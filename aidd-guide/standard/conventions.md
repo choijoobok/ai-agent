@@ -95,6 +95,6 @@ cd frontend && npm run lint && npx tsc -b --noEmit && npm run test
 
 ## 관련
 
-- [CLAUDE.md §4 · §6 · §7 · §8](../../CLAUDE.md) — 요지
+- [CLAUDE.md §5 · §7 · §8 · §9](../../CLAUDE.md) — 요지
 - [sources/backend/packages.md](./backend/packages.md) · [sources/frontend/packages.md](./frontend/packages.md)
 - [seed.md](./seed.md) — 생성물과 손으로 쓰는 것

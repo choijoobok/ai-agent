@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["documents/screenaidd-guide/artifact/template/02-requirements.md", "sources/frontend/src/features/sample/"]
+sources: ["aidd-guide/artifact/template/02-requirements.md", "sources/frontend/src/features/sample/"]
 author: Bong Jong Hyeon
 tier: 1
 tags: [prompt, overlay, index]
@@ -66,4 +66,4 @@ tags: [prompt, overlay, index]
 
 - [../INDEX.md](../INDEX.md) — 카테고리
 - [../screen.md](../screen.md) — 절차 4단계에서 Overlay 를 고른다
-- [`documents/screenaidd-guide/artifact/template/02-requirements.md`](../../template/02-requirements.md)) — 절 번호의 원본
+- [`aidd-guide/artifact/template/02-requirements.md`](../../template/02-requirements.md) — 절 번호의 원본

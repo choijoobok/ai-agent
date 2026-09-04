@@ -148,7 +148,7 @@ private String parameters;
 - MyBatis 쿼리는 **`databaseIdProvider` 로 벤더 분기 가능**하게 쓴다.
 - 테이블명 **30자 이내**, 공통 테이블은 `SYS_` 접두, 예약어 회피.
 - **이미 적재된 changeset 은 고치지 않고 새 파일을 더한다** — 고치면 남의 로컬이
-  checksum 으로 죽는다(CLAUDE.md §4-8).
+  checksum 으로 죽는다(CLAUDE.md §5-8).
 
 ## 7. 동시 갱신 — **어떤 락을 쓸 것인가**
 

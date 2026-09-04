@@ -111,7 +111,7 @@ api: {
 }
 ```
 
-- **`url` 은 `endpoints.ts` 의 값을 넣는다** — 리터럴을 적으면 ESLint 가 막는다(`CLAUDE.md` §4-6).
+- **`url` 은 `endpoints.ts` 의 값을 넣는다** — 리터럴을 적으면 ESLint 가 막는다(`CLAUDE.md` §8).
   그 값에 **`/api` 를 붙이지 않는다** — 배럴이 붙인다([http.md](./http.md)).
 - `read` 가 없으면 **전량 모드**다 — 조회 버튼이 서지 않는다.
 - `warn` 은 저장 전 확인 문구, `locateFieldErrors` 는 서버 필드 오류를 셀에 꽂는 자리다.

@@ -14,7 +14,7 @@ tags: [frontend, structure, shared, state, zustand]
 
 # 프론트엔드 구조 — 폴더 · 공통화 · 상태 경계
 
-> **두 번째 화면이 같은 것을 쓰는 순간 `shared/` 로 올린다**(CLAUDE.md §4-7).
+> **두 번째 화면이 같은 것을 쓰는 순간 `shared/` 로 올린다**(CLAUDE.md §8).
 > ESLint 는 **경로를 넘는 import 를 막을 뿐 복붙은 통과시킨다** — 그래서 이것은
 > 리뷰 규칙이다.
 >
@@ -172,4 +172,4 @@ features/user/
 
 - [http.md](./http.md) — `endpoints.ts` · 배럴 하나
 - [grid.md](./grid.md) — 화면 뼈대
-- [CLAUDE.md §4-7 · §6](../../../CLAUDE.md) — 공통물 승격 · 기계가 막는 것
+- [CLAUDE.md §8](../../../CLAUDE.md) — 공통물 승격 · 기계가 막는 것

@@ -40,7 +40,7 @@ tags: [memory, logs, index]
 
 | 무엇 | 어디 |
 |---|---|
-| **그보다 가벼운 결정** | **커밋 메시지**. `CLAUDE.md` §4-3 이 *왜* 를 본문에 적게 한다 |
+| **그보다 가벼운 결정** | **커밋 메시지**. `CLAUDE.md` §5-3 이 *왜* 를 본문에 적게 한다 |
 | **불변 진실** | Claude Code auto-memory(`~/.claude/…/memory/`) — 세션 진입에 자동으로 실린다 |
 
 > **레지스트리를 하나 더 만들지 않는 것이 결정이다.** 결정을 적는 자리가 둘이면
@@ -53,7 +53,7 @@ tags: [memory, logs, index]
 | 분류 | 정의 | 위치 |
 |------|------|-------------|
 | **Short-term** | 현재 컨텍스트 윈도우 | Claude Code 세션 |
-| **Episodic** | 시간 순 로그 | `chat-history/YYYY-MM/{raw,summary}/` — 형상 관리 제외 (CLAUDE.md §9) |
+| **Episodic** | 시간 순 로그 | `chat-history/YYYY-MM/{raw,summary}/` — 형상 관리 제외 (CLAUDE.md §10) |
 | **Semantic** | 개념·관계 지식 | `09-knowledge/`, `06-framework/`, `11-playbook/` |
 
 ## Structured Note-Taking (Anthropic)
@@ -73,11 +73,11 @@ tags: [memory, logs, index]
 
 | 메모리 | 갱신 조건 |
 |-------|----------|
-| logs (raw) | 훅이 남긴다. 사람도 AI 도 손대지 않는다 (CLAUDE.md §9) |
+| logs (raw) | 훅이 남긴다. 사람도 AI 도 손대지 않는다 (CLAUDE.md §10) |
 | logs (summary) | AI 가 세션 끝에 작성 — 결정·산출물·미결만 남긴다 |
 | ADR | 아키텍처 판단에서 **버린 안이 생겼을 때**. 형식은 adr/INDEX.md |
 
-> 실제 저장 경로는 [logs.md](./logs.md) 에 정의. 로그 폴더는 **형상 관리 대상이 아니다**(CLAUDE.md §9).
+> 실제 저장 경로는 [logs.md](./logs.md) 에 정의. 로그 폴더는 **형상 관리 대상이 아니다**(CLAUDE.md §10).
 
 ## 관련 카테고리
 

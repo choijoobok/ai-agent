@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["documents/screenaidd-guide/artifact/template/02-requirements.md", "sources/frontend/src/features/sample/singleoffset/"]
+sources: ["aidd-guide/artifact/template/02-requirements.md", "sources/frontend/src/features/sample/singleoffset/"]
 author: Bong Jong Hyeon
 tier: 1
 tags: [prompt, crud, example]
@@ -110,7 +110,7 @@ tags: [prompt, crud, example]
 | 컴포넌트·훅 이름을 적었다 | **어떻게** 는 요건서의 것이 아니다 |
 | 그리드 크롬·페이징·감사 넷을 적었다 | **이미 표준**이다 |
 | 질문을 한 개씩 나눠 던졌다 | 문맥 복원 비용이 사용자에게 간다 |
-| 승인 전에 파일을 만들었다 | CLAUDE.md §5.3 |
+| 승인 전에 파일을 만들었다 | CLAUDE.md §6.3 |
 
 ## 관련
 

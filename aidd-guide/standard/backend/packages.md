@@ -162,4 +162,4 @@ api         {화면·도메인}/
 - [persistence.md](./persistence.md) — JPA / QueryDSL / MyBatis 경계
 - [api.md](./api.md) — 경로·응답·액션 판정
 - [INDEX.md](./INDEX.md) — 백엔드 카테고리 진입
-- [CLAUDE.md §6](../../../CLAUDE.md) — 기계가 막는 것 / 사람이 지키는 것
+- [CLAUDE.md §8](../../../CLAUDE.md) — 기계가 막는 것 / 사람이 지키는 것

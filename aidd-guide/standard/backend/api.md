@@ -143,7 +143,7 @@ tags: [backend, api, rest, response, header]
 - **문서용이 아니라 시드용이다.** `generateApiSeed` 가 이 문장을 읽어
   `SYS_API.API_NM` 을 채우고, 그것이 **권한 화면에서 운영자가 보는 이름**이 된다.
   비우면 운영자가 `/service/roleAuth/getMenuTree` 를 보고 무엇인지 판단해야 한다.
-- 한국어로 쓴다(§4-5). 컨트롤러 javadoc 과 같은 말을 두 번 적지 않는다 —
+- 한국어로 쓴다(CLAUDE.md §5-6). 컨트롤러 javadoc 과 같은 말을 두 번 적지 않는다 —
   **`summary` 는 운영자의 말, javadoc 은 다음 개발자의 말**이다.
 
 ## 5. 헤더 넷
@@ -175,4 +175,4 @@ tags: [backend, api, rest, response, header]
 - [search.md](./search.md) — 조회 요청·화이트리스트·빌더
 - [packages.md](./packages.md) — 도메인 마디의 원본
 - [exception.md](./exception.md) — `code`·`message` 를 만드는 곳
-- [CLAUDE.md §4-6](../../../CLAUDE.md) — 호출 URL 은 `endpoints.ts` 에만
+- [CLAUDE.md §8](../../../CLAUDE.md) — 호출 URL 은 `endpoints.ts` 에만

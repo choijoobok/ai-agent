@@ -14,7 +14,7 @@ tags: [seed, liquibase, gradle, authz, message]
 
 # 생성 시드 — 절차와 검증
 
-> **시드는 생성물이다**(CLAUDE.md §4-8). 손으로 고치면 훅이 막고, 막히지 않는 것은
+> **시드는 생성물이다**(CLAUDE.md §5-8). 손으로 고치면 훅이 막고, 막히지 않는 것은
 > **다음 생성에서 사라진다.**
 >
 > *왜 생성하는가* 는 ADR 이 갖는다. **이 문서는 사람이 하는 절차만 갖는다.**
@@ -140,4 +140,4 @@ git add . && git rebase --continue
 - [sources/backend/api.md](./backend/api.md) — 접두가 액션을 정한다
 - [sources/backend/security.md](./backend/security.md) — 인가 사실이 데이터인 이유
 - [sources/frontend/http.md](./frontend/http.md) — `endpoints.ts` 선언
-- [CLAUDE.md §4-8 · §7](../../CLAUDE.md) — 시드는 생성물이다 · 게이트
+- [CLAUDE.md §5-8 · §7](../../CLAUDE.md) — 시드는 생성물이다 · 게이트

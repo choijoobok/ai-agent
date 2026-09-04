@@ -117,7 +117,7 @@ menu-tree.yaml  →  MENU_URL  →  screenRegistry.ts  →  화면 컴포넌트
 
 - **화면 접근은 서버가 내려준 권한 메뉴 목록으로 라우터가 제한한다.** 서버가 실제로
   지키는 것은 그 화면이 부르는 **API** 다 — **JS 청크는 정적 리소스라 막지 않는다.**
-- **`screenRegistry` 의 경로 전부가 문서 셋의 대상**이다(CLAUDE.md §5.1).
+- **`screenRegistry` 의 경로 전부가 문서 셋의 대상**이다(CLAUDE.md §6.1).
 - **경로를 바꾸면 `documents/screen/` 폴더도 같은 커밋에서 옮긴다.**
 
 ## 10. 셸이 그리드에 높이를 줘야 한다

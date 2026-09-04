@@ -6,7 +6,7 @@ type: operation
 created: "2026-05-04"
 updated: "2026-09-03"
 status: active
-sources: ["CLAUDE.md §9", "chat-history/"]
+sources: ["CLAUDE.md §10", "chat-history/"]
 author: Bong Jong Hyeon
 tier: 1
 tags: [memory, log, episodic, chat-history]
@@ -65,7 +65,7 @@ tags: [memory, log, episodic, chat-history]
 
 ## 무엇을 남기나 — `summary` 의 세 칸
 
-CLAUDE.md §9 의 셋이 그대로 칸이 된다: **결정 · 만든 것 · 남긴 미결.**
+CLAUDE.md §10 의 셋이 그대로 칸이 된다: **결정 · 만든 것 · 남긴 미결.**
 
 - **대화의 흐름은 담지 않는다.** *무엇을 물었고 무엇을 답했나* 는 `raw` 가 갖는다.
 - **검증 가능한 좌표로 적는다** — 파일 경로 · 커밋 해시 · `ADR-NNNN`. 이름만 적으면 다음 세션이 못 찾는다.
@@ -92,4 +92,4 @@ CLAUDE.md §9 의 셋이 그대로 칸이 된다: **결정 · 만든 것 · 남�
 
 - [INDEX.md](./INDEX.md) — Memory Hierarchy · 갱신 조건
 - [05-harness/hooks.md](../hooks.md) — 훅의 상세와 새 훅의 계약
-- [CLAUDE.md §9](../../../CLAUDE.md) — 위치 · 형상 관리 제외 · 담을 것
+- [CLAUDE.md §10](../../../CLAUDE.md) — 위치 · 형상 관리 제외 · 담을 것

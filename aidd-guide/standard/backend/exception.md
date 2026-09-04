@@ -85,7 +85,7 @@ MsgKey.java (서버)  ·  messageKeys.ts (프론트)
                                              SYS_MESSAGE 값은 새 changeset 으로
 ```
 
-- **문구를 소스에 박지 않는다**(CLAUDE.md §4-5). 서버는 `MsgKey` 상수 + `SYS_MESSAGE`.
+- **문구를 소스에 박지 않는다**(CLAUDE.md §5-6). 서버는 `MsgKey` 상수 + `SYS_MESSAGE`.
 - **키 시드는 생성물이다.** `MsgKey.java` 를 고쳤으면 생성 태스크를 돌려 **CSV 를 같은
   커밋에** 담는다. 값(`SYS_MESSAGE`)은 **이미 적재된 changeset 을 고치지 않고 새 파일로** 더한다.
 - `SeedMessageTest` 가 **값 시드의 키가 키 시드에 있는가**를 검사한다.
@@ -106,10 +106,10 @@ MsgKey.java (서버)  ·  messageKeys.ts (프론트)
 - **예외 로그는 비동기로 저장한다.** 로그 저장 실패가 원본 응답에 영향을 주면 안 된다.
 - **4xx 는 `ROOT_CAUSE_STACK` 을 저장하지 않는다.** 인가 거부의 스택은 인터셉터 프레임뿐이고
   **전 행이 같다** — 180일치 노이즈다. `NULL` 로 둔다.
-- **개발자용 로그·예외 메시지는 영어로 쓴다**(CLAUDE.md §4-5). 사용자 문구는 `SYS_MESSAGE` 다.
+- **소스에 남는 로그·예외의 기본 메시지는 한국어로 쓴다**(CLAUDE.md §5-6). 사용자 문구는 `SYS_MESSAGE` 다.
 
 ## 관련
 
 - [api.md](./api.md) — 봉투 · 서버가 문구를 완성하는 이유
 - [`../../09-knowledge/sys/message.md`](../../knowledge/sys/message.md) — `SYS_MESSAGE` 도메인
-- [CLAUDE.md §4-5 · §4-8](../../../CLAUDE.md) — 문구를 박지 않는다 · 시드는 생성물이다
+- [CLAUDE.md §5-6 · §5-8](../../../CLAUDE.md) — 문구를 박지 않는다 · 시드는 생성물이다
