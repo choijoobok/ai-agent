@@ -1,7 +1,7 @@
 # `documents/screen/_standalone/` — 메뉴를 갖지 않는 화면 여덟
 
 `SYS_MENU` 에 행이 없지만 **화면은 존재한다.** 셸에 들어가기 전이거나 셸의 모달이다.
-규칙은 [`CLAUDE.md` §5](../../../CLAUDE.md) 가 갖고 형식은 [`documents/screen/_TEMPLATE/`](../_TEMPLATE) 가 갖는다 — **여기서 재정의하지 않는다.**
+규칙은 [`CLAUDE.md` §5](../../../CLAUDE.md) 가 갖고 형식은 [`aidd-guide/artifact/template/`](../../../aidd-guide/artifact/template) 가 갖는다 — **여기서 재정의하지 않는다.**
 
 ```
 documents/screen/_standalone/{화면}/

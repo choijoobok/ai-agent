@@ -124,7 +124,7 @@ REQ 47개 / 이행 45 / 미이행 2 (CR-009로 2차 이관, 사용자 합의)
 - **반복된 spec 결함 유형 / 미검증 규칙 유형** — P3 체크리스트와 TC 작성 기준에 반영
 - **실제로 줄인 절차와 그 결과** (`charter.expectations.reduced_scope`) — 문제가 됐는가, 안 됐는가
 
-**회고 결과는 [`process/`](../process/overview.md) 와 [`phase/`](P0-inception.md) 에 반영한다.** 프레임워크가 프로젝트마다 자란다.
+**회고 결과는 [`process/`](../process/01-overview.md) 와 [`phase/`](P0-inception.md) 에 반영한다.** 프레임워크가 프로젝트마다 자란다.
 
 ## 7. G6 게이트
-→ `aidd-guide/process/gates.md` G6
+→ `aidd-guide/process/04-gates.md` G6

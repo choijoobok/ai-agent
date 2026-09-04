@@ -8,7 +8,7 @@ description: 현재 단계에서 사용자에게 물어야 할 것을 질문 배
 ## 절차
 
 ### 1. 규약 확인
-`aidd-guide/process/interview.md` 를 읽는다.
+`aidd-guide/process/03-interview.md` 를 읽는다.
 
 ### 2. 무엇이 부족한지 판정
 현재 단계의 `aidd-guide/phase/P?-*.md` 의 산출물 요건과 현재 `documents/spec/` 을 대조해
@@ -18,14 +18,14 @@ description: 현재 단계에서 사용자에게 물어야 할 것을 질문 배
 아래는 질문 목록에서 **제거**한다.
 - 이미 `documents/decisions/ADR-*.md` 로 답이 정해진 것
 - 이미 `documents/spec/` 에 있는 것
-- `aidd-guide/process/interview.md` §3 "물어보면 안 되는 것"
+- `aidd-guide/process/03-interview.md` §3 "물어보면 안 되는 것"
 - AI가 합리적 기본값을 정할 수 있는 Low/Medium 결정
 
 ### 4. 우선순위로 7개 자르기
 `되돌리기 비용 High` → `다른 결정을 막고 있는 것` → `나머지` 순.
 
 ### 5. 배치 작성
-`aidd-guide/process/interview.md` §1 포맷 그대로. 각 질문에 반드시:
+`aidd-guide/process/03-interview.md` §1 포맷 그대로. 각 질문에 반드시:
 - 배경 (왜 묻는지, 업무 언어로)
 - 선택지 2~3개 + **권장안 표시**
 - 권장 이유

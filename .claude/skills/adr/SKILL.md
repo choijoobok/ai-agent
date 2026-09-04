@@ -6,7 +6,7 @@ description: 아키텍처 의사결정 기록(ADR)을 작성한다. 되돌리기
 # ADR 작성
 
 ## 먼저 판정: 이게 ADR 대상인가
-`aidd-guide/process/decision.md` §1 로 되돌리기 비용을 판정한다.
+`aidd-guide/process/06-decision.md` §1 로 되돌리기 비용을 판정한다.
 - **High** → ADR + **사용자 승인 필수**
 - **Medium** → ADR + 통지 (승인 불필요)
 - **Low** → ADR 불필요. 그냥 결정한다.

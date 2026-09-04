@@ -265,7 +265,7 @@ sequenceDiagram
 
 ## 9. ⑧ 슬라이스 백로그
 
-`aidd-guide/process/slice.md` §2 순서 규칙(의존성 → 리스크 → 가치)으로 정렬해
+`aidd-guide/process/07-slice.md` §2 순서 규칙(의존성 → 리스크 → 가치)으로 정렬해
 `documents/project.state.yaml` 의 `slices:` 에 기록한다.
 
 ## 10. ⑨ 마무리

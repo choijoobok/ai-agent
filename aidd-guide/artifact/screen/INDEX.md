@@ -6,7 +6,7 @@ type: operation
 created: 2026-04-30
 updated: 2026-09-03
 status: active
-sources: ["documents/screen/_TEMPLATE/requirements.md", "documents/screen/README.md", "CLAUDE.md"]
+sources: ["documents/screenaidd-guide/artifact/template/02-requirements.md", "documents/screen/README.md", "CLAUDE.md"]
 author: Bong Jong Hyeon
 tier: 1
 tags: [prompt, requirements, overlay, index]
@@ -19,7 +19,7 @@ tags: [prompt, requirements, overlay, index]
 > 질문**(Overlay)을 갖는다.
 >
 > **형식은 여기 없다.** `requirements.md` 의 섹션 구성과 작성 원칙은
-> [`documents/screen/_TEMPLATE/`](../../../documents/screen/_TEMPLATE/requirements.md) 가 갖는다 —
+> [`aidd-guide/artifact/template/`](../template/02-requirements.md)) 가 갖는다 —
 > 여기서 재정의하면 형식이 둘이 된다.
 
 ## 세 카테고리의 경계

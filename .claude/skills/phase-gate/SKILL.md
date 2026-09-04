@@ -10,7 +10,7 @@ description: 단계 게이트를 점검하고 통과를 요청한다. Exit Crite
 ## 절차 — 4단계를 순서대로. 건너뛰지 않는다.
 
 ### ① Exit Criteria 자체검증
-`aidd-guide/process/gates.md` 의 해당 게이트 체크리스트를 **항목별로** 판정한다.
+`aidd-guide/process/04-gates.md` 의 해당 게이트 체크리스트를 **항목별로** 판정한다.
 
 - 각 항목에 ✅/❌ 와 **근거 파일 경로**를 붙인다. "충족" 만 쓰지 않는다.
 - 자동 검사 가능한 것은 실제로 실행한다:
@@ -32,7 +32,7 @@ description: 단계 게이트를 점검하고 통과를 요청한다. Exit Crite
 
 ### ③ 결정 카드 + 역질문 (생략 불가)
 사용자가 이해하지 못한 승인은 품질 장치가 아니라 책임 이전이다.
-→ `aidd-guide/process/cognitive-debt.md`
+→ `aidd-guide/process/10-cognitive-debt.md`
 
 **결정 카드**: 이번 단계에서 **사용자가 실제로 결정한 것**만 3~5개, 업무 언어 한 줄씩,
 되돌리기 비용과 함께. 산출물 목록이 아니다. 기술 용어를 쓰면 실패다.
@@ -47,7 +47,7 @@ description: 단계 게이트를 점검하고 통과를 요청한다. Exit Crite
 - 역질문에 답이 없어도 게이트를 인질로 잡지 않는다. ASM 등록 후 진행, 카운터만 올린다
 
 ### ④ 승인 요청
-`aidd-guide/process/gates.md` §3 포맷으로 제시한다. 포함할 것:
+`aidd-guide/process/04-gates.md` §3 포맷으로 제시한다. 포함할 것:
 - Exit Criteria 충족 현황 (n/m)
 - 레드팀 지적 **전문** (숨기지 않는다)
 - 미해결 ASM 목록

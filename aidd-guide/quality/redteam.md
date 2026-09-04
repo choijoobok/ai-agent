@@ -56,7 +56,7 @@ AI의 최대 실패 모드는 **자기 산출물에 대한 무비판**이다. �
 > 지켜야 할 규칙에서 표류한다.**
 
 원인은 명확하다. **AI가 코드를 먼저 쓰면 그 코드에 맞는 테스트를 쓴다.**
-TEST-FIRST(`aidd-guide/process/slice.md` §3-③)로 절반은 막지만, TC 자체가 약하면 여전히 헛돈다.
+TEST-FIRST(`aidd-guide/process/07-slice.md` §3-③)로 절반은 막지만, TC 자체가 약하면 여전히 헛돈다.
 "테스트 통과"를 완료 조건으로 삼는 한, 테스트의 강도를 따로 검증해야 한다.
 
 Thoughtworks Technology Radar Vol.34는 뮤테이션 테스트를 코딩 에이전트의

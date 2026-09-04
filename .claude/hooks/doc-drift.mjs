@@ -38,7 +38,7 @@ if (missing.length === 3) {
   warn(
     [
       `${path} 를 고쳤다 — 이 화면(${screenUrl})의 문서 셋이 **없다**.`,
-      `만들 곳: ${docDir}/  (템플릿: documents/screen/_TEMPLATE/ · 스킬: /menu-doc)`,
+      `만들 곳: ${docDir}/  (템플릿: aidd-guide/artifact/template/ · 스킬: /menu-doc)`,
       '메뉴 화면 착수 전에는 requirements.md 가 있어야 하고 사용자 검토를 받는다 — CLAUDE.md §6.3.',
     ].join('\n'),
   );

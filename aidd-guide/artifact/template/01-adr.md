@@ -35,7 +35,7 @@ tags: [template]
 무엇으로 정했는가. 한 문장.
 
 ## 4. 근거
-왜 그것인가. `aidd-guide/process/decision.md` §2의 판단 기준 순서로.
+왜 그것인가. `aidd-guide/process/06-decision.md` §2의 판단 기준 순서로.
 
 ## 5. 포기한 것 (Trade-off)
 이 선택으로 **못 하게 된 것**을 명시한다. 나중에 "왜 이거 안 됐지?"의 답이 된다.

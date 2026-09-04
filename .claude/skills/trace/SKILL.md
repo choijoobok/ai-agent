@@ -9,7 +9,7 @@ description: 추적성 체인을 검사한다. REQ→UC→FEAT→ENT/API/SCR→T
 
 ## 검사 실행
 `.claude/hooks/trace-check.mjs` 를 실행한다. 없으면 documents/spec/*.yaml 을 직접 파싱해
-`aidd-guide/process/traceability.md` §3 의 T1~T12 규칙을 검사한다.
+`aidd-guide/process/05-traceability.md` §3 의 T1~T12 규칙을 검사한다.
 
 ```bash
 node .claude/hooks/trace-check.mjs --all
@@ -38,11 +38,11 @@ node .claude/hooks/trace-check.mjs --all
 ```
 
 ## `--report` 추적성 매트릭스
-`documents/generated/90-추적성매트릭스.md` 생성. `aidd-guide/process/traceability.md` §6 포맷.
+`documents/generated/90-추적성매트릭스.md` 생성. `aidd-guide/process/05-traceability.md` §6 포맷.
 미실현 REQ가 하나라도 있으면 표 상단에 경고를 붙인다.
 
 ## `--impact ID` 변경 영향 분석
 체인을 타고 **직접 영향**과 **간접 영향**을 나열한다.
-`aidd-guide/process/traceability.md` §5 포맷. 이미 구현된 슬라이스가 걸리면 재작업 규모를 함께 낸다.
+`aidd-guide/process/05-traceability.md` §5 포맷. 이미 구현된 슬라이스가 걸리면 재작업 규모를 함께 낸다.
 
 **영향 분석 결과는 보고만 하고 자동 수정하지 않는다.** 사용자 판단 후 CR 절차로.

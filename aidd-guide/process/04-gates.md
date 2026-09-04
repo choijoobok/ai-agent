@@ -32,7 +32,7 @@ tags: [gate, exit-criteria]
 
 ②를 건너뛴 승인 요청은 무효다. AI는 자기 산출물을 반드시 먼저 공격해야 한다.
 ③도 건너뛸 수 없다. 사용자가 이해하지 못한 승인은 품질 장치가 아니라 책임 이전이다.
-→ `aidd-guide/process/cognitive-debt.md`
+→ `aidd-guide/process/10-cognitive-debt.md`
 
 ## 2. 게이트별 Exit Criteria
 
@@ -45,7 +45,7 @@ tags: [gate, exit-criteria]
 - [ ] 트랙(Lite/Standard/Full)이 결정됨
 - [ ] 기존 시스템 유무와 대체/연동 여부가 확인됨
 - [ ] **기대치 정렬 완료** — J-커브·검증 비용을 설명하고 `charter.expectations.user_priority`
-      (speed/quality/balanced)를 받음 → `aidd-guide/process/verification-cost.md` §2
+      (speed/quality/balanced)를 받음 → `aidd-guide/process/11-verification-cost.md` §2
 
 ### G1 — 요구사항 게이트 (P1 → P2)
 - [ ] 모든 요구사항이 `REQ-###` ID를 가지고 `검증 가능한 문장`으로 기술됨
@@ -109,7 +109,7 @@ tags: [gate, exit-criteria]
 - [ ] **운영 인수 시험 통과** — 사용자가 런북·매뉴얼을 보고 아래 3개에 답할 수 있음
       (① 로그인 장애 시 어디를 먼저 보는가 ② 데이터 복구 절차 ③ 신규 사용자 권한 부여 방법)
       답하지 못하면 **사용자가 아니라 문서의 결함**이다. 보강 후 다시 확인한다
-      → `aidd-guide/process/cognitive-debt.md` §6
+      → `aidd-guide/process/10-cognitive-debt.md` §6
 - [ ] 인수 확인서에 사용자 서명(승인 발화)
 
 ## 3. 게이트 승인 요청 포맷
@@ -159,7 +159,7 @@ documents/spec/ 을 베이스라인 동결하고 P4 구현에 들어갑니다. �
 **승인 / 보류(사유) / 특정 항목 재작업** 중에 알려주세요.
 ```
 
-**③의 규칙** (상세: `aidd-guide/process/cognitive-debt.md`)
+**③의 규칙** (상세: `aidd-guide/process/10-cognitive-debt.md`)
 - 결정 카드는 산출물 목록이 아니라 **사용자가 소유한 판단**만. 3~5개, 업무 언어로.
 - 기술 용어를 쓰면 실패다. "SAML 연동" ✗ → "퇴사하면 접근이 자동 차단됩니다" ✓
 - 역질문은 **AI의 불확실성**으로 포장한다. 시험처럼 묻지 않는다.

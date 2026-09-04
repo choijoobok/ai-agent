@@ -1,7 +1,7 @@
 # 03. 개발 방법 — 화면 하나를 만드는 순서
 
 > **규칙의 정본은 [`CLAUDE.md` §6](../CLAUDE.md) 와
-> [`aidd-guide/process/slice.md`](../aidd-guide/process/slice.md) 다.**
+> [`aidd-guide/process/07-slice.md`](../aidd-guide/process/07-slice.md) 다.**
 > 여기는 *사람이 무엇을 언제 보게 되는가* 를 옮긴 것이다.
 
 ## 1. 순서 — 여섯 단계
@@ -123,9 +123,9 @@ node .claude/skills/menu-doc/screens.mjs
 ## 관련
 
 - 화면 문서 셋의 형식 — [`documents/screen/README.md`](../documents/screen/README.md) ·
-  [`_TEMPLATE/`](../documents/screen/_TEMPLATE/requirements.md)
+  [`aidd-guide/artifact/template/`](../aidd-guide/artifact/template/02-requirements.md))
 - 화면 레시피 — [`aidd-guide/playbook/INDEX.md`](../aidd-guide/playbook/INDEX.md)
   (CRUD · 마스터디테일 · 마스터탭 · 트리 · 엑셀 · 모달 · changeset)
 - 개발 표준 — [`aidd-guide/standard/INDEX.md`](../aidd-guide/standard/INDEX.md) ·
   Hub 전용 규약 [`hub-conventions.md`](../aidd-guide/standard/hub-conventions.md)
-- 슬라이스 규약 — [`aidd-guide/process/slice.md`](../aidd-guide/process/slice.md)
+- 슬라이스 규약 — [`aidd-guide/process/07-slice.md`](../aidd-guide/process/07-slice.md)

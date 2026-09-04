@@ -5,7 +5,7 @@ description: 메뉴 화면의 문서 셋(requirements.md · mockup.html · manua
 
 # 화면 문서 셋 — 시작 · 현행화 · 점검
 
-규칙은 [`CLAUDE.md` §6](../../../CLAUDE.md) 가, **형식은 [`documents/screen/_TEMPLATE/`](../../../documents/screen/_TEMPLATE/) 의 머리 주석이** 갖는다.
+규칙은 [`CLAUDE.md` §6](../../../CLAUDE.md) 가, **형식은 [`aidd-guide/artifact/template/`](../../../aidd-guide/artifact/template) 의 머리 주석이** 갖는다.
 **이 스킬은 형식을 재정의하지 않는다** — 순서와 대조 방법만 정한다.
 
 인자로 화면을 받는다: 페이지 경로(`/user`) · 메뉴코드(`USER_MGMT`) · 기능 폴더(`user`) 아무거나.
@@ -30,7 +30,7 @@ node .claude/skills/menu-doc/screens.mjs
 
 **승인 전 BE/FE/시드 착수 금지**(§5.3). 순서를 바꾸지 않는다.
 
-1. `cp -r documents/screen/_TEMPLATE documents/screen/{페이지경로}` — 셋이 함께 생긴다.
+1. `cp -r aidd-guide/artifact/template/ documents/screen/{페이지경로}` — 셋이 함께 생긴다.
 2. **`requirements.md` 를 채운다.** 머리 주석의 작성 원칙을 그대로 따른다. 특히:
    - *무엇을* 적고 *어떻게* 는 적지 않는다. 컴포넌트·prop·훅 이름은 표준과 AI 의 몫이다.
    - **DB 테이블·컬럼명 · 공통코드 그룹 · 메시지 키 · 페이지 경로 · 메뉴코드는 명시**한다.
@@ -39,7 +39,7 @@ node .claude/skills/menu-doc/screens.mjs
 3. **모르는 것을 추정으로 메우지 않는다** — §9 미결에 남기고 사용자에게 묻는다(`CLAUDE.md` §2).
 4. **사용자 검토를 받는다.** 승인 뒤에 구현으로 간다.
 5. 구현과 **동시에** `mockup.html` · `manual.md` 를 만든다. 셋 중 하나만 있는 상태로 커밋하지 않는다.
-   - `mockup.html` 은 `_TEMPLATE` 의 `<style>` 블록을 **그대로 복사**한다. 외부 CSS·JS 를 쓰지 않는다.
+   - `mockup.html` 은 `aidd-guide/artifact/template/` 의 `<style>` 블록을 **그대로 복사**한다. 외부 CSS·JS 를 쓰지 않는다.
    - 테스트케이스에 **되면 안 되는 것**을 반드시 넣는다. 근거 칸이 빈 케이스는 지어낸 것이다.
    - `manual.html` 은 만들지 않는다 — `/manual-site` 가 생성한다.
 

@@ -39,7 +39,7 @@ tags: [spec, ssot, yaml]
 
 ## 공통 규칙
 
-1. 모든 항목에 `id:` 가 있다. ID 체계 → `aidd-guide/process/traceability.md` §2
+1. 모든 항목에 `id:` 가 있다. ID 체계 → `aidd-guide/process/05-traceability.md` §2
 2. ID는 재사용하지 않는다. 삭제해도 번호를 비워 둔다.
 3. 상위 산출물을 참조하는 필드가 반드시 있다 (`reqs:`, `usecases:`, `feature:` 등).
 4. G3 승인 후 베이스라인 동결. 각 파일 헤더에 `baselined: YYYY-MM-DD` 를 적는다.

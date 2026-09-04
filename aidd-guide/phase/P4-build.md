@@ -15,7 +15,7 @@ tags: [build, slice]
 # P4 구현 — 수직 슬라이스 반복
 
 > 목표: 슬라이스 단위로 동작하는 것을 쌓는다. 계층별로 만들지 않는다.
-> 상세 규약: `aidd-guide/process/slice.md`
+> 상세 규약: `aidd-guide/process/07-slice.md`
 > 소요: 프로젝트의 35%
 
 ## 1. 슬라이스 시작 전 (매번)
@@ -72,7 +72,7 @@ tests/
 db/migrations/             # 순번_설명.sql + 순번_설명_rollback.sql
 ```
 
-- 모든 소스 파일 상단에 `@feat FEAT-###` 태그 (→ `aidd-guide/process/traceability.md` §4)
+- 모든 소스 파일 상단에 `@feat FEAT-###` 태그 (→ `aidd-guide/process/05-traceability.md` §4)
 - 업무 규칙은 컨트롤러가 아니라 서비스/도메인에 둔다 (테스트 가능하게)
 - 권한 검사는 API 레벨. 화면 숨김만으로는 미충족
 - 에러는 spec의 에러코드로 던진다. 임의 메시지 금지
@@ -82,7 +82,7 @@ db/migrations/             # 순번_설명.sql + 순번_설명_rollback.sql
 | 시점 | 보고 |
 |---|---|
 | 슬라이스 시작 | 한 줄 (범위) |
-| 슬라이스 완료 | 완료 보고 포맷 ([`process/slice.md`](../process/slice.md) §6) |
+| 슬라이스 완료 | 완료 보고 포맷 ([`process/07-slice.md`](../process/07-slice.md) §6) |
 | 5개 슬라이스마다 | 누적 진척 + CR + 남은 슬라이스 + 범위 증가율 + **검증 부담 추이** |
 | 막힘 발생 즉시 | 무엇이 막혔는지 + 우회안 2개 |
 
@@ -102,14 +102,14 @@ db/migrations/             # 순번_설명.sql + 순번_설명_rollback.sql
 | `redteam_fixes` | 레드팀 지적 중 실제 수정으로 이어진 수 |
 
 **5개 슬라이스마다 추세를 보고한다.** 지표가 내려가면 J-커브를 빠져나오는 중이고,
-평평하거나 올라가면 원인이 있다 — 해석표는 `aidd-guide/process/verification-cost.md` §3.
+평평하거나 올라가면 원인이 있다 — 해석표는 `aidd-guide/process/11-verification-cost.md` §3.
 
 특히 `spec_defects` 나 `unverified_rules` 가 줄지 않으면 **P3 산출물이 부실했다는 신호**다.
 남은 슬라이스의 해당 spec을 선제 점검할지 사용자에게 제안한다.
 
 ### 사용자가 "너무 느리다, 절차를 줄이자"고 할 때
 
-즉흥적으로 판단하지 않는다. `aidd-guide/process/verification-cost.md` §4 의 3분류
+즉흥적으로 판단하지 않는다. `aidd-guide/process/11-verification-cost.md` §4 의 3분류
 (**줄일 수 있는 것 / 절대 안 되는 것 / 지금은 빠르지만 나중에 비싼 것**)로 즉답한다.
 줄이기로 한 것은 `charter.expectations.reduced_scope` 에 근거와 함께 기록한다.
 
@@ -125,6 +125,6 @@ db/migrations/             # 순번_설명.sql + 순번_설명_rollback.sql
 | 사용자가 중간에 새 기능 요청 | CR 절차. 현재 슬라이스는 끝내고 처리 |
 
 ## 7. G4 미니게이트 (슬라이스마다)
-→ `aidd-guide/process/gates.md` G4 체크리스트
+→ `aidd-guide/process/04-gates.md` G4 체크리스트
 
 전 슬라이스 done → `/phase-gate P4` → P5로.

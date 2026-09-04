@@ -32,7 +32,7 @@ tags: [harness, skill, workflow, convention]
 | [`/menu-doc`](../../.claude/skills/menu-doc/SKILL.md) | 새 화면 착수 전 요건서 · 소스 변경 뒤 문서 대조 · 전수 결손 점검 | 원본이 셋(`requirements.md` · `mockup.html` · `manual.md`). 파생 없음 |
 | [`/manual-site`](../../.claude/skills/manual-site/SKILL.md) | 메뉴얼을 고친 뒤 · 고객사 제출본을 만들 때 · 화면을 캡처해 넣을 때 | `manual.md` **하나가 원본**, `manual.html` · `documents/screen/index.html` · `build/manual/` 은 전부 파생 |
 
-- 규칙은 [CLAUDE.md §5](../../CLAUDE.md) 가, 문서 셋의 **형식**은 [`documents/screen/_TEMPLATE/`](../../documents/screen/_TEMPLATE) 의 머리 주석이 갖는다.
+- 규칙은 [CLAUDE.md §5](../../CLAUDE.md) 가, 문서 셋의 **형식**은 [`aidd-guide/artifact/template/`](../artifact/template) 의 머리 주석이 갖는다.
 - 인자 없이 `/menu-doc` 을 부르면 **전수 점검**이다 — 화면별 문서 셋 유무를 한 표로 낸다.
 
 ## 훅 · 스킬 · 플레이북의 경계

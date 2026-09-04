@@ -11,7 +11,7 @@ description: 수직 슬라이스 하나를 구현한다. 스펙 재확인 → �
 - `gates.P3_design.status == approved` 여야 한다. 아니면 **거부하고 이유를 보고**한다.
 - 의존 슬라이스가 `done` 인지 확인.
 
-## 절차 — `aidd-guide/process/slice.md` §3
+## 절차 — `aidd-guide/process/07-slice.md` §3
 
 ### ① 스펙 재확인 (기억에 의존 금지)
 해당 `FEAT-###` 의 spec을 **실제로 읽는다**: UC / ENT / API / SCR / TC 전부.
@@ -58,12 +58,12 @@ node .claude/hooks/quality-check.mjs
 → `aidd-guide/quality/INDEX.md` §5
 
 ### ⑧ 미니게이트 G4
-`aidd-guide/process/gates.md` G4 체크리스트 + `aidd-guide/quality/INDEX.md` §6 코드 품질 기준.
+`aidd-guide/process/04-gates.md` G4 체크리스트 + `aidd-guide/quality/INDEX.md` §6 코드 품질 기준.
 사용자에게 실행 결과(스크린샷/실행 방법)를 제시한다.
 
 ### ⑨ 상태 갱신
 `documents/project.state.yaml`: slice status = done, 다음 슬라이스 제시.
-완료 보고는 `aidd-guide/process/slice.md` §6 포맷.
+완료 보고는 `aidd-guide/process/07-slice.md` §6 포맷.
 
 ## 첫 슬라이스(SLICE-001)는 골격이다
 기능이 아니라 **관통 골격(Walking Skeleton)**: 로그인 → 권한 → 화면 → DB → 로그 → 테스트 → 배포.

@@ -1,7 +1,7 @@
 # 변경 요청 대장 (Change Requests)
 
 G3(설계 베이스라인) 승인 이후의 모든 spec 변경을 기록한다.
-절차 → `aidd-guide/process/change-control.md`
+절차 → `aidd-guide/process/08-change-control.md`
 
 | ID | 일자 | 유형 | 요청 내용 | 요청자 | 영향 | 재작업 규모 | 판정 | 상태 |
 |---|---|---|---|---|---|---|---|---|

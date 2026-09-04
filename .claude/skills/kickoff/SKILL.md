@@ -21,10 +21,10 @@ description: 새 시스템 구축 프로젝트를 시작한다. 사용자가 "�
 ### 1. 방법론 숙지
 아래를 순서대로 읽는다.
 - `CLAUDE.md`
-- `aidd-guide/process/overview.md`
-- `aidd-guide/process/interview.md`
+- `aidd-guide/process/01-overview.md`
+- `aidd-guide/process/03-interview.md`
 - `aidd-guide/phase/P0-inception.md`
-- `aidd-guide/process/cognitive-debt.md` (게이트에서 결정 카드·역질문을 쓰기 위해)
+- `aidd-guide/process/10-cognitive-debt.md` (게이트에서 결정 카드·역질문을 쓰기 위해)
 
 ### 2. 사용자 요청 되풀이 (한 문단)
 "제가 이해한 것은 ... 입니다. 맞습니까?" — 오해를 여기서 잡는다.

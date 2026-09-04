@@ -7,7 +7,7 @@
  *   (인자 없이 표준 입력으로 훅 입력을 받으면 spec 변경 직후 축약 검사)
  * </pre>
  *
- * <p>규칙은 `aidd-guide/process/traceability.md` 의 T1~T12 다. <b>여기는 집행이고 정의는
+ * <p>규칙은 `aidd-guide/process/05-traceability.md` 의 T1~T12 다. <b>여기는 집행이고 정의는
  * 그쪽이다</b> — 규칙을 두 곳에 적으면 갈리고, 갈리면 초록불이 거짓이 된다.
  */
 
@@ -193,7 +193,7 @@ function fullCheck() {
     모델 단가 관리 · 전사 예산 계획 · 토큰 집계 · 스케줄러는 어느 기능 요구사항의 실현체도
     아니고 비용·안정성 목표의 실현체다. 그것을 고아로 부르면 **없는 REQ 를 만들어 붙이게
     되고**, 그 REQ 는 추적성을 위해서만 존재하는 거짓 항목이 된다.
-    → aidd-guide/process/traceability.md §3
+    → aidd-guide/process/05-traceability.md §3
   */
   for (const f of feats) {
     if (refs(f, 'usecases', 'reqs', 'nfrs').size === 0) {
@@ -257,7 +257,7 @@ function fullCheck() {
     백오피스 템플릿이 이 추적성 체계보다 앞서 들어왔으므로 미태깅이 수백 건이다. 줄줄이
     나열하면 <b>T6·T8 의 경고가 그 아래 묻힌다</b> — 많은 것을 다 보여주는 것이 아무것도
     보여주지 않는 것이 된다. 상한까지만 예로 들고 나머지는 수로 말한다.
-    → aidd-guide/process/traceability.md §3
+    → aidd-guide/process/05-traceability.md §3
   */
   const src = join(REPO, 'sources');
   if (existsSync(src)) {

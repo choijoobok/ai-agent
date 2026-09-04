@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-04
 status: active
-sources: ["documents/screen/_TEMPLATE/requirements.md", "documents/screen/README.md", "CLAUDE.md"]
+sources: ["documents/screenaidd-guide/artifact/template/02-requirements.md", "documents/screen/README.md", "CLAUDE.md"]
 author: Bong Jong Hyeon
 tier: 1
 tags: [prompt, requirements, procedure]
@@ -15,14 +15,14 @@ tags: [prompt, requirements, procedure]
 # 화면 요청 → 승인까지 **일곱 단계**
 
 > **승인 전에는 아무것도 만들지 않는다**(CLAUDE.md §5.3). 이 문서는 *그 승인에 도달하는
-> 절차* 이고, 요건서의 **형식은 [`documents/screen/_TEMPLATE/requirements.md`](../../../documents/screen/_TEMPLATE/requirements.md)**
+> 절차* 이고, 요건서의 **형식은 [`documents/screenaidd-guide/artifact/template/02-requirements.md`](../template/02-requirements.md))**
 > 가 갖는다.
 
 ## 절차
 
 ```
 1. 페이지 경로를 정한다        ← 폴더 이름이 여기서 나온다
-2. 폴더를 만든다               cp -r documents/screen/_TEMPLATE documents/screen/{경로}
+2. 폴더를 만든다               cp -r aidd-guide/artifact/template/ documents/screen/{경로}
 3. 소스에서 확인한다           표 · 컬럼 · 코드그룹 · 비슷한 화면
 4. Overlay 를 고른다           화면 특성 → 반드시 채울 절과 물을 질문
 5. 초안을 쓰고 미결을 모은다   §9 에 질문을 모아 한 번에 낸다
@@ -45,7 +45,7 @@ tags: [prompt, requirements, procedure]
 ## 2. 템플릿을 복사한다
 
 ```bash
-cp -r documents/screen/_TEMPLATE documents/screen/{페이지경로}
+cp -r aidd-guide/artifact/template/ documents/screen/{페이지경로}
 ```
 
 **섹션을 지우지 않는다.** 해당 없으면 **"없음" 이라고 쓴다** — 빈 칸은 *아직 안 정했다* 와
@@ -100,7 +100,7 @@ cp -r documents/screen/_TEMPLATE documents/screen/{페이지경로}
 **요건서에서만 나온다.** 목업이 요건서에 없는 것을 그리게 되면 **요건서를 먼저 고친다** —
 그러지 않으면 승인받은 것과 만들 것이 갈린다.
 
-- 형식은 [`documents/screen/_TEMPLATE/mockup.html`](../../../documents/screen/_TEMPLATE/mockup.html) 이 갖는다.
+- 형식은 [`documents/screenaidd-guide/artifact/template/03-mockup.html`](../template/03-mockup.html)) 이 갖는다.
   `<style>` 블록을 **그대로 복사**한다.
 - 담는 것은 **배치 · 상태 · 테스트케이스**(정상 · 경계 · 거부)다.
   구현 코드와 실제 데이터는 담지 않는다(CLAUDE.md §5.2).

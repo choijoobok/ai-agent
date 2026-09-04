@@ -29,6 +29,14 @@ ai-agent/
 └── sources/      ★ 코드 — 백엔드 · 프론트엔드. 빌드 루트가 여기다
 ```
 
+- **`aidd-guide` 는 *어떻게 하는가*, `documents` 는 *무엇을 만드는가* 다.** 갈릴 때 대는 판별식은
+  하나다 — **고객사가 바뀌어도 그대로 쓰는가?** 예면 `aidd-guide`, 아니면 `documents`.
+  코딩 방법 · 설정을 바꾸는 방법 · 프로세스를 진행하고 사용자와 합의하는 방법 · **산출물의
+  서식**은 다음 고객사에서도 그대로 쓰므로 `aidd-guide` 다. 이 프로젝트가 만들 업무 기능의
+  **결정과 지식**은 프로젝트와 함께 닫히므로 `documents` 다.
+  - 그래서 `knowledge/sys/` 열하나는 `aidd-guide` 에 있다 — 템플릿이 이미 준 기능이
+    *어떻게 동작하고 어떻게 설정을 바꾸나* 이며, 이것을 모르면 AI 가 있는 기능을 다시 만든다.
+  - 그래서 **서식은 `aidd-guide/artifact/template/` 이고 채운 것은 `documents/` 다.**
 - **`aidd-guide/` 와 `user-guide/` 를 헷갈리지 않는다.** 같은 주제라도 *AI 가 지킬 규칙* 은 앞쪽, *사람이 따라할 절차* 는 뒤쪽이다. 한쪽에 적었으면 다른 쪽은 **링크만** 둔다.
 - **`sources/` 가 빌드 루트다.** `./gradlew` · `npm` 명령은 `sources/` 에서 돈다. 문서에 적는 **파일 경로는 저장소 루트 기준**(`sources/backend/...`)이고, **빌드 명령은 `sources/` 기준**이다.
 
@@ -62,9 +70,9 @@ ai-agent/
 | **지금 어디까지 됐나** | `documents/project.state.yaml` → `/pm-status` |
 | **새 시스템·모듈 착수** | `/kickoff` → [`aidd-guide/phase/P0-inception.md`](aidd-guide/phase/P0-inception.md) |
 | **요구사항·설계 산출물** | [`aidd-guide/artifact/INDEX.md`](aidd-guide/artifact/INDEX.md) — 산출물 지도(무엇을 언제 어디에) |
-| **단계를 마감한다** | `/phase-gate` → [`aidd-guide/process/gates.md`](aidd-guide/process/gates.md) |
+| **단계를 마감한다** | `/phase-gate` → [`aidd-guide/process/04-gates.md`](aidd-guide/process/04-gates.md) |
 | **메뉴 화면 신규·수정** | **먼저 §6.3 워크플로** → `documents/screen/{페이지경로}/requirements.md` → [`aidd-guide/artifact/screen/INDEX.md`](aidd-guide/artifact/screen/INDEX.md) |
-| **기능 하나를 구현한다** | `/slice` → [`aidd-guide/process/slice.md`](aidd-guide/process/slice.md) |
+| **기능 하나를 구현한다** | `/slice` → [`aidd-guide/process/07-slice.md`](aidd-guide/process/07-slice.md) |
 | 백엔드 구조·이름·트랜잭션 | [`aidd-guide/standard/backend/INDEX.md`](aidd-guide/standard/backend/INDEX.md) |
 | 공통 컴포넌트 추가·변경 | [`aidd-guide/standard/frontend/INDEX.md`](aidd-guide/standard/frontend/INDEX.md) — 올리는 조건과 **공통물 목록** |
 | CRUD·마스터디테일·엑셀 레시피 | [`aidd-guide/playbook/INDEX.md`](aidd-guide/playbook/INDEX.md) |
@@ -87,7 +95,11 @@ ai-agent/
 2. **정리·현황·근거를 적는 별도 문서를 만들지 않는다.** 무엇을 왜 그렇게 했는가는 **커밋 메시지**가 갖고(§9), 되돌리기 비용이 큰 것만 **ADR** 이 갖는다. *지금 어디까지 왔나* 는 `project.state.yaml` 하나다.
 3. **한 사실은 한 곳에서만 정의한다.** 다른 곳은 **링크**다. 요약을 옮겨 적으면 그 순간부터 두 사실이 되고, 갈렸을 때 어느 쪽이 참인지 알 방법이 없다.
 4. **문서를 지우는 것도 작업이다.** 낡은 문서를 남겨 두는 것은 *보존* 이 아니라 *거짓말의 유지* 다. 지울 때 그 사실을 커밋 메시지에 적고, **지웠다는 목록을 따로 파일로 남기지 않는다**(git 이 갖는다).
-5. **생성물과 원본을 헷갈리지 않는다.** `documents/generated/` 는 `documents/spec/` 에서 나온다 — 손으로 고치면 다음 생성에서 사라지고, 훅이 막는다.
+5. **정본이면 커밋하고 파생이면 제외한다.** 정본에서 얼마든지 다시 만들 수 있는 것을 형상 관리에 넣으면, 정본을 한 줄 고칠 때마다 파생물이 diff 를 덮어 **무엇이 바뀌었는지 보이지 않게** 된다.
+   - **정본** — `documents/spec/*.yaml` · `documents/screen/*/requirements.md` · `mockup.html` · `manual.md` · `decisions/`
+   - **파생(`.gitignore`)** — `manual.html` · `documents/screen/index.html` · `documents/generated/` · `build/manual/`
+   - **예외는 빌드가 소비하는 것뿐이다** — 생성 시드 CSV 는 파생물이지만 Liquibase 가 기동에 읽으므로 커밋한다(§5-8). 빼면 새로 클론한 사람이 앱을 띄울 수 없다.
+   - 파생물은 **손으로 고치지 않는다** — 다음 생성에서 사라지고, 훅이 막는다.
 
 ---
 
@@ -97,14 +109,14 @@ ai-agent/
 2. **게이트를 건너뛰지 않는다.** 현재 단계의 Exit Criteria 를 모두 충족하고 사용자가 **명시 승인**해야 다음 단계로 간다. **한 턴에 하나의 게이트만** 넘는다 — "설계도 하고 구현도 했습니다" 는 금지다. **되돌릴 수 없는 것은 AI 가 하지 않는다** — DB DROP/TRUNCATE, `terraform apply`, `kubectl delete`, `git push --force`, 프로덕션 변경은 사용자가 직접 하거나 명시 승인한다(`guard-bash` 훅이 차단한다).
 3. **한 커밋은 한 가지 일이다.** 메시지는 `<타입>: <현상> — <조치>` 이며 **왜** 를 본문에 적는다. **경로를 지정해** 커밋한다(§9). **푸시는 사용자가 말할 때만** 한다.
 4. **`documents/spec/` 이 유일한 진실이다.** `documents/generated/` 는 파생 뷰다 — 그쪽을 고치지 말고 spec 을 고친 뒤 `/doc-gen` 으로 재생성한다.
-5. **ID 없는 산출물은 만들지 않는다.** 요구사항·유즈케이스·기능·엔티티·API·화면·테스트는 ID 를 갖고 **상위 ID 에 연결된다** → [`process/traceability.md`](aidd-guide/process/traceability.md). **추측을 사실처럼 쓰지 않는다** — 미확인 전제는 `ASM-###` 으로 [`documents/decisions/ASSUMPTIONS.md`](documents/decisions/ASSUMPTIONS.md) 에 적고 산출물 안에서 `[ASM-###]` 로 표시한다.
+5. **ID 없는 산출물은 만들지 않는다.** 요구사항·유즈케이스·기능·엔티티·API·화면·테스트는 ID 를 갖고 **상위 ID 에 연결된다** → [`process/05-traceability.md`](aidd-guide/process/05-traceability.md). **추측을 사실처럼 쓰지 않는다** — 미확인 전제는 `ASM-###` 으로 [`documents/decisions/ASSUMPTIONS.md`](documents/decisions/ASSUMPTIONS.md) 에 적고 산출물 안에서 `[ASM-###]` 로 표시한다.
 6. **문구를 소스에 박지 않는다.** 화면 문구는 `MSG` 키 + `label()`, 서버 문구는 `MsgKey` + `SYS_MESSAGE`. **소스에 남는 서버 문구 — 로그와 예외의 기본 메시지 — 는 한국어로 쓴다**(정본은 `SYS_MESSAGE` 이고 소스의 것은 폴백·진단이며, 그것을 읽는 사람이 한국어 운영자다).
-7. **판단이 갈리는 것은 먼저 묻는다** — 표준·이름 규칙·경로·데이터 마이그레이션·삭제. 규칙이 이미 정해진 일은 진행하고 **결과를 보고한다**. 큰 리팩터는 *무엇을 왜 어떻게* 를 먼저 한 문단으로 요약한 뒤 착수한다. **질문은 배치로 묶는다** — 한 번에 최대 7개, 전부 **권장안**을 붙이고 `[필수]` 는 3개 이하 → [`process/interview.md`](aidd-guide/process/interview.md).
+7. **판단이 갈리는 것은 먼저 묻는다** — 표준·이름 규칙·경로·데이터 마이그레이션·삭제. 규칙이 이미 정해진 일은 진행하고 **결과를 보고한다**. 큰 리팩터는 *무엇을 왜 어떻게* 를 먼저 한 문단으로 요약한 뒤 착수한다. **질문은 배치로 묶는다** — 한 번에 최대 7개, 전부 **권장안**을 붙이고 `[필수]` 는 3개 이하 → [`process/03-interview.md`](aidd-guide/process/03-interview.md).
 8. **시드는 생성물이다.** `menu-tree.yaml` · 컨트롤러 · `endpoints.ts` · `messageKeys.ts` 를 고쳤으면 생성 태스크를 돌려 **CSV 를 함께 커밋한다**(§7). 이미 적재된 changeset 은 고치지 않고 **새 파일을 더한다** — 고치면 남의 로컬이 checksum 으로 죽는다.
 9. **대용량 파일을 통째로 읽지 않는다**(§3 의 읽는 방법).
 10. **리뷰·점검 요청에는 문제·위험·누락을 먼저** 쓴다. 잘된 점은 뒤에, 짧게. **테스트 통과만으로 완료를 선언하지 않는다** — 업무 규칙을 코드에서 뒤집었을 때 테스트가 실패하는지 확인한다 → [`quality/redteam.md`](aidd-guide/quality/redteam.md).
 11. **훅·생성기의 영역을 침범하지 않는다.** 생성 산출물(시드 CSV · `manual.html` · `documents/screen/index.html` · `documents/generated/`)을 손으로 고치지 않는다 — 훅이 막고, 막히지 않는 것은 다음 생성에서 사라진다.
-12. **사용자가 이해하지 못한 승인을 받아내지 않는다.** 게이트마다 **결정 카드**(업무 언어 3~5줄)와 **역질문**(AI 가 확신 없는 것 1~2개)을 제시한다 → [`process/cognitive-debt.md`](aidd-guide/process/cognitive-debt.md). **"절차를 줄이자" 에 즉흥적으로 답하지 않는다** — 줄일 수 있는 것 / 절대 안 되는 것 / 지금은 빠르지만 나중에 비싼 것, 3분류로 답한다 → [`process/scope-reduction.md`](aidd-guide/process/scope-reduction.md).
+12. **사용자가 이해하지 못한 승인을 받아내지 않는다.** 게이트마다 **결정 카드**(업무 언어 3~5줄)와 **역질문**(AI 가 확신 없는 것 1~2개)을 제시한다 → [`process/10-cognitive-debt.md`](aidd-guide/process/10-cognitive-debt.md). **"절차를 줄이자" 에 즉흥적으로 답하지 않는다** — 줄일 수 있는 것 / 절대 안 되는 것 / 지금은 빠르지만 나중에 비싼 것, 3분류로 답한다 → [`process/12-scope-reduction.md`](aidd-guide/process/12-scope-reduction.md).
 
 ---
 
@@ -134,7 +146,7 @@ documents/screen/_standalone/{화면이름}/   메뉴가 없는 화면 (로그�
 | `mockup.html` | **설계자**(확인 주체) | 배치·상태·**테스트케이스**. **근거는 적지 않는다**(요건서가 갖는다) |
 | `manual.md` | **운영자·사용자** | 할 수 있는 일을 순서대로. **테이블·API 는 적지 않는다** |
 
-**같은 사실을 셋에 세 번 적지 않는다**(§4-3). 형식은 [`documents/screen/_TEMPLATE/`](documents/screen/_TEMPLATE/requirements.md) 가 갖고 상세는 [`documents/screen/README.md`](documents/screen/README.md) 가 갖는다.
+**같은 사실을 셋에 세 번 적지 않는다**(§4-3). 형식은 [`aidd-guide/artifact/template/`](./aidd-guide/artifact/template/02-requirements.md)) 가 갖고 상세는 [`documents/screen/README.md`](documents/screen/README.md) 가 갖는다.
 
 ### 6.3 메뉴 개발 워크플로 — 요청부터 완료까지
 
@@ -254,7 +266,7 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 | 화면 뼈대 | 뿌리 `<FillColumn>` · `useSearchFormHeader()` · `auditColumns()` · `useGridController` 선언 | [`standard/frontend/grid.md`](aidd-guide/standard/frontend/grid.md) |
 | 호출 감싸기 | 기능의 HTTP 호출은 `api/{도메인}Api.ts` 함수로. **호출 URL 은 `features/{도메인}/api/endpoints.ts` 에만** — 그 선언이 인가 시드의 입력이다 | [`standard/frontend/http.md`](aidd-guide/standard/frontend/http.md) |
 | 공통물 | **두 번째 사용에** `shared/` 로 올리고 목록에 등재하고 **원본을 지운다.** 복사하지 않는다 | [`standard/frontend/packages.md`](aidd-guide/standard/frontend/packages.md) |
-| 코드 태그 | 소스 파일 머리에 `@feat FEAT-###` — 추적성 T10 | [`process/traceability.md`](aidd-guide/process/traceability.md) |
+| 코드 태그 | 소스 파일 머리에 `@feat FEAT-###` — 추적성 T10 | [`process/05-traceability.md`](aidd-guide/process/05-traceability.md) |
 
 > **검사가 없으므로 여기 있는 것이 유일한 방어선이다** — 그래서 요지는 남긴다.
 > 다만 **표가 본문이 되지 않게** 한다: 근거와 예외는 오른쪽 칸이 갖는다.

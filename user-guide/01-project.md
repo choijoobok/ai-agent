@@ -1,6 +1,6 @@
 # 01. 프로젝트 수행 방법
 
-> **규칙의 정본은 [`aidd-guide/process/`](../aidd-guide/process/overview.md) 다.** 여기는
+> **규칙의 정본은 [`aidd-guide/process/`](../aidd-guide/process/01-overview.md) 다.** 여기는
 > *그것이 실제로 어떻게 굴러가는지* 를 사람의 말로 옮긴 것이다.
 
 ## 1. 한 문장으로
@@ -139,10 +139,10 @@ documents/정리내역.md 는 산출물 지도에 없는 자리다 — 새 문�
 
 ## 관련
 
-- 규칙의 정본 — [`aidd-guide/process/overview.md`](../aidd-guide/process/overview.md)
-  (총론) · [`gates.md`](../aidd-guide/process/gates.md)(Exit Criteria) ·
-  [`interview.md`](../aidd-guide/process/interview.md)(질문 규약)
+- 규칙의 정본 — [`aidd-guide/process/01-overview.md`](../aidd-guide/process/01-overview.md)
+  (총론) · [`gates.md`](../aidd-guide/process/04-gates.md)(Exit Criteria) ·
+  [`interview.md`](../aidd-guide/process/03-interview.md)(질문 규약)
 - 단계별 절차 — [`aidd-guide/phase/P0-inception.md`](../aidd-guide/phase/P0-inception.md) ~ `P6`
 - 왜 절차를 줄이면 안 되는가 —
-  [`verification-cost.md`](../aidd-guide/process/verification-cost.md)(DORA J-커브)
+  [`verification-cost.md`](../aidd-guide/process/11-verification-cost.md)(DORA J-커브)
 - 화면 하나를 만드는 순서 — [03-develop.md](03-develop.md)

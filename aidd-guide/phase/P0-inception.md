@@ -55,7 +55,7 @@ tags: [inception, charter]
 ## 2-A. 기대치 정렬 (질문 배치 직후, 헌장 확정 전 — 필수)
 
 사용자가 묻기를 기다리지 않는다. **AI가 먼저** 진행 속도에 대해 말한다.
-전문은 `aidd-guide/process/verification-cost.md` §2. 요지는 세 줄이다.
+전문은 `aidd-guide/process/11-verification-cost.md` §2. 요지는 세 줄이다.
 
 - P0~P3은 **돌아가는 게 하나도 안 나온다.** 답답할 것이다
 - P4 구현은 **빠르다.** 앞에서 정한 것 덕분이다
@@ -152,5 +152,5 @@ expectations:                # §2-A 기대치 정렬 결과. 비어 있으면 G
 | "AI 쓰니까 금방 되겠죠" | §2-A 기대치 정렬을 반드시 한다. 안 하면 P3에서 절차가 깎인다 |
 
 ## 5. G0 게이트
-`aidd-guide/process/gates.md` 의 G0 체크리스트 실행 → `[QA-레드팀]` 반박 → 승인 요청.
+`aidd-guide/process/04-gates.md` 의 G0 체크리스트 실행 → `[QA-레드팀]` 반박 → 승인 요청.
 승인되면 `documents/project.state.yaml`: `current.phase: P1`, `gates.P0_inception.status: approved`.

@@ -25,7 +25,7 @@ documents/screen/{페이지경로}/
 ## 새 화면을 시작할 때
 
 ```bash
-cp -r documents/screen/_TEMPLATE documents/screen/{페이지경로}
+cp -r aidd-guide/artifact/template/ documents/screen/{페이지경로}
 ```
 
 순서와 대조 방법은 `/menu-doc` 이 갖는다 — 어느 화면이 문서 셋을 갖췄는지는
@@ -46,7 +46,7 @@ cp -r documents/screen/_TEMPLATE documents/screen/{페이지경로}
 `sources/frontend/src/shared/routes/screenRegistry.ts` 의 키를 그대로 미러링한다 — `/log/access` → `documents/screen/log/access/`.
 **경로를 바꾸면 폴더도 같은 커밋에서 `git mv` 한다.** 메뉴 트리(`menu-tree.yaml` 의 위치)는 운영 중에 옮겨질 수 있으므로 폴더 기준이 아니다.
 
-`_` 로 시작하는 폴더는 문서 대상이 아니다(`_TEMPLATE`). 페이지 경로는 `_` 로 시작하지 않는다.
+`_` 로 시작하는 폴더는 문서 대상이 아니다(`aidd-guide/artifact/template/`). 페이지 경로는 `_` 로 시작하지 않는다.
 
 ## 현행화
 

@@ -57,7 +57,7 @@ tags: [artifact, map, index]
 | 35 | **화면 사용자 메뉴얼** | P4 | S | `documents/screen/{페이지경로}/manual.md` | ● | ● | ● |
 | 36 | 〃 파생 · 화면 그림 · 구현 기록 | P4 | G | `documents/screen/{페이지경로}/manual.html` · `screen.png` · `impl.md` | ○ | ● | ● |
 | 37 | 메뉴 없는 화면의 문서 | P3~P4 | S | `documents/screen/_standalone/{화면이름}/` | ○ | ● | ● |
-| 38 | 화면 문서 셋 템플릿·열람 페이지 | 상시 | S+G | `documents/screen/_TEMPLATE/` · `documents/screen/README.md` · `documents/screen/index.html` | ● | ● | ● |
+| 38 | 화면 문서 셋 템플릿·열람 페이지 | 상시 | S+G | `aidd-guide/artifact/template/` · `documents/screen/README.md` · `documents/screen/index.html` | ● | ● | ● |
 | 39 | **상세 설계 문서** | P3 | S | `documents/design/{주제}.md` | ○ | ● | ● |
 | 40 | 산출물 대장 (이 지도의 현재 상태) | 상시 | S | `documents/INDEX.md` | ● | ● | ● |
 
@@ -89,6 +89,19 @@ tags: [artifact, map, index]
 - **정리 내역·현황·근거를 적는 문서는 이 표에 없다.** 그것들은 커밋 메시지와 ADR 과
   `project.state.yaml` 이 갖는다. 여기에 행을 더해 달라는 요구가 그 셋으로 답할 수 있는
   것이면 **행을 더하지 않는다.**
+
+### 자리가 있다는 것과 커밋한다는 것은 다르다
+
+**`G` 로 표시된 자리는 파생물이라 형상 관리에 넣지 않는다**(CLAUDE.md §4-5).
+지도에 자리가 있는 이유는 *만들 때 어디에 두나* 를 정하기 위해서이고, 커밋하지 않는
+이유는 **정본에서 언제든 다시 만들 수 있어서**다. 둘을 헷갈리면 정본을 한 줄 고칠
+때마다 파생물이 diff 를 덮는다.
+
+| | 어디 | 커밋 |
+|---|---|---|
+| **정본** | `documents/spec/` · `screen/*/requirements.md` · `mockup.html` · `manual.md` · `decisions/` · `design/` | **한다** |
+| **파생** | `documents/generated/` · `screen/*/manual.html` · `screen/index.html` | 하지 않는다 |
+| **파생이지만 빌드가 읽는다** | 생성 시드 CSV | **한다** — 빼면 새로 클론한 사람이 앱을 띄울 수 없다 |
 
 ## 3. 산출물 생성 원칙
 

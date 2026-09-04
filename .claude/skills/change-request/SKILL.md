@@ -7,7 +7,7 @@ description: 베이스라인 이후의 변경 요청(CR)을 처리한다. 영향
 
 ## 먼저 확인: CR이 필요한가
 `gates.P3_design.status != approved` 면 CR 불필요. 그냥 spec을 고친다.
-G3 승인 이후에만 CR 절차를 탄다. → `aidd-guide/process/change-control.md`
+G3 승인 이후에만 CR 절차를 탄다. → `aidd-guide/process/08-change-control.md`
 
 ## 절차
 

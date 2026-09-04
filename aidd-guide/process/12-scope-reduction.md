@@ -14,7 +14,7 @@ tags: [scope, reduction, verification-cost, gate]
 
 # 절차 축소 3분류 — 줄일 수 있는 것과 안 되는 것
 
-> **왜 절차가 무거운가는 [verification-cost.md](verification-cost.md) 가 갖는다** —
+> **왜 절차가 무거운가는 [verification-cost.md](11-verification-cost.md) 가 갖는다** —
 > DORA J-커브와 verification tax. 여기는 **"줄이자" 는 요구에 어떻게 답하는가** 하나다.
 >
 > **이 문서만 따로 있는 이유**: `CLAUDE.md` §5-12 가 여기를 직접 가리킨다. 요구가 들어오는
@@ -79,7 +79,7 @@ tags: [scope, reduction, verification-cost, gate]
 
 ## 관련
 
-- [verification-cost.md](verification-cost.md) — 왜 절차가 무거운가 (J-커브 · 검증 부담 측정)
-- [gates.md](gates.md) — 게이트별 Exit Criteria (여기서 무엇을 줄이는지가 정해진다)
+- [verification-cost.md](11-verification-cost.md) — 왜 절차가 무거운가 (J-커브 · 검증 부담 측정)
+- [gates.md](04-gates.md) — 게이트별 Exit Criteria (여기서 무엇을 줄이는지가 정해진다)
 - [../quality/redteam.md](../quality/redteam.md) — 규칙 뒤집기 검사의 실제 절차
 - [../quality/code-quality.md](../quality/code-quality.md) — 중복·예외삼킴 임계와 그 근거

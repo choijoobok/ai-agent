@@ -6,7 +6,7 @@ type: operation
 created: 2026-09-03
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/features/sample/singleoffset/pages/SampleSingleOffsetPage.tsx", "sources/frontend/src/features/sample/mdvertical/pages/SampleMdVerticalPage.tsx", "documents/screen/_TEMPLATE/requirements.md"]
+sources: ["sources/frontend/src/features/sample/singleoffset/pages/SampleSingleOffsetPage.tsx", "sources/frontend/src/features/sample/mdvertical/pages/SampleMdVerticalPage.tsx", "documents/screenaidd-guide/artifact/template/02-requirements.md"]
 author: Bong Jong Hyeon
 tier: 1
 tags: [prompt, overlay, execution, progress]

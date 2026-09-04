@@ -74,7 +74,7 @@ tags: [index, routing, master, decision-tree]
 | 카테고리 | 역할 | Tier | 운용 |
 |---|---|---|---|
 | [meta](meta/INDEX.md) | 메타블록·200줄·라우팅·문서 스타일 | 3 | 4 |
-| [process](process/overview.md) | 방법론 — 역할·질문·게이트·추적성·결정·변경·인지부채·검증비용 | 1 | 11 |
+| [process](process/01-overview.md) | 방법론 — 역할·질문·게이트·추적성·결정·변경·인지부채·검증비용 | 1 | 11 |
 | [phase](phase/P0-inception.md) | P0~P6 실행 플레이북 | 1 | 7 |
 | [artifact](artifact/INDEX.md) | **산출물 지도 39 = 문서 예산** · 템플릿 · 화면 요건서 절차 | 1 | 20 |
 | [standard](standard/INDEX.md) | 백엔드·프론트 표준의 상세와 근거 | 2 | 48 |
@@ -118,7 +118,7 @@ tags: [index, routing, master, decision-tree]
 - **ID prefix 는 한 번 발급하면 변경 금지** — `status: deprecated|replaced` 로만 처리한다.
   폴더 이름이 번호를 잃고(`06-framework` → `standard`) 이름을 얻었어도 **ID 는 그대로 두었다**:
   ID 는 불변 앵커이고, 이미 다른 문서와 소스 주석이 그 번호를 가리키고 있다.
-- **산출물의 ID 는 여기가 아니라 [`process/traceability.md`](process/traceability.md) 가 갖는다** —
+- **산출물의 ID 는 여기가 아니라 [`process/05-traceability.md`](process/05-traceability.md) 가 갖는다** —
   `REQ-` · `UC-` · `FEAT-` 는 프로젝트의 것이고 `LLM-` 은 이 가이드의 것이다. 두 체계는 섞이지 않는다.
 
 ## 사용 규약 (한 곳에서만 정의)

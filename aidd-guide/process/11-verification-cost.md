@@ -153,5 +153,5 @@ J-커브: 2차 하강 (P5, 누적 검증) — 결함 21건 중 14건 처리
 
 ## 6. 장치 C 는 어디 있나
 
-**"절차를 줄이자" 에 답하는 3분류는 [scope-reduction.md](scope-reduction.md) 가 갖는다.**
+**"절차를 줄이자" 에 답하는 3분류는 [scope-reduction.md](12-scope-reduction.md) 가 갖는다.**
 분리한 이유는 그 문서가 스스로 적고 있다 — `CLAUDE.md` 가 그것만 직접 가리키기 때문이다.

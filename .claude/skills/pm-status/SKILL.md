@@ -55,7 +55,7 @@ REQ 47 · UC 13/18 · FEAT 41/62 · ENT 22 · API 58 · SCR 31 · TC 96 · ADR 1
 - 숫자는 실제 파일을 세서 낸다. `documents/project.state.yaml` 의 counters와 다르면 counters를 갱신한다.
 - **"막힌 것"이 없으면 "없음"이라고 쓴다.** 지어내지 않는다.
 - 진행률은 게이트 체크리스트 충족 비율로 계산한다.
-- **J-커브 위치를 항상 한 줄로 넣는다** (`aidd-guide/process/verification-cost.md` §5).
+- **J-커브 위치를 항상 한 줄로 넣는다** (`aidd-guide/process/11-verification-cost.md` §5).
   하강 구간이면 반드시 **"예상대로입니다"** 를 붙인다. 사용자가 느끼는 답답함이
   실패 신호가 아니라 예정된 구간임을 알아야 절차를 깎지 않는다.
 - 검증 부담 표는 P4 진입 후에만 낸다. 슬라이스 5개 미만이면 생략한다.

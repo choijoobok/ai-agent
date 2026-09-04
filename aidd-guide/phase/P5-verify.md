@@ -109,4 +109,4 @@ Critical/High 잔여 0. Medium 1건 사용자 합의. → G5 통과 요청
 ```
 
 ## 5. G5 게이트
-→ `aidd-guide/process/gates.md` G5
+→ `aidd-guide/process/04-gates.md` G5

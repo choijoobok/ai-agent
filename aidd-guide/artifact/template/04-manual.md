@@ -1,3 +1,17 @@
+---
+id: LLM-ART-008
+title: "사용자 메뉴얼 서식"
+category: artifact
+type: template
+created: 2026-09-04
+updated: 2026-09-04
+status: active
+sources: [“ordinary-backoffice docs/menu/_TEMPLATE/manual.md”, "documents/screen/"]
+author: Bong Jong Hyeon
+tier: 2
+tags: [artifact, template, screen]
+---
+
 <!--
   사용자 메뉴얼 — 템플릿 (v1)
   ─────────────────────────────────────────────────────────

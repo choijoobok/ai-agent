@@ -1,3 +1,17 @@
+---
+id: LLM-ART-007
+title: "화면 요건 정의서 서식"
+category: artifact
+type: template
+created: 2026-09-04
+updated: 2026-09-04
+status: active
+sources: [“ordinary-backoffice docs/menu/_TEMPLATE/requirements.md”, "documents/screen/"]
+author: Bong Jong Hyeon
+tier: 2
+tags: [artifact, template, screen]
+---
+
 <!--
   개발 요건 정의서 — 템플릿 (v1)
   ─────────────────────────────────────────────────────────

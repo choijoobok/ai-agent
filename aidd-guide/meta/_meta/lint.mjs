@@ -36,6 +36,10 @@ const REQUIRED = ['id', 'title', 'category', 'type', 'created', 'updated', 'stat
 
 /** 200줄 예외 — 쪼개면 더 나빠지는 셋. 조건은 `meta/doc-style.md` 의 '분량 규칙' 이 갖는다. */
 const LENGTH_EXEMPT = new Map([
+  [
+    'artifact/template/02-requirements.md',
+    '서식은 위에서 아래로 한 번에 채우는 것이다 — 쪼개면 칸 하나를 채우다 다른 파일로 건너가게 되고, 그러다 칸을 빼먹는다',
+  ],
   ['standard/backend/crosscutting.md', '필터·인터셉터의 순서가 곧 내용이다 — 쪼개면 순서를 두 파일에서 읽는다'],
   ['standard/backend/persistence.md', '다섯 벤더 × 타입·규칙 — 표가 갈리면 벤더 하나를 빠뜨린다'],
   ['phase/P3-design.md', '가장 무거운 단계의 절차를 끝까지 읽는 문서다 — 쪼개면 spec 일곱 개의 작성 순서와 동결 조건을 두 파일에서 읽는다'],

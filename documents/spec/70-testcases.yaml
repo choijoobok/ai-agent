@@ -8,7 +8,7 @@
 # 대해 T5 오류 85건을 낸다 — **그것이 사실이며 통과할 수 없다는 뜻이다.**
 # 또한 NFR 19건이 `test_case: null` 이라 T7 오류가 함께 난다.
 #
-# **TEST-FIRST 다**(aidd-guide/process/slice.md): 슬라이스 구현 전에 TC 를 먼저 코드로
+# **TEST-FIRST 다**(aidd-guide/process/07-slice.md): 슬라이스 구현 전에 TC 를 먼저 코드로
 # 옮기고 실패를 확인한다. 그리고 **테스트 통과만으로 완료를 선언하지 않는다** —
 # 업무 규칙을 코드에서 뒤집었을 때 테스트가 실패하는지 확인한다
 # (aidd-guide/quality/redteam.md).
