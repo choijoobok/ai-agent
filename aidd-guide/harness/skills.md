@@ -25,15 +25,37 @@ tags: [harness, skill, workflow, convention]
 - 새 스킬을 만들거나 기존 스킬의 절차를 고칠 때
 - 스킬이 **안 불릴 때** — 대개 `description` 문제다
 
-## 스킬 둘
+## 스킬 열셋
+
+### 프로젝트를 굴리는 것 — 단계와 게이트
+
+| 스킬 | 언제 부르나 |
+|---|---|
+| [`/kickoff`](../../.claude/skills/kickoff/SKILL.md) | 새 시스템 구축을 시작할 때 — P0 를 세운다 |
+| [`/interview`](../../.claude/skills/interview/SKILL.md) | 물어야 할 것을 질문 배치로 만들 때 |
+| [`/phase-gate`](../../.claude/skills/phase-gate/SKILL.md) | 단계 게이트를 점검하고 통과를 요청할 때 |
+| [`/pm-status`](../../.claude/skills/pm-status/SKILL.md) | *지금 어디까지 왔나* 를 보고할 때 |
+| [`/slice`](../../.claude/skills/slice/SKILL.md) | 수직 슬라이스 하나를 구현할 때 — 테스트 먼저 |
+| [`/change-request`](../../.claude/skills/change-request/SKILL.md) | 베이스라인 뒤의 변경 요청 — 영향 분석과 3옵션 |
+| [`/adr`](../../.claude/skills/adr/SKILL.md) | 되돌리기 비용이 큰 결정을 기록할 때 |
+
+### 산출물을 만들고 검사하는 것
 
 | 스킬 | 언제 부르나 | 원본 → 파생 |
 |---|---|---|
-| [`/menu-doc`](../../.claude/skills/menu-doc/SKILL.md) | 새 화면 착수 전 요건서 · 소스 변경 뒤 문서 대조 · 전수 결손 점검 | 원본이 셋(`requirements.md` · `mockup.html` · `manual.md`). 파생 없음 |
-| [`/manual-site`](../../.claude/skills/manual-site/SKILL.md) | 메뉴얼을 고친 뒤 · 고객사 제출본을 만들 때 · 화면을 캡처해 넣을 때 | `manual.md` **하나가 원본**, `manual.html` · `documents/screen/index.html` · `build/manual/` 은 전부 파생 |
+| [`/doc-gen`](../../.claude/skills/doc-gen/SKILL.md) | spec YAML 에서 읽는 문서를 만들 때 | `documents/spec/*.yaml` → `documents/generated/` |
+| [`/menu-doc`](../../.claude/skills/menu-doc/SKILL.md) | 새 화면 착수 전 요건서 · 소스 변경 뒤 문서 대조 · 전수 결손 점검 | 원본이 둘(`requirements.md` · `manual.md`) |
+| [`/mockup`](../../.claude/skills/mockup/SKILL.md) | 요건서를 고친 뒤 · 승인용 그림이 필요할 때 · `/manual-site` 앞 | `requirements.md` → `mockup.html` |
+| [`/manual-site`](../../.claude/skills/manual-site/SKILL.md) | 메뉴얼을 고친 뒤 · 고객사 제출본을 만들 때 · 화면을 캡처해 넣을 때 | `manual.md` + `mockup.html` → `manual.html` · `documents/screen/index.html` · `build/manual/` |
+| [`/trace`](../../.claude/skills/trace/SKILL.md) | 추적성 체인이 끊긴 곳을 찾을 때 | — (검사) |
+| [`/redteam`](../../.claude/skills/redteam/SKILL.md) | 자기가 만든 산출물을 적대적으로 검토할 때 | — (검사) |
 
-- 규칙은 [CLAUDE.md §5](../../CLAUDE.md) 가, 문서 셋의 **형식**은 [`aidd-guide/artifact/template/`](../artifact/template) 의 머리 주석이 갖는다.
-- 인자 없이 `/menu-doc` 을 부르면 **전수 점검**이다 — 화면별 문서 셋 유무를 한 표로 낸다.
+**셋이 한 사슬이다**: `requirements.md` → `/mockup` → `/manual-site`. 앞의 것을 고치면 뒤를 다시
+만든다 — 그리고 **뒤의 것을 고쳐 앞을 바꾸지 않는다.** 파생물은 형상 관리에 없어(CLAUDE.md §4-5)
+새로 클론한 트리에는 목업도 메뉴얼 HTML 도 **없는 것이 정상**이다.
+
+- 규칙은 [CLAUDE.md §6](../../CLAUDE.md) 가, 문서의 **형식**은 [`aidd-guide/artifact/template/`](../artifact/template) 의 머리 주석이 갖는다.
+- 인자 없이 `/menu-doc` 을 부르면 **전수 점검**이다 — 화면별 문서 유무를 한 표로 낸다.
 
 ## 훅 · 스킬 · 플레이북의 경계
 
@@ -65,11 +87,11 @@ tags: [harness, skill, workflow, convention]
 ### 형식을 재정의하지 않는다
 
 - 스킬은 **순서와 대조 방법**을 정한다. 문서의 섹션 구성·작성 원칙은 템플릿이 갖는다.
-- 표준을 옮겨 적으면 표준이 둘이 된다 — 링크한다(CLAUDE.md §5.2 · 단일 입구 정책).
+- 표준을 옮겨 적으면 표준이 둘이 된다 — 링크한다(CLAUDE.md §6.2 · 단일 입구 정책).
 
 ### 원본은 하나, 나머지는 파생
 
-- **파생물을 손으로 고치지 않는다.** 다음 생성에서 사라진다(CLAUDE.md §4-11).
+- **파생물을 손으로 고치지 않는다.** 다음 생성에서 사라진다(CLAUDE.md §5-11).
 - 모양을 바꿔야 하면 **생성기를 고친다**(`/manual-site` 는 `lib/page.mjs` 의 스타일 상수).
 - 저장소 파생물은 **소스와 같은 커밋**에, 제출본(`build/`)은 **담지 않는다**(§8).
 
@@ -90,7 +112,7 @@ tags: [harness, skill, workflow, convention]
 
 ### 보고는 문제부터
 
-- 결손·불일치를 먼저 쓰고 잘된 것은 뒤에 짧게(CLAUDE.md §4-10).
+- 결손·불일치를 먼저 쓰고 잘된 것은 뒤에 짧게(CLAUDE.md §5-10).
 - **빈 점검 결과를 채우려고 산출물을 새로 만들지 않는다.** 무엇을 만들지는 사용자가 정한다.
 - 생성기가 검사할 수 있는 것에는 끝이 있다 — `.pptx` 는 **PowerPoint 로 열어 확인한다**.
   규격을 지켰다는 것이 *그 프로그램이 연다* 와 같은 말은 아니다.
@@ -101,7 +123,7 @@ tags: [harness, skill, workflow, convention]
 2. 훅·플레이북과 경계가 겹치지 않는지 위 표로 확인한다.
 3. `description` 에 **트리거 어휘**를 넣는다.
 4. 절차만 적고 형식·표준은 링크한다.
-5. 이 파일의 카탈로그와 [INDEX.md](./INDEX.md) 의 스킬 표에 행을 더한다. CLAUDE.md §10 의 진행 표도 본다.
+5. 이 파일의 카탈로그와 [INDEX.md](./INDEX.md) 의 스킬 표에 행을 더한다. CLAUDE.md §11 의 진행 표도 본다.
 
 ## 관련
 

@@ -96,8 +96,8 @@ ai-agent/
 3. **한 사실은 한 곳에서만 정의한다.** 다른 곳은 **링크**다. 요약을 옮겨 적으면 그 순간부터 두 사실이 되고, 갈렸을 때 어느 쪽이 참인지 알 방법이 없다.
 4. **문서를 지우는 것도 작업이다.** 낡은 문서를 남겨 두는 것은 *보존* 이 아니라 *거짓말의 유지* 다. 지울 때 그 사실을 커밋 메시지에 적고, **지웠다는 목록을 따로 파일로 남기지 않는다**(git 이 갖는다).
 5. **정본이면 커밋하고 파생이면 제외한다.** 정본에서 얼마든지 다시 만들 수 있는 것을 형상 관리에 넣으면, 정본을 한 줄 고칠 때마다 파생물이 diff 를 덮어 **무엇이 바뀌었는지 보이지 않게** 된다.
-   - **정본** — `documents/spec/*.yaml` · `documents/screen/*/requirements.md` · `mockup.html` · `manual.md` · `decisions/`
-   - **파생(`.gitignore`)** — `manual.html` · `documents/screen/index.html` · `documents/generated/` · `build/manual/`
+   - **정본** — `documents/spec/*.yaml` · `documents/screen/*/requirements.md` · `manual.md` · `decisions/`
+   - **파생(`.gitignore`)** — `mockup.html` · `manual.html` · `documents/screen/index.html` · `documents/generated/` · `build/manual/`
    - **예외는 빌드가 소비하는 것뿐이다** — 생성 시드 CSV 는 파생물이지만 Liquibase 가 기동에 읽으므로 커밋한다(§5-8). 빼면 새로 클론한 사람이 앱을 띄울 수 없다.
    - 파생물은 **손으로 고치지 않는다** — 다음 생성에서 사라지고, 훅이 막는다.
 
@@ -115,21 +115,22 @@ ai-agent/
 8. **시드는 생성물이다.** `menu-tree.yaml` · 컨트롤러 · `endpoints.ts` · `messageKeys.ts` 를 고쳤으면 생성 태스크를 돌려 **CSV 를 함께 커밋한다**(§7). 이미 적재된 changeset 은 고치지 않고 **새 파일을 더한다** — 고치면 남의 로컬이 checksum 으로 죽는다.
 9. **대용량 파일을 통째로 읽지 않는다**(§3 의 읽는 방법).
 10. **리뷰·점검 요청에는 문제·위험·누락을 먼저** 쓴다. 잘된 점은 뒤에, 짧게. **테스트 통과만으로 완료를 선언하지 않는다** — 업무 규칙을 코드에서 뒤집었을 때 테스트가 실패하는지 확인한다 → [`quality/redteam.md`](aidd-guide/quality/redteam.md).
-11. **훅·생성기의 영역을 침범하지 않는다.** 생성 산출물(시드 CSV · `manual.html` · `documents/screen/index.html` · `documents/generated/`)을 손으로 고치지 않는다 — 훅이 막고, 막히지 않는 것은 다음 생성에서 사라진다.
+11. **훅·생성기의 영역을 침범하지 않는다.** 생성 산출물(시드 CSV · `manual.html` · `documents/screen/index.html` · `documents/generated/`)을 손으로 고치지 않는다 — 훅이 막고, 막히지 않는 것은 다음 생성에서 사라진다. **`mockup.html` 은 반만 생성물이다** — 골격·테스트 케이스 표·확인 목록은 요건서에서 오고 **그림만 AI 가 그린다**. 그래서 훅이 막지 않으며, 대신 **표와 확인 목록에는 손대지 않는다**(`/mockup --check` 가 어긋남을 잡는다).
 12. **사용자가 이해하지 못한 승인을 받아내지 않는다.** 게이트마다 **결정 카드**(업무 언어 3~5줄)와 **역질문**(AI 가 확신 없는 것 1~2개)을 제시한다 → [`process/10-cognitive-debt.md`](aidd-guide/process/10-cognitive-debt.md). **"절차를 줄이자" 에 즉흥적으로 답하지 않는다** — 줄일 수 있는 것 / 절대 안 되는 것 / 지금은 빠르지만 나중에 비싼 것, 3분류로 답한다 → [`process/12-scope-reduction.md`](aidd-guide/process/12-scope-reduction.md).
 
 ---
 
 ## 6. 화면 문서 셋 — 게이트와 현행화
 
-> 화면 하나 = 문서 **셋**. 셋은 **읽는 사람이 다르다.**
-> **AI 가 만들 것 · 설계자가 확인할 것 · 사용자가 쓸 것** 을 각자의 언어로 적는다.
+> 화면 하나 = **정본 둘 + 파생 하나**. 읽는 사람이 다르므로 각자의 언어로 적는다.
+> **AI 가 만들 것 · 사용자가 쓸 것** 을 손으로 쓰고, **설계자가 확인할 것** 은 그 둘에서 생성한다.
 
 ### 6.1 경로 — **페이지 경로**를 그대로 미러링한다
 
 ```
-documents/screen/{페이지경로}/   requirements.md · mockup.html · manual.md
-                                 (+ 생성물 manual.html · 선택 screen.png · impl.md)
+documents/screen/{페이지경로}/   requirements.md · manual.md          ← 정본. 커밋한다
+                                 mockup.html · manual.html            ← 파생. .gitignore
+                                 (+ 선택 screen.png · impl.md)
 documents/screen/_standalone/{화면이름}/   메뉴가 없는 화면 (로그인·프로필·설정·알림)
 ```
 
@@ -140,13 +141,17 @@ documents/screen/_standalone/{화면이름}/   메뉴가 없는 화면 (로그�
 
 ### 6.2 셋의 역할 — 겹치지 않게
 
-| 문서 | 독자 | 한마디로 |
-|---|---|---|
-| `requirements.md` | **AI**(구현 주체) | *무엇을* — 컬럼·조건·검증·영향 테이블. **어떻게는 적지 않는다** |
-| `mockup.html` | **설계자**(확인 주체) | 배치·상태·**테스트케이스**. **근거는 적지 않는다**(요건서가 갖는다) |
-| `manual.md` | **운영자·사용자** | 할 수 있는 일을 순서대로. **테이블·API 는 적지 않는다** |
+| 문서 | 독자 | 한마디로 | 정본 |
+|---|---|---|---|
+| `requirements.md` | **AI**(구현 주체) | *무엇을* — 컬럼·조건·검증·영향 테이블 · **테스트 케이스**. **어떻게는 적지 않는다** | **정본** |
+| `manual.md` | **운영자·사용자** | 할 수 있는 일을 순서대로. **테이블·API 는 적지 않는다** | **정본** |
+| `mockup.html` | **설계자**(확인 주체) | 배치·상태를 그린 **그림**. 요건서에서 [`/mockup`](.claude/skills/mockup/SKILL.md) 이 만든다 | 파생 |
 
-**같은 사실을 셋에 세 번 적지 않는다**(§4-3). 형식은 [`aidd-guide/artifact/template/`](./aidd-guide/artifact/template/02-requirements.md)) 가 갖고 상세는 [`documents/screen/README.md`](documents/screen/README.md) 가 갖는다.
+**같은 사실을 셋에 세 번 적지 않는다**(§4-3). 형식은 [`aidd-guide/artifact/template/`](aidd-guide/artifact/template/02-requirements.md) 가 갖고 상세는 [`documents/screen/README.md`](documents/screen/README.md) 가 갖는다.
+
+**목업에만 있는 규칙을 남기지 않는다.** 그림을 그리다 결정이 필요해지면 **요건서에 적고 나서** 그린다 —
+목업은 다시 생성되므로, 여기에만 적은 것은 다음 생성에서 사라진다. 테스트 케이스도 같은 이유로
+요건서가 갖는다: *무엇을 정했나* 와 *그것이 지켜졌나* 는 같은 문서에 있어야 짝이 어긋나지 않는다.
 
 ### 6.3 메뉴 개발 워크플로 — 요청부터 완료까지
 
@@ -161,8 +166,8 @@ documents/screen/_standalone/{화면이름}/   메뉴가 없는 화면 (로그�
 
 | 단계 | 누가 | 무엇을 | 넘어가지 못하는 조건 |
 |---|---|---|---|
-| **① 요건 정의서** | **AI** | `requirements.md` — 컬럼·조회조건·버튼·검증·상태 전이·영향 테이블·API. 모르는 것은 **묻거나 `ASM-###` 으로 적는다**(지어내지 않는다) | — |
-| **② 목업** | **AI** | `mockup.html` — **①에서만** 나온다. 배치·상태·**테스트케이스**(정상·경계·거부) | **①이 없으면 시작하지 않는다.** 목업이 요건서에 없는 것을 그리게 되면 **①을 먼저 고친다** |
+| **① 요건 정의서** | **AI** | `requirements.md` — 컬럼·조회조건·버튼·검증·상태 전이·영향 테이블·API · **테스트 케이스**(정상·경계·거부). 모르는 것은 **묻거나 `ASM-###` 으로 적는다**(지어내지 않는다) | — |
+| **② 목업** | **AI** | `/mockup` 이 `mockup.html` 을 **①에서 생성한다** — 배치·상태의 그림 | **①이 없으면 시작하지 않는다.** 목업이 요건서에 없는 것을 그리게 되면 **①을 먼저 고친다** |
 | **③ 승인** | **사용자** | 두 문서를 확인하고 승인하거나 반려한다 | **승인 없이 BE·FE·시드 착수 금지** |
 | **④ 개발 · 테스트** | **AI** | 소스 · **시드(④-a·④-b)** · `manual.md` 를 만들고 **게이트(§7)를 초록으로** 만든다 | **게이트가 초록이 아니면 ⑤로 넘기지 않는다** |
 | **④-a 생성 시드** | **AI** | 선언을 고친 **직후** `./gradlew generateSeeds` — 메뉴 · API · 메시지 **키**. 산출물을 소스와 **같은 커밋**에 담는다 | **손으로 고치지 않는다** — 훅이 차단한다. `checkSeeds` 가 초록이어야 한다 |
@@ -171,6 +176,7 @@ documents/screen/_standalone/{화면이름}/   메뉴가 없는 화면 (로그�
 | **⑥ 개선 · 보완** | **사용자** | 고칠 것을 말한다 → **①로 돌아간다** | **요건이 바뀌면 요건서부터 고친다** |
 
 - **①과 ②는 한 번에 낸다.** 승인은 *둘을 함께* 보는 판단이다 — 요건서만 승인받고 목업에서 뒤집히면 승인이 무효가 된다.
+- **②는 커밋에 담기지 않는다**(§4-5). 목업은 요건서에서 언제든 다시 만들 수 있고, 새로 클론한 트리에 **없는 것이 정상**이다. 승인을 위해 필요하면 그때 만든다. `/manual-site` 를 돌리기 전에도 먼저 만든다 — 메뉴얼의 화면 그림이 목업에서 나온다.
 - **`manual.md` 는 ④에서 만든다.** 화면이 서기 전의 사용법은 추측이고, 추측한 메뉴얼은 고칠 곳을 알려 주지 않는다.
 - **시드는 AI 가 만든다 — 사용자가 명령을 치지 않는다.** 선언을 고친 **그 자리에서** 돌리고 산출물을 같은 커밋에 담는다. **나중에 몰아서 만들지 않는다** — 시드 커밋이 뒤로 밀리면 **고친 사람이 아닌 사람의 PR 이 막힌다**. 절차의 상세는 [`standard/seed.md`](aidd-guide/standard/seed.md)(생성) · [`playbook/changeset.md`](aidd-guide/playbook/changeset.md)(손).
 - **⑥의 요청이 작아 보여도 ①을 거친다.** *버튼 하나* 가 검증·권한·영향 테이블을 건드리는 일이 흔하다. **다만 문구·정렬처럼 요건이 바뀌지 않는 것은 ④로 바로 간다.**
@@ -293,7 +299,7 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 
 ## 11. 앞으로 — 남은 것
 
-> **폴더 넷 · 헌법 · 훅 열하나 · 스킬 열둘 · `aidd-guide/` 는 섰다**(2026-09-04). 남은 것만 적는다.
+> **폴더 넷 · 헌법 · 훅 열하나 · 스킬 열셋 · `aidd-guide/` 는 섰다**(2026-09-04). 남은 것만 적는다.
 
 - **P1 발견을 마치지 않았다.** `documents/spec/` 의 P0·P2·P3 산출물은 agentic-ai 설계에서 재편성해 들어왔으나 **사용자 승인을 받지 않았다** — 각 파일의 `status: migrated` 가 그 표시다. `/phase-gate` 로 P0 부터 되짚는다.
 - **`documents/spec/30-usecases.yaml` · `40-domain.yaml` · `70-testcases.yaml` 이 비어 있다.** 유즈케이스·ERD·테스트케이스는 원본에 없었고, **지어내지 않았다.** P3 에서 만든다.

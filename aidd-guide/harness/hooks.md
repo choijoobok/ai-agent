@@ -33,7 +33,7 @@ tags: [harness, hooks, gate, automation]
 | `UserPromptSubmit` | — | `log-raw.mjs` | 10s |
 | `Stop` | — | `log-raw.mjs` | 15s |
 
-- **`PostToolUse` 둘은 순서가 있다.** 인코딩을 먼저 고치고 문서 셋을 대조한다.
+- **`PostToolUse` 둘은 순서가 있다.** 인코딩을 먼저 고치고 화면 문서를 대조한다.
 - 실행은 `node` 하나다. `package.json` 도 `node_modules` 도 보지 않는다 — **폐쇄망에서 `npm i` 없이 선다**(CLAUDE.md §1).
 
 ## 공통 계약 — `lib.mjs`
@@ -94,9 +94,9 @@ tags: [harness, hooks, gate, automation]
 - **바이너리는 확장자로만 거른다**(내용을 읽지 않는다). 목록에 없는 바이너리를 쓰면 훅이 텍스트로 다시 쓴다 — 새 바이너리 확장자가 저장소에 들어오면 **`.gitattributes` 와 훅 양쪽에 더한다.**
 - 쓰기에 실패하면 막지 않고 *고치지 못했다* 고 알린다.
 
-## `doc-drift` — 화면 소스 ↔ 문서 셋 경고
+## `doc-drift` — 화면 소스 ↔ 화면 문서 경고
 
-**계산한다**: 바뀐 파일 → 페이지 경로 → `documents/screen/{경로}/`(CLAUDE.md §5.5). 사슬은 두 갈래다.
+**계산한다**: 바뀐 파일 → 페이지 경로 → `documents/screen/{경로}/`(CLAUDE.md §6.5). 사슬은 두 갈래다.
 
 ```
 sources/frontend/src/features/{기능}/…  ─→ screenRegistry.ts 역인덱스 ─→ 페이지 경로
@@ -106,12 +106,12 @@ sources/frontend/src/features/{기능}/…  ─→ screenRegistry.ts 역인덱�
 - **`docs/` 와 `*.test|spec.*` 은 통과한다.** 문서를 고치는 것은 드리프트의 반대이고, 테스트는 화면 계약을 바꾸지 않는다.
 - **프론트**는 가장 긴 기능 폴더가 이긴다(`sample/…` 이 `sample` 을 덮지 않게).
 - **백엔드는 패키지 이름으로 기능 폴더를 맞히지 않는다.** 둘은 닮았을 뿐 규칙이 아니라(`accesslog` ↔ `api/log`), 맞히기 시작하면 **틀린 화면의 문서를 가리키는 훅**이 된다. 대신 그 경로를 **실제로 부르는 `endpoints.ts` 선언**을 찾는다.
-- 문서 셋이 **셋 다 없음 / 일부 없음 / 다 있음** 셋으로 갈라 말이 달라진다.
+- 정본 둘이 **다 없음 / 하나 없음 / 다 있음** 셋으로 갈라 말이 달라진다. **목업은 세지 않는다** — 파생물이라 없는 것이 정상이고, 그것을 결손으로 세면 화면마다 경고가 떠 경고가 배경음이 된다.
 - **한 화면당 세션에 한 번만** 말한다. 말한 화면은 `os.tmpdir()/ai-agent-doc-drift/{세션}.json` 에 적는다(저장소를 더럽히지 않는다). 매번 같은 말을 하면 **읽히지 않는 경고**가 되고, 그때부터 다른 경고까지 함께 묻힌다.
 
 ## `log-raw` — 대화 원문 append
 
-**남긴다**: `chat-history/YYYY-MM/raw/YYYY-MM-DD.md` 에 append only(CLAUDE.md §9 · [04-memory/logs.md](./memory/logs.md)).
+**남긴다**: `chat-history/YYYY-MM/raw/YYYY-MM-DD.md` 에 append only(CLAUDE.md §10 · [04-memory/logs.md](./memory/logs.md)).
 
 | 이벤트 | 무엇을 남기나 | 어디서 얻나 |
 |---|---|---|
@@ -134,7 +134,7 @@ sources/frontend/src/features/{기능}/…  ─→ screenRegistry.ts 역인덱�
 2. `lib.mjs` 만 import 한다. **의존성을 더하지 않는다** — 훅이 자기 의존성을 갖는 순간 그 설치가 새 사람의 첫 관문이 된다.
 3. `.claude/settings.json` 에 이벤트·matcher·timeout·`statusMessage` 를 배선한다.
 4. **막기만 하지 않는다.** `deny` 의 문구에 *고칠 곳* 과 *다음에 돌릴 것* 을 함께 적는다.
-5. [automation-matrix.md](./automation-matrix.md) 의 훅 표와 이 파일에 행을 더한다. CLAUDE.md §6 의 표도 함께 본다.
+5. [automation-matrix.md](./automation-matrix.md) 의 훅 표와 이 파일에 행을 더한다. CLAUDE.md §8 의 표도 함께 본다.
 
 ## 훅이 의심스러울 때
 
@@ -151,4 +151,4 @@ echo '{"tool_input":{"file_path":"sources/backend/bootstrap/src/main/resources/d
 - [automation-matrix.md](./automation-matrix.md) — 무엇을 언제 · 강도가 셋인 이유 · AI 가 하는 것
 - [skills.md](./skills.md) — 스킬 카탈로그와 작성 규약
 - [sensors-guides.md](./sensors-guides.md) — Sensors vs Guides 분류
-- [CLAUDE.md §6](../../CLAUDE.md) — 기계가 막는 것 / 사람이 지키는 것
+- [CLAUDE.md §8](../../CLAUDE.md) — 기계가 막는 것 / 사람이 지키는 것

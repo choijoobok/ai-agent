@@ -41,8 +41,8 @@ tags: [harness, hooks, skills, automation, index]
 | `guard-generated` | **차단** | 생성 시드 CSV 손편집 |
 | `guard-commit` | **차단** | 경로 없는 커밋 · `-a` · 큰따옴표 메시지 |
 | `normalize-encoding` | **교정** | BOM · CRLF |
-| `doc-drift` | **경고** | 화면 소스 ↔ 문서 셋 |
-| `log-raw` | **기록** | 대화 원문 → `chat-history/`(CLAUDE.md §9) |
+| `doc-drift` | **경고** | 화면 소스 ↔ 화면 문서(정본 둘) |
+| `log-raw` | **기록** | 대화 원문 → `chat-history/`(CLAUDE.md §10) |
 
 상세: [automation-matrix.md](./automation-matrix.md)
 
@@ -50,8 +50,13 @@ tags: [harness, hooks, skills, automation, index]
 
 | 스킬 | 용도 |
 |------|------|
-| `/menu-doc` | 화면 문서 셋(요건서·목업·메뉴얼) 생성·현행 대조 |
+| `/kickoff` · `/interview` · `/phase-gate` · `/pm-status` | 단계를 세우고 묻고 넘고 보고한다 |
+| `/slice` · `/change-request` · `/adr` | 구현 · 변경 요청 · 결정 기록 |
+| `/doc-gen` | spec YAML → `documents/generated/` |
+| `/menu-doc` | 화면 문서(요건서·메뉴얼) 생성·현행 대조 |
+| `/mockup` | 요건서 → `mockup.html` (파생) |
 | `/manual-site` | 메뉴얼 열람 페이지 + 고객사 제출본(`build/manual/`) 생성 |
+| `/trace` · `/redteam` | 추적성 검사 · 적대적 검토 |
 
 ## 관련 카테고리
 

@@ -81,7 +81,7 @@ tags: [index, routing, master, decision-tree]
 | [playbook](playbook/INDEX.md) | 화면 레시피 (샘플 여섯과 대응) | 2 | 7 |
 | [quality](quality/INDEX.md) | 테스트 설계 · 레드팀 · 코드 품질 · 골든셋 · 관측 | 2 | 13 |
 | [knowledge](knowledge/INDEX.md) | 표 34개 — 인가·코드·문구·이력·운영 | 3 | 15 |
-| [harness](harness/INDEX.md) | 훅 열하나 · 스킬 열둘 · 문맥 예산 · 로그 | 2 | 13 |
+| [harness](harness/INDEX.md) | 훅 열하나 · 스킬 열셋 · 문맥 예산 · 로그 | 2 | 13 |
 
 ## SSoT 우선순위 (정보 충돌 시)
 

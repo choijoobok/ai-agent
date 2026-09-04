@@ -69,7 +69,7 @@ tags: [playbook, recipe, index]
 ## 화면 하나 — 순서는 하나다
 
 ```
-0. requirements.md · mockup.html   함께 쓰고 **사용자 승인을 받는다** (CLAUDE.md §5.3 ①②③)
+0. requirements.md · mockup.html   함께 쓰고 **사용자 승인을 받는다** (CLAUDE.md §6.3 ①②③)
                                    ─── 승인 전에는 아래를 하나도 시작하지 않는다 ───
 1. changeset.md             표가 없으면 만든다 · 코드·문구를 넣는다
 2. 백엔드                   entity → repository → Spec → QueryService/Service → Controller
@@ -101,5 +101,5 @@ tags: [playbook, recipe, index]
 ## 관련
 
 - [INDEX](../INDEX.md) — 마스터
-- [CLAUDE.md §3 · §5](../../CLAUDE.md) — 진입 카테고리와 문서 셋 게이트
+- [CLAUDE.md §3 · §6](../../CLAUDE.md) — 진입 카테고리와 화면 문서 게이트
 - [03-prompt](../artifact/screen/INDEX.md) — 화면 프롬프트(이 레시피들을 가리킨다)

@@ -14,7 +14,7 @@
  *
  * <h2>둘을 만드는 이유</h2>
  *
- * <p>`documents/screen/{경로}/manual.html` 은 <b>문서 셋의 일부</b>다(CLAUDE.md §6.1) — 우리가
+ * <p>`documents/screen/{경로}/manual.html` 은 <b>화면 문서의 파생물</b>이다(CLAUDE.md §6.1) — 우리가
  * 소스 옆에서 본다. `build/manual/` 은 <b>제출본</b>이다 — 폴더 하나를 통째로 복사해 고객사에
  * 준다. 같은 원본에서 나오므로 둘이 갈릴 수 없다.
  *
@@ -125,7 +125,11 @@ function renderDoc({ screen, source, figures, hrefOf }) {
       used.add(key);
       const figure = figures.get(key);
       if (!figure) {
-        problems.push(`${screen.url} — 메뉴얼이 mockup.html#${key} 를 부르는데 그 그림이 없다`);
+        problems.push(
+          `${screen.url} — 메뉴얼이 mockup.html#${key} 를 부르는데 그 그림이 없다` +
+            `\n    목업이 아예 없으면 파생물이라 그렇다(CLAUDE.md §4-5) — 먼저 만든다:` +
+            `\n    node .claude/skills/mockup/scaffold.mjs ${screen.url.replace(/^\//, '')} > documents/screen${screen.url}/mockup.html`,
+        );
         return '';
       }
       return figureHtml(figure, caption || screen.name, hrefOf(figure));

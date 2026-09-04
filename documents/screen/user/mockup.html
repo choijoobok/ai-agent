@@ -282,752 +282,1493 @@ footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line2);
        font-size:11.5px;color:var(--muted)}
 </style>
 
-
 <main>
 
 <!--
-  목업 — 사용자 관리 (/user)
-  ─────────────────────────────────────────────────────────
-  [독자] 설계자. 화면을 눈으로 확인하고 테스트케이스를 판정한다.
-  [규약](../../../aidd-guide/artifact/template/03-mockup.html) 의 머리 주석 그대로. <style> 블록은 템플릿에서 복사했다.
-  [주의] 결정은 requirements.md 가 갖는다 — 여기에만 있고 요건서에 없는 규칙은 유실된 것으로 친다.
+  이 파일은 생성물이다 — `/mockup` 이 requirements.md 에서 만든다.
+  결정도 테스트 케이스도 요건서가 갖는다. 여기서 고치면 다음 생성에서 사라진다.
 -->
 
 <h1>사용자 관리</h1>
 <div class="head">
   <dl>
     <dt>페이지 경로</dt><dd><code>/user</code></dd>
-    <dt><code>MENU_CD</code></dt><dd><code>USER_MGMT</code></dd>
+    <dt>메뉴코드</dt><dd><code>USER_MGMT</code></dd>
+    <dt>프론트 폴더</dt><dd><code>sources/frontend/src/features/user/</code></dd>
+    <dt>백엔드 패키지</dt><dd><code>sources/backend/domain/…/domain/user/admin/</code> · <code>sources/backend/domain/…/domain/user/detail/</code> · <code>sources/backend/api/…/api/user/</code></dd>
+    <dt>화면 유형</dt><dd>마스터-디테일(상하) — 디테일은 탭 다섯</dd>
+    <dt>처리 유형</dt><dd>CRUD + 실행</dd>
+    <dt>쓰는 액션</dt><dd><code>R</code> <code>S</code> <code>E</code> <code>X</code> — <b>넷을 다 쓰는 유일한 화면</b>이다. <code>EXPORT_YN</code> = <code>Y</code></dd>
+    <dt>페이징</dt><dd>offset (마스터). 디테일 탭 다섯은 전건</dd>
+    <dt>문서 상태</dt><dd>구현됨 — 소스 역작성 2026-09-03</dd>
     <dt>요건서</dt><dd><a href="requirements.md">requirements.md</a></dd>
     <dt>메뉴얼</dt><dd><a href="manual.md">manual.md</a></dd>
-    <dt>형태</dt><dd>마스터 그리드 + 디테일 탭 다섯 (축은 상하)</dd>
-    <dt>액션</dt><dd><code>R</code> <code>S</code> <code>E</code> <code>X</code> — 넷을 다 쓰는 유일한 화면</dd>
-    <dt>상태</dt><dd>구현됨 — 소스 역작성 2026-09-03</dd>
   </dl>
 </div>
 
-<!-- ── 화면 1 ─────────────────────────────────────────────── -->
-<h2>1. 기본 상태 — 조회한 목록과 고른 사람의 탭 다섯</h2>
+<h2>1. 기본 상태 — 진입 직후와 조회 뒤</h2>
 
 <p style="font-size:12.5px;margin:0 0 8px">
-  <b>목록이 곧 상세다.</b> 편집 폼이 없으므로 이 그리드가 <code>SYS_USER</code> 의 모든 컬럼을 갖는다 —
-  다섯만 보이고 아홉은 <code>[⚙]</code> 로 켠다. 축이 <b>상하</b>인 것은 마스터 컬럼이 열여덟이라
-  좌우로는 가로가 모자라기 때문이다.
+  축이 <b>상하</b>인 이유는 마스터 컬럼이 열여덟이라 좌우로 나누면 가로가 모자라기 때문이다(요건서 §1).
+  <b>조회조건에 기본값을 가진 칸이 하나도 없다</b> — 계정을 끈 뒤 <i>왜 안 보이나</i> 를 확인하러 오는 동선이
+  이 화면의 흔한 사용이라, 기본 필터가 걸려 있으면 방금 끈 그 계정이 첫 조회에 없다(§2).
 </p>
 
-<div class="screen leaf" id="main" data-manual="main">
-  <div class="bar">/user — 시스템 › 사용자 › 사용자 관리</div>
+<h3>① 진입 직후 — 자동 조회가 돌지 않는다</h3>
+
+<div class="screen leaf">
+  <div class="bar">셸의 콘텐츠 영역 · 메뉴로 막 들어온 상태 — 목록도 탭도 비어 있다</div>
   <div class="body">
 
     <div class="bc">
       <span class="path">시스템 › 사용자 › <b>사용자 관리</b></span>
-      <span class="cnt" style="font-size:11.5px;color:var(--muted)">조건 2</span>
-      <button class="btn ghost">조건 펼치기 ▾</button>
+      <button class="btn ghost">조회조건 숨기기 ▲</button>
     </div>
 
     <div class="sf">
-      <label>로그인 ID</label><input value="" placeholder="앞 일치">
-      <label>이름</label><input value="">
-      <label>이메일</label><input value="">
-      <label>계정 상태</label><select><option>(전체)</option></select>
-      <label>보유 역할</label><select><option>(전체)</option></select>
-      <label>역할 만료 예정</label><select><option>—</option></select>
-      <label>최종 로그인</label><span class="wide"><select style="width:auto"><option>범위</option></select>
-        <input style="width:110px" placeholder="시작"> ~ <input style="width:110px" placeholder="종료"></span>
-      <label>등록일</label><span class="wide"><select style="width:auto"><option>범위</option></select>
-        <input style="width:110px" placeholder="시작"> ~ <input style="width:110px" placeholder="종료"></span>
-      <div class="act"><button class="btn sm ghost">초기화</button> <button class="btn sm">조회</button></div>
+      <label>로그인 ID</label>
+      <div style="display:flex;gap:4px">
+        <select style="flex:0 0 108px"><option>시작</option><option>같음</option><option>포함</option></select>
+        <input placeholder="">
+      </div>
+      <label>이름</label>
+      <div style="display:flex;gap:4px">
+        <select style="flex:0 0 108px"><option>포함</option><option>같음</option><option>시작</option><option>끝</option></select>
+        <input placeholder="">
+      </div>
+      <label>이메일</label>
+      <div style="display:flex;gap:4px">
+        <select style="flex:0 0 108px"><option>포함</option><option>같음</option><option>시작</option><option>끝</option></select>
+        <input placeholder="">
+      </div>
+
+      <label>계정 상태</label>
+      <select><option>선택하세요 (다중)</option></select>
+      <label>보유 역할</label>
+      <select><option>선택하세요</option></select>
+      <label>역할 만료 예정</label>
+      <select><option>선택하세요</option><option>7일 이내</option><option>14일 이내</option><option>30일 이내</option><option>60일 이내</option><option>90일 이내</option></select>
+
+      <label>최종 로그인</label>
+      <div style="display:flex;gap:4px">
+        <select style="flex:0 0 108px"><option>범위</option><option>이상</option><option>이하</option></select>
+        <input placeholder="시작"><input placeholder="끝">
+      </div>
+      <label>등록일</label>
+      <div style="display:flex;gap:4px">
+        <select style="flex:0 0 108px"><option>범위</option><option>이상</option><option>이하</option></select>
+        <input placeholder="시작"><input placeholder="끝">
+      </div>
+      <span></span><span></span>
+
+      <div class="act"><button class="btn ghost sm">초기화</button></div>
     </div>
 
     <div class="tb">
       <span class="ttl">사용자</span>
-      <button class="btn sm ghost">잠금 해제</button>
-      <button class="btn sm ghost">휴면 해제</button>
-      <button class="btn sm ghost">비밀번호 초기화</button>
-      <button class="btn sm ghost">행 추가</button>
-      <button class="btn sm">저장</button>
-      <button class="btn sm ghost ico">⤓</button>
-      <button class="btn sm ghost ico">⚙</button>
+      <button class="btn sm">조회</button>
+      <button class="btn ghost sm">행 추가</button>
+      <button class="btn ghost sm" disabled>저장</button>
+      <button class="btn ghost sm" disabled>잠금 해제</button>
+      <button class="btn ghost sm" disabled>휴면 해제</button>
+      <button class="btn ghost sm" disabled>비밀번호 초기화</button>
+      <span class="sp"></span>
+      <button class="btn ghost ico">⤓ ▾</button>
+      <button class="btn ghost ico">⚙</button>
+    </div>
+
+    <div class="grid" style="max-height:120px">
+      <table>
+        <thead><tr>
+          <th class="st"></th><th style="width:34px">☐</th>
+          <th class="req pinL">로그인 ID <em>*</em></th>
+          <th class="req">이름 <em>*</em></th>
+          <th class="req">이메일 <em>*</em></th>
+          <th class="roh">상태</th><th>사용 여부</th>
+          <th>사용 시작일</th><th>사용 종료일</th>
+          <th class="roh">최종 로그인</th>
+        </tr></thead>
+        <tbody><tr><td colspan="10" style="text-align:center;color:var(--muted);padding:26px">데이터가 없습니다.</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pg"><span>0건</span><span class="nav">‹ 1 ›</span><span class="size">20건씩 ▾</span></div>
+
+    <div class="split">
+      <span class="arw">▲</span><span class="hnd">⋯⋯⋯</span><span class="arw">▼</span>
+    </div>
+
+    <div class="tabs">
+      <span class="on">보유 역할</span><span>개인 예외</span><span>접속 IP</span><span>활성 세션</span><span>유효 권한</span>
+    </div>
+    <div class="grid" style="max-height:86px">
+      <table><tbody><tr><td style="text-align:center;color:var(--muted);padding:26px">사용자를 선택하세요</td></tr></tbody></table>
+    </div>
+
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span> <b>진입 시 자동 조회를 하지 않는다</b>(§1) — 사용자가 [조회]를 누른다. 그래서 첫 그림의 목록은 비어 있는 것이 정상이다.</li>
+    <li><span class="n">2</span> <b>접기 토글과 걸린 조건 수는 브레드크럼 줄에 있다</b> — 접히는 대상 안에 두면 숨긴 뒤 되돌릴 수 없다.</li>
+    <li><span class="n">3</span> <b>검색 폼의 버튼은 초기화 하나다</b> — 조회는 그리드 헤더가 갖는다(<code>frontend/grid.md</code>).</li>
+    <li><span class="n">4</span> <b>연산자를 사용자가 고른다</b>(§2 표의 연산 칸). 기간 둘에 <i>이상 · 이하</i> 를 연 이유는 여기서 실제로 묻는 것이 <i>이 날짜 이후로 한 번도 안 들어온 계정</i> 이기 때문이다.</li>
+    <li><span class="n">5</span> <b>탭의 빈 문구가 둘이다</b> — <i>사용자를 선택하세요</i>(고를 부모가 없다)와 <i>부여된 역할이 없습니다</i>(부모는 있고 자식이 없다)는 다른 사실이다.</li>
+    <li><span class="n">6</span> 왼쪽 끝 좁은 칸은 <b>행 상태 컬럼</b>이다(신규 · 수정 · 삭제 · 그대로). 마스터에는 <b>삭제 컬럼이 없다</b> — 계정은 지울 수 없다(§5-1).</li>
+  </ol>
+</div>
+
+<h3>② 조회 뒤 · 사용자 하나를 골랐다 — 이 화면의 기본 모습</h3>
+
+<div class="screen leaf" id="main" data-manual="main">
+  <div class="bar">사용자 관리 — 위는 사용자 목록(마스터), 아래는 고른 사람의 탭 다섯(디테일)</div>
+  <div class="body">
+
+    <div class="bc">
+      <span class="path">시스템 › 사용자 › <b>사용자 관리</b></span>
+      <button class="btn ghost">조회조건 숨기기 ▲</button>
+    </div>
+
+    <div class="sf">
+      <label>로그인 ID</label>
+      <div style="display:flex;gap:4px"><select style="flex:0 0 108px"><option>시작</option></select><input value=""></div>
+      <label>이름</label>
+      <div style="display:flex;gap:4px"><select style="flex:0 0 108px"><option>포함</option></select><input value=""></div>
+      <label>이메일</label>
+      <div style="display:flex;gap:4px"><select style="flex:0 0 108px"><option>포함</option></select><input value=""></div>
+
+      <label>계정 상태</label>
+      <select><option>선택하세요 (다중)</option></select>
+      <label>보유 역할</label>
+      <select><option>선택하세요</option></select>
+      <label>역할 만료 예정</label>
+      <select><option>선택하세요</option></select>
+
+      <label>최종 로그인</label>
+      <div style="display:flex;gap:4px"><select style="flex:0 0 108px"><option>범위</option></select><input placeholder="시작"><input placeholder="끝"></div>
+      <label>등록일</label>
+      <div style="display:flex;gap:4px"><select style="flex:0 0 108px"><option>범위</option></select><input placeholder="시작"><input placeholder="끝"></div>
+      <span></span><span></span>
+
+      <div class="act"><button class="btn ghost sm">초기화</button></div>
+    </div>
+
+    <div class="tb">
+      <span class="ttl">사용자</span>
+      <button class="btn sm">조회</button>
+      <button class="btn ghost sm">행 추가</button>
+      <button class="btn ghost sm" disabled>저장</button>
+      <button class="btn ghost sm">잠금 해제</button>
+      <button class="btn ghost sm">휴면 해제</button>
+      <button class="btn ghost sm">비밀번호 초기화</button>
+      <span class="sp"></span>
+      <span class="cnt">선택 1건</span>
+      <button class="btn ghost ico">⤓ ▾</button>
+      <button class="btn ghost ico">⚙</button>
     </div>
 
     <div class="grid">
       <table>
-        <thead>
-          <tr>
-            <th class="st"></th>
-            <th class="req pinL">로그인 ID <em>*</em><span class="mn">☰</span></th>
-            <th class="req">이름 <em>*</em><span class="mn">☰</span></th>
-            <th class="req">이메일 <em>*</em><span class="mn">☰</span></th>
-            <th class="roh">상태<span class="mn">☰</span></th>
-            <th>사용 여부<span class="mn">☰</span></th>
-            <th>사용 시작일<span class="mn">☰</span></th>
-            <th>사용 종료일<span class="mn">☰</span></th>
-            <th class="roh">최종 로그인 <span class="srt">▲</span><span class="mn">☰</span></th>
-          </tr>
-        </thead>
+        <thead><tr>
+          <th class="st"></th><th style="width:34px">☐</th>
+          <th class="req pinL">로그인 ID <em>*</em> <span class="srt">▲2</span><span class="mn">☰</span></th>
+          <th class="req">이름 <em>*</em> <span class="srt">▲1</span><span class="mn">☰</span></th>
+          <th class="req">이메일 <em>*</em><span class="mn">☰</span></th>
+          <th class="roh">상태 <span class="mn">☰</span></th>
+          <th>사용 여부 <span class="mn">☰</span></th>
+          <th>사용 시작일 <span class="mn">☰</span></th>
+          <th>사용 종료일 <span class="mn">☰</span></th>
+          <th class="roh">최종 로그인 <span class="mn">☰</span></th>
+          <th class="roh pinR">등록일시 <span class="mn">☰</span></th>
+        </tr></thead>
         <tbody>
+          <tr>
+            <td class="st"></td><td style="text-align:center">☐</td>
+            <td class="pinL" style="font-family:Consolas,monospace">kang.jw</td>
+            <td class="req">강지우</td><td class="req">kang.jw@example.com</td>
+            <td class="ro" style="color:var(--ok)">정상</td>
+            <td style="text-align:center"><span class="swt on"></span></td>
+            <td></td><td></td>
+            <td class="ro">2026-09-04 09:12</td><td class="ro pinR">2025-11-02 14:20</td>
+          </tr>
+          <tr>
+            <td class="st"></td><td style="text-align:center">☐</td>
+            <td class="pinL" style="font-family:Consolas,monospace">admin</td>
+            <td class="req">관리자</td><td class="req">admin@example.com</td>
+            <td class="ro" style="color:var(--ok)">정상</td>
+            <td class="ro" style="text-align:center" title="자기 계정은 사용 중지할 수 없습니다."><span class="swt on dis"></span></td>
+            <td></td><td></td>
+            <td class="ro">2026-09-05 08:41</td><td class="ro pinR">2025-01-02 09:00</td>
+          </tr>
           <tr class="sel">
-            <td class="st"></td>
-            <td class="pinL cur">kim.tester</td><td>김테스터</td><td>kim@example.com</td>
-            <td class="ro"><span style="color:var(--ok)">● 정상</span></td>
-            <td><span class="swt on"></span></td><td></td><td></td><td>2026-09-02 09:14</td>
+            <td class="st"></td><td style="text-align:center">☑</td>
+            <td class="pinL" style="font-family:Consolas,monospace">kim.mh</td>
+            <td class="req">김민호</td><td class="req">kim.mh@example.com</td>
+            <td class="ro" style="color:var(--err)">잠김</td>
+            <td style="text-align:center"><span class="swt on"></span></td>
+            <td></td><td></td>
+            <td class="ro">2026-08-28 18:03</td><td class="ro pinR">2026-02-11 10:05</td>
           </tr>
           <tr>
-            <td class="st"></td>
-            <td class="pinL">lee.ops</td><td>이운영</td><td>lee@example.com</td>
-            <td class="ro"><span style="color:var(--err)">● 잠김</span></td>
-            <td><span class="swt on"></span></td><td></td><td></td><td>2026-08-28 17:02</td>
+            <td class="st"></td><td style="text-align:center">☐</td>
+            <td class="pinL" style="font-family:Consolas,monospace">park.dh</td>
+            <td class="req">박도현</td><td class="req">park.dh@example.com</td>
+            <td class="ro" style="color:var(--err)">기간 만료</td>
+            <td style="text-align:center"><span class="swt on"></span></td>
+            <td>2026-01-01</td><td>2026-08-31</td>
+            <td class="ro">2026-08-30 17:55</td><td class="ro pinR">2025-12-20 16:41</td>
           </tr>
           <tr>
-            <td class="st"></td>
-            <td class="pinL">park.leave</td><td>박퇴사</td><td>park@example.com</td>
-            <td class="ro"><span style="color:var(--muted)">● 미사용</span></td>
-            <td><span class="swt"></span></td><td></td><td>2026-06-30</td><td>2026-06-30 18:40</td>
+            <td class="st"></td><td style="text-align:center">☐</td>
+            <td class="pinL" style="font-family:Consolas,monospace">lee.sy</td>
+            <td class="req">이서연</td><td class="req">lee.sy@example.com</td>
+            <td class="ro" style="color:var(--err)">휴면</td>
+            <td style="text-align:center"><span class="swt on"></span></td>
+            <td></td><td></td>
+            <td class="ro">2026-03-11 10:41</td><td class="ro pinR">2025-08-19 11:12</td>
           </tr>
           <tr>
-            <td class="st"></td>
-            <td class="pinL">choi.temp</td><td>최파견</td><td>choi@example.com</td>
-            <td class="ro"><span style="color:var(--err)" title="사용 기간 밖">● 기간 만료</span></td>
-            <td><span class="swt on"></span></td><td>2026-03-01</td><td>2026-08-31</td><td>2026-08-31 11:20</td>
+            <td class="st"></td><td style="text-align:center">☐</td>
+            <td class="pinL" style="font-family:Consolas,monospace">lee.sy2</td>
+            <td class="req">이서연</td><td class="req">lee.sy2@example.com</td>
+            <td class="ro" style="color:var(--ok)">정상</td>
+            <td style="text-align:center"><span class="swt on"></span></td>
+            <td></td><td></td>
+            <td class="ro">2026-09-02 13:27</td><td class="ro pinR">2026-07-01 09:33</td>
           </tr>
           <tr>
-            <td class="st"></td>
-            <td class="pinL">old.account</td><td>오래된계정</td><td>old@example.com</td>
-            <td class="ro"><span style="color:var(--err)">● 휴면</span></td>
-            <td><span class="swt on"></span></td><td></td><td></td><td>2025-11-04 10:00</td>
-          </tr>
-          <tr>
-            <td class="st"></td>
-            <td class="pinL">admin</td><td>관리자</td><td>admin@example.com</td>
-            <td class="ro"><span style="color:var(--ok)">● 정상</span></td>
-            <td class="ro" title="자기 계정은 사용 중지할 수 없습니다."><span class="swt on dis"></span></td>
-            <td></td><td></td><td>2026-09-03 08:55</td>
+            <td class="st"></td><td style="text-align:center">☐</td>
+            <td class="pinL" style="font-family:Consolas,monospace">jung.ha</td>
+            <td class="req">정하늘</td><td class="req">jung.ha@example.com</td>
+            <td class="ro" style="color:var(--muted)">미사용</td>
+            <td style="text-align:center"><span class="swt"></span></td>
+            <td></td><td>2026-06-30</td>
+            <td class="ro">2026-06-02 08:20</td><td class="ro pinR">2025-05-06 08:58</td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="pg">
-      <span>전체 <b>6</b> 건</span>
-      <span class="nav">‹ <b>1</b> 2 3 ›</span>
-      <span class="size">100건 ▾</span>
+      <span>총 <b>128</b>건 · 7페이지</span>
+      <span class="nav">‹ <b>1</b> 2 3 … 7 ›</span>
+      <span class="size">20건씩 ▾</span>
     </div>
 
-    <div class="split"><span class="arw">▲</span><span class="hnd">⋯⋯</span><span class="arw">▼</span></div>
+    <div class="split">
+      <span class="arw">▲</span><span class="hnd">⋯⋯⋯</span><span class="arw">▼</span>
+    </div>
 
     <div class="tabs">
-      <span class="on">보유 역할</span><span>개인 예외</span><span>접속 IP</span>
-      <span>활성 세션</span><span>유효 권한</span>
+      <span class="on">보유 역할</span><span>개인 예외</span><span>접속 IP</span><span>활성 세션</span><span>유효 권한</span>
     </div>
 
     <div class="tb">
-      <span class="ttl">보유 역할 — kim.tester (김테스터)</span>
-      <button class="btn sm ghost">행 추가</button>
-      <button class="btn sm">저장</button>
-      <button class="btn sm ghost ico">⤓</button>
-      <button class="btn sm ghost ico">⚙</button>
+      <span class="ttl">보유 역할 — 김민호 (kim.mh)</span>
+      <button class="btn sm">조회</button>
+      <button class="btn ghost sm">행 추가</button>
+      <button class="btn ghost sm" disabled>저장</button>
+      <span class="sp"></span>
+      <button class="btn ghost ico">⤓ ▾</button>
+      <button class="btn ghost ico">⚙</button>
     </div>
     <div class="grid" style="max-height:150px">
       <table>
         <thead><tr>
           <th class="st"></th>
-          <th class="req pinL">역할 <em>*</em></th>
-          <th class="roh">역할 사용</th><th>시작일</th><th>종료일</th><th class="roh">부여 상태</th>
-          <th class="del">✕</th>
+          <th class="req">역할 <em>*</em></th>
+          <th class="roh">역할 사용</th>
+          <th>시작일</th><th>종료일</th>
+          <th class="roh">부여 상태</th>
+          <th class="del">삭제</th>
         </tr></thead>
         <tbody>
-          <tr><td class="st"></td><td class="pinL">운영자 (OPERATOR)</td>
-              <td class="ro"><span class="swt on dis"></span></td><td></td><td></td>
-              <td class="ro"><span style="color:var(--ok)">유효</span></td><td class="del">✕</td></tr>
-          <tr><td class="st"></td><td class="pinL">정산담당 (SETTLE)</td>
-              <td class="ro"><span class="swt dis"></span></td><td>2026-09-01</td><td>2026-12-31</td>
-              <td class="ro"><span style="color:var(--ok)">유효</span>
-                  <span class="tag" style="color:var(--err);border-color:var(--err)"
-                        title="꺼진 역할입니다 — 기간이 유효해도 지금은 아무 권한도 주지 않습니다.">역할 사용</span></td>
-              <td class="del">✕</td></tr>
-          <tr><td class="st"></td><td class="pinL">임시조회 (TEMP_READ)</td>
-              <td class="ro"><span class="swt on dis"></span></td><td>2026-01-01</td><td>2026-06-30</td>
-              <td class="ro"><span style="color:var(--muted)">만료</span></td><td class="del">✕</td></tr>
+          <tr>
+            <td class="st"></td>
+            <td class="ro req">창고 운영자 (WH_OPER)</td>
+            <td class="ro" style="text-align:center"><span class="swt on dis"></span></td>
+            <td>2026-01-01</td><td></td>
+            <td class="ro" style="color:var(--ok)">유효</td>
+            <td class="del">☐</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="ro req">정산 담당 (SETTLE)</td>
+            <td class="ro" style="text-align:center"><span class="swt on dis"></span></td>
+            <td>2026-09-10</td><td>2026-12-31</td>
+            <td class="ro" style="color:var(--note)">예정</td>
+            <td class="del">☐</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="ro req">임시 조회 (TEMP_VIEW)</td>
+            <td class="ro" style="text-align:center"><span class="swt dis"></span></td>
+            <td>2026-05-01</td><td></td>
+            <td class="ro" style="color:var(--ok)">유효 <span class="tag" style="color:var(--err);border-color:var(--err)" title="꺼진 역할입니다 — 기간이 유효해도 지금은 아무 권한도 주지 않습니다.">⚠</span></td>
+            <td class="del">☐</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="ro req">감사 열람 (AUDIT_RO)</td>
+            <td class="ro" style="text-align:center"><span class="swt on dis"></span></td>
+            <td>2026-01-01</td><td>2026-06-30</td>
+            <td class="ro" style="color:var(--muted)">만료</td>
+            <td class="del">☐</td>
+          </tr>
         </tbody>
       </table>
     </div>
+    <div class="pg"><span>4건 조회됨</span><span class="nav"></span><span class="size"></span></div>
+
   </div>
 </div>
 
 <div class="notes">
   <ol>
-    <li><span class="n">1</span> 조회조건 <b>여덟 칸 모두 기본값이 없다</b> — 계정을 끈 뒤 <i>왜 안 보이나</i> 를 확인하러 오는 동선에서 방금 끈 계정이 목록에 없으면 안 된다. (req §2)</li>
-    <li><span class="n">2</span> <code>상태</code> 컬럼은 <b>읽기 전용이고 정렬이 없다</b> — 계산해서 만든 값이라 <code>ORDER BY</code> 대상이 아니다. (req §4-1 · §6-3)</li>
-    <li><span class="n">3</span> <code>admin</code> 행의 <code>사용 여부</code> 스위치만 잠겨 있다 — <b>행×컬럼 하나</b>를 막는 자리이며 감추지 않고 사유를 붙인다. (req §4-2)</li>
-    <li><span class="n">4</span> 실행 버튼 셋이 <b>전부 저장(S) 액션</b>이다 — 기준이 <i>위험해 보이는가</i> 가 아니라 <b>우리 테이블의 컬럼을 쓰는가</b>다. (req §5-1)</li>
-    <li><span class="n">5</span> <b>삭제 컬럼이 마스터에 없다</b> — 계정은 물리 삭제하지 않는다. 디테일 둘에는 있다. (req §5-1 · §4-1a)</li>
-    <li><span class="n">6</span> 부여 상태는 <b>기간만</b> 본다. 꺼진 역할은 <i>유효</i> 옆의 경고 배지가 말한다 — 그러지 않으면 <i>유효라는데 왜 안 되나</i> 에 답할 자리가 없다. (req §6-3)</li>
+    <li><span class="n">1</span> <b>디테일 제목에 부모 값을 붙인다</b> — 스플리터로 마스터를 접어도 <i>누구의 역할인가</i> 를 잃지 않는다.</li>
+    <li><span class="n">2</span> <b>기본 정렬은 <code>이름</code> 오름차 → <code>로그인 ID</code> 오름차다</b>(§3-2). tie-breaker 가 없으면 동명이인(<code>lee.sy</code> · <code>lee.sy2</code>)에서 순서가 비결정적이 되어 <b>페이징이 같은 행을 두 장에 낸다</b>.</li>
+    <li><span class="n">3</span> <b><code>상태</code> 컬럼에는 정렬 표시가 없다</b>(§4-1) — SQL 이 모르는 파생값이라 화이트리스트에 없고, 켜면 400 이다.</li>
+    <li><span class="n">4</span> <b><code>상태</code> 는 먼저 걸린 것 하나만 낸다</b>(§6-3). <code>jung.ha</code> 는 종료일도 지났지만 <code>미사용</code> 이 앞이라 <i>미사용</i> 으로 나온다 — 그래서 <i>기간 만료</i> 로 조회하면 나오지 않는다.</li>
+    <li><span class="n">5</span> <b><code>admin</code>(로그인한 자기 계정)의 <code>사용 여부</code> 는 읽기 전용으로 칠하고 사유를 붙인다</b>(§4-2) — 감추지 않는다. 감추면 <i>왜 이 행만 칸이 없나</i> 가 된다.</li>
+    <li><span class="n">6</span> <b>잠금 해제 · 휴면 해제 · 비밀번호 초기화는 대상을 좁히지 않는다</b>(§5-1) — 잠기지 않은 계정에 눌러도 실패가 아니다. 그래서 행이 선택돼 있으면 셋 다 활성이다.</li>
+    <li><span class="n">7</span> <b>보유 역할의 <code>역할</code> 셀은 기존 행에서 읽기 전용이다</b>(PK 의 절반 · §4-2). 신규 행에서만 콤보가 열리고 글자는 <code>역할명 (역할ID)</code> 다.</li>
+    <li><span class="n">8</span> <b><code>역할 사용</code> 은 이 부여의 값이 아니라 역할의 값이다</b>(§4-1a) — 그래서 읽기 전용이고, 꺼진 역할에는 상태 옆에 경고 배지가 붙는다.</li>
+    <li><span class="n">9</span> <b>디테일 다섯은 전건이다</b>(§0) — 페이지 네비게이션과 페이지 사이즈가 없고 건수만 낸다.</li>
+    <li><span class="n">10</span> 요건서 §5-2 의 <code>[행 삭제]</code> 는 <b>툴바 버튼이 아니라 오른쪽 끝 삭제 컬럼</b>으로 그렸다 — 삭제는 상태이지 실행이 아니어서 저장을 눌러야 나간다(<code>frontend/grid.md</code> §5). <b>확인이 필요한 자리다.</b></li>
+    <li><span class="n">11</span> 요건서 §4-1 은 마스터를 <i>표시 다섯 · 기본 숨김 아홉</i> 이라 적었으나 표의 <code>○</code> 는 일곱이고 컬럼은 열다섯이다. 여기서는 <b><code>○</code> 표시를 따라 여덟을 그렸다</b> — <b>숫자와 표시 중 어느 것이 맞는지 확인이 필요하다.</b></li>
   </ol>
 </div>
 
-<!-- ── 화면 2 ─────────────────────────────────────────────── -->
-<h2>2. 디테일이 갈리는 자리 — 선택 없음 · 잠김 · 활성</h2>
+<h2>2. 상태가 갈리는 자리 — 빈 · 잠긴 · 편집 중 · 검증 실패 · 권한 없음</h2>
 
 <p style="font-size:12.5px;margin:0 0 8px">
-  <b>같은 빈 판이지만 다음에 할 일이 다르다.</b> 셋을 한 문구로 합치면 사용자가 무엇을 해야 할지 모른다.
+  <b>기본 상태 하나로는 확인이 안 된다.</b> 아래 그림에는 <code>data-manual</code> 키가 없다 —
+  상태별 화면이 사용자 메뉴얼에 섞이지 않게 하는 규약이다.
 </p>
 
-<h3>① 선택 없음 — 진입 직후 · 마스터 조회 직후</h3>
-<div class="screen leaf"><div class="body">
-  <div class="tabs"><span class="on">보유 역할</span><span>개인 예외</span><span>접속 IP</span><span>활성 세션</span><span>유효 권한</span></div>
-  <div class="tb"><span class="ttl">보유 역할</span>
-    <button class="btn sm ghost" disabled>행 추가</button><button class="btn sm" disabled>저장</button></div>
-  <div class="grid" style="max-height:90px"><table><tbody>
-    <tr><td class="empty" style="text-align:center;color:var(--muted);padding:26px">사용자를 선택하세요</td></tr>
-  </tbody></table></div>
-</div></div>
+<h3>① 조회했으나 결과가 없다 — <i>데이터가 없습니다</i> 와 다른 문구다</h3>
 
-<h3>② 잠김 — 저장하지 않은 신규 마스터 행을 고른 동안</h3>
-<div class="screen leaf"><div class="body">
-  <div class="tabs"><span class="on">보유 역할</span><span>개인 예외</span><span>접속 IP</span><span>활성 세션</span><span>유효 권한</span></div>
-  <div class="tb"><span class="ttl">보유 역할</span>
-    <button class="btn sm ghost" disabled>행 추가</button><button class="btn sm" disabled>저장</button></div>
-  <div class="grid" style="max-height:90px"><table><tbody>
-    <tr><td class="empty" style="text-align:center;color:var(--muted);padding:26px">저장 후 편집할 수 있습니다</td></tr>
-  </tbody></table></div>
-  <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">
-    <code>SYS_USER_ROLE</code> 이 <code>SYS_USER</code> 를 FK 로 참조한다 — 부모가 저장되기 전에는 자식을 만들 수 없다.
-    <b>신규 사용자에게 역할을 주는 것은 2단계다.</b>
-  </p>
-</div></div>
-
-<h3>③ 활성이지만 결과가 비었다 — 탭마다 <b>다른 사실</b>을 말한다</h3>
-<div class="screen leaf"><div class="body">
-  <div class="grid" style="max-height:120px"><table><tbody>
-    <tr><td style="padding:9px 11px">[보유 역할] <span style="color:var(--muted)">부여된 역할이 없습니다. 이 계정은 개인 예외로만 화면에 닿습니다.</span></td></tr>
-    <tr><td style="padding:9px 11px">[개인 예외] <span style="color:var(--muted)">개인 예외가 없습니다.</span></td></tr>
-    <tr><td style="padding:9px 11px">[접속 IP] <span style="color:var(--err)">허용 대역이 없습니다 — 이 계정은 어느 IP 에서도 접속할 수 있습니다.</span></td></tr>
-    <tr><td style="padding:9px 11px">[활성 세션] <span style="color:var(--muted)">활성 세션이 없습니다.</span></td></tr>
-  </tbody></table></div>
-  <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">
-    <b>접속 IP 의 빈 문구만 색이 다르다.</b> <i>등록된 대역이 없습니다</i> 로 끝내면
-    <b>지금 어디서든 들어올 수 있다</b>는 사실을 아무도 말하지 않는다.
-  </p>
-</div></div>
-
-<!-- ── 화면 3 ─────────────────────────────────────────────── -->
-<h2>3. 편집 — 행 상태 · 신규 행 · 검증 · 편집 거부</h2>
-
-<div class="screen leaf"><div class="body">
-  <div class="tb"><span class="ttl">사용자</span>
-    <button class="btn sm ghost">행 추가</button><button class="btn sm">저장</button></div>
-  <div class="grid">
-    <table>
-      <thead><tr>
-        <th class="st"></th>
-        <th class="req pinL">로그인 ID <em>*</em></th><th class="req">이름 <em>*</em></th><th class="req">이메일 <em>*</em></th>
-        <th class="roh">상태</th><th>사용 여부</th><th>사용 시작일</th><th>사용 종료일</th>
-      </tr></thead>
-      <tbody>
-        <tr class="new">
-          <td class="st">+</td>
-          <td class="pinL req edit">jung.new</td><td class="req">정신규</td><td class="req">jung@example.com</td>
-          <td class="ro">정상</td><td><span class="swt on"></span></td><td></td><td></td>
-        </tr>
-        <tr class="new">
-          <td class="st">+</td>
-          <td class="pinL req err" title="같은 로그인 ID 가 두 번 있습니다.">jung.new</td>
-          <td class="req">정중복</td><td class="req err" title="이메일은 필수입니다."></td>
-          <td class="ro">정상</td><td><span class="swt on"></span></td><td></td><td></td>
-        </tr>
-        <tr class="mod">
-          <td class="st">✎</td>
-          <td class="pinL ro">lee.ops</td><td class="req">이운영</td><td class="req">lee2@example.com</td>
-          <td class="ro">잠김</td><td><span class="swt"></span></td>
-          <td class="err" title="사용 시작일이 종료일보다 늦습니다.">2026-12-01</td>
-          <td class="err">2026-09-30</td>
-        </tr>
-        <tr>
-          <td class="st"></td>
-          <td class="pinL ro">admin</td><td class="req">관리자</td><td class="req">admin@example.com</td>
-          <td class="ro">정상</td>
-          <td class="ro" title="자기 계정은 사용 중지할 수 없습니다."><span class="swt on dis"></span></td>
-          <td></td><td></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <ul class="rules">
-    <li class="ok">신규 행에서만 <b>로그인 ID 칸이 열린다</b> — 기존 행은 읽기 전용(회색)이다</li>
-    <li class="no">같은 요청 안 <b>로그인 ID 중복</b> — <i>같은 로그인 ID 가 두 번 있습니다.</i></li>
-    <li class="no"><b>이메일 비움</b> — <i>이메일은 필수입니다.</i> 임시 비밀번호의 발송처다</li>
-    <li class="no"><b>기간 역전</b> — <i>사용 시작일이 종료일보다 늦습니다.</i> 같은 날은 통과다(양끝 포함)</li>
-    <li class="no"><b>자기 계정의 사용 여부</b> — 셀이 열리지 않고 사유가 뜬다</li>
-    <li class="srv">서버가 같은 것을 다시 본다 <em>— 화면이 막는 것은 UX 이지 방어가 아니다</em></li>
-    <li class="srv">서버만 아는 것: <b>DB 에 이미 있는 로그인 ID</b> · <b>삭제 요청 거부</b> · <b>발급 기능 꺼짐</b></li>
-  </ul>
-
-  <div class="banner">저장 전 확인 — 신규 2건에 임시 비밀번호가 발급됩니다. 저장 후 표시되며 다시 볼 수 없습니다.<br>
-    사용 중지하는 1건은 다음 로그인부터 막힙니다. 지금 접속 중인 세션은 유지됩니다.</div>
-  <p style="font-size:11.5px;color:var(--muted);margin:0">
-    <b>건수는 <i>얼마나</i> 를 말할 뿐 <i>무엇이 일어나는지</i> 를 말하지 못한다</b> — 그래서 확인 창 <b>앞</b>에 이 두 줄이 선다. (req §5-3)
-  </p>
-</div></div>
-
-<!-- ── 화면 4 ─────────────────────────────────────────────── -->
-<h2>4. 임시 비밀번호 모달 — 이 응답에만 있는 값</h2>
-
-<div class="screen shell"><div class="body">
-  <div class="modal">
-    <div class="mh">임시 비밀번호가 발급되었습니다 <span class="x">✕</span></div>
-    <div class="mb">
-      <div class="banner" style="border-color:var(--err);background:var(--err-bg);color:var(--err)">
-        이 창을 닫으면 다시 볼 수 없습니다. 지금 사용자에게 전달하세요.<br>
-        <span style="font-weight:400">사용자는 다음 로그인에서 비밀번호를 바꿔야 하며, 정해진 시간이 지나면 이 값으로는 로그인할 수 없습니다.</span>
-      </div>
+<div class="screen leaf">
+  <div class="bar">조건을 좁혀 조회한 뒤 · 결과 0건</div>
+  <div class="body">
+    <div class="tb">
+      <span class="ttl">사용자</span>
+      <button class="btn sm">조회</button>
+      <button class="btn ghost sm">행 추가</button>
+      <button class="btn ghost sm" disabled>저장</button>
+      <button class="btn ghost sm" disabled>잠금 해제</button>
+      <button class="btn ghost sm" disabled>휴면 해제</button>
+      <button class="btn ghost sm" disabled>비밀번호 초기화</button>
+      <span class="sp"></span>
+      <button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:110px">
       <table>
-        <thead><tr><th>로그인 ID</th><th>이름</th><th>비밀번호</th></tr></thead>
+        <thead><tr><th class="st"></th><th style="width:34px">☐</th><th class="req pinL">로그인 ID <em>*</em></th><th class="req">이름 <em>*</em></th><th class="req">이메일 <em>*</em></th><th class="roh">상태</th><th>사용 여부</th></tr></thead>
+        <tbody><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:26px">조회 결과가 없습니다.</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pg"><span>0건 조회됨</span><span class="nav">‹ 1 ›</span><span class="size">20건씩 ▾</span></div>
+  </div>
+</div>
+
+<h3>② 조회조건을 접었다 — 걸린 조건 수가 접힌 채로도 보인다</h3>
+
+<div class="screen leaf">
+  <div class="bar">조건 셋을 넣고 접은 상태 — 접기는 표시일 뿐 조건은 살아 있다</div>
+  <div class="body">
+    <div class="bc">
+      <span class="path">시스템 › 사용자 › <b>사용자 관리</b></span>
+      <span style="font-size:11.5px">조건 3개 적용 중</span>
+      <button class="btn ghost">조회조건 ▼</button>
+    </div>
+    <div class="tb">
+      <span class="ttl">사용자</span>
+      <button class="btn sm">조회</button>
+      <button class="btn ghost sm">행 추가</button>
+      <button class="btn ghost sm" disabled>저장</button>
+      <span class="sp"></span>
+      <span class="cnt">총 3건</span>
+      <button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:96px">
+      <table>
+        <thead><tr><th class="st"></th><th style="width:34px">☐</th><th class="req pinL">로그인 ID <em>*</em></th><th class="req">이름 <em>*</em></th><th class="roh">상태 <span class="mn">☰</span></th><th class="roh">잠금</th><th class="roh">실패 횟수</th></tr></thead>
         <tbody>
-          <tr><td class="c">jung.new</td><td>정신규</td><td class="c">Xk7#pQ2m ⧉</td></tr>
-          <tr><td class="c">lee.ops</td><td>이운영</td><td class="c">Rt4@wZ9d ⧉</td></tr>
+          <tr><td class="st"></td><td style="text-align:center">☐</td><td class="pinL" style="font-family:Consolas,monospace">kim.mh</td><td class="req">김민호</td><td class="ro" style="color:var(--err)">잠김</td><td class="ro" style="text-align:center"><span class="swt on dis"></span></td><td class="ro" style="text-align:right">5</td></tr>
+          <tr><td class="st"></td><td style="text-align:center">☐</td><td class="pinL" style="font-family:Consolas,monospace">lee.sy</td><td class="req">이서연</td><td class="ro" style="color:var(--err)">휴면</td><td class="ro" style="text-align:center"><span class="swt dis"></span></td><td class="ro" style="text-align:right">0</td></tr>
+          <tr><td class="st"></td><td style="text-align:center">☐</td><td class="pinL" style="font-family:Consolas,monospace">park.dh</td><td class="req">박도현</td><td class="ro" style="color:var(--err)">기간 만료</td><td class="ro" style="text-align:center"><span class="swt dis"></span></td><td class="ro" style="text-align:right">2</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="mf"><span>바깥을 눌러 닫히지 않는다 · 취소 버튼이 없다</span><button class="btn sm">확인</button></div>
+    <div class="pg"><span>3건 조회됨</span><span class="nav">‹ 1 ›</span><span class="size">20건씩 ▾</span></div>
   </div>
-</div></div>
+</div>
 
 <div class="notes">
   <ol>
-    <li><span class="n">1</span> <b>엑셀도 전체 복사 버튼도 없다</b> — 값이 파일로 떨어지면 그 파일이 값의 수명을 넘겨 살아남는다. 칸 하나 복사(⧉)만 둔다.</li>
-    <li><span class="n">2</span> <b>취소가 없다</b> — 둘을 두면 <i>취소하면 발급이 취소되나</i> 가 된다. 되돌릴 방법이 없는 창이다.</li>
-    <li><span class="n">3</span> 값은 <b>고정폭 글꼴</b>이다 — 사람이 옮겨 적는 값이라 <code>l</code>·<code>1</code>·<code>I</code> 가 붙어 보이면 안 된다.</li>
-    <li><span class="n">4</span> <b>수정만 한 저장에서는 뜨지 않는다</b>(빈 배열).</li>
+    <li><span class="n">1</span> <b><code>[⚙]</code> 로 <code>잠금</code> · <code>실패 횟수</code> 를 켜면 재조회 없이 값이 보인다</b> — 응답에 이미 들어 있다(§4-1). 숨김은 표시의 문제이고 조회의 문제가 아니다.</li>
+    <li><span class="n">2</span> <b>시스템 축 셋(<code>잠금</code> · <code>휴면</code> · <code>실패 횟수</code>)은 읽기 전용이다</b>(§4-2) — 회색 바탕이 그 사실을 말한다. 스위치도 입력 칸이 아니라 상태 표시로 그린다.</li>
   </ol>
 </div>
 
-<!-- ── 화면 5 ─────────────────────────────────────────────── -->
-<h2>5. 활성 세션 — 자기 계정이면 버튼이 잠긴다</h2>
+<h3>③ 미저장 신규 마스터 행을 골랐다 — 디테일 다섯이 <b>잠긴다</b></h3>
 
-<div class="screen leaf"><div class="body">
-  <div class="tabs"><span>보유 역할</span><span>개인 예외</span><span>접속 IP</span><span class="on">활성 세션</span><span>유효 권한</span></div>
-  <div class="tb">
-    <span class="ttl">활성 세션 — admin (관리자)</span>
-    <button class="btn sm ghost" disabled title="자기 계정의 세션은 종료할 수 없습니다.">강제 종료</button>
-    <button class="btn sm ghost ico">⤓</button>
+<div class="screen leaf">
+  <div class="bar"><code>[행 추가]</code> 로 만든 행을 고른 상태 — 부모가 저장되기 전에는 자식을 만들 수 없다</div>
+  <div class="body">
+    <div class="tb">
+      <span class="ttl">사용자</span>
+      <button class="btn sm">조회</button>
+      <button class="btn ghost sm">행 추가</button>
+      <button class="btn sm">저장</button>
+      <button class="btn ghost sm">잠금 해제</button>
+      <button class="btn ghost sm">휴면 해제</button>
+      <button class="btn ghost sm">비밀번호 초기화</button>
+      <span class="sp"></span><span class="cnt">변경 1건</span>
+      <button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:130px">
+      <table>
+        <thead><tr>
+          <th class="st"></th><th style="width:34px">☐</th>
+          <th class="req pinL">로그인 ID <em>*</em></th><th class="req">이름 <em>*</em></th><th class="req">이메일 <em>*</em></th>
+          <th class="roh">상태</th><th>사용 여부</th><th>사용 시작일</th><th>사용 종료일</th><th class="roh">언어</th>
+        </tr></thead>
+        <tbody>
+          <tr class="new sel">
+            <td class="st">＋</td><td style="text-align:center">☑</td>
+            <td class="req pinL" style="font-family:Consolas,monospace">choi.yj</td>
+            <td class="req">최윤제</td><td class="req">choi.yj@example.com</td>
+            <td class="ro" style="color:var(--ok)">정상</td>
+            <td style="text-align:center"><span class="swt on"></span></td>
+            <td></td><td></td><td>한국어</td>
+          </tr>
+          <tr>
+            <td class="st"></td><td style="text-align:center">☐</td>
+            <td class="pinL" style="font-family:Consolas,monospace">kang.jw</td>
+            <td class="req">강지우</td><td class="req">kang.jw@example.com</td>
+            <td class="ro" style="color:var(--ok)">정상</td>
+            <td style="text-align:center"><span class="swt on"></span></td>
+            <td></td><td></td><td>한국어</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>총 <b>128</b>건 · 7페이지</span><span class="nav">‹ <b>1</b> 2 3 … 7 ›</span><span class="size">20건씩 ▾</span></div>
+
+    <div class="split"><span class="arw">▲</span><span class="hnd">⋯⋯⋯</span><span class="arw">▼</span></div>
+
+    <div class="tabs" style="opacity:.45">
+      <span class="on">보유 역할</span><span>개인 예외</span><span>접속 IP</span><span>활성 세션</span><span>유효 권한</span>
+    </div>
+    <div class="tb" style="opacity:.45">
+      <span class="ttl">보유 역할 — 최윤제 (choi.yj)</span>
+      <button class="btn sm" disabled>조회</button>
+      <button class="btn ghost sm" disabled>행 추가</button>
+      <button class="btn ghost sm" disabled>저장</button>
+      <span class="sp"></span>
+      <button class="btn ghost ico" disabled>⤓ ▾</button><button class="btn ghost ico" disabled>⚙</button>
+    </div>
+    <div class="grid" style="max-height:86px">
+      <table><tbody><tr><td style="text-align:center;color:var(--muted);padding:26px">저장 후 편집할 수 있습니다</td></tr></tbody></table>
+    </div>
   </div>
-  <div class="grid" style="max-height:140px">
-    <table>
-      <thead><tr><th class="st"></th><th class="pinL">세션</th><th>현재 세션</th><th>생성 시각</th>
-        <th>최근 접근 <span class="srt">▼</span></th><th>만료 예정</th><th>접속 IP</th><th>브라우저</th></tr></thead>
-      <tbody>
-        <tr><td class="st">☐</td><td class="pinL">a3f91b2c</td><td><span class="swt on dis"></span></td>
-            <td>2026-09-03 08:55</td><td>2026-09-03 12:10</td><td>2026-09-03 13:10</td>
-            <td>10.20.1.44</td><td title="Mozilla/5.0 (Windows NT 10.0; Win64; x64)…">Mozilla/5.0 (Windows…</td></tr>
-        <tr><td class="st">☐</td><td class="pinL">77de0451</td><td><span class="swt dis"></span></td>
-            <td>2026-09-02 19:31</td><td>2026-09-02 20:02</td><td>2026-09-02 21:02</td>
-            <td class="ro"></td><td class="ro"></td></tr>
-      </tbody>
-    </table>
+</div>
+
+<h3>④ 스플리터로 마스터를 접었다 — 접힌 쪽은 제목 줄만 남는다</h3>
+
+<div class="screen leaf">
+  <div class="bar">위 그리드를 접은 상태 — 접힌 것은 <b>없는 것과 다르다</b></div>
+  <div class="body">
+    <div class="folded">
+      사용자 <span class="why">접힘 · 총 128건 · 선택 김민호 (kim.mh)</span>
+      <button class="btn ghost sm">되돌리기</button>
+    </div>
+    <div class="split"><span class="arw off">▲</span><span class="hnd">⋯⋯⋯</span><span class="arw">▼</span></div>
+    <div class="tabs"><span>보유 역할</span><span>개인 예외</span><span class="on">접속 IP</span><span>활성 세션</span><span>유효 권한</span></div>
+    <div class="tb">
+      <span class="ttl">접속 IP — 김민호 (kim.mh)</span>
+      <button class="btn sm">조회</button><button class="btn ghost sm">행 추가</button><button class="btn ghost sm" disabled>저장</button>
+      <span class="sp"></span><button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:118px">
+      <table>
+        <thead><tr><th class="st"></th><th class="req">IP · CIDR <em>*</em></th><th>사용</th><th>허용 시작</th><th>허용 종료</th><th class="del">삭제</th></tr></thead>
+        <tbody>
+          <tr><td class="st"></td><td class="ro req" style="font-family:Consolas,monospace">10.20.0.0/16</td><td style="text-align:center"><span class="swt on"></span></td><td></td><td></td><td class="del">☐</td></tr>
+          <tr><td class="st"></td><td class="ro req" style="font-family:Consolas,monospace">203.0.113.44</td><td style="text-align:center"><span class="swt on"></span></td><td>2026-09-01</td><td>2026-09-30</td><td class="del">☐</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>2건 조회됨</span><span class="nav"></span><span class="size"></span></div>
   </div>
-  <ul class="rules">
-    <li class="no">자기 계정을 보고 있으면 <b>대상이 하나도 없다</b> — 버튼이 비활성이고 <b>사유를 말한다</b>(<i>선택 0건</i> 과 구별되어야 한다)</li>
-    <li class="ok">세션 ID 는 <b>앞 8자만 그린다</b> — 끊을 때 보내는 값은 온전한 값이다</li>
-    <li class="ok"><b>빈 칸이 정직하다</b> — 접속 IP·브라우저는 로그인 이력에서 붙이며 못 찾으면 비운다</li>
-    <li class="srv">고른 수와 끊은 수가 <b>다를 수 있다</b> — 이미 만료된 세션은 조용히 넘어간다</li>
-  </ul>
-  <div class="banner info">선택한 2건의 세션을 종료합니다. 계정은 바뀌지 않으므로 다시 로그인할 수 있습니다.</div>
-  <p style="font-size:11.5px;color:var(--muted);margin:0">
-    확인 문구가 <b>계정은 바뀌지 않는다</b>는 것을 말한다 — 그러지 않으면 이 버튼이 계정을 잠그는 것으로 읽힌다. (req §5-2)
-  </p>
-</div></div>
+</div>
 
-<!-- ── 화면 6 ─────────────────────────────────────────────── -->
-<h2>6. 유효 권한 — 이 사람이 지금 실제로 무엇을 할 수 있나</h2>
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span> <b>둘 다 접히지 않는다</b> — 위를 접으면 위쪽 화살표가 흐려진다.</li>
+    <li><span class="n">2</span> 접힌 줄에 <b>선택된 사용자를 남긴다</b> — 접혀 있는 동안 아래 판이 <i>누구의 것인가</i> 를 말할 자리가 여기뿐이다.</li>
+  </ol>
+</div>
 
-<div class="screen leaf"><div class="body">
-  <div class="tabs"><span>보유 역할</span><span>개인 예외</span><span>접속 IP</span><span>활성 세션</span><span class="on">유효 권한</span></div>
-  <div class="tb">
-    <span class="ttl">유효 권한 — kim.tester (김테스터)</span>
-    <label style="font-size:12px;color:var(--muted)">표시 범위</label>
-    <select style="width:130px;padding:3px 6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:12px">
-      <option>가진 것만</option><option>전체 메뉴</option></select>
-    <button class="btn sm ghost">조회</button>
-    <button class="btn sm ghost ico">⤓</button>
+<h3>⑤ 편집 중 — 행 상태 셋과 편집 중인 셀</h3>
+
+<div class="screen leaf">
+  <div class="bar">신규 · 수정 · 삭제 표시가 함께 있는 상태 · <code>이메일</code> 셀 편집 중</div>
+  <div class="body">
+    <div class="tb">
+      <span class="ttl">사용자</span>
+      <button class="btn sm">조회</button><button class="btn ghost sm">행 추가</button>
+      <button class="btn sm">저장</button>
+      <button class="btn ghost sm">잠금 해제</button><button class="btn ghost sm">휴면 해제</button><button class="btn ghost sm">비밀번호 초기화</button>
+      <span class="sp"></span><span class="cnt">변경 2건</span>
+      <button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:150px">
+      <table>
+        <thead><tr>
+          <th class="st"></th><th style="width:34px">☐</th>
+          <th class="req pinL">로그인 ID <em>*</em></th><th class="req">이름 <em>*</em></th><th class="req">이메일 <em>*</em></th>
+          <th class="roh">상태</th><th>사용 여부</th><th>사용 시작일</th><th>사용 종료일</th>
+        </tr></thead>
+        <tbody>
+          <tr class="new">
+            <td class="st">＋</td><td style="text-align:center">☐</td>
+            <td class="req pinL" style="font-family:Consolas,monospace">choi.yj</td><td class="req">최윤제</td><td class="req">choi.yj@example.com</td>
+            <td class="ro" style="color:var(--ok)">정상</td><td style="text-align:center"><span class="swt on"></span></td><td></td><td></td>
+          </tr>
+          <tr class="mod sel">
+            <td class="st">✎</td><td style="text-align:center">☑</td>
+            <td class="ro pinL" style="font-family:Consolas,monospace">kim.mh</td><td class="req">김민호</td>
+            <td class="req edit">kim.minho@example.com<span style="color:var(--pri)">|</span></td>
+            <td class="ro" style="color:var(--err)">잠김</td><td style="text-align:center"><span class="swt on"></span></td><td></td><td></td>
+          </tr>
+          <tr>
+            <td class="st"></td><td style="text-align:center">☐</td>
+            <td class="ro pinL" style="font-family:Consolas,monospace">lee.sy</td><td class="req">이서연</td><td class="req">lee.sy@example.com</td>
+            <td class="ro" style="color:var(--err)">휴면</td><td class="cur" style="text-align:center"><span class="swt on"></span></td><td></td><td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>총 <b>128</b>건 · 7페이지</span><span class="nav">‹ <b>1</b> 2 3 … 7 ›</span><span class="size">20건씩 ▾</span></div>
+
+    <div class="banner info" style="margin-top:10px">저장하지 않은 변경이 있습니다. 다시 조회하면 변경이 사라집니다. 계속할까요?</div>
   </div>
-  <div class="grid" style="max-height:170px">
-    <table>
-      <thead><tr><th class="pinL">메뉴</th><th>R</th><th>S</th><th>E</th><th>X</th>
-        <th>출처</th><th>상태</th><th>시작일</th><th>종료일</th></tr></thead>
-      <tbody>
-        <tr><td class="pinL">시스템 › 사용자 › 사용자 관리</td>
-            <td>●</td><td>●</td><td>●</td><td>·</td><td>운영자</td>
-            <td><span style="color:var(--ok)">유효</span></td><td></td><td></td></tr>
-        <tr><td class="pinL">시스템 › 사용자 › 사용자 관리</td>
-            <td>●</td><td>·</td><td>·</td><td>●</td><td>개인 예외</td>
-            <td><span style="color:var(--ok)">유효</span></td><td>2026-09-01</td><td>2026-12-31</td></tr>
-        <tr><td class="pinL">시스템 › 메뉴 › 역할 관리</td>
-            <td>●</td><td>●</td><td>—</td><td>—</td><td>운영자</td>
-            <td><span style="color:var(--ok)">유효</span></td><td></td><td></td></tr>
-        <tr class="rmv"><td class="pinL">시스템 › 로그 › 오류 이력</td>
-            <td>●</td><td>·</td><td>●</td><td>—</td><td>임시조회</td>
-            <td><span style="color:var(--err)" title="부여 기간 밖입니다 — 지금은 효력이 없습니다.">만료</span></td>
-            <td>2026-01-01</td><td>2026-06-30</td></tr>
-        <tr class="rmv"><td class="pinL">시스템 › 공지 › 공지 관리</td>
-            <td>●</td><td>●</td><td>—</td><td>—</td><td>운영자</td>
-            <td><span style="color:var(--err)" title="메뉴가 꺼져 있거나 화면이 없습니다 — 부여는 살아 있지만 권한이 되지 못합니다.">대상 유효</span></td>
-            <td></td><td></td></tr>
-      </tbody>
-    </table>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span> <b>신규 행은 끝까지 신규다</b> — 고쳐도 수정으로 바뀌지 않는다. 그리고 신규 행에서만 <code>로그인 ID</code> 셀이 열린다(§4-2).</li>
+    <li><span class="n">2</span> <b>기존 행의 <code>로그인 ID</code> 는 회색이다</b>(PK · §4-2) — 계정을 지울 수도 없으므로 한 번 정하면 끝이다.</li>
+    <li><span class="n">3</span> <b>재조회를 부르는 넷은 같은 확인을 받는다</b> — 조회 · 페이지 이동 · 페이지 사이즈 · <b>정렬</b>. 서버 정렬이므로 헤더를 누르는 것도 재조회다.</li>
+    <li><span class="n">4</span> <b>시스템 축 셋은 저장 요청에 실리지 않는다</b>(§4-6) — 서버의 저장 DTO 에도 그 필드가 없다.</li>
+  </ol>
+</div>
+
+<h3>⑥ 검증 실패 — 화면이 막는 넷</h3>
+
+<div class="screen leaf">
+  <div class="bar">저장을 누른 직후 · 화면 검증에서 걸렸다(서버로 나가지 않았다)</div>
+  <div class="body">
+    <div class="banner">3건의 오류가 있습니다.</div>
+    <div class="tb">
+      <span class="ttl">사용자</span>
+      <button class="btn sm">조회</button><button class="btn ghost sm">행 추가</button><button class="btn sm">저장</button>
+      <span class="sp"></span><span class="cnt">변경 3건</span>
+      <button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:170px">
+      <table>
+        <thead><tr>
+          <th class="st"></th><th style="width:34px">☐</th>
+          <th class="req pinL">로그인 ID <em>*</em></th><th class="req">이름 <em>*</em></th><th class="req">이메일 <em>*</em></th>
+          <th class="roh">상태</th><th>사용 여부</th><th>사용 시작일</th><th>사용 종료일</th>
+        </tr></thead>
+        <tbody>
+          <tr class="new">
+            <td class="st">＋</td><td style="text-align:center">☐</td>
+            <td class="err pinL" style="font-family:Consolas,monospace" title="같은 로그인 ID 가 두 번 있습니다.">choi.yj</td>
+            <td class="req">최윤제</td><td class="req">choi.yj@example.com</td>
+            <td class="ro" style="color:var(--ok)">정상</td><td style="text-align:center"><span class="swt on"></span></td><td></td><td></td>
+          </tr>
+          <tr class="new">
+            <td class="st">＋</td><td style="text-align:center">☐</td>
+            <td class="err pinL" style="font-family:Consolas,monospace" title="같은 로그인 ID 가 두 번 있습니다.">choi.yj</td>
+            <td class="req">최윤재</td>
+            <td class="err" title="이메일은 필수입니다."></td>
+            <td class="ro" style="color:var(--ok)">정상</td><td style="text-align:center"><span class="swt on"></span></td><td></td><td></td>
+          </tr>
+          <tr class="mod">
+            <td class="st">✎</td><td style="text-align:center">☐</td>
+            <td class="ro pinL" style="font-family:Consolas,monospace">park.dh</td><td class="req">박도현</td><td class="req">park.dh@example.com</td>
+            <td class="ro" style="color:var(--err)">기간 만료</td><td style="text-align:center"><span class="swt on"></span></td>
+            <td class="err" title="사용 시작일이 종료일보다 늦습니다.">2026-10-01</td>
+            <td class="err" title="사용 시작일이 종료일보다 늦습니다.">2026-09-30</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>총 <b>128</b>건 · 7페이지</span><span class="nav">‹ <b>1</b> 2 3 … 7 ›</span><span class="size">20건씩 ▾</span></div>
+
+    <ul class="rules" style="margin-top:12px">
+      <li class="no">같은 로그인 ID 가 두 번 있습니다. <em>— 화면 · 같은 요청 안 중복</em></li>
+      <li class="no">이메일은 필수입니다. <em>— 화면+서버 · DB 는 NULL 을 허용하지만 이 화면은 필수다</em></li>
+      <li class="no">사용 시작일이 종료일보다 늦습니다. <em>— 화면+서버 · 양끝 포함이라 같은 날은 통과</em></li>
+      <li class="no">자기 계정은 사용 중지할 수 없습니다. <em>— 셀이 열리지 않는다</em></li>
+      <li class="srv">이미 있는 로그인 ID 입니다. <em>— 서버만 안다(끈 계정도 남아 있다)</em></li>
+      <li class="srv">계정은 삭제할 수 없습니다. 사용 여부를 끄십시오. <em>— 서버가 <code>D</code> 를 거부한다</em></li>
+      <li class="srv">임시 비밀번호 발급이 꺼져 있습니다. <em>— <code>adminResetEnabled</code> 가 꺼져 있다</em></li>
+    </ul>
   </div>
-  <ul class="rules">
-    <li class="ok"><b>메뉴 하나가 여러 행일 수 있다</b> — 경유가 둘이면 행이 둘이다(사용자 관리 두 줄). 합치면 <i>어느 부여를 건드릴지</i> 를 잃는다</li>
-    <li class="ok">액션 칸은 <b>셋</b>이다 — <code>●</code> 준다 · <code>·</code> 안 준다 · <code>—</code> <b>정의되지 않았다</b>(부여할 칸 자체가 없다)</li>
-    <li class="ok">효력이 없는 행은 <b>이유를 배지가 말한다</b> — 기간 밖인가, 대상 메뉴가 죽었는가</li>
-    <li class="srv"><b><code>effective</code> 는 서버가 낸다</b> — 화면 계산을 두면 실제 판정과 갈리고, 그 순간 이 탭은 진단이 아니라 또 하나의 거짓말이 된다</li>
-  </ul>
-  <div class="banner">유효 권한이 공집합입니다 — 이 계정은 다음 로그인부터 차단됩니다.</div>
-  <p style="font-size:11.5px;color:var(--muted);margin:0">
-    <b>조회 전에는 내지 않는다.</b> 아직 안 부른 빈 판을 두고 <i>차단됩니다</i> 를 내면 그것이 곧 거짓말이다. (req §4-1e)
-  </p>
-</div></div>
+</div>
 
-<!-- ── 화면 7 ─────────────────────────────────────────────── -->
-<h2>7. 접속 IP — 첫 대역이 나머지 전부를 막는다</h2>
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span> <b>화면이 막는 것은 UX 이지 방어가 아니다</b>(§6-1) — 요청 본문은 조작할 수 있고 화면 없이 부르는 경로가 늘 있으므로 서버가 같은 것을 다시 본다. 위 목록의 <code>·</code> 표시가 <b>서버만 아는 것</b>이다.</li>
+    <li><span class="n">2</span> <b>새로 만든 빈 칸에 붉은 칠을 하지 않는다</b> — 아직 안 쓴 칸이고, 필수 표시(<code>*</code> 와 옅은 노란 바탕)가 그 일을 한다. 붉은 칸은 <b>저장을 눌렀을 때</b> 뜬다.</li>
+  </ol>
+</div>
 
-<div class="screen leaf"><div class="body">
-  <div class="tabs"><span>보유 역할</span><span>개인 예외</span><span class="on">접속 IP</span><span>활성 세션</span><span>유효 권한</span></div>
-  <div class="tb"><span class="ttl">접속 IP — kim.tester (김테스터)</span>
-    <button class="btn sm ghost">행 추가</button><button class="btn sm">저장</button></div>
-  <div class="grid" style="max-height:130px">
-    <table>
-      <thead><tr><th class="st"></th><th class="req pinL">IP · CIDR <em>*</em></th><th>사용</th>
-        <th>허용 시작</th><th>허용 종료</th><th class="del">✕</th></tr></thead>
-      <tbody>
-        <tr class="new"><td class="st">+</td><td class="pinL req edit">10.20.0.0/16</td>
-            <td><span class="swt on"></span></td><td></td><td></td><td class="del">✕</td></tr>
-        <tr class="new"><td class="st">+</td>
-            <td class="pinL req err" title="IP 주소 또는 CIDR 형식이 아닙니다.">10.20.300.1</td>
-            <td><span class="swt on"></span></td><td></td><td></td><td class="del">✕</td></tr>
-        <tr class="new"><td class="st">+</td>
-            <td class="pinL req err" title="같은 대역이 이미 목록에 있습니다.">10.20.0.0/16</td>
-            <td><span class="swt on"></span></td><td>2026-09-01</td><td>2026-10-31</td><td class="del">✕</td></tr>
-      </tbody>
-    </table>
+<h3>⑦ 자기 계정의 <code>사용 여부</code> 를 끄려 했다 — 셀이 열리지 않는다</h3>
+
+<div class="screen leaf">
+  <div class="bar">로그인한 사람이 자기 행(<code>admin</code>)의 스위치를 누른 직후</div>
+  <div class="body">
+    <div class="banner">자기 계정은 사용 중지할 수 없습니다.</div>
+    <div class="grid" style="max-height:96px">
+      <table>
+        <thead><tr><th class="st"></th><th style="width:34px">☐</th><th class="req pinL">로그인 ID <em>*</em></th><th class="req">이름 <em>*</em></th><th class="roh">상태</th><th>사용 여부</th></tr></thead>
+        <tbody>
+          <tr class="sel">
+            <td class="st"></td><td style="text-align:center">☑</td>
+            <td class="pinL" style="font-family:Consolas,monospace">admin</td><td class="req">관리자</td>
+            <td class="ro" style="color:var(--ok)">정상</td>
+            <td class="ro cur" style="text-align:center" title="자기 계정은 사용 중지할 수 없습니다."><span class="swt on dis"></span></td>
+          </tr>
+          <tr>
+            <td class="st"></td><td style="text-align:center">☐</td>
+            <td class="pinL" style="font-family:Consolas,monospace">kang.jw</td><td class="req">강지우</td>
+            <td class="ro" style="color:var(--ok)">정상</td>
+            <td style="text-align:center"><span class="swt on"></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-  <div class="banner">첫 대역을 등록하면 그 순간부터 나머지 모든 IP 가 막힙니다.</div>
-  <ul class="rules">
-    <li class="ok"><b>행이 없으면 제한 없음</b> — 그래서 첫 등록이 정책의 전환점이다. 삭제 행을 뺀 기존 건수로 센다</li>
-    <li class="ok"><b>꺼진 행도 조회된다</b> — 다시 켜는 곳이 이 화면이다</li>
-    <li class="no">형식 오류 · 같은 그리드 안 중복은 화면이 먼저 잡는다. <b>빈 값은 통과</b>다(아직 안 쓴 칸이다)</li>
-    <li class="srv">IPv6 의 최종 판정은 서버의 리터럴 파서가 한다 — 화면 정규식은 오타를 왕복 전에 잡는 것이 일이다</li>
-    <li class="srv">기간 판정은 <b>서버 기준 날짜</b>이며 양끝 포함이다</li>
-  </ul>
-</div></div>
+</div>
 
-<!-- ── 화면 8 — 메뉴얼이 싣는 탭 그림 다섯 ──────────────────── -->
-<h2>8. 탭 다섯 — 각 탭의 기본 모습</h2>
+<h3>⑧ 권한 없음 — 없는 버튼은 감춘다(비활성이 아니다)</h3>
+
+<div class="screen leaf">
+  <div class="bar"><code>R</code> 만 가진 사용자로 들어왔다 — 저장 · 행 추가 · 실행 셋이 <b>없다</b></div>
+  <div class="body">
+    <div class="tb">
+      <span class="ttl">사용자</span>
+      <button class="btn sm">조회</button>
+      <span class="sp"></span>
+      <button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:96px">
+      <table>
+        <thead><tr><th style="width:34px">☐</th><th class="pinL">로그인 ID</th><th>이름</th><th>이메일</th><th class="roh">상태</th><th class="roh">사용 여부</th></tr></thead>
+        <tbody>
+          <tr><td style="text-align:center">☐</td><td class="pinL" style="font-family:Consolas,monospace">kang.jw</td><td class="ro">강지우</td><td class="ro">kang.jw@example.com</td><td class="ro" style="color:var(--ok)">정상</td><td class="ro" style="text-align:center"><span class="swt on dis"></span></td></tr>
+          <tr><td style="text-align:center">☐</td><td class="pinL" style="font-family:Consolas,monospace">kim.mh</td><td class="ro">김민호</td><td class="ro">kim.mh@example.com</td><td class="ro" style="color:var(--err)">잠김</td><td class="ro" style="text-align:center"><span class="swt on dis"></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>총 <b>128</b>건 · 7페이지</span><span class="nav">‹ <b>1</b> 2 3 … 7 ›</span><span class="size">20건씩 ▾</span></div>
+  </div>
+</div>
+
+<div class="screen leaf">
+  <div class="bar"><code>R</code> <code>S</code> 는 있고 <code>X</code> 가 없는 사용자 — 잠금 해제 셋은 보이고 <code>[강제 종료]</code> 만 없다</div>
+  <div class="body">
+    <div class="tabs"><span>보유 역할</span><span>개인 예외</span><span>접속 IP</span><span class="on">활성 세션</span><span>유효 권한</span></div>
+    <div class="tb">
+      <span class="ttl">활성 세션 — 김민호 (kim.mh)</span>
+      <button class="btn sm">조회</button>
+      <span class="sp"></span>
+      <button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:96px">
+      <table>
+        <thead><tr><th style="width:34px">☐</th><th>세션</th><th>현재 세션</th><th>최근 접근 <span class="srt">▼</span></th><th>접속 IP</th><th>브라우저</th></tr></thead>
+        <tbody>
+          <tr><td style="text-align:center">☐</td><td class="ro" style="font-family:Consolas,monospace">9f3a71c2</td><td class="ro" style="text-align:center">·</td><td class="ro">2026-09-05 09:03</td><td class="ro">203.0.113.44</td><td class="ro">Chrome 141 · Windows</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>1건 조회됨</span><span class="nav"></span><span class="size"></span></div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span> <b>버튼은 선언에서 자동으로 난다</b> — 각 URL 의 액션을 유효 권한과 대조해 <b>없으면 감춘다</b>. 그래서 <code>R</code> 만 가진 사람의 화면에는 저장 자리가 비어 있지 않고 <b>애초에 없다</b>.</li>
+    <li><span class="n">2</span> <b>엑셀 다운로드와 그리드 설정은 권한 밖이다</b> — 프론트가 자기 데이터로 만들고 설정은 개인화다. 다만 내보내기 자체는 <code>EXPORT_YN='Y'</code> 가 선언한다(§5-1).</li>
+    <li><span class="n">3</span> <b>잠금 해제 · 휴면 해제 · 비밀번호 초기화의 액션은 <code>SAVE</code> 다</b>(§5-1) — 위험해 보이는가가 아니라 <b><code>SYS_USER</code> 의 컬럼을 쓰는가</b>가 기준이다. 그래서 <code>S</code> 가 있으면 셋이 함께 보인다.</li>
+  </ol>
+</div>
+
+<h2>3. 디테일 탭 다섯 — 탭마다 모습이 다르다</h2>
 
 <p style="font-size:12.5px;margin:0 0 8px">
-  <b>메뉴얼이 절마다 싣는 그림이다.</b> 위 화면 5·6·7 은 <i>거부되는 상태</i>를 보이지만
-  여기 다섯은 <b>탭을 열었을 때의 기본 모습</b>이며, 그것이 사용자가 처음 보는 것이다.
-  각 블록의 <code>data-manual</code> 키를 <code>manual.md</code> 가
-  <code>[설명](./mockup.html#키)</code> 로 부른다 — 짝이 어긋나면 생성기가 보고한다.
+  <b>탭 하나는 그림 하나다</b> — 그림 한 장으로는 <i>이 탭이 어떻게 생겼나</i> 에 답할 수 없다.
+  아래 다섯이 메뉴얼이 부르는 자리이고, 각 탭의 <b>빈 판과 갈리는 상태</b>는 키 없이 뒤에 붙인다.
+  저장 단위는 <b>탭마다 따로</b>이며, 한 탭을 저장하면 <b>나머지 네 탭의 조회 결과를 버린다</b>(§1-1).
 </p>
 
-<h3>① 보유 역할 — <code>tab-role</code></h3>
-<div class="screen leaf" id="tab-role" data-manual="tab-role"><div class="body">
-  <div class="tabs">
-    <span class="on">보유 역할</span><span>개인 예외</span><span>접속 IP</span>
-    <span>활성 세션</span><span>유효 권한</span>
-  </div>
-  <div class="tb">
-    <span class="ttl">보유 역할 — kim.tester (김테스터)</span>
-    <button class="btn sm ghost">행 추가</button>
-    <button class="btn sm">저장</button>
-    <button class="btn sm ghost ico">⤓</button>
-    <button class="btn sm ghost ico">⚙</button>
-  </div>
-  <div class="grid" style="max-height:132px">
-    <table>
-      <thead><tr><th class="st"></th><th class="req pinL">역할 <em>*</em></th>
-        <th class="roh">역할 사용</th><th>시작일</th><th>종료일</th><th class="roh">부여 상태</th>
-        <th class="del">✕</th></tr></thead>
-      <tbody>
-        <tr><td class="st"></td><td class="pinL">운영자 (OPERATOR)</td>
-            <td class="ro"><span class="swt on dis"></span></td><td></td><td></td>
-            <td class="ro"><span style="color:var(--ok)">유효</span></td><td class="del">✕</td></tr>
-        <tr><td class="st"></td><td class="pinL">정산담당 (SETTLE)</td>
-            <td class="ro"><span class="swt on dis"></span></td><td>2026-09-01</td><td>2026-12-31</td>
-            <td class="ro"><span style="color:var(--ok)">유효</span></td><td class="del">✕</td></tr>
-        <tr><td class="st"></td><td class="pinL">임시조회 (TEMP_READ)</td>
-            <td class="ro"><span class="swt on dis"></span></td><td>2026-01-01</td><td>2026-06-30</td>
-            <td class="ro"><span style="color:var(--muted)">만료</span></td><td class="del">✕</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div></div>
+<h3>3-1. 보유 역할 — 편집 가능 · 이 화면의 부여 자리</h3>
 
-<h3>② 개인 예외 — <code>tab-grant</code> (조회 전용)</h3>
-<div class="screen leaf" id="tab-grant" data-manual="tab-grant"><div class="body">
-  <div class="tabs">
-    <span>보유 역할</span><span class="on">개인 예외</span><span>접속 IP</span>
-    <span>활성 세션</span><span>유효 권한</span>
+<div class="screen leaf" id="tab-role" data-manual="tab-role">
+  <div class="bar">보유 역할 — 이 사람이 가진 역할. 회수는 <b>종료일을 어제로</b> 두는 것이고 삭제가 아니다</div>
+  <div class="body">
+    <div class="tabs"><span class="on">보유 역할</span><span>개인 예외</span><span>접속 IP</span><span>활성 세션</span><span>유효 권한</span></div>
+    <div class="tb">
+      <span class="ttl">보유 역할 — 김민호 (kim.mh)</span>
+      <button class="btn sm">조회</button><button class="btn ghost sm">행 추가</button><button class="btn ghost sm" disabled>저장</button>
+      <span class="sp"></span><button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:180px">
+      <table>
+        <thead><tr>
+          <th class="st"></th>
+          <th class="req">역할 <em>*</em><span class="mn">☰</span></th>
+          <th class="roh">역할 사용 <span class="mn">☰</span></th>
+          <th>시작일 <span class="mn">☰</span></th><th>종료일 <span class="mn">☰</span></th>
+          <th class="roh">부여 상태 <span class="mn">☰</span></th>
+          <th class="roh pinR">수정일시 <span class="srt">▼</span><span class="mn">☰</span></th>
+          <th class="del">삭제</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td class="st"></td>
+            <td class="ro req">창고 운영자 (WH_OPER)</td>
+            <td class="ro" style="text-align:center"><span class="swt on dis"></span></td>
+            <td>2026-01-01</td><td></td>
+            <td class="ro" style="color:var(--ok)">유효</td>
+            <td class="ro pinR">2026-01-02 09:14</td><td class="del">☐</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="ro req">정산 담당 (SETTLE)</td>
+            <td class="ro" style="text-align:center"><span class="swt on dis"></span></td>
+            <td>2026-09-10</td><td>2026-12-31</td>
+            <td class="ro" style="color:var(--note)">예정</td>
+            <td class="ro pinR">2026-09-01 11:02</td><td class="del">☐</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="ro req">임시 조회 (TEMP_VIEW)</td>
+            <td class="ro" style="text-align:center"><span class="swt dis"></span></td>
+            <td>2026-05-01</td><td></td>
+            <td class="ro" style="color:var(--ok)">유효 <span class="tag" style="color:var(--err);border-color:var(--err)" title="꺼진 역할입니다 — 기간이 유효해도 지금은 아무 권한도 주지 않습니다.">⚠</span></td>
+            <td class="ro pinR">2026-05-01 08:30</td><td class="del">☐</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="ro req">감사 열람 (AUDIT_RO)</td>
+            <td class="ro" style="text-align:center"><span class="swt on dis"></span></td>
+            <td>2026-01-01</td><td>2026-06-30</td>
+            <td class="ro" style="color:var(--muted)">만료</td>
+            <td class="ro pinR">2026-01-02 09:14</td><td class="del">☐</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>4건 조회됨</span><span class="nav"></span><span class="size"></span></div>
   </div>
-  <div class="tb">
-    <span class="ttl">개인 예외 — kim.tester (김테스터)</span>
-    <button class="btn sm ghost ico">⤓</button>
-    <button class="btn sm ghost ico">⚙</button>
-  </div>
-  <div class="grid" style="max-height:120px">
-    <table>
-      <thead><tr><th class="pinL roh">메뉴</th><th class="roh">액션</th><th class="roh">부여 상태</th>
-        <th class="roh">시작일</th><th class="roh">종료일</th><th class="roh">대상 유효</th>
-        <th class="roh">부여 사유</th></tr></thead>
-      <tbody>
-        <tr><td class="pinL ro">시스템 › 로그 › 사용 이력</td><td class="ro">조회</td>
-            <td class="ro"><span style="color:var(--ok)">유효</span></td>
-            <td class="ro">2026-09-01</td><td class="ro">2026-12-31</td>
-            <td class="ro"><span class="swt on dis"></span></td>
-            <td class="ro">분기 감사 대응</td></tr>
-        <tr><td class="pinL ro">시스템 › 공지 › 공지사항 관리</td><td class="ro">저장</td>
-            <td class="ro"><span style="color:var(--muted)">예정</span></td>
-            <td class="ro">2026-10-01</td><td class="ro">2026-10-31</td>
-            <td class="ro"><span class="swt on dis"></span></td>
-            <td class="ro">담당자 휴가 대행</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">
-    저장 버튼이 없다 — 부여는 <b>개인 예외 권한</b> 화면에서 한다.
-  </p>
-</div></div>
+</div>
 
-<h3>③ 접속 IP — <code>tab-ip</code></h3>
-<div class="screen leaf" id="tab-ip" data-manual="tab-ip"><div class="body">
-  <div class="tabs">
-    <span>보유 역할</span><span>개인 예외</span><span class="on">접속 IP</span>
-    <span>활성 세션</span><span>유효 권한</span>
-  </div>
-  <div class="tb">
-    <span class="ttl">접속 IP — kim.tester (김테스터)</span>
-    <button class="btn sm ghost">행 추가</button>
-    <button class="btn sm">저장</button>
-    <button class="btn sm ghost ico">⤓</button>
-    <button class="btn sm ghost ico">⚙</button>
-  </div>
-  <div class="grid" style="max-height:110px">
-    <table>
-      <thead><tr><th class="st"></th><th class="req pinL">IP · CIDR <em>*</em></th><th>사용</th>
-        <th>허용 시작</th><th>허용 종료</th><th class="del">✕</th></tr></thead>
-      <tbody>
-        <tr><td class="st"></td><td class="pinL">10.20.0.0/16</td>
-            <td><span class="swt on"></span></td><td></td><td></td><td class="del">✕</td></tr>
-        <tr><td class="st"></td><td class="pinL">203.0.113.24</td>
-            <td><span class="swt on"></span></td><td>2026-09-01</td><td>2026-10-31</td>
-            <td class="del">✕</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div></div>
+<h4 style="font-size:12px;color:var(--muted);margin:14px 0 6px">신규 행 · 회수 · 빈 판</h4>
 
-<h3>④ 활성 세션 — <code>tab-session</code></h3>
-<div class="screen leaf" id="tab-session" data-manual="tab-session"><div class="body">
-  <div class="tabs">
-    <span>보유 역할</span><span>개인 예외</span><span>접속 IP</span>
-    <span class="on">활성 세션</span><span>유효 권한</span>
+<div class="screen leaf">
+  <div class="bar">행을 하나 더하고 무기한 부여에 종료일을 넣었다 — <b>저장 확인 앞에 회수 경고가 선다</b></div>
+  <div class="body">
+    <div class="tb">
+      <span class="ttl">보유 역할 — 김민호 (kim.mh)</span>
+      <button class="btn sm">조회</button><button class="btn ghost sm">행 추가</button><button class="btn sm">저장</button>
+      <span class="sp"></span><span class="cnt">변경 3건</span>
+      <button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:150px">
+      <table>
+        <thead><tr><th class="st"></th><th class="req">역할 <em>*</em></th><th class="roh">역할 사용</th><th>시작일</th><th>종료일</th><th class="roh">부여 상태</th><th class="del">삭제</th></tr></thead>
+        <tbody>
+          <tr class="new">
+            <td class="st">＋</td>
+            <td class="req edit">정산 담당 (SETTLE) ▾</td>
+            <td class="ro" style="text-align:center"><span class="swt on dis"></span></td>
+            <td></td><td></td>
+            <td class="ro" style="color:var(--ok)">유효</td><td class="del">☐</td>
+          </tr>
+          <tr class="mod">
+            <td class="st">✎</td>
+            <td class="ro req">창고 운영자 (WH_OPER)</td>
+            <td class="ro" style="text-align:center"><span class="swt on dis"></span></td>
+            <td>2026-01-01</td><td>2026-09-04</td>
+            <td class="ro" style="color:var(--ok)">유효</td><td class="del">☐</td>
+          </tr>
+          <tr class="rmv">
+            <td class="st">✕</td>
+            <td class="ro req">감사 열람 (AUDIT_RO)</td>
+            <td class="ro" style="text-align:center"><span class="swt on dis"></span></td>
+            <td>2026-01-01</td><td>2026-06-30</td>
+            <td class="ro" style="color:var(--muted)">만료</td><td class="del">☑</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="banner info" style="margin-top:10px">
+      추가 1 · 수정 1 · 삭제 1건을 저장하시겠습니까?<br>
+      <b>회수하는 1건은 다음 로그인부터 반영됩니다. 지금 세션은 살아 있습니다.</b>
+    </div>
   </div>
-  <div class="tb">
-    <span class="ttl">활성 세션 — kim.tester (김테스터)</span>
-    <button class="btn sm ghost">강제 종료</button>
-    <button class="btn sm ghost ico">⤓</button>
-    <button class="btn sm ghost ico">⚙</button>
-  </div>
-  <div class="grid" style="max-height:110px">
-    <table>
-      <thead><tr><th class="st"></th><th class="pinL roh">세션</th><th class="roh">현재 세션</th>
-        <th class="roh">생성 시각</th><th class="roh">최근 접근</th><th class="roh">만료 예정</th>
-        <th class="roh">접속 IP</th><th class="roh">브라우저</th></tr></thead>
-      <tbody>
-        <tr><td class="st">☐</td><td class="pinL ro">a3f91b2c</td>
-            <td class="ro"><span class="swt dis"></span></td>
-            <td class="ro">2026-09-03 08:55</td><td class="ro">2026-09-03 12:10</td>
-            <td class="ro">2026-09-03 13:10</td><td class="ro">10.20.1.44</td>
-            <td class="ro" title="Mozilla/5.0 (Windows NT 10.0; Win64; x64)…">Mozilla/5.0 (Windows…</td></tr>
-        <tr><td class="st">☐</td><td class="pinL ro">77de0451</td>
-            <td class="ro"><span class="swt dis"></span></td>
-            <td class="ro">2026-09-02 19:31</td><td class="ro">2026-09-02 20:02</td>
-            <td class="ro">2026-09-02 21:02</td><td class="ro"></td><td class="ro"></td></tr>
-      </tbody>
-    </table>
-  </div>
-</div></div>
+</div>
 
-<h3>⑤ 유효 권한 — <code>tab-effective</code></h3>
-<div class="screen leaf" id="tab-effective" data-manual="tab-effective"><div class="body">
-  <div class="tabs">
-    <span>보유 역할</span><span>개인 예외</span><span>접속 IP</span>
-    <span>활성 세션</span><span class="on">유효 권한</span>
+<div class="screen leaf">
+  <div class="bar">역할이 하나도 없는 계정 — 빈 문구가 <b>그것이 무슨 뜻인지</b>까지 말한다</div>
+  <div class="body">
+    <div class="tb">
+      <span class="ttl">보유 역할 — 최윤제 (choi.yj)</span>
+      <button class="btn sm">조회</button><button class="btn ghost sm">행 추가</button><button class="btn ghost sm" disabled>저장</button>
+      <span class="sp"></span><button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:96px">
+      <table>
+        <thead><tr><th class="st"></th><th class="req">역할 <em>*</em></th><th class="roh">역할 사용</th><th>시작일</th><th>종료일</th><th class="roh">부여 상태</th><th class="del">삭제</th></tr></thead>
+        <tbody><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">부여된 역할이 없습니다. 이 계정은 개인 예외로만 화면에 닿습니다.</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pg"><span>0건 조회됨</span><span class="nav"></span><span class="size"></span></div>
   </div>
-  <div class="tb">
-    <span class="ttl">유효 권한 — kim.tester (김테스터)</span>
-    <label style="font-size:12px;color:var(--muted)">표시 범위</label>
-    <select style="width:120px;padding:3px 6px;border:1px solid var(--line);background:var(--bg);
-                   color:var(--ink);font:inherit;font-size:12px">
-      <option>가진 것만</option><option>전체 메뉴</option></select>
-    <button class="btn sm ghost">조회</button>
-    <button class="btn sm ghost ico">⤓</button>
-  </div>
-  <div class="grid" style="max-height:130px">
-    <table>
-      <thead><tr><th class="pinL roh">메뉴</th><th class="roh">R</th><th class="roh">S</th>
-        <th class="roh">E</th><th class="roh">X</th><th class="roh">출처</th>
-        <th class="roh">상태</th></tr></thead>
-      <tbody>
-        <tr><td class="pinL ro">시스템 › 사용자 › 사용자 관리</td>
-            <td class="ro">●</td><td class="ro">●</td><td class="ro">●</td><td class="ro">·</td>
-            <td class="ro">운영자</td><td class="ro"><span style="color:var(--ok)">유효</span></td></tr>
-        <tr><td class="pinL ro">시스템 › 사용자 › 사용자 관리</td>
-            <td class="ro">●</td><td class="ro">·</td><td class="ro">·</td><td class="ro">●</td>
-            <td class="ro">개인 예외</td><td class="ro"><span style="color:var(--ok)">유효</span></td></tr>
-        <tr><td class="pinL ro">시스템 › 메뉴 › 역할 관리</td>
-            <td class="ro">●</td><td class="ro">●</td><td class="ro">—</td><td class="ro">—</td>
-            <td class="ro">운영자</td><td class="ro"><span style="color:var(--ok)">유효</span></td></tr>
-      </tbody>
-    </table>
-  </div>
-  <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">
-    <code>●</code> 준다 · <code>·</code> 안 준다 · <code>—</code> 그 메뉴에 그 기능이 없다.
-  </p>
-</div></div>
+</div>
 
-<!-- ── 테스트 케이스 ───────────────────────────────────────── -->
-<h2>T. 테스트 케이스 — 위 화면들의 주장을 전부 덮는다</h2>
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span> <b>꺼진 역할도 후보다</b>(§4-1a) — 켜기 전에 부여를 구성해 두는 동선이 정상이다. 꺼져 있다는 사실은 <code>역할 사용</code> 컬럼과 경고 배지가 말한다.</li>
+    <li><span class="n">2</span> <b>회수 판정은 오늘이 언제인지 묻지 않는다</b>(§5-3) — <i>기간을 줄였는가</i>(편집 전후 두 값의 비교)로 판정한다. 그래서 <b>오늘보다 뒤의 종료일을 넣어도 경고가 뜨고</b>, KST 자정 직후에도 결과가 같다.</li>
+    <li><span class="n">3</span> <b>이미 만료된 부여의 삭제는 회수로 세지 않는다</b> — 잃을 권한이 없다.</li>
+    <li><span class="n">4</span> <b>삭제와 회수는 다른 것이다</b> — 삭제는 잘못 등록한 행 정리이고, 회수는 종료일을 어제로 두는 것이며 그때 행이 남는다. 변경 이력 테이블이 없으므로 <b>그 컬럼이 유일한 기록이다</b>.</li>
+    <li><span class="n">5</span> <b>부여 상태는 기간에서만 파생한다</b>(§6-3) — 역할 자체의 <code>사용 여부</code> 는 보지 않는다. 그래서 <i>유효인데 아무 권한도 주지 않는</i> 행이 있을 수 있다.</li>
+  </ol>
+</div>
+
+<h3>3-2. 개인 예외 — <b>조회 전용</b>. 저장 경로가 아예 없다</h3>
+
+<div class="screen leaf" id="tab-grant" data-manual="tab-grant">
+  <div class="bar">개인 예외 — 역할과 별개로 이 사람에게 직접 준 권한. <b>여기서는 보기만 한다</b></div>
+  <div class="body">
+    <div class="tabs"><span>보유 역할</span><span class="on">개인 예외</span><span>접속 IP</span><span>활성 세션</span><span>유효 권한</span></div>
+    <div class="banner info">조회 전용입니다 — 부여는 개인 예외 권한 화면에서 합니다.</div>
+    <div class="tb">
+      <span class="ttl">개인 예외 — 김민호 (kim.mh)</span>
+      <button class="btn sm">조회</button>
+      <span class="sp"></span><button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:170px">
+      <table>
+        <thead><tr>
+          <th>메뉴 <span class="mn">☰</span></th><th>액션 <span class="mn">☰</span></th>
+          <th>부여 상태 <span class="mn">☰</span></th>
+          <th>시작일 <span class="mn">☰</span></th><th>종료일 <span class="mn">☰</span></th>
+          <th>대상 유효 <span class="mn">☰</span></th>
+          <th>부여 사유 <span class="mn">☰</span></th>
+          <th class="pinR">수정일시 <span class="srt">▼</span><span class="mn">☰</span></th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td class="ro">사용 이력</td><td class="ro"><span class="tag">R</span></td>
+            <td class="ro" style="color:var(--ok)">유효</td>
+            <td class="ro">2026-06-01</td><td class="ro"></td>
+            <td class="ro" style="text-align:center">●</td>
+            <td class="ro">감사 대응 임시 조회</td><td class="ro pinR">2026-06-01 10:22</td>
+          </tr>
+          <tr>
+            <td class="ro">코드 관리</td><td class="ro"><span class="tag">R</span> <span class="tag">S</span></td>
+            <td class="ro" style="color:var(--ok)">유효</td>
+            <td class="ro">2026-08-01</td><td class="ro"></td>
+            <td class="ro" style="text-align:center;color:var(--err)" title="부여는 살아 있는데 대상이 죽었다 — 메뉴가 꺼져 있거나 화면이 없다.">✕</td>
+            <td class="ro">이관 준비</td><td class="ro pinR">2026-08-01 15:40</td>
+          </tr>
+          <tr>
+            <td class="ro">배치 이력</td><td class="ro"><span class="tag">R</span> <span class="tag">E</span></td>
+            <td class="ro" style="color:var(--muted)">만료</td>
+            <td class="ro">2026-01-01</td><td class="ro">2026-06-30</td>
+            <td class="ro" style="text-align:center">●</td>
+            <td class="ro">인수 검증</td><td class="ro pinR">2026-01-05 09:00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>3건 조회됨</span><span class="nav"></span><span class="size"></span></div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span> <b>저장 버튼이 없는 것이 아니라 저장 경로가 없다</b>(§4-1b) — 사용자 관리 권한이 있다고 예외 권한 부여 권한이 따라오면 안 되며, 시드 생성기가 <code>SAVE</code> 를 만들 수 없으므로 <b>어느 역할에도 줄 수 없다</b>.</li>
+    <li><span class="n">2</span> <b>저장 단위가 아니므로 행 상태 컬럼과 삭제 컬럼을 두지 않는다</b> — 두면 영영 빈 칸이 남고 <i>고쳤는데 표시가 안 된다</i> 로 읽힌다.</li>
+    <li><span class="n">3</span> <b><code>대상 유효</code> 가 거짓이면 부여는 살아 있는데 대상이 죽은 것이다</b>(§4-1b) — 부여를 지워야 할 이유가 아니고, 메뉴를 켜야 할 이유다.</li>
+  </ol>
+</div>
+
+<h3>3-3. 접속 IP — 편집 가능 · <b>행이 없으면 제한 없음</b>이다</h3>
+
+<div class="screen leaf" id="tab-ip" data-manual="tab-ip">
+  <div class="bar">접속 IP — 이 계정이 들어올 수 있는 대역. 판정은 <b>서버 기준 날짜</b>이며 양끝을 포함한다</div>
+  <div class="body">
+    <div class="tabs"><span>보유 역할</span><span>개인 예외</span><span class="on">접속 IP</span><span>활성 세션</span><span>유효 권한</span></div>
+    <div class="tb">
+      <span class="ttl">접속 IP — 김민호 (kim.mh)</span>
+      <button class="btn sm">조회</button><button class="btn ghost sm">행 추가</button><button class="btn ghost sm" disabled>저장</button>
+      <span class="sp"></span><button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:160px">
+      <table>
+        <thead><tr>
+          <th class="st"></th>
+          <th class="req">IP · CIDR <em>*</em><span class="mn">☰</span></th>
+          <th>사용 <span class="mn">☰</span></th>
+          <th>허용 시작 <span class="mn">☰</span></th><th>허용 종료 <span class="mn">☰</span></th>
+          <th class="roh pinR">수정일시 <span class="srt">▼</span><span class="mn">☰</span></th>
+          <th class="del">삭제</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td class="st"></td>
+            <td class="ro req" style="font-family:Consolas,monospace">10.20.0.0/16</td>
+            <td style="text-align:center"><span class="swt on"></span></td>
+            <td></td><td></td>
+            <td class="ro pinR">2026-02-11 10:06</td><td class="del">☐</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="ro req" style="font-family:Consolas,monospace">203.0.113.44</td>
+            <td style="text-align:center"><span class="swt on"></span></td>
+            <td>2026-09-01</td><td>2026-09-30</td>
+            <td class="ro pinR">2026-09-01 09:12</td><td class="del">☐</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="ro req" style="font-family:Consolas,monospace">192.168.10.0/24</td>
+            <td style="text-align:center"><span class="swt"></span></td>
+            <td></td><td></td>
+            <td class="ro pinR">2026-07-20 14:33</td><td class="del">☐</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>3건 조회됨</span><span class="nav"></span><span class="size"></span></div>
+  </div>
+</div>
+
+<h4 style="font-size:12px;color:var(--muted);margin:14px 0 6px">빈 판 · 첫 대역 경고 · 형식 오류</h4>
+
+<div class="screen leaf">
+  <div class="bar">대역이 하나도 없는 계정 — <b>빈 문구가 곧 규칙이다</b></div>
+  <div class="body">
+    <div class="grid" style="max-height:96px">
+      <table>
+        <thead><tr><th class="st"></th><th class="req">IP · CIDR <em>*</em></th><th>사용</th><th>허용 시작</th><th>허용 종료</th><th class="del">삭제</th></tr></thead>
+        <tbody><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px">허용 대역이 없습니다 — 이 계정은 어느 IP 에서도 접속할 수 있습니다.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="screen leaf">
+  <div class="bar">첫 대역을 넣고 저장을 눌렀다 · 아래는 형식이 틀린 행과 <b>아직 아무것도 입력하지 않은 행</b></div>
+  <div class="body">
+    <div class="banner info">첫 대역을 등록하면 그 순간부터 나머지 모든 IP 가 막힙니다.</div>
+    <div class="grid" style="max-height:150px">
+      <table>
+        <thead><tr><th class="st"></th><th class="req">IP · CIDR <em>*</em></th><th>사용</th><th>허용 시작</th><th>허용 종료</th><th class="del">삭제</th></tr></thead>
+        <tbody>
+          <tr class="new">
+            <td class="st">＋</td>
+            <td class="req" style="font-family:Consolas,monospace">10.20.0.0/16</td>
+            <td style="text-align:center"><span class="swt on"></span></td><td></td><td></td><td class="del">☐</td>
+          </tr>
+          <tr class="new">
+            <td class="st">＋</td>
+            <td class="err" style="font-family:Consolas,monospace" title="IP 주소 또는 CIDR 형식이 아닙니다.">1.2.3.4/64</td>
+            <td style="text-align:center"><span class="swt on"></span></td><td></td><td></td><td class="del">☐</td>
+          </tr>
+          <tr class="new">
+            <td class="st">＋</td>
+            <td class="req"></td>
+            <td style="text-align:center"><span class="swt on"></span></td><td></td><td></td><td class="del">☐</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="rules" style="margin-top:12px">
+      <li class="no">IP 주소 또는 CIDR 형식이 아닙니다. <em>— 상한이 계열에서 나온다(<code>/64</code> 는 IPv4 에 없다)</em></li>
+      <li class="no">같은 대역이 이미 목록에 있습니다. <em>— 같은 그리드 안 중복</em></li>
+      <li class="ok">빈 값은 통과한다 <em>— 아직 안 쓴 칸이고, 필수 표시가 그 일을 한다</em></li>
+      <li class="srv">IPv6 의 최종 판정은 서버의 리터럴 파서가 한다 <em>— 화면 정규식이 온전히 맞추지 않는다</em></li>
+    </ul>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span> <b>꺼진 행도 조회된다</b>(§4-1c) — 다시 켜는 곳이 이 화면이다. 그래서 <code>사용</code> 은 편집 가능하고 <code>IP · CIDR</code> 은 기존 행에서 잠긴다(PK 의 절반).</li>
+    <li><span class="n">2</span> <b>첫 대역 판정은 삭제 행을 뺀 기존 건수로 센다</b>(§5-3) — 기존 1건을 지우고 새 1건을 넣으면 경고가 <b>뜬다</b>.</li>
+    <li><span class="n">3</span> <b>IP 저장은 세션을 건드리지 않는다</b>(§6-2) — 인가가 아니라 <b>인증</b>의 검사다.</li>
+  </ol>
+</div>
+
+<h3>3-4. 활성 세션 — 조회 + 이 화면의 유일한 <code>EXECUTE</code></h3>
+
+<div class="screen leaf" id="tab-session" data-manual="tab-session">
+  <div class="bar">활성 세션 — 원천이 DB 가 아니라 <b>세션 스토어</b>다. 남의 세션 둘을 골랐다</div>
+  <div class="body">
+    <div class="tabs"><span>보유 역할</span><span>개인 예외</span><span>접속 IP</span><span class="on">활성 세션</span><span>유효 권한</span></div>
+    <div class="tb">
+      <span class="ttl">활성 세션 — 김민호 (kim.mh)</span>
+      <button class="btn sm">조회</button>
+      <button class="btn ghost sm">강제 종료</button>
+      <span class="sp"></span><span class="cnt">선택 2건</span>
+      <button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:170px">
+      <table>
+        <thead><tr>
+          <th style="width:34px">☐</th>
+          <th>세션 <span class="mn">☰</span></th>
+          <th>현재 세션 <span class="mn">☰</span></th>
+          <th>생성 시각 <span class="mn">☰</span></th>
+          <th>최근 접근 <span class="srt">▼</span><span class="mn">☰</span></th>
+          <th>만료 예정 <span class="mn">☰</span></th>
+          <th>접속 IP <span class="mn">☰</span></th>
+          <th>브라우저 <span class="mn">☰</span></th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td style="text-align:center">☑</td>
+            <td class="ro" style="font-family:Consolas,monospace">9f3a71c2</td>
+            <td class="ro" style="text-align:center">·</td>
+            <td class="ro">2026-09-05 08:41</td><td class="ro">2026-09-05 09:03</td><td class="ro">2026-09-05 09:33</td>
+            <td class="ro">203.0.113.44</td><td class="ro">Chrome 141 · Windows</td>
+          </tr>
+          <tr>
+            <td style="text-align:center">☑</td>
+            <td class="ro" style="font-family:Consolas,monospace">4b81e0d5</td>
+            <td class="ro" style="text-align:center">·</td>
+            <td class="ro">2026-09-04 13:20</td><td class="ro">2026-09-05 08:15</td><td class="ro">2026-09-05 08:45</td>
+            <td class="ro">10.20.4.19</td><td class="ro">Edge 141 · Windows</td>
+          </tr>
+          <tr>
+            <td style="text-align:center">☐</td>
+            <td class="ro" style="font-family:Consolas,monospace">2c07af99</td>
+            <td class="ro" style="text-align:center">·</td>
+            <td class="ro">2026-08-30 09:02</td><td class="ro">2026-09-01 11:47</td><td class="ro">2026-09-01 12:17</td>
+            <td class="ro" title="세션이 만들어진 무렵의 로그인 성공 이력에서 가져온 값입니다. 이력이 없으면 비어 있습니다."></td>
+            <td class="ro" title="세션이 만들어진 무렵의 로그인 성공 이력에서 가져온 값입니다. 이력이 없으면 비어 있습니다."></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>3건 조회됨</span><span class="nav"></span><span class="size"></span></div>
+
+    <div class="banner info" style="margin-top:10px">
+      선택한 2건의 세션을 종료합니다. <b>계정은 바뀌지 않으므로 다시 로그인할 수 있습니다.</b>
+    </div>
+  </div>
+</div>
+
+<h4 style="font-size:12px;color:var(--muted);margin:14px 0 6px">자기 계정 · 결과 건수가 다를 때 · 빈 판</h4>
+
+<div class="screen leaf">
+  <div class="bar">자기 계정(<code>admin</code>)의 세션을 보고 있다 — <b>버튼이 비활성이고 사유가 표시된다</b></div>
+  <div class="body">
+    <div class="tb">
+      <span class="ttl">활성 세션 — 관리자 (admin)</span>
+      <button class="btn sm">조회</button>
+      <button class="btn ghost sm" disabled title="자기 계정의 세션은 종료할 수 없습니다.">강제 종료</button>
+      <span class="sp"></span>
+      <span class="cnt" style="color:var(--err)">자기 계정의 세션은 종료할 수 없습니다.</span>
+      <button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:118px">
+      <table>
+        <thead><tr><th style="width:34px">☐</th><th>세션</th><th>현재 세션</th><th>최근 접근 <span class="srt">▼</span></th><th>접속 IP</th><th>브라우저</th></tr></thead>
+        <tbody>
+          <tr class="sel"><td style="text-align:center">☑</td><td class="ro" style="font-family:Consolas,monospace">e51b0a7d</td><td class="ro" style="text-align:center;color:var(--ok)">●</td><td class="ro">2026-09-05 09:05</td><td class="ro">10.20.4.7</td><td class="ro">Chrome 141 · Windows</td></tr>
+          <tr><td style="text-align:center">☐</td><td class="ro" style="font-family:Consolas,monospace">7ad3c410</td><td class="ro" style="text-align:center">·</td><td class="ro">2026-09-03 17:52</td><td class="ro">10.20.4.7</td><td class="ro">Firefox 132 · Windows</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>2건 조회됨</span><span class="nav"></span><span class="size"></span></div>
+  </div>
+</div>
+
+<div class="screen leaf">
+  <div class="bar">2건을 골라 끊었고 그중 1건은 이미 만료돼 있었다 — <b>오류가 아니라 1건 종료다</b></div>
+  <div class="body">
+    <div class="banner info">1건을 종료했습니다.</div>
+    <div class="grid" style="max-height:96px">
+      <table>
+        <thead><tr><th style="width:34px">☐</th><th>세션</th><th>현재 세션</th><th>최근 접근 <span class="srt">▼</span></th><th>접속 IP</th><th>브라우저</th></tr></thead>
+        <tbody><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px">활성 세션이 없습니다.</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pg"><span>0건 조회됨</span><span class="nav"></span><span class="size"></span></div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span> <b>세션 ID 는 표시만 8자로 자른다</b>(§4-1d) — 실행이 보내는 값은 온전한 값이다.</li>
+    <li><span class="n">2</span> <b><code>접속 IP</code> · <code>브라우저</code> 가 비어 있는 것이 정직하다</b>(§4-1d) — 로그인 이력에서 붙이는 값이고, 다른 로그인의 IP 를 끌어다 채우면 <i>어디서 들어왔나</i> 에 틀린 답을 하게 된다.</li>
+    <li><span class="n">3</span> <b>비활성 사유가 필요하다</b>(§5-2) — <i>선택 0건</i> 과 <i>자기 계정</i> 은 다른 사실이고, 힌트가 없으면 구별되지 않는다.</li>
+    <li><span class="n">4</span> <b>고른 수와 끊은 수가 다를 수 있고 다른 것이 사실이다</b>(§5-2) — 이미 만료된 세션은 조용히 넘어가고 결과 문구가 실제 건수를 말한다.</li>
+    <li><span class="n">5</span> <b>확인 문구가 <i>계정은 바뀌지 않는다</i> 를 말한다</b> — 그러지 않으면 이 버튼이 계정을 잠그는 것으로 읽힌다.</li>
+  </ol>
+</div>
+
+<h3>3-5. 유효 권한 — <b>조회 전용 · 진단</b>. 문의가 왔을 때 여기부터 본다</h3>
+
+<div class="screen leaf" id="tab-effective" data-manual="tab-effective">
+  <div class="bar">유효 권한 — <i>이 사람이 지금 실제로 무엇을 할 수 있나</i>. <code>effective</code> 는 <b>서버가 낸다</b></div>
+  <div class="body">
+    <div class="tabs"><span>보유 역할</span><span>개인 예외</span><span>접속 IP</span><span>활성 세션</span><span class="on">유효 권한</span></div>
+    <div class="tb">
+      <span class="ttl">유효 권한 — 김민호 (kim.mh)</span>
+      <button class="btn sm">조회</button>
+      <span class="sp"></span>
+      <span class="cnt">표시 범위</span>
+      <select style="width:auto;padding:3px 6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:12px">
+        <option>가진 것만</option><option>전체 메뉴</option>
+      </select>
+      <button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:200px">
+      <table>
+        <thead><tr>
+          <th>메뉴 <span class="mn">☰</span></th>
+          <th style="width:38px">R</th><th style="width:38px">S</th><th style="width:38px">E</th><th style="width:38px">X</th>
+          <th>출처 <span class="mn">☰</span></th>
+          <th>상태 <span class="mn">☰</span></th>
+          <th>시작일 <span class="mn">☰</span></th><th>종료일 <span class="mn">☰</span></th>
+          <th>부여 사유 <span class="mn">☰</span></th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td class="ro">사용자 관리</td>
+            <td class="ro" style="text-align:center">●</td><td class="ro" style="text-align:center">●</td>
+            <td class="ro" style="text-align:center">●</td><td class="ro" style="text-align:center">·</td>
+            <td class="ro">창고 운영자</td>
+            <td class="ro" style="color:var(--ok)">유효</td>
+            <td class="ro">2026-01-01</td><td class="ro"></td><td class="ro"></td>
+          </tr>
+          <tr>
+            <td class="ro">코드 관리</td>
+            <td class="ro" style="text-align:center">●</td><td class="ro" style="text-align:center">·</td>
+            <td class="ro" style="text-align:center">·</td><td class="ro" style="text-align:center">—</td>
+            <td class="ro">창고 운영자</td>
+            <td class="ro" style="color:var(--ok)">유효</td>
+            <td class="ro">2026-01-01</td><td class="ro"></td><td class="ro"></td>
+          </tr>
+          <tr>
+            <td class="ro">코드 관리</td>
+            <td class="ro" style="text-align:center">●</td><td class="ro" style="text-align:center">●</td>
+            <td class="ro" style="text-align:center">·</td><td class="ro" style="text-align:center">—</td>
+            <td class="ro">개인 예외</td>
+            <td class="ro" style="color:var(--muted)" title="메뉴가 꺼져 있거나 화면이 없습니다 — 부여는 살아 있지만 권한이 되지 못합니다.">유효 <span class="tag" style="color:var(--err);border-color:var(--err)">⚠</span></td>
+            <td class="ro">2026-08-01</td><td class="ro"></td><td class="ro">이관 준비</td>
+          </tr>
+          <tr>
+            <td class="ro">사용 이력</td>
+            <td class="ro" style="text-align:center">●</td><td class="ro" style="text-align:center">—</td>
+            <td class="ro" style="text-align:center">●</td><td class="ro" style="text-align:center">—</td>
+            <td class="ro">개인 예외</td>
+            <td class="ro" style="color:var(--ok)">유효</td>
+            <td class="ro">2026-06-01</td><td class="ro"></td><td class="ro">감사 대응 임시 조회</td>
+          </tr>
+          <tr style="color:var(--muted)">
+            <td class="ro">배치 이력</td>
+            <td class="ro" style="text-align:center">·</td><td class="ro" style="text-align:center">—</td>
+            <td class="ro" style="text-align:center">·</td><td class="ro" style="text-align:center">·</td>
+            <td class="ro">감사 열람</td>
+            <td class="ro" title="부여 기간 밖입니다 — 지금은 효력이 없습니다.">만료</td>
+            <td class="ro">2026-01-01</td><td class="ro">2026-06-30</td><td class="ro"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>5건 조회됨</span><span class="nav"></span><span class="size"></span></div>
+
+    <ul class="rules" style="margin-top:12px">
+      <li class="ok">● 준다</li>
+      <li class="no">· 안 준다</li>
+      <li class="srv">— <b>정의되지 않았다</b> <em>— 부여할 칸 자체가 없다. <i>안 줬다</i> 와 구별된다</em></li>
+    </ul>
+  </div>
+</div>
+
+<h4 style="font-size:12px;color:var(--muted);margin:14px 0 6px">조회 전 · 전체 메뉴 · 공집합</h4>
+
+<div class="screen leaf">
+  <div class="bar">탭을 열자마자 · 조회 전 — <b>공집합 배너가 번쩍이지 않는다</b></div>
+  <div class="body">
+    <div class="tb">
+      <span class="ttl">유효 권한 — 최윤제 (choi.yj)</span>
+      <button class="btn sm">조회</button>
+      <span class="sp"></span><span class="cnt">표시 범위</span>
+      <select style="width:auto;padding:3px 6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:12px"><option>가진 것만</option><option>전체 메뉴</option></select>
+      <button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:96px">
+      <table>
+        <thead><tr><th>메뉴</th><th style="width:38px">R</th><th style="width:38px">S</th><th style="width:38px">E</th><th style="width:38px">X</th><th>출처</th><th>상태</th></tr></thead>
+        <tbody><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">데이터가 없습니다.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="screen leaf">
+  <div class="bar">조회했고 <code>effective</code> 인 행이 하나도 없다 — <b>그때만</b> 배너가 뜬다</div>
+  <div class="body">
+    <div class="banner">유효 권한이 공집합입니다 — 이 계정은 다음 로그인부터 차단됩니다.</div>
+    <div class="tb">
+      <span class="ttl">유효 권한 — 최윤제 (choi.yj)</span>
+      <button class="btn sm">조회</button>
+      <span class="sp"></span><span class="cnt">표시 범위</span>
+      <select style="width:auto;padding:3px 6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:12px"><option>전체 메뉴</option><option>가진 것만</option></select>
+      <button class="btn ghost ico">⤓ ▾</button><button class="btn ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:150px">
+      <table>
+        <thead><tr><th>메뉴</th><th style="width:38px">R</th><th style="width:38px">S</th><th style="width:38px">E</th><th style="width:38px">X</th><th>출처</th><th>상태</th></tr></thead>
+        <tbody>
+          <tr style="color:var(--muted)"><td class="ro">대시보드</td><td class="ro" style="text-align:center">·</td><td class="ro" style="text-align:center">—</td><td class="ro" style="text-align:center">—</td><td class="ro" style="text-align:center">—</td><td class="ro">없음</td><td class="ro"></td></tr>
+          <tr style="color:var(--muted)"><td class="ro">사용자 관리</td><td class="ro" style="text-align:center">·</td><td class="ro" style="text-align:center">·</td><td class="ro" style="text-align:center">·</td><td class="ro" style="text-align:center">·</td><td class="ro">없음</td><td class="ro"></td></tr>
+          <tr style="color:var(--muted)"><td class="ro">코드 관리</td><td class="ro" style="text-align:center">·</td><td class="ro" style="text-align:center">·</td><td class="ro" style="text-align:center">·</td><td class="ro" style="text-align:center">—</td><td class="ro">없음</td><td class="ro"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>3건 조회됨</span><span class="nav"></span><span class="size"></span></div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span> <b>메뉴 하나가 여러 행일 수 있다</b>(§4-1e) — 경유가 둘이면 행이 둘이다. 합쳐서 한 행으로 내면 액션 합집합은 맞아도 <i>어느 부여를 건드려야 하는지</i> 를 잃는다.</li>
+    <li><span class="n">2</span> <b><code>표시 범위</code> 는 조회조건 칸이 아니라 그리드 헤더에 있다</b>(§4-1e) — 여기서 고르는 것이 <i>거르기</i> 가 아니라 <b>무엇을 행으로 낼지</b>(부여를 세나 메뉴를 세나)이기 때문이다. 바꾸면 다시 조회한다.</li>
+    <li><span class="n">3</span> <b>공집합 배너는 조회 전에 내지 않는다</b>(§4-1e) — 조회가 실패했을 때도 내지 않는다. 못 물어본 것을 두고 <i>권한이 없습니다</i> 라고 하지 않는다.</li>
+    <li><span class="n">4</span> <b>회색 행의 이유는 둘이다</b> — 부여 기간 밖이거나, 메뉴가 꺼져 있거나 화면이 없거나. 어느 쪽인지는 <code>상태</code> 칸과 그 옆 배지가 말한다.</li>
+  </ol>
+</div>
+
+<h2>4. 임시 비밀번호 모달 · 저장 앞의 경고</h2>
+
+<p style="font-size:12.5px;margin:0 0 8px">
+  <b>건수는 <i>얼마나</i> 를 말할 뿐이라 <i>무엇이 일어나는지</i> 를 말하지 못한다</b>(§5-3).
+  그래서 저장 확인 <b>앞에</b> 경고가 서고, 저장 <b>뒤에</b> 다시 볼 수 없는 값이 창으로 뜬다.
+</p>
+
+<h3>① 저장 확인 — 경고가 확인보다 앞이다</h3>
+
+<div class="screen shell">
+  <div class="bar">마스터 저장 · 신규 2건 + 사용 중지 1건</div>
+  <div class="body">
+    <div class="modal">
+      <div class="mh"><span>저장</span><span class="x">✕</span></div>
+      <div class="mb">
+        <div class="banner info" style="margin-bottom:10px">
+          신규 2건에 임시 비밀번호가 발급됩니다. 저장 후 표시되며 다시 볼 수 없습니다.<br>
+          사용 중지하는 1건은 다음 로그인부터 막힙니다. 지금 접속 중인 세션은 유지됩니다.
+        </div>
+        <p style="margin:0;font-size:12.5px">추가 2 · 수정 1 · 삭제 0건을 저장하시겠습니까?</p>
+      </div>
+      <div class="mf">
+        <span>한 트랜잭션으로 나간다</span>
+        <span><button class="btn ghost sm">취소</button> <button class="btn sm">확인</button></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>② 발급 결과 — 이 창을 닫으면 다시 볼 수 없다</h3>
+
+<div class="screen shell">
+  <div class="bar">저장 · 비밀번호 초기화의 <b>응답에만 있는 값</b>이다 — DB 에는 해시가 들어가므로 재조회로 얻을 수 없다</div>
+  <div class="body">
+    <div class="modal">
+      <div class="mh"><span>임시 비밀번호가 발급되었습니다</span></div>
+      <div class="mb">
+        <p style="margin:0 0 10px;font-size:12.5px">이 창을 닫으면 다시 볼 수 없습니다. 지금 사용자에게 전달하세요.</p>
+        <table>
+          <thead><tr><th>로그인 ID</th><th>이름</th><th>임시 비밀번호</th><th style="width:40px"></th></tr></thead>
+          <tbody>
+            <tr>
+              <td style="font-family:Consolas,monospace">choi.yj</td><td>최윤제</td>
+              <td style="font-family:Consolas,monospace;font-size:13px">rT7#kq2Wm9</td>
+              <td style="text-align:center">⧉</td>
+            </tr>
+            <tr>
+              <td style="font-family:Consolas,monospace">shin.gh</td><td>신가희</td>
+              <td style="font-family:Consolas,monospace;font-size:13px">xB4$vn8Ld3</td>
+              <td style="text-align:center">⧉</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="margin:8px 0 0;font-size:11.5px;color:var(--muted)">
+          사용자는 다음 로그인에서 비밀번호를 바꿔야 하며, 정해진 시간이 지나면 이 값으로는 로그인할 수 없습니다.
+        </p>
+      </div>
+      <div class="mf">
+        <span>엑셀 · 전체 복사가 없다 — 칸 하나 복사(⧉)만 있다</span>
+        <span><button class="btn sm">닫기</button></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span> <b>창은 바깥을 눌러 닫히지 않고 취소 버튼이 없다</b>(§6-4) — 둘을 두면 <i>취소하면 발급이 취소되나</i> 가 된다. 그래서 머리에 <code>✕</code> 도 두지 않았다.</li>
+    <li><span class="n">2</span> <b>엑셀 · 전체 복사를 두지 않는다</b>(§6-4) — 파일로 떨어지면 그 파일이 값의 수명을 넘겨 살아남는다.</li>
+    <li><span class="n">3</span> <b>값은 고정폭 글꼴로 그린다</b> — 사람이 옮겨 적는 값이다. 그리고 <b>누구의 것인지를 표가 말한다</b>(여러 건을 한 번에 발급할 수 있다).</li>
+    <li><span class="n">4</span> <b>수정만 한 저장에서는 창이 뜨지 않는다</b>(§6-4) — 응답의 배열이 비어 있다.</li>
+    <li><span class="n">5</span> <b>방어는 값의 수명이다</b>(§6-4) — <code>PWD_INIT_YN='Y'</code> 라 다음 로그인이 곧바로 강제 변경으로 가고, <code>tempValidHours</code> 가 지나면 그 값으로는 로그인할 수 없다.</li>
+    <li><span class="n">6</span> <b>비밀번호 초기화는 잠금을 풀지 않는다</b>(§5-1) — 초기화가 잠금을 풀면 <i>실패 5회 → 초기화 → 다시 5회</i> 가 무한 반복된다.</li>
+  </ol>
+</div>
+
+<h2>5. 테스트 케이스 — 위 화면들의 주장을 전부 덮는다</h2>
 
 <p style="font-size:12.5px;margin:0 0 10px">
+  <b>이 표는 요건서 §9 를 그대로 옮긴 것이다</b> — 고칠 곳은 요건서다.
   <b>화면은 <i>"왜 이렇게 그렸는가"</i> 를 말하고 여기는 <i>"그것이 지켜졌는가"</i> 를 묻는다.</b>
-  <b>되면 안 되는 것</b>은 기대 칸에 그렇게 적었다.
 </p>
 
 <h3>조회</h3>
 <table>
-  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th></tr></thead>
   <tbody>
-    <tr><td class="c">U-01</td><td>메뉴로 들어온다</td><td>목록이 비어 있다 — <b>자동 조회가 돌지 않는다</b></td><td>req §1</td></tr>
-    <tr><td class="c">U-02</td><td>조건을 하나도 넣지 않고 조회</td><td>전체가 나온다. 끈 계정·휴면 계정도 함께 나온다</td><td>req §2</td></tr>
-    <tr><td class="c">U-03</td><td><code>계정 상태</code> 에 다섯을 전부 고르고 조회</td><td>조건이 없는 것과 같은 결과다</td><td>req §6-3</td></tr>
-    <tr><td class="c">U-04</td><td><code>USE_YN='N'</code> 이면서 <code>LOCK_YN='Y'</code> 인 계정을 <i>잠김</i> 으로 조회</td><td><b>나오지 않는다.</b> 목록의 상태가 <i>미사용</i> 이므로 조회도 그것과 같아야 한다 <b>(되면 안 되는 것)</b></td><td>req §6-3</td></tr>
-    <tr><td class="c">U-05</td><td><code>상태</code> 컬럼 헤더를 누른다</td><td>정렬되지 않는다 <b>(되면 안 되는 것)</b></td><td>req §4-1</td></tr>
-    <tr><td class="c">U-06</td><td><code>보유 역할</code> 에 역할을 고르고 조회</td><td>기간이 <b>만료된 부여를 가진 사람도</b> 나온다</td><td>req §2</td></tr>
-    <tr><td class="c">U-07</td><td><code>역할 만료 예정</code> 을 <i>30일 이내</i> 로 조회</td><td>어제 만료된 부여만 가진 사람은 <b>나오지 않는다</b> — 범위는 오늘부터다</td><td>req §2</td></tr>
-    <tr><td class="c">U-08</td><td><code>[⚙]</code> 로 <code>잠금</code>·<code>실패 횟수</code> 를 켠다</td><td>재조회 없이 값이 보인다 — 응답에 이미 있다</td><td>req §4-1</td></tr>
-    <tr><td class="c">U-09</td><td>동명이인이 페이지 경계에 걸리게 조회하고 2페이지로 넘긴다</td><td>같은 행이 두 장에 나오지 않는다</td><td>req §3-2</td></tr>
-    <tr><td class="c">U-10</td><td>응답 본문을 확인한다</td><td><code>PWD</code> 가 어떤 형태로도 실려 있지 않다 <b>(되면 안 되는 것)</b></td><td>req §3-1</td></tr>
+    <tr><td class="c">U-01</td><td>메뉴로 들어온다</td><td>목록이 비어 있다 — <b>자동 조회가 돌지 않는다</b></td></tr>
+    <tr><td class="c">U-02</td><td>조건을 하나도 넣지 않고 조회</td><td>전체가 나온다. 끈 계정·휴면 계정도 함께 나온다</td></tr>
+    <tr><td class="c">U-03</td><td><code>계정 상태</code> 에 다섯을 전부 고르고 조회</td><td>조건이 없는 것과 같은 결과다</td></tr>
+    <tr><td class="c">U-04</td><td><code>USE_YN='N'</code> 이면서 <code>LOCK_YN='Y'</code> 인 계정을 <i>잠김</i> 으로 조회</td><td><b>나오지 않는다.</b> 목록의 상태가 <i>미사용</i> 이므로 조회도 그것과 같아야 한다 <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-05</td><td><code>상태</code> 컬럼 헤더를 누른다</td><td>정렬되지 않는다 <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-06</td><td><code>보유 역할</code> 에 역할을 고르고 조회</td><td>기간이 <b>만료된 부여를 가진 사람도</b> 나온다</td></tr>
+    <tr><td class="c">U-07</td><td><code>역할 만료 예정</code> 을 <i>30일 이내</i> 로 조회</td><td>어제 만료된 부여만 가진 사람은 <b>나오지 않는다</b> — 범위는 오늘부터다</td></tr>
+    <tr><td class="c">U-08</td><td><code>[⚙]</code> 로 <code>잠금</code>·<code>실패 횟수</code> 를 켠다</td><td>재조회 없이 값이 보인다 — 응답에 이미 있다</td></tr>
+    <tr><td class="c">U-09</td><td>동명이인이 페이지 경계에 걸리게 조회하고 2페이지로 넘긴다</td><td>같은 행이 두 장에 나오지 않는다</td></tr>
+    <tr><td class="c">U-10</td><td>응답 본문을 확인한다</td><td><code>PWD</code> 가 어떤 형태로도 실려 있지 않다 <b>(되면 안 되는 것)</b></td></tr>
   </tbody>
 </table>
 
 <h3>편집과 저장</h3>
 <table>
-  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th></tr></thead>
   <tbody>
-    <tr><td class="c">U-20</td><td>기존 행의 <code>로그인 ID</code> 셀을 두 번 누른다</td><td>편집 모드로 들어가지 않는다 <b>(되면 안 되는 것)</b></td><td>req §4-2</td></tr>
-    <tr><td class="c">U-21</td><td><code>잠금</code>·<code>휴면</code>·<code>실패 횟수</code> 셀을 두 번 누른다</td><td>셋 다 열리지 않는다 <b>(되면 안 되는 것)</b></td><td>req §4-2</td></tr>
-    <tr><td class="c">U-22</td><td>자기 계정 행의 <code>사용 여부</code> 를 끈다</td><td>셀이 열리지 않고 <i>자기 계정은 사용 중지할 수 없습니다.</i> <b>(되면 안 되는 것)</b></td><td>req §4-2</td></tr>
-    <tr><td class="c">U-23</td><td>U-22 를 화면 없이 API 로 직접 호출한다</td><td>서버가 거부한다 — <code>err.user-admin.self-disable</code> <b>(되면 안 되는 것)</b></td><td>req §6-1 #6</td></tr>
-    <tr><td class="c">U-24</td><td>신규 행 둘에 같은 로그인 ID 를 넣고 저장</td><td>저장 전에 화면이 막는다 — <i>같은 로그인 ID 가 두 번 있습니다.</i></td><td>req §6-1 #1</td></tr>
-    <tr><td class="c">U-25</td><td>이미 있는(끈) 계정의 ID 로 신규 행을 만들고 저장</td><td>서버가 거부한다 — <i>이미 있는 로그인 ID 입니다.</i></td><td>req §6-1 #2</td></tr>
-    <tr><td class="c">U-26</td><td>이메일을 비우고 저장</td><td>거부된다 — <b>DB 는 NULL 을 허용하지만 이 화면은 필수다</b></td><td>req §6-1 #4</td></tr>
-    <tr><td class="c">U-27</td><td>경계 — 시작일과 종료일을 <b>같은 날</b>로 넣는다</td><td>통과한다(양끝 포함)</td><td>req §6-1 #5</td></tr>
-    <tr><td class="c">U-28</td><td>시작일을 종료일보다 하루 뒤로 넣는다</td><td>거부된다 <b>(되면 안 되는 것)</b></td><td>req §6-1 #5</td></tr>
-    <tr><td class="c">U-29</td><td>마스터에 삭제 컬럼을 찾는다</td><td>없다. API 로 <code>D</code> 를 보내면 서버가 거부한다 <b>(되면 안 되는 것)</b></td><td>req §5-1 · §6-1 #7</td></tr>
-    <tr><td class="c">U-30</td><td>신규 1건 + 수정 1건을 함께 저장</td><td>한 트랜잭션이며, 모달에는 <b>신규 1건만</b> 나온다</td><td>req §6-2 · §6-4</td></tr>
-    <tr><td class="c">U-31</td><td>수정만 하고 저장</td><td>모달이 뜨지 않는다</td><td>req §6-4</td></tr>
-    <tr><td class="c">U-32</td><td>저장 요청 본문을 확인한다</td><td><code>LOCK_YN</code>·<code>DORMANT_YN</code>·<code>LOGIN_FAIL_CNT</code> 가 실리지 않는다</td><td>req §4-6</td></tr>
+    <tr><td class="c">U-20</td><td>기존 행의 <code>로그인 ID</code> 셀을 두 번 누른다</td><td>편집 모드로 들어가지 않는다 <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-21</td><td><code>잠금</code>·<code>휴면</code>·<code>실패 횟수</code> 셀을 두 번 누른다</td><td>셋 다 열리지 않는다 <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-22</td><td>자기 계정 행의 <code>사용 여부</code> 를 끈다</td><td>셀이 열리지 않고 <i>자기 계정은 사용 중지할 수 없습니다.</i> <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-23</td><td>U-22 를 화면 없이 API 로 직접 호출한다</td><td>서버가 거부한다 — <code>err.user-admin.self-disable</code> <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-24</td><td>신규 행 둘에 같은 로그인 ID 를 넣고 저장</td><td>저장 전에 화면이 막는다 — <i>같은 로그인 ID 가 두 번 있습니다.</i></td></tr>
+    <tr><td class="c">U-25</td><td>이미 있는(끈) 계정의 ID 로 신규 행을 만들고 저장</td><td>서버가 거부한다 — <i>이미 있는 로그인 ID 입니다.</i></td></tr>
+    <tr><td class="c">U-26</td><td>이메일을 비우고 저장</td><td>거부된다 — <b>DB 는 NULL 을 허용하지만 이 화면은 필수다</b></td></tr>
+    <tr><td class="c">U-27</td><td>경계 — 시작일과 종료일을 <b>같은 날</b>로 넣는다</td><td>통과한다(양끝 포함)</td></tr>
+    <tr><td class="c">U-28</td><td>시작일을 종료일보다 하루 뒤로 넣는다</td><td>거부된다 <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-29</td><td>마스터에 삭제 컬럼을 찾는다</td><td>없다. API 로 <code>D</code> 를 보내면 서버가 거부한다 <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-30</td><td>신규 1건 + 수정 1건을 함께 저장</td><td>한 트랜잭션이며, 모달에는 <b>신규 1건만</b> 나온다</td></tr>
+    <tr><td class="c">U-31</td><td>수정만 하고 저장</td><td>모달이 뜨지 않는다</td></tr>
+    <tr><td class="c">U-32</td><td>저장 요청 본문을 확인한다</td><td><code>LOCK_YN</code>·<code>DORMANT_YN</code>·<code>LOGIN_FAIL_CNT</code> 가 실리지 않는다</td></tr>
   </tbody>
 </table>
 
 <h3>실행 버튼 셋</h3>
 <table>
-  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th></tr></thead>
   <tbody>
-    <tr><td class="c">U-40</td><td>잠기지 <b>않은</b> 계정에 <code>[잠금 해제]</code></td><td>성공한다 — 실패 모달이 뜨지 않는다</td><td>req §5-1</td></tr>
-    <tr><td class="c">U-41</td><td>잠긴 계정에 <code>[비밀번호 초기화]</code> 후 다시 조회</td><td><code>잠금</code> 이 여전히 <code>Y</code> 다 — <b>초기화는 잠금을 풀지 않는다</b></td><td>req §5-1</td></tr>
-    <tr><td class="c">U-42</td><td>휴면+잠김 계정에 <code>[휴면 해제]</code></td><td>휴면만 풀리고 잠금은 남는다. 상태는 <i>잠김</i> 이 된다</td><td>req §5-1 · §6-3</td></tr>
-    <tr><td class="c">U-43</td><td><code>[비밀번호 초기화]</code> 를 두 번 하고 첫 값으로 로그인</td><td>실패한다 <b>(되면 안 되는 것)</b></td><td>req §6-4</td></tr>
-    <tr><td class="c">U-44</td><td>초기화된 계정으로 로그인</td><td>곧바로 비밀번호 변경 화면으로 간다(<code>PWD_INIT_YN='Y'</code>)</td><td>req §6-2</td></tr>
-    <tr><td class="c">U-45</td><td>초기화 후 사용자가 <b>직전 비밀번호</b>로 변경을 시도</td><td>재사용 금지에 걸린다 — 이력이 옮겨졌기 때문이다</td><td>req §6-2</td></tr>
-    <tr><td class="c">U-46</td><td>새로 만든 계정이 <b>첫 변경</b>에서 임의의 값으로 변경</td><td>통과한다 — 신규는 이력을 남기지 않는다</td><td>req §6-2</td></tr>
-    <tr><td class="c">U-47</td><td><code>adminResetEnabled</code> 를 끄고 <code>[비밀번호 초기화]</code></td><td>거부된다 — <i>임시 비밀번호 발급이 꺼져 있습니다.</i></td><td>req §6-1 #9</td></tr>
-    <tr><td class="c">U-48</td><td>사용 여부를 끄고 저장한 직후, 그 사람이 <b>이미 접속 중</b></td><td>지금 세션은 살아 있다. 막으려면 <code>[강제 종료]</code> 가 따로 필요하다</td><td>req §5-3 · §6-2</td></tr>
-    <tr><td class="c">U-49</td><td>사용 이력에서 초기화 요청을 찾는다</td><td>발급된 <b>값이 남아 있지 않다</b> — 이력은 요청 본문을 기록하고 값은 응답에 있다</td><td>req §6-4</td></tr>
+    <tr><td class="c">U-40</td><td>잠기지 <b>않은</b> 계정에 <code>[잠금 해제]</code></td><td>성공한다 — 실패 모달이 뜨지 않는다</td></tr>
+    <tr><td class="c">U-41</td><td>잠긴 계정에 <code>[비밀번호 초기화]</code> 후 다시 조회</td><td><code>잠금</code> 이 여전히 <code>Y</code> 다 — <b>초기화는 잠금을 풀지 않는다</b></td></tr>
+    <tr><td class="c">U-42</td><td>휴면+잠김 계정에 <code>[휴면 해제]</code></td><td>휴면만 풀리고 잠금은 남는다. 상태는 <i>잠김</i> 이 된다</td></tr>
+    <tr><td class="c">U-43</td><td><code>[비밀번호 초기화]</code> 를 두 번 하고 첫 값으로 로그인</td><td>실패한다 <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-44</td><td>초기화된 계정으로 로그인</td><td>곧바로 비밀번호 변경 화면으로 간다(<code>PWD_INIT_YN='Y'</code>)</td></tr>
+    <tr><td class="c">U-45</td><td>초기화 후 사용자가 <b>직전 비밀번호</b>로 변경을 시도</td><td>재사용 금지에 걸린다 — 이력이 옮겨졌기 때문이다</td></tr>
+    <tr><td class="c">U-46</td><td>새로 만든 계정이 <b>첫 변경</b>에서 임의의 값으로 변경</td><td>통과한다 — 신규는 이력을 남기지 않는다</td></tr>
+    <tr><td class="c">U-47</td><td><code>adminResetEnabled</code> 를 끄고 <code>[비밀번호 초기화]</code></td><td>거부된다 — <i>임시 비밀번호 발급이 꺼져 있습니다.</i></td></tr>
+    <tr><td class="c">U-48</td><td>사용 여부를 끄고 저장한 직후, 그 사람이 <b>이미 접속 중</b></td><td>지금 세션은 살아 있다. 막으려면 <code>[강제 종료]</code> 가 따로 필요하다</td></tr>
+    <tr><td class="c">U-49</td><td>사용 이력에서 초기화 요청을 찾는다</td><td>발급된 <b>값이 남아 있지 않다</b> — 이력은 요청 본문을 기록하고 값은 응답에 있다</td></tr>
   </tbody>
 </table>
 
 <h3>마스터-디테일 연동</h3>
 <table>
-  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th></tr></thead>
   <tbody>
-    <tr><td class="c">U-60</td><td>진입 직후 탭을 본다</td><td><i>사용자를 선택하세요</i></td><td>req §1-1</td></tr>
-    <tr><td class="c">U-61</td><td><code>[행 추가]</code> 로 만든 <b>미저장</b> 행을 고른다</td><td><i>저장 후 편집할 수 있습니다</i> — 조회도 편집도 되지 않는다 <b>(되면 안 되는 것)</b></td><td>req §1-1</td></tr>
-    <tr><td class="c">U-62</td><td>보유 역할을 고치던 중 다른 사용자 행을 누른다</td><td>폐기 확인이 뜬다. <b>취소하면 선택이 일어나지 않는다</b></td><td>req §1-1</td></tr>
-    <tr><td class="c">U-63</td><td>U-62 에서 취소한 뒤 화면을 본다</td><td>마스터 선택과 탭의 주인이 <b>같다</b> — 갈리지 않는다</td><td>req §1-1</td></tr>
-    <tr><td class="c">U-64</td><td>사용자를 고른 상태에서 마스터 <code>[조회]</code></td><td>탭이 <i>사용자를 선택하세요</i> 로 돌아간다. <b>자동 선택하지 않는다</b></td><td>req §1-1</td></tr>
-    <tr><td class="c">U-65</td><td>보유 역할을 저장한 뒤 [유효 권한] 탭으로 간다</td><td>다시 조회한다 — 저장 전의 답을 보여주지 않는다 <b>(되면 안 되는 것)</b></td><td>req §1-1</td></tr>
-    <tr><td class="c">U-66</td><td>탭을 처음 연다</td><td>그때 조회한다(미리 다섯을 부르지 않는다)</td><td>req §1-1</td></tr>
+    <tr><td class="c">U-60</td><td>진입 직후 탭을 본다</td><td><i>사용자를 선택하세요</i></td></tr>
+    <tr><td class="c">U-61</td><td><code>[행 추가]</code> 로 만든 <b>미저장</b> 행을 고른다</td><td><i>저장 후 편집할 수 있습니다</i> — 조회도 편집도 되지 않는다 <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-62</td><td>보유 역할을 고치던 중 다른 사용자 행을 누른다</td><td>폐기 확인이 뜬다. <b>취소하면 선택이 일어나지 않는다</b></td></tr>
+    <tr><td class="c">U-63</td><td>U-62 에서 취소한 뒤 화면을 본다</td><td>마스터 선택과 탭의 주인이 <b>같다</b> — 갈리지 않는다</td></tr>
+    <tr><td class="c">U-64</td><td>사용자를 고른 상태에서 마스터 <code>[조회]</code></td><td>탭이 <i>사용자를 선택하세요</i> 로 돌아간다. <b>자동 선택하지 않는다</b></td></tr>
+    <tr><td class="c">U-65</td><td>보유 역할을 저장한 뒤 [유효 권한] 탭으로 간다</td><td>다시 조회한다 — 저장 전의 답을 보여주지 않는다 <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-66</td><td>탭을 처음 연다</td><td>그때 조회한다(미리 다섯을 부르지 않는다)</td></tr>
   </tbody>
 </table>
 
 <h3>디테일 탭 다섯</h3>
 <table>
-  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th></tr></thead>
   <tbody>
-    <tr><td class="c">U-70</td><td>역할 콤보를 연다</td><td><b>꺼진 역할도</b> 후보에 있다. 글자는 <code>역할명 (역할ID)</code></td><td>req §4-1a</td></tr>
-    <tr><td class="c">U-71</td><td>꺼진 역할을 부여하고 저장</td><td>저장된다. 상태는 <i>유효</i> 이고 <b>경고 배지가 붙는다</b></td><td>req §4-1a · §6-3</td></tr>
-    <tr><td class="c">U-72</td><td>기존 부여의 <code>역할</code> 셀을 두 번 누른다</td><td>열리지 않는다 — PK 의 절반이다 <b>(되면 안 되는 것)</b></td><td>req §4-2</td></tr>
-    <tr><td class="c">U-73</td><td>무기한 부여에 <b>종료일을 넣고</b> 저장</td><td>회수 경고가 뜬다 — 오늘보다 뒤의 날짜여도 뜬다</td><td>req §5-3</td></tr>
-    <tr><td class="c">U-74</td><td><b>이미 만료된</b> 부여를 삭제하고 저장</td><td>회수 경고가 뜨지 않는다</td><td>req §5-3</td></tr>
-    <tr><td class="c">U-75</td><td>KST 자정 직후에 U-73 을 한다</td><td>결과가 같다 — <b>브라우저 시계를 보지 않는다</b></td><td>req §5-3</td></tr>
-    <tr><td class="c">U-76</td><td>[개인 예외] 탭에서 저장 버튼을 찾는다</td><td>없다. 부여는 <code>/user-auth</code> 에서 한다 <b>(되면 안 되는 것)</b></td><td>req §4-1b · §7</td></tr>
-    <tr><td class="c">U-77</td><td>IP 가 하나도 없는 계정에 첫 대역을 넣고 저장</td><td><i>첫 대역을 등록하면 그 순간부터 나머지 모든 IP 가 막힙니다.</i></td><td>req §5-3</td></tr>
-    <tr><td class="c">U-78</td><td>경계 — 기존 1건을 지우고 새 1건을 넣어 저장</td><td>첫 대역 경고가 <b>뜬다</b> — 삭제 행을 뺀 결과로 센다</td><td>req §5-3</td></tr>
-    <tr><td class="c">U-79</td><td><code>1.2.3.4/64</code> 를 넣는다</td><td>거부된다 — 상한이 계열에서 나온다 <b>(되면 안 되는 것)</b></td><td>req §6-1 #11</td></tr>
-    <tr><td class="c">U-80</td><td>새 IP 행을 만들고 아직 아무것도 입력하지 않는다</td><td>붉은 칸이 뜨지 않는다 — 빈 값은 통과이고 필수 표시가 그 일을 한다</td><td>req §6-1 #11</td></tr>
-    <tr><td class="c">U-81</td><td>자기 계정의 [활성 세션] 을 연다</td><td><code>[강제 종료]</code> 가 비활성이고 <b>사유가 표시된다</b> <b>(되면 안 되는 것)</b></td><td>req §5-2</td></tr>
-    <tr><td class="c">U-82</td><td>남의 세션 2건을 고르고 종료. 그중 1건은 이미 만료</td><td>오류가 아니라 <b>1건 종료</b>로 끝난다</td><td>req §5-2</td></tr>
-    <tr><td class="c">U-83</td><td>로그인 이력이 파기된 오래된 세션을 본다</td><td><code>접속 IP</code>·<code>브라우저</code> 가 <b>비어 있다</b> — 다른 로그인의 값을 끌어오지 않는다 <b>(되면 안 되는 것)</b></td><td>req §4-1d</td></tr>
-    <tr><td class="c">U-84</td><td>[유효 권한] 을 열고 <code>표시 범위</code> 를 <i>전체 메뉴</i> 로 바꾼다</td><td>다시 조회하고 <b>못 가진 메뉴까지</b> 나온다</td><td>req §4-1e</td></tr>
-    <tr><td class="c">U-85</td><td>같은 메뉴를 역할과 개인 예외 둘로 가진 사람을 본다</td><td><b>행이 둘</b>이다. 합쳐지지 않는다 <b>(되면 안 되는 것)</b></td><td>req §4-1e</td></tr>
-    <tr><td class="c">U-86</td><td>액션이 <code>R S</code> 만 정의된 메뉴를 본다</td><td><code>E</code>·<code>X</code> 칸이 <code>—</code> 다 — <i>안 줬다</i> 와 구별된다</td><td>req §4-1e</td></tr>
-    <tr><td class="c">U-87</td><td>탭을 열자마자(조회 전) 배너를 본다</td><td>공집합 배너가 <b>번쩍이지 않는다</b> <b>(되면 안 되는 것)</b></td><td>req §4-1e</td></tr>
-    <tr><td class="c">U-88</td><td>조회가 <b>실패</b>했다</td><td>공집합 배너가 뜨지 않는다 — 못 물어본 것을 두고 <i>권한이 없습니다</i> 라고 하지 않는다</td><td>req §4-1e</td></tr>
+    <tr><td class="c">U-70</td><td>역할 콤보를 연다</td><td><b>꺼진 역할도</b> 후보에 있다. 글자는 <code>역할명 (역할ID)</code></td></tr>
+    <tr><td class="c">U-71</td><td>꺼진 역할을 부여하고 저장</td><td>저장된다. 상태는 <i>유효</i> 이고 <b>경고 배지가 붙는다</b></td></tr>
+    <tr><td class="c">U-72</td><td>기존 부여의 <code>역할</code> 셀을 두 번 누른다</td><td>열리지 않는다 — PK 의 절반이다 <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-73</td><td>무기한 부여에 <b>종료일을 넣고</b> 저장</td><td>회수 경고가 뜬다 — 오늘보다 뒤의 날짜여도 뜬다</td></tr>
+    <tr><td class="c">U-74</td><td><b>이미 만료된</b> 부여를 삭제하고 저장</td><td>회수 경고가 뜨지 않는다</td></tr>
+    <tr><td class="c">U-75</td><td>KST 자정 직후에 U-73 을 한다</td><td>결과가 같다 — <b>브라우저 시계를 보지 않는다</b></td></tr>
+    <tr><td class="c">U-76</td><td>[개인 예외] 탭에서 저장 버튼을 찾는다</td><td>없다. 부여는 <code>/user-auth</code> 에서 한다 <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-77</td><td>IP 가 하나도 없는 계정에 첫 대역을 넣고 저장</td><td><i>첫 대역을 등록하면 그 순간부터 나머지 모든 IP 가 막힙니다.</i></td></tr>
+    <tr><td class="c">U-78</td><td>경계 — 기존 1건을 지우고 새 1건을 넣어 저장</td><td>첫 대역 경고가 <b>뜬다</b> — 삭제 행을 뺀 결과로 센다</td></tr>
+    <tr><td class="c">U-79</td><td><code>1.2.3.4/64</code> 를 넣는다</td><td>거부된다 — 상한이 계열에서 나온다 <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-80</td><td>새 IP 행을 만들고 아직 아무것도 입력하지 않는다</td><td>붉은 칸이 뜨지 않는다 — 빈 값은 통과이고 필수 표시가 그 일을 한다</td></tr>
+    <tr><td class="c">U-81</td><td>자기 계정의 [활성 세션] 을 연다</td><td><code>[강제 종료]</code> 가 비활성이고 <b>사유가 표시된다</b> <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-82</td><td>남의 세션 2건을 고르고 종료. 그중 1건은 이미 만료</td><td>오류가 아니라 <b>1건 종료</b>로 끝난다</td></tr>
+    <tr><td class="c">U-83</td><td>로그인 이력이 파기된 오래된 세션을 본다</td><td><code>접속 IP</code>·<code>브라우저</code> 가 <b>비어 있다</b> — 다른 로그인의 값을 끌어오지 않는다 <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-84</td><td>[유효 권한] 을 열고 <code>표시 범위</code> 를 <i>전체 메뉴</i> 로 바꾼다</td><td>다시 조회하고 <b>못 가진 메뉴까지</b> 나온다</td></tr>
+    <tr><td class="c">U-85</td><td>같은 메뉴를 역할과 개인 예외 둘로 가진 사람을 본다</td><td><b>행이 둘</b>이다. 합쳐지지 않는다 <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-86</td><td>액션이 <code>R S</code> 만 정의된 메뉴를 본다</td><td><code>E</code>·<code>X</code> 칸이 <code>—</code> 다 — <i>안 줬다</i> 와 구별된다</td></tr>
+    <tr><td class="c">U-87</td><td>탭을 열자마자(조회 전) 배너를 본다</td><td>공집합 배너가 <b>번쩍이지 않는다</b> <b>(되면 안 되는 것)</b></td></tr>
+    <tr><td class="c">U-88</td><td>조회가 <b>실패</b>했다</td><td>공집합 배너가 뜨지 않는다 — 못 물어본 것을 두고 <i>권한이 없습니다</i> 라고 하지 않는다</td></tr>
   </tbody>
 </table>
 
 <h3>권한과 엑셀</h3>
 <table>
-  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th></tr></thead>
   <tbody>
-    <tr><td class="c">U-90</td><td><code>R</code> 만 가진 사용자로 들어온다</td><td>저장·행 추가·실행 버튼 셋이 <b>없다</b></td><td>req §5</td></tr>
-    <tr><td class="c">U-91</td><td><code>R S</code> 는 있고 <code>X</code> 가 없는 사용자로 [활성 세션] 을 연다</td><td><code>[강제 종료]</code> 가 없다 — 잠금 해제 셋은 보인다</td><td>req §5 · §7</td></tr>
-    <tr><td class="c">U-92</td><td>사용자 관리 권한만 가진 사람이 역할 콤보를 연다</td><td>후보가 <b>정상적으로 나온다</b> — 역할 관리의 <code>READ</code> 를 요구하지 않는다</td><td>req §7</td></tr>
-    <tr><td class="c">U-93</td><td><code>[⤓]</code> 로 전체 다운로드</td><td><b>지금 보이는 컬럼만</b> 나간다. 상태는 <b>코드가 아니라 표시 글자</b>로 나간다</td><td>req §4-1</td></tr>
-    <tr><td class="c">U-94</td><td>임시 비밀번호 창에서 엑셀 버튼을 찾는다</td><td>없다 <b>(되면 안 되는 것)</b></td><td>req §6-4</td></tr>
+    <tr><td class="c">U-90</td><td><code>R</code> 만 가진 사용자로 들어온다</td><td>저장·행 추가·실행 버튼 셋이 <b>없다</b></td></tr>
+    <tr><td class="c">U-91</td><td><code>R S</code> 는 있고 <code>X</code> 가 없는 사용자로 [활성 세션] 을 연다</td><td><code>[강제 종료]</code> 가 없다 — 잠금 해제 셋은 보인다</td></tr>
+    <tr><td class="c">U-92</td><td>사용자 관리 권한만 가진 사람이 역할 콤보를 연다</td><td>후보가 <b>정상적으로 나온다</b> — 역할 관리의 <code>READ</code> 를 요구하지 않는다</td></tr>
+    <tr><td class="c">U-93</td><td><code>[⤓]</code> 로 전체 다운로드</td><td><b>지금 보이는 컬럼만</b> 나간다. 상태는 <b>코드가 아니라 표시 글자</b>로 나간다</td></tr>
+    <tr><td class="c">U-94</td><td>임시 비밀번호 창에서 엑셀 버튼을 찾는다</td><td>없다 <b>(되면 안 되는 것)</b></td></tr>
   </tbody>
 </table>
 
-<!-- ── 확인 목록 ───────────────────────────────────────────── -->
-<h2>X. 이 목업으로 확인할 것</h2>
+<h2>6. 이 목업으로 확인할 것</h2>
 
 <div class="todo">
   <b>결정하면 요건서에 적는다. 이 파일이 아니라.</b>
   <ul>
-    <li><b>계정 상태 정렬</b> — 지금은 정렬 불가가 결정이다(req §9). 운영에서 요구가 나오면 정렬 키를 따로 정의해야 하며, 그때 조회조건의 파생 번역과 어긋나지 않는지 함께 본다.</li>
-    <li><b>임시 비밀번호 화면 표시</b> — 알림(NOTI)이 서면 메일이 전달을 맡는다. 그때 이 창은 값을 보일 이유가 없어진다(req §9).</li>
-    <li><b>목록의 역할 나열</b> — 지금은 컬럼이 없고 조회조건 + 보유 역할 탭이 그 질문을 나눠 받는다. 한 줄에서 보고 싶다는 요구가 반복되면 벤더 중립적인 방법부터 정해야 한다.</li>
+    <li><b>계정 상태 컬럼의 정렬</b> — 지금은 켤 수 없다(SQL 이 모르는 값이라 화이트리스트에 없고 켜면 400). 필요해지면 정렬 키를 따로 정의해야 한다. <i>현재 답은 "정렬 없음" 이며 이것이 결정이다.</i></li>
+    <li><b>임시 비밀번호를 화면에 표시하는 것</b> — 알림(NOTI)이 서면 메일이 전달을 맡으므로 그때 뒤집는다. <i>지금은 표시가 결정이다.</i></li>
   </ul>
 </div>
 
 <footer>
-  <b>목업 규약</b> — 정적 HTML, 프레임워크 없음, 픽셀 충실도는 목표가 아니다.
-  <b>결정은 <code>requirements.md</code> 가 갖고 이 파일은 확인용이다</b> — 여기에만 있고
-  요건서에 없는 정보는 유실된 것으로 친다.<br>
-  이 파일의 <code>&lt;style&gt;</code> 블록은 <code>documents/screenaidd-guide/artifact/template/03-mockup.html</code> 에서 그대로 복사했다 —
-  <code>.sf</code> <code>.tb</code> <code>.grid</code> <code>.pg</code> <code>.split</code>.
+  <b>이 파일은 생성물이다</b> — <code>/mockup</code> 이 <code>requirements.md</code> 에서 만든다.
+  결정과 테스트 케이스는 요건서가 갖고 여기는 확인용이다. 손으로 고치면 다음 생성에서 사라진다.<br>
+  정적 HTML, 프레임워크 없음, 픽셀 충실도는 목표가 아니다.
 </footer>
 
 </main>

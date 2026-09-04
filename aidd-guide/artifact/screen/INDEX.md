@@ -6,7 +6,7 @@ type: operation
 created: 2026-04-30
 updated: 2026-09-03
 status: active
-sources: ["documents/screenaidd-guide/artifact/template/02-requirements.md", "documents/screen/README.md", "CLAUDE.md"]
+sources: ["aidd-guide/artifact/template/02-requirements.md", "documents/screen/README.md", "CLAUDE.md"]
 author: Bong Jong Hyeon
 tier: 1
 tags: [prompt, requirements, overlay, index]
@@ -14,7 +14,7 @@ tags: [prompt, requirements, overlay, index]
 
 # 03-prompt — **요건서를 받아내는 절차**
 
-> **화면을 만드는 일은 요건서에서 시작한다**(CLAUDE.md §5.3). 이 카테고리는 *요청을 받아
+> **화면을 만드는 일은 요건서에서 시작한다**(CLAUDE.md §6.3). 이 카테고리는 *요청을 받아
 > 승인된 `requirements.md` 에 도달하기까지* 의 절차와, **화면 특성별로 빠뜨리면 안 되는
 > 질문**(Overlay)을 갖는다.
 >
@@ -61,7 +61,7 @@ tags: [prompt, requirements, overlay, index]
 1. **사용자 입력은 그대로 보존한다.** 보완·검증만 하고 **임의로 바꾸지 않는다.**
 2. **컬럼명·테이블명·코드그룹·응답 구조를 추측하지 않는다** — 확인하거나 묻는다.
 3. **보완한 항목은 표시한다.** 표시하지 않은 보완은 **사용자가 검토할 수 없다.**
-4. **승인 전에는 BE·FE·시드를 착수하지 않는다**(CLAUDE.md §5.3).
+4. **승인 전에는 BE·FE·시드를 착수하지 않는다**(CLAUDE.md §6.3).
 
 ## Overlay 트리거 — 요약
 
@@ -81,6 +81,6 @@ tags: [prompt, requirements, overlay, index]
 ## 관련
 
 - [INDEX](../../INDEX.md) — 마스터
-- [`documents/screen/README.md`](../../../documents/screen/README.md) — 문서 셋의 형식과 시작 방법
+- [`documents/screen/README.md`](../../../documents/screen/README.md) — 화면 문서의 형식과 시작 방법
 - [11-playbook](../../playbook/INDEX.md) — 승인 뒤의 절차
-- [CLAUDE.md §5](../../../CLAUDE.md) — 문서 셋 게이트
+- [CLAUDE.md §6](../../../CLAUDE.md) — 화면 문서 게이트

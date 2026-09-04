@@ -31,7 +31,11 @@ logs/
 # 커밋에 넣으면, 정본을 한 줄 고칠 때마다 만 줄짜리 파생물이 diff 를 덮어 무엇이
 # 바뀌었는지 보이지 않게 된다.
 #
-# 정본은 documents/screen/*/manual.md 이고 /manual-site 가 아래 셋을 만든다.
+# 화면 하나의 정본은 requirements.md 와 manual.md 둘이다.
+#   requirements.md ──/mockup──> mockup.html ──/manual-site──> manual.html · 고객사 제출본
+# 목업은 요건서의 파생물이라 여기서 뺀다 — 새로 클론한 트리에 없는 것이 정상이고,
+# 승인이나 메뉴얼 생성에 필요할 때 만든다.
+documents/screen/**/mockup.html
 documents/screen/**/manual.html
 documents/screen/index.html
 build/manual/

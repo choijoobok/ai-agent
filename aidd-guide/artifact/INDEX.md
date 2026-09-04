@@ -52,23 +52,28 @@ tags: [artifact, map, index]
 | 30 | 사용자 매뉴얼 | P6 | G | `documents/generated/81-사용자매뉴얼.md` | ● | ● | ● |
 | 31 | 데이터 이행 계획 | P6 | S | `documents/generated/82-데이터이행.md` | ○ | ○ | ● |
 | 32 | 인수 확인서 | P6 | G | `documents/generated/99-인수확인서.md` | ○ | ● | ● |
-| 33 | **화면 요건 정의서** | P3~P4 | S | `documents/screen/{페이지경로}/requirements.md` | ● | ● | ● |
-| 34 | **화면 목업 + 테스트케이스** | P3~P4 | S | `documents/screen/{페이지경로}/mockup.html` | ● | ● | ● |
+| 33 | **화면 요건 정의서 + 테스트케이스** | P3~P4 | S | `documents/screen/{페이지경로}/requirements.md` | ● | ● | ● |
+| 34 | **화면 목업** | P3~P4 | G | `documents/screen/{페이지경로}/mockup.html` — `/mockup` 이 33 에서 만든다 | ● | ● | ● |
 | 35 | **화면 사용자 메뉴얼** | P4 | S | `documents/screen/{페이지경로}/manual.md` | ● | ● | ● |
 | 36 | 〃 파생 · 화면 그림 · 구현 기록 | P4 | G | `documents/screen/{페이지경로}/manual.html` · `screen.png` · `impl.md` | ○ | ● | ● |
 | 37 | 메뉴 없는 화면의 문서 | P3~P4 | S | `documents/screen/_standalone/{화면이름}/` | ○ | ● | ● |
-| 38 | 화면 문서 셋 템플릿·열람 페이지 | 상시 | S+G | `aidd-guide/artifact/template/` · `documents/screen/README.md` · `documents/screen/index.html` | ● | ● | ● |
+| 38 | 화면 문서 서식·열람 페이지 | 상시 | S+G | `aidd-guide/artifact/template/` · `documents/screen/README.md` · `documents/screen/index.html` | ● | ● | ● |
 | 39 | **상세 설계 문서** | P3 | S | `documents/design/{주제}.md` | ○ | ● | ● |
 | 40 | 산출물 대장 (이 지도의 현재 상태) | 상시 | S | `documents/INDEX.md` | ● | ● | ● |
 
 ● 필수 · △ 축약형 · ○ 선택
 
-### 33~38 — 화면 문서 셋은 왜 `generated/` 가 아닌가
+### 33~38 — 화면 문서는 왜 `generated/` 가 아닌가
 
-**셋은 spec 에서 생성되지 않는다.** `60-screens.yaml` 은 화면의 *목록과 소속* 을 갖고,
-요건서는 그 화면의 *컬럼·검증·영향 테이블* 을 갖는다 — 후자는 spec 에 담기지 않는 분량이며
-**설계자가 목업과 함께 보고 승인하는 대상**이다(CLAUDE.md §6.3 ③). 그래서 직접 작성(`S`)이고,
-`60-screens.yaml` 의 `SCR-###` 과 폴더가 1:1 로 대응하는 것으로 추적성을 유지한다.
+**spec 에서 생성되지 않는다.** `60-screens.yaml` 은 화면의 *목록과 소속* 을 갖고,
+요건서는 그 화면의 *컬럼·검증·영향 테이블·테스트 케이스* 를 갖는다 — 후자는 spec 에 담기지 않는
+분량이며 **설계자가 목업과 함께 보고 승인하는 대상**이다(CLAUDE.md §6.3 ③). 그래서 직접
+작성(`S`)이고, `60-screens.yaml` 의 `SCR-###` 과 폴더가 1:1 로 대응하는 것으로 추적성을 유지한다.
+
+**34 목업만 `G` 다.** 요건서의 §1 배치와 §테스트 케이스에서 [`/mockup`](../../.claude/skills/mockup/SKILL.md) 이
+만든다 — 골격·표·확인 목록은 기계가 옮기고 **그림만 AI 가 그린다.** 목업이 정본이던 시절에는
+*근거는 목업 §N 에 있다* 는 케이스가 쌓였고, 그 절이 사라지면 근거도 사라졌다. 지금은
+**결정과 그 검증이 같은 문서(33)에 있어** 어느 한쪽만 낡는 일이 생기지 않는다.
 
 ### 39 — 상세 설계 문서는 무엇을 담나
 
@@ -99,9 +104,13 @@ tags: [artifact, map, index]
 
 | | 어디 | 커밋 |
 |---|---|---|
-| **정본** | `documents/spec/` · `screen/*/requirements.md` · `mockup.html` · `manual.md` · `decisions/` · `design/` | **한다** |
-| **파생** | `documents/generated/` · `screen/*/manual.html` · `screen/index.html` | 하지 않는다 |
+| **정본** | `documents/spec/` · `screen/*/requirements.md` · `screen/*/manual.md` · `decisions/` · `design/` | **한다** |
+| **파생** | `documents/generated/` · `screen/*/mockup.html` · `screen/*/manual.html` · `screen/index.html` | 하지 않는다 |
 | **파생이지만 빌드가 읽는다** | 생성 시드 CSV | **한다** — 빼면 새로 클론한 사람이 앱을 띄울 수 없다 |
+
+**목업은 세 번째 칸에 넣지 않는다.** Liquibase 가 기동에 읽는 시드 CSV 와 달리, 목업은
+`/manual-site` 를 **돌릴 때만** 필요하고 그 자리에서 `/mockup` 으로 만들 수 있다. 앱이 뜨는
+일과 문서를 만드는 일은 급함이 다르다.
 
 ## 3. 산출물 생성 원칙
 

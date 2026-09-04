@@ -65,7 +65,7 @@ tags: [harness, sensors, guides, automation, classification]
 |------|--------|----------|
 | `./gradlew check` 출력 | ArchUnit·시드 정합 | 사용자·AI 가 돌릴 때 |
 | `npm run lint` · `tsc -b` 출력 | 금칙 구문·타입 | 〃 |
-| `doc-drift` 훅 경고 | 화면 소스 ↔ 문서 셋 어긋남 | 훅 (`PostToolUse`) |
+| `doc-drift` 훅 경고 | 화면 소스 ↔ 화면 문서 어긋남 | 훅 (`PostToolUse`) |
 | `git status` 출력 | 변경 파일 | git |
 | `chat-history/YYYY-MM/raw/` | 세션 원본 | 사람이 손대지 않는다 |
 

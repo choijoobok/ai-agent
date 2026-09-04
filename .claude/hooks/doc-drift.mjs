@@ -1,5 +1,8 @@
 /**
- * 화면 소스를 고치면 그 화면의 문서 셋을 대조하라고 알린다 — CLAUDE.md §6.3 · §6.5.
+ * 화면 소스를 고치면 그 화면의 문서를 대조하라고 알린다 — CLAUDE.md §6.3 · §6.5.
+ *
+ * <p><b>정본 둘만 본다</b> — requirements.md · manual.md. mockup.html 은 요건서의 파생물이라
+ * 없는 것이 정상이고, 그것을 결손으로 세면 화면마다 경고가 떠 경고가 배경음이 된다.
  *
  * <p><b>경고다.</b> *문서를 고쳐야 하는가* 는 판단이 필요한 물음이고(§6.4 — 일치하면 고치지
  * 않는다) 차단하면 작업이 자주 막힌다. 훅이 하는 일은 <b>사슬을 계산해 주는 것</b>뿐이다:
@@ -30,40 +33,41 @@ if (!screenUrl) pass();
 if (alreadyToldThisSession(input?.session_id, screenUrl)) pass();
 
 const docDir = `documents/screen${screenUrl}`;
-const missing = ['requirements.md', 'mockup.html', 'manual.md'].filter(
+/* 정본 둘만 센다. `mockup.html` 은 파생물이라 없는 것이 정상이다(CLAUDE.md §4-5) —
+   그것을 결손으로 세면 화면마다 경고가 떠 경고 전체가 배경음이 된다. */
+const missing = ['requirements.md', 'manual.md'].filter(
   (name) => !existsSync(join(REPO, docDir, name)),
 );
 
-if (missing.length === 3) {
+if (missing.length === 2) {
   warn(
     [
-      `${path} 를 고쳤다 — 이 화면(${screenUrl})의 문서 셋이 **없다**.`,
-      `만들 곳: ${docDir}/  (템플릿: aidd-guide/artifact/template/ · 스킬: /menu-doc)`,
+      `${path} 를 고쳤다 — 이 화면(${screenUrl})의 문서가 **없다**.`,
+      `만들 곳: ${docDir}/  (서식: aidd-guide/artifact/template/02-requirements.md · 스킬: /menu-doc)`,
       '메뉴 화면 착수 전에는 requirements.md 가 있어야 하고 사용자 검토를 받는다 — CLAUDE.md §6.3.',
     ].join('\n'),
   );
-}
-
-if (missing.length > 0) {
+} else if (missing.length > 0) {
   warn(
     [
-      `${path} 를 고쳤다 — 이 화면(${screenUrl})의 문서 셋이 **덜 찼다**.`,
+      `${path} 를 고쳤다 — 이 화면(${screenUrl})의 문서가 **덜 찼다**.`,
       `없는 것: ${missing.join(' · ')}  (있는 곳: ${docDir}/)`,
-      '셋 중 하나만 있는 상태로 커밋하지 않는다 — CLAUDE.md §6.3(④).',
+      '요건서 없이 구현하지 않고, 구현하고서 메뉴얼을 비우지 않는다 — CLAUDE.md §6.3.',
     ].join('\n'),
   );
 }
 
 warn(
   [
-    `${path} 를 고쳤다 — 이 화면(${screenUrl})의 문서 셋을 **지금 대조한다**(CLAUDE.md §6.4).`,
-    `대상: ${docDir}/{requirements.md, mockup.html, manual.md}`,
-    '볼 것: 컬럼 · 버튼 · API · 조회조건 · 검증 · 문구. **일치하면 고치지 않는다.**',
+    `${path} 를 고쳤다 — 이 화면(${screenUrl})의 문서를 **지금 대조한다**(CLAUDE.md §6.4).`,
+    `대상: ${docDir}/{requirements.md, manual.md}`,
+    '볼 것: 컬럼 · 버튼 · API · 조회조건 · 검증 · 문구 · 테스트 케이스. **일치하면 고치지 않는다.**',
+    '요건서를 고쳤으면 `/mockup` 으로 목업을 다시 만든다 — 목업을 손으로 맞추지 않는다.',
     '고쳤으면 소스와 문서를 **같은 커밋**에 담는다 — 나누면 그 사이의 커밋이 거짓말을 한다.',
   ].join('\n'),
 );
 
-// ── 사슬 (CLAUDE.md §5.5) ─────────────────────────────────────────
+// ── 사슬 (CLAUDE.md §6.5) ─────────────────────────────────────────
 
 /**
  * `screenRegistry.ts` 가 소유한 것 — <b>페이지 경로 ↔ 기능 폴더</b>.
@@ -101,7 +105,7 @@ function urlOfFrontend(changed) {
  * <p>패키지 이름으로 기능 폴더를 맞히지 않는다. 둘은 닮았을 뿐 규칙이 아니며
  * (`accesslog` ↔ `api/log`), 맞히기 시작하면 <b>틀린 화면의 문서를 가리키는 훅</b>이 된다.
  * 대신 컨트롤러가 선언한 경로를 <b>실제로 부르는 선언</b>을 찾는다 — 그 선언이 인가 시드의
- * 입력이기도 하다(CLAUDE.md §4-6).
+ * 입력이기도 하다(CLAUDE.md §8).
  */
 function urlOfBackend(changed) {
   if (!changed.startsWith('sources/backend/') || !changed.endsWith('Controller.java')) return null;

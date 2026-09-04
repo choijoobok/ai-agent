@@ -5,7 +5,20 @@ description: 화면별 manual.md 에서 사용자 메뉴얼 산출물을 만든�
 
 # 사용자 메뉴얼 — 산출물 생성
 
-`CLAUDE.md` §5.2. **`manual.md` 가 원본이고 나머지는 전부 파생이다.**
+`CLAUDE.md` §6.2. **`manual.md` 가 원본이고 나머지는 전부 파생이다.**
+
+## 0. 먼저 — 목업이 있어야 한다
+
+화면 그림은 **목업에서 나온다**(아래 *화면 그림*). 목업도 파생물이라 형상 관리에 없으므로
+(`CLAUDE.md` §4-5) **새로 클론한 트리에는 없다.** 없으면 그림 없는 메뉴얼이 나간다.
+
+```bash
+node .claude/skills/mockup/scaffold.mjs --check
+```
+
+그림 키가 어긋난 화면이 나오면 **그 화면의 목업을 `/mockup` 으로 먼저 만든다.**
+캡처(`screen.png`)만으로 갈 때는 `--shots=png` 를 쓴다 — 그때는 목업이 필요 없지만,
+캡처가 없는 화면은 그림 없이 나간다.
 
 ```bash
 node .claude/skills/manual-site/build.mjs
@@ -13,7 +26,7 @@ node .claude/skills/manual-site/build.mjs
 
 ## 무엇이 나오나
 
-**① 저장소 파생물** — 문서 셋의 일부다(§5.1). 소스 옆에서 본다.
+**① 저장소 파생물** — 화면 문서의 파생물이다(§6.1). 소스 옆에서 본다.
 
 ```
 documents/screen/{페이지경로}/manual.html
@@ -58,7 +71,8 @@ node .claude/skills/manual-site/build.mjs --split=menu --pptx
 ## 화면 그림
 
 **기본은 목업이다.** 화면의 모습은 이미 목업이 갖고 있고, 메뉴얼용으로 따로 그리면 같은 화면의
-그림이 두 벌이 된다(§4-7 과 같은 이유).
+그림이 두 벌이 된다(§4-3 과 같은 이유). **목업이 없으면 먼저 `/mockup` 으로 만든다**(위 §0) —
+목업은 요건서의 파생물이라 형상 관리에 없다.
 
 **그림은 여러 장이고 자리는 메뉴얼이 정한다.** 탭이 다섯이면 탭마다 모습이 다르므로 한 장으로는
 *이 탭이 어떻게 생겼나* 에 답할 수 없다. 두 쪽이 키로 짝을 맺는다:
@@ -158,7 +172,7 @@ node .claude/skills/manual-site/build.mjs --pptx            # 이제 캡처를 �
 | 시점 | 왜 |
 |---|---|
 | `manual.md` 를 고친 뒤 | 나머지는 전부 파생이다. 안 돌리면 두 파일이 다른 말을 한다 |
-| `mockup.html` 을 고친 뒤 | 메뉴얼의 화면 그림이 거기서 온다 |
+| 요건서를 고쳐 `/mockup` 을 다시 돌린 뒤 | 메뉴얼의 화면 그림이 목업에서 온다 |
 | `menu-tree.yaml` → `generateMenuSeed` 뒤 | 트리·이름·순서가 바뀌었다 |
 | 메뉴 이름 메시지(`menu.*`)를 고친 뒤 | 좌측 트리의 글자가 거기서 온다 |
 | **고객사에 전달하기 전** | 제출 폴더를 새로 만든다 |
@@ -167,10 +181,11 @@ node .claude/skills/manual-site/build.mjs --pptx            # 이제 캡처를 �
 
 ## 커밋
 
-**저장소 파생물은 소스와 같은 커밋에 담는다**(§8). **제출 폴더는 담지 않는다**(`build/`).
+**정본만 커밋한다**(§9). `manual.html` · `index.html` · `build/manual/` 은 전부 파생이라
+`.gitignore` 대상이다(CLAUDE.md §4-5) — 담을 것은 `manual.md` 하나다.
 
 ```bash
-git commit -F - -- documents/screen/{경로}/manual.md documents/screen/{경로}/manual.html documents/screen/index.html <<'EOF'
+git commit -F - -- documents/screen/{경로}/manual.md <<'EOF'
 docs: <현상> — <조치>
 EOF
 ```
@@ -180,7 +195,8 @@ EOF
 ## 고치지 않는 것
 
 - **`manual.html` · `index.html` · `build/manual/` 을 직접 고치지 않는다.** 다음 생성에서 사라진다.
-  피드백은 `manual.md` 에, 화면 모양은 `mockup.html` 에 반영한다.
+  피드백은 `manual.md` 에, **화면 모양은 `requirements.md` 에** 반영하고 `/mockup` 을 다시 돌린다 —
+  목업도 파생물이라 손으로 고치면 사라진다.
 - 모양을 바꿔야 하면 `lib/page.mjs` 의 `DOC_STYLE` · `PRINT_STYLE` · `SITE_STYLE` 을 고친다.
 - 마크다운 렌더러(`lib/markdown.mjs`)는 **메뉴얼이 쓰는 문법만** 다룬다. 새 문법이 필요해졌다면
   먼저 *그것이 운영자에게 필요한가* 를 묻는다 — 대개는 아니다.

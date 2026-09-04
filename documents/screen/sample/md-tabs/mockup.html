@@ -1,22 +1,22 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>목업 · [샘플] 마스터-디테일 · 탭 (sample-md-tabs)</title>
+<title>목업 · 샘플 · 마스터-디테일(복수 탭) (/sample/md-tabs)</title>
 <style>
 /* ─────────────────────────────────────────────────────────────
-   목업 공용 스타일
+   목업 공용 스타일 — 이 블록은 모든 목업이 공유한다
    목업은 한 파일로 완결되어야 한다. 외부 CSS 로 빼면 파일 하나만
    열거나 다른 곳에 붙였을 때 화면이 깨진다. 그래서 복제를 감수한다.
    새 목업은 이 블록을 그대로 복사한다.
    의도적으로 밋밋하다. AntD 처럼 보이면 잘못된 구속이 된다.
 
    ★ 그리드 어휘 다섯 — .sf .tb .grid .pg .split
-     크롬·행 상태·컬럼 고정의 자리는 53, 컬럼 계약은 54 가 정한다.
+     크롬·행 상태·컬럼 고정·컬럼 계약은 aidd-guide/standard/frontend/ 가 정한다.
    ───────────────────────────────────────────────────────────── */
 :root{
   --ink:#1a1a1a; --muted:#6b6b6b; --line:#c9c9c9; --line2:#e4e4e4;
   --bg:#ffffff; --panel:#f7f7f7; --err:#a8261c; --err-bg:#fbeceb;
   --note:#1f4e79; --note-bg:#eef4fa; --ok:#1d7a4d;
-  /* ── 그리드 색. 그리드가 스스로 정하지 않고 셸에서 받는다 ──
+  /* ── 그리드 색 — 그리드가 스스로 정하지 않고 셸에서 받는다 ──
      Primary — 선택·편집 표시는 전부 여기서 파생한다.
      진한 단계를 쓰지 않는다 — 그리드는 글자가 촘촘해 배경이 진해지면
      전부 읽기 어려워진다. 대비 문제를 애초에 만들지 않는다. */
@@ -177,16 +177,16 @@ a{color:var(--note)}
 .grid th .mn{float:right;color:var(--muted);font-weight:400;margin-left:8px}  /* 컬럼 메뉴 ☰ */
 .grid th .srt{color:var(--note)}                                             /* 정렬 표시 */
 .grid th.on{background:var(--note-bg)}                                       /* 필터 걸린 컬럼 */
-/* 헤더가 컬럼을 말한다. 색이 아니라 표시가 원본이다 */
+/* 헤더가 컬럼을 말한다 — 색이 아니라 표시가 원본이다 */
 .grid th.req em{font-style:normal;color:var(--err);font-weight:700}          /* 필수 * */
 .grid th.roh{color:var(--muted);font-weight:400}                             /* 읽기 전용 컬럼 */
-/* 양끝 시스템 컬럼. 사용자가 숨기거나 옮길 수 없다 */
+/* 양끝 시스템 컬럼 — 사용자가 숨기거나 옮길 수 없다 */
 .grid .st{width:26px;text-align:center;color:var(--muted)}
 .grid .del{width:34px;text-align:center;color:var(--muted)}
 .grid .pinL{border-right:2px solid var(--line)}   /* 좌 고정 ↔ 스크롤 경계 */
 .grid .pinR{border-left:2px solid var(--line)}    /* 스크롤 ↔ 우 고정 경계 */
 
-/* ── 셀과 행의 색 — 그리드 표준의 우선순위 여섯 ────────────────────
+/* ── 셀과 행의 색 — 우선순위 여섯 ────────────────────
    여섯이 전부 같은 명시도다. 그래서 나중에 쓴 것이 이긴다 —
    6 → 1 순서로 적었고, 순서를 바꾸면 규약이 바뀐다.
    행 규칙(tr.x td)이 셀 규칙(td.x)보다 명시도가 한 단계 높으므로
@@ -233,7 +233,7 @@ a{color:var(--note)}
 .pg .size{text-align:right}
 .pg b{color:var(--ink)}
 
-/* 마스터-디테일 스플리터. 축이 둘이고 접기 화살표가 붙는다 */
+/* 마스터-디테일 스플리터 — 축이 둘이고 접기 화살표가 붙는다 */
 .split{height:13px;margin:9px 0;border-top:1px solid var(--line2);
        border-bottom:1px solid var(--line2);background:var(--panel);
        display:flex;align-items:center;justify-content:center;gap:4px;
@@ -280,372 +280,633 @@ td.c{white-space:nowrap;font-family:Consolas,monospace;font-size:12px}
 .todo ul{margin:4px 0 0;padding-left:18px}
 footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line2);
        font-size:11.5px;color:var(--muted)}
-
-
-/* ── 이 목업만의 어휘 ───────────────────────────────
-   탭의 주제는 "편집 상태가 탭마다 따로 산다"이다. 그래서 탭 라벨에
-   미저장 표시(●)를 단다 — 안 보이면 다른 탭의 편집을 잊는다.    */
-.grid td.num,.grid th.num{text-align:right}
-.mut{color:var(--muted);font-size:11px}
-.key{font-family:ui-monospace,Consolas,monospace;font-size:11.5px}
-.todoc{outline:1px dashed var(--err);outline-offset:1px}
-.newbdg{display:inline-block;border:1px dashed var(--err);color:var(--err);
-        padding:0 4px;font-size:9.5px;border-radius:2px;margin-left:4px;vertical-align:1px}
-.bg{display:inline-block;padding:0 6px;font-size:10.5px;border-radius:9px;border:1px solid}
-.bg.none{border-color:var(--line);color:var(--muted)}
-.bg.ok{border-color:var(--ok);color:var(--ok)}
-.bg.warn{border-color:#a8760f;color:#a8760f}
-.bg.muted{border-color:var(--line2);color:var(--muted);opacity:.7}
-.tg{display:inline-block;border:1px solid var(--line);padding:0 4px;font-size:10px;
-    margin-right:3px;border-radius:2px}
-
-/* 하단 디테일 탭 — DetailTabs. 셸 탭바와 모양이 다르다 */
-.dtabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:6px}
-.dtabs>span{padding:5px 14px;font-size:12px;color:var(--muted);border:1px solid transparent;
-            border-bottom:none;min-width:100px;text-align:center}
-.dtabs>span.on{border-color:var(--line);background:var(--bg);color:var(--ink);
-               font-weight:600;margin-bottom:-1px}
-.dtabs>span.lock{opacity:.45}
-/* 미저장 표시 — 탭 라벨의 점 */
-.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--pri);
-     margin-left:5px;vertical-align:1px}
-.spin{padding:26px;text-align:center;color:var(--muted);font-size:12px}
 </style>
 
 <main>
 
-<!-- ── 개요 바 ─────────────────────────────────────────────── -->
-<h1>[샘플] 마스터-디테일 · 복수 탭</h1>
+<!--
+  이 파일은 생성물이다 — `/mockup` 이 requirements.md 에서 만든다.
+  결정도 테스트 케이스도 요건서가 갖는다. 여기서 고치면 다음 생성에서 사라진다.
+-->
+
+<h1>샘플 · 마스터-디테일(복수 탭)</h1>
 <div class="head">
   <dl>
-    <dt>화면코드</dt><dd><code>sample-md-tabs</code></dd>
+    <dt>페이지 경로</dt><dd><code>/sample/md-tabs</code></dd>
+    <dt>메뉴코드</dt><dd><code>SMPL_MD_TABS</code></dd>
+    <dt>프론트 폴더</dt><dd><code>sources/frontend/src/features/sample/mdtabs/</code></dd>
+    <dt>화면 유형</dt><dd><b>마스터-디테일(상하) + 하단 탭 둘</b></dd>
+    <dt>처리 유형</dt><dd>CRUD — <b>저장 단위가 셋</b></dd>
+    <dt>쓰는 액션</dt><dd><code>R</code> <code>S</code> <code>E</code> — <code>EXPORT_YN</code> = <code>Y</code>. <b><code>X</code> 없음</b></dd>
+    <dt>페이징</dt><dd>offset(마스터)</dd>
+    <dt>문서 상태</dt><dd>구현됨 — 소스 역작성 2026-09-03</dd>
     <dt>요건서</dt><dd><a href="requirements.md">requirements.md</a></dd>
-    <dt><code>MENU_CD</code></dt><dd><code>SMPL_MD_TABS</code> (상위 <code>SMPL_ROOT</code>)</dd>
-    <dt>라우트</dt><dd><code>/sample/md-tabs</code></dd>
-    <dt>담는 기능</dt><dd>SMPL-03</dd>
-    <dt>액션</dt><dd><b><code>R</code> <code>S</code> <code>E</code></b></dd>
-    <dt>형태</dt><dd><code>SplitPane axis="vertical"</code> + <b>하단 <code>DetailTabs</code> 둘</b></dd>
-    <dt>이 화면의 일</dt><dd><b>저장 단위가 셋</b>이고 <b>탭마다 편집 상태가 따로 산다</b>.
-      그리고 <b><code>list</code> 컬럼과 자식 테이블이 같은 데이터라는 것</b>을
-      ①의 태그 셀과 여기 <i>태그</i> 탭이 나란히 보인다</dd>
-    <dt>주의</dt><dd><b>탭이 늘어도 메뉴는 늘지 않는다</b>. 권한도 마스터 메뉴 하나에만 걸린다</dd>
+    <dt>메뉴얼</dt><dd><a href="manual.md">manual.md</a></dd>
   </dl>
 </div>
 
-<!-- ── 화면 1 ─────────────────────────────────────────────── -->
-<h2>1. 기본 상태 — 하단 탭 둘</h2>
+<h2>1. 기본 상태 — 위에서 주문을 고르면 아래 탭 둘이 그 주문의 두 얼굴을 보인다</h2>
+
+<p style="font-size:12.5px;margin:0 0 8px">
+  <b>축이 상하다</b> — 마스터가 컬럼 아홉으로 넓고, 하단은 <b>탭바를 얹을 폭</b>이 필요하다(요건서 §1).
+  <b>저장 버튼이 셋</b>이다 — 마스터 · 품목 · 태그. <b>탭에는 조회조건이 없다</b>: 대상이 위의 선택이며
+  그것은 <i>구조</i>이지 사용자가 좁힌 것이 아니다(요건서 §1).
+</p>
 
 <div class="screen leaf" id="main" data-manual="main">
-  <div class="bar">/sample/md-tabs — 하단 디테일 탭은 <b>셸 탭바와 층이 다르다</b>. 화면 안의 부분이다</div>
+  <div class="bar">/sample/md-tabs · 샘플 › 마스터-디테일 (복수 탭)</div>
   <div class="body">
 
     <div class="bc">
-      <span class="path">[샘플] 개발 참조 &rsaquo; <b>마스터-디테일 · 탭</b></span>
-      <button class="btn sm ghost" type="button">조건 &#9662;</button>
-      <button class="btn sm ghost" type="button">&#8963; 조회조건</button>
+      <span class="path">샘플 › <b>마스터-디테일 (복수 탭)</b></span>
+      <span>조회조건 4</span>
+      <button class="btn ghost sm">조건 접기 ▲</button>
     </div>
 
+    <!-- 조회조건 넷 — 마스터에만 있다(요건서 §2) -->
     <div class="sf">
-      <label>주문번호</label><input>
-      <label>고객명</label><input>
-      <label>주문일</label><input value="2026-08-02 ~ 2026-09-01">
-      <div class="act"><button class="btn sm ghost" type="button">초기화</button></div>
+      <label>주문번호</label>
+      <div class="row"><select><option>포함</option><option>같음</option><option>시작</option><option>끝</option></select><input value="SO-2026-04"></div>
+      <label>고객명</label>
+      <div class="row"><select><option>포함</option><option>같음</option><option>시작</option><option>끝</option></select><input value=""></div>
+      <label>주문상태</label>
+      <select><option>접수 · 확정 · 출고 (3)</option></select>
+      <label>주문일</label>
+      <div class="wide row"><input value="2026-03-21"><span>~</span><input value="2026-04-19"><span style="color:var(--muted)">기본 30일 · 상한 366일</span></div>
+      <div class="act"><button class="btn ghost sm">초기화</button></div>
+    </div>
+
+    <!-- ── 상단 pane — 마스터 ─────────────────────────────── -->
+    <div class="tb">
+      <span class="ttl">주문</span>
+      <button class="btn ghost sm">조회</button>
+      <button class="btn ghost sm">행 추가</button>
+      <button class="btn sm">저장</button>
+      <button class="btn ghost sm ico">⤓ ▾</button>
+      <button class="btn ghost sm ico">⚙</button>
+    </div>
+
+    <div class="grid">
+      <table>
+        <thead>
+          <tr>
+            <th class="st">상태</th>
+            <th class="req pinL">주문번호 <em>*</em></th>
+            <th class="req">주문명 <em>*</em></th>
+            <th class="req">고객명 <em>*</em></th>
+            <th class="roh">주문상태</th>
+            <th class="req">주문일 <em>*</em></th>
+            <th>수량</th>
+            <th class="roh">주문금액</th>
+            <th>긴급</th>
+            <th>사용</th>
+            <th class="roh">등록자</th>
+            <th class="roh">등록일시</th>
+            <th class="roh">수정자</th>
+            <th class="roh">수정일시</th>
+            <th class="del">삭제</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="st"></td>
+            <td class="ro pinL">SO-2026-0417</td><td>대한물산 3월 정기</td><td>대한물산</td>
+            <td class="ro">확정</td><td>2026-04-11</td><td class="ro">120</td><td class="ro">3,600,000</td>
+            <td><span class="swt"></span></td><td><span class="swt on"></span></td>
+            <td class="ro">kim</td><td class="ro">2026-04-11 09:12</td><td class="ro">kim</td><td class="ro">2026-04-12 14:02</td>
+            <td class="del">✕</td>
+          </tr>
+          <tr class="sel">
+            <td class="st"></td>
+            <td class="ro pinL cur">SO-2026-0419</td><td>대한물산</td><td>대한물산</td>
+            <td class="ro">접수</td><td>2026-04-19</td><td>50</td><td class="ro">1,250,000</td>
+            <td><span class="swt on"></span></td><td><span class="swt on"></span></td>
+            <td class="ro">lee</td><td class="ro">2026-04-19 08:40</td><td class="ro">—</td><td class="ro">—</td>
+            <td class="del">✕</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="ro pinL">SO-2026-0420</td><td>삼진유통 봄 보충</td><td>삼진유통</td>
+            <td class="ro">접수</td><td>2026-04-20</td><td>8</td><td class="ro">96,000</td>
+            <td><span class="swt"></span></td><td><span class="swt on"></span></td>
+            <td class="ro">lee</td><td class="ro">2026-04-20 10:05</td><td class="ro">—</td><td class="ro">—</td>
+            <td class="del">✕</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="ro pinL">SO-2026-0418</td><td>한빛상사 창고 이관</td><td>한빛상사</td>
+            <td class="ro">완료</td><td class="ro">2026-04-15</td><td class="ro">300</td><td class="ro">7,500,000</td>
+            <td><span class="swt dis"></span></td><td><span class="swt on dis"></span></td>
+            <td class="ro">park</td><td class="ro">2026-04-15 11:20</td><td class="ro">park</td><td class="ro">2026-04-16 09:01</td>
+            <td class="del ro">✕</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pg">
+      <span>총 <b>128</b>건 · 7페이지</span>
+      <span class="nav">‹ <b>1</b> 2 3 … 7 ›</span>
+      <span class="size">20건씩 ▾</span>
+    </div>
+
+    <!-- ── 스플리터 — 축이 상하다 ─────────────────────────── -->
+    <div class="split">
+      <span class="arw">▲</span><span class="hnd">⋯⋯</span><span class="arw">▼</span>
+    </div>
+
+    <!-- ── 하단 pane — 탭 둘 ─────────────────────────────── -->
+    <div class="tabs">
+      <span class="on">품목</span>
+      <span>태그</span>
     </div>
 
     <div class="tb">
-      <span class="ttl">주문</span><span class="sp"></span>
-      <button class="btn sm ghost" type="button">조회</button>
-      <button class="btn sm ghost" type="button">행 추가</button>
-      <button class="btn sm" type="button">저장</button>
-      <button class="btn sm ghost ico" type="button">&#8681; &#9662;</button>
-      <button class="btn sm ghost ico" type="button">&#9881;</button>
+      <span class="ttl">주문 품목 — SO-2026-0419 / 대한물산</span>
+      <button class="btn ghost sm">조회</button>
+      <button class="btn ghost sm">행 추가</button>
+      <button class="btn sm">저장</button>
+      <button class="btn ghost sm ico">⤓</button>
+      <button class="btn ghost sm ico">⚙</button>
     </div>
 
-    <div class="grid" style="max-height:120px"><table>
-      <thead><tr><th class="st">＊</th><th class="roh">No</th><th class="roh">주문번호</th>
-        <th class="req">주문명 <em>*</em></th><th class="roh">고객명</th><th>상태</th>
-        <th class="num roh">금액</th><th>긴급</th><th class="del">삭제</th></tr></thead>
-      <tbody>
-        <tr class="sel"><td class="st"></td><td class="ro">1</td><td class="ro key">SO-2026-0419</td>
-          <td class="req">추석 프로모션</td><td class="ro">대한물산</td><td><span class="bg warn">출고</span></td>
-          <td class="num ro">2,560,000</td><td><span class="swt"></span></td>
-          <td class="del"><span class="mut">&#9744;</span></td></tr>
-        <tr><td class="st"></td><td class="ro">2</td><td class="ro key">SO-2026-0417</td>
-          <td class="req">9월 정기 발주</td><td class="ro">대한물산</td><td><span class="bg none">접수</span></td>
-          <td class="num ro">1,500,000</td><td><span class="swt on"></span></td>
-          <td class="del"><span class="mut">&#9744;</span></td></tr>
-        <tr><td class="st"></td><td class="ro">3</td><td class="ro key">SO-2026-0418</td>
-          <td class="req">긴급 보충</td><td class="ro">서한상사</td><td><span class="bg ok">확정</span></td>
-          <td class="num ro">3,520,000</td><td><span class="swt on"></span></td>
-          <td class="del"><span class="mut">&#9744;</span></td></tr>
-      </tbody></table></div>
-    <div class="pg"><span>전체 <b>412</b>건</span><span class="nav">‹ <b>1</b> 2 3 ›</span>
-      <span class="size">100건씩 &#9662;</span></div>
-
-    <div class="split"><button class="arw" type="button">&#9650;</button>
-      <span class="hnd">&#8226;&#8226;&#8226;</span>
-      <button class="arw" type="button">&#9660;</button></div>
-
-    <div class="dtabs">
-      <span class="on">품목 <span class="mut">(3)</span></span>
-      <span>태그 <span class="mut">(4)</span></span>
+    <div class="grid">
+      <table>
+        <thead>
+          <tr>
+            <th class="st">상태</th>
+            <th class="roh pinL">순번</th>
+            <th class="req pinL">품목코드 <em>*</em></th>
+            <th class="req">품목명 <em>*</em></th>
+            <th>단위</th>
+            <th class="req">수량 <em>*</em></th>
+            <th class="req">단가 <em>*</em></th>
+            <th class="roh">금액</th>
+            <th>납기일</th>
+            <th>품목상태</th>
+            <th>비고</th>
+            <th class="del">삭제</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="st"></td><td class="ro pinL">1</td><td class="ro req pinL">A-1001</td>
+            <td class="req">골판지 박스 소</td><td>개</td><td class="req">20</td><td class="req">12,500</td>
+            <td class="ro">250,000</td><td>2026-04-25</td><td>대기</td><td></td><td class="del">✕</td>
+          </tr>
+          <tr>
+            <td class="st"></td><td class="ro pinL">2</td><td class="ro req pinL">A-1002</td>
+            <td class="req">골판지 박스 중</td><td>박스</td><td class="req">20</td><td class="req">31,000</td>
+            <td class="ro">620,000</td><td>2026-04-25</td><td>피킹</td><td>분할 출고</td><td class="del">✕</td>
+          </tr>
+          <tr>
+            <td class="st"></td><td class="ro pinL">3</td><td class="ro req pinL">B-2210</td>
+            <td class="req">완충재 20kg</td><td>킬로그램</td><td class="req">10</td><td class="req">38,000</td>
+            <td class="ro">380,000</td><td>2026-04-27</td><td>대기</td><td></td><td class="del">✕</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <div class="tb">
-      <span class="ttl">주문 품목 <span class="mut" style="font-weight:400">— SO-2026-0419 / 대한물산</span>
-        <span class="n">1</span></span>
-      <span class="sp"></span>
-      <button class="btn sm ghost" type="button" title="이 탭만 다시 읽는다">조회</button>
-      <button class="btn sm ghost" type="button">행 추가</button>
-      <button class="btn sm" type="button">저장</button>
-      <button class="btn sm ghost ico" type="button">&#8681; &#9662;</button>
-      <button class="btn sm ghost ico" type="button">&#9881;</button>
+    <div class="pg">
+      <span><b>3</b>건 조회됨</span>
+      <span class="nav"></span>
+      <span class="size"></span>
     </div>
-
-    <div class="grid" style="max-height:120px"><table>
-      <thead><tr><th class="st">＊</th><th class="roh">No</th>
-        <th class="req">품목 <em>*</em><span class="newbdg">popupRef</span></th>
-        <th class="roh">품목명</th><th>단위</th>
-        <th class="num req">수량 <em>*</em></th><th class="num req">단가 <em>*</em></th>
-        <th class="num roh">금액</th><th>상태</th><th class="del">삭제</th></tr></thead>
-      <tbody>
-        <tr class="sel"><td class="st"></td><td class="ro">1</td><td class="req">IT-7001 <span class="mut">&#128269;</span></td>
-          <td class="ro">선물세트 A형</td><td>SET</td><td class="num">500.000</td><td class="num">3,200</td>
-          <td class="num ro">1,600,000</td><td><span class="bg warn">출고</span></td><td class="del">&#9744;</td></tr>
-        <tr><td class="st"></td><td class="ro">2</td><td class="req">IT-7002 <span class="mut">&#128269;</span></td>
-          <td class="ro">선물세트 B형</td><td>SET</td><td class="num">300.000</td><td class="num">3,200</td>
-          <td class="num ro">960,000</td><td><span class="bg warn">출고</span></td><td class="del">&#9744;</td></tr>
-        <tr><td class="st"></td><td class="ro">3</td><td class="req">IT-7099 <span class="mut">&#128269;</span></td>
-          <td class="ro">포장 박스 대</td><td>EA</td><td class="num">800.000</td><td class="num">0</td>
-          <td class="num ro">0</td><td><span class="bg none">대기</span></td><td class="del">&#9744;</td></tr>
-      </tbody></table></div>
-    <div class="pg"><span><b>3</b>건</span><span class="nav"></span><span class="size"></span></div>
 
   </div>
 </div>
-
-<!-- ── 화면 2 ─────────────────────────────────────────────── -->
-<h2>2. 둘째 탭 — <b><code>list</code> 컬럼과 같은 데이터를 행으로</b> 본다</h2>
-
-<div class="screen leaf">
-  <div class="body">
-    <div class="dtabs">
-      <span>품목 <span class="mut">(3)</span></span>
-      <span class="on">태그 <span class="mut">(4)</span></span>
-    </div>
-
-    <div class="tb">
-      <span class="ttl">주문 태그 <span class="mut" style="font-weight:400">— SO-2026-0419 / 대한물산</span></span>
-      <span class="sp"></span>
-      <button class="btn sm ghost" type="button" title="이 탭만 다시 읽는다">조회</button>
-      <button class="btn sm ghost" type="button">행 추가</button>
-      <button class="btn sm" type="button">저장</button>
-      <button class="btn sm ghost ico" type="button">&#8681; &#9662;</button>
-      <button class="btn sm ghost ico" type="button">&#9881;</button>
-    </div>
-
-    <div class="grid" style="max-height:120px"><table>
-      <thead><tr><th class="st">＊</th><th class="num roh">순번</th>
-        <th class="req">태그명 <em>*</em></th><th class="req">유형 <em>*</em></th><th class="del">삭제</th></tr></thead>
-      <tbody>
-        <tr class="sel"><td class="st"></td><td class="num ro">1</td><td class="req">프로모션</td>
-          <td class="req">캠페인</td><td class="del">&#9744;</td></tr>
-        <tr><td class="st"></td><td class="num ro">2</td><td class="req">추석</td>
-          <td class="req">시즌</td><td class="del">&#9744;</td></tr>
-        <tr><td class="st"></td><td class="num ro">3</td><td class="req">대량</td>
-          <td class="req">물량</td><td class="del">&#9744;</td></tr>
-        <tr><td class="st"></td><td class="num ro">4</td><td class="req">선결제</td>
-          <td class="req">결제</td><td class="del">&#9744;</td></tr>
-      </tbody></table></div>
-    <div class="pg"><span><b>4</b>건</span><span class="nav"></span><span class="size"></span></div>
-
-    <div class="banner info" style="margin-top:10px">
-      <b>①의 태그 셀과 같은 데이터다</b> —
-      거기서는 <code>list</code> 컬럼이라 셀 하나에
-      <span class="tg">프로모션</span><span class="tg">추석</span><span class="tg">대량</span><span class="tg">선결제</span>
-      로 접혀 있고, 여기서는 <b>행 넷</b>이다. <b>배열은 화면의 어휘이고 저장은 자식 테이블</b>이라는
-      샘플 데이터 모델의 결정이 두 화면을 나란히 놓아야 이해된다 <span class="n">2</span>
-    </div>
-  </div>
-</div>
-
-<!-- ── 화면 3 ─────────────────────────────────────────────── -->
-<h2>3. 탭마다 편집 상태가 <b>따로 산다</b></h2>
-
-<div class="screen leaf">
-  <div class="bar">품목을 고치고 태그 탭으로 갔다. <b>묻지 않는다</b> — 표시가 바뀔 뿐이다</div>
-  <div class="body">
-    <div class="dtabs">
-      <span>품목 <span class="mut">(3)</span><span class="dot" title="저장하지 않은 변경이 있습니다"></span></span>
-      <span class="on">태그 <span class="mut">(4)</span><span class="dot"></span></span>
-    </div>
-    <div class="tb"><span class="ttl">주문 태그 <span class="mut" style="font-weight:400">— SO-2026-0419 / 대한물산</span></span>
-      <span class="sp"></span>
-      <button class="btn sm ghost" type="button">조회</button>
-      <button class="btn sm ghost" type="button">행 추가</button>
-      <button class="btn sm" type="button">저장</button>
-      <span class="cnt">변경 <b>1</b>건</span></div>
-    <div class="grid" style="max-height:96px"><table>
-      <thead><tr><th class="st">＊</th><th class="num roh">순번</th><th class="req">태그명 <em>*</em></th>
-        <th class="req">유형 <em>*</em></th><th class="del">삭제</th></tr></thead>
-      <tbody>
-        <tr class="new"><td class="st">＋</td><td class="num ro">5</td><td class="req edit">한정수량</td>
-          <td class="req">캠페인</td><td class="del">&#9744;</td></tr>
-        <tr><td class="st"></td><td class="num ro">1</td><td class="req">프로모션</td>
-          <td class="req">캠페인</td><td class="del">&#9744;</td></tr>
-      </tbody></table></div>
-
-    <ul class="rules" style="margin-top:10px">
-      <li class="ok"><b>탭 라벨의 <span class="dot" style="margin:0 2px"></span> 이 미저장을 말한다</b> —
-          다른 탭의 편집은 <b>화면에 안 보이므로</b> 표시가 없으면 잊는다 <span class="n">3</span></li>
-      <li class="ok"><b>탭을 옮겨도 언마운트하지 않는다</b> — 조회한 행과 편집이 살아 있다</li>
-      <li class="ok"><b>저장은 탭마다</b> 다. 태그 탭의 저장이 품목의 편집을 건드리지 않는다</li>
-      <li class="no"><b>탭 전환에서 묻지 않는다</b> — 잃는 것이 없다. 표시가 바뀔 뿐이다</li>
-      <li class="ok"><b>조회도 탭마다</b>다 — 품목의 조회가 태그를 읽지 않는다.
-          <b>마스터의 조회로는 대신할 수 없다</b>: 그쪽은 디테일을 리셋하고 고른 행을 잃는다</li>
-      <li class="no"><b>마스터 선택 변경에서는 묻는다</b> — 거기서 잃는다.
-          <b>탭 둘 다 미저장이어도 한 번만 묻는다</b> <span class="n">4</span></li>
-    </ul>
-  </div>
-</div>
-
-<!-- ── 화면 4 ─────────────────────────────────────────────── -->
-<h2>4. 지연 로딩 · 대상 없음 · 접힘</h2>
-
-<div class="screen leaf">
-  <div class="body">
-
-    <h3>4-1. 지연 로딩 — 탭을 <b>처음 열 때</b> 조회한다</h3>
-    <div class="dtabs"><span>품목 <span class="mut">(3)</span></span><span class="on">태그</span></div>
-    <div class="grid" style="max-height:66px"><table>
-      <thead><tr><th class="st">＊</th><th class="num roh">순번</th><th class="req">태그명 <em>*</em></th>
-        <th class="req">유형 <em>*</em></th><th class="del">삭제</th></tr></thead>
-      <tbody><tr><td colspan="5" class="spin">&#9676; 불러오는 중…</td></tr></tbody></table></div>
-    <div class="mut" style="margin-top:4px">마스터 선택만으로 <b>두 탭이 다 나가지 않는다</b> —
-      안 여는 탭의 왕복을 아낀다 <span class="n">5</span></div>
-
-    <h3 style="margin-top:16px">4-2. 대상 없음 — <b>탭은 살아 있고 버튼이 잠긴다</b></h3>
-    <div class="dtabs"><span class="on">품목</span><span>태그</span></div>
-    <div class="tb" style="opacity:.45">
-      <span class="ttl">주문 품목</span><span class="sp"></span>
-      <button class="btn sm ghost" type="button" disabled>조회</button>
-      <button class="btn sm ghost" type="button" disabled>행 추가</button>
-      <button class="btn sm" type="button" disabled>저장</button>
-      <button class="btn sm ghost ico" type="button" disabled>&#8681; &#9662;</button>
-      <button class="btn sm ghost ico" type="button" disabled>&#9881;</button></div>
-    <div class="grid" style="max-height:66px"><table>
-      <thead><tr><th class="st">＊</th><th class="roh">No</th><th class="req">품목 <em>*</em></th>
-        <th class="roh">품목명</th><th class="del">삭제</th></tr></thead>
-      <tbody><tr><td colspan="5" class="spin">주문을 선택하세요</td></tr></tbody></table></div>
-    <div class="mut" style="margin-top:4px"><b>탭을 잠그지 않는다</b> —
-      잠그면 <i>"이 주문에 태그 탭이 없나"</i> 로 읽힌다 <span class="n">6</span></div>
-
-    <h3 style="margin-top:16px">4-3. 하단을 접었다 — <b>탭바까지 감춘다</b></h3>
-    <div class="tb"><span class="ttl">주문</span><span class="sp"></span>
-      <button class="btn sm ghost" type="button">조회</button><button class="btn sm" type="button">저장</button></div>
-    <div class="grid" style="max-height:52px"><table>
-      <thead><tr><th class="roh">주문번호</th><th class="req">주문명 <em>*</em></th><th class="roh">고객명</th></tr></thead>
-      <tbody><tr class="sel"><td class="ro key">SO-2026-0419</td><td class="req">추석 프로모션</td>
-        <td class="ro">대한물산</td></tr></tbody></table></div>
-    <div class="pg"><span>전체 <b>412</b>건</span><span class="nav">‹ <b>1</b> ›</span><span class="size">100건씩 &#9662;</span></div>
-    <div class="split"><button class="arw off" type="button">&#9650;</button>
-      <span class="hnd">&#8226;&#8226;&#8226;</span><button class="arw" type="button">&#9660;</button></div>
-    <div class="folded">주문 품목 — SO-2026-0419 / 대한물산
-      <span class="why">탭바가 없다 <span class="n">7</span></span></div>
-  </div>
-</div>
-
-<!-- ── 주석 ───────────────────────────────────────────────── -->
-<h2>5. 주석</h2>
 
 <div class="notes">
   <ol>
-    <li><span class="n">1</span><b>탭 둘의 기본값 셋을 화면이 적지 않는다</b>(2026-08-31) —
-        <code>gridId</code> 는 탭 키에서, <code>titleSuffix</code> 는 부모 컨트롤러에서,
-        <code>disabled</code> 는 선택 상태에서 온다. 화면마다 적게 하면 탭 하나를 더할 때
-        <b>셋 중 하나를 빠뜨린다</b>.</li>
-    <li><span class="n">2</span><b><code>list</code> 는 화면의 어휘이지 저장의 어휘가 아니다</b>.
-        화면 ①은 배열을 보내고 받으며, <b>행으로 펴는 것은 서버</b>다. 두 표현이 같은
-        데이터라는 사실이 <b>이 화면과 ①을 나란히 놓아야</b> 보인다.</li>
-    <li><span class="n">3</span><b>안 보이는 편집은 잊힌다.</b> 하단 탭은 <b>한 번에 하나</b>만
-        보이므로, 다른 탭의 <code>✎</code> 를 표시하지 않으면 사용자는 저장했다고 믿고
-        마스터를 옮긴다 — 그때 묻는 모달이 <i>왜 뜨는지</i> 도 모른다.</li>
-    <li><span class="n">4</span><b>한 번만 묻는다.</b> 탭 둘이 다 미저장이어도 모달이 둘 뜨지 않는다 —
-        묻는 주체는 <b>탭이 아니라 마스터의 선택 변경</b>이다.</li>
-    <li><span class="n">5</span><b>지연 로딩은 왕복을 아끼는 것 이상이다.</b> 마스터 선택마다
-        두 탭이 나가면 <b>안 여는 탭의 조회가 실패했을 때</b> 사용자가 이유를 모르는 에러를 본다.</li>
-    <li><span class="n">6</span><b>비활성되는 것은 버튼이지 탭이 아니다.</b> 탭이 잠기면
-        <i>구성이 주문마다 다른가</i> 로 읽히고, 그것은 사실이 아니다.</li>
-    <li><span class="n">7</span><b>접히면 탭바까지 감춘다</b>(2026-08-31 실물). 탭바·버튼 줄·페이징이
-        남고 판만 0px 이면 <b>접은 것이 아니라 판이 깨진 것</b>으로 보인다. 탭바만 감추면
-        활성 탭의 그리드가 스스로 제목 한 줄로 접혀 <b>그리드 하나짜리 하단(§5)과 같은 모양</b>이
-        된다 — 접힘의 규칙이 하나여야 배울 것도 하나다.</li>
+    <li><span class="n">1</span><b>조회조건은 위의 것 하나다</b> — 탭에는 없다. 대상은 마스터의 선택이다(요건서 §1 · §2).</li>
+    <li><span class="n">2</span><b>탭 제목에 부모가 붙는다</b> — 요건서 <code>S5-04</code> 의 <code>— SO-2026-0419 / 대한물산</code>
+        이며 <b>주문번호 / 주문명</b>이다. 그래서 고른 행의 주문명을 그렇게 두었다.</li>
+    <li><span class="n">3</span><b>엑셀이 셋이고 전부 프론트 생성이다</b>(요건서 §5) — 세 그리드가 각자 <code>⤓</code> 를 갖는다.
+        마스터만 페이징이 있어(요건서 §0) <code>⤓ ▾</code> 로 <i>현재 페이지 / 전체</i> 가 갈린다.</li>
+    <li><span class="n">4</span><b>탭바에 닫기 <code>×</code> 가 없다</b>(<code>S5-22</code>) — 셸의 탭바와 다른 물건이다.
+        여는 탭이 아니라 <i>같은 주문의 다른 얼굴</i>이다.</li>
+    <li><span class="n">5</span><b>저장 버튼이 셋이다</b> — 묶으면 <i>태그만 고쳤는데 주문도 갱신됨</i> 이 되어 감사 컬럼이 거짓말을 한다(요건서 §1).</li>
   </ol>
 </div>
 
-<!-- ── 테스트 케이스 ───────────────────────────────────────── -->
-<h2>6. 테스트 케이스</h2>
+<h2>2. 상태가 갈리는 자리 — 빈 · 잠긴 · 지연 로딩 · 편집 중 · 편집 거부</h2>
 
+<h3>① 조회 전 — 마스터도 빈 판이고 <b>탭은 살아 있는데 버튼이 잠긴다</b></h3>
+
+<p style="font-size:12.5px;margin:0 0 8px">
+  <b>탭을 잠그지 않는다</b> — 잠그면 <i>이 주문에 태그 탭이 없나</i> 로 읽힌다. 없는 것은 <b>고를 주문</b>이다.
+  빈 판 문구가 <b>둘로 갈린다</b>: <i>주문을 먼저 선택하세요</i> 와 <i>등록된 품목이 없습니다</i> 는 다른 사실이다.
+</p>
+
+<div class="screen leaf">
+  <div class="bar">진입 직후 — 아직 조회하지 않았다</div>
+  <div class="body">
+    <div class="tb">
+      <span class="ttl">주문</span>
+      <button class="btn ghost sm">조회</button>
+      <button class="btn ghost sm">행 추가</button>
+      <button class="btn sm" disabled>저장</button>
+      <button class="btn ghost sm ico" disabled>⤓ ▾</button>
+      <button class="btn ghost sm ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:90px">
+      <table>
+        <thead><tr><th class="st">상태</th><th class="pinL">주문번호</th><th>주문명</th><th>고객명</th><th>주문상태</th><th>주문일</th><th class="del">삭제</th></tr></thead>
+        <tbody><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:22px">조회된 주문이 없습니다.</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="split"><span class="arw">▲</span><span class="hnd">⋯⋯</span><span class="arw">▼</span></div>
+
+    <div class="tabs"><span class="on">품목</span><span>태그</span></div>
+    <div class="tb">
+      <span class="ttl">주문 품목</span>
+      <button class="btn ghost sm" disabled>조회</button>
+      <button class="btn ghost sm" disabled>행 추가</button>
+      <button class="btn sm" disabled>저장</button>
+      <button class="btn ghost sm ico" disabled>⤓</button>
+      <button class="btn ghost sm ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:90px">
+      <table>
+        <thead><tr><th class="st">상태</th><th class="roh pinL">순번</th><th>품목코드</th><th>품목명</th><th>수량</th><th>단가</th><th class="del">삭제</th></tr></thead>
+        <tbody><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:22px">주문을 먼저 선택하세요.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<h3>② 마스터 선택 해제 — 탭 둘 다 <b>함께</b> 잠긴다. 엑셀도 같이(<code>S5-12</code> · <code>S5-13</code>)</h3>
+
+<p style="font-size:12.5px;margin:0 0 8px">
+  <b>대상 없이 엑셀을 내려받을 수 없다</b> — 화면의 표가 곧 엑셀의 표이므로(요건서 §5) 표가 비면 낼 것이 없다.
+  <b>판이 사라지지 않는다</b> — 탭 둘 다 자리에 남는다.
+</p>
+
+<div class="screen leaf">
+  <div class="bar">하단만 — 마스터에서 선택을 풀었다</div>
+  <div class="body">
+    <div class="tabs"><span class="on">품목</span><span>태그</span></div>
+    <div class="tb">
+      <span class="ttl">주문 품목</span>
+      <button class="btn ghost sm" disabled>조회</button>
+      <button class="btn ghost sm" disabled>행 추가</button>
+      <button class="btn sm" disabled>저장</button>
+      <button class="btn ghost sm ico" disabled>⤓</button>
+      <button class="btn ghost sm ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:80px">
+      <table>
+        <thead><tr><th class="st">상태</th><th class="roh pinL">순번</th><th>품목코드</th><th>품목명</th><th class="del">삭제</th></tr></thead>
+        <tbody><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px">주문을 먼저 선택하세요.</td></tr></tbody>
+      </table>
+    </div>
+    <p style="font-size:11.5px;color:var(--muted);margin:8px 0 0">
+      태그 탭도 같다 — <b>탭을 눌러 보면 같은 문구의 빈 판</b>이고 버튼이 잠겨 있다.
+    </p>
+  </div>
+</div>
+
+<h3>③ 미저장 신규 마스터 행을 골랐다 — <b>하단이 잠긴다</b></h3>
+
+<p style="font-size:12.5px;margin:0 0 8px">
+  부모 키가 아직 DB 에 없다 — 자식을 붙일 수 없으므로 <b>선택으로 취급하지 않는다</b>.
+  그래서 탭 제목의 <b>접미가 조용히 빠진다</b>.
+</p>
+
+<div class="screen leaf">
+  <div class="bar">마스터에 <code>＋</code> 행을 만들고 그 행을 고른 상태</div>
+  <div class="body">
+    <div class="grid" style="max-height:120px">
+      <table>
+        <thead><tr><th class="st">상태</th><th class="req pinL">주문번호 <em>*</em></th><th class="req">주문명 <em>*</em></th><th class="req">고객명 <em>*</em></th><th class="roh">주문상태</th><th class="req">주문일 <em>*</em></th><th>수량</th><th class="del">삭제</th></tr></thead>
+        <tbody>
+          <tr class="new sel">
+            <td class="st">＋</td><td class="req pinL cur"></td><td class="req"></td><td class="req"></td>
+            <td class="ro">접수</td><td class="req"></td><td>0</td><td class="del">✕</td>
+          </tr>
+          <tr><td class="st"></td><td class="ro pinL">SO-2026-0419</td><td>대한물산</td><td>대한물산</td><td class="ro">접수</td><td>2026-04-19</td><td>50</td><td class="del">✕</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="split"><span class="arw">▲</span><span class="hnd">⋯⋯</span><span class="arw">▼</span></div>
+
+    <div class="tabs"><span class="on">품목</span><span>태그</span></div>
+    <div class="tb">
+      <span class="ttl">주문 품목</span>
+      <button class="btn ghost sm" disabled>조회</button>
+      <button class="btn ghost sm" disabled>행 추가</button>
+      <button class="btn sm" disabled>저장</button>
+      <button class="btn ghost sm ico" disabled>⤓</button>
+      <button class="btn ghost sm ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:80px">
+      <table>
+        <thead><tr><th class="st">상태</th><th class="roh pinL">순번</th><th>품목코드</th><th>품목명</th><th class="del">삭제</th></tr></thead>
+        <tbody><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px">주문을 먼저 선택하세요.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<h3>④ 태그 탭 — <b>첫 클릭에 조회가 나간다</b>(지연 로딩). 재클릭에는 나가지 않는다</h3>
+
+<p style="font-size:12.5px;margin:0 0 8px">
+  마스터 행을 고를 때는 <b>활성 탭만</b> 조회한다(<code>S5-01</code>). 안 눌러 본 탭은 <b>아직 읽지 않은 것</b>이며,
+  한 번 읽은 탭은 <b>주문이 바뀔 때까지 다시 읽지 않는다</b>(<code>S5-03</code>).
+  두 탭의 <b><code>gridId</code> 가 다르다</b> — 컬럼 설정이 서로를 덮지 않는다(<code>S5-05</code>).
+</p>
+
+<div class="screen leaf">
+  <div class="bar">태그 탭을 처음 눌렀다 — 그때 조회가 나갔다</div>
+  <div class="body">
+    <div class="tabs"><span>품목</span><span class="on">태그</span></div>
+    <div class="tb">
+      <span class="ttl">주문 태그 — SO-2026-0419 / 대한물산</span>
+      <button class="btn ghost sm">조회</button>
+      <button class="btn ghost sm">행 추가</button>
+      <button class="btn sm">저장</button>
+      <button class="btn ghost sm ico">⤓</button>
+      <button class="btn ghost sm ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:150px">
+      <table>
+        <thead>
+          <tr>
+            <th class="st">상태</th><th class="roh pinL">순번</th>
+            <th class="req">태그명 <em>*</em></th><th>태그유형</th><th class="req">정렬순서 <em>*</em></th>
+            <th class="roh">등록자</th><th class="roh">등록일시</th><th class="del">삭제</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="st"></td><td class="ro pinL">1</td><td class="req">봄 프로모션</td><td>프로모션</td><td class="req">1</td><td class="ro">lee</td><td class="ro">2026-04-19 08:41</td><td class="del">✕</td></tr>
+          <tr><td class="st"></td><td class="ro pinL">2</td><td class="req">분할 출고</td><td>일반</td><td class="req">2</td><td class="ro">lee</td><td class="ro">2026-04-19 08:41</td><td class="del">✕</td></tr>
+          <tr><td class="st"></td><td class="ro pinL">3</td><td class="req">파손 주의</td><td>주의</td><td class="req">3</td><td class="ro">kim</td><td class="ro">2026-04-20 13:10</td><td class="del">✕</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span><b>3</b>건 조회됨</span><span class="nav"></span><span class="size"></span></div>
+  </div>
+</div>
+
+<p style="font-size:12.5px;margin:14px 0 8px">
+  <b>태그가 없는 주문</b> — 빈 판이지만 <b>행 추가는 열려 있다</b>. 주문은 골랐으므로 넣을 자리가 있다.
+</p>
+
+<div class="screen leaf">
+  <div class="bar">태그 0건인 주문</div>
+  <div class="body">
+    <div class="tabs"><span>품목</span><span class="on">태그</span></div>
+    <div class="tb">
+      <span class="ttl">주문 태그 — SO-2026-0420 / 삼진유통 봄 보충</span>
+      <button class="btn ghost sm">조회</button>
+      <button class="btn ghost sm">행 추가</button>
+      <button class="btn sm" disabled>저장</button>
+      <button class="btn ghost sm ico" disabled>⤓</button>
+      <button class="btn ghost sm ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:80px">
+      <table>
+        <thead><tr><th class="st">상태</th><th class="roh pinL">순번</th><th class="req">태그명 <em>*</em></th><th>태그유형</th><th class="req">정렬순서 <em>*</em></th><th class="del">삭제</th></tr></thead>
+        <tbody><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">등록된 태그가 없습니다.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<h3>⑤ 편집 중 — 품목을 고치고 태그 탭으로 옮겼다. <b>묻지 않고, 편집이 남는다</b></h3>
+
+<p style="font-size:12.5px;margin:0 0 8px">
+  <b>탭을 오가는 것으로는 묻지 않는다</b> — 표시가 바뀔 뿐 데이터를 버리지 않는다(요건서 §1-1).
+  대신 <b>미저장인 탭에 <code>●</code> 가 붙어</b> 어디에 두고 왔는지 말한다(<code>S5-06</code>).
+  <b>태그 탭에서 저장하면 태그만 나간다</b> — 품목의 <code>✎</code> 는 남는다(<code>S5-08</code>).
+</p>
+
+<div class="screen leaf">
+  <div class="bar">품목 <code>✎</code> 하나 · 태그 <code>＋</code> 하나 — 저장 단위가 다르다</div>
+  <div class="body">
+    <div class="tabs">
+      <span>품목 <span class="badge">●</span></span>
+      <span class="on">태그 <span class="badge">●</span></span>
+    </div>
+    <div class="tb">
+      <span class="ttl">주문 태그 — SO-2026-0419 / 대한물산</span>
+      <button class="btn ghost sm">조회</button>
+      <button class="btn ghost sm">행 추가</button>
+      <button class="btn sm">저장</button>
+      <button class="btn ghost sm ico">⤓</button>
+      <button class="btn ghost sm ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:150px">
+      <table>
+        <thead>
+          <tr><th class="st">상태</th><th class="roh pinL">순번</th><th class="req">태그명 <em>*</em></th><th>태그유형</th><th class="req">정렬순서 <em>*</em></th><th class="del">삭제</th></tr>
+        </thead>
+        <tbody>
+          <tr class="new">
+            <td class="st">＋</td><td class="ro pinL"></td>
+            <td class="req edit">재포장 필요</td><td>일반 ▾</td><td class="req">4</td><td class="del">✕</td>
+          </tr>
+          <tr><td class="st"></td><td class="ro pinL">1</td><td class="req">봄 프로모션</td><td>프로모션</td><td class="req">1</td><td class="del">✕</td></tr>
+          <tr class="mod"><td class="st">✎</td><td class="ro pinL">2</td><td class="req">분할 출고</td><td>주의</td><td class="req">2</td><td class="del">✕</td></tr>
+          <tr class="rmv"><td class="st">✎</td><td class="ro pinL">3</td><td class="req">파손 주의</td><td>주의</td><td class="req">3</td><td class="del">✕</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:11.5px;color:var(--muted);margin:8px 0 0">
+      <b>신규 행은 맨 위에 선다</b>. 순번은 <b>서버가 채운다</b> — 저장 전에는 비어 있다(<code>S5-17</code>).
+      행마다 상태를 실어 보내므로(요건서 §4-1b) <b>지운 행도 저장을 눌러야 나간다</b>.
+    </p>
+  </div>
+</div>
+
+<p style="font-size:12.5px;margin:14px 0 8px">
+  <b>품목 탭으로 돌아오면 편집이 그대로 있다</b>(<code>S5-07</code>) — 탭을 옮길 때 판을 언마운트하지 않는다.
+</p>
+
+<div class="screen leaf">
+  <div class="bar">태그 탭 → 품목 탭 복귀</div>
+  <div class="body">
+    <div class="tabs"><span class="on">품목 <span class="badge">●</span></span><span>태그 <span class="badge">●</span></span></div>
+    <div class="grid" style="max-height:120px">
+      <table>
+        <thead><tr><th class="st">상태</th><th class="roh pinL">순번</th><th class="req">품목코드 <em>*</em></th><th class="req">품목명 <em>*</em></th><th class="req">수량 <em>*</em></th><th class="req">단가 <em>*</em></th><th class="roh">금액</th><th class="del">삭제</th></tr></thead>
+        <tbody>
+          <tr class="mod"><td class="st">✎</td><td class="ro pinL">1</td><td class="ro req pinL">A-1001</td><td class="req">골판지 박스 소</td><td class="req cur">18</td><td class="req">12,500</td><td class="ro">225,000</td><td class="del">✕</td></tr>
+          <tr><td class="st"></td><td class="ro pinL">2</td><td class="ro req pinL">A-1002</td><td class="req">골판지 박스 중</td><td class="req">20</td><td class="req">31,000</td><td class="ro">620,000</td><td class="del">✕</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:11.5px;color:var(--muted);margin:8px 0 0">
+      수량을 고치면 <b>금액이 함께</b> 갱신되고 행이 <code>✎</code> 가 된다. <b>마스터의 주문금액은 그대로다</b> —
+      저장 뒤 서버가 합산한 값으로 온다.
+    </p>
+  </div>
+</div>
+
+<h3>⑥ 잠긴 주문 — <b>잠금이 먼저다</b>. 상태와 무관하게 닫힌다(요건서 §4-2)</h3>
+
+<div class="screen leaf">
+  <div class="bar">잠긴 주문의 셀을 눌렀다</div>
+  <div class="body">
+    <div class="banner">잠긴 주문입니다. 운영자가 잠금을 풀어야 고칠 수 있습니다.</div>
+    <div class="grid" style="max-height:110px">
+      <table>
+        <thead><tr><th class="st">상태</th><th class="req pinL">주문번호 <em>*</em></th><th class="req">주문명 <em>*</em></th><th class="roh">주문상태</th><th>수량</th><th>사용</th><th class="del">삭제</th></tr></thead>
+        <tbody>
+          <tr class="sel"><td class="st"></td><td class="ro pinL">SO-2026-0418</td><td class="ro">한빛상사 창고 이관</td><td class="ro">완료</td><td class="ro cur">300</td><td><span class="swt on dis"></span></td><td class="del ro">✕</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:11.5px;color:var(--muted);margin:8px 0 0">
+      <b>신규 행은 언제나 열린다</b> — 잠금도 상태도 아직 붙지 않은 행이다(요건서 §4-2).
+    </p>
+  </div>
+</div>
+
+<h2>3. 하단이 하나로 묶이는 자리 — 미저장 경고 · 접힘 · 권한</h2>
+
+<h3>① 마스터 선택을 바꿀 때 — <b>모달 하나</b>. 탭 둘이 미저장이어도 둘 뜨지 않는다</h3>
+
+<p style="font-size:12.5px;margin:0 0 8px">
+  <b>탭마다 물으면 사용자는 같은 물음에 두 번 답하면서도 무엇을 잃는지는 여전히 모른다</b>(요건서 §1-1).
+  묻는 것은 <b>마스터가 선택을 받아들이기 전 한 번</b>이고, 그 판단은 <b>탭 둘의 미저장을 합쳐</b> 나온다.
+</p>
+
+<div class="screen shell">
+  <div class="bar">품목 · 태그 둘 다 미저장 상태에서 다른 주문을 클릭했다</div>
+  <div class="body">
+    <div class="modal">
+      <div class="mh">저장하지 않은 변경이 있습니다.<span class="x">✕</span></div>
+      <div class="mb">다시 조회하면 변경이 사라집니다. 계속할까요?</div>
+      <div class="mf">
+        <span>취소하면 <b>마스터의 선택이 되돌아가고</b> 두 탭의 편집이 모두 남는다(<code>S5-10</code>)</span>
+        <span class="row"><button class="btn ghost sm">취소</button><button class="btn sm">확인</button></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="font-size:12.5px;margin:14px 0 8px">
+  <b>같은 모양이 한 자리 더 있다</b> — 미저장 상태로 <b>그 탭의 조회</b>를 누를 때다(<code>S5-25</code>).
+  그때 버려지는 것은 <b>누른 탭의 편집뿐</b>이고 반대쪽 탭은 영향이 없다.
+  <b>셸 탭을 닫을 때 묻는 것은 셸의 일이다</b>(<code>S5-11</code>) — 화면 안 탭이 아니다.
+</p>
+
+<h3>② 하단을 접었다 — <b>탭바가 사라지고 제목 한 줄만 남는다</b>(<code>S5-14</code> · <code>S5-15</code>)</h3>
+
+<div class="screen leaf">
+  <div class="bar">스플리터를 아래로 끝까지 끌었다</div>
+  <div class="body">
+    <div class="grid" style="max-height:90px">
+      <table>
+        <thead><tr><th class="st">상태</th><th class="pinL">주문번호</th><th>주문명</th><th>고객명</th><th class="roh">주문상태</th><th>주문일</th><th class="del">삭제</th></tr></thead>
+        <tbody>
+          <tr class="sel"><td class="st"></td><td class="ro pinL">SO-2026-0419</td><td>대한물산</td><td>대한물산</td><td class="ro">접수</td><td>2026-04-19</td><td class="del">✕</td></tr>
+          <tr><td class="st"></td><td class="ro pinL">SO-2026-0420</td><td>삼진유통 봄 보충</td><td>삼진유통</td><td class="ro">접수</td><td>2026-04-20</td><td class="del">✕</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="split">
+      <span class="arw off">▲</span><span class="hnd">⋯⋯</span><span class="arw">▼</span>
+    </div>
+    <div class="folded">
+      주문 태그 — SO-2026-0419 / 대한물산
+      <span class="why">클릭하면 펴진다 · 활성 탭과 편집이 그대로</span>
+    </div>
+    <p style="font-size:11.5px;color:var(--muted);margin:8px 0 0">
+      <b>접힌 것은 없어진 것과 다르다</b> — 판이 살아 있으므로 <code>●</code> 도 편집도 그대로다.
+      <b>위쪽 화살표는 비활성</b>이다 — 둘 다 접히지 않는다.
+    </p>
+  </div>
+</div>
+
+<h3>③ 권한 — <code>S</code> 가 없으면 <b>저장과 행 추가가 아예 없다</b></h3>
+
+<p style="font-size:12.5px;margin:0 0 8px">
+  이 화면이 쓰는 액션은 <code>R</code> <code>S</code> <code>E</code> 셋이고 <b><code>X</code> 가 없다</b> — <b>실행 버튼이 없다</b>(요건서 §5).
+  버튼은 각자의 URL 액션으로 판정되며 <b>없으면 감춘다</b>(비활성이 아니다).
+  <b>탭이 늘어도 메뉴와 권한은 하나다</b>(<code>S5-21</code>) — 권한 경계는 화면이고 탭은 그 안의 배치다.
+</p>
+
+<div class="screen leaf">
+  <div class="bar"><code>R</code> · <code>E</code> 만 가진 사용자</div>
+  <div class="body">
+    <div class="tb">
+      <span class="ttl">주문</span>
+      <button class="btn ghost sm">조회</button>
+      <button class="btn ghost sm ico">⤓ ▾</button>
+      <button class="btn ghost sm ico">⚙</button>
+    </div>
+    <div class="split"><span class="arw">▲</span><span class="hnd">⋯⋯</span><span class="arw">▼</span></div>
+    <div class="tabs"><span class="on">품목</span><span>태그</span></div>
+    <div class="tb">
+      <span class="ttl">주문 품목 — SO-2026-0419 / 대한물산</span>
+      <button class="btn ghost sm">조회</button>
+      <button class="btn ghost sm ico">⤓</button>
+      <button class="btn ghost sm ico">⚙</button>
+    </div>
+    <p style="font-size:11.5px;color:var(--muted);margin:8px 0 0">
+      <b>세 그리드가 함께 그렇게 된다</b> — 저장 버튼이 셋이지만 권한은 하나이므로 셋이 같이 서고 같이 사라진다.
+      <b>엑셀은 남는다</b> — 메뉴가 <code>EXPORT_YN = Y</code> 를 선언했다(요건서 §8).
+    </p>
+  </div>
+</div>
+
+<h2>4. 테스트 케이스 — 위 화면들의 주장을 전부 덮는다</h2>
+
+<p style="font-size:12.5px;margin:0 0 10px">
+  <b>이 표는 요건서 §9 를 그대로 옮긴 것이다</b> — 고칠 곳은 요건서다.
+  <b>화면은 <i>"왜 이렇게 그렸는가"</i> 를 말하고 여기는 <i>"그것이 지켜졌는가"</i> 를 묻는다.</b>
+</p>
+
+<h3>케이스</h3>
 <table>
-  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th></tr></thead>
   <tbody>
-  <tr><td class="c">S5-01</td><td>마스터 행 선택</td><td><b>활성 탭만</b> 조회가 나간다. 둘째 탭은 아직</td><td>주석 5</td></tr>
-  <tr><td class="c">S5-02</td><td>둘째 탭 첫 클릭</td><td>그때 조회가 나간다</td><td>화면 4-1</td></tr>
-  <tr><td class="c">S5-03</td><td>둘째 탭 재클릭</td><td><b>다시 조회하지 않는다</b> — 이미 읽었다</td><td>〃</td></tr>
-  <tr><td class="c">S5-04</td><td>탭 제목</td><td>둘 다 <b>— SO-2026-0419 / 대한물산</b> 이 붙는다</td><td>주석 1</td></tr>
-  <tr><td class="c">S5-05</td><td>두 탭의 <code>gridId</code></td><td><b>다르다.</b> 컬럼 설정이 서로를 덮지 않는다</td><td>주석 1</td></tr>
-  <tr><td class="c">S5-06</td><td>품목 수정 → 태그 탭</td><td><b>묻지 않는다.</b> 품목 탭에 <b>●</b> 가 붙는다</td><td>주석 3 · 화면 3</td></tr>
-  <tr><td class="c">S5-07</td><td>태그 탭 → 품목 탭 복귀</td><td><b>편집이 그대로</b> 있다 — 언마운트하지 않는다</td><td>화면 3</td></tr>
-  <tr><td class="c">S5-08</td><td>태그 탭에서 저장</td><td><b>태그만</b> 나간다. 품목의 <code>✎</code> 는 남는다</td><td>화면 3</td></tr>
-  <tr><td class="c">S5-09</td><td>탭 둘 다 미저장 · 마스터 선택 변경</td><td><b>모달 하나.</b> 둘 뜨지 않는다</td><td>주석 4</td></tr>
-  <tr><td class="c">S5-10</td><td>그 모달에서 취소</td><td>마스터 선택이 <b>되돌아간다.</b> 두 탭 편집 모두 남는다</td><td>—</td></tr>
-  <tr><td class="c">S5-11</td><td>미저장 상태로 <b>셸 탭 닫기</b></td><td>셸이 묻는다 — 화면 안 탭이 아니라 셸의 일</td><td>—</td></tr>
-  <tr><td class="c">S5-12</td><td>마스터 선택 해제</td><td>탭 둘 다 <b>살아 있고 버튼이 잠긴다</b></td><td>주석 6 · 화면 4-2</td></tr>
-  <tr><td class="c">S5-13</td><td>그 상태의 ②③</td><td><b>함께 잠긴다</b> — 대상 없이 엑셀을 내려받을 수 없다</td><td>—</td></tr>
-  <tr><td class="c">S5-14</td><td>하단을 접는다</td><td><b>탭바가 사라지고</b> 제목 한 줄만 남는다</td><td>주석 7 · 화면 4-3</td></tr>
-  <tr><td class="c">S5-15</td><td>접힌 제목 줄 클릭</td><td>펴진다. <b>활성 탭과 편집이 그대로</b></td><td>〃</td></tr>
-  <tr><td class="c">S5-16</td><td>태그 탭에서 행 추가</td><td>맨 위에 <code>＋</code> · <b>첫 편집 가능 셀이 열린다</b></td><td>—</td></tr>
-  <tr><td class="c">S5-17</td><td>태그 <code>SORT_NO</code></td><td>서버가 채운다. <b>화면이 순번을 만들지 않는다</b></td><td>—</td></tr>
-  <tr><td class="c">S5-18</td><td>태그를 여기서 지우고 저장 → 화면 ①로 간다</td><td>①의 <code>list</code> 셀에서도 <b>사라져 있다</b> — 같은 데이터다</td><td>주석 2</td></tr>
-  <tr><td class="c">S5-19</td><td>①의 <code>listModal</code> 로 태그를 더하고 저장 → 이 화면</td><td>태그 탭에 <b>행으로</b> 나온다</td><td>〃</td></tr>
-  <tr><td class="c">S5-20</td><td>마스터 삭제 — 품목 0건 · 태그 4건</td><td><b>열리지 않는다.</b> 태그도 자식이다</td><td>—</td></tr>
-  <tr><td class="c">S5-21</td><td>탭을 셋으로 늘린다</td><td><b>메뉴가 늘지 않는다.</b> 권한도 그대로 하나</td><td>—</td></tr>
-  <tr><td class="c">S5-23</td><td>품목 탭의 <b>조회</b></td><td><b>품목만</b> 다시 읽는다. 태그 탭은 <b>손대지 않는다</b></td><td>—</td></tr>
-  <tr><td class="c">S5-24</td><td>아직 열지 않은 태그 탭</td><td>품목의 조회가 <b>태그를 읽지 않는다</b> — 지연 로딩이 깨지지 않는다</td><td>주석 5</td></tr>
-  <tr><td class="c">S5-25</td><td>품목 미저장 상태로 <b>품목 탭 조회</b></td><td><b>묻는다.</b> 태그 탭의 편집은 <b>영향 없다</b></td><td>—</td></tr>
-  <tr><td class="c">S5-22</td><td>탭바의 모양</td><td>셸 탭바와 <b>다르다</b> — 닫기 <code>×</code> 가 없다</td><td>—</td></tr>
+    <tr><td class="c">S5-01</td><td>마스터 행 선택</td><td><b>활성 탭만</b> 조회가 나간다. 둘째 탭은 아직</td></tr>
+    <tr><td class="c">S5-02</td><td>둘째 탭 첫 클릭</td><td>그때 조회가 나간다</td></tr>
+    <tr><td class="c">S5-03</td><td>둘째 탭 재클릭</td><td><b>다시 조회하지 않는다</b> — 이미 읽었다</td></tr>
+    <tr><td class="c">S5-04</td><td>탭 제목</td><td>둘 다 <b>— SO-2026-0419 / 대한물산</b> 이 붙는다</td></tr>
+    <tr><td class="c">S5-05</td><td>두 탭의 <code>gridId</code></td><td><b>다르다.</b> 컬럼 설정이 서로를 덮지 않는다</td></tr>
+    <tr><td class="c">S5-06</td><td>품목 수정 → 태그 탭</td><td><b>묻지 않는다.</b> 품목 탭에 <b>●</b> 가 붙는다</td></tr>
+    <tr><td class="c">S5-07</td><td>태그 탭 → 품목 탭 복귀</td><td><b>편집이 그대로</b> 있다 — 언마운트하지 않는다</td></tr>
+    <tr><td class="c">S5-08</td><td>태그 탭에서 저장</td><td><b>태그만</b> 나간다. 품목의 <code>✎</code> 는 남는다</td></tr>
+    <tr><td class="c">S5-09</td><td>탭 둘 다 미저장 · 마스터 선택 변경</td><td><b>모달 하나.</b> 둘 뜨지 않는다</td></tr>
+    <tr><td class="c">S5-10</td><td>그 모달에서 취소</td><td>마스터 선택이 <b>되돌아간다.</b> 두 탭 편집 모두 남는다</td></tr>
+    <tr><td class="c">S5-11</td><td>미저장 상태로 <b>셸 탭 닫기</b></td><td>셸이 묻는다 — 화면 안 탭이 아니라 셸의 일</td></tr>
+    <tr><td class="c">S5-12</td><td>마스터 선택 해제</td><td>탭 둘 다 <b>살아 있고 버튼이 잠긴다</b></td></tr>
+    <tr><td class="c">S5-13</td><td>그 상태의 ②③</td><td><b>함께 잠긴다</b> — 대상 없이 엑셀을 내려받을 수 없다</td></tr>
+    <tr><td class="c">S5-14</td><td>하단을 접는다</td><td><b>탭바가 사라지고</b> 제목 한 줄만 남는다</td></tr>
+    <tr><td class="c">S5-15</td><td>접힌 제목 줄 클릭</td><td>펴진다. <b>활성 탭과 편집이 그대로</b></td></tr>
+    <tr><td class="c">S5-16</td><td>태그 탭에서 행 추가</td><td>맨 위에 <code>＋</code> · <b>첫 편집 가능 셀이 열린다</b></td></tr>
+    <tr><td class="c">S5-17</td><td>태그 <code>SORT_NO</code></td><td>서버가 채운다. <b>화면이 순번을 만들지 않는다</b></td></tr>
+    <tr><td class="c">S5-18</td><td>태그를 여기서 지우고 저장 → 화면 ①로 간다</td><td>①의 <code>list</code> 셀에서도 <b>사라져 있다</b> — 같은 데이터다</td></tr>
+    <tr><td class="c">S5-19</td><td>①의 <code>listModal</code> 로 태그를 더하고 저장 → 이 화면</td><td>태그 탭에 <b>행으로</b> 나온다</td></tr>
+    <tr><td class="c">S5-20</td><td>마스터 삭제 — 품목 0건 · 태그 4건</td><td><b>열리지 않는다.</b> 태그도 자식이다</td></tr>
+    <tr><td class="c">S5-21</td><td>탭을 셋으로 늘린다</td><td><b>메뉴가 늘지 않는다.</b> 권한도 그대로 하나</td></tr>
+    <tr><td class="c">S5-23</td><td>품목 탭의 <b>조회</b></td><td><b>품목만</b> 다시 읽는다. 태그 탭은 <b>손대지 않는다</b></td></tr>
+    <tr><td class="c">S5-24</td><td>아직 열지 않은 태그 탭</td><td>품목의 조회가 <b>태그를 읽지 않는다</b> — 지연 로딩이 깨지지 않는다</td></tr>
+    <tr><td class="c">S5-25</td><td>품목 미저장 상태로 <b>품목 탭 조회</b></td><td><b>묻는다.</b> 태그 탭의 편집은 <b>영향 없다</b></td></tr>
+    <tr><td class="c">S5-22</td><td>탭바의 모양</td><td>셸 탭바와 <b>다르다</b> — 닫기 <code>×</code> 가 없다</td></tr>
   </tbody>
 </table>
 
-<!-- ── 확인 목록 ───────────────────────────────────────────── -->
-<h2>7. 이 목업으로 확인할 것</h2>
+<h2>5. 이 목업으로 확인할 것</h2>
 
 <div class="todo">
-  <b>이 화면이 정한 것</b>
+  <b>결정하면 요건서에 적는다. 이 파일이 아니라.</b>
   <ul>
-    <li><b>탭 라벨에 미저장 표시(<span class="dot" style="margin:0 2px"></span>)를 둔다</b>(주석 3) —
-        그리드 표준에 없던 것이며, <b>한 번에 한 탭만 보이는</b> 구조가 요구한다.</li>
-    <li><b>탭 전환은 묻지 않고 마스터 선택 변경은 묻는다</b>(주석 4) — 경계가 어디인지를
-        <i>잃는가</i> 하나로 가른다.</li>
-    <li><b><code>list</code> 와 자식 테이블이 같은 데이터라는 것을 두 화면이 함께 보인다</b>(주석 2).</li>
-  </ul>
-  <b>아직 답이 없는 것</b>
-  <ul>
-    <li><b>탭 라벨의 건수 <code>(3)</code></b> — 조회 전에는 무엇을 보이나. 물음표인지 빈칸인지,
-        아니면 <b>연 뒤에만 붙는지</b>. 지연 로딩과 맞물린다.</li>
-    <li><b>미저장 표시를 <span class="dot" style="margin:0 2px"></span> 로 할지 <code>✎</code> 로 할지</b> —
-        행 상태 아이콘과 같은 글자를 쓰면 <i>탭 전체가 수정됨</i> 으로 읽힐 수 있다.</li>
-    <li><b>탭이 다섯을 넘으면</b> — 사용자 화면 설계가 이미 다섯이다. <b>스크롤인지 접기인지</b>가
-        미정이며, 그것은 이 화면이 아니라 <code>DetailTabs</code> 의 일이다.</li>
+    <li><b>이 화면을 지우면 하단 디테일 탭의 예가 사라진다.</b></li>
   </ul>
 </div>
 
 <footer>
-  <b>목업 규약</b> — 정적 HTML, 프레임워크 없음, 픽셀 충실도는 목표가 아니다.
-  <b>결정은 <code>requirements.md</code> 가 갖고 이 파일은 확인용이다</b> — 여기에만 있고
-  요건서에 없는 정보는 유실된 것으로 친다.<br>
-  이 파일의 <code>&lt;style&gt;</code> 블록은 <code>documents/screenaidd-guide/artifact/template/03-mockup.html</code> 에서 그대로 복사했다 —
-  <code>.sf</code> <code>.tb</code> <code>.grid</code> <code>.pg</code> <code>.split</code>.
+  <b>이 파일은 생성물이다</b> — <code>/mockup</code> 이 <code>requirements.md</code> 에서 만든다.
+  결정과 테스트 케이스는 요건서가 갖고 여기는 확인용이다. 손으로 고치면 다음 생성에서 사라진다.<br>
+  정적 HTML, 프레임워크 없음, 픽셀 충실도는 목표가 아니다.
 </footer>
 
 </main>
