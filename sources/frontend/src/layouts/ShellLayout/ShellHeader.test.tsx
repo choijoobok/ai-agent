@@ -38,7 +38,7 @@ describe('헤더 우측', () => {
     screen
       .getAllByRole('button')
       .map((element) => element.textContent)
-      .filter((text) => text !== 'Ordinary Backoffice' && text !== '');
+      .filter((text) => text !== 'AI Agent' && text !== '');
 
   it('알림 · 사용자 · 설정 · 로그아웃 순서다 — 오른쪽으로 갈수록 되돌리기 어렵다', () => {
     mount();

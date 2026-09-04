@@ -137,14 +137,14 @@ function theme() {
     '<a:ln w="6350"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln>'.repeat(3);
   const effect = '<a:effectStyle><a:effectLst/></a:effectStyle>'.repeat(3);
   return `${HEAD}
-<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="ordinary">
+<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="ai-agent">
 <a:themeElements>
-<a:clrScheme name="ordinary">${clr}</a:clrScheme>
-<a:fontScheme name="ordinary">
+<a:clrScheme name="ai-agent">${clr}</a:clrScheme>
+<a:fontScheme name="ai-agent">
 <a:majorFont><a:latin typeface="${font}"/><a:ea typeface="${font}"/><a:cs typeface=""/></a:majorFont>
 <a:minorFont><a:latin typeface="${font}"/><a:ea typeface="${font}"/><a:cs typeface=""/></a:minorFont>
 </a:fontScheme>
-<a:fmtScheme name="ordinary">
+<a:fmtScheme name="ai-agent">
 <a:fillStyleLst>${fill}</a:fillStyleLst>
 <a:lnStyleLst>${line}</a:lnStyleLst>
 <a:effectStyleLst>${effect}</a:effectStyleLst>

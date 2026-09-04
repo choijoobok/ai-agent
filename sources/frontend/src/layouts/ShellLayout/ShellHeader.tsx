@@ -80,7 +80,7 @@ export function ShellHeader({
         그대로 남는다.
       */}
       <Button type="text" onClick={onLogoClick} style={{ fontWeight: 600 }}>
-        Ordinary Backoffice
+        AI Agent
       </Button>
 
       {/* 왼쪽에서 오른쪽으로 되돌리기 어려워진다 — 마지막이 로그아웃이다. */}

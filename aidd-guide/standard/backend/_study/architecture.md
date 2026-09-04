@@ -31,7 +31,7 @@ tags: [backend, architecture, study]
 Gradle 멀티모듈. 목적은 **P2(삭제하기 쉬운 템플릿)** 와 의존 방향 강제다.
 
 ```
-ordinary-backoffice/
+ai-agent/
 ├── sources/settings.gradle.kts
 ├── sources/gradle/libs.versions.toml          # 버전 단일 출처
 ├── sources/backend/

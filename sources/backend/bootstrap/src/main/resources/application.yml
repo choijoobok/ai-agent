@@ -1,6 +1,6 @@
 spring:
   application:
-    name: ordinary-backoffice
+    name: ai-agent
 
   jpa:
     hibernate:
@@ -159,7 +159,7 @@ app:
   # 수 있으면 운영이 발송을 통째로 거부되게 만들 수 있고, 그 실패는 조용하다(§6-3).
   mail:
     from: no-reply@example.com
-    from-name: ordinary-backoffice
+    from-name: ai-agent
 
   security:
     # 동시 접속 제어 — 23 §4-1. sys-config 가 아니라 여기인 것은 기동 시 필터 체인의

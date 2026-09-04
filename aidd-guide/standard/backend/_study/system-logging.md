@@ -335,7 +335,7 @@ app:
 logging:
   config: classpath:logback-sync.xml   # 운영은 logback-async.xml
   file:
-    name: logs/ordinary-backoffice.log
+    name: logs/ai-agent.log
   logback:
     rollingpolicy:
       max-file-size: 50MB

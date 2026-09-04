@@ -132,4 +132,5 @@ log:
   - { at: "2026-09-04", by: "[AA]", what: "agentic-ai 12장(개발 표준)을 aidd-guide/standard/hub-conventions.md 로 옮겼다 — 코드 규칙은 spec 이 아니라 가이드의 자리다" }
   - { at: "2026-09-04", by: "[PM]", what: "문서 예산을 기계화했다 — guard-write 가 산출물 지도 40행을 읽어 지도 밖 문서를 차단한다(CLAUDE.md §4)" }
   - { at: "2026-09-04", by: "[개발]", what: "**템플릿 보수** — sources/ 주석 24곳이 옛 문서 경로(llm-guide/ · docs/screen/)를 가리켜 고쳤다. 주석뿐이라 동작에는 영향이 없으나, 없는 문서를 부르는 주석은 규약을 아무도 확인하지 않게 만든다. 고친 뒤 참조 9개가 전부 실물을 가리키는 것을 대조했다" }
+  - { at: "2026-09-04", by: "[개발]", what: "**템플릿 보수** — 템플릿 이름을 ai-agent 로 통일했다. 식별자 8곳(rootProject.name · spring.application.name · mail.from-name · package.json·lock · tmpdir 키 문서 2곳)과 **사람이 읽는 자리 2곳**(index.html title · 셸 헤더 → `AI Agent`)이다. **Java 패키지 `com.ordinary.backoffice` 는 그대로 두었다** — 하이픈이 들어간 `ai-agent` 는 패키지 이름이 될 수 없어 새 이름을 정하는 결정이 먼저이고, 624파일과 디렉터리 10 트리가 함께 움직인다. **출처 표기 6곳도 그대로다** — 실재하는 원본 저장소의 이름이라 바꾸면 기록이 거짓이 된다" }
   - { at: "2026-09-04", by: "[PM]", what: "**다음 할 일: OQ-001·OQ-002 에 답을 받고 `/phase-gate` 로 P0 를 승인받는다**" }

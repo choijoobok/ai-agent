@@ -1,4 +1,4 @@
-rootProject.name = "ordinary-backoffice"
+rootProject.name = "ai-agent"
 
 // 모듈 구성과 의존 방향은 aidd-guide/standard/backend/_study/architecture.md §1 이 단일 원본이다.
 include(

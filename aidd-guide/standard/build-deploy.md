@@ -25,7 +25,7 @@ npm run build  →  sources/frontend/dist/
       ↓ (Gradle copy)
 bootstrap/build/resources/main/static/
       ↓
-ordinary-backoffice-{version}.jar   (단일 산출물)
+bootstrap-{version}.jar   (단일 산출물 — 이름은 모듈명이 정한다)
 ```
 
 | | |
