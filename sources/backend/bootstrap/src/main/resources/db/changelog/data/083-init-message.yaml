@@ -1,0 +1,48 @@
+# 메시지 값 — 조회조건 연산자 *초과* · *미만*. 사람 소유 시드다(22 §1.1).
+#
+# 크기 계열의 마지막 둘이며(68 §9.12) 이로써 72 §3.3 의 열셋이 전부 열렸다. 여는 근거는
+# 57 §3.4 그대로다 — *쓰이지 않는 후보를 미리 열지 않는다* 이고, 쓰는 화면이 왔다.
+#
+# 이름이 일해야 하는 자리다. 기호는 `>` 와 `≥` 로 **밑줄 하나 차이**라 좁은 칸에서 갈리지
+# 않으며, 경계값이 들어가는지 아닌지는 이름이 말한다 — 그래서 *초과* / *미만* 이고
+# *보다 큼* 이 아니다: 뒤엣말은 경계에 대해 아무것도 말하지 않는다.
+#
+# CSV 는 생성한다 — 지금 값에는 콤마가 없지만, 손으로 쓰는 관행이 남으면 콤마가 든 문구가
+# 오는 날 **기동에서만** 깨진다(058 · 067 이 그랬다).
+databaseChangeLog:
+  - changeSet:
+      id: data-083-message
+      author: template
+      comment: 조회조건 연산자 초과·미만 — 68 §9.12
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/083-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-083-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

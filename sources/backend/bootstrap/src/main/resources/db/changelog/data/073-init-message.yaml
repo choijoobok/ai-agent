@@ -1,0 +1,63 @@
+# 메시지 값 — 공지·요청함 두 화면의 문구 57키. 사람 소유 시드다(22 §1.1).
+#
+# 072 는 서버가 던지는 오류 여덟이었고 여기는 **화면이 그리는 글자**다. 파일을 가른 것은
+# 소유자가 아니라 시점 때문이다 — 072 는 백엔드 슬라이스에, 이것은 화면 슬라이스에 딸려
+# 왔고, 앞 파일의 CSV 를 뒤에서 고치면 Liquibase 가 체크섬 불일치로 기동을 거부한다.
+#
+# ── 배지 일곱이 이 파일의 절반이다 ──────────────────────────────────────
+#
+#   notice.stat.*    예정 · 게시중 · 종료 · 내림
+#   notiReq.stat.*   접수 · 처리 · 반려
+#   notiReq.type.*   권한 신청 · 잠금 해제 · 기타
+#
+# **값은 코드이고 이 글자는 라벨이다**(54 §5.4). 라벨을 저장하면 set 필터와 정렬이 라벨을
+# 보게 되고, 언어를 바꾸는 순간 저장된 조건이 아무것도 못 찾는다. 47 §10 이 이 셋을
+# 공통코드로 두지 않기로 하며 "라벨만 메시지 키" 라고 적은 그 자리다.
+#
+# ── 문구 둘이 사실을 말한다 ─────────────────────────────────────────────
+#
+# notice.delete.confirm 은 되돌릴 수 없다는 사실과 **대안(끄기)** 을 함께 준다. 사람이
+# 실제로 하려는 일은 대개 "잠깐 감추는 것" 이고 USE_YN 이 이미 그것을 갖고 있다(66 §4.6).
+#
+# notiRequest.reject.notice 는 **사유가 요청자에게 간다**고 말한다. 건수만 말하면 그
+# 사실을 모르고 쓴 메모가 그대로 나간다 — 55 §7 의 confirm 이 실행마다 다른 이유다.
+#
+# notice.empty.active 와 notiRequest.empty 는 **0건을 진단으로 읽히게** 한다(64 §3.7).
+# 뒤엣것은 비어 있는 것이 좋은 소식인 유일한 화면이다(66 §5.7).
+databaseChangeLog:
+  - changeSet:
+      id: data-073-message
+      author: template
+      comment: 공지·요청함 두 화면의 문구 57키 — 66 §4 · §5
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/073-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-073-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

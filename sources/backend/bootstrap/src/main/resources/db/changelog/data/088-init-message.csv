@@ -1,0 +1,23 @@
+MSG_KEY,LANG_CD,MSG_VAL
+segment.dirty.content,ko,저장하지 않은 변경이 있습니다. 다른 화면으로 바꾸면 잃습니다.
+segment.dirty.content,en,You have unsaved changes. Switching will discard them.
+excel.upload.pick,ko,파일 선택
+excel.upload.pick,en,Choose file
+excel.upload.headerMismatch,ko,양식이 맞지 않습니다 — 엑셀 전체 다운로드를 양식으로 쓰세요. 필요: {expected} / 파일: {actual}
+excel.upload.headerMismatch,en,The file does not match the form — use the full Excel download as the form. Expected: {expected} / Found: {actual}
+excel.upload.tooMany,ko,{count}건은 {max}건을 넘습니다. 이 화면이 아니라 배치로 처리하세요.
+excel.upload.tooMany,en,{count} rows exceed the limit of {max}. Use a batch job instead of this screen.
+excel.upload.loaded,ko,{count}건을 읽었습니다
+excel.upload.loaded,en,Loaded {count} row(s)
+excel.upload.notNumber,ko,숫자가 아닙니다: {value}
+excel.upload.notNumber,en,Not a number: {value}
+excel.upload.notInteger,ko,정수가 아닙니다: {value}
+excel.upload.notInteger,en,Not an integer: {value}
+excel.upload.notYn,ko,Y 또는 N 이어야 합니다: {value}
+excel.upload.notYn,en,Must be Y or N: {value}
+excel.upload.unknownCode,ko,목록에 없는 값입니다: {value}
+excel.upload.unknownCode,en,Not in the list: {value}
+excel.upload.ambiguousCode,ko,이름이 두 개 이상의 코드에 해당합니다. 코드값으로 적으세요: {value}
+excel.upload.ambiguousCode,en,The name matches more than one code. Use the code value instead: {value}
+excel.upload.duplicated,ko,파일 안에 같은 키가 두 번 이상 있습니다
+excel.upload.duplicated,en,The same key appears more than once in the file

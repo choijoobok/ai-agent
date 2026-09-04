@@ -1,0 +1,54 @@
+# 메시지 값 — 태그 후보 팝업과 개수 상한(48 §8 · 54 §5.6 · 68 §9.6).
+#
+# 앞의 것을 고치지 않고 파일을 더한다(22 §1.1). loadData 는 CSV 의 내용을 체크섬에 넣으므로
+# 091 에 줄을 더하면 그 changeset 이 이미 돈 DB 에서 기동이 죽는다.
+#
+# ── 같은 문장이 키 둘에 있다 ────────────────────────────────────────────
+#
+# sample.tag.tooMany 는 화면의 것이고 err.sample.tag-too-many 는 서버의 것이다. 나누는 것은
+# 43 §3 의 규약이지만(FRONT·BACK 은 사용처가 다르다) 여기서는 **문장이 같아야** 한다 —
+# 사용자가 아는 사실은 하나이고, 갈라 쓰면 화면에서 막힐 때와 화면 밖 경로로 막힐 때
+# 같은 규칙이 두 문구로 설명된다.
+#
+# **자리표가 한쪽에만 있다.** 화면은 상수에서 숫자를 끼워 넣을 수 있지만(label 의 params)
+# 서버의 응답 문구는 SYS_MESSAGE 를 그대로 내므로 인자를 받을 통로가 없다 — 그래서 서버
+# 쪽에는 숫자를 적었다. 조회 기간 상한이 31일 을 적어 둔 것과 같은 자리다.
+#
+# 키는 008 이 소스에서 만든다(ADR-0023) — 여기서 또 넣으면 loadData 가 중복 키로 죽는다.
+databaseChangeLog:
+  - changeSet:
+      id: data-102-message
+      author: template
+      comment: 태그 후보 팝업과 개수 상한의 문구 — 48 §8
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/102-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-102-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

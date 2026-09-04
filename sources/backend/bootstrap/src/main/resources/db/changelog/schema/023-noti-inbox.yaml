@@ -1,0 +1,143 @@
+# 인앱 알림함 — 47 §7 · 51 §7 · 66 §6.
+#
+# 47 §5 는 알림을 셋으로 갈랐다(외부 발송 · 인앱 · 요청). 그중 인앱이며, 외부 발송
+# (SYS_NOTI_OUTBOX)은 이번에 만들지 않는다 — 66 §6.1: 메일·SMS 어댑터가 없는 배포에서
+# outbox 는 지나가는 것이 없는 테이블이고, 47 §5.1 이 "인앱 알림은 outbox 를 거치지
+# 않는다 — DB 에 행을 쓰는 것이 곧 도달" 로 이미 갈라 두었다. 설계는 47 §6 에 그대로
+# 남으며 미루는 것은 DDL 뿐이다.
+#
+# 그래서 이 테이블은 큐가 아니다. 상태 전이도 릴레이도 없고 READ_YN 하나만 바뀐다.
+#
+# 감사 4컬럼이 없다(47 §7). 행을 만드는 것은 사람이 아니라 시스템이고 USER_ID 는
+# 작성자가 아니라 수신자다 — REG_ID 를 두면 언제나 'system' 인 컬럼이 하나 는다
+# (40 §4.2 가 신뢰할 수 없는 컬럼이라 부른 것). 누가 넣었는가는 NOTI_TYPE_CD 가
+# 답하며 그것이 곧 생산자의 종류다(66 §6.2).
+#
+# 보존은 90일이다(32 §3 · 47 §10). 읽음 여부를 보지 않는다 — 읽은 것만 지우면
+# 안 읽은 알림이 영원히 쌓이고, 그것이 정확히 지우고 싶은 행이다(아무도 안 보는 알림).
+databaseChangeLog:
+  - changeSet:
+      id: 023-create-sys-noti-inbox
+      author: template
+      comment: DB 에 행을 쓰는 것이 곧 도달이다 — 47 §5.1
+      changes:
+        - createTable:
+            tableName: SYS_NOTI_INBOX
+            columns:
+              # SYS_SEQUENCE 생성 키다(ADR-0015). allocationSize 가 커서 PK 순서가 시간
+              # 순서가 아니므로 목록 정렬은 CRE_DTM 이 먼저 보고 이 값은 동률만 가른다.
+              - column:
+                  name: NOTI_ID
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_NOTI_INBOX
+                    nullable: false
+              # 수신자. FK 를 건다(47 §7) — 없는 사람에게 보낸 알림은 아무도 못 본다.
+              # SYS_USER 는 물리 삭제를 하지 않으므로(USER-02 · 41 §4.5) 이 FK 가 계정
+              # 정리를 막지 않는다. 021 이 FK 를 안 건 것과 갈리는 자리다: 그쪽은 등록을
+              # 지워도 이력이 남아야 했다.
+              - column:
+                  name: USER_ID
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+              # AUTH · AUTHZ · BATCH · REQUEST — 66 §6.2 의 생산자 넷과 1:1 이다.
+              # 공통코드가 아니다(47 §10 · 66 §3.2): 값은 소스가 분기하는 것이라 관리자가
+              # 늘리면 처리 코드가 없는 값이 생긴다. 라벨만 메시지 키(noti.type.*)다.
+              - column:
+                  name: NOTI_TYPE_CD
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: TITLE
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+              # nclob 이 아니다(47 §7 — "길지 않다. 상세는 링크로 보낸다"). 알림은 읽고
+              # 닫는 것이지 문서가 아니며, 목록에 그대로 실려야 하므로 nclob 의 미적재
+              # 규약(54 §5.5)에 걸리면 안 된다.
+              - column:
+                  name: CONTENT
+                  type: VARCHAR(2000)
+              # URL 이 아니라 메뉴 코드다(47 §7) — URL 을 담으면 메뉴 경로가 바뀔 때
+              # 과거 알림이 전부 깨진다. 메뉴 코드는 PK 라 바뀌지 않으며 권한 게이트도
+              # 그대로 적용된다: 권한이 없어진 메뉴로 가는 알림은 이동 버튼이 비활성이다.
+              #
+              # FK 를 걸지 않는다. 알림은 이력이라 대상 메뉴가 사라져도 남아야 하는데,
+              # FK 가 있으면 메뉴 하나를 지우려고 과거 알림을 먼저 지워야 한다 —
+              # 021 이 BATCH_ID 에 FK 를 안 건 것과 같은 판단이다(46 §2.2).
+              # 끊어진 코드는 표시 시점에 이동 버튼을 감추는 것으로 처리한다.
+              - column:
+                  name: LINK_MENU_CD
+                  type: VARCHAR(30)
+              # 그 화면에 넘길 식별자. NULL 이면 메뉴만 연다.
+              - column:
+                  name: LINK_PARAM
+                  type: VARCHAR(500)
+              # 미읽음 배지가 세는 유일한 값이다(51 §7.1). 목록을 열었다고 전체를 'Y' 로
+              # 바꾸지 않는다(51 §7.2) — 훑어만 봐도 배지가 사라지면 놓친 알림을 찾을 수
+              # 없다. 항목을 연 것과 "모두 읽음" 버튼만 바꾼다.
+              - column:
+                  name: READ_YN
+                  type: CHAR(1)
+                  defaultValue: "N"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: READ_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              # 발생 시각. 목록의 기본 정렬이자 파기 배치의 기준이다(32 §3 — 90일).
+              - column:
+                  name: CRE_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 023-fk-sys-noti-inbox
+      author: template
+      comment: 없는 사람에게 보낸 알림은 아무도 못 본다 — 47 §7
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: FK_SYS_NOTI_INBOX_01
+            baseTableName: SYS_NOTI_INBOX
+            baseColumnNames: USER_ID
+            referencedTableName: SYS_USER
+            referencedColumnNames: USER_ID
+
+  - changeSet:
+      id: 023-index-sys-noti-inbox
+      author: template
+      comment: 셋 다 질문 하나씩에 대응한다 — 021 과 같은 방식
+      changes:
+        # "내 알림 목록" — 51 §7 의 탭. 최신순이라 CRE_DTM 이 뒤따른다.
+        - createIndex:
+            tableName: SYS_NOTI_INBOX
+            indexName: IX_SYS_NOTI_INBOX_01
+            columns:
+              - column:
+                  name: USER_ID
+              - column:
+                  name: CRE_DTM
+        # "배지 숫자" — READ_YN='N' 의 개수(51 §7.1). 이것만 별도 인덱스인 이유는
+        # 호출 빈도다: 배지는 폴링으로 갱신되므로(10 §H · SYS-13) 접속자 수 × 주기만큼
+        # 돈다. 위 인덱스로도 USER_ID 까지는 좁혀지지만 READ_YN 을 세려면 행을 읽어야
+        # 하고, 그 비용이 목록 조회가 아니라 폴링에 붙는다.
+        - createIndex:
+            tableName: SYS_NOTI_INBOX
+            indexName: IX_SYS_NOTI_INBOX_02
+            columns:
+              - column:
+                  name: USER_ID
+              - column:
+                  name: READ_YN
+        # "90일 지난 것" — 파기 배치(32 §3 · 66 §6.3). 위 둘은 선두가 USER_ID 라
+        # 전 사용자를 훑는 이 질문에 쓸 수 없다. 021 의 IX_01(START_DTM)과 같은 자리다.
+        - createIndex:
+            tableName: SYS_NOTI_INBOX
+            indexName: IX_SYS_NOTI_INBOX_03
+            columns:
+              - column:
+                  name: CRE_DTM

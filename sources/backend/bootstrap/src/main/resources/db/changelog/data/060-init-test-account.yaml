@@ -1,0 +1,1144 @@
+# 테스트용 역할 둘과 계정 여섯 — **템플릿의 부트스트랩이 아니라 시험 데이터다**.
+#
+# +----------------------------------------------------------------------+
+# |  여섯 계정 모두 비밀번호가 admin 과 같다 - Backoffice!1                |
+# |  운영 배포에서는 이 파일을 include 에서 빼거나 계정을 지운다.          |
+# +----------------------------------------------------------------------+
+#
+# 004 가 *"역할은 ADMIN 하나만 둔다 — 템플릿이 역할을 지어내면 조직마다 뜻이 달라 아무도
+# 쓰지 않는다"* 고 적었고 그 판단은 그대로다. 여기 둘은 **그 판단의 예외가 아니라 다른
+# 범주**다: 인가 화면 셋(역할 권한 · 개인 예외 · 유효 권한)은 **역할이 하나뿐이면 아무것도
+# 보여주지 못한다** — 트리의 *역할 경유 보유* 배지도, 개인 예외의 *예정 · 유효 · 만료* 도,
+# 조회조건의 *보유 역할* 도 전부 데이터가 있어야 눈에 보인다(61 §4.4).
+#
+# 해시는 002 의 것을 그대로 쓴다. 새로 만들면 그 평문이 **주석에만** 남아 어긋날 수 있고
+# (SeedAdminPasswordTest 가 검사하는 것은 admin 하나다), 시험 계정에서 값을 숨길 이유가
+# 없다. 같은 해시라 소금도 같다는 사실이 DB 에 드러나지만 **그것이 곧 시험 계정이라는 표시**다.
+#
+# -- 무엇을 시험하려고 이렇게 뒀나 -------------------------------------------
+#
+#   역할 DEVELOPER  이력·로그 셋 + 배치 스케줄
+#   역할 MANAGER    공지사항 관리 하나
+#
+#   개인 예외로 **역할이 주지 않는 것**을 준다 — 그것이 61 §4 화면의 존재 이유다.
+#     dev1 -> 기준정보 셋(공통코드 · 메시지 · 환경설정)
+#     mgr1 -> 사용자 관리 · 개인 예외 권한
+#
+#   계정 상태 파생 컬럼(61 §3.2.1)의 다섯 값이 **한 목록에 다 나오게** 계정을 깐다 —
+#   정상 · 잠김 · 휴면 · 기간 만료 · 미사용. 잠금 해제·휴면 해제 버튼(61 §3.6)을 누를
+#   대상이 시드에 없으면 그 버튼은 눌러 볼 수가 없다.
+#
+#   개인 예외의 상태 셋(61 §4.7)도 마찬가지다 — 유효 하나로는 배지를 볼 수 없어
+#   **예정 하나와 만료 하나**를 함께 깐다.
+#
+# 날짜를 고정 값으로 박는다. CURRENT_DATE 로 상대 날짜를 만들면 벤더마다 문법이 갈리고
+# (22 §4), 무엇보다 **시험 데이터는 언제 깔아도 같은 그림**이어야 한다 — 만료가 진짜로
+# 만료여야 만료 배지를 볼 수 있다.
+databaseChangeLog:
+  - changeSet:
+      id: data-060-test-role
+      author: template
+      comment: 시험용 역할 둘 — 인가 화면은 역할이 하나뿐이면 아무것도 보여주지 못한다
+      changes:
+        - insert:
+            tableName: SYS_ROLE
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: DEVELOPER
+              - column:
+                  name: ROLE_NM
+                  value: 개발자
+              - column:
+                  name: ROLE_DESC
+                  value: 이력·로그와 배치 스케줄. 기준정보는 개인 예외로 받는다 — 시험 데이터다.
+              - column:
+                  name: USE_YN
+                  value: "Y"
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: MANAGER
+              - column:
+                  name: ROLE_NM
+                  value: 매니저
+              - column:
+                  name: ROLE_DESC
+                  value: 공지사항 관리. 사용자·권한 화면은 개인 예외로 받는다 — 시험 데이터다.
+              - column:
+                  name: USE_YN
+                  value: "Y"
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+      rollback:
+        - delete:
+            tableName: SYS_ROLE
+            where: ROLE_ID IN ('DEVELOPER', 'MANAGER')
+
+  - changeSet:
+      id: data-060-test-role-auth
+      author: template
+      comment: 52 §4.2 의 액션 열 그대로다 — 그 표에 없는 조합은 여기에도 없다
+      changes:
+        # 사용 이력 — 52 §4.2 가 R E 다
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: DEVELOPER
+              - column:
+                  name: MENU_CD
+                  value: ACCESS_LOG
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: DEVELOPER
+              - column:
+                  name: MENU_CD
+                  value: ACCESS_LOG
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: DEVELOPER
+              - column:
+                  name: MENU_CD
+                  value: LOGIN_LOG
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: DEVELOPER
+              - column:
+                  name: MENU_CD
+                  value: LOGIN_LOG
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: DEVELOPER
+              - column:
+                  name: MENU_CD
+                  value: ERROR_LOG
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: DEVELOPER
+              - column:
+                  name: MENU_CD
+                  value: ERROR_LOG
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 스케줄 관리 — R S X. 화면이 아직 없어 트리에서는 - 로 보인다(61 §4.4)
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: DEVELOPER
+              - column:
+                  name: MENU_CD
+                  value: BATCH_SCHEDULE
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: DEVELOPER
+              - column:
+                  name: MENU_CD
+                  value: BATCH_SCHEDULE
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: DEVELOPER
+              - column:
+                  name: MENU_CD
+                  value: BATCH_SCHEDULE
+              - column:
+                  name: ACTION_CD
+                  value: EXECUTE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 공지사항 관리 — R S. 이 하나가 MANAGER 의 역할 권한 전부다
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: MANAGER
+              - column:
+                  name: MENU_CD
+                  value: NOTICE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: MANAGER
+              - column:
+                  name: MENU_CD
+                  value: NOTICE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+      rollback:
+        - delete:
+            tableName: SYS_ROLE_MENU_AUTH
+            where: ROLE_ID IN ('DEVELOPER', 'MANAGER')
+
+  - changeSet:
+      id: data-060-test-user
+      author: template
+      comment: 계정 상태 다섯이 한 목록에 다 나오게 깐다 — 61 §3.2.1
+      changes:
+        # 정상 — 개인 예외로 기준정보를 받는다
+        - insert:
+            tableName: SYS_USER
+            columns:
+              - column:
+                  name: USER_ID
+                  value: dev1
+              - column:
+                  name: USER_NM
+                  value: 김개발
+              - column:
+                  name: EMAIL
+                  value: dev1@example.com
+              - column:
+                  name: PWD
+                  value: "{bcrypt}$2a$10$EvYM6dfQuT0zVHd/sHdCD.4vdyGIFaMSRaQ1oUY0FNcMkLQEnRfa6"
+              - column:
+                  name: USE_YN
+                  value: "Y"
+              - column:
+                  name: LOCK_YN
+                  value: "N"
+              - column:
+                  name: LOGIN_FAIL_CNT
+                  valueNumeric: 0
+              - column:
+                  name: PWD_CHG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: PWD_INIT_YN
+                  value: "N"
+              - column:
+                  name: DORMANT_YN
+                  value: "N"
+              - column:
+                  name: LOCALE_CD
+                  value: ko
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 정상 — 개인 예외로 사용자·권한 화면을 받는다
+        - insert:
+            tableName: SYS_USER
+            columns:
+              - column:
+                  name: USER_ID
+                  value: mgr1
+              - column:
+                  name: USER_NM
+                  value: 이매니저
+              - column:
+                  name: EMAIL
+                  value: mgr1@example.com
+              - column:
+                  name: PWD
+                  value: "{bcrypt}$2a$10$EvYM6dfQuT0zVHd/sHdCD.4vdyGIFaMSRaQ1oUY0FNcMkLQEnRfa6"
+              - column:
+                  name: USE_YN
+                  value: "Y"
+              - column:
+                  name: LOCK_YN
+                  value: "N"
+              - column:
+                  name: LOGIN_FAIL_CNT
+                  valueNumeric: 0
+              - column:
+                  name: PWD_CHG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: PWD_INIT_YN
+                  value: "N"
+              - column:
+                  name: DORMANT_YN
+                  value: "N"
+              - column:
+                  name: LOCALE_CD
+                  value: ko
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 잠김 — ①의 잠금 해제를 누를 대상이다(AUTH-04)
+        - insert:
+            tableName: SYS_USER
+            columns:
+              - column:
+                  name: USER_ID
+                  value: locked1
+              - column:
+                  name: USER_NM
+                  value: 박잠김
+              - column:
+                  name: EMAIL
+                  value: locked1@example.com
+              - column:
+                  name: PWD
+                  value: "{bcrypt}$2a$10$EvYM6dfQuT0zVHd/sHdCD.4vdyGIFaMSRaQ1oUY0FNcMkLQEnRfa6"
+              - column:
+                  name: USE_YN
+                  value: "Y"
+              - column:
+                  name: LOCK_YN
+                  value: "Y"
+              - column:
+                  name: LOCK_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: LOGIN_FAIL_CNT
+                  valueNumeric: 5
+              - column:
+                  name: PWD_CHG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: PWD_INIT_YN
+                  value: "N"
+              - column:
+                  name: DORMANT_YN
+                  value: "N"
+              - column:
+                  name: LOCALE_CD
+                  value: ko
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 휴면 — ①의 휴면 해제를 누를 대상이다(41 §4.2)
+        - insert:
+            tableName: SYS_USER
+            columns:
+              - column:
+                  name: USER_ID
+                  value: dormant1
+              - column:
+                  name: USER_NM
+                  value: 최휴면
+              - column:
+                  name: EMAIL
+                  value: dormant1@example.com
+              - column:
+                  name: PWD
+                  value: "{bcrypt}$2a$10$EvYM6dfQuT0zVHd/sHdCD.4vdyGIFaMSRaQ1oUY0FNcMkLQEnRfa6"
+              - column:
+                  name: USE_YN
+                  value: "Y"
+              - column:
+                  name: LOCK_YN
+                  value: "N"
+              - column:
+                  name: LOGIN_FAIL_CNT
+                  valueNumeric: 0
+              - column:
+                  name: PWD_CHG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: PWD_INIT_YN
+                  value: "N"
+              - column:
+                  name: DORMANT_YN
+                  value: "Y"
+              - column:
+                  name: LOCALE_CD
+                  value: ko
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 기간 만료 — 셀 편집으로 연장하는 것이 그 해제 수단이다(61 §3.6)
+        - insert:
+            tableName: SYS_USER
+            columns:
+              - column:
+                  name: USER_ID
+                  value: expired1
+              - column:
+                  name: USER_NM
+                  value: 정만료
+              - column:
+                  name: EMAIL
+                  value: expired1@example.com
+              - column:
+                  name: PWD
+                  value: "{bcrypt}$2a$10$EvYM6dfQuT0zVHd/sHdCD.4vdyGIFaMSRaQ1oUY0FNcMkLQEnRfa6"
+              - column:
+                  name: USE_YN
+                  value: "Y"
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-01-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-01-31"
+              - column:
+                  name: LOCK_YN
+                  value: "N"
+              - column:
+                  name: LOGIN_FAIL_CNT
+                  valueNumeric: 0
+              - column:
+                  name: PWD_CHG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: PWD_INIT_YN
+                  value: "N"
+              - column:
+                  name: DORMANT_YN
+                  value: "N"
+              - column:
+                  name: LOCALE_CD
+                  value: ko
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 미사용 — 조회조건 기본값에서 빠지는 둘 중 하나다(61 §3.3)
+        - insert:
+            tableName: SYS_USER
+            columns:
+              - column:
+                  name: USER_ID
+                  value: disabled1
+              - column:
+                  name: USER_NM
+                  value: 한중지
+              - column:
+                  name: EMAIL
+                  value: disabled1@example.com
+              - column:
+                  name: PWD
+                  value: "{bcrypt}$2a$10$EvYM6dfQuT0zVHd/sHdCD.4vdyGIFaMSRaQ1oUY0FNcMkLQEnRfa6"
+              - column:
+                  name: USE_YN
+                  value: "N"
+              - column:
+                  name: LOCK_YN
+                  value: "N"
+              - column:
+                  name: LOGIN_FAIL_CNT
+                  valueNumeric: 0
+              - column:
+                  name: PWD_CHG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: PWD_INIT_YN
+                  value: "N"
+              - column:
+                  name: DORMANT_YN
+                  value: "N"
+              - column:
+                  name: LOCALE_CD
+                  value: ko
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+      rollback:
+        - delete:
+            tableName: SYS_USER
+            where: USER_ID IN ('dev1', 'mgr1', 'locked1', 'dormant1', 'expired1', 'disabled1')
+
+  - changeSet:
+      id: data-060-test-user-role
+      author: template
+      comment: 기간 없는 부여가 기본이고 하나만 만료 예정이다 — 조회조건 하나가 그것을 묻는다(61 §3.3)
+      changes:
+        - insert:
+            tableName: SYS_USER_ROLE
+            columns:
+              - column:
+                  name: USER_ID
+                  value: dev1
+              - column:
+                  name: ROLE_ID
+                  value: DEVELOPER
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_ROLE
+            columns:
+              - column:
+                  name: USER_ID
+                  value: mgr1
+              - column:
+                  name: ROLE_ID
+                  value: MANAGER
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_ROLE
+            columns:
+              - column:
+                  name: USER_ID
+                  value: locked1
+              - column:
+                  name: ROLE_ID
+                  value: DEVELOPER
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_ROLE
+            columns:
+              - column:
+                  name: USER_ID
+                  value: dormant1
+              - column:
+                  name: ROLE_ID
+                  value: DEVELOPER
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_ROLE
+            columns:
+              - column:
+                  name: USER_ID
+                  value: expired1
+              - column:
+                  name: ROLE_ID
+                  value: MANAGER
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_ROLE
+            columns:
+              - column:
+                  name: USER_ID
+                  value: disabled1
+              - column:
+                  name: ROLE_ID
+                  value: MANAGER
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 기간이 있는 유일한 부여 — *역할 만료 예정 30일* 조회조건이 이 행을 찾는다
+        - insert:
+            tableName: SYS_USER_ROLE
+            columns:
+              - column:
+                  name: USER_ID
+                  value: dev1
+              - column:
+                  name: ROLE_ID
+                  value: MANAGER
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-09-15"
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+      rollback:
+        - delete:
+            tableName: SYS_USER_ROLE
+            where: ROLE_ID IN ('DEVELOPER', 'MANAGER')
+
+  - changeSet:
+      id: data-060-test-user-auth
+      author: template
+      comment: 개인 예외 — 기간과 사유가 필수다(AUTHZ-07). 유효 · 예정 · 만료 셋이 다 있다
+      changes:
+        # 유효 — 역할이 주지 않는 것을 개인 예외가 준다(61 §4.1)
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: dev1
+              - column:
+                  name: MENU_CD
+                  value: CODE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 기준정보 점검 — 2026년 하반기
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: dev1
+              - column:
+                  name: MENU_CD
+                  value: CODE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 기준정보 점검 — 2026년 하반기
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: dev1
+              - column:
+                  name: MENU_CD
+                  value: CODE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 기준정보 점검 — 2026년 하반기
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: dev1
+              - column:
+                  name: MENU_CD
+                  value: MESSAGE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 기준정보 점검 — 2026년 하반기
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: dev1
+              - column:
+                  name: MENU_CD
+                  value: MESSAGE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 기준정보 점검 — 2026년 하반기
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: dev1
+              - column:
+                  name: MENU_CD
+                  value: MESSAGE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 기준정보 점검 — 2026년 하반기
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 환경설정은 E 가 없다 — 52 §4.2 가 R S 다
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: dev1
+              - column:
+                  name: MENU_CD
+                  value: CONFIG_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 기준정보 점검 — 2026년 하반기
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: dev1
+              - column:
+                  name: MENU_CD
+                  value: CONFIG_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 기준정보 점검 — 2026년 하반기
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: mgr1
+              - column:
+                  name: MENU_CD
+                  value: USER_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 사용자 운영 위임 — 2026년 하반기
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: mgr1
+              - column:
+                  name: MENU_CD
+                  value: USER_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 사용자 운영 위임 — 2026년 하반기
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: mgr1
+              - column:
+                  name: MENU_CD
+                  value: USER_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 사용자 운영 위임 — 2026년 하반기
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: mgr1
+              - column:
+                  name: MENU_CD
+                  value: USER_AUTH_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 권한 운영 위임 — 2026년 하반기
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: mgr1
+              - column:
+                  name: MENU_CD
+                  value: USER_AUTH_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 권한 운영 위임 — 2026년 하반기
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: mgr1
+              - column:
+                  name: MENU_CD
+                  value: USER_AUTH_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-08-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 권한 운영 위임 — 2026년 하반기
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 예정 — 스위치는 꺼져 있고 배지가 붙는다(61 §4.4)
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: mgr1
+              - column:
+                  name: MENU_CD
+                  value: MENU_TREE
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-12-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-12-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 연말 메뉴 개편 준비
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 만료 — 스위치는 꺼져 있고 배지가 붙는다. 체크하면 그 행으로 데려간다(61 §4.4)
+        - insert:
+            tableName: SYS_USER_MENU_AUTH
+            columns:
+              - column:
+                  name: USER_ID
+                  value: mgr1
+              - column:
+                  name: MENU_CD
+                  value: API_CATALOG
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: VALID_FROM_DT
+                  valueDate: "2026-06-01"
+              - column:
+                  name: VALID_TO_DT
+                  valueDate: "2026-07-31"
+              - column:
+                  name: GRANT_RSN
+                  value: 상반기 점검 — 기간 종료
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+      rollback:
+        - delete:
+            tableName: SYS_USER_MENU_AUTH
+            where: USER_ID IN ('dev1', 'mgr1')

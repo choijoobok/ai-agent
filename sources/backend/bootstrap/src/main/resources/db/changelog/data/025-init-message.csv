@@ -1,0 +1,11 @@
+MSG_KEY,LANG_CD,MSG_VAL
+grid.excel,ko,엑셀 다운로드
+grid.excel,en,Download Excel
+grid.excel.page,ko,현재 페이지
+grid.excel.page,en,Current page
+grid.excel.all,ko,전체
+grid.excel.all,en,All rows
+grid.excel.tooMany,ko,내려받을 수 있는 행 수를 넘었습니다. 조회 조건을 좁혀 주세요
+grid.excel.tooMany,en,Too many rows to download. Narrow your filters and try again
+grid.excel.empty,ko,내려받을 행이 없습니다
+grid.excel.empty,en,Nothing to download

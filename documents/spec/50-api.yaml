@@ -1,0 +1,36 @@
+# API 명세 (Hub 내부 API — portal·admin 화면이 부르는 것)
+#
+# 작성 단계: P3
+# status: empty — **비어 있다. 지어내지 않았다.**
+#
+# **혼동하지 않는다**: 여기는 *우리가 만드는* API 다. *레거시가 제공하는* 업무 API 는
+# 런타임에 admin 이 등록하는 데이터이며(FEAT-004) 그 연동 규약은 51-interfaces.yaml
+# (IF-002)이 갖는다.
+#
+# 경로 규약은 백오피스 템플릿의 표준을 따른다 — `/api/{계층}/{도메인}/{동작}` ·
+# **접두가 액션을 정한다** · `service` 는 전부 POST.
+# 상세: aidd-guide/standard/backend/api.md
+#
+# **호출 URL 은 `sources/frontend/src/features/{도메인}/api/endpoints.ts` 에만 둔다** —
+# 그 선언이 인가 시드의 입력이다(CLAUDE.md §8). 선언하지 않고 부르면 403, 선언만 하고
+# 안 부르면 접근 범위가 조용히 넓어진다.
+#
+# 채우는 방법: aidd-guide/phase/P3-design.md §5
+
+meta:
+  status: empty
+  baselined: null
+  path_convention: "/api/{계층}/{도메인}/{동작} — 접두가 액션을 정한다"
+
+apis: []
+
+# 채울 때의 형식 (예시 — 실제 값이 아니다)
+# apis:
+#   - id: API-001
+#     feature: FEAT-101
+#     method: POST
+#     path: /api/portal/chat/service/ask
+#     action: EXEC
+#     request: { sessionId: "long", prompt: "string" }
+#     response: { turnId: "long" }
+#     note: "질의를 접수하고 즉시 반환한다 — 진행 상태는 폴링으로 조회한다 (ARCH-015)"

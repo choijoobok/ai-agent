@@ -1,0 +1,43 @@
+# 메시지 값 31차 — 사람 소유 시드다(22 §1.1).
+#
+# 로고 클릭이 "모든 탭 닫기" 에서 "앱을 다시 띄우기" 로 바뀌며 생긴 둘(51 §3.1).
+#
+# 닫기와 문구가 다른 것이 요점이다. 닫는 것이 아니라 브라우저를 새로 그리므로, 같은 문구를
+# 쓰면 사용자가 무엇을 잃는지 잘못 안다 — 탭만 닫히는 줄 알고 확인을 누른다.
+databaseChangeLog:
+  - changeSet:
+      id: data-041-message
+      author: template
+      comment: 로고 클릭이 앱을 다시 띄운다 — 51 §3.1
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/041-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-041-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

@@ -1,0 +1,49 @@
+MSG_KEY,LANG_CD,MSG_VAL
+config.grid.title,ko,환경설정
+config.grid.title,en,Configuration
+config.col.cfgKey,ko,키
+config.col.cfgKey,en,Key
+config.col.defaultVal,ko,기본값
+config.col.defaultVal,en,Default
+config.col.cfgVal,ko,적용값
+config.col.cfgVal,en,Applied
+config.col.cfgType,ko,유형
+config.col.cfgType,en,Type
+config.col.cfgDesc,ko,설명
+config.col.cfgDesc,en,Description
+config.col.revert,ko,되돌리기
+config.col.revert,en,Revert
+config.overridden,ko,변경됨
+config.overridden,en,Changed
+config.defaulted,ko,기본값
+config.defaulted,en,Default
+config.type.STRING,ko,STRING
+config.type.STRING,en,STRING
+config.type.NUMBER,ko,NUMBER
+config.type.NUMBER,en,NUMBER
+config.type.BOOLEAN,ko,BOOLEAN
+config.type.BOOLEAN,en,BOOLEAN
+config.type.JSON,ko,JSON
+config.type.JSON,en,JSON
+config.search.keyword,ko,키 · 설명
+config.search.keyword,en,Key · description
+config.search.prefix,ko,접두사
+config.search.prefix,en,Prefix
+config.search.overridden,ko,변경 여부
+config.search.overridden,en,Changed
+config.revert.warn,ko,{key} 을(를) 기본값 {defaultVal} 로 되돌립니다. 값이 사라지는 것이 아니라 yml 기본값이 드러납니다.
+config.revert.warn,en,Reverts {key} to the default {defaultVal}. The value is not removed — the yml default becomes visible again.
+config.adminReset.warn,ko,관리자 임시 비밀번호 발급을 끕니다. 메일 연동이 없는 배포에서는 잠긴 계정을 풀 수 없습니다.
+config.adminReset.warn,en,Turns off admin-issued temporary passwords. Without mail integration locked accounts cannot be released.
+config.validate.number,ko,숫자만 입력합니다.
+config.validate.number,en,Numbers only.
+config.validate.boolean,ko,true 또는 false 만 입력합니다.
+config.validate.boolean,en,Only true or false.
+grid.save.warn.title,ko,저장 전 확인
+grid.save.warn.title,en,Before you save
+err.config.key-unknown,ko,코드가 정하지 않은 설정 키입니다.
+err.config.key-unknown,en,That configuration key is not defined in code.
+err.config.not-overridden,ko,이미 기본값으로 되돌아간 설정입니다.
+err.config.not-overridden,en,That setting is already back to its default.
+err.config.invalid-value,ko,설정값이 규칙에 맞지 않습니다.
+err.config.invalid-value,en,The configuration value does not satisfy its constraints.

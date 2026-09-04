@@ -1,0 +1,50 @@
+# 메시지 값 — 배치 스케줄 조회조건의 사용 여부 후보 둘. 사람 소유 시드다(22 §1.1).
+#
+# 067 에 넣지 않고 파일을 더한 이유가 둘이다.
+#
+#   1. 067 은 이미 적용됐다. loadData 의 CSV 를 뒤에 고치면 Liquibase 가 체크섬 불일치로
+#      다음 기동을 거부한다 — 22 §1.1 이 "사람 소유 시드는 기존 changeset 을 손대지 않고
+#      새 파일을 더한다" 고 한 것의 실제 이유가 이것이다.
+#   2. 뒤늦게 필요해진 키다. 조회조건의 `사용 여부` 후보를 role.use.on/off 로 돌려쓰려다
+#      말았다 — 역할 관리의 문구를 고치면 배치 화면이 함께 바뀌는 결합이 생기고,
+#      그것은 MsgKey 가 err.user 와 err.user-admin 을 가른 것과 같은 종류의 사고다.
+#
+# 그리드 컬럼의 `사용` 은 스위치라 후보가 없다 — 여기 둘은 **폼의 콤보** 전용이다
+# (57 §3.1 — 폼의 타입은 셋뿐이라 값이 둘인 칸도 콤보로 낸다: *전체* 를 낼 자리가 필요하다).
+databaseChangeLog:
+  - changeSet:
+      id: data-068-message
+      author: template
+      comment: 배치 조회조건의 사용 여부 후보 — 65 §3.3
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/068-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-068-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

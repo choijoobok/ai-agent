@@ -1,0 +1,155 @@
+# 샘플 제거 — 48 §7.2. 지우는 방법을 사용자가 짜지 않는다.
+#
+# ── 쓰는 법 ─────────────────────────────────────────────────────────────
+#
+#   master 에서 900·901·902·903 네 줄을 지우고 이 한 줄로 바꿔 끼운다. 네 줄을 지우고 한 줄을
+#   넣는 것이 diff 에 남으므로 무엇을 왜 지웠는지가 이력이 된다.
+#
+#   그리고 소스도 함께 걷어낸다 — backend/domain/.../sample, backend/api/.../sample,
+#   frontend/src/features/sample, screenRegistry 의 한 줄, menu/menu-tree.yaml 의 두 줄.
+#   006·007 시드는 생성물이라 재생성이 안 뱉으면 저절로 사라진다(48 §7.1).
+#
+#   architecture/SampleIsolationTest 도 함께 지운다. 샘플이 없으면 그 세 규칙은 위반 0건으로
+#   통과하는데, 그것은 검사가 아니라 영원히 초록인 게이트다(68 §10.3).
+#
+# ── 왜 include 제거만으로는 안 되는가 ──────────────────────────────────
+#
+#   Liquibase 는 이미 적용한 changeset 을 목록에서 빼도 되돌리지 않는다. DATABASECHANGELOG
+#   행이 남고 테이블도 시드 행도 그대로 있다 — 그 문장은 앞으로 안 만든다 이지 지운다 가
+#   아니었다(48 §7.1).
+#
+# ── LIKE 의 밑줄이 와일드카드다 ────────────────────────────────────────
+#
+#   SMPL_% 는 SMPLX... 도 잡는다. ESCAPE 를 반드시 쓰며, 역슬래시를 쓰지 않는 것은 MySQL 이
+#   그것을 문자열 리터럴에서 한 번 더 해석하기 때문이다(48 §7.3 · 22 §4).
+#
+# ── 새 DB 에서도 안전하다 ──────────────────────────────────────────────
+#
+#   지울 것이 없으면 delete 가 0행이고, dropTable 은 preConditions 로 건너뛴다.
+#
+# 되돌릴 수 없다. 그것이 이 파일의 뜻이다 — 되돌릴 여지가 필요하면 그 단계는 끄기다.
+databaseChangeLog:
+  # ① 개인화·운영 데이터 — 넷 다 MENU_CD 를 갖는다(48 §7.4).
+  - changeSet:
+      id: 999-sample-remove-personal
+      author: template
+      comment: 사용자와 운영자가 만든 행이 먼저다 — FK 를 거스르지 않는다
+      changes:
+        - delete:
+            tableName: SYS_USER_GRID_PREF
+            where: MENU_CD LIKE 'SMPL/_%' ESCAPE '/'
+        - delete:
+            tableName: SYS_USER_SEARCH_COND
+            where: MENU_CD LIKE 'SMPL/_%' ESCAPE '/'
+        - delete:
+            tableName: SYS_USER_FAVORITE
+            where: MENU_CD LIKE 'SMPL/_%' ESCAPE '/'
+        - delete:
+            tableName: SYS_USER_MENU_STAT
+            where: MENU_CD LIKE 'SMPL/_%' ESCAPE '/'
+        - delete:
+            tableName: SYS_USER_MENU_AUTH
+            where: MENU_CD LIKE 'SMPL/_%' ESCAPE '/'
+        - delete:
+            tableName: SYS_ROLE_MENU_AUTH
+            where: MENU_CD LIKE 'SMPL/_%' ESCAPE '/'
+
+  # ② 인가 매핑 → ③ 메뉴. 리프가 먼저이고 SMPL_ROOT 가 나중이다 — 자기 참조 FK 다.
+  - changeSet:
+      id: 999-sample-remove-menu
+      author: template
+      comment: 매핑을 먼저 끊고 리프부터 지운다
+      changes:
+        - delete:
+            tableName: SYS_MENU_API
+            where: MENU_CD LIKE 'SMPL/_%' ESCAPE '/'
+        - delete:
+            tableName: SYS_MENU
+            where: MENU_CD LIKE 'SMPL/_%' ESCAPE '/' AND UP_MENU_CD IS NOT NULL
+        - delete:
+            tableName: SYS_MENU
+            where: MENU_CD LIKE 'SMPL/_%' ESCAPE '/'
+
+  # ④ 메시지 — 값이 먼저다. 키가 부모다.
+  #
+  # 접두가 넷인 것에 주의한다(48 §7.3): 화면이 쓰는 sample. 과 오류의 err.sample. 그리고
+  # 데이터가 만드는 menu.SMPL_* · code.SMPL_* 다. 하나를 빠뜨리면 고아 키가 관리 화면에
+  # 남는다.
+  #
+  # err.sample. 은 셋으로 적혀 있던 것을 넷으로 고친 것이다(2026-09-02, ⑤를 세우며).
+  # sample.% 가 그것을 잡지 못한다 — LIKE 는 앞에서부터 맞춰 보므로 err. 로 시작하는 키는
+  # 어느 조건에도 걸리지 않았고, 걷어낸 뒤 err.sample.locked 아홉 줄이 메시지 관리 화면에
+  # 주인 없이 남았을 것이다. 지금까지 아무도 걷어내 보지 않아 조용했다.
+  - changeSet:
+      id: 999-sample-remove-message
+      author: template
+      comment: 접두가 넷이다 — 화면의 것 둘과 데이터가 만드는 것 둘
+      changes:
+        - delete:
+            tableName: SYS_MESSAGE
+            where: MSG_KEY LIKE 'sample.%' OR MSG_KEY LIKE 'err.sample.%' OR MSG_KEY LIKE 'menu.SMPL/_%' ESCAPE '/' OR MSG_KEY LIKE 'code.SMPL/_%' ESCAPE '/'
+        - delete:
+            tableName: SYS_MESSAGE_KEY
+            where: MSG_KEY LIKE 'sample.%' OR MSG_KEY LIKE 'err.sample.%' OR MSG_KEY LIKE 'menu.SMPL/_%' ESCAPE '/' OR MSG_KEY LIKE 'code.SMPL/_%' ESCAPE '/'
+
+  # ⑤ 공통코드 — 상세가 먼저다.
+  - changeSet:
+      id: 999-sample-remove-code
+      author: template
+      comment: 상세를 먼저 지운다 — 그룹이 부모다
+      changes:
+        - delete:
+            tableName: SYS_CODE
+            where: GRP_CD LIKE 'SMPL/_%' ESCAPE '/'
+        - delete:
+            tableName: SYS_CODE_GROUP
+            where: GRP_CD LIKE 'SMPL/_%' ESCAPE '/'
+
+  # ⑥ 테이블 — 자식이 먼저다. 없으면 건너뛴다.
+  #
+  # 자식이 둘이다(48 §5.1). 둘 다 ORD_ID 로 SMPL_ORDER 를 RESTRICT 로 물고 있어, 하나라도
+  # 남기고 부모를 지우면 dropTable 이 FK 에서 막힌다.
+  - changeSet:
+      id: 999-sample-remove-table-tag
+      author: template
+      comment: 없는 DB 에서도 안전하다 — 없으면 건너뛴다
+      preConditions:
+        - onFail: MARK_RAN
+        - tableExists:
+            tableName: SMPL_ORDER_TAG
+      changes:
+        - dropTable:
+            tableName: SMPL_ORDER_TAG
+
+  - changeSet:
+      id: 999-sample-remove-table-item
+      author: template
+      comment: 없는 DB 에서도 안전하다 — 없으면 건너뛴다
+      preConditions:
+        - onFail: MARK_RAN
+        - tableExists:
+            tableName: SMPL_ORDER_ITEM
+      changes:
+        - dropTable:
+            tableName: SMPL_ORDER_ITEM
+
+  - changeSet:
+      id: 999-sample-remove-table-order
+      author: template
+      preConditions:
+        - onFail: MARK_RAN
+        - tableExists:
+            tableName: SMPL_ORDER
+      changes:
+        - dropTable:
+            tableName: SMPL_ORDER
+
+  # ⑦ 채번 — 논리 시퀀스명이 테이블명이라 접두로 걸린다(48 §7.3).
+  - changeSet:
+      id: 999-sample-remove-sequence
+      author: template
+      comment: SEQ_NAME 이 테이블명이라 접두가 저절로 성립한다
+      changes:
+        - delete:
+            tableName: SYS_SEQUENCE
+            where: SEQ_NAME LIKE 'SMPL/_%' ESCAPE '/'

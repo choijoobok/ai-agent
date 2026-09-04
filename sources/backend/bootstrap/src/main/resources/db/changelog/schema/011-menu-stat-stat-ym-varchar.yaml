@@ -1,0 +1,36 @@
+# STAT_YM 을 CHAR(6) -> VARCHAR(6) — 010 이 낸 기동 실패를 고친다.
+#
+#   found [bpchar (Types#CHAR)], but expecting [varchar(6) (Types#VARCHAR)]
+#
+# 22 §4.3 이 같은 실패를 Y/N 플래그에서 이미 겪고 기록해 두었다. 그쪽의 답은 컨버터의
+# DB 쪽 타입을 Character 로 두는 것이었는데(그러면 Hibernate 가 CHAR 로 잡는다),
+# STAT_YM 은 컨버터 없는 순수 String 이라 그 길이 없다 — 남는 선택은 둘이었다.
+#
+#   ① 엔티티에 @JdbcTypeCode(CHAR) 를 붙인다
+#   ② 컬럼을 VARCHAR 로 바꾼다
+#
+# ②다. 22 §3 의 타입 표가 "코드/짧은 문자 -> VARCHAR(n)" 이고, CHAR 를 쓰는 예외는
+# Y/N 플래그와 UUID(CHAR(36)) 둘뿐이다. ①은 컬럼마다 붙여야 하는 애너테이션이 하나 늘고
+# 22 §4.3 이 바로 그것을 "빠뜨릴 수 있는 자리" 라며 없앤 바 있다.
+#
+# 길이가 늘 6인 것은 그대로다 — 그것을 지키는 것은 컬럼 타입이 아니라 yyyyMM 을 만드는
+# 애플리케이션이다. 벤더별 CHAR 패딩 차이(Oracle 은 공백을 채우고 MySQL 은 읽을 때
+# 떼어낸다)를 지고 갈 이유도 없어졌다.
+#
+# 010 을 고치지 않는다 — 이미 적용된 체인지셋이다(22 §1.1).
+databaseChangeLog:
+  - changeSet:
+      id: 011-menu-stat-stat-ym-varchar
+      author: template
+      comment: 순수 String 컬럼은 VARCHAR 다 — 22 §3 · §4.3
+      changes:
+        - modifyDataType:
+            tableName: SYS_USER_MENU_STAT
+            columnName: STAT_YM
+            newDataType: VARCHAR(6)
+      # PK 의 일부라 인덱스가 다시 만들어진다. 되돌릴 일은 없지만 형태는 남긴다.
+      rollback:
+        - modifyDataType:
+            tableName: SYS_USER_MENU_STAT
+            columnName: STAT_YM
+            newDataType: CHAR(6)

@@ -1,0 +1,47 @@
+# 메시지 값 — 날짜 컬럼 필터의 두 칸과 해제 버튼. 사람 소유 시드다(22 §1.1).
+#
+# 54 §4.5 가 2026-08-31 에 "에디터와 정밀도는 섰고 필터는 아직" 으로 남겨 둔 자리를
+# 68 §9.8 이 닫는다. 판의 날짜 필터는 사람이 형식을 손으로 치는 텍스트 칸이고, 틀리면
+# 조용히 걸리지 않는다 — 검색 폼과 같은 AntD 달력으로 갈아 끼웠다.
+#
+# 두 칸의 글자가 라벨이 아니라 플레이스홀더인 것이 결정이다. 헤더 팝업은 컬럼 폭에
+# 매여 있어 라벨을 밖에 세울 자리가 없다.
+#
+# CSV 는 생성한다 — 손으로 쓰는 관행이 남으면 콤마가 든 문구가 오는 날 기동에서만 깨진다.
+databaseChangeLog:
+  - changeSet:
+      id: data-084-message
+      author: template
+      comment: 날짜 컬럼 필터의 두 칸과 해제 — 54 §4.5 · 68 §9.8
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/084-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-084-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

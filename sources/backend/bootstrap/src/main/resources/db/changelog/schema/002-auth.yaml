@@ -1,0 +1,121 @@
+# 사용자 계정 — 41 §4.
+#
+# PK 는 자연키다(41 §3) — 로그인 ID 는 업무가 부여하고 사실상 불변이며, 이력 테이블이
+# 이미 USER_ID 를 값으로 보관한다. 대리키를 두면 이력에 숫자를 남기고 조회마다 조인해야 한다.
+#
+# 이름·이메일은 평문이다(41 §4.1). 사내 직원 명부이고, 참조키를 담으면 이름 정렬과 LIKE
+# 검색이 불가능해져 사용자 목록의 가장 흔한 요구가 막힌다.
+#
+# 이 슬라이스가 쓰는 테이블만 만든다. SYS_USER_PWD_HIST · SYS_USER_PWD_RESET ·
+# SYS_USER_IP_ALLOW 는 41 이 정의했지만 각각의 슬라이스가 만든다 — 쓰지 않는 DDL 을 미리
+# 넣으면 "됐다" 로 보이는데 한 번도 돌아 본 적이 없다.
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-sys-user
+      author: template
+      comment: 계정을 못 쓰게 만드는 넷(USE_YN·기간·LOCK_YN·DORMANT_YN)은 축이 다르고 서로 덮지 않는다 — 41 §4.2
+      changes:
+        - createTable:
+            tableName: SYS_USER
+            columns:
+              - column:
+                  name: USER_ID
+                  type: VARCHAR(30)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_USER
+                    nullable: false
+              - column:
+                  name: USER_NM
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: EMAIL
+                  type: VARCHAR(255)
+              # BCrypt 해시 + DelegatingPasswordEncoder 의 {bcrypt} 접두 — 23 §6
+              - column:
+                  name: PWD
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              # Y/N 플래그는 CHAR(1) 이다(22 §4.3). Oracle 에 boolean 컬럼이 없어
+              # BOOLEAN 은 NUMBER(1) 이 되고, MyBatis 의 `= true` 가 벤더마다 깨진다.
+              - column:
+                  name: USE_YN
+                  type: CHAR(1)
+                  defaultValue: "Y"
+                  constraints:
+                    nullable: false
+              # 시각 접미사 규약 — _DT 는 날짜, _DTM 은 시각. 타입이 이름에서 드러난다(22 §4.2)
+              - column:
+                  name: VALID_FROM_DT
+                  type: DATE
+              - column:
+                  name: VALID_TO_DT
+                  type: DATE
+              - column:
+                  name: LOCK_YN
+                  type: CHAR(1)
+                  defaultValue: "N"
+                  constraints:
+                    nullable: false
+              # 원시 데이터다. 잠금 플래그는 조회 시 계산한다 — 배치로 풀면 지연이 생긴다(23 §4)
+              - column:
+                  name: LOCK_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: LOGIN_FAIL_CNT
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: PWD_CHG_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: PWD_INIT_YN
+                  type: CHAR(1)
+                  defaultValue: "N"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: LAST_LOGIN_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: DORMANT_YN
+                  type: CHAR(1)
+                  defaultValue: "N"
+                  constraints:
+                    nullable: false
+              # 언어만 DB 다 — 서버가 메일·알림을 어느 언어로 보낼지 정하기 때문이다(41 §4.3)
+              - column:
+                  name: LOCALE_CD
+                  type: VARCHAR(10)
+                  defaultValue: "ko"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REG_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: REG_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: MOD_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: MOD_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+
+  - changeSet:
+      id: 002-index-sys-user-email
+      author: template
+      comment: 비밀번호 재설정이 로그인 ID 로 계정을 찾아 메일을 보낸다 — 메일 주소는 입력받지 않는다(60 §3.8)
+      changes:
+        - createIndex:
+            tableName: SYS_USER
+            indexName: IX_SYS_USER_01
+            columns:
+              - column:
+                  name: EMAIL

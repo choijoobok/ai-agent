@@ -1,0 +1,131 @@
+# 배치 등록 — 46 §5 · 65 §3.
+#
+# 40 §7 이 "배치 슬라이스가 만든다" 며 남겨 둔 둘 중 앞엣것이다. 뒤엣것(SYS_BATCH_HISTORY)은
+# 021 이 만든다 — 둘을 한 파일에 두지 않는 것은 003-log 가 SYS_LO_ACCESS 와
+# SYS_LO_EXCEPTION 을 갈라 둔 것과 같은 이유이며, 등록과 이력은 생애가 다르다
+# (하나는 사람이 관리하고 하나는 러너가 쌓는다).
+#
+# FK 가 없다(46 §2.2). 이력이 이 테이블을 참조하지 않으므로 등록을 지워도 이력은 남고,
+# 남아야 한다 — 이력이 게이트가 되면 오래된 배치는 영영 못 지운다(65 §3.8).
+#
+# BATCH_ID 가 PK 이자 락 키다(31 §7). 그래서 길이가 SYS_DATA_LOCK.LOCK_KEY 안에 들어가야
+# 하고, VARCHAR(50) 은 그 제약을 이미 만족한다(015 는 200 이다).
+#
+# BATCH_DESC 가 NOT NULL 인 것이 이 표의 결정이다 — 46 §5.1 이 "끄면 무슨 일이 생기는가를
+# 적는 자리" 로 정했고, 65 §3.3 이 그것을 "비워 둔 채 저장할 수 없다" 로 집행한다.
+# 장애 대응 중에 소스를 열 시간은 없다.
+databaseChangeLog:
+  - changeSet:
+      id: 020-create-sys-schedule-batch
+      author: template
+      comment: 등록 한 건이 한 행 — 목록만으로 판단할 수 있어야 한다(46 §5.1)
+      changes:
+        - createTable:
+            tableName: SYS_SCHEDULE_BATCH
+            columns:
+              # PK 이자 락 키다(31 §7). BEAN_ID 가 같은 등록이 여럿일 수 있고(46 §5.2 의
+              # 창고 10개) 그 10건이 서로 다른 락을 잡는 근거가 이 컬럼이 PK 라는 사실이다.
+              - column:
+                  name: BATCH_ID
+                  type: VARCHAR(50)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_SCHEDULE_BATCH
+                    nullable: false
+              # 관리자 전용 명칭이라 메시지 키가 아니다(46 §5) — 운영자 화면까지 다국어로
+              # 열면 메시지 행이 관리 대상 데이터보다 많아진다.
+              - column:
+                  name: BATCH_NM
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              # NOT NULL 이 이 표의 결정이다(46 §5.1 · 65 §3.3). 무엇을 하는가 · 끄면 무엇이
+              # 멈추는가 · 되돌릴 수 있는가 셋을 적는 자리이며, 셋째가 특히 중요하다 —
+              # 껐다 켜면 따라잡는 배치와 건너뛴 구간이 영영 비는 배치는 끄는 결정의
+              # 무게가 다르고, CRON 과 USE_YN 은 그 차이를 표현하지 못한다.
+              - column:
+                  name: BATCH_DESC
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+              # BatchJob 구현의 스프링 빈 이름(BATCH-09). 화면은 타이핑이 아니라 목록에서
+              # 고르게 한다(65 §3.3) — 없는 빈은 실행 시점에 터지고, 고르게 하면 그 경로가
+              # 닫힌다. UNIQUE 가 아니다: 같은 빈을 여러 번 등록하는 것이 46 §5.2 의 요점이다.
+              - column:
+                  name: BEAN_ID
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              # 크론 표현식. 저장 시 쿨다운과의 관계를 검증한다(31 §7 · 65 §3.4) — 값 자체의
+              # 구문은 파서가 보고, 관계는 서버만 볼 수 있다(프론트에 크론 파서가 없다).
+              - column:
+                  name: CRON
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              # 실행 파라미터(BATCH-07). NULL 허용이다 — 파라미터 없는 배치가 정상이다.
+              # DB 의 JSON 타입을 쓰지 않는다: 4벤더가 제각각이라 무수정 기동이 깨진다(22).
+              # SYS_CONFIG.CFG_VAL 이 JSON 을 문자열로 담는 것과 같은 방식이다(43 §6).
+              - column:
+                  name: PARAM_JSON
+                  type: VARCHAR(2000)
+              # 장애 안전망이다 — 업무 규칙이 아니라 인프라 사정이 정한다(31 §5).
+              # 실행 이력의 유령 판정도 이 값을 임계값으로 쓴다(65 §4.4).
+              - column:
+                  name: LOCK_EXPIRY_SEC
+                  type: INT
+                  constraints:
+                    nullable: false
+              # 쿨다운 — 같은 키의 최소 재실행 간격(31 §5). 크론 최소 간격보다 길면
+              # 실행이 조용히 건너뛰어지므로 저장이 거부한다(31 §7 · 65 §3.4).
+              - column:
+                  name: LOCK_MIN_INTERVAL_SEC
+                  type: INT
+                  constraints:
+                    nullable: false
+              # 'N' 이면 스케줄러가 등록조차 하지 않는다 — 크론이 남아 있어도 돌지 않으며
+              # SKIP 이력도 남지 않는다(65 §3.6). "안 돈다" 와 "건너뛰었다" 는 다른 사건이다.
+              - column:
+                  name: USE_YN
+                  type: CHAR(1)
+                  defaultValue: "Y"
+                  constraints:
+                    nullable: false
+              # 사람이 정한다(46 §5.1 · 65 §3.3). 배치는 실행 순서가 의미를 갖는 묶음이
+              # 있다(마감 → 집계 → 발송) — 역할 목록이 SORT_NO 를 두지 않은 것과 갈리는 자리다.
+              # UNIQUE 가 아니다: 중복을 막지 않고 tie-breaker(BATCH_ID)가 결정성을 준다.
+              - column:
+                  name: SORT_NO
+                  type: INT
+                  defaultValue: 0
+                  constraints:
+                    nullable: false
+              # 사람이 관리하는 테이블이라 감사 4컬럼이 있다(46 §2.1) — 이력 테이블과
+              # 갈리는 지점이며, 021 에는 이 넷이 없다.
+              - column:
+                  name: REG_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: REG_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: MOD_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: MOD_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+
+  - changeSet:
+      id: 020-index-sys-schedule-batch
+      author: template
+      comment: 기본 정렬 하나뿐이다 — 등록이 수십 건이라 그 밖은 인덱스가 값을 못 낸다
+      changes:
+        # ORDER BY SORT_NO, BATCH_ID 가 기본 정렬이다(65 §3.3). 등록이 수십 건이라
+        # 성능 때문이 아니라 결정성 때문에 존재하는 인덱스이며, tie-breaker 가 PK 라
+        # 여기에 BATCH_ID 를 적지 않아도 된다(PK 가 뒤따른다).
+        - createIndex:
+            tableName: SYS_SCHEDULE_BATCH
+            indexName: IX_SYS_SCHEDULE_BATCH_01
+            columns:
+              - column:
+                  name: SORT_NO

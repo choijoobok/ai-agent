@@ -1,0 +1,3 @@
+MSG_KEY,LANG_CD,MSG_VAL
+shell.search.tooltip,ko,메뉴 검색 — Shift 두 번 또는 Ctrl+K
+shell.search.tooltip,en,Search menus — double-tap Shift or Ctrl+K

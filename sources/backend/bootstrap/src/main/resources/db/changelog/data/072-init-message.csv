@@ -1,0 +1,17 @@
+MSG_KEY,LANG_CD,MSG_VAL
+err.notice.required,ko,제목·본문·게시 시작은 필수입니다
+err.notice.required,en,Title / content / publish-from are required
+err.notice.not-found,ko,없는 공지입니다
+err.notice.not-found,en,No such notice
+err.notice.period,ko,게시 종료는 게시 시작보다 뒤여야 합니다
+err.notice.period,en,Publish-to must be after publish-from
+err.notice.popup-range,ko,팝업 기간은 게시 기간 안에 있어야 합니다
+err.notice.popup-range,en,The popup period must fall within the publish period
+err.notice.popup-period,ko,팝업을 사용하면 팝업 기간은 필수입니다
+err.notice.popup-period,en,The popup period is required when popup is on
+err.noti-req.not-found,ko,없는 요청입니다
+err.noti-req.not-found,en,No such request
+err.noti-req.not-received,ko,이미 처리된 요청이 선택에 있습니다
+err.noti-req.not-received,en,The selection contains a request that is already handled
+err.noti-req.memo-required,ko,반려 사유는 필수입니다
+err.noti-req.memo-required,en,A rejection reason is required

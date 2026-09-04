@@ -1,0 +1,32 @@
+# 식별자 생성기 — ADR-0015 · 22 §4.1.
+#
+# createSequence 를 쓰지 않는다. MySQL 에서 Liquibase 가 그것을 에러도 경고도 없이 건너뛰고,
+# Hibernate 는 단일 컬럼 테이블을 기대한다 — 기동은 성공하고 첫 INSERT 에서 실패한다.
+# ddl-auto=validate 도 생성기 객체의 부재는 잡지 못한다.
+#
+# 그래서 생성기 테이블을 평범한 createTable 로 만들고, 논리 시퀀스마다 시드 행을 넣는다
+# (data/001-init-sequence.yaml). 시드를 빠뜨리면 첫 INSERT 가 Hibernate 자체 경로로 빠져
+# 다중 노드에서 경합한다.
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-sys-sequence
+      author: template
+      comment: 논리 시퀀스 테이블. 5개 벤더가 같은 객체를 쓴다.
+      changes:
+        - createTable:
+            tableName: SYS_SEQUENCE
+            columns:
+              # varchar(255) 인 것은 @TableGenerator 에 pk 컬럼 길이 옵션이 없기 때문이다.
+              # 좁히면 ddl-auto=validate 를 켤 수 없게 된다 — 22 §4.1
+              - column:
+                  name: SEQ_NAME
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_SEQUENCE
+                    nullable: false
+              - column:
+                  name: NEXT_VAL
+                  type: BIGINT
+                  constraints:
+                    nullable: false

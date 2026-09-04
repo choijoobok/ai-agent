@@ -1,0 +1,7 @@
+MSG_KEY,LANG_CD,MSG_VAL
+grid.filter.from,ko,시작
+grid.filter.from,en,From
+grid.filter.to,ko,끝
+grid.filter.to,en,To
+grid.filter.clear,ko,필터 해제
+grid.filter.clear,en,Clear filter

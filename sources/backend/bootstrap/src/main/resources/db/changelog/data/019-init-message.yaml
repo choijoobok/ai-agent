@@ -1,0 +1,73 @@
+# 언어 이름 — 사람 소유 시드다(22 §1.1). 값과 **데이터 키**를 함께 넣는다(009 와 같은 모양).
+#
+# 화면이 언어를 `ko` · `en` 으로 보이고 있었다(2026-08-29 실물에서 잡음). 설정 모달의 콤보와
+# 프로필의 내 정보 둘 다이며, 코드값을 그대로 그린 것이다.
+#
+# 키가 `code.{GRP_CD}.{DTL_CD}` 인 것이 요건이다(43 §4.4). 프론트에 `{ ko: '한국어' }` 표를
+# 두면 언어를 하나 더할 때마다 프론트를 고쳐야 하고 그 이름이 번역되지 않는다 — 명칭의
+# 단일 원본은 SYS_MESSAGE 다(43 §3).
+#
+# USE_SCOPE 가 DATA 다. 데이터에서 조립된 키라 008 생성 태스크가 건드리지 않으며(43 §7.1),
+# menu.* 24개를 009 가 넣은 것과 같은 자리다.
+#
+# **SYS_CODE 는 아직 없다.** 지원 언어의 원본은 여전히 `sys-config.message.supported` 이며
+# (MessageProps) 기준정보 슬라이스가 LANG_CD 그룹을 만들 때 그 행이 이 키를 갖는다 —
+# 지금 맞춰 두는 것은 **키 규약**이고, 그래야 그날 화면이 바뀌지 않는다.
+databaseChangeLog:
+  - changeSet:
+      id: data-019-message-key-data
+      author: template
+      comment: 언어 이름 키 — USE_SCOPE 는 DATA 다(43 §7.1)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE_KEY
+            file: db/changelog/data/019-init-message-key.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: USE_SCOPE
+                  type: STRING
+              - column:
+                  name: MSG_DESC
+                  type: STRING
+
+  - changeSet:
+      id: data-019-message
+      author: template
+      comment: 현재 세션 언어로 읽힌다 — ko 화면은 한국어·영어, en 화면은 Korean·English(43 §4.4)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/019-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-019-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

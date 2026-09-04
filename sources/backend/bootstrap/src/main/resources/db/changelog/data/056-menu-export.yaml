@@ -1,0 +1,71 @@
+# 엑셀을 내는 화면 10개 — 52 §4.2 액션 열의 E · ADR-0027.
+#
+# 016 이 만든 EXPORT_YN 을 채운다. 003 이 비워 둔 ICON_CD 를 035 가 채운 것과 같은
+# 자리이며, 003 은 이미 적용된 changeset 이라 손대지 않는다(22 §1.1).
+#
+# 값은 52 §4.2 의 액션 열을 그대로 옮긴 것이다. 004 가 ADMIN 에게 준 EXPORT 부여
+# 10건과 정확히 같은 목록이며, 어긋나면 SeedBootstrapAuthorityTest 가 막는다 —
+# 부여만 있고 정의가 없으면 그 행은 화면에서 회수할 수 없는 고아가 된다(ADR-0022).
+#
+# 035 와 달리 changeset 이 하나다. 거기서 24개로 나눈 것은 아이콘이 메뉴마다 따로
+# 고른 값 24개였기 때문이고, 여기 10개는 **하나의 결정**이다 — 어느 화면이 데이터를
+# 내려받을 수 있는가. 목록 자체가 사실이므로 한 줄로 두어야 diff 가 그것을 보여준다.
+#
+# 빠진 화면이 뜻하는 것 — CONFIG_MGMT · ROLE_MGMT · ROLE_AUTH_MGMT · BATCH_SCHEDULE ·
+# NOTICE_MGMT · NOTI_REQUEST · DASHBOARD 는 감춘 것이 아니라 EXPORT 액션 자체가 없다.
+# 설정값과 인가 정의는 내려받아 돌려 보는 업무 데이터가 아니다.
+databaseChangeLog:
+  - changeSet:
+      id: data-056-menu-export
+      author: template
+      comment: 52 §4.2 의 E 열 — 프론트 생성 엑셀에는 API 가 없어 메뉴가 선언한다
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: EXPORT_YN
+                  value: "Y"
+            where: >-
+              MENU_CD IN ('ACCESS_LOG', 'API_CATALOG', 'BATCH_HISTORY', 'CODE_MGMT',
+              'ERROR_LOG', 'LOGIN_LOG', 'MENU_TREE', 'MESSAGE_MGMT', 'USER_AUTH_MGMT',
+              'USER_MGMT')
+
+  # 문구가 낡았다 — 051 이 "그 메뉴에 그 액션의 API 가 없습니다" 로 썼는데, 이제 API 가
+  # 없어도 정의될 수 있는 액션이 생겼다(EXPORT). 051 은 적용돼 있어 고칠 수 없다(055 와
+  # 같은 자리).
+  - changeSet:
+      id: data-056-message-action-undefined
+      author: template
+      comment: 거부의 이유는 API 의 부재가 아니라 정의의 부재다 — ADR-0027
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: 그 메뉴에 정의되지 않은 액션입니다.
+            where: MSG_KEY = 'err.role.auth.action' AND LANG_CD = 'ko'
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: That action is not defined for that menu.
+            where: MSG_KEY = 'err.role.auth.action' AND LANG_CD = 'en'
+
+  - changeSet:
+      id: data-056-cache-version
+      author: template
+      comment: 값을 고쳤으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

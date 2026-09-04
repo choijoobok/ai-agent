@@ -1,0 +1,5 @@
+MSG_KEY,LANG_CD,MSG_VAL
+progress.count.unknown,ko,{cur}건 처리
+progress.count.unknown,en,{cur} processed
+progress.elapsed,ko,경과 {min}분 {sec}초
+progress.elapsed,en,{min}m {sec}s elapsed

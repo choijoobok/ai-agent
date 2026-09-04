@@ -1,0 +1,166 @@
+# llm-guide 카탈로그 — 모든 운용 파일의 메타데이터 인덱스 (수동 갱신)
+# 학습 파일(_study/) 은 본 카탈로그에서 제외 — 라우팅 입구 아님
+#
+# ★ 운용 파일을 더할 때마다 해당 카테고리에 행을 추가한다.
+#    stub 이 active 가 되는 시점이 등록 시점이다.
+#
+# 사용법:
+#   python3 _meta/_lint.py        # 메타블록·200줄 검증
+#   (필요 시) 수동으로 본 catalog 와 실제 파일 동기화
+version: 1
+updated: 2026-09-04
+
+categories:
+  "00-meta":
+    prefix: LLM-MET
+    files:
+      - INDEX.md
+      - doc-style.md
+      - lifecycle.md
+      - meta-block.md
+      - routing.md
+  "02-context":
+    prefix: LLM-CTX
+    files:
+      - INDEX.md
+      - budget.md
+      - reading.md
+      - failure-modes.md
+  "03-prompt":
+    prefix: LLM-PMT
+    files:
+      - INDEX.md
+      - screen.md
+      - crud.md
+      - auto-completion.md
+      - few-shot-policy.md
+      - overlays/INDEX.md
+      - overlays/search-condition.md
+      - overlays/master-detail.md
+      - overlays/tabs.md
+      - overlays/excel.md
+      - overlays/modal.md
+      - overlays/execution.md
+      - overlays/history-pattern.md
+  "04-memory":
+    prefix: LLM-MEM
+    files:
+      - INDEX.md
+      - logs.md
+  "05-harness":
+    prefix: LLM-HRN
+    files:
+      - INDEX.md
+      - hooks.md
+      - skills.md
+      - automation-matrix.md
+      - sub-agents.md
+      - tool-curation.md
+      - sensors-guides.md
+      # LLM-HRN-004 는 flags.md 였고 지웠다(pending 플래그 실물 0건) — 번호는 재사용하지 않는다
+  "06-framework":
+    prefix: LLM-FWK
+    files:
+      - INDEX.md
+      - sources/backend/INDEX.md
+      - sources/backend/api.md
+      - sources/backend/batch.md
+      - sources/backend/caching.md
+      - sources/backend/crosscutting.md
+      - sources/backend/exception.md
+      - sources/backend/logging.md
+      - sources/backend/packages.md
+      - sources/backend/persistence.md
+      - sources/backend/pii-vault.md
+      - sources/backend/progress.md
+      - sources/backend/search.md
+      - sources/backend/security.md
+      - sources/backend/session.md
+      - build-deploy.md
+      - conventions.md
+      - sources/frontend/INDEX.md
+      - sources/frontend/declarations.md
+      - sources/frontend/grid-advanced.md
+      - sources/frontend/grid.md
+      - sources/frontend/http.md
+      - sources/frontend/i18n.md
+      - sources/frontend/packages.md
+      - sources/frontend/progress.md
+      - sources/frontend/search-form.md
+      - sources/frontend/tabs.md
+      - sources/frontend/theme.md
+      - seed.md
+      - stack.md
+      # _study/ 13편은 근거 자산이라 등재하지 않는다
+  "07-evals":
+    prefix: LLM-EVL
+    files:
+      - INDEX.md
+      - golden-set.md
+      - regression.md
+      - screen-reproduction.md
+      - ab-testing.md
+  "08-observability":
+    prefix: LLM-OBS
+    files:
+      - INDEX.md
+      - routing-accuracy.md
+      - token-economics.md
+      - context-rot-monitor.md
+  "09-knowledge":
+    prefix: LLM-KNW
+    files:
+      - INDEX.md
+      - glossary.md
+      - features.md
+      - retention.md
+      - sys/INDEX.md
+      - sys/user-role.md
+      - sys/menu.md
+      - sys/code.md
+      - sys/message.md
+      - sys/config.md
+      - sys/logs.md
+      - sys/batch.md
+      - sys/notification.md
+      - sys/progress-lock.md
+      - sys/personalization.md
+  "10-records":
+    prefix: LLM-REC
+    files:
+      - INDEX.md
+      - adr/INDEX.md
+      - legacy-doc-map.md
+      - raw-log.md
+      - summary-log.md
+  "11-playbook":
+    prefix: LLM-PLY
+    files:
+      - INDEX.md
+      - crud-screen.md
+      - master-detail.md
+      - master-tabs.md
+      - excel.md
+      - modal.md
+      - tree-screen.md
+      - changeset.md
+  "12-references":
+    prefix: LLM-REF
+    files:
+      - INDEX.md
+      - bibliography.md
+      - learning-log.md
+      - summaries/README.md
+      - summaries/01-openai-harness.md
+      - summaries/02-thoughtworks-harness.md
+      - summaries/05-anthropic-context-engineering.md
+      - summaries/09-chroma-context-rot.md
+      - summaries/11-hamel-evals.md
+  "13-safety":
+    prefix: LLM-SAF
+    files:
+      - INDEX.md
+      - pii.md
+      - prompt-injection.md
+      - secrets.md
+      - rate-limit.md

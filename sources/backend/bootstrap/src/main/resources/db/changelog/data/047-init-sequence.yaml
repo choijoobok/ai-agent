@@ -1,0 +1,25 @@
+# 논리 시퀀스 시드 2차 — SYS_LO_ACCESS.
+#
+# 001 이 "생성 키를 쓰는 테이블이 늘 때마다 여기에 행이 하나 는다" 고 적은 그 자리다.
+# 사람 소유 시드이므로 기존 changeset 을 고치지 않고 파일을 더한다(22 §1.1).
+#
+# 빠뜨리면 조용하다 — 기동도 되고 첫 INSERT 도 성공한다. Hibernate 가 자체 경로로 행을
+# 만들기 때문이며, 다중 노드에서 그 순간 경합한다.
+databaseChangeLog:
+  - changeSet:
+      id: data-047-seq-sys-lo-access
+      author: template
+      changes:
+        - insert:
+            tableName: SYS_SEQUENCE
+            columns:
+              - column:
+                  name: SEQ_NAME
+                  value: SYS_LO_ACCESS
+              - column:
+                  name: NEXT_VAL
+                  valueNumeric: 1
+      rollback:
+        - delete:
+            tableName: SYS_SEQUENCE
+            where: SEQ_NAME = 'SYS_LO_ACCESS'

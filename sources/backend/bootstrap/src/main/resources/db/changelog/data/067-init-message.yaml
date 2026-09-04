@@ -1,0 +1,66 @@
+# 메시지 값 — 배치 두 화면의 **화면 문구**(65 §3 · §4). 사람 소유 시드다(22 §1.1).
+#
+# 066 이 오류 문구(백엔드 MsgKey)였고 이쪽이 화면 문구(프론트 MSG)다. 둘을 가른 것은
+# 고칠 때 어디를 보는지가 달라서다 — 한 파일에 섞으면 CSV 만 읽어서는 그 구분이 안 보인다.
+#
+# 키 행은 여기 없다. 008 이 만든다(ADR-0023).
+#
+# ── 여기 담긴 결정 셋 ─────────────────────────────────────────────
+#
+# 1. grid.duration.* 넷이 65 §6 의 미결을 닫는다.
+#    "duration 의 표시 단위 — 1시간 2분 5초 인지 01:02:05 인지, 1초 미만을 어떻게 쓰나.
+#     **다국어에서 갈린다**" 가 그 미결이었다. 갈리는 것이 맞으므로 **형식 자체를
+#     메시지로** 둔다 — 소스가 문자열을 조립하면 한국어의 "1시간 2분" 과 영어의 "1h 2m"
+#     중 하나를 코드가 고르게 되고, 언어가 늘 때마다 소스를 고쳐야 한다(90 이 막으려는 것).
+#    0 인 단위는 **템플릿을 갈아** 없앤다(hms → ms → s) — {h}=0 을 그대로 그리면
+#    "0시간 3분" 이 된다.
+#    1초 미만은 별도 문구다. "0초" 라고 쓰면 **안 걸린 것**처럼 읽히는데, SKIP_* 행이
+#    실제로 0ms 이므로(46 §6.1) 그 둘이 같은 글자가 되면 안 된다.
+#
+# 2. batch.rslt.* 여섯과 batch.execType.* 둘이 65 §2.3 의 결정을 집행한다.
+#    값은 소스가 갖고(BatchResultCode · BatchExecType) **라벨만 메시지 키**다.
+#    공통코드로 두면 SYS_YN='Y' 로 잠가야 하고 잠가 두면 관리자에게 남는 것이 없다.
+#    색(tone)은 여기 없다 — 값이 여섯이고 색이 넷이라 코드 행에 색을 넣을 자리가
+#    애초에 없다(54 §5.4.1 의 tone 맵이 화면의 것이다).
+#
+# 3. batchSchedule.run.rejectedNode 가 노드와 시각을 **파라미터로** 받는다.
+#    65 §3.7 이 "노드와 시각을 문구에 넣는 것이 요점" 이라고 했고, 서버는 값만
+#    내려보낸다(BatchRunResult) — 완성된 문장을 서버가 지으면 그것이 서버의 언어로
+#    굳는다. 오류 응답에서는 그 대가를 감수하지만(21 §6-1.2) 이쪽은 정상 응답이다.
+databaseChangeLog:
+  - changeSet:
+      id: data-067-message
+      author: template
+      comment: 배치 스케줄 · 실행 이력의 화면 문구 — 65 §3 · §4 · duration 렌더러(54 §5.4)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/067-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-067-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

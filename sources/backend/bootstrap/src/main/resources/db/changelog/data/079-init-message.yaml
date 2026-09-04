@@ -1,0 +1,50 @@
+# 메시지 값 — 메뉴 트리의 통합 검색 자리표 1키. 사람 소유 시드다(22 §1.1).
+#
+# 트리의 검색 칸이 **셋에서 하나로** 줄었다(62 §4.10). 이름·코드·URL 을 각각 받던 칸을
+# `OR` 로 잇는 칸 하나로 합친 것이며, 사람은 **손에 있는 것으로 찾기** 때문이다 —
+# 어느 칸에 넣을지를 먼저 정해야 하는 것이 곧 마찰이다.
+#
+# ── 자리표가 무엇을 보는지 말한다 ───────────────────────────────────────
+#
+# `메뉴명 · 코드 · URL` 이다. 합친 칸에 그 말이 없으면 **이름만 찾는 칸**으로 읽히고,
+# 코드를 넣어 본 사람은 안 걸린다고 생각한 뒤 다시 넣지 않는다.
+#
+# 앞의 세 키(`menuTree.search.menuNm` 등)는 **값이 그대로 남는다** — 선언은 지웠지만 값
+# 시드의 행을 지울 수 없다(적재된 changeset 의 체크섬). 그래서 프론트의 상수도 남겨 둔다.
+databaseChangeLog:
+  - changeSet:
+      id: data-079-message
+      author: template
+      comment: 메뉴 트리 통합 검색 자리표 1키 — 62 §4.10
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/079-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-079-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

@@ -1,0 +1,49 @@
+# 메시지 값 14차 — 사람 소유 시드다(22 §1.1).
+#
+# 저장된 조회조건(UX-07 · 57 §5)의 열셋이다. 초기화 오른쪽의 설정 버튼이 여는 목록과,
+# 이름을 묻는 모달, 그리고 상한 초과 오류가 여기 있다.
+#
+# `searchCond.default` 를 `기본 조건` 이 아니라 `화면에 들어올 때 이 조건으로 채운다` 로
+# 둔 이유 — 체크박스 옆의 글자는 **켜면 무슨 일이 일어나는가**를 말해야 한다. `기본 조건`
+# 은 상태의 이름이라 처음 보는 사람이 무엇이 기본이 되는지 알 수 없다. 목록 안의 표시는
+# 자리가 좁아 이름 쪽(`searchCond.default.mark`)을 따로 뒀다.
+#
+# 상한 초과 문구에 **숫자가 없다**. 응답 문구에 인자 치환이 없고(ErrorMessages), 화면은
+# 목록 길이로 이미 그 수를 알고 있다 — 대신 **다음에 할 일**(하나 지우고 다시)을 적었다.
+databaseChangeLog:
+  - changeSet:
+      id: data-022-message
+      author: template
+      comment: 저장된 조회조건의 ko·en — UX-07 · 57 §5
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/022-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-022-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

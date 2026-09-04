@@ -1,0 +1,183 @@
+MSG_KEY,LANG_CD,MSG_VAL
+code.SMPL_CHNL.WEB,ko,웹
+code.SMPL_CHNL.WEB,en,Web
+code.SMPL_CHNL.EDI,ko,EDI
+code.SMPL_CHNL.EDI,en,EDI
+code.SMPL_CHNL.APP,ko,모바일 앱
+code.SMPL_CHNL.APP,en,Mobile App
+code.SMPL_CHNL.CALL,ko,전화 주문
+code.SMPL_CHNL.CALL,en,Call Center
+code.SMPL_CHNL.FAX,ko,팩스
+code.SMPL_CHNL.FAX,en,Fax
+code.SMPL_CHNL.EMAIL,ko,이메일
+code.SMPL_CHNL.EMAIL,en,Email
+code.SMPL_CHNL.B2B,ko,B2B 포털
+code.SMPL_CHNL.B2B,en,B2B Portal
+code.SMPL_CHNL.MARKET,ko,오픈마켓
+code.SMPL_CHNL.MARKET,en,Open Market
+code.SMPL_CHNL.KIOSK,ko,키오스크
+code.SMPL_CHNL.KIOSK,en,Kiosk
+code.SMPL_CHNL.AGENT,ko,대리점
+code.SMPL_CHNL.AGENT,en,Agency
+code.SMPL_CHNL.DIRECT,ko,직거래
+code.SMPL_CHNL.DIRECT,en,Direct
+code.SMPL_CHNL.EXPORT,ko,수출
+code.SMPL_CHNL.EXPORT,en,Export
+code.SMPL_CHNL.IMPORT,ko,수입
+code.SMPL_CHNL.IMPORT,en,Import
+code.SMPL_CHNL.RETURN,ko,반품 대체
+code.SMPL_CHNL.RETURN,en,Return Replacement
+code.SMPL_CHNL.SAMPLE,ko,견본
+code.SMPL_CHNL.SAMPLE,en,Sample
+code.SMPL_CHNL.EVENT,ko,행사
+code.SMPL_CHNL.EVENT,en,Event
+code.SMPL_CHNL.SUBSCR,ko,정기 구독
+code.SMPL_CHNL.SUBSCR,en,Subscription
+code.SMPL_CHNL.CONSIGN,ko,위탁
+code.SMPL_CHNL.CONSIGN,en,Consignment
+code.SMPL_CHNL.WHOLE,ko,도매
+code.SMPL_CHNL.WHOLE,en,Wholesale
+code.SMPL_CHNL.RETAIL,ko,소매
+code.SMPL_CHNL.RETAIL,en,Retail
+code.SMPL_CHNL.INTERNAL,ko,사내
+code.SMPL_CHNL.INTERNAL,en,Internal
+code.SMPL_CHNL.ETC,ko,기타
+code.SMPL_CHNL.ETC,en,Other
+code.SMPL_PRIORITY.LOW,ko,낮음
+code.SMPL_PRIORITY.LOW,en,Low
+code.SMPL_PRIORITY.NORMAL,ko,보통
+code.SMPL_PRIORITY.NORMAL,en,Normal
+code.SMPL_PRIORITY.HIGH,ko,높음
+code.SMPL_PRIORITY.HIGH,en,High
+code.SMPL_PRIORITY.URGENT,ko,긴급
+code.SMPL_PRIORITY.URGENT,en,Urgent
+code.SMPL_CUST_GRD.VIP,ko,VIP
+code.SMPL_CUST_GRD.VIP,en,VIP
+code.SMPL_CUST_GRD.GOLD,ko,골드
+code.SMPL_CUST_GRD.GOLD,en,Gold
+code.SMPL_CUST_GRD.SILVER,ko,실버
+code.SMPL_CUST_GRD.SILVER,en,Silver
+code.SMPL_CUST_GRD.BRONZE,ko,브론즈
+code.SMPL_CUST_GRD.BRONZE,en,Bronze
+code.SMPL_TAG_TYPE.GEN,ko,일반
+code.SMPL_TAG_TYPE.GEN,en,General
+code.SMPL_TAG_TYPE.RISK,ko,주의
+code.SMPL_TAG_TYPE.RISK,en,Risk
+code.SMPL_TAG_TYPE.PROMO,ko,프로모션
+code.SMPL_TAG_TYPE.PROMO,en,Promotion
+code.SMPL_SRC_SYS.ERP,ko,ERP
+code.SMPL_SRC_SYS.ERP,en,ERP
+code.SMPL_SRC_SYS.WMS,ko,WMS
+code.SMPL_SRC_SYS.WMS,en,WMS
+code.SMPL_SRC_SYS.MANUAL,ko,수기 등록
+code.SMPL_SRC_SYS.MANUAL,en,Manual
+menu.SMPL_SINGLE_OFFSET,ko,단일 그리드 (오프셋)
+menu.SMPL_SINGLE_OFFSET,en,Single Grid (Offset)
+sample.offset.grid.title,ko,주문 (전 컬럼)
+sample.offset.grid.title,en,Orders (All Columns)
+sample.offset.empty,ko,조건에 맞는 주문이 없습니다.
+sample.offset.empty,en,No orders match the conditions.
+sample.action.confirm,ko,확정
+sample.action.confirm,en,Confirm
+sample.action.confirm.hint,ko,접수 상태만 확정할 수 있습니다.
+sample.action.confirm.hint,en,Only received orders can be confirmed.
+sample.action.confirm.confirm,ko,고른 주문을 확정합니다. 확정 후에는 수량과 단가가 잠깁니다.
+sample.action.confirm.confirm,en,Confirm the selected orders. Quantity and unit price lock after confirmation.
+sample.action.recalc,ko,일괄 재계산
+sample.action.recalc,en,Recalculate All
+sample.action.recalc.title,ko,일괄 재계산
+sample.action.recalc.title,en,Recalculate All
+sample.recalc.baseDt,ko,기준일
+sample.recalc.baseDt,en,Base Date
+sample.recalc.vatRate,ko,부가세율
+sample.recalc.vatRate,en,VAT Rate
+sample.recalc.running,ko,주문 금액을 다시 계산하는 중입니다
+sample.recalc.running,en,Recalculating order amounts
+sample.control.range,ko,표시 범위
+sample.control.range,en,Range
+sample.control.range.all,ko,전체
+sample.control.range.all,en,All
+sample.control.range.mine,ko,내가 등록한 것
+sample.control.range.mine,en,Registered by me
+sample.control.help,ko,도움말
+sample.control.help,en,Help
+sample.control.print,ko,인쇄
+sample.control.print,en,Print
+sample.help.body,ko,"이 화면은 참조 구현입니다. 컬럼 서른이 그리드 어휘의 실물이며, 업무 화면이 아닙니다."
+sample.help.body,en,This screen is a reference implementation. Its thirty columns are the live examples of the grid vocabulary.
+sample.popup.customer,ko,고객 조회
+sample.popup.customer,en,Find Customer
+sample.popup.customer.id,ko,고객번호
+sample.popup.customer.id,en,Customer No.
+sample.popup.customer.nm,ko,고객명
+sample.popup.customer.nm,en,Customer Name
+sample.popup.customer.grd,ko,등급
+sample.popup.customer.grd,en,Grade
+sample.tag.modal.title,ko,태그 편집
+sample.tag.modal.title,en,Edit Tags
+sample.col.custGrd,ko,고객등급
+sample.col.custGrd,en,Grade
+sample.col.chnl,ko,채널
+sample.col.chnl,en,Channel
+sample.col.priority,ko,우선순위
+sample.col.priority,en,Priority
+sample.col.dlvrYm,ko,납기월
+sample.col.dlvrYm,en,Delivery Month
+sample.col.ordDtm,ko,주문일시
+sample.col.ordDtm,en,Ordered At
+sample.col.vatAmt,ko,부가세
+sample.col.vatAmt,en,VAT
+sample.col.dcRt,ko,할인율
+sample.col.dcRt,en,Discount
+sample.col.procMs,ko,소요시간
+sample.col.procMs,en,Elapsed
+sample.col.tagList,ko,태그
+sample.col.tagList,en,Tags
+sample.col.memo,ko,메모
+sample.col.memo,en,Memo
+sample.col.errMsg,ko,오류메시지
+sample.col.errMsg,en,Error Message
+sample.col.srcSys,ko,원천시스템
+sample.col.srcSys,en,Source System
+sample.col.regId,ko,등록자
+sample.col.regId,en,Registered By
+sample.col.regDtm,ko,등록일시
+sample.col.regDtm,en,Registered At
+sample.col.modId,ko,수정자
+sample.col.modId,en,Modified By
+sample.col.modDtm,ko,수정일시
+sample.col.modDtm,en,Modified At
+sample.cond.custId,ko,고객
+sample.cond.custId,en,Customer
+sample.cond.chnl,ko,채널
+sample.cond.chnl,en,Channel
+sample.cond.dlvrYm,ko,납기월
+sample.cond.dlvrYm,en,Delivery Month
+sample.cond.ordAmt,ko,주문금액
+sample.cond.ordAmt,en,Order Amount
+sample.cond.procSec,ko,소요시간(초)
+sample.cond.procSec,en,Elapsed (sec)
+sample.cond.urgent,ko,긴급
+sample.cond.urgent,en,Urgent
+sample.cond.tag,ko,태그
+sample.cond.tag,en,Tag
+sample.cond.errMsg,ko,오류메시지
+sample.cond.errMsg,en,Error Message
+sample.rmk.required,ko,할인율이 있으면 비고가 필요합니다.
+sample.rmk.required,en,A remark is required when a discount applies.
+err.sample.not-confirmable,ko,접수 상태의 주문만 확정할 수 있습니다.
+err.sample.not-confirmable,en,Only orders in the received state can be confirmed.
+sample.cond.ordNm,ko,주문명
+sample.cond.ordNm,en,Order Name
+sample.col.ordId,ko,주문ID
+sample.col.ordId,en,Order ID
+sample.col.custId,ko,고객번호
+sample.col.custId,en,Customer No.
+sample.col.lock,ko,잠금
+sample.col.lock,en,Locked
+sample.dcRt.range,ko,할인율은 0 에서 100 사이여야 합니다.
+sample.dcRt.range,en,Discount must be between 0 and 100.
+sample.yn.y,ko,예
+sample.yn.y,en,Yes
+sample.yn.n,ko,아니오
+sample.yn.n,en,No

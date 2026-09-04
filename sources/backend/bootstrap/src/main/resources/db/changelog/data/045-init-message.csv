@@ -1,0 +1,87 @@
+MSG_KEY,LANG_CD,MSG_VAL
+codeMgmt.group.title,ko,코드 그룹
+codeMgmt.group.title,en,Code Groups
+codeMgmt.detail.title,ko,코드
+codeMgmt.detail.title,en,Codes
+codeMgmt.col.grpCd,ko,그룹 코드
+codeMgmt.col.grpCd,en,Group Code
+codeMgmt.col.grpNm,ko,그룹명
+codeMgmt.col.grpNm,en,Group Name
+codeMgmt.col.grpDesc,ko,설명
+codeMgmt.col.grpDesc,en,Description
+codeMgmt.col.codeCount,ko,코드 수
+codeMgmt.col.codeCount,en,Codes
+codeMgmt.col.dtlCd,ko,코드
+codeMgmt.col.dtlCd,en,Code
+codeMgmt.col.codeNm,ko,코드명
+codeMgmt.col.codeNm,en,Code Name
+codeMgmt.col.dtlDesc,ko,설명
+codeMgmt.col.dtlDesc,en,Description
+codeMgmt.col.useYn,ko,사용
+codeMgmt.col.useYn,en,In Use
+codeMgmt.col.sortNo,ko,정렬
+codeMgmt.col.sortNo,en,Sort
+codeMgmt.col.sysYn,ko,시스템
+codeMgmt.col.sysYn,en,System
+codeMgmt.systemBadge,ko,시스템
+codeMgmt.systemBadge,en,System
+codeMgmt.detail.empty,ko,코드 그룹을 선택하세요
+codeMgmt.detail.empty,en,Select a code group
+codeMgmt.detail.locked,ko,저장 후 편집할 수 있습니다
+codeMgmt.detail.locked,en,Save the group first to edit its codes
+codeMgmt.refDef.button,ko,참조 코드 관리
+codeMgmt.refDef.button,en,Reference Codes
+codeMgmt.refDef.title,ko,참조 코드 관리 — {grpNm}
+codeMgmt.refDef.title,en,Reference Codes — {grpNm}
+codeMgmt.refDef.grid,ko,참조 코드 정의
+codeMgmt.refDef.grid,en,Reference Code Definitions
+codeMgmt.col.refCd,ko,참조 코드
+codeMgmt.col.refCd,en,Reference Code
+codeMgmt.col.refNm,ko,참조 코드명
+codeMgmt.col.refNm,en,Reference Name
+codeMgmt.col.refDesc,ko,설명
+codeMgmt.col.refDesc,en,Description
+codeMgmt.col.refValueCount,ko,입력된 값
+codeMgmt.col.refValueCount,en,Values
+codeMgmt.refDef.dirty,ko,저장하지 않은 편집이 있어 열 수 없습니다
+codeMgmt.refDef.dirty,en,Cannot open while there are unsaved edits
+codeMgmt.refDef.noGroup,ko,코드 그룹을 먼저 선택하세요
+codeMgmt.refDef.noGroup,en,Select a code group first
+codeMgmt.group.hasCode,ko,코드 {count}건이 있어 지울 수 없습니다
+codeMgmt.group.hasCode,en,Cannot delete — {count} code(s) exist
+codeMgmt.delete.refWarn,ko,{dtlCd} 의 참조값 {count}건이 함께 삭제됩니다
+codeMgmt.delete.refWarn,en,{count} reference value(s) of {dtlCd} will also be deleted
+codeMgmt.refDef.deleteWarn,ko,{refNm} 에 입력된 참조값 {count}건이 함께 삭제됩니다
+codeMgmt.refDef.deleteWarn,en,{count} value(s) entered for {refNm} will also be deleted
+codeMgmt.validate.duplicate,ko,이미 있는 코드입니다
+codeMgmt.validate.duplicate,en,Duplicate code
+codeMgmt.search.grpCd,ko,그룹 코드
+codeMgmt.search.grpCd,en,Group Code
+codeMgmt.search.grpNm,ko,그룹명
+codeMgmt.search.grpNm,en,Group Name
+codeMgmt.search.dtlCd,ko,코드
+codeMgmt.search.dtlCd,en,Code
+codeMgmt.search.codeNm,ko,코드명
+codeMgmt.search.codeNm,en,Code Name
+err.code.group-duplicate,ko,이미 있는 코드 그룹입니다
+err.code.group-duplicate,en,The code group already exists
+err.code.group-missing,ko,이미 삭제된 코드 그룹입니다
+err.code.group-missing,en,The code group no longer exists
+err.code.group-has-code,ko,코드가 있어 그룹을 지울 수 없습니다
+err.code.group-has-code,en,The group still has codes and cannot be deleted
+err.code.duplicate,ko,이미 있는 코드입니다
+err.code.duplicate,en,The code already exists
+err.code.missing,ko,이미 삭제된 코드입니다
+err.code.missing,en,The code no longer exists
+err.code.ref-def-unknown,ko,이 그룹에 정의되지 않은 참조 코드입니다
+err.code.ref-def-unknown,en,The reference code is not defined for this group
+err.code.ref-def-duplicate,ko,이미 있는 참조 코드입니다
+err.code.ref-def-duplicate,en,The reference code is already defined
+err.code.ref-cd-unknown,ko,허용되지 않은 참조 코드 값입니다
+err.code.ref-cd-unknown,en,The reference code value is not allowed
+err.code.system-locked,ko,시스템 코드는 지우거나 끌 수 없습니다
+err.code.system-locked,en,System codes cannot be deleted or disabled
+err.code.required,ko,필수 값이 비어 있습니다
+err.code.required,en,A required value is empty
+code.CODE_REF_KEY.PARENT,ko,상위 코드
+code.CODE_REF_KEY.PARENT,en,Parent

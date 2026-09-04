@@ -1,0 +1,53 @@
+# 메시지 값 44차 — 사람 소유 시드다(22 §1.1). 059 가 넣은 문구 하나를 고친다.
+#
+# 넣는 것이 아니라 고치는 것이라 loadData 가 아니라 update 다(055 와 같은 모양이다).
+# **059 는 이 저장소에 처음 들어가는 파일인데도 새 파일을 더한다** — 화면을 띄워 이 어긋남을
+# 본 시점에 개발 DB 에는 059 가 이미 적용돼 있었고, loadData 의 CSV 를 고치면 그 DB 가
+# **체크섬 불일치로 다음 기동을 거부한다**. 시드는 파일이 아니라 **적용된 사실**을 기준으로
+# 다뤄야 한다는 것이 22 §1.1 이 말한 것이고, 그 규칙에 "아직 커밋 전" 이라는 예외는 없다.
+#
+# ── 무엇이 어긋났나 ──────────────────────────────────────────────────────────
+#
+# 그리드에는 **행 상태 컬럼**이 맨 왼쪽에 붙고 그 헤더가 `grid.col.state` = **상태** 다
+# (53 §4 — 사용자가 끄거나 옮길 수 없다). 사용자 관리의 파생 컬럼도 **상태** 였다 —
+# 한 헤더 줄에 같은 글자가 둘이었고, 넉 칸 떨어져 있어 더 헷갈렸다.
+#
+# **계정 상태**로 고친다. 조회조건이 이미 그 이름으로 부르고 있고(user.search.accountStat),
+# 61 §3.2.1 이 이 값을 부르는 이름도 *계정 상태* 다 — **화면 안에서 같은 것을 두 이름으로
+# 부르고 있었던 쪽**이 이 컬럼이다.
+databaseChangeLog:
+  - changeSet:
+      id: data-062-message-account-stat
+      author: template
+      comment: 파생 컬럼 헤더가 행 상태 컬럼과 같은 글자였다 — 계정 상태로 가른다(53 §4 · 61 §3.2.1)
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: 계정 상태
+            where: MSG_KEY = 'user.col.accountStat' AND LANG_CD = 'ko'
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: Account status
+            where: MSG_KEY = 'user.col.accountStat' AND LANG_CD = 'en'
+
+  - changeSet:
+      id: data-062-cache-version
+      author: template
+      comment: 값을 고쳤으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

@@ -1,0 +1,288 @@
+# 용어사전 — 유비쿼터스 언어
+#
+# 작성 단계: P1
+# 원본: agentic-ai DESIGN-00 5장 (용어 정의와 개념 모델) · DESIGN-05 (glossary.md)
+# status: migrated — 사용자 승인 전이다.
+#
+# **이 사전이 모든 문서·DB 테이블·API 필드 명명의 기준이다.** 동의어를 섞어 쓰지 않는다.
+# `key` 는 영문 키이며, DB 컬럼 값과 코드 상수는 이 키를 대문자 스네이크로 쓴다.
+
+meta:
+  status: migrated
+  migrated_from: "agentic-ai/docs/design/foundation/00-overview.md 5장"
+  migrated_at: 2026-09-04
+  baselined: null
+
+# ── 대화 구조 (5.1) ────────────────────────────────────────────────
+terms:
+  - id: TRM-001
+    term: 세션
+    key: session
+    group: 대화
+    definition: "하나의 채팅 창. 맥락 유지와 컨텍스트 관리의 단위. 제목을 가지며, 사용자는 논리 삭제로 자신의 목록에서 숨길 수 있다"
+  - id: TRM-002
+    term: 턴
+    key: turn
+    group: 대화
+    definition: "**사용자 질의 1건과 그에 대한 최종 응답까지의 처리 단위.** 한 세션은 여러 턴을 가진다"
+  - id: TRM-003
+    term: 스텝
+    key: step
+    group: 대화
+    definition: "**턴을 처리하는 동안 발생하는 agent ↔ LLM 1회 요청·응답 왕복.** 한 턴은 여러 스텝을 가진다"
+  - id: TRM-004
+    term: 회차
+    key: revision
+    group: 대화
+    definition: "**한 턴 안에서 되돌려 다시 수행한 시도의 구분.** 되돌리면 스텝 순번이 처음부터 다시 시작되므로, 스텝을 특정하려면 회차가 함께 필요하다 — 스텝의 식별자는 `턴 + 회차 + 순번` 이다"
+  - id: TRM-005
+    term: 스텝 역할
+    key: stepRole
+    group: 대화
+    definition: "스텝이 LLM 에게 요구하는 작업의 성격. **주 추론**(계획 수립·SQL 생성·최종 응답 작성·실패 원인 분석)과 **보조 판정**(업무 연관성 판정·업무 도메인·데이터소스 선별·컬럼 프루닝·질의 키워드 추출·과거 턴 요약·처리 중 입력의 의도 분류)으로 구분한다"
+    note: "**모델 선택의 단위다**"
+  - id: TRM-006
+    term: 도구 호출
+    key: toolCall
+    group: 대화
+    definition: "스텝의 결과로 LLM 이 agent 에게 요청하는 단위 작업 (SQL 조회·API 실행·지식 검색·과거 이력 참조·사용자 확인 요청 등)"
+  - id: TRM-007
+    term: 도구
+    key: tool
+    group: 대화
+    definition: "agent 가 LLM 에게 노출하는, 호출 가능한 기능의 명세"
+  - id: TRM-008
+    term: 사용자 개입
+    key: interaction
+    group: 대화
+    definition: "턴 처리 중 사용자에게 추가 정보나 승인을 요청하고 응답을 받는 것"
+  - id: TRM-009
+    term: 컨텍스트
+    key: context
+    group: 대화
+    definition: "특정 턴을 처리하기 위해 LLM 에 전달되는 정보 집합 (시스템 프롬프트·개인 기본 지시·지식·과거 턴 요약·스키마 정보 등)"
+  - id: TRM-010
+    term: 품질 신고
+    key: qualityReport
+    group: 대화
+    definition: "사용자가 특정 턴의 응답 품질에 이의를 제기하는 건. 상태를 가지며 관리자의 처리로 종결된다"
+  - id: TRM-011
+    term: 실행 점유
+    key: executionLease
+    group: 대화
+    definition: "한 턴을 특정 agent 인스턴스가 처리 중임을 나타내는 **시한부 소유권**. 만료 시각을 가지며 갱신되지 않으면 회수된다"
+  - id: TRM-012
+    term: 점유 토큰
+    key: fenceToken
+    group: 대화
+    definition: "실행 점유가 바뀔 때마다 증가하는 값. 점유를 잃은 인스턴스의 뒤늦은 쓰기를 무효화하는 데 쓴다"
+
+# ── 실행과 자동화 (5.2) ────────────────────────────────────────────
+  - id: TRM-020
+    term: 워크플로우
+    key: workflow
+    group: 실행
+    definition: "기본 기능(도구)을 조합해 사용자가 정의한 자동 처리 절차"
+  - id: TRM-021
+    term: 잡
+    key: job
+    group: 실행
+    definition: "워크플로우의 실행 인스턴스. 주기 실행·조건 실행·수동 실행으로 생성된다"
+  - id: TRM-022
+    term: 액션
+    key: action
+    group: 실행
+    definition: "데이터를 변경하거나 외부에 영향을 주는 실행 (조회와 구분)"
+  - id: TRM-023
+    term: 승인 필요 액션
+    key: approvalRequiredAction
+    group: 실행
+    definition: "실행 전 사용자 승인이 강제되는 액션"
+  - id: TRM-024
+    term: 커스텀 도구
+    key: customTool
+    group: 실행
+    definition: "설정으로 표현할 수 없는 다중 시스템 데이터 가공을 위해 agent 안에 서비스 빈으로 구현하는 도구. 도구 레지스트리에 등록되어 다른 도구와 같은 통제를 받는다"
+    note: "PRN-08 의 명시적 예외다"
+  - id: TRM-025
+    term: 질의 즐겨찾기
+    key: savedPrompt
+    group: 실행
+    definition: "사용자가 저장한 **자연어 질의문**. 실행하면 새 턴으로 처리된다 — LLM 을 거치므로 토큰을 소모하고 결과가 매번 달라질 수 있다"
+  - id: TRM-026
+    term: 저장된 조회
+    key: savedQuery
+    group: 실행
+    definition: "사용자가 저장한 **확정 SQL 과 파라미터 명세, 해석문의 묶음**. 실행은 턴을 만들지 않고 직접 수행되며 LLM 을 호출하지 않는다. 인증 예제 쿼리의 개인 대응물이다"
+  - id: TRM-027
+    term: 대시보드
+    key: dashboard
+    group: 실행
+    definition: "저장된 조회를 배치한 개인 화면. 구성 단위는 **위젯**(저장된 조회 + 표현 형식)이다"
+
+# ── 정책과 권한 (5.3) ──────────────────────────────────────────────
+  - id: TRM-040
+    term: 대상 시스템
+    key: targetSystem
+    group: 정책
+    definition: "연동되는 레거시 업무 시스템 단위. 복수를 전제한다. API(기능)의 귀속처이며, **데이터소스와는 관계를 갖지 않는다**"
+  - id: TRM-041
+    term: 데이터소스
+    key: dataSource
+    group: 정책
+    definition: "조회 대상 DB 또는 DW 연결 단위. 접속 정보는 yml 설정이 원천이고, admin 에 등록된 데이터소스 레코드(표시용 별칭·DBMS 종류·파서)가 그 ID 를 연결한다. **대상 시스템과 관계를 갖지 않는다**"
+  - id: TRM-042
+    term: 업무 도메인
+    key: businessDomain
+    group: 정책
+    definition: "카탈로그·지식·인증 예제 쿼리를 업무 단위로 묶은 집합. 질의 처리의 첫 단계에서 이 묶음을 먼저 선별해 컨텍스트 주입 범위를 좁힌다"
+  - id: TRM-043
+    term: 인증 예제 쿼리
+    key: certifiedQuery
+    group: 정책
+    definition: "관리자가 검수해 등록한, 업무 질의와 그에 대응하는 SQL·파라미터 명세의 쌍. 컨텍스트에 예시로 주입되거나 파라미터만 채워 그대로 실행된다"
+  - id: TRM-044
+    term: 조회 계획
+    key: queryPlan
+    group: 정책
+    definition: "조회·실행 전에 사용자에게 **업무 용어로** 제시하는 처리 예정 내역 — 질의 해석문, 대상 데이터 영역의 업무 명칭, 적용 조건·기간·집계 단위. **액션이 포함된 턴에서는 실행할 액션과 순서도 포함한다**"
+    note: "DBMS 실행 계획(EXPLAIN)과는 다른 개념이다. **이 용어를 유지할지는 미확정** — 액션 목록까지 담게 되어 이름과 범위가 어긋난다"
+  - id: TRM-045
+    term: 사용자 그룹
+    key: userGroup
+    group: 정책
+    definition: "접근 통제의 기본 단위. 시스템 전체를 아우르는 **전역** 개념으로, 직무·역할 단위로 정의한다(예: 급여담당·평가관리자). 사용자는 여러 그룹에 속할 수 있고, 접근 범위는 소속 그룹들이 여는 범위의 **합집합**이다"
+  - id: TRM-046
+    term: 쿼터 등급
+    key: quotaGrade
+    group: 정책
+    definition: "토큰·비용 한도 등급. **사용자 단위로 하나만** 부여하며 그룹과 무관하다"
+  - id: TRM-047
+    term: 마스킹
+    key: masking
+    group: 정책
+    definition: "접근을 허용하되 값을 가려서 보여주는 것. **컬럼 또는 API 응답 경로** ↔ 그룹 매핑의 **모드**(허용/마스킹)로 지정하며, 값 변환 규칙은 두 경로가 같은 것을 쓴다"
+  - id: TRM-048
+    term: 기본 필터
+    key: defaultFilter
+    group: 정책
+    definition: "테이블을 조회할 때 기본으로 강제 주입되는 조건. 논리 삭제 플래그·유효 상태처럼 **빠뜨리면 폐기 데이터까지 집계되는** 조건을 다룬다. 테이블당 0..1개이며 명시적 지시가 있을 때만 해제된다"
+    note: "**권한 통제가 아니다** — 정확도를 위한 장치다. 행 스코프와 한 항목으로 합치지 않는다: 하나는 볼 수 있는 범위이고 하나는 세어야 할 범위다"
+  - id: TRM-049
+    term: 신원 매핑
+    key: identityMapping
+    group: 정책
+    definition: "Hub 사용자가 각 대상 시스템·데이터소스에서 갖는 사용자 식별자의 매핑. API 호출의 신원 파라미터와 행 스코프 조인의 바인딩 값으로 쓰인다"
+    note: "**신원 매핑은 곧 사칭 능력이다.** 매핑 변경은 정책 변경 이력에 남긴다"
+  - id: TRM-050
+    term: 프롬프트 규칙
+    key: promptRule
+    group: 정책
+    definition: "관리자가 등록·수정하는 시스템 차원의 지시"
+  - id: TRM-051
+    term: 개인 기본 지시
+    key: personalDirective
+    group: 정책
+    definition: "사용자가 등록하는 개인화 지시. 프롬프트 규칙에 종속되며 이를 무력화할 수 없다"
+  - id: TRM-052
+    term: 지식
+    key: knowledge
+    group: 정책
+    definition: "업무 용어·규칙·설명 등 검색되어 컨텍스트에 주입되는 자료"
+    note: "**물리 테이블·컬럼명과 SQL 을 담지 않는다** — 특정 테이블에 관한 것이면 참조 테이블 링크로 표현한다"
+  - id: TRM-053
+    term: 쿼터
+    key: quota
+    group: 정책
+    definition: "사용자·기간 단위 토큰/비용 한도"
+  - id: TRM-054
+    term: 행 스코프
+    key: rowScope
+    group: 정책
+    definition: "행 단위 접근 제한(담당 조직·거래처·창고 등). 대상 데이터소스 안의 사용자 권한 정보 테이블과의 조인 또는 서브쿼리로 구현하며, 테이블당 0..1개 규칙을 둔다"
+
+# ── 개념 계층 (5.4) ────────────────────────────────────────────────
+hierarchy: "세션 → 턴 → { 스텝 → 도구 호출 } · 사용자 개입"
+
+# ── 턴 상태 모델 (5.5) ────────────────────────────────────────────
+# 한 턴은 수 초에서 수 분 이상 걸리며, 사용자 이탈·중단·서버 장애를 견디고 재개될 수
+# 있어야 한다. 따라서 턴은 **상태를 가진 지속 작업**으로 다룬다. 상태는 여섯으로 한정한다.
+turn_states:
+  - id: TS-01
+    state: 접수
+    key: RECEIVED
+    meaning: "질의를 받아 기록했고 아직 처리를 시작하지 않았다"
+    next: [RUNNING, FAILED]
+  - id: TS-02
+    state: 처리중
+    key: RUNNING
+    meaning: "스텝을 진행하고 있다"
+    next: [WAITING_USER, DONE, ABORTED, FAILED]
+  - id: TS-03
+    state: 사용자대기
+    key: WAITING_USER
+    meaning: "사용자 응답 없이는 진행할 수 없다"
+    next: [RUNNING, ABORTED, FAILED]
+  - id: TS-04
+    state: 중단
+    key: ABORTED
+    meaning: "처리가 멈췄고 **재개 가능**하다 — 수동 중단·서버 재시작·실행 점유 만료·대기 만료처럼 다시 시도할 여지가 있는 멈춤"
+    next: [RUNNING]
+  - id: TS-05
+    state: 실패
+    key: FAILED
+    meaning: "처리가 불가능한 것으로 확정됐다 — 쿼터 소진·권한 부족·복구 불가 오류처럼 재시도해도 결과가 같은 종결"
+    next: []
+  - id: TS-06
+    state: 완료
+    key: DONE
+    meaning: "최종 응답을 사용자에게 전달했다"
+    next: []
+
+wait_types:
+  - id: WT-01
+    type: 승인 대기
+    key: APPROVAL
+    waits_for: "승인 필요 액션의 실행 전 승인"
+    resume: "승인이면 실행, **그 외 모든 입력은 비승인**"
+  - id: WT-02
+    type: 추가 정보 대기
+    key: ADDITIONAL_INFO
+    waits_for: "질의 처리에 필요한 정보 요구"
+    resume: "받은 정보를 입력으로 처리를 이어간다"
+  - id: WT-03
+    type: 의도 확인 대기
+    key: INTENT_CONFIRM
+    waits_for: "**처리 중 들어온 새 입력의 의도 확인**"
+    resume: "**네 갈래로 분기한다** — 진행 중 턴에 반영 / 되돌려 재수행 / 별도 턴 / 중단"
+    note: "**되돌릴 수 없는 것이 걸린 턴에서만 쓴다.** 그 외에는 턴을 처리중으로 둔 채 확인을 병행하며 사용자대기로 전이하지 않는다 — 확인 때문에 멈추는 것 자체가 비용이다"
+
+state_rules:
+  - "**중단과 실패를 구분한다.** 재시도 대상은 중단 상태에 한한다"
+  - "**사용자대기에는 만료 시각을 둔다.** 만료되면 중단으로 전이하고 대기 중이던 액션은 실행하지 않는다. 만료 시간은 **대기 유형별로** 관리한다 — 승인은 사람의 판단을 기다리므로 길고, 의도 확인은 직전 입력에 대한 반응이므로 짧다"
+  - "**이미 액션을 실행한 턴은 재개 대상에서 제외한다.** 실행된 업무 API 는 되돌릴 수 없으므로 재개 시 같은 액션이 다시 실행될 위험이 있다. 부분 실행 상태를 사용자에게 알리고 새 턴으로 처리한다"
+  - "**그 새 턴에서 무엇을 다시 할지는 agent 가 정하지 않는다.** 이미 실행된 액션과 결과를 제시하고 **사용자가 어디부터 다시 할지 선택**한다 — '같은 요청인가' 와 '이미 처리했는가' 를 추론으로 판정하면 오판이 곧 중복 실행이 된다"
+  - "**스텝은 별도의 상태 모델을 두지 않는다.** 이력으로만 남으며, 재개 지점은 **현재 회차에서** 마지막으로 완료된 스텝을 근거로 판단한다"
+
+# ── 되돌림과 회차 (5.5) ───────────────────────────────────────────
+revision_rules:
+  - path: "처리 중 입력의 교정"
+    increments: true
+    why: "되돌려 다시 한다. 지나온 스텝이 버려진다"
+  - path: "중단된 턴의 재시도"
+    increments: false
+    why: "중단 지점에서 **이어간다.** 버려지는 스텝이 없다"
+  - path: "승인·추가 정보 응답 후 재개"
+    increments: false
+    why: "이어간다"
+  - path: "비승인 입력 후 계속"
+    increments: false
+    why: "같은 턴을 계속 처리한다"
+  - path: "성공한 턴의 결과 교정 재요청"
+    increments: null
+    why: "해당 없음 — 종결된 턴은 되돌리지 않고 **새 턴으로 처리한다**"
+
+revision_notes:
+  - "**버려진 회차의 기록도 남긴다**(PRN-07). 버려졌다는 것과 기록하지 않는다는 것은 다르며, 그 회차에서 이미 발생한 토큰과 이미 실행된 도구가 거기 있다. 이력은 append-only 이므로 지난 회차의 행을 수정해 표시하지 않는다"
+  - "**감사 이력에는 기록 당시의 회차를 함께 남긴다.** 점유 토큰과 **두 값은 직교한다** — 점유 토큰은 '어느 인스턴스가 처리했나', 회차는 '무엇을 하려던 시도인가' 에 답한다"
+  - "**되돌림에는 상한을 둔다.** 교정이 반복되면 이력과 비용이 함께 늘어난다. 상한 값은 미확정이다"

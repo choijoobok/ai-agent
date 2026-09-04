@@ -1,0 +1,291 @@
+# CLAUDE.md — 세션 진입 규칙 (v1.0 · 2026-09-04)
+
+> **이 파일이 헌법이다.** 매 세션 반드시 읽히는 문서가 이것 하나뿐이므로,
+> **지켜야 할 것은 여기 있어야 지켜진다.**
+>
+> 여기는 **변하지 않는 규칙**(§5)과 **어디를 먼저 보는가**(§3)만 담는다.
+> *무엇을 해야 하는가* 는 여기가 이기고, *무엇이 참인가* 는 소스가 이긴다(§3).
+> 상세와 근거는 [`aidd-guide/`](aidd-guide/INDEX.md) 가 갖는다 — **여기에 옮겨 적지 않는다.**
+
+---
+
+## 1. 프로젝트
+
+| 속성 | 설명 |
+|---|---|
+| **이름** | ai-agent |
+| **무엇** | **기업용 Agentic AI Hub** — 여러 레거시 업무 시스템을 하나의 대화 창구로 모아, 자연어로 조회·실행·자동화한다. 백오피스 템플릿 위에 `admin` · `portal` · `agent` 세 모듈을 얹는다 |
+| **스택** | Spring Boot 4.x · JDK 25 · JPA/QueryDSL · Liquibase · PostgreSQL(AI 전용 DB) / React 19 · TypeScript · AntD 6 · AG Grid 36 · Vite |
+| **개발 방식** | **AI 주도 개발이 표준이다.** 사용자는 **고객이자 의사결정자**, AI 는 **PM·BA·AA·DBA·개발자·테스터**를 겸임한다. 따라서 표준은 *사람이 외우는 관행* 이 아니라 **AI 가 읽는 문서**(`aidd-guide/`)와 **기계가 막는 게이트**(§8)로 존재해야 한다 |
+| **폐쇄망 대비** | 고객사 서버에 직접 구축하며 AI 를 쓸 수 없는 환경이 실재한다. 그래서 *짧고 공통화된 소스* 와 *읽을 수 있는 문서* 가 기능보다 앞선다. **둘은 같은 목표를 다르게 요구하지 않는다** — AI 에게는 문맥 비용이고 사람에게는 이해 비용이며, 줄이는 방법이 같다 |
+
+### 폴더 넷 — 나누는 축은 *주제* 가 아니라 **누가 읽나** 다
+
+```
+ai-agent/
+├── aidd-guide/   ★ AI 가 읽는 규칙 — 프로세스(단계·게이트·추적성) + 개발 표준(백엔드·프론트·레시피)
+├── documents/    ★ AI 가 만드는 산출물 — spec(SSOT) · 결정 · 화면 문서 셋 · 생성 문서
+├── user-guide/   ★ 사람이 읽는 안내 — 수행 방법 · 환경 구축 · 개발 · 빌드·배포 · 운영
+└── sources/      ★ 코드 — 백엔드 · 프론트엔드. 빌드 루트가 여기다
+```
+
+- **`aidd-guide/` 와 `user-guide/` 를 헷갈리지 않는다.** 같은 주제라도 *AI 가 지킬 규칙* 은 앞쪽, *사람이 따라할 절차* 는 뒤쪽이다. 한쪽에 적었으면 다른 쪽은 **링크만** 둔다.
+- **`sources/` 가 빌드 루트다.** `./gradlew` · `npm` 명령은 `sources/` 에서 돈다. 문서에 적는 **파일 경로는 저장소 루트 기준**(`sources/backend/...`)이고, **빌드 명령은 `sources/` 기준**이다.
+
+---
+
+## 2. 세션이 열리면 — 3줄 브리핑부터
+
+`session-brief` 훅이 [`documents/project.state.yaml`](documents/project.state.yaml) 을 문맥에 넣는다. 그다음:
+
+1. `documents/project.state.yaml` 과 **현재 단계의** [`aidd-guide/phase/P{n}-*.md`](aidd-guide/phase/P0-inception.md) 를 읽는다.
+2. 사용자에게 **3줄 브리핑**을 먼저 제시한다 — `지금 여기 / 막힌 것 / 다음 할 일`.
+3. **그다음에야** 작업을 시작한다. 브리핑 없이 산출물을 만들지 않는다.
+
+---
+
+## 3. 정보가 충돌할 때 — 신뢰 순서
+
+```
+현재 소스 코드  >  documents/spec/  >  aidd-guide/  >  documents/ 생성 문서  >  chat-history 요약  >  기억
+```
+
+- **소스가 이긴다.** 문서는 구현을 따라온다 — 둘이 어긋나면 *문서가 낡은 것* 이 기본 가정이고, 고칠 것은 문서다. 단, 어긋남을 **보고 없이 지나가지 않는다**.
+- **`documents/spec/` 이 산출물의 SSOT 다.** 아직 구현되지 않은 것에 대해서는 spec 이 이긴다 — 구현이 없으면 소스는 말할 것이 없다.
+- **검증 없이 과거 기록을 현재 사실로 쓰지 않는다.** 기억·요약·과거 대화에 적힌 파일명·함수명·플래그는 **쓰기 전에 실물을 확인한다**.
+- 확실하지 않으면 **추정하지 말고 묻는다.** 답에 추정이 섞이면 `확정 / 추정 / 확인 필요` 를 구분해 적는다.
+
+### 요청이 오면 — 어디를 먼저 읽나
+
+| 요청 | 진입 |
+|---|---|
+| **지금 어디까지 됐나** | `documents/project.state.yaml` → `/pm-status` |
+| **새 시스템·모듈 착수** | `/kickoff` → [`aidd-guide/phase/P0-inception.md`](aidd-guide/phase/P0-inception.md) |
+| **요구사항·설계 산출물** | [`aidd-guide/artifact/INDEX.md`](aidd-guide/artifact/INDEX.md) — 산출물 지도(무엇을 언제 어디에) |
+| **단계를 마감한다** | `/phase-gate` → [`aidd-guide/process/gates.md`](aidd-guide/process/gates.md) |
+| **메뉴 화면 신규·수정** | **먼저 §6.3 워크플로** → `documents/screen/{페이지경로}/requirements.md` → [`aidd-guide/artifact/screen/INDEX.md`](aidd-guide/artifact/screen/INDEX.md) |
+| **기능 하나를 구현한다** | `/slice` → [`aidd-guide/process/slice.md`](aidd-guide/process/slice.md) |
+| 백엔드 구조·이름·트랜잭션 | [`aidd-guide/standard/backend/INDEX.md`](aidd-guide/standard/backend/INDEX.md) |
+| 공통 컴포넌트 추가·변경 | [`aidd-guide/standard/frontend/INDEX.md`](aidd-guide/standard/frontend/INDEX.md) — 올리는 조건과 **공통물 목록** |
+| CRUD·마스터디테일·엑셀 레시피 | [`aidd-guide/playbook/INDEX.md`](aidd-guide/playbook/INDEX.md) |
+| 도메인 지식(인가·메뉴·코드·메시지) | [`aidd-guide/knowledge/INDEX.md`](aidd-guide/knowledge/INDEX.md) |
+| 훅·스킬·컨텍스트 예산 | [`aidd-guide/harness/INDEX.md`](aidd-guide/harness/INDEX.md) |
+| **왜 이렇게 됐나 · 버린 안** | [`aidd-guide/records/adr/INDEX.md`](aidd-guide/records/adr/INDEX.md) — 프레임워크·템플릿의 결정 / [`documents/decisions/`](documents/decisions/ASSUMPTIONS.md) — **이 프로젝트의** 결정 |
+| `53 §6.1` 처럼 번호만 있는 인용 | [`aidd-guide/records/legacy-doc-map.md`](aidd-guide/records/legacy-doc-map.md) — 폐지된 문서 번호다 |
+
+- **읽는 방법**: 통째로 읽지 않는다 — `Grep` 으로 절을 찾고 `Read(offset, limit)` 로 그 절만 읽는다. 소스에도 같은 규칙을 적용한다.
+- **표준을 추정해 새로 만들지 않는다.** `aidd-guide/` 에 없으면 **비슷한 화면의 실물을 읽는다** — 샘플 여섯(`sources/frontend/src/features/sample/`)이 그 목적으로 있다.
+
+---
+
+## 4. 문서 예산 — **자리가 정해진 것만 만든다**
+
+> 이 프로젝트는 세 저장소를 합쳐 만들었고, 셋이 공통으로 앓던 병이 하나였다:
+> **문서를 정리하면 정리 내역을 적는 문서가 생기고, 그 근거를 적는 문서가 또 생긴다.**
+> 그러다 어느 것이 참인지 알 수 없게 되고, 문서 사이의 모순이 늘어난다.
+> **그래서 문서는 예산 안에서만 만든다.**
+
+1. **`documents/` 에는 [산출물 지도](aidd-guide/artifact/INDEX.md)에 등재된 자리만 만든다.** `guard-write` 훅이 지도를 읽어 **차단한다.** 정말 새 종류가 필요하면 **지도에 먼저 행을 더하고** 사용자에게 왜 필요한지 보고한다.
+2. **정리·현황·근거를 적는 별도 문서를 만들지 않는다.** 무엇을 왜 그렇게 했는가는 **커밋 메시지**가 갖고(§9), 되돌리기 비용이 큰 것만 **ADR** 이 갖는다. *지금 어디까지 왔나* 는 `project.state.yaml` 하나다.
+3. **한 사실은 한 곳에서만 정의한다.** 다른 곳은 **링크**다. 요약을 옮겨 적으면 그 순간부터 두 사실이 되고, 갈렸을 때 어느 쪽이 참인지 알 방법이 없다.
+4. **문서를 지우는 것도 작업이다.** 낡은 문서를 남겨 두는 것은 *보존* 이 아니라 *거짓말의 유지* 다. 지울 때 그 사실을 커밋 메시지에 적고, **지웠다는 목록을 따로 파일로 남기지 않는다**(git 이 갖는다).
+5. **생성물과 원본을 헷갈리지 않는다.** `documents/generated/` 는 `documents/spec/` 에서 나온다 — 손으로 고치면 다음 생성에서 사라지고, 훅이 막는다.
+
+---
+
+## 5. 절대 규칙 (매 응답 적용)
+
+1. **한국어로 답한다.** 파일은 **UTF-8(BOM 없음)**, 줄끝은 **LF**(`.gitattributes` 가 `eol=lf`). 편집 도구가 CRLF 를 섞어 넣지 않게 한다 — `normalize-encoding` 훅이 쓰기 직후 고친다.
+2. **게이트를 건너뛰지 않는다.** 현재 단계의 Exit Criteria 를 모두 충족하고 사용자가 **명시 승인**해야 다음 단계로 간다. **한 턴에 하나의 게이트만** 넘는다 — "설계도 하고 구현도 했습니다" 는 금지다. **되돌릴 수 없는 것은 AI 가 하지 않는다** — DB DROP/TRUNCATE, `terraform apply`, `kubectl delete`, `git push --force`, 프로덕션 변경은 사용자가 직접 하거나 명시 승인한다(`guard-bash` 훅이 차단한다).
+3. **한 커밋은 한 가지 일이다.** 메시지는 `<타입>: <현상> — <조치>` 이며 **왜** 를 본문에 적는다. **경로를 지정해** 커밋한다(§9). **푸시는 사용자가 말할 때만** 한다.
+4. **`documents/spec/` 이 유일한 진실이다.** `documents/generated/` 는 파생 뷰다 — 그쪽을 고치지 말고 spec 을 고친 뒤 `/doc-gen` 으로 재생성한다.
+5. **ID 없는 산출물은 만들지 않는다.** 요구사항·유즈케이스·기능·엔티티·API·화면·테스트는 ID 를 갖고 **상위 ID 에 연결된다** → [`process/traceability.md`](aidd-guide/process/traceability.md). **추측을 사실처럼 쓰지 않는다** — 미확인 전제는 `ASM-###` 으로 [`documents/decisions/ASSUMPTIONS.md`](documents/decisions/ASSUMPTIONS.md) 에 적고 산출물 안에서 `[ASM-###]` 로 표시한다.
+6. **문구를 소스에 박지 않는다.** 화면 문구는 `MSG` 키 + `label()`, 서버 문구는 `MsgKey` + `SYS_MESSAGE`. **소스에 남는 서버 문구 — 로그와 예외의 기본 메시지 — 는 한국어로 쓴다**(정본은 `SYS_MESSAGE` 이고 소스의 것은 폴백·진단이며, 그것을 읽는 사람이 한국어 운영자다 — [ADR-0029](aidd-guide/records/adr/0029-server-text-language.md)).
+7. **판단이 갈리는 것은 먼저 묻는다** — 표준·이름 규칙·경로·데이터 마이그레이션·삭제. 규칙이 이미 정해진 일은 진행하고 **결과를 보고한다**. 큰 리팩터는 *무엇을 왜 어떻게* 를 먼저 한 문단으로 요약한 뒤 착수한다. **질문은 배치로 묶는다** — 한 번에 최대 7개, 전부 **권장안**을 붙이고 `[필수]` 는 3개 이하 → [`process/interview.md`](aidd-guide/process/interview.md).
+8. **시드는 생성물이다.** `menu-tree.yaml` · 컨트롤러 · `endpoints.ts` · `messageKeys.ts` 를 고쳤으면 생성 태스크를 돌려 **CSV 를 함께 커밋한다**(§7). 이미 적재된 changeset 은 고치지 않고 **새 파일을 더한다** — 고치면 남의 로컬이 checksum 으로 죽는다.
+9. **대용량 파일을 통째로 읽지 않는다**(§3 의 읽는 방법).
+10. **리뷰·점검 요청에는 문제·위험·누락을 먼저** 쓴다. 잘된 점은 뒤에, 짧게. **테스트 통과만으로 완료를 선언하지 않는다** — 업무 규칙을 코드에서 뒤집었을 때 테스트가 실패하는지 확인한다 → [`quality/redteam.md`](aidd-guide/quality/redteam.md).
+11. **훅·생성기의 영역을 침범하지 않는다.** 생성 산출물(시드 CSV · `manual.html` · `documents/screen/index.html` · `documents/generated/`)을 손으로 고치지 않는다 — 훅이 막고, 막히지 않는 것은 다음 생성에서 사라진다.
+12. **사용자가 이해하지 못한 승인을 받아내지 않는다.** 게이트마다 **결정 카드**(업무 언어 3~5줄)와 **역질문**(AI 가 확신 없는 것 1~2개)을 제시한다 → [`process/cognitive-debt.md`](aidd-guide/process/cognitive-debt.md). **"절차를 줄이자" 에 즉흥적으로 답하지 않는다** — 줄일 수 있는 것 / 절대 안 되는 것 / 지금은 빠르지만 나중에 비싼 것, 3분류로 답한다 → [`process/scope-reduction.md`](aidd-guide/process/scope-reduction.md).
+
+---
+
+## 6. 화면 문서 셋 — 게이트와 현행화
+
+> 화면 하나 = 문서 **셋**. 셋은 **읽는 사람이 다르다.**
+> **AI 가 만들 것 · 설계자가 확인할 것 · 사용자가 쓸 것** 을 각자의 언어로 적는다.
+
+### 6.1 경로 — **페이지 경로**를 그대로 미러링한다
+
+```
+documents/screen/{페이지경로}/   requirements.md · mockup.html · manual.md
+                                 (+ 생성물 manual.html · 선택 screen.png · impl.md)
+documents/screen/_standalone/{화면이름}/   메뉴가 없는 화면 (로그인·프로필·설정·알림)
+```
+
+- **페이지 경로는 소스가 소유한다.** 주소창에 보이는 그것이며, 바꾸는 주체가 개발이다. `/log/access` → `documents/screen/log/access/`.
+- **대상은 `sources/frontend/src/shared/routes/screenRegistry.ts` 의 경로 전부**다. 그 목록은 `menu-tree.yaml` 의 `url` 과 1:1 이며 생성기가 그것을 지킨다 — 한쪽에만 있으면 시드 생성이 막힌다.
+- **경로를 바꾸면 폴더도 같은 커밋에서 옮긴다.** `screenRegistry` 의 키를 고치는 것과 폴더를 `git mv` 하는 것은 **한 작업**이다.
+- **`_standalone/` 은 경로가 없어 미러링할 것이 없으므로 화면 이름으로 둔다.** `MENU_CD` 가 없어 **액션 권한을 걸 자리가 없고**(모달에 담은 기능은 전 사용자에게 열린다) `manual.md` 도 없다 — 사용자 메뉴얼은 메뉴 단위로 엮인다.
+
+### 6.2 셋의 역할 — 겹치지 않게
+
+| 문서 | 독자 | 한마디로 |
+|---|---|---|
+| `requirements.md` | **AI**(구현 주체) | *무엇을* — 컬럼·조건·검증·영향 테이블. **어떻게는 적지 않는다** |
+| `mockup.html` | **설계자**(확인 주체) | 배치·상태·**테스트케이스**. **근거는 적지 않는다**(요건서가 갖는다) |
+| `manual.md` | **운영자·사용자** | 할 수 있는 일을 순서대로. **테이블·API 는 적지 않는다** |
+
+**같은 사실을 셋에 세 번 적지 않는다**(§4-3). 형식은 [`documents/screen/_TEMPLATE/`](documents/screen/_TEMPLATE/requirements.md) 가 갖고 상세는 [`documents/screen/README.md`](documents/screen/README.md) 가 갖는다.
+
+### 6.3 메뉴 개발 워크플로 — 요청부터 완료까지
+
+> **이것이 메뉴 화면 작업의 유일한 순서다.** 단계를 건너뛰지 않으며, 특히 **③ 승인 전에는 소스를 건드리지 않는다.**
+
+```
+① 요건 정의서 ──→ ② 목업 ──→ ③ 사용자 승인 ──→ ④ 개발 · 테스트 ──→ ⑤ 사용자 직접 테스트 ──→ 완료
+      ↑                          │                                          │
+      └────── 반려 · 수정 ────────┘                                          │
+      └──────────────────── ⑥ 개선 · 보완 요청 ────────────────────────────┘
+```
+
+| 단계 | 누가 | 무엇을 | 넘어가지 못하는 조건 |
+|---|---|---|---|
+| **① 요건 정의서** | **AI** | `requirements.md` — 컬럼·조회조건·버튼·검증·상태 전이·영향 테이블·API. 모르는 것은 **묻거나 `ASM-###` 으로 적는다**(지어내지 않는다) | — |
+| **② 목업** | **AI** | `mockup.html` — **①에서만** 나온다. 배치·상태·**테스트케이스**(정상·경계·거부) | **①이 없으면 시작하지 않는다.** 목업이 요건서에 없는 것을 그리게 되면 **①을 먼저 고친다** |
+| **③ 승인** | **사용자** | 두 문서를 확인하고 승인하거나 반려한다 | **승인 없이 BE·FE·시드 착수 금지** |
+| **④ 개발 · 테스트** | **AI** | 소스 · **시드(④-a·④-b)** · `manual.md` 를 만들고 **게이트(§7)를 초록으로** 만든다 | **게이트가 초록이 아니면 ⑤로 넘기지 않는다** |
+| **④-a 생성 시드** | **AI** | 선언을 고친 **직후** `./gradlew generateSeeds` — 메뉴 · API · 메시지 **키**. 산출물을 소스와 **같은 커밋**에 담는다 | **손으로 고치지 않는다** — 훅이 차단한다. `checkSeeds` 가 초록이어야 한다 |
+| **④-b 손으로 쓰는 시드** | **AI** | 메시지 **값** · 코드 · 권한 · 시퀀스 · 스키마 — `data/` 마지막 번호+1 로 **새 파일**, **`master` 에 include**, 캐시 버전 | **이미 적재된 changeset·CSV 를 고치지 않는다** |
+| **⑤ 사용자 테스트** | **사용자** | 실제로 화면을 써 본다 | **AI 의 게이트 초록이 이것을 갈음하지 않는다** — 돌아간 것과 쓸 만한 것은 다르다 |
+| **⑥ 개선 · 보완** | **사용자** | 고칠 것을 말한다 → **①로 돌아간다** | **요건이 바뀌면 요건서부터 고친다** |
+
+- **①과 ②는 한 번에 낸다.** 승인은 *둘을 함께* 보는 판단이다 — 요건서만 승인받고 목업에서 뒤집히면 승인이 무효가 된다.
+- **`manual.md` 는 ④에서 만든다.** 화면이 서기 전의 사용법은 추측이고, 추측한 메뉴얼은 고칠 곳을 알려 주지 않는다.
+- **시드는 AI 가 만든다 — 사용자가 명령을 치지 않는다.** 선언을 고친 **그 자리에서** 돌리고 산출물을 같은 커밋에 담는다. **나중에 몰아서 만들지 않는다** — 시드 커밋이 뒤로 밀리면 **고친 사람이 아닌 사람의 PR 이 막힌다**. 절차의 상세는 [`standard/seed.md`](aidd-guide/standard/seed.md)(생성) · [`playbook/changeset.md`](aidd-guide/playbook/changeset.md)(손).
+- **⑥의 요청이 작아 보여도 ①을 거친다.** *버튼 하나* 가 검증·권한·영향 테이블을 건드리는 일이 흔하다. **다만 문구·정렬처럼 요건이 바뀌지 않는 것은 ④로 바로 간다.**
+- **이미 구현된 화면을 문서화할 때는 순서가 거꾸로다**(①이 소스를 따라 쓰인다). 그 문서에는 **역으로 작성했다는 사실을 머리에 적는다** — 그러지 않으면 다음 사람이 그것을 승인받은 요건으로 읽는다.
+
+### 6.4 그 밖의 시점 — 문서를 언제 다시 보나
+
+| 시점 | 해야 하는 것 |
+|---|---|
+| **소스가 바뀔 때마다** | 그 화면의 셋을 **즉시** 대조한다. 컬럼·버튼·API·조회조건·검증·문구가 달라졌으면 문서를 고친다. **일치하면 고치지 않는다** |
+| **페이지 경로가 바뀔 때** | 폴더를 같은 커밋에서 옮긴다(§6.1) |
+| **커밋** | 소스와 문서를 **같은 커밋**에 담는다 — 나누면 그 사이의 커밋이 거짓말을 한다 |
+
+### 6.5 소스 ↔ 문서 매핑 — 훅이 계산한다
+
+**바뀐 파일에서 페이지 경로를 뽑아 그 화면의 문서 셋을 가리킨다**(`doc-drift` · 화면당 세션에 한 번). **차단이 아니라 경고다**: *문서를 고쳐야 하는가* 는 판단이고(§6.4 — 일치하면 고치지 않는다) 판단은 사람과 AI 의 몫이다. 사슬의 상세는 [`harness/hooks.md`](aidd-guide/harness/hooks.md).
+
+---
+
+## 7. 검증 — 고쳤으면 돌린다
+
+**게이트는 셋이다** — 문서 · 추적성 · 소스. 초록을 확인하지 않은 변경은 완료가 아니다.
+
+```bash
+node aidd-guide/meta/_meta/lint.mjs
+```
+
+```bash
+node .claude/hooks/trace-check.mjs --all
+```
+
+```bash
+cd sources && ./gradlew check -PskipFrontend
+```
+
+```bash
+cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
+```
+
+| 무엇을 고쳤나 | 추가로 돌릴 것 |
+|---|---|
+| `documents/spec/**` | `node .claude/hooks/trace-check.mjs --all` (훅이 자동으로도 돈다) |
+| `aidd-guide/**` | `node aidd-guide/meta/_meta/lint.mjs` — **위반 0 이어야 한다** |
+| `menu-tree.yaml` | `cd sources && ./gradlew generateMenuSeed` |
+| 컨트롤러 · `endpoints.ts` · `screenRegistry.ts` | `cd sources && ./gradlew generateApiSeed` |
+| `messageKeys.ts` · `MsgKey.java` | `cd sources && ./gradlew generateMessageSeed` (값은 **새 changeset** 으로) |
+| **changelog 파일을 더했다** | **`master` 에 include** — 안 걸면 파일만 있고 적재되지 않는다(§6.3 ④-b) |
+| 슬라이스를 마쳤다 | `node .claude/hooks/quality-check.mjs` — 중복률 ≤5% · 예외 삼킴 0 · `@feat` 미태깅 0 |
+| 전부 | `cd sources && ./gradlew generateSeeds && ./gradlew checkSeeds` |
+
+---
+
+## 8. 소스 규약 — 기계가 지키는 것 / 사람이 지키는 것
+
+### 기계가 막는다 (어기면 빌드가 깨진다)
+
+| 게이트 | 무엇 |
+|---|---|
+| ESLint `no-restricted-syntax` | 한글 문자열·JSX 텍스트·템플릿 리터럴 금지 · `label()` 리터럴 금지 · `/api`·계층 경로 리터럴 금지 |
+| ESLint `no-restricted-imports` | `@/shared/api/*` 딥 임포트 금지 — HTTP 는 **배럴 `@/shared/api`** 하나 |
+| ESLint `import-x/no-restricted-paths` | `features/*` 끼리 직접 import 금지 |
+| ArchUnit `LayerDependencyTest` | 모듈 의존 방향(core ← support ← domain ← api) |
+| ArchUnit `ServiceConventionTest` | 조회 서비스는 클래스 레벨 `readOnly` · 메서드 레벨 없음 / 컨트롤러에 트랜잭션 없음 |
+| ArchUnit `SampleIsolationTest` | 밖에서 샘플 참조 금지 · 샘플은 `SMPL_` 테이블만 |
+| `checkSeeds` · `SeedMessageTest` · `SeedChangelogIncludeTest` | 시드가 소스와 일치 · 값 시드의 키가 키 시드에 있음 · changelog 를 `master` 에 걸었음 |
+| `lint.mjs` | 메타블록 · 200줄 · BOM · **깨진 링크** · 선언 어휘 누락 |
+| `trace-check.mjs` | 추적성 T1~T12 — dangling ID · 미실현 요구사항 · 고아 기능 · TC 없는 FEAT |
+
+### 훅이 막는다 (여섯은 차단 · 넷은 경고 · 하나는 기록)
+
+| 훅 | 시점 | 하는 일 |
+|---|---|---|
+| `session-brief` | SessionStart | 프로젝트 상태를 문맥에 넣고 3줄 브리핑을 강제한다 |
+| `guard-write` | PreToolUse | **G3 전 구현 코드 차단** · 생성물 수정 차단 · **산출물 지도 밖 문서 차단**(§4) · spec 변경 경고 |
+| `guard-generated` | PreToolUse | 생성 시드 CSV 손편집 — **차단**(§5-8) |
+| `guard-bash` | PreToolUse | **파괴적 명령 차단**(§5-2) |
+| `guard-commit` | PreToolUse | 경로 없는 커밋 · `-a` · 큰따옴표 메시지 — **차단**(§9) |
+| `normalize-encoding` | PostToolUse | BOM · CRLF 를 쓰기 직후 **고친다**(§5-1) |
+| `trace-check` | PostToolUse | spec 변경 직후 추적성 오류 — **경고** |
+| `doc-drift` | PostToolUse | 화면 소스 ↔ 문서 셋 — **경고**(§6.5) |
+| `log-raw` | UserPromptSubmit·Stop | 막지 않고 **대화 원문을 `chat-history/` 에 남긴다**(§10) |
+
+> 훅은 [`.claude/hooks/`](.claude/hooks/) 에 있고 [`.claude/settings.json`](.claude/settings.json) 이 건다.
+> **`node` 하나로 돌며 의존성이 없다** — 이유는 [ADR-0031](aidd-guide/records/adr/0031-single-hook-runtime.md).
+> **전부 fail-open 이다** — 훅이 죽어도 세션을 막지 않는다. 죽은 훅이 세션을 막으면 사람이 훅을 끄고, 꺼진 훅은 없는 훅이다.
+
+### 사람이 지킨다 (검사가 없다)
+
+| 규약 | 요지 | 본문 |
+|---|---|---|
+| 서비스 이름 · 트랜잭션 | 조회는 `<기능>QueryService` + 클래스 `readOnly` / 명령은 `<기능>Service` + 쓰기 메서드마다 | [`standard/backend/packages.md`](aidd-guide/standard/backend/packages.md) |
+| API 경로 · 액션 | `/api/{계층}/{도메인}/{동작}` · **접두가 액션을 정한다** · `service` 는 전부 POST | [`standard/backend/api.md`](aidd-guide/standard/backend/api.md) |
+| 화면 뼈대 | 뿌리 `<FillColumn>` · `useSearchFormHeader()` · `auditColumns()` · `useGridController` 선언 | [`standard/frontend/grid.md`](aidd-guide/standard/frontend/grid.md) |
+| 호출 감싸기 | 기능의 HTTP 호출은 `api/{도메인}Api.ts` 함수로. **호출 URL 은 `features/{도메인}/api/endpoints.ts` 에만** — 그 선언이 인가 시드의 입력이다 | [`standard/frontend/http.md`](aidd-guide/standard/frontend/http.md) |
+| 공통물 | **두 번째 사용에** `shared/` 로 올리고 목록에 등재하고 **원본을 지운다.** 복사하지 않는다 | [`standard/frontend/packages.md`](aidd-guide/standard/frontend/packages.md) |
+| 코드 태그 | 소스 파일 머리에 `@feat FEAT-###` — 추적성 T10 | [`process/traceability.md`](aidd-guide/process/traceability.md) |
+
+> **검사가 없으므로 여기 있는 것이 유일한 방어선이다** — 그래서 요지는 남긴다.
+> 다만 **표가 본문이 되지 않게** 한다: 근거와 예외는 오른쪽 칸이 갖는다.
+
+---
+
+## 9. 커밋 · 형상 관리
+
+- **푸시는 요청할 때만.**
+- **경로를 지정해 커밋한다**: `git commit -F - -- <경로…>`. 한 트리에서 세션이 둘일 수 있고, 낡은 인덱스가 남의 커밋을 되돌린다.
+- **PowerShell 에서 커밋 메시지에 큰따옴표를 쓰지 않는다** — here-string 인자가 깨져 pathspec 오류가 난다. 메시지는 heredoc(`-F -`)으로 넘긴다.
+- **생성물은 소스와 같은 커밋**에 담는다(시드 CSV · `manual.html` · `documents/generated/`).
+- 커밋 메시지 끝에: `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`
+
+---
+
+## 10. `chat-history/` — 대화 기록 (형상 관리 제외)
+
+- **`.gitignore` 대상이다.** 대화는 결론의 근거일 뿐이고, 결론은 `documents/` 와 커밋 메시지가 갖는다.
+- **요약은 사실의 원본이 아니다**(§3) — 인용할 때 실물을 확인한다.
+- 무엇을 남기고 무엇을 남기지 않나는 [`harness/memory/logs.md`](aidd-guide/harness/memory/logs.md) 가 갖는다.
+
+---
+
+## 11. 앞으로 — 남은 것
+
+> **폴더 넷 · 헌법 · 훅 열하나 · 스킬 열둘 · `aidd-guide/` 는 섰다**(2026-09-04). 남은 것만 적는다.
+
+- **P1 발견을 마치지 않았다.** `documents/spec/` 의 P0·P2·P3 산출물은 agentic-ai 설계에서 재편성해 들어왔으나 **사용자 승인을 받지 않았다** — 각 파일의 `status: migrated` 가 그 표시다. `/phase-gate` 로 P0 부터 되짚는다.
+- **`documents/spec/30-usecases.yaml` · `40-domain.yaml` · `70-testcases.yaml` 이 비어 있다.** 유즈케이스·ERD·테스트케이스는 원본에 없었고, **지어내지 않았다.** P3 에서 만든다.
+- **`documents/screen/` 은 백오피스 템플릿의 화면 문서 셋이다.** Agentic AI Hub 의 메뉴 43개(admin 32 · portal 11)는 아직 문서가 없다 — `documents/spec/60-screens.yaml` 에 목록만 있다.
+- **컨텍스트 게이지** — 훅에서 남은 하나.

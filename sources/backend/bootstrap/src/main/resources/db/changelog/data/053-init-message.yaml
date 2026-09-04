@@ -1,0 +1,74 @@
+# 메시지 값 39차 — 사람 소유 시드다(22 §1.1). 로그인 이력(64 §4)의 문구 전부.
+#
+# 데이터 키를 함께 넣는다(019 · 045 와 같은 모양). 052 가 만든 결과 코드 15종의 이름이
+# 그것이며 코드 행의 DTL_NM 이 이미 그 키를 담고 있다(43 §4.4) — 값이 없으면 배지에
+# code.LOGIN_RSLT_CD.FAIL_PWD 가 그대로 보인다. USE_SCOPE 가 DATA 인 이유는 소스에 상수가
+# 없는 것이 **정상인 키**이기 때문이다: 008 생성 태스크가 code. 접두를 건드리지 않으므로
+# NONE 으로 두면 죽은 키로 잡힌다(33 §2.1).
+#
+# 이름을 코드값과 따로 두는 것이 요점이다. 갈래는 소스가 열거형으로 갖고(LoginResultCode)
+# **글자는 데이터가 갖는다** — 그래서 언어를 늘려도 소스가 늘지 않는다(90 §2).
+#
+# 배지의 라벨에 "실패 ·" 접두를 붙이지 않았다. 색이 이미 묶음을 말하므로(64 §4.3 — 색 셋)
+# 접두는 같은 말을 두 번 하면서 배지만 길어진다. 구분은 라벨이 하고 훑기는 색이 한다.
+#
+# 나머지는 프론트 MSG · 백엔드 MsgKey 의 값이라 키 행은 008 이 만든다(ADR-0023) —
+# 여기서 넣으면 그 파일과 겹쳐 loadData 가 중복 키로 죽는다.
+databaseChangeLog:
+  - changeSet:
+      id: data-053-message-key-data
+      author: template
+      comment: 로그인 결과 코드 이름 키 15종 — USE_SCOPE 는 DATA 다(43 §7.1)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE_KEY
+            file: db/changelog/data/053-init-message-key.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: USE_SCOPE
+                  type: STRING
+              - column:
+                  name: MSG_DESC
+                  type: STRING
+
+  - changeSet:
+      id: data-053-message
+      author: template
+      comment: 로그인 이력 — 화면 문구 · 결과 코드 이름 · 기간 거부 둘(64 §4)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/053-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-053-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

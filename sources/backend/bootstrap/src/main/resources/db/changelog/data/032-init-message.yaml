@@ -1,0 +1,49 @@
+# 메시지 값 24차 — 사람 소유 시드다(22 §1.1).
+#
+# 즐겨찾기(UX-03 · 42 §7)와 브라우저 새 탭(51 §4.7)의 문구다.
+#
+# `favorite.add` · `favorite.remove` 는 한 줄이 켜짐·꺼짐 둘을 겸하므로 서로 반대말이어야
+# 한다 — 한쪽만 고치면 같은 자리에서 말투가 갈린다.
+#
+# 빈 즐겨찾기 문구는 <b>넣는 방법까지 말한다</b>. 최근 사용(023)은 쓰다 보면 저절로 차지만
+# 즐겨찾기는 사용자가 등록해야 하고, 등록하는 자리가 우클릭 메뉴라 <b>찾아내기 전에는
+# 영영 비어 있다</b>.
+#
+# shell.entry.empty.pending 은 남는다 — 자주 쓰는 메뉴(42 §8)가 아직 그 자리다.
+databaseChangeLog:
+  - changeSet:
+      id: data-032-message
+      author: template
+      comment: 즐겨찾기와 브라우저 새 탭의 ko·en — 42 §7 · 51 §4.7
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/032-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-032-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

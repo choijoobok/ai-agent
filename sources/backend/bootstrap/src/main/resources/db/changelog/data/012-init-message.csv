@@ -1,0 +1,5 @@
+MSG_KEY,LANG_CD,MSG_VAL
+settings.step.down,ko,한 칸 줄이기
+settings.step.down,en,Decrease by one
+settings.step.up,ko,한 칸 늘리기
+settings.step.up,en,Increase by one

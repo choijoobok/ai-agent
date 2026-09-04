@@ -1,0 +1,131 @@
+# 다국어 메시지 · 프론트 캐시 버전 — 43 §7 · §8.1.
+#
+# 테이블이 둘인 이유는 소유가 둘이기 때문이다(ADR-0023). SYS_MESSAGE_KEY 는 코드가 갖고
+# 생성 시드(008)가 쓰며, SYS_MESSAGE 는 사람이 갖고 시드가 열지 않는다. 한 테이블에
+# 섞여 있던 것이 MSG_GRP_CD 의 부분 함수 종속이었다.
+#
+# SYS_CODE_GROUP · SYS_CODE 는 여기서 만들지 않는다 — 기준정보 슬라이스의 것이고,
+# 쓰지 않는 DDL 을 미리 넣으면 "됐다" 로 보이는데 한 번도 돌아 본 적이 없다(004 와 같다).
+# 그래서 LANG_CD 목록의 원본(공통코드 LANG_CD 그룹)도 아직 없다 — 43 §7 이 예고한 자리다.
+databaseChangeLog:
+  - changeSet:
+      id: 005-create-sys-message-key
+      author: template
+      comment: 키는 코드가 소유한다 — USE_SCOPE 가 곧 "누가 이 키를 쓰는가" 다(43 §7.1)
+      changes:
+        - createTable:
+            tableName: SYS_MESSAGE_KEY
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: VARCHAR(200)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_MESSAGE_KEY
+                    nullable: false
+              # FRONT · BACK · BOTH · DATA · NONE. 번들 여부는 이것의 파생이며
+              # 컬럼으로 저장하지 않는다 — 두면 같은 사실의 원천이 둘이 된다(ADR-0023 §4).
+              - column:
+                  name: USE_SCOPE
+                  type: VARCHAR(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: MSG_DESC
+                  type: VARCHAR(500)
+              # 생성 시드가 채우지 않는다 — 재생성마다 시각이 바뀌면 checkMessageSeed 의
+              # "재생성 결과 == 커밋본" 비교가 성립하지 않는다. 이 행들의 감사는 시드
+              # 커밋의 git 이력이 한다(43 §7 · ADR-0022).
+              - column:
+                  name: REG_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: REG_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: MOD_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: MOD_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+
+  - changeSet:
+      id: 005-create-sys-message
+      author: template
+      comment: 행 지향이다 — 언어를 늘려도 DDL 이 바뀌지 않는다(43 §7.2)
+      changes:
+        - createTable:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: VARCHAR(200)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_MESSAGE
+                    nullable: false
+              - column:
+                  name: LANG_CD
+                  type: VARCHAR(10)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              # NULL 을 허용한다 — 미번역이 "행이 없다" 가 아니라 "값이 비었다" 여야
+              # 화면이 빈 셀을 그대로 편집한다(ADR-0023 §3). 빈 문자열과 가른다(43 §7.3).
+              - column:
+                  name: MSG_VAL
+                  type: VARCHAR(2000)
+              - column:
+                  name: REG_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: REG_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: MOD_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: MOD_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+
+        # ON DELETE CASCADE 를 쓰지 않는다(41 §8). 삭제 서비스가 값 → 키 순서로 지운다 —
+        # 그래서 53 §6.2 의 사전 게이트가 필요 없다(ADR-0023 §3).
+        - addForeignKeyConstraint:
+            constraintName: FK_SYS_MESSAGE_KEY
+            baseTableName: SYS_MESSAGE
+            baseColumnNames: MSG_KEY
+            referencedTableName: SYS_MESSAGE_KEY
+            referencedColumnNames: MSG_KEY
+
+        # 번들 조회가 언어 하나로 전건을 긁는다(50 §3.2). PK 선두가 MSG_KEY 라
+        # 이 인덱스가 없으면 언어 필터가 전체 스캔이 된다.
+        - createIndex:
+            indexName: IX_SYS_MESSAGE_LANG
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: LANG_CD
+
+  - changeSet:
+      id: 005-create-sys-cache-version
+      author: template
+      comment: 프론트 캐시의 유효성 기준 — 백엔드 노드끼리 주고받는 신호가 아니다(43 §8.1)
+      changes:
+        - createTable:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: CACHE_NAME
+                  type: VARCHAR(50)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_CACHE_VERSION
+                    nullable: false
+              - column:
+                  name: VERSION
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: MOD_DTM
+                  type: TIMESTAMP WITH TIME ZONE

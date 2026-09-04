@@ -1,0 +1,47 @@
+# 메시지 값 — 메뉴 트리의 고아 배지. 사람 소유 시드다(22 §1.1).
+#
+# 메뉴 시드가 생성물이 되면서(ADR-0028) 선언에서 사라진 메뉴가 SRC_CD='ORPHAN' 으로
+# 남는다. 시드는 그것을 지우지 않는다 — 그 행에 역할 권한과 개인 예외가 딸려 있고,
+# 배포가 그것을 지우는 것은 운영 결정을 배포가 되돌리는 일이다(ADR-0022 §3).
+#
+# 그래서 트리가 배지로 말하고 사람이 판단한다. 배지만 있으면 "이게 뭔가" 로 끝나므로
+# 툴팁이 **무엇을 해야 하는지**까지 적는다 — 62 §4.8 의 게이트 넷이 그 순서다.
+#
+# CSV 는 생성한다. 툴팁 문구에 콤마가 들어 있어 손으로 쓰면 기동에서만 깨진다.
+databaseChangeLog:
+  - changeSet:
+      id: data-082-message
+      author: template
+      comment: 메뉴 트리의 고아 배지와 툴팁 — 62 §4.8 · ADR-0028
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/082-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-082-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

@@ -1,0 +1,72 @@
+# 메시지 값 7차 — 사람 소유 시드다(22 §1.1).
+#
+# 여기에는 **고치는 changeset 이 하나 있다**. 앞의 파일을 고치지 않는다는 규약은 그대로다
+# (011 은 runOnChange 가 아니라 체크섬이 달라지면 기동이 실패한다) — 대신 새 파일에서
+# update 로 값을 옮긴다. 시드 값은 설치 출발값이며, 그 뒤로는 사람이 화면에서 고친다.
+# 이미 고쳐 쓰고 있는 곳의 값을 되돌리는 셈이지만, 그것이 템플릿 기본값을 바로잡는 방법이다.
+#
+# 담는 것은 사이더 검색 칸의 단축키 안내다(51 §4.2). 칸 안의 글로 두었더니 사이더가 좁아
+# 중간에서 잘렸다 — 안내를 툴팁으로 옮기고 플레이스홀더는 이름만 남긴다.
+databaseChangeLog:
+  - changeSet:
+      id: data-015-message
+      author: template
+      comment: 검색 칸 툴팁의 ko·en — 51 §4.2
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/015-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-015-placeholder-ko
+      author: template
+      comment: 단축키를 뺀다 — 툴팁이 갖는다
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: 메뉴 검색
+            where: MSG_KEY = 'shell.search.placeholder' AND LANG_CD = 'ko'
+
+  - changeSet:
+      id: data-015-placeholder-en
+      author: template
+      comment: 〃
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: Search menus
+            where: MSG_KEY = 'shell.search.placeholder' AND LANG_CD = 'en'
+
+  - changeSet:
+      id: data-015-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

@@ -1,0 +1,60 @@
+# ⑤ SMPL_MD_TABS 의 ADMIN 부여와 메뉴 순서 — 42 §3 · 68 §7.
+#
+# 090·092·094·096 을 고치지 않고 더한다(22 §1.1). 이미 적용된 DB 에 들어가 있고, 고치면
+# 남의 로컬이 체크섬으로 죽는다.
+#
+# ── 액션이 셋이다 ──────────────────────────────────────────────────────
+#
+# 52 §4.2 의 액션 열이 R S E 다(68 §7.1) — 이 화면에는 실행이 없다. ③의 출고 지시와
+# ①의 확정·일괄 재계산이 EXECUTE 의 실물이며, 여기서 부여하면 화면에 없는 권한이 역할에
+# 붙는다.
+#
+# 저장이 셋인데 액션은 하나다(SAVE). 액션은 화면 단위이고 그리드 단위가 아니기 때문이며
+# (42 §3), 그리드마다 갈라야 하는 날이 오면 그것은 화면을 나눠야 한다는 신호다.
+databaseChangeLog:
+  - changeSet:
+      id: data-098-sample-tabs-auth
+      author: template
+      comment: ⑤의 ADMIN 부여 — 조회·저장·엑셀 셋이다
+      changes:
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_MD_TABS }
+              - column: { name: ACTION_CD, value: READ }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_MD_TABS }
+              - column: { name: ACTION_CD, value: SAVE }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_MD_TABS }
+              - column: { name: ACTION_CD, value: EXPORT }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+      rollback:
+        - delete:
+            tableName: SYS_ROLE_MENU_AUTH
+            where: MENU_CD = 'SMPL_MD_TABS'
+
+  - changeSet:
+      id: data-098-sample-tabs-sort
+      author: template
+      comment: ⑤가 다섯째 리프다 — 68 §10.1 의 트리 순서를 신규 설치에 심는다
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 5
+            where: MENU_CD = 'SMPL_MD_TABS' AND SORT_NO = 0

@@ -1,0 +1,73 @@
+MSG_KEY,LANG_CD,MSG_VAL
+userAuth.user.title,ko,사용자
+userAuth.user.title,en,Users
+userAuth.tree.title,ko,권한 트리
+userAuth.tree.title,en,Permission tree
+userAuth.tree.empty,ko,사용자를 선택하세요.
+userAuth.tree.empty,en,Select a user.
+userAuth.grant.title,ko,개인 예외
+userAuth.grant.title,en,Personal exceptions
+userAuth.grant.empty,ko,이 사용자에게 개인 예외가 없습니다. 트리에서 켜면 여기에 행이 생깁니다.
+userAuth.grant.empty,en,This user has no personal exceptions. Turn one on in the tree and a row appears here.
+userAuth.search.user,ko,사용자
+userAuth.search.user,en,User
+userAuth.search.menu,ko,메뉴명 검색
+userAuth.search.menu,en,Find menu
+userAuth.col.menu,ko,메뉴
+userAuth.col.menu,en,Menu
+userAuth.col.action,ko,액션
+userAuth.col.action,en,Action
+userAuth.col.state,ko,상태
+userAuth.col.state,en,State
+userAuth.col.validFromDt,ko,시작일
+userAuth.col.validFromDt,en,From
+userAuth.col.validToDt,ko,종료일
+userAuth.col.validToDt,en,To
+userAuth.col.grantRsn,ko,부여 사유
+userAuth.col.grantRsn,en,Reason
+userAuth.state.SCHEDULED,ko,예정
+userAuth.state.SCHEDULED,en,Scheduled
+userAuth.state.ACTIVE,ko,유효
+userAuth.state.ACTIVE,en,Active
+userAuth.state.EXPIRED,ko,만료
+userAuth.state.EXPIRED,en,Expired
+userAuth.viaRole,ko,역할로 이미 갖고 있습니다 — {roles}
+userAuth.viaRole,en,Already granted through a role — {roles}
+userAuth.viaRole.tag,ko,역할 {count}
+userAuth.viaRole.tag,en,role {count}
+userAuth.orphan,ko,부를 API 가 없습니다
+userAuth.orphan,en,no API to call
+userAuth.read.on,ko,조회 권한도 함께 켰습니다.
+userAuth.read.on,en,Read was turned on as well.
+userAuth.read.off,ko,조회를 회수해서 나머지 {count}건도 함께 회수했습니다.
+userAuth.read.off,en,"Read was revoked, and {count} other action(s) with it."
+userAuth.read.viaRole,ko,역할이 조회 권한을 주고 있어 따로 켜지 않았습니다.
+userAuth.read.viaRole,en,"A role already grants read, so it was not added."
+userAuth.revive.title,ko,이전 부여를 대체합니다
+userAuth.revive.title,en,This replaces the previous grant
+userAuth.revive.body,ko,"이 부여는 {from} ~ {to} 였고 사유는 ""{reason}"" 이었습니다. 이 내용은 대체됩니다."
+userAuth.revive.body,en,"This grant ran {from} to {to} with the reason ""{reason}"". That content will be replaced."
+userAuth.scheduled.keep,ko,예정된 부여입니다. 기간과 사유는 아래 목록에서 고칩니다.
+userAuth.scheduled.keep,en,This grant is scheduled. Edit its period and reason in the list below.
+userAuth.threshold,ko,한 번에 {count}건을 새로 부여합니다. 역할 신설을 검토하세요.
+userAuth.threshold,en,You are granting {count} new exceptions at once. Consider creating a role instead.
+userAuth.period.reversed,ko,시작일이 종료일보다 늦습니다.
+userAuth.period.reversed,en,The start date is after the end date.
+err.user-auth.not-found,ko,없는 계정입니다.
+err.user-auth.not-found,en,No such account.
+err.user-auth.menu,ko,권한을 줄 수 없는 메뉴입니다.
+err.user-auth.menu,en,Permissions cannot be granted on that menu.
+err.user-auth.action,ko,그 메뉴에 정의되지 않은 액션입니다.
+err.user-auth.action,en,That action is not defined for the menu.
+err.user-auth.read,ko,조회 권한 없이 다른 액션만 줄 수 없습니다.
+err.user-auth.read,en,Other actions cannot be granted without read.
+err.user-auth.period-required,ko,부여 기간은 필수입니다.
+err.user-auth.period-required,en,The grant period is required.
+err.user-auth.period,ko,부여 기간의 시작이 종료보다 늦습니다.
+err.user-auth.period,en,The start date is after the end date.
+err.user-auth.reason-required,ko,부여 사유는 필수입니다.
+err.user-auth.reason-required,en,A reason is required.
+err.user-auth.duplicate,ko,이미 있는 부여입니다.
+err.user-auth.duplicate,en,That grant already exists.
+err.user-auth.missing,ko,고치려는 부여가 없습니다.
+err.user-auth.missing,en,The grant you are editing no longer exists.

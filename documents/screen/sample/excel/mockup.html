@@ -1,0 +1,694 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>목업 · [샘플] 엑셀 업로드 (sample-excel)</title>
+<style>
+/* ─────────────────────────────────────────────────────────────
+   목업 공용 스타일
+   목업은 한 파일로 완결되어야 한다. 외부 CSS 로 빼면 파일 하나만
+   열거나 다른 곳에 붙였을 때 화면이 깨진다. 그래서 복제를 감수한다.
+   새 목업은 이 블록을 그대로 복사한다.
+   의도적으로 밋밋하다. AntD 처럼 보이면 잘못된 구속이 된다.
+
+   ★ 그리드 어휘 다섯 — .sf .tb .grid .pg .split
+     크롬·행 상태·컬럼 고정의 자리는 53, 컬럼 계약은 54 가 정한다.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --ink:#1a1a1a; --muted:#6b6b6b; --line:#c9c9c9; --line2:#e4e4e4;
+  --bg:#ffffff; --panel:#f7f7f7; --err:#a8261c; --err-bg:#fbeceb;
+  --note:#1f4e79; --note-bg:#eef4fa; --ok:#1d7a4d;
+  /* ── 그리드 색. 그리드가 스스로 정하지 않고 셸에서 받는다 ──
+     Primary — 선택·편집 표시는 전부 여기서 파생한다.
+     진한 단계를 쓰지 않는다 — 그리드는 글자가 촘촘해 배경이 진해지면
+     전부 읽기 어려워진다. 대비 문제를 애초에 만들지 않는다. */
+  --pri:#1f4e79;      /* 원색 — 편집 중인 셀 테두리에만 */
+  --pri-1:#eaf1f9;    /* 가장 옅은 단계 — 현재 선택 행 */
+  --pri-2:#d6e6f5;    /* 한 단계 진한 것 — 현재 선택 셀 */
+  /* 컬럼 상태 — 정적. 헤더 표시(* · 흐린 글자)와 짝이다 */
+  --req-bg:#fdf6e6;   /* 필수 입력 */
+                      /* 편집 가능 = 바탕(--bg). 칠하지 않는 것이 곧 표시다 */
+                      /* 읽기 전용 = --panel */
+  /* 행 상태 — Primary 와 무관하다. 아이콘이 원본이고 배경은 거든다 */
+  --row-new:#eaf5ef; --row-mod:#e7f1f2;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#e6e6e6; --muted:#9a9a9a; --line:#4a4a4a; --line2:#333;
+    --bg:#161616; --panel:#1e1e1e; --err:#e08b82; --err-bg:#3a201e;
+    --note:#8fb8dd; --note-bg:#1c2833; --ok:#63c08d;
+    /* 같은 알파를 얹지 않는다 — 다크에서는 안 보이거나 반대로 튄다.
+       단계를 모드별로 따로 고른다 */
+    --pri:#8fb8dd; --pri-1:#1a2b3a; --pri-2:#24405c;
+    --req-bg:#33291a;
+    --row-new:#17281f; --row-mod:#16272a;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--bg);color:var(--ink);
+     font:14px/1.6 "Malgun Gothic","Apple SD Gothic Neo",sans-serif;}
+main{max-width:1000px;margin:0 auto}
+h1{font-size:19px;margin:0 0 4px}
+h2{font-size:15px;margin:34px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+h3{font-size:13px;margin:20px 0 8px;color:var(--muted);font-weight:600}
+code{font-family:Consolas,monospace;font-size:.92em;background:var(--panel);padding:1px 4px}
+a{color:var(--note)}
+
+/* 개요 바 — 문서와의 연결. 모든 목업이 갖는다 */
+.head{border:1px solid var(--line);background:var(--panel);padding:12px 14px;margin-bottom:6px}
+.head dl{display:grid;grid-template-columns:max-content 1fr;gap:2px 14px;margin:0;font-size:12.5px}
+.head dt{color:var(--muted)}
+.head dd{margin:0}
+
+/* 화면 영역 — 뷰포트를 나타내는 상자 */
+.screen{border:1px solid var(--line);margin:0 0 8px;background:var(--bg)}
+.screen .bar{background:var(--panel);border-bottom:1px solid var(--line2);
+             padding:5px 10px;font-size:11.5px;color:var(--muted)}
+.screen .body{padding:28px 20px}
+/* 셸 위에 뜬 모달 — 배경이 셸이라는 힌트만 준다 */
+.screen.shell .body{background:repeating-linear-gradient(45deg,
+  var(--panel) 0 6px, transparent 6px 12px);padding:22px 14px}
+/* 리프 화면은 자기가 콘텐츠다 — 셸 크롬을 그리지 않는다 */
+.screen.leaf .body{padding:12px}
+
+/* 카드 — 로그인 등 중앙 배치 폼 */
+.card{max-width:320px;margin:0 auto;border:1px solid var(--line);padding:22px 20px;background:var(--bg)}
+.card .logo{height:38px;border:1px dashed var(--line);display:flex;align-items:center;
+            justify-content:center;color:var(--muted);font-size:11.5px;margin-bottom:18px}
+
+/* 모달 — 그리드 설정 창도 이것을 쓴다 */
+.modal{max-width:600px;margin:0 auto;border:1px solid var(--line);background:var(--bg)}
+.modal .mh{border-bottom:1px solid var(--line2);padding:9px 14px;font-size:13px;font-weight:600;
+           display:flex;justify-content:space-between;align-items:center}
+.modal .mh .x{color:var(--muted);font-weight:400}
+.modal .mb{padding:14px}
+.modal .mf{border-top:1px solid var(--line2);padding:9px 14px;font-size:11.5px;color:var(--muted);
+           display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* 탭 */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin:0 0 14px}
+.tabs>span{padding:6px 13px;font-size:12.5px;border:1px solid transparent;border-bottom:none;
+           color:var(--muted);cursor:default}   /* 자식만 — 안에 배지가 들어갈 수 있다 */
+.tabs>span.on{border-color:var(--line);background:var(--bg);color:var(--ink);font-weight:600;
+              margin-bottom:-1px}
+.tabs .badge{display:inline-block;min-width:16px;height:16px;line-height:16px;text-align:center;
+             border-radius:8px;background:var(--err);color:#fff;font-size:10.5px;margin-left:5px}
+
+/* 폼 — 화면에 남는 폼은 조회조건 하나다 */
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;margin-bottom:3px}
+.f input,.f select,.f textarea{width:100%;padding:6px 8px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+.f .hint{font-size:11px;color:var(--muted);margin-top:3px}
+.f.ro input{background:var(--panel);color:var(--muted)}
+.btn{width:100%;padding:8px;border:1px solid var(--ink);background:var(--ink);
+     color:var(--bg);font:inherit;font-size:13px;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.sm{width:auto;padding:4px 11px;font-size:12px}
+.btn[disabled]{opacity:.35}
+.sub{text-align:center;margin-top:12px;font-size:12px}
+.row{display:flex;gap:8px;align-items:center}
+.row .btn{width:auto}
+
+/* 키-값 나열 (읽기 전용 정보) */
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:12.5px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+
+/* 설정 그룹 */
+.grp{border:1px solid var(--line2);margin-bottom:10px}
+.grp>b{display:block;background:var(--panel);border-bottom:1px solid var(--line2);
+       padding:5px 11px;font-size:12px}
+.grp .item{display:flex;justify-content:space-between;align-items:center;gap:12px;
+           padding:6px 11px;font-size:12.5px;border-bottom:1px solid var(--line2)}
+.grp .item:last-child{border-bottom:none}
+.grp .item .where{font-size:10.5px;color:var(--muted);white-space:nowrap}
+
+/* 목록 (알림·검색 결과·드롭다운·필터 메뉴) */
+.list{border:1px solid var(--line2);font-size:12.5px;background:var(--bg)}
+.list .it{padding:7px 11px;border-bottom:1px solid var(--line2);display:flex;
+          justify-content:space-between;align-items:center;gap:10px}
+.list .it:last-child{border-bottom:none}
+.list .it.unread{background:var(--note-bg)}
+.list .it .path{display:block;font-size:10.5px;color:var(--muted)}
+.list .it .when{color:var(--muted);font-size:11px;white-space:nowrap}
+.list .empty{padding:22px 11px;text-align:center;color:var(--muted);font-size:12px}
+.tag{display:inline-block;border:1px solid var(--line);padding:0 5px;font-size:10.5px;
+     color:var(--muted);border-radius:2px}
+
+/* 규칙 체크리스트 */
+.rules{list-style:none;margin:0 0 14px;padding:9px 11px;border:1px solid var(--line2);
+       background:var(--panel);font-size:11.5px;line-height:1.7}
+.rules li{padding-left:17px;position:relative}
+.rules li::before{position:absolute;left:0;font-weight:700}
+.rules .ok::before{content:"✓";color:var(--ok)}
+.rules .no::before{content:"✕";color:var(--err)}
+.rules .srv::before{content:"·";color:var(--muted)}
+.rules .srv{color:var(--muted)}
+.rules em{font-style:normal;opacity:.8}
+
+/* 배너 — 폼 상단 한 곳. 토스트(UX-10)도 이것으로 표현한다 */
+.banner{border:1px solid var(--err);background:var(--err-bg);color:var(--err);
+        padding:7px 10px;font-size:12.5px;margin-bottom:14px}
+.banner.info{border-color:var(--note);background:var(--note-bg);color:var(--note)}
+
+/* ── 그리드 어휘 다섯 ─────────────────────────────── */
+
+/* 검색 폼 — <SearchForm>(UX-15). 서버 조회 조건은 이것뿐이다 */
+.sf{border:1px solid var(--line2);background:var(--panel);padding:9px 11px;margin-bottom:8px;
+    display:grid;grid-template-columns:max-content 1fr max-content 1fr max-content 1fr;
+    gap:6px 9px;align-items:center;font-size:12px}
+.sf label{color:var(--muted);white-space:nowrap}
+.sf input,.sf select{width:100%;padding:3px 6px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:12px}
+.sf .wide{grid-column:span 3}
+.sf .act{grid-column:1/-1;text-align:right;padding-top:2px}
+
+/* 그리드 헤더 — 왼쪽 제목(.ttl), 오른쪽 버튼. 도구 둘(.ico)은 맨 오른쪽 고정 */
+.tb{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.tb .ttl{font-size:13px;font-weight:600;margin-right:auto;white-space:nowrap}
+.tb .ico{width:auto;padding:4px 8px;font-size:12px;white-space:nowrap}
+.tb .sp{flex:1}
+.tb .cnt{font-size:11.5px;color:var(--muted);white-space:nowrap}
+
+/* 그리드 본문 — <DataGrid> */
+.grid{border:1px solid var(--line);overflow:auto;max-height:260px}
+.grid table{margin:0;font-size:12px;border:none}
+.grid th{position:sticky;top:0;z-index:1}
+.grid td,.grid th{white-space:nowrap}
+.grid th .mn{float:right;color:var(--muted);font-weight:400;margin-left:8px}  /* 컬럼 메뉴 ☰ */
+.grid th .srt{color:var(--note)}                                             /* 정렬 표시 */
+.grid th.on{background:var(--note-bg)}                                       /* 필터 걸린 컬럼 */
+/* 헤더가 컬럼을 말한다. 색이 아니라 표시가 원본이다 */
+.grid th.req em{font-style:normal;color:var(--err);font-weight:700}          /* 필수 * */
+.grid th.roh{color:var(--muted);font-weight:400}                             /* 읽기 전용 컬럼 */
+/* 양끝 시스템 컬럼. 사용자가 숨기거나 옮길 수 없다 */
+.grid .st{width:26px;text-align:center;color:var(--muted)}
+.grid .del{width:34px;text-align:center;color:var(--muted)}
+.grid .pinL{border-right:2px solid var(--line)}   /* 좌 고정 ↔ 스크롤 경계 */
+.grid .pinR{border-left:2px solid var(--line)}    /* 스크롤 ↔ 우 고정 경계 */
+
+/* ── 셀과 행의 색 — 그리드 표준의 우선순위 여섯 ────────────────────
+   여섯이 전부 같은 명시도다. 그래서 나중에 쓴 것이 이긴다 —
+   6 → 1 순서로 적었고, 순서를 바꾸면 규약이 바뀐다.
+   행 규칙(tr.x td)이 셀 규칙(td.x)보다 명시도가 한 단계 높으므로
+   5(행 상태)가 6(컬럼 상태)을 이기는 것은 순서가 아니라 구조다.  */
+
+/* 6. 컬럼 상태 — 정적이므로 다른 것이 없을 때의 바탕 */
+.grid td.req{background:var(--req-bg)}                       /* 필수 입력 */
+.grid td.ro {background:var(--panel);color:var(--muted)}     /* 읽기 전용 */
+                                                             /* 편집 가능은 칠하지 않는다 */
+/* 5. 행 상태 — 상태 컬럼 아이콘이 원본이다 */
+.grid tr.new td{background:var(--row-new)}
+.grid tr.mod td{background:var(--row-mod)}
+.grid tr.rmv td{color:var(--muted);text-decoration:line-through}  /* 배경이 아니라 글자다 */
+/* 4. 현재 선택 행 — Primary 가장 옅은 단계 */
+.grid tr.sel td{background:var(--pri-1)}
+/* 3. 현재 선택 셀 — 한 단계 진한 것 + 테두리 */
+.grid tr td.cur{background:var(--pri-2);outline:1px solid var(--pri);outline-offset:-1px}
+/* 2. 편집 중인 셀 — 테두리는 Primary 원색, 배경은 바탕(입력 글자가 읽혀야 한다) */
+.grid tr td.edit{background:var(--bg);color:var(--ink);outline:2px solid var(--pri);outline-offset:-2px}
+/* 1. 검증 실패 — 유일하게 Primary 와 무관하다 */
+.grid tr td.err{background:var(--err-bg);outline:1px solid var(--err);outline-offset:-1px}
+
+/* ── 스위치 — 값이 둘인 데이터 셀 ──────────
+   ynFlag 컬럼과 권한 트리 셀이 같은 것을 쓴다. 체크박스가 아니다.
+   켜짐 색은 Primary 에서 온다.
+   여럿을 고르는 자리는 여전히 체크박스다 — 행 선택 · set 필터 ·
+   그리드 설정의 컬럼 표시.                                      */
+.swt{display:inline-block;width:24px;height:13px;border:1px solid var(--line);
+     border-radius:7px;background:var(--panel);position:relative;vertical-align:-2px}
+.swt::after{content:"";position:absolute;top:1px;left:1px;width:9px;height:9px;
+            border-radius:50%;background:var(--muted)}
+.swt.on{background:var(--pri);border-color:var(--pri)}
+.swt.on::after{left:12px;background:var(--bg)}
+.swt.dis{opacity:.45}          /* 비활성 — 입력 칸이 아니라 상태 표시로 읽힌다 */
+
+/* 색 견본 — 화면 9 */
+.sw{display:inline-block;width:30px;height:14px;border:1px solid var(--line);
+    vertical-align:-2px;margin-right:6px}
+
+/* 그리드 푸터 — 건수 · 네비게이션 · 페이지 사이즈 */
+.pg{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+    padding:6px 2px;font-size:11.5px;color:var(--muted)}
+.pg .nav{text-align:center}
+.pg .size{text-align:right}
+.pg b{color:var(--ink)}
+
+/* 마스터-디테일 스플리터. 축이 둘이고 접기 화살표가 붙는다 */
+.split{height:13px;margin:9px 0;border-top:1px solid var(--line2);
+       border-bottom:1px solid var(--line2);background:var(--panel);
+       display:flex;align-items:center;justify-content:center;gap:4px;
+       font-size:9px;color:var(--muted);cursor:row-resize}
+.split .hnd{letter-spacing:2px;line-height:1}                 /* 끄는 손잡이 */
+.split .arw{border:1px solid var(--line);background:var(--bg);color:var(--muted);
+            font-size:8px;line-height:10px;padding:0 4px;cursor:default}
+.split .arw.off{opacity:.3}          /* 반대쪽이 이미 접혔다 — 둘 다 접히지 않는다 */
+/* 세로 축 — 좌우 배치 */
+.split.v{height:auto;width:13px;margin:0 9px;flex-direction:column;
+         border:none;border-left:1px solid var(--line2);border-right:1px solid var(--line2);
+         cursor:col-resize}
+.splitrow{display:flex;align-items:stretch}
+.splitrow>.pane{flex:1;min-width:0}
+/* 접힌 쪽 — 제목 줄만 남는다. 없는 것과 다르다 */
+.folded{border:1px solid var(--line2);background:var(--panel);padding:6px 10px;
+        font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.folded .why{font-weight:400;font-size:11px;color:var(--muted);margin-left:auto}
+
+/* ── 브레드크럼 줄 ──────────────────────────────────
+   줄은 셸의 것이고 오른쪽 슬롯은 화면이 채운다. 리프 목업이 셸
+   크롬을 그리지 않는 규약의 유일한 예외이며, 그리지 않으면
+   조회조건 컨트롤(UX-07 · UX-15)을 보일 자리가 없다.            */
+.bc{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+    border:1px solid var(--line2);background:var(--panel);
+    padding:4px 10px;margin-bottom:8px;font-size:12px;color:var(--muted)}
+.bc .path{margin-right:auto;white-space:nowrap}
+.bc .path b{color:var(--ink)}
+.bc .btn{width:auto;padding:2px 8px;font-size:11.5px}
+
+/* 주석 — 화면 요소 ↔ 문서 결정 연결 */
+.notes{border-left:3px solid var(--note);background:var(--note-bg);padding:10px 14px;font-size:12.5px}
+.notes ol{margin:0;padding-left:18px}
+.notes li{margin:3px 0}
+.n{display:inline-block;min-width:17px;height:17px;line-height:17px;text-align:center;
+   border-radius:50%;background:var(--note);color:#fff;font-size:11px;margin-right:5px}
+
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
+th,td{border:1px solid var(--line2);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:600;white-space:nowrap}
+td.c{white-space:nowrap;font-family:Consolas,monospace;font-size:12px}
+
+.todo{border:1px dashed var(--line);padding:10px 14px;font-size:12.5px;background:var(--panel)}
+.todo ul{margin:4px 0 0;padding-left:18px}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line2);
+       font-size:11.5px;color:var(--muted)}
+
+
+/* ── 이 목업만의 어휘 ───────────────────────────────
+   두 가지를 처음 그린다 — 화면 안 최상단 탭(.seg)과
+   업로드 탭. 최상단 탭은 셸 표준의 미결을 이 화면이 닫는다.     */
+.grid td.num,.grid th.num{text-align:right}
+.mut{color:var(--muted);font-size:11px}
+.key{font-family:ui-monospace,Consolas,monospace;font-size:11.5px}
+.todoc{outline:1px dashed var(--err);outline-offset:1px}
+.newbdg{display:inline-block;border:1px dashed var(--err);color:var(--err);
+        padding:0 4px;font-size:9.5px;border-radius:2px;margin-left:4px;vertical-align:1px}
+.bg{display:inline-block;padding:0 6px;font-size:10.5px;border-radius:9px;border:1px solid}
+.bg.none{border-color:var(--line);color:var(--muted)}
+.bg.ok{border-color:var(--ok);color:var(--ok)}
+.bg.warn{border-color:#a8760f;color:#a8760f}
+
+/* ★ 화면 안 최상단 탭. 하단 디테일 탭과 같은 모양이고 셸 탭바와는 갈린다.
+   처음엔 세그먼티드로 그렸는데 실물에서 일반 버튼 두 개로 읽혔다(2026-09-02) —
+   활성 표시가 밑줄이 아니라 채운 배경이면 "지금 어디" 가 아니라 "누르면 실행" 이 된다 */
+.seg{display:flex;border-bottom:1px solid var(--line);margin:0 0 10px}
+.seg span{min-width:100px;text-align:center;padding:6px 16px;font-size:12px;color:var(--muted);
+          white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px}
+.seg span.on{color:var(--pri);font-weight:600;border-bottom-color:var(--pri)}
+/* 비교용 — 셸 탭바의 모양 */
+.shelltab{display:flex;border-bottom:1px solid var(--line);font-size:12px}
+.shelltab span{padding:5px 12px;border:1px solid transparent;border-bottom:none;color:var(--muted)}
+.shelltab span.on{border-color:var(--line);background:var(--bg);color:var(--ink);margin-bottom:-1px}
+.shelltab span .x{margin-left:8px;color:var(--muted)}
+
+/* 파일 선택 줄 */
+.filebar{display:flex;align-items:center;gap:8px;border:1px solid var(--line2);
+         background:var(--panel);padding:6px 10px;margin-bottom:8px;font-size:12px}
+.filebar .fn{font-family:ui-monospace,Consolas,monospace;font-size:11.5px}
+</style>
+
+<main>
+
+<!-- ── 개요 바 ─────────────────────────────────────────────── -->
+<h1>[샘플] 엑셀 업로드 — 화면 안 최상단 탭</h1>
+<div class="head">
+  <dl>
+    <dt>화면코드</dt><dd><code>sample-excel</code></dd>
+    <dt>요건서</dt><dd><a href="requirements.md">requirements.md</a></dd>
+    <dt><code>MENU_CD</code></dt><dd><code>SMPL_EXCEL</code> (상위 <code>SMPL_ROOT</code>)</dd>
+    <dt>라우트</dt><dd><code>/sample/excel</code></dd>
+    <dt>담는 기능</dt><dd><b>SMPL-05</b> · FILE-06(좁아진 것 — 검증 리포트가 <b>그리드</b>다)</dd>
+    <dt>액션</dt><dd><b><code>R</code> <code>S</code> <code>E</code></b> — <b>업로드 액션이 없다</b></dd>
+    <dt>형태</dt><dd><b>화면 안 최상단 탭</b> <code>( 업무 데이터 │ 엑셀 업로드 )</code>
+      + 각 탭에 단일 그리드</dd>
+    <dt>대상</dt><dd><b><code>SMPL_ORDER_ITEM</code></b> — 마스터가 아니다.
+      <code>SMPL_ORDER</code> 는 <code>list</code> 컬럼이 있어 <b>엑셀 업로드 전용 탭 결정이 기각한 모양</b>이다</dd>
+    <dt>없는 것</dt><dd>업로드 엔드포인트 · 미리보기 API · 파일 저장 · 서버 POI ·
+      <code>saveExcelPreview</code>/<code>saveExcelImport</code> — <b>전부 없다</b></dd>
+  </dl>
+</div>
+
+<!-- ── 화면 1 ─────────────────────────────────────────────── -->
+<h2>1. 최상단 탭이 <b>셸 탭바와 갈려야 한다</b> — 셸 표준을 닫는다</h2>
+
+<div class="screen leaf" id="main" data-manual="main">
+  <div class="bar">셸 탭바 바로 아래에 탭 줄이 하나 더 온다. <b>같은 모양이면 화면을 닫으려다 탭을 닫는다</b></div>
+  <div class="body">
+
+    <div class="shelltab" style="margin-bottom:6px">
+      <span>대시보드</span><span class="on">[샘플] 엑셀 업로드 <span class="x">&times;</span></span>
+      <span>[샘플] 단일 그리드 <span class="x">&times;</span></span>
+    </div>
+    <div class="mut" style="margin-bottom:8px">↑ 셸 탭바 — <b>화면들 사이 이동</b>. 닫기 <code>&times;</code> 가 있다</div>
+
+    <div class="bc">
+      <span class="path">[샘플] 개발 참조 &rsaquo; <b>엑셀 업로드</b></span>
+      <button class="btn sm ghost" type="button">조건 &#9662;</button>
+      <button class="btn sm ghost" type="button">&#8963; 조회조건</button>
+    </div>
+
+    <div class="seg todoc"><span class="on">업무 데이터</span><span>엑셀 업로드</span></div>
+    <span class="newbdg">화면 안 최상단 탭</span>
+    <div class="mut" style="margin-bottom:8px">↑ 화면 안 최상단 탭 — <b>한 화면의 두 모드</b>.
+      <b>하단 디테일 탭과 같은 모양</b>이고, 셸 탭과 달리 <b>닫기가 없다</b> <span class="n">1</span></div>
+
+    <div class="sf">
+      <label>주문번호</label><input>
+      <label>품목코드</label><input>
+      <label>품목상태</label><select><option>전체</option></select>
+      <label>납기일</label><input value="2026-09-01 ~ 2026-09-30">
+      <span></span><span></span>
+      <div class="act"><button class="btn sm ghost" type="button">초기화</button></div>
+    </div>
+
+    <div class="tb">
+      <span class="ttl">주문 품목</span><span class="sp"></span>
+      <button class="btn sm ghost" type="button">조회</button>
+      <button class="btn sm ghost" type="button">행 추가</button>
+      <button class="btn sm" type="button">저장</button>
+      <button class="btn sm ghost ico" type="button" title="② 전체 다운로드가 곧 양식이다">&#8681; &#9662;</button>
+      <button class="btn sm ghost ico" type="button">&#9881;</button>
+    </div>
+
+    <div class="grid" style="max-height:170px"><table>
+      <thead><tr>
+        <th class="st">＊</th><th class="roh">No</th>
+        <th class="req">주문번호 <em>*</em></th><th class="req">품목코드 <em>*</em></th>
+        <th class="roh">품목명</th><th>단위</th>
+        <th class="num req">수량 <em>*</em></th><th class="num req">단가 <em>*</em></th>
+        <th class="num roh">금액</th><th>납기일</th><th>상태</th><th>사용</th>
+        <th class="roh">비고</th><th class="del">삭제</th>
+      </tr></thead>
+      <tbody>
+        <tr class="sel"><td class="st"></td><td class="ro">1</td>
+          <td class="req key">SO-2026-0417</td><td class="req key">IT-8801</td>
+          <td class="ro">A4 복사지 80g</td><td>BOX</td>
+          <td class="num">50.000</td><td class="num">18,000</td><td class="num ro">900,000</td>
+          <td>2026-09-10</td><td><span class="bg none">대기</span></td>
+          <td><span class="swt on"></span></td><td class="ro"></td><td class="del">&#9744;</td></tr>
+        <tr><td class="st"></td><td class="ro">2</td>
+          <td class="req key">SO-2026-0417</td><td class="req key">IT-9120</td>
+          <td class="ro">토너 카트리지 K</td><td>EA</td>
+          <td class="num">40.000</td><td class="num">12,500</td><td class="num ro">500,000</td>
+          <td>2026-09-12</td><td><span class="bg ok">확정</span></td>
+          <td><span class="swt on"></span></td><td class="ro"></td><td class="del">&#9744;</td></tr>
+        <tr><td class="st"></td><td class="ro">3</td>
+          <td class="req key">SO-2026-0418</td><td class="req key">IT-4402</td>
+          <td class="ro">스테이플러 중형</td><td>EA</td>
+          <td class="num">30.000</td><td class="num">3,400</td><td class="num ro">102,000</td>
+          <td>2026-09-10</td><td><span class="bg none">대기</span></td>
+          <td><span class="swt on"></span></td><td class="ro">재고 확인</td><td class="del">&#9744;</td></tr>
+      </tbody></table></div>
+    <div class="pg"><span>전체 <b>1,284</b>건</span><span class="nav">‹ <b>1</b> 2 3 ›</span>
+      <span class="size">100건씩 &#9662;</span></div>
+
+    <div class="banner info" style="margin-top:8px">
+      <b><code>ORD_NO</code> 가 컬럼에 있다</b> — FK 는 <code>ORD_ID</code>(대리키)인데
+      업무 키를 한 벌 더 둔다. <b>사람이 채우는 엑셀에 대리키가 들어갈 수 없기</b> 때문이다
+      <span class="n">2</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── 화면 2 ─────────────────────────────────────────────── -->
+<h2>2. 엑셀 업로드 탭 — <b>파일 선택 → 적재 → 대조 → 검증 → 저장</b></h2>
+
+<div class="screen leaf">
+  <div class="bar">같은 화면, 탭만 바뀌었다. <b>화면 전체가 갈린다</b></div>
+  <div class="body">
+
+    <div class="bc"><span class="path">[샘플] 개발 참조 &rsaquo; <b>엑셀 업로드</b></span></div>
+
+    <div class="seg todoc"><span>업무 데이터</span><span class="on">엑셀 업로드</span></div>
+
+    <div class="filebar todoc">
+      <button class="btn sm ghost" type="button">파일 선택</button>
+      <span class="fn">order-item-2026-09.xlsx</span>
+      <span class="mut">· 412행 읽음 · <b>기존 1,284건과 대조 완료</b></span>
+      <span class="newbdg">ExcelUploadTab</span>
+    </div>
+
+    <div class="tb">
+      <span class="ttl">엑셀 업로드</span>
+      <span class="sp"></span>
+      <button class="btn sm" type="button" disabled title="오류 2건을 고쳐야 저장됩니다">저장</button>
+      <span class="cnt"><b>조회 버튼이 없다</b> — 디테일과 갈린다 <span class="n">4</span></span>
+      <button class="btn sm ghost ico" type="button" title="이 그리드를 그대로 내리면 오류 파일이다">&#8681; &#9662;</button>
+      <button class="btn sm ghost ico" type="button">&#9881;</button>
+    </div>
+
+    <div class="banner">주문번호를 찾을 수 없습니다 (1건) · 같은 키가 파일 안에 두 번 있습니다 (1건) <span class="n">7</span></div>
+
+    <div class="grid" style="max-height:210px"><table>
+      <thead><tr>
+        <th class="st">＊</th><th class="roh">엑셀행</th>
+        <th class="req">주문번호 <em>*</em></th><th class="req">품목코드 <em>*</em></th>
+        <th class="roh">품목명</th><th>단위</th>
+        <th class="num req">수량 <em>*</em></th><th class="num req">단가 <em>*</em></th>
+        <th class="num roh">금액</th><th>납기일</th><th>상태</th><th>사용</th>
+        <th class="roh">비고</th><th class="roh">대조 <span class="mut">(파생)</span></th>
+      </tr></thead>
+      <tbody>
+        <tr class="new"><td class="st">＋</td><td class="ro">2</td>
+          <td class="req key">SO-2026-0417</td><td class="req key">IT-5500</td>
+          <td class="ro">화이트보드 마카</td><td>EA</td>
+          <td class="num">200.000</td><td class="num">900</td><td class="num ro">180,000</td>
+          <td>2026-09-15</td><td><span class="bg none">대기</span></td>
+          <td><span class="swt on"></span></td><td class="ro"></td>
+          <td class="ro"><b>신규</b></td></tr>
+
+        <tr class="mod"><td class="st">✎</td><td class="ro">3</td>
+          <td class="req key">SO-2026-0417</td><td class="req key">IT-8801</td>
+          <td class="ro">A4 복사지 80g</td><td>BOX</td>
+          <td class="num">80.000</td><td class="num">18,000</td><td class="num ro">1,440,000</td>
+          <td>2026-09-10</td><td><span class="bg none">대기</span></td>
+          <td><span class="swt on"></span></td><td class="ro"></td>
+          <td class="ro"><b>변경</b> <span class="mut">수량 50→80</span></td></tr>
+
+        <tr><td class="st"></td><td class="ro">4</td>
+          <td class="req key">SO-2026-0417</td><td class="req key">IT-9120</td>
+          <td class="ro">토너 카트리지 K</td><td>EA</td>
+          <td class="num">40.000</td><td class="num">12,500</td><td class="num ro">500,000</td>
+          <td>2026-09-12</td><td><span class="bg ok">확정</span></td>
+          <td><span class="swt on"></span></td><td class="ro"></td>
+          <td class="ro"><span class="mut">동일</span> <span class="n">5</span></td></tr>
+
+        <tr class="new"><td class="st">＋</td><td class="ro">5</td>
+          <td class="req key err">SO-2026-9999</td><td class="req key">IT-4402</td>
+          <td class="ro"><span class="mut">—</span></td><td>EA</td>
+          <td class="num">10.000</td><td class="num">3,400</td><td class="num ro">34,000</td>
+          <td>2026-09-20</td><td><span class="bg none">대기</span></td>
+          <td><span class="swt on"></span></td><td class="ro"></td>
+          <td class="ro"><span style="color:var(--err)"><b>오류</b> 주문번호 없음</span></td></tr>
+
+        <tr class="new"><td class="st">＋</td><td class="ro">6</td>
+          <td class="req key err">SO-2026-0418</td><td class="req key err">IT-5500</td>
+          <td class="ro">화이트보드 마카</td><td>EA</td>
+          <td class="num">50.000</td><td class="num">900</td><td class="num ro">45,000</td>
+          <td>2026-09-15</td><td><span class="bg none">대기</span></td>
+          <td><span class="swt on"></span></td><td class="ro"></td>
+          <td class="ro"><span style="color:var(--err)"><b>오류</b> 파일 내 중복(9행)</span></td></tr>
+      </tbody></table></div>
+    <div class="pg">
+      <span>412행 <span class="mut">· 신규 <b>68</b> · 변경 <b>104</b> · 동일 <b>238</b> · <span style="color:var(--err)">오류 <b>2</b></span></span></span>
+      <span class="nav">‹ <b>1</b> 2 3 4 5 ›</span><span class="size">100건씩 &#9662;</span></div>
+
+    <div class="banner info" style="margin-top:8px">
+      <b>DB 에만 있는 행은 나타나지 않는다</b> — <code>D</code> 상태가 생기지 않는다.
+      <b>파일에서 줄을 지운 것과 <i>지워라</i> 를 구별할 방법이 없다</b>.
+      삭제는 <b>업무 탭의 삭제 컬럼</b>이다 <span class="n">6</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── 화면 3 ─────────────────────────────────────────────── -->
+<h2>3. 미리보기가 <b>행 상태</b>다</h2>
+
+<div class="screen leaf">
+  <div class="body">
+    <table>
+      <thead><tr><th>파일의 행이</th><th>행 상태</th><th>화면</th><th>저장 대상</th></tr></thead>
+      <tbody>
+        <tr><td>DB 에 <b>없다</b></td><td class="c">C</td><td><code>＋</code> · 신규 배경</td><td>●</td></tr>
+        <tr><td>DB 에 있고 <b>값이 다르다</b></td><td class="c">U</td><td><code>✎</code> · 수정 배경 — <b><i>덮어쓴다</i> 가 이것이다</b></td><td>●</td></tr>
+        <tr><td>DB 에 있고 <b>값이 같다</b></td><td><b>없다</b></td><td>빈 상태 컬럼</td><td><b>✕</b> — 변경 행만 보낸다</td></tr>
+        <tr><td><b>검증 실패</b></td><td>상태 + 오류 셀</td><td>오류 배경 + 배너</td><td><b>저장이 막힌다</b></td></tr>
+        <tr><td><b>DB 에만 있다</b></td><td>—</td><td><b>나타나지 않는다</b></td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <ul class="rules" style="margin-top:10px">
+      <li class="ok"><b>별도 화면도 모달도 없다</b> — <code>rowState</code> 와 검증이
+          <b>이미 같은 것을 말한다</b>. 둘을 두면 어긋나고, 어긋나면 어느 쪽이 맞는지 알 수 없다</li>
+      <li class="ok"><b>부가 집계도 컬럼이다</b> — <i>대조</i> 파생 컬럼이 <b>행마다</b> 말한다.
+          <i>"104건"</i> 은 어느 행인지 말하지 않는다</li>
+      <li class="ok"><b>오류 목록을 서버에 요청하지 않는다</b> — ②의 엑셀이 이 그리드를 그대로 내린다</li>
+      <li class="no"><b>부분 저장이 없다</b> — 일괄 저장이 원래 한 트랜잭션이다(UX-14)</li>
+      <li class="no"><b><code>D</code> 를 만들지 않는다</b></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ── 화면 4 ─────────────────────────────────────────────── -->
+<h2>4. 예외</h2>
+
+<div class="screen leaf">
+  <div class="body">
+    <div class="banner">양식이 맞지 않습니다 — ②의 <b>전체 다운로드</b>를 양식으로 쓰세요
+      <span class="mut">(컬럼 <code>단가</code> 가 없습니다)</span> <span class="n">8</span></div>
+    <div class="banner" style="margin-top:6px">5,000행을 넘으면 이 화면이 아니라 <b>배치</b>입니다
+      <span class="mut">(파일: 12,480행 · <code>ui.excel.max-rows</code>)</span> <span class="n">9</span></div>
+    <div class="banner" style="margin-top:6px">오류가 <b>2건</b> 있어 저장할 수 없습니다 — 고치거나 그 행을 파일에서 빼세요</div>
+
+    <div class="screen shell" style="margin-top:10px">
+      <div class="bar">업로드 탭에 미저장 행이 있는 상태로 <b>최상단 탭을 전환</b>했다</div>
+      <div class="body">
+        <div class="modal" style="max-width:420px">
+          <div class="mh"><span>확인</span><span class="x">&times;</span></div>
+          <div class="mb">읽어들인 <b>412행</b>이 아직 저장되지 않았습니다.<br>
+            업무 데이터로 이동하면 사라집니다. 계속할까요?</div>
+          <div class="mf"><span>&nbsp;</span>
+            <span><button class="btn sm ghost" type="button">취소</button>
+                  <button class="btn sm" type="button">계속</button></span></div>
+        </div>
+        <div class="mut" style="margin-top:8px"><b>하단 디테일 탭(§7)과 규칙이 다르다</b> —
+          저것은 표시가 바뀔 뿐이고 <b>이것은 화면 전체를 갈아 끼운다</b> <span class="n">10</span></div>
+      </div>
+    </div>
+
+    <div class="banner info" style="margin-top:10px">
+      <b><code>S</code> 권한이 없으면 엑셀 업로드 탭 자체가 없다</b> —
+      저장 액션이 하나뿐이라 그리드 API 계약이 이미 거른다. <b>따로 감추는 코드를 쓰지 않는다</b>
+      <span class="n">11</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── 주석 ───────────────────────────────────────────────── -->
+<h2>5. 주석</h2>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b>하단 디테일 탭과 같은 탭이다 — 셸 표준의 미결을 이 화면이 닫는다.</b>
+        <b>처음 답은 세그먼티드 컨트롤이었고 실물에서 뒤집혔다</b>(2026-09-02):
+        채운 배경으로 활성을 말하니 <b>일반 버튼 두 개</b>로 읽혔다 —
+        화면을 <b>갈아 끼우는</b> 컨트롤이 <i>누르면 뭔가 실행되는 버튼</i> 과 같은 모양이면
+        <b>지금 어디에 있는지를 말하는 표시</b>로 읽히지 않는다.
+        셸 탭바와는 <b>여전히 갈린다</b>: <b>닫기 <code>&times;</code> 가 없고</b>(셸 탭은 항목마다 단다)
+        자리가 <b>브레드크럼 아래</b>다 — 셸 탭바는 위다.
+        나머지 둘(<b>층이 다르다</b> · <b>하단 탭과 갈린다</b>)은 모양이 아니라 <b>자리</b>가 말한다.</li>
+    <li><span class="n">2</span><b>대상이 <code>SMPL_ORDER_ITEM</code> 인 것이 규약의 결과다.</b>
+        엑셀 업로드 전용 탭 결정이 <code>CODE_MGMT</code>(2단계)와 <code>MESSAGE_MGMT</code>(<code>list</code> 컬럼)를
+        둘 다 기각한 그 기준으로 보면 <code>SMPL_ORDER</code> 도 <b>같은 이유로 기각</b>된다 —
+        <code>TAG_LIST</code> 가 있다. <b>평면이어야 한다.</b></li>
+    <li><span class="n">3</span><b>양식이 갈릴 수 없다</b> — 두 탭의 컬럼 배열이 <b>같은 것</b>이고,
+        ②의 <i>전체 다운로드</i> 가 곧 양식이다. 양식 파일을 따로 배포하면
+        컬럼이 바뀔 때 <b>양식만 옛것으로</b> 남는다.</li>
+    <li><span class="n">4</span><b>조회 버튼이 없다 — 디테일 그리드와 갈리는 자리다.</b>
+        그리드 표준이 <i>"디테일도 ①에 조회를 갖는다"</i> 로 닫았지만 <b>업로드 탭은 디테일이 아니다</b>:
+        행이 서버 조회가 아니라 <b>파일</b>에서 오므로 부를 곳이 없고, 눌리면
+        <b>읽어들인 412행이 통째로 날아간다</b> — <code>list</code> 디테일에 <code>api</code> 를
+        선언하지 않는 것과 <b>같은 이유</b>다.
+        기존 행과의 대조는 파일을 읽은 <b>직후</b> 업무 탭과 같은 조회 API 를 한 번 불러서 한다 —
+        이것이 이 패턴이 요구하는 <b>유일한 추가 동작</b>이며 새 API 가 아니다.</li>
+    <li><span class="n">5</span><b>동일 행은 상태가 없다.</b> 그리드 표준이 <i>변경 행만 보낸다</i> 이므로
+        <b>저장 대상에서 자동으로 빠진다</b> — 따로 거르는 코드가 없다.</li>
+    <li><span class="n">6</span><b>엑셀은 삭제 수단이 아니다.</b> 파일에서 줄을 지운 것과
+        <i>지워라</i> 를 구별할 방법이 없다.</li>
+    <li><span class="n">7</span><b>오류는 배너와 셀 둘 다</b>. 412행에서 배너만 있으면
+        찾을 수 없고, 셀만 있으면 스크롤 밖의 오류를 못 본다.
+        <b>파일 내 중복은 그리드 층 검증</b>이다 — 행 하나만 봐서는 알 수 없다.</li>
+    <li><span class="n">8</span><b>양식이 다르면 읽지 않는다.</b> 되는 만큼만 읽으면
+        <b>빠진 컬럼이 조용히 기본값</b>이 되고, 그것이 그대로 저장된다.</li>
+    <li><span class="n">9</span><b>상한을 넘으면 자르지 않고 거절한다</b> — 엑셀 세 갈래 결정이 엑셀
+        상한에서 쓴 것과 같은 수법이다. 조용히 자르면 <i>전량 올렸다</i> 가 거짓말이 된다.</li>
+    <li><span class="n">10</span><b>세그먼트 전환은 묻고 하단 탭 전환은 묻지 않는다.</b>
+        기준은 <i>잃는가</i> 하나다 — 화면 전체가 갈리면 읽어들인 412행이 사라진다.</li>
+    <li><span class="n">11</span><b>권한이 이미 걸러 준다.</b> 업로드 API 가 없고 저장이
+        업무 탭과 <b>같은 하나</b>이므로, <code>READ</code> 권한자가 업로드 창을 여는 경로가
+        <b>애초에 존재하지 않는다</b>. 엑셀 업로드 전용 탭 결정이 <i>사라지는 것</i> 으로 적은 항목이다.</li>
+  </ol>
+</div>
+
+<!-- ── 테스트 케이스 ───────────────────────────────────────── -->
+<h2>6. 테스트 케이스</h2>
+
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+  <tr><td class="c">S6-01</td><td>화면 진입</td><td><b>업무 데이터</b> 탭이 활성</td><td>화면 1</td></tr>
+  <tr><td class="c">S6-02</td><td>최상단 탭과 셸 탭바를 나란히 본다</td><td><b>모양이 다르다</b> — 닫기 없음 · 브레드크럼 아래. <b>하단 디테일 탭과는 같다</b></td><td>주석 1</td></tr>
+  <tr><td class="c">S6-03</td><td>최상단 탭을 <b>엑셀 업로드</b>로</td><td>조회조건이 <b>사라진다</b> — 대상이 파일이다</td><td>—</td></tr>
+  <tr><td class="c">S6-04</td><td>업무 데이터로 되돌아온다</td><td><b>조회 결과가 남아 있다</b> — 언마운트하지 않는다</td><td>—</td></tr>
+  <tr><td class="c">S6-05</td><td>②의 <b>전체 다운로드</b></td><td>컬럼이 업로드 탭과 <b>같다</b> — 그것이 양식이다</td><td>주석 3</td></tr>
+  <tr><td class="c">S6-06</td><td>내려받은 파일을 그대로 올린다</td><td><b>전부 <i>동일</i></b> · 저장 대상 0건</td><td>주석 5</td></tr>
+  <tr><td class="c">S6-07</td><td>파일 선택</td><td><b>네트워크 요청이 나가지 않는다</b> — 프론트가 읽는다</td><td>—</td></tr>
+  <tr><td class="c">S6-08</td><td>파일을 읽은 직후</td><td>업무 탭과 <b>같은 조회 API</b> 가 한 번 나간다</td><td>주석 4</td></tr>
+  <tr><td class="c">S6-09</td><td><code>SYS_FILE</code> 테이블</td><td><b>행이 생기지 않는다</b></td><td>—</td></tr>
+  <tr><td class="c">S6-10</td><td>DB 에 없는 <code>(주문번호, 품목코드)</code></td><td><code>＋</code> <b>신규</b></td><td>화면 3</td></tr>
+  <tr><td class="c">S6-11</td><td>DB 에 있고 수량이 다르다</td><td><code>✎</code> <b>변경</b> · 대조 컬럼에 <i>수량 50→80</i></td><td>〃</td></tr>
+  <tr><td class="c">S6-12</td><td>DB 와 완전히 같다</td><td><b>상태 컬럼이 빈다</b> · 저장에 <b>포함되지 않는다</b></td><td>주석 5</td></tr>
+  <tr><td class="c">S6-13</td><td>DB 에만 있는 행</td><td><b>그리드에 나타나지 않는다.</b> <code>D</code> 도 없다</td><td>주석 6</td></tr>
+  <tr><td class="c">S6-14</td><td>없는 주문번호</td><td>그 행 <b>오류</b>. 주문번호 셀에 오류 배경</td><td>화면 2</td></tr>
+  <tr><td class="c">S6-15</td><td>파일 안에 같은 키가 두 번</td><td><b>두 행 다 오류</b> + 서로의 엑셀행 번호를 가리킨다</td><td>주석 7</td></tr>
+  <tr><td class="c">S6-16</td><td>오류가 있는 채로 저장</td><td><b>나가지 않는다.</b> 부분 저장이 없다</td><td>화면 3</td></tr>
+  <tr><td class="c">S6-17</td><td>업로드 그리드에서 오류 셀을 <b>고친다</b></td><td>오류가 풀리고 저장이 열린다 — <b>고칠 자리가 있는 것</b>이 이 패턴의 요점</td><td>—</td></tr>
+  <tr><td class="c">S6-18</td><td>저장 성공</td><td><b>업무 탭의 <code>api.save</code> 와 같은 URL</b> 이 호출된다</td><td>—</td></tr>
+  <tr><td class="c">S6-19</td><td>저장 중 서버 오류</td><td><b>전건 롤백.</b> 한 트랜잭션이다</td><td>UX-14</td></tr>
+  <tr><td class="c">S6-20</td><td>컬럼이 하나 빠진 파일</td><td><b>읽지 않는다.</b> 되는 만큼만 읽지 않는다</td><td>주석 8</td></tr>
+  <tr><td class="c">S6-21</td><td>12,480행 파일</td><td><b>읽지 않는다.</b> 잘라서 5,000행만 넣지 않는다</td><td>주석 9</td></tr>
+  <tr><td class="c">S6-22</td><td>업로드 탭의 ② 엑셀</td><td><b>이 그리드를 그대로</b> 내린다 — 오류 파일을 서버에 요청하지 않는다</td><td>화면 3</td></tr>
+  <tr><td class="c">S6-23</td><td>412행 읽은 상태로 최상단 탭 전환</td><td><b>묻는다</b></td><td>주석 10</td></tr>
+  <tr><td class="c">S6-24</td><td>같은 상태로 <b>셸 탭 닫기</b></td><td>셸이 묻는다</td><td>—</td></tr>
+  <tr><td class="c">S6-25</td><td><code>S</code> 권한 없는 사용자</td><td><b>엑셀 업로드 탭이 없다.</b> 업무 탭의 저장·행 추가도 없다</td><td>주석 11</td></tr>
+  <tr><td class="c">S6-26</td><td><code>saveExcelImport</code> 같은 엔드포인트</td><td><b>존재하지 않는다.</b> API 시드에도 없다</td><td>—</td></tr>
+  <tr><td class="c">S6-28</td><td>업로드 탭의 ①</td><td><b>조회 버튼이 없다.</b> 디테일 그리드와 갈린다 — 행이 파일에서 온다</td><td>주석 4</td></tr>
+  <tr><td class="c">S6-27</td><td>메뉴 액션</td><td><code>R S E</code> — <b><code>X</code> 가 없다</b>. 업로드가 실행이 아니다</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<!-- ── 확인 목록 ───────────────────────────────────────────── -->
+<h2>7. 이 목업으로 확인할 것</h2>
+
+<div class="todo">
+  <b>이 화면이 정한 것</b>
+  <ul>
+    <li><b>화면 안 최상단 탭은 하단 디테일 탭과 같은 모양이다</b>(주석 1) — <b>셸 표준의 미결을 닫는다</b>.
+        <b>세그먼티드로 정했다가 실물에서 뒤집었다</b>(2026-09-02): 채운 배경은 <i>지금 어디</i> 가 아니라
+        <b>누르면 실행</b> 으로 읽혔다. 셸 탭바와 갈리는 것은 <b>닫기 없음</b> 과 <b>자리</b>가 맡는다.</li>
+    <li><b>SMPL-04(탭 안 레이아웃 중첩)를 없앤다</b> — 엑셀 업로드 전용 탭 결정이 마스터-디테일에
+        업로드를 붙이는 것을 <b>금지</b>하므로 그 조합이 성립하지 않는다. 중첩은 ⑤가 이미 보인다.</li>
+    <li><b>대상이 디테일 테이블인 것이 규약의 결과다</b>(주석 2) — 마스터를 골랐다면
+        엑셀 업로드 전용 탭 결정이 스스로 기각한 모양을 샘플이 되풀이하는 셈이 된다.</li>
+    <li><b><code>ORD_NO</code> 복제가 이 화면 때문이다</b> — 정규화를 깨는 유일한 자리이며
+        <b>왜 깼는지</b>가 여기에 있다.</li>
+  </ul>
+  <b>아직 답이 없는 것</b>
+  <ul>
+    <li><b>엑셀의 <code>code</code> 컬럼</b> — 사람이 코드값(<code>EA</code>)을 쓰나 코드명(<code>개</code>)을 쓰나.
+        명으로 받으면 <b>역매핑이 유일하지 않을 수 있고</b>, 값으로 받으면 사람이 코드표를 봐야 한다.
+        <b>둘 다 받고 값을 우선</b>하는 안이 있으나 정하지 않았다.</li>
+    <li><b><code>ui.excel.max-rows</code> 의 실제 값</b> — 5,000 은 초안이다.
+        프론트 파싱 + 한 트랜잭션이 어디서 무너지는지 <b>재 보지 않았다</b>.</li>
+    <li><b>대조 파생 컬럼의 문구</b> — <i>수량 50→80</i> 처럼 <b>무엇이 달라졌는지</b>까지 적을지,
+        <i>변경</i> 만 적을지. 컬럼이 여럿 바뀌면 칸이 길어진다.</li>
+  </ul>
+</div>
+
+<footer>
+  <b>목업 규약</b> — 정적 HTML, 프레임워크 없음, 픽셀 충실도는 목표가 아니다.
+  <b>결정은 <code>requirements.md</code> 가 갖고 이 파일은 확인용이다</b> — 여기에만 있고
+  요건서에 없는 정보는 유실된 것으로 친다.<br>
+  이 파일의 <code>&lt;style&gt;</code> 블록은 <code>documents/screen/_TEMPLATE/mockup.html</code> 에서 그대로 복사했다 —
+  <code>.sf</code> <code>.tb</code> <code>.grid</code> <code>.pg</code> <code>.split</code>.
+</footer>
+
+</main>

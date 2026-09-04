@@ -1,0 +1,156 @@
+# 공지사항 — 47 §9 · 66 §4.
+#
+# 40 §7 이 "메타 테이블 전무" 로 남긴 영역이며 47 이 신설한 여섯 중 첫째다. 00 §4 가
+# 화면(66)을 D 로 미루면서도 "테이블은 그대로 만든다" 고 못박은 그것인데, 실제로는
+# 만들어지지 않은 채 남아 있었다 — 66 이 D 에서 나오며 함께 선다(2026-08-31).
+#
+# 대상 컬럼이 없다(47 §9 · 66 §2.1). 공지는 전체 공개이며, 역할별로 갈리는 통지는
+# 공지가 아니라 알림이다 — SYS_NOTI_INBOX 가 USER_ID 를 갖는 것이 그 자리다(023).
+# 좁히는 프로젝트는 컬럼이 아니라 자식 테이블 SYS_NOTICE_ROLE 을 둔다: 한 공지가 역할
+# 여럿에 걸리므로 다대다이고, 컬럼 하나면 콤마 문자열이 되어 조인도 인덱스도 못 쓴다.
+#
+# 읽음 상태도 없다(66 §2.2). 미읽음 배지가 공지를 세지 않으므로(51 §7.1) 저장해도
+# 나타날 곳이 없고, 전체 공개라 읽음은 (NOTICE_ID, USER_ID) 교차 테이블이 되어
+# 사용자 수 × 공지 수로 자란다.
+#
+# 보존 파기 대상이 아니다(32 §3). 사람이 쓴 것이고 USE_YN 으로 내리므로 지우는 것은
+# 사람의 결정이다 — 기간으로 지우는 것은 023 뿐이다.
+databaseChangeLog:
+  - changeSet:
+      id: 022-create-sys-notice
+      author: template
+      comment: 게시 기간과 팝업 기간과 USE_YN 은 축이 셋이다 — 47 §9.2
+      changes:
+        - createTable:
+            tableName: SYS_NOTICE
+            columns:
+              # SYS_SEQUENCE 생성 키다(ADR-0015). 기본 정렬의 tie-breaker 이기도 하며
+              # 그것이 없으면 같은 시각에 올린 공지 둘의 순서가 조회마다 흔들린다(22 §4.5).
+              # 팝업이 그 정렬의 첫 건을 집으므로(66 §2.4 C안) 결정성이 화면에 직접 보인다.
+              - column:
+                  name: NOTICE_ID
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_NOTICE
+                    nullable: false
+              - column:
+                  name: TITLE
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+              # 매핑은 @Nationalized + LONG32NVARCHAR 고정이다 — @Lob 은 MySQL 에서
+              # tinytext(255B) 가 된다(22 §3.1). 목록은 이 컬럼을 SELECT 하되 셀에서
+              # 한 줄로 자르고 전체는 textModal 이 연다(54 §5.5 · 66 §4.3).
+              # 정렬은 화면이 끈다 — Oracle 이 CLOB 의 ORDER BY 를 막는다.
+              - column:
+                  name: CONTENT
+                  type: NCLOB
+                  constraints:
+                    nullable: false
+              # TEXT(기본) · HTML. 지금 값이 TEXT 하나뿐이라 화면이 이 컬럼을 감춘다
+              # (66 §4.3) — 고를 것이 없기 때문이며, 컬럼을 빼지 않는 것은 에디터를
+              # 붙이는 프로젝트가 HTML 로 저장하기 때문이다. 그때 저장 시 sanitize 가
+              # 필수다(47 §9): 공지는 전 사용자에게 렌더링된다.
+              - column:
+                  name: CONTENT_TYPE_CD
+                  type: VARCHAR(20)
+                  defaultValue: TEXT
+                  constraints:
+                    nullable: false
+              # 게시 기간 — 47 §9.2 가 신설했다. 원래 이 표에는 팝업 기간만 있어
+              # "언제까지 목록에 있는가" 를 말할 수 없었고, noti-inbox.html 의
+              # 게시중/종료 배지가 근거 없이 떠 있었다.
+              #
+              # 시작이 NOT NULL 인 것이 예약 게시의 근거다 — 비울 수 있게 두면 "지금부터"
+              # 와 "정하지 않음" 이 같은 값이 되어 자동 노출을 판정할 수 없다.
+              - column:
+                  name: NOTICE_FROM_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              # 비우면 무기한이다. NOT NULL 로 두고 먼 미래를 넣게 하면 그 값이 곧
+              # 매직 넘버가 되고, 벤더마다 TIMESTAMP 상한이 달라 이식성이 걸린다(22).
+              - column:
+                  name: NOTICE_TO_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              # 팝업 축 — 게시 기간 안이어야 하며 저장이 막는다(66 §4.5).
+              # 넘으면 "팝업은 뜨는데 목록에 없는 공지" 가 생기고, 팝업의
+              # "공지 N건 더 있음" 링크가 빈 목록으로 간다.
+              - column:
+                  name: POPUP_YN
+                  type: CHAR(1)
+                  defaultValue: "N"
+                  constraints:
+                    nullable: false
+              # POPUP_YN='Y' 일 때만 필수다 — 화면이 판정한다(66 §4.5). DB 제약으로
+              # 걸지 않는 것은 CHECK 문법이 벤더마다 갈리기 때문이다(22).
+              #
+              # POPUP_YN 을 꺼도 이 둘을 지우지 않는다(66 §4.5) — 다시 켤 때 값이
+              # 살아 있어야 한다.
+              - column:
+                  name: POPUP_FROM_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: POPUP_TO_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              # 즉시 내림이며 기간과 축이 다르다(47 §9.2). 기간을 고쳐 내리게 하면
+              # 미래의 게시 계획을 손으로 지우는 일이 되고 되돌릴 때 원래 기간을
+              # 기억해야 한다. 표시 판정에서 이것이 기간을 이긴다 — USE_YN='N' 이면
+              # 기간 안이어도 목록에서 사라진다(66 §4.4).
+              - column:
+                  name: USE_YN
+                  type: CHAR(1)
+                  defaultValue: "Y"
+                  constraints:
+                    nullable: false
+              # 목록 상단 고정. 020 과 같이 UNIQUE 가 아니며 중복을 막지 않는다 —
+              # 결정성은 tie-breaker(NOTICE_ID)가 준다(66 §4.2.1).
+              - column:
+                  name: SORT_NO
+                  type: INT
+                  defaultValue: 0
+                  constraints:
+                    nullable: false
+              # 사람이 작성한다(47 §9) — 020 과 같고 021(러너가 쓴다)과 갈린다.
+              - column:
+                  name: REG_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: REG_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: MOD_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: MOD_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+
+  - changeSet:
+      id: 022-index-sys-notice
+      author: template
+      comment: 둘 다 66 §4 가 선언한 질문에 대응한다
+      changes:
+        # 기본 정렬 — ORDER BY SORT_NO, NOTICE_FROM_DTM DESC, NOTICE_ID DESC(66 §4.2.1).
+        # 공지가 수백 건이라 성능보다 결정성이 이 인덱스의 값이며, 그 결정성이 화면에
+        # 직접 보이는 것이 팝업이다: 정렬의 첫 건이 팝업으로 뜬다(66 §2.4).
+        - createIndex:
+            tableName: SYS_NOTICE
+            indexName: IX_SYS_NOTICE_01
+            columns:
+              - column:
+                  name: SORT_NO
+              - column:
+                  name: NOTICE_FROM_DTM
+        # 게시 판정과 조회조건의 기간이 함께 쓴다(66 §4.4 · §4.7). 알림 모달의 공지 탭이
+        # 매 열람마다 이 조건으로 돌므로 관리 화면보다 이쪽이 자주 탄다.
+        #   USE_YN='Y' AND NOTICE_FROM_DTM <= :now
+        #             AND (NOTICE_TO_DTM IS NULL OR NOTICE_TO_DTM >= :now)
+        # 선두를 NOTICE_FROM_DTM 으로 두는 것은 그것만 범위 조건이 확정이기 때문이다 —
+        # NOTICE_TO_DTM 은 NULL 허용이라 인덱스로 거를 수 없다.
+        - createIndex:
+            tableName: SYS_NOTICE
+            indexName: IX_SYS_NOTICE_02
+            columns:
+              - column:
+                  name: NOTICE_FROM_DTM

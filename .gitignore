@@ -1,0 +1,36 @@
+# Obsidian 로컬 에디터 설정
+.obsidian/
+
+# Gradle
+.gradle/
+build/
+!sources/gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+# IntelliJ 가 Gradle 에 위임하지 않고 직접 빌드할 때의 산출물 — build/ 와 같은 성격이다.
+out/
+
+# 프론트
+node_modules/
+sources/frontend/dist/
+
+# 로컬 실행
+logs/
+*.log
+# application-local.yml 은 무시하지 않는다 — 템플릿을 받은 사람이 "로컬을 어떻게 띄우나"
+# 의 답을 가져야 한다. 비밀값은 그 파일에 두지 않고 환경변수로 주입한다.
+
+# 품질 검사 기준선 — 로컬 측정값이다. 팀이 공유할 값이 아니다.
+.quality-baseline.json
+
+# 생성 산출물 — 고객사 제출본. 원본은 documents/screen/*/manual.md 다.
+build/manual/
+
+# macOS
+.DS_Store
+
+# AI 대화 기록 — CLAUDE.md §10. 결론은 documents/ 와 커밋 메시지가 갖는다.
+chat-history/

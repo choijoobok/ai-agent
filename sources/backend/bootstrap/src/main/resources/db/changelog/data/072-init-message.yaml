@@ -1,0 +1,57 @@
+# 메시지 값 — 공지·요청함 두 화면의 오류 문구 여덟. 사람 소유 시드다(22 §1.1).
+#
+# 기존 파일을 고치지 않고 더한다. 앞 파일들은 이미 적용됐고 loadData 의 CSV 를 뒤에서
+# 고치면 Liquibase 가 체크섬 불일치로 다음 기동을 거부한다(068 · 070 이 같은 이유로 생겼다).
+#
+# ── 여덟 중 둘이 이 슬라이스 고유의 것이다 ──────────────────────────────
+#
+# err.notice.popup-range   팝업 기간이 게시 기간을 벗어났다
+# err.noti-req.not-received 이미 처리된 요청이 선택에 섞였다
+#
+# 나머지 여섯은 어느 화면에나 있는 필수·기간·대상 검증이지만 이 둘은 **화면 밖의 계약**을
+# 지킨다.
+#
+# 앞엣것은 표시 측의 계약이다. 팝업은 최신 1건만 띄우고 나머지를 "공지 N건 더 있음 →" 으로
+# 알림 모달의 공지 탭에 넘기는데(66 §2.4 C안), 그 탭은 게시 기간을 본다 — 팝업이 게시보다
+# 넓으면 **눌러도 그 공지가 없다.** 팝업이 도달 보장 장치라는 전제가 거기서 깨진다.
+#
+# 뒤엣것은 부분 성공을 만들지 않겠다는 선언이다. 처리 가능한 것만 골라 실행하면 알림이
+# 일부에게만 나가고, 되돌리는 길이 없으므로(66 §5.7) 사용자는 무엇이 처리됐는지 모른 채
+# 남는다. 그래서 문구가 "N건은 처리했습니다" 가 아니라 **선택에 있습니다** 다.
+databaseChangeLog:
+  - changeSet:
+      id: data-072-message
+      author: template
+      comment: 공지·요청함의 오류 문구 여덟 — 66 §4.5 · §5.3 · §5.7
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/072-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-072-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

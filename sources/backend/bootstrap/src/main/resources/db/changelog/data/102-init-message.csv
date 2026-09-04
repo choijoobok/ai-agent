@@ -1,0 +1,7 @@
+MSG_KEY,LANG_CD,MSG_VAL
+sample.popup.tag,ko,태그 선택
+sample.popup.tag,en,Select Tag
+sample.tag.tooMany,ko,태그는 최대 {max}개입니다.
+sample.tag.tooMany,en,At most {max} tags are allowed.
+err.sample.tag-too-many,ko,태그는 최대 20개입니다.
+err.sample.tag-too-many,en,At most 20 tags are allowed.

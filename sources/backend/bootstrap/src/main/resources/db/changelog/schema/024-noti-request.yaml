@@ -1,0 +1,136 @@
+# 사용자 → 관리자 요청함 — 47 §8 · 66 §5.
+#
+# 47 §5 가 가른 셋 중 셋째다. 023 과 방향이 반대이고 상태의 성격이 다르다 —
+# 알림은 읽음(봤나), 요청은 처리(했나)다. 한 테이블에 합치면 그 둘이 한 컬럼에 섞인다.
+#
+# 상태가 셋에서 닫힌다(47 §8.1 · 01 §2) — RECEIVED · DONE · REJECTED. 결재선·단계·
+# 결재자 지정을 두지 않으며, 넷째를 요구하는 요청("검토 중" · "보류")은 컬럼이 아니라
+# 범위의 문제로 다룬다. 그 이상이 필요하면 신청 메뉴와 승인 메뉴를 분리해 권한으로
+# 표현한다.
+#
+# 되돌아가는 전이가 없다(66 §5.7). DONE·REJECTED 에서 RECEIVED 로 가는 길을 두지 않는
+# 것은 처리 시점에 요청자에게 알림이 이미 나갔기 때문이다 — 상태를 되돌려도 그 알림은
+# 회수되지 않는다. 잘못 처리했으면 요청자가 다시 내고 그것이 새 행이다.
+#
+# 감사 4컬럼이 없다(47 §8). REG_* 자리는 USER_ID + CRE_DTM 이고 MOD_* 자리는
+# HANDLER_ID + HANDLE_DTM 이다 — 같은 사실을 두 벌로 적지 않는다(40 §4.2).
+# 두 짝의 뜻이 다른 것이 요점이다: 앞은 낸 사람, 뒤는 판정한 사람이다.
+#
+# 보존 기간이 아직 없다(66 §8 미결). 요청은 개인이 낸 것이라 로그와 성격이 다르고,
+# 짧게 잡으면 "작년에 낸 요청" 의 답이 사라진다. 정해지면 32 §3 표에 행이 하나 늘고
+# RetentionPurgeJob 의 목록에 한 줄이 는다 — 배치 본문은 그대로다(32 §4-1).
+databaseChangeLog:
+  - changeSet:
+      id: 024-create-sys-noti-request
+      author: template
+      comment: 상태는 셋에서 닫는다 — 워크플로를 만들지 않는다(47 §8.1 · 01 §2)
+      changes:
+        - createTable:
+            tableName: SYS_NOTI_REQUEST
+            columns:
+              # SYS_SEQUENCE 생성 키다(ADR-0015). 기본 정렬의 tie-breaker 이며 방향이
+              # 오름차순인 것이 이 화면의 성격이다 — 대기열은 오래 기다린 것이 먼저다
+              # (66 §5.2.1). 로그 3종(64)이 최신순인 것과 반대다.
+              - column:
+                  name: REQ_ID
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_NOTI_REQUEST
+                    nullable: false
+              # 요청자. FK 를 건다(47 §8) — 023 과 같은 근거이며 SYS_USER 가 물리 삭제를
+              # 하지 않으므로(USER-02 · 41 §4.5) 계정 정리를 막지 않는다.
+              - column:
+                  name: USER_ID
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+              # ROLE_GRANT · UNLOCK · ETC. 공통코드가 아니다(47 §10) — 라벨만 메시지
+              # 키(notiReq.type.*)다.
+              - column:
+                  name: REQ_TYPE_CD
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+              # nclob 이 아니다(47 §8). 목록에 실리는 컬럼이라 nclob 미적재 규약에
+              # 걸리면 안 되며, 그럼에도 셀 한 줄에는 안 들어가므로 화면은 textModal 을
+              # 읽기 모드로 연다(54 §5.5 · 66 §5.2) — 길이가 타입과 무관하다는 그 절의
+              # 주장이 반대 방향에서 확인되는 자리다.
+              - column:
+                  name: REQ_CONTENT
+                  type: VARCHAR(2000)
+                  constraints:
+                    nullable: false
+              # 셋뿐이다(47 §8.1). 기본값이 RECEIVED 인 것은 요청이 곧 접수이기 때문이며,
+              # 접수를 별도 동작으로 두지 않는다 — 관리자가 "접수" 를 누르는 단계를 만들면
+              # 그것이 워크플로의 첫 단계가 된다.
+              - column:
+                  name: REQ_STAT_CD
+                  type: VARCHAR(20)
+                  defaultValue: RECEIVED
+                  constraints:
+                    nullable: false
+              # 처리한 관리자. FK 를 걸지 않는다 — 47 §8 이 USER_ID 에만 FK 를 적었고,
+              # 이쪽은 NULL 이 정상 상태(미처리)라 제약이 지키는 것이 요청자 쪽보다 적다.
+              # 길이는 SYS_USER.USER_ID 와 같아야 조인이 성립한다.
+              - column:
+                  name: HANDLER_ID
+                  type: VARCHAR(30)
+              - column:
+                  name: HANDLE_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              # 처리는 선택, 반려는 필수다(47 §8.1 · 66 §5.3). DB 제약으로 걸지 않는 것은
+              # 조건부 NOT NULL 이 CHECK 이고 그 문법이 벤더마다 갈리기 때문이다(22).
+              # 화면과 서비스가 함께 막는다.
+              #
+              # 비대칭이 의도다 — 처리는 결과 자체가 답이지만 반려는 이유가 없으면 답이
+              # 아니다. 사유 없는 반려는 요청자가 같은 요청을 다시 내게 만들고, 그것이
+              # 워크플로를 만들지 않기로 한 대가(01 §2)를 실제 비용으로 바꾼다.
+              - column:
+                  name: HANDLE_MEMO
+                  type: VARCHAR(2000)
+              # 요청 시각. 기본 정렬(오름차순)이자 조회조건의 기간이다.
+              - column:
+                  name: CRE_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 024-fk-sys-noti-request
+      author: template
+      comment: 없는 사람이 낸 요청은 처리해도 알릴 곳이 없다 — 47 §8
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: FK_SYS_NOTI_REQUEST_01
+            baseTableName: SYS_NOTI_REQUEST
+            baseColumnNames: USER_ID
+            referencedTableName: SYS_USER
+            referencedColumnNames: USER_ID
+
+  - changeSet:
+      id: 024-index-sys-noti-request
+      author: template
+      comment: 둘이다 — 관리자의 대기열과 사용자의 내 요청
+      changes:
+        # 관리자 화면의 기본 조회 — 상태 = RECEIVED 가 기본값이고(66 §5.5) 그 안에서
+        # 요청일시 오름차순이다. 선두가 REQ_STAT_CD 인 것은 그것이 등가 조건이고
+        # CRE_DTM 이 정렬이기 때문이다.
+        - createIndex:
+            tableName: SYS_NOTI_REQUEST
+            indexName: IX_SYS_NOTI_REQUEST_01
+            columns:
+              - column:
+                  name: REQ_STAT_CD
+              - column:
+                  name: CRE_DTM
+        # 알림 모달의 "내 요청" 탭 — 자기가 낸 것만 본다(52 §7.3 의 사용자 측).
+        # 이쪽은 최신순이다: 이력을 보는 자리이지 대기열이 아니다.
+        - createIndex:
+            tableName: SYS_NOTI_REQUEST
+            indexName: IX_SYS_NOTI_REQUEST_02
+            columns:
+              - column:
+                  name: USER_ID
+              - column:
+                  name: CRE_DTM

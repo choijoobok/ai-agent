@@ -1,0 +1,25 @@
+MSG_KEY,LANG_CD,MSG_VAL
+menu.SMPL_EXCEL,ko,엑셀 업로드
+menu.SMPL_EXCEL,en,Excel Upload
+sample.excel.seg.data,ko,업무 데이터
+sample.excel.seg.data,en,Data
+sample.excel.seg.upload,ko,엑셀 업로드
+sample.excel.seg.upload,en,Excel Upload
+sample.excel.data.title,ko,주문 품목
+sample.excel.data.title,en,Order Items
+sample.excel.upload.title,ko,엑셀 미리보기
+sample.excel.upload.title,en,Excel Preview
+sample.excel.empty,ko,조건에 맞는 품목이 없습니다.
+sample.excel.empty,en,No items match the conditions.
+sample.excel.keyDuplicated,ko,같은 주문에 같은 품목코드가 두 번 있습니다.
+sample.excel.keyDuplicated,en,The same item code appears twice in the same order.
+sample.cond.itemCd,ko,품목코드
+sample.cond.itemCd,en,Item Code
+sample.cond.itemStat,ko,품목상태
+sample.cond.itemStat,en,Item Status
+sample.cond.dlvrDt,ko,납기일
+sample.cond.dlvrDt,en,Delivery Date
+err.sample.no-such-order,ko,없는 주문번호입니다. 파일의 주문번호를 확인하세요.
+err.sample.no-such-order,en,No such order number. Check the order numbers in the file.
+err.sample.item-duplicated,ko,같은 주문에 같은 품목코드가 두 번 있습니다.
+err.sample.item-duplicated,en,The same item code appears twice in the same order.

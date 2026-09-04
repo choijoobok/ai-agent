@@ -1,0 +1,86 @@
+# 샘플 화면의 ADMIN 권한 부여 — 42 §3 · 68 §5.
+#
+# ── 왜 004 를 고치지 않는가 ─────────────────────────────────────────────
+#
+# 사람 소유 시드는 기존 changeset 을 고치지 않고 새 changeset 을 더한다(22 §1.1).
+# 004 는 이미 적용된 DB 에 들어가 있고, 고치면 남의 로컬이 체크섬으로 죽는다.
+#
+# 검사도 그에 맞춰 파일 이름이 아니라 목록으로 모은다(SeedApiTest) — 이름으로 잡으면
+# 뒤에 온 부여가 검사 밖으로 나가고, 그때 그 검사는 조용히 통과한다.
+#
+# ── 액션 넷이 전부 있다 ────────────────────────────────────────────────
+#
+# 52 §4.2 의 액션 열이 R S E X 다(68 §5.1). 부여가 빠진 (메뉴, 액션) 은 그 API 가
+# 언제나 403 이 되며, 그것은 화면에서 "버튼이 없다" 로만 보인다.
+#
+# SMPL_ROOT 에는 부여하지 않는다 — URL 없는 구조 노드는 권한 대상이 아니다(42 §3).
+databaseChangeLog:
+  - changeSet:
+      id: data-090-sample-auth
+      author: template
+      comment: 샘플 화면의 ADMIN 부여 — 부여가 없으면 그 API 는 언제나 403 이다
+      changes:
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_MD_VERT }
+              - column: { name: ACTION_CD, value: READ }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_MD_VERT }
+              - column: { name: ACTION_CD, value: SAVE }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+        # 엑셀 셋이 서버 생성이라 EXPORT 가 실제로 집행되는 통제다(ADR-0027 과 갈리는 자리).
+        # 프론트 생성에서는 그 권한이 운영 사실이었지만 여기서는 서버가 요청을 막는다.
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_MD_VERT }
+              - column: { name: ACTION_CD, value: EXPORT }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+        # 출고 지시 — 접두가 정한 EXECUTE 다(ADR-0020).
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_MD_VERT }
+              - column: { name: ACTION_CD, value: EXECUTE }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+      rollback:
+        - delete:
+            tableName: SYS_ROLE_MENU_AUTH
+            where: MENU_CD LIKE 'SMPL/_%' ESCAPE '/'
+
+  - changeSet:
+      id: data-090-sample-sort
+      author: template
+      comment: 신규 설치의 메뉴 순서 — 081 이 채운 칸을 샘플도 채운다(ADR-0028)
+      changes:
+        # WHERE 에 SORT_NO = 0 이 붙는 이유는 081 과 같다: 0 인 행은 방금 들어온 행뿐이며,
+        # 조건 없이 쓰면 운영자가 드래그한 순서를 이 배포가 되돌린다(62 §4.5).
+        #
+        # SMPL_ROOT 가 7 인 것은 최상위의 마지막이기 때문이다 — 샘플은 참조 구현이라
+        # 업무 메뉴 뒤에 선다(68 §10.1).
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 7
+            where: MENU_CD = 'SMPL_ROOT' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 1
+            where: MENU_CD = 'SMPL_MD_VERT' AND SORT_NO = 0

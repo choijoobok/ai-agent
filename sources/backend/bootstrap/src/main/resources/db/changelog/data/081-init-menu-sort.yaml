@@ -1,0 +1,192 @@
+# 메뉴의 초기 정렬 — 003 이 비워 둔 칸 (ADR-0028 · 52 §4.2).
+#
+# 003 이 생성물이 되면서 SORT_NO 가 CSV 에서 빠졌다. 담으면 배포마다 운영자의 드래그를
+# 되돌리기 때문이며(62 §4.5), 그 대가로 **새 행이 DB 기본값 0 으로 들어온다** — 정렬이
+# ORDER BY SORT_NO, MENU_CD 라 신규 설치의 사이더가 통째로 알파벳순이 된다.
+#
+# 24개를 손으로 드래그하게 두지 않는다. 035 가 ICON_CD 에, 056 이 EXPORT_YN 에 한 것과
+# 같은 자리이며 — 003 이 비워 둔 칸을 뒤에 오는 파일이 채운다 — 값은 52 §4.2 의 순서다.
+#
+# ── WHERE 에 SORT_NO = 0 이 붙는 이유 ───────────────────────────────────
+#
+# 이미 적용된 DB 는 옛 003 의 insert 로 1..N 이 들어가 있고, 그 사이에 운영자가 드래그했을
+# 수도 있다. 조건 없이 쓰면 **그 드래그를 이 배포가 되돌린다**.
+#
+# 0 은 안전한 판별자다 — 드래그는 형제 전체를 1..N 으로 다시 쓰므로(42 §4) 0 을 만들지
+# 않는다. 즉 0 인 행은 "방금 들어온 행" 뿐이다.
+#
+# runOnChange 를 쓰지 않는다. 한 번 채우면 그 뒤로는 운영의 것이다.
+databaseChangeLog:
+  - changeSet:
+      id: data-081-menu-sort
+      author: template
+      comment: 신규 설치의 메뉴 순서 — 이미 정렬된 DB 는 건드리지 않는다(ADR-0028)
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 1
+            where: MENU_CD = 'DASHBOARD' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 2
+            where: MENU_CD = 'SYSTEM' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 1
+            where: MENU_CD = 'USER' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 1
+            where: MENU_CD = 'USER_MGMT' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 2
+            where: MENU_CD = 'USER_AUTH_MGMT' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 2
+            where: MENU_CD = 'MENU' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 1
+            where: MENU_CD = 'MENU_TREE' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 2
+            where: MENU_CD = 'ROLE_MGMT' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 3
+            where: MENU_CD = 'ROLE_AUTH_MGMT' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 4
+            where: MENU_CD = 'API_CATALOG' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 3
+            where: MENU_CD = 'MASTER' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 1
+            where: MENU_CD = 'CODE_MGMT' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 2
+            where: MENU_CD = 'MESSAGE_MGMT' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 3
+            where: MENU_CD = 'CONFIG_MGMT' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 4
+            where: MENU_CD = 'LOG' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 1
+            where: MENU_CD = 'ACCESS_LOG' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 2
+            where: MENU_CD = 'LOGIN_LOG' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 3
+            where: MENU_CD = 'ERROR_LOG' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 5
+            where: MENU_CD = 'BATCH' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 1
+            where: MENU_CD = 'BATCH_SCHEDULE' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 2
+            where: MENU_CD = 'BATCH_HISTORY' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 6
+            where: MENU_CD = 'NOTICE' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 1
+            where: MENU_CD = 'NOTICE_MGMT' AND SORT_NO = 0
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 2
+            where: MENU_CD = 'NOTI_REQUEST' AND SORT_NO = 0

@@ -1,0 +1,66 @@
+# 논리 시퀀스 시드 5차 — 공지 · 알림 세 테이블.
+#
+# 001 이 "생성 키를 쓰는 테이블이 늘 때마다 여기에 행이 하나 는다" 고 적은 자리다.
+# 047(SYS_LO_ACCESS) · 057(SYS_LO_EXCEPTION) · 065(SYS_BATCH_HISTORY)에 이어 다섯째이며,
+# 한 번에 셋이 느는 것은 처음이다 — 022·023·024 가 한 슬라이스라서다.
+#
+# 빠뜨리면 조용하다(065 주석) — 기동도 되고 첫 INSERT 도 성공한다. Hibernate 가 자체
+# 경로로 행을 만들기 때문이며 다중 노드에서 그 순간 경합한다.
+#
+# 여기서는 그 대가가 SYS_NOTI_INBOX 에서 가장 크다. 알림은 요청 처리·만료 예고·배치
+# 실패가 각자 다른 시점에 넣으므로(66 §6.2) 노드 여럿이 동시에 채번하는 상황이 실제로
+# 온다 — 공지는 사람이 화면에서 한 건씩 만든다.
+databaseChangeLog:
+  - changeSet:
+      id: data-071-seq-notice
+      author: template
+      changes:
+        - insert:
+            tableName: SYS_SEQUENCE
+            columns:
+              - column:
+                  name: SEQ_NAME
+                  value: SYS_NOTICE
+              - column:
+                  name: NEXT_VAL
+                  valueNumeric: 1
+      rollback:
+        - delete:
+            tableName: SYS_SEQUENCE
+            where: SEQ_NAME = 'SYS_NOTICE'
+
+  - changeSet:
+      id: data-071-seq-noti-inbox
+      author: template
+      changes:
+        - insert:
+            tableName: SYS_SEQUENCE
+            columns:
+              - column:
+                  name: SEQ_NAME
+                  value: SYS_NOTI_INBOX
+              - column:
+                  name: NEXT_VAL
+                  valueNumeric: 1
+      rollback:
+        - delete:
+            tableName: SYS_SEQUENCE
+            where: SEQ_NAME = 'SYS_NOTI_INBOX'
+
+  - changeSet:
+      id: data-071-seq-noti-request
+      author: template
+      changes:
+        - insert:
+            tableName: SYS_SEQUENCE
+            columns:
+              - column:
+                  name: SEQ_NAME
+                  value: SYS_NOTI_REQUEST
+              - column:
+                  name: NEXT_VAL
+                  valueNumeric: 1
+      rollback:
+        - delete:
+            tableName: SYS_SEQUENCE
+            where: SEQ_NAME = 'SYS_NOTI_REQUEST'

@@ -1,0 +1,9 @@
+MSG_KEY,LANG_CD,MSG_VAL
+settings.fontWeight,ko,글자 굵기
+settings.fontWeight,en,Font weight
+settings.fontWeight.light,ko,얇게
+settings.fontWeight.light,en,Light
+settings.fontWeight.normal,ko,보통
+settings.fontWeight.normal,en,Normal
+settings.fontWeight.bold,ko,굵게
+settings.fontWeight.bold,en,Bold

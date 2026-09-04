@@ -1,0 +1,200 @@
+---
+id: LLM-FWK-BE-003
+title: "조회 — 봉투 · 화이트리스트 · 빌더"
+category: "06-framework/backend"
+type: operation
+created: 2026-05-04
+updated: 2026-09-03
+status: active
+sources: ["sources/backend/core/search/", "sources/backend/domain/search/", "aidd-guide/standard/backend/_study/api-conventions.md", "aidd-guide/standard/backend/search.md"]
+author: Bong Jong Hyeon
+tier: 2
+tags: [backend, query, search, whitelist, paging]
+---
+
+# 조회 — 봉투 · 화이트리스트 · 빌더
+
+> **조회는 둘이다.** 검색 폼이 있으면 **동적형**, 없으면 **고정형**.
+> 이 문서는 동적형이다 — 고정형은 그냥 전용 `record` 를 받는 평범한 API 다.
+>
+> 유도과정은 [`_study/api-conventions.md`](./_study/api-conventions.md) §3~5.
+
+## 1. 어느 쪽인가
+
+| | **고정형** | **동적형** |
+|---|---|---|
+| 사용자가 연산자를 바꾸나 | 아니다 | 그렇다 |
+| 어디 | 디테일 그리드 · 코드·콤보·트리 · 단건 | **검색 폼이 있는 마스터 그리드** |
+| 요청 | **전용 `record`** — `{ "userId": "kim.jb" }` | 봉투(§2) |
+| 화이트리스트 | **없다** | **필요하다**(§4) |
+| 개수 | 대부분 | 화면당 **최대 하나** |
+
+조회조건 폼은 화면에 하나뿐이므로 **디테일 탭이 다섯이면 고정형이 다섯, 동적형이 하나**다.
+
+> **고정형이 기본인 이유는 편의가 아니라 보안이다.** 디테일을 동적 봉투로 태우면 부모 키
+> 제약이 **클라이언트가 보낸 조건 하나**로 표현된다 — `conditions` 를 빈 배열로 보내면
+> **조건 없는 전체 조회**가 되고, `op` 를 `contains` 로 바꾸면 다른 사용자까지 걸린다.
+> **`@NotBlank String userId` 는 그것을 표현할 수 없다** — 표현할 수 없는 것은 공격할 수 없다.
+
+## 2. 봉투 — 넷
+
+```jsonc
+{ "conditions": [ { "field": "creDtm", "op": "between",
+                    "value": ["2026-08-27T00:00:00+09:00", "2026-08-28T23:59:59+09:00"] },
+                  { "field": "userId", "op": "eq", "value": "kim.jb" } ],
+  "sorts":  [ { "field": "creDtm", "dir": "desc" } ],
+  "page":   { "mode": "cursor", "size": 100, "cursor": "eyJ…" },
+  "params": { "roleCd": "ROLE_X", "roleAsOf": "2026-08-28" } }
+```
+
+**앞의 셋이 공통이고 `params` 만 화면마다 다르다** — 없는 화면이 대부분이다.
+
+- **`conditions` 는 전부 `AND` 다. `OR` 는 열지 않는다** — 근거는 *사례가 없다* 가 아니라
+  **비용**이다. 열면 중첩 그룹이 따라오고 그것은 와이어 · 화이트리스트 · 폼 UI ·
+  저장된 조건을 **넷 다** 바꾼다. 흔한 형태(*"이름 또는 사업자번호로"*)는 **파생이 덮는다**.
+- **같은 필드가 두 번 오면 400** — 범위는 `between`, 다중은 `in` 이 받는다.
+- **빈 조건은 보내지 않는다.** 비운 칸은 배열에서 빠진다 — `value: null` 로 보내
+  *"NULL 인 것을 찾아라"* 와 섞이지 않게 한다. 예외는 `isNull`·`isNotNull` 뿐이다.
+
+### 2.1 `params` — 봉투를 빠져나가는 문
+
+**폼의 모든 칸이 `conditions` 로 가지는 않는다.**
+
+| 폼 필드가 | 어디로 |
+|---|---|
+| 컬럼 하나에 연산자 하나 | `conditions` |
+| 값 **하나** → SQL 조각 **하나** (컬럼 조합 · `EXISTS`) | `conditions` + 스펙의 `.derived()` |
+| **여러 칸이 합쳐져 조각 하나** | `params` |
+| 다른 조건을 **수식**한다 (기준일 · 포함 플래그) | `params` |
+| **술어가 아니다** (조인 전환 · `SELECT` 식) | `params` |
+
+**경계는 하나다 — 파생은 값 하나가 들어가고 조각 하나가 나온다. 그 관계가 깨지면 `params`.**
+
+`params` 는 화이트리스트를 우회하는 문이 아니다: **타입이 있고**(화면 전용 `record` + `@Valid`,
+열린 맵이 아니다) · **빌더에 들어가지 않고**(서비스가 이름으로 직접 읽는다) ·
+**컬럼을 지명할 수 없고** · **정렬 대상이 아니며** · 저장된 조건에 **함께 저장된다**.
+
+## 3. 조건 하나 — `field` · `op` · `value`
+
+`field` 는 **논리 이름**이다. **컬럼명도 별칭도 아니다** — 올리면 넷을 잃는다:
+파생을 표현할 수 없고 · 별칭은 쿼리 하나의 사정이며 · **저장된 조건이 조인 변경으로
+무효화되고** · 스키마가 devtools 에 그대로 보인다.
+
+### 연산자 열셋
+
+| `op` | SQL | `value` | 타입 |
+|---|---|---|---|
+| `eq` · `ne` | `= ?` · `<> ?` | 스칼라 | 전부 |
+| `in` | `IN (…)` | 배열 (`null` 포함 가능) | 전부 |
+| `startsWith` · `contains` · `endsWith` | `LIKE` | 문자열 | **문자열** |
+| `between` | `>= ? AND <= ?` | **2원소. 한쪽이 `null` 이면 단측** | **숫자 · 날짜** |
+| `gt` · `gte` · `lt` · `lte` | 부등호 | 스칼라 | **숫자 · 날짜** |
+| `isNull` · `isNotNull` | `IS (NOT) NULL` | **없다** — 있으면 400 | 전부 |
+
+**연산자가 타입을 제한한다 — 필드마다 선언하지 않는다.** 반대로 하면 필드별 허용 연산자
+목록이 생기고 그것이 곧 미러링이다. 필드의 타입은 스펙의 `Path` 가 안다.
+
+> **부등호는 넷 다 둔다 — 사례가 없어도.** 둘만 두면 *"초과"* 를 표현할 방법이 없어
+> 화면이 **`gte` 에 값을 하나 더해 흉내 낸다.** 정수면 맞지만 **날짜와 소수에서는 틀리고**,
+> 그 우회가 화면마다 다르게 구현된다.
+
+> **문자열에 부등호를 여는 문이 하나.** 스펙이 컬럼에 **`ordered()`** 를 붙이면 그 칸은
+> 범위 연산자를 받는다. **타입이 아니라 선언이 근거다** — 자바 타입만 보면 `ORD_NM` 과
+> `DLVR_YM` 이 같은 `String` 이고, 앞의 것에 범위를 열면 **말이 되지 않는 결과가 조용히
+> 나온다.** *"이 문자열의 사전순이 시간순이다"* 는 컬럼을 아는 자리에서만 할 수 있는 말이다.
+
+## 4. 화이트리스트 — 스펙 객체가 그것이다
+
+```java
+public static final QuerySpec SPEC = QuerySpec.of("accessLog")
+    .from(AL)
+    .leftJoin(U).on(U.userId.eq(AL.userId))    // 조인도 여기 있다
+    .col("creDtm",  AL.creDtm).sortable()
+    .col("userNm",  U.userNm)                  // 조인 컬럼 — 별칭을 Q타입이 안다
+    .col("menuCd",  AL.menuCd).nullable()
+    .derived("status", AccessLogSpec::status)  // 컬럼이 아니다 — 정렬 불가
+    .defaultSort("creDtm", DESC)
+    .pk(AL.seq)                                // tie-breaker
+    .build();
+```
+
+**`.col(…)` 로 열지 않은 이름이 오면 400 이다.** 대상이 `Path` 객체라 **타입이 곧 허용
+연산자**이며, 프론트 선언을 미러링하지 않는다.
+
+> **레코드 리플렉션이 아닌 이유 둘.** ① 그 레코드는 **바인딩되지 않는다** — `between` 의
+> 값은 2원소 배열이고 `in` 은 리스트라 `OffsetDateTime`·`String` 필드에 담기지 않는다.
+> ② 리플렉션은 **절반만 준다** — 이름 집합은 나오지만 **어느 컬럼·별칭인지**는 안 나온다.
+
+### 검증 없이 빌더에 들어갈 수 없다 — 자료형으로 막는다
+
+**빌더의 산출물(`Built` · `SqlFragment`)만 쿼리에 들어간다.** 생성자를 패키지 전용으로
+닫으면 **빌더 말고는 아무도 만들 수 없다.**
+
+| | AOP 통과 표식 | **자료형** |
+|---|---|---|
+| 검증을 건너뛰면 | 런타임 500 | **컴파일 실패** |
+| 리포지터리 시그니처 | 무엇이든 받는다 | **`SqlFragment` 만 받는다** |
+
+**그래도 런타임에 뚫리면 400 이 아니라 500 이다.** 사용자 입력 문제가 아니라 **우리 코드의
+버그**이므로, 조용히 400 으로 돌리면 *"조회가 안 된다"* 로 묻힌다.
+
+## 4-1. 조회 기간 상한 — `RangeGuard` 하나가 판정한다
+
+이력 화면은 기간 없이 열면 표 전체를 훑는다. **화면마다 다시 짜지 않는다.**
+
+```java
+RangeGuard.check(request, new RangeGuard.Rule(
+        "creDtm", "traceId",                        // 기간 조건의 field · 면제 조건
+        configs.get(SearchRangeProps.class).maxDays(),
+        XxxErrorCode.RANGE_REQUIRED, XxxErrorCode.RANGE_TOO_WIDE));
+```
+
+- **상한은 시스템 설정**(`SearchRangeProps`)이다. 더 좁히는 것은 `Math.min(시스템, N)` 이며
+  **요건서가 그렇게 말한 화면만** 한다 — 사용 이력은 31일, 로그인 이력은 좁히지 않는다.
+- **`bypassField` 는 한 건을 정확히 집는 조건**이다. 그것이 오면 기간이 선택이 된다.
+- 쓰는 곳 넷 — `AccessLog` · `LoginLog` · `ErrorLog` · `Sample` 의 `QueryService`.
+
+## 5. 정렬 — tie-breaker 는 서버가 붙인다
+
+- **처음부터 배열**이다. 기본이 원소 하나일 뿐.
+- **비어 있으면 서버의 기본 정렬** — 화면이 아니라 API 가 가진 것이다.
+- **tie-breaker 를 클라이언트가 보내지 않는다.** 서버가 `ORDER BY {요청}, {PK}` 로 **언제나**
+  붙인다. NULL 정렬 순서가 벤더별로 달라, 맡기면 **빠뜨린 화면에서만 페이징이 흔들리고**
+  증상이 *"2페이지에 1페이지 행이 또 있다"* 라 원인을 짐작하기 어렵다. **커서형에서는 곧바로 깨진다.**
+- **파생 필드 · `params` 키 · `nclob` 컬럼은 `sorts` 에 올 수 없다** — 400.
+
+## 6. 페이징 — 모드 셋. 화면이 선언하지 않는다
+
+**모드는 엔드포인트가 정하고 응답이 나른다.** 요청에도 화면 선언에도 없다.
+
+| 모드 | 언제 | 총 건수 | 정렬 |
+|---|---|---|---|
+| **`offset`**(기본) | 대부분 | **센다** | 서버 |
+| **`cursor`** | **대용량 이력** | **세지 않는다** | 서버 · 한 컬럼 |
+| **`all`** | 전량이 작아 페이징이 무의미 | `COUNT` 없이 배열 길이 | 클라이언트 |
+
+> **화면이 선언하지 않는 이유는 미러링이기 때문이다.** 페이징 여부는 이미 서버 소스가
+> 정한다 — 리포지터리가 `Pageable` 을 받는지, 커서 조건을 붙이는지가 **곧 모드**다.
+> 화면이 한 번 더 적으면 **같은 사실이 두 곳에 생기고 어긋날 때 어느 쪽이 맞는지 알 수 없다.**
+
+**커서 토큰은 다섯 마디다** — `field | dir | backward | value | pk`. 앞의 둘이 *정렬이
+바뀌면 무효* 를 집행한다(값만 담으면 바뀐 정렬에 옛 기준점이 먹혀 **결과가 조용히 틀린다**).
+
+## 7. 응답 — `PageResponse<T>` 의 첫 키가 `mode`
+
+```jsonc
+{ "mode": "offset", "content": [ … ], "size": 100, "hasNext": true,
+  "totalElements": 3418, "totalPages": 35, "nextCursor": null, "prevCursor": null }
+```
+
+- **`mode` 를 명시한다.** `null` 여부로 추론하면 **`cursor` 의 마지막 장과 `all` 이
+  구별되지 않는다** — 둘 다 `totalPages`·`nextCursor` 가 `null` 이고 `hasNext` 가 `false` 다.
+- **`hasNext` 는 셋 다 채운다.** 그리드 푸터가 한 컴포넌트이므로 *"다음이 있나"* 는
+  모드와 무관하게 답이 있어야 한다.
+- **타입을 셋으로 가르지 않는다** — 한 타입에 `mode` 한 키가 화면의 분기를 한 곳에 모은다.
+
+## 관련
+
+- [api.md](./api.md) — 경로·봉투·헤더
+- [persistence.md](./persistence.md) — `IN` 쪼개기 · tie-breaker 의 벤더 근거
+- [`_study/api-conventions.md`](./_study/api-conventions.md) — 원문

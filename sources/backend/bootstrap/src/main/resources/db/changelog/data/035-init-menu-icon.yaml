@@ -1,0 +1,323 @@
+# 메뉴 아이콘 — 52 §4 · 51 §4.1.
+#
+# 003 이 ICON_CD 를 비워 두며 "아이콘은 셸이 사이더를 그릴 때 정한다, 지금 값을 넣으면
+# 실제로 렌더된 적 없는 이름 24개가 남는다" 고 적었다. 셸이 섰고 폴백(폴더/문서)만으로는
+# 24개가 전부 같아 보이므로 여기서 채운다.
+#
+# 값은 판(antd)의 컴포넌트 이름이 아니라 **뜻의 코드**다. 이름을 그대로 넣으면 판을
+# 바꿀 때 데이터가 낡는다 — 코드 -> 컴포넌트 매핑은 프론트(menuIcons.tsx)가 갖는다.
+#
+# 없는 코드가 와도 화면은 선다. 매핑에 없으면 폴백(구조 노드는 폴더, 리프는 문서)이며
+# 그것이 003 이 비워 두었을 때의 모습이다.
+databaseChangeLog:
+  - changeSet:
+      id: data-035-icon-dashboard
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: dashboard
+            where: MENU_CD = 'DASHBOARD'
+
+  - changeSet:
+      id: data-035-icon-system
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: system
+            where: MENU_CD = 'SYSTEM'
+
+  - changeSet:
+      id: data-035-icon-user
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: user-group
+            where: MENU_CD = 'USER'
+
+  - changeSet:
+      id: data-035-icon-user-mgmt
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: user
+            where: MENU_CD = 'USER_MGMT'
+
+  - changeSet:
+      id: data-035-icon-user-auth-mgmt
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: user-auth
+            where: MENU_CD = 'USER_AUTH_MGMT'
+
+  - changeSet:
+      id: data-035-icon-menu
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: menu
+            where: MENU_CD = 'MENU'
+
+  - changeSet:
+      id: data-035-icon-menu-tree
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: tree
+            where: MENU_CD = 'MENU_TREE'
+
+  - changeSet:
+      id: data-035-icon-role-mgmt
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: role
+            where: MENU_CD = 'ROLE_MGMT'
+
+  - changeSet:
+      id: data-035-icon-role-auth-mgmt
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: role-auth
+            where: MENU_CD = 'ROLE_AUTH_MGMT'
+
+  - changeSet:
+      id: data-035-icon-api-catalog
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: api
+            where: MENU_CD = 'API_CATALOG'
+
+  - changeSet:
+      id: data-035-icon-master
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: master
+            where: MENU_CD = 'MASTER'
+
+  - changeSet:
+      id: data-035-icon-code-mgmt
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: code
+            where: MENU_CD = 'CODE_MGMT'
+
+  - changeSet:
+      id: data-035-icon-message-mgmt
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: message
+            where: MENU_CD = 'MESSAGE_MGMT'
+
+  - changeSet:
+      id: data-035-icon-config-mgmt
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: config
+            where: MENU_CD = 'CONFIG_MGMT'
+
+  - changeSet:
+      id: data-035-icon-log
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: log
+            where: MENU_CD = 'LOG'
+
+  - changeSet:
+      id: data-035-icon-access-log
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: access-log
+            where: MENU_CD = 'ACCESS_LOG'
+
+  - changeSet:
+      id: data-035-icon-login-log
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: login-log
+            where: MENU_CD = 'LOGIN_LOG'
+
+  - changeSet:
+      id: data-035-icon-error-log
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: error-log
+            where: MENU_CD = 'ERROR_LOG'
+
+  - changeSet:
+      id: data-035-icon-batch
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: batch
+            where: MENU_CD = 'BATCH'
+
+  - changeSet:
+      id: data-035-icon-batch-schedule
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: schedule
+            where: MENU_CD = 'BATCH_SCHEDULE'
+
+  - changeSet:
+      id: data-035-icon-batch-history
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: run-history
+            where: MENU_CD = 'BATCH_HISTORY'
+
+  - changeSet:
+      id: data-035-icon-notice
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: notice
+            where: MENU_CD = 'NOTICE'
+
+  - changeSet:
+      id: data-035-icon-notice-mgmt
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: notice-board
+            where: MENU_CD = 'NOTICE_MGMT'
+
+  - changeSet:
+      id: data-035-icon-noti-request
+      author: template
+      comment: 메뉴명에 맞는 아이콘 — 51 §4.1
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: ICON_CD
+                  value: inbox
+            where: MENU_CD = 'NOTI_REQUEST'

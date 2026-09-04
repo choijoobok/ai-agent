@@ -1,0 +1,52 @@
+# 메시지 값 8차 — 사람 소유 시드다(22 §1.1).
+#
+# 015 를 고치지 않고 파일을 더한다. 015 는 몇 분 전에 쓴 것이라 아직 아무 데도 적용되지
+# 않았을 가능성이 크지만, **적용됐는지 여부를 여기서 알 수 없다** — 이미 적용된 곳이
+# 있다면 체크섬이 달라져 그 곳의 기동이 실패한다. 파일 하나를 더하는 값이 그보다 싸다.
+#
+# 담는 것은 사이더 검색 칸의 단축키 안내다(51 §4.2 · §10). 015 에서 이름만 남겼는데,
+# 짧은 형태(`Shift×2`)는 지금 폭에 들어간다 — 재 보니 여유 105px 에 97px 이다.
+# **툴팁은 그대로 둔다**: 글자 크기를 키우면(51 §9.3) 이 안내는 다시 잘리고, 그때 남는 것이
+# 툴팁이다.
+databaseChangeLog:
+  - changeSet:
+      id: data-016-placeholder-ko
+      author: template
+      comment: 짧은 형태로 단축키를 되살린다 — 51 §4.2
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: 메뉴 검색 (Shift×2)
+            where: MSG_KEY = 'shell.search.placeholder' AND LANG_CD = 'ko'
+
+  - changeSet:
+      id: data-016-placeholder-en
+      author: template
+      comment: 〃 — `Search menus` 는 폭에 들어가지 않는다
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: Search (Shift×2)
+            where: MSG_KEY = 'shell.search.placeholder' AND LANG_CD = 'en'
+
+  - changeSet:
+      id: data-016-cache-version
+      author: template
+      comment: 값을 바꿨으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

@@ -1,0 +1,760 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>목업 · 로그인 이력 (login-log)</title>
+<style>
+/* ─────────────────────────────────────────────────────────────
+   목업 공용 스타일
+   목업은 한 파일로 완결되어야 한다. 외부 CSS 로 빼면 파일 하나만
+   열거나 다른 곳에 붙였을 때 화면이 깨진다. 그래서 복제를 감수한다.
+   새 목업은 이 블록을 그대로 복사한다.
+   의도적으로 밋밋하다. AntD 처럼 보이면 잘못된 구속이 된다.
+
+   ★ 그리드 어휘 다섯 — .sf .tb .grid .pg .split
+     크롬·행 상태·컬럼 고정의 자리는 53, 컬럼 계약은 54 가 정한다.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --ink:#1a1a1a; --muted:#6b6b6b; --line:#c9c9c9; --line2:#e4e4e4;
+  --bg:#ffffff; --panel:#f7f7f7; --err:#a8261c; --err-bg:#fbeceb;
+  --note:#1f4e79; --note-bg:#eef4fa; --ok:#1d7a4d;
+  /* ── 그리드 색. 그리드가 스스로 정하지 않고 셸에서 받는다 ──
+     Primary — 선택·편집 표시는 전부 여기서 파생한다.
+     진한 단계를 쓰지 않는다 — 그리드는 글자가 촘촘해 배경이 진해지면
+     전부 읽기 어려워진다. 대비 문제를 애초에 만들지 않는다. */
+  --pri:#1f4e79;      /* 원색 — 편집 중인 셀 테두리에만 */
+  --pri-1:#eaf1f9;    /* 가장 옅은 단계 — 현재 선택 행 */
+  --pri-2:#d6e6f5;    /* 한 단계 진한 것 — 현재 선택 셀 */
+  /* 컬럼 상태 — 정적. 헤더 표시(* · 흐린 글자)와 짝이다 */
+  --req-bg:#fdf6e6;   /* 필수 입력 */
+                      /* 편집 가능 = 바탕(--bg). 칠하지 않는 것이 곧 표시다 */
+                      /* 읽기 전용 = --panel */
+  /* 행 상태 — Primary 와 무관하다. 아이콘이 원본이고 배경은 거든다 */
+  --row-new:#eaf5ef; --row-mod:#e7f1f2;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#e6e6e6; --muted:#9a9a9a; --line:#4a4a4a; --line2:#333;
+    --bg:#161616; --panel:#1e1e1e; --err:#e08b82; --err-bg:#3a201e;
+    --note:#8fb8dd; --note-bg:#1c2833; --ok:#63c08d;
+    /* 같은 알파를 얹지 않는다 — 다크에서는 안 보이거나 반대로 튄다.
+       단계를 모드별로 따로 고른다 */
+    --pri:#8fb8dd; --pri-1:#1a2b3a; --pri-2:#24405c;
+    --req-bg:#33291a;
+    --row-new:#17281f; --row-mod:#16272a;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--bg);color:var(--ink);
+     font:14px/1.6 "Malgun Gothic","Apple SD Gothic Neo",sans-serif;}
+main{max-width:1000px;margin:0 auto}
+h1{font-size:19px;margin:0 0 4px}
+h2{font-size:15px;margin:34px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+h3{font-size:13px;margin:20px 0 8px;color:var(--muted);font-weight:600}
+code{font-family:Consolas,monospace;font-size:.92em;background:var(--panel);padding:1px 4px}
+a{color:var(--note)}
+
+/* 개요 바 — 문서와의 연결. 모든 목업이 갖는다 */
+.head{border:1px solid var(--line);background:var(--panel);padding:12px 14px;margin-bottom:6px}
+.head dl{display:grid;grid-template-columns:max-content 1fr;gap:2px 14px;margin:0;font-size:12.5px}
+.head dt{color:var(--muted)}
+.head dd{margin:0}
+
+/* 화면 영역 — 뷰포트를 나타내는 상자 */
+.screen{border:1px solid var(--line);margin:0 0 8px;background:var(--bg)}
+.screen .bar{background:var(--panel);border-bottom:1px solid var(--line2);
+             padding:5px 10px;font-size:11.5px;color:var(--muted)}
+.screen .body{padding:28px 20px}
+/* 셸 위에 뜬 모달 — 배경이 셸이라는 힌트만 준다 */
+.screen.shell .body{background:repeating-linear-gradient(45deg,
+  var(--panel) 0 6px, transparent 6px 12px);padding:22px 14px}
+/* 리프 화면은 자기가 콘텐츠다 — 셸 크롬을 그리지 않는다 */
+.screen.leaf .body{padding:12px}
+
+/* 카드 — 로그인 등 중앙 배치 폼 */
+.card{max-width:320px;margin:0 auto;border:1px solid var(--line);padding:22px 20px;background:var(--bg)}
+.card .logo{height:38px;border:1px dashed var(--line);display:flex;align-items:center;
+            justify-content:center;color:var(--muted);font-size:11.5px;margin-bottom:18px}
+
+/* 모달 — 그리드 설정 창도 이것을 쓴다 */
+.modal{max-width:600px;margin:0 auto;border:1px solid var(--line);background:var(--bg)}
+.modal .mh{border-bottom:1px solid var(--line2);padding:9px 14px;font-size:13px;font-weight:600;
+           display:flex;justify-content:space-between;align-items:center}
+.modal .mh .x{color:var(--muted);font-weight:400}
+.modal .mb{padding:14px}
+.modal .mf{border-top:1px solid var(--line2);padding:9px 14px;font-size:11.5px;color:var(--muted);
+           display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* 탭 */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin:0 0 14px}
+.tabs>span{padding:6px 13px;font-size:12.5px;border:1px solid transparent;border-bottom:none;
+           color:var(--muted);cursor:default}   /* 자식만 — 안에 배지가 들어갈 수 있다 */
+.tabs>span.on{border-color:var(--line);background:var(--bg);color:var(--ink);font-weight:600;
+              margin-bottom:-1px}
+.tabs .badge{display:inline-block;min-width:16px;height:16px;line-height:16px;text-align:center;
+             border-radius:8px;background:var(--err);color:#fff;font-size:10.5px;margin-left:5px}
+
+/* 폼 — 화면에 남는 폼은 조회조건 하나다 */
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;margin-bottom:3px}
+.f input,.f select,.f textarea{width:100%;padding:6px 8px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+.f .hint{font-size:11px;color:var(--muted);margin-top:3px}
+.f.ro input{background:var(--panel);color:var(--muted)}
+.btn{width:100%;padding:8px;border:1px solid var(--ink);background:var(--ink);
+     color:var(--bg);font:inherit;font-size:13px;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.sm{width:auto;padding:4px 11px;font-size:12px}
+.btn[disabled]{opacity:.35}
+.sub{text-align:center;margin-top:12px;font-size:12px}
+.row{display:flex;gap:8px;align-items:center}
+.row .btn{width:auto}
+
+/* 키-값 나열 (읽기 전용 정보) */
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:12.5px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+
+/* 설정 그룹 */
+.grp{border:1px solid var(--line2);margin-bottom:10px}
+.grp>b{display:block;background:var(--panel);border-bottom:1px solid var(--line2);
+       padding:5px 11px;font-size:12px}
+.grp .item{display:flex;justify-content:space-between;align-items:center;gap:12px;
+           padding:6px 11px;font-size:12.5px;border-bottom:1px solid var(--line2)}
+.grp .item:last-child{border-bottom:none}
+.grp .item .where{font-size:10.5px;color:var(--muted);white-space:nowrap}
+
+/* 목록 (알림·검색 결과·드롭다운·필터 메뉴) */
+.list{border:1px solid var(--line2);font-size:12.5px;background:var(--bg)}
+.list .it{padding:7px 11px;border-bottom:1px solid var(--line2);display:flex;
+          justify-content:space-between;align-items:center;gap:10px}
+.list .it:last-child{border-bottom:none}
+.list .it.unread{background:var(--note-bg)}
+.list .it .path{display:block;font-size:10.5px;color:var(--muted)}
+.list .it .when{color:var(--muted);font-size:11px;white-space:nowrap}
+.list .empty{padding:22px 11px;text-align:center;color:var(--muted);font-size:12px}
+.tag{display:inline-block;border:1px solid var(--line);padding:0 5px;font-size:10.5px;
+     color:var(--muted);border-radius:2px}
+
+/* 규칙 체크리스트 */
+.rules{list-style:none;margin:0 0 14px;padding:9px 11px;border:1px solid var(--line2);
+       background:var(--panel);font-size:11.5px;line-height:1.7}
+.rules li{padding-left:17px;position:relative}
+.rules li::before{position:absolute;left:0;font-weight:700}
+.rules .ok::before{content:"✓";color:var(--ok)}
+.rules .no::before{content:"✕";color:var(--err)}
+.rules .srv::before{content:"·";color:var(--muted)}
+.rules .srv{color:var(--muted)}
+.rules em{font-style:normal;opacity:.8}
+
+/* 배너 — 폼 상단 한 곳. 토스트(UX-10)도 이것으로 표현한다 */
+.banner{border:1px solid var(--err);background:var(--err-bg);color:var(--err);
+        padding:7px 10px;font-size:12.5px;margin-bottom:14px}
+.banner.info{border-color:var(--note);background:var(--note-bg);color:var(--note)}
+
+/* ── 그리드 어휘 다섯 ─────────────────────────────── */
+
+/* 검색 폼 — <SearchForm>(UX-15). 서버 조회 조건은 이것뿐이다 */
+.sf{border:1px solid var(--line2);background:var(--panel);padding:9px 11px;margin-bottom:8px;
+    display:grid;grid-template-columns:max-content 1fr max-content 1fr max-content 1fr;
+    gap:6px 9px;align-items:center;font-size:12px}
+.sf label{color:var(--muted);white-space:nowrap}
+.sf input,.sf select{width:100%;padding:3px 6px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:12px}
+.sf .wide{grid-column:span 3}
+.sf .act{grid-column:1/-1;text-align:right;padding-top:2px}
+
+/* 그리드 헤더 — 왼쪽 제목(.ttl), 오른쪽 버튼. 도구 둘(.ico)은 맨 오른쪽 고정 */
+.tb{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.tb .ttl{font-size:13px;font-weight:600;margin-right:auto;white-space:nowrap}
+.tb .ico{width:auto;padding:4px 8px;font-size:12px;white-space:nowrap}
+.tb .sp{flex:1}
+.tb .cnt{font-size:11.5px;color:var(--muted);white-space:nowrap}
+
+/* 그리드 본문 — <DataGrid> */
+.grid{border:1px solid var(--line);overflow:auto;max-height:260px}
+.grid table{margin:0;font-size:12px;border:none}
+.grid th{position:sticky;top:0;z-index:1}
+.grid td,.grid th{white-space:nowrap}
+.grid th .mn{float:right;color:var(--muted);font-weight:400;margin-left:8px}  /* 컬럼 메뉴 ☰ */
+.grid th .srt{color:var(--note)}                                             /* 정렬 표시 */
+.grid th.on{background:var(--note-bg)}                                       /* 필터 걸린 컬럼 */
+/* 헤더가 컬럼을 말한다. 색이 아니라 표시가 원본이다 */
+.grid th.req em{font-style:normal;color:var(--err);font-weight:700}          /* 필수 * */
+.grid th.roh{color:var(--muted);font-weight:400}                             /* 읽기 전용 컬럼 */
+/* 양끝 시스템 컬럼. 사용자가 숨기거나 옮길 수 없다 */
+.grid .st{width:26px;text-align:center;color:var(--muted)}
+.grid .del{width:34px;text-align:center;color:var(--muted)}
+.grid .pinL{border-right:2px solid var(--line)}   /* 좌 고정 ↔ 스크롤 경계 */
+.grid .pinR{border-left:2px solid var(--line)}    /* 스크롤 ↔ 우 고정 경계 */
+
+/* ── 셀과 행의 색 — 그리드 표준의 우선순위 여섯 ────────────────────
+   여섯이 전부 같은 명시도다. 그래서 나중에 쓴 것이 이긴다 —
+   6 → 1 순서로 적었고, 순서를 바꾸면 규약이 바뀐다.
+   행 규칙(tr.x td)이 셀 규칙(td.x)보다 명시도가 한 단계 높으므로
+   5(행 상태)가 6(컬럼 상태)을 이기는 것은 순서가 아니라 구조다.  */
+
+/* 6. 컬럼 상태 — 정적이므로 다른 것이 없을 때의 바탕 */
+.grid td.req{background:var(--req-bg)}                       /* 필수 입력 */
+.grid td.ro {background:var(--panel);color:var(--muted)}     /* 읽기 전용 */
+                                                             /* 편집 가능은 칠하지 않는다 */
+/* 5. 행 상태 — 상태 컬럼 아이콘이 원본이다 */
+.grid tr.new td{background:var(--row-new)}
+.grid tr.mod td{background:var(--row-mod)}
+.grid tr.rmv td{color:var(--muted);text-decoration:line-through}  /* 배경이 아니라 글자다 */
+/* 4. 현재 선택 행 — Primary 가장 옅은 단계 */
+.grid tr.sel td{background:var(--pri-1)}
+/* 3. 현재 선택 셀 — 한 단계 진한 것 + 테두리 */
+.grid tr td.cur{background:var(--pri-2);outline:1px solid var(--pri);outline-offset:-1px}
+/* 2. 편집 중인 셀 — 테두리는 Primary 원색, 배경은 바탕(입력 글자가 읽혀야 한다) */
+.grid tr td.edit{background:var(--bg);color:var(--ink);outline:2px solid var(--pri);outline-offset:-2px}
+/* 1. 검증 실패 — 유일하게 Primary 와 무관하다 */
+.grid tr td.err{background:var(--err-bg);outline:1px solid var(--err);outline-offset:-1px}
+
+/* ── 스위치 — 값이 둘인 데이터 셀 ──────────
+   ynFlag 컬럼과 권한 트리 셀이 같은 것을 쓴다. 체크박스가 아니다.
+   켜짐 색은 Primary 에서 온다.
+   여럿을 고르는 자리는 여전히 체크박스다 — 행 선택 · set 필터 ·
+   그리드 설정의 컬럼 표시.                                      */
+.swt{display:inline-block;width:24px;height:13px;border:1px solid var(--line);
+     border-radius:7px;background:var(--panel);position:relative;vertical-align:-2px}
+.swt::after{content:"";position:absolute;top:1px;left:1px;width:9px;height:9px;
+            border-radius:50%;background:var(--muted)}
+.swt.on{background:var(--pri);border-color:var(--pri)}
+.swt.on::after{left:12px;background:var(--bg)}
+.swt.dis{opacity:.45}          /* 비활성 — 입력 칸이 아니라 상태 표시로 읽힌다 */
+
+/* 색 견본 — 화면 9 */
+.sw{display:inline-block;width:30px;height:14px;border:1px solid var(--line);
+    vertical-align:-2px;margin-right:6px}
+
+/* 그리드 푸터 — 건수 · 네비게이션 · 페이지 사이즈 */
+.pg{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+    padding:6px 2px;font-size:11.5px;color:var(--muted)}
+.pg .nav{text-align:center}
+.pg .size{text-align:right}
+.pg b{color:var(--ink)}
+
+/* 마스터-디테일 스플리터. 축이 둘이고 접기 화살표가 붙는다 */
+.split{height:13px;margin:9px 0;border-top:1px solid var(--line2);
+       border-bottom:1px solid var(--line2);background:var(--panel);
+       display:flex;align-items:center;justify-content:center;gap:4px;
+       font-size:9px;color:var(--muted);cursor:row-resize}
+.split .hnd{letter-spacing:2px;line-height:1}                 /* 끄는 손잡이 */
+.split .arw{border:1px solid var(--line);background:var(--bg);color:var(--muted);
+            font-size:8px;line-height:10px;padding:0 4px;cursor:default}
+.split .arw.off{opacity:.3}          /* 반대쪽이 이미 접혔다 — 둘 다 접히지 않는다 */
+/* 세로 축 — 좌우 배치 */
+.split.v{height:auto;width:13px;margin:0 9px;flex-direction:column;
+         border:none;border-left:1px solid var(--line2);border-right:1px solid var(--line2);
+         cursor:col-resize}
+.splitrow{display:flex;align-items:stretch}
+.splitrow>.pane{flex:1;min-width:0}
+/* 접힌 쪽 — 제목 줄만 남는다. 없는 것과 다르다 */
+.folded{border:1px solid var(--line2);background:var(--panel);padding:6px 10px;
+        font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.folded .why{font-weight:400;font-size:11px;color:var(--muted);margin-left:auto}
+
+/* ── 브레드크럼 줄 ──────────────────────────────────
+   줄은 셸의 것이고 오른쪽 슬롯은 화면이 채운다. 리프 목업이 셸
+   크롬을 그리지 않는 규약의 유일한 예외이며, 그리지 않으면
+   조회조건 컨트롤(UX-07 · UX-15)을 보일 자리가 없다.            */
+.bc{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+    border:1px solid var(--line2);background:var(--panel);
+    padding:4px 10px;margin-bottom:8px;font-size:12px;color:var(--muted)}
+.bc .path{margin-right:auto;white-space:nowrap}
+.bc .path b{color:var(--ink)}
+.bc .btn{width:auto;padding:2px 8px;font-size:11.5px}
+
+/* 주석 — 화면 요소 ↔ 문서 결정 연결 */
+.notes{border-left:3px solid var(--note);background:var(--note-bg);padding:10px 14px;font-size:12.5px}
+.notes ol{margin:0;padding-left:18px}
+.notes li{margin:3px 0}
+.n{display:inline-block;min-width:17px;height:17px;line-height:17px;text-align:center;
+   border-radius:50%;background:var(--note);color:#fff;font-size:11px;margin-right:5px}
+
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
+th,td{border:1px solid var(--line2);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:600;white-space:nowrap}
+td.c{white-space:nowrap;font-family:Consolas,monospace;font-size:12px}
+
+.todo{border:1px dashed var(--line);padding:10px 14px;font-size:12.5px;background:var(--panel)}
+.todo ul{margin:4px 0 0;padding-left:18px}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line2);
+       font-size:11.5px;color:var(--muted)}
+
+
+/* ── 이 목업만의 어휘 셋 ──────────────────────────────
+   조회 전용이라 편집 어휘가 없다. 이 화면의 것은
+   결과 배지 셋 · 파생 빈값 · 긴 한 줄(User-Agent)이다.
+   배지가 셋인 것이 결정이다 — 코드는 13 이지만 색은 셋이다.   */
+.grid td.num,.grid th.num{text-align:right}
+.grid td .nil{color:var(--muted)}
+.grid td.ua{max-width:230px;overflow:hidden;text-overflow:ellipsis}
+.mut{color:var(--muted);font-size:11px}
+/* 배지 셋 — 성공 · 실패 · 종료. 색은 셋, 글자는 13 */
+.bdg{display:inline-block;border:1px solid var(--err);color:var(--err);
+     padding:0 5px;font-size:10.5px;border-radius:2px}
+.bdg.ok{border-color:var(--ok);color:var(--ok)}
+.bdg.end{border-color:var(--line);color:var(--muted)}
+</style>
+
+<main>
+
+<!-- ── 개요 바 ─────────────────────────────────────────────── -->
+<h1>로그인 이력</h1>
+<div class="head">
+  <dl>
+    <dt>화면코드</dt><dd><code>login-log</code></dd>
+    <dt>요건서</dt><dd><a href="requirements.md">requirements.md</a></dd>
+    <dt><code>MENU_CD</code></dt><dd><code>LOGIN_LOG</code> (상위 <code>LOG</code>)</dd>
+    <dt>라우트</dt><dd><code>/log/login</code> · 셸 안의 탭</dd>
+    <dt>담는 기능</dt><dd>LOG-02 · LOG-08(엑셀)</dd>
+    <dt>액션</dt><dd><b><code>R</code> <code>E</code></b></dd>
+    <dt>형태</dt><dd><b>마스터 그리드 하나.</b> 모달도 없다 — <b><code>nclob</code> 컬럼이 없는 유일한 화면</b></dd>
+    <dt>보존</dt><dd><b>1년</b> 상한 — <b>보존이 조회 창(92일)보다 길다</b>(미결)</dd>
+    <dt>다루는 것</dt><dd><b>이름이 담는 것보다 좁다</b> — 로그아웃 · 강제 종료 · 밀려남까지 담으므로
+      실제로는 <b>세션 이력</b>이다. 이름을 바꾸지 않는 이유는 화면 2 끝에 있다</dd>
+  </dl>
+</div>
+
+<!-- ── 화면 1 ─────────────────────────────────────────────── -->
+<h2>1. 기본 상태 — <b>실패만 보기</b>가 이 화면의 기본 동선이다</h2>
+
+<div class="screen leaf" id="main" data-manual="main">
+  <div class="bar">/log/login — 리프 화면이라 셸 크롬을 그리지 않는다. <b>브레드크럼 줄만 예외</b>다</div>
+  <div class="body">
+
+    <div class="bc">
+      <span class="path">시스템 &rsaquo; 이력 · 로그 &rsaquo; <b>로그인 이력</b></span>
+      <button class="btn sm ghost" type="button" title="저장된 조회조건 — UX-07">조건 &#9662;</button>
+      <button class="btn sm ghost" type="button" title="조회조건 접기/펼치기 — UX-15">&#8963; 조회조건</button>
+    </div>
+
+    <div class="sf">
+      <label>일시 <span style="color:var(--err)">*</span></label>
+      <span class="wide"><input value="2026-08-22 00:00:00" style="width:47%"> ~ <input value="2026-08-28 23:59:59" style="width:47%"></span>
+      <label>사용자 아이디</label><input placeholder="같음 (기본) · 시작 · 포함 · 끝">
+      <label>사용자명</label><input placeholder="포함 (기본) · 같음 · 시작 · 끝">
+      <label><b>결과 묶음</b></label><select><option>전체</option><option selected>실패만</option><option>종료만</option></select>
+      <label>결과</label><select><option>전체</option><option>비밀번호 불일치</option><option>존재하지 않는 ID</option><option>잠김</option></select>
+      <label>IP</label><input placeholder="완전 일치">
+      <label>추적 ID</label><input placeholder="완전 일치">
+      <span class="mut" style="grid-column:span 2"><b>묶음은 훑기, 코드는 좁히기</b>다 — 함께 채우면 <b>교집합</b> <span class="n">1</span></span>
+      <div class="act"><button class="btn sm ghost" type="button">초기화</button></div>
+    </div>
+
+    <div class="tb">
+      <span class="ttl">로그인 이력</span>
+      <span class="sp"></span>
+      <button class="btn sm ghost" type="button">조회</button>
+      <button class="btn sm ghost ico" type="button" title="엑셀 다운로드">⤓ ▾</button>
+      <button class="btn sm ghost ico" type="button" title="그리드 설정">⚙ <span class="n">2</span></button>
+    </div>
+
+    <div class="grid" style="max-height:250px">
+      <table>
+        <thead><tr>
+          <th class="roh">일시 <span class="srt">▼</span><span class="mn">☰</span></th>
+          <th class="roh">사용자 아이디 <span class="n">3</span><span class="mn">☰</span></th>
+          <th class="roh">사용자명 <span class="n">4</span><span class="mn">☰</span></th>
+          <th class="roh">결과<span class="mn">☰</span></th>
+          <th class="roh">IP<span class="mn">☰</span></th>
+          <th class="roh">추적 ID</th>
+        </tr></thead>
+        <tbody>
+          <tr class="sel"><td class="ro">2026-08-28 09:14:02</td><td class="ro">park.sy</td><td class="ro">박수영</td>
+              <td class="ro"><span class="bdg">비밀번호 불일치</span> <span class="n">5</span></td>
+              <td class="ro">10.20.7.8</td><td class="ro">c1a4…-77b0</td></tr>
+          <tr><td class="ro">2026-08-28 09:13:41</td><td class="ro">park.sy</td><td class="ro">박수영</td>
+              <td class="ro"><span class="bdg">비밀번호 불일치</span></td><td class="ro">10.20.7.8</td><td class="ro">2b09…-31ce</td></tr>
+          <tr><td class="ro">2026-08-28 09:13:20</td><td class="ro">park.sy</td><td class="ro">박수영</td>
+              <td class="ro"><span class="bdg">잠김</span></td><td class="ro">10.20.7.8</td><td class="ro">8f77…-a204</td></tr>
+          <tr><td class="ro">2026-08-28 08:52:10</td><td class="ro"><b>admin1</b></td><td class="ro"><span class="bdg">없는 계정</span></td>
+              <td class="ro"><span class="bdg">존재하지 않는 ID</span> <span class="n">6</span></td>
+              <td class="ro">203.0.113.9</td><td class="ro">55d1…-e0a8</td></tr>
+          <tr><td class="ro">2026-08-28 08:52:08</td><td class="ro"><b>administrator</b></td><td class="ro"><span class="bdg">없는 계정</span></td>
+              <td class="ro"><span class="bdg">존재하지 않는 ID</span></td><td class="ro">203.0.113.9</td><td class="ro">4ee2…-9c31</td></tr>
+          <tr><td class="ro">2026-08-28 08:11:33</td><td class="ro">kim.jb</td><td class="ro">김진범</td>
+              <td class="ro"><span class="bdg end">다른 자리에서 로그인</span> <span class="n">7</span></td>
+              <td class="ro">10.20.3.41</td><td class="ro">ab30…-1f6d</td></tr>
+          <tr><td class="ro">2026-08-28 08:10:59</td><td class="ro">kim.jb</td><td class="ro">김진범</td>
+              <td class="ro"><span class="bdg ok">성공</span></td><td class="ro">10.20.3.41</td><td class="ro">7c05…-4482</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg">
+      <span><b>7</b>건 조회됨 <span class="mut">· 최근 7일 · 실패만</span></span>
+      <span class="nav">‹ 이전 &nbsp; 다음 ›</span>
+      <span class="size">100건씩 ▾</span>
+    </div>
+
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b><code>결과 묶음</code> 이 배지 셋과 같은 축이다</b>(화면 2).
+        코드 열다섯을 하나씩 고르게 하면 <i>"실패 전부"</i> 를 고르는 데 <b>열 번 클릭</b>한다.
+        묶음을 고르면 <b>서버가 코드 집합으로 번역</b>한다 — 사용자 화면 설계의 계정 상태와 같은 <b>파생 조건</b>이며
+        <code>72</code> 프로토콜의 두 번째 사례다. <b>하나로 합치지 않는 이유</b>: 한 콤보에 15+2 를 섞으면
+        목록에서 <b>무엇이 묶음인지 알 수 없다</b>.</li>
+    <li><span class="n">2</span><b><code>⤓</code> 와 <code>⚙</code> 만 남는다</b> — 메뉴·권한 화면 설계의 조회 전용 모양 그대로다.
+        <b><code>getDetail</code> 도 없다</b> — <code>nclob</code> 컬럼이 없으므로 <b>목록이 곧 전부</b>다(사용자 화면 설계와 같은 이유).</li>
+    <li><span class="n">3</span><b>헤더가 <code>사용자 아이디</code> 다</b>(2026-09-01 개정 — 이력 셋이 같은 이름을 쓴다).
+        값은 여전히 <b>시도한 ID</b> 이며 <code>SYS_USER</code> 에 없는 값이 들어온다 —
+        그 사실은 <b>헤더 툴팁과 옆 칸의 배지</b>가 말한다. <i>시도 ID</i> 라는 이름으로 걱정을 표현하는 것보다
+        <b>칸이 스스로 말하는 편</b>이 낫다.</li>
+    <li><span class="n">4</span><b>이름이 비면 <code>없는 계정</code> 배지가 붙는다</b>(화면 3).
+        글자와 색이 <b>결과 칸의 <code>FAIL_NO_USER</code> 와 같은 공통코드 행</b>에서 온다 —
+        <b>한 행의 두 칸이 같은 사실을 두 글자로 말하면 사람이 둘을 다른 사실로 읽는다</b>.
+        <b>아이디가 없는 행에는 붙지 않는다</b>: 입력조차 없었으면 <i>없는 계정</i> 이 아니라
+        <b>계정을 말하지 않은 것</b>이고, 왼쪽 칸이 이미 <code>(입력 없음)</code> 이라고 말한다.</li>
+    <li><span class="n">5</span><b><code>FAIL_NO_USER</code> 와 <code>FAIL_PWD</code> 를 여기서는 구분해 보여준다.</b>
+        로그 데이터 모델의 비대칭 — <b>이력의 목적은 진단</b>이고 <b>로그인 화면의 목적은 정보 노출 최소화</b>다.
+        로그인 화면에서는 <b>같은 메시지</b>를 준다.</li>
+    <li><span class="n">6</span><b>없는 ID 로의 연속 시도가 침입 탐지의 근거다</b>(FK 를 걸지 않은 이유).
+        <b>IP 를 복사해 그 IP 로 다시 조회하는 것</b>이 이 화면의 두 번째 동선이다(화면 3).</li>
+    <li><span class="n">7</span><b><code>SESSION_EVICTED</code> 가 회색인 것이 의도다</b>.
+        사용자에게는 <i>"갑자기 로그아웃됨"</i> 이지만 <b>시스템으로서는 정상 동작</b>이다(보안 설계 동시 접속 제어).
+        빨강으로 두면 문의를 받은 운영자가 <b>장애로 읽는다</b>.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 2 ─────────────────────────────────────────────── -->
+<h2>2. 코드는 <b>15</b>, 배지는 <b>셋</b> — 색만 접고 값은 접지 않는다</h2>
+
+<div class="screen leaf">
+  <div class="body">
+    <p style="font-size:12.5px;margin:0 0 10px"><b>운영자가 색 열다섯을 외우지 않는다.</b>
+      배지 안의 라벨이 코드마다 다르므로(<code>SYS_CODE</code> 의 코드명)
+      <b>구분은 잃지 않고 훑기만 빨라진다.</b></p>
+    <div class="row" style="flex-wrap:wrap;gap:6px">
+      <span class="bdg ok">성공</span>
+      <span class="bdg">존재하지 않는 ID</span><span class="bdg">비밀번호 불일치</span>
+      <span class="bdg">미사용 계정</span><span class="bdg">사용 기간 만료</span><span class="bdg">잠김</span>
+      <span class="bdg">휴면</span><span class="bdg">허용 IP 아님</span><span class="bdg">권한 없음</span>
+      <span class="bdg">임시 비밀번호 만료</span><span class="bdg">동시 접속 거부</span>
+      <span class="bdg end">로그아웃</span><span class="bdg end">세션 만료</span><span class="bdg end">강제 로그아웃</span><span class="bdg end">다른 자리에서 로그인</span>
+    </div>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th>묶음</th><th>코드</th><th>배지</th><th>뜻</th></tr></thead>
+  <tbody>
+    <tr><td><b>성공</b></td><td class="c">SUCCESS</td><td><span class="bdg ok">성공</span></td>
+        <td>체인 전부 통과. <b>비밀번호 만료도 여기다</b> — 차단이 아니라 <b>제한 세션 전환</b>이다</td></tr>
+    <tr><td rowspan="10"><b>실패</b></td><td class="c">FAIL_NO_USER</td><td><span class="bdg">존재하지 않는 ID</span></td>
+        <td><b><code>SYS_USER</code> 에 없다</b> — FK 가 없어 기록된다</td></tr>
+    <tr><td class="c">FAIL_PWD</td><td><span class="bdg">비밀번호 불일치</span></td><td><code>LOGIN_FAIL_CNT</code> 증가 → 잠금으로 간다</td></tr>
+    <tr><td class="c">FAIL_DISABLED</td><td><span class="bdg">미사용 계정</span></td><td>체인 #2 — <code>USE_YN='N'</code></td></tr>
+    <tr><td class="c">FAIL_EXPIRED</td><td><span class="bdg">사용 기간 만료</span></td><td>체인 #3 — <b>세션 만료가 아니다</b></td></tr>
+    <tr><td class="c">FAIL_LOCKED</td><td><span class="bdg">잠김</span></td><td>체인 #4 — 푸는 것은 <code>USER_MGMT</code> 의 버튼</td></tr>
+    <tr><td class="c">FAIL_DORMANT</td><td><span class="bdg">휴면</span></td><td><b>푸는 화면이 아직 없다</b>(사용자 화면 설계 미결)</td></tr>
+    <tr><td class="c">FAIL_IP</td><td><span class="bdg">허용 IP 아님</span></td><td>AUTH-08</td></tr>
+    <tr><td class="c">FAIL_NO_AUTHORITY</td><td><span class="bdg">권한 없음</span></td><td><b>유효 권한이 공집합</b></td></tr>
+    <tr><td class="c">FAIL_TEMP_EXPIRED</td><td><span class="bdg">임시 비밀번호 만료</span></td><td><code>temp-valid-hours</code> 경과 — 재발급 필요</td></tr>
+    <tr><td class="c"><b>FAIL_CONCURRENT</b></td><td><span class="bdg">동시 접속 거부</span></td>
+        <td><b>기존 세션이 살아 있어 신규 로그인이 거부됐다</b> — <code>SESSION_EVICTED</code> 와
+            <b>반대 방향</b>이다(저쪽은 기존이 밀려난다)</td></tr>
+    <tr><td rowspan="4"><b>종료</b></td><td class="c">LOGOUT</td><td><span class="bdg end">로그아웃</span></td><td>정상 종료</td></tr>
+    <tr><td class="c"><b>SESSION_TIMEOUT</b></td><td><span class="bdg end">세션 만료</span></td>
+        <td><b>2026-08-28 신설</b> — 기록 시점은 <b>첫 401</b>. 아래 주석 2</td></tr>
+    <tr><td class="c">FORCED_LOGOUT</td><td><span class="bdg end">강제 로그아웃</span></td><td>AUTH-10 — <code>USER_MGMT</code> 의 활성 세션 탭</td></tr>
+    <tr><td class="c">SESSION_EVICTED</td><td><span class="bdg end">다른 자리에서 로그인</span></td><td>동시 접속 제어로 밀려남</td></tr>
+  </tbody>
+</table>
+
+<div class="notes">
+  <ol>
+    <li><b>색은 <code>tone</code> 맵이 정한다</b>. <code>SYS_CODE</code> 에 색을 열다섯 넣는 것이
+        오히려 어긋난다 — <b>색은 운영자가 훑는 방식이지 코드의 속성이 아니다</b>.
+        <code>code</code> 타입이어도 <b><code>tone</code> 이 있으면 그것이 이긴다</b>.</li>
+    <li><b>색만 접고 값은 접지 않는다.</b> 사용자 화면 설계가 계정 상태 넷을 <b>파생 컬럼 하나</b>로 접은 것과
+        <b>같은 방향, 다른 수단</b>이다 — 거기는 <b>값</b>을 접었고 여기는 <b>색만</b> 접는다.
+        값을 접으면 <code>FAIL_NO_USER</code> 와 <code>FAIL_PWD</code> 의 구분이 사라지는데
+        <b>그 구분이 이 화면의 존재 이유다</b>(화면 1 주석 4·5).</li>
+    <li><b><code>SESSION_TIMEOUT</code> 을 더했다</b>(2026-08-28). 원래 13 중
+        <b>세션 만료가 없었고</b> <code>FAIL_EXPIRED</code> 는 <b>사용 기간 만료</b>지 세션이 아니다.
+        <b>401 을 에러 로그에 남기지 않기로 한 것과 한 결정</b>이다(하트비트마다 쌓이면
+        에러 로그가 만료 로그가 된다) — <i>"왜 로그아웃됐나"</i> 에 답하는 화면인데
+        <b>가장 흔한 답이 빠져 있었다.</b>
+        <b>기록 시점은 첫 401</b> — 만료 순간(스토어 이벤트)은 <b>JDBC 와 Redis 에서 시각이 갈려</b>
+        세션 스토어 선택형 결정 선택형과 충돌한다. 하트비트가 있어 실질적으로 만료 직후에 잡히고,
+        <b>중복은 만료된 세션 쿠키 값으로 막는다</b>.
+        브라우저를 닫고 영영 안 오면 기록이 없지만 <b>그 경우엔 물어볼 사람도 없다</b>.</li>
+    <li><b>화면 이름을 <i>세션 이력</i> 으로 바꾸지 않는다</b>.
+        <code>MENU_CD</code> 는 시드이고 메뉴명은 메시지 키다 — 바꾸면
+        <b>로그인 실패를 찾는 사람이 메뉴에서 그것을 못 찾는다.</b>
+        담는 것이 넓은 것보다 <b>찾는 이름으로 있는 것</b>이 낫다.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 3 ─────────────────────────────────────────────── -->
+<h2>3. <code>SYS_USER</code> 를 <b><code>leftJoin</code> 한다</b> — 빈칸 대신 배지를 그린다 (2026-09-01 개정)</h2>
+
+<p style="font-size:12.5px;margin:0 0 8px">
+  <b>이 절은 뒤집혔다.</b> 로그 화면 설계는 <i>"조인하면 없는 ID 행에서 이름이 비고 그 빈칸이
+  <b>조회가 덜 됐다</b> 로 읽힌다"</i> 를 이유로 이름을 붙이지 않았다. 그런데
+  <b>문제는 조인이 아니라 빈칸</b>이었으므로 답은 <b>빈칸을 없애는 것</b>이다 —
+  그 자리에 <code>없는 계정</code> 배지를 그린다.
+</p>
+
+<div class="screen leaf">
+  <div class="body">
+    <div class="sf">
+      <label>일시 <span style="color:var(--err)">*</span></label>
+      <span class="wide"><input value="2026-08-28 00:00:00" style="width:47%"> ~ <input value="2026-08-28 23:59:59" style="width:47%"></span>
+      <label>IP</label><input value="203.0.113.9">
+      <label>결과 묶음</label><select><option selected>실패만</option></select>
+      <div class="act"><button class="btn sm ghost" type="button">초기화</button></div>
+    </div>
+    <div class="tb"><span class="ttl">로그인 이력 — <span class="mut">IP 203.0.113.9 · 실패만</span></span><span class="sp"></span>
+      <button class="btn sm ghost" type="button">조회</button>
+      <button class="btn sm ghost ico" type="button" title="엑셀 다운로드">⤓ ▾</button>
+      <button class="btn sm ghost ico" type="button" title="그리드 설정">⚙</button></div>
+    <div class="grid" style="max-height:180px">
+      <table>
+        <thead><tr><th class="roh">일시</th><th class="roh">사용자 아이디</th><th class="roh">사용자명</th>
+          <th class="roh">결과</th><th class="roh">IP</th></tr></thead>
+        <tbody>
+          <tr><td class="ro">2026-08-28 08:52:12</td><td class="ro">root</td>
+              <td class="ro"><span class="bdg">없는 계정</span> <span class="n">1</span></td>
+              <td class="ro"><span class="bdg">존재하지 않는 ID</span></td><td class="ro">203.0.113.9</td></tr>
+          <tr><td class="ro">2026-08-28 08:52:10</td><td class="ro">admin1</td>
+              <td class="ro"><span class="bdg">없는 계정</span></td>
+              <td class="ro"><span class="bdg">존재하지 않는 ID</span></td><td class="ro">203.0.113.9</td></tr>
+          <tr><td class="ro">2026-08-28 08:52:08</td><td class="ro">administrator</td>
+              <td class="ro"><span class="bdg">없는 계정</span></td>
+              <td class="ro"><span class="bdg">존재하지 않는 ID</span></td><td class="ro">203.0.113.9</td></tr>
+          <tr><td class="ro">2026-08-28 08:51:59</td><td class="ro"><span class="mut">(입력 없음)</span></td>
+              <td class="ro"><span class="mut">&mdash;</span> <span class="n">2</span></td>
+              <td class="ro"><span class="bdg">존재하지 않는 ID</span></td><td class="ro">203.0.113.9</td></tr>
+          <tr><td class="ro">2026-08-27 14:02:11</td><td class="ro">lee.hn</td>
+              <td class="ro"><span class="bdg">없는 계정</span> <span class="n">3</span></td>
+              <td class="ro"><span class="bdg">존재하지 않는 ID</span></td><td class="ro">10.20.5.6</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span><b>5</b>건 조회됨 <span class="mut">· 최근 1일 · 실패만</span></span>
+      <span class="nav">‹ 이전 &nbsp; 다음 ›</span><span class="size">100건씩 ▾</span></div>
+    <div class="banner info" style="margin-top:10px"><b>배지의 글자와 색이 결과 칸에서 온다</b> —
+      같은 공통코드 행(<code>code.LOGIN_RSLT_CD.FAIL_NO_USER</code>)이라 <b>한 행의 두 칸이 같은 말을 한다</b></div>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th>무엇이 바뀌었나</th><th>왜</th></tr></thead>
+  <tbody>
+    <tr><td><b><code>leftJoin</code> 으로 이름을 붙인다</b></td>
+        <td><b><code>join</code> 이면 없는 계정의 시도가 통째로 사라진다</b> —
+            그것은 이 화면의 <b>두 번째 용도(침입 시도 탐지)를 없애는 것</b>이다.
+            <code>USER_ID</code> 가 <code>SYS_USER</code> 의 PK 라 <b>행이 늘지 않는다</b></td></tr>
+    <tr><td>빈칸에 <b><code>없는 계정</code> 배지</b></td>
+        <td>이 칸이 비는 것은 이 테이블에서 <b>예외가 아니라 흔한 일</b>이다.
+            글자와 색을 <b>결과 컬럼의 <code>FAIL_NO_USER</code> 와 같은 공통코드 행</b>에서 가져오므로,
+            관리 화면에서 이름을 고치면 <b>두 칸이 함께</b> 바뀐다</td></tr>
+    <tr><td>헤더가 <b><code>사용자 아이디</code> · <code>사용자명</code></b> 이다</td>
+        <td>이력 셋이 <b>같은 이름</b>을 쓴다. 값이 <i>시도한 ID</i> 라는 사실은
+            <b>헤더 툴팁과 옆 칸의 배지</b>가 말한다 — <i>시도 ID</i> 라는 이름으로 걱정을 표현하는 것보다
+            <b>칸이 스스로 말하는 편</b>이 낫다</td></tr>
+    <tr><td><b>이름으로도 검색한다</b></td>
+        <td>옛 근거(<i>"퇴사자를 지우면 과거 이력이 검색되지 않는다"</i>)는 <b>전제가 성립하지 않는다</b> —
+            <code>SYS_USER</code> 는 <b>물리 삭제를 하지 않는다</b>(USER-02).
+            그래서 65 의 <code>(삭제된 배치)</code> 같은 고아가 <b>여기에는 생기지 않는다</b></td></tr>
+  </tbody>
+</table>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b>배지가 붙는 조건은 <i>아이디는 있는데 이름이 없다</i> 이다.</b>
+        <b>지워진 계정의 예전 로그인도 같은 배지</b>이며 그것이 맞다 —
+        <i>"지금 이 아이디로 들어올 계정이 없다"</i> 가 두 경우에 다 참이다.</li>
+    <li><span class="n">2</span><b>아이디가 없는 행에는 배지를 붙이지 않는다.</b>
+        입력조차 없었으면 <i>없는 계정</i> 이 아니라 <b>계정을 말하지 않은 것</b>이고,
+        왼쪽 칸이 이미 <code>(입력 없음)</code> 이라고 말한다.
+        그 판정이 <code>??</code> 가 아니라 <code>||</code> 인 것에 이유가 있다 —
+        <b>오라클은 빈 문자열을 <code>NULL</code> 로 저장한다</b>:
+        <code>??</code> 로 두면 <i>같은 행이 PostgreSQL 에서는 빈칸, 오라클에서는 <code>(입력 없음)</code></i> 이 된다.</li>
+    <li><span class="n">3</span><b>이름으로 물으면 이 행들이 빠진다</b> — 그 행에는 이름이 없기 때문이며
+        <b>그것이 맞다</b>: <i>"홍길동의 로그인 실패"</i> 를 묻는 사람이 찾는 것은 <b>그 사람의 행</b>이고,
+        없는 계정의 시도는 <b>아이디나 결과 코드</b>로 찾는다(§1 의 첫 동선).</li>
+    <li><b>IP 를 완전 일치로 둔 것은 그대로다</b>. 실패 행에서 <b>IP 를 복사해</b>
+        그 IP 로 다시 조회한다 — <b>대역 검색(<code>LIKE '203.0.113.%'</code>)은 두지 않는다</b>:
+        인덱스가 없어 기간으로만 좁혀지므로 <b>완전 일치와 비용이 같은데 결과만 넓어진다</b>.
+        <b>사람 칸 둘이 그 예외다</b> — 부분 이름은 <b>다른 답</b>을 낸다.</li>
+    <li><b>읽는 테이블이 넷이 됐다</b> — <code>SYS_LO_LOGIN</code> · <b><code>SYS_USER</code></b> ·
+        <code>SYS_CODE</code> · <code>SYS_CONFIG</code>. <code>SYS_USER</code> 가 목록에 들어온 것이 이 개정이다.</li>
+  </ol>
+</div>
+
+
+<!-- ── 화면 4 ─────────────────────────────────────────────── -->
+<h2>4. <code>USER_AGENT</code> — <b>500 을 유지한다</b> (로그 데이터 모델 미결을 닫는다)</h2>
+
+<div class="screen leaf">
+  <div class="body">
+    <p style="font-size:12.5px;margin:0 0 8px"><b>화면이 이 값으로 하는 일은 하나다</b> —
+      <i>"같은 사람이 다른 기기에서 들어왔나"</i>. 그 판단은 <b>앞부분에서 끝난다</b>.
+      기본 숨김이며 <code>⚙</code> 에서 켠다 — 켜면 아래처럼 된다.</p>
+    <div class="grid" style="max-height:130px">
+      <table>
+        <thead><tr><th class="roh">일시</th><th class="roh">사용자 아이디</th><th class="roh">사용자명</th><th class="roh">결과</th>
+          <th class="roh">IP</th><th class="roh">User-Agent <span class="n">1</span></th></tr></thead>
+        <tbody>
+          <tr><td class="ro">2026-08-28 08:10:59</td><td class="ro">kim.jb</td><td class="ro">김진범</td><td class="ro"><span class="bdg ok">성공</span></td>
+              <td class="ro">10.20.3.41</td>
+              <td class="ro ua" title="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 …</td></tr>
+          <tr><td class="ro">2026-08-27 19:44:02</td><td class="ro">kim.jb</td><td class="ro">김진범</td><td class="ro"><span class="bdg ok">성공</span></td>
+              <td class="ro">211.34.8.2</td>
+              <td class="ro ua" title="Mozilla/5.0 (iPhone; CPU iPhone OS 18_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.2 Mobile/15E148 Safari/604.1">Mozilla/5.0 (iPhone; CPU iPhone OS 18_2 like Mac OS X) …</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th>물음</th><th>답</th><th>왜</th></tr></thead>
+  <tbody>
+    <tr><td>상한을 늘릴까</td><td><b>500 유지</b></td>
+        <td>실사용 UA 는 <b>200자 안쪽</b>이고 넘는 것은 봇·스캐너다. 이 컬럼은 <b>행마다</b> 붙고
+            로그인 이력은 <b>1년을 산다</b> — <b>가장 오래 사는 테이블이 가장 넓어진다</b></td></tr>
+    <tr><td>절단된 값에 <code>…</code> 를 붙일까</td><td><b>붙이지 않는다</b></td>
+        <td><b>값에 없는 문자를 화면이 만들면 엑셀과 다른 것이 나간다</b></td></tr>
+    <tr><td>셀을 <code>[보기]</code> 로 할까</td><td><b>아니다</b></td>
+        <td><code>nclob</code> 이 아니라 <code>VARCHAR</code> 다 — <b>값이 손에 있다</b>.
+ 의 규칙을 쓰지 않는다. <b>한 줄로 자르고 툴팁에 전체</b></td></tr>
+    <tr><td>파싱해 <i>Chrome 131 / Windows</i> 로 접을까</td><td><b>하지 않는다</b></td>
+        <td>UA 파싱 라이브러리가 들어오고 그것은 <b>매달 갱신되는 의존성</b>이다</td></tr>
+  </tbody>
+</table>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b>기본 숨김이다</b>(<code>visible: false</code>). 한 줄이 200자를 넘어
+        <b>켜는 순간 다른 컬럼이 전부 밀린다</b> — 기기를 확인해야 하는 사람만 켠다.</li>
+    <li><b>이 화면에 <code>hidden</code> 컬럼은 없다</b> — <b>운영자가 켜서 보면 안 되는 컬럼이
+        이력에는 없다</b>. 메뉴·권한 화면 설계와 같은 판단이다.</li>
+    <li><b><code>MENU_CD</code> 컬럼이 아예 없다</b> — 테이블에 없다.
+        로그인은 메뉴 문맥이 없으므로 <b>애초에 담을 것이 없었다</b>.
+        <b>사용 이력은 같은 문제를 NULL 로 풀었고</b>(access-log 화면 3) <b>여기는 컬럼을 두지 않는 것으로 풀었다</b> —
+        어긋나지 않는다.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 5 ─────────────────────────────────────────────── -->
+<h2>5. 예외 화면 — <b>실패가 0건인 것도 진단이다</b></h2>
+
+<div class="screen leaf">
+  <div class="body">
+    <div class="banner"><b>조회 기간은 필수입니다</b></div>
+    <div class="banner"><b>조회 기간은 최대 92일입니다</b> — 현재 365일 <span class="n">1</span></div>
+    <div class="banner info"><b>이 기간에 로그인 실패가 없습니다</b> <span class="n">2</span></div>
+    <div class="banner info"><b>로그인 이력은 1년간 보관됩니다.</b> 2025-08-28 이전 기록은 파기됐습니다</div>
+    <div class="list"><div class="empty">조회 조건에 맞는 로그인 이력이 없습니다</div></div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b>보존(1년)보다 조회 창(92일)이 짧은 유일한 화면이다</b>.
+        1년치를 봐야 하면 <b>엑셀을 네 번 내린다</b>. <b>운영에서 이것이 버티는지가 미결</b>이다.</li>
+    <li><span class="n">2</span><b><code>실패만</code> 인데 0건이면 문구가 다르다.</b>
+        <i>"조회 결과가 없습니다"</i> 로 끝내면 <b>진단이 사라진다</b> —
+        메뉴·권한 · 로그 화면 설계와 <b>같은 규칙</b>이다.</li>
+    <li><b>기간 상한은 시스템 값 92 를 그대로 쓴다</b> — 화면이 덮지 않는다.
+        <b>덮는 것은 사용 이력 하나</b>(1 / 31)이며, 그 화면만 행마다 <code>nclob</code> 이 달려 있다.</li>
+  </ol>
+</div>
+
+<!-- ── 테스트 케이스 ───────────────────────────────────────── -->
+<h2>6. 테스트 케이스 — 주석의 주장을 전부 덮는다</h2>
+
+<p style="font-size:12.5px;margin:0 0 10px">
+  <b>주석은 <i>"왜 이렇게 그렸는가"</i> 를 말하고, 여기는 <i>"그것이 지켜졌는가"</i> 를 묻는다</b>.
+  <b>근거가 빈 케이스는 지어낸 것이다.</b> <b>되면 안 되는 것</b>도 함께 넣는다.
+</p>
+
+<h3>조회 전용과 페이징 (§1)</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">LL-01</td><td>그리드 헤더</td><td><b>조회 · <code>⤓</code> · <code>⚙</code> 뿐</b></td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">LL-02</td><td>행을 더블 클릭</td><td><b>아무 일도 없다</b> — <code>getDetail</code> 이 없다</td><td>§1 주석 2 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">LL-03</td><td>기간을 비우고 조회</td><td><b>조회가 일어나지 않는다</b></td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">LL-04</td><td>기간을 365일로 넣는다</td><td><b>400</b> — <i>"최대 92일"</i>. 화면이 덮지 않는다</td><td>§5 주석 3</td></tr>
+    <tr><td class="c">LL-05</td><td>푸터</td><td><b>총 건수·페이지 번호가 없다</b> · 사이즈 <b>100</b></td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">LL-06</td><td><b>결과</b> 컬럼 헤더를 클릭</td><td><b>정렬되지 않는다</b> — 일시만 열린다</td><td>(되면 안 되는 것)</td></tr>
+  </tbody>
+</table>
+
+<h3>결과 코드와 배지 (§2)</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">LL-07</td><td>결과 컬럼</td><td><b>색은 셋, 글자는 열다섯</b> — 15색이 나오면 안 된다</td><td>§2 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">LL-08</td><td><code>SESSION_EVICTED</code> 행</td><td><b>회색</b>이다 — 빨강이 아니다</td><td>§1 주석 6 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">LL-09</td><td>비밀번호 만료로 제한 세션 전환</td><td><b><code>SUCCESS</code></b> 다 — 실패 코드가 아니다</td><td>§2</td></tr>
+    <tr><td class="c">LL-10</td><td><code>FAIL_EXPIRED</code> 의 라벨</td><td><b>사용 기간 만료</b> — <b>세션 만료가 아니다</b></td><td>§2 주석 2</td></tr>
+    <tr><td class="c">LL-11</td><td><b>세션이 만료된 사용자</b>를 찾는다</td><td><code>SESSION_TIMEOUT</code> <b>으로 나온다</b> — 배지는 <b>회색</b>(실패가 아니다)</td><td>§2 주석 2</td></tr>
+    <tr><td class="c">LL-11b</td><td>여러 탭이 동시에 401 을 받는다</td><td><b>행이 하나</b> — 만료된 세션 쿠키 값으로 중복을 막는다</td><td>§2 주석 2 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">LL-11c</td><td>브라우저를 닫고 돌아오지 않는다</td><td><b>기록이 없다</b> — 받아들인 한계다</td><td>—</td></tr>
+    <tr><td class="c">LL-12</td><td>배지 라벨의 출처</td><td><code>SYS_CODE</code> 의 코드명이다 — 소스 상수가 아니다</td><td>—</td></tr>
+    <tr><td class="c">LL-13</td><td><code>결과 묶음 = 실패만</code> + <code>결과 = 잠김</code></td><td><b>교집합</b> — 잠김만 나온다</td><td>§1 주석 1</td></tr>
+    <tr><td class="c">LL-14</td><td>결과 콤보 하나에 15+2 가 섞여 있다</td><td><b>그러면 안 된다</b> — 묶음과 코드는 별도 칸이다</td><td>(되면 안 되는 것)</td></tr>
+  </tbody>
+</table>
+
+<h3>사람 칸 둘 · User-Agent (§3 · §4)</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">LL-15</td><td>둘째 · 셋째 컬럼의 라벨</td><td><b><code>사용자 아이디</code> · <code>사용자명</code></b> — 이력 셋이 같은 이름을 쓴다</td><td>2026-09-01 · §1 주석 3</td></tr>
+    <tr><td class="c">LL-16</td><td>없는 ID 로 시도한 행</td><td><b>기록되어 있다</b> — FK 가 없다</td><td>§3</td></tr>
+    <tr><td class="c">LL-17</td><td>그 행의 <code>사용자명</code> 칸</td><td><b><code>없는 계정</code> 배지</b> — <b>빈칸이 아니다</b></td><td>2026-09-01 · §3</td></tr>
+    <tr><td class="c">LL-18</td><td>그 배지의 글자를 관리 화면에서 고친다</td><td><b>결과 칸의 <code>존재하지 않는 ID</code> 도 함께 바뀐다</b> — 같은 공통코드 행이다</td><td>§3 표</td></tr>
+    <tr><td class="c">LL-19</td><td>아이디조차 없는 행</td><td><b>배지가 붙지 않는다</b> — 왼쪽 칸이 <code>(입력 없음)</code> 이다</td><td>§3 주석 2 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">LL-20</td><td><code>사용자명</code> 으로 검색</td><td><b>된다</b>. 다만 <b>없는 계정의 시도는 빠진다</b> — 그 행에는 이름이 없다</td><td>2026-09-01 · §3 주석 3</td></tr>
+    <tr><td class="c">LL-21</td><td><code>FAIL_NO_USER</code> 와 <code>FAIL_PWD</code></td><td><b>이력에서는 구분된다</b> — 로그인 화면에서는 같은 메시지다</td><td>§1 주석 5</td></tr>
+    <tr><td class="c">LL-22</td><td>IP 로 대역 검색(<code>203.0.113.%</code>)</td><td><b>안 된다</b> — 완전 일치뿐이다</td><td>§3 주석 4 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">LL-23</td><td>User-Agent 컬럼</td><td><b>기본 숨김</b> — <code>⚙</code> 에서 켠다</td><td>§4 주석 1</td></tr>
+    <tr><td class="c">LL-24</td><td>켠 뒤 셀</td><td><b>한 줄로 잘리고 툴팁에 전체</b> — <code>[보기]</code> 가 아니다</td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">LL-25</td><td>500자에서 잘린 값을 엑셀로 내린다</td><td><b>화면과 같은 값</b> — <code>…</code> 가 붙지 않는다</td><td>§4 표</td></tr>
+    <tr><td class="c">LL-26</td><td><code>MENU_CD</code> 컬럼</td><td><b>없다</b> — 테이블에 없다</td><td>§4 주석 3 (되면 안 되는 것)</td></tr>
+  </tbody>
+</table>
+
+<!-- ── 확인 목록 ───────────────────────────────────────────── -->
+<h2>7. 이 목업으로 확인할 것</h2>
+
+<div class="todo">
+  <b>이 화면이 규약에 되돌려 준 것</b>
+  <ul>
+    <li><b>로그 데이터 모델의 <code>USER_AGENT</code> 미결이 닫혔다</b> — <b>500 유지</b>. 파싱하지 않고,
+        절단 표시를 값에 만들지 않는다.</li>
+    <li><b><code>LOGIN_RSLT_CD</code> 가 15종이 됐다</b> — <code>SESSION_TIMEOUT</code> 신설.
+        <i>"왜 로그아웃됐나"</i> 에 답하는 화면인데 <b>가장 흔한 답이 없었다</b>.
+        <b>401 을 에러 로그에 남기지 않기로 한 것과 한 결정</b>이며 함께 정했다.</li>
+    <li><b>파생 조건의 두 번째 사례가 나왔다</b> — <code>결과 묶음</code>.
+        사용자 화면 설계의 계정 상태에 이어, <code>72</code> 프로토콜이 <b>화면 값 ≠ SQL 컬럼</b>을 어떻게 싣는지 정해야 한다.</li>
+  </ul>
+  <b>아직 답이 없는 것</b>
+  <ul>
+    <li><b>보존 1년, 조회 창 92일</b> — 1년치를 봐야 하는 일이 실제로 있는지,
+        있으면 <b>엑셀 네 번</b>으로 버티는지.</li>
+    <li><b>첫 401 로 잡는 것이 실제로 만료 직후인가</b> — 하트비트 주기에 달려 있다.
+        주기가 길면 만료 시각과 기록 시각이 벌어진다.</li>
+    <li><b>침입 탐지를 화면이 어디까지 하나</b> — 지금은 <b>실패만 + IP</b> 로 사람이 읽는다.
+        연속 실패 집계·경고는 두지 않았다. 두면 <b>임계값이 또 하나의 설정</b>이 된다(AUTH-04 는 이미 있다).</li>
+  </ul>
+</div>
+
+<footer>
+  <b>목업 규약</b> — 정적 HTML, 프레임워크 없음, 픽셀 충실도는 목표가 아니다.
+  <b>결정은 <code>requirements.md</code> 가 갖고 이 파일은 확인용이다</b> — 여기에만 있고
+  요건서에 없는 정보는 유실된 것으로 친다.<br>
+  이 파일의 <code>&lt;style&gt;</code> 블록은 <code>documents/screen/_TEMPLATE/mockup.html</code> 에서 그대로 복사했다 —
+  <code>.sf</code> <code>.tb</code> <code>.grid</code> <code>.pg</code> <code>.split</code>.
+</footer>
+
+</main>

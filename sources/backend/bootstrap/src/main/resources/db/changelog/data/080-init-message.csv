@@ -1,0 +1,21 @@
+MSG_KEY,LANG_CD,MSG_VAL
+accessLog.col.userNm,ko,사용자명
+accessLog.col.userNm,en,User name
+accessLog.search.userNm,ko,사용자명
+accessLog.search.userNm,en,User name
+accessLog.search.menuCd,ko,메뉴 코드
+accessLog.search.menuCd,en,Menu code
+accessLog.search.menuNm,ko,메뉴명
+accessLog.search.menuNm,en,Menu name
+loginLog.col.userNm,ko,사용자명
+loginLog.col.userNm,en,User name
+loginLog.search.userNm,ko,사용자명
+loginLog.search.userNm,en,User name
+errorLog.col.userNm,ko,사용자명
+errorLog.col.userNm,en,User name
+errorLog.search.userNm,ko,사용자명
+errorLog.search.userNm,en,User name
+errorLog.search.menuCd,ko,메뉴 코드
+errorLog.search.menuCd,en,Menu code
+errorLog.search.menuNm,ko,메뉴명
+errorLog.search.menuNm,en,Menu name

@@ -1,0 +1,47 @@
+# 메시지 값 27차 — 사람 소유 시드다(22 §1.1).
+#
+# 색 톤 넷째(초록 · 51 §9.7)와 자주 쓰는 메뉴의 빈 문구(UX-16 · 42 §8).
+#
+# 빈 문구는 즐겨찾기(032)와 말투가 다르다. 즐겨찾기는 사용자가 등록해야 채워지므로
+# 넣는 방법을 말하지만, 자주 쓰는 메뉴는 쓰다 보면 저절로 찬다 — 할 일이 없다는 것이
+# 그 문구가 말해야 하는 전부다.
+#
+# shell.entry.empty.pending 은 코드에서 사라졌다. 008 재생성이 USE_SCOPE='NONE' 으로
+# 표시하며 값 행은 남는다(33 §2.2).
+databaseChangeLog:
+  - changeSet:
+      id: data-036-message
+      author: template
+      comment: 초록 톤과 자주 쓰는 메뉴 빈 문구의 ko·en — 51 §9.7 · 42 §8
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/036-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-036-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

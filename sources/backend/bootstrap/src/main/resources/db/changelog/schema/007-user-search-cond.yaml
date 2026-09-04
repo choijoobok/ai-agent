@@ -1,0 +1,102 @@
+# 저장된 조회조건 — 57 §5.5 가 낸 요구다(UX-07).
+#
+# 40 §7 과 41 §9 가 "57 이 직렬화 형태를 정해야 한다" 로 미뤄 둔 테이블이며, 57 §5 가
+# 그것을 닫았으므로 여기서 만든다.
+#
+# PK 가 셋인 것이 곧 요건이다 — 화면 안에서 이름 중복 불가(57 §5.4)가 (USER_ID, MENU_CD,
+# COND_NM) 이다. 대리키를 두고 UNIQUE 를 거는 형태와 결과가 같은데, 대리키 쪽은 시퀀스를
+# 하나 더 만들고 "이름이 같은 행 둘" 을 만들 수 있는 경로를 열어 둔다.
+#
+# MENU_CD 가 PK 에 있다 — 조건은 화면에 매인다. 화면이 다르면 필드가 다르다.
+#
+# FK 를 둘 다 건다(41 §8). 41 §9 의 "이력에는 걸지 않는다" 와 방향이 다른데, 여기는
+# 이력이 아니라 개인 설정이고 사용자든 메뉴든 사라지면 조건이 뜻을 잃기 때문이다.
+#
+# DFLT_YN 의 "사용자·메뉴당 하나" 를 DB 로 강제하지 않는다 — 부분 유니크 인덱스는 벤더마다
+# 문법이 다르다(22 §4). 저장할 때 애플리케이션이 이전 것을 내린다(57 §5.5).
+#
+# COND_JSON 은 nclob 이다. 정렬·검색 대상이 아니므로 54 §5.5 의 제약에 걸리지 않으며,
+# clob 이 아닌 이유는 SQL Server 에서 varchar(MAX) 가 되어 한글이 위험하기 때문이다(22 §3.1).
+databaseChangeLog:
+  - changeSet:
+      id: 007-create-sys-user-search-cond
+      author: template
+      comment: 저장하는 것은 와이어가 아니라 폼 값이다 — 57 §5.1
+      changes:
+        - createTable:
+            tableName: SYS_USER_SEARCH_COND
+            columns:
+              - column:
+                  name: USER_ID
+                  type: VARCHAR(30)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_USER_SEARCH_COND
+                    nullable: false
+              - column:
+                  name: MENU_CD
+                  type: VARCHAR(30)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_USER_SEARCH_COND
+                    nullable: false
+              # 사용자가 붙인 이름이다. 메시지 키가 아니다 — 사람마다 다른 값이므로
+              # 번역 대상이 될 수 없다(43 §7 의 경계에서 데이터 쪽이다).
+              - column:
+                  name: COND_NM
+                  type: VARCHAR(100)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_USER_SEARCH_COND
+                    nullable: false
+              # 값 맵이다(57 §5.1). 봉투가 아니라 폼 값이며 기본값과 같은 칸은 빠져 있다.
+              - column:
+                  name: COND_JSON
+                  type: NCLOB
+                  constraints:
+                    nullable: false
+              # 지정하면 화면 진입 시 그 조건으로 폼이 채워진다(57 §5.4). 하나만이다.
+              - column:
+                  name: DFLT_YN
+                  type: CHAR(1)
+                  defaultValue: 'N'
+                  constraints:
+                    nullable: false
+              # 드롭다운 순서. 사용자가 만든 순서이며 이름 순이 아니다 —
+              # 자주 쓰는 것을 먼저 만드는 것이 보통이다.
+              - column:
+                  name: SORT_NO
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REG_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: REG_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: MOD_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: MOD_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+
+  - changeSet:
+      id: 007-fk-sys-user-search-cond
+      author: template
+      comment: 둘 다 사라지면 조건이 뜻을 잃는다 — 41 §8·§9
+      changes:
+        # 매핑 → 마스터다. 이력이 아니라 개인 설정이므로 41 §9 의 예외에 들지 않는다.
+        - addForeignKeyConstraint:
+            constraintName: FK_SYS_USER_SEARCH_COND_01
+            baseTableName: SYS_USER_SEARCH_COND
+            baseColumnNames: USER_ID
+            referencedTableName: SYS_USER
+            referencedColumnNames: USER_ID
+        - addForeignKeyConstraint:
+            constraintName: FK_SYS_USER_SEARCH_COND_02
+            baseTableName: SYS_USER_SEARCH_COND
+            baseColumnNames: MENU_CD
+            referencedTableName: SYS_MENU
+            referencedColumnNames: MENU_CD

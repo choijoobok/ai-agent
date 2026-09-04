@@ -1,0 +1,51 @@
+# 메시지 값 고침 — 품목 금액 재계산의 확인 문구(68 §5.4).
+#
+# 104 를 고치지 않고 파일을 더한다(22 §1.1). loadData 는 CSV 의 내용을 체크섬에 넣으므로
+# 그 파일을 다시 쓰면 이미 적재한 로컬이 기동에서 죽고, 같은 키를 다시 loadData 하면
+# SYS_MESSAGE 의 PK(MSG_KEY, LANG_CD)가 충돌한다 — update 다(055 · 103 의 선례).
+#
+# ── 왜 바뀌었나 ─────────────────────────────────────────────────────────
+#
+# 대상이 selected 에서 all 로 옮겨졌다. 이 화면의 마스터는 단일 선택이고(아래 pane 이 고른
+# 행의 품목을 보인다) 행×디테일 진행률은 행이 둘 이상이어야 보이므로, 대상을 조회된
+# 묶음으로 옮겼다 — 고르는 제스처는 그대로 둔다.
+#
+# 그러면 선택한 {count}건 은 거짓말이 된다: 사용자는 아무것도 고르지 않았고, 그 숫자는
+# 조회 결과에서 대상이 되는 행의 수다. 실행 전에 사용자가 확인할 것이 정확히 그것이므로
+# 문구가 그것을 말해야 한다.
+databaseChangeLog:
+  - changeSet:
+      id: data-105-message-recalc-items-confirm
+      author: template
+      comment: 대상이 조회된 묶음이라 선택한 을 조회된 으로 고친다 — 55 §7
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: 조회된 주문 중 대상 {count}건의 품목 금액을 수량×단가로 다시 계산합니다. 주문이 바뀔 때마다 진행률이 그 주문 기준으로 다시 시작됩니다.
+            where: MSG_KEY = 'sample.action.recalcItems.confirm' AND LANG_CD = 'ko'
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: Recalculate item amounts (qty × unit price) for {count} eligible order(s) in the current result. Progress restarts for each order.
+            where: MSG_KEY = 'sample.action.recalcItems.confirm' AND LANG_CD = 'en'
+
+  - changeSet:
+      id: data-105-cache-version
+      author: template
+      comment: 값을 고쳤으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

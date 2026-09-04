@@ -1,0 +1,307 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>목업 · 설정 모달 (settings)</title>
+<style>
+/* ─────────────────────────────────────────────────────────────
+   목업 공용 스타일
+   목업은 한 파일로 완결되어야 한다. 외부 CSS 로 빼면 파일 하나만
+   열거나 다른 곳에 붙였을 때 화면이 깨진다. 그래서 복제를 감수한다.
+   새 목업은 이 블록을 그대로 복사한다.
+   의도적으로 밋밋하다. AntD 처럼 보이면 잘못된 구속이 된다.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --ink:#1a1a1a; --muted:#6b6b6b; --line:#c9c9c9; --line2:#e4e4e4;
+  --bg:#ffffff; --panel:#f7f7f7; --err:#a8261c; --err-bg:#fbeceb;
+  --note:#1f4e79; --note-bg:#eef4fa; --ok:#1d7a4d;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#e6e6e6; --muted:#9a9a9a; --line:#4a4a4a; --line2:#333;
+    --bg:#161616; --panel:#1e1e1e; --err:#e08b82; --err-bg:#3a201e;
+    --note:#8fb8dd; --note-bg:#1c2833; --ok:#63c08d;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--bg);color:var(--ink);
+     font:14px/1.6 "Malgun Gothic","Apple SD Gothic Neo",sans-serif;}
+main{max-width:960px;margin:0 auto}
+h1{font-size:19px;margin:0 0 4px}
+h2{font-size:15px;margin:34px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+h3{font-size:13px;margin:20px 0 8px;color:var(--muted);font-weight:600}
+code{font-family:Consolas,monospace;font-size:.92em;background:var(--panel);padding:1px 4px}
+a{color:var(--note)}
+
+/* 개요 바 — 문서와의 연결. 모든 목업이 갖는다 */
+.head{border:1px solid var(--line);background:var(--panel);padding:12px 14px;margin-bottom:6px}
+.head dl{display:grid;grid-template-columns:max-content 1fr;gap:2px 14px;margin:0;font-size:12.5px}
+.head dt{color:var(--muted)}
+.head dd{margin:0}
+
+/* 화면 영역 — 뷰포트를 나타내는 상자 */
+.screen{border:1px solid var(--line);margin:0 0 8px;background:var(--bg)}
+.screen .bar{background:var(--panel);border-bottom:1px solid var(--line2);
+             padding:5px 10px;font-size:11.5px;color:var(--muted)}
+.screen .body{padding:28px 20px}
+/* 셸 위에 뜬 모달을 표현할 때 — 배경이 셸이라는 힌트만 준다 */
+.screen.shell .body{background:repeating-linear-gradient(45deg,
+  var(--panel) 0 6px, transparent 6px 12px);padding:22px 14px}
+
+/* 카드 — 로그인 등 중앙 배치 폼 */
+.card{max-width:320px;margin:0 auto;border:1px solid var(--line);padding:22px 20px;background:var(--bg)}
+.card .logo{height:38px;border:1px dashed var(--line);display:flex;align-items:center;
+            justify-content:center;color:var(--muted);font-size:11.5px;margin-bottom:18px}
+
+/* 모달 — 폭이 있는 것 */
+.modal{max-width:600px;margin:0 auto;border:1px solid var(--line);background:var(--bg)}
+.modal .mh{border-bottom:1px solid var(--line2);padding:9px 14px;font-size:13px;font-weight:600;
+           display:flex;justify-content:space-between;align-items:center}
+.modal .mh .x{color:var(--muted);font-weight:400}
+.modal .mb{padding:14px}
+.modal .mf{border-top:1px solid var(--line2);padding:9px 14px;font-size:11.5px;color:var(--muted);
+           display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* 탭 */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin:0 0 14px}
+.tabs span{padding:6px 13px;font-size:12.5px;border:1px solid transparent;border-bottom:none;
+           color:var(--muted);cursor:default}
+.tabs span.on{border-color:var(--line);background:var(--bg);color:var(--ink);font-weight:600;
+              margin-bottom:-1px}
+.tabs .badge{display:inline-block;min-width:16px;height:16px;line-height:16px;text-align:center;
+             border-radius:8px;background:var(--err);color:#fff;font-size:10.5px;margin-left:5px}
+
+/* 폼 */
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;margin-bottom:3px}
+.f input,.f select,.f textarea{width:100%;padding:6px 8px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+.f .hint{font-size:11px;color:var(--muted);margin-top:3px}
+.f.ro input{background:var(--panel);color:var(--muted)}
+.btn{width:100%;padding:8px;border:1px solid var(--ink);background:var(--ink);
+     color:var(--bg);font:inherit;font-size:13px;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.sm{width:auto;padding:4px 11px;font-size:12px}
+.btn[disabled]{opacity:.45}
+.sub{text-align:center;margin-top:12px;font-size:12px}
+.row{display:flex;gap:8px;align-items:center}
+.row .btn{width:auto}
+
+/* 키-값 나열 (읽기 전용 정보) */
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:12.5px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+
+/* 설정 그룹 */
+.grp{border:1px solid var(--line2);margin-bottom:10px}
+.grp>b{display:block;background:var(--panel);border-bottom:1px solid var(--line2);
+       padding:5px 11px;font-size:12px}
+.grp .item{display:flex;justify-content:space-between;align-items:center;gap:12px;
+           padding:6px 11px;font-size:12.5px;border-bottom:1px solid var(--line2)}
+.grp .item:last-child{border-bottom:none}
+.grp .item .where{font-size:10.5px;color:var(--muted);white-space:nowrap}
+
+/* 목록 (알림·검색 결과·즐겨찾기) */
+.list{border:1px solid var(--line2);font-size:12.5px}
+.list .it{padding:7px 11px;border-bottom:1px solid var(--line2);display:flex;
+          justify-content:space-between;align-items:center;gap:10px}
+.list .it:last-child{border-bottom:none}
+.list .it.unread{background:var(--note-bg)}
+.list .it .path{display:block;font-size:10.5px;color:var(--muted)}
+.list .it .when{color:var(--muted);font-size:11px;white-space:nowrap}
+.list .empty{padding:22px 11px;text-align:center;color:var(--muted);font-size:12px}
+.tag{display:inline-block;border:1px solid var(--line);padding:0 5px;font-size:10.5px;
+     color:var(--muted);border-radius:2px}
+
+/* 규칙 체크리스트 — 실시간 판정을 표현만 한다 */
+.rules{list-style:none;margin:0 0 14px;padding:9px 11px;border:1px solid var(--line2);
+       background:var(--panel);font-size:11.5px;line-height:1.7}
+.rules li{padding-left:17px;position:relative}
+.rules li::before{position:absolute;left:0;font-weight:700}
+.rules .ok::before{content:"✓";color:var(--ok)}
+.rules .no::before{content:"✕";color:var(--err)}
+.rules .srv::before{content:"·";color:var(--muted)}
+.rules .srv{color:var(--muted)}
+.rules em{font-style:normal;opacity:.8}
+
+/* 에러 배너 — 폼 상단 한 곳 */
+.banner{border:1px solid var(--err);background:var(--err-bg);color:var(--err);
+        padding:7px 10px;font-size:12.5px;margin-bottom:14px}
+
+/* 주석 — 화면 요소 ↔ 문서 결정 연결 */
+.notes{border-left:3px solid var(--note);background:var(--note-bg);padding:10px 14px;font-size:12.5px}
+.notes ol{margin:0;padding-left:18px}
+.notes li{margin:3px 0}
+.n{display:inline-block;min-width:17px;height:17px;line-height:17px;text-align:center;
+   border-radius:50%;background:var(--note);color:#fff;font-size:11px;margin-right:5px}
+
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
+th,td{border:1px solid var(--line2);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:600;white-space:nowrap}
+td.c{white-space:nowrap;font-family:Consolas,monospace;font-size:12px}
+
+.todo{border:1px dashed var(--line);padding:10px 14px;font-size:12.5px;background:var(--panel)}
+.todo ul{margin:4px 0 0;padding-left:18px}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line2);
+       font-size:11.5px;color:var(--muted)}
+</style>
+
+<main>
+
+<h1>설정 모달</h1>
+<div class="head">
+  <dl>
+    <dt>화면코드</dt><dd><code>settings</code></dd>
+    <dt>요건서</dt><dd><a href="requirements.md">requirements.md</a></dd>
+    <dt><code>MENU_CD</code></dt><dd><b>없음</b> — 헤더 → 모달</dd>
+    <dt>담는 기능</dt><dd>UX-08 (테마) · UX-09 (언어)</dd>
+    <dt>액션</dt><dd><b>해당 없음</b> — 전 사용자 공통. 개인화 설정이다</dd>
+  </dl>
+</div>
+
+<h2>1. 그룹 넷</h2>
+
+<div class="screen shell">
+  <div class="bar">셸 위 모달 · 개인화 설정</div>
+  <div class="body">
+    <div class="modal" style="max-width:520px">
+      <div class="mh">설정 <span class="x">✕</span></div>
+      <div class="mb">
+
+        <div class="grp">
+          <b>일반</b>
+          <div class="item"><span>언어 <span class="n">4</span></span>
+            <span class="row"><select style="font-size:12px"><option>한국어</option><option>English</option></select>
+            <span class="where">서버 <span class="n">1</span></span></span></div>
+          <div class="item"><span>헤더 자동 숨기기</span>
+            <span class="row"><input type="checkbox"><span class="where">localStorage</span></span></div>
+          <div class="item"><span>사이더 기본 접힘</span>
+            <span class="row"><input type="checkbox"><span class="where">localStorage</span></span></div>
+        </div>
+
+        <div class="grp">
+          <b>테마</b>
+          <div class="item"><span>모드</span>
+            <span class="row"><select style="font-size:12px">
+              <option>시스템 따름</option><option>라이트</option><option>다크</option></select>
+            <span class="where">localStorage</span></span></div>
+          <div class="item"><span>Primary Color</span>
+            <span class="row"><input type="text" value="#2E4FB7" style="width:90px;font-size:12px">
+            <span class="where">localStorage</span></span></div>
+          <div class="item"><span>콤팩트 모드</span>
+            <span class="row"><input type="checkbox">
+            <span class="where">localStorage</span></span></div>
+        </div>
+
+        <div class="grp">
+          <b>글꼴</b>
+          <div class="item"><span>폰트</span>
+            <span class="row"><select style="font-size:12px"><option>시스템 기본</option></select>
+            <span class="where">localStorage</span></span></div>
+          <div class="item"><span>기본 폰트 크기</span>
+            <span class="row"><input type="text" value="14" style="width:52px;font-size:12px">
+            <span class="where">localStorage</span></span></div>
+        </div>
+
+        <div class="grp">
+          <b>그리드</b>
+          <div class="item"><span>헤더 높이</span>
+            <span class="row"><input type="text" value="36" style="width:52px;font-size:12px">
+            <span class="where">localStorage</span></span></div>
+          <div class="item"><span>행 높이</span>
+            <span class="row"><input type="text" value="32" style="width:52px;font-size:12px">
+            <span class="where">localStorage</span></span></div>
+          <div class="item"><span>그리드 폰트 크기 <span class="n">3</span></span>
+            <span class="row"><input type="text" value="13" style="width:52px;font-size:12px">
+            <span class="where">localStorage</span></span></div>
+        </div>
+
+      </div>
+      <div class="mf">
+        <span><b>저장 버튼이 없다</b> — 즉시 반영한다 <span class="n">2</span></span>
+        <button class="btn ghost sm" type="button">기본값으로</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b>언어만 서버다</b>(<code>SYS_USER.LOCALE_CD</code>) — 메일·알림을 어느
+        언어로 보낼지 결정하는 것은 서버이고 <code>localStorage</code> 는 서버가 볼 수 없다.
+        바꾸면 메시지 번들을 그 언어로 교체하고 <code>localStorage</code> 도 함께 갱신한다 —
+        <b>다음 로그인 화면이 그것으로 그려진다</b>(화면 흐름의 1순위).</li>
+    <li><span class="n">2</span><b>저장 버튼을 두지 않는다</b>. 나머지가 전부
+        <code>localStorage</code> 라 왕복이 없고, 테마·글꼴은 <b>바꿔 보면서 고르는 것</b>이라
+        저장 버튼이 오히려 방해다. <b>언어만 예외다</b> — <span class="n">4</span>.</li>
+    <li><span class="n">4</span><b>언어를 바꾸면 재로드한다</b>. 번들을 새로 받아야 하고,
+        코드 라벨도 언어별이며, <b>이미 떠 있는 에러 메시지는 서버가 번역해 보낸 문자열</b>이라
+        클라이언트가 다시 번역할 수 없다.<br>
+        순서는 <b>① 미저장 변경 확인 → ② 서버 저장 → ③ localStorage → ④ 재로드</b> 다.
+        서버가 먼저인 이유는 저장이 실패했는데 <code>localStorage</code> 만 바뀌면
+        다음 로그인의 언어 판정이 어긋나기 때문이다.<br>
+        <b>탭은 따로 닫지 않는다</b> — 새로고침 시 복원하지 않기로 이미 정했으므로
+        재로드가 탭 비우기를 함께 한다.</li>
+    <li><span class="n">3</span><b>그리드 폰트 크기는 기본 크기와 별개다</b> — 그리드는
+        한 화면에 행을 많이 넣어야 해서 본문보다 작게 쓰는 경우가 흔하다.</li>
+    <li><b>UI 설정은 기기의 속성이다</b> — PC 마다 해상도·화면 비율이 달라 계정에
+        묶으면 다른 자리에서 로그인할 때마다 어긋난다.</li>
+  </ol>
+</div>
+
+<h2>2. 저장 위치가 나뉘는 결과</h2>
+
+<table>
+  <thead><tr><th>저장 위치</th><th>항목</th><th>다른 PC 에서</th></tr></thead>
+  <tbody>
+    <tr><td><b>서버</b> <code>SYS_USER.LOCALE_CD</code></td><td>언어</td><td>따라온다</td></tr>
+    <tr><td><code>localStorage</code></td><td>테마 · 글꼴 · 그리드 · 헤더/사이더</td>
+        <td><b>따라오지 않는다 — 의도된 것</b></td></tr>
+  </tbody>
+</table>
+
+<!-- ── 테스트 케이스 ───────────────────────────────────────── -->
+<h2>3. 테스트 케이스 — 주석의 주장을 전부 덮는다</h2>
+
+<p style="font-size:12.5px;margin:0 0 10px">
+  <b>주석은 <i>"왜 이렇게 그렸는가"</i> 를 말하고, 여기는 <i>"그것이 지켜졌는가"</i> 를 묻는다</b>.
+  <b>근거가 빈 케이스는 지어낸 것이다</b> — 문서 절이나 이 파일의 주석 번호를 가리킨다.
+  <b>되면 안 되는 것</b>도 함께 넣는다.
+</p>
+
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">ST-01</td><td>저장 버튼 찾기</td><td><b>없다</b> — 즉시 반영이다</td><td>주석 2</td></tr>
+    <tr><td class="c">ST-02</td><td>테마·글꼴을 바꾼다</td><td><b>서버 왕복 없이</b> 즉시 바뀐다 — <code>localStorage</code></td><td>주석 2</td></tr>
+    <tr><td class="c">ST-03</td><td>다른 PC 에서 로그인</td><td><b>UI 설정이 따라오지 않는다</b> — 기기의 속성이다</td><td>주석</td></tr>
+    <tr><td class="c">ST-04</td><td><b>언어</b>를 바꾼다</td><td><b>①미저장 확인 → ②서버 저장 → ③<code>localStorage</code> → ④재로드</b> 순서로 돈다</td><td>주석 4</td></tr>
+    <tr><td class="c">ST-05</td><td>언어 저장이 <b>서버에서 실패</b></td><td><b><code>localStorage</code> 를 갱신하지 않는다</b> — 서버가 먼저인 이유</td><td>주석 4 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">ST-06</td><td>언어를 바꾼 뒤 로그아웃 → 로그인 화면</td><td><b>바꾼 언어로 그려진다</b> — <code>localStorage</code> 가 1순위</td><td>주석 1</td></tr>
+    <tr><td class="c">ST-07</td><td>언어를 바꾸고 <b>재로드하지 않는다면</b></td><td>이미 떠 있는 <b>서버 발 에러 메시지</b>가 이전 언어로 남는다 — 그래서 재로드한다</td><td>주석 4</td></tr>
+    <tr><td class="c">ST-08</td><td>그리드 글꼴 크기를 바꾼다</td><td><b>본문 크기는 그대로</b>다 — 둘은 별개 설정</td><td>주석 3</td></tr>
+    <tr><td class="c">ST-09</td><td>저장 위치를 표로 대조</td><td><b>언어만 서버</b>(<code>SYS_USER.LOCALE_CD</code>), 나머지 전부 <code>localStorage</code></td><td>§2</td></tr>
+  </tbody>
+</table>
+<h2>4. 이 목업으로 확인할 것</h2>
+<div class="todo">
+  <ul>
+    <li><b>기본값 숫자</b> — 셸 표준 미결. 목업은 폰트 14 / 헤더 36 / 행 32 / 그리드 13 을
+        가정했다. 실측이 필요하다</li>
+    <li><b>"기본값으로" 버튼의 범위</b> — 그룹별인지 전체인지. 전체면 확인 모달이 필요하다</li>
+    <li><b>Primary Color 입력 방식</b> — 자유 입력인지 팔레트 선택인지. 자유 입력이면
+        명암비 검증이 필요하다(다크 모드에서 안 보이는 색이 나온다)</li>
+    <li><b>언어 변경 시 재로드 안내를 어떻게 줄지</b>(§1 <span class="n">4</span>) — 확인 모달로 미리 알릴지,
+        미저장 변경이 없으면 조용히 재로드할지. 후자면 <i>"갑자기 화면이 새로 떴다"</i> 가 된다</li>
+    <li>그리드 설정이 <b>UX-06 그리드 컬럼 설정과 다른 것</b>임을 화면에서 구분할지 —
+        여기는 높이·폰트(전역), UX-06 은 컬럼 순서·표시(화면별)다</li>
+  </ul>
+</div>
+
+<footer>
+  <b>목업 규약</b> — 정적 HTML, 프레임워크 없음, 픽셀 충실도는 목표가 아니다.
+  <b>결정은 <code>requirements.md</code> 가 갖고 이 파일은 확인용이다</b> — 여기에만 있고
+  요건서에 없는 정보는 유실된 것으로 친다.<br>
+  이 파일의 <code>&lt;style&gt;</code> 블록은 <code>documents/screen/_TEMPLATE/mockup.html</code> 에서 그대로 복사했다 —
+  <code>.sf</code> <code>.tb</code> <code>.grid</code> <code>.pg</code> <code>.split</code>.
+</footer>
+
+</main>

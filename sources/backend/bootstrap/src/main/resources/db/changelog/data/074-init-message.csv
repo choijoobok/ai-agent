@@ -1,0 +1,65 @@
+MSG_KEY,LANG_CD,MSG_VAL
+err.noti-inbox.not-found,ko,없는 알림입니다.
+err.noti-inbox.not-found,en,No such notification.
+err.noti-req.content-required,ko,요청 내용은 필수입니다.
+err.noti-req.content-required,en,The request content is required.
+err.noti-req.duplicate,ko,같은 유형의 요청이 접수 상태로 남아 있습니다. 답을 기다려 주세요.
+err.noti-req.duplicate,en,A request of the same type is still open. Please wait for the answer.
+notification.truncated,ko,최근 {count}건
+notification.truncated,en,latest {count}
+notification.back,ko,목록으로
+notification.back,en,Back to list
+notification.notice.includeExpired,ko,지난 공지 포함
+notification.notice.includeExpired,en,Include past notices
+notification.notice.empty,ko,게시 중인 공지가 없습니다.
+notification.notice.empty,en,No notice is currently published.
+notification.notice.from,ko,게시일
+notification.notice.from,en,Published
+notification.notice.author,ko,작성자
+notification.notice.author,en,Author
+notification.notice.expired,ko,종료
+notification.notice.expired,en,Ended
+notification.mine.empty,ko,받은 알림이 없습니다.
+notification.mine.empty,en,No notifications.
+notification.mine.unread,ko,읽지 않음 {count}건
+notification.mine.unread,en,{count} unread
+notification.mine.markAll,ko,모두 읽음
+notification.mine.markAll,en,Mark all read
+notification.mine.receivedAt,ko,받은 시각
+notification.mine.receivedAt,en,Received
+notification.mine.content,ko,내용
+notification.mine.content,en,Content
+notification.mine.goto,ko,해당 화면으로 이동
+notification.mine.goto,en,Open the screen
+notification.mine.gotoDenied,ko,그 화면의 권한이 없습니다 — 알림이 권한을 주지는 않습니다.
+notification.mine.gotoDenied,en,You no longer have access to that screen — a notification does not grant access.
+noti.type.REQUEST,ko,요청 처리
+noti.type.REQUEST,en,Request handled
+noti.type.AUTH,ko,계정
+noti.type.AUTH,en,Account
+noti.type.AUTHZ,ko,권한
+noti.type.AUTHZ,en,Authority
+noti.type.BATCH,ko,배치
+noti.type.BATCH,en,Batch
+notification.request.empty,ko,낸 요청이 없습니다.
+notification.request.empty,en,You have not made any request.
+notification.request.new,ko,새 요청
+notification.request.new,en,New request
+notification.request.type,ko,유형
+notification.request.type,en,Type
+notification.request.content,ko,요청 내용
+notification.request.content,en,Request
+notification.request.placeholder,ko,무엇이 필요한지 한 번에 적어 주세요 — 되묻는 단계가 없습니다.
+notification.request.placeholder,en,Describe what you need in full — there is no follow-up step.
+notification.request.submit,ko,요청
+notification.request.submit,en,Send
+notification.request.at,ko,{date} 신청
+notification.request.at,en,Requested {date}
+notification.request.reason,ko,사유
+notification.request.reason,en,Reason
+notification.request.pending,ko,같은 유형의 요청이 아직 접수 상태입니다.
+notification.request.pending,en,A request of the same type is still open.
+noticePopup.dismiss,ko,오늘 하루 보지 않기
+noticePopup.dismiss,en,Do not show today
+noticePopup.more,ko,공지 {count}건 더 있음
+noticePopup.more,en,{count} more notice(s)

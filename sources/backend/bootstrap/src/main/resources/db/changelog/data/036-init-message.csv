@@ -1,0 +1,5 @@
+MSG_KEY,LANG_CD,MSG_VAL
+settings.colorTone.green,ko,초록
+settings.colorTone.green,en,Green
+shell.entry.empty.frequent,ko,아직 없습니다 — 메뉴를 열다 보면 저절로 채워집니다
+shell.entry.empty.frequent,en,Nothing yet — this fills in as you open menus

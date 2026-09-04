@@ -1,0 +1,42 @@
+# 메시지 값 16차 — 사람 소유 시드다(22 §1.1).
+#
+# 상태 컬럼의 되돌리기 아이콘 하나다(53 §3.3). `되돌리기` 가 아니라 `편집 취소` 인 것은
+# 같은 줄의 삭제 아이콘도 되돌리기를 하기 때문이다 — 이 아이콘이 되돌리는 것은 **편집**
+# 뿐이며, 신규 행을 없애거나 삭제 표시를 푸는 것은 삭제 아이콘의 일이다.
+databaseChangeLog:
+  - changeSet:
+      id: data-024-message
+      author: template
+      comment: 상태 컬럼의 편집 취소 ko·en — 53 §3.3
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/024-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-024-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

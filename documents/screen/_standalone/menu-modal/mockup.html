@@ -1,0 +1,347 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>목업 · 메뉴 검색 · 즐겨찾기 모달 (menu-modal)</title>
+<style>
+/* ─────────────────────────────────────────────────────────────
+   목업 공용 스타일
+   목업은 한 파일로 완결되어야 한다. 외부 CSS 로 빼면 파일 하나만
+   열거나 다른 곳에 붙였을 때 화면이 깨진다. 그래서 복제를 감수한다.
+   새 목업은 이 블록을 그대로 복사한다.
+   의도적으로 밋밋하다. AntD 처럼 보이면 잘못된 구속이 된다.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --ink:#1a1a1a; --muted:#6b6b6b; --line:#c9c9c9; --line2:#e4e4e4;
+  --bg:#ffffff; --panel:#f7f7f7; --err:#a8261c; --err-bg:#fbeceb;
+  --note:#1f4e79; --note-bg:#eef4fa; --ok:#1d7a4d;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#e6e6e6; --muted:#9a9a9a; --line:#4a4a4a; --line2:#333;
+    --bg:#161616; --panel:#1e1e1e; --err:#e08b82; --err-bg:#3a201e;
+    --note:#8fb8dd; --note-bg:#1c2833; --ok:#63c08d;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--bg);color:var(--ink);
+     font:14px/1.6 "Malgun Gothic","Apple SD Gothic Neo",sans-serif;}
+main{max-width:960px;margin:0 auto}
+h1{font-size:19px;margin:0 0 4px}
+h2{font-size:15px;margin:34px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+h3{font-size:13px;margin:20px 0 8px;color:var(--muted);font-weight:600}
+code{font-family:Consolas,monospace;font-size:.92em;background:var(--panel);padding:1px 4px}
+a{color:var(--note)}
+
+/* 개요 바 — 문서와의 연결. 모든 목업이 갖는다 */
+.head{border:1px solid var(--line);background:var(--panel);padding:12px 14px;margin-bottom:6px}
+.head dl{display:grid;grid-template-columns:max-content 1fr;gap:2px 14px;margin:0;font-size:12.5px}
+.head dt{color:var(--muted)}
+.head dd{margin:0}
+
+/* 화면 영역 — 뷰포트를 나타내는 상자 */
+.screen{border:1px solid var(--line);margin:0 0 8px;background:var(--bg)}
+.screen .bar{background:var(--panel);border-bottom:1px solid var(--line2);
+             padding:5px 10px;font-size:11.5px;color:var(--muted)}
+.screen .body{padding:28px 20px}
+/* 셸 위에 뜬 모달을 표현할 때 — 배경이 셸이라는 힌트만 준다 */
+.screen.shell .body{background:repeating-linear-gradient(45deg,
+  var(--panel) 0 6px, transparent 6px 12px);padding:22px 14px}
+
+/* 카드 — 로그인 등 중앙 배치 폼 */
+.card{max-width:320px;margin:0 auto;border:1px solid var(--line);padding:22px 20px;background:var(--bg)}
+.card .logo{height:38px;border:1px dashed var(--line);display:flex;align-items:center;
+            justify-content:center;color:var(--muted);font-size:11.5px;margin-bottom:18px}
+
+/* 모달 — 폭이 있는 것 */
+.modal{max-width:600px;margin:0 auto;border:1px solid var(--line);background:var(--bg)}
+.modal .mh{border-bottom:1px solid var(--line2);padding:9px 14px;font-size:13px;font-weight:600;
+           display:flex;justify-content:space-between;align-items:center}
+.modal .mh .x{color:var(--muted);font-weight:400}
+.modal .mb{padding:14px}
+.modal .mf{border-top:1px solid var(--line2);padding:9px 14px;font-size:11.5px;color:var(--muted);
+           display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* 탭 */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin:0 0 14px}
+.tabs span{padding:6px 13px;font-size:12.5px;border:1px solid transparent;border-bottom:none;
+           color:var(--muted);cursor:default}
+.tabs span.on{border-color:var(--line);background:var(--bg);color:var(--ink);font-weight:600;
+              margin-bottom:-1px}
+.tabs .badge{display:inline-block;min-width:16px;height:16px;line-height:16px;text-align:center;
+             border-radius:8px;background:var(--err);color:#fff;font-size:10.5px;margin-left:5px}
+
+/* 폼 */
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;margin-bottom:3px}
+.f input,.f select,.f textarea{width:100%;padding:6px 8px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+.f .hint{font-size:11px;color:var(--muted);margin-top:3px}
+.f.ro input{background:var(--panel);color:var(--muted)}
+.btn{width:100%;padding:8px;border:1px solid var(--ink);background:var(--ink);
+     color:var(--bg);font:inherit;font-size:13px;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.sm{width:auto;padding:4px 11px;font-size:12px}
+.btn[disabled]{opacity:.45}
+.sub{text-align:center;margin-top:12px;font-size:12px}
+.row{display:flex;gap:8px;align-items:center}
+.row .btn{width:auto}
+
+/* 키-값 나열 (읽기 전용 정보) */
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:12.5px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+
+/* 설정 그룹 */
+.grp{border:1px solid var(--line2);margin-bottom:10px}
+.grp>b{display:block;background:var(--panel);border-bottom:1px solid var(--line2);
+       padding:5px 11px;font-size:12px}
+.grp .item{display:flex;justify-content:space-between;align-items:center;gap:12px;
+           padding:6px 11px;font-size:12.5px;border-bottom:1px solid var(--line2)}
+.grp .item:last-child{border-bottom:none}
+.grp .item .where{font-size:10.5px;color:var(--muted);white-space:nowrap}
+
+/* 목록 (알림·검색 결과·즐겨찾기) */
+.list{border:1px solid var(--line2);font-size:12.5px}
+.list .it{padding:7px 11px;border-bottom:1px solid var(--line2);display:flex;
+          justify-content:space-between;align-items:center;gap:10px}
+.list .it:last-child{border-bottom:none}
+.list .it.unread{background:var(--note-bg)}
+.list .it .path{display:block;font-size:10.5px;color:var(--muted)}
+.list .it .when{color:var(--muted);font-size:11px;white-space:nowrap}
+.list .empty{padding:22px 11px;text-align:center;color:var(--muted);font-size:12px}
+.tag{display:inline-block;border:1px solid var(--line);padding:0 5px;font-size:10.5px;
+     color:var(--muted);border-radius:2px}
+
+/* 규칙 체크리스트 — 실시간 판정을 표현만 한다 */
+.rules{list-style:none;margin:0 0 14px;padding:9px 11px;border:1px solid var(--line2);
+       background:var(--panel);font-size:11.5px;line-height:1.7}
+.rules li{padding-left:17px;position:relative}
+.rules li::before{position:absolute;left:0;font-weight:700}
+.rules .ok::before{content:"✓";color:var(--ok)}
+.rules .no::before{content:"✕";color:var(--err)}
+.rules .srv::before{content:"·";color:var(--muted)}
+.rules .srv{color:var(--muted)}
+.rules em{font-style:normal;opacity:.8}
+
+/* 에러 배너 — 폼 상단 한 곳 */
+.banner{border:1px solid var(--err);background:var(--err-bg);color:var(--err);
+        padding:7px 10px;font-size:12.5px;margin-bottom:14px}
+
+/* 주석 — 화면 요소 ↔ 문서 결정 연결 */
+.notes{border-left:3px solid var(--note);background:var(--note-bg);padding:10px 14px;font-size:12.5px}
+.notes ol{margin:0;padding-left:18px}
+.notes li{margin:3px 0}
+.n{display:inline-block;min-width:17px;height:17px;line-height:17px;text-align:center;
+   border-radius:50%;background:var(--note);color:#fff;font-size:11px;margin-right:5px}
+
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
+th,td{border:1px solid var(--line2);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:600;white-space:nowrap}
+td.c{white-space:nowrap;font-family:Consolas,monospace;font-size:12px}
+
+.todo{border:1px dashed var(--line);padding:10px 14px;font-size:12.5px;background:var(--panel)}
+.todo ul{margin:4px 0 0;padding-left:18px}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line2);
+       font-size:11.5px;color:var(--muted)}
+</style>
+
+<main>
+
+<h1>메뉴 검색 · 즐겨찾기 모달</h1>
+<div class="head">
+  <dl>
+    <dt>화면코드</dt><dd><code>menu-modal</code></dd>
+    <dt>요건서</dt><dd><a href="requirements.md">requirements.md</a></dd>
+    <dt><code>MENU_CD</code></dt><dd><b>없음</b> — 헤더 → 모달. <b>같은 메뉴 선택 컴포넌트</b></dd>
+    <dt>담는 기능</dt><dd>UX-03 (즐겨찾기 · 최근) · UX-04 (커맨드 팔레트) · UX-16 (자주 쓰는 메뉴)</dd>
+    <dt>액션</dt><dd><b>해당 없음</b> — 전 사용자 공통. 목록은 <b>유효 권한 메뉴로 이미 좁혀져 있다</b></dd>
+  </dl>
+</div>
+
+<h2>1. 검색 결과 — 2건 이상일 때만 모달이 뜬다</h2>
+
+<div class="screen shell">
+  <div class="bar">셸 위 모달 · 검색 모드</div>
+  <div class="body">
+    <div class="modal" style="max-width:460px">
+      <div class="mh">메뉴 이동 <span class="x">✕</span></div>
+      <div class="mb">
+        <div class="f" style="margin-bottom:10px">
+          <input type="text" value="사용자" placeholder="메뉴명 검색"></div>
+
+        <div class="list">
+          <div class="it"><span><span class="path">사용자</span><b>사용자 관리</b></span>
+            <span class="when">Enter <span class="n">3</span></span></div>
+          <div class="it"><span><span class="path">사용자</span><b>개인 예외 권한</b></span></div>
+          <div class="it"><span><span class="path">이력 · 로그</span><b>사용 이력</b> <span class="n">2</span></span></div>
+        </div>
+        <p style="font-size:11.5px;color:var(--muted);margin:8px 0 0">
+          정렬은 <b>트리 순서</b>(경로 + <code>SORT_NO</code>) <span class="n">4</span></p>
+      </div>
+      <div class="mf"><span>즐겨찾기 · 최근 · 자주 쓰는 메뉴는 탭으로 — §2</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b>결과 1건이면 모달을 띄우지 않고 바로 연다.</b> 0건이면 빈 상태
+        (UX-11), 2건 이상이면 이 모달이다.</li>
+    <li><span class="n">2</span><b>매칭은 메뉴명 하나만 본다 — 경로는 표시용이다.</b> 경로를 포함시키면
+        <i>기준정보</i> 를 쳤을 때 그 폴더 하위 전체가 걸려 결과가 폭발한다.
+        <i>사용자</i> 가 <b>사용 이력</b> 을 잡은 것은 메뉴명에 그 글자가 있기 때문이다.</li>
+    <li><span class="n">3</span>정규화는 <b>공백 제거 + 소문자화</b>, 판정은 <b>포함</b>이다.
+        초성 검색은 하지 않는다 — 한국어 전용 규칙이 되어 다국어 템플릿에 맞지 않는다.</li>
+    <li><span class="n">4</span><b>"일치 위치가 앞선 것 우선" 을 쓰지 않는다</b> — UX 로는 나을 수
+        있으나 결과 순서를 예측할 수 없게 된다.</li>
+    <li><b>서버 왕복이 없다 — 클라이언트 필터다.</b> 프론트가 로그인 시 이미 유효 권한 메뉴
+        트리를 갖고 있고 번역도 프론트가 한다. 따라서 <b>권한 필터를 검색 로직이 따로 걸지 않는다</b>.</li>
+    <li>구조 노드는 결과에 넣지 않는다 — <code>MENU_URL</code> 이 없어 열 수 없다.</li>
+  </ol>
+</div>
+
+<h2>2. 즐겨찾기 탭 — 순서 변경은 여기서만 한다</h2>
+
+<div class="screen shell">
+  <div class="bar">셸 위 모달 · 즐겨찾기</div>
+  <div class="body">
+    <div class="modal" style="max-width:460px">
+      <div class="mh">메뉴 이동 <span class="x">✕</span></div>
+      <div class="mb">
+        <div class="tabs">
+          <span class="on">즐겨찾기</span><span>최근 사용</span><span>자주 쓰는 메뉴</span>
+        </div>
+        <div class="list">
+          <div class="it"><span><span class="path">사용자</span><b>사용자 관리</b></span>
+            <span class="row"><button class="btn ghost sm" disabled>▲</button>
+            <button class="btn ghost sm">▼</button><span class="n">5</span></span></div>
+          <div class="it"><span><span class="path">메뉴 관리</span><b>역할 권한 관리</b></span>
+            <span class="row"><button class="btn ghost sm">▲</button>
+            <button class="btn ghost sm">▼</button></span></div>
+          <div class="it"><span><span class="path">배치 · 스케줄</span><b>실행 이력</b></span>
+            <span class="row"><button class="btn ghost sm">▲</button>
+            <button class="btn ghost sm" disabled>▼</button></span></div>
+        </div>
+        <p style="font-size:11.5px;color:var(--muted);margin:8px 0 0">
+          <b>개수 상한 없음</b> — 많이 등록하면 목록이 스크롤될 뿐이다 <span class="n">6</span></p>
+      </div>
+      <div class="mf"><span>즉시 저장 · 디바운스 · 마지막 상태만 전송</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">5</span><b>두 화살표가 다른 것이다</b> — <b>행 우측 아이콘</b>은
+        순서 변경, <b>키보드 위아래</b>는 항목 선택 이동이다. 키보드로 순서를 바꾸려면
+        <code>Alt</code> + 위아래. 같은 목록 위에 함께 있어 구현할 때 헷갈리기 쉽다.</li>
+    <li><span class="n">6</span>모달은 <b>크기를 조절할 수 있다</b>므로 목록이 길어도
+        감당된다. 상한을 두면 <i>"왜 더 못 넣나"</i> 가 생긴다.</li>
+    <li><b>저장 버튼을 두지 않는다</b> — <i>"순서 바꿨는데 안 됐다"</i> 가 생긴다. 연타에
+        요청이 쏟아지지 않게 디바운스하고 마지막 상태만 보낸다.</li>
+    <li><b>즐겨찾기가 권한을 주지는 않는다</b>. 권한을 잃으면 <b>행은 남고 표시만 멈춘다</b> —
+        권한이 돌아오면 다시 나타난다.</li>
+  </ol>
+</div>
+
+<h2>3. 세 목록의 원본이 다르다</h2>
+
+<table>
+  <thead><tr><th>탭</th><th>원본</th><th>권한을 잃으면</th><th>기능</th></tr></thead>
+  <tbody>
+    <tr><td>즐겨찾기</td><td class="c">SYS_USER_FAVORITE</td><td><b>행은 남고 표시만 멈춘다</b></td><td>UX-03</td></tr>
+    <tr><td>최근 사용</td><td class="c">localStorage</td><td>표시에서 걸러진다</td><td>UX-03</td></tr>
+    <tr><td>자주 쓰는 메뉴</td><td class="c">SYS_USER_MENU_STAT</td><td>표시에서 걸러진다</td><td>UX-16</td></tr>
+  </tbody>
+</table>
+
+<div class="notes">
+  <ol>
+    <li><b>셋 다 같은 게이트를 지난다</b> — 유효 권한을 통과한 메뉴만 보여준다.
+        화면마다 다른 규칙을 쓰면 어디선가 권한 없는 메뉴가 새어 나온다.</li>
+    <li>자주 쓰는 메뉴는 <b>월 버킷 · 이번 달 포함 3개월 창</b>이고 <b>메뉴 선택 행위만</b> 센다 —
+        탭 클릭·버튼 클릭은 세지 않는다.</li>
+  </ol>
+</div>
+
+<h2>4. 선택은 API 하나로 수렴한다</h2>
+
+<pre style="background:var(--panel);border:1px solid var(--line2);padding:11px;font-size:12px;overflow-x:auto">POST /api/common/menu/select   { menuCd, entryType }
+
+entryType = TREE · SEARCH · FAVORITE · RECENT · FREQUENT · DEEPLINK
+            (+ NOTIFICATION NOTI-02 가 요청, 인가 데이터 모델 미반영)</pre>
+
+<div class="notes">
+  <ol>
+    <li><b>메뉴 선택 UI 는 재사용하되 API 는 하나다</b>. 이 모달의 어느 탭에서 골랐는지가
+        <code>entryType</code> 이고, 그것이 UX-16 집계와 이력의 입력이 된다.</li>
+    <li><b>구조 노드는 선택 대상이 아니다</b> — 어느 탭에도 나타나지 않는다.</li>
+  </ol>
+</div>
+
+<!-- ── 테스트 케이스 ───────────────────────────────────────── -->
+<h2>5. 테스트 케이스 — 주석의 주장을 전부 덮는다</h2>
+
+<p style="font-size:12.5px;margin:0 0 10px">
+  <b>주석은 <i>"왜 이렇게 그렸는가"</i> 를 말하고, 여기는 <i>"그것이 지켜졌는가"</i> 를 묻는다</b>.
+  <b>근거가 빈 케이스는 지어낸 것이다</b> — 문서 절이나 이 파일의 주석 번호를 가리킨다.
+  <b>되면 안 되는 것</b>도 함께 넣는다.
+</p>
+
+<h3>검색</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">MM-01</td><td>결과가 <b>1건</b></td><td><b>모달을 띄우지 않고 바로 연다</b></td><td>주석 1</td></tr>
+    <tr><td class="c">MM-02</td><td>결과가 <b>0건</b></td><td><b>빈 상태</b>(UX-11)</td><td>〃</td></tr>
+    <tr><td class="c">MM-03</td><td>결과가 <b>2건 이상</b></td><td>이 모달</td><td>〃</td></tr>
+    <tr><td class="c">MM-04</td><td>폴더명(예: <i>기준정보</i>)을 친다</td><td><b>그 폴더 하위 전체가 걸리지 않는다</b> — 매칭은 <b>메뉴명만</b> 본다</td><td>주석 2 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">MM-05</td><td><code>사 용 자</code> · <code>USER</code> 로 친다</td><td><b>공백 제거 + 소문자화</b> 후 <b>포함</b> 판정</td><td>주석 3</td></tr>
+    <tr><td class="c">MM-06</td><td><code>ㅅㅇㅈ</code> 로 친다</td><td><b>걸리지 않는다</b> — 초성 검색은 없다</td><td>주석 3 — 한국어 전용 규칙이 된다</td></tr>
+    <tr><td class="c">MM-07</td><td>같은 검색어를 두 번 친다</td><td><b>결과 순서가 같다</b> — "일치 위치 우선" 을 쓰지 않는다</td><td>주석 4</td></tr>
+    <tr><td class="c">MM-08</td><td>검색 중 네트워크 확인</td><td><b>서버 왕복이 없다</b> — 프론트가 이미 권한 메뉴 트리를 갖는다</td><td>주석</td></tr>
+    <tr><td class="c">MM-09</td><td>구조 노드가 검색어에 맞는 경우</td><td><b>결과에 없다</b> — <code>MENU_URL</code> 이 없어 열 수 없다</td><td>주석 (되면 안 되는 것)</td></tr>
+  </tbody>
+</table>
+<h3>즐겨찾기</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">MM-10</td><td>행 우측 화살표 vs 키보드 위아래</td><td><b>다른 것</b>이다 — 순서 변경 vs 항목 이동. 키보드 순서 변경은 <code>Alt</code>+위아래</td><td>주석 5 · §10</td></tr>
+    <tr><td class="c">MM-11</td><td>즐겨찾기를 많이 추가</td><td><b>상한이 없다</b> — 모달 크기를 조절할 수 있다</td><td>주석 6</td></tr>
+    <tr><td class="c">MM-12</td><td>순서를 연달아 바꾼다</td><td><b>저장 버튼이 없고</b> 디바운스 후 <b>마지막 상태만</b> 보낸다</td><td>주석</td></tr>
+    <tr><td class="c">MM-13</td><td>즐겨찾기에 있는 메뉴의 <b>권한을 잃는다</b></td><td><b>행은 남고 표시만 멈춘다.</b> 권한이 돌아오면 다시 나타난다</td><td>주석</td></tr>
+  </tbody>
+</table>
+<h3>세 탭 공통</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">MM-14</td><td>세 목록(검색 · 즐겨찾기 · 자주 쓰는) 각각</td><td><b>같은 권한 게이트</b>를 지난다 — 권한 없는 메뉴가 새지 않는다</td><td>주석</td></tr>
+    <tr><td class="c">MM-15</td><td>자주 쓰는 메뉴 집계</td><td><b>월 버킷 · 이번 달 포함 3개월</b>, <b>메뉴 선택만</b> 센다(탭·버튼 클릭 제외)</td><td>주석</td></tr>
+    <tr><td class="c">MM-16</td><td>어느 탭에서 고르든</td><td><b>API 는 하나</b>이고 <b>어느 탭이었는지가 <code>entryType</code></b> 이다</td><td>주석</td></tr>
+    <tr><td class="c">MM-17</td><td>구조 노드</td><td><b>어느 탭에도 나타나지 않는다</b></td><td>주석 (되면 안 되는 것)</td></tr>
+  </tbody>
+</table>
+<h2>6. 이 목업으로 확인할 것</h2>
+<div class="todo">
+  <ul>
+    <li><b>검색과 세 탭이 한 모달인지 두 모달인지</b> — 셸 표준이 <i>"검색 결과 모드"</i> 로
+        같은 모달의 모드 전환을 시사하지만, 목업에서는 §1 과 §2 를 따로 그렸다. 검색 입력이
+        탭 위에 상시 있는 형태가 자연스러운지 확인 필요</li>
+    <li><b>모달을 여는 단축키</b> — <b>미결</b>이다(<code>Ctrl+W</code> 충돌 건과 같은 표에서 함께 정한다).
+        커맨드 팔레트는 단축키가 없으면 값이 절반이다</li>
+    <li><b>즐겨찾기 등록·해제를 어디서 하는가</b> — 이 모달에는 해제 버튼이 없다. 사이더 트리의
+        별 아이콘인지, 화면 안 버튼인지</li>
+    <li><b>"자주 쓰는 메뉴" 상위 N</b> — 인가 데이터 모델이 <i>릴리스</i> 게이트로 미룬 실측 항목</li>
+  </ul>
+</div>
+
+<footer>
+  <b>목업 규약</b> — 정적 HTML, 프레임워크 없음, 픽셀 충실도는 목표가 아니다.
+  <b>결정은 <code>requirements.md</code> 가 갖고 이 파일은 확인용이다</b> — 여기에만 있고
+  요건서에 없는 정보는 유실된 것으로 친다.<br>
+  이 파일의 <code>&lt;style&gt;</code> 블록은 <code>documents/screen/_TEMPLATE/mockup.html</code> 에서 그대로 복사했다 —
+  <code>.sf</code> <code>.tb</code> <code>.grid</code> <code>.pg</code> <code>.split</code>.
+</footer>
+
+</main>

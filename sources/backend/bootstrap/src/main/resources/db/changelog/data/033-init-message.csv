@@ -1,0 +1,5 @@
+MSG_KEY,LANG_CD,MSG_VAL
+shell.tree.expandAll,ko,모두 펼치기
+shell.tree.expandAll,en,Expand all
+shell.tree.collapseAll,ko,모두 접기
+shell.tree.collapseAll,en,Collapse all

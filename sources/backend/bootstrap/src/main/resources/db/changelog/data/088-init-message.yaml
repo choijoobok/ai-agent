@@ -1,0 +1,53 @@
+# 메시지 값 — 화면 안 세그먼트와 엑셀 업로드 탭.
+#
+# 68 §9.15 의 6단계다. 담을 자리가 먼저이고 담기는 것이 나중이다.
+#
+# 세그먼트의 문구는 하나뿐이다. 제목은 탭 닫기의 것을 함께 쓰고(잃는 것이 같다) 본문만
+# 가른다 — 저기는 "닫으면 잃는다" 인데 여기서는 화면이 남아 있고, 같은 말을 쓰면
+# 사용자는 탭이 닫히는 줄 알고 멈춘다.
+#
+# 엑셀 업로드에는 진행률도 업로드 실패도 없다 — 파일이 서버에 올라가지 않는다(ADR-0024
+# §3). 여기 있는 것은 전부 읽기의 거절 사유이며, 통째로 거절하는 둘(양식·행 수)과
+# 행마다 붙는 다섯이 갈린다.
+#
+# 코드 컬럼이 값과 이름을 둘 다 받는 것이 68 §11.1 이고, 이름이 두 코드에 걸리면 그 행이
+# 오류다 — 둘 중 하나를 조용히 고르면 그 행은 화면에서 정상으로 보인다.
+#
+# CSV 는 생성한다 — 아래 값 여럿에 쉼표와 마침표가 있고, 손으로 쓰면 기동에서만 깨진다.
+databaseChangeLog:
+  - changeSet:
+      id: data-088-message
+      author: template
+      comment: 화면 안 세그먼트와 엑셀 업로드 탭 — 51 §12 · ADR-0024 · 68 §9.2 · §9.3
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/088-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-088-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

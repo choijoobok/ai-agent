@@ -1,0 +1,751 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>목업 · 요청함 처리 (noti-request)</title>
+
+<style>
+/* ─────────────────────────────────────────────────────────────
+   목업 공용 스타일
+   목업은 한 파일로 완결되어야 한다. 외부 CSS 로 빼면 파일 하나만
+   열거나 다른 곳에 붙였을 때 화면이 깨진다. 그래서 복제를 감수한다.
+   새 목업은 이 블록을 그대로 복사한다.
+   의도적으로 밋밋하다. AntD 처럼 보이면 잘못된 구속이 된다.
+
+   ★ 그리드 어휘 다섯 — .sf .tb .grid .pg .split
+     크롬·행 상태·컬럼 고정의 자리는 53, 컬럼 계약은 54 가 정한다.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --ink:#1a1a1a; --muted:#6b6b6b; --line:#c9c9c9; --line2:#e4e4e4;
+  --bg:#ffffff; --panel:#f7f7f7; --err:#a8261c; --err-bg:#fbeceb;
+  --note:#1f4e79; --note-bg:#eef4fa; --ok:#1d7a4d;
+  /* ── 그리드 색. 그리드가 스스로 정하지 않고 셸에서 받는다 ──
+     Primary — 선택·편집 표시는 전부 여기서 파생한다.
+     진한 단계를 쓰지 않는다 — 그리드는 글자가 촘촘해 배경이 진해지면
+     전부 읽기 어려워진다. 대비 문제를 애초에 만들지 않는다. */
+  --pri:#1f4e79;      /* 원색 — 편집 중인 셀 테두리에만 */
+  --pri-1:#eaf1f9;    /* 가장 옅은 단계 — 현재 선택 행 */
+  --pri-2:#d6e6f5;    /* 한 단계 진한 것 — 현재 선택 셀 */
+  /* 컬럼 상태 — 정적. 헤더 표시(* · 흐린 글자)와 짝이다 */
+  --req-bg:#fdf6e6;   /* 필수 입력 */
+                      /* 편집 가능 = 바탕(--bg). 칠하지 않는 것이 곧 표시다 */
+                      /* 읽기 전용 = --panel */
+  /* 행 상태 — Primary 와 무관하다. 아이콘이 원본이고 배경은 거든다 */
+  --row-new:#eaf5ef; --row-mod:#e7f1f2;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#e6e6e6; --muted:#9a9a9a; --line:#4a4a4a; --line2:#333;
+    --bg:#161616; --panel:#1e1e1e; --err:#e08b82; --err-bg:#3a201e;
+    --note:#8fb8dd; --note-bg:#1c2833; --ok:#63c08d;
+    /* 같은 알파를 얹지 않는다 — 다크에서는 안 보이거나 반대로 튄다.
+       단계를 모드별로 따로 고른다 */
+    --pri:#8fb8dd; --pri-1:#1a2b3a; --pri-2:#24405c;
+    --req-bg:#33291a;
+    --row-new:#17281f; --row-mod:#16272a;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--bg);color:var(--ink);
+     font:14px/1.6 "Malgun Gothic","Apple SD Gothic Neo",sans-serif;}
+main{max-width:1000px;margin:0 auto}
+h1{font-size:19px;margin:0 0 4px}
+h2{font-size:15px;margin:34px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+h3{font-size:13px;margin:20px 0 8px;color:var(--muted);font-weight:600}
+code{font-family:Consolas,monospace;font-size:.92em;background:var(--panel);padding:1px 4px}
+a{color:var(--note)}
+
+/* 개요 바 — 문서와의 연결. 모든 목업이 갖는다 */
+.head{border:1px solid var(--line);background:var(--panel);padding:12px 14px;margin-bottom:6px}
+.head dl{display:grid;grid-template-columns:max-content 1fr;gap:2px 14px;margin:0;font-size:12.5px}
+.head dt{color:var(--muted)}
+.head dd{margin:0}
+
+/* 화면 영역 — 뷰포트를 나타내는 상자 */
+.screen{border:1px solid var(--line);margin:0 0 8px;background:var(--bg)}
+.screen .bar{background:var(--panel);border-bottom:1px solid var(--line2);
+             padding:5px 10px;font-size:11.5px;color:var(--muted)}
+.screen .body{padding:28px 20px}
+/* 셸 위에 뜬 모달 — 배경이 셸이라는 힌트만 준다 */
+.screen.shell .body{background:repeating-linear-gradient(45deg,
+  var(--panel) 0 6px, transparent 6px 12px);padding:22px 14px}
+/* 리프 화면은 자기가 콘텐츠다 — 셸 크롬을 그리지 않는다 */
+.screen.leaf .body{padding:12px}
+
+/* 카드 — 로그인 등 중앙 배치 폼 */
+.card{max-width:320px;margin:0 auto;border:1px solid var(--line);padding:22px 20px;background:var(--bg)}
+.card .logo{height:38px;border:1px dashed var(--line);display:flex;align-items:center;
+            justify-content:center;color:var(--muted);font-size:11.5px;margin-bottom:18px}
+
+/* 모달 — 그리드 설정 창도 이것을 쓴다 */
+.modal{max-width:600px;margin:0 auto;border:1px solid var(--line);background:var(--bg)}
+.modal .mh{border-bottom:1px solid var(--line2);padding:9px 14px;font-size:13px;font-weight:600;
+           display:flex;justify-content:space-between;align-items:center}
+.modal .mh .x{color:var(--muted);font-weight:400}
+.modal .mb{padding:14px}
+.modal .mf{border-top:1px solid var(--line2);padding:9px 14px;font-size:11.5px;color:var(--muted);
+           display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* 탭 */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin:0 0 14px}
+.tabs>span{padding:6px 13px;font-size:12.5px;border:1px solid transparent;border-bottom:none;
+           color:var(--muted);cursor:default}   /* 자식만 — 안에 배지가 들어갈 수 있다 */
+.tabs>span.on{border-color:var(--line);background:var(--bg);color:var(--ink);font-weight:600;
+              margin-bottom:-1px}
+.tabs .badge{display:inline-block;min-width:16px;height:16px;line-height:16px;text-align:center;
+             border-radius:8px;background:var(--err);color:#fff;font-size:10.5px;margin-left:5px}
+
+/* 폼 — 화면에 남는 폼은 조회조건 하나다 */
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;margin-bottom:3px}
+.f input,.f select,.f textarea{width:100%;padding:6px 8px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+.f .hint{font-size:11px;color:var(--muted);margin-top:3px}
+.f.ro input{background:var(--panel);color:var(--muted)}
+.btn{width:100%;padding:8px;border:1px solid var(--ink);background:var(--ink);
+     color:var(--bg);font:inherit;font-size:13px;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.sm{width:auto;padding:4px 11px;font-size:12px}
+.btn[disabled]{opacity:.35}
+.sub{text-align:center;margin-top:12px;font-size:12px}
+.row{display:flex;gap:8px;align-items:center}
+.row .btn{width:auto}
+
+/* 키-값 나열 (읽기 전용 정보) */
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:12.5px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+
+/* 설정 그룹 */
+.grp{border:1px solid var(--line2);margin-bottom:10px}
+.grp>b{display:block;background:var(--panel);border-bottom:1px solid var(--line2);
+       padding:5px 11px;font-size:12px}
+.grp .item{display:flex;justify-content:space-between;align-items:center;gap:12px;
+           padding:6px 11px;font-size:12.5px;border-bottom:1px solid var(--line2)}
+.grp .item:last-child{border-bottom:none}
+.grp .item .where{font-size:10.5px;color:var(--muted);white-space:nowrap}
+
+/* 목록 (알림·검색 결과·드롭다운·필터 메뉴) */
+.list{border:1px solid var(--line2);font-size:12.5px;background:var(--bg)}
+.list .it{padding:7px 11px;border-bottom:1px solid var(--line2);display:flex;
+          justify-content:space-between;align-items:center;gap:10px}
+.list .it:last-child{border-bottom:none}
+.list .it.unread{background:var(--note-bg)}
+.list .it .path{display:block;font-size:10.5px;color:var(--muted)}
+.list .it .when{color:var(--muted);font-size:11px;white-space:nowrap}
+.list .empty{padding:22px 11px;text-align:center;color:var(--muted);font-size:12px}
+.tag{display:inline-block;border:1px solid var(--line);padding:0 5px;font-size:10.5px;
+     color:var(--muted);border-radius:2px}
+
+/* 규칙 체크리스트 */
+.rules{list-style:none;margin:0 0 14px;padding:9px 11px;border:1px solid var(--line2);
+       background:var(--panel);font-size:11.5px;line-height:1.7}
+.rules li{padding-left:17px;position:relative}
+.rules li::before{position:absolute;left:0;font-weight:700}
+.rules .ok::before{content:"✓";color:var(--ok)}
+.rules .no::before{content:"✕";color:var(--err)}
+.rules .srv::before{content:"·";color:var(--muted)}
+.rules .srv{color:var(--muted)}
+.rules em{font-style:normal;opacity:.8}
+
+/* 배너 — 폼 상단 한 곳. 토스트(UX-10)도 이것으로 표현한다 */
+.banner{border:1px solid var(--err);background:var(--err-bg);color:var(--err);
+        padding:7px 10px;font-size:12.5px;margin-bottom:14px}
+.banner.info{border-color:var(--note);background:var(--note-bg);color:var(--note)}
+
+/* ── 그리드 어휘 다섯 ─────────────────────────────── */
+
+/* 검색 폼 — <SearchForm>(UX-15). 서버 조회 조건은 이것뿐이다 */
+.sf{border:1px solid var(--line2);background:var(--panel);padding:9px 11px;margin-bottom:8px;
+    display:grid;grid-template-columns:max-content 1fr max-content 1fr max-content 1fr;
+    gap:6px 9px;align-items:center;font-size:12px}
+.sf label{color:var(--muted);white-space:nowrap}
+.sf input,.sf select{width:100%;padding:3px 6px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:12px}
+.sf .wide{grid-column:span 3}
+.sf .act{grid-column:1/-1;text-align:right;padding-top:2px}
+
+/* 그리드 헤더 — 왼쪽 제목(.ttl), 오른쪽 버튼. 도구 둘(.ico)은 맨 오른쪽 고정 */
+.tb{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.tb .ttl{font-size:13px;font-weight:600;margin-right:auto;white-space:nowrap}
+.tb .ico{width:auto;padding:4px 8px;font-size:12px;white-space:nowrap}
+.tb .sp{flex:1}
+.tb .cnt{font-size:11.5px;color:var(--muted);white-space:nowrap}
+
+/* 그리드 본문 — <DataGrid> */
+.grid{border:1px solid var(--line);overflow:auto;max-height:260px}
+.grid table{margin:0;font-size:12px;border:none}
+.grid th{position:sticky;top:0;z-index:1}
+.grid td,.grid th{white-space:nowrap}
+.grid th .mn{float:right;color:var(--muted);font-weight:400;margin-left:8px}  /* 컬럼 메뉴 ☰ */
+.grid th .srt{color:var(--note)}                                             /* 정렬 표시 */
+.grid th.on{background:var(--note-bg)}                                       /* 필터 걸린 컬럼 */
+/* 헤더가 컬럼을 말한다. 색이 아니라 표시가 원본이다 */
+.grid th.req em{font-style:normal;color:var(--err);font-weight:700}          /* 필수 * */
+.grid th.roh{color:var(--muted);font-weight:400}                             /* 읽기 전용 컬럼 */
+/* 양끝 시스템 컬럼. 사용자가 숨기거나 옮길 수 없다 */
+.grid .st{width:26px;text-align:center;color:var(--muted)}
+.grid .del{width:34px;text-align:center;color:var(--muted)}
+.grid .pinL{border-right:2px solid var(--line)}   /* 좌 고정 ↔ 스크롤 경계 */
+.grid .pinR{border-left:2px solid var(--line)}    /* 스크롤 ↔ 우 고정 경계 */
+
+/* ── 셀과 행의 색 — 그리드 표준의 우선순위 여섯 ────────────────────
+   여섯이 전부 같은 명시도다. 그래서 나중에 쓴 것이 이긴다 —
+   6 → 1 순서로 적었고, 순서를 바꾸면 규약이 바뀐다.
+   행 규칙(tr.x td)이 셀 규칙(td.x)보다 명시도가 한 단계 높으므로
+   5(행 상태)가 6(컬럼 상태)을 이기는 것은 순서가 아니라 구조다.  */
+
+/* 6. 컬럼 상태 — 정적이므로 다른 것이 없을 때의 바탕 */
+.grid td.req{background:var(--req-bg)}                       /* 필수 입력 */
+.grid td.ro {background:var(--panel);color:var(--muted)}     /* 읽기 전용 */
+                                                             /* 편집 가능은 칠하지 않는다 */
+/* 5. 행 상태 — 상태 컬럼 아이콘이 원본이다 */
+.grid tr.new td{background:var(--row-new)}
+.grid tr.mod td{background:var(--row-mod)}
+.grid tr.rmv td{color:var(--muted);text-decoration:line-through}  /* 배경이 아니라 글자다 */
+/* 4. 현재 선택 행 — Primary 가장 옅은 단계 */
+.grid tr.sel td{background:var(--pri-1)}
+/* 3. 현재 선택 셀 — 한 단계 진한 것 + 테두리 */
+.grid tr td.cur{background:var(--pri-2);outline:1px solid var(--pri);outline-offset:-1px}
+/* 2. 편집 중인 셀 — 테두리는 Primary 원색, 배경은 바탕(입력 글자가 읽혀야 한다) */
+.grid tr td.edit{background:var(--bg);color:var(--ink);outline:2px solid var(--pri);outline-offset:-2px}
+/* 1. 검증 실패 — 유일하게 Primary 와 무관하다 */
+.grid tr td.err{background:var(--err-bg);outline:1px solid var(--err);outline-offset:-1px}
+
+/* ── 스위치 — 값이 둘인 데이터 셀 ──────────
+   ynFlag 컬럼과 권한 트리 셀이 같은 것을 쓴다. 체크박스가 아니다.
+   켜짐 색은 Primary 에서 온다.
+   여럿을 고르는 자리는 여전히 체크박스다 — 행 선택 · set 필터 ·
+   그리드 설정의 컬럼 표시.                                      */
+.swt{display:inline-block;width:24px;height:13px;border:1px solid var(--line);
+     border-radius:7px;background:var(--panel);position:relative;vertical-align:-2px}
+.swt::after{content:"";position:absolute;top:1px;left:1px;width:9px;height:9px;
+            border-radius:50%;background:var(--muted)}
+.swt.on{background:var(--pri);border-color:var(--pri)}
+.swt.on::after{left:12px;background:var(--bg)}
+.swt.dis{opacity:.45}          /* 비활성 — 입력 칸이 아니라 상태 표시로 읽힌다 */
+
+/* 색 견본 — 화면 9 */
+.sw{display:inline-block;width:30px;height:14px;border:1px solid var(--line);
+    vertical-align:-2px;margin-right:6px}
+
+/* 그리드 푸터 — 건수 · 네비게이션 · 페이지 사이즈 */
+.pg{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+    padding:6px 2px;font-size:11.5px;color:var(--muted)}
+.pg .nav{text-align:center}
+.pg .size{text-align:right}
+.pg b{color:var(--ink)}
+
+/* 마스터-디테일 스플리터. 축이 둘이고 접기 화살표가 붙는다 */
+.split{height:13px;margin:9px 0;border-top:1px solid var(--line2);
+       border-bottom:1px solid var(--line2);background:var(--panel);
+       display:flex;align-items:center;justify-content:center;gap:4px;
+       font-size:9px;color:var(--muted);cursor:row-resize}
+.split .hnd{letter-spacing:2px;line-height:1}                 /* 끄는 손잡이 */
+.split .arw{border:1px solid var(--line);background:var(--bg);color:var(--muted);
+            font-size:8px;line-height:10px;padding:0 4px;cursor:default}
+.split .arw.off{opacity:.3}          /* 반대쪽이 이미 접혔다 — 둘 다 접히지 않는다 */
+/* 세로 축 — 좌우 배치 */
+.split.v{height:auto;width:13px;margin:0 9px;flex-direction:column;
+         border:none;border-left:1px solid var(--line2);border-right:1px solid var(--line2);
+         cursor:col-resize}
+.splitrow{display:flex;align-items:stretch}
+.splitrow>.pane{flex:1;min-width:0}
+/* 접힌 쪽 — 제목 줄만 남는다. 없는 것과 다르다 */
+.folded{border:1px solid var(--line2);background:var(--panel);padding:6px 10px;
+        font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.folded .why{font-weight:400;font-size:11px;color:var(--muted);margin-left:auto}
+
+/* ── 브레드크럼 줄 ──────────────────────────────────
+   줄은 셸의 것이고 오른쪽 슬롯은 화면이 채운다. 리프 목업이 셸
+   크롬을 그리지 않는 규약의 유일한 예외이며, 그리지 않으면
+   조회조건 컨트롤(UX-07 · UX-15)을 보일 자리가 없다.            */
+.bc{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+    border:1px solid var(--line2);background:var(--panel);
+    padding:4px 10px;margin-bottom:8px;font-size:12px;color:var(--muted)}
+.bc .path{margin-right:auto;white-space:nowrap}
+.bc .path b{color:var(--ink)}
+.bc .btn{width:auto;padding:2px 8px;font-size:11.5px}
+
+/* 주석 — 화면 요소 ↔ 문서 결정 연결 */
+.notes{border-left:3px solid var(--note);background:var(--note-bg);padding:10px 14px;font-size:12.5px}
+.notes ol{margin:0;padding-left:18px}
+.notes li{margin:3px 0}
+.n{display:inline-block;min-width:17px;height:17px;line-height:17px;text-align:center;
+   border-radius:50%;background:var(--note);color:#fff;font-size:11px;margin-right:5px}
+
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
+th,td{border:1px solid var(--line2);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:600;white-space:nowrap}
+td.c{white-space:nowrap;font-family:Consolas,monospace;font-size:12px}
+
+.todo{border:1px dashed var(--line);padding:10px 14px;font-size:12.5px;background:var(--panel)}
+.todo ul{margin:4px 0 0;padding-left:18px}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line2);
+       font-size:11.5px;color:var(--muted)}
+
+
+/* ── 이 목업만의 어휘 넷 ──────────────────────────────
+   편집 그리드이므로 그리드 표준의 색이 전부 살아 있다. 더하는 것은
+   결과 배지(tone 맵) · 긴 텍스트 링크 · 확인 다이얼로그
+   안의 BATCH_DESC 블록 · 신설 컬럼 표시다.                      */
+.grid td.num,.grid th.num{text-align:right}
+.grid td .lnk{color:var(--note);text-decoration:underline;cursor:default}
+.grid td .nil{color:var(--muted)}
+.grid td.cut{max-width:210px;overflow:hidden;text-overflow:ellipsis}
+.mut{color:var(--muted);font-size:11px}
+/* 결과 배지 — tone 맵이 정한다 */
+.bdg{display:inline-block;border:1px solid var(--line);color:var(--muted);
+     padding:0 5px;font-size:10.5px;border-radius:2px}
+.bdg.ok{border-color:var(--ok);color:var(--ok)}
+.bdg.err{border-color:var(--err);color:var(--err)}
+.bdg.warn{border-color:#a67c00;color:#a67c00}
+@media (prefers-color-scheme: dark){ .bdg.warn{border-color:#d4a72c;color:#d4a72c} }
+/* 확인 다이얼로그 안의 BATCH_DESC — 인프라 데이터 모델을 그대로 읽어 준다 */
+.desc{border-left:3px solid var(--line);background:var(--panel);
+      padding:8px 11px;margin:8px 0;font-size:12.5px;line-height:1.65}
+.desc b{display:block;margin-bottom:2px}
+.ta{width:100%;height:110px;border:1px solid var(--line);background:var(--bg);
+    color:var(--ink);font:12px/1.55 Consolas,monospace;padding:8px;resize:none}
+</style>
+<main>
+
+<!-- ── 개요 바 ─────────────────────────────────────────────── -->
+<h1>요청함 처리</h1>
+<div class="head">
+  <dl>
+    <dt>화면코드</dt><dd><code>noti-request</code></dd>
+    <dt>요건서</dt><dd><a href="requirements.md">requirements.md</a></dd>
+    <dt><code>MENU_CD</code></dt><dd><code>NOTI_REQUEST</code> (상위 <code>NOTICE</code>)</dd>
+    <dt>라우트</dt><dd><code>/noti-request</code> · 셸 안의 탭</dd>
+    <dt>담는 기능</dt><dd>NOTI-06 (<b>관리자 측</b>) — 사용자 측은 알림 모달의 <i>내 요청</i> 탭이다(<code>noti-inbox.html</code> §4)</dd>
+    <dt>액션</dt><dd><b><code>R</code> <code>S</code></b> — <b><code>S</code> 가 셀 저장이 아니다.</b>
+      처리·반려 실행이며 <code>SYS_NOTI_REQUEST</code> 의 컬럼 넷을 쓴다(사용자 화면 설계의 기준)</dd>
+    <dt>형태</dt><dd>마스터 그리드 + <b>처리 모달</b>. <b>편집 열이 통째로 없다</b> — 62~65 를 통틀어 처음이다</dd>
+    <dt>다루는 것</dt><dd><b>대기열이다.</b> 정렬이 <b>오름차순</b>이고(화면 1) 조회조건 기본값이
+      <code>접수</code> 하나다 — <b>할 일 목록</b>이지 이력이 아니다</dd>
+  </dl>
+</div>
+
+<!-- ── 화면 1 ─────────────────────────────────────────────── -->
+<h2>1. 기본 상태 &mdash; <b>대기열은 오래 기다린 것이 먼저다</b></h2>
+
+<div class="screen leaf" id="main" data-manual="main">
+  <div class="bar">/noti-request &mdash; 리프 화면이라 셸 크롬을 그리지 않는다. <b>브레드크럼 줄만 예외</b>다</div>
+  <div class="body">
+
+    <div class="bc">
+      <span class="path">시스템 &rsaquo; 공지 · 알림 &rsaquo; <b>요청함 처리</b></span>
+      <button class="btn sm ghost" type="button" title="저장된 조회조건 — UX-07">조건 &#9662;</button>
+      <button class="btn sm ghost" type="button" title="조회조건 접기/펼치기 — UX-15">&#8963; 조회조건</button>
+    </div>
+
+    <div class="sf">
+      <label>요청일시</label>
+      <span class="wide"><input placeholder="시작" style="width:47%"> ~ <input placeholder="종료" style="width:47%"></span>
+      <label><b>상태</b></label><select multiple size="1"><option selected>접수</option></select>
+      <label>유형</label><select><option>전체</option><option>권한 신청</option><option>잠금 해제</option><option>기타</option></select>
+      <label>요청자</label><input placeholder="부분 일치">
+      <div class="act"><button class="btn sm ghost" type="button">초기화</button></div>
+    </div>
+
+    <div class="tb">
+      <span class="ttl">요청함 <span class="cnt">접수 4건</span></span>
+      <span class="sp"></span>
+      <button class="btn sm ghost" type="button">&#128269; 조회</button>
+      <button class="btn sm ghost" type="button">처리 <span class="n">4</span></button>
+      <button class="btn sm ghost" type="button">반려</button>
+      <button class="btn sm ghost ico" type="button" title="그리드 설정">&#9881; <span class="n">6</span></button>
+    </div>
+
+    <div class="grid" style="max-height:250px">
+      <table>
+        <thead><tr>
+          <th class="st"></th>
+          <th>요청일시 <span class="srt">&#9650;</span> <span class="n">1</span></th>
+          <th>요청자</th>
+          <th class="roh">유형 <span class="n">2</span></th>
+          <th>요청 내용 <span class="n">3</span></th>
+          <th class="roh">상태</th>
+          <th class="roh">처리자</th>
+          <th class="roh">처리일시</th>
+          <th class="roh">처리 메모</th>
+        </tr></thead>
+        <tbody>
+          <tr class="sel">
+            <td class="st"></td><td class="ro">2026-08-20 14:02</td><td class="ro">김운영</td>
+            <td class="ro"><span class="bdg warn">잠금 해제</span></td>
+            <td class="ro cut" title="비밀번호를 5회 틀려 잠겼습니다. 해제 부탁드립니다.">비밀번호를 5회 틀려 잠겼습니다. 해제…</td>
+            <td class="ro"><span class="bdg">접수</span></td>
+            <td class="ro"><span class="nil">&mdash;</span></td><td class="ro"><span class="nil">&mdash;</span></td>
+            <td class="ro"><span class="nil">&mdash;</span></td></tr>
+          <tr>
+            <td class="st"></td><td class="ro">2026-08-25 09:31</td><td class="ro">박정산</td>
+            <td class="ro"><span class="bdg">권한 신청</span></td>
+            <td class="ro cut" title="야간 정산 배치를 직접 재실행해야 하는 경우가 있어 배치 실행 권한을 신청합니다.">야간 정산 배치를 직접 재실행해야 하는…</td>
+            <td class="ro"><span class="bdg">접수</span></td>
+            <td class="ro"><span class="nil">&mdash;</span></td><td class="ro"><span class="nil">&mdash;</span></td>
+            <td class="ro"><span class="nil">&mdash;</span></td></tr>
+          <tr>
+            <td class="st"></td><td class="ro">2026-08-26 11:04</td><td class="ro">이재고</td>
+            <td class="ro"><span class="bdg">권한 신청</span></td>
+            <td class="ro cut">정산 조회 메뉴 접근을 신청합니다.</td>
+            <td class="ro"><span class="bdg">접수</span></td>
+            <td class="ro"><span class="nil">&mdash;</span></td><td class="ro"><span class="nil">&mdash;</span></td>
+            <td class="ro"><span class="nil">&mdash;</span></td></tr>
+          <tr>
+            <td class="st"></td><td class="ro">2026-08-28 16:47</td><td class="ro">최문의</td>
+            <td class="ro"><span class="bdg">기타</span></td>
+            <td class="ro cut">엑셀 다운로드가 5만 건에서 막힙니다.</td>
+            <td class="ro"><span class="bdg">접수</span></td>
+            <td class="ro"><span class="nil">&mdash;</span></td><td class="ro"><span class="nil">&mdash;</span></td>
+            <td class="ro"><span class="nil">&mdash;</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>총 <b>4</b>건 · <b>1</b>페이지</span>
+      <span class="nav">&lsaquo; <b>1</b> &rsaquo;</span><span class="size">50건씩 &#9662; <span class="n">5</span></span></div>
+
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b>요청일시 오름차순이다 &mdash; 로그 화면과 반대다.</b>
+        64 의 이력 3종은 <i>"방금 무슨 일이 있었나"</i> 를 묻지만 <b>처리함은 대기열</b>이고,
+        대기열은 <b>오래 기다린 것이 먼저</b>다. 최신을 위에 두면
+        <b>가장 오래 방치된 요청이 목록 맨 아래로 밀려 영원히 안 보인다.</b>
+        tie-breaker 는 <code>REQ_ID ASC</code> 다.</li>
+    <li><span class="n">2</span><b>유형과 상태는 공통코드가 아니다</b> &mdash;
+        값은 소스가 분기하고 <b>라벨만 메시지 키</b>(<code>notiReq.type.*</code> · <code>notiReq.stat.*</code>)다.
+        <b>배지는 값이 아니라 <code>display</code> 를 그린다</b>:
+        라벨로 저장하면 <code>set</code> 필터와 정렬이 라벨을 보게 된다.</li>
+    <li><span class="n">3</span><b>요청 내용은 <code>VARCHAR(2000)</code> 인데 긴 텍스트 뷰어로 연다</b>(화면 2).
+        <b><code>largeText</code> 다</b> — 처음에는 <code>textModal</code> 로 적었는데 <b>그 어휘에는 구현이
+        없다</b>(컬럼 계약 열한째 · <code>notice.html</code> §2 가 같은 정정을 담는다).
+        컬럼 계약이 <i>"길이가 타입과 무관하다"</i> 고 한 것이 <b>반대 방향에서 확인되는 첫 자리</b>다 &mdash;
+        <code>nclob</code> 이 아니어도 셀 한 줄에 안 들어간다.</li>
+    <li><span class="n">4</span><b>편집 열이 통째로 없다.</b> 지금까지의 화면을 통틀어 처음이며 <b>그리드 표준</b>
+        (<i>"그리드가 목록이자 편집 화면"</i>)의 <b>예외</b>다. 이유가 셋이다 &mdash;
+        처리는 <b>저장이 아니라 판정</b>이고, <b>부수 효과가 있고</b>(화면 3 · 4),
+        <b>반려는 두 값을 함께 강제</b>해야 하는데 셀 하나로는 안 된다.</li>
+    <li><span class="n">5</span><b>50건씩이다</b> &mdash; 처리 대기를 훑는 화면이라
+        넘기며 보는 것보다 한눈에 보는 것이 낫다. <code>notice.html</code> 은 20건이다.</li>
+    <li><span class="n">6</span><b>②가 없다.</b> <code>E</code> 액션이 없으므로 감춘다 &mdash;
+        <code>notice.html</code> 과 함께 <b>두 번째·세 번째 실물</b>이다.
+        요청은 개인이 낸 글이라 <b>내려받아 돌려 볼 업무 데이터가 아니다</b>(메뉴 목록의 판단과 같은 방향).</li>
+    <li><b>조회조건 기본값이 <code>접수</code> 하나다</b>. 전체를 기본으로 두면
+        <b>처리된 것이 대기 중인 것을 덮는다</b> &mdash; <code>notice.html</code> 의 게시 상태
+        기본값과 방향이 같고 <b>더 좁다</b>.</li>
+    <li><b>삭제 컬럼이 없다.</b> 요청은 이력이며 지우면 <i>"그때 뭘 요청했었나"</i> 의 답이 사라진다.
+        보존은 기간이 맡는다 &mdash; <b>그 기간이 아직 미정</b>이다.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 2 ─────────────────────────────────────────────── -->
+<h2>2. 요청 내용 &mdash; <b>읽기 전용이어도 열린다</b></h2>
+
+<div class="screen shell">
+  <div class="body">
+    <div class="modal">
+      <div class="mh"><span>요청 내용 &mdash; <span class="mut">박정산 · 2026-08-25 09:31</span></span><span class="x">&#10005;</span></div>
+      <div class="mb">
+        <textarea class="ta" readonly>야간 정산 배치를 직접 재실행해야 하는 경우가 있어 배치 실행 권한을 신청합니다.
+
+지난주 8/19, 8/22 두 번 야간 정산이 SKIP 되어 운영팀에 재실행을 요청했는데,
+연락이 닿는 데 오래 걸렸습니다. 정산 마감 시간 안에 처리하려면 직접 돌릴 수 있어야 합니다.</textarea>
+        <div class="mut" style="margin-top:6px">읽기 모드 &mdash; <b>고칠 수 없고 복사는 된다</b> <span class="n">1</span></div>
+      </div>
+      <div class="mf"><span></span>
+        <span class="row"><button class="btn sm ghost" type="button">닫기</button></span></div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b><code>editable: false</code> 가 <i>못 본다</i> 를 뜻하지 않는다</b>.
+        긴 텍스트는 <b>열어야만 보이므로</b> 읽기 전용 컬럼도 에디터를 <b>읽기 모드로 연다</b> &mdash;
+        그 절이 <i>"거부 메시지가 나오지 않는 유일한 읽기 전용 컬럼"</i> 이라고 한 그것이다.
+        편집·검증 규약의 <i>"읽기 전용 셀입니다"</i> 가 <b>여기서는 나오지 않는다</b> &mdash;
+        <b>거부할 것이 아니라 보여줄 것</b>이기 때문이다.</li>
+    <li><b>처리 메모도 같다.</b> 처리된 행의 <code>HANDLE_MEMO</code> 를 더블 클릭하면
+        같은 모달이 읽기 모드로 열린다.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 3 ─────────────────────────────────────────────── -->
+<h2>3. 처리 &mdash; <b>메모가 선택이다</b></h2>
+
+<div class="screen shell">
+  <div class="body">
+    <div class="modal">
+      <div class="mh"><span>처리</span><span class="x">&#10005;</span></div>
+      <div class="mb">
+        요청 <b>1</b>건을 <b>처리 완료</b>로 표시합니다.
+        <div class="grp" style="margin-top:8px">
+          <div class="item">박정산 &mdash; 배치 실행 권한 신청 <span class="where">2026-08-25</span></div>
+        </div>
+        <div class="f" style="margin-top:10px">
+          <label>처리 메모</label>
+          <textarea class="ta" style="min-height:70px" placeholder="선택 — 요청자에게 그대로 전달됩니다"></textarea>
+          <div class="hint">비우면 기본 문구가 갑니다 &mdash; <i>"요청이 처리되었습니다."</i> <span class="n">1</span></div>
+        </div>
+        <div class="banner info" style="margin-top:8px">
+          확인하면 <b>요청자의 알림함에 행이 하나 생깁니다</b> &mdash; 같은 트랜잭션입니다. <span class="n">2</span>
+        </div>
+      </div>
+      <div class="mf"><span></span>
+        <span class="row"><button class="btn sm ghost" type="button">취소</button><button class="btn sm" type="button">확인</button></span></div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b>처리 메모는 선택이고 반려 사유는 필수다</b>(화면 4).
+        <b>비대칭이 의도다</b> &mdash; 파일·알림 데이터 모델이 <code>REJECTED</code> 에만
+        <i>"<code>HANDLE_MEMO</code> 필수"</i> 라고 적었고 이 화면이 그것을 집행한다.
+        처리는 <b>결과 자체가 답</b>이지만 반려는 <b>이유가 없으면 답이 아니다</b>.</li>
+    <li><span class="n">2</span><b>이 화면이 <code>SYS_NOTI_INBOX</code> 의 첫 생산자다</b>.
+        셸 표준이 <i>"상태가 바뀌면 그것이 내 알림으로 온다"</i> 고 적은 알림을 여기서 넣는다.
+        <b>같은 트랜잭션</b>이며 &mdash; 파일·알림 데이터 모델의 <i>"DB 에 행을 쓰는 것이 곧 도달"</i> 그대로다.
+        <b><code>outbox</code> 도 릴레이도 없다</b>: 외부 채널이 없는 배포이므로
+        지나갈 곳이 없는 테이블이다.</li>
+    <li><b><code>LINK_MENU_CD</code> 는 <code>NULL</code> 이다</b> &mdash;
+        요청 결과를 보러 갈 <b>메뉴가 요청자에게 없다</b>. <code>NOTI_REQUEST</code> 는 관리자 메뉴이고
+        요청자가 보는 자리는 <b>알림 모달의 탭</b>인데 <b>탭에는 <code>MENU_CD</code> 가 없다</b>.
+        파일·알림 데이터 모델이 <i>"NULL 이면 이동 없음"</i> 으로 이미 열어 둔 자리다.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 4 ─────────────────────────────────────────────── -->
+<h2>4. 반려 &mdash; <b>사유가 필수다</b></h2>
+
+<div class="screen shell" id="reject" data-manual="reject">
+  <div class="body">
+    <div class="modal">
+      <div class="mh"><span>반려</span><span class="x">&#10005;</span></div>
+      <div class="mb">
+        요청 <b>1</b>건을 <b>반려</b>합니다. <b>사유가 요청자에게 전달됩니다.</b> <span class="n">1</span>
+        <div class="grp" style="margin-top:8px">
+          <div class="item">김운영 &mdash; 잠금 해제 요청 <span class="where">2026-08-20</span></div>
+        </div>
+        <div class="f" style="margin-top:10px">
+          <label>반려 사유 <em>*</em></label>
+          <textarea class="ta" style="min-height:70px"></textarea>
+          <div class="hint" style="color:#b42318">사유를 입력하세요 <span class="n">2</span></div>
+        </div>
+      </div>
+      <div class="mf"><span>사유가 비면 확인이 비활성이다</span>
+        <span class="row"><button class="btn sm ghost" type="button">취소</button><button class="btn sm" type="button" disabled>확인</button></span></div>
+    </div>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th></th><th><code>처리</code></th><th><code>반려</code></th></tr></thead>
+  <tbody>
+    <tr><td>결과 상태</td><td><code>DONE</code></td><td><code>REJECTED</code></td></tr>
+    <tr><td><code>HANDLE_MEMO</code></td><td><b>선택</b></td><td><b>필수</b></td></tr>
+    <tr><td>확인 문구</td><td>무엇을 몇 건</td><td><b>+ 사유가 상대에게 간다</b></td></tr>
+    <tr><td>API</td><td colspan="2"><b>같다</b> &mdash; <code>POST /api/service/notiRequest/updateHandle</code>. <code>reqStatCd</code> 가 가른다</td></tr>
+  </tbody>
+</table>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b>확인 문구를 실행이 지정한다</b> &mdash; 그리드 API 계약의
+        <code>confirm: string</code> 이 batch-history 의 <i>중단</i> 에 이어 <b>두 번째로 쓰이는 자리</b>다.
+        일반 문구는 <b>무엇을 몇 건</b> 만 말하는데, 반려에서 중요한 것은
+        <b>사유가 상대에게 간다는 사실</b>이다 &mdash; 그것을 모르고 쓴 메모가 그대로 나간다.</li>
+    <li><span class="n">2</span><b>사유 없는 반려는 요청자에게 아무 정보도 주지 않는다.</b>
+        그러면 같은 요청을 다시 내고, <b>워크플로를 만들지 않기로 한 대가</b>가
+        실제 비용이 된다 &mdash; 단계가 없으므로 <b>한 번의 답이 전부</b>여야 한다.</li>
+    <li><b>처리와 반려가 한 API 인 이유</b> &mdash; 쓰는 컬럼이 같고 트랜잭션이 같다.
+        둘로 가르면 <b>알림 INSERT 코드가 두 벌</b>이 되고 한쪽만 고치는 날이 온다.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 5 ─────────────────────────────────────────────── -->
+<h2>5. 이미 처리된 행이 섞였을 때 &mdash; <b>전부 막는다</b></h2>
+
+<div class="screen leaf">
+  <div class="bar">/noti-request &mdash; 상태 조건을 비워 전체를 보고 있고, 접수와 처리 완료를 함께 골랐다</div>
+  <div class="body">
+    <div class="tb">
+      <span class="ttl">요청함 <span class="cnt">2건 선택</span></span>
+      <span class="sp"></span>
+      <button class="btn sm ghost" type="button">&#128269; 조회</button>
+      <button class="btn sm ghost" type="button" disabled>처리</button>
+      <button class="btn sm ghost" type="button" disabled>반려 <span class="n">1</span></button>
+    </div>
+    <div class="grid">
+      <table>
+        <thead><tr><th class="st"></th><th>요청일시</th><th>요청자</th><th class="roh">유형</th>
+          <th class="roh">상태</th><th class="roh">처리자</th><th class="roh">처리일시</th><th class="roh">처리 메모</th></tr></thead>
+        <tbody>
+          <tr class="sel"><td class="st"></td><td class="ro">2026-08-20 14:02</td><td class="ro">김운영</td>
+            <td class="ro"><span class="bdg warn">잠금 해제</span></td>
+            <td class="ro"><span class="bdg">접수</span></td>
+            <td class="ro"><span class="nil">&mdash;</span></td><td class="ro"><span class="nil">&mdash;</span></td>
+            <td class="ro"><span class="nil">&mdash;</span></td></tr>
+          <tr class="sel"><td class="st"></td><td class="ro">2026-08-18 10:12</td><td class="ro">정예전</td>
+            <td class="ro"><span class="bdg">권한 신청</span></td>
+            <td class="ro"><span class="bdg ok">처리</span></td>
+            <td class="ro">관리자</td><td class="ro">2026-08-19 09:20</td>
+            <td class="ro cut">역할 BATCH_OP 를 부여했습니다.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="banner" style="margin-top:8px">
+      선택에 <b>이미 처리된 요청</b>이 있습니다 &mdash; <code>접수</code> 상태만 처리할 수 있습니다. <span class="n">2</span>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b>버튼이 비활성이다 &mdash; 눌러서 안내를 받지 않는다</b>.
+        batch-schedule 의 <i>선택 없이 즉시 실행</i> 과 같은 규칙이며, 여기는
+        <b>선택이 있는데도 비활성</b>인 경우다.</li>
+    <li><span class="n">2</span><b>섞이면 전부 막는다 &mdash; 처리 가능한 것만 골라 실행하지 않는다.</b>
+        일부만 처리하면 <b>알림이 일부에게만 나가고</b> 사용자는 무엇이 처리됐는지 모른다.
+        <b>되돌리는 길이 없으므로</b>(아래) 부분 성공을 만들지 않는다.</li>
+    <li><b>되돌아가는 전이가 없다</b>. <code>DONE</code>·<code>REJECTED</code> 에서
+        <code>RECEIVED</code> 로 가는 길을 두지 않는 이유는 <b>알림이 이미 나갔기 때문</b>이다 &mdash;
+        상태를 되돌려도 <b>요청자가 받은 알림은 회수되지 않는다</b>.
+        잘못 처리했으면 <b>요청자가 다시 내고 그것이 새 행</b>이다.</li>
+    <li><b>넷째 상태를 요구하는 목소리</b>(<i>검토 중</i> · <i>보류</i>)는 <b>컬럼이 아니라 범위의 문제</b>다
+       . 그 이상이 필요하면 신청 메뉴와 승인 메뉴를 분리해 <b>권한으로 표현</b>한다.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 6 ─────────────────────────────────────────────── -->
+<h2>6. 빈 상태 &mdash; <b>비어 있는 것이 정상인 유일한 화면이다</b></h2>
+
+<div class="screen leaf">
+  <div class="bar">/noti-request &mdash; 상태 = <code>접수</code>(기본값) 이고 0건이다</div>
+  <div class="body">
+    <div class="sf">
+      <label>요청일시</label>
+      <span class="wide"><input style="width:47%"> ~ <input style="width:47%"></span>
+      <label><b>상태</b></label><select><option>접수</option></select>
+      <label>유형</label><select><option>전체</option></select>
+      <div class="act"><button class="btn sm ghost" type="button">초기화</button></div>
+    </div>
+    <div class="tb"><span class="ttl">요청함</span><span class="sp"></span>
+      <button class="btn sm ghost" type="button">&#128269; 조회</button>
+      <button class="btn sm ghost" type="button" disabled>처리</button>
+      <button class="btn sm ghost" type="button" disabled>반려</button></div>
+    <div class="grid" style="min-height:120px">
+      <div class="list"><div class="empty">처리할 요청이 없습니다. <span class="n">1</span></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b><i>"조회 결과가 없습니다"</i> 가 아니다</b>(로그 화면 설계와 같은 규칙).
+        대기열이 비었다는 것은 <b>좋은 소식</b>이고 그렇게 읽혀야 한다 &mdash;
+        <code>notice.html</code> 화면 5 의 <i>"현재 게시 중인 공지가 없습니다"</i> 와 같은 방향이다.</li>
+    <li><b>다른 조건의 0건은 일반 문구다.</b> 요청자로 걸러 0건인 것은 검색 결과이지 진단이 아니다.</li>
+  </ol>
+</div>
+
+<!-- ── 테스트 케이스 ───────────────────────────────────────── -->
+<h2>7. 테스트 케이스 &mdash; 주석의 주장을 전부 덮는다</h2>
+
+<p class="mut">주석은 <b>"왜 이렇게 그렸는가"</b> 를 말하고, 여기는 <b>"그것이 지켜졌는가"</b> 를 묻는다.
+<b>근거가 빈 케이스는 지어낸 것이다</b> — 문서 절이나 이 파일의 주석 번호를 가리킨다.
+<b>되면 안 되는 것</b>도 함께 넣는다.</p>
+
+<h3>목록 · 대기열 (화면 1)</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">NR-01</td><td>기본 조회</td><td><b>오래된 것이 위</b> &mdash; 요청일시 오름차순이다</td><td>§1 주석 1</td></tr>
+    <tr><td class="c">NR-02</td><td>같은 시각의 요청 둘</td><td>순서가 <b>매 조회 같다</b> &mdash; <code>REQ_ID ASC</code> tie-breaker</td><td>§1 주석 1</td></tr>
+    <tr><td class="c">NR-03</td><td>화면을 열었을 때의 상태 조건</td><td><b><code>접수</code> 하나</b>다 &mdash; 전체가 아니다</td><td>§1 주석 7</td></tr>
+    <tr><td class="c">NR-04</td><td>아무 셀이나 더블 클릭해 고쳐 본다</td><td><b>편집되지 않는다</b> &mdash; 편집 열이 통째로 없다</td><td>§1 주석 4 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">NR-05</td><td>상태 셀을 직접 <code>처리</code> 로 바꾼다</td><td><b>경로가 없다</b> &mdash; 모달로만 바뀐다</td><td>§1 주석 4 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">NR-06</td><td>삭제 컬럼을 찾는다</td><td><b>없다</b> &mdash; 요청은 이력이다</td><td>§1 주석 8 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">NR-07</td><td>엑셀 버튼(②)을 찾는다</td><td><b>없다</b> &mdash; <code>E</code> 액션이 없다</td><td>§1 주석 6 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">NR-08</td><td>유형 <code>set</code> 필터를 연다</td><td>후보가 <b>코드값</b>에서 모이고 <b>이름만 붙는다</b></td><td>§1 주석 2</td></tr>
+    <tr><td class="c">NR-09</td><td>유형에 새 값을 추가하려 한다</td><td><b>공통 코드 관리에 없다</b> &mdash; 소스가 갖는다</td><td>(되면 안 되는 것)</td></tr>
+  </tbody>
+</table>
+
+<h3>처리 · 반려 (화면 2 · 3 · 4 · 5)</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">NR-10</td><td>요청 내용 셀을 더블 클릭</td><td><b>읽기 모드 모달</b>이 열린다 &mdash; 거부 메시지가 아니다</td><td>§2 주석 1</td></tr>
+    <tr><td class="c">NR-11</td><td>그 모달에서 내용을 고쳐 본다</td><td><b>안 된다.</b> 복사는 된다</td><td>§2 주석 1 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">NR-12</td><td>선택 없이 처리</td><td><b>버튼이 비활성</b>이다</td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">NR-13</td><td>메모를 비우고 <b>처리</b> 확인</td><td><b>된다</b> &mdash; 기본 문구가 간다</td><td>§3 주석 1</td></tr>
+    <tr><td class="c">NR-14</td><td>사유를 비우고 <b>반려</b> 확인</td><td><b>확인이 비활성</b>이다</td><td>§4 주석 2 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">NR-15</td><td>반려 확인 문구</td><td><b>사유가 요청자에게 간다</b>고 말한다 &mdash; 건수만이 아니다</td><td><code>confirm</code> · §4 주석 1</td></tr>
+    <tr><td class="c">NR-16</td><td>처리 확인 직후 요청자로 로그인</td><td>알림함에 <b>행이 하나</b> 늘고 <b>벨 배지가 는다</b></td><td>§3 주석 2</td></tr>
+    <tr><td class="c">NR-17</td><td>그 알림의 <i>이동</i> 버튼</td><td><b>없다</b> &mdash; <code>LINK_MENU_CD</code> 가 <code>NULL</code> 이다</td><td>§3 주석 3 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">NR-18</td><td>처리 트랜잭션이 롤백된다</td><td><b>알림도 없다</b> &mdash; 같은 트랜잭션이다</td><td>§3 주석 2</td></tr>
+    <tr><td class="c">NR-19</td><td>접수와 처리 완료를 함께 고른다</td><td><b>버튼 전부 비활성</b> &mdash; 부분 실행하지 않는다</td><td>§5 주석 1·2 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">NR-20</td><td>처리된 요청을 <code>접수</code> 로 되돌린다</td><td><b>경로가 없다</b> &mdash; 알림이 이미 나갔다</td><td>§5 주석 3 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">NR-21</td><td><i>보류</i> 상태를 찾는다</td><td><b>없다</b> &mdash; 셋에서 닫는다</td><td>§5 주석 4 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">NR-22</td><td>요청자가 <b>미사용 계정</b>이 된 뒤 처리</td><td>이름 옆 <code>(미사용)</code> · <b>처리되고 알림도 들어간다</b></td><td>—</td></tr>
+    <tr><td class="c">NR-22b</td><td><code>(삭제된 사용자)</code> 표시를 찾는다</td><td><b>없다</b> &mdash; <code>SYS_USER</code> 는 물리 삭제를 하지 않는다</td><td>USER-02 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">NR-23</td><td>기본 조건으로 0건</td><td><i>"처리할 요청이 없습니다"</i> &mdash; 진단으로 읽힌다</td><td>§6 주석 1</td></tr>
+  </tbody>
+</table>
+
+<h3>사용자 측과의 계약 (<code>noti-inbox.html</code> §4)</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">NR-24</td><td>사용자가 알림 모달에서 요청을 처리하려 한다</td><td><b>불가</b> &mdash; 자기 요청의 <b>상태 확인</b>만이다</td><td><code>noti-inbox.html</code> 주석 5 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">NR-25</td><td>내 요청 탭의 배지</td><td><b>없다</b> &mdash; 내가 보낸 것이라 <i>읽지 않음</i> 이 성립하지 않는다</td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">NR-26</td><td>이 화면에 권한이 없는 사용자가 딥링크로 진입</td><td><code>&lt;Forbidden&gt;</code> &mdash; 콘텐츠 전체</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<!-- ── 확인 목록 ───────────────────────────────────────────── -->
+<h2>8. 이 목업으로 확인할 것</h2>
+
+<div class="todo">
+  <b>이 화면이 규약에 되돌려 준 것</b>
+  <ul>
+    <li><b>읽기 전용 그리드의 첫 실물</b> &mdash; 편집 열이 통째로 없다.
+        <b>판정에 부수 효과가 있으면 셀 편집이 아니다</b>(§1 주석 4).</li>
+    <li><b>긴 텍스트 뷰어가 <code>nclob</code> 밖에서 처음 쓰인다</b>(쓰인 것은
+ <code>largeText</code> 다) &mdash;
+        <code>REQ_CONTENT</code> 는 <code>VARCHAR(2000)</code> 이다.
+        <i>"길이가 타입과 무관하다"</i> 가 <b>반대 방향에서 확인된다</b>(§1 주석 3).</li>
+    <li><b>대기열 화면은 오름차순이다</b>(로그 화면 설계와 반대) &mdash;
+        <b>정렬 방향이 화면 성격에서 나온다</b>(§1 주석 1).</li>
+    <li><b><code>confirm: string</code> 의 두 번째 자리</b> &mdash;
+        반려는 <i>사유가 상대에게 간다</i> 를 말해야 한다(§4 주석 1).</li>
+    <li><b><code>SYS_NOTI_INBOX</code> 의 첫 생산자</b> &mdash;
+        셸 표준이 <i>"상태가 바뀌면 그것이 내 알림으로 온다"</i> 고 적은 알림을 여기서 넣는다.
+        <b>outbox 없이</b> 성립한다.</li>
+  </ul>
+  <b>아직 답이 없는 것</b>
+  <ul>
+    <li><b><code>SYS_NOTI_REQUEST</code> 의 보존 기간</b> &mdash; 보관 정책의 정책 표에 없다.
+        요청은 <b>개인이 낸 것</b>이라 로그와 성격이 다르고, 짧으면 <i>"작년에 낸 요청"</i> 의 답이 사라진다.</li>
+    <li><b>알림에서 알림 모달의 다른 탭으로 가는 링크</b> &mdash;
+        <code>LINK_MENU_CD</code> 는 메뉴 코드라 <b>모달 안을 가리킬 수 없다</b>. 지금은 <code>NULL</code> 이다.</li>
+    <li><b><code>entryType = NOTIFICATION</code></b>(<code>noti-inbox.html</code> NI-10) &mdash;
+        <code>MenuSelectRequest</code> 가 <code>entryType</code> 자체를 받지 않는다.
+        <b>메뉴 진입은 되고 경로 기록만 안 된다.</b></li>
+    <li><b>요청을 <i>내는</i> 화면의 상세</b> &mdash; 알림 모달 <i>내 요청</i> 탭의 <b>새 요청</b> 버튼
+        (<code>noti-inbox.html</code> §4). 유형 셋 중 무엇을 사용자가 고를 수 있는지는 인증 화면 설계의 몫이다.</li>
+  </ul>
+</div>
+
+<footer>
+  <b>목업 규약</b> — 정적 HTML, 프레임워크 없음, 픽셀 충실도는 목표가 아니다.
+  <b>결정은 <code>requirements.md</code> 가 갖고 이 파일은 확인용이다</b> — 여기에만 있고
+  요건서에 없는 정보는 유실된 것으로 친다.<br>
+  이 파일의 <code>&lt;style&gt;</code> 블록은 <code>documents/screen/_TEMPLATE/mockup.html</code> 에서 그대로 복사했다 —
+  <code>.sf</code> <code>.tb</code> <code>.grid</code> <code>.pg</code> <code>.split</code>.
+</footer>
+
+</main>

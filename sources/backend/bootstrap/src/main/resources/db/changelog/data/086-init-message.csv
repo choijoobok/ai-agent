@@ -1,0 +1,11 @@
+MSG_KEY,LANG_CD,MSG_VAL
+grid.list.add,ko,추가
+grid.list.add,en,Add
+grid.list.remove,ko,삭제
+grid.list.remove,en,Remove
+grid.list.up,ko,위로
+grid.list.up,en,Move up
+grid.list.down,ko,아래로
+grid.list.down,en,Move down
+grid.list.empty,ko,항목이 없습니다
+grid.list.empty,en,No items

@@ -1,0 +1,68 @@
+# 로그인 이력 — 45 §5.
+#
+# 감사 4컬럼이 없다(45 §2.1) — USER_ID + CRE_DTM 이 곧 "누가 언제" 다.
+# FK 도 없다(45 §2.2) — 존재하지 않는 ID 의 시도도 기록해야 하고, 계정이 사라져도
+# 과거 기록의 주체는 남아야 한다.
+#
+# SYS_LO_ACCESS · SYS_LO_EXCEPTION 은 이력 슬라이스가 만든다. 여기 있는 것은 로그인이
+# 실제로 쓰는 한 장뿐이다.
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-sys-lo-login
+      author: template
+      comment: 결과 코드가 접근 제어 체인의 실패 지점과 1:1 이다 — 45 §5.1
+      changes:
+        - createTable:
+            tableName: SYS_LO_LOGIN
+            columns:
+              - column:
+                  name: LOGIN_LOG_SEQ
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_LO_LOGIN
+                    nullable: false
+              # 시도한 ID 다. FK 가 없으므로 없는 계정의 시도도 그대로 남는다.
+              - column:
+                  name: USER_ID
+                  type: VARCHAR(30)
+              - column:
+                  name: LOGIN_RSLT_CD
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              # IPv6 최대 표기 길이가 45 다
+              - column:
+                  name: CLIENT_IP
+                  type: VARCHAR(45)
+              - column:
+                  name: USER_AGENT
+                  type: VARCHAR(500)
+              - column:
+                  name: TRACE_ID
+                  type: VARCHAR(64)
+              - column:
+                  name: CRE_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 003-index-sys-lo-login
+      author: template
+      comment: 이력 조회는 거의 항상 최근 순이다 — 45 §2.3
+      changes:
+        - createIndex:
+            tableName: SYS_LO_LOGIN
+            indexName: IX_SYS_LO_LOGIN_01
+            columns:
+              - column:
+                  name: CRE_DTM
+        # TRACE_ID 는 PK 가 아니라 일반 컬럼 + 인덱스다. UUID 를 PK 로 쓰면 인덱스가
+        # 분산되고, 이력 조회의 지역성은 단조 증가 숫자 쪽이 낫다(45 §2.3).
+        - createIndex:
+            tableName: SYS_LO_LOGIN
+            indexName: IX_SYS_LO_LOGIN_02
+            columns:
+              - column:
+                  name: TRACE_ID

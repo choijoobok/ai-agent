@@ -1,0 +1,40 @@
+# 테스트 케이스
+#
+# 작성 단계: P3~P5
+# status: empty — **비어 있다. 지어내지 않았다.**
+#
+# **비어 있는 것이 G3 를 막는다.** 추적성 규칙 T5 는 모든 FEAT 가 최소 1개 TC 를
+# 가질 것을 요구하므로, `node .claude/hooks/trace-check.mjs --all` 은 지금 FEAT 85건에
+# 대해 T5 오류 85건을 낸다 — **그것이 사실이며 통과할 수 없다는 뜻이다.**
+# 또한 NFR 19건이 `test_case: null` 이라 T7 오류가 함께 난다.
+#
+# **TEST-FIRST 다**(aidd-guide/process/slice.md): 슬라이스 구현 전에 TC 를 먼저 코드로
+# 옮기고 실패를 확인한다. 그리고 **테스트 통과만으로 완료를 선언하지 않는다** —
+# 업무 규칙을 코드에서 뒤집었을 때 테스트가 실패하는지 확인한다
+# (aidd-guide/quality/redteam.md).
+#
+# 최소 세트와 작성 형식: aidd-guide/quality/test-design.md
+
+meta:
+  status: empty
+  baselined: null
+
+testcases: []
+
+# 채울 때의 형식 (예시 — 실제 값이 아니다)
+# testcases:
+#   - id: TC-0011
+#     feature: FEAT-101
+#     usecase: UC-001
+#     type: normal            # normal | boundary | validation | permission | business_exception
+#     title: "허용 그룹의 테이블을 자연어로 조회한다"
+#     given: "사용자가 급여담당 그룹에 속하고 급여 테이블이 그 그룹에 매핑되어 있다"
+#     when: "지난달 부서별 급여 합계를 조회한다"
+#     then: "그리드와 기준 시각이 함께 반환된다"
+#   - id: TC-0012
+#     feature: FEAT-101
+#     type: permission
+#     title: "미매핑 테이블은 존재를 드러내지 않는다"
+#     given: "평가 테이블이 사용자의 어떤 그룹에도 매핑되어 있지 않다"
+#     when: "평가 점수를 조회한다"
+#     then: "정보 부재로 응답하고 접근 가능 데이터 목록으로 안내한다. **권한 부족이라고 말하지 않는다** (REQ-101)"

@@ -1,0 +1,113 @@
+MSG_KEY,LANG_CD,MSG_VAL
+grid.action.confirm.title,ko,실행 확인
+grid.action.confirm.title,en,Confirm
+grid.action.confirm.body,ko,선택한 {count}건에 대해 [{name}]을(를) 실행하시겠습니까?
+grid.action.confirm.body,en,Run [{name}] on the {count} selected row(s)?
+grid.action.confirm.none,ko,[{name}]을(를) 실행하시겠습니까?
+grid.action.confirm.none,en,Run [{name}]?
+grid.action.done,ko,실행했습니다.
+grid.action.done,en,Done.
+user.grid.title,ko,사용자
+user.grid.title,en,Users
+user.stat.NORMAL,ko,정상
+user.stat.NORMAL,en,Normal
+user.stat.DISABLED,ko,미사용
+user.stat.DISABLED,en,Disabled
+user.stat.EXPIRED,ko,기간 만료
+user.stat.EXPIRED,en,Expired
+user.stat.LOCKED,ko,잠김
+user.stat.LOCKED,en,Locked
+user.stat.DORMANT,ko,휴면
+user.stat.DORMANT,en,Dormant
+user.col.userId,ko,로그인 ID
+user.col.userId,en,Login ID
+user.col.userNm,ko,이름
+user.col.userNm,en,Name
+user.col.email,ko,이메일
+user.col.email,en,Email
+user.col.accountStat,ko,상태
+user.col.accountStat,en,Status
+user.col.accountStat.tip,ko,계정을 못 쓰게 하는 넷 중 먼저 걸린 것 하나를 보여줍니다. 넷이 동시에 걸릴 수 있으며 원본 컬럼은 그리드 설정에서 켭니다.
+user.col.accountStat.tip,en,Shows the first of the four blocking conditions that applies. More than one can apply at once; turn on the source columns in grid settings.
+user.col.useYn,ko,사용 여부
+user.col.useYn,en,Enabled
+user.col.validFromDt,ko,사용 시작일
+user.col.validFromDt,en,Valid from
+user.col.validToDt,ko,사용 종료일
+user.col.validToDt,en,Valid to
+user.col.lastLoginDtm,ko,최종 로그인
+user.col.lastLoginDtm,en,Last login
+user.col.localeCd,ko,언어
+user.col.localeCd,en,Language
+user.col.lockYn,ko,잠금
+user.col.lockYn,en,Locked
+user.col.lockDtm,ko,잠금 시각
+user.col.lockDtm,en,Locked at
+user.col.loginFailCnt,ko,실패 횟수
+user.col.loginFailCnt,en,Failures
+user.col.dormantYn,ko,휴면
+user.col.dormantYn,en,Dormant
+user.col.pwdInitYn,ko,임시 비밀번호
+user.col.pwdInitYn,en,Temporary password
+user.col.pwdChgDtm,ko,비밀번호 변경일
+user.col.pwdChgDtm,en,Password changed
+user.locale.ko,ko,한국어
+user.locale.ko,en,Korean
+user.locale.en,ko,영어
+user.locale.en,en,English
+user.search.userId,ko,로그인 ID
+user.search.userId,en,Login ID
+user.search.userNm,ko,이름
+user.search.userNm,en,Name
+user.search.email,ko,이메일
+user.search.email,en,Email
+user.search.accountStat,ko,계정 상태
+user.search.accountStat,en,Account status
+user.search.roleId,ko,보유 역할
+user.search.roleId,en,Role
+user.search.roleExpiringInDays,ko,역할 만료 예정
+user.search.roleExpiringInDays,en,Role expiring
+user.search.days,ko,{days}일 이내
+user.search.days,en,within {days} days
+user.search.lastLoginDtm,ko,최종 로그인
+user.search.lastLoginDtm,en,Last login
+user.search.regDtm,ko,등록일
+user.search.regDtm,en,Registered
+user.action.unlock,ko,잠금 해제
+user.action.unlock,en,Unlock
+user.action.dormantRelease,ko,휴면 해제
+user.action.dormantRelease,en,Release dormancy
+user.action.passwordReset,ko,비밀번호 초기화
+user.action.passwordReset,en,Reset password
+user.issued.title,ko,임시 비밀번호가 발급되었습니다
+user.issued.title,en,Temporary password issued
+user.issued.desc,ko,이 창을 닫으면 다시 볼 수 없습니다. 지금 사용자에게 전달하세요.
+user.issued.desc,en,You cannot see this again after closing. Pass it to the user now.
+user.issued.expiry,ko,"사용자는 다음 로그인에서 비밀번호를 바꿔야 하며, 정해진 시간이 지나면 이 값으로는 로그인할 수 없습니다."
+user.issued.expiry,en,"The user must change it at next sign-in, and it stops working after the configured period."
+user.duplicate,ko,같은 로그인 ID 가 두 번 있습니다.
+user.duplicate,en,This login ID appears twice.
+user.period.reversed,ko,사용 시작일이 종료일보다 늦습니다.
+user.period.reversed,en,The start date is after the end date.
+user.selfDisable,ko,자기 계정은 사용 중지할 수 없습니다.
+user.selfDisable,en,You cannot disable your own account.
+user.warn.newPassword,ko,신규 {count}건에 임시 비밀번호가 발급됩니다. 저장 후 표시되며 다시 볼 수 없습니다.
+user.warn.newPassword,en,A temporary password will be issued for {count} new account(s). It is shown once after saving.
+user.warn.disable,ko,사용 중지하는 {count}건은 다음 로그인부터 막힙니다. 지금 접속 중인 세션은 유지됩니다.
+user.warn.disable,en,{count} account(s) will be blocked from the next sign-in. Current sessions stay alive.
+err.user-admin.duplicate,ko,이미 있는 로그인 ID 입니다.
+err.user-admin.duplicate,en,That login ID already exists.
+err.user-admin.not-found,ko,없는 계정입니다.
+err.user-admin.not-found,en,No such account.
+err.user-admin.name-required,ko,이름은 필수입니다.
+err.user-admin.name-required,en,Name is required.
+err.user-admin.email-required,ko,이메일은 필수입니다.
+err.user-admin.email-required,en,Email is required.
+err.user-admin.period,ko,사용 기간의 시작이 종료보다 늦습니다.
+err.user-admin.period,en,The start date is after the end date.
+err.user-admin.no-delete,ko,계정은 삭제할 수 없습니다. 사용 여부를 끄십시오.
+err.user-admin.no-delete,en,Accounts cannot be deleted. Turn off the enabled flag instead.
+err.user-admin.self-disable,ko,자기 계정은 사용 중지할 수 없습니다.
+err.user-admin.self-disable,en,You cannot disable your own account.
+err.user-admin.reset-disabled,ko,임시 비밀번호 발급이 꺼져 있습니다.
+err.user-admin.reset-disabled,en,Temporary password issuing is turned off.

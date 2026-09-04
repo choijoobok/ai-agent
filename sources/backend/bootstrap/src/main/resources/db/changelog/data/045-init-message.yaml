@@ -1,0 +1,68 @@
+# 메시지 값 33차 — 사람 소유 시드다(22 §1.1). 공통 코드 관리(63 §2)의 문구 전부.
+#
+# 데이터 키를 함께 넣는다(019 와 같은 모양). 043 이 만든 CODE_REF_KEY.PARENT 의 이름이
+# 그것이며, 코드 행의 DTL_NM 이 이미 그 키를 담고 있다(43 §4.4) — 값이 없으면 화면에
+# code.CODE_REF_KEY.PARENT 가 그대로 보인다. USE_SCOPE 가 DATA 인 이유는 소스에 상수가
+# 없는 것이 **정상인 키**이기 때문이다: 008 생성 태스크가 code. 접두를 건드리지 않으므로
+# NONE 으로 두면 죽은 키로 잡히고, 다음 생성도 그것을 고쳐 주지 않는다(33 §2.1).
+#
+# 나머지는 전부 프론트 MSG · 백엔드 MsgKey 의 값이라 키 행은 008 이 만든다(ADR-0023) —
+# 여기서 넣으면 그 파일과 겹쳐 loadData 가 중복 키로 죽는다.
+databaseChangeLog:
+  - changeSet:
+      id: data-045-message-key-data
+      author: template
+      comment: 참조 코드 이름 키 — USE_SCOPE 는 DATA 다(43 §7.1)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE_KEY
+            file: db/changelog/data/045-init-message-key.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: USE_SCOPE
+                  type: STRING
+              - column:
+                  name: MSG_DESC
+                  type: STRING
+
+  - changeSet:
+      id: data-045-message
+      author: template
+      comment: 공통 코드 관리 문구 — 화면·오류·코드명(63 §2)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/045-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-045-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

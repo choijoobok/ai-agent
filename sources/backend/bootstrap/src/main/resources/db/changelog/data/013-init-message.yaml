@@ -1,0 +1,45 @@
+# 메시지 값 5차 — 사람 소유 시드다(22 §1.1).
+#
+# 앞의 것을 고치지 않고 파일을 더한다(22 §1.1). 012 는 runOnChange 가 아니므로 이미
+# 적용된 changeset 을 고치면 체크섬이 달라져 기동이 실패한다.
+#
+# 담는 것은 설정 모달의 사이더 자동 숨기기 이름이다(51 §9.5). 그 자리에 있던
+# `settings.siderCollapsed` 는 쓰는 곳이 없어져 008 이 USE_SCOPE='NONE' 으로 내렸다
+# (ADR-0023) — 값 행은 지우지 않는다. 되살아날 수도 있고, 지우는 것은 사람의 일이다.
+databaseChangeLog:
+  - changeSet:
+      id: data-013-message
+      author: template
+      comment: 사이더 자동 숨기기의 ko·en — 51 §9.5
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/013-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-013-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

@@ -1,0 +1,187 @@
+MSG_KEY,LANG_CD,MSG_VAL
+menu.DASHBOARD,ko,대시보드
+menu.DASHBOARD,en,Dashboard
+menu.SYSTEM,ko,시스템
+menu.SYSTEM,en,System
+menu.USER,ko,사용자
+menu.USER,en,Users
+menu.USER_MGMT,ko,사용자 관리
+menu.USER_MGMT,en,User Management
+menu.USER_AUTH_MGMT,ko,개인 예외 권한
+menu.USER_AUTH_MGMT,en,Per-user Exceptions
+menu.MENU,ko,메뉴 관리
+menu.MENU,en,Menus
+menu.MENU_TREE,ko,메뉴 트리
+menu.MENU_TREE,en,Menu Tree
+menu.ROLE_MGMT,ko,역할 관리
+menu.ROLE_MGMT,en,Role Management
+menu.ROLE_AUTH_MGMT,ko,역할 권한 관리
+menu.ROLE_AUTH_MGMT,en,Role Permissions
+menu.API_CATALOG,ko,API 카탈로그
+menu.API_CATALOG,en,API Catalog
+menu.MASTER,ko,기준정보
+menu.MASTER,en,Master Data
+menu.CODE_MGMT,ko,공통 코드 관리
+menu.CODE_MGMT,en,Code Management
+menu.MESSAGE_MGMT,ko,다국어 메시지 관리
+menu.MESSAGE_MGMT,en,Message Management
+menu.CONFIG_MGMT,ko,시스템 환경설정
+menu.CONFIG_MGMT,en,System Settings
+menu.LOG,ko,이력 · 로그
+menu.LOG,en,History & Logs
+menu.ACCESS_LOG,ko,사용 이력
+menu.ACCESS_LOG,en,Access History
+menu.LOGIN_LOG,ko,로그인 이력
+menu.LOGIN_LOG,en,Sign-in History
+menu.ERROR_LOG,ko,에러 로그
+menu.ERROR_LOG,en,Error Log
+menu.BATCH,ko,배치 · 스케줄
+menu.BATCH,en,Batch & Schedule
+menu.BATCH_SCHEDULE,ko,스케줄 관리
+menu.BATCH_SCHEDULE,en,Schedule Management
+menu.BATCH_HISTORY,ko,실행 이력
+menu.BATCH_HISTORY,en,Run History
+menu.NOTICE,ko,공지 · 알림
+menu.NOTICE,en,Notices & Alerts
+menu.NOTICE_MGMT,ko,공지사항 관리
+menu.NOTICE_MGMT,en,Notice Management
+menu.NOTI_REQUEST,ko,요청함 처리
+menu.NOTI_REQUEST,en,Request Inbox
+err.validation,ko,입력값을 확인하세요.
+err.validation,en,Please check your input.
+err.unauthenticated,ko,로그인이 필요합니다.
+err.unauthenticated,en,Sign-in required.
+err.forbidden,ko,권한이 없습니다.
+err.forbidden,en,You do not have permission.
+err.not-found,ko,요청한 자원을 찾을 수 없습니다.
+err.not-found,en,The requested resource was not found.
+err.method-not-allowed,ko,허용되지 않은 요청 방식입니다.
+err.method-not-allowed,en,That request method is not allowed.
+err.malformed-body,ko,요청 본문을 해석할 수 없습니다.
+err.malformed-body,en,The request body could not be parsed.
+err.internal,ko,처리 중 오류가 발생했습니다.
+err.internal,en,Something went wrong while processing the request.
+err.login.failed,ko,아이디 또는 비밀번호가 올바르지 않습니다.
+err.login.failed,en,The ID or password is incorrect.
+err.login.disabled,ko,사용할 수 없는 계정입니다. 관리자에게 문의하세요.
+err.login.disabled,en,This account cannot be used. Contact your administrator.
+err.login.expired,ko,사용 기간이 만료된 계정입니다. 관리자에게 문의하세요.
+err.login.expired,en,This account has expired. Contact your administrator.
+err.login.locked,ko,계정이 잠겼습니다. 비밀번호 재설정으로 해제하거나 관리자에게 문의하세요.
+err.login.locked,en,This account is locked. Reset your password or contact your administrator.
+err.login.dormant,ko,장기 미접속으로 휴면 상태입니다. 비밀번호 재설정으로 본인 확인을 마치면 해제됩니다.
+err.login.dormant,en,This account is dormant after a long absence. Reset your password to verify your identity and reactivate it.
+err.login.ip-denied,ko,허용되지 않은 위치에서의 접속입니다.
+err.login.ip-denied,en,Sign-in from this location is not allowed.
+err.login.no-authority,ko,부여된 권한이 없어 로그인할 수 없습니다. 관리자에게 문의하세요.
+err.login.no-authority,en,"You have no permissions assigned, so you cannot sign in. Contact your administrator."
+err.login.temp-expired,ko,임시 비밀번호가 만료됐습니다. 재발급을 요청하세요.
+err.login.temp-expired,en,The temporary password has expired. Request a new one.
+err.login.concurrent,ko,이미 다른 곳에서 로그인되어 있습니다. 그 접속을 끝낸 뒤 다시 시도하세요.
+err.login.concurrent,en,You are already signed in elsewhere. End that session and try again.
+err.session.evicted,ko,다른 곳에서 로그인하여 이 접속이 종료됐습니다.
+err.session.evicted,en,This session ended because you signed in somewhere else.
+err.api-not-registered,ko,권한이 없습니다.
+err.api-not-registered,en,You do not have permission.
+err.api-not-mapped,ko,권한이 없습니다.
+err.api-not-mapped,en,You do not have permission.
+err.no-authority,ko,권한이 없습니다.
+err.no-authority,en,You do not have permission.
+err.unclassified-api,ko,권한이 없습니다.
+err.unclassified-api,en,You do not have permission.
+err.password-change-required,ko,비밀번호를 변경해야 계속할 수 있습니다.
+err.password-change-required,en,You must change your password to continue.
+common.cancel,ko,취소
+common.cancel,en,Cancel
+common.close,ko,닫기
+common.close,en,Close
+login.title,ko,백오피스 로그인
+login.title,en,Backoffice Sign-in
+login.id,ko,로그인 ID
+login.id,en,Login ID
+login.id.required,ko,로그인 ID를 입력하세요.
+login.id.required,en,Enter your login ID.
+login.password,ko,비밀번호
+login.password,en,Password
+login.password.required,ko,비밀번호를 입력하세요.
+login.password.required,en,Enter your password.
+login.submit,ko,로그인
+login.submit,en,Sign in
+login.traceId,ko,문의 번호: {traceId}
+login.traceId,en,Reference number: {traceId}
+reauth.title,ko,세션이 만료되었습니다
+reauth.title,en,Your session has expired
+reauth.desc,ko,작업 중이던 화면은 그대로 있습니다. 비밀번호를 입력하면 이어서 진행합니다.
+reauth.desc,en,Your open screens are still here. Enter your password to pick up where you left off.
+reauth.loginId,ko,아이디
+reauth.loginId,en,ID
+reauth.submit,ko,계속하기
+reauth.submit,en,Continue
+reauth.otherAccount,ko,다른 계정으로 로그인
+reauth.otherAccount,en,Sign in as someone else
+reauth.retry,ko,다시 시도해 주세요.
+reauth.retry,en,Please try again.
+session.noAuthority,ko,부여된 권한이 없어 로그아웃합니다.
+session.noAuthority,en,"You have no permissions assigned, so you are being signed out."
+session.authzChanged,ko,권한이 변경되어 {tabs} 탭을 닫았습니다.
+session.authzChanged,en,"Your permissions changed, so these tabs were closed: {tabs}"
+session.passwordChange.title,ko,비밀번호를 변경해야 계속할 수 있습니다.
+session.passwordChange.title,en,You must change your password to continue.
+session.passwordChange.desc,ko,비밀번호 변경 화면은 아직 없습니다(60 §4).
+session.passwordChange.desc,en,The password change screen does not exist yet (60 §4).
+shell.sider.expand,ko,사이더 펼치기
+shell.sider.expand,en,Expand sidebar
+shell.sider.collapse,ko,사이더 접기
+shell.sider.collapse,en,Collapse sidebar
+shell.theme.tooltip,ko,테마 — {mode}
+shell.theme.tooltip,en,Theme — {mode}
+shell.theme.toggle,ko,테마 전환
+shell.theme.toggle,en,Switch theme
+shell.theme.light,ko,라이트
+shell.theme.light,en,Light
+shell.theme.dark,ko,다크
+shell.theme.dark,en,Dark
+shell.theme.system,ko,시스템 따름
+shell.theme.system,en,Follow system
+shell.logout,ko,로그아웃
+shell.logout,en,Sign out
+tab.close,ko,탭 닫기
+tab.close,en,Close tab
+tab.closeOthers,ko,다른 탭 닫기
+tab.closeOthers,en,Close other tabs
+tab.closeAll,ko,모든 탭 닫기
+tab.closeAll,en,Close all tabs
+tab.openNewInstance,ko,새 탭으로 열기
+tab.openNewInstance,en,Open in a new tab
+tab.limit.title,ko,탭이 최대 {limit}개입니다
+tab.limit.title,en,You can keep at most {limit} tabs open
+tab.limit.content,ko,가장 먼저 연 {name} 를 닫고 여시겠습니까?
+tab.limit.content,en,"Close {name}, the oldest tab, and open this one?"
+tab.limit.contentDirty,ko,가장 먼저 연 {name} 를 닫고 여시겠습니까? 저장하지 않은 변경이 있습니다.
+tab.limit.contentDirty,en,"Close {name}, the oldest tab, and open this one? It has unsaved changes."
+tab.limit.ok,ko,닫고 열기
+tab.limit.ok,en,Close and open
+tab.dirty.title,ko,저장하지 않은 변경이 있습니다
+tab.dirty.title,en,There are unsaved changes
+tab.dirty.close.content,ko,닫으면 {tabs} 의 변경을 잃습니다.
+tab.dirty.close.content,en,Closing will discard the changes in {tabs}.
+tab.dirty.logout.content,ko,로그아웃하면 {tabs} 의 변경을 잃습니다.
+tab.dirty.logout.content,en,Signing out will discard the changes in {tabs}.
+screen.missing.title,ko,{menu} — 화면이 아직 없습니다.
+screen.missing.title,en,{menu} — this screen does not exist yet.
+screen.missing.desc,ko,MENU_CD={menuCd} · MENU_URL={menuUrl} 에 대응하는 컴포넌트가 screenRegistry 에 없습니다.
+screen.missing.desc,en,No component in screenRegistry matches MENU_CD={menuCd} · MENU_URL={menuUrl}.
+screen.error.title,ko,화면을 표시할 수 없습니다.
+screen.error.title,en,This screen could not be displayed.
+screen.denied,ko,요청한 화면에 접근할 수 없습니다.
+screen.denied,en,You cannot access the requested screen.
+dashboard.greeting,ko,"{name}님, 안녕하세요."
+dashboard.greeting,en,"Hello, {name}."
+dashboard.menuCount,ko,접근 가능한 메뉴
+dashboard.menuCount,en,Menus you can open
+dashboard.menuCount.value,ko,{count}개
+dashboard.menuCount.value,en,{count}
+dashboard.permissionCount,ko,보유 권한 (메뉴 × 액션)
+dashboard.permissionCount,en,Permissions (menu × action)
+dashboard.permissionCount.value,ko,{count}쌍
+dashboard.permissionCount.value,en,{count} pairs

@@ -1,0 +1,9 @@
+MSG_KEY,LANG_CD,MSG_VAL
+grid.filter.all,ko,전체
+grid.filter.all,en,All
+grid.filter.blank,ko,(비어 있음)
+grid.filter.blank,en,(Blank)
+grid.filter.empty,ko,고를 값이 없습니다
+grid.filter.empty,en,No values to choose
+grid.settings.drag,ko,끌어서 순서 바꾸기
+grid.settings.drag,en,Drag to reorder

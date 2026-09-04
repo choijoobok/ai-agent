@@ -1,0 +1,55 @@
+# 메시지 값 — 실행 파라미터 모달과 진행률 창.
+#
+# 둘 다 실행(actions)에 붙는 창이고 순서가 실행 흐름과 같다(68 §9.15 의 5단계) —
+# 인자를 묻는 창이 먼저, 진행률이 나중이다.
+#
+# 파라미터 모달은 확인을 겸한다(55 §8). 그래서 건수 줄이 있고 버튼이 `확인` 이 아니라
+# `실행` 이다 — 이 창이 확인 다이얼로그를 대신하므로 버튼이 곧 실행이며, `확인` 은
+# "내가 적은 값이 맞다" 로도 읽힌다.
+#
+# 진행률 창의 문구 셋 중 둘이 갈려 있는 것이 결정이다(progress.failed / .unreachable):
+# 작업이 실패한 것과 우리가 진행률을 못 보는 것은 다른 사실이며, 후자에서 작업은
+# 여전히 돌고 있을 수 있다. 하나로 말하면 사용자가 다시 실행하고 같은 작업이 두 번 돈다.
+#
+# 셋째(.background)가 없으면 사용자는 닫으면 취소되는 것으로 읽고 끝날 때까지 앉아
+# 있는다 — 붙잡아 두지 않는 것이 이 기능의 요점인데 그것이 전달되지 않는다.
+#
+# CSV 는 생성한다 — 아래 값 중 셋에 마침표와 쉼표가 있고, 손으로 쓰면 그것이 기동에서만
+# 깨진다.
+databaseChangeLog:
+  - changeSet:
+      id: data-087-message
+      author: template
+      comment: 실행 파라미터 모달과 진행률 창 — 55 §8 · 30 §6 · 68 §9.1 · §9.13
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/087-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-087-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

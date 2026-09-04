@@ -1,0 +1,52 @@
+# ② SMPL_SINGLE_CURSOR 의 ADMIN 부여와 메뉴 순서 — 42 §3 · 68 §4.
+#
+# 090·092 를 고치지 않고 더한다(22 §1.1). 그 changeset 들은 이미 적용된 DB 에 들어가 있고,
+# 고치면 남의 로컬이 체크섬으로 죽는다.
+#
+# ── 액션이 둘뿐이다 ────────────────────────────────────────────────────
+#
+# 52 §4.2 의 액션 열이 R E 다(68 §4.1) — 이 화면은 저장이 없다. SAVE 나 EXECUTE 를
+# 함께 부여하면 화면에 없는 권한이 역할에 붙고, 그것은 인가 화면에서 "이 메뉴는 저장도
+# 되는구나" 로 읽힌다.
+databaseChangeLog:
+  - changeSet:
+      id: data-094-sample-cursor-auth
+      author: template
+      comment: ②의 ADMIN 부여 — 조회와 엑셀 둘뿐이다
+      changes:
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_SINGLE_CURSOR }
+              - column: { name: ACTION_CD, value: READ }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+        # 엑셀 둘이 프론트 생성이라 서버 경로가 없다. 이 부여는 요청을 막는 통제가 아니라
+        # 버튼을 세우는 근거다(ADR-0027) — ③의 EXPORT 가 실제로 요청을 막는 것과 갈린다.
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_SINGLE_CURSOR }
+              - column: { name: ACTION_CD, value: EXPORT }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+      rollback:
+        - delete:
+            tableName: SYS_ROLE_MENU_AUTH
+            where: MENU_CD = 'SMPL_SINGLE_CURSOR'
+
+  - changeSet:
+      id: data-094-sample-cursor-sort
+      author: template
+      comment: ②가 둘째 리프다 — 68 §10.1 의 트리 순서를 신규 설치에 심는다
+      changes:
+        # ③은 092 가 이미 3 으로 밀어 두었다 — 여기서 다시 손댈 것이 없다.
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 2
+            where: MENU_CD = 'SMPL_SINGLE_CURSOR' AND SORT_NO = 0

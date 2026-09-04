@@ -1,0 +1,56 @@
+# 메시지 값 — 품목 금액 재계산(행×디테일 진행률). 30 §6 · 68 §5.4.
+#
+# 앞의 것을 고치지 않고 파일을 더한다(22 §1.1). loadData 는 CSV 의 내용을 체크섬에 넣으므로
+# 089 에 줄을 더하면 그 changeset 이 이미 돈 DB 에서 기동이 죽는다.
+#
+# ── 같은 문장이 키 둘에 있다 ────────────────────────────────────────────
+#
+# sample.action.recalcItems.hint 는 화면의 것(버튼이 비활성인 이유)이고
+# err.sample.not-recalculable 은 서버의 것(화면 밖 경로가 막힌 이유)이다. 나누는 것은
+# 43 §3 의 규약이지만 사용자가 아는 사실은 하나이므로 문장이 서로 어긋나면 안 된다 —
+# 102 의 태그 상한이 같은 자리였다.
+#
+# ── 확인 문구에 품목 건수를 적지 않는다 ─────────────────────────────────
+#
+# {count} 는 주문 수다. 품목 건수는 주문마다 세어야 알 수 있고, 확인 창을 띄우려고 조회를
+# 한 번 더 도는 것은 실행 전에 실행만큼 일하는 꼴이다 — 그 숫자는 진행률 창이 구간마다
+# 말한다(그것이 이 실행에 진행률이 있는 이유다).
+#
+# 키는 008 이 소스에서 만든다(ADR-0023) — 여기서 또 넣으면 loadData 가 중복 키로 죽는다.
+databaseChangeLog:
+  - changeSet:
+      id: data-104-message
+      author: template
+      comment: 품목 금액 재계산의 문구 — 행×디테일 진행률(68 §5.4)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/104-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-104-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

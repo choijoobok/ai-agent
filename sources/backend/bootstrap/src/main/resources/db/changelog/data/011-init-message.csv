@@ -1,0 +1,85 @@
+MSG_KEY,LANG_CD,MSG_VAL
+err.user.locale-unsupported,ko,지원하지 않는 언어입니다.
+err.user.locale-unsupported,en,That language is not supported.
+shell.search.placeholder,ko,메뉴 검색 (Ctrl+K)
+shell.search.placeholder,en,Search menus (Ctrl+K)
+shell.search.title,ko,검색 결과
+shell.search.title,en,Search results
+shell.search.empty,ko,일치하는 메뉴가 없습니다.
+shell.search.empty,en,No menu matches.
+shell.search.count,ko,{count}건
+shell.search.count,en,{count} found
+settings.title,ko,설정
+settings.title,en,Settings
+settings.group.general,ko,일반
+settings.group.general,en,General
+settings.group.theme,ko,테마
+settings.group.theme,en,Theme
+settings.group.font,ko,글꼴
+settings.group.font,en,Font
+settings.group.grid,ko,그리드
+settings.group.grid,en,Grid
+settings.reset.group,ko,이 그룹 초기화
+settings.reset.group,en,Reset group
+settings.reset.all,ko,전체 초기화
+settings.reset.all,en,Reset all
+settings.language,ko,언어
+settings.language,en,Language
+settings.language.confirm.title,ko,언어를 바꾸면 화면을 다시 불러옵니다.
+settings.language.confirm.title,en,Changing the language reloads the app.
+settings.language.confirm.body,ko,열린 탭이 모두 닫힙니다. 계속할까요?
+settings.language.confirm.body,en,All open tabs will close. Continue?
+settings.headerAutoHide,ko,헤더 자동 숨기기
+settings.headerAutoHide,en,Auto-hide header
+settings.siderCollapsed,ko,사이더 접기
+settings.siderCollapsed,en,Collapse sider
+settings.themeMode,ko,모드
+settings.themeMode,en,Mode
+settings.primaryColor,ko,강조색
+settings.primaryColor,en,Accent color
+settings.primaryColor.default,ko,기본값
+settings.primaryColor.default,en,Default
+settings.primaryColor.contrast,ko,이 색 위의 흰 글씨는 읽기 어려울 수 있습니다.
+settings.primaryColor.contrast,en,White text on this color may be hard to read.
+settings.colorTone,ko,색 톤
+settings.colorTone,en,Color tone
+settings.colorTone.neutral,ko,중립
+settings.colorTone.neutral,en,Neutral
+settings.colorTone.warm,ko,따뜻함
+settings.colorTone.warm,en,Warm
+settings.colorTone.cold,ko,차가움
+settings.colorTone.cold,en,Cold
+settings.compact,ko,콤팩트 모드
+settings.compact,en,Compact
+settings.fontFamily,ko,글꼴
+settings.fontFamily,en,Font
+settings.fontFamily.default,ko,시스템 기본
+settings.fontFamily.default,en,System default
+settings.fontFamily.loadLocal,ko,설치된 글꼴 불러오기
+settings.fontFamily.loadLocal,en,Load installed fonts
+settings.fontFamily.localDenied,ko,글꼴 목록을 읽지 못해 기본 목록에서 고릅니다.
+settings.fontFamily.localDenied,en,Could not read installed fonts; using the built-in list.
+settings.fontSize,ko,글자 크기
+settings.fontSize,en,Font size
+settings.grid.headerHeight,ko,헤더 높이
+settings.grid.headerHeight,en,Header height
+settings.grid.rowHeight,ko,행 높이
+settings.grid.rowHeight,en,Row height
+settings.grid.fontSize,ko,글자 크기
+settings.grid.fontSize,en,Font size
+session.expiry.title,ko,세션이 곧 만료됩니다.
+session.expiry.title,en,Your session is about to expire.
+session.expiry.body,ko,약 {minutes}분 뒤 자동으로 로그아웃됩니다.
+session.expiry.body,en,You will be signed out in about {minutes} minutes.
+session.expiry.extend,ko,연장
+session.expiry.extend,en,Stay signed in
+session.expiry.logout,ko,지금 로그아웃
+session.expiry.logout,en,Sign out now
+session.expiry.timeout,ko,세션이 만료되어 로그아웃했습니다.
+session.expiry.timeout,en,Your session expired and you were signed out.
+searchForm.hide,ko,조회조건 숨기기
+searchForm.hide,en,Hide filters
+searchForm.show,ko,조회조건
+searchForm.show,en,Filters
+searchForm.active,ko,조건 {count}개 적용 중
+searchForm.active,en,{count} filters applied

@@ -1,0 +1,5 @@
+MSG_KEY,LANG_CD,MSG_VAL
+grid.split.collapseFirst,ko,위 그리드 접기
+grid.split.collapseFirst,en,Collapse top grid
+grid.split.collapseSecond,ko,아래 그리드 접기
+grid.split.collapseSecond,en,Collapse bottom grid

@@ -1,0 +1,44 @@
+# 메시지 값 35차 — 사람 소유 시드다(22 §1.1).
+#
+# API 카탈로그(62 §5). 이 묶음에 저장·삭제·확인 문구가 하나도 없다 — 화면이 데이터를
+# 고치지 않기 때문이며(62 §5.6), 있는 것은 컬럼 이름과 진단 문구뿐이다.
+#
+# 진단 문구 셋이 이 화면의 값어치다. 403 은 세 갈래로 갈리는데(미등록 · 미매핑 · 권한),
+# 앞의 둘은 화면이 데이터를 못 보여주는 자리라 문구가 유일한 답이다 — 62 §5.2.
+databaseChangeLog:
+  - changeSet:
+      id: data-048-message
+      author: template
+      comment: API 카탈로그 — 62 §5
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/048-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-048-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

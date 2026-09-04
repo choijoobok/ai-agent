@@ -1,0 +1,105 @@
+MSG_KEY,LANG_CD,MSG_VAL
+menu.SMPL_ROOT,ko,샘플
+menu.SMPL_ROOT,en,Sample
+menu.SMPL_MD_VERT,ko,마스터-디테일 (상하)
+menu.SMPL_MD_VERT,en,Master-Detail (Vertical)
+code.SMPL_ORD_STAT.RCV,ko,접수
+code.SMPL_ORD_STAT.RCV,en,Received
+code.SMPL_ORD_STAT.CFM,ko,확정
+code.SMPL_ORD_STAT.CFM,en,Confirmed
+code.SMPL_ORD_STAT.SHP,ko,출고
+code.SMPL_ORD_STAT.SHP,en,Shipped
+code.SMPL_ORD_STAT.DON,ko,완료
+code.SMPL_ORD_STAT.DON,en,Done
+code.SMPL_UOM.EA,ko,개
+code.SMPL_UOM.EA,en,EA
+code.SMPL_UOM.BOX,ko,박스
+code.SMPL_UOM.BOX,en,Box
+code.SMPL_UOM.KG,ko,킬로그램
+code.SMPL_UOM.KG,en,Kg
+code.SMPL_ITEM_STAT.WAIT,ko,대기
+code.SMPL_ITEM_STAT.WAIT,en,Waiting
+code.SMPL_ITEM_STAT.PICK,ko,피킹
+code.SMPL_ITEM_STAT.PICK,en,Picking
+code.SMPL_ITEM_STAT.SENT,ko,출고완료
+code.SMPL_ITEM_STAT.SENT,en,Sent
+sample.order.grid.title,ko,주문
+sample.order.grid.title,en,Orders
+sample.item.grid.title,ko,주문 품목
+sample.item.grid.title,en,Order Items
+sample.cond.ordNo,ko,주문번호
+sample.cond.ordNo,en,Order No.
+sample.cond.custNm,ko,고객명
+sample.cond.custNm,en,Customer
+sample.cond.ordStat,ko,주문상태
+sample.cond.ordStat,en,Status
+sample.cond.ordDt,ko,주문일
+sample.cond.ordDt,en,Order Date
+sample.col.ordNo,ko,주문번호
+sample.col.ordNo,en,Order No.
+sample.col.ordNm,ko,주문명
+sample.col.ordNm,en,Order Name
+sample.col.custNm,ko,고객명
+sample.col.custNm,en,Customer
+sample.col.ordStat,ko,주문상태
+sample.col.ordStat,en,Status
+sample.col.ordDt,ko,주문일
+sample.col.ordDt,en,Order Date
+sample.col.ordQty,ko,수량
+sample.col.ordQty,en,Qty
+sample.col.ordAmt,ko,주문금액
+sample.col.ordAmt,en,Amount
+sample.col.urgent,ko,긴급
+sample.col.urgent,en,Urgent
+sample.col.use,ko,사용
+sample.col.use,en,Active
+sample.col.itemSeq,ko,순번
+sample.col.itemSeq,en,Seq
+sample.col.itemCd,ko,품목코드
+sample.col.itemCd,en,Item Code
+sample.col.itemNm,ko,품목명
+sample.col.itemNm,en,Item Name
+sample.col.uom,ko,단위
+sample.col.uom,en,Unit
+sample.col.qty,ko,수량
+sample.col.qty,en,Qty
+sample.col.unitAmt,ko,단가
+sample.col.unitAmt,en,Unit Price
+sample.col.amt,ko,금액
+sample.col.amt,en,Amount
+sample.col.dlvrDt,ko,납기일
+sample.col.dlvrDt,en,Delivery Date
+sample.col.itemStat,ko,품목상태
+sample.col.itemStat,en,Item Status
+sample.col.rmk,ko,비고
+sample.col.rmk,en,Remark
+sample.action.ship,ko,출고 지시
+sample.action.ship,en,Ship
+sample.action.ship.confirm,ko,선택한 {count}건을 출고 지시합니다. 확정 상태의 주문만 대상입니다.
+sample.action.ship.confirm,en,Ship {count} selected order(s). Only confirmed orders are eligible.
+sample.action.ship.hint,ko,확정 상태가 아닌 주문이 섞여 있습니다.
+sample.action.ship.hint,en,The selection contains orders that are not confirmed.
+sample.excel.noItem,ko,품목 없는 주문
+sample.excel.noItem,en,Orders without items
+sample.delete.blocked,ko,품목이 {count}건 있어 지울 수 없습니다. 품목을 먼저 지우세요.
+sample.delete.blocked,en,Cannot delete: {count} item(s) remain. Remove the items first.
+sample.locked,ko,잠긴 주문입니다. 운영자가 잠금을 풀어야 고칠 수 있습니다.
+sample.locked,en,This order is locked. An operator must unlock it before editing.
+sample.order.empty,ko,조회된 주문이 없습니다.
+sample.order.empty,en,No orders found.
+sample.item.empty,ko,등록된 품목이 없습니다.
+sample.item.empty,en,No items registered.
+sample.item.noMaster,ko,주문을 먼저 선택하세요.
+sample.item.noMaster,en,Select an order first.
+err.sample.required,ko,주문번호·주문명·고객·주문일은 필수입니다.
+err.sample.required,en,"Order no., name, customer and order date are required."
+err.sample.not-found,ko,없는 주문입니다. 화면을 다시 조회하세요.
+err.sample.not-found,en,No such order. Refresh the list.
+err.sample.duplicated,ko,이미 있는 주문번호입니다.
+err.sample.duplicated,en,That order number already exists.
+err.sample.locked,ko,잠긴 주문은 고칠 수 없습니다.
+err.sample.locked,en,A locked order cannot be modified.
+err.sample.has-items,ko,품목이 있는 주문은 지울 수 없습니다.
+err.sample.has-items,en,An order with items cannot be deleted.
+err.sample.not-shippable,ko,확정 상태의 주문만 출고 지시할 수 있습니다.
+err.sample.not-shippable,en,Only confirmed orders can be shipped.

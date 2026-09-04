@@ -1,0 +1,71 @@
+# 참조 코드 화이트리스트 — 43 §4.3 · §5.2 · 63 §2.4. 사람 소유 시드다(22 §1.1).
+#
+# 이 한 그룹이 없으면 CODE_MGMT 의 정의 모달에서 **고를 것이 하나도 없다**. REF_CD 는
+# 소스가 문자열로 참조하는 값이라 화이트리스트로 통제하는데(43 §4.3), 그 화이트리스트의
+# 자리가 공통코드 그룹 CODE_REF_KEY 다 — 정의 테이블이 그것을 대신하지 않는다.
+#
+# 그래서 그룹이 SYS_YN='Y' 다. 지우면 참조 코드를 **정의할 수단 자체가 사라진다**.
+#
+# PARENT 도 'Y' 다. MASTER-10 의 3형태 중 **단일 부모 필터**의 규약값이며 43 §4.3 이
+# code.CODE_REF_KEY.PARENT 를 그 예시로 들었다 — 종속 콤보가 이 이름으로 부모를 찾는다.
+# 다중 부모 플래그(IS_{부모값})와 부가 속성은 **업무가 더한다** — 그것들은 'N' 이고
+# 자유롭게 지울 수 있다.
+#
+# DTL_NM 이 이름이 아니라 **메시지 키**인 것에 주의한다(43 §4.4). 값은 045 가 넣는다 —
+# 넣지 않으면 화면에 code.CODE_REF_KEY.PARENT 가 그대로 보이며, 그것이 43 §7.3 이 말한
+# "시끄럽게 드러나는" 쪽이다.
+#
+# LANG_CD 그룹은 **여기 없다**. 019 가 "기준정보 슬라이스가 만들 때" 로 미뤄 두었지만
+# 지원 언어의 런타임 원본은 아직 sys-config.message.supported 이고(MessageProps),
+# 읽는 쪽을 함께 옮기지 않은 채 행만 넣으면 **같은 목록이 두 곳**에 생긴다 — 그 이관은
+# 읽는 쪽까지 한 번에 옮기는 별도 작업이다.
+databaseChangeLog:
+  - changeSet:
+      id: data-043-code-ref-key
+      author: template
+      comment: REF_CD 화이트리스트 그룹 — 지우면 참조 코드를 정의할 수 없다(43 §4.3)
+      changes:
+        - insert:
+            tableName: SYS_CODE_GROUP
+            columns:
+              - column:
+                  name: GRP_CD
+                  value: CODE_REF_KEY
+              - column:
+                  name: GRP_NM
+                  value: 참조 코드 종류
+              - column:
+                  name: GRP_DESC
+                  value: SYS_CODE_GRP_REF.REF_CD 로 쓸 수 있는 값의 목록. 소스가 이 값을 문자열로 참조한다.
+              - column:
+                  name: SYS_YN
+                  value: Y
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 1
+
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column:
+                  name: GRP_CD
+                  value: CODE_REF_KEY
+              - column:
+                  name: DTL_CD
+                  value: PARENT
+              # 사람이 정하지 않는다 — 서버가 PK 로 조립하는 것과 같은 값을 시드도 쓴다.
+              - column:
+                  name: DTL_NM
+                  value: code.CODE_REF_KEY.PARENT
+              - column:
+                  name: DTL_DESC
+                  value: 단일 부모 필터 — REF_VAL 에 부모 코드값을 넣는다(10 MASTER-10).
+              - column:
+                  name: SYS_YN
+                  value: Y
+              - column:
+                  name: USE_YN
+                  value: Y
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 1

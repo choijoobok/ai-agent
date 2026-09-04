@@ -1,0 +1,115 @@
+MSG_KEY,LANG_CD,MSG_VAL
+notice.grid.title,ko,공지사항
+notice.grid.title,en,Notices
+notice.col.sortNo,ko,순서
+notice.col.sortNo,en,Order
+notice.col.noticeId,ko,번호
+notice.col.noticeId,en,No.
+notice.col.title,ko,제목
+notice.col.title,en,Title
+notice.col.content,ko,본문
+notice.col.content,en,Content
+notice.col.fromDtm,ko,게시 시작
+notice.col.fromDtm,en,Publish from
+notice.col.toDtm,ko,게시 종료
+notice.col.toDtm,en,Publish to
+notice.col.stat,ko,게시 상태
+notice.col.stat,en,Status
+notice.col.useYn,ko,사용
+notice.col.useYn,en,Enabled
+notice.col.popupYn,ko,팝업
+notice.col.popupYn,en,Popup
+notice.col.popupFrom,ko,팝업 시작
+notice.col.popupFrom,en,Popup from
+notice.col.popupTo,ko,팝업 종료
+notice.col.popupTo,en,Popup to
+notice.stat.SCHEDULED,ko,예정
+notice.stat.SCHEDULED,en,Scheduled
+notice.stat.ACTIVE,ko,게시중
+notice.stat.ACTIVE,en,Active
+notice.stat.EXPIRED,ko,종료
+notice.stat.EXPIRED,en,Expired
+notice.stat.DOWN,ko,내림
+notice.stat.DOWN,en,Taken down
+notice.search.title,ko,제목
+notice.search.title,en,Title
+notice.search.period,ko,게시 기간
+notice.search.period,en,Publish period
+notice.search.stat,ko,게시 상태
+notice.search.stat,en,Status
+notice.search.popup,ko,팝업
+notice.search.popup,en,Popup
+notice.popup.on,ko,사용
+notice.popup.on,en,On
+notice.popup.off,ko,미사용
+notice.popup.off,en,Off
+notice.empty,ko,조회 결과가 없습니다.
+notice.empty,en,No results.
+notice.empty.active,ko,현재 게시 중인 공지가 없습니다.
+notice.empty.active,en,No notice is currently published.
+notice.delete.confirm,ko,공지 {count}건을 삭제합니다. 되돌릴 수 없습니다. 잠시 감출 것이라면 사용을 끄세요 — 목록에는 남습니다.
+notice.delete.confirm,en,"Deleting {count} notice(s). This cannot be undone. To hide one temporarily, turn Enabled off instead — it stays in the list."
+notiRequest.grid.title,ko,요청함
+notiRequest.grid.title,en,Requests
+notiRequest.col.reqId,ko,번호
+notiRequest.col.reqId,en,No.
+notiRequest.col.creDtm,ko,요청일시
+notiRequest.col.creDtm,en,Requested at
+notiRequest.col.user,ko,요청자
+notiRequest.col.user,en,Requester
+notiRequest.col.type,ko,유형
+notiRequest.col.type,en,Type
+notiRequest.col.content,ko,요청 내용
+notiRequest.col.content,en,Request
+notiRequest.col.stat,ko,상태
+notiRequest.col.stat,en,Status
+notiRequest.col.handler,ko,처리자
+notiRequest.col.handler,en,Handled by
+notiRequest.col.handleDtm,ko,처리일시
+notiRequest.col.handleDtm,en,Handled at
+notiRequest.col.memo,ko,처리 메모
+notiRequest.col.memo,en,Note
+notiReq.type.ROLE_GRANT,ko,권한 신청
+notiReq.type.ROLE_GRANT,en,Role request
+notiReq.type.UNLOCK,ko,잠금 해제
+notiReq.type.UNLOCK,en,Unlock
+notiReq.type.ETC,ko,기타
+notiReq.type.ETC,en,Other
+notiReq.stat.RECEIVED,ko,접수
+notiReq.stat.RECEIVED,en,Received
+notiReq.stat.DONE,ko,처리
+notiReq.stat.DONE,en,Done
+notiReq.stat.REJECTED,ko,반려
+notiReq.stat.REJECTED,en,Rejected
+notiRequest.search.period,ko,요청일시
+notiRequest.search.period,en,Requested at
+notiRequest.search.stat,ko,상태
+notiRequest.search.stat,en,Status
+notiRequest.search.type,ko,유형
+notiRequest.search.type,en,Type
+notiRequest.search.user,ko,요청자
+notiRequest.search.user,en,Requester
+notiRequest.action.done,ko,처리
+notiRequest.action.done,en,Handle
+notiRequest.action.reject,ko,반려
+notiRequest.action.reject,en,Reject
+notiRequest.modal.done,ko,처리
+notiRequest.modal.done,en,Handle request
+notiRequest.modal.reject,ko,반려
+notiRequest.modal.reject,en,Reject request
+notiRequest.memo.optional,ko,처리 메모 (선택)
+notiRequest.memo.optional,en,Note (optional)
+notiRequest.memo.required,ko,반려 사유
+notiRequest.memo.required,en,Rejection reason
+notiRequest.memo.placeholder,ko,요청자에게 그대로 전달됩니다
+notiRequest.memo.placeholder,en,Sent to the requester as written
+notiRequest.reject.notice,ko,요청 {count}건을 반려합니다. 사유가 요청자에게 전달됩니다.
+notiRequest.reject.notice,en,Rejecting {count} request(s). The reason is sent to the requester.
+notiRequest.done.notice,ko,요청 {count}건을 처리 완료로 표시합니다. 요청자의 알림함에 결과가 들어갑니다.
+notiRequest.done.notice,en,Marking {count} request(s) as handled. The result is delivered to the requester inbox.
+notiRequest.empty,ko,처리할 요청이 없습니다.
+notiRequest.empty,en,No requests to handle.
+notiRequest.hint.notReceived,ko,이미 처리된 요청이 선택에 있습니다 — 접수 상태만 처리할 수 있습니다
+notiRequest.hint.notReceived,en,The selection contains an already-handled request — only received ones can be handled
+notiRequest.user.disabled,ko,미사용
+notiRequest.user.disabled,en,Disabled

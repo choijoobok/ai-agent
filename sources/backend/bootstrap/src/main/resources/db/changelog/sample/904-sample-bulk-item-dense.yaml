@@ -1,0 +1,57 @@
+# 품목이 수천 건인 주문 넷 — 30 §6 · 68 §5.4 의 행×디테일 진행률.
+#
+# ── 왜 902 로는 안 되는가 ───────────────────────────────────────────────
+#
+# 902 는 주문마다 품목을 하나에서 셋만 둔다. 그 밀도에서 품목 재계산(행×디테일)을 걸면
+# 구간마다 막대가 1/1 에서 3/3 으로 끝나 소제목만 깜빡이고 막대는 움직이지 않는다 —
+# 그 화면으로는 "행이 넘어가면 그 행 기준으로 다시 센다" 를 볼 수 없다.
+#
+# 같은 함정을 커서 페이징에서 이미 겪었다(902 의 주석 — 건수만 늘리는 것으로는 안 되고
+# 밀도가 맞아야 한다). 그래서 902 를 고치는 것이 아니라 파일을 더한다(22 §1.1):
+# loadData 는 CSV 내용을 체크섬에 넣으므로 그 파일을 다시 만들면 이미 적재한 로컬이
+# 기동에서 죽는다.
+#
+# ── 건수를 넷으로 다르게 둔 것이 요점이다 ───────────────────────────────
+#
+# 2,000 · 1,200 · 800 · 400 (ORD_ID 1005 · 1009 · 1013 · 1017). 같으면 구간이 바뀔 때
+# 전체가 갈아 끼워졌다는 사실이 화면에 나타나지 않는다 — 막대가 0 으로 돌아가는 것만
+# 보이고, 그것은 reset 의 절반뿐이다.
+#
+# 넷 다 접수(RCV) · 잠기지 않은 · 최근 여드레 안이다. 재계산의 게이트가 금액과 같은
+# 자리이고(SmplOrder.amountOpen — 확정부터는 금액이 잠긴다) 화면의 기본 조회 창이 그
+# 여드레이기 때문이다.
+#
+# ── 셋 중 하나는 금액이 0 이다 ──────────────────────────────────────────
+#
+# 재계산이 고칠 것이 없으면 그 실행은 아무 일도 하지 않은 것과 구별되지 않는다 —
+# 진행률만 돌고 화면의 값은 그대로다. 외부 연계가 금액을 빼먹고 넣은 품목이 그 실물이며,
+# 액션이 지나간 뒤 디테일 그리드의 그 칸들이 수량×단가로 채워지는 것이 이 샘플의 증거다.
+#
+# ITEM_SEQ 는 101 부터다 — 902 가 1~3 을 쓰므로 겹치지 않고, 번호만 보고 어느 시드의
+# 행인지 알 수 있다. 생성기는 build.gradle.kts 의 SampleBulkSeedTask 이고
+# checkSampleBulkSeed 가 손으로 고치는 것을 막는다.
+databaseChangeLog:
+  - changeSet:
+      id: 904-sample-bulk-item-dense
+      author: template
+      comment: 품목 4,400 — 행×디테일 진행률이 시연되는 밀도다(30 §6)
+      changes:
+        - loadData:
+            tableName: SMPL_ORDER_ITEM
+            file: db/changelog/sample/904-sample-bulk-item-dense.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column: { name: ORD_ID, type: NUMERIC }
+              - column: { name: ITEM_SEQ, type: NUMERIC }
+              - column: { name: ORD_NO, type: STRING }
+              - column: { name: ITEM_CD, type: STRING }
+              - column: { name: ITEM_NM, type: STRING }
+              - column: { name: UOM_CD, type: STRING }
+              - column: { name: QTY, type: NUMERIC }
+              - column: { name: UNIT_AMT, type: NUMERIC }
+              - column: { name: AMT, type: NUMERIC }
+              - column: { name: DLVR_DT, type: DATE }
+              - column: { name: ITEM_STAT_CD, type: STRING }
+              - column: { name: USE_YN, type: STRING }
+              - column: { name: REG_ID, type: STRING }

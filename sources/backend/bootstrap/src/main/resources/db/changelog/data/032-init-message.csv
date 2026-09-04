@@ -1,0 +1,9 @@
+MSG_KEY,LANG_CD,MSG_VAL
+tab.openNewWindow,ko,브라우저 새 탭으로 열기
+tab.openNewWindow,en,Open in new browser tab
+favorite.add,ko,즐겨찾기 추가
+favorite.add,en,Add to favorites
+favorite.remove,ko,즐겨찾기 제거
+favorite.remove,en,Remove from favorites
+shell.entry.empty.favorite,ko,즐겨찾기가 없습니다 — 메뉴나 탭을 우클릭해 추가하세요
+shell.entry.empty.favorite,en,No favorites yet — right-click a menu or tab to add one

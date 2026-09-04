@@ -1,0 +1,44 @@
+# 메시지 값 28차 — 사람 소유 시드다(22 §1.1).
+#
+# 글자 굵기(51 §9.3). 크기와 다른 축이다 — 크기를 키우면 글이 자리를 더 먹지만 굵기는
+# 자리를 그대로 두고 또렷해진다.
+#
+# 굵게가 700 이 아니라 500 인 것은 본문이 제목처럼 보이기 때문이다. 이름은 그 숫자가
+# 아니라 사람이 느끼는 정도를 말한다.
+databaseChangeLog:
+  - changeSet:
+      id: data-037-message
+      author: template
+      comment: 글자 굵기 넷의 ko·en — 51 §9.3
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/037-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-037-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

@@ -1,0 +1,47 @@
+# 로컬 개발 프로파일 — 25 §5.
+#
+# 이 파일은 저장소에 들어간다. 예전 .gitignore 는 이것을 무시했는데, 그러면 템플릿을
+# 받은 사람이 "로컬을 어떻게 띄우는가" 의 답을 갖지 못한다. 비밀값을 파일에 두지 않는
+# 규칙(25 §5)은 그대로이며 — 아래 값은 로컬 개발 DB 의 것이고 환경변수로 덮을 수 있다.
+#
+# 로컬 DB 는 ICU 로 만든다(22 §6.0). libc 콜레이션은 이름과 정렬 결과가 Windows·Linux
+# 에서 달라, 같은 쿼리가 개발자 PC 와 서버에서 다른 순서를 낸다.
+#
+#   CREATE DATABASE bo
+#     OWNER bo_admin ENCODING 'UTF8'
+#     LOCALE_PROVIDER icu ICU_LOCALE 'ko-KR'
+#     LC_COLLATE 'Korean_Korea.utf8' LC_CTYPE 'Korean_Korea.utf8'
+#     TEMPLATE template0;
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:bo}
+    username: ${DB_USER:bo_admin}
+    password: ${DB_PASSWORD:bo_admin}
+    # driver-class-name 도 jpa.database-platform 도 적지 않는다. 드라이버는 URL 로,
+    # 방언은 Hibernate 가 드라이버로 판별한다 — 적으면 DB 전환 시 수정 지점이 는다(25 §6).
+
+  jpa:
+    show-sql: false      # 포맷 없는 원문은 읽기 어렵다. 아래 로거로 본다
+    properties:
+      hibernate.format_sql: true
+      hibernate.highlight_sql: true
+
+  # 25 §5 는 로컬을 store-type=none 으로 적었다. jdbc 로 둔다(application.yml 의 기본을
+  # 그대로 쓴다) — none 이면 세션 스토어가 로컬에서 한 번도 돌지 않아, SPRING_SESSION DDL 과
+  # 직렬화 경로가 배포 뒤에야 시험된다. 조용히 통과하는 게이트를 만들지 않는다.
+
+# 파라미터가 박힌 SQL 을 콘솔에 낸다 — 28 §2. 로컬에서 켜는 것이 기본이다.
+app:
+  logging:
+    sql:
+      enabled: true
+      trace-caller: true
+
+logging:
+  level:
+    # Hibernate 자신의 SQL 로거는 끈다 — 켜 두면 **같은 쿼리가 두 번** 나온다.
+    # 그쪽은 물음표가 남은 원문이고, 우리가 보려는 것은 값이 박힌 쪽이다.
+    org.hibernate.SQL: off
+    org.hibernate.orm.jdbc.bind: off
+    liquibase: info

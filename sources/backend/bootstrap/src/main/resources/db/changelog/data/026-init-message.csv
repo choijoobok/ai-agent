@@ -1,0 +1,27 @@
+MSG_KEY,LANG_CD,MSG_VAL
+grid.settings,ko,그리드 설정
+grid.settings,en,Grid settings
+grid.settings.title,ko,컬럼 설정
+grid.settings.title,en,Columns
+grid.settings.column,ko,컬럼
+grid.settings.column,en,Column
+grid.settings.pin,ko,틀고정
+grid.settings.pin,en,Freeze
+grid.settings.pin.left,ko,왼쪽
+grid.settings.pin.left,en,Left
+grid.settings.pin.none,ko,없음
+grid.settings.pin.none,en,None
+grid.settings.pin.right,ko,오른쪽
+grid.settings.pin.right,en,Right
+grid.settings.up,ko,위로
+grid.settings.up,en,Move up
+grid.settings.down,ko,아래로
+grid.settings.down,en,Move down
+grid.settings.saved,ko,저장했습니다
+grid.settings.saved,en,Saved
+grid.settings.reset,ko,초기화
+grid.settings.reset,en,Reset
+grid.settings.reset.confirm,ko,저장한 컬럼 설정을 지우고 기본값으로 돌아갑니다. 되돌릴 수 없습니다
+grid.settings.reset.confirm,en,This deletes your saved column settings and restores the defaults. It cannot be undone
+grid.settings.noneVisible,ko,컬럼을 하나 이상 켜야 합니다
+grid.settings.noneVisible,en,Keep at least one column visible

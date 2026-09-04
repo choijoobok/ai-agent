@@ -1,0 +1,3 @@
+MSG_KEY,LANG_CD,MSG_VAL
+grid.pk.locked,ko,키는 신규 행에서만 입력합니다. 고치려면 지우고 다시 만듭니다.
+grid.pk.locked,en,Keys are entered on new rows only. Delete and re-create to change one.

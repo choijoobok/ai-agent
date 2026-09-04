@@ -1,0 +1,63 @@
+# 즐겨찾기 메뉴 — 42 §7 이 이미 형태를 닫아 둔 테이블이다(UX-03).
+#
+# 42 §7 은 "UX-03 은 S 등급이므로 화면은 뒤로 미룰 수 있다, 테이블만 먼저 둔다" 로 적었는데
+# 화면 쪽(사이더·탭 우클릭)이 먼저 왔으므로 여기서 함께 만든다.
+#
+# 감사 4컬럼이 없다 — 주체 = 행위자다. 본인이 자기 즐겨찾기를 등록하므로 REG_ID 는
+# USER_ID 와 같은 값이 되고, 그런 컬럼은 신뢰할 수 없는 컬럼을 하나 더 만드는 것이다
+# (40 §4.2). USER_ID + CRE_DTM 이 곧 "누가 언제" 다.
+#
+# FK 를 둘 다 건다(42 §9) — 없는 메뉴를 가리키는 즐겨찾기는 클릭이 곧 404 다.
+# ON DELETE CASCADE 는 쓰지 않는다: 메뉴를 지우려면 즐겨찾기를 먼저 정리해야 한다.
+databaseChangeLog:
+  - changeSet:
+      id: 009-create-sys-user-favorite
+      author: template
+      comment: 즐겨찾기는 사람이 명시적으로 선언한 것이라 DB 다 — 42 §7
+      changes:
+        - createTable:
+            tableName: SYS_USER_FAVORITE
+            columns:
+              - column:
+                  name: USER_ID
+                  type: VARCHAR(30)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_USER_FAVORITE
+                    nullable: false
+              - column:
+                  name: MENU_CD
+                  type: VARCHAR(30)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_USER_FAVORITE
+                    nullable: false
+              # 사용자가 정한 순서. 재배치는 목록 전체를 1..N 으로 다시 쓴다(42 §7).
+              - column:
+                  name: SORT_NO
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CRE_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 009-fk-sys-user-favorite
+      author: template
+      comment: 없는 메뉴를 가리키는 즐겨찾기는 클릭이 곧 404 다 — 42 §9
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: FK_SYS_USER_FAVORITE_01
+            baseTableName: SYS_USER_FAVORITE
+            baseColumnNames: USER_ID
+            referencedTableName: SYS_USER
+            referencedColumnNames: USER_ID
+        - addForeignKeyConstraint:
+            constraintName: FK_SYS_USER_FAVORITE_02
+            baseTableName: SYS_USER_FAVORITE
+            baseColumnNames: MENU_CD
+            referencedTableName: SYS_MENU
+            referencedColumnNames: MENU_CD

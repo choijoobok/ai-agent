@@ -1,0 +1,45 @@
+# 메시지 값 40차 — 사람 소유 시드다(22 §1.1). 그리드 설정 창의 초기화 버튼 하나.
+#
+# 값 하나에 파일 하나가 아깝게 보이지만 그것이 이 프로젝트의 규칙이다 — 이미 적용된
+# changeset 을 고치면 체크섬이 어긋나고, 그 사고를 실제로 겪었다(2026-08-30, 050).
+# 053 은 이미 로컬 DB 에 반영돼 있으므로 손대지 않는다.
+#
+# 문구가 말하는 것은 "지금은 못 누른다" 가 아니라 **왜 못 누르는가** 다. 꺼진 버튼은
+# 눌러 봐야 아무 일이 없고 이유를 말하지 못하므로 툴팁이 그 자리를 메운다(53 §5).
+databaseChangeLog:
+  - changeSet:
+      id: data-054-message
+      author: template
+      comment: 그리드 설정 — 되돌릴 것이 없을 때의 초기화 툴팁(53 §5)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/054-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-054-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

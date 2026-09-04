@@ -1,0 +1,127 @@
+MSG_KEY,LANG_CD,MSG_VAL
+authz.action.READ,ko,조회
+authz.action.READ,en,Read
+authz.action.SAVE,ko,저장
+authz.action.SAVE,en,Save
+authz.action.EXPORT,ko,출력
+authz.action.EXPORT,en,Export
+authz.action.EXECUTE,ko,실행
+authz.action.EXECUTE,en,Execute
+err.user.pwd-mismatch,ko,현재 비밀번호가 일치하지 않습니다.
+err.user.pwd-mismatch,en,The current password is incorrect.
+err.user.pwd-weak,ko,비밀번호가 정책을 충족하지 않습니다.
+err.user.pwd-weak,en,The password does not meet the policy.
+err.user.pwd-reused,ko,최근에 사용한 비밀번호는 다시 쓸 수 없습니다.
+err.user.pwd-reused,en,You cannot reuse a recent password.
+err.user.pwd-unchanged,ko,현재 비밀번호와 다른 값이어야 합니다.
+err.user.pwd-unchanged,en,The new password must differ from the current one.
+profile.title,ko,내 프로필
+profile.title,en,My profile
+profile.tab.info,ko,내 정보
+profile.tab.info,en,My info
+profile.tab.password,ko,비밀번호 변경
+profile.tab.password,en,Password
+profile.tab.history,ko,로그인 이력
+profile.tab.history,en,Sign-in history
+profile.tab.roles,ko,내 역할
+profile.tab.roles,en,My roles
+profile.version,ko,버전 {version} · {env}
+profile.version,en,Version {version} · {env}
+profile.userId,ko,아이디
+profile.userId,en,User ID
+profile.userNm,ko,이름
+profile.userNm,en,Name
+profile.userNm.required,ko,이름을 입력하세요.
+profile.userNm.required,en,Enter your name.
+profile.email,ko,이메일
+profile.email,en,Email
+profile.email.invalid,ko,이메일 형식이 아닙니다.
+profile.email.invalid,en,That is not a valid email address.
+profile.locale,ko,언어
+profile.locale,en,Language
+profile.validPeriod,ko,사용 기간
+profile.validPeriod,en,Valid period
+profile.lastLogin,ko,마지막 로그인
+profile.lastLogin,en,Last sign-in
+profile.none,ko,없음
+profile.none,en,None
+profile.save,ko,저장
+profile.save,en,Save
+profile.saved,ko,저장했습니다.
+profile.saved,en,Saved.
+profile.pwd.current,ko,현재 비밀번호
+profile.pwd.current,en,Current password
+profile.pwd.new,ko,새 비밀번호
+profile.pwd.new,en,New password
+profile.pwd.confirm,ko,새 비밀번호 확인
+profile.pwd.confirm,en,Confirm new password
+profile.pwd.confirmMismatch,ko,새 비밀번호와 일치하지 않습니다.
+profile.pwd.confirmMismatch,en,This does not match the new password.
+profile.pwd.required,ko,값을 입력하세요.
+profile.pwd.required,en,Enter a value.
+profile.pwd.rule,ko,"{minLength}자 이상이며, 영대문자·영소문자·숫자·특수문자 중 {kinds}종 이상을 씁니다."
+profile.pwd.rule,en,"At least {minLength} characters, using {kinds} or more of uppercase, lowercase, digits and symbols."
+profile.pwd.rule.reuse,ko,최근 {count}번 쓴 비밀번호는 다시 쓸 수 없습니다.
+profile.pwd.rule.reuse,en,You cannot reuse your last {count} passwords.
+profile.pwd.changedAt,ko,{when} 에 바꿨습니다.
+profile.pwd.changedAt,en,Last changed on {when}.
+profile.pwd.expiresIn,ko,비밀번호 만료까지 {days}일 남았습니다.
+profile.pwd.expiresIn,en,Your password expires in {days} days.
+profile.pwd.expired,ko,비밀번호가 만료되었습니다. 바꿔야 계속할 수 있습니다.
+profile.pwd.expired,en,Your password has expired. Change it to continue.
+profile.pwd.temporary,ko,관리자가 발급한 임시 비밀번호를 쓰고 있습니다. 새 비밀번호로 바꾸세요.
+profile.pwd.temporary,en,You are using a temporary password issued by an administrator. Please change it.
+profile.pwd.submit,ko,비밀번호 변경
+profile.pwd.submit,en,Change password
+profile.pwd.done,ko,비밀번호를 바꿨습니다.
+profile.pwd.done,en,Your password has been changed.
+profile.history.when,ko,일시
+profile.history.when,en,When
+profile.history.result,ko,결과
+profile.history.result,en,Result
+profile.history.ip,ko,접속 IP
+profile.history.ip,en,IP address
+profile.history.userAgent,ko,브라우저
+profile.history.userAgent,en,Browser
+profile.history.empty,ko,로그인 이력이 없습니다.
+profile.history.empty,en,No sign-in history.
+profile.history.note,ko,최근 30건입니다. 실패한 시도도 함께 보입니다 — 모르는 접속이 있으면 관리자에게 알리세요.
+profile.history.note,en,"The last 30 records, failed attempts included — tell an administrator about anything you do not recognise."
+profile.history.success,ko,성공
+profile.history.success,en,Success
+profile.history.failure,ko,실패
+profile.history.failure,en,Failed
+profile.history.ended,ko,종료
+profile.history.ended,en,Ended
+profile.roles.title,ko,보유 역할
+profile.roles.title,en,Roles
+profile.role.roleNm,ko,역할
+profile.role.roleNm,en,Role
+profile.role.period,ko,유효 기간
+profile.role.period,en,Valid period
+profile.role.state,ko,상태
+profile.role.state,en,State
+profile.role.effective,ko,유효
+profile.role.effective,en,Active
+profile.role.expired,ko,기간 지남
+profile.role.expired,en,Expired
+profile.role.pending,ko,시작 전
+profile.role.pending,en,Not yet started
+profile.role.disabled,ko,역할 중지
+profile.role.disabled,en,Role disabled
+profile.roles.empty,ko,부여된 역할이 없습니다.
+profile.roles.empty,en,No roles granted.
+profile.grants.title,ko,개인 예외 권한
+profile.grants.title,en,Individual exceptions
+profile.grant.menu,ko,메뉴
+profile.grant.menu,en,Menu
+profile.grant.action,ko,액션
+profile.grant.action,en,Action
+profile.grant.reason,ko,사유
+profile.grant.reason,en,Reason
+profile.grants.empty,ko,개인 예외 권한이 없습니다.
+profile.grants.empty,en,No individual exceptions.
+profile.grants.note,ko,읽기 전용입니다. 권한이 더 필요하면 관리자에게 신청하세요.
+profile.grants.note,en,Read-only. Ask an administrator if you need more access.
+profile.basisDate,ko,기준일 {date}
+profile.basisDate,en,As of {date}

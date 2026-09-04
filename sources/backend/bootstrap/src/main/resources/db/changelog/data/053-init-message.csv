@@ -1,0 +1,77 @@
+MSG_KEY,LANG_CD,MSG_VAL
+code.LOGIN_RSLT_CD.SUCCESS,ko,성공
+code.LOGIN_RSLT_CD.SUCCESS,en,Success
+code.LOGIN_RSLT_CD.FAIL_NO_USER,ko,없는 계정
+code.LOGIN_RSLT_CD.FAIL_NO_USER,en,No such account
+code.LOGIN_RSLT_CD.FAIL_PWD,ko,비밀번호 불일치
+code.LOGIN_RSLT_CD.FAIL_PWD,en,Wrong password
+code.LOGIN_RSLT_CD.FAIL_DISABLED,ko,사용 중지
+code.LOGIN_RSLT_CD.FAIL_DISABLED,en,Disabled
+code.LOGIN_RSLT_CD.FAIL_EXPIRED,ko,사용 기간 만료
+code.LOGIN_RSLT_CD.FAIL_EXPIRED,en,Account expired
+code.LOGIN_RSLT_CD.FAIL_LOCKED,ko,잠김
+code.LOGIN_RSLT_CD.FAIL_LOCKED,en,Locked
+code.LOGIN_RSLT_CD.FAIL_DORMANT,ko,휴면
+code.LOGIN_RSLT_CD.FAIL_DORMANT,en,Dormant
+code.LOGIN_RSLT_CD.FAIL_IP,ko,허용 IP 아님
+code.LOGIN_RSLT_CD.FAIL_IP,en,IP not allowed
+code.LOGIN_RSLT_CD.FAIL_NO_AUTHORITY,ko,권한 없음
+code.LOGIN_RSLT_CD.FAIL_NO_AUTHORITY,en,No authority
+code.LOGIN_RSLT_CD.FAIL_TEMP_EXPIRED,ko,임시 비밀번호 만료
+code.LOGIN_RSLT_CD.FAIL_TEMP_EXPIRED,en,Temp password expired
+code.LOGIN_RSLT_CD.FAIL_CONCURRENT,ko,동시 접속 거부
+code.LOGIN_RSLT_CD.FAIL_CONCURRENT,en,Concurrent login blocked
+code.LOGIN_RSLT_CD.LOGOUT,ko,로그아웃
+code.LOGIN_RSLT_CD.LOGOUT,en,Logout
+code.LOGIN_RSLT_CD.SESSION_TIMEOUT,ko,세션 만료
+code.LOGIN_RSLT_CD.SESSION_TIMEOUT,en,Session timed out
+code.LOGIN_RSLT_CD.FORCED_LOGOUT,ko,강제 로그아웃
+code.LOGIN_RSLT_CD.FORCED_LOGOUT,en,Forced logout
+code.LOGIN_RSLT_CD.SESSION_EVICTED,ko,세션 밀림
+code.LOGIN_RSLT_CD.SESSION_EVICTED,en,Session evicted
+loginLog.grid.title,ko,로그인 이력
+loginLog.grid.title,en,Login History
+loginLog.col.creDtm,ko,일시
+loginLog.col.creDtm,en,Time
+loginLog.col.userId,ko,시도 ID
+loginLog.col.userId,en,Attempted ID
+loginLog.col.result,ko,결과
+loginLog.col.result,en,Result
+loginLog.col.clientIp,ko,IP
+loginLog.col.clientIp,en,IP
+loginLog.col.userAgent,ko,User-Agent
+loginLog.col.userAgent,en,User-Agent
+loginLog.col.traceId,ko,추적 ID
+loginLog.col.traceId,en,Trace ID
+loginLog.col.seq,ko,순번
+loginLog.col.seq,en,No.
+loginLog.userId.attempted,ko,로그인 화면에 입력된 ID 다. 등록되지 않은 계정의 시도도 그대로 남는다
+loginLog.userId.attempted,en,The ID as typed at login. Attempts on unregistered accounts are recorded as-is
+loginLog.noUserId,ko,(입력 없음)
+loginLog.noUserId,en,(not entered)
+loginLog.footer.range,ko,최대 {days}일
+loginLog.footer.range,en,up to {days} days
+loginLog.empty,ko,조회 결과가 없습니다. 로그인 이력은 1년간 보관됩니다
+loginLog.empty,en,No results. Login history is kept for one year
+loginLog.empty.failed,ko,이 기간에 로그인 실패가 없습니다
+loginLog.empty.failed,en,There were no login failures in this period
+loginLog.search.period,ko,기간
+loginLog.search.period,en,Period
+loginLog.search.userId,ko,시도 ID
+loginLog.search.userId,en,Attempted ID
+loginLog.search.result,ko,결과
+loginLog.search.result,en,Result
+loginLog.search.rsltGroup,ko,결과 묶음
+loginLog.search.rsltGroup,en,Result group
+loginLog.rsltGroup.failed,ko,실패만
+loginLog.rsltGroup.failed,en,Failures only
+loginLog.rsltGroup.closed,ko,종료만
+loginLog.rsltGroup.closed,en,Session ends only
+loginLog.search.clientIp,ko,IP
+loginLog.search.clientIp,en,IP
+loginLog.search.traceId,ko,추적 ID
+loginLog.search.traceId,en,Trace ID
+err.login-log.range-required,ko,조회 기간은 필수입니다
+err.login-log.range-required,en,The search period is required
+err.login-log.range-too-wide,ko,조회 기간이 허용 범위를 넘었습니다
+err.login-log.range-too-wide,en,The search period exceeds the allowed range

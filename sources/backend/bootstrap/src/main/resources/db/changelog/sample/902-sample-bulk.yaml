@@ -1,0 +1,115 @@
+# 샘플 대량 시드 — 48 §8 의 데이터 건수. 주문 2,000 · 품목 3,999.
+#
+# ── 왜 901 과 파일을 가르는가 ───────────────────────────────────────────
+#
+# 901 의 여섯은 **손으로 고른 행**이다: 상태 넷 · 잠긴 행 · 품목이 0건인 주문 · 태그가 여럿인
+# 주문. 그 여섯은 화면이 무엇을 그리는지 보이기 위한 것이라 값 하나하나에 뜻이 있다.
+#
+# 여기 2,000 은 **양** 이다. 섞어 두면 여섯의 뜻이 묻히고, 걷어낼 때도 갈라 두는 편이
+# 낫다 — 양만 줄이고 싶은 사람은 이 파일의 include 한 줄을 뺀다.
+#
+# ── 왜 2,000 인가 ───────────────────────────────────────────────────────
+#
+# ②(커서 페이징)의 쪽수 후보가 100 · 500 · 1000 이다. 가장 큰 후보에서도 **두 쪽**이어야
+# 다음 쪽 버튼이 눌리고, 그래야 커서가 시연된다 — 한 쪽이면 이 화면의 존재 이유가 화면에
+# 나타나지 않는다. 100 에서는 20쪽이라 오프셋의 쪽수 이동과 나란히 보인다.
+#
+# 건수의 원본은 생성기의 상수다(build.gradle.kts 의 SampleBulkSeedTask.COUNT) — CSV 를
+# 손으로 고치지 않으며 checkSampleBulkSeed 가 그것을 지킨다.
+#
+# ── 다시 만들면 남의 로컬이 죽는다 ─────────────────────────────────────
+#
+# loadData 는 CSV 내용을 체크섬에 넣는다(22 §1.1). 건수를 바꾸는 것은 이 CSV 를 다시 만드는
+# 일이 아니라 **새 changeset 을 더하는** 일이다.
+#
+# ── NULL 을 글자로 적는다 ───────────────────────────────────────────────
+#
+# CSV 의 빈 칸이 빈 문자열로 실릴 수 있어(벤더·버전에 따라 갈린다) 비울 칸에는 NULL 이라고
+# 적었다. PROC_MS 는 `bigint` 라 빈 문자열이면 실패하고, ERR_MSG 는 문자라 빈 문자열이면
+# **조회조건 *값 있음* 이 전건을 잡는다** — 후자는 조용해서 더 나쁘다.
+databaseChangeLog:
+  - changeSet:
+      id: 902-sample-bulk-order
+      author: template
+      comment: 주문 2,000 — ②의 커서 페이징이 시연되는 최소치(48 §8)
+      changes:
+        - loadData:
+            tableName: SMPL_ORDER
+            file: db/changelog/sample/902-sample-bulk-order.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column: { name: ORD_ID, type: NUMERIC }
+              - column: { name: ORD_NO, type: STRING }
+              - column: { name: ORD_NM, type: STRING }
+              - column: { name: CUST_ID, type: STRING }
+              - column: { name: CUST_NM, type: STRING }
+              - column: { name: CUST_GRD_CD, type: STRING }
+              - column: { name: ORD_STAT_CD, type: STRING }
+              - column: { name: CHNL_CD, type: STRING }
+              - column: { name: PRIORITY_CD, type: STRING }
+              - column: { name: ORD_DT, type: DATE }
+              - column: { name: DLVR_YM, type: STRING }
+              - column: { name: ORD_DTM, type: DATETIME }
+              - column: { name: ORD_QTY, type: NUMERIC }
+              - column: { name: UNIT_AMT, type: NUMERIC }
+              - column: { name: ORD_AMT, type: NUMERIC }
+              - column: { name: VAT_AMT, type: NUMERIC }
+              - column: { name: DC_RT, type: NUMERIC }
+              - column: { name: PROC_MS, type: NUMERIC }
+              - column: { name: URGENT_YN, type: STRING }
+              - column: { name: USE_YN, type: STRING }
+              - column: { name: LOCK_YN, type: STRING }
+              - column: { name: SRC_SYS_CD, type: STRING }
+              - column: { name: ERR_MSG, type: STRING }
+              - column: { name: REG_ID, type: STRING }
+
+  # 품목이 주문마다 하나에서 셋이다. 비우지 않는 것이 요점이다 — 대량 주문의 디테일이 전부
+  # 비어 있으면 ③④⑤가 고장난 것처럼 보이고, ⑥의 평면 그리드는 손으로 만든 일곱 줄만 갖는다.
+  - changeSet:
+      id: 902-sample-bulk-item
+      author: template
+      comment: 품목 3,999 — 디테일과 ⑥의 평면 그리드가 볼 것을 갖는다
+      changes:
+        - loadData:
+            tableName: SMPL_ORDER_ITEM
+            file: db/changelog/sample/902-sample-bulk-item.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column: { name: ORD_ID, type: NUMERIC }
+              - column: { name: ITEM_SEQ, type: NUMERIC }
+              - column: { name: ORD_NO, type: STRING }
+              - column: { name: ITEM_CD, type: STRING }
+              - column: { name: ITEM_NM, type: STRING }
+              - column: { name: UOM_CD, type: STRING }
+              - column: { name: QTY, type: NUMERIC }
+              - column: { name: UNIT_AMT, type: NUMERIC }
+              - column: { name: AMT, type: NUMERIC }
+              - column: { name: DLVR_DT, type: DATE }
+              - column: { name: ITEM_STAT_CD, type: STRING }
+              - column: { name: USE_YN, type: STRING }
+              - column: { name: REG_ID, type: STRING }
+
+  # ── 채번을 올린다 ────────────────────────────────────────────────────
+  #
+  # 901 이 51 로 두었다. 그때 시드가 쓴 ORD_ID 는 1~6 이었고, 여기서 1001~3000 을 쓰므로
+  # 그 값을 두면 사용자가 행을 스무 번쯤 추가한 뒤 **시드 행과 겹친다** — 그 충돌은 기동이
+  # 아니라 저장에서 나고, 그때까지는 아무 징후가 없다(901 의 머리말이 같은 함정을 적어 두었다).
+  #
+  # 3051 인 것은 allocationSize 가 50 이라서다. 최대 ID 가 3000 이므로 3001 로 두면
+  # **블록의 뜻이 lo 인지 hi 인지에 따라** 안전하지 않다: hi 라면 그 블록은 2952~3001 이고
+  # 3000 을 덮는다. 3051 은 어느 뜻으로 읽어도 3000 위에서 시작한다 — 벤더와 Hibernate
+  # 최적화기의 조합을 우리가 다 알 수 없으므로 **둘 다 성립하는 값**을 고른다.
+  - changeSet:
+      id: 902-sample-bulk-sequence
+      author: template
+      comment: 채번이 시드 ID 를 침범하지 않게 올린다 — ADR-0015 · 22 §4.1
+      changes:
+        - update:
+            tableName: SYS_SEQUENCE
+            columns:
+              - column:
+                  name: NEXT_VAL
+                  valueNumeric: 3051
+            where: SEQ_NAME = 'SMPL_ORDER'

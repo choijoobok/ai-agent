@@ -1,0 +1,27 @@
+MSG_KEY,LANG_CD,MSG_VAL
+searchCond.title,ko,저장된 조회조건
+searchCond.title,en,Saved filters
+searchCond.save,ko,현재 조건 저장
+searchCond.save,en,Save current filter
+searchCond.save.title,ko,조회조건 저장
+searchCond.save.title,en,Save filter
+searchCond.name,ko,이름
+searchCond.name,en,Name
+searchCond.name.required,ko,이름을 입력하세요
+searchCond.name.required,en,Enter a name
+searchCond.overwrite,ko,같은 이름이 이미 있습니다. 저장하면 덮어씁니다
+searchCond.overwrite,en,A filter with this name exists. Saving replaces it
+searchCond.default,ko,화면에 들어올 때 이 조건으로 채운다
+searchCond.default,en,Apply this filter when the screen opens
+searchCond.default.mark,ko,기본 조건
+searchCond.default.mark,en,Default filter
+searchCond.empty,ko,저장된 조회조건이 없습니다
+searchCond.empty,en,No saved filters
+searchCond.delete,ko,삭제
+searchCond.delete,en,Delete
+searchCond.delete.confirm,ko,{name} 을(를) 지웁니다. 되돌릴 수 없습니다
+searchCond.delete.confirm,en,Delete {name}. This cannot be undone
+searchCond.saved,ko,저장했습니다
+searchCond.saved,en,Saved
+err.searchCond.limit,ko,저장할 수 있는 조회조건 수를 넘었습니다. 쓰지 않는 것을 지우고 다시 저장하세요
+err.searchCond.limit,en,You have reached the saved filter limit. Delete one and try again

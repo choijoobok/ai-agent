@@ -1,0 +1,11 @@
+MSG_KEY,LANG_CD,MSG_VAL
+grid.col.rowNo,ko,No
+grid.col.rowNo,en,No
+grid.col.select,ko,선택
+grid.col.select,en,Select
+grid.selectAll,ko,전체 선택
+grid.selectAll,en,Select all
+grid.selectRow,ko,이 행 선택
+grid.selectRow,en,Select row
+grid.split.expand,ko,되돌리기
+grid.split.expand,en,Restore

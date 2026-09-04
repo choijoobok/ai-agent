@@ -1,0 +1,52 @@
+# 메시지 값 3차 — 사람 소유 시드다(22 §1.1).
+#
+# 앞의 것을 고치지 않고 파일을 더한다. 그것이 사람 소유 시드가 늘어나는 방식이며(22 §1.1),
+# 여기서는 규약을 넘어 **강제**이기도 하다: 009 는 runOnChange 가 아니므로 이미 적용된
+# changeset 을 고치면 체크섬이 달라져 기동이 실패한다.
+#
+# 담는 것은 셸의 나머지 — 메뉴 검색(51 §4.2) · 설정 모달(51 §9) · 세션 만료 예고
+# (50 §7) · 조회조건 접기(51 §5.1) 가 처음 쓰는 문구다.
+# 키 행은 여기 없다 — 전부 소스 상수라 008 이 생성으로 만든다(ADR-0023).
+#
+# 이 값들이 없으면 갓 설치한 템플릿의 설정 모달이 `settings.title` 로 보인다.
+# 관리 화면에서 채울 수는 있지만, 그 화면으로 가는 길에 있는 문구가 그 상태다.
+databaseChangeLog:
+  - changeSet:
+      id: data-011-message
+      author: template
+      comment: 검색·설정·만료·폼 접기의 ko·en — 51 §4.2·§5.1·§9 · 50 §7
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/011-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-011-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 올리지 않으면 이미 받아 둔 화면이 새 문구를 못 본다
+      changes:
+        # 프론트는 캐시의 버전을 들고 물으며, 같으면 서버가 `unchanged` 로 답하고 화면은
+        # 옛 번들을 그대로 쓴다(43 §8.1). 값을 더해 놓고 이 한 줄을 빼면 **DB 에는 있는데
+        # 화면에는 키 문자열이 보이는** 상태가 되고, 그 원인은 어디에도 드러나지 않는다.
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

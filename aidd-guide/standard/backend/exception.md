@@ -1,0 +1,115 @@
+---
+id: LLM-FWK-BE-005
+title: "예외 — ErrorCode · BusinessException · GlobalExceptionHandler"
+category: "06-framework/backend"
+type: operation
+created: 2026-05-04
+updated: 2026-09-03
+status: active
+sources: ["sources/backend/core/error/", "sources/backend/core/message/MsgKey.java", "sources/backend/api/error/"]
+author: Bong Jong Hyeon
+tier: 2
+tags: [backend, exception, error, message]
+---
+
+# 예외 — `ErrorCode` · `BusinessException` · `GlobalExceptionHandler`
+
+> **던지는 쪽은 코드만 안다. 문구를 만드는 것은 한 곳뿐이다.**
+> 서비스가 `messageSource` 를 부르기 시작하면 문구 조립이 코드 곳곳에 생기고,
+> 같은 사건이 사람마다 다른 문자열로 로그에 쌓여 **묶어 셀 수 없다.**
+
+## 1. 세 조각
+
+```
+ErrorCode (interface)          code() · type() · defaultMessage()
+   └ {도메인}ErrorCode (enum)  도메인마다 하나 — CommonErrorCode · AuthErrorCode …
+BusinessException              ErrorCode + message + List<FieldError>
+GlobalExceptionHandler         @RestControllerAdvice — 봉투로 감싸고 로그에 남긴다
+```
+
+- **`ErrorCode` 는 인터페이스다.** 도메인마다 enum 하나가 구현한다
+  (`CommonErrorCode` · `AuthErrorCode` · `MenuErrorCode` · `BatchScheduleErrorCode` …).
+  **하나의 거대한 enum 을 두지 않는다** — 도메인을 지우면 그 코드도 함께 사라져야 한다.
+- **`defaultMessage()` 는 최종 문구가 아니다.** `SYS_MESSAGE` 조회가 실패했을 때의
+  **폴백**이다.
+
+## 2. `ErrorType` 이 상태 코드를 정한다
+
+| `ErrorType` | 상태 | 언제 |
+|---|---|---|
+| `INVALID_REQUEST` | **400** | 검증 실패 · 조회조건 위반. 폼이 필드별 오류를 표시한다 |
+| `UNAUTHENTICATED` | **401** | 세션 만료. 프론트는 **재인증 모달** — 로그아웃하지 않는다 |
+| `FORBIDDEN` | **403** | 인가 거부. **`code` 가 갈래를 나른다** |
+| `INTERNAL_ERROR` | **500** | 그 밖. **스택트레이스를 응답에 담지 않는다** — `traceId` 만 준다 |
+
+**상태 코드를 컨트롤러가 고르지 않는다.** 예외가 나르는 `ErrorType` 이 정한다.
+
+## 3. 던지기
+
+```java
+throw new BusinessException(CodeErrorCode.DUPLICATE_CODE);
+throw new BusinessException(CodeErrorCode.DUPLICATE_CODE, "이미 등록된 코드입니다: " + grpCd);
+throw new BusinessException(CommonErrorCode.VALIDATION, msg, List.of(
+        new FieldError("cron", "쿨다운이 크론 최소 간격보다 깁니다"),
+        new FieldError("lockMinIntervalSec", "〃")));
+```
+
+- **`fieldErrors` 는 배열이다.** 같은 문구가 두 필드에 실릴 수 있다 — *어느 쪽이 틀렸는지
+  서버가 말할 수 없는*, **관계가 틀린** 경우가 있다.
+- `BusinessException` 이 나르는 `message` 는 **서버 언어**이고 그대로 로그에 남는다.
+  응답에 나가는 문구는 **다시 읽은 사용자 언어**다(§4).
+
+## 4. 문구는 `ErrorMessages` 하나가 만든다
+
+```java
+messages.find(errorCode.code(), locale.current())
+        .orElseGet(errorCode::defaultMessage);
+```
+
+| | |
+|---|---|
+| 원본 | **`SYS_MESSAGE`** — `MESSAGE_MGMT` 화면에서 바꾼다 |
+| 키 | `ErrorCode.code()` — 점 표기 문자열 상수 (`err.login.failed`) |
+| 언어 | 세션이 있으면 `SYS_USER.LOCALE_CD`, 없으면 `Accept-Language` |
+| 실패하면 | **`defaultMessage()` 로 떨어지고 `warn` 을 남긴다** — 메시지 조회 실패가 원래 예외를 덮어서는 안 된다 |
+
+> **로그의 언어와 응답의 언어를 가른다.** 합치면 **같은 사건이 사람마다 다른 문자열로**
+> 쌓여 묶어 셀 수 없다. 예외의 `getMessage()` 는 서버 언어로 `SYS_LO_EXCEPTION` 에 남고,
+> 응답 문구는 `code()` 를 키로 다시 읽는다.
+
+## 5. 키는 소스가 소유한다
+
+```
+MsgKey.java (서버)  ·  messageKeys.ts (프론트)
+        └─→ ./gradlew generateMessageSeed ─→ SYS_MESSAGE_KEY 시드 CSV
+                                             SYS_MESSAGE 값은 새 changeset 으로
+```
+
+- **문구를 소스에 박지 않는다**(CLAUDE.md §4-5). 서버는 `MsgKey` 상수 + `SYS_MESSAGE`.
+- **키 시드는 생성물이다.** `MsgKey.java` 를 고쳤으면 생성 태스크를 돌려 **CSV 를 같은
+  커밋에** 담는다. 값(`SYS_MESSAGE`)은 **이미 적재된 changeset 을 고치지 않고 새 파일로** 더한다.
+- `SeedMessageTest` 가 **값 시드의 키가 키 시드에 있는가**를 검사한다.
+- **`USE_SCOPE` 가 프론트 번들의 경계다.** 에러 문구는 프론트가 쓰지 않으므로 공개 번들에서
+  빠진다 — 서버가 완성해 내려보내기 때문이다([api.md §4](./api.md)).
+
+## 6. 핸들러가 잡는 것
+
+| 예외 | 상태 | 코드 |
+|---|---|---|
+| `BusinessException` | `ErrorType` 이 정함 | 예외가 나르는 것 |
+| `MethodArgumentNotValidException` | 400 | `err.validation` + 필드별 배열 |
+| `NoResourceFoundException` | 404 | `err.not-found` |
+| `HttpRequestMethodNotSupportedException` | 405 | `err.method-not-allowed` — **서버 고장이 아니라 클라이언트 잘못** |
+| `HttpMessageNotReadableException` | 400 | `err.malformed-body` — **어느 필드인지 알 수 없다** |
+| `Exception` | 500 | `err.internal` — **`traceId` 하나만 나간다** |
+
+- **예외 로그는 비동기로 저장한다.** 로그 저장 실패가 원본 응답에 영향을 주면 안 된다.
+- **4xx 는 `ROOT_CAUSE_STACK` 을 저장하지 않는다.** 인가 거부의 스택은 인터셉터 프레임뿐이고
+  **전 행이 같다** — 180일치 노이즈다. `NULL` 로 둔다.
+- **개발자용 로그·예외 메시지는 영어로 쓴다**(CLAUDE.md §4-5). 사용자 문구는 `SYS_MESSAGE` 다.
+
+## 관련
+
+- [api.md](./api.md) — 봉투 · 서버가 문구를 완성하는 이유
+- [`../../09-knowledge/sys/message.md`](../../knowledge/sys/message.md) — `SYS_MESSAGE` 도메인
+- [CLAUDE.md §4-5 · §4-8](../../../CLAUDE.md) — 문구를 박지 않는다 · 시드는 생성물이다

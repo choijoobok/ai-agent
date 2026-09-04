@@ -1,0 +1,83 @@
+# 메시지 값 — 샘플 ④ SMPL_MD_HORZ (68 §6) 와 ①의 조건부 필수 사유.
+#
+# 089·091·093 에 이어 붙이지 않는다. loadData 는 CSV 의 내용을 체크섬에 넣으므로, 줄을 더하면
+# 그 changeset 이 이미 돈 DB 에서 기동이 죽는다 — 5fa1f90 이 003 에서 겪은 자리이며
+# 파일을 새로 두는 것이 그 사고를 아예 없앤다.
+#
+# ── 체크섬이 보는 것은 커밋이 아니라 실행이다 ──────────────────────────
+#
+# err.sample.rmk-required 두 줄이 여기 있는 이유다. 처음에는 093 에 붙였다 — 아직 커밋
+# 전이니 안전하다고 본 것인데, 그 판단이 틀렸다: 093 은 그 사이의 실기동에서 이미 돌았고
+# DATABASECHANGELOG 에 체크섬이 박혀 있었다. 다음 기동이 Validation Failed 로 죽었다.
+#
+# 커밋 여부를 Liquibase 는 모른다. 물어야 하는 것은 이 changeset 이 어딘가에서 돌았나
+# 이고, 로컬에서 한 번이라도 띄웠으면 답은 그렇다 다.
+#
+# 접두는 089 와 같다(48 §7.3): 데이터가 만드는 menu.SMPL_* · code.SMPL_* 와 화면이 쓰는
+# sample.* · err.sample.* 다. 제거 changelog 의 LIKE 셋이 그대로 잡는다.
+#
+# 키는 둘로 갈린다 —
+#
+#   menu.* · code.*   여기 CSV 가 갖는다. SYS_MENU.MENU_NM 과 SYS_CODE.DTL_NM 에 이름이
+#                     아니라 키가 들어가므로(42 §4 · 43 §4.4) 값이 없으면 화면에
+#                     code.SMPL_CHNL.WEB 이 그대로 보인다.
+#   sample.* err.*    키는 008 이 소스에서 만든다(ADR-0023). 여기서 또 넣으면 loadData 가
+#                     중복 키로 죽는다 — 값만 싣는다.
+databaseChangeLog:
+  - changeSet:
+      id: data-095-message-key
+      author: template
+      comment: 데이터가 만드는 키 — ④의 메뉴명 하나(42 §4 · 43 §4.4)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE_KEY
+            file: db/changelog/data/095-init-message-key.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: USE_SCOPE
+                  type: STRING
+              - column:
+                  name: MSG_DESC
+                  type: STRING
+
+  - changeSet:
+      id: data-095-message
+      author: template
+      comment: ④의 메뉴명과 ①의 조건부 필수 사유 — 화면 문구는 ③의 키를 그대로 쓴다
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/095-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-095-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

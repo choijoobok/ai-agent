@@ -1,0 +1,19 @@
+MSG_KEY,LANG_CD,MSG_VAL
+menu.SMPL_SINGLE_CURSOR,ko,단일 그리드 (커서)
+menu.SMPL_SINGLE_CURSOR,en,Single Grid (Cursor)
+sample.cursor.grid.title,ko,주문 이력
+sample.cursor.grid.title,en,Order History
+sample.cursor.empty,ko,조건에 맞는 주문이 없습니다.
+sample.cursor.empty,en,No orders match the conditions.
+sample.cursor.cond.ordDtm,ko,주문일시
+sample.cursor.cond.ordDtm,en,Ordered At
+sample.cursor.footer.range,ko,최근 {days}일 이내
+sample.cursor.footer.range,en,Within the last {days} days
+sample.cursor.autoRefresh,ko,자동 새로고침
+sample.cursor.autoRefresh,en,Auto refresh
+sample.cursor.help.body,ko,"커서 페이징 화면입니다. 총 건수를 세지 않으므로 페이지 번호가 없고, 정렬은 한 컬럼만 걸립니다."
+sample.cursor.help.body,en,"This screen uses cursor paging. It does not count total rows, so there are no page numbers and only one column can be sorted."
+err.sample.range-required,ko,주문일시는 필수입니다.
+err.sample.range-required,en,The order date-time range is required.
+err.sample.range-too-wide,ko,조회 기간은 31일을 넘을 수 없습니다.
+err.sample.range-too-wide,en,The range cannot exceed 31 days.

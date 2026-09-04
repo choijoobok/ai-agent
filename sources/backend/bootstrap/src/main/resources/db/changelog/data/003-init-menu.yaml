@@ -1,0 +1,81 @@
+# 메뉴 시드 — 생성물이다. 손으로 고치지 않는다(ADR-0028 · 33 §2).
+#
+#   원본                          menu/menu-tree.yaml
+#   ./gradlew generateMenuSeed    원본 → 003-init-menu.csv
+#   ./gradlew checkMenuSeed       재생성 결과 == 커밋본 (CI 의 check 에 달려 있다)
+#
+# ── 006(API)과 방식이 다르다 — 삭제가 없다 ──────────────────────────────
+#
+# 006 은 전건 삭제 후 전건 삽입이다. 그 행에 사람의 것이 없기 때문이며(ADR-0022), 여기서는
+# 성립하지 않는다 — SYS_MENU 를 참조하는 FK 가 일곱이고 넷은 사람이 결정한 사실이다
+# (역할 권한 · 개인 예외 · 매핑 · 자식 노드). onDelete 선언이 저장소에 하나도 없어 전부
+# RESTRICT 이므로 전건 삭제는 배포를 FK 위반으로 터뜨리고, CASCADE 로 뚫으면 ADR-0022 §3 이
+# 금지한 "배포가 운영 결정을 지운다" 가 된다.
+#
+# 그래서 008(메시지 키)과 같은 칸이다 — upsert 하고 지우지 않으며, 사라진 것은 표시한다.
+#
+#   ①  SRC_CD='SEED' 를 전부 ORPHAN 으로 표시한다
+#   ②  CSV 에 있는 것만 SEED 로 되돌린다 (없으면 새로 넣는다)
+#   ③  남은 ORPHAN 이 곧 "선언에서 사라진 메뉴" 다 — 지우는 것은 62 §4.8 의 화면이다
+#
+# 두 단계가 한 changeSet 인 것이 중요하다. 갈라 두면 ①만 돌고 ②가 안 도는 창이 생기고,
+# 그때 기동이 끊기면 전 메뉴가 고아로 남는다.
+#
+# ── CSV 에 없는 컬럼이 이 파일의 절반이다 ────────────────────────────────
+#
+#   SORT_NO · ICON_CD · USE_YN 이 없다. loadUpdateData 는 CSV 에 담은 컬럼만 갱신하므로
+#   운영자가 드래그한 순서(62 §4.5)와 켜고 끈 상태(§4.7)가 배포에서 살아남는다.
+#   새 행은 DB 기본값으로 들어온다 — SORT_NO=0 · USE_YN='Y'.
+#
+#   감사 4컬럼도 없다. 재생성마다 시각이 바뀌면 checkMenuSeed 의 비교가 성립하지 않으며,
+#   이 행들의 감사는 시드 커밋의 git 이력이 한다(006 과 같다).
+#
+# ── 이 파일이 누적에서 생성물로 바뀐 자국 ────────────────────────────────
+#
+# changeSet id 가 그대로다(data-003-menu). 이미 적용된 DB 는 체크섬이 달라져 runOnChange 로
+# 한 번 더 도는데, 그것이 곧 첫 동기화다 — 24행이 전부 SEED 로 갱신된다. 035(ICON_CD)와
+# 056(EXPORT_YN)은 이미 적용됐고 여기가 그 둘 중 EXPORT_YN 만 다시 쓴다(선언이 갖는 칸이다).
+databaseChangeLog:
+  - changeSet:
+      # id · author · 파일 경로 셋이 changeSet 의 신원이다. 하나라도 바꾸면 Liquibase 가
+      # 새 changeSet 으로 보고, 옛 DATABASECHANGELOG 행이 되돌아볼 곳 없는 고아로 남는다.
+      # 그래서 author 를 generated 로 고치지 않는다 — 006 도 생성물이면서 template 이다.
+      id: data-003-menu
+      author: template
+      runOnChange: true
+      comment: 메뉴 하나 = 화면 하나 = 목업 한 장 = SYS_MENU 한 행 — 52 §1 · ADR-0028
+      changes:
+        # ① 시드 출신을 일단 고아로 표시한다. USER 는 건드리지 않는다.
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SRC_CD
+                  value: ORPHAN
+            where: SRC_CD = 'SEED'
+        # ② 선언에 있는 것만 SEED 로 되돌린다. 없는 행은 새로 들어온다.
+        - loadUpdateData:
+            tableName: SYS_MENU
+            file: db/changelog/data/003-init-menu.csv
+            relativeToChangelogFile: false
+            primaryKey: MENU_CD
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MENU_CD
+                  type: STRING
+              - column:
+                  name: UP_MENU_CD
+                  type: STRING
+              - column:
+                  name: MENU_NM
+                  type: STRING
+              - column:
+                  name: MENU_URL
+                  type: STRING
+              - column:
+                  name: EXPORT_YN
+                  type: STRING
+              - column:
+                  name: SRC_CD
+                  type: STRING

@@ -1,0 +1,25 @@
+MSG_KEY,LANG_CD,MSG_VAL
+menu.SMPL_MD_TABS,ko,마스터-디테일 (복수 탭)
+menu.SMPL_MD_TABS,en,Master-Detail (Tabs)
+sample.tab.item,ko,품목
+sample.tab.item,en,Items
+sample.tab.tag,ko,태그
+sample.tab.tag,en,Tags
+sample.tag.grid.title,ko,주문 태그
+sample.tag.grid.title,en,Order Tags
+sample.tag.empty,ko,등록된 태그가 없습니다.
+sample.tag.empty,en,No tags have been added.
+sample.col.tagSeq,ko,순번
+sample.col.tagSeq,en,Seq
+sample.col.tagNm,ko,태그명
+sample.col.tagNm,en,Tag
+sample.col.tagType,ko,태그유형
+sample.col.tagType,en,Tag Type
+sample.col.sortNo,ko,정렬순서
+sample.col.sortNo,en,Order
+sample.tag.sortDuplicated,ko,정렬순서가 겹칩니다. 태그마다 다른 값을 주세요.
+sample.tag.sortDuplicated,en,Sort order must be unique within an order.
+err.sample.tag-required,ko,태그명과 정렬순서는 필수입니다.
+err.sample.tag-required,en,Tag name and sort order are required.
+err.sample.tag-sort-duplicated,ko,태그의 정렬순서가 겹칩니다.
+err.sample.tag-sort-duplicated,en,Tag sort order must be unique within an order.

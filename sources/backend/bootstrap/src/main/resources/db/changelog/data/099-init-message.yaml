@@ -1,0 +1,122 @@
+# 메시지 값 — 샘플 ⑥ SMPL_EXCEL (68 §8).
+#
+# 089·091·093·095·097 에 이어 붙이지 않는다. loadData 는 CSV 의 내용을 체크섬에 넣으므로,
+# 줄을 더하면 그 changeset 이 이미 돈 DB 에서 기동이 죽는다 — 095 의 머리말이 그 사고를
+# 한 번 겪고 적어 두었다. 물어야 하는 것은 커밋 여부가 아니라 이 changeset 이 어딘가에서
+# 돌았나 이고, 로컬에서 한 번이라도 띄웠으면 답은 그렇다 다.
+#
+# ── 파일을 읽는 문구는 여기 없다 ────────────────────────────────────────
+#
+# excel.upload.* 열하나는 088 이 이미 넣었다 — 공용 컴포넌트(ExcelUploadTab)의 것이며,
+# 화면마다 베끼면 같은 사고를 두 벌의 문구로 설명하게 된다. 세그먼트의 미저장 물음
+# (segment.dirty.content)도 마찬가지다.
+#
+# 여기 있는 것은 이 화면이 새로 그리는 것뿐이다: 세그먼트 이름 둘 · 그리드 제목 둘 ·
+# 빈 판 · 조회조건 셋 · 오류 둘. 컬럼 헤더는 ③의 키를 그대로 쓴다 — 같은 표이므로
+# 새 키를 만들면 같은 컬럼이 화면마다 다른 이름으로 보이는 날이 온다.
+#
+# 세그먼트 이름과 그리드 제목을 갈라 두는 것은 층이 달라서다: 세그먼트는 화면의 모드를
+# 말하고(업무 데이터 · 엑셀 업로드) 제목은 그 판이 무엇인지 말한다(주문 품목 ·
+# 엑셀 미리보기) — 같은 낱말을 쓰면 세그먼트를 눌렀는데 아무것도 안 바뀐 것처럼 보인다.
+#
+# 접두는 089 와 같다(48 §7.3): 데이터가 만드는 menu.SMPL_* 와 화면이 쓰는 sample.* ·
+# err.sample.* 다. 제거 changelog 의 LIKE 넷이 그대로 잡는다(999 — 접두가 셋이던 것을
+# ⑥과 함께 넷으로 고쳤다).
+#
+# 키는 둘로 갈린다 —
+#
+#   menu.*            여기 CSV 가 갖는다. SYS_MENU.MENU_NM 에 이름이 아니라 키가 들어가므로
+#                     (42 §4) 값이 없으면 메뉴 트리에 menu.SMPL_EXCEL 가 그대로 보인다.
+#   sample.* err.*    키는 008 이 소스에서 만든다(ADR-0023). 여기서 또 넣으면 loadData 가
+#                     중복 키로 죽는다 — 값만 싣는다.
+databaseChangeLog:
+  - changeSet:
+      id: data-099-message-key
+      author: template
+      comment: 데이터가 만드는 키 — ⑥의 메뉴명 하나(42 §4)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE_KEY
+            file: db/changelog/data/099-init-message-key.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: USE_SCOPE
+                  type: STRING
+              - column:
+                  name: MSG_DESC
+                  type: STRING
+
+  - changeSet:
+      id: data-099-message
+      author: template
+      comment: ⑥의 메뉴명과 세그먼트·조회조건 문구
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/099-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  # ── 세그먼트의 물음이 거짓말을 하고 있었다 ────────────────────────────
+  #
+  # 088 이 넣은 segment.dirty.content 는 "다른 화면으로 바꾸면 잃습니다" 였다. ⑥을 띄워
+  # 보니 그렇지 않다 — ScreenSegment 는 언마운트하지 않고 감추기만 하므로(68 §9.3) 읽어
+  # 들인 행은 그대로 있고, 돌아오면 다시 보인다. 실제로 3건을 읽고 오간 뒤에도 남아 있었다.
+  #
+  # 물음 자체는 남긴다(68 §8.7). 화면 전체가 갈리면 그 행들이 보이지 않게 되므로 알려 줄
+  # 값이 있다 — 하단 디테일 탭이 묻지 않는 것과 갈리는 자리가 거기다. 고치는 것은 문구다:
+  # 오지 않는 일을 예고하는 경고는 사용자가 곧 무시하게 되고, 그러면 진짜 경고도 함께
+  # 무시된다.
+  #
+  # 088 의 CSV 를 고치지 않는다. loadData 가 이미 돌았으므로 줄을 바꾸면 체크섬이 달라져
+  # 남의 로컬이 죽는다 — 값을 바꾸는 것은 update 다.
+  - changeSet:
+      id: data-099-segment-dirty-wording
+      author: template
+      comment: 세그먼트 전환은 미저장을 잃지 않는다 — 088 의 문구를 실물에 맞춘다(68 §9.3)
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: 저장하지 않은 변경이 있습니다. 바꾸면 보이지 않게 되지만 사라지지는 않습니다.
+            where: MSG_KEY = 'segment.dirty.content' AND LANG_CD = 'ko'
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: You have unsaved changes. Switching hides them — they are not discarded.
+            where: MSG_KEY = 'segment.dirty.content' AND LANG_CD = 'en'
+
+  - changeSet:
+      id: data-099-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

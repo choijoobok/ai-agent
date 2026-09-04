@@ -1,0 +1,61 @@
+MSG_KEY,LANG_CD,MSG_VAL
+err.reset.code-expired,ko,인증번호가 만료됐습니다. 처음부터 다시 요청하세요.
+err.reset.code-expired,en,The code is no longer valid. Please start over.
+err.reset.code-invalid,ko,인증번호가 올바르지 않습니다.
+err.reset.code-invalid,en,That code is not correct.
+login.forgotPassword,ko,비밀번호를 잊으셨나요?
+login.forgotPassword,en,Forgot your password?
+login.lockedReset,ko,비밀번호 재설정으로 직접 해제하기
+login.lockedReset,en,Unlock it yourself by resetting your password
+mail.pwdReset.subject,ko,비밀번호 재설정 인증번호
+mail.pwdReset.subject,en,Your password reset code
+mail.pwdReset.body,ko,{userNm} 님의 비밀번호 재설정 인증번호는 {code} 입니다. {minutes}분 안에 입력하세요. 본인이 요청한 것이 아니라면 이 메일을 무시하시면 됩니다 — 비밀번호는 바뀌지 않습니다.
+mail.pwdReset.body,en,"Hello {userNm}, your password reset code is {code}. Enter it within {minutes} minutes. If you did not request this, you can ignore this message — your password will not change."
+pwd.rule.min-length,ko,{min}자 이상이어야 합니다.
+pwd.rule.min-length,en,At least {min} characters.
+pwd.rule.charset-kinds,ko,영대문자·영소문자·숫자·특수문자 중 {kinds}종 이상을 포함해야 합니다.
+pwd.rule.charset-kinds,en,"At least {kinds} of: uppercase, lowercase, digit, symbol."
+pwd.rule.no-reuse,ko,최근 {count}개와 같은 비밀번호는 쓸 수 없습니다.
+pwd.rule.no-reuse,en,Cannot repeat any of your last {count} passwords.
+reset.title,ko,비밀번호 재설정
+reset.title,en,Reset your password
+reset.step.request,ko,인증번호 요청
+reset.step.request,en,Request code
+reset.step.verify,ko,인증번호 확인
+reset.step.verify,en,Verify code
+reset.step.done,ko,새 비밀번호
+reset.step.done,en,New password
+reset.request.desc,ko,로그인 아이디를 넣으면 등록된 메일 주소로 인증번호를 보냅니다. 메일 주소는 묻지 않습니다.
+reset.request.desc,en,Enter your login ID and we will send a code to the email address on file. We do not ask for the address.
+reset.send,ko,인증번호 받기
+reset.send,en,Send code
+reset.sent,ko,입력하신 아이디로 계정을 찾을 수 있으면 인증번호를 보냈습니다. 메일함을 확인하세요.
+reset.sent,en,If that ID matches an account we have sent a code. Please check your inbox.
+reset.verify.desc,ko,메일로 받은 6자리 인증번호를 넣으세요. {minutes}분 동안 유효합니다.
+reset.verify.desc,en,Enter the 6-digit code from the email. It is valid for {minutes} minutes.
+reset.code,ko,인증번호
+reset.code,en,Verification code
+reset.code.required,ko,인증번호를 넣으세요.
+reset.code.required,en,Enter the verification code.
+reset.verify,ko,인증번호 확인
+reset.verify,en,Verify
+reset.resend,ko,인증번호 다시 받기
+reset.resend,en,Send a new code
+reset.resendIn,ko,{seconds}초 뒤에 다시 받을 수 있습니다
+reset.resendIn,en,You can request a new code in {seconds}s
+reset.done.desc,ko,새 비밀번호를 정하세요. 계정이 잠겨 있었다면 여기서 함께 풀립니다.
+reset.done.desc,en,Choose a new password. If your account was locked it will be unlocked here.
+reset.newPwd,ko,새 비밀번호
+reset.newPwd,en,New password
+reset.newPwd.required,ko,새 비밀번호를 넣으세요.
+reset.newPwd.required,en,Enter a new password.
+reset.newPwd.confirm,ko,새 비밀번호 확인
+reset.newPwd.confirm,en,Confirm new password
+reset.newPwd.mismatch,ko,두 값이 서로 다릅니다.
+reset.newPwd.mismatch,en,The two entries do not match.
+reset.submit,ko,비밀번호 바꾸기
+reset.submit,en,Change password
+reset.completed,ko,비밀번호를 바꿨습니다. 새 비밀번호로 로그인하세요.
+reset.completed,en,Your password has been changed. Please sign in with the new one.
+reset.backToLogin,ko,로그인으로 돌아가기
+reset.backToLogin,en,Back to sign in

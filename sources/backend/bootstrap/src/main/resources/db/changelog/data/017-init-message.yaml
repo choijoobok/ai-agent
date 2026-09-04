@@ -1,0 +1,48 @@
+# 메시지 값 9차 — 사람 소유 시드다(22 §1.1).
+#
+# 프로필 모달(51 §8)이 쓰는 63개 키의 ko·en 이다. 탭 넷 · 비밀번호 정책 안내 · 로그인
+# 이력 컬럼 · 역할과 개인 예외 표, 그리고 비밀번호 변경 실패 문구 넷(UserErrorCode).
+#
+# 앞의 파일을 고치지 않고 더한다 — 011 부터의 규약 그대로다. loadData(전건 삽입)인 것은
+# 전부 **새 키**라서다. 008 이 키 행을 먼저 만들고(runOnChange) 여기가 값을 채운다.
+#
+# 액션 4종(authz.action.*)이 여기 섞여 있는 이유는 첫 소비처가 이 화면의 개인 예외 표이기
+# 때문이다. 접두를 profile.* 로 두지 않은 것은 권한 관리 화면(AUTHZ-07)이 같은 말을 쓰기
+# 때문이며, 붙였으면 그때 같은 말이 두 키가 된다.
+databaseChangeLog:
+  - changeSet:
+      id: data-017-message
+      author: template
+      comment: 프로필 모달 네 탭의 ko·en — 51 §8
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/017-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-017-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1. 빠뜨리면 기존 세션이 옛 번들을 계속 쓴다
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

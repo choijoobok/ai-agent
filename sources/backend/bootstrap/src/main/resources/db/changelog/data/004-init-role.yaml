@@ -1,0 +1,845 @@
+# 부트스트랩 역할과 권한 부여 — 23 §4 · 42 §3 · §6.
+#
+# ┌──────────────────────────────────────────────────────────────────────────┐
+# │  이 파일이 없으면 admin 이 로그인하지 못한다.                             │
+# │  유효 권한이 공집합이면 로그인이 차단되고(23 §4), 관리 화면에 들어갈 수    │
+# │  없으므로 복구 경로가 남지 않는다 — 23 §4 가 "부트스트랩 함정" 이라고     │
+# │  적어 둔 그것이다.                                                       │
+# └──────────────────────────────────────────────────────────────────────────┘
+#
+# 그래서 SYS_USER(002) · SYS_ROLE · SYS_USER_ROLE · SYS_ROLE_MENU_AUTH 는 한 묶음이며,
+# 그 정합성은 SeedBootstrapAuthorityTest 가 지킨다 — 파일이 둘로 갈려도 검사는 하나다.
+#
+# 역할은 ADMIN 하나만 둔다. 사용 프로젝트가 자기 역할을 새 changelog 로 더한다 —
+# 템플릿이 "운영자" · "조회전용" 같은 역할을 지어내면 조직마다 뜻이 달라 아무도 쓰지 않고,
+# 그러면서 SYS_ROLE_MENU_AUTH 에 아무도 검토하지 않은 부여 행이 수십 개 남는다.
+#
+# 부여에 기간을 넣지 않는다(NULL = 무제한). 설치 시점에 종료일을 정할 근거가 없고,
+# 9999-12-31 을 채우면 "무기한" 을 뜻하는 값을 아무 제약도 보증하지 않게 된다(42 §3.1).
+#
+# 권한 부여 행은 부트스트랩 최초 1회다 — 이후 시드가 건드리지 않는다(22 §1.1).
+# 여기서 준 것을 회수하려면 역할 권한 관리 화면(AUTHZ-03)에서 지운다.
+#
+# 액션은 52 §4.2 의 `액션` 열을 그대로 옮긴 것이다. 그 표에 없는 조합은 여기에도 없다 —
+# 액션이 없는 (메뉴, 액션) 은 부를 API 가 없으므로 권한 행이 존재할 이유가 없다.
+databaseChangeLog:
+  - changeSet:
+      id: data-004-role
+      author: template
+      comment: ADMIN 역할 — 사용 프로젝트는 이것을 고치지 않고 자기 역할을 더한다
+      changes:
+        - insert:
+            tableName: SYS_ROLE
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: ROLE_NM
+                  value: 시스템 관리자
+              - column:
+                  name: ROLE_DESC
+                  value: 템플릿 기본 메뉴 전체에 대한 모든 액션. 설치 후 조직의 역할 체계로 대체한다.
+              - column:
+                  name: USE_YN
+                  value: "Y"
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+      rollback:
+        - delete:
+            tableName: SYS_ROLE
+            where: ROLE_ID = 'ADMIN'
+
+  - changeSet:
+      id: data-004-user-role
+      author: template
+      comment: 002-init-admin 의 admin 에게 ADMIN 을 준다 — 이 행이 없으면 로그인이 차단된다
+      changes:
+        - insert:
+            tableName: SYS_USER_ROLE
+            columns:
+              - column:
+                  name: USER_ID
+                  value: admin
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+      rollback:
+        - delete:
+            tableName: SYS_USER_ROLE
+            where: USER_ID = 'admin' AND ROLE_ID = 'ADMIN'
+
+  - changeSet:
+      id: data-004-role-menu-auth
+      author: template
+      comment: 리프 17개 × 52 §4.2 의 액션 = 41행. 구조 노드는 권한 대상이 아니므로 여기 없다
+      changes:
+        # 대시보드
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: DASHBOARD
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 사용자 관리
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: USER_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: USER_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: USER_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: USER_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: EXECUTE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 개인 예외 권한
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: USER_AUTH_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: USER_AUTH_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: USER_AUTH_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 메뉴 트리
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: MENU_TREE
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: MENU_TREE
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: MENU_TREE
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 역할 관리
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: ROLE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: ROLE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 역할 권한 관리
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: ROLE_AUTH_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: ROLE_AUTH_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # API 카탈로그
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: API_CATALOG
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: API_CATALOG
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 공통 코드 관리
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: CODE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: CODE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: CODE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 다국어 메시지 관리
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: MESSAGE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: MESSAGE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: MESSAGE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 시스템 환경설정
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: CONFIG_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: CONFIG_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 사용 이력
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: ACCESS_LOG
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: ACCESS_LOG
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 로그인 이력
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: LOGIN_LOG
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: LOGIN_LOG
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 에러 로그
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: ERROR_LOG
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: ERROR_LOG
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 스케줄 관리
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: BATCH_SCHEDULE
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: BATCH_SCHEDULE
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: BATCH_SCHEDULE
+              - column:
+                  name: ACTION_CD
+                  value: EXECUTE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 실행 이력
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: BATCH_HISTORY
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: BATCH_HISTORY
+              - column:
+                  name: ACTION_CD
+                  value: EXPORT
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: BATCH_HISTORY
+              - column:
+                  name: ACTION_CD
+                  value: EXECUTE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 공지사항 관리
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: NOTICE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: NOTICE_MGMT
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        # 요청함 처리
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: NOTI_REQUEST
+              - column:
+                  name: ACTION_CD
+                  value: READ
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column:
+                  name: ROLE_ID
+                  value: ADMIN
+              - column:
+                  name: MENU_CD
+                  value: NOTI_REQUEST
+              - column:
+                  name: ACTION_CD
+                  value: SAVE
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+      rollback:
+        - delete:
+            tableName: SYS_ROLE_MENU_AUTH
+            where: ROLE_ID = 'ADMIN'

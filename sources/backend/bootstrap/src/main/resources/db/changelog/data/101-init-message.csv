@@ -1,0 +1,5 @@
+MSG_KEY,LANG_CD,MSG_VAL
+progress.reopen,ko,진행률 다시 열기
+progress.reopen,en,Reopen progress
+progress.done,ko,{title} 작업이 완료되었습니다.
+progress.done,en,{title} finished.

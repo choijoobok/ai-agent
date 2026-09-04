@@ -1,0 +1,44 @@
+# 메시지 값 25차 — 사람 소유 시드다(22 §1.1).
+#
+# 사이더 트리의 모두 펼치기 · 모두 접기(51 §4.2).
+#
+# shell.search.placeholder · shell.search.tooltip 은 여기서 다루지 않는다. 사이더의 검색
+# 칸이 사라지면서 tooltip 은 코드에서 빠졌고, placeholder 는 진입 모달이 여전히 쓴다 —
+# 죽은 키 판정은 008 재생성의 일이며 값 행은 남는다(33 §2.2).
+databaseChangeLog:
+  - changeSet:
+      id: data-033-message
+      author: template
+      comment: 트리 펼치기·접기의 ko·en — 51 §4.2
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/033-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-033-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

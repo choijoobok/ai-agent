@@ -1,0 +1,81 @@
+# ① SMPL_SINGLE_OFFSET 의 ADMIN 부여와 메뉴 순서 — 42 §3 · 68 §3.
+#
+# 090 을 고치지 않고 더한다(22 §1.1). 그 changeset 은 이미 적용된 DB 에 들어가 있고,
+# 고치면 남의 로컬이 체크섬으로 죽는다 — 검사도 파일 이름이 아니라 목록으로 모으므로
+# (SeedApiTest) 뒤에 온 부여가 검사 밖으로 나가지 않는다.
+#
+# 액션 넷이 전부 있다. 52 §4.2 의 액션 열이 R S E X 이며(68 §3.1), 부여가 빠진
+# (메뉴, 액션) 은 그 API 가 언제나 403 이 되고 화면에서는 "버튼이 없다" 로만 보인다.
+databaseChangeLog:
+  - changeSet:
+      id: data-092-sample-offset-auth
+      author: template
+      comment: ①의 ADMIN 부여 — 부여가 없으면 그 API 는 언제나 403 이다
+      changes:
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_SINGLE_OFFSET }
+              - column: { name: ACTION_CD, value: READ }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_SINGLE_OFFSET }
+              - column: { name: ACTION_CD, value: SAVE }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+        # ①의 엑셀은 프론트 생성이라 서버 경로가 없다(68 §3.4). 그래서 이 부여는
+        # 요청을 막는 통제가 아니라 버튼을 세우는 근거다 — ADR-0027 이 연 갈래이며,
+        # ③의 EXPORT 가 실제로 요청을 막는 것과 갈리는 자리다.
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_SINGLE_OFFSET }
+              - column: { name: ACTION_CD, value: EXPORT }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+        # 확정과 일괄 재계산 — 둘 다 접두가 정한 EXECUTE 다(ADR-0020). 한 부여가
+        # 둘을 함께 연다: 액션은 넷으로 닫혀 있고 API 단위가 아니다(23 §4).
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_SINGLE_OFFSET }
+              - column: { name: ACTION_CD, value: EXECUTE }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+      rollback:
+        - delete:
+            tableName: SYS_ROLE_MENU_AUTH
+            where: MENU_CD = 'SMPL_SINGLE_OFFSET'
+
+  - changeSet:
+      id: data-092-sample-offset-sort
+      author: template
+      comment: ①이 첫 리프다 — 68 §10.1 의 트리 순서를 신규 설치에 심는다
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 1
+            where: MENU_CD = 'SMPL_SINGLE_OFFSET' AND SORT_NO = 0
+        # ③을 3 으로 민다. 68 §10.1 의 트리에서 ①②가 앞이며, 090 이 1 을 준 것은
+        # 그때 리프가 하나뿐이었기 때문이다.
+        #
+        # WHERE 에 SORT_NO = 1 이 붙는 이유는 081·090 의 SORT_NO = 0 과 같다 —
+        # 그 값은 이 템플릿이 넣은 값이고, 운영자가 드래그해 옮겼다면 다른 값이다.
+        # 조건 없이 쓰면 이 배포가 남의 순서를 되돌린다(62 §4.5).
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 3
+            where: MENU_CD = 'SMPL_MD_VERT' AND SORT_NO = 1

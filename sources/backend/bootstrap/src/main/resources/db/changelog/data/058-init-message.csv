@@ -1,0 +1,81 @@
+MSG_KEY,LANG_CD,MSG_VAL
+errorLog.grid.title,ko,에러 로그
+errorLog.grid.title,en,Error Log
+errorLog.col.creDtm,ko,일시
+errorLog.col.creDtm,en,Time
+errorLog.col.httpStat,ko,상태
+errorLog.col.httpStat,en,Status
+errorLog.col.errCd,ko,오류 코드
+errorLog.col.errCd,en,Error Code
+errorLog.col.errMsg,ko,메시지
+errorLog.col.errMsg,en,Message
+errorLog.col.userId,ko,사용자
+errorLog.col.userId,en,User
+errorLog.col.menu,ko,메뉴
+errorLog.col.menu,en,Menu
+errorLog.col.requestUri,ko,요청 URI
+errorLog.col.requestUri,en,Request URI
+errorLog.col.detail,ko,상세
+errorLog.col.detail,en,Detail
+errorLog.col.traceId,ko,추적 ID
+errorLog.col.traceId,en,Trace ID
+errorLog.col.clientIp,ko,IP
+errorLog.col.clientIp,en,IP
+errorLog.col.seq,ko,순번
+errorLog.col.seq,en,No
+errorLog.detail.link,ko,[보기]
+errorLog.detail.link,en,[View]
+errorLog.anonymous,ko,(익명)
+errorLog.anonymous,en,(anonymous)
+errorLog.noMenu,ko,(메뉴 없음)
+errorLog.noMenu,en,(no menu)
+errorLog.menu.clientClaim,ko,클라이언트가 밝힌 현재 메뉴입니다. 인가 판정에 쓰이지 않으므로 통계·추적 외 용도로 신뢰하지 마십시오.
+errorLog.menu.clientClaim,en,The current menu as claimed by the client. It is not used for authorization — do not rely on it beyond statistics and tracing.
+errorLog.footer.range,ko,최대 {days}일
+errorLog.footer.range,en,up to {days} days
+errorLog.empty,ko,조회된 오류가 없습니다. 보존 기간(180일)이 지난 기록은 파기됩니다.
+errorLog.empty,en,No errors found. Records older than the retention period (180 days) are purged.
+errorLog.empty.server,ko,이 기간에 서버 오류가 없습니다.
+errorLog.empty.server,en,There were no server errors in this period.
+errorLog.empty.trace,ko,"이 추적 ID 의 오류 기록이 없습니다. 보존 기간(180일)이 지났거나, 오류가 아닌 요청입니다 — 사용 이력에서 찾아보십시오."
+errorLog.empty.trace,en,No error is recorded for this trace ID. Either it is past the retention period (180 days) or the request did not fail — look it up in the access log.
+errorLog.search.period,ko,일시
+errorLog.search.period,en,Time
+errorLog.search.status,ko,상태
+errorLog.search.status,en,Status
+errorLog.status.server,ko,5xx 만
+errorLog.status.server,en,5xx only
+errorLog.status.client,ko,4xx 만
+errorLog.status.client,en,4xx only
+errorLog.search.errCd,ko,오류 코드
+errorLog.search.errCd,en,Error Code
+errorLog.search.userId,ko,사용자
+errorLog.search.userId,en,User
+errorLog.search.menu,ko,메뉴
+errorLog.search.menu,en,Menu
+errorLog.search.requestUri,ko,요청 URI
+errorLog.search.requestUri,en,Request URI
+errorLog.search.traceId,ko,추적 ID
+errorLog.search.traceId,en,Trace ID
+errorLog.detail.title,ko,오류 상세
+errorLog.detail.title,en,Error Detail
+errorLog.tab.payload,ko,요청 전문
+errorLog.tab.payload,en,Request Payload
+errorLog.tab.stack,ko,스택트레이스
+errorLog.tab.stack,en,Stack Trace
+errorLog.stack.none,ko,이 오류는 스택을 남기지 않습니다. 4xx 는 스택이 매번 같아 저장하지 않습니다.
+errorLog.stack.none,en,"This error does not keep a stack trace. 4xx responses share the same frames, so they are not stored."
+errorLog.payload.purged,ko,이 요청의 전문은 파기됐습니다 (사용 이력 90일).
+errorLog.payload.purged,en,The payload for this request has been purged (access log keeps 90 days).
+errorLog.payload.none,ko,이 요청에는 저장된 전문이 없습니다.
+errorLog.payload.none,en,No payload was stored for this request.
+errorLog.detail.length,ko,{count}자
+errorLog.detail.length,en,{count} characters
+errorLog.detail.truncated,ko,상한에서 잘렸습니다
+errorLog.detail.truncated,en,Truncated at the limit
+err.error-log.range-required,ko,조회 기간은 필수입니다 — 추적 ID 를 넣으면 기간 없이도 조회할 수 있습니다
+err.error-log.range-required,en,The search period is required — enter a trace ID to search without one
+err.error-log.range-too-wide,ko,조회 기간이 허용 범위를 넘었습니다
+err.error-log.range-too-wide,en,The search period exceeds the allowed range
+err.error-log.purged,ko,이미 파기된 이력입니다
+err.error-log.purged,en,This record has already been purged

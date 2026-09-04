@@ -1,0 +1,75 @@
+# 메시지 값 — 이력 3화면의 사용자·메뉴 칸. 사람 소유 시드다(22 §1.1).
+#
+# 이력 셋(사용 이력 · 로그인 이력 · 에러 로그)의 사용자 칸이 **아이디와 이름 둘**이 됐고,
+# 사용 이력·에러 로그의 메뉴 조건이 **코드와 이름 둘**로 갈렸다(64 §3.3 · §4.6 · §5.6).
+#
+# ── changeSet 이 둘인 이유 ────────────────────────────────────────────
+#
+# **넣는 것과 고치는 것이 갈린다**(062 와 같은 모양이다). 새 키 열의 값은 `loadData` 로
+# 넣지만, 이미 들어간 여섯 키의 값은 **`update` 여야 한다** — `loadData` 로 같은 키를 다시
+# 넣으면 PK 충돌이고, 049·053·058 의 CSV 를 고치면 그 changeset 이 이미 적용된 DB 가
+# **체크섬 불일치로 다음 기동을 거부한다**(22 §1.1).
+#
+# ── 헤더 이름을 통일한다 ──────────────────────────────────────────────
+#
+# 세 화면이 같은 것을 세 이름으로 불렀다 — 사용 이력·에러 로그는 `사용자`, 로그인 이력은
+# `시도 ID` 였다. 로그인 이력의 이름은 **의도된 것**이었는데(64 §4.4 — *사용자* 라고 쓰면
+# `SYS_USER` 에 있는 것처럼 읽힌다), 그 걱정을 이제 **이름 칸의 `없는 계정` 배지**가 대신
+# 말한다. 한 규약의 세 화면에서 같은 컬럼을 다르게 부르는 대가가 더 크다.
+databaseChangeLog:
+  - changeSet:
+      id: data-080-message
+      author: template
+      comment: 이력 3화면의 사용자명·메뉴 코드·메뉴명 문구 10키 — 64 §3.3 · §4.6 · §5.6
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/080-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-080-message-user-id-header
+      author: template
+      comment: 사용자 칸의 이름을 세 화면에서 `사용자 아이디` 로 통일한다 — 64 §4.4
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: 사용자 아이디
+            where: MSG_KEY IN ('accessLog.col.userId', 'accessLog.search.userId', 'errorLog.col.userId', 'errorLog.search.userId', 'loginLog.col.userId', 'loginLog.search.userId') AND LANG_CD = 'ko'
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: User ID
+            where: MSG_KEY IN ('accessLog.col.userId', 'accessLog.search.userId', 'errorLog.col.userId', 'errorLog.search.userId', 'loginLog.col.userId', 'loginLog.search.userId') AND LANG_CD = 'en'
+
+  - changeSet:
+      id: data-080-cache-version
+      author: template
+      comment: 값을 넣고 고쳤으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

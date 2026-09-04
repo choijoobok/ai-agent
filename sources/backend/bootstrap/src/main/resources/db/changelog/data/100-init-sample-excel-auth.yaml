@@ -1,0 +1,67 @@
+# ⑥ SMPL_EXCEL 의 ADMIN 부여와 메뉴 순서 — 42 §3 · 68 §8.
+#
+# 090·092·094·096·098 을 고치지 않고 더한다(22 §1.1). 이미 적용된 DB 에 들어가 있고,
+# 고치면 남의 로컬이 체크섬으로 죽는다.
+#
+# ── 액션이 셋이다 ──────────────────────────────────────────────────────
+#
+# 52 §4.2 의 액션 열이 R S E 다(68 §8.1) — 이 화면에는 실행이 없다.
+#
+# ── E 가 이 화면에서는 두 몫이다 ───────────────────────────────────────
+#
+# 다른 화면의 EXPORT 는 "지금 보는 것을 내려받는다" 하나인데, 여기서는 그 파일이 곧
+# 업로드 양식이다(53 §2.2 · 68 §8.2). E 가 없는 역할은 업로드 탭에 들어가도 양식을 얻을
+# 길이 없고, 사용자에게는 "어떤 파일을 올려야 하는지 아무도 말해 주지 않는" 화면이 된다.
+#
+# ── S 는 세그먼트 하나를 통째로 가른다 ─────────────────────────────────
+#
+# 68 §8.7 — S 가 없으면 엑셀 업로드 세그먼트 자체가 없다(ScreenSegment 의 actionCd).
+# 그 탭의 액션이 저장 하나뿐이라 들어가 봐야 할 일이 없고, 빈 탭을 남기면 "왜 여기서는
+# 아무것도 안 되나" 를 묻게 된다. 액션 하나가 화면의 절반을 여는 유일한 자리다.
+databaseChangeLog:
+  - changeSet:
+      id: data-100-sample-excel-auth
+      author: template
+      comment: ⑥의 ADMIN 부여 — 조회·저장·엑셀 셋이다
+      changes:
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_EXCEL }
+              - column: { name: ACTION_CD, value: READ }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_EXCEL }
+              - column: { name: ACTION_CD, value: SAVE }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+        - insert:
+            tableName: SYS_ROLE_MENU_AUTH
+            columns:
+              - column: { name: ROLE_ID, value: ADMIN }
+              - column: { name: MENU_CD, value: SMPL_EXCEL }
+              - column: { name: ACTION_CD, value: EXPORT }
+              - column: { name: REG_ID, value: SYSTEM }
+              - column: { name: REG_DTM, valueComputed: CURRENT_TIMESTAMP }
+      rollback:
+        - delete:
+            tableName: SYS_ROLE_MENU_AUTH
+            where: MENU_CD = 'SMPL_EXCEL'
+
+  - changeSet:
+      id: data-100-sample-excel-sort
+      author: template
+      comment: ⑥이 여섯째 리프다 — 68 §10.1 의 트리 순서를 신규 설치에 심는다
+      changes:
+        - update:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 6
+            where: MENU_CD = 'SMPL_EXCEL' AND SORT_NO = 0

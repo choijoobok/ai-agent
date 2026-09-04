@@ -1,0 +1,42 @@
+# 메시지 키 — 생성물이다. 손으로 고치지 않는다(ADR-0023 · 33 §2).
+#
+#   ./gradlew generateMessageSeed     프론트 MSG + 백엔드 MsgKey + 직전 CSV → 008-...csv
+#   ./gradlew checkMessageSeed        재생성 결과 == 커밋본 (CI 의 check 에 달려 있다)
+#
+# 006-init-api 와 방식이 다르다(ADR-0022 와 갈리는 자리다).
+#
+#   006  전건 삭제 → 전건 삽입    그 행에 사람의 것이 없다
+#   008  없는 것만 추가           번역이 딸려 있다. 지우면 사람이 쓴 것이 사라진다
+#
+# 그래서 loadUpdateData 이며, CSV 에 담은 컬럼만 갱신한다 — SYS_MESSAGE 를 건드리지 않는다.
+# 코드에서 사라진 키는 행이 남고 USE_SCOPE 만 NONE 이 된다. 그것이 죽은 키 판정의 유일한
+# 경로이며(33 §2.2), DB 에서 실제로 지우는 자리는 관리 화면이다(63 §3.2).
+#
+# CSV 에 감사 컬럼이 없다. 재생성마다 시각이 바뀌면 checkMessageSeed 의 "재생성 결과 ==
+# 커밋본" 비교가 성립하지 않기 때문이며, 이 행들의 감사는 시드 커밋의 git 이력이 한다.
+#
+# menu.* · code.* 접두는 여기 없다. 소스 상수가 아니라 데이터에서 조립된 키이며(43 §4.4)
+# 그 행은 009 와 관리 화면이 만든다 — 이 예외를 잊으면 그 키 전부가 죽은 키로 잡힌다.
+databaseChangeLog:
+  - changeSet:
+      id: data-008-message-key
+      author: template
+      runOnChange: true
+      comment: 키는 코드가 소유한다 — 값(SYS_MESSAGE)은 열지 않는다(ADR-0023)
+      changes:
+        - loadUpdateData:
+            tableName: SYS_MESSAGE_KEY
+            file: db/changelog/data/008-init-message-key.csv
+            relativeToChangelogFile: false
+            primaryKey: MSG_KEY
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: USE_SCOPE
+                  type: STRING
+              - column:
+                  name: MSG_DESC
+                  type: STRING

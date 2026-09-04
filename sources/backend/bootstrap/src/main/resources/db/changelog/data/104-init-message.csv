@@ -1,0 +1,9 @@
+MSG_KEY,LANG_CD,MSG_VAL
+sample.action.recalcItems,ko,품목 금액 재계산
+sample.action.recalcItems,en,Recalculate Items
+sample.action.recalcItems.confirm,ko,선택한 {count}건의 품목 금액을 수량×단가로 다시 계산합니다. 주문마다 진행률이 다시 시작됩니다.
+sample.action.recalcItems.confirm,en,Recalculate item amounts (qty × unit price) for {count} selected order(s). Progress restarts for each order.
+sample.action.recalcItems.hint,ko,접수 상태이고 품목이 있는 주문만 대상입니다.
+sample.action.recalcItems.hint,en,Only orders that are received and have items are eligible.
+err.sample.not-recalculable,ko,확정 전(접수) 주문의 품목만 다시 계산할 수 있습니다.
+err.sample.not-recalculable,en,Only received orders can have their items recalculated.

@@ -1,0 +1,58 @@
+# 메시지 값 — 일곱째 실행 결과 `LOST`(유실). 사람 소유 시드다(22 §1.1).
+#
+# 067 에 넣지 않고 파일을 더한다. 그 파일은 이미 적용됐고, loadData 의 CSV 를 뒤에 고치면
+# Liquibase 가 체크섬 불일치로 다음 기동을 거부한다 — 068 이 같은 이유로 생겼다.
+#
+# ── 왜 코드가 하나 늘었나 ────────────────────────────────────────────────
+#
+# 실행하던 노드가 통째로 죽으면 RUNNING 행을 갱신할 주체가 없어 영원히 그대로 남는다.
+# 65 §4.4 가 그것을 **유령**이라 부르고 화면에 배지를 붙였는데, 그 배지는 문제를 **보이게만**
+# 했다. 실제 피해는 따로 있다 — 즉시 실행이 그 행을 "이미 실행 중" 으로 읽어 **그 배치를
+# 다시는 못 돌린다.**
+#
+# 이제 BatchGhostSweeper 가 그 행을 종결시키고, 종결된 것에는 이름이 있어야 한다.
+#
+# FAIL 로 적지 않는 이유가 이 키의 존재 이유다. FAIL 은 "배치가 예외를 던졌다" 는 뜻이고
+# 그 증거가 ERR_MSG 의 스택인데, 여기에는 스택이 없다 — 죽은 것은 배치가 아니라 프로세스이며
+# 배치가 어디까지 했는지 **아무도 모른다.** 같은 코드로 두면 스택을 찾다 못 찾은 사람이
+# "로그가 유실됐다" 로 잘못 결론짓는다.
+#
+# 글자가 "유실" 인 것도 그래서다. "실패" 는 무슨 일이 있었는지 안다는 말이고, 여기서 아는
+# 것은 **모른다는 사실** 하나다. 색은 FAIL 과 같은 err 다 — 운영자가 할 일이 같다: 봐야 한다.
+databaseChangeLog:
+  - changeSet:
+      id: data-070-message
+      author: template
+      comment: 실행 결과 LOST 의 라벨 — 65 §4.4
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/070-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-070-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

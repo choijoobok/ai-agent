@@ -1,0 +1,117 @@
+MSG_KEY,LANG_CD,MSG_VAL
+err.role.duplicate,ko,이미 있는 역할 ID 입니다.
+err.role.duplicate,en,That role ID already exists.
+err.role.not-found,ko,없는 역할입니다.
+err.role.not-found,en,No such role.
+err.role.not-deletable,ko,보유 사용자나 권한이 있어 삭제할 수 없습니다. 사용 여부를 끄세요.
+err.role.not-deletable,en,It has holders or permissions and cannot be deleted. Disable it instead.
+err.role.name-required,ko,역할명은 필수입니다.
+err.role.name-required,en,Role name is required.
+err.role.auth.menu,ko,권한을 줄 수 없는 메뉴입니다. 화면이 없는 메뉴에는 권한이 붙지 않습니다.
+err.role.auth.menu,en,This menu cannot hold permissions. A menu without a screen takes no grants.
+err.role.auth.action,ko,그 메뉴에 그 액션의 API 가 없습니다.
+err.role.auth.action,en,That menu has no API for that action.
+err.role.auth.read,ko,조회 권한 없이 다른 액션만 줄 수 없습니다.
+err.role.auth.read,en,Other actions cannot be granted without read.
+role.grid.title,ko,역할 목록
+role.grid.title,en,Roles
+role.holder.title,ko,보유 사용자
+role.holder.title,en,Users with This Role
+role.col.roleId,ko,역할 ID
+role.col.roleId,en,Role ID
+role.col.roleNm,ko,역할명
+role.col.roleNm,en,Role Name
+role.col.roleDesc,ko,설명
+role.col.roleDesc,en,Description
+role.col.useYn,ko,사용 여부
+role.col.useYn,en,Enabled
+role.col.holderCount,ko,보유 인원
+role.col.holderCount,en,Holders
+role.col.activeHolderCount,ko,유효 인원
+role.col.activeHolderCount,en,Active Holders
+role.col.authCount,ko,권한 건수
+role.col.authCount,en,Permissions
+role.col.userNm,ko,사용자
+role.col.userNm,en,User
+role.col.userId,ko,ID
+role.col.userId,en,ID
+role.col.accountUsable,ko,계정 상태
+role.col.accountUsable,en,Account
+role.col.grantState,ko,부여 상태
+role.col.grantState,en,Grant
+role.col.period,ko,부여 기간
+role.col.period,en,Valid Period
+role.col.hasPersonalGrant,ko,개인 예외 보유
+role.col.hasPersonalGrant,en,Personal Grant
+role.col.hasOtherRole,ko,다른 역할 보유
+role.col.hasOtherRole,en,Other Role
+role.account.usable,ko,사용
+role.account.usable,en,Usable
+role.account.blocked,ko,사용 불가
+role.account.blocked,en,Blocked
+role.grant.SCHEDULED,ko,예정
+role.grant.SCHEDULED,en,Scheduled
+role.grant.ACTIVE,ko,유효
+role.grant.ACTIVE,en,Active
+role.grant.EXPIRED,ko,만료
+role.grant.EXPIRED,en,Expired
+role.period.unlimited,ko,제한 없음
+role.period.unlimited,en,No limit
+role.has.yes,ko,있음
+role.has.yes,en,Yes
+role.has.no,ko,없음
+role.has.no,en,No
+role.search.roleNm,ko,역할명
+role.search.roleNm,en,Role name
+role.search.useYn,ko,사용 여부
+role.search.useYn,en,Enabled
+role.use.on,ko,사용
+role.use.on,en,Enabled
+role.use.off,ko,미사용
+role.use.off,en,Disabled
+role.duplicate,ko,이미 있는 역할 ID 입니다.
+role.duplicate,en,That role ID already exists.
+role.delete.blocked,ko,보유 사용자 {users}명 · 권한 {auths}건이 있어 삭제할 수 없습니다. 사용하지 않으려면 사용 여부를 끄세요.
+role.delete.blocked,en,"{users} holder(s) and {auths} permission(s) exist, so it cannot be deleted. Disable it instead."
+role.detail.empty,ko,역할을 선택하세요.
+role.detail.empty,en,Select a role.
+role.detail.locked,ko,저장 후 조회할 수 있습니다.
+role.detail.locked,en,You can view this after saving.
+role.disable.impact,ko,{name} 을(를) 미사용으로 바꾸면 {users}명의 유효 권한에서 권한 {auths}건이 빠집니다.
+role.disable.impact,en,Disabling {name} removes {auths} permission(s) from the effective authority of {users} user(s).
+role.disable.blocked,ko,그중 {count}명은 유효 권한이 공집합이 되어 다음 로그인부터 차단됩니다.
+role.disable.blocked,en,"Of those, {count} will end up with no effective authority and be blocked from the next sign-in."
+role.blocked.partial,ko,보유자 {total}명 중 {counted}명까지만 확인했습니다. 차단될 사람이 더 있을 수 있습니다.
+role.blocked.partial,en,"Only {counted} of {total} holders were checked, so there may be more who would be blocked."
+roleAuth.role.title,ko,역할
+roleAuth.role.title,en,Roles
+roleAuth.tree.title,ko,권한 트리
+roleAuth.tree.title,en,Permission Tree
+roleAuth.tree.empty,ko,역할을 선택하세요.
+roleAuth.tree.empty,en,Select a role.
+roleAuth.col.menu,ko,메뉴
+roleAuth.col.menu,en,Menu
+roleAuth.undefined,ko,이 메뉴에 그 액션의 API 가 없어 줄 것이 없습니다.
+roleAuth.undefined,en,"This menu has no API for that action, so there is nothing to grant."
+roleAuth.tri.all,ko,전체
+roleAuth.tri.all,en,All
+roleAuth.tri.some,ko,부분
+roleAuth.tri.some,en,Some
+roleAuth.tri.none,ko,없음
+roleAuth.tri.none,en,None
+roleAuth.read.on,ko,조회 권한도 함께 켰습니다.
+roleAuth.read.on,en,Read was turned on as well.
+roleAuth.read.off,ko,조회를 껐습니다. 나머지 {count}건도 함께 껐습니다.
+roleAuth.read.off,en,"Read was turned off, and so were the other {count}."
+roleAuth.save.counts,ko,권한 {added}건을 추가하고 {removed}건을 삭제합니다.
+roleAuth.save.counts,en,Adding {added} permission(s) and removing {removed}.
+roleAuth.save.holders,ko,이 역할을 가진 {count}명에게 적용됩니다.
+roleAuth.save.holders,en,This applies to {count} user(s) who hold the role.
+roleAuth.save.blocked,ko,그중 {count}명은 유효 권한이 공집합이 되어 다음 로그인부터 차단됩니다.
+roleAuth.save.blocked,en,"Of those, {count} will end up with no effective authority and be blocked from the next sign-in."
+roleAuth.affected.title,ko,영향 인원
+roleAuth.affected.title,en,Affected Users
+roleAuth.affected.empty,ko,역할을 선택하세요.
+roleAuth.affected.empty,en,Select a role.
+roleAuth.search.menu,ko,메뉴명
+roleAuth.search.menu,en,Menu name

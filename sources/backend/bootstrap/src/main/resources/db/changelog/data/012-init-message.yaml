@@ -1,0 +1,45 @@
+# 메시지 값 4차 — 사람 소유 시드다(22 §1.1).
+#
+# 앞의 것을 고치지 않고 파일을 더한다(22 §1.1). 011 은 runOnChange 가 아니므로 이미
+# 적용된 changeset 을 고치면 체크섬이 달라져 기동이 실패한다.
+#
+# 담는 것은 설정 모달의 숫자 슬라이더 양옆에 붙은 한 칸 버튼의 이름이다(51 §9.2).
+# 아이콘뿐이라 화면에는 글자가 없고, 이 값이 없으면 읽어 주는 장치가 키를 읽는다.
+databaseChangeLog:
+  - changeSet:
+      id: data-012-message
+      author: template
+      comment: 슬라이더 한 칸 버튼의 ko·en — 51 §9.2
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/012-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-012-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        # 빼면 SeedMessageCacheVersionTest 가 잡는다. 그 게이트가 있는 이유는 43 §8.1 에 있다.
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

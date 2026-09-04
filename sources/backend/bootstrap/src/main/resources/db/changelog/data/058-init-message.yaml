@@ -1,0 +1,57 @@
+# 메시지 값 41차 — 사람 소유 시드다(22 §1.1). 에러 로그(64 §5)의 문구 전부.
+#
+# 키 행은 여기 없다. 프론트 MSG · 백엔드 MsgKey 의 값이라 008 이 만들며(ADR-0023),
+# 여기서 넣으면 그 파일과 겹쳐 loadData 가 중복 키로 죽는다. 053 이 데이터 키를 함께
+# 넣은 것은 그쪽이 공통코드 이름(code. 접두)이라 소스에 상수가 없어서였다.
+#
+# **탭 둘의 빈 문구가 셋이다.** errorLog.stack.none · payload.purged · payload.none 인데
+# 셋 다 "비었다" 를 말하지만 **이유가 서로 다르다**(64 §5.5):
+#   - 스택이 없는 것은 4xx 라 **일부러 저장하지 않은 것**이다
+#   - 전문이 없는 것은 사용 이력 90일이 지나 **파기된 것**이다
+#   - 그냥 없는 것은 멀티파트 요청이나 캐싱이 꺼진 구간이다
+# 하나로 합치면 4xx 를 본 사람이 "데이터가 날아갔다" 로 읽고, 파기된 행을 본 사람은
+# "원래 없는 것" 으로 읽는다 — 한쪽은 없는 사고를 걱정하고 다른 쪽은 있는 한계를 모른다.
+#
+# **0건 문구도 셋이다**(64 §5.8). 이 화면의 0건은 대개 답이지 빈 결과가 아니다 —
+# 특히 추적 ID 로 물은 0건은 "그 요청은 오류가 아니었다" 는 뜻이고, 그 문장이 없으면
+# traceId 를 들고 온 사람이 **로그 유실로 읽는다**.
+#
+# err.error-log.* 셋에 {days} 를 넣지 않았다. ErrorMessages 는 파라미터를 넘기지 않으므로
+# (코드 하나로 문구를 찾는다) 넣으면 중괄호가 그대로 보인다 — 049 · 053 과 같은 모양이다.
+databaseChangeLog:
+  - changeSet:
+      id: data-058-message
+      author: template
+      comment: 에러 로그 — 화면 문구 · 상세 모달 탭 둘 · 기간 거부 둘과 파기 하나(64 §5)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/058-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-058-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

@@ -1,0 +1,73 @@
+# 메시지 값 — 샘플 화면(68 §5).
+#
+# 접두가 셋이다: 화면이 쓰는 sample. 과 err.sample. · 데이터가 만드는 menu.SMPL_* ·
+# code.SMPL_* (48 §7.3). 셋 다 제거 changelog 의 LIKE 가 잡으므로, 다른 접두를 쓴 키는
+# 남아서 관리 화면의 고아가 되고 그 누락은 조용하다.
+#
+# menu.SMPL_* 와 code.SMPL_* 는 화면이 아니라 데이터가 만드는 키다 — SYS_MENU.MENU_NM 과
+# SYS_CODE.DTL_NM 에 이름이 아니라 키가 들어간다(42 §4 · 43 §4.4). 이 값이 없으면
+# 메뉴 트리에 menu.SMPL_MD_VERT 가 그대로 보인다(43 §7.3 의 "시끄럽게 드러나는" 쪽).
+#
+# CSV 는 생성한다 — 값 여럿에 쉼표와 마침표가 있고, 손으로 쓰면 기동에서만 깨진다.
+databaseChangeLog:
+  # 키가 먼저다 — SYS_MESSAGE 의 FK 가 SYS_MESSAGE_KEY 를 가리킨다.
+  #
+  # menu.* 와 code.* 만 여기 있다. sample.* 과 err.sample.* 은 생성물(008)이 갖는다 —
+  # 소스가 그 키의 원본이고(ADR-0023) 여기서 또 넣으면 loadData 가 중복 키로 죽는다.
+  - changeSet:
+      id: data-089-message-key
+      author: template
+      comment: 데이터가 만드는 키 — 메뉴명과 코드명(42 §4 · 43 §4.4)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE_KEY
+            file: db/changelog/data/089-init-message-key.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: USE_SCOPE
+                  type: STRING
+              - column:
+                  name: MSG_DESC
+                  type: STRING
+
+  - changeSet:
+      id: data-089-message
+      author: template
+      comment: 샘플 화면의 메뉴명·코드명·컬럼 헤더·거절 사유 — 68 §5
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/089-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-089-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

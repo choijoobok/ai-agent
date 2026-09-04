@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>공통 코드 관리 — 사용자 메뉴얼</title>
+<script>
+try {
+  var saved = localStorage.getItem('manual-theme');
+  if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+} catch (e) { /* 파일에서 열면 저장소가 막힐 수 있다 — 그때는 시스템을 따른다 */ }
+</script>
+<style>
+:root{--ink:#1a1a1a;--muted:#6b6b6b;--line:#c9c9c9;--line2:#e4e4e4;--bg:#fff;--panel:#f7f7f7;
+      --note:#1f4e79;--note-bg:#eef4fa;--sel:#eaf1f9}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--ink:#e6e6e6;--muted:#9a9a9a;--line:#4a4a4a;--line2:#333;--bg:#161616;--panel:#1e1e1e;
+        --note:#8fb8dd;--note-bg:#1c2833;--sel:#1a2b3a}
+}
+
+  :root[data-theme="dark"]{--ink:#e6e6e6;--muted:#9a9a9a;--line:#4a4a4a;--line2:#333;--bg:#161616;--panel:#1e1e1e;
+        --note:#8fb8dd;--note-bg:#1c2833;--sel:#1a2b3a}
+
+
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+     font:15px/1.75 "Malgun Gothic","Apple SD Gothic Neo",sans-serif}
+.doc{padding:28px 32px;max-width:900px}
+.doc h1{font-size:24px;margin:0 0 6px}
+.doc h2{font-size:17px;margin:30px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.doc h3{font-size:15px;margin:20px 0 8px}
+.doc p{margin:9px 0}
+.doc ul,.doc ol{margin:9px 0;padding-left:22px}
+.doc li{margin:4px 0}
+.doc blockquote{margin:12px 0;padding:9px 14px;border-left:3px solid var(--note);
+                background:var(--note-bg)}
+.doc code{font-family:Consolas,monospace;font-size:.9em;background:var(--panel);padding:1px 5px}
+.doc pre{background:var(--panel);padding:12px 14px;overflow:auto;font-family:Consolas,monospace;
+         font-size:12.5px;line-height:1.6}
+.doc table{border-collapse:collapse;width:100%;font-size:13.5px;margin:12px 0}
+.doc th,.doc td{border:1px solid var(--line2);padding:7px 10px;text-align:left;vertical-align:top}
+.doc th{background:var(--panel);font-weight:600;white-space:nowrap}
+.doc hr{border:none;border-top:1px solid var(--line2);margin:26px 0}
+.doc a{color:var(--note)}
+.gen{font-size:11.5px;color:var(--muted);border:1px dashed var(--line);padding:7px 11px;margin-bottom:20px}
+
+/* 화면 그림 — 목업을 오려 온 것과 캡처 PNG 가 같은 액자를 쓴다 */
+.shot{margin:16px 0 22px;padding:0}
+.shot img{display:block;width:100%;border:1px solid var(--line)}
+.shot figcaption{font-size:11.5px;color:var(--muted);margin-top:6px}
+.shot .mockwrap{border:1px solid var(--line);padding:10px;background:var(--bg);overflow:auto}
+/* 오려 온 목업이 자기 여백을 다시 그리지 않게 한다 */
+.shot .mockwrap .screen{border:none;margin:0}
+.shot .mockwrap .screen .body{padding:10px 8px}
+
+@media print{
+  :root,:root[data-theme="dark"]{--ink:#1a1a1a;--muted:#555;--line:#999;--line2:#ccc;--bg:#fff;
+        --panel:#f2f2f2;--note:#1f4e79;--note-bg:#eef4fa;--sel:#fff}
+  @page{size:A4;margin:16mm 14mm}
+  body{font-size:10.5pt;line-height:1.6;background:#fff;color:#1a1a1a}
+  .doc{padding:0;max-width:none}
+  .noprint{display:none !important}
+  .screen-doc{break-after:page}
+  .screen-doc:last-child{break-after:auto}
+  .doc h1{font-size:17pt}
+  .doc h2{font-size:12.5pt;break-after:avoid}
+  .doc h3{font-size:11pt;break-after:avoid}
+  .doc table{font-size:9pt;break-inside:avoid}
+  .doc tr{break-inside:avoid}
+  .doc blockquote,.shot,.gen{break-inside:avoid}
+  .doc pre{white-space:pre-wrap}
+  a{color:inherit;text-decoration:none}
+}
+
+/* ─────────────────────────────────────────────────────────────
+   목업 공용 스타일
+   목업은 한 파일로 완결되어야 한다. 외부 CSS 로 빼면 파일 하나만
+   열거나 다른 곳에 붙였을 때 화면이 깨진다. 그래서 복제를 감수한다.
+   새 목업은 이 블록을 그대로 복사한다.
+   의도적으로 밋밋하다. AntD 처럼 보이면 잘못된 구속이 된다.
+
+   ★ 그리드 어휘 다섯 — .sf .tb .grid .pg .split
+     크롬·행 상태·컬럼 고정의 자리는 53, 컬럼 계약은 54 가 정한다.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --ink:#1a1a1a; --muted:#6b6b6b; --line:#c9c9c9; --line2:#e4e4e4;
+  --bg:#ffffff; --panel:#f7f7f7; --err:#a8261c; --err-bg:#fbeceb;
+  --note:#1f4e79; --note-bg:#eef4fa; --ok:#1d7a4d;
+  /* ── 그리드 색. 그리드가 스스로 정하지 않고 셸에서 받는다 ──
+     Primary — 선택·편집 표시는 전부 여기서 파생한다.
+     진한 단계를 쓰지 않는다 — 그리드는 글자가 촘촘해 배경이 진해지면
+     전부 읽기 어려워진다. 대비 문제를 애초에 만들지 않는다. */
+  --pri:#1f4e79;      /* 원색 — 편집 중인 셀 테두리에만 */
+  --pri-1:#eaf1f9;    /* 가장 옅은 단계 — 현재 선택 행 */
+  --pri-2:#d6e6f5;    /* 한 단계 진한 것 — 현재 선택 셀 */
+  /* 컬럼 상태 — 정적. 헤더 표시(* · 흐린 글자)와 짝이다 */
+  --req-bg:#fdf6e6;   /* 필수 입력 */
+                      /* 편집 가능 = 바탕(--bg). 칠하지 않는 것이 곧 표시다 */
+                      /* 읽기 전용 = --panel */
+  /* 행 상태 — Primary 와 무관하다. 아이콘이 원본이고 배경은 거든다 */
+  --row-new:#eaf5ef; --row-mod:#e7f1f2;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#e6e6e6; --muted:#9a9a9a; --line:#4a4a4a; --line2:#333;
+    --bg:#161616; --panel:#1e1e1e; --err:#e08b82; --err-bg:#3a201e;
+    --note:#8fb8dd; --note-bg:#1c2833; --ok:#63c08d;
+    /* 같은 알파를 얹지 않는다 — 다크에서는 안 보이거나 반대로 튄다.
+       단계를 모드별로 따로 고른다 */
+    --pri:#8fb8dd; --pri-1:#1a2b3a; --pri-2:#24405c;
+    --req-bg:#33291a;
+    --row-new:#17281f; --row-mod:#16272a;
+  }
+}
+
+  :root[data-theme="dark"]{
+    --ink:#e6e6e6; --muted:#9a9a9a; --line:#4a4a4a; --line2:#333;
+    --bg:#161616; --panel:#1e1e1e; --err:#e08b82; --err-bg:#3a201e;
+    --note:#8fb8dd; --note-bg:#1c2833; --ok:#63c08d;
+    /* 같은 알파를 얹지 않는다 — 다크에서는 안 보이거나 반대로 튄다.
+       단계를 모드별로 따로 고른다 */
+    --pri:#8fb8dd; --pri-1:#1a2b3a; --pri-2:#24405c;
+    --req-bg:#33291a;
+    --row-new:#17281f; --row-mod:#16272a;
+  }
+
+
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--bg);color:var(--ink);
+     font:14px/1.6 "Malgun Gothic","Apple SD Gothic Neo",sans-serif;}
+main{max-width:1000px;margin:0 auto}
+h1{font-size:19px;margin:0 0 4px}
+h2{font-size:15px;margin:34px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+h3{font-size:13px;margin:20px 0 8px;color:var(--muted);font-weight:600}
+code{font-family:Consolas,monospace;font-size:.92em;background:var(--panel);padding:1px 4px}
+a{color:var(--note)}
+
+/* 개요 바 — 문서와의 연결. 모든 목업이 갖는다 */
+.head{border:1px solid var(--line);background:var(--panel);padding:12px 14px;margin-bottom:6px}
+.head dl{display:grid;grid-template-columns:max-content 1fr;gap:2px 14px;margin:0;font-size:12.5px}
+.head dt{color:var(--muted)}
+.head dd{margin:0}
+
+/* 화면 영역 — 뷰포트를 나타내는 상자 */
+.screen{border:1px solid var(--line);margin:0 0 8px;background:var(--bg)}
+.screen .bar{background:var(--panel);border-bottom:1px solid var(--line2);
+             padding:5px 10px;font-size:11.5px;color:var(--muted)}
+.screen .body{padding:28px 20px}
+/* 셸 위에 뜬 모달 — 배경이 셸이라는 힌트만 준다 */
+.screen.shell .body{background:repeating-linear-gradient(45deg,
+  var(--panel) 0 6px, transparent 6px 12px);padding:22px 14px}
+/* 리프 화면은 자기가 콘텐츠다 — 셸 크롬을 그리지 않는다 */
+.screen.leaf .body{padding:12px}
+
+/* 카드 — 로그인 등 중앙 배치 폼 */
+.card{max-width:320px;margin:0 auto;border:1px solid var(--line);padding:22px 20px;background:var(--bg)}
+.card .logo{height:38px;border:1px dashed var(--line);display:flex;align-items:center;
+            justify-content:center;color:var(--muted);font-size:11.5px;margin-bottom:18px}
+
+/* 모달 — 그리드 설정 창도 이것을 쓴다 */
+.modal{max-width:600px;margin:0 auto;border:1px solid var(--line);background:var(--bg)}
+.modal .mh{border-bottom:1px solid var(--line2);padding:9px 14px;font-size:13px;font-weight:600;
+           display:flex;justify-content:space-between;align-items:center}
+.modal .mh .x{color:var(--muted);font-weight:400}
+.modal .mb{padding:14px}
+.modal .mf{border-top:1px solid var(--line2);padding:9px 14px;font-size:11.5px;color:var(--muted);
+           display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* 탭 */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin:0 0 14px}
+.tabs>span{padding:6px 13px;font-size:12.5px;border:1px solid transparent;border-bottom:none;
+           color:var(--muted);cursor:default}   /* 자식만 — 안에 배지가 들어갈 수 있다 */
+.tabs>span.on{border-color:var(--line);background:var(--bg);color:var(--ink);font-weight:600;
+              margin-bottom:-1px}
+.tabs .badge{display:inline-block;min-width:16px;height:16px;line-height:16px;text-align:center;
+             border-radius:8px;background:var(--err);color:#fff;font-size:10.5px;margin-left:5px}
+
+/* 폼 — 화면에 남는 폼은 조회조건 하나다 */
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;margin-bottom:3px}
+.f input,.f select,.f textarea{width:100%;padding:6px 8px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+.f .hint{font-size:11px;color:var(--muted);margin-top:3px}
+.f.ro input{background:var(--panel);color:var(--muted)}
+.btn{width:100%;padding:8px;border:1px solid var(--ink);background:var(--ink);
+     color:var(--bg);font:inherit;font-size:13px;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.sm{width:auto;padding:4px 11px;font-size:12px}
+.btn[disabled]{opacity:.35}
+.sub{text-align:center;margin-top:12px;font-size:12px}
+.row{display:flex;gap:8px;align-items:center}
+.row .btn{width:auto}
+
+/* 키-값 나열 (읽기 전용 정보) */
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:12.5px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+
+/* 설정 그룹 */
+.grp{border:1px solid var(--line2);margin-bottom:10px}
+.grp>b{display:block;background:var(--panel);border-bottom:1px solid var(--line2);
+       padding:5px 11px;font-size:12px}
+.grp .item{display:flex;justify-content:space-between;align-items:center;gap:12px;
+           padding:6px 11px;font-size:12.5px;border-bottom:1px solid var(--line2)}
+.grp .item:last-child{border-bottom:none}
+.grp .item .where{font-size:10.5px;color:var(--muted);white-space:nowrap}
+
+/* 목록 (알림·검색 결과·드롭다운·필터 메뉴) */
+.list{border:1px solid var(--line2);font-size:12.5px;background:var(--bg)}
+.list .it{padding:7px 11px;border-bottom:1px solid var(--line2);display:flex;
+          justify-content:space-between;align-items:center;gap:10px}
+.list .it:last-child{border-bottom:none}
+.list .it.unread{background:var(--note-bg)}
+.list .it .path{display:block;font-size:10.5px;color:var(--muted)}
+.list .it .when{color:var(--muted);font-size:11px;white-space:nowrap}
+.list .empty{padding:22px 11px;text-align:center;color:var(--muted);font-size:12px}
+.tag{display:inline-block;border:1px solid var(--line);padding:0 5px;font-size:10.5px;
+     color:var(--muted);border-radius:2px}
+
+/* 규칙 체크리스트 */
+.rules{list-style:none;margin:0 0 14px;padding:9px 11px;border:1px solid var(--line2);
+       background:var(--panel);font-size:11.5px;line-height:1.7}
+.rules li{padding-left:17px;position:relative}
+.rules li::before{position:absolute;left:0;font-weight:700}
+.rules .ok::before{content:"✓";color:var(--ok)}
+.rules .no::before{content:"✕";color:var(--err)}
+.rules .srv::before{content:"·";color:var(--muted)}
+.rules .srv{color:var(--muted)}
+.rules em{font-style:normal;opacity:.8}
+
+/* 배너 — 폼 상단 한 곳. 토스트(UX-10)도 이것으로 표현한다 */
+.banner{border:1px solid var(--err);background:var(--err-bg);color:var(--err);
+        padding:7px 10px;font-size:12.5px;margin-bottom:14px}
+.banner.info{border-color:var(--note);background:var(--note-bg);color:var(--note)}
+
+/* ── 그리드 어휘 다섯 ─────────────────────────────── */
+
+/* 검색 폼 — <SearchForm>(UX-15). 서버 조회 조건은 이것뿐이다 */
+.sf{border:1px solid var(--line2);background:var(--panel);padding:9px 11px;margin-bottom:8px;
+    display:grid;grid-template-columns:max-content 1fr max-content 1fr max-content 1fr;
+    gap:6px 9px;align-items:center;font-size:12px}
+.sf label{color:var(--muted);white-space:nowrap}
+.sf input,.sf select{width:100%;padding:3px 6px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:12px}
+.sf .wide{grid-column:span 3}
+.sf .act{grid-column:1/-1;text-align:right;padding-top:2px}
+
+/* 그리드 헤더 — 왼쪽 제목(.ttl), 오른쪽 버튼. 도구 둘(.ico)은 맨 오른쪽 고정 */
+.tb{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.tb .ttl{font-size:13px;font-weight:600;margin-right:auto;white-space:nowrap}
+.tb .ico{width:auto;padding:4px 8px;font-size:12px;white-space:nowrap}
+.tb .sp{flex:1}
+.tb .cnt{font-size:11.5px;color:var(--muted);white-space:nowrap}
+
+/* 그리드 본문 — <DataGrid> */
+.grid{border:1px solid var(--line);overflow:auto;max-height:260px}
+.grid table{margin:0;font-size:12px;border:none}
+.grid th{position:sticky;top:0;z-index:1}
+.grid td,.grid th{white-space:nowrap}
+.grid th .mn{float:right;color:var(--muted);font-weight:400;margin-left:8px}  /* 컬럼 메뉴 ☰ */
+.grid th .srt{color:var(--note)}                                             /* 정렬 표시 */
+.grid th.on{background:var(--note-bg)}                                       /* 필터 걸린 컬럼 */
+/* 헤더가 컬럼을 말한다. 색이 아니라 표시가 원본이다 */
+.grid th.req em{font-style:normal;color:var(--err);font-weight:700}          /* 필수 * */
+.grid th.roh{color:var(--muted);font-weight:400}                             /* 읽기 전용 컬럼 */
+/* 양끝 시스템 컬럼. 사용자가 숨기거나 옮길 수 없다 */
+.grid .st{width:26px;text-align:center;color:var(--muted)}
+.grid .del{width:34px;text-align:center;color:var(--muted)}
+.grid .pinL{border-right:2px solid var(--line)}   /* 좌 고정 ↔ 스크롤 경계 */
+.grid .pinR{border-left:2px solid var(--line)}    /* 스크롤 ↔ 우 고정 경계 */
+
+/* ── 셀과 행의 색 — 그리드 표준의 우선순위 여섯 ────────────────────
+   여섯이 전부 같은 명시도다. 그래서 나중에 쓴 것이 이긴다 —
+   6 → 1 순서로 적었고, 순서를 바꾸면 규약이 바뀐다.
+   행 규칙(tr.x td)이 셀 규칙(td.x)보다 명시도가 한 단계 높으므로
+   5(행 상태)가 6(컬럼 상태)을 이기는 것은 순서가 아니라 구조다.  */
+
+/* 6. 컬럼 상태 — 정적이므로 다른 것이 없을 때의 바탕 */
+.grid td.req{background:var(--req-bg)}                       /* 필수 입력 */
+.grid td.ro {background:var(--panel);color:var(--muted)}     /* 읽기 전용 */
+                                                             /* 편집 가능은 칠하지 않는다 */
+/* 5. 행 상태 — 상태 컬럼 아이콘이 원본이다 */
+.grid tr.new td{background:var(--row-new)}
+.grid tr.mod td{background:var(--row-mod)}
+.grid tr.rmv td{color:var(--muted);text-decoration:line-through}  /* 배경이 아니라 글자다 */
+/* 4. 현재 선택 행 — Primary 가장 옅은 단계 */
+.grid tr.sel td{background:var(--pri-1)}
+/* 3. 현재 선택 셀 — 한 단계 진한 것 + 테두리 */
+.grid tr td.cur{background:var(--pri-2);outline:1px solid var(--pri);outline-offset:-1px}
+/* 2. 편집 중인 셀 — 테두리는 Primary 원색, 배경은 바탕(입력 글자가 읽혀야 한다) */
+.grid tr td.edit{background:var(--bg);color:var(--ink);outline:2px solid var(--pri);outline-offset:-2px}
+/* 1. 검증 실패 — 유일하게 Primary 와 무관하다 */
+.grid tr td.err{background:var(--err-bg);outline:1px solid var(--err);outline-offset:-1px}
+
+/* ── 스위치 — 값이 둘인 데이터 셀 ──────────
+   ynFlag 컬럼과 권한 트리 셀이 같은 것을 쓴다. 체크박스가 아니다.
+   켜짐 색은 Primary 에서 온다.
+   여럿을 고르는 자리는 여전히 체크박스다 — 행 선택 · set 필터 ·
+   그리드 설정의 컬럼 표시.                                      */
+.swt{display:inline-block;width:24px;height:13px;border:1px solid var(--line);
+     border-radius:7px;background:var(--panel);position:relative;vertical-align:-2px}
+.swt::after{content:"";position:absolute;top:1px;left:1px;width:9px;height:9px;
+            border-radius:50%;background:var(--muted)}
+.swt.on{background:var(--pri);border-color:var(--pri)}
+.swt.on::after{left:12px;background:var(--bg)}
+.swt.dis{opacity:.45}          /* 비활성 — 입력 칸이 아니라 상태 표시로 읽힌다 */
+
+/* 색 견본 — 화면 9 */
+.sw{display:inline-block;width:30px;height:14px;border:1px solid var(--line);
+    vertical-align:-2px;margin-right:6px}
+
+/* 그리드 푸터 — 건수 · 네비게이션 · 페이지 사이즈 */
+.pg{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+    padding:6px 2px;font-size:11.5px;color:var(--muted)}
+.pg .nav{text-align:center}
+.pg .size{text-align:right}
+.pg b{color:var(--ink)}
+
+/* 마스터-디테일 스플리터. 축이 둘이고 접기 화살표가 붙는다 */
+.split{height:13px;margin:9px 0;border-top:1px solid var(--line2);
+       border-bottom:1px solid var(--line2);background:var(--panel);
+       display:flex;align-items:center;justify-content:center;gap:4px;
+       font-size:9px;color:var(--muted);cursor:row-resize}
+.split .hnd{letter-spacing:2px;line-height:1}                 /* 끄는 손잡이 */
+.split .arw{border:1px solid var(--line);background:var(--bg);color:var(--muted);
+            font-size:8px;line-height:10px;padding:0 4px;cursor:default}
+.split .arw.off{opacity:.3}          /* 반대쪽이 이미 접혔다 — 둘 다 접히지 않는다 */
+/* 세로 축 — 좌우 배치 */
+.split.v{height:auto;width:13px;margin:0 9px;flex-direction:column;
+         border:none;border-left:1px solid var(--line2);border-right:1px solid var(--line2);
+         cursor:col-resize}
+.splitrow{display:flex;align-items:stretch}
+.splitrow>.pane{flex:1;min-width:0}
+/* 접힌 쪽 — 제목 줄만 남는다. 없는 것과 다르다 */
+.folded{border:1px solid var(--line2);background:var(--panel);padding:6px 10px;
+        font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.folded .why{font-weight:400;font-size:11px;color:var(--muted);margin-left:auto}
+
+/* ── 브레드크럼 줄 ──────────────────────────────────
+   줄은 셸의 것이고 오른쪽 슬롯은 화면이 채운다. 리프 목업이 셸
+   크롬을 그리지 않는 규약의 유일한 예외이며, 그리지 않으면
+   조회조건 컨트롤(UX-07 · UX-15)을 보일 자리가 없다.            */
+.bc{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+    border:1px solid var(--line2);background:var(--panel);
+    padding:4px 10px;margin-bottom:8px;font-size:12px;color:var(--muted)}
+.bc .path{margin-right:auto;white-space:nowrap}
+.bc .path b{color:var(--ink)}
+.bc .btn{width:auto;padding:2px 8px;font-size:11.5px}
+
+/* 주석 — 화면 요소 ↔ 문서 결정 연결 */
+.notes{border-left:3px solid var(--note);background:var(--note-bg);padding:10px 14px;font-size:12.5px}
+.notes ol{margin:0;padding-left:18px}
+.notes li{margin:3px 0}
+.n{display:inline-block;min-width:17px;height:17px;line-height:17px;text-align:center;
+   border-radius:50%;background:var(--note);color:#fff;font-size:11px;margin-right:5px}
+
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
+th,td{border:1px solid var(--line2);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:600;white-space:nowrap}
+td.c{white-space:nowrap;font-family:Consolas,monospace;font-size:12px}
+
+.todo{border:1px dashed var(--line);padding:10px 14px;font-size:12.5px;background:var(--panel)}
+.todo ul{margin:4px 0 0;padding-left:18px}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line2);
+       font-size:11.5px;color:var(--muted)}
+
+/* ── 이 목업만의 어휘 셋 ──────────────────────────────
+   건수는 오른쪽 정렬한다(읽기 전용이라 바탕은 컬럼 계약이 깐다).
+   시스템 배지는 왜 못 지우는지를 눌러 보기 전에 말한다.
+   키 문자열 폴백은 "아직 안 채운 것" 이라 흐리게 낸다. */
+.grid td.num,.grid th.num{text-align:right}
+.mut{color:var(--muted);font-size:11px}
+
+.bdg{display:inline-block;border:1px solid var(--line);color:var(--muted);
+     padding:0 4px;font-size:10px;border-radius:2px;margin-left:4px}
+.bdg.sys{border-color:var(--note);color:var(--note)}
+.key{color:var(--muted);font-style:italic}
+.lnk{color:var(--pri);text-decoration:underline;cursor:pointer}
+</style>
+<div class="doc"><div class="gen noprint"><b>생성물이다 — 손으로 고치지 않는다.</b>
+원본은 <code>manual.md</code> 이고 이 파일은 <code>/manual-site</code> 가 만든다(CLAUDE.md §5.2).
+여기서 고친 것은 다음 생성에서 사라진다.</div></div>
+<section class="doc screen-doc">
+<h1>공통 코드 관리</h1>
+<blockquote>화면 곳곳의 선택 상자에 나오는 <b>항목들</b>을 등록하고 고칩니다. <i>주문 유형</i> · <i>처리 상태</i> 처럼 값이 정해져 있는 것들이 모두 여기서 나옵니다.</blockquote>
+<p><b>메뉴 위치</b> 시스템 › 기준정보 › 공통 코드 관리</p>
+<figure class="shot mock">
+<div class="mockwrap"><div class="screen leaf" id="main" data-manual="main">
+  
+  <div class="body">
+
+    <div class="bc">
+      <span class="path">시스템 &rsaquo; 기준정보 &rsaquo; <b>공통 코드 관리</b></span>
+      <button class="btn sm ghost" type="button" title="저장된 조회조건 — UX-07">조건 &#9662;</button>
+      <button class="btn sm ghost" type="button" title="조회조건 접기/펼치기 — UX-15">&#8963; 조회조건</button>
+    </div>
+
+    <div class="sf">
+      <label>그룹 코드</label><input>
+      <label>그룹명</label><input>
+      <label>사용 여부</label><select><option>전체</option><option>사용</option><option>미사용</option></select>
+      <label>시스템 여부</label><select><option>전체</option><option>시스템</option><option>업무</option></select>
+      <label>코드</label><input>
+      <label>코드명</label><input>
+      <span class="mut" style="grid-column:span 2"><b>코드 조건이 그룹을 거른다</b> —
+        <i>"이 코드값이 어느 그룹에 있더라"</i> 가 자주 묻는 것이다</span>
+      <div class="act"><button class="btn sm ghost" type="button">초기화</button></div>
+    </div>
+
+    <div class="tb">
+      <span class="ttl">코드 그룹</span>
+      <span class="sp"></span>
+      <button class="btn sm ghost" type="button">조회</button>
+      <button class="btn sm ghost" type="button">행 추가</button>
+      <button class="btn sm" type="button">저장</button>
+      <button class="btn sm ghost ico" type="button" title="엑셀 다운로드">&#10515; &#9662;</button>
+      <button class="btn sm ghost ico" type="button" title="그리드 설정">&#9881;</button>
+    </div>
+
+    <div class="grid" style="max-height:190px"><table>
+      <thead><tr>
+        <th class="st">＊</th>
+        <th class="req">그룹 코드 <em>*</em></th>
+        <th class="req">그룹명 <em>*</em></th>
+        <th>설명</th><th>사용</th><th class="num">정렬</th>
+        <th class="num roh">코드</th>
+        <th class="roh">시스템</th>
+        <th class="del">🗑</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="st"></td><td class="ro">CODE_REF_KEY</td><td class="req">참조 종류</td>
+            <td>SYS_CODE_REF 화이트리스트</td><td><span class="swt on dis"></span></td><td class="num">10</td>
+            <td class="num ro">6</td><td class="ro"><span class="bdg sys">시스템</span></td>
+            <td class="del"><span class="mut">—</span></td></tr>
+        <tr><td class="st"></td><td class="ro">LANG_CD</td><td class="req">지원 언어</td>
+            <td>설정 모달의 드롭다운</td><td><span class="swt on dis"></span></td><td class="num">20</td>
+            <td class="num ro">2</td><td class="ro"><span class="bdg sys">시스템</span></td>
+            <td class="del"><span class="mut">—</span></td></tr>
+        <tr class="sel"><td class="st"></td><td class="ro">ORDER_KIND</td><td class="req">주문 구분</td>
+            <td>출고 · 입고</td><td><span class="swt on"></span></td><td class="num">30</td>
+            <td class="num ro">2</td><td class="ro"></td>
+            <td class="del"><span class="mut">☐</span></td></tr>
+        <tr><td class="st"></td><td class="ro">ORDER_TYPE</td><td class="req">주문 유형</td>
+            <td>구분에 종속(MASTER-10)</td><td><span class="swt on"></span></td><td class="num">40</td>
+            <td class="num ro">5</td><td class="ro"></td>
+            <td class="del"><span class="mut">☐</span></td></tr>
+        <tr><td class="st"></td><td class="ro">SHIP_STATUS</td><td class="req">출고 상태</td>
+            <td>아직 쓰지 않는다</td><td><span class="swt"></span></td><td class="num">50</td>
+            <td class="num ro"><b>0</b></td><td class="ro"></td>
+            <td class="del">☑</td></tr>
+      </tbody></table></div>
+    <div class="pg"><span>전체 <b>5</b>건</span><span class="nav">‹ <b>1</b> ›</span>
+      <span class="size">20건씩 &#9662;</span></div>
+
+    <div class="split"><span class="arw">▲</span><span class="hnd">⠿⠿⠿</span><span class="arw">▼</span></div>
+
+    <div class="tb">
+      <span class="ttl">코드 — <span class="mut">ORDER_KIND</span></span>
+      <span class="sp"></span>
+      <button class="btn sm ghost" type="button" title="controls · slot: beforeRead">참조 코드 관리</button>
+      <button class="btn sm ghost" type="button">조회</button>
+      <button class="btn sm ghost" type="button">행 추가</button>
+      <button class="btn sm" type="button">저장</button>
+      <button class="btn sm ghost ico" type="button" title="그리드 설정">&#9881;</button>
+    </div>
+
+    <div class="grid" style="max-height:130px"><table>
+      <thead><tr>
+        <th class="st">＊</th>
+        <th class="req">코드 <em>*</em></th>
+        <th class="req">코드명 <em>*</em></th>
+        <th>설명</th><th>사용</th><th class="num">정렬</th>
+        <th>색상</th><th class="num">정렬 가중치</th><th>익일배송</th>
+        <th class="roh">시스템</th>
+        <th class="del">🗑</th>
+      </tr></thead>
+      <tbody>
+        <tr><td class="st"></td><td class="ro">OUT</td><td class="req">출고</td>
+            <td>창고 &rarr; 고객</td><td><span class="swt on"></span></td><td class="num">10</td>
+            <td>#2f6f4f</td><td class="num">100</td><td>Y</td><td class="ro"></td>
+            <td class="del"><span class="mut">☐</span></td></tr>
+        <tr class="mod"><td class="st">✎</td><td class="ro">IN</td>
+            <td class="req"><span class="key">code.ORDER_KIND.IN</span></td>
+            <td>공급처 &rarr; 창고</td><td><span class="swt on"></span></td><td class="num">20</td>
+            <td>#8a5a2b</td><td class="num">200</td><td class="mut"></td><td class="ro"></td>
+            <td class="del"><span class="mut">☐</span></td></tr>
+      </tbody></table></div>
+    <div class="pg"><span>전체 <b>2</b>건</span><span class="nav">‹ <b>1</b> ›</span>
+      <span class="size">20건씩 &#9662;</span></div>
+    
+
+  </div>
+</div></div>
+<figcaption>공통 코드 관리 화면 — 위는 코드 그룹, 아래는 그 그룹의 코드들 — <b>배치를 보이는 그림</b>입니다. 실제 화면의 데이터·글꼴·색은 다를 수 있습니다.</figcaption>
+</figure>
+<hr>
+<h2>1. 먼저 알아 둘 것</h2>
+<ul>
+<li><b>구조는 두 단입니다.</b> 위쪽이 <b>그룹</b>(<i>주문 유형</i> 같은 묶음), 아래쪽이 그 그룹의 <b>코드</b>(<i>B2B</i> · <i>B2C</i> 같은 항목)입니다.</li>
+<li><b>그룹은 함부로 만들지 않습니다.</b> 그룹 이름은 <b>프로그램이 직접 부르는 것</b>이라, 개발에서 정해 준 이름이 아니면 만들어도 아무 화면에서도 쓰이지 않습니다. 여기서 주로 하는 일은 <b>이미 있는 그룹에 코드를 더하거나 고치는 것</b>입니다.</li>
+<li><b><code>시스템</code> 표시가 붙은 줄은 지울 수도 끌 수도 없습니다.</b> 프로그램이 그 값에 기대어 동작하기 때문입니다.</li>
+<li><b>여기서 고치면 다른 사람 화면에도 곧 반영됩니다.</b> 선택 상자의 항목과 글자가 함께 바뀝니다.</li>
+<li><b>코드명은 지금 쓰고 있는 언어로만 입력됩니다.</b> 다른 언어는 [다국어 메시지 관리]에서 채웁니다.</li>
+</ul>
+<hr>
+<h2>2. 찾기</h2>
+<ol>
+<li>위쪽 조회조건에 값을 넣고 <code>[조회]</code>.</li>
+<li>위쪽 목록에서 <b>그룹 한 줄을 고르면</b> 아래에 그 그룹의 코드가 나옵니다.</li>
+</ol>
+<p><b>자주 쓰는 조건</b></p>
+<table><thead><tr>
+<th>이렇게 찾고 싶다</th><th>이렇게 넣습니다</th>
+</tr></thead><tbody>
+<tr><td>그룹 이름을 알 때</td><td><code>그룹명</code>에 조각을 넣습니다</td></tr>
+<tr><td><b>이 코드값이 어느 그룹에 있는지 모를 때</b></td><td><code>코드</code>에 그 값을 넣습니다 — <b>그 값을 가진 그룹만</b> 위에 나옵니다</td></tr>
+<tr><td>화면에 보이던 그 글자로 찾을 때</td><td><code>코드명</code>에 그 글자를 넣습니다</td></tr>
+</tbody></table>
+<ul>
+<li><b>아래 두 조건(<code>코드</code> · <code>코드명</code>)은 위아래를 함께 거릅니다.</b> 그룹을 고르면 아래 목록이 <b>이미 그 조건으로 걸려 있습니다</b> — 전체를 보려면 조건을 지우고 다시 조회하십시오.</li>
+<li><code>사용 여부</code>나 <code>시스템 여부</code>로는 조회할 수 없습니다. <b>컬럼 제목의 필터</b>로 거르십시오 — 위아래 어느 쪽을 거르는지가 자리로 분명해집니다.</li>
+<li>참조 속성 값으로도 조회할 수 없습니다. 아래 목록은 <b>전체가 한 번에</b> 나오므로 컬럼 필터로 충분합니다.</li>
+</ul>
+<hr>
+<h2>3. 하기</h2>
+<h3>3-1. 코드 더하기 (가장 흔한 일)</h3>
+<ol>
+<li>위에서 그룹을 고릅니다.</li>
+<li>아래 그리드에서 <code>[행 추가]</code>.</li>
+<li><b>코드</b>와 <b>코드명</b>을 채웁니다.</li>
+</ol>
+<ul>
+<li><b>코드는 나중에 바꿀 수 없습니다.</b> 고치려면 지우고 다시 만듭니다.</li>
+<li><code>정렬</code>은 <b>선택 상자에 나오는 순서</b>입니다. 관리 화면용이 아닙니다.</li>
+</ul>
+<ol>
+<li><code>[저장]</code>.</li>
+</ol>
+<h3>3-2. 코드 끄기 · 지우기</h3>
+<ul>
+<li><b>쓰지 않게 된 코드는 <code>사용</code>을 끕니다.</b> 그러면 <b>앞으로는 선택 상자에 나오지 않지만</b>, 이미 그 값으로 저장된 기존 자료는 그대로 남습니다.</li>
+<li>지우는 것은 <code>[행 삭제]</code> → <code>[저장]</code> 입니다. <b>참조 속성 값이 있으면 저장 전에 몇 건이 함께 사라지는지 알려 줍니다.</b></li>
+<li><b><code>시스템</code> 표시가 붙은 줄은 체크박스 자체가 없고, <code>사용</code>도 끌 수 없습니다.</b></li>
+</ul>
+<blockquote><b>끄는 것과 지우는 것은 다릅니다.</b> 지우면 그 코드가 무엇이었는지가 사라져, 예전 자료의 그 값이 이름 없는 값이 됩니다. <b>웬만하면 끄십시오.</b></blockquote>
+<h3>3-3. 그룹 만들기</h3>
+<ol>
+<li>위쪽에서 <code>[행 추가]</code> → <code>그룹 코드</code> · <code>그룹명</code>을 채우고 <code>[저장]</code>.</li>
+<li><b>저장하기 전에는 아래가 잠깁니다.</b> 먼저 저장하고, 그 줄을 다시 골라야 코드를 넣을 수 있습니다.</li>
+</ol>
+<ul>
+<li><b>그룹 코드도 나중에 바꿀 수 없습니다.</b></li>
+<li>그룹에는 <code>사용</code> 스위치가 없습니다 — 그룹을 끈다는 것의 뜻이 정해져 있지 않기 때문입니다. 쓰지 않을 그룹은 <b>코드를 모두 지운 뒤 그룹을 지웁니다.</b></li>
+</ul>
+<h3>3-4. 그룹 지우기</h3>
+<ul>
+<li><b>코드가 하나라도 남아 있으면 체크박스가 꺼집니다.</b> 칸에 마우스를 올리면 몇 건이 남았는지 알려 줍니다.</li>
+<li>코드를 먼저 모두 지운 뒤 그룹을 지웁니다.</li>
+</ul>
+<h3>3-5. 참조 속성 — 코드마다 붙는 부가 값</h3>
+<p>어떤 그룹은 코드마다 <b>추가로 적어 둘 값</b>이 필요합니다. 그것을 참조 속성이라고 합니다.</p>
+<figure class="shot mock">
+<div class="mockwrap"><div class="screen shell" id="ref-def" data-manual="ref-def">
+  
+  <div class="body">
+    <div class="modal" style="max-width:640px">
+      <div class="mh">참조 코드 관리 — <code>ORDER_KIND</code> <span class="x">✕</span></div>
+      <div class="mb">
+        <div class="tb">
+          <span class="ttl">참조 코드 정의</span>
+          <span class="sp"></span>
+          <button class="btn sm ghost" type="button">조회</button>
+          <button class="btn sm ghost" type="button">행 추가</button>
+          <button class="btn sm" type="button">저장</button>
+        </div>
+        <div class="grid" style="max-height:none"><table>
+          <thead><tr><th class="st">＊</th><th class="req">참조 코드 <em>*</em></th>
+            <th class="req">참조명 <em>*</em></th><th>설명</th>
+            <th class="num roh">입력된 값</th><th class="del">🗑</th></tr></thead>
+          <tbody>
+            <tr><td class="st"></td><td class="ro">COLOR</td><td class="req">색상</td>
+                <td>배지 배경색</td><td class="num ro">2</td><td class="del"><span class="mut">☐</span></td></tr>
+            <tr><td class="st"></td><td class="ro">SORT_WEIGHT</td><td class="req">정렬 가중치</td>
+                <td>콤보 정렬과 별개</td><td class="num ro">2</td><td class="del"><span class="mut">☐</span></td></tr>
+            <tr class="mod"><td class="st">✎</td><td class="ro">IS_EXPRESS</td><td class="req">익일배송</td>
+                <td>다중 부모 플래그</td><td class="num ro">1</td>
+                <td class="del">☑</td></tr>
+            <tr class="new"><td class="st">＋</td>
+                <td class="req">PARENT <span class="mut">▾</span></td>
+                <td class="req">상위 창고</td><td></td>
+                <td class="num ro"><b>0</b></td><td class="del"><span class="mut">☐</span></td></tr>
+          </tbody></table></div>
+        
+      </div>
+      <div class="mf"><span>저장은 <b>모달 안에서 닫힌다</b></span>
+        <span class="row"><button class="btn sm ghost" type="button">닫기</button></span></div>
+    </div>
+  </div>
+</div></div>
+<figcaption>참조 코드 정의 창 — 이 그룹이 어떤 속성을 쓰는지 정합니다 — <b>배치를 보이는 그림</b>입니다. 실제 화면의 데이터·글꼴·색은 다를 수 있습니다.</figcaption>
+</figure>
+<p><b>두 단계입니다.</b></p>
+<ol>
+<li><b>어떤 속성을 쓸지 정합니다</b> — 아래 그리드 위의 <code>[참조 코드 관리]</code> 를 누릅니다.</li>
+</ol>
+<ul>
+<li><code>참조 코드</code>는 <b>미리 허용된 것 중에서만</b> 고를 수 있습니다.</li>
+<li><code>참조명</code>에 적은 글자가 <b>아래 그리드의 컬럼 제목</b>이 됩니다. 같은 속성을 그룹마다 다르게 부를 수 있습니다.</li>
+<li>저장하고 창을 닫습니다.</li>
+</ul>
+<ol>
+<li><b>값을 채웁니다</b> — 아래 그리드의 <b>오른쪽 끝</b>에 방금 정한 컬럼이 생겼습니다. 칸에 값을 넣고 <code>[저장]</code>.</li>
+</ol>
+<ul>
+<li><b>빈 칸이 곧 할 일입니다.</b> 아직 안 채운 코드가 한눈에 보이도록 일부러 펼쳐 두었습니다.</li>
+<li><b><code>시스템</code> 코드에도 참조값은 넣을 수 있습니다.</b> 보호되는 것은 코드의 존재이지 이 값이 아닙니다.</li>
+<li>값을 <b>지우려면 칸을 비우고 저장</b>합니다.</li>
+<li><b>정의를 지우면 그 컬럼에 넣었던 값이 모두 사라집니다.</b> 저장 전에 몇 건인지 알려 줍니다.</li>
+</ul>
+<h3>3-6. 다른 언어의 이름 채우기</h3>
+<ul>
+<li>이 화면의 <code>코드명</code>은 <b>지금 보고 있는 언어</b>의 이름입니다.</li>
+<li>다른 언어는 <b>[다국어 메시지 관리]</b> 에서 채웁니다.</li>
+<li><b>코드명 칸을 비우고 저장하면 그 언어의 이름을 지웁니다.</b> 그러면 화면에 <code>code.그룹.코드</code> 같은 글자가 그대로 보이는데, 그것이 <i>아직 안 채웠다</i> 는 표시입니다.</li>
+</ul>
+<h3>3-7. 엑셀로 받기</h3>
+<ul>
+<li><code>[⤓]</code> — 현재 페이지와 전체 중에서 고릅니다. <b>지금 보이는 컬럼만</b> 나갑니다.</li>
+<li>엑셀 올리기는 이 화면에 없습니다.</li>
+</ul>
+<hr>
+<h2>4. 안 될 때</h2>
+<table><thead><tr>
+<th>이런 일이 생기면</th><th>이유</th><th>어떻게 하나</th>
+</tr></thead><tbody>
+<tr><td><i>이미 있는 코드 그룹입니다.</i> / <i>이미 있는 코드입니다.</i></td><td>같은 값이 이미 있습니다</td><td>조건을 비우고 그 값으로 조회해 확인합니다</td></tr>
+<tr><td>같은 값이 두 번 있다는 표시가 뜹니다</td><td>지금 저장하려는 줄 안에 같은 값이 둘입니다</td><td>한 줄을 지웁니다</td></tr>
+<tr><td><i>코드가 있어 그룹을 지울 수 없습니다.</i></td><td>그 그룹에 코드가 남아 있습니다</td><td>코드를 먼저 지웁니다</td></tr>
+<tr><td><i>시스템 코드는 지우거나 끌 수 없습니다.</i></td><td>프로그램이 기대는 값입니다</td><td>지울 수 없습니다. 개발 담당자와 상의하십시오</td></tr>
+<tr><td><i>허용되지 않은 참조 코드 값입니다.</i></td><td>미리 허용된 목록에 없는 값입니다</td><td>목록에서 고릅니다. 새 속성이 필요하면 개발 담당자에게 요청합니다</td></tr>
+<tr><td><i>이 그룹에 정의되지 않은 참조 코드입니다.</i></td><td>정의가 지워진 뒤 옛 화면에서 저장했습니다</td><td>화면을 다시 조회합니다</td></tr>
+<tr><td><i>이미 삭제된 코드 그룹입니다.</i> / <i>이미 삭제된 코드입니다.</i></td><td>다른 사람이 먼저 지웠습니다</td><td>다시 조회합니다</td></tr>
+<tr><td><i>필수 값이 비어 있습니다.</i></td><td><code>그룹명</code> 또는 <code>참조명</code>이 비었습니다</td><td>채웁니다</td></tr>
+<tr><td><b>아래 그리드가 눌리지 않습니다</b></td><td>그룹을 고르지 않았거나, 아직 저장하지 않은 새 그룹입니다</td><td>먼저 저장하고 그 줄을 다시 고릅니다</td></tr>
+<tr><td><b><code>[참조 코드 관리]</code> 가 눌리지 않습니다</b></td><td>그룹을 고르지 않았거나, <b>아래에 저장하지 않은 변경이 있습니다</b></td><td>눌러 보면 사유가 뜹니다. 저장하거나 되돌린 뒤 다시 누릅니다</td></tr>
+<tr><td>다른 그룹을 골랐더니 물어봅니다</td><td>아래에 저장하지 않은 변경이 있습니다</td><td>버릴 것인지 답합니다. <b>아니오</b> 를 고르면 선택이 되돌아갑니다</td></tr>
+<tr><td>화면에 <code>code.무엇.무엇</code> 같은 글자가 보입니다</td><td><b>그 언어의 코드명이 비어 있습니다</b></td><td>이 화면에서 코드명을 채우거나, 다른 언어면 [다국어 메시지 관리]에서 채웁니다</td></tr>
+<tr><td>코드를 만들었는데 선택 상자에 안 나옵니다</td><td><code>사용</code>이 꺼져 있거나, 화면을 다시 열지 않았습니다</td><td><code>사용</code>을 켜고, 그 화면을 다시 엽니다</td></tr>
+</tbody></table>
+<hr>
+<h2>5. 다른 메뉴와의 관계</h2>
+<p><b>먼저 해야 하는 것</b></p>
+<table><thead><tr>
+<th>무엇을</th><th>어디서</th><th>왜</th>
+</tr></thead><tbody>
+<tr><td>그룹 이름 정하기</td><td><b>개발</b></td><td>그룹 이름은 프로그램이 직접 부릅니다. 임의로 만든 그룹은 아무 화면에도 나오지 않습니다</td></tr>
+<tr><td>참조 코드 허용 목록에 추가</td><td><b>이 화면</b></td><td><code>CODE_REF_KEY</code> 그룹을 골라 코드를 더하면 참조 코드 후보가 늘어납니다</td></tr>
+</tbody></table>
+<p><b>여기서 저장하면 바뀌는 곳</b></p>
+<table><thead><tr>
+<th>어디가</th><th>어떻게</th>
+</tr></thead><tbody>
+<tr><td><b>그 코드를 쓰는 모든 화면</b></td><td>선택 상자의 항목과 순서, 표시되는 글자가 바뀝니다</td></tr>
+<tr><td>목록의 배지·상태 글자</td><td>같은 이름을 씁니다 — 예를 들어 [로그인 이력]의 결과 이름이 여기서 옵니다</td></tr>
+<tr><td>조회조건의 선택 상자</td><td>마찬가지입니다</td></tr>
+</tbody></table>
+<p><b>같이 보는 화면</b></p>
+<ul>
+<li><b>[다국어 메시지 관리]</b> — 다른 언어의 코드명. 여기서 넣은 이름과 <b>같은 것</b>을 다루므로, 한쪽에서 지우면 다른 쪽에서도 사라집니다.</li>
+</ul>
+<hr>
+<h2>6. 자주 묻는 것</h2>
+<ul>
+<li><b>새 그룹을 만들었는데 아무 화면에도 안 나옵니다</b> — 그룹 이름은 프로그램이 부르는 것입니다. 개발에서 그 이름을 쓰도록 만들어야 나옵니다.</li>
+<li><b>코드를 지웠더니 예전 자료가 이상해졌습니다</b> — 지우지 말고 <b>끄십시오.</b> 이미 저장된 값은 남는데 그 이름이 사라져서 그렇습니다.</li>
+<li><b>순서를 바꾸고 싶습니다</b> — <code>정렬</code> 숫자를 고칩니다. 작은 값이 앞에 옵니다.</li>
+<li><b>참조 속성이 뭔가요</b> — 코드마다 붙는 부가 값입니다. 예를 들어 <i>주문 유형</i> 마다 <i>약칭</i> 이나 <i>색상</i> 을 적어 두는 식입니다. 무엇에 쓰이는지는 그 값을 읽는 화면이 정합니다.</li>
+<li><b><code>시스템</code> 표시를 떼고 싶습니다</b> — 화면에 그 수단이 없습니다. 개발 담당자와 상의하십시오.</li>
+</ul>
+</section>
+</html>

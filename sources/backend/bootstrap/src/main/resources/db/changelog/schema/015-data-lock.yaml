@@ -1,0 +1,57 @@
+# 분산 락 — 31 §3 · 46 §4.
+#
+# 001 이 "테이블이 늘 때마다" 라고 적은 SYS_SEQUENCE 와 달리 이 테이블에는 시드 행이 없다.
+# 락은 잡을 때 만들어지고 놓을 때 사라지는 것이라 초기 상태가 "빈 테이블" 이다.
+#
+# 감사 4컬럼이 없다(46 §2.1) — 기계가 쓰는 인프라 테이블이며 "누가 이 행을 만들었나" 가
+# 성립하지 않는다. USER_ID 는 감사가 아니라 진단용이고 FK 도 걸지 않는다(46 §2.2).
+#
+# 타입은 4벤더 중립만 쓴다(46 §2.4). 시각은 전부 TIMESTAMP 이고 접미사가 _DTM 이다 —
+# 46 §4.1 이 EXPIRE_DT · RELEASE_DT 를 고친 그 규약이며, 둘 다 초 단위 시점이라
+# date 로 읽히면 만료 회수 쿼리를 잘못 쓰게 된다.
+databaseChangeLog:
+  - changeSet:
+      id: 015-create-sys-data-lock
+      author: template
+      comment: 분산 락 저장소. PK INSERT 성공 여부가 선점 판정이다 — 31 §3
+      changes:
+        - createTable:
+            tableName: SYS_DATA_LOCK
+            columns:
+              - column:
+                  name: LOCK_TYPE
+                  type: VARCHAR(50)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_DATA_LOCK
+                    nullable: false
+              - column:
+                  name: LOCK_KEY
+                  type: VARCHAR(200)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              # 장애 안전망 — 프로세스가 죽어 해제를 못 했을 때의 회수 시한.
+              - column:
+                  name: EXPIRE_DTM
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              # 쿨다운 종료 시각. NULL 이면 작업 종료 즉시 해제다 — 31 §5.
+              - column:
+                  name: RELEASE_DTM
+                  type: TIMESTAMP
+              # SYS_BATCH_HISTORY · SYS_NOTI_OUTBOX 와 같은 값이어야 한다 — 46 §2.5.
+              - column:
+                  name: NODE_ID
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: USER_ID
+                  type: VARCHAR(30)
+              - column:
+                  name: CRE_DTM
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false

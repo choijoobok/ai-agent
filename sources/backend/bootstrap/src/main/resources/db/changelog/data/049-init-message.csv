@@ -1,0 +1,75 @@
+MSG_KEY,LANG_CD,MSG_VAL
+accessLog.grid.title,ko,사용 이력
+accessLog.grid.title,en,Access History
+accessLog.col.creDtm,ko,일시
+accessLog.col.creDtm,en,When
+accessLog.col.httpStat,ko,상태
+accessLog.col.httpStat,en,Status
+accessLog.col.userId,ko,사용자
+accessLog.col.userId,en,User
+accessLog.col.menu,ko,메뉴
+accessLog.col.menu,en,Menu
+accessLog.col.requestUri,ko,요청 URI
+accessLog.col.requestUri,en,Request URI
+accessLog.col.payload,ko,전문
+accessLog.col.payload,en,Payload
+accessLog.col.clientIp,ko,IP
+accessLog.col.clientIp,en,IP
+accessLog.col.traceId,ko,추적 ID
+accessLog.col.traceId,en,Trace ID
+accessLog.col.seq,ko,순번
+accessLog.col.seq,en,No
+accessLog.anonymous,ko,(익명)
+accessLog.anonymous,en,(anonymous)
+accessLog.noMenu,ko,(메뉴 없음)
+accessLog.noMenu,en,(no menu)
+accessLog.menu.clientClaim,ko,클라이언트가 밝힌 값입니다. 통계·추적에만 씁니다
+accessLog.menu.clientClaim,en,Reported by the client. Used only for statistics and tracing
+accessLog.payload.link,ko,보기
+accessLog.payload.link,en,View
+accessLog.payload.title,ko,요청 전문
+accessLog.payload.title,en,Request Payload
+accessLog.payload.length,ko,{count}자
+accessLog.payload.length,en,{count} characters
+accessLog.payload.truncated,ko,상한에서 잘렸습니다
+accessLog.payload.truncated,en,Truncated at the size limit
+accessLog.footer.range,ko,최대 {days}일
+accessLog.footer.range,en,up to {days} days
+accessLog.empty,ko,조회 결과가 없습니다. 사용 이력은 90일간 보관됩니다
+accessLog.empty,en,No results. Access history is kept for 90 days
+accessLog.search.period,ko,기간
+accessLog.search.period,en,Period
+accessLog.search.outcome,ko,상태
+accessLog.search.outcome,en,Outcome
+accessLog.outcome.success,ko,성공만
+accessLog.outcome.success,en,Success only
+accessLog.outcome.failure,ko,실패만
+accessLog.outcome.failure,en,Failure only
+accessLog.search.userId,ko,사용자
+accessLog.search.userId,en,User
+accessLog.search.menu,ko,메뉴
+accessLog.search.menu,en,Menu
+accessLog.search.requestUri,ko,요청 URI
+accessLog.search.requestUri,en,Request URI
+accessLog.search.clientIp,ko,IP
+accessLog.search.clientIp,en,IP
+accessLog.search.traceId,ko,추적 ID
+accessLog.search.traceId,en,Trace ID
+grid.footer.loaded,ko,{count}건 조회됨
+grid.footer.loaded,en,{count} rows loaded
+search.op.between,ko,사이
+search.op.between,en,Between
+search.required,ko,필수 조건입니다
+search.required,en,This condition is required
+search.rangeTooWide,ko,조회 기간은 최대 {days}일입니다
+search.rangeTooWide,en,The period may span at most {days} days
+err.query.invalid-cursor,ko,페이지를 다시 조회해 주세요
+err.query.invalid-cursor,en,Please run the search again
+err.query.cursor-sort-arity,ko,이 목록은 한 컬럼으로만 정렬할 수 있습니다
+err.query.cursor-sort-arity,en,This list can be sorted by one column only
+err.access-log.range-required,ko,조회 기간은 필수입니다
+err.access-log.range-required,en,The search period is required
+err.access-log.range-too-wide,ko,조회 기간이 허용 범위를 넘었습니다
+err.access-log.range-too-wide,en,The search period exceeds the allowed range
+err.access-log.purged,ko,이미 파기된 이력입니다
+err.access-log.purged,en,This history entry has already been purged

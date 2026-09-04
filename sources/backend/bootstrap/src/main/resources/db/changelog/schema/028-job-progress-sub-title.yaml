@@ -1,0 +1,27 @@
+# 진행률의 소제목 — 30 §6.
+#
+# 027 을 손대지 않고 파일을 더한다(22 §1.1). 그 changeset 은 이미 돈 DB 가 있으므로
+# createTable 에 컬럼을 끼우면 체크섬이 갈려 기동이 죽는다.
+#
+# 왜 필요한가 — 한 실행이 **여러 구간**으로 갈리는 작업이 있다. 고른 행 몇을 두고 행마다
+# 딸린 디테일 수천 건을 처리하는 실행이 그것이며, 그때 사용자가 알아야 하는 것은 둘이다:
+# **지금 어느 행인가**(이 컬럼)와 **그 행이 어디까지 갔는가**(CUR_CNT / TOT_CNT).
+#
+# STEP_MSG 로 겸할 수 없다. 그 값은 "지금 무엇을 하는 중" 이라 구간 안에서 계속 바뀌는데,
+# 소제목은 구간이 바뀔 때만 바뀌어야 한다 — 한 칸에 둘을 쓰면 행 이름이 단계 문구에
+# 덮여 **어느 행을 보고 있는지가 1초마다 사라진다**.
+#
+# 300자다. STEP_MSG(500)보다 짧은 것은 이것이 문장이 아니라 **이름**이기 때문이며,
+# 초과분은 엔티티가 자른다 — 벤더마다 자르는 곳도, 예외로 죽는 것도 있다.
+databaseChangeLog:
+  - changeSet:
+      id: 028-add-sub-title-to-sys-job-progress
+      author: template
+      comment: 구간이 갈리는 작업이 지금 어느 구간인지 말한다 — 30 §6
+      changes:
+        - addColumn:
+            tableName: SYS_JOB_PROGRESS
+            columns:
+              - column:
+                  name: SUB_TITLE
+                  type: VARCHAR(300)

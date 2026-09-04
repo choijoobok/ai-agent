@@ -1,0 +1,113 @@
+# 파이프라인 단계는 aidd-guide/standard/build-deploy.md §5 가 단일 원본이다.
+name: CI
+
+on:
+  push:
+    branches: [main]
+    # 코드가 아닌 커밋은 돌리지 않는다. 문서 정리 트랙이 돌기 시작하면
+    # 이쪽 커밋이 다수가 된다.
+    #
+    # 4벤더 확인은 자체 워크플로다(db-portability.yml). Docker 가 필요하고 20분이 들어
+    # 매 푸시에 태울 수 없으며, 태우는 조건은 그쪽이 자기 paths 로 정한다.
+    paths-ignore:
+      - 'documents/**'
+      - 'aidd-guide/**'
+      - 'user-guide/**'
+      - '**/*.md'
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: 백엔드 — 컴파일 · 단위테스트 · ArchUnit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      # 프론트는 frontend 잡이 맡는다. 여기서 npm 을 돌리면 같은 일을 두 번 한다 — 25 §2
+      - name: 백엔드 빌드 — 빌드 루트는 sources/ 다
+        working-directory: sources
+        run: ./gradlew build -PskipFrontend
+
+      - if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: backend-test-reports
+          path: sources/backend/*/build/reports/tests/
+
+  frontend:
+    name: 프론트 — 린트 · 테스트 · 빌드
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sources/frontend
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          # 하한은 package.json engines 가 갖는다 — ESLint 10 이 ^22.13.0 을 요구한다
+          node-version-file: sources/.nvmrc
+          cache: npm
+          cache-dependency-path: sources/frontend/package-lock.json
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run build
+
+  # 배포 대상이 아직 없어 산출물에 소비처가 없다. 남는 것은 "프론트가 JAR 에
+  # 실리는가" 검증뿐이라 매 푸시마다 돌릴 값이 아니다 — 수동으로 부른다.
+  # 배포가 생기면 이 조건을 지운다.
+  package:
+    name: 단일 JAR — 프론트 임베드
+    if: github.event_name == 'workflow_dispatch'
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: sources/.nvmrc
+          cache: npm
+          cache-dependency-path: sources/frontend/package-lock.json
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: 단일 JAR — 빌드 루트는 sources/ 다
+        working-directory: sources
+        run: ./gradlew :backend:bootstrap:bootJar
+
+      # 프론트가 실제로 실렸는지 확인한다. 임베드가 조용히 빠지면 배포본이 빈 화면이 된다.
+      - name: JAR 에 프론트가 들어갔는지 확인
+        run: |
+          jar=$(ls sources/backend/bootstrap/build/libs/*.jar | grep -v plain)
+          if ! unzip -l "$jar" | grep -q 'BOOT-INF/classes/static/index.html'; then
+            echo "::error::JAR 에 static/index.html 이 없다 — 프론트 임베드가 빠졌다"
+            unzip -l "$jar" | head -40
+            exit 1
+          fi
+          unzip -l "$jar" | grep 'BOOT-INF/classes/static/'
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ai-agent-jar
+          path: sources/backend/bootstrap/build/libs/*.jar
+          if-no-files-found: error

@@ -1,0 +1,5 @@
+MSG_KEY,LANG_CD,MSG_VAL
+menu.SMPL_MD_HORZ,ko,마스터-디테일 (좌우)
+menu.SMPL_MD_HORZ,en,Master-Detail (Horizontal)
+err.sample.rmk-required,ko,할인율이 있으면 비고가 필요합니다.
+err.sample.rmk-required,en,A remark is required when a discount applies.

@@ -1,0 +1,161 @@
+MSG_KEY,LANG_CD,MSG_VAL
+err.query.unknown-field,ko,조회할 수 없는 항목입니다.
+err.query.unknown-field,en,That field cannot be searched.
+err.query.op-type,ko,이 항목에 쓸 수 없는 조건입니다.
+err.query.op-type,en,That condition does not apply to this field.
+err.query.value,ko,조회 조건의 값이 올바르지 않습니다.
+err.query.value,en,The search value is not valid.
+err.query.not-sortable,ko,정렬할 수 없는 항목입니다.
+err.query.not-sortable,en,That column cannot be sorted.
+err.query.too-many-rows,ko,결과가 너무 많습니다. 조건을 좁혀 주세요.
+err.query.too-many-rows,en,Too many results. Narrow your search.
+err.message.key-duplicate,ko,이미 있는 메시지 키입니다.
+err.message.key-duplicate,en,That message key already exists.
+err.message.lang-unknown,ko,지원하지 않는 언어입니다.
+err.message.lang-unknown,en,That language is not supported.
+err.message.key-missing,ko,이미 삭제된 메시지 키입니다.
+err.message.key-missing,en,That message key has already been deleted.
+grid.read,ko,조회
+grid.read,en,Search
+grid.save,ko,저장
+grid.save,en,Save
+grid.addRow,ko,행 추가
+grid.addRow,en,Add row
+grid.col.state,ko,상태
+grid.col.state,en,State
+grid.col.delete,ko,삭제
+grid.col.delete,en,Delete
+grid.col.regId,ko,등록자
+grid.col.regId,en,Created by
+grid.col.regDtm,ko,등록일시
+grid.col.regDtm,en,Created at
+grid.col.modId,ko,수정자
+grid.col.modId,en,Updated by
+grid.col.modDtm,ko,수정일시
+grid.col.modDtm,en,Updated at
+grid.footer.total,ko,총 {total}건 · {pages}페이지
+grid.footer.total,en,{total} rows · {pages} pages
+grid.footer.filtered,ko,이 페이지 {loaded}건 중 {shown}건
+grid.footer.filtered,en,{shown} of {loaded} on this page
+grid.footer.count,ko,{count}건 조회됨
+grid.footer.count,en,{count} rows
+grid.footer.pageSize,ko,{size}건씩
+grid.footer.pageSize,en,{size} / page
+grid.empty,ko,데이터가 없습니다.
+grid.empty,en,No data.
+grid.read.empty,ko,조회 결과가 없습니다.
+grid.read.empty,en,No rows matched.
+grid.discard.title,ko,저장하지 않은 변경이 있습니다.
+grid.discard.title,en,You have unsaved changes.
+grid.discard.body,ko,다시 조회하면 변경이 사라집니다. 계속할까요?
+grid.discard.body,en,Reloading discards them. Continue?
+grid.save.confirm.title,ko,저장
+grid.save.confirm.title,en,Save
+grid.save.confirm.body,ko,추가 {added} · 수정 {updated} · 삭제 {removed}건을 저장하시겠습니까?
+grid.save.confirm.body,en,"Save {added} added, {updated} changed, {removed} deleted?"
+grid.save.confirm.hidden,ko,그중 {hidden}건은 필터에 가려 보이지 않습니다.
+grid.save.confirm.hidden,en,{hidden} of them are hidden by a column filter.
+grid.save.done,ko,저장했습니다.
+grid.save.done,en,Saved.
+grid.save.nothing,ko,저장할 변경이 없습니다.
+grid.save.nothing,en,Nothing to save.
+grid.validation.count,ko,{count}건의 오류가 있습니다.
+grid.validation.count,en,{count} errors found.
+grid.validation.required,ko,필수 항목입니다.
+grid.validation.required,en,This field is required.
+grid.confirm.ok,ko,확인
+grid.confirm.ok,en,OK
+search.reset,ko,초기화
+search.reset,en,Reset
+search.all,ko,전체
+search.all,en,All
+search.op.eq,ko,같음
+search.op.eq,en,is
+search.op.ne,ko,같지 않음
+search.op.ne,en,is not
+search.op.startsWith,ko,시작
+search.op.startsWith,en,starts with
+search.op.contains,ko,포함
+search.op.contains,en,contains
+search.op.endsWith,ko,끝
+search.op.endsWith,en,ends with
+search.op.isNull,ko,값 없음
+search.op.isNull,en,is empty
+search.op.isNotNull,ko,값 있음
+search.op.isNotNull,en,is not empty
+message.master.title,ko,메시지 키
+message.master.title,en,Message keys
+message.detail.title,ko,언어별 값
+message.detail.title,en,Values by language
+message.col.msgKey,ko,메시지 키
+message.col.msgKey,en,Key
+message.col.useScope,ko,사용처
+message.col.useScope,en,Used by
+message.col.bundled,ko,번들
+message.col.bundled,en,Bundled
+message.col.translated,ko,번역
+message.col.translated,en,Translated
+message.col.msgDesc,ko,설명
+message.col.msgDesc,en,Description
+message.col.langCd,ko,언어
+message.col.langCd,en,Language
+message.col.msgVal,ko,값
+message.col.msgVal,en,Value
+message.scope.BOTH,ko,공용
+message.scope.BOTH,en,Both
+message.scope.FRONT,ko,프론트
+message.scope.FRONT,en,Front
+message.scope.BACK,ko,백엔드
+message.scope.BACK,en,Back
+message.scope.DATA,ko,데이터
+message.scope.DATA,en,Data
+message.scope.NONE,ko,미사용
+message.scope.NONE,en,Unused
+message.untranslated,ko,미번역
+message.untranslated,en,Untranslated
+message.search.msgKey,ko,메시지 키
+message.search.msgKey,en,Key
+message.search.msgVal,ko,메시지 값
+message.search.msgVal,en,Value
+message.search.useScope,ko,사용처
+message.search.useScope,en,Used by
+message.search.untranslated,ko,미번역 언어
+message.search.untranslated,en,Missing language
+message.detail.empty,ko,메시지 키를 선택하세요.
+message.detail.empty,en,Select a message key.
+message.validate.noValue,ko,최소 한 언어의 값을 입력하세요.
+message.validate.noValue,en,Enter a value for at least one language.
+message.validate.duplicate,ko,화면 안에 같은 키가 있습니다.
+message.validate.duplicate,en,This key appears twice on this screen.
+grid.ag.loading,ko,불러오는 중…
+grid.ag.loading,en,Loading…
+grid.ag.filterOoo,ko,필터…
+grid.ag.filterOoo,en,Filter…
+grid.ag.applyFilter,ko,적용
+grid.ag.applyFilter,en,Apply
+grid.ag.resetFilter,ko,되돌리기
+grid.ag.resetFilter,en,Reset
+grid.ag.clearFilter,ko,지우기
+grid.ag.clearFilter,en,Clear
+grid.ag.notContains,ko,포함하지 않음
+grid.ag.notContains,en,does not contain
+grid.ag.greaterThan,ko,초과
+grid.ag.greaterThan,en,greater than
+grid.ag.greaterOrEqual,ko,이상
+grid.ag.greaterOrEqual,en,greater than or equal
+grid.ag.lessThan,ko,미만
+grid.ag.lessThan,en,less than
+grid.ag.lessOrEqual,ko,이하
+grid.ag.lessOrEqual,en,less than or equal
+grid.ag.inRange,ko,범위
+grid.ag.inRange,en,in range
+grid.ag.inRangeStart,ko,시작
+grid.ag.inRangeStart,en,from
+grid.ag.inRangeEnd,ko,끝
+grid.ag.inRangeEnd,en,to
+grid.ag.and,ko,그리고
+grid.ag.and,en,AND
+grid.ag.or,ko,또는
+grid.ag.or,en,OR
+grid.ag.noMatchingRows,ko,필터에 걸린 행이 없습니다.
+grid.ag.noMatchingRows,en,No rows match the filter.

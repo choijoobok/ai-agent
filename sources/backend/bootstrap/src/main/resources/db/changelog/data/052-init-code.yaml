@@ -1,0 +1,92 @@
+# 로그인 결과 코드 그룹 — 45 §5.1 · 64 §4.3. 사람 소유 시드다(22 §1.1).
+#
+# 043 이 만든 CODE_REF_KEY 에 이어 **두 번째 시스템 그룹**이며, 043 과 달리 값이 열다섯이라
+# CSV 로 싣는다. 043 은 코드가 하나라 인라인 insert 였다.
+#
+# 왜 SYS_YN='Y' 인가 — 소스가 이 코드값을 **문자열이 아니라 열거형으로** 갖는다
+# (LoginResultCode). 43 §4.3 이 보호하려던 것("소스가 참조하는 코드값")의 가장 단단한
+# 형태이며, 여기서 한 줄을 지우면 이력에 그 코드가 그대로 쌓이는데 **화면에는 이름이
+# 없어져** code.LOGIN_RSLT_CD.FAIL_PWD 가 셀에 보인다. 그룹도 'Y' 다 — 무결성 규칙상
+# 그룹 'N' · 코드 'Y' 조합이 거부되고(43 §4.3), 그룹을 지우면 코드가 함께 사라진다.
+#
+# USE_YN 이 전부 'Y' 인 것에는 뜻이 있다. 그 플래그는 "새로 고를 수 있는가" 이고
+# (43 §4.1) 여기서 고르는 자리는 **조회조건 콤보**다 — 하나라도 끄면 그 코드로 조회할
+# 길이 없어지는데, 이력에는 그 행이 계속 쌓인다.
+#
+# DTL_NM 이 이름이 아니라 **메시지 키**다(43 §4.4). 값은 053 이 넣는다.
+#
+# 감사 4컬럼을 담지 않는다 — 043 과 같다. nullable 이고, 이 행들의 감사는 시드 커밋의
+# git 이력이 한다(008 이 CSV 에서 감사 컬럼을 뺀 것과 같은 판단).
+databaseChangeLog:
+  - changeSet:
+      id: data-052-code-group-login-rslt
+      author: template
+      comment: 로그인 결과 코드 그룹 — 지우면 코드가 함께 사라진다(43 §4.3)
+      changes:
+        - insert:
+            tableName: SYS_CODE_GROUP
+            columns:
+              - column:
+                  name: GRP_CD
+                  value: LOGIN_RSLT_CD
+              - column:
+                  name: GRP_NM
+                  value: 로그인 결과
+              - column:
+                  name: GRP_DESC
+                  value: SYS_LO_LOGIN.LOGIN_RSLT_CD 의 값. 접근 제어 체인의 실패 지점과 1:1 이며 소스가 열거형으로 갖는다.
+              - column:
+                  name: SYS_YN
+                  value: Y
+              - column:
+                  name: SORT_NO
+                  valueNumeric: 2
+
+  - changeSet:
+      id: data-052-code-login-rslt
+      author: template
+      comment: 결과 코드 15종 — LoginResultCode 와 1:1 이다(45 §5.1)
+      changes:
+        - loadData:
+            tableName: SYS_CODE
+            file: db/changelog/data/052-init-code.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: GRP_CD
+                  type: STRING
+              - column:
+                  name: DTL_CD
+                  type: STRING
+              - column:
+                  name: DTL_NM
+                  type: STRING
+              - column:
+                  name: DTL_DESC
+                  type: STRING
+              - column:
+                  name: SYS_YN
+                  type: STRING
+              - column:
+                  name: USE_YN
+                  type: STRING
+              - column:
+                  name: SORT_NO
+                  type: NUMERIC
+
+  - changeSet:
+      id: data-052-cache-version
+      author: template
+      comment: 코드를 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'code'

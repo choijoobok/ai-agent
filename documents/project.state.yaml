@@ -1,0 +1,134 @@
+# 프로젝트 진행 상태 — **"지금 어디 있는가" 의 유일한 진실**
+#
+# AI 가 매 작업 후 갱신하고 사람이 읽고 승인한다. `session-brief` 훅이 세션 시작에
+# 이 파일을 문맥에 넣는다(CLAUDE.md §2).
+#
+# **현황을 적는 다른 문서를 만들지 않는다**(CLAUDE.md §4-2). 여기가 그 자리다.
+
+project:
+  name: "기업용 Agentic AI Hub"
+  code: AIHUB
+  started_at: 2026-09-04
+  owner: "사용자 (고객·의사결정자)"
+  note: >-
+    세 저장소를 합쳐 시작했다 — ordinary-backoffice(개발 표준·백오피스 템플릿) +
+    ai-driven-development(프로세스) + agentic-ai(설계). 합친 근거는 ADR-0030.
+
+current:
+  phase: P0                  # P0~P6
+  slice: null                # 구현 단계에서만: SLICE-###
+  blocked_by: [OQ-001, OQ-002]
+  template_maintenance: false
+  # ↑ true 로 켜면 G3 전에도 sources/ 를 고칠 수 있다(guard-write ①).
+  #   **템플릿 자체의 보수에만 켠다.** 켠 사실이 여기 남아 무엇을 왜 열었는지 추적된다.
+
+# ── 단계 게이트 ────────────────────────────────────────────────────
+# status: not_started | in_progress | self_verified | approved
+gates:
+  P0_inception:    { status: in_progress, approved_at: null, note: "spec 00·01·02 가 이관됐다. **사용자 승인 전이다** — status: migrated 가 그 표시다" }
+  P1_discovery:    { status: in_progress, approved_at: null, note: "03·10 이관 완료. **11-processes.yaml 이 비어 있다** — 프로세스 정의가 원본에 없었고 CON-017 에 막혀 있다" }
+  P2_architecture: { status: in_progress, approved_at: null, note: "20·21·22 이관 완료. **NFR 19건의 목표 수치가 전부 null** 이고 TC 가 없어 T7 오류가 난다" }
+  P3_design:       { status: in_progress, approved_at: null, note: "31·51·60 이관 완료. **30·40·50·70 이 비어 있다** — UC·ERD·API·TC 는 원본에 없었고 지어내지 않았다" }
+  P4_build:        { status: not_started, approved_at: null, note: "**G4 기계 검사를 템플릿 코드에 처음 대 봤고 셋 다 임계를 넘는다** — 아래 quality_baseline" }
+  P5_verify:       { status: not_started, approved_at: null, note: "" }
+  P6_deliver:      { status: not_started, approved_at: null, note: "" }
+
+gate_note: >-
+  **단계가 P0 인데 게이트 넷이 in_progress 인 것은 이상 상태다.** 산출물이 뒤에서
+  앞으로 들어왔기 때문이다 — 설계가 먼저 있었고 프로세스를 뒤에 씌웠다. 정상화하는
+  방법은 하나다: **P0 부터 `/phase-gate` 를 돌려 순서대로 승인받는다.** 승인 없이
+  다음으로 넘어가면 그 뒤의 모든 것이 근거 없이 떠 있게 된다(CLAUDE.md §5-2).
+
+# ── 미결 질문 (Open Questions) ─────────────────────────────────────
+# 사용자 답변이 필요한 것. 답변되면 삭제하고 결과를 spec·ADR 에 반영한다.
+open_questions:
+  - id: OQ-001
+    phase: P0
+    question: "이관된 spec 을 P0 부터 순서대로 승인받을 것인가, 아니면 P1 발견(업무 프로세스 정의)을 먼저 채운 뒤 한 번에 볼 것인가"
+    recommended: "P0 부터 순서대로 — 헌장의 목표·비목표·성공 기준이 승인되지 않으면 그 아래 59개 요구사항의 우선순위를 판단할 근거가 없다"
+    required: true
+    impact: "전 단계의 게이트 순서. 11-processes.yaml · 30-usecases.yaml 의 작성 시점"
+    reversal_cost: low
+
+  - id: OQ-002
+    phase: P1
+    question: "1차 적용 업무를 무엇으로 할 것인가 (CON-017)"
+    recommended: "**시스템 경계를 넘는 대조가 실제로 일어나는 업무 하나**를 고른다 — 헌장의 가치가 거기 집중되고(ECO-01), 한 업무의 As-Is 를 그려 보면 프로세스 정의서의 형식도 함께 확정된다"
+    required: true
+    impact: "11-processes.yaml 전체 · 성공 기준의 기준선(SUC-01) · 메타데이터 구축 범위(CON-016)"
+    reversal_cost: medium
+    note: "**이 답 없이는 P1 을 마칠 수 없다.** 프로세스가 없으면 요구사항의 우선순위도 효과 측정의 기준선도 세워지지 않는다"
+
+# ── 인지 부채 ──────────────────────────────────────────────────────
+# 사용자가 이해하지 못한 채 승인하는 것을 감지한다.
+cognitive_debt:
+  silent_approvals: 0
+  last_walkthrough: null
+  deferred_by_user: false
+  unanswered_reverse_q:
+    - "이관된 spec 의 `status: migrated` 를 **한 번에 전부 승인**하는 것을 원하는가? 그렇게 하면 절차는 빨라지지만, 승인의 의미가 '읽었다' 가 아니라 '넘겼다' 가 된다 — 그 위험을 알고 택하는 것인지 확인하고 싶다"
+    - "`documents/` 의 문서를 **훅이 차단**하게 만들었다(문서 예산). 정당한 새 문서가 막히는 일이 생길 텐데, 그때 지도에 행을 더하는 절차가 번거롭게 느껴지면 규칙이 아니라 훅을 끄게 된다. **차단이 맞는 강도인가**, 경고로 낮출 것인가?"
+
+# ── 진행 지표 ──────────────────────────────────────────────────────
+# 이관으로 들어온 것을 센 값이다. 승인받은 것의 수가 아니다.
+counters:
+  REQ: 59
+  UC: 0
+  FEAT: 85
+  ENT: 0
+  API: 0
+  SCR: 43
+  TC: 0
+  ADR: 2      # documents/decisions/ 의 것. aidd-guide/records/adr/ 의 31개는 프레임워크·템플릿의 것이다
+  ASM: 3
+  SLICE: 0
+  DEF: 0
+
+counter_note: >-
+  **UC · ENT · API · TC 가 0 이라 추적성 체인이 끊겨 있다.**
+  `node .claude/hooks/trace-check.mjs --all` 이 그 사실을 오류로 보고한다 —
+  FEAT 85건에 TC 가 없어 T5, NFR 19건에 TC 가 없어 T7. **G3 를 통과할 수 없다.**
+  이것은 결함이 아니라 **현재 상태의 정직한 표시**다.
+
+# ── G4 기계 검사 첫 측정 (2026-09-04) ─────────────────────────────
+# `node .claude/hooks/quality-check.mjs` — 소스 962개 / 코드 49,617라인
+#
+# **임계를 올려서 통과시키지 않는다**(CLAUDE.md §5-10). 대신 셋이 각각 무엇인지 적어 둔다 —
+# 판정은 P4 착수 시 사용자와 함께 한다.
+quality_baseline:
+  measured_at: 2026-09-04
+  duplication_pct: 12.66      # 임계 5%
+  duplication_finding: >-
+    **상위 중복이 전부 Java 구조 보일러플레이트다** — `*ErrorCode` enum 의 동일한 세 줄이
+    23회, 복합키 `@Embeddable` 클래스가 14회. 복사·붙여넣기 부채가 아니라 언어가 요구하는
+    형태다. 임계 5%는 GitClear 의 일반 관찰에서 온 값이고 **이 코드베이스에 맞춰 재측정한
+    값이 아니다.** P4 착수 시 ① 보일러플레이트를 제외하는 측정으로 바꿀지 ② 임계를 이
+    코드베이스 기준으로 다시 잡을지 사용자와 정한다. **둘 중 어느 쪽도 "그냥 올린다" 가
+    아니다** — 근거를 남기고 바꾼다.
+  swallowed_errors: 1         # 임계 0
+  swallowed_finding: >-
+    `BatchGhostSweeper.sweepQuietly()` 하나다. **의도된 삼킴이고 소스에 이유가 적혀 있다** —
+    `scheduleWithFixedDelay` 는 작업이 던지면 다시 부르지 않으므로, DB 가 잠깐 흔들린 것
+    때문에 청소가 영영 멈추면 안 된다. **검출기의 오탐이다.** 예외 목록을 두는 방식과
+    `@SuppressWarnings` 류의 표식 중 무엇을 쓸지 P4 에서 정한다.
+  untagged_files: 962         # 임계 0
+  untagged_finding: >-
+    백오피스 템플릿이 이 추적성 체계보다 앞서 들어왔다. **템플릿의 기능을 실현하는 코드에
+    Hub 의 FEAT-### 를 붙이는 것은 거짓 연결이다**(traceability.md §3). T10 이 경고인 이유이며,
+    P4 부터 새로 쓰는 코드에만 적용한다.
+  note: >-
+    `trace-check` 는 817개, `quality-check` 는 962개로 센다 — 앞쪽이 테스트 파일을 빼기
+    때문이다. **같은 지표를 두 수로 보고하는 것은 좋지 않다.** 어느 쪽을 정본으로 할지
+    P4 착수 시 하나로 맞춘다.
+
+# ── 슬라이스 백로그 (P4) ───────────────────────────────────────────
+slices: []
+
+# ── 최근 활동 로그 (최신 10건만 유지) ─────────────────────────────
+log:
+  - { at: "2026-09-04", by: "[PM]", what: "세 저장소를 폴더 넷으로 합쳤다 — aidd-guide · documents · user-guide · sources. 근거는 ADR-0030" }
+  - { at: "2026-09-04", by: "[AA]", what: "훅·도구를 Node 하나로 통일했다(11개). 근거는 ADR-0031" }
+  - { at: "2026-09-04", by: "[BA]", what: "agentic-ai 설계 3,479줄을 spec 16파일로 재편성했다 — REQ 59 · FEAT 85 · SCR 43 · NFR 19 · 용어 35. 전부 status: migrated(미승인)" }
+  - { at: "2026-09-04", by: "[AA]", what: "agentic-ai 12장(개발 표준)을 aidd-guide/standard/hub-conventions.md 로 옮겼다 — 코드 규칙은 spec 이 아니라 가이드의 자리다" }
+  - { at: "2026-09-04", by: "[PM]", what: "문서 예산을 기계화했다 — guard-write 가 산출물 지도 40행을 읽어 지도 밖 문서를 차단한다(CLAUDE.md §4)" }
+  - { at: "2026-09-04", by: "[PM]", what: "**다음 할 일: OQ-001·OQ-002 에 답을 받고 `/phase-gate` 로 P0 를 승인받는다**" }

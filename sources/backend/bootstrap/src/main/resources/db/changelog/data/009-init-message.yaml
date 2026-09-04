@@ -1,0 +1,79 @@
+# 메시지 값과 데이터 키 — 사람 소유 시드다(22 §1.1).
+#
+# ADR-0023 은 "손으로 쓰는 메시지 시드는 없어진다 — 값은 화면과 엑셀이 넣는다" 로 적었다.
+# 그 문장은 생성물(008)이 키를 갖는다는 뜻이었고, 설치 직후의 값은 다루지 않았다.
+# 없으면 갓 설치한 템플릿이 화면 전체를 menu.SYSTEM 처럼 키 문자열로 보여준다 —
+# 관리 화면(MESSAGE_MGMT)조차 그 상태라 고칠 수도 없다. 그래서 이 파일이 있다(2026-08-29).
+#
+# 002-init-admin 과 같은 성격이다: 설치 시 한 번 들어가는 출발값이며, 그 뒤로는 사람이
+# 화면에서 고친다. runOnChange 를 쓰지 않고 이 changeset 을 손대지 않는다 — 두 번째
+# 배포부터는 새 파일을 더한다.
+#
+# 여기에만 있고 008 에 없는 것이 menu.* 키 행이다. 데이터에서 조립된 키라 생성 태스크가
+# 건드리지 않으며(43 §4.4), 시드로 들어온 메뉴 24개의 이름을 누군가는 만들어야 한다.
+# 앞으로 추가되는 메뉴의 키 행은 메뉴 저장 화면이 만든다.
+#
+# insert 를 나열하지 않고 loadData 를 쓴다. 186행이라 YAML 로 펼치면 파일이 2천 줄이 되고,
+# 그러면 번역을 고치려는 사람이 이 파일을 열지 않는다 — CSV 는 엑셀로 열린다.
+databaseChangeLog:
+  - changeSet:
+      id: data-009-message-key-data
+      author: template
+      comment: 시드 메뉴 24개의 이름 키 — USE_SCOPE 는 DATA 다(43 §7.1)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE_KEY
+            file: db/changelog/data/009-init-message-key.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: USE_SCOPE
+                  type: STRING
+              - column:
+                  name: MSG_DESC
+                  type: STRING
+
+  - changeSet:
+      id: data-009-message
+      author: template
+      comment: ko 와 en 을 함께 넣는다 — 11 §5 는 한국어 기본, 영어 동시 제공이다
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/009-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-009-cache-version
+      author: template
+      comment: message 하나만 넣는다 — code 와 config 캐시는 아직 없다(43 §8.1)
+      changes:
+        # 없는 이름을 물으면 0 이고, 프론트가 들고 있는 값과 절대 같지 않아 캐시를 버린다.
+        # 그래서 미리 행을 만들어 둘 이유가 없다 — 그 캐시가 생길 때 함께 들어온다.
+        - insert:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: CACHE_NAME
+                  value: message
+              - column:
+                  name: VERSION
+                  valueNumeric: 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP

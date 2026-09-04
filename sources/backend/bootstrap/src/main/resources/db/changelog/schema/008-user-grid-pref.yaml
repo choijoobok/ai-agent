@@ -1,0 +1,92 @@
+# 그리드 개인화 — UX-06 · UX-13 · 53 §5.
+#
+# 40 §7 이 "이름 잠정, 스키마 미정" 으로 남겨 둔 테이블이다. 53 §5 가 담을 것(표시 여부 ·
+# 순서 · 틀고정 · 페이지 사이즈)과 폐기 규칙(시그니처)을 이미 정해 두었으므로 여기서 만든다.
+#
+# PK 가 셋인 이유 — 화면 하나에 그리드가 둘일 수 있다(63 §3.2 의 마스터-디테일). MENU_CD
+# 까지만 두면 위아래 그리드의 설정이 서로를 덮는다. GRID_ID 는 화면이 붙이는 이름이며
+# 기본값이 'main' 이다.
+#
+# PREF_JSON 이 nclob 인 이유는 SYS_USER_SEARCH_COND.COND_JSON 과 같다(22 §3.1) —
+# 정렬·검색 대상이 아니고, clob 은 SQL Server 에서 varchar(MAX) 가 되어 한글이 위험하다.
+#
+# SIGNATURE 는 UX-13 이다. 화면의 컬럼 목록이 바뀌면 저장된 설정을 폐기한다 — 없어진
+# 컬럼을 숨김으로 들고 있거나, 새 컬럼이 순서 없이 끼는 상태를 만들지 않기 위해서다.
+# 판정은 서버 한 곳에서 한다(53 §5): 화면이 지금의 시그니처를 들고 물으면 서버가 다른
+# 것을 지우고 없다고 답한다.
+#
+# FK 를 둘 다 건다 — SYS_USER_SEARCH_COND(007)와 같은 성격이다. 이력이 아니라 개인
+# 설정이고, 사용자든 메뉴든 사라지면 설정이 뜻을 잃는다(41 §9).
+databaseChangeLog:
+  - changeSet:
+      id: 008-create-sys-user-grid-pref
+      author: template
+      comment: 표시 여부 · 순서 · 틀고정 · 페이지 사이즈를 한 덩이로 — 53 §5
+      changes:
+        - createTable:
+            tableName: SYS_USER_GRID_PREF
+            columns:
+              - column:
+                  name: USER_ID
+                  type: VARCHAR(30)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_USER_GRID_PREF
+                    nullable: false
+              - column:
+                  name: MENU_CD
+                  type: VARCHAR(30)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_USER_GRID_PREF
+                    nullable: false
+              # 화면 안의 그리드 이름. 마스터-디테일이면 둘이다.
+              - column:
+                  name: GRID_ID
+                  type: VARCHAR(30)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_USER_GRID_PREF
+                    nullable: false
+              # 컬럼별 표시·순서·틀고정 + 페이지 사이즈(53 §5).
+              - column:
+                  name: PREF_JSON
+                  type: NCLOB
+                  constraints:
+                    nullable: false
+              # UX-13. 저장 시점의 컬럼 목록을 해시한 값이며 다르면 폐기한다.
+              - column:
+                  name: SIGNATURE
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REG_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: REG_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: MOD_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: MOD_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+
+  - changeSet:
+      id: 008-fk-sys-user-grid-pref
+      author: template
+      comment: 사용자든 메뉴든 사라지면 설정이 뜻을 잃는다 — 41 §9
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: FK_SYS_USER_GRID_PREF_01
+            baseTableName: SYS_USER_GRID_PREF
+            baseColumnNames: USER_ID
+            referencedTableName: SYS_USER
+            referencedColumnNames: USER_ID
+        - addForeignKeyConstraint:
+            constraintName: FK_SYS_USER_GRID_PREF_02
+            baseTableName: SYS_USER_GRID_PREF
+            baseColumnNames: MENU_CD
+            referencedTableName: SYS_MENU
+            referencedColumnNames: MENU_CD

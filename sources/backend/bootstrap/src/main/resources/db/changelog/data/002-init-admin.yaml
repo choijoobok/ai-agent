@@ -1,0 +1,83 @@
+# 부트스트랩 관리자 계정.
+#
+# ┌──────────────────────────────────────────────────────────────────────┐
+# │  admin / Backoffice!1  —  설치 직후 반드시 바꾼다.                    │
+# └──────────────────────────────────────────────────────────────────────┘
+#
+# 해시는 BCrypt(strength 10)이며 {bcrypt} 접두는 DelegatingPasswordEncoder 의 것이다
+# (23 §6). 접두가 있어야 나중에 Argon2id 로 옮길 때 기존 해시를 그대로 둘 수 있다.
+#
+# 해시와 위 평문이 어긋나면 아무도 로그인하지 못하고, 그 사실이 기동에는 드러나지 않는다.
+# 그래서 SeedAdminPasswordTest 가 이 파일을 읽어 둘이 맞는지 검사한다.
+#
+# PWD_INIT_YN 이 'N' 인 것은 타협이다. 'Y' 가 의미상 옳지만(발급된 비밀번호이므로 최초
+# 로그인에 강제 변경) 그 화면이 아직 없다 — 60 §4 는 비밀번호 강제 변경 슬라이스다.
+# 그 슬라이스에서 이 시드를 PWD_INIT_YN='Y' · PWD_CHG_DTM=NULL 로 바꾼다.
+# NULL 이어야 temp-valid-hours(기본 24) 만료에 걸리지 않는다 — 23 §4.
+#
+# 권한은 비어 있다. deny-empty-authority(기본 true)를 실제로 강제하는 것은 인가
+# 인터셉터이며 아직 없다 — 그것이 붙는 슬라이스가 이 계정에 역할을 함께 준다.
+databaseChangeLog:
+  - changeSet:
+      id: data-002-admin-user
+      author: template
+      comment: admin / Backoffice!1 — 설치 후 변경 필수
+      changes:
+        - insert:
+            tableName: SYS_USER
+            columns:
+              - column:
+                  name: USER_ID
+                  value: admin
+              - column:
+                  name: USER_NM
+                  value: 관리자
+              - column:
+                  name: EMAIL
+                  value: admin@example.com
+              - column:
+                  name: PWD
+                  value: "{bcrypt}$2a$10$EvYM6dfQuT0zVHd/sHdCD.4vdyGIFaMSRaQ1oUY0FNcMkLQEnRfa6"
+              - column:
+                  name: USE_YN
+                  value: "Y"
+              - column:
+                  name: LOCK_YN
+                  value: "N"
+              - column:
+                  name: LOGIN_FAIL_CNT
+                  valueNumeric: 0
+              # 설치 시점부터 expire-days(90) 를 센다. 고정 날짜를 박으면 오래된 템플릿을
+              # 받은 사람이 첫 로그인부터 만료 상태가 된다.
+              #
+              # valueDate: now 가 아니라 valueComputed 다 — Liquibase 5.0.3 은 전자를 번역하지
+              # 않고 now 를 컬럼 이름으로 내보낸다("now 이름의 칼럼은 없습니다"). CURRENT_TIMESTAMP
+              # 는 표준 SQL 이라 5개 벤더가 모두 받는다.
+              #
+              # 22 §4.5 의 "현재시각을 SQL 로 구하지 않는다" 는 애플리케이션 쿼리 규칙이다.
+              # 설치 시 한 번 도는 시드는 그 대상이 아니며, 여기서 값을 주입할 애플리케이션이
+              # 아직 없다.
+              - column:
+                  name: PWD_CHG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: PWD_INIT_YN
+                  value: "N"
+              - column:
+                  name: DORMANT_YN
+                  value: "N"
+              - column:
+                  name: LOCALE_CD
+                  value: ko
+              # REG_ID 는 사람이 아니다. 시드가 넣었다는 사실을 그대로 남긴다 —
+              # 없는 사람 이름을 지어내면 감사 컬럼을 믿을 수 없게 된다.
+              - column:
+                  name: REG_ID
+                  value: SYSTEM
+              - column:
+                  name: REG_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+      rollback:
+        - delete:
+            tableName: SYS_USER
+            where: USER_ID = 'admin'

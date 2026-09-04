@@ -1,0 +1,402 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>목업 · 내 프로필 모달 (profile)</title>
+<style>
+/* ─────────────────────────────────────────────────────────────
+   목업 공용 스타일
+   목업은 한 파일로 완결되어야 한다. 외부 CSS 로 빼면 파일 하나만
+   열거나 다른 곳에 붙였을 때 화면이 깨진다. 그래서 복제를 감수한다.
+   새 목업은 이 블록을 그대로 복사한다.
+   의도적으로 밋밋하다. AntD 처럼 보이면 잘못된 구속이 된다.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --ink:#1a1a1a; --muted:#6b6b6b; --line:#c9c9c9; --line2:#e4e4e4;
+  --bg:#ffffff; --panel:#f7f7f7; --err:#a8261c; --err-bg:#fbeceb;
+  --note:#1f4e79; --note-bg:#eef4fa; --ok:#1d7a4d;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#e6e6e6; --muted:#9a9a9a; --line:#4a4a4a; --line2:#333;
+    --bg:#161616; --panel:#1e1e1e; --err:#e08b82; --err-bg:#3a201e;
+    --note:#8fb8dd; --note-bg:#1c2833; --ok:#63c08d;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--bg);color:var(--ink);
+     font:14px/1.6 "Malgun Gothic","Apple SD Gothic Neo",sans-serif;}
+main{max-width:960px;margin:0 auto}
+h1{font-size:19px;margin:0 0 4px}
+h2{font-size:15px;margin:34px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+h3{font-size:13px;margin:20px 0 8px;color:var(--muted);font-weight:600}
+code{font-family:Consolas,monospace;font-size:.92em;background:var(--panel);padding:1px 4px}
+a{color:var(--note)}
+
+/* 개요 바 — 문서와의 연결. 모든 목업이 갖는다 */
+.head{border:1px solid var(--line);background:var(--panel);padding:12px 14px;margin-bottom:6px}
+.head dl{display:grid;grid-template-columns:max-content 1fr;gap:2px 14px;margin:0;font-size:12.5px}
+.head dt{color:var(--muted)}
+.head dd{margin:0}
+
+/* 화면 영역 — 뷰포트를 나타내는 상자 */
+.screen{border:1px solid var(--line);margin:0 0 8px;background:var(--bg)}
+.screen .bar{background:var(--panel);border-bottom:1px solid var(--line2);
+             padding:5px 10px;font-size:11.5px;color:var(--muted)}
+.screen .body{padding:28px 20px}
+/* 셸 위에 뜬 모달을 표현할 때 — 배경이 셸이라는 힌트만 준다 */
+.screen.shell .body{background:repeating-linear-gradient(45deg,
+  var(--panel) 0 6px, transparent 6px 12px);padding:22px 14px}
+
+/* 카드 — 로그인 등 중앙 배치 폼 */
+.card{max-width:320px;margin:0 auto;border:1px solid var(--line);padding:22px 20px;background:var(--bg)}
+.card .logo{height:38px;border:1px dashed var(--line);display:flex;align-items:center;
+            justify-content:center;color:var(--muted);font-size:11.5px;margin-bottom:18px}
+
+/* 모달 — 폭이 있는 것 */
+.modal{max-width:600px;margin:0 auto;border:1px solid var(--line);background:var(--bg)}
+.modal .mh{border-bottom:1px solid var(--line2);padding:9px 14px;font-size:13px;font-weight:600;
+           display:flex;justify-content:space-between;align-items:center}
+.modal .mh .x{color:var(--muted);font-weight:400}
+.modal .mb{padding:14px}
+.modal .mf{border-top:1px solid var(--line2);padding:9px 14px;font-size:11.5px;color:var(--muted);
+           display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* 탭 */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin:0 0 14px}
+.tabs span{padding:6px 13px;font-size:12.5px;border:1px solid transparent;border-bottom:none;
+           color:var(--muted);cursor:default}
+.tabs span.on{border-color:var(--line);background:var(--bg);color:var(--ink);font-weight:600;
+              margin-bottom:-1px}
+.tabs .badge{display:inline-block;min-width:16px;height:16px;line-height:16px;text-align:center;
+             border-radius:8px;background:var(--err);color:#fff;font-size:10.5px;margin-left:5px}
+
+/* 폼 */
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;margin-bottom:3px}
+.f input,.f select,.f textarea{width:100%;padding:6px 8px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+.f .hint{font-size:11px;color:var(--muted);margin-top:3px}
+.f.ro input{background:var(--panel);color:var(--muted)}
+.btn{width:100%;padding:8px;border:1px solid var(--ink);background:var(--ink);
+     color:var(--bg);font:inherit;font-size:13px;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.sm{width:auto;padding:4px 11px;font-size:12px}
+.btn[disabled]{opacity:.45}
+.sub{text-align:center;margin-top:12px;font-size:12px}
+.row{display:flex;gap:8px;align-items:center}
+.row .btn{width:auto}
+
+/* 키-값 나열 (읽기 전용 정보) */
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:12.5px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+
+/* 설정 그룹 */
+.grp{border:1px solid var(--line2);margin-bottom:10px}
+.grp>b{display:block;background:var(--panel);border-bottom:1px solid var(--line2);
+       padding:5px 11px;font-size:12px}
+.grp .item{display:flex;justify-content:space-between;align-items:center;gap:12px;
+           padding:6px 11px;font-size:12.5px;border-bottom:1px solid var(--line2)}
+.grp .item:last-child{border-bottom:none}
+.grp .item .where{font-size:10.5px;color:var(--muted);white-space:nowrap}
+
+/* 목록 (알림·검색 결과·즐겨찾기) */
+.list{border:1px solid var(--line2);font-size:12.5px}
+.list .it{padding:7px 11px;border-bottom:1px solid var(--line2);display:flex;
+          justify-content:space-between;align-items:center;gap:10px}
+.list .it:last-child{border-bottom:none}
+.list .it.unread{background:var(--note-bg)}
+.list .it .path{display:block;font-size:10.5px;color:var(--muted)}
+.list .it .when{color:var(--muted);font-size:11px;white-space:nowrap}
+.list .empty{padding:22px 11px;text-align:center;color:var(--muted);font-size:12px}
+.tag{display:inline-block;border:1px solid var(--line);padding:0 5px;font-size:10.5px;
+     color:var(--muted);border-radius:2px}
+
+/* 규칙 체크리스트 — 실시간 판정을 표현만 한다 */
+.rules{list-style:none;margin:0 0 14px;padding:9px 11px;border:1px solid var(--line2);
+       background:var(--panel);font-size:11.5px;line-height:1.7}
+.rules li{padding-left:17px;position:relative}
+.rules li::before{position:absolute;left:0;font-weight:700}
+.rules .ok::before{content:"✓";color:var(--ok)}
+.rules .no::before{content:"✕";color:var(--err)}
+.rules .srv::before{content:"·";color:var(--muted)}
+.rules .srv{color:var(--muted)}
+.rules em{font-style:normal;opacity:.8}
+
+/* 에러 배너 — 폼 상단 한 곳 */
+.banner{border:1px solid var(--err);background:var(--err-bg);color:var(--err);
+        padding:7px 10px;font-size:12.5px;margin-bottom:14px}
+
+/* 주석 — 화면 요소 ↔ 문서 결정 연결 */
+.notes{border-left:3px solid var(--note);background:var(--note-bg);padding:10px 14px;font-size:12.5px}
+.notes ol{margin:0;padding-left:18px}
+.notes li{margin:3px 0}
+.n{display:inline-block;min-width:17px;height:17px;line-height:17px;text-align:center;
+   border-radius:50%;background:var(--note);color:#fff;font-size:11px;margin-right:5px}
+
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
+th,td{border:1px solid var(--line2);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:600;white-space:nowrap}
+td.c{white-space:nowrap;font-family:Consolas,monospace;font-size:12px}
+
+.todo{border:1px dashed var(--line);padding:10px 14px;font-size:12.5px;background:var(--panel)}
+.todo ul{margin:4px 0 0;padding-left:18px}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line2);
+       font-size:11.5px;color:var(--muted)}
+</style>
+
+<main>
+
+<h1>내 프로필 모달</h1>
+<div class="head">
+  <dl>
+    <dt>화면코드</dt><dd><code>profile</code></dd>
+    <dt>요건서</dt><dd><a href="requirements.md">requirements.md</a></dd>
+    <dt><code>MENU_CD</code></dt><dd><b>없음</b> — 헤더 → 모달</dd>
+    <dt>담는 기능</dt><dd>USER-05 · AUTH-05 · AUTH-06 · LOG-02 · AUTHZ-04</dd>
+    <dt>액션</dt><dd><b>해당 없음</b> — 전 사용자 공통. <b>내 것만</b> 본다</dd>
+  </dl>
+</div>
+
+<h2>1. 내 정보 탭 — 조회와 수정을 한 화면에서</h2>
+
+<div class="screen shell">
+  <div class="bar">셸 위 모달 · 탭 넷</div>
+  <div class="body">
+    <div class="modal">
+      <div class="mh">내 프로필 <span class="x">✕</span></div>
+      <div class="mb">
+        <div class="tabs">
+          <span class="on">내 정보</span><span>비밀번호 변경</span>
+          <span>내 로그인 이력</span><span>내 역할</span>
+        </div>
+
+        <div class="f ro"><label>로그인 ID</label><input value="hong.gd" readonly>
+          <div class="hint">변경할 수 없다 — 자연키 PK</div></div>
+        <div class="f"><label>이름</label><input value="홍길동"></div>
+        <div class="f"><label>이메일</label><input value="hong.gd@corp.com">
+          <div class="hint">평문 저장 — 사내 직원 정보이며 고유식별정보가 아니다</div></div>
+        <div class="f"><label>언어</label>
+          <select><option>한국어</option><option>English</option></select>
+          <div class="hint">서버 저장(<code>SYS_USER.LOCALE_CD</code>) — 나머지 UI 설정은 설정 모달 <span class="n">2</span></div></div>
+
+        <button class="btn sm" type="button">저장</button> <span class="n">1</span>
+      </div>
+      <div class="mf">
+        <span>v1.4.2 · build 20260826-1130 · prod <span class="n">5</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b>조회 탭과 수정 탭을 나누지 않는다</b> — 읽기 전용 화면을
+        본 뒤 "수정" 탭에서 같은 항목을 다시 그리는 것은 화면 하나를 두 번 만드는 일이다.</li>
+    <li><span class="n">2</span>언어만 서버인 이유 — <b>메일·알림을 어느 언어로 보낼지 결정하는 것은
+        서버</b>이고 <code>localStorage</code> 는 서버가 볼 수 없다.</li>
+    <li><span class="n">5</span><b>버전·환경을 모달 하단에 둔다</b> — 셸 표준이 푸터를 없애며 옮긴
+        자리다. SYS-03(서버 정보 화면)을 기능에서 제외할 수 있었던 근거이기도 하다.</li>
+  </ol>
+</div>
+
+<h2>2. 비밀번호 변경 탭 — 자발적 변경</h2>
+
+<div class="screen shell">
+  <div class="bar">셸 위 모달 · 비밀번호 변경</div>
+  <div class="body">
+    <div class="modal">
+      <div class="mh">내 프로필 <span class="x">✕</span></div>
+      <div class="mb">
+        <div class="tabs">
+          <span>내 정보</span><span class="on">비밀번호 변경</span>
+          <span>내 로그인 이력</span><span>내 역할</span>
+        </div>
+
+        <div style="max-width:340px">
+          <div class="f"><label>현재 비밀번호</label>
+            <input type="password" autocomplete="current-password"></div>
+          <div class="f"><label>새 비밀번호</label>
+            <input type="password" autocomplete="new-password"></div>
+          <div class="f"><label>새 비밀번호 확인</label>
+            <input type="password" autocomplete="new-password"></div>
+
+          <ul class="rules">
+            <li class="ok">9자 이상</li>
+            <li class="ok">영대문자 · 영소문자 · 숫자 · 특수문자 중 <b>3종 이상</b></li>
+            <li class="no">같은 문자 · 연속된 문자 <b>4자 이상</b> 금지</li>
+            <li class="no">아이디를 포함할 수 없습니다</li>
+            <li class="srv">최근 <b>3개</b> 와 같은 비밀번호는 쓸 수 없습니다 <em>— 서버에서 확인</em></li>
+          </ul>
+
+          <div class="row">
+            <button class="btn sm" type="button">변경</button> <span class="n">7</span>
+            <span style="font-size:11.5px;color:var(--muted)">변경 후에도 <b>로그아웃되지 않는다</b> <span class="n">8</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="mf"><span>v1.4.2 · build 20260826-1130 · prod</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">7</span><b>규칙 목록은 <code>pwd-change</code> 와 완전히 같다</b>.
+        정책 API 에서 규칙·파라미터·문구를 받으므로 두 화면이 갈릴 수 없다.
+        회색 항목(재사용 금지)은 여기서도 <b>제출해야 알 수 있다.</b></li>
+    <li><span class="n">8</span><b>강제 변경(<code>pwd-change</code>)과 다른 점은 출구다.</b>
+        강제는 셸 밖이고 출구가 로그아웃뿐인데, 여기는 셸 안이라 <b>탭을 옮기거나 모달을 닫으면
+        그만</b>이다. 동시 세션이 계정당 1개이므로 <b>다른 세션을 끊을 필요도 없다.</b></li>
+    <li>변경하면 <code>PWD_CHG_DTM</code> 갱신 · <code>PWD_INIT_YN='N'</code> ·
+        <code>SYS_USER_PWD_HIST</code> 적재다 — <b>90일 카운터가 여기서 리셋된다</b>.</li>
+    <li><b>진입 사유 배너가 없다.</b> 사용자가 스스로 온 것이므로 설명할 것이 없다 —
+        <code>pwd-change</code> 의 배너는 <i>"왜 갑자기 바꾸라는가"</i> 에 답하기 위한 것이었다.</li>
+  </ol>
+</div>
+
+<h2>3. 내 로그인 이력 탭 — 보안 기능이다</h2>
+
+<div class="screen shell">
+  <div class="bar">셸 위 모달 · 내 로그인 이력</div>
+  <div class="body">
+    <div class="modal">
+      <div class="mh">내 프로필 <span class="x">✕</span></div>
+      <div class="mb">
+        <div class="tabs">
+          <span>내 정보</span><span>비밀번호 변경</span>
+          <span class="on">내 로그인 이력</span><span>내 역할</span>
+        </div>
+        <table>
+          <thead><tr><th>일시</th><th>결과</th><th>IP</th><th>User-Agent</th></tr></thead>
+          <tbody>
+            <tr><td class="c">2026-08-26 09:12</td><td>성공</td><td class="c">10.20.1.44</td><td>Chrome / Windows</td></tr>
+            <tr><td class="c">2026-08-26 09:11</td><td style="color:var(--err)"><b>실패</b></td><td class="c">10.20.1.44</td><td>Chrome / Windows</td></tr>
+            <tr><td class="c">2026-08-25 18:03</td><td>로그아웃</td><td class="c">10.20.1.44</td><td>Chrome / Windows</td></tr>
+            <tr><td class="c">2026-08-25 14:20</td><td style="color:var(--err)"><b>실패</b></td><td class="c">203.0.113.9</td><td>Safari / iOS <span class="n">3</span></td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">
+          최근 <b>N</b> 건 — 건수는 미결(§5)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">3</span><b>실패 기록을 포함한다.</b> 누군가 내 계정으로 시도했다는 사실이
+        그 자체로 신호다. 본인이 모르는 접속을 발견하는 유일한 경로다.</li>
+    <li><b>관리자 화면(LOG-02)의 축소판이 아니다</b> — 본인 것만 보여준다. 읽기 전용이며
+        조회조건도 두지 않는다.</li>
+    <li>표시할 결과 코드는 로그 데이터 모델의 <b>14종</b> 중 <b>본인에게 의미 있는 것</b>만이다 —
+        <code>SESSION_EVICTED</code>(다른 자리 로그인으로 밀려남)가 특히 그렇다.</li>
+  </ol>
+</div>
+
+<h2>4. 내 역할 탭 — 읽기 전용</h2>
+
+<div class="screen shell">
+  <div class="bar">셸 위 모달 · 내 역할</div>
+  <div class="body">
+    <div class="modal">
+      <div class="mh">내 프로필 <span class="x">✕</span></div>
+      <div class="mb">
+        <div class="tabs">
+          <span>내 정보</span><span>비밀번호 변경</span>
+          <span>내 로그인 이력</span><span class="on">내 역할</span>
+        </div>
+        <table>
+          <thead><tr><th>구분</th><th>이름</th><th>유효기간</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag">역할</span></td><td>주문 담당자</td><td class="c">무기한</td></tr>
+            <tr><td><span class="tag">역할</span></td><td>정산 조회</td><td class="c">~ 2026-09-30 <span class="n">4</span></td></tr>
+            <tr><td><span class="tag">개인 예외</span></td><td>배치 실행</td><td class="c">~ 2026-08-31</td></tr>
+          </tbody>
+        </table>
+        <div class="sub" style="text-align:left">
+          <button class="btn ghost sm" type="button">권한 신청</button> <span class="n">6</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">4</span><b>언제 끝나는지까지 보여준다</b> — 기간이 있는 부여는
+        만료되면 권한이 조용히 사라진다. 미리 알 곳이 없으면 전부 문의로 온다.</li>
+    <li><span class="n">6</span><b>여기서 NOTI-06 요청으로 이어진다</b> — <i>"왜 이 메뉴가
+        안 보이나"</i> 를 본 자리에서 신청으로 잇는다. 관리자 측 처리는 <code>NOTI_REQUEST</code> 메뉴다.</li>
+    <li><b>읽기 전용이다.</b> 본인이 자기 권한을 바꿀 수는 없다 — 신청만 한다.</li>
+  </ol>
+</div>
+
+<!-- ── 테스트 케이스 ───────────────────────────────────────── -->
+<h2>5. 테스트 케이스 — 주석의 주장을 전부 덮는다</h2>
+
+<p style="font-size:12.5px;margin:0 0 10px">
+  <b>주석은 <i>"왜 이렇게 그렸는가"</i> 를 말하고, 여기는 <i>"그것이 지켜졌는가"</i> 를 묻는다</b>.
+  <b>근거가 빈 케이스는 지어낸 것이다</b> — 문서 절이나 이 파일의 주석 번호를 가리킨다.
+  <b>되면 안 되는 것</b>도 함께 넣는다.
+</p>
+
+<h3>내 정보 탭</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">PF-01</td><td>조회 전용 탭을 찾는다</td><td><b>없다</b> — 한 탭에서 보고 고친다</td><td>주석 1</td></tr>
+    <tr><td class="c">PF-02</td><td>언어를 바꾼다</td><td><b>서버에 저장</b>된다 — 메일·알림 언어를 서버가 정한다</td><td>주석 2</td></tr>
+    <tr><td class="c">PF-03</td><td>모달 하단</td><td><b>버전·환경</b>이 있다 — 푸터를 없애며 옮긴 자리</td><td>주석 5</td></tr>
+  </tbody>
+</table>
+<h3>비밀번호 변경 탭</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">PF-04</td><td>규칙 목록을 <code>pwd-change</code> 와 대조</td><td><b>목록이 완전히 같다</b> — 같은 정책 API. 건수를 세지 않는다</td><td>주석 7</td></tr>
+    <tr><td class="c">PF-05</td><td>진입 사유 배너를 찾는다</td><td><b>없다</b> — 스스로 온 것이라 설명할 것이 없다</td><td>주석 — <code>pwd-change</code> 와 다른 점</td></tr>
+    <tr><td class="c">PF-06</td><td>변경 성공</td><td><code>PWD_CHG_DTM</code> 갱신 · <code>PWD_INIT_YN='N'</code> · <code>SYS_USER_PWD_HIST</code> 적재. <b>90일 카운터가 리셋</b>된다</td><td>주석</td></tr>
+    <tr><td class="c">PF-07</td><td>변경 후 모달을 닫는다</td><td><b>그냥 닫힌다</b> — 셸 안이라 출구가 있다. 다른 세션을 끊지 않는다</td><td>주석 8 (동시 세션 1개)</td></tr>
+  </tbody>
+</table>
+<h3>내 로그인 이력 탭</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">PF-08</td><td>이력 목록</td><td><b>실패 기록이 포함</b>된다 — 본인이 모르는 접속을 발견하는 유일한 경로</td><td>주석 3</td></tr>
+    <tr><td class="c">PF-09</td><td>다른 사람의 이력을 보려 한다</td><td><b>불가</b> — 본인 것만이며 조회조건도 없다</td><td>주석 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">PF-10</td><td>다른 자리 로그인으로 밀려난 뒤 이력 확인</td><td><code>SESSION_EVICTED</code> 가 보인다</td><td>주석</td></tr>
+  </tbody>
+</table>
+<h3>내 역할 탭</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">PF-11</td><td>기간이 있는 역할</td><td><b>언제 끝나는지</b>가 보인다 — 조용히 사라지면 전부 문의가 된다</td><td>주석 4</td></tr>
+    <tr><td class="c">PF-12</td><td>역할을 고치려 한다</td><td><b>불가</b> — 읽기 전용이며 <b>신청만</b> 한다</td><td>주석 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">PF-13</td><td>"이 메뉴가 안 보인다" 를 확인한 자리에서</td><td><b>NOTI-06 요청으로 이어진다</b></td><td>주석 6</td></tr>
+  </tbody>
+</table>
+<h2>6. 이 목업으로 확인할 것</h2>
+<div class="todo">
+  <ul>
+    <li><b>로그인 이력 표시 건수 <code>N</code></b> — 셸 표준 미결. 20건 정도면 충분한지</li>
+    <li><b>이름·이메일을 본인이 수정할 수 있게 할지</b> — 인사 시스템이 원본인 조직에서는
+        읽기 전용이어야 한다. 설정으로 뺄지</li>
+    <li><b>비밀번호 변경 폼을 <code>pwd-change</code> 와 컴포넌트로 공유할지</b>(§2) — 규칙과
+        체크리스트는 같고 <b>출구와 배너만 다르다.</b> 공유하면 규칙 표시가 한 곳이지만
+        강제/자발 분기가 컴포넌트 안으로 들어온다. Phase 6 공통 컴포넌트에서 판단</li>
+    <li><b>변경 성공 후 안내</b>(§2) — 토스트인지 폼 상단 메시지인지. 모달을 자동으로 닫을지</li>
+    <li>버전·환경 표기의 <b>노출 범위</b> — 빌드 번호까지 전 사용자에게 보여도 되는지</li>
+  </ul>
+</div>
+
+<footer>
+  <b>목업 규약</b> — 정적 HTML, 프레임워크 없음, 픽셀 충실도는 목표가 아니다.
+  <b>결정은 <code>requirements.md</code> 가 갖고 이 파일은 확인용이다</b> — 여기에만 있고
+  요건서에 없는 정보는 유실된 것으로 친다.<br>
+  이 파일의 <code>&lt;style&gt;</code> 블록은 <code>documents/screen/_TEMPLATE/mockup.html</code> 에서 그대로 복사했다 —
+  <code>.sf</code> <code>.tb</code> <code>.grid</code> <code>.pg</code> <code>.split</code>.
+</footer>
+
+</main>

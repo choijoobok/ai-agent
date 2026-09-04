@@ -1,0 +1,136 @@
+# 배치 실행 이력 — 46 §6 · 65 §4.
+#
+# 020 이 만든 SYS_SCHEDULE_BATCH 의 짝이며, 40 §7 이 배치 슬라이스에 남겨 둔 둘 중
+# 뒤엣것이다. FK 가 없다(46 §2.2) — 등록을 지워도 이 행은 남으며 남아야 한다.
+# 그 대가로 화면에 고아가 생기고, 그것을 (삭제된 배치) 로 그린다(65 §3.8 · §4.2).
+#
+# 이력인데 갱신된다 — 이 템플릿에서 유일하다(46 §6). 시작 시 RUNNING 으로 INSERT 하고
+# 종료 시 UPDATE 한다. 미리 넣는 이유는 프로세스가 죽었을 때 END_DTM 이 NULL 인 행이
+# 남아야 하기 때문이며, 그것이 곧 비정상 종료의 증거다(65 §4.4 의 유령 판정).
+#
+# 감사 4컬럼이 없다(45 §2.1) — 쓰는 주체가 사람이 아니라 러너다. 대신 NODE_ID 가 있고
+# 그것이 "누가 썼나" 에 답한다. 46 §2.5 가 세 테이블이 같은 규칙으로 이 값을 만든다고
+# 적었으며 그 하나가 support 의 NodeId 다.
+#
+# 보존은 1년이다(32 §3) — 만료 청소가 아니라 보존 정책이다.
+databaseChangeLog:
+  - changeSet:
+      id: 021-create-sys-batch-history
+      author: template
+      comment: 건너뛴 실행도 기록한다 — 흔적이 없으면 "왜 안 돌았나" 에 답할 수 없다(46 §6.1)
+      changes:
+        - createTable:
+            tableName: SYS_BATCH_HISTORY
+            columns:
+              # SYS_SEQUENCE 생성 키다(45 §2.3 · ADR-0015). allocationSize 가 커서 PK 순서가
+              # 시간 순서가 아니므로, 정렬은 START_DTM 이 먼저 보고 이 값은 동률만 가른다.
+              - column:
+                  name: HIST_ID
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_BATCH_HISTORY
+                    nullable: false
+              # FK 가 없다(46 §2.2). 020 의 PK 와 같은 길이여야 조인이 성립한다.
+              - column:
+                  name: BATCH_ID
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              # SCHEDULE · MANUAL. 공통코드가 아니다 — 값은 러너가 분기하는 소스의 것이고
+              # 관리자가 늘릴 일이 없다(65 §2.3). 라벨만 메시지 키(batch.execType.*)다.
+              - column:
+                  name: EXEC_TYPE_CD
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              # 실행 노드 — 중복 실행의 원인을 가르는 유일한 값이다(46 §6 · 31 §8).
+              # 같은 배치가 두 번 돌았을 때 같은 노드면 재시도나 수동이고, 다른 노드면
+              # 락 선점 실패다. SYS_DATA_LOCK 과 같은 규칙으로 만든 값이라 대조된다(46 §2.5).
+              - column:
+                  name: NODE_ID
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: START_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              # 진행 중이면 NULL 이다. 오래도록 NULL 인 행이 유령이며(65 §4.4) 임계값은
+              # SYS_SCHEDULE_BATCH.LOCK_EXPIRY_SEC 를 조인해서 쓴다 — 새 임계값을 만들지 않는다.
+              - column:
+                  name: END_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              # 파생 값이지만 저장한다(46 §6). END_DTM - START_DTM 으로 계산하면 조회마다
+              # 벤더별 시간 차 함수를 쓰게 되고(22) "오래 걸린 배치" 정렬이 인덱스를 못 탄다 —
+              # 그 정렬이 65 §2.1 이 이 화면에서 정렬을 열어 둔 이유 전부다.
+              - column:
+                  name: ELAPSED_MS
+                  type: BIGINT
+              # 여섯이다 — RUNNING · SUCCESS · FAIL · SKIP_LOCK · SKIP_COOLDOWN · CANCELED
+              # (46 §6.1 · 65 §4.3). SKIP 하나였던 것을 둘로 가른 것이 이 표의 개정 내용이며,
+              # 락 선점 실패는 정상이고 쿨다운은 결함이라 한 코드에 두면 화면이 색을 줄 수 없다.
+              - column:
+                  name: RSLT_CD
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              # 한 줄 요약이다 — 처리 건수 등. nclob 으로 두지 않는 것이 46 §6.3 의 결정이며
+              # 이유는 목록 컬럼이기 때문이다(54 §5.5 가 nclob 의 정렬을 규칙으로 끈다).
+              # VARCHAR 이므로 초과분은 절단이다.
+              - column:
+                  name: RSLT_MSG
+                  type: VARCHAR(1000)
+              # 처리한 대상 목록 등 긴 결과 — 46 §6.3 이 신설했다. 대개 NULL 이며 남길 것이
+              # 있는 배치만 채운다. ERR_MSG 에 합치지 않는 이유는 축이 다르기 때문이다:
+              # 상세는 성공한 실행에도 남고 오류는 실패한 실행에만 남는다.
+              # 매핑은 @Nationalized + LONG32NVARCHAR 고정이다 — @Lob 은 MySQL 에서
+              # tinytext(255B) 가 된다(22 §3.1).
+              - column:
+                  name: RSLT_DTL_MSG
+                  type: NCLOB
+              # 실패 시 예외 스택. 위와 같은 매핑이며 목록 조회가 SELECT 하지 않는다(65 §2.2).
+              - column:
+                  name: ERR_MSG
+                  type: NCLOB
+              # 중단 요청 시각(BATCH-05). 결과가 아니라 요청이다 — 46 §6.2 · 65 §4.5.
+              # 협조적 중단이라 요청과 종료 사이에 시간이 있고, 한 컬럼으로는 그 "중단 중"
+              # 을 표현할 수 없다. 표현하지 못하면 운영자가 버튼을 다시 누른다.
+              - column:
+                  name: CANCEL_REQ_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+
+  - changeSet:
+      id: 021-index-sys-batch-history
+      author: template
+      comment: 셋 다 화면의 질문 하나씩에 대응한다 — 65 §4.1
+      changes:
+        # 기본 정렬이자 조회조건의 기간이다(65 §4.2 · §4.7). 보존 배치(32 §3)도 이 컬럼으로
+        # 지운다 — 여기는 1년이다.
+        - createIndex:
+            tableName: SYS_BATCH_HISTORY
+            indexName: IX_SYS_BATCH_HISTORY_01
+            columns:
+              - column:
+                  name: START_DTM
+        # "이 배치의 최근 실행" — 스케줄 관리의 하단 pane 과 최근 결과 컬럼이 이것으로
+        # 돈다(65 §3.9). 등록 한 건마다 10건을 뽑으므로 선두 컬럼이 BATCH_ID 여야 한다.
+        # 실행 중 판정(즉시 실행의 거부 사유)도 같은 인덱스를 탄다.
+        - createIndex:
+            tableName: SYS_BATCH_HISTORY
+            indexName: IX_SYS_BATCH_HISTORY_02
+            columns:
+              - column:
+                  name: BATCH_ID
+              - column:
+                  name: START_DTM
+        # "뭐가 오래 걸리나" — 46 §6 이 ELAPSED_MS 를 저장하기로 한 이유가 정확히 이
+        # 인덱스이며, 저장만 하고 인덱스를 두지 않으면 그 결정이 절반만 집행된다.
+        # 조회조건의 "소요 시간 이상" 도 같은 인덱스를 탄다(65 §4.7).
+        - createIndex:
+            tableName: SYS_BATCH_HISTORY
+            indexName: IX_SYS_BATCH_HISTORY_03
+            columns:
+              - column:
+                  name: ELAPSED_MS

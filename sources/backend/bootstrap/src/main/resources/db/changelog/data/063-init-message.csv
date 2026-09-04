@@ -1,0 +1,143 @@
+MSG_KEY,LANG_CD,MSG_VAL
+user.tab.role,ko,보유 역할
+user.tab.role,en,Roles
+user.tab.grant,ko,개인 예외
+user.tab.grant,en,Exceptions
+user.tab.ip,ko,접속 IP
+user.tab.ip,en,Allowed IPs
+user.tab.session,ko,활성 세션
+user.tab.session,en,Sessions
+user.tab.effective,ko,유효 권한
+user.tab.effective,en,Effective permissions
+user.detail.empty,ko,사용자를 선택하세요
+user.detail.empty,en,Select a user
+user.detail.locked,ko,저장 후 편집할 수 있습니다
+user.detail.locked,en,"Save the account first, then edit"
+user.state.SCHEDULED,ko,예정
+user.state.SCHEDULED,en,Scheduled
+user.state.ACTIVE,ko,유효
+user.state.ACTIVE,en,Active
+user.state.EXPIRED,ko,만료
+user.state.EXPIRED,en,Expired
+user.role.title,ko,보유 역할
+user.role.title,en,Roles held
+user.role.col.role,ko,역할
+user.role.col.role,en,Role
+user.role.col.roleNm,ko,역할명
+user.role.col.roleNm,en,Role name
+user.role.col.roleDesc,ko,설명
+user.role.col.roleDesc,en,Description
+user.role.col.roleUseYn,ko,역할 사용
+user.role.col.roleUseYn,en,Role enabled
+user.role.col.validFromDt,ko,시작일
+user.role.col.validFromDt,en,Valid from
+user.role.col.validToDt,ko,종료일
+user.role.col.validToDt,en,Valid to
+user.role.col.state,ko,부여 상태
+user.role.col.state,en,Grant status
+user.role.empty,ko,부여된 역할이 없습니다. 이 계정은 개인 예외로만 화면에 닿습니다.
+user.role.empty,en,No roles granted. This account reaches screens only through personal exceptions.
+user.role.off,ko,꺼진 역할입니다 — 기간이 유효해도 지금은 아무 권한도 주지 않습니다.
+user.role.off,en,"This role is disabled, so the grant confers nothing even while its period is valid."
+user.role.duplicate,ko,같은 역할이 이미 목록에 있습니다.
+user.role.duplicate,en,That role is already in the list.
+user.role.warn.revoke,ko,회수하는 {count}건은 다음 로그인부터 반영됩니다. 지금 세션은 살아 있습니다.
+user.role.warn.revoke,en,The {count} revoked grant(s) take effect at the next sign-in; current sessions stay alive.
+user.grant.title,ko,개인 예외
+user.grant.title,en,Personal exceptions
+user.grant.readonly,ko,조회 전용입니다 — 부여는 개인 예외 권한 화면에서 합니다.
+user.grant.readonly,en,Read-only here; grants are made on the Personal Exceptions screen.
+user.grant.col.menu,ko,메뉴
+user.grant.col.menu,en,Menu
+user.grant.col.menuOk,ko,대상 유효
+user.grant.col.menuOk,en,Target live
+user.grant.col.action,ko,액션
+user.grant.col.action,en,Action
+user.grant.col.grantRsn,ko,부여 사유
+user.grant.col.grantRsn,en,Reason
+user.grant.empty,ko,개인 예외가 없습니다.
+user.grant.empty,en,No personal exceptions.
+user.ip.title,ko,접속 IP
+user.ip.title,en,Allowed IPs
+user.ip.col.ipCidr,ko,IP · CIDR
+user.ip.col.ipCidr,en,IP / CIDR
+user.ip.col.useYn,ko,사용
+user.ip.col.useYn,en,Enabled
+user.ip.empty,ko,허용 대역이 없습니다 — 이 계정은 어느 IP 에서도 접속할 수 있습니다.
+user.ip.empty,en,"No allowed ranges, so this account may connect from any IP."
+user.ip.malformed,ko,IP 주소 또는 CIDR 형식이 아닙니다.
+user.ip.malformed,en,Not a valid IP address or CIDR.
+user.ip.duplicate,ko,같은 대역이 이미 목록에 있습니다.
+user.ip.duplicate,en,That range is already in the list.
+user.ip.warn.first,ko,첫 대역을 등록하면 그 순간부터 나머지 모든 IP 가 막힙니다.
+user.ip.warn.first,en,Adding the first range blocks every other IP from that moment on.
+user.session.title,ko,활성 세션
+user.session.title,en,Active sessions
+user.session.col.sessionId,ko,세션
+user.session.col.sessionId,en,Session
+user.session.col.current,ko,현재 세션
+user.session.col.current,en,This session
+user.session.col.created,ko,생성 시각
+user.session.col.created,en,Created
+user.session.col.lastAccess,ko,최근 접근
+user.session.col.lastAccess,en,Last accessed
+user.session.col.expiry,ko,만료 예정
+user.session.col.expiry,en,Expires
+user.session.empty,ko,활성 세션이 없습니다.
+user.session.empty,en,No active sessions.
+user.session.kill,ko,강제 종료
+user.session.kill,en,Sign out
+user.session.kill.confirm,ko,선택한 {count}건의 세션을 종료합니다. 계정은 바뀌지 않으므로 다시 로그인할 수 있습니다.
+user.session.kill.confirm,en,"Sign out the {count} selected session(s). The account itself is unchanged, so they can sign in again."
+user.session.kill.done,ko,{count}건을 종료했습니다.
+user.session.kill.done,en,Signed out {count} session(s).
+user.session.self,ko,자기 계정의 세션은 종료할 수 없습니다.
+user.session.self,en,You cannot sign out your own account.
+user.eff.title,ko,유효 권한
+user.eff.title,en,Effective permissions
+user.eff.scope,ko,표시 범위
+user.eff.scope,en,Show
+user.eff.scope.held,ko,가진 것만
+user.eff.scope.held,en,Granted only
+user.eff.scope.all,ko,전체 메뉴
+user.eff.scope.all,en,All menus
+user.eff.col.menu,ko,메뉴
+user.eff.col.menu,en,Menu
+user.eff.col.via,ko,출처
+user.eff.col.via,en,Source
+user.eff.col.state,ko,상태
+user.eff.col.state,en,Status
+user.eff.col.grantRsn,ko,부여 사유
+user.eff.col.grantRsn,en,Reason
+user.eff.via.personal,ko,개인 예외
+user.eff.via.personal,en,Personal exception
+user.eff.via.none,ko,없음
+user.eff.via.none,en,None
+user.eff.empty,ko,표시할 권한이 없습니다.
+user.eff.empty,en,Nothing to show.
+user.eff.none,ko,유효 권한이 공집합입니다 — 이 계정은 다음 로그인부터 차단됩니다.
+user.eff.none,en,"The effective permission set is empty, so this account is blocked from the next sign-in."
+user.eff.gate,ko,메뉴가 꺼져 있거나 화면이 없습니다 — 부여는 살아 있지만 권한이 되지 못합니다.
+user.eff.gate,en,"The menu is disabled or has no screen, so the grant exists but confers nothing."
+user.eff.inactive,ko,부여 기간 밖입니다 — 지금은 효력이 없습니다.
+user.eff.inactive,en,"Outside the grant period, so it has no effect right now."
+err.user-detail.user,ko,없는 계정입니다.
+err.user-detail.user,en,No such account.
+err.user-detail.role,ko,없는 역할입니다.
+err.user-detail.role,en,No such role.
+err.user-detail.role-duplicate,ko,이미 가진 역할입니다. 다시 주려면 그 행의 종료일을 미세요.
+err.user-detail.role-duplicate,en,"The account already holds that role. To grant it again, extend that row’s end date."
+err.user-detail.role-missing,ko,고치려는 역할 부여가 없습니다. 목록을 다시 조회하세요.
+err.user-detail.role-missing,en,The role grant you are editing no longer exists. Refresh the list.
+err.user-detail.period,ko,부여 기간의 시작이 종료보다 늦습니다.
+err.user-detail.period,en,The grant period starts after it ends.
+err.user-detail.ip,ko,IP 주소 또는 CIDR 형식이 아닙니다.
+err.user-detail.ip,en,Not a valid IP address or CIDR.
+err.user-detail.ip-duplicate,ko,이미 등록된 대역입니다.
+err.user-detail.ip-duplicate,en,That range is already registered.
+err.user-detail.ip-missing,ko,고치려는 허용 대역이 없습니다. 목록을 다시 조회하세요.
+err.user-detail.ip-missing,en,The allowed range you are editing no longer exists. Refresh the list.
+err.user-session.self,ko,자기 계정의 세션은 종료할 수 없습니다.
+err.user-session.self,en,You cannot sign out your own account.
+err.user-session.index,ko,이 배포에서는 활성 세션을 볼 수 없습니다 — 세션 저장소에 인덱스가 없습니다.
+err.user-session.index,en,Active sessions are unavailable in this deployment: the session store has no index.

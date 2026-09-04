@@ -1,0 +1,7 @@
+MSG_KEY,LANG_CD,MSG_VAL
+batchSchedule.use.on,ko,사용
+batchSchedule.use.on,en,Enabled
+batchSchedule.use.off,ko,미사용
+batchSchedule.use.off,en,Disabled
+search.op.gte,ko,이상
+search.op.gte,en,At least

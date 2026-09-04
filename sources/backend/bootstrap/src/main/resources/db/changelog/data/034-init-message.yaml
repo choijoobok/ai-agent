@@ -1,0 +1,43 @@
+# 메시지 값 26차 — 사람 소유 시드다(22 §1.1).
+#
+# 페이지 이동 넷의 이름(53 §2.3). 판이 아이콘만 그리므로 말하는 자리가 툴팁뿐이다.
+#
+# 가운데 둘은 다섯 쪽씩 뛴다 — 판의 기본값이며 점 셋으로만 그려져 몇 쪽인지 알 길이
+# 없다. 그래서 이름에 숫자를 넣는다.
+databaseChangeLog:
+  - changeSet:
+      id: data-034-message
+      author: template
+      comment: 페이지 이동 넷의 ko·en — 53 §2.3
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/034-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-034-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

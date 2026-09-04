@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ordinary-backoffice</title>
+  </head>
+  <body style="margin: 0">
+    <!--
+      margin 리셋만 인라인으로 둔다. 나머지 바탕색·글자색은 antd 토큰으로 칠하므로
+      (app/providers/AppProviders.tsx) 여기에 색을 적으면 출처가 둘이 된다.
+      antd 6 은 CSS-in-JS 라 전역 리셋 파일이 없다.
+    -->
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

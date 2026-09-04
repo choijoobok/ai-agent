@@ -1,0 +1,19 @@
+MSG_KEY,LANG_CD,MSG_VAL
+shell.entry.title,ko,메뉴 열기
+shell.entry.title,en,Open a menu
+shell.entry.tab.search,ko,메뉴 검색
+shell.entry.tab.search,en,Search
+shell.entry.tab.favorite,ko,즐겨찾기
+shell.entry.tab.favorite,en,Favorites
+shell.entry.tab.recent,ko,최근 메뉴
+shell.entry.tab.recent,en,Recent
+shell.entry.tab.frequent,ko,자주 쓰는 메뉴
+shell.entry.tab.frequent,en,Frequent
+shell.entry.filter,ko,이 목록에서 거르기
+shell.entry.filter,en,Filter this list
+shell.entry.search.prompt,ko,찾을 메뉴 이름을 입력하세요.
+shell.entry.search.prompt,en,Type a menu name to search.
+shell.entry.empty.recent,ko,최근에 연 메뉴가 없습니다.
+shell.entry.empty.recent,en,No menus opened yet.
+shell.entry.empty.pending,ko,아직 준비되지 않았습니다.
+shell.entry.empty.pending,en,Not available yet.

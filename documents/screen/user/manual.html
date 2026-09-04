@@ -1,0 +1,855 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>사용자 관리 — 사용자 메뉴얼</title>
+<script>
+try {
+  var saved = localStorage.getItem('manual-theme');
+  if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+} catch (e) { /* 파일에서 열면 저장소가 막힐 수 있다 — 그때는 시스템을 따른다 */ }
+</script>
+<style>
+:root{--ink:#1a1a1a;--muted:#6b6b6b;--line:#c9c9c9;--line2:#e4e4e4;--bg:#fff;--panel:#f7f7f7;
+      --note:#1f4e79;--note-bg:#eef4fa;--sel:#eaf1f9}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--ink:#e6e6e6;--muted:#9a9a9a;--line:#4a4a4a;--line2:#333;--bg:#161616;--panel:#1e1e1e;
+        --note:#8fb8dd;--note-bg:#1c2833;--sel:#1a2b3a}
+}
+
+  :root[data-theme="dark"]{--ink:#e6e6e6;--muted:#9a9a9a;--line:#4a4a4a;--line2:#333;--bg:#161616;--panel:#1e1e1e;
+        --note:#8fb8dd;--note-bg:#1c2833;--sel:#1a2b3a}
+
+
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+     font:15px/1.75 "Malgun Gothic","Apple SD Gothic Neo",sans-serif}
+.doc{padding:28px 32px;max-width:900px}
+.doc h1{font-size:24px;margin:0 0 6px}
+.doc h2{font-size:17px;margin:30px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.doc h3{font-size:15px;margin:20px 0 8px}
+.doc p{margin:9px 0}
+.doc ul,.doc ol{margin:9px 0;padding-left:22px}
+.doc li{margin:4px 0}
+.doc blockquote{margin:12px 0;padding:9px 14px;border-left:3px solid var(--note);
+                background:var(--note-bg)}
+.doc code{font-family:Consolas,monospace;font-size:.9em;background:var(--panel);padding:1px 5px}
+.doc pre{background:var(--panel);padding:12px 14px;overflow:auto;font-family:Consolas,monospace;
+         font-size:12.5px;line-height:1.6}
+.doc table{border-collapse:collapse;width:100%;font-size:13.5px;margin:12px 0}
+.doc th,.doc td{border:1px solid var(--line2);padding:7px 10px;text-align:left;vertical-align:top}
+.doc th{background:var(--panel);font-weight:600;white-space:nowrap}
+.doc hr{border:none;border-top:1px solid var(--line2);margin:26px 0}
+.doc a{color:var(--note)}
+.gen{font-size:11.5px;color:var(--muted);border:1px dashed var(--line);padding:7px 11px;margin-bottom:20px}
+
+/* 화면 그림 — 목업을 오려 온 것과 캡처 PNG 가 같은 액자를 쓴다 */
+.shot{margin:16px 0 22px;padding:0}
+.shot img{display:block;width:100%;border:1px solid var(--line)}
+.shot figcaption{font-size:11.5px;color:var(--muted);margin-top:6px}
+.shot .mockwrap{border:1px solid var(--line);padding:10px;background:var(--bg);overflow:auto}
+/* 오려 온 목업이 자기 여백을 다시 그리지 않게 한다 */
+.shot .mockwrap .screen{border:none;margin:0}
+.shot .mockwrap .screen .body{padding:10px 8px}
+
+@media print{
+  :root,:root[data-theme="dark"]{--ink:#1a1a1a;--muted:#555;--line:#999;--line2:#ccc;--bg:#fff;
+        --panel:#f2f2f2;--note:#1f4e79;--note-bg:#eef4fa;--sel:#fff}
+  @page{size:A4;margin:16mm 14mm}
+  body{font-size:10.5pt;line-height:1.6;background:#fff;color:#1a1a1a}
+  .doc{padding:0;max-width:none}
+  .noprint{display:none !important}
+  .screen-doc{break-after:page}
+  .screen-doc:last-child{break-after:auto}
+  .doc h1{font-size:17pt}
+  .doc h2{font-size:12.5pt;break-after:avoid}
+  .doc h3{font-size:11pt;break-after:avoid}
+  .doc table{font-size:9pt;break-inside:avoid}
+  .doc tr{break-inside:avoid}
+  .doc blockquote,.shot,.gen{break-inside:avoid}
+  .doc pre{white-space:pre-wrap}
+  a{color:inherit;text-decoration:none}
+}
+
+/* ─────────────────────────────────────────────────────────────
+   목업 공용 스타일 — 이 블록은 모든 목업이 공유한다
+   목업은 한 파일로 완결되어야 한다. 외부 CSS 로 빼면 파일 하나만
+   열거나 다른 곳에 붙였을 때 화면이 깨진다. 그래서 복제를 감수한다.
+   새 목업은 이 블록을 그대로 복사한다.
+   의도적으로 밋밋하다. AntD 처럼 보이면 잘못된 구속이 된다.
+
+   ★ 그리드 어휘 다섯 — .sf .tb .grid .pg .split
+     크롬·행 상태·컬럼 고정·컬럼 계약은 aidd-guide/standard/frontend/ 가 정한다.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --ink:#1a1a1a; --muted:#6b6b6b; --line:#c9c9c9; --line2:#e4e4e4;
+  --bg:#ffffff; --panel:#f7f7f7; --err:#a8261c; --err-bg:#fbeceb;
+  --note:#1f4e79; --note-bg:#eef4fa; --ok:#1d7a4d;
+  /* ── 그리드 색 — 그리드가 스스로 정하지 않고 셸에서 받는다 ──
+     Primary — 선택·편집 표시는 전부 여기서 파생한다.
+     진한 단계를 쓰지 않는다 — 그리드는 글자가 촘촘해 배경이 진해지면
+     전부 읽기 어려워진다. 대비 문제를 애초에 만들지 않는다. */
+  --pri:#1f4e79;      /* 원색 — 편집 중인 셀 테두리에만 */
+  --pri-1:#eaf1f9;    /* 가장 옅은 단계 — 현재 선택 행 */
+  --pri-2:#d6e6f5;    /* 한 단계 진한 것 — 현재 선택 셀 */
+  /* 컬럼 상태 — 정적. 헤더 표시(* · 흐린 글자)와 짝이다 */
+  --req-bg:#fdf6e6;   /* 필수 입력 */
+                      /* 편집 가능 = 바탕(--bg). 칠하지 않는 것이 곧 표시다 */
+                      /* 읽기 전용 = --panel */
+  /* 행 상태 — Primary 와 무관하다. 아이콘이 원본이고 배경은 거든다 */
+  --row-new:#eaf5ef; --row-mod:#e7f1f2;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#e6e6e6; --muted:#9a9a9a; --line:#4a4a4a; --line2:#333;
+    --bg:#161616; --panel:#1e1e1e; --err:#e08b82; --err-bg:#3a201e;
+    --note:#8fb8dd; --note-bg:#1c2833; --ok:#63c08d;
+    /* 같은 알파를 얹지 않는다 — 다크에서는 안 보이거나 반대로 튄다.
+       단계를 모드별로 따로 고른다 */
+    --pri:#8fb8dd; --pri-1:#1a2b3a; --pri-2:#24405c;
+    --req-bg:#33291a;
+    --row-new:#17281f; --row-mod:#16272a;
+  }
+}
+
+  :root[data-theme="dark"]{
+    --ink:#e6e6e6; --muted:#9a9a9a; --line:#4a4a4a; --line2:#333;
+    --bg:#161616; --panel:#1e1e1e; --err:#e08b82; --err-bg:#3a201e;
+    --note:#8fb8dd; --note-bg:#1c2833; --ok:#63c08d;
+    /* 같은 알파를 얹지 않는다 — 다크에서는 안 보이거나 반대로 튄다.
+       단계를 모드별로 따로 고른다 */
+    --pri:#8fb8dd; --pri-1:#1a2b3a; --pri-2:#24405c;
+    --req-bg:#33291a;
+    --row-new:#17281f; --row-mod:#16272a;
+  }
+
+
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--bg);color:var(--ink);
+     font:14px/1.6 "Malgun Gothic","Apple SD Gothic Neo",sans-serif;}
+main{max-width:1000px;margin:0 auto}
+h1{font-size:19px;margin:0 0 4px}
+h2{font-size:15px;margin:34px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+h3{font-size:13px;margin:20px 0 8px;color:var(--muted);font-weight:600}
+code{font-family:Consolas,monospace;font-size:.92em;background:var(--panel);padding:1px 4px}
+a{color:var(--note)}
+
+/* 개요 바 — 문서와의 연결. 모든 목업이 갖는다 */
+.head{border:1px solid var(--line);background:var(--panel);padding:12px 14px;margin-bottom:6px}
+.head dl{display:grid;grid-template-columns:max-content 1fr;gap:2px 14px;margin:0;font-size:12.5px}
+.head dt{color:var(--muted)}
+.head dd{margin:0}
+
+/* 화면 영역 — 뷰포트를 나타내는 상자 */
+.screen{border:1px solid var(--line);margin:0 0 8px;background:var(--bg)}
+.screen .bar{background:var(--panel);border-bottom:1px solid var(--line2);
+             padding:5px 10px;font-size:11.5px;color:var(--muted)}
+.screen .body{padding:28px 20px}
+/* 셸 위에 뜬 모달 — 배경이 셸이라는 힌트만 준다 */
+.screen.shell .body{background:repeating-linear-gradient(45deg,
+  var(--panel) 0 6px, transparent 6px 12px);padding:22px 14px}
+/* 리프 화면은 자기가 콘텐츠다 — 셸 크롬을 그리지 않는다 */
+.screen.leaf .body{padding:12px}
+
+/* 카드 — 로그인 등 중앙 배치 폼 */
+.card{max-width:320px;margin:0 auto;border:1px solid var(--line);padding:22px 20px;background:var(--bg)}
+.card .logo{height:38px;border:1px dashed var(--line);display:flex;align-items:center;
+            justify-content:center;color:var(--muted);font-size:11.5px;margin-bottom:18px}
+
+/* 모달 — 그리드 설정 창도 이것을 쓴다 */
+.modal{max-width:600px;margin:0 auto;border:1px solid var(--line);background:var(--bg)}
+.modal .mh{border-bottom:1px solid var(--line2);padding:9px 14px;font-size:13px;font-weight:600;
+           display:flex;justify-content:space-between;align-items:center}
+.modal .mh .x{color:var(--muted);font-weight:400}
+.modal .mb{padding:14px}
+.modal .mf{border-top:1px solid var(--line2);padding:9px 14px;font-size:11.5px;color:var(--muted);
+           display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* 탭 */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin:0 0 14px}
+.tabs>span{padding:6px 13px;font-size:12.5px;border:1px solid transparent;border-bottom:none;
+           color:var(--muted);cursor:default}   /* 자식만 — 안에 배지가 들어갈 수 있다 */
+.tabs>span.on{border-color:var(--line);background:var(--bg);color:var(--ink);font-weight:600;
+              margin-bottom:-1px}
+.tabs .badge{display:inline-block;min-width:16px;height:16px;line-height:16px;text-align:center;
+             border-radius:8px;background:var(--err);color:#fff;font-size:10.5px;margin-left:5px}
+
+/* 폼 — 화면에 남는 폼은 조회조건 하나다 */
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;margin-bottom:3px}
+.f input,.f select,.f textarea{width:100%;padding:6px 8px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+.f .hint{font-size:11px;color:var(--muted);margin-top:3px}
+.f.ro input{background:var(--panel);color:var(--muted)}
+.btn{width:100%;padding:8px;border:1px solid var(--ink);background:var(--ink);
+     color:var(--bg);font:inherit;font-size:13px;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.sm{width:auto;padding:4px 11px;font-size:12px}
+.btn[disabled]{opacity:.35}
+.sub{text-align:center;margin-top:12px;font-size:12px}
+.row{display:flex;gap:8px;align-items:center}
+.row .btn{width:auto}
+
+/* 키-값 나열 (읽기 전용 정보) */
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:12.5px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+
+/* 설정 그룹 */
+.grp{border:1px solid var(--line2);margin-bottom:10px}
+.grp>b{display:block;background:var(--panel);border-bottom:1px solid var(--line2);
+       padding:5px 11px;font-size:12px}
+.grp .item{display:flex;justify-content:space-between;align-items:center;gap:12px;
+           padding:6px 11px;font-size:12.5px;border-bottom:1px solid var(--line2)}
+.grp .item:last-child{border-bottom:none}
+.grp .item .where{font-size:10.5px;color:var(--muted);white-space:nowrap}
+
+/* 목록 (알림·검색 결과·드롭다운·필터 메뉴) */
+.list{border:1px solid var(--line2);font-size:12.5px;background:var(--bg)}
+.list .it{padding:7px 11px;border-bottom:1px solid var(--line2);display:flex;
+          justify-content:space-between;align-items:center;gap:10px}
+.list .it:last-child{border-bottom:none}
+.list .it.unread{background:var(--note-bg)}
+.list .it .path{display:block;font-size:10.5px;color:var(--muted)}
+.list .it .when{color:var(--muted);font-size:11px;white-space:nowrap}
+.list .empty{padding:22px 11px;text-align:center;color:var(--muted);font-size:12px}
+.tag{display:inline-block;border:1px solid var(--line);padding:0 5px;font-size:10.5px;
+     color:var(--muted);border-radius:2px}
+
+/* 규칙 체크리스트 */
+.rules{list-style:none;margin:0 0 14px;padding:9px 11px;border:1px solid var(--line2);
+       background:var(--panel);font-size:11.5px;line-height:1.7}
+.rules li{padding-left:17px;position:relative}
+.rules li::before{position:absolute;left:0;font-weight:700}
+.rules .ok::before{content:"✓";color:var(--ok)}
+.rules .no::before{content:"✕";color:var(--err)}
+.rules .srv::before{content:"·";color:var(--muted)}
+.rules .srv{color:var(--muted)}
+.rules em{font-style:normal;opacity:.8}
+
+/* 배너 — 폼 상단 한 곳. 토스트(UX-10)도 이것으로 표현한다 */
+.banner{border:1px solid var(--err);background:var(--err-bg);color:var(--err);
+        padding:7px 10px;font-size:12.5px;margin-bottom:14px}
+.banner.info{border-color:var(--note);background:var(--note-bg);color:var(--note)}
+
+/* ── 그리드 어휘 다섯 ─────────────────────────────── */
+
+/* 검색 폼 — <SearchForm>(UX-15). 서버 조회 조건은 이것뿐이다 */
+.sf{border:1px solid var(--line2);background:var(--panel);padding:9px 11px;margin-bottom:8px;
+    display:grid;grid-template-columns:max-content 1fr max-content 1fr max-content 1fr;
+    gap:6px 9px;align-items:center;font-size:12px}
+.sf label{color:var(--muted);white-space:nowrap}
+.sf input,.sf select{width:100%;padding:3px 6px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:12px}
+.sf .wide{grid-column:span 3}
+.sf .act{grid-column:1/-1;text-align:right;padding-top:2px}
+
+/* 그리드 헤더 — 왼쪽 제목(.ttl), 오른쪽 버튼. 도구 둘(.ico)은 맨 오른쪽 고정 */
+.tb{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.tb .ttl{font-size:13px;font-weight:600;margin-right:auto;white-space:nowrap}
+.tb .ico{width:auto;padding:4px 8px;font-size:12px;white-space:nowrap}
+.tb .sp{flex:1}
+.tb .cnt{font-size:11.5px;color:var(--muted);white-space:nowrap}
+
+/* 그리드 본문 — <DataGrid> */
+.grid{border:1px solid var(--line);overflow:auto;max-height:260px}
+.grid table{margin:0;font-size:12px;border:none}
+.grid th{position:sticky;top:0;z-index:1}
+.grid td,.grid th{white-space:nowrap}
+.grid th .mn{float:right;color:var(--muted);font-weight:400;margin-left:8px}  /* 컬럼 메뉴 ☰ */
+.grid th .srt{color:var(--note)}                                             /* 정렬 표시 */
+.grid th.on{background:var(--note-bg)}                                       /* 필터 걸린 컬럼 */
+/* 헤더가 컬럼을 말한다 — 색이 아니라 표시가 원본이다 */
+.grid th.req em{font-style:normal;color:var(--err);font-weight:700}          /* 필수 * */
+.grid th.roh{color:var(--muted);font-weight:400}                             /* 읽기 전용 컬럼 */
+/* 양끝 시스템 컬럼 — 사용자가 숨기거나 옮길 수 없다 */
+.grid .st{width:26px;text-align:center;color:var(--muted)}
+.grid .del{width:34px;text-align:center;color:var(--muted)}
+.grid .pinL{border-right:2px solid var(--line)}   /* 좌 고정 ↔ 스크롤 경계 */
+.grid .pinR{border-left:2px solid var(--line)}    /* 스크롤 ↔ 우 고정 경계 */
+
+/* ── 셀과 행의 색 — 우선순위 여섯 ────────────────────
+   여섯이 전부 같은 명시도다. 그래서 나중에 쓴 것이 이긴다 —
+   6 → 1 순서로 적었고, 순서를 바꾸면 규약이 바뀐다.
+   행 규칙(tr.x td)이 셀 규칙(td.x)보다 명시도가 한 단계 높으므로
+   5(행 상태)가 6(컬럼 상태)을 이기는 것은 순서가 아니라 구조다.  */
+
+/* 6. 컬럼 상태 — 정적이므로 다른 것이 없을 때의 바탕 */
+.grid td.req{background:var(--req-bg)}                       /* 필수 입력 */
+.grid td.ro {background:var(--panel);color:var(--muted)}     /* 읽기 전용 */
+                                                             /* 편집 가능은 칠하지 않는다 */
+/* 5. 행 상태 — 상태 컬럼 아이콘이 원본이다 */
+.grid tr.new td{background:var(--row-new)}
+.grid tr.mod td{background:var(--row-mod)}
+.grid tr.rmv td{color:var(--muted);text-decoration:line-through}  /* 배경이 아니라 글자다 */
+/* 4. 현재 선택 행 — Primary 가장 옅은 단계 */
+.grid tr.sel td{background:var(--pri-1)}
+/* 3. 현재 선택 셀 — 한 단계 진한 것 + 테두리 */
+.grid tr td.cur{background:var(--pri-2);outline:1px solid var(--pri);outline-offset:-1px}
+/* 2. 편집 중인 셀 — 테두리는 Primary 원색, 배경은 바탕(입력 글자가 읽혀야 한다) */
+.grid tr td.edit{background:var(--bg);color:var(--ink);outline:2px solid var(--pri);outline-offset:-2px}
+/* 1. 검증 실패 — 유일하게 Primary 와 무관하다 */
+.grid tr td.err{background:var(--err-bg);outline:1px solid var(--err);outline-offset:-1px}
+
+/* ── 스위치 — 값이 둘인 데이터 셀 ──────────
+   ynFlag 컬럼과 권한 트리 셀이 같은 것을 쓴다. 체크박스가 아니다.
+   켜짐 색은 Primary 에서 온다.
+   여럿을 고르는 자리는 여전히 체크박스다 — 행 선택 · set 필터 ·
+   그리드 설정의 컬럼 표시.                                      */
+.swt{display:inline-block;width:24px;height:13px;border:1px solid var(--line);
+     border-radius:7px;background:var(--panel);position:relative;vertical-align:-2px}
+.swt::after{content:"";position:absolute;top:1px;left:1px;width:9px;height:9px;
+            border-radius:50%;background:var(--muted)}
+.swt.on{background:var(--pri);border-color:var(--pri)}
+.swt.on::after{left:12px;background:var(--bg)}
+.swt.dis{opacity:.45}          /* 비활성 — 입력 칸이 아니라 상태 표시로 읽힌다 */
+
+/* 색 견본 — 화면 9 */
+.sw{display:inline-block;width:30px;height:14px;border:1px solid var(--line);
+    vertical-align:-2px;margin-right:6px}
+
+/* 그리드 푸터 — 건수 · 네비게이션 · 페이지 사이즈 */
+.pg{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+    padding:6px 2px;font-size:11.5px;color:var(--muted)}
+.pg .nav{text-align:center}
+.pg .size{text-align:right}
+.pg b{color:var(--ink)}
+
+/* 마스터-디테일 스플리터 — 축이 둘이고 접기 화살표가 붙는다 */
+.split{height:13px;margin:9px 0;border-top:1px solid var(--line2);
+       border-bottom:1px solid var(--line2);background:var(--panel);
+       display:flex;align-items:center;justify-content:center;gap:4px;
+       font-size:9px;color:var(--muted);cursor:row-resize}
+.split .hnd{letter-spacing:2px;line-height:1}                 /* 끄는 손잡이 */
+.split .arw{border:1px solid var(--line);background:var(--bg);color:var(--muted);
+            font-size:8px;line-height:10px;padding:0 4px;cursor:default}
+.split .arw.off{opacity:.3}          /* 반대쪽이 이미 접혔다 — 둘 다 접히지 않는다 */
+/* 세로 축 — 좌우 배치 */
+.split.v{height:auto;width:13px;margin:0 9px;flex-direction:column;
+         border:none;border-left:1px solid var(--line2);border-right:1px solid var(--line2);
+         cursor:col-resize}
+.splitrow{display:flex;align-items:stretch}
+.splitrow>.pane{flex:1;min-width:0}
+/* 접힌 쪽 — 제목 줄만 남는다. 없는 것과 다르다 */
+.folded{border:1px solid var(--line2);background:var(--panel);padding:6px 10px;
+        font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.folded .why{font-weight:400;font-size:11px;color:var(--muted);margin-left:auto}
+
+/* ── 브레드크럼 줄 ──────────────────────────────────
+   줄은 셸의 것이고 오른쪽 슬롯은 화면이 채운다. 리프 목업이 셸
+   크롬을 그리지 않는 규약의 유일한 예외이며, 그리지 않으면
+   조회조건 컨트롤(UX-07 · UX-15)을 보일 자리가 없다.            */
+.bc{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+    border:1px solid var(--line2);background:var(--panel);
+    padding:4px 10px;margin-bottom:8px;font-size:12px;color:var(--muted)}
+.bc .path{margin-right:auto;white-space:nowrap}
+.bc .path b{color:var(--ink)}
+.bc .btn{width:auto;padding:2px 8px;font-size:11.5px}
+
+/* 주석 — 화면 요소 ↔ 문서 결정 연결 */
+.notes{border-left:3px solid var(--note);background:var(--note-bg);padding:10px 14px;font-size:12.5px}
+.notes ol{margin:0;padding-left:18px}
+.notes li{margin:3px 0}
+.n{display:inline-block;min-width:17px;height:17px;line-height:17px;text-align:center;
+   border-radius:50%;background:var(--note);color:#fff;font-size:11px;margin-right:5px}
+
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
+th,td{border:1px solid var(--line2);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:600;white-space:nowrap}
+td.c{white-space:nowrap;font-family:Consolas,monospace;font-size:12px}
+
+.todo{border:1px dashed var(--line);padding:10px 14px;font-size:12.5px;background:var(--panel)}
+.todo ul{margin:4px 0 0;padding-left:18px}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line2);
+       font-size:11.5px;color:var(--muted)}
+</style>
+<div class="doc"><div class="gen noprint"><b>생성물이다 — 손으로 고치지 않는다.</b>
+원본은 <code>manual.md</code> 이고 이 파일은 <code>/manual-site</code> 가 만든다(CLAUDE.md §5.2).
+여기서 고친 것은 다음 생성에서 사라진다.</div></div>
+<section class="doc screen-doc">
+<h1>사용자 관리</h1>
+<blockquote>시스템을 쓸 사람을 등록하고, 계정을 쓸 수 있게 하거나 막고, 잠긴 계정을 풀고, 역할·접속 IP·접속 중인 세션을 관리합니다.</blockquote>
+<p><b>메뉴 위치</b> 시스템 › 사용자 › 사용자 관리</p>
+<figure class="shot mock">
+<div class="mockwrap"><div class="screen leaf" id="main" data-manual="main">
+  
+  <div class="body">
+
+    <div class="bc">
+      <span class="path">시스템 › 사용자 › <b>사용자 관리</b></span>
+      <span class="cnt" style="font-size:11.5px;color:var(--muted)">조건 2</span>
+      <button class="btn ghost">조건 펼치기 ▾</button>
+    </div>
+
+    <div class="sf">
+      <label>로그인 ID</label><input value="" placeholder="앞 일치">
+      <label>이름</label><input value="">
+      <label>이메일</label><input value="">
+      <label>계정 상태</label><select><option>(전체)</option></select>
+      <label>보유 역할</label><select><option>(전체)</option></select>
+      <label>역할 만료 예정</label><select><option>—</option></select>
+      <label>최종 로그인</label><span class="wide"><select style="width:auto"><option>범위</option></select>
+        <input style="width:110px" placeholder="시작"> ~ <input style="width:110px" placeholder="종료"></span>
+      <label>등록일</label><span class="wide"><select style="width:auto"><option>범위</option></select>
+        <input style="width:110px" placeholder="시작"> ~ <input style="width:110px" placeholder="종료"></span>
+      <div class="act"><button class="btn sm ghost">초기화</button> <button class="btn sm">조회</button></div>
+    </div>
+
+    <div class="tb">
+      <span class="ttl">사용자</span>
+      <button class="btn sm ghost">잠금 해제</button>
+      <button class="btn sm ghost">휴면 해제</button>
+      <button class="btn sm ghost">비밀번호 초기화</button>
+      <button class="btn sm ghost">행 추가</button>
+      <button class="btn sm">저장</button>
+      <button class="btn sm ghost ico">⤓</button>
+      <button class="btn sm ghost ico">⚙</button>
+    </div>
+
+    <div class="grid">
+      <table>
+        <thead>
+          <tr>
+            <th class="st"></th>
+            <th class="req pinL">로그인 ID <em>*</em><span class="mn">☰</span></th>
+            <th class="req">이름 <em>*</em><span class="mn">☰</span></th>
+            <th class="req">이메일 <em>*</em><span class="mn">☰</span></th>
+            <th class="roh">상태<span class="mn">☰</span></th>
+            <th>사용 여부<span class="mn">☰</span></th>
+            <th>사용 시작일<span class="mn">☰</span></th>
+            <th>사용 종료일<span class="mn">☰</span></th>
+            <th class="roh">최종 로그인 <span class="srt">▲</span><span class="mn">☰</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="sel">
+            <td class="st"></td>
+            <td class="pinL cur">kim.tester</td><td>김테스터</td><td>kim@example.com</td>
+            <td class="ro"><span style="color:var(--ok)">● 정상</span></td>
+            <td><span class="swt on"></span></td><td></td><td></td><td>2026-09-02 09:14</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="pinL">lee.ops</td><td>이운영</td><td>lee@example.com</td>
+            <td class="ro"><span style="color:var(--err)">● 잠김</span></td>
+            <td><span class="swt on"></span></td><td></td><td></td><td>2026-08-28 17:02</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="pinL">park.leave</td><td>박퇴사</td><td>park@example.com</td>
+            <td class="ro"><span style="color:var(--muted)">● 미사용</span></td>
+            <td><span class="swt"></span></td><td></td><td>2026-06-30</td><td>2026-06-30 18:40</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="pinL">choi.temp</td><td>최파견</td><td>choi@example.com</td>
+            <td class="ro"><span style="color:var(--err)" title="사용 기간 밖">● 기간 만료</span></td>
+            <td><span class="swt on"></span></td><td>2026-03-01</td><td>2026-08-31</td><td>2026-08-31 11:20</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="pinL">old.account</td><td>오래된계정</td><td>old@example.com</td>
+            <td class="ro"><span style="color:var(--err)">● 휴면</span></td>
+            <td><span class="swt on"></span></td><td></td><td></td><td>2025-11-04 10:00</td>
+          </tr>
+          <tr>
+            <td class="st"></td>
+            <td class="pinL">admin</td><td>관리자</td><td>admin@example.com</td>
+            <td class="ro"><span style="color:var(--ok)">● 정상</span></td>
+            <td class="ro" title="자기 계정은 사용 중지할 수 없습니다."><span class="swt on dis"></span></td>
+            <td></td><td></td><td>2026-09-03 08:55</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg">
+      <span>전체 <b>6</b> 건</span>
+      <span class="nav">‹ <b>1</b> 2 3 ›</span>
+      <span class="size">100건 ▾</span>
+    </div>
+
+    <div class="split"><span class="arw">▲</span><span class="hnd">⋯⋯</span><span class="arw">▼</span></div>
+
+    <div class="tabs">
+      <span class="on">보유 역할</span><span>개인 예외</span><span>접속 IP</span>
+      <span>활성 세션</span><span>유효 권한</span>
+    </div>
+
+    <div class="tb">
+      <span class="ttl">보유 역할 — kim.tester (김테스터)</span>
+      <button class="btn sm ghost">행 추가</button>
+      <button class="btn sm">저장</button>
+      <button class="btn sm ghost ico">⤓</button>
+      <button class="btn sm ghost ico">⚙</button>
+    </div>
+    <div class="grid" style="max-height:150px">
+      <table>
+        <thead><tr>
+          <th class="st"></th>
+          <th class="req pinL">역할 <em>*</em></th>
+          <th class="roh">역할 사용</th><th>시작일</th><th>종료일</th><th class="roh">부여 상태</th>
+          <th class="del">✕</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="st"></td><td class="pinL">운영자 (OPERATOR)</td>
+              <td class="ro"><span class="swt on dis"></span></td><td></td><td></td>
+              <td class="ro"><span style="color:var(--ok)">유효</span></td><td class="del">✕</td></tr>
+          <tr><td class="st"></td><td class="pinL">정산담당 (SETTLE)</td>
+              <td class="ro"><span class="swt dis"></span></td><td>2026-09-01</td><td>2026-12-31</td>
+              <td class="ro"><span style="color:var(--ok)">유효</span>
+                  <span class="tag" style="color:var(--err);border-color:var(--err)"
+                        title="꺼진 역할입니다 — 기간이 유효해도 지금은 아무 권한도 주지 않습니다.">역할 사용</span></td>
+              <td class="del">✕</td></tr>
+          <tr><td class="st"></td><td class="pinL">임시조회 (TEMP_READ)</td>
+              <td class="ro"><span class="swt on dis"></span></td><td>2026-01-01</td><td>2026-06-30</td>
+              <td class="ro"><span style="color:var(--muted)">만료</span></td><td class="del">✕</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div></div>
+<figcaption>사용자 관리 화면 — 위는 사용자 목록, 아래는 고른 사람의 탭 다섯 — <b>배치를 보이는 그림</b>입니다. 실제 화면의 데이터·글꼴·색은 다를 수 있습니다.</figcaption>
+</figure>
+<hr>
+<h2>1. 먼저 알아 둘 것</h2>
+<ul>
+<li>역할을 부여하려면 <b>[역할 관리]에서 역할이 먼저 등록</b>되어 있어야 합니다.</li>
+<li><b>계정은 지울 수 없습니다.</b> 더 이상 쓰지 않는 계정은 <code>사용 여부</code>를 꺼서 막습니다. 지난 이력이 누구의 것인지 남아야 하기 때문입니다.</li>
+<li><b>관리자는 비밀번호를 정하지 않습니다.</b> 계정을 새로 만들거나 비밀번호를 초기화하면 시스템이 <b>임시 비밀번호를 만들어</b> 화면에 한 번 보여 줍니다. 그 창을 닫으면 다시 볼 수 없습니다.</li>
+<li>계정을 못 쓰게 만드는 사유는 <b>넷</b>이고 서로 다른 것입니다 — <code>미사용</code>(관리자가 껐다) · <code>기간 만료</code>(사용 기간이 지났다) · <code>잠김</code>(로그인을 여러 번 틀렸다) · <code>휴면</code>(오래 안 들어왔다). 하나를 풀어도 다른 것이 걸려 있을 수 있습니다.</li>
+</ul>
+<hr>
+<h2>2. 찾기</h2>
+<ol>
+<li>위쪽 조회조건에 찾을 값을 넣습니다. <b>아무것도 넣지 않으면 전체가 나옵니다</b> — 조건은 모두 선택입니다.</li>
+<li><code>[조회]</code> 를 누릅니다.</li>
+<li>화면에 들어오기만 해서는 목록이 나오지 않습니다. 반드시 <code>[조회]</code> 를 눌러야 합니다.</li>
+</ol>
+<p><b>자주 쓰는 조건</b></p>
+<table><thead><tr>
+<th>이렇게 찾고 싶다</th><th>이렇게 넣습니다</th>
+</tr></thead><tbody>
+<tr><td>지금 못 들어오는 계정만</td><td><code>계정 상태</code>에서 <i>잠김</i> · <i>휴면</i> · <i>기간 만료</i> 를 고릅니다</td></tr>
+<tr><td>그만둔 사람 계정 확인</td><td><code>계정 상태</code>에서 <i>미사용</i> 을 고릅니다</td></tr>
+<tr><td>특정 역할을 가진 사람 전부</td><td><code>보유 역할</code>에서 역할을 고릅니다 — <b>기간이 지난 부여도 함께 나옵니다</b></td></tr>
+<tr><td>곧 역할이 끝나는 사람</td><td><code>역할 만료 예정</code>에서 <i>30일 이내</i> 처럼 고릅니다</td></tr>
+<tr><td>한 번도 안 들어온 사람</td><td><code>최종 로그인</code>의 연산을 <i>이하</i> 로 바꾸고 오늘 날짜를 넣습니다</td></tr>
+</tbody></table>
+<ul>
+<li>목록에는 <b>다섯 칸만</b> 보입니다. <code>잠금</code> · <code>실패 횟수</code> · <code>휴면</code> · <code>언어</code> 같은 칸은 그리드 설정(<code>[⚙]</code>)에서 켜면 보입니다 — 켜지 않았을 뿐 값은 이미 와 있습니다.</li>
+<li><code>상태</code> 칸은 <b>먼저 걸린 사유 하나</b>만 보여 줍니다. 넷이 동시에 걸려 있을 수 있으므로, 자세히 볼 때는 원래 칸들을 켜서 봅니다.</li>
+<li><code>상태</code> 칸은 정렬되지 않습니다. 계산해서 만든 값이기 때문입니다.</li>
+</ul>
+<hr>
+<h2>3. 하기</h2>
+<h3>3-1. 계정 새로 만들기</h3>
+<ol>
+<li><code>[행 추가]</code> 를 누르면 맨 위에 빈 줄이 생깁니다.</li>
+<li><b>로그인 ID · 이름 · 이메일</b>을 채웁니다. 셋은 필수입니다.</li>
+</ol>
+<ul>
+<li><b>로그인 ID 는 나중에 바꿀 수 없습니다.</b> 계정은 지울 수도 없으므로 한 번 정하면 끝입니다.</li>
+<li>이메일이 필수인 이유는 <b>임시 비밀번호를 전할 곳</b>이기 때문입니다.</li>
+</ul>
+<ol>
+<li>필요하면 <code>사용 시작일</code> · <code>사용 종료일</code>을 넣습니다. 비워 두면 기간 제한이 없습니다. <b>시작일과 종료일 당일도 포함</b>됩니다.</li>
+<li><code>[저장]</code> 을 누릅니다. 여러 줄을 한꺼번에 만들 수 있습니다.</li>
+<li>저장하면 <b>임시 비밀번호 창</b>이 뜹니다 — 값을 사용자에게 전하고 닫습니다.</li>
+</ol>
+<blockquote><b>신규 계정에 역할을 주는 것은 두 단계입니다.</b> 저장하기 전에는 아래 탭이 잠겨 있습니다. 먼저 저장하고, 그 줄을 다시 골라 [보유 역할] 탭에서 역할을 줍니다.</blockquote>
+<h3>3-2. 고치기</h3>
+<ol>
+<li>고칠 칸을 두 번 누르면 편집됩니다. 바꾼 줄에는 왼쪽에 표시가 붙습니다.</li>
+<li><code>[저장]</code> 을 누릅니다.</li>
+</ol>
+<p><b>고칠 수 있는 칸</b> — 이름 · 이메일 · 사용 여부 · 사용 시작일 · 사용 종료일 · 언어.</p>
+<p><b>고칠 수 없는 칸</b> — <code>잠금</code> · <code>잠금 시각</code> · <code>실패 횟수</code> · <code>휴면</code> · <code>임시 비밀번호</code> · <code>최종 로그인</code> · <code>상태</code>. 이 값들은 <b>시스템이 스스로 거는 것</b>이고, 푸는 방법은 위쪽 버튼들입니다(3-4). 칸을 직접 고치게 두면 여러 사유가 뒤섞입니다.</p>
+<h3>3-3. 계정을 못 쓰게 하기</h3>
+<ul>
+<li><b>지우는 것이 아니라 끄는 것입니다.</b> <code>사용 여부</code>를 끄고 <code>[저장]</code> 합니다.</li>
+<li>저장 전에 <i>다음 로그인부터 막힙니다. 지금 접속 중인 세션은 유지됩니다</i> 라는 안내가 뜹니다. <b>지금 당장 내보내려면</b> [활성 세션] 탭에서 <code>[강제 종료]</code>를 함께 해야 합니다.</li>
+<li><b>자기 계정은 끌 수 없습니다.</b> 그 칸을 누르면 <i>자기 계정은 사용 중지할 수 없습니다.</i> 라고 뜹니다.</li>
+<li>기간을 정해서 막으려면 <code>사용 종료일</code>을 넣습니다. 그날까지는 들어올 수 있습니다.</li>
+</ul>
+<h3>3-4. 잠긴 계정 풀기 · 휴면 풀기 · 비밀번호 초기화</h3>
+<p>줄을 고르고 위쪽 버튼을 누릅니다. <b>셋은 서로 다른 것을 풉니다.</b></p>
+<table><thead><tr>
+<th>버튼</th><th>무엇을 하나</th><th>무엇을 하지 않나</th>
+</tr></thead><tbody>
+<tr><td><code>[잠금 해제]</code></td><td>로그인 실패로 걸린 잠금을 풀고 실패 횟수를 0으로 되돌립니다</td><td>비밀번호는 그대로입니다</td></tr>
+<tr><td><code>[휴면 해제]</code></td><td>오래 안 들어와 걸린 휴면을 풉니다</td><td><b>잠금은 풀리지 않습니다</b></td></tr>
+<tr><td><code>[비밀번호 초기화]</code></td><td>임시 비밀번호를 새로 발급하고 다음 로그인에서 바꾸도록 표시합니다</td><td><b>잠금은 풀리지 않습니다</b></td></tr>
+</tbody></table>
+<ul>
+<li>이미 풀려 있는 계정에 눌러도 <b>오류가 아닙니다.</b> 원하던 결과가 이미 이뤄져 있는 것입니다.</li>
+<li>비밀번호를 못 쓰게 된 사람이 <b>잠기기까지 했다면</b> <code>[잠금 해제]</code> 와 <code>[비밀번호 초기화]</code> 를 <b>둘 다</b> 눌러야 합니다.</li>
+<li>여러 줄을 골라 한 번에 할 수 있습니다. 초기화는 발급된 값들을 표로 한 번에 보여 줍니다.</li>
+</ul>
+<blockquote><b>임시 비밀번호 창은 다시 열 수 없습니다.</b> 창을 닫은 뒤 값을 잊었다면 다시 초기화하는 수밖에 없고, 그러면 <b>방금 전한 값이 그 자리에서 못 쓰게 됩니다.</b> 전하기 전에는 닫지 마십시오.</blockquote>
+<blockquote>이 값은 오래 살지 않습니다 — 사용자는 다음 로그인에서 반드시 비밀번호를 바꿔야 하고, 정해진 시간이 지나면 그 값으로는 아예 들어올 수 없습니다.</blockquote>
+<h3>3-5. 아래쪽 탭 다섯</h3>
+<p>목록에서 <b>저장된 줄 하나를 고르면</b> 아래쪽 탭이 그 사람의 것으로 채워집니다. 탭은 처음 열 때 조회됩니다.</p>
+<figure class="shot mock">
+<div class="mockwrap"><div class="screen leaf" id="tab-role" data-manual="tab-role"><div class="body">
+  <div class="tabs">
+    <span class="on">보유 역할</span><span>개인 예외</span><span>접속 IP</span>
+    <span>활성 세션</span><span>유효 권한</span>
+  </div>
+  <div class="tb">
+    <span class="ttl">보유 역할 — kim.tester (김테스터)</span>
+    <button class="btn sm ghost">행 추가</button>
+    <button class="btn sm">저장</button>
+    <button class="btn sm ghost ico">⤓</button>
+    <button class="btn sm ghost ico">⚙</button>
+  </div>
+  <div class="grid" style="max-height:132px">
+    <table>
+      <thead><tr><th class="st"></th><th class="req pinL">역할 <em>*</em></th>
+        <th class="roh">역할 사용</th><th>시작일</th><th>종료일</th><th class="roh">부여 상태</th>
+        <th class="del">✕</th></tr></thead>
+      <tbody>
+        <tr><td class="st"></td><td class="pinL">운영자 (OPERATOR)</td>
+            <td class="ro"><span class="swt on dis"></span></td><td></td><td></td>
+            <td class="ro"><span style="color:var(--ok)">유효</span></td><td class="del">✕</td></tr>
+        <tr><td class="st"></td><td class="pinL">정산담당 (SETTLE)</td>
+            <td class="ro"><span class="swt on dis"></span></td><td>2026-09-01</td><td>2026-12-31</td>
+            <td class="ro"><span style="color:var(--ok)">유효</span></td><td class="del">✕</td></tr>
+        <tr><td class="st"></td><td class="pinL">임시조회 (TEMP_READ)</td>
+            <td class="ro"><span class="swt on dis"></span></td><td>2026-01-01</td><td>2026-06-30</td>
+            <td class="ro"><span style="color:var(--muted)">만료</span></td><td class="del">✕</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div></div></div>
+<figcaption>보유 역할 탭 — <b>배치를 보이는 그림</b>입니다. 실제 화면의 데이터·글꼴·색은 다를 수 있습니다.</figcaption>
+</figure>
+<p><b>[보유 역할]</b> — 이 사람이 가진 역할입니다.</p>
+<ul>
+<li>주기: <code>[행 추가]</code> → <code>역할</code>을 고르고 필요하면 기간을 넣습니다 → <code>[저장]</code>. 기간을 비우면 무기한입니다.</li>
+<li>회수: <b>종료일을 어제로 바꿉니다.</b> 그러면 언제까지 그 역할이었는지가 남습니다. <code>[행 삭제]</code>는 <b>잘못 등록한 줄을 정리할 때</b>만 쓰십시오 — 지우면 기록이 남지 않습니다.</li>
+<li>회수는 <b>다음 로그인부터</b> 반영됩니다. 지금 접속 중이면 그대로 쓸 수 있습니다.</li>
+<li><code>역할 사용</code>이 꺼져 있으면 **부여 상태가 <i>유효</i> 여도 아무 권한도 주지 않습니다.** 역할 자체를 켜는 곳은 [역할 관리]입니다.</li>
+</ul>
+<figure class="shot mock">
+<div class="mockwrap"><div class="screen leaf" id="tab-grant" data-manual="tab-grant"><div class="body">
+  <div class="tabs">
+    <span>보유 역할</span><span class="on">개인 예외</span><span>접속 IP</span>
+    <span>활성 세션</span><span>유효 권한</span>
+  </div>
+  <div class="tb">
+    <span class="ttl">개인 예외 — kim.tester (김테스터)</span>
+    <button class="btn sm ghost ico">⤓</button>
+    <button class="btn sm ghost ico">⚙</button>
+  </div>
+  <div class="grid" style="max-height:120px">
+    <table>
+      <thead><tr><th class="pinL roh">메뉴</th><th class="roh">액션</th><th class="roh">부여 상태</th>
+        <th class="roh">시작일</th><th class="roh">종료일</th><th class="roh">대상 유효</th>
+        <th class="roh">부여 사유</th></tr></thead>
+      <tbody>
+        <tr><td class="pinL ro">시스템 › 로그 › 사용 이력</td><td class="ro">조회</td>
+            <td class="ro"><span style="color:var(--ok)">유효</span></td>
+            <td class="ro">2026-09-01</td><td class="ro">2026-12-31</td>
+            <td class="ro"><span class="swt on dis"></span></td>
+            <td class="ro">분기 감사 대응</td></tr>
+        <tr><td class="pinL ro">시스템 › 공지 › 공지사항 관리</td><td class="ro">저장</td>
+            <td class="ro"><span style="color:var(--muted)">예정</span></td>
+            <td class="ro">2026-10-01</td><td class="ro">2026-10-31</td>
+            <td class="ro"><span class="swt on dis"></span></td>
+            <td class="ro">담당자 휴가 대행</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">
+    저장 버튼이 없다 — 부여는 <b>개인 예외 권한</b> 화면에서 한다.
+  </p>
+</div></div></div>
+<figcaption>개인 예외 탭 — <b>배치를 보이는 그림</b>입니다. 실제 화면의 데이터·글꼴·색은 다를 수 있습니다.</figcaption>
+</figure>
+<p><b>[개인 예외]</b> — 역할과 별개로 이 사람에게 직접 준 권한입니다. <b>여기서는 보기만 합니다</b> — 주고 거두는 것은 [개인 예외 권한] 메뉴입니다.</p>
+<figure class="shot mock">
+<div class="mockwrap"><div class="screen leaf" id="tab-ip" data-manual="tab-ip"><div class="body">
+  <div class="tabs">
+    <span>보유 역할</span><span>개인 예외</span><span class="on">접속 IP</span>
+    <span>활성 세션</span><span>유효 권한</span>
+  </div>
+  <div class="tb">
+    <span class="ttl">접속 IP — kim.tester (김테스터)</span>
+    <button class="btn sm ghost">행 추가</button>
+    <button class="btn sm">저장</button>
+    <button class="btn sm ghost ico">⤓</button>
+    <button class="btn sm ghost ico">⚙</button>
+  </div>
+  <div class="grid" style="max-height:110px">
+    <table>
+      <thead><tr><th class="st"></th><th class="req pinL">IP · CIDR <em>*</em></th><th>사용</th>
+        <th>허용 시작</th><th>허용 종료</th><th class="del">✕</th></tr></thead>
+      <tbody>
+        <tr><td class="st"></td><td class="pinL">10.20.0.0/16</td>
+            <td><span class="swt on"></span></td><td></td><td></td><td class="del">✕</td></tr>
+        <tr><td class="st"></td><td class="pinL">203.0.113.24</td>
+            <td><span class="swt on"></span></td><td>2026-09-01</td><td>2026-10-31</td>
+            <td class="del">✕</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div></div></div>
+<figcaption>접속 IP 탭 — <b>배치를 보이는 그림</b>입니다. 실제 화면의 데이터·글꼴·색은 다를 수 있습니다.</figcaption>
+</figure>
+<p><b>[접속 IP]</b> — 이 계정이 들어올 수 있는 IP 대역입니다.</p>
+<ul>
+<li><b>줄이 하나도 없으면 제한이 없습니다.</b> 어디서든 들어올 수 있다는 뜻입니다.</li>
+<li><b>첫 줄을 등록하는 순간부터 나머지 모든 IP 가 막힙니다.</b> 저장 전에 그 안내가 뜹니다 — 사무실 대역을 빠뜨리면 본인이 못 들어옵니다.</li>
+<li>파견·출장처럼 기한이 있으면 <code>허용 시작</code> · <code>허용 종료</code>를 넣습니다. 비우면 무기한입니다.</li>
+<li>잠시 막을 때는 <code>사용</code>을 끄고, 아주 안 쓰면 줄을 지웁니다.</li>
+</ul>
+<figure class="shot mock">
+<div class="mockwrap"><div class="screen leaf" id="tab-session" data-manual="tab-session"><div class="body">
+  <div class="tabs">
+    <span>보유 역할</span><span>개인 예외</span><span>접속 IP</span>
+    <span class="on">활성 세션</span><span>유효 권한</span>
+  </div>
+  <div class="tb">
+    <span class="ttl">활성 세션 — kim.tester (김테스터)</span>
+    <button class="btn sm ghost">강제 종료</button>
+    <button class="btn sm ghost ico">⤓</button>
+    <button class="btn sm ghost ico">⚙</button>
+  </div>
+  <div class="grid" style="max-height:110px">
+    <table>
+      <thead><tr><th class="st"></th><th class="pinL roh">세션</th><th class="roh">현재 세션</th>
+        <th class="roh">생성 시각</th><th class="roh">최근 접근</th><th class="roh">만료 예정</th>
+        <th class="roh">접속 IP</th><th class="roh">브라우저</th></tr></thead>
+      <tbody>
+        <tr><td class="st">☐</td><td class="pinL ro">a3f91b2c</td>
+            <td class="ro"><span class="swt dis"></span></td>
+            <td class="ro">2026-09-03 08:55</td><td class="ro">2026-09-03 12:10</td>
+            <td class="ro">2026-09-03 13:10</td><td class="ro">10.20.1.44</td>
+            <td class="ro" title="Mozilla/5.0 (Windows NT 10.0; Win64; x64)…">Mozilla/5.0 (Windows…</td></tr>
+        <tr><td class="st">☐</td><td class="pinL ro">77de0451</td>
+            <td class="ro"><span class="swt dis"></span></td>
+            <td class="ro">2026-09-02 19:31</td><td class="ro">2026-09-02 20:02</td>
+            <td class="ro">2026-09-02 21:02</td><td class="ro"></td><td class="ro"></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div></div></div>
+<figcaption>활성 세션 탭 — <b>배치를 보이는 그림</b>입니다. 실제 화면의 데이터·글꼴·색은 다를 수 있습니다.</figcaption>
+</figure>
+<p><b>[활성 세션]</b> — 지금 접속 중인 세션입니다.</p>
+<ul>
+<li>모르는 곳에서 들어온 세션이 보이면 고르고 <code>[강제 종료]</code>.</li>
+<li><b>계정은 바뀌지 않습니다</b> — 그 사람은 다시 로그인할 수 있습니다. 아예 막으려면 <code>사용 여부</code>를 꺼야 합니다(3-3).</li>
+<li><b>자기 계정의 세션은 종료할 수 없습니다.</b> 그때는 버튼이 눌리지 않고 사유가 표시됩니다.</li>
+<li>고른 수보다 적게 끊길 수 있습니다 — 이미 만료된 세션은 그냥 넘어갑니다.</li>
+<li><code>접속 IP</code> · <code>브라우저</code>가 비어 있을 수 있습니다. 로그인 이력에서 찾아 붙이는 값이라 이력이 없으면 비어 있습니다.</li>
+</ul>
+<figure class="shot mock">
+<div class="mockwrap"><div class="screen leaf" id="tab-effective" data-manual="tab-effective"><div class="body">
+  <div class="tabs">
+    <span>보유 역할</span><span>개인 예외</span><span>접속 IP</span>
+    <span>활성 세션</span><span class="on">유효 권한</span>
+  </div>
+  <div class="tb">
+    <span class="ttl">유효 권한 — kim.tester (김테스터)</span>
+    <label style="font-size:12px;color:var(--muted)">표시 범위</label>
+    <select style="width:120px;padding:3px 6px;border:1px solid var(--line);background:var(--bg);
+                   color:var(--ink);font:inherit;font-size:12px">
+      <option>가진 것만</option><option>전체 메뉴</option></select>
+    <button class="btn sm ghost">조회</button>
+    <button class="btn sm ghost ico">⤓</button>
+  </div>
+  <div class="grid" style="max-height:130px">
+    <table>
+      <thead><tr><th class="pinL roh">메뉴</th><th class="roh">R</th><th class="roh">S</th>
+        <th class="roh">E</th><th class="roh">X</th><th class="roh">출처</th>
+        <th class="roh">상태</th></tr></thead>
+      <tbody>
+        <tr><td class="pinL ro">시스템 › 사용자 › 사용자 관리</td>
+            <td class="ro">●</td><td class="ro">●</td><td class="ro">●</td><td class="ro">·</td>
+            <td class="ro">운영자</td><td class="ro"><span style="color:var(--ok)">유효</span></td></tr>
+        <tr><td class="pinL ro">시스템 › 사용자 › 사용자 관리</td>
+            <td class="ro">●</td><td class="ro">·</td><td class="ro">·</td><td class="ro">●</td>
+            <td class="ro">개인 예외</td><td class="ro"><span style="color:var(--ok)">유효</span></td></tr>
+        <tr><td class="pinL ro">시스템 › 메뉴 › 역할 관리</td>
+            <td class="ro">●</td><td class="ro">●</td><td class="ro">—</td><td class="ro">—</td>
+            <td class="ro">운영자</td><td class="ro"><span style="color:var(--ok)">유효</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">
+    <code>●</code> 준다 · <code>·</code> 안 준다 · <code>—</code> 그 메뉴에 그 기능이 없다.
+  </p>
+</div></div></div>
+<figcaption>유효 권한 탭 — <b>배치를 보이는 그림</b>입니다. 실제 화면의 데이터·글꼴·색은 다를 수 있습니다.</figcaption>
+</figure>
+<p><b>[유효 권한]</b> — <i>이 사람이 지금 실제로 무엇을 할 수 있나</i> 를 한 화면에서 봅니다. <b>문의가 왔을 때 여기부터 봅니다.</b></p>
+<ul>
+<li>액션 네 칸은 <code>●</code> 준다 · <code>·</code> 안 준다 · <code>—</code> <b>그 메뉴에는 그런 기능이 아예 없다</b> 입니다.</li>
+<li><code>출처</code>가 어느 역할 때문인지 또는 <i>개인 예외</i> 인지 말합니다. 같은 메뉴가 두 줄이면 경로가 둘이라는 뜻입니다.</li>
+<li><code>표시 범위</code>를 <i>전체 메뉴</i> 로 바꾸면 <b>못 가진 메뉴까지</b> 함께 보여 어디가 비었는지 알 수 있습니다.</li>
+<li>줄은 있는데 회색이면 이유가 둘 중 하나입니다 — 부여 기간 밖이거나, <b>메뉴가 꺼져 있거나 화면이 없거나</b>.</li>
+<li>아무 권한도 없으면 <i>유효 권한이 공집합입니다 — 이 계정은 다음 로그인부터 차단됩니다.</i> 라고 알려 줍니다.</li>
+</ul>
+<h3>3-6. 엑셀로 받기</h3>
+<ul>
+<li><code>[⤓]</code> — 현재 페이지와 전체 중에서 고릅니다. <b>지금 보이는 컬럼만</b> 나갑니다. 아래 탭들도 각각 받을 수 있습니다.</li>
+<li>엑셀 올리기는 이 화면에 없습니다.</li>
+<li><b>임시 비밀번호 창은 엑셀로 받을 수 없습니다.</b> 값이 파일로 남으면 안 되기 때문입니다.</li>
+</ul>
+<hr>
+<h2>4. 안 될 때</h2>
+<table><thead><tr>
+<th>이런 일이 생기면</th><th>이유</th><th>어떻게 하나</th>
+</tr></thead><tbody>
+<tr><td><i>이미 있는 로그인 ID 입니다.</i></td><td>그 ID 의 계정이 이미 있습니다. 껐던 계정도 남아 있습니다</td><td><code>계정 상태</code>를 비우고 그 ID 로 조회해 보십시오</td></tr>
+<tr><td><i>같은 로그인 ID 가 두 번 있습니다.</i></td><td>지금 저장하려는 줄 안에 같은 ID 가 둘입니다</td><td>한 줄을 지우고 저장합니다</td></tr>
+<tr><td><i>이메일은 필수입니다.</i></td><td>임시 비밀번호를 전할 곳이 없습니다</td><td>이메일을 채웁니다</td></tr>
+<tr><td><i>사용 기간의 시작이 종료보다 늦습니다.</i></td><td>시작일과 종료일이 뒤집혔습니다</td><td>날짜를 바로잡습니다. 같은 날은 괜찮습니다</td></tr>
+<tr><td><i>자기 계정은 사용 중지할 수 없습니다.</i></td><td>자기 계정을 끄면 그 자리에서 밀려납니다</td><td>다른 관리자에게 요청합니다</td></tr>
+<tr><td><i>계정은 삭제할 수 없습니다. 사용 여부를 끄십시오.</i></td><td>계정은 지우지 않습니다</td><td><code>사용 여부</code>를 끕니다</td></tr>
+<tr><td><i>임시 비밀번호 발급이 꺼져 있습니다.</i></td><td>이 시스템에서 관리자 발급 기능을 꺼 두었습니다</td><td>사용자가 로그인 화면의 비밀번호 재설정을 쓰게 합니다</td></tr>
+<tr><td><i>IP 주소 또는 CIDR 형식이 아닙니다.</i></td><td>오타이거나 형식이 맞지 않습니다</td><td><code>192.168.0.10</code> 또는 <code>192.168.0.0/24</code> 형태로 넣습니다</td></tr>
+<tr><td>잠금을 풀었는데 여전히 못 들어옵니다</td><td>사유가 여럿이었습니다</td><td>상태 칸을 다시 보고 <code>휴면</code> · <code>미사용</code> · <code>기간 만료</code> 를 확인합니다</td></tr>
+<tr><td>역할을 줬는데 메뉴가 안 보인다고 합니다</td><td>회수·부여는 <b>다음 로그인부터</b> 반영됩니다</td><td>다시 로그인하게 합니다. 그래도 안 되면 [유효 권한] 탭을 봅니다</td></tr>
+<tr><td>역할이 <i>유효</i> 인데 아무것도 안 됩니다</td><td><b>역할 자체가 꺼져 있습니다</b></td><td>[역할 관리]에서 그 역할을 켭니다</td></tr>
+<tr><td>아래 탭이 눌러지지 않습니다</td><td>사용자를 고르지 않았거나, 아직 저장하지 않은 새 줄입니다</td><td>먼저 저장하고 그 줄을 다시 고릅니다</td></tr>
+<tr><td>버튼이 눌리지 않습니다</td><td>권한이 없거나 대상을 고르지 않았습니다</td><td>대상을 고르고, 그래도 안 되면 권한을 요청합니다</td></tr>
+</tbody></table>
+<hr>
+<h2>5. 다른 메뉴와의 관계</h2>
+<p><b>먼저 해야 하는 것</b></p>
+<table><thead><tr>
+<th>무엇을</th><th>어디서</th><th>왜</th>
+</tr></thead><tbody>
+<tr><td>역할 등록</td><td>역할 관리</td><td>여기서 부여할 역할이 있어야 합니다</td></tr>
+<tr><td>역할에 권한 주기</td><td>역할별 권한</td><td>역할이 있어도 권한이 없으면 아무것도 열리지 않습니다</td></tr>
+<tr><td>메뉴 등록</td><td>메뉴 관리</td><td>메뉴가 꺼져 있으면 권한을 줘도 열리지 않습니다</td></tr>
+</tbody></table>
+<p><b>여기서 저장하면 바뀌는 곳</b></p>
+<table><thead><tr>
+<th>어디가</th><th>어떻게</th>
+</tr></thead><tbody>
+<tr><td>그 사람의 로그인</td><td>사용 여부 · 사용 기간 · 잠금 · 휴면이 로그인을 막거나 엽니다. <b>다음 로그인부터</b>입니다</td></tr>
+<tr><td>그 사람의 메뉴</td><td>역할을 주거나 거두면 다음 로그인부터 메뉴가 달라집니다</td></tr>
+<tr><td>그 사람의 접속 경로</td><td>접속 IP 를 등록하면 그 대역 밖에서는 들어오지 못합니다</td></tr>
+<tr><td>사용 이력</td><td>누가 언제 무엇을 했는지 남습니다</td></tr>
+</tbody></table>
+<p><b>같이 보는 화면</b></p>
+<ul>
+<li>로그인이 안 된다는 문의 → <b>[로그인 이력]</b> 에서 실패 사유를 함께 봅니다. 여기 <code>상태</code> 칸과 같은 순서로 기록됩니다.</li>
+<li>권한이 이상하다는 문의 → 이 화면의 <b>[유효 권한]</b> 탭을 먼저 보고, 고칠 곳이 역할이면 [역할별 권한], 이 사람만이면 [개인 예외 권한]입니다.</li>
+</ul>
+<hr>
+<h2>6. 자주 묻는 것</h2>
+<ul>
+<li><b>계정을 지우고 싶습니다</b> — 지울 수 없습니다. <code>사용 여부</code>를 끄면 못 들어옵니다. 지난 이력에 그 사람이 남아 있어야 하기 때문입니다.</li>
+<li><b>같은 사람이 ID 를 바꾸고 싶어 합니다</b> — 로그인 ID 는 바꿀 수 없습니다. 새 계정을 만들고 옛 계정을 끕니다. 역할은 새 계정에 다시 줘야 합니다.</li>
+<li><b>임시 비밀번호를 잃어버렸습니다</b> — 다시 초기화하면 됩니다. 다만 <b>먼저 발급한 값은 그 순간 못 쓰게 됩니다.</b></li>
+<li><b>비밀번호를 관리자가 정해 줄 수 있나요</b> — 없습니다. 발급만 할 수 있습니다.</li>
+<li><b>끈 계정도 목록에 나오나요</b> — 나옵니다. 조회조건에 기본값이 없어서 <b>처음 조회하면 전부</b> 나옵니다.</li>
+</ul>
+</section>
+</html>

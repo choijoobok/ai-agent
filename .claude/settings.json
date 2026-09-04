@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [".claude/hooks/session-brief.mjs"],
+            "timeout": 15,
+            "statusMessage": "프로젝트 상태 확인"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [".claude/hooks/guard-write.mjs"],
+            "timeout": 15,
+            "statusMessage": "게이트·산출물 지도 확인"
+          },
+          {
+            "type": "command",
+            "command": "node",
+            "args": [".claude/hooks/guard-generated.mjs"],
+            "timeout": 10,
+            "statusMessage": "생성물 보호 확인"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [".claude/hooks/guard-bash.mjs"],
+            "timeout": 15,
+            "statusMessage": "파괴적 명령 확인"
+          },
+          {
+            "type": "command",
+            "command": "node",
+            "args": [".claude/hooks/guard-commit.mjs"],
+            "timeout": 10,
+            "statusMessage": "커밋 형태 확인"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [".claude/hooks/normalize-encoding.mjs"],
+            "timeout": 10,
+            "statusMessage": "인코딩 정리"
+          },
+          {
+            "type": "command",
+            "command": "node",
+            "args": [".claude/hooks/trace-check.mjs"],
+            "timeout": 30,
+            "statusMessage": "추적성 검사"
+          },
+          {
+            "type": "command",
+            "command": "node",
+            "args": [".claude/hooks/doc-drift.mjs"],
+            "timeout": 15,
+            "statusMessage": "문서 셋 대조"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [".claude/hooks/log-raw.mjs"],
+            "timeout": 10,
+            "statusMessage": "대화 기록"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [".claude/hooks/log-raw.mjs"],
+            "timeout": 15,
+            "statusMessage": "대화 기록"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(node .claude/hooks/*)",
+      "Bash(node aidd-guide/meta/_meta/lint.mjs*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)"
+    ]
+  }
+}

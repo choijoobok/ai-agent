@@ -1,0 +1,9 @@
+MSG_KEY,LANG_CD,MSG_VAL
+grid.page.prev,ko,이전 페이지
+grid.page.prev,en,Previous page
+grid.page.next,ko,다음 페이지
+grid.page.next,en,Next page
+grid.page.jumpPrev,ko,이전 5페이지
+grid.page.jumpPrev,en,Back 5 pages
+grid.page.jumpNext,ko,다음 5페이지
+grid.page.jumpNext,en,Forward 5 pages

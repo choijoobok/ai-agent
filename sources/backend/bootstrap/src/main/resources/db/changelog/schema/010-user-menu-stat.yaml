@@ -1,0 +1,57 @@
+# 자주 쓰는 메뉴 — 42 §8 이 형태까지 닫아 둔 테이블이다(UX-16).
+#
+# 세는 것은 "메뉴를 선택하는 행위" 하나다. 탭바에서 탭을 고르는 것은 이미 열려 있어
+# 찾는 수고가 없고, 화면 안의 기능 버튼은 사용 강도이지 여는 횟수가 아니다.
+#
+# 월 버킷이다. 일 버킷 + 30일 창은 창이 정확한 대신 행이 30배인데, 이 기능이 내는 답은
+# "상위 N개와 그 순서" 라 창 경계가 며칠 흔들려도 답이 거의 바뀌지 않는다.
+#
+# STAT_YM 이 CHAR(6) 인 이유 — date 에 매월 1일을 넣으면 "1일에 일어난 일" 로 읽히고
+# 15일이 들어간 행을 막을 방법이 없다. yyyyMM 문자열은 사전순이 곧 시간순이라 >= 비교가
+# 그대로 성립하고 4벤더 어디서도 같게 동작한다(22).
+#
+# FK 를 걸지 않는다(42 §9) — 파생 데이터이며 고아 행은 표시 시점의 조인에서 걸러진다.
+# 감사 4컬럼도 없다: 애플리케이션이 기계적으로 쓰며 "누가" 가 존재하지 않는다(40 §4.2).
+databaseChangeLog:
+  - changeSet:
+      id: 010-create-sys-user-menu-stat
+      author: template
+      comment: 월 버킷 카운터 — 42 §8
+      changes:
+        - createTable:
+            tableName: SYS_USER_MENU_STAT
+            columns:
+              - column:
+                  name: USER_ID
+                  type: VARCHAR(30)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_USER_MENU_STAT
+                    nullable: false
+              - column:
+                  name: MENU_CD
+                  type: VARCHAR(30)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_USER_MENU_STAT
+                    nullable: false
+              # 집계 월 yyyyMM — 업무 시간대 기준이다(40 §4.3).
+              - column:
+                  name: STAT_YM
+                  type: CHAR(6)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_USER_MENU_STAT
+                    nullable: false
+              - column:
+                  name: USE_CNT
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              # 합계가 같을 때의 정렬 보조 — 최근에 쓴 것이 위로 온다.
+              - column:
+                  name: LAST_USE_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false

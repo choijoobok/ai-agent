@@ -1,0 +1,19 @@
+MSG_KEY,LANG_CD,MSG_VAL
+search.op.lte,ko,이하
+search.op.lte,en,Up to
+user.ip.col.validFromDt,ko,허용 시작
+user.ip.col.validFromDt,en,Allowed from
+user.ip.col.validToDt,ko,허용 종료
+user.ip.col.validToDt,en,Allowed to
+user.ip.period.tip,ko,비우면 제한이 없습니다. 서버 기준 날짜로 판정하며 시작일과 종료일 모두 포함합니다.
+user.ip.period.tip,en,Leave empty for no limit. Evaluated against the server date; both the start and end dates are included.
+user.session.col.clientIp,ko,접속 IP
+user.session.col.clientIp,en,IP address
+user.session.col.userAgent,ko,브라우저
+user.session.col.userAgent,en,Browser
+user.session.fromLogin,ko,세션이 만들어진 무렵의 로그인 성공 이력에서 가져온 값입니다. 이력이 없으면 비어 있습니다.
+user.session.fromLogin,en,Taken from the successful sign-in logged around the time this session was created. Empty when no such record exists.
+grid.validation.line,ko,{column} — {message}
+grid.validation.line,en,{column} — {message}
+grid.validation.more,ko,그 밖에 {count}건이 더 있습니다.
+grid.validation.more,en,{count} more.

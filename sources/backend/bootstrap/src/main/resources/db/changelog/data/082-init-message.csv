@@ -1,0 +1,5 @@
+MSG_KEY,LANG_CD,MSG_VAL
+menuTree.orphan,ko,고아
+menuTree.orphan,en,Orphan
+menuTree.orphan.hint,ko,"선언에서 사라진 메뉴입니다. 화면이 없어 열리지 않으며, 지우려면 매핑 API·역할 권한·개인 예외를 먼저 회수해야 합니다."
+menuTree.orphan.hint,en,"This menu is gone from the declaration. It has no screen and cannot be opened. To delete it, first revoke its mapped APIs, role authorities and personal exceptions."

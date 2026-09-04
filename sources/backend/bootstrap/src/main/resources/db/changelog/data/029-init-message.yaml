@@ -1,0 +1,50 @@
+# 메시지 값 21차 — 사람 소유 시드다(22 §1.1).
+#
+# 그리드 설정 창의 제목에 **그리드 이름**을 넣는다. 026 에서 `컬럼 설정` 이었는데, 화면
+# 하나에 그리드가 둘이면 창도 둘이고 생김새가 같다 — 어느 것을 건드리고 있는지 제목이
+# 말하지 않으면 알 수 없다(53 §5).
+#
+# `{grid} 그리드 컬럼 설정` 이다. `{grid} 컬럼 설정` 도 되지만, 그리드 제목이 `메시지 키`
+# 처럼 명사면 `메시지 키 컬럼 설정` 이 되어 **어디까지가 그리드 이름인지** 끊기지 않는다.
+databaseChangeLog:
+  - changeSet:
+      id: data-029-settings-title-ko
+      author: template
+      comment: 화면에 설정 창이 둘일 수 있다 — 53 §5
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: '{grid} 그리드 컬럼 설정'
+            where: MSG_KEY = 'grid.settings.title' AND LANG_CD = 'ko'
+
+  - changeSet:
+      id: data-029-settings-title-en
+      author: template
+      comment: 〃
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: '{grid} — column settings'
+            where: MSG_KEY = 'grid.settings.title' AND LANG_CD = 'en'
+
+  - changeSet:
+      id: data-029-cache-version
+      author: template
+      comment: 값을 바꿨으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

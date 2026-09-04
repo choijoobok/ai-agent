@@ -1,0 +1,45 @@
+MSG_KEY,LANG_CD,MSG_VAL
+apiCatalog.grid.title,ko,API 목록
+apiCatalog.grid.title,en,APIs
+apiCatalog.menu.title,ko,이 API 를 쓰는 메뉴
+apiCatalog.menu.title,en,Menus Using This API
+apiCatalog.col.apiUrl,ko,API URL
+apiCatalog.col.apiUrl,en,API URL
+apiCatalog.col.apiNm,ko,API 명
+apiCatalog.col.apiNm,en,API Name
+apiCatalog.col.actionCd,ko,액션
+apiCatalog.col.actionCd,en,Action
+apiCatalog.col.apiDesc,ko,설명
+apiCatalog.col.apiDesc,en,Description
+apiCatalog.col.menuCount,ko,매핑 메뉴
+apiCatalog.col.menuCount,en,Mapped Menus
+apiCatalog.col.seedDtm,ko,최종 시드 반영
+apiCatalog.col.seedDtm,en,Last Seeded
+apiCatalog.col.menuPath,ko,메뉴 경로
+apiCatalog.col.menuPath,en,Menu Path
+apiCatalog.col.menuCd,ko,메뉴 코드
+apiCatalog.col.menuCd,en,Menu Code
+apiCatalog.col.menuUseYn,ko,사용 여부
+apiCatalog.col.menuUseYn,en,Enabled
+apiCatalog.col.accessibleUserCount,ko,접근 가능 인원
+apiCatalog.col.accessibleUserCount,en,Users with Access
+apiCatalog.unmapped,ko,미매핑
+apiCatalog.unmapped,en,Unmapped
+apiCatalog.mapped,ko,매핑됨
+apiCatalog.mapped,en,Mapped
+apiCatalog.search.apiUrl,ko,API URL
+apiCatalog.search.apiUrl,en,API URL
+apiCatalog.search.apiNm,ko,API 명
+apiCatalog.search.apiNm,en,API Name
+apiCatalog.search.actionCd,ko,액션
+apiCatalog.search.actionCd,en,Action
+apiCatalog.search.mapped,ko,매핑 상태
+apiCatalog.search.mapped,en,Mapping Status
+apiCatalog.empty,ko,조회 조건에 맞는 API 가 없습니다.
+apiCatalog.empty,en,No API matches the search conditions.
+apiCatalog.notRegistered,ko,등록되지 않은 API 입니다. 컨트롤러를 추가하고 시드를 재생성하세요(./gradlew generateApiSeed).
+apiCatalog.notRegistered,en,This API is not registered. Add the controller and regenerate the seed (./gradlew generateApiSeed).
+apiCatalog.menu.empty,ko,API 를 선택하세요.
+apiCatalog.menu.empty,en,Select an API.
+apiCatalog.menu.unmapped,ko,이 API 를 쓰는 메뉴가 없습니다. 아무도 이 API 를 호출할 수 없습니다 — 프론트 endpoints.ts 에 선언하고 시드를 재생성하세요.
+apiCatalog.menu.unmapped,en,"No menu uses this API, so nobody can call it. Declare it in the frontend endpoints.ts and regenerate the seed."

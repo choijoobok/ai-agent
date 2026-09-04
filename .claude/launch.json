@@ -1,0 +1,22 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "sources/frontend"],
+      "port": 3000
+    },
+    {
+      "name": "packaged",
+      "runtimeExecutable": "java",
+      "runtimeArgs": [
+        "-jar",
+        "sources/backend/bootstrap/build/libs/bootstrap-0.0.1-SNAPSHOT.jar",
+        "--spring.profiles.active=local",
+        "--server.port=8081"
+      ],
+      "port": 8081
+    }
+  ]
+}

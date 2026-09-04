@@ -1,0 +1,46 @@
+# 메시지 값 37차 — 사람 소유 시드다(22 §1.1).
+#
+# 메뉴 트리(62 §4)와 그것이 쓰는 분산 락(31 §2).
+#
+# 이 묶음에 저장 버튼 문구가 없다 — 통째로 즉시 저장이라(62 §4.4) 저장 버튼도 미저장
+# 상태도 없기 때문이다. 대신 확인 문구가 많다: 되돌릴 수 없는 조작마다 놓기 전에 묻는다.
+#
+# 드롭 문장 일곱이 특히 그렇다(§4.5.2). 표시가 최종 판정이 아니라 문장이 최종 판정이며,
+# 놓을 수 없는 자리에서도 이유를 낸다 — 왜 안 놓이는지 모르면 사용자는 버그로 읽는다.
+databaseChangeLog:
+  - changeSet:
+      id: data-050-message
+      author: template
+      comment: 메뉴 트리 — 62 §4 · 분산 락 — 31 §2
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/050-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-050-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

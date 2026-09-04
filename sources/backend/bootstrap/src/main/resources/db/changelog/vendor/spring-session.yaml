@@ -1,0 +1,55 @@
+# SPRING_SESSION / SPRING_SESSION_ATTRIBUTES — 22 §4.7.
+#
+# 직접 만들지 않는다. Spring Session 이 벤더별 DDL 을 제공하며, 그것을 dbms 분기로 실어
+# 온다. 손으로 옮겨 적으면 라이브러리가 컬럼을 바꿀 때 조용히 어긋난다 —
+# 세션 저장은 실패해도 로그인 화면이 그냥 반복될 뿐이라 원인이 드러나지 않는다.
+#
+# 경로는 spring-session-jdbc JAR 안의 리소스다. initialize-schema: never 로 두었으므로
+# 이 changelog 가 유일한 생성 경로다(23 §2).
+#
+# 분기가 생기면 모든 벤더 버전을 함께 작성하는 것이 리뷰 규칙이다(22 §4.6).
+# MariaDB 는 자기 스크립트가 없어 MySQL 것을 쓴다.
+databaseChangeLog:
+  - changeSet:
+      id: vendor-spring-session-postgresql
+      author: template
+      dbms: postgresql
+      changes:
+        - sqlFile:
+            path: org/springframework/session/jdbc/schema-postgresql.sql
+            relativeToChangelogFile: false
+            splitStatements: true
+            endDelimiter: ;
+
+  - changeSet:
+      id: vendor-spring-session-mysql
+      author: template
+      dbms: mysql,mariadb
+      changes:
+        - sqlFile:
+            path: org/springframework/session/jdbc/schema-mysql.sql
+            relativeToChangelogFile: false
+            splitStatements: true
+            endDelimiter: ;
+
+  - changeSet:
+      id: vendor-spring-session-oracle
+      author: template
+      dbms: oracle
+      changes:
+        - sqlFile:
+            path: org/springframework/session/jdbc/schema-oracle.sql
+            relativeToChangelogFile: false
+            splitStatements: true
+            endDelimiter: ;
+
+  - changeSet:
+      id: vendor-spring-session-mssql
+      author: template
+      dbms: mssql
+      changes:
+        - sqlFile:
+            path: org/springframework/session/jdbc/schema-sqlserver.sql
+            relativeToChangelogFile: false
+            splitStatements: true
+            endDelimiter: ;

@@ -1,0 +1,77 @@
+# 메시지 값 13차 — 사람 소유 시드다(22 §1.1).
+#
+# 담는 것 둘이다.
+#
+# ① `search.op.in` — 콤보를 다중 선택으로 바꾸는 연산자다(57 §3.4). ko 를 `포함` 으로 둔
+#    이유는 `IN` 을 그대로 쓰면 SQL 을 모르는 운영자에게 뜻이 닫히지 않기 때문이고, en 을
+#    `Is one of` 로 둔 이유는 `In` 이 전치사와 구분되지 않아 목록에서 읽히지 않기 때문이다.
+#
+# ② `searchForm.show` — 접힌 상태의 토글 문구다. 011 에서 `조회조건` 이었는데 그것은
+#    **상태의 이름**이지 **누르면 일어날 일**이 아니다. 짝인 `searchForm.hide` 는 이미
+#    `조회조건 숨기기` 라 둘이 어휘가 갈려 있었다(2026-08-29 실물).
+#
+# 011 을 고치지 않고 update 로 덮는다 — 016 과 같은 이유다. 이미 적용된 곳이 있으면
+# 체크섬이 달라져 그 곳의 기동이 실패한다.
+databaseChangeLog:
+  - changeSet:
+      id: data-021-message
+      author: template
+      comment: 포함 연산자의 ko·en — 57 §3.4
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/021-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-021-form-show-ko
+      author: template
+      comment: 상태의 이름이 아니라 누르면 일어날 일이다 — 51 §5.1
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: 조회조건 보이기
+            where: MSG_KEY = 'searchForm.show' AND LANG_CD = 'ko'
+
+  - changeSet:
+      id: data-021-form-show-en
+      author: template
+      comment: 〃
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: Show filters
+            where: MSG_KEY = 'searchForm.show' AND LANG_CD = 'en'
+
+  - changeSet:
+      id: data-021-cache-version
+      author: template
+      comment: 값을 넣거나 바꿨으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

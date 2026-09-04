@@ -1,0 +1,31 @@
+# SYS_MENU.SRC_CD — 누가 이 메뉴를 만들었나 (ADR-0028 · 42 §4).
+#
+# 메뉴 시드가 생성물이 되면서 필요해졌다. 시드는 매 기동에서 선언 파일 전건을 upsert 하는데
+# (003), 그러려면 **자기가 만든 행과 운영자가 만든 행을 갈라야** 한다 — 62 §4.6 의 하위 메뉴
+# 추가로 만들어진 행을 시드가 건드리면 배포마다 사라진다.
+#
+#   SEED     선언 파일에 있다
+#   USER     운영자가 화면에서 만들었다 — 시드가 건드리지 않는다
+#   ORPHAN   시드가 만들었는데 선언에서 사라졌다 — 62 §4.8 이 배지를 붙인다
+#
+# 기본값이 USER 인 것이 의도다. 이미 적용된 DB 의 24행이 일단 USER 가 되고, 003 의 첫
+# 동기화가 그중 선언에 있는 것을 SEED 로 덮는다 — 순서가 반대면(기본값 SEED) 첫 동기화의
+# ① 단계가 그 행들을 전부 ORPHAN 으로 만든 뒤 ②가 되돌리게 되어, 그 사이에 기동이 끊기면
+# 전 메뉴가 고아로 남는다.
+#
+# 003 보다 먼저 include 되어야 한다 — 그 changeSet 이 runOnChange 라 같은 기동에서 다시 돈다.
+databaseChangeLog:
+  - changeSet:
+      id: schema-026-menu-src-cd
+      author: template
+      comment: 시드가 만든 메뉴와 운영자가 만든 메뉴를 가른다 — ADR-0028
+      changes:
+        - addColumn:
+            tableName: SYS_MENU
+            columns:
+              - column:
+                  name: SRC_CD
+                  type: VARCHAR(10)
+                  defaultValue: USER
+                  constraints:
+                    nullable: false

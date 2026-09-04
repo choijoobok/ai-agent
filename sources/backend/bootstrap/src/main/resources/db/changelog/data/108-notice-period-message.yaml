@@ -1,0 +1,57 @@
+# 공지 게시기간 오류 문구를 바로잡는다 — 값이 소스보다 좁게 말하고 있었다.
+#
+# 소스는 `to.isBefore(from)` 일 때만 던진다(NoticeService) — 같은 값은 통과한다.
+# 요건서 §6-1 도 `게시 종료 >= 게시 시작` 이다. 그런데 072 의 값이 ko 는
+# "게시 종료는 게시 시작보다 뒤여야 합니다" · en 은 "must be after" 여서,
+# 읽는 사람은 **같은 값이 거부된다**고 이해한다. 시작과 종료를 같은 시각으로 넣어
+# 하루짜리 공지를 올리려던 사람이 되는 조작을 안 되는 것으로 읽는다.
+#
+# 키 설명(008)은 처음부터 "게시 종료가 시작보다 앞이다." 였고, ErrorCode 의
+# defaultMessage 도 "게시 종료가 시작보다 앞입니다" 다 — **값 시드 하나만 갈려 있었다.**
+#
+# 앞의 파일을 고치지 않고 새 파일에서 update 한다(22 §1.1 · 015 의 선례).
+# 072 는 runOnChange 가 아니라, 고치면 이미 적용한 로컬이 checksum 으로 죽는다.
+#
+# 2026-09-04 화면 재현 실험(07-evals/screen-reproduction.md)이 찾았다.
+databaseChangeLog:
+  - changeSet:
+      id: data-108-notice-period-ko
+      author: template
+      comment: 같은 값은 통과한다 — 경계를 문구가 잘못 말했다
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: 게시 종료가 게시 시작보다 앞입니다
+            where: MSG_KEY = 'err.notice.period' AND LANG_CD = 'ko'
+
+  - changeSet:
+      id: data-108-notice-period-en
+      author: template
+      comment: 〃
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: Publish-to is earlier than publish-from
+            where: MSG_KEY = 'err.notice.period' AND LANG_CD = 'en'
+
+  - changeSet:
+      id: data-108-cache-version
+      author: template
+      comment: 값을 고쳤으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

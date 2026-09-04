@@ -1,0 +1,46 @@
+# 메시지 값 — 참조 팝업의 버튼 둘. 사람 소유 시드다(22 §1.1).
+#
+# 한 번 골라 여러 칸을 채우는 창이다(54 §6 · 68 §9.4). 창의 제목과 컬럼은 팝업 선언이
+# 갖고 여기 있는 것은 어느 팝업에서나 같은 글자라, 둘뿐이다.
+#
+# 지우기가 취소와 갈려 있는 것이 결정이다. 하나로 묶으면 Esc 가 셀을 비우고, 고르러
+# 열었다가 마음을 바꾼 사람이 원래 값을 잃는다 — 저장 전까지 아무 경고도 없는 사고다.
+#
+# CSV 는 생성한다 — 손으로 쓰는 관행이 남으면 콤마가 든 문구가 오는 날 기동에서만 깨진다.
+databaseChangeLog:
+  - changeSet:
+      id: data-085-message
+      author: template
+      comment: 참조 팝업의 선택·지우기 — 54 §6 · 68 §9.4
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/085-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-085-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

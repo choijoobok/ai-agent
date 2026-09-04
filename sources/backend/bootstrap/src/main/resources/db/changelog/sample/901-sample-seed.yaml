@@ -1,0 +1,972 @@
+# 샘플 시드 — 48 §7 · 68 §5.
+#
+# 셋을 넣는다: 채번 행 · 공통코드 · 볼 것이 있는 주문 여섯.
+#
+# ── 왜 데이터까지 넣는가 ────────────────────────────────────────────────
+#
+# 68 §1 이 이 화면들을 참조 구현 이라 했는데, 빈 그리드는 참조가 되지 않는다 — 배지의
+# 색도, 계산 컬럼도, 마스터 삭제 게이트도 행이 있어야 보인다. 그리고 68 §5.7 의 예외
+# 화면 다섯 중 넷은 행이 있어야 재현된다.
+#
+# ── 코드 그룹이 셋뿐이다 ────────────────────────────────────────────────
+#
+# SMPL_MD_VERT 가 실제로 그리는 코드 컬럼이 셋이다(주문상태 · 단위 · 품목상태).
+# CHNL_CD · PRIORITY_CD · CUST_GRD_CD 는 테이블에 있지만 이 화면의 아홉 컬럼에 없으므로
+# 그룹을 넣지 않는다 — 그리는 화면이 서는 날 그 화면이 가져온다(구현된 것만 담는다).
+#
+# DTL_NM 이 이름이 아니라 메시지 키인 것에 주의한다(43 §4.4). 값은 메시지 시드가 넣는다.
+databaseChangeLog:
+  - changeSet:
+      id: 901-seq-smpl-order
+      author: template
+      comment: 논리 시퀀스명 = 테이블명이다(ADR-0015 · 22 §4.1)
+      changes:
+        # NEXT_VAL 이 1 이 아닌 것은 아래 시드가 ORD_ID 를 직접 쓰기 때문이다.
+        # 1 로 두면 첫 채번 블록이 시드 행과 겹쳐 PK 충돌이 나는데, 그 충돌은
+        # 기동이 아니라 사용자가 행을 처음 추가할 때 난다 — 늦게 드러나는 쪽이다.
+        - insert:
+            tableName: SYS_SEQUENCE
+            columns:
+              - column:
+                  name: SEQ_NAME
+                  value: SMPL_ORDER
+              - column:
+                  name: NEXT_VAL
+                  valueNumeric: 51
+      rollback:
+        - delete:
+            tableName: SYS_SEQUENCE
+            where: SEQ_NAME = 'SMPL_ORDER'
+
+  - changeSet:
+      id: 901-code-smpl-ord-stat
+      author: template
+      comment: 상태 넷과 전이 — editable 함수와 eligible 이 이 표를 근거로 판단한다(48 §3.2)
+      changes:
+        - insert:
+            tableName: SYS_CODE_GROUP
+            columns:
+              - column: { name: GRP_CD, value: SMPL_ORD_STAT }
+              - column: { name: GRP_NM, value: 샘플 주문상태 }
+              - column: { name: GRP_DESC, value: 접수 → 확정 → 출고 → 완료. 상태가 편집 가능 여부를 정한다(48 §3.2). }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: SORT_NO, valueNumeric: 900 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_ORD_STAT }
+              - column: { name: DTL_CD, value: RCV }
+              - column: { name: DTL_NM, value: code.SMPL_ORD_STAT.RCV }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 1 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_ORD_STAT }
+              - column: { name: DTL_CD, value: CFM }
+              - column: { name: DTL_NM, value: code.SMPL_ORD_STAT.CFM }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 2 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_ORD_STAT }
+              - column: { name: DTL_CD, value: SHP }
+              - column: { name: DTL_NM, value: code.SMPL_ORD_STAT.SHP }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 3 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_ORD_STAT }
+              - column: { name: DTL_CD, value: DON }
+              - column: { name: DTL_NM, value: code.SMPL_ORD_STAT.DON }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 4 }
+
+  - changeSet:
+      id: 901-code-smpl-uom
+      author: template
+      comment: 품목 단위 — 디테일의 code 컬럼
+      changes:
+        - insert:
+            tableName: SYS_CODE_GROUP
+            columns:
+              - column: { name: GRP_CD, value: SMPL_UOM }
+              - column: { name: GRP_NM, value: 샘플 단위 }
+              - column: { name: GRP_DESC, value: 주문 품목의 수량 단위. }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: SORT_NO, valueNumeric: 901 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_UOM }
+              - column: { name: DTL_CD, value: EA }
+              - column: { name: DTL_NM, value: code.SMPL_UOM.EA }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 1 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_UOM }
+              - column: { name: DTL_CD, value: BOX }
+              - column: { name: DTL_NM, value: code.SMPL_UOM.BOX }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 2 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_UOM }
+              - column: { name: DTL_CD, value: KG }
+              - column: { name: DTL_NM, value: code.SMPL_UOM.KG }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 3 }
+
+  - changeSet:
+      id: 901-code-smpl-item-stat
+      author: template
+      comment: 품목 상태 — badge 렌더러의 실물
+      changes:
+        - insert:
+            tableName: SYS_CODE_GROUP
+            columns:
+              - column: { name: GRP_CD, value: SMPL_ITEM_STAT }
+              - column: { name: GRP_NM, value: 샘플 품목상태 }
+              - column: { name: GRP_DESC, value: 품목 한 줄의 진행 상태. 주문 상태와 다른 축이다. }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: SORT_NO, valueNumeric: 902 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_ITEM_STAT }
+              - column: { name: DTL_CD, value: WAIT }
+              - column: { name: DTL_NM, value: code.SMPL_ITEM_STAT.WAIT }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 1 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_ITEM_STAT }
+              - column: { name: DTL_CD, value: PICK }
+              - column: { name: DTL_NM, value: code.SMPL_ITEM_STAT.PICK }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 2 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_ITEM_STAT }
+              - column: { name: DTL_CD, value: SENT }
+              - column: { name: DTL_NM, value: code.SMPL_ITEM_STAT.SENT }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 3 }
+
+  - changeSet:
+      id: 901-rows-smpl-order
+      author: template
+      comment: 볼 것이 있어야 참조 구현이다 — 빈 그리드는 배지도 계산도 게이트도 안 보인다
+      changes:
+        # 상태 넷이 전부 있다. 편집이 열리는 행(RCV)과 잠긴 행(DON)이 같은 화면에 있어야
+        # editable 함수가 하는 일이 보인다(48 §3.2).
+        - insert:
+            tableName: SMPL_ORDER
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 1 }
+              - column: { name: ORD_NO, value: SO-2026-0001 }
+              - column: { name: ORD_NM, value: 정기 보충 주문 }
+              - column: { name: CUST_ID, value: C001 }
+              - column: { name: CUST_NM, value: 가나상사 }
+              - column: { name: ORD_STAT_CD, value: RCV }
+              - column: { name: CHNL_CD, value: WEB }
+              - column: { name: PRIORITY_CD, value: NORMAL }
+              - column: { name: ORD_DT, valueDate: 2026-08-24 }
+              - column: { name: ORD_DTM, valueDate: 2026-08-24T09:12:00 }
+              - column: { name: ORD_QTY, valueNumeric: 120 }
+              - column: { name: UNIT_AMT, valueNumeric: 1500.00 }
+              - column: { name: ORD_AMT, valueNumeric: 180000.00 }
+              - column: { name: VAT_AMT, valueNumeric: 18000.00 }
+              - column: { name: DC_RT, valueNumeric: 2.50 }
+              - column: { name: PROC_MS, valueNumeric: 840 }
+              - column: { name: URGENT_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: LOCK_YN, value: N }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 2 }
+              - column: { name: ORD_NO, value: SO-2026-0002 }
+              - column: { name: ORD_NM, value: 긴급 출고 요청 }
+              - column: { name: CUST_ID, value: C002 }
+              - column: { name: CUST_NM, value: 다라물산 }
+              - column: { name: ORD_STAT_CD, value: CFM }
+              - column: { name: CHNL_CD, value: EDI }
+              - column: { name: PRIORITY_CD, value: HIGH }
+              - column: { name: ORD_DT, valueDate: 2026-08-26 }
+              - column: { name: ORD_DTM, valueDate: 2026-08-26T14:03:00 }
+              - column: { name: ORD_QTY, valueNumeric: 40 }
+              - column: { name: UNIT_AMT, valueNumeric: 9800.00 }
+              - column: { name: ORD_AMT, valueNumeric: 392000.00 }
+              - column: { name: VAT_AMT, valueNumeric: 39200.00 }
+              - column: { name: DC_RT, valueNumeric: 12.00 }
+              - column: { name: PROC_MS, valueNumeric: 65400 }
+              - column: { name: URGENT_YN, value: Y }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: LOCK_YN, value: N }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 3 }
+              - column: { name: ORD_NO, value: SO-2026-0003 }
+              - column: { name: ORD_NM, value: 신제품 초도 물량 }
+              - column: { name: CUST_ID, value: C003 }
+              - column: { name: CUST_NM, value: 마바유통 }
+              - column: { name: ORD_STAT_CD, value: SHP }
+              - column: { name: CHNL_CD, value: WEB }
+              - column: { name: PRIORITY_CD, value: NORMAL }
+              - column: { name: ORD_DT, valueDate: 2026-08-28 }
+              - column: { name: ORD_DTM, valueDate: 2026-08-28T11:41:00 }
+              - column: { name: ORD_QTY, valueNumeric: 500 }
+              - column: { name: UNIT_AMT, valueNumeric: 320.00 }
+              - column: { name: ORD_AMT, valueNumeric: 160000.00 }
+              - column: { name: VAT_AMT, valueNumeric: 16000.00 }
+              - column: { name: DC_RT, valueNumeric: 22.00 }
+              - column: { name: URGENT_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: LOCK_YN, value: N }
+              - column: { name: REG_ID, value: admin }
+        # 완료 + 잠금. 전부 잠긴 행이며 LOCK_YN 이 상태와 다른 축이라는 것도 여기서 보인다.
+        - insert:
+            tableName: SMPL_ORDER
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 4 }
+              - column: { name: ORD_NO, value: SO-2026-0004 }
+              - column: { name: ORD_NM, value: 월말 정산 주문 }
+              - column: { name: CUST_ID, value: C001 }
+              - column: { name: CUST_NM, value: 가나상사 }
+              - column: { name: ORD_STAT_CD, value: DON }
+              - column: { name: CHNL_CD, value: EDI }
+              - column: { name: PRIORITY_CD, value: LOW }
+              - column: { name: ORD_DT, valueDate: 2026-08-31 }
+              - column: { name: ORD_DTM, valueDate: 2026-08-31T18:00:00 }
+              - column: { name: ORD_QTY, valueNumeric: 88 }
+              - column: { name: UNIT_AMT, valueNumeric: 2400.00 }
+              - column: { name: ORD_AMT, valueNumeric: 211200.00 }
+              - column: { name: VAT_AMT, valueNumeric: 21120.00 }
+              - column: { name: DC_RT, valueNumeric: 0.00 }
+              - column: { name: PROC_MS, valueNumeric: 1250 }
+              - column: { name: URGENT_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: LOCK_YN, value: Y }
+              - column: { name: REG_ID, value: admin }
+        # 품목이 0건인 주문 — 68 §5.7 의 예외 화면이고, 임의 API 엑셀 항목이 내리는 표다.
+        - insert:
+            tableName: SMPL_ORDER
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 5 }
+              - column: { name: ORD_NO, value: SO-2026-0005 }
+              - column: { name: ORD_NM, value: 품목 미등록 주문 }
+              - column: { name: CUST_ID, value: C004 }
+              - column: { name: CUST_NM, value: 사아상회 }
+              - column: { name: ORD_STAT_CD, value: RCV }
+              - column: { name: CHNL_CD, value: WEB }
+              - column: { name: PRIORITY_CD, value: NORMAL }
+              - column: { name: ORD_DT, valueDate: 2026-09-01 }
+              - column: { name: ORD_DTM, valueDate: 2026-09-01T08:20:00 }
+              - column: { name: URGENT_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: LOCK_YN, value: N }
+              - column: { name: REG_ID, value: admin }
+        # 사용 안 함 + 오류 사유. viewer largeText 가 읽을 것이 있어야 한다.
+        - insert:
+            tableName: SMPL_ORDER
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 6 }
+              - column: { name: ORD_NO, value: SO-2026-0006 }
+              - column: { name: ORD_NM, value: 연동 실패 주문 }
+              - column: { name: CUST_ID, value: C005 }
+              - column: { name: CUST_NM, value: 자차기업 }
+              - column: { name: ORD_STAT_CD, value: RCV }
+              - column: { name: CHNL_CD, value: EDI }
+              - column: { name: PRIORITY_CD, value: HIGH }
+              - column: { name: ORD_DT, valueDate: 2026-09-01 }
+              - column: { name: ORD_DTM, valueDate: 2026-09-01T23:58:00 }
+              - column: { name: ORD_QTY, valueNumeric: 12 }
+              - column: { name: UNIT_AMT, valueNumeric: 5000.00 }
+              - column: { name: ORD_AMT, valueNumeric: 60000.00 }
+              - column: { name: VAT_AMT, valueNumeric: 6000.00 }
+              - column: { name: DC_RT, valueNumeric: 7.50 }
+              - column: { name: URGENT_YN, value: N }
+              - column: { name: USE_YN, value: N }
+              - column: { name: LOCK_YN, value: N }
+              - column: { name: SRC_SYS_CD, value: LEGACY }
+              - column: { name: ERR_MSG, value: 외부 시스템 응답 지연으로 품목 동기화에 실패했다. 재처리 대상이며 원인 조사가 끝날 때까지 사용 안 함으로 둔다. }
+              - column: { name: REG_ID, value: admin }
+      rollback:
+        - delete:
+            tableName: SMPL_ORDER
+            where: ORD_NO LIKE 'SO-2026-%'
+
+  - changeSet:
+      id: 901-rows-smpl-order-item
+      author: template
+      comment: 주문 다섯에는 품목이 있고 하나에는 없다 — 마스터 삭제 게이트의 두 갈래다
+      changes:
+        - insert:
+            tableName: SMPL_ORDER_ITEM
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 1 }
+              - column: { name: ITEM_SEQ, valueNumeric: 1 }
+              - column: { name: ORD_NO, value: SO-2026-0001 }
+              - column: { name: ITEM_CD, value: P-1001 }
+              - column: { name: ITEM_NM, value: 표준 포장 상자 }
+              - column: { name: UOM_CD, value: BOX }
+              - column: { name: QTY, valueNumeric: 100.000 }
+              - column: { name: UNIT_AMT, valueNumeric: 1500.00 }
+              - column: { name: AMT, valueNumeric: 150000.00 }
+              - column: { name: DLVR_DT, valueDate: 2026-09-05 }
+              - column: { name: ITEM_STAT_CD, value: WAIT }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER_ITEM
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 1 }
+              - column: { name: ITEM_SEQ, valueNumeric: 2 }
+              - column: { name: ORD_NO, value: SO-2026-0001 }
+              - column: { name: ITEM_CD, value: P-1002 }
+              - column: { name: ITEM_NM, value: 완충재 롤 }
+              - column: { name: UOM_CD, value: EA }
+              - column: { name: QTY, valueNumeric: 20.000 }
+              - column: { name: UNIT_AMT, valueNumeric: 1500.00 }
+              - column: { name: AMT, valueNumeric: 30000.00 }
+              - column: { name: ITEM_STAT_CD, value: WAIT }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: RMK, value: 파손 주의 }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER_ITEM
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 2 }
+              - column: { name: ITEM_SEQ, valueNumeric: 1 }
+              - column: { name: ORD_NO, value: SO-2026-0002 }
+              - column: { name: ITEM_CD, value: P-2010 }
+              - column: { name: ITEM_NM, value: 냉장 보관 용기 }
+              - column: { name: UOM_CD, value: EA }
+              - column: { name: QTY, valueNumeric: 40.000 }
+              - column: { name: UNIT_AMT, valueNumeric: 9800.00 }
+              - column: { name: AMT, valueNumeric: 392000.00 }
+              - column: { name: DLVR_DT, valueDate: 2026-08-29 }
+              - column: { name: ITEM_STAT_CD, value: PICK }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER_ITEM
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 3 }
+              - column: { name: ITEM_SEQ, valueNumeric: 1 }
+              - column: { name: ORD_NO, value: SO-2026-0003 }
+              - column: { name: ITEM_CD, value: P-3001 }
+              - column: { name: ITEM_NM, value: 신제품 A }
+              - column: { name: UOM_CD, value: EA }
+              - column: { name: QTY, valueNumeric: 300.000 }
+              - column: { name: UNIT_AMT, valueNumeric: 320.00 }
+              - column: { name: AMT, valueNumeric: 96000.00 }
+              - column: { name: DLVR_DT, valueDate: 2026-09-02 }
+              - column: { name: ITEM_STAT_CD, value: SENT }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER_ITEM
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 3 }
+              - column: { name: ITEM_SEQ, valueNumeric: 2 }
+              - column: { name: ORD_NO, value: SO-2026-0003 }
+              - column: { name: ITEM_CD, value: P-3002 }
+              - column: { name: ITEM_NM, value: 신제품 B }
+              - column: { name: UOM_CD, value: KG }
+              - column: { name: QTY, valueNumeric: 200.000 }
+              - column: { name: UNIT_AMT, valueNumeric: 320.00 }
+              - column: { name: AMT, valueNumeric: 64000.00 }
+              - column: { name: ITEM_STAT_CD, value: PICK }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER_ITEM
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 4 }
+              - column: { name: ITEM_SEQ, valueNumeric: 1 }
+              - column: { name: ORD_NO, value: SO-2026-0004 }
+              - column: { name: ITEM_CD, value: P-1001 }
+              - column: { name: ITEM_NM, value: 표준 포장 상자 }
+              - column: { name: UOM_CD, value: BOX }
+              - column: { name: QTY, valueNumeric: 88.000 }
+              - column: { name: UNIT_AMT, valueNumeric: 2400.00 }
+              - column: { name: AMT, valueNumeric: 211200.00 }
+              - column: { name: DLVR_DT, valueDate: 2026-09-01 }
+              - column: { name: ITEM_STAT_CD, value: SENT }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER_ITEM
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 6 }
+              - column: { name: ITEM_SEQ, valueNumeric: 1 }
+              - column: { name: ORD_NO, value: SO-2026-0006 }
+              - column: { name: ITEM_CD, value: P-9001 }
+              - column: { name: ITEM_NM, value: 연동 대기 품목 }
+              - column: { name: UOM_CD, value: EA }
+              - column: { name: QTY, valueNumeric: 12.000 }
+              - column: { name: UNIT_AMT, valueNumeric: 5000.00 }
+              - column: { name: AMT, valueNumeric: 60000.00 }
+              - column: { name: ITEM_STAT_CD, value: WAIT }
+              - column: { name: USE_YN, value: N }
+              - column: { name: REG_ID, value: admin }
+      rollback:
+        - delete:
+            tableName: SMPL_ORDER_ITEM
+            where: ORD_NO LIKE 'SO-2026-%'
+
+  - changeSet:
+      id: 901-code-smpl-chnl
+      author: template
+      comment: 후보가 스물둘이라 타이핑이 필터다 — richSelect 의 실물(54 §5.7).
+      changes:
+        - insert:
+            tableName: SYS_CODE_GROUP
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: GRP_NM, value: 샘플 주문채널 }
+              - column: { name: GRP_DESC, value: 후보가 스물둘이라 타이핑이 필터다 — richSelect 의 실물(54 §5.7). }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: SORT_NO, valueNumeric: 910 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: WEB }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.WEB }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 1 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: EDI }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.EDI }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 2 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: APP }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.APP }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 3 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: CALL }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.CALL }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 4 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: FAX }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.FAX }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 5 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: EMAIL }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.EMAIL }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 6 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: B2B }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.B2B }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 7 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: MARKET }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.MARKET }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 8 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: KIOSK }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.KIOSK }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 9 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: AGENT }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.AGENT }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 10 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: DIRECT }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.DIRECT }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 11 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: EXPORT }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.EXPORT }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 12 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: IMPORT }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.IMPORT }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 13 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: RETURN }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.RETURN }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 14 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: SAMPLE }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.SAMPLE }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 15 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: EVENT }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.EVENT }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 16 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: SUBSCR }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.SUBSCR }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 17 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: CONSIGN }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.CONSIGN }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 18 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: WHOLE }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.WHOLE }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 19 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: RETAIL }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.RETAIL }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 20 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: INTERNAL }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.INTERNAL }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 21 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CHNL }
+              - column: { name: DTL_CD, value: ETC }
+              - column: { name: DTL_NM, value: code.SMPL_CHNL.ETC }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 22 }
+
+  - changeSet:
+      id: 901-code-smpl-priority
+      author: template
+      comment: 아이콘 렌더러가 그리는 코드 — 값이 아이콘을 고른다(54 §5.4).
+      changes:
+        - insert:
+            tableName: SYS_CODE_GROUP
+            columns:
+              - column: { name: GRP_CD, value: SMPL_PRIORITY }
+              - column: { name: GRP_NM, value: 샘플 우선순위 }
+              - column: { name: GRP_DESC, value: 아이콘 렌더러가 그리는 코드 — 값이 아이콘을 고른다(54 §5.4). }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: SORT_NO, valueNumeric: 911 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_PRIORITY }
+              - column: { name: DTL_CD, value: LOW }
+              - column: { name: DTL_NM, value: code.SMPL_PRIORITY.LOW }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 1 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_PRIORITY }
+              - column: { name: DTL_CD, value: NORMAL }
+              - column: { name: DTL_NM, value: code.SMPL_PRIORITY.NORMAL }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 2 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_PRIORITY }
+              - column: { name: DTL_CD, value: HIGH }
+              - column: { name: DTL_NM, value: code.SMPL_PRIORITY.HIGH }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 3 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_PRIORITY }
+              - column: { name: DTL_CD, value: URGENT }
+              - column: { name: DTL_NM, value: code.SMPL_PRIORITY.URGENT }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 4 }
+
+  - changeSet:
+      id: 901-code-smpl-cust-grd
+      author: template
+      comment: tone 맵의 실물 — 값이 색을 고른다(54 §5.4.1). 팝업이 채우는 칸이다.
+      changes:
+        - insert:
+            tableName: SYS_CODE_GROUP
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CUST_GRD }
+              - column: { name: GRP_NM, value: 샘플 고객등급 }
+              - column: { name: GRP_DESC, value: tone 맵의 실물 — 값이 색을 고른다(54 §5.4.1). 팝업이 채우는 칸이다. }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: SORT_NO, valueNumeric: 912 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CUST_GRD }
+              - column: { name: DTL_CD, value: VIP }
+              - column: { name: DTL_NM, value: code.SMPL_CUST_GRD.VIP }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 1 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CUST_GRD }
+              - column: { name: DTL_CD, value: GOLD }
+              - column: { name: DTL_NM, value: code.SMPL_CUST_GRD.GOLD }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 2 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CUST_GRD }
+              - column: { name: DTL_CD, value: SILVER }
+              - column: { name: DTL_NM, value: code.SMPL_CUST_GRD.SILVER }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 3 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_CUST_GRD }
+              - column: { name: DTL_CD, value: BRONZE }
+              - column: { name: DTL_NM, value: code.SMPL_CUST_GRD.BRONZE }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 4 }
+
+  - changeSet:
+      id: 901-code-smpl-tag-type
+      author: template
+      comment: list 항목이 스칼라가 아닌 쪽의 실물(54 §5.6).
+      changes:
+        - insert:
+            tableName: SYS_CODE_GROUP
+            columns:
+              - column: { name: GRP_CD, value: SMPL_TAG_TYPE }
+              - column: { name: GRP_NM, value: 샘플 태그유형 }
+              - column: { name: GRP_DESC, value: list 항목이 스칼라가 아닌 쪽의 실물(54 §5.6). }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: SORT_NO, valueNumeric: 913 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_TAG_TYPE }
+              - column: { name: DTL_CD, value: GEN }
+              - column: { name: DTL_NM, value: code.SMPL_TAG_TYPE.GEN }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 1 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_TAG_TYPE }
+              - column: { name: DTL_CD, value: RISK }
+              - column: { name: DTL_NM, value: code.SMPL_TAG_TYPE.RISK }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 2 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_TAG_TYPE }
+              - column: { name: DTL_CD, value: PROMO }
+              - column: { name: DTL_NM, value: code.SMPL_TAG_TYPE.PROMO }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 3 }
+
+  - changeSet:
+      id: 901-code-smpl-src-sys
+      author: template
+      comment: 기본 숨김 컬럼이 쓰는 코드 — 설정 창에서 사용자가 켠다(54 §2.1).
+      changes:
+        - insert:
+            tableName: SYS_CODE_GROUP
+            columns:
+              - column: { name: GRP_CD, value: SMPL_SRC_SYS }
+              - column: { name: GRP_NM, value: 샘플 원천시스템 }
+              - column: { name: GRP_DESC, value: 기본 숨김 컬럼이 쓰는 코드 — 설정 창에서 사용자가 켠다(54 §2.1). }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: SORT_NO, valueNumeric: 914 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_SRC_SYS }
+              - column: { name: DTL_CD, value: ERP }
+              - column: { name: DTL_NM, value: code.SMPL_SRC_SYS.ERP }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 1 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_SRC_SYS }
+              - column: { name: DTL_CD, value: WMS }
+              - column: { name: DTL_NM, value: code.SMPL_SRC_SYS.WMS }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 2 }
+        - insert:
+            tableName: SYS_CODE
+            columns:
+              - column: { name: GRP_CD, value: SMPL_SRC_SYS }
+              - column: { name: DTL_CD, value: MANUAL }
+              - column: { name: DTL_NM, value: code.SMPL_SRC_SYS.MANUAL }
+              - column: { name: SYS_YN, value: N }
+              - column: { name: USE_YN, value: Y }
+              - column: { name: SORT_NO, valueNumeric: 3 }
+
+  - changeSet:
+      id: 901-fill-smpl-order-offset
+      author: template
+      comment: ①이 그리는 컬럼을 기존 여섯에 채운다 — 빈 칸은 어휘의 실물이 되지 못한다
+      changes:
+        - update:
+            tableName: SMPL_ORDER
+            columns:
+              - column: { name: CUST_GRD_CD, value: GOLD }
+              - column: { name: DLVR_YM, value: "202609" }
+              - column: { name: SRC_SYS_CD, value: ERP }
+              - column: { name: MEMO, value: "정기 보충이라 재고를 먼저 확인한다." }
+              - column: { name: RMK, value: "할인 2.5% 적용 — 분기 계약가." }
+            where: ORD_ID = 1
+        - update:
+            tableName: SMPL_ORDER
+            columns:
+              - column: { name: CUST_GRD_CD, value: VIP }
+              - column: { name: DLVR_YM, value: "202609" }
+              - column: { name: SRC_SYS_CD, value: EDI }
+              - column: { name: MEMO, value: "긴급 건이라 출고 우선순위를 올렸다." }
+            where: ORD_ID = 2
+        - update:
+            tableName: SMPL_ORDER
+            columns:
+              - column: { name: CUST_GRD_CD, value: SILVER }
+              - column: { name: DLVR_YM, value: "202610" }
+              - column: { name: SRC_SYS_CD, value: ERP }
+            where: ORD_ID = 3
+        - update:
+            tableName: SMPL_ORDER
+            columns:
+              - column: { name: CUST_GRD_CD, value: GOLD }
+              - column: { name: DLVR_YM, value: "202608" }
+              - column: { name: SRC_SYS_CD, value: WMS }
+              - column: { name: MEMO, value: "완료된 주문이라 더 손대지 않는다." }
+            where: ORD_ID = 4
+        - update:
+            tableName: SMPL_ORDER
+            columns:
+              - column: { name: CUST_GRD_CD, value: BRONZE }
+              - column: { name: SRC_SYS_CD, value: MANUAL }
+              - column: { name: MEMO, value: "수기로 받은 주문 — 원천 시스템이 없다." }
+            where: ORD_ID = 5
+        - update:
+            tableName: SMPL_ORDER
+            columns:
+              - column: { name: CUST_GRD_CD, value: VIP }
+              - column: { name: DLVR_YM, value: "202611" }
+              - column: { name: SRC_SYS_CD, value: ERP }
+              - column: { name: MEMO, value: "품목이 아직 없다 — 삭제 게이트가 열리는 유일한 주문이다." }
+            where: ORD_ID = 6
+
+  - changeSet:
+      id: 901-rows-smpl-order-tag
+      author: template
+      comment: list 컬럼의 저장 형태 — 태그가 없는 주문 하나가 빈 배열의 실물이다(48 §4.1)
+      changes:
+        - insert:
+            tableName: SMPL_ORDER_TAG
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 1 }
+              - column: { name: TAG_SEQ, valueNumeric: 1 }
+              - column: { name: TAG_NM, value: 정기 }
+              - column: { name: TAG_TYPE_CD, value: GEN }
+              - column: { name: SORT_NO, valueNumeric: 1 }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER_TAG
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 1 }
+              - column: { name: TAG_SEQ, valueNumeric: 2 }
+              - column: { name: TAG_NM, value: 계약가 }
+              - column: { name: TAG_TYPE_CD, value: PROMO }
+              - column: { name: SORT_NO, valueNumeric: 2 }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER_TAG
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 2 }
+              - column: { name: TAG_SEQ, valueNumeric: 1 }
+              - column: { name: TAG_NM, value: 긴급 }
+              - column: { name: TAG_TYPE_CD, value: RISK }
+              - column: { name: SORT_NO, valueNumeric: 1 }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER_TAG
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 2 }
+              - column: { name: TAG_SEQ, valueNumeric: 2 }
+              - column: { name: TAG_NM, value: VIP }
+              - column: { name: TAG_TYPE_CD, value: GEN }
+              - column: { name: SORT_NO, valueNumeric: 2 }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER_TAG
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 2 }
+              - column: { name: TAG_SEQ, valueNumeric: 3 }
+              - column: { name: TAG_NM, value: 당일 }
+              - column: { name: TAG_TYPE_CD, value: GEN }
+              - column: { name: SORT_NO, valueNumeric: 3 }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER_TAG
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 3 }
+              - column: { name: TAG_SEQ, valueNumeric: 1 }
+              - column: { name: TAG_NM, value: 수출 }
+              - column: { name: TAG_TYPE_CD, value: GEN }
+              - column: { name: SORT_NO, valueNumeric: 1 }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER_TAG
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 4 }
+              - column: { name: TAG_SEQ, valueNumeric: 1 }
+              - column: { name: TAG_NM, value: 완료 }
+              - column: { name: TAG_TYPE_CD, value: GEN }
+              - column: { name: SORT_NO, valueNumeric: 1 }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER_TAG
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 4 }
+              - column: { name: TAG_SEQ, valueNumeric: 2 }
+              - column: { name: TAG_NM, value: 감사대상 }
+              - column: { name: TAG_TYPE_CD, value: RISK }
+              - column: { name: SORT_NO, valueNumeric: 2 }
+              - column: { name: REG_ID, value: admin }
+        - insert:
+            tableName: SMPL_ORDER_TAG
+            columns:
+              - column: { name: ORD_ID, valueNumeric: 6 }
+              - column: { name: TAG_SEQ, valueNumeric: 1 }
+              - column: { name: TAG_NM, value: 신규 }
+              - column: { name: TAG_TYPE_CD, value: GEN }
+              - column: { name: SORT_NO, valueNumeric: 1 }
+              - column: { name: REG_ID, value: admin }

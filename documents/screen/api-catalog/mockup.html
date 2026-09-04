@@ -1,0 +1,737 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>목업 · API 카탈로그 (api-catalog)</title>
+<style>
+/* ─────────────────────────────────────────────────────────────
+   목업 공용 스타일
+   목업은 한 파일로 완결되어야 한다. 외부 CSS 로 빼면 파일 하나만
+   열거나 다른 곳에 붙였을 때 화면이 깨진다. 그래서 복제를 감수한다.
+   새 목업은 이 블록을 그대로 복사한다.
+   의도적으로 밋밋하다. AntD 처럼 보이면 잘못된 구속이 된다.
+
+   ★ 그리드 어휘 다섯 — .sf .tb .grid .pg .split
+     크롬·행 상태·컬럼 고정의 자리는 53, 컬럼 계약은 54 가 정한다.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --ink:#1a1a1a; --muted:#6b6b6b; --line:#c9c9c9; --line2:#e4e4e4;
+  --bg:#ffffff; --panel:#f7f7f7; --err:#a8261c; --err-bg:#fbeceb;
+  --note:#1f4e79; --note-bg:#eef4fa; --ok:#1d7a4d;
+  /* ── 그리드 색. 그리드가 스스로 정하지 않고 셸에서 받는다 ──
+     Primary — 선택·편집 표시는 전부 여기서 파생한다.
+     진한 단계를 쓰지 않는다 — 그리드는 글자가 촘촘해 배경이 진해지면
+     전부 읽기 어려워진다. 대비 문제를 애초에 만들지 않는다. */
+  --pri:#1f4e79;      /* 원색 — 편집 중인 셀 테두리에만 */
+  --pri-1:#eaf1f9;    /* 가장 옅은 단계 — 현재 선택 행 */
+  --pri-2:#d6e6f5;    /* 한 단계 진한 것 — 현재 선택 셀 */
+  /* 컬럼 상태 — 정적. 헤더 표시(* · 흐린 글자)와 짝이다 */
+  --req-bg:#fdf6e6;   /* 필수 입력 */
+                      /* 편집 가능 = 바탕(--bg). 칠하지 않는 것이 곧 표시다 */
+                      /* 읽기 전용 = --panel */
+  /* 행 상태 — Primary 와 무관하다. 아이콘이 원본이고 배경은 거든다 */
+  --row-new:#eaf5ef; --row-mod:#e7f1f2;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#e6e6e6; --muted:#9a9a9a; --line:#4a4a4a; --line2:#333;
+    --bg:#161616; --panel:#1e1e1e; --err:#e08b82; --err-bg:#3a201e;
+    --note:#8fb8dd; --note-bg:#1c2833; --ok:#63c08d;
+    /* 같은 알파를 얹지 않는다 — 다크에서는 안 보이거나 반대로 튄다.
+       단계를 모드별로 따로 고른다 */
+    --pri:#8fb8dd; --pri-1:#1a2b3a; --pri-2:#24405c;
+    --req-bg:#33291a;
+    --row-new:#17281f; --row-mod:#16272a;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--bg);color:var(--ink);
+     font:14px/1.6 "Malgun Gothic","Apple SD Gothic Neo",sans-serif;}
+main{max-width:1000px;margin:0 auto}
+h1{font-size:19px;margin:0 0 4px}
+h2{font-size:15px;margin:34px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+h3{font-size:13px;margin:20px 0 8px;color:var(--muted);font-weight:600}
+code{font-family:Consolas,monospace;font-size:.92em;background:var(--panel);padding:1px 4px}
+a{color:var(--note)}
+
+/* 개요 바 — 문서와의 연결. 모든 목업이 갖는다 */
+.head{border:1px solid var(--line);background:var(--panel);padding:12px 14px;margin-bottom:6px}
+.head dl{display:grid;grid-template-columns:max-content 1fr;gap:2px 14px;margin:0;font-size:12.5px}
+.head dt{color:var(--muted)}
+.head dd{margin:0}
+
+/* 화면 영역 — 뷰포트를 나타내는 상자 */
+.screen{border:1px solid var(--line);margin:0 0 8px;background:var(--bg)}
+.screen .bar{background:var(--panel);border-bottom:1px solid var(--line2);
+             padding:5px 10px;font-size:11.5px;color:var(--muted)}
+.screen .body{padding:28px 20px}
+/* 셸 위에 뜬 모달 — 배경이 셸이라는 힌트만 준다 */
+.screen.shell .body{background:repeating-linear-gradient(45deg,
+  var(--panel) 0 6px, transparent 6px 12px);padding:22px 14px}
+/* 리프 화면은 자기가 콘텐츠다 — 셸 크롬을 그리지 않는다 */
+.screen.leaf .body{padding:12px}
+
+/* 카드 — 로그인 등 중앙 배치 폼 */
+.card{max-width:320px;margin:0 auto;border:1px solid var(--line);padding:22px 20px;background:var(--bg)}
+.card .logo{height:38px;border:1px dashed var(--line);display:flex;align-items:center;
+            justify-content:center;color:var(--muted);font-size:11.5px;margin-bottom:18px}
+
+/* 모달 — 그리드 설정 창도 이것을 쓴다 */
+.modal{max-width:600px;margin:0 auto;border:1px solid var(--line);background:var(--bg)}
+.modal .mh{border-bottom:1px solid var(--line2);padding:9px 14px;font-size:13px;font-weight:600;
+           display:flex;justify-content:space-between;align-items:center}
+.modal .mh .x{color:var(--muted);font-weight:400}
+.modal .mb{padding:14px}
+.modal .mf{border-top:1px solid var(--line2);padding:9px 14px;font-size:11.5px;color:var(--muted);
+           display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* 탭 */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin:0 0 14px}
+.tabs>span{padding:6px 13px;font-size:12.5px;border:1px solid transparent;border-bottom:none;
+           color:var(--muted);cursor:default}   /* 자식만 — 안에 배지가 들어갈 수 있다 */
+.tabs>span.on{border-color:var(--line);background:var(--bg);color:var(--ink);font-weight:600;
+              margin-bottom:-1px}
+.tabs .badge{display:inline-block;min-width:16px;height:16px;line-height:16px;text-align:center;
+             border-radius:8px;background:var(--err);color:#fff;font-size:10.5px;margin-left:5px}
+
+/* 폼 — 화면에 남는 폼은 조회조건 하나다 */
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;margin-bottom:3px}
+.f input,.f select,.f textarea{width:100%;padding:6px 8px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+.f .hint{font-size:11px;color:var(--muted);margin-top:3px}
+.f.ro input{background:var(--panel);color:var(--muted)}
+.btn{width:100%;padding:8px;border:1px solid var(--ink);background:var(--ink);
+     color:var(--bg);font:inherit;font-size:13px;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.sm{width:auto;padding:4px 11px;font-size:12px}
+.btn[disabled]{opacity:.35}
+.sub{text-align:center;margin-top:12px;font-size:12px}
+.row{display:flex;gap:8px;align-items:center}
+.row .btn{width:auto}
+
+/* 키-값 나열 (읽기 전용 정보) */
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:12.5px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+
+/* 설정 그룹 */
+.grp{border:1px solid var(--line2);margin-bottom:10px}
+.grp>b{display:block;background:var(--panel);border-bottom:1px solid var(--line2);
+       padding:5px 11px;font-size:12px}
+.grp .item{display:flex;justify-content:space-between;align-items:center;gap:12px;
+           padding:6px 11px;font-size:12.5px;border-bottom:1px solid var(--line2)}
+.grp .item:last-child{border-bottom:none}
+.grp .item .where{font-size:10.5px;color:var(--muted);white-space:nowrap}
+
+/* 목록 (알림·검색 결과·드롭다운·필터 메뉴) */
+.list{border:1px solid var(--line2);font-size:12.5px;background:var(--bg)}
+.list .it{padding:7px 11px;border-bottom:1px solid var(--line2);display:flex;
+          justify-content:space-between;align-items:center;gap:10px}
+.list .it:last-child{border-bottom:none}
+.list .it.unread{background:var(--note-bg)}
+.list .it .path{display:block;font-size:10.5px;color:var(--muted)}
+.list .it .when{color:var(--muted);font-size:11px;white-space:nowrap}
+.list .empty{padding:22px 11px;text-align:center;color:var(--muted);font-size:12px}
+.tag{display:inline-block;border:1px solid var(--line);padding:0 5px;font-size:10.5px;
+     color:var(--muted);border-radius:2px}
+
+/* 규칙 체크리스트 */
+.rules{list-style:none;margin:0 0 14px;padding:9px 11px;border:1px solid var(--line2);
+       background:var(--panel);font-size:11.5px;line-height:1.7}
+.rules li{padding-left:17px;position:relative}
+.rules li::before{position:absolute;left:0;font-weight:700}
+.rules .ok::before{content:"✓";color:var(--ok)}
+.rules .no::before{content:"✕";color:var(--err)}
+.rules .srv::before{content:"·";color:var(--muted)}
+.rules .srv{color:var(--muted)}
+.rules em{font-style:normal;opacity:.8}
+
+/* 배너 — 폼 상단 한 곳. 토스트(UX-10)도 이것으로 표현한다 */
+.banner{border:1px solid var(--err);background:var(--err-bg);color:var(--err);
+        padding:7px 10px;font-size:12.5px;margin-bottom:14px}
+.banner.info{border-color:var(--note);background:var(--note-bg);color:var(--note)}
+
+/* ── 그리드 어휘 다섯 ─────────────────────────────── */
+
+/* 검색 폼 — <SearchForm>(UX-15). 서버 조회 조건은 이것뿐이다 */
+.sf{border:1px solid var(--line2);background:var(--panel);padding:9px 11px;margin-bottom:8px;
+    display:grid;grid-template-columns:max-content 1fr max-content 1fr max-content 1fr;
+    gap:6px 9px;align-items:center;font-size:12px}
+.sf label{color:var(--muted);white-space:nowrap}
+.sf input,.sf select{width:100%;padding:3px 6px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:12px}
+.sf .wide{grid-column:span 3}
+.sf .act{grid-column:1/-1;text-align:right;padding-top:2px}
+
+/* 그리드 헤더 — 왼쪽 제목(.ttl), 오른쪽 버튼. 도구 둘(.ico)은 맨 오른쪽 고정 */
+.tb{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.tb .ttl{font-size:13px;font-weight:600;margin-right:auto;white-space:nowrap}
+.tb .ico{width:auto;padding:4px 8px;font-size:12px;white-space:nowrap}
+.tb .sp{flex:1}
+.tb .cnt{font-size:11.5px;color:var(--muted);white-space:nowrap}
+
+/* 그리드 본문 — <DataGrid> */
+.grid{border:1px solid var(--line);overflow:auto;max-height:260px}
+.grid table{margin:0;font-size:12px;border:none}
+.grid th{position:sticky;top:0;z-index:1}
+.grid td,.grid th{white-space:nowrap}
+.grid th .mn{float:right;color:var(--muted);font-weight:400;margin-left:8px}  /* 컬럼 메뉴 ☰ */
+.grid th .srt{color:var(--note)}                                             /* 정렬 표시 */
+.grid th.on{background:var(--note-bg)}                                       /* 필터 걸린 컬럼 */
+/* 헤더가 컬럼을 말한다. 색이 아니라 표시가 원본이다 */
+.grid th.req em{font-style:normal;color:var(--err);font-weight:700}          /* 필수 * */
+.grid th.roh{color:var(--muted);font-weight:400}                             /* 읽기 전용 컬럼 */
+/* 양끝 시스템 컬럼. 사용자가 숨기거나 옮길 수 없다 */
+.grid .st{width:26px;text-align:center;color:var(--muted)}
+.grid .del{width:34px;text-align:center;color:var(--muted)}
+.grid .pinL{border-right:2px solid var(--line)}   /* 좌 고정 ↔ 스크롤 경계 */
+.grid .pinR{border-left:2px solid var(--line)}    /* 스크롤 ↔ 우 고정 경계 */
+
+/* ── 셀과 행의 색 — 그리드 표준의 우선순위 여섯 ────────────────────
+   여섯이 전부 같은 명시도다. 그래서 나중에 쓴 것이 이긴다 —
+   6 → 1 순서로 적었고, 순서를 바꾸면 규약이 바뀐다.
+   행 규칙(tr.x td)이 셀 규칙(td.x)보다 명시도가 한 단계 높으므로
+   5(행 상태)가 6(컬럼 상태)을 이기는 것은 순서가 아니라 구조다.  */
+
+/* 6. 컬럼 상태 — 정적이므로 다른 것이 없을 때의 바탕 */
+.grid td.req{background:var(--req-bg)}                       /* 필수 입력 */
+.grid td.ro {background:var(--panel);color:var(--muted)}     /* 읽기 전용 */
+                                                             /* 편집 가능은 칠하지 않는다 */
+/* 5. 행 상태 — 상태 컬럼 아이콘이 원본이다 */
+.grid tr.new td{background:var(--row-new)}
+.grid tr.mod td{background:var(--row-mod)}
+.grid tr.rmv td{color:var(--muted);text-decoration:line-through}  /* 배경이 아니라 글자다 */
+/* 4. 현재 선택 행 — Primary 가장 옅은 단계 */
+.grid tr.sel td{background:var(--pri-1)}
+/* 3. 현재 선택 셀 — 한 단계 진한 것 + 테두리 */
+.grid tr td.cur{background:var(--pri-2);outline:1px solid var(--pri);outline-offset:-1px}
+/* 2. 편집 중인 셀 — 테두리는 Primary 원색, 배경은 바탕(입력 글자가 읽혀야 한다) */
+.grid tr td.edit{background:var(--bg);color:var(--ink);outline:2px solid var(--pri);outline-offset:-2px}
+/* 1. 검증 실패 — 유일하게 Primary 와 무관하다 */
+.grid tr td.err{background:var(--err-bg);outline:1px solid var(--err);outline-offset:-1px}
+
+/* ── 스위치 — 값이 둘인 데이터 셀 ──────────
+   ynFlag 컬럼과 권한 트리 셀이 같은 것을 쓴다. 체크박스가 아니다.
+   켜짐 색은 Primary 에서 온다.
+   여럿을 고르는 자리는 여전히 체크박스다 — 행 선택 · set 필터 ·
+   그리드 설정의 컬럼 표시.                                      */
+.swt{display:inline-block;width:24px;height:13px;border:1px solid var(--line);
+     border-radius:7px;background:var(--panel);position:relative;vertical-align:-2px}
+.swt::after{content:"";position:absolute;top:1px;left:1px;width:9px;height:9px;
+            border-radius:50%;background:var(--muted)}
+.swt.on{background:var(--pri);border-color:var(--pri)}
+.swt.on::after{left:12px;background:var(--bg)}
+.swt.dis{opacity:.45}          /* 비활성 — 입력 칸이 아니라 상태 표시로 읽힌다 */
+
+/* 색 견본 — 화면 9 */
+.sw{display:inline-block;width:30px;height:14px;border:1px solid var(--line);
+    vertical-align:-2px;margin-right:6px}
+
+/* 그리드 푸터 — 건수 · 네비게이션 · 페이지 사이즈 */
+.pg{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+    padding:6px 2px;font-size:11.5px;color:var(--muted)}
+.pg .nav{text-align:center}
+.pg .size{text-align:right}
+.pg b{color:var(--ink)}
+
+/* 마스터-디테일 스플리터. 축이 둘이고 접기 화살표가 붙는다 */
+.split{height:13px;margin:9px 0;border-top:1px solid var(--line2);
+       border-bottom:1px solid var(--line2);background:var(--panel);
+       display:flex;align-items:center;justify-content:center;gap:4px;
+       font-size:9px;color:var(--muted);cursor:row-resize}
+.split .hnd{letter-spacing:2px;line-height:1}                 /* 끄는 손잡이 */
+.split .arw{border:1px solid var(--line);background:var(--bg);color:var(--muted);
+            font-size:8px;line-height:10px;padding:0 4px;cursor:default}
+.split .arw.off{opacity:.3}          /* 반대쪽이 이미 접혔다 — 둘 다 접히지 않는다 */
+/* 세로 축 — 좌우 배치 */
+.split.v{height:auto;width:13px;margin:0 9px;flex-direction:column;
+         border:none;border-left:1px solid var(--line2);border-right:1px solid var(--line2);
+         cursor:col-resize}
+.splitrow{display:flex;align-items:stretch}
+.splitrow>.pane{flex:1;min-width:0}
+/* 접힌 쪽 — 제목 줄만 남는다. 없는 것과 다르다 */
+.folded{border:1px solid var(--line2);background:var(--panel);padding:6px 10px;
+        font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.folded .why{font-weight:400;font-size:11px;color:var(--muted);margin-left:auto}
+
+/* ── 브레드크럼 줄 ──────────────────────────────────
+   줄은 셸의 것이고 오른쪽 슬롯은 화면이 채운다. 리프 목업이 셸
+   크롬을 그리지 않는 규약의 유일한 예외이며, 그리지 않으면
+   조회조건 컨트롤(UX-07 · UX-15)을 보일 자리가 없다.            */
+.bc{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+    border:1px solid var(--line2);background:var(--panel);
+    padding:4px 10px;margin-bottom:8px;font-size:12px;color:var(--muted)}
+.bc .path{margin-right:auto;white-space:nowrap}
+.bc .path b{color:var(--ink)}
+.bc .btn{width:auto;padding:2px 8px;font-size:11.5px}
+
+/* 주석 — 화면 요소 ↔ 문서 결정 연결 */
+.notes{border-left:3px solid var(--note);background:var(--note-bg);padding:10px 14px;font-size:12.5px}
+.notes ol{margin:0;padding-left:18px}
+.notes li{margin:3px 0}
+.n{display:inline-block;min-width:17px;height:17px;line-height:17px;text-align:center;
+   border-radius:50%;background:var(--note);color:#fff;font-size:11px;margin-right:5px}
+
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
+th,td{border:1px solid var(--line2);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:600;white-space:nowrap}
+td.c{white-space:nowrap;font-family:Consolas,monospace;font-size:12px}
+
+.todo{border:1px dashed var(--line);padding:10px 14px;font-size:12.5px;background:var(--panel)}
+.todo ul{margin:4px 0 0;padding-left:18px}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line2);
+       font-size:11.5px;color:var(--muted)}
+
+/* ── 이 목업만의 어휘 셋 ──────────────────────────────
+   조회 전용 화면이라 편집 어휘가 없다. 건수는 오른쪽 정렬하고,
+   미매핑 배지는 메뉴 트리와 같은 것을 쓴다 — 둘 다
+   "연결이 끊겼다" 이고 고치는 곳만 다르다.                      */
+.grid td.num,.grid th.num{text-align:right}
+.grid td.ck,.grid th.ck{text-align:center;width:40px}
+.mut{color:var(--muted);font-size:11px}
+
+/* 배지 둘 — 뜻도 고치는 곳도 다르다 */
+.bdg{display:inline-block;border:1px solid var(--err);color:var(--err);
+     padding:0 4px;font-size:10px;border-radius:2px;margin-left:4px}
+.bdg.warn{border-color:#a67c00;color:#a67c00}
+@media (prefers-color-scheme: dark){ .bdg.warn{border-color:#d4a72c;color:#d4a72c} }
+
+/* 브레드크럼 줄 (그리드 목업 공용) */
+.bc{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+    border:1px solid var(--line2);background:var(--panel);
+    padding:4px 10px;margin-bottom:8px;font-size:12px;color:var(--muted)}
+.bc .path{margin-right:auto;white-space:nowrap}
+.bc .path b{color:var(--ink)}
+.bc .btn{width:auto;padding:2px 8px;font-size:11.5px}
+</style>
+
+<main>
+
+<!-- ── 개요 바 ─────────────────────────────────────────────── -->
+<h1>API 카탈로그</h1>
+<div class="head">
+  <dl>
+    <dt>화면코드</dt><dd><code>api-catalog</code></dd>
+    <dt>요건서</dt><dd><a href="requirements.md">requirements.md</a></dd>
+    <dt><code>MENU_CD</code></dt><dd><code>API_CATALOG</code> (상위 <code>MENU</code>)</dd>
+    <dt>라우트</dt><dd><code>/api-catalog</code> · 셸 안의 탭</dd>
+    <dt>담는 기능</dt><dd>AUTHZ-14</dd>
+    <dt>액션</dt><dd><b><code>R</code> <code>E</code></b> — <b>62 의 넷 중 유일하게 <code>S</code> 가 없는 화면</b>. 내보내기는 쓰기가 아니다(§5)</dd>
+    <dt>형태</dt><dd>마스터(API 목록) + 하단 <b>pane 하나</b>. 축은 <b>상하</b></dd>
+    <dt>다루는 것</dt><dd><b>403 을 진단한다</b>(§2) — 미등록 · 미매핑 · 권한 문제 <b>세 갈래</b>.
+      <b>데이터를 고치지 않는다</b> — 원본이 시드이고 여기서 고친 것은 다음 배포에서 사라진다(§5)</dd>
+  </dl>
+</div>
+
+<!-- ── 화면 1 ─────────────────────────────────────────────── -->
+<h2>1. 기본 상태 — <b>버튼이 조회 하나뿐</b>이다</h2>
+
+<div class="screen leaf" id="main" data-manual="main">
+  <div class="bar">/api-catalog — 리프 화면이라 셸 크롬을 그리지 않는다. <b>브레드크럼 줄만 예외</b>다</div>
+  <div class="body">
+
+    <div class="bc">
+      <span class="path">시스템 &rsaquo; 메뉴 관리 &rsaquo; <b>API 카탈로그</b></span>
+      <button class="btn sm ghost" type="button" title="저장된 조회조건 — UX-07">조건 &#9662;</button>
+      <button class="btn sm ghost" type="button" title="조회조건 접기/펼치기 — UX-15">&#8963; 조회조건</button>
+    </div>
+
+    <div class="sf">
+      <label>API URL</label><input>
+      <label>API 명</label><input>
+      <label>액션</label><select><option>전체</option><option>조회</option><option>저장</option><option>내보내기</option><option>실행</option></select>
+      <label>매핑 상태</label><select><option>전체</option><option>매핑됨</option><option>미매핑</option></select>
+      <span class="mut" style="grid-column:span 2"><b>매핑 상태가 진단의 입구</b>다 — 서버 조건이어야 한다 <span class="n">1</span></span>
+      <div class="act"><button class="btn sm ghost" type="button">초기화</button></div>
+    </div>
+
+    <div class="tb">
+      <span class="ttl">API 목록</span>
+      <span class="sp"></span>
+      <button class="btn sm ghost" type="button">조회</button>
+      <button class="btn sm ghost ico" type="button" title="엑셀 다운로드">⤓ ▾ <span class="n">2</span></button>
+      <button class="btn sm ghost ico" type="button" title="그리드 설정">⚙</button>
+    </div>
+
+    <div class="grid" style="max-height:250px">
+      <table>
+        <thead><tr>
+          <th class="roh">API URL</th><th class="roh">API 명</th><th class="roh">액션</th>
+          <th class="roh">설명</th><th class="roh num">매핑<br>메뉴</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="ro">/api/service/errorLog/getDetail</td><td class="ro">에러 로그 상세</td>
+              <td class="ro">조회</td><td class="ro">스택트레이스</td><td class="ro num">1</td></tr>
+          <tr class="sel"><td class="ro">/api/service/errorLog/getList</td><td class="ro">에러 로그 목록</td>
+              <td class="ro">조회</td><td class="ro">기간·상태로 조회</td><td class="ro num">1</td></tr>
+          <tr><td class="ro">/api/service/menu/deleteNode</td><td class="ro">메뉴 삭제</td>
+              <td class="ro">저장</td><td class="ro">게이트 통과 시</td><td class="ro num">1</td></tr>
+          <tr><td class="ro">/api/service/menu/getTree</td><td class="ro">메뉴 트리 조회</td>
+              <td class="ro">조회</td><td class="ro">전건</td><td class="ro num">1</td></tr>
+          <tr><td class="ro">/api/service/order/exportSummary</td><td class="ro">주문 요약 내보내기</td>
+              <td class="ro">내보내기</td><td class="ro">서버 POI</td>
+              <td class="ro num">0 <span class="bdg">미매핑</span> <span class="n">3</span></td></tr>
+          <tr><td class="ro">/api/service/role/save</td><td class="ro">역할 저장</td>
+              <td class="ro">저장</td><td class="ro">일괄 CUD</td><td class="ro num">1</td></tr>
+          <tr><td class="ro">/api/service/user/getList</td><td class="ro">사용자 목록</td>
+              <td class="ro">조회</td><td class="ro">조회조건 검색</td><td class="ro num">2</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>총 <b>128</b>건 · <b>7</b>페이지 <span class="mut">· 미매핑 <b>1</b>건</span></span>
+      <span class="nav">‹ <b>1</b> 2 3 … ›</span><span class="size">20건씩 ▾</span></div>
+
+    <div class="split"><span class="arw">▲</span><span class="hnd">⠿⠿⠿</span><span class="arw">▼</span></div>
+
+    <div class="tb"><span class="ttl">이 API 를 쓰는 메뉴 — <span class="mut">/api/service/errorLog/getList</span> <span class="n">4</span></span>
+      <span class="sp"></span>
+      <button class="btn sm ghost" type="button">조회</button>
+      <button class="btn sm ghost ico" type="button" title="그리드 설정">⚙</button></div>
+    <div class="grid" style="max-height:90px">
+      <table>
+        <thead><tr><th class="roh">메뉴 경로</th><th class="roh">메뉴 코드</th><th class="roh ck">사용</th><th class="roh num">접근 가능 인원</th></tr></thead>
+        <tbody>
+          <tr><td class="ro">시스템 › 이력 · 로그 › <b>에러 로그</b></td><td class="ro">ERROR_LOG</td>
+              <td class="ro ck"><span class="swt on dis"></span></td><td class="ro num">14</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span>총 <b>1</b>건 — <b>더블 클릭하면 메뉴 트리를 그 메뉴로 연다</b> <span class="n">5</span></span></div>
+
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b><code>매핑 상태</code> 가 진단의 입구다</b>. 미매핑만 골라 보는 것이 이 화면에서
+        가장 자주 하는 일인데, <b>컬럼 필터로 두면 현재 페이지 안에서만 걸린다</b> —
+        전량을 물어야 하므로 <b>서버 조건</b>이다.</li>
+    <li><span class="n">2</span><b>쓰는 버튼이 없다.</b> 전 컬럼이 읽기 전용이라 <code>editable</code> 을 하나도
+        선언하지 않고, 그래서 <b>상태 컬럼 · 삭제 컬럼 · 저장 버튼 · 행 추가가 전부 없다</b>
+        (§4).
+        <b><code>⤓</code> 는 있다</b> — <b>조회 전용은 <i>쓰기</i> 에 관한 말이지 <i>내보내기</i> 에 관한 말이 아니다</b>.
+        항목은 <b>둘</b>(현재 페이지 · 전체)이며 — <b>페이징이 있어</b> 메뉴 트리와 다르다.
+        <b><code>⚙</code> 도 있다</b> — 개인화이지 데이터가 아니다.</li>
+    <li><span class="n">3</span><b>미매핑은 대개 결함이다</b>. <code>SYS_MENU_API</code> 에 행이 없으면
+        <b>아무도 그 API 를 호출할 수 없다</b> — 유효 권한의 원소가 <code>(MENU_CD, ACTION_CD)</code> 쌍인데
+        메뉴가 없으니 쌍이 만들어지지 않는다. <b>프론트가 부르지 않는 API 가 컨트롤러에
+        남아 있다</b>는 뜻이며, <b>배포 예정 화면의 API 가 먼저 들어온</b> 정상 경우가 있어 막지는 않는다.</li>
+    <li><span class="n">4</span><b>탭이 아니라 pane 하나</b>다 — 메뉴·권한 화면 설계가 역할 화면에서 내린 것과 같은 판단이며
+        <b>탭 하나짜리 탭바는 누를 곳이 없는 크롬</b>이다. <b>메뉴 경로를 전체로</b> 낸다 —
+        메뉴명만으로는 어느 것인지 모른다.</li>
+    <li><span class="n">5</span><b>더블 클릭이 셋째 갈래로 넘겨준다</b>(화면 2). <code>MENU_TREE</code> 를 그 메뉴로 열고
+        (UX-02 멀티탭), 거기 <b>매핑된 역할</b> 탭에서 <code>ROLE_AUTH_MGMT</code>로 이어진다.</li>
+    <li><b>감사 4컬럼이 목록에 없다</b> — 기본 숨김이다(<code>visible: false</code>).
+        시드가 <b>전건 삭제 후 전건 삽입</b>이라 <b>모든 행의 값이 매번 같이 다시 쓰인다</b> —
+        <i>등록일</i> 이라고 부르면 거짓말이라 라벨이 <b>최종 시드 반영</b>이다.</li>
+    <li><b>액션 셀이 <i>조회 · 저장 · 내보내기 · 실행</i> 으로 나온다</b> — <code>READ</code> 가 아니다.
+        권한 화면의 <b>액션 4열 헤더</b>와 <b>같은 메시지 키</b>(<code>action.{ACTION_CD}</code>)를 읽는다
+       . <b>공통코드가 아니다</b> — 이 넷은 헤더로도 쓰여 소스에 박혀 있고,
+        잠가 두면(<code>SYS_YN</code>) 관리자에게 남는 것이 없다. <b>값은 소스, 라벨만 데이터</b>다.</li>
+    <li><b>기본 정렬은 <code>API_URL</code></b> 이다. PK 라 <b>tie-breaker 가 필요 없다</b> —
+        역할 목록이 <code>ROLE_NM, ROLE_ID</code> 로 두 컬럼이 필요했던 것과 다르다.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 2 ─────────────────────────────────────────────── -->
+<h2>2. 이 화면의 존재 이유 — 403 은 <b>세 갈래</b>로 갈린다</h2>
+
+<div class="screen leaf">
+  <div class="body">
+    <ul class="rules">
+      <li class="srv"><em>운영자가 403 을 받는다 → 로그(64)에서 <b>URL 하나</b>를 얻는다 → 여기서 찾는다</em></li>
+      <li class="no"><b>목록에 없다</b> → <b>미등록</b> — 컨트롤러 + 시드 재생성. <b>화면 3</b></li>
+      <li class="no"><b>있는데 매핑 메뉴 0</b> → <b>미매핑</b> — 프론트 <code>endpoints.ts</code> + 시드 재생성. <b>화면 4</b></li>
+      <li class="ok"><b>있고 매핑 메뉴가 있다</b> → <b>권한 문제</b> — 역할 권한 또는 개인 예외</li>
+    </ul>
+    <div class="banner info"><b>세 갈래가 이 화면의 설계를 전부 정한다</b> —
+      마스터가 첫째와 둘째를 답하고, <b>하단 pane 이 셋째로 넘겨준다</b>(화면 1 주석 5)</div>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th>상태</th><th>무엇이 없나</th><th>증상</th><th>고치는 곳</th></tr></thead>
+  <tbody>
+    <tr><td><b>미등록</b></td><td><code>SYS_API</code> 에 행</td><td>403. <b>이 화면에서 찾을 수 없다</b></td>
+        <td><b>컨트롤러</b> + <code>./gradlew generateApiSeed</code></td></tr>
+    <tr><td><b>미매핑</b></td><td><code>SYS_MENU_API</code> 에 행</td><td>403. <b>배지가 보인다</b></td>
+        <td><b>프론트 <code>endpoints.ts</code></b> + 시드 재생성</td></tr>
+    <tr><td>권한 문제</td><td><b>사람의 권한</b></td><td>403. API 는 정상이다</td>
+        <td><b>역할 권한</b> · 개인 예외</td></tr>
+  </tbody>
+</table>
+
+<div class="notes">
+  <ol>
+    <li><b>인가 데이터 모델이 미등록과 미매핑을 가른 이유가 여기서 값을 한다</b> — <i>"둘 다 403 이지만
+        고치는 곳이 다르므로 구분해 기록한다"</i>. <b>그 구분을 사람이 확인하는 자리</b>가 이 화면이다.</li>
+    <li><b>미등록은 이 화면이 보여줄 수 없다</b> — 없는 행을 목록에 낼 방법이 없다.
+        그래서 <b>검색 결과 0건의 빈 상태가 곧 진단</b>이 된다(화면 3). <i>"조회 결과가 없습니다"</i> 로
+        끝내면 <b>세 갈래 중 하나가 사라진다</b>.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 3 ─────────────────────────────────────────────── -->
+<h2>3. 미등록 — <b>빈 상태가 진단이다</b></h2>
+
+<div class="screen leaf" id="not-registered" data-manual="not-registered">
+  <div class="body">
+    <div class="sf">
+      <label>API URL</label><input value="/api/service/order/cancel">
+      <label>API 명</label><input>
+      <label>액션</label><select><option>전체</option></select>
+      <label>매핑 상태</label><select><option>전체</option></select>
+      <div class="act"><button class="btn sm ghost" type="button">초기화</button></div>
+    </div>
+    <div class="tb"><span class="ttl">API 목록</span><span class="sp"></span>
+      <button class="btn sm ghost" type="button">조회</button></div>
+    <div class="grid" style="max-height:none">
+      <table><thead><tr><th class="roh">API URL</th><th class="roh">API 명</th><th class="roh">액션</th><th class="roh num">매핑 메뉴</th></tr></thead></table>
+      <div class="empty" style="padding:20px 12px;text-align:center;font-size:12.5px;border-top:1px solid var(--line2)">
+        <b>등록되지 않은 API 입니다.</b><br>
+        <span class="mut">컨트롤러를 추가하고 시드를 재생성하세요 — <code>./gradlew generateApiSeed</code></span>
+      </div>
+    </div>
+    <div class="pg"><span>총 <b>0</b>건 <span class="n">6</span></span></div>
+  </div>
+</div>
+
+<div class="screen leaf">
+  <div class="body">
+    <div class="tb"><span class="ttl">같은 0건인데 <b>다른 문구</b>다 <span class="n">7</span></span></div>
+    <div class="grid" style="max-height:none">
+      <table><thead><tr><th class="roh">API URL</th><th class="roh">API 명</th><th class="roh">액션</th><th class="roh num">매핑 메뉴</th></tr></thead></table>
+      <div class="empty" style="padding:20px 12px;text-align:center;font-size:12.5px;border-top:1px solid var(--line2)">
+        조회 조건에 맞는 API 가 없습니다
+      </div>
+    </div>
+    <div class="pg"><span>총 <b>0</b>건 <span class="mut">— 액션 <b>내보내기</b> + 매핑 상태 <b>미매핑</b> 으로 조회했다</span></span></div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">6</span><b>URL 로 찾았는데 0건이면 그것이 미등록이다</b>. 없는 행을 보여줄 수
+        없으니 <b>빈 상태가 그 자리를 대신한다</b> — <b>고칠 명령까지 적는다</b>.</li>
+    <li><span class="n">7</span><b>빈 상태를 둘로 가르는 근거는 조회조건이다</b>.
+        <b>URL 칸에 값이 있고 다른 칸이 비었을 때만</b> 미등록 문구를 낸다 — 아니면
+        <b>조건을 잘못 준 사람에게 <i>"컨트롤러를 추가하라"</i> 고 말하게 된다</b>.</li>
+    <li><b>이것이 이 화면에서 가장 중요한 한 줄이다.</b> 나머지는 목록이고, 이 문구가
+        <b>세 갈래 중 하나를 혼자 담당한다</b>(화면 2).</li>
+  </ol>
+</div>
+
+<!-- ── 화면 4 ─────────────────────────────────────────────── -->
+<h2>4. 미매핑 — 배지와 하단이 <b>같은 말</b>을 한다</h2>
+
+<div class="screen leaf">
+  <div class="body">
+    <div class="tb"><span class="ttl">API 목록 — <span class="mut">매핑 상태 <b>미매핑</b> 으로 걸렀다</span></span></div>
+    <div class="grid" style="max-height:70px">
+      <table>
+        <thead><tr><th class="roh">API URL</th><th class="roh">API 명</th><th class="roh">액션</th><th class="roh num">매핑 메뉴</th></tr></thead>
+        <tbody>
+          <tr class="sel"><td class="ro">/api/service/order/exportSummary</td><td class="ro">주문 요약 내보내기</td>
+              <td class="ro">내보내기</td><td class="ro num">0 <span class="bdg">미매핑</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="split"><span class="arw">▲</span><span class="hnd">⠿⠿⠿</span><span class="arw">▼</span></div>
+    <div class="tb"><span class="ttl">이 API 를 쓰는 메뉴</span></div>
+    <div class="grid" style="max-height:none">
+      <table><thead><tr><th class="roh">메뉴 경로</th><th class="roh">메뉴 코드</th><th class="roh ck">사용</th><th class="roh num">접근 가능 인원</th></tr></thead></table>
+      <div class="empty" style="padding:16px 12px;text-align:center;font-size:12.5px;border-top:1px solid var(--line2)">
+        <b>어느 메뉴도 이 API 를 쓰지 않습니다.</b><br>
+        <span class="mut">아무도 호출할 수 없습니다 — 프론트 <code>endpoints.ts</code> 를 확인하고 시드를 재생성하세요</span>
+      </div>
+    </div>
+    <div class="pg"><span>총 <b>0</b>건 <span class="n">8</span></span></div>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th>배지</th><th>어느 화면</th><th>뜻</th><th>고치는 곳</th></tr></thead>
+  <tbody>
+    <tr><td><span class="bdg">미매핑</span></td><td><b>여기</b> · 메뉴 트리</td>
+        <td><code>SYS_MENU_API</code> 0건 — <b>아무도 못 쓴다</b></td><td>프론트 <code>endpoints.ts</code> + 시드</td></tr>
+    <tr><td><span class="bdg warn">미연결</span></td><td>메뉴 트리</td>
+        <td>라우트 맵에 없다 — <b>클릭이 404</b></td><td><b>프론트 라우트</b></td></tr>
+  </tbody>
+</table>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">8</span><b>배지와 하단이 같은 말을 한다.</b> 목록에서 훑을 때는 배지가, 한 건을 들여다볼
+        때는 하단이 답한다 — <b>어느 쪽으로 들어와도 같은 곳에 닿는다</b>.</li>
+    <li><b>두 배지를 같은 어휘로 쓰는 것이 의도다</b>. 둘 다 <i>"연결이 끊겼다"</i> 이고
+        <b>고치는 곳만 다르다</b> — <b>화면이 둘이어도 사용자가 배우는 것은 하나</b>다.</li>
+    <li><b><code>/api/service/**</code> 만 목록에 있다</b>(접두 액션 · 시드 생성 결정의 스캔 범위) — <code>/api/common/*</code> 은
+        인가 대상이 아니라 애초에 없다. <b>그래서 목록에 있는 미매핑은 전부 업무 API 다</b>.</li>
+    <li><b>CI 경고로 올릴지는 메뉴·권한 화면 설계 미결</b>이다 — 접두 액션 · 시드 생성 결정의 CI 가 잡는 것은 <b>시드 재생성 누락</b>이고
+        미매핑 자체는 아니다. <b>배포 예정 화면의 API 가 먼저 들어오는 정상 경로</b>가 있어 오탐이 난다.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 5 ─────────────────────────────────────────────── -->
+<h2>5. 왜 조회 전용인가 — <b>여기서 고친 것은 다음 배포에서 사라진다</b></h2>
+
+<table>
+  <thead><tr><th>사실</th><th>어디</th><th>그래서</th></tr></thead>
+  <tbody>
+    <tr><td><code>ACTION_CD</code> 는 <b>코드가 결정한다</b> — 경로 접두 또는 <code>@ApiActionType</code></td>
+        <td>—</td><td rowspan="4"><b>위 넷 중 하나만으로도 조회 전용이 된다.</b><br>
+        편집 수단을 두면 <i>"고쳤는데 원래대로 돌아왔다"</i> 가 배포마다 반복되고,
+        그것은 기능이 아니라 <b>고장으로 읽힌다</b></td></tr>
+    <tr><td>매핑은 <b>프론트 <code>endpoints.ts</code></b> 에서 나온다</td><td>〃</td></tr>
+    <tr><td>시드는 <b>전건 삭제 후 전건 삽입</b>이다</td><td>—</td></tr>
+    <tr><td>매핑 행 추가가 <b>곧 접근 범위 확장</b>이라 코드 리뷰를 거쳐야 한다</td><td>—</td></tr>
+    <tr><td><b>API 명·설명은 <code>@Operation</code></b> 이 준다 — 컨트롤러에 쓴 한 문장이다</td><td>—</td>
+        <td><b>고칠 곳은 코드다.</b> <code>summary</code> 누락은 ArchUnit 이 빌드에서 깬다 —
+        <b>그래서 이 화면에 <i>이름 없는 행</i> 이 없다</b></td></tr>
+  </tbody>
+</table>
+
+<div class="notes">
+  <ol>
+    <li><b><code>EXPORT</code> 는 있다</b>(메뉴 목록의 액션 열이 <code>R E</code>). <b>넷은 <i>쓰기</i> 를 막는 근거이지
+        <i>내보내기</i> 를 막는 근거가 아니다.</b> 시드 파일에 있는 것은 <code>SYS_API</code> 네 컬럼과 매핑 행뿐이고,
+        <b>이 화면이 계산하는 <code>매핑 메뉴</code> 수와 접근 가능 인원은 어디에도 없다</b>.
+        가장 쓸모 있는 조합은 <b><code>매핑 상태 = 미매핑</code> 으로 조회한 뒤 <i>전체</i></b> —
+        <b>결함 목록이 그대로 파일이 된다</b>.</li>
+    <li><b>62 의 넷 중 처음으로 <code>R</code> 만 있는 화면</b>이다 — §2·§3 은 <code>R S</code>, §4 는 <code>R S E</code> 였다.</li>
+    <li><b>조회 전용이라고 그리드 설정까지 없어지는 것은 아니다</b> — 컬럼 표시·순서·고정은
+        <b>개인화</b>이며 데이터와 무관하다. 트리가 그 창을 갖지 않는 것과는 이유가 다르다.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 6 ─────────────────────────────────────────────── -->
+<h2>6. 버튼 → 액션 · 사용 테이블</h2>
+
+<table>
+  <thead><tr><th>그리드</th><th>자리</th><th>버튼</th><th>API</th><th>액션</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="3">마스터</td><td>①</td><td>조회</td><td class="c">apiCatalog/getList</td><td><b>R</b></td><td>접두 <code>get</code></td></tr>
+    <tr><td><b>②</b></td><td><b>엑셀</b></td><td><b>선언이 없다</b> — 프론트 생성</td><td><b>E</b></td><td>—</td></tr>
+    <tr><td>③</td><td>그리드 설정</td><td>개인화 API(공통)</td><td><b>없음</b></td><td>—</td></tr>
+    <tr><td>하단</td><td>①</td><td>조회</td><td class="c">apiCatalog/getMenuList</td><td><b>R</b></td><td>—</td></tr>
+  </tbody>
+</table>
+
+<table>
+  <thead><tr><th>테이블</th><th>읽기</th><th>쓰기</th></tr></thead>
+  <tbody>
+    <tr><td><code>SYS_API</code></td><td>마스터 전체</td><td rowspan="2"><b>없음</b> — 시드다</td></tr>
+    <tr><td><code>SYS_MENU_API</code></td><td>하단 · <b>매핑 메뉴 컬럼</b></td></tr>
+    <tr><td><code>SYS_MENU</code></td><td>하단의 <b>경로 · 사용 여부</b></td><td>—</td></tr>
+    <tr><td><code>SYS_ROLE_MENU_AUTH</code> · <code>SYS_USER_MENU_AUTH</code></td><td>하단의 <b>접근 가능 인원</b></td><td>—</td></tr>
+    <tr><td><code>SYS_MESSAGE</code></td><td>메뉴 경로의 이름 — <code>menu.{MENU_CD}</code></td><td>—</td></tr>
+  </tbody>
+</table>
+
+<div class="notes">
+  <ol>
+    <li><b>권한이 없으면 조회 버튼만 남는다</b> — <b>원래 그것뿐이다</b>.
+        다른 화면에서 <i>"권한 없으면 저장·삭제가 감춰진다"</i> 던 규칙이 여기서는 <b>보일 것이 없다</b>.</li>
+    <li><b>하단도 조회 전용이다</b> — 매핑 행 추가가 곧 접근 범위 확장이다.
+        <code>addRow</code> 를 선언하지 않으면 행 추가 버튼이 나오지 않는다.</li>
+  </ol>
+</div>
+
+<!-- ── 테스트 케이스 ───────────────────────────────────────── -->
+<h2>7. 테스트 케이스 — 주석의 주장을 전부 덮는다</h2>
+
+<p style="font-size:12.5px;margin:0 0 10px">
+  <b>주석은 <i>"왜 이렇게 그렸는가"</i> 를 말하고, 여기는 <i>"그것이 지켜졌는가"</i> 를 묻는다</b>.
+  <b>근거가 빈 케이스는 지어낸 것이다</b> — 문서 절이나 이 파일의 화면 번호를 가리킨다.
+  <b>되면 안 되는 것</b>도 함께 넣는다.
+</p>
+
+<h3>크롬과 컬럼 (§1)</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">AC-01</td><td>그리드 헤더</td><td><b>조회와 <code>⚙</code> 뿐이다</b> — 저장 · 행 추가 · <code>⤓</code> 가 없다</td><td>§1 주석 2 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">AC-02</td><td>양끝 시스템 컬럼</td><td><b>상태 컬럼도 삭제 컬럼도 없다</b> — 편집 가능한 컬럼이 하나도 없다</td><td>§4</td></tr>
+    <tr><td class="c">AC-03</td><td>셀을 더블 클릭</td><td><b>편집되지 않는다</b> — 전 컬럼 읽기 전용</td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">AC-04</td><td>감사 4컬럼</td><td><b>기본 숨김</b>이고 라벨이 <b>최종 시드 반영</b>이다 — <i>등록일</i> 이 아니다</td><td>§1 주석 6</td></tr>
+    <tr><td class="c">AC-05</td><td>감사 4컬럼을 켜 본다</td><td><b>전 행이 같은 값</b>이다 — 시드가 전건 다시 쓰인다</td><td>—</td></tr>
+    <tr><td class="c">AC-06</td><td>기본 정렬</td><td><code>API_URL</code> 하나 — <b>PK 라 tie-breaker 가 없다</b></td><td>§1 주석 7</td></tr>
+    <tr><td class="c">AC-07</td><td>브레드크럼 줄 오른쪽</td><td><code>[조건 ▾]</code> 과 <code>[⌃ 조회조건]</code> 이 있다</td><td>—</td></tr>
+    <tr><td class="c">AC-08</td><td>검색 폼의 버튼</td><td><b>초기화 하나뿐</b> — 조회는 그리드 ①이 갖는다</td><td>(되면 안 되는 것)</td></tr>
+  </tbody>
+</table>
+
+<h3>403 진단 (§2 · §3 · §4)</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">AC-09</td><td><b>URL 만</b> 넣고 조회했는데 0건</td><td><b>미등록 문구</b>가 뜬다 — <code>generateApiSeed</code> 까지 적는다</td><td>§3 주석 6</td></tr>
+    <tr><td class="c">AC-10</td><td>액션·매핑 상태로 조회했는데 0건</td><td><b>보통의 빈 상태</b>다 — 미등록 문구를 내지 않는다</td><td>§3 주석 7 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">AC-11</td><td>매핑 메뉴가 <code>0</code> 인 행</td><td><b><code>미매핑</code> 배지</b>가 붙는다</td><td>§1 주석 3</td></tr>
+    <tr><td class="c">AC-12</td><td>그 행을 선택한다</td><td>하단이 <b>같은 진단</b>을 낸다 — 프론트 <code>endpoints.ts</code> 를 가리킨다</td><td>§4 주석 1</td></tr>
+    <tr><td class="c">AC-13</td><td><code>매핑 상태 = 미매핑</code> 으로 조회</td><td><b>서버 조건</b>이라 <b>전량에서</b> 걸린다 — 현재 페이지가 아니다</td><td>§1 주석 1 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">AC-14</td><td>매핑이 있는 행</td><td>하단에 <b>메뉴 경로 전체</b>와 <b>접근 가능 인원</b>이 나온다</td><td>—</td></tr>
+    <tr><td class="c">AC-15</td><td>하단 행을 <b>더블 클릭</b></td><td><code>MENU_TREE</code> 를 <b>그 메뉴로</b> 연다 — 셋째 갈래</td><td>§1 주석 5 · UX-02</td></tr>
+    <tr><td class="c">AC-16</td><td>매핑된 메뉴가 <b>미사용</b>이다</td><td>하단의 <b>사용 스위치가 꺼져</b> 보인다 — 매핑이 살아 있어도 소용없다</td><td>보안 설계 게이트 ④</td></tr>
+    <tr><td class="c">AC-17</td><td><code>/api/common/*</code> 을 찾는다</td><td><b>목록에 없다</b> — 인가 대상이 아니다. <b>미등록 문구가 오답이 되는 유일한 경우</b></td><td>§4 주석 3</td></tr>
+  </tbody>
+</table>
+
+<h3>조회 전용 (§5 · §6)</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">AC-18</td><td>매핑을 화면에서 추가하려 한다</td><td><b>수단이 없다</b> — 시드로만 바뀐다</td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">AC-19</td><td><code>ACTION_CD</code> 를 고치려 한다</td><td><b>수단이 없다</b> — 경로 접두 또는 <code>@ApiActionType</code> 이 정한다</td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">AC-20</td><td><b>API 명이 빈 행</b>을 찾는다</td><td><b>없다</b> — <code>@Operation.summary</code> 는 필수이며 ArchUnit 이 막는다</td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">AC-21</td><td><b>설명이 빈 행</b>이 있다</td><td><b>정상이다</b> — <code>description</code> 은 선택이다. 진단은 URL·매핑 수로 한다</td><td>—</td></tr>
+    <tr><td class="c">AC-22</td><td>엑셀 버튼(②)</td><td><b>있다</b> — 항목 <b>둘</b>(현재 페이지 · 전체). 조회 전용은 쓰기에 관한 말이다</td><td>§5 주석 1</td></tr>
+    <tr><td class="c">AC-23</td><td><code>매핑 상태 = 미매핑</code> 으로 조회 후 <b>전체</b> 다운로드</td><td><b>결함 목록이 그대로 파일</b>이 된다 — 조회조건이 그대로 걸린다</td><td>§5 주석 1</td></tr>
+    <tr><td class="c">AC-24</td><td><code>최종 시드 반영</code> 을 끈 채 엑셀</td><td><b>파일에도 없다</b> — 보이는 컬럼만 나간다</td><td>—</td></tr>
+    <tr><td class="c">AC-25</td><td>하단 pane 의 엑셀 버튼</td><td><b>없다</b> — 전량은 마스터가 답한다</td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">AC-26</td><td>그리드 설정 <code>⚙</code></td><td><b>있다</b> — 개인화이며 데이터와 무관하다</td><td>§5 주석 3</td></tr>
+    <tr><td class="c">AC-27</td><td>액션 컬럼의 셀</td><td><b>조회 · 저장 · 내보내기 · 실행</b> — <code>READ</code> 가 보이면 안 된다</td><td>§1 주석</td></tr>
+    <tr><td class="c">AC-28</td><td>조회조건의 액션 콤보</td><td><b>같은 라벨</b>이 나온다 — <code>&lt;ActionSelect&gt;</code> 하나를 쓴다</td><td>—</td></tr>
+    <tr><td class="c">AC-29</td><td><code>READ</code> 권한이 없는 사용자</td><td><b>조회 버튼도 사라진다</b> — 남을 것이 없다</td><td>§6 주석 1</td></tr>
+    <tr><td class="c">AC-30</td><td>하단의 행 추가 버튼</td><td><b>없다</b> — <code>addRow</code> 를 선언하지 않았다</td><td>§6 주석 2 (되면 안 되는 것)</td></tr>
+  </tbody>
+</table>
+
+<!-- ── 확인 목록 ───────────────────────────────────────────── -->
+<h2>8. 이 목업으로 확인할 것</h2>
+
+<div class="todo">
+  <b>이 화면이 규약에 되돌려 준 것</b>
+  <ul>
+    <li><b>메뉴 목록이 남긴 <i>기본정보 탭</i> 정리가 끝났다</b> — <code>ROLE_MGMT</code> ·
+        <code>MENU_TREE</code> 에 이어 마지막 하나다. AUTHZ-14 의 <i>"API명·설명·액션 팝업"</i> 도
+        <b>팝업이 아니라 컬럼</b>이 됐다.</li>
+    <li><b>인가 데이터 모델의 미등록·미매핑 구분이 화면을 얻었다</b> — 그 절이 <i>"고치는 곳이 다르므로 구분해
+        기록한다"</i> 고 적은 것을 <b>사람이 확인하는 자리</b>가 생겼다.</li>
+    <li><b>조회 전용 화면의 모양이 처음 정해졌다</b> — 상태·삭제 컬럼도 저장 버튼도 행 추가도 없지만
+        <b><code>⤓</code> 와 <code>⚙</code> 는 남는다.</b> 하나는 <b>쓰기가 아니고</b> 하나는 <b>개인화</b>다.
+        <b>64 의 로그 3종이 이 모양을 그대로 따랐고</b>, 대용량이라 <b>셋을 더했다</b> —
+        총 건수 생략 · <code>nclob</code> 미적재 · 추적 ID.</li>
+  </ul>
+  <b>아직 답이 없는 것</b>
+  <ul>
+    <li><b>미매핑을 CI 경고로 올릴지</b> — 배포 예정 화면의 API 가 먼저 들어오는 정상 경로가
+        있어 오탐이 난다.</li>
+    <li><b><code>SYS_API</code> 가 수백 건이 됐을 때</b> — 전량 페이징으로 버티는지.
+        <code>매핑 상태</code> 를 서버 조건으로 둔 것이 그 대비다.</li>
+    <li><s><b>403 로그에서 이 화면으로 바로 넘어가는 링크</b>를 둘지</s> — <b>닫혔다(2026-08-28).</b>
+        <b>둔다</b> — 에러 로그의 <code>요청 URI</code> <b>셀 더블 클릭</b>이며, 아래
+        <i>하단 행 더블 클릭 → <code>MENU_TREE</code></i> 와 <b>같은 어휘</b>다.
+        403 은 <b>사용 이력과 에러 로그 양쪽에 남고</b>,
+        <b><code>ERR_CD</code> 가 세 갈래를 그대로 나른다</b>.</li>
+  </ul>
+</div>
+
+<footer>
+  <b>목업 규약</b> — 정적 HTML, 프레임워크 없음, 픽셀 충실도는 목표가 아니다.
+  <b>결정은 <code>requirements.md</code> 가 갖고 이 파일은 확인용이다</b> — 여기에만 있고
+  요건서에 없는 정보는 유실된 것으로 친다.<br>
+  이 파일의 <code>&lt;style&gt;</code> 블록은 <code>documents/screen/_TEMPLATE/mockup.html</code> 에서 그대로 복사했다 —
+  <code>.sf</code> <code>.tb</code> <code>.grid</code> <code>.pg</code> <code>.split</code>.
+</footer>
+
+</main>

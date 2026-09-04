@@ -1,0 +1,82 @@
+# 메시지 값 — 진행률을 접었다가 다시 여는 길(68 §9.1 · §11).
+#
+# 087 에 이어 붙이지 않는다. loadData 는 CSV 의 내용을 체크섬에 넣으므로 줄을 더하면 그
+# changeset 이 이미 돈 DB 에서 기동이 죽는다 — 물어야 하는 것은 커밋 여부가 아니라 이
+# changeset 이 어딘가에서 돌았나 이고, 로컬에서 한 번이라도 띄웠으면 답은 그렇다 다.
+#
+# ── 값이 둘뿐이다 ──────────────────────────────────────────────────
+#
+# 접힌 표시에 적히는 것은 **그 실행의 이름**이라(화면이 준다) 여기 없다. 이 파일이 갖는
+# 것은 창의 틀 둘이다 —
+#
+#   progress.reopen   누를 수 있다는 사실. 진행 중 표시는 흔히 보여 주기만 하는 것이라,
+#                     말하지 않으면 사용자는 **다시 실행**으로 창을 되찾으려 한다.
+#   progress.done     접힌 채 끝났다. 창이 열려 있었으면 100% 막대가 그 말을 하지만,
+#                     접혀 있으면 표시가 사라지는 것 말고는 신호가 없다.
+#
+# 키는 008 이 소스에서 만든다(ADR-0023) — 여기서 또 넣으면 loadData 가 중복 키로 죽는다.
+databaseChangeLog:
+  - changeSet:
+      id: data-101-message
+      author: template
+      comment: 접힌 진행률의 문구 둘 — 68 §9.1
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/101-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  # ── 창을 닫아도 계속된다 는 말에 갈 곳이 없었다 ────────────────────────
+  #
+  # 087 의 progress.background 는 사실이었지만 절반이었다. 계속 도는 것은 맞는데 **다시
+  # 볼 길**이 없어, 닫은 사용자에게 그 작업은 사실상 사라진 것이었다 — 68 §11 이 걱정하던
+  # 자리가 정확히 이것이다. 이제 접힌 표시가 남으므로 어디를 보면 되는지까지 말한다.
+  #
+  # 087 의 CSV 를 고치지 않는다. loadData 가 이미 돌았으므로 줄을 바꾸면 체크섬이 달라져
+  # 남의 로컬이 죽는다 — 값을 바꾸는 것은 update 다(099 가 같은 자리를 한 번 겪었다).
+  - changeSet:
+      id: data-101-background-wording
+      author: template
+      comment: 닫아도 계속된다에 다시 여는 길을 더한다 — 68 §9.1
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: 창을 닫아도 작업은 계속됩니다. 오른쪽 아래 표시를 누르면 다시 열립니다.
+            where: MSG_KEY = 'progress.background' AND LANG_CD = 'ko'
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: The job keeps running after you close this window. Reopen it from the indicator at the bottom right.
+            where: MSG_KEY = 'progress.background' AND LANG_CD = 'en'
+
+  - changeSet:
+      id: data-101-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

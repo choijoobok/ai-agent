@@ -1,0 +1,5 @@
+MSG_KEY,LANG_CD,MSG_VAL
+settings.density.white,ko,흰색 농도
+settings.density.white,en,White density
+settings.density.black,ko,검은색 농도
+settings.density.black,en,Black density

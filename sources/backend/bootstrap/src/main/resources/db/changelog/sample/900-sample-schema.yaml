@@ -1,0 +1,435 @@
+# 샘플 테이블 — 48 §3 · §4. 어휘의 실물이다.
+#
+# 컬럼이 스물여섯인 것은 업무가 요구해서가 아니라 54 §5 의 타입·에디터·렌더러가 하나씩
+# 실물을 가져야 하기 때문이다(48 §1). 그래서 이 파일에 물어야 하는 것은 "왜 이 컬럼이
+# 필요한가" 가 아니라 "이 컬럼이 무엇의 실물인가" 다 — 48 §3 의 오른쪽 두 열이 그 답이다.
+#
+# ── 폴더가 db/changelog/sample 인 것이 삭제 장치다(48 §7.2) ─────────────
+#
+#   쓰는 동안   - include: sample/900-sample-schema.yaml
+#               - include: sample/901-sample-seed.yaml
+#   걷어낼 때   위 둘을 지우고  - include: sample/999-sample-remove.yaml  한 줄로 바꾼다
+#
+# include 를 지우는 것만으로는 아무 일도 일어나지 않는다 — Liquibase 는 이미 적용한
+# changeset 을 목록에서 빼도 되돌리지 않으므로 테이블도 시드도 그대로 남는다(48 §7.1).
+#
+# ── SMPL_ORDER_TAG 는 쓰는 화면보다 먼저 선다 ──────────────────────────
+#
+# 첫 판은 "구현된 것만 담는다" 로 이 테이블을 비워 두었다. 그때는 쓰는 화면이 하나도
+# 없었고, 지금은 둘이 기다린다 — ① 의 태그 조회조건(68 §3.3, SMPL_ORDER_TAG EXISTS)과
+# ⑤ 의 둘째 탭(68 §7)이다. 나중에 더하면 두 화면이 각자 스키마 변경을 끌고 오고, 그때는
+# 화면을 짜다 말고 4벤더를 다시 도는 일이 된다.
+#
+# 아무도 안 읽는 동안의 대가는 4벤더 CI 한 벌인데, 48 §6 이 이미 이 테이블을 복합 PK
+# 검증 대상으로 적어 두었다 — 치를 값이지 새로 생긴 값이 아니다.
+databaseChangeLog:
+  - changeSet:
+      id: 900-create-smpl-order
+      author: template
+      comment: 마스터 — 컬럼 어휘의 실물이다(48 §3)
+      changes:
+        - createTable:
+            tableName: SMPL_ORDER
+            columns:
+              # bigint 어휘의 실물 — API 가 문자열로 내려야 뜻이 있다(24 §6.1).
+              # TABLE 전략 채번이라 SYS_SEQUENCE 에 행이 하나 든다(ADR-0015 · 901).
+              - column:
+                  name: ORD_ID
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SMPL_ORDER
+                    nullable: false
+              # 업무 키. 이름이 바뀌지 않는 컬럼이고 엑셀 대조의 키다(48 §4.3).
+              - column:
+                  name: ORD_NO
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ORD_NM
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+              # popupRef — 고르면 CUST_NM 을 함께 채운다(54 §6).
+              - column:
+                  name: CUST_ID
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CUST_NM
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+              # tone 맵 — 값이 색을 고른다(54 §5.4.1).
+              - column:
+                  name: CUST_GRD_CD
+                  type: VARCHAR(20)
+              # 상태 전이의 근거 — editable 함수가 이 값을 읽는다(48 §3.2).
+              - column:
+                  name: ORD_STAT_CD
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CHNL_CD
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: PRIORITY_CD
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              # 정밀도 day
+              - column:
+                  name: ORD_DT
+                  type: DATE
+                  constraints:
+                    nullable: false
+              # 정밀도 month — VARCHAR(6) 이다(48 §4.2). date 의 1일로 두면 있지도 않은
+              # 일자가 값에 섞인다.
+              - column:
+                  name: DLVR_YM
+                  type: VARCHAR(6)
+              # 정밀도 second · 커서형 페이징의 정렬 키(68 §4)
+              - column:
+                  name: ORD_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ORD_QTY
+                  type: INT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: UNIT_AMT
+                  type: DECIMAL(15,2)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              # afterEdit 이 계산한다 = ORD_QTY 곱하기 UNIT_AMT (56 §2.3)
+              - column:
+                  name: ORD_AMT
+                  type: DECIMAL(17,2)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: VAT_AMT
+                  type: DECIMAL(17,2)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              # tone 범위 — 값이 어느 구간에 드는가로 색을 고른다(48 §3.3)
+              - column:
+                  name: DC_RT
+                  type: DECIMAL(5,2)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              # duration 렌더러 — 값은 ms 그대로다(54 §5.4). NULL 허용 + 정렬의 4벤더 대상.
+              - column:
+                  name: PROC_MS
+                  type: BIGINT
+              # 스위치다 — 체크박스가 아니다(54 §5.2)
+              - column:
+                  name: URGENT_YN
+                  type: CHAR(1)
+                  defaultValue: "N"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: USE_YN
+                  type: CHAR(1)
+                  defaultValue: "Y"
+                  constraints:
+                    nullable: false
+              # 에디터 largeText — 셀 위 팝업 텍스트영역(54 §5.5)
+              - column:
+                  name: MEMO
+                  type: NCLOB
+              # 같은 것을 모달로 — 에디터 textModal
+              - column:
+                  name: RMK
+                  type: NCLOB
+              # 뷰어 largeText — 읽기 전용인데 펼쳐 읽는다. 에디터와 다른 축이다.
+              - column:
+                  name: ERR_MSG
+                  type: NCLOB
+              # hidden — 켜져서는 안 되는 컬럼. USE_YN 의 editable 이 근거로만 읽는다.
+              # 상태와 다른 축이다: 상태는 일이 어디까지 갔나, 이것은 운영이 잠갔나(48 §3.2).
+              - column:
+                  name: LOCK_YN
+                  type: CHAR(1)
+                  defaultValue: "N"
+                  constraints:
+                    nullable: false
+              # 기본 숨김 — 설정 창에서 사용자가 켠다(54 §2.1).
+              - column:
+                  name: SRC_SYS_CD
+                  type: VARCHAR(20)
+              - column:
+                  name: REG_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: REG_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: MOD_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: MOD_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+
+  - changeSet:
+      id: 900-create-smpl-order-item
+      author: template
+      comment: 디테일 — 인라인 편집과 계산 컬럼의 자리다(48 §4)
+      changes:
+        - createTable:
+            tableName: SMPL_ORDER_ITEM
+            columns:
+              - column:
+                  name: ORD_ID
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SMPL_ORDER_ITEM
+                    nullable: false
+              - column:
+                  name: ITEM_SEQ
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SMPL_ORDER_ITEM
+                    nullable: false
+              # 부모의 업무 키를 복제한다 — 정규화를 깨는 유일한 자리다(48 §4.3).
+              #
+              # 엑셀 업로드 때문이다. 사람이 채우는 엑셀에 대리키가 들어갈 수 없으므로
+              # 업로드 탭은 ORD_NO 와 ITEM_CD 로 기존 행과 대조하고, 저장 시 서버가
+              # ORD_NO 를 ORD_ID 로 푼다. 복제한 값이 갱신되어야 한다는 전제는
+              # ORD_NO 가 바뀌지 않는 컬럼이라 성립한다.
+              - column:
+                  name: ORD_NO
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ITEM_CD
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: ITEM_NM
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: UOM_CD
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              # DECIMAL 정밀도의 4벤더 대상 — 반올림·자리수(48 §6)
+              - column:
+                  name: QTY
+                  type: DECIMAL(13,3)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: UNIT_AMT
+                  type: DECIMAL(15,2)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              # afterEdit 계산 = QTY 곱하기 UNIT_AMT. 읽기 전용이다.
+              - column:
+                  name: AMT
+                  type: DECIMAL(17,2)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: DLVR_DT
+                  type: DATE
+              - column:
+                  name: ITEM_STAT_CD
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: USE_YN
+                  type: CHAR(1)
+                  defaultValue: "Y"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: RMK
+                  type: VARCHAR(500)
+              - column:
+                  name: REG_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: REG_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: MOD_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: MOD_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+
+  - changeSet:
+      id: 900-create-smpl-order-tag
+      author: template
+      comment: list 컬럼의 저장 형태 — 배열은 화면의 어휘이고 저장은 행이다(48 §4.1)
+      changes:
+        - createTable:
+            tableName: SMPL_ORDER_TAG
+            columns:
+              - column:
+                  name: ORD_ID
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SMPL_ORDER_TAG
+                    nullable: false
+              - column:
+                  name: TAG_SEQ
+                  type: INT
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SMPL_ORDER_TAG
+                    nullable: false
+              # list 항목의 표시값. 조회 조건이 EXISTS 로 이 컬럼을 본다(68 §3.3) —
+              # 직렬화 문자열이었으면 LIKE '%…%' 라서 개발 이 개발자 에 걸렸다.
+              - column:
+                  name: TAG_NM
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              # 항목이 스칼라가 아닐 수 있다는 쪽의 실물이다(54 §5.6).
+              - column:
+                  name: TAG_TYPE_CD
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              # 배열의 순서. 직렬화 문자열이면 공짜로 얻는 것이 자식 테이블에서는 컬럼이다.
+              - column:
+                  name: SORT_NO
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REG_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: REG_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: MOD_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: MOD_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+
+  - changeSet:
+      id: 900-constraints-smpl
+      author: template
+      comment: FK 를 건다 — 마스터의 삭제 게이트가 장식이 되지 않게(48 §5.1)
+      changes:
+        # 업무 키 유일성 · 엑셀 대조(48 §5.2)
+        - addUniqueConstraint:
+            tableName: SMPL_ORDER
+            columnNames: ORD_NO
+            constraintName: UK_SMPL_ORDER_NO
+        # RESTRICT 다. CASCADE 면 53 §6.2 의 "품목이 있으면 삭제가 안 열린다" 가
+        # 화면에만 있는 장식이 된다 — 화면 밖 경로가 부모를 지우면 자식이 함께 사라진다.
+        - addForeignKeyConstraint:
+            baseTableName: SMPL_ORDER_ITEM
+            baseColumnNames: ORD_ID
+            referencedTableName: SMPL_ORDER
+            referencedColumnNames: ORD_ID
+            constraintName: FK_SMPL_ORDER_ITEM_01
+            onDelete: RESTRICT
+
+  # 900-constraints-smpl 안에 넣지 않는다. 그 changeset 은 ③ 과 함께 이미 돌았고, 내용을
+  # 고치면 체크섬이 바뀌어 남의 로컬이 기동에서 죽는다 — 5fa1f90 이 003 에서 겪은 그것이다.
+  # 이미 돈 것은 손대지 않고 뒤에 세운다.
+  - changeSet:
+      id: 900-constraints-smpl-tag
+      author: template
+      comment: 같은 이유로 RESTRICT 다(48 §5.1) — 태그가 붙은 주문도 삭제가 열리지 않는다
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: SMPL_ORDER_TAG
+            baseColumnNames: ORD_ID
+            referencedTableName: SMPL_ORDER
+            referencedColumnNames: ORD_ID
+            constraintName: FK_SMPL_ORDER_TAG_01
+            onDelete: RESTRICT
+
+  - changeSet:
+      id: 900-index-smpl
+      author: template
+      comment: 커서 인덱스가 없으면 커서형이 오프셋보다 느려진다(48 §5.2)
+      changes:
+        # 커서는 ORD_DTM 과 ORD_ID 의 튜플 비교이고(72 §3.8) 그 튜플에 인덱스가 없으면
+        # 매 장이 풀스캔이다.
+        - createIndex:
+            tableName: SMPL_ORDER
+            indexName: IX_SMPL_ORDER_DTM
+            columns:
+              - column:
+                  name: ORD_DTM
+                  descending: true
+              - column:
+                  name: ORD_ID
+                  descending: true
+        - createIndex:
+            tableName: SMPL_ORDER
+            indexName: IX_SMPL_ORDER_STAT
+            columns:
+              - column:
+                  name: ORD_STAT_CD
+              - column:
+                  name: ORD_DT
+        # 엑셀 업로드의 키 대조(48 §4.3)
+        - createIndex:
+            tableName: SMPL_ORDER_ITEM
+            indexName: IX_SMPL_ITEM_ORDNO
+            columns:
+              - column:
+                  name: ORD_NO
+              - column:
+                  name: ITEM_CD
+
+  # 900-constraints-smpl 안에 넣지 않는다. 그 changeset 은 ③과 함께 이미 돌았고, 내용을
+  # 고치면 체크섬이 달라져 남의 로컬이 Validation Failed 로 죽는다(095 의 머리말).
+  - changeSet:
+      id: 900-constraints-smpl-item-cd
+      author: template
+      comment: 엑셀 대조의 키를 실제로 키로 만든다 — 48 §5.2 · 68 §8
+      changes:
+        # ⑥이 요구했다. 48 §4.3 이 (ORD_NO, ITEM_CD) 를 "엑셀 대조의 키" 로 정하고 900 이
+        # 그 쌍에 인덱스까지 두었지만, 유일성은 아무도 보증하지 않았다 — 키라고 부르는데
+        # 키가 아니었다.
+        #
+        # 없으면 무엇이 깨지나 —
+        #   · 업로드 대조가 Map 을 그 쌍으로 색인하므로 겹친 두 행 중 하나가 조용히 이기고,
+        #     사용자는 다른 하나가 자기 값으로 덮인 것을 알 방법이 없다
+        #   · 저장이 (ORD_NO, ITEM_CD) 로 대상을 찾는데 둘이면 어느 행을 고치는지 말할 수 없다
+        #   · SampleItemSpec 의 tie-breaker 가 이 쌍이라, 겹치면 오프셋 페이징에서 같은 행이
+        #     두 장에 나오거나 아예 빠진다
+        #
+        # ORD_NO 가 아니라 ORD_ID 로 건다. ORD_NO 는 SMPL_ORDER 에서 유일하므로 둘이 같은
+        # 것을 말하지만, 제약은 이 테이블의 FK 컬럼 위에 서는 편이 자연스럽고 인덱스도
+        # 부모 조회와 결이 같다.
+        - addUniqueConstraint:
+            tableName: SMPL_ORDER_ITEM
+            columnNames: ORD_ID, ITEM_CD
+            constraintName: UK_SMPL_ITEM_CD

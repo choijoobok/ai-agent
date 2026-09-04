@@ -1,0 +1,5 @@
+MSG_KEY,LANG_CD,MSG_VAL
+search.op.gt,ko,초과
+search.op.gt,en,Greater than
+search.op.lt,ko,미만
+search.op.lt,en,Less than

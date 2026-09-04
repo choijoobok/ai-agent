@@ -1,0 +1,5 @@
+MSG_KEY,LANG_CD,MSG_VAL
+shell.entry.frequent.since,ko,{from} 부터 집계
+shell.entry.frequent.since,en,counted since {from}
+shell.entry.frequent.count,ko,{count}회
+shell.entry.frequent.count,en,{count} times

@@ -1,0 +1,49 @@
+# 메시지 값 10차 — 사람 소유 시드다(22 §1.1).
+#
+# 알림 모달(51 §7)과 시스템 정보 팝오버(§7.3)가 쓰는 14개 키의 ko·en 이다.
+#
+# 라벨을 짧게 잡았다 — 팝오버가 280px 이고 여섯 줄이 들어간다. `빌드 시각`·`기동 시각`
+# 대신 `빌드`·`기동` 인 것이 그래서이며, 무엇의 시각인지는 값(날짜)이 말한다.
+#
+# profile.version 은 여기서 다루지 않는다. 프로필 모달 하단의 버전 표시를 시스템 정보로
+# 일원화하면서 코드에서 사라졌고, 008 재생성이 그 키를 USE_SCOPE='NONE'(죽은 키)으로
+# 표시했다 — 그것이 죽은 키 판정의 유일한 경로이며(33 §2.2) 값 행은 남는다.
+# 017 을 고쳐 지우지 않는 이유는 앞의 파일을 손대지 않는 규약 그대로다: 이미 적용된 곳이
+# 있으면 체크섬이 달라져 그 곳의 기동이 실패한다.
+databaseChangeLog:
+  - changeSet:
+      id: data-018-message
+      author: template
+      comment: 알림 모달과 시스템 정보의 ko·en — 51 §7
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/018-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-018-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1. 빠뜨리면 기존 세션이 옛 번들을 계속 쓴다
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

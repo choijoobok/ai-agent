@@ -1,0 +1,98 @@
+# 사용 이력 — 45 §4.1 · 21 §6.3 · 64 §3.
+#
+# 003-log 가 "SYS_LO_ACCESS · SYS_LO_EXCEPTION 은 이력 슬라이스가 만든다" 며 비워 둔 자리
+# 중 앞엣것이다. 뒤엣것(에러 로그)은 64 §5 의 화면이 서는 날 온다 — 지금 만들면 쓰는 쪽
+# 없이 굳는다.
+#
+# **전 요청이 한 행이다**(21 §6.3, 2026-08-28 개정). 이전 규약은 사용 이력과 에러 로그가
+# 배타였고, 그 배타가 "이 사용자가 무엇을 했나" 에 두 테이블을 요구했다(ADR-0010 의 전제가
+# 깨진다). 중복의 정체는 PARAMETERS 하나였으므로 그것만 이 테이블에 두는 것으로 풀었다.
+#
+# HTTP_STAT 이 그 개정의 산물이다 — 전 요청을 받으므로 없으면 성공과 실패가 섞인다.
+#
+# 감사 4컬럼이 없다(45 §2.1) — USER_ID + CRE_DTM 이 곧 "누가 언제" 다.
+# FK 도 없다(45 §2.2) — 계정이 사라져도 과거 기록의 주체는 남아야 하고, MENU_CD 는
+# 애초에 클라이언트 주장이라 SYS_MENU 에 없는 값이 올 수 있다.
+#
+# 인덱스가 둘뿐이다(64 §3.3). 고빈도 INSERT 테이블이라 인덱스마다 쓰기 비용이 붙는데,
+# 읽기는 하루 몇 번이고 쓰기는 초당 수십 건이다 — 균형이 쓰기 쪽에 있다. 조회가 느린 것은
+# 기간을 좁혀 해결한다.
+databaseChangeLog:
+  - changeSet:
+      id: 014-create-sys-lo-access
+      author: template
+      comment: 전 요청 1행 — PARAMETERS 는 이 테이블에만 있다(45 §4.1)
+      changes:
+        - createTable:
+            tableName: SYS_LO_ACCESS
+            columns:
+              - column:
+                  name: ACCESS_LOG_SEQ
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_LO_ACCESS
+                    nullable: false
+              # 미인증 요청은 NULL 이다 — 화면이 (익명) 으로 그린다(64 §2.7).
+              - column:
+                  name: USER_ID
+                  type: VARCHAR(30)
+              # X-Menu-Code 헤더 값. NULL 을 허용한다(64 §3.2.1) — 로그인·하트비트는 셸
+              # 진입 전이라 현재 메뉴가 존재하지 않는다. 빈 문자열은 Oracle 에서 NULL 이
+              # 되어 구분이 성립하지 않고(22 §4.5), 특수값(NONE)은 메뉴명 조인이 비어
+              # 같은 처리를 부르면서 값만 하나 는다.
+              - column:
+                  name: MENU_CD
+                  type: VARCHAR(30)
+              - column:
+                  name: REQUEST_URI
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: false
+              # 응답 상태. smallint 인 것은 값의 범위가 100~599 이기 때문이다.
+              - column:
+                  name: HTTP_STAT
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              # 쿼리스트링 + 헤더 + body 를 직렬화한 하나의 CLOB. 마스킹을 거친 값이다
+              # (LOG-06). 매핑은 @Nationalized + LONG32NVARCHAR 고정 — @Lob 은 MySQL 에서
+              # tinytext(255B) 가 되어 전문이 들어가지 않는다(22 §3.1).
+              #
+              # 상한에서 잘릴 수 있다(21 §6.2). 잘렸음은 화면이 말한다(64 §2.4).
+              - column:
+                  name: PARAMETERS
+                  type: NCLOB
+              - column:
+                  name: CLIENT_IP
+                  type: VARCHAR(45)
+              - column:
+                  name: TRACE_ID
+                  type: VARCHAR(64)
+              - column:
+                  name: CRE_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 014-index-sys-lo-access
+      author: template
+      comment: 기간과 추적 ID 둘뿐이다 — 쓰기 비용이 균형을 정한다(64 §3.3)
+      changes:
+        # 기본 조회가 최근 순이고 조회조건의 기간이 필수다(64 §2.2) — 이 인덱스가
+        # 그 조건을 받는다. 보존 배치(32 §4)도 같은 컬럼으로 지운다.
+        - createIndex:
+            tableName: SYS_LO_ACCESS
+            indexName: IX_SYS_LO_ACCESS_01
+            columns:
+              - column:
+                  name: CRE_DTM
+        # 추적 ID 를 넣으면 기간이 선택이 된다(64 §2.2) — 그것이 성립하는 근거가 이
+        # 인덱스다. 없으면 기간 없는 조회가 90일 전량 스캔이 된다.
+        - createIndex:
+            tableName: SYS_LO_ACCESS
+            indexName: IX_SYS_LO_ACCESS_02
+            columns:
+              - column:
+                  name: TRACE_ID

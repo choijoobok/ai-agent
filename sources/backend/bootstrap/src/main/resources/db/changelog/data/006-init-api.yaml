@@ -1,0 +1,68 @@
+# 인가 시드 — 생성물이다. 손으로 고치지 않는다(ADR-0020 · ADR-0022 · 33 §2).
+#
+#   ./gradlew generateApiSeed     컨트롤러 + screenRegistry + endpoints + 메뉴 시드 → CSV 둘
+#   ./gradlew checkApiSeed        재생성 결과 == 커밋본 (CI 의 check 에 달려 있다)
+#
+# 008(메시지 키)과 방식이 다르다 — 축은 "누가 소유하는가" 다(ADR-0022).
+#
+#   006  전건 삭제 → 전건 삽입    행에 사람의 것이 없다. 지운 API 의 행은 사라져야 한다
+#   008  없는 것만 추가           번역이 딸려 있다. 지우면 사람이 쓴 것이 사라진다
+#
+# ── changeSet 이 하나인 것이 의도다 ──────────────────────────────────────
+#
+# ADR-0020 은 산출물을 006·007 두 changelog 로 적었다. 그렇게 나누면 깨진다.
+#
+# runOnChange 는 changeSet 의 체크섬으로 재실행을 판정하고, loadData 의 체크섬은 그 CSV
+# 하나만 본다. 006 만 바뀌면 006 의 changeSet 이 재실행되어 FK 때문에 SYS_MENU_API 를
+# 먼저 지워야 하는데, 007 은 체크섬이 그대로라 재실행되지 않는다 — 매핑이 통째로 빈 채
+# 남고, 증상은 "권한을 줬는데 403" 이다.
+#
+# 그래서 삭제 둘과 적재 둘을 한 changeSet 에 둔다. 체크섬이 CSV 둘을 함께 보므로 어느
+# 쪽이 바뀌어도 네 단계가 함께 돈다. 생성물이 둘인 것은 그대로다 — 파일이 갈린 이유는
+# 테이블이 둘이기 때문이지 changeSet 이 둘이어야 해서가 아니었다.
+#
+# 삭제 순서가 값 → 키다. SYS_MENU_API 가 SYS_API 를 참조하므로 반대로 하면 FK 가 거부한다.
+#
+# CSV 에 감사 컬럼이 없다. 재생성마다 시각이 바뀌면 checkApiSeed 의 "재생성 결과 == 커밋본"
+# 비교가 성립하지 않으며, 이 행들의 감사는 시드 커밋의 git 이력이 한다.
+databaseChangeLog:
+  - changeSet:
+      id: data-006-api
+      author: template
+      runOnChange: true
+      comment: API 의 존재와 액션은 코드가 결정한다 — 화면에서 고치지 않는다(AUTHZ-14)
+      changes:
+        - delete:
+            tableName: SYS_MENU_API
+        - delete:
+            tableName: SYS_API
+        - loadData:
+            tableName: SYS_API
+            file: db/changelog/data/006-init-api.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: API_URL
+                  type: STRING
+              - column:
+                  name: API_NM
+                  type: STRING
+              - column:
+                  name: API_DESC
+                  type: STRING
+              - column:
+                  name: ACTION_CD
+                  type: STRING
+        - loadData:
+            tableName: SYS_MENU_API
+            file: db/changelog/data/007-init-menu-api.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MENU_CD
+                  type: STRING
+              - column:
+                  name: API_URL
+                  type: STRING

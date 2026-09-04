@@ -1,0 +1,61 @@
+# 시스템 환경설정 — 43 §6 · 63 §4 · ADR-0026.
+#
+# **오버라이드 테이블이 오버라이드만 담는다.** 층이 둘이라(yml 이 기본값, 여기가 적용값)
+# 한 번도 바꾸지 않은 키는 **행이 없는 것이 정상**이다. 그래서 `SELECT * FROM SYS_CONFIG`
+# 로는 설정 목록을 만들 수 없고, 관리 화면은 yml 이 정한 키 목록을 왼쪽에 둔 아우터
+# 조인이다(63 §4.2).
+#
+# 컬럼이 셋 없다 — 43 §6 이 2026-08-28 에 지웠다.
+#   CFG_TYPE_CD : 원천이 **필드 타입**으로 옮겨갔다
+#   CFG_DESC    : 원천이 **필드 Javadoc**(spring-configuration-metadata.json)으로 옮겨갔다
+#   SYS_YN      : 두 층 폴백 때문에 **지킬 것이 없다** — 행을 지워도 yml 값이 살아 있다
+# DB 에 두면 같은 사실이 두 곳이 되고, 설명을 채우려고 편집하면 **값을 안 바꿨는데 그 키가
+# 변경됨이 된다**(63 §4.2).
+#
+# CFG_GRP_CD 도 없다 — "설정 하나는 한 영역에만 속한다" 가 참이 아니다(43 §6.1).
+# 분류가 아니라 **키 접두사와 검색**으로 찾는다.
+#
+# FK 가 없다. 왼쪽 테이블이 코드이므로 참조할 대상 테이블이 애초에 없다 —
+# 필드를 지운 뒤 남은 고아 행은 **읽을 경로가 없어** 무시된다(ADR-0026 §1).
+databaseChangeLog:
+  - changeSet:
+      id: 012-create-sys-config
+      author: template
+      comment: 오버라이드만 담는다 — CFG_KEY · CFG_VAL · 감사 4컬럼(43 §6)
+      changes:
+        - createTable:
+            tableName: SYS_CONFIG
+            columns:
+              # yml 프로퍼티 경로에서 루트 키 sys-config 만 뺀 문자열 — 43 §6.1 · §10.
+              # 루트를 넣으면 관리 화면의 접두사 콤보에서 첫 마디가 전부 같아 아무 정보가
+              # 없고(ADR-0026 §5), VARCHAR(100) 중 12자를 늘 선불로 낸다.
+              - column:
+                  name: CFG_KEY
+                  type: VARCHAR(100)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: PK_SYS_CONFIG
+                    nullable: false
+              # 문자열로 보관한다 — 타입은 필드가 갖고 있고, 재바인딩이 그 타입으로 읽는다.
+              #
+              # NOT NULL 이다. 값을 비우는 것은 수정이 아니라 **되돌리기(행 삭제)** 이며
+              # (63 §4.4), NULL 을 허용하면 "행은 있는데 값이 없다" 는 세 번째 상태가
+              # 생겨 오버라이드가 무엇을 뜻하는지 물어야 한다.
+              - column:
+                  name: CFG_VAL
+                  type: VARCHAR(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: REG_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: REG_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: MOD_ID
+                  type: VARCHAR(50)
+              - column:
+                  name: MOD_DTM
+                  type: TIMESTAMP WITH TIME ZONE
+

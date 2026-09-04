@@ -1,0 +1,41 @@
+# 도메인 · 데이터 모델 (엔티티 · 속성 · 인덱스 · 상태 전이)
+#
+# 작성 단계: P3
+# status: empty — **비어 있다. 지어내지 않았다.**
+#
+# 원본(agentic-ai)의 진행 순서는 **DB 설계가 agent 설계보다 앞선다**고 규정했으나
+# (1.3의 3단계) 아직 그 단계에 도달하지 않았다. 이력 스키마는 agent 설계의 산출물이
+# 아니라 **입력**이다 — 턴·스텝·회차·실행 점유의 구조는 이미 규정됐고
+# (03-glossary.yaml 의 turn_states · 20-architecture.yaml 의 execution_lease),
+# 재개 상태·감사 이력·사용량이 그 스키마 위에서만 정의된다.
+#
+# **스키마를 뒤에 두면 앞선 결정들이 근거 없이 떠 있게 된다.**
+#
+# 네이밍 규약 (원본 12.1 — 확정된 것이므로 여기 적는다):
+#   - 모든 테이블에 접두어 `ai_` · 형식 `ai_<서브모듈>_<상세>`
+#   - 서브모듈 키는 모듈명 또는 기능 영역 (`ai_admin_*` · `ai_portal_*` · `ai_agent_*`)
+#   - **서브모듈 키는 명명 구분용이다.** 테이블의 소유·접근 권한을 뜻하지 않는다
+#   - PK 는 **서로게이트 키**, 자연키(예: `(데이터소스, DB 스키마, 테이블명)`)에는
+#     **유니크 제약**을 둔다. 참조는 서로게이트 키로 하여 이름 변경이 참조를 깨지 않게 한다
+#   - 모든 일시 컬럼은 **`timestamptz`**
+#
+# 채우는 방법: aidd-guide/phase/P3-design.md §4
+
+meta:
+  status: empty
+  baselined: null
+  naming: "ai_<서브모듈>_<상세> · 서로게이트 PK + 자연키 유니크 · timestamptz"
+
+entities: []
+
+# 채울 때의 형식 (예시 — 실제 값이 아니다)
+# entities:
+#   - id: ENT-001
+#     name: "턴"
+#     table: ai_agent_turn
+#     terms: [TRM-002]
+#     attributes:
+#       - { name: turn_id, type: bigint, pk: true }
+#       - { name: status, type: varchar, enum: [RECEIVED, RUNNING, WAITING_USER, ABORTED, FAILED, DONE] }
+#     state_machine: "03-glossary.yaml 의 turn_states 를 따른다"
+#     delete_policy: "물리 삭제하지 않는다 — 보관 기간 정책의 일괄 처리만 (REQ-109)"

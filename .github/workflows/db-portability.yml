@@ -1,0 +1,99 @@
+# 4벤더 이식성 — llm-guide/06-framework/backend/_study/db-portability.md §6.
+#
+# 스파이크(spike-db-portability.yml)가 있던 자리다. 그것은 손으로 만든 축소판 changelog 로
+# 식별자 전략과 CLOB 매핑만 봤고, 그 둘은 확인이 끝나 결론이 22 §3.1·§4.1 과 ADR-0015 로
+# 옮겨졌다 — 남은 질문은 전부 실제 스키마와 실제 시드를 요구한다. 검사가 둘이면 쉬운 쪽이
+# 초록인 것을 보고 안심하게 되므로 축소판은 지웠다.
+#
+# 로컬에서 돌릴 수 없다. 개발 머신에서 가상화를 켤 수 없어(22 §398) Docker 가 필요한 확인은
+# 여기서만 돈다 — 그래서 이 파일이 처음 도는 순간이 그 검사가 처음 도는 순간이다.
+name: DB 이식성 — 4벤더
+
+on:
+  # 스키마·시드·매핑이 바뀐 커밋만 태운다. 화면 코드가 벤더 동작을 바꾸지는 않으므로
+  # 매 푸시에 20분을 쓰면 사람이 이 워크플로를 끄게 된다.
+  push:
+    branches: [main]
+    paths:
+      - 'sources/backend/bootstrap/src/main/resources/db/changelog/**'
+      - 'sources/backend/bootstrap/src/test/java/**/portability/**'
+      - 'sources/backend/domain/src/main/java/**/entity/**'
+      - 'sources/backend/bootstrap/build.gradle.kts'
+      - '.github/workflows/db-portability.yml'
+  # 아무것도 안 바꿔도 깨질 수 있다 — 이미지 태그가 움직이고 드라이버가 올라간다.
+  schedule:
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+    inputs:
+      oracle:
+        description: 'Oracle 포함 (이미지 2GB+, 느리다)'
+        type: boolean
+        default: false
+
+concurrency:
+  group: db-portability
+  cancel-in-progress: true
+
+jobs:
+  vendors:
+    name: 선다 → 걷어낸다 → 다시 선다
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      # 검사가 Docker 없으면 assumeTrue 로 조용히 건너뛴다. 건너뛴 채 초록이면
+      # 확인했다고 착각하게 되므로, 먼저 여기서 막는다.
+      - name: Docker 확인
+        run: docker info --format 'ServerVersion={{.ServerVersion}} OS={{.OSType}}'
+
+      - name: 4벤더 확인
+        working-directory: sources
+        run: >
+          ./gradlew :backend:bootstrap:portabilityTest
+          -Dportability.vendors=${{ inputs.oracle && 'postgresql,mysql,mariadb,sqlserver,oracle' || 'postgresql,mysql,mariadb,sqlserver' }}
+
+      # assumeTrue 가 걸리면 테스트는 'skipped' 로 통과한다 — 그것을 실패로 바꾼다.
+      # 벤더 수도 함께 센다: -Dportability.vendors 가 빗나가면 0건으로 초록이 된다.
+      - name: 건너뛴 벤더가 없는지 확인
+        if: always()
+        run: |
+          dir=sources/backend/bootstrap/build/test-results/portabilityTest
+          if [ ! -d "$dir" ]; then
+            echo "::error::테스트 결과가 없다 — 실행 자체가 안 됐다"
+            exit 1
+          fi
+          total=$(grep -ho 'tests="[0-9]*"' "$dir"/*.xml | grep -o '[0-9]*' | awk '{s+=$1} END {print s+0}')
+          skipped=$(grep -ho 'skipped="[0-9]*"' "$dir"/*.xml | grep -o '[0-9]*' | awk '{s+=$1} END {print s+0}')
+          echo "벤더 $total 건 · 건너뜀 $skipped 건"
+          expected=${{ inputs.oracle && 5 || 4 }}
+          if [ "${total:-0}" -ne "$expected" ]; then
+            echo "::error::벤더 $expected 개를 태워야 하는데 $total 개가 돌았다"
+            exit 1
+          fi
+          if [ "${skipped:-0}" -gt 0 ]; then
+            echo "::error::건너뛴 벤더가 있다 — Docker 가 없었을 가능성이 크다. 결과를 신뢰할 수 없다"
+            grep -l 'skipped="[1-9]' "$dir"/*.xml
+            exit 1
+          fi
+
+      # 한글 정렬 순서를 로그에서 바로 읽는다 — 22 §6 의 마지막 미결이 그것이다.
+      # 검사가 붉을 때 어느 벤더가 어떻게 다른지는 이 줄들에 있다.
+      - name: 벤더별 한글 정렬
+        if: always()
+        run: grep -ho '\[정렬\][^<]*' sources/backend/bootstrap/build/test-results/portabilityTest/*.xml || true
+
+      - if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: db-portability-results
+          path: |
+            sources/backend/bootstrap/build/test-results/portabilityTest/
+            sources/backend/bootstrap/build/reports/tests/portabilityTest/

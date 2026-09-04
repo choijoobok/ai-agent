@@ -1,0 +1,153 @@
+MSG_KEY,LANG_CD,MSG_VAL
+err.lock.conflict,ko,다른 작업이 처리 중입니다. 잠시 후 다시 시도해 주세요.
+err.lock.conflict,en,Another operation is in progress. Please try again shortly.
+err.menu.tree-changed,ko,트리가 변경되었습니다. 다시 불러오세요.
+err.menu.tree-changed,en,The tree has changed. Please reload it.
+err.menu.cycle,ko,자기 자신이나 하위 메뉴 아래로 옮길 수 없습니다.
+err.menu.cycle,en,A menu cannot be moved under itself or its own descendants.
+err.menu.depth,ko,메뉴 깊이 상한을 넘습니다.
+err.menu.depth,en,This would exceed the maximum menu depth.
+err.menu.url-on-parent,ko,하위 메뉴가 있는 메뉴는 화면을 가질 수 없습니다.
+err.menu.url-on-parent,en,A menu that has children cannot have a screen.
+err.menu.child-under-leaf,ko,화면이 있는 메뉴에는 하위를 둘 수 없습니다. URL 을 비우면 폴더가 됩니다.
+err.menu.child-under-leaf,en,A menu with a screen cannot have children. Clear its URL to make it a folder.
+err.menu.url-required,ko,권한이 부여된 메뉴는 화면을 비울 수 없습니다.
+err.menu.url-required,en,A menu that has granted permissions cannot have its screen cleared.
+err.menu.duplicate,ko,이미 있는 메뉴 코드입니다.
+err.menu.duplicate,en,That menu code already exists.
+err.menu.not-deletable,ko,다른 곳에서 쓰고 있어 삭제할 수 없습니다.
+err.menu.not-deletable,en,It is still in use elsewhere and cannot be deleted.
+err.menu.not-found,ko,없는 메뉴입니다.
+err.menu.not-found,en,No such menu.
+menuTree.grid.title,ko,메뉴 트리
+menuTree.grid.title,en,Menu Tree
+menuTree.col.menuNm,ko,메뉴명
+menuTree.col.menuNm,en,Menu Name
+menuTree.col.menuCd,ko,메뉴 코드
+menuTree.col.menuCd,en,Menu Code
+menuTree.col.menuUrl,ko,URL
+menuTree.col.menuUrl,en,URL
+menuTree.col.iconCd,ko,아이콘
+menuTree.col.iconCd,en,Icon
+menuTree.col.useYn,ko,사용 여부
+menuTree.col.useYn,en,Enabled
+menuTree.col.apiCount,ko,매핑 API
+menuTree.col.apiCount,en,Mapped APIs
+menuTree.col.accessibleUserCount,ko,접근 가능 인원
+menuTree.col.accessibleUserCount,en,Users with Access
+menuTree.col.roleCount,ko,매핑 역할
+menuTree.col.roleCount,en,Mapped Roles
+menuTree.url.none,ko,(없음)
+menuTree.url.none,en,(none)
+menuTree.unlinked,ko,미연결
+menuTree.unlinked,en,Unlinked
+menuTree.collapseAll,ko,모두 접기
+menuTree.collapseAll,en,Collapse All
+menuTree.expandAll,ko,모두 펼치기
+menuTree.expandAll,en,Expand All
+menuTree.addRoot,ko,최상위 메뉴 추가
+menuTree.addRoot,en,Add Top-Level Menu
+menuTree.addChild,ko,하위 메뉴 추가
+menuTree.addChild,en,Add Child Menu
+menuTree.addChild.noSelection,ko,메뉴를 먼저 선택하세요.
+menuTree.addChild.noSelection,en,Select a menu first.
+menuTree.addChild.leaf,ko,화면이 있는 메뉴에는 하위를 둘 수 없습니다. URL 을 비우면 폴더가 됩니다.
+menuTree.addChild.leaf,en,A menu with a screen cannot have children. Clear its URL to make it a folder.
+menuTree.addChild.depth,ko,메뉴 깊이 상한에 닿아 하위를 둘 수 없습니다.
+menuTree.addChild.depth,en,This menu is at the maximum depth and cannot have children.
+menuTree.delete,ko,삭제
+menuTree.delete,en,Delete
+menuTree.delete.blocked,ko,하위 메뉴 · 매핑 API · 매핑 역할 · 개인 예외가 남아 있어 삭제할 수 없습니다.
+menuTree.delete.blocked,en,"Child menus, mapped APIs, mapped roles, or personal grants still exist, so it cannot be deleted."
+menuTree.delete.confirm,ko,{name} 을(를) 삭제합니다. 이 메뉴를 즐겨찾기에 등록한 사용자에게서도 함께 제거됩니다.
+menuTree.delete.confirm,en,Delete {name}? It will also be removed from the favorites of everyone who saved it.
+menuTree.add.title,ko,{parent} 아래에 메뉴 추가
+menuTree.add.title,en,Add a menu under {parent}
+menuTree.add.titleRoot,ko,최상위
+menuTree.add.titleRoot,en,Top level
+menuTree.add.menuCd,ko,메뉴 코드
+menuTree.add.menuCd,en,Menu Code
+menuTree.add.menuCdHint,ko,대문자로 시작하고 대문자·숫자·밑줄만 씁니다. 만든 뒤에는 바꿀 수 없습니다.
+menuTree.add.menuCdHint,en,"Starts with an uppercase letter; uppercase letters, digits and underscores only. It cannot be changed later."
+menuTree.drop.inside,ko,{name} 안에 — 마지막 자식으로
+menuTree.drop.inside,en,Inside {name} — as the last child
+menuTree.drop.before,ko,{name} 앞 — 형제로
+menuTree.drop.before,en,Before {name} — as a sibling
+menuTree.drop.after,ko,{name} 다음 — 형제로
+menuTree.drop.after,en,After {name} — as a sibling
+menuTree.drop.firstChild,ko,{name} 안에 — 첫 자식으로
+menuTree.drop.firstChild,en,Inside {name} — as the first child
+menuTree.drop.self,ko,놓을 수 없습니다 — 자기 자손입니다.
+menuTree.drop.self,en,Cannot drop here — this is its own descendant.
+menuTree.drop.leaf,ko,놓을 수 없습니다 — {name} 은(는) 화면이 있습니다.
+menuTree.drop.leaf,en,Cannot drop here — {name} has a screen.
+menuTree.drop.depth,ko,놓을 수 없습니다 — 깊이 {max}단을 넘습니다.
+menuTree.drop.depth,en,Cannot drop here — it would exceed {max} levels.
+menuTree.move.title,ko,{name} 을(를) 옮깁니다.
+menuTree.move.title,en,Move {name}
+menuTree.move.from,ko,지금 　{path} ({index}번째)
+menuTree.move.from,en,Now　　{path} (position {index})
+menuTree.move.to,ko,이동 　{path} ({index}번째)
+menuTree.move.to,en,Move to　{path} (position {index})
+menuTree.move.warn,ko,이 이동으로 두 폴더의 순서가 다시 매겨집니다. 되돌리려면 다시 끌어야 합니다.
+menuTree.move.warn,en,This renumbers both folders. To undo it you must drag again.
+menuTree.useOff.title,ko,{name} 을(를) 미사용으로 바꿉니다.
+menuTree.useOff.title,en,Set {name} to disabled
+menuTree.useOff.descendants,ko,아래 메뉴 {count}개가 함께 미사용이 됩니다.
+menuTree.useOff.descendants,en,{count} menu(s) below it will be disabled as well.
+menuTree.useOff.users,ko,접근할 수 있던 {count}명이 접근할 수 없게 됩니다.
+menuTree.useOff.users,en,{count} user(s) who could reach it will lose access.
+menuTree.useOn.title,ko,{name} 을(를) 사용으로 바꿉니다.
+menuTree.useOn.title,en,Set {name} to enabled
+menuTree.useOn.descendants,ko,아래 메뉴 {count}개가 함께 사용으로 바뀝니다 — 개별로 꺼 두었던 {off}개도 함께 켜집니다.
+menuTree.useOn.descendants,en,{count} menu(s) below it will be enabled too — including {off} that were turned off individually.
+menuTree.tab.api,ko,매핑 API
+menuTree.tab.api,en,Mapped APIs
+menuTree.tab.user,ko,사용 가능 사용자
+menuTree.tab.user,en,Users with Access
+menuTree.tab.role,ko,매핑된 역할
+menuTree.tab.role,en,Mapped Roles
+menuTree.tab.apiEmpty,ko,매핑된 API 가 없습니다. 이 화면의 기능을 아무도 쓸 수 없습니다.
+menuTree.tab.apiEmpty,en,"No API is mapped to this menu, so nobody can use anything on this screen."
+menuTree.detail.empty,ko,메뉴를 선택하세요.
+menuTree.detail.empty,en,Select a menu.
+menuTree.via.personal,ko,개인 예외
+menuTree.via.personal,en,Personal grant
+menuTree.col.roleId,ko,역할 ID
+menuTree.col.roleId,en,Role ID
+menuTree.col.roleNm,ko,역할명
+menuTree.col.roleNm,en,Role Name
+menuTree.col.via,ko,경유
+menuTree.col.via,en,Granted via
+menuTree.col.accountUsable,ko,계정 상태
+menuTree.col.accountUsable,en,Account
+menuTree.col.actions,ko,액션
+menuTree.col.actions,en,Actions
+menuTree.col.grantState,ko,부여 상태
+menuTree.col.grantState,en,Grant
+menuTree.col.period,ko,부여 기간
+menuTree.col.period,en,Valid Period
+menuTree.grant.SCHEDULED,ko,예정
+menuTree.grant.SCHEDULED,en,Scheduled
+menuTree.grant.ACTIVE,ko,유효
+menuTree.grant.ACTIVE,en,Active
+menuTree.grant.EXPIRED,ko,만료
+menuTree.grant.EXPIRED,en,Expired
+menuTree.account.usable,ko,사용
+menuTree.account.usable,en,Usable
+menuTree.account.blocked,ko,사용 불가
+menuTree.account.blocked,en,Blocked
+menuTree.search.menuNm,ko,메뉴명
+menuTree.search.menuNm,en,Menu name
+menuTree.search.menuCd,ko,메뉴 코드
+menuTree.search.menuCd,en,Menu code
+menuTree.search.menuUrl,ko,URL
+menuTree.search.menuUrl,en,URL
+menuTree.search.position,ko,{index} / {total}
+menuTree.search.position,en,{index} / {total}
+menuTree.search.prev,ko,이전
+menuTree.search.prev,en,Previous
+menuTree.search.next,ko,다음
+menuTree.search.next,en,Next
+menuTree.excel.path,ko,경로
+menuTree.excel.path,en,Path

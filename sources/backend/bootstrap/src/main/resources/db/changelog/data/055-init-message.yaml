@@ -1,0 +1,46 @@
+# 메시지 값 41차 — 사람 소유 시드다(22 §1.1). 054 가 넣은 문구 하나를 고친다.
+#
+# 넣는 것이 아니라 고치는 것이라 loadData 가 아니라 update 다. 054 는 이미 적용돼 있어
+# 손댈 수 없고(적용된 changeset 을 고치면 체크섬이 어긋난다 — 2026-08-30, 050), 같은 키를
+# 다시 loadData 하면 PK 충돌이다.
+#
+# 왜 문구가 바뀌었나 — 그 사이에 설정 창의 버튼이 셋이 됐다(취소 · 저장 · 초기화).
+# 되돌리는 일은 취소가 맡고 초기화는 **저장된 행을 지우는** 일만 하므로, 꺼진 이유도
+# "되돌릴 설정이 없다" 가 아니라 "저장된 설정이 없다" 여야 한다 — 취소는 언제나 켜져
+# 있어서, 되돌릴 것이 없다고 말하면 옆의 켜진 버튼과 어긋난다(53 §5).
+databaseChangeLog:
+  - changeSet:
+      id: data-055-message-reset-none
+      author: template
+      comment: 초기화가 꺼진 이유를 다시 적는다 — 버튼이 셋이 되며 뜻이 좁아졌다(53 §5)
+      changes:
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: 저장된 설정이 없습니다
+            where: MSG_KEY = 'grid.settings.reset.none' AND LANG_CD = 'ko'
+        - update:
+            tableName: SYS_MESSAGE
+            columns:
+              - column:
+                  name: MSG_VAL
+                  value: There are no saved settings
+            where: MSG_KEY = 'grid.settings.reset.none' AND LANG_CD = 'en'
+
+  - changeSet:
+      id: data-055-cache-version
+      author: template
+      comment: 값을 고쳤으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

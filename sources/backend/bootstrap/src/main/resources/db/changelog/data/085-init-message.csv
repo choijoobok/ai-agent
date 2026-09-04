@@ -1,0 +1,5 @@
+MSG_KEY,LANG_CD,MSG_VAL
+popup.pick,ko,선택
+popup.pick,en,Select
+popup.clear,ko,지우기
+popup.clear,en,Clear

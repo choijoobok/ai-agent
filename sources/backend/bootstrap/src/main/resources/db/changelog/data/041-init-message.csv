@@ -1,0 +1,5 @@
+MSG_KEY,LANG_CD,MSG_VAL
+tab.dirty.reload.content,ko,다시 띄우면 {tabs} 의 변경을 잃습니다.
+tab.dirty.reload.content,en,Reloading will discard the changes in {tabs}.
+shell.reload,ko,다시 띄우기
+shell.reload,en,Reload

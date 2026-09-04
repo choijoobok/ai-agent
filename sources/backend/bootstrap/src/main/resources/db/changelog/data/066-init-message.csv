@@ -1,0 +1,25 @@
+MSG_KEY,LANG_CD,MSG_VAL
+err.batch.duplicate,ko,이미 있는 배치 ID 입니다
+err.batch.duplicate,en,This batch ID already exists
+err.batch.not-found,ko,없는 배치입니다
+err.batch.not-found,en,No such batch
+err.batch.name-required,ko,배치명은 필수입니다
+err.batch.name-required,en,Batch name is required
+err.batch.desc-required,ko,설명은 필수입니다 — 끄면 무엇이 멈추는지 적습니다
+err.batch.desc-required,en,Description is required — state what stops when this batch is turned off
+err.batch.bean-unknown,ko,등록된 배치 구현이 아닙니다
+err.batch.bean-unknown,en,Not a registered batch implementation
+err.batch.cron-invalid,ko,크론 표현식이 올바르지 않습니다
+err.batch.cron-invalid,en,The cron expression is not valid
+err.batch.cooldown-too-long,ko,쿨다운이 크론 최소 간격보다 깁니다. 실행이 건너뛰어집니다
+err.batch.cooldown-too-long,en,The cooldown is longer than the shortest cron interval. Runs will be skipped
+err.batch.param-json,ko,파라미터가 올바른 JSON 이 아닙니다
+err.batch.param-json,en,The parameter is not valid JSON
+err.batch.not-deletable,ko,켜져 있거나 실행 중이어서 삭제할 수 없습니다
+err.batch.not-deletable,en,Cannot delete while the batch is enabled or running
+err.batch.already-running,ko,이미 실행 중입니다
+err.batch.already-running,en,Already running
+err.batch-hist.purged,ko,이미 파기된 이력입니다
+err.batch-hist.purged,en,This history record has already been purged
+err.batch-hist.not-cancelable,ko,실행 중인 이력이 아닙니다
+err.batch-hist.not-cancelable,en,This execution is not running

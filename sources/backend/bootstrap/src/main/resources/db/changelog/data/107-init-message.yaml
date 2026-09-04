@@ -1,0 +1,65 @@
+# 메시지 값 — 분실 비밀번호 재설정 3단계와 비밀번호 정책 문구. AUTH-07 · login 요건서 §8.
+#
+# 앞의 것을 고치지 않고 파일을 더한다(22 §1.1). loadData 는 CSV 의 내용을 체크섬에 넣으므로
+# 106 에 줄을 더하면 그 changeset 이 이미 돈 DB 에서 기동이 죽는다.
+#
+# 키는 008 이 소스에서 만든다(ADR-0023) — 여기서 또 넣으면 loadData 가 중복 키로 죽는다.
+#
+# ── 메일 본문이 여기 있는 것이 결정이다 ─────────────────────────────────
+#
+# 파일 템플릿(HTML·Thymeleaf)을 새로 만들지 않았다. `SYS_MESSAGE` 에 두면 **다국어와 운영 중
+# 수정이 공짜로 따라온다** — 수신자의 `LOCALE_CD` 로 문구를 고르는 코드가 이미 있고, 문구를
+# 고치는 화면도 이미 있다. 템플릿 파일은 그 둘을 처음부터 다시 만들게 한다.
+#
+# **본문에 줄바꿈이 없다.** CSV 의 따옴표 안 개행은 loadData 가 읽기는 하지만, 그 사실을
+# 이 저장소의 어느 시드도 아직 쓰지 않는다 — 짧은 알림 메일이라 한 문단으로 충분하고,
+# 필요해지는 날 그 첫 사용자가 벤더 넷에서 확인하면 된다.
+#
+# ── 정책 문구에는 자리표가 있다 ─────────────────────────────────────────
+#
+# `{min}` · `{kinds}` · `{count}` 를 서버가 채워 내려준다(`MsgFormat`). 응답 실패 문구
+# (`err.user.pwd-*`)에 인자 치환이 없는 것과 갈리는 자리이며, 이유는 정책 값이 런타임에
+# 바뀌기 때문이다 — 숫자를 문구에 굳히면 설정을 바꾼 배포에서 문구가 거짓말을 한다.
+#
+# ── 발송 안내가 성공을 단정하지 않는다 ──────────────────────────────────
+#
+# `reset.sent` 가 *"~이면 보냈습니다"* 인 것은 계정 열거 방지의 마지막 한 겹이다(요건서 §6-3).
+# 서버가 응답을 하나로 맞춰 놓아도 문구가 *"등록된 메일로 보냈습니다"* 라고 단정하면
+# 사용자는 그것을 **계정이 있다는 확인**으로 읽는다.
+databaseChangeLog:
+  - changeSet:
+      id: data-107-message
+      author: template
+      comment: 재설정 3단계 · 정책 문구 · 메일 본문 — AUTH-07(login 요건서 §8)
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/107-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-107-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

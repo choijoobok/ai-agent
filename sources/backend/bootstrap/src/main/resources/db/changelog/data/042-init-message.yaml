@@ -1,0 +1,44 @@
+# 메시지 값 32차 — 사람 소유 시드다(22 §1.1).
+#
+# 바탕 농도의 라벨 둘(51 §9.7). 눈금도 저장되는 값도 하나이고 무엇의 농도인가 만 모드를
+# 따라 갈린다 — 라이트에서는 흰색, 다크에서는 검은색이다.
+#
+# settings.whiteLevel 이 죽은 키가 됐다. 값은 남겨 둔다 — 지우는 것은 다국어 메시지
+# 화면의 일이고(63 §3.4), 여기서 DELETE 를 쓰면 그 화면이 하는 일을 시드가 가로챈다.
+databaseChangeLog:
+  - changeSet:
+      id: data-042-message
+      author: template
+      comment: 바탕 농도 라벨이 모드를 따라간다 — 51 §9.7
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/042-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-042-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — 43 §8.1
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

@@ -1,0 +1,3 @@
+MSG_KEY,LANG_CD,MSG_VAL
+screenTabs.dirty.content,ko,저장하지 않은 변경이 있습니다. 바꾸면 보이지 않게 되지만 사라지지는 않습니다.
+screenTabs.dirty.content,en,You have unsaved changes. Switching hides them — they are not discarded.

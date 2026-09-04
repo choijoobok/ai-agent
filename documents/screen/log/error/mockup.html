@@ -1,0 +1,832 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>목업 · 에러 로그 (error-log)</title>
+<style>
+/* ─────────────────────────────────────────────────────────────
+   목업 공용 스타일
+   목업은 한 파일로 완결되어야 한다. 외부 CSS 로 빼면 파일 하나만
+   열거나 다른 곳에 붙였을 때 화면이 깨진다. 그래서 복제를 감수한다.
+   새 목업은 이 블록을 그대로 복사한다.
+   의도적으로 밋밋하다. AntD 처럼 보이면 잘못된 구속이 된다.
+
+   ★ 그리드 어휘 다섯 — .sf .tb .grid .pg .split
+     크롬·행 상태·컬럼 고정의 자리는 53, 컬럼 계약은 54 가 정한다.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --ink:#1a1a1a; --muted:#6b6b6b; --line:#c9c9c9; --line2:#e4e4e4;
+  --bg:#ffffff; --panel:#f7f7f7; --err:#a8261c; --err-bg:#fbeceb;
+  --note:#1f4e79; --note-bg:#eef4fa; --ok:#1d7a4d;
+  /* ── 그리드 색. 그리드가 스스로 정하지 않고 셸에서 받는다 ──
+     Primary — 선택·편집 표시는 전부 여기서 파생한다.
+     진한 단계를 쓰지 않는다 — 그리드는 글자가 촘촘해 배경이 진해지면
+     전부 읽기 어려워진다. 대비 문제를 애초에 만들지 않는다. */
+  --pri:#1f4e79;      /* 원색 — 편집 중인 셀 테두리에만 */
+  --pri-1:#eaf1f9;    /* 가장 옅은 단계 — 현재 선택 행 */
+  --pri-2:#d6e6f5;    /* 한 단계 진한 것 — 현재 선택 셀 */
+  /* 컬럼 상태 — 정적. 헤더 표시(* · 흐린 글자)와 짝이다 */
+  --req-bg:#fdf6e6;   /* 필수 입력 */
+                      /* 편집 가능 = 바탕(--bg). 칠하지 않는 것이 곧 표시다 */
+                      /* 읽기 전용 = --panel */
+  /* 행 상태 — Primary 와 무관하다. 아이콘이 원본이고 배경은 거든다 */
+  --row-new:#eaf5ef; --row-mod:#e7f1f2;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#e6e6e6; --muted:#9a9a9a; --line:#4a4a4a; --line2:#333;
+    --bg:#161616; --panel:#1e1e1e; --err:#e08b82; --err-bg:#3a201e;
+    --note:#8fb8dd; --note-bg:#1c2833; --ok:#63c08d;
+    /* 같은 알파를 얹지 않는다 — 다크에서는 안 보이거나 반대로 튄다.
+       단계를 모드별로 따로 고른다 */
+    --pri:#8fb8dd; --pri-1:#1a2b3a; --pri-2:#24405c;
+    --req-bg:#33291a;
+    --row-new:#17281f; --row-mod:#16272a;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--bg);color:var(--ink);
+     font:14px/1.6 "Malgun Gothic","Apple SD Gothic Neo",sans-serif;}
+main{max-width:1000px;margin:0 auto}
+h1{font-size:19px;margin:0 0 4px}
+h2{font-size:15px;margin:34px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+h3{font-size:13px;margin:20px 0 8px;color:var(--muted);font-weight:600}
+code{font-family:Consolas,monospace;font-size:.92em;background:var(--panel);padding:1px 4px}
+a{color:var(--note)}
+
+/* 개요 바 — 문서와의 연결. 모든 목업이 갖는다 */
+.head{border:1px solid var(--line);background:var(--panel);padding:12px 14px;margin-bottom:6px}
+.head dl{display:grid;grid-template-columns:max-content 1fr;gap:2px 14px;margin:0;font-size:12.5px}
+.head dt{color:var(--muted)}
+.head dd{margin:0}
+
+/* 화면 영역 — 뷰포트를 나타내는 상자 */
+.screen{border:1px solid var(--line);margin:0 0 8px;background:var(--bg)}
+.screen .bar{background:var(--panel);border-bottom:1px solid var(--line2);
+             padding:5px 10px;font-size:11.5px;color:var(--muted)}
+.screen .body{padding:28px 20px}
+/* 셸 위에 뜬 모달 — 배경이 셸이라는 힌트만 준다 */
+.screen.shell .body{background:repeating-linear-gradient(45deg,
+  var(--panel) 0 6px, transparent 6px 12px);padding:22px 14px}
+/* 리프 화면은 자기가 콘텐츠다 — 셸 크롬을 그리지 않는다 */
+.screen.leaf .body{padding:12px}
+
+/* 카드 — 로그인 등 중앙 배치 폼 */
+.card{max-width:320px;margin:0 auto;border:1px solid var(--line);padding:22px 20px;background:var(--bg)}
+.card .logo{height:38px;border:1px dashed var(--line);display:flex;align-items:center;
+            justify-content:center;color:var(--muted);font-size:11.5px;margin-bottom:18px}
+
+/* 모달 — 그리드 설정 창도 이것을 쓴다 */
+.modal{max-width:600px;margin:0 auto;border:1px solid var(--line);background:var(--bg)}
+.modal .mh{border-bottom:1px solid var(--line2);padding:9px 14px;font-size:13px;font-weight:600;
+           display:flex;justify-content:space-between;align-items:center}
+.modal .mh .x{color:var(--muted);font-weight:400}
+.modal .mb{padding:14px}
+.modal .mf{border-top:1px solid var(--line2);padding:9px 14px;font-size:11.5px;color:var(--muted);
+           display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* 탭 */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin:0 0 14px}
+.tabs>span{padding:6px 13px;font-size:12.5px;border:1px solid transparent;border-bottom:none;
+           color:var(--muted);cursor:default}   /* 자식만 — 안에 배지가 들어갈 수 있다 */
+.tabs>span.on{border-color:var(--line);background:var(--bg);color:var(--ink);font-weight:600;
+              margin-bottom:-1px}
+.tabs .badge{display:inline-block;min-width:16px;height:16px;line-height:16px;text-align:center;
+             border-radius:8px;background:var(--err);color:#fff;font-size:10.5px;margin-left:5px}
+
+/* 폼 — 화면에 남는 폼은 조회조건 하나다 */
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;margin-bottom:3px}
+.f input,.f select,.f textarea{width:100%;padding:6px 8px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+.f .hint{font-size:11px;color:var(--muted);margin-top:3px}
+.f.ro input{background:var(--panel);color:var(--muted)}
+.btn{width:100%;padding:8px;border:1px solid var(--ink);background:var(--ink);
+     color:var(--bg);font:inherit;font-size:13px;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.sm{width:auto;padding:4px 11px;font-size:12px}
+.btn[disabled]{opacity:.35}
+.sub{text-align:center;margin-top:12px;font-size:12px}
+.row{display:flex;gap:8px;align-items:center}
+.row .btn{width:auto}
+
+/* 키-값 나열 (읽기 전용 정보) */
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:12.5px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+
+/* 설정 그룹 */
+.grp{border:1px solid var(--line2);margin-bottom:10px}
+.grp>b{display:block;background:var(--panel);border-bottom:1px solid var(--line2);
+       padding:5px 11px;font-size:12px}
+.grp .item{display:flex;justify-content:space-between;align-items:center;gap:12px;
+           padding:6px 11px;font-size:12.5px;border-bottom:1px solid var(--line2)}
+.grp .item:last-child{border-bottom:none}
+.grp .item .where{font-size:10.5px;color:var(--muted);white-space:nowrap}
+
+/* 목록 (알림·검색 결과·드롭다운·필터 메뉴) */
+.list{border:1px solid var(--line2);font-size:12.5px;background:var(--bg)}
+.list .it{padding:7px 11px;border-bottom:1px solid var(--line2);display:flex;
+          justify-content:space-between;align-items:center;gap:10px}
+.list .it:last-child{border-bottom:none}
+.list .it.unread{background:var(--note-bg)}
+.list .it .path{display:block;font-size:10.5px;color:var(--muted)}
+.list .it .when{color:var(--muted);font-size:11px;white-space:nowrap}
+.list .empty{padding:22px 11px;text-align:center;color:var(--muted);font-size:12px}
+.tag{display:inline-block;border:1px solid var(--line);padding:0 5px;font-size:10.5px;
+     color:var(--muted);border-radius:2px}
+
+/* 규칙 체크리스트 */
+.rules{list-style:none;margin:0 0 14px;padding:9px 11px;border:1px solid var(--line2);
+       background:var(--panel);font-size:11.5px;line-height:1.7}
+.rules li{padding-left:17px;position:relative}
+.rules li::before{position:absolute;left:0;font-weight:700}
+.rules .ok::before{content:"✓";color:var(--ok)}
+.rules .no::before{content:"✕";color:var(--err)}
+.rules .srv::before{content:"·";color:var(--muted)}
+.rules .srv{color:var(--muted)}
+.rules em{font-style:normal;opacity:.8}
+
+/* 배너 — 폼 상단 한 곳. 토스트(UX-10)도 이것으로 표현한다 */
+.banner{border:1px solid var(--err);background:var(--err-bg);color:var(--err);
+        padding:7px 10px;font-size:12.5px;margin-bottom:14px}
+.banner.info{border-color:var(--note);background:var(--note-bg);color:var(--note)}
+
+/* ── 그리드 어휘 다섯 ─────────────────────────────── */
+
+/* 검색 폼 — <SearchForm>(UX-15). 서버 조회 조건은 이것뿐이다 */
+.sf{border:1px solid var(--line2);background:var(--panel);padding:9px 11px;margin-bottom:8px;
+    display:grid;grid-template-columns:max-content 1fr max-content 1fr max-content 1fr;
+    gap:6px 9px;align-items:center;font-size:12px}
+.sf label{color:var(--muted);white-space:nowrap}
+.sf input,.sf select{width:100%;padding:3px 6px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:12px}
+.sf .wide{grid-column:span 3}
+.sf .act{grid-column:1/-1;text-align:right;padding-top:2px}
+
+/* 그리드 헤더 — 왼쪽 제목(.ttl), 오른쪽 버튼. 도구 둘(.ico)은 맨 오른쪽 고정 */
+.tb{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.tb .ttl{font-size:13px;font-weight:600;margin-right:auto;white-space:nowrap}
+.tb .ico{width:auto;padding:4px 8px;font-size:12px;white-space:nowrap}
+.tb .sp{flex:1}
+.tb .cnt{font-size:11.5px;color:var(--muted);white-space:nowrap}
+
+/* 그리드 본문 — <DataGrid> */
+.grid{border:1px solid var(--line);overflow:auto;max-height:260px}
+.grid table{margin:0;font-size:12px;border:none}
+.grid th{position:sticky;top:0;z-index:1}
+.grid td,.grid th{white-space:nowrap}
+.grid th .mn{float:right;color:var(--muted);font-weight:400;margin-left:8px}  /* 컬럼 메뉴 ☰ */
+.grid th .srt{color:var(--note)}                                             /* 정렬 표시 */
+.grid th.on{background:var(--note-bg)}                                       /* 필터 걸린 컬럼 */
+/* 헤더가 컬럼을 말한다. 색이 아니라 표시가 원본이다 */
+.grid th.req em{font-style:normal;color:var(--err);font-weight:700}          /* 필수 * */
+.grid th.roh{color:var(--muted);font-weight:400}                             /* 읽기 전용 컬럼 */
+/* 양끝 시스템 컬럼. 사용자가 숨기거나 옮길 수 없다 */
+.grid .st{width:26px;text-align:center;color:var(--muted)}
+.grid .del{width:34px;text-align:center;color:var(--muted)}
+.grid .pinL{border-right:2px solid var(--line)}   /* 좌 고정 ↔ 스크롤 경계 */
+.grid .pinR{border-left:2px solid var(--line)}    /* 스크롤 ↔ 우 고정 경계 */
+
+/* ── 셀과 행의 색 — 그리드 표준의 우선순위 여섯 ────────────────────
+   여섯이 전부 같은 명시도다. 그래서 나중에 쓴 것이 이긴다 —
+   6 → 1 순서로 적었고, 순서를 바꾸면 규약이 바뀐다.
+   행 규칙(tr.x td)이 셀 규칙(td.x)보다 명시도가 한 단계 높으므로
+   5(행 상태)가 6(컬럼 상태)을 이기는 것은 순서가 아니라 구조다.  */
+
+/* 6. 컬럼 상태 — 정적이므로 다른 것이 없을 때의 바탕 */
+.grid td.req{background:var(--req-bg)}                       /* 필수 입력 */
+.grid td.ro {background:var(--panel);color:var(--muted)}     /* 읽기 전용 */
+                                                             /* 편집 가능은 칠하지 않는다 */
+/* 5. 행 상태 — 상태 컬럼 아이콘이 원본이다 */
+.grid tr.new td{background:var(--row-new)}
+.grid tr.mod td{background:var(--row-mod)}
+.grid tr.rmv td{color:var(--muted);text-decoration:line-through}  /* 배경이 아니라 글자다 */
+/* 4. 현재 선택 행 — Primary 가장 옅은 단계 */
+.grid tr.sel td{background:var(--pri-1)}
+/* 3. 현재 선택 셀 — 한 단계 진한 것 + 테두리 */
+.grid tr td.cur{background:var(--pri-2);outline:1px solid var(--pri);outline-offset:-1px}
+/* 2. 편집 중인 셀 — 테두리는 Primary 원색, 배경은 바탕(입력 글자가 읽혀야 한다) */
+.grid tr td.edit{background:var(--bg);color:var(--ink);outline:2px solid var(--pri);outline-offset:-2px}
+/* 1. 검증 실패 — 유일하게 Primary 와 무관하다 */
+.grid tr td.err{background:var(--err-bg);outline:1px solid var(--err);outline-offset:-1px}
+
+/* ── 스위치 — 값이 둘인 데이터 셀 ──────────
+   ynFlag 컬럼과 권한 트리 셀이 같은 것을 쓴다. 체크박스가 아니다.
+   켜짐 색은 Primary 에서 온다.
+   여럿을 고르는 자리는 여전히 체크박스다 — 행 선택 · set 필터 ·
+   그리드 설정의 컬럼 표시.                                      */
+.swt{display:inline-block;width:24px;height:13px;border:1px solid var(--line);
+     border-radius:7px;background:var(--panel);position:relative;vertical-align:-2px}
+.swt::after{content:"";position:absolute;top:1px;left:1px;width:9px;height:9px;
+            border-radius:50%;background:var(--muted)}
+.swt.on{background:var(--pri);border-color:var(--pri)}
+.swt.on::after{left:12px;background:var(--bg)}
+.swt.dis{opacity:.45}          /* 비활성 — 입력 칸이 아니라 상태 표시로 읽힌다 */
+
+/* 색 견본 — 화면 9 */
+.sw{display:inline-block;width:30px;height:14px;border:1px solid var(--line);
+    vertical-align:-2px;margin-right:6px}
+
+/* 그리드 푸터 — 건수 · 네비게이션 · 페이지 사이즈 */
+.pg{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+    padding:6px 2px;font-size:11.5px;color:var(--muted)}
+.pg .nav{text-align:center}
+.pg .size{text-align:right}
+.pg b{color:var(--ink)}
+
+/* 마스터-디테일 스플리터. 축이 둘이고 접기 화살표가 붙는다 */
+.split{height:13px;margin:9px 0;border-top:1px solid var(--line2);
+       border-bottom:1px solid var(--line2);background:var(--panel);
+       display:flex;align-items:center;justify-content:center;gap:4px;
+       font-size:9px;color:var(--muted);cursor:row-resize}
+.split .hnd{letter-spacing:2px;line-height:1}                 /* 끄는 손잡이 */
+.split .arw{border:1px solid var(--line);background:var(--bg);color:var(--muted);
+            font-size:8px;line-height:10px;padding:0 4px;cursor:default}
+.split .arw.off{opacity:.3}          /* 반대쪽이 이미 접혔다 — 둘 다 접히지 않는다 */
+/* 세로 축 — 좌우 배치 */
+.split.v{height:auto;width:13px;margin:0 9px;flex-direction:column;
+         border:none;border-left:1px solid var(--line2);border-right:1px solid var(--line2);
+         cursor:col-resize}
+.splitrow{display:flex;align-items:stretch}
+.splitrow>.pane{flex:1;min-width:0}
+/* 접힌 쪽 — 제목 줄만 남는다. 없는 것과 다르다 */
+.folded{border:1px solid var(--line2);background:var(--panel);padding:6px 10px;
+        font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.folded .why{font-weight:400;font-size:11px;color:var(--muted);margin-left:auto}
+
+/* ── 브레드크럼 줄 ──────────────────────────────────
+   줄은 셸의 것이고 오른쪽 슬롯은 화면이 채운다. 리프 목업이 셸
+   크롬을 그리지 않는 규약의 유일한 예외이며, 그리지 않으면
+   조회조건 컨트롤(UX-07 · UX-15)을 보일 자리가 없다.            */
+.bc{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+    border:1px solid var(--line2);background:var(--panel);
+    padding:4px 10px;margin-bottom:8px;font-size:12px;color:var(--muted)}
+.bc .path{margin-right:auto;white-space:nowrap}
+.bc .path b{color:var(--ink)}
+.bc .btn{width:auto;padding:2px 8px;font-size:11.5px}
+
+/* 주석 — 화면 요소 ↔ 문서 결정 연결 */
+.notes{border-left:3px solid var(--note);background:var(--note-bg);padding:10px 14px;font-size:12.5px}
+.notes ol{margin:0;padding-left:18px}
+.notes li{margin:3px 0}
+.n{display:inline-block;min-width:17px;height:17px;line-height:17px;text-align:center;
+   border-radius:50%;background:var(--note);color:#fff;font-size:11px;margin-right:5px}
+
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
+th,td{border:1px solid var(--line2);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:600;white-space:nowrap}
+td.c{white-space:nowrap;font-family:Consolas,monospace;font-size:12px}
+
+.todo{border:1px dashed var(--line);padding:10px 14px;font-size:12.5px;background:var(--panel)}
+.todo ul{margin:4px 0 0;padding-left:18px}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line2);
+       font-size:11.5px;color:var(--muted)}
+
+
+/* ── 이 목업만의 어휘 넷 ──────────────────────────────
+   조회 전용이라 편집 어휘가 없다. 이 화면의 것은
+   상태 배지 둘(4xx · 5xx) · 상세 링크 · 탭 둘짜리 모달 ·
+   신설 컬럼 표시다. 신설 셋은 헤더를 붉게 찍어 구분한다.     */
+.grid td.num,.grid th.num{text-align:right}
+.grid td .lnk{color:var(--note);text-decoration:underline;cursor:default}
+.grid td .nil{color:var(--muted)}
+.grid th.nw{color:var(--err)}                 /* 로그 데이터 모델에 없는 신설 컬럼 */
+.mut{color:var(--muted);font-size:11px}
+/* 상태 배지 둘 — 4xx 는 대개 정상, 5xx 가 고쳐야 할 것 */
+.bdg{display:inline-block;border:1px solid var(--err);color:var(--err);
+     padding:0 5px;font-size:10.5px;border-radius:2px}
+.bdg.warn{border-color:#a67c00;color:#a67c00}
+@media (prefers-color-scheme: dark){ .bdg.warn{border-color:#d4a72c;color:#d4a72c} }
+/* 상세 모달 — 읽기 전용 textarea × 2 탭. 그리드 어휘가 아니다 */
+.ta{width:100%;height:150px;border:1px solid var(--line);background:var(--panel);
+    color:var(--muted);font:12px/1.55 Consolas,monospace;padding:8px;resize:none}
+.tabs>span.off{color:var(--line);text-decoration:line-through}
+</style>
+
+<main>
+
+<!-- ── 개요 바 ─────────────────────────────────────────────── -->
+<h1>에러 로그</h1>
+<div class="head">
+  <dl>
+    <dt>화면코드</dt><dd><code>error-log</code></dd>
+    <dt>요건서</dt><dd><a href="requirements.md">requirements.md</a></dd>
+    <dt><code>MENU_CD</code></dt><dd><code>ERROR_LOG</code> (상위 <code>LOG</code>)</dd>
+    <dt>라우트</dt><dd><code>/log/error</code> · 셸 안의 탭</dd>
+    <dt>담는 기능</dt><dd>LOG-03 · LOG-05 · LOG-08</dd>
+    <dt>액션</dt><dd><b><code>R</code> <code>E</code></b></dd>
+    <dt>형태</dt><dd><b>마스터 그리드 하나 + 상세 모달(탭 둘 — 전문 · 스택)</b></dd>
+    <dt>보존</dt><dd><b>180일</b> 상한</dd>
+    <dt>다루는 것</dt><dd><b>셋 중 유일하게 사람이 먼저 찾아오는 화면</b>이다 —
+      사용자가 들고 온 <code>traceId</code> 나 URL 로 들어온다(화면 4).
+      <b>이 화면이 백엔드 구조의 요청 로깅 모델을 바꿨다</b>(화면 2) — 컬럼 셋이 없었고
+      <b>사용 이력과 배타</b>였다. <b>403 은 양쪽에 남는다</b>(화면 3)</dd>
+  </dl>
+</div>
+
+<!-- ── 화면 1 ─────────────────────────────────────────────── -->
+<h2>1. 기본 상태 — <b><code>5xx 만</code></b> 이 가장 흔한 조회다</h2>
+
+<div class="screen leaf" id="main" data-manual="main">
+  <div class="bar">/log/error — 리프 화면이라 셸 크롬을 그리지 않는다. <b>브레드크럼 줄만 예외</b>다</div>
+  <div class="body">
+
+    <div class="bc">
+      <span class="path">시스템 &rsaquo; 이력 · 로그 &rsaquo; <b>에러 로그</b></span>
+      <button class="btn sm ghost" type="button" title="저장된 조회조건 — UX-07">조건 &#9662;</button>
+      <button class="btn sm ghost" type="button" title="조회조건 접기/펼치기 — UX-15">&#8963; 조회조건</button>
+    </div>
+
+    <div class="sf">
+      <label>일시 <span style="color:var(--err)">*</span></label>
+      <span class="wide"><input value="2026-08-22 00:00:00" style="width:47%"> ~ <input value="2026-08-28 23:59:59" style="width:47%"></span>
+      <label><b>상태</b></label><select><option>전체</option><option selected>5xx 만</option><option>4xx 만</option></select>
+      <label>오류 코드</label><input placeholder="완전 일치">
+      <label>사용자</label><input placeholder="완전 일치">
+      <label>요청 URI</label><input placeholder="앞 일치">
+      <label>추적 ID</label><input placeholder="완전 일치">
+      <span class="mut" style="grid-column:span 2"><b>403 이 압도적으로 많고 그것은 대개 정상 동작</b>이다 <span class="n">1</span></span>
+      <div class="act"><button class="btn sm ghost" type="button">초기화</button></div>
+    </div>
+
+    <div class="tb">
+      <span class="ttl">에러 로그</span>
+      <span class="sp"></span>
+      <button class="btn sm ghost" type="button">조회</button>
+      <button class="btn sm ghost ico" type="button" title="엑셀 다운로드">⤓ ▾</button>
+      <button class="btn sm ghost ico" type="button" title="그리드 설정">⚙</button>
+    </div>
+
+    <div class="grid" style="max-height:230px">
+      <table>
+        <thead><tr>
+          <th class="roh">일시 <span class="srt">▼</span><span class="mn">☰</span></th>
+          <th class="roh nw">상태 <span class="n">2</span><span class="mn">☰</span></th>
+          <th class="roh nw">오류 코드<span class="mn">☰</span></th>
+          <th class="roh nw">메시지<span class="mn">☰</span></th>
+          <th class="roh">사용자<span class="mn">☰</span></th>
+          <th class="roh">요청 URI<span class="mn">☰</span></th>
+          <th class="roh">상세</th>
+          <th class="roh">추적 ID</th>
+        </tr></thead>
+        <tbody>
+          <tr class="sel"><td class="ro">2026-08-28 11:02:47</td><td class="ro"><span class="bdg">500</span></td>
+              <td class="ro">err.data-integrity</td><td class="ro">이미 등록된 코드입니다: USE_YN / Y</td>
+              <td class="ro">kim.jb</td><td class="ro">/api/service/code/save</td>
+              <td class="ro"><span class="lnk">[보기]</span> <span class="n">3</span></td><td class="ro">3c88…-0a72</td></tr>
+          <tr><td class="ro">2026-08-28 10:41:19</td><td class="ro"><span class="bdg">500</span></td>
+              <td class="ro">err.unexpected</td><td class="ro">처리 중 오류가 발생했습니다</td>
+              <td class="ro">park.sy</td><td class="ro">/api/service/user/save</td>
+              <td class="ro"><span class="lnk">[보기]</span></td><td class="ro">9a01…-b7e3</td></tr>
+          <tr><td class="ro">2026-08-28 09:58:02</td><td class="ro"><span class="bdg warn">403</span></td>
+              <td class="ro"><b>err.api-not-mapped</b></td><td class="ro">호출 권한이 없습니다</td>
+              <td class="ro">lee.hj</td><td class="ro">/api/service/order/exportSummary</td>
+              <td class="ro"><span class="lnk">[보기]</span></td><td class="ro">6d4c…-2210</td></tr>
+          <tr><td class="ro">2026-08-28 09:57:44</td><td class="ro"><span class="bdg warn">403</span></td>
+              <td class="ro"><b>err.no-authority</b></td><td class="ro">호출 권한이 없습니다</td>
+              <td class="ro">lee.hj</td><td class="ro">/api/service/user/save</td>
+              <td class="ro"><span class="lnk">[보기]</span></td><td class="ro">1f9e…-5c08</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg">
+      <span><b>4</b>건 조회됨 <span class="mut">· 최근 7일</span></span>
+      <span class="nav">‹ 이전 &nbsp; 다음 ›</span>
+      <span class="size">100건씩 ▾</span>
+    </div>
+
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b><code>5xx 만</code> 이 이 화면의 가장 흔한 조회다</b>.
+        <b>403 이 압도적으로 많고 그것은 대개 정상 동작</b>이다(권한 없는 사람이 눌렀다) —
+        <i>"고쳐야 할 것"</i> 만 보려면 5xx 다. login-log 의 <code>결과 묶음</code> 과 같은 <b>파생 조건</b>이며
+        <b>세 번째 사례</b>다(<code>72</code>). <b><code>number</code> 범위로 두지 않는 이유</b>:
+        <code>400~499</code> 를 사람이 입력하면 <b>경계를 틀린다</b>.</li>
+    <li><span class="n">2</span><b>붉은 헤더 셋은 이 화면을 그리다 없는 것이 드러났다</b>(화면 2).
+        로그 데이터 모델은 <i>"사용 이력과 동일 + <code>ROOT_CAUSE_STACK</code>"</i> 이라고만 적고 있었다 —
+        <b>2026-08-28 에 로그 데이터 모델으로 들어갔다</b>.</li>
+    <li><span class="n">3</span><b><code>[보기]</code> 하나가 탭 둘을 연다</b>(화면 5). <code>PARAMETERS</code> 와
+        <code>ROOT_CAUSE_STACK</code> 이 <b>둘 다 <code>nclob</code></b> 이라 목록에 실을 수 없고,
+        컬럼마다 링크를 두면 <b>사용자가 어느 쪽을 눌러야 하는지 매번 판단</b>한다.</li>
+    <li><b>메뉴 · IP · 순번은 기본 숨김</b>이다(<code>visible: false</code>) — <code>⚙</code> 에서 켠다.
+        <b><code>hidden</code> 컬럼은 없다</b>.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 2 ─────────────────────────────────────────────── -->
+<h2>2. 모델이 바뀌었다 — <b>배타를 없애고 컬럼 셋을 넣는다</b></h2>
+
+<div class="screen leaf">
+  <div class="body">
+    <ul class="rules">
+      <li class="no"><b>로그 데이터 모델의 그림과 백엔드 구현이 서로 다른 모델이었다</b> —
+          그림은 <i>한 요청 = ACCESS 1행 + (예외 시) EXCEPTION 1행</i>, 구현은 <i>둘 중 하나</i> <span class="n">2</span></li>
+      <li class="ok"><b>중복의 정체가 <code>PARAMETERS</code>(1MB <code>nclob</code>) 하나</b>였다 —
+          그것만 사용 이력에 두면 <b>중복 회피의 목적이 달성되고 배타가 필요 없어진다</b></li>
+      <li class="no"><b><code>HTTP_STAT</code> 이 없으면</b> 403 홍수 속에서 <b>500 을 찾을 수 없다</b> —
+          가르는 컬럼이 없으면 <b>드문 쪽이 흔한 쪽에 묻힌다</b></li>
+      <li class="no"><b><code>ERR_CD</code> 가 없으면</b> <i>"같은 오류가 몇 건인가"</i> 를 물을 수 없다 —
+          <code>nclob</code> 스택으로는 <b>정렬도 그룹도 벤더가 막는다</b>(22)</li>
+      <li class="no"><b><code>ERR_MSG</code> 가 없으면</b> 목록에서 무슨 오류인지 볼 수 없다 —
+          지금은 <b>스택 안에 묻혀 있다</b></li>
+      <li class="ok"><b>셋 다 응답이 이미 갖고 있는 값</b>이다 — <code>ApiResponse</code> 의
+          <code>code</code> · <code>message</code> 와 HTTP 상태</li>
+    </ul>
+    <div class="banner info"><b>백엔드 구조가 이미 적었다</b> —
+      <i>"예외의 <code>getMessage()</code> 가 그대로 <code>SYS_LO_EXCEPTION</code> 과 애플리케이션 로그에 남는다 …
+      코드와 완성된 문구가 함께 남는 것이 운영 대응의 값이다"</i>.
+      <b>적었는데 담을 컬럼이 없었다</b> <span class="n">1</span></div>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th>컬럼</th><th>타입</th><th>없으면 무엇을 못 하나</th></tr></thead>
+  <tbody>
+    <tr><td class="c"><b>HTTP_STAT</b></td><td class="c">smallint</td>
+        <td><b>4xx 와 5xx 를 가를 수 없다.</b> <b>403 과 무관하게 이미 필요했다</b> —
+            백엔드 구조가 검증 실패를 400 으로 정했으므로 <b>이 테이블에는 오늘도 4xx 가 있다</b></td></tr>
+    <tr><td class="c"><b>ERR_CD</b></td><td class="c">VARCHAR(50)</td>
+        <td>같은 오류를 <b>묶을 수 없다</b>. 403 의 <b>세 갈래</b>도 여기 실린다(화면 3)</td></tr>
+    <tr><td class="c"><b>ERR_MSG</b></td><td class="c">VARCHAR(1000)</td>
+        <td>목록 컬럼이 되지 않는다. <b><code>nclob</code> 으로 두면 의 제약을 또 하나 만든다</b></td></tr>
+  </tbody>
+</table>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b>새로 만드는 것이 아니라 버리고 있던 것을 적는다.</b>
+        셋 다 응답에 이미 있는 값이며, <b>모델을 고치기 전에는 응답으로만 나가고 이력에 남지 않았다</b>.</li>
+    <li><span class="n">2</span><b>그림이 옳았고 구현이 따라오지 못한 것이다</b>.
+        배타였을 때 <i>"이 에러 요청의 전문을 보자"</i> 는 <b>언제나 0건</b>이었고 사용자는 그것을
+        <b>로그 유실로 읽었다</b>. <b>대가는 하나</b> — 전문이 사용 이력에만 있어
+        <b>보존이 90일 / 180일로 어긋난다</b>(화면 5).</li>
+    <li><b><code>ERR_MSG</code> 를 <code>VARCHAR</code> 로 두는 이유</b> — 서버가 <b>번역을 완성해 담으므로</b>
+        파라미터가 치환된 문장이 들어온다. <code>nclob</code> 으로 두면 <b>정렬 불가 · 목록 미적재</b>가
+        따라온다 — <b>목록 컬럼으로 쓰려면 <code>VARCHAR</code> 여야 한다</b>. 초과분은 절단한다.</li>
+    <li><b>예외 클래스명 컬럼은 두지 않는다</b>. <code>ERR_CD</code> 가 같은 일을 하며,
+        <b>클래스명은 리팩터링으로 바뀐다</b> — 과거 이력과 현재 코드가 어긋난다.
+        백엔드 구조가 <code>code</code> 를 <b>문자열 상수</b>로 둔 것이 그 대비다.</li>
+    <li><b>DDL 이 바뀐다 — 2026-08-28 에 로그 데이터 모델에 반영됐다</b>.
+        <code>65</code>~<code>67</code> 이 이 테이블을 건드리지 않아 <b>더 모을 사례가 없어 지금 닫았다</b>.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 3 ─────────────────────────────────────────────── -->
+<h2>3. <b>403 이 여기 있다</b> — 보안 설계가 <i>"구분해 기록한다"</i> 고만 적었다</h2>
+
+<div class="screen leaf">
+  <div class="body">
+    <ul class="rules">
+      <li class="srv"><em>인가 인터셉터의 거부는 <b>예외로 던져 <code>@RestControllerAdvice</code> 가 받는다</b></em></li>
+      <li class="ok"><b>403 은 <i>양쪽</i> 에 남는다</b> — 사용 이력에 <b>일어난 요청</b>(<code>HTTP_STAT=403</code> · 전문),
+          에러 로그에 <b><code>ERR_CD</code> 로 구분된 원인</b>. <b>고를 필요가 없어졌다</b> <span class="n">2</span></li>
+      <li class="ok"><b>로깅 인터셉터를 인가 인터셉터보다 앞에 등록</b>한다 — <code>preHandle</code> 이 거부해도
+          <b>이미 <code>true</code> 를 반환한 인터셉터의 <code>afterCompletion</code> 은 호출</b>된다 <span class="n">3</span></li>
+      <li class="no"><b>401 은 기록하지 않는다</b> — 세션 만료는 정상 흐름이고 하트비트마다 쌓이면
+          <b>에러 로그가 만료 로그가 된다</b> <span class="n">1</span></li>
+    </ul>
+
+    <div class="tb"><span class="ttl">에러 로그 — <span class="mut">4xx 만</span></span><span class="sp"></span>
+      <button class="btn sm ghost" type="button">조회</button>
+      <button class="btn sm ghost ico" type="button" title="엑셀 다운로드">⤓ ▾</button>
+      <button class="btn sm ghost ico" type="button" title="그리드 설정">⚙</button></div>
+    <div class="grid" style="max-height:130px">
+      <table>
+        <thead><tr><th class="roh">일시</th><th class="roh">상태</th><th class="roh">오류 코드</th>
+          <th class="roh">요청 URI</th><th class="roh">상세</th></tr></thead>
+        <tbody>
+          <tr><td class="ro">2026-08-28 09:58:02</td><td class="ro"><span class="bdg warn">403</span></td>
+              <td class="ro"><b>err.api-not-mapped</b></td><td class="ro">/api/service/order/exportSummary</td>
+              <td class="ro"><span class="lnk">[보기]</span></td></tr>
+          <tr><td class="ro">2026-08-28 09:57:44</td><td class="ro"><span class="bdg warn">403</span></td>
+              <td class="ro"><b>err.no-authority</b></td><td class="ro">/api/service/user/save</td>
+              <td class="ro"><span class="lnk">[보기]</span></td></tr>
+          <tr><td class="ro">2026-08-28 09:12:30</td><td class="ro"><span class="bdg warn">403</span></td>
+              <td class="ro"><b>err.api-not-registered</b></td><td class="ro">/api/service/report/getDaily</td>
+              <td class="ro"><span class="lnk">[보기]</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg"><span><b>3</b>건 조회됨 <span class="mut">· 최근 7일 · 4xx 만</span></span>
+      <span class="nav">‹ 이전 &nbsp; 다음 ›</span><span class="size">100건씩 ▾</span></div>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th><code>ERR_CD</code></th><th>뜻</th><th>고치는 곳</th><th>다음 화면</th></tr></thead>
+  <tbody>
+    <tr><td class="c">err.api-not-registered</td><td><code>SYS_API</code> 에 행이 없다</td>
+        <td>컨트롤러 + <code>./gradlew generateApiSeed</code></td><td><code>API_CATALOG</code> 에서 <b>0건</b>으로 확인</td></tr>
+    <tr><td class="c">err.api-not-mapped</td><td><code>SYS_MENU_API</code> 가 0건</td>
+        <td>프론트 <code>endpoints.ts</code> + 시드 재생성</td><td><code>API_CATALOG</code> 의 <b><code>미매핑</code> 배지</b></td></tr>
+    <tr><td class="c">err.no-authority</td><td>사람에게 권한이 없다</td>
+        <td>역할 권한 · 개인 예외</td><td><code>ROLE_AUTH_MGMT</code> · <code>USER_AUTH_MGMT</code></td></tr>
+  </tbody>
+</table>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b>401 을 빼면 그 사건이 갈 곳이 없어진다</b> — 그래서
+        <code>LOGIN_RSLT_CD</code> 에 <b><code>SESSION_TIMEOUT</code> 을 더했다</b>(코드 13 → 14).
+        <b>401 을 빼는 것과 코드를 더하는 것은 한 결정</b>이며 함께 정했다. login-log 화면 2 와 같은 항목이다.</li>
+    <li><span class="n">2</span><b>보안 설계는 오래 <i>"구분해 기록한다"</i> 고만 적고 어디인지를 비워 두었다.</b>
+        <code>ERR_CD</code> 가 그 자리이며, <b>셋째 줄(<code>err.no-authority</code>)이 그 표에 새로 들어갔다</b> —
+        원래 둘은 <i>설정 결함</i> 이고 셋째는 <i>정상 동작</i> 이라 가르지 않았는데,
+        <b>운영자가 받는 것은 셋 다 403 하나</b>다.</li>
+    <li><span class="n">3</span><b>등록 순서가 규약이 됐다</b>. 뒤에 두면
+        <b>인가가 막은 요청이 사용 이력에서 통째로 사라진다</b> — 그러면 403 을 양쪽에 남기기로 한 결정이 무너진다.</li>
+    <li><b>4xx 는 스택을 저장하지 않는다</b>. <code>AccessDeniedException</code> 의 스택은
+        <b>인터셉터의 프레임뿐</b>이고 <b>전 행이 같다</b> — 180일치 노이즈다.
+        <code>ROOT_CAUSE_STACK</code> 은 NULL 이며 모달의 스택 탭이 <b>비활성</b>으로 뜬다(화면 5).</li>
+    <li><b><code>ERR_CD</code> 가 세 갈래를 그대로 나른다</b> — 메뉴·권한 화면 설계의 진단표와 <b>같은 세 값</b>이다.
+        보안 설계는 <i>"구분해 기록한다"</i> 고 했지만 <b>어디에 기록하는지를 적지 않았다</b> — 여기가 그 자리다.</li>
+    <li><b><code>HTTP_STAT</code> 을 공통코드로 두지 않는다</b> — HTTP 상태 코드는 <b>표준</b>이고
+        관리자가 늘릴 것이 아니다. 인프라 · 기준정보 데이터 모델과 같은 판단이다.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 4 ─────────────────────────────────────────────── -->
+<h2>4. 들어오는 길 <b>셋</b>, 나가는 길 <b>하나</b></h2>
+
+<div class="screen leaf">
+  <div class="body">
+    <ul class="rules">
+      <li class="srv"><em><b><code>traceId</code></b> — <b>5xx 공통 에러 토스트</b>에서 얻는다 →
+          조건 <code>추적 ID</code>. <b>기간이 선택이 된다</b></em></li>
+      <li class="srv"><em><b>시각 + 화면 이름</b> — 문의 전화 → 조건 <code>일시</code> + <code>메뉴</code></em></li>
+      <li class="srv"><em><b>URL</b> — 개발자 도구 · 다른 화면의 403 → 조건 <code>요청 URI</code></em></li>
+      <li class="ok"><b>나가는 길</b> — <code>요청 URI</code> <b>셀 더블 클릭</b> → <code>API_CATALOG</code> 를
+          <b>그 URL 로 조회한 상태</b>로 연다(UX-02 멀티탭) <span class="n">1</span></li>
+    </ul>
+
+    <div class="grid" style="max-height:80px">
+      <table>
+        <thead><tr><th class="roh">상태</th><th class="roh">오류 코드</th><th class="roh">요청 URI</th><th class="roh">추적 ID</th></tr></thead>
+        <tbody>
+          <tr class="sel"><td class="ro"><span class="bdg warn">403</span></td><td class="ro">err.api-not-mapped</td>
+              <td class="ro cur"><span class="lnk">/api/service/order/exportSummary</span> <span class="n">1</span></td>
+              <td class="ro">6d4c…-2210 <span class="n">2</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="banner info" style="margin-top:10px"><b>세 화면이 한 동선이다</b> —
+      에러 로그가 <code>ERR_CD</code> 로 <b>어느 갈래인지</b> 말하고(화면 3),
+      더블 클릭이 <code>API_CATALOG</code> 로 <b>넘겨주고</b>,
+      거기 하단 pane 이 <code>MENU_TREE</code> 로 <b>다시 넘겨준다</b></div>
+  </div>
+</div>
+
+<table>
+  <thead><tr><th>제스처</th><th>어디서</th><th>무엇을 연다</th><th>왜 그 축인가</th></tr></thead>
+  <tbody>
+    <tr><td><b>행</b> 더블 클릭</td><td>어느 셀이든</td><td><b>상세 모달</b>(화면 5)</td><td>행 전체에 대한 것이다</td></tr>
+    <tr><td><b>셀</b> 더블 클릭</td><td><code>요청 URI</code></td><td><code>API_CATALOG</code></td><td>그 <b>컬럼 값</b>에 대한 것이다</td></tr>
+    <tr><td><b>셀</b> 더블 클릭</td><td><code>추적 ID</code></td><td><b>복사</b> — 화면을 열지 않는다</td><td>건너뛰기는 <b>상세 모달이 이미 한다</b> <span class="n">2</span></td></tr>
+  </tbody>
+</table>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b><code>api-catalog.html</code> §8 의 todo 를 닫는다</b> —
+        <i>"403 로그에서 이 화면으로 바로 넘어가는 링크를 둘지 … <code>64</code> 착수 시 함께 본다"</i>.
+        <b>둔다.</b> 메뉴·권한 화면 설계의 <b>하단 행 더블 클릭 → <code>MENU_TREE</code></b> 와 <b>같은 어휘</b>다.
+        <b>사용 이력에도 같은 컬럼에 같은 제스처</b>를 둔다 — 2xx 라 진단이 급하지는 않지만
+        <b>같은 컬럼이 화면마다 다르게 동작하면 그것이 더 나쁘다</b>.</li>
+    <li><span class="n">2</span><b>버튼을 또 두지 않는다</b>. 배타를 없앤 뒤
+        <i>"이 에러 요청의 전문을 보자"</i> 는 <b>성립하게 됐지만</b>, 그 일은
+        <b>상세 모달의 전문 탭이 이미 하고 있다</b>(화면 5) — 버튼을 또 두면 <b>같은 일에 경로가 둘</b>이 된다.</li>
+    <li><b>이제 네 짝이 다 성립한다</b> — 사용 이력↔에러 로그(<b>90일 안에서</b>),
+        사용 이력↔로그인 이력, 에러 로그↔로그인 이력, 그리고 <b>애플리케이션 로그 파일</b>(MDC · 28 — <b>화면 밖</b>).
+        <b>배타였을 때 첫 짝이 언제나 0건이었다.</b></li>
+  </ol>
+</div>
+
+<!-- ── 화면 5 ─────────────────────────────────────────────── -->
+<h2>5. 상세 모달 — 탭 둘이고, <b>전문은 다른 테이블에서 온다</b></h2>
+
+<div class="screen shell" id="detail" data-manual="detail">
+  <div class="body">
+    <div class="modal" style="max-width:640px">
+      <div class="mh"><span>오류 상세 — <span class="mut">2026-08-28 11:02:47 · <b>500</b> · err.data-integrity</span></span><span class="x">✕</span></div>
+      <div class="mb">
+        <div class="tabs"><span>요청 전문</span><span class="on">스택트레이스</span></div>
+        <textarea class="ta" readonly>org.springframework.dao.DataIntegrityViolationException: could not execute statement
+  at o.s.orm.jpa.vendor.HibernateJpaDialect.convertHibernateAccessException(...)
+  at o.s.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:566)
+  ...
+Caused by: java.sql.SQLIntegrityConstraintViolationException:
+  ORA-00001: unique constraint (APP.PK_SYS_CODE) violated
+  at oracle.jdbc.driver.T4CTTIoer11.processError(T4CTTIoer11.java:509)
+  ...</textarea>
+        <div class="mut" style="margin-top:6px">3,902자 · <b>읽기 전용</b>(복사는 된다) ·
+          <b>탭 둘을 <code>getDetail</code> 한 번에 가져온다</b> — 스택은 자기 테이블,
+          <b>전문은 <code>TRACE_ID</code> 로 사용 이력에서</b> <span class="n">1</span></div>
+      </div>
+      <div class="mf"><span>전문·스택 절단 상한 <b>1MB</b></span><button class="btn sm ghost" type="button">닫기</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen shell">
+  <div class="body">
+    <div class="modal" style="max-width:640px">
+      <div class="mh"><span>오류 상세 — <span class="mut">2026-08-28 09:58:02 · <b>403</b> · err.api-not-mapped</span></span><span class="x">✕</span></div>
+      <div class="mb">
+        <div class="tabs"><span class="on">요청 전문</span><span class="off" title="4xx 는 스택을 저장하지 않는다">스택트레이스</span></div>
+        <textarea class="ta" readonly>{
+  "headers": { "x-menu-code": "ORDER_MGMT", "authorization": "***" },
+  "query": {},
+  "body": { "orderNo": "SO-2026-0812" }
+}</textarea>
+        <div class="banner info" style="margin:8px 0 0"><b>이 오류는 스택을 남기지 않습니다</b> —
+          인가 거부의 스택은 <b>인터셉터의 프레임뿐</b>이고 전 행이 같다 <span class="n">2</span></div>
+      </div>
+      <div class="mf"><span>403 · 매핑 시드를 확인하세요</span><button class="btn sm ghost" type="button">닫기</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen shell">
+  <div class="body">
+    <div class="modal" style="max-width:640px">
+      <div class="mh"><span>오류 상세 — <span class="mut">2026-03-04 02:17:55 · <b>500</b> · err.unexpected</span></span><span class="x">✕</span></div>
+      <div class="mb">
+        <div class="tabs"><span class="off" title="사용 이력 보존 90일이 지났다">요청 전문</span><span class="on">스택트레이스</span></div>
+        <textarea class="ta" readonly>java.lang.NullPointerException: Cannot invoke "OrderLine.getQty()" because "line" is null
+  at com.ordinary.backoffice.domain.order.OrderService.recalc(OrderService.java:212)
+  ...</textarea>
+        <div class="banner info" style="margin:8px 0 0"><b>이 요청의 전문은 파기됐습니다 (사용 이력 90일)</b> —
+          전문은 <code>SYS_LO_ACCESS</code> 에만 있고 <b>에러 로그는 180일을 산다</b> <span class="n">3</span></div>
+      </div>
+      <div class="mf"><span>178일 전 · 코드 · 메시지 · 스택은 남아 있다</span><button class="btn sm ghost" type="button">닫기</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b>탭 둘을 한 번에 가져온다</b>. 둘 다 <code>nclob</code> 이고,
+        <b>스택을 보다가 전문을 보는 것이 진단의 기본 동선</b>이다.
+        탭마다 부르면 왕복이 둘이 되고 <b>두 번째가 실패하면 절반만 열린 모달</b>이 된다.</li>
+    <li><span class="n">2</span><b>4xx 는 스택 탭이 비활성</b>이다 — <b>비어 있는 것이 아니라 저장하지 않은 것</b>이며
+        화면이 그 차이를 말한다. 말하지 않으면 <i>"스택이 유실됐다"</i> 로 읽힌다.</li>
+    <li><span class="n">3</span><b>전문 탭이 로그 화면 설계의 대가를 그대로 받는다.</b>
+        <code>PARAMETERS</code> 는 <b>사용 이력에만</b> 있고 두 테이블의 보존이 <b>90일 / 180일</b>로 다르다.
+        <b>받아들이는 이유</b> — <code>ERR_CD</code> · <code>ERR_MSG</code> · 스택이 자기 테이블에 있어
+        <b>진단이 자립한다</b>. 180일 된 오류에서 필요한 것은 <i>"무엇이 몇 번 났나"</i> 이지
+        그때 보낸 body 가 아니다. <b>두 기간을 맞출지는 로그 데이터 모델 미결</b>이다(보관 정책에도 적었다).</li>
+    <li><b>컬럼 계약의 <code>textModal</code> 은 컬럼 하나에 모달 하나를 전제한다</b> —
+        여기는 <b>한 행에 둘</b>이다. 컬럼마다 <code>[보기]</code> 를 두면 그리드에 <b>링크 컬럼이 둘</b> 생기고
+        사용자는 <b>어느 쪽을 눌러야 하는지 매번 판단</b>한다. <b>로그 화면 설계가 이 사례를 54 로 되돌려 준다.</b>
+        <br><b>그래서 이 모달은 그리드 어휘가 아니다</b>(2026-08-31 정정) — 탭 둘을 담는
+        <b>화면 컴포넌트</b>이며, <code>textModal</code> 은 <b>아직 자체 구현 대상</b>이다(컬럼 계약 열한째).
+        <b>이 화면은 그것을 기다리지 않는다.</b></li>
+    <li><b>읽기 전용이어도 열린다</b> — <i>"<code>editable: false</code> 가 못 본다를 뜻하지 않는다"</i>.
+        이것이 <b>편집·검증 규약의 거부 메시지가 나오지 않는 유일한 읽기 전용 컬럼</b>이다.</li>
+  </ol>
+</div>
+
+<!-- ── 화면 6 ─────────────────────────────────────────────── -->
+<h2>6. 예외 화면 — <b><code>traceId</code> 0건을 사용자 말로 옮긴다</b></h2>
+
+<div class="screen leaf">
+  <div class="body">
+    <div class="banner"><b>조회 기간은 필수입니다</b></div>
+    <div class="banner"><b>조회 기간은 최대 92일입니다</b></div>
+    <div class="banner info"><b>이 추적 ID 의 오류 기록이 없습니다.</b>
+      보존 기간(180일)이 지났거나, <b>오류가 아닌 요청</b>입니다 <span class="n">1</span></div>
+    <div class="banner info"><b>이 기간에 서버 오류가 없습니다</b> <span class="n">2</span></div>
+    <div class="list"><div class="empty">조회 조건에 맞는 에러 로그가 없습니다</div></div>
+  </div>
+</div>
+
+<div class="notes">
+  <ol>
+    <li><span class="n">1</span><b><code>traceId</code> 0건은 유실이 아니다</b>.
+        로그 화면 설계 이후 <b>모든 요청은 사용 이력에 있고</b> 에러 로그는 <b>예외가 난 것만</b> 받는다.
+        여기서 0건이면 <i>"그 요청은 오류가 아니었다"</i> 는 뜻이며 <b>사용 이력에는 반드시 있다</b>.
+        이 문장이 없으면 <code>traceId</code> 를 들고 온 사람이 <b>로그 유실로 읽는다</b>.</li>
+    <li><span class="n">2</span><b><code>5xx 만</code> 인데 0건이면 진단이다.</b>
+        access-log · login-log 와 <b>같은 규칙</b>이며 메뉴·권한 화면 설계에서 온 것이다 —
+        <b>0건에는 언제나 이유가 있고, 화면이 아는 이유는 화면이 말한다.</b></li>
+    <li><b>기간 상한은 시스템 값 92 를 그대로 쓴다</b> — 보존이 180일이라
+        <b>여기도 보존보다 창이 짧다</b>. 로그인 이력과 같은 미결이다.</li>
+  </ol>
+</div>
+
+<!-- ── 테스트 케이스 ───────────────────────────────────────── -->
+<h2>7. 테스트 케이스 — 주석의 주장을 전부 덮는다</h2>
+
+<p style="font-size:12.5px;margin:0 0 10px">
+  <b>주석은 <i>"왜 이렇게 그렸는가"</i> 를 말하고, 여기는 <i>"그것이 지켜졌는가"</i> 를 묻는다</b>.
+  <b>근거가 빈 케이스는 지어낸 것이다.</b> <b>되면 안 되는 것</b>도 함께 넣는다.
+</p>
+
+<h3>조회 전용 · 기간 · 페이징 (§1)</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">EL-01</td><td>그리드 헤더</td><td><b>조회 · <code>⤓</code> · <code>⚙</code> 뿐</b></td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-02</td><td>이력을 화면에서 지우려 한다</td><td><b>수단이 없다</b> — 파기는 배치 하나다</td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-03</td><td>기간을 비우고 조회</td><td><b>조회가 일어나지 않는다</b></td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-04</td><td><b>추적 ID 만</b> 넣고 기간을 비운다</td><td><b>조회된다</b></td><td>§4</td></tr>
+    <tr><td class="c">EL-05</td><td>푸터</td><td><b>총 건수·페이지 번호가 없다</b> · 사이즈 <b>100</b></td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-06</td><td><b>오류 코드</b> 헤더를 클릭</td><td><b>정렬되지 않는다</b> — 일시만 열린다</td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-07</td><td>조회조건 <code>상태</code></td><td><b>전체 · 5xx 만 · 4xx 만</b> 셋 — 숫자 범위 입력이 아니다</td><td>§1 주석 1 (되면 안 되는 것)</td></tr>
+  </tbody>
+</table>
+
+<h3>신설 컬럼 셋 (§2)</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">EL-08</td><td>목록 컬럼</td><td><b>상태 · 오류 코드 · 메시지</b>가 있다</td><td>—</td></tr>
+    <tr><td class="c">EL-09</td><td><code>ERR_MSG</code> 컬럼 헤더를 클릭</td><td><b>정렬된다</b> — <code>VARCHAR</code> 라 벤더가 막지 않는다… <b>단 로그 화면 설계가 끈다</b></td><td>—</td></tr>
+    <tr><td class="c">EL-10</td><td>1000자를 넘는 메시지</td><td><b>절단된다</b> — <code>nclob</code> 이 아니다</td><td>§2 주석 2</td></tr>
+    <tr><td class="c">EL-11</td><td>예외 클래스명 컬럼</td><td><b>없다</b> — 리팩터링으로 바뀐다</td><td>§2 주석 3 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-12</td><td><code>HTTP_STAT</code> 의 조회조건 콤보</td><td><b>공통코드가 아니다</b> — 소스가 정한다</td><td>§3 주석 4</td></tr>
+  </tbody>
+</table>
+
+<h3>403 진단 (§3 · §4)</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">EL-13</td><td>403 을 받은 요청</td><td><b>에러 로그에 있다</b> — <code>ERR_CD</code> 로 원인이 갈린다</td><td>§3</td></tr>
+    <tr><td class="c">EL-14</td><td>그 요청을 <b>사용 이력에서</b> 찾는다</td><td><b>있다</b> — <code>HTTP_STAT=403</code> 으로 남는다. <b>배타가 아니다</b></td><td>§3</td></tr>
+    <tr><td class="c">EL-15</td><td>401(세션 만료) 요청</td><td><b>에러 로그에 없고</b> 로그인 이력에 <code>SESSION_TIMEOUT</code> 으로 있다</td><td>§3 주석 1</td></tr>
+    <tr><td class="c">EL-15b</td><td>인터셉터 등록 순서를 뒤집는다</td><td><b>403 이 사용 이력에서 사라진다</b> — 등록 순서가 규약이다</td><td>§3 주석 3 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-16</td><td>403 세 갈래</td><td><code>ERR_CD</code> 가 <b>셋을 구분</b>한다 — 메뉴·권한 화면 설계의 진단표와 같다</td><td>§3</td></tr>
+    <tr><td class="c">EL-17</td><td>4xx 행의 <code>ROOT_CAUSE_STACK</code></td><td><b>NULL</b> — 저장하지 않는다</td><td>§3 주석 2 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-18</td><td><code>요청 URI</code> 셀 <b>더블 클릭</b></td><td><code>API_CATALOG</code> 를 <b>그 URL 로</b> 연다</td><td>§4 주석 1 · UX-02</td></tr>
+    <tr><td class="c">EL-19</td><td><code>추적 ID</code> 셀 <b>더블 클릭</b></td><td><b>복사</b> — 다른 로그 화면을 열지 않는다</td><td>§4 주석 2 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-20</td><td><i>"이 요청의 사용 이력 보기"</i> 버튼</td><td><b>없다</b> — 그 일은 <b>상세 모달의 전문 탭</b>이 한다</td><td>§4 주석 2 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-21</td><td>5xx 토스트의 <code>traceId</code> 로 조회</td><td><b>그 행이 나온다</b> — 기간 없이도 된다</td><td>—</td></tr>
+    <tr><td class="c">EL-22</td><td>정상 응답의 <code>traceId</code> 로 조회</td><td><b>0건 + 전용 문구</b> — <i>"오류가 아닌 요청입니다"</i>. <b>사용 이력에는 있다</b></td><td>§6 주석 1</td></tr>
+  </tbody>
+</table>
+
+<h3>상세 모달 (§5)</h3>
+<table>
+  <thead><tr><th>#</th><th>조작 · 상황</th><th>기대</th><th>근거</th></tr></thead>
+  <tbody>
+    <tr><td class="c">EL-23</td><td><code>[보기]</code> 또는 행 더블 클릭</td><td><b>모달 하나에 탭 둘</b> — 모달이 둘이 아니다</td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-24</td><td>탭을 바꾼다</td><td><b>서버를 부르지 않는다</b> — <code>getDetail</code> 한 번에 왔다</td><td>§5 주석 1 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-25</td><td>4xx 행의 스택 탭</td><td><b>비활성 + 사유</b> — 빈 탭이 아니다</td><td>§5 주석 2</td></tr>
+    <tr><td class="c">EL-26</td><td>모달 안에서 고치려 한다</td><td><b>읽기 전용</b> — 복사는 된다</td><td>§5 주석 4 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-27</td><td>목록 응답을 본다</td><td><code>ROOT_CAUSE_STACK</code> <b>이 없다.</b> <code>PARAMETERS</code> 는 <b>이 테이블에 아예 없다</b></td><td>S-2 (되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-27b</td><td><b>90일이 지난</b> 오류의 <code>[보기]</code></td><td><b>전문 탭이 비활성</b> + <i>"전문은 파기됐습니다"</i>. 스택 탭은 열린다</td><td>§5 주석 3</td></tr>
+    <tr><td class="c">EL-28</td><td>1MB 를 넘긴 스택</td><td><b><i>"상한에서 잘렸습니다"</i></b></td><td>—</td></tr>
+    <tr><td class="c">EL-29</td><td>엑셀을 내린다</td><td><b>전문·스택이 파일에 없다</b></td><td>(되면 안 되는 것)</td></tr>
+    <tr><td class="c">EL-30</td><td>전문의 <code>authorization</code></td><td><b><code>***</code></b> — 마스킹을 거친 값이다</td><td>LOG-06</td></tr>
+  </tbody>
+</table>
+
+<!-- ── 확인 목록 ───────────────────────────────────────────── -->
+<h2>8. 이 목업으로 확인할 것</h2>
+
+<div class="todo">
+  <b>이 화면이 규약에 되돌려 준 것 — 전부 반영됐다 (2026-08-28)</b>
+  <ul>
+    <li><b>사용 이력과 에러 로그의 배타를 없앴다</b> —
+        <b>로그 데이터 모델의 그림과 백엔드 구현이 서로 다른 모델</b>이었고, <b>그림이 옳았다</b>.
+        중복의 정체가 <b><code>PARAMETERS</code> 하나</b>였으므로 그것만 사용 이력에 두고 배타를 풀었다.
+</li>
+    <li><b><code>SYS_LO_EXCEPTION</code> 에 컬럼 셋이 들어갔다</b> —
+        <code>HTTP_STAT</code> · <code>ERR_CD</code> · <code>ERR_MSG</code>.
+        <b><code>HTTP_STAT</code> 은 403 과 무관하게 이미 필요했다</b>(백엔드 구조가 검증 실패를 400 으로 정했다).</li>
+    <li><b>403 은 양쪽에 남는다</b> — 보안 설계의 <i>"구분해 기록한다"</i> 가 <b><code>ERR_CD</code> 라는 기록처를 얻었고</b>,
+        <b>셋째 갈래(<code>err.no-authority</code>)가 그 표에 새로 들어갔다</b>.</li>
+    <li><b>401 을 빼고 <code>SESSION_TIMEOUT</code> 을 더했다</b> — 코드 13 → 14.
+        <b>둘은 한 결정</b>이었다.</li>
+    <li><b>로깅 인터셉터가 인가 인터셉터보다 앞</b>이라는 등록 순서가 규약이 됐다.</li>
+    <li><b>컬럼 계약에 <i>한 행에 둘</i> 이 더해진다</b> — 모달 하나 + 탭. 게다가
+        <b>둘 중 하나는 다른 테이블에 있다</b>(화면 5).</li>
+    <li><b>컬럼 계약이 생겼다</b> — <code>badge</code> 의 색을 정하는 축이 <b>코드 · 묶음</b> 둘이 됐다.
+        <b>사례 셋이 같은 방향으로 벗어나 있었다</b>(상태 4xx/5xx · 결과 14→3 · 메뉴·권한 화면 설계의 <code>미매핑</code>) —
+        <b>규약이 좁았던 것</b>이다. 화면은 <code>tone</code> 맵으로 선언하고 <b>맵에 없는 값은 칠하지 않는다</b>.</li>
+  </ul>
+  <b>아직 답이 없는 것</b>
+  <ul>
+    <li><b>전 요청 기록으로 사용 이력이 얼마나 커지나</b> — 4xx·5xx 가 더해진다.
+        2xx 가 압도적이라 미미하다고 보지만 <b>403 이 잦은 조직</b>에서는 다를 수 있다. <b>Docker 필요</b>.</li>
+    <li><b>보존 90일 / 180일을 맞출지</b> — 180일 된 오류의 <b>전문이 없다</b>(화면 5).
+        지금은 <b>둔다</b> — 진단이 자립하기 때문이다.</li>
+    <li><b><code>ERR_MSG</code> 1000자</b> — 백엔드 구조의 <b>필드별 오류 배열</b>이
+        문장으로 펼쳐지면 넘을 수 있다.</li>
+
+  </ul>
+</div>
+
+<footer>
+  <b>목업 규약</b> — 정적 HTML, 프레임워크 없음, 픽셀 충실도는 목표가 아니다.
+  <b>결정은 <code>requirements.md</code> 가 갖고 이 파일은 확인용이다</b> — 여기에만 있고
+  요건서에 없는 정보는 유실된 것으로 친다.<br>
+  이 파일의 <code>&lt;style&gt;</code> 블록은 <code>documents/screen/_TEMPLATE/mockup.html</code> 에서 그대로 복사했다 —
+  <code>.sf</code> <code>.tb</code> <code>.grid</code> <code>.pg</code> <code>.split</code>.
+</footer>
+
+</main>

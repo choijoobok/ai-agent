@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>사용 이력 — 사용자 메뉴얼</title>
+<script>
+try {
+  var saved = localStorage.getItem('manual-theme');
+  if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+} catch (e) { /* 파일에서 열면 저장소가 막힐 수 있다 — 그때는 시스템을 따른다 */ }
+</script>
+<style>
+:root{--ink:#1a1a1a;--muted:#6b6b6b;--line:#c9c9c9;--line2:#e4e4e4;--bg:#fff;--panel:#f7f7f7;
+      --note:#1f4e79;--note-bg:#eef4fa;--sel:#eaf1f9}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--ink:#e6e6e6;--muted:#9a9a9a;--line:#4a4a4a;--line2:#333;--bg:#161616;--panel:#1e1e1e;
+        --note:#8fb8dd;--note-bg:#1c2833;--sel:#1a2b3a}
+}
+
+  :root[data-theme="dark"]{--ink:#e6e6e6;--muted:#9a9a9a;--line:#4a4a4a;--line2:#333;--bg:#161616;--panel:#1e1e1e;
+        --note:#8fb8dd;--note-bg:#1c2833;--sel:#1a2b3a}
+
+
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+     font:15px/1.75 "Malgun Gothic","Apple SD Gothic Neo",sans-serif}
+.doc{padding:28px 32px;max-width:900px}
+.doc h1{font-size:24px;margin:0 0 6px}
+.doc h2{font-size:17px;margin:30px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.doc h3{font-size:15px;margin:20px 0 8px}
+.doc p{margin:9px 0}
+.doc ul,.doc ol{margin:9px 0;padding-left:22px}
+.doc li{margin:4px 0}
+.doc blockquote{margin:12px 0;padding:9px 14px;border-left:3px solid var(--note);
+                background:var(--note-bg)}
+.doc code{font-family:Consolas,monospace;font-size:.9em;background:var(--panel);padding:1px 5px}
+.doc pre{background:var(--panel);padding:12px 14px;overflow:auto;font-family:Consolas,monospace;
+         font-size:12.5px;line-height:1.6}
+.doc table{border-collapse:collapse;width:100%;font-size:13.5px;margin:12px 0}
+.doc th,.doc td{border:1px solid var(--line2);padding:7px 10px;text-align:left;vertical-align:top}
+.doc th{background:var(--panel);font-weight:600;white-space:nowrap}
+.doc hr{border:none;border-top:1px solid var(--line2);margin:26px 0}
+.doc a{color:var(--note)}
+.gen{font-size:11.5px;color:var(--muted);border:1px dashed var(--line);padding:7px 11px;margin-bottom:20px}
+
+/* 화면 그림 — 목업을 오려 온 것과 캡처 PNG 가 같은 액자를 쓴다 */
+.shot{margin:16px 0 22px;padding:0}
+.shot img{display:block;width:100%;border:1px solid var(--line)}
+.shot figcaption{font-size:11.5px;color:var(--muted);margin-top:6px}
+.shot .mockwrap{border:1px solid var(--line);padding:10px;background:var(--bg);overflow:auto}
+/* 오려 온 목업이 자기 여백을 다시 그리지 않게 한다 */
+.shot .mockwrap .screen{border:none;margin:0}
+.shot .mockwrap .screen .body{padding:10px 8px}
+
+@media print{
+  :root,:root[data-theme="dark"]{--ink:#1a1a1a;--muted:#555;--line:#999;--line2:#ccc;--bg:#fff;
+        --panel:#f2f2f2;--note:#1f4e79;--note-bg:#eef4fa;--sel:#fff}
+  @page{size:A4;margin:16mm 14mm}
+  body{font-size:10.5pt;line-height:1.6;background:#fff;color:#1a1a1a}
+  .doc{padding:0;max-width:none}
+  .noprint{display:none !important}
+  .screen-doc{break-after:page}
+  .screen-doc:last-child{break-after:auto}
+  .doc h1{font-size:17pt}
+  .doc h2{font-size:12.5pt;break-after:avoid}
+  .doc h3{font-size:11pt;break-after:avoid}
+  .doc table{font-size:9pt;break-inside:avoid}
+  .doc tr{break-inside:avoid}
+  .doc blockquote,.shot,.gen{break-inside:avoid}
+  .doc pre{white-space:pre-wrap}
+  a{color:inherit;text-decoration:none}
+}
+
+/* ─────────────────────────────────────────────────────────────
+   목업 공용 스타일
+   목업은 한 파일로 완결되어야 한다. 외부 CSS 로 빼면 파일 하나만
+   열거나 다른 곳에 붙였을 때 화면이 깨진다. 그래서 복제를 감수한다.
+   새 목업은 이 블록을 그대로 복사한다.
+   의도적으로 밋밋하다. AntD 처럼 보이면 잘못된 구속이 된다.
+
+   ★ 그리드 어휘 다섯 — .sf .tb .grid .pg .split
+     크롬·행 상태·컬럼 고정의 자리는 53, 컬럼 계약은 54 가 정한다.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --ink:#1a1a1a; --muted:#6b6b6b; --line:#c9c9c9; --line2:#e4e4e4;
+  --bg:#ffffff; --panel:#f7f7f7; --err:#a8261c; --err-bg:#fbeceb;
+  --note:#1f4e79; --note-bg:#eef4fa; --ok:#1d7a4d;
+  /* ── 그리드 색. 그리드가 스스로 정하지 않고 셸에서 받는다 ──
+     Primary — 선택·편집 표시는 전부 여기서 파생한다.
+     진한 단계를 쓰지 않는다 — 그리드는 글자가 촘촘해 배경이 진해지면
+     전부 읽기 어려워진다. 대비 문제를 애초에 만들지 않는다. */
+  --pri:#1f4e79;      /* 원색 — 편집 중인 셀 테두리에만 */
+  --pri-1:#eaf1f9;    /* 가장 옅은 단계 — 현재 선택 행 */
+  --pri-2:#d6e6f5;    /* 한 단계 진한 것 — 현재 선택 셀 */
+  /* 컬럼 상태 — 정적. 헤더 표시(* · 흐린 글자)와 짝이다 */
+  --req-bg:#fdf6e6;   /* 필수 입력 */
+                      /* 편집 가능 = 바탕(--bg). 칠하지 않는 것이 곧 표시다 */
+                      /* 읽기 전용 = --panel */
+  /* 행 상태 — Primary 와 무관하다. 아이콘이 원본이고 배경은 거든다 */
+  --row-new:#eaf5ef; --row-mod:#e7f1f2;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#e6e6e6; --muted:#9a9a9a; --line:#4a4a4a; --line2:#333;
+    --bg:#161616; --panel:#1e1e1e; --err:#e08b82; --err-bg:#3a201e;
+    --note:#8fb8dd; --note-bg:#1c2833; --ok:#63c08d;
+    /* 같은 알파를 얹지 않는다 — 다크에서는 안 보이거나 반대로 튄다.
+       단계를 모드별로 따로 고른다 */
+    --pri:#8fb8dd; --pri-1:#1a2b3a; --pri-2:#24405c;
+    --req-bg:#33291a;
+    --row-new:#17281f; --row-mod:#16272a;
+  }
+}
+
+  :root[data-theme="dark"]{
+    --ink:#e6e6e6; --muted:#9a9a9a; --line:#4a4a4a; --line2:#333;
+    --bg:#161616; --panel:#1e1e1e; --err:#e08b82; --err-bg:#3a201e;
+    --note:#8fb8dd; --note-bg:#1c2833; --ok:#63c08d;
+    /* 같은 알파를 얹지 않는다 — 다크에서는 안 보이거나 반대로 튄다.
+       단계를 모드별로 따로 고른다 */
+    --pri:#8fb8dd; --pri-1:#1a2b3a; --pri-2:#24405c;
+    --req-bg:#33291a;
+    --row-new:#17281f; --row-mod:#16272a;
+  }
+
+
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--bg);color:var(--ink);
+     font:14px/1.6 "Malgun Gothic","Apple SD Gothic Neo",sans-serif;}
+main{max-width:1000px;margin:0 auto}
+h1{font-size:19px;margin:0 0 4px}
+h2{font-size:15px;margin:34px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+h3{font-size:13px;margin:20px 0 8px;color:var(--muted);font-weight:600}
+code{font-family:Consolas,monospace;font-size:.92em;background:var(--panel);padding:1px 4px}
+a{color:var(--note)}
+
+/* 개요 바 — 문서와의 연결. 모든 목업이 갖는다 */
+.head{border:1px solid var(--line);background:var(--panel);padding:12px 14px;margin-bottom:6px}
+.head dl{display:grid;grid-template-columns:max-content 1fr;gap:2px 14px;margin:0;font-size:12.5px}
+.head dt{color:var(--muted)}
+.head dd{margin:0}
+
+/* 화면 영역 — 뷰포트를 나타내는 상자 */
+.screen{border:1px solid var(--line);margin:0 0 8px;background:var(--bg)}
+.screen .bar{background:var(--panel);border-bottom:1px solid var(--line2);
+             padding:5px 10px;font-size:11.5px;color:var(--muted)}
+.screen .body{padding:28px 20px}
+/* 셸 위에 뜬 모달 — 배경이 셸이라는 힌트만 준다 */
+.screen.shell .body{background:repeating-linear-gradient(45deg,
+  var(--panel) 0 6px, transparent 6px 12px);padding:22px 14px}
+/* 리프 화면은 자기가 콘텐츠다 — 셸 크롬을 그리지 않는다 */
+.screen.leaf .body{padding:12px}
+
+/* 카드 — 로그인 등 중앙 배치 폼 */
+.card{max-width:320px;margin:0 auto;border:1px solid var(--line);padding:22px 20px;background:var(--bg)}
+.card .logo{height:38px;border:1px dashed var(--line);display:flex;align-items:center;
+            justify-content:center;color:var(--muted);font-size:11.5px;margin-bottom:18px}
+
+/* 모달 — 그리드 설정 창도 이것을 쓴다 */
+.modal{max-width:600px;margin:0 auto;border:1px solid var(--line);background:var(--bg)}
+.modal .mh{border-bottom:1px solid var(--line2);padding:9px 14px;font-size:13px;font-weight:600;
+           display:flex;justify-content:space-between;align-items:center}
+.modal .mh .x{color:var(--muted);font-weight:400}
+.modal .mb{padding:14px}
+.modal .mf{border-top:1px solid var(--line2);padding:9px 14px;font-size:11.5px;color:var(--muted);
+           display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* 탭 */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin:0 0 14px}
+.tabs>span{padding:6px 13px;font-size:12.5px;border:1px solid transparent;border-bottom:none;
+           color:var(--muted);cursor:default}   /* 자식만 — 안에 배지가 들어갈 수 있다 */
+.tabs>span.on{border-color:var(--line);background:var(--bg);color:var(--ink);font-weight:600;
+              margin-bottom:-1px}
+.tabs .badge{display:inline-block;min-width:16px;height:16px;line-height:16px;text-align:center;
+             border-radius:8px;background:var(--err);color:#fff;font-size:10.5px;margin-left:5px}
+
+/* 폼 — 화면에 남는 폼은 조회조건 하나다 */
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;margin-bottom:3px}
+.f input,.f select,.f textarea{width:100%;padding:6px 8px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:13px}
+.f .hint{font-size:11px;color:var(--muted);margin-top:3px}
+.f.ro input{background:var(--panel);color:var(--muted)}
+.btn{width:100%;padding:8px;border:1px solid var(--ink);background:var(--ink);
+     color:var(--bg);font:inherit;font-size:13px;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.sm{width:auto;padding:4px 11px;font-size:12px}
+.btn[disabled]{opacity:.35}
+.sub{text-align:center;margin-top:12px;font-size:12px}
+.row{display:flex;gap:8px;align-items:center}
+.row .btn{width:auto}
+
+/* 키-값 나열 (읽기 전용 정보) */
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:12.5px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+
+/* 설정 그룹 */
+.grp{border:1px solid var(--line2);margin-bottom:10px}
+.grp>b{display:block;background:var(--panel);border-bottom:1px solid var(--line2);
+       padding:5px 11px;font-size:12px}
+.grp .item{display:flex;justify-content:space-between;align-items:center;gap:12px;
+           padding:6px 11px;font-size:12.5px;border-bottom:1px solid var(--line2)}
+.grp .item:last-child{border-bottom:none}
+.grp .item .where{font-size:10.5px;color:var(--muted);white-space:nowrap}
+
+/* 목록 (알림·검색 결과·드롭다운·필터 메뉴) */
+.list{border:1px solid var(--line2);font-size:12.5px;background:var(--bg)}
+.list .it{padding:7px 11px;border-bottom:1px solid var(--line2);display:flex;
+          justify-content:space-between;align-items:center;gap:10px}
+.list .it:last-child{border-bottom:none}
+.list .it.unread{background:var(--note-bg)}
+.list .it .path{display:block;font-size:10.5px;color:var(--muted)}
+.list .it .when{color:var(--muted);font-size:11px;white-space:nowrap}
+.list .empty{padding:22px 11px;text-align:center;color:var(--muted);font-size:12px}
+.tag{display:inline-block;border:1px solid var(--line);padding:0 5px;font-size:10.5px;
+     color:var(--muted);border-radius:2px}
+
+/* 규칙 체크리스트 */
+.rules{list-style:none;margin:0 0 14px;padding:9px 11px;border:1px solid var(--line2);
+       background:var(--panel);font-size:11.5px;line-height:1.7}
+.rules li{padding-left:17px;position:relative}
+.rules li::before{position:absolute;left:0;font-weight:700}
+.rules .ok::before{content:"✓";color:var(--ok)}
+.rules .no::before{content:"✕";color:var(--err)}
+.rules .srv::before{content:"·";color:var(--muted)}
+.rules .srv{color:var(--muted)}
+.rules em{font-style:normal;opacity:.8}
+
+/* 배너 — 폼 상단 한 곳. 토스트(UX-10)도 이것으로 표현한다 */
+.banner{border:1px solid var(--err);background:var(--err-bg);color:var(--err);
+        padding:7px 10px;font-size:12.5px;margin-bottom:14px}
+.banner.info{border-color:var(--note);background:var(--note-bg);color:var(--note)}
+
+/* ── 그리드 어휘 다섯 ─────────────────────────────── */
+
+/* 검색 폼 — <SearchForm>(UX-15). 서버 조회 조건은 이것뿐이다 */
+.sf{border:1px solid var(--line2);background:var(--panel);padding:9px 11px;margin-bottom:8px;
+    display:grid;grid-template-columns:max-content 1fr max-content 1fr max-content 1fr;
+    gap:6px 9px;align-items:center;font-size:12px}
+.sf label{color:var(--muted);white-space:nowrap}
+.sf input,.sf select{width:100%;padding:3px 6px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:12px}
+.sf .wide{grid-column:span 3}
+.sf .act{grid-column:1/-1;text-align:right;padding-top:2px}
+
+/* 그리드 헤더 — 왼쪽 제목(.ttl), 오른쪽 버튼. 도구 둘(.ico)은 맨 오른쪽 고정 */
+.tb{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.tb .ttl{font-size:13px;font-weight:600;margin-right:auto;white-space:nowrap}
+.tb .ico{width:auto;padding:4px 8px;font-size:12px;white-space:nowrap}
+.tb .sp{flex:1}
+.tb .cnt{font-size:11.5px;color:var(--muted);white-space:nowrap}
+
+/* 그리드 본문 — <DataGrid> */
+.grid{border:1px solid var(--line);overflow:auto;max-height:260px}
+.grid table{margin:0;font-size:12px;border:none}
+.grid th{position:sticky;top:0;z-index:1}
+.grid td,.grid th{white-space:nowrap}
+.grid th .mn{float:right;color:var(--muted);font-weight:400;margin-left:8px}  /* 컬럼 메뉴 ☰ */
+.grid th .srt{color:var(--note)}                                             /* 정렬 표시 */
+.grid th.on{background:var(--note-bg)}                                       /* 필터 걸린 컬럼 */
+/* 헤더가 컬럼을 말한다. 색이 아니라 표시가 원본이다 */
+.grid th.req em{font-style:normal;color:var(--err);font-weight:700}          /* 필수 * */
+.grid th.roh{color:var(--muted);font-weight:400}                             /* 읽기 전용 컬럼 */
+/* 양끝 시스템 컬럼. 사용자가 숨기거나 옮길 수 없다 */
+.grid .st{width:26px;text-align:center;color:var(--muted)}
+.grid .del{width:34px;text-align:center;color:var(--muted)}
+.grid .pinL{border-right:2px solid var(--line)}   /* 좌 고정 ↔ 스크롤 경계 */
+.grid .pinR{border-left:2px solid var(--line)}    /* 스크롤 ↔ 우 고정 경계 */
+
+/* ── 셀과 행의 색 — 그리드 표준의 우선순위 여섯 ────────────────────
+   여섯이 전부 같은 명시도다. 그래서 나중에 쓴 것이 이긴다 —
+   6 → 1 순서로 적었고, 순서를 바꾸면 규약이 바뀐다.
+   행 규칙(tr.x td)이 셀 규칙(td.x)보다 명시도가 한 단계 높으므로
+   5(행 상태)가 6(컬럼 상태)을 이기는 것은 순서가 아니라 구조다.  */
+
+/* 6. 컬럼 상태 — 정적이므로 다른 것이 없을 때의 바탕 */
+.grid td.req{background:var(--req-bg)}                       /* 필수 입력 */
+.grid td.ro {background:var(--panel);color:var(--muted)}     /* 읽기 전용 */
+                                                             /* 편집 가능은 칠하지 않는다 */
+/* 5. 행 상태 — 상태 컬럼 아이콘이 원본이다 */
+.grid tr.new td{background:var(--row-new)}
+.grid tr.mod td{background:var(--row-mod)}
+.grid tr.rmv td{color:var(--muted);text-decoration:line-through}  /* 배경이 아니라 글자다 */
+/* 4. 현재 선택 행 — Primary 가장 옅은 단계 */
+.grid tr.sel td{background:var(--pri-1)}
+/* 3. 현재 선택 셀 — 한 단계 진한 것 + 테두리 */
+.grid tr td.cur{background:var(--pri-2);outline:1px solid var(--pri);outline-offset:-1px}
+/* 2. 편집 중인 셀 — 테두리는 Primary 원색, 배경은 바탕(입력 글자가 읽혀야 한다) */
+.grid tr td.edit{background:var(--bg);color:var(--ink);outline:2px solid var(--pri);outline-offset:-2px}
+/* 1. 검증 실패 — 유일하게 Primary 와 무관하다 */
+.grid tr td.err{background:var(--err-bg);outline:1px solid var(--err);outline-offset:-1px}
+
+/* ── 스위치 — 값이 둘인 데이터 셀 ──────────
+   ynFlag 컬럼과 권한 트리 셀이 같은 것을 쓴다. 체크박스가 아니다.
+   켜짐 색은 Primary 에서 온다.
+   여럿을 고르는 자리는 여전히 체크박스다 — 행 선택 · set 필터 ·
+   그리드 설정의 컬럼 표시.                                      */
+.swt{display:inline-block;width:24px;height:13px;border:1px solid var(--line);
+     border-radius:7px;background:var(--panel);position:relative;vertical-align:-2px}
+.swt::after{content:"";position:absolute;top:1px;left:1px;width:9px;height:9px;
+            border-radius:50%;background:var(--muted)}
+.swt.on{background:var(--pri);border-color:var(--pri)}
+.swt.on::after{left:12px;background:var(--bg)}
+.swt.dis{opacity:.45}          /* 비활성 — 입력 칸이 아니라 상태 표시로 읽힌다 */
+
+/* 색 견본 — 화면 9 */
+.sw{display:inline-block;width:30px;height:14px;border:1px solid var(--line);
+    vertical-align:-2px;margin-right:6px}
+
+/* 그리드 푸터 — 건수 · 네비게이션 · 페이지 사이즈 */
+.pg{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+    padding:6px 2px;font-size:11.5px;color:var(--muted)}
+.pg .nav{text-align:center}
+.pg .size{text-align:right}
+.pg b{color:var(--ink)}
+
+/* 마스터-디테일 스플리터. 축이 둘이고 접기 화살표가 붙는다 */
+.split{height:13px;margin:9px 0;border-top:1px solid var(--line2);
+       border-bottom:1px solid var(--line2);background:var(--panel);
+       display:flex;align-items:center;justify-content:center;gap:4px;
+       font-size:9px;color:var(--muted);cursor:row-resize}
+.split .hnd{letter-spacing:2px;line-height:1}                 /* 끄는 손잡이 */
+.split .arw{border:1px solid var(--line);background:var(--bg);color:var(--muted);
+            font-size:8px;line-height:10px;padding:0 4px;cursor:default}
+.split .arw.off{opacity:.3}          /* 반대쪽이 이미 접혔다 — 둘 다 접히지 않는다 */
+/* 세로 축 — 좌우 배치 */
+.split.v{height:auto;width:13px;margin:0 9px;flex-direction:column;
+         border:none;border-left:1px solid var(--line2);border-right:1px solid var(--line2);
+         cursor:col-resize}
+.splitrow{display:flex;align-items:stretch}
+.splitrow>.pane{flex:1;min-width:0}
+/* 접힌 쪽 — 제목 줄만 남는다. 없는 것과 다르다 */
+.folded{border:1px solid var(--line2);background:var(--panel);padding:6px 10px;
+        font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.folded .why{font-weight:400;font-size:11px;color:var(--muted);margin-left:auto}
+
+/* ── 브레드크럼 줄 ──────────────────────────────────
+   줄은 셸의 것이고 오른쪽 슬롯은 화면이 채운다. 리프 목업이 셸
+   크롬을 그리지 않는 규약의 유일한 예외이며, 그리지 않으면
+   조회조건 컨트롤(UX-07 · UX-15)을 보일 자리가 없다.            */
+.bc{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+    border:1px solid var(--line2);background:var(--panel);
+    padding:4px 10px;margin-bottom:8px;font-size:12px;color:var(--muted)}
+.bc .path{margin-right:auto;white-space:nowrap}
+.bc .path b{color:var(--ink)}
+.bc .btn{width:auto;padding:2px 8px;font-size:11.5px}
+
+/* 주석 — 화면 요소 ↔ 문서 결정 연결 */
+.notes{border-left:3px solid var(--note);background:var(--note-bg);padding:10px 14px;font-size:12.5px}
+.notes ol{margin:0;padding-left:18px}
+.notes li{margin:3px 0}
+.n{display:inline-block;min-width:17px;height:17px;line-height:17px;text-align:center;
+   border-radius:50%;background:var(--note);color:#fff;font-size:11px;margin-right:5px}
+
+table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
+th,td{border:1px solid var(--line2);padding:5px 8px;text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:600;white-space:nowrap}
+td.c{white-space:nowrap;font-family:Consolas,monospace;font-size:12px}
+
+.todo{border:1px dashed var(--line);padding:10px 14px;font-size:12.5px;background:var(--panel)}
+.todo ul{margin:4px 0 0;padding-left:18px}
+footer{margin-top:34px;padding-top:12px;border-top:1px solid var(--line2);
+       font-size:11.5px;color:var(--muted)}
+
+
+/* ── 이 목업만의 어휘 넷 ──────────────────────────────
+   조회 전용이라 편집 어휘가 없다(메뉴·권한 화면 설계와 같다). 더하는 것은
+   전문 링크 · 파생 빈값 · 잘림 표시 · 번호 없는 네비게이션이다.  */
+.grid td.num,.grid th.num{text-align:right}
+.grid td .lnk{color:var(--note);text-decoration:underline;cursor:default}
+.grid td .nil{color:var(--muted);font-style:normal}   /* (익명) · (메뉴 없음) */
+.grid th.nw{color:var(--err)}                          /* 로그 화면 설계로 생긴 컬럼 */
+.mut{color:var(--muted);font-size:11px}
+.bdg{display:inline-block;border:1px solid var(--err);color:var(--err);
+     padding:0 4px;font-size:10px;border-radius:2px;margin-left:4px}
+.bdg.warn{border-color:#a67c00;color:#a67c00}
+@media (prefers-color-scheme: dark){ .bdg.warn{border-color:#d4a72c;color:#d4a72c} }
+ .bdg.warn{border-color:#d4a72c;color:#d4a72c} 
+
+/* 상태 배지 둘 — 2xx 는 칠하지 않는다 (그리드 표준과 같은 규칙) */
+.bdg.ok{border-color:var(--line);color:var(--muted)}
+/* 전문 모달 — 읽기 전용 textarea. 그리드 어휘가 아니다 */
+.ta{width:100%;height:150px;border:1px solid var(--line);background:var(--panel);
+    color:var(--muted);font:12px/1.55 Consolas,monospace;padding:8px;resize:none}
+</style>
+<div class="doc"><div class="gen noprint"><b>생성물이다 — 손으로 고치지 않는다.</b>
+원본은 <code>manual.md</code> 이고 이 파일은 <code>/manual-site</code> 가 만든다(CLAUDE.md §5.2).
+여기서 고친 것은 다음 생성에서 사라진다.</div></div>
+<section class="doc screen-doc">
+<h1>사용 이력</h1>
+<blockquote>시스템에 들어온 요청을 시각 순으로 보여 줍니다. <b>성공한 것만이 아니라 실패한 것까지 전부</b> 남습니다 — <i>누가 언제 무엇을 했나</i> 를 확인하는 화면입니다.</blockquote>
+<p><b>메뉴 위치</b> 시스템 › 로그 › 사용 이력</p>
+<figure class="shot mock">
+<div class="mockwrap"><div class="screen leaf" id="main" data-manual="main">
+  
+  <div class="body">
+
+    <div class="bc">
+      <span class="path">시스템 &rsaquo; 이력 · 로그 &rsaquo; <b>사용 이력</b></span>
+      <button class="btn sm ghost" type="button" title="저장된 조회조건 — UX-07">조건 &#9662;</button>
+      <button class="btn sm ghost" type="button" title="조회조건 접기/펼치기 — UX-15">&#8963; 조회조건</button>
+    </div>
+
+    <div class="sf">
+      <label>일시 <span style="color:var(--err)">*</span></label>
+      <span class="wide"><input value="2026-08-27 00:00:00" style="width:47%"> ~ <input value="2026-08-28 23:59:59" style="width:47%"></span>
+      <label><b>상태</b></label><select><option selected>전체</option><option>성공만</option><option>실패만</option></select>
+      <label>사용자</label><input placeholder="완전 일치">
+      <label>메뉴</label><select><option>전체</option><option>사용자 관리</option><option>공통 코드 관리</option><option>(메뉴 없음)</option></select>
+      <label>요청 URI</label><input placeholder="앞 일치">
+      <label>IP</label><input placeholder="완전 일치">
+      <label>추적 ID</label><input placeholder="완전 일치">
+      <span class="mut" style="grid-column:span 4"><b>일시는 필수이고 상한이 31일</b>이다 ·
+        <b>추적 ID 를 넣으면 일시가 선택이 된다</b></span>
+      <div class="act"><button class="btn sm ghost" type="button">초기화</button></div>
+    </div>
+
+    <div class="tb">
+      <span class="ttl">사용 이력</span>
+      <span class="sp"></span>
+      <button class="btn sm ghost" type="button">조회</button>
+      <button class="btn sm ghost ico" type="button" title="엑셀 다운로드">⤓ ▾</button>
+      <button class="btn sm ghost ico" type="button" title="그리드 설정">⚙</button>
+    </div>
+
+    <div class="grid" style="max-height:250px">
+      <table>
+        <thead><tr>
+          <th class="roh">일시 <span class="srt">▼</span><span class="mn">☰</span></th>
+          <th class="roh nw">상태<span class="mn">☰</span></th>
+          <th class="roh">사용자<span class="mn">☰</span></th>
+          <th class="roh">메뉴<span class="mn">☰</span></th>
+          <th class="roh">요청 URI<span class="mn">☰</span></th>
+          <th class="roh">전문</th>
+          <th class="roh">IP<span class="mn">☰</span></th>
+          <th class="roh">추적 ID</th>
+        </tr></thead>
+        <tbody>
+          <tr class="sel"><td class="ro">2026-08-28 14:22:07</td><td class="ro"><span class="bdg ok">200</span></td><td class="ro">kim.jb</td><td class="ro">사용 이력</td>
+              <td class="ro">/api/service/accessLog/getList</td><td class="ro"><span class="lnk">[보기]</span></td>
+              <td class="ro">10.20.3.41</td><td class="ro">7f2a1c9e-…-b31d</td></tr>
+          <tr><td class="ro">2026-08-28 14:21:58</td><td class="ro"><span class="bdg">500</span></td><td class="ro">kim.jb</td><td class="ro">공통 코드 관리</td>
+              <td class="ro">/api/service/code/save</td><td class="ro"><span class="lnk">[보기]</span></td>
+              <td class="ro">10.20.3.41</td><td class="ro">3c88b410-…-0a72</td></tr>
+          <tr><td class="ro">2026-08-28 14:20:11</td><td class="ro"><span class="bdg ok">200</span></td><td class="ro"><span class="nil">(익명)</span></td>
+              <td class="ro"><span class="nil">(메뉴 없음)</span></td>
+              <td class="ro">/api/public/auth/login</td><td class="ro"><span class="lnk">[보기]</span></td>
+              <td class="ro">10.20.3.41</td><td class="ro">91ee0d3b-…-cc10</td></tr>
+          <tr><td class="ro">2026-08-28 09:57:44</td><td class="ro"><span class="bdg warn">403</span></td><td class="ro">lee.hj</td><td class="ro">사용자 관리</td>
+              <td class="ro">/api/service/user/save</td><td class="ro"><span class="lnk">[보기]</span></td>
+              <td class="ro">10.20.9.5</td><td class="ro"><b>1f9e…-5c08</b></td></tr>
+          <tr><td class="ro">2026-08-28 14:19:02</td><td class="ro"><span class="bdg ok">200</span></td><td class="ro">park.sy</td><td class="ro">사용자 관리</td>
+              <td class="ro">/api/common/excel/log</td><td class="ro"><span class="lnk">[보기]</span></td>
+              <td class="ro">10.20.7.8</td><td class="ro">a4b6631f-…-2d80</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pg">
+      <span><b>100</b>건 조회됨 <span class="mut">· 최근 2일</span></span>
+      <span class="nav">‹ 이전 &nbsp; 다음 ›</span>
+      <span class="size">100건씩 ▾</span>
+    </div>
+
+  </div>
+</div></div>
+<figcaption>사용 이력 화면 — 기간이 필수이고 아래쪽은 이전·다음으로 넘깁니다 — <b>배치를 보이는 그림</b>입니다. 실제 화면의 데이터·글꼴·색은 다를 수 있습니다.</figcaption>
+</figure>
+<hr>
+<h2>1. 먼저 알아 둘 것</h2>
+<ul>
+<li><b>조회 기간은 반드시 넣어야 하고, 한 번에 31일까지만</b> 볼 수 있습니다. 이 이력은 요청마다 보낸 내용 전체가 함께 저장되어 가장 큰 이력이기 때문입니다.</li>
+<li><b>기록은 90일까지만 남습니다.</b> 그보다 오래된 기간을 물으면 조건이 잘못된 것이 아니라 <b>거기 자료가 없는 것</b>입니다.</li>
+<li><b>여기서는 보기만 합니다.</b> 고치거나 지울 수 없습니다 — 오래된 기록은 시스템이 정해진 날짜에 스스로 지웁니다.</li>
+<li><b>실패한 요청도 함께 나옵니다.</b> 권한이 없어 거부된 요청, 값이 잘못돼 되돌아온 요청도 한 줄입니다. <i>잘 된 것만 보는 화면이 아닙니다.</i></li>
+<li><b>이 화면에서 조회한 것도 이력에 남습니다.</b> 다음에 조회하면 방금 내가 한 조회가 맨 위에 보입니다 — 고장이 아닙니다.</li>
+</ul>
+<hr>
+<h2>2. 찾기</h2>
+<ol>
+<li><code>조회 기간</code>을 넣습니다. <b>비워 둘 수 없습니다.</b> 처음 열면 최근 1일이 들어 있습니다.</li>
+<li>필요한 조건을 더 넣습니다.</li>
+<li><code>[조회]</code> 를 누릅니다.</li>
+</ol>
+<p><b>자주 쓰는 조건</b></p>
+<table><thead><tr>
+<th>이렇게 찾고 싶다</th><th>이렇게 넣습니다</th>
+</tr></thead><tbody>
+<tr><td>오류가 난 요청만</td><td><code>상태</code>를 <i>실패</i> 로 고릅니다 (400 이상이 전부 여기 들어갑니다)</td></tr>
+<tr><td>한 사람이 무엇을 했나</td><td><code>사용자 ID</code>에 아이디를 넣습니다 — 목록에서 복사해 넣는 것이 정확합니다</td></tr>
+<tr><td>이름 일부만 기억날 때</td><td><code>사용자명</code>에 <i>김</i> 처럼 조각을 넣습니다 (기본이 <i>포함</i> 입니다)</td></tr>
+<tr><td>어느 메뉴에서 일어났나</td><td><code>메뉴명</code>에 화면에 보이는 이름을 넣습니다</td></tr>
+<tr><td>사용자가 오류 번호를 들고 왔을 때</td><td><code>추적 ID</code>에 그 값을 그대로 붙여 넣습니다 — <b>이때는 기간을 넣지 않아도 됩니다</b></td></tr>
+<tr><td>특정 자리에서 들어온 요청</td><td><code>접속 IP</code>에 IP 를 <b>정확히</b> 넣습니다 (일부만은 안 됩니다)</td></tr>
+</tbody></table>
+<ul>
+<li><b>오류 화면에 뜬 긴 번호가 <code>추적 ID</code> 입니다.</b> 사용자가 그 값을 알려 주면 기간을 몰라도 그 요청 하나를 바로 찾을 수 있습니다.</li>
+<li>목록 아래쪽에는 <b><code>‹ 이전</code> · <code>다음 ›</code></b> 만 있습니다. 전체 건수와 페이지 번호는 없습니다 — 이력이 워낙 많아 세는 데만 오래 걸리기 때문입니다.</li>
+<li><b>정렬은 <code>일시</code> 하나만 됩니다.</b> 다른 칸의 제목을 눌러도 정렬되지 않습니다. <i>사람별로 모아 보고 싶다</i> 면 정렬이 아니라 <b>조회조건</b>으로 거릅니다.</li>
+<li><code>순번</code> 칸은 숨어 있습니다. 그리드 설정(<code>[⚙]</code>)에서 켜면 보입니다.</li>
+</ul>
+<hr>
+<h2>3. 하기</h2>
+<h3>3-1. 요청 내용 들여다보기</h3>
+<p><code>전문</code> 칸의 <code>[보기]</code> 를 누르면 그 요청이 실제로 보낸 내용이 창으로 열립니다.</p>
+<figure class="shot mock">
+<div class="mockwrap"><div class="screen shell" id="payload" data-manual="payload">
+  <div class="body">
+    <div class="modal">
+      <div class="mh"><span>요청 전문 — <span class="mut">2026-08-28 14:21:58 · /api/service/code/save</span></span><span class="x">✕</span></div>
+      <div class="mb">
+        <textarea class="ta" readonly>{
+  "headers": {
+    "content-type": "application/json",
+    "x-menu-code": "CODE_MGMT",
+    "x-request-id": "3c88b410-77aa-4e21-9f05-0a72",
+    "authorization": "***",
+    "cookie": "***"
+  },
+  "query": {},
+  "body": {
+    "rows": [
+      { "rowState": "MOD", "grpCd": "USE_YN", "dtlCd": "Y", "dtlNm": "사용" },
+      { "rowState": "NEW", "grpCd": "USE_YN", "dtlCd": "N", "dtlNm": "미사용" }
+    ]
+  }
+}</textarea>
+        <div class="mut" style="margin-top:6px">1,284자 · <b>읽기 전용</b>(복사는 된다) ·
+          <code>authorization</code> · <code>cookie</code> 는 <b>마스킹된 값</b>이다</div>
+      </div>
+      <div class="mf"><span>전문 절단 상한 <b>1MB</b></span><button class="btn sm ghost" type="button">닫기</button></div>
+    </div>
+  </div>
+</div></div>
+<figcaption>요청 전문 창 — 읽기 전용이고 복사만 됩니다 — <b>배치를 보이는 그림</b>입니다. 실제 화면의 데이터·글꼴·색은 다를 수 있습니다.</figcaption>
+</figure>
+<ul>
+<li><b>읽기 전용입니다.</b> 고쳐도 아무 데도 반영되지 않습니다. 여기서 할 수 있는 일은 읽고 복사하는 것뿐입니다.</li>
+<li><b>비밀번호·인증 값은 이미 가려져 있습니다.</b> <code>***</code> 로 보이는 것은 저장할 때부터 가린 것이지 창이 감추는 것이 아닙니다.</li>
+<li>내용이 아주 길면 <b>잘립니다.</b> 그때는 창에 <i>상한에서 잘렸습니다</i> 라고 뜹니다 — <b>저장이 깨진 것이 아닙니다.</b></li>
+<li><code>[보기]</code> 가 없는 줄도 있습니다. 파일을 올린 요청처럼 내용을 담지 않는 요청입니다.</li>
+</ul>
+<h3>3-2. 이 요청이 어느 화면 것인지 확인하기</h3>
+<p><code>요청 URI</code> 칸을 <b>두 번 누르면</b> [API 카탈로그]가 그 주소로 조회된 채 열립니다.</p>
+<ul>
+<li><i>권한이 없다는데 왜 그런지</i> 를 따라갈 때 쓰는 첫 칸입니다. 거기서 그 주소가 <b>등록돼 있나 · 어느 메뉴에 붙어 있나</b> 를 보고, 필요하면 다시 [메뉴 관리]로 갑니다.</li>
+<li>[API 카탈로그]를 볼 권한이 없으면 <b>아무 일도 일어나지 않습니다.</b></li>
+</ul>
+<h3>3-3. 엑셀로 받기</h3>
+<ul>
+<li><code>[⤓]</code> — 현재 페이지와 전체 중에서 고릅니다. <b>지금 보이는 컬럼만</b> 나갑니다.</li>
+<li><code>전문</code> 칸은 엑셀에서 <code>[보기]</code> 가 아니라 <b>있음/없음</b>으로 나갑니다. 내용 자체는 엑셀에 담기지 않습니다.</li>
+<li>엑셀 올리기는 이 화면에 없습니다.</li>
+</ul>
+<hr>
+<h2>4. 안 될 때</h2>
+<table><thead><tr>
+<th>이런 일이 생기면</th><th>이유</th><th>어떻게 하나</th>
+</tr></thead><tbody>
+<tr><td><i>조회 기간은 필수입니다.</i></td><td>기간을 비웠습니다</td><td>기간을 넣습니다. 요청 번호를 알면 <code>추적 ID</code>만으로도 찾을 수 있습니다</td></tr>
+<tr><td><i>조회 기간이 허용 범위를 넘었습니다.</i></td><td>31일이 넘습니다</td><td>기간을 나눠서 조회합니다. <b>잘라서 보여 주지 않는 이유는</b> 31일치를 본 것으로 착각한 채 더 넓은 기간의 결론을 내는 것을 막기 위해서입니다</td></tr>
+<tr><td><i>이미 파기된 이력입니다.</i></td><td>목록을 조회한 뒤 그 줄이 보존 기간을 넘겨 지워졌습니다</td><td>목록을 다시 조회합니다</td></tr>
+<tr><td>결과가 0건입니다</td><td>조건이 좁거나, <b>그 기간에 자료가 없습니다</b></td><td>90일보다 오래된 기간인지 먼저 확인합니다</td></tr>
+<tr><td><code>사용자 ID</code> 칸이 <code>(익명)</code> 입니다</td><td>로그인하기 전에 일어난 요청입니다</td><td>정상입니다 — 로그인 시도 자체가 그렇습니다</td></tr>
+<tr><td><code>사용자명</code>이 비어 있습니다</td><td>로그인 전 요청이거나, <b>그 계정이 지금은 없습니다</b></td><td>계정을 확인하려면 [사용자 관리]에서 그 아이디로 찾아봅니다</td></tr>
+<tr><td><code>메뉴</code> 칸이 <i>(메뉴 없음)</i> 입니다</td><td>화면에 들어가기 전에 일어난 요청입니다(로그인·연결 확인 등)</td><td>정상입니다</td></tr>
+<tr><td>컬럼 제목을 눌러도 정렬되지 않습니다</td><td><code>일시</code> 말고는 정렬이 열려 있지 않습니다</td><td>조회조건으로 거릅니다</td></tr>
+<tr><td>메뉴가 보이지 않습니다</td><td>이 메뉴 권한이 없습니다</td><td>[역할별 권한] 담당자에게 요청합니다</td></tr>
+</tbody></table>
+<blockquote><b><code>메뉴</code> 칸은 참고용입니다.</b> 이 값은 화면이 스스로 붙여 보낸 것이라 <b>권한 판정에 쓰이지 않습니다.</b> 메뉴별로 세어 감사 근거로 쓰지 마십시오. 칸 제목에 마우스를 올리면 같은 안내가 뜹니다.</blockquote>
+<hr>
+<h2>5. 다른 메뉴와의 관계</h2>
+<p><b>먼저 해야 하는 것</b></p>
+<ul>
+<li>없습니다. 요청이 일어나면 자동으로 쌓입니다.</li>
+</ul>
+<p><b>여기서 저장하면 바뀌는 곳</b></p>
+<ul>
+<li>없습니다. <b>이 화면은 아무것도 바꾸지 않습니다.</b></li>
+<li>다만 <b>엑셀로 받으면 그 사실이 기록됩니다.</b> 누가 언제 무엇을 내려받았는지 남습니다.</li>
+</ul>
+<p><b>같이 보는 화면</b></p>
+<table><thead><tr>
+<th>무엇이 궁금한가</th><th>어디로</th>
+</tr></thead><tbody>
+<tr><td>이 주소가 어느 메뉴 것인가</td><td><b>[API 카탈로그]</b> — <code>요청 URI</code> 를 두 번 눌러 바로 갑니다</td></tr>
+<tr><td>왜 오류가 났나 (자세한 내용)</td><td><b>[에러 로그]</b> — 같은 <code>추적 ID</code> 로 찾습니다. 오류가 난 요청은 <b>여기와 거기에 각각 한 줄씩</b> 남습니다</td></tr>
+<tr><td>로그인이 왜 실패했나</td><td><b>[로그인 이력]</b> — 실패 사유는 그쪽에 있습니다</td></tr>
+<tr><td>이 사람이 지금 무엇을 할 수 있나</td><td><b>[사용자 관리]</b> 의 [유효 권한] 탭</td></tr>
+</tbody></table>
+<hr>
+<h2>6. 자주 묻는 것</h2>
+<ul>
+<li><b>오류가 났는데 여기에 안 보입니다</b> — 기간을 확인하십시오. 그리고 <code>상태</code>를 <i>실패</i> 로 걸어 보십시오. 자세한 오류 내용은 [에러 로그]에 있습니다.</li>
+<li><b>전체가 몇 건인지 알고 싶습니다</b> — 이 화면은 세지 않습니다. 건수를 알아야 하면 엑셀로 받아 세는 것이 정확합니다.</li>
+<li><b>한 달치를 한 번에 보고 싶습니다</b> — 31일까지는 됩니다. 그보다 넓히려면 나눠서 조회하십시오.</li>
+<li><b>오래된 기록을 다시 보고 싶습니다</b> — 90일이 지난 것은 남아 있지 않습니다.</li>
+<li><b>내 조회가 목록에 나옵니다</b> — 맞습니다. 이력을 본 것도 이력입니다. <code>메뉴</code>를 <i>사용 이력</i> 으로 걸러 보면 누가 얼마나 열람했는지 알 수 있습니다.</li>
+</ul>
+</section>
+</html>
