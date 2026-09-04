@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 태그 탭의 저장 — 68 §7.4. <b>같은 테이블에 갈래가 둘이고, 다른 하나는 주문이 갖는다.</b>
+ * 태그 탭의 저장 — playbook/INDEX.md. <b>같은 테이블에 갈래가 둘이고, 다른 하나는 주문이 갖는다.</b>
  *
  * <p>①({@code SampleOrderService} 의 전량 교체)은 배열을 통째로 받고 여기는 행마다
  * {@code rowState} 를 본다. 이상해 보이는 것이 정직한 결과다 — <b>편집 어휘가 둘</b>이기
@@ -61,7 +61,7 @@ public class SampleTagService {
      *
      * <p><b>순서가 겹치면 거부한다.</b> 같은 {@code SORT_NO} 가 둘이면 읽는 순서가
      * 정해지지 않고, 사용자에게는 <i>고치지도 않았는데 조회할 때마다 태그가 뒤바뀐다</i> 로
-     * 보인다 — 48 §4.1 이 이 컬럼을 둔 이유가 그 증상을 없애는 것이었다.
+     * 보인다 — playbook/INDEX.md 이 이 컬럼을 둔 이유가 그 증상을 없애는 것이었다.
      */
     @Transactional
     public void saveTags(long ordId, List<SmplTagSaveRow> rows) {
@@ -127,10 +127,10 @@ public class SampleTagService {
     }
 
     /**
-     * 태그 한 행의 검증 — <b>화면이 이미 막았어도 다시 본다</b>(grid-edit-validation.md §3.4).
+     * 태그 한 행의 검증 — <b>화면이 이미 막았어도 다시 본다</b>(frontend/grid.md).
      *
      * <p>{@code SORT_NO} 가 필수인 것은 {@code NOT NULL} 이라서가 아니라 <b>값이기</b>
-     * 때문이다(48 §4.1) — 비워 두면 그 태그의 자리가 정해지지 않는다.
+     * 때문이다(playbook/INDEX.md) — 비워 두면 그 태그의 자리가 정해지지 않는다.
      */
     private static void validateTag(SmplTagSaveRow row) {
         if (row.tagNm() == null || row.tagNm().isBlank()) {

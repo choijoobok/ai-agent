@@ -50,11 +50,9 @@ tags: [meta, routing, decision-tree]
   │
   ├─ "도메인 지식"                        → 09-knowledge/
   │
-  ├─ "DEC·raw/summary 형식"               → 10-records/
   │
   ├─ "CRUD/마스터-디테일/엑셀/SQL 레시피" → 11-playbook/
   │
-  ├─ "외부 문헌·요약·learning log"        → 12-references/
   │
   └─ "PII·민감 데이터·prompt injection"    → 13-safety/
 ```

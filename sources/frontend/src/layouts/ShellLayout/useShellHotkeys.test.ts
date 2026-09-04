@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useShellHotkeys } from '@/layouts/ShellLayout/useShellHotkeys';
 
 /**
- * 셸 단축키 — main-shell.md §10.
+ * 셸 단축키 — frontend/tabs.md.
  *
  * <p><b>`Shift` 두 번은 조합이 아니라 같은 키를 잇달아 누르는 것</b>이라, 무엇이 <i>두 번이
  * 아닌가</i>를 정확히 정해야 한다. 그 판정이 느슨하면 <b>대문자를 잇달아 치는 동안 모달이

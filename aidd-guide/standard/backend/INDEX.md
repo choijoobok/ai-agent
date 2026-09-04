@@ -60,19 +60,6 @@ tags: [backend, index]
 | LLM-FWK-BE-012 | [batch.md](./batch.md) | 배치 — 등록이 곧 스케줄 · 락 · 유령 | ✅ |
 | LLM-FWK-004 | [../seed.md](../seed.md) | 생성 시드 — 절차와 검증 (백엔드 밖) | ✅ |
 
-## `_study/` — 근거
-
-운용 파일은 **규칙과 핵심 근거**만 200줄 안에 담는다. 유도과정·대안 검토·해소된 미결은
-같은 폴더의 `_study/` 에 원문으로 있다. **라우팅의 기본 경로가 아니다** — 운용 파일을
-먼저 읽고, *규칙은 알겠는데 왜 그런가* 가 남을 때만 들어간다.
-
-| 파일 | 무엇 |
-|---|---|
-| [`_study/architecture.md`](./_study/architecture.md) | 모듈·패키지·트랜잭션·횡단 관심사·요청 로깅의 원문 |
-| [`_study/api-conventions.md`](./_study/api-conventions.md) | API·조회 프로토콜의 원문 |
-| [`_study/db-portability.md`](./_study/db-portability.md) | DB 중립성 전략의 원문 |
-| [`_study/security-design.md`](./_study/security-design.md) | 보안 설계의 원문(비밀번호·PII·CSRF·헤더) |
-
 ## 기계가 지키는 것
 
 | 테스트 | 무엇 |

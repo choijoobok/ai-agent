@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 공개 메시지 번들 — 50 §3.2.
+ * 공개 메시지 번들.
  *
  * <p><b>{@code messages} 가 없는 응답이 정상 경로다.</b> 두 번째 이후 접속은 버전만 확인하고
  * 본문 없이 끝난다 — 번들은 전 사용자 공통이고 변경이 드물어 사실상 한 번만 받는다.
@@ -14,8 +14,8 @@ import java.util.Map;
  * 수 있다({@code ja} → {@code en}). 프론트가 요청 값으로 {@code localStorage} 키를 만들면
  * 다음 접속에서 <b>영어 번들을 일본어 칸에</b> 넣고 매번 다시 받는다.
  *
- * @param langs 지원 언어 전부 — <b>{@code unchanged} 여도 함께 온다.</b> 43 §7 이 이 목록의
- *     원본을 공통코드({@code LANG_CD})로 정했고 63 §3.2 는 다국어 관리 화면의 하단 행 수가
+ * @param langs 지원 언어 전부 — <b>{@code unchanged} 여도 함께 온다.</b> sys/code.md 이 이 목록의
+ * 원본을 공통코드({@code LANG_CD})로 정했고 screen/code/requirements.md 는 다국어 관리 화면의 하단 행 수가
  *     <i>"이미 캐시에 있는"</i> 그 목록에서 온다고 했다. {@code SYS_CODE} 가 없는 동안 이
  *     번들이 그 캐시 자리를 대신한다 — <b>별도 API 를 두면 화면 진입마다 왕복이 하나
  *     늘고</b>, 그 API 는 공통코드가 생기는 날 지울 것이 된다

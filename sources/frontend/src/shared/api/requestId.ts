@@ -1,5 +1,5 @@
 /**
- * 요청마다 새 UUID 를 만든다 — 중복 요청 방어와 추적 ID 를 겸한다(29 §8 · frontend-stack.md §9).
+ * 요청마다 새 UUID 를 만든다 — 중복 요청 방어와 추적 ID 를 겸한다(backend/crosscutting.md · frontend/packages.md).
  *
  * <p><b>폴백이 필수다.</b> `crypto.randomUUID` 는 secure context 전용이라
  * 사내망 평문 HTTP(`http://10.x.x.x`)에서는 존재하지 않는다. 없는 채로 부르면

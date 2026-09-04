@@ -1,11 +1,11 @@
-// core — 도메인 비종속 커널. 다른 모듈을 참조하지 않는다(21 §1).
+// core — 도메인 비종속 커널. 다른 모듈을 참조하지 않는다(backend/packages.md).
 // 프레임워크 의존을 최소로 유지한다 — 스타터가 아니라 필요한 API 만 가져온다.
 dependencies {
     api("jakarta.persistence:jakarta.persistence-api")
     api("jakarta.validation:jakarta.validation-api")
     api("com.fasterxml.jackson.core:jackson-annotations")
 
-    // 감사 애너테이션(@CreatedBy 등)만 쓴다. 리포지토리·JPA 는 domain 의 것이다(21 §1).
+    // 감사 애너테이션(@CreatedBy 등)만 쓴다. 리포지토리·JPA 는 domain 의 것이다(backend/packages.md).
     api("org.springframework.data:spring-data-commons")
 
     // core 에 @MappedSuperclass 가 있으면 Q 클래스도 core 에 생겨야 한다 —

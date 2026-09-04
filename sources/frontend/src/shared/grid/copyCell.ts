@@ -1,13 +1,13 @@
 /**
- * 셀 하나를 클립보드에 — grid-standard.md §4.
+ * 셀 하나를 클립보드에 — frontend/grid.md.
  *
  * <p><b>복사하는 것은 데이터가 아니라 화면에 보이는 글자다.</b> 코드 컬럼의 값은
  * {@code 'Y'} 인데 사람이 보고 있는 것은 <i>사용</i> 이고, 그것을 어딘가에 붙여 넣으려는
- * 것이므로 <b>보이는 쪽</b>이 답이다(grid-column-contract.md §5.4). 그래서 값을 다시 포맷하지 않고 <b>그려진
+ * 것이므로 <b>보이는 쪽</b>이 답이다(frontend/grid.md). 그래서 값을 다시 포맷하지 않고 <b>그려진
  * 셀의 글자</b>를 읽는다.
  *
  * <p><b>다만 셀의 글자가 전부 값인 것은 아니다</b>(2026-08-30 — 실물에서 잡음). 값 뒤에
- * 배지를 덧붙이는 셀이 있고(54 의 {@code badge} — 63 §2.6 의 <i>시스템</i>, §4.3 의
+ * 배지를 덧붙이는 셀이 있고(54 의 {@code badge} — screen/code/requirements.md 의 <i>시스템</i>, §4.3 의
  * <i>변경됨</i>), 거기서 셀을 통째로 읽으면 {@code CODE_REF_KEY시스템} 이 복사된다 —
  * <b>붙여 넣을 수 없는 문자열</b>이다.
  *
@@ -24,7 +24,7 @@
  * 어댑터가 그 조각에 {@link ASIDE_CLASS} 를 달고 여기는 그것을 뺄 뿐이다. 여기서 태그
  * 모양이나 색으로 짐작하면 <b>새 렌더러가 생길 때마다 조용히 틀린다</b>.
  *
- * <p><b>글자가 없는 셀이 있다.</b> 스위치 컬럼(grid-column-contract.md §5.2)이 그렇다 — 그때 빈 문자열을
+ * <p><b>글자가 없는 셀이 있다.</b> 스위치 컬럼(frontend/grid.md)이 그렇다 — 그때 빈 문자열을
  * 복사하면 <i>눌렀는데 아무 일도 없는</i> 것과 구별되지 않는다. 참·거짓은 DB 의 말투로
  * 되돌린다: {@code Y} · {@code N}.
  */
@@ -67,7 +67,7 @@ export function cellText(rendered: string | null | undefined, value: unknown): s
   if (typeof value === 'string' || typeof value === 'number') {
     return String(value);
   }
-  // 객체는 `[object Object]` 대신 빈 칸이다 — grid-column-contract.md §5.3 이 기각한 모양이다.
+  // 객체는 `[object Object]` 대신 빈 칸이다 — frontend/grid.md 이 기각한 모양이다.
   return '';
 }
 

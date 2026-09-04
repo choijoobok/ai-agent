@@ -19,7 +19,7 @@ const STAT_LABEL: Record<ReqStatus, string> = {
   REJECTED: MSG.NOTI_REQUEST_STAT_REJECTED,
 };
 
-/** 상태의 색 — 요청함 화면의 배지 색과 같다(grid-api-contract.md §6). */
+/** 상태의 색 — 요청함 화면의 배지 색과 같다(frontend/grid.md). */
 const STAT_TONE: Record<ReqStatus, string | undefined> = {
   RECEIVED: undefined,
   DONE: 'green',
@@ -27,26 +27,26 @@ const STAT_TONE: Record<ReqStatus, string | undefined> = {
 };
 
 /**
- * 내 요청 탭 — NOTI-06 사용자 측(60 §8).
+ * 내 요청 탭 — NOTI-06 사용자 측(screen/_standalone/README.md).
  *
  * <h2>방향이 반대다</h2>
  *
  * <p>앞의 두 탭은 **받는 것**이고 여기는 **보내는 것**이다. 그래서 미읽음이 없고
- * (`NI-15`), 정렬이 최신순이며(내 이력이지 대기열이 아니다 — 66 §5.2.1), 목록에 **버튼이
+ * (`NI-15`), 정렬이 최신순이며(내 이력이지 대기열이 아니다 — screen/notice/requirements.md), 목록에 **버튼이
  * 하나 붙는다.**
  *
  * <h2>처리는 여기서 하지 않는다 — `NI-13`</h2>
  *
- * <p>`NOTI_REQUEST` 메뉴의 일이며 `(NOTI_REQUEST, SAVE)` 권한이 필요하다(52 §7.3).
+ * <p>`NOTI_REQUEST` 메뉴의 일이며 `(NOTI_REQUEST, SAVE)` 권한이 필요하다(sys/menu.md).
  * **모달에는 권한을 걸 자리가 없다** — 권한은 `(MENU_CD, ACTION_CD)` 쌍이고 메뉴 밖
- * 화면에는 `MENU_CD` 가 없다(60 §1.1).
+ * 화면에는 `MENU_CD` 가 없다(screen/_standalone/README.md).
  *
  * <h2>같은 유형을 두 번 열지 않는다</h2>
  *
  * <p>접수 상태로 열려 있는 유형은 폼에서 고를 수 있되 **보내기가 막힌다.** 서버도
- * 거부하지만(마지막 방어) 눌러서 오류를 보는 것보다 낫다 — 워크플로가 없으므로(01 §2)
+ * 거부하지만(마지막 방어) 눌러서 오류를 보는 것보다 낫다 — 워크플로가 없으므로
  * 같은 것을 또 내도 진행이 빨라지지 않고, 관리자는 그 여벌을 **하나씩 반려**해야 하며
- * 반려마다 알림이 나간다(66 §5.4).
+ * 반려마다 알림이 나간다(screen/notice/requirements.md).
  */
 export function MyRequestTab() {
   const [loaded, setLoaded] = useState<MyRequests | null>(null);
@@ -184,10 +184,10 @@ export function MyRequestTab() {
                     })}
                     {/*
                       **처리자가 쓴 글을 줄에 붙인다.** 상태만 보이면 왜 그렇게 됐는지 알 수
-                      없고, 그것을 되묻는 단계가 없다(01 §2) — 한 번의 답이 전부여야 한다.
+                      없고, 그것을 되묻는 단계가 없다 — 한 번의 답이 전부여야 한다.
 
                       **라벨이 상태마다 다르다.** 반려면 *사유* 이고 처리면 *처리 메모* 다
-                      (66 §5.3 의 비대칭 그대로) — 처리된 요청에 "사유" 를 붙이면 <b>처리된
+                      (screen/notice/requirements.md 의 비대칭 그대로) — 처리된 요청에 "사유" 를 붙이면 <b>처리된
                       것이 반려된 것처럼</b> 읽힌다. 브라우저에서 눌러 보고 드러났다.
                     */}
                     {row.handleMemo &&

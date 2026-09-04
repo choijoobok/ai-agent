@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * {@link SysUserGridPref} 의 복합키 — grid-standard.md §5.
+ * {@link SysUserGridPref} 의 복합키 — frontend/grid.md.
  *
  * <p>record 가 아니라 클래스인 것은 {@code @IdClass} 의 요구 때문이다.
  */

@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
 /**
- * 샘플 주문 품목 — 48 §4. <b>인라인 편집과 계산 컬럼의 자리다.</b>
+ * 샘플 주문 품목 — playbook/INDEX.md. <b>인라인 편집과 계산 컬럼의 자리다.</b>
  *
  * <h2>{@code ORD_NO} 를 복제한다 — 정규화를 깨는 유일한 자리</h2>
  *
- * <p>FK 는 {@code ORD_ID}(대리키)인데 업무 키를 한 벌 더 둔다(48 §4.3). <b>엑셀 업로드
+ * <p>FK 는 {@code ORD_ID}(대리키)인데 업무 키를 한 벌 더 둔다(playbook/INDEX.md). <b>엑셀 업로드
  * 때문이다</b>: 사람이 채우는 엑셀에 대리키가 들어갈 수 없으므로(발번 전이거나 알 방법이
  * 없다) 업로드 탭은 {@code (ORD_NO, ITEM_CD)} 로 기존 행과 대조하고, 저장 시 서버가
  * {@code ORD_NO} 를 {@code ORD_ID} 로 푼다.

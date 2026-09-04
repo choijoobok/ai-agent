@@ -5,17 +5,17 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * 배치 등록의 저장·실행이 거부하는 것 — 65 §3.4 · §3.7 · §3.8.
+ * 배치 등록의 저장·실행이 거부하는 것 — screen/batch/schedule/requirements.md.
  *
  * <p><b>화면이 앞서 막는 것이 둘뿐이다</b>({@link #NOT_DELETABLE} 의 <i>켜져 있음</i> 과
  * {@link #PARAM_JSON_INVALID}). 나머지는 <b>서버만 아는 사실</b>에 걸린다 — 크론의 최소
- * 간격은 파서가 있어야 알고(65 §3.4), 등록된 빈 목록은 스프링 컨텍스트가 안다.
+ * 간격은 파서가 있어야 알고(screen/batch/schedule/requirements.md), 등록된 빈 목록은 스프링 컨텍스트가 안다.
  * {@code RoleErrorCode} 에서 화면이 미리 막던 것이 <i>건수 컬럼</i> 이었던 것과
  * 대비되는 자리다.
  *
  * <p><b>{@link #ALREADY_RUNNING} 만 저장이 아니다.</b> 즉시 실행의 거부이며, 그래서
  * 이 열거형에 <i>실행</i>이 하나 섞여 있다 — 화면 하나가 {@code S} 와 {@code X} 를 함께
- * 갖기 때문이다(52 §4.2 의 액션 열이 {@code R S X}).
+ * 갖기 때문이다(sys/menu.md 의 액션 열이 {@code R S X}).
  */
 public enum BatchScheduleErrorCode implements ErrorCode {
 

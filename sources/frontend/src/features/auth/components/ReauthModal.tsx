@@ -16,7 +16,7 @@ interface Props {
 }
 
 /**
- * 재인증 모달 — ADR-0021 · 50 §7.1.
+ * 재인증 모달 — backend/session.md ·.
  *
  * <p><b>만료는 로그아웃이 아니다.</b> 자리를 잠깐 비운 것과 업무를 끝낸 것은 다른데, 401 을
  * 로그아웃과 같게 처리하면 열려 있던 탭 20개와 <b>입력 중이던 값</b>이 사라진다.
@@ -29,7 +29,7 @@ interface Props {
  * 로그아웃. 닫을 수 있으면 아무것도 동작하지 않는 셸이 남는다.
  *
  * <p><b>배경을 블러한다.</b> 만료된 화면이 그대로 보이면 자리를 비운 사이 데이터가 노출된다 —
- * 다만 <b>탭 제목은 남으므로</b> 완전한 방어가 아니며 그것은 OS 잠금의 몫이다(ADR-0021).
+ * 다만 <b>탭 제목은 남으므로</b> 완전한 방어가 아니며 그것은 OS 잠금의 몫이다(backend/session.md).
  */
 export function ReauthModal({ reason, onRecovered, onGiveUp }: Props) {
   const user = useAuthStore((state) => state.user);
@@ -46,7 +46,7 @@ export function ReauthModal({ reason, onRecovered, onGiveUp }: Props) {
       const session = await login({ loginId: user.userId, password });
 
       // 개발도구로 다른 ID 를 보낼 수 있다 — 막지 않되(권한 상승이 아니다) 값이 다르면
-      // 전체 재로드한다. 값싸고 실수를 잡는다(ADR-0021).
+      // 전체 재로드한다. 값싸고 실수를 잡는다(backend/session.md).
       if (session.user.userId !== user.userId) {
         window.location.reload();
         return;
@@ -56,7 +56,7 @@ export function ReauthModal({ reason, onRecovered, onGiveUp }: Props) {
         session.user.localeCd,
         session.cacheVersions?.message,
       );
-      // 코드 캐시도 같은 자리에서 맞춘다 — 왕복이 없다(43 §8.1). 버전이 같으면 아무 일도
+      // 코드 캐시도 같은 자리에서 맞춘다 — 왕복이 없다(sys/code.md). 버전이 같으면 아무 일도
       // 하지 않으므로, 로그인할 때마다 코드를 다시 받지 않는다.
       useCodeStore.getState().syncWithSession(session.cacheVersions?.code);
       form.resetFields();
@@ -102,7 +102,7 @@ export function ReauthModal({ reason, onRecovered, onGiveUp }: Props) {
           </Form.Item>
 
           <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-            {/* 다른 계정으로 가려면 정식 로그아웃 정리를 거친다 — 50 §9. */}
+            {/* 다른 계정으로 가려면 정식 로그아웃 정리를 거친다. */}
             <Button type="link" onClick={onGiveUp} style={{ paddingInline: 0 }}>
               {label(MSG.REAUTH_OTHER_ACCOUNT)}
             </Button>

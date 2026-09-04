@@ -6,12 +6,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * 엑셀의 행 상한 <b>둘</b> — FILE-05 · 43 §6.4 · ADR-0019 · ADR-0024.
+ * 엑셀의 행 상한 <b>둘</b> — FILE-05 · sys/code.md · frontend/grid-advanced.md.
  *
  * <h2>내려받기와 올리기가 다른 값이다 (2026-09-02 실측)</h2>
  *
  * <p>한동안 올리기가 내려받기의 값을 그대로 썼다. 근거는 <i>양식이 곧 내려받은 파일이라
- * 두 상한이 갈리면 내려받은 것을 그대로 올렸는데 거절이 성립한다</i> 였는데(68 §9.2),
+ * 두 상한이 갈리면 내려받은 것을 그대로 올렸는데 거절이 성립한다</i> 였는데(playbook/INDEX.md),
  * <b>두 값은 서로 다른 것을 재고 있었다</b> —
  *
  * <ul>
@@ -20,7 +20,7 @@ import org.springframework.validation.annotation.Validated;
  *   <li><b>올리기</b>는 파싱 + <b>한 트랜잭션</b>이다. 실측(로컬 PostgreSQL)에서 파싱은
  *       5만 행이 1.5초로 싸고 <b>저장이 비쌌다</b>: 1천 1.5초 · 5천 4.6초 · 1만 6.5초 ·
  *       2만 12.5초. 5만이면 30초짜리 쓰기 트랜잭션이며 그것은 화면의 저장 버튼이 아니라
- *       배치다(48 §8)
+ * 배치다(playbook/INDEX.md)
  * </ul>
  *
  * <p>그래서 <b>키를 둘로 갈랐다.</b> 같은 값으로 둘 수 있는 길은 내려받기를 5천으로
@@ -32,7 +32,7 @@ import org.springframework.validation.annotation.Validated;
  * 의 {@code @Size}) — 화면이 통과시킨 것을 서버가 거절하면 사용자는 <b>왜 안 되는지</b> 를
  * 알 수 없다.
  *
- * <p><b>프론트가 생성하므로 전량을 메모리에 올린다</b>(ADR-0019). 상한이 없으면 브라우저가
+ * <p><b>프론트가 생성하므로 전량을 메모리에 올린다</b>(frontend/grid-advanced.md). 상한이 없으면 브라우저가
  * 죽으며, <b>서버 생성으로 폴백하지 않는다</b> — 경로가 하나 늘고 사용자가 <i>"왜 어떤
  * 때만 느린가"</i> 를 알 수 없다.
  *

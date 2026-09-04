@@ -42,11 +42,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code USER_MGMT} 의 디테일 탭 넷을 읽는다 — 61 §3.8.
+ * {@code USER_MGMT} 의 디테일 탭 넷을 읽는다 — screen/user/requirements.md.
  *
- * <p>다섯째(활성 세션)는 여기 없다. 원천이 DB 가 아니라 <b>세션 스토어</b>라(61 §3.8.2)
+ * <p>다섯째(활성 세션)는 여기 없다. 원천이 DB 가 아니라 <b>세션 스토어</b>라(screen/user/requirements.md)
  * {@code api} 모듈의 일이며, 도메인이 {@code FindByIndexNameSessionRepository} 를 알면
- * architecture.md §1 이 갈린다.
+ * backend/packages.md 이 갈린다.
  *
  * <h2>넷이 한 클래스인 이유</h2>
  *
@@ -101,7 +101,7 @@ public class UserDetailQueryService {
      * 대해 적어 둔 것과 같은 이유다: 여기서 답해야 하는 것이 <i>"왜 이 메뉴가 안 보이나"</i>
      * 이므로 <b>만료된 부여야말로 보여줘야 할 답</b>이다.
      *
-     * <p><b>{@code roleUseYn} 이 함께 온다.</b> 판정은 두 조건의 AND 이고(42 §3.1) 상태 배지는
+     * <p><b>{@code roleUseYn} 이 함께 온다.</b> 판정은 두 조건의 AND 이고(sys/menu.md) 상태 배지는
      * <b>기간만</b> 본다 — 역할이 꺼져 있으면 <i>유효라는데 왜 안 되나</i> 가 되고, 그 답은
      * 이 칸에만 있다.
      */
@@ -136,7 +136,7 @@ public class UserDetailQueryService {
     }
 
     /**
-     * 42 §3.1 — <b>양끝 포함</b>이고 {@code null} 은 제한 없음이다(40 §4.3).
+     * sys/menu.md — <b>양끝 포함</b>이고 {@code null} 은 제한 없음이다(sys/INDEX.md).
      *
      * <p>{@code UserAuthQueryService#stateOf} 와 <b>같은 판정을 다른 입력</b>에 한다: 저기는
      * 기간이 {@code NOT NULL} 이라 {@code null} 을 다룰 필요가 없다. 한 자리로 모으면
@@ -153,8 +153,8 @@ public class UserDetailQueryService {
      * 부여할 수 있는 역할의 후보 — <b>전건이고 페이징하지 않는다</b>.
      *
      * <p>{@code SYS_ROLE} 의 행 수는 <b>조직의 크기</b>이지 데이터의 크기가 아니다. 콤보의
-     * 후보라 한 판에 다 들어가야 하고, 62 §3.2.2 와 같은 순서로 낸다({@code ROLE_NM,
-     * ROLE_ID}) — tie-breaker 없이는 동명 역할에서 순서가 비결정적이다(db-portability.md §4.5).
+     * 후보라 한 판에 다 들어가야 하고, screen/menu/requirements.md 와 같은 순서로 낸다({@code ROLE_NM,
+     * ROLE_ID}) — tie-breaker 없이는 동명 역할에서 순서가 비결정적이다(backend/persistence.md).
      *
      * <p><b>꺼진 역할도 낸다</b>({@link RoleCandidate}) — 부여는 되고 판정에서 걸릴 뿐이다.
      */
@@ -169,15 +169,15 @@ public class UserDetailQueryService {
     // ── 탭 2 — 개인 예외 (AUTHZ-07 조회) ─────────────────────────────
 
     /**
-     * 이 사람의 개인 예외 <b>전부</b> — 61 §5 가 {@code getUserMenuAuth} 로 이름 지은 경로다.
+     * 이 사람의 개인 예외 <b>전부</b> — screen/user/requirements.md 가 {@code getUserMenuAuth} 로 이름 지은 경로다.
      *
-     * <p>{@code USER_AUTH_MGMT} 의 트리 조회와 <b>API 를 공유하지 않는다</b>. security-design.md §4 의
+     * <p>{@code USER_AUTH_MGMT} 의 트리 조회와 <b>API 를 공유하지 않는다</b>. backend/security.md 의
      * <i>"화면마다 허용 범위가 달라야 한다면 그것은 분리해야 할 두 API"</i> 와 방향이 같으며,
      * 실제로 반환 형태가 다르다 — 저쪽은 <b>메뉴 전건</b>에 체크 상태를 실어야 트리를 그릴 수
      * 있고, 여기는 <b>부여된 행만</b> 나오는 납작한 목록이다.
      *
      * <p><b>페이징하지 않는다.</b> 개인 예외는 <i>예외</i> 라 한 사람에게 많아야 열 몇 줄이고
-     * (많으면 그것은 역할이어야 한다 — 42 §6), 보여줄 컬럼 셋이 파생이다({@code menuPath} ·
+     * (많으면 그것은 역할이어야 한다 — sys/menu.md), 보여줄 컬럼 셋이 파생이다({@code menuPath} ·
      * {@code grantState} · {@code menuAuthorizable}).
      */
     public PageResponse<UserGrantRow> getUserMenuAuth(SearchRequest<UserIdParams> request, String lang) {
@@ -206,7 +206,7 @@ public class UserDetailQueryService {
                     menuCd,
                     /*
                       고아 부여도 낸다 — 메뉴가 사라졌으면 경로를 만들 수 없으므로 코드를
-                      그대로 낸다(ADR-0022 의 어휘). 감추면 회수할 수단이 없어진다.
+                      그대로 낸다(seed.md 의 어휘). 감추면 회수할 수단이 없어진다.
                     */
                     paths.getOrDefault(menuCd, menuCd),
                     menu != null && menu.isAuthorizable(),
@@ -226,7 +226,7 @@ public class UserDetailQueryService {
         return PageResponse.all(rows);
     }
 
-    /** 개인 예외는 기간이 {@code NOT NULL} 이라 셋 중 하나가 반드시 정해진다 — 42 §6. */
+    /** 개인 예외는 기간이 {@code NOT NULL} 이라 셋 중 하나가 반드시 정해진다 — sys/menu.md. */
     private static GrantState stateOf(LocalDate from, LocalDate to, LocalDate today) {
         if (today.isBefore(from)) {
             return GrantState.SCHEDULED;
@@ -267,12 +267,12 @@ public class UserDetailQueryService {
         return built.respond(rows, total == null ? 0L : total);
     }
 
-    // ── 탭 5 — 유효 권한 (61 §3.8.1) ────────────────────────────────
+    // ── 탭 5 — 유효 권한 (screen/user/requirements.md) ────────────────────────────────
 
     /**
-     * <i>"이 사용자가 왜 이 메뉴를 못 보나"</i> 에 답한다 — 52 §8 의 미결을 닫는 자리.
+     * <i>"이 사용자가 왜 이 메뉴를 못 보나"</i> 에 답한다 — sys/menu.md 의 미결을 닫는 자리.
      *
-     * <p><b>security-design.md §4 파이프라인을 그대로 쓴다</b>(61 §3.8.1 의 요구 1). 화면 전용 계산을 두면
+     * <p><b>backend/security.md 파이프라인을 그대로 쓴다</b>(screen/user/requirements.md 의 요구 1). 화면 전용 계산을 두면
      * 실제 판정과 갈리고, <b>갈리는 순간 이 탭은 진단이 아니라 또 하나의 거짓말</b>이 된다.
      * 그래서 여기서 하는 일은 <b>계산이 아니라 펴는 것</b>이다 — 파이프라인의 ①②를 출처별로
      * 나열하고, ④의 게이트를 {@code menuAuthorizable} 로 각 행에 붙인다.
@@ -282,7 +282,7 @@ public class UserDetailQueryService {
      * 판정이지 진단 화면이 아니다.
      *
      * <p><b>읽기만 한다.</b> 관리자 세션을 바꾸지 않으며 어떤 캐시도 건드리지 않는다 —
-     * security-design.md §4 가 AUTHZ-09 를 되살릴 때의 조건으로 건 것이다(미리보기가 권한 상승 경로가 되면
+     * backend/security.md 가 AUTHZ-09 를 되살릴 때의 조건으로 건 것이다(미리보기가 권한 상승 경로가 되면
      * 안 된다).
      */
     public PageResponse<EffectiveAuthRow> getEffectiveAuthList(
@@ -313,7 +313,7 @@ public class UserDetailQueryService {
 
             if (sources.isEmpty()) {
                 /*
-                  <b>없는 것도 보여야 한다</b>(61 §3.8.1 의 요구 2). 전체 모드에서 부여가
+                  <b>없는 것도 보여야 한다</b>(screen/user/requirements.md 의 요구 2). 전체 모드에서 부여가
                   하나도 없는 메뉴는 이 한 행으로 나오고, 화면이 회색으로 그린다 —
                   가진 것만 보여주면 이 탭은 진단이 아니라 요약이다.
                 */

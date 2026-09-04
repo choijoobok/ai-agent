@@ -22,31 +22,31 @@ import { duplicatedKeys } from '@/features/sample/excel/itemKeyRules';
 import type { SampleOrderItem } from '@/features/sample/types';
 
 /**
- * `SMPL_EXCEL` — 68 §8. **참조 구현이지 업무 화면이 아니다.**
+ * `SMPL_EXCEL` — playbook/INDEX.md. **참조 구현이지 업무 화면이 아니다.**
  *
- * <p>이 화면이 **유일한 실물**로 갖는 것 둘(68 §2 의 굵은 ●): **화면 안 최상단 탭**과
+ * <p>이 화면이 **유일한 실물**로 갖는 것 둘(playbook/INDEX.md 의 굵은 ●): **화면 안 최상단 탭**과
  * **엑셀 업로드**. 지우면 템플릿에서 그 어휘의 예가 사라진다.
  *
  * <h2>대상이 `SMPL_ORDER_ITEM` 이다 — `SMPL_ORDER` 가 아니다</h2>
  *
- * <p>ADR-0024 가 평면 엑셀 한 장을 전제하는데 주문에는 `list` 컬럼(`TAG_LIST`)이 있어
- * **같은 이유로 기각**된다(68 §8.2) — `CODE_MGMT`(2단계)와 `MESSAGE_MGMT`(`list`)를 그
- * ADR 이 이미 같은 기준으로 기각했다. 부모는 `ORD_NO` 로 나른다(48 §4.3).
+ * <p>frontend/grid-advanced.md 가 평면 엑셀 한 장을 전제하는데 주문에는 `list` 컬럼(`TAG_LIST`)이 있어
+ * **같은 이유로 기각**된다(playbook/INDEX.md) — `CODE_MGMT`(2단계)와 `MESSAGE_MGMT`(`list`)를 그
+ * ADR 이 이미 같은 기준으로 기각했다. 부모는 `ORD_NO` 로 나른다(playbook/INDEX.md).
  *
  * <h2>최상단 탭 둘이 **같은 것 셋**을 나눠 쓴다</h2>
  *
  * <p>컬럼 배열 · 조회 API · 저장 API 다. 갈릴 수 없는 것들이다:
  *
- * - **컬럼**이 갈리면 ②의 전체 다운로드가 양식이 아니게 된다(grid-standard.md §2.2)
+ * - **컬럼**이 갈리면 ②의 전체 다운로드가 양식이 아니게 된다(frontend/grid.md)
  * - **조회**가 갈리면 *화면이 보는 표* 와 *대조하는 표* 가 달라져 **이미 있는 행이
- *   신규로** 잡힌다(ADR-0024 §4)
+ * 신규로** 잡힌다(frontend/grid-advanced.md)
  * - **저장**이 갈리면 같은 표에 규칙이 둘 생기고, 그 둘은 반드시 갈린다
  *
  * <h2>업로드 탭이 `S` 권한에 매인다</h2>
  *
- * <p>68 §8.7 — 그 탭의 액션이 저장 하나뿐이라 권한이 없으면 들어가 봐야 할 일이 없다.
+ * <p>playbook/INDEX.md — 그 탭의 액션이 저장 하나뿐이라 권한이 없으면 들어가 봐야 할 일이 없다.
  * `ScreenTabs` 가 항목을 걸러 내며, 남는 항목이 하나면 **컨트롤 자체를 내지 않는다** —
- * 조회조건이 후보 하나면 셀렉터를 내지 않는 것과 같은 규칙이다(search-form-contract.md §3.4).
+ * 조회조건이 후보 하나면 셀렉터를 내지 않는 것과 같은 규칙이다(frontend/search-form.md).
  */
 
 const MENU_CD = 'SMPL_EXCEL';
@@ -66,15 +66,15 @@ export function SampleExcelPage() {
     [],
   );
 
-  /** **두 탭이 같은 배열을 쓴다** — 양식이 갈릴 수 없다(68 §9.2). */
+  /** **두 탭이 같은 배열을 쓴다** — 양식이 갈릴 수 없다(playbook/INDEX.md). */
   const columns = useMemo(() => buildItemFormColumns(), []);
   const searchFields = useMemo(() => buildSearchFields(), []);
 
   /**
-   * **두 탭이 같은 저장 API 를 쓴다** — ADR-0024 가 업로드에 새 경로를 두지 않기로
+   * **두 탭이 같은 저장 API 를 쓴다** — frontend/grid-advanced.md 가 업로드에 새 경로를 두지 않기로
    * 한 자리다.
    *
-   * <p>3층 검증이 함께 붙으므로 **양쪽에서 같은 규칙이 돈다**(grid-edit-validation.md §3.3): 업로드가 읽는
+   * <p>3층 검증이 함께 붙으므로 **양쪽에서 같은 규칙이 돈다**(frontend/grid.md): 업로드가 읽는
    * 시점에 이미 겹침을 짚지만(`ExcelUploadTab`), 사용자가 읽어들인 뒤 셀을 고쳐 겹치게
    * 만들 수 있고 업무 탭은 행 추가로 그렇게 만들 수 있다.
    */
@@ -102,7 +102,7 @@ export function SampleExcelPage() {
    * 다시 센다 — 보낼 경로를 두면 화면이 금액을 스스로 정하게 된다.
    *
    * <p>**삭제도 키 둘은 보낸다.** 다른 화면에서는 삭제가 대상만 가리키지만 여기서는
-   * `(주문번호, 품목코드)` **가 곧 대상**이라(48 §4.3) 뺄 수가 없다.
+   * `(주문번호, 품목코드)` **가 곧 대상**이라(playbook/INDEX.md) 뺄 수가 없다.
    */
   const toSavePayload = useCallback(
     (rows: GridRow<SampleOrderItem>[]) => ({
@@ -134,7 +134,7 @@ export function SampleExcelPage() {
     params: collectConditions,
     addRow: {
       defaults: () => ({
-        // 서버가 정한다 — 양식에 없는 것이 여기서도 없다(68 §8.2).
+        // 서버가 정한다 — 양식에 없는 것이 여기서도 없다(playbook/INDEX.md).
         ordId: null,
         itemSeq: null,
         ordNo: '',
@@ -158,14 +158,14 @@ export function SampleExcelPage() {
     toSavePayload,
   });
 
-  /** **삭제는 업무 탭의 삭제 컬럼이다**(68 §8.6) — 업로드에는 `D` 가 생기지 않는다. */
+  /** **삭제는 업무 탭의 삭제 컬럼이다**(playbook/INDEX.md) — 업로드에는 `D` 가 생기지 않는다. */
   const deletable = useMemo<DeleteColumnSpec<SampleOrderItem>>(
     () => ({ enabled: () => true }),
     [],
   );
 
   /**
-   * 최상단 탭을 옮기기 전에 묻는다 — 68 §8.7.
+   * 최상단 탭을 옮기기 전에 묻는다 — playbook/INDEX.md.
    *
    * <p>**하단 디테일 탭과 규칙이 다르다**(§7.7 은 묻지 않는다). 저기는 한 화면 안의 부분이
    * 갈리는 것이고 여기는 **화면 전체**가 갈린다 — 묻지 않으면 사용자는 *탭을 옮긴 것*으로
@@ -186,7 +186,7 @@ export function SampleExcelPage() {
         content: (
           <FillColumn>
             {/*
-              **조회조건이 업무 탭의 것이다**(68 §8.3) — 업로드 탭에는 없다. 대상이
+              **조회조건이 업무 탭의 것이다**(playbook/INDEX.md) — 업로드 탭에는 없다. 대상이
               파일이므로 거를 것이 없고, 탭 밖에 두면 **쓰지 않는 탭에서도 보인다**.
             */}
             <SearchForm
@@ -207,7 +207,7 @@ export function SampleExcelPage() {
                 emptyText={MSG.SAMPLE_EXCEL_EMPTY}
                 /*
                   **개인화를 열지 않는다.** 이 그리드의 컬럼은 사용자의 표가 아니라
-                  **양식**이다(grid-standard.md §2.2 · 68 §8.2) — 하나를 감추거나 순서를 바꾸면 ②의
+                  **양식**이다(frontend/grid.md · playbook/INDEX.md) — 하나를 감추거나 순서를 바꾸면 ②의
                   다운로드가 그 상태로 나가고, 그 파일은 업로드가 거절한다. 즉
                   **자기가 방금 내려받은 파일이 양식이 아니게** 된다.
                 */
@@ -219,7 +219,7 @@ export function SampleExcelPage() {
       },
       {
         key: TAB_UPLOAD,
-        // `S` 가 없으면 이 항목이 아예 없다 — 그 탭의 액션이 저장 하나뿐이다(68 §8.7).
+        // `S` 가 없으면 이 항목이 아예 없다 — 그 탭의 액션이 저장 하나뿐이다(playbook/INDEX.md).
         actionCd: 'SAVE',
         label: MSG.SAMPLE_EXCEL_SEG_UPLOAD,
         content: (
@@ -251,7 +251,7 @@ export function SampleExcelPage() {
 
   return (
     <FillColumn>
-      {/* 브레드크럼 아래, 조회조건 위 — 68 §9.3 의 자리다. */}
+      {/* 브레드크럼 아래, 조회조건 위 — playbook/INDEX.md 의 자리다. */}
       <ScreenTabs
         menuCd={MENU_CD}
         items={items}
@@ -264,7 +264,7 @@ export function SampleExcelPage() {
 }
 
 /**
- * 조회조건 넷 — 68 §8.3. **업무 데이터 탭에만 있다.**
+ * 조회조건 넷 — playbook/INDEX.md. **업무 데이터 탭에만 있다.**
  *
  * <p>업로드 탭은 대상이 파일이라 거를 것이 없다. 그래서 이 폼이 탭 **안**에 있으며,
  * 밖에 두면 쓰지 않는 탭에서도 보인다.

@@ -3,7 +3,7 @@ package com.aiagent.api.trace;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
- * 접속 IP 추출의 <b>한 자리</b> — security-design.md §8.1.
+ * 접속 IP 추출의 <b>한 자리</b> — backend/security.md.
  *
  * <p>부르는 곳이 셋이고 손에 든 것이 저마다 다르다(로그인 서비스 · 세션 만료 콜백 ·
  * 사용 이력 인터셉터). 규칙이 갈리면 <b>같은 접속 한 번이 두 가지 IP 로 기록된다</b>.
@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public final class ClientIp {
 
-    /** {@code CLIENT_IP} 는 {@code VARCHAR(45)} 다 — IPv6 최대 표기 길이(45 §4.1 · §5). */
+    /** {@code CLIENT_IP} 는 {@code VARCHAR(45)} 다 — IPv6 최대 표기 길이(sys/logs.md). */
     public static final int MAX_LENGTH = 45;
 
     private ClientIp() {}

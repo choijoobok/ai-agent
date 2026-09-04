@@ -40,14 +40,14 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 /**
- * 개인 예외 저장 — 61 §4.5 · 42 §6 의 원칙 P1.
+ * 개인 예외 저장 — screen/user/requirements.md · sys/menu.md 의 원칙 P1.
  *
  * <p><b>여기서 재는 것은 서버가 마지막으로 막는 것들</b>이다. 화면도 같은 것을 막지만 그것은
- * UX 이고(grid-edit-validation.md §3.4), 요청 본문은 조작할 수 있으며 화면 없이 부르는 경로가 늘 있다.
+ * UX 이고(frontend/grid.md), 요청 본문은 조작할 수 있으며 화면 없이 부르는 경로가 늘 있다.
  *
- * <p>가장 미묘한 것이 <b>{@code READ} 불변식의 판정 범위</b>다. 규칙은 62 §2 와 같은데
+ * <p>가장 미묘한 것이 <b>{@code READ} 불변식의 판정 범위</b>다. 규칙은 screen/menu/requirements.md 와 같은데
  * <b>무엇을 두고 그 규칙을 보는가</b>가 다르다 — 여기서는 <b>역할과 개인 예외의 합집합</b>
- * 이다(security-design.md §4 ③). 역할이 조회를 주고 있으면 개인 예외에는 저장만 있어도 되고, 그것이 이
+ * 이다(backend/security.md ③). 역할이 조회를 주고 있으면 개인 예외에는 저장만 있어도 되고, 그것이 이
  * 화면의 가장 흔한 쓰임이다: <i>이미 볼 수 있는 사람에게 고칠 수 있게만 더해 주는 일</i>.
  *
  * <p>그 판정이 좁으면(역할을 안 보면) <b>정상 운영이 거부</b>되고, 넓으면(아무것도 안 보면)
@@ -91,7 +91,7 @@ class UserAuthServiceTest {
         when(roleAuths.findGrantsOfUser(anyString(), any(), anyBoolean())).thenReturn(List.of());
     }
 
-    // ── READ 불변식 — 판정은 합집합에서 (61 §4.4) ────────────────────
+    // ── READ 불변식 — 판정은 합집합에서 (screen/user/requirements.md) ────────────────────
 
     @Nested
     @DisplayName("READ 불변식은 합집합에서 판정한다")
@@ -146,7 +146,7 @@ class UserAuthServiceTest {
         }
     }
 
-    // ── 줄 수 있는 조합인가 (42 §6) ──────────────────────────────────
+    // ── 줄 수 있는 조합인가 (sys/menu.md) ──────────────────────────────────
 
     @Nested
     @DisplayName("줄 수 없는 것은 거부한다")
@@ -170,11 +170,11 @@ class UserAuthServiceTest {
         }
 
         @Test
-        @DisplayName("고아 부여는 지울 수 있다 — 막으면 영영 정리하지 못한다(ADR-0022)")
+        @DisplayName("고아 부여는 지울 수 있다 — 막으면 영영 정리하지 못한다(seed.md)")
         void allowsDeletingAnOrphan() {
             /*
               {@code EXECUTE} 는 정의 밖이다. 그런데도 부여 행이 있는 것이 <b>고아</b>이며,
-              61 §4.7 이 <i>잘못 등록한 행 정리</i> 를 셋째 수단으로 적어 두었다 — 지우는
+              screen/user/requirements.md 이 <i>잘못 등록한 행 정리</i> 를 셋째 수단으로 적어 두었다 — 지우는
               것까지 막으면 <b>사람이 판단할 길</b>이 사라진다.
             */
             SysUserMenuAuth orphan = grant(ActionType.EXECUTE);
@@ -222,7 +222,7 @@ class UserAuthServiceTest {
         }
     }
 
-    // ── 회수는 삭제가 아니다 (61 §4.7) ───────────────────────────────
+    // ── 회수는 삭제가 아니다 (screen/user/requirements.md) ───────────────────────────────
 
     @Test
     @DisplayName("회수는 같은 행의 종료일을 고친다 — 행을 지우면 사유가 사라진다")

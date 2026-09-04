@@ -6,7 +6,7 @@ import type { GridRow } from '@/shared/grid/rows';
 import type { ApiValidation, ColumnDef, EditContext, GridIssue } from '@/shared/grid/types';
 
 /**
- * 두 시점, 세 층 — grid-edit-validation.md §3.
+ * 두 시점, 세 층 — frontend/grid.md.
  *
  * <p><b>입력 시점에는 1층만 돈다.</b> 그때는 사용자가 어느 버튼을 누를지 모르므로, 저장
  * 규칙으로 검사했는데 다른 버튼을 누르면 검사가 어긋난다.
@@ -23,7 +23,7 @@ export function validateCell<T>(
   ctx: EditContext,
 ): string | null {
   if (requiredOf(column, row, ctx) && isEmpty(value)) {
-    // 필수 검사가 먼저다. 값이 비어 있으면 validate 를 부르지 않는다 — grid-column-contract.md §5.1.
+    // 필수 검사가 먼저다. 값이 비어 있으면 validate 를 부르지 않는다 — frontend/grid.md.
     return label(MSG.GRID_VALIDATION_REQUIRED);
   }
   if (isEmpty(value)) {
@@ -35,7 +35,7 @@ export function validateCell<T>(
 /**
  * API 호출 전 — 세 층 전부.
  *
- * <p><b>삭제 상태 행은 컬럼 검증에서 뺀다</b>(grid-edit-validation.md §3.3) — 지울 행의 값은 저장되지 않는다.
+ * <p><b>삭제 상태 행은 컬럼 검증에서 뺀다</b>(frontend/grid.md) — 지울 행의 값은 저장되지 않는다.
  * 반대로 <b>그리드 검증은 삭제 행을 뺀 결과로 계산한다</b>: 합계·최소 1건은 <i>저장 후의
  * 모습</i>을 물어야 한다.
  *

@@ -51,7 +51,7 @@ describe('authStore', () => {
 
   it('로그아웃하면 이전 사용자의 메뉴가 남지 않는다', () => {
     // persist 를 쓰지 않기로 한 결정의 이유가 이것이다 — 로그아웃 뒤 그 PC 에
-    // 이전 사용자의 메뉴 구조가 남으면 안 된다(frontend-stack.md §8.1 · 50 §5.1).
+    // 이전 사용자의 메뉴 구조가 남으면 안 된다(frontend/packages.md).
     useAuthStore.getState().signIn(SESSION);
     useAuthStore.getState().signOut();
 

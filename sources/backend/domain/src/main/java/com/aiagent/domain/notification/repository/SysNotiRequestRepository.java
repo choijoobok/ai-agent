@@ -8,15 +8,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * 요청함 — 47 §8. 조회는 {@code QuerySpec} 을 지난다(api-conventions.md §4.1).
+ * 요청함 — sys/notification.md. 조회는 {@code QuerySpec} 을 지난다(backend/api.md).
  *
- * <p><b>보존 기간이 아직 없다</b>(66 §8 미결). 요청은 개인이 낸 것이라 로그와 성격이
+ * <p><b>보존 기간이 아직 없다</b>(screen/notice/requirements.md 미결). 요청은 개인이 낸 것이라 로그와 성격이
  * 다르고, 짧게 잡으면 <i>"작년에 낸 요청"</i> 의 답이 사라진다.
  */
 public interface SysNotiRequestRepository extends JpaRepository<SysNotiRequest, Long> {
 
     /**
-     * 처리 대상을 <b>한 번에</b> 집는다 — 66 §5.7.
+     * 처리 대상을 <b>한 번에</b> 집는다 — screen/notice/requirements.md.
      *
      * <p>행마다 {@code findById} 를 부르지 않는 이유는 N+1 이 아니라 <b>판정 때문</b>이다:
      * 선택에 이미 처리된 것이 섞이면 <b>전부 막아야</b> 하므로(부분 실행하지 않는다)
@@ -27,11 +27,11 @@ public interface SysNotiRequestRepository extends JpaRepository<SysNotiRequest, 
     /**
      * <i>내 요청</i> 탭 — <b>최신이 위</b>다.
      *
-     * <p>{@code NOTI_REQUEST} 메뉴의 오름차순과 <b>반대</b>이며 그것이 의도다(66 §5.2.1):
+     * <p>{@code NOTI_REQUEST} 메뉴의 오름차순과 <b>반대</b>이며 그것이 의도다(screen/notice/requirements.md):
      * 저쪽은 <b>대기열</b>이라 오래 기다린 것이 먼저지만, 여기는 <b>내 이력</b>이라
      * 방금 낸 것이 위여야 한다 — 내가 낸 요청이 어떻게 됐는지가 물음이다.
      *
-     * <p>tie-breaker 는 PK 다(db-portability.md §4.5).
+     * <p>tie-breaker 는 PK 다(backend/persistence.md).
      */
     List<SysNotiRequest> findByUserIdOrderByCreDtmDescReqIdDesc(String userId, Pageable page);
 

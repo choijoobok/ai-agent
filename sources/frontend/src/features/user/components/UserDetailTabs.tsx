@@ -32,17 +32,17 @@ import type {
 import { VIA_PERSONAL } from '@/features/user/types';
 
 /**
- * `USER_MGMT` 의 디테일 — 61 §3.8. <b>탭 다섯이 다 그리드다.</b>
+ * `USER_MGMT` 의 디테일 — screen/user/requirements.md. <b>탭 다섯이 다 그리드다.</b>
  *
- * <p>편집 폼을 두지 않으므로(grid-standard.md §1.1) 기본정보 탭이 없고, 그 내용은 마스터 그리드의
+ * <p>편집 폼을 두지 않으므로(frontend/grid.md) 기본정보 탭이 없고, 그 내용은 마스터 그리드의
  * 컬럼이 됐다. 남은 다섯은 전부 <b>`SYS_USER` 밖</b>의 데이터라 각자 조회 경로를 갖는다.
  *
  * <h2>탭을 열 때 부른다</h2>
  *
- * <p>61 §3.9 의 표는 *"저장된 행 선택 → 다섯 개 전부 조회"* 라고 적었지만 <b>여는 탭
+ * <p>screen/user/requirements.md 의 표는 *"저장된 행 선택 → 다섯 개 전부 조회"* 라고 적었지만 <b>여는 탭
  * 하나만 부른다</b>(2026-08-31). 마스터를 클릭할 때마다 왕복이 다섯이면 <b>목록을 훑는
  * 동작 자체가 부하</b>가 되고, 그중 유효 권한은 메뉴 전건과 부여 전건을 함께 읽어 가장
- * 비싸다 — 62 §4.11 이 메뉴 상세 탭 셋에 대해 이미 같은 판단을 내렸고 그 근거가 여기서도
+ * 비싸다 — screen/menu/requirements.md 이 메뉴 상세 탭 셋에 대해 이미 같은 판단을 내렸고 그 근거가 여기서도
  * 그대로다.
  *
  * <p>표가 말하려던 것은 <b>버튼과 빈 판의 상태</b>이며 그것은 그대로 지킨다: 고르기 전에는
@@ -64,7 +64,7 @@ import { VIA_PERSONAL } from '@/features/user/types';
  *
  * <h2>미저장 편집이 있는 탭은 둘뿐이다</h2>
  *
- * <p>보유 역할과 접속 IP 다. 마스터의 선택을 바꿀 때 화면이 그것을 묻고(grid-standard.md §6.1), 그
+ * <p>보유 역할과 접속 IP 다. 마스터의 선택을 바꿀 때 화면이 그것을 묻고(frontend/grid.md), 그
  * 물음의 답을 알아야 선택을 받아들일지 정할 수 있어 <b>페이지가 묻는다</b> — 여기서는
  * {@link UserDetailTabsHandle.dirty} 로 알려 주기만 한다.
  */
@@ -73,11 +73,11 @@ type TabKey = 'role' | 'grant' | 'ip' | 'session' | 'effective';
 
 export interface UserDetailTabsHandle {
   /**
-   * 마스터의 선택이 바뀌었다 — grid-standard.md §6.1 의 상태 셋을 여기서 편다.
+   * 마스터의 선택이 바뀌었다 — frontend/grid.md 의 상태 셋을 여기서 편다.
    *
    * @param userId `null` 이면 <b>빈 상태</b>다(조회 · 행 추가 · 아무도 안 고름)
    * @param locked <b>미저장 신규 행</b>이다 — 조회하지 않는다. `SYS_USER_ROLE` 이
-   *     `SYS_USER` 를 FK 로 참조하므로 부모가 저장되기 전에는 자식을 만들 수 없다(41 §8)
+   * `SYS_USER` 를 FK 로 참조하므로 부모가 저장되기 전에는 자식을 만들 수 없다(sys/user-role.md)
    */
   select: (userId: string | null, locked: boolean) => Promise<void>;
   /** 편집이 있는 두 탭 중 하나라도 미저장인가 — 마스터가 선택을 바꾸기 전에 묻는다. */
@@ -86,12 +86,12 @@ export interface UserDetailTabsHandle {
 
 interface Props {
   menuCd: string;
-  /** 61 §3.7.1 — 자기 계정의 세션은 끊을 수 없다. */
+  /** screen/user/requirements.md — 자기 계정의 세션은 끊을 수 없다. */
   myUserId: string;
-  /** 역할 후보. 마스터의 조회조건과 <b>같은 목록</b>을 본다(61 §3.3). */
+  /** 역할 후보. 마스터의 조회조건과 <b>같은 목록</b>을 본다(screen/user/requirements.md). */
   roleOptions: SelectOption[];
   /**
-   * 마스터 그리드 — <b>탭의 제목이 누구의 것인지 말하는 근거</b>다(grid-standard.md §6.1).
+   * 마스터 그리드 — <b>탭의 제목이 누구의 것인지 말하는 근거</b>다(frontend/grid.md).
    *
    * <p>{@link UserDetailTabsHandle.select} 가 이미 사용자 ID 를 받지만 그것으로는 모자란다:
    * 제목에 붙는 것은 <b>ID 와 이름</b>이고, 이름을 여기서 또 들면 <b>같은 사실이 두 곳</b>이
@@ -99,7 +99,7 @@ interface Props {
    */
   master: { selected: GridRow<UserRow>[] };
   /**
-   * 스플리터가 하단을 <b>접었다</b> — grid-standard.md §6.3.
+   * 스플리터가 하단을 <b>접었다</b> — frontend/grid.md.
    *
    * <p>탭바가 사라지고 <b>활성 탭의 그리드 제목 한 줄</b>만 남는다({@code DetailTabs} ·
    * {@code DataGrid collapsed}). 접힘이 <b>표시</b>일 뿐이라 언마운트하지 않으며, 조회한
@@ -120,7 +120,7 @@ export function UserDetailTabs(props: Props) {
    * 지금 보고 있는 사용자 — <b>렌더가 보는 값</b>이다.
    *
    * <p>같은 사실을 {@link userId} 도 담지만 축이 다르다: 저것은 <b>콜백이 그 순간에</b>
-   * 읽는 값이고 이것은 <b>화면이 다시 그릴 때</b> 읽는 값이다(63 §2 가 같은 자리에서 같은
+   * 읽는 값이고 이것은 <b>화면이 다시 그릴 때</b> 읽는 값이다(screen/code/requirements.md 가 같은 자리에서 같은
    * 쌍을 두었다). ref 하나로 둘을 다 하면 빈 안내가 사용자를 바꿔도 그대로다.
    */
   const [picked, setPicked] = useState<{ userId: string | null; locked: boolean }>({
@@ -144,12 +144,12 @@ export function UserDetailTabs(props: Props) {
    * 유효 권한 탭을 <b>부른 적이 있는가</b> — 배너가 이것을 본다.
    *
    * <p>{@link loaded} 가 같은 사실을 담지만 그것은 ref 라 <b>렌더가 읽을 수 없다</b>
-   * (`react-hooks/refs`). 축이 다른 값을 억지로 하나로 두지 않는다 — 63 §2 의
+   * (`react-hooks/refs`). 축이 다른 값을 억지로 하나로 두지 않는다 — screen/code/requirements.md 의
    * {@code selectedGrpCd} · {@code savedGrpCd} 쌍과 같은 자리다.
    */
   const [effRead, setEffRead] = useState(false);
 
-  /** 디테일 탭에는 조회조건 폼이 없다 — 대상이 없으면 <b>조회 자체를 하지 않는다</b>(grid-api-contract.md §5). */
+  /** 디테일 탭에는 조회조건 폼이 없다 — 대상이 없으면 <b>조회 자체를 하지 않는다</b>(frontend/grid.md). */
   const conditions = useCallback(
     () => Promise.resolve(userId.current && !locked.current ? [] : null),
     [],
@@ -205,7 +205,7 @@ export function UserDetailTabs(props: Props) {
         roleUseYn: true,
         validFromDt: null,
         validToDt: null,
-        // 기간이 비면 언제나 유효다 — `null` 이 무기한이기 때문이다(42 §3.1).
+        // 기간이 비면 언제나 유효다 — `null` 이 무기한이기 때문이다(sys/menu.md).
         grantState: 'ACTIVE',
         regId: null,
         regDtm: null,
@@ -227,11 +227,11 @@ export function UserDetailTabs(props: Props) {
   });
 
   /**
-   * 지울 수 있는가 — <b>언제나 그렇다</b>(61 §4.7 의 셋째 줄과 같은 어휘).
+   * 지울 수 있는가 — <b>언제나 그렇다</b>(screen/user/requirements.md 의 셋째 줄과 같은 어휘).
    *
    * <p>지우는 것은 <b>잘못 등록한 행 정리</b>이며 <i>회수</i> 가 아니다. 회수는 종료일을
-   * 어제로 하는 것이고 그때 행은 남는다 — 변경 이력 테이블이 없으므로(ADR-0010)
-   * <b>누가 언제까지 무슨 역할을 가졌는지</b> 를 남기는 것이 그 컬럼뿐이다(42 §3.1).
+   * 어제로 하는 것이고 그때 행은 남는다 — 변경 이력 테이블이 없으므로(sys/logs.md)
+   * <b>누가 언제까지 무슨 역할을 가졌는지</b> 를 남기는 것이 그 컬럼뿐이다(sys/menu.md).
    */
   const roleDeletable = useMemo<DeleteColumnSpec<UserRoleRow>>(
     () => ({ enabled: () => true, reason: () => null }),
@@ -261,7 +261,7 @@ export function UserDetailTabs(props: Props) {
         validate: { grid: validateIps },
         warn: warnFirstRange,
         /*
-          허용 IP 는 인가가 아니라 인증의 검사라(41 §4.2) 다른 탭의 답을 바꾸지 않는다.
+          허용 IP 는 인가가 아니라 인증의 검사라(sys/user-role.md) 다른 탭의 답을 바꾸지 않는다.
           그래도 같은 규칙을 건다 — <b>어느 저장이 무엇을 바꾸는지</b> 를 화면이 표로
           들고 있으면 그 표가 틀리는 날 증상이 조용하다.
         */
@@ -280,7 +280,7 @@ export function UserDetailTabs(props: Props) {
       defaults: () => ({
         ipCidr: '',
         useYn: true,
-        // 기간이 비면 제한 없음이다 — 역할 부여와 같은 규칙이며 `null` 이 무기한이다(42 §3.1).
+        // 기간이 비면 제한 없음이다 — 역할 부여와 같은 규칙이며 `null` 이 무기한이다(sys/menu.md).
         validFromDt: null,
         validToDt: null,
         regId: null,
@@ -305,7 +305,7 @@ export function UserDetailTabs(props: Props) {
     }),
   });
 
-  /** 지우는 것이 정상이다 — 이사한 사무실의 대역을 남겨 둘 이유가 없다(41 §7). */
+  /** 지우는 것이 정상이다 — 이사한 사무실의 대역을 남겨 둘 이유가 없다(sys/user-role.md). */
   const ipDeletable = useMemo<DeleteColumnSpec<UserIpRow>>(
     () => ({ enabled: () => true, reason: () => null }),
     [],
@@ -323,19 +323,19 @@ export function UserDetailTabs(props: Props) {
           label: MSG.USER_SESSION_KILL,
           url: USER_ENDPOINTS.killSession,
           /*
-            <b>확인 문구가 계정은 바뀌지 않는다는 것을 말한다</b>(61 §3.8.2). *"N건을
+            <b>확인 문구가 계정은 바뀌지 않는다는 것을 말한다</b>(screen/user/requirements.md). *"N건을
             종료합니다"* 만으로는 <b>다시 로그인할 수 있다</b>는 사실이 빠지고, 그러면 이
             버튼이 계정을 잠그는 것으로 읽힌다 — 막으려면 `USE_YN='N'` 이고 그것은 **다른
-            축**이다(41 §4.2).
+            축**이다(sys/user-role.md).
           */
           confirm: MSG.USER_SESSION_KILL_CONFIRM,
           /*
-            <b>자기 계정이면 대상이 하나도 없다</b>(61 §3.7.1). 고른 행을 여기서 걸러 내는
+            <b>자기 계정이면 대상이 하나도 없다</b>(screen/user/requirements.md). 고른 행을 여기서 걸러 내는
             것이 `toTargets` 가 아니라 `eligible` 인 이유는, 걸러진 결과가 확인 문구의
-            건수와 버튼의 활성 상태를 함께 정하기 때문이다(grid-api-contract.md §7).
+            건수와 버튼의 활성 상태를 함께 정하기 때문이다(frontend/grid.md).
           */
           eligible: () => userId.current !== myUserId,
-          // 비활성 사유가 <i>선택 0건</i> 이 아니므로 말해 준다 — 61 §3.7.1.
+          // 비활성 사유가 <i>선택 0건</i> 이 아니므로 말해 준다 — screen/user/requirements.md.
           hint: MSG.USER_SESSION_SELF,
           toTargets: (rows: GridRow<UserSessionRow>[]) =>
             rows.map((row) => row.data.sessionId),
@@ -362,7 +362,7 @@ export function UserDetailTabs(props: Props) {
     searchParams: byUser,
   });
 
-  // ── 탭 5 — 유효 권한 (61 §3.8.1) ───────────────────────────────
+  // ── 탭 5 — 유효 권한 (screen/user/requirements.md) ───────────────────────────────
 
   const effColumns = useMemo(() => buildEffectiveColumns(), []);
   const effApi = useMemo(() => ({ read: { url: USER_ENDPOINTS.getEffectiveAuthList } }), []);
@@ -375,7 +375,7 @@ export function UserDetailTabs(props: Props) {
   });
 
   /**
-   * 유효 권한이 <b>공집합</b>인가 — 61 §3.8.1 이 배너로 먼저 알리라고 한 것.
+   * 유효 권한이 <b>공집합</b>인가 — screen/user/requirements.md 이 배너로 먼저 알리라고 한 것.
    *
    * <p>행에서 센다. 서버가 따로 세어 주지 않아도 되는 것은 이 탭이 <b>전건을 내려받기</b>
    * 때문이며(`mode: 'all'`), 범위가 <i>가진 것만</i> 이든 <i>전체 메뉴</i> 든 답이 같다 —
@@ -386,7 +386,7 @@ export function UserDetailTabs(props: Props) {
    */
   const emptyAuthority = effRead && !effective.rows.some((row) => row.data.effective);
 
-  // ── 탭 전환과 선택 (grid-standard.md §6.1) ───────────────────────────────────
+  // ── 탭 전환과 선택 (frontend/grid.md) ───────────────────────────────────
 
   const controllerOf = useCallback(
     (key: TabKey) => {
@@ -444,7 +444,7 @@ export function UserDetailTabs(props: Props) {
       setPicked({ userId: next, locked: isLocked });
       /*
         <b>다섯을 다 비운다.</b> 남겨 두면 <i>다른 사람의 데이터를 그 사람 것으로</i> 보게
-        되고(grid-standard.md §6.1), 탭을 옮기는 순간 그 오해가 화면에 그대로 남는다.
+        되고(frontend/grid.md), 탭을 옮기는 순간 그 오해가 화면에 그대로 남는다.
       */
       roles.setRows([]);
       grants.setRows([]);
@@ -472,7 +472,7 @@ export function UserDetailTabs(props: Props) {
       const held = next === 'held';
       heldOnly.current = held;
       setScope(held ? 'held' : 'all');
-      // <b>컨트롤이 스스로 부르지 않는다</b> — 재조회는 화면의 일이다(grid-api-contract.md §3.2).
+      // <b>컨트롤이 스스로 부르지 않는다</b> — 재조회는 화면의 일이다(frontend/grid.md).
       if (userId.current && !locked.current) {
         loaded.current.add('effective');
         void effective.read(true);
@@ -482,7 +482,7 @@ export function UserDetailTabs(props: Props) {
   );
 
   /**
-   * ⓐ 의 셀렉트 — <b>grid-api-contract.md §3.2 의 `select` 첫 실물</b>이다.
+   * ⓐ 의 셀렉트 — <b>frontend/grid.md 의 `select` 첫 실물</b>이다.
    *
    * <p>조회조건 칸이 아닌 이유는 여기서 고르는 것이 <i>거르기</i> 가 아니라 <b>무엇을 행으로
    * 낼지</b>이기 때문이다 — 부여를 세느냐 메뉴를 세느냐. 그리고 이 화면의 검색 폼은
@@ -510,12 +510,12 @@ export function UserDetailTabs(props: Props) {
   // ── 그리기 ─────────────────────────────────────────────────────
 
   const idle = picked.userId === null || picked.locked;
-  /** 빈 판의 문구 셋 — <b>같은 빈 판이지만 다음에 할 일이 다르다</b>(grid-standard.md §6.1). */
+  /** 빈 판의 문구 셋 — <b>같은 빈 판이지만 다음에 할 일이 다르다</b>(frontend/grid.md). */
   const emptyOf = (own: string) =>
     picked.userId === null ? MSG.USER_DETAIL_EMPTY : picked.locked ? MSG.USER_DETAIL_LOCKED : own;
 
   /**
-   * 탭 다섯의 제목 뒤에 붙는 것 — <b>로그인 ID 와 이름</b>이다(grid-standard.md §6.1 의 `titleSuffix`).
+   * 탭 다섯의 제목 뒤에 붙는 것 — <b>로그인 ID 와 이름</b>이다(frontend/grid.md 의 `titleSuffix`).
    *
    * <p>둘 다인 이유는 각자 부족하기 때문이다. ID 만으로는 <b>누구인지</b> 를 모르고
    * (`u10293`), 이름만으로는 <b>동명이인</b>이 갈리지 않는다 — 조회조건에 이름이 있는
@@ -598,7 +598,7 @@ export function UserDetailTabs(props: Props) {
                 onExpand={onExpand}
                 gridId="detailSession"
                 controller={sessions}
-                /* 여럿 중에서 고르는 일이라 다중 선택이다 — grid-standard.md §4. */
+                /* 여럿 중에서 고르는 일이라 다중 선택이다 — frontend/grid.md. */
                 selection="multiple"
                 emptyText={emptyOf(MSG.USER_SESSION_EMPTY)}
                 disabled={idle}
@@ -612,13 +612,13 @@ export function UserDetailTabs(props: Props) {
               /*
                 <b>배너가 탭 안에 있다</b>(2026-08-31). 탭바 위에 두었더니 <b>탭 다섯 전체가
                 한 줄 밀렸고</b>, 무엇보다 그 줄은 <i>유효 권한 탭의 말</i> 인데 탭 밖에
-                있어서 <b>화면 전체에 대한 경고</b>처럼 읽혔다 — 61 §3.8.1 이 요구한 것은
+                있어서 <b>화면 전체에 대한 경고</b>처럼 읽혔다 — screen/user/requirements.md 이 요구한 것은
                 *빈 표를 보고 유추하게 두지 않는 것* 이고, 그 자리는 그 표의 위다.
               */
               <div
                 style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}
               >
-                {/* 접히면 배너도 함께 접힌다 — 남는 것은 제목 한 줄뿐이다(grid-standard.md §6.3). */}
+                {/* 접히면 배너도 함께 접힌다 — 남는 것은 제목 한 줄뿐이다(frontend/grid.md). */}
                 {!collapsed && emptyAuthority && (
                   <Alert
                     type="warning"
@@ -652,7 +652,7 @@ export function UserDetailTabs(props: Props) {
 
 // ── 공용 어휘 ──────────────────────────────────────────────────────
 
-/** 상태 배지의 색 — 세 탭이 같은 맵을 본다(grid-column-contract.md §5.4.1). */
+/** 상태 배지의 색 — 세 탭이 같은 맵을 본다(frontend/grid.md). */
 const STATE_TONE: Record<string, Tone> = {
   SCHEDULED: 'none',
   ACTIVE: 'ok',
@@ -665,7 +665,7 @@ const STATE_LABEL: Record<GrantState, string> = {
   EXPIRED: MSG.USER_STATE_EXPIRED,
 };
 
-/** 코드 그대로 두고 <b>글자만</b> 바꾼다 — 그래야 정렬·필터·엑셀이 코드를 본다(grid-column-contract.md §5.3). */
+/** 코드 그대로 두고 <b>글자만</b> 바꾼다 — 그래야 정렬·필터·엑셀이 코드를 본다(frontend/grid.md). */
 function stateText(value: unknown): string {
   // `unknown` 을 그대로 잇지 않는다 — 객체가 오면 `[object Object]` 가 셀에 박힌다.
   const code = typeof value === 'string' ? value : '';
@@ -696,7 +696,7 @@ function buildRoleColumns(roleOptions: SelectOption[]): ColumnDef<UserRoleRow>[]
       pinned: 'left',
       sortable: true,
       /*
-        <b>PK 의 절반</b>이다(42 §3.2) — 신규 행에서만 열리고 필수이며 헤더에 표시가 붙는다.
+        <b>PK 의 절반</b>이다(sys/menu.md) — 신규 행에서만 열리고 필수이며 헤더에 표시가 붙는다.
         다른 역할을 주려면 이 행을 정리하고 새로 만든다: 다른 역할은 <b>다른 사실</b>이지
         같은 부여의 수정이 아니다.
       */
@@ -704,7 +704,7 @@ function buildRoleColumns(roleOptions: SelectOption[]): ColumnDef<UserRoleRow>[]
       editor: 'select',
       /*
         후보의 글자가 <b>이름과 코드</b> 둘 다다. 저장된 행에서도 이 맵이 표시에 쓰이므로
-        (grid-column-contract.md §5.3) 목록이 이름으로 읽히고, 코드가 필요한 순간에도 눈으로 확인된다.
+        (frontend/grid.md) 목록이 이름으로 읽히고, 코드가 필요한 순간에도 눈으로 확인된다.
       */
       options: roleOptions,
     },
@@ -720,7 +720,7 @@ function buildRoleColumns(roleOptions: SelectOption[]): ColumnDef<UserRoleRow>[]
     { field: 'roleDesc', header: MSG.USER_ROLE_COL_ROLE_DESC, type: 'text', width: 240, visible: false },
     {
       /*
-        <b>역할 자체</b>의 사용 여부다(42 §3.1 의 AND). 상태 배지는 기간만 보므로, 이 칸이
+        <b>역할 자체</b>의 사용 여부다(sys/menu.md 의 AND). 상태 배지는 기간만 보므로, 이 칸이
         없으면 <i>유효라는데 왜 안 되나</i> 에 답할 것이 없다. 읽기 전용인 것은 이것이
         <b>이 부여의 값이 아니라 역할의 값</b>이기 때문이다 — 고치는 곳은 `ROLE_MGMT` 다.
       */
@@ -758,7 +758,7 @@ function buildRoleColumns(roleOptions: SelectOption[]): ColumnDef<UserRoleRow>[]
       tone: STATE_TONE,
       display: stateText,
       /*
-        <b>꺼진 역할이면 배지가 하나 더 붙는다</b>(63 §4.3 의 값-뒤 배지). 상태는 기간만
+        <b>꺼진 역할이면 배지가 하나 더 붙는다</b>(screen/code/requirements.md 의 값-뒤 배지). 상태는 기간만
         보므로 <i>유효</i> 인데 아무것도 주지 않는 행이 있고, 그 사실을 말하는 자리가
         여기밖에 없다.
       */
@@ -771,7 +771,7 @@ function buildRoleColumns(roleOptions: SelectOption[]): ColumnDef<UserRoleRow>[]
   ];
 }
 
-/** 같은 그리드 안의 중복은 클라이언트가 판정할 수 있다 — grid-edit-validation.md §3.2. */
+/** 같은 그리드 안의 중복은 클라이언트가 판정할 수 있다 — frontend/grid.md. */
 function validateRoleIds(rows: GridRow<UserRoleRow>[]): GridIssue[] {
   const issues: GridIssue[] = [];
   const seen = new Set<string>();
@@ -786,7 +786,7 @@ function validateRoleIds(rows: GridRow<UserRoleRow>[]): GridIssue[] {
   return issues;
 }
 
-/** <b>양끝 포함</b>이라 같은 날은 통과다 — 40 §4.3. 서버도 같은 것을 본다(grid-edit-validation.md §3.4). */
+/** <b>양끝 포함</b>이라 같은 날은 통과다 — sys/INDEX.md. 서버도 같은 것을 본다(frontend/grid.md). */
 function periodIssue(from: string | null, to: string | null): string | null {
   if (!from || !to) return null;
   return from > to ? label(MSG.USER_PERIOD_REVERSED) : null;
@@ -800,7 +800,7 @@ function buildGrantColumns(): ColumnDef<UserGrantRow>[] {
       field: 'menuPath',
       header: MSG.USER_GRANT_COL_MENU,
       /*
-        <b>여기서는 고칠 수 없다</b>는 것을 헤더가 말한다(61 §5). 회색 그리드만 두면
+        <b>여기서는 고칠 수 없다</b>는 것을 헤더가 말한다(screen/user/requirements.md). 회색 그리드만 두면
         *"왜 안 고쳐지나"* 가 되고, 그 답은 권한 설계에 있지 화면의 결함이 아니다.
       */
       headerTooltip: MSG.USER_GRANT_READONLY,
@@ -830,7 +830,7 @@ function buildGrantColumns(): ColumnDef<UserGrantRow>[] {
     { field: 'validToDt', header: MSG.USER_AUTH_COL_TO, type: 'date', width: 130, sortable: true },
     {
       /*
-        게이트 ④ — 부여는 살아 있는데 <b>대상이 죽었다</b>(security-design.md §4). 이 칸이 꺼져 있으면
+        게이트 ④ — 부여는 살아 있는데 <b>대상이 죽었다</b>(backend/security.md). 이 칸이 꺼져 있으면
         상태가 <i>유효</i> 여도 유효 권한에 들어가지 않으며, 그것이 <i>"권한을 줬는데 안
         보인다"</i> 의 답이다.
       */
@@ -847,7 +847,7 @@ function buildGrantColumns(): ColumnDef<UserGrantRow>[] {
       type: 'text',
       width: 240,
       fill: true,
-      // 값이 500자까지라 셀에서 잘린다 — 이미 손에 있는 값이므로 툴팁이다(grid-column-contract.md §4.5).
+      // 값이 500자까지라 셀에서 잘린다 — 이미 손에 있는 값이므로 툴팁이다(frontend/grid.md).
       cellTooltip: true,
     },
     { field: 'menuCd', header: MSG.USER_AUTH_COL_MENU, type: 'text', width: 160, visible: false },
@@ -866,7 +866,7 @@ function buildIpColumns(): ColumnDef<UserIpRow>[] {
       width: 220,
       pinned: 'left',
       sortable: true,
-      // PK 의 절반이다 — 다른 대역은 다른 사실이라 고치지 않고 지우고 다시 넣는다(41 §7).
+      // PK 의 절반이다 — 다른 대역은 다른 사실이라 고치지 않고 지우고 다시 넣는다(sys/user-role.md).
       pk: true,
       validate: (value) =>
         isIpOrCidr(typeof value === 'string' ? value : '')
@@ -879,11 +879,11 @@ function buildIpColumns(): ColumnDef<UserIpRow>[] {
       type: 'ynFlag',
       width: 90,
       sortable: true,
-      // <b>지우지 않고 끈다</b> — 지웠다 넣으면 감사 4컬럼이 사라진다(41 §7).
+      // <b>지우지 않고 끈다</b> — 지웠다 넣으면 감사 4컬럼이 사라진다(sys/user-role.md).
       editable: true,
     },
     /*
-      ── 기간 둘 (2026-08-31 · 41 §7) ──────────────────────────────
+      ── 기간 둘 (2026-08-31 · sys/user-role.md) ──────────────────────────────
 
       <b>사무실이 어디인가</b> 는 예정된 종료를 갖지 않는다고 적어 두었었고, 그래서 이
       테이블에만 기간이 없었다. 그런데 이 목록이 하는 일은 <b>들어올 수 있는 곳을 제한</b>
@@ -893,11 +893,11 @@ function buildIpColumns(): ColumnDef<UserIpRow>[] {
 
       <b>`USE_YN` 과 다른 축이다.</b> 저것은 <i>지금 손으로 끄고 켜는 것</i>이고 이것은
       <i>미리 정해 두는 것</i>이다 — 둘의 AND 가 판정이며, 역할 부여가 이미 같은 모양을
-      갖는다(42 §3.1).
+      갖는다(sys/menu.md).
 
       <b>서버 기준 시간이다.</b> 오늘이 언제인지를 브라우저가 정하면 <b>여행 중인
       관리자의 시계</b>가 접근 정책을 하루 밀 수 있다 — 판정은 `BusinessCalendar` 가 하고
-      (46 §5) 화면은 날짜를 <b>그대로</b> 보낸다.
+      (sys/batch.md) 화면은 날짜를 <b>그대로</b> 보낸다.
     */
     {
       field: 'validFromDt',
@@ -924,7 +924,7 @@ function buildIpColumns(): ColumnDef<UserIpRow>[] {
 }
 
 /**
- * 기간이 뒤집혔는가 — <b>양끝 포함</b>이라 같은 날은 통과다(40 §4.3).
+ * 기간이 뒤집혔는가 — <b>양끝 포함</b>이라 같은 날은 통과다(sys/INDEX.md).
  *
  * <p>보유 역할의 {@link periodIssue} 와 같은 판정을 한다. 한 함수로 합치지 않는 것은
  * <b>문구가 갈리는 날</b>을 위해서다 — 역할은 *부여* 이고 이것은 *접근 허용* 이라, 같은
@@ -950,10 +950,10 @@ function validateIps(rows: GridRow<UserIpRow>[]): GridIssue[] {
 }
 
 /**
- * <b>첫 대역 하나가 정책을 켜는 스위치</b>다 — 41 §7.
+ * <b>첫 대역 하나가 정책을 켜는 스위치</b>다 — sys/user-role.md.
  *
  * <p>행이 없으면 제한 없음이므로, 아무것도 없던 계정에 하나를 더하는 순간 <b>나머지 모든
- * IP 가 막힌다</b>. 건수는 <i>얼마나</i> 를 말할 뿐이라 그것을 말하지 못한다(63 §4.4).
+ * IP 가 막힌다</b>. 건수는 <i>얼마나</i> 를 말할 뿐이라 그것을 말하지 못한다(screen/code/requirements.md).
  */
 function warnFirstRange(rows: GridRow<UserIpRow>[]): string[] {
   const added = rows.filter((row) => row.state === 'C').length;
@@ -972,10 +972,10 @@ function buildSessionColumns(): ColumnDef<UserSessionRow>[] {
       width: 140,
       pinned: 'left',
       /*
-        <b>앞 8자만 그린다</b>(61 §3.8.2).
+        <b>앞 8자만 그린다</b>(screen/user/requirements.md).
 
         `display` 가 아니라 `derive` 인 것은 어댑터가 `display` 를 <b>렌더러가 있는 칸</b>
-        (`list` · `link` · `badge`)에만 태우기 때문이다(grid-column-contract.md §5.3) — 평범한 텍스트 칸에서는
+        (`list` · `link` · `badge`)에만 태우기 때문이다(frontend/grid.md) — 평범한 텍스트 칸에서는
         아무 일도 하지 않는다(2026-08-31 실물: 전체 ID 가 그대로 보였다).
 
         <b>실행이 보내는 값은 그대로다</b> — `toTargets` 가 행 데이터의 `sessionId` 를
@@ -992,7 +992,7 @@ function buildSessionColumns(): ColumnDef<UserSessionRow>[] {
     },
     { field: 'createdDtm', header: MSG.USER_SESSION_COL_CREATED, type: 'dateTime', width: 170, sortable: true },
     {
-      // 목록의 기본 정렬이 이것이다 — *끊을까 말까* 를 가르는 값이다(61 §3.8.2).
+      // 목록의 기본 정렬이 이것이다 — *끊을까 말까* 를 가르는 값이다(screen/user/requirements.md).
       field: 'lastAccessedDtm',
       header: MSG.USER_SESSION_COL_ACCESS,
       type: 'dateTime',
@@ -1004,12 +1004,12 @@ function buildSessionColumns(): ColumnDef<UserSessionRow>[] {
       ── 어디서 들어왔나 (2026-08-31) ──────────────────────────────
 
       <b>세션 스토어에는 없는 값이다.</b> 로그인 이력({@code SYS_LO_LOGIN})에서 온다 —
-      그래서 헤더에 <b>출처를 적는다</b>(64 §3.2.1 과 같은 규약: 이 컬럼을 어디까지 믿을
+      그래서 헤더에 <b>출처를 적는다</b>(screen/log/access/requirements.md 과 같은 규약: 이 컬럼을 어디까지 믿을
       수 있나를 화면이 말한다).
 
       <b>같은 사실이 두 곳이 되는 것이 아니다.</b> 값의 원본은 여전히 이력 하나이고 세션은
       그것을 <b>담지 않는다</b> — 조회 시점에 <i>그 세션이 만들어진 무렵의 로그인</i>을
-      찾아 붙일 뿐이다. 그래서 이력을 파기하면(32 §3) 이 칸이 빈다: 그것이 맞다.
+      찾아 붙일 뿐이다. 그래서 이력을 파기하면(retention.md) 이 칸이 빈다: 그것이 맞다.
 
       <b>왜 필요한가.</b> 이 탭이 하는 일이 <i>끊을까 말까</i> 인데, 세션 ID 앞 8자와 시각
       셋만으로는 <b>어느 것이 내 것이고 어느 것이 남의 것인지</b> 를 가릴 수 없다 —
@@ -1031,7 +1031,7 @@ function buildSessionColumns(): ColumnDef<UserSessionRow>[] {
       width: 240,
       sortable: true,
       fill: true,
-      // `VARCHAR(500)` 이라 셀에서 잘린다 — 이미 손에 있는 값이므로 툴팁이다(grid-column-contract.md §4.5).
+      // `VARCHAR(500)` 이라 셀에서 잘린다 — 이미 손에 있는 값이므로 툴팁이다(frontend/grid.md).
       cellTooltip: true,
     },
   ];
@@ -1040,11 +1040,11 @@ function buildSessionColumns(): ColumnDef<UserSessionRow>[] {
 // ── 탭 5 — 유효 권한 ──────────────────────────────────────────────
 
 /**
- * 61 §3.8.1 의 컬럼 표 그대로다 — <b>메뉴 · 액션 4열 · 출처 · 상태</b>.
+ * screen/user/requirements.md 의 컬럼 표 그대로다 — <b>메뉴 · 액션 4열 · 출처 · 상태</b>.
  *
  * <p>액션 넷이 <b>파생 컬럼</b>이다. 값이 `actions` 배열의 원소 여부이고 정의 밖이면
  * `—` 인데, 그 셋(있음 · 없음 · 줄 것 없음)을 한 칸에 담는 방법이 배지의 글자다 —
- * 61 §4.4 가 트리에서 쓴 것과 <b>같은 어휘</b>다.
+ * screen/user/requirements.md 가 트리에서 쓴 것과 <b>같은 어휘</b>다.
  */
 function buildEffectiveColumns(): ColumnDef<EffectiveAuthRow>[] {
   const actionColumn = (action: ActionCd): ColumnDef<EffectiveAuthRow> => ({
@@ -1055,8 +1055,8 @@ function buildEffectiveColumns(): ColumnDef<EffectiveAuthRow>[] {
     renderer: 'badge',
     tone: { ON: 'ok', OFF: 'muted', NONE: 'muted' },
     /*
-      <b>정의되지 않은 액션은 `—` 다</b>(52 §4.2) — *안 줬다* 와 *줄 것이 없다* 는 다르며,
-      뒤엣것은 <b>부여할 칸 자체가 없는</b> 것이다(ADR-0027).
+      <b>정의되지 않은 액션은 `—` 다</b>(sys/menu.md) — *안 줬다* 와 *줄 것이 없다* 는 다르며,
+      뒤엣것은 <b>부여할 칸 자체가 없는</b> 것이다(sys/menu.md).
     */
     derive: (row) =>
       !row.definedActions.includes(action)
@@ -1077,7 +1077,7 @@ function buildEffectiveColumns(): ColumnDef<EffectiveAuthRow>[] {
       sortable: true,
       /*
         <b>지금 효력이 없는 행은 흐리다</b>. 게이트 ④에 걸렸거나 부여가 예정·만료인
-        것들이며, 배지가 그중 어느 쪽인지 말한다 — 61 §3.8.1 의 *전체 모드에서 권한 없는
+        것들이며, 배지가 그중 어느 쪽인지 말한다 — screen/user/requirements.md 의 *전체 모드에서 권한 없는
         행은 회색* 을 <b>모든 모드로</b> 넓힌 것이다: 가진 것만 모드에도 만료된 부여가 있다.
       */
       emphasis: (row) => row.effective,
@@ -1101,7 +1101,7 @@ function buildEffectiveColumns(): ColumnDef<EffectiveAuthRow>[] {
       width: 180,
       sortable: true,
       /*
-        <b>역할명이거나 개인 예외</b>다(security-design.md §4 의 두 갈래). 부여가 없는 행은 <i>없음</i> 인데,
+        <b>역할명이거나 개인 예외</b>다(backend/security.md 의 두 갈래). 부여가 없는 행은 <i>없음</i> 인데,
         빈 칸으로 두면 *조회가 덜 된 것* 으로 읽힌다.
 
         `display` 가 아니라 `derive` 인 이유는 세션 ID 칸과 같다 — 텍스트 칸에서는
@@ -1128,7 +1128,7 @@ function buildEffectiveColumns(): ColumnDef<EffectiveAuthRow>[] {
     { field: 'validFromDt', header: MSG.USER_AUTH_COL_FROM, type: 'date', width: 130, sortable: true },
     { field: 'validToDt', header: MSG.USER_AUTH_COL_TO, type: 'date', width: 130, sortable: true },
     {
-      // 역할 부여에는 사유가 없다(42 §3.2) — 개인 예외 경유일 때만 값이 있다.
+      // 역할 부여에는 사유가 없다(sys/menu.md) — 개인 예외 경유일 때만 값이 있다.
       field: 'grantRsn',
       header: MSG.USER_EFF_COL_REASON,
       type: 'text',

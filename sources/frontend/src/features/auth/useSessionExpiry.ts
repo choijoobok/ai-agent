@@ -3,7 +3,7 @@ import { onResponseSignal } from '@/shared/api';
 import { heartbeat } from '@/features/auth/api/authApi';
 
 /**
- * 만료 예고 — 50 §7. <b>주기적 하트비트를 두지 않는다.</b>
+ * 만료 예고. <b>주기적 하트비트를 두지 않는다.</b>
  *
  * <p>화면을 열어 둔 것만으로 세션이 갱신되면 30분 타임아웃이 사실상 무한이 되고, 자리를
  * 비운 PC 가 계속 로그인 상태로 남는다. <b>연장은 사람이 누르는 것</b>이어야 한다.
@@ -17,14 +17,14 @@ import { heartbeat } from '@/features/auth/api/authApi';
  * <b>한 번의 늦은 판정</b>으로 끝난다.
  *
  * <p><b>세는 것은 매초, 내는 것은 분이다.</b> 매초 상태를 갱신하면 셸이 <b>초당 한 번</b>
- * 다시 그려지고, 비활성 탭을 언마운트하지 않는 구조라(ADR-0005) 그 리렌더가 <b>열려 있는
+ * 다시 그려지고, 비활성 탭을 언마운트하지 않는 구조라(frontend/tabs.md) 그 리렌더가 <b>열려 있는
  * 탭 전부</b>로 내려간다 — 초당 비용이 탭 수에 비례해 자라는 것이 <i>"쓰면 쓸수록
  * 느려진다"</i> 였다(2026-08-31: 간격을 60초로 늘리자 체감이 사라져 원인이 확정됐다).
  * 그때 <b>간격을 늘리는 것은 답이 아니다</b> — 위 단락의 늦은 판정을 되살린다. 화면에
  * 남는 값이 {@link SessionExpiryState.remainingMinutes} 하나뿐이므로 <b>그것만 낸다</b>.
  */
 
-/** 만료 5분 전 — 50 §7 의 표. */
+/** 만료 5분 전 — 의 표. */
 const WARN_BEFORE_SECONDS = 300;
 
 export interface SessionExpiryState {
@@ -118,7 +118,7 @@ export function useSessionExpiry(options: {
 
   const extend = useCallback(async () => {
     const result = await heartbeat();
-    // 서버가 준 값이 정본이다 — 프론트에 30분을 박아 두면 설정과 어긋난다(60 §5).
+    // 서버가 준 값이 정본이다 — 프론트에 30분을 박아 두면 설정과 어긋난다(screen/_standalone/README.md).
     budget.current = result.expiresInSeconds;
     push();
     // 다음 틱을 기다리지 않고 예고를 걷는다 — 누른 사람은 지금 사라지는 것을 봐야 한다.

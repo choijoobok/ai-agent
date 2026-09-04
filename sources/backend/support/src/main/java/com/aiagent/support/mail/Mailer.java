@@ -10,7 +10,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
 /**
- * 메일 한 통을 내보낸다 — architecture.md §1 이 알림을 이 모듈에 준 책임이다.
+ * 메일 한 통을 내보낸다 — backend/packages.md 이 알림을 이 모듈에 준 책임이다.
  *
  * <h2>설정만 하면 돈다 — 코드에 스위치가 없다</h2>
  *
@@ -76,7 +76,7 @@ public class Mailer {
             sender.send(message);
             return true;
         } catch (RuntimeException e) {
-            // 본문도 제목도 남기지 않는다 — 재설정 코드가 본문에 있다(architecture.md §6.4 와 같은 이유).
+            // 본문도 제목도 남기지 않는다 — 재설정 코드가 본문에 있다(backend/packages.md 와 같은 이유).
             log.warn("mail delivery failed to={}", to, e);
             return false;
         }

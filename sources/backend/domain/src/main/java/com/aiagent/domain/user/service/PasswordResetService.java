@@ -160,7 +160,7 @@ public class PasswordResetService {
      * 맞는 비밀번호로 로그인하다 잠김 안내를 본다.
      *
      * <p><b>{@code DORMANT_YN} 은 여기서 풀리지 않는다.</b> 휴면 해제는 로그인 후처리 체인이
-     * 판정하는 별개의 축이며(41 §4.2), 재설정을 마친 사용자는 다음 로그인에서 그 경로를
+     * 판정하는 별개의 축이며(sys/user-role.md), 재설정을 마친 사용자는 다음 로그인에서 그 경로를
      * 정상적으로 지난다.
      */
     @Transactional
@@ -239,7 +239,7 @@ public class PasswordResetService {
      *
      * <p>요청의 {@code Accept-Language} 가 아닌 것이 요점이다. 요청을 보낸 브라우저와 메일을
      * 읽는 사람이 같다는 보장이 없고, 무엇보다 <b>사용자가 고른 언어</b>가 그 계정의 것이다
-     * (41 §4.3 이 {@code LOCALE_CD} 를 서버에 둔 이유가 정확히 이것이다).
+     * (sys/user-role.md 이 {@code LOCALE_CD} 를 서버에 둔 이유가 정확히 이것이다).
      */
     private ResetMail compose(SysUser user, String code, int validMinutes) {
         String lang = user.getLocaleCd();

@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * 콤보가 읽는 코드 — 43 §8.
+ * 콤보가 읽는 코드 — sys/code.md.
  *
  * <p>여기서 지키는 것은 <b>요청한 그룹이 하나도 빠지지 않는다</b>는 것이다. 없는 그룹을
  * 응답에서 빼면 프론트 캐시가 <i>"아직 못 받았다"</i> 와 <i>"받았는데 비어 있다"</i> 를

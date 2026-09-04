@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * {@code IN} 목록 쪼개기 — db-portability.md §4.6.
+ * {@code IN} 목록 쪼개기 — backend/persistence.md.
  *
  * <p><b>이 실패는 오라클로 배포한 뒤에야 나타난다.</b> PostgreSQL·MySQL 로 개발하는 동안에는
  * 목록이 아무리 길어도 통과하고, 같은 코드가 오라클에서 {@code ORA-01795} 로 죽는다 —

@@ -6,7 +6,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/** QueryDSL 7.6(OpenFeign 포크) × Spring Boot 4.1 — 20 §4.3 최우선 리스크. */
+/** QueryDSL 7.6(OpenFeign 포크) × Spring Boot 4.1 — stack.md 최우선 리스크. */
 class QuerydslToolchainTest {
 
     @Test

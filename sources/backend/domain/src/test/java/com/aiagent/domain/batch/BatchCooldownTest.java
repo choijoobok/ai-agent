@@ -26,7 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 쿨다운의 기준 — 31 §5 · 65 §4.3. <b>건너뜀은 기준이 아니다.</b>
+ * 쿨다운의 기준 — backend/persistence.md · screen/batch/schedule/requirements.md. <b>건너뜀은 기준이 아니다.</b>
  *
  * <p>이 파일이 지키는 것은 한 문장이다: <b>쿨다운이 자기 자신을 밀어서는 안 된다.</b>
  * 건너뜀 행을 기준으로 삼으면 {@code SKIP_COOLDOWN} 이 <i>자기 다음 판정의 기준</i>이
@@ -81,7 +81,7 @@ class BatchCooldownTest {
 
         verify(writer).skip(eq(BATCH_ID), any(), eq(BatchResultCode.SKIP_COOLDOWN), anyString());
         /*
-          <b>순서가 판정이다</b>(65 §4.3). 락을 먼저 잡아 보면 실패한 이유를 저장소가
+          <b>순서가 판정이다</b>(screen/batch/schedule/requirements.md). 락을 먼저 잡아 보면 실패한 이유를 저장소가
           가르지 못해 쿨다운에 막힌 것이 전부 {@code SKIP_LOCK} 으로 적힌다 — 결함이
           정상으로 기록된다.
         */

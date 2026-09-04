@@ -18,26 +18,26 @@ const NAV_TOOLTIP: Record<string, string | undefined> = {
 };
 
 /**
- * 그리드 푸터 — grid-standard.md §2.3.
+ * 그리드 푸터 — frontend/grid.md.
  *
- * <p><b>모양을 화면이 선언하지 않는다 — 응답의 {@code mode} 가 정한다</b>(api-conventions.md §3.8).
+ * <p><b>모양을 화면이 선언하지 않는다 — 응답의 {@code mode} 가 정한다</b>(backend/api.md).
  * 화면이 한 번 더 적으면 미러링이고, 어긋날 때 어느 쪽이 맞는지 알 수 없다.
  *
  * <p><b>페이지 목록은 그리드 <i>가운데</i>다</b> — 건수 문구는 왼쪽, 쪽수 콤보는 오른쪽에
  * 두고 가운데 칸만 페이지 번호가 쓴다. 셋을 오른쪽에 몰아 두면 번호를 누르려고 눈이
  * 화면 끝까지 간다.
  *
- * <p><b>커서형은 세 칸 중 가운데가 다르다</b>(64 §2.3). 총 건수를 세지 않기로 했으므로
+ * <p><b>커서형은 세 칸 중 가운데가 다르다</b>(screen/log/access/requirements.md). 총 건수를 세지 않기로 했으므로
  * (상한·근사·생략 중 <b>생략</b>) 페이지 번호를 만들 수 없고, 왼쪽은 <i>총 N건</i> 대신
- * <b>{@code N건 조회됨}</b> 이 된다 — <b>grid-standard.md §2.3 의 3분할에서 한 칸을 잃는 유일한 예외</b>다.
+ * <b>{@code N건 조회됨}</b> 이 된다 — <b>frontend/grid.md 의 3분할에서 한 칸을 잃는 유일한 예외</b>다.
  *
- * <p><b>컬럼 필터는 총 건수를 바꾸지 않는다</b>(grid-column-contract.md §4.2). 필터가 거른 결과는 덧붙은 문구로만
+ * <p><b>컬럼 필터는 총 건수를 바꾸지 않는다</b>(frontend/grid.md). 필터가 거른 결과는 덧붙은 문구로만
  * 나타나며, 그 표기가 <i>"필터가 현재 페이지에만 걸린다"</i> 를 사용자에게 알리는 유일한
  * 자리다.
  */
 
 /**
- * 쪽수 후보의 기본값 — grid-standard.md §2.3.
+ * 쪽수 후보의 기본값 — frontend/grid.md.
  *
  * <p><b>백오피스는 한 화면에 많이 놓고 훑는다.</b> 스무 줄씩 넘기는 것은 <i>찾는</i> 일에
  * 맞는 크기이고, 여기서 흔한 일은 <b>죽 훑어 내리다 하나를 집는</b> 것이다.
@@ -60,7 +60,7 @@ interface GridFooterProps {
   /** 컬럼 필터를 통과해 지금 보이는 행 수. */
   shown: number;
   /**
-   * 커서형에서 건수 뒤에 덧붙는 한마디 — {@code 최근 1일} 같은 것(64 §2.3).
+   * 커서형에서 건수 뒤에 덧붙는 한마디 — {@code 최근 1일} 같은 것(screen/log/access/requirements.md).
    *
    * <p><b>총 건수를 잃은 자리를 메운다.</b> <i>N건 조회됨</i> 만 있으면 <i>"전부가 N건"</i>
    * 으로 읽히는데 실제로는 <b>이 장이 N건</b>이다 — 무엇을 물어서 나온 N건인지가 함께
@@ -97,7 +97,7 @@ export function GridFooter(props: GridFooterProps) {
           비어 건수 한 줄만 남는데, 그러면 <b>같은 화면의 그리드 둘이 다른 바닥</b>을 갖는다
           (제목 줄이 같은 이유로 바닥값을 갖는다 — {@code GridHeader}).
 
-          트리 그리드도 <b>같은 값을 선언</b>한다(62 §4.2.2) — 위아래로 놓인 트리와 그리드의
+          트리 그리드도 <b>같은 값을 선언</b>한다(screen/menu/requirements.md) — 위아래로 놓인 트리와 그리드의
           판 바닥이 어긋나면 스플리터를 옮길 때마다 그 차이가 눈에 띈다.
         */
         minHeight: token.controlHeight + 16,
@@ -105,7 +105,7 @@ export function GridFooter(props: GridFooterProps) {
     >
       <Typography.Text type="secondary">
         {mode === 'all' ? label(MSG.GRID_FOOTER_COUNT, { count: loaded }) : null}
-        {/* 총 건수가 없다 — 이 장이 몇 건인지만 말한다(64 §2.3). */}
+        {/* 총 건수가 없다 — 이 장이 몇 건인지만 말한다(screen/log/access/requirements.md). */}
         {cursor ? label(MSG.GRID_FOOTER_LOADED, { count: loaded }) : null}
         {mode === 'offset'
           ? label(MSG.GRID_FOOTER_TOTAL, { total: total ?? 0, pages: totalPages ?? 0 })
@@ -118,7 +118,7 @@ export function GridFooter(props: GridFooterProps) {
       <div style={{ justifySelf: 'center' }}>
         {/*
           <b>번호가 없다</b> — 총 건수를 세지 않으므로 몇 페이지인지 알 수 없고, 알 수 없는
-          것을 그리면 <i>3페이지로 건너뛰기</i> 가 눌리는데 갈 수 없다(64 §2.3).
+          것을 그리면 <i>3페이지로 건너뛰기</i> 가 눌리는데 갈 수 없다(screen/log/access/requirements.md).
         */}
         {cursor ? (
           <Space size={4}>

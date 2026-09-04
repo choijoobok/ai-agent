@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/** {@link SysCodeRef} 의 복합키 — 셋 다 키다. {@code REF_VAL} 은 여기 없다(43 §5.3). */
+/** {@link SysCodeRef} 의 복합키 — 셋 다 키다. {@code REF_VAL} 은 여기 없다(sys/code.md). */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

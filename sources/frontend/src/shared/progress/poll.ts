@@ -1,7 +1,7 @@
 import type { JobProgress } from '@/shared/progress/types';
 
 /**
- * 진행률을 <b>끝날 때까지 훑는다</b> — 30 §6 · 68 §9.1.
+ * 진행률을 <b>끝날 때까지 훑는다</b> — backend/crosscutting.md · playbook/INDEX.md.
  *
  * <p><b>따로 떼어 둔 것은 검사할 수 있게 하기 위해서다.</b> 이 규칙 셋(주기 · 세션 만료의
  * 취급 · 실패 예산)은 화면을 몰아서는 재기 어렵고, 흔들리는 검사는 없는 것보다 나쁘다
@@ -10,13 +10,13 @@ import type { JobProgress } from '@/shared/progress/types';
  *
  * <h2>주기가 1초인 이유</h2>
  *
- * <p>서버가 <b>진행률 1% 또는 1초 중 늦은 쪽</b>으로 쓴다(30 §6.2). 더 자주 물으면 같은
+ * <p>서버가 <b>진행률 1% 또는 1초 중 늦은 쪽</b>으로 쓴다(backend/crosscutting.md). 더 자주 물으면 같은
  * 값을 다시 받고, 더 뜸하면 서버가 써 둔 것을 놓친다 — <b>쓰는 쪽에 맞춘다</b>.
  *
  * <h2>세션 만료는 실패가 아니다</h2>
  *
- * <p>68 §9.1 이 <i>"세션이 만료돼도 폴링을 재개한다"</i> 로 적었다. 재인증 모달이 뜨고
- * (ADR-0021) 사람이 비밀번호를 치는 동안 <b>수십 초</b>가 지날 수 있으므로, 401 을 실패로
+ * <p>playbook/INDEX.md 이 <i>"세션이 만료돼도 폴링을 재개한다"</i> 로 적었다. 재인증 모달이 뜨고
+ * (backend/session.md) 사람이 비밀번호를 치는 동안 <b>수십 초</b>가 지날 수 있으므로, 401 을 실패로
  * 세면 그 사이에 예산이 바닥나 <b>멀쩡히 도는 작업을 놓친다</b>. 401 은 <i>지금은 못
  * 본다</i> 이지 <i>고장</i> 이 아니다.
  *
@@ -40,7 +40,7 @@ export const POLL_MAX_FAILURES = 5;
 export interface PollDeps {
   fetchOne: (jobId: string) => Promise<JobProgress>;
   sleep: (ms: number) => Promise<void>;
-  /** 창을 닫았거나 화면을 떠났다 — <b>작업을 멈추는 것이 아니다</b>(68 §9.1). */
+  /** 창을 닫았거나 화면을 떠났다 — <b>작업을 멈추는 것이 아니다</b>(playbook/INDEX.md). */
   cancelled: () => boolean;
   /** 이 오류가 <b>세션 만료</b>인가 — 실패로 세지 않는 유일한 갈래다. */
   isUnauthenticated: (error: unknown) => boolean;

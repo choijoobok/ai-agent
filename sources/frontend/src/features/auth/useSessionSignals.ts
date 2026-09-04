@@ -16,13 +16,13 @@ export interface SessionSignalsState {
 }
 
 /**
- * 세션 차원의 사건 둘을 처리한다 — <b>401</b>(ADR-0021)과 <b>권한 변경</b>(50 §8.1).
+ * 세션 차원의 사건 둘을 처리한다 — <b>401</b>(backend/session.md)과 <b>권한 변경</b>.
  *
  * <p>둘 다 <i>어느 화면이 부른 API 인가와 무관</i>하므로 호출부마다 두면 새 화면을 만들 때마다
  * 같은 코드를 다시 쓴다. <b>앱 최상단에 하나</b>만 둔다.
  *
  * <p><b>셸 안이 아니라 앱 최상단인 것이 필요하다.</b> 권한 버전의 <b>기준값</b>은 로그인
- * 응답이 실어 오는데(50 §8.1) 그 순간 셸은 아직 없다 — 셸 안에 두면 기준값을 놓치고,
+ * 응답이 실어 오는데 그 순간 셸은 아직 없다 — 셸 안에 두면 기준값을 놓치고,
  * 셸이 뜬 뒤 처음 본 헤더를 "바뀌었다" 로 오해한다.
  */
 export function useSessionSignals(): SessionSignalsState {
@@ -48,7 +48,7 @@ export function useSessionSignals(): SessionSignalsState {
         return;
       }
 
-      // 권한을 잃은 메뉴의 탭은 이제 403 만 낸다 — 50 §8.2.
+      // 권한을 잃은 메뉴의 탭은 이제 403 만 낸다.
       const closed = useTabStore.getState().retain(session.menus);
       if (closed.length > 0) {
         // 활성 탭이 말없이 닫히면 사용자는 자기가 뭘 잘못 눌렀다고 생각한다.
@@ -73,7 +73,7 @@ export function useSessionSignals(): SessionSignalsState {
 
         if (signal.status === 401) {
           // F5 후에는 `authStore` 가 비어 있고 유지할 탭도 없다 — 그때는 로그인 화면이다.
-          // 두 조건이 항상 함께 움직이므로 판정에 별도 플래그가 필요 없다(ADR-0021).
+          // 두 조건이 항상 함께 움직이므로 판정에 별도 플래그가 필요 없다(backend/session.md).
           if (state.user) {
             setReauth({ reason: signal.message });
           }

@@ -24,7 +24,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 /**
- * {@code MENU_TREE} 의 쓰기 — 42 §4 · 62 §4. <b>네 연산이 전부 락 하나를 지난다.</b>
+ * {@code MENU_TREE} 의 쓰기 — sys/menu.md · screen/menu/requirements.md. <b>네 연산이 전부 락 하나를 지난다.</b>
  *
  * <pre>
  * createNode   신규 노드      — 선택 노드의 자식, 형제의 맨 끝
@@ -33,31 +33,31 @@ import org.springframework.stereotype.Service;
  * deleteNode   삭제           — 게이트 넷, 즐겨찾기는 함께 지운다
  * </pre>
  *
- * <h2>왜 넷 다 락인가 — 42 §4 는 위치 변경만 적었다</h2>
+ * <h2>왜 넷 다 락인가 — sys/menu.md 는 위치 변경만 적었다</h2>
  *
- * 락의 근거는 <b>불변식이 여러 행에 걸린다</b>는 것이고(31 §9), 이 화면에는 그런 불변식이
+ * 락의 근거는 <b>불변식이 여러 행에 걸린다</b>는 것이고(backend/persistence.md), 이 화면에는 그런 불변식이
  * <b>둘</b>이다.
  *
  * <table>
  *   <tr><th>불변식</th><th>걸리는 행</th><th>깨는 조합</th></tr>
  *   <tr><td>순환 금지</td><td>조상 사슬 전체</td>
- *       <td>두 이동이 서로의 조상을 옮긴다 — 42 §4 가 적은 그것</td></tr>
+ * <td>두 이동이 서로의 조상을 옮긴다 — sys/menu.md 가 적은 그것</td></tr>
  *   <tr><td><b>URL 과 자식은 배타</b></td><td>부모와 자식</td>
  *       <td><b>A 가 N 에 URL 을 채우는 동안 B 가 N 아래에 자식을 만든다</b> —
  *           각자의 검사는 통과하고 합쳐진 결과만 위반이다</td></tr>
  * </table>
  *
- * <p>둘째가 같은 모양의 write-skew 다. 42 §4 가 위치 변경만 적은 것은 <b>순환을 말하던
+ * <p>둘째가 같은 모양의 write-skew 다. sys/menu.md 가 위치 변경만 적은 것은 <b>순환을 말하던
  * 자리</b>였기 때문이며, 같은 문서가 URL↔자식 배타도 <i>"다른 행을 봐야 하므로 DB 제약으로
  * 표현할 수 없다"</i> 고 적어 두었다 — 그 문장이 곧 여기서 락이 필요하다는 말이다.
  *
- * <p><b>대가가 없다시피 하다.</b> 메뉴는 드물게 바뀌는 마스터이고(42 §4) 락 하나가 트리
+ * <p><b>대가가 없다시피 하다.</b> 메뉴는 드물게 바뀌는 마스터이고(sys/menu.md) 락 하나가 트리
  * 전역이라 경합 자체가 거의 없다. 반대로 <b>연산마다 락 여부가 갈리면</b> 어느 것이 보호되고
  * 어느 것이 아닌지를 매번 다시 따져야 한다.
  *
  * <h2>{@code @Transactional} 이 메서드에 없다</h2>
  *
- * 락 트리거가 트랜잭션을 연다({@code WAIT} — 31 §4). 여기 클래스에 트랜잭션을 붙이면
+ * 락 트리거가 트랜잭션을 연다({@code WAIT} — backend/persistence.md). 여기 클래스에 트랜잭션을 붙이면
  * <b>락 구간에 트랜잭션이 걸쳐</b> 애스펙트의 런타임 검사가 거부한다. 그래서 이 클래스의
  * 공개 메서드는 <b>락 안에서 도는 몸통</b>이고, 트랜잭션 경계는 락이 갖는다.
  */
@@ -104,31 +104,31 @@ public class MenuService {
         this.calendar = calendar;
     }
 
-    // ── 신규 (62 §4.6) ───────────────────────────────────────────────
+    // ── 신규 (screen/menu/requirements.md) ───────────────────────────────────────────────
 
     /**
-     * 노드를 만든다 — 모달이 받는 칸은 {@code MENU_CD} 하나다(62 §4.6).
+     * 노드를 만든다 — 모달이 받는 칸은 {@code MENU_CD} 하나다(screen/menu/requirements.md).
      *
      * <p>나머지 여섯은 <b>사람이 정하는 값이 아니다</b>: 부모는 선택 노드, {@code SORT_NO} 는
      * 형제의 맨 끝, {@code MENU_NM} 은 {@code menu.{MENU_CD}}, {@code USE_YN} 은 {@code 'Y'},
      * URL·아이콘은 <b>만든 뒤 셀에서</b> 채운다.
      *
-     * <p><b>맨 앞이 아니라 맨 끝이다</b>(42 §4) — 맨 앞에 넣으면 형제 전체의 {@code SORT_NO}
+     * <p><b>맨 앞이 아니라 맨 끝이다</b>(sys/menu.md) — 맨 앞에 넣으면 형제 전체의 {@code SORT_NO}
      * 를 밀어야 하고, 그것은 방금 만든 노드 하나 때문에 형제 전부를 다시 쓰는 일이다. 다른
      * 자리로 옮기려면 드래그한다.
      *
-     * @param upMenuCd {@code null} 이면 최상위 — <b>모듈 노드</b>가 된다(52 §3.4)
+     * @param upMenuCd {@code null} 이면 최상위 — <b>모듈 노드</b>가 된다(sys/menu.md)
      */
     public void createNode(String upMenuCd, String menuCd) {
         lock.withLock(() -> {
             if (menus.existsById(menuCd)) {
-                // 다른 사람이 방금 만든 것을 클라이언트가 알 수 없다 — 서버 검증이다(grid-edit-validation.md §3.4).
+                // 다른 사람이 방금 만든 것을 클라이언트가 알 수 없다 — 서버 검증이다(frontend/grid.md).
                 throw new BusinessException(
                         MenuErrorCode.DUPLICATE_CODE, "이미 있는 메뉴 코드다 — " + menuCd);
             }
             if (upMenuCd != null) {
                 SysMenu parent = require(upMenuCd);
-                // URL 이 있는 노드에는 자식을 만들 수 없다 — 먼저 URL 을 비운다(security-design.md §4).
+                // URL 이 있는 노드에는 자식을 만들 수 없다 — 먼저 URL 을 비운다(backend/security.md).
                 if (parent.getMenuUrl() != null) {
                     throw new BusinessException(
                             MenuErrorCode.CHILD_UNDER_LEAF,
@@ -144,9 +144,9 @@ public class MenuService {
               (SYS_MESSAGE 가 SYS_MESSAGE_KEY 를 FK 로 참조한다).
 
               **`dataKey` 다.** 사람이 만든 키가 아니라 **메뉴 행이 있는 한 살아 있는 키**이며
-              소스에 상수가 없는 것이 정상이다(ADR-0023 §4) — `created` 로 만들면 죽은 키
+              소스에 상수가 없는 것이 정상이다(sys/message.md) — `created` 로 만들면 죽은 키
               목록이 메뉴 수만큼 부풀고, `generateMessageSeed` 가 `menu.` 접두를 아예
-              건드리지 않으므로(seed-generation.md §2.1) **다음 생성도 그것을 고쳐 주지 않는다**.
+              건드리지 않으므로(seed.md) **다음 생성도 그것을 고쳐 주지 않는다**.
             */
             String msgKey = SysMenu.messageKey(menuCd);
             if (!messageKeys.existsById(msgKey)) {
@@ -157,7 +157,7 @@ public class MenuService {
         });
     }
 
-    /** 형제의 맨 끝 — {@code 0} 건이면 {@code 1} 이다(42 §4). */
+    /** 형제의 맨 끝 — {@code 0} 건이면 {@code 1} 이다(sys/menu.md). */
     private int nextSortNo(String upMenuCd) {
         return menus.findAll().stream()
                         .filter(menu -> java.util.Objects.equals(menu.getUpMenuCd(), upMenuCd))
@@ -167,17 +167,17 @@ public class MenuService {
                 + 1;
     }
 
-    // ── 속성 (62 §4.3 · §4.7) ────────────────────────────────────────
+    // ── 속성 (screen/menu/requirements.md) ────────────────────────────────────────
 
     /**
-     * URL · 아이콘 · 사용 여부 — <b>위치도 메뉴명도 받지 않는다</b>(42 §4).
+     * URL · 아이콘 · 사용 여부 — <b>위치도 메뉴명도 받지 않는다</b>(sys/menu.md).
      *
      * <p>{@code UP_MENU_CD}·{@code SORT_NO}·{@code MENU_NM} 을 인자로 두지 않으므로 조작할
      * 경로가 <b>구조적으로 없다</b>(원칙 P1). 폼에서 감추는 것은 UX 이지 방어가 아니다.
      *
-     * <p><b>사용 여부는 자손 전체에 쓴다</b>(62 §4.7). 전파는 <b>아래로만</b> 하며, 조상의
-     * 값은 <i>마지막 일괄 명령의 기록</i>이다 — 게이트는 여전히 리프 자신의 값만 본다(security-design.md §4).
-     * 조상의 값을 게이트로 읽으면 security-design.md §4 가 기각한 <b>경로 결합</b>이 {@code USE_YN} 이라는
+     * <p><b>사용 여부는 자손 전체에 쓴다</b>(screen/menu/requirements.md). 전파는 <b>아래로만</b> 하며, 조상의
+     * 값은 <i>마지막 일괄 명령의 기록</i>이다 — 게이트는 여전히 리프 자신의 값만 본다(backend/security.md).
+     * 조상의 값을 게이트로 읽으면 backend/security.md 가 기각한 <b>경로 결합</b>이 {@code USE_YN} 이라는
      * 이름으로 되살아난다.
      */
     public void saveNode(String menuCd, String menuUrl, String iconCd, boolean useYn) {
@@ -197,11 +197,11 @@ public class MenuService {
     }
 
     /**
-     * URL 은 <b>둘을 본다</b> — 자식이 있는가, 권한 행이 있는가(62 §4.3).
+     * URL 은 <b>둘을 본다</b> — 자식이 있는가, 권한 행이 있는가(screen/menu/requirements.md).
      *
-     * <p>앞엣것은 security-design.md §4 의 <i>URL 과 자식은 배타</i> 이고, 뒤엣것은 그 <b>거꾸로</b>다:
+     * <p>앞엣것은 backend/security.md 의 <i>URL 과 자식은 배타</i> 이고, 뒤엣것은 그 <b>거꾸로</b>다:
      * 비우는 순간 권한 대상이 아닌데 {@code SYS_ROLE_MENU_AUTH} 에 행이 남아,
-     * 42 §4 가 <i>"들어오면 거부"</i> 라고 한 상태가 <b>반대 방향으로</b> 만들어진다.
+     * sys/menu.md 가 <i>"들어오면 거부"</i> 라고 한 상태가 <b>반대 방향으로</b> 만들어진다.
      */
     private void applyUrl(SysMenu menu, String menuUrl, List<SysMenu> all) {
         String current = menu.getMenuUrl();
@@ -221,10 +221,10 @@ public class MenuService {
         menu.changeUrl(menuUrl);
     }
 
-    // ── 위치 (42 §4 · 62 §4.5) ───────────────────────────────────────
+    // ── 위치 (sys/menu.md · screen/menu/requirements.md) ───────────────────────────────────────
 
     /**
-     * 형제 목록을 통째로 받아 {@code 1..N} 으로 재작성한다 — 42 §4.
+     * 형제 목록을 통째로 받아 {@code 1..N} 으로 재작성한다 — sys/menu.md.
      *
      * <p><b>이동 명령이 아니라 최종 상태다.</b> {@code {menuCd, newIndex}} 를 보내 서버가
      * 재계산하는 방식보다 결정적이며, UX-14 리스트 CUD 규약(<i>화면이 최종 상태를 보내고
@@ -271,7 +271,7 @@ public class MenuService {
     }
 
     /**
-     * 보낸 목록이 <b>그 부모의 현재 자식 집합</b>과 맞는가 — 42 §4.
+     * 보낸 목록이 <b>그 부모의 현재 자식 집합</b>과 맞는가 — sys/menu.md.
      *
      * <p>비교 대상은 <b>이동해 오는 것을 뺀 나머지</b>다. 다른 그룹에서 이 부모로 옮겨 오는
      * 노드는 아직 여기 자식이 아니므로, 그것까지 <i>현재 집합</i>에 요구하면 <b>정상적인
@@ -310,7 +310,7 @@ public class MenuService {
     }
 
     /**
-     * 옮겨 갈 자리가 성립하는가 — <b>셋을 본다</b>(42 §4 · 62 §4.5).
+     * 옮겨 갈 자리가 성립하는가 — <b>셋을 본다</b>(sys/menu.md · screen/menu/requirements.md).
      *
      * <p>순환 · 깊이 · URL 이 있는 노드 아래로의 이동이다. <b>결과 트리</b>에 대해 판정하므로
      * 인자가 {@code parentAfter} 다 — 지금 트리로 보면 같은 요청 안의 두 이동이 서로를
@@ -334,14 +334,14 @@ public class MenuService {
         for (String menuCd : group.menuCds()) {
             requireNoCycle(menuCd, parentAfter);
             /*
-              서브트리를 통째로 끌면 **그 서브트리의 높이까지 더해** 판정한다(62 §4.5) —
+              서브트리를 통째로 끌면 **그 서브트리의 높이까지 더해** 판정한다(screen/menu/requirements.md) —
               옮기는 노드만 보면 자손이 상한을 넘는 것을 놓친다.
             */
             requireDepth(depthOf(menuCd, parentAfter) + heightOf(menuCd, parentAfter));
         }
     }
 
-    /** 자기 자신 또는 자손 아래로의 이동 — 42 §4 의 네 층 중 <b>저장 서비스</b>다. */
+    /** 자기 자신 또는 자손 아래로의 이동 — sys/menu.md 의 네 층 중 <b>저장 서비스</b>다. */
     private static void requireNoCycle(String menuCd, Map<String, String> parentAfter) {
         Set<String> seen = new HashSet<>();
         String cursor = parentAfter.get(menuCd);
@@ -350,7 +350,7 @@ public class MenuService {
                 throw new BusinessException(
                         MenuErrorCode.CYCLE, "자기 자신이나 자손 아래로 옮길 수 없다 — " + menuCd);
             }
-            // **상한이 없으면 이미 순환이 있는 데이터에서 검사 자체가 무한 루프다**(42 §4).
+            // **상한이 없으면 이미 순환이 있는 데이터에서 검사 자체가 무한 루프다**(sys/menu.md).
             if (!seen.add(cursor)) {
                 throw new BusinessException(
                         MenuErrorCode.CYCLE, "트리에 이미 순환이 있다 — " + cursor);
@@ -359,10 +359,10 @@ public class MenuService {
         }
     }
 
-    // ── 삭제 (62 §4.8) ───────────────────────────────────────────────
+    // ── 삭제 (screen/menu/requirements.md) ───────────────────────────────────────────────
 
     /**
-     * 게이트가 넷이고 <b>하나는 함께 지운다</b> — 62 §4.8.
+     * 게이트가 넷이고 <b>하나는 함께 지운다</b> — screen/menu/requirements.md.
      *
      * <table>
      *   <tr><td>자식 노드 · 매핑 API · 매핑 역할 · 개인 예외</td><td><b>막는다</b></td></tr>
@@ -371,14 +371,14 @@ public class MenuService {
      *
      * <p><b>가르는 기준은 그 행이 인가 사실인가다.</b> 권한 둘과 매핑과 구조는 <b>누군가 결정한
      * 사실</b>이라 조용히 지울 수 없다. 즐겨찾기는 <b>메뉴를 가리키는 포인터</b>이며, 없는
-     * 메뉴를 가리키는 즐겨찾기는 <i>클릭이 곧 404</i> 다(42 §9) — 남길 이유가 없다.
+     * 메뉴를 가리키는 즐겨찾기는 <i>클릭이 곧 404</i> 다(sys/menu.md) — 남길 이유가 없다.
      *
      * <p><b>막아 두면 막다른 골목이 된다.</b> 관리자는 남의 즐겨찾기를 볼 수도 지울 수도
      * 없는데 게이트 메시지가 <i>"3명이 즐겨찾기에 등록했습니다"</i> 이면 <b>할 수 있는 일이
      * 없는 거부</b>이고, 그것은 거부가 아니라 고장이다.
      *
      * <p><b>매핑 API 를 막는 이유는 FK 가 아니라 다음 배포다.</b> 시드가 전체 동기화이므로
-     * (ADR-0022) 코드에 그 화면이 살아 있으면 {@code generateApiSeed} 가 다음 배포에서
+     * (seed.md) 코드에 그 화면이 살아 있으면 {@code generateApiSeed} 가 다음 배포에서
      * {@code SYS_MENU_API} 행을 다시 넣고, {@code MENU_CD} 가 없으면 <b>FK 로 배포가
      * 깨진다</b> — 게이트는 <i>프론트 선언 제거 → 시드 재생성 → 배포 → 메뉴 삭제</i> 라는
      * 순서를 강제하는 장치다.
@@ -389,13 +389,13 @@ public class MenuService {
             requireDeletable(menuCd);
 
             /*
-              포인터 셋을 함께 지운다 — 62 §4.8 · ADR-0028. ON DELETE CASCADE 로 하지
-              않는다(41 §8 이 금지했다) — 같은 트랜잭션에서 서비스가 지우고, 확인 문구가
+              포인터 셋을 함께 지운다 — screen/menu/requirements.md · seed.md. ON DELETE CASCADE 로 하지
+              않는다(sys/user-role.md 이 금지했다) — 같은 트랜잭션에서 서비스가 지우고, 확인 문구가
               무엇이 함께 사라지는지 미리 말한다.
 
               막는 넷(자식 노드 · 매핑 API · 역할 권한 · 개인 예외)과 가르는 기준은
               **그 행이 인가 사실인가** 다. 이 셋은 메뉴를 가리키는 포인터일 뿐이고,
-              없는 메뉴를 가리키는 즐겨찾기는 클릭이 곧 404 다(42 §9).
+              없는 메뉴를 가리키는 즐겨찾기는 클릭이 곧 404 다(sys/menu.md).
 
               조회조건과 그리드 설정이 뒤늦게 들어왔다(2026-09-02). 둘 다 MENU_CD FK 를
               갖는데 §4.8 의 표에 없었고, 그대로 두면 **운영자가 할 수 있는 일이 없는
@@ -406,9 +406,9 @@ public class MenuService {
             gridPrefs.deleteByMenuCd(menuCd);
 
             /*
-              이름의 자리도 거둔다 — **데이터가 만든 키는 그 데이터가 거둔다**(ADR-0023 §4).
+              이름의 자리도 거둔다 — **데이터가 만든 키는 그 데이터가 거둔다**(sys/message.md).
               남기면 `menu.X` 가 `USE_SCOPE='DATA'` 인 채로 영영 남는데,
-              `generateMessageSeed` 가 `menu.` 접두를 건드리지 않으므로(seed-generation.md §2.1) **죽은 키로
+              `generateMessageSeed` 가 `menu.` 접두를 건드리지 않으므로(seed.md) **죽은 키로
               표시될 경로조차 없다**.
 
               값 → 키 순서다. 반대로 지우면 FK 가 거부한다(005 changelog).
@@ -426,7 +426,7 @@ public class MenuService {
         });
     }
 
-    /** 넷 중 하나라도 남아 있으면 막는다. <b>어느 쪽이 막는지 말한다</b>(62 §3.5 의 규약). */
+    /** 넷 중 하나라도 남아 있으면 막는다. <b>어느 쪽이 막는지 말한다</b>(screen/menu/requirements.md 의 규약). */
     private void requireDeletable(String menuCd) {
         List<String> blockers = new ArrayList<>();
         if (menus.existsByUpMenuCd(menuCd)) {
@@ -472,7 +472,7 @@ public class MenuService {
         return roleAuths.existsByMenuCd(menuCd) || userAuths.existsByMenuCd(menuCd);
     }
 
-    /** 자기 + 자손 — 사용 여부 전파의 대상이다(62 §4.7). */
+    /** 자기 + 자손 — 사용 여부 전파의 대상이다(screen/menu/requirements.md). */
     private static List<SysMenu> selfAndDescendants(String menuCd, List<SysMenu> all) {
         Map<String, List<SysMenu>> childrenOf = new HashMap<>();
         for (SysMenu menu : all) {
@@ -485,7 +485,7 @@ public class MenuService {
         List<String> pending = new ArrayList<>(List.of(menuCd));
         while (!pending.isEmpty()) {
             String cursor = pending.removeLast();
-            // 순환이 들어온 데이터에서도 터지지 않는다 — 42 §4 3층.
+            // 순환이 들어온 데이터에서도 터지지 않는다 — sys/menu.md 3층.
             if (!visited.add(cursor)) {
                 continue;
             }
@@ -502,9 +502,9 @@ public class MenuService {
     }
 
     /**
-     * 뿌리부터 이 노드까지의 단수 — 최상위가 {@code 1} 이다(52 §3.4).
+     * 뿌리부터 이 노드까지의 단수 — 최상위가 {@code 1} 이다(sys/menu.md).
      *
-     * <p>방문 집합이 있는 것은 <b>이미 순환이 있는 데이터</b> 때문이다(42 §4 3층) — 없으면
+     * <p>방문 집합이 있는 것은 <b>이미 순환이 있는 데이터</b> 때문이다(sys/menu.md 3층) — 없으면
      * 깊이를 세려다 무한 루프에 빠지고, <i>깊이를 막는 검사</i>가 <i>서버를 멈추는 검사</i>가
      * 된다.
      */
@@ -551,7 +551,7 @@ public class MenuService {
         return tallest + 1;
     }
 
-    /** 리프 포함 5단이 상한이다 — 52 §3.4. 넘는 생성·이동은 저장에서 거부한다(42 §4). */
+    /** 리프 포함 5단이 상한이다 — sys/menu.md. 넘는 생성·이동은 저장에서 거부한다(sys/menu.md). */
     private static void requireDepth(int depth) {
         if (depth > SysMenu.MAX_DEPTH) {
             throw new BusinessException(
@@ -561,9 +561,9 @@ public class MenuService {
     }
 
     /**
-     * 이름 행이 실제로 사라졌을 때만 올린다 — 43 §8.1.
+     * 이름 행이 실제로 사라졌을 때만 올린다 — sys/code.md.
      *
-     * <p><b>{@code @Transactional} 이 없다.</b> 이미 락의 트랜잭션 안이며(31 §4), 붙여도
+     * <p><b>{@code @Transactional} 이 없다.</b> 이미 락의 트랜잭션 안이며(backend/persistence.md), 붙여도
      * 자기 호출이라 프록시를 지나지 않아 <b>아무 일도 하지 않는다</b> — 붙어 있으면
      * <i>경계가 있다</i> 고 읽혀 더 나쁘다.
      */

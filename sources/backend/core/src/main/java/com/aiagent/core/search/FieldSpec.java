@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 /**
- * 화이트리스트의 한 줄 — api-conventions.md §4.1.
+ * 화이트리스트의 한 줄 — backend/api.md.
  *
  * <p>둘 중 하나다. <b>컬럼 필드</b>는 {@code Path} 를 갖고 연산자를 여기서 편다.
- * <b>파생 필드</b>는 컬럼이 아니며 <b>번역 함수를 함께 갖는다</b>(api-conventions.md §3.5) — 화면 값 하나가
- * 조각 하나가 되고, 그 관계가 깨지면 {@code params} 로 간다(api-conventions.md §3.1.1).
+ * <b>파생 필드</b>는 컬럼이 아니며 <b>번역 함수를 함께 갖는다</b>(backend/api.md) — 화면 값 하나가
+ * 조각 하나가 되고, 그 관계가 깨지면 {@code params} 로 간다(backend/api.md).
  *
  * <p><b>타입을 따로 적지 않는다.</b> {@code Path} 가 자기 자바 타입을 알고 그것이 곧
  * {@link Op#accepts(Class)} 의 판정이다 — 컬럼을 개명하면 문자열이 아니라 Q타입 참조라
@@ -54,7 +54,7 @@ public final class FieldSpec {
         return name;
     }
 
-    /** {@code sorts} 에 올 수 있는가 — <b>기본은 불가</b>(api-conventions.md §4.1). */
+    /** {@code sorts} 에 올 수 있는가 — <b>기본은 불가</b>(backend/api.md). */
     public boolean sortable() {
         return sortable;
     }
@@ -70,7 +70,7 @@ public final class FieldSpec {
 
     /**
      * <b>문자열 순서가 곧 값의 순서인가</b> — {@code VARCHAR(6)} 의 {@code 202608} 이 그것이다
-     * (48 §4.2).
+     * (playbook/INDEX.md).
      *
      * <p>{@link Op#accepts(Class)} 는 문자열에 부등호를 주지 않는다. 자바 타입만 보면
      * {@code ORD_NM} 과 {@code DLVR_YM} 이 같은 {@code String} 이고, 앞의 것에 범위를 열면
@@ -94,7 +94,7 @@ public final class FieldSpec {
         return op.accepts(javaType()) || (ordered && op.comparesOrder());
     }
 
-    /** 커서 조립이 쓴다 — 같은 패키지의 {@link CursorSupport} 하나뿐이다(api-conventions.md §3.8). */
+    /** 커서 조립이 쓴다 — 같은 패키지의 {@link CursorSupport} 하나뿐이다(backend/api.md). */
     Expression<?> path() {
         return path;
     }
@@ -103,7 +103,7 @@ public final class FieldSpec {
      * 이 필드가 받는 자바 타입.
      *
      * <p><b>파생은 {@code String} 이다</b> — 화면이 보내는 것이 묶음 이름 하나이고, 그것을 무엇으로
-     * 펼지는 번역 함수만 안다. 부등호를 받지 않는 것이 옳다(api-conventions.md §3.5 의 사례 넷이 전부 열거값이다).
+     * 펼지는 번역 함수만 안다. 부등호를 받지 않는 것이 옳다(backend/api.md 의 사례 넷이 전부 열거값이다).
      */
     public Class<?> javaType() {
         return derived != null ? String.class : path.getType();
@@ -117,7 +117,7 @@ public final class FieldSpec {
     /**
      * 조건 하나를 표현식으로 편다.
      *
-     * <p><b>{@code LIKE} 는 값을 이스케이프하고 {@code ESCAPE} 절을 붙인다</b>(api-conventions.md §3.3) —
+     * <p><b>{@code LIKE} 는 값을 이스케이프하고 {@code ESCAPE} 절을 붙인다</b>(backend/api.md) —
      * 4벤더 전부 지원하며, 화면이 와일드카드를 아는 일이 없다.
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -139,7 +139,7 @@ public final class FieldSpec {
             case eq -> simple.eq(ValueCoercion.one(rawValue, type, name));
             case ne -> {
                 BooleanExpression base = simple.ne(ValueCoercion.one(rawValue, type, name));
-                // 사용자가 "HQ 가 아닌 것" 이라 말할 때 부서 없는 행을 빼겠다는 뜻이 아니다 — api-conventions.md §3.3.
+                // 사용자가 "HQ 가 아닌 것" 이라 말할 때 부서 없는 행을 빼겠다는 뜻이 아니다 — backend/api.md.
                 yield nullable ? base.or(simple.isNull()) : base;
             }
             case in -> inPredicate(simple, rawValue, type);
@@ -192,7 +192,7 @@ public final class FieldSpec {
             throw SearchErrors.betweenArity(name);
         }
         /*
-          한쪽이 null 이면 단측이다 — api-conventions.md §3.3. 숫자 가지를 타는 것은 위 orderPredicate 과
+          한쪽이 null 이면 단측이다 — backend/api.md. 숫자 가지를 타는 것은 위 orderPredicate 과
           같은 이유이며, 여기서 comparable() 만 쓰면 숫자 컬럼의 between 이 500 이 된다.
         */
         if (lo == null) {
@@ -217,7 +217,7 @@ public final class FieldSpec {
      *
      * <p><b>실기동에서 잡혔다</b>(2026-09-02). 단위 테스트는 전부 통과했는데 — 스펙을 만들 때
      * {@code .col(...)} 은 {@code Expression<?>} 만 받으므로 <b>컴파일이 막지 않고</b>, 그
-     * 자리는 조건이 실제로 요청에 실려 와야 지나간다. 65 §4.7 이 연 배치 이력의 <i>소요 시간
+     * 자리는 조건이 실제로 요청에 실려 와야 지나간다. screen/batch/schedule/requirements.md 이 연 배치 이력의 <i>소요 시간
      * 이상</i> 도 같은 길이었다.
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -253,10 +253,10 @@ public final class FieldSpec {
     }
 
     /**
-     * <b>대소문자를 가리지 않는다</b> — api-conventions.md §3.3.
+     * <b>대소문자를 가리지 않는다</b> — backend/api.md.
      *
      * <p>이전에는 벤더 콜레이션에 맡겼다(<i>"프로토콜이 정할 일이 아니다"</i>). 그러면
-     * <b>같은 조건이 MySQL 에서는 걸리고 PostgreSQL 에서는 안 걸린다</b> — db-portability.md §1 이 내건
+     * <b>같은 조건이 MySQL 에서는 걸리고 PostgreSQL 에서는 안 걸린다</b> — backend/persistence.md 이 내건
      * <i>무수정 기동</i> 은 기동이 되는 것이 아니라 <b>같은 답이 나오는 것</b>이다.
      *
      * <p><b>{@code eq}·{@code ne}·{@code in} 은 그대로 가린다.</b> 그 셋은 코드값·ID 를
@@ -264,7 +264,7 @@ public final class FieldSpec {
      * 여기 셋만 <b>사람이 기억나는 대로 치는</b> 검색이다.
      *
      * <p>대가가 있다 — {@code LOWER(col)} 이라 <b>{@code startsWith} 가 인덱스를 못 탄다.</b>
-     * 필요해지는 테이블에는 함수 기반 인덱스를 만든다(벤더마다 문법이 다르므로 db-portability.md §4 의
+     * 필요해지는 테이블에는 함수 기반 인덱스를 만든다(벤더마다 문법이 다르므로 backend/persistence.md 의
      * 대상이다). 그것 없이도 조회는 페이징으로 잘리며, <b>틀린 결과보다 느린 결과가 낫다.</b>
      */
     private BooleanExpression like(String pattern) {

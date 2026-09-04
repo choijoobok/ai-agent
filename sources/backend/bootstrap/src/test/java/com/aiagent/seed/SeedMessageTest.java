@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * 메시지 키가 실제로 한 곳에서 나오는가 — ADR-0023.
+ * 메시지 키가 실제로 한 곳에서 나오는가 — sys/message.md.
  *
  * <p>ADR 은 <i>"키는 전역 상수다 — 리터럴을 금지한다"</i> 로 정하고 그 집행을 <b>ESLint 와
  * ArchUnit</b> 에 맡겼다. 프론트는 ESLint 가 {@code label()} 에 리터럴을 넘기는 것을 막는다.
@@ -46,7 +46,7 @@ class SeedMessageTest {
 
     /**
      * 값 시드는 <b>파일 하나가 아니다.</b> 사람 소유 시드는 기존 changeset 을 손대지 않고
-     * 파일을 더하므로(db-portability.md §1.1) {@code 009} · {@code 010} · … 으로 늘어난다.
+     * 파일을 더하므로(backend/persistence.md) {@code 009} · {@code 010} · … 으로 늘어난다.
      *
      * <p><b>이름을 고정해 두면 다음 파일이 검사 밖으로 나간다</b> — 값을 넣었는데 아래 검사가
      * 여전히 실패하거나, 더 나쁘게는 <b>넣지 않았는데 통과</b>한다. 패턴으로 모은다.
@@ -62,7 +62,7 @@ class SeedMessageTest {
      * 패턴인데, 짝이 되는 이쪽만 이름이었다.
      *
      * <p>{@code 008} 은 여기 걸리지 않는다 — 이름이 {@code -message-key} 로 같지만 그쪽은
-     * <b>생성물</b>이고 소유자가 다르다(ADR-0023). 아래에서 걸러 낸다.
+     * <b>생성물</b>이고 소유자가 다르다(sys/message.md). 아래에서 걸러 낸다.
      */
     private static final Pattern DATA_KEY_SEED =
             Pattern.compile("[0-9]{3}-init-message-key[.]csv");
@@ -83,7 +83,7 @@ class SeedMessageTest {
             // 새면 조용하다 — 응답은 정상이고, 그 키만 SYS_MESSAGE_KEY 에 행이 없어
             // 관리 화면에 나타나지 않는다. 번역할 방법이 없다는 사실을 아무도 모른다.
             assertThat(undeclared)
-                    .as("MsgKey 에 상수를 추가하고 ErrorCode 가 그것을 참조하게 한다 — ADR-0023 §1")
+.as("MsgKey 에 상수를 추가하고 ErrorCode 가 그것을 참조하게 한다 — sys/message.md")
                     .isEmpty();
         }
 
@@ -107,7 +107,7 @@ class SeedMessageTest {
         @Test
         @DisplayName("데이터가 만드는 키는 생성 시드에 없다 — 있으면 전부 죽은 키로 잡힌다")
         void dataKeysStayOut() {
-            // menu.* · code.* 는 소스 상수가 아니라 데이터에서 조립된 키다(43 §4.4).
+            // menu.* · code.* 는 소스 상수가 아니라 데이터에서 조립된 키다(sys/code.md).
             // generateMessageSeed 가 이 접두를 건드리면 소스에서 못 찾아 NONE 을 쓴다.
             assertThat(keysOf(GENERATED_KEYS))
                     .noneMatch(key -> key.startsWith("menu.") || key.startsWith("code."));
@@ -126,15 +126,15 @@ class SeedMessageTest {
     class ValueSeed {
 
         /**
-         * <b>템플릿은 값 없는 키를 내보내지 않는다.</b> 43 §7.3 이 <i>"없으면 키를 그대로"</i>
+         * <b>템플릿은 값 없는 키를 내보내지 않는다.</b> sys/code.md 이 <i>"없으면 키를 그대로"</i>
          * 로 정한 것은 <b>운영 중 빠뜨림</b>을 드러내기 위한 것이지, 설치 직후의 정상 상태가
          * 아니다.
          *
          * <p>새 키를 추가한 사람이 여기서 막히면 할 일은 둘 중 하나다 — 값 시드에 행을 넣거나,
-         * 그 키가 이 템플릿의 것이 아니라면 자기 프로젝트의 값 시드 파일을 더한다(db-portability.md §1.1).
+         * 그 키가 이 템플릿의 것이 아니라면 자기 프로젝트의 값 시드 파일을 더한다(backend/persistence.md).
          */
         @Test
-        @DisplayName("시드가 만든 키는 ko 와 en 값을 함께 갖는다 — 11 §5")
+        @DisplayName("시드가 만든 키는 ko 와 en 값을 함께 갖는다 — ")
         void everySeededKeyHasBothLanguages() {
             Set<String> keys = new LinkedHashSet<>(keysOf(GENERATED_KEYS));
             keys.addAll(dataKeys());
@@ -156,7 +156,7 @@ class SeedMessageTest {
          * 그 둘이고 값 시드는 {@code loadData}(순수 {@code INSERT})이므로, 파일이 갈려 있어도
          * <b>DB 에서는 한 테이블</b>이다.
          *
-         * <p><b>파일이 늘어날수록 나기 쉬운 사고다.</b> 값 시드는 db-portability.md §1.1 대로 고치지 않고
+         * <p><b>파일이 늘어날수록 나기 쉬운 사고다.</b> 값 시드는 backend/persistence.md 대로 고치지 않고
          * 더하므로(089 · 091 · 093 …) 새 화면이 <i>이미 있는 컬럼</i> 의 헤더 키를 다시 적기
          * 쉽다 — 실제로 ①이 {@code sample.col.unitAmt} · {@code sample.col.rmk} ·
          * {@code sample.col.urgent} 셋을 ③의 089 위에 다시 적었고, <b>단위 테스트는 전부

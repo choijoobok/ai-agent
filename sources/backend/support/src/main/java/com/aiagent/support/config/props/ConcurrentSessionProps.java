@@ -6,10 +6,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * 동시 접속 제어 — security-design.md §4-1.
+ * 동시 접속 제어 — backend/security.md.
  *
  * <p><b>{@code sys-config.} 아래가 아니다.</b> 이 값들은 기동 시 필터 체인의 모양을 정하므로
- * 런타임에 바꿔도 반영될 자리가 없다 — {@code SYS_CONFIG} 오버레이(43 §6.1)의 대상이 아니라
+ * 런타임에 바꿔도 반영될 자리가 없다 — {@code SYS_CONFIG} 오버레이(sys/code.md)의 대상이 아니라
  * <b>배포 설정</b>이다. 그래서 접두사가 {@code app.security} 이며 관리 화면에 나타나지 않는다.
  *
  * <p><b>IP 비교가 아니라 세션 개수다.</b> IP 비교는 사무실 NAT(전원이 같은 공인 IP)에서
@@ -30,6 +30,6 @@ public record ConcurrentSessionProps(
          * {@code true} — 기존 세션이 남고 <b>신규 로그인이 거부</b>된다.
          *
          * <p><b>{@code true} 를 기본으로 두지 않는다</b>: 브라우저 비정상 종료로 남은 유령
-         * 세션이 재로그인을 세션 타임아웃(최대 30분)까지 막는다(security-design.md §4-1).
+         * 세션이 재로그인을 세션 타임아웃(최대 30분)까지 막는다(backend/security.md).
          */
         @NotNull Boolean preventLogin) {}

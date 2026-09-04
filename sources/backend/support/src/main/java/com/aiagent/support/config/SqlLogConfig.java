@@ -12,13 +12,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 /**
- * 파라미터가 바인딩된 SQL 로그 — system-logging.md §2 · ADR-0011.
+ * 파라미터가 바인딩된 SQL 로그 — backend/logging.md.
  *
  * <p><b>{@code DataSource} 를 감싸는 것이 전부다.</b> JPA · QueryDSL · MyBatis 가 반드시
  * 지나는 유일한 지점이 JDBC 이고, 거기서 가로채야 <b>세 경로가 한 벌로</b> 해결된다.
  * Hibernate 의 {@code show-sql} 은 JPA 만 잡고 파라미터가 물음표로 남는다.
  *
- * <p><b>스타터를 쓰지 않는다</b>(system-logging.md §2.0). 스타터가 해 주는 일은 자동 래핑과 yml
+ * <p><b>스타터를 쓰지 않는다</b>(backend/logging.md). 스타터가 해 주는 일은 자동 래핑과 yml
  * 바인딩뿐이고, 그 둘이 이 파일 하나다 — 대신 판(Spring Boot)의 버전에 매이지 않는다.
  *
  * <p><b>{@link Binder} 로 직접 읽는다.</b> {@link ConfigLookup} 을 쓰지 않는 이유는
@@ -29,7 +29,7 @@ import org.springframework.core.env.Environment;
 @Configuration(proxyBeanMethods = false)
 public class SqlLogConfig {
 
-    /** 켜지 않으면 아무것도 감싸지 않는다 — 운영 기본이 꺼짐이다(system-logging.md §8). */
+    /** 켜지 않으면 아무것도 감싸지 않는다 — 운영 기본이 꺼짐이다(backend/logging.md). */
     private static final SqlLogProps OFF = new SqlLogProps(false, false, java.util.List.of());
 
     /**

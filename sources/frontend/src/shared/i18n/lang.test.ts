@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { normalizeLang, rememberLang, resolveLang } from '@/shared/i18n/lang';
 
 /**
- * 언어 결정 — 50 §3.2.
+ * 언어 결정.
  *
  * <p>여기서 지키는 것은 **어떤 입력이든 지원 언어 하나로 닫힌다**는 것이다. 닫히지 않는
  * 입력이 하나라도 있으면 *"서버 기본 언어"* 라는 3순위가 필요해지고, 그 순간

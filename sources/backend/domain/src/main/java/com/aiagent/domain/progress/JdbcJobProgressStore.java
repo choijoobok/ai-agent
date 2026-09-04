@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DB 에 담는 진행률 — 30 §6.2 의 {@code jdbc} store.
+ * DB 에 담는 진행률 — backend/crosscutting.md 의 {@code jdbc} store.
  *
  * <p><b>쓰기마다 자기 트랜잭션이다</b>({@code REQUIRES_NEW}). 진행률은 <b>작업의 트랜잭션과
  * 운명을 함께하면 안 된다</b> — 같이 묶이면 도는 동안 아무것도 커밋되지 않아 화면이
@@ -24,10 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>설정이 없으면 이것이다</h2>
  *
- * <p>{@code app.progress.store} 가 비어 있으면 이 빈이 뜬다({@code matchIfMissing}) — 30 §6.1
+ * <p>{@code app.progress.store} 가 비어 있으면 이 빈이 뜬다({@code matchIfMissing}) — backend/crosscutting.md
  * 이 템플릿의 기본 가정을 <i>다중화인데 Redis 가 없는 배포</i>로 잡았고, 그 답이
  * {@code jdbc} 이기 때문이다. <b>기본값이 문서가 아니라 코드에 있어야</b> 둘이 갈리지 않는다
- * (실제로 갈려 있었다 — 30 §10 의 예시가 오래 {@code caffeine} 이었다).
+ * (실제로 갈려 있었다 — backend/crosscutting.md 의 예시가 오래 {@code caffeine} 이었다).
  *
  * <p><b>아직 없는 값을 적으면 기동이 죽는다.</b> {@code redis} 라 적어도 구현이 없으니 빈이
  * 없고, {@link JobProgressStore} 를 받는 자리가 실패한다 — Boot 의 실패 분석기가 <i>이 조건
@@ -82,7 +82,7 @@ public class JdbcJobProgressStore implements JobProgressStore {
     public Optional<JobProgressView> find(String jobId, String userId) {
         return repository
                 .findById(jobId)
-                // 남의 것은 <b>없는 것</b>이다 — 46 §8.1.
+                // 남의 것은 <b>없는 것</b>이다 — sys/batch.md.
                 .filter(row -> row.getUserId().equals(userId))
                 .map(row -> new JobProgressView(
                         row.getJobId(),
@@ -96,10 +96,10 @@ public class JdbcJobProgressStore implements JobProgressStore {
     }
 
     /**
-     * 만료된 행을 지운다 — 32 §5 의 <i>만료 청소</i>. 부르는 것은 {@link JdbcProgressSweeper}.
+     * 만료된 행을 지운다 — retention.md 의 <i>만료 청소</i>. 부르는 것은 {@link JdbcProgressSweeper}.
      *
      * <p><b>{@link JobProgressStore} 에 없는 메서드다.</b> Redis·Caffeine 은 native TTL 로
-     * 스스로 만료하므로(32 §5) 인터페이스에 두면 그쪽이 <b>빈 메서드</b>를 갖게 되고, 빈
+     * 스스로 만료하므로(retention.md) 인터페이스에 두면 그쪽이 <b>빈 메서드</b>를 갖게 되고, 빈
      * 메서드는 <i>부르면 되는 것</i>처럼 보인다 — 청소는 저장소의 성질이지 저장소의 계약이
      * 아니다.
      *

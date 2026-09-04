@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { UI_DEFAULTS, UI_STORAGE_KEY, useUiStore } from '@/shared/stores/uiStore';
 
 /**
- * 설정 저장과 초기화 — main-shell.md §9.2.
+ * 설정 저장과 초기화 — frontend/tabs.md.
  *
  * <p><b>초기값과 초기화 값이 같아야 한다.</b> 둘을 따로 두면 <i>"초기화했는데 처음과
  * 다르다"</i> 가 생기고, 되돌릴 경로를 믿지 못하면 사용자는 설정 자체를 피한다.
@@ -73,7 +73,7 @@ describe('uiStore', () => {
 
   it('자동 숨기기와 접힘은 다른 축이다 — 하나를 켜도 다른 하나가 따라 움직이지 않는다', () => {
     // 접힘은 자리를 차지한 채 좁아지고, 숨기기는 자리를 비운다. 숨긴 채로도 접힘이
-    // 남아 있어야 나올 때 그 너비로 나온다(main-shell.md §9.5).
+    // 남아 있어야 나올 때 그 너비로 나온다(frontend/tabs.md).
     useUiStore.getState().setSiderCollapsed(true);
     useUiStore.getState().setSiderAutoHide(true);
 

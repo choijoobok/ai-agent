@@ -5,7 +5,7 @@ import { ScreenTabs } from '@/shared/screentabs/ScreenTabs';
 import { useAuthStore } from '@/shared/stores/authStore';
 
 /**
- * 화면 안 최상단 탭 — main-shell.md §12 · 68 §9.3.
+ * 화면 안 최상단 탭 — frontend/tabs.md · playbook/INDEX.md.
  *
  * <p>여기서 세는 것은 <b>지우면 사고가 되는 것 둘</b>이다.
  *
@@ -65,7 +65,7 @@ describe('화면 안 최상단 탭', () => {
     expect(hidden?.getAttribute('aria-hidden')).toBe('true');
   });
 
-  describe('권한이 항목을 거른다 — 68 §9.3', () => {
+  describe('권한이 항목을 거른다 — playbook/INDEX.md', () => {
     it('`S` 가 없으면 업로드 항목이 아예 없다', () => {
       useAuthStore.setState({ permissions: ['SMPL_EXCEL:READ'] });
 
@@ -76,7 +76,7 @@ describe('화면 안 최상단 탭', () => {
 
     /*
       <b>고를 것이 하나뿐이면 컨트롤이 없다.</b> 누를 수 없는 탭 하나를 남기는 것은
-      조회조건이 후보 하나짜리 셀렉터를 내지 않는 것과 같은 자리다(search-form-contract.md §3.4).
+      조회조건이 후보 하나짜리 셀렉터를 내지 않는 것과 같은 자리다(frontend/search-form.md).
     */
     it('남은 항목이 하나면 탭바를 그리지 않는다', () => {
       useAuthStore.setState({ permissions: ['SMPL_EXCEL:READ'] });
@@ -101,7 +101,7 @@ describe('화면 안 최상단 탭', () => {
   });
 
   /*
-    <b>미저장이면 묻는다</b>(68 §9.3) — 화면 전체가 갈리므로 하단 디테일 탭과 규칙이
+    <b>미저장이면 묻는다</b>(playbook/INDEX.md) — 화면 전체가 갈리므로 하단 디테일 탭과 규칙이
     다르다. 모양이 하단 탭과 같아졌다고 이 규칙까지 같아지지는 않는다.
 
     묻는 동안 전환이 일어나면 안 된다: 사용자가 <i>취소</i> 를 고를 수 있어야 한다.

@@ -3,11 +3,11 @@ import { Select } from 'antd';
 import { useCodeOptionsOf } from '@/shared/code/useCodeOptions';
 
 /**
- * 공통코드 콤보 — 43 §4.2 · §8.
+ * 공통코드 콤보 — sys/code.md.
  *
  * <p><b>화면은 그룹코드만 적는다.</b> 목록을 받고 캐시하고 이름을 붙이는 일이 전부 이 안에
  * 있으므로, 코드를 더하거나 빼는 데 소스 변경이 따르지 않는다 — 그것이 공통코드로 관리할
- * 코드와 <b>소스가 값을 갖는</b> 코드({@code ACTION_CD} 류, 43 §4.4)를 가르는 선이다.
+ * 코드와 <b>소스가 값을 갖는</b> 코드({@code ACTION_CD} 류, sys/code.md)를 가르는 선이다.
  *
  * <p><b>조회조건과 그리드는 이것을 쓰지 않는다.</b> 그쪽은 선언(`SearchField`·`ColumnDef`)에
  * `grpCd` 를 적고 폼과 판이 후보를 채운다 — 컨트롤을 직접 그리는 것이 아니라 <b>선언을
@@ -17,7 +17,7 @@ export function CodeSelect(props: {
   grpCd: string;
   value?: string | string[];
   onChange?: (value: string | string[]) => void;
-  /** 다중 선택 — 값이 배열이 된다(search-form-contract.md §3.4 의 `in` 과 같은 모양이다). */
+  /** 다중 선택 — 값이 배열이 된다(frontend/search-form.md 의 `in` 과 같은 모양이다). */
   multiple?: boolean;
   placeholder?: string;
   disabled?: boolean;
@@ -36,7 +36,7 @@ export function CodeSelect(props: {
       allowClear={props.allowClear}
       style={props.style}
       // `title: ''` — 판은 고른 항목의 글자를 그대로 브라우저 툴팁으로 단다. 보이는 글자를
-      // 한 번 더 띄우는 것이고, 모양도 셸의 툴팁과 다르다(grid-standard.md §2.1).
+      // 한 번 더 띄우는 것이고, 모양도 셸의 툴팁과 다르다(frontend/grid.md).
       options={options.map((option) => ({ value: option.value, label: option.text, title: '' }))}
     />
   );

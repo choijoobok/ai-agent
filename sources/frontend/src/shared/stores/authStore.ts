@@ -9,7 +9,7 @@ export interface AuthUser {
 }
 
 /**
- * 날짜 표시 형식 셋 — grid-column-contract.md §4.5 의 정밀도 표와 1:1 이다.
+ * 날짜 표시 형식 셋 — frontend/grid.md 의 정밀도 표와 1:1 이다.
  *
  * <p>{@code dayjs} 의 형식 문자열이다. 구분자를 바꾸는 것이 이 설정의 첫 용도이며
  * (`YYYY.MM.DD`), 자릿수 자체를 바꾸는 것은 <b>컬럼 선언의 일</b>이다 — 정밀도를 설정으로
@@ -26,7 +26,7 @@ export interface DateFormat {
 
 export interface AuthState {
   user: AuthUser | null;
-  /** 체인 #5. 참이면 비밀번호 변경 외의 화면으로 가면 안 된다(security-design.md §4). */
+  /** 체인 #5. 참이면 비밀번호 변경 외의 화면으로 가면 안 된다(backend/security.md). */
   mustChangePassword: boolean;
   /** 권한 있는 <b>리프 코드</b>. 버튼·진입 판정이 묻는 값이며 트리 순회가 아니다. */
   menus: string[];
@@ -34,17 +34,17 @@ export interface AuthState {
   /** 사이더가 그리는 트리. 조상은 서버가 역산해 넣었다(AUTHZ-04). */
   menuTree: MenuNode[];
   /**
-   * 마지막으로 관찰한 `X-Authz-Version` — 50 §8.1.
+   * 마지막으로 관찰한 `X-Authz-Version`.
    *
    * <p>이 값과 다른 헤더가 오면 권한이 바뀐 것이며 `/auth/me` 로 다시 받는다. <b>`null` 은
    * "아직 모른다"</b> 이고 "바뀌었다" 가 아니다 — 헤더 없는 응답을 변경으로 오해하면 로그인
    * 직후 헛 재조회가 돈다.
    */
   authzVersion: string | null;
-  /** 만료까지의 예산(초) — 셸이 예고 타이머를 거는 근거다(50 §7). 0 이면 세션이 없다. */
+  /** 만료까지의 예산(초) — 셸이 예고 타이머를 거는 근거다. 0 이면 세션이 없다. */
   expiresInSeconds: number;
   /**
-   * 엑셀 <b>전체</b> 다운로드의 행 상한 — ADR-0019 · 43 §6.4.
+   * 엑셀 <b>전체</b> 다운로드의 행 상한 — frontend/grid-advanced.md · sys/code.md.
    *
    * <p>`cacheVersions` 처럼 사용자별이 아니지만 <b>담는다</b> — 엑셀을 누른 순간 총 건수와
    * 비교해야 하고, 그때 물으면 클릭에 왕복이 하나 붙는다.
@@ -59,7 +59,7 @@ export interface AuthState {
    */
   excelMaxUploadRows: number;
   /**
-   * 조회 기간의 <b>시스템 층</b> — 43 §6.4 · 64 §2.2.
+   * 조회 기간의 <b>시스템 층</b> — sys/code.md · screen/log/access/requirements.md.
    *
    * <p>`excelMaxRows` 와 같은 성격이다. 화면은 이것을 <i>더 좁게</i> 덮으며(사용 이력이
    * 1 · 31), 프론트에 7 · 92 를 박아 두면 `SYS_CONFIG` 와 어긋난다 — 그 어긋남은
@@ -67,7 +67,7 @@ export interface AuthState {
    */
   searchRange: { defaultDays: number; maxDays: number };
   /**
-   * 날짜 표시 형식 — 43 §6.4 · grid-column-contract.md §4.5. <b>정밀도 셋이 각자 문자열을 갖는다.</b>
+   * 날짜 표시 형식 — sys/code.md · frontend/grid.md. <b>정밀도 셋이 각자 문자열을 갖는다.</b>
    *
    * <p>`excelMaxRows`·`searchRange` 와 같은 성격이다 — 사용자별이 아니지만 <b>화면이 값을
    * 그리는 데 필요한 기준</b>이며 몇 바이트다. 셀마다 물을 수 없고, 프론트에 박아 두면
@@ -81,14 +81,14 @@ export interface AuthState {
   signIn: (session: AuthSession) => void;
   signOut: () => void;
   /**
-   * 이름만 갈아 끼운다 — 내 정보 저장(main-shell.md §8)이 헤더를 그 자리에서 바꾼다.
+   * 이름만 갈아 끼운다 — 내 정보 저장(frontend/tabs.md)이 헤더를 그 자리에서 바꾼다.
    *
    * <p>서버는 세션 주체도 함께 고치므로 새로고침해도 새 이름이다. 여기서 고치지 않으면
    * **저장은 됐는데 헤더만 옛 이름**이 되고, 그것은 저장이 실패한 것처럼 보인다.
    */
   renameUser: (userNm: string) => void;
   /**
-   * 제한 세션을 푼다 — 체인 #5 는 차단이 아니라 유도이고(security-design.md §4) 유도의 끝에는 문이
+   * 제한 세션을 푼다 — 체인 #5 는 차단이 아니라 유도이고(backend/security.md) 유도의 끝에는 문이
    * 열려야 한다. 서버가 세션 표시를 내리는 것과 짝이다.
    */
   clearPasswordChange: () => void;
@@ -103,7 +103,7 @@ export interface AuthSession {
   permissions: string[];
   menuTree: MenuNode[];
   /**
-   * 프론트 캐시의 유효성 기준 — `{ message: 3, … }`(43 §8.1).
+   * 프론트 캐시의 유효성 기준 — `{ message: 3, … }`(sys/code.md).
    *
    * <p>**스토어에 담지 않는다.** 값이 아니라 *"들고 있는 캐시를 버릴까"* 의 판단 재료이며,
    * 그 판단은 받은 자리에서 끝난다(`messageStore.syncWithSession`). 담아 두면 캐시의
@@ -111,7 +111,7 @@ export interface AuthSession {
    */
   cacheVersions: Record<string, number>;
   /**
-   * 만료까지의 예산(초) — 50 §7.
+   * 만료까지의 예산(초).
    *
    * <p><b>스토어에 담지 않는 `cacheVersions` 와 다르다.</b> 저것은 받은 자리에서 판단이
    * 끝나지만 이것은 <b>셸이 세션 내내 들고 타이머를 건다</b> — 담지 않으면 만료 예고를
@@ -155,21 +155,21 @@ const EMPTY = {
   */
   searchRange: { defaultDays: 7, maxDays: 92 },
   /*
-    <b>ISO 다</b> — grid-column-contract.md §4.5. 서버가 안 보냈을 때 조직의 관례를 여기 적으면, 설정을 비운
+    <b>ISO 다</b> — frontend/grid.md. 서버가 안 보냈을 때 조직의 관례를 여기 적으면, 설정을 비운
     배포가 그 관례를 물려받고 <b>설정 화면에 없는 값</b>으로 날짜가 그려진다.
   */
   dateFormat: { month: 'YYYY-MM', day: 'YYYY-MM-DD', second: 'YYYY-MM-DD HH:mm:ss' },
 };
 
 /**
- * 로그인 사용자와 권한 — frontend-stack.md §8.1.
+ * 로그인 사용자와 권한 — frontend/packages.md.
  *
  * <p><b>{@code persist} 를 붙이지 않는 것이 결정이다.</b> 붙이면 로그아웃한 뒤에도 그 PC 에
- * 이전 사용자의 메뉴 구조가 남는다(50 §5.1). F5 마다 왕복 하나를 그 대가로 감수한다.
+ * 이전 사용자의 메뉴 구조가 남는다. F5 마다 왕복 하나를 그 대가로 감수한다.
  *
  * <p>비우는 것은 <b>로그아웃 정리뿐</b>이다 — 세션 만료로는 비우지 않는다. 재인증 모달이
  * 탭과 입력값을 그대로 두고 뜨려면 그때 사용자 정보가 살아 있어야 하기 때문이다
- * (ADR-0021 · 50 §7.1).
+ * (backend/session.md).
  */
 export const useAuthStore = create<AuthState>((set) => ({
   ...EMPTY,

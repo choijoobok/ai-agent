@@ -13,7 +13,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
- * 이 요청의 언어 — architecture.md §6-1.2 · 50 §3.2.
+ * 이 요청의 언어 — backend/packages.md ·.
  *
  * <p>순서는 <b>둘</b>이다. 세션이 있으면 {@code SYS_USER.LOCALE_CD}, 없으면 요청의 언어
  * 힌트({@code Accept-Language})다. <b>"서버 기본 언어" 를 3순위로 두지 않는다</b> —
@@ -26,12 +26,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  *
  * <h2>비동기 경로가 생겼다 — {@link RequestLang} (2026-09-02)</h2>
  *
- * <p>오래 걸리는 작업이 별도 풀에서 도는데(30 §6) 그 스레드에는 요청도
+ * <p>오래 걸리는 작업이 별도 풀에서 도는데(backend/crosscutting.md) 그 스레드에는 요청도
  * {@code SecurityContext} 도 없다. 실패 문구를 사용자 언어로 완성하려면 그 값을
  * <b>맡기기 전에</b> 받아야 하므로, 도메인이 선언한 구멍을 이 클래스가 채운다 —
  * 도메인은 api 를 참조할 수 없기 때문이다({@code LayerDependencyTest}).
  *
- * <p><b>{@code LocaleContextHolder} 전파(30 §3)는 여전히 하지 않는다.</b> 값을 <b>한 번
+ * <p><b>{@code LocaleContextHolder} 전파(backend/crosscutting.md)는 여전히 하지 않는다.</b> 값을 <b>한 번
  * 읽어 넘기는</b> 것으로 이 경로가 닫히고, 홀더를 채우는 필터는 위 문단의 이유로 여전히
  * 두지 않는다.
  */
@@ -51,7 +51,7 @@ public class RequestLocale implements RequestLang {
     }
 
     /**
-     * 어떤 입력이든 지원 언어 하나로 닫는다 — 50 §3.2 순위 2.
+     * 어떤 입력이든 지원 언어 하나로 닫는다 — 순위 2.
      *
      * <p>지역을 버리고 언어만 본다({@code ko-KR} → {@code ko}). 모르는 언어는
      * {@code browserFallbackLang} 이며 <b>기본 언어가 아니다</b> — 일본어 브라우저에

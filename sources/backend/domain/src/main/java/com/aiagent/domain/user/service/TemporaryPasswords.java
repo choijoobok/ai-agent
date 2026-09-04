@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 관리자가 발급하는 임시 비밀번호를 만든다 — AUTH-07 · 61 §3.4.
+ * 관리자가 발급하는 임시 비밀번호를 만든다 — AUTH-07 · screen/user/requirements.md.
  *
  * <p>{@link PasswordRules} 와 <b>짝</b>이다. 저것은 <i>이 값이 정책을 채우는가</i> 를 묻고
  * 이것은 <b>채우는 값을 만든다</b> — 규칙이 하나뿐이므로 만든 것이 검사를 통과하지 못하는
@@ -16,7 +16,7 @@ import java.util.List;
  * <h2>헷갈리는 글자를 빼는 것이 이 클래스의 전부다</h2>
  *
  * <p>이 값은 <b>사람이 옮겨 적는다</b>. 메일 연동이 없는 배포에서 관리자가 화면에서 읽어
- * 전화나 메신저로 전하며(43 §6.3 의 {@code admin-reset-enabled} 가 <i>"유일한 경로"</i> 라고
+ * 전화나 메신저로 전하며(sys/code.md 의 {@code admin-reset-enabled} 가 <i>"유일한 경로"</i> 라고
  * 적은 그것이다), {@code 0}·{@code O}·{@code 1}·{@code l}·{@code I} 가 섞이면 <b>로그인
  * 실패가 잠금까지 간다</b> — 다섯 번이면 계정이 잠기고, 그 계정은 방금 임시 비밀번호를 받은
  * 계정이다.

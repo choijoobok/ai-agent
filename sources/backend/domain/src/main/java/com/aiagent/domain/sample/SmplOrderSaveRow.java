@@ -8,18 +8,18 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
- * 마스터 저장의 한 행 — 68 §5.
+ * 마스터 저장의 한 행 — playbook/INDEX.md.
  *
  * <p><b>파생 셋이 없다</b>({@code ordAmt} · {@code vatAmt} · {@code itemCnt}). 화면은
- * {@code afterEdit} 으로 앞의 둘을 계산해 보여 주지만(grid-edit-validation.md §2.3) 그것은 <i>보여주기</i> 이고,
+ * {@code afterEdit} 으로 앞의 둘을 계산해 보여 주지만(frontend/grid.md) 그것은 <i>보여주기</i> 이고,
  * 받을 경로를 두면 <b>화면이 금액을 스스로 정하는</b> 셈이 된다 — 읽기 전용은 화면에서만
  * 읽기 전용이고 요청 본문은 조작할 수 있다(원칙 P1).
  *
  * <p><b>{@code lockYn} 도 없다.</b> 그것은 운영이 정하는 것이고 이 화면은 그리지도 않는다
- * (48 §3.2 — {@code hidden}). 받으면 <b>잠긴 주문이 스스로 잠금을 푸는</b> 요청이 성립한다.
+ * (playbook/INDEX.md — {@code hidden}). 받으면 <b>잠긴 주문이 스스로 잠금을 푸는</b> 요청이 성립한다.
  *
  * <p>{@code ordId} 는 신규 행에서 {@code null} 이고(채번) 수정·삭제에서는 <b>대상을
- * 가리키는 값</b>이다. 문자열인 것은 {@code bigint} 어휘의 규약이다(frontend-stack.md §6.1).
+ * 가리키는 값</b>이다. 문자열인 것은 {@code bigint} 어휘의 규약이다(frontend/packages.md).
  */
 public record SmplOrderSaveRow(
         @NotNull RowState rowState,

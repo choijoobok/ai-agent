@@ -15,11 +15,11 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 /**
- * {@code jdbc} store 의 만료 청소 — 32 §5 · 30 §6.2.
+ * {@code jdbc} store 의 만료 청소 — retention.md · backend/crosscutting.md.
  *
  * <h2>청소가 저장소를 따라다닌다</h2>
  *
- * <p>32 §5 는 <i>"Redis·local store 는 native TTL 로 자동 만료되므로 청소 배치가 필요
+ * <p>retention.md 는 <i>"Redis·local store 는 native TTL 로 자동 만료되므로 청소 배치가 필요
  * 없다"</i> 고 적었다. 그래서 이 빈은 {@link JdbcJobProgressStore} 와 <b>같은 조건</b>을
  * 달고 선다 — 배포가 Redis 로 갈아타면 저장소와 함께 <b>사라진다</b>.
  *
@@ -55,7 +55,7 @@ public class JdbcProgressSweeper {
     /**
      * 훑는 주기.
      *
-     * <p>32 §5 의 표는 <b>일 1회</b>로 적었지만 그 값은 <i>보관 기간이 일 단위</i>라는
+     * <p>retention.md 의 표는 <b>일 1회</b>로 적었지만 그 값은 <i>보관 기간이 일 단위</i>라는
      * 전제에서 나온 것이다. 진행률의 보관 기간은 분 단위이므로(기본 30분), 일 1회로 훑으면
      * <b>보관 기간이 사실상 하루</b>가 된다 — 설정한 값과 실제가 갈린다.
      *

@@ -34,7 +34,7 @@ const SWAPPED = JSON.stringify({
 const fieldsOf = (columns: ColumnDef<Row>[]) => columns.map((column) => column.field);
 
 /**
- * 설정 창의 버튼 둘이 보는 것 — grid-standard.md §5.
+ * 설정 창의 버튼 둘이 보는 것 — frontend/grid.md.
  *
  * <p><b>축이 둘이고 하나가 둘을 겸하면 안 된다.</b> {@code saved} 는 <i>DB 에 행이
  * 있는가</i>(초기화가 켜지는 조건)이고 {@code cancel} 은 <i>확정된 상태로 되감는 일</i>
@@ -150,7 +150,7 @@ describe('그리드 개인화 — 저장된 것과 해 보는 중인 것', () =>
   });
 
   /**
-   * 헤더 드래그가 <b>순서 말고 다른 것을 바꾸면 안 된다</b> — grid-standard.md §5.
+   * 헤더 드래그가 <b>순서 말고 다른 것을 바꾸면 안 된다</b> — frontend/grid.md.
    *
    * <p>판은 <b>꺼진 컬럼도 함께</b> 알려 주므로(`getAllGridColumns`) 그 칸들이 전부 이
    * 경로를 지난다. 모르는 칸을 <i>보임 · 고정 없음</i> 으로 채우던 동안, 저장된 설정이
@@ -218,7 +218,7 @@ describe('그리드 개인화 — 저장된 것과 해 보는 중인 것', () =>
   });
 
   /**
-   * <b>되감을 자리를 옮기는 것은 저장이 아니라 적용이다</b> — grid-standard.md §5(2026-08-31 — 지시).
+   * <b>되감을 자리를 옮기는 것은 저장이 아니라 적용이다</b> — frontend/grid.md(2026-08-31 — 지시).
    *
    * <p>적용이 그 자리를 옮기지 않던 동안, <i>적용</i> 으로 맞춰 둔 화면은 <b>그 뒤에 창을
    * 열어 무엇 하나만 고치고 취소해도 통째로 날아갔다</b> — 되감을 자리가 <i>저장한 것</i>

@@ -14,13 +14,13 @@ interface Props {
 }
 
 /**
- * 내 정보 — USER-05 · main-shell.md §8.
+ * 내 정보 — USER-05 · frontend/tabs.md.
  *
- * <p><b>조회와 수정을 탭으로 나누지 않는다</b>(main-shell.md §8). 읽기 전용 화면을 본 뒤 "수정" 으로
+ * <p><b>조회와 수정을 탭으로 나누지 않는다</b>(frontend/tabs.md). 읽기 전용 화면을 본 뒤 "수정" 으로
  * 옮겨 같은 항목을 다시 그리는 것은 화면 하나를 두 번 만드는 일이다.
  *
  * <p><b>편집 가능한 것은 둘뿐이다</b> — 이름과 메일. 나머지는 <b>관리자의 축</b>이거나
- * (사용 기간 · 41 §4.2) <b>다른 화면의 것</b>(언어 · main-shell.md §9.1)이라 읽기로만 둔다. 여기서
+ * (사용 기간 · sys/user-role.md) <b>다른 화면의 것</b>(언어 · frontend/tabs.md)이라 읽기로만 둔다. 여기서
  * 고칠 수 있게 하면 자기 계정으로 자기 권한을 넓히는 경로가 열린다.
  *
  * <p><b>저장하면 헤더의 이름도 바뀐다.</b> 서버가 세션 주체를 갈아 끼우고, 여기서는
@@ -97,7 +97,7 @@ export function MyInfoTab({ profile, onSaved }: Props) {
  * 양끝이 다 비면 제한이 없다는 뜻이다 — 빈 칸으로 두면 조회가 실패한 것처럼 보인다.
  *
  * <p>업무 날짜(`_DT`)는 시간대가 없으므로 `dayjs` 를 태우지 않고 그대로 쓴다 —
- * 현지 시각으로 해석하면 하루가 어긋난다(40 §4.3).
+ * 현지 시각으로 해석하면 하루가 어긋난다(sys/INDEX.md).
  */
 function period(from: string | null, to: string | null): string {
   if (!from && !to) return label(MSG.PROFILE_NONE);

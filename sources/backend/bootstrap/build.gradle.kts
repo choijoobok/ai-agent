@@ -3,7 +3,7 @@ import java.net.URLClassLoader
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-// bootstrap — 실행 모듈. main · application.yml · Liquibase changelog · 프론트 정적 리소스(21 §1).
+// bootstrap — 실행 모듈. main · application.yml · Liquibase changelog · 프론트 정적 리소스(backend/packages.md).
 plugins {
     alias(libs.plugins.spring.boot)
 }
@@ -12,14 +12,14 @@ dependencies {
     implementation(project(":backend:api"))
     implementation("org.springframework.boot:spring-boot-starter")
 
-    // 스키마의 유일한 출처. ddl-auto 는 전 환경 validate 다(22 §1).
+    // 스키마의 유일한 출처. ddl-auto 는 전 환경 validate 다(backend/persistence.md).
     //
     // liquibase-core 만 넣으면 안 된다. Spring Boot 4 는 자동설정을 기술별 모듈로 쪼갰고,
     // 라이브러리만 있으면 자동설정이 붙지 않아 마이그레이션이 조용히 돌지 않는다.
     // 그 침묵을 ddl-auto=validate 가 깼다 — "missing table" 로 기동이 실패한다.
     implementation("org.springframework.boot:spring-boot-starter-liquibase")
 
-    // 4벤더 무수정 기동 요건 — 드라이버는 전부 클래스패스에 있어야 한다(20 §1.3).
+    // 4벤더 무수정 기동 요건 — 드라이버는 전부 클래스패스에 있어야 한다(stack.md).
     runtimeOnly(libs.driver.postgresql)
     runtimeOnly(libs.driver.oracle)
     runtimeOnly(libs.driver.mysql)
@@ -36,16 +36,16 @@ dependencies {
     // "설정만 하면 돈다" 의 다른 쪽 절반이며, 빈이 없을 때의 동작은 Mailer 가 정한다.
     runtimeOnly("org.springframework.boot:spring-boot-starter-mail")
 
-    // 의존 방향 규칙은 빌드가 강제한다(21 §1).
+    // 의존 방향 규칙은 빌드가 강제한다(backend/packages.md).
     testImplementation(libs.archunit.junit5)
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     // 시드에 박힌 해시가 문서화된 비밀번호와 맞는지 검사한다 — SeedAdminPasswordTest.
     testImplementation("org.springframework.security:spring-security-crypto")
 
-    // ── 4벤더 이식성 — VendorPortabilityTest(22 §6 · 48 §7.6) ───────────
+    // ── 4벤더 이식성 — VendorPortabilityTest(backend/persistence.md · playbook/INDEX.md) ───────────
     //
-    // 버전을 적지 않는다. Spring Boot BOM 이 testcontainers 를 관리하므로(20 §4.1) 여기에
+    // 버전을 적지 않는다. Spring Boot BOM 이 testcontainers 를 관리하므로(stack.md) 여기에
     // 숫자를 두면 같은 것의 두 원본이 생긴다.
     //
     // 이름이 testcontainers-* 다. Testcontainers 2.0 이 모듈 좌표를 그렇게 바꿨고, 1.x 이름
@@ -55,7 +55,7 @@ dependencies {
     //
     // 벤더 모듈 넷이 다 필요하다. jdbc:tc: URL 은 그 모듈이 있어야 해석되며, 없으면
     // 컨테이너를 띄우기도 전에 "Database name ... not supported" 로 죽는다 — Docker 문제로
-    // 오해하기 쉬운 문장이다. 드라이버는 runtimeOnly 로 이미 넷 다 있다(20 §1.3).
+    // 오해하기 쉬운 문장이다. 드라이버는 runtimeOnly 로 이미 넷 다 있다(stack.md).
     testImplementation("org.testcontainers:testcontainers-junit-jupiter")
     testImplementation("org.testcontainers:testcontainers-jdbc")
     testImplementation("org.testcontainers:testcontainers-postgresql")
@@ -79,7 +79,7 @@ tasks.test {
 
 tasks.register<Test>("portabilityTest") {
     group = "verification"
-    description = "실제 changelog 를 4벤더에 태운다 — 선다 → 걷어낸다 → 다시 선다(22 §6)"
+    description = "실제 changelog 를 4벤더에 태운다 — 선다 → 걷어낸다 → 다시 선다(backend/persistence.md)"
     testClassesDirs = sourceSets.test.get().output.classesDirs
     classpath = sourceSets.test.get().runtimeClasspath
     useJUnitPlatform { includeTags("portability") }
@@ -97,7 +97,7 @@ tasks.register<Test>("portabilityTest") {
 }
 
 // ── 빌드 정보 ─────────────────────────────────────────────────────────
-// 시스템 정보 팝오버(51 §7.3)가 읽는 것 — "지금 도는 서버가 어느 빌드인가" 에 답한다.
+// 시스템 정보 팝오버(frontend/tabs.md)가 읽는 것 — "지금 도는 서버가 어느 빌드인가" 에 답한다.
 //
 // 버전 문자열만으로는 답이 되지 않는다. 릴리스 태그를 붙이기 전까지 version 은 계속
 // 0.0.1-SNAPSHOT 이고, 그 값으로는 어제 배포와 오늘 배포가 구분되지 않는다. 그래서
@@ -135,12 +135,12 @@ springBoot {
 }
 
 // ── 프론트엔드 임베드 ──────────────────────────────────────────────────
-// npm run build → frontend/dist → 이 모듈의 정적 리소스 → 단일 JAR (25 §1·§2).
+// npm run build → frontend/dist → 이 모듈의 정적 리소스 → 단일 JAR (build-deploy.md).
 
 val frontendDir = rootProject.layout.projectDirectory.dir("frontend")
 val npmCmd = if (System.getProperty("os.name").lowercase().contains("windows")) "npm.cmd" else "npm"
 
-/** 백엔드만 만질 때 프론트 빌드를 건너뛴다 — `-PskipFrontend` (25 §2). */
+/** 백엔드만 만질 때 프론트 빌드를 건너뛴다 — `-PskipFrontend` (build-deploy.md). */
 val skipFrontend = providers.gradleProperty("skipFrontend").isPresent
 
 val npmInstall by tasks.registering(Exec::class) {
@@ -178,14 +178,14 @@ tasks.processResources {
 }
 
 // ── 로컬 기동 ──────────────────────────────────────────────────────────
-// 25 §4. 프로파일을 태스크가 갖는다 — 기동에 그것이 **필수**이기 때문이다.
+// build-deploy.md. 프로파일을 태스크가 갖는다 — 기동에 그것이 **필수**이기 때문이다.
 //
 // application.yml 에는 datasource 가 없고 spring.profiles.active 기본값도 없다. 프로파일
 // 없이 띄우면 "Failed to configure a DataSource" 로 실패하며, 그 메시지는 *무엇을 안 줬는지*
 // 를 말해 주지 않는다 — 처음 받은 사람은 DB 가 안 떴다고 읽는다.
 //
 // 그래서 --args 를 사람이 매번 적는 것이 아니라 여기서 준다. 문서에 적힌 명령이 그대로
-// 붙여 넣어 도는 것과 같은 규약이다(25 §4.1 — IDE 실행 구성도 이 태스크를 부른다).
+// 붙여 넣어 도는 것과 같은 규약이다(build-deploy.md — IDE 실행 구성도 이 태스크를 부른다).
 //
 // 덮는 길은 하나뿐이다. -Pprofile=dev 로 바꾸며, 그 자리에 SPRING_PROFILES_ACTIVE 환경변수를
 // 두지 않는다 — bootRun 은 앱을 별도 JVM 으로 포크하고 그 환경은 **Gradle 데몬**의 것이라,
@@ -195,15 +195,15 @@ tasks.bootRun {
 }
 
 // ── 메시지 키 시드 생성 ─────────────────────────────────────────────────
-// ADR-0023 · 33 §2. 키는 코드가 소유하고 값은 사람이 소유한다 — 이 태스크는 키만 쓰며
+// sys/message.md · seed.md. 키는 코드가 소유하고 값은 사람이 소유한다 — 이 태스크는 키만 쓰며
 // SYS_MESSAGE 를 열지 않는다.
 //
-// 입력이 셋인 것이 generateApiSeed 와 갈리는 자리다(33 §2.2). 소스에서 사라진 키는 소스
+// 입력이 셋인 것이 generateApiSeed 와 갈리는 자리다(seed.md). 소스에서 사라진 키는 소스
 // 스캔으로 알 수 없으므로 직전 시드 파일을 함께 읽어 USE_SCOPE 를 NONE 으로 이어 쓴다.
 // 이 입력을 빼면 재생성이 그 행을 떨어뜨리고, loadUpdateData 가 갱신하지 않아 DB 의
 // USE_SCOPE 가 옛 값으로 굳는다 — 죽은 키가 영원히 미사용으로 안 보인다.
 
-/** 데이터가 만드는 키의 접두 — 이 태스크가 건드리지 않는다(43 §4.4). */
+/** 데이터가 만드는 키의 접두 — 이 태스크가 건드리지 않는다(sys/code.md). */
 val dataKeyPrefixes = listOf("menu.", "code.")
 
 abstract class MessageSeedTask : DefaultTask() {
@@ -214,7 +214,7 @@ abstract class MessageSeedTask : DefaultTask() {
 
     @get:Input abstract val dataPrefixes: ListProperty<String>
 
-    /** 생성 대상이자 <b>입력</b>이다 — 그래서 @InputFile 로 선언할 수 없다(33 §2.2). */
+    /** 생성 대상이자 <b>입력</b>이다 — 그래서 @InputFile 로 선언할 수 없다(seed.md). */
     @get:Internal abstract val seedFile: RegularFileProperty
 
     /** 참이면 쓰지 않고 커밋본과 비교만 한다 — CI 의 checkSeeds. */
@@ -266,7 +266,7 @@ abstract class MessageSeedTask : DefaultTask() {
         val committed = if (file.exists()) file.readText(Charsets.UTF_8) else ""
         if (committed != rendered) {
             throw GradleException(
-                "메시지 키 시드가 소스와 다르다. ./gradlew generateMessageSeed 를 돌리고 함께 커밋한다 — 33 §5.",
+                "메시지 키 시드가 소스와 다르다../gradlew generateMessageSeed 를 돌리고 함께 커밋한다 — seed.md.",
             )
         }
         logger.lifecycle("메시지 키 시드 일치 — ${rows.size}개")
@@ -382,9 +382,9 @@ fun Project.messageSeedTask(name: String, verify: Boolean) =
     tasks.register<MessageSeedTask>(name) {
         group = "seed"
         description = if (verify) {
-            "메시지 키 시드가 소스와 일치하는지 확인한다 — 33 §4"
+            "메시지 키 시드가 소스와 일치하는지 확인한다 — seed.md"
         } else {
-            "프론트 MSG 와 백엔드 MsgKey 를 읽어 008-init-message-key.csv 를 만든다 — ADR-0023"
+            "프론트 MSG 와 백엔드 MsgKey 를 읽어 008-init-message-key.csv 를 만든다 — sys/message.md"
         }
         backendKeys.set(
             rootProject.layout.projectDirectory.file(
@@ -406,7 +406,7 @@ fun Project.messageSeedTask(name: String, verify: Boolean) =
 val generateMessageSeed = messageSeedTask("generateMessageSeed", verify = false)
 val checkMessageSeed = messageSeedTask("checkMessageSeed", verify = true)
 
-// ── 메뉴 시드 생성 — ADR-0028 · 33 §2 ───────────────────────────────────
+// ── 메뉴 시드 생성 — seed.md ───────────────────────────────────
 //
 //   ./gradlew generateMenuSeed    menu/menu-tree.yaml → 003-init-menu.csv
 //   ./gradlew checkMenuSeed       재생성 결과 == 커밋본
@@ -415,15 +415,15 @@ val checkMessageSeed = messageSeedTask("checkMessageSeed", verify = true)
 // 선언 파일을 읽어 CSV 를 뱉을 뿐이고, upsert 냐 전건 교체냐는 003 의 changeSet 이 정한다.
 //
 // 선언에 없는 것을 CSV 가 담지 않는다 — SORT_NO · ICON_CD · USE_YN 은 운영이 정하는 값이라
-// loadUpdateData 가 건드리면 안 된다(ADR-0028). MENU_NM 은 메뉴명이 아니라 메시지 키이며
-// 코드에서 만든다(42 §4).
+// loadUpdateData 가 건드리면 안 된다(seed.md). MENU_NM 은 메뉴명이 아니라 메시지 키이며
+// 코드에서 만든다(sys/menu.md).
 
 /**
  * 메뉴 선언 파일의 파서 — 두 태스크가 나눠 쓴다.
  *
  * generateMenuSeed 는 CSV 를 만들고 generateApiSeed 는 `MENU_CD ↔ MENU_URL` 사슬의 첫
  * 마디로 쓴다. 그 전에는 뒤엣것이 `003-init-menu.yaml` 한 파일을 파싱했고, 메뉴가 파일로
- * 늘어나면 **둘째 파일을 읽지 못해** 그 화면의 API 가 전부 미매핑(=403)이 됐다(ADR-0028).
+ * 늘어나면 **둘째 파일을 읽지 못해** 그 화면의 API 가 전부 미매핑(=403)이 됐다(seed.md).
  *
  * <b>`object` 인 것이 필요해서다.</b> 스크립트 최상위 함수를 태스크가 부르면 그 태스크
  * 클래스가 <b>스크립트 인스턴스를 잡는 inner class</b> 가 되고, Gradle 이 만들지 못한다.
@@ -490,7 +490,7 @@ abstract class MenuSeedTask : DefaultTask() {
         if (rows.isEmpty()) {
             // 파서가 헛돌면 CSV 가 비고, 그러면 전 메뉴가 ORPHAN 이 된다 — 조용히 지나가면
             // 증상이 "로그인했더니 사이더가 비었다" 로 나타난다.
-            throw GradleException("메뉴 선언을 하나도 읽지 못했다 — menu/menu-tree.yaml 을 확인한다(ADR-0028).")
+            throw GradleException("메뉴 선언을 하나도 읽지 못했다 — menu/menu-tree.yaml 을 확인한다(seed.md).")
         }
 
         val codes = rows.map { it.code }
@@ -517,7 +517,7 @@ abstract class MenuSeedTask : DefaultTask() {
         val committed = if (file.exists()) file.readText(Charsets.UTF_8) else ""
         if (committed != rendered) {
             throw GradleException(
-                "메뉴 시드가 선언과 다르다. ./gradlew generateMenuSeed 를 돌리고 함께 커밋한다 — 33 §5.",
+                "메뉴 시드가 선언과 다르다../gradlew generateMenuSeed 를 돌리고 함께 커밋한다 — seed.md.",
             )
         }
         logger.lifecycle("메뉴 시드 일치 — ${rows.size}개")
@@ -532,7 +532,7 @@ abstract class MenuSeedTask : DefaultTask() {
         rows.forEach { row ->
             out.append(row.code).append(',')
                 .append(row.parent ?: "NULL").append(',')
-                // 메뉴명이 아니라 메시지 키다 — 이름의 단일 원본은 SYS_MESSAGE 다(42 §4).
+                // 메뉴명이 아니라 메시지 키다 — 이름의 단일 원본은 SYS_MESSAGE 다(sys/menu.md).
                 .append("menu.").append(row.code).append(',')
                 .append(row.url ?: "NULL").append(',')
                 .append(if (row.export) "Y" else "N").append(',')
@@ -546,9 +546,9 @@ fun menuSeedTask(name: String, verify: Boolean) =
     tasks.register<MenuSeedTask>(name) {
         group = "seed"
         description = if (verify) {
-            "메뉴 시드가 선언과 일치하는지 확인한다 — 33 §4"
+            "메뉴 시드가 선언과 일치하는지 확인한다 — seed.md"
         } else {
-            "menu/menu-tree.yaml 을 읽어 003-init-menu.csv 를 만든다 — ADR-0028"
+            "menu/menu-tree.yaml 을 읽어 003-init-menu.csv 를 만든다 — seed.md"
         }
         declaration.set(layout.projectDirectory.file("src/main/resources/menu/menu-tree.yaml"))
         seedFile.set(
@@ -560,28 +560,28 @@ fun menuSeedTask(name: String, verify: Boolean) =
 val generateMenuSeed = menuSeedTask("generateMenuSeed", verify = false)
 val checkMenuSeed = menuSeedTask("checkMenuSeed", verify = true)
 
-// ── 인가 시드 생성 — ADR-0020 · ADR-0022 · 33 ───────────────────────────────
+// ── 인가 시드 생성 — backend/api.md · seed.md · 33 ───────────────────────────────
 //
 //   ./gradlew generateApiSeed     컨트롤러 + 프론트 endpoints + 메뉴 시드 → 006·007 CSV
 //   ./gradlew checkApiSeed        재생성 결과 == 커밋본 (CI 의 check 에 달려 있다)
 //
-// 008(메시지)과 방식이 다르다. 여기는 전건 삭제 → 전건 삽입이며(ADR-0022) 그 행에
+// 008(메시지)과 방식이 다르다. 여기는 전건 삭제 → 전건 삽입이며(seed.md) 그 행에
 // 사람의 것이 딸려 있지 않기 때문이다 — 지운 API 의 행은 그대로 사라져야 한다.
 //
 // 바이트코드를 읽는다. @Operation 과 @ApiActionType 이 RUNTIME 유지인 것이 그래서이며
-// (ADR-0020), Javadoc 을 파싱하는 대안은 SOURCE 유지라 스캔이 보지 못한다.
+// (backend/api.md), Javadoc 을 파싱하는 대안은 SOURCE 유지라 스캔이 보지 못한다.
 //
 // MENU_CD ↔ API_URL 의 사슬은 셋을 잇는다.
 //
-//   menu/menu-tree.yaml  MENU_CD ↔ MENU_URL   (ADR-0028 — 시드가 아니라 선언이다)
+// menu/menu-tree.yaml MENU_CD ↔ MENU_URL (seed.md — 시드가 아니라 선언이다)
 //   screenRegistry.ts    MENU_URL → @/features/{도메인}[/{화면}]
 //   {도메인}[/{화면}]/api/endpoints.ts  → /service/** URL 들
 //
-// 마디가 둘일 수 있는 것이 68 §10.2 다 — 샘플 여섯은 한 애그리거트를 나눠 쓰므로 폴더가
+// 마디가 둘일 수 있는 것이 playbook/INDEX.md 다 — 샘플 여섯은 한 애그리거트를 나눠 쓰므로 폴더가
 // 인가 경계이고, 한 폴더에 둘을 두면 두 화면의 엔드포인트가 서로에게 매핑된다.
 //
 // 사슬의 어느 마디도 이 태스크를 위해 새로 만든 선언이 아니다 — 셋 다 화면이 돌기 위해
-// 이미 있어야 하는 것이며, 그래서 "선언 = 사용" 이 구조적으로 성립한다(ADR-0020).
+// 이미 있어야 하는 것이며, 그래서 "선언 = 사용" 이 구조적으로 성립한다(backend/api.md).
 
 abstract class ApiSeedTask : DefaultTask() {
 
@@ -592,7 +592,7 @@ abstract class ApiSeedTask : DefaultTask() {
     @get:InputFiles abstract val scanClasspath: ConfigurableFileCollection
 
     /**
-     * 메뉴 **선언** 파일이다 — 시드가 아니다(ADR-0028).
+     * 메뉴 **선언** 파일이다 — 시드가 아니다(seed.md).
      *
      * 그 전에는 `003-init-menu.yaml` 한 파일을 파싱했고, 메뉴가 changeset 파일로 늘어나는
      * 모델에서는 **둘째 파일을 읽지 못해** 그 화면의 API 가 전부 미매핑(=403)이 됐다.
@@ -622,7 +622,7 @@ abstract class ApiSeedTask : DefaultTask() {
         if (apis.isEmpty()) {
             // 스캔이 비면 시드가 통째로 비고, 그러면 전 화면이 403 이 된다. 조용히 지나가면
             // 원인이 "권한이 없다" 로 보인다 — 클래스패스가 어긋난 것이다.
-            throw GradleException("업무 API 를 하나도 찾지 못했다 — 스캔 대상을 확인한다(ADR-0020).")
+            throw GradleException("업무 API 를 하나도 찾지 못했다 — 스캔 대상을 확인한다(backend/api.md).")
         }
         val mappings = scanMappings(apis.keys)
 
@@ -682,7 +682,7 @@ abstract class ApiSeedTask : DefaultTask() {
 
         if (summary.isEmpty()) {
             throw GradleException(
-                "@Operation(summary=…) 이 없다 — $url. API_NM 을 만들 방법이 없다(ADR-0020).",
+                "@Operation(summary=…) 이 없다 — $url. API_NM 을 만들 방법이 없다(backend/api.md).",
             )
         }
         val declared = annotationOf(method.annotations, "ApiActionType")
@@ -691,7 +691,7 @@ abstract class ApiSeedTask : DefaultTask() {
         return ApiRow(summary.take(100), description.take(500), action, declared != null)
     }
 
-    /** 마지막 마디의 접두가 액션을 정한다 — ADR-0020 결정 1. */
+    /** 마지막 마디의 접두가 액션을 정한다 — backend/api.md 결정 1. */
     private fun actionOfPath(url: String): String {
         val last = url.substringAfterLast('/')
         return when {
@@ -727,7 +727,7 @@ abstract class ApiSeedTask : DefaultTask() {
         val screens = parseScreenRegistry(screenRegistry.get().asFile.readText(Charsets.UTF_8))
 
         /*
-          <b>화면은 등록됐는데 메뉴가 없다</b> — 언제나 실수다(ADR-0028). 그 화면은 메뉴
+          <b>화면은 등록됐는데 메뉴가 없다</b> — 언제나 실수다(seed.md). 그 화면은 메뉴
           트리에 없어 열 수가 없고, 매핑도 안 만들어져 부를 수 있어도 403 이다.
 
           반대 방향(선언에 있는데 SCREENS 에 없음)은 정상이다 — screenRegistry 주석이
@@ -738,7 +738,7 @@ abstract class ApiSeedTask : DefaultTask() {
             if (missing.isNotEmpty()) {
                 throw GradleException(
                     "screenRegistry 에 있는데 메뉴 선언에 없다 — 열 수 없는 화면이다: " +
-                        missing.joinToString() + " (menu/menu-tree.yaml · ADR-0028)",
+                        missing.joinToString() + " (menu/menu-tree.yaml · seed.md)",
                 )
             }
         }
@@ -779,12 +779,12 @@ abstract class ApiSeedTask : DefaultTask() {
         val mapped = mappings.map { it.second }.toSet()
         val unmapped = apis.keys - mapped
         if (unmapped.isNotEmpty()) {
-            // 42 §5 의 미매핑이다. 잘못은 아니지만 아무도 권한을 가질 수 없으므로 곧 403 이다.
+            // sys/menu.md 의 미매핑이다. 잘못은 아니지만 아무도 권한을 가질 수 없으므로 곧 403 이다.
             logger.warn("메뉴 매핑이 0건인 API ${unmapped.size}개 — 전부 403 이다: ${unmapped.joinToString()}")
         }
         val execute = apis.filterValues { it.action == "EXECUTE" && !it.declared }.keys
         if (execute.isNotEmpty()) {
-            // 접두 오타(svae)가 조용히 EXECUTE 로 떨어지는 자리다 — ADR-0020 결과.
+            // 접두 오타(svae)가 조용히 EXECUTE 로 떨어지는 자리다 — backend/api.md 결과.
             logger.lifecycle("접두로 EXECUTE 가 된 API ${execute.size}개: ${execute.joinToString()}")
         }
     }
@@ -818,7 +818,7 @@ abstract class ApiSeedTask : DefaultTask() {
         val committed = if (file.exists()) file.readText(Charsets.UTF_8) else ""
         if (committed != rendered) {
             throw GradleException(
-                "$label 이 소스와 다르다. ./gradlew generateApiSeed 를 돌리고 함께 커밋한다 — 33 §5.",
+                "$label 이 소스와 다르다../gradlew generateApiSeed 를 돌리고 함께 커밋한다 — seed.md.",
             )
         }
     }
@@ -844,7 +844,7 @@ abstract class ApiSeedTask : DefaultTask() {
         val SAVE_PREFIXES = listOf("save", "insert", "update", "delete")
         val ENDPOINT_URL = Regex("""'(/service/[^']+)'""")
         /*
-          마디를 하나로 못 박지 않는다. 68 §10.2 가 화면마다 폴더를 요구하므로 샘플의
+          마디를 하나로 못 박지 않는다. playbook/INDEX.md 가 화면마다 폴더를 요구하므로 샘플의
           여섯은 `features/sample/mdvertical` 처럼 두 마디이며, 한 마디만 잡으면 `sample`
           로 읽어 `features/sample/api/endpoints.ts` 를 찾다가 없다고 조용히 건너뛴다 —
           그 화면의 API 가 전부 미매핑(=403)이고, 실패가 아니라 침묵으로 나온다.
@@ -861,9 +861,9 @@ fun Project.apiSeedTask(name: String, verify: Boolean) =
     tasks.register<ApiSeedTask>(name) {
         group = if (verify) "verification" else "seed"
         description = if (verify) {
-            "인가 시드가 컨트롤러·화면 선언과 일치하는지 확인한다 — 33 §4"
+            "인가 시드가 컨트롤러·화면 선언과 일치하는지 확인한다 — seed.md"
         } else {
-            "컨트롤러와 프론트 endpoints 를 읽어 006·007 CSV 를 만든다 — ADR-0020"
+            "컨트롤러와 프론트 endpoints 를 읽어 006·007 CSV 를 만든다 — backend/api.md"
         }
         dependsOn(":backend:api:classes")
         controllerClasses.from(
@@ -893,7 +893,7 @@ fun Project.apiSeedTask(name: String, verify: Boolean) =
 val generateApiSeed = apiSeedTask("generateApiSeed", verify = false)
 val checkApiSeed = apiSeedTask("checkApiSeed", verify = true)
 
-// ── 샘플 대량 시드 — 48 §8 의 데이터 건수 ────────────────────────────
+// ── 샘플 대량 시드 — playbook/INDEX.md 의 데이터 건수 ────────────────────────────
 //
 //   ./gradlew generateSampleBulkSeed    902-sample-bulk-{order,item}.csv 를 만든다
 //   ./gradlew checkSampleBulkSeed       재생성 결과 == 커밋본
@@ -904,7 +904,7 @@ val checkApiSeed = apiSeedTask("checkApiSeed", verify = true)
 //
 // ── 다시 만들면 남의 로컬이 죽는다 ─────────────────────────────────────
 //
-// loadData 는 CSV 내용을 체크섬에 넣는다(22 §1.1). 건수를 바꾸는 것은 이 CSV 를 다시 만드는
+// loadData 는 CSV 내용을 체크섬에 넣는다(backend/persistence.md). 건수를 바꾸는 것은 이 CSV 를 다시 만드는
 // 일이 아니라 **새 changeset 을 더하는** 일이다 — 이미 902 가 돈 DB 에서는 기동이 죽는다.
 // checkSampleBulkSeed 가 CI 에 붙어 있는 것은 그래서다: 손으로 고치는 것도, 무심코 다시
 // 만드는 것도 여기서 걸린다.
@@ -916,7 +916,7 @@ val checkApiSeed = apiSeedTask("checkApiSeed", verify = true)
 //
 // 새 changeset 에는 **RMK 를 함께 실어야 한다.** 여기 컬럼 목록에 그것이 없어서 902 는
 // 할인율만 넣고 비고를 비운 행 1996건을 만들었고, ①은 **할인이 있으면 비고가 필수**라
-// (68 §3.2) 그 행들이 화면에서 저장되지 않았다 — 한 칸을 고치고 저장을 누르면 손대지 않은
+// (playbook/INDEX.md) 그 행들이 화면에서 저장되지 않았다 — 한 칸을 고치고 저장을 누르면 손대지 않은
 // 97행이 함께 걸려 "99건의 오류" 가 뜬다. 903 이 그 행들을 뒤에서 채웠지만, 이 목록은
 // 그대로다(CSV 를 다시 만들 수 없다 — 위의 이유).
 abstract class SampleBulkSeedTask : DefaultTask() {
@@ -959,8 +959,8 @@ abstract class SampleBulkSeedTask : DefaultTask() {
         val committed = if (file.exists()) file.readText(Charsets.UTF_8) else ""
         if (committed != rendered) {
             throw GradleException(
-                "샘플 대량 시드가 생성기와 다르다(${file.name}). 손으로 고치지 않는다 — 33 §5. " +
-                    "건수를 바꾸려면 새 changeset 이 필요하다(48 §7.8).",
+                "샘플 대량 시드가 생성기와 다르다(${file.name}). 손으로 고치지 않는다 — seed.md. " +
+                    "건수를 바꾸려면 새 changeset 이 필요하다(playbook/INDEX.md).",
             )
         }
     }
@@ -1015,7 +1015,7 @@ abstract class SampleBulkSeedTask : DefaultTask() {
                 if (i % 5 == 0) "NULL" else (30 + (i * 37) % 90_000).toString(),
                 if (i % 23 == 0) "Y" else "N",
                 if (i % 97 == 0) "N" else "Y",
-                // 잠긴 행 — USE_YN 이 닫히는 것이 그 행에서만 보인다(48 §3.2).
+                // 잠긴 행 — USE_YN 이 닫히는 것이 그 행에서만 보인다(playbook/INDEX.md).
                 if (i % 61 == 0) "Y" else "N",
                 SOURCES[i % SOURCES.size],
                 // 오류 메시지가 있는 행 — 조회조건 `값 있음` 이 잡을 것이 있어야 한다.
@@ -1130,7 +1130,7 @@ abstract class SampleBulkSeedTask : DefaultTask() {
      * **다섯 중 넷은 최근 [DENSE_DAYS]일 안이다** (2026-09-02 — 실측에서 고쳤다).
      *
      * 처음에는 2년에 고르게 흩었는데, ②는 `ordDtm` 범위를 **31일까지만** 받고 기본이
-     * **최근 1일**이다(68 §4.3 · `SampleQueryService.checkRange`) — 하루 두세 건이면 그 창에
+     * **최근 1일**이다(playbook/INDEX.md · `SampleQueryService.checkRange`) — 하루 두세 건이면 그 창에
      * 99건만 들어와 100/쪽에서 한 쪽이고, 그러면 다음 쪽 버튼이 눌리지 않아 **커서가
      * 시연되지 않는다.** 건수만 늘리는 것으로는 안 되고 **밀도**가 맞아야 하는 자리다.
      *
@@ -1139,7 +1139,7 @@ abstract class SampleBulkSeedTask : DefaultTask() {
      * 그때는 기간을 데이터가 있는 쪽으로 옮겨 조회한다. 901 의 여섯도 같은 성질이다.
      *
      * 나머지 다섯 중 하나는 이틀 간격으로 2년 남짓 거슬러 둔다 — ①의 주문일 조건은 366일까지
-     * 열려 있고(57 §3), 오래된 행이 없으면 그 조건은 **넓혀도 결과가 같다.**
+     * 열려 있고(frontend/search-form.md), 오래된 행이 없으면 그 조건은 **넓혀도 결과가 같다.**
      */
     private fun dayOf(i: Int): LocalDate =
         if (i < DENSE_COUNT) {
@@ -1151,7 +1151,7 @@ abstract class SampleBulkSeedTask : DefaultTask() {
     /**
      * 같은 날에 앉은 행끼리 **시각이 겹치지 않게** 흩는다.
      *
-     * 정렬 기본값이 `ORD_DTM desc` 이고 커서가 그 값을 담으므로(72 §3.9), 같은 값이 쌓이면
+     * 정렬 기본값이 `ORD_DTM desc` 이고 커서가 그 값을 담으므로(backend/api.md), 같은 값이 쌓이면
      * 시연되는 것이 **커서가 아니라 tie-breaker** 다. 하루에 [DENSE_DAYS] 칸씩 앉으므로
      * 8시부터 분 단위로 배치하면 하루 안에서 유일하다.
      */
@@ -1162,7 +1162,7 @@ abstract class SampleBulkSeedTask : DefaultTask() {
 
     companion object {
         /**
-         * **2,000 건** — 48 §8 이 초안으로 적어 둔 값이다.
+         * **2,000 건** — playbook/INDEX.md 이 초안으로 적어 둔 값이다.
          *
          * ②의 쪽수 후보가 100 · 500 · 1000 이라(SampleSingleCursorPage) 가장 큰 후보에서도
          * **두 쪽**이다 — 한 쪽이면 다음 쪽 버튼이 눌리지 않아 커서가 시연되지 않는다.
@@ -1180,7 +1180,7 @@ abstract class SampleBulkSeedTask : DefaultTask() {
         /**
          * 밀집 구간의 폭 — **여드레**.
          *
-         * ②의 기간 조건은 기본이 **최근 1일**이고 상한이 31일이다(68 §4.3). 상한에 맞춰
+         * ②의 기간 조건은 기본이 **최근 1일**이고 상한이 31일이다(playbook/INDEX.md). 상한에 맞춰
          * 31일에 흩으면 하루에 52건이 앉아 **기본값으로 조회했을 때 한 쪽**이고, 그러면
          * 커서를 보려면 사용자가 먼저 기간을 넓혀야 한다 — 참조 구현이 **첫 조회에서**
          * 자기 어휘를 보여야 하므로 하루에 200건이 앉게 좁혔다.
@@ -1244,9 +1244,9 @@ fun sampleBulkSeedTask(name: String, verify: Boolean) =
     tasks.register<SampleBulkSeedTask>(name) {
         group = if (verify) "verification" else "seed"
         description = if (verify) {
-            "샘플 대량 시드가 생성기와 일치하는지 확인한다 — 48 §8"
+            "샘플 대량 시드가 생성기와 일치하는지 확인한다 — playbook/INDEX.md"
         } else {
-            "샘플 대량 시드 CSV 를 만든다 — 48 §8"
+            "샘플 대량 시드 CSV 를 만든다 — playbook/INDEX.md"
         }
         orderFile.set(
             layout.projectDirectory.file(
@@ -1272,13 +1272,13 @@ val checkSampleBulkSeed = sampleBulkSeedTask("checkSampleBulkSeed", verify = tru
 // 태스크를 따로 기억하게 두지 않는다 — 하나만 돌린 커밋이 생기고, 그때 막는 것은 CI 뿐이다.
 tasks.register("generateSeeds") {
     group = "seed"
-    description = "생성 시드를 전부 다시 만든다 — 33 §3"
+    description = "생성 시드를 전부 다시 만든다 — seed.md"
     dependsOn(generateMenuSeed, generateApiSeed, generateMessageSeed, generateSampleBulkSeed)
 }
 
 tasks.register("checkSeeds") {
     group = "verification"
-    description = "생성 시드가 소스와 일치하는지 확인한다 — 33 §4"
+    description = "생성 시드가 소스와 일치하는지 확인한다 — seed.md"
     dependsOn(checkMenuSeed, checkApiSeed, checkMessageSeed, checkSampleBulkSeed)
 }
 

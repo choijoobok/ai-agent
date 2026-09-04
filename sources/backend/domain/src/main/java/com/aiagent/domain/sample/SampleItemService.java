@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 품목의 저장과 재계산 — 68 §5.4 · §8.
+ * 품목의 저장과 재계산 — playbook/INDEX.md.
  *
  * <h2>대상을 가리키는 방법이 둘이다</h2>
  *
@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
  * <p>섞으면 거부되는 요청이 쓰기를 한 번 내고 돌아가며, 롤백해도 <b>시퀀스는 뛴다</b> —
  * 이 테이블은 채번을 쓰므로 실제로 일어난다. 412행 중 400번째가 <i>없는 주문번호</i> 이면
  * 앞의 399행이 이미 들어간 채로 실패하고, 사용자는 <b>어디까지 됐는지</b> 를 조회해서
- * 세야 한다(68 §8.7).
+ * 세야 한다(playbook/INDEX.md).
  *
  * <p><b>잠금은 {@link SampleRules} 가 본다</b> — 주문·품목·태그 셋이 같은 문을 지난다.
  */
@@ -107,9 +107,9 @@ public class SampleItemService {
     }
 
     /**
-     * ⑤의 저장 — 68 §8. <b>업무 데이터 탭과 엑셀 업로드 탭이 같은 경로를 쓴다.</b>
+     * ⑤의 저장 — playbook/INDEX.md. <b>업무 데이터 탭과 엑셀 업로드 탭이 같은 경로를 쓴다.</b>
      *
-     * <p>ADR-0024 가 업로드에 새 경로를 두지 않기로 한 자리다: 업로드는 <i>파일을 서버에
+     * <p>frontend/grid-advanced.md 가 업로드에 새 경로를 두지 않기로 한 자리다: 업로드는 <i>파일을 서버에
      * 올리는 일</i>이 아니라 <b>브라우저가 읽어 그리드에 부은 행을 저장하는 일</b>이라,
      * 업무 탭의 저장과 <b>같은 요청</b>이 된다. 경로를 가르면 같은 표에 규칙이 둘 생기고
      * 그 둘은 반드시 갈린다.
@@ -119,7 +119,7 @@ public class SampleItemService {
      * <p>{@link #saveItems} 와 갈리는 유일한 점이며, 이유는 {@link SmplFlatItemSaveRow} 가
      * 적어 두었다 — 한 파일에 여러 주문이 섞이고 {@code ITEM_SEQ} 는 파일에 없다.
      *
-     * <p><b>화면이 이미 걸렀어도 다시 본다</b>(grid-edit-validation.md §3.4). 없는 주문번호도 파일 안의 키 중복도
+     * <p><b>화면이 이미 걸렀어도 다시 본다</b>(frontend/grid.md). 없는 주문번호도 파일 안의 키 중복도
      * 프론트가 먼저 짚지만, 그 판정은 <b>파일을 읽던 시점</b>의 것이다 — 그 사이에 남이
      * 주문을 지웠을 수 있다.
      */
@@ -165,7 +165,7 @@ public class SampleItemService {
         for (SmplFlatItemSaveRow row : rows) {
             SmplOrder order = byOrdNo.get(row.ordNo());
             if (order == null) {
-                // 68 §8.7 — ORD_NO 가 DB 에 없으면 ORD_ID 를 풀 수 없다. 그 행이 오류다.
+                // playbook/INDEX.md — ORD_NO 가 DB 에 없으면 ORD_ID 를 풀 수 없다. 그 행이 오류다.
                 throw new BusinessException(
                         SampleErrorCode.NO_SUCH_ORDER, "no such order: " + row.ordNo());
             }

@@ -4,7 +4,7 @@
  * <p><b>의존성이 없다. `node` 하나로 돈다</b> — 폐쇄망에서 `npm i` 없이 훅이 서야 하고
  * (CLAUDE.md §1), 훅이 자기 의존성을 갖는 순간 그 설치가 새 사람의 첫 관문이 된다.
  * 두 저장소에서 합칠 때 <b>런타임을 Node 하나로 고른 이유</b>가 이것이다 —
- * [ADR-0031](../../aidd-guide/records/adr/0031-single-hook-runtime.md).
+ * [`harness/hooks.md`](../../aidd-guide/harness/hooks.md).
  *
  * <p><b>전부 fail-open 이다.</b> 훅이 죽어도 세션을 막지 않는다. 막는 훅이 죽으면
  * 규율이 사라지지만, <b>죽은 훅이 세션을 막으면 사람이 훅을 끈다</b> — 꺼진 훅은 없는 훅이다.

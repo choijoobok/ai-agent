@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
  *
  * <p><b>{@code sys-config.} 아래가 아니다.</b> 발신 주소는 메일 서버가 허용하는 것과 짝이라
  * 화면에서 바꾸면 <b>발송이 통째로 거부되는</b> 상태를 운영이 만들 수 있다. 배포 설정이며
- * 관리 화면에 나오지 않는다(43 §6.1).
+ * 관리 화면에 나오지 않는다(sys/code.md).
  *
  * @param from 발신 주소. 메일 서버가 이 주소로의 발송을 허용해야 한다 — 대개 인증 계정과
  *     같거나 그 도메인이다.

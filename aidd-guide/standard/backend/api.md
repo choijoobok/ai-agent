@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/api/", "sources/backend/core/response/ApiResponse.java", "aidd-guide/standard/backend/_study/api-conventions.md"]
+sources: ["sources/backend/api/", "sources/backend/core/response/ApiResponse.java", "aidd-guide/standard/backend/api.md"]
 author: Bong Jong Hyeon
 tier: 2
 tags: [backend, api, rest, response, header]
@@ -18,7 +18,6 @@ tags: [backend, api, rest, response, header]
 > 무슨 액션인가. 그래서 경로를 짓는 것이 이 프로젝트에서 가장 되돌리기 비싼 결정이다.
 >
 > 조회 프로토콜(조건·정렬·페이징·화이트리스트)은 [search.md](./search.md) 가 갖는다.
-> 유도과정은 [`_study/api-conventions.md`](./_study/api-conventions.md).
 
 ## 1. 경로
 
@@ -177,4 +176,3 @@ tags: [backend, api, rest, response, header]
 - [packages.md](./packages.md) — 도메인 마디의 원본
 - [exception.md](./exception.md) — `code`·`message` 를 만드는 곳
 - [CLAUDE.md §4-6](../../../CLAUDE.md) — 호출 URL 은 `endpoints.ts` 에만
-- [`_study/api-conventions.md`](./_study/api-conventions.md) — 원문

@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * 언어 정규화 — 50 §3.2 순위 2.
+ * 언어 정규화 — 순위 2.
  *
  * <p>이 규칙이 지켜야 하는 것은 <b>어떤 입력이든 지원 언어 하나로 닫힌다</b>는 것이다.
  * 닫히지 않는 입력이 하나라도 있으면 <i>"서버 기본 언어"</i> 라는 3순위가 필요해지고,

@@ -3,10 +3,10 @@ package com.aiagent.support.config;
 import java.util.Map;
 
 /**
- * {@code SYS_CONFIG} 를 읽는 쪽 — ADR-0026 §1.
+ * {@code SYS_CONFIG} 를 읽는 쪽 — sys/config.md.
  *
  * <p><b>인터페이스인 것은 모듈 방향 때문이다.</b> 조회 유틸은 {@code support} 에 있고
- * 그 테이블은 {@code domain} 의 것이다(architecture.md §1) — {@code support} 가 {@code domain} 을
+ * 그 테이블은 {@code domain} 의 것이다(backend/packages.md) — {@code support} 가 {@code domain} 을
  * 참조할 수 없으므로 <b>구멍만 여기 두고 채우는 것은 저쪽</b>이다.
  *
  * <p><b>작업당 한 번 불린다.</b> 캐시도 조건도 두지 않는다 — 그 판단은

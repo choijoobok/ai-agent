@@ -10,16 +10,15 @@
  * <h2>검사하는 것</h2>
  * <ul>
  *   <li>메타블록 필수 필드 — `id` `title` `category` `type` `created` `updated` `status`.
- *       `records/adr/` 는 예외다: 머리말을 두지 않는 것이 결정이며(ADR 은 널리 통하는
- *       형식이고 형식을 바꾸면 번호는 같은데 다른 문서가 된다) 그 근거는 `records/adr/INDEX.md`.</li>
- *   <li>운용 파일 200줄 — `_study/` 는 예외. 그 밖의 예외는 아래 {@link LENGTH_EXEMPT} 셋뿐이며
- *       <b>여기가 유일한 통로다</b>. 파일이 스스로 선언하게 두면 조용히 늘어난다.</li>
+ *       <b>예외가 없다</b>.</li>
+ *   <li>운용 파일 200줄 — 예외는 아래 {@link LENGTH_EXEMPT} 셋뿐이며 <b>여기가 유일한
+ *       통로다</b>. 파일이 스스로 선언하게 두면 조용히 늘어난다.</li>
  *   <li>BOM · CRLF 는 훅이 고치므로 여기서는 남은 것만 잡는다.</li>
  *   <li>링크 — 대상 부재와 <b>대소문자 불일치</b>. 후자는 Windows·macOS 에서 통과하고
  *       Linux·GitHub 에서 404 가 되므로, 경로 조각을 실제 디렉터리 목록과 하나씩 대조한다.</li>
- *   <li><b>폐지 문서 번호 인용 집계</b> — 위반이 아니라 <b>집계</b>다. 뜻은
- *       `records/legacy-doc-map.md` 가 갖고, <b>줄어들기만 해야 한다</b>. 목표는 0 이 되어
- *       그 지도를 지우는 것이다.</li>
+ *   <li><b>절이 없는 링크형 인용 집계</b> — `[x](y.md) §3` 인데 대상에 그 절이 없는 것.
+ *       링크가 열리므로 사람이 대상 문서에서 절을 찾다가 못 찾는다. 위반이 아니라
+ *       <b>집계</b>이며 줄어들기만 해야 한다.</li>
  *   <li>선언 어휘 대조 — 소스에 있고 `standard/frontend/declarations.md` 에 없는 키.
  *       '빠짐없음' 을 사람이 지키게 두면 낡는다.</li>
  * </ul>
@@ -34,17 +33,14 @@ const GUIDE = resolve(HERE, '..', '..'); // aidd-guide/
 const REPO = resolve(GUIDE, '..');
 
 const REQUIRED = ['id', 'title', 'category', 'type', 'created', 'updated', 'status'];
-const META_EXEMPT_DIR = 'records/adr/';
 
 /** 200줄 예외 — 쪼개면 더 나빠지는 셋. 조건은 `meta/doc-style.md` 의 '분량 규칙' 이 갖는다. */
 const LENGTH_EXEMPT = new Map([
-  ['knowledge/features.md', '기능 ID 카탈로그 — 쪼개면 ID 를 부르는 258곳이 어느 파일인지 잃는다'],
   ['standard/backend/crosscutting.md', '필터·인터셉터의 순서가 곧 내용이다 — 쪼개면 순서를 두 파일에서 읽는다'],
   ['standard/backend/persistence.md', '다섯 벤더 × 타입·규칙 — 표가 갈리면 벤더 하나를 빠뜨린다'],
   ['phase/P3-design.md', '가장 무거운 단계의 절차를 끝까지 읽는 문서다 — 쪼개면 spec 일곱 개의 작성 순서와 동결 조건을 두 파일에서 읽는다'],
 ]);
 
-const LEGACY_MAP = 'records/legacy-doc-map.md';
 const VOCAB_DOC = 'standard/frontend/declarations.md';
 const VOCAB_SOURCES = [
   ['sources/frontend/src/shared/grid/types.ts', 'ColumnDef'],
@@ -59,8 +55,6 @@ const LINK_SEC_RE = /\[([^\]]*)\]\(([^)\s]+\.md)\)\s*§\s*([0-9][0-9.\-]*)/g;
 const HEAD_NUM_RE = /^#{2,4}\s*([0-9][0-9.\-]*)[.\s]/gm;
 const FENCE_RE = /^```[\s\S]*?^```/gm;
 const INLINE_RE = /`[^`\n]*`/g;
-const NUM_SEC_RE = /(?<![\w/.\-])(\d{2})\s*§\s*([0-9]+(?:[.\-][0-9]+)*)/g;
-const MAP_ROW_RE = /^\|\s*`(\d{2})`\s*\|([^|]*)\|([^|]*)\|/gm;
 
 // ── 실행 ──────────────────────────────────────────────────────────
 
@@ -99,25 +93,14 @@ out.push('카테고리별 파일 수:');
 for (const [c, n] of [...byCategory].sort()) out.push(`  ${c}: ${n}`);
 out.push('', 'type 분포:');
 for (const [t, n] of [...byType].sort()) out.push(`  ${t}: ${n}`);
-out.push('', `예외: 머리말 ${META_EXEMPT_DIR} · 200줄 ${LENGTH_EXEMPT.size}건`);
+out.push('', `예외: 200줄 ${LENGTH_EXEMPT.size}건 — 그 밖에는 없다`);
 for (const [rel, why] of LENGTH_EXEMPT) {
   out.push(`    ${String(lineCount(join(GUIDE, rel))).padStart(4)}줄  ${rel} — ${why}`);
 }
 
-const zones = legacyCitations();
-const grand = zones.reduce((s, z) => s + z.hits, 0);
 out.push('');
-out.push(`폐지 문서 번호 인용: ${grand} 곳 — 위반이 아니라 집계다. **줄어들기만 해야 한다.**`);
-out.push(`  뜻과 지도는 ${LEGACY_MAP}. 목표는 0 이 되어 그 지도를 지우는 것이다.`);
-out.push(`    ${'구역'.padEnd(24)} ${'곳'.padStart(6)} ${'파일'.padStart(5)} ${'절 살아있음'.padStart(11)} ${'절 죽음'.padStart(8)}`);
-for (const z of zones) {
-  out.push(
-    `    ${z.name.padEnd(24)} ${String(z.hits).padStart(6)} ${String(z.files).padStart(5)} ` +
-      `${String(z.alive).padStart(11)} ${String(z.dead).padStart(8)}`,
-  );
-}
 const totalStale = [...stale.values()].reduce((a, b) => a + b, 0);
-out.push(`  그중 링크형(열리는데 그 절이 없다) — aidd-guide 안 ${totalStale} 곳 / ${stale.size} 파일`);
+out.push(`링크형 인용 중 대상에 그 절이 없는 것: ${totalStale} 곳 / ${stale.size} 파일 — 줄어들기만 해야 한다.`);
 for (const [rel, n] of [...stale].sort((a, b) => b[1] - a[1]).slice(0, 5)) {
   out.push(`    ${String(n).padStart(4)}  ${rel}`);
 }
@@ -146,13 +129,12 @@ function lintFile(file, rel) {
   const text = raw.toString('utf8');
   if (text.includes('\r\n')) issues.push('CRLF detected');
   const lines = countLines(text);
-  const isStudy = rel.includes('_study/');
 
   issues.push(...checkLinks(file, text));
 
   const m = text.match(YAML_RE);
   if (!m) {
-    if (!rel.startsWith(META_EXEMPT_DIR)) issues.push('no YAML frontmatter');
+    issues.push('no YAML frontmatter');
     return { issues, lineCount: lines, type: 'unknown' };
   }
 
@@ -167,7 +149,7 @@ function lintFile(file, rel) {
   const type = (fields.get('type') ?? '').replace(/^["']|["']$/g, '');
   if (!['operation', 'study', 'template'].includes(type)) issues.push(`invalid type: ${type}`);
 
-  if (!isStudy && ['operation', 'template'].includes(type) && !LENGTH_EXEMPT.has(rel) && lines > 200) {
+  if (['operation', 'template'].includes(type) && !LENGTH_EXEMPT.has(rel) && lines > 200) {
     issues.push(`exceeds 200 lines: ${lines}`);
   }
   return { issues, lineCount: lines, type: type || 'unknown' };
@@ -217,77 +199,6 @@ function staleSectionRefs(file) {
     if (!headings(target).has(want)) n += 1;
   }
   return n;
-}
-
-/**
- * 폐지 번호 인용 — 구역별 집계.
- *
- * <p>2026-09-04 에 '링크형' 만 세다 459 로 보고했는데, 맨숫자형(`53 §6.1`)까지 저장소 전체로
- * 세니 7723 곳이었다 — 실제의 6% 만 보이던 셈이다. <b>지표가 규모를 감추면 '줄어들기만
- * 해야 한다' 가 지켜지는지 알 수 없다.</b>
- */
-function legacyCitations() {
-  const targets = legacyTargets();
-  const guideMd = walk(GUIDE).filter((f) => f.endsWith('.md'));
-  const zones = [
-    {
-      name: '소스 주석 (java·ts)',
-      files: walk(join(REPO, 'sources')).filter(
-        (f) => /\.(java|ts|tsx)$/.test(f) && !/[\\/](build|node_modules|\.gradle)[\\/]/.test(f),
-      ),
-    },
-    { name: 'aidd-guide 운용', files: guideMd.filter((f) => !f.includes(`_study${sep}`)) },
-    { name: 'aidd-guide _study (원문)', files: guideMd.filter((f) => f.includes(`_study${sep}`)) },
-    {
-      name: 'documents/ 문서 셋',
-      files: walk(join(REPO, 'documents')).filter((f) => /\.(md|html)$/.test(f)),
-    },
-  ];
-
-  const result = [];
-  for (const zone of zones) {
-    let hits = 0;
-    let alive = 0;
-    let dead = 0;
-    let nf = 0;
-    for (const file of zone.files) {
-      let text;
-      try {
-        text = readFileSync(file, 'utf8');
-      } catch {
-        continue;
-      }
-      // 규약을 설명하는 예시(`53 §6.1`)가 자기 집계에 잡히면 안 된다.
-      if (file.endsWith('.md')) text = strip(text);
-      const found = [...text.matchAll(NUM_SEC_RE)];
-      if (found.length === 0) continue;
-      nf += 1;
-      for (const m of found) {
-        hits += 1;
-        const t = targets.get(m[1]);
-        if (t && t.has(m[2].replace(/-/g, '.').replace(/\.+$/, ''))) alive += 1;
-        else dead += 1;
-      }
-    }
-    if (hits > 0) result.push({ name: zone.name, hits, files: nf, alive, dead });
-  }
-  return result;
-}
-
-/** 지도의 `NN` → 후속 문서의 헤딩 번호 집합. 후속이 없으면 담지 않는다. */
-function legacyTargets() {
-  const doc = join(GUIDE, LEGACY_MAP);
-  const out = new Map();
-  if (!existsSync(doc)) return out;
-  for (const m of readFileSync(doc, 'utf8').matchAll(MAP_ROW_RE)) {
-    const dest = m[3];
-    const link = dest.match(/\]\(([^)]+)\)/);
-    if (dest.includes('후속 없음') || !link) continue;
-    const p = normalize(join(GUIDE, 'records', link[1]));
-    if (!existsSync(p)) continue;
-    out.set(m[1], headings(p));
-  }
-  return out;
 }
 
 /** 소스에 있고 문서에 없는 선언 키. 소스가 없으면 건너뛴다. */

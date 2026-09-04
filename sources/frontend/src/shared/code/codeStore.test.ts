@@ -11,16 +11,16 @@ vi.mock('@/shared/api/request', () => ({
 }));
 
 /**
- * 공통코드 프론트 캐시 — 43 §8 · §8.1 · ADR-0017.
+ * 공통코드 프론트 캐시 — sys/code.md · backend/caching.md.
  *
  * <p>여기서 지키는 것 넷이다.
  *
  * <ol>
  *   <li><b>같은 그룹을 두 번 묻지 않는다</b> — 캐시의 존재 이유가 그것이다
- *   <li><b>같은 틱의 그룹들이 요청 하나로 모인다</b> — 43 §8 이 캐싱의 근거로 든
+ * <li><b>같은 틱의 그룹들이 요청 하나로 모인다</b> — sys/code.md 이 캐싱의 근거로 든
  *       <i>"한 화면이 콤보를 여러 개 띄울 때의 왕복"</i> 은 <b>첫 진입</b>의 문제이고,
  *       캐시만으로는 그때가 풀리지 않는다
- *   <li><b>버전이 다르면 통째로 버린다</b>(43 §8.1) — 그룹 단위 버전이 없으므로
+ * <li><b>버전이 다르면 통째로 버린다</b>(sys/code.md) — 그룹 단위 버전이 없으므로
  *   <li><b>실패를 굳히지 않는다</b> — 빈 목록으로 눌러앉으면 콤보가 영영 비고 원인이
  *       화면에 드러나지 않는다
  * </ol>
@@ -115,7 +115,7 @@ describe('codeStore', () => {
     expect(post).toHaveBeenCalledTimes(1);
   });
 
-  describe('버전 대조 — 43 §8.1', () => {
+  describe('버전 대조 — sys/code.md', () => {
     it('버전이 같으면 아무 일도 하지 않는다 — 로그인할 때마다 코드를 다시 받지 않는다', async () => {
       const store = await freshStore();
       answer({ version: 5, groups: { LANG_CD: ['ko'] } });

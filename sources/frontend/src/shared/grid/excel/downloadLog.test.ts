@@ -10,7 +10,7 @@ vi.mock('@/shared/api/request', () => ({
 }));
 
 /**
- * 다운로드 이력 — ADR-0019 · LOG-08.
+ * 다운로드 이력 — frontend/grid-advanced.md · LOG-08.
  *
  * <p>여기서 지키는 것 셋이다.
  *

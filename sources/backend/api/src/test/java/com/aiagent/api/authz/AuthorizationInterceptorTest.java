@@ -44,11 +44,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
- * 인가 판정 — security-design.md §4. <b>여기서 검사하는 것은 "무엇이 막히는가" 다.</b>
+ * 인가 판정 — backend/security.md. <b>여기서 검사하는 것은 "무엇이 막히는가" 다.</b>
  *
  * <p>DB 를 띄우지 않는다. 판정의 입력은 <b>기동 시 적재된 맵</b>과 <b>세션의 유효 권한</b>
  * 둘뿐이고 그 둘을 손으로 만들 수 있기 때문이다 — 그것이 <i>요청당 추가 쿼리 0</i> 설계의
- * 부수 효과다. 4벤더 통합 검증은 그 위층이다(db-portability.md §2).
+ * 부수 효과다. 4벤더 통합 검증은 그 위층이다(backend/persistence.md).
  */
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)

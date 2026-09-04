@@ -10,11 +10,11 @@ import org.springframework.mock.env.MockEnvironment;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
- * 저장하려는 값이 바인딩을 통과하는가 — 63 §4.5 · ADR-0026 §3.
+ * 저장하려는 값이 바인딩을 통과하는가 — screen/code/requirements.md · sys/config.md.
  *
  * <p><b>여기서 지키는 것은 <i>거부했는가</i> 가 아니라 <i>어느 칸이라고 말했는가</i> 다.</b>
  * 거부만 하고 키를 못 짚으면 화면은 문구를 모달로만 낼 수 있고, 일괄 저장은 화면에 안 보이는
- * 행까지 나가므로 <b>사용자가 어느 줄을 고쳐야 하는지 알 수 없다</b>(grid-edit-validation.md §3.4).
+ * 행까지 나가므로 <b>사용자가 어느 줄을 고쳐야 하는지 알 수 없다</b>(frontend/grid.md).
  *
  * <p>실제로 그렇게 틀렸었다(2026-08-30) — {@code Binder} 가 언제나 {@code BindException} 으로
  * 싸는데 사슬을 한 번만 돌며 둘을 함께 보면 <b>바깥이 늘 먼저 걸려</b> 키가 클래스 접두사
@@ -96,7 +96,7 @@ class ConfigValidatorTest {
     }
 
     @Test
-    @DisplayName("정상 값도 통과한다 — 0 이 끔 인 키를 막지 않는다(43 §6.3)")
+    @DisplayName("정상 값도 통과한다 — 0 이 끔 인 키를 막지 않는다(sys/code.md)")
     void 정상값은_통과() {
         assertThat(validator.validate(Map.of("auth.login.fail-limit", "0"))).isEmpty();
     }
@@ -122,7 +122,7 @@ class ConfigValidatorTest {
     }
 
     @Test
-    @DisplayName("타입이 안 맞으면 거부한다 — 화면이 막는 형식이지만 서버가 최종 판정이다(grid-edit-validation.md §3.4)")
+    @DisplayName("타입이 안 맞으면 거부한다 — 화면이 막는 형식이지만 서버가 최종 판정이다(frontend/grid.md)")
     void 타입_불일치도_거부() {
         var violations = validator.validate(Map.of("auth.login.fail-limit", "abc"));
 
@@ -135,7 +135,7 @@ class ConfigValidatorTest {
      * 이기고, 그러면 <b>화면은 저장됐다는데 검증은 옛 값을 본다</b> — 잘못된 값이 통과한다.
      */
     @Test
-    @DisplayName("오버라이드가 yml 을 덮는다 — 유틸이 마지막에 덮는다(ADR-0026 §1)")
+    @DisplayName("오버라이드가 yml 을 덮는다 — 유틸이 마지막에 덮는다(sys/config.md)")
     void 오버라이드가_이긴다() {
         // yml 의 9 는 통과하는 값이다. 덮지 못하면 이 검사가 빈 목록을 받는다.
         assertThat(validator.validate(Map.of("auth.password.min-length", "3"))).hasSize(1);

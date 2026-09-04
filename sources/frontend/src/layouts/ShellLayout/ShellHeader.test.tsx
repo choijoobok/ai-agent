@@ -5,13 +5,13 @@ import { useAuthStore } from '@/shared/stores/authStore';
 import { useUiStore } from '@/shared/stores/uiStore';
 
 /**
- * 헤더 우측 — main-shell.md §3.
+ * 헤더 우측 — frontend/tabs.md.
  *
  * <p><b>순서가 결정이다.</b> *받는 것(알림) → 나(프로필) → 내 환경(설정) → 끝내기(로그아웃)*
  * 이며 오른쪽으로 갈수록 되돌리기 어렵다. 코드에서는 JSX 한 줄을 옮기면 끝나는 일이라
  * 리뷰가 알아채기 어렵고, 화면에서도 <b>틀린 순서가 그럴듯해 보인다</b> — 그래서 잰다.
  *
- * <p>넷을 상한으로 둔 것도 함께 잰다(main-shell.md §3). 다섯째가 붙으면 설정 또는 프로필 모달 안으로
+ * <p>넷을 상한으로 둔 것도 함께 잰다(frontend/tabs.md). 다섯째가 붙으면 설정 또는 프로필 모달 안으로
  * 들어가야 하며, 막지 않으면 헤더가 기능 목록이 된다.
  */
 describe('헤더 우측', () => {
@@ -28,7 +28,7 @@ describe('헤더 우측', () => {
       onProfile: vi.fn(),
       onNotification: vi.fn(),
     };
-    // 배지는 여기서 검사하지 않는다 — 세는 규칙은 알림 모달의 것이다(main-shell.md §7.1).
+    // 배지는 여기서 검사하지 않는다 — 세는 규칙은 알림 모달의 것이다(frontend/tabs.md).
     render(<ShellHeader {...handlers} unreadCount={0} />);
     return handlers;
   };
@@ -52,7 +52,7 @@ describe('헤더 우측', () => {
     ]);
   });
 
-  it('사용자명을 누르면 프로필이 열린다 — 이름 자체가 버튼이다(main-shell.md §8)', () => {
+  it('사용자명을 누르면 프로필이 열린다 — 이름 자체가 버튼이다(frontend/tabs.md)', () => {
     const handlers = mount();
 
     // 접근성 이름에는 아이콘의 `aria-label`(user)이 함께 들어간다 — 부분 일치로 찾는다.

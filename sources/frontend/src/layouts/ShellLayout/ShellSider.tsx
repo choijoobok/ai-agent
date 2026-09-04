@@ -27,18 +27,18 @@ interface Props {
   index: MenuIndex;
   onOpen: (node: MenuNode) => void;
   onOpenInNewTab: (node: MenuNode) => void;
-  /** 브라우저 창을 하나 더 연다 — 앱 안의 탭이 아니다(main-shell.md §4.7). */
+  /** 브라우저 창을 하나 더 연다 — 앱 안의 탭이 아니다(frontend/tabs.md). */
   onOpenInBrowser: (node: MenuNode) => void;
-  /** 진입 모달을 그 탭으로 연다 — main-shell.md §4.3. */
+  /** 진입 모달을 그 탭으로 연다 — frontend/tabs.md. */
   onOpenEntry: (tab: EntryTab) => void;
 }
 
 /**
- * 사이더 — main-shell.md §4.
+ * 사이더 — frontend/tabs.md.
  *
- * <p><b>여기 있는 것은 검색과 메뉴 트리다.</b> main-shell.md §4 는 상단에 <b>진입 스플릿 버튼</b>
+ * <p><b>여기 있는 것은 검색과 메뉴 트리다.</b> frontend/tabs.md 는 상단에 <b>진입 스플릿 버튼</b>
  * (즐겨찾기·최근·자주)도 두라고 하는데 그것은 `SYS_USER_FAVORITE`·`SYS_USER_MENU_STAT` 이
- * 먼저다(42 §7·§8) — 자리는 main-shell.md §4 가 이미 정해 두었으므로 그때 검색 옆에 얹으면 된다.
+ * 먼저다(sys/menu.md) — 자리는 frontend/tabs.md 가 이미 정해 두었으므로 그때 검색 옆에 얹으면 된다.
  *
  * <p><b>검색 칸이 없다</b>(2026-08-30 실물). 칸에 치고 Enter 를 누르면 <b>모달이 열려
  * 같은 질의를 다시 받는다</b> — 칸이 하는 일은 결국 <i>모달을 여는 것</i> 하나였고,
@@ -57,7 +57,7 @@ interface Props {
  * <b>팝업으로</b> 낸다 — 탭을 옮겼을 뿐인데 화면 위로 메뉴가 뜬다.
  *
  * <p><b>권한 필터를 여기서 걸지 않는다.</b> 서버가 준 트리가 이미 유효 권한을 통과한 것이며
- * (security-design.md §4) 화면마다 다른 규칙을 쓰면 어디선가 권한 없는 메뉴가 새어 나온다(main-shell.md §4.4).
+ * (backend/security.md) 화면마다 다른 규칙을 쓰면 어디선가 권한 없는 메뉴가 새어 나온다(frontend/tabs.md).
  */
 export function ShellSider({
   index,
@@ -130,7 +130,7 @@ export function ShellSider({
   );
 
   /*
-    <b>상단 줄과 트리를 따로 붙든다</b> — main-shell.md §4 · 2026-08-31 실측.
+    <b>상단 줄과 트리를 따로 붙든다</b> — frontend/tabs.md · 2026-08-31 실측.
 
     <p>탭을 옮기면 셸이 <b>세 번</b> 커밋한다({@code navigate} 로 location 이 바뀌고, 효과가
     {@code activate} 를 부르고, 그 뒤 하나 더). 사이더는 자기가 {@code tabs}·{@code activeKey} 를
@@ -237,12 +237,12 @@ export function ShellSider({
     <Layout.Sider
       collapsible
       collapsed={collapsed}
-      // 접힘 토글은 헤더 버튼 하나다 — main-shell.md §4.1. 사이더 하단의 기본 트리거를 함께 두면
+      // 접힘 토글은 헤더 버튼 하나다 — frontend/tabs.md. 사이더 하단의 기본 트리거를 함께 두면
       // 같은 동작의 조작점이 둘이 된다.
       trigger={null}
       width={240}
       // 색은 전역 알고리즘이 정한다 — theme="light" 를 박으면 다크 모드에서 사이더만
-      // 밝게 남아 main-shell.md §9.7 의 "화면의 절반만 따라온다" 가 그대로 일어난다.
+      // 밝게 남아 frontend/tabs.md 의 "화면의 절반만 따라온다" 가 그대로 일어난다.
       // 세로를 스스로 채운다. 붙박이일 때는 바깥 flex 가 늘려 주지만 <b>떠 있을 때는 그
       // 힘이 없어</b> 내용 높이에서 멈추고, 그 아래로 화면이 비쳐 배경이 뚫린 것처럼 보인다.
       style={{
@@ -254,7 +254,7 @@ export function ShellSider({
       {/*
         상단 줄은 <b>접혀 있을 때도 남는다</b> — 남는 것은 펼치기 버튼 하나다.
 
-        접힘 토글이 사이더 안에 있는 것이 요점이다(main-shell.md §4.1). 조작하는 것과 조작되는 것이
+        접힘 토글이 사이더 안에 있는 것이 요점이다(frontend/tabs.md). 조작하는 것과 조작되는 것이
         붙어 있어야 하고, <b>접은 뒤에 펼치려고 찾는 곳</b>도 여기다 — 헤더에 있으면
         사이더가 사라진 자리를 보다가 눈을 위로 올려야 한다.
       */}
@@ -267,7 +267,7 @@ export function ShellSider({
 }
 
 /**
- * 진입 모달로 가는 세 입구 — main-shell.md §4.3.
+ * 진입 모달로 가는 세 입구 — frontend/tabs.md.
  *
  * <p><b>설계는 스플릿 버튼 하나였다</b>(§4.3 — <i>"아이콘 셋을 나열하면 사이더 상단이
  * 지저분해진다"</i>). <b>실물로 견줘 보려고 늘어놓았다</b> — 어느 쪽이 나은지는 화면에서
@@ -307,7 +307,7 @@ function EntryButtons({ onOpenEntry }: { onOpenEntry: (tab: EntryTab) => void })
 /**
  * 구조 노드는 `children` 을 갖고 리프는 갖지 않는다 — 서버가 이미 배타로 만들어 준다.
  *
- * <p><b>우클릭 메뉴는 리프에만 붙인다</b>(main-shell.md §4.7). 구조 노드는 열 수도 즐겨찾기에 넣을
+ * <p><b>우클릭 메뉴는 리프에만 붙인다</b>(frontend/tabs.md). 구조 노드는 열 수도 즐겨찾기에 넣을
  * 수도 없으므로 비활성 항목만 뜨는 메뉴를 보여줄 이유가 없다.
  *
  * <p><b>즐겨찾기는 한 줄이 켜짐·꺼짐 둘을 겸한다.</b> <i>추가</i> 와 <i>제거</i> 를 나란히
@@ -375,7 +375,7 @@ interface ContextActions {
 }
 
 /**
- * 접힌 사이더에서 <b>아이콘이 없으면 잘린 글자만 남는다</b> — main-shell.md §4.1 은 접힘 상태를
+ * 접힌 사이더에서 <b>아이콘이 없으면 잘린 글자만 남는다</b> — frontend/tabs.md 은 접힘 상태를
  * <i>"아이콘 + 툴팁으로 이름"</i> 으로 정했다. 실제로 접어 보니 `menu.LOGIN_LOG` 가
  * <code>m</code> 으로 잘려 무엇인지 알 수 없었다.
  *

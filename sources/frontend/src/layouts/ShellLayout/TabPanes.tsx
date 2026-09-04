@@ -15,10 +15,10 @@ import { MSG } from '@/shared/i18n/messageKeys';
 import { TabIdentityProvider } from '@/layouts/ShellLayout/tabContext';
 
 /**
- * 열린 탭의 화면들 — frontend-stack.md §4.2 · §4.3.
+ * 열린 탭의 화면들 — frontend/packages.md.
  *
  * <p><b>비활성 탭을 언마운트하지 않고 숨긴다.</b> 검색 조건·스크롤·입력 중인 폼이 탭 전환
- * 후에도 남아야 하기 때문이며, 언마운트 방식은 멀티탭의 이점이 없다(ADR-0005).
+ * 후에도 남아야 하기 때문이며, 언마운트 방식은 멀티탭의 이점이 없다(frontend/tabs.md).
  *
  * <p>대신 DOM 이 계속 쌓이므로 <b>전환이 O(1) 이어야 한다</b> — `display` 토글만 하고
  * 리마운트·리페치를 하지 않는다.
@@ -29,7 +29,7 @@ import { TabIdentityProvider } from '@/layouts/ShellLayout/tabContext';
  * {@link TabBody} 가 화면을 갖는다.
  *
  * <p><b>React key 가 `tab.key` 다.</b> 같은 라우트라도 탭이 다르면 별개 인스턴스이며 상태를
- * 공유하지 않는다 — main-shell.md §4.7.1 의 "새 탭으로 열기" 가 성립하는 근거다.
+ * 공유하지 않는다 — frontend/tabs.md 의 "새 탭으로 열기" 가 성립하는 근거다.
  */
 export function TabPanes() {
   const tabs = useTabStore((state) => state.tabs);
@@ -52,7 +52,7 @@ export function TabPanes() {
  * 전환 비용을 화면 크기에서 떼어 낸다.
  *
  * <p><b>`content-visibility` 를 주지 않는다.</b> 한동안 숨은 패널에 {@code hidden} 을
- * 줬는데(frontend-stack.md §4.3) {@code display: none} 이 이미 박스를 만들지 않으므로 <b>아무 일도 하지
+ * 줬는데(frontend/packages.md) {@code display: none} 이 이미 박스를 만들지 않으므로 <b>아무 일도 하지
  * 않는 선언</b>이었다. 숨기는 쪽은 원래 공짜이고, 비용은 <b>되켤 때의 레이아웃</b>에 있다 —
  * 그쪽은 실측 20~30ms 로 문제가 아니었다(2026-08-31).
  *
@@ -90,7 +90,7 @@ const TabPane = memo(function TabPane({ tab, active }: { tab: WorkTab; active: b
  * 그리게 하고 있었다(2026-08-31 실측: 클릭 → 350ms 렌더 → 그 끝에서야 `display` 가 바뀜).
  *
  * <p><b>테마·언어는 그대로 통과한다.</b> 끊는 것은 부모의 리렌더 하나이며 컨텍스트와 스토어
- * 구독은 memo 를 넘어 도달한다 — main-shell.md §9.7 의 토큰 교체는 여전히 모든 탭에 닿는다.
+ * 구독은 memo 를 넘어 도달한다 — frontend/tabs.md 의 토큰 교체는 여전히 모든 탭에 닿는다.
  */
 const TabBody = memo(function TabBody({ tab }: { tab: WorkTab }) {
   // 탭이 사는 동안 바뀌지 않는 값이다 — 컨텍스트 소비자(모든 탭의 `SearchForm`)가
@@ -98,9 +98,9 @@ const TabBody = memo(function TabBody({ tab }: { tab: WorkTab }) {
   const identity = useMemo(() => ({ tabKey: tab.key, menuCd: tab.menuCd }), [tab.key, tab.menuCd]);
 
   return (
-    // 화면이 셸의 슬롯을 채우려면 자기가 어느 탭인지 알아야 한다 — main-shell.md §5.1.
+    // 화면이 셸의 슬롯을 채우려면 자기가 어느 탭인지 알아야 한다 — frontend/tabs.md.
     <TabIdentityProvider value={identity}>
-      {/* 에러 바운더리가 탭 단위인 것이 요점이다 — main-shell.md §6. */}
+      {/* 에러 바운더리가 탭 단위인 것이 요점이다 — frontend/tabs.md. */}
       <TabErrorBoundary tab={tab}>
         <Suspense fallback={<ScreenLoading />}>
           <TabScreen tab={tab} />
@@ -146,7 +146,7 @@ function TabScreen({ tab }: { tab: WorkTab }) {
   const screen = screenFor(tab.pathname);
   if (!screen) {
     // 데이터가 앞서간 것이 아니라 아직 만들지 않은 화면이다 — 프론트는 서버와 원자적으로
-    // 함께 배포되므로(ADR-0001) 메뉴만 먼저 생기는 경우가 없다.
+    // 함께 배포되므로(build-deploy.md) 메뉴만 먼저 생기는 경우가 없다.
     return (
       <Alert
         type="info"
@@ -164,7 +164,7 @@ function TabScreen({ tab }: { tab: WorkTab }) {
 
 /**
  * <b>셸 전체를 감싸지 않는다.</b> 감싸면 화면 하나가 깨질 때 열려 있던 탭 전부가 함께 죽어
- * 멀티탭의 의미가 사라진다 — 탭 하나가 깨져도 나머지는 살아 있고 그 탭만 닫으면 된다(main-shell.md §6).
+ * 멀티탭의 의미가 사라진다 — 탭 하나가 깨져도 나머지는 살아 있고 그 탭만 닫으면 된다(frontend/tabs.md).
  */
 class TabErrorBoundary extends Component<
   { tab: WorkTab; children: ReactNode },

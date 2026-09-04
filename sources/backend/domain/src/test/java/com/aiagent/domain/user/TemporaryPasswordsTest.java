@@ -10,14 +10,14 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * 관리자 발급 임시 비밀번호 — AUTH-07 · 61 §3.4.
+ * 관리자 발급 임시 비밀번호 — AUTH-07 · screen/user/requirements.md.
  *
  * <p><b>재는 것이 둘이다.</b> 만든 값이 <i>정책을 확실히 채우는가</i> 와 <i>사람이 옮겨 적을
  * 수 있는가</i>.
  *
  * <p>앞엣것이 없으면 <b>발급 직후 저장이 실패</b>한다 — 같은 정책을 {@link PasswordRules} 가
  * 검사하므로 둘이 어긋나면 그 자리에서 드러난다. 뒤엣것이 없으면 <b>로그인 실패가 잠금까지
- * 간다</b>: 이 값은 메일 연동이 없는 배포에서 관리자가 <b>읽어서 전하는</b> 값이고(43 §6.3),
+ * 간다</b>: 이 값은 메일 연동이 없는 배포에서 관리자가 <b>읽어서 전하는</b> 값이고(sys/code.md),
  * {@code 0}·{@code O} 를 헷갈려 다섯 번 틀리면 방금 임시 비밀번호를 받은 계정이 잠긴다.
  *
  * <p><b>무작위라서 여러 번 돌린다.</b> 한 번만 보면 <i>우연히 통과한 값</i> 을 보고 있을 수
@@ -70,7 +70,7 @@ class TemporaryPasswordsTest {
     class Legible {
 
         /**
-         * 서로 헷갈리는 글자들 — 61 §3.4 가 이 값을 <b>화면에 표시</b>하기로 한 결과다.
+         * 서로 헷갈리는 글자들 — screen/user/requirements.md 가 이 값을 <b>화면에 표시</b>하기로 한 결과다.
          *
          * <p>{@code l}(엘)·{@code I}(아이 대문자)·{@code 1} 이 한 묶음이고,
          * {@code O}(오)·{@code 0} 이 한 묶음이다. 전화로 불러 주는 상황을 가정한다.

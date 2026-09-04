@@ -30,7 +30,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 /**
- * 자주 쓰는 메뉴 — UX-16 · 42 §8.
+ * 자주 쓰는 메뉴 — UX-16 · sys/menu.md.
  *
  * <p>여기서 지키는 것 둘이다 — ① <b>같은 달은 한 행이다</b>(카운트만 오르고 행은 늘지
  * 않는다), ② <b>창은 이번 달 포함 N개월</b>이다.

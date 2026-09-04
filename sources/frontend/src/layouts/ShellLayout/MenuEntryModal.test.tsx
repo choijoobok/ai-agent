@@ -7,7 +7,7 @@ import { rememberRecentMenu } from '@/shared/authz/recentMenus';
 import { useFavoriteStore } from '@/shared/favorite/favoriteStore';
 
 /**
- * 메뉴 진입 모달 — main-shell.md §4.3.
+ * 메뉴 진입 모달 — frontend/tabs.md.
  *
  * <p><b>여기서 지키는 것 셋이다.</b> ① <b>여는 경로가 탭을 정한다</b>, ② <b>모달 밖에서 난
  * 키는 결과를 열지 않는다</b>, ③ <b>탭마다 목록의 출처가 다르다</b>.
@@ -153,7 +153,7 @@ describe('메뉴 진입 모달', () => {
 });
 
 /**
- * 입력 칸과 탭 이동 — main-shell.md §4.3 · §10.
+ * 입력 칸과 탭 이동 — frontend/tabs.md.
  *
  * <p>셋 다 <b>다시 열었을 때</b>에 관한 것이다. 지난 질의가 남아 있으면 지우고 다시 쳐야
  * 하고, 포커스가 없으면 한 번 더 클릭해야 한다 — 단축키로 여는 창에서 그 한 번이 단축키를
@@ -229,7 +229,7 @@ describe('메뉴 진입 모달 — 입력 칸', () => {
 
       expect(activeTab()).not.toBe(before);
       // 탭을 가진 모달이 그 단축키의 주인이다 — 뒤에 가린 탭바가 함께 움직이면
-      // 무엇이 바뀌었는지 알 수 없다(main-shell.md §10). 셸도 **같은 키**를 듣게 된 지금은
+      // 무엇이 바뀌었는지 알 수 없다(frontend/tabs.md). 셸도 **같은 키**를 듣게 된 지금은
       // 이 한 줄이 둘을 가르는 규칙 전부다.
       expect(shell).not.toHaveBeenCalled();
     } finally {
@@ -260,7 +260,7 @@ describe('메뉴 진입 모달 — 입력 칸', () => {
   });
 
   /**
-   * 즐겨찾기 <b>탭에서 직접 지운다</b> — main-shell.md §4.3.
+   * 즐겨찾기 <b>탭에서 직접 지운다</b> — frontend/tabs.md.
    *
    * <p><b>휴지통이 넣는 일을 하면 안 된다.</b> 스토어의 `toggle` 로도 같은 결과가 나오지만
    * 그것은 <i>지금 상태</i> 에 달려 있다 — 목록이 잠깐 어긋난 순간에 누른 사용자가

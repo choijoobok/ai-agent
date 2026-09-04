@@ -11,13 +11,13 @@ import org.springframework.data.repository.query.Param;
 public interface SysDataLockRepository extends JpaRepository<SysDataLock, SysDataLockId> {
 
     /**
-     * 만료 락 회수 — <b>조건부 DELETE 다</b>(31 §3 의 반드시 지킬 것 3).
+     * 만료 락 회수 — <b>조건부 DELETE 다</b>(backend/persistence.md 의 반드시 지킬 것 3).
      *
      * <p><i>검사 후 삭제</i> 로 짜면 두 노드가 같은 만료 락을 함께 회수하고 <b>둘 다 선점에
      * 성공</b>한다. 조건을 DELETE 안에 넣으면 그 판정이 DB 의 원자적 연산이 된다.
      *
      * <p>{@code RELEASE_DTM} 을 보지 않는다 — 쿨다운이 걸린 해제는 <b>만료를 그 시각으로
-     * 낮추므로</b>(31 §5) 회수 조건이 이 한 줄로 닫힌다.
+     * 낮추므로</b>(backend/persistence.md) 회수 조건이 이 한 줄로 닫힌다.
      */
     @Modifying
     @Query("""
@@ -34,7 +34,7 @@ public interface SysDataLockRepository extends JpaRepository<SysDataLock, SysDat
     int deleteLock(@Param("type") String type, @Param("key") String key);
 
     /**
-     * 쿨다운이 남은 락의 <b>만료를 앞당긴다</b> — 지우는 대신이다(31 §5).
+     * 쿨다운이 남은 락의 <b>만료를 앞당긴다</b> — 지우는 대신이다(backend/persistence.md).
      *
      * <p>{@code RELEASE_DTM} 이 미래인 행에만 걸린다. 이미 지난 것은 {@code 0} 이 돌아오고
      * 부르는 쪽이 그때 지운다 — <b>읽고 판단하지 않고 갱신 건수로 판단</b>하므로 두 노드가
@@ -53,7 +53,7 @@ public interface SysDataLockRepository extends JpaRepository<SysDataLock, SysDat
             @Param("type") String type, @Param("key") String key, @Param("now") Instant now);
 
     /**
-     * 하트비트 — <b>{@code NODE_ID} 가 조건에 있는 것이 전부</b>다(31 §5.1).
+     * 하트비트 — <b>{@code NODE_ID} 가 조건에 있는 것이 전부</b>다(backend/persistence.md).
      *
      * <p>빼면 이미 회수돼 남이 잡은 락의 만료를 <b>옛 주인이 밀어 준다</b>. 그러면 두
      * 노드가 같은 락을 자기 것으로 믿고, 그 상태는 <b>어느 쪽도 눈치채지 못한다</b>.
@@ -75,7 +75,7 @@ public interface SysDataLockRepository extends JpaRepository<SysDataLock, SysDat
             @Param("nodeId") String nodeId,
             @Param("expiresAt") Instant expiresAt);
 
-    /** 그 노드가 아직 쥐고 있는 <b>살아 있는</b> 락이 있는가 — 유령 판정(65 §4.4). */
+    /** 그 노드가 아직 쥐고 있는 <b>살아 있는</b> 락이 있는가 — 유령 판정(screen/batch/schedule/requirements.md). */
     @Query("""
             select count(l) > 0
             from SysDataLock l

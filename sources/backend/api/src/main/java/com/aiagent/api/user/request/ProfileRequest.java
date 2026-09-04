@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
- * 내 정보 저장 — USER-05 · main-shell.md §8.
+ * 내 정보 저장 — USER-05 · frontend/tabs.md.
  *
  * <p><b>{@code userId} 가 없는 것이 이 record 의 요점이다.</b> 대상은 언제나 세션의
  * 주인이며, 두는 순간 <i>"누구 것을 바꾸는가"</i> 가 클라이언트가 보낸 값이 되고 그것을

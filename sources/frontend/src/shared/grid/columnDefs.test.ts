@@ -13,7 +13,7 @@ interface Flag {
 }
 
 /**
- * 시스템 컬럼의 <b>순서와 번호</b> — grid-standard.md §4.
+ * 시스템 컬럼의 <b>순서와 번호</b> — frontend/grid.md.
  *
  * <p><b>번호는 값이 아니라 자리다.</b> 페이지마다 1부터 다시 세면 <i>"몇 번째 데이터인가"</i>
  * 를 사용자가 손으로 계산하게 된다 — 21번째 행은 2페이지 첫 줄에서도 21이어야 한다.
@@ -55,7 +55,7 @@ describe('시스템 컬럼', () => {
     expect(ids(build())).not.toContain(SELECT_COL_ID);
   });
 
-  it('상태 컬럼은 번호와 체크박스 다음이다 — grid-standard.md §3.2 의 자리는 그대로다', () => {
+  it('상태 컬럼은 번호와 체크박스 다음이다 — frontend/grid.md 의 자리는 그대로다', () => {
     expect(ids(build({ showState: true, multiSelect: true })))
       .toEqual(['__rowNo', SELECT_COL_ID, '__grid.col.state', 'name']);
   });
@@ -91,7 +91,7 @@ describe('시스템 컬럼', () => {
   });
 
   /**
-   * 삭제 컬럼의 <b>라벨과 게이트</b> — grid-standard.md §3.5 · 63 §4.4.
+   * 삭제 컬럼의 <b>라벨과 게이트</b> — frontend/grid.md · screen/code/requirements.md.
    *
    * <p>시스템 환경설정에서는 헤더가 <i>되돌리기</i> 다. 행을 지우면 값이 사라지는 것이
    * 아니라 `yml` 이 드러나며, 라벨이 <i>삭제</i> 면 관리자는 값이 사라질 것을 기대하고
@@ -129,7 +129,7 @@ describe('시스템 컬럼', () => {
   });
 
   /**
-   * 취소선의 범위 — grid-standard.md §3.4 는 <b>행 전체</b>이고 63 §4.4 가 그 예외다.
+   * 취소선의 범위 — frontend/grid.md 는 <b>행 전체</b>이고 screen/code/requirements.md 가 그 예외다.
    *
    * <p>거기서는 행이 사라지지 않는다. 지우는 것은 오버라이드 한 줄이고 <b>키는 목록에
    * 남으므로</b>, 전 셀에 그으면 *"이 행이 통째로 없어진다"* 로 읽혀 저장 뒤에 기대가
@@ -161,7 +161,7 @@ describe('시스템 컬럼', () => {
   });
 
   /**
-   * 남는 폭을 먹는 컬럼 — grid-standard.md §2.
+   * 남는 폭을 먹는 컬럼 — frontend/grid.md.
    *
    * <p>선언한 폭이 <b>최소 폭</b>이 되는 것이 요점이다. 폭으로 남으면 판이 그것을 지켜
    * 늘어나지 않고, 최소가 없으면 좁은 화면에서 이 칸만 뭉개진다.
@@ -183,7 +183,7 @@ describe('시스템 컬럼', () => {
     });
   });
   /**
-   * 동적 컬럼 — grid-column-contract.md §2.2. <b>`CODE_MGMT` 의 참조 코드가 첫 실물이다</b>(63 §2.4).
+   * 동적 컬럼 — frontend/grid.md. <b>`CODE_MGMT` 의 참조 코드가 첫 실물이다</b>(screen/code/requirements.md).
    *
    * <p>여기서 지키는 것 둘이다. ① 헤더가 <b>메시지 키가 아니다</b> — 정의 행의 `REF_NM`
    * 이며 그대로 나가야 한다, ② 값이 <b>맵의 한 칸</b>이라 읽기는 `derive`, 쓰기는 `patch`
@@ -247,7 +247,7 @@ describe('시스템 컬럼', () => {
 });
 
 /**
- * 스위치 칸은 <b>판의 편집기를 열지 않는다</b> — grid-column-contract.md §5.2.
+ * 스위치 칸은 <b>판의 편집기를 열지 않는다</b> — frontend/grid.md.
  *
  * <p>2026-08-31 실물: {@code def.editable} 을 켜 둔 채 {@code Enter}·{@code F2} 만 막았더니
  * <b>더블 클릭이 남았다</b> — 스위치를 비껴 셀 배경을 두 번 누르면 텍스트 편집기가 열려

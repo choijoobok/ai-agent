@@ -40,24 +40,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code ROLE_MGMT}(62 §3) · {@code ROLE_AUTH_MGMT}(62 §2) 의 조회 — <b>클래스가 하나다.</b>
+ * {@code ROLE_MGMT}(screen/menu/requirements.md) · {@code ROLE_AUTH_MGMT}(screen/menu/requirements.md) 의 조회 — <b>클래스가 하나다.</b>
  *
  * <p>두 화면이 <b>같은 테이블 짝</b>을 다른 각도에서 본다. §3 은 <i>역할 자체의 생애</i>,
  * §2 는 <i>그 역할이 무엇을 할 수 있나</i> 인데, <b>하단 pane 은 아예 같은 그리드</b>이며
- * 62 §3.7 이 <i>"경로도 같아야 한다"</i> 고 못박았다 — 서비스를 가르면 그 하나가 두 곳에
+ * screen/menu/requirements.md 이 <i>"경로도 같아야 한다"</i> 고 못박았다 — 서비스를 가르면 그 하나가 두 곳에
  * 생기거나, 한쪽이 다른 쪽을 부르는 이상한 의존이 된다.
  *
  * <h2>쿼리가 여럿인 것이 이 클래스의 형태다</h2>
  *
  * 마스터 한 번에 <b>파생 셋</b>(보유 인원 · 유효 인원 · 권한 건수)이 붙는데 셋 다 다른 것을
  * 센다. 스칼라 서브쿼리로 얹으면 <b>행마다 세 번</b>이 되고, 조인해 {@code GROUP BY} 하면
- * 페이징 단위가 역할이 아니게 될 위험을 매번 확인해야 한다 — 63 §2 가 코드 그룹에서, 62 §4
+ * 페이징 단위가 역할이 아니게 될 위험을 매번 확인해야 한다 — screen/code/requirements.md 가 코드 그룹에서, screen/menu/requirements.md
  * 가 메뉴 트리에서 내린 것과 같은 판단이다.
  *
  * <h2>권한 트리는 {@code QueryDslBuilder} 를 쓰지 않는다</h2>
  *
- * {@code MENU_TREE} 와 같은 이유다(62 §4.10) — <b>조건에 맞는 노드만 남기면 부모가 사라져
- * 트리가 아니게 된다</b>. 62 §2.3 은 <i>메뉴명</i> 을 <i>(트리 조회 조건)</i> 으로 적었지만,
+ * {@code MENU_TREE} 와 같은 이유다(screen/menu/requirements.md) — <b>조건에 맞는 노드만 남기면 부모가 사라져
+ * 트리가 아니게 된다</b>. screen/menu/requirements.md 은 <i>메뉴명</i> 을 <i>(트리 조회 조건)</i> 으로 적었지만,
  * 여기서 거르면 그것 말고 <b>하나가 더 깨진다</b>: 폴더의 파생 3-state 는 <b>저장 전 편집에
  * 반응해야 하는 값</b>이라(§2.4 — {@code SAVE} 를 켜면 {@code READ} 열의 요약이 바뀐다)
  * <b>자손 전부가 클라이언트에 있어야</b> 다시 계산된다. 걸러 내려보내면 화면이 그 계산을
@@ -102,18 +102,18 @@ public class RoleQueryService {
         this.actions = actions;
     }
 
-    // ── ROLE_MGMT 마스터 (62 §3.2) ──────────────────────────────────
+    // ── ROLE_MGMT 마스터 (screen/menu/requirements.md) ──────────────────────────────────
 
     /**
-     * 역할 목록 — <b>파생 셋을 함께 낸다</b>(62 §3.2.1).
+     * 역할 목록 — <b>파생 셋을 함께 낸다</b>(screen/menu/requirements.md).
      *
-     * <p>61 §3.2.2 가 <b>역할 나열 컬럼을 기각</b>한 것은 문자열 집계가 벤더마다 다르기
-     * 때문이다({@code LISTAGG} · {@code GROUP_CONCAT} · {@code string_agg} — db-portability.md §4).
+     * <p>screen/user/requirements.md 가 <b>역할 나열 컬럼을 기각</b>한 것은 문자열 집계가 벤더마다 다르기
+     * 때문이다({@code LISTAGG} · {@code GROUP_CONCAT} · {@code string_agg} — backend/persistence.md).
      * <b>{@code COUNT} 에는 그 문제가 없다</b> — 그래서 세는 것은 컬럼으로 둔다.
      *
      * <p>셋 중 둘이 <b>삭제 게이트의 근거</b>다(§3.5). 조회 응답이 이미 갖고 있으므로
      * <b>자식이 화면에 없어도 게이트가 닫힌다</b> — {@code SYS_ROLE_MENU_AUTH} 는 이 화면에
-     * 디테일이 없고(편집은 §2 다) grid-standard.md §6.2 의 <i>"디테일이 전부 도착한 뒤 판정"</i> 이 그대로는
+     * 디테일이 없고(편집은 §2 다) frontend/grid.md 의 <i>"디테일이 전부 도착한 뒤 판정"</i> 이 그대로는
      * 성립하지 않는 첫 화면이다.
      */
     public PageResponse<RoleRow> getList(SearchRequest<Void> request) {
@@ -146,7 +146,7 @@ public class RoleQueryService {
         return built.respond(rows, total == null ? 0L : total);
     }
 
-    // ── ROLE_AUTH_MGMT 왼쪽 목록 (62 §2.2) ──────────────────────────
+    // ── ROLE_AUTH_MGMT 왼쪽 목록 (screen/menu/requirements.md) ──────────────────────────
 
     /** 고르기만 하는 목록 — 보유 인원 하나만 붙는다({@link RolePickRow}). */
     public PageResponse<RolePickRow> getRoleList(SearchRequest<Void> request) {
@@ -169,19 +169,19 @@ public class RoleQueryService {
         return built.respond(rows, total == null ? 0L : total);
     }
 
-    // ── 권한 트리 (62 §2.4) ─────────────────────────────────────────
+    // ── 권한 트리 (screen/menu/requirements.md) ─────────────────────────────────────────
 
     /**
      * 메뉴 계층 × 액션 4열 — <b>전건이고 전위 순회다</b>.
      *
      * <p>페이징하지 않는다({@code mode: 'all'}) — <b>계층이 잘리면 부모 없는 자식이 보인다</b>
-     * (61 §4.4). 조건으로도 거르지 않는다(클래스 주석).
+     * (screen/user/requirements.md). 조건으로도 거르지 않는다(클래스 주석).
      *
      * <p><b>고아·순환에 걸린 노드도 낸다.</b> {@code MenuTreeService} 는 조상 역산이 목적이라
      * 그것들을 빼지만, 권한을 주는 화면에서 사라지면 <b>그 메뉴에 부여된 권한을 회수할 수단이
-     * 없어진다</b> — 62 §4 의 트리와 같은 판단이며 순회에 방문 집합을 걸어 터지지 않게 한다.
+     * 없어진다</b> — screen/menu/requirements.md 의 트리와 같은 판단이며 순회에 방문 집합을 걸어 터지지 않게 한다.
      *
-     * @param lang 세션 언어 — 컨트롤러가 준다. 도메인은 요청을 모른다(architecture.md §1)
+     * @param lang 세션 언어 — 컨트롤러가 준다. 도메인은 요청을 모른다(backend/packages.md)
      */
     public PageResponse<RoleAuthTreeRow> getMenuTree(String roleId, String lang) {
         List<SysMenu> all = menus.findAll();
@@ -195,9 +195,9 @@ public class RoleQueryService {
             rows.add(new RoleAuthTreeRow(
                     menuCd,
                     menu.getUpMenuCd(),
-                    // MENU_NM 은 메뉴명이 아니라 메시지 키다 — `menu.{MENU_CD}`(42 §4).
+                    // MENU_NM 은 메뉴명이 아니라 메시지 키다 — `menu.{MENU_CD}`(sys/menu.md).
                     messages.text(menu.getMenuNm(), lang),
-                    // 사이더가 그리는 것과 <b>같은 코드</b>다 — main-shell.md §4.1.
+                    // 사이더가 그리는 것과 <b>같은 코드</b>다 — frontend/tabs.md.
                     menu.getIconCd(),
                     menu.getMenuUrl(),
                     menu.getUseYn(),
@@ -225,12 +225,12 @@ public class RoleQueryService {
         return actions == null ? List.of() : List.copyOf(actions);
     }
 
-    // ── 하단 pane — 두 화면이 같은 그리드 (62 §2.5 · §3.4) ──────────
+    // ── 하단 pane — 두 화면이 같은 그리드 (screen/menu/requirements.md) ──────────
 
     /**
      * 이 역할을 가진 사람 — AUTHZ-13 의 역방향 조회.
      *
-     * <p><b>기간으로 거르지 않는다</b>(62 §2.5). 만료된 부여도 <b>다시 유효해질 수 있으므로</b>
+     * <p><b>기간으로 거르지 않는다</b>(screen/menu/requirements.md). 만료된 부여도 <b>다시 유효해질 수 있으므로</b>
      * 목록에 내고 상태로 말한다 — 감추면 <i>"영향 없다고 해서 지웠는데 다음 달에 문제가
      * 생겼다"</i> 가 된다.
      *
@@ -271,7 +271,7 @@ public class RoleQueryService {
     }
 
     /**
-     * 계정이 <b>관리자가 정한 뜻으로</b> 살아 있는가 — 잠금·휴면은 보지 않는다(41 §4.2).
+     * 계정이 <b>관리자가 정한 뜻으로</b> 살아 있는가 — 잠금·휴면은 보지 않는다(sys/user-role.md).
      *
      * <p>넷 중 뒤의 둘은 <b>일시적이고 스스로 풀린다</b>. 그것까지 <i>계정 상태</i> 한 칸에
      * 접으면 <i>"어제는 정상이었는데"</i> 가 되고, 이 화면이 답해야 하는 <b>부여의 영향</b>과
@@ -283,7 +283,7 @@ public class RoleQueryService {
                 && (to == null || !to.isBefore(today));
     }
 
-    /** 42 §3.1 — <b>양끝 포함</b>이고 {@code null} 은 제한 없음이다(40 §4.3). */
+    /** sys/menu.md — <b>양끝 포함</b>이고 {@code null} 은 제한 없음이다(sys/INDEX.md). */
     private static MenuUserRow.GrantState grantState(LocalDate from, LocalDate to, LocalDate today) {
         if (from != null && from.isAfter(today)) {
             return MenuUserRow.GrantState.SCHEDULED;
@@ -298,7 +298,7 @@ public class RoleQueryService {
      * <b>공집합 판정의 입력 ①</b> — 지금 유효한 개인 예외를 <b>살아 있는 리프 위에</b> 가진 사람.
      *
      * <p>단순히 <i>{@code SYS_USER_MENU_AUTH} 에 행이 있는가</i> 로 두면 안 된다. 유효 권한은
-     * 게이트 ④를 지나므로(security-design.md §4) <b>만료된 예외나 꺼진 메뉴의 예외는 합집합에 들어가지
+     * 게이트 ④를 지나므로(backend/security.md) <b>만료된 예외나 꺼진 메뉴의 예외는 합집합에 들어가지
      * 않는다</b> — 그것을 <i>있음</i> 으로 세면 차단될 사람을 <b>안전하다고 말한다</b>.
      */
     private Set<String> usersWithPersonalGrant(List<String> userIds, LocalDate today) {
@@ -326,7 +326,7 @@ public class RoleQueryService {
     /**
      * <b>공집합 판정의 입력 ②</b> — <i>이 역할 말고</i> 살아 있는 권한을 주는 역할을 가진 사람.
      *
-     * <p>넷을 함께 본다: 다른 역할일 것 · 그 역할이 활성일 것(security-design.md §4 ②) · 그 부여가 유효기간
+     * <p>넷을 함께 본다: 다른 역할일 것 · 그 역할이 활성일 것(backend/security.md ②) · 그 부여가 유효기간
      * 안일 것 · 그 역할이 <b>살아 있는 리프에</b> 부여를 하나라도 가질 것(게이트 ④). 마지막
      * 하나를 빼면 <b>권한이 하나도 없는 역할</b>을 가진 사람이 안전한 것으로 세어진다.
      */
@@ -356,7 +356,7 @@ public class RoleQueryService {
         return found;
     }
 
-    /** 게이트 ④를 통과하는 메뉴 — 리프이고 살아 있는 것(security-design.md §4 · {@code SysMenu#isAuthorizable}). */
+    /** 게이트 ④를 통과하는 메뉴 — 리프이고 살아 있는 것(backend/security.md · {@code SysMenu#isAuthorizable}). */
     private Set<String> authorizableMenus() {
         Set<String> codes = new HashSet<>();
         for (SysMenu menu : menus.findAll()) {
@@ -367,13 +367,13 @@ public class RoleQueryService {
         return codes;
     }
 
-    // ── 파생 셋 (62 §3.2.1) ─────────────────────────────────────────
+    // ── 파생 셋 (screen/menu/requirements.md) ─────────────────────────────────────────
 
     /**
      * 보유 인원 · 유효 인원 — <b>같은 쿼리에 조건 하나가 더 붙는다</b>.
      *
      * @param onlyActive 참이면 오늘 유효한 부여만 센다. 게이트가 보는 것은 <b>거짓</b> 쪽이며
-     *     (62 §3.5 — FK 는 날짜를 보지 않는다) 운영자가 궁금한 것은 참 쪽이다
+     * (screen/menu/requirements.md — FK 는 날짜를 보지 않는다) 운영자가 궁금한 것은 참 쪽이다
      */
     private Map<String, Long> holderCounts(List<String> roleIds, boolean onlyActive) {
         if (roleIds.isEmpty()) {
@@ -391,7 +391,7 @@ public class RoleQueryService {
                 : null;
 
         Map<String, Long> counts = new HashMap<>();
-        // `IN` 을 쪼갠다 — 페이지 하나가 최대 1000개이고 그것이 오라클의 한계다(db-portability.md §4.6).
+        // `IN` 을 쪼갠다 — 페이지 하나가 최대 1000개이고 그것이 오라클의 한계다(backend/persistence.md).
         for (List<String> chunk : InChunks.split(roleIds)) {
             // 엔티티가 아니라 <b>키의 한쪽</b>을 센다 — 복합키 엔티티의 count 는 벤더마다
             // 번역이 갈리고, (USER_ID, ROLE_ID) 가 PK 라 역할별로는 사용자 수가 곧 행 수다.
@@ -409,7 +409,7 @@ public class RoleQueryService {
     /**
      * 권한 건수 — <b>행 수이지 메뉴 수가 아니다</b>.
      *
-     * <p>62 §4.11 의 <i>매핑 역할</i> 이 {@code countDistinct} 인 것과 갈리는 자리다. 거기서는
+     * <p>screen/menu/requirements.md 의 <i>매핑 역할</i> 이 {@code countDistinct} 인 것과 갈리는 자리다. 거기서는
      * 같은 수를 탭 3 의 목록이 다시 세지만, 여기 <b>권한 건수는 목록이 없다</b> — 세는 것이
      * 곧 {@code SYS_ROLE_MENU_AUTH} 의 행이고, 그것이 <b>FK 가 막는 것</b>과 같은 단위다(§3.5).
      */

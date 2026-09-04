@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
- * 디테일 탭 다섯이 공유하는 <b>부모 키</b> — 61 §3.9 · api-conventions.md §3.1.1.
+ * 디테일 탭 다섯이 공유하는 <b>부모 키</b> — screen/user/requirements.md · backend/api.md.
  *
  * <p>{@code RoleIdParams} 와 같은 이유로 조건이 아니라 {@code params} 다: 이것은 <i>사용자가
  * 좁힌 것</i> 이 아니라 <b>화면의 구조</b>다. 조건 목록에 두면 화이트리스트를 지나며

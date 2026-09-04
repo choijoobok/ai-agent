@@ -8,12 +8,12 @@ import { useLoad } from '@/shared/hooks/useLoad';
 import type { MyLoginRecord } from '@/features/profile/types';
 
 interface Props {
-  /** 이 탭이 화면에 있는가 — 열릴 때 한 번만 읽는다(main-shell.md §8). */
+  /** 이 탭이 화면에 있는가 — 열릴 때 한 번만 읽는다(frontend/tabs.md). */
   active: boolean;
 }
 
 /**
- * 내 로그인 이력 — LOG-02 · main-shell.md §8.
+ * 내 로그인 이력 — LOG-02 · frontend/tabs.md.
  *
  * <p><b>보안 기능이다.</b> 본인이 모르는 접속을 발견하는 유일한 경로이므로 관리자 화면의
  * 축소판이 아니라 <b>본인 것만</b> 보여준다.
@@ -21,7 +21,7 @@ interface Props {
  * <p><b>실패 기록을 포함한다.</b> 누군가 내 계정으로 시도했다는 사실이 그 자체로 신호이며,
  * 성공만 보이면 이 탭이 있을 이유가 없다.
  *
- * <p><b>결과 코드를 그대로 쓰지 않는다.</b> {@code FAIL_PWD} 같은 문자열은 45 §5.1 의 것이지
+ * <p><b>결과 코드를 그대로 쓰지 않는다.</b> {@code FAIL_PWD} 같은 문자열은 sys/logs.md 의 것이지
  * 사용자가 읽을 말이 아니다. 세 갈래(성공 · 실패 · 종료)로 접고 원래 코드는 툴팁에 둔다 —
  * 운영 문의에서 그 값이 필요해질 수 있다.
  */

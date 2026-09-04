@@ -18,16 +18,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
- * 예외를 봉투로 바꾼다 — api-conventions.md §2.3.
+ * 예외를 봉투로 바꾼다 — backend/api.md.
  *
- * <p><b>스택트레이스를 응답에 담지 않는다</b>(security-design.md §8). 사용자가 받는 것은 {@code traceId}
+ * <p><b>스택트레이스를 응답에 담지 않는다</b>(backend/security.md). 사용자가 받는 것은 {@code traceId}
  * 하나이고, 상세는 서버 로그와 에러 로그 테이블에 남는다.
  *
  * <h2>여기가 에러 로그의 유일한 적재 지점이다</h2>
  *
- * <p>{@code SYS_LO_EXCEPTION} 한 행이 여기서 난다(LOG-03 · 64 §5). <b>봉투를 만드는 자리와
+ * <p>{@code SYS_LO_EXCEPTION} 한 행이 여기서 난다(LOG-03 · screen/log/access/requirements.md). <b>봉투를 만드는 자리와
  * 같은 자리</b>여야 하는 이유가 있다 — 테이블의 {@code ERR_CD} · {@code ERR_MSG} 는
- * <i>응답에 나간 바로 그 값</i> 이며(architecture.md §6-1.2), 다른 곳에서 적으면 둘이 갈릴 수 있고 갈리는
+ * <i>응답에 나간 바로 그 값</i> 이며(backend/packages.md), 다른 곳에서 적으면 둘이 갈릴 수 있고 갈리는
  * 순간 <b>운영자가 보는 화면과 사용자가 받은 화면이 다른 말을 한다</b>.
  *
  * <p>적재의 규칙(401 제외 · 4xx 는 스택 없음 · 실패는 삼킴)은 {@link ExceptionLogRecorder}
@@ -58,12 +58,12 @@ public class GlobalExceptionHandler {
         log.debug("업무 예외 {} — {}", code.code(), e.getMessage());
         /*
           <b>403 의 세 갈래가 여기를 지난다</b> — 인가 인터셉터가 던지는 것이 이 예외이며
-          (security-design.md §4), 그 갈래를 나르는 것이 `ERR_CD` 다(64 §5.3). 401 만 기록기가 걸러 낸다.
+          (backend/security.md), 그 갈래를 나르는 것이 `ERR_CD` 다(screen/log/access/requirements.md). 401 만 기록기가 걸러 낸다.
         */
         return envelope(request, code.type().status(), code, e.fieldErrors(), e);
     }
 
-    /** 필드별 오류는 <b>배열</b>이다 — 관계가 틀린 검증은 같은 문구가 두 필드에 실린다(api-conventions.md §2.3). */
+    /** 필드별 오류는 <b>배열</b>이다 — 관계가 틀린 검증은 같은 문구가 두 필드에 실린다(backend/api.md). */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Void>> handleValidation(
             HttpServletRequest request, MethodArgumentNotValidException e) {
@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 존재하지 않는 경로. <b>500 이 아니라 404 여야 한다</b> — SPA 폴백이
-     * {@code /api/**} 를 넘기지 않으므로(25 §3) 오타 난 API 경로가 여기로 온다.
+     * {@code /api/**} 를 넘기지 않으므로(build-deploy.md) 오타 난 API 경로가 여기로 온다.
      */
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleNoResource(
@@ -90,7 +90,7 @@ public class GlobalExceptionHandler {
     /**
      * 잘못된 HTTP 메서드. <b>500 이 아니라 405 여야 한다</b>(2026-08-29 실측).
      *
-     * <p>security-design.md §4 는 <i>"잘못된 메서드는 프레임워크가 막는다 — Spring MVC 가 405 로 거부하며
+     * <p>backend/security.md 는 <i>"잘못된 메서드는 프레임워크가 막는다 — Spring MVC 가 405 로 거부하며
      * 인터셉터에 닿지 않는다"</i> 고 전제했다. 앞 절반은 맞다 — 인터셉터에 닿지 않는다.
      * <b>뒤 절반이 틀렸다</b>: {@link HttpRequestMethodNotSupportedException} 을 아무도 잡지
      * 않아 아래 포괄 핸들러가 받고 <b>500 + ERROR 로그</b>가 된다. 인가 슬라이스의 403 을
@@ -111,7 +111,7 @@ public class GlobalExceptionHandler {
      * 깨진 요청 본문. <b>클라이언트 잘못이므로 400 이다</b> — 같은 이유로 500 에서 옮긴다.
      *
      * <p>{@code fields} 를 채우지 않는다. 파싱이 실패했으므로 어느 필드가 문제인지 알 수
-     * 없고, 짐작해 채우면 <b>없는 정보를 있는 것처럼</b> 보이게 한다(api-conventions.md §2.3).
+     * 없고, 짐작해 채우면 <b>없는 정보를 있는 것처럼</b> 보이게 한다(backend/api.md).
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse<Void>> handleMalformedBody(
@@ -122,7 +122,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * <b>스택이 남는 유일한 갈래다</b> — 500 이기 때문이다(64 §5.3).
+     * <b>스택이 남는 유일한 갈래다</b> — 500 이기 때문이다(screen/log/access/requirements.md).
      *
      * <p>위의 다섯은 전부 4xx 이고 그 스택은 프레임워크의 프레임뿐이라 전 행이 같다.
      * 여기만 <i>무엇이 어디서 터졌나</i> 를 담는다.
@@ -140,7 +140,7 @@ public class GlobalExceptionHandler {
      *
      * <p><b>문구를 한 번만 만드는 것이 요점이다.</b> {@link ErrorMessages#of} 를 두 번 부르면
      * 두 값이 <i>이론적으로는</i> 같지만 실제로는 갈릴 수 있다 — 그 사이 메시지 캐시가
-     * 갱신되면(43 §8.1) 사용자가 받은 문구와 테이블에 남은 문구가 다르다. 한 변수를 둘이
+     * 갱신되면(sys/code.md) 사용자가 받은 문구와 테이블에 남은 문구가 다르다. 한 변수를 둘이
      * 나눠 쓰면 갈릴 자리가 없다.
      *
      * <p><b>순서도 요점이다.</b> 기록이 먼저고 응답이 나중이다 — 기록기가 실패를 삼키므로

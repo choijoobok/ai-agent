@@ -6,10 +6,9 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: [Anthropic "Effective context engineering", 12-references/summaries/05-anthropic-context-engineering.md]
+sources: [Anthropic "Effective context engineering"]
 author: Bong Jong Hyeon
 tier: 1
-references: [5]
 tags: [prompt, few-shot, canonical-example]
 ---
 
@@ -64,4 +63,3 @@ tags: [prompt, few-shot, canonical-example]
 
 - [03-prompt/INDEX.md](./INDEX.md)
 - [03-prompt/overlays/INDEX.md](./overlay/INDEX.md) — Overlay = 조건부 canonical example
-- [12-references/summaries/05-anthropic-context-engineering.md](../../reference/summary/05-anthropic-context-engineering.md)

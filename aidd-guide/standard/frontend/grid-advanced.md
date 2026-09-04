@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/shared/grid/", "aidd-guide/standard/frontend/_study/grid-column-contract.md", "aidd-guide/standard/frontend/_study/grid-edit-validation.md"]
+sources: ["sources/frontend/src/shared/grid/", "aidd-guide/standard/frontend/grid.md", "aidd-guide/standard/frontend/grid.md"]
 author: Bong Jong Hyeon
 tier: 1
 tags: [frontend, grid, column, validation, master-detail]
@@ -17,9 +17,7 @@ tags: [frontend, grid, column, validation, master-detail]
 > **어휘는 우리 것이고 판은 어댑터가 고른다.** 컬럼 선언에 AG Grid 의 이름이 나오지
 > 않는다 — Community 와 Enterprise 를 오가도 화면이 바뀌지 않아야 한다.
 >
-> 뼈대와 `api` 선언은 [grid.md](./grid.md). 유도과정은
-> [`_study/grid-column-contract.md`](./_study/grid-column-contract.md) ·
-> [`_study/grid-edit-validation.md`](./_study/grid-edit-validation.md).
+> 뼈대와 `api` 선언은 [grid.md](./grid.md).
 
 ## 1. 컬럼 하나
 

@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * {@link SysUserSearchCond} 의 복합키 — search-form-contract.md §5.5.
+ * {@link SysUserSearchCond} 의 복합키 — frontend/search-form.md.
  *
- * <p>셋인 것이 곧 요건이다 — <i>화면 안에서 이름 중복 불가</i>(search-form-contract.md §5.4)가
+ * <p>셋인 것이 곧 요건이다 — <i>화면 안에서 이름 중복 불가</i>(frontend/search-form.md)가
  * {@code (USER_ID, MENU_CD, COND_NM)} 이다.
  *
  * <p>record 가 아니라 클래스인 것은 {@code @IdClass} 의 요구 때문이다 — 인자 없는 생성자와

@@ -20,7 +20,7 @@ import type { MyNotiRow, NoticeBrief } from '@/features/notification/types';
 interface Props {
   open: boolean;
   onClose: () => void;
-  /** 헤더 벨의 배지를 맞춘다 — main-shell.md §7.1. 내 알림 탭이 유일한 출처다. */
+  /** 헤더 벨의 배지를 맞춘다 — frontend/tabs.md. 내 알림 탭이 유일한 출처다. */
   onUnread: (count: number) => void;
   /** 알림이 가리키는 메뉴를 열 수 있는가 — **내 메뉴 트리에 있는가**다(`NI-11`). */
   canOpenMenu: (menuCd: string) => boolean;
@@ -46,7 +46,7 @@ type View =
   | { kind: 'noti'; row: MyNotiRow };
 
 /**
- * 알림 모달 — main-shell.md §7 · 60 §8.
+ * 알림 모달 — frontend/tabs.md · screen/_standalone/README.md.
  *
  * <p>**게시판 형태의 탭 모달**이다. 목록에서 항목을 고르면 같은 모달 안에서 상세로
  * 바뀐다 — 새 탭을 열지 않는다. 알림은 읽고 닫는 것이지 작업 공간이 아니다.
@@ -59,7 +59,7 @@ type View =
  *
  * <h2>권한을 걸 자리가 없다 — `NI-01` · `NI-13`</h2>
  *
- * <p>메뉴 밖 화면이라 `MENU_CD` 가 없고(60 §1.1), 권한은 `(MENU_CD, ACTION_CD)` 쌍이다.
+ * <p>메뉴 밖 화면이라 `MENU_CD` 가 없고(screen/_standalone/README.md), 권한은 `(MENU_CD, ACTION_CD)` 쌍이다.
  * 그래서 이 모달은 **내 것만** 보고 **관리 조작을 하나도 갖지 않는다** — 공지 작성은
  * `NOTICE_MGMT`, 요청 처리는 `NOTI_REQUEST` 메뉴의 일이다.
  *
@@ -76,7 +76,7 @@ type View =
  * 자리에서 여는 모달 둘의 버튼이 <b>다른 크기</b>였다 — 목록이 촘촘한 것과 <b>누르는 것이
  * 작은 것</b>은 다른 축이다.
  *
- * <p><b>그래서 크기를 적지 않는다.</b> 판의 기본은 밀도 설정(main-shell.md §9.7 의 {@code compact})을
+ * <p><b>그래서 크기를 적지 않는다.</b> 판의 기본은 밀도 설정(frontend/tabs.md 의 {@code compact})을
  * 따라가므로, 여기서 한 번 더 적으면 <b>설정이 이 모달만 비껴간다</b> — 그리드의 글자 크기를
  * 셀이 물려받게 두는 것과 같은 규약이다.
  *
@@ -105,9 +105,9 @@ export function NotificationModal({ open, onClose, onUnread, canOpenMenu, onOpen
   const detail = view.kind !== 'list';
 
   /*
-    <b>`PageUp`/`PageDown` 이 이 모달의 탭을 옮긴다</b> — main-shell.md §10 · `useModalTabHotkeys`.
+    <b>`PageUp`/`PageDown` 이 이 모달의 탭을 옮긴다</b> — frontend/tabs.md · `useModalTabHotkeys`.
 
-    <b>진입 모달만 하고 있던 일이다</b>(2026-09-01 — 지시). main-shell.md §10 은 <i>"탭을 가진 모달이
+    <b>진입 모달만 하고 있던 일이다</b>(2026-09-01 — 지시). frontend/tabs.md 은 <i>"탭을 가진 모달이
     떠 있으면 그 모달의 탭"</i> 이라 적었는데 이 창은 듣지 않았다 — 그래서 알림을 읽는 동안
     누른 `PageDown` 이 <b>뒤에 가린 셸의 탭바</b>를 옮겼고, 모달을 닫으면 다른 화면이 열려
     있었다. 무엇이 바뀌었는지 알 수 없는 이동이 바로 그 조항이 막으려던 것이다.
@@ -132,7 +132,7 @@ export function NotificationModal({ open, onClose, onUnread, canOpenMenu, onOpen
           <Space size={6}>
             {/*
               **되돌아가는 길이 제목에 있다.** 모달 하나가 두 화면을 갖는 구조라(`NI-09`)
-              브라우저 뒤로가기가 여기 닿지 않는다 — frontend-stack.md §4.4 가 감수한 제약과 같은 자리다.
+              브라우저 뒤로가기가 여기 닿지 않는다 — frontend/packages.md 가 감수한 제약과 같은 자리다.
             */}
             <Button
               type="text"

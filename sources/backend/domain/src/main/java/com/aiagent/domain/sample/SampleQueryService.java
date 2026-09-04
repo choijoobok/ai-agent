@@ -33,18 +33,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code SMPL_MD_VERT} 의 조회 — 68 §5.
+ * {@code SMPL_MD_VERT} 의 조회 — playbook/INDEX.md.
  *
  * <h2>디테일은 조회조건을 갖지 않는다</h2>
  *
  * <p>대상이 <b>마스터의 선택</b>이며 그것은 {@code searchParams}(구조)이지
- * {@code conditions}(사용자가 좁힌 것)가 아니다(68 §5.3 · api-conventions.md §3.1.1). 조건 목록에 두면
+ * {@code conditions}(사용자가 좁힌 것)가 아니다(playbook/INDEX.md · backend/api.md). 조건 목록에 두면
  * 사용자가 지울 수 있는 것이 되고, 그러면 <i>이 주문의 품목</i> 을 묻는 pane 이
  * <b>전 주문의 품목</b>을 쏟는다.
  *
  * <h2>{@code itemCnt} 를 마스터가 함께 싣는다</h2>
  *
- * <p>마스터 삭제 게이트가 이 값을 읽는다(grid-standard.md §6.2). 행마다 물으면 목록 한 장에 왕복이
+ * <p>마스터 삭제 게이트가 이 값을 읽는다(frontend/grid.md). 행마다 물으면 목록 한 장에 왕복이
  * 스물이고, 안 실으면 <b>화면이 게이트를 열 근거가 없어</b> 눌러 보고 실패로 알게 된다.
  */
 @Service
@@ -61,7 +61,7 @@ public class SampleQueryService {
     private static final QSmplOrderTag T = QSmplOrderTag.smplOrderTag;
 
     /*
-      nclob 셋 중 ERR_MSG 만 싣는다. MEMO·RMK 는 이 화면의 아홉 컬럼에 없고(68 §5.2),
+      nclob 셋 중 ERR_MSG 만 싣는다. MEMO·RMK 는 이 화면의 아홉 컬럼에 없고(playbook/INDEX.md),
       목록이 안 쓰는 nclob 을 나르면 페이지마다 그만큼이 그냥 왕복한다.
     */
     private static final Expression<?>[] LIST = {
@@ -89,11 +89,11 @@ public class SampleQueryService {
     };
 
     /**
-     * ①의 서른 — 68 §3.2. <b>{@code nclob} 셋을 전부 싣는다.</b>
+     * ①의 서른 — playbook/INDEX.md. <b>{@code nclob} 셋을 전부 싣는다.</b>
      *
      * <p>③이 {@code ERR_MSG} 하나만 싣는 것과 갈리는 자리이며, 이 화면은 {@code MEMO}(에디터
      * {@code largeText}) · {@code RMK}({@code textModal}) · {@code ERR_MSG}({@code viewer})
-     * 셋이 <b>서로 다른 어휘의 유일한 실물</b>이라 뺄 수가 없다(48 §3.1).
+     * 셋이 <b>서로 다른 어휘의 유일한 실물</b>이라 뺄 수가 없다(playbook/INDEX.md).
      */
     private static final Expression<?>[] FULL = {
         O.ordId,
@@ -128,7 +128,7 @@ public class SampleQueryService {
     };
 
     /**
-     * ②의 열둘 — 68 §4.2. <b>{@code nclob} 은 {@code ERR_MSG} 하나다.</b>
+     * ②의 열둘 — playbook/INDEX.md. <b>{@code nclob} 은 {@code ERR_MSG} 하나다.</b>
      *
      * <p>{@code viewer:'largeText'} 가 그것을 펼쳐 읽게 한다 — 읽기 전용인데 셀 폭에 갇히면
      * 오류 문구를 읽을 수가 없다. {@code MEMO}·{@code RMK} 는 이 화면에 없다.
@@ -150,9 +150,9 @@ public class SampleQueryService {
     };
 
     /**
-     * 화면 층의 상한 — 68 §4.3 의 {@code rangeDays.max}.
+     * 화면 층의 상한 — playbook/INDEX.md 의 {@code rangeDays.max}.
      *
-     * <p><b>넓히는 쪽으로는 못 간다</b>(64 §2.2). 시스템 값이 더 좁으면 그쪽이 이긴다.
+     * <p><b>넓히는 쪽으로는 못 간다</b>(screen/log/access/requirements.md). 시스템 값이 더 좁으면 그쪽이 이긴다.
      */
     public static final int MAX_RANGE_DAYS = 31;
 
@@ -189,10 +189,10 @@ public class SampleQueryService {
     }
 
     /**
-     * ①의 목록 — 오프셋 페이징, 컬럼 서른(68 §3.2).
+     * ①의 목록 — 오프셋 페이징, 컬럼 서른(playbook/INDEX.md).
      *
      * <p><b>{@link #getOrderList} 와 엔드포인트가 갈린다.</b> 같은 테이블이고 같은 페이징
-     * 모드지만 <b>투영이 다르다</b> — 68 §4.2 가 <i>"모드는 엔드포인트가 정한다"</i> 고 한 것과
+     * 모드지만 <b>투영이 다르다</b> — playbook/INDEX.md 가 <i>"모드는 엔드포인트가 정한다"</i> 고 한 것과
      * 같은 이유로, 무엇을 실을지는 테이블이 아니라 <b>부르는 화면</b>이 정한다.
      */
     public PageResponse<SmplOrderFullRow> getOrderOffsetList(SearchRequest<Void> request) {
@@ -205,7 +205,7 @@ public class SampleQueryService {
     }
 
     /**
-     * 조건 그대로 <b>전량</b> — 엑셀의 <i>전체</i> 항목이 쓴다(ADR-0019).
+     * 조건 그대로 <b>전량</b> — 엑셀의 <i>전체</i> 항목이 쓴다(frontend/grid-advanced.md).
      *
      * <p>페이징이 없으므로 상한은 부르는 쪽이 건다({@link SampleExcelService}).
      */
@@ -218,7 +218,7 @@ public class SampleQueryService {
         return toRows(found);
     }
 
-    /** 품목이 <b>하나도 없는</b> 주문 — 조회로는 낼 수 없는 표다(68 §5.4 의 `extra`). */
+    /** 품목이 <b>하나도 없는</b> 주문 — 조회로는 낼 수 없는 표다(playbook/INDEX.md 의 `extra`). */
     public List<SmplOrderRow> findOrdersWithoutItems(int limit) {
         List<Tuple> found = query
                 .select(Projections.tuple(LIST))
@@ -231,14 +231,14 @@ public class SampleQueryService {
     }
 
     /**
-     * ②의 목록 — <b>커서형</b>이다(68 §4 · api-conventions.md §3.8).
+     * ②의 목록 — <b>커서형</b>이다(playbook/INDEX.md · backend/api.md).
      *
      * <p><b>총 건수를 세지 않는다.</b> 그것이 이 모드의 값이며, 대용량 이력에서
      * {@code COUNT(*)} 는 매 장마다 전 범위를 훑는다 — 화면의 푸터에 총 건수 자리가 없는
-     * 것이(68 §4.4) 이 사실의 표현이다.
+     * 것이(playbook/INDEX.md) 이 사실의 표현이다.
      *
-     * <p><b>기간이 필수다.</b> 64 §2.2 의 규칙을 업무 테이블에서 되풀이하는 것이 이 화면의
-     * 역할이며(68 §4.1), 화면만 막으면 <b>도구·스크립트가 그대로 지나간다</b>.
+     * <p><b>기간이 필수다.</b> screen/log/access/requirements.md 의 규칙을 업무 테이블에서 되풀이하는 것이 이 화면의
+     * 역할이며(playbook/INDEX.md), 화면만 막으면 <b>도구·스크립트가 그대로 지나간다</b>.
      *
      * <p><b>{@code CURSOR_SPEC} 을 쓴다</b> — 기본 정렬이 하나다. {@code SPEC} 을 그대로
      * 쓰면 정렬 키가 둘이라 서버가 400 이며, 그 실패는 <i>조회를 눌렀는데 아무 일도 없다</i>
@@ -280,7 +280,7 @@ public class SampleQueryService {
     }
 
     /**
-     * 기간 조건을 <b>서버가 다시 본다</b> — 64 §2.2 의 두 층 중 위.
+     * 기간 조건을 <b>서버가 다시 본다</b> — screen/log/access/requirements.md 의 두 층 중 위.
      *
      * <p>통과하지 못하면 400 이다. <b>조용히 자르지 않는다</b> — 잘라 주면 사용자는
      * <i>"상한만큼 봤다"</i> 고 믿은 채 더 넓은 기간의 결론을 낸다.
@@ -302,7 +302,7 @@ public class SampleQueryService {
     }
 
     /**
-     * 참조 팝업의 후보 — 68 §9.4. <b>주문에서 중복 없이 뽑는다.</b>
+     * 참조 팝업의 후보 — playbook/INDEX.md. <b>주문에서 중복 없이 뽑는다.</b>
      *
      * <p>고객 테이블이 없는 이유는 {@link SmplCustomerRow} 가 적어 두었다.
      *
@@ -325,7 +325,7 @@ public class SampleQueryService {
                     row.get(O.custId),
                     new SmplCustomerRow(row.get(O.custId), row.get(O.custNm), row.get(O.custGrdCd)));
         }
-        // 팝업도 그리드다(grid-column-contract.md §6.3) — 같은 봉투를 읽는다.
+        // 팝업도 그리드다(frontend/grid.md) — 같은 봉투를 읽는다.
         return PageResponse.all(List.copyOf(byId.values()));
     }
 
@@ -365,12 +365,12 @@ public class SampleQueryService {
      * 디테일 목록 — 대상은 마스터의 선택이다(위).
      *
      * <p><b>봉투에 담아 돌려준다</b>({@code PageMode.all}). 그리드 컨트롤러는 응답을 언제나
-     * {@code PageResponse} 로 읽으므로(api-conventions.md §3.9) 맨 배열을 주면 {@code content} 가
+     * {@code PageResponse} 로 읽으므로(backend/api.md) 맨 배열을 주면 {@code content} 가
      * {@code undefined} 이고 화면이 <b>그 자리에서 죽는다</b> — 조회는 200 인데 모달에
      * {@code TypeError} 가 뜬다.
      *
      * <p>페이징이 없는 것은 대상이 <b>주문 하나의 품목</b>이라서다. 모드는 엔드포인트가
-     * 정하고 응답이 나른다(api-conventions.md §3.8) — 화면은 그 사실로 푸터를 그리지 않는다.
+     * 정하고 응답이 나른다(backend/api.md) — 화면은 그 사실로 푸터를 그리지 않는다.
      */
     public PageResponse<SmplOrderItemRow> getItemList(long ordId) {
         return PageResponse.all(
@@ -380,13 +380,13 @@ public class SampleQueryService {
     }
 
     /**
-     * ⑤의 업무 데이터 탭 목록 — 68 §8.3. <b>주문을 가로질러 품목을 낸다.</b>
+     * ⑤의 업무 데이터 탭 목록 — playbook/INDEX.md. <b>주문을 가로질러 품목을 낸다.</b>
      *
      * <p>{@link #getItemList} 와 갈리는 것이 <b>대상</b>이다: 저것은 고른 주문 하나의
      * 품목이라 조회조건이 없고(파라미터다), 이것은 사용자가 좁히는 조회조건 넷을 받는다
      * (주문번호 · 품목코드 · 품목상태 · 납기일).
      *
-     * <p><b>엑셀 업로드 탭도 이 경로를 쓴다</b>(ADR-0024 §4). 파일을 읽은 직후 기존 행을
+     * <p><b>엑셀 업로드 탭도 이 경로를 쓴다</b>(frontend/grid-advanced.md). 파일을 읽은 직후 기존 행을
      * 받아 대조하는 자리이며, 새 경로를 만들면 <i>화면이 보는 표</i> 와 <i>대조하는 표</i>
      * 가 갈릴 수 있다 — 그 어긋남은 <b>이미 있는 행이 신규로</b> 잡히는 모습으로 나온다.
      */
@@ -403,10 +403,10 @@ public class SampleQueryService {
     }
 
     /**
-     * 태그 탭의 목록 — 68 §7.2. <b>⑤가 {@code SMPL_ORDER_TAG} 의 둘째 소비자다.</b>
+     * 태그 탭의 목록 — playbook/INDEX.md. <b>⑤가 {@code SMPL_ORDER_TAG} 의 둘째 소비자다.</b>
      *
      * <p>①은 같은 데이터를 {@code list} 컬럼 하나로 나르고(그 화면의 {@code tagList}),
-     * 여기서는 <b>행으로</b> 본다. 48 §4.1 의 <i>"배열은 화면의 어휘이고 저장은 자식
+     * 여기서는 <b>행으로</b> 본다. playbook/INDEX.md 의 <i>"배열은 화면의 어휘이고 저장은 자식
      * 테이블"</i> 이 두 화면을 나란히 놓아야 이해되는 결정이며, 그 나란함이 이 메서드다.
      *
      * <p>봉투에 담는다({@code PageMode.all}) — {@link #getItemList} 와 같은 이유다.
@@ -447,7 +447,7 @@ public class SampleQueryService {
         for (Tuple row : found) {
             Long ordId = row.get(O.ordId);
             rows.add(new SmplOrderRow(
-                    // 문자열로 내린다 — frontend-stack.md §6.1. 숫자로 내리면 브라우저가 정밀도를 잃는다.
+                    // 문자열로 내린다 — frontend/packages.md. 숫자로 내리면 브라우저가 정밀도를 잃는다.
                     ordId == null ? null : String.valueOf(ordId),
                     row.get(O.ordNo),
                     row.get(O.ordNm),

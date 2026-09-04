@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.env.MockEnvironment;
 
 /**
- * 왼쪽 테이블이 코드에서 나온다 — 63 §4.2.
+ * 왼쪽 테이블이 코드에서 나온다 — screen/code/requirements.md.
  *
  * <p><b>여기서 지키는 것 넷이다.</b> ① 등록 목록을 관리하지 않는다(애노테이션 스캔),
  * ② 중첩 객체는 재귀한다, ③ 컬렉션은 목록에 없다, ④ <b>설명이 빌드 산출물에서 온다</b>.
@@ -50,10 +50,10 @@ class ConfigCatalogTest {
         }
 
         @Test
-        @DisplayName("접두사에서 루트를 뺀 것 + 필드명(kebab)이 CFG_KEY 다 — 43 §10")
+        @DisplayName("접두사에서 루트를 뺀 것 + 필드명(kebab)이 CFG_KEY 다 — sys/code.md")
         void 키는_루트를_뺀_나머지다() {
             assertThat(byKey()).containsKey("auth.login.fail-limit");
-            // 루트가 붙으면 접두사 콤보의 첫 마디가 전부 같아진다 — ADR-0026 §5.
+            // 루트가 붙으면 접두사 콤보의 첫 마디가 전부 같아진다 — sys/config.md.
             assertThat(catalog.keys()).noneMatch(key -> key.key().startsWith("sys-config."));
         }
 
@@ -101,7 +101,7 @@ class ConfigCatalogTest {
     }
 
     @Nested
-    @DisplayName("설명은 빌드 산출물에서 온다 — 63 §4.2")
+    @DisplayName("설명은 빌드 산출물에서 온다 — screen/code/requirements.md")
     class Descriptions {
 
         /**
@@ -138,7 +138,7 @@ class ConfigCatalogTest {
 
         /**
          * <b>여기서 던지지 않는다.</b> 값이 없는 것은 기동이 이미 실패했어야 할 상태인데
-         * (43 §6.1), 그 판정은 바인딩의 것이지 카탈로그의 것이 아니다 — 카탈로그가 함께
+         * (sys/code.md), 그 판정은 바인딩의 것이지 카탈로그의 것이 아니다 — 카탈로그가 함께
          * 죽으면 <b>기동 실패의 원인이 두 곳</b>에서 나온다.
          */
         @Test

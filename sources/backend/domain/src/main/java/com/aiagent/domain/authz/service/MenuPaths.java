@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * 메뉴 하나를 <b>조상 경로를 포함한 한 줄</b>로 편다 — {@code 사용자 &gt; 사용자 관리}.
  *
- * <p>main-shell.md §4.2 의 검색 결과가 쓰는 형식이고, 61 §3.8 의 탭 둘(개인 예외 · 유효 권한)이 같은
+ * <p>frontend/tabs.md 의 검색 결과가 쓰는 형식이고, screen/user/requirements.md 의 탭 둘(개인 예외 · 유효 권한)이 같은
  * 형식을 요구했다. <b>목록에서는 리프 이름만으로 부족하다</b> — 같은 이름의 리프가 다른
  * 가지에 있을 수 있고, 무엇보다 <i>"이게 어느 화면이지"</i> 를 코드로 되짚게 만든다.
  *
@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
  * 부여된 권한도 목록에 나와야 회수할 수 있기 때문이며({@link MenuPreOrder} 와 같은 판단),
  * 조상이 끊긴 자리에서는 <b>거기까지의 경로</b>를 낸다.
  *
- * <p>순환에 대비해 깊이를 제한한다 — 42 §4 의 3층 방어 중 <b>읽는 쪽</b>이다.
+ * <p>순환에 대비해 깊이를 제한한다 — sys/menu.md 의 3층 방어 중 <b>읽는 쪽</b>이다.
  */
 public final class MenuPaths {
 
-    /** main-shell.md §4.2 의 검색 결과와 같은 구분자다 — 두 곳이 다르면 같은 메뉴가 다르게 보인다. */
+    /** frontend/tabs.md 의 검색 결과와 같은 구분자다 — 두 곳이 다르면 같은 메뉴가 다르게 보인다. */
     public static final String SEPARATOR = " > ";
 
     private MenuPaths() {}
@@ -37,7 +37,7 @@ public final class MenuPaths {
      * {@code MENU_CD → 표시 경로}. <b>받은 것과 같은 건수</b>를 돌려준다.
      *
      * @param menus 메뉴 전건. 조상을 따라가야 하므로 <b>부분 집합으로는 만들 수 없다</b>
-     * @param displayName {@code MENU_NM} 은 메뉴명이 아니라 <b>메시지 키</b>다(42 §4) — 그것을
+     * @param displayName {@code MENU_NM} 은 메뉴명이 아니라 <b>메시지 키</b>다(sys/menu.md) — 그것을
      *     세션 언어의 글자로 바꾸는 것은 도메인이 아니라 부르는 쪽의 사실이라 함수로 받는다
      */
     public static Map<String, String> of(Collection<SysMenu> menus, UnaryOperator<String> displayName) {

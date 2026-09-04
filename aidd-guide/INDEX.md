@@ -31,7 +31,7 @@ tags: [index, routing, master, decision-tree]
 
 **둘의 접합부가 `artifact/` 다.** 프로세스가 *무엇을 만들라* 고 말하고, 산출물 지도가
 *어디에 어떤 형식으로* 를 말하며, 개발 표준이 *그것을 코드로 어떻게 옮기나* 를 말한다.
-→ [ADR-0030](records/adr/0030-merge-three-repositories.md)
+→ [`CLAUDE.md`](../CLAUDE.md)
 
 ## 작업 시작 결정 트리 (Routing-as-Code)
 
@@ -63,10 +63,6 @@ tags: [index, routing, master, decision-tree]
   ├─ "라우팅 정확도·토큰 비용·Context Rot"     → quality/observability/
   ├─ "훅·스킬·서브에이전트·문맥 예산·로그"     → harness/
   │
-  │  ── 기록 ────────────────────────────────────
-  ├─ "왜 이렇게 됐나 · 버린 안"                → records/adr/   ADR 31
-  ├─ "로그 형식 · 옛 문서 번호"                → records/
-  └─ "외부 문헌·요약·학습 로그"                → reference/
   ↓
 ② 해당 카테고리의 INDEX.md 진입 (Progressive Disclosure)
   ↓
@@ -86,8 +82,6 @@ tags: [index, routing, master, decision-tree]
 | [quality](quality/INDEX.md) | 테스트 설계 · 레드팀 · 코드 품질 · 골든셋 · 관측 | 2 | 13 |
 | [knowledge](knowledge/INDEX.md) | 표 34개 — 인가·코드·문구·이력·운영 | 3 | 15 |
 | [harness](harness/INDEX.md) | 훅 열하나 · 스킬 열둘 · 문맥 예산 · 로그 | 2 | 13 |
-| [records](records/INDEX.md) | **ADR 31** · 폐지 문서 지도 · 로그 형식 | 3 | 35 |
-| [reference](reference/INDEX.md) | bibliography · 외부 문헌 요약 | 4 | 9 |
 
 ## SSoT 우선순위 (정보 충돌 시)
 
@@ -119,8 +113,6 @@ tags: [index, routing, master, decision-tree]
 | LLM-HRN | harness | LLM-HRN-001 |
 | LLM-CTX | harness/context | LLM-CTX-001 |
 | LLM-MEM | harness/memory | LLM-MEM-001 |
-| LLM-REC | records | LLM-REC-001 |
-| LLM-REF | reference | LLM-REF-001 |
 
 - 학습 자산은 `S` 접미사: `LLM-CTX-S001` 형태.
 - **ID prefix 는 한 번 발급하면 변경 금지** — `status: deprecated|replaced` 로만 처리한다.
@@ -132,9 +124,8 @@ tags: [index, routing, master, decision-tree]
 ## 사용 규약 (한 곳에서만 정의)
 
 - **운용 파일** (`type: operation`) 은 200줄 이내, **UTF-8 (BOM 없음)**, LF, 메타블록 필수.
-- 학습 파일 (`type: study`, `_study/` 하위) 은 길이 제한 예외.
-- **명시 예외 둘** — 200줄은 `meta/_meta/lint.mjs` 의 `LENGTH_EXEMPT` **넷**, 메타블록은
-  `records/adr/` **전부**. 조건은 [`meta/doc-style.md`](meta/doc-style.md) 가 갖는다.
+- **명시 예외는 하나** — 200줄 제한의 `meta/_meta/lint.mjs` 의 `LENGTH_EXEMPT` **셋**.
+  조건은 [`meta/doc-style.md`](meta/doc-style.md) 가 갖는다.
   **`node aidd-guide/meta/_meta/lint.mjs` 는 위반 0 이어야 한다.**
 - 카테고리 간 **중복 정의 금지** — 정의 1곳, 나머지는 링크.
 - 메타블록 표준은 [`meta/meta-block.md`](meta/meta-block.md), 200줄 정책은
@@ -142,7 +133,8 @@ tags: [index, routing, master, decision-tree]
 
 ## 변경 가이드
 
-- 새 운용 파일을 추가했다면 (1) 카테고리 INDEX 에 링크 추가 (2) `meta/_meta/catalog.yaml` 등록
-  (3) 영향 받는 결정 트리 분기 검토 (4) `lint.mjs` 초록 확인.
+- 새 운용 파일을 추가했다면 (1) 카테고리 INDEX 에 링크 추가 (2) 영향 받는 결정 트리
+  분기 검토 (3) `lint.mjs` 초록 확인. **파일 목록을 따로 유지하지 않는다** — 사람이
+  유지하는 목록은 반드시 낙고, 낙은 목록은 없는 것보다 나쀼다.
 - **위 카탈로그의 수는 `INDEX.md` 를 뺀 운용 파일 수다.** 세는 기준이 행마다 갈리면 어느 쪽도 믿을 수 없게 된다.
 - 카테고리 구성 자체를 바꾸려면 헌법([CLAUDE.md](../CLAUDE.md)) 수준의 결정. **ADR 로 남긴다.**

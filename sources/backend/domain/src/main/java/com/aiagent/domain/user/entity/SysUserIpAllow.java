@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 접속 IP 허용 — 41 §7 · AUTH-08. <b>행이 없으면 제한 없음이다.</b>
+ * 접속 IP 허용 — sys/user-role.md · AUTH-08. <b>행이 없으면 제한 없음이다.</b>
  *
  * <p>그 해석이 이 테이블의 전부다. 빈 화이트리스트를 전면 차단으로 읽으면 <b>운영 사고가
  * 관리자 계정에서</b> 난다 — 이 기능을 쓰는 계정이 정확히 그것이기 때문이다.
@@ -26,13 +26,13 @@ import lombok.NoArgsConstructor;
  * <b>끝난 계약의 IP 가 열려 있는 상태</b>가 된다.
  *
  * <p>{@code USE_YN} 은 <i>지금 손으로 끄고 켜는 것</i>이고 기간은 <i>미리 정해 두는 것</i>이다 —
- * 둘의 AND 가 판정이며 {@link SysUserRole} 이 이미 같은 모양을 갖는다(42 §3.1). 그리고
+ * 둘의 AND 가 판정이며 {@link SysUserRole} 이 이미 같은 모양을 갖는다(sys/menu.md). 그리고
  * {@code USE_YN} 은 여전히 <b>지우지 않고 끄는</b> 수단이다: 지웠다 다시 넣으면 감사
  * 4컬럼이 사라져 <i>누가 언제 이 대역을 열었나</i> 에 답할 수 없다.
  *
- * <p><b>이 행을 읽는 검사는 아직 없다</b>(2026-08-30). AUTH-08 은 S 등급이고 41 §4.2 가
+ * <p><b>이 행을 읽는 검사는 아직 없다</b>(2026-08-30). AUTH-08 은 S 등급이고 sys/user-role.md 가
  * 그 검사를 <b>로그인 후처리 핸들러 체인</b>의 한 클래스로 배정해 두었다 — 이 슬라이스가
- * 세우는 것은 <b>값을 관리하는 화면</b>이며(61 §3.8 탭 3), 집행은 그 핸들러가 설 때 붙는다.
+ * 세우는 것은 <b>값을 관리하는 화면</b>이며(screen/user/requirements.md 탭 3), 집행은 그 핸들러가 설 때 붙는다.
  * 순서가 이쪽인 이유는 <b>검사가 먼저 서면 아무도 값을 넣을 수 없어 전원이 잠기기</b>
  * 때문이다.
  */
@@ -62,7 +62,7 @@ public class SysUserIpAllow extends BaseAuditEntity {
     private Boolean useYn;
 
     /**
-     * 허용 기간 — <b>양끝 포함이며 {@code null} 이 제한 없음</b>이다(40 §4.3).
+     * 허용 기간 — <b>양끝 포함이며 {@code null} 이 제한 없음</b>이다(sys/INDEX.md).
      *
      * <p>{@code null} 을 그렇게 읽는 것이 <b>기간을 뒤늦게 더할 수 있었던 이유</b>다 —
      * 기간을 적지 않은 기존 행은 예전과 똑같이 동작한다.

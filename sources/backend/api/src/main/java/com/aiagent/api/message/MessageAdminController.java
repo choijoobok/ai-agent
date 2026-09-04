@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code MESSAGE_MGMT} — 63 §3. <b>이 저장소의 첫 업무 API 다.</b>
+ * {@code MESSAGE_MGMT} — screen/code/requirements.md. <b>이 저장소의 첫 업무 API 다.</b>
  *
  * <p>경로가 {@code /api/service/**} 이므로 {@code SYS_API}·{@code SYS_MENU_API} 판정을 받는다
- * (security-design.md §4). 시드가 없으면 <b>전부 403</b> 이며 그것이 fail-closed 의 정상 동작이다 —
- * {@code ./gradlew generateApiSeed} 가 이 클래스를 스캔해 그 두 시드를 만든다(ADR-0020).
+ * (backend/security.md). 시드가 없으면 <b>전부 403</b> 이며 그것이 fail-closed 의 정상 동작이다 —
+ * {@code./gradlew generateApiSeed} 가 이 클래스를 스캔해 그 두 시드를 만든다(backend/api.md).
  *
  * <p><b>{@code @Operation(summary=…)} 은 필수다.</b> {@code SYS_API.API_NM} 의 원천이며
  * {@code ApiOperationSummaryTest} 가 빠뜨림을 빌드에서 막는다 — 시드를 재생성하지 않아도
@@ -51,7 +51,7 @@ public class MessageAdminController {
     }
 
     /**
-     * <b>응답 본문이 없다.</b> 저장 결과로 화면이 할 일은 재조회이고(grid-api-contract.md §6) 그것은 별도
+     * <b>응답 본문이 없다.</b> 저장 결과로 화면이 할 일은 재조회이고(frontend/grid.md) 그것은 별도
      * 호출이다 — 여기서 갱신된 행을 돌려주면 <b>재조회와 두 갈래</b>가 되고, 둘이 어긋날 때
      * 화면이 어느 쪽을 믿을지 정해야 한다.
      */

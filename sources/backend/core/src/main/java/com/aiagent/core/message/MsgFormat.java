@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 /**
  * 문구의 {@code {name}} 자리를 채운다 — 프론트 {@code label()} 의 {@code format} 과 <b>같은
- * 규칙</b>이다(43 §3).
+ * 규칙</b>이다(sys/code.md).
  *
  * <p><b>규칙이 갈리면 같은 문구가 두 곳에서 다르게 그려진다.</b> 비밀번호 정책 문구는
  * 정책 API 로 서버가 완성해 내려주고 그것을 프론트가 그대로 쓰는데, 자리표 문법이 다르면

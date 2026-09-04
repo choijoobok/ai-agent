@@ -1,7 +1,7 @@
 import { useMessageStore } from '@/shared/i18n/messageStore';
 
 /**
- * 메시지 키를 화면 문구로 — 43 §3 · §7.3.
+ * 메시지 키를 화면 문구로 — sys/code.md.
  *
  * <p><b>없으면 키를 그대로 낸다.</b> 빈 문자열이나 "—" 를 보여주면 누락이 숨는다 — 화면에
  * `login.title` 이 보이면 즉시 신고된다(원칙 P1). 서버도 같은 규칙이지만 마지막 수단은 각자

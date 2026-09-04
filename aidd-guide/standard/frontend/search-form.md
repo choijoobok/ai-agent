@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/shared/searchform/", "aidd-guide/standard/frontend/_study/search-form-contract.md"]
+sources: ["sources/frontend/src/shared/searchform/", "aidd-guide/standard/frontend/search-form.md"]
 author: Bong Jong Hyeon
 tier: 1
 tags: [frontend, search, form, condition]
@@ -18,7 +18,6 @@ tags: [frontend, search, form, condition]
 > ([../backend/search.md §1](../backend/search.md)).
 >
 > **화면에 남는 폼은 이것 하나다** — 편집 폼도 등록 모달도 없다([grid.md §1](./grid.md)).
-> 유도과정은 [`_study/search-form-contract.md`](./_study/search-form-contract.md).
 
 ## 1. 필드 하나 — 키를 넷으로 묶는다
 

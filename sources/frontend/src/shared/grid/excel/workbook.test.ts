@@ -12,7 +12,7 @@ interface Row {
 }
 
 /**
- * 엑셀 셀 하나의 글자 — grid-standard.md §2.2 · ADR-0019.
+ * 엑셀 셀 하나의 글자 — frontend/grid.md · frontend/grid-advanced.md.
  *
  * <p><b>파일에는 화면에 보이는 것이 들어간다.</b> 코드값 대신 이름, 배열 대신 사람이 읽는
  * 나열이다 — *"화면의 이름이 파일에서는 코드"* 는 그 자체로 문의가 된다.
@@ -53,7 +53,7 @@ describe('엑셀 셀 값', () => {
     expect(of({ field: 'used', header: 'h', type: 'ynFlag' })).toBe('Y');
   });
 
-  it('배열은 한 칸에 나열한다 — grid-column-contract.md §5.6 의 list 컬럼', () => {
+  it('배열은 한 칸에 나열한다 — frontend/grid.md 의 list 컬럼', () => {
     expect(of({ field: 'tags', header: 'h', type: 'list' })).toBe('a, b');
   });
 
@@ -61,11 +61,11 @@ describe('엑셀 셀 값', () => {
     expect(of({ field: 'memo', header: 'h', type: 'text' })).toBeNull();
   });
 
-  it('객체도 빈 칸이다 — [object Object] 를 파일에 넣지 않는다(grid-column-contract.md §5.3)', () => {
+  it('객체도 빈 칸이다 — [object Object] 를 파일에 넣지 않는다(frontend/grid.md)', () => {
     expect(of({ field: 'ref', header: 'h', type: 'text' })).toBeNull();
   });
 
-  it('파생 컬럼은 계산한 값이다 — 저장된 값이 아니다(grid-column-contract.md §3)', () => {
+  it('파생 컬럼은 계산한 값이다 — 저장된 값이 아니다(frontend/grid.md)', () => {
     expect(of({
       field: 'ratio',
       header: 'h',

@@ -11,21 +11,21 @@ import { MSG } from '@/shared/i18n/messageKeys';
 
 interface Props {
   onSelect: (key: string) => void;
-  /** 닫기 계열은 미저장 확인을 거쳐야 하므로 셸이 받는다 — main-shell.md §3.1. */
+  /** 닫기 계열은 미저장 확인을 거쳐야 하므로 셸이 받는다 — frontend/tabs.md. */
   onClose: (keys: string[]) => void;
 }
 
 /**
- * 탭바 — frontend-stack.md §4 · main-shell.md §5.
+ * 탭바 — frontend/packages.md · frontend/tabs.md.
  *
  * <p><b>넘칠 때 탭을 줄이지 않는다.</b> 상한이 20개라 넘치는 것이 기본 상태인데, 축소하면
- * 제목이 잘려 무슨 탭인지 알 수 없게 된다 — 너비를 유지하고 <b>스크롤</b>한다(frontend-stack.md §4.7).
+ * 제목이 잘려 무슨 탭인지 알 수 없게 된다 — 너비를 유지하고 <b>스크롤</b>한다(frontend/packages.md).
  * AntD `Tabs` 가 화살표와 휠 스크롤을 이미 제공하고 활성 탭도 스스로 보이게 한다.
  *
- * <p><b>드래그 순서 변경(frontend-stack.md §4.7)은 아직 없다.</b> `@dnd-kit` 은 메뉴 트리 편집(42 §4)·
- * 즐겨찾기 순서(main-shell.md §4.5)와 <b>같은 라이브러리를 셋이 공유</b>하기로 되어 있어, 셋 중 하나만
+ * <p><b>드래그 순서 변경(frontend/packages.md)은 아직 없다.</b> `@dnd-kit` 은 메뉴 트리 편집(sys/menu.md)·
+ * 즐겨찾기 순서(frontend/tabs.md)와 <b>같은 라이브러리를 셋이 공유</b>하기로 되어 있어, 셋 중 하나만
  * 먼저 만들면 나머지 둘이 그것을 따라야 할지 다시 정해야 한다. 순서는 저장하지 않으므로
- * (frontend-stack.md §4.7) 나중에 붙여도 잃는 것이 없다.
+ * (frontend/packages.md) 나중에 붙여도 잃는 것이 없다.
  */
 export function ShellTabBar({ onSelect, onClose }: Props) {
   const { token } = theme.useToken();
@@ -47,7 +47,7 @@ export function ShellTabBar({ onSelect, onClose }: Props) {
 
   return (
     // 헤더 아래 선에 탭이 붙지 않게 한 칸 띄운다. 값이 아니라 토큰이어야 콤팩트 모드에서
-    // 함께 줄어든다(main-shell.md §9.3) — 밀도를 바꿨는데 이 틈만 그대로면 그것이 더 눈에 띈다.
+    // 함께 줄어든다(frontend/tabs.md) — 밀도를 바꿨는데 이 틈만 그대로면 그것이 더 눈에 띈다.
     <div
       style={{
         background: token.colorBgContainer,
@@ -56,7 +56,7 @@ export function ShellTabBar({ onSelect, onClose }: Props) {
       }}
     >
       <Tabs
-        // 드래그로 순서를 바꾼다 — frontend-stack.md §4.7. 판의 탭바를 그대로 쓰고 마디만 감싼다.
+        // 드래그로 순서를 바꾼다 — frontend/packages.md. 판의 탭바를 그대로 쓰고 마디만 감싼다.
         renderTabBar={(barProps, DefaultTabBar) => (
           <DndContext sensors={sensors} onDragEnd={onDragEnd}>
             <SortableContext
@@ -121,10 +121,10 @@ export function ShellTabBar({ onSelect, onClose }: Props) {
   );
 
   /**
-   * frontend-stack.md §4.5 — 대시보드에서는 "탭 닫기" 가 뜨지 않는다. 고정 탭이기 때문이며, 나머지 둘은
+   * frontend/packages.md — 대시보드에서는 "탭 닫기" 가 뜨지 않는다. 고정 탭이기 때문이며, 나머지 둘은
    * 그대로 동작한다.
    *
-   * <p><b>즐겨찾기는 트리 우클릭 메뉴와 대칭이다</b>(main-shell.md §4.7) — 같은 일을 어느 한쪽에서만
+   * <p><b>즐겨찾기는 트리 우클릭 메뉴와 대칭이다</b>(frontend/tabs.md) — 같은 일을 어느 한쪽에서만
    * 할 수 있으면 사용자는 <i>"어디서 되더라"</i> 를 외워야 한다. 한 줄이 켜짐·꺼짐 둘을
    * 겸하는 것도 같다.
    */
@@ -154,7 +154,7 @@ export function ShellTabBar({ onSelect, onClose }: Props) {
 }
 
 /**
- * 탭 하나를 끌 수 있게 감싼다 — frontend-stack.md §4.7.
+ * 탭 하나를 끌 수 있게 감싼다 — frontend/packages.md.
  *
  * <p><b>판의 탭 마디를 그대로 쓴다.</b> 새로 그리면 닫기 버튼·활성 표시·넘침 스크롤을 전부
  * 다시 만들어야 하고, 그것들은 판이 이미 잘 하고 있다. 여기서 더하는 것은 <b>끌 수 있다는

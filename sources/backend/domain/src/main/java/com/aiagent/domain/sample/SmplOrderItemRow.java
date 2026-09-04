@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 
-/** 디테일 목록의 한 행 — 68 §5.2 · 48 §4. */
+/** 디테일 목록의 한 행 — playbook/INDEX.md. */
 public record SmplOrderItemRow(
         String ordId,
         Integer itemSeq,

@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it, vi } from 'vitest';
 import { headerMinWidth, textWidth } from '@/shared/grid/headerWidth';
 
 /**
- * 헤더가 잘리지 않을 최소 폭 — grid-column-contract.md §2.
+ * 헤더가 잘리지 않을 최소 폭 — frontend/grid.md.
  *
  * <p><b>이 파일이 지키는 것은 더하는 몫 넷이다.</b> 값은 판의 테마 기본값에서 옮겨 적은
  * 것이고(`cellHorizontalPadding` 16 × 2 · `cellWidgetSpacing` 12 + `iconSize` 16 · 여유 4),
@@ -61,7 +61,7 @@ describe('헤더 최소 폭', () => {
       .toBe(2 * GLYPH + BARE + ICON + ICON);
   });
 
-  it('필수 표시는 10px 이다 — CSS 가 붙이므로 글자 측정에 들어오지 않는다(grid-column-contract.md §5.1)', () => {
+  it('필수 표시는 10px 이다 — CSS 가 붙이므로 글자 측정에 들어오지 않는다(frontend/grid.md)', () => {
     expect(headerMinWidth('가나', FONT, { ...plain, required: true }))
       .toBe(2 * GLYPH + BARE + 10);
   });

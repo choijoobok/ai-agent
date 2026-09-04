@@ -4,7 +4,7 @@ import com.aiagent.domain.authz.EffectiveAuthority;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * 유효 권한이 바뀌었음을 알리는 <b>유일한 채널</b> — 50 §8.1.
+ * 유효 권한이 바뀌었음을 알리는 <b>유일한 채널</b>.
  *
  * <pre>
  * X-Authz-Version: &lt;유효 권한 집합의 해시&gt;

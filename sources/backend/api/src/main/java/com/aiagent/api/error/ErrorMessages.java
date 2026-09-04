@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * 응답에 나갈 실패 문구를 완성한다 — architecture.md §6-1.2.
+ * 응답에 나갈 실패 문구를 완성한다 — backend/packages.md.
  *
  * <p><b>{@code ErrorCode.code()} 가 곧 메시지 키다.</b> 별도의 매핑표를 두지 않는 것이 이
  * 설계의 요점이며, 그래서 <i>"코드를 추가했는데 문구를 어디 넣는지 모르겠다"</i> 가 생기지

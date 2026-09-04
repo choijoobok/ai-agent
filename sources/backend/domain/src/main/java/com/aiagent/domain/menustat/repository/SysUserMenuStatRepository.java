@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-/** 자주 쓰는 메뉴 — 42 §8. */
+/** 자주 쓰는 메뉴 — sys/menu.md. */
 public interface SysUserMenuStatRepository
         extends JpaRepository<SysUserMenuStat, SysUserMenuStatId> {
 
@@ -17,7 +17,7 @@ public interface SysUserMenuStatRepository
             String userId, String menuCd, String statYm);
 
     /**
-     * 창 안의 합계로 정렬한 상위 목록 — 42 §8.
+     * 창 안의 합계로 정렬한 상위 목록 — sys/menu.md.
      *
      * <p><b>합계가 같으면 최근에 쓴 것이 위다.</b> 그것이 없으면 동점인 메뉴들의 순서가
      * 조회할 때마다 달라지고, 사용자는 <i>목록이 흔들린다</i> 고 느낀다.

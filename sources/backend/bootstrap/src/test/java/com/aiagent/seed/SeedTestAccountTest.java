@@ -19,10 +19,10 @@ import org.junit.jupiter.api.Test;
  * 설치 시점에 터지지 않는가</b> 와 <b>인가 화면 셋이 보여줄 것을 실제로 갖고 있는가</b> 다.
  *
  * <p>뒤엣것이 이 파일의 존재 이유다 — 시험 데이터가 조용히 한쪽으로 쏠리면(전부 <i>유효</i>
- * 이거나 전부 <i>정상</i> 이면) 61 §3.2.1 의 상태 다섯과 §4.7 의 상태 셋은 <b>화면을 열어도
+ * 이거나 전부 <i>정상</i> 이면) screen/user/requirements.md 의 상태 다섯과 §4.7 의 상태 셋은 <b>화면을 열어도
  * 눈에 보이지 않는다</b>. 그러면 그 코드는 <b>아무도 본 적 없는 채로</b> 배포된다.
  *
- * <p>{@code SYS_USER_MENU_AUTH} 를 시드로 넣는 것은 여기가 처음이므로, 42 §6 의 제약
+ * <p>{@code SYS_USER_MENU_AUTH} 를 시드로 넣는 것은 여기가 처음이므로, sys/menu.md 의 제약
  * (기간 <b>필수</b> · 사유 <b>필수</b>)이 실제로 채워졌는지도 함께 잰다 — {@code NOT NULL}
  * 이라 빠지면 설치가 실패하는데, 그 실패는 <b>이 changelog 를 처음 적용하는 사람</b>에게만
  * 드러난다.
@@ -56,7 +56,7 @@ class SeedTestAccountTest {
                 .containsExactlyInAnyOrderElementsOf(EXPECTED_USERS);
 
         /*
-          61 §3.2.1 의 체인 순서로 읽는다 — 먼저 걸린 것 하나가 그 계정의 표시다.
+          screen/user/requirements.md 의 체인 순서로 읽는다 — 먼저 걸린 것 하나가 그 계정의 표시다.
           여기서 세는 것은 <b>표시가 무엇인가</b> 이지 컬럼 값이 아니며, 그래서
           `UserQueryService.statOf` 와 같은 순서로 본다.
         */
@@ -67,7 +67,7 @@ class SeedTestAccountTest {
                 .containsExactlyInAnyOrder("DISABLED", "EXPIRED", "LOCKED", "DORMANT", "NORMAL");
     }
 
-    /** 접근 제어 체인 순서 — 41 §4.2 · 61 §3.2.1. 하나만 낸다. */
+    /** 접근 제어 체인 순서 — sys/user-role.md · screen/user/requirements.md. 하나만 낸다. */
     private static String statOf(Map<String, Object> user) {
         if (!"Y".equals(SeedRows.str(user, "USE_YN"))) {
             return "DISABLED";
@@ -135,7 +135,7 @@ class SeedTestAccountTest {
                 .collect(Collectors.toSet());
 
         assertThat(states)
-                .as("61 §4.4 의 배지를 화면에서 보려면 세 상태가 시드에 다 있어야 한다")
+.as("screen/user/requirements.md 의 배지를 화면에서 보려면 세 상태가 시드에 다 있어야 한다")
                 .containsExactlyInAnyOrder("SCHEDULED", "ACTIVE", "EXPIRED");
     }
 
@@ -171,7 +171,7 @@ class SeedTestAccountTest {
                 .collect(Collectors.toSet());
 
         assertThat(withRole)
-                .as("security-design.md §4 — 유효 권한이 공집합이면 그 계정은 로그인 화면에서 거절된다")
+.as("backend/security.md — 유효 권한이 공집합이면 그 계정은 로그인 화면에서 거절된다")
                 .containsAll(EXPECTED_USERS);
     }
 }

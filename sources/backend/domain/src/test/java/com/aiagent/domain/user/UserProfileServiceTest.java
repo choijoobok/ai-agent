@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 /**
- * 내 프로필 — USER-05 · main-shell.md §8.
+ * 내 프로필 — USER-05 · frontend/tabs.md.
  *
  * <p>재는 것 둘이다 — <b>만료까지 남은 날</b>과 <b>편집 표면</b>. 앞의 것은 화면이 무엇을
  * 안내할지 가르고(0 과 음수가 다른 문구다), 뒤의 것은 <i>본인이 무엇을 고칠 수 있는가</i>
@@ -114,7 +114,7 @@ class UserProfileServiceTest {
         assertThat(user.getUseYn()).isTrue();
         assertThat(user.getLockYn()).isFalse();
         assertThat(user.getDormantYn()).isFalse();
-        // 언어는 설정 모달의 것이다 — 여기서 바꾸면 정본이 둘이 된다(main-shell.md §9.1).
+        // 언어는 설정 모달의 것이다 — 여기서 바꾸면 정본이 둘이 된다(frontend/tabs.md).
         assertThat(user.getLocaleCd()).isEqualTo("ko");
         assertThat(user.getPwd()).isEqualTo("enc:x");
     }

@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
- * 메뉴를 골랐다 — 42 §8.
+ * 메뉴를 골랐다 — sys/menu.md.
  *
- * <p><b>{@code entryType} 이 없다.</b> 42 §8 은 진입 경로(TREE · SEARCH · FAVORITE …)를
+ * <p><b>{@code entryType} 이 없다.</b> sys/menu.md 은 진입 경로(TREE · SEARCH · FAVORITE …)를
  * 함께 받도록 적었는데 <b>그것을 읽는 곳이 아직 없다</b> — 경로가 필요한 이유는 분석뿐이고
  * 그 분석이 사는 자리는 사용 이력({@code SYS_LO_ACCESS})이다. 담을 곳 없는 값을 받으면
  * <b>계약이 거짓말</b>이 된다: 보내는 쪽은 기록되는 줄 안다.

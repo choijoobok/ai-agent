@@ -18,7 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 태그의 <b>행 편집</b> — 68 §7.4. ⑤의 저장이며 ①의 배열 교체와 어휘가 다르다.
+ * 태그의 <b>행 편집</b> — playbook/INDEX.md. ⑤의 저장이며 ①의 배열 교체와 어휘가 다르다.
  *
  * <p>여기서 세는 것은 <b>저장 뒤의 개수</b>다. 상한을 넘겨 만들 수 있으면 그 주문을
  * <b>①이 저장할 수 없게 된다</b> — 배열을 통째로 보내므로 자기가 만들지도 않은 개수에
@@ -66,7 +66,7 @@ class SampleTagServiceTest {
 
     /*
       <b>지나치게 막는 쪽의 실패다.</b> 지울 행은 결과에 없으므로 상한에 붙은 판에서도
-      <i>하나 지우고 하나 넣는</i> 편집이 통과해야 한다 — grid-edit-validation.md §3.3 이 그리드 검증을
+      <i>하나 지우고 하나 넣는</i> 편집이 통과해야 한다 — frontend/grid.md 이 그리드 검증을
       <b>삭제 행을 뺀 결과</b>로 계산하라고 한 이유가 이것이다.
     */
     @Test

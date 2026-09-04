@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/** {@link SysCodeGrpRef} 의 복합키 — 정의는 그룹의 것이다(43 §5.1). */
+/** {@link SysCodeGrpRef} 의 복합키 — 정의는 그룹의 것이다(sys/code.md). */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

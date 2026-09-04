@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * 인터셉터 등록 — architecture.md §6.1.
+ * 인터셉터 등록 — backend/packages.md.
  *
  * <p><b>등록 순서가 규약이다.</b> 사용 이력 인터셉터({@code UserActionLogInterceptor})가
  * 인가 인터셉터보다 <b>앞</b>에 와야 한다. {@code preHandle} 이 거부해도 이미 {@code true} 를

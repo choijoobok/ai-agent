@@ -16,7 +16,7 @@ import tools.jackson.databind.ObjectMapper;
  * <p>{@code @RestControllerAdvice} 는 <b>컨트롤러에 도달한 요청만</b> 다룬다. Security 가
  * 앞에서 끊은 401·403 은 거기까지 오지 않으므로, 그대로 두면 <b>같은 API 가 어떤 실패는
  * 봉투로 어떤 실패는 서블릿 기본 HTML 로</b> 응답한다 — 프론트의 첫 분기가 {@code success}
- * 하나여야 하는데 그것이 깨진다(api-conventions.md §2.3).
+ * 하나여야 하는데 그것이 깨진다(backend/api.md).
  *
  * <p><b>패키지가 {@code tools.jackson} 이다.</b> Spring Boot 4.1 은 Jackson 3 을 쓴다 —
  * {@code com.fasterxml.jackson.databind} 는 클래스패스에 없다. 애너테이션만

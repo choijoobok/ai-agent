@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * {@link SysUserPwdHist} 의 복합키 — 41 §5.
+ * {@link SysUserPwdHist} 의 복합키 — sys/user-role.md.
  *
  * <p>record 가 아니라 클래스인 것은 {@code @IdClass} 의 요구 때문이다 — 인자 없는 생성자와
  * 필드 접근이 필요하다. {@link com.aiagent.domain.authz.entity.SysUserRoleId}

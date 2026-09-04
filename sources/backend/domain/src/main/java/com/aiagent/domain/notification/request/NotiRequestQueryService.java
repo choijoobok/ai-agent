@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code NOTI_REQUEST} 의 조회 — 66 §5.2 · §5.5.
+ * {@code NOTI_REQUEST} 의 조회 — screen/notice/requirements.md.
  *
  * <h2>처리자 이름을 두 번째 조인으로 얻지 않는다</h2>
  *
@@ -63,7 +63,7 @@ public class NotiRequestQueryService {
 
     /**
      * 대기열 — 기본 정렬이 <b>요청일시 오름차순</b>이고 조회조건 기본값이
-     * {@code RECEIVED} 하나다(66 §5.5).
+     * {@code RECEIVED} 하나다(screen/notice/requirements.md).
      */
     public PageResponse<NotiRequestRow> getList(SearchRequest<Void> request) {
         Built built = builder.build(request, SPEC, PageMode.offset);
@@ -97,7 +97,7 @@ public class NotiRequestQueryService {
     /**
      * 처리자 ID → 이름.
      *
-     * <p><b>없는 ID 는 그냥 빠진다.</b> {@code HANDLER_ID} 에는 FK 가 없으므로(47 §8)
+     * <p><b>없는 ID 는 그냥 빠진다.</b> {@code HANDLER_ID} 에는 FK 가 없으므로(sys/notification.md)
      * 이론상 끊어질 수 있고, 그때 화면은 ID 를 그대로 보인다 — 이름을 못 찾은 것이
      * 조회를 실패시킬 이유는 아니다.
      */

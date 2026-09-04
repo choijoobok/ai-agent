@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 이 쿼리를 부른 <b>우리 코드의 첫 자리</b> — system-logging.md §3.
+ * 이 쿼리를 부른 <b>우리 코드의 첫 자리</b> — backend/logging.md.
  *
  * <p>P6Spy 는 JDBC 계층이라 호출자를 모른다. 스택을 직접 걸어 찾는다.
  *
@@ -12,9 +12,9 @@ import java.util.Optional;
  * 전체 스택을 배열로 만들어 버리는데, 우리가 쓰는 것은 <b>맨 앞 하나</b>뿐이다.
  * {@code StackWalker} 는 게으르게 순회하다 첫 매칭에서 멈춘다.
  *
- * <p><b>못 찾는 경우가 있다</b>(system-logging.md §3.2). JPA 는 엔티티를 고쳐 두면 <b>커밋 시점</b>에
+ * <p><b>못 찾는 경우가 있다</b>(backend/logging.md). JPA 는 엔티티를 고쳐 두면 <b>커밋 시점</b>에
  * UPDATE 를 내보내는데, 그 스택에는 값을 바꾼 서비스 메서드가 이미 없다. 그때 답은
- * {@code MDC} 의 {@code requestId} 이며(system-logging.md §3.3) 이 클래스가 할 수 있는 일은 아니다.
+ * {@code MDC} 의 {@code requestId} 이며(backend/logging.md) 이 클래스가 할 수 있는 일은 아니다.
  */
 public final class SqlCaller {
 

@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 /**
- * 저장 하나가 두 가지를 한다 — 63 §4.7.
+ * 저장 하나가 두 가지를 한다 — screen/code/requirements.md.
  *
  * <p><b>여기서 지키는 것 넷이다.</b> ① 화면이 <b>키를 만들지 못한다</b>(왼쪽 테이블은 코드다),
  * ② 되돌리기는 <b>행 삭제</b>이고 없는 행을 지우려 하면 거부한다, ③ 검증은 <b>저장 후의
@@ -108,7 +108,7 @@ class ConfigServiceTest {
 
         /**
          * <b>기본값과 같은 값도 저장된다.</b> 그것이 <i>변경됨</i> 의 근거가 행의 존재인 이유다
-         * (63 §4.3) — 값 비교로 판정하면 이 저장이 <b>아무 일도 안 한 것</b>이 되고, 다음
+         * (screen/code/requirements.md) — 값 비교로 판정하면 이 저장이 <b>아무 일도 안 한 것</b>이 되고, 다음
          * 배포가 {@code yml} 을 올렸을 때 그 키가 옛 값에 묶인 사실을 아무도 볼 수 없다.
          */
         @Test
@@ -208,7 +208,7 @@ class ConfigServiceTest {
         }
 
         @Test
-        @DisplayName("거부되면 쓰지 않는다 — 실패는 CFG_KEY 를 달고 나간다(grid-edit-validation.md §3.4)")
+        @DisplayName("거부되면 쓰지 않는다 — 실패는 CFG_KEY 를 달고 나간다(frontend/grid.md)")
         void 거부되면_쓰지_않는다() {
             when(validator.validate(any())).thenReturn(
                     List.of(new ConfigViolation("auth.password.min-length", "4 이상이어야 합니다")));
@@ -234,7 +234,7 @@ class ConfigServiceTest {
     class CacheVersion {
 
         @Test
-        @DisplayName("저장 한 번에 +1 이다 — 행 수만큼 올리지 않는다(43 §8.1)")
+        @DisplayName("저장 한 번에 +1 이다 — 행 수만큼 올리지 않는다(sys/code.md)")
         void 한_번에_한_번() {
             SysCacheVersion version = SysCacheVersion.started(SysCacheVersion.CONFIG, NOW);
             when(versions.findById(SysCacheVersion.CONFIG)).thenReturn(Optional.of(version));

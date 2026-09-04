@@ -8,7 +8,7 @@ import { ParamModalContextProvider } from '@/shared/formmodal/paramModalContext'
 import type { OpenParamModal, ParamField, ParamModalSpec } from '@/shared/formmodal/types';
 
 /**
- * 실행 파라미터 모달이 열리는 <b>단 한 자리</b> — grid-api-contract.md §8 · 68 §9.13. frontend-stack.md §7 의 `<FormModal>`.
+ * 실행 파라미터 모달이 열리는 <b>단 한 자리</b> — frontend/grid.md · playbook/INDEX.md. frontend/packages.md 의 `<FormModal>`.
  *
  * <p><b>팝업 호스트와 같은 모양</b>이다(`PopupHost`) — 앱 루트에 하나만 서고, 열려 있는데
  * 또 부르면 앞의 약속을 <b>취소로 닫는다</b>: 매달아 두면 앞의 실행이 영영 기다린다.
@@ -17,7 +17,7 @@ import type { OpenParamModal, ParamField, ParamModalSpec } from '@/shared/formmo
  * 실행 인자는 <b>그 실행 하나의 것</b>이다 — 등록해 두면 어느 실행의 인자인지 키 이름으로
  * 추측하게 되고, 그 키는 쓰는 곳이 하나뿐이라 <b>이름을 지을 근거가 없다</b>.
  *
- * <p><b>확인을 겸한다</b>(grid-api-contract.md §8) — 건수를 위에 적고 실행/취소를 둔다. 그래서 그리드는
+ * <p><b>확인을 겸한다</b>(frontend/grid.md) — 건수를 위에 적고 실행/취소를 둔다. 그래서 그리드는
  * {@code params} 가 있으면 확인 다이얼로그를 띄우지 않는다({@code useGridController}).
  */
 export function FormModalHost({ children }: { children: ReactNode }) {
@@ -35,7 +35,7 @@ export function FormModalHost({ children }: { children: ReactNode }) {
   const open = useCallback<OpenParamModal>((next) => {
     const previous = pending.current;
     pending.current = null;
-    // 앞의 것은 취소다 — 실행이 일어나지 않는다(grid-api-contract.md §8 의 `null`).
+    // 앞의 것은 취소다 — 실행이 일어나지 않는다(frontend/grid.md 의 `null`).
     if (previous) previous(null);
 
     return new Promise<Record<string, unknown> | null>((resolve) => {
@@ -67,7 +67,7 @@ function ParamModal(props: {
   const submit = useCallback(async () => {
     /*
       <b>검증에 걸리면 창이 닫히지 않는다.</b> AntD 는 실패를 예외로 내므로 여기서
-      삼킨다 — grid-api-contract.md §8 의 <i>검증 실패도 실행하지 않는다</i> 는 <b>취소와 같은 결과</b>이지만
+      삼킨다 — frontend/grid.md 의 <i>검증 실패도 실행하지 않는다</i> 는 <b>취소와 같은 결과</b>이지만
       <b>같은 동작이 아니다</b>: 취소는 창이 닫히고 이쪽은 열린 채로 이유가 붙는다.
     */
     let values: Record<string, unknown>;
@@ -91,7 +91,7 @@ function ParamModal(props: {
       destroyOnHidden
     >
       {/*
-        <b>건수가 곧 확인 문구다</b>(grid-api-contract.md §8) — 이것이 없으면 사용자는 자기가 무엇에 대해
+        <b>건수가 곧 확인 문구다</b>(frontend/grid.md) — 이것이 없으면 사용자는 자기가 무엇에 대해
         값을 넣고 있는지 모른 채 실행한다. {@code target: 'none'} 인 실행에는 건수가
         없으므로 줄도 없다.
       */}

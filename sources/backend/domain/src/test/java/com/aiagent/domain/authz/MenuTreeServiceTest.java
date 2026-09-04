@@ -33,7 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  *
  * <p>이 클래스가 지키는 것은 둘이다. <b>보여야 할 것이 보이는가</b>(조상이 딸려오는가)와
  * <b>보이면 안 되는 것이 안 보이는가</b>(권한 없는 형제). 그리고 셋째로 <b>깨진 데이터에서
- * 터지지 않는가</b> — 42 §4 가 순회 코드에 방문 집합과 깊이 상한을 요구한 이유이며, 그것이
+ * 터지지 않는가</b> — sys/menu.md 가 순회 코드에 방문 집합과 깊이 상한을 요구한 이유이며, 그것이
  * 없으면 순환 하나가 로그인 전체를 멈춘다.
  */
 @ExtendWith(MockitoExtension.class)
@@ -89,7 +89,7 @@ class MenuTreeServiceTest {
     @Test
     @DisplayName("구조 노드의 USE_YN='N' 은 트리에서 빼지 않는다 — 게이트는 리프 단독 판정이다")
     void disabledFolderDoesNotHideItsGrantedLeaf() {
-        // 42 §4 — 폴더의 스위치는 자손 전체에 같은 값을 쓰는 일괄 명령이다. 리프가 여전히
+        // sys/menu.md — 폴더의 스위치는 자손 전체에 같은 값을 쓰는 일괄 명령이다. 리프가 여전히
         // 켜져 있다는 것은 그 명령이 없었다는 뜻이며, 여기서 조상 값을 한 번 더 보면
         // 같은 사실을 두 곳이 판정하게 된다.
         givenMenus(disabledFolder("SYSTEM", null, 1), leaf("USER_MGMT", "SYSTEM", 1));
@@ -160,7 +160,7 @@ class MenuTreeServiceTest {
 
     /**
      * <b>빠진 가지는 로그로만 드러난다.</b> 사용자에게는 <i>"권한은 있는데 메뉴가 없다"</i> 로만
-     * 보이고, 그 사람은 원인을 알 수도 고칠 수도 없다 — 42 §4 가 조회 중 발견에 <b>에러 로그 +
+     * 보이고, 그 사람은 원인을 알 수도 고칠 수도 없다 — sys/menu.md 가 조회 중 발견에 <b>에러 로그 +
      * 운영 알림</b>을 요구한 자리다.
      *
      * <p><b>로그를 검사하는 것이 과해 보이지만 그렇지 않다.</b> 위의 세 테스트는 <i>"빠진다"</i>

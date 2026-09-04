@@ -6,9 +6,9 @@ import { MSG } from '@/shared/i18n/messageKeys';
 import { getErrorLogDetail } from '@/features/errorlog/api/errorLogApi';
 
 /**
- * 상세 — 64 §5.5 의 <b>탭 둘</b>. 각각 `textModal` 읽기 전용(grid-column-contract.md §5.5).
+ * 상세 — screen/log/access/requirements.md 의 <b>탭 둘</b>. 각각 `textModal` 읽기 전용(frontend/grid.md).
  *
- * <p><b>편집기가 아니다.</b> 이력 행은 불변이며(64 §2.1) 여는 순간 고칠 수 있는 것처럼
+ * <p><b>편집기가 아니다.</b> 이력 행은 불변이며(screen/log/access/requirements.md) 여는 순간 고칠 수 있는 것처럼
  * 보이면 안 된다 — 큰 textarea 지만 잠겨 있고, 여기서 하는 일은 <b>읽고 복사하는 것</b>뿐이다.
  *
  * <h2>왕복이 하나다</h2>
@@ -19,9 +19,9 @@ import { getErrorLogDetail } from '@/features/errorlog/api/errorLogApi';
  * <h2>비어 있는 이유를 탭마다 <b>따로</b> 말한다</h2>
  *
  * <table><caption></caption>
- * <tr><td>스택이 없다</td><td><b>4xx 라 저장하지 않았다</b>(64 §5.3). 인가 거부의 스택은
+ * <tr><td>스택이 없다</td><td><b>4xx 라 저장하지 않았다</b>(screen/log/access/requirements.md). 인가 거부의 스택은
  *     인터셉터 프레임뿐이고 전 행이 같아서 <b>일부러</b> 비운 것이다</td></tr>
- * <tr><td>전문이 없다</td><td><b>사용 이력 90일이 지났다</b>(64 §5.5). 오류 행은 180일을
+ * <tr><td>전문이 없다</td><td><b>사용 이력 90일이 지났다</b>(screen/log/access/requirements.md). 오류 행은 180일을
  *     살아 멀쩡히 있는데 <b>전문만 다른 테이블에 있어</b> 먼저 파기된다</td></tr>
  * </table>
  *
@@ -32,7 +32,7 @@ import { getErrorLogDetail } from '@/features/errorlog/api/errorLogApi';
  * <p><b>사유는 탭 이름의 툴팁이 낸다.</b> 처음에는 탭 <i>안</i> 에 두었는데, 비활성 탭은
  * 열리지 않으므로 <b>그 안내를 볼 방법이 없었다</b>(2026-08-30 실측 — 이 파일이 세 문단에
  * 걸쳐 피하려던 바로 그 실패다). 꺼진 것에 이유를 붙이는 자리는 툴팁이며, 설정 창의 꺼진
- * 초기화 버튼과 같은 수법이다(grid-standard.md §5) — 거기서도 `<span>` 하나를 덧대야 마우스 이벤트가
+ * 초기화 버튼과 같은 수법이다(frontend/grid.md) — 거기서도 `<span>` 하나를 덧대야 마우스 이벤트가
  * 산다.
  */
 export function ErrorDetailModal(props: { exceptionLogSeq: number | null; onClose: () => void }) {
@@ -43,7 +43,7 @@ export function ErrorDetailModal(props: { exceptionLogSeq: number | null; onClos
     queryFn:
       exceptionLogSeq === null ? skipToken : () => getErrorLogDetail(exceptionLogSeq),
     /*
-      <b>이력은 불변이다</b>(64 §2.1) — 한 번 읽은 스택이 바뀔 일이 없으므로 다시 물을
+      <b>이력은 불변이다</b>(screen/log/access/requirements.md) — 한 번 읽은 스택이 바뀔 일이 없으므로 다시 물을
       이유도 없다. 같은 행을 두 번 열어도 왕복은 한 번이다.
     */
     staleTime: Infinity,
@@ -70,7 +70,7 @@ export function ErrorDetailModal(props: { exceptionLogSeq: number | null; onClos
           <Spin />
         </div>
       ) : detail.isError ? (
-        /* 문구는 서버가 완성해 내려준다 — 화면은 `code` 로 분기하지 않는다(architecture.md §6-1.2). */
+        /* 문구는 서버가 완성해 내려준다 — 화면은 `code` 로 분기하지 않는다(backend/packages.md). */
         <Alert
           type="warning"
           showIcon
@@ -98,7 +98,7 @@ export function ErrorDetailModal(props: { exceptionLogSeq: number | null; onClos
               labelKey: MSG.ERROR_LOG_TAB_PAYLOAD,
               text: data?.parameters ?? null,
               truncated: data?.parametersTruncated ?? false,
-              // 파기된 것과 원래 없는 것을 가른다 — 서버가 그 둘을 따로 준다(64 §5.5).
+              // 파기된 것과 원래 없는 것을 가른다 — 서버가 그 둘을 따로 준다(screen/log/access/requirements.md).
               emptyKey: data?.parametersFound
                 ? MSG.ERROR_LOG_PAYLOAD_NONE
                 : MSG.ERROR_LOG_PAYLOAD_PURGED,
@@ -108,7 +108,7 @@ export function ErrorDetailModal(props: { exceptionLogSeq: number | null; onClos
               labelKey: MSG.ERROR_LOG_TAB_STACK,
               text: data?.rootCauseStack ?? null,
               truncated: data?.stackTruncated ?? false,
-              // 4xx 는 저장하지 않았다 — 없는 것이 아니라 두지 않은 것이다(64 §5.3).
+              // 4xx 는 저장하지 않았다 — 없는 것이 아니라 두지 않은 것이다(screen/log/access/requirements.md).
               emptyKey: MSG.ERROR_LOG_STACK_NONE,
             }),
           ]}
@@ -119,7 +119,7 @@ export function ErrorDetailModal(props: { exceptionLogSeq: number | null; onClos
 }
 
 /**
- * 탭 하나 — <b>비었으면 꺼지고, 꺼진 이유는 이름에 붙는다</b>(64 §5.5).
+ * 탭 하나 — <b>비었으면 꺼지고, 꺼진 이유는 이름에 붙는다</b>(screen/log/access/requirements.md).
  *
  * <p>둘을 한 함수가 만드는 것이 요점이다. 따로 두면 <i>꺼지는 조건</i> 과 <i>사유를 다는
  * 자리</i> 가 한쪽에서만 빠지고, 빠진 쪽은 <b>이유 없이 꺼진 탭</b>이 된다.
@@ -147,7 +147,7 @@ function tab(props: {
         {/*
           <b>`<span>` 을 덧대야 툴팁이 뜬다.</b> 꺼진 탭은 마우스 이벤트를 내지 않으므로
           (antd 가 `pointer-events` 를 끈다) 겉을 하나 두르고 그 겉에서 다시 켠다 —
-          설정 창의 꺼진 초기화 버튼에서 같은 수법을 썼다(grid-standard.md §5).
+          설정 창의 꺼진 초기화 버튼에서 같은 수법을 썼다(frontend/grid.md).
         */}
         <span style={{ pointerEvents: 'auto' }}>{label(props.labelKey)}</span>
       </Tooltip>

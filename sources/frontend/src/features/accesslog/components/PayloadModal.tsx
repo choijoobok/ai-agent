@@ -6,18 +6,18 @@ import { MSG } from '@/shared/i18n/messageKeys';
 import { getAccessLogDetail } from '@/features/accesslog/api/accessLogApi';
 
 /**
- * 요청 전문 — 64 §2.4 의 `textModal` 읽기 전용.
+ * 요청 전문 — screen/log/access/requirements.md 의 `textModal` 읽기 전용.
  *
- * <p><b>편집기가 아니다.</b> 이력 행은 불변이며(64 §2.1) 여는 순간 고칠 수 있는 것처럼
+ * <p><b>편집기가 아니다.</b> 이력 행은 불변이며(screen/log/access/requirements.md) 여는 순간 고칠 수 있는 것처럼
  * 보이면 안 된다 — 큰 textarea 지만 잠겨 있고, 여기서 하는 일은 <b>읽고 복사하는 것</b>뿐이다.
  *
  * <p><b>열 때 부른다.</b> 목록에 값이 없으므로(100행 × 1MB) 이 모달이 그 한 행의 `nclob` 만
  * 가져온다 — 그것이 `getDetail` 이 돌아온 유일한 이유다.
  *
- * <p><b>잘렸음을 말한다.</b> 전문은 1MB 에서 잘리며(architecture.md §6.2), 말하지 않으면 잘린 JSON 을
+ * <p><b>잘렸음을 말한다.</b> 전문은 1MB 에서 잘리며(backend/packages.md), 말하지 않으면 잘린 JSON 을
  * 받은 사람이 *"저장이 깨졌다"* 로 읽는다 — 이 화면에서 가장 흔한 오독이다.
  *
- * <p><b>이미 파기된 행은 목록을 다시 읽지 않는다</b>(64 §3.7). 모달만 안내하고 화면은
+ * <p><b>이미 파기된 행은 목록을 다시 읽지 않는다</b>(screen/log/access/requirements.md). 모달만 안내하고 화면은
  * 그대로 둔다 — 보던 목록이 눈앞에서 갈리는 것이 더 나쁘다.
  */
 export function PayloadModal(props: { accessLogSeq: number | null; onClose: () => void }) {
@@ -27,7 +27,7 @@ export function PayloadModal(props: { accessLogSeq: number | null; onClose: () =
     queryKey: ['accessLog', 'detail', accessLogSeq],
     queryFn: accessLogSeq === null ? skipToken : () => getAccessLogDetail(accessLogSeq),
     /*
-      <b>이력은 불변이다</b>(64 §2.1) — 한 번 읽은 전문이 바뀔 일이 없으므로 다시 물을
+      <b>이력은 불변이다</b>(screen/log/access/requirements.md) — 한 번 읽은 전문이 바뀔 일이 없으므로 다시 물을
       이유도 없다. 같은 행의 `[보기]` 를 두 번 눌러도 왕복은 한 번이다.
     */
     staleTime: Infinity,
@@ -54,7 +54,7 @@ export function PayloadModal(props: { accessLogSeq: number | null; onClose: () =
           <Spin />
         </div>
       ) : detail.isError ? (
-        /* 문구는 서버가 완성해 내려준다 — 화면은 `code` 로 분기하지 않는다(architecture.md §6-1.2). */
+        /* 문구는 서버가 완성해 내려준다 — 화면은 `code` 로 분기하지 않는다(backend/packages.md). */
         <Alert
           type="warning"
           showIcon

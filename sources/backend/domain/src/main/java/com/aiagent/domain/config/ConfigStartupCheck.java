@@ -12,7 +12,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 /**
- * 기동 시 <b>예행 바인딩</b> — ADR-0026 §3.
+ * 기동 시 <b>예행 바인딩</b> — sys/config.md.
  *
  * <p>{@code SYS_CONFIG} 전량을 {@code yml} 위에 얹어 <b>전 props 클래스를 한 번</b>
  * 바인딩해 본다. 실패하면 <b>기동이 실패한다.</b>
@@ -42,7 +42,7 @@ import org.springframework.stereotype.Component;
  * 그 사실이 분명하다.
  *
  * <p><b>경계를 직접 연다.</b> 여기는 요청도 배치도 아니라 열어 줄 사람이 없다 —
- * {@code inNewSnapshot} 이 그 자리다(ADR-0026 §2).
+ * {@code inNewSnapshot} 이 그 자리다(sys/config.md).
  *
  * <p><b>{@code Started …Application} 로그가 먼저 찍히고 그 뒤에 죽는다.</b> 러너는 웹
  * 서버가 뜬 뒤에 도므로 그렇게 보이며, 프로세스는 <b>0이 아닌 코드로 끝난다</b> —
@@ -92,7 +92,7 @@ public class ConfigStartupCheck implements ApplicationRunner {
     private static String describe(List<ConfigViolation> violations) {
         StringBuilder text = new StringBuilder(
                 "SYS_CONFIG 의 값이 바인딩을 통과하지 못했다 — 이 테이블의 쓰기 경로는"
-                        + " 관리 화면 하나이며 SQL 직접 수정은 비지원이다(ADR-0026 §3).");
+                        + " 관리 화면 하나이며 SQL 직접 수정은 비지원이다(sys/config.md).");
         violations.forEach(violation ->
                 text.append("\n  ").append(violation.key()).append(": ").append(violation.message()));
         return text.toString();

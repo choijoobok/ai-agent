@@ -16,7 +16,7 @@ import org.springframework.mock.env.MockEnvironment;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
- * 작업 스코프 스냅샷 — ADR-0026 §2 · ADR-0017 §3.
+ * 작업 스코프 스냅샷 — sys/config.md · backend/caching.md.
  *
  * <p><b>여기서 지키는 것 넷이다.</b> ① {@code SYS_CONFIG} 가 {@code yml} 을 덮는다,
  * ② 조회는 <b>작업당 한 번</b>이고 그 안에서는 값이 바뀌지 않는다, ③ 경계 밖 호출은
@@ -75,7 +75,7 @@ class ConfigLookupTest {
         }
 
         /**
-         * <b>순서로 지켜야 했을 것을 구조가 지킨다</b>(ADR-0026 §1). 환경변수가 같은 키를
+         * <b>순서로 지켜야 했을 것을 구조가 지킨다</b>(sys/config.md). 환경변수가 같은 키를
          * 가져도 화면에서 바꾼 값이 이기는 것은 <i>프로퍼티 소스 순서</i> 때문이 아니라
          * <b>유틸이 마지막에 덮기</b> 때문이다.
          */
@@ -103,7 +103,7 @@ class ConfigLookupTest {
         /**
          * <b>재바인딩이 {@code @Validated} 를 다시 돌린다.</b> 화면을 안 거친 값(SQL 직접
          * 수정)이 검증을 만나는 자리이며, <b>그 키만 {@code yml} 로 조용히 되돌리지 않는다</b>
-         * — 그러면 화면은 {@code 변경됨} 이라 말하는데 동작은 기본값이다(ADR-0026 §3).
+         * — 그러면 화면은 {@code 변경됨} 이라 말하는데 동작은 기본값이다(sys/config.md).
          */
         @Test
         @DisplayName("규칙을 어긴 행은 예외다 — yml 로 조용히 폴백하지 않는다")
@@ -140,7 +140,7 @@ class ConfigLookupTest {
         }
 
         /**
-         * ADR-0017 §3 이 원한 일관성이 이것이다. <b>오래 도는 작업이 낡은 값에 묶이는 것은
+         * backend/caching.md 이 원한 일관성이 이것이다. <b>오래 도는 작업이 낡은 값에 묶이는 것은
          * 버그가 아니라 의도</b>이며, 반영하려면 작업을 다시 돌린다.
          */
         @Test
@@ -209,7 +209,7 @@ class ConfigLookupTest {
 
         /**
          * <b>조용히 임시 스냅샷을 뜨지 않는다.</b> 루프 안에서 부르면 매번 조회하고
-         * <b>매번 값이 다를 수 있다</b> — ADR-0017 §3 이 막으려던 사고가 되돌아온다.
+         * <b>매번 값이 다를 수 있다</b> — backend/caching.md 이 막으려던 사고가 되돌아온다.
          */
         @Test
         @DisplayName("sys-config 아래를 경계 밖에서 읽으면 예외다 — 열라고 말한다")
@@ -222,7 +222,7 @@ class ConfigLookupTest {
         }
 
         /**
-         * <b>배포 설정에는 덮을 층이 없다</b>(43 §6.1) — 기동 시 필터 체인의 모양을 정하므로
+         * <b>배포 설정에는 덮을 층이 없다</b>(sys/code.md) — 기동 시 필터 체인의 모양을 정하므로
          * 런타임에 바꿔도 반영될 자리가 없고 관리 화면에도 나오지 않는다. 경계를 요구하면
          * {@code SecurityConfig} 가 기동 중에 읽는 정상 호출이 죽는다.
          */

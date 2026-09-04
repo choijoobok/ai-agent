@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 요청을 <b>내는 쪽</b> — 알림 모달의 <i>내 요청</i> 탭(60 §8 · NOTI-06 사용자 측).
+ * 요청을 <b>내는 쪽</b> — 알림 모달의 <i>내 요청</i> 탭(screen/_standalone/README.md · NOTI-06 사용자 측).
  *
  * <p>{@link NotiRequestService} 와 <b>같은 테이블의 반대편</b>이다. 나눈 이유는
  * 인가의 자리가 다르기 때문이다 — 저쪽은 {@code (NOTI_REQUEST, SAVE)} 권한이 필요한
  * {@code service} 계층이고, 여기는 <b>권한이 없는 사람도 부른다</b>({@code common} 계층 ·
- * security-design.md §4). 실제로 <b>권한이 없어서</b> 요청을 내는 것이 이 기능의 첫 용도다(권한 신청).
+ * backend/security.md). 실제로 <b>권한이 없어서</b> 요청을 내는 것이 이 기능의 첫 용도다(권한 신청).
  *
  * <h2>대상이 언제나 세션의 주인이다</h2>
  *
@@ -29,14 +29,14 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>낸 사람에게 알림을 넣지 않는다</h2>
  *
- * <p>main-shell.md §7.1 이 <i>"상태가 바뀌면 그것이 내 알림으로 온다"</i> 고 하며 <b>접수</b>를 함께
+ * <p>frontend/tabs.md 이 <i>"상태가 바뀌면 그것이 내 알림으로 온다"</i> 고 하며 <b>접수</b>를 함께
  * 적었지만, 접수는 <b>내가 방금 한 일</b>이다 — 알림이 답하는 물음은 <i>"내가 하지 않은
  * 무슨 일이 있었나"</i> 이고, 내 행동을 나에게 알리면 <b>배지가 내 클릭을 세게</b> 된다.
  * 접수 사실은 <i>내 요청</i> 탭에 그 줄이 생기는 것으로 이미 보인다.
  *
  * <h2>관리자에게도 알리지 않는다</h2>
  *
- * <p>66 §6.2 의 생산자 넷에 <i>요청 접수</i> 가 없다. 대기열은 {@code NOTI_REQUEST} 화면이
+ * <p>screen/notice/requirements.md 의 생산자 넷에 <i>요청 접수</i> 가 없다. 대기열은 {@code NOTI_REQUEST} 화면이
  * 보는 것이고, 알림으로도 보내면 <b>같은 사실을 두 곳이 말한다</b> — 그리고 받을 사람을
  * 정하려면 <i>어느 역할이 요청을 처리하는가</i> 라는 설정이 하나 더 필요해진다.
  */
@@ -55,7 +55,7 @@ public class MyNotiRequestService {
         this.clock = clock;
     }
 
-    /** 내가 낸 것 — <b>최신이 위</b>다(대기열이 아니라 이력이다 · 66 §5.2.1). */
+    /** 내가 낸 것 — <b>최신이 위</b>다(대기열이 아니라 이력이다 · screen/notice/requirements.md). */
     public MyRequests findMine(String userId) {
         int limit = configs.get(NotiProps.class).listSize();
 
@@ -71,9 +71,9 @@ public class MyNotiRequestService {
     /**
      * 새 요청 — <b>같은 유형이 접수 상태로 열려 있으면 거부한다</b>.
      *
-     * <p>워크플로가 없으므로(01 §2) 요청은 한 번 내면 답이 올 때까지 그대로다. 여벌을
+     * <p>워크플로가 없으므로 요청은 한 번 내면 답이 올 때까지 그대로다. 여벌을
      * 허용하면 두 가지가 생긴다 — 대기열이 <b>같은 사람의 같은 말</b>로 차고, 관리자가
-     * 그 여벌을 하나씩 반려하는 동안 <b>반려 알림이 그 수만큼 나간다</b>(66 §5.4).
+     * 그 여벌을 하나씩 반려하는 동안 <b>반려 알림이 그 수만큼 나간다</b>(screen/notice/requirements.md).
      * 더블클릭 한 번이 그것을 만든다.
      *
      * <p><b>유형별로 센다.</b> 권한 신청과 잠금 해제는 서로 다른 답을 기다리는 것이라

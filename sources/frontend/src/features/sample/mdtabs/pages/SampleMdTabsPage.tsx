@@ -20,9 +20,9 @@ import {
 import type { SampleOrder } from '@/features/sample/types';
 
 /**
- * `SMPL_MD_TABS` — 68 §7. **참조 구현이지 업무 화면이 아니다.**
+ * `SMPL_MD_TABS` — playbook/INDEX.md. **참조 구현이지 업무 화면이 아니다.**
  *
- * <p>이 화면이 **유일한 실물**로 갖는 것은 하나다(68 §2 의 굵은 ●): **하단 디테일 탭**.
+ * <p>이 화면이 **유일한 실물**로 갖는 것은 하나다(playbook/INDEX.md 의 굵은 ●): **하단 디테일 탭**.
  * 지우면 템플릿에서 그 어휘의 예가 사라진다.
  *
  * <h2>③에 탭을 얹은 것이지 ③을 베낀 것이 아니다</h2>
@@ -34,24 +34,24 @@ import type { SampleOrder } from '@/features/sample/types';
  * <h2>저장 단위가 셋이다</h2>
  *
  * <p>③이 둘이었던 자리에서 하나가 는다(마스터 · 품목 · 태그). 묶지 않는 이유는 그대로다 —
- * 저장 버튼이 그리드마다 따로이며(grid-standard.md §2.1), 묶으면 *태그만 고쳤는데 주문도 갱신됨* 이
+ * 저장 버튼이 그리드마다 따로이며(frontend/grid.md), 묶으면 *태그만 고쳤는데 주문도 갱신됨* 이
  * 되어 감사 컬럼이 거짓말을 한다.
  *
  * <h2>미저장 경고를 **한 번만** 묻는다</h2>
  *
- * <p>68 §7.6 — 마스터의 선택을 바꿀 때 탭 둘 중 하나라도 미저장이면 묻는다. 탭마다 물으면
+ * <p>playbook/INDEX.md — 마스터의 선택을 바꿀 때 탭 둘 중 하나라도 미저장이면 묻는다. 탭마다 물으면
  * 사용자는 같은 물음에 두 번 답하면서도 **무엇을 잃는지는 여전히 모른다**. 탭을 오가는
  * 것으로는 묻지 않는다 — 표시가 바뀔 뿐 데이터를 버리지 않는다(§7.7).
  */
 
 const MENU_CD = 'SMPL_MD_TABS';
 
-/** 주문 상태 넷 — 48 §3.2 의 전이표. **소스가 값을 갖는다**(43 §4.4). */
+/** 주문 상태 넷 — playbook/INDEX.md 의 전이표. **소스가 값을 갖는다**(sys/code.md). */
 const STAT_RCV = 'RCV';
 const STAT_DON = 'DON';
 
 /**
- * 편집이 열리는가 — 48 §3.2 의 전이표를 그대로 편다(③과 같은 규칙이다).
+ * 편집이 열리는가 — playbook/INDEX.md 의 전이표를 그대로 편다(③과 같은 규칙이다).
  *
  * <p>**`LOCK_YN` 이 먼저다.** 상태는 *일이 어디까지 갔나* 이고 잠금은 *운영이 잠갔나*
  * 이며, 잠긴 것은 상태와 무관하게 닫힌다. 신규 행(`C`)은 언제나 열린다.
@@ -59,7 +59,7 @@ const STAT_DON = 'DON';
 function amountEditable(row: SampleOrder, state: RowState): boolean | { ok: false; message: string } {
   if (state === 'C') return true;
   if (row.lockYn) return { ok: false, message: label(MSG.SAMPLE_LOCKED) };
-  // 확정부터는 금액이 잠긴다 — 확정된 금액이다(48 §3.2).
+  // 확정부터는 금액이 잠긴다 — 확정된 금액이다(playbook/INDEX.md).
   return row.ordStatCd === STAT_RCV;
 }
 
@@ -77,7 +77,7 @@ export function SampleMdTabsPage() {
    * 하단이 부르는 손잡이 — 선택을 상태로 들지 않는다.
    *
    * <p>③은 `selected` 를 들었지만 그것은 **제목 접미**를 만들기 위해서였다. 여기서는 접미를
-   * `SampleDetailTabs` 가 `master.selected` 에서 직접 읽으므로(grid-standard.md §6.1) 같은 사실을 두 곳에
+   * `SampleDetailTabs` 가 `master.selected` 에서 직접 읽으므로(frontend/grid.md) 같은 사실을 두 곳에
    * 두면 **마스터에서 이름을 고치고 저장하기 전**에 둘이 갈린다.
    */
   const tabs = useRef<SampleDetailTabsHandle | null>(null);
@@ -164,7 +164,7 @@ export function SampleMdTabsPage() {
 
   /**
    * **화면이 묻는다.** 그리드에 맡기면 물음의 결과를 화면이 알 수 없고, 그 답을 알아야
-   * 선택을 받아들일지 정할 수 있다(grid-standard.md §6.1).
+   * 선택을 받아들일지 정할 수 있다(frontend/grid.md).
    */
   const confirmDiscard = useCallback(
     () =>
@@ -182,13 +182,13 @@ export function SampleMdTabsPage() {
   );
 
   /**
-   * 주문 선택 — grid-standard.md §6.1 의 상태 셋을 그대로 편다.
+   * 주문 선택 — frontend/grid.md 의 상태 셋을 그대로 편다.
    *
    * <p>**거부할 수 있다.** 하단에 미저장 편집이 있으면 묻고, 아니라고 하면 판의 선택이
    * 되돌아간다(UX-10). 거부권이 없으면 *보고 있는 것*과 *고른 것*이 갈리고, 그 상태로
    * 저장하면 **A 주문의 품목이 B 주문으로 나간다**.
    *
-   * <p>**묻는 것은 여기 한 번뿐이다**(68 §7.6). 탭이 둘이어도 물음은 하나이며, 그 판단은
+   * <p>**묻는 것은 여기 한 번뿐이다**(playbook/INDEX.md). 탭이 둘이어도 물음은 하나이며, 그 판단은
    * `SampleDetailTabsHandle.dirty` 가 둘을 합쳐 답한다.
    */
   const selectOrder = useCallback(
@@ -196,7 +196,7 @@ export function SampleMdTabsPage() {
       if (tabs.current?.dirty() && !(await confirmDiscard())) {
         return false;
       }
-      // 신규 행은 부모 키가 아직 DB 에 없다 — 붙이려 하면 FK 위반이다(grid-standard.md §6.1).
+      // 신규 행은 부모 키가 아직 DB 에 없다 — 붙이려 하면 FK 위반이다(frontend/grid.md).
       await tabs.current?.select(!row || row.state === 'C' ? null : row.data.ordId);
       return true;
     },
@@ -204,7 +204,7 @@ export function SampleMdTabsPage() {
   );
 
   /**
-   * 마스터 조회는 **하단을 리셋한다** — grid-standard.md §6.1.
+   * 마스터 조회는 **하단을 리셋한다** — frontend/grid.md.
    *
    * <p>조회는 목록을 통째로 바꾸므로 이전에 보던 행이 결과에 없을 수도 있다. 하단이 남아
    * 있으면 **다른 주문의 품목을 그 주문 것으로 보게 된다** — 탭이 둘이라 그 오해가 두 배다.
@@ -215,7 +215,7 @@ export function SampleMdTabsPage() {
   }, [master]);
 
   /**
-   * 지울 수 있는가 — **마스터 삭제 게이트**(grid-standard.md §6.2).
+   * 지울 수 있는가 — **마스터 삭제 게이트**(frontend/grid.md).
    *
    * <p>게이트가 **건수 컬럼**에서 나온다: 마스터 응답이 품목 수를 갖고 있으므로 행마다
    * 답할 수 있다. 잠긴 주문도 닫힌다.
@@ -255,7 +255,7 @@ export function SampleMdTabsPage() {
             <DataGrid<SampleOrder>
               title={MSG.SAMPLE_ORDER_GRID_TITLE}
               menuCd={MENU_CD}
-              // 개인화의 키다 — 같으면 위아래 설정이 서로를 덮는다(grid-standard.md §5).
+              // 개인화의 키다 — 같으면 위아래 설정이 서로를 덮는다(frontend/grid.md).
               gridId="master"
               controller={master}
               deletable={masterDeletable}
@@ -282,10 +282,10 @@ export function SampleMdTabsPage() {
 }
 
 /**
- * 마스터 컬럼 아홉 — 68 §7.2 가 **§5.2 의 아홉**이라고 적었다.
+ * 마스터 컬럼 아홉 — playbook/INDEX.md 가 **§5.2 의 아홉**이라고 적었다.
  *
  * <p>③과 같은 표이므로 같은 키를 쓴다. 여기에 새 키를 만들면 같은 컬럼이 두 화면에서
- * 다른 이름으로 보이는 날이 온다 — 폴더가 가르는 것은 인가 경계이지(68 §10.2) 표의
+ * 다른 이름으로 보이는 날이 온다 — 폴더가 가르는 것은 인가 경계이지(playbook/INDEX.md) 표의
  * 정의가 아니다.
  */
 function buildOrderColumns(): ColumnDef<SampleOrder>[] {
@@ -297,7 +297,7 @@ function buildOrderColumns(): ColumnDef<SampleOrder>[] {
       width: 160,
       pinned: 'left',
       sortable: true,
-      // 업무 키다 — 신규 행에서만 열리고 고치려면 지우고 다시 만든다(grid-column-contract.md §5.1).
+      // 업무 키다 — 신규 행에서만 열리고 고치려면 지우고 다시 만든다(frontend/grid.md).
       pk: true,
       required: true,
     },
@@ -325,10 +325,10 @@ function buildOrderColumns(): ColumnDef<SampleOrder>[] {
       type: 'code',
       width: 110,
       sortable: true,
-      // 후보가 공통코드에서 온다 — 이름과 순서는 운영이 정한다(43 §8).
+      // 후보가 공통코드에서 온다 — 이름과 순서는 운영이 정한다(sys/code.md).
       grpCd: 'SMPL_ORD_STAT',
       renderer: 'badge',
-      // 값이 색을 고른다 — tone 맵(grid-column-contract.md §5.4.1).
+      // 값이 색을 고른다 — tone 맵(frontend/grid.md).
       tone: { RCV: 'none', CFM: 'ok', SHP: 'warn', DON: 'muted' },
     },
     {
@@ -349,7 +349,7 @@ function buildOrderColumns(): ColumnDef<SampleOrder>[] {
       sortable: true,
       editable: (row, ctx) => amountEditable(row, ctx.state),
       editor: 'number',
-      // 계산은 한 곳에서 둘 다 한다 — 연쇄로 두면 순서가 숨은 규칙이 된다(grid-edit-validation.md §2.3).
+      // 계산은 한 곳에서 둘 다 한다 — 연쇄로 두면 순서가 숨은 규칙이 된다(frontend/grid.md).
       afterEdit: (row) => ({
         ordAmt: (row.ordQty ?? 0) * (row.unitAmt ?? 0),
         vatAmt: (row.ordQty ?? 0) * (row.unitAmt ?? 0) * 0.1,
@@ -361,7 +361,7 @@ function buildOrderColumns(): ColumnDef<SampleOrder>[] {
       type: 'number',
       width: 130,
       sortable: true,
-      // 파생이다 — 편집 선언이 없으면 읽기 전용이다(grid-column-contract.md §2).
+      // 파생이다 — 편집 선언이 없으면 읽기 전용이다(frontend/grid.md).
     },
     {
       field: 'urgentYn',
@@ -369,7 +369,7 @@ function buildOrderColumns(): ColumnDef<SampleOrder>[] {
       type: 'ynFlag',
       width: 90,
       sortable: true,
-      // 스위치다 — 체크박스가 아니다(grid-column-contract.md §5.2).
+      // 스위치다 — 체크박스가 아니다(frontend/grid.md).
       editable: (row, ctx) => textEditable(row, ctx.state),
       editor: 'switch',
     },
@@ -387,10 +387,10 @@ function buildOrderColumns(): ColumnDef<SampleOrder>[] {
 }
 
 /**
- * 조회조건 넷 — 68 §7.3 이 **§5.3 과 같다**고 적었다. **마스터에만 있다.**
+ * 조회조건 넷 — playbook/INDEX.md 이 **§5.3 과 같다**고 적었다. **마스터에만 있다.**
  *
  * <p>탭 둘은 조회조건을 갖지 않는다 — 대상이 마스터의 선택이며 그것은 `searchParams`
- * (구조)이지 `conditions`(사용자가 좁힌 것)가 아니다(api-conventions.md §3.1.1).
+ * (구조)이지 `conditions`(사용자가 좁힌 것)가 아니다(backend/api.md).
  */
 function buildSearchFields(): SearchField[] {
   return [
@@ -423,7 +423,7 @@ function buildSearchFields(): SearchField[] {
       type: 'dateRange',
       // **`DATE` 컬럼이다** — 적지 않으면 시각까지 보내고 서버가 그 값을 못 읽는다.
       precision: 'day',
-      // 기간이 필수가 아니다 — 이 표는 대용량 이력이 아니다(64 §2.2 와 갈리는 자리).
+      // 기간이 필수가 아니다 — 이 표는 대용량 이력이 아니다(screen/log/access/requirements.md 와 갈리는 자리).
       required: false,
       rangeDays: { default: 30, max: 365 },
     },

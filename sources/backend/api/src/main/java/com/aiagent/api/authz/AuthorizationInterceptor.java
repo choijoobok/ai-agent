@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
- * 인가 판정 — security-design.md §4. <b>여기가 유일한 판정 자리다.</b>
+ * 인가 판정 — backend/security.md. <b>여기가 유일한 판정 자리다.</b>
  *
  * <pre>
  * 요청 → /api/public 익명 통과 · /api/common 인증만 확인
@@ -42,7 +42,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
  * {@link ApiAuthorityRegistry} 와 세션의 유효 권한뿐이다. 쿼리가 도는 것은 <b>캐시가 낡았을
  * 때</b>(플래그 또는 날짜 경과) 한 번이며 그것도 그 사용자에 대해서만이다.
  *
- * <p><b>등록 순서가 규약이다</b> — 사용 이력 인터셉터가 이것보다 <b>앞</b>이어야 한다(architecture.md §6.1).
+ * <p><b>등록 순서가 규약이다</b> — 사용 이력 인터셉터가 이것보다 <b>앞</b>이어야 한다(backend/packages.md).
  * {@code preHandle} 이 거부해도 이미 {@code true} 를 반환한 인터셉터의
  * {@code afterCompletion} 은 호출되므로, 앞에 두어야 403 이 사용 이력에 남는다.
  * 그 인터셉터는 이력 슬라이스가 만든다.
@@ -58,7 +58,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
      * <p><b>비워 두지 않는다.</b> 비우면 비밀번호가 만료된 사용자가 로그인한 뒤 아무것도 할
      * 수 없고 로그아웃조차 못 한다 — 막다른 세션이 된다.
      *
-     * <p>비밀번호 변경 화면(60 §4)은 아직 없다. 경로를 미리 적어 두는 이유는 그 슬라이스가
+     * <p>비밀번호 변경 화면(screen/_standalone/README.md)은 아직 없다. 경로를 미리 적어 두는 이유는 그 슬라이스가
      * <b>컨트롤러만 추가하면 되게</b> 하려는 것이며, 없는 경로가 여기 있어도 무해하다 —
      * 핸들러가 없으면 404 다.
      */
@@ -94,7 +94,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         String path = pathOf(request);
         ApiLayer layer = ApiLayer.of(path);
 
-        // 정적 리소스·SPA 라우트. 보호 대상은 화면(코드)이 아니라 데이터다(security-design.md §4).
+        // 정적 리소스·SPA 라우트. 보호 대상은 화면(코드)이 아니라 데이터다(backend/security.md).
         if (layer == null || layer == ApiLayer.PUBLIC) {
             return true;
         }
@@ -117,7 +117,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         // 함께 돌기 때문이다. 공통 API 만 부르는 세션이 그 검사를 영원히 건너뛰면 안 된다.
         EffectiveAuthority authority = currentAuthority(session, userId);
 
-        // 프론트의 메뉴 트리가 낡았는지 판정할 유일한 근거 — 50 §8.1. 판정 결과가 무엇이든
+        // 프론트의 메뉴 트리가 낡았는지 판정할 유일한 근거. 판정 결과가 무엇이든
         // (403 도) 붙는다: 권한이 줄어서 거부된 것이면 그 사실을 알려야 할 이유가 더 크다.
         AuthzVersionHeader.stamp(response, authority);
 
@@ -152,14 +152,14 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     // ── 캐시 ────────────────────────────────────────────────────────────
 
     /**
-     * 세션의 유효 권한을 쓰되 <b>낡았으면 다시 계산한다</b> — security-design.md §4.
+     * 세션의 유효 권한을 쓰되 <b>낡았으면 다시 계산한다</b> — backend/security.md.
      *
      * <p>신호가 둘이고 <b>함께</b> 본다. {@code authzDirty} 는 데이터가 바뀐 것이고,
      * {@code authzCalcDate} 불일치는 <b>아무도 아무것도 바꾸지 않았는데 부여가 만료된 것</b>
      * 이다. 후자가 없으면 어제 만료된 권한이 세션이 끝날 때까지 살아 있다.
      *
      * <p>각 사용자가 <b>자정 이후 첫 요청에서 스스로</b> 재계산하므로, 자정에 활성 세션을
-     * 찾아 순회하는 작업이 필요 없다(ADR-0017).
+     * 찾아 순회하는 작업이 필요 없다(backend/caching.md).
      */
     private EffectiveAuthority currentAuthority(HttpSession session, String userId) {
         EffectiveAuthority cached = AuthzSession.read(session);
@@ -177,7 +177,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * 접근 제어 체인 #2~#4 의 <b>세션 중 재검사</b> — security-design.md §4 의 체인 표.
+     * 접근 제어 체인 #2~#4 의 <b>세션 중 재검사</b> — backend/security.md 의 체인 표.
      *
      * <p><b>재계산과 같은 순간에 도는 것이 설계다.</b> 매 요청 계정을 조회하면 요청당 쿼리 0
      * 이라는 전제가 깨지고, 아예 하지 않으면 <b>비활성화된 계정이 세션 만료까지 계속

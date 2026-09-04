@@ -5,19 +5,19 @@ import { parseCell, type ParseText } from '@/shared/excelupload/parseCell';
 import type { GridIssue } from '@/shared/grid/types';
 
 /**
- * 파일 → 행 배열 — ADR-0024 · 68 §9.2 의 <i>하는 일 다섯</i> 중 1·2·5.
+ * 파일 → 행 배열 — frontend/grid-advanced.md · playbook/INDEX.md 의 <i>하는 일 다섯</i> 중 1·2·5.
  *
- * <p><b>서버에 올리지 않는다</b>(ADR-0024 §3). 브라우저가 읽으므로 `SYS_FILE` 에 아무것도
+ * <p><b>서버에 올리지 않는다</b>(frontend/grid-advanced.md). 브라우저가 읽으므로 `SYS_FILE` 에 아무것도
  * 남지 않고, 업로드 엔드포인트도 없다 — 저장은 <b>업무 탭과 같은 `api.save`</b> 다.
  *
- * <p><b>양식이 곧 ②의 전체 다운로드다</b>(grid-standard.md §2.2 · 68 §8.2). 그래서 헤더는 컬럼의
+ * <p><b>양식이 곧 ②의 전체 다운로드다</b>(frontend/grid.md · playbook/INDEX.md). 그래서 헤더는 컬럼의
  * <b>번역된 이름</b>이며, 다르면 <b>읽지 않는다</b>: 어긋난 채로 읽으면 열이 하나 밀려
  * <b>수량 자리에 단가가</b> 들어가고, 그 파일은 저장까지 통과한다.
  */
 
 export type ReadOutcome<T> =
   | { ok: true; rows: T[]; issues: GridIssue[] }
-  /** 파일을 <b>통째로 거절</b>한 경우 — 68 §8.7 의 예외 화면 둘이다. */
+  /** 파일을 <b>통째로 거절</b>한 경우 — playbook/INDEX.md 의 예외 화면 둘이다. */
   | { ok: false; reason: 'header' | 'tooManyRows'; detail: string };
 
 export interface ReadText extends ParseText {
@@ -28,7 +28,7 @@ export interface ReadText extends ParseText {
 }
 
 /**
- * @param columns 업무 탭과 <b>같은 배열</b>이다 — 양식이 갈릴 수 없다(68 §9.2)
+ * @param columns 업무 탭과 <b>같은 배열</b>이다 — 양식이 갈릴 수 없다(playbook/INDEX.md)
  * @param maxRows `ui.excel.max-rows`. 넘으면 <b>조용히 자르지 않고</b> 거절한다
  */
 export async function readWorkbook<T>(
@@ -56,7 +56,7 @@ export async function readWorkbook<T>(
     <b>헤더를 뺀 줄 수</b>다. {@code rowCount} 는 마지막으로 쓰인 행의 번호라, 사람이
     아래쪽 빈 칸을 한 번 눌렀다 지운 파일에서는 실제보다 크다 — 아래 루프가 <i>값이
     하나도 없는 줄</i>을 건너뛰므로 최종 건수는 다시 맞는다. 여기 상한은 <b>읽기 전에</b>
-    막는 것이 목적이며(68 §8.7 — <i>읽지 않는다</i>), 크게 잡힌 쪽으로 틀리는 것이 안전하다.
+    막는 것이 목적이며(playbook/INDEX.md — <i>읽지 않는다</i>), 크게 잡힌 쪽으로 틀리는 것이 안전하다.
   */
   const dataRows = Math.max(0, sheet.rowCount - 1);
   if (dataRows > maxRows) {
@@ -78,7 +78,7 @@ export async function readWorkbook<T>(
         /*
           <b>못 읽은 칸은 비운다.</b> 원본 글자를 남기면 컬럼의 타입과 어긋난 값이 행에
           들어가고, 그 행은 <i>숫자 컬럼에 글자가 든 채</i> 저장 페이로드까지 간다.
-          사유는 아래 {@code issues} 가 나르며 셀에 붙는다(grid-edit-validation.md §3.3).
+          사유는 아래 {@code issues} 가 나르며 셀에 붙는다(frontend/grid.md).
         */
         data[column.field] = null;
         issues.push({ rowId: `x${rows.length + 1}`, field: column.field, message: parsed.message });
@@ -106,13 +106,13 @@ function headerRow(sheet: ExcelJS.Worksheet, width: number): string[] {
   const row = sheet.getRow(1);
   const headers: string[] = [];
   /*
-    <b>한 칸 더 읽는다</b>(2026-09-02 실물 — 68 §8 이 서면서 드러났다). 기대한 폭까지만
+    <b>한 칸 더 읽는다</b>(2026-09-02 실물 — playbook/INDEX.md 이 서면서 드러났다). 기대한 폭까지만
     읽으면 배열 길이가 <b>언제나 같아져</b> {@code sameHeader} 의 길이 비교가 죽은 검사가
     되고, <b>뒤에 열이 더 붙은 파일이 조용히 통과</b>한다.
 
     조용한 것이 문제다: 사용자가 양식에 메모 열을 하나 붙여 올리면 <i>읽었습니다</i> 만
     나오고 그 열은 <b>아무 데도 가지 않는다</b> — 저장까지 성공하므로 값이 사라졌다는
-    사실을 아무도 모른다. 68 §8.7 은 <i>컬럼이 양식과 다른 파일은 읽지 않는다</i> 이며,
+    사실을 아무도 모른다. playbook/INDEX.md 은 <i>컬럼이 양식과 다른 파일은 읽지 않는다</i> 이며,
     <b>더 있는 것도 다른 것</b>이다.
 
     <b>빈 칸은 세지 않는다.</b> 사람이 만진 파일에는 헤더 오른쪽에 빈 칸이 남을 수 있고,

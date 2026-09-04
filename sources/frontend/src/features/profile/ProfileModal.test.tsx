@@ -23,11 +23,11 @@ const saveProfile = vi.mocked(saveMyProfile);
 const loadHistory = vi.mocked(getMyLoginHistory);
 const loadRoles = vi.mocked(getMyRoles);
 /**
- * 프로필 모달 — main-shell.md §8.
+ * 프로필 모달 — frontend/tabs.md.
  *
  * <p>여기서 지키는 것은 **모달의 일**뿐이다 — ① 여는 순간 읽는 것은 하나뿐, ② 탭을 열어야
  * 그 탭이 읽는다, ③ 저장하면 헤더의 이름이 따라온다, ④ `PageUp`/`PageDown` 이 이 모달의 탭을
- * 옮기고 셸로 내려가지 않는다(main-shell.md §10). 탭 안의 판정은 각 탭의 테스트가 잰다
+ * 옮기고 셸로 내려가지 않는다(frontend/tabs.md). 탭 안의 판정은 각 탭의 테스트가 잰다
  * (`PasswordTab.test.tsx`).
  *
  * <p>①·②는 조용히 깨지는 종류다. 넷을 다 읽어도 화면은 똑같이 보이고, 대부분 첫 탭만 보고
@@ -88,7 +88,7 @@ describe('프로필 모달', () => {
     expect(loadRoles).not.toHaveBeenCalled();
   });
 
-  it('PageDown 은 이 모달의 탭을 옮기고 셸로 내려가지 않는다 — main-shell.md §10', async () => {
+  it('PageDown 은 이 모달의 탭을 옮기고 셸로 내려가지 않는다 — frontend/tabs.md', async () => {
     const shell = vi.fn();
     window.addEventListener('keydown', shell);
     try {

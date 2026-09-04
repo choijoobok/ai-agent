@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
  * <p>[10] §L 이 샘플을 <i>"참조 구현"</i> 으로 정의하면서 함께 요구한 것이 격리다. 사용
  * 프로젝트는 샘플을 베낀 다음 걷어내는데, 그 삭제가 <b>폴더 하나와 선언 몇 줄</b>이 아니면
  * 아무도 걷어내지 않는다 — 남은 샘플은 업무 코드 사이에 섞여 <i>"이건 예제인가 진짜인가"</i>
- * 를 영원히 묻게 한다(48 §1.2 의 <i>"그럴듯할수록 위험하다"</i>).
+ * 를 영원히 묻게 한다(playbook/INDEX.md 의 <i>"그럴듯할수록 위험하다"</i>).
  *
  * <h2>규칙이 둘이고, 방향이 반대다</h2>
  *
@@ -45,7 +45,7 @@ class SampleIsolationTest {
 
     private static final String BASE = "com.aiagent";
 
-    /** 샘플의 패키지 — 계층이 어디든 마디가 {@code sample} 이면 샘플이다(68 §10.3). */
+    /** 샘플의 패키지 — 계층이 어디든 마디가 {@code sample} 이면 샘플이다(playbook/INDEX.md). */
     private static final String SAMPLE = BASE + "..sample..";
 
     /** 문자열로 쓴다 — 이 테스트가 JPA 를 컴파일 의존으로 끌어오지 않게. */
@@ -54,7 +54,7 @@ class SampleIsolationTest {
     private static final String TABLE = "jakarta.persistence.Table";
 
     /**
-     * <b>유일한 예외다</b>(68 §10.3). 코드 라벨은 <b>읽기만</b> 하며, 샘플이 지워져도
+     * <b>유일한 예외다</b>(playbook/INDEX.md). 코드 라벨은 <b>읽기만</b> 하며, 샘플이 지워져도
      * {@code SYS_CODE} 는 제 주인이 따로 있어 아무것도 남지 않는다. 예외를 이름 하나로
      * 못 박는 것은 패키지로 열면 <i>코드 도메인 전체</i> 가 함께 열리기 때문이다.
      */

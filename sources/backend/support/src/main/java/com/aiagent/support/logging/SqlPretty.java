@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * SQL 을 <b>읽을 수 있게 줄로 끊는다</b> — system-logging.md §2 의 요구 3.
+ * SQL 을 <b>읽을 수 있게 줄로 끊는다</b> — backend/logging.md 의 요구 3.
  *
  * <p><b>Hibernate 의 {@code FormatStyle} 을 쓰지 않는다.</b> 그것은 판의 내부 클래스라
  * 판이 올라갈 때마다 자리가 바뀔 수 있고, 무엇보다 <b>support 가 Hibernate 를 알게
- * 된다</b> — 이 모듈은 core 만 참조한다(architecture.md §1). 여기서 하는 일은 <b>절 앞에서 줄을
+ * 된다</b> — 이 모듈은 core 만 참조한다(backend/packages.md). 여기서 하는 일은 <b>절 앞에서 줄을
  * 바꾸는 것</b> 하나이며, 그 이상은 DB 툴이 훨씬 잘한다.
  *
  * <p><b>따옴표 안은 건드리지 않는다.</b> 값에 {@code from} 이 들어 있는 경우가 실제로

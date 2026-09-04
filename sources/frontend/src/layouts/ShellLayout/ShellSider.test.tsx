@@ -7,7 +7,7 @@ import { useUiStore } from '@/shared/stores/uiStore';
 import { useTabStore } from '@/shared/stores/tabStore';
 
 /**
- * 트리는 스스로 펼쳐지지 않는다 — main-shell.md §4.1.
+ * 트리는 스스로 펼쳐지지 않는다 — frontend/tabs.md.
  *
  * <p><b>두 번 틀렸던 자리다.</b> 처음에는 활성 메뉴가 바뀔 때마다 <b>메뉴를 통째로 새로
  * 만들어</b> 조상을 펼쳤는데, 사람이 접어 둔 폴더까지 다시 열리고 접힌 사이더에서는 팝업으로

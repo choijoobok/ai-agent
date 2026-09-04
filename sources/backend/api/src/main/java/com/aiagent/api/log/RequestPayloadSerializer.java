@@ -15,7 +15,7 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ObjectNode;
 
 /**
- * 요청 하나를 <b>{@code PARAMETERS} 한 칸</b>으로 — architecture.md §6.3 · §6.4.
+ * 요청 하나를 <b>{@code PARAMETERS} 한 칸</b>으로 — backend/packages.md.
  *
  * <pre>
  * { "method": "POST",
@@ -24,11 +24,11 @@ import tools.jackson.databind.node.ObjectNode;
  *   "body":   "{\"userId\":\"admin\",\"password\":\"***\"}" }
  * </pre>
  *
- * <p><b>응답 body 는 담지 않는다</b>(architecture.md §6.3) — 목록 응답이 수 MB 다.
+ * <p><b>응답 body 는 담지 않는다</b>(backend/packages.md) — 목록 응답이 수 MB 다.
  *
  * <h2>마스킹이 이 클래스의 절반이다</h2>
  *
- * <p>전문을 통째로 저장하므로 마스킹이 없으면 <b>로그가 최대 취약점</b>이다(architecture.md §6.4).
+ * <p>전문을 통째로 저장하므로 마스킹이 없으면 <b>로그가 최대 취약점</b>이다(backend/packages.md).
  * 가리는 규칙이 둘이며 <b>일치 방식이 다르다</b> — 파라미터는 부분({@code newPassword}),
  * 헤더는 완전({@code X-Cookie-Consent} 를 가리지 않으려고).
  *
@@ -38,7 +38,7 @@ import tools.jackson.databind.node.ObjectNode;
  *
  * <h2>바이트로 잰다</h2>
  *
- * <p>상한이 문자면 전부 한글일 때 <b>3배가 샌다</b>(architecture.md §6.2 의 실측). 절단은 UTF-8 <b>바이트
+ * <p>상한이 문자면 전부 한글일 때 <b>3배가 샌다</b>(backend/packages.md 의 실측). 절단은 UTF-8 <b>바이트
  * 경계</b>에서 하며 — 문자 중간에서 자르면 깨진 바이트가 남는다 — 잘렸음을 끝에 적는다
  * ({@link LogText#TRUNCATED_MARK}).
  *
@@ -51,7 +51,7 @@ public class RequestPayloadSerializer {
     private static final String MASKED = "***";
 
     /**
-     * 전문으로 담는 Content-Type — architecture.md §6.4 의 화이트리스트.
+     * 전문으로 담는 Content-Type — backend/packages.md 의 화이트리스트.
      *
      * <p><b>화이트리스트인 것이 요점이다.</b> 블랙리스트로 두면 처음 보는 타입이 그대로
      * 담기고, 그 첫 사례가 이미지든 PDF든 <b>바이너리가 {@code nclob} 에 들어간다</b>.

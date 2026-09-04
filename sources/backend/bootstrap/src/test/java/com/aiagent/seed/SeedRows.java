@@ -18,7 +18,7 @@ import org.yaml.snakeyaml.Yaml;
  * 시드 changelog 의 {@code insert} 행을 읽는다 — <b>테스트 전용</b>.
  *
  * <p>시드는 애플리케이션을 거치지 않고 DB 에 들어가므로 저장 서비스의 검증을 받지 않는다.
- * 42 §4 가 <i>"시드 검증 테스트"</i> 를 네 층 중 하나로 세워 둔 자리가 여기다 — 순환·고아·
+ * sys/menu.md 가 <i>"시드 검증 테스트"</i> 를 네 층 중 하나로 세워 둔 자리가 여기다 — 순환·고아·
  * URL 배타 같은 <b>DB 제약으로 표현할 수 없는 규칙</b>을 CI 가 대신 지킨다.
  *
  * <p><b>파일을 읽는다.</b> DB 에 붙어 확인하는 편이 확실해 보이지만, 그러면 검사가
@@ -62,7 +62,7 @@ final class SeedRows {
      * 한 changelog 파일에서 특정 테이블을 고치는 {@code update} 를 전부 뽑는다.
      *
      * <p><b>{@code insert} 만으로는 부족해졌다.</b> 이미 적용된 changeset 은 고칠 수 없으므로
-     * (db-portability.md §1.1) 003 이 비워 둔 컬럼은 <b>뒤에 오는 파일이 {@code update} 로</b> 채운다 —
+     * (backend/persistence.md) 003 이 비워 둔 컬럼은 <b>뒤에 오는 파일이 {@code update} 로</b> 채운다 —
      * 035 의 {@code ICON_CD}, 056 의 {@code EXPORT_YN} 이 그것이다. 검사해야 할 사실이
      * 그쪽에 있으면 이쪽도 읽을 수 있어야 한다.
      *
@@ -182,13 +182,13 @@ final class SeedRows {
         return value == null ? null : String.valueOf(value);
     }
 
-    /** 메뉴 시드가 CSV 가 됐다 — ADR-0028. */
+    /** 메뉴 시드가 CSV 가 됐다 — seed.md. */
     static final String MENU_SEED = "data/003-init-menu.csv";
 
     /**
      * 메뉴 시드의 행 — <b>{@code inserts()} 와 같은 모양</b>으로 돌려준다.
      *
-     * <p>메뉴가 생성물이 되면서 `- insert:` 가 사라졌다(ADR-0028). 검사하려는 사실은 그대로이므로
+     * <p>메뉴가 생성물이 되면서 `- insert:` 가 사라졌다(seed.md). 검사하려는 사실은 그대로이므로
      * (트리인가 · 고아가 없는가 · URL 과 자식이 배타인가) <b>읽는 자리만 옮긴다</b>.
      *
      * <p><b>선언(`menu-tree.yaml`)이 아니라 CSV 를 읽는다.</b> DB 에 들어가는 것이 이쪽이고,

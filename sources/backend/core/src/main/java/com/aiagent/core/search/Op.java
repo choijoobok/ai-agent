@@ -4,9 +4,9 @@ import java.time.temporal.Temporal;
 import java.util.Date;
 
 /**
- * 조회 연산자 <b>열둘</b> — api-conventions.md §3.3.
+ * 조회 연산자 <b>열둘</b> — backend/api.md.
  *
- * <p><b>연산자가 타입을 제한한다</b>(api-conventions.md §3.4). 반대로 하면 필드마다 허용 연산자를 적어야
+ * <p><b>연산자가 타입을 제한한다</b>(backend/api.md). 반대로 하면 필드마다 허용 연산자를 적어야
  * 하고 그것이 곧 미러링이다 — 화이트리스트는 <i>"이 필드가 존재하는가"</i> 만 보고, 나머지는
  * {@link #accepts(Class)} 가 필드의 자바 타입에서 도출한다.
  *
@@ -18,9 +18,9 @@ public enum Op {
 
     /** {@code = ?} */
     eq,
-    /** {@code <> ?} — nullable 필드면 {@code OR col IS NULL} 을 함께 편다(api-conventions.md §3.3). */
+    /** {@code <> ?} — nullable 필드면 {@code OR col IS NULL} 을 함께 편다(backend/api.md). */
     ne,
-    /** {@code IN (…)} — 배열에 {@code null} 을 담을 수 있다(api-conventions.md §3.6). */
+    /** {@code IN (…)} — 배열에 {@code null} 을 담을 수 있다(backend/api.md). */
     in,
 
     /** {@code LIKE ? || '%'} — 문자열만. 인덱스를 탄다. */
@@ -47,7 +47,7 @@ public enum Op {
     isNotNull;
 
     /**
-     * 값을 받는 연산자인가 — api-conventions.md §3.3.
+     * 값을 받는 연산자인가 — backend/api.md.
      *
      * <p>받지 않는 둘에 값이 오면 400 이다. 무시하면 <i>"값을 넣었는데 안 걸린다"</i> 가 된다.
      */
@@ -66,7 +66,7 @@ public enum Op {
     }
 
     /**
-     * 이 연산자가 그 자바 타입을 받는가 — api-conventions.md §3.4 의 표 그대로.
+     * 이 연산자가 그 자바 타입을 받는가 — backend/api.md 의 표 그대로.
      *
      * <p><b>{@code dateString} 계열은 여기서 부등호를 받지 못한다.</b> 자바 타입이 {@code String}
      * 이라 <i>숫자·날짜 계열</i> 과 구분할 근거가 서버에 없다. <b>조용히 문자열 비교가 되는

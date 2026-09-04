@@ -5,7 +5,7 @@ spring:
   jpa:
     hibernate:
       # 스키마의 유일한 출처는 Liquibase 다. validate 는 엔티티와 테이블이 어긋나면
-      # 기동을 실패시킨다 — 어긋난 채 도는 것보다 낫다(22 §1 · 원칙 P1).
+      # 기동을 실패시킨다 — 어긋난 채 도는 것보다 낫다(backend/persistence.md · 원칙 P1).
       ddl-auto: validate
     # 뷰 렌더 중 세션이 열려 있으면 지연 로딩이 컨트롤러 밖에서 쿼리를 던진다. SPA 라
     # 뷰가 없고, 켜 두면 N+1 이 어디서 났는지 추적이 어려워진다.
@@ -37,14 +37,14 @@ spring:
   #     mail.smtp.auth: true
   #     mail.smtp.starttls.enable: true
 
-  # 세션 스토어 선택 — 23 §2.
+  # 세션 스토어 선택 — backend/security.md.
   #
   # spring.session.store-type 은 Spring Boot 4 에 없다. 적어도 아무 일이 없고(알 수 없는
   # 프로퍼티는 오류가 아니다) 스토어는 클래스패스에 있는 자동설정이 정한다 — 둘 다 있으면
   # Redis 가 이긴다. store-type: jdbc 를 적어 둔 채 Redis 로 붙어 버렸고, 그 사실은
   # "Unable to connect to Redis" 가 나기 전까지 드러나지 않았다.
   #
-  # 그래서 선택을 자동설정 제외로 표현한다. 여전히 설정이며 코드 분기가 아니다(ADR-0002).
+  # 그래서 선택을 자동설정 제외로 표현한다. 여전히 설정이며 코드 분기가 아니다(backend/session.md).
   #   jdbc  (기본) : 아래처럼 Redis 세션 자동설정을 뺀다
   #   redis        : 아래 줄을 JdbcSessionAutoConfiguration 으로 바꾸고
   #                  **session.data.redis.repository-type 을 indexed 로 함께 둔다** (아래)
@@ -67,7 +67,7 @@ spring:
     #   RedisIndexedSessionRepository  인덱스 있음  ← indexed
     #
     # 인덱스가 없으면 SpringSessionBackedSessionRegistry 를 만들 수 없고, 그러면 동시 접속
-    # 제어(23 §4-1)와 활성 세션 조회(AUTH-10)가 다중화에서 동작하지 않는다.
+    # 제어(backend/security.md)와 활성 세션 조회(AUTH-10)가 다중화에서 동작하지 않는다.
     # data:
     #   redis:
     #     repository-type: indexed
@@ -79,7 +79,7 @@ spring:
 
 server:
   shutdown: graceful
-  # 프록시·L4 뒤에 둘 때만 native 로 바꾼다 — 23 §8.1.
+  # 프록시·L4 뒤에 둘 때만 native 로 바꾼다 — backend/security.md.
   #
   # X-Forwarded-For 는 클라이언트가 아무 값이나 넣을 수 있다. 손으로 읽으면 아무나
   # 로그인 이력의 IP 를 위조할 수 있으므로 애플리케이션은 getRemoteAddr() 만 본다.
@@ -94,26 +94,26 @@ server:
       cookie:
         http-only: true
         same-site: lax
-        # secure 는 운영 프로파일이 켠다 — 사내 HTTP 배포에서 켜면 쿠키가 아예 붙지 않는다(23 §8).
+        # secure 는 운영 프로파일이 켠다 — 사내 HTTP 배포에서 켜면 쿠키가 아예 붙지 않는다(backend/security.md).
         secure: false
 
 management:
   health:
     redis:
-      # store-type 이 jdbc 인데 Redis 헬스체크가 기동을 막으면 안 된다(23 §2 유의점 2).
+      # store-type 이 jdbc 인데 Redis 헬스체크가 기동을 막으면 안 된다(backend/security.md 유의점 2).
       enabled: false
 
 logging:
   pattern:
-    # traceId 가 로그 줄마다 있어야 사용자가 들고 온 값으로 그 요청을 찾을 수 있다(00 §3-13).
+    # traceId 가 로그 줄마다 있어야 사용자가 들고 온 값으로 그 요청을 찾을 수 있다.
     level: "%5p [%X{traceId:-}]"
 
 app:
-  # SQL 로깅 — 28 §2 · ADR-0011. 기본이 꺼짐이다.
+  # SQL 로깅 — backend/logging.md. 기본이 꺼짐이다.
   #
   # 켜면 DataSource 를 P6Spy 로 감싸 **파라미터가 박힌 SQL** 을 찍는다 — 복사해서 DB 툴에
   # 바로 넣을 수 있는 것이 이 기능의 전부다(요구 4). 운영에서 상시로 켜지 않는 이유는
-  # 비용보다 **평문이 로그에 남는 경로** 때문이다(28 §6): PII Vault 가 개인정보를 구조적으로
+  # 비용보다 **평문이 로그에 남는 경로** 때문이다(backend/logging.md): PII Vault 가 개인정보를 구조적으로
   # 막아 두었어도, PII 로 지정하지 않은 값이 조건절에 들어가면 그대로 보인다.
   logging:
     sql:
@@ -124,10 +124,10 @@ app:
         - SPRING_SESSION
         - DATABASECHANGELOG
 
-  # 업무 달력 날짜의 판정 기준. 배포 시 고정하며 런타임 변경 대상이 아니다 — 40 §4.3
+  # 업무 달력 날짜의 판정 기준. 배포 시 고정하며 런타임 변경 대상이 아니다 — sys/INDEX.md
   business-timezone: Asia/Seoul
 
-  # 요청 body 캐싱 — 21 §6.2. 사용 이력이 전문을 보려면 필터가 먼저 감싸야 한다.
+  # 요청 body 캐싱 — backend/packages.md. 사용 이력이 전문을 보려면 필터가 먼저 감싸야 한다.
   #
   # 상한은 바이트다. 문자로 재면 전부 한글일 때 3배가 샌다 — 스파이크 실측(2026-08-28)에서
   # 1,048,576자가 1,359,272바이트였고, PARAMETERS 가 nclob 이라 넘친 사실조차 드러나지 않는다.
@@ -135,7 +135,7 @@ app:
     enabled: true
     max-bytes: 1048576
 
-  # 요청 전문 마스킹 — 21 §6.4. 없으면 로그가 최대 취약점이 된다.
+  # 요청 전문 마스킹 — backend/packages.md. 없으면 로그가 최대 취약점이 된다.
   #
   # sys-config 가 아니라 여기인 것은 런타임에 줄일 수 없어야 하기 때문이다. 화면에서
   # "잠깐만 열어 보자" 가 가능하면 그 순간부터의 이력이 평문을 담고, 되돌려도 저장된 것은
@@ -162,7 +162,7 @@ app:
     from-name: ai-agent
 
   security:
-    # 동시 접속 제어 — 23 §4-1. sys-config 가 아니라 여기인 것은 기동 시 필터 체인의
+    # 동시 접속 제어 — backend/security.md. sys-config 가 아니라 여기인 것은 기동 시 필터 체인의
     # 모양을 정하기 때문이다 — 런타임에 바꿔도 반영될 자리가 없다.
     concurrent-session:
       enabled: true
@@ -171,10 +171,10 @@ app:
       # 세션 타임아웃(최대 30분)까지 막는다.
       prevent-login: false
 
-  # 진행률이 사는 곳 — 30 §6.1. 배포 형태가 정하므로 sys-config 가 아니라 여기다:
+  # 진행률이 사는 곳 — backend/crosscutting.md. 배포 형태가 정하므로 sys-config 가 아니라 여기다:
   # 런타임에 바꾸면 이미 도는 작업의 진행률이 다른 저장소로 갈라진다.
   #
-  # 지금 구현된 값은 jdbc 하나다. 나머지 셋(redis · caffeine · inmemory)은 30 §6.1 이
+  # 지금 구현된 값은 jdbc 하나다. 나머지 셋(redis · caffeine · inmemory)은 backend/crosscutting.md 이
   # 열어 둔 자리이며, 그중 caffeine·inmemory 는 노드 로컬이라 다중화에서 폴링이 다른
   # 노드로 가면 조용히 못 찾는다 — 구현이 없는 값을 적으면 빈이 없어 기동이 실패한다.
   progress:
@@ -183,7 +183,7 @@ app:
     # 끝난 작업의 진행률 행을 얼마나 두는가. 화면이 완료를 보고 닫을 만큼이면 된다.
     #
     # 이 값이 곧 청소다. jdbc 는 JdbcProgressSweeper 가 지우고, Redis·Caffeine 을 세우는
-    # 날에는 같은 값이 native TTL 이 된다(32 §5) — 그쪽에는 지울 배치가 없으므로 TTL 을
+    # 날에는 같은 값이 native TTL 이 된다(retention.md) — 그쪽에는 지울 배치가 없으므로 TTL 을
     # 빠뜨리면 만료가 아예 없어진다.
     ttl: 30m
 
@@ -193,18 +193,18 @@ app:
     # 조절되므로(1% 또는 1초) 멈춘 것처럼 보이는 구간이 정상적으로 있다.
     ghost-after: 24h
 
-  # 락이 사는 곳 — 31 §3. 마찬가지로 배포 형태가 정한다.
+  # 락이 사는 곳 — backend/persistence.md. 마찬가지로 배포 형태가 정한다.
   #
   # 지금 구현된 값은 db 하나다(SYS_DATA_LOCK 의 PK INSERT 로 선점을 판정한다).
-  # redis 를 템플릿에 넣을지는 31 §12 의 미결이다.
+  # redis 를 템플릿에 넣을지는 backend/persistence.md 의 미결이다.
   lock:
     store: db
 
-# ── 시스템 설정 (43 §6.1) ──────────────────────────────────────────────
+# ── 시스템 설정 (sys/code.md) ──────────────────────────────────────────────
 # 이 루트 아래가 SYS_CONFIG 의 기본값 층이다. CFG_KEY 는 여기서 'sys-config.' 만 뺀 것.
 #
 # 기본값의 자리는 여기 하나다 — 자바 필드 초기화식에 두지 않는다. 그래야 키를 추가하고
-# yml 을 빠뜨렸을 때 하드코딩 값이 조용히 쓰이는 대신 기동이 실패한다(43 §6.1).
+# yml 을 빠뜨렸을 때 하드코딩 값이 조용히 쓰이는 대신 기동이 실패한다(sys/code.md).
 sys-config:
   auth:
     login:
@@ -226,45 +226,45 @@ sys-config:
     account:
       dormant-days: 90
 
-  # 화면 공통 UI 값 — 43 §6.4.
+  # 화면 공통 UI 값 — sys/code.md.
   ui:
     excel:
-      # FILE-05 · ADR-0019. 프론트가 전량을 메모리에 올리므로 없으면 브라우저가 죽는다.
+      # FILE-05 · frontend/grid-advanced.md. 프론트가 전량을 메모리에 올리므로 없으면 브라우저가 죽는다.
       # 넘으면 조용히 자르지 않고 거부한다 — 일부만 받은 파일을 전부로 알고 쓰게 된다.
       max-rows: 50000
-      # ADR-0024 · 48 §8. 내려받기와 다른 값인 것이 실측의 결론이다(UiExcelProps 주석) —
+      # frontend/grid-advanced.md · playbook/INDEX.md. 내려받기와 다른 값인 것이 실측의 결론이다(UiExcelProps 주석) —
       # 파싱은 5만 행이 1.5초로 싸지만 저장이 한 트랜잭션이라 2만이 12.5초다. 그 위는
       # 화면의 저장 버튼이 아니라 배치다.
       max-upload-rows: 5000
     date-format:
-      # 날짜 표시 형식 — 54 §4.5. 정밀도 셋이 각자 문자열을 갖는다.
+      # 날짜 표시 형식 — frontend/grid.md. 정밀도 셋이 각자 문자열을 갖는다.
       #
       # 기본은 ISO 다. 조직에 따라 구분자가 . 이거나 / 인데, 화면마다 고치게 두면 같은 앱
       # 안에서 날짜가 두 모양으로 보인다 — 그리드의 시각 컬럼과 조회조건의 달력이 같은
       # 문자열을 봐야 한다.
       #
       # dayjs 의 토큰이다(서버의 DateTimeFormatter 문법이 아니다). 값을 그리는 것은 화면이고
-      # (54 §5.4 — 값은 바꾸지 않는다) 서버는 이 값을 로그인 응답에 실어 나르기만 한다.
+      # (frontend/grid.md — 값은 바꾸지 않는다) 서버는 이 값을 로그인 응답에 실어 나르기만 한다.
       #
-      # 시간대는 여기 없다. 서버가 주는 것은 오프셋 포함 ISO-8601 이고(21 §6-1) 브라우저가
+      # 시간대는 여기 없다. 서버가 주는 것은 오프셋 포함 ISO-8601 이고(backend/packages.md) 브라우저가
       # 자기 시간대로 옮겨 그린다 — 설정으로 두면 같은 화면을 서울과 하노이에서 볼 때 둘 중
       # 하나가 틀린다.
       #
-      # 어느 컬럼이 년월인지는 컬럼 선언이 정한다(54 §4.5 의 precision). 설정으로 두면
+      # 어느 컬럼이 년월인지는 컬럼 선언이 정한다(frontend/grid.md 의 precision). 설정으로 두면
       # 년월 컬럼이 있는 화면과 없는 화면이 같은 값을 다르게 읽는다.
       month: YYYY-MM
       day: YYYY-MM-DD
       second: YYYY-MM-DD HH:mm:ss
     search:
-      # 조회 기간의 시스템 기본값과 상한 — 43 §6.4 · 64 §2.2.
+      # 조회 기간의 시스템 기본값과 상한 — sys/code.md · screen/log/access/requirements.md.
       #
-      # 층이 둘이고 아래가 위를 덮는다(53 §2.3 의 페이지 사이즈 3층과 같은 방향). 화면
-      # 기본값은 그리드 선언이 갖는다 — 사용 이력만 1 · 31 이다(64 §3.3): 행마다 nclob 이
+      # 층이 둘이고 아래가 위를 덮는다(frontend/grid.md 의 페이지 사이즈 3층과 같은 방향). 화면
+      # 기본값은 그리드 선언이 갖는다 — 사용 이력만 1 · 31 이다(screen/log/access/requirements.md): 행마다 nclob 이
       # 달려 있고 보존이 90일로 가장 짧아 "가장 큰 테이블에 가장 짧은 창" 이 맞다.
       #
       # 개인 설정 층이 없다 — 조회 기간은 부하의 상한이지 취향이 아니다.
       #
-      # 키가 default-days · max-days 다. 43 §6.4 · 64 §2.2 는 default · max 로 적었는데
+      # 키가 default-days · max-days 다. sys/code.md · screen/log/access/requirements.md 는 default · max 로 적었는데
       # 자바에 default 라는 이름의 레코드 컴포넌트를 만들 수 없다 — 예약어다. 한쪽만
       # 줄이면 짝이 어긋나 보이므로 둘 다 -days 를 단다.
       range-days:
@@ -275,23 +275,23 @@ sys-config:
         # 사람이 먼저 막히고, 어느 화면의 조건을 지워야 하는지 알 수 없다.
         max-count: 20
     noti:
-      # 알림 모달의 탭 하나가 내는 최대 행 수 — 51 §7 · 60 §8. 페이징이 아니라 상한이며,
+      # 알림 모달의 탭 하나가 내는 최대 행 수 — frontend/tabs.md · screen/_standalone/README.md. 페이징이 아니라 상한이며,
       # 넘치면 화면이 "최근 N건" 이라고 말한다(조용히 자르지 않는다).
       #
       # 미읽음 배지는 이 값과 무관하게 전건을 센다 — 상한이 배지를 깎으면 "배지는 3인데
-      # 목록엔 2" 가 생긴다(51 §7.1).
+      # 목록엔 2" 가 생긴다(frontend/tabs.md).
       list-size: 50
     menu-stat:
-      # UX-16 · 42 §8. 이번 달 포함 3개월 — 1 이면 월 1일에 목록이 비고, 2 여도 월이
+      # UX-16 · sys/menu.md. 이번 달 포함 3개월 — 1 이면 월 1일에 목록이 비고, 2 여도 월이
       # 바뀔 때 절반이 한 번에 날아가 순위가 점프한다.
       months: 3
-      # 20 이다 — 목록은 스크롤되면 그만이고(51 §7) 몇 개까지 볼지는 사용자 몫이다.
+      # 20 이다 — 목록은 스크롤되면 그만이고(frontend/tabs.md) 몇 개까지 볼지는 사용자 몫이다.
       top-n: 20
 
-  # 알림 정책 — 66 §6.2 의 생산자 셋. 화면 값(ui.noti.*)과 층이 다르다: 저쪽은 몇 줄을
+  # 알림 정책 — screen/notice/requirements.md 의 생산자 셋. 화면 값(ui.noti.*)과 층이 다르다: 저쪽은 몇 줄을
   # 그리는가이고 여기는 누구에게 언제 보내는가다.
   #
-  # 채널 키가 없다 — 채널이 인앱뿐이면 채널 설정이 없다(66 §6.1). 65 §3.11 이 BATCH-06 을
+  # 채널 키가 없다 — 채널이 인앱뿐이면 채널 설정이 없다(screen/notice/requirements.md). screen/batch/schedule/requirements.md 이 BATCH-06 을
   # "수신 대상과 채널" 로 남겼는데 그중 하나가 여기서 사라졌다.
   noti:
     # 배치 실패를 받을 역할(BATCH-06). 비우면 보내지 않는다 — 배치별 on/off 를 두지 않는
@@ -303,33 +303,33 @@ sys-config:
     # 권한은 신청하고 기다려야 한다. 승인이 걸리는 조직일수록 커진다.
     authz-expire-notice-days: 7
 
-  # 이력 보존 기간 — 32 §3 의 정책 표. LOG-07 파기 배치가 읽는다.
+  # 이력 보존 기간 — retention.md 의 정책 표. LOG-07 파기 배치가 읽는다.
   #
-  # 32 §6 은 이 값을 app.retention.* 에 그렸다. 여기로 옮긴 이유는 하나다 — 운영하면서
+  # retention.md 은 이 값을 app.retention.* 에 그렸다. 여기로 옮긴 이유는 하나다 — 운영하면서
   # 조정하는 값인데 app.* 는 yml 뿐이라 재배포가 필요하다. sys-config 아래면 화면에서
-  # 고칠 수 있다(43 §6). 같은 이유로 중첩 맵이 아니라 평평한 스칼라다: 화면의 값 타입은
+  # 고칠 수 있다(sys/code.md). 같은 이유로 중첩 맵이 아니라 평평한 스칼라다: 화면의 값 타입은
   # 넷뿐이라 중첩은 JSON 한 칸이 되고, 그러면 기간 하나를 고치려고 JSON 을 손으로 짠다.
   #
-  # 방향(상한/하한)은 여기 없다 — 32 §4-2 가 하한 대상을 "설정으로 켤 수 있게도 하지
+  # 방향(상한/하한)은 여기 없다 — retention.md 가 하한 대상을 "설정으로 켤 수 있게도 하지
   # 않는다" 로 못박았다. 대상 다섯은 코드가 갖는다(RetentionPurgeJob).
   #
-  # 아카이브도 없다. 32 §3.1 은 "아카이브 후 삭제" 를 정했지만 §7 이 그 산출물 형식을
+  # 아카이브도 없다. retention.md 은 "아카이브 후 삭제" 를 정했지만 §7 이 그 산출물 형식을
   # 아직 미결로 들고 있어, 템플릿은 archive-mode: none 에 해당하는 상태로 선다 —
   # 파기 배치는 USE_YN='N' 로 시드되므로 켜는 프로젝트가 그때 형식과 함께 정한다.
   retention:
-    # 32 §3 의 값 그대로다. 사용 이력이 가장 짧은 것은 요청 전문(nclob)이 달려 있어서다.
+    # retention.md 의 값 그대로다. 사용 이력이 가장 짧은 것은 요청 전문(nclob)이 달려 있어서다.
     access-log-days: 90
     exception-log-days: 180
     login-log-days: 365
     batch-history-days: 365
-    # 인앱 알림(SYS_NOTI_INBOX) — 47 §10 · 66 §6.3. **읽음 여부를 보지 않는다**:
+    # 인앱 알림(SYS_NOTI_INBOX) — sys/notification.md · screen/notice/requirements.md. **읽음 여부를 보지 않는다**:
     # 읽은 것만 지우면 안 읽은 알림이 영원히 쌓이고, 그것이 정확히 지우고 싶은 행이다.
     noti-inbox-days: 90
-    # 한 트랜잭션이 지우는 행 수 — 32 §4-4. 크게 잡으면 락과 언두 로그가 터지고,
+    # 한 트랜잭션이 지우는 행 수 — retention.md. 크게 잡으면 락과 언두 로그가 터지고,
     # 작게 잡으면 왕복만 는다. 중단 확인도 청크 사이에서 일어나므로 응답성의 상한이다.
     chunk-size: 1000
 
-  # 다국어 메시지 — 43 §7 · 50 §3.2.
+  # 다국어 메시지 — sys/code.md ·.
   #
   # supported 가 여기 있는 것은 임시다. 원본은 공통코드(LANG_CD 그룹)이며 기준정보
   # 슬라이스가 그 테이블을 만든다 — 그때 이 키가 사라진다(MessageProps).

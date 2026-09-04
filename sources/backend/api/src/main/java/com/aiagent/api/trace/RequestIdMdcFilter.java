@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * 추적 ID 를 MDC 에 올리고 <b>설정 스냅샷의 경계를 연다</b> — architecture.md §5 의 <b>최우선</b> 필터.
+ * 추적 ID 를 MDC 에 올리고 <b>설정 스냅샷의 경계를 연다</b> — backend/packages.md 의 <b>최우선</b> 필터.
  *
  * <p><b>클라이언트가 발급한 값을 이어받는다.</b> 프론트가 {@code X-Request-Id} 헤더와
- * {@code _rid} 쿼리 양쪽에 같은 UUID 를 싣고(29 · frontend-stack.md §9), 서버는 그것을 그대로 쓴다 —
+ * {@code _rid} 쿼리 양쪽에 같은 UUID 를 싣고(29 · frontend/packages.md), 서버는 그것을 그대로 쓴다 —
  * 서버가 새로 만들면 사용자가 들고 온 값과 로그의 값이 달라져 추적이 끊긴다.
  *
  * <p>헤더가 없으면(도구·헬스체크·직접 호출) 서버가 만든다. 없다고 비워 두면 그 요청만
@@ -25,7 +25,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  *
  * <h2>일이 둘인 것이 의도다</h2>
  *
- * <p>ADR-0026 §2 가 설정 스냅샷의 경계를 <b>MDC 가 이미 붙는 자리 셋</b>(요청 필터 ·
+ * <p>sys/config.md 가 설정 스냅샷의 경계를 <b>MDC 가 이미 붙는 자리 셋</b>(요청 필터 ·
  * {@code @Async} 데코레이터 · 스케줄러 래퍼)으로 정하며 <i>"새 자리를 만들지 않는다"</i>
  * 고 적었다. 요청이 그 셋 중 하나이고 <b>여기가 그 자리</b>다.
  *
@@ -40,7 +40,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RequestIdMdcFilter extends OncePerRequestFilter {
 
-    /** {@code TRACE_ID} 컬럼이 {@code VARCHAR(64)} 다(45 §5) — 넘치면 저장에서 깨진다. */
+    /** {@code TRACE_ID} 컬럼이 {@code VARCHAR(64)} 다(sys/logs.md) — 넘치면 저장에서 깨진다. */
     private static final int MAX_LENGTH = 64;
 
     private final ConfigLookup configs;

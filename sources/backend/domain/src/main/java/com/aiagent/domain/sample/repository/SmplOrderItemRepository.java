@@ -6,11 +6,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * 샘플 주문 품목 — 48 §4.
+ * 샘플 주문 품목 — playbook/INDEX.md.
  *
- * <p>{@link #countByOrdId} 가 <b>마스터 삭제 게이트</b>의 근거다(grid-standard.md §6.2) — 품목이 하나라도
+ * <p>{@link #countByOrdId} 가 <b>마스터 삭제 게이트</b>의 근거다(frontend/grid.md) — 품목이 하나라도
  * 있으면 주문의 삭제 체크가 열리지 않는다. FK 가 {@code RESTRICT} 라 화면이 잘못 열어도
- * DB 가 막지만, 그 막힘은 <b>저장을 눌러 실패로</b> 드러난다(48 §5.1).
+ * DB 가 막지만, 그 막힘은 <b>저장을 눌러 실패로</b> 드러난다(playbook/INDEX.md).
  */
 public interface SmplOrderItemRepository extends JpaRepository<SmplOrderItem, SmplOrderItemId> {
 

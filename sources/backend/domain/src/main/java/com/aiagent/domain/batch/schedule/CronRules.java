@@ -8,11 +8,11 @@ import java.util.Optional;
 import org.springframework.scheduling.support.CronExpression;
 
 /**
- * 크론을 <b>읽는 규칙</b> — 31 §7 · 65 §3.4.
+ * 크론을 <b>읽는 규칙</b> — backend/persistence.md · screen/batch/schedule/requirements.md.
  *
- * <p>화면이 이것을 못 하는 것이 이 클래스가 서버에 있는 이유다. 65 §3.4 가
- * <i>"크론 파서가 필요하고, 그것은 20 §2 의 프론트 의존성에 없다"</i> 고 적었고,
- * grid-edit-validation.md §3.4 의 <b>서버 검증이 남는 자리</b>가 정확히 여기다.
+ * <p>화면이 이것을 못 하는 것이 이 클래스가 서버에 있는 이유다. screen/batch/schedule/requirements.md 가
+ * <i>"크론 파서가 필요하고, 그것은 stack.md 의 프론트 의존성에 없다"</i> 고 적었고,
+ * frontend/grid.md 의 <b>서버 검증이 남는 자리</b>가 정확히 여기다.
  *
  * <p><b>파서를 새로 들이지 않는다.</b> {@link CronExpression} 은 스프링이 이미 갖고 있고
  * ({@code spring-context}) 스케줄러가 실제로 쓰는 파서다 — 다른 파서로 검증하면
@@ -20,7 +20,7 @@ import org.springframework.scheduling.support.CronExpression;
  *
  * <h2>최소 간격을 <b>표본</b>으로 잰다</h2>
  *
- * <p>31 §7 이 정의를 그렇게 두었다 — <i>"고정 기준시각에서 다음 실행 N개를 뽑아 인접
+ * <p>backend/persistence.md 이 정의를 그렇게 두었다 — <i>"고정 기준시각에서 다음 실행 N개를 뽑아 인접
  * 간격의 최솟값"</i>. 크론의 최소 주기를 해석적으로 구하는 것은 필드 조합이 얽혀 정확히
  * 어렵고, 표본은 <b>틀려도 안전한 쪽으로 틀린다</b>: 표본에서 못 본 짧은 간격이 뒤에
  * 있으면 검증이 <i>통과</i> 시킬 뿐이며, 없는 간격을 지어내지는 않는다.
@@ -31,7 +31,7 @@ import org.springframework.scheduling.support.CronExpression;
 public final class CronRules {
 
     /**
-     * 표본 개수 — 31 §7 의 <i>N</i>.
+     * 표본 개수 — backend/persistence.md 의 <i>N</i>.
      *
      * <p>{@code 0 0 9 * * MON-FRI} 같은 주간 패턴에서 <b>주말 건너뜀</b>이 보이려면 한 주를
      * 넘겨야 하고, 열 개면 평일 크론이 두 번의 주말을 지난다.
@@ -53,7 +53,7 @@ public final class CronRules {
     }
 
     /**
-     * 다음 실행 시각 — 파생 컬럼 <b>다음 실행</b>이 이 값이다(65 §3.4).
+     * 다음 실행 시각 — 파생 컬럼 <b>다음 실행</b>이 이 값이다(screen/batch/schedule/requirements.md).
      *
      * <p>그 컬럼이 <i>크론을 눈으로 확인시킨다</i> — {@code 0 0 9 * * MON-FRI} 를 넣고
      * 다음 실행이 월요일이면 맞게 쓴 것이다. <b>API 를 늘리지 않고</b> 목록 조회가 계산해
@@ -61,7 +61,7 @@ public final class CronRules {
      *
      * <p><b>{@code USE_YN='N'} 이면 부르는 쪽이 비운다.</b> 여기서 판단하지 않는 것은 이
      * 클래스가 크론만 알기 때문이며, 꺼 둔 배치에 다음 실행을 그리면 <i>돌 것처럼</i>
-     * 보인다(65 §3.6 — 스케줄러가 등록조차 하지 않는다).
+     * 보인다(screen/batch/schedule/requirements.md — 스케줄러가 등록조차 하지 않는다).
      */
     public static Optional<Instant> nextExecution(String cron, Instant from) {
         return parse(cron)
@@ -70,7 +70,7 @@ public final class CronRules {
     }
 
     /**
-     * 인접 실행 간격의 <b>최솟값(초)</b> — 쿨다운과 비교되는 값이다(31 §7 · 65 §3.4).
+     * 인접 실행 간격의 <b>최솟값(초)</b> — 쿨다운과 비교되는 값이다(backend/persistence.md · screen/batch/schedule/requirements.md).
      *
      * <p>표본을 다 못 뽑으면(연 1회 크론이 상한에 걸린다) 뽑은 것까지로 잰다. 하나도 못
      * 뽑으면 비어 있고, 그때 부르는 쪽은 <b>검증을 건너뛴다</b> — 간격을 모르는 것과
@@ -114,7 +114,7 @@ public final class CronRules {
     private CronRules() {}
 
     /**
-     * 쿨다운이 <b>주기를 통째로 삼키는가</b> — 65 §3.4 가 저장에서 막는 그 관계다.
+     * 쿨다운이 <b>주기를 통째로 삼키는가</b> — screen/batch/schedule/requirements.md 가 저장에서 막는 그 관계다.
      *
      * <p><b>판정이 두 곳에서 필요하다.</b> 저장은 사람이 넣는 값을 막고(그 자리에서
      * 고칠 수 있으므로 거부한다), 기동은 <b>시드와 직접 UPDATE 로 들어온 값</b>을 본다

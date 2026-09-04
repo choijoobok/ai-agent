@@ -4,22 +4,22 @@ import type { CustomCellEditorProps } from 'ag-grid-react';
 import type { SelectOption } from '@/shared/grid/types';
 
 /**
- * 검색 콤보 셀 편집기 — `richSelect` 의 자체 구현(grid-column-contract.md §5.7 · 68 §9.5).
+ * 검색 콤보 셀 편집기 — `richSelect` 의 자체 구현(frontend/grid.md · playbook/INDEX.md).
  *
  * <p><b>고르는 것이지 쓰는 것이 아니다.</b> 이 한 줄이 아래 전부를 정한다 — 타이핑은
  * <b>필터</b>이고 그 문자열이 값이 되지 않으며, 고르지 않고 벗어나면 <b>편집 전 값</b>이
  * 남는다. 자유 입력을 남기면 목록에 없는 값이 저장되고 <i>"저장은 되는데 동작하지 않는"</i>
- * 상태가 만들어진다(62 §4.3 의 URL 칸이 그 사례다).
+ * 상태가 만들어진다(screen/menu/requirements.md 의 URL 칸이 그 사례다).
  *
- * <p><b>{@code select} 와 갈리는 자리는 후보 수 하나다</b>(68 §9.5) — 스무 개를 넘으면
+ * <p><b>{@code select} 와 갈리는 자리는 후보 수 하나다</b>(playbook/INDEX.md) — 스무 개를 넘으면
  * 스크롤로 찾게 되고, 그때부터 <i>고르는 것</i>이 <i>뒤지는 것</i>이 된다. 판의
  * {@code agSelectCellEditor} 에는 검색이 없어(Enterprise 의 `agRichSelectCellEditor` 가
- * 그 자리다) 여기서 만든다 — ADR-0018 이 어댑터 경계를 둔 이유이며, 화면 선언
+ * 그 자리다) 여기서 만든다 — frontend/grid.md 이 어댑터 경계를 둔 이유이며, 화면 선언
  * ({@code editor: 'richSelect'})은 판을 바꿔도 그대로다.
  *
  * <h2>후보가 하나로 좁혀지면 확정한다</h2>
  *
- * <p>남은 하나를 <b>다시 고르게 하는 것</b>은 헛수고다(grid-column-contract.md §5.7). 부분 일치라 검색어를
+ * <p>남은 하나를 <b>다시 고르게 하는 것</b>은 헛수고다(frontend/grid.md). 부분 일치라 검색어를
  * 늘리면 후보는 <b>줄기만 하므로</b>, 지금 하나면 더 쳐도 그 하나이거나 0건이다 —
  * 사용자가 고를 것이 남아 있는데 가로채는 경로가 없다.
  *
@@ -83,14 +83,14 @@ export function SearchSelectCellEditor(props: CustomCellEditorProps<unknown, unk
         onSearch={(text) => {
           if (text === '') return;
           const matched = options.filter((option) => matches(option, text));
-          // 남은 하나를 다시 고르게 하지 않는다 — grid-column-contract.md §5.7.
+          // 남은 하나를 다시 고르게 하지 않는다 — frontend/grid.md.
           if (matched.length === 1) commit(matched[0].value);
         }}
         onChange={(value: string) => commit(value)}
         onOpenChange={(next) => {
           setOpen(next);
           /*
-            <b>고르지 않고 닫으면 편집 전 값이 남는다</b>(grid-column-contract.md §5.7) — {@code onValueChange}
+            <b>고르지 않고 닫으면 편집 전 값이 남는다</b>(frontend/grid.md) — {@code onValueChange}
             를 부르지 않았으므로 판이 원래 값을 그대로 둔다. 타이핑한 문자열은 버려진다.
           */
           if (!next && !done.current) props.stopEditing();

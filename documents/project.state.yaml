@@ -12,7 +12,7 @@ project:
   owner: "사용자 (고객·의사결정자)"
   note: >-
     세 저장소를 합쳐 시작했다 — ordinary-backoffice(개발 표준·백오피스 템플릿) +
-    ai-driven-development(프로세스) + agentic-ai(설계). 합친 근거는 ADR-0030.
+    ai-driven-development(프로세스) + agentic-ai(설계). 합친 근거는 CLAUDE.md.
 
 current:
   phase: P0                  # P0~P6
@@ -79,7 +79,7 @@ counters:
   API: 0
   SCR: 43
   TC: 0
-  ADR: 2      # documents/decisions/ 의 것. aidd-guide/records/adr/ 의 31개는 프레임워크·템플릿의 것이다
+  ADR: 0      # documents/decisions/ 의 것. 결정 기록은 이 프로젝트에서 새로 시작한다
   ASM: 3
   SLICE: 0
   DEF: 0
@@ -126,13 +126,13 @@ slices: []
 
 # ── 최근 활동 로그 (최신 10건만 유지) ─────────────────────────────
 log:
-  - { at: "2026-09-04", by: "[PM]", what: "세 저장소를 폴더 넷으로 합쳤다 — aidd-guide · documents · user-guide · sources. 근거는 ADR-0030" }
-  - { at: "2026-09-04", by: "[AA]", what: "훅·도구를 Node 하나로 통일했다(11개). 근거는 ADR-0031" }
+  - { at: "2026-09-04", by: "[PM]", what: "세 저장소를 폴더 넷으로 합쳤다 — aidd-guide · documents · user-guide · sources. 근거는 CLAUDE.md" }
+  - { at: "2026-09-04", by: "[AA]", what: "훅·도구를 Node 하나로 통일했다(11개). 근거는 harness/hooks.md" }
   - { at: "2026-09-04", by: "[BA]", what: "agentic-ai 설계 3,479줄을 spec 16파일로 재편성했다 — REQ 59 · FEAT 85 · SCR 43 · NFR 19 · 용어 35. 전부 status: migrated(미승인)" }
   - { at: "2026-09-04", by: "[AA]", what: "agentic-ai 12장(개발 표준)을 aidd-guide/standard/hub-conventions.md 로 옮겼다 — 코드 규칙은 spec 이 아니라 가이드의 자리다" }
   - { at: "2026-09-04", by: "[PM]", what: "문서 예산을 기계화했다 — guard-write 가 산출물 지도 40행을 읽어 지도 밖 문서를 차단한다(CLAUDE.md §4)" }
   - { at: "2026-09-04", by: "[개발]", what: "**템플릿 보수** — sources/ 주석 24곳이 옛 문서 경로(llm-guide/ · docs/screen/)를 가리켜 고쳤다. 주석뿐이라 동작에는 영향이 없으나, 없는 문서를 부르는 주석은 규약을 아무도 확인하지 않게 만든다. 고친 뒤 참조 9개가 전부 실물을 가리키는 것을 대조했다" }
   - { at: "2026-09-04", by: "[개발]", what: "**템플릿 보수** — 템플릿 이름을 ai-agent 로 통일했다. 식별자 8곳(rootProject.name · spring.application.name · mail.from-name · package.json·lock · tmpdir 키 문서 2곳)과 **사람이 읽는 자리 2곳**(index.html title · 셸 헤더 → `AI Agent`)이다. **Java 패키지 `com.ordinary.backoffice` 는 그대로 두었다** — 하이픈이 들어간 `ai-agent` 는 패키지 이름이 될 수 없어 새 이름을 정하는 결정이 먼저이고, 624파일과 디렉터리 10 트리가 함께 움직인다. **출처 표기 6곳도 그대로다** — 실재하는 원본 저장소의 이름이라 바꾸면 기록이 거짓이 된다" }
-  - { at: "2026-09-04", by: "[개발]", what: "**템플릿 보수** — Java 패키지를 `com.ordinary.backoffice` → **`com.aiagent`** 로, Gradle group 을 `com.ordinary` → `com.aiagent` 로 바꿨다. 추적 파일 650개 2,484곳 · 디렉터리 10 트리(`git mv` 로 옮겨 이력이 rename 으로 남는다). `backoffice` 칸을 버린 이유는 루트가 제품을 말하면 남을 이유가 없기 때문이다. **문자열로 클래스를 부르는 자리 11곳이 중요했다** — ArchUnit `BASE` 넷 · `ConfigCatalog.BASE_PACKAGE` · `SqlCaller` 둘 · **`spy.properties` 의 p6spy FQCN 둘**. 마지막 것을 놓치면 SQL 로깅이 기동에서 조용히 죽는다. `clean check` 로 대조했다" }
-  - { at: "2026-09-04", by: "[개발]", what: "**템플릿 보수** — 패키지에서 `backoffice` 를 지운 뒤에도 클래스 이름 셋에 남아 있어 바꿨다: `BackofficeApplication` → **`AiAgentApplication`**(기동 로그 첫 줄에 찍히는 이름) · `BackofficeUserDetails(Service)` → **`AppUserDetails(Service)`**. 뒤의 둘에 제품 이름을 다시 넣지 않은 이유는 패키지가 이미 말하기 때문이다. 참조 5파일" }
+  - { at: "2026-09-04", by: "[개발]", what: "**템플릿 보수** — 이름을 ai-agent 로 통일했다. 식별자 10곳(rootProject.name · spring.application.name · mail.from-name · package.json·lock · tmpdir 키) · 사람이 읽는 자리 2곳(탭 title · 셸 헤더 → `AI Agent`) · **Java 패키지 `com.ordinary.backoffice` → `com.aiagent`**(650파일 2,484곳 · 디렉토리 10트리) · 클래스 셋(`AiAgentApplication` · `AppUserDetails(Service)`). 문자열로 클래스를 부르는 11곳이 위험이었다 — ArchUnit BASE 넷 · ConfigCatalog · SqlCaller · **spy.properties 의 p6spy FQCN 둘**" }
+  - { at: "2026-09-04", by: "[AA]", what: "**aidd-guide 를 절반으로 줄였다** — 212파일 30,894줄 → 131파일 14,582줄. 지운 82파일: `_study/` 13(폐지된 docs/design 초안) · `reference/` 10(외부 글 요약) · `records/` 57(ADR 31 · 폐지 문서 지도 · 증거) · `knowledge/features.md`(요건서와 중복) · `catalog.yaml`(읽는 코드가 없는 사람 유지 목록). **인용 6,300곳을 live 문서 이름으로 돌렸다** — 번호형 · `_study` 파일명형 · `ADR-NNNN` 676곳. 지우지 않고 돌린 이유는 반이 문장의 명사구여서다. **`db/changelog/` 는 동결했다**(§5.3 ④-b) — 이미 적재된 changeset 과 사용자에게 보이는 메시지 값이라 인용 잠재가 남았다" }
   - { at: "2026-09-04", by: "[PM]", what: "**다음 할 일: OQ-001·OQ-002 에 답을 받고 `/phase-gate` 로 P0 를 승인받는다**" }

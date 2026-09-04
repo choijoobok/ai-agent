@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
- * 디테일 저장의 한 행 — 68 §5.
+ * 디테일 저장의 한 행 — playbook/INDEX.md.
  *
  * <p><b>{@code amt} 가 없다</b> — {@code afterEdit} 이 계산하는 파생이고 서버가 다시
  * 센다(마스터와 같은 규칙).

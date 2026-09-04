@@ -87,18 +87,6 @@ sources/frontend/src/
 
 **의존 방향은 `LayerDependencyTest`(ArchUnit)가 강제한다.**
 
-## `_study/` — 근거
-
-운용 파일은 **규칙과 핵심 근거**만 200줄 안에 담는다. 유도과정·실측·해소된 미결은
-`_study/` 에 원문으로 있다. **라우팅의 기본 경로가 아니다** — 운용 파일을 먼저 읽고,
-*규칙은 알겠는데 왜 그런가* 가 남을 때만 들어간다.
-
-| 어디 | 무엇 |
-|---|---|
-| [`_study/seed-generation.md`](./_study/seed-generation.md) | 생성 시드의 원문 |
-| [`sources/backend/_study/`](./backend/INDEX.md) | 아키텍처 · API/조회 프로토콜 · DB 중립 · 보안 · 로깅 |
-| [`sources/frontend/_study/`](./frontend/INDEX.md) | 스택·구조 · 그리드 넷 · 검색 폼 · 셸 |
-
 ## 기계가 지키는 것
 
 ```bash

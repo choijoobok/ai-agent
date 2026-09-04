@@ -6,7 +6,7 @@ import {
 } from '@/shared/menustat/api/menuStatApi';
 
 /**
- * 자주 쓰는 메뉴 — UX-16 · 42 §8.
+ * 자주 쓰는 메뉴 — UX-16 · sys/menu.md.
  *
  * <p><b>원본이 DB 다.</b> 즐겨찾기와 같은 자리이고 최근 사용(`localStorage`)과 갈린다 —
  * 즐겨찾기는 사용자가 선언한 것, 이것은 서버가 센 것, 최근은 이 기기의 것이다.
@@ -30,7 +30,7 @@ interface FrequentState {
    * 메뉴를 골랐다 — <b>던지고 잊는다</b>.
    *
    * <p>실패해도 조용하다. 카운트는 부수 효과이며, 이것 때문에 화면이 안 열리거나
-   * 빨간 토스트가 뜨면 <b>기능의 무게가 목적보다 커진다</b>(42 §8).
+   * 빨간 토스트가 뜨면 <b>기능의 무게가 목적보다 커진다</b>(sys/menu.md).
    */
   count: (menuCd: string) => void;
   clear: () => void;

@@ -5,15 +5,15 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * 메뉴 트리 저장이 거부하는 것 — 42 §4 · 62 §4.
+ * 메뉴 트리 저장이 거부하는 것 — sys/menu.md · screen/menu/requirements.md.
  *
  * <p><b>전부 서버가 마지막으로 막는 것이다.</b> 화면도 같은 것을 막지만(드롭 금지 · 비활성)
- * 그것은 <b>UX 이지 방어가 아니다</b>(security-design.md §4) — 시드·직접 UPDATE·API 조작은 화면을 지나지
+ * 그것은 <b>UX 이지 방어가 아니다</b>(backend/security.md) — 시드·직접 UPDATE·API 조작은 화면을 지나지
  * 않는다.
  *
  * <p><b>{@link #TREE_CHANGED} 만 성질이 다르다.</b> 나머지는 <i>해서는 안 되는 일</i>이고
  * 이것은 <i>당신이 보던 트리가 낡았다</i> 이다 — 사용자는 조회 한 번으로 복구한다. 조용히
- * 덮어쓰는 대신 <b>시끄러운 실패</b>로 바꾼 것이 42 §4 의 판단이다.
+ * 덮어쓰는 대신 <b>시끄러운 실패</b>로 바꾼 것이 sys/menu.md 의 판단이다.
  */
 public enum MenuErrorCode implements ErrorCode {
 

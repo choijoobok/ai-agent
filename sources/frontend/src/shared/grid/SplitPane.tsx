@@ -10,7 +10,7 @@ import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
 
 /**
- * 마스터-디테일의 스플리터 — grid-standard.md §6.3. <b>축은 둘이며 화면이 선언한다.</b>
+ * 마스터-디테일의 스플리터 — frontend/grid.md. <b>축은 둘이며 화면이 선언한다.</b>
  *
  * <p><b>화살표는 스플리터가 갈 자리를 가리킨다.</b> {@code ▲} 를 누르면 막대가 <b>맨 위로</b>
  * 가고 그 결과로 <b>마스터가 접힌다</b> — <i>"무엇을 접는가"</i> 로 읽으면 누를 때마다 틀린
@@ -23,15 +23,15 @@ import { MSG } from '@/shared/i18n/messageKeys';
  * 그것이 곧 <i>되돌리기</i> 다. 비활성 상태가 아예 없어진다.
  *
  * <p><b>비율과 접힘은 {@code localStorage} 다.</b> 27인치에서 맞춘 비율이 노트북에서는
- * 틀리므로 <b>사람의 속성이 아니라 기기·화면의 속성</b>이다(41 §4.3의 경계) — 그래서 DB 가
+ * 틀리므로 <b>사람의 속성이 아니라 기기·화면의 속성</b>이다(sys/user-role.md의 경계) — 그래서 DB 가
  * 아니고, 직접 조작으로 정해지므로 그리드 설정 창에도 없다.
  *
- * <p><b>좌우 축이 생겼다</b>(2026-08-30 — 62 §2). grid-standard.md §6.3 이 실물로 예고한 자리가
+ * <p><b>좌우 축이 생겼다</b>(2026-08-30 — screen/menu/requirements.md). frontend/grid.md 이 실물로 예고한 자리가
  * {@code ROLE_AUTH_MGMT}(역할 목록 ↔ 권한 트리)이며, 트리는 컬럼이 하나라 위아래로 두면
  * <b>가로 공간의 대부분이 빈다</b>.
  *
  * <p><b>축이 정해지면 나머지가 함께 정해진다</b> — 스플리터의 방향도, 화살표도, 접기
- * 방향도 따로 고르지 않는다(grid-standard.md §6.3). 그래서 선언은 {@code axis} 하나이고 규칙은 <b>둘 다
+ * 방향도 따로 고르지 않는다(frontend/grid.md). 그래서 선언은 {@code axis} 하나이고 규칙은 <b>둘 다
  * 같다</b>: <i>화살표는 스플리터가 갈 자리를 가리킨다</i> — {@code ◀} 를 누르면 막대가
  * <b>맨 왼쪽으로</b> 가고 그 결과로 왼쪽 pane 이 접힌다. <b>축이 바뀌어도 배울 것이 새로
  * 없다.</b>
@@ -43,7 +43,7 @@ import { MSG } from '@/shared/i18n/messageKeys';
 type Collapsed = 'none' | 'first' | 'second';
 
 /**
- * grid-standard.md §6.3 — <b>마스터가 넓으면 상하, 좁으면 좌우</b>다.
+ * frontend/grid.md — <b>마스터가 넓으면 상하, 좁으면 좌우</b>다.
  *
  * <p>이름을 내보내는 것은 <b>접힌 pane 의 제목이 이 값을 봐야</b> 하기 때문이다
  * ({@code <DataGrid collapsedAxis>} · {@code <TreeGrid collapsedAxis>}).
@@ -54,14 +54,14 @@ interface SplitPaneProps {
   /** `localStorage` 키의 꼬리. 화면마다 다르다. */
   storageKey: string;
   /**
-   * grid-standard.md §6.3 — <b>마스터가 넓으면 상하, 좁으면 좌우</b>다.
+   * frontend/grid.md — <b>마스터가 넓으면 상하, 좁으면 좌우</b>다.
    *
    * <p>기본이 상하인 것은 컬럼이 많은 목록이 대부분이기 때문이며, 좌우는 <b>트리처럼 컬럼이
-   * 한둘인</b> 마스터의 것이다. <b>축은 데이터가 정하지 취향이 정하지 않는다</b>(62 §3.1).
+   * 한둘인</b> 마스터의 것이다. <b>축은 데이터가 정하지 취향이 정하지 않는다</b>(screen/menu/requirements.md).
    */
   axis?: SplitAxis;
   /**
-   * 접힘 여부와 <b>제목 줄 클릭으로 되돌리는 길</b>을 함께 넘긴다 — grid-standard.md §6.3.
+   * 접힘 여부와 <b>제목 줄 클릭으로 되돌리는 길</b>을 함께 넘긴다 — frontend/grid.md.
    *
    * <p><b>축도 함께 넘긴다</b>(2026-08-31). 접힌 pane 이 <i>제목 한 줄</i>만 남기는데, 그
    * 제목이 <b>가로로 눕는가 세로로 서는가</b>는 축이 정한다 — 좌우로 접으면 남는 것이 48px
@@ -81,7 +81,7 @@ interface SplitState {
   collapsed: Collapsed;
 }
 
-/** 헤더 한 줄 + 컬럼 헤더 + 본문 한 행 + 푸터. 그보다 작게 끌면 접힘에 붙는다(grid-standard.md §6.3). */
+/** 헤더 한 줄 + 컬럼 헤더 + 본문 한 행 + 푸터. 그보다 작게 끌면 접힘에 붙는다(frontend/grid.md). */
 const MIN_PANE_PX = 140;
 
 /**
@@ -136,7 +136,7 @@ export function SplitPane(props: SplitPaneProps) {
     const first = offset - chrome / 2;
 
     // 끝까지 끌면 접힘으로 스냅한다 — 손으로 끈 것과 화살표로 접은 것이 같은 상태여야
-    // 되돌리는 방법도 하나다(grid-standard.md §6.3).
+    // 되돌리는 방법도 하나다(frontend/grid.md).
     if (first < MIN_PANE_PX) {
       setState((current) => ({ ...current, collapsed: 'first' }));
       return;
@@ -284,7 +284,7 @@ function paneStyle(
 ): CSSProperties {
   /*
     <b>좌우 축에서는 접힌 쪽에 고정 폭을 준다.</b> 상하에서는 제목 한 줄이 그대로 남지만,
-    세로로 접으면 폭이 0 이 되어 <b>제목을 눌러 되돌리는 길</b>(grid-standard.md §6.3)이 사라진다.
+    세로로 접으면 폭이 0 이 되어 <b>제목을 눌러 되돌리는 길</b>(frontend/grid.md)이 사라진다.
 
     그 폭이 <b>상하로 접었을 때의 높이와 같다</b> — 그래야 접은 결과가 <i>축을 바꿨다고
     다른 양</i>이 아니다(2026-08-31 요청).

@@ -38,14 +38,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 인증 API — security-design.md §3.
+ * 인증 API — backend/security.md.
  *
- * <p><b>계층 마디가 접근 정책을 정한다</b>(api-conventions.md §2.1). {@code public} 은 인증 전이므로
+ * <p><b>계층 마디가 접근 정책을 정한다</b>(backend/api.md). {@code public} 은 인증 전이므로
  * {@code permitAll} 이자 CSRF 예외이고, {@code common} 은 로그인한 사람이면 누구나 쓴다 —
  * 메뉴×액션 인가를 받지 않는다. 그래서 이 컨트롤러는 {@code SYS_API} 시드 대상이 아니다
- * (60 §3.4).
+ * (screen/_standalone/README.md).
  *
- * <p>경로 표기는 <b>camelCase 단수</b>이며 <b>소스의 메서드명이 그대로 경로</b>다(api-conventions.md §2.2).
+ * <p>경로 표기는 <b>camelCase 단수</b>이며 <b>소스의 메서드명이 그대로 경로</b>다(backend/api.md).
  */
 @RestController
 public class AuthController {
@@ -94,7 +94,7 @@ public class AuthController {
      * 비밀번호 규칙 목록 — {@code documents/screen/_standalone/login/requirements.md} §7-1.
      *
      * <p><b>{@code public} 인데 {@code GET} 인 것이 규약이다</b> — {@code common}·{@code public}
-     * 의 조회는 GET 이고 나머지는 POST 다(api-conventions.md §2.1). 인가 판정을 받지 않으므로 접두
+     * 의 조회는 GET 이고 나머지는 POST 다(backend/api.md). 인가 판정을 받지 않으므로 접두
      * ({@code get*})가 액션을 정하지는 않지만 <b>같은 접두를 쓴다</b>: 규칙이 둘이 되면
      * 어느 쪽인지 매번 확인해야 한다.
      *
@@ -167,7 +167,7 @@ public class AuthController {
 
     /**
      * 새로고침 시 세션 복원 — {@code authStore} 에 {@code persist} 를 붙이지 않기로 한
-     * 결정의 대가가 이 왕복이다(frontend-stack.md §8.1).
+     * 결정의 대가가 이 왕복이다(frontend/packages.md).
      */
     @GetMapping("/api/common/auth/getMe")
     public ApiResponse<LoginResponse> me(Principal principal, HttpServletRequest request) {
@@ -197,7 +197,7 @@ public class AuthController {
     }
 
     /**
-     * 날짜 표시 형식 셋 — 43 §6.4 · grid-column-contract.md §4.5.
+     * 날짜 표시 형식 셋 — sys/code.md · frontend/grid.md.
      *
      * <p><b>{@link LoginService} 에 같은 메서드가 있다.</b> 부품으로 빼지 않는 것은 두 곳이
      * 모두 <i>설정 하나를 응답의 한 칸에 담는</i> 세 줄이고, 그것을 옮기면 <b>설정 조회의
@@ -211,7 +211,7 @@ public class AuthController {
     }
 
     /**
-     * 만료까지의 예산 — 50 §7. 세션이 없으면 0 이며 <b>셸이 타이머를 걸지 않는다.</b>
+     * 만료까지의 예산. 세션이 없으면 0 이며 <b>셸이 타이머를 걸지 않는다.</b>
      *
      * <p>0 을 예고 시점으로 해석해 즉시 모달을 띄우면, 세션을 못 찾은 것이 <i>"곧 만료된다"</i>
      * 로 보인다 — 그 둘은 다른 사실이다.
@@ -222,7 +222,7 @@ public class AuthController {
     }
 
     /**
-     * 만료 예고 모달의 "연장" — 60 §5.
+     * 만료 예고 모달의 "연장" — screen/_standalone/README.md.
      *
      * <p>세션 갱신 자체는 이 요청이 도달한 것으로 이미 끝났다({@code lastAccessedTime}).
      * 응답이 나르는 것은 <b>다음 만료까지 남은 초</b>이며, 프론트가 그것으로 다음 예고
@@ -239,7 +239,7 @@ public class AuthController {
     }
 
     /**
-     * 본인 비밀번호 변경 — AUTH-05 · main-shell.md §8 의 <b>비밀번호 변경</b> 탭.
+     * 본인 비밀번호 변경 — AUTH-05 · frontend/tabs.md 의 <b>비밀번호 변경</b> 탭.
      *
      * <p><b>{@code user} 가 아니라 {@code auth} 아래인 것이 요건이다.</b> 제한 세션에서
      * 열려 있어야 하는 유일한 업무 경로이며({@code AuthorizationInterceptor} 의
@@ -283,7 +283,7 @@ public class AuthController {
 
     /**
      * 인가 인터셉터가 세션에 넣어 둔 유효 권한을 그대로 나른다 — <b>여기서 다시 계산하지
-     * 않는다</b>(security-design.md §4 판정은 한 곳에서).
+     * 않는다</b>(backend/security.md 판정은 한 곳에서).
      *
      * <p>낡았으면 이미 인터셉터가 갱신했다. 그래서 F5 마다 도는 이 왕복은 <b>쿼리 0</b> 이며,
      * 자정을 넘긴 첫 새로고침에서만 재계산이 붙는다.

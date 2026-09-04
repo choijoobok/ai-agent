@@ -9,7 +9,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/** 계정 상태 전이 — security-design.md §4 잠금 전이 표. 전이 하나가 메서드 하나다. */
+/** 계정 상태 전이 — backend/security.md 잠금 전이 표. 전이 하나가 메서드 하나다. */
 @Service
 @Transactional(readOnly = true)
 public class UserAccountService {
@@ -44,7 +44,7 @@ public class UserAccountService {
                         calendar.now(), configs.get(AuthLoginProps.class).failLimit()));
     }
 
-    /** 로그인 성공. 실패 횟수와 경과분 잠금만 정리하고 나머지 셋은 건드리지 않는다(41 §4.2 규칙 3). */
+    /** 로그인 성공. 실패 횟수와 경과분 잠금만 정리하고 나머지 셋은 건드리지 않는다(sys/user-role.md 규칙 3). */
     @Transactional
     public void recordLoginSuccess(String userId) {
         userRepository.findById(userId).ifPresent(user -> user.recordLoginSuccess(calendar.now()));

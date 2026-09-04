@@ -5,14 +5,14 @@ import type { CustomCellEditorProps } from 'ag-grid-react';
 import { datePattern, type DatePrecision } from '@/shared/grid/dateFormat';
 
 /**
- * 날짜 셀의 편집기 — <b>AntD 달력</b>이다(grid-column-contract.md §4.5 · §5).
+ * 날짜 셀의 편집기 — <b>AntD 달력</b>이다(frontend/grid.md).
  *
  * <p><b>판의 기본 편집기는 텍스트 칸</b>이다. 그대로 두면 사람이 {@code 2026-08-31} 을
- * 손으로 치고, 형식이 틀리면 <b>조용히 값이 되지 않는다</b> — 61 §3.8 탭 1 의 시작·종료일이
+ * 손으로 치고, 형식이 틀리면 <b>조용히 값이 되지 않는다</b> — screen/user/requirements.md 탭 1 의 시작·종료일이
  * 실물로 그랬다(2026-08-31).
  *
  * <p><b>조회조건과 같은 컴포넌트</b>다. 다르면 같은 화면에서 <b>두 모양의 달력</b>이 뜨고,
- * AntD 쪽만 셸의 색·모드 토큰을 받으므로(main-shell.md §9.7) 다크에서 어긋난다.
+ * AntD 쪽만 셸의 색·모드 토큰을 받으므로(frontend/tabs.md) 다크에서 어긋난다.
  *
  * <h2>정밀도가 달력의 모양과 값을 함께 정한다</h2>
  *
@@ -25,7 +25,7 @@ import { datePattern, type DatePrecision } from '@/shared/grid/dateFormat';
  * <h2>값의 모양은 <b>컬럼 타입</b>이 정한다</h2>
  *
  * <p>{@code date} 는 {@code LocalDate}({@code YYYY-MM-DD})이고 {@code dateTime} 은 오프셋을
- * 포함한 ISO-8601 이다(architecture.md §6-1). <b>표시 형식을 그대로 쓰지 않는다</b> — 시스템 설정이
+ * 포함한 ISO-8601 이다(backend/packages.md). <b>표시 형식을 그대로 쓰지 않는다</b> — 시스템 설정이
  * {@code YYYY.MM.DD} 로 바뀌면 서버가 받는 값도 함께 바뀌어 <b>파싱이 깨진다</b>.
  *
  * <h2>드롭다운에 판의 클래스를 붙인다</h2>
@@ -43,7 +43,7 @@ import { datePattern, type DatePrecision } from '@/shared/grid/dateFormat';
  *
  * <p>판의 긴 글 편집기가 멀쩡했던 것은 그쪽이 자기 바탕을 갖기 때문이다({@code .ag-large-text}
  * 에 배경·둥근 모서리·그림자가 붙어 있다). 여기서도 <b>같은 셋</b>을 칠한다 — 색은
- * <b>토큰에서</b> 온다(grid-standard.md §8.4): hex 를 적으면 다크에서 흰 판이 뜬다.
+ * <b>토큰에서</b> 온다(frontend/grid.md): hex 를 적으면 다크에서 흰 판이 뜬다.
  *
  * <p><b>폭은 셀에서 받는다.</b> 껍데기가 폭을 주지 않으므로 {@code width: 100%} 는 기댈 곳이
  * 없고, 그대로 두면 칸이 <b>글자 길이만큼</b> 줄어 아래 글자가 옆으로 삐져나온다 — 셀 폭에

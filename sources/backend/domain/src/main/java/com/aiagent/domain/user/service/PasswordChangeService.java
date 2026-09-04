@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 본인 비밀번호 변경 — AUTH-05 · main-shell.md §8 의 <b>비밀번호 변경</b> 탭.
+ * 본인 비밀번호 변경 — AUTH-05 · frontend/tabs.md 의 <b>비밀번호 변경</b> 탭.
  *
- * <p><b>실패 갈래가 넷이고 서로 갈라 둔다</b>(security-design.md §4) — 현재 비밀번호 불일치 · 정책 미달 ·
+ * <p><b>실패 갈래가 넷이고 서로 갈라 둔다</b>(backend/security.md) — 현재 비밀번호 불일치 · 정책 미달 ·
  * 재사용 · 무변경. 합치면 사용자는 <i>무엇을 고쳐야 하는지</i> 를 모른다. 계정 열거 위험이
  * 없는 자리라 갈라도 된다: <b>이미 로그인한 본인</b>이며 계정의 존재는 이미 알려져 있다.
  *

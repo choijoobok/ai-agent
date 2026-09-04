@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
- * {@code SYS_USER_PWD_HIST} 를 다루는 규칙 하나 — 41 §5.
+ * {@code SYS_USER_PWD_HIST} 를 다루는 규칙 하나 — sys/user-role.md.
  *
  * <p><b>비밀번호가 바뀌는 경로가 둘이 되면서 떼어 냈다</b>(2026-08-30). 본인 변경
  * ({@link PasswordChangeService} — AUTH-05)과 <b>관리자 발급</b>({@code UserService} —
@@ -30,7 +30,7 @@ public class PasswordHistory {
     }
 
     /**
-     * 최근 N건과 대조한다 — 41 §5.
+     * 최근 N건과 대조한다 — sys/user-role.md.
      *
      * <p><b>해시라 SQL 로 비교할 수 없다.</b> BCrypt 는 솔트가 행마다 달라 같은 평문이라도
      * 다른 문자열이 되므로, 후보를 읽어 와 {@code matches} 를 N 번 부르는 것이 유일한

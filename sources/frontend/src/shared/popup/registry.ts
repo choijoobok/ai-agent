@@ -1,8 +1,8 @@
 import type { PopupSpec } from '@/shared/popup/types';
 
 /**
- * 참조 팝업 레지스트리 — grid-column-contract.md §8 의 미결(<i>"화면 코드에서 선언할지 공통 목록을 둘지"</i>)에
- * 답한다(68 §9.4).
+ * 참조 팝업 레지스트리 — frontend/grid.md 의 미결(<i>"화면 코드에서 선언할지 공통 목록을 둘지"</i>)에
+ * 답한다(playbook/INDEX.md).
  *
  * <p><b>공통 레지스트리에 등록하되 키에 네임스페이스를 둔다</b>(`sample.customer` ·
  * `sys.user`). 둘 중 하나만 고르면 각각 이렇게 깨진다 —
@@ -11,13 +11,13 @@ import type { PopupSpec } from '@/shared/popup/types';
  *   <li><b>화면마다 선언하면</b> 같은 팝업이 두 화면에서 두 벌이 되고, 한쪽만 컬럼이
  *       늘어난다. 고르는 창은 <b>같은 데이터를 같은 모양으로</b> 보여야 하는 자리다
  *   <li><b>네임스페이스 없는 공통 목록이면</b> 샘플을 지울 때 그 목록에서 줄을 지워야
- *       하고, 그것은 10 §L 체크리스트에 <b>없던 항목</b>이 된다 — 빠뜨리면 없는 화면의
+ * 하고, 그것은 screen/README.md 체크리스트에 <b>없던 항목</b>이 된다 — 빠뜨리면 없는 화면의
  *       팝업이 목록에 남는다
  * </ul>
  *
  * <p><b>등록은 모듈 로드에서 일어난다.</b> 화면이 자기가 쓰는 팝업 모듈을 임포트하므로
  * 그 화면이 열릴 때 등록되고, <b>화면 폴더를 지우면 등록도 함께 사라진다</b> — 지우는
- * 일이 폴더 하나로 끝나는 것이 68 §10.2 의 규칙이다.
+ * 일이 폴더 하나로 끝나는 것이 playbook/INDEX.md 의 규칙이다.
  */
 
 const registry = new Map<string, PopupSpec>();
@@ -44,8 +44,8 @@ const KEY_SHAPE = /^[a-z][a-zA-Z0-9]*\.[a-zA-Z0-9]+$/;
 export function registerPopups(entries: Record<string, PopupSpec>): void {
   for (const [key, spec] of Object.entries(entries)) {
     if (!KEY_SHAPE.test(key)) {
-      // 개발자용이라 영어다 — 화면에 나가는 문구가 아니다(eslint 의 43 §3 규칙 주석).
-      throw new Error(`Popup key must be namespaced as "ns.name" (68 §9.4): ${key}`);
+      // 개발자용이라 영어다 — 화면에 나가는 문구가 아니다(eslint 의 sys/code.md 규칙 주석).
+      throw new Error(`Popup key must be namespaced as "ns.name" (playbook/INDEX.md): ${key}`);
     }
     registry.set(key, spec);
   }

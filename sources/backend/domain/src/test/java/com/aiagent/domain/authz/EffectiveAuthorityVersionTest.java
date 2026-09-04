@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * {@code X-Authz-Version} — 50 §8.1.
+ * {@code X-Authz-Version}.
  *
  * <p>이 값이 틀리는 방향은 둘이고 <b>비용이 다르다</b>. 같아야 하는데 다르면 프론트가 헛
  * 재조회를 돌고(성능), <b>달라야 하는데 같으면 회수된 권한의 메뉴가 화면에 남는다</b>(오답).
@@ -57,7 +57,7 @@ class EffectiveAuthorityVersionTest {
     @DisplayName("쌍이 옮겨 가면 달라진다 — 개수가 같다고 같은 권한이 아니다")
     void movedPairChangesVersion() {
         // (A,READ)+(B,SAVE) 와 (A,SAVE)+(B,READ) 는 토큰 개수도 메뉴 집합도 액션 집합도 같다.
-        // 구분 단위가 쌍이 아니면 이 둘이 같은 버전을 갖는다 — security-design.md §4 의 곱집합 실수와 같은 모양이다.
+        // 구분 단위가 쌍이 아니면 이 둘이 같은 버전을 갖는다 — backend/security.md 의 곱집합 실수와 같은 모양이다.
         EffectiveAuthority one = authority(
                 new MenuAction("A", ActionType.READ), new MenuAction("B", ActionType.SAVE));
         EffectiveAuthority other = authority(
@@ -80,7 +80,7 @@ class EffectiveAuthorityVersionTest {
     @Test
     @DisplayName("뺐다가 되돌리면 같다 — 결과가 같으므로 다시 받을 이유도 없다")
     void revertedChangeIsNotDetected() {
-        // 단조 증가 카운터로 두면 이 경우에 헛 재조회가 생긴다(50 §8.1).
+        // 단조 증가 카운터로 두면 이 경우에 헛 재조회가 생긴다.
         EffectiveAuthority before = authority(new MenuAction("ORDER", ActionType.READ));
         EffectiveAuthority reverted = authority(new MenuAction("ORDER", ActionType.READ));
 

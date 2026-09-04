@@ -1,14 +1,14 @@
 import type { GridRow } from '@/shared/grid/rows';
 
 /**
- * 읽은 행 ↔ 기존 행 대조 — ADR-0024 §4 · 68 §8.6.
+ * 읽은 행 ↔ 기존 행 대조 — frontend/grid-advanced.md · playbook/INDEX.md.
  *
  * <p><b>붙는 상태가 셋이다.</b> DB 에 없으면 신규(`C`), 있고 값이 다르면 변경(`U`),
  * 있고 같으면 <b>상태가 없다</b> — 마지막이 요점이다: 사람이 412행짜리 파일에서 세 줄만
  * 고쳐 올리면 <b>나가는 것도 세 줄</b>이어야 한다. 전량을 보내면 감사 컬럼이 전부
  * 갱신되어 <i>누가 언제 무엇을 고쳤나</i> 를 잃는다.
  *
- * <p><b>`D` 가 생기지 않는다</b>(68 §8.6). 파일에서 줄을 지운 것과 <i>"지워라"</i> 를
+ * <p><b>`D` 가 생기지 않는다</b>(playbook/INDEX.md). 파일에서 줄을 지운 것과 <i>"지워라"</i> 를
  * 구별할 방법이 없다 — 삭제는 업무 탭의 삭제 컬럼이다.
  */
 
@@ -51,14 +51,14 @@ function scalar(value: unknown): string {
 
 export interface MatchResult<T> {
   rows: GridRow<T>[];
-  /** 파일 안에서 <b>키가 겹친 행</b>들의 id — 그리드 층 검증이 받는다(grid-edit-validation.md §3.2). */
+  /** 파일 안에서 <b>키가 겹친 행</b>들의 id — 그리드 층 검증이 받는다(frontend/grid.md). */
   duplicated: string[];
 }
 
 /**
  * @param parsed 파일에서 읽은 행들 — <b>순서가 파일 순서</b>다. 정렬하지 않는 것은
  *     사용자가 자기 파일의 몇째 줄인지로 오류를 찾기 때문이다
- * @param existing 같은 조회 API 가 준 기존 행(ADR-0024 §4)
+ * @param existing 같은 조회 API 가 준 기존 행(frontend/grid-advanced.md)
  */
 export function matchRows<T>(parsed: T[], existing: T[], keyFields: string[]): MatchResult<T> {
   const byKey = new Map<string, T>();
@@ -84,7 +84,7 @@ export function matchRows<T>(parsed: T[], existing: T[], keyFields: string[]): M
       return;
     }
     /*
-      <b>기존 행을 원본으로 둔다.</b> 되돌리기가 그것을 쓰고(grid-standard.md §3.1), <i>같은 값이면
+      <b>기존 행을 원본으로 둔다.</b> 되돌리기가 그것을 쓰고(frontend/grid.md), <i>같은 값이면
       상태가 없다</i> 는 판정도 여기서 나온다 — 파일의 행을 원본으로 두면 무엇을 고쳐도
       <b>영원히 무변경</b>이다.
     */
@@ -98,7 +98,7 @@ export function matchRows<T>(parsed: T[], existing: T[], keyFields: string[]): M
 /**
  * 값이 같은가 — <b>파일에 있는 칸만 본다</b>.
  *
- * <p>기존 행에는 파일에 없는 컬럼이 있다(`ITEM_SEQ`·`ORD_ID`·감사 4 — 68 §8.2). 통째로
+ * <p>기존 행에는 파일에 없는 컬럼이 있다(`ITEM_SEQ`·`ORD_ID`·감사 4 — playbook/INDEX.md). 통째로
  * 비교하면 <b>모든 행이 변경</b>이 되고, 그러면 위의 <i>세 줄만 나간다</i> 가 성립하지
  * 않는다.
  */

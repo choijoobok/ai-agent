@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/** {@link SysMessage} 의 복합키 — 행 지향이라 언어가 키의 일부다(43 §7.2). */
+/** {@link SysMessage} 의 복합키 — 행 지향이라 언어가 키의 일부다(sys/code.md). */
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode

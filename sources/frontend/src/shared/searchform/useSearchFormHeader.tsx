@@ -7,7 +7,7 @@ import { useSearchFormCollapse } from '@/shared/searchform/useSearchFormCollapse
 import { useBreadcrumbSlot } from '@/layouts/ShellLayout/breadcrumbSlotStore';
 
 /**
- * 조회조건 폼의 <b>브레드크럼 헤더</b> — main-shell.md §5.1 · UX-15.
+ * 조회조건 폼의 <b>브레드크럼 헤더</b> — frontend/tabs.md · UX-15.
  *
  * <p><b>접기 토글과 걸린 조건 수는 폼이 아니라 브레드크럼 줄에 있다</b>. 토글이 접히는
  * 대상 안에 있으면 <b>숨긴 뒤 되돌릴 수 없고</b>, 조건 수는 접힌 채로도 보여야 한다 —
@@ -34,7 +34,7 @@ import { useBreadcrumbSlot } from '@/layouts/ShellLayout/breadcrumbSlotStore';
  *
  * <p><b>폼의 `ref` 는 화면이 갖는다.</b> 여기로 올리지 않은 이유는 조건을 <i>읽는</i> 쪽이
  * 화면이기 때문이다 — 조회 파라미터를 모으고(`collect`), 넘겨받은 값을 채워 넣는다
- * (`apply` — 64 §5.4 의 화면 간 이동). 훅이 들고 있으면 그 둘이 한 번 더 감싸여 돌아간다.
+ * (`apply` — screen/log/access/requirements.md 의 화면 간 이동). 훅이 들고 있으면 그 둘이 한 번 더 감싸여 돌아간다.
  *
  * <p><b>슬롯 노드를 매 렌더 새로 만들지 않는다.</b> {@code useBreadcrumbSlot} 은 내용을
  * 효과의 의존으로 받으므로(스토어에 등록한다) 새 노드는 곧 <b>매 렌더 재등록</b>이다 —
@@ -50,13 +50,13 @@ export interface SearchFormHeader {
 export function useSearchFormHeader(): SearchFormHeader {
   const [activeConditions, setActiveConditions] = useState(0);
 
-  // 토글은 접히는 대상 밖에 있어야 한다 — 폼 안에 두면 숨긴 뒤 되돌릴 수 없다(main-shell.md §5.1).
+  // 토글은 접히는 대상 밖에 있어야 한다 — 폼 안에 두면 숨긴 뒤 되돌릴 수 없다(frontend/tabs.md).
   const form = useSearchFormCollapse();
 
   const slot = useMemo(
     () => (
       <Space size={8}>
-        {/* 접힌 채로 조건이 걸려 있으면 그것을 말한다 — grid-column-contract.md §4.2 가 컬럼 필터에 정한 규칙과 같다. */}
+        {/* 접힌 채로 조건이 걸려 있으면 그것을 말한다 — frontend/grid.md 가 컬럼 필터에 정한 규칙과 같다. */}
         {form.collapsed && activeConditions > 0 && (
           <Typography.Text type="secondary" style={{ fontSize: 12 }}>
             {label(MSG.SEARCH_FORM_ACTIVE, { count: activeConditions })}

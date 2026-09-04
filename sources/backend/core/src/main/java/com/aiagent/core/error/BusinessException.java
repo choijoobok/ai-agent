@@ -7,7 +7,7 @@ import java.util.List;
  * 업무 규칙 위반. {@link ErrorCode} 하나와 필드 오류 목록을 나른다.
  *
  * <p>{@code getMessage()} 가 <b>완성된 문구</b>여야 한다 — 그대로 {@code SYS_LO_EXCEPTION}
- * 과 애플리케이션 로그에 남고, 코드만 남으면 매번 뜻을 되찾아야 하기 때문이다(architecture.md §6-1.2).
+ * 과 애플리케이션 로그에 남고, 코드만 남으면 매번 뜻을 되찾아야 하기 때문이다(backend/packages.md).
  *
  * <p><b>이 문구는 로그의 것이고 응답의 것이 아니다</b>(2026-08-29). 응답에 나가는 문구는
  * {@link ErrorCode#code()} 를 키로 {@code SYS_MESSAGE} 에서 <b>사용자 언어</b>로 읽는다
@@ -47,10 +47,10 @@ public class BusinessException extends RuntimeException {
     }
 
     /**
-     * 400 응답의 {@code fields} 한 칸(api-conventions.md §2.3).
+     * 400 응답의 {@code fields} 한 칸(backend/api.md).
      *
      * <p><b>배열인 것이 규약이다</b> — 관계가 틀린 검증은 같은 문구가 두 필드에 실린다
-     * (65 §3.4).
+     * (screen/batch/schedule/requirements.md).
      */
     public record FieldError(String field, String message) {}
 }

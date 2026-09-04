@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/", "aidd-guide/standard/backend/_study/architecture.md"]
+sources: ["sources/backend/", "aidd-guide/standard/backend/packages.md"]
 author: Bong Jong Hyeon
 tier: 2
 tags: [backend, module, package, naming, transaction]
@@ -17,7 +17,7 @@ tags: [backend, module, package, naming, transaction]
 > **무엇을 어디에 두고 무엇이라 부르는가.** 새 기능을 만들 때 가장 먼저 정해지고,
 > 한 번 틀리면 가장 늦게 드러나는 것들이다.
 >
-> 유도과정·대안 검토는 [`_study/architecture.md`](./_study/architecture.md) 에 있다.
+> 유도과정·대안 검토는 [`backend/packages.md`](./packages.md) 에 있다.
 
 ## 1. 모듈 다섯
 
@@ -117,7 +117,7 @@ api         {화면·도메인}/
 - **조회는 `RoleQueryService` 하나**다 — 두 화면이 같은 표를 같은 조인으로 읽으므로,
   가르면 `holderCount` 를 세는 질의가 두 벌이 되고 한쪽만 고쳐진다.
 - **명령은 `RoleService`(역할의 생애)와 `RoleAuthService`(권한 부여)로 가른다** —
-  트랜잭션 경계도 인가 액션도 다르다([ADR-0027](../../records/adr/0027-menu-declared-export-action.md)).
+  트랜잭션 경계도 인가 액션도 다르다([`sys/menu.md`](../../knowledge/sys/menu.md)).
 - **`{화면}QueryService` 를 새로 만들지 않는다.** 이름이 화면을 가리키면 두 번째 화면이
   왔을 때 갈 곳이 없다 — 이름은 **패키지가 담는 것**을 가리킨다.
 
@@ -163,4 +163,3 @@ api         {화면·도메인}/
 - [api.md](./api.md) — 경로·응답·액션 판정
 - [INDEX.md](./INDEX.md) — 백엔드 카테고리 진입
 - [CLAUDE.md §6](../../../CLAUDE.md) — 기계가 막는 것 / 사람이 지키는 것
-- [`_study/architecture.md`](./_study/architecture.md) — 원문(유도과정·대안·해소된 미결)

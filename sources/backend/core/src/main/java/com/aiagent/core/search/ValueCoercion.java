@@ -18,10 +18,10 @@ import java.util.List;
  * 만들고 드라이버가 벤더마다 다르게 실패한다.
  *
  * <p><b>느슨하게 읽지 않는다.</b> 읽을 수 없으면 400 이며, 조용히 {@code null} 로 떨어뜨리면
- * <i>"조건을 넣었는데 안 걸린다"</i> 가 된다 — api-conventions.md §3.3 이 {@code isNull} 에 대해 한 판단과 같다.
+ * <i>"조건을 넣었는데 안 걸린다"</i> 가 된다 — backend/api.md 이 {@code isNull} 에 대해 한 판단과 같다.
  *
  * <p><b>{@code ynFlag} 는 {@code 'Y'}/{@code 'N'} 과 {@code true}/{@code false} 를 둘 다 받는다.</b>
- * DB 는 {@code CHAR(1)} 이고(db-portability.md §4.3) 자바 필드는 {@code Boolean} 이라(컨버터) 화면이 어느
+ * DB 는 {@code CHAR(1)} 이고(backend/persistence.md) 자바 필드는 {@code Boolean} 이라(컨버터) 화면이 어느
  * 쪽을 보내도 뜻이 하나다.
  */
 final class ValueCoercion {
@@ -73,8 +73,8 @@ final class ValueCoercion {
                 return OffsetDateTime.parse(raw.toString());
             }
             /*
-              이력 테이블의 시각 컬럼이 {@code Instant} 다(45 §4.1). 화면은 오프셋을 포함한
-              ISO-8601 을 보내므로(architecture.md §6-1) {@code OffsetDateTime} 으로 읽어 순간으로 바꾼다 —
+              이력 테이블의 시각 컬럼이 {@code Instant} 다(sys/logs.md). 화면은 오프셋을 포함한
+              ISO-8601 을 보내므로(backend/packages.md) {@code OffsetDateTime} 으로 읽어 순간으로 바꾼다 —
               {@code Instant.parse} 는 {@code Z} 만 받아 {@code +09:00} 에서 죽는다.
             */
             if (type == Instant.class) {

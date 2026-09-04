@@ -70,8 +70,6 @@ ai-agent/
 | CRUD·마스터디테일·엑셀 레시피 | [`aidd-guide/playbook/INDEX.md`](aidd-guide/playbook/INDEX.md) |
 | 도메인 지식(인가·메뉴·코드·메시지) | [`aidd-guide/knowledge/INDEX.md`](aidd-guide/knowledge/INDEX.md) |
 | 훅·스킬·컨텍스트 예산 | [`aidd-guide/harness/INDEX.md`](aidd-guide/harness/INDEX.md) |
-| **왜 이렇게 됐나 · 버린 안** | [`aidd-guide/records/adr/INDEX.md`](aidd-guide/records/adr/INDEX.md) — 프레임워크·템플릿의 결정 / [`documents/decisions/`](documents/decisions/ASSUMPTIONS.md) — **이 프로젝트의** 결정 |
-| `53 §6.1` 처럼 번호만 있는 인용 | [`aidd-guide/records/legacy-doc-map.md`](aidd-guide/records/legacy-doc-map.md) — 폐지된 문서 번호다 |
 
 - **읽는 방법**: 통째로 읽지 않는다 — `Grep` 으로 절을 찾고 `Read(offset, limit)` 로 그 절만 읽는다. 소스에도 같은 규칙을 적용한다.
 - **표준을 추정해 새로 만들지 않는다.** `aidd-guide/` 에 없으면 **비슷한 화면의 실물을 읽는다** — 샘플 여섯(`sources/frontend/src/features/sample/`)이 그 목적으로 있다.
@@ -100,7 +98,7 @@ ai-agent/
 3. **한 커밋은 한 가지 일이다.** 메시지는 `<타입>: <현상> — <조치>` 이며 **왜** 를 본문에 적는다. **경로를 지정해** 커밋한다(§9). **푸시는 사용자가 말할 때만** 한다.
 4. **`documents/spec/` 이 유일한 진실이다.** `documents/generated/` 는 파생 뷰다 — 그쪽을 고치지 말고 spec 을 고친 뒤 `/doc-gen` 으로 재생성한다.
 5. **ID 없는 산출물은 만들지 않는다.** 요구사항·유즈케이스·기능·엔티티·API·화면·테스트는 ID 를 갖고 **상위 ID 에 연결된다** → [`process/traceability.md`](aidd-guide/process/traceability.md). **추측을 사실처럼 쓰지 않는다** — 미확인 전제는 `ASM-###` 으로 [`documents/decisions/ASSUMPTIONS.md`](documents/decisions/ASSUMPTIONS.md) 에 적고 산출물 안에서 `[ASM-###]` 로 표시한다.
-6. **문구를 소스에 박지 않는다.** 화면 문구는 `MSG` 키 + `label()`, 서버 문구는 `MsgKey` + `SYS_MESSAGE`. **소스에 남는 서버 문구 — 로그와 예외의 기본 메시지 — 는 한국어로 쓴다**(정본은 `SYS_MESSAGE` 이고 소스의 것은 폴백·진단이며, 그것을 읽는 사람이 한국어 운영자다 — [ADR-0029](aidd-guide/records/adr/0029-server-text-language.md)).
+6. **문구를 소스에 박지 않는다.** 화면 문구는 `MSG` 키 + `label()`, 서버 문구는 `MsgKey` + `SYS_MESSAGE`. **소스에 남는 서버 문구 — 로그와 예외의 기본 메시지 — 는 한국어로 쓴다**(정본은 `SYS_MESSAGE` 이고 소스의 것은 폴백·진단이며, 그것을 읽는 사람이 한국어 운영자다).
 7. **판단이 갈리는 것은 먼저 묻는다** — 표준·이름 규칙·경로·데이터 마이그레이션·삭제. 규칙이 이미 정해진 일은 진행하고 **결과를 보고한다**. 큰 리팩터는 *무엇을 왜 어떻게* 를 먼저 한 문단으로 요약한 뒤 착수한다. **질문은 배치로 묶는다** — 한 번에 최대 7개, 전부 **권장안**을 붙이고 `[필수]` 는 3개 이하 → [`process/interview.md`](aidd-guide/process/interview.md).
 8. **시드는 생성물이다.** `menu-tree.yaml` · 컨트롤러 · `endpoints.ts` · `messageKeys.ts` 를 고쳤으면 생성 태스크를 돌려 **CSV 를 함께 커밋한다**(§7). 이미 적재된 changeset 은 고치지 않고 **새 파일을 더한다** — 고치면 남의 로컬이 checksum 으로 죽는다.
 9. **대용량 파일을 통째로 읽지 않는다**(§3 의 읽는 방법).
@@ -244,7 +242,7 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 | `log-raw` | UserPromptSubmit·Stop | 막지 않고 **대화 원문을 `chat-history/` 에 남긴다**(§10) |
 
 > 훅은 [`.claude/hooks/`](.claude/hooks/) 에 있고 [`.claude/settings.json`](.claude/settings.json) 이 건다.
-> **`node` 하나로 돌며 의존성이 없다** — 이유는 [ADR-0031](aidd-guide/records/adr/0031-single-hook-runtime.md).
+> **`node` 하나로 돌며 의존성이 없다** — 이유는 [`harness/hooks.md`](./aidd-guide/harness/hooks.md).
 > **전부 fail-open 이다** — 훅이 죽어도 세션을 막지 않는다. 죽은 훅이 세션을 막으면 사람이 훅을 끄고, 꺼진 훅은 없는 훅이다.
 
 ### 사람이 지킨다 (검사가 없다)

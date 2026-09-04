@@ -8,7 +8,7 @@ interface Row {
 }
 
 /**
- * 큰 정수 컬럼 — 68 §9.10.
+ * 큰 정수 컬럼 — playbook/INDEX.md.
  *
  * <p><b>이 타입이 존재하는 이유는 <i>보이는 것</i>이 아니라 <i>조용히 틀리는 것</i>이다.</b>
  * 값은 문자열로 오고 셀에는 그대로 그려지므로 화면만 봐서는 아무 문제가 없다 — 깨지는
@@ -76,7 +76,7 @@ describe('bigint 컬럼', () => {
     expect(sorted(['5', '', '1'])).toEqual(['1', '5', '']);
   });
 
-  it('서버 정렬이면 비교자가 순서를 만들지 않는다 — 서버가 준 그대로다(grid-column-contract.md §3)', () => {
+  it('서버 정렬이면 비교자가 순서를 만들지 않는다 — 서버가 준 그대로다(frontend/grid.md)', () => {
     const compare = comparatorOf(true);
     expect(compare?.('9', '10', undefined as never, undefined as never, false)).toBe(0);
   });

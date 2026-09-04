@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import org.springframework.stereotype.Component;
 
 /**
- * 스프링 컨텍스트에 있는 {@link BatchJob} 구현 전부 — 65 §3.3.
+ * 스프링 컨텍스트에 있는 {@link BatchJob} 구현 전부 — screen/batch/schedule/requirements.md.
  *
  * <p>그 절이 <i>"목록의 출처: <b>서버가 준다</b> — 스프링 컨텍스트에서 {@code BatchJob}
  * 구현을 모은다. <b>시드가 아니다</b>"</i> 라고 적은 자리다. 시드로 두면 배포마다
@@ -43,7 +43,7 @@ public class BatchJobRegistry {
     }
 
     /**
-     * 저장이 이것으로 <b>없는 빈을 막는다</b>(65 §3.3 — 원칙 P1).
+     * 저장이 이것으로 <b>없는 빈을 막는다</b>(screen/batch/schedule/requirements.md — 원칙 P1).
      *
      * <p>화면은 고르게 해서 그 경로를 닫지만, 화면 밖 경로(직접 UPDATE · API 조작)는
      * 그 셀렉트를 지나지 않는다. 막지 않으면 <b>실행 시점에 터지고</b>, 그때는 크론이

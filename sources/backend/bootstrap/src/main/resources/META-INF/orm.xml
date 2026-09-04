@@ -6,7 +6,7 @@
   기동도 되고 저장도 되며 REG_ID·REG_DTM 만 조용히 NULL 로 남는다 — 배포 뒤에야 안다.
   여기 한 줄이면 새 엔티티가 무엇을 하든 자동으로 걸린다.
 
-  core 에 걸지 않은 이유는 AuditingEntityListener 가 spring-data-jpa 의 것이라서다(21 §1).
+  core 에 걸지 않은 이유는 AuditingEntityListener 가 spring-data-jpa 의 것이라서다(backend/packages.md).
 -->
 <entity-mappings xmlns="https://jakarta.ee/xml/ns/persistence/orm"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

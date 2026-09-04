@@ -31,7 +31,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 /**
- * 내 역할 — AUTHZ-04 · main-shell.md §8.
+ * 내 역할 — AUTHZ-04 · frontend/tabs.md.
  *
  * <p><b>유효 권한 계산과 방향이 반대라는 것이 이 테스트의 전부다.</b>
  * {@link com.aiagent.domain.authz.service.EffectiveAuthorityService} 는 만료·비활성을

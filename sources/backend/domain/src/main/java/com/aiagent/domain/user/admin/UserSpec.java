@@ -17,31 +17,31 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 /**
- * {@code USER_MGMT} 의 화이트리스트 — 61 §3.3 · api-conventions.md §4.1.
+ * {@code USER_MGMT} 의 화이트리스트 — screen/user/requirements.md · backend/api.md.
  *
  * <h2>이 스펙만 {@code static} 이 아니다</h2>
  *
  * <p>다른 화면의 스펙은 {@code public static final QuerySpec} 인데 여기는 <b>빈</b>이다.
  * 이유 하나 — <b>계정 상태 파생 조건이 오늘을 봐야 한다</b>(기간 만료). 업무 시간대의 오늘은
- * {@link BusinessCalendar} 만 아는 값이고(40 §4.3), 그것을 {@code static} 초기화가 가질 방법이
+ * {@link BusinessCalendar} 만 아는 값이고(sys/INDEX.md), 그것을 {@code static} 초기화가 가질 방법이
  * 없다.
  *
  * <p><b>{@code CURRENT_DATE} 로 도망가지 않는다.</b> 4벤더 다 지원하지만 그 값은 <b>DB 서버의
- * 시간대</b>이며, 40 §4.3 이 {@code app.business-timezone} 을 둔 이유가 정확히 <i>자정 근처에서만
+ * 시간대</b>이며, sys/INDEX.md 이 {@code app.business-timezone} 을 둔 이유가 정확히 <i>자정 근처에서만
  * 하루가 밀리는</i> 그 버그다. 조건과 표시가 서로 다른 오늘을 보게 두느니 빈이 낫다.
  *
  * <h2>계정 상태는 화면의 값과 SQL 컬럼이 1:1 이 아니다</h2>
  *
  * <p>화면이 보내는 것은 {@link AccountStat} 다섯 중 몇 개이고, 서버가 그것을 <b>네 컬럼의
- * 조건</b>으로 번역한다(61 §3.3). 조회 프로토콜(QRY-01)이 <b>파생 조건을 어떻게 싣는지</b> 의
- * 사례이며 api-conventions.md §3.5 가 <i>"와이어의 문제가 아니라 화이트리스트의 문제"</i> 로 답한 그 자리다 —
- * {@code LoginLogSpec.rsltGroup}(64 §4.6)에 이은 셋째다.
+ * 조건</b>으로 번역한다(screen/user/requirements.md). 조회 프로토콜(QRY-01)이 <b>파생 조건을 어떻게 싣는지</b> 의
+ * 사례이며 backend/api.md 가 <i>"와이어의 문제가 아니라 화이트리스트의 문제"</i> 로 답한 그 자리다 —
+ * {@code LoginLogSpec.rsltGroup}(screen/log/access/requirements.md)에 이은 셋째다.
  *
  * <h2>파생 셋이 정렬 대상이 아니다</h2>
  *
  * <p>{@code .sortable()} 을 붙이면 기동이 실패한다({@code QuerySpec.Builder}) — 정렬할
  * {@code Path} 가 없기 때문이다. 화면도 상태 컬럼의 {@code sortable} 을 켜지 않는다:
- * 켜면 400 이고, 그것이 61 §3.2.1 이 <i>"정렬은 미결"</i> 로 남긴 것의 현재 답이다.
+ * 켜면 400 이고, 그것이 screen/user/requirements.md 이 <i>"정렬은 미결"</i> 로 남긴 것의 현재 답이다.
  */
 @Component
 public class UserSpec {
@@ -69,7 +69,7 @@ public class UserSpec {
      * 조건을 걸 일도 없다 — 화이트리스트가 <i>이 화면이 무엇을 물을 수 있는가</i> 를 말한다.
      *
      * <p>기본 정렬이 {@code USER_NM, USER_ID} 다. tie-breaker 없이는 동명이인에서 순서가
-     * 비결정적이고(db-portability.md §4.5) 페이징이 그 위에서 돌면 같은 행이 두 장에 나온다.
+     * 비결정적이고(backend/persistence.md) 페이징이 그 위에서 돌면 같은 행이 두 장에 나온다.
      */
     private QuerySpec build() {
         return QuerySpec.of("user")
@@ -99,7 +99,7 @@ public class UserSpec {
                 .build();
     }
 
-    // ── 파생 (api-conventions.md §3.5) ───────────────────────────────────────────────
+    // ── 파생 (backend/api.md) ───────────────────────────────────────────────
 
     /**
      * 계정 상태 — <b>{@code IN} 과 {@code =} 만 받는다</b>.
@@ -169,14 +169,14 @@ public class UserSpec {
     }
 
     /**
-     * 특정 역할 보유자 찾기 — 61 §3.2.2 가 <b>역할 나열 컬럼 대신</b> 준 수단이다.
+     * 특정 역할 보유자 찾기 — screen/user/requirements.md 가 <b>역할 나열 컬럼 대신</b> 준 수단이다.
      *
      * <p>문자열 집계는 벤더마다 함수가 다르지만({@code LISTAGG} · {@code GROUP_CONCAT} ·
-     * {@code string_agg}) <b>{@code EXISTS} 에는 그 문제가 없다</b>(db-portability.md §4).
+     * {@code string_agg}) <b>{@code EXISTS} 에는 그 문제가 없다</b>(backend/persistence.md).
      *
      * <p><b>기간을 보지 않는다.</b> 묻는 것이 <i>"이 역할을 가진 사람"</i> 이고 만료된 부여도
      * 그 사실이다 — 오늘 유효한 사람만 보고 싶으면 그 질문에 답하는 것은 {@code ROLE_MGMT} 의
-     * 하단 pane 이다(62 §3.4).
+     * 하단 pane 이다(screen/menu/requirements.md).
      */
     private static BooleanExpression hasRole(Op op, Object value) {
         if (op != Op.eq) {
@@ -189,13 +189,13 @@ public class UserSpec {
     }
 
     /**
-     * 역할 부여가 <b>N일 안에 끝나는</b> 사람 — 42 §10 의 <i>만료 예고</i> 에 대한 답이다.
+     * 역할 부여가 <b>N일 안에 끝나는</b> 사람 — sys/menu.md 의 <i>만료 예고</i> 에 대한 답이다.
      *
-     * <p><b>{@code =} 로 받는다.</b> 61 §3.3 은 이 칸을 <i>{@code number} · {@code <=}</i> 로
+     * <p><b>{@code =} 로 받는다.</b> screen/user/requirements.md 은 이 칸을 <i>{@code number} · {@code <=}</i> 로
      * 적었지만 파생 필드의 자바 타입은 {@code String} 이고({@code FieldSpec#javaType}) 부등호는
      * 거기서 거부된다 — 화면이 보내는 것은 <b>일수 하나</b>이고 <i>N일 이내</i> 라는 뜻은
-     * <b>번역 함수만 안다</b>는 것이 api-conventions.md §3.5 의 규약이다. 그래서 폼도 숫자 칸이 아니라
-     * <b>후보 콤보</b>이며, 그 김에 61 §6 의 <i>기본값 미결</i> 이 <b>기본값 없음</b>으로 닫힌다.
+     * <b>번역 함수만 안다</b>는 것이 backend/api.md 의 규약이다. 그래서 폼도 숫자 칸이 아니라
+     * <b>후보 콤보</b>이며, 그 김에 screen/user/requirements.md 의 <i>기본값 미결</i> 이 <b>기본값 없음</b>으로 닫힌다.
      *
      * <p>범위는 <b>오늘부터</b>다 — 이미 만료된 부여는 예고할 것이 아니라 지난 일이다.
      */

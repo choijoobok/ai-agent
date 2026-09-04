@@ -1,5 +1,5 @@
 /**
- * 이 브라우저가 볼 언어를 정한다 — 50 §3.2.
+ * 이 브라우저가 볼 언어를 정한다.
  *
  * <p><b>순위는 둘로 끝난다.</b> `localStorage` 의 직전 언어, 그리고 `navigator.language` 의
  * 언어 부분이다. *"서버 기본 언어"* 를 3순위로 두지 않는 이유는 2순위가 **모든 경우를 닫기**
@@ -10,14 +10,14 @@
  * 요청의 에러 문구를 그 힌트로 만들어야 한다. 둘 다 *"ko 로 시작하면 ko, 그 밖은 전부 en"*
  * 한 줄로 접힌다.
  *
- * <p>지원 목록의 원본은 공통코드(`LANG_CD` 그룹)이며(43 §7) 그 테이블은 기준정보 슬라이스의
+ * <p>지원 목록의 원본은 공통코드(`LANG_CD` 그룹)이며(sys/code.md) 그 테이블은 기준정보 슬라이스의
  * 것이다. 늘어나면 여기와 서버 설정을 함께 고친다.
  */
 export const SUPPORTED_LANGS = ['ko', 'en'] as const;
 
 export type Lang = (typeof SUPPORTED_LANGS)[number];
 
-/** 지원하지 않는 브라우저 언어의 답. **번역 폴백 언어(ko)와 다른 축이다** — 43 §7.3. */
+/** 지원하지 않는 브라우저 언어의 답. **번역 폴백 언어(ko)와 다른 축이다** — sys/code.md. */
 export const BROWSER_FALLBACK_LANG: Lang = 'en';
 
 const LANG_STORAGE_KEY = 'backoffice.lang';
@@ -64,7 +64,7 @@ export function writeStorage(key: string, value: string): void {
 }
 
 /**
- * 캐시를 버리는 쪽 — 43 §8.1 이 <i>"달라진 것만 버린다"</i> 고 한 그 <b>버린다</b>.
+ * 캐시를 버리는 쪽 — sys/code.md 이 <i>"달라진 것만 버린다"</i> 고 한 그 <b>버린다</b>.
  *
  * <p>빈 문자열을 쓰지 않는다. 그러면 읽는 쪽마다 <i>"없다"</i> 와 <i>"비었다"</i> 를 가르는
  * 규칙이 따로 생기고, 그 둘이 어긋나면 <b>못 지운 캐시가 지운 척</b>한다.

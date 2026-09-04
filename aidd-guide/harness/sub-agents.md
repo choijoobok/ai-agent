@@ -6,10 +6,9 @@ type: operation
 created: 2026-05-04
 updated: 2026-05-04
 status: active
-sources: [Anthropic "Effective context engineering", 12-references/summaries/05-anthropic-context-engineering.md]
+sources: [Anthropic "Effective context engineering"]
 author: Bong Jong Hyeon
 tier: 2
-references: [5]
 tags: [harness, sub-agent, delegation, context-protection]
 ---
 
@@ -80,4 +79,3 @@ tags: [harness, sub-agent, delegation, context-protection]
 - [INDEX.md](./INDEX.md)
 - [tool-curation.md](./tool-curation.md) — 서브 에이전트도 도구 추가의 일종
 - [02-context/budget.md](./context/budget.md) — 메인 컨텍스트 보호
-- [12-references/summaries/05-anthropic-context-engineering.md](../reference/summary/05-anthropic-context-engineering.md)

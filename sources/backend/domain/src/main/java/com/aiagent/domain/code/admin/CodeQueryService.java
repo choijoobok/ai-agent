@@ -29,18 +29,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code CODE_MGMT} 의 조회 — 63 §2.
+ * {@code CODE_MGMT} 의 조회 — screen/code/requirements.md.
  *
  * <h2>그리드 셋이 페이징 모드 둘을 쓴다</h2>
  *
- * 마스터만 {@code offset} 이고 하단과 정의 모달은 <b>{@code all}</b> 이다. 63 §2.8 이
+ * 마스터만 {@code offset} 이고 하단과 정의 모달은 <b>{@code all}</b> 이다. screen/code/requirements.md 이
  * 참조값을 <b>컬럼 필터</b>로 거르기로 하면서 <i>"하단은 한 그룹의 코드 목록이라 그 범위가
  * 곧 전부다"</i> 라고 적었는데, 페이징하면 그 문장이 거짓이 된다 — 컬럼 필터는 <b>현재
- * 페이지 안에서만</b> 걸리므로(grid-column-contract.md §4.1) 매트릭스의 빈 칸을 세는 일이 장마다 답이 달라진다.
+ * 페이지 안에서만</b> 걸리므로(frontend/grid.md) 매트릭스의 빈 칸을 세는 일이 장마다 답이 달라진다.
  *
  * <h2>코드명은 조인이 아니라 메시지 캐시에서 온다</h2>
  *
- * 43 §7.3 의 폴백(요청 언어 → 기본 언어 → <b>키 문자열</b>)이 이미 {@link MessageService}
+ * sys/code.md 의 폴백(요청 언어 → 기본 언어 → <b>키 문자열</b>)이 이미 {@link MessageService}
  * 하나에 있다. 여기서 아우터 조인을 한 벌 더 쓰면 <b>같은 폴백이 두 곳</b>이 되고, SQL 쪽은
  * 두 언어를 겹치는 판정을 벤더 문법으로 다시 써야 한다.
  *
@@ -82,10 +82,10 @@ public class CodeQueryService {
     /**
      * 코드 그룹 — 쿼리가 둘이다.
      *
-     * <p>둘째가 <b>코드 수</b>이며 그것이 삭제 게이트의 근거다(grid-standard.md §6.2 · 63 §2.5). 첫 쿼리에
+     * <p>둘째가 <b>코드 수</b>이며 그것이 삭제 게이트의 근거다(frontend/grid.md · screen/code/requirements.md). 첫 쿼리에
      * 스칼라 서브쿼리로 얹지 않는 이유는 <b>행마다 한 번씩 도는 것</b>이 되기 때문이고,
      * 조인해 {@code GROUP BY} 하면 <b>페이징 단위가 그룹이 아니게</b> 될 위험을 매번 다시
-     * 확인해야 한다 — 63 §3 이 같은 자리에서 쿼리를 둘로 가른 것과 같은 판단이다.
+     * 확인해야 한다 — screen/code/requirements.md 이 같은 자리에서 쿼리를 둘로 가른 것과 같은 판단이다.
      */
     public PageResponse<CodeGroupRow> getGroupList(SearchRequest<Void> request) {
         Built built = builder.build(request, GROUP_SPEC, PageMode.offset);
@@ -113,7 +113,7 @@ public class CodeQueryService {
         return built.respond(rows, total == null ? 0L : total);
     }
 
-    /** {@code IN} 을 쪼갠다 — 페이지 하나가 최대 1000개이고 그것이 오라클의 한계다(db-portability.md §4.6). */
+    /** {@code IN} 을 쪼갠다 — 페이지 하나가 최대 1000개이고 그것이 오라클의 한계다(backend/persistence.md). */
     private Map<String, Long> codeCounts(List<String> grpCds) {
         if (grpCds.isEmpty()) {
             return Map.of();
@@ -134,14 +134,14 @@ public class CodeQueryService {
     // ── 하단 ─────────────────────────────────────────────────────────
 
     /**
-     * 한 그룹의 코드 — <b>참조값 맵을 함께 낸다</b>(63 §2.4).
+     * 한 그룹의 코드 — <b>참조값 맵을 함께 낸다</b>(screen/code/requirements.md).
      *
      * <p><b>정의 목록은 여기서 내지 않는다.</b> 화면이 그것을 <i>병렬로</i> 따로 부르며(§2.4)
      * 둘 다 도착한 뒤에 그린다 — 컬럼 없이 행을 그리면 값이 갈 자리가 없고, 행 없이 컬럼만
      * 그리면 빈 그리드가 한 번 깜빡인다. 응답 하나에 합치면 <b>모달이 부르는 것과 같은
      * 목록이 두 경로</b>로 생긴다.
      *
-     * @param lang 세션 언어 — 컨트롤러가 준다. 도메인은 요청을 모른다(architecture.md §1)
+     * @param lang 세션 언어 — 컨트롤러가 준다. 도메인은 요청을 모른다(backend/packages.md)
      */
     public PageResponse<CodeRow> getList(SearchRequest<CodeGroupParams> request, String lang) {
         String grpCd = request.params().grpCd();
@@ -158,7 +158,7 @@ public class CodeQueryService {
             String dtlCd = code.get(C.dtlCd);
             rows.add(new CodeRow(
                     dtlCd,
-                    // 없으면 키 문자열이다 — 아직 안 채웠다는 사실이 셀에서 드러난다(63 §2.3).
+                    // 없으면 키 문자열이다 — 아직 안 채웠다는 사실이 셀에서 드러난다(screen/code/requirements.md).
                     messages.text(SysCode.messageKey(grpCd, dtlCd), lang),
                     code.get(C.dtlDesc),
                     code.get(C.useYn),
@@ -177,7 +177,7 @@ public class CodeQueryService {
     /**
      * 그 그룹의 참조값 전량 → {@code DTL_CD → (REF_CD → REF_VAL)}.
      *
-     * <p><b>값이 없는 칸은 키가 아예 없다</b>(43 §5.4) — 화면이 정의 목록과 아우터 조인해
+     * <p><b>값이 없는 칸은 키가 아예 없다</b>(sys/code.md) — 화면이 정의 목록과 아우터 조인해
      * 빈 셀을 그린다. 여기서 {@code null} 로 채워 보내면 <i>"없음"</i> 이 두 모양을 갖는다.
      */
     private Map<String, Map<String, String>> refValues(String grpCd) {
@@ -195,7 +195,7 @@ public class CodeQueryService {
     // ── 정의 모달 ────────────────────────────────────────────────────
 
     /**
-     * 참조 코드 정의 — <b>화면이 두 자리에서 부른다</b>(63 §2.4).
+     * 참조 코드 정의 — <b>화면이 두 자리에서 부른다</b>(screen/code/requirements.md).
      *
      * <p>모달의 조회 버튼이 부르고, 하단 조회가 <b>함께</b> 부른다. 같은 응답을 쓰므로 정의가
      * 늘거나 줄면 컬럼 집합과 모달 목록이 <b>같은 순간에</b> 같아진다.
@@ -226,7 +226,7 @@ public class CodeQueryService {
         return built.respond(rows, rows.size());
     }
 
-    /** 정의를 지울 때 <i>"입력된 참조값 N건이 함께 삭제됩니다"</i> 가 말하는 수 — 63 §2.5. */
+    /** 정의를 지울 때 <i>"입력된 참조값 N건이 함께 삭제됩니다"</i> 가 말하는 수 — screen/code/requirements.md. */
     private Map<String, Long> refValueCounts(String grpCd) {
         Map<String, Long> counts = new HashMap<>();
         for (Tuple row : query.select(V.refCd, V.count())

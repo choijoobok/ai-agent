@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 /**
- * <b>이 객체가 곧 화이트리스트다</b> — api-conventions.md §4.1.
+ * <b>이 객체가 곧 화이트리스트다</b> — backend/api.md.
  *
  * <pre>
  * public static final QuerySpec SPEC = QuerySpec.of("message")
@@ -26,7 +26,7 @@ import java.util.function.BiFunction;
  *     .build();
  * </pre>
  *
- * <p><b>레코드 리플렉션이 아닌 이유가 둘이다</b>(api-conventions.md §4.1). ① 그 레코드는 바인딩되지 않는다 —
+ * <p><b>레코드 리플렉션이 아닌 이유가 둘이다</b>(backend/api.md). ① 그 레코드는 바인딩되지 않는다 —
  * {@code between} 이면 값이 2원소 배열이고 {@code in} 이면 리스트라 스칼라 필드에 담기지
  * 않는다. ② 리플렉션은 이름만 주고 <b>어느 컬럼·별칭인지</b> 를 주지 않아 SQL 을 만들 수 없다.
  *
@@ -79,7 +79,7 @@ public final class QuerySpec {
     }
 
     /**
-     * 같은 기본 정렬을 <b>이름과 방향으로</b> — 커서형이 읽는다(api-conventions.md §3.8).
+     * 같은 기본 정렬을 <b>이름과 방향으로</b> — 커서형이 읽는다(backend/api.md).
      *
      * <p>{@link OrderSpecifier} 만 두면 커서를 만들 수 없다. 토큰에 담을 것이 <i>어느 필드를
      * 어느 방향으로</i> 인데 그 객체는 이미 표현식이라 <b>필드 이름을 되돌려주지 않는다</b>.
@@ -89,9 +89,9 @@ public final class QuerySpec {
     }
 
     /**
-     * tie-breaker — 빌더가 {@code ORDER BY {요청}, {PK}} 로 <b>언제나</b> 붙인다(api-conventions.md §3.7).
+     * tie-breaker — 빌더가 {@code ORDER BY {요청}, {PK}} 로 <b>언제나</b> 붙인다(backend/api.md).
      *
-     * <p>db-portability.md §4.5 가 {@code NULL} 정렬 순서의 벤더 차이를 근거로 <i>"항상 명시적
+     * <p>backend/persistence.md 가 {@code NULL} 정렬 순서의 벤더 차이를 근거로 <i>"항상 명시적
      * tie-breaker"</i> 를 정했다. 화면에 맡기면 빠뜨린 곳에서만 페이징이 흔들린다.
      */
     public ComparableExpressionBase<?> pk() {
@@ -155,7 +155,7 @@ public final class QuerySpec {
         }
 
         /**
-         * 파생 필드 — 컬럼이 아니다(api-conventions.md §3.5).
+         * 파생 필드 — 컬럼이 아니다(backend/api.md).
          *
          * <p><b>정렬 대상이 될 수 없다</b> — {@code .sortable()} 을 붙여도 {@link FieldSpec#order}
          * 가 쓸 {@code Path} 가 없다. 그래서 {@link #sortable()} 이 여기서 거부한다.
@@ -181,13 +181,13 @@ public final class QuerySpec {
         }
 
         /**
-         * <b>이 문자열의 사전순이 값의 순서다</b> — {@code DLVR_YM} 의 {@code 202608}(48 §4.2).
+         * <b>이 문자열의 사전순이 값의 순서다</b> — {@code DLVR_YM} 의 {@code 202608}(playbook/INDEX.md).
          *
          * <p>{@link FieldSpec#ordered()} 가 왜 타입이 아니라 선언인지를 적어 두었다. 여기서는
          * <b>거짓말을 막는 것</b>만 한다 — 문자열이 아닌 컬럼은 이미 타입이 부등호를 주므로 이
          * 표시가 필요 없고, 붙어 있으면 <i>무엇을 열었는지</i> 를 읽는 사람이 잘못 짚는다.
          *
-         * <p>파생 필드도 거절한다. 파생은 값 하나를 조각으로 펴는 것이라(api-conventions.md §3.5) 순서를 말할
+         * <p>파생 필드도 거절한다. 파생은 값 하나를 조각으로 펴는 것이라(backend/api.md) 순서를 말할
          * 대상이 애초에 없다.
          */
         public Builder ordered() {
@@ -205,7 +205,7 @@ public final class QuerySpec {
             return this;
         }
 
-        /** 헤더 정렬이 <i>없음</i> 으로 돌아왔을 때의 순서(grid-column-contract.md §3). */
+        /** 헤더 정렬이 <i>없음</i> 으로 돌아왔을 때의 순서(frontend/grid.md). */
         public Builder defaultSort(String field, SortDir dir) {
             FieldSpec spec = fields.get(field);
             if (spec == null) {

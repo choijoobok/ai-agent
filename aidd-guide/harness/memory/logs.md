@@ -14,7 +14,7 @@ tags: [memory, log, episodic, chat-history]
 
 # raw · summary 로그 정책
 
-> **형식은 [10-records](../../records/INDEX.md) 가, 위치와 형상 관리 제외는 [CLAUDE.md §9](../../../CLAUDE.md) 가 갖는다.**
+> **위치와 형상 관리 제외는 [CLAUDE.md §10](../../../CLAUDE.md) 가 갖는다.**
 > 여기는 *누가 언제 쓰고 · 무엇을 남기지 않고 · 읽을 때 얼마나 믿는가* 다.
 
 ## 진입 조건
@@ -35,7 +35,7 @@ tags: [memory, log, episodic, chat-history]
 |---|---|---|---|
 | **raw** | 원문 그대로 | **훅** `log-raw` (append only) | **아무도 안 된다** — 사람도 AI 도 |
 | **summary** | 결정 · 산출물 · 미결 | **AI** | AI 가 다듬는다 |
-| **essence** | 한 줄 진실 | AI → **커밋 메시지** · [ADR](../../records/adr/INDEX.md) | 남긴 뒤 고치지 않는다 |
+| **essence** | 한 줄 진실 | AI → **커밋 메시지** · ADR | 남긴 뒤 고치지 않는다 |
 
 - **AI 가 `raw` 를 직접 쓰지 않는다.** 쓰면 훅의 기록과 겹쳐 **같은 턴이 두 번** 남고, 그때부터 어느 쪽이 원문인지 알 수 없다.
 - **`raw` 를 고쳐 요약하지 않는다.** 압축은 `summary` 에서 한다 — 원문이 압축되면 되돌릴 곳이 없다.
@@ -47,7 +47,7 @@ tags: [memory, log, episodic, chat-history]
 | 매 턴 | `log-raw` 가 `raw` 에 append — 사람의 말은 `UserPromptSubmit`, AI 의 말은 `Stop` 이 |
 | **세션을 마칠 때** | AI 가 그날 `summary` 를 쓰거나 잇는다 |
 | 하루 마감 | 같은 날 여러 세션이면 한 파일에 시간순으로 쌓는다 |
-| 결정이 생겼을 때 | `summary` 의 Artifacts 에 **커밋 해시**를 적는다. 버린 안이 있으면 [ADR](../../records/adr/INDEX.md) 을 쓴다 |
+| 결정이 생겼을 때 | `summary` 의 Artifacts 에 **커밋 해시**를 적는다. 버린 안이 있으면 ADR 을 쓴다 |
 
 ## 무엇을 남기지 않나
 
@@ -58,7 +58,6 @@ tags: [memory, log, episodic, chat-history]
 | 비밀번호 · 토큰 · API 키 · 접속 문자열 | [13-safety/secrets.md](../../standard/safety/secrets.md) |
 | 실제 개인정보 — 주민번호 · 연락처 · 계좌 | [13-safety/pii.md](../../standard/safety/pii.md) |
 | 운영 DB 에서 뽑은 실데이터 행 | 화면 확인은 값이 아니라 **형태**로 적는다 |
-| 감상 · 추정 · 사람에 대한 평가 | `summary` 는 사실만([10-records/summary-log.md](../../records/summary-log.md)) |
 
 - **마스킹은 훅이 한다** — 규칙 파일 하나(`.claude/hooks/log-mask.patterns`)를 원본으로 삼고, 매칭된 줄을 통째로 가린다. **정책을 훅에 나눠 적지 않는다.**
 - **마스킹이 있다고 붙여 넣어도 되는 것이 아니다.** 패턴은 아는 모양만 잡는다 — 애초에 넣지 않는 것이 유일하게 확실하다.
@@ -92,7 +91,5 @@ CLAUDE.md §9 의 셋이 그대로 칸이 된다: **결정 · 만든 것 · 남�
 ## 관련
 
 - [INDEX.md](./INDEX.md) — Memory Hierarchy · 갱신 조건
-- [10-records/adr/INDEX.md](../../records/adr/INDEX.md) — 버린 안을 남기는 자리
-- [10-records/raw-log.md](../../records/raw-log.md) · [summary-log.md](../../records/summary-log.md) — **형식**
 - [05-harness/hooks.md](../hooks.md) — 훅의 상세와 새 훅의 계약
 - [CLAUDE.md §9](../../../CLAUDE.md) — 위치 · 형상 관리 제외 · 담을 것

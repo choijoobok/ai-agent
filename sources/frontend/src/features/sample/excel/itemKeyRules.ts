@@ -5,7 +5,7 @@ import type { GridIssue } from '@/shared/grid/types';
 import type { SampleOrderItem } from '@/features/sample/types';
 
 /**
- * ⑥의 키 규칙 — 68 §8.7. `features/sample/tagRules.ts` 와 같은 자리다.
+ * ⑥의 키 규칙 — playbook/INDEX.md. `features/sample/tagRules.ts` 와 같은 자리다.
  *
  * <p>화면에서 뽑아낸 것은 **검사가 붙을 곳이 필요해서**다. 이 함수가 틀렸을 때의 증상이
  * 조용하기 때문이며 — 겹친 키는 서버가 거절하지만, **너무 많이 짚으면** 멀쩡한 파일이
@@ -13,7 +13,7 @@ import type { SampleOrderItem } from '@/features/sample/types';
  */
 
 /**
- * `ORD_NO`␟`ITEM_CD` — 이 표에서 행 하나를 가리키는 이름이다(48 §4.3).
+ * `ORD_NO`␟`ITEM_CD` — 이 표에서 행 하나를 가리키는 이름이다(playbook/INDEX.md).
  *
  * <p>**구분자가 값에 들어갈 수 없어야 한다.** 그냥 이으면 `(SO-1, 001)` 과 `(SO-10, 01)`
  * 이 같은 글자가 되어 **서로 다른 두 행이 겹친 것으로** 잡힌다. 유닛 구분자(`U+001F`)를
@@ -28,7 +28,7 @@ export function itemKeyOf(row: SampleOrderItem): string {
 }
 
 /**
- * 3층 검증 — **같은 `(주문번호, 품목코드)` 가 두 번이면 막는다**(grid-edit-validation.md §3.3 · 68 §8.7).
+ * 3층 검증 — **같은 `(주문번호, 품목코드)` 가 두 번이면 막는다**(frontend/grid.md · playbook/INDEX.md).
  *
  * <p>그 쌍이 이 표의 키다. 겹치면 저장이 **어느 행을 고치는지 말할 수 없고**, 서버도 같은
  * 것을 보아 전부 거절한다 — 여기서 먼저 짚는 것은 사용자에게 **어느 줄**인지 말하기

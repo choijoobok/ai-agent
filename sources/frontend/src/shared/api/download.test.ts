@@ -20,7 +20,7 @@ function failure(status: number, envelope: unknown): AxiosError {
 }
 
 /**
- * 파일 받기 — ADR-0019 의 <b>세 번째 갈래</b>가 쓰는 길.
+ * 파일 받기 — frontend/grid-advanced.md 의 <b>세 번째 갈래</b>가 쓰는 길.
  *
  * <p><b>여기서 세는 것은 실패 쪽이다.</b> 성공은 바이트를 그대로 넘기면 끝이고, 조용히
  * 틀리는 것은 실패다: {@code responseType: 'blob'} 이면 <b>실패 응답의 body 도 Blob</b> 이라

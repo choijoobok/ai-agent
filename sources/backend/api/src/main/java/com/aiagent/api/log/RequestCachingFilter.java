@@ -14,7 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 /**
- * 요청 body 를 <b>다시 읽을 수 있게</b> 감싼다 — architecture.md §5 · §6.2.
+ * 요청 body 를 <b>다시 읽을 수 있게</b> 감싼다 — backend/packages.md.
  *
  * <p>{@code HttpServletRequest} 의 body 는 한 번만 읽힌다. 컨트롤러가 읽은 뒤에도
  * 인터셉터({@link UserActionLogInterceptor})와 예외 핸들러가 <b>같은 내용</b>을 보려면
@@ -27,12 +27,12 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
  * <h2>담기지 않는 요청 둘</h2>
  *
  * <table><caption></caption>
- * <tr><td>{@code /api/} 밖</td><td>정적 리소스·SPA 라우트다. 이력의 대상이 아니다(architecture.md §6.2)</td></tr>
+ * <tr><td>{@code /api/} 밖</td><td>정적 리소스·SPA 라우트다. 이력의 대상이 아니다(backend/packages.md)</td></tr>
  * <tr><td>{@code multipart/}</td><td>업로드 바이너리를 통째로 버퍼링하면 <b>OOM</b> 이다.
  *     그 요청도 이력에는 남고 전문만 비운다</td></tr>
  * </table>
  *
- * <p><b>상한을 넘으면 조용히 자른다 — 그리고 잘렸음을 화면이 말한다</b>(64 §2.4).
+ * <p><b>상한을 넘으면 조용히 자른다 — 그리고 잘렸음을 화면이 말한다</b>(screen/log/access/requirements.md).
  * 판({@link ContentCachingRequestWrapper})이 상한 뒤를 캐시하지 않을 뿐 <b>애플리케이션에는
  * 전량이 전달된다</b> — 잘린 것은 <i>기록</i> 이지 <i>처리</i> 가 아니다.
  */

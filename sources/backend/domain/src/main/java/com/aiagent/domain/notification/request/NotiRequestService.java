@@ -13,24 +13,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code NOTI_REQUEST} 의 처리 — 66 §5.3 · §5.4 · §5.7.
+ * {@code NOTI_REQUEST} 의 처리 — screen/notice/requirements.md.
  *
  * <h2>이 서비스가 {@code SYS_NOTI_INBOX} 의 첫 생산자다</h2>
  *
- * <p>main-shell.md §7.1 이 요청 탭에 배지를 두지 않으며 <i>"상태가 바뀌면 그것이 내 알림으로 온다"</i>
- * 고 적었다. <b>그 알림을 넣는 곳이 여기</b>이며, 66 §6.2 의 생산자 넷 중 <b>이 슬라이스
+ * <p>frontend/tabs.md 이 요청 탭에 배지를 두지 않으며 <i>"상태가 바뀌면 그것이 내 알림으로 온다"</i>
+ * 고 적었다. <b>그 알림을 넣는 곳이 여기</b>이며, screen/notice/requirements.md 의 생산자 넷 중 <b>이 슬라이스
  * 안에서 자급자족하는 유일한 것</b>이다 — 나머지 셋(비밀번호 만료 · 권한 만료 · 배치
  * 실패)은 각자의 기능이 서야 온다.
  *
  * <h2>같은 트랜잭션이다</h2>
  *
  * <p>{@link NotificationSender} 가 새 트랜잭션을 열지 않으므로 여기 참여한다 — 처리가
- * 롤백되면 알림도 없다. 47 §5.1 의 <i>"DB 에 행을 쓰는 것이 곧 도달"</i> 이 그 반대편도
+ * 롤백되면 알림도 없다. sys/notification.md 의 <i>"DB 에 행을 쓰는 것이 곧 도달"</i> 이 그 반대편도
  * 뜻한다: <b>커밋되지 않으면 도달하지 않는다</b>.
  *
  * <h2>섞이면 전부 막는다</h2>
  *
- * <p>선택에 이미 처리된 것이 하나라도 있으면 <b>아무것도 처리하지 않는다</b>(66 §5.7).
+ * <p>선택에 이미 처리된 것이 하나라도 있으면 <b>아무것도 처리하지 않는다</b>(screen/notice/requirements.md).
  * 처리 가능한 것만 골라 실행하면 <b>알림이 일부에게만 나가고</b> 사용자는 무엇이
  * 처리됐는지 모른다 — 되돌리는 길이 없으므로 부분 성공을 만들지 않는다.
  */
@@ -57,7 +57,7 @@ public class NotiRequestService {
      * 처리 또는 반려 — <b>한 트랜잭션이다</b>.
      *
      * <p>{@code updateHandle} 하나가 둘을 다 하는 이유는 <b>쓰는 컬럼이 같고 트랜잭션이
-     * 같기 때문</b>이다(66 §5.6). 둘로 가르면 알림 INSERT 코드가 두 벌이 되고 한쪽만
+     * 같기 때문</b>이다(screen/notice/requirements.md). 둘로 가르면 알림 INSERT 코드가 두 벌이 되고 한쪽만
      * 고치는 날이 온다.
      *
      * <p><b>처리자는 인자가 아니라 {@code AuditorAware} 에서 온다</b>({@code DbLockStore} 와
@@ -65,7 +65,7 @@ public class NotiRequestService {
      * {@code HANDLER_ID} 가 답해야 하는 물음은 <b>누가 판정했나</b> 하나다.
      *
      * @param to {@link ReqStatus#DONE} 또는 {@link ReqStatus#REJECTED} 뿐이다 —
-     *     {@link ReqStatus#RECEIVED} 로 되돌리는 길은 없다(66 §5.7)
+     * {@link ReqStatus#RECEIVED} 로 되돌리는 길은 없다(screen/notice/requirements.md)
      */
     @Transactional
     public void handle(List<Long> reqIds, ReqStatus to, String memo) {
@@ -119,9 +119,9 @@ public class NotiRequestService {
     /**
      * 알림 제목 — <b>메시지 키가 아니라 문장이다</b>.
      *
-     * <p>47 §9.1 이 알림 템플릿을 {@code SYS_MESSAGE} 로 정했지만 그것은 <b>다국어가 필요한
+     * <p>sys/notification.md 이 알림 템플릿을 {@code SYS_MESSAGE} 로 정했지만 그것은 <b>다국어가 필요한
      * 발송 템플릿</b>의 이야기다(NOTI-04). 인앱 알림의 제목은 <b>수신 시점에 확정되어
-     * 행에 저장</b>되므로(47 §7 의 {@code TITLE} 컬럼) 키를 담을 자리가 없다 — 담으면
+     * 행에 저장</b>되므로(sys/notification.md 의 {@code TITLE} 컬럼) 키를 담을 자리가 없다 — 담으면
      * 읽는 시점의 언어로 번역해야 하고, 그러면 {@code TITLE} 이 키인지 문장인지 행마다
      * 달라진다.
      *
@@ -133,7 +133,7 @@ public class NotiRequestService {
         return to == ReqStatus.DONE ? "요청이 처리되었습니다" : "요청이 반려되었습니다";
     }
 
-    /** 메모가 없으면 기본 문구 — 처리는 메모가 선택이다(66 §5.3). */
+    /** 메모가 없으면 기본 문구 — 처리는 메모가 선택이다(screen/notice/requirements.md). */
     private static String contentOf(ReqStatus to, String memo) {
         if (memo != null && !memo.isBlank()) {
             return memo;

@@ -13,7 +13,7 @@ public interface SysUserMenuAuthRepository
         extends JpaRepository<SysUserMenuAuth, SysUserMenuAuthId> {
 
     /**
-     * ① 수집 + ② 필터 중 <b>개인 예외 쪽</b> — security-design.md §4.
+     * ① 수집 + ② 필터 중 <b>개인 예외 쪽</b> — backend/security.md.
      *
      * <p>합집합의 <b>독립 항</b>이다. 역할이 하나도 없어도 개인 예외만으로 일하는 사용자가
      * 정당하게 존재하므로, 로그인 차단 판정을 "역할 미부여" 로 하면 그 사용자가 부당하게
@@ -33,13 +33,13 @@ public interface SysUserMenuAuthRepository
             @Param("userId") String userId, @Param("businessToday") LocalDate businessToday);
 
     /**
-     * 내 역할 탭이 읽는 <b>예외 전부</b> — main-shell.md §8.
+     * 내 역할 탭이 읽는 <b>예외 전부</b> — frontend/tabs.md.
      *
      * <p>위의 것과 달리 <b>기간으로 거르지 않는다.</b> 만료된 예외를 감추면 <i>"어제까지
      * 되던 것이 왜 안 되나"</i> 에 답할 것이 없어진다 — 그 답이 이 탭의 존재 이유다.
      */
     List<SysUserMenuAuth> findByUserIdOrderByMenuCdAscActionCdAsc(String userId);
 
-    /** 이 메뉴에 개인 예외가 있는가 — 삭제 게이트 · URL 비우기 게이트(62 §4.3 · §4.8). */
+    /** 이 메뉴에 개인 예외가 있는가 — 삭제 게이트 · URL 비우기 게이트(screen/menu/requirements.md). */
     boolean existsByMenuCd(String menuCd);
 }

@@ -12,7 +12,7 @@ const ParamModalContext = createContext<OpenParamModal | null>(null);
 export const ParamModalContextProvider = ParamModalContext.Provider;
 
 /**
- * 실행 파라미터를 묻는 함수 — grid-api-contract.md §8.
+ * 실행 파라미터를 묻는 함수 — frontend/grid.md.
  *
  * <p><b>없으면 던진다.</b> 조용히 {@code null} 을 돌려주면 <i>버튼을 눌렀는데 아무 일도
  * 없다</i> 가 되고(그것이 정확히 취소의 값이다), 화면에서 고장으로도 보이지 않는다.
@@ -20,8 +20,8 @@ export const ParamModalContextProvider = ParamModalContext.Provider;
 export function useParamModal(): OpenParamModal {
   const open = useContext(ParamModalContext);
   if (!open) {
-    // 개발자용이라 영어다 — 화면에 나가는 문구가 아니다(eslint 의 43 §3 규칙 주석).
-    throw new Error('No FormModalHost in the tree: mount it inside AppProviders (grid-api-contract.md §8)');
+    // 개발자용이라 영어다 — 화면에 나가는 문구가 아니다(eslint 의 sys/code.md 규칙 주석).
+    throw new Error('No FormModalHost in the tree: mount it inside AppProviders (frontend/grid.md)');
   }
   return open;
 }

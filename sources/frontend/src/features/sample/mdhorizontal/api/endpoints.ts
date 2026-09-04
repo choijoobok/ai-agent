@@ -1,8 +1,8 @@
 /**
- * 샘플 마스터-디테일(좌우) API — 68 §6.
+ * 샘플 마스터-디테일(좌우) API — playbook/INDEX.md.
  *
- * <p>호출 URL 은 이 파일에만 둔다(frontend-stack.md §9). **이 선언이 `SYS_MENU_API` 시드의 입력**이므로
- * (ADR-0020) *선언 = 사용* 이 구조적으로 보장돼야 한다 — `generateApiSeed` 가
+ * <p>호출 URL 은 이 파일에만 둔다(frontend/packages.md). **이 선언이 `SYS_MENU_API` 시드의 입력**이므로
+ * (backend/api.md) *선언 = 사용* 이 구조적으로 보장돼야 한다 — `generateApiSeed` 가
  * `screenRegistry` 의 `/sample/md-horizontal` → `@/features/sample/mdhorizontal` 을 따라와
  * 여기를 읽는다.
  *
@@ -15,7 +15,7 @@
  * 매핑하며, 적지 않으면 이 화면에서만 403 이 난다.
  *
  * <p>**팝업의 조회도 여기 적는다.** 등록은 `features/sample/popups.ts` 에 있지만 인가는
- * **부르는 화면의 것**이다(68 §9.4).
+ * **부르는 화면의 것**이다(playbook/INDEX.md).
  */
 export const SAMPLE_HORZ_ENDPOINTS = {
   getOrderList: '/service/sample/getOrderList',

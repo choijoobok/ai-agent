@@ -5,7 +5,7 @@
 # status: migrated — 사용자 승인 전이다.
 #
 # 재채번: ADM/POR/AGT/CMN- → FEAT-. 원본 ID 는 `legacy` 칸에 **이관 대조용으로만** 남긴다 —
-#   참조에 쓰지 않는다(ADR-0030). agentic-ai 저장소를 아카이브하면 이 칸을 지운다.
+# 참조에 쓰지 않는다(CLAUDE.md). agentic-ai 저장소를 아카이브하면 이 칸을 지운다.
 #
 # **추적성**: 모든 FEAT 는 `reqs` 로 역추적되고(T4) 최소 1개 TC 를 가져야 한다(T5).
 #   **TC 는 아직 없다** — 70-testcases.yaml 이 비어 있고 P3 에서 만든다. `trace-check` 의

@@ -16,16 +16,16 @@ import org.hibernate.annotations.Nationalized;
 import org.hibernate.type.SqlTypes;
 
 /**
- * 진행률 한 건 — 30 §6 · 46 §8.
+ * 진행률 한 건 — backend/crosscutting.md · sys/batch.md.
  *
  * <p><b>감사 4컬럼이 없다.</b> {@code USER_ID} 는 작성자가 아니라 <b>시작한 사람</b>이고
- * 그것이 곧 인가의 근거다(46 §8.1) — {@code REG_ID} 를 함께 두면 언제나 같은 값인 컬럼이
- * 하나 늘고, 40 §4.2 가 <i>신뢰할 수 없는 컬럼</i> 이라 부른 것이 된다.
+ * 그것이 곧 인가의 근거다(sys/batch.md) — {@code REG_ID} 를 함께 두면 언제나 같은 값인 컬럼이
+ * 하나 늘고, sys/INDEX.md 가 <i>신뢰할 수 없는 컬럼</i> 이라 부른 것이 된다.
  *
  * <p><b>임시 행이다.</b> 업무 이력이 아니라 <i>지금 도는 것</i>을 보여주기 위한 자리이며,
- * 종료 후 보관 기간을 넘기면 지운다(32 §5) — 보존 정책이 아니라 <b>만료 청소</b>다.
+ * 종료 후 보관 기간을 넘기면 지운다(retention.md) — 보존 정책이 아니라 <b>만료 청소</b>다.
  *
- * <p><b>갱신된다.</b> 이력 행의 불변 규약(45 §2.1)에 걸리지 않는 것은 이것이 이력이
+ * <p><b>갱신된다.</b> 이력 행의 불변 규약(sys/logs.md)에 걸리지 않는 것은 이것이 이력이
  * 아니기 때문이며, {@code SYS_BATCH_HISTORY} 가 같은 이유로 예외인 것과는 자리가 다르다.
  */
 @Entity
@@ -43,7 +43,7 @@ public class SysJobProgress {
     @Column(name = "JOB_ID", length = 64, nullable = false)
     private String jobId;
 
-    /** 시작한 사람 — 조회에서 세션 사용자와 대조한다(46 §8.1). */
+    /** 시작한 사람 — 조회에서 세션 사용자와 대조한다(sys/batch.md). */
     @Column(name = "USER_ID", length = 30, nullable = false)
     private String userId;
 
@@ -55,7 +55,7 @@ public class SysJobProgress {
     private long curCnt;
 
     /**
-     * 전체 건수 — <b>모르면 {@code null} 이다</b>(46 §8).
+     * 전체 건수 — <b>모르면 {@code null} 이다</b>(sys/batch.md).
      *
      * <p>0 으로 두면 {@code 0/0} 이 되어 <b>완료로 보인다</b>. 화면은 이 값이 없으면
      * 불확정 막대를 그린다.
@@ -73,11 +73,11 @@ public class SysJobProgress {
     @Column(name = "SUB_TITLE", length = SUB_TITLE_MAX)
     private String subTitle;
 
-    /** 퍼센트만 있으면 <i>멈춘 것</i>과 <i>느린 것</i>을 구별할 수 없다(68 §9.1). */
+    /** 퍼센트만 있으면 <i>멈춘 것</i>과 <i>느린 것</i>을 구별할 수 없다(playbook/INDEX.md). */
     @Column(name = "STEP_MSG", length = STEP_MSG_MAX)
     private String stepMsg;
 
-    /** 실패 사유. {@code @Lob} 이 아닌 이유는 db-portability.md §3.1 의 실측이다. */
+    /** 실패 사유. {@code @Lob} 이 아닌 이유는 backend/persistence.md 의 실측이다. */
     @Nationalized
     @JdbcTypeCode(SqlTypes.LONG32NVARCHAR)
     @Column(name = "ERR_MSG")
@@ -89,7 +89,7 @@ public class SysJobProgress {
     @Column(name = "MOD_DTM", nullable = false)
     private Instant modDtm;
 
-    /** {@code RUNNING} 사전 등록 — 30 §6. */
+    /** {@code RUNNING} 사전 등록 — backend/crosscutting.md. */
     public static SysJobProgress start(String jobId, String userId, Long totCnt, Instant now) {
         SysJobProgress progress = new SysJobProgress();
         progress.jobId = jobId;
@@ -145,7 +145,7 @@ public class SysJobProgress {
 
     public void complete(Instant now) {
         this.jobStatCd = JobStatus.DONE;
-        // 끝났으면 100% 다 — 마지막 flush 가 늦었어도 화면이 99% 에서 멈추지 않는다(30 §6.2).
+        // 끝났으면 100% 다 — 마지막 flush 가 늦었어도 화면이 99% 에서 멈추지 않는다(backend/crosscutting.md).
         if (totCnt != null) {
             this.curCnt = totCnt;
         }

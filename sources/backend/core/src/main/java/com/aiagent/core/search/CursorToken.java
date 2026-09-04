@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
- * 커서 한 장 — api-conventions.md §3.8. <b>불투명하고 유효기간이 없다.</b>
+ * 커서 한 장 — backend/api.md. <b>불투명하고 유효기간이 없다.</b>
  *
  * <pre>
  * base64url( field | dir | backward | value | pk )   // 다섯 마디를 URL 인코딩해 '|' 로 잇는다
@@ -22,17 +22,17 @@ import java.util.Base64;
  * <h2>다섯 마디가 각각 하는 일</h2>
  *
  * <table><caption></caption>
- * <tr><td>{@code field}·{@code dir}</td><td><b>정렬이 바뀌면 커서는 무효다</b>(api-conventions.md §3.8).
+ * <tr><td>{@code field}·{@code dir}</td><td><b>정렬이 바뀌면 커서는 무효다</b>(backend/api.md).
  *     값만 담으면 바뀐 정렬에 옛 기준점이 그대로 먹혀 <b>결과가 조용히 틀린다</b> — 서버가
  *     알아보고 400 을 내려면 무엇으로 만든 커서인지가 토큰 안에 있어야 한다</td></tr>
  * <tr><td>{@code backward}</td><td><b>{@code ‹ 이전} 도 커서다.</b> 방향을 뒤집어 읽고
  *     결과를 되집는다 — 두 방향이 <b>같은 토큰 형식</b>을 쓰므로 화면은 둘을 구분하지 않고
  *     받은 것을 돌려준다</td></tr>
  * <tr><td>{@code value}·{@code pk}</td><td>기준점. PK 가 함께 있어야 <b>같은 시각의 행이
- *     여럿</b>일 때 경계가 흔들리지 않는다(64 §2.3)</td></tr>
+ * 여럿</b>일 때 경계가 흔들리지 않는다(screen/log/access/requirements.md)</td></tr>
  * </table>
  *
- * <p><b>JSON 이 아니다.</b> {@code core} 는 {@code jackson-databind} 를 갖지 않는다(architecture.md §1 —
+ * <p><b>JSON 이 아니다.</b> {@code core} 는 {@code jackson-databind} 를 갖지 않는다(backend/packages.md —
  * 프레임워크 의존 최소). 다섯 마디뿐이라 구분자 하나로 족하며, 값에 {@code |} 가 들어와도
  * <b>URL 인코딩이 먼저 막는다</b>.
  */

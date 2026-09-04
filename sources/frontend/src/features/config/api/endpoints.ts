@@ -1,12 +1,12 @@
 /**
- * 시스템 환경설정 API — 63 §4.7.
+ * 시스템 환경설정 API — screen/code/requirements.md.
  *
- * <p>호출 URL 은 이 파일에만 둔다(frontend-stack.md §9). <b>이 선언이 `SYS_MENU_API` 시드의 입력</b>이므로
- * (ADR-0020) *선언 = 사용* 이 구조적으로 보장돼야 한다 — `generateApiSeed` 가
+ * <p>호출 URL 은 이 파일에만 둔다(frontend/packages.md). <b>이 선언이 `SYS_MENU_API` 시드의 입력</b>이므로
+ * (backend/api.md) *선언 = 사용* 이 구조적으로 보장돼야 한다 — `generateApiSeed` 가
  * `screenRegistry` 의 `/config` → `@/features/config` 를 따라와 여기를 읽는다.
  *
  * <p><b>`exportExcel` 이 없다.</b> 감춘 것이 아니라 이 화면에 `EXPORT` 액션 자체가 없다
- * (52 §4.2) — 키 목록은 `yml` 에 있고 바뀐 값은 *변경 여부* 조회로 화면에서 끝난다.
+ * (sys/menu.md) — 키 목록은 `yml` 에 있고 바뀐 값은 *변경 여부* 조회로 화면에서 끝난다.
  * 수십 건짜리 목록이다.
  *
  * <p><b>되돌리기용 URL 도 없다.</b> 일괄 저장이라 수정과 삭제가 `save` 하나로 나간다
@@ -14,7 +14,7 @@
  */
 export const CONFIG_ENDPOINTS = {
   getList: '/service/config/getList',
-  /** 조회조건의 접두사 콤보가 부른다 — 목록 응답에 실리지 않는다(63 §4.6). */
+  /** 조회조건의 접두사 콤보가 부른다 — 목록 응답에 실리지 않는다(screen/code/requirements.md). */
   getPrefixes: '/service/config/getPrefixes',
   save: '/service/config/save',
 } as const;

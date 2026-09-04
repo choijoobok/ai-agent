@@ -9,7 +9,6 @@ status: active
 sources: [Anthropic "Effective context engineering", Chroma Context Rot]
 author: Bong Jong Hyeon
 tier: 1
-references: [5, 9]
 tags: [context, rag, reading-map, budget, attention-budget, jit, index]
 ---
 

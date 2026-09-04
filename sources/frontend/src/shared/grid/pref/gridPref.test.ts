@@ -15,7 +15,7 @@ interface Row {
 }
 
 /**
- * 그리드 개인화의 값 — UX-06 · UX-13 · grid-standard.md §5.
+ * 그리드 개인화의 값 — UX-06 · UX-13 · frontend/grid.md.
  *
  * <p>지키는 것 셋이다 — ① <b>시그니처는 선언에서만</b> 만든다, ② <b>목록에 없는 컬럼</b>이
  * 무엇인지, ③ <b>모르는 필드를 만나도 화면이 그려진다.</b>
@@ -31,7 +31,7 @@ describe('그리드 개인화', () => {
     { field: 'c', header: 'C', type: 'text', hidden: true },
   ];
 
-  it('목록에 hidden 은 없다 — 처음부터 없는 컬럼이다(grid-column-contract.md §2.1)', () => {
+  it('목록에 hidden 은 없다 — 처음부터 없는 컬럼이다(frontend/grid.md)', () => {
     expect(settableColumns(columns).map((column) => column.field)).toEqual(['a', 'b']);
   });
 
@@ -40,7 +40,7 @@ describe('그리드 개인화', () => {
   });
 
   /**
-   * 동적 컬럼 — grid-column-contract.md §2.2 · ADR-0025.
+   * 동적 컬럼 — frontend/grid.md · sys/code.md.
    *
    * <p><b>시그니처가 특히 중요하다.</b> 그 집합은 *고른 그룹* 을 따라 바뀌므로, 넣으면
    * 그룹을 옮길 때마다 시그니처가 달라져 <b>자기 설정이 자기를 폐기한다</b> — 사용자가
@@ -85,7 +85,7 @@ describe('그리드 개인화', () => {
       expect(signatureOf(off)).toBe(signatureOf(columns));
     });
 
-    it('hidden 을 켜면 달라진다 — 목록이 바뀐다(grid-standard.md §5)', () => {
+    it('hidden 을 켜면 달라진다 — 목록이 바뀐다(frontend/grid.md)', () => {
       const shown = columns.map((column) =>
         column.field === 'c' ? { ...column, hidden: false } : column);
 

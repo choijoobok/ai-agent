@@ -20,22 +20,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 조상 역산 — AUTHZ-04 · security-design.md §4.
+ * 조상 역산 — AUTHZ-04 · backend/security.md.
  *
  * <pre>
  * 유효 권한의 리프 집합 → 각 리프의 조상 경로를 역산 → 합쳐서 트리
  * </pre>
  *
- * <p><b>역할별로 트리를 만들어 병합하지 않는다</b>(security-design.md §4). 합집합을 먼저 구하고 <b>그 리프
+ * <p><b>역할별로 트리를 만들어 병합하지 않는다</b>(backend/security.md). 합집합을 먼저 구하고 <b>그 리프
  * 집합에서 조상을 한 번</b> 역산한다 — 역할 셋이 같은 폴더 아래를 갖고 있어도 순회는 한 번이다.
  *
  * <p><b>경로 결합이 아니다.</b> 조상은 권한 판정에 참여하지 않으며 <b>표시만</b> 된다
- * (security-design.md §4 가 경로 결합을 기각한 이유 — 개인 예외가 무력화되고 실패가 조용해진다). 그래서
- * 조상의 {@code USE_YN} 도 읽지 않는다: 42 §4 는 구조 노드의 스위치를 <b>자손 전체에 같은
+ * (backend/security.md 가 경로 결합을 기각한 이유 — 개인 예외가 무력화되고 실패가 조용해진다). 그래서
+ * 조상의 {@code USE_YN} 도 읽지 않는다: sys/menu.md 는 구조 노드의 스위치를 <b>자손 전체에 같은
  * 값을 쓰는 일괄 명령</b>으로 정의했으므로, 폴더를 끄면 리프가 꺼져 게이트(④)에서 이미
  * 빠진다. 여기서 조상 값을 한 번 더 보면 <b>같은 사실을 두 곳이 판정</b>하게 된다.
  *
- * <p><b>순회에 방문 집합과 깊이 상한을 건다</b>(42 §4 4층 방어의 3층). 막는 것이 아니라
+ * <p><b>순회에 방문 집합과 깊이 상한을 건다</b>(sys/menu.md 4층 방어의 3층). 막는 것이 아니라
  * <b>터지지 않게</b> 하는 것이다 — 시드·수동 UPDATE 로 순환이 들어올 수 있고, 그때
  * 무한 루프 대신 <b>그 서브트리만 빠지고 나머지 트리는 나온다</b>.
  */
@@ -44,7 +44,7 @@ public class MenuTreeService {
 
     private static final Logger log = LoggerFactory.getLogger(MenuTreeService.class);
 
-    /** 42 §4 — {@code UNIQUE(UP_MENU_CD, SORT_NO)} 를 걸 수 없으므로 tie-breaker 가 필수다. */
+    /** sys/menu.md — {@code UNIQUE(UP_MENU_CD, SORT_NO)} 를 걸 수 없으므로 tie-breaker 가 필수다. */
     private static final Comparator<SysMenu> TREE_ORDER =
             Comparator.comparing(SysMenu::getSortNo).thenComparing(SysMenu::getMenuCd);
 
@@ -57,7 +57,7 @@ public class MenuTreeService {
     /**
      * 이 사람이 보는 트리.
      *
-     * <p>입력은 <b>이미 계산된</b> 유효 권한이다 — 여기서 다시 계산하지 않는다(security-design.md §4 판정은
+     * <p>입력은 <b>이미 계산된</b> 유효 권한이다 — 여기서 다시 계산하지 않는다(backend/security.md 판정은
      * 한 곳에서). 권한이 공집합이면 빈 트리이며, 그 상태는 애초에 로그인이 차단된다.
      */
     @Transactional(readOnly = true)

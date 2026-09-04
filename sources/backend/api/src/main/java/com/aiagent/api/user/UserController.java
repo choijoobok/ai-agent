@@ -22,31 +22,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code USER_MGMT} 의 마스터 — 61 §3. <b>경로가 다섯이고 넷이 {@code save*} 다.</b>
+ * {@code USER_MGMT} 의 마스터 — screen/user/requirements.md. <b>경로가 다섯이고 넷이 {@code save*} 다.</b>
  *
  * <table>
  *   <tr><td>{@code getList}</td><td>목록 — <b>곧 상세다</b>({@code getDetail} 이 없는 이유)</td></tr>
  *   <tr><td>{@code save}</td><td>셀 편집 일괄 저장 — <b>관리자 축 둘</b>과 이름·이메일·언어</td></tr>
  *   <tr><td>{@code saveUnlock}</td><td>잠금 해제 — AUTH-04</td></tr>
- *   <tr><td>{@code saveDormantRelease}</td><td>휴면 해제 — 41 §4.2</td></tr>
+ * <tr><td>{@code saveDormantRelease}</td><td>휴면 해제 — sys/user-role.md</td></tr>
  *   <tr><td>{@code savePasswordReset}</td><td>임시 비밀번호 발급 — AUTH-07</td></tr>
  * </table>
  *
  * <h2>{@code unlock} 이 아니라 {@code saveUnlock} 이다</h2>
  *
- * <p>61 §3.4.1 — <b>규칙을 넓히지 않고 경로를 규칙에 맞춘다</b>(ADR-0020). 순진하게
+ * <p>screen/user/requirements.md — <b>규칙을 넓히지 않고 경로를 규칙에 맞춘다</b>(backend/api.md). 순진하게
  * {@code unlock} 으로 쓰면 접두가 {@code EXECUTE} 로 떨어지는데, 이 API 는
  * {@code LOCK_YN}·{@code LOGIN_FAIL_CNT} 두 컬럼을 <b>쓴다</b> — 저장이다.
  *
  * <p>기준은 <i>버튼이 위험해 보이는가</i> 가 아니라 <b>우리 테이블의 컬럼을 쓰는가</b>이며,
- * 그래서 이 화면의 {@code EXECUTE} 는 <b>강제 로그아웃 하나</b>다(52 §4.2 의 {@code X}) —
- * 그것은 세션 스토어를 비우지 우리 테이블을 쓰지 않고, 활성 세션 탭에 붙는다(61 §3.8.2).
+ * 그래서 이 화면의 {@code EXECUTE} 는 <b>강제 로그아웃 하나</b>다(sys/menu.md 의 {@code X}) —
+ * 그것은 세션 스토어를 비우지 우리 테이블을 쓰지 않고, 활성 세션 탭에 붙는다(screen/user/requirements.md).
  *
  * <h2>{@code exportExcel} 이 없다</h2>
  *
- * <p>이 화면의 액션 열은 {@code R S E X} 인데(52 §4.2) <b>{@code E} 에 대응하는 경로가
- * 없다</b> — 엑셀 두 갈래는 프론트가 만들고(ADR-0019) {@code EXPORT} 는
- * {@code SYS_MENU.EXPORT_YN} 이 선언한다(ADR-0027). 056 이 이 메뉴에 이미 {@code 'Y'} 를
+ * <p>이 화면의 액션 열은 {@code R S E X} 인데(sys/menu.md) <b>{@code E} 에 대응하는 경로가
+ * 없다</b> — 엑셀 두 갈래는 프론트가 만들고(frontend/grid-advanced.md) {@code EXPORT} 는
+ * {@code SYS_MENU.EXPORT_YN} 이 선언한다(sys/menu.md). 056 이 이 메뉴에 이미 {@code 'Y'} 를
  * 넣어 두었으므로 <b>스위치는 화면이 서기 전부터 서 있었다</b>.
  *
  * <h2>저장이 값을 돌려준다</h2>
@@ -77,10 +77,10 @@ public class UserController {
     }
 
     /**
-     * 셀 편집 저장 — <b>신규 행은 임시 비밀번호를 함께 받는다</b>(61 §3.2).
+     * 셀 편집 저장 — <b>신규 행은 임시 비밀번호를 함께 받는다</b>(screen/user/requirements.md).
      *
-     * <p>{@code principal} 을 넘기는 것은 <b>자기 비활성화를 막기 위해서</b>다(61 §3.7.1).
-     * 도메인이 <i>지금 누가 요청했는가</i> 를 스스로 알면 계층이 뒤집힌다(architecture.md §1) — 감사 4컬럼을
+     * <p>{@code principal} 을 넘기는 것은 <b>자기 비활성화를 막기 위해서</b>다(screen/user/requirements.md).
+     * 도메인이 <i>지금 누가 요청했는가</i> 를 스스로 알면 계층이 뒤집힌다(backend/packages.md) — 감사 4컬럼을
      * 채우는 {@code AuditorAware} 와 <b>다른 자리</b>인 것은, 저것이 <i>기록</i> 이고 이것은
      * <b>판정</b>이기 때문이다.
      */
@@ -114,12 +114,12 @@ public class UserController {
     /**
      * 임시 비밀번호 발급 — <b>값을 응답에 담는다</b>.
      *
-     * <p>61 §6 이 <i>"메일 발송이 없는 배포에서 화면에 표시할지"</i> 를 미결로 남겼고
-     * <b>표시하는 쪽으로 닫았다</b>({@link IssuedPassword}) — 43 §6.3 이 이 기능을 <i>"잠긴
+     * <p>screen/user/requirements.md 이 <i>"메일 발송이 없는 배포에서 화면에 표시할지"</i> 를 미결로 남겼고
+     * <b>표시하는 쪽으로 닫았다</b>({@link IssuedPassword}) — sys/code.md 이 이 기능을 <i>"잠긴
      * 계정을 푸는 유일한 경로"</i> 라 부른 이상 전달 수단이 없으면 경로가 아니다.
      *
      * <p><b>사용 이력에 값이 남지 않는다.</b> {@code UserActionLogInterceptor} 가 기록하는
-     * 것은 <b>요청 본문</b>이고(ADR-0010) 여기서 값이 실리는 곳은 <b>응답</b>이다 — 우연이
+     * 것은 <b>요청 본문</b>이고(sys/logs.md) 여기서 값이 실리는 곳은 <b>응답</b>이다 — 우연이
      * 아니라 이 경계가 그렇게 생겼다: 비밀번호를 <i>받는</i> API 는 마스킹이 필요하고,
      * <i>주는</i> API 는 그 문제가 애초에 없다.
      */

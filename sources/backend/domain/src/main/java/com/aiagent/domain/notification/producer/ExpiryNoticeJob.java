@@ -34,21 +34,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 만료를 <b>미리 알린다</b> — AUTH-05(비밀번호) · AUTHZ-08(권한). 66 §6.2 의 <i>만료 점검
+ * 만료를 <b>미리 알린다</b> — AUTH-05(비밀번호) · AUTHZ-08(권한). screen/notice/requirements.md 의 <i>만료 점검
  * 배치</i> 다.
  *
  * <h2>만료를 <i>처리</i> 하지 않는다 — 이름이 그렇게 붙은 이유</h2>
  *
- * <p>security-design.md §4 가 <b>만료 판정을 조회 시 계산</b>으로 못박았다(계정 잠금 자동 해제와 같은
+ * <p>backend/security.md 가 <b>만료 판정을 조회 시 계산</b>으로 못박았다(계정 잠금 자동 해제와 같은
  * 구조 — 컬럼은 원시 데이터, 판정은 파생). 그래서 이 배치는 <b>행을 하나도 바꾸지
  * 않는다</b> — 넣는 것은 알림뿐이다. {@code ExpiryProcessJob} 같은 이름을 피한 것이
  * 그 사실을 지키는 첫 방어이며, <b>이 배치가 실패해도 권한 판정은 정확하다.</b>
  *
- * <h2>하는 일이 통보 하나다 — security-design.md §4 가 이력 기록을 물렸다 (2026-08-31)</h2>
+ * <h2>하는 일이 통보 하나다 — backend/security.md 가 이력 기록을 물렸다 (2026-08-31)</h2>
  *
  * <p>그 문서는 AUTHZ-08 을 <i>캐시 무효화 · 이력 기록 · 만료 예정 통보</i> 셋으로 정의했고
- * ADR-0017 이 첫째를 뺐다. 남은 <b>이력 기록도 물렸다</b> — 적을 테이블을 ADR-0010 이
- * 만들지 않기로 했고 42 §3.1 이 {@code VALID_TO_DT} 를 그 자리로 정했다.
+ * backend/caching.md 이 첫째를 뺐다. 남은 <b>이력 기록도 물렸다</b> — 적을 테이블을 sys/logs.md 이
+ * 만들지 않기로 했고 sys/menu.md 이 {@code VALID_TO_DT} 를 그 자리로 정했다.
  *
  * <p><b>그리고 그것은 애초에 배치의 일이 아니었다.</b> 자동 만료는 <b>저장이 일어나지
  * 않는다</b> — 날짜가 지나갔을 뿐이라 이 배치가 쓸 행이 없다. 이력이 필요한 프로젝트가
@@ -56,12 +56,12 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>받는 사람이 본인이다</h2>
  *
- * <p>42 §10 이 <i>"역할 부여 만료 예고 — 알림은 <b>수신자를 정할 수 없다</b>(부여자인지
+ * <p>sys/menu.md 이 <i>"역할 부여 만료 예고 — 알림은 <b>수신자를 정할 수 없다</b>(부여자인지
  * 관리자 전원인지 조직마다 다르다)"</i> 로 관리자 알림을 닫고 조회 조건으로 답했다
- * (61 §3.3 의 {@code 역할 만료 예정 N일}). <b>그것과 어긋나지 않는다</b> — 여기서 받는
+ * (screen/user/requirements.md 의 {@code 역할 만료 예정 N일}). <b>그것과 어긋나지 않는다</b> — 여기서 받는
  * 사람은 <b>권한이 사라질 당사자</b>이고 그 수신자는 자명하다.
  *
- * <p>그리고 당사자에게는 <b>할 일이 있다</b>. 60 §8.3 이 <i>새 요청</i> 을 세우면서
+ * <p>그리고 당사자에게는 <b>할 일이 있다</b>. screen/_standalone/README.md 이 <i>새 요청</i> 을 세우면서
  * 연장을 신청할 경로가 생겼다 — 알림이 그 경로의 입구다. 관리자 쪽은 조회가 답한다.
  *
  * <h2>같은 말을 매일 하지 않는다</h2>
@@ -74,7 +74,7 @@ import org.springframework.transaction.annotation.Transactional;
  * <h2>보낼 사람이 없는 날이 대부분이다</h2>
  *
  * <p>그것이 정상이며 {@code SUCCESS} 다. 요약 문구가 <i>0건</i> 을 말하는 것이 중요한데,
- * 65 §4.3 이 <i>"어제 안 돌았는데 왜"</i> 를 이력 화면의 물음으로 든 것과 같은 자리다 —
+ * screen/batch/schedule/requirements.md 이 <i>"어제 안 돌았는데 왜"</i> 를 이력 화면의 물음으로 든 것과 같은 자리다 —
  * <b>돌았는데 대상이 없었던 것</b>과 <b>안 돈 것</b>이 화면에서 구분돼야 한다.
  */
 @Component
@@ -117,7 +117,7 @@ public class ExpiryNoticeJob implements BatchJob {
      * 트랜잭션이면 <b>절반만 보낸 상태</b>가 남지 않는다 — 알림은 되돌릴 수 없으므로
      * (읽은 사람이 있다) 실패했을 때 아무것도 안 간 편이 낫다.
      *
-     * <p><b>중단은 둘 사이에서만 본다</b>(46 §6.2 의 협조적 중단). 안에서 보면 보낸 것을
+     * <p><b>중단은 둘 사이에서만 본다</b>(sys/batch.md 의 협조적 중단). 안에서 보면 보낸 것을
      * 롤백해야 하고, 그러면 <i>중단했는데 절반이 갔다</i> 가 된다.
      */
     @Override
@@ -148,7 +148,7 @@ public class ExpiryNoticeJob implements BatchJob {
     /**
      * 비밀번호 만료 예고 — AUTH-05.
      *
-     * <p><b>날짜 계산을 SQL 로 보내지 않는다</b>(db-portability.md §4.5). {@code PWD_CHG_DTM + 90일} 을
+     * <p><b>날짜 계산을 SQL 로 보내지 않는다</b>(backend/persistence.md). {@code PWD_CHG_DTM + 90일} 을
      * DB 에서 더하면 벤더마다 다른 함수가 되고 <i>지금</i> 도 DB 의 시계가 된다. 대신
      * <b>기준을 뒤집어</b> 창의 양끝을 애플리케이션이 계산해 넣는다 — 만료일이
      * {@code [지금, 지금+예고]} 라는 말은 {@code PWD_CHG_DTM} 이
@@ -207,8 +207,8 @@ public class ExpiryNoticeJob implements BatchJob {
                             : remaining + "일 후 비밀번호를 변경해야 합니다.",
                     /*
                       **이동 링크가 없다.** 비밀번호 변경은 메뉴가 아니라 프로필 모달의
-                      탭이고(60 §6), 모달에는 MENU_CD 가 없다(60 §1.1) — 요청 처리 알림이
-                      링크 없이 가는 것과 같은 자리다(66 §5.4).
+                      탭이고(screen/_standalone/README.md), 모달에는 MENU_CD 가 없다(screen/_standalone/README.md) — 요청 처리 알림이
+                      링크 없이 가는 것과 같은 자리다(screen/notice/requirements.md).
                     */
                     null,
                     null);
@@ -229,7 +229,7 @@ public class ExpiryNoticeJob implements BatchJob {
      * 그것을 <i>"3일 후"</i> 라고 부른다. 브라우저에서 실제로 <i>"2일 후"</i> 가 찍혀
      * 드러났다.
      *
-     * <p>기준 날짜는 <b>업무 시간대</b>의 오늘이다(40 §4.3) — 자정 근처에 도는 배치라
+     * <p>기준 날짜는 <b>업무 시간대</b>의 오늘이다(sys/INDEX.md) — 자정 근처에 도는 배치라
      * 서버의 시스템 시간대로 세면 하루가 어긋난다.
      */
     private long remainingDays(Instant deadline) {
@@ -241,14 +241,14 @@ public class ExpiryNoticeJob implements BatchJob {
      * 권한 만료 예고 — AUTHZ-08.
      *
      * <p><b>둘을 함께 센다</b> — 역할 부여({@code SYS_USER_ROLE})와 개인 예외
-     * ({@code SYS_USER_MENU_AUTH}). 42 §3.1 이 성격을 갈라 두었지만 <b>당사자에게는 같은
+     * ({@code SYS_USER_MENU_AUTH}). sys/menu.md 이 성격을 갈라 두었지만 <b>당사자에게는 같은
      * 사건</b>이다: 곧 무언가가 안 보이게 된다.
      *
      * <p><b>사람당 한 통이다.</b> 권한 다섯 개가 같은 날 끝나면 다섯 통이 아니라 한 통이며,
      * 그래야 <i>"권한 N건"</i> 이라는 말이 성립한다.
      *
      * <p><b>무기한 부여는 대상이 아니다</b> — {@code VALID_TO_DT} 가 {@code null} 이면
-     * 만료가 없다(역할 부여만 그럴 수 있다 · 42 §3.1). {@code between} 이 그것을 저절로
+     * 만료가 없다(역할 부여만 그럴 수 있다 · sys/menu.md). {@code between} 이 그것을 저절로
      * 거른다.
      */
     private int notifyAuthorityExpiry(NotiPolicyProps policy, List<String> detail) {
@@ -257,8 +257,8 @@ public class ExpiryNoticeJob implements BatchJob {
         LocalDate until = today.plusDays(noticeDays);
 
         /*
-          **양끝을 포함한다** — VALID_TO_DT 는 그날까지 유효하다는 뜻이다(42 §3.1 ·
-          40 §4.3). 오늘 끝나는 것을 빼면 "오늘이 마지막 날" 을 알릴 기회가 없다.
+          **양끝을 포함한다** — VALID_TO_DT 는 그날까지 유효하다는 뜻이다(sys/menu.md ·
+          sys/INDEX.md). 오늘 끝나는 것을 빼면 "오늘이 마지막 날" 을 알릴 기회가 없다.
         */
         Map<String, Expiring> byUser = new LinkedHashMap<>();
 
@@ -321,7 +321,7 @@ public class ExpiryNoticeJob implements BatchJob {
      * 메뉴 이름 — <b>{@code MENU_CD} 를 그대로 보이지 않는다</b>.
      *
      * <p>{@code SYS_MENU.MENU_NM} 은 이름이 아니라 <b>메시지 키</b>({@code menu.{MENU_CD}})다
-     * (43 §3). 그것을 풀지 않으면 사용자에게 <i>"BATCH_HISTORY 권한이 곧 만료됩니다"</i> 가
+     * (sys/code.md). 그것을 풀지 않으면 사용자에게 <i>"BATCH_HISTORY 권한이 곧 만료됩니다"</i> 가
      * 가고, 그 말은 <b>아무 뜻도 없다</b> — 브라우저에서 그렇게 찍혀 드러났다.
      *
      * <p><b>기본 언어로 푼다.</b> 문장 전체가 그 언어로 지어지고 있으므로 이름만 수신자의
@@ -345,14 +345,14 @@ public class ExpiryNoticeJob implements BatchJob {
      * <b>알릴 값어치가 있는 계정인가.</b>
      *
      * <p>{@code LOCK_YN} 과 {@code DORMANT_YN} 을 보지 않는 것이 결정이다 — <b>일시적
-     * 상태</b>이고 풀리면 그 알림을 본다(66 §5.7.1 이 미사용 계정의 요청 처리를 막지 않은
+     * 상태</b>이고 풀리면 그 알림을 본다(screen/notice/requirements.md 이 미사용 계정의 요청 처리를 막지 않은
      * 것과 같은 방향). 오히려 잠긴 사람일수록 <i>비밀번호가 곧 만료된다</i> 를 알아야 한다.
      *
      * <p>{@code USE_YN} 과 계정 기간은 <b>돌아오지 않을 수 있는</b> 상태라 거른다 —
      * 퇴사자에게 비밀번호를 바꾸라고 알리는 것은 아무도 안 볼 알림함을 채우고, 90일 뒤
      * 파기 배치가 그것을 지운다.
      *
-     * <p>기간은 <b>양끝 포함</b>이다(40 §4.3) — {@code null} 이면 제한이 없다.
+     * <p>기간은 <b>양끝 포함</b>이다(sys/INDEX.md) — {@code null} 이면 제한이 없다.
      */
     private static BooleanExpression noticeWorthy(LocalDate today) {
         return U.useYn.isTrue()

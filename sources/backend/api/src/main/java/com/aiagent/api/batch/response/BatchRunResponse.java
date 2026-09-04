@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.util.List;
 
 /**
- * 즉시 실행의 응답 — grid-api-contract.md §9 · 65 §3.7. <b>건별이다.</b>
+ * 즉시 실행의 응답 — frontend/grid.md · screen/batch/schedule/requirements.md. <b>건별이다.</b>
  *
  * <p>그 절이 <i>"응답: 모달 — 성공/실패를 건별로 낸다"</i> 고 적었다. 여러 건을 골라
  * 누르면 어떤 것은 시작하고 어떤 것은 이미 돌고 있으며, <b>첫 실패에서 예외를 던지면
@@ -12,9 +12,9 @@ import java.util.List;
  *
  * <h2>문구를 서버가 짓지 않는다</h2>
  *
- * <p>65 §3.7 이 요구한 문구는 <i>"이미 실행 중입니다 (노드 {@code app-02}, 09:14 시작)"</i>
+ * <p>screen/batch/schedule/requirements.md 이 요구한 문구는 <i>"이미 실행 중입니다 (노드 {@code app-02}, 09:14 시작)"</i>
  * 이고, 그 안에 <b>노드와 시각</b>이 들어간다. 서버가 완성된 문장을 내려보내면 그것은
- * <b>서버의 언어</b>로 굳고(architecture.md §6-1.2 가 오류 문구에서 감수한 대가), 이 화면은 오류 응답이
+ * <b>서버의 언어</b>로 굳고(backend/packages.md 가 오류 문구에서 감수한 대가), 이 화면은 오류 응답이
  * 아니라 <b>정상 응답</b>이라 그 대가를 감수할 이유가 없다.
  *
  * <p>그래서 값만 내려보내고 화면이 메시지 키에 끼운다 — {@code label(key, params)} 가
@@ -32,7 +32,7 @@ public record BatchRunResponse(List<Item> items) {
      *     {@code RUNNING} 이력이 없는 경우이며(락이 방금 잡혔거나 해제 직전이다) 화면은
      *     그때 노드 없는 문구를 낸다
      * @param runningStartedAt 그 실행의 시작 시각 — 운영자가 <b>얼마나 기다려야 하는지</b>
-     *     를 재는 값이다. 31 §8 이 {@code NODE_ID} 를 남긴 것과 같은 이유로 함께 간다
+     * 를 재는 값이다. backend/persistence.md 이 {@code NODE_ID} 를 남긴 것과 같은 이유로 함께 간다
      */
     public record Item(
             String batchId, boolean started, String runningNodeId, Instant runningStartedAt) {}

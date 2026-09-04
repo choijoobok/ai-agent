@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
- * {@link CustomLock} 의 집행 — 31 §4 · §11.
+ * {@link CustomLock} 의 집행 — backend/persistence.md.
  *
  * <h2>정책이 둘로 갈리고, 트랜잭션 구조가 그 갈림이다</h2>
  *
@@ -28,12 +28,12 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  *                                         commit    ← 해제가 곧 커밋
  * </pre>
  *
- * <p>왼쪽에는 <b>flush+commit 구간의 노출 창</b>이 남는다(31 §4). 좁지만 안전하지 않다 —
+ * <p>왼쪽에는 <b>flush+commit 구간의 노출 창</b>이 남는다(backend/persistence.md). 좁지만 안전하지 않다 —
  * 피해가 창 크기에 비례하지 않고(그 5ms 안에 {@code SELECT} 한 번만 걸리면 뒤 트랜잭션 전체가
  * 잘못된 전제 위에서 돈다), <b>확률이 가장 높은 순간에 열린다</b>(두 사람이 거의 동시에 누를
  * 때 — 정확히 방어하려던 상황이다). 오른쪽은 해제와 영속성 결정이 원자적이라 창이 0 이다.
  *
- * <h2>4중 방어 중 둘이 여기 있다 — 31 §4</h2>
+ * <h2>4중 방어 중 둘이 여기 있다 — backend/persistence.md</h2>
  *
  * <table>
  *   <tr><td>1</td><td><b>전용 락 트리거 빈</b></td><td>구조적. 쓰는 쪽이 한다</td></tr>
@@ -102,12 +102,12 @@ public class CustomLockAspect {
             throw new IllegalStateException(
                     "락 구간에 트랜잭션이 걸쳐 있다 — "
                             + method.getDeclaringClass().getSimpleName() + "." + method.getName()
-                            + " (31 §4: 전용 락 트리거 빈을 쓰거나 전파를 NOT_SUPPORTED 로 덮는다)");
+                            + " (backend/persistence.md: 전용 락 트리거 빈을 쓰거나 전파를 NOT_SUPPORTED 로 덮는다)");
         }
     }
 
     /**
-     * {@code WAIT} — 락과 본체가 <b>한 트랜잭션</b>이다(31 §4).
+     * {@code WAIT} — 락과 본체가 <b>한 트랜잭션</b>이다(backend/persistence.md).
      *
      * <p>해제도 <b>같은 트랜잭션</b>이다 — 별도 트랜잭션으로 지우면 그 원자성이 깨져 즉시실패
      * 정책과 같은 노출 창이 생긴다. <b>{@code finally} 가 아닌 것</b>이 여기서는 옳다: 본체가
@@ -124,7 +124,7 @@ public class CustomLockAspect {
     }
 
     /**
-     * 즉시실패 셋 — 선점과 해제가 각각 <b>별도 오토커밋</b>이다(31 §3).
+     * 즉시실패 셋 — 선점과 해제가 각각 <b>별도 오토커밋</b>이다(backend/persistence.md).
      *
      * <p><b>해제는 반드시 {@code finally} 다.</b> 예외 경로에서 락이 남으면
      * {@code expirySeconds} 까지 잠기고, 그 시간 동안 증상은 <i>기능이 통째로 멎은 것</i>으로

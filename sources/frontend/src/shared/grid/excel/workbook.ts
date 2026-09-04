@@ -4,21 +4,21 @@ import type { ColumnDef } from '@/shared/grid/types';
 import { recordDownload, type ExcelScope } from '@/shared/grid/excel/downloadLog';
 
 /**
- * 엑셀 파일을 <b>브라우저에서 만든다</b> — ADR-0019.
+ * 엑셀 파일을 <b>브라우저에서 만든다</b> — frontend/grid-advanced.md.
  *
  * <p><b>왜 서버가 아닌가</b> — 현재 페이지는 이미 브라우저에 있는 데이터이므로 서버 생성이면
  * *다시 조회해서 다시 내려보내는* 일이 된다. 그리고 **마스킹이 자동으로 지켜진다**: 화면에
- * 마스킹된 값을 그대로 쓰므로 응답 직렬화 계층(27 §2)을 이미 통과한 값이다.
+ * 마스킹된 값을 그대로 쓰므로 응답 직렬화 계층(backend/pii-vault.md)을 이미 통과한 값이다.
  *
  * <p><b>`exceljs` 다.</b> SheetJS(`xlsx`)는 npm 배포를 중단했고 registry 에 남은 마지막
- * 버전에 미수정 취약점이 있다 — 폐쇄망 빌드와 보안 검사 둘 다에서 막힌다(ADR-0019).
+ * 버전에 미수정 취약점이 있다 — 폐쇄망 빌드와 보안 검사 둘 다에서 막힌다(frontend/grid-advanced.md).
  *
- * <p><b>값은 화면의 어휘로 만든다</b>(grid-column-contract.md §5). 판(AG Grid)의 렌더러를 거치지 않는 이유는
+ * <p><b>값은 화면의 어휘로 만든다</b>(frontend/grid.md). 판(AG Grid)의 렌더러를 거치지 않는 이유는
  * *전체* 경로에 판이 없기 때문이다 — 거기서만 다른 규칙을 쓰면 두 파일의 같은 컬럼이
  * 다른 글자로 나온다.
  */
 
-/** 파일에 실릴 컬럼 하나 — <b>보이는 것만, 보이는 순서로</b>다(grid-standard.md §2.2). */
+/** 파일에 실릴 컬럼 하나 — <b>보이는 것만, 보이는 순서로</b>다(frontend/grid.md). */
 export interface ExcelColumn<T> {
   column: ColumnDef<T>;
   header: string;
@@ -32,18 +32,18 @@ export interface ExcelColumn<T> {
  */
 export function cellValue<T>(column: ColumnDef<T>, row: T): string | number | boolean | null {
   // 파생·동적 컬럼의 읽는 규칙은 `cell.ts` 한 곳이다 — 여기서 따로 알면 셀에는 보이는데
-  // 파일에는 빈 칸인 컬럼이 생긴다(grid-column-contract.md §2.2 · §3).
+  // 파일에는 빈 칸인 컬럼이 생긴다(frontend/grid.md).
   const raw = readCell(column, row);
 
   if (raw === null || raw === undefined) return null;
 
   if (Array.isArray(raw)) {
-    // `list` 컬럼 — 셀 하나에 여럿이 들어간다(grid-column-contract.md §5.6).
+    // `list` 컬럼 — 셀 하나에 여럿이 들어간다(frontend/grid.md).
     return raw.map((item) => (column.display ? column.display(item) : String(item))).join(', ');
   }
   if (typeof raw === 'boolean') return raw ? 'Y' : 'N';
   /*
-    <b>큰 정수는 숫자로 쓰지 않는다</b> — 68 §9.10.
+    <b>큰 정수는 숫자로 쓰지 않는다</b> — playbook/INDEX.md.
 
     값은 이미 문자열로 왔지만(그것이 이 타입의 전부다) 여기서 아무 말도 하지 않으면
     아래 문자열 가지로 흘러 <b>지금은 맞게 동작한다</b> — 그리고 어느 날 서버가 숫자로
@@ -56,7 +56,7 @@ export function cellValue<T>(column: ColumnDef<T>, row: T): string | number | bo
   }
   if (typeof raw === 'number') return raw;
   if (typeof raw !== 'string') {
-    // 객체가 오면 빈 칸이다 — `[object Object]` 를 파일에 넣지 않는다(grid-column-contract.md §5.3).
+    // 객체가 오면 빈 칸이다 — `[object Object]` 를 파일에 넣지 않는다(frontend/grid.md).
     return null;
   }
   const option = column.options?.find((candidate) => candidate.value === raw);
@@ -69,7 +69,7 @@ export function cellValue<T>(column: ColumnDef<T>, row: T): string | number | bo
  * <p><b>파일 이름에 시각을 붙인다</b> — 같은 화면을 두 번 내리면 브라우저가 `(1)` 을 붙여
  * 주지만, 그 둘 중 어느 것이 최신인지는 파일 목록만 봐서는 알 수 없다.
  *
- * @param scope 이력에 남길 갈래 — grid-standard.md §2.2 의 드롭다운 항목
+ * @param scope 이력에 남길 갈래 — frontend/grid.md 의 드롭다운 항목
  */
 export async function downloadExcel<T>(
   baseName: string,
@@ -102,7 +102,7 @@ export async function downloadExcel<T>(
 }
 
 /**
- * 컬럼 선언 없이 <b>이미 만들어진 표</b>를 내린다 — 62 §4.9 의 트리 엑셀이 요구했다.
+ * 컬럼 선언 없이 <b>이미 만들어진 표</b>를 내린다 — screen/menu/requirements.md 의 트리 엑셀이 요구했다.
  *
  * <p>위의 것과 갈리는 이유가 하나다. 트리는 <b>계층을 경로 컬럼으로</b> 펴는데(엑셀의
  * 들여쓰기는 필터·정렬 한 번에 무너진다) 그 컬럼은 <b>어느 행에도 없는 파생</b>이라
@@ -130,8 +130,8 @@ export async function downloadRows(
   const buffer = await workbook.xlsx.writeBuffer();
   saveBlob(new Blob([buffer], { type: XLSX_MIME }), `${baseName}_${stamp}.xlsx`);
   /*
-    <b>트리는 언제나 전량이다</b>(62 §4.9) — 페이지가 없어 *현재 페이지* 와 *전체* 가 같고,
-    그래서 버튼도 드롭다운을 열지 않는다(grid-standard.md §2.2).
+    <b>트리는 언제나 전량이다</b>(screen/menu/requirements.md) — 페이지가 없어 *현재 페이지* 와 *전체* 가 같고,
+    그래서 버튼도 드롭다운을 열지 않는다(frontend/grid.md).
   */
   recordDownload('ALL', rows.length, columns.map((column) => column.key));
 }
@@ -139,7 +139,7 @@ export async function downloadRows(
 /**
  * 표를 직접 만드는 쪽의 컬럼 — <b>키와 이름이 함께 온다</b>.
  *
- * <p>이력이 요구했다(ADR-0019 의 {@code columnKeys}). 헤더만 받던 때는 보낼 것이 <b>번역된
+ * <p>이력이 요구했다(frontend/grid-advanced.md 의 {@code columnKeys}). 헤더만 받던 때는 보낼 것이 <b>번역된
  * 이름</b>뿐이었는데, 그러면 같은 컬럼이 언어마다 다른 값으로 남아 <i>무엇을 내려받았나</i>
  * 를 세지 못한다. 키는 {@code ColumnDef.field} 와 같은 층이며 <b>파생 컬럼도 이름을
  * 갖는다</b>(트리의 경로 컬럼 — 어느 행에도 없지만 식별자는 있어야 한다).
@@ -159,7 +159,7 @@ function widthOf<T>(column: ColumnDef<T>): number {
 /**
  * 파일을 사용자의 디스크로 — <b>세 갈래가 같은 자리를 쓴다</b>.
  *
- * <p>서버 생성 경로도 이것을 부른다(ADR-0019). 저장하는 방법이 갈래마다 다르면 어느
+ * <p>서버 생성 경로도 이것을 부른다(frontend/grid-advanced.md). 저장하는 방법이 갈래마다 다르면 어느
  * 하나에서만 {@code revokeObjectURL} 을 빠뜨리는 날이 오고, 그 누수는 <b>탭이 닫힐
  * 때까지 파일 크기만큼</b>이라 눈에 띄지 않는다.
  */

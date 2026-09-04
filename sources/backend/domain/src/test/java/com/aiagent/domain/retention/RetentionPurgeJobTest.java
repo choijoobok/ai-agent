@@ -28,9 +28,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 보존 파기 배치 — LOG-07 · 32 §4. <b>템플릿의 첫 {@code BatchJob} 구현이다.</b>
+ * 보존 파기 배치 — LOG-07 · retention.md. <b>템플릿의 첫 {@code BatchJob} 구현이다.</b>
  *
- * <p>여기서 지키는 것 셋이 32 §4 의 계약 그대로다: <b>표를 데이터로 읽는가</b>(대상 다섯,
+ * <p>여기서 지키는 것 셋이 retention.md 의 계약 그대로다: <b>표를 데이터로 읽는가</b>(대상 다섯,
  * 각자 다른 기간) · <b>분할 커밋인가</b>(청크가 덜 차면 끝) · <b>중단이 먹는가</b>(청크
  * 사이에서만 본다).
  *
@@ -96,7 +96,7 @@ class RetentionPurgeJobTest {
     void readsThePolicyTable() {
         job.run(context());
 
-        // 32 §3 의 값 그대로다 — 90 · 365 · 180 · 365 · 90.
+        // retention.md 의 값 그대로다 — 90 · 365 · 180 · 365 · 90.
         assertThat(calls)
                 .containsExactly(
                         "SYS_LO_ACCESS@" + NOW.minus(java.time.Duration.ofDays(90)),
@@ -116,7 +116,7 @@ class RetentionPurgeJobTest {
         /*
           <b>대역은 READ_YN 을 모른다.</b> 배치가 리포지토리에 넘기는 것은 기준 시각
           하나뿐이며(RetentionTarget.findIds 의 시그니처가 그것을 강제한다), 읽음 여부를
-          보려면 대상 표의 모양 자체가 달라져야 한다 — 47 §10 이 닫은 결정이 여기서
+          보려면 대상 표의 모양 자체가 달라져야 한다 — sys/notification.md 이 닫은 결정이 여기서
           <b>구조로</b> 지켜진다. 읽은 것만 지우면 안 읽은 알림이 영원히 쌓이고,
           그것이 정확히 지우고 싶은 행이다.
         */
@@ -126,13 +126,13 @@ class RetentionPurgeJobTest {
     }
 
     @Test
-    @DisplayName("개인정보 접근 이력은 대상에 없다 — 32 §4-2 의 구조적 제외")
+    @DisplayName("개인정보 접근 이력은 대상에 없다 — retention.md 의 구조적 제외")
     void personalDataAccessHistoryIsStructurallyExcluded() {
         job.run(context());
 
         /*
           <b>설정으로도 켤 수 없다.</b> 목록에 행 자체가 없으므로, 켜려면 소스를 고치고
-          배포해야 한다 — 32 §4-2 가 <i>"설정으로 켤 수 있게도 하지 않는다"</i> 로 못박은
+          배포해야 한다 — retention.md 가 <i>"설정으로 켤 수 있게도 하지 않는다"</i> 로 못박은
           것이 이 상태다. 방향이 반대인 대상을 같은 배치에 넣으면 <b>규제 위반을 자동화</b>한다.
         */
         assertThat(calls).noneMatch(call -> call.contains("PII"));

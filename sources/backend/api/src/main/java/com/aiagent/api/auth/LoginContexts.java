@@ -15,7 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * 않다. 값이 갈리면 같은 로그인 한 번이 두 가지 IP 로 기록되므로 추출 규칙을 하나로 둔다.
  *
  * <p>IP 자체의 규칙은 {@link com.aiagent.api.trace.ClientIp} 가 갖는다 — 사용 이력
- * 인터셉터도 같은 것을 묻기 시작하면서 부르는 곳이 셋이 됐다(architecture.md §6.3).
+ * 인터셉터도 같은 것을 묻기 시작하면서 부르는 곳이 셋이 됐다(backend/packages.md).
  */
 public final class LoginContexts {
 

@@ -8,12 +8,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
- * 일괄 재계산 — 68 §3.4 의 실행 <b>둘 중 뒤</b>({@code params} 모달 · 프로그레스 있음).
+ * 일괄 재계산 — playbook/INDEX.md 의 실행 <b>둘 중 뒤</b>({@code params} 모달 · 프로그레스 있음).
  *
  * <h2>{@code params} 아래에 있다 (2026-09-02)</h2>
  *
  * <p>두 칸이 <b>맨 위에 있었고, 그래서 이 실행은 한 번도 서버에 닿은 적이 없다</b> —
- * 그리드가 보내는 몸통은 <b>둘로 갈린 봉투</b>다(grid-api-contract.md §8): 대상 행은 {@code targets} 에,
+ * 그리드가 보내는 몸통은 <b>둘로 갈린 봉투</b>다(frontend/grid.md): 대상 행은 {@code targets} 에,
  * 모달이 만든 값은 {@code params} 에 담긴다. 봉투를 펴서 받으면 두 칸 다 {@code null} 이
  * 오고 {@code @NotNull} 이 <b>400</b> 을 내며, 화면에는 <i>입력값을 확인하세요</i> 만 뜬다.
  *
@@ -25,7 +25,7 @@ import java.time.LocalDate;
  * <h2>{@code targets} 를 선언하지 않는다</h2>
  *
  * <p>이 실행의 대상은 <b>기준일에 든 전량</b>이지 화면이 든 행이 아니다({@code target:'none'}
- * — 68 §3.4). 봉투에는 여전히 빈 {@code targets} 가 실려 오지만 <b>읽지 않는 칸을 선언하면
+ * — playbook/INDEX.md). 봉투에는 여전히 빈 {@code targets} 가 실려 오지만 <b>읽지 않는 칸을 선언하면
  * 서버가 그것을 쓴다고 말하는 셈</b>이 된다 — {@code UserTargetRequest} 가 {@code params} 를
  * 두지 않은 것과 같은 자리다.
  *
@@ -36,7 +36,7 @@ import java.time.LocalDate;
 public record SampleRecalcRequest(@NotNull @Valid Params params) {
 
     /**
-     * 모달의 두 칸 — 68 §9.13.
+     * 모달의 두 칸 — playbook/INDEX.md.
      *
      * <p><b>{@code @Valid} 가 없으면 여기까지 내려오지 않는다.</b> 중첩 객체의 제약은
      * 바깥에서 그것을 달아 줘야 검사되며, 빠뜨리면 <b>세율 상한이 조용히 사라진다</b>.

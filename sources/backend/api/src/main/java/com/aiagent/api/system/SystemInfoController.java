@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 시스템 정보 — main-shell.md §7.3.
+ * 시스템 정보 — frontend/tabs.md.
  *
- * <p><b>{@code common} 계층이다</b>(security-design.md §4). 특정 메뉴에 소속시킬 수 없고 매핑하려 들면
+ * <p><b>{@code common} 계층이다</b>(backend/security.md). 특정 메뉴에 소속시킬 수 없고 매핑하려 들면
  * 메뉴를 전부 나열하게 된다 — {@code SYS_API} 시드의 입력이 아니다.
  *
  * <p><b>익명에게 열지 않는다.</b> 빌드 해시와 활성 프로필은 <i>비밀</i> 은 아니지만

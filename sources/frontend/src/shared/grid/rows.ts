@@ -1,5 +1,5 @@
 /**
- * 행 상태 넷과 그 전이 — grid-standard.md §3.2 · §3.3 · §3.4.
+ * 행 상태 넷과 그 전이 — frontend/grid.md.
  *
  * <p><b>한 행은 상태 하나만 갖는다.</b> 수정한 행을 삭제하면 삭제이고, <b>되돌리면 수정으로
  * 돌아가는 것이 아니라 무변경</b>으로 돌아간다 — 셀 값도 함께 되돌린다. 부분적으로 되돌리면
@@ -38,14 +38,14 @@ export function toRows<T>(content: T[]): GridRow<T>[] {
   }));
 }
 
-/** 새 행은 <b>맨 위에</b> 붙는다 — 방금 만든 것이 바로 보여야 한다(grid-api-contract.md §3.6). */
+/** 새 행은 <b>맨 위에</b> 붙는다 — 방금 만든 것이 바로 보여야 한다(frontend/grid.md). */
 export function addRow<T>(rows: GridRow<T>[], data: T): GridRow<T>[] {
   return [{ id: `n${(sequence += 1)}`, state: 'C', data, original: null }, ...rows];
 }
 
 /**
  * 셀 편집. <b>신규 행은 끝까지 신규다</b> — 수정으로 바뀌면 저장 시 0건을 갱신하는
- * {@code UPDATE} 가 나간다(grid-standard.md §3.3).
+ * {@code UPDATE} 가 나간다(frontend/grid.md).
  *
  * <h2>원본과 같아지면 <b>무변경으로 돌아간다</b> — 2026-08-31</h2>
  *
@@ -56,16 +56,16 @@ export function addRow<T>(rows: GridRow<T>[], data: T): GridRow<T>[] {
  *
  * <p><b>되돌리기 아이콘과 축이 같다.</b> {@link revertRow} 는 <i>한 번에 전부</i> 되돌리고
  * 이것은 <i>한 칸씩</i> 되돌린 결과가 마침 전부인 경우다 — 두 길의 끝이 같아야
- * <b>상태 컬럼이 값과 어긋나지 않는다</b>(grid-standard.md §3.3).
+ * <b>상태 컬럼이 값과 어긋나지 않는다</b>(frontend/grid.md).
  *
  * <p><b>{@link sameData} 가 판정한다</b> — 직렬화 비교라 동적 컬럼처럼 <b>맵을 새로 만들어
- * 쓰는</b> 칸도 내용으로 비교된다({@code refs} — grid-column-contract.md §2.2). 참조 비교로는 그 칸이 영영
+ * 쓰는</b> 칸도 내용으로 비교된다({@code refs} — frontend/grid.md). 참조 비교로는 그 칸이 영영
  * <i>바뀐 것</i>이 된다.
  */
 export function editRow<T>(rows: GridRow<T>[], id: string, patch: Partial<T>): GridRow<T>[] {
   return rows.map((row) => {
     if (row.id !== id) return row;
-    // 삭제 상태의 행은 셀 편집이 막힌다 — 지울 행을 고치는 것은 의미가 없다(grid-standard.md §3.4).
+    // 삭제 상태의 행은 셀 편집이 막힌다 — 지울 행을 고치는 것은 의미가 없다(frontend/grid.md).
     if (row.state === 'D') return row;
 
     const data = { ...row.data, ...patch };
@@ -81,9 +81,9 @@ export function editRow<T>(rows: GridRow<T>[], id: string, patch: Partial<T>): G
 }
 
 /**
- * 삭제 아이콘. <b>상태이지 실행이 아니다</b>(grid-standard.md §3.4).
+ * 삭제 아이콘. <b>상태이지 실행이 아니다</b>(frontend/grid.md).
  *
- * <p>신규 행은 <b>즉시 제거</b>한다 — 서버에 없는 행을 지우라고 보내게 된다(grid-standard.md §3.3).
+ * <p>신규 행은 <b>즉시 제거</b>한다 — 서버에 없는 행을 지우라고 보내게 된다(frontend/grid.md).
  */
 export function toggleDelete<T>(rows: GridRow<T>[], id: string): GridRow<T>[] {
   const target = rows.find((row) => row.id === id);
@@ -101,7 +101,7 @@ export function toggleDelete<T>(rows: GridRow<T>[], id: string): GridRow<T>[] {
 }
 
 /**
- * 편집 취소 — 상태 컬럼의 되돌리기 아이콘이 부른다(grid-standard.md §3.3).
+ * 편집 취소 — 상태 컬럼의 되돌리기 아이콘이 부른다(frontend/grid.md).
  *
  * <p><b>수정한 행만 대상이다.</b> 신규 행을 되돌리는 것은 <i>없애는 것</i> 이고 그것은
  * 삭제 아이콘의 일이며({@link toggleDelete}), 삭제 표시를 되돌리는 것도 거기 있다 —
@@ -118,7 +118,7 @@ export function revertRow<T>(rows: GridRow<T>[], id: string): GridRow<T>[] {
 }
 
 /**
- * 행의 내용이 원본과 같은가 — <b>{@link editRow} 와 마스터-디테일이 함께 쓴다</b>(63 §3.2).
+ * 행의 내용이 원본과 같은가 — <b>{@link editRow} 와 마스터-디테일이 함께 쓴다</b>(screen/code/requirements.md).
  *
  * <p>하단에서 되돌린 값이 마스터 행으로 흘러갈 때, 마스터가 원본과 같아졌는지는
  * <b>내용을 비교해야만</b> 안다. 서버가 준 JSON 을 그대로 들고 있는 행이라
@@ -148,7 +148,7 @@ export interface ChangeCounts {
   total: number;
 }
 
-/** 저장 전 확인이 말하는 건수 — grid-api-contract.md §6. 일괄 저장에서 <b>건수가 유일한 요약</b>이다. */
+/** 저장 전 확인이 말하는 건수 — frontend/grid.md. 일괄 저장에서 <b>건수가 유일한 요약</b>이다. */
 export function countChanges<T>(rows: GridRow<T>[]): ChangeCounts {
   const added = rows.filter((row) => row.state === 'C').length;
   const updated = rows.filter((row) => row.state === 'U').length;

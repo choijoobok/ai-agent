@@ -11,7 +11,7 @@ const done: JobProgress = { ...running(100), jobStatCd: 'DONE' };
 const failed: JobProgress = { ...running(40), jobStatCd: 'FAILED', errMsg: '단가가 없다' };
 
 /**
- * 진행률 폴링 — 30 §6 · 68 §9.1.
+ * 진행률 폴링 — backend/crosscutting.md · playbook/INDEX.md.
  *
  * <p><b>시간을 주입으로 받는다.</b> 진짜로 1초를 기다리면 검사가 느려지고, 느린 검사는
  * 곧 <i>가끔 흔들리는</i> 검사가 된다 — 그때부터 붉은 줄을 다시 돌려 보게 되고 진짜
@@ -62,7 +62,7 @@ describe('진행률 폴링', () => {
   });
 
   /*
-    <b>창을 닫는 것은 작업을 멈추는 것이 아니다</b>(68 §9.1). 여기서는 <i>보는 것</i>만
+    <b>창을 닫는 것은 작업을 멈추는 것이 아니다</b>(playbook/INDEX.md). 여기서는 <i>보는 것</i>만
     그만두므로 결과가 {@code null} 이며, 그것을 <i>작업이 끝나지 않았다</i> 로 읽으면 안
     된다 — 부르는 쪽이 {@code onDone} 을 부르지 않는 근거가 이 값이다.
   */
@@ -76,9 +76,9 @@ describe('진행률 폴링', () => {
     expect(settled).toBeNull();
   });
 
-  describe('세션 만료는 실패가 아니다 — 68 §9.1', () => {
+  describe('세션 만료는 실패가 아니다 — playbook/INDEX.md', () => {
     /*
-      재인증 모달이 뜨고(ADR-0021) 사람이 비밀번호를 치는 동안 <b>수십 초</b>가 지날 수
+      재인증 모달이 뜨고(backend/session.md) 사람이 비밀번호를 치는 동안 <b>수십 초</b>가 지날 수
       있다. 401 을 실패로 세면 그 사이 예산이 바닥나 <b>멀쩡히 도는 작업을 놓친다</b>.
     */
     it('401 이 이어져도 예산을 쓰지 않고 재개한다', async () => {

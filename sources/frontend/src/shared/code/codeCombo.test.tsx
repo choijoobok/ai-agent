@@ -21,21 +21,21 @@ vi.mock('@/shared/api/request', () => ({
 }));
 
 /**
- * 선언에 <b>그룹코드만</b> 적으면 조회조건과 그리드가 공통코드 콤보를 낸다 — 43 §8 · search-form-contract.md §3.3.
+ * 선언에 <b>그룹코드만</b> 적으면 조회조건과 그리드가 공통코드 콤보를 낸다 — sys/code.md · frontend/search-form.md.
  *
  * <p>이 파일이 지키는 것은 <b>세 조각이 실제로 이어져 있다</b>는 것이다.
  *
  * <ol>
  *   <li>선언(`SearchField.grpCd` · `ColumnDef.grpCd`)이 캐시에 <b>요청을 일으킨다</b>
- *   <li>서버가 준 <b>코드값</b>에 `SYS_MESSAGE` 의 이름이 <b>메모리에서</b> 붙는다(43 §4.4)
+ * <li>서버가 준 <b>코드값</b>에 `SYS_MESSAGE` 의 이름이 <b>메모리에서</b> 붙는다(sys/code.md)
  *   <li>고른 값은 <b>코드값</b>이다 — 화면에 보이는 이름이 조건으로 나가면 서버가 못 찾는다
  * </ol>
  *
  * <p><b>화면 하나가 콤보를 여럿 띄워도 요청은 하나다.</b> 조회조건과 그리드가 같은 커밋에
- * 뜨므로, 그 둘의 그룹이 한 번에 모여 나가는지를 함께 본다 — 43 §8 이 프론트 캐시의 근거로
+ * 뜨므로, 그 둘의 그룹이 한 번에 모여 나가는지를 함께 본다 — sys/code.md 이 프론트 캐시의 근거로
  * 든 것이 그 왕복이다.
  *
- * <p>이름이 없는 코드는 <b>키 문자열이 그대로</b> 보인다(43 §7.3). 빈 칸으로 떨어뜨리지
+ * <p>이름이 없는 코드는 <b>키 문자열이 그대로</b> 보인다(sys/code.md). 빈 칸으로 떨어뜨리지
  * 않는 것이 규약이며, 여기서도 그것을 검사한다 — 등록을 빠뜨렸다는 사실이 화면에서 즉시
  * 드러나야 한다.
  */
@@ -58,14 +58,14 @@ describe('공통코드 콤보', () => {
       messages: {
         'code.ORD_STATUS.NEW': '신규',
         'code.ORD_STATUS.PAID': '결제완료',
-        // DONE 은 일부러 비운다 — 키가 그대로 보이는 것이 규약이다(43 §7.3).
+        // DONE 은 일부러 비운다 — 키가 그대로 보이는 것이 규약이다(sys/code.md).
       },
     });
 
     post.mockResolvedValue({ version: 1, groups: { ORD_STATUS: STATUS_CODES } });
   });
 
-  describe('조회조건 — search-form-contract.md §3', () => {
+  describe('조회조건 — frontend/search-form.md', () => {
     const fields: SearchField[] = [
       { field: 'status', label: 'x', type: 'select', ops: ['eq', 'in'], grpCd: 'ORD_STATUS' },
     ];
@@ -88,7 +88,7 @@ describe('공통코드 콤보', () => {
       expect(screen.queryByText('결제완료')).not.toBeNull();
     });
 
-    it('이름이 없는 코드는 키 문자열이 그대로 보인다 — 누락이 시끄럽게 드러난다(43 §7.3)', async () => {
+    it('이름이 없는 코드는 키 문자열이 그대로 보인다 — 누락이 시끄럽게 드러난다(sys/code.md)', async () => {
       mount();
       await waitFor(() => expect(post).toHaveBeenCalled());
 
@@ -128,7 +128,7 @@ describe('공통코드 콤보', () => {
     });
   });
 
-  describe('그리드 — grid-standard.md §4 · grid-column-contract.md §5', () => {
+  describe('그리드 — frontend/grid.md', () => {
     const columns: ColumnDef<Row>[] = [
       { field: 'id', header: 'x', type: 'text', width: 120 },
       { field: 'status', header: 'y', type: 'code', width: 160, grpCd: 'ORD_STATUS' },
@@ -199,7 +199,7 @@ describe('공통코드 콤보', () => {
     });
   });
 
-  it('폼과 판이 같은 화면에 있어도 요청은 하나다 — 43 §8 이 캐시를 둔 이유가 그 왕복이다', async () => {
+  it('폼과 판이 같은 화면에 있어도 요청은 하나다 — sys/code.md 이 캐시를 둔 이유가 그 왕복이다', async () => {
     function Screen() {
       const controller = useGridController<Row>({
         menuCd: 'TEST',

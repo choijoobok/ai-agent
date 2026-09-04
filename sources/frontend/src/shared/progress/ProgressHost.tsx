@@ -11,14 +11,14 @@ import { splitElapsed } from '@/shared/progress/elapsed';
 import type { JobProgress, OpenProgress, ProgressOptions } from '@/shared/progress/types';
 
 /**
- * 진행률 창이 열리는 <b>단 한 자리</b> — 30 §6 · 68 §9.1.
+ * 진행률 창이 열리는 <b>단 한 자리</b> — backend/crosscutting.md · playbook/INDEX.md.
  *
  * <p><b>창을 닫아도 작업은 돈다.</b> 사용자를 붙잡아 두지 않는 것이 이 기능의 요점이며
  * (붙잡을 것이면 동기 호출로 충분했다), 그래서 <b>폴링은 창이 아니라 이 호스트가</b>
  * 들고 있다 — 창에 두면 닫는 순간 폴링이 죽어 {@code onDone} 이 오지 않고, 목록은
  * <b>갱신되지 않은 채</b> 남는다.
  *
- * <h2>닫는 것은 <b>접는 것</b>이다 (2026-09-02 — 68 §11 을 닫으면서)</h2>
+ * <h2>닫는 것은 <b>접는 것</b>이다 (2026-09-02 — playbook/INDEX.md 을 닫으면서)</h2>
  *
  * <p>여기가 한 번 어긋나 있었다. 계약은 <i>"모달을 닫아도 약속은 계속 산다"</i> 였는데
  * ({@code types.ts}) 닫기가 폴링의 세대를 올려 <b>루프를 취소</b>했다 — 그래서 닫으면
@@ -54,7 +54,7 @@ export function ProgressHost({ children }: { children: ReactNode }) {
   const open = useCallback<OpenProgress>((jobId, options) => {
     const mine = ++generation.current;
     /*
-      <b>창이 뜬 시각을 여기서 잡는다</b>(30 §6). 경과 시간의 기준이며, 서버의
+      <b>창이 뜬 시각을 여기서 잡는다</b>(backend/crosscutting.md). 경과 시간의 기준이며, 서버의
       {@code CRE_DTM} 을 쓰지 않는 이유는 {@code elapsed.ts} 가 적었다 — 시계가 어긋난
       만큼 틀리고, <b>폴링이 실패하는 동안 멈춘다</b>: 그 구간이 바로 경과 시간이 가장
       필요한 때다.
@@ -79,7 +79,7 @@ export function ProgressHost({ children }: { children: ReactNode }) {
               // 다음 작업이 왔으면 이 루프는 <b>보는 것을 그만둔다</b>. 창을 닫은 것과 다르다.
               cancelled: () => generation.current !== mine,
               /*
-                <b>세션 만료는 실패가 아니다</b>(68 §9.1). 재인증 모달이 복구하면 다음
+                <b>세션 만료는 실패가 아니다</b>(playbook/INDEX.md). 재인증 모달이 복구하면 다음
                 폴링이 그냥 나간다 — 여기서 실패로 세면 사람이 비밀번호를 치는 동안
                 예산이 바닥나고, <b>멀쩡히 도는 작업을 놓친다</b>.
               */
@@ -133,7 +133,7 @@ export function ProgressHost({ children }: { children: ReactNode }) {
       if (!current) return null;
       // 끝났거나 더 볼 수 없게 됐다 — 접어 두면 <i>아직 돈다</i> 로 읽히는 표시가 남는다.
       if (!alive(current)) return null;
-      // 보는 것만 접는다 — 폴링도 작업도 계속 간다(68 §9.1).
+      // 보는 것만 접는다 — 폴링도 작업도 계속 간다(playbook/INDEX.md).
       return { ...current, folded: true };
     });
   }, []);
@@ -175,7 +175,7 @@ function alive(job: Job): boolean {
 }
 
 /**
- * 완료율 — <b>{@code null} 이면 그런 것이 없다</b>(46 §8).
+ * 완료율 — <b>{@code null} 이면 그런 것이 없다</b>(sys/batch.md).
  *
  * <p>전체를 모르면 나눌 수가 없다. 0 으로 치환하면 <b>0% 가 <i>아직 시작 안 함</i>으로
  * 읽히고</b>, 0 으로 나누면 화면에 {@code NaN%} 이 뜬다.
@@ -216,7 +216,7 @@ function useElapsed(openedAt: number, running: boolean): number {
 }
 
 /**
- * 접힌 진행률 — 68 §9.1 · §11.
+ * 접힌 진행률 — playbook/INDEX.md.
  *
  * <p><b>이것이 없으면 닫기가 곧 잊기다.</b> 작업은 서버에서 계속 돌지만 화면에 그 사실이
  * 아무 데도 없어, 사용자가 하는 일은 <b>같은 실행을 한 번 더</b>가 된다.
@@ -263,7 +263,7 @@ function ProgressModal({ job, onClose }: { job: Job; onClose: () => void }) {
   const done = progress?.jobStatCd === 'DONE';
 
   /*
-    <b>전체를 모르면 불확정 막대다</b>(46 §8). 0 으로 치환하면 {@code 0/0} 이라
+    <b>전체를 모르면 불확정 막대다</b>(sys/batch.md). 0 으로 치환하면 {@code 0/0} 이라
     <i>완료</i> 로 보이고, 그 화면은 <b>아직 도는 작업을 끝난 것</b>으로 말한다.
   */
   const percent = percentOf(progress);
@@ -286,7 +286,7 @@ function ProgressModal({ job, onClose }: { job: Job; onClose: () => void }) {
         50행을 도는 동안 한 글자도 바뀌지 않으므로, 행이 넘어가고 있다는 사실을 말하는
         것은 이 줄뿐이다.
 
-        <b>메시지 키가 아니다</b> — 서버가 문구를 완성한다(architecture.md §6-1.2). 업무 데이터가
+        <b>메시지 키가 아니다</b> — 서버가 문구를 완성한다(backend/packages.md). 업무 데이터가
         섞이는 값이라(<i>주문 A-1023</i>) 화면이 조립할 수 있는 것이 아니다.
       */}
       {progress?.subTitle && (
@@ -314,7 +314,7 @@ function ProgressModal({ job, onClose }: { job: Job; onClose: () => void }) {
         {label(MSG.PROGRESS_ELAPSED, splitElapsed(elapsed))}
       </Typography.Paragraph>
       {/*
-        <b>지금 무엇을 하는 중인가</b>(68 §9.1) — 퍼센트만 있으면 <i>멈춘 것</i>과
+        <b>지금 무엇을 하는 중인가</b>(playbook/INDEX.md) — 퍼센트만 있으면 <i>멈춘 것</i>과
         <i>느린 것</i>을 구별할 수 없다.
       */}
       {progress?.stepMsg && (
@@ -325,7 +325,7 @@ function ProgressModal({ job, onClose }: { job: Job; onClose: () => void }) {
           type="error"
           showIcon
           message={label(MSG.PROGRESS_FAILED)}
-          // 서버가 완성한 사유 그대로다 — 스택은 서버 로그가 갖는다(security-design.md §8).
+          // 서버가 완성한 사유 그대로다 — 스택은 서버 로그가 갖는다(backend/security.md).
           description={progress?.errMsg ?? undefined}
         />
       )}
@@ -348,7 +348,7 @@ function ProgressModal({ job, onClose }: { job: Job; onClose: () => void }) {
 }
 
 /**
- * 몇 건 중 몇 건이고 몇 퍼센트인가 — <b>전체를 모르면 문구가 갈린다</b>(46 §8).
+ * 몇 건 중 몇 건이고 몇 퍼센트인가 — <b>전체를 모르면 문구가 갈린다</b>(sys/batch.md).
  *
  * <p>그때 {@code {cur} / {tot}} 을 쓸 수 없는데, 그렇다고 <b>줄을 없애면</b> 창에 도는
  * 막대만 남아 <i>멈춘 것</i>과 구별되지 않는다 — 건수라도 올라가는 것이 돌고 있다는
@@ -365,7 +365,7 @@ function countText(progress: JobProgress, percent: number | null): string {
   return label(MSG.PROGRESS_COUNT, { cur, tot: progress.totCnt.toLocaleString(), percent });
 }
 
-/** 화면에 그대로 보이는 줄 — 서버가 문구를 완성한다(architecture.md §6-1.2). */
+/** 화면에 그대로 보이는 줄 — 서버가 문구를 완성한다(backend/packages.md). */
 function describe(error: unknown): string {
   if (error instanceof ApiError) return error.message;
   return error instanceof Error ? error.message : String(error);

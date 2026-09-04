@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/shared/api/", "sources/frontend/eslint.config.js", "aidd-guide/standard/frontend/_study/frontend-stack.md"]
+sources: ["sources/frontend/src/shared/api/", "sources/frontend/eslint.config.js", "aidd-guide/standard/frontend/packages.md"]
 author: Bong Jong Hyeon
 tier: 2
 tags: [frontend, http, axios, endpoints, request-id]

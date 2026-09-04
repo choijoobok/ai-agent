@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 역할 권한 — 42 §6.
+ * 역할 권한 — sys/menu.md.
  *
  * <p><b>행의 존재가 곧 허용이다.</b> 거부를 표현하는 컬럼을 두지 않는다 — 개인 예외가
  * 허용만 하기 때문이며, {@code DENY_YN} 같은 컬럼을 두면 합집합 규칙이 즉시 무너진다.
@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
  * 같은 테이블의 다른 행에 의존하므로 DB 제약으로 표현할 수 없고, 저장 서비스와 시드 검증
  * 테스트가 지킨다(원칙 P1).
  *
- * <p><b>고아가 되어도 지우지 않는다</b>(ADR-0022). API 가 사라져 (메뉴, 액션) 이 미정의가
+ * <p><b>고아가 되어도 지우지 않는다</b>(seed.md). API 가 사라져 (메뉴, 액션) 이 미정의가
  * 되면 이 행은 고아지만 <b>인가에는 무해하다</b> — 부를 API 가 없으므로 그 권한으로 할 수
  * 있는 일이 없다. {@link SysApi} 와 방향이 반대인 것은 <b>소유자가 다르기 때문</b>이다:
  * 코드가 소유한 것은 코드를 따라가고, 사람이 소유한 것은 사람을 기다린다.
@@ -56,10 +56,10 @@ public class SysRoleMenuAuth extends BaseAuditEntity {
     private ActionType actionCd;
 
     /**
-     * 부여 하나 — 62 §2.6 의 저장이 만든다.
+     * 부여 하나 — screen/menu/requirements.md 의 저장이 만든다.
      *
      * <p><b>받는 것이 키 셋뿐이다.</b> 이 테이블에는 키 밖의 컬럼이 감사 4개밖에 없고
-     * (42 §6) 그것은 {@code BaseAuditEntity} 가 채운다 — <b>행의 존재가 곧 허용</b>이라
+     * (sys/menu.md) 그것은 {@code BaseAuditEntity} 가 채운다 — <b>행의 존재가 곧 허용</b>이라
      * 값으로 표현할 것이 없다.
      */
     public static SysRoleMenuAuth created(String roleId, String menuCd, ActionType actionCd) {

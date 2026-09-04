@@ -57,4 +57,3 @@ tags: [harness, hooks, skills, automation, index]
 
 - [INDEX](../INDEX.md)
 - [04-memory](./memory/INDEX.md) — 메모리 갱신 정책
-- [10-records](../records/INDEX.md) — 기록 형식

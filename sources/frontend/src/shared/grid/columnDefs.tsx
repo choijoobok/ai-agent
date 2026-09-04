@@ -44,7 +44,7 @@ import type {
 } from '@/shared/grid/types';
 
 /**
- * 우리 어휘 → AG Grid — ADR-0018 의 <b>어댑터</b>다.
+ * 우리 어휘 → AG Grid — frontend/grid.md 의 <b>어댑터</b>다.
  *
  * <p>화면은 {@link ColumnDef} 만 쓰고 이 파일만 AG Grid 를 안다. 판을 바꾸면 여기가 바뀌고
  * 화면은 그대로다 — <b>반대로 화면이 {@code ColDef} 를 직접 만들기 시작하면 그 경계가
@@ -64,17 +64,17 @@ const TONE_COLOR: Record<Tone, string | undefined> = {
 };
 
 /**
- * `tags` 셀이 <b>글자로 그리는 항목 수</b> — 나머지는 `+N` 이다(68 §9.6).
+ * `tags` 셀이 <b>글자로 그리는 항목 수</b> — 나머지는 `+N` 이다(playbook/INDEX.md).
  *
  * <p><b>폭에서 계산하지 않는다.</b> 태그 하나의 폭은 글자 수에 따라 갈리고 컬럼 폭은
- * 사용자가 바꾸므로, 재려면 셀마다 실측해야 한다 — 렌더 함수를 여는 일이며 grid-column-contract.md §5.4 가
+ * 사용자가 바꾸므로, 재려면 셀마다 실측해야 한다 — 렌더 함수를 여는 일이며 frontend/grid.md 가
  * 닫아 둔 문이다. 셋은 <b>좁은 컬럼에서도 잘리지 않는</b> 수이고, 넘친 것은 사라지는
  * 대신 <b>수와 툴팁</b>으로 남는다.
  */
 const TAG_LIMIT = 3;
 
 /**
- * ms → <b>사람이 읽는 시간</b> — 65 §4.4 · 65 §6 의 미결을 닫는다.
+ * ms → <b>사람이 읽는 시간</b> — screen/batch/schedule/requirements.md 의 미결을 닫는다.
  *
  * <p><b>형식을 소스가 조립하지 않는다.</b> 그 미결이 <i>"`1시간 2분 5초` 인지 `01:02:05`
  * 인지, <b>다국어에서 갈린다</b>"</i> 였고, 갈리는 것이 맞으므로 <b>형식 자체가
@@ -84,9 +84,9 @@ const TAG_LIMIT = 3;
  * *"0시간 3분"* 이 된다.
  *
  * <p><b>1초 미만은 별도 문구</b>다. *"0초"* 라고 쓰면 <i>안 걸린 것</i>처럼 읽히는데,
- * `SKIP_*` 이력이 실제로 0ms 라(46 §6.1) 둘이 같은 글자가 되면 안 된다.
+ * `SKIP_*` 이력이 실제로 0ms 라(sys/batch.md) 둘이 같은 글자가 되면 안 된다.
  *
- * <p><b>값이 없으면 빈 칸</b>이다 — 진행 중인 행의 `ELAPSED_MS` 가 `null` 이며(65 §4.4)
+ * <p><b>값이 없으면 빈 칸</b>이다 — 진행 중인 행의 `ELAPSED_MS` 가 `null` 이며(screen/batch/schedule/requirements.md)
  * 거기에 `0초` 를 그리면 <i>0ms 만에 끝났다</i> 로 읽힌다.
  */
 function durationText(value: unknown): string {
@@ -106,14 +106,14 @@ function durationText(value: unknown): string {
 }
 
 /**
- * 값 <b>뒤에</b> 붙는 표시 — 63 §4.3 · 65 §4.4.
+ * 값 <b>뒤에</b> 붙는 표시 — screen/code/requirements.md · screen/batch/schedule/requirements.md.
  *
- * <p><b>값이 아니라 값의 내력이다</b> — 그래서 복사에서 빠진다(grid-standard.md §4 · `copyCell` 이
+ * <p><b>값이 아니라 값의 내력이다</b> — 그래서 복사에서 빠진다(frontend/grid.md · `copyCell` 이
  * `bo-cell-aside` 를 걷어낸다). {@code renderer: 'badge'} 의 <i>본</i> 태그에는 이 클래스가
  * 없다: 거기서는 <b>배지가 곧 값</b>이라 복사되는 것이 맞다.
  *
  * <p>{@code tip} 은 <b>왜 붙었는지</b>다. `유령` 세 글자만으로는 무엇을 하면 되는지가
- * 읽히지 않으며, 64 §7-3.6 이 <i>꺼진 것에는 이유를 붙인다</i> 로 적은 규칙과 같은 축이다.
+ * 읽히지 않으며, screen/log/access/requirements.md 이 <i>꺼진 것에는 이유를 붙인다</i> 로 적은 규칙과 같은 축이다.
  *
  * <p><b>컴포넌트가 아니라 함수다</b>(이름이 소문자인 이유). 이 파일은 어댑터라 컴포넌트를
  * 내보내지 않으며, 여기에 컴포넌트를 하나 두면 `react-refresh` 가 <i>파일이 컴포넌트만
@@ -132,49 +132,49 @@ interface AdapterOptions<T> {
   columns: ColumnDef<T>[];
   /** 편집 결과를 행에 반영한다 — 상태 전이는 {@code rows.ts} 가 한다. */
   onEdit: (rowId: string, patch: Partial<T>) => void;
-  /** 편집 거부 메시지 — grid-edit-validation.md §2.1. 토스트로 낸다. */
+  /** 편집 거부 메시지 — frontend/grid.md. 토스트로 낸다. */
   onEditDenied: (message: string) => void;
   /**
-   * 방금 고친 칸이 <b>규칙을 어겼다</b> — grid-edit-validation.md §3.3 ④. 〃 통로다.
+   * 방금 고친 칸이 <b>규칙을 어겼다</b> — frontend/grid.md ④. 〃 통로다.
    *
    * <p>{@link onEditDenied} 와 <b>축이 다르다</b>: 저것은 <i>고칠 수 없다</i> 이고 이것은
    * <b>고쳤는데 그대로 저장되지 않는다</b> 다. 값은 행에 들어가고 편집도 막지 않는다.
    */
   onInvalidEdit: (message: string) => void;
-  /** 삭제 컬럼의 아이콘. 없으면 컬럼 자체가 나오지 않는다 — grid-standard.md §3.5. */
+  /** 삭제 컬럼의 아이콘. 없으면 컬럼 자체가 나오지 않는다 — frontend/grid.md. */
   onToggleDelete?: (rowId: string) => void;
-  /** 삭제 컬럼의 라벨과 게이트 — 63 §4.4. 없으면 <i>삭제</i> 이고 전 행이 열린다. */
+  /** 삭제 컬럼의 라벨과 게이트 — screen/code/requirements.md. 없으면 <i>삭제</i> 이고 전 행이 열린다. */
   deleteColumn?: DeleteColumnSpec<T>;
-  /** 상태 컬럼의 되돌리기 아이콘 — 수정한 행에만 나온다(grid-standard.md §3.3). */
+  /** 상태 컬럼의 되돌리기 아이콘 — 수정한 행에만 나온다(frontend/grid.md). */
   onRevert: (rowId: string) => void;
-  /** 검증 실패 표시 — grid-edit-validation.md §3.3. */
+  /** 검증 실패 표시 — frontend/grid.md. */
   issues: GridIssue[];
   /**
-   * 이 그리드가 매인 메뉴 — <b>참조 팝업의 인가가 여기에 매인다</b>(ADR-0020 · 68 §9.4).
+   * 이 그리드가 매인 메뉴 — <b>참조 팝업의 인가가 여기에 매인다</b>(backend/api.md · playbook/INDEX.md).
    *
    * <p>팝업은 자기 메뉴가 없다. 조회 엔드포인트가 <b>이 화면의 폴더</b>에 있고 시드가
    * 이 화면의 메뉴에 매핑하므로, 넘기지 않으면 그 조회는 <b>어느 메뉴로도 인가되지
    * 않아</b> 403 이 된다.
    */
   menuCd: string;
-  /** 서버 정렬이면 그리드 자체 정렬을 끈다 — grid-column-contract.md §3. */
+  /** 서버 정렬이면 그리드 자체 정렬을 끈다 — frontend/grid.md. */
   serverSort: boolean;
   /** 셀이 열리는가. */
   editable: boolean;
   /**
-   * 상태 컬럼을 그리는가 — <b>편집이 열리는 그리드면 그린다</b>(grid-standard.md §3.2).
+   * 상태 컬럼을 그리는가 — <b>편집이 열리는 그리드면 그린다</b>(frontend/grid.md).
    *
-   * <p>저장 단위인가와 다른 축이다. 63 §3.2 의 하단처럼 <b>남의 저장에 실리는 그리드</b>도
+   * <p>저장 단위인가와 다른 축이다. screen/code/requirements.md 의 하단처럼 <b>남의 저장에 실리는 그리드</b>도
    * 고친 행이 무엇인지 보여야 하고, 되돌릴 수도 있어야 한다 — 표시가 마스터에만 있으면
    * <i>"어느 언어를 고쳤더라"</i> 를 하단에서 알 수 없다(2026-08-30).
    */
   showState: boolean;
-  /** 다중 선택이면 번호 <b>오른쪽</b>에 체크박스 컬럼이 붙는다(grid-standard.md §4). */
+  /** 다중 선택이면 번호 <b>오른쪽</b>에 체크박스 컬럼이 붙는다(frontend/grid.md). */
   multiSelect: boolean;
   /**
    * 헤더 글자를 재는 데 쓰는 <b>CSS 글꼴 문자열</b> — `headerWidth` 가 이것으로 잰다.
    *
-   * <p>글꼴과 크기가 사용자 설정이라(main-shell.md §9.7) 상수로 둘 수 없다. 주지 않으면 재지 않으며,
+   * <p>글꼴과 크기가 사용자 설정이라(frontend/tabs.md) 상수로 둘 수 없다. 주지 않으면 재지 않으며,
    * 그때는 선언한 폭이 그대로다 — 폭이 <b>측정 실패로 조용히 0 이 되는 일</b>은 없다.
    */
   headerFont?: string;
@@ -207,9 +207,9 @@ export interface GridContext {
 }
 
 /**
- * 스위치의 폭 — 판의 {@code small}(28px)의 두 배다(grid-column-contract.md §5.2).
+ * 스위치의 폭 — 판의 {@code small}(28px)의 두 배다(frontend/grid.md).
  *
- * <p><b>셀과 필터 목록이 같은 값을 쓴다.</b> 필터 항목이 곧 그 스위치이므로(grid-column-contract.md §4.3)
+ * <p><b>셀과 필터 목록이 같은 값을 쓴다.</b> 필터 항목이 곧 그 스위치이므로(frontend/grid.md)
  * 둘의 크기가 다르면 <b>같은 것을 다른 것으로</b> 보게 된다.
  */
 export const SWITCH_WIDTH = 56;
@@ -218,13 +218,13 @@ export function toColDefs<T>(options: AdapterOptions<T>): ColDef<GridRow<T>>[] {
   const { columns, showState, multiSelect } = options;
   const defs: ColDef<GridRow<T>>[] = [];
 
-  // 순서가 결정이다 — 번호 → 체크박스 → 상태(grid-standard.md §4). 번호가 맨 왼쪽인 이유는 그것이
+  // 순서가 결정이다 — 번호 → 체크박스 → 상태(frontend/grid.md). 번호가 맨 왼쪽인 이유는 그것이
   // **행을 부르는 이름**이기 때문이다: 옆 사람에게 "3번 행" 이라고 말할 수 있어야 한다.
   defs.push(rowNumberColumn<T>());
   if (multiSelect) {
     defs.push(selectionColumn<T>());
   }
-  // 상태 컬럼 — grid-standard.md §3.2. 사용자가 끄거나 옮길 수 없다.
+  // 상태 컬럼 — frontend/grid.md. 사용자가 끄거나 옮길 수 없다.
   if (showState) {
     defs.push(
       systemColumn(MSG.GRID_COL_STATE, 84, stateRenderer(options.onRevert), options.headerFont),
@@ -232,7 +232,7 @@ export function toColDefs<T>(options: AdapterOptions<T>): ColDef<GridRow<T>>[] {
   }
 
   for (const column of columns) {
-    // hidden 은 화면에 나오지 않으므로 고정할 자리도 설정 창의 줄도 없다 — grid-column-contract.md §2.1.
+    // hidden 은 화면에 나오지 않으므로 고정할 자리도 설정 창의 줄도 없다 — frontend/grid.md.
     if (column.hidden) continue;
     defs.push(toColDef(column, options));
   }
@@ -250,10 +250,10 @@ export function toColDefs<T>(options: AdapterOptions<T>): ColDef<GridRow<T>>[] {
         /*
           <b>비활성 버튼을 두지 않는다.</b> 회색 아이콘은 눌러 봐야 아무 일이 없고 왜
           안 되는지 말하지 못한다 — 지울 것이 없는 행에는 <b>버튼 자체가 없는</b> 것이
-          정직하다(63 §4.4 의 *변경됨 인 행만*).
+          정직하다(screen/code/requirements.md 의 *변경됨 인 행만*).
         */
         if (enabled && !enabled(row)) {
-          // <b>사유를 말한다</b> — 63 §2.5. 없으면 그냥 비운다: 시스템 행은 자기 배지가
+          // <b>사유를 말한다</b> — screen/code/requirements.md. 없으면 그냥 비운다: 시스템 행은 자기 배지가
           // 이미 말하고 있고, 같은 말을 두 번 하면 그 배지가 뜻을 잃는다.
           const why = options.deleteColumn?.reason?.(row) ?? null;
           const dash = <span style={{ opacity: 0.35 }}>—</span>;
@@ -277,7 +277,7 @@ export function toColDefs<T>(options: AdapterOptions<T>): ColDef<GridRow<T>>[] {
         );
       },
       options.headerFont,
-      // 맨 오른쪽이다 — 왼쪽에 두면 상태 컬럼과 붙어 무엇이 무엇인지 읽히지 않는다(grid-standard.md §4).
+      // 맨 오른쪽이다 — 왼쪽에 두면 상태 컬럼과 붙어 무엇이 무엇인지 읽히지 않는다(frontend/grid.md).
       { pinned: 'right' }),
     );
   }
@@ -288,12 +288,12 @@ function toColDef<T>(column: ColumnDef<T>, options: AdapterOptions<T>): ColDef<G
   const { issues, serverSort } = options;
   const header = headerText(column);
   /*
-    <b>헤더가 잘리지 않을 폭을 바닥값으로 깐다</b>(grid-column-contract.md §2 · `headerWidth`). 선언의 폭은
+    <b>헤더가 잘리지 않을 폭을 바닥값으로 깐다</b>(frontend/grid.md · `headerWidth`). 선언의 폭은
     <b>값</b>을 보고 고른 숫자인데 헤더는 다국어라, 같은 컬럼이 영어에서는 남고 한글에서는
     말줄임표가 됐다(2026-08-31 실물).
 
     <b>최소값으로만 쓴다</b> — 선언이 더 넓으면 그대로이고, 사용자가 끌어 놓은 폭은
-    {@code DataGrid} 가 이 위에 덮는다(grid-standard.md §5). 판의 자동 맞춤을 쓰지 않는 이유는
+    {@code DataGrid} 가 이 위에 덮는다(frontend/grid.md). 판의 자동 맞춤을 쓰지 않는 이유는
     `headerWidth` 머리말에 있다.
   */
   const declared = column.width ?? 0;
@@ -310,19 +310,19 @@ function toColDef<T>(column: ColumnDef<T>, options: AdapterOptions<T>): ColDef<G
 
   const def: ColDef<GridRow<T>> = {
     colId: column.field,
-    // 동적 컬럼만 메시지 키가 아니다 — grid-column-contract.md §2.2. `cell.ts` 가 그 예외를 한 곳에 담는다.
+    // 동적 컬럼만 메시지 키가 아니다 — frontend/grid.md. `cell.ts` 가 그 예외를 한 곳에 담는다.
     headerName: header,
     /*
-      필수 표시(`*`)는 <b>클래스</b>이지 글자가 아니다 — grid-column-contract.md §5.1.
+      필수 표시(`*`)는 <b>클래스</b>이지 글자가 아니다 — frontend/grid.md.
 
       헤더 글자에 붙이면 그 문자열이 <b>정렬·필터·엑셀</b>로 함께 흘러 `그룹 코드 *` 가
       파일의 헤더가 된다. 붙는 자리는 화면 하나이므로 CSS 가 그린다.
     */
     headerClass: marksRequired(column) ? 'bo-header-required' : undefined,
-    // 헤더에만 붙는다 — 셀의 값이 아니라 컬럼 자체에 대한 설명이다(grid-column-contract.md §2.1).
+    // 헤더에만 붙는다 — 셀의 값이 아니라 컬럼 자체에 대한 설명이다(frontend/grid.md).
     headerTooltip: column.headerTooltip ? label(column.headerTooltip) : undefined,
     width: fitted === 0 ? column.width : fitted,
-    // 남는 폭을 채우는 컬럼은 <b>폭이 계산된다</b> — 선언한 폭은 최소 폭이 된다(grid-standard.md §2).
+    // 남는 폭을 채우는 컬럼은 <b>폭이 계산된다</b> — 선언한 폭은 최소 폭이 된다(frontend/grid.md).
     ...(column.fill ? { flex: 1, minWidth: fitted || column.width, width: undefined } : {}),
     // `undefined` 를 두지 않는다 — 판은 그것을 <i>바꾸지 않는다</i> 로 읽어, 고정을 풀어도
     // 앞의 상태가 남는다. `null` 이 <b>고정 없음</b>이다.
@@ -330,29 +330,29 @@ function toColDef<T>(column: ColumnDef<T>, options: AdapterOptions<T>): ColDef<G
     hide: column.visible === false,
     resizable: true,
     // 판의 컬럼 메뉴를 끈다. 컬럼 표시·순서·틀고정의 자리는 그리드 설정 창(③)이고 그것은
-    // 개인화 테이블 스키마가 Phase 6 미결이라 아직 없다(grid-standard.md §5·§9) — 지금 열어 두면
+    // 개인화 테이블 스키마가 Phase 6 미결이라 아직 없다(frontend/grid.md) — 지금 열어 두면
     // **저장되지 않는 설정**을 사용자가 만지게 되고, 그것은 "설정이 저장되지 않는다" 다.
     suppressHeaderMenuButton: true,
     sortable: column.sortable ?? false,
     valueGetter: (params: ValueGetterParams<GridRow<T>>) =>
-      // 파생 컬럼은 저장되는 값이 아니라 행에서 계산한 것이고(grid-column-contract.md §3), 동적 컬럼은 맵의 한
+      // 파생 컬럼은 저장되는 값이 아니라 행에서 계산한 것이고(frontend/grid.md), 동적 컬럼은 맵의 한
       // 칸이다(§2.2) — 읽는 규칙은 `cell.ts` 한 곳이다.
       params.data ? cellValue(column, params.data.data) : undefined,
   };
 
   // 서버가 정렬해 준 것을 그리드가 한 번 더 정렬하면 tie-breaker · 콜레이션 · NULL 위치 ·
-  // 표시값에서 어긋난다(grid-column-contract.md §3). 헤더는 상태 표시와 이벤트만 내고 순서는 서버가 준 그대로다.
+  // 표시값에서 어긋난다(frontend/grid.md). 헤더는 상태 표시와 이벤트만 내고 순서는 서버가 준 그대로다.
   if (serverSort) {
     def.comparator = () => 0;
   } else if (column.type === 'bigint') {
     /*
-      <b>큰 정수는 문자열로 온다</b>(68 §9.10) — 그래서 판의 기본 비교자가 <b>글자로</b>
+      <b>큰 정수는 문자열로 온다</b>(playbook/INDEX.md) — 그래서 판의 기본 비교자가 <b>글자로</b>
       견준다: {@code '9'} 가 {@code '10'} 보다 뒤에 오고, 그것이 <i>정렬을 눌렀는데
       순서가 이상하다</i> 로만 드러난다.
 
       <b>서버 정렬이면 위 가지가 이미 막았다.</b> 여기 오는 것은 클라이언트가 정렬하는
       그리드(전량 조회)이며, 그런 화면에서도 같은 컬럼이 같은 순서로 보여야 한다 —
-      68 §9.10 이 *"정렬은 서버가 한다"* 로 닫아 둔 것은 <b>페이징이 있는 화면</b> 얘기다.
+      playbook/INDEX.md 이 *"정렬은 서버가 한다"* 로 닫아 둔 것은 <b>페이징이 있는 화면</b> 얘기다.
 
       {@code Number()} 로 바꾸지 않는다 — 그러면 이 타입이 존재하는 이유를 비교자 안에서
       되돌리는 꼴이다. 자릿수를 먼저 보고 같으면 글자로 견주는 것이 <b>정확</b>하다.
@@ -360,11 +360,11 @@ function toColDef<T>(column: ColumnDef<T>, options: AdapterOptions<T>): ColDef<G
     def.comparator = compareBigint;
   }
 
-  // `pk` 는 스스로 편집 규칙이다 — `editable` 선언이 없어도 신규 행에서 열린다(grid-column-contract.md §5.1).
+  // `pk` 는 스스로 편집 규칙이다 — `editable` 선언이 없어도 신규 행에서 열린다(frontend/grid.md).
   if ((column.editable !== undefined || column.pk) && options.editable) {
     def.editable = (params) => {
       const row = params.data;
-      // 삭제 상태의 행은 셀 편집이 막힌다 — grid-standard.md §3.4.
+      // 삭제 상태의 행은 셀 편집이 막힌다 — frontend/grid.md.
       if (!row || row.state === 'D') return false;
       return editableOf(column, row.data, { state: row.state }) === true;
     };
@@ -378,7 +378,7 @@ function toColDef<T>(column: ColumnDef<T>, options: AdapterOptions<T>): ColDef<G
   applyRenderer(def, column, options);
   applyDateFormat(def, column);
 
-  // 한 건이면 셀 툴팁이다 — grid-edit-validation.md §3.3. 표시(테두리·배경)만으로는 무엇이 틀렸는지 말하지 못한다.
+  // 한 건이면 셀 툴팁이다 — frontend/grid.md. 표시(테두리·배경)만으로는 무엇이 틀렸는지 말하지 못한다.
   def.tooltipValueGetter = (params) => {
     const issue = issues.find(
       (candidate) => candidate.rowId === params.data?.id && candidate.field === column.field,
@@ -386,14 +386,14 @@ function toColDef<T>(column: ColumnDef<T>, options: AdapterOptions<T>): ColDef<G
     if (issue) return issue.message;
     /*
       오류가 없을 때만 값이 온다. 폭보다 긴 값을 <b>펼쳐 읽는</b> 자리이며(로그인 이력의
-      `User-Agent` — 64 §4.5), 틀린 칸에서는 무엇이 틀렸는지가 먼저다(grid-edit-validation.md §3.3).
+      `User-Agent` — screen/log/access/requirements.md), 틀린 칸에서는 무엇이 틀렸는지가 먼저다(frontend/grid.md).
     */
     return column.cellTooltip ? scalar(params.value) || null : null;
   };
 
   def.cellClassRules = {
     /*
-      취소선이 <b>이 칸에만</b> 걸린다 — 63 §4.4. 선언이 없으면 행 전체이며(grid-standard.md §3.4)
+      취소선이 <b>이 칸에만</b> 걸린다 — screen/code/requirements.md. 선언이 없으면 행 전체이며(frontend/grid.md)
       그때는 이 규칙이 아무 행에도 붙지 않는다.
     */
     'bo-cell-removed': (params) =>
@@ -411,14 +411,14 @@ function toColDef<T>(column: ColumnDef<T>, options: AdapterOptions<T>): ColDef<G
 }
 
 /**
- * 필터 유형은 <b>컬럼 타입이 정한다</b> — grid-column-contract.md §4.3.
+ * 필터 유형은 <b>컬럼 타입이 정한다</b> — frontend/grid.md.
  *
  * <p><b>고르는 값에는 고르는 필터를 준다.</b> {@code ynFlag} 와 {@code options} 가 있는
  * 컬럼(코드·셀렉트)은 값 집합이 닫혀 있으므로 체크박스이며, 거기에 텍스트 필터를 두면
  * 사용자는 화면에 보이는 <i>이름</i> 을 치는데 판은 <i>코드값</i> 을 비교한다.
  *
  * <p>나머지는 아직 판의 기본이다 — 날짜 범위·숫자 범위는 그것을 처음 요구하는 화면이
- * 가져온다(grid-column-contract.md §4.3의 구현 노트).
+ * 가져온다(frontend/grid.md의 구현 노트).
  *
  * <p>{@code list} 는 배열이라 비교 대상이 아니다.
  */
@@ -453,7 +453,7 @@ function applyFilter<T>(def: ColDef<GridRow<T>>, column: ColumnDef<T>): void {
     return;
   }
   /*
-    <b>날짜는 달력이다</b> — grid-column-contract.md §4.5 · 68 §9.8. 판의 날짜 필터는 사람이 형식을 손으로
+    <b>날짜는 달력이다</b> — frontend/grid.md · playbook/INDEX.md. 판의 날짜 필터는 사람이 형식을 손으로
     치는 텍스트 칸이고, 틀리면 <b>조용히 걸리지 않는다</b>.
 
     {@code options} 가지보다 <b>뒤에</b> 있는 것은 순서가 아니라 사실이다 — 날짜 컬럼에
@@ -474,7 +474,7 @@ function applyEditor<T>(
   options: AdapterOptions<T>,
 ): void {
   /*
-    <b>날짜는 타입이 편집기를 정한다</b>(grid-column-contract.md §5 의 표 — `date` 계열의 기본 에디터가 `date`).
+    <b>날짜는 타입이 편집기를 정한다</b>(frontend/grid.md 의 표 — `date` 계열의 기본 에디터가 `date`).
     선언에 {@code editor} 를 적지 않아도 달력이 뜬다: 판의 기본은 텍스트 칸이고 그것을
     그대로 두면 사람이 `2026-08-31` 을 손으로 치는데, 형식이 틀리면 <b>조용히 값이 되지
     않는다</b>(2026-08-31 실물 — 보유 역할 탭의 시작·종료일).
@@ -493,7 +493,7 @@ function applyEditor<T>(
   }
 
   /*
-    <b>팝업은 타입이 정한다</b> — grid-column-contract.md §6. {@code editor: 'popupRef'} 를 적어도 같은 뜻이며
+    <b>팝업은 타입이 정한다</b> — frontend/grid.md. {@code editor: 'popupRef'} 를 적어도 같은 뜻이며
     (아래 {@code switch} 가 그것을 받는다) 날짜와 같은 모양이다.
 
     <b>선언이 반쪽이면 열지 않는다.</b> {@code type} 만 있고 {@code popup} 이 없는 칸에
@@ -528,7 +528,7 @@ function applyEditor<T>(
 
   switch (column.editor) {
     case 'largeText':
-      // 셀에서 볼 수 없는 값이라 팝업으로 연다 — grid-column-contract.md §5.5.
+      // 셀에서 볼 수 없는 값이라 팝업으로 연다 — frontend/grid.md.
       def.cellEditor = 'agLargeTextCellEditor';
       def.cellEditorPopup = true;
       def.cellEditorParams = { maxLength: 2000, rows: 8, cols: 60 };
@@ -541,11 +541,11 @@ function applyEditor<T>(
       def.cellEditorParams = { values: (column.options ?? []).map((option) => option.value) };
       break;
     /*
-      검색 콤보 — grid-column-contract.md §5.7 · 68 §9.5.
+      검색 콤보 — frontend/grid.md · playbook/INDEX.md.
 
       <b>후보를 여기서 채워 넣는다.</b> {@code grpCd} 인 컬럼은 판에 닿기 전에
       {@code options} 가 채워지므로({@code DataGrid}) 편집기는 <b>한 자리만</b> 본다 —
-      공통코드인지 화면이 아는 목록인지 편집기가 다시 묻지 않는다(grid-column-contract.md §5.7).
+      공통코드인지 화면이 아는 목록인지 편집기가 다시 묻지 않는다(frontend/grid.md).
     */
     case 'richSelect': {
       const searchParams: SearchSelectCellEditorParams = { options: column.options ?? [] };
@@ -556,7 +556,7 @@ function applyEditor<T>(
       break;
     }
     /*
-      배열 편집 — grid-column-contract.md §5.6 · 68 §9.6.
+      배열 편집 — frontend/grid.md · playbook/INDEX.md.
 
       <b>선언이 반쪽이면 열지 않는다</b>({@code popupRef} 와 같은 규칙) — 고를 팝업이
       없으면 <i>추가</i> 버튼이 아무 일도 하지 않는 창이 뜨고, 그 원인은 화면 어디에도
@@ -571,7 +571,7 @@ function applyEditor<T>(
         display: column.display,
         title: headerText(column),
         /*
-          <b>읽기 전용이어도 열린다</b>(grid-column-contract.md §5.5 와 같은 자리) — 배열은 셀에서 다 볼 수
+          <b>읽기 전용이어도 열린다</b>(frontend/grid.md 와 같은 자리) — 배열은 셀에서 다 볼 수
           없다. 판은 {@code def.editable} 이 꺼진 칸의 편집기를 아예 열지 않으므로
           (아래 {@code toColDef} 가 그것을 정한다) 여기서 보는 것은 <b>행마다 갈리는
           닫힘</b>이 아니라 <b>컬럼 선언의 닫힘</b>이다.
@@ -583,7 +583,7 @@ function applyEditor<T>(
       def.cellEditorParams = listParams;
       break;
     }
-    // 긴 텍스트의 넓은 쪽 — grid-column-contract.md §5.5 · 68 §9.7. `largeText` 와 갈리는 것이 <b>글자 수</b>다.
+    // 긴 텍스트의 넓은 쪽 — frontend/grid.md · playbook/INDEX.md. `largeText` 와 갈리는 것이 <b>글자 수</b>다.
     case 'textModal': {
       const textParams: TextModalCellEditorParams = {
         title: headerText(column),
@@ -610,9 +610,9 @@ function applyEditor<T>(
 const DEFAULT_TEXT_MODAL_LENGTH = 2000;
 
 /**
- * 읽기 전용인데 셀에서 다 볼 수 없는 칸 — grid-column-contract.md §5.5.
+ * 읽기 전용인데 셀에서 다 볼 수 없는 칸 — frontend/grid.md.
  *
- * <p><b>편집기를 열지 않는다.</b> 여는 순간 고칠 수 있는 것처럼 보이고, 63 §4.2 의 설명
+ * <p><b>편집기를 열지 않는다.</b> 여는 순간 고칠 수 있는 것처럼 보이고, screen/code/requirements.md 의 설명
  * 컬럼처럼 <i>편집하면 값을 안 바꿨는데 행이 생기는</i> 칸에서는 그것이 곧 사고다. 대신
  * {@code DataGrid} 가 더블클릭을 받아 <b>읽기 전용 모달</b>을 연다 — 여기서는 그 칸임을
  * 알리고 커서로 <b>눌러 볼 수 있다는 것</b>만 말한다.
@@ -634,17 +634,17 @@ function applyRenderer<T>(
   };
 
   if (column.type === 'ynFlag') {
-    // 값이 둘인 데이터 칸은 스위치다 — 체크박스가 아니다(grid-column-contract.md §5.2).
+    // 값이 둘인 데이터 칸은 스위치다 — 체크박스가 아니다(frontend/grid.md).
     /*
       <b>가로만 늘린다.</b> 높이는 행 높이에 매여 있으므로 `small` 그대로이고, 켜짐·꺼짐이
       갈리는 것은 <b>손잡이가 어느 쪽 끝에 있는가</b>라 폭이 그 신호를 만든다 — 좁으면
       두 상태의 손잡이 위치가 몇 px 차이다(2026-08-30 실물).
     */
     /*
-      <b>스위치가 곧 편집기다</b>(grid-column-contract.md §5.2 · 2026-08-30 실물). 여기 있던 것은 언제나
+      <b>스위치가 곧 편집기다</b>(frontend/grid.md · 2026-08-30 실물). 여기 있던 것은 언제나
       {@code disabled} 인 <b>표시용</b> 스위치였고, 그래서 `editable` 을 선언한 컬럼도
       <b>켜고 끌 수가 없었다</b> — `CODE_MGMT` 의 사용 여부와 `ROLE_MGMT` 의 사용 여부가
-      같이 걸려 있었다(62 §3.6 의 확인 세 줄이 이 스위치에서 시작한다).
+      같이 걸려 있었다(screen/menu/requirements.md 의 확인 세 줄이 이 스위치에서 시작한다).
 
       <b>판의 편집기를 아예 열지 않는다</b>(2026-08-31 — 고쳤다). {@link EditorType} 에
       {@code switch} 가 있지만 판의 편집기로 옮기지 않는 것은, 값이 둘인 칸에서 <i>편집
@@ -657,7 +657,7 @@ function applyRenderer<T>(
 
       <b>{@code def.editable} 을 끄는 것이 잃는 것이 없다.</b> 그것을 켜 두었던 근거는
       <i>필수·읽기전용 배경색과 검증의 입력</i> 이었는데, 둘 다 <b>우리 어휘</b>를 본다 —
-      배경은 아래 {@code cellClassRules} 가 {@code editableOf} 로 판정하고(grid-column-contract.md §5.1) 검증은
+      배경은 아래 {@code cellClassRules} 가 {@code editableOf} 로 판정하고(frontend/grid.md) 검증은
       {@code validate.ts} 가 같은 함수를 쓴다. 스위치의 커밋도 {@code valueSetter} 가 아니라
       {@code commitEdit} 를 직접 부르므로 경로가 끊기지 않는다.
     */
@@ -675,13 +675,13 @@ function applyRenderer<T>(
         />
       );
       /*
-        <b>왜 못 켜는지 말한다</b>(2026-08-30 — 61 §3.7.1). 텍스트 칸은 편집을 시도하면
+        <b>왜 못 켜는지 말한다</b>(2026-08-30 — screen/user/requirements.md). 텍스트 칸은 편집을 시도하면
         {@code denyEdit} 가 사유를 내지만, <b>비활성 스위치는 이벤트를 내지 않아</b> 그
-        문구가 영영 나가지 않는다 — 63 §2.4 가 비활성 버튼에 대해 적은 것과 같은 자리다.
+        문구가 영영 나가지 않는다 — screen/code/requirements.md 가 비활성 버튼에 대해 적은 것과 같은 자리다.
 
         <b>사유가 있을 때만 감싼다.</b> 컬럼 전체가 읽기 전용인 칸(선언에 {@code editable}
         이 없는 것)은 사유가 없고, 거기 툴팁을 붙이면 <i>못 고치는 칸마다 빈 말풍선</i>이
-        생긴다 — 61 §2.3 의 시스템 축 셋이 정확히 그런 칸이다.
+        생긴다 — screen/user/requirements.md 의 시스템 축 셋이 정확히 그런 칸이다.
 
         <b>{@code span} 으로 감싼다</b> — 비활성 요소는 마우스 이벤트를 내지 않으므로
         툴팁이 붙을 자리가 따로 필요하다.
@@ -710,12 +710,12 @@ function applyRenderer<T>(
     /*
       <b>{@code display} 가 글자를 정하고 값이 색을 정한다</b> — 축이 둘이다.
 
-      값이 코드(`SKIP_LOCK`)이고 글자가 라벨(`건너뜀(락)`)인 배지가 있다(65 §4.3 ·
-      61 §3.2.1). 라벨을 {@code derive} 로 만들어 넣으면 <b>{@code tone} 조회가 라벨
+      값이 코드(`SKIP_LOCK`)이고 글자가 라벨(`건너뜀(락)`)인 배지가 있다(screen/batch/schedule/requirements.md ·
+      screen/user/requirements.md). 라벨을 {@code derive} 로 만들어 넣으면 <b>{@code tone} 조회가 라벨
       문자열로 가서 색이 하나도 안 칠해지고</b>, 정렬·필터·엑셀도 라벨을 보게 된다 —
-      값을 원본으로 두는 것이 grid-column-contract.md §5.4 의 규칙이다.
+      값을 원본으로 두는 것이 frontend/grid.md 의 규칙이다.
 
-      어휘를 새로 만들지 않는다 — {@code display} 는 grid-column-contract.md §5.3 이 이미 <i>값을 글자로
+      어휘를 새로 만들지 않는다 — {@code display} 는 frontend/grid.md 이 이미 <i>값을 글자로
       바꾸는 방법</i> 으로 정의해 둔 자리이며 {@code link} 가 같은 뜻으로 쓴다.
     */
     const render = column.display;
@@ -723,10 +723,10 @@ function applyRenderer<T>(
     def.cellRenderer = (params: ICellRendererParams<GridRow<T>>) => {
       const color = TONE_COLOR[toneOf(column.tone, params.value)];
       const text = render ? render(params.value) : textOf(params.value);
-      // 맵에 없는 값은 칠하지 않는다 — 정상이 압도적인 목록에서는 그것이 기본이다(grid-column-contract.md §5.4.1).
+      // 맵에 없는 값은 칠하지 않는다 — 정상이 압도적인 목록에서는 그것이 기본이다(frontend/grid.md).
       const main = color ? <Tag color={color}>{text}</Tag> : <span>{text}</span>;
       /*
-        <b>값의 내력이 함께 올 수 있다</b>(65 §4.4). 실행 이력의 *결과* 가 그 자리이며
+        <b>값의 내력이 함께 올 수 있다</b>(screen/batch/schedule/requirements.md). 실행 이력의 *결과* 가 그 자리이며
         `진행 중` 옆에 `유령` 이 붙는다 — 값이 사라지지 않으므로 아래 `column.badge` 분기가
         금지한 겹침(값 <i>대신</i> 배지)이 아니다.
       */
@@ -742,11 +742,11 @@ function applyRenderer<T>(
     return;
   }
   /*
-    밀리초를 사람이 읽는 단위로 — grid-column-contract.md §5.4 · 65 §4.4.
+    밀리초를 사람이 읽는 단위로 — frontend/grid.md · screen/batch/schedule/requirements.md.
 
     <b>{@code 3725000} 을 사람이 읽지 않는다.</b> 서버가 포맷한 문자열 컬럼을 따로 주면
     그 컬럼의 정렬이 <b>문자열 정렬</b>이 되고(`9분` > `10분`), 셀에서 계산하면 렌더 함수를
-    여는 것이라 grid-column-contract.md §5.4 가 닫아 둔 문이다.
+    여는 것이라 frontend/grid.md 가 닫아 둔 문이다.
 
     <b>값은 원본 ms 다</b> — 정렬·필터·엑셀이 전부 그것을 본다.
   */
@@ -757,12 +757,12 @@ function applyRenderer<T>(
     return;
   }
   /*
-    누를 수 있는 글자 — grid-column-contract.md §5.4.
+    누를 수 있는 글자 — frontend/grid.md.
 
     <b>{@code onClick} 이 없으면 보통 텍스트다.</b> 링크처럼 보이는데 아무 일도 하지 않는
     셀은 <i>고장</i> 으로 읽힌다.
 
-    <b>값이 아니라 {@code display} 가 그린다</b>(64 §2.4의 {@code [보기]}). 값은 그대로
+    <b>값이 아니라 {@code display} 가 그린다</b>(screen/log/access/requirements.md의 {@code [보기]}). 값은 그대로
     남아 엑셀과 복사가 그것을 쓴다.
   */
   if (column.renderer === 'link') {
@@ -787,13 +787,13 @@ function applyRenderer<T>(
     return;
   }
   /*
-    0~100 막대 — 68 §9.9.
+    0~100 막대 — playbook/INDEX.md.
 
-    <b>값은 원본 숫자다</b>(grid-column-contract.md §5.4). 서버가 `43%` 라는 문자열을 주면 정렬이 문자열
+    <b>값은 원본 숫자다</b>(frontend/grid.md). 서버가 `43%` 라는 문자열을 주면 정렬이 문자열
     정렬이 되고 엑셀에도 그 글자가 실린다 — `duration` 과 정확히 같은 규칙이다.
 
-    <b>막대 굵기가 행 높이를 따라가지 않는다</b>(2026-09-02 — 68 §11 의 미결을 닫는다).
-    판의 행 높이는 사용자가 40px 까지 올릴 수 있는데(main-shell.md §9), 굵기를 거기 매면 <b>셀을
+    <b>막대 굵기가 행 높이를 따라가지 않는다</b>(2026-09-02 — playbook/INDEX.md 의 미결을 닫는다).
+    판의 행 높이는 사용자가 40px 까지 올릴 수 있는데(frontend/tabs.md), 굵기를 거기 매면 <b>셀을
     가득 채운 색 덩어리</b>가 되어 옆 칸의 글자를 눌러 버린다. 진행률은 <i>값</i> 이지
     <i>배경</i> 이 아니다. 대신 <b>세로 가운데</b>에 놓아 어느 행 높이에서도 글자 줄과
     같은 선에 오게 한다 — 스위치와 같은 처리다.
@@ -805,7 +805,7 @@ function applyRenderer<T>(
         {@code Number('')} 이 <b>둘 다 0</b> 이라, 값이 없는 칸에 <b>0% 막대</b>가 그려진다
         (2026-09-02 실물 — 테스트가 잡았다). 그러면 <i>아직 시작 안 함</i> 과 <i>진행률을
         모름</i> 이 화면에서 같은 것이 되고, 후자는 <b>고장</b>인데 전자로 읽힌다.
-        `duration` 이 {@code null} 을 빈 칸으로 두는 것과 같은 자리다(65 §4.4).
+        `duration` 이 {@code null} 을 빈 칸으로 두는 것과 같은 자리다(screen/batch/schedule/requirements.md).
       */
       const raw: unknown = params.value;
       const numeric = raw === null || raw === undefined || raw === '' ? NaN : Number(raw);
@@ -816,13 +816,13 @@ function applyRenderer<T>(
     return;
   }
   /*
-    아이콘 + 툴팁 — 68 §9.9.
+    아이콘 + 툴팁 — playbook/INDEX.md.
 
     <b>모양은 {@code icons} 가, 색은 {@code tone} 이 정한다</b>(축 둘). 툴팁에는
     <b>화면에 보이던 글자</b>가 온다 — 아이콘만 남으면 색맹·흑백 인쇄·모르는 아이콘
     셋 다에서 그 칸을 읽을 수 없다.
 
-    <b>맵에 없는 값은 글자로 떨어진다</b>(grid-column-contract.md §5.4.1). 물음표 아이콘을 그리면 진짜 값이
+    <b>맵에 없는 값은 글자로 떨어진다</b>(frontend/grid.md). 물음표 아이콘을 그리면 진짜 값이
     화면 어디에도 남지 않는다 — {@code cellIcons.tsx} 머리말과 같은 결정이다.
   */
   if (column.renderer === 'icon') {
@@ -837,7 +837,7 @@ function applyRenderer<T>(
     return;
   }
   /*
-    배열을 태그로 — grid-column-contract.md §5.6 · 68 §9.6.
+    배열을 태그로 — frontend/grid.md · playbook/INDEX.md.
 
     <b>앞 몇 개와 `+N` 이다.</b> 전부 그리면 태그가 셀 밖으로 밀려 나가고, 판은 셀을
     한 줄로 자르므로 <b>넘친 것이 화면에서 사라진다</b> — 열 개 붙은 행과 세 개 붙은
@@ -868,7 +868,7 @@ function applyRenderer<T>(
     return;
   }
   /*
-    값 <b>과 함께</b> 내는 표시 — 63 §4.3.
+    값 <b>과 함께</b> 내는 표시 — screen/code/requirements.md.
 
     `renderer: 'badge'` 아래에 두는 것은, 저것이 값 <i>대신</i> 배지를 그리므로 둘이
     한 셀에서 만나면 값이 사라지기 때문이다. 여기 오는 셀은 값이 주인공이고 굵기와
@@ -896,9 +896,9 @@ function applyRenderer<T>(
 }
 
 /**
- * 시각을 <b>보이는 대로</b> 그린다 — grid-column-contract.md §4.5.
+ * 시각을 <b>보이는 대로</b> 그린다 — frontend/grid.md.
  *
- * <p>서버가 주는 것은 오프셋을 포함한 ISO-8601 이고(architecture.md §6-1) 그대로 두면 셀에
+ * <p>서버가 주는 것은 오프셋을 포함한 ISO-8601 이고(backend/packages.md) 그대로 두면 셀에
  * `2026-08-30T09:50:12.345Z` 가 보인다. 읽는 사람은 <b>자기 시간대의 시각</b>을 기대하므로
  * `dayjs` 가 현지로 옮겨 자른다 — 이력 화면이 처음으로 시각 컬럼을 <b>보이게</b> 두면서
  * 필요해졌다(그 전까지 시각 컬럼은 전부 감사 4컬럼이라 기본 숨김이었다).
@@ -906,9 +906,9 @@ function applyRenderer<T>(
  * <p><b>형식 문자열은 시스템 설정이 정한다</b>(2026-08-31 — `dateFormat`). 여기 상수로 두면
  * 같은 값이 화면과 설정 화면에서 다른 모양으로 보인다.
  *
- * <p><b>값은 바꾸지 않는다</b>(grid-column-contract.md §5.4) — 바뀌는 것은 표시뿐이고 엑셀과 조건은 원본을 쓴다.
+ * <p><b>값은 바꾸지 않는다</b>(frontend/grid.md) — 바뀌는 것은 표시뿐이고 엑셀과 조건은 원본을 쓴다.
  * 다만 <b>필터는 보이는 글자를 본다</b>: 셀에 `2026-08-30 18:50:12` 가 보이는데 필터가
- * ISO 원문을 비교하면 <i>화면에 있는 글자로 걸러지지 않는다</i>(grid-column-contract.md §4.2).
+ * ISO 원문을 비교하면 <i>화면에 있는 글자로 걸러지지 않는다</i>(frontend/grid.md).
  */
 function applyDateFormat<T>(def: ColDef<GridRow<T>>, column: ColumnDef<T>): void {
   if (column.type !== 'date' && column.type !== 'dateTime') {
@@ -922,7 +922,7 @@ function applyDateFormat<T>(def: ColDef<GridRow<T>>, column: ColumnDef<T>): void
 }
 
 /**
- * 큰 정수 문자열 둘의 순서 — {@code Number} 를 거치지 않는다(68 §9.10).
+ * 큰 정수 문자열 둘의 순서 — {@code Number} 를 거치지 않는다(playbook/INDEX.md).
  *
  * <p><b>부호 → 자릿수 → 글자</b> 순으로 본다. 앞의 {@code 0} 을 떼고 나면 <i>자릿수가
  * 많은 쪽이 크다</i> 가 양수에서 언제나 참이고, 자릿수가 같으면 <b>글자 비교가 곧 수
@@ -952,10 +952,10 @@ function compareBigint(left: unknown, right: unknown): number {
 }
 
 /**
- * 값 → 색 — grid-column-contract.md §5.4.1 의 <b>축 둘</b>.
+ * 값 → 색 — frontend/grid.md 의 <b>축 둘</b>.
  *
  * <p>맵은 값이 무엇인가로, 범위는 값이 어디에 드는가로 고른다. <b>둘 다 없는 값은 칠하지
- * 않는다</b>: 정상이 압도적인 목록에서는 그것이 기본이고, 칠한 것만 눈에 남는다(grid-standard.md §8.1).
+ * 않는다</b>: 정상이 압도적인 목록에서는 그것이 기본이고, 칠한 것만 눈에 남는다(frontend/grid.md).
  */
 function toneOf(tone: ColumnDef<never>['tone'], value: unknown): Tone {
   if (!tone) return 'none';
@@ -969,21 +969,21 @@ function toneOf(tone: ColumnDef<never>['tone'], value: unknown): Tone {
   return tone[String(value)] ?? 'none';
 }
 
-/** 표시용 문자열. 객체가 오면 `[object Object]` 가 아니라 빈 칸이다 — grid-column-contract.md §5.3 이 기각한 모양이다. */
+/** 표시용 문자열. 객체가 오면 `[object Object]` 가 아니라 빈 칸이다 — frontend/grid.md 이 기각한 모양이다. */
 /**
  * 이 행에서 <b>스위치를 만질 수 있는가</b> — {@code def.editable} 과 같은 판정이다.
  *
  * <p>같은 규칙을 두 곳에 적지 않으려고 {@link editableOf} 하나를 본다. 다른 것은 <b>거절을
  * 말하지 않는다</b>는 것뿐이다: 비활성 스위치는 <i>못 만지는 것</i>으로 이미 읽히고
- * (61 §4.4 — <i>회색 체크박스는 꺼진 것과 구분되지 않는다</i> 의 반대편이다), 누를 수 없는
+ * (screen/user/requirements.md — <i>회색 체크박스는 꺼진 것과 구분되지 않는다</i> 의 반대편이다), 누를 수 없는
  * 컨트롤은 사유를 낼 계기 자체가 없다.
  */
 /**
  * 스위치가 열리는가 — <b>그리고 안 열리면 왜인가</b>.
  *
- * <p>{@code false} 와 {@code {ok:false, message}} 를 가르는 것이 요점이다(grid-edit-validation.md §2.1). 앞엣것은
+ * <p>{@code false} 와 {@code {ok:false, message}} 를 가르는 것이 요점이다(frontend/grid.md). 앞엣것은
  * <b>이 컬럼은 원래 못 고친다</b>(선언에 {@code editable} 이 없거나 지운 행이다)이고,
- * 뒤엣것은 <b>이 행에서만 못 고친다</b> — 61 §3.7.1 의 <i>자기 계정은 사용 중지할 수 없다</i>
+ * 뒤엣것은 <b>이 행에서만 못 고친다</b> — screen/user/requirements.md 의 <i>자기 계정은 사용 중지할 수 없다</i>
  * 가 그것이며, 그때는 <b>사유를 말해야 한다</b>: 말하지 않으면 <i>왜 이 행만 안 되나</i> 가
  * 된다.
  */
@@ -993,7 +993,7 @@ function switchVerdict<T>(
   row: GridRow<T> | undefined,
 ): EditableResult {
   if (!row || !options.editable) return false;
-  // 삭제 상태의 행은 셀 편집이 막힌다 — grid-standard.md §3.4.
+  // 삭제 상태의 행은 셀 편집이 막힌다 — frontend/grid.md.
   if (row.state === 'D') return false;
   if (column.editable === undefined && !column.pk) return false;
   return editableOf(column, row.data, { state: row.state });
@@ -1016,7 +1016,7 @@ function commitEdit<T>(
 }
 
 /**
- * 팝업에서 고른 행을 <b>이 행에 머지한다</b> — grid-column-contract.md §6.3.
+ * 팝업에서 고른 행을 <b>이 행에 머지한다</b> — frontend/grid.md.
  *
  * <p><b>{@link commitEdit} 와 같은 길을 탄다.</b> 갈리는 것은 <i>패치를 무엇이 만드는가</i>
  * 하나이며(셀 값 하나냐 {@code apply} 의 부분 객체냐), 그 뒤의 <b>편집 가능 판정 →
@@ -1038,7 +1038,7 @@ export function commitPopupPick<T>(
 }
 
 /**
- * 편집 하나가 행에 닿는 <b>공통 경로</b> — grid-edit-validation.md §2.1 · §2.3 · §3.3.
+ * 편집 하나가 행에 닿는 <b>공통 경로</b> — frontend/grid.md.
  *
  * <p>갈라 둔 것은 <b>둘이 같은 순서를 타야 하기 때문</b>이다. 예전에는 이 몸통이
  * {@code commitEdit} 안에만 있었고, 팝업이 그것을 흉내 내면 <b>흉내가 한 걸음 모자란
@@ -1058,20 +1058,20 @@ function commitPatch<T>(
   }
   const patch = makePatch(row.data);
   const merged = { ...row.data, ...patch };
-  // 후작업은 한 단계에서 멈춘다 — 다른 컬럼의 afterEdit 를 다시 부르지 않는다(grid-edit-validation.md §2.3).
+  // 후작업은 한 단계에서 멈춘다 — 다른 컬럼의 afterEdit 를 다시 부르지 않는다(frontend/grid.md).
   const extra = column.afterEdit ? column.afterEdit(merged) : null;
   const applied = extra ? { ...merged, ...extra } : merged;
   options.onEdit(row.id, extra ? { ...patch, ...extra } : patch);
 
   /*
-    <b>규칙을 어겼으면 그 자리에서 말한다</b>(2026-08-31 실물 — grid-edit-validation.md §3.3 ④).
+    <b>규칙을 어겼으면 그 자리에서 말한다</b>(2026-08-31 실물 — frontend/grid.md ④).
 
-    <b>편집을 막지 않는다</b>(grid-edit-validation.md §3.1) — 값은 이미 행에 들어갔고 붉은 표시도 붙는다. 다만
+    <b>편집을 막지 않는다</b>(frontend/grid.md) — 값은 이미 행에 들어갔고 붉은 표시도 붙는다. 다만
     그 표시가 <i>무엇이 틀렸는지</i> 를 말하지 않아, IP 형식이 아닌 값을 넣으면 <b>테두리만
     빨개지고 이유가 어디에도 없었다</b>: 유일한 통로가 셀 툴팁인데 판의 기본 지연이 2초라
     <b>2초를 버티고 호버해야</b> 나왔다.
 
-    <b>거절 메시지와 같은 통로를 쓴다</b>(위 {@code onEditDenied} — grid-edit-validation.md §2.1). 둘의 뜻은
+    <b>거절 메시지와 같은 통로를 쓴다</b>(위 {@code onEditDenied} — frontend/grid.md). 둘의 뜻은
     다르지만 사용자가 알아야 하는 것은 같다: <i>지금 한 입력이 그대로 남지 않는다</i>.
 
     <b>{@code afterEdit} 뒤의 값을 본다</b> — 후작업이 값을 바꿀 수 있으므로 그 전에 재면
@@ -1088,7 +1088,7 @@ function scalar(value: unknown): string {
   return '';
 }
 
-/** 상태·삭제 컬럼 — 시스템이 붙이며 숨기지도 옮기지도 못한다(grid-standard.md §4). */
+/** 상태·삭제 컬럼 — 시스템이 붙이며 숨기지도 옮기지도 못한다(frontend/grid.md). */
 function systemColumn<T>(
   headerKey: string,
   width: number,
@@ -1099,7 +1099,7 @@ function systemColumn<T>(
   const header = label(headerKey);
   /*
     <b>시스템 컬럼도 헤더가 잘린다.</b> 폭이 고정(min = max)이라 사용자가 끌어 늘릴 수도
-    없어서 모자라면 <b>영영 말줄임표</b>이고, 63 §4.4 처럼 라벨을 바꾸는 자리가 있으므로
+    없어서 모자라면 <b>영영 말줄임표</b>이고, screen/code/requirements.md 처럼 라벨을 바꾸는 자리가 있으므로
     상수 하나로는 덮이지 않는다.
   */
   const fitted = font === undefined
@@ -1125,7 +1125,7 @@ function systemColumn<T>(
     /*
       가운데 정렬을 <b>줄 상자가 아니라 칸</b>에서 한다 — 셀의 내용은 기본적으로 글자
       줄에 얹히므로 글리프가 없는 것(체크박스 · 아이콘)은 내려간 만큼 아래로 처진다
-      (스위치 셀과 같은 자리다 — grid-standard.md §3.1).
+      (스위치 셀과 같은 자리다 — frontend/grid.md).
     */
     cellStyle: { display: 'flex', alignItems: 'center', justifyContent: 'center' },
     cellRenderer: renderer,
@@ -1134,7 +1134,7 @@ function systemColumn<T>(
 }
 
 /**
- * 행 번호 — <b>페이지를 넘어도 이어진다</b>(grid-standard.md §4).
+ * 행 번호 — <b>페이지를 넘어도 이어진다</b>(frontend/grid.md).
  *
  * <p>{@code rowIndex} 는 <b>지금 보이는 자리</b>이고 거기에 이 페이지 앞의 건수를 더한다.
  * 그래서 21번째 행은 2페이지 첫 줄에서도 <b>21</b> 이다 — 페이지마다 1부터 다시 세면
@@ -1142,7 +1142,7 @@ function systemColumn<T>(
  *
  * <p><b>컬럼 필터가 걸리면 번호가 촘촘해지지 않는다</b> — 걸러진 행은 자리를 비우는 것이
  * 아니라 목록에서 빠지므로 보이는 순서대로 다시 매겨진다. 필터는 현재 페이지 안에서만
- * 걸리며(grid-column-contract.md §4.1) 그 사실은 푸터가 말한다(grid-standard.md §2.3).
+ * 걸리며(frontend/grid.md) 그 사실은 푸터가 말한다(frontend/grid.md).
  *
  * <p>정렬 대상이 아니다. 번호는 <b>값이 아니라 자리</b>이므로 그것으로 정렬한다는 말은
  * 뜻이 없다.
@@ -1162,7 +1162,7 @@ function rowNumberColumn<T>(): ColDef<GridRow<T>> {
 }
 
 /**
- * 다중 선택 체크박스 — <b>번호 오른쪽</b>이다(grid-standard.md §4).
+ * 다중 선택 체크박스 — <b>번호 오른쪽</b>이다(frontend/grid.md).
  *
  * <p>판이 스스로 붙이는 선택 컬럼을 쓰지 않는다. 그것은 {@code lockPosition: 'left'} 라
  * <b>언제나 맨 앞</b>이고, 번호를 그보다 왼쪽에 두는 내장 행번호 컬럼은 <b>Enterprise</b>
@@ -1254,13 +1254,13 @@ function selectClicked<T>(
 }
 
 /**
- * 상태 넷의 표시 — grid-standard.md §3.2. <b>수정에만 되돌리기가 붙는다.</b>
+ * 상태 넷의 표시 — frontend/grid.md. <b>수정에만 되돌리기가 붙는다.</b>
  *
  * <p>신규를 되돌리는 것은 <i>없애는 것</i> 이고 삭제 표시를 되돌리는 것도 삭제 아이콘의
- * 일이다(grid-standard.md §3.3·§3.4) — 여기에 다 두면 <b>같은 아이콘이 상태마다 다른 일</b>을 한다.
+ * 일이다(frontend/grid.md) — 여기에 다 두면 <b>같은 아이콘이 상태마다 다른 일</b>을 한다.
  *
  * <p><b>글리프가 아니라 아이콘이다</b>(2026-08-30 실물). `＋`·`✕`·`✎` 는 글꼴이 주는
- * 글자라 <b>고른 글꼴마다 굵기와 크기가 달라지고</b>(main-shell.md §9.3) 셸의 다른 아이콘과 나란히
+ * 글자라 <b>고른 글꼴마다 굵기와 크기가 달라지고</b>(frontend/tabs.md) 셸의 다른 아이콘과 나란히
  * 놓이면 혼자 다른 계열로 보인다.
  */
 function stateRenderer<T>(onRevert: (rowId: string) => void) {

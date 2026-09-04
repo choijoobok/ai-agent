@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
- * 메뉴 하나를 <b>조상 경로를 포함한 한 줄</b>로 — 61 §3.8 의 탭 둘이 요구했다.
+ * 메뉴 하나를 <b>조상 경로를 포함한 한 줄</b>로 — screen/user/requirements.md 의 탭 둘이 요구했다.
  *
  * <p><b>재는 것은 빼지 않는가</b>다. {@code MenuTreeService} 의 조상 역산은 뿌리에 닿지
  * 못하는 리프를 <b>뺀다</b>(트리를 만드는 것이 목적이라 그것이 맞다). 여기는 반대다 —
@@ -21,11 +21,11 @@ import org.springframework.test.util.ReflectionTestUtils;
  */
 class MenuPathsTest {
 
-    /** 메뉴명은 메시지 키다 — 부르는 쪽이 글자로 바꾼다(42 §4). 여기서는 키를 그대로 쓴다. */
+    /** 메뉴명은 메시지 키다 — 부르는 쪽이 글자로 바꾼다(sys/menu.md). 여기서는 키를 그대로 쓴다. */
     private static final UnaryOperator<String> AS_IS = key -> key;
 
     @Test
-    @DisplayName("뿌리부터 리프까지 이어 붙인다 — main-shell.md §4.2 의 검색 결과와 같은 형식이다")
+    @DisplayName("뿌리부터 리프까지 이어 붙인다 — frontend/tabs.md 의 검색 결과와 같은 형식이다")
     void joinsFromRoot() {
         Map<String, String> paths = MenuPaths.of(
                 List.of(menu("USER", null, "사용자"), menu("USER_MGMT", "USER", "사용자 관리")),
@@ -54,7 +54,7 @@ class MenuPathsTest {
     }
 
     @Test
-    @DisplayName("순환에서 터지지 않는다 — 42 §4 의 3층 방어 중 읽는 쪽이다")
+    @DisplayName("순환에서 터지지 않는다 — sys/menu.md 의 3층 방어 중 읽는 쪽이다")
     void surviresACycle() {
         List<SysMenu> loop = List.of(menu("X", "Y", "엑스"), menu("Y", "X", "와이"));
 

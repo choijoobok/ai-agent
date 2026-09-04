@@ -1,7 +1,7 @@
 /**
- * 즐겨찾기의 API — UX-03 · 42 §7.
+ * 즐겨찾기의 API — UX-03 · sys/menu.md.
  *
- * <p>호출 URL 은 `api/endpoints.ts` 에만 둔다(frontend-stack.md §9). 셋 다 **`common` 계층이라
+ * <p>호출 URL 은 `api/endpoints.ts` 에만 둔다(frontend/packages.md). 셋 다 **`common` 계층이라
  * `SYS_MENU_API` 시드의 입력이 아니다** — `menuCd` 를 받지만 **그 메뉴의 권한을 묻지
  * 않는다**: 담는 것은 *"나는 이 메뉴를 자주 쓴다"* 라는 **사람의 속성**이지 그 메뉴의
  * 데이터가 아니다.

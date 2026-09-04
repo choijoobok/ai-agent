@@ -11,11 +11,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * {@code ERROR_LOG} 화이트리스트 — 64 §5.6.
+ * {@code ERROR_LOG} 화이트리스트 — screen/log/access/requirements.md.
  *
  * <p><b>여기서 지키는 것은 묶음 둘이 서로를 침범하지 않는가</b> 다. {@code 4xx 만} 에 500 이
  * 섞이면 <i>"고쳐야 할 것"</i> 을 세는 조회가 틀리고, {@code 5xx 만} 에 403 이 섞이면
- * <b>정상 동작이 장애로 집계된다</b>(권한 없는 사람이 눌렀을 뿐이다 — 64 §5.6).
+ * <b>정상 동작이 장애로 집계된다</b>(권한 없는 사람이 눌렀을 뿐이다 — screen/log/access/requirements.md).
  *
  * <p>경계가 사람의 손을 타지 않는 것이 이 조건을 파생으로 둔 이유다. {@code HTTP_STAT} 을
  * 범위로 열면 {@code 400~499} 를 사람이 입력하고 <b>경계를 틀린다</b>.
@@ -49,7 +49,7 @@ class ErrorLogSpecTest {
     @DisplayName("없는 묶음은 거절한다 — 조용히 전건을 내면 거른 줄 알고 결론을 낸다")
     void 없는_묶음은_거절() {
         assertThatThrownBy(() -> group().toPredicate(Op.eq, "3XX"))
-                // 파생 번역기의 거절은 `FieldSpec` 이 400 으로 감싼다 — 64 §7-2.4.
+                // 파생 번역기의 거절은 `FieldSpec` 이 400 으로 감싼다 — screen/log/access/requirements.md.
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("statusGroup");
     }
@@ -62,7 +62,7 @@ class ErrorLogSpecTest {
     }
 
     @Test
-    @DisplayName("정렬은 일시 하나만 열린다 — 커서의 기준점이다(64 §2.3)")
+    @DisplayName("정렬은 일시 하나만 열린다 — 커서의 기준점이다(screen/log/access/requirements.md)")
     void 정렬은_일시_하나다() {
         assertThat(ErrorLogSpec.SPEC.field("creDtm").sortable()).isTrue();
         assertThat(ErrorLogSpec.SPEC.field("errCd").sortable()).isFalse();
@@ -77,17 +77,17 @@ class ErrorLogSpecTest {
         assertThat(ErrorLogSpec.SPEC.field("rootCauseStack")).isNull();
         /*
           `errMsg` 는 실을 수는 있지만(VARCHAR) 조건으로 열지 않는다 — 사용자 언어로 남으므로
-          같은 사건이 언어마다 다른 문자열이다. 그 물음에 답하는 것은 `errCd` 다(64 §5.3).
+          같은 사건이 언어마다 다른 문자열이다. 그 물음에 답하는 것은 `errCd` 다(screen/log/access/requirements.md).
         */
         assertThat(ErrorLogSpec.SPEC.field("errMsg")).isNull();
         assertThat(ErrorLogSpec.SPEC.field("errCd")).isNotNull();
     }
 
     @Test
-    @DisplayName("사용자 조인은 left 다 — inner 면 지워진 계정의 오류가 목록에서 사라진다(45 §2.2)")
+    @DisplayName("사용자 조인은 left 다 — inner 면 지워진 계정의 오류가 목록에서 사라진다(sys/logs.md)")
     void 사용자_조인은_left_다() {
         /*
-          사용자가 `traceId` 를 들고 오는 화면이다(64 §5.4). 그 한 행이 조인 때문에 없으면
+          사용자가 `traceId` 를 들고 오는 화면이다(screen/log/access/requirements.md). 그 한 행이 조인 때문에 없으면
           운영자는 **로그 유실**로 읽고, 0건 문구는 *"그 요청은 오류가 아니었다"* 라고
           말한다 — 둘 다 틀린 답이다(§5.8).
         */
@@ -105,7 +105,7 @@ class ErrorLogSpecTest {
             assertThat(menuNm.toPredicate(op, "사용 이력").toString()).contains("exists");
         }
         /*
-          `in`·`ne` 는 파생 번역기가 거절하고 `FieldSpec` 이 400 으로 감싼다(64 §7-2.4).
+          `in`·`ne` 는 파생 번역기가 거절하고 `FieldSpec` 이 400 으로 감싼다(screen/log/access/requirements.md).
           흘려보내면 <b>거르지 않은 목록을 거른 것으로</b> 읽는다.
         */
         assertThatThrownBy(() -> menuNm.toPredicate(Op.in, List.of("사용 이력")))
@@ -116,7 +116,7 @@ class ErrorLogSpecTest {
     @Test
     @DisplayName("메뉴명 조건은 언어를 묻지 않는다 — 운영자는 화면에 보이는 그 이름을 들고 온다")
     void 메뉴명은_언어를_묻지_않는다() {
-        // 63 §3.7 이 메시지 화면에서 한 판단과 같다 — LANG_CD 로 좁히면 그 조건이 여기 보인다.
+        // screen/code/requirements.md 이 메시지 화면에서 한 판단과 같다 — LANG_CD 로 좁히면 그 조건이 여기 보인다.
         assertThat(ErrorLogSpec.SPEC.field("menuNm").toPredicate(Op.contains, "이력").toString())
                 .doesNotContain("langCd");
     }

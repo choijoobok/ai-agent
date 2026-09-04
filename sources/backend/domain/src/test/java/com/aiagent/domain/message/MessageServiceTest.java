@@ -29,10 +29,10 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 /**
- * 메시지 조회 — 43 §7.3 · §8.
+ * 메시지 조회 — sys/code.md.
  *
  * <p>여기서 지키는 것은 셋이다. <b>폴백이 한 방향인가</b>(요청 언어 → 기본 언어 → 부르는
- * 쪽), <b>번들에 서버 전용 문구가 섞이지 않는가</b>(architecture.md §6-1.2), 그리고 <b>캐시가 실제로
+ * 쪽), <b>번들에 서버 전용 문구가 섞이지 않는가</b>(backend/packages.md), 그리고 <b>캐시가 실제로
  * DB 를 아끼는가</b>.
  *
  * <p>마지막 것을 세는 이유는 <b>캐시가 조용히 꺼져도 화면이 똑같기</b> 때문이다 — 값은
@@ -67,7 +67,7 @@ class MessageServiceTest {
     }
 
     @Test
-    @DisplayName("요청 언어에 값이 없으면 기본 언어로 폴백한다 — 43 §7.3")
+    @DisplayName("요청 언어에 값이 없으면 기본 언어로 폴백한다 — sys/code.md")
     void fallsBackToDefaultLanguage() {
         givenRows(row("login.title", "ko", "백오피스 로그인", MessageScope.FRONT));
 
@@ -92,7 +92,7 @@ class MessageServiceTest {
     }
 
     @Test
-    @DisplayName("번들은 프론트가 쓰는 것만 담는다 — 에러 문구는 서버가 완성한다(architecture.md §6-1.2)")
+    @DisplayName("번들은 프론트가 쓰는 것만 담는다 — 에러 문구는 서버가 완성한다(backend/packages.md)")
     void bundleExcludesServerOnlyKeys() {
         givenRows(
                 row("login.title", "ko", "백오피스 로그인", MessageScope.FRONT),

@@ -4,18 +4,18 @@ import type { GridRow } from '@/shared/grid/rows';
 import type { ActionApi } from '@/shared/grid/types';
 
 /**
- * 실행의 <b>대상이 무엇인가</b> — grid-api-contract.md §7.
+ * 실행의 <b>대상이 무엇인가</b> — frontend/grid.md.
  *
  * <p><b>화면과 컨트롤러가 같은 함수로 센다.</b> 버튼의 비활성(그리고 그 사유 툴팁)도, 실제로
  * 나가는 페이로드도 이 함수의 결과이며 — 따로 세면 <i>버튼은 켜졌는데 눌러도 아무 일이
  * 없는</i> 상태나 <b>확인 문구의 건수와 실제로 나간 건수가 다른</b> 상태가 생긴다.
  *
- * <p><b>{@code 'all'} 이 걸러지는 것이 이 파일의 이유다</b>(68 §5.4 의 품목 재계산이 첫
+ * <p><b>{@code 'all'} 이 걸러지는 것이 이 파일의 이유다</b>(playbook/INDEX.md 의 품목 재계산이 첫
  * 사용처다). <i>전체</i> 가 아니라 <b>지금 그리드에 들어 있는 행</b>이고 거기서 대상이 되는
  * 것만 남으므로, <b>조회 결과에 대상이 하나도 없는</b> 상태가 실재한다 — 그때 빈 배열을
  * 보내면 서버가 400 을 내고 화면에는 <i>입력값을 확인하세요</i> 만 뜬다.
  */
-describe('실행의 대상 — 고른 뒤에 거른다(grid-api-contract.md §7)', () => {
+describe('실행의 대상 — 고른 뒤에 거른다(frontend/grid.md)', () => {
   interface Order {
     ordNo: string;
     stat: string;

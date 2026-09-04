@@ -13,7 +13,7 @@ import {
 } from '@/shared/stores/uiStore';
 
 /**
- * 축 셋에서 <b>토큰 세트 하나</b>를 만든다 — main-shell.md §9.7.
+ * 축 셋에서 <b>토큰 세트 하나</b>를 만든다 — frontend/tabs.md.
  *
  * <pre>
  *         설정(모드 · Primary · 색 톤 · 글꼴 · 그리드 높이)
@@ -214,17 +214,17 @@ export function agGridTheme(inputs: ThemeInputs, shell: ShellSurface): AgTheme {
     accentColor: shell.accentColor,
     fontFamily: inputs.fontFamily ? fontStack(inputs.fontFamily) : shell.fontFamily,
     fontSize: inputs.gridFontSize,
-    // 판은 자기 글자 굵기를 따로 갖는다 — 먹이지 않으면 셸만 굵어진다(main-shell.md §9.7).
+    // 판은 자기 글자 굵기를 따로 갖는다 — 먹이지 않으면 셸만 굵어진다(frontend/tabs.md).
     fontWeight: FONT_WEIGHT_VALUE[inputs.fontWeight],
     headerHeight: inputs.gridHeaderHeight,
     rowHeight: inputs.gridRowHeight,
     /*
       고정 구역의 세로 줄을 없앤다 — 판은 <b>고정 ↔ 스크롤 경계</b>에 선을 하나 긋는다.
-      행 번호가 늘 고정이라(grid-standard.md §4) 그 선이 <b>모든 그리드의 두 번째 칸 뒤</b>에 서게 됐고,
+      행 번호가 늘 고정이라(frontend/grid.md) 그 선이 <b>모든 그리드의 두 번째 칸 뒤</b>에 서게 됐고,
       다른 컬럼 사이에는 선이 없으므로 <i>"저 컬럼만 뭔가 다르다"</i> 로 읽혔다
       (2026-08-30 실물).
 
-      대가가 있다 — 사용자가 틀고정한 컬럼(grid-standard.md §5)에 <b>고정됐다는 표시가 없어진다.</b>
+      대가가 있다 — 사용자가 틀고정한 컬럼(frontend/grid.md)에 <b>고정됐다는 표시가 없어진다.</b>
       스크롤해 보면 드러나므로 그쪽을 택했다.
     */
     pinnedColumnBorder: false,
@@ -232,7 +232,7 @@ export function agGridTheme(inputs: ThemeInputs, shell: ShellSurface): AgTheme {
 }
 
 /**
- * <b>폴백이 필수다</b> — main-shell.md §9.3.
+ * <b>폴백이 필수다</b> — frontend/tabs.md.
  *
  * <p>고른 글꼴이 그 기기에 없거나 이름이 미묘하게 다르면(로컬라이즈된 폰트 이름) 브라우저가
  * 자기 기본 세리프로 떨어진다. 백오피스에서 그것은 <b>화면 전체가 낯설어지는 것</b>이다.
@@ -243,7 +243,7 @@ function fontStack(family: string): string {
 }
 
 /**
- * main-shell.md §9.3 의 웹 세이프 목록 — <b>API 를 못 읽을 때의 경로</b>다.
+ * frontend/tabs.md 의 웹 세이프 목록 — <b>API 를 못 읽을 때의 경로</b>다.
  *
  * <p>목록을 못 읽는 것이 기능 실패가 되면 안 된다. 글꼴 선택은 편의이지 필수가 아니다.
  */

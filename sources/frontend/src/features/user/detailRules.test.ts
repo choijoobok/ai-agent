@@ -4,10 +4,10 @@ import { isIpOrCidr, warnRevoke } from '@/features/user/detailRules';
 import type { UserRoleRow } from '@/features/user/types';
 
 /**
- * 디테일 탭의 판정 둘 — 61 §3.8.
+ * 디테일 탭의 판정 둘 — screen/user/requirements.md.
  *
  * <p><b>둘 다 한 번씩 틀렸던 자리다.</b> 회수 경고는 브라우저 시계를 UTC 로 읽어 KST 자정
- * 직후에 뜨지 않았고(40 §4.3), 형식 검사는 IPv4 의 접두 상한을 계열에서 얻지 않으면
+ * 직후에 뜨지 않았고(sys/INDEX.md), 형식 검사는 IPv4 의 접두 상한을 계열에서 얻지 않으면
  * `1.2.3.4/64` 를 통과시킨다.
  *
  * <p>그래서 재는 것이 <i>맞는 값을 통과시키는가</i> 가 아니라 <b>그때 틀렸던 것을 지금은
@@ -146,7 +146,7 @@ describe('IP · CIDR 형식 — 접두 상한이 계열에서 나온다', () => 
     expect(isIpOrCidr('localhost')).toBe(false);
   });
 
-  it('빈 칸은 통과한다 — 아직 안 쓴 칸이고 그것은 필수 표시가 막는다(grid-column-contract.md §5.1)', () => {
+  it('빈 칸은 통과한다 — 아직 안 쓴 칸이고 그것은 필수 표시가 막는다(frontend/grid.md)', () => {
     expect(isIpOrCidr('')).toBe(true);
     expect(isIpOrCidr('   ')).toBe(true);
   });

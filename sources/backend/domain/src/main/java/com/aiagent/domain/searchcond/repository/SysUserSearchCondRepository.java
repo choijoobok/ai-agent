@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 /**
- * 저장된 조회조건 — search-form-contract.md §5.
+ * 저장된 조회조건 — frontend/search-form.md.
  *
  * <p><b>조회는 언제나 (사용자, 메뉴) 로 좁힌다.</b> 사용자 단위로 전건을 읽는 경로를 두지
  * 않는 이유는 그런 화면이 없기 때문이고, 두면 <i>"내 조건 전부 보기"</i> 라는 없는 기능이
@@ -28,7 +28,7 @@ public interface SysUserSearchCondRepository
     void deleteByUserIdAndMenuCdAndCondNm(String userId, String menuCd, String condNm);
 
     /**
-     * 메뉴가 지워질 때 함께 거둔다 — 62 §4.8 · ADR-0028.
+     * 메뉴가 지워질 때 함께 거둔다 — screen/menu/requirements.md · seed.md.
      *
      * <p>위 주석의 <i>"사용자 단위 전건 경로를 두지 않는다"</i> 와 어긋나 보이지만 축이
      * 다르다 — 이것은 <b>메뉴 단위</b>이며 사용자를 넘나드는 <b>조회</b>가 아니라 삭제다.

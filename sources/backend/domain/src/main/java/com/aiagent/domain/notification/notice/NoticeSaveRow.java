@@ -8,14 +8,14 @@ import jakarta.validation.constraints.Size;
 import java.time.Instant;
 
 /**
- * 마스터 저장의 한 행 — 66 §4.2 · grid-standard.md §3.1.
+ * 마스터 저장의 한 행 — screen/notice/requirements.md · frontend/grid.md.
  *
  * <p><b>{@code noticeStat} 이 없다.</b> 서버가 계산하는 파생 값이라 받을 경로를 두면
  * <b>화면이 게시 여부를 스스로 정하는</b> 셈이 된다 — 읽기 전용은 화면에서만 읽기
  * 전용이고 요청 본문은 조작할 수 있다(원칙 P1). {@code BatchScheduleSaveRow} 가 파생
  * 셋을 뺀 것과 같은 장치다.
  *
- * <p><b>{@code contentTypeCd} 도 없다</b>(66 §4.3). 받으면 화면이 {@code HTML} 을 저장할
+ * <p><b>{@code contentTypeCd} 도 없다</b>(screen/notice/requirements.md). 받으면 화면이 {@code HTML} 을 저장할
  * 수 있게 되는데 <b>표시 측이 아직 분기하지 않아</b> 태그가 글자로 보인다.
  *
  * <p>{@code noticeId} 는 신규 행에서 {@code null} 이고(채번) 수정·삭제에서는 <b>대상을

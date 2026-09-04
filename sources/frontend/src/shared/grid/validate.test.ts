@@ -10,7 +10,7 @@ interface Row {
 }
 
 /**
- * 두 시점, 세 층 — grid-edit-validation.md §3.
+ * 두 시점, 세 층 — frontend/grid.md.
  *
  * <p>여기서 지키는 것은 <b>층이 실제로 갈려 있는가</b>다. 셋을 뭉치면 입력 시점에 저장
  * 규칙이 돌고, 그러면 사용자가 저장을 누르지도 않았는데 <i>"승인에 필요한 사유"</i> 를
@@ -53,7 +53,7 @@ describe('그리드 검증', () => {
       expect(validateCell(locked, '', row(''), { state: null })).toBeNull();
     });
 
-    it('행마다 편집 가능이 갈리면 필수도 갈린다 — grid-edit-validation.md §2.1 의 ctx', () => {
+    it('행마다 편집 가능이 갈리면 필수도 갈린다 — frontend/grid.md 의 ctx', () => {
       const pkOnNew: ColumnDef<Row> = {
         field: 'code',
         header: 'x',

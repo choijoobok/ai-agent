@@ -12,19 +12,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 저장된 조회조건 — UX-07 · search-form-contract.md §5.
+ * 저장된 조회조건 — UX-07 · frontend/search-form.md.
  *
  * <p><b>대상은 언제나 세션의 주인이다.</b> {@code userId} 를 인자로 받되 컨트롤러가
  * {@code Principal} 에서 꺼낸 값이며 요청 본문에서 오지 않는다 — 본문에 두는 순간
  * <i>"누구 것을 고치는가"</i> 가 클라이언트가 보낸 값이 된다.
  *
- * <p><b>{@code condJson} 을 열어 보지 않는다</b>(search-form-contract.md §5.1·§5.3). 무엇이 유효한 필드인지
+ * <p><b>{@code condJson} 을 열어 보지 않는다</b>(frontend/search-form.md). 무엇이 유효한 필드인지
  * 아는 것은 <b>화면 선언</b>이고, 서버가 검증하려면 선언을 서버에도 한 벌 두어야 한다 —
  * 그것이 미러링이다. 낡은 키는 복원할 때 화면이 <b>조용히</b> 버린다: 개인 편의 기능이라
  * 배포마다 <i>"저장한 조건 3개가 무효입니다"</i> 를 띄우면 고칠 수 없는 경고가 반복된다.
  *
- * <p><b>기본 조건은 하나다</b>(search-form-contract.md §5.4). DB 로 강제하지 않는 이유는 부분 유니크 인덱스의
- * 문법이 벤더마다 다르기 때문이며(db-portability.md §4), 그래서 <b>내리는 일이 여기 있다</b>.
+ * <p><b>기본 조건은 하나다</b>(frontend/search-form.md). DB 로 강제하지 않는 이유는 부분 유니크 인덱스의
+ * 문법이 벤더마다 다르기 때문이며(backend/persistence.md), 그래서 <b>내리는 일이 여기 있다</b>.
  */
 @Service
 @Transactional(readOnly = true)
@@ -46,7 +46,7 @@ public class SearchCondService {
     }
 
     /**
-     * 저장 — <b>같은 이름이면 덮어쓴다</b>(search-form-contract.md §5.4 의 <i>이름 중복 불가</i>가 곧 그 뜻이다).
+     * 저장 — <b>같은 이름이면 덮어쓴다</b>(frontend/search-form.md 의 <i>이름 중복 불가</i>가 곧 그 뜻이다).
      *
      * <p><b>상한은 새로 만들 때만 본다.</b> 덮어쓰기까지 막으면 상한에 찬 사용자가
      * <b>이미 있는 조건을 고칠 수도 없게</b> 된다 — 그 상태에서 할 수 있는 일은 지우는

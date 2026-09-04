@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 청크 하나를 <b>자기 트랜잭션에서</b> 지운다 — 32 §4-4.
+ * 청크 하나를 <b>자기 트랜잭션에서</b> 지운다 — retention.md.
  *
  * <p>{@link RetentionPurgeJob} 에서 떼어 낸 이유가 둘이다.
  *

@@ -3,7 +3,7 @@ import { MSG } from '@/shared/i18n/messageKeys';
 import type { ColumnDef, EditContext, EditableResult } from '@/shared/grid/types';
 
 /**
- * 컬럼 선언을 <b>편집·필수 판단으로 펴는 곳</b> — grid-column-contract.md §5.1 · grid-edit-validation.md §2.1.
+ * 컬럼 선언을 <b>편집·필수 판단으로 펴는 곳</b> — frontend/grid.md.
  *
  * <p><b>한 곳인 것이 요점이다.</b> 어댑터(`columnDefs`)와 검증(`validate`)이 각자 같은 규칙을
  * 쓰고 있었다 — 그 상태에서 규칙을 하나 더하면 <b>한쪽만 알게 되고</b>, 그러면 셀은 잠기는데
@@ -19,7 +19,7 @@ import type { ColumnDef, EditContext, EditableResult } from '@/shared/grid/types
  *
  * <p><b>고치는 화면이 아주 없지는 않다.</b> 그때는 `pk: { renamable: true }` 로 <b>명시해서</b>
  * 연다 — 기본이 잠그는 쪽이고 여는 것이 선언이어야, 빠뜨렸을 때 <b>덜 위험한 쪽</b>으로
- * 떨어진다(`deny by default` 와 같은 방향 — security-design.md §4).
+ * 떨어진다(`deny by default` 와 같은 방향 — backend/security.md).
  */
 
 /** `pk` 가 정한 것을 화면이 <b>덮어쓸 수 없다</b> — 덮을 수 있으면 기본이 기본이 아니다. */
@@ -29,7 +29,7 @@ function pkOf<T>(column: ColumnDef<T>): { renamable: boolean } | null {
 }
 
 /**
- * 이 셀이 열리는가 — grid-edit-validation.md §2.1 의 `(row, ctx)`.
+ * 이 셀이 열리는가 — frontend/grid.md 의 `(row, ctx)`.
  *
  * <p><b>거부에 이유를 붙인다.</b> 저장된 PK 를 두드리는 사람은 <i>왜 안 되는지</i> 를 묻고
  * 있고, 그 답이 <i>고치려면 지우고 다시 만든다</i> 라는 것은 화면 어디에도 적혀 있지 않다.
@@ -52,7 +52,7 @@ export function isEditable<T>(column: ColumnDef<T>, row: T, ctx: EditContext): b
 }
 
 /**
- * 이 셀이 필수인가 — grid-column-contract.md §5.1.
+ * 이 셀이 필수인가 — frontend/grid.md.
  *
  * <p><b>편집할 수 없는 칸은 필수가 아니다.</b> 사용자가 채울 방법이 없는데 저장을 막으면
  * 그 화면은 <b>영영 저장되지 않는다</b> — 저장된 행의 PK 가 그 자리다: 값은 이미 있고
@@ -66,7 +66,7 @@ export function requiredOf<T>(column: ColumnDef<T>, row: T, ctx: EditContext): b
 }
 
 /**
- * 헤더에 <b>필수 표시(`*`)</b>를 붙이는가 — grid-column-contract.md §5.1.
+ * 헤더에 <b>필수 표시(`*`)</b>를 붙이는가 — frontend/grid.md.
  *
  * <p><b>컬럼 하나에 대한 답이라 행을 보지 않는다.</b> 그래서 셋을 가른다.
  *

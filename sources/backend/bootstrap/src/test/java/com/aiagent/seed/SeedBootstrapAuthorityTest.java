@@ -13,7 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * <b>부트스트랩 함정</b> — security-design.md §4.
+ * <b>부트스트랩 함정</b> — backend/security.md.
  *
  * <p>최초 관리자 계정에 {@code SYS_USER_ROLE} 이 없으면 유효 권한이 공집합이라 로그인이
  * 차단되고, 관리 화면에 들어갈 수 없으므로 <b>복구 경로가 남지 않는다.</b> 그래서
@@ -42,7 +42,7 @@ class SeedBootstrapAuthorityTest {
     /** {@code MENU_CD IN ('A', 'B', …)} 에서 코드만 뽑는다 — SQL 을 해석하지 않는다. */
     private static final Pattern MENU_CODE = Pattern.compile("'([A-Z_]+)'");
 
-    /** security-design.md §4 — 집합은 여기서 닫힌다. */
+    /** backend/security.md — 집합은 여기서 닫힌다. */
     private static final Set<String> ACTIONS = Set.of("READ", "SAVE", "EXPORT", "EXECUTE");
 
     private static List<Map<String, Object>> grants;
@@ -116,7 +116,7 @@ class SeedBootstrapAuthorityTest {
                 .toList();
 
         assertThat(structural)
-                .as("MENU_URL 이 없는 메뉴에 붙은 권한 — security-design.md §4 는 이것을 거부한다")
+.as("MENU_URL 이 없는 메뉴에 붙은 권한 — backend/security.md 는 이것을 거부한다")
                 .isEmpty();
     }
 
@@ -153,9 +153,9 @@ class SeedBootstrapAuthorityTest {
     void exportGrantsAreDeclared() {
         /*
           다른 셋과 달리 EXPORT 는 매핑된 API 가 말해 주지 않는다 — 엑셀은 프론트가 만들어
-          SYS_API 행이 없다(ADR-0019 · ADR-0027). 그래서 이 검사가 없으면 어긋남이 조용하다:
+          SYS_API 행이 없다(frontend/grid-advanced.md · sys/menu.md). 그래서 이 검사가 없으면 어긋남이 조용하다:
           기동은 성공하고, 역할 권한 화면의 트리에 그 칸이 — 로 그려지며, 004 가 준 부여는
-          <b>화면에서 회수할 수 없는 고아</b>로 남는다(ADR-0022 — 정의 밖은 건드리지 않는다).
+          <b>화면에서 회수할 수 없는 고아</b>로 남는다(seed.md — 정의 밖은 건드리지 않는다).
 
           실제로 그렇게 있었다(2026-08-30). 10건 전부가 그랬다.
         */

@@ -1,9 +1,9 @@
 import type { GlobalToken } from 'antd';
 
 /**
- * 트리 그리드의 <b>판 색과 여백</b> — 62 §4.2.1 · grid-standard.md §8.
+ * 트리 그리드의 <b>판 색과 여백</b> — screen/menu/requirements.md · frontend/grid.md.
  *
- * <p>트리는 AG Grid 를 쓰지 않고 직접 그린다(Tree Data 가 Enterprise 다 — grid-column-contract.md §7.1). 그래서
+ * <p>트리는 AG Grid 를 쓰지 않고 직접 그린다(Tree Data 가 Enterprise 다 — frontend/grid.md). 그래서
  * <b>판이 테마에서 계산해 주던 값을 여기서 손으로 계산한다</b>. 값을 눈대중으로 고르지 않고
  * <b>판의 테마 파라미터와 1:1 로 맞추는</b> 것이 이 파일의 전부다(2026-08-31 요청:
  * <i>"헤더와 셀 등 디자인이 AG Grid 와 너무 이질적"</i>).
@@ -22,11 +22,11 @@ import type { GlobalToken } from 'antd';
  *   <tr><td>{@link TreeSkin.rowSelected}</td><td>{@code selectedRowBackgroundColor}</td>
  *       <td>강조색 12% — 다만 우리 판은 이것을 {@code --bo-grid-selected} 로 덮는다</td></tr>
  *   <tr><td>{@link TreeSkin.readonlyCell}</td><td>—</td>
- *       <td>판이 아니라 <b>우리 규약</b>이다 — {@code .bo-cell-readonly}(grid-standard.md §8.2)</td></tr>
+ * <td>판이 아니라 <b>우리 규약</b>이다 — {@code.bo-cell-readonly}(frontend/grid.md)</td></tr>
  * </table>
  *
  * <p><b>토큰에서 받는 것이 요점이다</b>({@code thinScrollbar} 와 같은 규약). 값을 박으면
- * 사용자가 톤·모드를 바꿀 때 <b>트리만 따라오지 않는다</b> — main-shell.md §9.7 이 <i>"화면의 절반만
+ * 사용자가 톤·모드를 바꿀 때 <b>트리만 따라오지 않는다</b> — frontend/tabs.md 이 <i>"화면의 절반만
  * 따라온다"</i> 로 적은 그것이다.
  */
 export interface TreeSkin {
@@ -42,7 +42,7 @@ export interface TreeSkin {
   /**
    * <b>편집할 수 없는 셀</b>의 색 — `.bo-cell-readonly` 와 같은 값이다.
    *
-   * <p>이 프로젝트의 그리드는 <b>열리는 칸을 표시하지 않고 잠긴 칸을 칠한다</b>(grid-standard.md §8.2 ·
+   * <p>이 프로젝트의 그리드는 <b>열리는 칸을 표시하지 않고 잠긴 칸을 칠한다</b>(frontend/grid.md ·
    * `columnRules.editableOf`). 트리도 같은 규칙을 써야 <i>어디를 더블 클릭할 수 있나</i> 를
    * 두 판에서 같은 방법으로 읽는다 — 트리만 규칙이 다르면 그 화면에서 배운 것이 옆 화면에서
    * 틀린다.

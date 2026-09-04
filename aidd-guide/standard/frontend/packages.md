@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/", "sources/frontend/eslint.config.js", "aidd-guide/standard/frontend/_study/frontend-stack.md"]
+sources: ["sources/frontend/src/", "sources/frontend/eslint.config.js", "aidd-guide/standard/frontend/packages.md"]
 author: Bong Jong Hyeon
 tier: 2
 tags: [frontend, structure, shared, state, zustand]
@@ -18,7 +18,6 @@ tags: [frontend, structure, shared, state, zustand]
 > ESLint 는 **경로를 넘는 import 를 막을 뿐 복붙은 통과시킨다** — 그래서 이것은
 > 리뷰 규칙이다.
 >
-> 유도과정은 [`_study/frontend-stack.md`](./_study/frontend-stack.md).
 
 ## 1. 폴더
 

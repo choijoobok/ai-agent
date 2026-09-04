@@ -6,13 +6,13 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 /**
- * 실행이 받는 <b>대상 행</b> — grid-api-contract.md §8.
+ * 실행이 받는 <b>대상 행</b> — frontend/grid.md.
  *
  * <p>요청 페이로드가 <b>둘로 나뉜다</b>: 대상 행({@code targets})과 호출의 인자
  * ({@code params}). 섞으면 서버가 <i>"이 필드가 행의 것인가 파라미터인가"</i> 를 이름으로
  * 추측하게 된다.
  *
- * <p><b>{@code params} 필드가 여기 없다.</b> 61 §3.4 의 실행 셋(잠금 해제 · 휴면 해제 ·
+ * <p><b>{@code params} 필드가 여기 없다.</b> screen/user/requirements.md 의 실행 셋(잠금 해제 · 휴면 해제 ·
  * 비밀번호 초기화)은 <b>받을 인자가 없다</b> — 그리드도 그 자리를 비워 보낸다. 인자를 받는
  * 실행이 생기면 <b>그 요청 레코드가 자기 필드로</b> 가진다: 여기 미리 열어 두면 아무도 채우지
  * 않는 칸이 남고, 그 칸의 타입을 {@code Object} 로 두는 순간 검증이 사라진다.

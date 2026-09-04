@@ -28,9 +28,9 @@ import {
 import type { DropZone, TreeColumn, TreeGridProps, TreeNode } from '@/shared/tree/types';
 
 /**
- * 트리 그리드 — 62 §4.2.1. <b>`<DataGrid>` 가 아니다.</b>
+ * 트리 그리드 — screen/menu/requirements.md. <b>`<DataGrid>` 가 아니다.</b>
  *
- * <p>AG Grid 의 Tree Data 는 Enterprise 이며 어휘 밖이라(grid-column-contract.md §7.1) 판을 쓰지 않고 직접
+ * <p>AG Grid 의 Tree Data 는 Enterprise 이며 어휘 밖이라(frontend/grid.md) 판을 쓰지 않고 직접
  * 그린다. 53 의 크롬·색은 그대로 받는다 — 제목 줄, 버튼 자리 ①·Ⓑ·②, 왼쪽의 건수.
  *
  * <h2>여기 없는 것이 이 컴포넌트의 절반이다</h2>
@@ -47,14 +47,14 @@ import type { DropZone, TreeColumn, TreeGridProps, TreeNode } from '@/shared/tre
  * 행 하나를 <b>세로로 셋</b>으로 나눈다(§4.5.2) — 위 1/4 는 앞 형제, 가운데 1/2 는 자식 맨 끝,
  * 아래 1/4 는 <i>보이는 다음 행</i> 앞이다. 선과 테두리는 <b>모양이 다르다</b>: 선은
  * <i>사이에 끼운다</i>, 테두리는 <i>안에 넣는다</i> — 같은 표시를 굵기나 색으로만 구분하지
- * 않는다(grid-standard.md §8.1).
+ * 않는다(frontend/grid.md).
  *
  * <p>그 위에 <b>문장</b>을 띄운다. 표시가 최종 판정이 아니라 <b>문장이 최종 판정</b>이며,
  * <b>놓을 수 없는 자리에서도 이유를 낸다</b> — 왜 안 놓이는지 모르면 사용자는 버그로 읽는다.
  *
  * <h2>표시 설정은 <b>그리드와 같은 것</b>을 본다</h2>
  *
- * <p>머리 높이 · 행 높이 · 글자 크기가 {@code uiStore} 의 셋이다(main-shell.md §9.6) — 판을 쓰지 않는다고
+ * <p>머리 높이 · 행 높이 · 글자 크기가 {@code uiStore} 의 셋이다(frontend/tabs.md) — 판을 쓰지 않는다고
  * 설정을 따르지 않으면, <b>한 화면의 그리드 둘이 다른 밀도</b>로 보인다(2026-08-31 실물:
  * 하단 예외 목록은 촘촘한데 위 트리만 헐렁했다). 설정 창의 라벨이 <i>그리드</i> 라 트리가
  * 예외라고 읽을 근거도 없다.
@@ -73,7 +73,7 @@ import type { DropZone, TreeColumn, TreeGridProps, TreeNode } from '@/shared/tre
  * <h2>편집은 <b>더블 클릭</b>이다 — 셀에 입력 칸이 서 있지 않다</h2>
  *
  * <p>콤보가 셀에 늘 보였다(2026-08-31 요청). 판의 편집 가능 셀은 <b>평소에 값만 보이고</b>
- * 더블 클릭에서 편집기가 열리는데(grid-edit-validation.md §2.2), 트리만 입력 화면처럼 보였다 — 이 트리에서 자주
+ * 더블 클릭에서 편집기가 열리는데(frontend/grid.md), 트리만 입력 화면처럼 보였다 — 이 트리에서 자주
  * 하는 일은 구조를 <b>보는</b> 것이다.
  *
  * <p><b>열린 셀은 하나다</b>({@code editing}). 판과 같은 규칙이며, 여럿이 열려 있으면
@@ -82,7 +82,7 @@ import type { DropZone, TreeColumn, TreeGridProps, TreeNode } from '@/shared/tre
  * 그 칸이 닫힌다.
  *
  * <p><b>잠긴 칸은 칠한다</b>({@code TreeColumn.editable}) — `.bo-cell-readonly` 와 같은 값
- * 이다. 열리는 칸을 표시하는 대신 잠긴 칸을 칠하는 것이 이 프로젝트의 규약이고(grid-standard.md §8.2),
+ * 이다. 열리는 칸을 표시하는 대신 잠긴 칸을 칠하는 것이 이 프로젝트의 규약이고(frontend/grid.md),
  * 트리만 반대로 두면 그 화면에서 배운 것이 옆 화면에서 틀린다.
  */
 export function TreeGrid<T>(props: TreeGridProps<T>) {
@@ -95,7 +95,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
   const skin = useMemo(() => treeSkin(token, dark), [token, dark]);
   const permissions = useAuthStore((state) => state.permissions);
   /*
-    그리드와 <b>같은 설정</b>을 본다 — main-shell.md §9.6 · 클래스 주석. 판(AG Grid)이 테마 파트로 받는
+    그리드와 <b>같은 설정</b>을 본다 — frontend/tabs.md · 클래스 주석. 판(AG Grid)이 테마 파트로 받는
     셋을 여기서는 손으로 먹인다: 머리 높이는 머리 줄의 최소 높이, 행 높이는 행의 최소 높이,
     글자 크기는 <b>물려받게</b> 머리와 행에 건다.
   */
@@ -110,10 +110,10 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
     null,
   );
   /**
-   * <b>지금 열린 셀 하나</b> — 판과 같은 규칙이다(grid-edit-validation.md §2.2).
+   * <b>지금 열린 셀 하나</b> — 판과 같은 규칙이다(frontend/grid.md).
    *
    * <p>컬럼을 <b>헤더 키로</b> 가리킨다. {@code TreeColumn} 에 식별자가 없고(그리드 설정이
-   * 없어 필요한 적이 없었다 — 62 §4.2) 헤더는 메시지 키라 <b>한 트리 안에서 유일</b>하다 —
+   * 없어 필요한 적이 없었다 — screen/menu/requirements.md) 헤더는 메시지 키라 <b>한 트리 안에서 유일</b>하다 —
    * 판의 컬럼 목록도 같은 값을 {@code key} 로 쓰고 있다.
    */
   const [editing, setEditing] = useState<{ id: string; column: string } | null>(null);
@@ -168,11 +168,11 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
   );
 
   /**
-   * 계층 컬럼의 폭 — <b>내용에서 낸다</b>(62 §4.2 · {@code hierarchyText}).
+   * 계층 컬럼의 폭 — <b>내용에서 낸다</b>(screen/menu/requirements.md · {@code hierarchyText}).
    *
    * <p><b>접힌 행까지 전부 잰다.</b> 보이는 것만 재면 폴더를 펼칠 때마다 컬럼이 넓어지고
    * 좁아져 <i>표가 숨을 쉬는</i> 것처럼 보인다 — 트리는 이미 조립돼 있어 접힌 행의 깊이도
-   * 공짜로 안다(42 §4).
+   * 공짜로 안다(sys/menu.md).
    *
    * <p><b>헤더도 함께 본다.</b> 이름이 전부 짧은 트리에서 헤더가 잘리면 그것도 잘린 것이다.
    *
@@ -198,7 +198,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
     return Math.ceil(Math.min(Math.max(widest, header, HIERARCHY_MIN), HIERARCHY_MAX));
   }, [font, nodes, props.hierarchyHeader, props.hierarchyText]);
 
-  /** 화면이 가리킨 행으로 스크롤한다 — <b>첫 일치</b>다(62 §4.10). 못 보면 못 찾은 것이다. */
+  /** 화면이 가리킨 행으로 스크롤한다 — <b>첫 일치</b>다(screen/menu/requirements.md). 못 보면 못 찾은 것이다. */
   const { focusedId } = props;
   useEffect(() => {
     if (!focusedId || !body.current) return;
@@ -247,7 +247,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
    * 줄만 남고, 그 상태에서 끄는 것이 트리 이동의 정상 동선이다 — <b>접기가 놓을 수 있는
    * 자리를 바꾼다</b>(§4.5.2 의 <i>펼친 폴더의 아래 1/4</i>).
    *
-   * <p><b>저장하지 않는다.</b> 접힘은 그 순간의 작업 상태이지 개인화가 아니다(grid-standard.md §5).
+   * <p><b>저장하지 않는다.</b> 접힘은 그 순간의 작업 상태이지 개인화가 아니다(frontend/grid.md).
    */
   const collapseAll = useCallback(() => {
     const folders = new Set<string>();
@@ -264,7 +264,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
   */
   useImperativeHandle(props.handleRef, () => ({ collapseAll, expandAll }), [collapseAll, expandAll]);
 
-  // ── 드래그 (62 §4.5) ────────────────────────────────────────────
+  // ── 드래그 (screen/menu/requirements.md) ────────────────────────────────────────────
 
   const clearExpandTimer = () => {
     if (expandTimer.current) {
@@ -274,7 +274,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
   };
 
   const startDrag = (node: TreeNode<T>) => {
-    // 자손 계산이 공짜다 — 트리를 이미 갖고 있다(42 §4 의 프론트 층).
+    // 자손 계산이 공짜다 — 트리를 이미 갖고 있다(sys/menu.md 의 프론트 층).
     setDrag({ node, forbidden: selfAndDescendants(node) });
   };
 
@@ -334,7 +334,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
     void props.onDrop({ dragId: current.node.id, targetId: target.id, zone, ...place });
   };
 
-  // ── 엑셀 (62 §4.9) ──────────────────────────────────────────────
+  // ── 엑셀 (screen/menu/requirements.md) ──────────────────────────────────────────────
 
   const { excel } = props;
   const [downloading, setDownloading] = useState(false);
@@ -352,13 +352,13 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
   const canSave = hasPermission(permissions, props.menuCd, 'SAVE');
   /*
     <b>①이 잠기는 이유가 둘</b>이다 — 조회 중(곧 풀린다)이거나 <b>대상이 없다</b>
-    (grid-standard.md §6.1 의 빈 상태). 한 값으로 모으는 것은 ①의 <b>모든</b> 컨트롤이 같은 상태를
+    (frontend/grid.md 의 빈 상태). 한 값으로 모으는 것은 ①의 <b>모든</b> 컨트롤이 같은 상태를
     봐야 하기 때문이다: 조회만 잠그고 접기·펼치기를 열어 두면 <i>빈 트리를 접는</i> 버튼이
     남는다.
   */
   const locked = loading || props.disabled === true;
   /*
-    <b>접힌 것과 없는 것은 다르다</b>(grid-standard.md §6.3) — 제목 줄을 남겨야 그 둘이 구분되고, 되돌리는
+    <b>접힌 것과 없는 것은 다르다</b>(frontend/grid.md) — 제목 줄을 남겨야 그 둘이 구분되고, 되돌리는
     길이 그 제목 하나다. 세로로 서는 것은 <b>좌우로 접혔을 때뿐</b>이다.
   */
   /* 이름이 {@code collapsed} 가 아니다 — 그것은 <b>접힌 폴더들</b>이다(위 상태). */
@@ -403,7 +403,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
             {label(props.title)}
           </Typography.Text>
           {/*
-            <b>지금 보고 있는 대상</b> — grid-standard.md §6.1. 제목과 굵기·색이 갈린다: 이것은 제목이
+            <b>지금 보고 있는 대상</b> — frontend/grid.md. 제목과 굵기·색이 갈린다: 이것은 제목이
             아니라 <i>누구의 트리인가</i> 이고, 같은 굵기로 두면 그리드 이름이 사람마다
             바뀌는 것처럼 보인다. 없으면 아무것도 붙지 않는다.
           */}
@@ -417,14 +417,14 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
             </Typography.Text>
           )}
         </Space>
-        {/* 보이지 않는 트리의 버튼을 누를 이유가 없다 — 버튼도 함께 접힌다(grid-standard.md §6.3). */}
+        {/* 보이지 않는 트리의 버튼을 누를 이유가 없다 — 버튼도 함께 접힌다(frontend/grid.md). */}
         {paneCollapsed ? null : (
         <Space size={8}>
-          {/* ①의 왼쪽 — 트리 검색이다(62 §4.10). 조회 <b>앞</b>인 것이 일의 순서다. */}
+          {/* ①의 왼쪽 — 트리 검색이다(screen/menu/requirements.md). 조회 <b>앞</b>인 것이 일의 순서다. */}
           {props.search && (
             <Input
               allowClear
-              // 조회조건 값 칸과 <b>같은 크기</b>다 — search-form-contract.md §3.10 · `fieldWidth`.
+              // 조회조건 값 칸과 <b>같은 크기</b>다 — frontend/search-form.md · `fieldWidth`.
               style={{ width: SEARCH_VALUE_WIDTH }}
               placeholder={label(props.search.placeholder)}
               value={props.search.value}
@@ -440,9 +440,9 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
             {label(MSG.GRID_READ)}
           </Button>
           {/*
-            <b>저장 버튼은 선언이 있을 때만 선다</b>(62 §2.6). 이 컴포넌트를 쓰는 화면 둘의
-            저장 모델이 반대라(62 §4.2.1) 여기에 고정으로 두면 메뉴 트리에 <i>누를 수 없는
-            버튼</i> 이 하나 생긴다 — grid-standard.md §3.6 이 <b>화면이 선언한다</b> 고 정한 그대로다.
+            <b>저장 버튼은 선언이 있을 때만 선다</b>(screen/menu/requirements.md). 이 컴포넌트를 쓰는 화면 둘의
+            저장 모델이 반대라(screen/menu/requirements.md) 여기에 고정으로 두면 메뉴 트리에 <i>누를 수 없는
+            버튼</i> 이 하나 생긴다 — frontend/grid.md 이 <b>화면이 선언한다</b> 고 정한 그대로다.
           */}
           {props.save && canSave && (
             <Button
@@ -458,7 +458,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
             <ControlButton key={control.key} control={control} locked={locked} />
           ))}
           {/*
-            ② — 도구는 언제나 맨 오른쪽이다(grid-standard.md §2.1). <b>항목이 하나라</b> 드롭다운을 열지
+            ② — 도구는 언제나 맨 오른쪽이다(frontend/grid.md). <b>항목이 하나라</b> 드롭다운을 열지
             않고 아이콘이 바로 내린다 — 페이지가 없어 *현재 페이지* 와 *전체* 가 같다(§4.9).
           */}
           {excel && hasPermission(permissions, props.menuCd, 'EXPORT') && (
@@ -502,7 +502,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
             background: skin.headerBackground,
             borderBottom: `1px solid ${skin.border}`,
             fontWeight: skin.headerFontWeight,
-            // 설정 창의 <b>그리드 머리 높이 · 글자 크기</b>다(main-shell.md §9.6 · 클래스 주석).
+            // 설정 창의 <b>그리드 머리 높이 · 글자 크기</b>다(frontend/tabs.md · 클래스 주석).
             minHeight: headerHeight,
             fontSize,
           }}
@@ -603,7 +603,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
 /** 접힌 폴더를 펼치기까지 머무르는 시간. 지나가다 스치는 것으로는 펼쳐지지 않아야 한다. */
 const HOVER_EXPAND_MS = 700;
 
-/** 한 단 들여쓰기 — 62 §4.2. 최상위가 1단이므로 그 단은 들여쓰지 않는다. */
+/** 한 단 들여쓰기 — screen/menu/requirements.md. 최상위가 1단이므로 그 단은 들여쓰지 않는다. */
 const INDENT_STEP = 16;
 /** 펼침 버튼의 자리. 리프도 <b>같은 폭을 먹는다</b> — 없으면 이름이 형제보다 왼쪽으로 밀린다. */
 const TOGGLE_WIDTH = 20;
@@ -639,7 +639,7 @@ function indentOf(depth: number): number {
  * 머리 칸 하나 — <b>여백은 판의 {@code cellHorizontalPadding}</b> 이고 넘치면 말줄임표다.
  *
  * <p>세로 여백을 주지 않는 것이 요점이다: 높이는 <b>설정 창의 머리 높이</b>가 정하고
- * (main-shell.md §9.6) 줄은 그 안에서 가운데 정렬된다 — 여백을 함께 주면 <b>선언한 높이보다
+ * (frontend/tabs.md) 줄은 그 안에서 가운데 정렬된다 — 여백을 함께 주면 <b>선언한 높이보다
  * 커진다</b>.
  */
 function headerCell(skin: TreeSkin): React.CSSProperties {
@@ -663,7 +663,7 @@ function bodyCell(skin: TreeSkin, editable: boolean): React.CSSProperties {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
-    // <b>잠긴 칸을 칠한다</b> — `.bo-cell-readonly` 와 같은 값이다(grid-standard.md §8.2).
+    // <b>잠긴 칸을 칠한다</b> — `.bo-cell-readonly` 와 같은 값이다(frontend/grid.md).
     background: editable ? undefined : skin.readonlyCell,
   };
 }
@@ -685,12 +685,12 @@ function editableAt<T>(column: TreeColumn<T>, node: TreeNode<T>): boolean {
 function hierarchyCell(width: number | null): React.CSSProperties {
   return width === null
     ? { flex: 1, minWidth: 260 }
-    : // 잘린 이름은 <b>툴팁</b>이 말한다 — 그래서 넘치는 것을 잘라도 된다(62 §4.2).
+    : // 잘린 이름은 <b>툴팁</b>이 말한다 — 그래서 넘치는 것을 잘라도 된다(screen/menu/requirements.md).
       { width, flex: `0 0 ${String(width)}px`, minWidth: 0, overflow: 'hidden' };
 }
 
 /**
- * 구역 → <b>부모와 자리</b> — 62 §4.5.2 의 표를 그대로 편다.
+ * 구역 → <b>부모와 자리</b> — screen/menu/requirements.md 의 표를 그대로 편다.
  *
  * <table>
  *   <tr><th>대상 행</th><th>위 1/4</th><th>가운데</th><th>아래 1/4</th></tr>
@@ -742,7 +742,7 @@ function stamp(): string {
 }
 
 /**
- * grid-api-contract.md §3.2 의 컨트롤 하나. 비활성이면 사유를 붙인다 — 63 §2.4 와 같은 규약이다.
+ * frontend/grid.md 의 컨트롤 하나. 비활성이면 사유를 붙인다 — screen/code/requirements.md 와 같은 규약이다.
  *
  * <p><b>`button` 만 받는다.</b> 트리 화면의 ①에 셀렉트가 필요해진 적이 없고, 필요해지면
  * 그때 이 함수가 `DataGrid` 의 `renderControl` 처럼 갈라진다 — 미리 갈라 두면 아무도
@@ -767,8 +767,8 @@ function ControlButton({ control, locked }: { control: GridButtonControl; locked
  * 드롭이 성립하는가 · 무엇이라 말할 것인가.
  *
  * <p><b>금지를 먼저 본다.</b> 자기 자손이면 어느 구역이든 놓이지 않으며, 그것은 화면이
- * 트리를 갖고 있어 <b>공짜로</b> 판정된다(42 §4 의 첫째 층). 서버가 같은 검사를 다시 하는
- * 것은 <i>화면의 방어는 UX 이지 방어가 아니기</i> 때문이다(security-design.md §4).
+ * 트리를 갖고 있어 <b>공짜로</b> 판정된다(sys/menu.md 의 첫째 층). 서버가 같은 검사를 다시 하는
+ * 것은 <i>화면의 방어는 UX 이지 방어가 아니기</i> 때문이다(backend/security.md).
  */
 function judge<T>(
   drag: { node: TreeNode<T>; forbidden: Set<string> },
@@ -789,9 +789,9 @@ interface RowProps<T> {
   props: TreeGridProps<T>;
   /** 판의 테마 파라미터에서 온 색과 여백 — `treeSkin`. */
   skin: TreeSkin;
-  /** 계층 컬럼의 폭 — `null` 이면 남는 폭을 먹는다(62 §4.2). */
+  /** 계층 컬럼의 폭 — `null` 이면 남는 폭을 먹는다(screen/menu/requirements.md). */
   hierarchyWidth: number | null;
-  /** 설정 창의 <b>그리드 행 높이 · 글자 크기</b>(main-shell.md §9.6). */
+  /** 설정 창의 <b>그리드 행 높이 · 글자 크기</b>(frontend/tabs.md). */
   rowHeight: number;
   fontSize: number;
   /** 이 행에서 열린 컬럼의 헤더 — `null` 이면 이 행에는 열린 셀이 없다. */
@@ -821,13 +821,13 @@ function Row<T>({ node, props, ...state }: RowProps<T>) {
   const { token } = theme.useToken();
   /*
     <b>행 하나의 상태다.</b> 판은 hover 를 CSS 로 칠하지만 이 트리에는 스타일시트가 없고
-    (frontend-stack.md §2 — CSS-in-JS), 위로 올리면 <b>마우스가 지날 때마다 트리 전체가 다시 그려진다</b>.
+    (frontend/packages.md — CSS-in-JS), 위로 올리면 <b>마우스가 지날 때마다 트리 전체가 다시 그려진다</b>.
   */
   const [hovered, setHovered] = useState(false);
   const indent = indentOf(node.depth) - CELL_PADDING;
   const isFolder = node.children.length > 0;
   /*
-    <b>이름을 툴팁으로 한 번 더 낸다</b>(2026-08-31 — 62 §4.2). 계층 컬럼은 폭이 내용에서
+    <b>이름을 툴팁으로 한 번 더 낸다</b>(2026-08-31 — screen/menu/requirements.md). 계층 컬럼은 폭이 내용에서
     나되 상한이 있고(`HIERARCHY_MAX`) 깊은 단은 들여쓰기가 폭을 먹으므로, <b>잘리는 이름이
     실제로 있다</b> — 잘린 채로 두면 그 행이 무엇인지 화면이 답하지 못한다.
   */
@@ -851,7 +851,7 @@ function Row<T>({ node, props, ...state }: RowProps<T>) {
         onDragEnd={state.onDragEnd}
         onDragOver={(event) => state.onDragOver(event, node)}
         onDrop={(event) => state.onDrop(event, node)}
-        // 선택이 없는 화면이 있다 — 62 §2 의 권한 트리에서 행 하나는 그 자체로 편집
+        // 선택이 없는 화면이 있다 — screen/menu/requirements.md 의 권한 트리에서 행 하나는 그 자체로 편집
         // 대상이고 아래를 정하지 않는다.
         onClick={props.onSelect ? () => props.onSelect?.(node.data) : undefined}
         onMouseEnter={() => setHovered(true)}
@@ -865,7 +865,7 @@ function Row<T>({ node, props, ...state }: RowProps<T>) {
           cursor: state.draggable ? 'grab' : props.onSelect ? 'pointer' : 'default',
           opacity: state.forbidden || state.dragging ? 0.4 : 1,
           /*
-            셋의 순서가 <b>판의 우선순위</b>와 같다(grid-standard.md §8.2) — 선택이 hover 를 이기고,
+            셋의 순서가 <b>판의 우선순위</b>와 같다(frontend/grid.md) — 선택이 hover 를 이기고,
             검색 강조는 그 둘 사이다: 강조는 <i>찾은 것</i> 이라 <b>고른 것</b>보다 약하고
             지나가는 마우스보다는 세다.
           */
@@ -878,7 +878,7 @@ function Row<T>({ node, props, ...state }: RowProps<T>) {
                 : undefined,
           borderTop: state.hover?.zone === 'before' ? line : '2px solid transparent',
           borderBottom: state.hover?.zone === 'after' ? line : '2px solid transparent',
-          // 테두리는 <b>행 전체를 감싼다</b> — 선과 모양이 달라야 한다(grid-standard.md §8.1).
+          // 테두리는 <b>행 전체를 감싼다</b> — 선과 모양이 달라야 한다(frontend/grid.md).
           outline: state.hover?.zone === 'inside' ? line : undefined,
           outlineOffset: -2,
         }}
@@ -888,7 +888,7 @@ function Row<T>({ node, props, ...state }: RowProps<T>) {
           <b>행의 정체</b>이며(펼침 버튼 · 드래그 손잡이 · 선택 대상) 판에서 그 자리에
           해당하는 것은 행 번호와 자동 그룹 컬럼이다 — 둘 다 크롬이라 칠하지 않는다.
 
-          이름을 고치는 곳이 여기가 아니라는 사실은(`MESSAGE_MGMT` 하나다 — 62 §4) 색이
+          이름을 고치는 곳이 여기가 아니라는 사실은(`MESSAGE_MGMT` 하나다 — screen/menu/requirements.md) 색이
           아니라 <b>더블 클릭이 아무 일도 하지 않는 것</b>으로 이미 드러난다.
         */}
         <div
@@ -945,7 +945,7 @@ function Row<T>({ node, props, ...state }: RowProps<T>) {
               일</b>이고, 그때 하단이 그 메뉴를 보여주는 것은 어긋남이 아니라 맞는 동작이다.
             */
             /*
-              <b>더블 클릭이 편집기를 연다</b> — 판과 같은 제스처다(grid-edit-validation.md §2.2). 열 것이 없는
+              <b>더블 클릭이 편집기를 연다</b> — 판과 같은 제스처다(frontend/grid.md). 열 것이 없는
               컬럼(스위치처럼 셀이 곧 편집기이거나 아예 잠긴 칸)에서는 <b>아무 일도 하지
               않는다</b>: 판도 그 자리에서 조용하다.
             */

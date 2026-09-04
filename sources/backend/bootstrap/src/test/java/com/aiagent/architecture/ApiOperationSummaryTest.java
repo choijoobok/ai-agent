@@ -15,7 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * {@code /api/service/**} 핸들러는 {@code @Operation(summary=…)} 을 갖는다 — ADR-0020 결정 2.
+ * {@code /api/service/**} 핸들러는 {@code @Operation(summary=…)} 을 갖는다 — backend/api.md 결정 2.
  *
  * <p><b>{@code checkApiSeed} 가 아니라 여기인 이유</b> — 시드 어긋남이 아니라 <b>코드 규약</b>
  * 이다. 시드를 재생성하지 않아도 어겨질 수 있고, 그때 {@code checkApiSeed} 는
@@ -43,7 +43,7 @@ class ApiOperationSummaryTest {
                 .isNotEmpty();
 
         assertThat(missingSummary())
-                .as("@Operation(summary=…) 이 없으면 SYS_API.API_NM 을 만들 수 없다 — ADR-0020")
+.as("@Operation(summary=…) 이 없으면 SYS_API.API_NM 을 만들 수 없다 — backend/api.md")
                 .isEmpty();
     }
 

@@ -22,33 +22,33 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code USER_AUTH_MGMT} 의 저장 — 61 §4.5 · §4.7. <b>행 상태가 있는 일괄 저장이다.</b>
+ * {@code USER_AUTH_MGMT} 의 저장 — screen/user/requirements.md. <b>행 상태가 있는 일괄 저장이다.</b>
  *
  * <h2>{@code RoleAuthService} 와 갈리는 자리</h2>
  *
- * <p>역할 쪽은 <b>켜진 스위치 전부</b>를 받아 서버가 차이를 냈다(62 §2.6). 권한이 있거나
+ * <p>역할 쪽은 <b>켜진 스위치 전부</b>를 받아 서버가 차이를 냈다(screen/menu/requirements.md). 권한이 있거나
  * 없거나 둘뿐이라 <i>수정</i> 이 존재하지 않았기 때문이다.
  *
- * <p>여기는 <b>기간과 사유가 붙는다</b>(42 §6). 같은 조합의 값이 바뀔 수 있으므로 <i>수정</i>
- * 이 실재하고, 그래서 grid-standard.md §3.1 의 보통 일괄 저장 모양이 된다 — 61 §4.4 가 <i>"목록이 원본이고
+ * <p>여기는 <b>기간과 사유가 붙는다</b>(sys/menu.md). 같은 조합의 값이 바뀔 수 있으므로 <i>수정</i>
+ * 이 실재하고, 그래서 frontend/grid.md 의 보통 일괄 저장 모양이 된다 — screen/user/requirements.md 가 <i>"목록이 원본이고
  * 트리는 그 투영"</i> 이라고 한 것의 서버 쪽 모습이다.
  *
  * <h2>회수는 삭제가 아니다</h2>
  *
- * <p><b>{@code D} 는 잘못 등록한 행 정리뿐</b>이다(61 §4.7). 회수는 <b>종료일을 어제로</b>
+ * <p><b>{@code D} 는 잘못 등록한 행 정리뿐</b>이다(screen/user/requirements.md). 회수는 <b>종료일을 어제로</b>
  * 하는 {@code U} 이며, 행을 지우면 <b>사유가 사라진다</b> — 변경 이력 테이블을 두지 않았으므로
- * (ADR-0010) <i>"누구에게 왜 무엇을 언제까지 줬는가"</i> 를 남기는 것이 이 행뿐이다.
+ * (sys/logs.md) <i>"누구에게 왜 무엇을 언제까지 줬는가"</i> 를 남기는 것이 이 행뿐이다.
  *
  * <p>그래서 이 서비스는 <b>{@code D} 를 막지 않는다</b>. 막으면 오타로 만든 행을 영영 지울 수
- * 없고, 61 §4.7 이 셋째 수단으로 그것을 적어 두었다 — <b>무엇을 위한 삭제인지는 사람이 안다</b>.
+ * 없고, screen/user/requirements.md 이 셋째 수단으로 그것을 적어 두었다 — <b>무엇을 위한 삭제인지는 사람이 안다</b>.
  *
  * <h2>{@code READ} 불변식을 <b>합집합</b>에서 본다 — 역할 쪽과 판정이 다르다</h2>
  *
- * <p>61 §4.4 의 불변식은 <i>다른 액션이 하나라도 켜져 있으면 {@code READ} 가 켜져 있다</i>
+ * <p>screen/user/requirements.md 의 불변식은 <i>다른 액션이 하나라도 켜져 있으면 {@code READ} 가 켜져 있다</i>
  * 이고, 그 근거는 <b>화면에 못 들어가면 어느 버튼도 누를 수 없다</b>는 것이다.
  *
  * <p>그렇다면 판정 대상은 <b>유효 권한</b>이어야 한다. 유효 권한은 역할과 개인 예외의
- * <b>합집합</b>이므로(security-design.md §4 ③), <b>역할이 조회를 주고 있으면 개인 예외에는 저장만 있어도
+ * <b>합집합</b>이므로(backend/security.md ③), <b>역할이 조회를 주고 있으면 개인 예외에는 저장만 있어도
  * 화면에 들어갈 수 있다</b> — 그리고 그것이 이 화면의 흔한 쓰임이다: 이미 볼 수 있는 사람에게
  * <i>고칠 수 있게</i> 만 더해 주는 일.
  *
@@ -58,9 +58,9 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <p><b>기간의 겹침까지 보지는 않는다.</b> 개인 {@code SAVE} 가 8월이고 개인 {@code READ} 가
  * 9월이면 8월에는 도달할 수 없는데 여기서 잡지 못한다 — 그 검사는 <b>액션 넷 × 기간 구간</b>
- * 을 교차해야 하고, 무엇보다 <b>역할 부여의 기간까지</b> 함께 봐야 성립한다. 61 §4.4 가
+ * 을 교차해야 하고, 무엇보다 <b>역할 부여의 기간까지</b> 함께 봐야 성립한다. screen/user/requirements.md 가
  * 요구한 것은 그 수준이 아니며, 화면이 기간을 한 번에 받아 <b>같은 값을 복사</b>하므로
- * (security-design.md §4 — 부여 작업 단위로 사유 하나) 정상 경로에서는 생기지 않는다.
+ * (backend/security.md — 부여 작업 단위로 사유 하나) 정상 경로에서는 생기지 않는다.
  */
 @Service
 public class UserAuthService {
@@ -88,7 +88,7 @@ public class UserAuthService {
     }
 
     /**
-     * 일괄 저장 — grid-standard.md §3.1. <b>한 트랜잭션이다</b>(UX-14).
+     * 일괄 저장 — frontend/grid.md. <b>한 트랜잭션이다</b>(UX-14).
      *
      * <p>순서가 규약이다: <b>행 하나씩 형태를 보고 → 반영하고 → 마지막에 불변식</b>. 불변식은
      * <b>반영 뒤의 상태</b>를 봐야 하므로 행 하나만 보고는 판정할 수 없다 — 같은 요청 안에서
@@ -164,14 +164,14 @@ public class UserAuthService {
         }
     }
 
-    // ── 검증 (42 §6 원칙 P1) ────────────────────────────────────────
+    // ── 검증 (sys/menu.md 원칙 P1) ────────────────────────────────────────
 
     /**
      * 줄 수 있는 조합인가 — <b>{@code C} 와 {@code U} 에만 건다</b>.
      *
      * <p>{@code D} 에 걸지 않는 것이 요점이다. API 가 사라져 <b>고아가 된 부여</b>는 정의
      * 밖이라 여기서 거부되는데, 그 행을 지우는 것은 <b>사람이 판단해 하는 정리</b>이며
-     * 61 §4.7 이 셋째 수단으로 적어 두었다 — 막으면 고아를 영영 지울 수 없다.
+     * screen/user/requirements.md 이 셋째 수단으로 적어 두었다 — 막으면 고아를 영영 지울 수 없다.
      */
     private static void validateGrantable(
             MenuAction pair,
@@ -179,12 +179,12 @@ public class UserAuthService {
             Map<String, Set<ActionType>> definable) {
 
         /*
-          <b>{@code MENU_URL IS NULL} 이면 거부한다</b>(42 §6). 구조 노드에는 화면이 스위치를
-          그리지 않으므로(61 §4.4) 정상 경로로는 오지 않는다 — 여기 닿는 것은 화면 밖
+          <b>{@code MENU_URL IS NULL} 이면 거부한다</b>(sys/menu.md). 구조 노드에는 화면이 스위치를
+          그리지 않으므로(screen/user/requirements.md) 정상 경로로는 오지 않는다 — 여기 닿는 것은 화면 밖
           경로이거나, 트리를 열어 둔 사이에 그 메뉴가 폴더가 된 경우다.
 
           <b>{@code USE_YN} 은 보지 않는다.</b> 꺼진 메뉴에도 예외는 줄 수 있고 게이트 ④에서
-          걸릴 뿐이며(security-design.md §4), 그것이 <i>켜기 전에 구성한다</i> 는 동선이다.
+          걸릴 뿐이며(backend/security.md), 그것이 <i>켜기 전에 구성한다</i> 는 동선이다.
         */
         SysMenu menu = menuByCode.get(pair.menuCd());
         if (menu == null || menu.getMenuUrl() == null) {
@@ -199,10 +199,10 @@ public class UserAuthService {
     }
 
     /**
-     * 기간과 사유 — <b>둘 다 {@code NOT NULL}</b> 이다(42 §6 · AUTHZ-07).
+     * 기간과 사유 — <b>둘 다 {@code NOT NULL}</b> 이다(sys/menu.md · AUTHZ-07).
      *
      * <p>DB 제약이 이미 막지만 그 실패는 <b>제약 위반 예외</b>로 나가 사용자에게 무슨 칸이
-     * 문제인지 말하지 못한다. 여기서 먼저 보는 것이 grid-edit-validation.md §3.4 의 <i>서버가 최종 판정</i> 이다.
+     * 문제인지 말하지 못한다. 여기서 먼저 보는 것이 frontend/grid.md 의 <i>서버가 최종 판정</i> 이다.
      */
     private static void validateValues(UserAuthSaveRow row) {
         if (row.validFromDt() == null || row.validToDt() == null) {
@@ -274,7 +274,7 @@ public class UserAuthService {
      * 역할이 <b>지금</b> 조회를 주는 메뉴들.
      *
      * <p><b>유효 권한 계산이 쓰는 그 쿼리를 그대로 부른다</b>({@code findGrantsOfUser} —
-     * security-design.md §4 의 ① 수집 + ② 필터). 여기서 조건을 다시 적으면 <i>역할이 활성일 것</i>·<i>부여가
+     * backend/security.md 의 ① 수집 + ② 필터). 여기서 조건을 다시 적으면 <i>역할이 활성일 것</i>·<i>부여가
      * 유효기간 안일 것</i> 이 <b>두 곳</b>에 표현되고, 한쪽만 고쳤을 때의 증상이
      * <i>"저장은 됐는데 안 된다"</i> 또는 그 반대다.
      *

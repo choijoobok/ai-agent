@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 메시지 값을 넣는 시드는 <b>캐시 버전을 함께 올린다</b> — 43 §8.1.
+ * 메시지 값을 넣는 시드는 <b>캐시 버전을 함께 올린다</b> — sys/code.md.
  *
  * <p>프론트는 캐시의 버전을 들고 묻고, 같으면 서버가 {@code unchanged} 로 답한다. 값을
  * 더해 놓고 버전을 올리지 않으면 <b>이미 번들을 받아 둔 화면</b>은 새 문구를 영원히 못 본다 —

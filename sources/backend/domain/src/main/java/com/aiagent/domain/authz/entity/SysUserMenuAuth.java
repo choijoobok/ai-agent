@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 개인 예외 권한 — 42 §6 · security-design.md §4 · AUTHZ-07.
+ * 개인 예외 권한 — sys/menu.md · backend/security.md · AUTHZ-07.
  *
  * <p><b>허용(GRANT)만 있다.</b> 차단(DENY)을 두면 우선순위 규칙이 필요해지고 <i>"왜 권한이
  * 없는지"</i> 를 추적할 수 없게 된다. 특정 사용자만 빼야 하면 역할을 분리한다.
@@ -59,12 +59,12 @@ public class SysUserMenuAuth extends BaseAuditEntity {
     @Column(name = "VALID_TO_DT", nullable = false)
     private LocalDate validToDt;
 
-    /** 감사 대응. 부여 <b>작업</b> 단위로 한 번 입력받아 선택 행 전체에 복사한다(security-design.md §4). */
+    /** 감사 대응. 부여 <b>작업</b> 단위로 한 번 입력받아 선택 행 전체에 복사한다(backend/security.md). */
     @Column(name = "GRANT_RSN", length = 500, nullable = false)
     private String grantRsn;
 
     /**
-     * 새 부여 — 61 §4.4 에서 <b>꺼진 칸을 켠 것</b>이다.
+     * 새 부여 — screen/user/requirements.md 에서 <b>꺼진 칸을 켠 것</b>이다.
      *
      * <p>검증은 밖에서 한다({@code UserAuthService}). 엔티티가 {@code SYS_MENU} 와
      * {@code SYS_API} 를 알아야 <i>줄 수 있는 조합인가</i> 를 판정할 수 있는데, 그것은
@@ -89,17 +89,17 @@ public class SysUserMenuAuth extends BaseAuditEntity {
     }
 
     /**
-     * 기간과 사유를 갱신한다 — <b>재부여도 회수도 이것</b>이다(61 §4.4 · §4.7).
+     * 기간과 사유를 갱신한다 — <b>재부여도 회수도 이것</b>이다(screen/user/requirements.md).
      *
      * <p>PK 가 {@code (USER_ID, MENU_CD, ACTION_CD)} 라 <b>한 조합에 행은 하나뿐</b>이며,
      * 같은 조합을 기간을 달리해 두 번 줄 수 없다. 그래서 <i>재부여</i> 는 새 행이 아니라
      * 이 메서드이고, <b>즉시 회수</b>({@code VALID_TO_DT = 어제})도 이 메서드다.
      *
      * <p><b>행을 지우지 않는 이유는 사유가 사라지기 때문</b>이다 — 변경 이력 테이블을 두지
-     * 않았으므로(ADR-0010) <i>"누구에게 왜 무엇을 언제까지 줬는가"</i> 를 남기는 것이 이
+     * 않았으므로(sys/logs.md) <i>"누구에게 왜 무엇을 언제까지 줬는가"</i> 를 남기는 것이 이
      * 행뿐이다.
      *
-     * <p>덮어써진 이전 기간과 사유는 <b>요청 전문 로그</b>에 있다(61 §4.4) — 작년의
+     * <p>덮어써진 이전 기간과 사유는 <b>요청 전문 로그</b>에 있다(screen/user/requirements.md) — 작년의
      * {@code save} 요청에 작년의 기간과 사유가 들어 있다.
      */
     public void change(LocalDate validFromDt, LocalDate validToDt, String grantRsn) {

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 세션에 담기는 유효 권한 — security-design.md §4 권한 캐싱.
+ * 세션에 담기는 유효 권한 — backend/security.md 권한 캐싱.
  *
  * <p><b>담는 것은 계산 결과뿐이다.</b> 역할 목록·개인 예외·유효기간은 계산 <b>입력</b>이며
  * 담지 않는다 — 담으면 매 요청 재계산해야 한다.
@@ -40,13 +40,13 @@ public record EffectiveAuthority(Set<MenuAction> grants, LocalDate calcDate)
         return grants.contains(new MenuAction(menuCd, action));
     }
 
-    /** 공집합이면 로그인이 차단된다 — security-design.md §4. */
+    /** 공집합이면 로그인이 차단된다 — backend/security.md. */
     public boolean isEmpty() {
         return grants.isEmpty();
     }
 
     /**
-     * 이 집합의 <b>내용 해시</b> — 50 §8.1 의 {@code X-Authz-Version}.
+     * 이 집합의 <b>내용 해시</b> — 의 {@code X-Authz-Version}.
      *
      * <p><b>시점이 아니라 내용이다.</b> 시점으로 만들면 노드마다 적재 시각이 달라 같은 권한에
      * 다른 버전이 나오고, 요청이 노드를 옮겨 다닐 때마다 헛 재조회가 걸린다. 내용 해시는
@@ -55,7 +55,7 @@ public record EffectiveAuthority(Set<MenuAction> grants, LocalDate calcDate)
      * <p><b>단조 증가 카운터가 아닌 것도 결정이다.</b> 권한을 뺐다가 되돌리면 감지되지 않는데,
      * <b>결과가 같으므로 다시 받을 이유도 없다</b>.
      *
-     * <p><b>담아 두지 않고 매번 계산한다.</b> 50 §8.1 은 재계산 때 한 번 계산해 세션에 함께
+     * <p><b>담아 두지 않고 매번 계산한다.</b> 은 재계산 때 한 번 계산해 세션에 함께
      * 담는 것으로 적었으나, 세션 스토어가 JDBC·Redis 면 <b>세션 속성이 매 요청 역직렬화되므로</b>
      * 담아 두어도 그 순간 다시 만들어진다 — 필드를 하나 늘려 얻는 것이 없다. 비용은 토큰 수십
      * 개에 대한 SHA-256 한 번이다.
@@ -74,7 +74,7 @@ public record EffectiveAuthority(Set<MenuAction> grants, LocalDate calcDate)
         return !calcDate.equals(businessToday);
     }
 
-    /** 프론트가 받는 것은 평탄화된 문자열이다 — 역할명으로 분기하지 않게 하려는 것이다(security-design.md §4). */
+    /** 프론트가 받는 것은 평탄화된 문자열이다 — 역할명으로 분기하지 않게 하려는 것이다(backend/security.md). */
     public List<String> permissionTokens() {
         return grants.stream().map(MenuAction::toToken).sorted().toList();
     }
@@ -85,7 +85,7 @@ public record EffectiveAuthority(Set<MenuAction> grants, LocalDate calcDate)
      * <p>트리는 이 집합에서 조상을 역산해 만든다(AUTHZ-04) —
      * {@link com.aiagent.domain.authz.service.MenuTreeService} 가 이 목록을 입력으로
      * 받는다. <b>역산이 여기 없는 것이 결정이다</b>: 조상은 권한 판정에 참여하지 않으므로
-     * (security-design.md §4 경로 결합 기각) 판정 결과를 담는 이 값이 트리 구조를 알 이유가 없다.
+     * (backend/security.md 경로 결합 기각) 판정 결과를 담는 이 값이 트리 구조를 알 이유가 없다.
      */
     public List<String> menuCodes() {
         return grants.stream()

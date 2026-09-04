@@ -14,15 +14,15 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 
 /**
- * 비밀번호 이력 — 41 §5. AUTH-05 의 <b>재사용 금지</b>가 이 테이블의 유일한 존재 이유다.
+ * 비밀번호 이력 — sys/user-role.md. AUTH-05 의 <b>재사용 금지</b>가 이 테이블의 유일한 존재 이유다.
  *
  * <p><b>{@code USER_ID} 는 주체, {@code REG_ID} 는 행위자다.</b> 둘이 갈리는 유일한
- * 테이블이며(40 §3), 본인 변경이면 같고 관리자 임시 발급이면 다르다 — 그 구분이 여기 말고는
- * 남지 않는다(security-design.md §4).
+ * 테이블이며(sys/INDEX.md), 본인 변경이면 같고 관리자 임시 발급이면 다르다 — 그 구분이 여기 말고는
+ * 남지 않는다(backend/security.md).
  *
  * <p><b>{@link com.aiagent.core.domain.BaseAuditEntity} 를 상속하지 않는다.</b>
  * 감사 컬럼이 {@code REG_*} 둘뿐이기 때문이다 — 이력은 수정되지 않으므로 {@code MOD_*} 는
- * 언제나 NULL 이고, 항상 NULL 인 컬럼이 늘면 그 컬럼 자체를 신뢰할 수 없게 된다(40 §4.2).
+ * 언제나 NULL 이고, 항상 NULL 인 컬럼이 늘면 그 컬럼 자체를 신뢰할 수 없게 된다(sys/INDEX.md).
  *
  * <p><b>{@code CHG_SEQ} 는 사용자 안에서만 단조 증가한다.</b> 전역 시퀀스를 쓰지 않는 이유는
  * 비교가 언제나 <i>"이 사람의 최근 N건"</i> 이라 전역 번호에 쓸 데가 없기 때문이다.

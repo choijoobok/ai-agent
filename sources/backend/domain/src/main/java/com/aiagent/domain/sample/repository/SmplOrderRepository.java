@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-/** 샘플 주문 — 48 §3. */
+/** 샘플 주문 — playbook/INDEX.md. */
 public interface SmplOrderRepository extends JpaRepository<SmplOrder, Long> {
 
     boolean existsByOrdNo(String ordNo);
@@ -22,7 +22,7 @@ public interface SmplOrderRepository extends JpaRepository<SmplOrder, Long> {
     List<SmplOrder> findByOrdIdIn(List<Long> ordIds);
 
     /**
-     * 일괄 재계산의 대상 — 기준일 <b>이전</b>의 주문 전량이다(68 §3.4).
+     * 일괄 재계산의 대상 — 기준일 <b>이전</b>의 주문 전량이다(playbook/INDEX.md).
      *
      * <p>순서를 못 박는 것은 진행률 때문이다. 순서가 흔들리면 두 번 돌렸을 때 <i>몇 번째에서
      * 실패했다</i> 가 다른 행을 가리키고, 그 사실을 아는 사람이 아무도 없다.

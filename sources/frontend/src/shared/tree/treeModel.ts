@@ -1,13 +1,13 @@
 import type { DropZone, TreeNode } from '@/shared/tree/types';
 
 /**
- * 평면 목록 → 트리 — 62 §4.2.1.
+ * 평면 목록 → 트리 — screen/menu/requirements.md.
  *
- * <p>서버가 <b>전위 순회 순서</b>로 내려주므로(62 §4.9) 이 함수는 순서를 만들지 않고
+ * <p>서버가 <b>전위 순회 순서</b>로 내려주므로(screen/menu/requirements.md) 이 함수는 순서를 만들지 않고
  * **깊이와 부모-자식 관계만** 붙인다. 다시 정렬하면 트리가 아니게 된다.
  *
  * <p><b>고아를 버리지 않는다.</b> 부모를 못 찾은 노드는 최상위로 올려 붙인다 — 이 화면은
- * *고치러 오는 화면*이고(62 §4.1), 화면에서 사라지면 고칠 수단이 없어진다. 서버도 같은
+ * *고치러 오는 화면*이고(screen/menu/requirements.md), 화면에서 사라지면 고칠 수단이 없어진다. 서버도 같은
  * 이유로 그것들을 목록 끝에 붙여 보낸다.
  */
 export function buildTree<T>(
@@ -43,7 +43,7 @@ export function buildTree<T>(
 /**
  * 지금 <b>보이는</b> 행들 — 접힌 폴더의 자손은 빠진다.
  *
- * <p>62 §4.5.2 의 <i>"가로선은 화면에 보이는 두 행 사이를 뜻한다"</i> 가 이 목록 위에서
+ * <p>screen/menu/requirements.md 의 <i>"가로선은 화면에 보이는 두 행 사이를 뜻한다"</i> 가 이 목록 위에서
  * 성립한다 — 드롭 판정이 보는 것과 사람이 보는 것이 같아야 한다.
  */
 export function visibleRows<T>(roots: TreeNode<T>[], collapsed: ReadonlySet<string>): TreeNode<T>[] {
@@ -60,7 +60,7 @@ export function visibleRows<T>(roots: TreeNode<T>[], collapsed: ReadonlySet<stri
   return out;
 }
 
-/** {@code 자신} ∪ 자손 — 드롭 금지 집합이다(42 §4 의 네 층 중 첫째). */
+/** {@code 자신} ∪ 자손 — 드롭 금지 집합이다(sys/menu.md 의 네 층 중 첫째). */
 export function selfAndDescendants<T>(node: TreeNode<T>): Set<string> {
   const ids = new Set<string>();
   const walk = (current: TreeNode<T>) => {
@@ -79,7 +79,7 @@ export function heightOf<T>(node: TreeNode<T>): number {
 }
 
 /**
- * 마우스가 행의 어디에 있는가 — <b>행 하나를 세로로 셋으로 나눈다</b>(62 §4.5.2).
+ * 마우스가 행의 어디에 있는가 — <b>행 하나를 세로로 셋으로 나눈다</b>(screen/menu/requirements.md).
  *
  * <p><b>좌우는 읽지 않는다.</b> 선의 들여쓰기를 손으로 맞추게 하면 한 픽셀 차이로 부모가
  * 바뀌고, 그 실수는 <b>놓기 전에 보이지 않는다</b> — 깊이를 고르는 수단은 접기 하나다.

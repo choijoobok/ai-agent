@@ -3,7 +3,7 @@ import { Tabs, theme, type TabsProps } from 'antd';
 import { ensureGridStyles } from '@/shared/grid/gridStyles';
 
 /**
- * 마스터-디테일의 <b>하단 탭</b> — grid-standard.md §6.1 · 61 §3.8.
+ * 마스터-디테일의 <b>하단 탭</b> — frontend/grid.md · screen/user/requirements.md.
  *
  * <p><b>기본값을 화면마다 적지 않는다.</b> 탭 안이 그리드인 화면이 여러 개 서면서 같은 값
  * 셋을 매번 적게 됐고(높이 · 탭 최소 폭 · 탭바 높이), 적는 자리가 화면이면 <b>새 화면이
@@ -27,13 +27,13 @@ import { ensureGridStyles } from '@/shared/grid/gridStyles';
 
 interface DetailTabsProps extends Omit<TabsProps, 'size' | 'className'> {
   /**
-   * 스플리터가 이 pane 을 <b>접었다</b> — grid-standard.md §6.3.
+   * 스플리터가 이 pane 을 <b>접었다</b> — frontend/grid.md.
    *
    * <p><b>탭바를 감춘다.</b> 본문의 그리드는 화면이 {@code collapsed} 를 함께 넘겨 제목 한
    * 줄로 접으며, 그 둘이 맞물려 <b>그리드 하나짜리 하단과 같은 모양</b>이 된다.
    *
    * <p>언마운트하지 않는다 — 접힘은 <b>표시</b>일 뿐이라 조회한 행과 미저장 편집이 살아
-   * 있어야 한다(main-shell.md §5.1 의 조회조건 접힘과 같은 규칙).
+   * 있어야 한다(frontend/tabs.md 의 조회조건 접힘과 같은 규칙).
    */
   collapsed?: boolean;
 }
@@ -49,7 +49,7 @@ export function DetailTabs(props: DetailTabsProps) {
       size="small"
       /*
         <b>접히면 탭바까지 감춘다</b>(2026-08-31 실물). 그리드 하나만 있는 하단은 접히면
-        <b>제목 한 줄</b>이 남는데(grid-standard.md §6.3), 탭이 있는 하단은 <b>탭바 · 버튼 줄 · 페이징이
+        <b>제목 한 줄</b>이 남는데(frontend/grid.md), 탭이 있는 하단은 <b>탭바 · 버튼 줄 · 페이징이
         그대로 남고 판만 0px</b> 이 됐다 — 접은 것이 아니라 <i>판이 깨진 것</i>으로 보였다.
 
         <b>탭바만 감추면 되는 것이 요점이다.</b> 남은 본문(활성 탭 하나)의 그리드가 스스로

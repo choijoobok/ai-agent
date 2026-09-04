@@ -14,23 +14,23 @@ import { buildItemColumns } from '@/features/sample/itemColumns';
 import type { SampleOrder, SampleOrderItem, SampleOrderTagRow } from '@/features/sample/types';
 
 /**
- * `SMPL_MD_TABS` 의 하단 — 68 §7. **하단 디테일 탭의 유일한 실물**이다(68 §2).
+ * `SMPL_MD_TABS` 의 하단 — playbook/INDEX.md. **하단 디테일 탭의 유일한 실물**이다(playbook/INDEX.md).
  *
  * <p>탭 둘이 **같은 주문의 서로 다른 얼굴**이다: 품목은 ③④와 같은 표이고, 태그는 ①이
- * `list` 컬럼 하나로 나르던 것을 **행으로** 편 것이다(48 §4.1).
+ * `list` 컬럼 하나로 나르던 것을 **행으로** 편 것이다(playbook/INDEX.md).
  *
  * <h2>탭 둘의 기본값 셋을 화면이 적지 않는다</h2>
  *
- * <p>grid-standard.md §6.1 — `gridId` 는 탭 키에서, `titleSuffix` 는 부모 컨트롤러에서, `disabled` 는
+ * <p>frontend/grid.md — `gridId` 는 탭 키에서, `titleSuffix` 는 부모 컨트롤러에서, `disabled` 는
  * 선택 상태에서 온다. 판의 높이·탭 최소 폭·탭바 높이는 `DetailTabs` 가 갖는다.
  *
  * <h2>지연 로딩 — 안 연 탭은 아직 읽지도 않았다</h2>
  *
  * <p>마스터를 클릭할 때마다 둘 다 나가면 **목록을 훑는 동작 자체가 부하**가 된다
- * (68 §7.6). `USER_MGMT` 가 탭 다섯에 대해 같은 판단을 내렸고 그 근거가 여기서도 같다.
+ * (playbook/INDEX.md). `USER_MGMT` 가 탭 다섯에 대해 같은 판단을 내렸고 그 근거가 여기서도 같다.
  *
  * <p>**한 번 부른 탭은 주문이 바뀔 때까지 다시 부르지 않는다** — 탭을 오가는 것은 조회가
- * 아니라 *보는 각도를 바꾸는 것*이다. 그래도 **조회 버튼은 탭마다 있다**(68 §7.4): 남이
+ * 아니라 *보는 각도를 바꾸는 것*이다. 그래도 **조회 버튼은 탭마다 있다**(playbook/INDEX.md): 남이
  * 고친 것을 다시 읽는 일은 **그 탭만**의 일이며, 마스터의 조회는 목록을 통째로 바꿔
  * 디테일을 리셋하므로 같은 것이 아니다.
  *
@@ -42,7 +42,7 @@ import type { SampleOrder, SampleOrderItem, SampleOrderTagRow } from '@/features
  * <h2>탭별 독립 편집 상태</h2>
  *
  * <p>`useGridController` 둘이 **이 컴포넌트에** 산다. antd 의 탭이 활성 판만 그리더라도
- * 훅은 부모에 있으므로 **품목을 고치고 태그 탭으로 가도 편집이 살아 있다**(68 §7.6) —
+ * 훅은 부모에 있으므로 **품목을 고치고 태그 탭으로 가도 편집이 살아 있다**(playbook/INDEX.md) —
  * 탭 안에서 훅을 부르면 언마운트와 함께 미저장 편집이 사라진다.
  */
 
@@ -50,7 +50,7 @@ type TabKey = 'item' | 'tag';
 
 export interface SampleDetailTabsHandle {
   /**
-   * 마스터의 선택이 바뀌었다 — grid-standard.md §6.1 의 상태 셋을 여기서 편다.
+   * 마스터의 선택이 바뀌었다 — frontend/grid.md 의 상태 셋을 여기서 편다.
    *
    * @param ordId `null` 이면 **빈 상태**다(조회 전 · 아무도 안 고름 · 미저장 신규 행).
    *     신규 행이 여기 섞이는 것은 FK 때문이다 — 부모가 저장되기 전에는 자식을 만들 수 없다.
@@ -59,7 +59,7 @@ export interface SampleDetailTabsHandle {
   /**
    * **탭 둘 중 하나라도** 미저장인가 — 마스터가 선택을 바꾸기 전에 묻는다.
    *
-   * <p>68 §7.6 이 *"두 번 묻지 않는다"* 고 적은 것이 이 한 줄이다. 탭마다 물으면 사용자는
+   * <p>playbook/INDEX.md 이 *"두 번 묻지 않는다"* 고 적은 것이 이 한 줄이다. 탭마다 물으면 사용자는
    * 같은 물음에 두 번 답하면서도 **무엇을 잃는지는 여전히 모른다**.
    */
   dirty: () => boolean;
@@ -68,14 +68,14 @@ export interface SampleDetailTabsHandle {
 interface Props {
   menuCd: string;
   /**
-   * 마스터 그리드 — **탭의 제목이 누구의 것인지 말하는 근거**다(grid-standard.md §6.1).
+   * 마스터 그리드 — **탭의 제목이 누구의 것인지 말하는 근거**다(frontend/grid.md).
    *
    * <p>{@link SampleDetailTabsHandle.select} 가 이미 주문 ID 를 받지만 그것으로는 모자란다:
    * 제목에 붙는 것은 **주문번호와 주문명**이고, 그 둘을 여기서 또 들면 **같은 사실이 두
    * 곳**이 된다 — 마스터에서 이름을 고치고 저장하기 전이면 둘이 갈린다.
    */
   master: { selected: GridRow<SampleOrder>[] };
-  /** 스플리터가 하단을 접었다 — **탭바까지 감춘다**(68 §7.6 · `DetailTabs`). */
+  /** 스플리터가 하단을 접었다 — **탭바까지 감춘다**(playbook/INDEX.md · `DetailTabs`). */
   collapsed?: boolean;
   onExpand?: () => void;
   handleRef: React.RefObject<SampleDetailTabsHandle | null>;
@@ -99,7 +99,7 @@ export function SampleDetailTabs(props: Props) {
   /** 신규 태그 행이 제안할 순서가 읽는다 — `defaults` 는 콜백이라 렌더 값을 못 본다. */
   const tagRows = useRef<GridRow<SampleOrderTagRow>[]>([]);
 
-  /** 디테일 탭에는 조회조건 폼이 없다 — 대상이 없으면 **조회 자체를 하지 않는다**(grid-api-contract.md §5). */
+  /** 디테일 탭에는 조회조건 폼이 없다 — 대상이 없으면 **조회 자체를 하지 않는다**(frontend/grid.md). */
   const conditions = useCallback(() => Promise.resolve(ordId.current ? [] : null), []);
   const byOrder = useCallback(() => ({ ordId: ordId.current }), []);
 
@@ -174,10 +174,10 @@ export function SampleDetailTabs(props: Props) {
       save: {
         url: SAMPLE_TABS_ENDPOINTS.saveTags,
         /*
-          3층 — 판 전체를 봐야 아는 것이다(grid-edit-validation.md §3.3). 서버도 같은 것을 본다.
+          3층 — 판 전체를 봐야 아는 것이다(frontend/grid.md). 서버도 같은 것을 본다.
 
           **둘을 이어 붙인다.** 개수와 순서는 서로 상관이 없고 한 판에서 둘 다 어긋날 수
-          있으므로, 앞의 것만 내면 사용자가 고친 뒤에 나머지를 처음 듣는다 — grid-edit-validation.md §3.3 의
+          있으므로, 앞의 것만 내면 사용자가 고친 뒤에 나머지를 처음 듣는다 — frontend/grid.md 의
           *건수를 먼저 알려준다* 가 두 규칙에 걸쳐서도 성립해야 한다.
 
           **개수를 앞에 둔다.** 넘은 판에서 할 일은 행을 빼는 것이고, 뺄 행의 순서를 먼저
@@ -270,7 +270,7 @@ export function SampleDetailTabs(props: Props) {
       setPicked(next);
       /*
         **둘 다 비운다.** 남겨 두면 *다른 주문의 데이터를 그 주문 것으로* 보게 되고
-        (grid-standard.md §6.1), 탭을 옮기는 순간 그 오해가 화면에 그대로 남는다 — 지연 로딩이라
+        (frontend/grid.md), 탭을 옮기는 순간 그 오해가 화면에 그대로 남는다 — 지연 로딩이라
         **안 연 탭은 조회로 갈아 끼워지지도 않는다**.
       */
       items.setRows([]);
@@ -293,7 +293,7 @@ export function SampleDetailTabs(props: Props) {
   // ── 그리기 ─────────────────────────────────────────────────────
 
   /**
-   * 대상이 없으면 **탭은 살아 있고 버튼이 잠긴다**(68 §7.6).
+   * 대상이 없으면 **탭은 살아 있고 버튼이 잠긴다**(playbook/INDEX.md).
    *
    * <p>탭을 잠그면 *"이 주문에 태그 탭이 없나"* 로 읽힌다 — 없는 것은 **고를 주문**이지
    * 탭이 아니다.
@@ -328,7 +328,7 @@ export function SampleDetailTabs(props: Props) {
               <DataGrid<SampleOrderItem>
                 title={MSG.SAMPLE_ITEM_GRID_TITLE}
                 menuCd={menuCd}
-                // 개인화의 키다 — 같으면 탭 둘의 설정이 서로를 덮는다(grid-standard.md §5).
+                // 개인화의 키다 — 같으면 탭 둘의 설정이 서로를 덮는다(frontend/grid.md).
                 gridId="detailItem"
                 controller={items}
                 deletable={itemDeletable}
@@ -365,10 +365,10 @@ export function SampleDetailTabs(props: Props) {
 }
 
 /**
- * 태그 탭의 컬럼 넷 — 68 §7.2 의 셋에 **`TAG_SEQ` 를 더한다**.
+ * 태그 탭의 컬럼 넷 — playbook/INDEX.md 의 셋에 **`TAG_SEQ` 를 더한다**.
  *
  * <p>§7.2 가 `TAG_NM`·`TAG_TYPE_CD`·`SORT_NO` 셋을 적었지만 순번을 함께 그린다. 그 둘이
- * **여기서 처음 갈리기** 때문이다(48 §4.1): ①은 배열을 통째로 보내 서버가 `index + 1` 을
+ * **여기서 처음 갈리기** 때문이다(playbook/INDEX.md): ①은 배열을 통째로 보내 서버가 `index + 1` 을
  * 둘에 함께 넣지만, 행 편집은 **순번을 유지한 채 순서만** 바꿀 수 있다. 하나만 그리면 그
  * 갈림이 데이터에만 있고 화면에는 없어, 다음 사람이 *왜 컬럼이 둘인가* 를 테이블에서
  * 유추해야 한다.
@@ -396,7 +396,7 @@ function buildTagColumns(): ColumnDef<SampleOrderTagRow>[] {
       header: MSG.SAMPLE_COL_TAG_TYPE,
       type: 'code',
       width: 130,
-      // 항목이 스칼라가 아닌 쪽의 실물이다(grid-column-contract.md §5.6) — ①의 `listModal` 이 같은 값을 편집한다.
+      // 항목이 스칼라가 아닌 쪽의 실물이다(frontend/grid.md) — ①의 `listModal` 이 같은 값을 편집한다.
       grpCd: 'SMPL_TAG_TYPE',
       renderer: 'badge',
       tone: { GEN: 'none', PROMO: 'ok', RISK: 'warn' },

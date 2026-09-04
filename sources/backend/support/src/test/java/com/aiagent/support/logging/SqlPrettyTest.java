@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * SQL 줄 나누기 — system-logging.md §2.
+ * SQL 줄 나누기 — backend/logging.md.
  *
  * <p><b>이 클래스가 있는 이유는 복사다.</b> 값이 박힌 SQL 을 그대로 DB 툴에 붙여 넣는 것이
  * 기능의 전부이므로, 보기 좋게 만들다가 <b>다른 쿼리로 바꿔 놓으면</b> 전부가 무의미해진다.

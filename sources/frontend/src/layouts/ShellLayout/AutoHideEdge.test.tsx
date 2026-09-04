@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { AutoHideEdge } from '@/layouts/ShellLayout/AutoHideEdge';
 
 /**
- * 가장자리에서 나오는 띠 — main-shell.md §9.5.
+ * 가장자리에서 나오는 띠 — frontend/tabs.md.
  *
  * <p>여기서 지키는 것 셋이다. ① <b>마우스로 열리고 닫힌다</b>, ② <b>감춰진 동안 마우스를
  * 가로채지 않는다</b>, ③ <b>헤더가 사이더보다 위다</b>.

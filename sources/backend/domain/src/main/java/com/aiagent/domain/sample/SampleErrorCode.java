@@ -5,12 +5,12 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * 샘플 저장이 거부하는 것 — 68 §5.
+ * 샘플 저장이 거부하는 것 — playbook/INDEX.md.
  *
- * <p><b>{@link #HAS_ITEMS} 가 이 화면 고유의 것</b>이다. grid-standard.md §6.2 의 <b>마스터 삭제
+ * <p><b>{@link #HAS_ITEMS} 가 이 화면 고유의 것</b>이다. frontend/grid.md 의 <b>마스터 삭제
  * 게이트</b>이며, 화면이 체크박스를 열지 않는 것과 <b>같은 사실을 서버가 다시</b> 말한다 —
  * 화면 밖 경로가 실재하고(직접 호출) FK 의 {@code RESTRICT} 는 <i>제약 위반</i> 이라는
- * 읽을 수 없는 문구로만 답한다(48 §5.1).
+ * 읽을 수 없는 문구로만 답한다(playbook/INDEX.md).
  */
 public enum SampleErrorCode implements ErrorCode {
 

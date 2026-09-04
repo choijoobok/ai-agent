@@ -16,9 +16,9 @@ import type { SavedCondValue, SavedCondValues } from '@/shared/searchform/savedC
 import type { SearchField, SearchOp } from '@/shared/searchform/types';
 
 /**
- * 조회조건 폼 — 57 · grid-standard.md §2.4. <b>화면에 남는 유일한 폼이다</b>(grid-standard.md §1.1).
+ * 조회조건 폼 — 57 · frontend/grid.md. <b>화면에 남는 유일한 폼이다</b>(frontend/grid.md).
  *
- * <p><b>라벨이 칸 위에 있고 칸의 폭이 고정이다</b>(search-form-contract.md §3.10). 라벨을 왼쪽에 두면 라벨 길이가
+ * <p><b>라벨이 칸 위에 있고 칸의 폭이 고정이다</b>(frontend/search-form.md). 라벨을 왼쪽에 두면 라벨 길이가
  * 제각각인 다국어에서 <b>칸의 시작점이 줄마다 달라진다</b> — 위로 올리면 라벨이 아무리 길어도
  * 칸은 언제나 같은 자리에서 시작한다. 폭이 {@code span} 이 아니라 <b>고정 픽셀</b>인 것도
  * 같은 이유다: 24칸 격자는 <i>화면 폭에 따라</i> 칸의 폭이 변해 두 줄이 되면 어긋난다.
@@ -29,7 +29,7 @@ import type { SearchField, SearchOp } from '@/shared/searchform/types';
  * <p><b>영역이 좌우로 갈린다</b> — 왼쪽이 칸, 오른쪽이 버튼이다. 버튼을 <b>위에 한 줄로</b>
  * 두면 칸 전체가 그만큼 내려앉는다. 나란히 두면 칸이 맨 위에서 시작한다.
  *
- * <p><b>그 버튼은 오른쪽 아래다</b>(2026-09-01 — main-shell.md §5.1). 처음에는 오른쪽 <b>위</b>였고
+ * <p><b>그 버튼은 오른쪽 아래다</b>(2026-09-01 — frontend/tabs.md). 처음에는 오른쪽 <b>위</b>였고
  * 근거는 <i>"칸이 두 줄 세 줄로 늘어나도 자리가 같아 손이 기억한다"</i> 였다. 칸이 두 줄이
  * 되는 화면에서 갈렸다 — 손이 마지막으로 머무는 곳은 <b>마지막 줄</b>인데 버튼만 첫 줄에
  * 남아, 자리를 기억하는 대가로 <b>눈이 폼을 거슬러 올라가야</b> 했다. 자리가 고정인 것은
@@ -38,22 +38,22 @@ import type { SearchField, SearchOp } from '@/shared/searchform/types';
  * <p>버튼 둘의 순서는 <b>초기화 → 저장/불러오기</b>다: 왼쪽이 지금 폼을 되돌리는 것,
  * 오른쪽이 다른 폼을 불러오는 것이라 <i>가까운 일에서 먼 일로</i> 간다.
  *
- * <p><b>조회 버튼은 없다</b>(search-form-contract.md §4.4) — 그리드 ①이 이미 갖는다. 다만 <b>{@code Enter} 는
+ * <p><b>조회 버튼은 없다</b>(frontend/search-form.md) — 그리드 ①이 이미 갖는다. 다만 <b>{@code Enter} 는
  * 남는다</b>: 버튼을 없앤 것이지 제스처를 없앤 것이 아니다.
  *
- * <p><b>빈 칸은 보내지 않는다</b>(search-form-contract.md §4.2 · api-conventions.md §3.1) — {@code value: null} 을 보내면
+ * <p><b>빈 칸은 보내지 않는다</b>(frontend/search-form.md · backend/api.md) — {@code value: null} 을 보내면
  * <i>"NULL 인 것을 찾아라"</i> 와 섞인다. 예외는 {@code isNull}·{@code isNotNull} 둘뿐이며
  * 그 둘은 <b>값이 없는 것이 정상</b>이다.
  *
- * <p><b>정렬 필드가 없다</b>(search-form-contract.md §4.3) — 정렬 기준은 언제나 컬럼이므로 컬럼 위가 맞는 자리다.
+ * <p><b>정렬 필드가 없다</b>(frontend/search-form.md) — 정렬 기준은 언제나 컬럼이므로 컬럼 위가 맞는 자리다.
  */
 
 /*
-  폭 둘은 <b>다른 파일</b>에 있다 — 트리의 ①에 선 검색 칸이 같은 값을 읽는다(62 §4.10).
+  폭 둘은 <b>다른 파일</b>에 있다 — 트리의 ①에 선 검색 칸이 같은 값을 읽는다(screen/menu/requirements.md).
   컴포넌트 파일에서 내보내면 Fast Refresh 가 깨지므로 `fieldWidth` 로 갈랐다.
 */
 /**
- * 년월의 와이어 형식 — DB 가 `VARCHAR(6)` 이라 값도 그 모양이다(48 §4.2).
+ * 년월의 와이어 형식 — DB 가 `VARCHAR(6)` 이라 값도 그 모양이다(playbook/INDEX.md).
  *
  * <p>문자열 정렬이 곧 시간 순서이므로 서버의 범위 비교가 그대로 성립한다.
  */
@@ -72,11 +72,11 @@ const VALUE_WIDTH = SEARCH_VALUE_WIDTH;
 const OP_WIDTH = SEARCH_OP_WIDTH;
 
 
-/** 후보를 적지 않으면 타입이 준다 — search-form-contract.md §3.5 의 표. */
+/** 후보를 적지 않으면 타입이 준다 — frontend/search-form.md 의 표. */
 const TEXT_OPS: SearchOp[] = ['eq', 'ne', 'startsWith', 'contains', 'endsWith', 'isNull', 'isNotNull'];
 const SELECT_OPS: SearchOp[] = ['eq', 'ne', 'in'];
 /**
- * 팝업 칸의 후보 — <b>같음과 같지 않음</b>뿐이다(68 §9.14).
+ * 팝업 칸의 후보 — <b>같음과 같지 않음</b>뿐이다(playbook/INDEX.md).
  *
  * <p>값이 <b>고른 키</b>라 조각 일치({@code contains})가 뜻이 없다 — 사용자는 키를 치는
  * 것이 아니라 목록에서 고르며, 고른 키의 <i>일부를 포함하는</i> 행이라는 질문은 아무도
@@ -85,40 +85,40 @@ const SELECT_OPS: SearchOp[] = ['eq', 'ne', 'in'];
  */
 const POPUP_OPS: SearchOp[] = ['eq', 'ne', 'isNull', 'isNotNull'];
 /**
- * <b>기본은 하나뿐이다</b> — 64 §3.3 의 연산자 칸이 {@code BETWEEN} 하나다.
+ * <b>기본은 하나뿐이다</b> — screen/log/access/requirements.md 의 연산자 칸이 {@code BETWEEN} 하나다.
  *
  * <p>{@code gte}·{@code lte} 를 <b>기본으로 열지 않는다.</b> 한쪽이 열린 범위는 <b>기간
  * 상한 검사를 그대로 통과하는 무제한 조회</b>이고(그 검사는 두 끝의 차를 본다 —
  * {@link issueOf}), 기간이 <b>부하의 상한인 화면</b>에서 그것은 문을 열어 두는 것이다.
  *
- * <p><b>선택 필터인 칸은 화면이 열 수 있다</b>(2026-08-31 · 61 §3.3). 사용자 목록의 *최종
+ * <p><b>선택 필터인 칸은 화면이 열 수 있다</b>(2026-08-31 · screen/user/requirements.md). 사용자 목록의 *최종
  * 로그인* 처럼 기간이 창이 아니라 거르개인 칸에서는 <i>이 날짜 이후로 한 번도 안 들어온
  * 계정</i> 을 물을 방법이 필요하며, 범위로 표현하려면 반대쪽 끝에 <b>사람이 아무 값이나</b>
  * 넣어야 한다 — 그 값이 곧 조건이 되어 <b>묻지 않은 것을 거른다</b>.
  *
  * <p>그래서 <b>여는 것이 선언</b>이다({@code ops}). 기본이 닫는 쪽이면 새 이력 화면이
- * 빠뜨렸을 때 <b>덜 위험한 쪽</b>으로 떨어진다(security-design.md §4 와 같은 방향).
+ * 빠뜨렸을 때 <b>덜 위험한 쪽</b>으로 떨어진다(backend/security.md 와 같은 방향).
  */
 const DATE_RANGE_OPS: SearchOp[] = ['between'];
 
 /**
- * 기간 칸이 <b>달력 하나</b>로 바뀌는 연산자 — 2026-08-31 · 61 §3.3.
+ * 기간 칸이 <b>달력 하나</b>로 바뀌는 연산자 — 2026-08-31 · screen/user/requirements.md.
  *
  * <p>범위 칸을 그대로 두고 한쪽을 비우게 하면 <i>비운 것</i>과 <i>아직 안 고른 것</i>이
  * 같은 모양이 되어, 조회가 되는지를 눌러 봐야 안다.
  *
- * <p><b>{@code gt}·{@code lt} 도 여기 있다</b>(68 §9.12) — 그 둘을 {@link DATE_RANGE_OPS}
+ * <p><b>{@code gt}·{@code lt} 도 여기 있다</b>(playbook/INDEX.md) — 그 둘을 {@link DATE_RANGE_OPS}
  * 기본에 넣지 않은 것과 <b>다른 축</b>이다: 저것은 <i>후보로 나오는가</i> 이고 이것은
  * <b>나왔을 때 무엇으로 그리는가</b> 다. 화면이 {@code ops} 로 명시해서 열었는데 여기
  * 없으면 그 칸은 <b>날짜를 손으로 치는 텍스트 칸</b>이 된다.
  */
 const SINGLE_DATE_OPS: SearchOp[] = ['gte', 'lte', 'gt', 'lt'];
 
-/** 값 칸이 날짜 둘을 담는다 — {@code [from, to]} 이며 ISO-8601(오프셋 포함)이다(architecture.md §6-1). */
+/** 값 칸이 날짜 둘을 담는다 — {@code [from, to]} 이며 ISO-8601(오프셋 포함)이다(backend/packages.md). */
 const RANGE_ARITY = 2;
 
 /**
- * 드롭다운에 나오는 <b>순서</b> — 화면이 적은 순서가 아니다(search-form-contract.md §3.4).
+ * 드롭다운에 나오는 <b>순서</b> — 화면이 적은 순서가 아니다(frontend/search-form.md).
  *
  * <p><b>화면마다 다르면 같은 목록을 매번 다시 읽는다.</b> 조회조건 둘이 나란히 있는데
  * 한쪽은 <i>포함</i> 이 첫째고 다른 쪽은 셋째면, 손이 자리를 기억하지 못한다
@@ -140,20 +140,20 @@ const OP_ORDER: SearchOp[] = [
   'endsWith',
   'isNotNull',
   'isNull',
-  // 크기 계열의 첫 실물 — 나머지 넷은 그것을 요구하는 화면이 이 뒤에 붙인다(search-form-contract.md §3.4).
+  // 크기 계열의 첫 실물 — 나머지 넷은 그것을 요구하는 화면이 이 뒤에 붙인다(frontend/search-form.md).
   'between',
-  // 둘째 — 65 §4.7 의 *소요 시간 이상*. 위 주석이 정한 순서(gte · gt · lte · lt)의 첫 칸이다.
+  // 둘째 — screen/batch/schedule/requirements.md 의 *소요 시간 이상*. 위 주석이 정한 순서(gte · gt · lte · lt)의 첫 칸이다.
   'gte',
-  // 크기 계열의 넷째·다섯째 — 68 §9.12(2026-09-02). 위 주석이 정한 순서(gte · gt ·
-  // lte · lt)의 남은 두 칸이며, 이로써 api-conventions.md §3.3 의 열셋이 전부 열렸다.
+  // 크기 계열의 넷째·다섯째 — playbook/INDEX.md(2026-09-02). 위 주석이 정한 순서(gte · gt ·
+  // lte · lt)의 남은 두 칸이며, 이로써 backend/api.md 의 열셋이 전부 열렸다.
   'gt',
-  // 셋째 — 61 §3.3 의 기간 칸 둘. 그 순서의 셋째 자리다.
+  // 셋째 — screen/user/requirements.md 의 기간 칸 둘. 그 순서의 셋째 자리다.
   'lte',
   'lt',
 ];
 
 /**
- * 타입의 <b>기본 연산자</b> — search-form-contract.md §3.5 의 표.
+ * 타입의 <b>기본 연산자</b> — frontend/search-form.md 의 표.
  *
  * <p>{@link OP_ORDER} 와 다른 축이다. 순서는 <i>목록에서 어디에 있나</i> 이고 이것은
  * <i>처음 골라져 있는 것</i> 이다 — 순서의 첫째를 기본으로 삼으면 <b>텍스트 칸의 기본이
@@ -190,7 +190,7 @@ const OP_LABEL: Record<SearchOp, string> = {
  * {@code a*}·{@code *a*} 는 와일드카드 관례를 그대로 읽는다 — 여기에 돋보기나 화살표 같은
  * 그림을 얹으면 <b>기호를 그림으로 번역했다가 사용자가 다시 되번역</b>해야 한다.
  *
- * <p>이름은 드롭다운이 낸다 — search-form-contract.md §8 의 미결 <i>"연산자 셀렉터의 모양"</i> 을 이 형태로 닫는다.
+ * <p>이름은 드롭다운이 낸다 — frontend/search-form.md 의 미결 <i>"연산자 셀렉터의 모양"</i> 을 이 형태로 닫는다.
  * 기호만 두면 뜻을 모르는 사용자가 있고, 이름을 칸 안에 두면 <b>다국어에서 잘린다</b>:
  * 값 칸이 300px 고정이라 남는 폭이 없다.
  */
@@ -213,7 +213,7 @@ const OP_GLYPH: Record<SearchOp, string> = {
   lt: '<',
 };
 
-/** 타입이 주는 후보 — 화면이 {@code ops} 를 적으면 그쪽이 이긴다(search-form-contract.md §3.4). */
+/** 타입이 주는 후보 — 화면이 {@code ops} 를 적으면 그쪽이 이긴다(frontend/search-form.md). */
 const TYPE_OPS: Record<SearchField['type'], SearchOp[]> = {
   text: TEXT_OPS,
   select: SELECT_OPS,
@@ -224,18 +224,18 @@ const TYPE_OPS: Record<SearchField['type'], SearchOp[]> = {
 
 const GLYPH_FONT = 'ui-monospace, SFMono-Regular, Consolas, monospace';
 
-/** 칸 하나의 값 — {@code in} 이면 배열이다(search-form-contract.md §3.4). */
+/** 칸 하나의 값 — {@code in} 이면 배열이다(frontend/search-form.md). */
 type FieldValue = string | string[];
 
 export interface SearchFormHandle {
-  /** 그리드가 <i>"값을 달라"</i> 고 부른다 — grid-api-contract.md §5. 검증 실패면 {@code null} 이다. */
+  /** 그리드가 <i>"값을 달라"</i> 고 부른다 — frontend/grid.md. 검증 실패면 {@code null} 이다. */
   collect: () => SearchCondition[] | null;
   /**
-   * <b>다른 화면이 건넨 값으로 폼을 채운다</b> — 넘겨주기(64 §5.4 · 62 §5.5).
+   * <b>다른 화면이 건넨 값으로 폼을 채운다</b> — 넘겨주기(screen/log/access/requirements.md · screen/menu/requirements.md).
    *
    * <p>선언({@code defaultValue})으로는 안 되는 자리다. 폼의 상태는 <b>첫 렌더에 한 번</b>
    * 만들어지므로 {@code fields} 를 바꿔도 이미 마운트된 폼은 움직이지 않는다 — 그런데
-   * 넘겨주기가 오는 흔한 경우가 <b>그 화면이 이미 열려 있을 때</b>다(main-shell.md §4.7.1).
+   * 넘겨주기가 오는 흔한 경우가 <b>그 화면이 이미 열려 있을 때</b>다(frontend/tabs.md).
    *
    * <p><b>적지 않은 칸은 기본값으로 돌아간다.</b> 건네받았다는 것은 <i>다른 질문을 하러
    * 왔다</i> 는 뜻이라, 앞서 걸어 둔 조건이 남아 있으면 <b>건넨 값이 그 조건에 갇힌다</b> —
@@ -250,22 +250,22 @@ export interface SearchFormHandle {
 
 interface SearchFormProps {
   fields: SearchField[];
-  /** `Enter` 와 초기화가 부른다 — 초기화는 컬럼 필터도 함께 지운다(grid-standard.md §2.4). */
+  /** `Enter` 와 초기화가 부른다 — 초기화는 컬럼 필터도 함께 지운다(frontend/grid.md). */
   onSubmit: () => void;
   onReset?: () => void;
   handleRef?: Ref<SearchFormHandle>;
   /**
    * 지금 걸린 조건 수 — <b>접힌 채로 조건이 있으면 브레드크럼 줄이 그것을 표시한다</b>
-   * (main-shell.md §5.1). 알리지 않으면 접힌 사용자는 *"왜 데이터가 이것뿐이지"* 의 원인을 못 찾는다.
+   * (frontend/tabs.md). 알리지 않으면 접힌 사용자는 *"왜 데이터가 이것뿐이지"* 의 원인을 못 찾는다.
    */
   onActiveCountChange?: (count: number) => void;
-  /** 접힘은 <b>표시</b>일 뿐이다 — 언마운트하지 않으므로 조건이 살아 있다(main-shell.md §5.1). */
+  /** 접힘은 <b>표시</b>일 뿐이다 — 언마운트하지 않으므로 조건이 살아 있다(frontend/tabs.md). */
   collapsed?: boolean;
   /**
-   * 저장된 조회조건을 <b>쓰지 않는다</b> — 참조 팝업 안의 폼이 그 자리다(68 §9.4).
+   * 저장된 조회조건을 <b>쓰지 않는다</b> — 참조 팝업 안의 폼이 그 자리다(playbook/INDEX.md).
    *
    * <p>기본은 켜짐이고 끄는 것이 예외다. 끄는 이유가 하나뿐이라 이름도 그것을 말한다 —
-   * <b>조건이 메뉴에 매인다</b>(search-form-contract.md §5). 팝업은 자기 메뉴가 없어 <b>부른 화면의 메뉴</b>로
+   * <b>조건이 메뉴에 매인다</b>(frontend/search-form.md). 팝업은 자기 메뉴가 없어 <b>부른 화면의 메뉴</b>로
    * 저장되는데, 그러면 화면의 조건과 팝업의 조건이 <b>한 목록에 섞이고</b> 이름이 겹치면
    * 서로를 덮는다 — 사용자가 보기에는 <i>저장한 조건이 다른 것으로 바뀌어 있다</i> 다.
    */
@@ -276,7 +276,7 @@ interface FieldState {
   op: SearchOp;
   value: FieldValue;
   /**
-   * 팝업 칸이 <b>보여 주는 글자</b> — 68 §9.14. 나가는 조건에는 담기지 않는다.
+   * 팝업 칸이 <b>보여 주는 글자</b> — playbook/INDEX.md. 나가는 조건에는 담기지 않는다.
    *
    * <p>{@link FieldState.value} 와 <b>축이 다르다</b>: 저것은 서버가 아는 키이고 이것은
    * 사람이 읽는 이름이다. 하나로 합치면 둘 중 하나를 잃는다 — 이름을 보내면 <i>이름으로도
@@ -285,7 +285,7 @@ interface FieldState {
   text?: string;
 }
 
-/** 조회 기간의 시스템 층 — `SYS_CONFIG` 의 `ui.search.range-days.*`(43 §6.4). */
+/** 조회 기간의 시스템 층 — `SYS_CONFIG` 의 `ui.search.range-days.*`(sys/code.md). */
 type SystemRange = { defaultDays: number; maxDays: number };
 
 export function SearchForm(props: SearchFormProps) {
@@ -293,13 +293,13 @@ export function SearchForm(props: SearchFormProps) {
   const identity = useTabIdentity();
 
   /*
-    조회 기간의 <b>시스템 층</b> — 43 §6.4 · 64 §2.2. 로그인 응답이 나른다.
+    조회 기간의 <b>시스템 층</b> — sys/code.md · screen/log/access/requirements.md. 로그인 응답이 나른다.
     프론트에 7 · 92 를 박아 두면 {@code SYS_CONFIG} 와 어긋나고, 그 어긋남은 <b>폼이
     통과시킨 조회를 서버가 400 으로 거부하는 것</b>으로만 드러난다.
 
     <b>기본값도 여기서 온다</b>(2026-08-30). 상한만 시스템 층을 보고 기본값은 하루로
     떨어뜨렸더니, `rangeDays` 를 적지 않은 화면이 <i>최근 7일</i> 이어야 할 자리에서
-    <b>최근 하루</b>로 열렸다 — 로그인 이력이 그 첫 사례다(64 §4.6).
+    <b>최근 하루</b>로 열렸다 — 로그인 이력이 그 첫 사례다(screen/log/access/requirements.md).
   */
   const systemRange = useAuthStore((session) => session.searchRange);
   const initial = useMemo(() => defaults(props.fields, systemRange), [props.fields, systemRange]);
@@ -308,7 +308,7 @@ export function SearchForm(props: SearchFormProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   /*
-    공통코드에서 후보를 받는 칸 — 43 §8. 화면은 <b>그룹코드만</b> 적고 목록·캐시·이름은
+    공통코드에서 후보를 받는 칸 — sys/code.md. 화면은 <b>그룹코드만</b> 적고 목록·캐시·이름은
     여기 아래가 맡는다. 하나도 없으면 훅이 빈 객체를 내고 요청도 나가지 않는다.
   */
   const codeOptions = useCodeOptions(
@@ -318,7 +318,7 @@ export function SearchForm(props: SearchFormProps) {
   /**
    * 걸린 조건 — <b>검증하지 않는다</b>.
    *
-   * <p>조건 수 표시(main-shell.md §5.1)가 매 렌더 이것을 부르므로, 여기서 오류 상태를 세우면
+   * <p>조건 수 표시(frontend/tabs.md)가 매 렌더 이것을 부르므로, 여기서 오류 상태를 세우면
    * <b>아직 조회를 누르지도 않았는데 빨간 글씨</b>가 뜬다.
    */
   const build = useCallback((): SearchCondition[] => {
@@ -343,10 +343,10 @@ export function SearchForm(props: SearchFormProps) {
   }, [props.fields, state]);
 
   /**
-   * 조회를 누른 순간의 검증 — grid-api-contract.md §5. <b>실패하면 조회가 일어나지 않는다.</b>
+   * 조회를 누른 순간의 검증 — frontend/grid.md. <b>실패하면 조회가 일어나지 않는다.</b>
    *
    * <p>둘뿐이다: <b>필수인데 비었다</b> 와 <b>기간이 상한을 넘었다</b>. 서버도 같은 것을
-   * 다시 보므로(64 §2.2) 여기서 막는 것은 <i>왕복 하나를 아끼는 것</i> 이지 유일한 방어가
+   * 다시 보므로(screen/log/access/requirements.md) 여기서 막는 것은 <i>왕복 하나를 아끼는 것</i> 이지 유일한 방어가
    * 아니다 — 그래서 규칙을 여기 더 복잡하게 적지 않는다.
    */
   const collect = useCallback((): SearchCondition[] | null => {
@@ -370,7 +370,7 @@ export function SearchForm(props: SearchFormProps) {
     setState((current) => ({ ...current, [field]: { ...current[field], ...patch } }));
 
   /**
-   * 저장할 값 — <b>기본값과 같은 칸은 담지 않는다</b>(search-form-contract.md §5.2).
+   * 저장할 값 — <b>기본값과 같은 칸은 담지 않는다</b>(frontend/search-form.md).
    *
    * <p>그래서 <i>최근 7일</i> 로 저장한 조건이 열 때마다 최근 7일이다. 절대값으로 굳으면
    * <b>내일 열었을 때 어제 것</b>이 나오고, 그것이 저장된 조건의 가장 흔한 배신이다.
@@ -388,7 +388,7 @@ export function SearchForm(props: SearchFormProps) {
       if (current.op !== initial.op) entry.op = current.op;
       if (!sameValue(current.value, initial.value)) entry.value = current.value;
       /*
-        <b>표시값은 선언에서 되만들 수 없다</b>(68 §9.14) — 고른 행에서 나온 글자라,
+        <b>표시값은 선언에서 되만들 수 없다</b>(playbook/INDEX.md) — 고른 행에서 나온 글자라,
         저장하지 않으면 다시 열었을 때 <b>빈 칸</b>이 된다: 조건은 걸려 있는데 무엇으로
         걸렀는지가 화면 어디에도 없다.
       */
@@ -484,7 +484,7 @@ export function SearchForm(props: SearchFormProps) {
                 />
                 <ValueControl
                   field={field}
-                  // 선언이 적은 후보가 이긴다 — 소스가 값을 갖는 코드가 그쪽이다(43 §4.4).
+                  // 선언이 적은 후보가 이긴다 — 소스가 값을 갖는 코드가 그쪽이다(sys/code.md).
                   options={field.options ?? (field.grpCd ? codeOptions[field.grpCd] : undefined)}
                   state={state[field.field]}
                   onChange={(patch) => change(field.field, patch)}
@@ -521,7 +521,7 @@ export function SearchForm(props: SearchFormProps) {
           >
             {label(MSG.SEARCH_RESET)}
           </Button>
-          {/* 셸 밖(로그인 화면 등)에는 메뉴가 없다 — 조건이 매이는 자리가 그것이다(search-form-contract.md §5.5). */}
+          {/* 셸 밖(로그인 화면 등)에는 메뉴가 없다 — 조건이 매이는 자리가 그것이다(frontend/search-form.md). */}
           {identity && props.savedConditions !== false && (
             <SavedCondControl menuCd={identity.menuCd} read={readValues} apply={applyValues} />
           )}
@@ -543,30 +543,30 @@ function ValueControl(props: {
   const multiple = state.op === 'in';
 
   /*
-    값을 받지 않는 연산자에는 <b>잠긴 칸</b>이 남는다 — api-conventions.md §3.3 이 칸을 없애라고 한 뜻은
+    값을 받지 않는 연산자에는 <b>잠긴 칸</b>이 남는다 — backend/api.md 이 칸을 없애라고 한 뜻은
     *"값을 넣었는데 안 걸린다"* 를 막으라는 것이고 잠긴 칸이 그것을 막는다. 통째로 지우면
-    그 칸만 폭이 줄어 아래윗줄의 정렬이 깨진다(search-form-contract.md §3.10).
+    그 칸만 폭이 줄어 아래윗줄의 정렬이 깨진다(frontend/search-form.md).
   */
   if (!takesValue(state.op)) {
     return <Input disabled value="" style={{ width: VALUE_WIDTH }} />;
   }
 
   /*
-    기간 — 64 §3.3. <b>시각까지 고른다.</b>
+    기간 — screen/log/access/requirements.md. <b>시각까지 고른다.</b>
 
     날짜만 고르게 두면 <i>오늘</i> 이 자정에서 끊겨 <b>방금 일어난 요청이 안 나온다</b> —
     사용 이력에서 가장 흔한 조회가 <i>조금 전 그 요청</i> 이라 그것이 곧 고장으로 읽힌다.
 
-    값은 <b>오프셋을 포함한 ISO-8601</b> 이다(architecture.md §6-1). {@code dayjs.toISOString()} 이
+    값은 <b>오프셋을 포함한 ISO-8601</b> 이다(backend/packages.md). {@code dayjs.toISOString()} 이
     {@code Z} 로 내는데 서버는 {@code OffsetDateTime} 으로 읽으므로 둘이 맞는다.
   */
   if (field.type === 'dateRange') {
     /*
-      <b>정밀도가 셋이다</b>(grid-column-contract.md §4.5 · 68 §3.3). 기본은 `second` 이고, 그것이 사용 이력의
+      <b>정밀도가 셋이다</b>(frontend/grid.md · playbook/INDEX.md). 기본은 `second` 이고, 그것이 사용 이력의
       규약이다 — 날짜만 고르게 두면 <i>오늘</i> 이 자정에서 끊긴다.
 
       `month` 는 년월 달력이며 값도 <b>`202608` 문자열</b>로 나간다. 그 컬럼은 DB 가
-      VARCHAR(6) 이고(48 §4.2) ISO 시각을 보내면 비교가 언제나 빗나가, 조건은 걸렸는데
+      VARCHAR(6) 이고(playbook/INDEX.md) ISO 시각을 보내면 비교가 언제나 빗나가, 조건은 걸렸는데
       0건인 목록이 된다 — 사용자에게 그것은 <i>그런 주문이 없다</i> 로 보인다.
     */
     const precision = field.precision ?? 'second';
@@ -578,7 +578,7 @@ function ValueControl(props: {
       `DATE` 는 `LocalDate` 이고 `LocalDate.parse` 는 ISO 시각에서 죽는다(`ValueCoercion`).
       그 실패는 조회 400 이며 화면에는 *조회 조건의 값이 올바르지 않습니다* 로만 나온다.
 
-      `second` 만 오프셋을 포함한 ISO-8601 이다(architecture.md §6-1) — 그 칸의 컬럼이
+      `second` 만 오프셋을 포함한 ISO-8601 이다(backend/packages.md) — 그 칸의 컬럼이
       `OffsetDateTime`·`Instant` 라서다.
     */
     const wireFormat = precision === 'month' ? MONTH_WIRE : DAY_WIRE;
@@ -588,7 +588,7 @@ function ValueControl(props: {
       precision === 'second' ? dayjs(value) : dayjs(value, wireFormat);
 
     /*
-      <b>한쪽만 아는 조건은 달력 하나다</b>(2026-08-31 · 61 §3.3). 범위 칸을 그대로 두고
+      <b>한쪽만 아는 조건은 달력 하나다</b>(2026-08-31 · screen/user/requirements.md). 범위 칸을 그대로 두고
       한쪽을 비우게 하면 <i>비운 것</i>과 <i>아직 안 고른 것</i>이 같은 모양이 되어,
       조회가 되는지 안 되는지를 눌러 봐야 안다.
     */
@@ -600,7 +600,7 @@ function ValueControl(props: {
           picker={picker}
           allowClear
           style={{ width: VALUE_WIDTH }}
-          // 표시 형식은 시스템 설정이 정한다 — 그리드의 시각 컬럼과 같은 값이다(grid-column-contract.md §4.5).
+          // 표시 형식은 시스템 설정이 정한다 — 그리드의 시각 컬럼과 같은 값이다(frontend/grid.md).
           format={format}
           value={single === '' ? null : fromWire(single)}
           onChange={(picked) => onChange({ value: picked ? toWire(picked) : '' })}
@@ -632,11 +632,11 @@ function ValueControl(props: {
   }
 
   /*
-    참조 팝업 — 68 §9.14. <b>표시 칸(읽기 전용) + 찾기 + 지우기</b>다.
+    참조 팝업 — playbook/INDEX.md. <b>표시 칸(읽기 전용) + 찾기 + 지우기</b>다.
 
     <b>칸에 직접 칠 수 없다.</b> 칠 수 있으면 목록에 없는 키가 만들어지고, 그 조건은
     <i>걸렸는데 0건</i> 이 되어 사용자가 자기 오타를 의심할 근거가 없다 —
-    {@code richSelect} 의 <i>타이핑은 필터이지 입력이 아니다</i>(68 §9.5)와 같은 규칙이다.
+    {@code richSelect} 의 <i>타이핑은 필터이지 입력이 아니다</i>(playbook/INDEX.md)와 같은 규칙이다.
 
     <b>보내는 것은 키 하나뿐이다.</b> 칸에 보이는 이름은 조건에 들어가지 않는다 —
     이름까지 보내면 <i>이름으로도 걸러 달라</i> 는 뜻이 되어 버린다.
@@ -686,14 +686,14 @@ function ValueControl(props: {
   }
 
   /*
-    태그 입력 — 68 §9.12. <b>텍스트 칸의 {@code in}</b> 이다.
+    태그 입력 — playbook/INDEX.md. <b>텍스트 칸의 {@code in}</b> 이다.
 
     콤보의 {@code in}(위 가지)과 <b>값의 모양이 같고 고르는 방법이 다르다</b>: 저기는
     닫힌 후보에서 고르고 여기는 <b>사람이 친다</b>. 그래서 {@code mode="tags"} 이고
     후보 목록이 없다 — 빈 드롭다운을 띄우면 <i>고를 것이 없다</i> 로 읽힌다.
 
     <b>{@code null} 항목은 없다.</b> 텍스트의 <i>(없음)</i> 은 {@code isNull} 이 표현하며
-    (api-conventions.md §3.3), 칩으로 빈 문자열을 만들 수 있게 두면 <b>같은 질문을 두 방법으로</b> 묻게
+    (backend/api.md), 칩으로 빈 문자열을 만들 수 있게 두면 <b>같은 질문을 두 방법으로</b> 묻게
     된다 — 서버의 {@code IN} 절에 {@code NULL} 이 섞이면 그 절은 어떤 행도 맞히지 못한다.
 
     <b>{@code Enter} 를 가로채지 않는다</b> — 콤보의 다중 선택과 갈리는 자리다. 거기서
@@ -732,9 +732,9 @@ function ValueControl(props: {
 }
 
 /**
- * 참조 팝업 칸 — 68 §9.14 · grid-column-contract.md §6.
+ * 참조 팝업 칸 — playbook/INDEX.md · frontend/grid.md.
  *
- * <p><b>그리드와 같은 레지스트리를 쓴다</b>(68 §9.4) — 두 벌을 두면 같은 고객 팝업이
+ * <p><b>그리드와 같은 레지스트리를 쓴다</b>(playbook/INDEX.md) — 두 벌을 두면 같은 고객 팝업이
  * 그리드에서는 다섯 컬럼이고 폼에서는 셋인 날이 온다.
  *
  * <p><b>표시 칸은 잠겨 있다.</b> 값이 <i>고른 키</i> 라 손으로 친 글자는 키가 아니며,
@@ -781,9 +781,9 @@ function PopupField(props: {
 }
 
 /**
- * 연산자 — <b>기호 하나짜리 버튼</b>이고 이름은 드롭다운이 낸다(search-form-contract.md §3.4).
+ * 연산자 — <b>기호 하나짜리 버튼</b>이고 이름은 드롭다운이 낸다(frontend/search-form.md).
  *
- * <p><b>후보가 하나여도 자리가 남는다.</b> search-form-contract.md §3.4 는 <i>셀렉터</i> 가 사라진다고 했고 그것은
+ * <p><b>후보가 하나여도 자리가 남는다.</b> frontend/search-form.md 는 <i>셀렉터</i> 가 사라진다고 했고 그것은
  * 지킨다 — 누를 수 없는 표시로 바뀔 뿐이다. 통째로 없애면 그 칸의 값 입력만 44px 왼쪽에서
  * 시작해 <b>줄이 어긋난다</b>. 고정 연산자를 보여 주는 것 자체도 값을 한다: 요청 URI 가
  * 앞 일치인 것을 사용자가 알 방법이 그 표시밖에 없다.
@@ -867,7 +867,7 @@ function defaultOpOf(field: SearchField): SearchOp {
 }
 
 /**
- * 화면 단위 → 저장 단위 — search-form-contract.md §3.9 의 {@code scale}.
+ * 화면 단위 → 저장 단위 — frontend/search-form.md 의 {@code scale}.
  *
  * <p><b>나가는 순간에만 곱한다.</b> 폼의 상태에는 사람이 입력한 값 그대로 남아야
  * 저장된 조건이 화면 단위로 남고(§5.2), 다시 열었을 때 <b>또 곱해지지 않는다</b>.
@@ -890,7 +890,7 @@ function takesValue(op: SearchOp): boolean {
 }
 
 /**
- * 연산자를 바꾸면 값이 따라간다 — search-form-contract.md §3.4.
+ * 연산자를 바꾸면 값이 따라간다 — frontend/search-form.md.
  *
  * <p><b>다중에서 단일로 돌아오면 비운다.</b> 문서는 <i>"첫 원소만 남긴다"</i> 였는데
  * 콤보에서는 그러면 안 된다 — 거기서 빈 값은 <b>*전체* 이고 그것은 값이 아니라 *묻지 않음*</b>
@@ -913,7 +913,7 @@ function moveValue(value: FieldValue, next: SearchOp): FieldValue {
   return Array.isArray(value) ? '' : value;
 }
 
-/** 다중 선택의 기본값 — <b>배열이면 그대로</b>다(61 §3.3 의 계정 상태가 셋을 준다). */
+/** 다중 선택의 기본값 — <b>배열이면 그대로</b>다(screen/user/requirements.md 의 계정 상태가 셋을 준다). */
 function asList(value: string | string[]): string[] {
   if (Array.isArray(value)) return value;
   return value === '' ? [] : [value];
@@ -930,8 +930,8 @@ function defaults(fields: SearchField[], systemRange: SystemRange): Record<strin
     const op = defaultOpOf(field);
     if (op === 'between') {
       /*
-        <b>빈 문자열이 *비워 둔다* 다</b>(2026-08-30 — 61 §3.3). 기간을 미리 채우는 것은
-        <b>기간이 부하의 상한인 화면</b>의 규약이고(64 §2.2), 사용자 목록의 *최종 로그인*
+        <b>빈 문자열이 *비워 둔다* 다</b>(2026-08-30 — screen/user/requirements.md). 기간을 미리 채우는 것은
+        <b>기간이 부하의 상한인 화면</b>의 규약이고(screen/log/access/requirements.md), 사용자 목록의 *최종 로그인*
         처럼 <b>선택 필터</b>인 칸에서는 그것이 <i>한 번도 로그인하지 않은 계정을 첫
         조회에서 통째로 빼는</i> 일이 된다.
       */
@@ -946,7 +946,7 @@ function defaults(fields: SearchField[], systemRange: SystemRange): Record<strin
 }
 
 /**
- * <b>최근 N일</b> — 절대값이 아니라 <i>지금부터</i> 다(search-form-contract.md §5.2).
+ * <b>최근 N일</b> — 절대값이 아니라 <i>지금부터</i> 다(frontend/search-form.md).
  *
  * <p>{@code defaults} 가 폼을 열 때와 초기화할 때 다시 부르므로, 저장된 조건도
  * <b>열 때마다 최근 N일</b>이 된다 — 절대값으로 굳으면 <i>내일 열었을 때 어제 것</i> 이
@@ -979,7 +979,7 @@ function wire(value: Dayjs, field: SearchField): string {
 }
 
 /**
- * 조회를 막는 것 둘 — 64 §2.2 · §3.7.
+ * 조회를 막는 것 둘 — screen/log/access/requirements.md.
  *
  * <p><b>기간의 상한은 두 층 중 좁은 쪽</b>이다. 화면이 32를 적어도 시스템이 31이면 31이며,
  * 화면 층은 <i>더 좁게</i> 만 갈 수 있다 — 넓히는 쪽으로 덮을 수 있으면 화면 하나가
@@ -1009,9 +1009,9 @@ function issueOf(
 }
 
 /**
- * 저장된 값을 폼에 되돌린다 — search-form-contract.md §5.3. <b>맞지 않는 것은 조용히 버린다.</b>
+ * 저장된 값을 폼에 되돌린다 — frontend/search-form.md. <b>맞지 않는 것은 조용히 버린다.</b>
  *
- * <p>여기는 40 §7 의 <i>실패가 시끄러운 쪽을 택한다</i> 와 방향이 다르다. <b>개인 편의
+ * <p>여기는 sys/INDEX.md 의 <i>실패가 시끄러운 쪽을 택한다</i> 와 방향이 다르다. <b>개인 편의
  * 기능</b>이며, 배포마다 <i>"저장한 조건 3개가 무효입니다"</i> 를 띄우면 사용자가 고칠 수
  * 없는 경고가 반복된다.
  */

@@ -1,279 +1,279 @@
 MSG_KEY,USE_SCOPE,MSG_DESC
-accessLog.anonymous,FRONT,사용자 칸이 빈 행의 표시 — 64 §2.7. 빈칸으로 두면 *수집이 안 된 것*과 구분되지 않는다. 미인증 요청에 `USER_ID` 가 없는 것은 정상이다. /
+accessLog.anonymous,FRONT,사용자 칸이 빈 행의 표시 — screen/log/access/requirements.md. 빈칸으로 두면 *수집이 안 된 것*과 구분되지 않는다. 미인증 요청에 `USER_ID` 가 없는 것은 정상이다. /
 accessLog.col.clientIp,FRONT,IP 컬럼.
-accessLog.col.creDtm,FRONT,일시 컬럼 — 정렬이 열린 유일한 컬럼이다(64 §2.3).
-accessLog.col.httpStat,FRONT,상태 컬럼 — 응답의 HTTP 상태. 전 요청을 받으므로 필요하다(64 §3.2.2).
-accessLog.col.menu,FRONT,메뉴 컬럼 — 코드가 아니라 메뉴명으로 그린다(43 §3).
-accessLog.col.payload,FRONT,전문 컬럼 — 값이 아니라 `[보기]` 다(64 §2.4).
+accessLog.col.creDtm,FRONT,일시 컬럼 — 정렬이 열린 유일한 컬럼이다(screen/log/access/requirements.md).
+accessLog.col.httpStat,FRONT,상태 컬럼 — 응답의 HTTP 상태. 전 요청을 받으므로 필요하다(screen/log/access/requirements.md).
+accessLog.col.menu,FRONT,메뉴 컬럼 — 코드가 아니라 메뉴명으로 그린다(sys/code.md).
+accessLog.col.payload,FRONT,전문 컬럼 — 값이 아니라 `[보기]` 다(screen/log/access/requirements.md).
 accessLog.col.requestUri,FRONT,요청 URI 컬럼.
-accessLog.col.seq,FRONT,순번 컬럼 — tie-breaker 이며 기본 숨김이다(64 §2.7).
-accessLog.col.traceId,FRONT,추적 ID 컬럼 — 5xx 토스트의 그 값이다(64 §2.5).
+accessLog.col.seq,FRONT,순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/log/access/requirements.md).
+accessLog.col.traceId,FRONT,추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/log/access/requirements.md).
 accessLog.col.userId,FRONT,사용자 아이디 컬럼 — 미인증 요청은 #ACCESS_LOG_ANONYMOUS 다.
 accessLog.col.userNm,FRONT,"사용자명 컬럼 — `SYS_USER` 를 조인해 얻는다(2026-09-01). 미인증 요청과 지워진 계정에서 비며, 그 자리를 채우지 않는다 — 바로 왼쪽 칸이 이미 `(익명)` 이라고 말하고 있어 이 칸의 빈칸은 덧말이다. 로그인 이력이 `없는 계정` 배지를 붙이는 것과 갈리는 자리다(거기는 없는 계정이 흔한 일이다). /"
-accessLog.empty,FRONT,"0건일 때 — 보존 기간을 함께 말한다(64 §3.7). *""조회 결과가 없습니다""* 로 끝내면 조건이 좁은 것인지 거기 데이터가 없는 것인지 구분되지 않는다. 0건에는 언제나 이유가 있고 화면이 아는 이유는 화면이 말한다. /"
-accessLog.footer.range,FRONT,푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(64 §2.3).
-accessLog.grid.title,FRONT,마스터 그리드의 제목 — 이 화면에 그리드가 하나다(64 §3.1).
-accessLog.menu.clientClaim,FRONT,메뉴 컬럼 헤더의 툴팁 — 클라이언트가 밝힌 값이다(architecture.md §6.3). 붙이지 않으면 이 화면의 메뉴별 집계가 감사 근거로 인용된다(64 §3.2.1). /
-accessLog.noMenu,FRONT,메뉴 문맥 없는 요청의 표시 — 로그인·하트비트가 그렇다(64 §3.2.1).
+accessLog.empty,FRONT,"0건일 때 — 보존 기간을 함께 말한다(screen/log/access/requirements.md). *""조회 결과가 없습니다""* 로 끝내면 조건이 좁은 것인지 거기 데이터가 없는 것인지 구분되지 않는다. 0건에는 언제나 이유가 있고 화면이 아는 이유는 화면이 말한다. /"
+accessLog.footer.range,FRONT,푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/log/access/requirements.md).
+accessLog.grid.title,FRONT,마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/log/access/requirements.md).
+accessLog.menu.clientClaim,FRONT,메뉴 컬럼 헤더의 툴팁 — 클라이언트가 밝힌 값이다(backend/packages.md). 붙이지 않으면 이 화면의 메뉴별 집계가 감사 근거로 인용된다(screen/log/access/requirements.md). /
+accessLog.noMenu,FRONT,메뉴 문맥 없는 요청의 표시 — 로그인·하트비트가 그렇다(screen/log/access/requirements.md).
 accessLog.outcome.failure,FRONT,상태 조건의 항목 — 4xx·5xx.
 accessLog.outcome.success,FRONT,상태 조건의 항목 — 2xx·3xx.
-accessLog.payload.length,FRONT,전문 모달 하단의 글자 수 — `{count}`(64 §2.4).
-accessLog.payload.link,FRONT,전문 셀에 그려지는 글자 — 값이 아니다(64 §2.4).
+accessLog.payload.length,FRONT,전문 모달 하단의 글자 수 — `{count}`(screen/log/access/requirements.md).
+accessLog.payload.link,FRONT,전문 셀에 그려지는 글자 — 값이 아니다(screen/log/access/requirements.md).
 accessLog.payload.title,FRONT,전문 모달의 제목.
-accessLog.payload.truncated,FRONT,"전문이 상한에서 잘렸다 — architecture.md §6.2. 말하지 않으면 잘린 JSON 을 받은 사람이 *""저장이 깨졌다""* 로 읽는다. 이 화면에서 가장 흔한 오독이다. /"
+accessLog.payload.truncated,FRONT,"전문이 상한에서 잘렸다 — backend/packages.md. 말하지 않으면 잘린 JSON 을 받은 사람이 *""저장이 깨졌다""* 로 읽는다. 이 화면에서 가장 흔한 오독이다. /"
 accessLog.search.clientIp,FRONT,조회조건 — IP. 완전 일치다.
 accessLog.search.menu,FRONT,
-accessLog.search.menuCd,FRONT,조회조건 — 메뉴 코드. 뿌리 테이블의 컬럼이라 값 비교 하나로 끝난다. `메뉴 없음` 항목이 여기 없다. 콤보였을 때는 `in` 배열의 `null` 이 `IS NULL` 로 펴졌는데(64 §3.2.1) 텍스트 칸에는 담을 자리가 없다 — 그 물음은 메뉴 컬럼의 필터가 답한다(grid-column-contract.md §4.1). /
-accessLog.search.menuNm,FRONT,조회조건 — 메뉴명. 이름은 두 테이블 건너에 있다(43 §3). `SYS_MENU.MENU_NM` 이 담은 것은 메시지 키이고 이름은 `SYS_MESSAGE` 의 값이라 서버가 `EXISTS` 로 푼다. 어느 언어든 걸린다 — 운영자는 화면에 보이는 그 이름을 들고 오지 어느 언어의 값인지를 들고 오지 않는다(63 §3.7). /
-accessLog.search.outcome,FRONT,조회조건 — 상태. 파생이며 기본은 전체다(64 §3.3).
-accessLog.search.period,FRONT,조회조건 — 기간. 필수이며 상한이 31일이다(64 §2.2).
-accessLog.search.requestUri,FRONT,조회조건 — 요청 URI. 앞 일치다(64 §3.3).
-accessLog.search.traceId,FRONT,조회조건 — 추적 ID. 넣으면 기간이 선택이 된다(64 §2.2).
-accessLog.search.userId,FRONT,"조회조건 — 사용자 아이디. 문자열 비교 넷(같음 · 시작 · 포함 · 끝)이다(2026-09-01). 인덱스가 없는 것은 그대로인데 기간이 먼저 좁힌다(64 §2.2) — 완전 일치만 열어 두면 조각을 든 사람이 기간을 넓혀 훑고, 그것이 더 비싸다. /"
+accessLog.search.menuCd,FRONT,조회조건 — 메뉴 코드. 뿌리 테이블의 컬럼이라 값 비교 하나로 끝난다. `메뉴 없음` 항목이 여기 없다. 콤보였을 때는 `in` 배열의 `null` 이 `IS NULL` 로 펴졌는데(screen/log/access/requirements.md) 텍스트 칸에는 담을 자리가 없다 — 그 물음은 메뉴 컬럼의 필터가 답한다(frontend/grid.md). /
+accessLog.search.menuNm,FRONT,조회조건 — 메뉴명. 이름은 두 테이블 건너에 있다(sys/code.md). `SYS_MENU.MENU_NM` 이 담은 것은 메시지 키이고 이름은 `SYS_MESSAGE` 의 값이라 서버가 `EXISTS` 로 푼다. 어느 언어든 걸린다 — 운영자는 화면에 보이는 그 이름을 들고 오지 어느 언어의 값인지를 들고 오지 않는다(screen/code/requirements.md). /
+accessLog.search.outcome,FRONT,조회조건 — 상태. 파생이며 기본은 전체다(screen/log/access/requirements.md).
+accessLog.search.period,FRONT,조회조건 — 기간. 필수이며 상한이 31일이다(screen/log/access/requirements.md).
+accessLog.search.requestUri,FRONT,조회조건 — 요청 URI. 앞 일치다(screen/log/access/requirements.md).
+accessLog.search.traceId,FRONT,조회조건 — 추적 ID. 넣으면 기간이 선택이 된다(screen/log/access/requirements.md).
+accessLog.search.userId,FRONT,"조회조건 — 사용자 아이디. 문자열 비교 넷(같음 · 시작 · 포함 · 끝)이다(2026-09-01). 인덱스가 없는 것은 그대로인데 기간이 먼저 좁힌다(screen/log/access/requirements.md) — 완전 일치만 열어 두면 조각을 든 사람이 기간을 넓혀 훑고, 그것이 더 비싸다. /"
 accessLog.search.userNm,FRONT,조회조건 — 사용자명. 이름은 `SYS_USER` 조인이 답한다(2026-09-01).
 apiCatalog.col.accessibleUserCount,FRONT,하단 — 접근 가능 인원(AUTHZ-13). 게이트 ④를 먹이지 않은 수다.
-apiCatalog.col.actionCd,FRONT,액션 컬럼 — 공통코드가 아니라 API 의 속성이다(43 §4.3.1).
+apiCatalog.col.actionCd,FRONT,액션 컬럼 — 공통코드가 아니라 API 의 속성이다(sys/code.md).
 apiCatalog.col.apiDesc,FRONT,설명 컬럼 — `@Operation.description` 이며 빌 수 있다. 선택이다.
 apiCatalog.col.apiNm,FRONT,API 명 컬럼 — `@Operation.summary` 다. 빌 수 없다(ArchUnit 이 빌드를 깬다).
 apiCatalog.col.apiUrl,FRONT,API URL 컬럼 — PK 이고 기본 정렬이다. 열리지 않는다.
 apiCatalog.col.menuCd,FRONT,하단 — 메뉴 코드 컬럼.
-apiCatalog.col.menuCount,FRONT,매핑 메뉴 수 컬럼 — `0` 이 곧 진단이다(62 §5.4).
-apiCatalog.col.menuPath,FRONT,하단 — 메뉴 경로 컬럼. 전체 경로다(62 §5.5).
-apiCatalog.col.menuUseYn,FRONT,하단 — 메뉴의 사용 여부. 꺼져 있으면 매핑이 살아 있어도 소용없다(security-design.md §4).
-apiCatalog.col.seedDtm,FRONT,"감사 컬럼의 라벨 — 최종 시드 반영이다. *등록일* 이 아니다(62 §5.3). 시드는 전건 삭제 후 전건 삽입이라(ADR-0022) 전 행이 같은 값이며, 뜻은 *""이 배포에서 시드가 다시 쓰인 시각""* 이다. 라벨이 그 기대를 만든다. /"
-apiCatalog.empty,FRONT,보통의 빈 상태 — 조건이 안 맞아 0건이다(62 §5.7).
+apiCatalog.col.menuCount,FRONT,매핑 메뉴 수 컬럼 — `0` 이 곧 진단이다(screen/menu/requirements.md).
+apiCatalog.col.menuPath,FRONT,하단 — 메뉴 경로 컬럼. 전체 경로다(screen/menu/requirements.md).
+apiCatalog.col.menuUseYn,FRONT,하단 — 메뉴의 사용 여부. 꺼져 있으면 매핑이 살아 있어도 소용없다(backend/security.md).
+apiCatalog.col.seedDtm,FRONT,"감사 컬럼의 라벨 — 최종 시드 반영이다. *등록일* 이 아니다(screen/menu/requirements.md). 시드는 전건 삭제 후 전건 삽입이라(seed.md) 전 행이 같은 값이며, 뜻은 *""이 배포에서 시드가 다시 쓰인 시각""* 이다. 라벨이 그 기대를 만든다. /"
+apiCatalog.empty,FRONT,보통의 빈 상태 — 조건이 안 맞아 0건이다(screen/menu/requirements.md).
 apiCatalog.grid.title,FRONT,마스터 그리드의 제목 — API 마스터 목록이다.
 apiCatalog.mapped,FRONT,조회조건 `매핑 상태` 의 반대쪽 — 이 API 를 쓰는 메뉴가 하나라도 있다.
-apiCatalog.menu.empty,FRONT,마스터에서 API 를 고르기 전 하단의 빈 상태(grid-standard.md §6.1).
-apiCatalog.menu.title,FRONT,하단 pane 의 제목 — 탭이 아니다(62 §5.5).
-apiCatalog.menu.unmapped,FRONT,하단이 0건일 때 — 배지와 같은 말을 pane 에서도 한다(62 §5.4).
-apiCatalog.notRegistered,FRONT,"여기가 진단이다 — URL 칸에만 값을 넣었는데 0건일 때(62 §5.7). 미등록은 화면이 보여줄 수 없다 — 없는 행을 목록에 낼 방법이 없기 때문이다. *""조회 결과가 없습니다""* 로 끝내면 이 화면의 세 갈래 중 하나가 사라진다(§5.2). /"
+apiCatalog.menu.empty,FRONT,마스터에서 API 를 고르기 전 하단의 빈 상태(frontend/grid.md).
+apiCatalog.menu.title,FRONT,하단 pane 의 제목 — 탭이 아니다(screen/menu/requirements.md).
+apiCatalog.menu.unmapped,FRONT,하단이 0건일 때 — 배지와 같은 말을 pane 에서도 한다(screen/menu/requirements.md).
+apiCatalog.notRegistered,FRONT,"여기가 진단이다 — URL 칸에만 값을 넣었는데 0건일 때(screen/menu/requirements.md). 미등록은 화면이 보여줄 수 없다 — 없는 행을 목록에 낼 방법이 없기 때문이다. *""조회 결과가 없습니다""* 로 끝내면 이 화면의 세 갈래 중 하나가 사라진다(§5.2). /"
 apiCatalog.search.actionCd,FRONT,조회조건 — 액션. 기본은 전체다.
 apiCatalog.search.apiNm,FRONT,조회조건 — API 명.
-apiCatalog.search.apiUrl,FRONT,조회조건 — API URL. 로그에서 얻은 URL 하나가 들어오는 칸이다(64 §5.4).
-apiCatalog.search.mapped,FRONT,조회조건 — 매핑 상태. 진단의 입구다(62 §5.7). 컬럼 필터로 두면 현재 페이지 안에서만 걸리므로(grid-column-contract.md §4.1) 서버 조건이다. /
-apiCatalog.unmapped,FRONT,"매핑 메뉴 `0` 에 붙는 배지 — 62 §4.3 의 `미연결` 과 같은 어휘, 다른 뜻이다. 둘 다 *""연결이 끊겼다""* 이고 고치는 곳만 다르다 — 미연결은 프론트 라우트, 미매핑은 `endpoints.ts` 와 시드다. 화면이 둘이어도 사용자가 배우는 것은 하나다. /"
+apiCatalog.search.apiUrl,FRONT,조회조건 — API URL. 로그에서 얻은 URL 하나가 들어오는 칸이다(screen/log/access/requirements.md).
+apiCatalog.search.mapped,FRONT,조회조건 — 매핑 상태. 진단의 입구다(screen/menu/requirements.md). 컬럼 필터로 두면 현재 페이지 안에서만 걸리므로(frontend/grid.md) 서버 조건이다. /
+apiCatalog.unmapped,FRONT,"매핑 메뉴 `0` 에 붙는 배지 — screen/menu/requirements.md 의 `미연결` 과 같은 어휘, 다른 뜻이다. 둘 다 *""연결이 끊겼다""* 이고 고치는 곳만 다르다 — 미연결은 프론트 라우트, 미매핑은 `endpoints.ts` 와 시드다. 화면이 둘이어도 사용자가 배우는 것은 하나다. /"
 authz.action.EXECUTE,FRONT,"절차 발동 — 배치 실행, 승인/반려, 강제 로그아웃."
 authz.action.EXPORT,FRONT,출력 — 엑셀 다운로드.
 authz.action.READ,FRONT,"조회 — 화면 진입, 목록·상세."
 authz.action.SAVE,FRONT,저장 — 추가·수정·삭제를 포함한다.
-batch.execType.MANUAL,FRONT,사람이 즉시 실행을 눌렀다 — 쿨다운을 우회한 실행이다(31 §7).
+batch.execType.MANUAL,FRONT,사람이 즉시 실행을 눌렀다 — 쿨다운을 우회한 실행이다(backend/persistence.md).
 batch.execType.SCHEDULE,FRONT,크론이 깨웠다.
 batch.rslt.CANCELED,FRONT,사람이 중단시켰고 배치가 그것을 읽었다 — 배지 `muted`.
 batch.rslt.FAIL,FRONT,예외 종료 — 배지 `err`.
-batch.rslt.LOST,FRONT,"실행하던 노드가 사라져 결과를 모른다 — 배지 `err` (65 §4.4). `FAIL` 과 가르는 이유는 스택이 없다는 것이다. 죽은 것은 배치가 아니라 프로세스이고, 같은 색을 쓰되 다른 글자여야 스택을 찾다 못 찾은 사람이 *로그가 유실됐다* 로 잘못 결론짓지 않는다. /"
-batch.rslt.RUNNING,FRONT,진행 중 — 배지 `none`. 오래 남으면 유령이다(65 §4.4).
-batch.rslt.SKIP_COOLDOWN,FRONT,쿨다운에 막힘 — 나면 안 되는 일이라 `warn` 이다(31 §7).
-batch.rslt.SKIP_LOCK,FRONT,락 선점 실패 — 다중화에서는 정상이라 배지가 `muted` 다(65 §4.3).
+batch.rslt.LOST,FRONT,"실행하던 노드가 사라져 결과를 모른다 — 배지 `err` (screen/batch/schedule/requirements.md). `FAIL` 과 가르는 이유는 스택이 없다는 것이다. 죽은 것은 배치가 아니라 프로세스이고, 같은 색을 쓰되 다른 글자여야 스택을 찾다 못 찾은 사람이 *로그가 유실됐다* 로 잘못 결론짓지 않는다. /"
+batch.rslt.RUNNING,FRONT,진행 중 — 배지 `none`. 오래 남으면 유령이다(screen/batch/schedule/requirements.md).
+batch.rslt.SKIP_COOLDOWN,FRONT,쿨다운에 막힘 — 나면 안 되는 일이라 `warn` 이다(backend/persistence.md).
+batch.rslt.SKIP_LOCK,FRONT,락 선점 실패 — 다중화에서는 정상이라 배지가 `muted` 다(screen/batch/schedule/requirements.md).
 batch.rslt.SUCCESS,FRONT,정상 종료 — 배지 `ok`.
-batchHistory.action.cancel,FRONT,①의 실행 — 중단(BATCH-05). 액션은 `EXECUTE` 다(65 §4.9).
-batchHistory.cancel.already,FRONT,결과 — `{count}` 건은 이미 요청돼 있었다. 오류가 아니다(65 §4.5).
-batchHistory.cancel.confirm,FRONT,"확인 문구 — `{count}`. *""중단합니다""* 가 아니다(65 §4.5). 협조적 중단이라 요청까지가 화면의 책임이고, 그것을 말하지 않으면 안 멈췄을 때 화면이 거짓말한 것이 된다. /"
+batchHistory.action.cancel,FRONT,①의 실행 — 중단(BATCH-05). 액션은 `EXECUTE` 다(screen/batch/schedule/requirements.md).
+batchHistory.cancel.already,FRONT,결과 — `{count}` 건은 이미 요청돼 있었다. 오류가 아니다(screen/batch/schedule/requirements.md).
+batchHistory.cancel.confirm,FRONT,"확인 문구 — `{count}`. *""중단합니다""* 가 아니다(screen/batch/schedule/requirements.md). 협조적 중단이라 요청까지가 화면의 책임이고, 그것을 말하지 않으면 안 멈췄을 때 화면이 거짓말한 것이 된다. /"
 batchHistory.cancel.done,FRONT,결과 — `{count}` 건에 요청했다. 멈추는 시점은 배치의 체크포인트다.
-batchHistory.canceling,FRONT,중단 버튼이 비활성인 이유 — `{time}` 에 이미 요청됐다(65 §4.5).
-batchHistory.col.batchId,FRONT,배치 ID 컬럼 — 더블 클릭하면 `BATCH_SCHEDULE` 이 그 배치로 열린다(65 §4.7).
-batchHistory.col.batchNm,FRONT,배치명 컬럼 — 조인이며 없으면 `(삭제된 배치)` 다(65 §3.8).
-batchHistory.col.cancelReq,FRONT,중단 요청 컬럼 — 결과가 아니라 요청이다(46 §6.2).
-batchHistory.col.detail,FRONT,상세 컬럼 — 파생이며 셀에 그려지는 것은 `[보기]` 다(65 §2.2).
-batchHistory.col.elapsed,FRONT,소요 컬럼 — 정렬이 이 화면의 핵심이다(65 §2.1). 값은 ms 원본이다.
-batchHistory.col.endDtm,FRONT,종료 컬럼 — NULL 이면 진행 중이다(65 §4.4).
-batchHistory.col.execType,FRONT,실행 구분 컬럼 — 스케줄 · 수동. 중복 진단의 첫 단계다(65 §4.6).
+batchHistory.canceling,FRONT,중단 버튼이 비활성인 이유 — `{time}` 에 이미 요청됐다(screen/batch/schedule/requirements.md).
+batchHistory.col.batchId,FRONT,배치 ID 컬럼 — 더블 클릭하면 `BATCH_SCHEDULE` 이 그 배치로 열린다(screen/batch/schedule/requirements.md).
+batchHistory.col.batchNm,FRONT,배치명 컬럼 — 조인이며 없으면 `(삭제된 배치)` 다(screen/batch/schedule/requirements.md).
+batchHistory.col.cancelReq,FRONT,중단 요청 컬럼 — 결과가 아니라 요청이다(sys/batch.md).
+batchHistory.col.detail,FRONT,상세 컬럼 — 파생이며 셀에 그려지는 것은 `[보기]` 다(screen/batch/schedule/requirements.md).
+batchHistory.col.elapsed,FRONT,소요 컬럼 — 정렬이 이 화면의 핵심이다(screen/batch/schedule/requirements.md). 값은 ms 원본이다.
+batchHistory.col.endDtm,FRONT,종료 컬럼 — NULL 이면 진행 중이다(screen/batch/schedule/requirements.md).
+batchHistory.col.execType,FRONT,실행 구분 컬럼 — 스케줄 · 수동. 중복 진단의 첫 단계다(screen/batch/schedule/requirements.md).
 batchHistory.col.histId,FRONT,순번 컬럼 — PK 이자 tie-breaker.
-batchHistory.col.nodeId,FRONT,노드 컬럼 — 기본 숨김이며 중복이 의심될 때 켠다(65 §4.6).
-batchHistory.col.rslt,FRONT,결과 컬럼 — 배지. 색은 `tone` 맵이 정한다(65 §4.3).
-batchHistory.col.rsltMsg,FRONT,요약 컬럼 — `VARCHAR(1000)` 이라 셀에 싣는다(46 §6.3).
+batchHistory.col.nodeId,FRONT,노드 컬럼 — 기본 숨김이며 중복이 의심될 때 켠다(screen/batch/schedule/requirements.md).
+batchHistory.col.rslt,FRONT,결과 컬럼 — 배지. 색은 `tone` 맵이 정한다(screen/batch/schedule/requirements.md).
+batchHistory.col.rsltMsg,FRONT,요약 컬럼 — `VARCHAR(1000)` 이라 셀에 싣는다(sys/batch.md).
 batchHistory.col.startDtm,FRONT,시작 컬럼 — 기본 정렬(내림)이다.
-batchHistory.deletedBatch,FRONT,배치명이 비었을 때 — 이름을 지어내지 않는다(64 §4.4 와 같은 판단).
-batchHistory.detail.link,FRONT,상세 셀에 그려지는 글자 — 값이 아니다(65 §2.2). 엑셀은 원본 값을 쓴다(grid-column-contract.md §5.4).
+batchHistory.deletedBatch,FRONT,배치명이 비었을 때 — 이름을 지어내지 않는다(screen/log/access/requirements.md 와 같은 판단).
+batchHistory.detail.link,FRONT,상세 셀에 그려지는 글자 — 값이 아니다(screen/batch/schedule/requirements.md). 엑셀은 원본 값을 쓴다(frontend/grid.md).
 batchHistory.detail.noError,FRONT,오류 탭이 비활성인 이유 — 성공한 실행이다. 위와 사유가 다르다.
-batchHistory.detail.noResult,FRONT,결과 상세 탭이 비활성인 이유 — 탭 이름의 툴팁이다(64 §7-3.6). 탭 안에 두면 비활성 탭이 열리지 않아 볼 방법이 없다. 그리고 비어 있는 것과 남기지 않은 것이 다르다 — 대개의 배치는 대상 목록을 남기지 않는다. /
+batchHistory.detail.noResult,FRONT,결과 상세 탭이 비활성인 이유 — 탭 이름의 툴팁이다(screen/log/access/requirements.md). 탭 안에 두면 비활성 탭이 열리지 않아 볼 방법이 없다. 그리고 비어 있는 것과 남기지 않은 것이 다르다 — 대개의 배치는 대상 목록을 남기지 않는다. /
 batchHistory.detail.tabError,FRONT,탭 — 오류(`ERR_MSG`). 예외 스택이다.
-batchHistory.detail.tabResult,FRONT,탭 — 결과 상세(`RSLT_DTL_MSG`). 처리한 대상 목록이다(46 §6.3).
-batchHistory.detail.title,FRONT,상세 모달의 제목 — 탭 둘이다(65 §2.2).
+batchHistory.detail.tabResult,FRONT,탭 — 결과 상세(`RSLT_DTL_MSG`). 처리한 대상 목록이다(sys/batch.md).
+batchHistory.detail.title,FRONT,상세 모달의 제목 — 탭 둘이다(screen/batch/schedule/requirements.md).
 batchHistory.empty,FRONT,0건 — 조건 없이 물었을 때.
-batchHistory.emptyFailed,FRONT,0건인데 답이다 — *실패만* 으로 물어 0건이면 이 기간에 실패가 없었다(65 §4.10).
+batchHistory.emptyFailed,FRONT,0건인데 답이다 — *실패만* 으로 물어 0건이면 이 기간에 실패가 없었다(screen/batch/schedule/requirements.md).
 batchHistory.emptySkipped,FRONT,0건인데 답이다 — *건너뜀만* 으로 물어 0건이면 락도 쿨다운도 걸리지 않았다.
-batchHistory.ghost,FRONT,`RUNNING` 인데 락 만료를 넘긴 행의 배지 — 죽었다는 뜻이다(65 §4.4).
+batchHistory.ghost,FRONT,`RUNNING` 인데 락 만료를 넘긴 행의 배지 — 죽었다는 뜻이다(screen/batch/schedule/requirements.md).
 batchHistory.ghostTip,FRONT,그 배지의 툴팁 — 왜 유령이라고 부르는지 말한다.
 batchHistory.grid.title,FRONT,마스터 그리드의 제목.
 batchHistory.group.failed,FRONT,결과 묶음의 후보 — 실패만(`FAIL` + `CANCELED`).
 batchHistory.group.skipped,FRONT,결과 묶음의 후보 — 건너뜀만(`SKIP_LOCK` + `SKIP_COOLDOWN`).
-batchHistory.retention,FRONT,푸터 주석 — 보존 1년(32 §3). 없는 것과 파기된 것을 사용자가 가를 수 있게 한다.
+batchHistory.retention,FRONT,푸터 주석 — 보존 1년(retention.md). 없는 것과 파기된 것을 사용자가 가를 수 있게 한다.
 batchHistory.search.batchId,FRONT,조회조건 — 배치.
-batchHistory.search.elapsed,FRONT,"조회조건 — 소요 시간 이상(초). 입력은 초, 전송은 ms 다(65 §4.7)."
+batchHistory.search.elapsed,FRONT,"조회조건 — 소요 시간 이상(초). 입력은 초, 전송은 ms 다(screen/batch/schedule/requirements.md)."
 batchHistory.search.execType,FRONT,조회조건 — 실행 구분.
-batchHistory.search.nodeId,FRONT,조회조건 — 노드. 특정 노드만 보는 것이 진단의 한 단계다(65 §4.6).
+batchHistory.search.nodeId,FRONT,조회조건 — 노드. 특정 노드만 보는 것이 진단의 한 단계다(screen/batch/schedule/requirements.md).
 batchHistory.search.rsltCd,FRONT,조회조건 — 결과(다중).
-batchHistory.search.rsltGroup,FRONT,조회조건 — 결과 묶음. 파생 조건의 네 번째 사례다(65 §4.7).
-batchHistory.search.startDtm,FRONT,조회조건 — 시작 일시. 필수가 아니다. 기본값만 둔다(65 §2.1).
-batchSchedule.action.runNow,FRONT,①의 실행 — 즉시 실행(BATCH-02). 액션은 `EXECUTE` 다(65 §3.10).
-batchSchedule.col.batchDesc,FRONT,설명 컬럼 — 끄면 무엇이 멈추는가를 적는 자리다(46 §5.1). 필수다.
-batchSchedule.col.batchId,FRONT,배치 ID 컬럼 — PK 이자 락 키다(31 §7).
-batchSchedule.col.batchNm,FRONT,배치명 컬럼 — 관리자 전용 명칭이라 다국어가 아니다(46 §5).
-batchSchedule.col.beanId,FRONT,실행 빈 컬럼 — 타이핑이 아니라 고르는 것이다(65 §3.3).
-batchSchedule.col.cooldown,FRONT,쿨다운 컬럼 — 크론과 비교된다(65 §3.4).
-batchSchedule.col.cron,FRONT,크론 컬럼 — 저장이 쿨다운과의 관계를 검증한다(65 §3.4).
-batchSchedule.col.lastRslt,FRONT,최근 결과 컬럼 — 하단 pane 첫 행과 같은 값이다(65 §3.9).
-batchSchedule.col.lockExpiry,FRONT,락 만료 컬럼 — 장애 안전망이며 유령 판정의 임계값이기도 하다(65 §4.4).
-batchSchedule.col.nextExec,FRONT,다음 실행 컬럼 — 서버가 계산한다. 크론을 눈으로 확인시킨다(65 §3.4).
-batchSchedule.col.paramJson,FRONT,파라미터 컬럼 — `nclob` 이 아니므로 `[보기]` 가 아니라 `textModal` 이다(65 §3.2).
-batchSchedule.col.sortNo,FRONT,순서 컬럼 — 사람이 정한다. 드래그가 아니라 숫자다(65 §3.3).
-batchSchedule.col.useYn,FRONT,사용 컬럼 — 스위치지만 즉시 저장이 아니다(65 §3.6).
+batchHistory.search.rsltGroup,FRONT,조회조건 — 결과 묶음. 파생 조건의 네 번째 사례다(screen/batch/schedule/requirements.md).
+batchHistory.search.startDtm,FRONT,조회조건 — 시작 일시. 필수가 아니다. 기본값만 둔다(screen/batch/schedule/requirements.md).
+batchSchedule.action.runNow,FRONT,①의 실행 — 즉시 실행(BATCH-02). 액션은 `EXECUTE` 다(screen/batch/schedule/requirements.md).
+batchSchedule.col.batchDesc,FRONT,설명 컬럼 — 끄면 무엇이 멈추는가를 적는 자리다(sys/batch.md). 필수다.
+batchSchedule.col.batchId,FRONT,배치 ID 컬럼 — PK 이자 락 키다(backend/persistence.md).
+batchSchedule.col.batchNm,FRONT,배치명 컬럼 — 관리자 전용 명칭이라 다국어가 아니다(sys/batch.md).
+batchSchedule.col.beanId,FRONT,실행 빈 컬럼 — 타이핑이 아니라 고르는 것이다(screen/batch/schedule/requirements.md).
+batchSchedule.col.cooldown,FRONT,쿨다운 컬럼 — 크론과 비교된다(screen/batch/schedule/requirements.md).
+batchSchedule.col.cron,FRONT,크론 컬럼 — 저장이 쿨다운과의 관계를 검증한다(screen/batch/schedule/requirements.md).
+batchSchedule.col.lastRslt,FRONT,최근 결과 컬럼 — 하단 pane 첫 행과 같은 값이다(screen/batch/schedule/requirements.md).
+batchSchedule.col.lockExpiry,FRONT,락 만료 컬럼 — 장애 안전망이며 유령 판정의 임계값이기도 하다(screen/batch/schedule/requirements.md).
+batchSchedule.col.nextExec,FRONT,다음 실행 컬럼 — 서버가 계산한다. 크론을 눈으로 확인시킨다(screen/batch/schedule/requirements.md).
+batchSchedule.col.paramJson,FRONT,파라미터 컬럼 — `nclob` 이 아니므로 `[보기]` 가 아니라 `textModal` 이다(screen/batch/schedule/requirements.md).
+batchSchedule.col.sortNo,FRONT,순서 컬럼 — 사람이 정한다. 드래그가 아니라 숫자다(screen/batch/schedule/requirements.md).
+batchSchedule.col.useYn,FRONT,사용 컬럼 — 스위치지만 즉시 저장이 아니다(screen/batch/schedule/requirements.md).
 batchSchedule.delete.enabled,FRONT,삭제 게이트 — 켜져 있다. 대안까지 말한다(먼저 끄세요).
-batchSchedule.delete.running,FRONT,삭제 게이트 — 실행 중이다. 락이 잡힌 채 등록이 사라지면 안 된다(65 §3.8).
-batchSchedule.duplicate,FRONT,같은 그리드 안에 같은 배치 ID 가 둘이다 — 화면이 판정할 수 있는 중복이다(grid-edit-validation.md §3.2).
+batchSchedule.delete.running,FRONT,삭제 게이트 — 실행 중이다. 락이 잡힌 채 등록이 사라지면 안 된다(screen/batch/schedule/requirements.md).
+batchSchedule.duplicate,FRONT,같은 그리드 안에 같은 배치 ID 가 둘이다 — 화면이 판정할 수 있는 중복이다(frontend/grid.md).
 batchSchedule.empty,FRONT,0건 — 등록 자체가 없다.
 batchSchedule.grid.title,FRONT,마스터 그리드의 제목.
-batchSchedule.paramInvalid,FRONT,파라미터 셀의 컬럼 검증 — 프론트가 `JSON.parse` 로 즉시 판정한다(65 §3.5).
-batchSchedule.recent.empty,FRONT,하단 빈 상태 — 아직 아무 배치도 고르지 않았다(grid-standard.md §6.1).
-batchSchedule.recent.locked,FRONT,하단 빈 상태 — 미저장 신규 행이라 조회할 것이 없다(grid-standard.md §6.1).
-batchSchedule.recent.none,FRONT,"하단 빈 상태 — 고른 배치가 한 번도 안 돌았다. 위 둘과 다른 사실이다. 65 §4.3 이 *""행이 없으면 꺼져 있는 것""* 이라고 한 그 신호이며, *""선택하세요""* 로 뭉치면 조사하러 온 사람이 아무것도 못 읽는다. /"
-batchSchedule.recent.title,FRONT,하단 pane 의 제목 — 탭이 아니라 pane 하나다(65 §3.9).
+batchSchedule.paramInvalid,FRONT,파라미터 셀의 컬럼 검증 — 프론트가 `JSON.parse` 로 즉시 판정한다(screen/batch/schedule/requirements.md).
+batchSchedule.recent.empty,FRONT,하단 빈 상태 — 아직 아무 배치도 고르지 않았다(frontend/grid.md).
+batchSchedule.recent.locked,FRONT,하단 빈 상태 — 미저장 신규 행이라 조회할 것이 없다(frontend/grid.md).
+batchSchedule.recent.none,FRONT,"하단 빈 상태 — 고른 배치가 한 번도 안 돌았다. 위 둘과 다른 사실이다. screen/batch/schedule/requirements.md 이 *""행이 없으면 꺼져 있는 것""* 이라고 한 그 신호이며, *""선택하세요""* 로 뭉치면 조사하러 온 사람이 아무것도 못 읽는다. /"
+batchSchedule.recent.title,FRONT,하단 pane 의 제목 — 탭이 아니라 pane 하나다(screen/batch/schedule/requirements.md).
 batchSchedule.run.rejected,FRONT,거절인데 노드를 모른다 — 락은 잡혔는데 `RUNNING` 이력이 아직 없는 짧은 창이다.
-batchSchedule.run.rejectedNode,FRONT,"거절 — `{batchId}` `{node}` `{time}`. 노드와 시각이 요점이다(65 §3.7). *""실행 중입니다""* 만 내면 운영자는 얼마나 기다려야 하는지 모른다 — 31 §8 이 `NODE_ID` 를 남긴 것과 같은 이유다. /"
-batchSchedule.run.started,FRONT,그중 시작한 것 — `{count}`. 진행은 하단 pane 의 `RUNNING` 행이 보여준다(65 §2.4).
-batchSchedule.run.title,FRONT,실행 결과 모달의 제목 — 성공/실패를 건별로 낸다(grid-api-contract.md §9).
-batchSchedule.run.unsaved,FRONT,실행 앞의 검증 — 미저장 변경이 있으면 막는다(65 §3.7).
+batchSchedule.run.rejectedNode,FRONT,"거절 — `{batchId}` `{node}` `{time}`. 노드와 시각이 요점이다(screen/batch/schedule/requirements.md). *""실행 중입니다""* 만 내면 운영자는 얼마나 기다려야 하는지 모른다 — backend/persistence.md 이 `NODE_ID` 를 남긴 것과 같은 이유다. /"
+batchSchedule.run.started,FRONT,그중 시작한 것 — `{count}`. 진행은 하단 pane 의 `RUNNING` 행이 보여준다(screen/batch/schedule/requirements.md).
+batchSchedule.run.title,FRONT,실행 결과 모달의 제목 — 성공/실패를 건별로 낸다(frontend/grid.md).
+batchSchedule.run.unsaved,FRONT,실행 앞의 검증 — 미저장 변경이 있으면 막는다(screen/batch/schedule/requirements.md).
 batchSchedule.search.batchNm,FRONT,조회조건 — 배치명.
 batchSchedule.search.beanId,FRONT,조회조건 — 실행 빈.
 batchSchedule.search.useYn,FRONT,조회조건 — 사용 여부. 기본이 *전체* 다: 꺼 둔 것을 감추면 또 만든다.
 batchSchedule.use.off,FRONT,〃 — 미사용.
-batchSchedule.use.on,FRONT,"조회조건 콤보의 후보 — 그리드의 스위치와 다른 자리다(search-form-contract.md §3.1). 폼의 타입이 셋뿐이라 값이 둘인 칸도 콤보로 내며, 스위치로 두면 끄기 = N 이 되어 *전체* 를 표현할 자리가 없다. `role.use.on` 을 돌려쓰지 않는다. 역할 관리의 문구를 고치면 배치 화면이 함께 바뀌는 결합이 생긴다 — `MsgKey` 가 `err.user` 와 `err.user-admin` 을 가른 것과 같은 종류의 사고다. /"
-batchSchedule.warn.disable,FRONT,저장 확인의 첫 줄 — 끄는 배치가 `{count}` 건 있다(65 §3.6).
-batchSchedule.warn.disableItem,FRONT,"그 목록의 한 줄 — `{name}` `{batchId}`. 다음 줄에 설명이 그대로 붙는다. 설명이 데이터라 메시지가 아니다 — 46 §5.1 의 셋째 항목(*""껐다 켜면 따라잡는가""*)을 끄는 순간에 읽히게 하는 것이 이 확인의 목적 전부다. /"
-codeMgmt.col.codeCount,FRONT,그룹의 코드 수 — 파생이며 삭제 게이트가 읽는다(63 §2.5).
-codeMgmt.col.codeNm,FRONT,코드명 컬럼 — 값이 `SYS_MESSAGE` 로 간다(63 §2.3). 여기서 채우는 것은 지금 세션 언어 하나다. 다른 언어는 `MESSAGE_MGMT` 로 간다 — 언어를 컬럼으로 늘리면 지원 언어를 하나 켤 때마다 그리드가 옆으로 자란다. /
+batchSchedule.use.on,FRONT,"조회조건 콤보의 후보 — 그리드의 스위치와 다른 자리다(frontend/search-form.md). 폼의 타입이 셋뿐이라 값이 둘인 칸도 콤보로 내며, 스위치로 두면 끄기 = N 이 되어 *전체* 를 표현할 자리가 없다. `role.use.on` 을 돌려쓰지 않는다. 역할 관리의 문구를 고치면 배치 화면이 함께 바뀌는 결합이 생긴다 — `MsgKey` 가 `err.user` 와 `err.user-admin` 을 가른 것과 같은 종류의 사고다. /"
+batchSchedule.warn.disable,FRONT,저장 확인의 첫 줄 — 끄는 배치가 `{count}` 건 있다(screen/batch/schedule/requirements.md).
+batchSchedule.warn.disableItem,FRONT,"그 목록의 한 줄 — `{name}` `{batchId}`. 다음 줄에 설명이 그대로 붙는다. 설명이 데이터라 메시지가 아니다 — sys/batch.md 의 셋째 항목(*""껐다 켜면 따라잡는가""*)을 끄는 순간에 읽히게 하는 것이 이 확인의 목적 전부다. /"
+codeMgmt.col.codeCount,FRONT,그룹의 코드 수 — 파생이며 삭제 게이트가 읽는다(screen/code/requirements.md).
+codeMgmt.col.codeNm,FRONT,코드명 컬럼 — 값이 `SYS_MESSAGE` 로 간다(screen/code/requirements.md). 여기서 채우는 것은 지금 세션 언어 하나다. 다른 언어는 `MESSAGE_MGMT` 로 간다 — 언어를 컬럼으로 늘리면 지원 언어를 하나 켤 때마다 그리드가 옆으로 자란다. /
 codeMgmt.col.dtlCd,FRONT,코드 컬럼 — 그룹과 복합 PK 다. 신규 행에서만 열린다.
-codeMgmt.col.dtlDesc,FRONT,코드 설명 컬럼 — 관리 화면 전용이다(43 §3).
-codeMgmt.col.grpCd,FRONT,그룹 코드 컬럼 — PK 라 신규 행에서만 열린다(63 §2.2).
+codeMgmt.col.dtlDesc,FRONT,코드 설명 컬럼 — 관리 화면 전용이다(sys/code.md).
+codeMgmt.col.grpCd,FRONT,그룹 코드 컬럼 — PK 라 신규 행에서만 열린다(screen/code/requirements.md).
 codeMgmt.col.grpDesc,FRONT,그룹 설명 컬럼.
-codeMgmt.col.grpNm,FRONT,그룹명 컬럼 — 다국어가 아니다. 관리 화면 전용 명칭이라 컬럼 값이다(43 §3).
-codeMgmt.col.refCd,FRONT,참조 코드 컬럼 — `CODE_REF_KEY` 화이트리스트에서 고른다(43 §4.3).
+codeMgmt.col.grpNm,FRONT,그룹명 컬럼 — 다국어가 아니다. 관리 화면 전용 명칭이라 컬럼 값이다(sys/code.md).
+codeMgmt.col.refCd,FRONT,참조 코드 컬럼 — `CODE_REF_KEY` 화이트리스트에서 고른다(sys/code.md).
 codeMgmt.col.refDesc,FRONT,참조 코드 설명 컬럼.
-codeMgmt.col.refNm,FRONT,참조 코드명 컬럼 — 하단 그리드의 컬럼 헤더가 된다. 필수다(43 §5.2).
-codeMgmt.col.refValueCount,FRONT,입력된 참조값 건수 — 정의 삭제 확인이 말하는 수다(63 §2.5).
+codeMgmt.col.refNm,FRONT,참조 코드명 컬럼 — 하단 그리드의 컬럼 헤더가 된다. 필수다(sys/code.md).
+codeMgmt.col.refValueCount,FRONT,입력된 참조값 건수 — 정의 삭제 확인이 말하는 수다(screen/code/requirements.md).
 codeMgmt.col.sortNo,FRONT,"정렬 컬럼 — 그룹에서는 관리 화면 정렬, 코드에서는 콤보 정렬이다."
 codeMgmt.col.sysYn,FRONT,시스템 여부 컬럼 — 읽기 전용이다. 왜 못 지우는지가 눌러 보기 전에 보인다.
-codeMgmt.col.useYn,FRONT,사용 여부 컬럼 — 스위치다(grid-column-contract.md §5.2). 시스템 행에서는 잠긴다(63 §2.6).
+codeMgmt.col.useYn,FRONT,사용 여부 컬럼 — 스위치다(frontend/grid.md). 시스템 행에서는 잠긴다(screen/code/requirements.md).
 codeMgmt.delete.refWarn,FRONT,코드 삭제 저장 전 확인 — `{count}`. 참조값은 그 행의 파생이라 함께 지운다.
-codeMgmt.detail.empty,FRONT,마스터에서 그룹을 고르기 전 하단의 빈 상태(grid-standard.md §6.1).
-codeMgmt.detail.locked,FRONT,"미저장 신규 그룹을 골랐을 때 — 잠긴 상태다(grid-standard.md §6.1). 부모 키가 아직 DB 에 없어 자식을 붙일 수 없다. 63 §3.2 의 메시지 화면이 이 규칙을 비껴간 것은 하단이 DB 에 붙지 않아서였고, 여기 하단은 자기 테이블에 FK 로 붙어 있다 — 2단계 등록을 그대로 치른다. /"
+codeMgmt.detail.empty,FRONT,마스터에서 그룹을 고르기 전 하단의 빈 상태(frontend/grid.md).
+codeMgmt.detail.locked,FRONT,"미저장 신규 그룹을 골랐을 때 — 잠긴 상태다(frontend/grid.md). 부모 키가 아직 DB 에 없어 자식을 붙일 수 없다. screen/code/requirements.md 의 메시지 화면이 이 규칙을 비껴간 것은 하단이 DB 에 붙지 않아서였고, 여기 하단은 자기 테이블에 FK 로 붙어 있다 — 2단계 등록을 그대로 치른다. /"
 codeMgmt.detail.title,FRONT,하단 그리드의 제목 — 고른 그룹의 코드다.
-codeMgmt.group.hasCode,FRONT,그룹 삭제가 잠긴 이유 — `{count}`. 회색 체크박스만 두면 버그로 읽힌다(63 §2.5).
+codeMgmt.group.hasCode,FRONT,그룹 삭제가 잠긴 이유 — `{count}`. 회색 체크박스만 두면 버그로 읽힌다(screen/code/requirements.md).
 codeMgmt.group.title,FRONT,마스터 그리드의 제목 — 코드 그룹이다.
-codeMgmt.refDef.button,FRONT,하단 ⓐ의 버튼 — 서버를 부르지 않고 모달을 연다(grid-api-contract.md §3.2 · 63 §2.4).
+codeMgmt.refDef.button,FRONT,하단 ⓐ의 버튼 — 서버를 부르지 않고 모달을 연다(frontend/grid.md · screen/code/requirements.md).
 codeMgmt.refDef.deleteWarn,FRONT,정의 삭제 저장 전 확인 — `{count}`. 값 → 정의 순서라 FK 가 거부하지 않는다.
-codeMgmt.refDef.dirty,FRONT,"정의 버튼이 잠긴 이유 — 미저장 편집이 있다(63 §2.4). 정의가 바뀌면 컬럼 집합이 바뀌고 하단 재조회가 편집을 버린다. 열고 나서 묻는 것보다 누를 수 없는 것이 먼저 보이는 편이 낫고, 그 사유를 말한다. /"
+codeMgmt.refDef.dirty,FRONT,"정의 버튼이 잠긴 이유 — 미저장 편집이 있다(screen/code/requirements.md). 정의가 바뀌면 컬럼 집합이 바뀌고 하단 재조회가 편집을 버린다. 열고 나서 묻는 것보다 누를 수 없는 것이 먼저 보이는 편이 낫고, 그 사유를 말한다. /"
 codeMgmt.refDef.grid,FRONT,정의 모달 안 그리드의 제목.
 codeMgmt.refDef.noGroup,FRONT,그룹을 고르지 않은 채 정의를 열려 했을 때.
 codeMgmt.refDef.title,FRONT,정의 모달의 제목 — `{grpNm}` 이 어느 그룹의 것인지를 말한다.
 codeMgmt.search.codeNm,FRONT,조회조건 — 코드명. 이름은 `SYS_MESSAGE` 에 있고 어느 언어든 걸린다.
-codeMgmt.search.dtlCd,FRONT,"조회조건 — 코드. 하단 조건이 마스터를 거른다(63 §2.8). *""이 코드값이 어느 그룹에 있더라""* 가 실제로 자주 묻는 것이며, 고르면 하단이 그 조건으로 미리 걸려 있다. /"
+codeMgmt.search.dtlCd,FRONT,"조회조건 — 코드. 하단 조건이 마스터를 거른다(screen/code/requirements.md). *""이 코드값이 어느 그룹에 있더라""* 가 실제로 자주 묻는 것이며, 고르면 하단이 그 조건으로 미리 걸려 있다. /"
 codeMgmt.search.grpCd,FRONT,조회조건 — 그룹 코드.
 codeMgmt.search.grpNm,FRONT,조회조건 — 그룹명.
 codeMgmt.systemBadge,FRONT,시스템 행에 붙는 배지의 글자.
 codeMgmt.validate.duplicate,FRONT,같은 코드가 이 그리드 안에 둘 있을 때 — 클라이언트가 판정할 수 있다.
 common.cancel,FRONT,모달·확인 대화의 취소 버튼.
 common.close,FRONT,모달·확인 대화의 닫기 버튼.
-config.adminReset.warn,FRONT,`auth.password.admin-reset-enabled` 를 끌 때 — 43 §6.3. 되돌릴 수는 있지만 되돌릴 사람이 못 들어올 수 있다. 메일 연동이 없는 배포에서 잠긴 계정을 푸는 유일한 경로다. /
-config.col.cfgDesc,FRONT,설명 컬럼 — 필드 Javadoc 에서 온다. `CFG_DESC` 가 아니다(63 §4.2).
+config.adminReset.warn,FRONT,`auth.password.admin-reset-enabled` 를 끌 때 — sys/code.md. 되돌릴 수는 있지만 되돌릴 사람이 못 들어올 수 있다. 메일 연동이 없는 배포에서 잠긴 계정을 푸는 유일한 경로다. /
+config.col.cfgDesc,FRONT,설명 컬럼 — 필드 Javadoc 에서 온다. `CFG_DESC` 가 아니다(screen/code/requirements.md).
 config.col.cfgKey,FRONT,키 컬럼 — PK 이고 코드가 정한다. 열리지 않는다.
 config.col.cfgType,FRONT,유형 컬럼 — 필드 타입에서 온다. 읽기 전용.
 config.col.cfgVal,FRONT,적용값 컬럼 — 이 화면의 유일한 입력 칸이다.
-config.col.defaultVal,FRONT,기본값 컬럼 — `yml` 이며 언제나 있다. 숨기지 않는다(63 §4.3).
-config.col.revert,FRONT,"삭제 컬럼의 헤더 — 되돌리기 다(63 §4.4). *삭제* 면 관리자는 값이 사라질 것을 기대하고, 목록에 같은 키가 남아 있으면 버그로 읽는다 — 기대를 라벨이 만든다. /"
+config.col.defaultVal,FRONT,기본값 컬럼 — `yml` 이며 언제나 있다. 숨기지 않는다(screen/code/requirements.md).
+config.col.revert,FRONT,"삭제 컬럼의 헤더 — 되돌리기 다(screen/code/requirements.md). *삭제* 면 관리자는 값이 사라질 것을 기대하고, 목록에 같은 키가 남아 있으면 버그로 읽는다 — 기대를 라벨이 만든다. /"
 config.defaulted,FRONT,조회조건의 반대쪽 — 오버라이드 행이 없는 키.
 config.grid.title,FRONT,그리드의 제목 — 단일 그리드다.
-config.overridden,FRONT,"적용값 뒤에 붙는 배지 — 근거는 `SYS_CONFIG` 행의 존재다(63 §4.3). 값이 기본값과 같아도 붙는다. 같은 값으로 저장해 두면 다음 배포가 기본값을 올려도 그 키만 옛 값에 묶이며, 눈으로는 구분되지 않으므로 이것이 유일한 신호다. /"
-config.revert.warn,FRONT,"되돌리기 확인 — `{key}` · `{defaultVal}`. 기본값을 함께 말한다(63 §4.4). 값이 사라지는 것이 아니라 `yml` 이 드러난다는 것을 미리 말해 두지 않으면, 되돌린 뒤에도 목록에 남은 같은 키가 ""지웠는데 그대로다"" 로 읽힌다. /"
-config.search.keyword,FRONT,조회조건 — 키와 설명을 한 칸이 함께 건다(43 §6.1).
+config.overridden,FRONT,"적용값 뒤에 붙는 배지 — 근거는 `SYS_CONFIG` 행의 존재다(screen/code/requirements.md). 값이 기본값과 같아도 붙는다. 같은 값으로 저장해 두면 다음 배포가 기본값을 올려도 그 키만 옛 값에 묶이며, 눈으로는 구분되지 않으므로 이것이 유일한 신호다. /"
+config.revert.warn,FRONT,"되돌리기 확인 — `{key}` · `{defaultVal}`. 기본값을 함께 말한다(screen/code/requirements.md). 값이 사라지는 것이 아니라 `yml` 이 드러난다는 것을 미리 말해 두지 않으면, 되돌린 뒤에도 목록에 남은 같은 키가 ""지웠는데 그대로다"" 로 읽힌다. /"
+config.search.keyword,FRONT,조회조건 — 키와 설명을 한 칸이 함께 건다(sys/code.md).
 config.search.overridden,FRONT,조회조건 — 변경 여부. 판정은 행의 존재다.
-config.search.prefix,FRONT,조회조건 — 접두사. 전 키에서 도출한다(63 §4.6).
+config.search.prefix,FRONT,조회조건 — 접두사. 전 키에서 도출한다(screen/code/requirements.md).
 config.type.BOOLEAN,FRONT,유형 `BOOLEAN` — `true`/`false` 아닌 값을 막는다.
-config.type.JSON,FRONT,유형 `JSON` — 컬렉션을 한 칸에 담은 문자열이다(46 §5.2).
-config.type.NUMBER,FRONT,유형 `NUMBER` — 화면이 문자를 막는다(grid-edit-validation.md §2.1).
+config.type.JSON,FRONT,유형 `JSON` — 컬렉션을 한 칸에 담은 문자열이다(sys/batch.md).
+config.type.NUMBER,FRONT,유형 `NUMBER` — 화면이 문자를 막는다(frontend/grid.md).
 config.type.STRING,FRONT,유형 `STRING`.
 config.validate.boolean,FRONT,`BOOLEAN` 유형에 `true`/`false` 아닌 값.
-config.validate.number,FRONT,`NUMBER` 유형에 숫자가 아닌 값 — 화면이 아는 것은 유형까지다(63 §4.5).
+config.validate.number,FRONT,`NUMBER` 유형에 숫자가 아닌 값 — 화면이 아는 것은 유형까지다(screen/code/requirements.md).
 dashboard.greeting,FRONT,대시보드 인사 — `{name}`.
 dashboard.menuCount,FRONT,접근 가능한 메뉴 수 카드의 제목.
 dashboard.menuCount.value,FRONT,그 카드의 값 — `{count}`.
-dashboard.permissionCount,FRONT,"보유 권한 수 카드의 제목 — 원소는 (메뉴, 액션) 쌍이다(security-design.md §4)."
+dashboard.permissionCount,FRONT,"보유 권한 수 카드의 제목 — 원소는 (메뉴, 액션) 쌍이다(backend/security.md)."
 dashboard.permissionCount.value,FRONT,그 카드의 값 — `{count}`.
 err.access-log.purged,BACK,전문을 열려는데 그 행이 없다 — 조회 뒤에 파기 배치가 지나갔다.
 err.access-log.range-required,BACK,기간 없이 조회하려 했다 — 조건 없이 열면 첫 조회가 보존 기간 전량을 향한다.
 err.access-log.range-too-wide,BACK,기간이 상한을 넘었다. 조용히 자르면 좁은 기간을 봤다고 믿은 채 넓은 결론을 낸다.
 err.api-not-mapped,BACK,API 행은 있으나 메뉴 매핑이 0건이다.
 err.api-not-registered,BACK,SYS_API 에 행이 없다. 고치는 곳은 API 마스터 시드다.
-err.batch-hist.not-cancelable,BACK,"중단 대상이 아니다 — RUNNING 이 아니다(65 §4.5). 화면이 eligible 로 이미 걸렀지만 그것은 고른 시점의 사실이고, 그 사이 배치가 끝났을 수 있다. 조용히 건너뛰지 않고 거절하는 쪽이 맞다 — 끝난 행에 요청을 세우면 영원히 응답하지 않을 요청이 이력에 남는다. /"
-err.batch-hist.purged,BACK,[보기] 를 눌렀는데 그 사이 파기됐다 — 보존 1년(32 §3 · 65 §4.10).
-err.batch.already-running,BACK,"즉시 실행이 거부됐다 — 이미 실행 중이다(65 §3.7). 거부 사유가 이것 하나다. 쿨다운은 수동이 우회하고, USE_YN='N' 은 막지 않는다 — 꺼 둔 배치를 한 번 돌려 보는 것이 정상 동선이다. 문구에 노드와 시각이 들어간다. ""실행 중입니다"" 만 내면 운영자는 얼마나 기다려야 하는지 모른다 — 31 §8 이 NODE_ID 를 남긴 것과 같은 이유다. /"
-err.batch.bean-unknown,BACK,"실행 빈이 없거나 등록된 BatchJob 구현이 아니다 — 65 §3.3. 화면은 셀렉트로 고르게 해서 이 경로를 닫지만, 화면 밖 경로는 그 셀렉트를 지나지 않는다. 막지 않으면 실행 시점에 터지고 그때는 크론이 깨운 새벽이다(원칙 P1). /"
-err.batch.cooldown-too-long,BACK,"쿨다운이 크론 최소 간격보다 길다 — 31 §7 이 등록 거부 로 정한 그것. 같은 값이어도 거부한다 — 경계에서 한 주기가 통째로 누락될 수 있다. 이 조건이 막으려는 사고가 실행이 조용히 건너뛰어진다 이며, 조용하기 때문에 저장 시점에 막는 것 말고는 알릴 자리가 없다. 오류가 두 셀에 걸린다(65 §3.4) — 어느 쪽이 틀렸는지 서버가 말할 수 없다. 틀린 것은 값이 아니라 관계이며, 그래서 문구가 두 값을 함께 읽어 준다. /"
-err.batch.cron-invalid,BACK,크론 표현식을 파서가 읽지 못했다 — 스케줄러가 쓰는 그 파서다(65 §3.4).
-err.batch.desc-required,BACK,"설명을 비운 채 저장했다 — 46 §5.1 · 65 §3.3. 설명이 필수인 유일한 테이블이다. 끄는 확인 창이 이 문장을 그대로 읽어 주며 (65 §3.6), 비어 있으면 그 확인이 아무 말도 하지 않는다 — 운영자가 배치를 끄는 순간은 대개 장애 대응 중이고 그때 소스를 열 시간은 없다. /"
-err.batch.duplicate,BACK,BATCH_ID 중복 — PK 이자 락 키다(31 §7).
-err.batch.name-required,BACK,배치명을 비운 채 저장했다 — 65 §3.2 의 필수 컬럼.
-err.batch.not-deletable,BACK,지울 수 없다 — 켜져 있거나 실행 중이다(65 §3.8). 실행 이력은 게이트가 아니다. 이력에 FK 가 없으므로(46 §2.2) 등록을 지워도 행은 남으며 남아야 한다 — 이력이 게이트가 되면 오래된 배치는 영영 못 지운다. /
+err.batch-hist.not-cancelable,BACK,"중단 대상이 아니다 — RUNNING 이 아니다(screen/batch/schedule/requirements.md). 화면이 eligible 로 이미 걸렀지만 그것은 고른 시점의 사실이고, 그 사이 배치가 끝났을 수 있다. 조용히 건너뛰지 않고 거절하는 쪽이 맞다 — 끝난 행에 요청을 세우면 영원히 응답하지 않을 요청이 이력에 남는다. /"
+err.batch-hist.purged,BACK,[보기] 를 눌렀는데 그 사이 파기됐다 — 보존 1년(retention.md · screen/batch/schedule/requirements.md).
+err.batch.already-running,BACK,"즉시 실행이 거부됐다 — 이미 실행 중이다(screen/batch/schedule/requirements.md). 거부 사유가 이것 하나다. 쿨다운은 수동이 우회하고, USE_YN='N' 은 막지 않는다 — 꺼 둔 배치를 한 번 돌려 보는 것이 정상 동선이다. 문구에 노드와 시각이 들어간다. ""실행 중입니다"" 만 내면 운영자는 얼마나 기다려야 하는지 모른다 — backend/persistence.md 이 NODE_ID 를 남긴 것과 같은 이유다. /"
+err.batch.bean-unknown,BACK,"실행 빈이 없거나 등록된 BatchJob 구현이 아니다 — screen/batch/schedule/requirements.md. 화면은 셀렉트로 고르게 해서 이 경로를 닫지만, 화면 밖 경로는 그 셀렉트를 지나지 않는다. 막지 않으면 실행 시점에 터지고 그때는 크론이 깨운 새벽이다(원칙 P1). /"
+err.batch.cooldown-too-long,BACK,"쿨다운이 크론 최소 간격보다 길다 — backend/persistence.md 이 등록 거부 로 정한 그것. 같은 값이어도 거부한다 — 경계에서 한 주기가 통째로 누락될 수 있다. 이 조건이 막으려는 사고가 실행이 조용히 건너뛰어진다 이며, 조용하기 때문에 저장 시점에 막는 것 말고는 알릴 자리가 없다. 오류가 두 셀에 걸린다(screen/batch/schedule/requirements.md) — 어느 쪽이 틀렸는지 서버가 말할 수 없다. 틀린 것은 값이 아니라 관계이며, 그래서 문구가 두 값을 함께 읽어 준다. /"
+err.batch.cron-invalid,BACK,크론 표현식을 파서가 읽지 못했다 — 스케줄러가 쓰는 그 파서다(screen/batch/schedule/requirements.md).
+err.batch.desc-required,BACK,"설명을 비운 채 저장했다 — sys/batch.md · screen/batch/schedule/requirements.md. 설명이 필수인 유일한 테이블이다. 끄는 확인 창이 이 문장을 그대로 읽어 주며 (screen/batch/schedule/requirements.md), 비어 있으면 그 확인이 아무 말도 하지 않는다 — 운영자가 배치를 끄는 순간은 대개 장애 대응 중이고 그때 소스를 열 시간은 없다. /"
+err.batch.duplicate,BACK,BATCH_ID 중복 — PK 이자 락 키다(backend/persistence.md).
+err.batch.name-required,BACK,배치명을 비운 채 저장했다 — screen/batch/schedule/requirements.md 의 필수 컬럼.
+err.batch.not-deletable,BACK,지울 수 없다 — 켜져 있거나 실행 중이다(screen/batch/schedule/requirements.md). 실행 이력은 게이트가 아니다. 이력에 FK 가 없으므로(sys/batch.md) 등록을 지워도 행은 남으며 남아야 한다 — 이력이 게이트가 되면 오래된 배치는 영영 못 지운다. /
 err.batch.not-found,BACK,없는 등록을 가리켰다. 화면이 낡았거나 화면 밖 경로다.
-err.batch.param-json,BACK,PARAM_JSON 이 JSON 이 아니다 — 프론트도 보고 서버도 본다(65 §3.5 · grid-edit-validation.md §3.4).
+err.batch.param-json,BACK,PARAM_JSON 이 JSON 이 아니다 — 프론트도 보고 서버도 본다(screen/batch/schedule/requirements.md · frontend/grid.md).
 err.code.duplicate,BACK,"이미 있는 (GRP_CD, DTL_CD) 로 신규 행을 저장했다."
 err.code.group-duplicate,BACK,이미 있는 GRP_CD 로 신규 행을 저장했다.
-err.code.group-has-code,BACK,코드가 남아 있어 그룹을 지울 수 없다 — 조회 뒤에 누군가 추가했다(63 §2.5).
+err.code.group-has-code,BACK,코드가 남아 있어 그룹을 지울 수 없다 — 조회 뒤에 누군가 추가했다(screen/code/requirements.md).
 err.code.group-missing,BACK,고치거나 지우려는 그룹이 이미 없다 — 다른 사람이 먼저 지웠다.
 err.code.missing,BACK,고치거나 지우려는 코드가 이미 없다.
 err.code.ref-cd-unknown,BACK,CODE_REF_KEY 화이트리스트 밖의 참조 코드다 — 소스가 이 값을 문자열로 참조한다.
 err.code.ref-def-duplicate,BACK,"이미 있는 (GRP_CD, REF_CD) 정의를 다시 만들려 했다."
 err.code.ref-def-unknown,BACK,그 그룹에 정의되지 않은 참조 코드로 값을 보냈다 — 화면이 만들 수 없는 조합이다.
 err.code.required,BACK,그룹명·코드값 같은 필수 값이 비었다. 화면도 막지만 판정은 서버에도 있다.
-err.code.system-locked,BACK,시스템 코드(SYS_YN='Y')를 지우거나 끄려 했다 — 43 §4.3.
+err.code.system-locked,BACK,시스템 코드(SYS_YN='Y')를 지우거나 끄려 했다 — sys/code.md.
 err.config.invalid-value,BACK,재바인딩이 값을 거부했다 — 타입·@Min·상호 제약이 전부 여기로 온다.
 err.config.key-unknown,BACK,코드가 정하지 않은 CFG_KEY 가 왔다 — 아우터 조인의 왼쪽에 없는 키다.
 err.config.not-overridden,BACK,되돌리려는데 오버라이드 행이 없다 — 다른 사람이 먼저 되돌렸다.
 err.error-log.purged,BACK,상세를 열려는데 그 행이 없다 — 조회 뒤에 파기 배치가 지나갔다.
 err.error-log.range-required,BACK,기간 없이 조회하려 했다 — 추적 ID 를 넣으면 건너뛴다(이 화면의 주된 동선이다).
 err.error-log.range-too-wide,BACK,기간이 92일을 넘었다 — 보존은 180일이라 잘라 주면 못 본 절반이 남는다.
-err.forbidden,BACK,인가 거부의 기본 문구. 원인 넷이 이 하나를 공유한다(security-design.md §4).
-err.internal,BACK,처리하지 못한 예외. 사용자에게는 traceId 하나만 나간다(security-design.md §8).
+err.forbidden,BACK,인가 거부의 기본 문구. 원인 넷이 이 하나를 공유한다(backend/security.md).
+err.internal,BACK,처리하지 못한 예외. 사용자에게는 traceId 하나만 나간다(backend/security.md).
 err.lock.conflict,BACK,같은 자원을 다른 작업이 잡고 있다. 경합은 정상이므로 400 대다.
 err.login-log.range-required,BACK,기간 없이 조회하려 했다 — 보존이 1년이라 조건 없이 열면 그 전량을 향한다.
-err.login-log.range-too-wide,BACK,기간이 92일을 넘었다 — 보존(1년)보다 창이 짧은 유일한 화면이다(64 §4.6).
+err.login-log.range-too-wide,BACK,기간이 92일을 넘었다 — 보존(1년)보다 창이 짧은 유일한 화면이다(screen/log/access/requirements.md).
 err.login.concurrent,BACK,prevent-login: true 에서 기존 세션이 살아 있어 신규 로그인을 거부했다.
 err.login.disabled,BACK,사용 중지된 계정(USE_YN='N').
-err.login.dormant,BACK,장기 미접속 휴면. 본인 확인을 마치면 해제된다(41 §4.2).
+err.login.dormant,BACK,장기 미접속 휴면. 본인 확인을 마치면 해제된다(sys/user-role.md).
 err.login.expired,BACK,사용 기간이 지난 계정.
 err.login.failed,BACK,없는 ID 와 비밀번호 불일치가 같은 문구로 나간다 — 갈리면 계정 열거다.
 err.login.ip-denied,BACK,허용되지 않은 IP 에서의 접속.
 err.login.locked,BACK,연속 실패로 잠긴 계정. 재설정으로 풀린다.
-err.login.no-authority,BACK,유효 권한이 공집합이라 로그인시키지 않는다 — 빈 셸로 들여보내지 않는다(security-design.md §4).
+err.login.no-authority,BACK,유효 권한이 공집합이라 로그인시키지 않는다 — 빈 셸로 들여보내지 않는다(backend/security.md).
 err.login.temp-expired,BACK,임시 비밀번호의 유효 시간이 지났다.
 err.malformed-body,BACK,요청 본문을 파싱하지 못했다. 어느 필드인지는 알 수 없다.
 err.menu.child-under-leaf,BACK,URL 이 있는 노드 아래에 자식을 만들거나 옮기려 했다 — 〃.
-err.menu.cycle,BACK,자기 자신 또는 자손 아래로 옮기려 했다 — 순환 네 층 중 저장 서비스(42 §4).
-err.menu.depth,BACK,리프 포함 5단을 넘는다 — 서브트리를 통째로 옮기면 그 높이까지 더해 본다(52 §3.4).
-err.menu.duplicate,BACK,MENU_CD 중복 — 다른 사람이 방금 만든 것을 클라이언트가 알 수 없다(grid-edit-validation.md §3.4).
-err.menu.not-deletable,BACK,삭제 게이트 — 자식·매핑 API·매핑 역할·개인 예외 중 하나라도 남아 있다(62 §4.8).
+err.menu.cycle,BACK,자기 자신 또는 자손 아래로 옮기려 했다 — 순환 네 층 중 저장 서비스(sys/menu.md).
+err.menu.depth,BACK,리프 포함 5단을 넘는다 — 서브트리를 통째로 옮기면 그 높이까지 더해 본다(sys/menu.md).
+err.menu.duplicate,BACK,MENU_CD 중복 — 다른 사람이 방금 만든 것을 클라이언트가 알 수 없다(frontend/grid.md).
+err.menu.not-deletable,BACK,삭제 게이트 — 자식·매핑 API·매핑 역할·개인 예외 중 하나라도 남아 있다(screen/menu/requirements.md).
 err.menu.not-found,BACK,없는 메뉴를 가리켰다. 화면이 낡았거나 화면 밖 경로다.
-err.menu.tree-changed,BACK,"보낸 형제 목록이 지금의 자식 집합과 다르다 — 42 §4 의 집합 검증. 나머지와 성질이 다르다: 해서는 안 되는 일이 아니라 보던 트리가 낡았다 이며, 조회 한 번이 복구다. 문구가 그 한 줄을 말한다. /"
-err.menu.url-on-parent,BACK,자식이 있는 노드에 URL 을 채우려 했다 — URL 과 자식은 배타다(security-design.md §4).
-err.menu.url-required,BACK,"권한 행이 있는 노드의 URL 을 비우려 했다 — 62 §4.3. 비우는 순간 권한 대상이 아닌데 SYS_ROLE_MENU_AUTH 에 행이 남는다 — 42 §4 가 ""들어오면 거부"" 라고 한 상태가 거꾸로 만들어진다. /"
+err.menu.tree-changed,BACK,"보낸 형제 목록이 지금의 자식 집합과 다르다 — sys/menu.md 의 집합 검증. 나머지와 성질이 다르다: 해서는 안 되는 일이 아니라 보던 트리가 낡았다 이며, 조회 한 번이 복구다. 문구가 그 한 줄을 말한다. /"
+err.menu.url-on-parent,BACK,자식이 있는 노드에 URL 을 채우려 했다 — URL 과 자식은 배타다(backend/security.md).
+err.menu.url-required,BACK,"권한 행이 있는 노드의 URL 을 비우려 했다 — screen/menu/requirements.md. 비우는 순간 권한 대상이 아닌데 SYS_ROLE_MENU_AUTH 에 행이 남는다 — sys/menu.md 가 ""들어오면 거부"" 라고 한 상태가 거꾸로 만들어진다. /"
 err.message.key-duplicate,BACK,이미 있는 MSG_KEY 로 신규 행을 저장했다. 현재 페이지 밖은 화면이 모른다.
 err.message.key-missing,BACK,저장하려는 키가 이미 지워졌다 — 다른 사람이 먼저 지웠다.
 err.message.lang-unknown,BACK,지원하지 않는 언어의 값이 왔다. 지원 언어 목록은 서버가 갖는다.
 err.method-not-allowed,BACK,허용되지 않은 HTTP 메서드. 서버 고장이 아니라 클라이언트 잘못이다.
 err.no-authority,BACK,API 는 정상이고 이 사람에게 권한이 없다.
 err.not-found,BACK,없는 자원 · 오타 난 API 경로.
-err.noti-inbox.not-found,BACK,"내 알림이 아니다 — 남의 번호이거나 이미 파기됐다(보존 90일 · 32 §3). 둘을 갈라 말하지 않는다. ""남의 것"" 이라고 답하면 그 번호가 실재한다는 사실을 알려 주게 되고, 알림은 사람마다 행이 다르므로(47 §7) 그 사실 자체가 정보다. 조용히 넘기지 않는 이유는 화면이 읽음으로 바뀐 줄 알고 배지를 깎기 때문이다 — 새로고침하면 숫자가 되돌아온다. /"
-err.noti-req.content-required,BACK,요청 내용이 비었다 — 47 §8 이 REQ_CONTENT 를 필수로 두었다.
-err.noti-req.duplicate,BACK,"같은 유형의 접수 상태 요청이 이미 있다. 워크플로가 없으므로(01 §2) 요청은 한 번 내면 답이 올 때까지 그대로다 — 같은 것을 또 내도 진행이 빨라지지 않고 대기열만 늘어난다. 그리고 관리자는 그 여벌을 하나씩 반려해야 하는데, 반려마다 요청자에게 알림이 나간다(66 §5.4). 막는 것은 같은 유형뿐이다. 권한 신청과 잠금 해제는 서로 다른 답을 기다리는 것이라 함께 열려 있어야 한다. /"
-err.noti-req.memo-required,BACK,"반려인데 사유가 비었다 — 47 §8.1 이 필수로 정했다. 사유 없는 반려는 요청자에게 아무 정보도 주지 않는다. 그러면 같은 요청을 다시 내고, 그것이 워크플로를 만들지 않기로 한 대가(01 §2)를 실제 비용으로 바꾼다 — 단계가 없으므로 한 번의 답이 전부여야 한다. /"
+err.noti-inbox.not-found,BACK,"내 알림이 아니다 — 남의 번호이거나 이미 파기됐다(보존 90일 · retention.md). 둘을 갈라 말하지 않는다. ""남의 것"" 이라고 답하면 그 번호가 실재한다는 사실을 알려 주게 되고, 알림은 사람마다 행이 다르므로(sys/notification.md) 그 사실 자체가 정보다. 조용히 넘기지 않는 이유는 화면이 읽음으로 바뀐 줄 알고 배지를 깎기 때문이다 — 새로고침하면 숫자가 되돌아온다. /"
+err.noti-req.content-required,BACK,요청 내용이 비었다 — sys/notification.md 이 REQ_CONTENT 를 필수로 두었다.
+err.noti-req.duplicate,BACK,"같은 유형의 접수 상태 요청이 이미 있다. 워크플로가 없으므로 요청은 한 번 내면 답이 올 때까지 그대로다 — 같은 것을 또 내도 진행이 빨라지지 않고 대기열만 늘어난다. 그리고 관리자는 그 여벌을 하나씩 반려해야 하는데, 반려마다 요청자에게 알림이 나간다(screen/notice/requirements.md). 막는 것은 같은 유형뿐이다. 권한 신청과 잠금 해제는 서로 다른 답을 기다리는 것이라 함께 열려 있어야 한다. /"
+err.noti-req.memo-required,BACK,"반려인데 사유가 비었다 — sys/notification.md 이 필수로 정했다. 사유 없는 반려는 요청자에게 아무 정보도 주지 않는다. 그러면 같은 요청을 다시 내고, 그것이 워크플로를 만들지 않기로 한 대가를 실제 비용으로 바꾼다 — 단계가 없으므로 한 번의 답이 전부여야 한다. /"
 err.noti-req.not-found,BACK,없는 요청이다.
-err.noti-req.not-received,BACK,이미 처리된 요청이 선택에 섞였다 — 66 §5.7. 처리 가능한 것만 골라 실행하지 않는다. 일부만 처리하면 알림이 일부에게만 나가고 사용자는 무엇이 처리됐는지 모른다 — 되돌리는 길이 없으므로(§5.7) 부분 성공을 만들지 않는다. /
+err.noti-req.not-received,BACK,이미 처리된 요청이 선택에 섞였다 — screen/notice/requirements.md. 처리 가능한 것만 골라 실행하지 않는다. 일부만 처리하면 알림이 일부에게만 나가고 사용자는 무엇이 처리됐는지 모른다 — 되돌리는 길이 없으므로(§5.7) 부분 성공을 만들지 않는다. /
 err.notice.not-found,BACK,없는 공지다 — 화면이 낡았거나 화면 밖 경로다.
 err.notice.period,BACK,게시 종료가 시작보다 앞이다.
-err.notice.popup-period,BACK,팝업을 켰는데 팝업 기간이 비었다 — 66 §4.5.
-err.notice.popup-range,BACK,"팝업 기간이 게시 기간을 벗어났다 — 66 §4.5. 이 검증이 없으면 목록에 없는 공지가 팝업으로 뜬다. 팝업의 ""공지 N건 더 있음"" 링크가 알림 모달의 공지 탭을 여는데 그 탭은 게시 기간을 보므로, 눌러도 그 공지가 없다 — 팝업이 도달 보장 장치라는 전제가 거기서 깨진다. /"
-err.notice.required,BACK,제목·본문·게시 시작이 비었다 — 셀 단위 오류로 돌려준다(grid-edit-validation.md §3.3).
+err.notice.popup-period,BACK,팝업을 켰는데 팝업 기간이 비었다 — screen/notice/requirements.md.
+err.notice.popup-range,BACK,"팝업 기간이 게시 기간을 벗어났다 — screen/notice/requirements.md. 이 검증이 없으면 목록에 없는 공지가 팝업으로 뜬다. 팝업의 ""공지 N건 더 있음"" 링크가 알림 모달의 공지 탭을 여는데 그 탭은 게시 기간을 보므로, 눌러도 그 공지가 없다 — 팝업이 도달 보장 장치라는 전제가 거기서 깨진다. /"
+err.notice.required,BACK,제목·본문·게시 시작이 비었다 — 셀 단위 오류로 돌려준다(frontend/grid.md).
 err.password-change-required,BACK,제한 세션. 비밀번호를 바꾸면 풀리므로 이것만 문구가 다르다.
 err.query.cursor-sort-arity,BACK,커서형에 정렬 컬럼이 둘 이상 왔다 — 기준점이 성립하려면 정렬 키가 하나여야 한다.
 err.query.invalid-cursor,BACK,커서를 읽을 수 없다. 조용히 첫 장으로 떨어뜨리면 데이터가 없다 로 읽힌다.
@@ -284,124 +284,124 @@ err.query.unknown-field,BACK,화이트리스트에 없는 필드로 조건이 �
 err.query.value,BACK,값의 형태가 연산자와 맞지 않는다 — between 이 2원소가 아니거나 해석 불가.
 err.reset.code-expired,BACK,"만료 · 이미 사용 · 시도 한도 초과 — 셋이 한 문구다. 사용자가 할 일이 셋 다 같기 때문이다(①로 돌아가 다시 받는다). 갈라 두면 ""이 아이디에 유효한 토큰이 있었다"" 를 알려주는 응답이 생긴다. /"
 err.reset.code-invalid,BACK,인증번호가 맞지 않다. 남은 시도 횟수를 알려주지 않는다.
-err.role.auth.action,BACK,"그 메뉴에 정의되지 않은 액션이다 — 61 §4.4 의 —. 줄 것이 없는 조합이다. 받아 두면 인가 데이터가 줬는데 안 되는 상태를 갖게 되고, 그 다음 문의는 ""권한을 줬는데 왜 안 되나"" 가 된다. EXPORT 는 API 가 없어도 정의될 수 있으므로(ADR-0027) 이유를 API 의 부재로 대지 않는다. /"
-err.role.auth.menu,BACK,"구조 노드나 없는 메뉴에 권한을 주려 했다 — 42 §6 의 MENU_URL IS NULL 거부. 화면에는 구조 노드에 스위치가 아예 없다(62 §2.4). 이 문구가 나가는 것은 화면 밖 경로이거나, 트리를 열어 둔 사이에 그 메뉴가 폴더가 된 경우다. /"
-err.role.auth.read,BACK,"READ 없이 다른 액션만 왔다 — 61 §4.4 의 불변식 하나. 화면이 이것을 유지하므로(끄면 함께 끄고, 켜면 함께 켠다) 정상 경로로는 오지 않는다. 서버가 다시 보는 것은 42 §6 의 원칙 P1 이며 MENU_URL IS NULL 거부와 같은 자리다. /"
-err.role.duplicate,BACK,ROLE_ID 중복 — 다른 사람이 방금 만든 것을 클라이언트가 알 수 없다(grid-edit-validation.md §3.4).
-err.role.name-required,BACK,역할명을 비운 채 저장했다 — 62 §3.2 의 필수 컬럼.
-err.role.not-deletable,BACK,삭제 게이트 — 보유 사용자나 권한 행이 남아 있다(62 §3.5). 거의 항상 삭제가 아니라 USE_YN='N' 이다. 이 게이트를 통과하는 역할은 한 번도 쓰이지 않은 것뿐이며 그것이 정확히 잘못 만든 역할 이다 — 쓰인 역할을 지우면 누가 무슨 역할을 가졌었나 가 사라진다(42 §3.1). /
+err.role.auth.action,BACK,"그 메뉴에 정의되지 않은 액션이다 — screen/user/requirements.md 의 —. 줄 것이 없는 조합이다. 받아 두면 인가 데이터가 줬는데 안 되는 상태를 갖게 되고, 그 다음 문의는 ""권한을 줬는데 왜 안 되나"" 가 된다. EXPORT 는 API 가 없어도 정의될 수 있으므로(sys/menu.md) 이유를 API 의 부재로 대지 않는다. /"
+err.role.auth.menu,BACK,"구조 노드나 없는 메뉴에 권한을 주려 했다 — sys/menu.md 의 MENU_URL IS NULL 거부. 화면에는 구조 노드에 스위치가 아예 없다(screen/menu/requirements.md). 이 문구가 나가는 것은 화면 밖 경로이거나, 트리를 열어 둔 사이에 그 메뉴가 폴더가 된 경우다. /"
+err.role.auth.read,BACK,"READ 없이 다른 액션만 왔다 — screen/user/requirements.md 의 불변식 하나. 화면이 이것을 유지하므로(끄면 함께 끄고, 켜면 함께 켠다) 정상 경로로는 오지 않는다. 서버가 다시 보는 것은 sys/menu.md 의 원칙 P1 이며 MENU_URL IS NULL 거부와 같은 자리다. /"
+err.role.duplicate,BACK,ROLE_ID 중복 — 다른 사람이 방금 만든 것을 클라이언트가 알 수 없다(frontend/grid.md).
+err.role.name-required,BACK,역할명을 비운 채 저장했다 — screen/menu/requirements.md 의 필수 컬럼.
+err.role.not-deletable,BACK,삭제 게이트 — 보유 사용자나 권한 행이 남아 있다(screen/menu/requirements.md). 거의 항상 삭제가 아니라 USE_YN='N' 이다. 이 게이트를 통과하는 역할은 한 번도 쓰이지 않은 것뿐이며 그것이 정확히 잘못 만든 역할 이다 — 쓰인 역할을 지우면 누가 무슨 역할을 가졌었나 가 사라진다(sys/menu.md). /
 err.role.not-found,BACK,없는 역할을 가리켰다. 화면이 낡았거나 화면 밖 경로다.
 err.sample.duplicated,BACK,이미 있는 주문번호다 — UK_SMPL_ORDER_NO 를 사람이 읽는 문구로 옮긴다.
-err.sample.has-items,BACK,"품목이 있는 주문은 지울 수 없다 — grid-standard.md §6.2 의 마스터 삭제 게이트다. 화면이 체크박스를 열지 않지만 그것만으로는 부족하다: 화면 밖 경로가 실재하고, FK 의 RESTRICT 는 제약 위반 이라는 읽을 수 없는 문구로만 답한다(48 §5.1). /"
-err.sample.item-duplicated,BACK,"한 주문에 같은 품목코드가 둘이다 — 68 §8.7. #ERR_SAMPLE_DUPLICATED 는 주문번호 의 중복이라 문구가 그 낱말을 쓴다. 여기서 겹친 것은 주문 안의 품목이며, 파일 안에서 겹쳤을 수도 이미 있는 행과 겹쳤을 수도 있다 — 어느 쪽이든 사용자가 볼 곳은 그 두 줄이다. /"
-err.sample.locked,BACK,잠긴 주문이다 — LOCK_YN 은 상태와 다른 축이다(48 §3.2). 상태는 일이 어디까지 갔나 이고 이것은 운영이 잠갔나 다. 합치면 완료된 주문의 잠금을 풀 방법이 없어진다. /
-err.sample.no-such-order,BACK,"엑셀의 주문번호가 DB 에 없다 — 68 §8.7. #ERR_SAMPLE_NOT_FOUND 와 갈라 두는 것은 사용자가 할 일이 다르기 때문이다. 저것은 화면을 다시 조회하세요 이고(남이 지웠다), 이것은 파일의 그 칸을 고치는 일이다 — 다시 조회해 봐야 없는 주문번호는 그대로다. /"
-err.sample.not-confirmable,BACK,"접수 상태가 아니다 — 확정은 RCV 에서만 열린다(48 §3.2 의 전이표). #ERR_SAMPLE_NOT_SHIPPABLE 과 같은 자리이며, 갈라 두는 것은 사용자가 보는 문장이 어느 전이가 막혔는지를 말해야 하기 때문이다 — 하나로 합치면 상태가 맞지 않습니다 가 되어 무엇을 해야 할지가 사라진다. /"
+err.sample.has-items,BACK,"품목이 있는 주문은 지울 수 없다 — frontend/grid.md 의 마스터 삭제 게이트다. 화면이 체크박스를 열지 않지만 그것만으로는 부족하다: 화면 밖 경로가 실재하고, FK 의 RESTRICT 는 제약 위반 이라는 읽을 수 없는 문구로만 답한다(playbook/INDEX.md). /"
+err.sample.item-duplicated,BACK,"한 주문에 같은 품목코드가 둘이다 — playbook/INDEX.md. #ERR_SAMPLE_DUPLICATED 는 주문번호 의 중복이라 문구가 그 낱말을 쓴다. 여기서 겹친 것은 주문 안의 품목이며, 파일 안에서 겹쳤을 수도 이미 있는 행과 겹쳤을 수도 있다 — 어느 쪽이든 사용자가 볼 곳은 그 두 줄이다. /"
+err.sample.locked,BACK,잠긴 주문이다 — LOCK_YN 은 상태와 다른 축이다(playbook/INDEX.md). 상태는 일이 어디까지 갔나 이고 이것은 운영이 잠갔나 다. 합치면 완료된 주문의 잠금을 풀 방법이 없어진다. /
+err.sample.no-such-order,BACK,"엑셀의 주문번호가 DB 에 없다 — playbook/INDEX.md. #ERR_SAMPLE_NOT_FOUND 와 갈라 두는 것은 사용자가 할 일이 다르기 때문이다. 저것은 화면을 다시 조회하세요 이고(남이 지웠다), 이것은 파일의 그 칸을 고치는 일이다 — 다시 조회해 봐야 없는 주문번호는 그대로다. /"
+err.sample.not-confirmable,BACK,"접수 상태가 아니다 — 확정은 RCV 에서만 열린다(playbook/INDEX.md 의 전이표). #ERR_SAMPLE_NOT_SHIPPABLE 과 같은 자리이며, 갈라 두는 것은 사용자가 보는 문장이 어느 전이가 막혔는지를 말해야 하기 때문이다 — 하나로 합치면 상태가 맞지 않습니다 가 되어 무엇을 해야 할지가 사라진다. /"
 err.sample.not-found,BACK,없는 주문이다 — 화면이 낡았거나 화면 밖 경로다.
-err.sample.not-recalculable,BACK,"금액이 잠긴 주문의 품목을 다시 세려 했다 — 68 §5.4 의 행×디테일 재계산. #ERR_SAMPLE_NOT_CONFIRMABLE 와 갈라 두는 것은 사용자가 할 일이 다르기 때문이다. 확정은 지금 하려는 일 이 막힌 것이고, 이쪽은 이미 확정된 금액 이라 막힌 것이다 — 같은 문구로 말하면 확정을 먼저 하라는 뜻으로 읽힌다. /"
-err.sample.not-shippable,BACK,"확정 상태가 아니다 — 출고 지시는 CFM 에서만 열린다(48 §3.2 의 전이표). 화면이 eligible 로 대상을 거르지만(grid-api-contract.md §7), 고른 뒤 남이 상태를 바꾸면 그 판정은 낡은 값이다. /"
-err.sample.range-required,BACK,기간을 비우고 조회했다 — ②는 기간이 부하의 상한인 화면이다(68 §4.3 · 64 §2.2). 화면의 required 가 먼저 막지만 도구·스크립트는 그 폼을 지나지 않는다. /
-err.sample.range-too-wide,BACK,조회 기간이 상한을 넘었다 — 조용히 자르지 않는다(64 §2.2).
-err.sample.required,BACK,주문번호·주문명·고객이 비었다 — 셀 단위 오류로 돌려준다(grid-edit-validation.md §3.3).
-err.sample.rmk-required,BACK,"할인율이 있는데 비고가 없다 — 조건부 필수(68 §3.2 · grid-column-contract.md §5.1). #ERR_SAMPLE_REQUIRED 와 갈라 두는 것은 그 문구가 주문번호·주문명·고객· 주문일 넷을 열거하기 때문이다. 조건부 필수를 거기 얹으면 사용자에게 틀린 칸을 가리킨다 — 다 채웠는데 왜 필수라는지 알 수 없고, 그 넷을 다시 들여다보게 된다. 실기동에서 드러났다(2026-09-02). 화면의 required 함수가 먼저 막으므로 평소에는 이 문구가 보이지 않지만, 보이는 순간은 화면 밖 경로라 더 정확해야 한다. /"
-err.sample.tag-required,BACK,"태그 행의 필수 — 태그명과 정렬순서(68 §7.4). #ERR_SAMPLE_REQUIRED 와 갈라 두는 이유가 #ERR_SAMPLE_RMK_REQUIRED 와 같다: 그 문구는 주문 의 넷을 열거하는데 여기서 빈 것은 태그 탭의 행이라, 얹으면 사용자가 마스터를 들여다보게 된다. /"
-err.sample.tag-sort-duplicated,BACK,"태그의 정렬순서가 겹친다 — 48 §4.1. 순서가 값이라서 막는다. 같은 SORT_NO 가 둘이면 읽는 순서가 정해지지 않고, 사용자에게는 고치지도 않았는데 조회할 때마다 태그가 뒤바뀐다 로 보인다 — 그 증상을 없애려고 둔 컬럼이 그 증상을 만들게 된다. DB 의 유일 제약이 아니라 서비스가 막는다. 제약을 걸면 ①의 전량 교체가 같은 트랜잭션 안에서 옛 행과 새 행이 겹치는 순간에 걸리고(지웠다 넣는다), 그 실패는 사용자가 읽을 수 없는 문구로만 답한다. /"
+err.sample.not-recalculable,BACK,"금액이 잠긴 주문의 품목을 다시 세려 했다 — playbook/INDEX.md 의 행×디테일 재계산. #ERR_SAMPLE_NOT_CONFIRMABLE 와 갈라 두는 것은 사용자가 할 일이 다르기 때문이다. 확정은 지금 하려는 일 이 막힌 것이고, 이쪽은 이미 확정된 금액 이라 막힌 것이다 — 같은 문구로 말하면 확정을 먼저 하라는 뜻으로 읽힌다. /"
+err.sample.not-shippable,BACK,"확정 상태가 아니다 — 출고 지시는 CFM 에서만 열린다(playbook/INDEX.md 의 전이표). 화면이 eligible 로 대상을 거르지만(frontend/grid.md), 고른 뒤 남이 상태를 바꾸면 그 판정은 낡은 값이다. /"
+err.sample.range-required,BACK,기간을 비우고 조회했다 — ②는 기간이 부하의 상한인 화면이다(playbook/INDEX.md · screen/log/access/requirements.md). 화면의 required 가 먼저 막지만 도구·스크립트는 그 폼을 지나지 않는다. /
+err.sample.range-too-wide,BACK,조회 기간이 상한을 넘었다 — 조용히 자르지 않는다(screen/log/access/requirements.md).
+err.sample.required,BACK,주문번호·주문명·고객이 비었다 — 셀 단위 오류로 돌려준다(frontend/grid.md).
+err.sample.rmk-required,BACK,"할인율이 있는데 비고가 없다 — 조건부 필수(playbook/INDEX.md · frontend/grid.md). #ERR_SAMPLE_REQUIRED 와 갈라 두는 것은 그 문구가 주문번호·주문명·고객· 주문일 넷을 열거하기 때문이다. 조건부 필수를 거기 얹으면 사용자에게 틀린 칸을 가리킨다 — 다 채웠는데 왜 필수라는지 알 수 없고, 그 넷을 다시 들여다보게 된다. 실기동에서 드러났다(2026-09-02). 화면의 required 함수가 먼저 막으므로 평소에는 이 문구가 보이지 않지만, 보이는 순간은 화면 밖 경로라 더 정확해야 한다. /"
+err.sample.tag-required,BACK,"태그 행의 필수 — 태그명과 정렬순서(playbook/INDEX.md). #ERR_SAMPLE_REQUIRED 와 갈라 두는 이유가 #ERR_SAMPLE_RMK_REQUIRED 와 같다: 그 문구는 주문 의 넷을 열거하는데 여기서 빈 것은 태그 탭의 행이라, 얹으면 사용자가 마스터를 들여다보게 된다. /"
+err.sample.tag-sort-duplicated,BACK,"태그의 정렬순서가 겹친다 — playbook/INDEX.md. 순서가 값이라서 막는다. 같은 SORT_NO 가 둘이면 읽는 순서가 정해지지 않고, 사용자에게는 고치지도 않았는데 조회할 때마다 태그가 뒤바뀐다 로 보인다 — 그 증상을 없애려고 둔 컬럼이 그 증상을 만들게 된다. DB 의 유일 제약이 아니라 서비스가 막는다. 제약을 걸면 ①의 전량 교체가 같은 트랜잭션 안에서 옛 행과 새 행이 겹치는 순간에 걸리고(지웠다 넣는다), 그 실패는 사용자가 읽을 수 없는 문구로만 답한다. /"
 err.sample.tag-too-many,BACK,"한 주문의 태그가 상한을 넘었다 &mdash; 48 &sect;8 의 결정(2026-09-02). 문구가 숫자를 그대로 적는다. 태그가 너무 많습니다 만으로는 몇 개를 빼야 하는지 알 수 없고, 사용자는 하나 지우고 저장하기를 반복한다 &mdash; 56 &sect;3.3 이 건수를 먼저 알려준다 로 정한 것과 같은 이유다. #ERR_SAMPLE_RANGE_TOO_WIDE 가 31일 을 적은 것과 같은 자리이며, 응답 문구는 SYS_MESSAGE 에서 오므로 인자를 끼울 통로가 없다 (BusinessException 은 서버 언어의 로그 문구만 나른다). 저장 둘이 이 문구를 쓴다. &#9312;은 배열의 개수로 &#9316;은 행의 개수로 걸리는데, 사용자에게 사실은 하나다 &mdash; 이 주문에 태그가 몇 개까지 다. 갈라 쓰면 같은 사실이 두 문구로 설명된다. /"
 err.searchCond.limit,BACK,한 화면에 저장할 수 있는 조회조건 수를 넘겼다.
-err.session.evicted,BACK,다른 곳의 로그인에 밀려 이 세션이 끝났다 — 유휴 만료와 뜻이 다르다(security-design.md §4-1).
+err.session.evicted,BACK,다른 곳의 로그인에 밀려 이 세션이 끝났다 — 유휴 만료와 뜻이 다르다(backend/security.md).
 err.unauthenticated,BACK,세션이 없거나 만료됐다. 프론트가 로그인 화면으로 돌린다.
 err.unclassified-api,BACK,세 계층 프리픽스 밖의 /api/** — 경로 차원의 fail-closed.
-err.user-admin.duplicate,BACK,USER_ID 중복 — 다른 사람이 방금 만든 것을 클라이언트가 알 수 없다(grid-edit-validation.md §3.4).
-err.user-admin.email-required,BACK,이메일을 비운 채 저장했다 — 61 §3.2 의 필수 컬럼. 필수인 이유가 발송처다. 관리자가 발급한 임시 비밀번호를 전할 곳이 없으면 그 계정은 만들어지자마자 들어올 수 없다(AUTH-07). /
-err.user-admin.name-required,BACK,이름을 비운 채 저장했다 — 61 §3.2 의 필수 컬럼.
-err.user-admin.no-delete,BACK,삭제 행이 왔다 — SYS_USER 는 물리 삭제를 하지 않는다(41 §4.5 · USER-02). 화면에는 삭제 컬럼이 아예 없다(61 §2). 못 쓰게 하는 수단은 USE_YN='N' 이며 그것은 셀 편집이다 — 이력 테이블이 USER_ID 를 값으로 갖고 있어(41 §3) 행을 지우면 지난 이력의 주인이 사라진다. /
+err.user-admin.duplicate,BACK,USER_ID 중복 — 다른 사람이 방금 만든 것을 클라이언트가 알 수 없다(frontend/grid.md).
+err.user-admin.email-required,BACK,이메일을 비운 채 저장했다 — screen/user/requirements.md 의 필수 컬럼. 필수인 이유가 발송처다. 관리자가 발급한 임시 비밀번호를 전할 곳이 없으면 그 계정은 만들어지자마자 들어올 수 없다(AUTH-07). /
+err.user-admin.name-required,BACK,이름을 비운 채 저장했다 — screen/user/requirements.md 의 필수 컬럼.
+err.user-admin.no-delete,BACK,삭제 행이 왔다 — SYS_USER 는 물리 삭제를 하지 않는다(sys/user-role.md · USER-02). 화면에는 삭제 컬럼이 아예 없다(screen/user/requirements.md). 못 쓰게 하는 수단은 USE_YN='N' 이며 그것은 셀 편집이다 — 이력 테이블이 USER_ID 를 값으로 갖고 있어(sys/user-role.md) 행을 지우면 지난 이력의 주인이 사라진다. /
 err.user-admin.not-found,BACK,없는 계정을 가리켰다. 화면이 낡았거나 화면 밖 경로다.
-err.user-admin.period,BACK,사용 기간의 시작이 종료보다 늦다 — 그 계정은 어느 날도 쓸 수 없다(40 §4.3).
-err.user-admin.reset-disabled,BACK,"임시 비밀번호 발급이 꺼져 있다 — sys-config.auth.password.admin-reset-enabled. 기본값이 켜짐인 것이 결정이다(43 §6.3) — 메일 연동이 없는 배포에서 잠긴 계정을 푸는 유일한 경로이며, 끄면 복구 수단이 사라진다. /"
-err.user-admin.self-disable,BACK,"자기 계정을 비활성화하려 했다 — 61 §3.7.1. 권한이 아니라 대상 제약이라 화면은 감추지 않고 보이되 막고 사유를 붙인다(main-shell.md §6 의 예외가 아니라 축이 다른 것이다). 그 자리에서 화면 밖으로 밀려나기 때문이며, 되돌릴 사람이 그 사람 자신이다. /"
-err.user-auth.action,BACK,"그 메뉴에 정의되지 않은 액션이다 — 61 §4.4 의 —. 줄 것이 없는 조합이다. 받아 두면 줬는데 안 되는 상태가 인가 데이터에 남고, 그 다음 문의는 ""권한을 줬는데 왜 안 되나"" 가 된다. /"
-err.user-auth.duplicate,BACK,"같은 (메뉴, 액션) 이 두 번 왔거나 이미 있는 행을 새로 만들려 했다. PK 가 (USER_ID, MENU_CD, ACTION_CD) 이므로 한 조합에 행은 하나뿐이며, 재부여는 새 행이 아니라 같은 행의 기간·사유를 갱신하는 것이다(61 §4.4). /"
-err.user-auth.menu,BACK,"구조 노드나 없는 메뉴에 예외를 주려 했다 — 42 §6 의 MENU_URL IS NULL 거부. 화면에는 구조 노드에 스위치가 아예 없다(61 §4.4). 이 문구가 나가는 것은 화면 밖 경로이거나, 트리를 열어 둔 사이에 그 메뉴가 폴더가 된 경우다. /"
+err.user-admin.period,BACK,사용 기간의 시작이 종료보다 늦다 — 그 계정은 어느 날도 쓸 수 없다(sys/INDEX.md).
+err.user-admin.reset-disabled,BACK,"임시 비밀번호 발급이 꺼져 있다 — sys-config.auth.password.admin-reset-enabled. 기본값이 켜짐인 것이 결정이다(sys/code.md) — 메일 연동이 없는 배포에서 잠긴 계정을 푸는 유일한 경로이며, 끄면 복구 수단이 사라진다. /"
+err.user-admin.self-disable,BACK,"자기 계정을 비활성화하려 했다 — screen/user/requirements.md. 권한이 아니라 대상 제약이라 화면은 감추지 않고 보이되 막고 사유를 붙인다(frontend/tabs.md 의 예외가 아니라 축이 다른 것이다). 그 자리에서 화면 밖으로 밀려나기 때문이며, 되돌릴 사람이 그 사람 자신이다. /"
+err.user-auth.action,BACK,"그 메뉴에 정의되지 않은 액션이다 — screen/user/requirements.md 의 —. 줄 것이 없는 조합이다. 받아 두면 줬는데 안 되는 상태가 인가 데이터에 남고, 그 다음 문의는 ""권한을 줬는데 왜 안 되나"" 가 된다. /"
+err.user-auth.duplicate,BACK,"같은 (메뉴, 액션) 이 두 번 왔거나 이미 있는 행을 새로 만들려 했다. PK 가 (USER_ID, MENU_CD, ACTION_CD) 이므로 한 조합에 행은 하나뿐이며, 재부여는 새 행이 아니라 같은 행의 기간·사유를 갱신하는 것이다(screen/user/requirements.md). /"
+err.user-auth.menu,BACK,"구조 노드나 없는 메뉴에 예외를 주려 했다 — sys/menu.md 의 MENU_URL IS NULL 거부. 화면에는 구조 노드에 스위치가 아예 없다(screen/user/requirements.md). 이 문구가 나가는 것은 화면 밖 경로이거나, 트리를 열어 둔 사이에 그 메뉴가 폴더가 된 경우다. /"
 err.user-auth.missing,BACK,고치거나 지우려는 행이 없다 — 다른 사람이 먼저 지웠다.
 err.user-auth.not-found,BACK,없는 계정에 예외를 주려 했다. 화면이 낡았거나 화면 밖 경로다.
-err.user-auth.period,BACK,시작이 종료보다 늦다 — 그 예외는 어느 날도 유효하지 않다(40 §4.3).
-err.user-auth.period-required,BACK,기간을 비운 채 저장했다 — 개인 예외에는 무기한이라는 선택지가 없다(42 §6).
-err.user-auth.read,BACK,"READ 없이 다른 액션만 남는다 — 61 §4.4 의 불변식 하나. 역할 쪽과 판정이 다르다. 거기서는 그 역할 안에서만 봤지만 여기서는 유효 권한이 역할과 개인 예외의 합집합이므로(security-design.md §4 ③), 역할이 조회를 주고 있으면 개인 예외에는 저장만 있어도 된다 — 실제로 그것이 이 화면의 흔한 쓰임이다. /"
-err.user-auth.reason-required,BACK,"사유를 비운 채 저장했다 — 필수다(AUTHZ-07). 변경 이력 테이블을 두지 않았으므로(ADR-0010) ""누구에게 왜 무엇을 언제까지 줬는가"" 를 남기는 것이 이 컬럼뿐이다. /"
-err.user-detail.ip,BACK,"IP 도 CIDR 도 아니다 — 41 §7 이 DDL 에 두지 않은 검사다. 벤더 중립 DDL 에 정규식 CHECK 를 둘 수 없고(db-portability.md §4), 둘 수 있어도 IPv6 축약까지 정규식으로 맞추는 것은 저장 시 파싱보다 약하다. /"
-err.user-detail.ip-duplicate,BACK,"같은 대역을 두 번 넣었다 — PK 가 (USER_ID, IP_CIDR) 다(41 §7)."
+err.user-auth.period,BACK,시작이 종료보다 늦다 — 그 예외는 어느 날도 유효하지 않다(sys/INDEX.md).
+err.user-auth.period-required,BACK,기간을 비운 채 저장했다 — 개인 예외에는 무기한이라는 선택지가 없다(sys/menu.md).
+err.user-auth.read,BACK,"READ 없이 다른 액션만 남는다 — screen/user/requirements.md 의 불변식 하나. 역할 쪽과 판정이 다르다. 거기서는 그 역할 안에서만 봤지만 여기서는 유효 권한이 역할과 개인 예외의 합집합이므로(backend/security.md ③), 역할이 조회를 주고 있으면 개인 예외에는 저장만 있어도 된다 — 실제로 그것이 이 화면의 흔한 쓰임이다. /"
+err.user-auth.reason-required,BACK,"사유를 비운 채 저장했다 — 필수다(AUTHZ-07). 변경 이력 테이블을 두지 않았으므로(sys/logs.md) ""누구에게 왜 무엇을 언제까지 줬는가"" 를 남기는 것이 이 컬럼뿐이다. /"
+err.user-detail.ip,BACK,"IP 도 CIDR 도 아니다 — sys/user-role.md 이 DDL 에 두지 않은 검사다. 벤더 중립 DDL 에 정규식 CHECK 를 둘 수 없고(backend/persistence.md), 둘 수 있어도 IPv6 축약까지 정규식으로 맞추는 것은 저장 시 파싱보다 약하다. /"
+err.user-detail.ip-duplicate,BACK,"같은 대역을 두 번 넣었다 — PK 가 (USER_ID, IP_CIDR) 다(sys/user-role.md)."
 err.user-detail.ip-missing,BACK,고치거나 지우려는 대역이 없다.
-err.user-detail.period,BACK,부여 기간의 시작이 종료보다 늦다 — 그 부여는 어느 날도 유효하지 않다(40 §4.3).
+err.user-detail.period,BACK,부여 기간의 시작이 종료보다 늦다 — 그 부여는 어느 날도 유효하지 않다(sys/INDEX.md).
 err.user-detail.role,BACK,없는 역할을 줬다 — 화면이 낡았거나 화면 밖 경로다.
-err.user-detail.role-duplicate,BACK,"이미 가진 역할을 또 줬다 — PK 가 (USER_ID, ROLE_ID) 다(42 §3.2). 재부여는 같은 행의 기간을 갱신하는 것이지 새 행이 아니다. 만료된 부여가 목록에 남아 있는데 다시 주려고 행을 추가하면 이 오류가 나며, 할 일은 그 행의 종료일을 미는 것이다. /"
+err.user-detail.role-duplicate,BACK,"이미 가진 역할을 또 줬다 — PK 가 (USER_ID, ROLE_ID) 다(sys/menu.md). 재부여는 같은 행의 기간을 갱신하는 것이지 새 행이 아니다. 만료된 부여가 목록에 남아 있는데 다시 주려고 행을 추가하면 이 오류가 나며, 할 일은 그 행의 종료일을 미는 것이다. /"
 err.user-detail.role-missing,BACK,고치거나 지우려는 부여가 없다 — 다른 사람이 먼저 정리했다.
 err.user-detail.user,BACK,없는 계정에 무언가를 매달려 했다 — FK 가 막기 전에 우리가 먼저 말한다.
-err.user-session.index,BACK,"세션 인덱스가 없어 활성 세션을 나열할 수 없다 — ADR-0002 · security-design.md §4-1. 빈 목록으로 답하지 않는다. 그러면 ""이 사람은 지금 아무 데도 안 들어와 있다"" 로 읽히는데 그것은 모르는 것을 아는 것처럼 말하는 것이다 — 이 탭이 하는 일이 끊을까 말까 이므로 그 거짓말의 대가가 크다. 스토어가 있는데 인덱스가 없는 배포는 SecurityConfig 가 기동에서 막으므로, 여기 닿는 것은 store-type: none 하나이며 그것은 선택된 동작이다(단일 노드 · 개발). /"
-err.user-session.self,BACK,"자기 세션을 끊으려 했다 — 61 §3.7.1. 그 자리에서 화면 밖으로 밀려난다. 사용 여부 'N' 전환과 같은 이유로 막고 다른 자리에서 막는다: 저것은 셀 편집이라 컬럼이 막고, 이것은 실행이라 버튼이 비활성이며 서버가 다시 본다. /"
+err.user-session.index,BACK,"세션 인덱스가 없어 활성 세션을 나열할 수 없다 — backend/session.md · backend/security.md. 빈 목록으로 답하지 않는다. 그러면 ""이 사람은 지금 아무 데도 안 들어와 있다"" 로 읽히는데 그것은 모르는 것을 아는 것처럼 말하는 것이다 — 이 탭이 하는 일이 끊을까 말까 이므로 그 거짓말의 대가가 크다. 스토어가 있는데 인덱스가 없는 배포는 SecurityConfig 가 기동에서 막으므로, 여기 닿는 것은 store-type: none 하나이며 그것은 선택된 동작이다(단일 노드 · 개발). /"
+err.user-session.self,BACK,"자기 세션을 끊으려 했다 — screen/user/requirements.md. 그 자리에서 화면 밖으로 밀려난다. 사용 여부 'N' 전환과 같은 이유로 막고 다른 자리에서 막는다: 저것은 셀 편집이라 컬럼이 막고, 이것은 실행이라 버튼이 비활성이며 서버가 다시 본다. /"
 err.user.locale-unsupported,BACK,지원하지 않는 언어를 고르려 했다. 화면은 목록만 보여주지만 판정은 서버다.
 err.user.pwd-mismatch,BACK,현재 비밀번호가 다르다. 새 비밀번호 쪽 문제와 갈라야 한다 — 합치면 무엇을 고칠지 모른다.
-err.user.pwd-reused,BACK,최근 N건 안에 있던 비밀번호다 — 건수는 정책이 정한다(41 §5).
+err.user.pwd-reused,BACK,최근 N건 안에 있던 비밀번호다 — 건수는 정책이 정한다(sys/user-role.md).
 err.user.pwd-unchanged,BACK,지금 쓰는 것과 같다. 재사용 이력에는 아직 없으므로 별도 판정이다.
 err.user.pwd-weak,BACK,새 비밀번호가 정책의 최소 길이·문자 종류를 못 채웠다.
-err.validation,BACK,요청 값 검증 실패. 필드별 오류가 함께 나간다(api-conventions.md §2.3).
-errorLog.anonymous,FRONT,사용자 컬럼이 빈 행의 표시 — 빈칸은 *수집이 안 된 것*과 구분되지 않는다(64 §2.7).
-errorLog.col.clientIp,FRONT,IP 컬럼 — 기본 숨김이다(64 §5.2).
-errorLog.col.creDtm,FRONT,일시 컬럼 — 정렬이 열린 유일한 컬럼이다(64 §2.3).
-errorLog.col.detail,FRONT,상세 컬럼 — 파생이며 셀에 그려지는 것은 `[보기]` 다(64 §5.5).
-errorLog.col.errCd,FRONT,오류 코드 컬럼 — 문자열 상수라 이 값으로 묶어 센다(architecture.md §6-1.2).
+err.validation,BACK,요청 값 검증 실패. 필드별 오류가 함께 나간다(backend/api.md).
+errorLog.anonymous,FRONT,사용자 컬럼이 빈 행의 표시 — 빈칸은 *수집이 안 된 것*과 구분되지 않는다(screen/log/access/requirements.md).
+errorLog.col.clientIp,FRONT,IP 컬럼 — 기본 숨김이다(screen/log/access/requirements.md).
+errorLog.col.creDtm,FRONT,일시 컬럼 — 정렬이 열린 유일한 컬럼이다(screen/log/access/requirements.md).
+errorLog.col.detail,FRONT,상세 컬럼 — 파생이며 셀에 그려지는 것은 `[보기]` 다(screen/log/access/requirements.md).
+errorLog.col.errCd,FRONT,오류 코드 컬럼 — 문자열 상수라 이 값으로 묶어 센다(backend/packages.md).
 errorLog.col.errMsg,FRONT,메시지 컬럼 — 서버가 완성한 문장이며 사용자가 그때 본 그 글이다.
-errorLog.col.httpStat,FRONT,상태 컬럼 — 4xx 와 5xx 를 가른다. 배지의 색이 그 둘이다(64 §5.3).
-errorLog.col.menu,FRONT,메뉴 컬럼 — 요청 URI 앞에 보인다(2026-09-01. 그 전에는 기본 숨김이었다). 클라이언트 주장이라 헤더 툴팁이 그 사실을 말한다(architecture.md §6.3). /
-errorLog.col.requestUri,FRONT,요청 URI 컬럼 — 더블 클릭이 `API_CATALOG` 로 건너뛴다(64 §5.4).
-errorLog.col.seq,FRONT,순번 컬럼 — tie-breaker 이며 기본 숨김이다(64 §2.7).
-errorLog.col.traceId,FRONT,추적 ID 컬럼 — 5xx 토스트의 그 값이다(64 §2.5).
+errorLog.col.httpStat,FRONT,상태 컬럼 — 4xx 와 5xx 를 가른다. 배지의 색이 그 둘이다(screen/log/access/requirements.md).
+errorLog.col.menu,FRONT,메뉴 컬럼 — 요청 URI 앞에 보인다(2026-09-01. 그 전에는 기본 숨김이었다). 클라이언트 주장이라 헤더 툴팁이 그 사실을 말한다(backend/packages.md). /
+errorLog.col.requestUri,FRONT,요청 URI 컬럼 — 더블 클릭이 `API_CATALOG` 로 건너뛴다(screen/log/access/requirements.md).
+errorLog.col.seq,FRONT,순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/log/access/requirements.md).
+errorLog.col.traceId,FRONT,추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/log/access/requirements.md).
 errorLog.col.userId,FRONT,사용자 아이디 컬럼 — 미인증 요청은 #ERROR_LOG_ANONYMOUS 다.
 errorLog.col.userNm,FRONT,사용자명 컬럼 — `SYS_USER` 를 조인해 얻는다(2026-09-01). 미인증 요청과 지워진 계정에서 빈다 — 왼쪽 칸이 이미 `(익명)` 이라고 말하므로 그 자리를 채우지 않는다(사용 이력과 같은 규칙이다). /
 errorLog.detail.length,FRONT,모달 하단의 글자 수 — `{count}`.
-errorLog.detail.link,FRONT,상세 셀에 그려지는 글자 — 값이 아니라 여는 것이다(64 §2.4).
+errorLog.detail.link,FRONT,상세 셀에 그려지는 글자 — 값이 아니라 여는 것이다(screen/log/access/requirements.md).
 errorLog.detail.title,FRONT,상세 모달의 제목.
-errorLog.detail.truncated,FRONT,상한에서 잘렸다 — 말하지 않으면 잘린 값을 깨진 값으로 읽는다(64 §2.4).
-errorLog.empty,FRONT,0건일 때 — 보존 기간(180일)을 함께 말한다(64 §5.8).
-errorLog.empty.server,FRONT,"5xx 만 으로 물었는데 0건이다 — 진단으로 읽히게 한다(64 §5.8). *""조회 결과가 없습니다""* 로 끝내면 답이 빈 결과로 읽힌다. 이 기간에 서버 오류가 없었다는 것은 가장 듣고 싶은 답이다. /"
-errorLog.empty.trace,FRONT,"추적 ID 로 물었는데 0건이다 — 유실이 아니다(64 §5.8). §1.4 이후 모든 요청은 사용 이력에 있고 여기는 예외가 난 것만 받는다. 그래서 0건이면 *""그 요청은 오류가 아니었다""* 는 뜻이며 사용 이력에는 반드시 있다 — 문구가 그 사실을 사용자 말로 옮겨 사용 이력으로 보낸다. /"
-errorLog.footer.range,FRONT,푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(64 §2.3).
-errorLog.grid.title,FRONT,마스터 그리드의 제목 — 이 화면에 그리드가 하나다(64 §5.1).
-errorLog.menu.clientClaim,FRONT,메뉴 헤더의 툴팁 — 클라이언트 주장이다(architecture.md §6.3 · security-design.md §4).
-errorLog.noMenu,FRONT,메뉴 컬럼이 빈 행의 표시 — 로그인·하트비트는 셸 진입 전이라 메뉴가 없다(64 §3.2.1).
+errorLog.detail.truncated,FRONT,상한에서 잘렸다 — 말하지 않으면 잘린 값을 깨진 값으로 읽는다(screen/log/access/requirements.md).
+errorLog.empty,FRONT,0건일 때 — 보존 기간(180일)을 함께 말한다(screen/log/access/requirements.md).
+errorLog.empty.server,FRONT,"5xx 만 으로 물었는데 0건이다 — 진단으로 읽히게 한다(screen/log/access/requirements.md). *""조회 결과가 없습니다""* 로 끝내면 답이 빈 결과로 읽힌다. 이 기간에 서버 오류가 없었다는 것은 가장 듣고 싶은 답이다. /"
+errorLog.empty.trace,FRONT,"추적 ID 로 물었는데 0건이다 — 유실이 아니다(screen/log/access/requirements.md). §1.4 이후 모든 요청은 사용 이력에 있고 여기는 예외가 난 것만 받는다. 그래서 0건이면 *""그 요청은 오류가 아니었다""* 는 뜻이며 사용 이력에는 반드시 있다 — 문구가 그 사실을 사용자 말로 옮겨 사용 이력으로 보낸다. /"
+errorLog.footer.range,FRONT,푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/log/access/requirements.md).
+errorLog.grid.title,FRONT,마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/log/access/requirements.md).
+errorLog.menu.clientClaim,FRONT,메뉴 헤더의 툴팁 — 클라이언트 주장이다(backend/packages.md · backend/security.md).
+errorLog.noMenu,FRONT,메뉴 컬럼이 빈 행의 표시 — 로그인·하트비트는 셸 진입 전이라 메뉴가 없다(screen/log/access/requirements.md).
 errorLog.payload.none,FRONT,전문 탭이 비어 있는데 파기는 아니다 — 멀티파트 요청·캐싱이 꺼진 구간이다.
-errorLog.payload.purged,FRONT,"전문 탭이 비어 있는 이유 — 사용 이력 90일이 지났다(64 §5.5). §3.7 의 *""이미 파기된 이력입니다""* 와 같은 어휘다. 보존이 180일 / 90일로 달라 생기는 일이며 고장이 아니다. /"
-errorLog.search.errCd,FRONT,조회조건 — 오류 코드. 완전 일치다. 셀을 복사해 넣는 동선이다(64 §5.6).
+errorLog.payload.purged,FRONT,"전문 탭이 비어 있는 이유 — 사용 이력 90일이 지났다(screen/log/access/requirements.md). §3.7 의 *""이미 파기된 이력입니다""* 와 같은 어휘다. 보존이 180일 / 90일로 달라 생기는 일이며 고장이 아니다. /"
+errorLog.search.errCd,FRONT,조회조건 — 오류 코드. 완전 일치다. 셀을 복사해 넣는 동선이다(screen/log/access/requirements.md).
 errorLog.search.menu,FRONT,
-errorLog.search.menuCd,FRONT,"조회조건 — 메뉴 코드. 문의 전화가 주는 것이 시각과 화면 이름이다(64 §5.4). 이름을 받는 칸이 아래에 따로 있으므로 이 칸은 코드를 아는 사람의 것이다 — 대개 개발자이며, 오류 코드 칸과 같은 동선(셀을 복사해 넣는다)이다. /"
-errorLog.search.menuNm,FRONT,조회조건 — 메뉴명. 이름은 `SYS_MESSAGE` 에 있어 서버가 `EXISTS` 로 푼다(43 §3).
-errorLog.search.period,FRONT,조회조건 — 기간. 필수이며 상한은 시스템 값(92일) 그대로다(64 §5.6).
+errorLog.search.menuCd,FRONT,"조회조건 — 메뉴 코드. 문의 전화가 주는 것이 시각과 화면 이름이다(screen/log/access/requirements.md). 이름을 받는 칸이 아래에 따로 있으므로 이 칸은 코드를 아는 사람의 것이다 — 대개 개발자이며, 오류 코드 칸과 같은 동선(셀을 복사해 넣는다)이다. /"
+errorLog.search.menuNm,FRONT,조회조건 — 메뉴명. 이름은 `SYS_MESSAGE` 에 있어 서버가 `EXISTS` 로 푼다(sys/code.md).
+errorLog.search.period,FRONT,조회조건 — 기간. 필수이며 상한은 시스템 값(92일) 그대로다(screen/log/access/requirements.md).
 errorLog.search.requestUri,FRONT,조회조건 — 요청 URI. 앞 일치다(인덱스가 없다).
-errorLog.search.status,FRONT,조회조건 — 상태. 파생이며 묶음 둘이다(64 §5.6).
-errorLog.search.traceId,FRONT,조회조건 — 추적 ID. 넣으면 기간이 선택이 된다(64 §2.2).
+errorLog.search.status,FRONT,조회조건 — 상태. 파생이며 묶음 둘이다(screen/log/access/requirements.md).
+errorLog.search.traceId,FRONT,조회조건 — 추적 ID. 넣으면 기간이 선택이 된다(screen/log/access/requirements.md).
 errorLog.search.userId,FRONT,조회조건 — 사용자 아이디. 문자열 비교 넷이다 — 기간이 먼저 좁힌다(2026-09-01).
 errorLog.search.userNm,FRONT,조회조건 — 사용자명. 이름은 `SYS_USER` 조인이 답한다(2026-09-01).
-errorLog.stack.none,FRONT,"스택 탭이 비어 있는 이유 — 4xx 라 저장하지 않았다(64 §5.3). *""없습니다""* 로 끝내지 않는다. 인가 거부의 스택은 인터셉터 프레임뿐이고 전 행이 같아서 일부러 저장하지 않은 것이며, 그것을 말하지 않으면 유실로 읽는다. /"
+errorLog.stack.none,FRONT,"스택 탭이 비어 있는 이유 — 4xx 라 저장하지 않았다(screen/log/access/requirements.md). *""없습니다""* 로 끝내지 않는다. 인가 거부의 스택은 인터셉터 프레임뿐이고 전 행이 같아서 일부러 저장하지 않은 것이며, 그것을 말하지 않으면 유실로 읽는다. /"
 errorLog.status.client,FRONT,상태 묶음의 항목 — 403 이 대부분이며 대개 정상 동작이다.
-errorLog.status.server,FRONT,상태 묶음의 항목 — 이 화면의 가장 흔한 조회다(64 §5.6).
-errorLog.tab.payload,FRONT,탭 하나 — 요청 전문. 다른 테이블에서 온다(64 §5.5).
+errorLog.status.server,FRONT,상태 묶음의 항목 — 이 화면의 가장 흔한 조회다(screen/log/access/requirements.md).
+errorLog.tab.payload,FRONT,탭 하나 — 요청 전문. 다른 테이블에서 온다(screen/log/access/requirements.md).
 errorLog.tab.stack,FRONT,탭 하나 — 스택트레이스. 4xx 는 비활성이다.
-excel.upload.ambiguousCode,FRONT,코드명이 두 코드에 걸린다 — `{value}`(68 §11.1). 둘 중 하나를 조용히 고르지 않는다 — 그렇게 저장된 행은 화면에서 정상으로 보인다. /
+excel.upload.ambiguousCode,FRONT,코드명이 두 코드에 걸린다 — `{value}`(playbook/INDEX.md). 둘 중 하나를 조용히 고르지 않는다 — 그렇게 저장된 행은 화면에서 정상으로 보인다. /
 excel.upload.duplicated,FRONT,파일 안에서 키가 겹쳤다 — 어느 칸이라 말할 수 없다(키 조합이다).
-excel.upload.headerMismatch,FRONT,"양식이 다르다 — `{expected}` · `{actual}`. 읽지 않는다(68 §8.7). 어긋난 채로 읽으면 열이 하나 밀려 수량 자리에 단가가 들어가고, 그 파일은 저장까지 통과한다. /"
+excel.upload.headerMismatch,FRONT,"양식이 다르다 — `{expected}` · `{actual}`. 읽지 않는다(playbook/INDEX.md). 어긋난 채로 읽으면 열이 하나 밀려 수량 자리에 단가가 들어가고, 그 파일은 저장까지 통과한다. /"
 excel.upload.loaded,FRONT,읽었다 — `{count}`. 몇 건이 들어왔는지 말하지 않으면 사용자가 스크롤로 센다.
-excel.upload.notInteger,FRONT,정수가 아니다 — `{value}`. `bigint` 컬럼은 자릿수만 본다(68 §9.10).
+excel.upload.notInteger,FRONT,정수가 아니다 — `{value}`. `bigint` 컬럼은 자릿수만 본다(playbook/INDEX.md).
 excel.upload.notNumber,FRONT,숫자가 아니다 — `{value}` 가 파일에 있던 글자다.
 excel.upload.notYn,FRONT,`Y`/`N` 이 아니다 — `{value}`.
 excel.upload.pick,FRONT,파일을 고르는 버튼 — ①의 `beforeRead` 자리다.
-excel.upload.tooMany,FRONT,행이 상한을 넘는다 — `{max}` · `{count}`. 조용히 자르지 않는다(68 §8.7).
-excel.upload.unknownCode,FRONT,목록에 없는 코드다 — `{value}`. 코드값과 코드명 둘 다 찾아본 결과다(68 §11.1).
+excel.upload.tooMany,FRONT,행이 상한을 넘는다 — `{max}` · `{count}`. 조용히 자르지 않는다(playbook/INDEX.md).
+excel.upload.unknownCode,FRONT,목록에 없는 코드다 — `{value}`. 코드값과 코드명 둘 다 찾아본 결과다(playbook/INDEX.md).
 favorite.add,FRONT,이 메뉴를 즐겨찾기에 넣는다.
 favorite.remove,FRONT,즐겨찾기에서 뺀다.
 grid.action.confirm.body,FRONT,그 본문 — `{name}`(버튼 이름) · `{count}`(선택 건수).
-grid.action.confirm.none,FRONT,행과 무관한 실행의 본문 — `{name}`. 건수를 넣지 않는다(grid-api-contract.md §7).
+grid.action.confirm.none,FRONT,행과 무관한 실행의 본문 — `{name}`. 건수를 넣지 않는다(frontend/grid.md).
 grid.action.confirm.title,FRONT,실행 전 확인의 제목.
-grid.action.done,FRONT,실행 성공 — 확인을 누르면 재조회가 돈다(grid-api-contract.md §7 의 꼬리).
-grid.addRow,FRONT,그리드 헤더 ①의 행 추가 버튼 — `addRow` 를 선언한 그리드에만 나온다(grid-api-contract.md §3.6).
+grid.action.done,FRONT,실행 성공 — 확인을 누르면 재조회가 돈다(frontend/grid.md 의 꼬리).
+grid.addRow,FRONT,그리드 헤더 ①의 행 추가 버튼 — `addRow` 를 선언한 그리드에만 나온다(frontend/grid.md).
 grid.ag.and,FRONT,조건 둘을 묶는 접속사 — 그리고.
 grid.ag.applyFilter,FRONT,필터 패널의 적용 버튼.
 grid.ag.clearFilter,FRONT,필터 패널의 지우기 버튼.
@@ -414,152 +414,152 @@ grid.ag.inRangeStart,FRONT,범위 필터의 시작 칸.
 grid.ag.lessOrEqual,FRONT,숫자 필터 — 이하.
 grid.ag.lessThan,FRONT,숫자 필터 — 미만.
 grid.ag.loading,FRONT,조회 중 오버레이.
-grid.ag.noMatchingRows,FRONT,"컬럼 필터가 전부 걸러냈을 때 — 판이 별도 오버레이로 그린다. *""데이터가 없습니다""* 와 다른 문구여야 한다. 조회 결과는 있는데 필터가 가린 것이며, 그 사실을 말하지 않으면 사용자가 접힌 헤더 메뉴 안의 잊힌 필터를 찾지 못한다 (grid-column-contract.md §4.2). /"
+grid.ag.noMatchingRows,FRONT,"컬럼 필터가 전부 걸러냈을 때 — 판이 별도 오버레이로 그린다. *""데이터가 없습니다""* 와 다른 문구여야 한다. 조회 결과는 있는데 필터가 가린 것이며, 그 사실을 말하지 않으면 사용자가 접힌 헤더 메뉴 안의 잊힌 필터를 찾지 못한다 (frontend/grid.md). /"
 grid.ag.notContains,FRONT,텍스트 필터 — 포함하지 않음.
 grid.ag.or,FRONT,조건 둘을 묶는 접속사 — 또는.
 grid.ag.resetFilter,FRONT,필터 패널의 되돌리기 버튼.
-grid.col.delete,FRONT,맨 오른쪽 삭제 컬럼의 헤더 — 물리 삭제하는 그리드에만 있다(grid-standard.md §3.5).
+grid.col.delete,FRONT,맨 오른쪽 삭제 컬럼의 헤더 — 물리 삭제하는 그리드에만 있다(frontend/grid.md).
 grid.col.modDtm,FRONT,수정일시 컬럼.
 grid.col.modId,FRONT,수정자 컬럼.
 grid.col.regDtm,FRONT,등록일시 컬럼.
-grid.col.regId,FRONT,등록자 컬럼 — 감사 4컬럼은 기본이 숨김이다(grid-column-contract.md §2.1).
-grid.col.rowNo,FRONT,맨 왼쪽 행 번호 컬럼의 헤더 — 페이지를 넘어도 번호가 이어진다(grid-standard.md §4).
+grid.col.regId,FRONT,등록자 컬럼 — 감사 4컬럼은 기본이 숨김이다(frontend/grid.md).
+grid.col.rowNo,FRONT,맨 왼쪽 행 번호 컬럼의 헤더 — 페이지를 넘어도 번호가 이어진다(frontend/grid.md).
 grid.col.select,FRONT,다중 선택 그리드의 체크박스 컬럼 헤더 — 글자는 안 보이고 전체 선택 체크박스가 그 자리다.
-grid.col.state,FRONT,상태 컬럼의 헤더 — 사용자가 끄거나 옮길 수 없다(grid-standard.md §4).
+grid.col.state,FRONT,상태 컬럼의 헤더 — 사용자가 끄거나 옮길 수 없다(frontend/grid.md).
 grid.confirm.ok,FRONT,저장 확인 대화의 확인 버튼.
 grid.discard.body,FRONT,그 본문 — 되돌릴 수 없다는 것을 말한다.
 grid.discard.title,FRONT,미저장 변경이 있는데 재조회를 유발했을 때의 제목(조회·페이지·사이즈·정렬).
 grid.duration.hms,FRONT,`1시간 2분 5초` — `{h}` `{m}` `{s}`. 한 시간을 넘긴 소요.
 grid.duration.ms,FRONT,`3분 20초` — `{m}` `{s}`.
 grid.duration.s,FRONT,`12초` — `{s}`.
-grid.duration.sub,FRONT,`1초 미만` — `0초` 라고 쓰지 않는다. `SKIP_*` 이력이 실제로 0ms 이므로(46 §6.1) 둘이 같은 글자가 되면 안 걸린 것과 빨리 끝난 것이 구분되지 않는다. /
+grid.duration.sub,FRONT,`1초 미만` — `0초` 라고 쓰지 않는다. `SKIP_*` 이력이 실제로 0ms 이므로(sys/batch.md) 둘이 같은 글자가 되면 안 걸린 것과 빨리 끝난 것이 구분되지 않는다. /
 grid.empty,FRONT,행이 없을 때 그리드 본문에 나오는 표시.
 grid.excel,FRONT,②의 아이콘 버튼 이름 — 항목이 둘이라 어느 라벨도 대표하지 못해 글자가 없다.
-grid.excel.all,FRONT,항목 ② — 조회조건으로 전량 재조회. 상한이 있다(ADR-0019).
+grid.excel.all,FRONT,항목 ② — 조회조건으로 전량 재조회. 상한이 있다(frontend/grid-advanced.md).
 grid.excel.empty,FRONT,내려받을 행이 없을 때 — 빈 파일을 만들지 않는다.
-grid.excel.page,FRONT,항목 ① — 지금 화면에 보이는 행. 컬럼 필터가 걸려 있으면 걸러진 결과다(grid-column-contract.md §4.1).
+grid.excel.page,FRONT,항목 ① — 지금 화면에 보이는 행. 컬럼 필터가 걸려 있으면 걸러진 결과다(frontend/grid.md).
 grid.excel.tooMany,FRONT,전량이 상한을 넘었을 때 — 조용히 자르지 않고 거절한다.
 grid.filter.all,FRONT,`set` 필터의 전체 선택 — 초기 상태이자 *필터 없음* 이다.
 grid.filter.blank,FRONT,값이 비어 있는 행을 고르는 항목 — 빈 칸도 골라야 거를 수 있다.
 grid.filter.clear,FRONT,날짜 필터를 푸는 버튼. 칸마다 있는 × 로도 지워지지만 두 번 눌러야 한다. 필터를 푸는 것은 거는 것보다 급한 동작이다 — 걸어 둔 것을 잊고 조회하면 0건이 데이터가 없는 것으로 읽힌다. /
 grid.filter.empty,FRONT,로드된 행에 값이 하나도 없을 때 — 목록이 비면 고장으로 보인다.
-grid.filter.from,FRONT,"날짜 필터의 시작 칸 — grid-column-contract.md §4.5 · 68 §9.8. 플레이스홀더이지 라벨이 아니다. 칸이 둘뿐이라 시작·끝 이라는 글자가 밖에 또 서면 폭의 절반을 먹는데, 헤더 팝업은 컬럼 폭에 매여 있어 그럴 자리가 없다. /"
+grid.filter.from,FRONT,"날짜 필터의 시작 칸 — frontend/grid.md · playbook/INDEX.md. 플레이스홀더이지 라벨이 아니다. 칸이 둘뿐이라 시작·끝 이라는 글자가 밖에 또 서면 폭의 절반을 먹는데, 헤더 팝업은 컬럼 폭에 매여 있어 그럴 자리가 없다. /"
 grid.filter.to,FRONT,〃 끝 칸. 비워 두면 위쪽이 열린다 — 단측이다.
 grid.footer.count,FRONT,페이징이 없는 그리드(`mode: 'all'`)의 푸터 — `{count}`.
-grid.footer.filtered,FRONT,컬럼 필터가 걸렸을 때 덧붙는 문구 — `{loaded}` · `{shown}`(grid-column-contract.md §4.2).
-grid.footer.loaded,FRONT,커서형 푸터의 왼쪽 — `{count}`(64 §2.3). `GRID_FOOTER_TOTAL` 과 다른 말이다. 저것은 전부가 몇 건이고 이것은 이 장이 몇 건이다 — 총 건수를 세지 않기로 한 화면에서 총 이라고 쓰면 거짓말이 된다. /
+grid.footer.filtered,FRONT,컬럼 필터가 걸렸을 때 덧붙는 문구 — `{loaded}` · `{shown}`(frontend/grid.md).
+grid.footer.loaded,FRONT,커서형 푸터의 왼쪽 — `{count}`(screen/log/access/requirements.md). `GRID_FOOTER_TOTAL` 과 다른 말이다. 저것은 전부가 몇 건이고 이것은 이 장이 몇 건이다 — 총 건수를 세지 않기로 한 화면에서 총 이라고 쓰면 거짓말이 된다. /
 grid.footer.pageSize,FRONT,
 grid.footer.total,FRONT,푸터 왼쪽 — `{total}` · `{pages}`.
 grid.list.add,FRONT,항목을 고르는 팝업을 연다 — 여기서 타이핑을 받지 않는다(목록에 없는 값이 생긴다).
 grid.list.down,FRONT,〃 아래로.
 grid.list.empty,FRONT,항목이 하나도 없을 때 — 비었다고 말한다. 빈 창을 그냥 두면 아직 안 불러온 것과 구별되지 않는다. /
 grid.list.remove,FRONT,항목 하나를 뺀다. 배열 전체를 비우는 버튼이 아니다.
-grid.list.up,FRONT,항목을 한 칸 위로 — 순서가 값의 일부다(48 §4.1 의 `SORT_NO`). 아이콘만 있는 버튼이라 툴팁이 유일한 설명이다. /
+grid.list.up,FRONT,항목을 한 칸 위로 — 순서가 값의 일부다(playbook/INDEX.md 의 `SORT_NO`). 아이콘만 있는 버튼이라 툴팁이 유일한 설명이다. /
 grid.page.jumpNext,FRONT,다섯 쪽 뒤로 — 판의 점 셋이 그 뜻이다.
 grid.page.jumpPrev,FRONT,다섯 쪽 앞으로 — 판의 점 셋이 그 뜻이다.
 grid.page.next,FRONT,한 쪽 뒤로.
 grid.page.prev,FRONT,페이지 이동 — 한 쪽 앞으로.
-grid.pk.locked,FRONT,"저장된 행의 PK 칸을 고치려 했을 때 — grid-column-contract.md §5.1 의 `pk`. *""고치려면 지우고 다시 만든다""* 가 답인데 그것은 화면 어디에도 적혀 있지 않다 — 잠긴 칸은 왜 잠겼는지를 말하지 않으면 버그로 읽힌다. /"
+grid.pk.locked,FRONT,"저장된 행의 PK 칸을 고치려 했을 때 — frontend/grid.md 의 `pk`. *""고치려면 지우고 다시 만든다""* 가 답인데 그것은 화면 어디에도 적혀 있지 않다 — 잠긴 칸은 왜 잠겼는지를 말하지 않으면 버그로 읽힌다. /"
 grid.read,FRONT,그리드 헤더 ①의 조회 버튼.
-grid.read.empty,FRONT,조회 결과가 0건일 때의 알림 — 마스터만 기본으로 켠다(grid-api-contract.md §5).
-grid.revert,FRONT,상태 컬럼의 되돌리기 아이콘 — 수정한 행을 원본으로 돌린다(grid-standard.md §3.3).
+grid.read.empty,FRONT,조회 결과가 0건일 때의 알림 — 마스터만 기본으로 켠다(frontend/grid.md).
+grid.revert,FRONT,상태 컬럼의 되돌리기 아이콘 — 수정한 행을 원본으로 돌린다(frontend/grid.md).
 grid.save,FRONT,그리드 헤더 ①의 저장 버튼.
 grid.save.confirm.body,FRONT,그 본문 — `{added}` · `{updated}` · `{removed}`. 건수가 유일한 요약이다.
-grid.save.confirm.hidden,FRONT,컬럼 필터로 보이지 않는 변경 행이 있을 때 덧붙는다 — `{hidden}`(grid-standard.md §3.1).
+grid.save.confirm.hidden,FRONT,컬럼 필터로 보이지 않는 변경 행이 있을 때 덧붙는다 — `{hidden}`(frontend/grid.md).
 grid.save.confirm.title,FRONT,저장 전 확인의 제목.
-grid.save.done,FRONT,저장 성공 — 확인을 누르면 재조회가 돈다(grid-api-contract.md §6).
+grid.save.done,FRONT,저장 성공 — 확인을 누르면 재조회가 돈다(frontend/grid.md).
 grid.save.nothing,FRONT,저장할 변경이 없는데 저장을 눌렀을 때.
-grid.save.warn.title,FRONT,"건수 확인 앞에 서는 경고의 제목 — 63 §4.4 · §4.5. 본문은 화면이 만든다. 건수는 얼마나를 말할 뿐이라 무엇이 일어나는지 를 말하지 못하며, 그것을 아는 것은 화면이다. /"
+grid.save.warn.title,FRONT,"건수 확인 앞에 서는 경고의 제목 — screen/code/requirements.md. 본문은 화면이 만든다. 건수는 얼마나를 말할 뿐이라 무엇이 일어나는지 를 말하지 못하며, 그것을 아는 것은 화면이다. /"
 grid.selectAll,FRONT,다중 선택 컬럼 헤더의 전체 선택 체크박스 이름.
 grid.selectRow,FRONT,다중 선택 컬럼에서 행 하나를 고르는 체크박스 이름.
 grid.settings,FRONT,③의 아이콘 버튼 이름 — 글자가 없어 툴팁이 유일한 설명이다.
-grid.settings.apply,FRONT,적용 버튼 — 고친 것을 화면에만 두고 닫는다. DB 에는 남기지 않는다(grid-standard.md §5).
+grid.settings.apply,FRONT,적용 버튼 — 고친 것을 화면에만 두고 닫는다. DB 에는 남기지 않는다(frontend/grid.md).
 grid.settings.column,NONE,목록의 컬럼명 열 머리.
 grid.settings.down,NONE,설정 창의 아래로 버튼 — 드래그로 바꾸면서 사라졌다.
 grid.settings.drag,FRONT,순서를 바꾸는 손잡이 — 아이콘만 보이며 읽는 것은 스크린리더다.
 grid.settings.noneVisible,FRONT,컬럼을 전부 끄고 저장하려 했을 때 — 빈 그리드가 되면 되돌릴 컨트롤이 그 안에 있다.
 grid.settings.pin,NONE,틀고정 열 머리 — 53 §4 의 좌·우 두 방향이다.
-grid.settings.pin.left,FRONT,위 경계선의 이름 — 이 선보다 위가 왼쪽 고정이다(grid-standard.md §4).
+grid.settings.pin.left,FRONT,위 경계선의 이름 — 이 선보다 위가 왼쪽 고정이다(frontend/grid.md).
 grid.settings.pin.none,NONE,틀고정 없음 — 경계선으로 바꾸면서 사라졌다.
 grid.settings.pin.right,FRONT,아래 경계선의 이름 — 이 선보다 아래가 오른쪽 고정이다.
 grid.settings.reset,FRONT,초기화 버튼 — 저장된 설정을 지우고 화면 선언으로 돌아간다.
 grid.settings.reset.confirm,FRONT,그 확인 문구 — 되돌릴 수 없다.
-grid.settings.reset.none,FRONT,초기화가 꺼진 이유 — 저장된 설정이 없다. 꺼진 버튼은 스스로 이유를 말하지 못한다(grid-standard.md §5).
+grid.settings.reset.none,FRONT,초기화가 꺼진 이유 — 저장된 설정이 없다. 꺼진 버튼은 스스로 이유를 말하지 못한다(frontend/grid.md).
 grid.settings.saved,FRONT,저장 성공 토스트.
-grid.settings.title,FRONT,창의 제목 — `{grid}` 는 그 그리드의 제목이다. 화면에 창이 둘일 수 있다(grid-standard.md §5).
+grid.settings.title,FRONT,창의 제목 — `{grid}` 는 그 그리드의 제목이다. 화면에 창이 둘일 수 있다(frontend/grid.md).
 grid.settings.up,NONE,순서를 위로 옮기는 버튼 — 아이콘만 보인다.
-grid.split.collapseFirst,FRONT,스플리터의 위 화살표 — 막대를 맨 위로 보내 위 그리드를 접는다(grid-standard.md §6.3).
-grid.split.collapseSecond,FRONT,스플리터의 아래 화살표 — 막대를 맨 아래로 보내 아래 그리드를 접는다(grid-standard.md §6.3).
-grid.split.expand,FRONT,접힌 상태에 남는 화살표 하나 — 누르면 되돌린다(grid-standard.md §6.3).
-grid.validation.count,FRONT,검증 실패 건수 — `{count}`(grid-edit-validation.md §3.3).
-grid.validation.line,FRONT,검증 실패 한 줄 — `{column}` · `{message}`(grid-edit-validation.md §3.3 ④의 *목록*). 건수만으로는 **무엇이 틀렸는지** 알 수 없다. 붉은 셀이 *어디* 를 말하고 이 줄이 *무엇* 을 말한다 — 컬럼 이름을 앞에 붙이는 것은 같은 문구가 여러 컬럼에서 날 수 있기 때문이다(`필수 항목입니다`). /
+grid.split.collapseFirst,FRONT,스플리터의 위 화살표 — 막대를 맨 위로 보내 위 그리드를 접는다(frontend/grid.md).
+grid.split.collapseSecond,FRONT,스플리터의 아래 화살표 — 막대를 맨 아래로 보내 아래 그리드를 접는다(frontend/grid.md).
+grid.split.expand,FRONT,접힌 상태에 남는 화살표 하나 — 누르면 되돌린다(frontend/grid.md).
+grid.validation.count,FRONT,검증 실패 건수 — `{count}`(frontend/grid.md).
+grid.validation.line,FRONT,검증 실패 한 줄 — `{column}` · `{message}`(frontend/grid.md ④의 *목록*). 건수만으로는 **무엇이 틀렸는지** 알 수 없다. 붉은 셀이 *어디* 를 말하고 이 줄이 *무엇* 을 말한다 — 컬럼 이름을 앞에 붙이는 것은 같은 문구가 여러 컬럼에서 날 수 있기 때문이다(`필수 항목입니다`). /
 grid.validation.more,FRONT,목록이 열 줄을 넘었다 — `{count}`. 남은 수만 말한다(스크롤되는 목록을 만들지 않는다).
-grid.validation.required,FRONT,필수 컬럼이 비었을 때의 기본 문구(grid-column-contract.md §5.1).
+grid.validation.required,FRONT,필수 컬럼이 비었을 때의 기본 문구(frontend/grid.md).
 login.forgotPassword,FRONT,로그인 폼 아래의 재설정 진입 링크.
 login.id,FRONT,로그인 ID 입력 칸의 라벨.
 login.id.required,FRONT,로그인 ID 를 비운 채 제출했을 때.
-login.lockedReset,FRONT,잠김·휴면 안내 배너 **안에** 붙는 재설정 링크(60 §3.8 · login 요건서 §6-4). 폼 아래의 평소 링크와 문구가 다른 것이 의도다 — 저것은 *어쩌다 잊은 사람* 에게 하는 말이고 이것은 **지금 막힌 사람**에게 하는 말이다. /
+login.lockedReset,FRONT,잠김·휴면 안내 배너 **안에** 붙는 재설정 링크(screen/_standalone/README.md · login 요건서 §6-4). 폼 아래의 평소 링크와 문구가 다른 것이 의도다 — 저것은 *어쩌다 잊은 사람* 에게 하는 말이고 이것은 **지금 막힌 사람**에게 하는 말이다. /
 login.password,FRONT,비밀번호 입력 칸의 라벨.
 login.password.required,FRONT,비밀번호를 비운 채 제출했을 때.
 login.submit,FRONT,로그인 제출 버튼.
 login.title,FRONT,로그인 화면의 제목.
 login.traceId,FRONT,5xx 응답에 붙는 문의 번호 안내 — `{traceId}`.
 loginLog.col.clientIp,FRONT,IP 컬럼.
-loginLog.col.creDtm,FRONT,일시 컬럼 — 정렬이 열린 유일한 컬럼이다(64 §2.3).
-loginLog.col.result,FRONT,결과 컬럼 — 공통코드 15종이며 배지의 색은 셋이다(64 §4.3).
-loginLog.col.seq,FRONT,순번 컬럼 — tie-breaker 이며 기본 숨김이다(64 §2.7).
-loginLog.col.traceId,FRONT,추적 ID 컬럼 — 5xx 토스트의 그 값이다(64 §2.5).
-loginLog.col.userAgent,FRONT,User-Agent 컬럼 — 기본 숨김이다. 켜면 다른 컬럼이 전부 밀린다(64 §4.5).
-loginLog.col.userId,FRONT,"사용자 아이디 컬럼 — 시도한 ID 다(64 §4.4). 헤더가 *시도 ID* 였다(2026-09-01 에 바뀌었다). 이력 셋의 헤더를 사용자 아이디 · 사용자명으로 통일하면서 갈렸는데, *사용자* 라고 쓰면 `SYS_USER` 에 있는 것처럼 읽힌다던 걱정은 이름 칸의 `없는 계정` 배지가 대신 말한다 — 헤더를 화면마다 다르게 부르는 대가가 더 크다. 툴팁(#LOGIN_LOG_USER_ID_ATTEMPTED)은 남는다. /"
+loginLog.col.creDtm,FRONT,일시 컬럼 — 정렬이 열린 유일한 컬럼이다(screen/log/access/requirements.md).
+loginLog.col.result,FRONT,결과 컬럼 — 공통코드 15종이며 배지의 색은 셋이다(screen/log/access/requirements.md).
+loginLog.col.seq,FRONT,순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/log/access/requirements.md).
+loginLog.col.traceId,FRONT,추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/log/access/requirements.md).
+loginLog.col.userAgent,FRONT,User-Agent 컬럼 — 기본 숨김이다. 켜면 다른 컬럼이 전부 밀린다(screen/log/access/requirements.md).
+loginLog.col.userId,FRONT,"사용자 아이디 컬럼 — 시도한 ID 다(screen/log/access/requirements.md). 헤더가 *시도 ID* 였다(2026-09-01 에 바뀌었다). 이력 셋의 헤더를 사용자 아이디 · 사용자명으로 통일하면서 갈렸는데, *사용자* 라고 쓰면 `SYS_USER` 에 있는 것처럼 읽힌다던 걱정은 이름 칸의 `없는 계정` 배지가 대신 말한다 — 헤더를 화면마다 다르게 부르는 대가가 더 크다. 툴팁(#LOGIN_LOG_USER_ID_ATTEMPTED)은 남는다. /"
 loginLog.col.userNm,FRONT,"사용자명 컬럼 — `SYS_USER` 를 조인해 얻는다(2026-09-01). 없는 계정의 시도에서는 비고, 그 자리에 `없는 계정` 배지가 붙는다. 배지의 글자와 색은 결과 컬럼의 `FAIL_NO_USER` 와 같은 것이며 같은 공통코드 행 (`code.LOGIN_RSLT_CD.FAIL_NO_USER`)에서 온다 — 한 행의 두 칸이 같은 사실을 두 글자로 말하면 사람이 둘을 다른 사실로 읽는다. /"
-loginLog.empty,FRONT,0건일 때 — 보존 기간(1년)을 함께 말한다(64 §4.8).
-loginLog.empty.failed,FRONT,"실패만 으로 물었는데 0건이다 — 문구가 다르다(64 §4.8). *""조회 결과가 없습니다""* 로 끝내면 진단이 빈 결과로 읽힌다. 이 기간에 로그인 실패가 없었다는 것은 답이지 실패가 아니다. /"
-loginLog.footer.range,FRONT,푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(64 §2.3).
-loginLog.grid.title,FRONT,마스터 그리드의 제목 — 이 화면에 그리드가 하나다(64 §4.1).
-loginLog.noUserId,FRONT,시도 ID 가 빈 행의 표시 — 빈칸은 *수집이 안 된 것*과 구분되지 않는다(64 §2.7).
+loginLog.empty,FRONT,0건일 때 — 보존 기간(1년)을 함께 말한다(screen/log/access/requirements.md).
+loginLog.empty.failed,FRONT,"실패만 으로 물었는데 0건이다 — 문구가 다르다(screen/log/access/requirements.md). *""조회 결과가 없습니다""* 로 끝내면 진단이 빈 결과로 읽힌다. 이 기간에 로그인 실패가 없었다는 것은 답이지 실패가 아니다. /"
+loginLog.footer.range,FRONT,푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/log/access/requirements.md).
+loginLog.grid.title,FRONT,마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/log/access/requirements.md).
+loginLog.noUserId,FRONT,시도 ID 가 빈 행의 표시 — 빈칸은 *수집이 안 된 것*과 구분되지 않는다(screen/log/access/requirements.md).
 loginLog.rsltGroup.closed,FRONT,결과 묶음의 항목 — 로그아웃·만료·강제·밀려남 넷.
-loginLog.rsltGroup.failed,FRONT,결과 묶음의 항목 — `FAIL_*` 열. 이 화면의 기본 동선이다(64 §4.6).
-loginLog.search.clientIp,FRONT,조회조건 — IP. 완전 일치다. 실패 행에서 복사해 다시 조회하는 동선이다(64 §4.6).
-loginLog.search.period,FRONT,조회조건 — 기간. 필수이며 상한은 시스템 값(92일) 그대로다(64 §4.6).
-loginLog.search.result,FRONT,조회조건 — 결과. 다중 선택이며 후보는 공통코드가 낸다(43 §8).
-loginLog.search.rsltGroup,FRONT,조회조건 — 결과 묶음. 파생이며 배지의 색 셋과 같은 축이다(64 §4.3 · §4.6).
-loginLog.search.traceId,FRONT,조회조건 — 추적 ID. 넣으면 기간이 선택이 된다(64 §2.2).
-loginLog.search.userId,FRONT,"조회조건 — 사용자 아이디. 문자열 비교 넷(같음 · 시작 · 포함 · 끝)이다(2026-09-01). 인덱스가 없는 것은 그대로인데 기간이 먼저 좁힌다(64 §2.2). IP 를 완전 일치로 둔 것과 갈리는 자리다 — 대역 검색은 결과만 넓어지는 조건이지만, 부분 아이디는 다른 답을 낸다(`admin` 으로 끝나는 시도가 그렇다). /"
+loginLog.rsltGroup.failed,FRONT,결과 묶음의 항목 — `FAIL_*` 열. 이 화면의 기본 동선이다(screen/log/access/requirements.md).
+loginLog.search.clientIp,FRONT,조회조건 — IP. 완전 일치다. 실패 행에서 복사해 다시 조회하는 동선이다(screen/log/access/requirements.md).
+loginLog.search.period,FRONT,조회조건 — 기간. 필수이며 상한은 시스템 값(92일) 그대로다(screen/log/access/requirements.md).
+loginLog.search.result,FRONT,조회조건 — 결과. 다중 선택이며 후보는 공통코드가 낸다(sys/code.md).
+loginLog.search.rsltGroup,FRONT,조회조건 — 결과 묶음. 파생이며 배지의 색 셋과 같은 축이다(screen/log/access/requirements.md).
+loginLog.search.traceId,FRONT,조회조건 — 추적 ID. 넣으면 기간이 선택이 된다(screen/log/access/requirements.md).
+loginLog.search.userId,FRONT,"조회조건 — 사용자 아이디. 문자열 비교 넷(같음 · 시작 · 포함 · 끝)이다(2026-09-01). 인덱스가 없는 것은 그대로인데 기간이 먼저 좁힌다(screen/log/access/requirements.md). IP 를 완전 일치로 둔 것과 갈리는 자리다 — 대역 검색은 결과만 넓어지는 조건이지만, 부분 아이디는 다른 답을 낸다(`admin` 으로 끝나는 시도가 그렇다). /"
 loginLog.search.userNm,FRONT,조회조건 — 사용자명. 없는 계정의 시도는 이름이 없어 이 조건에 걸리지 않는다.
-loginLog.userId.attempted,FRONT,시도 ID 헤더의 툴팁 — 등록된 계정이 아닐 수 있다(45 §2.2 · 64 §4.4). 말하지 않으면 없는 ID 의 행이 결함처럼 보인다. 그 행들이야말로 이 화면의 두 번째 용도(침입 시도 탐지)가 찾는 것이다. /
+loginLog.userId.attempted,FRONT,시도 ID 헤더의 툴팁 — 등록된 계정이 아닐 수 있다(sys/logs.md · screen/log/access/requirements.md). 말하지 않으면 없는 ID 의 행이 결함처럼 보인다. 그 행들이야말로 이 화면의 두 번째 용도(침입 시도 탐지)가 찾는 것이다. /
 mail.pwdReset.body,BACK,재설정 인증번호 메일의 본문 — {code} · {minutes}.
 mail.pwdReset.subject,BACK,재설정 인증번호 메일의 제목.
 menuTree.account.blocked,FRONT,계정이 막힌 상태 — 관리자가 정한 뜻이다(`USE_YN` 또는 기간).
 menuTree.account.usable,FRONT,계정이 쓸 수 있는 상태.
-menuTree.add.menuCd,FRONT,신규 모달의 유일한 칸 — 명명 규약은 52 §3.1 이다.
+menuTree.add.menuCd,FRONT,신규 모달의 유일한 칸 — 명명 규약은 sys/menu.md 이다.
 menuTree.add.menuCdHint,FRONT,그 칸의 안내 — 대문자·숫자·밑줄.
 menuTree.add.title,FRONT,신규 모달의 제목 — `{parent}` 가 어디 아래인지 말한다.
 menuTree.add.titleRoot,FRONT,신규 모달의 제목 — 최상위일 때.
 menuTree.addChild,FRONT,① — 하위 메뉴 추가. 선택이 없으면 비활성이다.
-menuTree.addChild.depth,FRONT,〃 — 깊이 5단에 닿았다(52 §3.4).
+menuTree.addChild.depth,FRONT,〃 — 깊이 5단에 닿았다(sys/menu.md).
 menuTree.addChild.leaf,FRONT,〃 — URL 이 있는 노드다(§4.3). 드롭의 가운데 구역이 죽는 조건과 같다.
 menuTree.addChild.noSelection,FRONT,*하위 메뉴 추가* 가 잠긴 이유 — 선택이 없다.
 menuTree.addRoot,FRONT,① — 최상위 메뉴 추가. 언제나 활성이며 트리의 맨 아래에 붙는다(§4.6).
 menuTree.col.accessibleUserCount,FRONT,접근 가능 인원 — AUTHZ-13. 리프만 값이 있다.
-menuTree.col.accountUsable,FRONT,탭 2 — 계정 상태. `USE_YN` 과 기간만 본다(41 §4.2).
+menuTree.col.accountUsable,FRONT,탭 2 — 계정 상태. `USE_YN` 과 기간만 본다(sys/user-role.md).
 menuTree.col.actions,FRONT,탭 2 — 액션 4열을 한 칸에 묶은 헤더.
-menuTree.col.apiCount,FRONT,매핑 API 수 — `0` 이면 미매핑이다(42 §5).
+menuTree.col.apiCount,FRONT,매핑 API 수 — `0` 이면 미매핑이다(sys/menu.md).
 menuTree.col.grantState,FRONT,탭 2 — 부여 상태.
-menuTree.col.iconCd,FRONT,아이콘 컬럼 — 아이콘 세트는 frontend-stack.md §7 이다.
+menuTree.col.iconCd,FRONT,아이콘 컬럼 — 아이콘 세트는 frontend/packages.md 이다.
 menuTree.col.menuCd,FRONT,메뉴 코드 컬럼 — PK 이며 신규 행에서도 셀이 아니다(§4.6 의 모달이 받는다).
-menuTree.col.menuNm,FRONT,계층 컬럼 — 서버가 만든다. 고치는 곳은 `MESSAGE_MGMT` 하나다(42 §4).
+menuTree.col.menuNm,FRONT,계층 컬럼 — 서버가 만든다. 고치는 곳은 `MESSAGE_MGMT` 하나다(sys/menu.md).
 menuTree.col.menuUrl,FRONT,URL 컬럼 — 라우트 목록에서 고른다(§4.3). 자식이 있으면 잠긴다.
 menuTree.col.period,FRONT,탭 2 — 부여 기간.
 menuTree.col.roleCount,FRONT,매핑 역할 수 — 삭제 게이트의 근거다.
 menuTree.col.roleId,FRONT,탭 3 — 역할 ID 컬럼. 메뉴 쪽 라벨을 돌려쓰지 않는다. 한때 MENU_COL_MENU_CD 를 그대로 썼는데 헤더가 메뉴 코드 인 칸에 역할 ID 가 들어가 있었다(2026-08-30 실물) — 같은 화면 안에서 컬럼 폭과 자리가 맞으면 틀린 라벨이 눈에 띄지 않는다. /
 menuTree.col.roleNm,FRONT,탭 3 — 역할명 컬럼.
-menuTree.col.useYn,FRONT,사용 여부 컬럼 — 최종 게이트다(security-design.md §4). 구조 노드에 놓으면 자손 전체에 쓴다.
+menuTree.col.useYn,FRONT,사용 여부 컬럼 — 최종 게이트다(backend/security.md). 구조 노드에 놓으면 자손 전체에 쓴다.
 menuTree.col.via,FRONT,탭 2 — 경유 컬럼의 헤더.
 menuTree.collapseAll,FRONT,Ⓑ — 모두 접기. 드래그의 전제다(§4.5.1).
 menuTree.delete,FRONT,① — 삭제. 게이트 넷이 전부 `0` 일 때만 활성이다(§4.8).
 menuTree.delete.blocked,FRONT,삭제가 잠긴 이유 — `{blockers}` 가 어느 쪽이 막는지 말한다.
 menuTree.delete.confirm,FRONT,삭제 확인 — `{name}`. 즐겨찾기가 함께 지워지는 것을 말한다(§4.8).
-menuTree.detail.empty,FRONT,마스터에서 메뉴를 고르기 전 하단의 빈 상태(grid-standard.md §6.1).
+menuTree.detail.empty,FRONT,마스터에서 메뉴를 고르기 전 하단의 빈 상태(frontend/grid.md).
 menuTree.drop.after,FRONT,드롭 문장 — 이 행 다음에 형제로. `{name}`.
 menuTree.drop.before,FRONT,드롭 문장 — 이 행 앞에 형제로. `{name}`.
 menuTree.drop.depth,FRONT,놓을 수 없다 — 깊이 상한을 넘는다. `{max}`.
@@ -577,9 +577,9 @@ menuTree.move.from,FRONT,드롭 확인 — 지금 자리. `{path}` · `{index}`.
 menuTree.move.title,FRONT,드롭 확인의 제목 — `{name}` 을 옮긴다(§4.5.3).
 menuTree.move.to,FRONT,드롭 확인 — 이동할 자리. `{path}` · `{index}`.
 menuTree.move.warn,FRONT,드롭 확인의 마지막 줄 — 되돌리려면 다시 끌어야 한다.
-menuTree.orphan,FRONT,선언에서 사라진 메뉴의 배지 — 62 §4.8 · ADR-0028.
+menuTree.orphan,FRONT,선언에서 사라진 메뉴의 배지 — screen/menu/requirements.md · seed.md.
 menuTree.orphan.hint,FRONT,그 배지의 툴팁 — 무엇을 해야 하는지까지 말한다.
-menuTree.search.any,FRONT,"트리 검색 — 칸 하나가 셋을 함께 본다(2026-08-31 요청 · 62 §4.10). 칸이 셋이었다. 그런데 사람은 손에 있는 것으로 찾는다 — 이름이거나 코드이거나 URL 이고, 어느 칸에 넣을지 를 먼저 정해야 하는 것이 곧 마찰이다. 셋을 `OR` 로 잇는 칸 하나면 그 결정이 사라진다(`userAuth.search.user` 가 ID 와 이름을 함께 보는 것과 같은 판단이다 — 61 §4.3). 자리표에 무엇을 보는지 를 적는다 — 하나로 합친 칸은 그 말이 없으면 이름만 찾는 칸 으로 읽힌다. /"
+menuTree.search.any,FRONT,"트리 검색 — 칸 하나가 셋을 함께 본다(2026-08-31 요청 · screen/menu/requirements.md). 칸이 셋이었다. 그런데 사람은 손에 있는 것으로 찾는다 — 이름이거나 코드이거나 URL 이고, 어느 칸에 넣을지 를 먼저 정해야 하는 것이 곧 마찰이다. 셋을 `OR` 로 잇는 칸 하나면 그 결정이 사라진다(`userAuth.search.user` 가 ID 와 이름을 함께 보는 것과 같은 판단이다 — screen/user/requirements.md). 자리표에 무엇을 보는지 를 적는다 — 하나로 합친 칸은 그 말이 없으면 이름만 찾는 칸 으로 읽힌다. /"
 menuTree.search.menuCd,FRONT,조회조건 — 메뉴 코드.
 menuTree.search.menuNm,FRONT,
 menuTree.search.menuUrl,FRONT,조회조건 — URL.
@@ -598,24 +598,24 @@ menuTree.useOff.users,FRONT,〃 접근할 수 있던 인원 — `{count}`.
 menuTree.useOn.descendants,FRONT,〃 개별로 꺼 두었던 것까지 켜진다 — `{count}` · `{off}`.
 menuTree.useOn.title,FRONT,사용 여부를 켤 때 — `{name}`. 켜는 방향에도 경고가 있다(§4.7).
 menuTree.via.personal,FRONT,탭 2 의 경유 컬럼 — 역할명 또는 이 문구(개인 예외).
-message.col.bundled,FRONT,번들 컬럼 — 사용처의 파생이다(43 §7.1).
+message.col.bundled,FRONT,번들 컬럼 — 사용처의 파생이다(sys/code.md).
 message.col.langCd,FRONT,하단의 언어 컬럼.
 message.col.msgDesc,FRONT,설명 컬럼 — 상수의 Javadoc 에서 온 값이라 읽기 전용이다.
 message.col.msgKey,FRONT,마스터의 키 컬럼 — 신규 행에서만 편집된다.
-message.col.msgVal,FRONT,하단의 값 컬럼 — 2000자라 셀에서 보지 않는다(grid-column-contract.md §5.5).
+message.col.msgVal,FRONT,하단의 값 컬럼 — 2000자라 셀에서 보지 않는다(frontend/grid.md).
 message.col.translated,FRONT,번역 컬럼 — `list` 에서 계산한다. `1/2` 처럼 낸다.
-message.col.useScope,FRONT,사용처 컬럼 — 읽기 전용이다. 시드가 소유한다(ADR-0023).
-message.detail.empty,FRONT,마스터에서 행을 고르기 전 하단의 빈 상태(grid-standard.md §6.1).
+message.col.useScope,FRONT,사용처 컬럼 — 읽기 전용이다. 시드가 소유한다(sys/message.md).
+message.detail.empty,FRONT,마스터에서 행을 고르기 전 하단의 빈 상태(frontend/grid.md).
 message.detail.title,FRONT,하단 그리드의 제목.
-message.master.title,FRONT,마스터 그리드의 제목 — 화면 제목이 아니라 그리드 제목이다(grid-standard.md §2.1).
+message.master.title,FRONT,마스터 그리드의 제목 — 화면 제목이 아니라 그리드 제목이다(frontend/grid.md).
 message.scope.BACK,FRONT,사용처 `BACK` — 번들에 실리지 않는다.
 message.scope.BOTH,FRONT,사용처 `BOTH` — 프론트·백엔드 양쪽 상수에 있다.
 message.scope.DATA,FRONT,사용처 `DATA` — `menu.*` · `code.*`.
 message.scope.FRONT,FRONT,사용처 `FRONT`.
 message.scope.NONE,FRONT,사용처 `NONE` — 아무도 안 쓰는 죽은 키다.
 message.search.msgKey,FRONT,조회조건 — 메시지 키.
-message.search.msgVal,FRONT,조회조건 — 메시지 값. 어느 언어든 걸린다(63 §3.7).
-message.search.untranslated,FRONT,조회조건 — 미번역 언어. 서버 조건이다(63 §3.3).
+message.search.msgVal,FRONT,조회조건 — 메시지 값. 어느 언어든 걸린다(screen/code/requirements.md).
+message.search.untranslated,FRONT,조회조건 — 미번역 언어. 서버 조건이다(screen/code/requirements.md).
 message.search.useScope,FRONT,조회조건 — 사용처.
 message.untranslated,FRONT,번역이 하나라도 비었을 때 붙는 배지(MASTER-06).
 message.validate.duplicate,FRONT,같은 키가 이 화면 안에 둘 있을 때 — 클라이언트가 판정할 수 있다.
@@ -623,17 +623,17 @@ message.validate.noValue,NONE,신규 키에 값이 하나도 없을 때 — 화�
 noti.type.AUTH,FRONT,비밀번호 만료 예고 — AUTH-05.
 noti.type.AUTHZ,FRONT,권한 만료 예정 — AUTHZ-08.
 noti.type.BATCH,FRONT,배치 실패 — BATCH-06.
-noti.type.REQUEST,FRONT,요청 처리 결과 — 66 §5.4.
+noti.type.REQUEST,FRONT,요청 처리 결과 — screen/notice/requirements.md.
 notiReq.stat.DONE,FRONT,
 notiReq.stat.RECEIVED,FRONT,
 notiReq.stat.REJECTED,FRONT,
 notiReq.type.ETC,FRONT,
-notiReq.type.ROLE_GRANT,FRONT,유형 셋 · 상태 셋 — 공통코드가 아니라 소스의 값이다(47 §10).
+notiReq.type.ROLE_GRANT,FRONT,유형 셋 · 상태 셋 — 공통코드가 아니라 소스의 값이다(sys/notification.md).
 notiReq.type.UNLOCK,FRONT,
-notiRequest.action.done,FRONT,처리 · 반려 버튼 — 저장이 아니라 판정이다(66 §5.2).
+notiRequest.action.done,FRONT,처리 · 반려 버튼 — 저장이 아니라 판정이다(screen/notice/requirements.md).
 notiRequest.action.reject,FRONT,
 notiRequest.col.content,FRONT,
-notiRequest.col.creDtm,FRONT,요청일시 — 오름차순이 기본이다. 대기열은 오래 기다린 것이 먼저다(66 §5.2.1).
+notiRequest.col.creDtm,FRONT,요청일시 — 오름차순이 기본이다. 대기열은 오래 기다린 것이 먼저다(screen/notice/requirements.md).
 notiRequest.col.handleDtm,FRONT,
 notiRequest.col.handler,FRONT,
 notiRequest.col.memo,FRONT,
@@ -641,35 +641,35 @@ notiRequest.col.reqId,FRONT,
 notiRequest.col.stat,FRONT,
 notiRequest.col.type,FRONT,
 notiRequest.col.user,FRONT,
-notiRequest.done.notice,FRONT,처리하면 요청자의 알림함에 행이 하나 생긴다 — 같은 트랜잭션이다(66 §5.4).
-notiRequest.empty,FRONT,조회 0건 — 비어 있는 것이 정상인 유일한 화면이다(66 §5.7).
+notiRequest.done.notice,FRONT,처리하면 요청자의 알림함에 행이 하나 생긴다 — 같은 트랜잭션이다(screen/notice/requirements.md).
+notiRequest.empty,FRONT,조회 0건 — 비어 있는 것이 정상인 유일한 화면이다(screen/notice/requirements.md).
 notiRequest.grid.title,FRONT,
-notiRequest.hint.notReceived,FRONT,선택에 이미 처리된 것이 섞였다 — 버튼이 비활성인 이유(66 §5.7).
-notiRequest.memo.optional,FRONT,처리는 메모가 선택이다 — 결과 자체가 답이다(66 §5.3).
+notiRequest.hint.notReceived,FRONT,선택에 이미 처리된 것이 섞였다 — 버튼이 비활성인 이유(screen/notice/requirements.md).
+notiRequest.memo.optional,FRONT,처리는 메모가 선택이다 — 결과 자체가 답이다(screen/notice/requirements.md).
 notiRequest.memo.placeholder,FRONT,
-notiRequest.memo.required,FRONT,반려는 사유가 필수다 — 이유가 없으면 답이 아니다(47 §8.1).
+notiRequest.memo.required,FRONT,반려는 사유가 필수다 — 이유가 없으면 답이 아니다(sys/notification.md).
 notiRequest.modal.done,FRONT,모달 제목 둘.
 notiRequest.modal.reject,FRONT,
-notiRequest.reject.notice,FRONT,사유가 요청자에게 간다는 사실을 확인 문구가 말해야 한다(grid-api-contract.md §7 · 66 §5.3).
+notiRequest.reject.notice,FRONT,사유가 요청자에게 간다는 사실을 확인 문구가 말해야 한다(frontend/grid.md · screen/notice/requirements.md).
 notiRequest.search.period,FRONT,
 notiRequest.search.stat,FRONT,
 notiRequest.search.type,FRONT,
 notiRequest.search.user,FRONT,
-notiRequest.user.disabled,FRONT,미사용 계정 표시 — `(삭제된 사용자)` 는 없다(66 §5.7.1).
-notice.col.content,FRONT,본문 — `nclob` 이지만 목록에 싣는다. 공지는 수백 건이다(66 §3.1).
+notiRequest.user.disabled,FRONT,미사용 계정 표시 — `(삭제된 사용자)` 는 없다(screen/notice/requirements.md).
+notice.col.content,FRONT,본문 — `nclob` 이지만 목록에 싣는다. 공지는 수백 건이다(screen/notice/requirements.md).
 notice.col.fromDtm,FRONT,
 notice.col.noticeId,FRONT,
 notice.col.popupFrom,FRONT,
 notice.col.popupTo,FRONT,
 notice.col.popupYn,FRONT,
-notice.col.sortNo,FRONT,순서 — 상단 고정용이며 드래그가 아니라 숫자다(66 §4.2.1).
-notice.col.stat,FRONT,"게시 상태 — 파생이며 서버가 판정한다(66 §4.4). 클라이언트가 계산하면 PC 시계가 틀린 사람에게 다른 배지가 뜨고, 기준 시각은 브라우저가 아니라 업무 타임존이다(40 §4.3). /"
+notice.col.sortNo,FRONT,순서 — 상단 고정용이며 드래그가 아니라 숫자다(screen/notice/requirements.md).
+notice.col.stat,FRONT,"게시 상태 — 파생이며 서버가 판정한다(screen/notice/requirements.md). 클라이언트가 계산하면 PC 시계가 틀린 사람에게 다른 배지가 뜨고, 기준 시각은 브라우저가 아니라 업무 타임존이다(sys/INDEX.md). /"
 notice.col.title,FRONT,
-notice.col.toDtm,FRONT,게시 종료 — 비우면 무기한이다(47 §9.2).
-notice.col.useYn,FRONT,사용 — 즉시 내림이며 기간과 축이 다르다(47 §9.2).
-notice.delete.confirm,FRONT,삭제 확인 — 되돌릴 수 없다고 말하고 대안(끄기)을 함께 준다(66 §4.6).
+notice.col.toDtm,FRONT,게시 종료 — 비우면 무기한이다(sys/notification.md).
+notice.col.useYn,FRONT,사용 — 즉시 내림이며 기간과 축이 다르다(sys/notification.md).
+notice.delete.confirm,FRONT,삭제 확인 — 되돌릴 수 없다고 말하고 대안(끄기)을 함께 준다(screen/notice/requirements.md).
 notice.empty,FRONT,조회 0건 — 일반 문구다.
-notice.empty.active,FRONT,"`게시중` 으로 걸렀는데 0건 — 진단으로 읽히게 한다(66 §4.9 · 64 §3.7). 지금 사용자에게 아무 공지도 보이지 않는다는 뜻이고, 그것을 알고 싶어서 거른 것이다. /"
+notice.empty.active,FRONT,"`게시중` 으로 걸렀는데 0건 — 진단으로 읽히게 한다(screen/notice/requirements.md · screen/log/access/requirements.md). 지금 사용자에게 아무 공지도 보이지 않는다는 뜻이고, 그것을 알고 싶어서 거른 것이다. /"
 notice.grid.title,FRONT,마스터 그리드의 제목.
 notice.popup.off,FRONT,
 notice.popup.on,FRONT,
@@ -680,16 +680,16 @@ notice.search.title,FRONT,
 notice.stat.ACTIVE,FRONT,
 notice.stat.DOWN,FRONT,
 notice.stat.EXPIRED,FRONT,
-notice.stat.SCHEDULED,FRONT,게시 상태 배지 넷 — 값은 코드이고 글자만 라벨이다(grid-column-contract.md §5.4).
-noticePopup.dismiss,FRONT,"""오늘 하루 보지 않기"" — `localStorage` 에 **다음 자정까지** 담는다(66 §2.4)."
+notice.stat.SCHEDULED,FRONT,게시 상태 배지 넷 — 값은 코드이고 글자만 라벨이다(frontend/grid.md).
+noticePopup.dismiss,FRONT,"""오늘 하루 보지 않기"" — `localStorage` 에 **다음 자정까지** 담는다(screen/notice/requirements.md)."
 noticePopup.more,FRONT,"나머지는 공지 탭에 있다 — ""공지 {count}건 더 있음""."
-notification.back,FRONT,상세에서 목록으로 — **새 탭을 열지 않는다**(main-shell.md §7).
+notification.back,FRONT,상세에서 목록으로 — **새 탭을 열지 않는다**(frontend/tabs.md).
 notification.empty.pending,NONE,담을 테이블이 아직 없다 — 빈 목록과 다른 말이라야 한다.
 notification.mine.content,FRONT,상세의 라벨 — 내용.
 notification.mine.empty,FRONT,받은 알림이 없다.
 notification.mine.goto,FRONT,알림이 가리키는 화면으로 — `MENU_CD` + 파라미터가 곧 메뉴 진입이다(NI-10).
 notification.mine.gotoDenied,FRONT,**권한이 없어진 메뉴**로 가는 알림 — 버튼이 비활성이고 이 문구가 이유를 말한다. 눌러서 403 을 보는 것보다 낫다(NI-11). **알림이 권한을 주지 않는다.** /
-notification.mine.markAll,FRONT,사용자가 **의도적으로 비우는** 경로(main-shell.md §7.2).
+notification.mine.markAll,FRONT,사용자가 **의도적으로 비우는** 경로(frontend/tabs.md).
 notification.mine.receivedAt,FRONT,상세의 라벨 — 받은 시각.
 notification.mine.unread,FRONT,하단의 읽지 않음 수 — 배지와 같은 값이다.
 notification.notice.author,FRONT,상세의 라벨 — 작성자.
@@ -702,29 +702,29 @@ notification.request.content,FRONT,폼의 라벨 — 요청 내용.
 notification.request.empty,FRONT,낸 요청이 없다.
 notification.request.new,FRONT,새 요청 폼을 연다 — 같은 모달 안에서 바뀐다.
 notification.request.pending,FRONT,**같은 유형이 접수 상태로 열려 있다** — 새 요청 버튼이 비활성이고 이 문구가 이유다. 서버도 거부하지만(마지막 방어) 눌러서 오류를 보는 것보다 낫다. /
-notification.request.placeholder,FRONT,무엇을 적어야 하는지 — 되묻는 단계가 없다(01 §2).
+notification.request.placeholder,FRONT,무엇을 적어야 하는지 — 되묻는 단계가 없다.
 notification.request.reason,FRONT,"반려 사유가 줄에 붙는다 — ""사유: …""."
 notification.request.submit,FRONT,보내기.
 notification.request.type,FRONT,폼의 라벨 — 유형.
-notification.tab.mine,FRONT,탭 이름 — 내 알림(시스템 → 나). 헤더 배지가 세는 것이 이것 하나다(main-shell.md §7.1).
+notification.tab.mine,FRONT,탭 이름 — 내 알림(시스템 → 나). 헤더 배지가 세는 것이 이것 하나다(frontend/tabs.md).
 notification.tab.notice,FRONT,탭 이름 — 공지사항(관리자 → 전체).
 notification.tab.request,FRONT,탭 이름 — 내 요청(나 → 관리자). 권한 신청·잠금 해제 요청.
 notification.truncated,FRONT,목록이 상한에 걸려 잘렸다 — 조용히 자르면 목록이 전부로 읽힌다.
-params.count,FRONT,대상 건수 — `{count}`. 이 모달이 확인을 겸하므로 있다(grid-api-contract.md §8). 없으면 사용자는 무엇에 대해 값을 넣는지 모른 채 실행한다. /
-params.run,FRONT,"실행 버튼 — `확인` 이 아니다. 이 창은 확인 다이얼로그를 대신하므로(grid-api-contract.md §8) 버튼이 곧 실행이며, 그 사실을 글자가 말해야 한다 — `확인` 은 내가 적은 값이 맞다 로도 읽힌다. /"
-popup.clear,FRONT,"값을 비운다 — 딸려 온 칸까지 함께 지운다(grid-column-contract.md §6.3). 취소와 갈라야 하는 버튼이다. 창을 그냥 닫는 것과 한 뜻으로 두면 마음을 바꾼 사람이 원래 값을 잃고, 그 사고는 저장하기 전까지 화면에 아무 경고도 남기지 않는다. 지금 값이 있는 칸에서만 나온다. /"
+params.count,FRONT,대상 건수 — `{count}`. 이 모달이 확인을 겸하므로 있다(frontend/grid.md). 없으면 사용자는 무엇에 대해 값을 넣는지 모른 채 실행한다. /
+params.run,FRONT,"실행 버튼 — `확인` 이 아니다. 이 창은 확인 다이얼로그를 대신하므로(frontend/grid.md) 버튼이 곧 실행이며, 그 사실을 글자가 말해야 한다 — `확인` 은 내가 적은 값이 맞다 로도 읽힌다. /"
+popup.clear,FRONT,"값을 비운다 — 딸려 온 칸까지 함께 지운다(frontend/grid.md). 취소와 갈라야 하는 버튼이다. 창을 그냥 닫는 것과 한 뜻으로 두면 마음을 바꾼 사람이 원래 값을 잃고, 그 사고는 저장하기 전까지 화면에 아무 경고도 남기지 않는다. 지금 값이 있는 칸에서만 나온다. /"
 popup.pick,FRONT,고른 행으로 확정한다 — 더블클릭이 같은 일을 한다.
-profile.basisDate,FRONT,유효 판정의 기준일 — `{date}`. 브라우저의 오늘이 아니다(40 §4.3).
+profile.basisDate,FRONT,유효 판정의 기준일 — `{date}`. 브라우저의 오늘이 아니다(sys/INDEX.md).
 profile.email,FRONT,메일 칸의 라벨. 비울 수 있다.
 profile.email.invalid,FRONT,메일 형식이 아닐 때. 비우는 것은 정상이므로 값이 있을 때만 본다.
 profile.grant.action,FRONT,개인 예외 표의 컬럼 — 액션.
 profile.grant.menu,FRONT,개인 예외 표의 컬럼 — 메뉴.
-profile.grant.reason,FRONT,개인 예외 표의 컬럼 — 부여 사유. 부여할 때 필수다(42 §6).
+profile.grant.reason,FRONT,개인 예외 표의 컬럼 — 부여 사유. 부여할 때 필수다(sys/menu.md).
 profile.grants.empty,FRONT,개인 예외가 없을 때 — 대부분의 사용자가 그렇다.
-profile.grants.note,FRONT,이 탭이 읽기 전용이라는 것과 늘리는 경로가 어디인지 — main-shell.md §8.
-profile.grants.title,FRONT,개인 예외 — 역할과 합치지 않는다. 출처가 다르고 고치는 사람이 다르다(42 §6).
+profile.grants.note,FRONT,이 탭이 읽기 전용이라는 것과 늘리는 경로가 어디인지 — frontend/tabs.md.
+profile.grants.title,FRONT,개인 예외 — 역할과 합치지 않는다. 출처가 다르고 고치는 사람이 다르다(sys/menu.md).
 profile.history.empty,FRONT,이력이 한 건도 없을 때 — 빈 상태(UX-11).
-profile.history.ended,FRONT,로그아웃 · 세션 만료 · 강제 종료 · 밀려남 — 실패가 아니라 끝난 것이다(45 §5.1).
+profile.history.ended,FRONT,로그아웃 · 세션 만료 · 강제 종료 · 밀려남 — 실패가 아니라 끝난 것이다(sys/logs.md).
 profile.history.failure,FRONT,결과 태그 — 로그인 실패. 내가 한 것이 아니면 신고할 일이다.
 profile.history.ip,FRONT,이력 컬럼 — 접속 IP.
 profile.history.note,FRONT,무엇을 보고 있는지 — 실패 기록이 섞여 있는 이유를 말한다.
@@ -733,7 +733,7 @@ profile.history.success,FRONT,결과 태그 — 로그인 성공.
 profile.history.userAgent,FRONT,이력 컬럼 — 브라우저(User-Agent).
 profile.history.when,FRONT,이력 컬럼 — 일시.
 profile.lastLogin,FRONT,마지막 로그인 시각 — 읽기 전용이다.
-profile.locale,FRONT,언어 — 여기서는 보이기만 한다. 바꾸는 자리는 설정 모달이다(main-shell.md §9.1).
+profile.locale,FRONT,언어 — 여기서는 보이기만 한다. 바꾸는 자리는 설정 모달이다(frontend/tabs.md).
 profile.none,FRONT,기간이나 값이 없을 때 — 빈 칸으로 두면 조회가 실패한 것처럼 보인다.
 profile.pwd.changedAt,FRONT,마지막으로 바꾼 날 — `{when}`. 만료 주기를 쓰지 않을 때 그 자리를 대신한다.
 profile.pwd.confirm,FRONT,새 비밀번호 확인 칸의 라벨.
@@ -751,11 +751,11 @@ profile.pwd.temporary,FRONT,관리자가 발급한 임시 비밀번호를 쓰고
 profile.role.disabled,FRONT,역할 자체가 꺼졌다 — 기간과 다른 원인이라 갈라서 말한다.
 profile.role.effective,FRONT,지금 유효하다.
 profile.role.expired,FRONT,기간이 지났다 — 사용자가 기다린다고 돌아오지 않는다. 관리자에게 갈 일이다.
-profile.role.pending,FRONT,아직 시작 전이다 — 인사 발령을 미리 넣어 둔 경우다(42 §3.1).
+profile.role.pending,FRONT,아직 시작 전이다 — 인사 발령을 미리 넣어 둔 경우다(sys/menu.md).
 profile.role.period,FRONT,역할·예외 표의 컬럼 — 유효 기간.
 profile.role.roleNm,FRONT,역할 표의 컬럼 — 역할명.
 profile.role.state,FRONT,역할·예외 표의 컬럼 — 지금 유효한가.
-profile.roles.empty,FRONT,부여된 역할이 없을 때 — 개인 예외만으로 일하는 사용자가 있다(42 §6).
+profile.roles.empty,FRONT,부여된 역할이 없을 때 — 개인 예외만으로 일하는 사용자가 있다(sys/menu.md).
 profile.roles.title,FRONT,역할 표의 제목.
 profile.save,FRONT,내 정보 저장 버튼.
 profile.saved,FRONT,저장이 끝났을 때의 토스트.
@@ -764,18 +764,18 @@ profile.tab.info,FRONT,탭 이름 — 내 정보.
 profile.tab.password,FRONT,탭 이름 — 비밀번호 변경.
 profile.tab.roles,FRONT,탭 이름 — 내 역할.
 profile.title,FRONT,헤더의 사용자명을 누르면 열리는 모달의 제목.
-profile.userId,FRONT,읽기 전용 — 자연키라 바꿀 수 없다(41 §3).
+profile.userId,FRONT,읽기 전용 — 자연키라 바꿀 수 없다(sys/user-role.md).
 profile.userNm,FRONT,이름 칸의 라벨. 편집할 수 있는 둘 중 하나다.
 profile.userNm.required,FRONT,이름을 비운 채 저장했을 때 — 화면이 판정한다.
-profile.validPeriod,FRONT,계정 사용 기간(체인 #3). 관리자의 축이라 읽기 전용이다(41 §4.2).
+profile.validPeriod,FRONT,계정 사용 기간(체인 #3). 관리자의 축이라 읽기 전용이다(sys/user-role.md).
 profile.version,NONE,모달 하단의 버전·환경 — `{version}` · `{env}`. 푸터를 없애며 여기로 옮긴 것이다(51 §2).
-progress.background,FRONT,창을 닫아도 계속된다 — 68 §9.1 의 모달은 닫을 수 있고 작업은 계속 돈다. 말하지 않으면 사용자는 닫으면 취소되는 것으로 읽고 끝날 때까지 앉아 있는다. /
-progress.count,FRONT,처리한 건수와 완료율 — `{cur}` / `{tot}` / `{percent}`. **전체를 모르면 아래 PROGRESS_COUNT_UNKNOWN 이 대신 온다**(46 §8) — 그때는 나눌 수가 없어 퍼센트가 아예 없다. /
-progress.count.unknown,FRONT,"**전체를 모르는 작업의 건수** — `{cur}` 뿐이다(46 §8). 이 줄이 없으면 그 작업의 창에는 도는 막대만 남고, 그것은 멈춘 것과 구별되지 않는다 — 건수라도 올라가는 것이 돌고 있다는 유일한 증거다. /"
+progress.background,FRONT,창을 닫아도 계속된다 — playbook/INDEX.md 의 모달은 닫을 수 있고 작업은 계속 돈다. 말하지 않으면 사용자는 닫으면 취소되는 것으로 읽고 끝날 때까지 앉아 있는다. /
+progress.count,FRONT,처리한 건수와 완료율 — `{cur}` / `{tot}` / `{percent}`. **전체를 모르면 아래 PROGRESS_COUNT_UNKNOWN 이 대신 온다**(sys/batch.md) — 그때는 나눌 수가 없어 퍼센트가 아예 없다. /
+progress.count.unknown,FRONT,"**전체를 모르는 작업의 건수** — `{cur}` 뿐이다(sys/batch.md). 이 줄이 없으면 그 작업의 창에는 도는 막대만 남고, 그것은 멈춘 것과 구별되지 않는다 — 건수라도 올라가는 것이 돌고 있다는 유일한 증거다. /"
 progress.done,FRONT,"접힌 채 끝났다 — `{title}` 은 그 실행의 이름이다. 창이 열려 있었으면 100% 막대가 그 말을 한다. 접혀 있으면 표시가 사라지는 것 말고는 끝났다는 신호가 없어, 사용자는 내가 놓쳤나 를 묻는다. /"
 progress.elapsed,FRONT,"**창이 뜬 지 얼마나 지났는가** — `{min}` 분 `{sec}` 초. 퍼센트만으로는 기다릴 수 없다. 사용자가 이 창 앞에서 하는 결정은 기다릴까 접을까 하나이며, 3초 지난 24% 와 5분 지난 24% 는 그 결정이 정반대다. /"
 progress.failed,FRONT,작업이 실패했다. 사유는 서버가 준 `ERR_MSG` 가 아래 붙는다. 아래 PROGRESS_UNREACHABLE 과 갈라야 하는 문구다. /
-progress.reopen,FRONT,"접힌 표시를 누르면 창이 돌아온다 — 68 §9.1 · §11. 표시에는 그 실행의 이름이 이미 적혀 있다. 이 문구는 그것이 눌린다는 사실을 말하며 — 진행 중 표시는 흔히 보여 주기만 하는 것이라, 누를 수 있다는 것을 말하지 않으면 사용자는 다시 실행으로 창을 되찾으려 한다. /"
+progress.reopen,FRONT,"접힌 표시를 누르면 창이 돌아온다 — playbook/INDEX.md. 표시에는 그 실행의 이름이 이미 적혀 있다. 이 문구는 그것이 눌린다는 사실을 말하며 — 진행 중 표시는 흔히 보여 주기만 하는 것이라, 누를 수 있다는 것을 말하지 않으면 사용자는 다시 실행으로 창을 되찾으려 한다. /"
 progress.unreachable,FRONT,"진행률을 볼 수 없다 — 작업이 실패한 것이 아니다. 폴링이 연속으로 실패한 경우이며 작업은 여전히 돌고 있을 수 있다. 이것을 실패로 말하면 사용자는 다시 실행하고, 그때 같은 작업이 두 번 돈다. /"
 pwd.rule.charset-kinds,BACK,문자 종류 수 규칙 — {kinds}.
 pwd.rule.min-length,BACK,최소 길이 규칙 — {min}.
@@ -809,66 +809,66 @@ reset.verify,FRONT,② 제출 버튼.
 reset.verify.desc,FRONT,② 안내 — 유효 시간을 말한다. `{minutes}`.
 role.account.blocked,FRONT,계정이 막힌 상태 — 관리자가 정한 뜻이다.
 role.account.usable,FRONT,계정이 쓸 수 있는 상태.
-role.blocked.partial,FRONT,보유자가 한 장에 다 담기지 않았다 — `{counted}` / `{total}`. 62 §2.9 가 *영향 인원의 규모* 를 미결로 남겼다. 그 답이 나오기 전까지 화면이 할 수 있는 정직한 일은 **못 본 사람이 있다고 말하는 것**이다 — 세어 보니 0명인 것과 1000명까지만 세어 0명인 것은 다른 사실이다. /
-role.col.accountUsable,FRONT,하단 — 계정 상태. `USE_YN` 과 계정 유효기간만 본다(41 §4.2).
+role.blocked.partial,FRONT,보유자가 한 장에 다 담기지 않았다 — `{counted}` / `{total}`. screen/menu/requirements.md 가 *영향 인원의 규모* 를 미결로 남겼다. 그 답이 나오기 전까지 화면이 할 수 있는 정직한 일은 **못 본 사람이 있다고 말하는 것**이다 — 세어 보니 0명인 것과 1000명까지만 세어 0명인 것은 다른 사실이다. /
+role.col.accountUsable,FRONT,하단 — 계정 상태. `USE_YN` 과 계정 유효기간만 본다(sys/user-role.md).
 role.col.activeHolderCount,FRONT,그중 오늘 유효한 부여. 게이트가 보지 않는 수이며 운영자가 궁금한 쪽이다.
-role.col.authCount,FRONT,**디테일이 없는 자식**의 건수 — 편집은 `ROLE_AUTH_MGMT` 다(62 §3.2.1).
-role.col.grantState,FRONT,하단 — 부여 상태(예정·유효·만료). 기간에서 파생한다(42 §3.1).
+role.col.authCount,FRONT,**디테일이 없는 자식**의 건수 — 편집은 `ROLE_AUTH_MGMT` 다(screen/menu/requirements.md).
+role.col.grantState,FRONT,하단 — 부여 상태(예정·유효·만료). 기간에서 파생한다(sys/menu.md).
 role.col.hasOtherRole,FRONT,"하단 — **공집합 판정의 입력 ②**. 확인 문구의 *""다른 역할 없음""* 이 이 값이다."
-role.col.hasPersonalGrant,FRONT,하단 — **공집합 판정의 입력 ①**(62 §2.5). 개인 예외가 있으면 차단되지 않는다.
-role.col.holderCount,FRONT,**삭제 게이트가 보는 수** — 기간을 보지 않는다(62 §3.5).
-role.col.period,FRONT,하단 — 부여 기간. 양끝 포함이며 `null` 은 제한 없음이다(40 §4.3).
+role.col.hasPersonalGrant,FRONT,하단 — **공집합 판정의 입력 ①**(screen/menu/requirements.md). 개인 예외가 있으면 차단되지 않는다.
+role.col.holderCount,FRONT,**삭제 게이트가 보는 수** — 기간을 보지 않는다(screen/menu/requirements.md).
+role.col.period,FRONT,하단 — 부여 기간. 양끝 포함이며 `null` 은 제한 없음이다(sys/INDEX.md).
 role.col.roleDesc,FRONT,
-role.col.roleId,FRONT,PK. **신규 행에서만 편집 가능**하다(41 §3).
-role.col.roleNm,FRONT,필수 컬럼. 다국어가 아니라 관리 화면 전용 명칭이다(43 §3).
-role.col.useYn,FRONT,유효 권한 계산의 **입력 필터**다(security-design.md §4 ②) — 메뉴의 같은 이름과 자리가 다르다.
+role.col.roleId,FRONT,PK. **신규 행에서만 편집 가능**하다(sys/user-role.md).
+role.col.roleNm,FRONT,필수 컬럼. 다국어가 아니라 관리 화면 전용 명칭이다(sys/code.md).
+role.col.useYn,FRONT,유효 권한 계산의 **입력 필터**다(backend/security.md ②) — 메뉴의 같은 이름과 자리가 다르다.
 role.col.userId,FRONT,하단 — 사용자 ID.
 role.col.userNm,FRONT,하단 — 사용자 이름.
-role.delete.blocked,FRONT,삭제 게이트가 막았을 때의 사유 — `{users}` · `{auths}`. **대안까지 말한다**(62 §3.5).
-role.detail.empty,FRONT,하단의 빈 상태 — 역할을 아직 고르지 않았다(grid-standard.md §6.1).
-role.detail.locked,FRONT,하단의 잠긴 상태 — 미저장 신규 행이라 FK 로 자식이 있을 수 없다(grid-standard.md §6.1).
-role.disable.blocked,FRONT,저장 확인 셋째 줄 — `{count}` 명이 공집합이 되어 다음 로그인부터 차단된다(security-design.md §4).
+role.delete.blocked,FRONT,삭제 게이트가 막았을 때의 사유 — `{users}` · `{auths}`. **대안까지 말한다**(screen/menu/requirements.md).
+role.detail.empty,FRONT,하단의 빈 상태 — 역할을 아직 고르지 않았다(frontend/grid.md).
+role.detail.locked,FRONT,하단의 잠긴 상태 — 미저장 신규 행이라 FK 로 자식이 있을 수 없다(frontend/grid.md).
+role.disable.blocked,FRONT,저장 확인 셋째 줄 — `{count}` 명이 공집합이 되어 다음 로그인부터 차단된다(backend/security.md).
 role.disable.impact,FRONT,저장 확인 둘째 줄 — `{name}` 을 끄면 `{users}` 명에게서 권한 `{auths}` 건이 빠진다.
-role.duplicate,FRONT,같은 요청 안에 같은 역할 ID 가 둘 — 클라이언트가 판정한다(grid-edit-validation.md §3.2 의 3층).
+role.duplicate,FRONT,같은 요청 안에 같은 역할 ID 가 둘 — 클라이언트가 판정한다(frontend/grid.md 의 3층).
 role.grant.ACTIVE,FRONT,부여 상태 — 유효.
-role.grant.EXPIRED,FRONT,부여 상태 — 만료. **감추지 않는다** — 다시 유효해질 수 있다(62 §2.5).
+role.grant.EXPIRED,FRONT,부여 상태 — 만료. **감추지 않는다** — 다시 유효해질 수 있다(screen/menu/requirements.md).
 role.grant.SCHEDULED,FRONT,부여 상태 — 예정.
 role.grid.title,FRONT,마스터 그리드의 제목 — 역할 목록.
 role.has.no,FRONT,있음/없음 열의 *없음*.
 role.has.yes,FRONT,있음/없음 열의 *있음*.
 role.holder.title,FRONT,하단 pane 의 제목(`ROLE_MGMT`) — 같은 그리드를 `ROLE_AUTH_MGMT` 는 *영향 인원* 이라 부른다.
-role.period.unlimited,FRONT,기간 양끝이 비었을 때 — 역할 부여는 `null` 이 무기한이다(42 §3.1).
+role.period.unlimited,FRONT,기간 양끝이 비었을 때 — 역할 부여는 `null` 이 무기한이다(sys/menu.md).
 role.search.roleNm,FRONT,조회조건 — 역할명.
-role.search.useYn,FRONT,조회조건 — 사용 여부. **기본값이 *전체* 다**(62 §3.3).
+role.search.useYn,FRONT,조회조건 — 사용 여부. **기본값이 *전체* 다**(screen/menu/requirements.md).
 role.use.off,FRONT,조회조건의 후보 — 미사용.
 role.use.on,FRONT,조회조건의 후보 — 사용. 폼에서는 스위치가 아니라 콤보다(*전체* 를 낼 자리가 필요하다).
 roleAuth.affected.empty,FRONT,하단의 빈 상태.
-roleAuth.affected.title,FRONT,하단 — 영향 인원의 제목. `ROLE_MGMT` 에서는 *보유 사용자* 라 부른다(62 §3.4).
-roleAuth.col.menu,FRONT,트리의 계층 컬럼 헤더 — 맨 왼쪽 고정이다(61 §4.4).
+roleAuth.affected.title,FRONT,하단 — 영향 인원의 제목. `ROLE_MGMT` 에서는 *보유 사용자* 라 부른다(screen/menu/requirements.md).
+roleAuth.col.menu,FRONT,트리의 계층 컬럼 헤더 — 맨 왼쪽 고정이다(screen/user/requirements.md).
 roleAuth.read.off,FRONT,조회를 꺼서 나머지 `{count}` 건이 함께 꺼졌다 — 〃.
-roleAuth.read.on,FRONT,다른 액션을 켜서 조회가 함께 켜졌다 — **조용히 하지 않는다**(61 §4.4).
-roleAuth.role.title,FRONT,좌 — 역할 목록의 제목. **읽기 전용**이며 생성은 `ROLE_MGMT` 다(62 §2.2).
+roleAuth.read.on,FRONT,다른 액션을 켜서 조회가 함께 켜졌다 — **조용히 하지 않는다**(screen/user/requirements.md).
+roleAuth.role.title,FRONT,좌 — 역할 목록의 제목. **읽기 전용**이며 생성은 `ROLE_MGMT` 다(screen/menu/requirements.md).
 roleAuth.save.blocked,FRONT,저장 확인 셋째 줄 — 그중 `{count}` 명이 공집합이 되어 차단된다.
-roleAuth.save.counts,FRONT,저장 확인 첫째 줄 — `{added}` 추가 · `{removed}` 삭제. **수정이 없다**(62 §2.5).
-roleAuth.save.holders,FRONT,저장 확인 둘째 줄 — 이 역할을 가진 `{count}` 명에게 적용된다(security-design.md §4).
-roleAuth.search.menu,FRONT,트리 검색 — 메뉴명. **거르지 않는다**(62 §2.3 · 62 §4.10 과 같은 어휘다).
+roleAuth.save.counts,FRONT,저장 확인 첫째 줄 — `{added}` 추가 · `{removed}` 삭제. **수정이 없다**(screen/menu/requirements.md).
+roleAuth.save.holders,FRONT,저장 확인 둘째 줄 — 이 역할을 가진 `{count}` 명에게 적용된다(backend/security.md).
+roleAuth.search.menu,FRONT,트리 검색 — 메뉴명. **거르지 않는다**(screen/menu/requirements.md 과 같은 어휘다).
 roleAuth.tree.empty,FRONT,우 — 역할을 고르기 전의 빈 상태.
 roleAuth.tree.title,FRONT,우 — 권한 트리의 제목.
-roleAuth.tri.all,FRONT,폴더 파생 3-state — 전체. **저장되지 않는다**(42 §6).
+roleAuth.tri.all,FRONT,폴더 파생 3-state — 전체. **저장되지 않는다**(sys/menu.md).
 roleAuth.tri.none,FRONT,폴더 파생 3-state — 없음.
 roleAuth.tri.some,FRONT,폴더 파생 3-state — 부분.
-roleAuth.undefined,FRONT,`—` 셀의 툴팁 — *안 줬다* 가 아니라 **줄 것이 없다**(61 §4.4).
-sample.action.confirm,FRONT,"확정 — `target:'selected'`, 프로그레스 없음(68 §3.4)."
+roleAuth.undefined,FRONT,`—` 셀의 툴팁 — *안 줬다* 가 아니라 **줄 것이 없다**(screen/user/requirements.md).
+sample.action.confirm,FRONT,"확정 — `target:'selected'`, 프로그레스 없음(playbook/INDEX.md)."
 sample.action.confirm.confirm,FRONT,
 sample.action.confirm.hint,FRONT,
-sample.action.recalc,FRONT,"일괄 재계산 — `target:'all'`, **`params` 모달 + 진행률**(68 §3.4). 확정과 같은 `X` 액션인데 사용자 경험이 다른 것이 이 화면의 핵심 시연이다. /"
+sample.action.recalc,FRONT,"일괄 재계산 — `target:'all'`, **`params` 모달 + 진행률**(playbook/INDEX.md). 확정과 같은 `X` 액션인데 사용자 경험이 다른 것이 이 화면의 핵심 시연이다. /"
 sample.action.recalc.title,FRONT,`params` 모달의 제목이자 진행률 모달의 제목.
-sample.action.recalcItems,FRONT,품목 금액 재계산 버튼 — 68 §5.4 의 실행 둘 중 뒤(행×디테일 진행률). 위의 출고 지시와 같은 자리에 나란히 선다: 같은 `EXECUTE` 이고 같은 `target:'selected'` 인데 하나는 즉시 끝나고 하나는 진행률을 갖는다 — 고른 주문마다 딸린 품목이 수천 건일 수 있어서다(30 §6). /
-sample.action.recalcItems.confirm,FRONT,"실행 확인 문구 — `{count}` 는 주문 수다(grid-api-contract.md §7). 품목 건수를 적지 않는다. 그 값은 주문마다 세어야 알 수 있고, 확인 창을 띄우려고 조회를 한 번 더 도는 것은 실행 전에 실행만큼 일하는 꼴이다 — 품목 건수는 진행률 창이 구간마다 말한다. /"
-sample.action.recalcItems.hint,FRONT,접수 아닌 행이나 품목 없는 행이 섞였다 — 버튼이 비활성인 이유(grid-api-contract.md §7 의 `hint`). 확정부터는 금액이 잠긴다(48 §3.2). 화면의 `amountEditable` 이 그렇게 서 있으므로 이 실행이 그 문을 열어 주면 안 된다. /
-sample.action.ship,FRONT,출고 지시 버튼 — 68 §5.4 의 실행 액션(프로그레스 없음).
-sample.action.ship.confirm,FRONT,실행 확인 문구 — `{count}`(grid-api-contract.md §7).
-sample.action.ship.hint,FRONT,확정 아닌 행이 섞였다 — 버튼이 비활성인 이유(grid-api-contract.md §7 의 `hint`).
+sample.action.recalcItems,FRONT,품목 금액 재계산 버튼 — playbook/INDEX.md 의 실행 둘 중 뒤(행×디테일 진행률). 위의 출고 지시와 같은 자리에 나란히 선다: 같은 `EXECUTE` 이고 같은 `target:'selected'` 인데 하나는 즉시 끝나고 하나는 진행률을 갖는다 — 고른 주문마다 딸린 품목이 수천 건일 수 있어서다(backend/crosscutting.md). /
+sample.action.recalcItems.confirm,FRONT,"실행 확인 문구 — `{count}` 는 주문 수다(frontend/grid.md). 품목 건수를 적지 않는다. 그 값은 주문마다 세어야 알 수 있고, 확인 창을 띄우려고 조회를 한 번 더 도는 것은 실행 전에 실행만큼 일하는 꼴이다 — 품목 건수는 진행률 창이 구간마다 말한다. /"
+sample.action.recalcItems.hint,FRONT,접수 아닌 행이나 품목 없는 행이 섞였다 — 버튼이 비활성인 이유(frontend/grid.md 의 `hint`). 확정부터는 금액이 잠긴다(playbook/INDEX.md). 화면의 `amountEditable` 이 그렇게 서 있으므로 이 실행이 그 문을 열어 주면 안 된다. /
+sample.action.ship,FRONT,출고 지시 버튼 — playbook/INDEX.md 의 실행 액션(프로그레스 없음).
+sample.action.ship.confirm,FRONT,실행 확인 문구 — `{count}`(frontend/grid.md).
+sample.action.ship.hint,FRONT,확정 아닌 행이 섞였다 — 버튼이 비활성인 이유(frontend/grid.md 의 `hint`).
 sample.col.amt,FRONT,
 sample.col.chnl,FRONT,
 sample.col.custGrd,FRONT,
@@ -880,18 +880,18 @@ sample.col.dlvrYm,FRONT,
 sample.col.errMsg,FRONT,
 sample.col.itemCd,FRONT,
 sample.col.itemNm,FRONT,
-sample.col.itemSeq,FRONT,디테일 컬럼 — 48 §4.
+sample.col.itemSeq,FRONT,디테일 컬럼 — playbook/INDEX.md.
 sample.col.itemStat,FRONT,
-sample.col.lock,FRONT,"`hidden` 컬럼의 헤더 — **어디에도 보이지 않는다**(grid-column-contract.md §2.1). 그래도 선언하는 것은 헤더가 컬럼의 필수 항목이기 때문이며, 값을 비워 두면 설정 창을 여는 다른 화면에서 **빈 줄**로 나타난다. /"
+sample.col.lock,FRONT,"`hidden` 컬럼의 헤더 — **어디에도 보이지 않는다**(frontend/grid.md). 그래도 선언하는 것은 헤더가 컬럼의 필수 항목이기 때문이며, 값을 비워 두면 설정 창을 여는 다른 화면에서 **빈 줄**로 나타난다. /"
 sample.col.memo,FRONT,
 sample.col.modDtm,FRONT,
 sample.col.modId,FRONT,
 sample.col.ordAmt,FRONT,
 sample.col.ordDt,FRONT,
 sample.col.ordDtm,FRONT,
-sample.col.ordId,FRONT,①이 더한 컬럼 — 48 §3 의 서른 중 ③이 그리지 않는 것들.
+sample.col.ordId,FRONT,①이 더한 컬럼 — playbook/INDEX.md 의 서른 중 ③이 그리지 않는 것들.
 sample.col.ordNm,FRONT,
-sample.col.ordNo,FRONT,마스터 컬럼 아홉 — 68 §5.2.
+sample.col.ordNo,FRONT,마스터 컬럼 아홉 — playbook/INDEX.md.
 sample.col.ordQty,FRONT,
 sample.col.ordStat,FRONT,
 sample.col.priority,FRONT,
@@ -904,7 +904,7 @@ sample.col.sortNo,FRONT,
 sample.col.srcSys,FRONT,
 sample.col.tagList,FRONT,
 sample.col.tagNm,FRONT,
-sample.col.tagSeq,FRONT,"**`SORT_NO` 와 나란히 보여야 뜻이 있는 컬럼**이다(48 §4.1). 복합 PK 의 절반이라 고칠 수 없고, ①에서는 `SORT_NO` 와 같은 값이었다 — 둘을 함께 그려야 *왜 컬럼이 둘인가* 를 테이블에서 유추하지 않아도 된다. /"
+sample.col.tagSeq,FRONT,"**`SORT_NO` 와 나란히 보여야 뜻이 있는 컬럼**이다(playbook/INDEX.md). 복합 PK 의 절반이라 고칠 수 없고, ①에서는 `SORT_NO` 와 같은 값이었다 — 둘을 함께 그려야 *왜 컬럼이 둘인가* 를 테이블에서 유추하지 않아도 된다. /"
 sample.col.tagType,FRONT,
 sample.col.unitAmt,FRONT,
 sample.col.uom,FRONT,
@@ -921,7 +921,7 @@ sample.cond.itemCd,FRONT,
 sample.cond.itemStat,FRONT,
 sample.cond.ordAmt,FRONT,
 sample.cond.ordDt,FRONT,
-sample.cond.ordNm,FRONT,①이 더한 조회조건 여덟 — 68 §3.3. 앞의 넷은 ③과 같은 키를 쓴다.
+sample.cond.ordNm,FRONT,①이 더한 조회조건 여덟 — playbook/INDEX.md. 앞의 넷은 ③과 같은 키를 쓴다.
 sample.cond.ordNo,FRONT,조회조건 넷의 라벨.
 sample.cond.ordStat,FRONT,
 sample.cond.procSec,FRONT,**초로 받아 밀리초로 보낸다** — 라벨이 단위를 말해야 한다(57 의 `scale`).
@@ -929,79 +929,79 @@ sample.cond.tag,FRONT,
 sample.cond.urgent,FRONT,
 sample.control.help,FRONT,`controls` 우 — `beforeTools`.
 sample.control.print,FRONT,
-sample.control.range,FRONT,`controls` 좌 — `beforeRead`(grid-api-contract.md §3).
+sample.control.range,FRONT,`controls` 좌 — `beforeRead`(frontend/grid.md).
 sample.control.range.all,FRONT,
 sample.control.range.mine,FRONT,
-sample.cursor.autoRefresh,FRONT,`controls` 좌의 토글 — 값이 둘이라 스위치다(68 §9.11).
+sample.cursor.autoRefresh,FRONT,`controls` 좌의 토글 — 값이 둘이라 스위치다(playbook/INDEX.md).
 sample.cursor.cond.ordDtm,FRONT,조회조건은 셋인데 둘은 ①과 같은 키를 쓴다 — 갈리는 것은 기간 칸 하나다.
 sample.cursor.empty,FRONT,
-sample.cursor.footer.range,FRONT,**총 건수를 잃은 자리**를 메우는 문구 — `{days}`(68 §4.4). 무엇을 물어서 나온 N건인지가 함께 있어야 *전부가 N건* 으로 읽히지 않는다. /
+sample.cursor.footer.range,FRONT,**총 건수를 잃은 자리**를 메우는 문구 — `{days}`(playbook/INDEX.md). 무엇을 물어서 나온 N건인지가 함께 있어야 *전부가 N건* 으로 읽히지 않는다. /
 sample.cursor.grid.title,FRONT,
 sample.cursor.help.body,FRONT,
-sample.dcRt.range,FRONT,할인율이 0~100 을 벗어났다 — 그리드 층의 검증(grid-edit-validation.md §3.2).
-sample.delete.blocked,FRONT,품목이 있어 삭제 체크가 열리지 않는 이유 — `{count}`(grid-standard.md §6.2).
+sample.dcRt.range,FRONT,할인율이 0~100 을 벗어났다 — 그리드 층의 검증(frontend/grid.md).
+sample.delete.blocked,FRONT,품목이 있어 삭제 체크가 열리지 않는 이유 — `{count}`(frontend/grid.md).
 sample.excel.data.title,FRONT,
 sample.excel.empty,FRONT,
-sample.excel.keyDuplicated,FRONT,"파일 안에서 같은 `(주문번호, 품목코드)` 가 두 번이다 — 그리드 층(grid-edit-validation.md §3.2)."
-sample.excel.noItem,FRONT,"②의 세 번째 항목 — 품목이 없는 주문만 내린다. 조회로는 낼 수 없는 표다: 마스터는 주문을 내고 디테일은 고른 하나의 품목을 내므로, *품목이 하나도 없는 주문들* 은 어느 그리드의 결과도 아니다(ADR-0019 의 임의 API). /"
-sample.excel.seg.data,FRONT,세그먼트 둘 — **한 화면의 두 모드**이지 화면 둘이 아니다(68 §9.3).
+sample.excel.keyDuplicated,FRONT,"파일 안에서 같은 `(주문번호, 품목코드)` 가 두 번이다 — 그리드 층(frontend/grid.md)."
+sample.excel.noItem,FRONT,"②의 세 번째 항목 — 품목이 없는 주문만 내린다. 조회로는 낼 수 없는 표다: 마스터는 주문을 내고 디테일은 고른 하나의 품목을 내므로, *품목이 하나도 없는 주문들* 은 어느 그리드의 결과도 아니다(frontend/grid-advanced.md 의 임의 API). /"
+sample.excel.seg.data,FRONT,세그먼트 둘 — **한 화면의 두 모드**이지 화면 둘이 아니다(playbook/INDEX.md).
 sample.excel.seg.upload,FRONT,
-sample.excel.upload.title,FRONT,업로드 탭의 제목 — **미리보기가 곧 행 상태다**(68 §8.6).
+sample.excel.upload.title,FRONT,업로드 탭의 제목 — **미리보기가 곧 행 상태다**(playbook/INDEX.md).
 sample.help.body,FRONT,
-sample.item.empty,FRONT,품목 0건 — 행 추가는 열려 있다(68 §5.7).
-sample.item.grid.title,FRONT,아래 pane 그리드의 제목 — 뒤에 고른 주문의 번호가 붙는다(grid-standard.md §6.1).
-sample.item.noMaster,FRONT,주문을 고르지 않았다 — 아래 pane 이 통째로 비활성인 상태(grid-standard.md §6.1).
-sample.locked,FRONT,잠긴 주문이라 편집이 열리지 않는 이유 — 48 §3.2 의 `LOCK_YN`.
+sample.item.empty,FRONT,품목 0건 — 행 추가는 열려 있다(playbook/INDEX.md).
+sample.item.grid.title,FRONT,아래 pane 그리드의 제목 — 뒤에 고른 주문의 번호가 붙는다(frontend/grid.md).
+sample.item.noMaster,FRONT,주문을 고르지 않았다 — 아래 pane 이 통째로 비활성인 상태(frontend/grid.md).
+sample.locked,FRONT,잠긴 주문이라 편집이 열리지 않는 이유 — playbook/INDEX.md 의 `LOCK_YN`.
 sample.offset.empty,FRONT,조회 결과 0건.
 sample.offset.grid.title,FRONT,그리드 제목 — 이 화면은 그리드가 하나다.
 sample.order.empty,FRONT,마스터 0건.
 sample.order.grid.title,FRONT,위 pane 그리드의 제목.
-sample.popup.customer,FRONT,고객 참조 팝업 — 레지스트리 키 `sample.customer` 가 쓰는 문구(68 §9.4).
+sample.popup.customer,FRONT,고객 참조 팝업 — 레지스트리 키 `sample.customer` 가 쓰는 문구(playbook/INDEX.md).
 sample.popup.customer.grd,FRONT,
 sample.popup.customer.id,FRONT,
 sample.popup.customer.nm,FRONT,
-sample.popup.tag,FRONT,"태그 후보 팝업 — 레지스트리 키 `sample.tag` 가 쓰는 제목(68 §9.6). **`listModal` 의 창과 갈린다.** 저것은 *편집하는 창*(쌓고 순서를 바꾸고 뺀다)이라 제목이 **컬럼 헤더**이고, 이것은 그 위에 뜨는 **고르는 창**이다 — 껍데기가 하나이고 레지스트리가 정하는 것이 후자다(grid-column-contract.md §5.6). 헤더를 그대로 쓰면 모달 위에 모달이 뜬 화면에서 **제목이 같은 창 둘**이 겹친다. /"
+sample.popup.tag,FRONT,"태그 후보 팝업 — 레지스트리 키 `sample.tag` 가 쓰는 제목(playbook/INDEX.md). **`listModal` 의 창과 갈린다.** 저것은 *편집하는 창*(쌓고 순서를 바꾸고 뺀다)이라 제목이 **컬럼 헤더**이고, 이것은 그 위에 뜨는 **고르는 창**이다 — 껍데기가 하나이고 레지스트리가 정하는 것이 후자다(frontend/grid.md). 헤더를 그대로 쓰면 모달 위에 모달이 뜬 화면에서 **제목이 같은 창 둘**이 겹친다. /"
 sample.recalc.baseDt,FRONT,
 sample.recalc.running,FRONT,진행률 모달이 도는 동안 보이는 문구 — 퍼센트만으로는 멈춘 것과 느린 것이 같다.
 sample.recalc.vatRate,FRONT,
-sample.rmk.required,FRONT,조건부 필수 — `DC_RT > 0` 이면 비고가 필수다(68 §3.2 · grid-column-contract.md §5.1).
+sample.rmk.required,FRONT,조건부 필수 — `DC_RT > 0` 이면 비고가 필수다(playbook/INDEX.md · frontend/grid.md).
 sample.tab.item,FRONT,
 sample.tab.tag,FRONT,
 sample.tag.empty,FRONT,
 sample.tag.grid.title,FRONT,
 sample.tag.modal.title,NONE,`listModal` 에디터의 제목 — 태그를 편집하는 창(68 §9.6).
-sample.tag.sortDuplicated,FRONT,정렬순서가 겹쳤다 — 그리드 층의 검증(grid-edit-validation.md §3.2). 서버도 같은 것을 본다.
-sample.tag.tooMany,FRONT,"태그가 상한을 넘었다 — 48 §8 의 결정. `{max}` 를 채운다. **층이 둘인데 문구는 하나다**(grid-edit-validation.md §3.2) — ①은 컬럼 층에서 배열을 세고 ⑤는 그리드 층에서 행을 세는데, 사용자가 알아야 하는 사실은 *이 주문에 태그가 몇 개까지* 하나다. 서버도 같은 것을 본다(`err.sample.tag-too-many`). /"
+sample.tag.sortDuplicated,FRONT,정렬순서가 겹쳤다 — 그리드 층의 검증(frontend/grid.md). 서버도 같은 것을 본다.
+sample.tag.tooMany,FRONT,"태그가 상한을 넘었다 — playbook/INDEX.md 의 결정. `{max}` 를 채운다. **층이 둘인데 문구는 하나다**(frontend/grid.md) — ①은 컬럼 층에서 배열을 세고 ⑤는 그리드 층에서 행을 세는데, 사용자가 알아야 하는 사실은 *이 주문에 태그가 몇 개까지* 하나다. 서버도 같은 것을 본다(`err.sample.tag-too-many`). /"
 sample.yn.n,FRONT,
-sample.yn.y,FRONT,조회조건의 Y/N 콤보 — **`select` 이지 스위치가 아니다**(search-form-contract.md §3.1).
-screen.denied,FRONT,권한 없는 경로로 직접 들어왔을 때의 토스트(frontend-stack.md §5).
-screen.error.title,FRONT,탭 화면이 예외를 던졌을 때(에러 바운더리는 탭 단위다 — main-shell.md §6).
+sample.yn.y,FRONT,조회조건의 Y/N 콤보 — **`select` 이지 스위치가 아니다**(frontend/search-form.md).
+screen.denied,FRONT,권한 없는 경로로 직접 들어왔을 때의 토스트(frontend/packages.md).
+screen.error.title,FRONT,탭 화면이 예외를 던졌을 때(에러 바운더리는 탭 단위다 — frontend/tabs.md).
 screen.missing.desc,FRONT,그 안내의 본문 — `{menuCd}` · `{menuUrl}`.
 screen.missing.title,FRONT,`screenRegistry` 에 컴포넌트가 없는 메뉴를 열었을 때 — `{menu}`.
 screenTabs.dirty.content,FRONT,미저장인 채로 다른 모드로 옮기려 할 때의 본문. 탭 닫기 문구를 쓰지 않는다. 저기는 *닫으면 잃는다* 인데 여기서는 화면이 남아 있다 — 같은 말을 쓰면 사용자는 탭이 닫히는 줄 알고 멈춘다. 잃는 것은 같으므로 제목은 함께 쓴다. /
 search.all,FRONT,값을 고르지 않았을 때의 콤보 항목.
-search.op.between,FRONT,연산자 셀렉터 — 두 끝 사이. 크기 계열의 첫 실물이다(search-form-contract.md §3.4).
+search.op.between,FRONT,연산자 셀렉터 — 두 끝 사이. 크기 계열의 첫 실물이다(frontend/search-form.md).
 search.op.contains,FRONT,연산자 셀렉터 — 부분 일치.
 search.op.endsWith,FRONT,연산자 셀렉터 — 끝 문자 일치.
 search.op.eq,FRONT,연산자 셀렉터 — 같음.
-search.op.gt,FRONT,연산자 셀렉터 — 초과(`>`). 크기 계열의 넷째 실물이다(68 §9.12). 이상과 한 글자 차이라 글자가 일해야 한다. 기호(`>`)는 `≥` 와 밑줄 하나 차이이고 좁은 칸에서는 그 차이가 안 보인다 — 이름이 초과 라고 말해야 사람이 경계값이 들어가는지를 안다. /
-search.op.gte,FRONT,연산자 셀렉터 — 이상(`>=`). 크기 계열의 둘째 실물이다(search-form-contract.md §3.4). 65 §4.7 의 *소요 시간 이상* 이 처음 요구했다. /
+search.op.gt,FRONT,연산자 셀렉터 — 초과(`>`). 크기 계열의 넷째 실물이다(playbook/INDEX.md). 이상과 한 글자 차이라 글자가 일해야 한다. 기호(`>`)는 `≥` 와 밑줄 하나 차이이고 좁은 칸에서는 그 차이가 안 보인다 — 이름이 초과 라고 말해야 사람이 경계값이 들어가는지를 안다. /
+search.op.gte,FRONT,연산자 셀렉터 — 이상(`>=`). 크기 계열의 둘째 실물이다(frontend/search-form.md). screen/batch/schedule/requirements.md 의 *소요 시간 이상* 이 처음 요구했다. /
 search.op.in,FRONT,연산자 셀렉터 — 여럿 중 하나. 고르면 콤보가 다중 선택이 된다(`부분 일치` 와 다르다).
 search.op.isNotNull,FRONT,연산자 셀렉터 — 값 있음. `in` 으로 표현할 방법이 아예 없는 조건이다.
-search.op.isNull,FRONT,연산자 셀렉터 — 값 없음. 고르면 값 칸이 사라진다(api-conventions.md §3.3).
-search.op.lt,FRONT,연산자 셀렉터 — 미만(`<`). 크기 계열의 다섯째이자 마지막이다(68 §9.12).
-search.op.lte,FRONT,연산자 셀렉터 — 이하(`<=`). 크기 계열의 셋째 실물이다(search-form-contract.md §3.4). 61 §3.3 의 기간 칸 둘이 처음 요구했다(2026-08-31). *한쪽만 아는 조건* 이 실제로 있다 — 이 날짜 이후로 한 번도 안 들어온 계정 이 `lte` 이고 그 반대가 `gte` 다. /
+search.op.isNull,FRONT,연산자 셀렉터 — 값 없음. 고르면 값 칸이 사라진다(backend/api.md).
+search.op.lt,FRONT,연산자 셀렉터 — 미만(`<`). 크기 계열의 다섯째이자 마지막이다(playbook/INDEX.md).
+search.op.lte,FRONT,연산자 셀렉터 — 이하(`<=`). 크기 계열의 셋째 실물이다(frontend/search-form.md). screen/user/requirements.md 의 기간 칸 둘이 처음 요구했다(2026-08-31). *한쪽만 아는 조건* 이 실제로 있다 — 이 날짜 이후로 한 번도 안 들어온 계정 이 `lte` 이고 그 반대가 `gte` 다. /
 search.op.ne,FRONT,연산자 셀렉터 — 같지 않음.
 search.op.startsWith,FRONT,연산자 셀렉터 — 시작 문자 일치.
-search.rangeTooWide,FRONT,기간이 상한을 넘었다 — `{days}`. 조용히 자르지 않는다(64 §3.7).
-search.required,FRONT,필수 조건을 비우고 조회했다 — 64 §2.2. 조회 자체가 일어나지 않는다.
-search.reset,FRONT,폼의 유일한 버튼 — 조건과 컬럼 필터를 함께 지운다(grid-standard.md §2.4).
+search.rangeTooWide,FRONT,기간이 상한을 넘었다 — `{days}`. 조용히 자르지 않는다(screen/log/access/requirements.md).
+search.required,FRONT,필수 조건을 비우고 조회했다 — screen/log/access/requirements.md. 조회 자체가 일어나지 않는다.
+search.reset,FRONT,폼의 유일한 버튼 — 조건과 컬럼 필터를 함께 지운다(frontend/grid.md).
 searchCond.default,FRONT,기본 조건 체크박스 — 화면에 들어올 때 이 조건으로 폼이 채워진다.
 searchCond.default.mark,FRONT,목록에서 기본 조건임을 나타내는 표시의 이름.
 searchCond.delete,FRONT,항목의 삭제 버튼 — 아이콘만 보인다.
 searchCond.delete.confirm,FRONT,삭제 확인의 본문 — `{name}`. 되돌릴 수 없다.
 searchCond.empty,FRONT,저장된 것이 하나도 없을 때 목록에 나오는 문구.
-searchCond.name,FRONT,그 모달의 이름 칸 라벨 — 화면 안에서 중복될 수 없다(search-form-contract.md §5.4).
+searchCond.name,FRONT,그 모달의 이름 칸 라벨 — 화면 안에서 중복될 수 없다(frontend/search-form.md).
 searchCond.name.required,FRONT,이름을 비운 채 저장하려 했을 때.
 searchCond.overwrite,FRONT,같은 이름이 이미 있을 때의 안내 — 막지 않고 덮어쓴다는 것을 말한다.
 searchCond.save,FRONT,목록 아래의 항목 — 지금 폼에 채워진 값을 이름 붙여 담는다.
@@ -1019,7 +1019,7 @@ session.expiry.logout,FRONT,연장하지 않고 지금 끝낸다.
 session.expiry.timeout,FRONT,연장하지 않아 자동으로 끝났을 때.
 session.expiry.title,FRONT,만료 5분 전에 뜨는 모달의 제목.
 session.noAuthority,FRONT,권한이 통째로 사라져 로그아웃할 때의 토스트.
-session.passwordChange.desc,FRONT,그 화면이 아직 없다는 안내 — 비밀번호 변경 화면(60 §4)이 오면 사라진다.
+session.passwordChange.desc,FRONT,그 화면이 아직 없다는 안내 — 비밀번호 변경 화면(screen/_standalone/README.md)이 오면 사라진다.
 session.passwordChange.title,FRONT,비밀번호를 바꿔야 계속할 수 있는 제한 세션의 안내 제목(체인 #5).
 settings.colorTone,FRONT,중립 회색의 색조.
 settings.colorTone.cold,FRONT,색 톤 — 차가움(파란 기미).
@@ -1027,11 +1027,11 @@ settings.colorTone.green,FRONT,색 톤 — 초록(눈이 덜 피로하다는 선
 settings.colorTone.neutral,FRONT,색 톤 — 중립.
 settings.colorTone.warm,FRONT,색 톤 — 따뜻함(노란 기미).
 settings.compact,FRONT,AntD `compactAlgorithm` — 여백을 줄인다.
-settings.density.black,FRONT,"다크일 때의 바탕 농도(%) — 100% 가 완전한 검은색, 낮출수록 회색이다. 같은 값의 다른 이름이다. 눈금도 저장되는 값도 하나이고 무엇의 농도인가 만 모드를 따라 갈린다 — 한 이름으로 부르면 절반은 거짓말이 된다(main-shell.md §9.7). /"
+settings.density.black,FRONT,"다크일 때의 바탕 농도(%) — 100% 가 완전한 검은색, 낮출수록 회색이다. 같은 값의 다른 이름이다. 눈금도 저장되는 값도 하나이고 무엇의 농도인가 만 모드를 따라 갈린다 — 한 이름으로 부르면 절반은 거짓말이 된다(frontend/tabs.md). /"
 settings.density.white,FRONT,"라이트일 때의 바탕 농도(%) — 100% 가 완전한 흰색, 낮출수록 회색이다."
 settings.fontFamily,FRONT,글꼴 이름.
 settings.fontFamily.default,FRONT,판의 기본 글꼴을 쓴다.
-settings.fontFamily.loadLocal,FRONT,설치된 글꼴 목록을 읽는 버튼 — 누를 때 권한 프롬프트가 뜬다(main-shell.md §9.3).
+settings.fontFamily.loadLocal,FRONT,설치된 글꼴 목록을 읽는 버튼 — 누를 때 권한 프롬프트가 뜬다(frontend/tabs.md).
 settings.fontFamily.localDenied,FRONT,목록을 못 읽었을 때 — 기본 목록으로 떨어진다. 기능 실패가 아니다.
 settings.fontSize,FRONT,기본 글자 크기.
 settings.fontWeight,FRONT,본문 글자의 굵기 — 크기와 다른 축이다.
@@ -1046,11 +1046,11 @@ settings.group.general,FRONT,그룹 — 일반.
 settings.group.grid,FRONT,그룹 — 그리드. 전역 표시 속성이며 컬럼 구성(UX-06)과 다른 것이다.
 settings.group.theme,FRONT,그룹 — 테마.
 settings.headerAutoHide,FRONT,헤더를 감췄다가 위 가장자리에 마우스를 대면 화면 위로 내려오게 한다.
-settings.language,FRONT,언어 — 유일하게 서버에 저장되는 항목이다(main-shell.md §9.1).
+settings.language,FRONT,언어 — 유일하게 서버에 저장되는 항목이다(frontend/tabs.md).
 settings.language.confirm.body,FRONT,그 본문.
 settings.language.confirm.title,FRONT,언어를 바꾸기 전 확인의 제목 — 재로드는 모든 탭을 닫는 것이다.
 settings.primaryColor,FRONT,강조색 — 버튼과 그리드의 선택 표시가 이 색에서 나온다.
-settings.primaryColor.contrast,FRONT,고른 색의 대비가 모자랄 때 — 막지는 않는다(main-shell.md §9.4).
+settings.primaryColor.contrast,FRONT,고른 색의 대비가 모자랄 때 — 막지는 않는다(frontend/tabs.md).
 settings.primaryColor.default,FRONT,강조색을 판의 기본값으로 되돌리는 항목.
 settings.reset.all,FRONT,전부 기본값으로.
 settings.reset.group,FRONT,이 그룹만 기본값으로 되돌린다.
@@ -1065,7 +1065,7 @@ shell.entry.empty.favorite,FRONT,즐겨찾기가 비었다 — 넣는 방법까�
 shell.entry.empty.frequent,FRONT,자주 쓰는 메뉴가 비었다 — 쓰다 보면 저절로 찬다.
 shell.entry.empty.pending,NONE,자주 쓰는 메뉴 — 담을 테이블이 아직 없다(42 §8).
 shell.entry.empty.recent,FRONT,
-shell.entry.filter,FRONT,탭 안에서 그 목록만 거른다 — 전체 메뉴 검색과 다른 일이다(main-shell.md §4.3).
+shell.entry.filter,FRONT,탭 안에서 그 목록만 거른다 — 전체 메뉴 검색과 다른 일이다(frontend/tabs.md).
 shell.entry.frequent.count,FRONT,그 메뉴를 연 횟수 — `{count}`. 순위의 근거다.
 shell.entry.frequent.since,FRONT,자주 쓰는 메뉴를 센 기간 — `{from}` 은 시작 달이다.
 shell.entry.search.prompt,FRONT,아직 묻지 않았다 — 물었는데 없는 것과 다르다.
@@ -1073,8 +1073,8 @@ shell.entry.tab.favorite,FRONT,
 shell.entry.tab.frequent,FRONT,
 shell.entry.tab.recent,FRONT,
 shell.entry.tab.search,FRONT,
-shell.entry.title,FRONT,진입 모달의 제목 — 검색·즐겨찾기·최근·자주가 한 창이다(main-shell.md §4.3).
-shell.logout,FRONT,헤더의 로그아웃 버튼(main-shell.md §3.2 — 독립 버튼이다).
+shell.entry.title,FRONT,진입 모달의 제목 — 검색·즐겨찾기·최근·자주가 한 창이다(frontend/tabs.md).
+shell.logout,FRONT,헤더의 로그아웃 버튼(frontend/tabs.md — 독립 버튼이다).
 shell.notification,FRONT,헤더의 알림 버튼과 모달의 제목.
 shell.reload,FRONT,그 확인의 실행 버튼.
 shell.search.count,FRONT,결과 건수 — `{count}`.
@@ -1085,7 +1085,7 @@ shell.search.tooltip,NONE,검색 칸의 툴팁 — 단축키를 여기서 말한
 shell.sider.collapse,FRONT,펼친 사이더를 접는 버튼의 대체 텍스트.
 shell.sider.expand,FRONT,접힌 사이더를 펼치는 버튼의 대체 텍스트.
 shell.theme.dark,FRONT,다크 테마의 이름.
-shell.theme.light,FRONT,라이트 테마의 이름 — 설정 모달의 모드 선택지다(main-shell.md §9.7).
+shell.theme.light,FRONT,라이트 테마의 이름 — 설정 모달의 모드 선택지다(frontend/tabs.md).
 shell.theme.system,FRONT,OS 설정을 따르는 테마의 이름.
 shell.theme.toggle,NONE,테마 전환 버튼의 대체 텍스트.
 shell.theme.tooltip,NONE,테마 전환 버튼의 툴팁 — `{mode}` 는 현재 모드 이름.
@@ -1093,7 +1093,7 @@ shell.tree.collapseAll,FRONT,사람이 연 폴더를 전부 접는다 — 활성
 shell.tree.expandAll,FRONT,트리의 폴더를 전부 편다.
 system.info,FRONT,알림 모달 우측 하단의 버튼과 팝오버의 제목.
 system.info.buildTime,FRONT,빌드 시각 = 배포된 것이 만들어진 때.
-system.info.cacheVersion,FRONT,캐시 버전 — 프론트가 들고 있는 값과 대조할 근거다(43 §8.1).
+system.info.cacheVersion,FRONT,캐시 버전 — 프론트가 들고 있는 값과 대조할 근거다(sys/code.md).
 system.info.commit,FRONT,git 리비전. `-dirty` 가 붙었으면 고친 것이 있는 채로 만든 빌드다.
 system.info.profile,FRONT,활성 Spring 프로필.
 system.info.profile.default,FRONT,프로필을 하나도 지정하지 않고 도는 중 — 빈 칸으로 두면 조회 실패로 보인다.
@@ -1105,7 +1105,7 @@ tab.closeAll,FRONT,"탭 우클릭 메뉴의 ""모든 탭 닫기""."
 tab.closeOthers,FRONT,"탭 우클릭 메뉴의 ""다른 탭 닫기"" — 현재 탭과 대시보드를 남긴다."
 tab.dirty.close.content,FRONT,그 확인의 본문 — 닫으면 잃는다는 것을 알린다.
 tab.dirty.logout.content,FRONT,미저장 상태로 로그아웃하려 할 때의 본문.
-tab.dirty.reload.content,FRONT,로고를 눌러 앱을 다시 띄울 때의 확인 — `{tabs}`(main-shell.md §3.1). 닫기와 문구가 다르다. 닫는 것이 아니라 브라우저를 새로 그린다는 것을 말해야 사용자가 무엇을 잃는지 안다. /
+tab.dirty.reload.content,FRONT,로고를 눌러 앱을 다시 띄울 때의 확인 — `{tabs}`(frontend/tabs.md). 닫기와 문구가 다르다. 닫는 것이 아니라 브라우저를 새로 그린다는 것을 말해야 사용자가 무엇을 잃는지 안다. /
 tab.dirty.title,FRONT,저장하지 않은 변경이 있는 탭을 닫으려 할 때의 제목.
 tab.limit.content,FRONT,그 확인 모달의 본문 — `{name}` 은 닫힐 탭의 제목.
 tab.limit.contentDirty,FRONT,닫힐 탭에 저장하지 않은 변경이 있을 때의 본문 — `{name}`.
@@ -1115,141 +1115,141 @@ tab.openNewInstance,FRONT,"트리 우클릭 메뉴의 ""새 탭으로 열기"" �
 tab.openNewWindow,FRONT,브라우저 창을 하나 더 열어 그 메뉴를 띄운다 — 앱 안의 탭이 아니다.
 user.action.dormantRelease,FRONT,①의 실행 — 휴면 해제. 메일이 안 되는 환경을 위한 관리자 경로다.
 user.action.passwordReset,FRONT,①의 실행 — 비밀번호 초기화(AUTH-07). **잠금은 풀리지 않는다**.
-user.action.unlock,FRONT,①의 실행 — 잠금 해제(AUTH-04). 액션은 `SAVE` 다(61 §3.4.1).
+user.action.unlock,FRONT,①의 실행 — 잠금 해제(AUTH-04). 액션은 `SAVE` 다(screen/user/requirements.md).
 user.col.accountStat,FRONT,컬럼 — 계정 상태(파생).
-user.col.accountStat.tip,FRONT,"그 헤더의 한 줄 설명 — **넷을 하나로 접은 값**이라는 사실을 말한다. 접은 것을 말하지 않으면 *""잠금을 풀었는데 여전히 못 쓴다""* 의 이유(미사용이 함께 걸려 있었다)를 화면에서 읽을 수 없다(61 §3.2.1). /"
+user.col.accountStat.tip,FRONT,"그 헤더의 한 줄 설명 — **넷을 하나로 접은 값**이라는 사실을 말한다. 접은 것을 말하지 않으면 *""잠금을 풀었는데 여전히 못 쓴다""* 의 이유(미사용이 함께 걸려 있었다)를 화면에서 읽을 수 없다(screen/user/requirements.md). /"
 user.col.dormantYn,FRONT,컬럼 — 휴면. **읽기 전용**이다.
 user.col.email,FRONT,컬럼 — 이메일. 임시 비밀번호의 발송처다(AUTH-07).
 user.col.lastLoginDtm,FRONT,컬럼 — 최종 로그인. 휴면 판정의 근거다.
-user.col.localeCd,FRONT,컬럼 — 언어. 서버가 알아야 하는 값이다(41 §4.3).
+user.col.localeCd,FRONT,컬럼 — 언어. 서버가 알아야 하는 값이다(sys/user-role.md).
 user.col.lockDtm,FRONT,컬럼 — 잠금 시각.
 user.col.lockYn,FRONT,컬럼 — 잠금. **읽기 전용**이며 푸는 것은 ①의 버튼이다.
 user.col.loginFailCnt,FRONT,컬럼 — 로그인 실패 횟수. 잠금 직전 진단용이다.
 user.col.pwdChgDtm,FRONT,컬럼 — 비밀번호 변경일. 만료 임박 확인용이다.
 user.col.pwdInitYn,FRONT,컬럼 — 임시 비밀번호(발급 후 미변경).
-user.col.useYn,FRONT,컬럼 — 사용 여부. **관리자가 건다**(61 §2.3).
-user.col.userId,FRONT,컬럼 — 로그인 ID. PK 이며 신규 행에서만 열린다(41 §3).
+user.col.useYn,FRONT,컬럼 — 사용 여부. **관리자가 건다**(screen/user/requirements.md).
+user.col.userId,FRONT,컬럼 — 로그인 ID. PK 이며 신규 행에서만 열린다(sys/user-role.md).
 user.col.userNm,FRONT,컬럼 — 이름.
 user.col.validFromDt,FRONT,컬럼 — 사용 기간 시작.
 user.col.validToDt,FRONT,컬럼 — 사용 기간 종료.
-user.detail.empty,FRONT,"아직 아무도 고르지 않았다 — *""사용자를 선택하세요""*(grid-standard.md §6.1). **비활성되는 것은 버튼이지 탭이 아니다**(61 §3.9). 탭은 열리되 비어 있고 안내가 뜬다 — 탭을 잠그면 *""이 사용자에게 역할 탭이 없나""* 로 읽힌다. /"
-user.detail.locked,FRONT,"미저장 신규 행을 골랐다 — *""저장 후 편집할 수 있습니다""*(grid-standard.md §6.1). `SYS_USER_ROLE` 이 `SYS_USER` 를 FK 로 참조하므로(41 §8) **부모가 저장되기 전에는 자식을 만들 수 없다.** 빈 상태와 **같은 빈 판이지만 다음에 할 일이 다르다**. /"
-user.duplicate,FRONT,같은 그리드 안에 같은 로그인 ID 가 둘이다 — 화면이 판정할 수 있는 중복이다(grid-edit-validation.md §3.2).
-user.eff.col.grantRsn,FRONT,컬럼 — 사유. 개인 예외 경유일 때만 있다(역할 부여에는 사유가 없다 — 42 §3.2).
+user.detail.empty,FRONT,"아직 아무도 고르지 않았다 — *""사용자를 선택하세요""*(frontend/grid.md). **비활성되는 것은 버튼이지 탭이 아니다**(screen/user/requirements.md). 탭은 열리되 비어 있고 안내가 뜬다 — 탭을 잠그면 *""이 사용자에게 역할 탭이 없나""* 로 읽힌다. /"
+user.detail.locked,FRONT,"미저장 신규 행을 골랐다 — *""저장 후 편집할 수 있습니다""*(frontend/grid.md). `SYS_USER_ROLE` 이 `SYS_USER` 를 FK 로 참조하므로(sys/user-role.md) **부모가 저장되기 전에는 자식을 만들 수 없다.** 빈 상태와 **같은 빈 판이지만 다음에 할 일이 다르다**. /"
+user.duplicate,FRONT,같은 그리드 안에 같은 로그인 ID 가 둘이다 — 화면이 판정할 수 있는 중복이다(frontend/grid.md).
+user.eff.col.grantRsn,FRONT,컬럼 — 사유. 개인 예외 경유일 때만 있다(역할 부여에는 사유가 없다 — sys/menu.md).
 user.eff.col.menu,FRONT,컬럼 — 메뉴(조상 경로 포함).
 user.eff.col.state,FRONT,컬럼 — 상태. 부여가 없는 행에서는 비어 있다.
-user.eff.col.via,FRONT,컬럼 — 출처. 역할명이거나 개인 예외다(security-design.md §4 의 두 갈래).
+user.eff.col.via,FRONT,컬럼 — 출처. 역할명이거나 개인 예외다(backend/security.md 의 두 갈래).
 user.eff.empty,FRONT,조회 결과가 비었다.
-user.eff.gate,FRONT,부여는 살아 있는데 **대상이 죽었다** — 게이트 ④(security-design.md §4). 행의 배지 사유다.
+user.eff.gate,FRONT,부여는 살아 있는데 **대상이 죽었다** — 게이트 ④(backend/security.md). 행의 배지 사유다.
 user.eff.inactive,FRONT,부여가 예정이거나 만료다 — 지금은 효력이 없다. 〃
-user.eff.none,FRONT,**유효 권한이 공집합이다** — 배너로 먼저 알린다(61 §3.8.1). 그 계정은 **다음 로그인부터 차단된다**(security-design.md §4). 탭을 열어 빈 표를 보고 유추하게 두지 않는다 — 빈 표는 *조회가 안 된 것* 으로도 읽힌다. /
-user.eff.scope,FRONT,헤더 ⓐ 의 셀렉트 라벨 — 표시 범위(grid-api-contract.md §3.2 의 `select` 첫 실물).
-user.eff.scope.all,FRONT,"범위 — 전체 메뉴. **없는 것도 보여야 한다**(61 §3.8.1 의 요구 2). *""왜 못 보나""* 는 **권한이 없는 행**에 답이 있다 — 가진 것만 보여주면 이 탭은 진단이 아니라 요약이다. /"
+user.eff.none,FRONT,**유효 권한이 공집합이다** — 배너로 먼저 알린다(screen/user/requirements.md). 그 계정은 **다음 로그인부터 차단된다**(backend/security.md). 탭을 열어 빈 표를 보고 유추하게 두지 않는다 — 빈 표는 *조회가 안 된 것* 으로도 읽힌다. /
+user.eff.scope,FRONT,헤더 ⓐ 의 셀렉트 라벨 — 표시 범위(frontend/grid.md 의 `select` 첫 실물).
+user.eff.scope.all,FRONT,"범위 — 전체 메뉴. **없는 것도 보여야 한다**(screen/user/requirements.md 의 요구 2). *""왜 못 보나""* 는 **권한이 없는 행**에 답이 있다 — 가진 것만 보여주면 이 탭은 진단이 아니라 요약이다. /"
 user.eff.scope.held,FRONT,범위 — 가진 것만. 기본값이다.
 user.eff.title,FRONT,탭 5 의 제목.
 user.eff.via.none,FRONT,출처가 없다 — **부여 자체가 없는 행**이다(전체 메뉴 모드에서만 나온다).
 user.eff.via.personal,FRONT,출처가 개인 예외다 — 서버가 보내는 `PERSONAL` 을 화면이 이 글자로 바꾼다.
 user.grant.col.action,FRONT,컬럼 — 액션.
-user.grant.col.grantRsn,FRONT,컬럼 — 사유. **이 행이 곧 감사 기록**이다(ADR-0010).
+user.grant.col.grantRsn,FRONT,컬럼 — 사유. **이 행이 곧 감사 기록**이다(sys/logs.md).
 user.grant.col.menu,FRONT,컬럼 — 메뉴(조상 경로 포함).
-user.grant.col.menuOk,FRONT,컬럼 — 대상 메뉴가 살아 있는가(게이트 ④ — security-design.md §4).
+user.grant.col.menuOk,FRONT,컬럼 — 대상 메뉴가 살아 있는가(게이트 ④ — backend/security.md).
 user.grant.empty,FRONT,개인 예외가 하나도 없다.
-user.grant.readonly,FRONT,"메뉴 컬럼의 헤더 툴팁 — **여기서는 고칠 수 없다**(61 §5). 사용자 관리 권한이 있다고 예외 권한 부여 권한이 따라오면 안 되며, 권한은 `(MENU_CD, ACTION_CD)` 쌍이므로 **메뉴가 갈려야 갈린다**. 회색 그리드만 두면 *""왜 안 고쳐지나""* 가 된다. /"
+user.grant.readonly,FRONT,"메뉴 컬럼의 헤더 툴팁 — **여기서는 고칠 수 없다**(screen/user/requirements.md). 사용자 관리 권한이 있다고 예외 권한 부여 권한이 따라오면 안 되며, 권한은 `(MENU_CD, ACTION_CD)` 쌍이므로 **메뉴가 갈려야 갈린다**. 회색 그리드만 두면 *""왜 안 고쳐지나""* 가 된다. /"
 user.grant.title,FRONT,탭 2 의 제목.
 user.grid.title,FRONT,마스터 그리드의 제목.
 user.ip.col.ipCidr,FRONT,컬럼 — 단일 IP 또는 CIDR. **PK 의 절반**이라 고치지 않고 지우고 다시 넣는다.
-user.ip.col.useYn,FRONT,컬럼 — 사용. **지우지 않고 끄는** 수단이다(41 §7).
-user.ip.col.validFromDt,FRONT,"컬럼 — 허용 기간의 시작(2026-08-31 · 41 §7). **파견·출장처럼 기한이 있는 접근**이 이 기능의 둘째 용도다. 기간이 없으면 그 대역을 사람이 기억해서 지워야 하고, 잊으면 **끝난 계약의 IP 가 열려 있는 상태**가 된다. /"
-user.ip.col.validToDt,FRONT,〃 종료. **양끝 포함**이며 비우면 제한 없음이다(40 §4.3).
+user.ip.col.useYn,FRONT,컬럼 — 사용. **지우지 않고 끄는** 수단이다(sys/user-role.md).
+user.ip.col.validFromDt,FRONT,"컬럼 — 허용 기간의 시작(2026-08-31 · sys/user-role.md). **파견·출장처럼 기한이 있는 접근**이 이 기능의 둘째 용도다. 기간이 없으면 그 대역을 사람이 기억해서 지워야 하고, 잊으면 **끝난 계약의 IP 가 열려 있는 상태**가 된다. /"
+user.ip.col.validToDt,FRONT,〃 종료. **양끝 포함**이며 비우면 제한 없음이다(sys/INDEX.md).
 user.ip.duplicate,FRONT,같은 대역이 이미 목록에 있다.
-user.ip.empty,FRONT,"허용 대역이 하나도 없다 — **제한 없음이라고 말한다**(41 §7). *""등록된 대역이 없습니다""* 로 끝내면 **지금 이 계정이 어디서든 들어올 수 있다**는 사실을 아무도 말하지 않는다. 빈 화이트리스트를 전면 차단으로 읽는 오해가 정확히 반대편에 있고, 그 오해는 관리자 계정에서 사고가 된다. /"
-user.ip.malformed,FRONT,IP 도 CIDR 도 아니다 — 서버가 다시 본다(grid-edit-validation.md §3.4).
+user.ip.empty,FRONT,"허용 대역이 하나도 없다 — **제한 없음이라고 말한다**(sys/user-role.md). *""등록된 대역이 없습니다""* 로 끝내면 **지금 이 계정이 어디서든 들어올 수 있다**는 사실을 아무도 말하지 않는다. 빈 화이트리스트를 전면 차단으로 읽는 오해가 정확히 반대편에 있고, 그 오해는 관리자 계정에서 사고가 된다. /"
+user.ip.malformed,FRONT,IP 도 CIDR 도 아니다 — 서버가 다시 본다(frontend/grid.md).
 user.ip.period.tip,FRONT,두 컬럼의 헤더 툴팁 — **판정 시각이 서버 기준**이라는 사실을 말한다.
 user.ip.title,FRONT,탭 3 의 제목.
-user.ip.warn.first,FRONT,첫 대역을 더할 때의 경고 — **그 순간 나머지 전부가 막힌다**. 행이 없으면 제한 없음이므로(41 §7) 첫 행 하나가 **정책을 켜는 스위치**다. 건수는 *얼마나* 를 말할 뿐이라 그것을 말하지 못한다(63 §4.4 가 연 자리). /
-user.issued.desc,FRONT,"그 안내 — **이 창을 닫으면 다시 볼 수 없다**. 값이 응답에만 있기 때문이다(61 §3.4). 말하지 않으면 관리자가 창을 닫고 나서 재발급을 누르는데, 그러면 방금 전한 값이 그 자리에서 무효가 된다. /"
+user.ip.warn.first,FRONT,첫 대역을 더할 때의 경고 — **그 순간 나머지 전부가 막힌다**. 행이 없으면 제한 없음이므로(sys/user-role.md) 첫 행 하나가 **정책을 켜는 스위치**다. 건수는 *얼마나* 를 말할 뿐이라 그것을 말하지 못한다(screen/code/requirements.md 가 연 자리). /
+user.issued.desc,FRONT,"그 안내 — **이 창을 닫으면 다시 볼 수 없다**. 값이 응답에만 있기 때문이다(screen/user/requirements.md). 말하지 않으면 관리자가 창을 닫고 나서 재발급을 누르는데, 그러면 방금 전한 값이 그 자리에서 무효가 된다. /"
 user.issued.expiry,FRONT,발급 값이 곧 만료된다는 안내 — `{hours}` 시간.
 user.issued.title,FRONT,발급 결과 모달의 제목.
 user.locale.en,FRONT,언어 후보 — 영어.
 user.locale.ko,FRONT,언어 후보 — 한국어. 조회조건과 셀 에디터가 같은 목록을 본다.
 user.period.reversed,FRONT,사용 기간의 시작이 종료보다 늦다.
-user.role.col.role,FRONT,컬럼 — 역할. **PK 의 절반**이라 신규 행에서만 열린다(42 §3.2).
+user.role.col.role,FRONT,컬럼 — 역할. **PK 의 절반**이라 신규 행에서만 열린다(sys/menu.md).
 user.role.col.roleDesc,FRONT,컬럼 — 설명.
 user.role.col.roleNm,FRONT,컬럼 — 역할명. 기본 정렬이 이것이다.
-user.role.col.roleUseYn,FRONT,컬럼 — **역할 자체**의 사용 여부. 부여의 것이 아니다(42 §3.1 의 AND).
+user.role.col.roleUseYn,FRONT,컬럼 — **역할 자체**의 사용 여부. 부여의 것이 아니다(sys/menu.md 의 AND).
 user.role.col.state,FRONT,컬럼 — 부여 상태. **기간에서 파생**한다.
 user.role.col.validFromDt,FRONT,컬럼 — 시작일. `null` 이 **무기한**이다.
-user.role.col.validToDt,FRONT,컬럼 — 종료일. 〃 **즉시 회수는 어제 날짜**다(42 §3.1).
-user.role.duplicate,FRONT,같은 역할을 두 번 줬다 — 화면이 판정할 수 있는 중복이다(grid-edit-validation.md §3.2).
+user.role.col.validToDt,FRONT,컬럼 — 종료일. 〃 **즉시 회수는 어제 날짜**다(sys/menu.md).
+user.role.duplicate,FRONT,같은 역할을 두 번 줬다 — 화면이 판정할 수 있는 중복이다(frontend/grid.md).
 user.role.empty,FRONT,부여가 하나도 없다 — 이 계정은 개인 예외로만 화면에 닿는다.
 user.role.off,FRONT,역할이 꺼져 있다 — **기간이 유효해도 지금은 아무 권한도 주지 않는다**. 배지의 사유다.
 user.role.title,FRONT,탭 1 의 제목.
-user.role.warn.revoke,FRONT,저장 확인 앞의 경고 — 회수하는 `{count}` 건은 **다음 로그인부터** 반영된다(security-design.md §4).
-user.search.accountStat,FRONT,조회조건 — 계정 상태(다중). 기본값이 *사용중* 셋이다(61 §3.3).
+user.role.warn.revoke,FRONT,저장 확인 앞의 경고 — 회수하는 `{count}` 건은 **다음 로그인부터** 반영된다(backend/security.md).
+user.search.accountStat,FRONT,조회조건 — 계정 상태(다중). 기본값이 *사용중* 셋이다(screen/user/requirements.md).
 user.search.days,FRONT,그 후보의 표시 — `{days}` 일 이내.
 user.search.email,FRONT,조회조건 — 이메일. 〃
 user.search.lastLoginDtm,FRONT,조회조건 — 최종 로그인 기간.
 user.search.regDtm,FRONT,조회조건 — 등록일 기간.
-user.search.roleExpiringInDays,FRONT,조회조건 — 역할 만료 예정 N일. 숫자 칸이 아니라 **후보 콤보**다. 파생 조건은 부등호를 받지 못하므로(api-conventions.md §3.5) *N일 이내* 라는 뜻을 번역 함수가 갖는다 — 그 김에 61 §6 의 *기본값 미결* 이 **기본값 없음**으로 닫힌다. /
-user.search.roleId,FRONT,조회조건 — 보유 역할. `EXISTS` 라 벤더 중립이다(61 §3.2.2).
-user.search.userId,FRONT,조회조건 — 로그인 ID. 앞 일치이며 PK 인덱스를 탄다(61 §3.3).
-user.search.userNm,FRONT,조회조건 — 이름. 부분 일치라 인덱스를 타지 않는다(61 §6 미결).
-user.selfDisable,FRONT,자기 계정의 사용 여부 셀을 끄려 했을 때 — **권한이 아니라 대상 제약**이다(61 §3.7.1).
-user.session.col.clientIp,FRONT,컬럼 — 접속 IP(2026-08-31). **세션 스토어에는 없는 값**이며 로그인 이력에서 온다. 담지 않고 조회 시점에 붙이므로 원본은 여전히 `SYS_LO_LOGIN` 하나다(45 §5). /
+user.search.roleExpiringInDays,FRONT,조회조건 — 역할 만료 예정 N일. 숫자 칸이 아니라 **후보 콤보**다. 파생 조건은 부등호를 받지 못하므로(backend/api.md) *N일 이내* 라는 뜻을 번역 함수가 갖는다 — 그 김에 screen/user/requirements.md 의 *기본값 미결* 이 **기본값 없음**으로 닫힌다. /
+user.search.roleId,FRONT,조회조건 — 보유 역할. `EXISTS` 라 벤더 중립이다(screen/user/requirements.md).
+user.search.userId,FRONT,조회조건 — 로그인 ID. 앞 일치이며 PK 인덱스를 탄다(screen/user/requirements.md).
+user.search.userNm,FRONT,조회조건 — 이름. 부분 일치라 인덱스를 타지 않는다(screen/user/requirements.md 미결).
+user.selfDisable,FRONT,자기 계정의 사용 여부 셀을 끄려 했을 때 — **권한이 아니라 대상 제약**이다(screen/user/requirements.md).
+user.session.col.clientIp,FRONT,컬럼 — 접속 IP(2026-08-31). **세션 스토어에는 없는 값**이며 로그인 이력에서 온다. 담지 않고 조회 시점에 붙이므로 원본은 여전히 `SYS_LO_LOGIN` 하나다(sys/logs.md). /
 user.session.col.created,FRONT,컬럼 — 생성 시각.
-user.session.col.current,FRONT,컬럼 — 현재 세션인가. 61 §3.7.1 의 **자기 자신 금지**를 눈으로 확인시킨다.
+user.session.col.current,FRONT,컬럼 — 현재 세션인가. screen/user/requirements.md 의 **자기 자신 금지**를 눈으로 확인시킨다.
 user.session.col.expiry,FRONT,컬럼 — 만료 예정 = 최근 접근 + 유휴 한도. **파생**이다.
-user.session.col.lastAccess,FRONT,컬럼 — 최근 접근. ***끊을까 말까* 를 가르는 값**이다(61 §3.8.2).
+user.session.col.lastAccess,FRONT,컬럼 — 최근 접근. ***끊을까 말까* 를 가르는 값**이다(screen/user/requirements.md).
 user.session.col.sessionId,FRONT,컬럼 — 세션. **앞 8자만** 그린다.
 user.session.col.userAgent,FRONT,〃 브라우저(`User-Agent`). `VARCHAR(500)` 이라 셀에서 잘리고 툴팁으로 펼친다.
 user.session.empty,FRONT,활성 세션이 없다 — 지금 아무 데도 들어와 있지 않다.
-user.session.fromLogin,FRONT,"두 컬럼의 헤더 툴팁 — **출처를 말한다**(64 §3.2.1 과 같은 규약). 이 컬럼을 어디까지 믿을 수 있나가 값의 옆에 없으면, **빈 칸이 결함으로** 읽히고 채워진 칸은 세션이 들고 있는 사실처럼 읽힌다. /"
+user.session.fromLogin,FRONT,"두 컬럼의 헤더 툴팁 — **출처를 말한다**(screen/log/access/requirements.md 과 같은 규약). 이 컬럼을 어디까지 믿을 수 있나가 값의 옆에 없으면, **빈 칸이 결함으로** 읽히고 채워진 칸은 세션이 들고 있는 사실처럼 읽힌다. /"
 user.session.kill,FRONT,실행 버튼 — 강제 종료(AUTH-10).
-user.session.kill.confirm,FRONT,"확인 문구 — **계정은 바뀌지 않는다**는 것을 말한다(61 §3.8.2). *""N건을 종료합니다""* 만으로는 **다시 로그인할 수 있다**는 사실이 빠진다 — 막으려면 `USE_YN='N'` 이고 그것은 **다른 축**이다(41 §4.2). 말하지 않으면 이 버튼이 계정을 잠그는 것으로 읽힌다. /"
+user.session.kill.confirm,FRONT,"확인 문구 — **계정은 바뀌지 않는다**는 것을 말한다(screen/user/requirements.md). *""N건을 종료합니다""* 만으로는 **다시 로그인할 수 있다**는 사실이 빠진다 — 막으려면 `USE_YN='N'` 이고 그것은 **다른 축**이다(sys/user-role.md). 말하지 않으면 이 버튼이 계정을 잠그는 것으로 읽힌다. /"
 user.session.kill.done,FRONT,결과 — `{count}` 건을 끊었다. **고른 수와 다를 수 있고 다른 것이 사실**이다.
-user.session.self,FRONT,버튼이 왜 비활성인가 — 자기 계정의 세션은 끊을 수 없다(61 §3.7.1).
+user.session.self,FRONT,버튼이 왜 비활성인가 — 자기 계정의 세션은 끊을 수 없다(screen/user/requirements.md).
 user.session.title,FRONT,탭 4 의 제목.
 user.stat.DISABLED,FRONT,`USE_YN='N'` — **관리자가 껐다**.
 user.stat.DORMANT,FRONT,`DORMANT_YN='Y'` — 배치가 걸었다.
 user.stat.EXPIRED,FRONT,오늘이 사용 기간 밖이다.
 user.stat.LOCKED,FRONT,`LOCK_YN='Y'` — 연속 실패로 시스템이 걸었다.
 user.stat.NORMAL,FRONT,접근 제어 체인 넷을 다 통과했다.
-user.state.ACTIVE,FRONT,상태 — 유효. 기간 안이다(**양끝 포함** — 40 §4.3).
-user.state.EXPIRED,FRONT,상태 — 만료. 종료일이 지났다. **행은 남는다** — 회수는 삭제가 아니다(42 §3.1).
+user.state.ACTIVE,FRONT,상태 — 유효. 기간 안이다(**양끝 포함** — sys/INDEX.md).
+user.state.EXPIRED,FRONT,상태 — 만료. 종료일이 지났다. **행은 남는다** — 회수는 삭제가 아니다(sys/menu.md).
 user.state.SCHEDULED,FRONT,상태 — 예정. 오늘이 시작일 전이다. 세 탭이 함께 쓴다.
-user.tab.effective,FRONT,탭 5 — 유효 권한. 52 §8 의 미결을 닫는 진단이다(61 §3.8.1).
-user.tab.grant,FRONT,탭 2 — 개인 예외(AUTHZ-07 조회). **조회 전용**이다(61 §5).
+user.tab.effective,FRONT,탭 5 — 유효 권한. sys/menu.md 의 미결을 닫는 진단이다(screen/user/requirements.md).
+user.tab.grant,FRONT,탭 2 — 개인 예외(AUTHZ-07 조회). **조회 전용**이다(screen/user/requirements.md).
 user.tab.ip,FRONT,탭 3 — 접속 IP(AUTH-08).
 user.tab.role,FRONT,탭 1 — 보유 역할(USER-03).
 user.tab.session,FRONT,탭 4 — 활성 세션(AUTH-10).
 user.warn.disable,FRONT,저장 확인 앞의 경고 — 사용 중지하는 `{count}` 건은 다음 로그인부터 막힌다.
-user.warn.newPassword,FRONT,저장 확인 앞의 경고 — 신규 `{count}` 건에 임시 비밀번호가 발급된다(61 §3.2).
+user.warn.newPassword,FRONT,저장 확인 앞의 경고 — 신규 `{count}` 건에 임시 비밀번호가 발급된다(screen/user/requirements.md).
 userAuth.col.action,FRONT,목록 컬럼 — 액션.
-userAuth.col.grantCnt,FRONT,좌 pane 컬럼 — **지금 유효한** 예외 건수(61 §4.2). 예정·만료를 세지 않는 것이 이름에 들어가야 했다 — *예외 건수* 로 두면 만료가 쌓인 계정에서 **화면의 어느 수와도 맞지 않는다**. /
+userAuth.col.grantCnt,FRONT,좌 pane 컬럼 — **지금 유효한** 예외 건수(screen/user/requirements.md). 예정·만료를 세지 않는 것이 이름에 들어가야 했다 — *예외 건수* 로 두면 만료가 쌓인 계정에서 **화면의 어느 수와도 맞지 않는다**. /
 userAuth.col.grantCnt.tip,FRONT,그 툴팁 — **무엇을 세지 않는지**를 말한다. 값만 보고는 알 수 없다.
-userAuth.col.grantRsn,FRONT,목록 컬럼 — 사유. 〃 이 행이 곧 감사 기록이다(ADR-0010).
+userAuth.col.grantRsn,FRONT,목록 컬럼 — 사유. 〃 이 행이 곧 감사 기록이다(sys/logs.md).
 userAuth.col.menu,FRONT,목록 컬럼 — 메뉴(조상 경로 포함).
-userAuth.col.state,FRONT,목록 컬럼 — 상태(예정 · 유효 · 만료). **기간에서 파생**한다(61 §4.7).
+userAuth.col.state,FRONT,목록 컬럼 — 상태(예정 · 유효 · 만료). **기간에서 파생**한다(screen/user/requirements.md).
 userAuth.col.validFromDt,FRONT,목록 컬럼 — 시작일. **필수**다.
-userAuth.col.validToDt,FRONT,목록 컬럼 — 종료일. 〃 **무기한이라는 선택지가 없다**(42 §6).
+userAuth.col.validToDt,FRONT,목록 컬럼 — 종료일. 〃 **무기한이라는 선택지가 없다**(sys/menu.md).
 userAuth.grant.empty,FRONT,예외가 하나도 없을 때 — **고장이 아니다**. 예외는 예외다.
 userAuth.grant.title,FRONT,하 pane 의 제목 — 예외 목록.
-userAuth.orphan,FRONT,부여는 있는데 그 액션이 정의에서 사라졌다 — **고아**다(ADR-0022).
-userAuth.period.reversed,FRONT,시작일이 종료일보다 늦다. **비어 있는 것은 여기서 말하지 않는다** — 컬럼의 `required` 가 그리드 공용 문구 (`grid.validation.required`)를 낸다(grid-column-contract.md §5.1). 같은 말을 화면마다 다시 적으면 그것이 곧 번역해야 할 문장이 하나 더 느는 일이다. /
+userAuth.orphan,FRONT,부여는 있는데 그 액션이 정의에서 사라졌다 — **고아**다(seed.md).
+userAuth.period.reversed,FRONT,시작일이 종료일보다 늦다. **비어 있는 것은 여기서 말하지 않는다** — 컬럼의 `required` 가 그리드 공용 문구 (`grid.validation.required`)를 낸다(frontend/grid.md). 같은 말을 화면마다 다시 적으면 그것이 곧 번역해야 할 문장이 하나 더 느는 일이다. /
 userAuth.read.off,FRONT,조회를 회수해서 나머지 `{count}` 건도 함께 회수됐다 — 〃.
-userAuth.read.on,FRONT,다른 액션을 켜서 조회가 함께 켜졌다 — **조용히 하지 않는다**(61 §4.4).
+userAuth.read.on,FRONT,다른 액션을 켜서 조회가 함께 켜졌다 — **조용히 하지 않는다**(screen/user/requirements.md).
 userAuth.read.viaRole,FRONT,역할이 조회를 주고 있어 조회를 따로 켜지 않았다 — 합집합이라 그것으로 충분하다.
 userAuth.revive.body,FRONT,그 본문 — `{from}` · `{to}` · `{reason}` 이 **대체될 이전 값**이다.
-userAuth.revive.title,FRONT,만료된 부여를 다시 켤 때의 확인 제목(61 §4.4).
+userAuth.revive.title,FRONT,만료된 부여를 다시 켤 때의 확인 제목(screen/user/requirements.md).
 userAuth.scheduled.keep,FRONT,예정 부여를 켜려 했을 때 — **값을 건드리지 않는다**. 고치려면 목록에서 고친다.
-userAuth.search.menu,FRONT,트리 검색 — 메뉴명. **거르지 않는다**(61 §4.3 · 62 §2.3 과 같은 어휘다).
-userAuth.search.user,FRONT,조회조건 — 사용자. **ID 와 이름을 함께** 본다(61 §4.3).
+userAuth.search.menu,FRONT,트리 검색 — 메뉴명. **거르지 않는다**(screen/user/requirements.md · screen/menu/requirements.md 과 같은 어휘다).
+userAuth.search.user,FRONT,조회조건 — 사용자. **ID 와 이름을 함께** 본다(screen/user/requirements.md).
 userAuth.state.ACTIVE,FRONT,상태 — 유효. 스위치가 켜지는 것은 이것 하나뿐이다.
 userAuth.state.EXPIRED,FRONT,상태 — 만료. 종료일이 지났다.
 userAuth.state.SCHEDULED,FRONT,상태 — 예정. 오늘이 시작일 전이다.
-userAuth.threshold,FRONT,한 번에 `{count}` 건을 골랐다 — *역할 신설을 검토하세요*(61 §4.4). **막지는 않는다**.
+userAuth.threshold,FRONT,한 번에 `{count}` 건을 골랐다 — *역할 신설을 검토하세요*(screen/user/requirements.md). **막지는 않는다**.
 userAuth.tree.empty,FRONT,"사용자를 고르기 전의 트리 — *""사용자를 선택하세요""*."
 userAuth.tree.title,FRONT,우 pane 의 제목 — 권한 트리.
 userAuth.user.title,FRONT,좌 pane 의 제목 — 사용자 목록.
-userAuth.viaRole,FRONT,역할 경유 배지의 툴팁 — `{roles}` 가 역할명 목록이다(61 §4.4).
+userAuth.viaRole,FRONT,역할 경유 배지의 툴팁 — `{roles}` 가 역할명 목록이다(screen/user/requirements.md).
 userAuth.viaRole.tag,FRONT,역할 경유 배지의 글자 — 좁은 칸이라 짧다. 이름은 툴팁이 말한다.

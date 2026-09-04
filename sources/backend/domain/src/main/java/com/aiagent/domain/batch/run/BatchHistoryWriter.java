@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 이력 행을 <b>즉시 보이게</b> 쓰는 자리 — 46 §6.
+ * 이력 행을 <b>즉시 보이게</b> 쓰는 자리 — sys/batch.md.
  *
  * <p>{@link BatchRunner} 에서 떼어 낸 이유는 <b>트랜잭션 경계가 실행과 반대</b>이기
  * 때문이다. 배치 본체는 트랜잭션 밖에서 오래 돌고(그 안에서 자기 트랜잭션을 연다),
@@ -29,9 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
  * </table>
  *
  * <p><b>{@code REQUIRES_NEW} 가 그 둘을 함께 표현한다.</b> 락 저장소가 같은 이유로 같은
- * 전파를 쓴다(31 §3 — <i>업무 롤백이 선점·해제를 되돌리면 안 된다</i>).
+ * 전파를 쓴다(backend/persistence.md — <i>업무 롤백이 선점·해제를 되돌리면 안 된다</i>).
  *
- * <p><b>{@code NODE_ID} 를 여기서 채운다.</b> 46 §2.5 가 세 테이블이 같은 규칙으로 이 값을
+ * <p><b>{@code NODE_ID} 를 여기서 채운다.</b> sys/batch.md 가 세 테이블이 같은 규칙으로 이 값을
  * 만든다고 했고 그 하나가 {@link NodeId} 다 — 러너가 문자열을 직접 만들면 락 테이블과
  * 대조가 깨진다.
  */
@@ -67,7 +67,7 @@ public class BatchHistoryWriter {
     }
 
     /**
-     * 건너뜀 — {@code RUNNING} 을 거치지 않는 두 갈래다(46 §6.1).
+     * 건너뜀 — {@code RUNNING} 을 거치지 않는 두 갈래다(sys/batch.md).
      *
      * <p>사유를 {@code RSLT_MSG} 에 적되 <b>판정은 코드가 갖는다</b> — 화면이 문자열을
      * 읽어 색을 정하면 문구를 고치는 순간 화면이 틀린다.
@@ -96,7 +96,7 @@ public class BatchHistoryWriter {
         histories.findById(histId).ifPresent(history -> {
             history.finish(rsltCd, clock.instant(), rsltMsg, rsltDtlMsg, errMsg);
             /*
-              <b>BATCH-06 이 여기 걸린다</b>(65 §3.11 · 66 §6.2). 러너에는 FAIL 을 적는
+              <b>BATCH-06 이 여기 걸린다</b>(screen/batch/schedule/requirements.md · screen/notice/requirements.md). 러너에는 FAIL 을 적는
               자리가 넷인데(큐 적재 실패 · 구현 없음 · 예외 · 유령), 거기에 각각 붙이면
               <b>하나를 빠뜨린 것을 아무도 모른다</b> — 드물게 타는 경로라 운영에서
               "알림이 안 왔다" 로만 드러난다.
@@ -111,11 +111,11 @@ public class BatchHistoryWriter {
     }
 
     /**
-     * 취소가 요청됐는가 — <b>배치가 체크포인트마다 부른다</b>(46 §6.2).
+     * 취소가 요청됐는가 — <b>배치가 체크포인트마다 부른다</b>(sys/batch.md).
      *
      * <p>매번 DB 를 읽는다. 요청은 <b>다른 노드의 화면</b>이 세우므로 메모리 플래그로는
      * 보이지 않는다 — 캐시하면 <i>중단이 안 먹는다</i> 가 되고, 그것이 운영자가 버튼을
-     * 다시 누르게 만드는 상황이다(65 §4.5).
+     * 다시 누르게 만드는 상황이다(screen/batch/schedule/requirements.md).
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public boolean isCancelRequested(Long histId) {
@@ -126,7 +126,7 @@ public class BatchHistoryWriter {
     }
 
     /**
-     * 지금 {@code RUNNING} 인 행들 — <b>유령 청소가 훑을 목록</b>이다(65 §4.4).
+     * 지금 {@code RUNNING} 인 행들 — <b>유령 청소가 훑을 목록</b>이다(screen/batch/schedule/requirements.md).
      *
      * <p>엔티티가 아니라 {@link RunningRow} 를 돌려준다. 청소는 <b>트랜잭션 밖에서</b>
      * 락을 하나씩 물어보므로, 엔티티를 넘기면 <i>준영속 객체를 들고 판정하다가 나중에
@@ -141,7 +141,7 @@ public class BatchHistoryWriter {
     }
 
     /**
-     * 유령으로 종결한다 — <b>다시 읽고 나서</b> 바꾼다(65 §4.4).
+     * 유령으로 종결한다 — <b>다시 읽고 나서</b> 바꾼다(screen/batch/schedule/requirements.md).
      *
      * <p>{@link #runningHistories} 가 준 목록은 <b>읽은 시점의 사실</b>이다. 락을 물어보는
      * 사이에 배치가 스스로 끝냈을 수 있고, 그때 덮어쓰면 <b>성공한 실행이 유실로</b> 기록된다
@@ -170,7 +170,7 @@ public class BatchHistoryWriter {
                 .orElse(false);
     }
 
-    /** 시작 시각 — 즉시 실행 거부 문구가 <i>"09:14 시작"</i> 을 여기서 얻는다(65 §3.7). */
+    /** 시작 시각 — 즉시 실행 거부 문구가 <i>"09:14 시작"</i> 을 여기서 얻는다(screen/batch/schedule/requirements.md). */
     public Instant now() {
         return clock.instant();
     }

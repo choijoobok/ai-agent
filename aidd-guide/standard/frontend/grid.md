@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/shared/grid/", "aidd-guide/standard/frontend/_study/grid-standard.md", "aidd-guide/standard/frontend/_study/grid-api-contract.md"]
+sources: ["sources/frontend/src/shared/grid/", "aidd-guide/standard/frontend/grid.md", "aidd-guide/standard/frontend/grid.md"]
 author: Bong Jong Hyeon
 tier: 1
 tags: [frontend, grid, ag-grid, crud, save]
@@ -18,7 +18,6 @@ tags: [frontend, grid, ag-grid, crud, save]
 > 화면에 남는 폼은 조회조건 하나뿐이며, **등록은 그리드의 새 행이고 수정은 셀 편집**이다.
 >
 > 컬럼 선언·정렬·필터는 [grid-advanced.md](./grid-advanced.md).
-> 유도과정은 [`_study/grid-standard.md`](./_study/grid-standard.md).
 
 ## 1. 왜 폼이 없나
 
@@ -188,4 +187,4 @@ const grid = useGridController<UserRow>({
 - [grid-advanced.md](./grid-advanced.md) — 컬럼 계약 · 편집 · 검증 · 마스터-디테일
 - [search-form.md](./search-form.md) — 조회조건 헤더
 - [../backend/search.md](../backend/search.md) — 서버 쪽 봉투
-- [`_study/grid-standard.md`](./_study/grid-standard.md) · [`_study/grid-api-contract.md`](./_study/grid-api-contract.md)
+- [`frontend/grid.md`](./grid.md) · [`frontend/grid.md`](./grid.md)

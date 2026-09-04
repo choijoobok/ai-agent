@@ -5,14 +5,14 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * 개인 예외 저장이 거부하는 것 — 61 §4 · 42 §6 의 원칙 P1.
+ * 개인 예외 저장이 거부하는 것 — screen/user/requirements.md · sys/menu.md 의 원칙 P1.
  *
  * <p>{@code RoleErrorCode} 의 뒤 셋(메뉴 · 액션 · {@code READ})과 <b>같은 규칙</b>을
  * 지키지만 <b>키를 공유하지 않는다</b>({@link MsgKey} 의 해당 블록) — 규칙이 하나인 것과
  * 문구가 하나인 것은 다르다.
  *
  * <p>여기만 있는 것이 넷이다: <b>기간 필수 · 기간 순서 · 사유 필수 · 행 존재</b>. 앞의 셋은
- * {@code SYS_USER_MENU_AUTH} 가 역할 부여와 <b>모양이 다른</b> 데서 오고(42 §6 — 기간과 사유가
+ * {@code SYS_USER_MENU_AUTH} 가 역할 부여와 <b>모양이 다른</b> 데서 오고(sys/menu.md — 기간과 사유가
  * {@code NOT NULL} 이다), 넷째는 이 화면에만 <b>수정과 삭제가 있기</b> 때문이다.
  */
 public enum UserAuthErrorCode implements ErrorCode {

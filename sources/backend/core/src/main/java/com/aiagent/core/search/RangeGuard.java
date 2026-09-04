@@ -9,22 +9,22 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 /**
- * 기간은 <b>필수 조건이고 상한이 있다</b> — 64 §2.2.
+ * 기간은 <b>필수 조건이고 상한이 있다</b> — screen/log/access/requirements.md.
  *
  * <p>이력 화면 셋에 공통인 규칙이다. 사용 이력이 먼저 필요로 했고 로그인 이력이 <b>같은
  * 것을 다시</b> 필요로 하면서 여기로 나왔다 — 에러 로그가 셋째다.
  *
  * <h2>왜 화면 층만으로 부족한가</h2>
  *
- * <p>폼도 같은 것을 막지만(search-form-contract.md §3.4의 {@code required}) <b>막는 이유가 편의가 아니라
+ * <p>폼도 같은 것을 막지만(frontend/search-form.md의 {@code required}) <b>막는 이유가 편의가 아니라
  * 부하</b>다. 화면만 막으면 도구·스크립트가 그대로 지나가고, 조건 없는 첫 조회가 보존
  * 기간 전량을 향한다.
  *
  * <h2>조건 하나가 다른 조건의 필수 여부를 바꾼다</h2>
  *
- * <p>{@link Rule#bypassField} 가 그것이다. 추적 ID 에는 별도 인덱스가 있으므로(45 §4.1)
+ * <p>{@link Rule#bypassField} 가 그것이다. 추적 ID 에는 별도 인덱스가 있으므로(sys/logs.md)
  * 기간 없이도 인덱스를 타며, 그때는 기간이 <b>선택</b>이 된다 — 72 프로토콜에 없던 모양이라
- * 64 §2.2 가 입력으로 적어 두었다.
+ * screen/log/access/requirements.md 가 입력으로 적어 두었다.
  *
  * <h2>여기에 문구가 없다</h2>
  *
@@ -38,7 +38,7 @@ public final class RangeGuard {
      * @param field 기간 조건의 필드명 — 이력 셋 모두 {@code creDtm} 이다
      * @param bypassField 이 조건이 있으면 기간이 <b>선택</b>이 된다. 없으면 {@code null}
      * @param maxDays 상한. <b>화면 층과 시스템 값 중 좁은 쪽</b>을 부르는 쪽이 이미 고른다 —
-     *     화면은 <i>더 좁게</i> 만 갈 수 있다(64 §2.2)
+     * 화면은 <i>더 좁게</i> 만 갈 수 있다(screen/log/access/requirements.md)
      */
     public record Rule(
             String field, String bypassField, int maxDays, ErrorCode required, ErrorCode tooWide) {}
@@ -72,7 +72,7 @@ public final class RangeGuard {
     }
 
     /**
-     * 한쪽이 열린 범위(api-conventions.md §3.3 의 단측)도 <b>상한을 넘은 것으로 본다</b> — 열린 쪽이 곧
+     * 한쪽이 열린 범위(backend/api.md 의 단측)도 <b>상한을 넘은 것으로 본다</b> — 열린 쪽이 곧
      * 무제한이며, 그것이 이 검사가 막으려던 바로 그 조회다.
      */
     private static void checkWidth(Condition range, Rule rule) {

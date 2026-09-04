@@ -55,7 +55,7 @@ public final class SampleItemSpec {
      */
     public static final QuerySpec SPEC = QuerySpec.of("smplOrderItem")
             .from(I)
-            // 부모를 업무 키로 나르는 컬럼이다(48 §4.3) — 엑셀 양식에 대리키를 넣을 수 없다.
+            // 부모를 업무 키로 나르는 컬럼이다(playbook/INDEX.md) — 엑셀 양식에 대리키를 넣을 수 없다.
             .col("ordNo", I.ordNo).sortable()
             .col("itemCd", I.itemCd).sortable()
             .col("itemNm", I.itemNm).sortable()
@@ -63,7 +63,7 @@ public final class SampleItemSpec {
             .col("qty", I.qty).sortable()
             .col("unitAmt", I.unitAmt).sortable()
             .col("amt", I.amt).sortable()
-            // 납기일은 비어 있을 수 있다 — isNull 이 값 칸 없는 조건으로 온다(api-conventions.md §3.4).
+            // 납기일은 비어 있을 수 있다 — isNull 이 값 칸 없는 조건으로 온다(backend/api.md).
             .col("dlvrDt", I.dlvrDt).sortable().nullable()
             .col("itemStatCd", I.itemStatCd).sortable()
             .col("useYn", I.useYn).sortable()

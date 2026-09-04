@@ -5,7 +5,7 @@ import { SearchForm, type SearchFormHandle } from '@/shared/searchform/SearchFor
 import type { SearchField } from '@/shared/searchform/types';
 
 /**
- * 폼이 내놓는 조건 — search-form-contract.md §3·§4 · api-conventions.md §3.1.
+ * 폼이 내놓는 조건 — frontend/search-form.md · backend/api.md.
  *
  * <p><b>빈 칸을 보내지 않는 것이 프로토콜의 전제다.</b> 보내면 서버가 <i>"값이 NULL 인 것을
  * 찾아라"</i> 와 구분할 수 없고, 그 구분은 {@code isNull} 이 따로 있는 이유다.
@@ -54,7 +54,7 @@ describe('SearchForm', () => {
     ]);
   });
 
-  it('후보가 하나면 고를 수 없다 — 다만 표시는 남는다(search-form-contract.md §3.10 의 정렬)', () => {
+  it('후보가 하나면 고를 수 없다 — 다만 표시는 남는다(frontend/search-form.md 의 정렬)', () => {
     mount([{ field: 'uri', label: 'x', type: 'text', ops: ['startsWith'] }]);
 
     // 통째로 없애면 그 칸의 값 입력만 왼쪽에서 시작해 줄이 어긋난다.
@@ -102,7 +102,7 @@ describe('SearchForm', () => {
       await pick('search.op.eq', 'search.op.in');
       await pick('search.op.in', 'search.op.eq');
 
-      // search-form-contract.md §3.4 의 *첫 원소만 남긴다* 를 콤보에서는 따르지 않는다 — 거기서 빈 값은
+      // frontend/search-form.md 의 *첫 원소만 남긴다* 를 콤보에서는 따르지 않는다 — 거기서 빈 값은
       // 값이 아니라 *묻지 않음* 이고, 첫 원소를 남기면 조용히 걸린 조건이 된다.
       await waitFor(() => expect(handle.current?.collect()).toEqual([]));
     });
@@ -131,9 +131,9 @@ describe('SearchForm', () => {
     });
   });
   /**
-   * 크기 계열의 <b>마지막 둘</b> — 68 §9.12 · api-conventions.md §3.3.
+   * 크기 계열의 <b>마지막 둘</b> — playbook/INDEX.md · backend/api.md.
    *
-   * <p>여는 근거는 search-form-contract.md §3.4 그대로다(<i>쓰는 화면이 왔다</i>). 여기서 지키는 것은 둘이다 —
+   * <p>여는 근거는 frontend/search-form.md 그대로다(<i>쓰는 화면이 왔다</i>). 여기서 지키는 것은 둘이다 —
    * <b>후보로 나오되 기본에는 없다</b>는 것, 그리고 <b>기간 칸에서 텍스트로 떨어지지
    * 않는다</b>는 것: 후보로만 열고 그리는 쪽을 빠뜨리면 그 칸은 사람이 날짜를 손으로 치는
    * 입력칸이 되고, 형식이 틀리면 <b>조용히 값이 되지 않는다</b>.
@@ -149,7 +149,7 @@ describe('SearchForm', () => {
       expect(screen.queryByText('search.op.lt')).toBeNull();
     });
 
-    it('선언하면 조건이 그대로 나간다 — 서버는 이미 아는 연산자다(api-conventions.md §3.3)', () => {
+    it('선언하면 조건이 그대로 나간다 — 서버는 이미 아는 연산자다(backend/api.md)', () => {
       const handle = mount([
         { field: 'ordAmt', label: 'x', type: 'text', op: 'gt', defaultValue: '1000' },
       ]);
@@ -168,7 +168,7 @@ describe('SearchForm', () => {
   });
 
   /**
-   * 태그 입력 — 텍스트 칸의 {@code in}(68 §9.12).
+   * 태그 입력 — 텍스트 칸의 {@code in}(playbook/INDEX.md).
    *
    * <p>콤보의 {@code in} 과 <b>값의 모양이 같고 고르는 방법이 다르다</b>. 여기서 지키는
    * 것은 <b>빈 칩이 만들어지지 않는다</b> 하나다 — 서버의 {@code IN} 절에 빈 문자열이

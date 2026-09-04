@@ -15,7 +15,7 @@ import org.springframework.session.SessionRepository;
 import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 
 /**
- * 세션 레지스트리가 <b>무엇 위에 서는가</b> — security-design.md §4-1 · ADR-0002.
+ * 세션 레지스트리가 <b>무엇 위에 서는가</b> — backend/security.md · backend/session.md.
  *
  * <p><b>조용한 폴백이 이 테스트의 이유다.</b> Spring Session 의 Redis 구현은 둘이고
  * {@link FindByIndexNameSessionRepository} 를 가진 것은 하나인데,

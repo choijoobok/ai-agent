@@ -2,11 +2,11 @@ import { create } from 'zustand';
 import { addFavorite, getFavorites, removeFavorite } from '@/shared/favorite/api/favoriteApi';
 
 /**
- * 즐겨찾기 메뉴 — UX-03 · 42 §7.
+ * 즐겨찾기 메뉴 — UX-03 · sys/menu.md.
  *
  * <p><b>원본이 DB 다.</b> 최근 사용 메뉴({@link recentMenus})와 짝이지만 저장 위치가
  * 갈린다 — 즐겨찾기는 사용자가 <b>명시적으로 선언</b>한 것이라 자리를 바꿔도 따라와야
- * 하고, 최근은 파생·휘발이라 `localStorage` 다(42 §7 · 41 §4.3).
+ * 하고, 최근은 파생·휘발이라 `localStorage` 다(sys/menu.md · sys/user-role.md).
  *
  * <p><b>메모리다.</b> `persist` 를 쓰지 않는 이유는 원본이 서버이기 때문이다 — 캐시를
  * 디스크에 두면 로그인한 순간 <b>남의 기기에 남은 옛 목록</b>이 잠깐 보인다.
@@ -17,7 +17,7 @@ import { addFavorite, getFavorites, removeFavorite } from '@/shared/favorite/api
  * 것 자체가 답이다.
  */
 interface FavoriteState {
-  /** 순서대로의 메뉴 코드. <b>이름은 없다</b> — 이름의 원본은 메뉴 트리다(43 §4.4). */
+  /** 순서대로의 메뉴 코드. <b>이름은 없다</b> — 이름의 원본은 메뉴 트리다(sys/code.md). */
   menuCds: string[];
   load: () => Promise<void>;
   /** 있으면 빼고 없으면 넣는다 — 우클릭 메뉴가 무엇을 보여줄지 이미 알고 있다. */

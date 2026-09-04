@@ -7,9 +7,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 작업이 손에 쥐는 진행률 손잡이 — 30 §6.
+ * 작업이 손에 쥐는 진행률 손잡이 — backend/crosscutting.md.
  *
- * <p><b>건별로 쓰지 않는다</b>(30 §6.2). 이 값은 사용자가 <b>폴링으로 보는 것</b>이라
+ * <p><b>건별로 쓰지 않는다</b>(backend/crosscutting.md). 이 값은 사용자가 <b>폴링으로 보는 것</b>이라
  * 밀리초 정밀도가 필요 없고, 10만 건마다 {@code UPDATE} 를 치면 <i>진행률을 보여 주려고
  * 작업을 느리게 만드는</i> 꼴이 된다.
  *
@@ -22,7 +22,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * <p><b>종료는 조절하지 않는다.</b> {@code complete}·{@code fail} 은 즉시 쓴다 — 마지막
  * flush 이후의 잔여 진행분과 종료 상태가 함께 늦으면 <b>작업이 끝났는데 99% 에서 멈춰
- * 보인다</b>(30 §6.2).
+ * 보인다</b>(backend/crosscutting.md).
  *
  * <h2>여러 스레드가 함께 세도 된다 (2026-09-03)</h2>
  *
@@ -74,7 +74,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class Progress {
 
-    /** 1초 — 30 §6.2. */
+    /** 1초 — backend/crosscutting.md. */
     private static final Duration MIN_INTERVAL = Duration.ofSeconds(1);
 
     /** 1% — 〃. */
@@ -119,7 +119,7 @@ public class Progress {
      *
      * <p>없으면 종료 직전에 밟힌 걸음이 <b>종료 뒤에</b> 도착해 {@code CUR_CNT} 와
      * {@code MOD_DTM} 을 되돌린다. 상태는 그대로 {@code DONE} 이라 화면은 멀쩡해 보이지만,
-     * 만료 청소(32 §5)가 <i>방금 끝난 작업</i>으로 읽어 그만큼 늦게 지운다.
+     * 만료 청소(retention.md)가 <i>방금 끝난 작업</i>으로 읽어 그만큼 늦게 지운다.
      */
     private boolean finished;
 

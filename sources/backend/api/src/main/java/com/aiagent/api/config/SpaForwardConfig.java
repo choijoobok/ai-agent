@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
 /**
- * SPA 라우팅 — 25 §3.
+ * SPA 라우팅 — build-deploy.md.
  *
  * <p>React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌한다. {@code /login} 에서
  * <b>새로고침</b>하면 서버에 그런 파일이 없어 404 가 난다. 그래서 정적 파일이 아닌 GET 을
@@ -31,7 +31,7 @@ public class SpaForwardConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 해시 파일명이라 내용이 바뀌면 이름이 바뀐다 — 영구 캐시가 안전하다(25 §3).
+        // 해시 파일명이라 내용이 바뀌면 이름이 바뀐다 — 영구 캐시가 안전하다(build-deploy.md).
         registry.addResourceHandler("/assets/**")
                 .addResourceLocations("classpath:/static/assets/")
                 .setCacheControl(CacheControl.maxAge(Duration.ofDays(365)).immutable());

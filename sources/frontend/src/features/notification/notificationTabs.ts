@@ -1,7 +1,7 @@
 import { MSG } from '@/shared/i18n/messageKeys';
 
 /**
- * 알림 모달의 탭 셋 — main-shell.md §7.
+ * 알림 모달의 탭 셋 — frontend/tabs.md.
  *
  * **순서가 뜻을 갖는다 — 방향이다.** 관리자→전체, 시스템→나, 나→관리자.
  *
@@ -17,7 +17,7 @@ export const NOTIFICATION_TABS = [
 
 export type NotificationTab = (typeof NOTIFICATION_TABS)[number]['key'];
 
-/** 키만 뽑은 차례 — 탭 이동 단축키가 읽는다(`useModalTabHotkeys` · main-shell.md §10). */
+/** 키만 뽑은 차례 — 탭 이동 단축키가 읽는다(`useModalTabHotkeys` · frontend/tabs.md). */
 export const NOTIFICATION_TAB_KEYS: readonly NotificationTab[] = NOTIFICATION_TABS.map(
   (tab) => tab.key,
 );

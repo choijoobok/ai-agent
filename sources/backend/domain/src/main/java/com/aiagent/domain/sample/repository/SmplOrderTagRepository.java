@@ -5,7 +5,7 @@ import com.aiagent.domain.sample.entity.SmplOrderTagId;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-/** {@link SmplOrderTag} — 48 §4.1. 읽기는 언제나 주문 단위이고 순서는 {@code SORT_NO} 다. */
+/** {@link SmplOrderTag} — playbook/INDEX.md. 읽기는 언제나 주문 단위이고 순서는 {@code SORT_NO} 다. */
 public interface SmplOrderTagRepository extends JpaRepository<SmplOrderTag, SmplOrderTagId> {
 
     List<SmplOrderTag> findByOrdIdInOrderByOrdIdAscSortNoAsc(List<Long> ordIds);

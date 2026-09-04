@@ -5,10 +5,10 @@ import type { ApiEnvelope } from '@/shared/api/types';
 import { resolveLang } from '@/shared/i18n/lang';
 
 /**
- * 공용 axios 인스턴스 — 규약은 frontend-stack.md §9.
+ * 공용 axios 인스턴스 — 규약은 frontend/packages.md.
  *
  * <p>응답 쪽은 <b>관찰만</b> 한다 — 세션 차원의 신호(권한 버전 · 401)를 흘려보내고 흐름은
- * 건드리지 않는다. 무엇을 띄울지는 셸이 정한다(frontend-stack.md §9 · ADR-0021).
+ * 건드리지 않는다. 무엇을 띄울지는 셸이 정한다(frontend/packages.md · backend/session.md).
  */
 export const apiClient = axios.create({
   baseURL: '/api',
@@ -16,7 +16,7 @@ export const apiClient = axios.create({
   withCredentials: true,
 });
 
-/** 활성 탭의 메뉴 코드. 셸이 라우트 전환마다 갱신한다(frontend-stack.md §9). */
+/** 활성 탭의 메뉴 코드. 셸이 라우트 전환마다 갱신한다(frontend/packages.md). */
 let activeMenuCode: string | null = null;
 
 export function setActiveMenuCode(menuCd: string | null): void {
@@ -34,7 +34,7 @@ apiClient.interceptors.request.use((config) => {
     config.headers.set('X-Menu-Code', activeMenuCode);
   }
 
-  // 언어를 정한 쪽이 그것을 말한다 — architecture.md §6-1.2 · 50 §3.2.
+  // 언어를 정한 쪽이 그것을 말한다 — backend/packages.md ·.
   //
   // 서버는 세션이 없는 요청의 에러 문구를 "요청의 언어 힌트" 로 만든다. 브라우저가 보내는
   // Accept-Language 를 그대로 두면 그 힌트가 **프론트가 정한 언어와 다르다** — 화면은

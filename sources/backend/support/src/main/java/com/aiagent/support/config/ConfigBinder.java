@@ -21,7 +21,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 
 /**
- * {@code yml} 위에 {@code SYS_CONFIG} 를 덮어 <b>다시 바인딩한다</b> — ADR-0026 §3.
+ * {@code yml} 위에 {@code SYS_CONFIG} 를 덮어 <b>다시 바인딩한다</b> — sys/config.md.
  *
  * <pre>
  * 기동   : yml → @ConfigurationProperties 바인딩 → 검증        ← SYS_CONFIG 가 없다
@@ -34,9 +34,9 @@ import org.springframework.validation.Validator;
  * <p><b>덮는 순서가 이 클래스의 전부다.</b> 오버라이드 소스를 <b>맨 앞</b>에 둔다 —
  * 환경변수가 같은 키를 가져도 화면에서 바꾼 값이 이긴다. 근거는 <i>프로퍼티 소스 순서</i>
  * 가 아니라 <b>여기가 마지막에 덮는다</b> 는 것이며, <b>순서로 지켜야 했을 것을 구조가
- * 지킨다</b>(ADR-0026 §1).
+ * 지킨다</b>(sys/config.md).
  *
- * <p><b>검증이 딸려 온다.</b> {@link ValidationBindHandler} 를 함께 태우므로 43 §6.2 의
+ * <p><b>검증이 딸려 온다.</b> {@link ValidationBindHandler} 를 함께 태우므로 sys/code.md 의
  * <i>"제약의 단일 원본은 바인딩 객체"</i> 가 <b>저장 경로뿐 아니라 읽기 경로에서도</b>
  * 저절로 지켜진다 — 대가는 화면을 안 거친 값이 검증을 만나는 것이고, 그것이 이 설계가
  * 원한 바다.
@@ -60,8 +60,8 @@ public class ConfigBinder {
      * props 클래스 하나를 오버라이드를 얹어 만든다.
      *
      * <p><b>바인딩 실패를 기본값으로 덮지 않는다.</b> {@code yml} 키 누락은 기동 실패여야
-     * 하고(43 §6.1), 런타임 재바인딩 실패는 <b>예외여야 한다</b> — 그 키만 {@code yml} 로
-     * 되돌리면 <b>화면은 {@code 변경됨} 이라 말하는데 동작은 기본값</b>인, ADR-0026 이
+     * 하고(sys/code.md), 런타임 재바인딩 실패는 <b>예외여야 한다</b> — 그 키만 {@code yml} 로
+     * 되돌리면 <b>화면은 {@code 변경됨} 이라 말하는데 동작은 기본값</b>인, sys/config.md 이
      * 닫으려는 바로 그 실패가 된다(§3).
      *
      * @param overrides {@code CFG_KEY → CFG_VAL}. 루트({@code sys-config.})가 붙지 않은 키다
@@ -75,7 +75,7 @@ public class ConfigBinder {
     }
 
     /**
-     * 실패를 <b>키 단위</b>로 편다 — 저장 경로가 그 키로 셀을 칠한다(grid-edit-validation.md §3.4).
+     * 실패를 <b>키 단위</b>로 편다 — 저장 경로가 그 키로 셀을 칠한다(frontend/grid.md).
      *
      * <p>{@code Binder} 는 실패를 {@code BindException} 으로 싸고 그 안에 원인이 들어 있다.
      * 둘을 가른다 — <b>검증 실패</b>는 어느 필드인지 알고, <b>변환 실패</b>는 어느 프로퍼티
@@ -137,7 +137,7 @@ public class ConfigBinder {
 
         List<ConfigViolation> violations = new ArrayList<>();
         for (ObjectError objectError : error.getValidationErrors().getAllErrors()) {
-            // 필드가 없는 것은 객체 전체의 제약이다 — 상호 제약이 그렇게 온다(43 §6.4).
+            // 필드가 없는 것은 객체 전체의 제약이다 — 상호 제약이 그렇게 온다(sys/code.md).
             String key = objectError instanceof FieldError field
                     ? base + "." + kebabPath(field.getField())
                     : base;

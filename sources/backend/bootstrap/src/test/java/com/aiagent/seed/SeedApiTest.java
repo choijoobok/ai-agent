@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * 인가 시드가 스스로와 맞는가 — ADR-0020 · 42 §5.
+ * 인가 시드가 스스로와 맞는가 — backend/api.md · sys/menu.md.
  *
  * <p><b>{@code checkApiSeed} 가 보는 것과 다른 것을 본다.</b> 그쪽은 <i>"재생성 결과 ==
  * 커밋본"</i> 이라 <b>생성기가 틀리면 둘 다 같이 틀린다.</b> 여기서 보는 것은 <b>시드끼리의
@@ -101,7 +101,7 @@ class SeedApiTest {
 
         /**
          * <b>매핑만으로는 아무도 그 API 를 부를 수 없다.</b> 판정은 (메뉴, 액션) 쌍이 유효
-         * 권한에 있는가이므로(security-design.md §4), 그 쌍을 가진 역할이 하나도 없으면 결과는 403 이다.
+         * 권한에 있는가이므로(backend/security.md), 그 쌍을 가진 역할이 하나도 없으면 결과는 403 이다.
          *
          * <p>템플릿에서 그 역할은 {@code ADMIN} 하나다 — 사용 프로젝트가 자기 역할을 더하기
          * 전까지 <b>부트스트랩 권한이 곧 상한</b>이며, 그것을 넘는 매핑은 <b>돌아 본 적 없는
@@ -115,7 +115,7 @@ class SeedApiTest {
 
             /*
               <b>파일 이름을 박지 않는다.</b> 부트스트랩 부여는 004 에서 시작했지만 뒤에
-              오는 메뉴는 새 changelog 로 부여를 더한다(db-portability.md §1.1 — 사람 소유 시드는 기존
+              오는 메뉴는 새 changelog 로 부여를 더한다(backend/persistence.md — 사람 소유 시드는 기존
               changeset 을 고치지 않는다). 이름으로 잡으면 <b>뒤에 온 부여가 검사 밖으로
               나가고</b>, 그때 이 검사는 조용히 통과한다.
             */

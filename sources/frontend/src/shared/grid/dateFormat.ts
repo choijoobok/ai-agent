@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { useAuthStore } from '@/shared/stores/authStore';
 
 /**
- * 날짜 계열의 <b>정밀도와 표시 형식</b> — grid-column-contract.md §4.5.
+ * 날짜 계열의 <b>정밀도와 표시 형식</b> — frontend/grid.md.
  *
  * <p><b>타입은 값의 형태이고 정밀도는 자릿수다.</b> 타입 이름이 이미 둘을 섞고 있어
  * (`date` vs `dateTime`) 년월만 자리가 없었다 — {@link DatePrecision} 이 그 축을 밖으로 뺀다.
@@ -14,14 +14,14 @@ import { useAuthStore } from '@/shared/stores/authStore';
  * 고치게 두면</b> 같은 앱 안에서 날짜가 두 모양으로 보인다.
  *
  * <p><b>시간대는 설정이 아니다.</b> 서버가 주는 것은 오프셋을 포함한 ISO-8601 이고
- * (architecture.md §6-1) {@code dayjs} 가 <b>브라우저의 시간대</b>로 옮긴다 — 읽는 사람이 기대하는 것은
+ * (backend/packages.md) {@code dayjs} 가 <b>브라우저의 시간대</b>로 옮긴다 — 읽는 사람이 기대하는 것은
  * 자기 시각이며, 그것을 설정으로 두면 <i>같은 화면을 서울과 하노이에서 볼 때</i> 둘 중
  * 하나가 틀린다.
  *
- * <p><b>값은 바꾸지 않는다</b>(grid-column-contract.md §5.4) — 바뀌는 것은 표시뿐이고 엑셀과 조건은 원본을 쓴다.
+ * <p><b>값은 바꾸지 않는다</b>(frontend/grid.md) — 바뀌는 것은 표시뿐이고 엑셀과 조건은 원본을 쓴다.
  */
 
-/** grid-column-contract.md §4.5 의 표 — 셋이다. */
+/** frontend/grid.md 의 표 — 셋이다. */
 export type DatePrecision = 'month' | 'day' | 'second';
 
 /**
@@ -50,7 +50,7 @@ export function datePattern(precision: DatePrecision): string {
 }
 
 /**
- * 컬럼이 쓸 정밀도 — 선언이 없으면 <b>타입의 기본</b>이다(grid-column-contract.md §4.5).
+ * 컬럼이 쓸 정밀도 — 선언이 없으면 <b>타입의 기본</b>이다(frontend/grid.md).
  *
  * <p>{@code date} 는 일, {@code dateTime} 은 초다. 년월은 타입으로 표현되지 않으므로
  * <b>선언해야</b> 나온다.

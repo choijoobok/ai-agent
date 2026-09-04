@@ -25,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * 유효 권한 계산 — security-design.md §4 의 <b>③ 합집합</b>과 <b>④ 게이트</b>.
+ * 유효 권한 계산 — backend/security.md 의 <b>③ 합집합</b>과 <b>④ 게이트</b>.
  *
  * <p>②(출처 필터)는 JPQL 의 {@code where} 이므로 여기서 검사하지 않는다 — 저장소를 mock 하는
  * 순간 그 절은 실행되지 않는다. 이 테스트가 지키는 것은 <b>자바 쪽에 남은 두 단계</b>이며,

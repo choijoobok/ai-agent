@@ -36,13 +36,13 @@ const readAll = vi.mocked(markAllNotiRead);
 const loadRequests = vi.mocked(getMyRequests);
 
 /**
- * 알림 모달 — main-shell.md §7 · 60 §8.
+ * 알림 모달 — frontend/tabs.md · screen/_standalone/README.md.
  *
  * <p>지키는 것 일곱이다 — ① **탭 순서가 방향인가**, ② **목록을 열었다고 전체 읽음이
- * 되지 않는가**(main-shell.md §7.2 · `NI-06`), ③ **항목을 열면 그 항목만인가**(`NI-07`),
+ * 되지 않는가**(frontend/tabs.md · `NI-06`), ③ **항목을 열면 그 항목만인가**(`NI-07`),
  * ④ **권한 없는 메뉴로 가는 이동이 막히는가**(`NI-11`), ⑤ **이동이 `LINK_PARAM` 을 버리지
  * 않는가**(`NI-10`), ⑥ **시스템 정보는 눌러야 읽는가**, ⑦ **`PageUp`/`PageDown` 이 이 모달의
- * 탭을 옮기고 셸로 내려가지 않는가**(main-shell.md §10).
+ * 탭을 옮기고 셸로 내려가지 않는가**(frontend/tabs.md).
  *
  * <p>②가 특히 조용히 깨진다. 목록 조회에 읽음 처리를 붙이면 화면은 오히려 <i>깔끔해
  * 보이고</i>, 사용자는 **훑어만 봤는데 배지가 사라진 것**을 나중에야 안다 — 그때는
@@ -183,7 +183,7 @@ describe('알림 모달', () => {
     expect(onOpenMenu).toHaveBeenCalledWith('BATCH_HISTORY', 'RETENTION_PURGE');
   });
 
-  it('PageDown 은 이 모달의 탭을 옮기고 셸로 내려가지 않는다 — main-shell.md §10', async () => {
+  it('PageDown 은 이 모달의 탭을 옮기고 셸로 내려가지 않는다 — frontend/tabs.md', async () => {
     const shell = vi.fn();
     window.addEventListener('keydown', shell);
     try {

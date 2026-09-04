@@ -21,10 +21,10 @@ import { MenuDetailTabs } from '@/features/menu/components/MenuDetailTabs';
 import type { MenuSiblingGroup, MenuTreeRow } from '@/features/menu/types';
 
 /**
- * `MENU_TREE` — 62 §4. <b>통째로 즉시 저장이다.</b>
+ * `MENU_TREE` — screen/menu/requirements.md. <b>통째로 즉시 저장이다.</b>
  *
  * <p>이 화면의 절반이 그 한 줄에서 나온다(§4.4). 위치 변경은 <b>즉시일 수밖에 없고</b>(형제
- * 전체가 다시 쓰이며 `@CustomLock(WAIT)` 로 직렬화된다 — 42 §4), 한 그리드 안에서 일괄과
+ * 전체가 다시 쓰이며 `@CustomLock(WAIT)` 로 직렬화된다 — sys/menu.md), 한 그리드 안에서 일괄과
  * 즉시를 섞지 않으므로 <b>전부 즉시</b>가 됐다.
  *
  * <pre>
@@ -40,7 +40,7 @@ import type { MenuSiblingGroup, MenuTreeRow } from '@/features/menu/types';
  *
  * <h2>이 화면이 실제로 하는 일 — 리프를 만드는 곳이 아니다</h2>
  *
- * 프론트 라우트는 <b>정적 맵이고 배포로만 바뀐다</b>(ADR-0020) — 화면에서 리프를 새로 만들어도
+ * 프론트 라우트는 <b>정적 맵이고 배포로만 바뀐다</b>(backend/api.md) — 화면에서 리프를 새로 만들어도
  * 그 URL 에 컴포넌트가 없다. 자주 하는 일은 <b>구조 정리</b>(폴더 추가 · 순서 · 부모 바꾸기)와
  * <b>아이콘 · 사용 여부</b>이며, 리프 추가는 <b>배포 뒤에</b> 트리에 붙이는 드문 일이다.
  *
@@ -57,13 +57,13 @@ import type { MenuSiblingGroup, MenuTreeRow } from '@/features/menu/types';
  * 찾고, 어느 칸에 넣을지를 먼저 정해야 하는 것이 곧 마찰이다.
  *
  * <p><b>자리도 브레드크럼에서 트리 ①로 내려왔다</b>. 슬롯은 셸이 그리는 구조라 값이 한 커밋
- * 늦게 도착해 <b>한글이 두 번 입력됐다</b>(61 §4 에서 실물로 겪었다). 이동 버튼 둘은 뺐다 —
+ * 늦게 도착해 <b>한글이 두 번 입력됐다</b>(screen/user/requirements.md 에서 실물로 겪었다). 이동 버튼 둘은 뺐다 —
  * 강조가 경로를 펼치므로 나머지 일치도 같은 화면 안에 있다.
  */
 
 const MENU_CD = 'MENU_TREE';
 
-/** 리프 포함 5단이 상한이다 — 52 §3.4. 서버도 같은 값을 본다(42 §4). */
+/** 리프 포함 5단이 상한이다 — sys/menu.md. 서버도 같은 값을 본다(sys/menu.md). */
 const MAX_DEPTH = 5;
 
 export function MenuTreePage() {
@@ -73,7 +73,7 @@ export function MenuTreePage() {
   const canSave = hasPermission(permissions, MENU_CD, 'SAVE');
 
   /**
-   * 넘겨받은 메뉴 — 62 §5.5 가 요구한 도착 지점이다.
+   * 넘겨받은 메뉴 — screen/menu/requirements.md 가 요구한 도착 지점이다.
    *
    * <p>`API_CATALOG` 하단에서 더블 클릭하면 그 메뉴 코드가 건네져 온다. <b>마운트할 때 한 번
    * 읽고 지운다</b>({@code takeHandoff}) — 넘겨주기는 <b>사건</b>이지 상태가 아니라서, 남겨
@@ -105,7 +105,7 @@ export function MenuTreePage() {
     하는 길을 둘로 만들지 않는다.
   */
   /**
-   * 검색어 <b>하나</b>가 이름·코드·URL 을 함께 본다 — 2026-08-31 요청 · 62 §4.10.
+   * 검색어 <b>하나</b>가 이름·코드·URL 을 함께 본다 — 2026-08-31 요청 · screen/menu/requirements.md.
    *
    * <p>칸이 셋이었다. 그런데 <b>사람은 손에 있는 것으로 찾는다</b> — 이름이거나 코드이거나
    * URL 이고, <i>어느 칸에 넣을지</i> 를 먼저 정해야 하는 것이 곧 마찰이다.
@@ -118,8 +118,8 @@ export function MenuTreePage() {
   /**
    * <b>이미 열려 있을 때</b>의 넘겨주기 — 위의 초기값과 <b>짝이다</b>.
    *
-   * <p>main-shell.md §4.7.1 대로 같은 메뉴를 다시 열면 새 탭이 아니라 <b>이미 있는 탭이 활성화</b>되고,
-   * 비활성 탭도 마운트된 채이므로(ADR-0005) 이 화면은 <b>다시 마운트되지 않는다</b> — 초기값
+   * <p>frontend/tabs.md 대로 같은 메뉴를 다시 열면 새 탭이 아니라 <b>이미 있는 탭이 활성화</b>되고,
+   * 비활성 탭도 마운트된 채이므로(frontend/tabs.md) 이 화면은 <b>다시 마운트되지 않는다</b> — 초기값
    * 하나로 두면 그 넘겨주기는 아무 일도 일으키지 못한다.
    *
    * <p>구독 콜백에서 값을 받는다. 효과가 하는 일은 <b>구독을 걸고 푸는 것</b>뿐이며, 상태를
@@ -153,7 +153,7 @@ export function MenuTreePage() {
   const { refetch } = treeQuery;
 
   /**
-   * ① 의 <b>조회</b> — 선택을 놓는다(grid-standard.md §6.1).
+   * ① 의 <b>조회</b> — 선택을 놓는다(frontend/grid.md).
    *
    * <p>조회는 목록을 통째로 바꾸므로 이전에 보던 행이 결과에 없을 수도 있다. 하단이 남아
    * 있으면 <b>다른 메뉴의 권한을 이 메뉴 것으로</b> 보게 된다. §4.5 의 집합 검증 실패에서
@@ -168,7 +168,7 @@ export function MenuTreePage() {
    * 저장 뒤의 다시 읽기 — <b>선택을 놓지 않는다</b>. {@link read} 와 갈리는 자리다.
    *
    * <p>즉시 저장이라 셀 하나를 고칠 때마다 트리를 다시 읽는데(§4.4), 그때마다 선택이
-   * 풀리면 <b>아이콘 하나 바꿨다고 읽던 하단이 사라진다</b>(2026-08-30 실물). grid-standard.md §6.1 이
+   * 풀리면 <b>아이콘 하나 바꿨다고 읽던 하단이 사라진다</b>(2026-08-30 실물). frontend/grid.md 이
    * 선택을 놓으라고 한 것은 <i>사람이 조회를 눌렀을 때</i> 이고, 그 근거는 <b>목록이 통째로
    * 바뀌었을 수 있다</b> 는 것이다 — 자기가 방금 고친 한 행을 다시 읽는 것은 그 경우가 아니다.
    *
@@ -187,18 +187,18 @@ export function MenuTreePage() {
   /**
    * <b>지금 트리에서 다시 찾는다.</b> 트리가 도착하기 전에는 {@code null} 이고, 넘겨받은
    * 코드가 트리에 없어도(지워진 메뉴를 가리켰다) {@code null} 이다 — 둘 다 <i>고른 것이
-   * 없다</i> 이며 하단이 빈 상태를 낸다(grid-standard.md §6.1).
+   * 없다</i> 이며 하단이 빈 상태를 낸다(frontend/grid.md).
    */
   const selected = selectedCd === null ? null : (nodes.get(selectedCd)?.data ?? null);
 
-  // ── 검색 (62 §4.10) ─────────────────────────────────────────────
+  // ── 검색 (screen/menu/requirements.md) ─────────────────────────────────────────────
 
   /**
    * <b>셋을 {@code OR} 로 잇는다</b> — 칸이 하나가 됐다(2026-08-31 요청).
    *
    * <p>{@code AND} 였다. 칸이 셋일 때는 그것이 <i>좁히는</i> 뜻이었지만 칸이 하나면 <b>넣은
    * 글자가 어디서든 걸려야</b> 한다 — {@code USER_AUTH_MGMT} 의 사용자 조건이 ID 와 이름을
-   * 함께 보는 것과 같은 규칙이며(61 §4.3), 그쪽도 서버에서 {@code OR} 다.
+   * 함께 보는 것과 같은 규칙이며(screen/user/requirements.md), 그쪽도 서버에서 {@code OR} 다.
    */
   const matches = useMemo(() => {
     const needle = term.trim().toLowerCase();
@@ -214,11 +214,11 @@ export function MenuTreePage() {
   }, [rows, term]);
 
   const highlighted = useMemo(() => new Set(matches), [matches]);
-  // 첫 일치로 스크롤한다 — 강조가 경로를 펼치므로 나머지도 같은 화면 안에 있다(62 §4.10).
+  // 첫 일치로 스크롤한다 — 강조가 경로를 펼치므로 나머지도 같은 화면 안에 있다(screen/menu/requirements.md).
   const focused = matches[0] ?? null;
 
   /**
-   * 트리 ①의 검색 칸 — <b>브레드크럼이 아니라 거기다</b>(2026-08-31 · 62 §4.10).
+   * 트리 ①의 검색 칸 — <b>브레드크럼이 아니라 거기다</b>(2026-08-31 · screen/menu/requirements.md).
    *
    * <p>근거는 {@code TreeSearch} 에 있다. 슬롯에 두면 값이 <b>한 커밋 늦게</b> 도착해
    * <b>한글이 두 번 입력되고</b>, 자리도 <i>조회조건 숨기기</i> 옆이라 무엇을 검색하는지가
@@ -232,10 +232,10 @@ export function MenuTreePage() {
   /*
     브레드크럼 슬롯이 <b>빈다</b>(2026-08-31) — 이 화면에 있던 것은 검색 칸 셋과 이동 버튼
     둘뿐이었고 그것이 전부 트리 ①로 옮겨 갔다(위 {@code treeSearch}). 조회조건 폼이 없는
-    화면이라 main-shell.md §5.1 의 <i>조회조건 접기</i> 도 여기 올 것이 없다.
+    화면이라 frontend/tabs.md 의 <i>조회조건 접기</i> 도 여기 올 것이 없다.
   */
 
-  // ── 쓰기 넷 (62 §4.4) ───────────────────────────────────────────
+  // ── 쓰기 넷 (screen/menu/requirements.md) ───────────────────────────────────────────
 
   /**
    * 셀 하나에 요청 하나 — <b>응답을 받고 값을 바꾼다</b>(§4.4).
@@ -259,7 +259,7 @@ export function MenuTreePage() {
    * <p>끌 때는 자손 수와 <b>접근할 수 있던 인원</b>을, 켤 때는 <b>개별로 꺼 두었던 것까지
    * 켜진다</b>는 것을 말한다. 켜는 방향에 경고가 있는 것이 §3.6 과 갈리는 자리이며, 이유는
    * <b>전파가 이전 상태를 기억하지 않기</b> 때문이다 — 기억하려면 컬럼이 하나 더 필요한데
-   * security-design.md §4 가 `DISP_YN` 을 기각하며 적은 <i>"컬럼 둘이 한 일을 하면 어느 것을 봐야 하는지 알
+   * backend/security.md 가 `DISP_YN` 을 기각하며 적은 <i>"컬럼 둘이 한 일을 하면 어느 것을 봐야 하는지 알
    * 수 없다"</i> 가 그대로 걸린다.
    *
    * <p><b>자손 수가 `0` 이면 그 줄을 내지 않는다</b> — 항상 보이면 읽히지 않는다.
@@ -282,7 +282,7 @@ export function MenuTreePage() {
         );
       }
       if (!useYn) {
-        // 리프만 인원이 있다 — 구조 노드는 권한 대상이 아니라 `0` 이다(security-design.md §4).
+        // 리프만 인원이 있다 — 구조 노드는 권한 대상이 아니라 `0` 이다(backend/security.md).
         const people = family
           .map((menuCd) => nodes.get(menuCd)?.data.accessibleUserCount ?? 0)
           .reduce((sum, count) => sum + count, 0);
@@ -346,7 +346,7 @@ export function MenuTreePage() {
         ),
         okText: label(MSG.GRID_CONFIRM_OK),
         cancelText: label(MSG.COMMON_CANCEL),
-        // 되돌릴 수 없는 확인의 기본은 안전한 쪽이다(grid-standard.md §3.4 의 삭제 확인과 같다).
+        // 되돌릴 수 없는 확인의 기본은 안전한 쪽이다(frontend/grid.md 의 삭제 확인과 같다).
         autoFocusButton: 'cancel',
         onOk: async () => {
           await saveTree(groups);
@@ -418,13 +418,13 @@ export function MenuTreePage() {
         width: 170,
         /*
           <b>글자 크기를 적지 않는다.</b> 설정 창의 <i>그리드 글자 크기</i>를 트리가 행에 걸고
-          셀이 물려받는다(main-shell.md §9.6) — 여기서 한 번 더 적으면 설정이 이 컬럼만 비껴간다.
+          셀이 물려받는다(frontend/tabs.md) — 여기서 한 번 더 적으면 설정이 이 컬럼만 비껴간다.
         */
         cell: (row: MenuTreeRow) => (
           <Typography.Text>
             {row.menuCd}
             {/*
-              <b>선언에서 사라진 메뉴</b>(ADR-0028). 시드가 지우지 않고 표시만 하므로
+              <b>선언에서 사라진 메뉴</b>(seed.md). 시드가 지우지 않고 표시만 하므로
               — 딸린 권한이 사람의 것이다 — 지울 대상을 트리가 말해 주는 자리가 여기다.
               지우는 길은 §4.8 의 삭제 버튼이며 게이트 넷을 먼저 통과해야 한다.
             */}
@@ -441,10 +441,10 @@ export function MenuTreePage() {
         width: 210,
         /*
           <b>자식이 있으면 잠긴다</b>(§4.3) — URL 과 자식은 배타다. 화면이 미리 막고
-          저장 서비스가 다시 막는다: 화면의 방어는 UX 이지 방어가 아니다(security-design.md §4).
+          저장 서비스가 다시 막는다: 화면의 방어는 UX 이지 방어가 아니다(backend/security.md).
 
           이제 그 잠금이 <b>색으로도 보인다</b> — 열리지 않는 칸은 읽기 전용 색조가 깔린다
-          (`TreeColumn.editable` · grid-standard.md §8.2).
+          (`TreeColumn.editable` · frontend/grid.md).
         */
         editable: (_row: MenuTreeRow, node: TreeNode<MenuTreeRow>) =>
           canSave && node.children.length === 0,
@@ -535,7 +535,7 @@ export function MenuTreePage() {
         header: MSG.MENU_COL_USE_YN,
         width: 90,
         /*
-          <b>스위치는 셀이 곧 편집기다</b> — 판의 {@code ynFlag} 컬럼과 같다(grid-column-contract.md §5.2).
+          <b>스위치는 셀이 곧 편집기다</b> — 판의 {@code ynFlag} 컬럼과 같다(frontend/grid.md).
           더블 클릭이 열 것이 없으므로 {@code editor} 가 없고, 그래도 <b>잠긴 칸이
           아니므로</b> 이것을 선언한다 — 안 하면 읽기 전용 색조가 깔린다.
         */
@@ -543,7 +543,7 @@ export function MenuTreePage() {
         cell: (row: MenuTreeRow) => (
           <Switch
             size="small"
-            // <b>그리드의 스위치 컬럼과 같은 폭</b>이다 — grid-column-contract.md §5.2 · `SWITCH_WIDTH`.
+            // <b>그리드의 스위치 컬럼과 같은 폭</b>이다 — frontend/grid.md · `SWITCH_WIDTH`.
             style={{ minWidth: SWITCH_WIDTH }}
             checked={row.useYn}
             disabled={!canSave}
@@ -595,7 +595,7 @@ export function MenuTreePage() {
     () => [
       /*
         Ⓑ 의 둘은 <b>`actionCd` 를 선언하지 않는다</b>(§4.12) — 표시를 바꿀 뿐 데이터를 읽지도
-        쓰지도 않는다. grid-api-contract.md §3.3 은 선언한 것만 권한 판정을 받는다고 정했다.
+        쓰지도 않는다. frontend/grid.md 은 선언한 것만 권한 판정을 받는다고 정했다.
 
         <b>토글 하나로 두지 않는다</b>(§4.5.1) — 일부만 펼친 중간 상태에서 토글이 무엇을
         가리키는지 말할 수 없다.
@@ -660,9 +660,9 @@ export function MenuTreePage() {
               handleRef={tree}
               title={MSG.MENU_TREE_TITLE}
               /*
-                <b>접히면 제목만 남는다</b>(grid-standard.md §6.3). 넘기지 않으면 트리는 자기가 접혔다는
+                <b>접히면 제목만 남는다</b>(frontend/grid.md). 넘기지 않으면 트리는 자기가 접혔다는
                 것을 몰라 머리·판·푸터를 그대로 그리고, 좁아진 pane 안에서 그것이 <b>잘린
-                표</b>로 보인다(61 §4 에서 실물로 겪었다).
+                표</b>로 보인다(screen/user/requirements.md 에서 실물로 겪었다).
               */
               collapsed={collapsed}
               collapsedAxis={axis}
@@ -679,12 +679,12 @@ export function MenuTreePage() {
                     alignItems: 'center',
                     gap: 4,
                     minWidth: 0,
-                    // 꺼진 메뉴는 흐리다 — 최종 게이트에서 걸린다(security-design.md §4 ④).
+                    // 꺼진 메뉴는 흐리다 — 최종 게이트에서 걸린다(backend/security.md ④).
                     opacity: row.useYn ? 1 : 0.45,
                   }}
                 >
                   {/*
-                    <b>사이더와 같은 아이콘</b>이다 — main-shell.md §4.1 · `menuIconOf`. 폴백까지
+                    <b>사이더와 같은 아이콘</b>이다 — frontend/tabs.md · `menuIconOf`. 폴백까지
                     공유하므로, 아이콘을 <b>비워 둔 메뉴</b>가 여기서는 폴더/문서로 보이고
                     사이더에서는 다른 모양이던 일이 없어진다(그 폴백이 사이더에만 있었다).
                   */}
@@ -703,7 +703,7 @@ export function MenuTreePage() {
                   </span>
                 </span>
               )}
-              /* 폭을 내용에서 내고 잘린 이름은 툴팁이 말한다 — 62 §4.2. */
+              /* 폭을 내용에서 내고 잘린 이름은 툴팁이 말한다 — screen/menu/requirements.md. */
               hierarchyText={(row) => row.menuNm}
               search={treeSearch}
               columns={columns}
@@ -724,7 +724,7 @@ export function MenuTreePage() {
             />
           )}
           /*
-            <b>접힘을 넘긴다</b>(grid-standard.md §6.3) — 탭바가 사라지고 활성 탭의 그리드가 제목 한 줄로
+            <b>접힘을 넘긴다</b>(frontend/grid.md) — 탭바가 사라지고 활성 탭의 그리드가 제목 한 줄로
             접힌다. 넘기지 않으면 탭이 있는 하단은 <b>탭바·버튼 줄·페이징이 그대로 남고
             판만 0px</b> 이 되어 <i>판이 깨진 것</i>으로 보인다.
           */
@@ -798,11 +798,11 @@ function siblingIndex(rows: MenuTreeRow[], menuCd: string): number {
 }
 
 /**
- * 드롭 → <b>형제 목록</b>(42 §4).
+ * 드롭 → <b>형제 목록</b>(sys/menu.md).
  *
  * <p>부모가 바뀌면 <b>둘</b>이다 — 뺀 쪽과 넣은 쪽. 한 요청에 담으므로 배열 하나에 넣는다.
  * <b>뺀 쪽을 빼먹지 않는 것</b>이 중요하다: 중간에서 하나가 빠진 형제는 `1,2,4` 가 되고,
- * 42 §4 가 전체 재작성으로 얻으려던 <i>언제나 정규화 상태</i> 가 깨진다.
+ * sys/menu.md 가 전체 재작성으로 얻으려던 <i>언제나 정규화 상태</i> 가 깨진다.
  */
 function siblingGroups(
   rows: MenuTreeRow[],
@@ -828,7 +828,7 @@ function siblingGroups(
 }
 
 /**
- * 놓을 수 있는가 · 무엇이라 말할 것인가 — 62 §4.5.2 의 문장 넷이 여기서 만들어진다.
+ * 놓을 수 있는가 · 무엇이라 말할 것인가 — screen/menu/requirements.md 의 문장 넷이 여기서 만들어진다.
  *
  * <p><b>놓을 수 없는 자리에서도 이유를 낸다.</b> 왜 안 놓이는지 모르면 사용자는 버그로 읽는다.
  */
@@ -870,7 +870,7 @@ function verdictOf(
 function excelTable(rows: MenuTreeRow[], nodes: Map<string, TreeNode<MenuTreeRow>>) {
   return {
     /*
-      <b>키가 함께 간다</b> — 다운로드 이력이 컬럼 식별자를 남긴다(ADR-0019). `path` 만
+      <b>키가 함께 간다</b> — 다운로드 이력이 컬럼 식별자를 남긴다(frontend/grid-advanced.md). `path` 만
       행에 없는 파생이며(계층을 편 것) 나머지 일곱은 {@link MenuTreeRow} 의 필드명 그대로다.
     */
     columns: [

@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
  * 레벨 {@code readOnly} 가 빠지면 조회가 <b>쓰기 트랜잭션으로 돈다</b> — 동작은 같고
  * 플러시만 늘어나므로 아무도 알아채지 못한다.
  *
- * <p><b>세 모양을 인정한다</b>(architecture.md §4). 여기서 검사하는 것은 <b>순수 조회</b> 하나다:
+ * <p><b>세 모양을 인정한다</b>(backend/packages.md). 여기서 검사하는 것은 <b>순수 조회</b> 하나다:
  *
  * <ul>
  *   <li><b>순수 조회</b>({@code *QueryService}) — 클래스 레벨 {@code readOnly = true},
@@ -55,7 +55,7 @@ class ServiceConventionTest {
                         events.add(SimpleConditionEvent.violated(
                                 item,
                                 item.getName()
-                                        + " 에 클래스 레벨 @Transactional(readOnly = true) 가 없다 — architecture.md §4"));
+                                        + " 에 클래스 레벨 @Transactional(readOnly = true) 가 없다 — backend/packages.md"));
                     }
                 }
             };
@@ -89,7 +89,7 @@ class ServiceConventionTest {
     }
 
     /**
-     * {@code Admin} 은 <b>패키지가 말하거나 이름 충돌을 피할 때만</b> 쓴다 — architecture.md §2.
+     * {@code Admin} 은 <b>패키지가 말하거나 이름 충돌을 피할 때만</b> 쓴다 — backend/packages.md.
      *
      * <p>조회에는 충돌이 없었다. 열일곱 중 여섯만 {@code Admin} 을 달고 있었고 그 여섯은
      * 모두 {@code <도메인>/admin/} 패키지 안이라 <b>같은 말을 두 번</b> 하고 있었다.

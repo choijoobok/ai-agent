@@ -9,11 +9,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 /**
- * 진행률 저장소의 JPA 면 — 30 §6.2 의 {@code jdbc} store 가 이것을 쓴다.
+ * 진행률 저장소의 JPA 면 — backend/crosscutting.md 의 {@code jdbc} store 가 이것을 쓴다.
  *
  * <h2>만료 청소가 <b>여기에</b> 있는 것이 요점이다</h2>
  *
- * <p>32 §5 는 <i>"Redis·local store 는 native TTL 로 자동 만료되므로 청소 배치가 필요
+ * <p>retention.md 는 <i>"Redis·local store 는 native TTL 로 자동 만료되므로 청소 배치가 필요
  * 없다"</i> 고 적었다. 그 문장이 곧 <b>청소는 저장소마다 다르다</b>는 뜻이며, 그래서
  * {@code JobProgressStore} 인터페이스에 {@code purge} 가 없다 — 두면 Redis 구현이
  * <b>빈 메서드</b>를 갖게 되고, 빈 메서드는 <i>부르면 되는 것</i>처럼 보인다.

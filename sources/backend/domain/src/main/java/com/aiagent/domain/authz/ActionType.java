@@ -1,7 +1,7 @@
 package com.aiagent.domain.authz;
 
 /**
- * 액션 4종 — security-design.md §4. <b>집합은 여기서 닫힌다.</b>
+ * 액션 4종 — backend/security.md. <b>집합은 여기서 닫힌다.</b>
  *
  * <p>화면별 커스텀 액션을 허용하면 권한 화면이 메뉴마다 다른 컬럼을 갖게 되어
  * (주체 × 메뉴 × 액션) 의 균일함이 깨진다.
@@ -13,7 +13,7 @@ package com.aiagent.domain.authz;
  */
 public enum ActionType {
 
-    /** 조회 — 화면 진입, 목록·상세. 나머지 셋의 전제다(42 §6). */
+    /** 조회 — 화면 진입, 목록·상세. 나머지 셋의 전제다(sys/menu.md). */
     READ,
 
     /** 저장 — <b>추가·수정·삭제를 포함한다.</b> */

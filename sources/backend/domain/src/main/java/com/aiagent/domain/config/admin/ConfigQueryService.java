@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code CONFIG_MGMT} 의 조회 — 63 §4.2.
+ * {@code CONFIG_MGMT} 의 조회 — screen/code/requirements.md.
  *
  * <p><b>{@code QuerySpec} 을 쓰지 않는 유일한 목록이다.</b> 그 기계는 <b>왼쪽 테이블이
  * DB 에 있을 때</b>의 것이고, 여기는 왼쪽이 <b>코드</b>다(`yml` 이 정한 키 목록). 아우터
@@ -40,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 때문이다.</b> 스무 줄짜리 표이며 <b>사용자 데이터가 아니라서 자라지 않는다</b> — 자라려면
  * 개발자가 필드를 더해야 하고, 그때는 이 판단을 다시 볼 사람이 그 자리에 있다.
  *
- * <p><b>62 §5.2 의 <i>미등록</i> 과 같은 구조인데 답이 다르다.</b> API 카탈로그는 없는 행을
+ * <p><b>screen/menu/requirements.md 의 <i>미등록</i> 과 같은 구조인데 답이 다르다.</b> API 카탈로그는 없는 행을
  * 목록에 낼 수 없어 <b>빈 상태가 진단</b>이 됐다. 여기는 왼쪽 테이블이 코드에 있어서 낼 수
  * 있다 — <b>차이는 후보 집합을 아는가</b>다. 그래서 이 화면에는 그런 빈 상태가 없다.
  */
@@ -48,16 +48,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ConfigQueryService {
 
-    /** 키와 설명을 <b>한 칸이 함께 건다</b> — 43 §6.1 이 분류 컬럼 대신 고른 것이다. */
+    /** 키와 설명을 <b>한 칸이 함께 건다</b> — sys/code.md 이 분류 컬럼 대신 고른 것이다. */
     private static final String KEYWORD = "keyword";
 
-    /** 전 키에서 <b>도출</b>한다 — 목록을 관리하지 않는다(63 §4.6). */
+    /** 전 키에서 <b>도출</b>한다 — 목록을 관리하지 않는다(screen/code/requirements.md). */
     private static final String PREFIX = "prefix";
 
-    /** {@code Y}(변경됨) · {@code N}(기본값). 판정은 <b>행의 존재</b>다(63 §4.3). */
+    /** {@code Y}(변경됨) · {@code N}(기본값). 판정은 <b>행의 존재</b>다(screen/code/requirements.md). */
     private static final String OVERRIDDEN = "overridden";
 
-    /** 정렬은 키 하나만 연다 — 나머지는 값이라 <b>정렬해서 얻을 것이 없다</b>(grid-column-contract.md §3). */
+    /** 정렬은 키 하나만 연다 — 나머지는 값이라 <b>정렬해서 얻을 것이 없다</b>(frontend/grid.md). */
     private static final String SORT_KEY = "cfgKey";
 
     private final ConfigCatalog catalog;
@@ -86,10 +86,10 @@ public class ConfigQueryService {
     }
 
     /**
-     * 접두사 콤보의 후보 — 63 §4.6.
+     * 접두사 콤보의 후보 — screen/code/requirements.md.
      *
      * <p><b>관리하지 않는다.</b> 전 키에서 마디 단위로 도출하므로 <i>"새로 관리할 것도,
-     * 어긋날 것도 없다"</i>(43 §6.1). 키를 하나 더하면 그 접두사가 <b>저절로</b> 목록에 선다.
+     * 어긋날 것도 없다"</i>(sys/code.md). 키를 하나 더하면 그 접두사가 <b>저절로</b> 목록에 선다.
      *
      * <p>마지막 마디는 접두사가 아니다 — {@code auth.login.fail-limit} 이 내는 것은
      * {@code auth.} 와 {@code auth.login.} 둘이며 <b>자기 자신은 아니다</b>. 자기 자신을 넣으면
@@ -115,7 +115,7 @@ public class ConfigQueryService {
 
         List<ConfigRow> rows = new ArrayList<>(catalog.keys().size());
         for (ConfigKey key : catalog.keys()) {
-            // 오른쪽이 비어 있는 것이 정상이다 — 63 §4.2.
+            // 오른쪽이 비어 있는 것이 정상이다 — screen/code/requirements.md.
             SysConfig override = byKey.get(key.key());
             rows.add(new ConfigRow(
                     key.key(),
@@ -135,10 +135,10 @@ public class ConfigQueryService {
     // ── 조회조건 ─────────────────────────────────────────────────────
 
     /**
-     * 화이트리스트는 <b>셋</b>이다 — 63 §4.6.
+     * 화이트리스트는 <b>셋</b>이다 — screen/code/requirements.md.
      *
      * <p>{@code QuerySpec} 이 없다고 화이트리스트까지 없는 것은 아니다. 모르는 필드는
-     * <b>조용히 무시하지 않고 400</b> 이며(api-conventions.md §4), 무시하면 화면의 오타가 <i>"조건이 안
+     * <b>조용히 무시하지 않고 400</b> 이며(backend/api.md), 무시하면 화면의 오타가 <i>"조건이 안
      * 걸린다"</i> 로만 나타나 원인을 짚을 수 없다.
      */
     private static List<ConfigRow> apply(List<ConfigRow> rows, Condition condition) {
@@ -159,10 +159,10 @@ public class ConfigQueryService {
     }
 
     /**
-     * <b>한 칸이 키와 설명을 함께 건다</b> — 43 §6.1.
+     * <b>한 칸이 키와 설명을 함께 건다</b> — sys/code.md.
      *
      * <p>분류 컬럼({@code CFG_GRP_CD})을 두지 않았으므로 <i>"여러 영역에 걸치는 설정"</i> 을
-     * 찾는 수단이 검색뿐이다. 설명의 원천은 메타데이터라(63 §4.2) 이 조건이 <b>DB 에 없는
+     * 찾는 수단이 검색뿐이다. 설명의 원천은 메타데이터라(screen/code/requirements.md) 이 조건이 <b>DB 에 없는
      * 문자열</b>을 건다 — SQL 로는 표현할 수 없는 조건이며, 그것이 이 목록이 메모리인 또
      * 하나의 이유다.
      */

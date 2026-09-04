@@ -16,7 +16,7 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
 /**
- * 오래 걸리는 작업을 <b>맡기고 곧바로 돌아온다</b> — 30 §6 · 68 §9.1.
+ * 오래 걸리는 작업을 <b>맡기고 곧바로 돌아온다</b> — backend/crosscutting.md · playbook/INDEX.md.
  *
  * <pre>
  * String jobId = progressHelper.start(1000L, progress -&gt; service.bulkSave(list, progress));
@@ -27,12 +27,12 @@ import org.springframework.stereotype.Component;
  * 있고, 사용자는 <i>화면이 멈췄다</i> 를 겪으며 새로고침한다 — 그러면 같은 작업이 <b>또</b>
  * 시작된다.
  *
- * <p><b>{@code RUNNING} 을 먼저 적재한다</b>(30 §6). 화면은 {@code jobId} 를 받자마자
+ * <p><b>{@code RUNNING} 을 먼저 적재한다</b>(backend/crosscutting.md). 화면은 {@code jobId} 를 받자마자
  * 폴링을 시작하는데, 그 첫 요청이 <i>없음</i> 을 받으면 <b>실패한 것과 구별할 수 없다</b>.
  *
  * <p><b>사용자를 여기서 붙든다.</b> 작업은 다른 스레드에서 돌고 그 스레드에는
  * {@code SecurityContext} 가 없다 — 안에서 물으면 <b>주인 없는 진행률</b>이 되어 시작한
- * 사람조차 자기 것을 볼 수 없다(46 §8.1 의 인가가 {@code USER_ID} 대조다).
+ * 사람조차 자기 것을 볼 수 없다(sys/batch.md 의 인가가 {@code USER_ID} 대조다).
  *
  * <p><b>언어도 같은 이유로 여기서 붙든다</b>({@link RequestLang} · 2026-09-02). 실패
  * 문구는 사용자 언어여야 하는데 그것을 정하는 규칙은 요청을 아는 쪽에 있고, 작업
@@ -46,12 +46,12 @@ import org.springframework.stereotype.Component;
  * 언어이며, 부르는 자리가 상세를 덧붙이면 <b>개발자용 문자열</b>이다. 그래서 진행률 창에
  * <i>amount is closed: SO-2026-1021</i> 이 떴다. 사용자가 읽을 문구는
  * {@code ErrorCode.code()} 를 키로 {@code SYS_MESSAGE} 에서 그 사람의 언어로 읽는 것이며
- * (architecture.md §6-1.2 — {@code ErrorMessages} 가 응답에서 하는 것과 같다), 이 클래스가 그
+ * (backend/packages.md — {@code ErrorMessages} 가 응답에서 하는 것과 같다), 이 클래스가 그
  * 자리를 대신한다: 작업 스레드에는 요청이 없으므로 {@code ErrorMessages} 를 쓸 수 없다.
  *
  * <p><b>업무 규칙 위반과 예상 밖의 고장을 가른다.</b> 앞엣것은 <i>무엇이 막혔는지</i> 를
  * 말할 수 있고(그 코드의 문구), 뒤엣것은 말할 것이 없다 — 그때 예외의 문구를 내면
- * SQL 조각이나 클래스 이름이 창에 뜬다(security-design.md §8 이 응답에 스택을 담지 않기로 한 것과 같은
+ * SQL 조각이나 클래스 이름이 창에 뜬다(backend/security.md 이 응답에 스택을 담지 않기로 한 것과 같은
  * 자리다). 뒤엣것은 {@code err.internal} 하나로 닫고 <b>원인은 로그가 갖는다</b>.
  */
 @Component
@@ -83,13 +83,13 @@ public class ProgressHelper {
 
     /**
      * @param totCnt 전체 건수. <b>모르면 {@code null}</b> — 화면이 불확정 막대를 그린다
-     *     (46 §8). 0 을 주면 {@code 0/0} 이 되어 <b>완료로 보인다</b>
+     * (sys/batch.md). 0 을 주면 {@code 0/0} 이 되어 <b>완료로 보인다</b>
      * @return 발급된 {@code jobId} — 응답에 실어 보내면 화면이 그것으로 폴링한다
      */
     public String start(Long totCnt, Consumer<Progress> work) {
         String userId = auditor.getCurrentAuditor().orElseThrow(() ->
-                // 개발자용이라 영어다 — 사용자에게 나가는 문구가 아니다(43 §3).
-                new IllegalStateException("Progress job needs a session user (46 §8.1)"));
+                // 개발자용이라 영어다 — 사용자에게 나가는 문구가 아니다(sys/code.md).
+                new IllegalStateException("Progress job needs a session user (sys/batch.md)"));
         // 여기가 요청 스레드다 — 작업 안에서는 물을 수 없다(위).
         String userLang = lang.current();
         String jobId = UUID.randomUUID().toString();
@@ -102,7 +102,7 @@ public class ProgressHelper {
             /*
               <b>큐가 찼으면 그 자리에서 실패로 닫는다.</b> 사전 등록한 {@code RUNNING} 행을
               그대로 두면 <b>영영 도는 작업</b>이 되고, 사용자는 만료 청소가 지울 때까지
-              (32 §5) 진행률 창을 열어 둔 채 기다린다.
+              (retention.md) 진행률 창을 열어 둔 채 기다린다.
             */
             store.fail(jobId, userText(rejected, userLang));
             throw rejected;
@@ -133,11 +133,11 @@ public class ProgressHelper {
     }
 
     /**
-     * 화면에 그대로 보이는 문구다(68 §9.1 &mdash; <i>{@code ERR_MSG} 를 보인다</i>).
+     * 화면에 그대로 보이는 문구다(playbook/INDEX.md &mdash; <i>{@code ERR_MSG} 를 보인다</i>).
      *
      * <p><b>예외의 문구를 쓰지 않는다</b>(위 클래스 주석). 업무 규칙 위반이면 그 코드의
      * 문구를 사용자 언어로 읽고, 예상 밖의 고장이면 {@code err.internal} 하나로 닫는다 &mdash;
-     * 스택도 예외의 문구도 창에 넣지 않으며(security-design.md §8) 그것들은 위 로그가 갖는다.
+     * 스택도 예외의 문구도 창에 넣지 않으며(backend/security.md) 그것들은 위 로그가 갖는다.
      *
      * <p><b>여기서 던지면 안 된다.</b> 실패를 적는 경로가 스스로 실패하면 그 작업은
      * {@code RUNNING} 인 채 굳고, 사용자에게는 <i>끝나지 않는 작업</i>이 된다 &mdash;

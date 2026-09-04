@@ -24,42 +24,42 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
- * 배치 한 번을 <b>실제로 돌리는 곳</b> — BATCH-02 · BATCH-09 · 31 §7.
+ * 배치 한 번을 <b>실제로 돌리는 곳</b> — BATCH-02 · BATCH-09 · backend/persistence.md.
  *
  * <p>두 입구가 있고 <b>쿨다운에서만 갈린다</b>.
  *
  * <table><caption></caption>
  *   <tr><th></th><th>{@link #runNow}</th><th>{@link #runScheduled}</th></tr>
- *   <tr><td>부르는 쪽</td><td>화면의 <b>즉시 실행</b>(65 §3.7)</td><td>크론</td></tr>
+ * <tr><td>부르는 쪽</td><td>화면의 <b>즉시 실행</b>(screen/batch/schedule/requirements.md)</td><td>크론</td></tr>
  *   <tr><td>{@code EXEC_TYPE_CD}</td><td>{@code MANUAL}</td><td>{@code SCHEDULE}</td></tr>
- *   <tr><td>쿨다운</td><td><b>우회한다</b>(31 §7)</td>
+ * <tr><td>쿨다운</td><td><b>우회한다</b>(backend/persistence.md)</td>
  *       <td>지킨다 — 막히면 {@code SKIP_COOLDOWN}</td></tr>
  *   <tr><td>락에 막히면</td><td><b>거절</b> — 사람이 보고 있다</td>
  *       <td>{@code SKIP_LOCK} 행 하나 — 다중화에서 <b>정상</b>이다</td></tr>
  * </table>
  *
  * <p><b>거절과 {@code SKIP} 이 다른 것이 요점이다.</b> 사람이 누른 실행은 <i>안 됐다</i> 를
- * <b>그 자리에서 말해야</b> 하고(65 §3.7 의 문구가 노드와 시각을 요구한다), 크론이 깨운
+ * <b>그 자리에서 말해야</b> 하고(screen/batch/schedule/requirements.md 의 문구가 노드와 시각을 요구한다), 크론이 깨운
  * 실행은 아무도 보고 있지 않으므로 <b>이력에 적는 것이 유일한 말하기</b>다.
  *
  * <h2>던지고 끝낸다 — 진행률을 쓰지 않는다</h2>
  *
- * <p>65 §2.4. {@code ProgressHelper} 는 <i>요청 스레드가 시작하는 작업</i>을 전제하는데
+ * <p>screen/batch/schedule/requirements.md. {@code ProgressHelper} 는 <i>요청 스레드가 시작하는 작업</i>을 전제하는데
  * 배치는 <b>락을 잡은 노드에서</b> 돌고 그것이 다른 노드일 수 있다. 진행 상황을 보여줄
  * 자리는 이미 있다 — 실행 이력의 {@code RUNNING} 행이다.
  *
  * <p>그래서 {@link #runNow} 는 <b>시작만 확인하고 돌아온다.</b> 화면은 하단 pane 을
- * 재조회하고 거기 {@code RUNNING} 행이 보인다(65 §3.9).
+ * 재조회하고 거기 {@code RUNNING} 행이 보인다(screen/batch/schedule/requirements.md).
  *
  * <h2>락 해제가 {@code finally} 에 있다</h2>
  *
  * <p>없으면 프로세스가 살아 있는 채로 락이 남아 <b>만료까지 그 배치가 다시 못 돈다</b>.
- * 만료 안전망은 <i>프로세스가 죽었을 때</i>의 것이지 예외가 났을 때의 것이 아니다(31 §5).
+ * 만료 안전망은 <i>프로세스가 죽었을 때</i>의 것이지 예외가 났을 때의 것이 아니다(backend/persistence.md).
  */
 @Component
 public class BatchRunner {
 
-    /** 락 네임스페이스 — 키는 {@code BATCH_ID} 이고 그것이 PK 인 이유다(31 §7 · 46 §5). */
+    /** 락 네임스페이스 — 키는 {@code BATCH_ID} 이고 그것이 PK 인 이유다(backend/persistence.md · sys/batch.md). */
     public static final String LOCK_TYPE = "BATCH";
 
     private static final Logger log = LoggerFactory.getLogger(BatchRunner.class);
@@ -67,7 +67,7 @@ public class BatchRunner {
     /**
      * {@code ERR_MSG} 는 {@code nclob} 이라 길이 제약이 사실상 없지만 <b>무한은 아니다</b>.
      *
-     * <p>architecture.md §6.2 가 요청 전문에 1MB 를 둔 것과 같은 이유이며, 46 §10 이 상세 결과의 절단
+     * <p>backend/packages.md 가 요청 전문에 1MB 를 둔 것과 같은 이유이며, sys/batch.md 이 상세 결과의 절단
      * 상한을 미결로 남긴 것과 <b>같은 축</b>이다 — 스택은 보통 수 KB 라 이 값에 닿지
      * 않는다. 닿는 경우는 재귀 예외뿐이고 그때 필요한 것은 앞쪽 프레임이다.
      */
@@ -99,14 +99,14 @@ public class BatchRunner {
     }
 
     /**
-     * 즉시 실행 — <b>거절되면 이유가 돌아온다</b>(65 §3.7).
+     * 즉시 실행 — <b>거절되면 이유가 돌아온다</b>(screen/batch/schedule/requirements.md).
      *
      * <p>거절 사유는 <b>하나뿐</b>이다: 이미 실행 중. 쿨다운은 우회하고({@link
      * LockStore#forceRelease}) {@code USE_YN='N'} 은 막지 않는다 — <i>꺼 둔 배치를 한 번
      * 돌려 보는 것이 정상 동선</i>이기 때문이다.
      *
      * <p><b>노드와 시각을 문구에 넣는 것이 요점이다.</b> <i>"실행 중입니다"</i> 만 내면
-     * 운영자는 얼마나 기다려야 하는지 모른다 — 31 §8 이 {@code NODE_ID} 를 남긴 것과
+     * 운영자는 얼마나 기다려야 하는지 모른다 — backend/persistence.md 이 {@code NODE_ID} 를 남긴 것과
      * 같은 이유다. 그래서 락이 아니라 <b>이력 행</b>을 보고 판정한다(락은 <i>잡혔다</i>
      * 만 말한다).
      */
@@ -121,7 +121,7 @@ public class BatchRunner {
               락에 막혔다. 이력에 RUNNING 이 있으면 방금 다른 노드가 시작한 것이고 —
               그때는 노드와 시각이 있는 문구를 낸다.
 
-              없으면 쿨다운만 남은 락이다(31 §5 — 작업이 끝나도 그 시각까지 행이 남는다).
+              없으면 쿨다운만 남은 락이다(backend/persistence.md — 작업이 끝나도 그 시각까지 행이 남는다).
               수동은 그것을 우회하므로 지우고 다시 잡는다. **먼저 RUNNING 을 확인한 뒤에만**
               지우는 것이 forceRelease 의 계약이다 — 저장소는 도는 락과 쿨다운 락을 가리지
               못한다.
@@ -141,7 +141,7 @@ public class BatchRunner {
     }
 
     /**
-     * 크론이 깨웠다 — <b>건너뛰면 행이 남는다</b>(46 §6.1).
+     * 크론이 깨웠다 — <b>건너뛰면 행이 남는다</b>(sys/batch.md).
      *
      * <p>기록하지 않으면 <i>"어제 배치가 안 돌았다"</i> 를 조사할 때 아무 흔적도 없고,
      * 크론이 안 맞은 것인지 다른 노드가 가져간 것인지 쿨다운에 막힌 것인지 구분할 수 없다.
@@ -149,7 +149,7 @@ public class BatchRunner {
      * <p><b>{@code SKIP_LOCK} 과 {@code SKIP_COOLDOWN} 을 가르는 것이 여기서 일어난다.</b>
      * 락 저장소는 둘을 가르지 않으므로({@code tryAcquire} 가 {@code false} 하나로 돌려준다)
      * <b>쿨다운을 먼저 본다</b> — 순서가 판정이다. 뒤바꾸면 쿨다운에 막힌 것이 전부
-     * {@code SKIP_LOCK} 으로 적히고, 그러면 <b>결함이 정상으로 기록</b>된다(65 §4.3).
+     * {@code SKIP_LOCK} 으로 적히고, 그러면 <b>결함이 정상으로 기록</b>된다(screen/batch/schedule/requirements.md).
      */
     public void runScheduled(SysScheduleBatch batch) {
         Instant cooldownUntil = cooldownUntil(batch);
@@ -182,7 +182,7 @@ public class BatchRunner {
      * <b>{@code RUNNING} 행을 먼저 쓰고</b> 실행을 큐에 넣는다.
      *
      * <p>순서가 뒤바뀌면 큐에서 기다리는 동안 화면에 아무것도 안 보이고, 사용자는
-     * <i>버튼이 안 먹었다</i> 로 읽어 다시 누른다 — 65 §4.5 가 중단 버튼에서 걱정한 것과
+     * <i>버튼이 안 먹었다</i> 로 읽어 다시 누른다 — screen/batch/schedule/requirements.md 가 중단 버튼에서 걱정한 것과
      * 같은 종류다.
      */
     private void submit(SysScheduleBatch batch, BatchExecType execType) {
@@ -216,7 +216,7 @@ public class BatchRunner {
     private void execute(SysScheduleBatch batch, Long histId, BatchHeartbeat.Beat beat) {
         try {
             /*
-              <b>ADR-0026 §2 가 비워 둔 경계 셋 중 하나가 여기다.</b> 그 ADR 은 경계를
+              <b>sys/config.md 가 비워 둔 경계 셋 중 하나가 여기다.</b> 그 ADR 은 경계를
               <i>요청</i> 이 아니라 <b>작업</b> 으로 정의했고 스케줄러를 그 한 종류로
               들면서 "생기는 슬라이스가 한 줄을 넣는다" 고 적었다 — 이 슬라이스다.
 
@@ -269,7 +269,7 @@ public class BatchRunner {
             /*
               Throwable 이 아니라 Exception 이다 — OOM·StackOverflow 는 이 스레드가 이력을
               적을 수 있다는 보장이 없고, 적으려다 두 번째 오류가 나면 첫 번째가 로그에서도
-              사라진다. 그런 죽음은 유령 행으로 드러난다(65 §4.4).
+              사라진다. 그런 죽음은 유령 행으로 드러난다(screen/batch/schedule/requirements.md).
             */
             log.error("배치 실행이 실패했다 — batchId={} histId={}", batch.getBatchId(), histId, e);
             writer.finish(histId, BatchResultCode.FAIL, oneLineOf(e), null, stackOf(e));
@@ -277,7 +277,7 @@ public class BatchRunner {
     }
 
     /**
-     * 선점 — <b>쿨다운을 락에 실어 준다</b>(31 §5).
+     * 선점 — <b>쿨다운을 락에 실어 준다</b>(backend/persistence.md).
      *
      * <p>{@code releasableAt} 이 미래면 작업이 끝나도 그 시각까지 행이 남고, 그 사이의
      * {@code tryAcquire} 가 실패한다. 그것이 정확히 <i>같은 키의 최소 재실행 간격</i>이다.
@@ -297,10 +297,10 @@ public class BatchRunner {
      * <p><b>락이 아니라 이력을 본다.</b> 락 저장소는 실패 이유를 가르지 않으므로
      * ({@code tryAcquire} 가 {@code false} 하나다) 여기서 미리 갈라야
      * {@code SKIP_COOLDOWN} 과 {@code SKIP_LOCK} 이 서로 다른 코드로 남는다 — 하나는
-     * 결함이고 하나는 정상이라 <b>같은 코드에 두면 화면이 색을 줄 수 없다</b>(65 §4.3).
+     * 결함이고 하나는 정상이라 <b>같은 코드에 두면 화면이 색을 줄 수 없다</b>(screen/batch/schedule/requirements.md).
      *
      * <p>기준은 <b>마지막으로 실제로 돈 실행의 시작 시각</b>이다. 종료 시각으로 재면 오래
-     * 걸린 배치가 자기 소요만큼 쿨다운을 더 갖게 되고, 31 §5 가 정의한 것은 <i>재실행
+     * 걸린 배치가 자기 소요만큼 쿨다운을 더 갖게 되고, backend/persistence.md 가 정의한 것은 <i>재실행
      * 간격</i>이다.
      *
      * <p><b>건너뜀 행은 기준이 아니다</b>(2026-08-31 에 뒤집었다). 넣으면 건너뜀이 자기
@@ -326,7 +326,7 @@ public class BatchRunner {
         return running.isEmpty() ? Optional.empty() : Optional.of(running.get(0));
     }
 
-    /** {@code RSLT_MSG} 에 실을 한 줄 — 목록 컬럼이라 스택을 넣지 않는다(46 §6.3). */
+    /** {@code RSLT_MSG} 에 실을 한 줄 — 목록 컬럼이라 스택을 넣지 않는다(sys/batch.md). */
     private static String oneLineOf(Exception e) {
         String message = e.getMessage();
         return message == null || message.isBlank()
@@ -344,7 +344,7 @@ public class BatchRunner {
     /**
      * 즉시 실행의 결과 — <b>시작했는가, 아니면 왜 안 했는가</b>.
      *
-     * <p>예외로 표현하지 않는 것은 65 §3.7 의 응답이 <b>건별</b>이기 때문이다. 여러 건을
+     * <p>예외로 표현하지 않는 것은 screen/batch/schedule/requirements.md 의 응답이 <b>건별</b>이기 때문이다. 여러 건을
      * 골라 누르면 어떤 것은 시작하고 어떤 것은 실행 중이며, 예외를 던지면 <b>첫 실패에서
      * 나머지가 멈춘다</b>.
      *

@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 에러 로그 한 행을 쓴다 — architecture.md §6-1.2 · LOG-03.
+ * 에러 로그 한 행을 쓴다 — backend/packages.md · LOG-03.
  *
  * <p><b>{@code REQUIRES_NEW} 가 여기서는 더 절실하다.</b> {@link AccessLogService} 는
  * <i>롤백돼도 그 요청이 일어났다는 사실은 남아야 한다</i> 였지만, 여기는 <b>부르는 시점이

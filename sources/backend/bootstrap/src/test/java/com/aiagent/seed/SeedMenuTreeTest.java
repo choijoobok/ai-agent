@@ -17,7 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 메뉴 시드가 <b>트리인가</b> — 42 §4 의 네 층 중 넷째.
+ * 메뉴 시드가 <b>트리인가</b> — sys/menu.md 의 네 층 중 넷째.
  *
  * <p>여기서 막는 규칙들은 <b>전부 DB 제약으로 표현할 수 없다.</b> 다른 행의 값에 의존하기
  * 때문이며(CHECK 는 다른 행을 볼 수 없고 트리거는 이식성을 포기하는 것이다), 원칙 P1 에 따라
@@ -30,13 +30,13 @@ import org.junit.jupiter.api.Test;
  */
 class SeedMenuTreeTest {
 
-    /** 초기 정렬은 여기 있다 — 003 이 생성물이 되면서 갈렸다(ADR-0028 · 081 파일 머리). */
+    /** 초기 정렬은 여기 있다 — 003 이 생성물이 되면서 갈렸다(seed.md · 081 파일 머리). */
     private static final String MENU_SORT_SEED = "data/081-init-menu-sort.yaml";
 
     /** {@code MENU_CD = 'X' AND SORT_NO = 0} 에서 대상 메뉴를 뽑는다. */
     private static final Pattern SORT_TARGET = Pattern.compile("MENU_CD = '([A-Z_0-9]+)'");
 
-    /** 리프 포함 5단 — 52 §3.4. 넘는 저장은 거부한다. */
+    /** 리프 포함 5단 — sys/menu.md. 넘는 저장은 거부한다. */
     private static final int MAX_DEPTH = 5;
 
     private static List<Map<String, Object>> rows;
@@ -54,18 +54,18 @@ class SeedMenuTreeTest {
     }
 
     @Test
-    @DisplayName("52 §4.1 이 센 것과 행 수가 같다 — 구조 노드 8 + 리프 23")
+    @DisplayName("sys/menu.md 이 센 것과 행 수가 같다 — 구조 노드 8 + 리프 23")
     void rowCount() {
         long leaves = rows.stream().filter(row -> SeedRows.str(row, "MENU_URL") != null).count();
         long structural = rows.size() - leaves;
 
         /*
-          샘플 일곱이 늘었다(2026-09-02 — 68 §3 ~ §8 여섯 화면 + 모듈 노드). 24 +
+          샘플 일곱이 늘었다(2026-09-02 — playbook/INDEX.md ~ §8 여섯 화면 + 모듈 노드). 24 +
           SMPL_ROOT + SMPL_SINGLE_OFFSET + SMPL_SINGLE_CURSOR + SMPL_MD_VERT + SMPL_MD_HORZ +
           SMPL_MD_TABS + SMPL_EXCEL 이며, 이 숫자가 손으로 적혀 있는 것이 요점이다 —
-          메뉴가 <b>모르는 사이에</b> 느는 것을 막는다(52 §4.1 이 세는 것과 같아야 한다).
+          메뉴가 <b>모르는 사이에</b> 느는 것을 막는다(sys/menu.md 이 세는 것과 같아야 한다).
 
-          <b>여섯이 다 섰다.</b> 68 §2 의 커버리지 표에 빈 칸이 없으므로 여기서 더 늘 일은
+          <b>여섯이 다 섰다.</b> playbook/INDEX.md 의 커버리지 표에 빈 칸이 없으므로 여기서 더 늘 일은
           샘플이 아닌 화면이며, 그때도 이 줄을 고치는 순간 52 를 함께 보게 된다.
         */
         assertThat(rows).hasSize(31);
@@ -97,7 +97,7 @@ class SeedMenuTreeTest {
                 .toList();
 
         // 같으면 둘 다 참(URL 도 있고 자식도 있다)이거나 둘 다 거짓(URL 도 자식도 없는
-        // 죽은 노드)이다. 전자는 security-design.md §4 가 금지한 것이고, 후자는 아무 쓸모가 없는 행이다.
+        // 죽은 노드)이다. 전자는 backend/security.md 가 금지한 것이고, 후자는 아무 쓸모가 없는 행이다.
         assertThat(violations)
                 .as("URL 과 자식을 함께 갖거나 둘 다 없는 메뉴")
                 .isEmpty();
@@ -145,7 +145,7 @@ class SeedMenuTreeTest {
     }
 
     /**
-     * <b>SORT_NO 가 메뉴 시드에서 빠졌다</b>(ADR-0028) — 담으면 배포가 운영자의 드래그를
+     * <b>SORT_NO 가 메뉴 시드에서 빠졌다</b>(seed.md) — 담으면 배포가 운영자의 드래그를
      * 되돌리기 때문이며, 신규 설치의 초기 순서는 {@code 081-init-menu-sort.yaml} 이 채운다.
      *
      * <p>그래서 검사도 그쪽으로 옮긴다. 검사하려는 사실은 그대로다 — 형제 사이에 값이
@@ -157,7 +157,7 @@ class SeedMenuTreeTest {
         Map<String, String> sortOf = new LinkedHashMap<>();
         /*
           <b>파일 이름을 박지 않는다.</b> 081 이 그때의 24개를 채웠고 뒤에 오는 메뉴는 새
-          changelog 가 채운다(db-portability.md §1.1) — 이름으로 잡으면 뒤에 온 것이 검사 밖으로 나간다.
+          changelog 가 채운다(backend/persistence.md) — 이름으로 잡으면 뒤에 온 것이 검사 밖으로 나간다.
           SYS_MENU 를 갱신하는 시드는 이것 말고도 있으므로(003 의 고아 표시 · ICON_CD ·
           EXPORT_YN) <b>SORT_NO 를 쓰는 것만</b> 고른다.
         */

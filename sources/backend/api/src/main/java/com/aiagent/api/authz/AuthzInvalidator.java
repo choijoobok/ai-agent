@@ -10,11 +10,11 @@ import org.springframework.session.Session;
 import org.springframework.stereotype.Component;
 
 /**
- * <b>남의 세션</b>에 재계산 표시를 세운다 — security-design.md §4 권한 캐싱.
+ * <b>남의 세션</b>에 재계산 표시를 세운다 — backend/security.md 권한 캐싱.
  *
  * <p>{@link AuthzSession#markDirty} 는 <i>이 요청의 세션</i> 하나를 다룬다. 그것으로는 모자란
  * 자리가 역할 화면이다: <b>역할 권한을 고치거나 역할을 끄면 보유자 전원의 유효 권한이
- * 바뀌는데</b>(62 §2.5 · §3.6) 그 사람들은 지금 다른 세션에 들어와 있다. security-design.md §4 가
+ * 바뀌는데</b>(screen/menu/requirements.md) 그 사람들은 지금 다른 세션에 들어와 있다. backend/security.md 가
  * {@code SYS_USER_ROLE} 역방향 조회로 <b>보유자 전원</b>의 세션을 찾아 같은 플래그를 세우라고
  * 한 것이 이 컴포넌트이며, {@code AuthzSession} 이 <i>"부를 화면(AUTHZ-02·03)이 아직
  * 없다 — 역할 관리 슬라이스가 그것을 잇는다"</i> 고 적어 둔 자리를 닫는다.
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
  * {@code SpringSessionBackedSessionRegistry} 는 <b>세션을 나열</b>할 뿐 그 속성을 고칠 수단을
  * 주지 않는다(만료시키는 것은 된다 — 그것은 강제 로그아웃이고 여기서 하려는 일이 아니다).
  * 필요한 것은 {@code principal → 세션들} 인덱스이므로 그 인덱스를 가진
- * {@link FindByIndexNameSessionRepository} 를 그대로 쓴다 — security-design.md §4-1 이 동시 접속 제어를
+ * {@link FindByIndexNameSessionRepository} 를 그대로 쓴다 — backend/security.md 이 동시 접속 제어를
  * 위해 이미 요구한 <b>같은 부품</b>이다.
  *
  * <h2>이 요청의 세션은 <b>저장소로 건드리지 않는다</b></h2>
@@ -88,7 +88,7 @@ public class AuthzInvalidator {
             // 컨테이너 세션이다 — 다른 노드는커녕 같은 노드의 다른 세션에도 닿지 못한다.
             log.warn(
                     "세션 인덱스가 없어 보유자 {}명의 권한 재계산을 예약하지 못했다 — 각자 다음"
-                            + " 로그인에서 반영된다(security-design.md §4-1 · ADR-0002)",
+                            + " 로그인에서 반영된다(backend/security.md · backend/session.md)",
                     userIds.size());
             return;
         }

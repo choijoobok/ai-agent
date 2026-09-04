@@ -29,7 +29,7 @@ function greenness(hex: string): number {
 }
 
 /**
- * 테마 씨앗 — main-shell.md §9.7.
+ * 테마 씨앗 — frontend/tabs.md.
  *
  * <p><b>온도는 눈으로만 확인해 왔다.</b> 그래서 <i>"톤을 바꿔도 달라지는 게 없다"</i> 가
  * 하루를 갔다(2026-08-30 실물) — 씨앗은 옅었고 그리드는 아예 딴 표를 보고 있었다.

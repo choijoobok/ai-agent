@@ -30,15 +30,15 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 /**
- * 디테일 탭의 저장 — 61 §3.8 탭 1 · 탭 3.
+ * 디테일 탭의 저장 — screen/user/requirements.md 탭 1 · 탭 3.
  *
  * <p><b>재는 것이 셋이다.</b> <i>회수와 삭제가 갈리는가</i> · <i>거부되는 요청이 쓰기를 하지
  * 않는가</i> · <i>형식 검사가 들어오는 것에만 걸리는가</i>.
  *
- * <p>첫째가 이 화면의 핵심이다. 42 §3.1 이 <b>회수는 삭제가 아니라 {@code VALID_TO_DT}</b>
- * 라고 정했고 61 §4.7 이 <b>행 삭제는 잘못 등록한 행 정리</b> 로 남겨 두었다 — 둘을 섞으면
+ * <p>첫째가 이 화면의 핵심이다. sys/menu.md 이 <b>회수는 삭제가 아니라 {@code VALID_TO_DT}</b>
+ * 라고 정했고 screen/user/requirements.md 이 <b>행 삭제는 잘못 등록한 행 정리</b> 로 남겨 두었다 — 둘을 섞으면
  * <i>"누가 언제까지 무슨 역할을 가졌는가"</i> 가 사라진다. 변경 이력 테이블이 없으므로
- * (ADR-0010) 그 기록을 갖는 것이 이 행뿐이다.
+ * (sys/logs.md) 그 기록을 갖는 것이 이 행뿐이다.
  *
  * <p>셋째는 <b>조용한 함정</b>이다. 형식 검사를 삭제 행에도 걸면, 검사가 뒤에 바뀌었을 때
  * <b>예전에 들어간 값이 지울 수 없는 행</b>이 된다 — 그 상태에서 관리자가 할 수 있는 일이
@@ -76,7 +76,7 @@ class UserDetailServiceTest {
     class Roles {
 
         @Test
-        @DisplayName("기간을 비운 부여가 통과한다 — null 이 무기한이고 그것이 다수다(42 §3.1)")
+        @DisplayName("기간을 비운 부여가 통과한다 — null 이 무기한이고 그것이 다수다(sys/menu.md)")
         void openEndedGrantIsAllowed() {
             service.saveRoles(USER, List.of(new UserRoleSaveRow(RowState.C, ROLE, null, null)));
 
@@ -89,7 +89,7 @@ class UserDetailServiceTest {
         }
 
         @Test
-        @DisplayName("회수는 U 이고 행이 남는다 — 종료일을 어제로 하는 것이 회수다(42 §3.1)")
+        @DisplayName("회수는 U 이고 행이 남는다 — 종료일을 어제로 하는 것이 회수다(sys/menu.md)")
         void revokeKeepsTheRow() {
             SysUserRole existing = SysUserRole.granted(USER, ROLE, FROM, TO);
             when(grants.findByUserIdOrderByRoleIdAsc(USER)).thenReturn(List.of(existing));
@@ -103,7 +103,7 @@ class UserDetailServiceTest {
         }
 
         @Test
-        @DisplayName("삭제는 잘못 등록한 행 정리다 — 막지 않는다(61 §4.7 의 셋째 줄)")
+        @DisplayName("삭제는 잘못 등록한 행 정리다 — 막지 않는다(screen/user/requirements.md 의 셋째 줄)")
         void deleteIsAllowed() {
             SysUserRole existing = SysUserRole.granted(USER, ROLE, FROM, TO);
             when(grants.findByUserIdOrderByRoleIdAsc(USER)).thenReturn(List.of(existing));
@@ -116,7 +116,7 @@ class UserDetailServiceTest {
         }
 
         @Test
-        @DisplayName("이미 가진 역할을 또 주면 거부한다 — PK 가 (사용자, 역할) 하나다(42 §3.2)")
+        @DisplayName("이미 가진 역할을 또 주면 거부한다 — PK 가 (사용자, 역할) 하나다(sys/menu.md)")
         void duplicateGrantIsRejected() {
             when(grants.findByUserIdOrderByRoleIdAsc(USER))
                     .thenReturn(List.of(SysUserRole.granted(USER, ROLE, FROM, TO)));
@@ -152,7 +152,7 @@ class UserDetailServiceTest {
         }
 
         @Test
-        @DisplayName("기간이 뒤집히면 거부한다 — 그 부여는 어느 날도 유효하지 않다(40 §4.3)")
+        @DisplayName("기간이 뒤집히면 거부한다 — 그 부여는 어느 날도 유효하지 않다(sys/INDEX.md)")
         void reversedPeriodIsRejected() {
             assertThatThrownBy(() -> service.saveRoles(
                             USER, List.of(new UserRoleSaveRow(RowState.C, ROLE, TO, FROM))))
@@ -160,7 +160,7 @@ class UserDetailServiceTest {
         }
 
         @Test
-        @DisplayName("같은 날 하루짜리 부여는 통과한다 — 양끝 포함이다(40 §4.3)")
+        @DisplayName("같은 날 하루짜리 부여는 통과한다 — 양끝 포함이다(sys/INDEX.md)")
         void singleDayGrantIsAllowed() {
             assertThatCode(() -> service.saveRoles(
                             USER, List.of(new UserRoleSaveRow(RowState.C, ROLE, FROM, FROM))))
@@ -208,7 +208,7 @@ class UserDetailServiceTest {
     class Ips {
 
         @Test
-        @DisplayName("첫 대역을 전부 지우는 것을 막지 않는다 — 행이 없으면 제한 없음이다(41 §7)")
+        @DisplayName("첫 대역을 전부 지우는 것을 막지 않는다 — 행이 없으면 제한 없음이다(sys/user-role.md)")
         void clearingEveryRangeIsAllowed() {
             SysUserIpAllow existing = SysUserIpAllow.created(USER, "10.0.0.0/8", true, null, null);
             when(ipAllows.findByUserIdOrderByIpCidrAsc(USER)).thenReturn(List.of(existing));
@@ -230,7 +230,7 @@ class UserDetailServiceTest {
         }
 
         @Test
-        @DisplayName("형식이 아니면 거부한다 — DDL 에 둘 수 없는 검사다(db-portability.md §4)")
+        @DisplayName("형식이 아니면 거부한다 — DDL 에 둘 수 없는 검사다(backend/persistence.md)")
         void malformedRangeIsRejected() {
             assertThatThrownBy(() -> service.saveIps(
                             USER, List.of(new UserIpSaveRow(RowState.C, "192.168.0", true, null, null))))
@@ -249,7 +249,7 @@ class UserDetailServiceTest {
         }
 
         @Test
-        @DisplayName("기간이 뒤집히면 거부한다 — 그 대역은 어느 날도 허용되지 않는다(40 §4.3)")
+        @DisplayName("기간이 뒤집히면 거부한다 — 그 대역은 어느 날도 허용되지 않는다(sys/INDEX.md)")
         void reversedPeriodIsRejected() {
             assertThatThrownBy(() -> service.saveIps(
                             USER,
@@ -263,7 +263,7 @@ class UserDetailServiceTest {
         }
 
         @Test
-        @DisplayName("같은 날 하루짜리 허용은 통과한다 — 양끝 포함이다(40 §4.3)")
+        @DisplayName("같은 날 하루짜리 허용은 통과한다 — 양끝 포함이다(sys/INDEX.md)")
         void singleDayPeriodPasses() {
             LocalDate day = LocalDate.of(2026, 9, 1);
 
@@ -274,7 +274,7 @@ class UserDetailServiceTest {
         }
 
         @Test
-        @DisplayName("기간을 비우면 제한이 없다 — 기간이 없던 기존 행과 같은 뜻이다(41 §7)")
+        @DisplayName("기간을 비우면 제한이 없다 — 기간이 없던 기존 행과 같은 뜻이다(sys/user-role.md)")
         void emptyPeriodMeansNoLimit() {
             service.saveIps(
                     USER, List.of(new UserIpSaveRow(RowState.C, "10.1.2.3", true, null, null)));
@@ -288,7 +288,7 @@ class UserDetailServiceTest {
         }
 
         @Test
-        @DisplayName("같은 대역을 두 번 넣으면 거부한다 — PK 가 (사용자, 대역) 하나다(41 §7)")
+        @DisplayName("같은 대역을 두 번 넣으면 거부한다 — PK 가 (사용자, 대역) 하나다(sys/user-role.md)")
         void duplicateRangeIsRejected() {
             when(ipAllows.findByUserIdOrderByIpCidrAsc(USER))
                     .thenReturn(List.of(SysUserIpAllow.created(USER, "10.0.0.0/8", true, null, null)));
@@ -299,7 +299,7 @@ class UserDetailServiceTest {
         }
     }
 
-    // ── 형식 판정 (41 §7) ─────────────────────────────────────────
+    // ── 형식 판정 (sys/user-role.md) ─────────────────────────────────────────
 
     @Nested
     @DisplayName("IP · CIDR 판정 — 접두 길이의 상한이 계열에서 나온다")

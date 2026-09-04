@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 /**
- * 그리드 개인화 — UX-06 · UX-13 · grid-standard.md §5.
+ * 그리드 개인화 — UX-06 · UX-13 · frontend/grid.md.
  *
  * <p><b>시그니처 판정이 전부다.</b> 어긋난 설정을 그대로 내려 주면 <i>없어진 컬럼이 숨김
  * 목록에 남고 새 컬럼은 순서 없이 끼는</i> 상태가 되며, 사용자가 겪는 것은 *"설정이

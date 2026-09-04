@@ -19,7 +19,7 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.data.domain.AuditorAware;
 
 /**
- * 저장소를 설정이 고른다 — 30 §6.1 · 31 §3.
+ * 저장소를 설정이 고른다 — backend/crosscutting.md · backend/persistence.md.
  *
  * <p><b>고를 것이 하나씩인데 왜 설정으로 두는가.</b> 목적은 고르는 것이 아니라 <b>모르는
  * 값을 조용히 삼키지 않는 것</b>이다. {@code redis} 라 적었는데 DB 로 떨어지면 락도 진행률도

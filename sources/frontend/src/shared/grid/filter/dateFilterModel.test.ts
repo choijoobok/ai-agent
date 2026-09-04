@@ -6,7 +6,7 @@ import {
 } from '@/shared/grid/filter/dateFilterModel';
 
 /**
- * 날짜 필터의 판정 — grid-column-contract.md §4.5 · 68 §9.8.
+ * 날짜 필터의 판정 — frontend/grid.md · playbook/INDEX.md.
  *
  * <p><b>날짜 문자열에 오프셋을 적지 않는다.</b> 적으면 {@code startOf('day')} 가 <b>러너의
  * 시간대</b>에서 잘리므로 같은 테스트가 서울에서는 통과하고 UTC CI 에서는 죽는다 —

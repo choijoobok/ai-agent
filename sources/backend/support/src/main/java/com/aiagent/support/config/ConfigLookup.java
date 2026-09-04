@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import org.springframework.stereotype.Component;
 
 /**
- * 시스템 설정 조회 — 43 §6.1 · ADR-0026.
+ * 시스템 설정 조회 — sys/code.md · sys/config.md.
  *
  * <pre>
  * configs.get(AuthLoginProps.class).failLimit()   // call site 에 문자열 키가 없다
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  *
  * <p><b>props 클래스를 빈으로 등록하지 않는다.</b> 등록하면 {@code @Autowired} 로 직접
  * 주입할 수 있게 되고, 그러면 아래의 {@code SYS_CONFIG} 오버레이를 우회하는 경로가 생긴다
- * — 화면은 {@code 변경됨} 이라 말하는데 동작은 {@code yml} 값인 그 실패다(ADR-0026 §4).
+ * — 화면은 {@code 변경됨} 이라 말하는데 동작은 {@code yml} 값인 그 실패다(sys/config.md).
  * 여기서 직접 바인딩하므로 주입 시도는 기동에서 죽는다.
  *
  * <h2>층이 둘이고 메커니즘도 둘이다</h2>
@@ -27,12 +27,12 @@ import org.springframework.stereotype.Component;
  *
  * <p>{@code SYS_CONFIG} 를 프로퍼티 소스로 두지 않았다. 두면 <b>읽는 시점이 기동 한 번</b>
  * 이라 MASTER-08 의 런타임 변경이 성립하지 않고, 두 층이 하나의 {@code Environment} 에
- * 섞여 <b>어느 층에서 온 값인지 물을 수 없게</b> 된다(ADR-0026 §1).
+ * 섞여 <b>어느 층에서 온 값인지 물을 수 없게</b> 된다(sys/config.md).
  *
  * <h2>경계는 요청이 아니라 <b>작업</b>이다</h2>
  *
  * <p>한 덩어리 일 안에서 값이 바뀌면 안 된다 — 배치가 10만 건을 도는 도중에 바뀌어도 같은
- * 사고다(ADR-0017 §3 · ADR-0026 §2). 그래서 경계의 이름이 <b>작업(unit-of-work)</b> 이며
+ * 사고다(backend/caching.md · sys/config.md). 그래서 경계의 이름이 <b>작업(unit-of-work)</b> 이며
  * 요청은 그 한 종류다.
  *
  * <p>조회는 <b>작업당 {@code SELECT * FROM SYS_CONFIG} 한 번</b>이고, 그 안에서는 어느
@@ -40,12 +40,12 @@ import org.springframework.stereotype.Component;
  * 다시 만든다. 안 쓰는 값 때문에 죽을 이유가 없고, <b>전량 검사는 기동이 한다</b>.
  *
  * <p><b>경계 밖 호출은 예외로 죽인다.</b> 조용히 임시 스냅샷을 뜨면 루프 안에서 부를 때
- * 매번 조회하고 <b>매번 값이 다를 수 있다</b> — ADR-0017 §3 이 막으려던 사고가 그대로
+ * 매번 조회하고 <b>매번 값이 다를 수 있다</b> — backend/caching.md 이 막으려던 사고가 그대로
  * 되돌아온다. 대신 {@link #inNewSnapshot} 을 공개해 기동 검사·테스트가 경계를 직접 연다.
  *
  * <h2>{@code sys-config.} 밖은 경계를 요구하지 않는다</h2>
  *
- * <p>{@code app.security.*} · {@code app.logging.*} 은 <b>배포 설정</b>이다(43 §6.1) —
+ * <p>{@code app.security.*} · {@code app.logging.*} 은 <b>배포 설정</b>이다(sys/code.md) —
  * 기동 시 필터 체인이나 {@code DataSource} 의 모양을 정하므로 런타임에 바꿔도 반영될 자리가
  * 없고, 그래서 관리 화면에도 나오지 않는다. <b>덮을 층이 없으므로 스냅샷도 필요 없다</b> —
  * 요구하면 {@code SecurityConfig} 처럼 <b>기동 중에 읽는 정상 호출</b>이 전부 죽는다.
@@ -68,7 +68,7 @@ public class ConfigLookup {
      * 지금 열려 있는 작업의 스냅샷.
      *
      * <p><b>{@code InheritableThreadLocal} 이 아니다.</b> 자식 스레드가 부모의 것을 <i>가리키게</i>
-     * 두면 부모 작업이 먼저 끝나도 자식이 계속 쓰게 되고, 그것은 30 §3.2 가 금지한
+     * 두면 부모 작업이 먼저 끝나도 자식이 계속 쓰게 되고, 그것은 backend/crosscutting.md 가 금지한
      * <b>살아 있는 객체의 전파</b>다. 비동기는 <b>복사</b>해 물려받는다 — 그 배선은
      * {@code @Async} 데코레이터가 생기는 슬라이스의 것이다.
      */
@@ -95,16 +95,16 @@ public class ConfigLookup {
             throw new IllegalStateException(
                     "작업 경계 밖에서 설정을 읽었다 — " + type.getSimpleName()
                             + ". 요청·비동기·스케줄러 밖이라면 configs.inNewSnapshot(…) 으로 직접 연다"
-                            + " (ADR-0026 §2)");
+                            + " (sys/config.md)");
         }
         return snapshot.get(type);
     }
 
     /**
-     * 작업 경계를 <b>직접 연다</b> — 기동 검사와 테스트의 자리다(ADR-0026 §2).
+     * 작업 경계를 <b>직접 연다</b> — 기동 검사와 테스트의 자리다(sys/config.md).
      *
      * <p>요청 필터·{@code @Async} 데코레이터·스케줄러 래퍼는 <b>MDC 가 이미 붙는 자리</b>
-     * (30 §3 · §8)에서 이것을 부른다. <b>새 자리를 만들지 않는다.</b>
+     * (backend/crosscutting.md)에서 이것을 부른다. <b>새 자리를 만들지 않는다.</b>
      *
      * <p><b>중첩은 바깥을 지킨다.</b> 이미 열려 있으면 새로 뜨지 않고 그대로 쓴다 — 한
      * 작업 안에서 값이 갈리면 이 클래스가 지키려는 것이 무너진다.

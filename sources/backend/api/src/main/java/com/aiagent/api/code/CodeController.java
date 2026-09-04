@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 콤보가 읽는 공통코드 — 43 §8 · security-design.md §4.
+ * 콤보가 읽는 공통코드 — sys/code.md · backend/security.md.
  *
  * <h2>{@code common} 계층이다</h2>
  *

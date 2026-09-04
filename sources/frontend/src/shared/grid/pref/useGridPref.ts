@@ -10,7 +10,7 @@ import {
 import type { ColumnDef } from '@/shared/grid/types';
 
 /**
- * 저장된 그리드 설정을 읽어 선언에 입힌다 — UX-06 · grid-standard.md §5.
+ * 저장된 그리드 설정을 읽어 선언에 입힌다 — UX-06 · frontend/grid.md.
  *
  * <p><b>실패하면 조용히 선언 그대로 간다.</b> 개인 편의 기능이고, 화면에 들어올 때마다 뜨는
  * 빨간 토스트는 **고칠 수 없는 경고**다 — 그리드 자체는 그것 없이도 제 일을 한다
@@ -23,7 +23,7 @@ export interface GridPrefHandle<T> {
   /** 저장된 것을 입힌 컬럼 — 그리드가 이것을 그린다. */
   columns: ColumnDef<T>[];
   /**
-   * <b>저장된 개인화가 있는가</b> — 설정 창의 <i>초기화</i> 가 이것으로 켜지고 꺼진다(grid-standard.md §5).
+   * <b>저장된 개인화가 있는가</b> — 설정 창의 <i>초기화</i> 가 이것으로 켜지고 꺼진다(frontend/grid.md).
    *
    * <p><b>화면이 선언과 다른가</b> 가 아니라 <b>DB 에 행이 있는가</b> 다. 앞엣것으로
    * 판정했더니 창에서 컬럼을 켜고 끄기만 해도 초기화가 켜졌고, 사용자는 그것을
@@ -34,7 +34,7 @@ export interface GridPrefHandle<T> {
    */
   saved: boolean;
   /**
-   * <b>헤더를 끌어 순서를 바꿨을 때</b> 그 순서를 받는다 — 저장하지는 않는다(grid-standard.md §5).
+   * <b>헤더를 끌어 순서를 바꿨을 때</b> 그 순서를 받는다 — 저장하지는 않는다(frontend/grid.md).
    *
    * <p>받지 않으면 <b>판만 아는 순서</b>가 생긴다. 그러면 설정 창을 열었을 때 <i>처음
    * 순서</i> 가 나오고, 창에서 순서를 바꿔 저장해도 판이 자기 순서를 고집한다 — 사용자가
@@ -42,7 +42,7 @@ export interface GridPrefHandle<T> {
    */
   reorder: (fields: string[]) => void;
   /**
-   * <b>지금 화면에 바로 입힌다</b> — 서버에 보내지 않는다(grid-standard.md §5).
+   * <b>지금 화면에 바로 입힌다</b> — 서버에 보내지 않는다(frontend/grid.md).
    *
    * <p>설정 창에서 컬럼을 옮기거나 껐을 때 부른다. <b>적용과 저장은 다른 일</b>이다:
    * 사용자는 껐다 켜보며 맞추는데(그래서 저장 버튼이 있다) 그 <i>맞춰 보는 것</i> 이
@@ -50,7 +50,7 @@ export interface GridPrefHandle<T> {
    */
   apply: (next: ColumnDef<T>[]) => void;
   /**
-   * <b>지금 화면의 것을 되감을 자리로 삼는다</b> — 설정 창의 <i>적용</i> 이 부른다(grid-standard.md §5).
+   * <b>지금 화면의 것을 되감을 자리로 삼는다</b> — 설정 창의 <i>적용</i> 이 부른다(frontend/grid.md).
    *
    * <p><b>{@code apply} 와 다른 것이다.</b> 저것은 창에서 <b>한 칸 고칠 때마다</b> 불려
    * 화면에 즉시 입히는 미리보기이고, 이것은 <b>버튼 하나</b>다 — <i>여기까지를 남기겠다</i>
@@ -61,7 +61,7 @@ export interface GridPrefHandle<T> {
    */
   keep: (next: ColumnDef<T>[]) => void;
   /**
-   * <b>적용한 것을 물린다</b> — 설정 창의 <i>취소</i> 가 부른다(grid-standard.md §5).
+   * <b>적용한 것을 물린다</b> — 설정 창의 <i>취소</i> 가 부른다(frontend/grid.md).
    *
    * <p>돌아가는 자리는 <b>마지막으로 남기기로 한 상태</b>다: 저장했거나({@code save})
    * 적용한({@code keep}) 것, 둘 다 없으면 선언이다. 창 밖에서 만든 변경(헤더 드래그)과 창
@@ -82,7 +82,7 @@ export function useGridPref<T>(
   gridId: string,
   declared: ColumnDef<T>[],
   /**
-   * 끄면 <b>읽지 않는다</b> — 설정 버튼이 없는 그리드다(grid-standard.md §2.1).
+   * 끄면 <b>읽지 않는다</b> — 설정 버튼이 없는 그리드다(frontend/grid.md).
    *
    * <p>버튼만 감추고 여기는 그대로 두면 <b>바꿀 길이 없는 설정을 화면마다 한 번씩</b>
    * 물어본다. 화면에 그리드가 둘이면 왕복도 둘이며, 그중 하나는 쓰이지 않는다.
@@ -95,7 +95,7 @@ export function useGridPref<T>(
    * <b>DB 에 있는 것</b> — 읽고·저장하고·지울 때만 움직인다. 적용은 건드리지 않는다.
    *
    * <p>둘을 가른 것이 이 훅의 요점이다. 하나로 두면 <i>저장했다</i> 와 <i>해 보는
-   * 중이다</i> 가 같은 값이 되고, 화면은 그 둘을 다르게 그려야 한다(grid-standard.md §5).
+   * 중이다</i> 가 같은 값이 되고, 화면은 그 둘을 다르게 그려야 한다(frontend/grid.md).
    */
   const [committed, setCommitted] = useState<GridPrefValue | null>(null);
   /**
@@ -209,7 +209,7 @@ export function useGridPref<T>(
   }, [menuCd, gridId]);
 
   /*
-    <b>버튼들이 축 둘을 나눠 갖는다</b>(grid-standard.md §5). 초기화는 `committed` 를 보고(지울 행이
+    <b>버튼들이 축 둘을 나눠 갖는다</b>(frontend/grid.md). 초기화는 `committed` 를 보고(지울 행이
     있는가) 취소는 `baseline` 으로 되감는다 — 하나가 둘을 겸하면 <i>저장했다</i> 와
     <i>해 보는 중이다</i> 를 사람이 구분할 수 없다.
   */

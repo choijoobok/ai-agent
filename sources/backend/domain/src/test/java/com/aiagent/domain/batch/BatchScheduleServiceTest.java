@@ -24,16 +24,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
 
 /**
- * 배치 등록의 저장 — 65 §3.4 · §3.5 · §3.8.
+ * 배치 등록의 저장 — screen/batch/schedule/requirements.md.
  *
  * <p><b>여기서 막는 것 절반은 화면이 못 하는 것</b>이다 — 등록된 빈 목록은 스프링
- * 컨텍스트가 알고, 크론의 최소 간격은 파서가 있어야 안다(grid-edit-validation.md §3.4).
+ * 컨텍스트가 알고, 크론의 최소 간격은 파서가 있어야 안다(frontend/grid.md).
  *
  * <p><b>한때 화면으로는 여기 닿을 수 없었다.</b> 템플릿에 {@code BatchJob} 구현이 하나도
- * 없어(65 §3.3) 실제 화면에서는 <i>빈이 없다</i> 에서 언제나 먼저 걸렸다. 보존 파기
+ * 없어(screen/batch/schedule/requirements.md) 실제 화면에서는 <i>빈이 없다</i> 에서 언제나 먼저 걸렸다. 보존 파기
  * 배치({@code retentionPurgeJob})가 서면서 셀렉트에 값이 하나 생겼고, 이제 그 뒤의 검증들이
  * <b>화면에서도 실행된다</b> — 이 테스트가 유일한 확인 자리는 아니게 됐지만, 크론 파서와
- * 쿨다운의 관계는 <b>값싸게 지킬 자리가 여전히 여기</b>다(grid-edit-validation.md §3.4).
+ * 쿨다운의 관계는 <b>값싸게 지킬 자리가 여전히 여기</b>다(frontend/grid.md).
  */
 class BatchScheduleServiceTest {
 
@@ -74,7 +74,7 @@ class BatchScheduleServiceTest {
                 RowState.C, "X", "이름", "설명", "noSuchJob", "0 0 2 * * *", null, 300, 0, true, 0));
 
         assertThat(thrown.errorCode().code()).isEqualTo("err.batch.bean-unknown");
-        // 셀에 붙어야 사용자가 어느 칸을 고칠지 안다(grid-edit-validation.md §3.3).
+        // 셀에 붙어야 사용자가 어느 칸을 고칠지 안다(frontend/grid.md).
         assertThat(thrown.fieldErrors()).extracting(BusinessException.FieldError::field)
                 .containsExactly("beanId");
         verify(batches, never()).save(any());
@@ -107,7 +107,7 @@ class BatchScheduleServiceTest {
 
         assertThat(thrown.errorCode().code()).isEqualTo("err.batch.cooldown-too-long");
         /*
-          <b>오류가 두 셀에 걸린다</b>(65 §3.4) — 어느 쪽이 틀렸는지 서버가 말할 수 없다.
+          <b>오류가 두 셀에 걸린다</b>(screen/batch/schedule/requirements.md) — 어느 쪽이 틀렸는지 서버가 말할 수 없다.
           틀린 것은 값이 아니라 <b>관계</b>이며, 문구가 두 값을 함께 읽어 준다.
         */
         assertThat(thrown.fieldErrors()).extracting(BusinessException.FieldError::field)
@@ -181,7 +181,7 @@ class BatchScheduleServiceTest {
 
         service.save(List.of(row(RowState.D)));
 
-        // 이력이 남아 있어도 지운다 — FK 가 없고(46 §2.2) 게이트로 삼으면 영영 못 지운다.
+        // 이력이 남아 있어도 지운다 — FK 가 없고(sys/batch.md) 게이트로 삼으면 영영 못 지운다.
         verify(batches).delete(off);
     }
 

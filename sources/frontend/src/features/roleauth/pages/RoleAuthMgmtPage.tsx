@@ -27,35 +27,35 @@ import { blockedUsers, fetchAllHolders, useRoleHolders } from '@/shared/authz/ro
 import type { RoleAuthGrant, RoleAuthTreeRow, RolePickRow } from '@/features/roleauth/types';
 
 /**
- * `ROLE_AUTH_MGMT` — 62 §2. <b>저장 대상은 트리뿐이다.</b>
+ * `ROLE_AUTH_MGMT` — screen/menu/requirements.md. <b>저장 대상은 트리뿐이다.</b>
  *
- * <p>61 §4 의 개인 예외와 <b>같은 컴포넌트</b>이며 여기는 <b>덜어 내기만</b> 한다(§2.4).
+ * <p>screen/user/requirements.md 의 개인 예외와 <b>같은 컴포넌트</b>이며 여기는 <b>덜어 내기만</b> 한다(§2.4).
  * 거기는 *"목록이 원본이고 트리는 그 투영"* 이었지만 `SYS_ROLE_MENU_AUTH` 에는 기간도 사유도
- * 없으므로(42 §6) <b>넣을 것이 없어 트리가 전부</b>다 — 하단은 <b>영향 인원</b>이고
+ * 없으므로(sys/menu.md) <b>넣을 것이 없어 트리가 전부</b>다 — 하단은 <b>영향 인원</b>이고
  * <b>읽기 전용</b>이다.
  *
  * <h2>화면이 셋으로 나뉜다 — 스플리터 둘</h2>
  *
- * 좌우(역할 목록 ↔ 권한 트리) 위에 상하(위 ↔ 영향 인원)가 있다(grid-standard.md §6.3). <b>좌우 축의 첫
+ * 좌우(역할 목록 ↔ 권한 트리) 위에 상하(위 ↔ 영향 인원)가 있다(frontend/grid.md). <b>좌우 축의 첫
  * 실물</b>이며, 역할 목록은 컬럼이 셋이라 위아래로 두면 가로 공간의 대부분이 빈다.
  *
  * <h2>`READ` 는 나머지 셋의 전제다 — 불변식 하나</h2>
  *
- * *다른 액션이 하나라도 켜져 있으면 `READ` 가 켜져 있다*(61 §4.4). <b>규칙 둘이 아니라
+ * *다른 액션이 하나라도 켜져 있으면 `READ` 가 켜져 있다*(screen/user/requirements.md). <b>규칙 둘이 아니라
  * 불변식 하나</b>이며 양방향이 거기서 나온다 — `READ` 를 끄면 나머지도 함께 꺼지고,
  * `READ` 가 꺼진 채 다른 액션을 켜면 `READ` 도 함께 켜진다. <b>둘 다 조용히 하지 않는다.</b>
  *
  * <h2>메뉴명은 거르지 않고 찾아간다</h2>
  *
- * 62 §2.3 은 메뉴명을 *(트리 조회 조건)* 으로 적었지만 <b>거를 수 없다</b>. 걸러 내려보내면
+ * screen/menu/requirements.md 은 메뉴명을 *(트리 조회 조건)* 으로 적었지만 <b>거를 수 없다</b>. 걸러 내려보내면
  * 폴더의 파생 3-state 가 <b>보이는 자식만으로</b> 요약하는데, 그 값은 저장 전 편집에
  * 반응해야 하므로(§2.4 — `SAVE` 를 켜면 `READ` 열의 요약이 바뀐다) <b>자손 전부가 화면에
- * 있어야</b> 다시 계산된다. 그래서 `MENU_TREE`(62 §4.10)와 <b>같은 어휘</b>를 쓴다 —
+ * 있어야</b> 다시 계산된다. 그래서 `MENU_TREE`(screen/menu/requirements.md)와 <b>같은 어휘</b>를 쓴다 —
  * 강조하고 <b>그 경로를 펼치며</b>, 첫 일치로 스크롤한다.
  *
  * <p><b>칸은 트리 ①에 있다</b>(2026-08-31). 브레드크럼 슬롯에 두었더니 값이 <b>한 커밋
  * 늦게</b> 도착해 한글이 두 번 입력됐고, 자리도 <i>조회조건 숨기기</i> 옆이라 무엇을
- * 검색하는지가 화면에 없었다 — 61 §4 에서 겪은 그것이며 세 트리 화면이 같은 구조였다.
+ * 검색하는지가 화면에 없었다 — screen/user/requirements.md 에서 겪은 그것이며 세 트리 화면이 같은 구조였다.
  */
 
 const MENU_CD = 'ROLE_AUTH_MGMT';
@@ -88,7 +88,7 @@ export function RoleAuthMgmtPage() {
 
   const holders = useRoleHolders(MENU_CD, ROLE_AUTH_ENDPOINTS.getAffectedUsers);
 
-  // ── 좌 — 역할 목록 (62 §2.2) ────────────────────────────────────
+  // ── 좌 — 역할 목록 (screen/menu/requirements.md) ────────────────────────────────────
 
   const collectConditions = useCallback(
     () => Promise.resolve(searchForm.current?.collect() ?? []),
@@ -106,17 +106,17 @@ export function RoleAuthMgmtPage() {
     api: roleApi,
     params: collectConditions,
     /*
-      <b>읽기 전용이다</b>(62 §2.2) — 생성·비활성화·삭제는 `ROLE_MGMT` 의 일이므로 행 추가
-      버튼도 삭제 컬럼도 없다(grid-api-contract.md §3.6). `addRow` 를 선언하지 않는 것이 그 집행이다.
+      <b>읽기 전용이다</b>(screen/menu/requirements.md) — 생성·비활성화·삭제는 `ROLE_MGMT` 의 일이므로 행 추가
+      버튼도 삭제 컬럼도 없다(frontend/grid.md). `addRow` 를 선언하지 않는 것이 그 집행이다.
     */
     editable: false,
   });
 
-  // ── 우 — 권한 트리 (62 §2.4) ────────────────────────────────────
+  // ── 우 — 권한 트리 (screen/menu/requirements.md) ────────────────────────────────────
 
   /**
    * <b>`useGridController` 가 아니라 `useQuery` 다.</b> 저것은 조건·정렬·페이징을 들고 있는데
-   * 트리에는 <b>하나도 없다</b>(61 §4.4) — 쓰면 절반이 죽은 채로 붙어 있게 되고, 다음 사람이
+   * 트리에는 <b>하나도 없다</b>(screen/user/requirements.md) — 쓰면 절반이 죽은 채로 붙어 있게 되고, 다음 사람이
    * *왜 여기서만 안 되나* 를 묻는다. `MENU_TREE` 와 같은 판단이다.
    *
    * <p>{@code enabled} 가 선택 여부다 — 역할을 고르기 전에는 요청이 나가지 않는다.
@@ -139,7 +139,7 @@ export function RoleAuthMgmtPage() {
   }, [original, edits]);
 
   /**
-   * 정의된 조합만 센다 — <b>고아 부여는 화면이 표현하지 못한다</b>(61 §4.4).
+   * 정의된 조합만 센다 — <b>고아 부여는 화면이 표현하지 못한다</b>(screen/user/requirements.md).
    *
    * <p>API 가 사라져 미정의가 된 부여는 셀이 `—` 라 켜고 끌 수 없고, 저장 페이로드에도
    * 실리지 않는다. 그것을 차이에 넣으면 <b>아무것도 안 만졌는데 미저장</b>이 된다 —
@@ -148,7 +148,7 @@ export function RoleAuthMgmtPage() {
   const diff = useMemo(() => countDiff(rows, original, granted), [rows, original, granted]);
   const dirty = diff.added > 0 || diff.removed > 0;
   /**
-   * 미저장 변경이 있는 메뉴들 — 메뉴명 옆의 `✎` 다(2026-09-01 요청 · 61 §4.4 와 같은 표시).
+   * 미저장 변경이 있는 메뉴들 — 메뉴명 옆의 `✎` 다(2026-09-01 요청 · screen/user/requirements.md 와 같은 표시).
    *
    * <p><b>건수와 같은 판정에서 나온다</b>({@link countDiff}) — 저장 확인의 <i>추가 N · 삭제
    * M</i> 과 트리의 표시가 갈리면 <b>어느 쪽이 맞는지 알 수 없다</b>. 그래서 세는 함수가
@@ -162,7 +162,7 @@ export function RoleAuthMgmtPage() {
   const dirtyMenus = diff.menus;
 
   /**
-   * 스위치 하나 — <b>불변식이 함께 돈다</b>(61 §4.4).
+   * 스위치 하나 — <b>불변식이 함께 돈다</b>(screen/user/requirements.md).
    *
    * <p><b>자동은 줄이는 쪽으로만 연쇄한다.</b> `READ` 를 켠다고 나머지가 켜지지는 않는다 —
    * 끄는 것은 축소라 안전하고 켜는 것은 확장이라 명시해야 한다. 다른 액션을 켤 때 `READ` 가
@@ -188,7 +188,7 @@ export function RoleAuthMgmtPage() {
 
       if (next) {
         held.add(action);
-        // 확장은 명시해야 한다 — 그래도 이 조작 자체가 이미 확장의 의사표시다(61 §4.4).
+        // 확장은 명시해야 한다 — 그래도 이 조작 자체가 이미 확장의 의사표시다(screen/user/requirements.md).
         if (action !== 'READ' && !held.has('READ') && defined.has('READ')) {
           held.add('READ');
           notice = label(MSG.ROLE_AUTH_READ_ON);
@@ -197,12 +197,12 @@ export function RoleAuthMgmtPage() {
         held.delete(action);
         if (action === 'READ') {
           /*
-            도달할 수 없는 권한을 남기면 <b>인가 데이터가 거짓말을 한다</b>(61 §4.4).
+            도달할 수 없는 권한을 남기면 <b>인가 데이터가 거짓말을 한다</b>(screen/user/requirements.md).
 
             <b>정의된 액션만 센다.</b> 화면이 {@code —} 로 그리는 고아 부여(API 가 사라진
             조합)까지 세면 <i>화면에 보이지 않는 것</i>을 껐다고 말하게 되고 — 실제로
             *"나머지 2건"* 이라 했는데 스위치는 하나뿐인 화면이 나왔다(2026-08-30 실물).
-            지우지도 않는다: 그 행은 사람이 판단할 몫이다(ADR-0022).
+            지우지도 않는다: 그 행은 사람이 판단할 몫이다(seed.md).
           */
           const dropped = [...held].filter((candidate) => defined.has(candidate));
           if (dropped.length > 0) {
@@ -221,17 +221,17 @@ export function RoleAuthMgmtPage() {
   );
 
   /**
-   * 저장 — <b>확인 문구가 세 줄이다</b>(62 §2.5).
+   * 저장 — <b>확인 문구가 세 줄이다</b>(screen/menu/requirements.md).
    *
    * <table>
    *   <tr><td>①</td><td>건수 — <b>수정이 없다</b>. 권한은 있거나 없거나라 켜면 추가, 끄면 삭제다</td></tr>
-   *   <tr><td>②</td><td>이 역할을 가진 <b>N 명</b>에게 적용된다 — security-design.md §4</td></tr>
+   * <tr><td>②</td><td>이 역할을 가진 <b>N 명</b>에게 적용된다 — backend/security.md</td></tr>
    *   <tr><td>③</td><td>그중 <b>유효 권한이 공집합</b>이 되는 사람 — 다음 로그인부터 차단된다</td></tr>
    * </table>
    *
    * <p><b>셋째 줄은 조건이 맞을 때만 낸다.</b> 이 역할이 저장 뒤에도 <b>살아 있는 리프에</b>
    * 권한을 하나라도 주면 아무도 공집합이 되지 않고, 역할 자체가 꺼져 있으면 이 변경은
-   * 지금 아무에게도 영향이 없다(security-design.md §4 ② — 입력 필터). <b>공집합 인원이 `0` 이어도 내지
+   * 지금 아무에게도 영향이 없다(backend/security.md ② — 입력 필터). <b>공집합 인원이 `0` 이어도 내지
    * 않는다</b> — 항상 보이면 읽히지 않는다.
    *
    * <p><b>이름을 함께 낸다.</b> 건수만 알려주면 *"그 2명이 누구지"* 를 찾으러 다른 화면에
@@ -255,7 +255,7 @@ export function RoleAuthMgmtPage() {
         lines.push(label(MSG.ROLE_AUTH_SAVE_BLOCKED, { count: blocked.length }));
         lines.push(blocked.map((user) => `  · ${user.userNm} (${user.userId})`).join('\n'));
       }
-      // 한 장에 다 담기지 않았다 — <b>0명이라고 말하지 않는다</b>(62 §2.9 미결).
+      // 한 장에 다 담기지 않았다 — <b>0명이라고 말하지 않는다</b>(screen/menu/requirements.md 미결).
       if (sample.truncated) {
         lines.push(
           label(MSG.ROLE_BLOCKED_PARTIAL, {
@@ -285,14 +285,14 @@ export function RoleAuthMgmtPage() {
     setEdits(new Map());
     message.success(label(MSG.GRID_SAVE_DONE));
     /*
-      <b>다시 읽는다</b>(grid-api-contract.md §6). 서버가 정의 밖의 고아 부여를 그대로 남기므로 화면이 든 값과
+      <b>다시 읽는다</b>(frontend/grid.md). 서버가 정의 밖의 고아 부여를 그대로 남기므로 화면이 든 값과
       DB 가 완전히 같다고 단정할 수 없고, 무엇보다 <b>다른 사람이 그 사이에 고쳤을 수
       있다</b>. 재조회가 {@code granted} 를 다시 세운다.
     */
     await treeQuery.refetch();
   }, [diff, granted, message, modal, role, rows, treeQuery]);
 
-  // ── 검색 (62 §2.3 — 거르지 않고 찾아간다) ───────────────────────
+  // ── 검색 (screen/menu/requirements.md — 거르지 않고 찾아간다) ───────────────────────
 
   const matches = useMemo(() => {
     const needle = term.trim().toLowerCase();
@@ -302,15 +302,15 @@ export function RoleAuthMgmtPage() {
       .map((row) => row.menuCd);
   }, [rows, term]);
   const highlighted = useMemo(() => new Set(matches), [matches]);
-  // 첫 일치로 스크롤한다 — 강조가 경로를 펼치므로 나머지도 같은 화면 안에 있다(62 §4.10).
+  // 첫 일치로 스크롤한다 — 강조가 경로를 펼치므로 나머지도 같은 화면 안에 있다(screen/menu/requirements.md).
   const focused = matches[0] ?? null;
 
   /**
-   * 트리 ①의 검색 칸 — <b>브레드크럼이 아니라 거기다</b>(2026-08-31 · 62 §4.10).
+   * 트리 ①의 검색 칸 — <b>브레드크럼이 아니라 거기다</b>(2026-08-31 · screen/menu/requirements.md).
    *
    * <p>근거는 {@code TreeSearch} 에 있다 — 자리도 자리이지만 슬롯에 두면 값이 <b>한 커밋
    * 늦게</b> 도착해 <b>한글이 두 번 입력된다</b>. 개인 예외 화면에서 실물로 겪은 그것이며
-   * (61 §4.3) 여기도 같은 구조였다.
+   * (screen/user/requirements.md) 여기도 같은 구조였다.
    */
   const treeSearch = useMemo(
     () => ({ placeholder: MSG.ROLE_AUTH_SEARCH_MENU, value: term, onChange: setTerm }),
@@ -318,7 +318,7 @@ export function RoleAuthMgmtPage() {
   );
 
   /**
-   * <b>빈 상태</b> — grid-standard.md §6.1. 우(트리)와 하(영향 인원)가 함께 잠긴다.
+   * <b>빈 상태</b> — frontend/grid.md. 우(트리)와 하(영향 인원)가 함께 잠긴다.
    *
    * <p>디테일은 마스터의 선택에 종속되므로 고른 역할이 없으면 <b>조회할 대상도 저장할 것도
    * 없다</b> — 트리의 조회 버튼이 눌러도 조용했다({@code enabled: false} 라 요청이 나가지
@@ -326,9 +326,9 @@ export function RoleAuthMgmtPage() {
    */
   const idle = role === null;
   /**
-   * 제목 뒤에 붙는 <b>고른 역할</b> — grid-standard.md §6.1.
+   * 제목 뒤에 붙는 <b>고른 역할</b> — frontend/grid.md.
    *
-   * <p><b>모양이 둘로 갈리는 것은 컴포넌트의 차이</b>다(61 §4 와 같다). 하단은 컨트롤러를
+   * <p><b>모양이 둘로 갈리는 것은 컴포넌트의 차이</b>다(screen/user/requirements.md 와 같다). 하단은 컨트롤러를
    * 넘길 수 있어 판정을 {@code DataGrid} 에 두고, 트리는 <b>완성된 글자</b>를 받는다 —
    * 둘이 <b>같은 선택 하나</b>에서 나오므로 갈릴 수 없다.
    */
@@ -343,14 +343,14 @@ export function RoleAuthMgmtPage() {
   }, [role]);
 
   /*
-    브레드크럼 슬롯에 남는 것은 <b>조회조건 토글 하나</b>다(main-shell.md §5.1 · UX-15) — 트리 검색이
+    브레드크럼 슬롯에 남는 것은 <b>조회조건 토글 하나</b>다(frontend/tabs.md · UX-15) — 트리 검색이
     ①로 옮겨 갔다(위 {@code treeSearch}).
   */
 
   // ── 선택과 조회 ─────────────────────────────────────────────────
 
   /**
-   * 역할 선택 — <b>미저장 편집이 있으면 묻는다</b>(grid-standard.md §6.1 · UX-10).
+   * 역할 선택 — <b>미저장 편집이 있으면 묻는다</b>(frontend/grid.md · UX-10).
    *
    * <p>거부권이 없으면 <i>보고 있는 것</i>과 <i>고른 것</i>이 갈리고, 그 상태로 저장하면
    * <b>A 역할의 권한이 B 역할로 나간다</b> — 여기서는 그것이 곧 인가 사고다.
@@ -384,7 +384,7 @@ export function RoleAuthMgmtPage() {
   );
 
   /**
-   * 좌 ① 의 조회 — <b>선택이 풀린다</b>(grid-standard.md §6.1 · 목업 RA-06).
+   * 좌 ① 의 조회 — <b>선택이 풀린다</b>(frontend/grid.md · 목업 RA-06).
    *
    * <p>목록을 통째로 바꾸므로 이전에 보던 행이 결과에 없을 수도 있다. 트리와 영향 인원이
    * 남아 있으면 <b>다른 역할의 권한을 이 역할 것으로</b> 보게 된다.
@@ -410,8 +410,8 @@ export function RoleAuthMgmtPage() {
     () => [
       /*
         Ⓑ 의 둘은 <b>`actionCd` 를 선언하지 않는다</b> — 표시를 바꿀 뿐 데이터를 읽지도 쓰지도
-        않는다(grid-api-contract.md §3.3). <b>토글 하나로 두지 않는 것</b>은 일부만 펼친 중간 상태에서 토글이
-        무엇을 가리키는지 말할 수 없기 때문이다(62 §4.5.1).
+        않는다(frontend/grid.md). <b>토글 하나로 두지 않는 것</b>은 일부만 펼친 중간 상태에서 토글이
+        무엇을 가리키는지 말할 수 없기 때문이다(screen/menu/requirements.md).
       */
       {
         key: 'collapseAll',
@@ -445,14 +445,14 @@ export function RoleAuthMgmtPage() {
       />
 
       <div style={{ flex: 1, minHeight: 0 }}>
-        {/* 스플리터 둘 — 좌우(역할 ↔ 트리) 위에 상하(위 ↔ 영향 인원)다(grid-standard.md §6.3). */}
+        {/* 스플리터 둘 — 좌우(역할 ↔ 트리) 위에 상하(위 ↔ 영향 인원)다(frontend/grid.md). */}
         <SplitPane
           storageKey="roleAuth"
           defaultRatio={0.62}
           first={(collapsed, expand) =>
             /*
               <b>접히면 좌우 스플리터를 그리지 않는다.</b> 접힌 pane 은 제목 줄 높이만
-              차지하는데(grid-standard.md §6.3) 그 안에 또 스플리터를 두면 <b>두 그리드가 0 높이로 눌려</b>
+              차지하는데(frontend/grid.md) 그 안에 또 스플리터를 두면 <b>두 그리드가 0 높이로 눌려</b>
               되돌릴 자리가 사라진다 — 화살표로 접고 화살표로 돌아올 수 없었던 그 실패와
               같은 모양이다.
 
@@ -471,7 +471,7 @@ export function RoleAuthMgmtPage() {
             ) : (
             <SplitPane
               storageKey="roleAuth.pick"
-              // 마스터가 <b>좁다</b> — 컬럼 셋짜리 목록이라 좌우가 맞다(grid-standard.md §6.3).
+              // 마스터가 <b>좁다</b> — 컬럼 셋짜리 목록이라 좌우가 맞다(frontend/grid.md).
               axis="horizontal"
               defaultRatio={0.28}
               first={(collapsed, expand, axis) => (
@@ -483,7 +483,7 @@ export function RoleAuthMgmtPage() {
                   onSelect={selectRole}
                   collapsed={collapsed}
                   /*
-                    <b>좌우로 접히면 제목이 세로로 선다</b>(grid-standard.md §6.3) — 접힌 폭이 제목 줄의
+                    <b>좌우로 접히면 제목이 세로로 선다</b>(frontend/grid.md) — 접힌 폭이 제목 줄의
                     높이와 같아졌으므로(2026-08-31) 가로 제목은 그 자리에서 잘린다.
                   */
                   collapsedAxis={axis}
@@ -552,7 +552,7 @@ function toGrantMap(rows: RoleAuthTreeRow[]): Map<string, Set<Action>> {
  *
  * <p>고아 부여(`definedActions` 에 없는데 `grantedActions` 에 있는 것)는 화면이 `—` 로
  * 그리므로 켜고 끌 수 없고, 여기서도 빠진다. 서버가 <b>정의된 조합 안에서만</b> 지우므로
- * 그 행은 손대지 않은 채 남는다 — 61 §4.4 의 *"배포가 운영 결정을 지우지 않는다"* 다.
+ * 그 행은 손대지 않은 채 남는다 — screen/user/requirements.md 의 *"배포가 운영 결정을 지우지 않는다"* 다.
  */
 function toGrantList(
   rows: RoleAuthTreeRow[],
@@ -572,7 +572,7 @@ function toGrantList(
   return list;
 }
 
-/** 추가와 삭제 — <b>수정이 없다</b>(62 §2.5 §4 주석 1). 정의된 조합 안에서만 센다. */
+/** 추가와 삭제 — <b>수정이 없다</b>(screen/menu/requirements.md §4 주석 1). 정의된 조합 안에서만 센다. */
 function countDiff(
   rows: RoleAuthTreeRow[],
   original: ReadonlyMap<string, ReadonlySet<Action>>,
@@ -602,9 +602,9 @@ function countDiff(
   return { added, removed, menus };
 }
 
-// ── 좌 컬럼 · 조회조건 (62 §2.2 · §2.3) ───────────────────────────
+// ── 좌 컬럼 · 조회조건 (screen/menu/requirements.md) ───────────────────────────
 
-/** 역할명 · 사용 여부 · 보유 인원 셋뿐이다 — <b>고르기만 하는 목록</b>이다(62 §2.2). */
+/** 역할명 · 사용 여부 · 보유 인원 셋뿐이다 — <b>고르기만 하는 목록</b>이다(screen/menu/requirements.md). */
 function buildRoleColumns(): ColumnDef<RolePickRow>[] {
   return [
     { field: 'roleNm', header: MSG.ROLE_COL_ROLE_NM, type: 'text', width: 160, sortable: true, fill: true },
@@ -624,7 +624,7 @@ function buildRoleColumns(): ColumnDef<RolePickRow>[] {
       header: MSG.ROLE_COL_HOLDER,
       type: 'number',
       width: 90,
-      // 파생이라 정렬 대상이 아니다(grid-column-contract.md §3) — 서버 화이트리스트에도 없다.
+      // 파생이라 정렬 대상이 아니다(frontend/grid.md) — 서버 화이트리스트에도 없다.
       filter: false,
     },
   ];
@@ -634,10 +634,10 @@ function buildRoleColumns(): ColumnDef<RolePickRow>[] {
  * 역할명 하나다.
  *
  * <p><b>사용 여부가 없다</b> — 비활성 역할의 권한을 고치는 것은 아무에게도 영향이 없어
- * <b>가장 안전한 편집</b>이며, 감추면 *켜기 전에 구성한다* 는 동선이 막힌다(62 §2.2).
+ * <b>가장 안전한 편집</b>이며, 감추면 *켜기 전에 구성한다* 는 동선이 막힌다(screen/menu/requirements.md).
  *
  * <p><b>부여 상태도 없다</b> — `SYS_ROLE_MENU_AUTH` 에 기간 컬럼이 없으므로 <b>상태 자체가
- * 없다</b>(42 §6). 61 §4.3 이 개인 예외에서 그것을 넣었다 뺐다 한 것과 갈리는 자리다.
+ * 없다</b>(sys/menu.md). screen/user/requirements.md 이 개인 예외에서 그것을 넣었다 뺐다 한 것과 갈리는 자리다.
  *
  * <p><b>메뉴명은 폼에 없다.</b> 서버로 나가지 않기 때문이며(클래스 주석), 트리 검색은
  * `MENU_TREE` 와 같은 자리 — 브레드크럼 줄 — 에 둔다. 같은 일을 하는 컨트롤이 화면마다 다른

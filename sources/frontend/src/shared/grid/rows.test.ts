@@ -16,7 +16,7 @@ interface Row {
 }
 
 /**
- * 행 상태 넷과 전이 — grid-standard.md §3.2 · §3.3 · §3.4.
+ * 행 상태 넷과 전이 — frontend/grid.md.
  *
  * <p><b>여기서 지키는 것은 "한 행은 상태 하나" 다.</b> 그 규칙이 깨지면 저장 페이로드가
  * 거짓을 말한다 — 서버에 없는 행을 지우라고 보내거나, 0건을 갱신하는 {@code UPDATE} 가
@@ -73,9 +73,9 @@ describe('그리드 행 상태', () => {
 
   /*
     참조 비교로는 이 칸이 영영 "바뀐 것" 이 된다 — 동적 컬럼의 patch 가 맵을 새로
-    만들어 쓰기 때문이다(grid-column-contract.md §2.2 의 refs). sameData 가 직렬화로 비교하는 이유다.
+    만들어 쓰기 때문이다(frontend/grid.md 의 refs). sameData 가 직렬화로 비교하는 이유다.
   */
-  it('맵을 새로 만들어 쓰는 칸도 내용으로 비교한다 — 동적 컬럼(grid-column-contract.md §2.2)', () => {
+  it('맵을 새로 만들어 쓰는 칸도 내용으로 비교한다 — 동적 컬럼(frontend/grid.md)', () => {
     const rows = toRows([{ id: 'a', name: '가', refs: { PARENT: 'p1' } }]);
     const edited = editRow(rows, rows[0].id, { refs: { PARENT: 'p2' } });
     expect(edited[0].state).toBe('U');
@@ -117,7 +117,7 @@ describe('그리드 행 상태', () => {
     const restored = toggleDelete(deleted, rows[0].id);
 
     // 수정으로 돌아가는 것이 아니라 무변경이다 — 부분적으로 되돌리면 무엇이 남았는지
-    // 화면이 설명할 수 없다(grid-standard.md §3.2).
+    // 화면이 설명할 수 없다(frontend/grid.md).
     expect(restored[0].state).toBeNull();
     expect(restored[0].data.name).toBe('가');
   });

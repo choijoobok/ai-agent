@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 /**
- * 만료 청소의 <b>두 하한</b> — 32 §5 · 30 §6.2.
+ * 만료 청소의 <b>두 하한</b> — retention.md · backend/crosscutting.md.
  *
  * <p>여기서 세는 것은 <b>어느 시각을 넘긴 것을 지우는가</b> 하나다. 지우는 문장 자체는
  * 조건부 DELETE 라 볼 것이 없고, <b>틀리면 조용한 쪽</b>이 이 계산이다: 하한을 잘못 잡으면
@@ -34,7 +34,7 @@ class ProgressSweeperTest {
 
     /*
       <b>둘이 다른 하한이라야 한다.</b> 같은 값을 주면 RUNNING 행이 보관 기간만 넘겨도
-      지워지는데, 진행률 쓰기는 조절되므로(1% 또는 1초 — 30 §6.2) <b>멈춘 것처럼 보이는
+      지워지는데, 진행률 쓰기는 조절되므로(1% 또는 1초 — backend/crosscutting.md) <b>멈춘 것처럼 보이는
       구간이 정상적으로 있다</b>.
     */
     @Test

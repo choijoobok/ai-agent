@@ -6,7 +6,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
- * 휴면 계정(USER-08) — 41 §4.2 · §4.4.
+ * 휴면 계정(USER-08) — sys/user-role.md.
  *
  * <p>배치가 굳힌 {@code DORMANT_YN} 을 본다. {@code LAST_LOGIN_DTM} 에서 파생하지 않는 이유는
  * <b>휴면이 로그인을 막는 상태</b>라서다 — 막으면 마지막 로그인 시각이 갱신되지 않으므로

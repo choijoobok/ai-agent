@@ -35,7 +35,7 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v6
 
-      # 프론트는 frontend 잡이 맡는다. 여기서 npm 을 돌리면 같은 일을 두 번 한다 — 25 §2
+      # 프론트는 frontend 잡이 맡는다. 여기서 npm 을 돌리면 같은 일을 두 번 한다 — build-deploy.md
       - name: 백엔드 빌드 — 빌드 루트는 sources/ 다
         working-directory: sources
         run: ./gradlew build -PskipFrontend

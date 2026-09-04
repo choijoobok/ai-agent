@@ -11,29 +11,29 @@ interface Props {
 }
 
 /**
- * 내 알림 상세 — main-shell.md §7 · `NI-09` · `NI-10` · `NI-11`.
+ * 내 알림 상세 — frontend/tabs.md · `NI-09` · `NI-10` · `NI-11`.
  *
  * <h2>더 읽지 않는다</h2>
  *
  * <p>목록이 이미 전부를 갖고 있다 — `CONTENT` 가 `VARCHAR(2000)` 이라 목록에 실려 오기
- * 때문이다(47 §7: *"길지 않다. 상세는 링크로 보낸다"*). 공지 상세가 한 번 더 묻는 것과
+ * 때문이다(sys/notification.md: *"길지 않다. 상세는 링크로 보낸다"*). 공지 상세가 한 번 더 묻는 것과
  * **갈리는 자리**이며, 그쪽은 본문이 `nclob` 이다.
  *
  * <h2>이동 버튼이 권한을 확인한다 — `NI-11`</h2>
  *
- * <p>`LINK_MENU_CD` 는 URL 이 아니라 **메뉴 코드**다(47 §7). 권한이 없어진 메뉴로 가는
+ * <p>`LINK_MENU_CD` 는 URL 이 아니라 **메뉴 코드**다(sys/notification.md). 권한이 없어진 메뉴로 가는
  * 알림은 **버튼이 비활성**이다 — 눌러서 403 을 보는 것보다 낫고, **알림이 권한을 주지
  * 않는다**는 사실이 화면에서 그렇게 보여야 한다.
  *
  * <p>판정은 **내 메뉴 트리에 그 코드가 있는가** 하나다. 트리는 유효 권한으로 이미 걸러져
- * 오므로(main-shell.md §4.4) 여기서 권한을 다시 묻지 않는다.
+ * 오므로(frontend/tabs.md) 여기서 권한을 다시 묻지 않는다.
  *
- * <p>`linkMenuCd` 가 `null` 이면 **이동 자체가 없다** — 요청 처리 알림이 그렇다(66 §5.4):
+ * <p>`linkMenuCd` 가 `null` 이면 **이동 자체가 없다** — 요청 처리 알림이 그렇다(screen/notice/requirements.md):
  * 결과를 보러 갈 자리가 이 모달의 탭이고 **탭에는 `MENU_CD` 가 없다.**
  *
  * <h2>`LINK_PARAM` 은 넘겨주기로 간다</h2>
  *
- * <p>`handoffStore` 다 — 62 §5.5 · 64 §5.4 · 65 §4.7 의 *화면 → 화면* 건네주기와 **같은
+ * <p>`handoffStore` 다 — screen/menu/requirements.md · screen/log/access/requirements.md · screen/batch/schedule/requirements.md 의 *화면 → 화면* 건네주기와 **같은
  * 채널**이며, 알림이 그 셋째 입구가 된다. URL 파라미터가 아닌 이유도 같다: 경로 하나가
  * 탭 여러 개에 대응하므로 주소에 값을 실으면 **탭 전환마다 되살아난다.**
  *

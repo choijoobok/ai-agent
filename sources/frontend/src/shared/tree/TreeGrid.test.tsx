@@ -5,7 +5,7 @@ import { TreeGrid } from '@/shared/tree/TreeGrid';
 import type { TreeColumn, TreeSearch } from '@/shared/tree/types';
 
 /**
- * 트리 그리드의 크롬 — 62 §4.2 · §4.10.
+ * 트리 그리드의 크롬 — screen/menu/requirements.md.
  *
  * <p>번들이 없는 테스트에서는 메시지 키가 그대로 글자로 나온다 — 헤더와 자리표를 그 키로 찾는다.
  *
@@ -74,7 +74,7 @@ describe('TreeGrid', () => {
     return wrapper.style;
   };
 
-  it('제목 뒤에 지금 보고 있는 대상이 붙는다 — grid-standard.md §6.1', () => {
+  it('제목 뒤에 지금 보고 있는 대상이 붙는다 — frontend/grid.md', () => {
     mount({ titleSuffix: '홍길동 / u10293' });
     expect(screen.queryByText('홍길동 / u10293')).not.toBeNull();
   });
@@ -87,12 +87,12 @@ describe('TreeGrid', () => {
   });
 
   /*
-    <b>브레드크럼 슬롯이 아니라 여기다</b>(62 §4.10). 이 테스트가 붙잡는 것은 자리 하나가
+    <b>브레드크럼 슬롯이 아니라 여기다</b>(screen/menu/requirements.md). 이 테스트가 붙잡는 것은 자리 하나가
     아니라 <b>한글이 두 번 입력되던 원인</b>이다 — 슬롯은 셸이 그리므로 값이 한 커밋 늦게
     도착했고, 칸이 트리 안에 있으면 그 왕복이 없다. 슬롯은 여기 없으므로, 칸이 보이는 것이
     곧 <i>트리가 그렸다</i> 는 뜻이다.
   */
-  it('검색 칸은 트리의 ① 에 서고 조회 버튼 앞이다 — 62 §4.10', () => {
+  it('검색 칸은 트리의 ① 에 서고 조회 버튼 앞이다 — screen/menu/requirements.md', () => {
     mount({ search: search() });
 
     const following =
@@ -110,11 +110,11 @@ describe('TreeGrid', () => {
   });
 
   /*
-    <b>대상이 없으면 ①이 통째로 잠긴다</b>(grid-standard.md §6.1). 조회만 잠그던 자리가 아니다 — 빈 트리를
+    <b>대상이 없으면 ①이 통째로 잠긴다</b>(frontend/grid.md). 조회만 잠그던 자리가 아니다 — 빈 트리를
     접는 버튼도, 찾을 이름이 없는 칸도 함께 잠겨야 <i>아무 일도 일어나지 않는 클릭</i>이
     남지 않는다.
   */
-  it('disabled 면 ①의 조회와 검색 칸이 함께 잠긴다 — grid-standard.md §6.1', () => {
+  it('disabled 면 ①의 조회와 검색 칸이 함께 잠긴다 — frontend/grid.md', () => {
     mount({ disabled: true, search: search() });
 
     expect(readButton().disabled).toBe(true);
@@ -129,7 +129,7 @@ describe('TreeGrid', () => {
   });
 
   /*
-    <b>접힌 것과 없는 것은 다르다</b>(grid-standard.md §6.3) — 제목 줄은 남고 나머지는 사라진다. 한때
+    <b>접힌 것과 없는 것은 다르다</b>(frontend/grid.md) — 제목 줄은 남고 나머지는 사라진다. 한때
     트리가 자기가 접혔다는 것을 몰라 <b>좁은 띠 안에 잘린 표</b>가 남았다(2026-08-31 실물).
   */
   it('접히면 제목만 남는다 — 판도 푸터도 버튼도 없다', () => {
@@ -154,7 +154,7 @@ describe('TreeGrid', () => {
     expect(titleStyle().writingMode).toBe('');
   });
 
-  it('hierarchyText 를 선언하면 계층 컬럼이 고정 폭이 된다 — 62 §4.2', () => {
+  it('hierarchyText 를 선언하면 계층 컬럼이 고정 폭이 된다 — screen/menu/requirements.md', () => {
     mount({ hierarchyText: (row) => row.nm });
     // 캔버스가 없어 폴백 폭이다 — 남는 폭을 먹지 <b>않는</b> 것이 요점이다.
     expect(screen.getByText(MSG.USER_AUTH_COL_MENU).style.width).toBe('300px');
@@ -168,7 +168,7 @@ describe('TreeGrid', () => {
   });
 
   /*
-    ── 편집 (2026-08-31 요청 · grid-edit-validation.md §2.2) ────────────────────────────────
+    ── 편집 (2026-08-31 요청 · frontend/grid.md) ────────────────────────────────
 
     <b>콤보가 셀에 늘 서 있었다.</b> 판의 편집 가능 셀은 평소에 값만 보이고 더블 클릭에서
     편집기가 열리는데, 트리만 입력 화면처럼 보였다 — 이 아래 넷이 그 제스처를 붙잡는다.
@@ -237,10 +237,10 @@ describe('TreeGrid', () => {
 
   /*
     <b>잠긴 칸을 칠한다</b> — 열리는 칸을 표시하는 대신 잠긴 칸을 칠하는 것이 이 프로젝트의
-    규약이고(`.bo-cell-readonly` · grid-standard.md §8.2), 트리만 반대로 두면 그 화면에서 배운 것이 옆
+    규약이고(`.bo-cell-readonly` · frontend/grid.md), 트리만 반대로 두면 그 화면에서 배운 것이 옆
     화면에서 틀린다.
   */
-  it('editable 을 선언하지 않은 컬럼은 읽기 전용 색조가 깔린다 — grid-standard.md §8.2', () => {
+  it('editable 을 선언하지 않은 컬럼은 읽기 전용 색조가 깔린다 — frontend/grid.md', () => {
     mount({ columns: editableColumns() });
 
     expect(cellOf('시스템 잠김').style.background).not.toBe('');

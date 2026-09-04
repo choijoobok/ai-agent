@@ -17,13 +17,13 @@ import { MSG } from '@/shared/i18n/messageKeys';
 /**
  * 라우트는 둘뿐이다 — <b>로그인 화면과 셸</b>. 메뉴별 경로는 `Routes` 에 없다.
  *
- * <p><b>탭이 라우트를 대신하기 때문</b>이다(frontend-stack.md §4·§5). 경로 하나가 탭 여러 개에 대응할 수
+ * <p><b>탭이 라우트를 대신하기 때문</b>이다(frontend/packages.md). 경로 하나가 탭 여러 개에 대응할 수
  * 있으므로 라우터가 화면을 고르면 같은 경로의 두 인스턴스를 구분하지 못한다 — 매칭은
  * `MENU_URL` → 정적 컴포넌트 맵이 하고(`screenRegistry`), 어느 탭인지는 `pushState` 의
  * `state.tabKey` 가 갖는다.
  *
  * <p>새로고침 복원이 여기 있는 이유는 `authStore` 에 `persist` 를 붙이지 않기로 했기
- * 때문이다(frontend-stack.md §8.1) — F5 마다 `/auth/me` 한 번이 그 결정의 대가다.
+ * 때문이다(frontend/packages.md) — F5 마다 `/auth/me` 한 번이 그 결정의 대가다.
  */
 export function AppRouter() {
   const restored = useAuthStore((state) => state.restored);
@@ -36,7 +36,7 @@ export function AppRouter() {
   // 401 · 권한 변경은 셸 밖에서 듣는다 — 기준값을 실어 오는 로그인 응답이 셸보다 먼저다.
   const { reauth, dismissReauth, giveUp } = useSessionSignals();
 
-  // 문구 없이 화면을 그리지 않는다 — 50 §3.2. 정적 폴백으로 먼저 그리면 문구의 원본이
+  // 문구 없이 화면을 그리지 않는다. 정적 폴백으로 먼저 그리면 문구의 원본이
   // 둘이 되고, 시간이 갈수록 DB 번들과 벌어진다.
   if (messageStatus === 'failed') {
     return <BootFailure />;
@@ -86,11 +86,11 @@ export function AppRouter() {
 }
 
 /**
- * 체인 #5 의 제한 세션 — security-design.md §4.
+ * 체인 #5 의 제한 세션 — backend/security.md.
  *
  * <p><b>셸을 그리지 않는다.</b> 인가 인터셉터가 비밀번호 변경 외의 모든 API 를 403 으로
  * 막으므로 셸을 그리면 <b>메뉴는 보이는데 무엇을 눌러도 실패하는</b> 화면이 된다.
- * 변경 화면(60 §4)이 이 자리에 온다.
+ * 변경 화면(screen/_standalone/README.md)이 이 자리에 온다.
  */
 function RestrictedSession() {
   return (
@@ -102,7 +102,7 @@ function RestrictedSession() {
   );
 }
 
-/** 세션이 있으면 셸로 보낸다 — 로그인 화면에 다시 들어올 이유가 없다(60 §3.7). */
+/** 세션이 있으면 셸로 보낸다 — 로그인 화면에 다시 들어올 이유가 없다(screen/_standalone/README.md). */
 function RequireAnonymous({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((state) => state.user);
   return user ? <Navigate to="/dashboard" replace /> : <>{children}</>;
@@ -114,7 +114,7 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * 번들이 닿지 않았다 — 50 §3.2.
+ * 번들이 닿지 않았다.
  *
  * <p>여기 쓰이는 문구만 정적이다(`src/locales`). <b>내용이 고정적이고 몇 개뿐이라 DB 번들과
  * 벌어질 여지가 없다</b> — 전체 폴백을 두는 것과는 다른 결정이다.
@@ -135,13 +135,13 @@ function BootFailure() {
 }
 
 /**
- * 첫 진입에 한 번 — <b>세션을 확인하고 그 답에 따라 번들을 받는다</b>(50 §3).
+ * 첫 진입에 한 번 — <b>세션을 확인하고 그 답에 따라 번들을 받는다</b>.
  *
  * <p>401 은 <b>실패가 아니라 답</b>이다 — 로그인하지 않았다는 뜻이므로 에러로 다루지 않는다.
  * 재인증 모달이 뜨지 않는 것도 같은 이유이며, {@code useSessionSignals} 가
  * <b>{@code authStore.user} 가 있을 때만</b> 모달을 띄우므로 여기서 따로 막을 것이 없다.
  *
- * <p><b>두 경로가 번들을 다르게 받는다</b>(50 §3.1).
+ * <p><b>두 경로가 번들을 다르게 받는다</b>.
  *
  * <table>
  *   <tr><th></th><th>언어</th><th>버전 확인</th></tr>
@@ -164,8 +164,8 @@ function useBoot() {
       .then(async (session) => {
         if (cancelled) return;
         signIn(session);
-        // 번들은 확인하지 않고 캐시를 쓴다(50 §3.1). 코드는 <b>확인한다</b> — 판정에 쓸
-        // 버전이 이 응답에 이미 실려 있어 왕복이 늘지 않기 때문이다(43 §8.1).
+        // 번들은 확인하지 않고 캐시를 쓴다. 코드는 <b>확인한다</b> — 판정에 쓸
+        // 버전이 이 응답에 이미 실려 있어 왕복이 늘지 않기 때문이다(sys/code.md).
         useCodeStore.getState().syncWithSession(session.cacheVersions?.code);
         await messages.load({ lang: session.user.localeCd, verify: false });
       })

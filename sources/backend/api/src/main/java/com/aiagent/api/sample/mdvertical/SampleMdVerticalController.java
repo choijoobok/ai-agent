@@ -32,34 +32,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code SMPL_MD_VERT} — 68 §5. <b>참조 구현이지 업무 화면이 아니다.</b>
+ * {@code SMPL_MD_VERT} — playbook/INDEX.md. <b>참조 구현이지 업무 화면이 아니다.</b>
  *
  * <h2>패키지가 화면마다 갈리고, URL 의 도메인 마디는 하나다</h2>
  *
- * <p>68 §10.3 이 {@code api/sample/{singleoffset,…}} 을 요구한다. 화면 여섯이 한 컨트롤러에
+ * <p>playbook/INDEX.md 이 {@code api/sample/{singleoffset,…}} 을 요구한다. 화면 여섯이 한 컨트롤러에
  * 모이면 <b>인가 경계가 사라진다</b> — {@code generateApiSeed} 는 화면 폴더의
- * {@code endpoints.ts} 를 읽어 {@code SYS_MENU_API} 를 만들므로(ADR-0020), 한 자리에 둘을
- * 두면 <b>두 화면의 엔드포인트가 서로에게 매핑</b>된다(68 §10.2).
+ * {@code endpoints.ts} 를 읽어 {@code SYS_MENU_API} 를 만들므로(backend/api.md), 한 자리에 둘을
+ * 두면 <b>두 화면의 엔드포인트가 서로에게 매핑</b>된다(playbook/INDEX.md).
  *
- * <p><b>그런데 URL 은 여섯이 {@code /api/service/sample} 하나를 나눠 쓴다.</b> api-conventions.md §2.2 의
+ * <p><b>그런데 URL 은 여섯이 {@code /api/service/sample} 하나를 나눠 쓴다.</b> backend/api.md 의
  * 도메인 마디는 <b>애그리거트 이름</b>이고 여섯 화면의 애그리거트는 하나다 — 화면마다
  * 마디를 가르면 같은 {@code getOrderList} 가 URL 을 여섯 벌 갖는다. 클래스 이름이
  * {@code SampleController} 가 아닌 것도 여기서 온다: 패키지가 갈려도 <b>스프링 빈 이름은
  * 단순명</b>이라 둘째 화면이 서는 순간 기동이 이름 충돌로 죽는다.
  *
- * <p>액션은 <b>경로 접두가 정한다</b>(ADR-0020) — {@code get*} 은 {@code READ},
+ * <p>액션은 <b>경로 접두가 정한다</b>(backend/api.md) — {@code get*} 은 {@code READ},
  * {@code save*} 는 {@code SAVE}, {@code export*} 는 {@code EXPORT}, 나머지는
  * {@code EXECUTE}. 선언에 또 적지 않는다.
  *
  * <h2>엑셀 셋이 <b>봉투를 쓰지 않는다</b></h2>
  *
- * <p>api-conventions.md §2.3 의 {@code ApiResponse} 는 <i>알맹이를 감싸는</i> 규약인데 파일 응답에는
+ * <p>backend/api.md 의 {@code ApiResponse} 는 <i>알맹이를 감싸는</i> 규약인데 파일 응답에는
  * 감쌀 알맹이가 없다 — <b>통째로 파일</b>이다. 실패할 때만 봉투가 나가며, 프론트가 그것을
  * 되읽는다({@code shared/api/download.ts}).
  *
  * <h2>다운로드 이력이 <b>저절로 남는다</b></h2>
  *
- * <p>ADR-0019 가 프론트 생성에만 {@code POST /api/common/excel/saveLog} 를 둔 이유가 여기서
+ * <p>frontend/grid-advanced.md 가 프론트 생성에만 {@code POST /api/common/excel/saveLog} 를 둔 이유가 여기서
  * 보인다: 이 경로는 <b>요청이 도착하는 것 자체가 기록</b>이다(사용 이력 인터셉터가 모든
  * {@code /api/**} 를 남긴다). 프론트가 이력을 또 부르면 <b>한 번 내려받은 것이 두 행</b>이
  * 된다.
@@ -97,7 +97,7 @@ public class SampleMdVerticalController {
     }
 
     /**
-     * 디테일 목록 — 대상이 <b>조회조건이 아니라 파라미터</b>다(api-conventions.md §3.1.1).
+     * 디테일 목록 — 대상이 <b>조회조건이 아니라 파라미터</b>다(backend/api.md).
      *
      * <p>조건 목록에 두면 사용자가 지울 수 있는 것이 되고, 그러면 <i>이 주문의 품목</i> 을
      * 묻는 pane 이 <b>전 주문의 품목</b>을 쏟는다.
@@ -131,10 +131,10 @@ public class SampleMdVerticalController {
     }
 
     /**
-     * 출고 지시 — 68 §5.4. <b>프로그레스가 없다.</b>
+     * 출고 지시 — playbook/INDEX.md. <b>프로그레스가 없다.</b>
      *
      * <p>상태 하나를 바꾸는 일이라 즉시 끝난다. 프로그레스를 붙이면 창이 떴다가 바로
-     * 닫히며, 그 깜빡임은 <i>무언가 잘못됐나</i> 로 읽힌다(30 §6).
+     * 닫히며, 그 깜빡임은 <i>무언가 잘못됐나</i> 로 읽힌다(backend/crosscutting.md).
      */
     @Operation(
             summary = "샘플 주문 출고 지시",
@@ -146,7 +146,7 @@ public class SampleMdVerticalController {
     }
 
     /**
-     * 품목 금액 재계산 — <b>{@code jobId} 를 즉시 돌려준다</b>(30 §6 · 68 §5.4).
+     * 품목 금액 재계산 — <b>{@code jobId} 를 즉시 돌려준다</b>(backend/crosscutting.md · playbook/INDEX.md).
      *
      * <p><b>이 화면이 행×디테일 진행률의 실물이다.</b> 대상은 고른 주문 몇이고 일은 그
      * 주문마다 딸린 품목 전건이라, 주문 하나가 <b>수천 건</b>일 수 있다 — 요청 스레드로
@@ -154,7 +154,7 @@ public class SampleMdVerticalController {
      *
      * <p><b>{@code totCnt} 를 {@code null} 로 준다.</b> 전체가 <b>하나가 아니라 구간마다</b>
      * 있기 때문이다 — 서비스가 주문마다 {@code progress.reset(소제목, 품목수)} 로 갈아
-     * 끼우고(30 §6), 화면은 소제목으로 <i>지금 어느 주문</i>을, 막대로 <i>그 주문이 어디까지</i>
+     * 끼우고(backend/crosscutting.md), 화면은 소제목으로 <i>지금 어느 주문</i>을, 막대로 <i>그 주문이 어디까지</i>
      * 를 본다. 여기서 품목 총합을 미리 세어 주면 <b>막대 하나가 두 뜻을 갖게</b> 되고, 그
      * 값은 구간이 바뀔 때마다 어긋난다.
      *
@@ -176,7 +176,7 @@ public class SampleMdVerticalController {
     }
 
     /**
-     * ②의 <i>현재 페이지</i> — <b>주문 + 품목 합본</b>이다(ADR-0019).
+     * ②의 <i>현재 페이지</i> — <b>주문 + 품목 합본</b>이다(frontend/grid-advanced.md).
      *
      * <p>화면의 아홉 컬럼을 내리지 않는다. 이 파일의 표는 <b>화면에 없는 표</b>이며,
      * 그것이 이 갈래가 서버에 있는 이유다.

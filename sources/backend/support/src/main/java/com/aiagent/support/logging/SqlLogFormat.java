@@ -3,7 +3,7 @@ package com.aiagent.support.logging;
 import com.p6spy.engine.spy.appender.MessageFormattingStrategy;
 
 /**
- * 로그 한 줄의 모양 — system-logging.md §2.1.
+ * 로그 한 줄의 모양 — backend/logging.md.
  *
  * <pre>
  * [27ms] statement &lt;- com.aiagent...UserService.searchPage(UserService.java:88)

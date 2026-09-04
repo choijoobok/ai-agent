@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * <i>내 요청</i> — 알림 모달의 셋째 탭(60 §8 · NOTI-06 사용자 측).
+ * <i>내 요청</i> — 알림 모달의 셋째 탭(screen/_standalone/README.md · NOTI-06 사용자 측).
  *
  * <p><b>{@link NotiRequestController} 와 방향이 반대다.</b> 저쪽은
  * {@code /api/service/notiRequest/**} 이고 {@code (NOTI_REQUEST, SAVE)} 권한을 요구하지만,
@@ -38,7 +38,7 @@ public class MyNotiRequestController {
      * 내가 낸 것 — <b>최신이 위</b>다.
      *
      * <p>{@code NOTI_REQUEST} 메뉴의 대기열이 오름차순인 것과 반대이며 그것이 의도다
-     * (66 §5.2.1) — 저쪽은 오래 기다린 것을 먼저 처리해야 하고, 여기는 <b>방금 낸 것이
+     * (screen/notice/requirements.md) — 저쪽은 오래 기다린 것을 먼저 처리해야 하고, 여기는 <b>방금 낸 것이
      * 어떻게 됐는지</b> 가 물음이다.
      */
     @GetMapping("/api/common/notiRequest/getMyList")
@@ -51,7 +51,7 @@ public class MyNotiRequestController {
      *
      * <p>같은 유형이 <b>접수 상태로 열려 있으면 거부</b>한다. 화면도 버튼을 막지만 그것은
      * 마지막 방어가 아니다 — 더블클릭 한 번이 여벌을 만들고, 그 여벌은 관리자가 하나씩
-     * 반려해야 하며 반려마다 알림이 나간다(66 §5.4).
+     * 반려해야 하며 반려마다 알림이 나간다(screen/notice/requirements.md).
      */
     @PostMapping("/api/common/notiRequest/save")
     public ApiResponse<MyRequests> create(

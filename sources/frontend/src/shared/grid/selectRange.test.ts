@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newAnchor, planSelectRange, type SelectAnchor } from '@/shared/grid/selectRange';
 
 /**
- * 체크박스 범위 선택 — grid-standard.md §4.
+ * 체크박스 범위 선택 — frontend/grid.md.
  *
  * <p>여기서 세는 것은 <b>사용자가 잃는 것</b>이다. 고르는 쪽은 틀려도 다시 누르면 되지만,
  * <b>푸는 쪽</b>이 틀리면 방금 모은 대상이 조용히 사라진다.
@@ -48,7 +48,7 @@ describe('체크박스 범위 선택', () => {
 
   /*
     <b>범위 밖에서 고른 행은 건드리지 않는다</b> — 판의 내장 동작은 여기서 선택 전체를
-    리셋하지만, 이 체크박스가 가리키는 것은 <b>실행의 대상</b>이라(grid-api-contract.md §7) 사용자가 여러
+    리셋하지만, 이 체크박스가 가리키는 것은 <b>실행의 대상</b>이라(frontend/grid.md) 사용자가 여러
     번에 걸쳐 모은다.
   */
   it('직전 범위 밖은 풀지 않는다 — 따로 고른 행이 남는다', () => {

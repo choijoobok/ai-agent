@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 프론트 캐시 버전 — 43 §8.1.
+ * 프론트 캐시 버전 — sys/code.md.
  *
  * <p><b>읽는 시점이 정해져 있다</b> — 로그인 응답과 공개 번들 요청 둘뿐이다. 폴링하지 않으며
  * 백엔드 캐시의 유효성과는 아무 관계가 없다(그쪽은 TTL 이다 — {@link MessageService}).

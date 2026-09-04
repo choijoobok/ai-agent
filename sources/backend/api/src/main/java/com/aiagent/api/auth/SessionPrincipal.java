@@ -16,14 +16,14 @@ import org.springframework.stereotype.Component;
  *
  * <p><b>주체는 로그인 시점의 사진이다.</b> 그 뒤에 바뀐 사실은 다시 넣어 주지 않으면
  * 세션이 끝날 때까지 옛 값이다 — 지금 그 대상은 <b>언어</b>({@code RequestLocale} 이 요청마다
- * DB 를 치지 않고 주체를 읽는다 — architecture.md §6-1.2)와 <b>이름</b>({@code auth/me} 가 주체에서
- * 읽는다 — main-shell.md §8) 둘이다.
+ * DB 를 치지 않고 주체를 읽는다 — backend/packages.md)와 <b>이름</b>({@code auth/me} 가 주체에서
+ * 읽는다 — frontend/tabs.md) 둘이다.
  *
  * <p><b>{@code SecurityContextHolder} 만 바꾸면 이 요청에서만 산다.</b> 홀더는 요청 스레드의
  * 것이고 저장은 리포지터리가 한다 — 세션에 쓰지 않으면 <b>다음 요청이 옛 주체를 되살린다.</b>
  *
  * <p><b>권한(체인 #2~#5)은 여기서 다시 계산하지 않는다.</b> 계정 상태의 사진은 인가
- * 인터셉터가 자기 주기로 갱신하며(security-design.md §4), 이 자리가 그것까지 하면 <b>같은 판정이 두
+ * 인터셉터가 자기 주기로 갱신하며(backend/security.md), 이 자리가 그것까지 하면 <b>같은 판정이 두
  * 곳</b>에 생긴다.
  */
 @Component
@@ -31,13 +31,13 @@ public class SessionPrincipal {
 
     private final SecurityContextRepository repository = new HttpSessionSecurityContextRepository();
 
-    /** 언어를 갈아 끼운다 — main-shell.md §9.1. */
+    /** 언어를 갈아 끼운다 — frontend/tabs.md. */
     public void changeLocale(
             String localeCd, HttpServletRequest request, HttpServletResponse response) {
         replace(details -> details.withLocale(localeCd), request, response);
     }
 
-    /** 이름을 갈아 끼운다 — USER-05 · main-shell.md §8. 헤더가 읽는 값이 여기서 나온다. */
+    /** 이름을 갈아 끼운다 — USER-05 · frontend/tabs.md. 헤더가 읽는 값이 여기서 나온다. */
     public void changeUserNm(
             String userNm, HttpServletRequest request, HttpServletResponse response) {
         replace(details -> details.withUserNm(userNm), request, response);

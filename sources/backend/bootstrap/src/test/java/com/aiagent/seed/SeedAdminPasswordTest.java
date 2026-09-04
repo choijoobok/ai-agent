@@ -42,7 +42,7 @@ class SeedAdminPasswordTest {
         String hash = extractSeededHash();
 
         assertThat(hash).startsWith("{bcrypt}");
-        // 컬럼이 VARCHAR(100) 이다(41 §4). 알고리즘을 바꾸다 넘치면 저장에서 잘린다.
+        // 컬럼이 VARCHAR(100) 이다(sys/user-role.md). 알고리즘을 바꾸다 넘치면 저장에서 잘린다.
         assertThat(hash.length()).isLessThanOrEqualTo(100);
         assertThat(encoder.matches(DOCUMENTED_PASSWORD, hash))
                 .as("data/002-init-admin.yaml 의 해시가 '%s' 와 맞지 않는다", DOCUMENTED_PASSWORD)
@@ -52,7 +52,7 @@ class SeedAdminPasswordTest {
     @Test
     @DisplayName("시드 비밀번호가 기본 비밀번호 정책을 만족한다 — 첫 계정이 정책 위반이면 안 된다")
     void seededPasswordSatisfiesDefaultPolicy() {
-        // application.yml 의 sys-config.auth.password 기본값(43 §6.3).
+        // application.yml 의 sys-config.auth.password 기본값(sys/code.md).
         assertThat(DOCUMENTED_PASSWORD.length()).isGreaterThanOrEqualTo(9);
         assertThat(charsetKinds(DOCUMENTED_PASSWORD)).isGreaterThanOrEqualTo(3);
         assertThat(DOCUMENTED_PASSWORD.toLowerCase()).doesNotContain("admin");

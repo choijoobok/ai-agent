@@ -4,13 +4,13 @@ import { ApiError, TRANSPORT_ERROR_CODE, type ApiEnvelope } from '@/shared/api/t
 import { staticText } from '@/locales/staticText';
 
 /**
- * 봉투를 벗겨 알맹이를 주거나 {@link ApiError} 로 던진다 — api-conventions.md §2.3.
+ * 봉투를 벗겨 알맹이를 주거나 {@link ApiError} 로 던진다 — backend/api.md.
  *
  * <p>인터셉터에서 벗기지 않는 이유는 <b>성공 응답에도 traceId 가 있기</b> 때문이다.
  * 인터셉터가 `response.data = data` 로 갈아치우면 그 값이 사라지고, 나중에 필요해질 때
  * 모든 호출부가 바뀐다.
  *
- * <p><b>401 을 여기서 처리하지 않는다.</b> 규약은 재인증 모달이고(frontend-stack.md §9 · ADR-0021) 그것은
+ * <p><b>401 을 여기서 처리하지 않는다.</b> 규약은 재인증 모달이고(frontend/packages.md · backend/session.md) 그것은
  * 셸 위에 뜨는 UI 다 — 띄울 셸이 없는 지금 로그아웃으로 대신하면, 셸이 생길 때 그 임시
  * 처리를 찾아 지워야 한다. 상태를 실어 보내고 판단은 호출부에 둔다.
  */
@@ -65,7 +65,7 @@ function normalize(error: unknown): ApiError {
 function toApiError(envelope: ApiEnvelope<unknown>, status: number): ApiError {
   return new ApiError({
     code: envelope.code ?? TRANSPORT_ERROR_CODE,
-    // 문구는 서버가 완성한다. 프론트에 에러 메시지 카탈로그를 두지 않는다(architecture.md §6-1.2).
+    // 문구는 서버가 완성한다. 프론트에 에러 메시지 카탈로그를 두지 않는다(backend/packages.md).
     message: envelope.message ?? staticText('net.failed'),
     status,
     traceId: envelope.traceId,

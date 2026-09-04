@@ -5,10 +5,10 @@ import type { GridIssue } from '@/shared/grid/types';
 import type { SampleOrderTagRow } from '@/features/sample/types';
 
 /**
- * 태그의 규칙 — 68 §7.4 · grid-column-contract.md §5.6. `features/user/detailRules.ts` 와 같은 자리다.
+ * 태그의 규칙 — playbook/INDEX.md · frontend/grid.md. `features/user/detailRules.ts` 와 같은 자리다.
  *
  * <p>화면에서 뽑아낸 것은 **검사가 붙을 곳이 필요해서**다. 앞의 둘은 `SORT_NO` 가
- * **값이라는 사실**(48 §4.1)에서 나오며, 틀리면 증상이 조용하다 — 순서가 겹친 판은
+ * **값이라는 사실**(playbook/INDEX.md)에서 나오며, 틀리면 증상이 조용하다 — 순서가 겹친 판은
  * 저장까지 되고 나서 *조회할 때마다 태그가 뒤바뀐다* 로만 드러난다.
  *
  * <p>**화면 폴더 밖에 있다**(2026-09-02 — ①이 개수 상한의 둘째 소비자가 되면서 옮겼다).
@@ -25,17 +25,17 @@ import type { SampleOrderTagRow } from '@/features/sample/types';
  * 하나* 를 매번 묻게 된다.
  *
  * <p>**삭제 표시된 행도 센다.** 지울 행의 순서를 비워 두면 새 행이 그 자리를 제안하는데,
- * 사용자가 삭제를 되돌리는 순간(grid-standard.md §3.5 의 토글) 둘이 겹친다.
+ * 사용자가 삭제를 되돌리는 순간(frontend/grid.md 의 토글) 둘이 겹친다.
  */
 export function nextSortNo(rows: GridRow<SampleOrderTagRow>[]): number {
   return rows.reduce((max, row) => Math.max(max, row.data.sortNo ?? 0), 0) + 1;
 }
 
 /**
- * 3층 검증 — **정렬순서가 겹치면 막는다**(grid-edit-validation.md §3.3).
+ * 3층 검증 — **정렬순서가 겹치면 막는다**(frontend/grid.md).
  *
  * <p>겹치면 읽는 순서가 정해지지 않고, 사용자에게는 *고치지도 않았는데 조회할 때마다
- * 태그가 뒤바뀐다* 로 보인다 — 48 §4.1 이 이 컬럼을 둔 이유가 그 증상을 없애는 것이었다.
+ * 태그가 뒤바뀐다* 로 보인다 — playbook/INDEX.md 이 이 컬럼을 둔 이유가 그 증상을 없애는 것이었다.
  *
  * <p>**삭제 행은 컨트롤러가 이미 뺐다**(`validate.ts` 가 `state !== 'D'` 로 거른다). 지울
  * 행과 새 행이 같은 순서를 갖는 것은 정상이며, 세면 *3번을 지우고 3번을 새로 만드는* 흔한
@@ -67,25 +67,25 @@ export function duplicatedSortNo(rows: GridRow<SampleOrderTagRow>[]): GridIssue[
 }
 
 /**
- * 한 주문의 태그 개수 상한 — 48 §8 의 결정(2026-09-02).
+ * 한 주문의 태그 개수 상한 — playbook/INDEX.md 의 결정(2026-09-02).
  *
  * <p>근거는 서버의 같은 상수가 갖는다(`SampleRules.MAX_TAGS`) — **상한을 정하는
- * 것은 기계가 아니라 창이다**: 순서 변경이 위·아래 버튼이라(68 §9.6) 마지막 항목을 맨
+ * 것은 기계가 아니라 창이다**: 순서 변경이 위·아래 버튼이라(playbook/INDEX.md) 마지막 항목을 맨
  * 앞으로 옮기는 데 N−1 번을 눌러야 하고, 엑셀·저장이 무너지는 자리는 훨씬 뒤다.
  *
  * <p>**두 곳에 같은 숫자가 있는 것이 이 규칙의 모양이다.** 서버가 다시 보지 않으면 화면
- * 밖 경로가 그대로 통과하고(grid-edit-validation.md §3.4), 화면이 보지 않으면 사용자가 **저장을 눌러 보고**
- * 안다. 설정 키로 올리지 않는 것은 grid-column-contract.md §5.6 이 개수를 **업무 규칙**으로 못 박았기
+ * 밖 경로가 그대로 통과하고(frontend/grid.md), 화면이 보지 않으면 사용자가 **저장을 눌러 보고**
+ * 안다. 설정 키로 올리지 않는 것은 frontend/grid.md 이 개수를 **업무 규칙**으로 못 박았기
  * 때문이다 — *"창고가 A 면 최대 50개"* 가 성립하는 자리는 배포 설정이 될 수 없다.
  */
 export const MAX_TAGS = 20;
 
 /**
- * ①의 **컬럼 층**(1층 · grid-edit-validation.md §3.2) — 배열이 셀 값이므로 여기서 센다.
+ * ①의 **컬럼 층**(1층 · frontend/grid.md) — 배열이 셀 값이므로 여기서 센다.
  *
- * <p>48 §8 의 초안은 *"검증 3층의 그리드 층이 받는다"* 고 적었는데, **어느 층인지는
+ * <p>playbook/INDEX.md 의 초안은 *"검증 3층의 그리드 층이 받는다"* 고 적었는데, **어느 층인지는
  * 편집 어휘가 정한다**: ①에서 태그는 `list` 컬럼 한 칸이라 다른 행을 볼 필요가 없고,
- * 그리드 층으로 올리면 *어느 셀의 문제인가* 에 답할 자리를 잃는다(grid-edit-validation.md §3.3).
+ * 그리드 층으로 올리면 *어느 셀의 문제인가* 에 답할 자리를 잃는다(frontend/grid.md).
  *
  * <p>**빈 배열은 여기 오지 않는다** — `validateCell` 이 길이 0 을 *비었다* 로 보고
  * 건너뛴다. 상한 검사에는 상관이 없다.
@@ -96,14 +96,14 @@ export function tooManyTags(value: unknown): string | null {
 }
 
 /**
- * ⑤의 **그리드 층**(3층 · grid-edit-validation.md §3.2) — 행이 편집 단위이므로 판 전체를 봐야 안다.
+ * ⑤의 **그리드 층**(3층 · frontend/grid.md) — 행이 편집 단위이므로 판 전체를 봐야 안다.
  *
  * <p>**삭제 행은 컨트롤러가 이미 뺐다**(`validate.ts`). 그래서 여기 센 수가 곧 저장 뒤의
  * 개수이며, 스물다섯 중 여섯을 지우는 편집이 통과한다 — 세어야 하는 것은 *지금 판에 몇
- * 줄인가* 가 아니라 **저장하면 몇 개가 되는가**다(grid-edit-validation.md §3.3 의 *저장 후의 모습*).
+ * 줄인가* 가 아니라 **저장하면 몇 개가 되는가**다(frontend/grid.md 의 *저장 후의 모습*).
  *
  * <p>**초과분의 첫 행을 짚는다.** 상한까지는 잘못이 없고 사용자가 지워야 하는 것은 그
- * 뒤이며, 짚어 두면 화면이 그 행으로 데려간다(grid-edit-validation.md §3.3 ②) — `field` 를 주지 않는 것은
+ * 뒤이며, 짚어 두면 화면이 그 행으로 데려간다(frontend/grid.md ②) — `field` 를 주지 않는 것은
  * **어느 칸의 문제도 아니기** 때문이다.
  */
 export function tooManyTagRows(rows: GridRow<SampleOrderTagRow>[]): GridIssue[] {

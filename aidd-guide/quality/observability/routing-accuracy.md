@@ -26,9 +26,7 @@ tags: [observability, routing, accuracy, golden-set]
 | 4 | "프롬프트 품질을 어떻게 측정해야 해" | 07-evals | 평가 프레임워크 |
 | 5 | "AsnMgmtReqRecord 어떤 record DTO 패턴 쓰지" | 06-framework | 프레임워크 컨벤션 |
 | 6 | "이 프로젝트 헌법이 뭐야" | CLAUDE.md | 헌법 직접 명시 |
-| 7 | "요약 로그 형식 알려줘" | 10-records | 기록 형식 |
 | 8 | "민감한 데이터 다루는 규약" | 13-safety | PII·secrets |
-| 9 | "Anthropic Context Engineering 글 요약" | 12-references | 외부 문헌 요약 |
 | 10 | "Stop 훅 디버깅 방법" | 05-harness | 하네스·훅 |
 
 ## 측정 절차
@@ -57,7 +55,7 @@ INDEX 또는 카테고리 추가/이동 시 **반드시** 다시 10개 측정. 8
 
 ## 사용 빈도 함께 보기
 
-`grep -r "category:" aidd-guide/meta/_meta/catalog.yaml | sort | uniq -c` 로 파일 분포 확인. 특정 카테고리만 비대해지면 분할 검토.
+`grep -rh "^category:" aidd-guide --include=*.md | sort | uniq -c` 로 파일 분포 확인. 특정 카테고리만 비대해지면 분할 검토.
 
 ## 관련
 

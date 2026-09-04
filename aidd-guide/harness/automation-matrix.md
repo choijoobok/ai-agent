@@ -51,7 +51,7 @@ tags: [harness, hooks, automation]
 | 문서 셋 현행화 | AI | `doc-drift` 는 *어느 화면인지* 만 가리킨다. 고칠지 말지는 AI 와 사람이 정한다 |
 | 공통물 승격 | AI | 두 번째 사용을 알아채는 검사가 없다 — 리뷰에서 *이거 다른 화면에도 있지 않나* 를 묻는다 |
 | `chat-history` 요약 | AI | **원문은 `log-raw` 가 남긴다.** 요약은 결정·산출물·미결만(CLAUDE.md §9 · [04-memory/logs.md](./memory/logs.md)) |
-| 결정 기록 | AI | **커밋 메시지에 *왜* 를 적는다**(CLAUDE.md §8). 버린 안이 있으면 [ADR](../records/adr/INDEX.md) 을 더한다 |
+| 결정 기록 | AI | **커밋 메시지에 *왜* 를 적는다**(CLAUDE.md §8). 버린 안이 있으면 ADR 을 더한다 |
 
 ## 위반 패턴
 

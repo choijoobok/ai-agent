@@ -26,11 +26,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.DockerClientFactory;
 
 /**
- * <b>무수정으로 서고, 걷어내고, 다시 선다</b> — 4벤더. db-portability.md §6 · 48 §7.6 · 68 §11.
+ * <b>무수정으로 서고, 걷어내고, 다시 선다</b> — 4벤더. backend/persistence.md · playbook/INDEX.md.
  *
  * <p><b>스파이크가 있던 자리다</b>(2026-09-02). {@code spike/db-portability} 는 손으로 만든
  * <b>축소판 changelog</b> 로 식별자 전략과 CLOB 매핑만 봤고, 그 둘은 확인이 끝나 결론이
- * db-portability.md §3.1 · §4.1 과 ADR-0015 로 옮겨졌다. 남은 질문은 전부 <b>실제 스키마와 실제 시드</b>를
+ * backend/persistence.md 과 backend/persistence.md 로 옮겨졌다. 남은 질문은 전부 <b>실제 스키마와 실제 시드</b>를
  * 요구한다 — 축소판이 초록인 것은 이제 아무것도 뜻하지 않으므로, 그것을 지우고 여기가
  * 물려받는다. 검사가 둘이면 <b>쉬운 쪽이 초록인 것을 보고 안심</b>하게 된다.
  *
@@ -60,14 +60,14 @@ import org.testcontainers.DockerClientFactory;
 @Tag("portability")
 class VendorPortabilityTest {
 
-    /** 스키마의 유일한 출처(db-portability.md §1) — 축소판이 아니라 <b>이것</b>을 태운다. */
+    /** 스키마의 유일한 출처(backend/persistence.md) — 축소판이 아니라 <b>이것</b>을 태운다. */
     private static final String MASTER = "db/changelog/db.changelog-master.yaml";
 
-    /** 걷어내기 — 48 §7.2. master 에서 900·901 을 빼고 이 한 줄로 바꾸는 그 파일이다. */
+    /** 걷어내기 — playbook/INDEX.md. master 에서 900·901 을 빼고 이 한 줄로 바꾸는 그 파일이다. */
     private static final String REMOVAL = "db/changelog/sample/999-sample-remove.yaml";
 
     /**
-     * <b>ESCAPE 가 지키는 것</b> — 48 §7.3.
+     * <b>ESCAPE 가 지키는 것</b> — playbook/INDEX.md.
      *
      * <p>{@code LIKE 'SMPL_%'} 의 밑줄은 와일드카드라 <b>{@code SMPLX} 도 잡는다</b>.
      * 그래서 걷어내기 전에 {@code SMPLX} 넷을 심어 두고 <b>살아남는지</b> 본다 — 접두가
@@ -75,8 +75,8 @@ class VendorPortabilityTest {
      * 접두만 세면 이 사고는 보이지 않는다: 지워야 할 것이 다 지워졌기 때문이다.
      *
      * <p><b>이것이 4벤더 질문인 이유</b>는 {@code ESCAPE '/'} 가 벤더마다 같게 도는지를
-     * 아무도 확인한 적이 없다는 것이다(48 §8). 역슬래시를 안 쓴 것도 그래서다 — MySQL 은
-     * 그것을 문자열 리터럴에서 <b>한 번 더</b> 해석한다(db-portability.md §4).
+     * 아무도 확인한 적이 없다는 것이다(playbook/INDEX.md). 역슬래시를 안 쓴 것도 그래서다 — MySQL 은
+     * 그것을 문자열 리터럴에서 <b>한 번 더</b> 해석한다(backend/persistence.md).
      */
     private static final List<String> DECOYS = List.of(
             "INSERT INTO SYS_SEQUENCE (SEQ_NAME, NEXT_VAL) VALUES ('SMPLX', 1)",
@@ -86,7 +86,7 @@ class VendorPortabilityTest {
             "INSERT INTO SYS_MENU (MENU_CD, MENU_NM, SORT_NO, USE_YN, EXPORT_YN, SRC_CD)"
                     + " VALUES ('SMPLX', 'decoy', 999, 'Y', 'N', 'SEED')");
 
-    /** 걷어낸 뒤 <b>한 줄도 남아서는 안 되는 것</b> — 48 §7.4 의 일곱 단계와 같은 목록이다. */
+    /** 걷어낸 뒤 <b>한 줄도 남아서는 안 되는 것</b> — playbook/INDEX.md 의 일곱 단계와 같은 목록이다. */
     private static final List<String> RESIDUE = List.of(
             "SELECT count(*) FROM SYS_USER_GRID_PREF   WHERE MENU_CD LIKE 'SMPL/_%' ESCAPE '/'",
             "SELECT count(*) FROM SYS_USER_SEARCH_COND WHERE MENU_CD LIKE 'SMPL/_%' ESCAPE '/'",
@@ -100,7 +100,7 @@ class VendorPortabilityTest {
             "SELECT count(*) FROM SYS_CODE_GROUP       WHERE GRP_CD  LIKE 'SMPL/_%' ESCAPE '/'",
             "SELECT count(*) FROM SYS_SEQUENCE         WHERE SEQ_NAME LIKE 'SMPL/_%' ESCAPE '/'",
             /*
-              <b>접두가 넷이다</b>(48 §7.3) — 화면이 쓰는 둘과 데이터가 만드는 둘. 한 줄에
+              <b>접두가 넷이다</b>(playbook/INDEX.md) — 화면이 쓰는 둘과 데이터가 만드는 둘. 한 줄에
               OR 로 묶지 않고 넷으로 갈라 두는 것은, 묶으면 <b>어느 접두가 남았는지</b> 를
               실패가 말하지 못하기 때문이다. ⑤를 세우며 겪은 것이 정확히 그 하나였다.
             */
@@ -114,10 +114,10 @@ class VendorPortabilityTest {
             "SELECT count(*) FROM SYS_MESSAGE_KEY WHERE MSG_KEY LIKE 'code.SMPL/_%' ESCAPE '/'");
 
     /**
-     * 로컬 개발 DB(PostgreSQL · ICU {@code ko-KR} — db-portability.md §6.0)가 낸 순서다.
+     * 로컬 개발 DB(PostgreSQL · ICU {@code ko-KR} — backend/persistence.md)가 낸 순서다.
      *
-     * <p><b>그리드 정렬을 서버가 판정하므로</b>(grid-column-contract.md §3) 벤더를 바꾸면 같은 목록이 다른 순서로
-     * 나올 수 있고, 그것이 db-portability.md §6 의 마지막 미결이다. 여기서 붉어지는 것은 <b>고장이 아니라
+     * <p><b>그리드 정렬을 서버가 판정하므로</b>(frontend/grid.md) 벤더를 바꾸면 같은 목록이 다른 순서로
+     * 나올 수 있고, 그것이 backend/persistence.md 의 마지막 미결이다. 여기서 붉어지는 것은 <b>고장이 아니라
      * 답</b>이다 — 어느 벤더가 어떻게 다른지를 실패 메시지가 그대로 적어 준다.
      *
      * <p>고른 여덟은 샘플 코드그룹의 이름이다. <b>첫 글자가 같은 짝이 둘</b>(주문상태 ·
@@ -136,7 +136,7 @@ class VendorPortabilityTest {
     /**
      * 어느 벤더를 태우나 — {@code -Dportability.vendors=mysql,sqlserver}.
      *
-     * <p>기본이 넷인 것은 <b>넷이 요건</b>이기 때문이다(20 §1.3). Oracle 은 이미지가 2GB+ 라
+     * <p>기본이 넷인 것은 <b>넷이 요건</b>이기 때문이다(stack.md). Oracle 은 이미지가 2GB+ 라
      * 기본에서 빼 두었고, 워크플로의 입력이 그것을 켠다 — 20분 걸리는 확인을 매번 돌리면
      * <b>사람이 워크플로를 안 돌리게</b> 된다.
      */
@@ -174,15 +174,15 @@ class VendorPortabilityTest {
         }
 
         /*
-          ③ 다시 선다 — 48 §7.6 이 4벤더 CI 에 요구한 것이 이 한 줄이다. <b>남은 FK 하나가
+          ③ 다시 선다 — playbook/INDEX.md 이 4벤더 CI 에 요구한 것이 이 한 줄이다. <b>남은 FK 하나가
           다음 사람의 기동을 막는다</b>: 걷어내기가 부모를 먼저 지우거나 매핑을 남기면
           여기서 처음 드러난다.
 
           <b>이것이 "걷어내기가 끝났다" 를 뜻하지는 않는다.</b> 여기서 메뉴·API 시드는
           {@code runOnChange} 로 <b>다시 돌고</b>, 선언 파일에 샘플이 남아 있으면
-          {@code SYS_MENU} 의 SMPL_ 행이 되살아난다 — 그것이 48 §7.5 가 소스까지 함께
+          {@code SYS_MENU} 의 SMPL_ 행이 되살아난다 — 그것이 playbook/INDEX.md 가 소스까지 함께
           걷어내라고 적은 이유이며, 잔여 판정을 ②에서 먼저 하는 이유다. 샘플 테이블은
-          되살아나지 않는다(이미 적용된 changeset 은 다시 돌지 않는다 — 48 §7.1).
+          되살아나지 않는다(이미 적용된 changeset 은 다시 돌지 않는다 — playbook/INDEX.md).
         */
         apply(url, MASTER);
         try (Connection c = connect(url)) {
@@ -210,7 +210,7 @@ class VendorPortabilityTest {
         assertThat(menuName).as("%s — 한글 왕복", vendor).isEqualTo("엑셀 업로드");
     }
 
-    /** db-portability.md §6 의 마지막 미결 — 벤더가 다르면 실패 메시지가 <b>어떻게 다른지</b> 를 적는다. */
+    /** backend/persistence.md 의 마지막 미결 — 벤더가 다르면 실패 메시지가 <b>어떻게 다른지</b> 를 적는다. */
     private static void reportKoreanOrder(Connection c, String vendor) throws SQLException {
         List<String> ordered = column(c,
                 "SELECT GRP_NM FROM SYS_CODE_GROUP WHERE GRP_CD LIKE 'SMPL/_%' ESCAPE '/'"
@@ -220,7 +220,7 @@ class VendorPortabilityTest {
         System.out.printf("[정렬] %s / 한글 순서 = %s%n", vendor, ordered);
 
         assertThat(ordered)
-                .as("%s — 한글 정렬이 로컬(ICU ko-KR)과 같은가. 다르면 그것이 db-portability.md §6 의 답이다", vendor)
+.as("%s — 한글 정렬이 로컬(ICU ko-KR)과 같은가. 다르면 그것이 backend/persistence.md 의 답이다", vendor)
                 .containsExactlyElementsOf(KOREAN_ORDER);
     }
 
@@ -242,7 +242,7 @@ class VendorPortabilityTest {
         assertThat(left).as("%s — 샘플 테이블", vendor).isEmpty();
     }
 
-    /** {@code SMPLX} 는 샘플이 아니다 — ESCAPE 가 없으면 함께 지워진다(48 §7.3). */
+    /** {@code SMPLX} 는 샘플이 아니다 — ESCAPE 가 없으면 함께 지워진다(playbook/INDEX.md). */
     private static void assertDecoysSurvived(Connection c, String vendor) throws SQLException {
         assertThat(count(c, "SELECT count(*) FROM SYS_SEQUENCE WHERE SEQ_NAME = 'SMPLX'"))
                 .as("%s — ESCAPE 없으면 SMPLX 가 SMPL_%% 에 걸린다(SEQ_NAME)", vendor)
@@ -313,7 +313,7 @@ class VendorPortabilityTest {
             case "sqlserver" -> "jdbc:tc:sqlserver:2022-latest:///bo?TC_DAEMON=true";
             /*
               <b>확인된 적 없다.</b> 스파이크도 이미지 크기(2GB+) 때문에 Oracle 을 빼고
-              돌렸으므로(db-portability.md §6) 이 한 줄은 <b>처음 켜는 사람이 고칠 수도 있다</b> —
+              돌렸으므로(backend/persistence.md) 이 한 줄은 <b>처음 켜는 사람이 고칠 수도 있다</b> —
               {@code oracle} 이라는 타입 이름이 {@code oracle-free} 모듈에 그대로 붙는지가
               그 자리다. 넷과 함께 기본으로 켜 두지 않는 것이 그 사실을 감추지 않는 길이다.
             */

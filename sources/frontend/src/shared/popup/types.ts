@@ -2,14 +2,14 @@ import type { ColumnDef, ReadApi } from '@/shared/grid/types';
 import type { SearchField } from '@/shared/searchform/types';
 
 /**
- * 참조 팝업 — grid-column-contract.md §6 · 68 §9.4.
+ * 참조 팝업 — frontend/grid.md · playbook/INDEX.md.
  *
- * <p><b>고르는 창은 그 자체가 그리드다</b>(grid-column-contract.md §6.3) — 조회조건과 목록을 갖고 grid-standard.md §2 의
+ * <p><b>고르는 창은 그 자체가 그리드다</b>(frontend/grid.md) — 조회조건과 목록을 갖고 frontend/grid.md 의
  * 크롬을 쓴다. 그래서 팝업을 <i>컴포넌트</i>로 등록하지 않고 <b>선언으로</b> 등록한다:
  * 컴포넌트로 두면 팝업마다 조회 버튼의 자리와 페이징의 모양이 갈리고, <b>같은 앱에서
  * 목록을 고르는 방법이 팝업 수만큼</b> 생긴다.
  *
- * <p><b>선택은 언제나 한 행이다</b>(grid-column-contract.md §6.3) — 셀 하나에 값 하나이므로, 여러 행을 고르는
+ * <p><b>선택은 언제나 한 행이다</b>(frontend/grid.md) — 셀 하나에 값 하나이므로, 여러 행을 고르는
  * 것은 셀 편집이 아니라 <b>행 추가</b>이며 다른 기능이다.
  */
 
@@ -19,21 +19,21 @@ import type { SearchField } from '@/shared/searchform/types';
  * <p>레지스트리가 키 하나로 여럿을 담으므로 여기서 타입을 붙들 수가 없다(제네릭을 맵에
  * 통과시키면 등록하는 쪽이 전부 {@code any} 가 된다). <b>타입이 필요한 자리는 여기가
  * 아니라 {@code apply} 다</b> — 고른 행을 <b>어느 컬럼에 어떻게 담을지</b> 아는 것은
- * 팝업이 아니라 그것을 쓰는 컬럼이고, 그쪽은 자기 행 타입을 안다(grid-column-contract.md §6.2).
+ * 팝업이 아니라 그것을 쓰는 컬럼이고, 그쪽은 자기 행 타입을 안다(frontend/grid.md).
  */
 export type PopupRow = Record<string, unknown>;
 
 export interface PopupSpec {
-  /** 모달 제목 — 메시지 키(43 §3). */
+  /** 모달 제목 — 메시지 키(sys/code.md). */
   title: string;
   /**
-   * 목록 컬럼 — <b>그리드 어휘 그대로다</b>(grid-column-contract.md §5).
+   * 목록 컬럼 — <b>그리드 어휘 그대로다</b>(frontend/grid.md).
    *
    * <p>읽기 전용 목록이므로 {@code editable} 을 적지 않는다. 고르는 창에서 값을 고치면
    * 그 편집은 <b>아무 데도 저장되지 않는다</b> — 저장 버튼이 없는 그리드다.
    */
   columns: ColumnDef<PopupRow>[];
-  /** 목록 조회 — grid-api-contract.md §5 의 {@code read} 하나다. */
+  /** 목록 조회 — frontend/grid.md 의 {@code read} 하나다. */
   read: ReadApi;
   /**
    * 조회조건 — 없으면 조건 없이 전량을 연다.
@@ -50,7 +50,7 @@ export interface PopupSpec {
  * 팝업이 닫힌 <b>세 가지 방법</b>.
  *
  * <p><b>취소와 지우기를 가르는 것이 이 타입의 존재 이유다.</b> 하나로 묶어 {@code null}
- * 을 돌려주면 grid-column-contract.md §6.3 의 <i>{@code picked === null} 은 지우는 것이다</i> 와 만나 <b>Esc 가
+ * 을 돌려주면 frontend/grid.md 의 <i>{@code picked === null} 은 지우는 것이다</i> 와 만나 <b>Esc 가
  * 셀을 비운다</b> — 고르러 열었다가 마음을 바꾼 사람이 <b>원래 값을 잃는다</b>. 그 사고는
  * 저장하기 전까지는 화면에 아무 경고도 남기지 않는다.
  *
@@ -58,7 +58,7 @@ export interface PopupSpec {
  */
 export type PopupOutcome =
   | { kind: 'picked'; row: PopupRow }
-  /** 값을 비운다 — {@code apply(row, null)} 이 딸려 온 칸까지 함께 지운다(grid-column-contract.md §6.3). */
+  /** 값을 비운다 — {@code apply(row, null)} 이 딸려 온 칸까지 함께 지운다(frontend/grid.md). */
   | { kind: 'cleared' }
   /** 창을 닫았을 뿐이다 — 셀은 그대로다. */
   | { kind: 'cancelled' };
@@ -76,12 +76,12 @@ export type PopupOutcome =
 export type OpenPopup = (
   key: string,
   options?: {
-    /** 팝업의 조회 봉투에 실린다 — <b>현재 행에서</b> 만든 조건이다(grid-column-contract.md §6.2 의 `param`). */
+    /** 팝업의 조회 봉투에 실린다 — <b>현재 행에서</b> 만든 조건이다(frontend/grid.md 의 `param`). */
     param?: unknown;
     /**
      * 인가가 매이는 메뉴 — <b>부르는 화면의 것</b>이다.
      *
-     * <p>팝업의 조회 엔드포인트는 그 화면의 폴더에 있고(ADR-0020) 시드가 그 화면의 메뉴에
+     * <p>팝업의 조회 엔드포인트는 그 화면의 폴더에 있고(backend/api.md) 시드가 그 화면의 메뉴에
      * 매핑한다. 팝업이 자기 메뉴를 갖는 것처럼 굴면 <b>어느 메뉴로도 인가되지 않는</b>
      * 요청이 되어 403 이 난다.
      */

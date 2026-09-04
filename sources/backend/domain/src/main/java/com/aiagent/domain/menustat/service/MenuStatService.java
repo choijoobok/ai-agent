@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 자주 쓰는 메뉴 — UX-16 · 42 §8.
+ * 자주 쓰는 메뉴 — UX-16 · sys/menu.md.
  *
  * <p><b>즐겨찾기 등록조차 하지 않는 사용자를 위한 것이다.</b> 그래서 <i>무엇을 세는가</i> 가
  * 이 기능의 전부이며, 세는 것은 <b>메뉴를 선택하는 행위</b> 하나다.
@@ -88,7 +88,7 @@ public class MenuStatService {
         return new FrequentMenus(fromYm, menus);
     }
 
-    /** 이번 달 — <b>업무 시간대</b>의 달이다(40 §4.3). 자정 근처의 한 건이 옆 달로 새지 않게. */
+    /** 이번 달 — <b>업무 시간대</b>의 달이다(sys/INDEX.md). 자정 근처의 한 건이 옆 달로 새지 않게. */
     private String currentYm() {
         return YearMonth.from(calendar.today()).format(YM);
     }

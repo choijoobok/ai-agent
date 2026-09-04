@@ -1,7 +1,7 @@
 import { label } from '@/shared/i18n/label';
 
 /**
- * 공통코드 값을 사람이 읽는 이름으로 — 43 §4.4.
+ * 공통코드 값을 사람이 읽는 이름으로 — sys/code.md.
  *
  * <p><b>데이터에서 조립된 키다</b>(`code.{GRP_CD}.{DTL_CD}`). 그래서 `messageKeys.ts` 에
  * 상수가 없고 `generateMessageSeed` 도 건드리지 않는다 — `menu.{MENU_CD}` 와 같은 부류이며,
@@ -10,10 +10,10 @@ import { label } from '@/shared/i18n/label';
  *
  * <p><b>코드에 이름을 적어 두지 않는다.</b> `{ ko: '한국어' }` 같은 표를 두면 값을 하나 더할
  * 때마다 프론트를 고쳐야 하고, 그 이름이 <b>번역되지 않는다</b> — 명칭의 단일 원본은 언제나
- * `SYS_MESSAGE` 다(43 §3).
+ * `SYS_MESSAGE` 다(sys/code.md).
  *
  * <p>행이 없으면 키가 그대로 보인다(`code.LANG_CD.ko`). 빈 칸이나 코드값으로 떨어뜨리지
- * 않는 것이 규약이며, 등록을 빠뜨렸다는 사실이 화면에서 즉시 드러나야 한다(43 §4.4 · §7.3).
+ * 않는 것이 규약이며, 등록을 빠뜨렸다는 사실이 화면에서 즉시 드러나야 한다(sys/code.md).
  *
  * <p><b>`lang.ts` 가 아니라 여기 있다.</b> 그쪽에 두면 `lang → label → messageStore → lang`
  * 순환이 생기고, `messageStore` 는 초기 상태를 만들며 `resolveLang()` 을 부른다 — 순환 안에서

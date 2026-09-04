@@ -18,19 +18,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Service;
 
 /**
- * 메시지 조회 — 43 §7.3 · §8.
+ * 메시지 조회 — sys/code.md.
  *
  * <p><b>폴백은 한 방향이다.</b> 요청 언어의 값이 있으면 그것, 없으면 기본 언어, 그것도 없으면
  * <b>부르는 쪽이 마지막 수단을 정한다</b> — {@link #find}는 비어 있는 답을 그대로 돌려준다.
- * 화면은 키 문자열을 그대로 보이고(43 §7.3) 에러 응답은 {@code defaultMessage()} 로 간다
- * (architecture.md §6-1.2). 마지막 수단이 둘이라 여기서 하나로 정하면 한쪽이 거짓을 말한다.
+ * 화면은 키 문자열을 그대로 보이고(sys/code.md) 에러 응답은 {@code defaultMessage()} 로 간다
+ * (backend/packages.md). 마지막 수단이 둘이라 여기서 하나로 정하면 한쪽이 거짓을 말한다.
  *
  * <h2>캐시가 두 축이다</h2>
  *
  * 여기의 TTL 은 <b>DB 왕복을 줄이는 것</b>이고, 프론트가 캐시를 버리는 기준은
- * {@code SYS_CACHE_VERSION} 이다(43 §8.1). <b>이 캐시는 그 표를 읽지 않는다</b> — 읽으려면 매
+ * {@code SYS_CACHE_VERSION} 이다(sys/code.md). <b>이 캐시는 그 표를 읽지 않는다</b> — 읽으려면 매
  * 요청 PK 조회가 붙어 캐시의 의미가 사라진다. 대가는 <i>"메시지를 고치고 최대 TTL 만큼 옛
- * 문구가 나간다"</i> 이며, 그것이 43 §8 이 이 대상에 TTL 을 고른 이유다.
+ * 문구가 나간다"</i> 이며, 그것이 sys/code.md 이 이 대상에 TTL 을 고른 이유다.
  */
 @Service
 public class MessageService {
@@ -39,7 +39,7 @@ public class MessageService {
     private final ConfigLookup configs;
     private final Clock clock;
 
-    /** 언어별 스냅샷. 노드마다 따로 만든다 — 노드 간 공유가 필요한 캐시는 없다(ADR-0017). */
+    /** 언어별 스냅샷. 노드마다 따로 만든다 — 노드 간 공유가 필요한 캐시는 없다(backend/caching.md). */
     private final Map<String, Snapshot> snapshots = new ConcurrentHashMap<>();
 
     public MessageService(SysMessageRepository messages, ConfigLookup configs, Clock clock) {
@@ -53,16 +53,16 @@ public class MessageService {
         return Optional.ofNullable(snapshot(lang).all().get(msgKey));
     }
 
-    /** 화면에 그대로 낼 문자열. <b>없으면 키를 그대로 낸다</b> — 누락이 시끄럽게 드러난다(43 §7.3). */
+    /** 화면에 그대로 낼 문자열. <b>없으면 키를 그대로 낸다</b> — 누락이 시끄럽게 드러난다(sys/code.md). */
     public String text(String msgKey, String lang) {
         return find(msgKey, lang).orElse(msgKey);
     }
 
     /**
-     * 공개 번들 — {@code USE_SCOPE ∈ {FRONT, BOTH, DATA}}(50 §3.2 · ADR-0023 §4).
+     * 공개 번들 — {@code USE_SCOPE ∈ {FRONT, BOTH, DATA}}(sys/message.md).
      *
      * <p><b>에러 문구({@code BACK})가 빠지는 것이 요점이다.</b> 서버가 응답에 완성해 담으므로
-     * 프론트가 쓰지 않는다 — 경계는 <i>프론트가 쓰는가</i> 하나다(architecture.md §6-1.2).
+     * 프론트가 쓰지 않는다 — 경계는 <i>프론트가 쓰는가</i> 하나다(backend/packages.md).
      */
     public Map<String, String> bundle(String lang) {
         return snapshot(lang).bundled();

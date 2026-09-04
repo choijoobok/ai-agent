@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 주문 + 품목 <b>합본</b> — ADR-0019 의 세 번째 갈래이자 그 ADR 이 든 <b>바로 그 사례</b>다.
+ * 주문 + 품목 <b>합본</b> — frontend/grid-advanced.md 의 세 번째 갈래이자 그 ADR 이 든 <b>바로 그 사례</b>다.
  *
- * <p>ADR-0019 는 갈래를 열면서 이렇게 적었다: <i>"입출고 주문은 헤더 1건 + 상품 N건이고
+ * <p>frontend/grid-advanced.md 는 갈래를 열면서 이렇게 적었다: <i>"입출고 주문은 헤더 1건 + 상품 N건이고
  * 화면은 상단 폼과 하단 그리드로 쪼개 보여주지만, <b>사용자는 헤더와 상품을 합친 엑셀
  * 하나를 원한다</b>. 그리드 데이터를 모아 붙이는 방식으로는 나오지 않는다."</i>
  *
@@ -35,11 +35,11 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>상한이 서버로 넘어온다</h2>
  *
- * <p>프론트 생성에서는 화면이 첫 응답의 총 건수로 판정했지만(grid-standard.md §2.2), 이 갈래는
+ * <p>프론트 생성에서는 화면이 첫 응답의 총 건수로 판정했지만(frontend/grid.md), 이 갈래는
  * <b>행을 받지 않으므로</b> 셀 수 있는 것이 없다. 같은 설정({@code ui.excel.max-rows})을
  * 여기서 읽는다 — 값이 갈리면 <i>화면에서는 되는데 파일은 잘린</i> 상태가 된다.
  *
- * <p><b>넘으면 자르지 않고 거절한다</b>(ADR-0019). 조용히 자르면 사용자는 <i>올린 것이 다
+ * <p><b>넘으면 자르지 않고 거절한다</b>(frontend/grid-advanced.md). 조용히 자르면 사용자는 <i>올린 것이 다
  * 들어간 줄</i> 알고, 그 파일로 다음 일을 한다.
  */
 @Service
@@ -51,7 +51,7 @@ public class SampleExcelService {
      *
      * <p>번역 키가 아니라 글자인 것에 주의한다. 서버 생성 엑셀의 문구는 <b>요청의 언어</b>로
      * 만들어야 하는데 그 배선이 아직 없다 — 지금은 한국어 고정이며, 그것이 이 갈래에
-     * 남은 미결이다(68 §5.4).
+     * 남은 미결이다(playbook/INDEX.md).
      */
     private static final List<String> HEADERS = List.of(
             "주문번호", "주문명", "고객명", "주문상태", "주문일", "주문금액",
@@ -70,7 +70,7 @@ public class SampleExcelService {
      *
      * <p>주문을 <b>화면이 지목한다</b>({@code ordNos}). 조건을 다시 보내게 하지 않는 것은
      * 화면에 <i>지금 보이는 것</i>이 조건만으로는 재현되지 않기 때문이다 — 컬럼 필터와
-     * 정렬이 판에 걸려 있고 그것은 서버가 모른다(grid-column-contract.md §4.1).
+     * 정렬이 판에 걸려 있고 그것은 서버가 모른다(frontend/grid.md).
      */
     public byte[] pageWorkbook(List<String> ordNos) {
         List<SmplOrderRow> orders = queries

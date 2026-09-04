@@ -9,7 +9,6 @@ status: active
 sources: [Drew Breunig "How long contexts fail", Chroma Context Rot]
 author: Bong Jong Hyeon
 tier: 1
-references: [7, 9, 10]
 tags: [context, failure-mode, rot, distraction, clash, poisoning]
 ---
 
@@ -22,13 +21,11 @@ tags: [context, failure-mode, rot, distraction, clash, poisoning]
 | 모드 | 정의 | 대표 신호 | 대응 |
 |------|------|----------|------|
 | **Context Rot** | 컨텍스트가 길어질수록 정확도 선형 이상으로 저하 | 같은 질문에 일관된 답을 못 함 | `/compact` 또는 `/clear` |
-| **Distraction** | 관련 없는 정보가 너무 많아 신호가 묻힘 | 핵심을 비껴 답변 | 서브에이전트 위임, `_study/` 격리 |
 | **Clash** | 모순된 정보가 섞여 잘못된 정답 채택 | 기억과 현재 답이 다름 | SSoT 우선순위 명시, 결정적 출처만 |
 | **Poisoning** | 잘못된 사실이 한번 들어가면 이후 응답 전염 | 존재하지 않는 함수·파일 인용 | 즉시 `/clear` + 검증 후 재시작 |
 
 ## Context Rot
 
-- 출처: Chroma 2026 (`12-references/summaries/09-chroma-context-rot.md`)
 - **선형이 아니다** — 50% 부터 가파르게 저하. 70% 넘으면 단순 반복도 틀림.
 - 측정: [08-observability/context-rot-monitor.md](../../quality/observability/context-rot-monitor.md)
 - 예방: 200줄 운용 파일 룰, JIT Context (필요할 때만 fetch).
@@ -36,7 +33,6 @@ tags: [context, failure-mode, rot, distraction, clash, poisoning]
 ## Distraction
 
 - **무관한 자료가 적재되면** 핵심 신호가 attention 에서 밀림.
-- 대응: 카테고리별 `_study/` 분리, INDEX 결정 트리로 진입, 전체 Read 금지.
 - 예: `guide.md` 1394줄을 통째로 적재하면 Distraction. Reading Map 필수.
 
 ## Clash
@@ -65,5 +61,4 @@ tags: [context, failure-mode, rot, distraction, clash, poisoning]
 
 - [budget.md](./budget.md) — 컨텍스트 측정·관리
 - [reading.md](./reading.md) — JIT 읽기 전략
-- [12-references/summaries/09-chroma-context-rot.md](../../reference/summary/09-chroma-context-rot.md)
 - [08-observability/context-rot-monitor.md](../../quality/observability/context-rot-monitor.md)

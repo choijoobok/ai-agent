@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 비밀번호의 형태 요건 — 43 §6.3.
+ * 비밀번호의 형태 요건 — sys/code.md.
  *
  * <p>이 판정이 순수 함수인 이유는 <b>세 경로가 같은 규칙을 써야 하기</b> 때문이다 —
  * 본인 변경(AUTH-05) · 관리자 발급(AUTH-06) · 분실 재설정(AUTH-07).

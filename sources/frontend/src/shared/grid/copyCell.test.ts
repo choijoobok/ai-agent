@@ -8,7 +8,7 @@ const press = (key: string, mods: { ctrlKey?: boolean; metaKey?: boolean } = {})
 });
 
 /**
- * 셀 복사 — grid-standard.md §4.
+ * 셀 복사 — frontend/grid.md.
  *
  * <p><b>복사하는 것은 데이터가 아니라 보이는 글자다.</b> 값이 `Y` 인 칸을 사람은
  * <i>사용</i> 으로 보고 있고, 붙여 넣으려는 것도 그것이다.

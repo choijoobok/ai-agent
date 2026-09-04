@@ -4,7 +4,7 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 /**
- * {@code Boolean} ↔ {@code CHAR(1)} {@code 'Y'}/{@code 'N'} — db-portability.md §4.3.
+ * {@code Boolean} ↔ {@code CHAR(1)} {@code 'Y'}/{@code 'N'} — backend/persistence.md.
  *
  * <p>공통 테이블의 불리언 성격 컬럼에 {@code BOOLEAN} 을 쓰지 않는 이유는 Oracle 에
  * boolean 컬럼이 없어 {@code NUMBER(1)} 로 매핑되고, 그러면 MyBatis 쿼리의

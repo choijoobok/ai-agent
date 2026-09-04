@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
- * 정의 모달 저장의 한 행 — 63 §2.4.
+ * 정의 모달 저장의 한 행 — screen/code/requirements.md.
  *
  * <p><b>모달 안에서 닫힌다.</b> 바깥 그리드의 미저장 편집과 섞이지 않으며, 닫으면 하단을
  * 재조회한다 — 컬럼 집합이 바뀌었을 수 있다.

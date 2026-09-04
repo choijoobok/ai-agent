@@ -18,17 +18,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code URL → (ACTION_CD, [MENU_CD…])} 맵 — 기동 시 한 번 적재한다(security-design.md §4 권한 캐싱).
+ * {@code URL → (ACTION_CD, [MENU_CD…])} 맵 — 기동 시 한 번 적재한다(backend/security.md 권한 캐싱).
  *
  * <p><b>요청당 추가 쿼리 0 이 기본이다.</b> 인가 인터셉터가 매 요청 참조하는 것은 이 맵과
  * 세션의 유효 권한뿐이며 둘 다 미리 적재돼 있다.
  *
  * <p><b>불변이다 — 시드 배포 = 재기동.</b> {@code SYS_API}·{@code SYS_MENU_API} 는 운영 중
- * 편집하는 데이터가 아니라 코드와 함께 배포되는 시드이므로(ADR-0020) 무효화 신호가 필요
+ * 편집하는 데이터가 아니라 코드와 함께 배포되는 시드이므로(backend/api.md) 무효화 신호가 필요
  * 없다. 그래서 TTL 도 리프레시 API 도 두지 않는다.
  *
  * <p><b>매칭은 패턴이 아니라 경로 완전 일치</b>다. 업무 API 경로가 고정 문자열이므로
- * (경로 변수·와일드카드 금지 — security-design.md §4) 해시 조회 한 번이면 되고, 새 API 가 기존의 넓은
+ * (경로 변수·와일드카드 금지 — backend/security.md) 해시 조회 한 번이면 되고, 새 API 가 기존의 넓은
  * 패턴에 조용히 덮이는 일이 없다.
  *
  * <p><b>{@link ApplicationReadyEvent} 에 적재하는 이유</b> — Liquibase 가 스키마와 시드를
@@ -74,7 +74,7 @@ public class ApiAuthorityRegistry {
         this.facts = Map.copyOf(loaded);
 
         long unmapped = loaded.values().stream().filter(fact -> !fact.isMapped()).count();
-        // 미매핑은 기동을 막지 않는다 — fail-closed 런타임이 이미 받는다(security-design.md §4 deny by default).
+        // 미매핑은 기동을 막지 않는다 — fail-closed 런타임이 이미 받는다(backend/security.md deny by default).
         // 다만 조용하면 안 된다: 아무도 권한을 가질 수 없는 API 가 있다는 사실은 배포 직후에
         // 드러나야 하고, 그 자리가 로그다.
         log.info("인가 사실 적재 완료 — API {}건, 매핑 없는 API {}건", loaded.size(), unmapped);

@@ -26,16 +26,16 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
 
 /**
- * 설정 키의 <b>왼쪽 테이블</b> — 63 §4.2. {@code yml} 이 정한 키 목록이 여기서 나온다.
+ * 설정 키의 <b>왼쪽 테이블</b> — screen/code/requirements.md. {@code yml} 이 정한 키 목록이 여기서 나온다.
  *
  * <p><b>등록 목록을 관리하지 않는다.</b> props 클래스는 빈으로 등록되지 않으므로
- * (ADR-0026 §4) {@code getBeansWithAnnotation} 이 아무것도 돌려주지 않는다 —
+ * (sys/config.md) {@code getBeansWithAnnotation} 이 아무것도 돌려주지 않는다 —
  * <b>애노테이션 스캔</b>이며 그래서 <b>빠뜨릴 목록이 없다.</b>
  *
  * <p><b>인스턴스를 만들지 않는다.</b> 층이 셋이던 판은 기본값을 읽으려고
  * {@code new AuthLoginProps()} 를 만들었고 그 때문에 JavaBean 바인딩을 강제해야 했다.
  * 층이 둘이 되면서 그 제약이 통째로 사라진다 — 이 클래스에게 props 클래스는 <b>이름과
- * 타입을 얻는 수단</b>일 뿐이라 {@code record} 로 써도 된다(63 §4.2).
+ * 타입을 얻는 수단</b>일 뿐이라 {@code record} 로 써도 된다(screen/code/requirements.md).
  *
  * <p><b>셋의 원천이 셋이다.</b>
  *
@@ -46,7 +46,7 @@ import org.springframework.stereotype.Component;
  * </table>
  *
  * <p><b>메타데이터의 {@code defaultValue} 는 쓰지 않는다</b> — 기본값의 원천은 {@code yml}
- * 하나이고(43 §6.1), 프로세서의 추출은 best-effort 이며 <b>프로필을 반영하지 못한다</b>.
+ * 하나이고(sys/code.md), 프로세서의 추출은 best-effort 이며 <b>프로필을 반영하지 못한다</b>.
  *
  * <p><b>기동 때 한 번 만들고 그대로 둔다.</b> 셋 다 기동 중에 바뀌지 않는다 —
  * 클래스패스도, 빌드 산출물도, {@code Environment} 도 그렇다. 런타임에 바뀌는 것은
@@ -58,7 +58,7 @@ public class ConfigCatalog {
     private static final Logger log = LoggerFactory.getLogger(ConfigCatalog.class);
 
     /**
-     * 시스템 설정의 루트 — 43 §6.1 · ADR-0026 §5.
+     * 시스템 설정의 루트 — sys/code.md · sys/config.md.
      *
      * <p>이 루트가 <b>범위를 확정한다</b>. {@code app.*} 은 기동 시 구조를 정하는 <b>배포
      * 설정</b>이라 런타임에 바꿔도 반영될 자리가 없고, 그래서 이 화면에 나타나지 않는다.
@@ -70,7 +70,7 @@ public class ConfigCatalog {
 
     private static final Pattern CAMEL_BOUNDARY = Pattern.compile("([a-z0-9])([A-Z])");
 
-    /** Javadoc 표기를 걷어낸다 — {@code MessageSeedTask.clean} 과 같은 규칙이다(seed-generation.md §2). */
+    /** Javadoc 표기를 걷어낸다 — {@code MessageSeedTask.clean} 과 같은 규칙이다(seed.md). */
     private static final Pattern JAVADOC_TAG = Pattern.compile("\\{@\\w+\\s+([^}]*)}");
 
     private static final Pattern HTML_TAG = Pattern.compile("</?[a-zA-Z]+>");
@@ -85,7 +85,7 @@ public class ConfigCatalog {
         log.info("시스템 설정 키 {}개 — props 클래스 {}개", keys.size(), propsClasses.size());
     }
 
-    /** 키 목록. <b>키 오름차순</b>이며 이것이 화면의 기본 정렬이다(63 §4.3). */
+    /** 키 목록. <b>키 오름차순</b>이며 이것이 화면의 기본 정렬이다(screen/code/requirements.md). */
     public List<ConfigKey> keys() {
         return keys;
     }
@@ -93,7 +93,7 @@ public class ConfigCatalog {
     /**
      * 재바인딩의 대상 — {@code sys-config.} 아래의 props 클래스 전부.
      *
-     * <p>저장 검증이 이것을 돈다(63 §4.5). 여기 없는 클래스는 이 화면이 건드릴 수 없다.
+     * <p>저장 검증이 이것을 돈다(screen/code/requirements.md). 여기 없는 클래스는 이 화면이 건드릴 수 없다.
      */
     public List<Class<?>> propsClasses() {
         return propsClasses;
@@ -154,7 +154,7 @@ public class ConfigCatalog {
         Set<String> seen = new LinkedHashSet<>();
 
         for (Class<?> type : propsClasses) {
-            // 루트를 뺀 나머지가 CFG_KEY 다 — 43 §10 · ADR-0026 §5.
+            // 루트를 뺀 나머지가 CFG_KEY 다 — sys/code.md · sys/config.md.
             String base = prefixOf(type).substring(ROOT.length());
             collect(type, base, descriptions, binder, result, seen, 0);
         }
@@ -185,7 +185,7 @@ public class ConfigCatalog {
             ConfigValueType valueType = ConfigValueType.of(member.type());
 
             if (valueType == null) {
-                // 컬렉션·맵은 목록에 내지 않는다(63 §4.2). 우리 패키지의 객체는 펴 낸다.
+                // 컬렉션·맵은 목록에 내지 않는다(screen/code/requirements.md). 우리 패키지의 객체는 펴 낸다.
                 if (isNested(member.type())) {
                     collect(member.type(), key, descriptions, binder, result, seen, depth + 1);
                 }
@@ -238,13 +238,13 @@ public class ConfigCatalog {
      *
      * <p>{@code Environment.getProperty} 는 정확한 이름만 본다. 배포가 환경변수
      * ({@code SYS_CONFIG_AUTH_LOGIN_FAIL_LIMIT})로 덮은 값이 <b>기본값 컬럼에서 사라지면</b>
-     * 화면이 배포가 정한 값을 말하지 못한다(63 §4.2).
+     * 화면이 배포가 정한 값을 말하지 못한다(screen/code/requirements.md).
      */
     private static String defaultOf(Binder binder, String fullKey) {
         return binder.bind(fullKey, Bindable.of(String.class)).orElse(null);
     }
 
-    /** {@code camelCase → kebab-case} — 완화 바인딩의 <b>정규 표기</b>다(63 §4.2). */
+    /** {@code camelCase → kebab-case} — 완화 바인딩의 <b>정규 표기</b>다(screen/code/requirements.md). */
     static String kebab(String name) {
         return CAMEL_BOUNDARY.matcher(name).replaceAll("$1-$2").toLowerCase(java.util.Locale.ROOT);
     }
@@ -252,7 +252,7 @@ public class ConfigCatalog {
     // ── 설명(빌드 산출물) ───────────────────────────────────────────
 
     /**
-     * {@code META-INF/spring-configuration-metadata.json} — 63 §4.2.
+     * {@code META-INF/spring-configuration-metadata.json} — screen/code/requirements.md.
      *
      * <p><b>여러 개일 수 있다.</b> 모듈마다 하나씩 나오므로 {@code classpath*:} 로 전부
      * 읽어 합친다.
@@ -279,7 +279,7 @@ public class ConfigCatalog {
             readInto(resource, descriptions);
         }
         if (descriptions.isEmpty()) {
-            log.warn("설정 메타데이터가 비었다 — spring-boot-configuration-processor 가 붙었는지 본다(63 §4.2)");
+            log.warn("설정 메타데이터가 비었다 — spring-boot-configuration-processor 가 붙었는지 본다(screen/code/requirements.md)");
         }
         return descriptions;
     }

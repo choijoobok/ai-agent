@@ -3,25 +3,25 @@ import { fetchCodes, type CodeListResponse } from '@/shared/code/api/codeApi';
 import { readStorage, removeStorage, writeStorage } from '@/shared/i18n/lang';
 
 /**
- * 공통코드 캐시 — 43 §8 · §8.1 · ADR-0017.
+ * 공통코드 캐시 — sys/code.md · backend/caching.md.
  *
  * <h2>왜 프론트에만 캐시가 있나</h2>
  *
  * <p>서버는 코드를 캐싱하지 않는다 — 조회가 인덱스 한 번이라 부하가 아니다. 문제인 것은
  * <b>한 화면이 콤보를 여러 개 띄울 때의 왕복</b>이고 그것은 여기서 푼다. 그래서 MASTER-02 의
  * <i>수정 즉시 반영</i> 이 서버 쪽에서는 구조적으로 성립하고, 어긋남은 <b>로그인 시점에</b>
- * 맞춘다(43 §8.1).
+ * 맞춘다(sys/code.md).
  *
  * <h2>저장 키가 하나다</h2>
  *
  * <p>메시지 번들과 갈리는 자리다. 저쪽은 언어 축이 붙어 `message:ko` · `message:en` 이지만
  * <b>코드에는 언어 축이 없다</b> — 담는 것이 코드값뿐이고 이름은 메시지 번들과 메모리에서
- * 조인하기 때문이다(43 §8). 그리고 버전이 `CACHE_NAME` 단위라 <b>그룹 하나가 바뀌어도
- * 코드 캐시 전체가 버려진다</b>(43 §8.1) — 버려지는 단위가 하나이므로 담는 단위도 하나다.
+ * 조인하기 때문이다(sys/code.md). 그리고 버전이 `CACHE_NAME` 단위라 <b>그룹 하나가 바뀌어도
+ * 코드 캐시 전체가 버려진다</b>(sys/code.md) — 버려지는 단위가 하나이므로 담는 단위도 하나다.
  *
  * <h2>그룹은 지연 로드, 요청은 한 번</h2>
  *
- * <p>적재는 <b>그룹별</b>이다(43 §8.1) — 화면이 쓰지 않는 그룹까지 받으면 코드가 늘수록
+ * <p>적재는 <b>그룹별</b>이다(sys/code.md) — 화면이 쓰지 않는 그룹까지 받으면 코드가 늘수록
  * 첫 진입이 무거워진다. 대신 같은 틱에 뜬 콤보들의 그룹을 <b>마이크로태스크 하나로 모아</b>
  * 한 번에 묻는다: 콤보마다 부르면 캐시가 빈 첫 진입에서 왕복이 콤보 수만큼 난다.
  */
@@ -49,7 +49,7 @@ interface CodeState {
   accept: (response: CodeListResponse) => void;
 
   /**
-   * 로그인·복원 응답을 받은 자리에서 부른다 — 50 §5.2 · 43 §8.1.
+   * 로그인·복원 응답을 받은 자리에서 부른다 — · sys/code.md.
    *
    * <p><b>왕복이 없다.</b> `cacheVersions.code` 는 이미 그 응답에 실려 오므로 비교는
    * 순수하게 로컬이다 — 그래서 로그인만이 아니라 F5 복원에서도 부른다.
@@ -80,7 +80,7 @@ export const useCodeStore = create<CodeState>((set, get) => ({
   },
 
   accept: ({ version, groups }) => {
-    // 버전이 다르면 들고 있던 것은 전부 낡았다 — 방금 받은 것만 남긴다(43 §8.1).
+    // 버전이 다르면 들고 있던 것은 전부 낡았다 — 방금 받은 것만 남긴다(sys/code.md).
     const base = get().version === version ? get().groups : {};
     const next = { ...base, ...groups };
     write({ version, groups: next });

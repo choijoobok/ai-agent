@@ -10,9 +10,9 @@ import type { ReactNode } from 'react';
  *
  * <h2>문서의 `<PageContainer>` 가 이것이다</h2>
  *
- * <p>frontend-stack.md §7 은 *제목 + 액션버튼 + 콘텐츠* 를 갖는 `<PageContainer>` 를 적어 두었지만, 그 둘은
- * <b>셸이 갖게 됐다</b> — 제목은 브레드크럼이고(main-shell.md §5.1) 액션 버튼은 그리드 헤더가 선언으로
- * 렌더한다(grid-api-contract.md §3). 남은 것이 <b>채우는 열</b> 하나이므로 이름도 그것이다.
+ * <p>frontend/packages.md 은 *제목 + 액션버튼 + 콘텐츠* 를 갖는 `<PageContainer>` 를 적어 두었지만, 그 둘은
+ * <b>셸이 갖게 됐다</b> — 제목은 브레드크럼이고(frontend/tabs.md) 액션 버튼은 그리드 헤더가 선언으로
+ * 렌더한다(frontend/grid.md). 남은 것이 <b>채우는 열</b> 하나이므로 이름도 그것이다.
  */
 export function FillColumn({ children }: { children: ReactNode }) {
   return (

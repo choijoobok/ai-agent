@@ -1,7 +1,7 @@
 import type { SearchOp } from '@/shared/searchform/types';
 
 /**
- * 저장된 조회조건의 <b>직렬화 형태</b> — search-form-contract.md §5.1.
+ * 저장된 조회조건의 <b>직렬화 형태</b> — frontend/search-form.md.
  *
  * <p><b>와이어가 아니라 폼 값이다.</b> 봉투(`conditions`·`params`)는 파생물이고
  * `to`·`paramKey`·`scale` 은 **선언에 있으므로** 함께 저장하면 미러링이다 — 선언을 고쳤을
@@ -21,7 +21,7 @@ export interface SavedCondValue {
   /** 기본값을 그대로 쓰면 없다 — `op` 만 바꾼 칸이 그렇다. */
   value?: string | string[];
   /**
-   * 팝업 칸의 <b>표시값</b> — 68 §9.14.
+   * 팝업 칸의 <b>표시값</b> — playbook/INDEX.md.
    *
    * <p><b>위 머리말의 <i>미러링</i> 경고에 걸리지 않는다.</b> 그것은 <i>선언에 있는 것을
    * 또 저장하지 말라</i> 는 규칙인데, 이 글자는 선언에 없다 — <b>고른 행에서 나온 것</b>
@@ -29,14 +29,14 @@ export interface SavedCondValue {
    *
    * <p>저장하지 않으면 다시 열었을 때 <b>빈 칸</b>이다: 조건은 걸려 있는데 무엇으로
    * 걸렀는지 사용자가 알 수 없고, 그 상태로 조회하면 <i>왜 이것만 나오나</i> 가 된다.
-   * search-form-contract.md §5.1 이 <b>와이어가 아니라 폼 값</b>을 저장하는 이유가 정확히 이 자리다.
+   * frontend/search-form.md 이 <b>와이어가 아니라 폼 값</b>을 저장하는 이유가 정확히 이 자리다.
    */
   text?: string;
 }
 
 export type SavedCondValues = Record<string, SavedCondValue>;
 
-/** 서버가 주는 항목 하나 — search-form-contract.md §5.4 의 속성 넷 중 셋. `condJson` 은 위 맵의 문자열이다. */
+/** 서버가 주는 항목 하나 — frontend/search-form.md 의 속성 넷 중 셋. `condJson` 은 위 맵의 문자열이다. */
 export interface SavedCond {
   condNm: string;
   condJson: string;

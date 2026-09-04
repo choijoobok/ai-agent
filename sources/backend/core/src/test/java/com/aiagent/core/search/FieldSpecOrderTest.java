@@ -12,7 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 /**
- * 부등호가 <b>타입마다 다른 가지를 탄다</b> — api-conventions.md §3.3.
+ * 부등호가 <b>타입마다 다른 가지를 탄다</b> — backend/api.md.
  *
  * <p><b>실기동에서만 드러나던 자리다</b>(2026-09-02). Querydsl 의 {@code NumberPath} 는
  * {@code ComparableExpression} 이 아니라 형제이고, 숫자 컬럼을 그쪽으로 캐스팅하면
@@ -59,7 +59,7 @@ class FieldSpecOrderTest {
     }
 
     /**
-     * {@code ordered()} 를 붙인 문자열 칸 — 68 §3.3 의 납기월({@code VARCHAR(6)}).
+     * {@code ordered()} 를 붙인 문자열 칸 — playbook/INDEX.md 의 납기월({@code VARCHAR(6)}).
      *
      * <p>여기는 원래도 {@code ComparableExpression} 이라 캐스팅이 성립했고, 실기동에서도
      * 이 조건만 통과했다. <b>그 통과가 숫자 쪽을 가렸다</b> — 문자열 범위가 되니 범위 자체는
@@ -84,7 +84,7 @@ class FieldSpecOrderTest {
 
         assertThatCode(() -> amounts.toPredicate(Op.between, java.util.Arrays.asList(1, 10)))
                 .doesNotThrowAnyException();
-        // 한쪽만 아는 조건 — api-conventions.md §3.3 의 단측이다.
+        // 한쪽만 아는 조건 — backend/api.md 의 단측이다.
         assertThatCode(() -> amounts.toPredicate(Op.between, java.util.Arrays.asList(null, 10)))
                 .doesNotThrowAnyException();
         assertThatCode(() -> amounts.toPredicate(Op.between, java.util.Arrays.asList(1, null)))

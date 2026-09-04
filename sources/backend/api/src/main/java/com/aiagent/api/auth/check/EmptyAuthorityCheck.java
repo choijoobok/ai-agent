@@ -8,7 +8,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
- * 유효 권한 공집합 — security-design.md §4. <b>빈 셸로 들여보내지 않는다.</b>
+ * 유효 권한 공집합 — backend/security.md. <b>빈 셸로 들여보내지 않는다.</b>
  *
  * <p><b>기준은 "역할 미부여" 가 아니라 "유효 권한 공집합" 이다.</b> 역할이 하나도 없어도 개인
  * 예외 권한(AUTHZ-07)만으로 일하는 사용자가 정당하게 존재한다 — 개인 예외는 합집합의 독립
@@ -24,8 +24,8 @@ import org.springframework.stereotype.Component;
  *       <td>권한 부여를 잊은 것이 <b>로그인 단계에서</b> 드러난다 — deny by default 와 같은 방향</td></tr>
  * </table>
  *
- * <p><b>{@code @Order} 가 휴면(10)보다 뒤인 것이 규약이다</b>(41 §4.4). 권한 계산은 조인이
- * 필요하므로 값싼 검사를 먼저 한다. 이력에는 먼저 걸린 코드 하나만 남는다(45 §5.1).
+ * <p><b>{@code @Order} 가 휴면(10)보다 뒤인 것이 규약이다</b>(sys/user-role.md). 권한 계산은 조인이
+ * 필요하므로 값싼 검사를 먼저 한다. 이력에는 먼저 걸린 코드 하나만 남는다(sys/logs.md).
  *
  * <p><b>{@code auth.login.deny-empty-authority} 로 끌 수 있다</b>(기본 {@code true}).
  * 끄면 UX-11 의 권한 없음 화면이 랜딩이 된다 — 로그인 후 권한을 <i>신청</i>하는 흐름을 두는

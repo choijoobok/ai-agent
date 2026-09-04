@@ -21,14 +21,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 내 역할 — AUTHZ-04 · main-shell.md §8.
+ * 내 역할 — AUTHZ-04 · frontend/tabs.md.
  *
  * <p><b>{@link EffectiveAuthorityService} 와 방향이 반대다.</b> 저쪽은 <i>무엇을 할 수
  * 있는가</i> 를 계산하려고 만료·비활성을 <b>걸러 버리고</b>, 여기는 <i>왜 할 수 없는가</i> 를
  * 보이려고 <b>걸러진 것까지 남긴다</b>. 그래서 두 서비스를 합칠 수 없다 — 합치면 한쪽의
  * 필터가 다른 쪽의 답을 지운다.
  *
- * <p><b>부여를 만들거나 고치는 메서드가 없다.</b> 이 탭은 읽기 전용이며(main-shell.md §8), 권한을
+ * <p><b>부여를 만들거나 고치는 메서드가 없다.</b> 이 탭은 읽기 전용이며(frontend/tabs.md), 권한을
  * 늘리는 경로는 신청(NOTI-06)이지 본인 화면이 아니다.
  */
 @Service
@@ -64,7 +64,7 @@ public class MyAuthorityService {
      *
      * <p>조인 쿼리를 쓰지 않는 것은 <b>한 사람의 역할이 몇 개</b>이기 때문이다 — 생성자
      * 표현식 쿼리를 두면 그 형태를 위한 레코드가 하나 더 생기고, 유효 판정은 어차피 자바가
-     * 한다(기준일이 {@link BusinessCalendar} 의 것이라 SQL 의 오늘과 다르다 — db-portability.md §4.5).
+     * 한다(기준일이 {@link BusinessCalendar} 의 것이라 SQL 의 오늘과 다르다 — backend/persistence.md).
      */
     private List<MyRoleGrant> roleGrants(String userId, LocalDate today) {
         List<SysUserRole> grants = userRoles.findByUserIdOrderByRoleIdAsc(userId);
@@ -115,7 +115,7 @@ public class MyAuthorityService {
                 .toList();
     }
 
-    /** <b>양끝을 포함</b>하며 NULL 은 제한 없음이다 — 40 §4.3. */
+    /** <b>양끝을 포함</b>하며 NULL 은 제한 없음이다 — sys/INDEX.md. */
     private static boolean within(LocalDate from, LocalDate to, LocalDate today) {
         if (from != null && today.isBefore(from)) {
             return false;

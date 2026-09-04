@@ -25,7 +25,7 @@ public final class SysGrantFixture {
         return role;
     }
 
-    /** 기간은 NULL 을 허용한다 — 무기한 부여가 정상이다(42 §3.1). */
+    /** 기간은 NULL 을 허용한다 — 무기한 부여가 정상이다(sys/menu.md). */
     public static SysUserRole userRole(String userId, String roleId, LocalDate from, LocalDate to) {
         SysUserRole grant = instantiate(SysUserRole.class);
         set(grant, SysUserRole.class, "userId", userId);
@@ -35,7 +35,7 @@ public final class SysGrantFixture {
         return grant;
     }
 
-    /** 개인 예외는 기간도 사유도 필수다 — 마찰이 있어야 한다(42 §6). */
+    /** 개인 예외는 기간도 사유도 필수다 — 마찰이 있어야 한다(sys/menu.md). */
     public static SysUserMenuAuth personalGrant(
             String userId, String menuCd, ActionType action, LocalDate from, LocalDate to) {
         SysUserMenuAuth grant = instantiate(SysUserMenuAuth.class);

@@ -4,7 +4,7 @@ import com.aiagent.core.error.BusinessException;
 import com.aiagent.domain.sample.entity.SmplOrder;
 
 /**
- * 저장 서비스 셋이 함께 보는 규칙 — 68 §5 · §7 · §8.
+ * 저장 서비스 셋이 함께 보는 규칙 — playbook/INDEX.md.
  *
  * <p><b>여기 있는 것은 세 서비스 중 둘 이상이 보는 것뿐이다.</b> 주문만의 기본값
  * ({@code DEFAULT_CHNL} · {@code DEFAULT_PRIORITY})은 {@link SampleOrderService} 가 갖고,
@@ -45,13 +45,13 @@ public final class SampleRules {
      */
     public static final int MAX_TAGS = 20;
 
-    /** 태그 유형의 기본 — 사용자가 유형까지 고르지 않으면 <i>일반</i> 이다(48 §4.1). */
+    /** 태그 유형의 기본 — 사용자가 유형까지 고르지 않으면 <i>일반</i> 이다(playbook/INDEX.md). */
     static final String DEFAULT_TAG_TYPE = "GEN";
 
     private SampleRules() {}
 
     /**
-     * 잠긴 주문은 고칠 수 없다 — {@code LOCK_YN} 은 상태와 다른 축이다(48 §3.2).
+     * 잠긴 주문은 고칠 수 없다 — {@code LOCK_YN} 은 상태와 다른 축이다(playbook/INDEX.md).
      *
      * <p>주문·품목·태그 <b>셋 다</b> 이 문을 지난다. 잠금이 뜻하는 것은 <i>이 주문에 딸린
      * 것을 아무도 건드리지 않는다</i> 이므로, 품목만 열려 있으면 그 뜻이 절반만 성립한다.
@@ -62,7 +62,7 @@ public final class SampleRules {
         }
     }
 
-    /** 필수 문자열 — 화면이 이미 막았어도 다시 본다(grid-edit-validation.md §3.4). */
+    /** 필수 문자열 — 화면이 이미 막았어도 다시 본다(frontend/grid.md). */
     static void requireText(String value, String field) {
         if (value == null || value.isBlank()) {
             throw new BusinessException(SampleErrorCode.REQUIRED, field + " is required");

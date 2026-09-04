@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 /**
- * 즐겨찾기 — UX-03 · 42 §7.
+ * 즐겨찾기 — UX-03 · sys/menu.md.
  *
  * <p>여기서 지키는 것 둘이다 — ① <b>이미 있으면 다시 넣지 않는다</b>, ② <b>맨 뒤에
  * 붙는다</b>.

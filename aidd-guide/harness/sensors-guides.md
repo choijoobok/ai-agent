@@ -6,10 +6,9 @@ type: operation
 created: 2026-05-04
 updated: 2026-05-04
 status: active
-sources: [Birgitta Böckeler / Thoughtworks "Engineering with AI", 12-references/summaries/02-thoughtworks-harness.md]
+sources: [Birgitta Böckeler / Thoughtworks "Engineering with AI"]
 author: Bong Jong Hyeon
 tier: 2
-references: [2]
 tags: [harness, sensors, guides, automation, classification]
 ---
 
@@ -78,4 +77,3 @@ tags: [harness, sensors, guides, automation, classification]
 - [INDEX.md](./INDEX.md)
 - [hooks.md](./hooks.md) — sensor 갱신 메커니즘
 - [automation-matrix.md](./automation-matrix.md) — 훅 자동화 vs AI 책임
-- [12-references/summaries/02-thoughtworks-harness.md](../reference/summary/02-thoughtworks-harness.md)

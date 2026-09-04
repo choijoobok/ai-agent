@@ -2,7 +2,7 @@ import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
 
 /**
- * AG Grid 자체 문구도 언어를 따른다 — 43 §7 · grid-standard.md §8 과 같은 방향.
+ * AG Grid 자체 문구도 언어를 따른다 — sys/code.md · frontend/grid.md 과 같은 방향.
  *
  * <p><b>판이 내는 문구가 화면에 그대로 나온다.</b> 로딩 오버레이와 <b>컬럼 필터 패널</b>이
  * 그것이며, 두지 않으면 한국어 화면에 <i>"Loading…"</i> 과 <i>"Contains"</i> 가 섞인다 —
@@ -13,7 +13,7 @@ import { MSG } from '@/shared/i18n/messageKeys';
  * <b>실제로 화면에 나오는 것</b>뿐이며, 새 화면이 다른 문구를 띄우면 그때 더한다 —
  * 안 쓰는 키를 미리 넣으면 번역하는 사람이 <b>한 번도 보이지 않는 문구</b>를 채우게 된다.
  *
- * <p>날짜 필터는 여기 없다. grid-column-contract.md §4.5 가 <b>AntD 달력으로 자체 구현</b>하기로 정했으므로
+ * <p>날짜 필터는 여기 없다. frontend/grid.md 가 <b>AntD 달력으로 자체 구현</b>하기로 정했으므로
  * 판의 날짜 문구가 나올 자리가 아니다 — 그 구현은 그것을 처음 요구하는 화면이 가져온다.
  */
 export function gridLocaleText(): Record<string, string> {

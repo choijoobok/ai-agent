@@ -31,7 +31,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
- * {@code CODE_MGMT} 의 저장 — 63 §2. <b>버튼 하나가 테이블 셋을 쓴다.</b>
+ * {@code CODE_MGMT} 의 저장 — screen/code/requirements.md. <b>버튼 하나가 테이블 셋을 쓴다.</b>
  *
  * <p>하단의 저장 하나가 {@code SYS_CODE} · {@code SYS_MESSAGE}(코드명 — §2.3) ·
  * {@code SYS_CODE_REF}(참조값 — §2.4)를 쓴다. 화면이 셋을 각각 부르게 하면 <b>부분 실패</b>가
@@ -39,7 +39,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  *
  * <h2>게이트 하나, 확인 둘</h2>
  *
- * 63 §2.5 가 셋을 갈랐고 <b>가르는 기준은 <i>DB 가 거부하는가</i></b> 다(grid-standard.md §6.2).
+ * screen/code/requirements.md 가 셋을 갈랐고 <b>가르는 기준은 <i>DB 가 거부하는가</i></b> 다(frontend/grid.md).
  *
  * <table>
  *   <tr><td>그룹 삭제</td><td><b>게이트</b></td><td>코드가 남의 것이라 FK 가 거부한다</td></tr>
@@ -52,20 +52,20 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  *
  * <h2>{@code SYS_YN} 은 여기서도 막는다</h2>
  *
- * 화면이 입력 수단을 없앤 것(63 §2.6)과 별개로 저장이 판정한다 — 읽기 전용은 화면에서만
- * 읽기 전용이고 요청 본문은 조작할 수 있다(43 §4.3 · 원칙 P1). 켜고 끄는 것 자체는
+ * 화면이 입력 수단을 없앤 것(screen/code/requirements.md)과 별개로 저장이 판정한다 — 읽기 전용은 화면에서만
+ * 읽기 전용이고 요청 본문은 조작할 수 있다(sys/code.md · 원칙 P1). 켜고 끄는 것 자체는
  * <b>DTO 에 필드가 없어</b> 구조적으로 불가능하다.
  *
- * <p><b>막는 것이 단계마다 다르다</b>(2026-08-30 — 43 §4.1 이 그룹의 {@code USE_YN} 을
+ * <p><b>막는 것이 단계마다 다르다</b>(2026-08-30 — sys/code.md 이 그룹의 {@code USE_YN} 을
  * 없앤 뒤).
  *
  * <table>
  *   <tr><td>그룹</td><td><b>삭제만</b></td>
  *       <td>막을 <i>비활성</i> 이라는 것이 없다. 남은 셋({@code GRP_NM}·{@code GRP_DESC}·
- *           {@code SORT_NO})은 43 §4.3 이 시스템 행에서도 허용한 것들이다</td></tr>
+ * {@code SORT_NO})은 sys/code.md 이 시스템 행에서도 허용한 것들이다</td></tr>
  *   <tr><td>코드</td><td><b>삭제와 비활성</b></td>
  *       <td>{@code USE_YN} 이 있고 <b>끄는 것이 지우는 것과 같은 효과</b>다 — 콤보에서
- *           사라지므로(43 §5.5) 소스가 그 코드값을 못 찾는다</td></tr>
+ * 사라지므로(sys/code.md) 소스가 그 코드값을 못 찾는다</td></tr>
  * </table>
  */
 @Service
@@ -136,9 +136,9 @@ public class CodeAdminService {
     }
 
     /**
-     * <b>여기에 {@code SYS_YN} 검사가 없다</b>(2026-08-30 — 43 §4.1). 그룹에서 막을
+     * <b>여기에 {@code SYS_YN} 검사가 없다</b>(2026-08-30 — sys/code.md). 그룹에서 막을
      * <i>비활성</i> 이라는 것이 없어졌기 때문이다 — {@code USE_YN} 컬럼이 사라졌고, 남은
-     * 셋({@code GRP_NM} · {@code GRP_DESC} · {@code SORT_NO})은 43 §4.3 이 시스템 행에서도
+     * 셋({@code GRP_NM} · {@code GRP_DESC} · {@code SORT_NO})은 sys/code.md 이 시스템 행에서도
      * <b>허용한</b> 것들이다. 그룹의 {@code SYS_YN} 이 지키는 것은 이제 <b>삭제 하나</b>다.
      *
      * <p>코드 쪽({@link #updateCode})에는 그 검사가 남는다 — 거기는 {@code USE_YN} 이 있다.
@@ -149,7 +149,7 @@ public class CodeAdminService {
     }
 
     /**
-     * <b>게이트가 여기 있다</b> — grid-standard.md §6.2 의 첫 실물(63 §2.5).
+     * <b>게이트가 여기 있다</b> — frontend/grid.md 의 첫 실물(screen/code/requirements.md).
      *
      * <p>화면은 하단이 {@code 0} 건일 때만 체크박스를 연다. 그 판정은 <b>조회 시점</b>의
      * 것이므로 그 사이에 다른 사람이 코드를 추가할 수 있다 — 여기서 한 번 더 세는 것이 그
@@ -176,9 +176,9 @@ public class CodeAdminService {
     // ── 하단 — 코드 ──────────────────────────────────────────────────
 
     /**
-     * 코드 저장 — <b>{@code refs} 는 그 그룹의 정의 목록을 루프한다</b>(63 §2.4).
+     * 코드 저장 — <b>{@code refs} 는 그 그룹의 정의 목록을 루프한다</b>(screen/code/requirements.md).
      *
-     * @param lang 세션 언어 — 코드명이 쓰이는 {@code SYS_MESSAGE} 행의 언어다(63 §2.3).
+     * @param lang 세션 언어 — 코드명이 쓰이는 {@code SYS_MESSAGE} 행의 언어다(screen/code/requirements.md).
      *     도메인이 요청을 모르므로 컨트롤러가 준다
      */
     @Transactional
@@ -202,7 +202,7 @@ public class CodeAdminService {
         bump(SysCacheVersion.CODE);
         if (nameChanged) {
             // 이름의 원본이 SYS_MESSAGE 라 프론트는 그것을 번들에서 읽는다 — code 만 올리면
-            // 목록은 새것인데 라벨이 옛것인 화면이 나온다(43 §3 · §8.1).
+            // 목록은 새것인데 라벨이 옛것인 화면이 나온다(sys/code.md).
             bump(SysCacheVersion.MESSAGE);
             evictAfterCommit();
         }
@@ -229,11 +229,11 @@ public class CodeAdminService {
     }
 
     /**
-     * 코드 삭제 — <b>참조값도 이름도 함께 사라진다</b>(63 §2.5).
+     * 코드 삭제 — <b>참조값도 이름도 함께 사라진다</b>(screen/code/requirements.md).
      *
      * <p>참조값은 그 행의 파생이라 함께 지우고, 이름은 <b>키까지</b> 지운다. 값만 지우고 키를
      * 남기면 그 키는 {@code USE_SCOPE='DATA'} 인 채로 영영 남는데,
-     * {@code generateMessageSeed} 가 {@code code.} 접두를 건드리지 않으므로(seed-generation.md §2.1) <b>죽은
+     * {@code generateMessageSeed} 가 {@code code.} 접두를 건드리지 않으므로(seed.md) <b>죽은
      * 키로 표시될 경로조차 없다</b> — {@code MESSAGE_MGMT} 에서 손으로 찾아 지우는 수밖에
      * 없어진다. 데이터가 만든 키는 <b>그 데이터가 거둔다.</b>
      */
@@ -255,9 +255,9 @@ public class CodeAdminService {
     }
 
     /**
-     * 코드명 — <b>비우면 그 언어의 행을 지운다</b>(63 §2.3).
+     * 코드명 — <b>비우면 그 언어의 행을 지운다</b>(screen/code/requirements.md).
      *
-     * <p>빈 문자열을 넣지 않는 이유는 43 §7.3 의 폴백이 죽기 때문이다. 값이 없으면 기본
+     * <p>빈 문자열을 넣지 않는 이유는 sys/code.md 의 폴백이 죽기 때문이다. 값이 없으면 기본
      * 언어로, 그것도 없으면 <b>키 문자열</b>로 떨어져야 <i>아직 안 채웠다</i> 가 화면에서
      * 드러난다 — 빈 문자열은 <b>이름이 없는 코드를 조용히</b> 만든다.
      *
@@ -282,7 +282,7 @@ public class CodeAdminService {
         }
         if (current == null) {
             if (!messageKeys.existsById(msgKey)) {
-                // USE_SCOPE 는 DATA 다 — 소스에 상수가 없는 것이 정상인 키다(ADR-0023 §4).
+                // USE_SCOPE 는 DATA 다 — 소스에 상수가 없는 것이 정상인 키다(sys/message.md).
                 messageKeys.save(SysMessageKey.dataKey(msgKey));
             }
             messageValues.save(SysMessage.of(msgKey, lang, codeNm));
@@ -296,10 +296,10 @@ public class CodeAdminService {
     }
 
     /**
-     * 참조값 — <b>정의 목록을 루프한다</b>(63 §2.4).
+     * 참조값 — <b>정의 목록을 루프한다</b>(screen/code/requirements.md).
      *
      * <p>맵을 루프하지 않는 것이 요점이다. 맵에 <b>키가 없는 것</b>과 <b>값이 빈 것</b>은 같은
-     * 뜻(<i>값 없음</i> — 43 §5.4)인데, 맵을 돌면 앞엣것이 <i>손대지 않음</i> 으로 읽혀
+     * 뜻(<i>값 없음</i> — sys/code.md)인데, 맵을 돌면 앞엣것이 <i>손대지 않음</i> 으로 읽혀
      * <b>지우는 경로가 사라진다</b>.
      *
      * <p>정의에 없는 {@code REF_CD} 는 거부한다. FK 도 같은 것을 막지만 그쪽의 실패는
@@ -342,9 +342,9 @@ public class CodeAdminService {
     // ── 정의 모달 — 참조 코드 ────────────────────────────────────────
 
     /**
-     * 정의 저장 — <b>모달 안에서 닫힌다</b>(63 §2.4).
+     * 정의 저장 — <b>모달 안에서 닫힌다</b>(screen/code/requirements.md).
      *
-     * <p>{@code REF_CD} 는 {@code CODE_REF_KEY} 공통코드의 화이트리스트에서만 온다(43 §4.3).
+     * <p>{@code REF_CD} 는 {@code CODE_REF_KEY} 공통코드의 화이트리스트에서만 온다(sys/code.md).
      * 화면이 콤보로 막지만 <b>정의 테이블이 그 통제를 대신하지 않으므로</b> 여기서도 본다 —
      * 소스가 이 값을 문자열로 참조하기 때문이며, 오타 하나가 <i>영영 안 걸리는 콤보</i> 가
      * 된다.
@@ -387,7 +387,7 @@ public class CodeAdminService {
         requireRefDef(grpCd, row.refCd()).apply(row.refNm(), row.refDesc());
     }
 
-    /** 값 → 정의 순서면 FK 가 거부하지 않는다 — 그래서 게이트가 아니라 확인이다(63 §2.5). */
+    /** 값 → 정의 순서면 FK 가 거부하지 않는다 — 그래서 게이트가 아니라 확인이다(screen/code/requirements.md). */
     private void deleteRefDef(String grpCd, CodeRefDefSaveRow row) {
         SysCodeGrpRef def = requireRefDef(grpCd, row.refCd());
         refValues.deleteByGrpCdAndRefCd(grpCd, row.refCd());

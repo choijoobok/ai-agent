@@ -22,7 +22,7 @@ const store = vi.mocked(saveSavedCond);
 const remove = vi.mocked(deleteSavedCond);
 
 /**
- * 저장된 조회조건 — UX-07 · search-form-contract.md §5.
+ * 저장된 조회조건 — UX-07 · frontend/search-form.md.
  *
  * <p>여기서 지키는 것 셋이다 — ① <b>담기는 것은 기본값과 다른 칸뿐</b>(§5.2), ② <b>선언이
  * 바뀌면 조용히 버린다</b>(§5.3), ③ <b>기본 조건은 진입할 때 폼을 채운다</b>(§5.4).
@@ -144,7 +144,7 @@ describe('저장된 조회조건', () => {
       await save('앞 일치');
 
       await waitFor(() => expect(store).toHaveBeenCalledTimes(1));
-      // 값은 기본 그대로라 `value` 가 없다 — `op` 만 담긴다(search-form-contract.md §5.1).
+      // 값은 기본 그대로라 `value` 가 없다 — `op` 만 담긴다(frontend/search-form.md).
       expect(savedJson()).toEqual({ msgKey: { op: 'startsWith' } });
     });
   });

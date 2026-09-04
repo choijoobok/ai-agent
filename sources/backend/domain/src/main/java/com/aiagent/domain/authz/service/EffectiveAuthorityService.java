@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 유효 권한 계산 — security-design.md §4 <i>계산 순서: 필터 · 합집합 · 게이트</i>.
+ * 유효 권한 계산 — backend/security.md <i>계산 순서: 필터 · 합집합 · 게이트</i>.
  *
  * <pre>
  * ① 수집   보유 역할 N 개 + 개인 예외가 각각 (MENU_CD, ACTION_CD) 행을 낸다
@@ -63,7 +63,7 @@ public class EffectiveAuthorityService {
 
     /**
      * 한 사용자의 유효 권한을 계산한다. <b>로그인 시 한 번</b>, 그리고 세션 캐시가 낡았을 때
-     * 다시 부른다 — 매 요청 부르는 것이 아니다(security-design.md §4 권한 캐싱).
+     * 다시 부른다 — 매 요청 부르는 것이 아니다(backend/security.md 권한 캐싱).
      */
     public EffectiveAuthority calculate(String userId) {
         LocalDate businessToday = calendar.today();

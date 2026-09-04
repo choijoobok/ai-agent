@@ -14,16 +14,16 @@ vi.mock('@/shared/api/request', () => ({
 }));
 
 /**
- * ①의 <b>토글 컨트롤</b> — 68 §9.11 · grid-api-contract.md §3.2.
+ * ①의 <b>토글 컨트롤</b> — playbook/INDEX.md · frontend/grid.md.
  *
  * <p><b>스스로 재조회하지 않는 것이 이 컨트롤의 계약이다.</b> 셀렉트와 같은 규칙이고 같은
  * 이유다: 컨트롤이 컨트롤러를 직접 부르면 <b>토글 하나가 미저장 편집을 말없이 버린다</b>
- * (grid-standard.md §3.1 의 재조회 규약은 컨트롤러의 것이다).
+ * (frontend/grid.md 의 재조회 규약은 컨트롤러의 것이다).
  *
  * <p>그래서 여기서 세는 것은 <i>스위치가 보이는가</i> 가 아니라 <b>{@code onChange} 가
  * 불리고 그 밖에는 아무 일도 없는가</b> 다 — 그 밖의 일이 생기면 그것이 곧 사고다.
  */
-describe('그리드 ①의 토글 — 68 §9.11', () => {
+describe('그리드 ①의 토글 — playbook/INDEX.md', () => {
   interface Row {
     id: string;
   }

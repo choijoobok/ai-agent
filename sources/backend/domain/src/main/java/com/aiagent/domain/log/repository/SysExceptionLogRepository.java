@@ -8,11 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-/** 에러 로그 — 45 §4.3. 조회는 {@code QuerySpec} 을 지난다. */
+/** 에러 로그 — sys/logs.md. 조회는 {@code QuerySpec} 을 지난다. */
 public interface SysExceptionLogRepository extends JpaRepository<SysExceptionLog, Long> {
 
     /**
-     * 파기 대상의 <b>번호만</b> 한 청크 — LOG-07 · 32 §4-4.
+     * 파기 대상의 <b>번호만</b> 한 청크 — LOG-07 · retention.md.
      *
      * <p>{@code ROOT_CAUSE_STACK} 이 {@code nclob} 이라 엔티티로 읽지 않는 이유가 사용
      * 이력과 같다. 인덱스는 {@code IX_SYS_LO_EXCEPTION_01(CRE_DTM)} 이다.

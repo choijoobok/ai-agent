@@ -38,7 +38,7 @@ import { MSG } from '@/shared/i18n/messageKeys';
 import { thinScrollbar } from '@/shared/theme/scrollbar';
 
 /**
- * 메인 셸 — main-shell.md §2.
+ * 메인 셸 — frontend/tabs.md.
  *
  * <pre>
  * 헤더
@@ -48,7 +48,7 @@ import { thinScrollbar } from '@/shared/theme/scrollbar';
  * </pre>
  *
  * <p><b>푸터가 없다.</b> 백오피스는 세로 공간이 그리드에 쓰이고 멀티탭이라 화면을 바꿔도
- * 셸이 남는다 — 항상 보이는 띠 하나가 모든 화면에서 그리드 몇 행을 가져간다(main-shell.md §2).
+ * 셸이 남는다 — 항상 보이는 띠 하나가 모든 화면에서 그리드 몇 행을 가져간다(frontend/tabs.md).
  *
  * <p><b>이 컴포넌트가 갖는 것은 "묻는 일" 뿐이다.</b> 탭 상한 확인과 미저장 확인 — 둘 다
  * 스토어에 넣을 수 없다(모달을 띄우는 것은 UI 의 일이다). 나머지는 전부 아래로 위임한다.
@@ -64,14 +64,14 @@ export function ShellLayout() {
 
   const expiresInSeconds = useAuthStore((state) => state.expiresInSeconds);
   const onExpire = useCallback(() => {
-    // 연장하지 않았다 — 정식 로그아웃으로 끝낸다(50 §7). 서버 세션은 이미 만료됐지만
+    // 연장하지 않았다 — 정식 로그아웃으로 끝낸다. 서버 세션은 이미 만료됐지만
     // 호출은 그대로 한다: 실패해도 프론트 정리는 반드시 돈다.
     void cleanup();
   }, [cleanup]);
   const expiry = useSessionExpiry({ expiresInSeconds, onExpire });
 
   /**
-   * 닫기 계열의 <b>유일한 입구</b>. main-shell.md §3.1 은 미저장 변경이 있을 때만 묻고 없으면 묻지
+   * 닫기 계열의 <b>유일한 입구</b>. frontend/tabs.md 은 미저장 변경이 있을 때만 묻고 없으면 묻지
    * 말라고 한다 — 그 판정이 경로마다 있으면 어딘가는 묻지 않고 닫는다.
    */
   const closeWithConfirm = useCallback(
@@ -91,7 +91,7 @@ export function ShellLayout() {
       }
       modal.confirm({
         title: label(MSG.TAB_DIRTY_TITLE),
-        // 어느 탭인지 나열한다 — 무엇을 잃는지 모르면 확인의 의미가 없다(main-shell.md §3.1).
+        // 어느 탭인지 나열한다 — 무엇을 잃는지 모르면 확인의 의미가 없다(frontend/tabs.md).
         content: label(MSG.TAB_DIRTY_CLOSE_CONTENT, {
           tabs: dirty.map((tab) => tabTitle(tab, label)).join(', '),
         }),
@@ -104,10 +104,10 @@ export function ShellLayout() {
   );
 
   /**
-   * 로고 클릭 — <b>탭을 닫는 것이 아니라 앱을 다시 띄운다</b>(main-shell.md §3.1).
+   * 로고 클릭 — <b>탭을 닫는 것이 아니라 앱을 다시 띄운다</b>(frontend/tabs.md).
    *
    * <p>탭만 닫으면 <b>브라우저에 쌓인 것은 그대로 남는다</b>. 비활성 탭을 언마운트하지 않는
-   * 설계라(ADR-0005) 하루를 쓰면 DOM·리스너·캐시가 계속 늘고, 그때 사람이 원하는 것은
+   * 설계라(frontend/tabs.md) 하루를 쓰면 DOM·리스너·캐시가 계속 늘고, 그때 사람이 원하는 것은
    * *"탭 정리"* 가 아니라 <b>깨끗한 시작</b>이다 — 그 수단이 새로고침이며 이 자리가 그
    * 입구다.
    *
@@ -158,7 +158,7 @@ export function ShellLayout() {
   }, [cleanup, modal]);
 
   /**
-   * 상한 확인 — frontend-stack.md §4.8. <b>클릭한 그 자리에서 묻는다.</b>
+   * 상한 확인 — frontend/packages.md. <b>클릭한 그 자리에서 묻는다.</b>
    *
    * <p>처음에는 "대기 중인 열기" 를 상태로 두고 효과에서 모달을 띄웠는데, 확인 뒤 스토어가
    * 바뀌면서 효과가 한 번 더 돌아 <b>같은 모달이 두 번</b> 떴다. 묻는 일에는 상태가 필요 없다 —
@@ -185,11 +185,11 @@ export function ShellLayout() {
     [modal, replaceOldest],
   );
 
-  // 자주 쓰는 메뉴를 세는 함수 — 아래 handleOutcome 이 쓴다(42 §8).
+  // 자주 쓰는 메뉴를 세는 함수 — 아래 handleOutcome 이 쓴다(sys/menu.md).
   const countMenu = useFrequentStore((state) => state.count);
 
   /**
-   * 열기의 결과를 받는 자리 — 상한에 걸렸으면 그때 묻는다(frontend-stack.md §4.8).
+   * 열기의 결과를 받는 자리 — 상한에 걸렸으면 그때 묻는다(frontend/packages.md).
    *
    * <p>사이더 클릭 · 우클릭 · <b>검색 결과</b> 셋이 같은 문을 지난다. 경로마다 따로 두면
    * 어느 하나가 상한을 조용히 무시한다.
@@ -199,11 +199,11 @@ export function ShellLayout() {
       outcome: ReturnType<typeof openMenu>,
       node: { menuCd: string; menuNm: string; menuUrl: string | null },
     ) => {
-      // 메뉴를 여는 모든 경로가 이 문을 지난다 — 최근 목록을 여기서 적는다(main-shell.md §4.6).
+      // 메뉴를 여는 모든 경로가 이 문을 지난다 — 최근 목록을 여기서 적는다(frontend/tabs.md).
       // 탭바에서 탭을 고르는 것은 여기로 오지 않으므로 세지 않는다. 이미 열려 있으니
       // 찾는 수고가 없다.
       rememberRecentMenu(node.menuCd);
-      // 자주 쓰는 메뉴도 <b>같은 문</b>에서 센다(42 §8) — 경로마다 세면 어느 하나가
+      // 자주 쓰는 메뉴도 <b>같은 문</b>에서 센다(sys/menu.md) — 경로마다 세면 어느 하나가
       // 빠지고, 빠진 경로로만 여는 사용자의 목록은 영영 비어 있다.
       countMenu(node.menuCd);
 
@@ -218,7 +218,7 @@ export function ShellLayout() {
   );
 
   /**
-   * 브라우저 창을 하나 더 열어 그 메뉴를 띄운다 — main-shell.md §4.7.
+   * 브라우저 창을 하나 더 열어 그 메뉴를 띄운다 — frontend/tabs.md.
    *
    * <p><b>여는 것은 경로 하나뿐이다.</b> 셸은 이미 <i>URL → 탭</i> 을 갖고 있어
    * (`useShellNavigation`) 새 창이 그 경로로 뜨면 그 메뉴가 열린 채 시작한다 — 넘길
@@ -233,7 +233,7 @@ export function ShellLayout() {
   }, []);
 
   /*
-    즐겨찾기를 셸이 뜰 때 한 번 읽는다 — 원본은 DB 다(42 §7).
+    즐겨찾기를 셸이 뜰 때 한 번 읽는다 — 원본은 DB 다(sys/menu.md).
 
     사이더 · 탭바 · 진입 모달 셋이 같은 목록을 보므로 <b>읽는 자리도 하나</b>여야 한다.
     각자 읽으면 한쪽에서 별을 눌렀을 때 나머지가 옛 목록을 그린다.
@@ -244,7 +244,7 @@ export function ShellLayout() {
   }, [loadFavorites]);
 
   /**
-   * 진입 모달을 여는 경로 — main-shell.md §4.3. `null` 이면 닫혀 있다.
+   * 진입 모달을 여는 경로 — frontend/tabs.md. `null` 이면 닫혀 있다.
    *
    * <p>탭과 질의를 <b>한 덩어리로</b> 갖는다. 따로 두면 <i>"검색 탭으로 열되 지난 질의를
    * 그대로"</i> 같은 어중간한 상태가 생기고, 무엇을 보고 있는지 설명할 수 없게 된다.
@@ -255,11 +255,11 @@ export function ShellLayout() {
   const [notificationOpen, setNotificationOpen] = useState(false);
 
   /**
-   * 헤더 벨의 미읽음 — main-shell.md §7.1. **내 알림의 미읽음뿐**이다.
+   * 헤더 벨의 미읽음 — frontend/tabs.md. **내 알림의 미읽음뿐**이다.
    *
    * <p><b>주기 조회를 하지 않는다.</b> 폴링을 붙이면 사람이 보고 있지 않은 시간에도 요청이
    * 계속 나가는데, 알림은 <i>지금 당장</i> 알아야 하는 것이 아니다(급한 것은 알림이 아니라
-   * 화면이 막는다 — 60 §4 · §5). 맞춰지는 시점이 셋이다:
+   * 화면이 막는다 — screen/_standalone/README.md). 맞춰지는 시점이 셋이다:
    *
    * <ul>
    *   <li>셸이 설 때 한 번</li>
@@ -292,7 +292,7 @@ export function ShellLayout() {
   const [expiryDismissed, setExpiryDismissed] = useState(false);
 
   /**
-   * 자동 숨기기 — main-shell.md §9.5. <b>탭바와 브레드크럼은 대상이 아니다.</b>
+   * 자동 숨기기 — frontend/tabs.md. <b>탭바와 브레드크럼은 대상이 아니다.</b>
    *
    * <p>탭바가 사라지면 지금 어느 화면인지 알 수 없고, 브레드크럼은 그 화면이 어디에
    * 있는지를 말한다 — 둘은 <b>보고 있는 동안 계속 필요한 것</b>이라 켜고 끌 대상이 아니다.
@@ -388,10 +388,10 @@ export function ShellLayout() {
   return (
     // 높이가 뷰포트에 고정된다 — minHeight 가 아니라 height 다.
     //
-    // 그리드 화면은 남는 높이를 **채워야** 한다(grid-standard.md §2 의 크롬은 헤더·본문·푸터 셋이고
+    // 그리드 화면은 남는 높이를 **채워야** 한다(frontend/grid.md 의 크롬은 헤더·본문·푸터 셋이고
     // 본문만 늘어난다). minHeight 로 두면 콘텐츠 영역의 높이가 auto 라 그 안의
     // `height: 100%` 가 0 으로 풀리고, **그리드가 줄 하나 없이 접혀 보인다** —
-    // 첫 그리드 화면(63 §3)에서 실제로 그렇게 렌더됐다.
+    // 첫 그리드 화면(screen/code/requirements.md)에서 실제로 그렇게 렌더됐다.
     // `position: relative` 가 자동 숨기기의 기준면이다 — 헤더는 이 면의 위 가장자리에서,
     // 사이더는 **한 겹 안쪽** 면의 왼쪽 가장자리에서 나온다. 사이더가 이 면을 쓰면 헤더까지
     // 덮는다.
@@ -437,8 +437,8 @@ export function ShellLayout() {
         onUnread={setUnreadCount}
         /*
           **권한 판정을 여기서 한다.** 메뉴 트리는 유효 권한으로 이미 걸러져 오므로
-          (main-shell.md §4.4) 코드가 색인에 있는지 묻는 것이 곧 권한 확인이다 — 알림 모달은
-          권한을 따로 물을 자리가 없다(60 §1.1).
+          (frontend/tabs.md) 코드가 색인에 있는지 묻는 것이 곧 권한 확인이다 — 알림 모달은
+          권한을 따로 물을 자리가 없다(screen/_standalone/README.md).
         */
         canOpenMenu={(menuCd) => index.byCode.get(menuCd)?.menuUrl != null}
         onOpenMenu={(menuCd, linkParam) => {
@@ -446,7 +446,7 @@ export function ShellLayout() {
           if (!node) return;
           /*
             **넘겨주기를 걸고 나서 연다.** 화면 → 화면 건네주기와 같은 채널이며
-            (62 §5.5 · 64 §5.4 · 65 §4.7) 알림이 그 셋째 입구다. 순서가 규약이다 —
+            (screen/menu/requirements.md · screen/log/access/requirements.md · screen/batch/schedule/requirements.md) 알림이 그 셋째 입구다. 순서가 규약이다 —
             받는 쪽이 마운트하며 읽으므로 열기 전에 넣어야 한다(`handoffStore`).
           */
           if (linkParam !== null) handOff(menuCd, linkParam);
@@ -454,7 +454,7 @@ export function ShellLayout() {
         }}
       />
       {/*
-        **셸이 선 뒤에 뜬다**(50 §5 · NP-01). 여기 렌더 트리에 있는 것이 곧 그 순서이며,
+        **셸이 선 뒤에 뜬다**(NP-01). 여기 렌더 트리에 있는 것이 곧 그 순서이며,
         조회가 실패해도 아무것도 열지 않는다 — 셸은 정상 동작한다(NP-02).
       */}
       <NoticePopupModal onOpenNotifications={() => setNotificationOpen(true)} />

@@ -3,7 +3,7 @@ import { PROFILE_ENDPOINTS } from '@/features/profile/api/endpoints';
 import type { MyAuthority, MyLoginRecord, MyProfile } from '@/features/profile/types';
 
 /**
- * 탭마다 호출이 하나다 — main-shell.md §8.
+ * 탭마다 호출이 하나다 — frontend/tabs.md.
  *
  * <p>넷을 한 번에 받지 않는 이유는 **대부분 첫 탭만 보고 닫기** 때문이다. 여는 순간
  * 로그인 이력과 권한까지 읽으면 그 비용이 매번 든다.

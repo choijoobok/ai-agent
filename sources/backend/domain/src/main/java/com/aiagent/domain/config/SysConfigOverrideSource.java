@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code support} 가 낸 구멍을 {@code domain} 이 채운다 — ADR-0026 §1 · architecture.md §1.
+ * {@code support} 가 낸 구멍을 {@code domain} 이 채운다 — sys/config.md · backend/packages.md.
  *
  * <p><b>전건 조회가 정상 사용법이다.</b> 스무 줄짜리 표이고 <b>작업당 한 번</b> 불린다
- * (ADR-0017 §3) — 어느 키가 필요한지는 부르는 시점에 알 수 없으므로 조건절을 둘 자리가
+ * (backend/caching.md) — 어느 키가 필요한지는 부르는 시점에 알 수 없으므로 조건절을 둘 자리가
  * 없다.
  *
  * <p><b>여기에 캐시를 두지 않는다.</b> 그 판단은 조회 유틸의 스냅샷이 이미 하고 있고,

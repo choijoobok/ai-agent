@@ -1,7 +1,7 @@
 import { MSG } from '@/shared/i18n/messageKeys';
 
 /**
- * 진입 모달의 탭 — main-shell.md §4.3.
+ * 진입 모달의 탭 — frontend/tabs.md.
  *
  * <p><b>모달과 같은 파일에 두지 않는다.</b> 사이더의 아이콘도 이 표를 쓰는데, 컴포넌트
  * 파일에서 상수를 함께 내보내면 개발 중 Fast Refresh 가 <b>파일 전체를 다시 만든다</b> —

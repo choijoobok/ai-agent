@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Nationalized;
 
 /**
- * 샘플 주문 태그 — 48 §4.1. <b>{@code list} 컬럼의 저장 형태다.</b>
+ * 샘플 주문 태그 — playbook/INDEX.md. <b>{@code list} 컬럼의 저장 형태다.</b>
  *
- * <p>grid-column-contract.md §8 이 <i>"`list` 를 서버가 어떻게 저장하나 — 자식 테이블 행들인지 직렬화 문자열
- * 인지"</i> 를 미결로 남겼고 48 §4.1 이 <b>자식 테이블</b>로 닫았다. 근거가 셋이다:
+ * <p>frontend/grid.md 이 <i>"`list` 를 서버가 어떻게 저장하나 — 자식 테이블 행들인지 직렬화 문자열
+ * 인지"</i> 를 미결로 남겼고 playbook/INDEX.md 이 <b>자식 테이블</b>로 닫았다. 근거가 셋이다:
  * 직렬화 문자열은 {@code JSON} 타입을 부르거나(22 가 4벤더 분기를 떠안는다) 구분자가
  * 값에 드는 날 조용히 깨지고, <i>이 태그가 붙은 주문</i> 이 {@code LIKE '%…%'} 가 되어
  * <b>{@code 개발} 이 {@code 개발자} 에 걸린다</b>.
@@ -28,7 +28,7 @@ import org.hibernate.annotations.Nationalized;
  *
  * <h2>{@code TAG_TYPE_CD} 는 <b>항목이 스칼라가 아닌 쪽</b>의 실물이다</h2>
  *
- * <p>grid-column-contract.md §5.6 이 {@code list} 항목을 객체로 열어 두었다. 문자열 배열만 다루면 그 문이 열려
+ * <p>frontend/grid.md 이 {@code list} 항목을 객체로 열어 두었다. 문자열 배열만 다루면 그 문이 열려
  * 있다는 사실에 실물이 없다.
  */
 @Entity

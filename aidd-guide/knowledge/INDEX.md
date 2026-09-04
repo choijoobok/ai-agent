@@ -35,7 +35,6 @@ tags: [knowledge, domain, index]
   ├─ 진행률 · 분산 락                              → sys/progress-lock.md
   ├─ 즐겨찾기 · 그리드 설정 · 저장 조회조건 · 통계 → sys/personalization.md
   ├─ 얼마나 보관하나 · 언제 지우나                 → retention.md
-  ├─ 이 기능이 범위 안인가 · 등급이 뭔가            → features.md
   └─ 이 말이 무슨 뜻인가                           → glossary.md
 ```
 
@@ -46,7 +45,6 @@ tags: [knowledge, domain, index]
 | LLM-KNW-001 | [glossary.md](./glossary.md) | 용어 — 이 저장소가 쓰는 말 |
 | LLM-KNW-SYS-IDX | [sys/INDEX.md](./sys/INDEX.md) | 표 34개 한눈에 |
 | LLM-KNW-003 | [retention.md](./retention.md) | **보존 기간 — 방향이 둘이다**(상한 · 하한) |
-| LLM-KNW-004 | [features.md](./features.md) | **기능 목록** — 목업·요건서가 부르는 ID 의 원본 |
 
 `sys/` 하위는 [sys/INDEX.md](./sys/INDEX.md) 가 목록을 갖는다.
 

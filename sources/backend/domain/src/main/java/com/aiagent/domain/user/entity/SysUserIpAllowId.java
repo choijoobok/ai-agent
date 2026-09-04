@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/** {@link SysUserIpAllow} 의 복합키 — 41 §7. */
+/** {@link SysUserIpAllow} 의 복합키 — sys/user-role.md. */
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode

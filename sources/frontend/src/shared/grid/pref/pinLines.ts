@@ -2,7 +2,7 @@ import { settableColumns } from '@/shared/grid/pref/gridPref';
 import type { ColumnDef } from '@/shared/grid/types';
 
 /**
- * 틀고정 경계선 — grid-standard.md §4·§5. <b>고정은 컬럼의 속성이 아니라 자리의 결과다.</b>
+ * 틀고정 경계선 — frontend/grid.md. <b>고정은 컬럼의 속성이 아니라 자리의 결과다.</b>
  *
  * <p>컬럼마다 *좌·없음·우* 를 고르게 두면 **왼쪽 고정이 가운데 컬럼에 붙는** 상태를 만들
  * 수 있는데 그리드에는 그런 자리가 없다 — 고정은 **양끝에서 몇 개까지인가**다. 선 둘이

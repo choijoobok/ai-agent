@@ -2,21 +2,21 @@ import dayjs, { type Dayjs } from 'dayjs';
 import type { DatePrecision } from '@/shared/grid/dateFormat';
 
 /**
- * 날짜 필터의 <b>판정</b> — grid-column-contract.md §4.5 · 68 §9.8.
+ * 날짜 필터의 <b>판정</b> — frontend/grid.md · playbook/INDEX.md.
  *
  * <p>컴포넌트에서 갈라 둔 이유는 {@code setFilterModel} 과 같다: 판의 필터는 그리드
  * 안에서만 살아 있어 컴포넌트째로는 단위 테스트가 서지 않는데, <b>조용히 깨지는 것은
  * 판정</b>이다 — 경계가 하루 어긋나면 화면은 정상이고 <i>27일 것이 안 나온다</i> 만 남는다.
  *
- * <p><b>거르는 자리는 조회 결과 안이다</b>(grid-column-contract.md §4.1) — 서버로 보내지 않는다. 그래서 값이
+ * <p><b>거르는 자리는 조회 결과 안이다</b>(frontend/grid.md) — 서버로 보내지 않는다. 그래서 값이
  * 이미 손에 있고, 여기서 하는 일은 <b>지금 화면의 행을 좁히는 것</b>뿐이다.
  */
 
 /**
- * 두 끝 — <b>한쪽만 채우면 단측</b>이다(68 §9.8).
+ * 두 끝 — <b>한쪽만 채우면 단측</b>이다(playbook/INDEX.md).
  *
  * <p>둘 다 비면 모델이 아니라 {@code null} 이다({@link toDateModel}) — 걸리지 않은 필터를
- * 걸린 것으로 두면 푸터의 <i>N건 중 M건</i> 이 거짓말을 한다(grid-standard.md §2.3 · `set` 필터와 같다).
+ * 걸린 것으로 두면 푸터의 <i>N건 중 M건</i> 이 거짓말을 한다(frontend/grid.md · `set` 필터와 같다).
  */
 export interface DateFilterModel {
   /** ISO-8601. {@code null} 이면 <b>아래쪽이 열려 있다</b>. */

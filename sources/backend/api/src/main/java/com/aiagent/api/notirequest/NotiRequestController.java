@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code NOTI_REQUEST} — 66 §5. <b>경로가 둘이고 액션이 둘이다.</b>
+ * {@code NOTI_REQUEST} — screen/notice/requirements.md. <b>경로가 둘이고 액션이 둘이다.</b>
  *
  * <table><caption></caption>
  *   <tr><td>{@code getList}</td><td>{@code READ}</td><td>대기열 — §5.2</td></tr>
@@ -25,22 +25,22 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <h2>{@code updateHandle} 이 {@code SAVE} 인 것에 예외가 없다</h2>
  *
- * <p>접두 {@code update} 가 {@code SAVE} 다(ADR-0020). 61 §3.4.1 의 기준(<i>"우리 테이블의
+ * <p>접두 {@code update} 가 {@code SAVE} 다(backend/api.md). screen/user/requirements.md 의 기준(<i>"우리 테이블의
  * 컬럼을 쓰는가"</i>)으로 봐도 그렇다 — 처리는 {@code SYS_NOTI_REQUEST} 의 컬럼 넷을 쓴다.
  *
- * <p><b>{@code BATCH_HISTORY} 의 {@code cancel} 과 갈리는 자리</b>다(65 §4.9). 그쪽은
+ * <p><b>{@code BATCH_HISTORY} 의 {@code cancel} 과 갈리는 자리</b>다(screen/batch/schedule/requirements.md). 그쪽은
  * 요청만 남기고 실제 종결은 배치가 했으므로 {@code EXECUTE} 였지만, 여기는 <b>이 호출이
  * 끝나면 상태가 끝난 상태</b>다.
  *
  * <h2>처리와 반려가 한 경로다</h2>
  *
- * <p>쓰는 컬럼이 같고 트랜잭션이 같다(66 §5.6). 둘로 가르면 <b>알림 INSERT 코드가 두
+ * <p>쓰는 컬럼이 같고 트랜잭션이 같다(screen/notice/requirements.md). 둘로 가르면 <b>알림 INSERT 코드가 두
  * 벌</b>이 되고 한쪽만 고치는 날이 온다 — {@code reqStatCd} 가 가른다.
  *
  * <h2>사용자 측은 여기 없다</h2>
  *
  * <p>자기 요청의 상태 확인은 알림 모달의 <i>내 요청</i> 탭이며 {@code /api/common/**}
- * 이다(52 §7.3 — <i>"관리자 측은 처리 권한이 필요하므로 메뉴여야 한다. 모달에는 권한을
+ * 이다(sys/menu.md — <i>"관리자 측은 처리 권한이 필요하므로 메뉴여야 한다. 모달에는 권한을
  * 걸 자리가 없다"</i>).
  */
 @RestController
@@ -66,7 +66,7 @@ public class NotiRequestController {
     }
 
     /**
-     * 처리 · 반려 — <b>섞이면 전부 막는다</b>(66 §5.7).
+     * 처리 · 반려 — <b>섞이면 전부 막는다</b>(screen/notice/requirements.md).
      *
      * <p>선택에 이미 처리된 것이 하나라도 있으면 아무것도 처리하지 않는다. 일부만
      * 처리하면 <b>알림이 일부에게만 나가고</b> 사용자는 무엇이 처리됐는지 모른다.

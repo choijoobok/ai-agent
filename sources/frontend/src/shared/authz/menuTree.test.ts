@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { findByUrl, indexMenuTree, pathOf, type MenuNode } from '@/shared/authz/menuTree';
 
 /**
- * 트리 색인 — main-shell.md §4.2 · §5.
+ * 트리 색인 — frontend/tabs.md.
  *
  * <p>여기서 지키는 것은 <b>브레드크럼과 검색 결과가 같은 경로 값을 쓴다</b>는 것이다.
  * 각자 계산하면 같은 메뉴가 두 곳에서 다른 경로로 보인다.
@@ -62,7 +62,7 @@ describe('menuTree', () => {
   });
 
   it('트리에 없는 경로는 null 이다 — 그것이 곧 "권한 없음" 이다', () => {
-    // 없는 메뉴인지 권한이 없는 것인지 프론트는 구분하지 않는다(frontend-stack.md §5).
+    // 없는 메뉴인지 권한이 없는 것인지 프론트는 구분하지 않는다(frontend/packages.md).
     expect(findByUrl(index, '/order')).toBeNull();
   });
 

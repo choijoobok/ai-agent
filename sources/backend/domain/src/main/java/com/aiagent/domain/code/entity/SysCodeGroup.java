@@ -12,25 +12,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 코드 그룹 — 43 §4.1 · 63 §2.2.
+ * 코드 그룹 — sys/code.md · screen/code/requirements.md.
  *
- * <p><b>{@code GRP_NM} 이 메시지 키가 아니다.</b> 43 §3 이 표시 명칭의 단일 원본을
+ * <p><b>{@code GRP_NM} 이 메시지 키가 아니다.</b> sys/code.md 이 표시 명칭의 단일 원본을
  * {@code SYS_MESSAGE} 로 정하면서 <b>관리 화면 전용 명칭</b>을 예외로 뒀고, 이 값은
  * {@code CODE_MGMT} 안에서만 보인다 — 운영자 화면까지 다국어로 열면 메시지 행이 관리 대상
  * 데이터보다 많아진다. {@link SysCode#getDtlNm()} 이 그 반대편이다.
  *
  * <p><b>{@code SYS_YN} 에 변경 메서드가 없다.</b> <i>"이 그룹을 소스가 문자열로 참조하는가"</i>
- * 는 코드가 아는 사실이지 운영 데이터가 아니므로(43 §4.3) 시드 말고는 쓰는 경로를 두지
- * 않는다. 화면이 입력 수단을 없애는 것(63 §2.6)과 <b>같은 방향으로 두 번</b> 막는 것이며,
+ * 는 코드가 아는 사실이지 운영 데이터가 아니므로(sys/code.md) 시드 말고는 쓰는 경로를 두지
+ * 않는다. 화면이 입력 수단을 없애는 것(screen/code/requirements.md)과 <b>같은 방향으로 두 번</b> 막는 것이며,
  * 화면만 막으면 요청 본문으로 뚫린다(원칙 P1).
  *
- * <h2>{@code USE_YN} 이 없다 — 43 §4.1 (2026-08-30 개정)</h2>
+ * <h2>{@code USE_YN} 이 없다 — sys/code.md (2026-08-30 개정)</h2>
  *
  * {@link SysCode} 에는 있고 여기에는 없다. <b>이름이 같다고 같은 것이 아니다.</b>
  *
  * <table>
  *   <tr><td>{@code SysCode.USE_YN}</td>
- *       <td>읽는 쪽이 있다 — <b>콤보 후보에서 뺀다</b>(43 §5.5 · §8). 이미 저장된 데이터는
+ * <td>읽는 쪽이 있다 — <b>콤보 후보에서 뺀다</b>(sys/code.md). 이미 저장된 데이터는
  *           그 값을 갖고 있으므로 <b>이름 조회는 계속 된다</b>: <i>"새로 고르지는 못하지만
  *           옛 행은 여전히 읽힌다"</i> 가 그 플래그의 뜻이다</td></tr>
  *   <tr><td>{@code SysCodeGroup.USE_YN}</td>
@@ -68,7 +68,7 @@ public class SysCodeGroup extends BaseAuditEntity {
     @Column(name = "SYS_YN", length = 1, nullable = false)
     private Boolean sysYn;
 
-    /** 관리 화면 정렬이다 — 콤보 정렬은 {@link SysCode} 쪽이다(63 §2.2). */
+    /** 관리 화면 정렬이다 — 콤보 정렬은 {@link SysCode} 쪽이다(screen/code/requirements.md). */
     @Column(name = "SORT_NO", nullable = false)
     private Integer sortNo;
 

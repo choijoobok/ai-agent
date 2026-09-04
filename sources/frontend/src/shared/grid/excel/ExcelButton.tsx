@@ -11,14 +11,14 @@ import type { ExcelScope } from '@/shared/grid/excel/downloadLog';
 import type { ExcelServer, ExcelSpec } from '@/shared/grid/excel/types';
 
 /**
- * ② 엑셀 다운로드 — grid-standard.md §2.2 · ADR-0019.
+ * ② 엑셀 다운로드 — frontend/grid.md · frontend/grid-advanced.md.
  *
  * <p><b>아이콘만 둔다.</b> 항목이 여럿이라 어느 라벨도 대표하지 못하고, ①이 길어지면 도구가
  * 밀린다 — 라벨은 드롭다운을 열면 나온다.
  *
  * <h2>세 갈래가 <b>여기 하나로</b> 덮인다</h2>
  *
- * <p>ADR-0019 는 갈래를 셋으로 갈랐고 frontend-stack.md §7 이 <i>"{@code <ExcelDownloadButton>} 이 세 경로를
+ * <p>frontend/grid-advanced.md 는 갈래를 셋으로 갈랐고 frontend/packages.md 이 <i>"{@code <ExcelDownloadButton>} 이 세 경로를
  * 하나의 인터페이스로 덮는다"</i> 고 적었다. <b>덮이지 않고 있었다</b> — 두 항목이 프론트
  * 생성에 박혀 있었다. {@code spec} 이 그 자리다.
  *
@@ -33,7 +33,7 @@ import type { ExcelServer, ExcelSpec } from '@/shared/grid/excel/types';
  * <h2>다운로드 이력을 <b>서버 경로에서는 부르지 않는다</b></h2>
  *
  * <p>{@code POST /api/common/excel/saveLog} 는 <i>호출이 없는 경로</i>의 구멍을 메우는 것이다
- * (ADR-0019). 서버 생성은 <b>요청이 도착하는 것 자체가 기록</b>이므로(사용 이력 인터셉터가
+ * (frontend/grid-advanced.md). 서버 생성은 <b>요청이 도착하는 것 자체가 기록</b>이므로(사용 이력 인터셉터가
  * 모든 {@code /api/**} 를 남긴다) 여기서 또 부르면 <b>한 번 내려받은 것이 두 행</b>이 되고,
  * <i>몇 번 내려받았나</i> 가 두 배로 세진다.
  *
@@ -50,7 +50,7 @@ interface Props<T> {
   all: () => Promise<T[] | null>;
   /** 세 번째 갈래의 선언 — 없으면 지금까지와 같다. */
   spec?: ExcelSpec;
-  /** {@code extra} 의 권한을 묻는 쌍(main-shell.md §6). */
+  /** {@code extra} 의 권한을 묻는 쌍(frontend/tabs.md). */
   permissions: readonly string[];
   menuCd: string;
   disabled?: boolean;
@@ -128,7 +128,7 @@ export function ExcelButton<T>(props: Props<T>) {
           <b>{@code disabled} 를 버튼이 직접 받는다</b>(2026-08-31 실물). 드롭다운은 자식에게
           그것을 전해 주지만({@code child.props.disabled ?? disabled}) <b>그 자식이 툴팁</b>
           이라 버튼에는 닿지 않았다 — 눌리지는 않는데 아이콘만 <b>활성 상태의 색</b>으로
-          남아, 하단 탭이 잠겼을 때(61 §3.9) 이 버튼 하나만 켜져 보였다.
+          남아, 하단 탭이 잠겼을 때(screen/user/requirements.md) 이 버튼 하나만 켜져 보였다.
         */}
         <Button
           icon={<FileExcelOutlined />}

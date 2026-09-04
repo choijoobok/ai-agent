@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useTabStore } from '@/shared/stores/tabStore';
 
 /**
- * `PageUp`/`PageDown` — main-shell.md §10.1.
+ * `PageUp`/`PageDown` — frontend/tabs.md.
  *
  * <p><b>브라우저 뒤로/앞으로와 다른 이동이다.</b> 그쪽은 <b>방문 순서</b>(아까 보던 탭)이고
  * 이것은 <b>위치 순서</b>(바로 왼쪽·오른쪽 탭)다. 열린 탭들을 훑을 때 쓴다.
@@ -17,7 +17,7 @@ import { useTabStore } from '@/shared/stores/tabStore';
  *
  * <p><b>대신 화면이 그 키를 쓰는 자리는 비켜 간다</b> — 셋이다. ① 화면이 <b>이미 처리한</b>
  * 키(`defaultPrevented`), ② <b>글을 쓰는 자리</b>(입력·편집 영역), ③ <b>그리드 안</b>.
- * 그리드는 이 키로 행을 넘긴다([53](53-grid-standard.md)).
+ * 그리드는 이 키로 행을 넘긴다([frontend/grid.md](../../../../../aidd-guide/standard/frontend/grid.md)).
  *
  * <p>이것이 예전에 거부한 <i>"포커스 위치로 분기"</i> 다. 그때 걱정한 것은 <i>"어떤 때는
  * 스크롤되고 어떤 때는 탭이 바뀐다"</i> 였는데, <b>가르는 선이 눈에 보이는 것</b>이면
@@ -27,7 +27,7 @@ import { useTabStore } from '@/shared/stores/tabStore';
  * 함께 움직이면 <b>브라우저 탭과 화면 탭이 한 번에</b> 바뀐다.
  *
  * <p>`Ctrl + PageUp/PageDown` 은 브라우저의 탭 전환이라 쓸 수 없고, 탭 <b>닫기</b> 단축키는
- * 아직 정해지지 않았다 — `Ctrl+W` 를 브라우저가 선점하기 때문이다(main-shell.md §12 미결).
+ * 아직 정해지지 않았다 — `Ctrl+W` 를 브라우저가 선점하기 때문이다(frontend/tabs.md 미결).
  */
 export function useTabHotkeys(selectTab: (key: string) => void): void {
   useEffect(() => {
@@ -55,7 +55,7 @@ export function useTabHotkeys(selectTab: (key: string) => void): void {
       const step = event.key === 'PageUp' ? -1 : 1;
       const next = (current + step + tabs.length) % tabs.length;
       // 위치 이동도 탭 전환이므로 pushState 가 쌓인다 — 방문 순서에 기록되고 뒤로가기로
-      // 되짚을 수 있다(main-shell.md §10.1).
+      // 되짚을 수 있다(frontend/tabs.md).
       selectTab(tabs[next].key);
     };
 

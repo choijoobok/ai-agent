@@ -14,13 +14,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * 도는 동안 락의 만료를 <b>계속 뒤로 민다</b> — 31 §5.1.
+ * 도는 동안 락의 만료를 <b>계속 뒤로 민다</b> — backend/persistence.md.
  *
  * <h2>없으면 오래 도는 배치가 자기 락을 잃는다</h2>
  *
  * <p>{@code EXPIRE_DTM} 은 선점할 때 <b>한 번</b> 정해진다({@code now + LOCK_EXPIRY_SEC}).
  * 배치가 그보다 오래 걸리면 <b>살아 있는데 락이 만료</b>되고, 다음 주기에 깨어난 다른 노드의
- * {@code tryAcquire} 가 <b>성공</b>한다 — 같은 배치가 두 노드에서 동시에 돈다. 31 §7 이
+ * {@code tryAcquire} 가 <b>성공</b>한다 — 같은 배치가 두 노드에서 동시에 돈다. backend/persistence.md 이
  * 락으로 막으려던 사고가 <b>정확히 그 자리에서</b> 일어난다.
  *
  * <p>기본값이 300초라 흔한 일이다. 이 템플릿의 첫 구현인 보존 파기 배치가
@@ -48,7 +48,7 @@ import org.springframework.stereotype.Component;
  *
  * <p>{@link LockStore#heartbeat} 는 {@code NODE_ID} 가 맞을 때만 민다. {@code false} 가
  * 돌아왔다는 것은 <b>이미 남이 잡았거나 누가 강제 해제했다</b>는 뜻이고, 그때 계속 두드리면
- * 로그만 채운다. 배치를 죽이지는 <b>않는다</b> — 중단은 협조적이어야 하고(46 §6.2), 여기서
+ * 로그만 채운다. 배치를 죽이지는 <b>않는다</b> — 중단은 협조적이어야 하고(sys/batch.md), 여기서
  * 스레드를 끊으면 배치가 체크포인트 밖에서 죽어 <b>정확히 유령을 만든다</b>. 대신 크게
  * 남긴다: 그 시점부터 <b>중복 실행이 일어났을 수 있다</b>는 것이 이 로그의 내용이다.
  */

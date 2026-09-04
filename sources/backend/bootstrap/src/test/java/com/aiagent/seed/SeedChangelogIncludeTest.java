@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
 
 /**
- * changelog 파일을 만들어 놓고 <b>{@code master} 에 걸지 않는 것</b>을 막는다 — db-portability.md §1.1.
+ * changelog 파일을 만들어 놓고 <b>{@code master} 에 걸지 않는 것</b>을 막는다 — backend/persistence.md.
  *
  * <h2>이것이 조용한 실패인 이유</h2>
  *
@@ -52,7 +52,7 @@ class SeedChangelogIncludeTest {
      * <b>일부러 걸지 않는 것</b> — 걸면 안 되는 것이라 예외를 목록으로 세운다.
      *
      * <p>{@code 999-sample-remove} 는 {@code VendorPortabilityTest} 가 {@code master} 의
-     * 900·901 을 <b>대신해</b> 태우는 파일이다(48 §7.2). 평소에 걸면 기동할 때마다 샘플이
+     * 900·901 을 <b>대신해</b> 태우는 파일이다(playbook/INDEX.md). 평소에 걸면 기동할 때마다 샘플이
      * 걷힌다.
      *
      * <p>목록으로 두는 것이 <i>이름 규칙으로 거르는 것</i> 보다 낫다 — 규칙은 다음에 생길
@@ -79,7 +79,7 @@ class SeedChangelogIncludeTest {
         assertThat(missing)
                 .as(
                         "%s 에 include 가 없다 — 파일은 있지만 기동해도 적재되지 않는다."
-                                + " master 맨 끝에 include 하고 왜 를 주석으로 적는다(db-portability.md §1.1)",
+                                + " master 맨 끝에 include 하고 왜 를 주석으로 적는다(backend/persistence.md)",
                         MASTER)
                 .isEmpty();
     }

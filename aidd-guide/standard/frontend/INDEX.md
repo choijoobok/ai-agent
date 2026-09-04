@@ -68,18 +68,6 @@ tags: [frontend, index]
 **표준을 추정해 새로 만들지 않는다** — 비슷한 화면의 실물을 읽는다.
 샘플 여섯이 `sources/frontend/src/features/sample/` 에 그 목적으로 있다.
 
-## `_study/` — 근거
-
-| 파일 | 무엇 |
-|---|---|
-| [`_study/frontend-stack.md`](./_study/frontend-stack.md) | 스택·구조·상태 경계의 원문 |
-| [`_study/grid-standard.md`](./_study/grid-standard.md) | 그리드 표준 — 크롬·편집·마스터디테일·색 |
-| [`_study/grid-api-contract.md`](./_study/grid-api-contract.md) | `api` 선언·버튼·실행 흐름 |
-| [`_study/grid-column-contract.md`](./_study/grid-column-contract.md) | 컬럼 계약 — 타입 13종·정렬·필터·렌더러 |
-| [`_study/grid-edit-validation.md`](./_study/grid-edit-validation.md) | 편집 진입·훅·검증 세 층 |
-| [`_study/search-form-contract.md`](./_study/search-form-contract.md) | 검색 폼 계약 — 필드 하나 |
-| [`_study/main-shell.md`](./_study/main-shell.md) | 셸 영역 구성과 인터랙션 |
-
 ## 기계가 막는 것
 
 | ESLint | 무엇 |

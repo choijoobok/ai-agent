@@ -4,11 +4,11 @@ import com.aiagent.core.error.ErrorCode;
 import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
-/** 저장된 조회조건이 거부되는 자리 — search-form-contract.md §5. */
+/** 저장된 조회조건이 거부되는 자리 — frontend/search-form.md. */
 public enum SearchCondErrorCode implements ErrorCode {
 
     /**
-     * 화면당 상한을 넘겼다 — search-form-contract.md §5.4.
+     * 화면당 상한을 넘겼다 — frontend/search-form.md.
      *
      * <p><b>사용자가 고칠 수 있는 실패다.</b> 하나 지우면 저장된다 — 그래서 조용히 가장
      * 오래된 것을 밀어내지 않는다: 밀려난 것이 <b>매일 쓰는 조건</b>일 수 있다.

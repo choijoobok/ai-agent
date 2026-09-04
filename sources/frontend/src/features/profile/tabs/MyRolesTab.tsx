@@ -24,17 +24,17 @@ interface Props {
 const TABLE_MAX_HEIGHT = 240;
 
 /**
- * 내 역할 — AUTHZ-04 · main-shell.md §8. <b>읽기 전용이다.</b>
+ * 내 역할 — AUTHZ-04 · frontend/tabs.md. <b>읽기 전용이다.</b>
  *
  * <p><b>있으면 권한 문의가 줄어든다.</b> *"왜 이 메뉴가 안 보이나"* 를 스스로 확인할 곳이
  * 없으면 그 물음은 전부 관리자에게 간다. 그래서 <b>만료된 부여도 보여준다</b> — 감추면
  * *"어제까지 되던 것이 왜 안 되나"* 에 답할 것이 없어지고, 그 답이 이 탭의 존재 이유다.
  *
- * <p><b>역할과 개인 예외를 한 표로 합치지 않는다</b>(42 §6). 출처가 다르고 고치는 사람이
+ * <p><b>역할과 개인 예외를 한 표로 합치지 않는다</b>(sys/menu.md). 출처가 다르고 고치는 사람이
  * 다르며, 합치면 *"이건 누구한테 말해야 하나"* 가 사라진다.
  *
  * <p><b>기준일을 밝힌다.</b> 유효 판정은 업무 시간대의 오늘로 하며 브라우저의 오늘이
- * 아니다(40 §4.3) — 자정 전후에 <i>왜 만료로 보이는지</i> 를 설명할 수 있어야 한다.
+ * 아니다(sys/INDEX.md) — 자정 전후에 <i>왜 만료로 보이는지</i> 를 설명할 수 있어야 한다.
  */
 export function MyRolesTab({ active }: Props) {
   const { data, error, loading } = useLoad(active, getMyRoles);
@@ -112,7 +112,7 @@ function roleColumns(businessToday: string | undefined): ColumnsType<MyRoleGrant
 
 function grantColumns(businessToday: string | undefined): ColumnsType<MyMenuGrant> {
   return [
-    // 이름이 아니라 메시지 키다(`menu.{MENU_CD}`) — 43 §3.
+    // 이름이 아니라 메시지 키다(`menu.{MENU_CD}`) — sys/code.md.
     { title: label(MSG.PROFILE_GRANT_MENU), dataIndex: 'menuNm', render: (key: string) => label(key) },
     {
       title: label(MSG.PROFILE_GRANT_ACTION),
@@ -126,7 +126,7 @@ function grantColumns(businessToday: string | undefined): ColumnsType<MyMenuGran
       width: 200,
       render: (_, row) => period(row.validFromDt, row.validToDt),
     },
-    // 사유는 부여할 때 필수다(42 §6) — 받은 사람이 볼 수 없으면 그 마찰이 기록으로만 남는다.
+    // 사유는 부여할 때 필수다(sys/menu.md) — 받은 사람이 볼 수 없으면 그 마찰이 기록으로만 남는다.
     {
       title: label(MSG.PROFILE_GRANT_REASON),
       dataIndex: 'grantRsn',
@@ -187,11 +187,11 @@ function stateTag(row: MyRoleGrant, businessToday: string | undefined) {
 }
 
 /**
- * 아직 시작 전인가, 지났는가 — 인사 발령을 미리 넣어 두는 것이 정상 운영이라(42 §3.1)
+ * 아직 시작 전인가, 지났는가 — 인사 발령을 미리 넣어 두는 것이 정상 운영이라(sys/menu.md)
  * 둘을 갈라야 한다. <b>기다리면 되는 것</b>과 <b>관리자에게 갈 것</b>이다.
  *
  * <p>`YYYY-MM-DD` 는 사전순이 곧 날짜순이라 문자열 비교로 충분하다 — `dayjs` 를 태우면
- * 현지 시각으로 해석되어 하루가 어긋난다(40 §4.3).
+ * 현지 시각으로 해석되어 하루가 어긋난다(sys/INDEX.md).
  */
 function pendingOrExpired(validFromDt: string | null, businessToday: string | undefined): string {
   if (validFromDt && businessToday && validFromDt > businessToday) {
@@ -200,7 +200,7 @@ function pendingOrExpired(validFromDt: string | null, businessToday: string | un
   return MSG.PROFILE_ROLE_EXPIRED;
 }
 
-/** 양끝이 다 비면 무기한이다 — `9999-12-31` 을 채우지 않기로 한 결정의 표시다(42 §3.1). */
+/** 양끝이 다 비면 무기한이다 — `9999-12-31` 을 채우지 않기로 한 결정의 표시다(sys/menu.md). */
 function period(from: string | null, to: string | null): string {
   if (!from && !to) return label(MSG.PROFILE_NONE);
   return `${from ?? ''} ~ ${to ?? ''}`;

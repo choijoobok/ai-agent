@@ -39,7 +39,7 @@ tags: [stack, version, gradle, npm]
 
 **표에 없는 것을 적지 않는다.** 이 표는 `libs.versions.toml` 과 `package.json` 의 요약이며,
 그 둘에 없는 아티팩트는 여기에도 없다 — *있다고 적힌 없는 것* 이 가장 비싼 거짓말이다.
-개인정보 암호화(Bouncy Castle)를 걷은 것이 그 예다: [ADR-0008](../records/adr/0008-pii-vault-pattern.md) 이
+개인정보 암호화(Bouncy Castle)를 걷은 것이 그 예다: [`backend/pii-vault.md`](./backend/pii-vault.md) 이
 컬럼 암호화를 버리고 분리보관으로 갔고 그마저 미뤘는데, 표에만 남아 있었다.
 
 **JDBC 드라이버의 버전은 적지 않는다** — 다섯 다 Spring Boot BOM 관리 대상이라, 카탈로그에
@@ -115,4 +115,3 @@ tags: [stack, version, gradle, npm]
 - [sources/backend/packages.md](./backend/packages.md) — 모듈 다섯과 의존 방향
 - [sources/backend/persistence.md](./backend/persistence.md) — 다섯 벤더
 - [sources/frontend/packages.md](./frontend/packages.md) — 프론트 구조
-- [`_study/`](./_study) — 원문

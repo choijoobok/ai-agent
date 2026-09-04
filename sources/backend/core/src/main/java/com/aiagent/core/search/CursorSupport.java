@@ -8,7 +8,7 @@ import com.querydsl.core.types.dsl.ComparableExpressionBase;
 import com.querydsl.core.types.dsl.Expressions;
 
 /**
- * 커서를 {@code WHERE} 절로 편다 — api-conventions.md §3.8.
+ * 커서를 {@code WHERE} 절로 편다 — backend/api.md.
  *
  * <pre>
  * ORDER BY CRE_DTM DESC, ACCESS_LOG_SEQ DESC
@@ -17,11 +17,11 @@ import com.querydsl.core.types.dsl.Expressions;
  *
  * <p><b>튜플 비교를 손으로 편다.</b> 표준 SQL 의 {@code (a, b) < (?, ?)} 는 4벤더 전부가
  * 지원하지 않고 QueryDSL 에도 없다 — {@code OR} 두 조각으로 쓰면 <b>보통의 {@code WHERE}</b>
- * 가 되어 벤더 차이가 사라진다(db-portability.md §4.5).
+ * 가 되어 벤더 차이가 사라진다(backend/persistence.md).
  *
  * <p><b>PK 가 함께 있어야 한다.</b> 시각만으로 자르면 같은 초에 들어온 행이 여럿일 때
  * 경계가 흔들려 <b>한 행이 두 페이지에 나오거나 아예 빠진다</b>. {@code allocationSize} 가
- * 1000 이라 PK 순서가 시간 순서가 아니므로(64 §2.3) <b>시각이 먼저고 PK 는 동률만 가른다</b>.
+ * 1000 이라 PK 순서가 시간 순서가 아니므로(screen/log/access/requirements.md) <b>시각이 먼저고 PK 는 동률만 가른다</b>.
  *
  * <h2>{@code Ops} 로 조립하는 것이 결정이다</h2>
  *
@@ -46,7 +46,7 @@ public final class CursorSupport {
             FieldSpec sortField, ComparableExpressionBase<?> pk, CursorToken token) {
 
         if (!token.field().equals(sortField.name())) {
-            // 정렬이 바뀌면 커서는 무효다(api-conventions.md §3.8). 조용히 무시하면 옛 기준점이 새 정렬에
+            // 정렬이 바뀌면 커서는 무효다(backend/api.md). 조용히 무시하면 옛 기준점이 새 정렬에
             // 먹혀 결과가 틀리고, 그 틀림은 아무 신호도 내지 않는다.
             throw new BusinessException(
                     SearchErrorCode.INVALID_CURSOR,
@@ -65,7 +65,7 @@ public final class CursorSupport {
     /**
      * {@code path {op} ?} — 상수는 <b>바인딩 파라미터</b>가 된다({@code Expressions.constant}).
      *
-     * <p>값을 문자열로 이어 붙이는 자리가 없으므로 인젝션 표면도 없다 — api-conventions.md §4.1 이 컬럼에
+     * <p>값을 문자열로 이어 붙이는 자리가 없으므로 인젝션 표면도 없다 — backend/api.md 이 컬럼에
      * 대해 한 말이 값에 대해서도 성립한다.
      */
     private static BooleanExpression compare(Ops op, Expression<?> path, Object value) {

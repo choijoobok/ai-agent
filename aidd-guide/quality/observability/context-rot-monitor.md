@@ -6,7 +6,6 @@ type: operation
 created: 2026-05-04
 updated: 2026-05-04
 status: active
-sources: [Chroma Context Rot 연구, 12-references/summaries/09-chroma-context-rot.md]
 author: Bong Jong Hyeon
 tier: 3
 tags: [observability, context-rot, attention-budget, decay]
@@ -56,5 +55,4 @@ tags: [observability, context-rot, attention-budget, decay]
 ## 관련
 
 - [02-context/failure-modes.md](../../harness/context/failure-modes.md) — 실패 모드 정의
-- [12-references/summaries/09-chroma-context-rot.md](../../reference/summary/09-chroma-context-rot.md) — 출처
 - [02-context/budget.md](../../harness/context/budget.md) — 컨텍스트 측정

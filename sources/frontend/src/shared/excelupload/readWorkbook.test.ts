@@ -50,7 +50,7 @@ async function file(rows: (string | number | null)[][], header = HEADER): Promis
 const HEADER = ['col.ordNo', 'col.qty', 'col.statCd'];
 
 /**
- * 파일 → 행 — ADR-0024 · 68 §9.2.
+ * 파일 → 행 — frontend/grid-advanced.md · playbook/INDEX.md.
  *
  * <p><b>진짜 통합 지점이다.</b> `exceljs` 가 어떤 모양으로 셀을 주는지는 문서가 아니라
  * 실물이 답하며(문자열 · 숫자 · {@code Date} · 수식 객체), 여기서 흉내를 내면 <b>흉내가
@@ -68,7 +68,7 @@ describe('엑셀 파일 읽기', () => {
 
   /*
     <b>어긋난 채로 읽으면 열이 하나 밀린다</b> — 수량 자리에 단가가 들어가고, 그 파일은
-    저장까지 통과한다. 그래서 통째로 거절한다(68 §8.7).
+    저장까지 통과한다. 그래서 통째로 거절한다(playbook/INDEX.md).
   */
   it('헤더가 다르면 읽지 않는다 — 열이 밀린 파일은 저장까지 통과한다', async () => {
     const outcome = await readWorkbook(

@@ -38,7 +38,7 @@ export default defineConfig({
     testTimeout: 15000,
   },
   build: {
-    // 산출물은 Gradle 이 bootstrap 리소스로 실어 간다(25 §2). 경로를 바꾸면 그쪽도 바뀐다.
+    // 산출물은 Gradle 이 bootstrap 리소스로 실어 간다(build-deploy.md). 경로를 바꾸면 그쪽도 바뀐다.
     outDir: 'dist',
     sourcemap: false,
   },

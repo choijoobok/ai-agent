@@ -13,13 +13,13 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 /**
- * 유령 정리 — 65 §4.4. <b>죽은 프로세스가 남긴 {@code RUNNING} 행을 종결시킨다.</b>
+ * 유령 정리 — screen/batch/schedule/requirements.md. <b>죽은 프로세스가 남긴 {@code RUNNING} 행을 종결시킨다.</b>
  *
  * <h2>유령은 보기 싫은 것이 아니라 <b>막는 것</b>이다</h2>
  *
  * <p>{@code RUNNING} 행은 실행 스레드가 갱신한다. 프로세스가 통째로 죽으면 갱신할 주체가
  * 없어 행이 영원히 그대로 남고, {@code BatchRunner#runNow} 가 그것을 <i>이미 실행 중</i>
- * 으로 읽는다 — <b>그 배치는 사람이 눌러도 다시 돌지 않는다.</b> 46 §6 이 이력 중 유일하게
+ * 으로 읽는다 — <b>그 배치는 사람이 눌러도 다시 돌지 않는다.</b> sys/batch.md 이 이력 중 유일하게
  * 갱신되는 테이블을 만들면서 진 빚이며, <b>갚는 주체가 없었다</b>: 락 만료는 락만 회수하고
  * 이력에는 손대지 않는다.
  *
@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component;
  * <p><b>{@code NODE_ID} 까지 맞춰 묻는 것</b>이 요점이다. 키만 물으면 <i>그 배치가 지금
  * 다시 돌고 있는 경우</i> 새 실행의 락을 보고 옛 유령을 살아 있다고 판정한다. {@code NodeId}
  * 는 기동마다 달라지므로(같은 호스트를 재기동해도 다르다) 그 비교가 <b>프로세스 동일성</b>을
- * 정확히 가른다 — 46 §2.5 가 세 테이블에 같은 값을 쓰기로 한 것이 여기서 값을 한다.
+ * 정확히 가른다 — sys/batch.md 가 세 테이블에 같은 값을 쓰기로 한 것이 여기서 값을 한다.
  *
  * <h2>노드마다 돈다 — 락을 잡지 않는다</h2>
  *

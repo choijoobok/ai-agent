@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 /**
- * 엔드포인트 선언에 <b>`/api` 를 또 적지 않는다</b> — frontend-stack.md §9.
+ * 엔드포인트 선언에 <b>`/api` 를 또 적지 않는다</b> — frontend/packages.md.
  *
  * <p>클라이언트의 {@code baseURL} 이 이미 {@code /api} 다. 여기에 또 적으면
  * {@code /api/api/...} 로 나가고 그 경로는 <b>어떤 컨트롤러에도 닿지 않는다</b>.

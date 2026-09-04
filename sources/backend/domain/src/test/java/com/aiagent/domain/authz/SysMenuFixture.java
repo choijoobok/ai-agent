@@ -23,7 +23,7 @@ public final class SysMenuFixture {
         return menu(menuCd, upMenuCd, "/" + menuCd.toLowerCase(), sortNo, false);
     }
 
-    /** 구조 노드 — {@code MENU_URL} 이 없다. URL 과 자식은 배타다(security-design.md §4). */
+    /** 구조 노드 — {@code MENU_URL} 이 없다. URL 과 자식은 배타다(backend/security.md). */
     public static SysMenu folder(String menuCd, String upMenuCd, int sortNo) {
         return menu(menuCd, upMenuCd, null, sortNo, true);
     }

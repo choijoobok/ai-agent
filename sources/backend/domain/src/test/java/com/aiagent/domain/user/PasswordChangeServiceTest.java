@@ -39,7 +39,7 @@ import org.springframework.data.domain.Limit;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
- * 본인 비밀번호 변경 — AUTH-05 · main-shell.md §8.
+ * 본인 비밀번호 변경 — AUTH-05 · frontend/tabs.md.
  *
  * <p><b>여기서 지키는 것은 순서와 갈래다.</b> 실패가 넷이고 서로 다른 조치를 요구하므로
  * (현재 비밀번호 · 무변경 · 정책 · 재사용) 하나로 뭉치면 사용자는 무엇을 고쳐야 하는지

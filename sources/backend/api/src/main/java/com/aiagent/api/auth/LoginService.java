@@ -46,11 +46,11 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 
 /**
- * 로그인 · 로그아웃 조립 — security-design.md §3 의 흐름 그대로다.
+ * 로그인 · 로그아웃 조립 — backend/security.md 의 흐름 그대로다.
  *
  * <p><b>체인 #2~#5 를 직접 구현하지 않는다.</b> {@code AccountStatusUserDetailsChecker} 가
  * 4개 플래그로 자동 검사하며, 여기서는 <b>어떤 예외가 어떤 이력 코드인가</b>만 옮긴다
- * (security-design.md §4). 직접 검사하면 플래그와 검사가 두 곳에 생겨 언젠가 어긋난다.
+ * (backend/security.md). 직접 검사하면 플래그와 검사가 두 곳에 생겨 언젠가 어긋난다.
  *
  * <p><b>#5 만 예외다.</b> 비밀번호 만료는 차단이 아니라 <b>유도</b>이므로
  * {@link CredentialsExpiredException} 을 잡아 제한 세션으로 전환한다. 그 예외가 던져졌다는
@@ -130,7 +130,7 @@ public class LoginService {
                     UsernamePasswordAuthenticationToken.unauthenticated(
                             form.loginId(), form.password()));
         } catch (CredentialsExpiredException e) {
-            // 체인 #5. 비밀번호는 맞았으므로 제한 세션으로 들여보낸다(security-design.md §4).
+            // 체인 #5. 비밀번호는 맞았으므로 제한 세션으로 들여보낸다(backend/security.md).
             mustChangePassword = true;
             authentication = restrictedAuthentication(form.loginId());
         } catch (BadCredentialsException e) {
@@ -148,13 +148,13 @@ public class LoginService {
                 .find(form.loginId())
                 .orElseThrow(() -> fail(form.loginId(), LoginResultCode.FAIL_NO_USER, context));
 
-        // 임시 비밀번호 방치 — 발급받고 temp-valid-hours 를 넘긴 계정은 들여보내지 않는다(security-design.md §4).
+        // 임시 비밀번호 방치 — 발급받고 temp-valid-hours 를 넘긴 계정은 들여보내지 않는다(backend/security.md).
         if (user.isTemporaryPasswordExpired(
                 calendar.now(), configs.get(AuthPasswordProps.class).tempValidHours())) {
             throw fail(form.loginId(), LoginResultCode.FAIL_TEMP_EXPIRED, context);
         }
 
-        // AUTH-14 후처리 체인 — 플래그로 커버되지 않는 검사들(41 §4.4).
+        // AUTH-14 후처리 체인 — 플래그로 커버되지 않는 검사들(sys/user-role.md).
         //
         // 유효 권한은 후보 객체가 지연 계산한다. 체인의 마지막 검사(공집합)가 부르거나,
         // 그것이 꺼져 있으면 아래 세션 적재가 부른다 — 어느 쪽이든 계산은 한 번이다.
@@ -199,7 +199,7 @@ public class LoginService {
     }
 
     /**
-     * 날짜 표시 형식 셋 — 43 §6.4 · grid-column-contract.md §4.5.
+     * 날짜 표시 형식 셋 — sys/code.md · frontend/grid.md.
      *
      * <p>{@code AuthController#dateFormat} 과 같은 세 줄이다. 부품으로 빼지 않는 근거는
      * 그쪽에 적어 두었다.
@@ -231,7 +231,7 @@ public class LoginService {
      * 세션 고정 공격 방어. <b>SecurityContext 를 저장하기 전에</b> 세션 ID 를 바꾼다 —
      * 순서가 뒤바뀌면 인증된 컨텍스트가 공격자가 아는 옛 ID 에 붙는다.
      *
-     * <p><b>동시 접속 제어(security-design.md §4-1)가 이 한 줄 안에 있다.</b> 주입된 전략은 합성물이며
+     * <p><b>동시 접속 제어(backend/security.md)가 이 한 줄 안에 있다.</b> 주입된 전략은 합성물이며
      * ({@code SecurityConfig}) 세션 ID 교체 앞에 {@code ConcurrentSessionControl} 이 붙어 있다 —
      * 그래서 {@code prevent-login: true} 에서 이 호출이 던지고, 아래의 세션 조작은 일어나지
      * 않는다. <b>전략을 직접 나열하지 않는 것이 요점</b>이다: 설정으로 켜고 끄는 것이
@@ -254,12 +254,12 @@ public class LoginService {
         HttpSession session = request.getSession();
         session.setAttribute(SessionKeys.PASSWORD_CHANGE_REQUIRED, mustChangePassword);
 
-        // 유효 권한을 세션에 담는다 — 이후 매 요청의 판정이 이 값 하나를 본다(security-design.md §4).
+        // 유효 권한을 세션에 담는다 — 이후 매 요청의 판정이 이 값 하나를 본다(backend/security.md).
         // 세션 ID 를 바꾼 뒤에 담아야 한다: 순서가 뒤바뀌면 옛 세션에 담기고 새 세션은 빈다.
         AuthzSession.write(session, authority);
 
         // 로그인 응답은 /api/public 이라 인가 인터셉터를 지나지 않는다 — 여기서 붙이지 않으면
-        // 프론트가 비교 기준값 없이 셸을 그린다(50 §8.1).
+        // 프론트가 비교 기준값 없이 셸을 그린다.
         AuthzVersionHeader.stamp(response, authority);
     }
 

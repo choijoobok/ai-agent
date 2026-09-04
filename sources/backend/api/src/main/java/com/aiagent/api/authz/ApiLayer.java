@@ -1,7 +1,7 @@
 package com.aiagent.api.authz;
 
 /**
- * {@code /api/**} 의 세 계층 — security-design.md §4.
+ * {@code /api/**} 의 세 계층 — backend/security.md.
  *
  * <p><b>분류가 URL 에 새겨져 있으므로 별도 상수 목록이 없다.</b> 컨트롤러의 경로가 곧 보안
  * 등급 선언이며, 코드 리뷰가 <i>"이 API 가 여기 있어도 되나"</i> 를 눈으로 볼 수 있다.
@@ -43,7 +43,7 @@ public enum ApiLayer {
      * 정적 리소스·SPA 라우트는 이 판정의 대상이 아니다.
      *
      * <p>쿼리스트링은 넘어오지 않는다({@code getRequestURI}). 매칭에 참여하지 않는 것이
-     * 규약이다(security-design.md §4).
+     * 규약이다(backend/security.md).
      */
     public static ApiLayer of(String path) {
         if (path == null || !path.startsWith("/api/")) {

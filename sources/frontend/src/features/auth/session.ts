@@ -8,13 +8,13 @@ import { setActiveMenuCode } from '@/shared/api';
 import { logout as callLogout } from '@/features/auth/api/authApi';
 
 /**
- * 로그아웃 정리 — 50 §9. <b>네 경로가 이 함수 하나로 수렴한다.</b>
+ * 로그아웃 정리. <b>네 경로가 이 함수 하나로 수렴한다.</b>
  *
  * <table>
- *   <tr><td>명시적 로그아웃</td><td>헤더 버튼 — main-shell.md §3.2</td></tr>
- *   <tr><td>만료 예고 모달의 "지금 로그아웃"</td><td>아직 없다(50 §7)</td></tr>
+ * <tr><td>명시적 로그아웃</td><td>헤더 버튼 — frontend/tabs.md</td></tr>
+ * <tr><td>만료 예고 모달의 "지금 로그아웃"</td><td>아직 없다</td></tr>
  *   <tr><td>재인증 포기</td><td>모달의 "다른 계정으로" · 재인증 불가</td></tr>
- *   <tr><td>유효 권한 공집합</td><td>50 §8.2 — 재인증해도 로그인이 막힌다</td></tr>
+ * <tr><td>유효 권한 공집합</td><td> — 재인증해도 로그인이 막힌다</td></tr>
  * </table>
  *
  * <p><b>경로마다 다르게 치우면 어느 하나가 빠진다.</b> 실제로 빠지기 쉬운 것은 react-query

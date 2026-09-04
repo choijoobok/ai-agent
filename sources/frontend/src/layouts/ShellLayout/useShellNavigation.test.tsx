@@ -8,7 +8,7 @@ import { useTabStore } from '@/shared/stores/tabStore';
 import type { MenuNode } from '@/shared/authz/menuTree';
 
 /**
- * URL 과 탭을 잇는 자리 — frontend-stack.md §4.4.
+ * URL 과 탭을 잇는 자리 — frontend/packages.md.
  *
  * <p><b>닫기는 스토어만 건드린다.</b> 활성 탭이 닫히면 스토어는 다음 탭으로 옮기는데
  * 주소창은 <b>방금 닫은 화면</b>을 가리킨 채 남는다. 그 상태로 새로고침하면 URL → 탭 효과가

@@ -10,10 +10,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 크론을 읽는 규칙 — 31 §7 · 65 §3.4.
+ * 크론을 읽는 규칙 — backend/persistence.md · screen/batch/schedule/requirements.md.
  *
- * <p><b>화면이 이것을 못 한다.</b> 크론 파서가 프론트 의존성에 없어(20 §2) 쿨다운과의
- * 관계는 서버만 판정할 수 있고, 그래서 grid-edit-validation.md §3.4 의 <i>서버 검증이 남는 자리</i> 다 —
+ * <p><b>화면이 이것을 못 한다.</b> 크론 파서가 프론트 의존성에 없어(stack.md) 쿨다운과의
+ * 관계는 서버만 판정할 수 있고, 그래서 frontend/grid.md 의 <i>서버 검증이 남는 자리</i> 다 —
  * 판정이 순수 함수라 여기서 값싸게 지킬 수 있다.
  */
 class CronRulesTest {
@@ -63,7 +63,7 @@ class CronRulesTest {
     @Test
     @DisplayName("다음 실행이 크론을 눈으로 확인시킨다 — 평일 크론은 주말을 건너뛴다")
     void nextExecutionSkipsTheWeekend() {
-        // 토요일 정오에서 물으면 다음은 **월요일 아침 9시**다 — 화면이 그것을 그린다(65 §3.4).
+        // 토요일 정오에서 물으면 다음은 **월요일 아침 9시**다 — 화면이 그것을 그린다(screen/batch/schedule/requirements.md).
         Instant saturdayNoon =
                 ZonedDateTime.of(2026, 8, 29, 12, 0, 0, 0, ZoneId.systemDefault()).toInstant();
 

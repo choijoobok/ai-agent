@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * 목록은 아우터 조인이고 <b>왼쪽이 코드</b>다 — 63 §4.2.
+ * 목록은 아우터 조인이고 <b>왼쪽이 코드</b>다 — screen/code/requirements.md.
  *
  * <p><b>여기서 지키는 것 셋이다.</b> ① 오른쪽이 비어도 <b>행 수가 그대로다</b>,
  * ② {@code 변경됨} 의 근거는 <b>행의 존재</b>이지 값 비교가 아니다, ③ 조회조건 셋은
@@ -97,7 +97,7 @@ class ConfigQueryServiceTest {
         }
 
         /**
-         * <b>배지의 근거는 값 비교가 아니다</b>(63 §4.3). 기본값과 같은 값으로 저장해 두면
+         * <b>배지의 근거는 값 비교가 아니다</b>(screen/code/requirements.md). 기본값과 같은 값으로 저장해 두면
          * 다음 배포가 {@code yml} 을 올려도 그 키만 옛 값에 묶이는데, 두 값이 같아 눈으로는
          * 구분되지 않으므로 <b>이것이 유일한 신호</b>다.
          */
@@ -137,7 +137,7 @@ class ConfigQueryServiceTest {
         }
 
         @Test
-        @DisplayName("대소문자를 가리지 않는다 — LIKE 와 같은 규칙이다(api-conventions.md §3.3)")
+        @DisplayName("대소문자를 가리지 않는다 — LIKE 와 같은 규칙이다(backend/api.md)")
         void 대소문자를_가리지_않는다() {
             assertThat(query(new Condition("keyword", Op.contains, "FAIL")).content()).hasSize(1);
         }
@@ -236,7 +236,7 @@ class ConfigQueryServiceTest {
     class Prefixes {
 
         /**
-         * <b>관리하지 않는다</b>(63 §4.6). 전 키에서 마디 단위로 도출하므로 키를 하나 더하면
+         * <b>관리하지 않는다</b>(screen/code/requirements.md). 전 키에서 마디 단위로 도출하므로 키를 하나 더하면
          * 그 접두사가 저절로 선다 — 목록으로 두면 <b>관리하는 순간 어긋난다</b>.
          */
         @Test

@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-04
 status: active
-sources: ["sources/backend/domain/", "sources/backend/core/search/", "aidd-guide/standard/backend/_study/architecture.md", "aidd-guide/standard/backend/_study/db-portability.md"]
+sources: ["sources/backend/domain/", "sources/backend/core/search/", "aidd-guide/standard/backend/packages.md", "aidd-guide/standard/backend/persistence.md"]
 author: Bong Jong Hyeon
 tier: 2
 tags: [backend, jpa, querydsl, mybatis, liquibase, portability]
@@ -18,7 +18,7 @@ tags: [backend, jpa, querydsl, mybatis, liquibase, portability]
 > 벤더 차이는 *나중에 고치는 버그* 가 아니라 **그 벤더로 배포한 뒤에야 나타나는 버그**다 —
 > 개발용 PostgreSQL 은 다 받아준다.
 >
-> 유도과정·실측은 [`_study/db-portability.md`](./_study/db-portability.md).
+> 유도과정·실측은 [`backend/persistence.md`](./persistence.md).
 
 ## 1. 셋의 경계
 
@@ -233,4 +233,3 @@ private String parameters;
 
 - [search.md](./search.md) — 화이트리스트와 빌더
 - [packages.md](./packages.md) — 트랜잭션 경계
-- [`_study/db-portability.md`](./_study/db-portability.md) — 원문(실측·스파이크·해소된 미결)

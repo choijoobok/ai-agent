@@ -22,19 +22,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 공지를 <b>읽는 쪽</b> — 알림 모달의 공지 탭(60 §8)과 로그인 팝업(60 §9).
+ * 공지를 <b>읽는 쪽</b> — 알림 모달의 공지 탭(screen/_standalone/README.md)과 로그인 팝업(screen/_standalone/README.md).
  *
  * <h2>{@link NoticeQueryService} 와 무엇이 다른가</h2>
  *
  * <p>저쪽은 {@code NOTICE_MGMT} 메뉴의 조회이고 <b>전건을 본다</b> — 내린 것도 예정된 것도
  * 관리자에게는 보여야 한다. 여기는 <b>전 사용자가 부르는 {@code common} 계층</b>이라
- * 조건이 코드에 박혀 있다: 화이트리스트도 조회조건 봉투도 없다(api-conventions.md §3.0 — 동적 조회가
+ * 조건이 코드에 박혀 있다: 화이트리스트도 조회조건 봉투도 없다(backend/api.md — 동적 조회가
  * 아니다).
  *
  * <p><b>그것이 보안 경계다.</b> 조건을 클라이언트가 주면 내려진 공지를 부를 수 있고, 그
- * 순간 <i>즉시 내림</i>(66 §4.4)이 <b>화면에서만 내려간 것</b>이 된다.
+ * 순간 <i>즉시 내림</i>(screen/notice/requirements.md)이 <b>화면에서만 내려간 것</b>이 된다.
  *
- * <h2>보이는 것의 규칙 — 66 §4.4</h2>
+ * <h2>보이는 것의 규칙 — screen/notice/requirements.md</h2>
  *
  * <pre>
  * 기본            사용 + 게시 시작이 지났고 + (게시 종료가 없거나 아직 안 지났다)
@@ -82,10 +82,10 @@ public class NoticeFeedService {
     }
 
     /**
-     * 공지 탭 — 66 §4.2.1 의 정렬 그대로다.
+     * 공지 탭 — screen/notice/requirements.md 의 정렬 그대로다.
      *
      * <p><b>관리 화면과 같은 순서</b>인 것이 요건이다. 팝업이 <i>이 정렬의 첫 건</i> 을
-     * 집으므로(66 §4.2.1) 순서가 갈리면 <i>"팝업에 뜬 공지가 탭 목록의 첫 줄이 아니다"</i>
+     * 집으므로(screen/notice/requirements.md) 순서가 갈리면 <i>"팝업에 뜬 공지가 탭 목록의 첫 줄이 아니다"</i>
      * 가 생기고, 그러면 <b>둘이 같은 것을 가리킨다는 전제</b>가 깨진다.
      *
      * @param includeExpired {@code NI-04} 의 <i>"지난 공지 포함"</i>. 기본은 꺼져 있다
@@ -144,9 +144,9 @@ public class NoticeFeedService {
     }
 
     /**
-     * 로그인 뒤 띄울 것 — 66 §2.4 C안.
+     * 로그인 뒤 띄울 것 — screen/notice/requirements.md C안.
      *
-     * <p><b>목록 정렬의 첫 건</b>이며 그것이 결정적이어야 한다(66 §4.2.1). 흔들리면
+     * <p><b>목록 정렬의 첫 건</b>이며 그것이 결정적이어야 한다(screen/notice/requirements.md). 흔들리면
      * <i>"어느 공지가 팝업으로 뜨는가"</i> 가 매 로그인마다 달라진다.
      *
      * <p><b>{@code moreCount} 는 게시중 전건에서 하나를 뺀 수</b>다. 팝업 대상만 세지
@@ -185,7 +185,7 @@ public class NoticeFeedService {
      * 공지가 생기고, 그것은 화면에서 설명할 수 없다.
      *
      * <p><b>사용 여부는 어느 쪽에서도 빠지지 않는다</b> — {@code includeExpired} 가 무르는
-     * 것은 <b>종료 조건 하나뿐</b>이다(66 §4.4).
+     * 것은 <b>종료 조건 하나뿐</b>이다(screen/notice/requirements.md).
      */
     private static BooleanExpression visible(Instant now, boolean includeExpired) {
         BooleanExpression base = N.useYn.isTrue().and(N.noticeFromDtm.loe(now));
@@ -213,7 +213,7 @@ public class NoticeFeedService {
      * 모아 한 번 더 묻는다. 공지를 쓰는 사람은 대개 한둘이라 이 왕복이 싸다.
      *
      * <p><b>못 찾은 것은 빠진다</b>(부르는 쪽이 ID 를 그대로 쓴다). 감사 컬럼에는 FK 가
-     * 없으므로(40 §4.2) 이론상 끊어질 수 있고, 이름을 못 찾은 것이 공지를 못 읽을 이유는
+     * 없으므로(sys/INDEX.md) 이론상 끊어질 수 있고, 이름을 못 찾은 것이 공지를 못 읽을 이유는
      * 아니다.
      */
     private Map<String, String> namesOf(List<String> regIds) {

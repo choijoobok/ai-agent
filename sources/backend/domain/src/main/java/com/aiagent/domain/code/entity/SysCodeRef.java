@@ -12,12 +12,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 참조 <b>값</b> — 43 §5.3 · §5.4. <b>매트릭스의 셀</b>이다.
+ * 참조 <b>값</b> — sys/code.md. <b>매트릭스의 셀</b>이다.
  *
  * <p>부모가 둘이다 — 행({@link SysCode})과 열({@link SysCodeGrpRef}). 그래서 <b>정의 없는
- * 참조값이 구조적으로 생길 수 없다</b>(43 §2).
+ * 참조값이 구조적으로 생길 수 없다</b>(sys/code.md).
  *
- * <p><b>없는 값은 행이 없는 것이다</b>(43 §5.4). {@code USE_YN} 도 {@code NULL} 도 빈 문자열도
+ * <p><b>없는 값은 행이 없는 것이다</b>(sys/code.md). {@code USE_YN} 도 {@code NULL} 도 빈 문자열도
  * 두지 않으며, 화면이 셀을 비우고 저장하면 서비스가 그 행을 <b>지운다</b> — 남기면 <i>"없음"</i>
  * 의 표현이 둘이 되고, 읽는 쪽이 매번 두 가지를 함께 판정해야 한다.
  *
@@ -60,7 +60,7 @@ public class SysCodeRef extends BaseAuditEntity {
     /**
      * <b>부르는 쪽이 {@code null} 을 넘기지 않는다.</b> 값을 비우는 것은 수정이 아니라
      * <b>행 삭제</b>이며 그 판단은 저장 서비스가 한다 — 여기서 받아 주면 {@code REF_VAL IS
-     * NULL} 인 행이 남아 <i>"값 없음"</i> 이 두 모양을 갖는다(43 §5.4).
+     * NULL} 인 행이 남아 <i>"값 없음"</i> 이 두 모양을 갖는다(sys/code.md).
      */
     public void changeValue(String refVal) {
         this.refVal = Objects.requireNonNull(refVal, "refVal");

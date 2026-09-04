@@ -9,7 +9,6 @@ status: active
 sources: [Anthropic "Effective context engineering"]
 author: Bong Jong Hyeon
 tier: 2
-references: [5]
 tags: [harness, tool, mcp, curation, gate]
 ---
 

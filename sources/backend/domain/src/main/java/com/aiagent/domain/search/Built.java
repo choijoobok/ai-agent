@@ -21,13 +21,13 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * 검증을 통과한 조회 — api-conventions.md §4.2. <b>이 타입만 쿼리에 들어간다.</b>
+ * 검증을 통과한 조회 — backend/api.md. <b>이 타입만 쿼리에 들어간다.</b>
  *
  * <p><b>생성자가 패키지 전용인 것이 장치다.</b> {@link QueryDslBuilder} 말고는 아무도 만들 수
  * 없으므로 <i>"검증 호출을 빠뜨렸다"</i> 가 <b>런타임 500 이 아니라 컴파일 실패</b>가 된다.
  * AOP 통과 표식은 배포 후에 알려 주고, 자료형은 빌드에서 막는다 — 원칙 P1.
  *
- * <p><b>{@code FROM}·{@code JOIN} 도 여기서 붙는다</b>(34 §4.4). 서비스에 남는 것은
+ * <p><b>{@code FROM}·{@code JOIN} 도 여기서 붙는다</b>(backend/search.md). 서비스에 남는 것은
  * <i>"무엇을 뽑나"</i>({@code PROJECTION})뿐이다 — 조인이 스펙과 서비스 두 곳에 있으면
  * 어긋났을 때 <b>묵시적 크로스 조인</b>으로 결과가 조용히 틀린다.
  */
@@ -72,9 +72,9 @@ public final class Built {
             case all -> query.limit(PageSpec.ALL_LIMIT + 1L);
             /*
               <b>{@code OFFSET} 이 없다.</b> 커서가 곧 {@code WHERE} 이므로 건너뛸 것이 없고,
-              그래서 이 모드만 벤더 분기를 요구하지 않는다(db-portability.md §4.4 · api-conventions.md §3.8).
+              그래서 이 모드만 벤더 분기를 요구하지 않는다(backend/persistence.md · backend/api.md).
 
-              한 건 더 읽는 것이 다음 장의 존재 판정이다 — ADR-0019 가 엑셀 상한을
+              한 건 더 읽는 것이 다음 장의 존재 판정이다 — frontend/grid-advanced.md 가 엑셀 상한을
               "상한 + 1 건까지만 조회" 로 판정한 것과 같은 수법이며, COUNT 를 세지 않기로 한
               이 모드에서 "다음이 있나" 에 답하는 유일한 수단이다.
             */
@@ -86,7 +86,7 @@ public final class Built {
     /**
      * 총 건수 쿼리 — {@code offset} 모드에만 있다.
      *
-     * <p><b>공짜가 아니다</b>(grid-standard.md §2.3). 대용량 이력에서 비싸며 그 화면들이 커서형을 고르는 이유다.
+     * <p><b>공짜가 아니다</b>(frontend/grid.md). 대용량 이력에서 비싸며 그 화면들이 커서형을 고르는 이유다.
      */
     @SuppressWarnings("unchecked")
     public JPAQuery<Long> count(JPAQueryFactory factory) {
@@ -95,7 +95,7 @@ public final class Built {
         return query.where(where);
     }
 
-    /** 조회 결과를 응답 봉투로 — api-conventions.md §3.9. */
+    /** 조회 결과를 응답 봉투로 — backend/api.md. */
     public <T> PageResponse<T> respond(List<T> rows, long totalElements) {
         return switch (mode) {
             case offset -> PageResponse.offset(
@@ -114,7 +114,7 @@ public final class Built {
     }
 
     /**
-     * 커서형의 응답 — api-conventions.md §3.8 · §3.9.
+     * 커서형의 응답 — backend/api.md.
      *
      * <p>{@link #apply} 가 {@code size + 1} 건을 읽어 왔다. 여기서 하는 일이 셋이다.
      *

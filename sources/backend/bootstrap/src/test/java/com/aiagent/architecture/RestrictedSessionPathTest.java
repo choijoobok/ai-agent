@@ -17,7 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 제한 세션 화이트리스트의 경로는 <b>실제 핸들러를 가리킨다</b> — security-design.md §4 체인 #5.
+ * 제한 세션 화이트리스트의 경로는 <b>실제 핸들러를 가리킨다</b> — backend/security.md 체인 #5.
  *
  * <p>체인 #5 는 <b>차단이 아니라 유도</b>다. 비밀번호가 만료된 사용자의 세션은 살아 있되
  * 이 목록 밖의 모든 {@code /api/**} 가 403 이 되며, <b>목록의 경로에 핸들러가 없으면
@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
  *
  * <p><b>실제로 그런 상태로 한동안 있었다.</b> {@code /api/common/auth/changePassword} 는
  * 화면이 오기 전부터 목록에 적혀 있었고(<i>"없는 경로가 여기 있어도 무해하다 — 핸들러가
- * 없으면 404 다"</i>), 프로필 모달(main-shell.md §8)이 그 핸들러를 붙이면서 비로소 참이 됐다. 이제
+ * 없으면 404 다"</i>), 프로필 모달(frontend/tabs.md)이 그 핸들러를 붙이면서 비로소 참이 됐다. 이제
  * <b>반대 방향의 오타</b>도 막는다: 경로를 고치면서 한쪽만 고치는 것이 이 게이트가 잡는 것이다.
  *
  * <p>매칭은 <b>완전 일치</b>다. 인터셉터가 {@code Set.contains} 로 비교하므로 여기서도

@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 
 /**
- * 열린 탭 하나 — frontend-stack.md §4.2.
+ * 열린 탭 하나 — frontend/packages.md.
  *
  * <p><b>`key` 가 `pathname` 이 아닌 것이 이 설계의 중심</b>이다. 같은 메뉴를 여러 탭에
- * 띄울 수 있으므로(main-shell.md §4.7.1 "새 탭으로 열기") 경로는 탭을 식별하지 못한다. 라우트
+ * 띄울 수 있으므로(frontend/tabs.md "새 탭으로 열기") 경로는 탭을 식별하지 못한다. 라우트
  * 엘리먼트에 이 `key` 를 React key 로 주면 <b>같은 라우트라도 탭이 다르면 별개 인스턴스</b>가
  * 되어 검색 조건·스크롤·입력값을 공유하지 않는다.
  */
@@ -23,19 +23,19 @@ export interface WorkTab {
   instance: number;
   closable: boolean;
   /**
-   * 연 순서. <b>위치가 아니라 나이</b>다 — 드래그로 자리를 바꿔도(frontend-stack.md §4.7) 상한에 닿았을 때
-   * 닫히는 대상은 바뀌지 않아야 한다(frontend-stack.md §4.8).
+   * 연 순서. <b>위치가 아니라 나이</b>다 — 드래그로 자리를 바꿔도(frontend/packages.md) 상한에 닿았을 때
+   * 닫히는 대상은 바뀌지 않아야 한다(frontend/packages.md).
    */
   seq: number;
 }
 
-/** frontend-stack.md §4.1 요구 1 — <b>비고정 탭</b> 기준이다. 대시보드가 한 칸을 잡아먹지 않는다(main-shell.md §2.1). */
+/** frontend/packages.md 요구 1 — <b>비고정 탭</b> 기준이다. 대시보드가 한 칸을 잡아먹지 않는다(frontend/tabs.md). */
 export const TAB_LIMIT = 20;
 
 export const DASHBOARD_MENU_CD = 'DASHBOARD';
 
 /**
- * main-shell.md §2.1 — 닫을 수 없고 언제나 첫 자리다.
+ * frontend/tabs.md — 닫을 수 없고 언제나 첫 자리다.
  *
  * <p><b>탭이 0개인 상태를 허용하지 않으려는 것</b>이다. 허용하면 탭바가 나타났다 사라지고
  * 그때마다 콘텐츠 영역의 높이가 바뀐다.
@@ -71,18 +71,18 @@ export interface TabState {
   dirtyKeys: string[];
 
   open: (target: OpenTarget) => OpenOutcome;
-  /** main-shell.md §4.7.1 — 이미 열려 있어도 <b>항상 새 인스턴스</b>를 만든다. */
+  /** frontend/tabs.md — 이미 열려 있어도 <b>항상 새 인스턴스</b>를 만든다. */
   openNewInstance: (target: OpenTarget) => OpenOutcome;
   closeAndOpen: (victimKey: string, target: OpenTarget) => OpenOutcome;
 
   activate: (key: string) => void;
   close: (key: string) => void;
-  /** frontend-stack.md §4.5 — 현재 탭과 대시보드를 남긴다. */
+  /** frontend/packages.md — 현재 탭과 대시보드를 남긴다. */
   closeOthers: (key: string) => void;
-  /** frontend-stack.md §4.5 · main-shell.md §3.1 — 대시보드만 남긴다. 헤더 로고와 같은 동작이다. */
+  /** frontend/packages.md · frontend/tabs.md — 대시보드만 남긴다. 헤더 로고와 같은 동작이다. */
   closeAll: () => void;
   /**
-   * frontend-stack.md §4.7 — 드래그로 순서를 바꾼다.
+   * frontend/packages.md — 드래그로 순서를 바꾼다.
    *
    * <p><b>고정 탭은 제자리를 지키고, 그 앞으로 끼어들 수도 없다</b> — 대시보드는 언제나 맨
    * 왼쪽이다. 둘을 함께 막지 않으면 대시보드는 못 옮기는데 다른 탭이 그 왼쪽에 들어간다.
@@ -90,9 +90,9 @@ export interface TabState {
   move: (fromKey: string, toKey: string) => void;
 
   setDirty: (key: string, dirty: boolean) => void;
-  /** 50 §8.2 — 권한을 잃은 메뉴의 탭을 정리한다. 닫힌 탭을 돌려준다. */
+  /** — 권한을 잃은 메뉴의 탭을 정리한다. 닫힌 탭을 돌려준다. */
   retain: (allowedMenuCds: readonly string[]) => WorkTab[];
-  /** 로그아웃 정리 — 50 §9. */
+  /** 로그아웃 정리. */
   reset: () => void;
 }
 
@@ -129,15 +129,15 @@ function createTab(target: OpenTarget, instance: number): WorkTab {
 }
 
 /**
- * 열린 탭과 활성 탭 — frontend-stack.md §8.1.
+ * 열린 탭과 활성 탭 — frontend/packages.md.
  *
  * <p><b>`persist` 를 쓰지 않는다.</b> 새로고침 시 탭을 복원하지 않기로 이미 정했으므로
- * (frontend-stack.md §4.1 요구 6) 저장할 대상이 없다 — F5 는 <b>대시보드 + 현재 URL 의 탭 하나</b>로 시작한다.
+ * (frontend/packages.md 요구 6) 저장할 대상이 없다 — F5 는 <b>대시보드 + 현재 URL 의 탭 하나</b>로 시작한다.
  *
  * <p><b>폼 입력값·스크롤은 여기 없다.</b> 비활성 탭의 컴포넌트를 언마운트하지 않고 숨기므로
  * 그 값들은 컴포넌트 안에 그대로 남는다. 이 스토어가 아는 것은 <i>"어떤 탭이 열려 있는가"</i>
  * 뿐이며, 화면 데이터를 여기 복사해 넣으면 같은 메뉴의 두 인스턴스가 그것을 공유하게 된다
- * (frontend-stack.md §4.6).
+ * (frontend/packages.md).
  */
 export const useTabStore = create<TabState>((set, get) => ({
   tabs: [DASHBOARD_TAB],
@@ -148,7 +148,7 @@ export const useTabStore = create<TabState>((set, get) => ({
     const { tabs } = get();
 
     // 트리에서 이미 열린 메뉴를 다시 누르면 그 탭으로 전환한다 — 새 인스턴스는 명시적
-    // 조작(새 탭으로 열기)일 때만 만든다(main-shell.md §4.7.1).
+    // 조작(새 탭으로 열기)일 때만 만든다(frontend/tabs.md).
     const existing = tabs.find((tab) => tab.menuCd === target.menuCd);
     if (existing) {
       set({ activeKey: existing.key });
@@ -245,7 +245,7 @@ function openFresh(
   const closable = tabs.filter((tab) => tab.closable);
 
   if (closable.length >= TAB_LIMIT) {
-    // 말없이 닫지 않는다 — 사용자는 무엇이 사라졌는지 모른 채 작업을 잃는다(frontend-stack.md §4.8).
+    // 말없이 닫지 않는다 — 사용자는 무엇이 사라졌는지 모른 채 작업을 잃는다(frontend/packages.md).
     // 기준은 위치가 아니라 나이다.
     const victim = closable.reduce((oldest, tab) => (tab.seq < oldest.seq ? tab : oldest));
     return { type: 'limit', victim };

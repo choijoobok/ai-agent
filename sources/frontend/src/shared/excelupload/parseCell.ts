@@ -1,13 +1,13 @@
 import type { ColumnDef } from '@/shared/grid/types';
 
 /**
- * 파일의 <b>글자</b> → 컬럼의 <b>값</b> — `workbook.cellValue` 의 반대편이다(ADR-0024).
+ * 파일의 <b>글자</b> → 컬럼의 <b>값</b> — `workbook.cellValue` 의 반대편이다(frontend/grid-advanced.md).
  *
- * <p><b>양식이 곧 다운로드다</b>(grid-standard.md §2.2 · 68 §8.2) — ②의 *전체* 가 만든 파일을 사람이
+ * <p><b>양식이 곧 다운로드다</b>(frontend/grid.md · playbook/INDEX.md) — ②의 *전체* 가 만든 파일을 사람이
  * 고쳐서 올린다. 그래서 여기서 읽어야 하는 것은 <b>그쪽이 쓴 것</b>이며, 두 규칙이
  * 갈리면 <i>내려받아 그대로 올렸는데 전부 오류</i> 가 된다.
  *
- * <h2>코드는 값과 이름을 둘 다 받는다 — 68 §11.1</h2>
+ * <h2>코드는 값과 이름을 둘 다 받는다 — playbook/INDEX.md</h2>
  *
  * <p>사람은 <b>화면에 보이는 이름</b>을 붙여넣고 타 시스템은 코드를 준다. 한쪽만 받으면
  * 양식이 <b>그 절반에게 쓸 수 없다</b>.
@@ -23,7 +23,7 @@ import type { ColumnDef } from '@/shared/grid/types';
  */
 export type ParseResult = { ok: true; value: unknown } | { ok: false; message: string };
 
-/** 못 읽은 사유는 <b>완성된 문구</b>로 온다 — 화면이 그대로 셀에 붙인다(grid-edit-validation.md §3.3). */
+/** 못 읽은 사유는 <b>완성된 문구</b>로 온다 — 화면이 그대로 셀에 붙인다(frontend/grid.md). */
 export interface ParseText {
   /** `{value}` 가 파일에 있던 글자다. */
   notNumber: (value: string) => string;
@@ -35,7 +35,7 @@ export interface ParseText {
 
 export function parseCell<T>(column: ColumnDef<T>, raw: unknown, text: ParseText): ParseResult {
   const value = normalize(raw);
-  // 빈 칸은 <b>비운 것</b>이다 — 필수 여부는 검증이 본다(grid-edit-validation.md §3.2), 여기가 아니다.
+  // 빈 칸은 <b>비운 것</b>이다 — 필수 여부는 검증이 본다(frontend/grid.md), 여기가 아니다.
   if (value === null) return { ok: true, value: null };
 
   if (column.type === 'ynFlag') {
@@ -67,7 +67,7 @@ export function parseCell<T>(column: ColumnDef<T>, raw: unknown, text: ParseText
   }
 
   /*
-    <b>큰 정수는 문자열로 남는다</b>(68 §9.10). {@code Number()} 로 확인만 해도 안 된다 —
+    <b>큰 정수는 문자열로 남는다</b>(playbook/INDEX.md). {@code Number()} 로 확인만 해도 안 된다 —
     2^53 을 넘는 값은 그 순간 정밀도를 잃고, 우리는 <i>확인했으니 맞다</i> 고 믿는다.
     자릿수만 본다.
   */

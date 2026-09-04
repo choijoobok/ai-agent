@@ -9,18 +9,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface SysCodeRepository extends JpaRepository<SysCode, SysCodeId> {
 
     /**
-     * 그룹 삭제의 게이트가 읽는 값 — grid-standard.md §6.2 · 63 §2.5.
+     * 그룹 삭제의 게이트가 읽는 값 — frontend/grid.md · screen/code/requirements.md.
      *
      * <p>화면은 하단의 행 수로 이미 판정하지만(조회 시점), <b>그 사이에 다른 사람이 코드를
      * 추가할 수 있다</b>. 저장 시점에 한 번 더 세는 것이 그 창을 좁히며, 그래도 남는 창은
-     * FK 가 닫는다 — 63 §2.5 가 <i>"동시성으로 뚫릴 수 있다"</i> 고 미리 적어 둔 그것이다.
+     * FK 가 닫는다 — screen/code/requirements.md 가 <i>"동시성으로 뚫릴 수 있다"</i> 고 미리 적어 둔 그것이다.
      */
     long countByGrpCd(String grpCd);
 
     List<SysCode> findByGrpCd(String grpCd);
 
     /**
-     * 콤보 후보 — {@code USE_YN='Y'} 만, 그룹별 {@code SORT_NO} 순이다(43 §4.1 · §8).
+     * 콤보 후보 — {@code USE_YN='Y'} 만, 그룹별 {@code SORT_NO} 순이다(sys/code.md).
      *
      * <p>{@code DTL_CD} 를 정렬의 <b>둘째 키</b>로 둔다. {@code SORT_NO} 가 같은 행이 있으면
      * 나머지 순서를 DB 가 정하는데 그것은 <b>매 조회 같다는 보장이 없다</b> — 콤보의 항목이

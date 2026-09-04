@@ -8,7 +8,7 @@ import { useTabStore } from '@/shared/stores/tabStore';
 import { MSG } from '@/shared/i18n/messageKeys';
 
 /**
- * 조회조건 헤더 — main-shell.md §5.1 · UX-15.
+ * 조회조건 헤더 — frontend/tabs.md · UX-15.
  *
  * <p>스물한 화면이 갖고 있던 스무 줄을 한 훅으로 모은 뒤(2026-09-02), <b>그 스무 줄이 하던
  * 일 셋</b>을 여기서 지킨다 — ① 토글이 <b>브레드크럼 줄</b>에 등록된다, ② 접힘이

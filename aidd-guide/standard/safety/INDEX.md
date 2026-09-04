@@ -47,4 +47,4 @@ tags: [safety, security, pii, injection, secrets, rate-limit, index]
 
 - [05-harness](../../harness/INDEX.md) — 도구 차단 룰은 훅·permission 으로 구현
 - [CLAUDE.md](../../../CLAUDE.md) — 안전 규칙은 헌법 다음 우선
-- [Anthropic critical_injection_defense](../../reference/bibliography.md) — 출처
+- Anthropic critical_injection_defense — 출처

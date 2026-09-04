@@ -7,7 +7,7 @@ export interface MessageBundle {
   /**
    * 지원 언어 전부 — **`unchanged` 여도 온다**.
    *
-   * <p>43 §7 은 이 목록의 원본을 공통코드(`LANG_CD`)로 정했고 63 §3.2 는 다국어 관리 화면의
+   * <p>sys/code.md 은 이 목록의 원본을 공통코드(`LANG_CD`)로 정했고 screen/code/requirements.md 는 다국어 관리 화면의
    * 하단 행 수가 *"이미 캐시에 있는"* 그 목록에서 온다고 했다. `SYS_CODE` 가 없는 동안
    * **이 번들이 그 캐시 자리를 대신한다** — 별도 API 를 두면 화면 진입마다 왕복이 하나 늘고,
    * 그 API 는 공통코드가 생기는 날 지울 것이 된다.
@@ -19,7 +19,7 @@ export interface MessageBundle {
 }
 
 /**
- * @param version 들고 있는 번들의 버전. 넘기면 같을 때 **본문 없이** 돌아온다(43 §8.1) —
+ * @param version 들고 있는 번들의 버전. 넘기면 같을 때 **본문 없이** 돌아온다(sys/code.md) —
  *   두 번째 이후 접속이 이 경로이며, 그래서 실제로 전량을 받는 것은 첫 접속뿐이다.
  */
 export function fetchMessageBundle(lang: string, version?: number): Promise<MessageBundle> {

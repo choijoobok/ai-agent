@@ -4,11 +4,11 @@ import { usePopup } from '@/shared/popup/popupContext';
 import type { PopupRow } from '@/shared/popup/types';
 
 /**
- * 참조 팝업 셀의 편집기 — grid-column-contract.md §6 · 68 §9.4.
+ * 참조 팝업 셀의 편집기 — frontend/grid.md · playbook/INDEX.md.
  *
  * <p><b>그리는 것이 없다.</b> 편집이 시작되는 순간 모달을 열고, 닫히면 편집을 끝낸다 —
  * 셀 자리에 입력칸을 두면 <b>사람이 거기 타이핑할 수 있게</b> 되고, 그렇게 들어온 값은
- * 팝업을 거치지 않았으므로 <i>딸려 오는 칸</i>이 채워지지 않는다. 그것이 정확히 grid-column-contract.md §6.1 이
+ * 팝업을 거치지 않았으므로 <i>딸려 오는 칸</i>이 채워지지 않는다. 그것이 정확히 frontend/grid.md 이
  * 없애려던 불일치다.
  *
  * <p><b>한 번만 연다.</b> 판은 편집기를 다시 그릴 수 있고({@code StrictMode} 는 두 번
@@ -21,9 +21,9 @@ import type { PopupRow } from '@/shared/popup/types';
  */
 export interface PopupCellEditorParams {
   popupKey: string;
-  /** 이 행에서 만든 팝업의 조회 조건 — grid-column-contract.md §6.2 의 `param`. */
+  /** 이 행에서 만든 팝업의 조회 조건 — frontend/grid.md 의 `param`. */
   param?: (data: unknown) => unknown;
-  /** 인가가 매이는 메뉴 — <b>부르는 화면의 것</b>이다(ADR-0020). */
+  /** 인가가 매이는 메뉴 — <b>부르는 화면의 것</b>이다(backend/api.md). */
   menuCd: string;
   /** 고른 행을 행에 머지한다. {@code null} 이면 지우는 것이다 — 취소는 여기까지 오지 않는다. */
   onPick: (data: unknown, picked: PopupRow | null) => void;

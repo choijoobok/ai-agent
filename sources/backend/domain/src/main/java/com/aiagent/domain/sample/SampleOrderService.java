@@ -23,12 +23,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 주문의 저장과 실행 — 68 §3 · §5.4 · §5.6.
+ * 주문의 저장과 실행 — playbook/INDEX.md.
  *
  * <h2>저장 단위가 둘이다</h2>
  *
- * <p>마스터와 디테일이 <b>각자 저장한다</b>(68 §5.1). 한 번에 묶지 않는 이유는 저장 버튼이
- * 그리드마다 따로이기 때문이며(grid-standard.md §2.1), 묶으면 <i>품목만 고쳤는데 주문도 갱신됨</i> 이
+ * <p>마스터와 디테일이 <b>각자 저장한다</b>(playbook/INDEX.md). 한 번에 묶지 않는 이유는 저장 버튼이
+ * 그리드마다 따로이기 때문이며(frontend/grid.md), 묶으면 <i>품목만 고쳤는데 주문도 갱신됨</i> 이
  * 되어 감사 컬럼이 거짓말을 한다. 그 갈림이 <b>클래스의 갈림</b>이기도 하다 — 품목은
  * {@link SampleItemService}, 태그의 행 편집은 {@link SampleTagService} 다.
  *
@@ -36,10 +36,10 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <table><caption></caption>
  *   <tr><td><b>품목이 있으면 삭제 불가</b></td>
- *       <td>grid-standard.md §6.2. 화면은 체크박스를 열지 않지만 <b>화면 밖 경로가 실재</b>하고,
+ * <td>frontend/grid.md. 화면은 체크박스를 열지 않지만 <b>화면 밖 경로가 실재</b>하고,
  *           FK 의 {@code RESTRICT} 는 <i>제약 위반</i> 이라는 읽을 수 없는 문구로만 답한다</td></tr>
  *   <tr><td><b>잠긴 주문은 수정 불가</b></td>
- *       <td>{@code LOCK_YN} 은 상태와 다른 축이다(48 §3.2) — {@link SampleRules} 가 본다</td></tr>
+ * <td>{@code LOCK_YN} 은 상태와 다른 축이다(playbook/INDEX.md) — {@link SampleRules} 가 본다</td></tr>
  * </table>
  *
  * <h2>전건을 먼저 보고 그다음에 쓴다</h2>
@@ -174,9 +174,9 @@ public class SampleOrderService {
     }
 
     /**
-     * 출고 지시 — 68 §5.4 의 실행 액션이다(<b>프로그레스 없음</b>).
+     * 출고 지시 — playbook/INDEX.md 의 실행 액션이다(<b>프로그레스 없음</b>).
      *
-     * <p>화면이 {@code eligible} 로 대상을 거르지만(grid-api-contract.md §7) 고른 뒤 남이 상태를 바꾸면 그
+     * <p>화면이 {@code eligible} 로 대상을 거르지만(frontend/grid.md) 고른 뒤 남이 상태를 바꾸면 그
      * 판정은 <b>낡은 값</b>이다. 여기가 그 마지막 확인이며, <b>하나라도 안 되면 전부
      * 거부한다</b> — 일부만 나가면 사용자가 <i>무엇이 나갔나</i> 를 다시 조회해 세야 한다.
      *
@@ -254,9 +254,9 @@ public class SampleOrderService {
     }
 
     /**
-     * 물리 삭제다 — 48 §3.4.
+     * 물리 삭제다 — playbook/INDEX.md.
      *
-     * <p>품목이 있으면 거부한다(grid-standard.md §6.2). 화면이 이미 막았더라도 여기서 다시 보는 이유는
+     * <p>품목이 있으면 거부한다(frontend/grid.md). 화면이 이미 막았더라도 여기서 다시 보는 이유는
      * <b>고른 뒤 남이 품목을 넣었을</b> 수 있기 때문이다 — 화면의 {@code itemCnt} 는
      * 조회 시점의 값이다.
      */
@@ -305,7 +305,7 @@ public class SampleOrderService {
                     SampleErrorCode.HAS_ITEMS, "order still has items: " + order.getOrdNo());
         }
         /*
-          태그를 먼저 지운다. FK 가 RESTRICT 라(48 §5.1) 남겨 두면 주문 삭제가 제약 위반으로
+          태그를 먼저 지운다. FK 가 RESTRICT 라(playbook/INDEX.md) 남겨 두면 주문 삭제가 제약 위반으로
           막히고, 그 실패는 "제약 위반" 이라는 읽을 수 없는 문구로만 사용자에게 닿는다.
         */
         tags.deleteByOrdId(order.getOrdId());
@@ -379,20 +379,20 @@ public class SampleOrderService {
             OrderStatus.of(row.ordStatCd());
         }
         /*
-          조건부 필수 — DC_RT 가 0 보다 크면 RMK 가 필수다(68 §3.2). 화면의 required 가
-          함수인 것과 같은 규칙이며(grid-column-contract.md §5.1), 여기서 다시 보는 것은 화면의 판정이 요청에
-          실려 오지 않기 때문이다(grid-edit-validation.md §3.4).
+          조건부 필수 — DC_RT 가 0 보다 크면 RMK 가 필수다(playbook/INDEX.md). 화면의 required 가
+          함수인 것과 같은 규칙이며(frontend/grid.md), 여기서 다시 보는 것은 화면의 판정이 요청에
+          실려 오지 않기 때문이다(frontend/grid.md).
         */
         if (row.dcRtOrZero().signum() > 0 && (row.rmk() == null || row.rmk().isBlank())) {
             throw new BusinessException(
                     SampleErrorCode.RMK_REQUIRED, "rmk is required when dcRt > 0");
         }
         /*
-          태그 개수 — 48 §8. **전건 앞에서 본다**(이 클래스의 머리말): replaceTags 에 두면
+          태그 개수 — playbook/INDEX.md. **전건 앞에서 본다**(이 클래스의 머리말): replaceTags 에 두면
           세 행 중 셋째가 넘긴 요청이 앞의 둘을 이미 쓰고 돌아가고, 이 테이블은 채번을
           쓰므로 롤백해도 시퀀스는 뛴다.
 
-          화면의 컬럼 검증이 앞서 막지만(grid-edit-validation.md §3.2 의 1층) 배열은 요청 본문이라 몇 개든
+          화면의 컬럼 검증이 앞서 막지만(frontend/grid.md 의 1층) 배열은 요청 본문이라 몇 개든
           실릴 수 있고, 전량 교체는 그것을 그대로 인서트로 편다.
         */
         if (row.tagListOrEmpty().size() > MAX_TAGS) {
@@ -417,7 +417,7 @@ public class SampleOrderService {
     }
 
     /*
-      샘플에서 채널·우선순위는 화면이 그리지 않는다(68 §5.2 의 아홉 컬럼). NOT NULL 이라
+      샘플에서 채널·우선순위는 화면이 그리지 않는다(playbook/INDEX.md 의 아홉 컬럼). NOT NULL 이라
       값은 있어야 하므로 신규 행에 기본을 준다 — 그 컬럼을 그리는 화면이 서는 날 그
       화면이 사용자에게 묻는다.
     */

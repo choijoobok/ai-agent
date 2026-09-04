@@ -4,7 +4,7 @@ import { useTabHotkeys } from '@/layouts/ShellLayout/useTabHotkeys';
 import { useTabStore } from '@/shared/stores/tabStore';
 
 /**
- * 탭 이동 단축키 — main-shell.md §10.1.
+ * 탭 이동 단축키 — frontend/tabs.md.
  *
  * <p><b>수정자 없이 듣기로 하면서 "무엇이 화면의 것인가" 를 정해야 했다.</b> 그리드는
  * `PageUp`/`PageDown` 으로 행을 넘기고 긴 입력 칸은 캐럿을 옮긴다 — 그 자리에서 탭이 바뀌면

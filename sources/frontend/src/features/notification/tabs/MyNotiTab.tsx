@@ -13,12 +13,12 @@ import type { MyNotiRow, MyNotifications } from '@/features/notification/types';
 interface Props {
   /** 고른 항목을 상세로 — 열기 **전에** 읽음이 된다. */
   onOpen: (row: MyNotiRow) => void;
-  /** 헤더 벨의 배지 — main-shell.md §7.1. 이 탭이 유일한 출처다. */
+  /** 헤더 벨의 배지 — frontend/tabs.md. 이 탭이 유일한 출처다. */
   onUnread: (count: number) => void;
 }
 
 /**
- * 내 알림 탭 — main-shell.md §7.1 · §7.2.
+ * 내 알림 탭 — frontend/tabs.md.
  *
  * <h2>배지가 세는 유일한 탭이다</h2>
  *
@@ -29,7 +29,7 @@ interface Props {
  * <h2>목록을 열었다고 전체 읽음 처리하지 않는다 — `NI-06`</h2>
  *
  * <p>훑어만 봐도 배지가 사라지면 **놓친 알림을 찾을 수 없다.** 읽음이 되는 경로는 둘뿐이며
- * (main-shell.md §7.2) 둘 다 사람의 명시적 조작이다 — 항목을 열거나, *모두 읽음* 을 누르거나.
+ * (frontend/tabs.md) 둘 다 사람의 명시적 조작이다 — 항목을 열거나, *모두 읽음* 을 누르거나.
  *
  * <p>그래서 이 컴포넌트의 조회는 `GET` 이고 서버도 `readOnly` 다. **없는 것으로 집행되는
  * 규칙**이라 눈에 띄지 않으므로 여기 적어 둔다.
@@ -109,7 +109,7 @@ export function MyNotiTab({ onOpen, onUnread }: Props) {
             <List.Item onClick={() => open(row)} style={{ cursor: 'pointer' }}>
               <List.Item.Meta
                 // 미읽음은 **점 하나**다 — 공지 탭이 강조를 쓰지 않는 것과 갈리는 자리이며,
-                // 여기서는 그 강조가 배지의 근거다(main-shell.md §7.1).
+                // 여기서는 그 강조가 배지의 근거다(frontend/tabs.md).
                 avatar={row.readYn ? <Badge status="default" /> : <Badge status="processing" />}
                 title={
                   <Typography.Text strong={!row.readYn}>{row.title}</Typography.Text>

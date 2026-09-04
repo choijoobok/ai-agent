@@ -12,7 +12,7 @@ vi.mock('@/shared/favorite/api/favoriteApi', () => api);
 const row = (menuCd: string, sortNo: number) => ({ menuCd, sortNo, creDtm: '2026-08-30T00:00:00Z' });
 
 /**
- * 즐겨찾기 — UX-03 · 42 §7.
+ * 즐겨찾기 — UX-03 · sys/menu.md.
  *
  * <p><b>토글의 방향이 조용히 뒤집히는 종류다.</b> 잘못되면 별을 눌렀을 때 <i>추가</i> 가
  * <i>제거</i> 를 부르고, 서버는 <b>없는 것을 지워도 성공</b>이라 아무 오류도 나지 않는다 —

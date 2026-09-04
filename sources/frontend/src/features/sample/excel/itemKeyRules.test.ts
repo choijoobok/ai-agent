@@ -4,7 +4,7 @@ import { duplicatedKeys, itemKeyOf } from '@/features/sample/excel/itemKeyRules'
 import type { SampleOrderItem } from '@/features/sample/types';
 
 /**
- * ⑥의 키 규칙 — 68 §8.7.
+ * ⑥의 키 규칙 — playbook/INDEX.md.
  *
  * <p>재는 것이 <i>겹치면 막는가</i> 하나가 아니다. <b>너무 많이 짚는 쪽의 실패</b>가 더
  * 나쁘기 때문이다: 멀쩡한 412행짜리 파일이 저장되지 않고 사용자는 <i>왜 안 되는지</i> 를
@@ -15,7 +15,7 @@ import type { SampleOrderItem } from '@/features/sample/types';
  * 겹쳤다는 거지</i> 로만 보이고 원인이 이 함수에 있다는 것을 아무도 모른다.
  */
 
-/** `state: null` 이 <b>조회된 그대로</b> 다 — 'R' 이 아니다(grid-standard.md §3.2). */
+/** `state: null` 이 <b>조회된 그대로</b> 다 — 'R' 이 아니다(frontend/grid.md). */
 function row(state: RowState, id: string, ordNo: string, itemCd: string): GridRow<SampleOrderItem> {
   const data: SampleOrderItem = {
     ordId: '1',

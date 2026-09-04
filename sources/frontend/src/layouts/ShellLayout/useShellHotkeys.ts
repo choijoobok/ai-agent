@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import type { EntryTab } from '@/layouts/ShellLayout/entryTabs';
 
 /**
- * 셸 단축키 — <b>진입 모달을 검색 탭으로 연다</b>(main-shell.md §4.3 · §10).
+ * 셸 단축키 — <b>진입 모달을 검색 탭으로 연다</b>(frontend/tabs.md).
  *
  * <p><b>두 가지로 연다.</b> `Ctrl/Cmd + K` 와 <b>`Shift` 두 번</b>이다. 뒤쪽은 조합이 아니라
  * <b>같은 키를 잇달아</b> 누르는 것이라 한 손으로 되고 다른 무엇과도 겹치지 않는다 — 어떤

@@ -10,26 +10,26 @@ import {
 } from '@/shared/i18n/lang';
 
 /**
- * 메시지 번들 — 50 §3.2 · 43 §8.1.
+ * 메시지 번들 — · sys/code.md.
  *
  * <p><b>`persist` 미들웨어를 쓰지 않는다.</b> 저장 키에 **언어 축**이 붙고(`message:ko`)
  * 버전과 함께 한 덩어리로 넣고 빼야 하는데, `persist` 는 스토어 하나에 키 하나다 — 언어를
  * 바꿀 때마다 옛 언어의 번들이 덮여 다음 접속에 전량을 다시 받는다.
  *
  * <p><b>실패해도 앱은 뜬다.</b> 캐시가 있으면 그것으로 가고, 없으면 `status: 'failed'` 이며
- * 그때 보이는 문구는 `src/locales` 의 정적 몇 개다(50 §3.2). 키 문자열이 그대로 보이는 화면을
+ * 그때 보이는 문구는 `src/locales` 의 정적 몇 개다. 키 문자열이 그대로 보이는 화면을
  * 내는 것보다 *"연결할 수 없습니다"* 가 정직하다.
  */
 interface CachedBundle {
   version: number;
-  /** 캐시에 함께 넣는다 — 세션 복원 경로는 서버를 부르지 않으므로(50 §3.1) 응답이 없다. */
+  /** 캐시에 함께 넣는다 — 세션 복원 경로는 서버를 부르지 않으므로 응답이 없다. */
   langs: string[];
   messages: Record<string, string>;
 }
 
 interface MessageState {
   lang: Lang;
-  /** 지원 언어 전부 — 다국어 관리 화면의 하단 행 수를 정한다(63 §3.2). */
+  /** 지원 언어 전부 — 다국어 관리 화면의 하단 행 수를 정한다(screen/code/requirements.md). */
   langs: string[];
   version: number | null;
   messages: Record<string, string>;
@@ -37,17 +37,17 @@ interface MessageState {
 
   /**
    * @param options.lang 서버가 아는 사용자 언어(`LOCALE_CD`). 없으면 브라우저가 정한다
-   * @param options.verify 버전을 확인할지. 세션 복원 경로는 **확인하지 않는다**(50 §3.1) —
+   * @param options.verify 버전을 확인할지. 세션 복원 경로는 **확인하지 않는다** —
    *   `localStorage` 를 그대로 쓰고 없을 때만 받는다
    */
   load: (options?: { lang?: string; verify?: boolean }) => Promise<void>;
 
   /**
-   * 로그인 응답을 받은 자리에서 부른다 — 50 §5.2.
+   * 로그인 응답을 받은 자리에서 부른다.
    *
    * <p>맞출 것이 둘이다. **언어**(`LOCALE_CD` 가 정본이며 다른 PC 의 첫 로그인이면 캐시와
    * 다르다)와 **버전**(`SYS_CACHE_VERSION`)이다. 둘 다 같으면 **아무 일도 하지 않는다** —
-   * 로그인할 때마다 수천 건을 다시 받지 않는 것이 이 비교의 목적이다(43 §8.1).
+   * 로그인할 때마다 수천 건을 다시 받지 않는 것이 이 비교의 목적이다(sys/code.md).
    */
   syncWithSession: (localeCd?: string, messageVersion?: number) => Promise<void>;
 }

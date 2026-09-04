@@ -13,9 +13,9 @@ interface Item {
 }
 
 /**
- * 참조 팝업 컬럼 — grid-column-contract.md §6 · 68 §9.4.
+ * 참조 팝업 컬럼 — frontend/grid.md · playbook/INDEX.md.
  *
- * <p><b>이 컬럼이 존재하는 이유가 곧 검사 대상이다</b>(grid-column-contract.md §6.1). 상품 아이디와 상품명을
+ * <p><b>이 컬럼이 존재하는 이유가 곧 검사 대상이다</b>(frontend/grid.md). 상품 아이디와 상품명을
  * 따로 입력받으면 <b>불일치가 저장된다</b> — 아이디는 `P-001` 인데 이름은 다른 상품인
  * 행이 만들어지고, 그것을 막을 제약이 화면에 없다. 그래서 여기서 세는 것은 <b>한 번
  * 골라 여러 칸이 함께 채워지는가</b>와 <b>지울 때도 함께 지워지는가</b> 둘이다.
@@ -42,7 +42,7 @@ describe('popupRef 컬럼', () => {
             }
           : { itemCd: null, itemNm: null, unitPrice: null },
     },
-    // 단가가 들어왔으면 금액이 계산된다 — grid-column-contract.md §6.3 의 <i>후작업이 이어서 돈다</i>.
+    // 단가가 들어왔으면 금액이 계산된다 — frontend/grid.md 의 <i>후작업이 이어서 돈다</i>.
     afterEdit: (row) => ({ amount: row.unitPrice === null ? null : row.unitPrice * row.qty }),
   };
 
@@ -83,7 +83,7 @@ describe('popupRef 컬럼', () => {
   });
 
   /*
-    <b>머지한 값에도 후작업이 돈다</b>(grid-column-contract.md §6.3 · grid-edit-validation.md §2.3). 빠뜨리면 팝업으로 채운 행만
+    <b>머지한 값에도 후작업이 돈다</b>(frontend/grid.md). 빠뜨리면 팝업으로 채운 행만
     금액이 비고, 그 행은 저장까지 그대로 간다.
   */
   it('afterEdit 이 이어서 돈다 — 단가가 들어왔으면 금액이 계산된다', () => {
@@ -100,7 +100,7 @@ describe('popupRef 컬럼', () => {
   });
 
   /*
-    <b>채울 때와 지울 때가 대칭이어야 한다</b>(grid-column-contract.md §6.3). 아이디만 비우고 이름을 남기면
+    <b>채울 때와 지울 때가 대칭이어야 한다</b>(frontend/grid.md). 아이디만 비우고 이름을 남기면
     <b>그것이 곧 불일치</b>이며, 이 컬럼이 없애려던 상태가 그대로 돌아온다.
   */
   it('지우면 딸려 온 칸도 함께 비고 금액도 따라 비운다', () => {

@@ -12,7 +12,7 @@ import {
 import { parseCondJson, type SavedCond, type SavedCondValues } from '@/shared/searchform/savedCond';
 
 /**
- * 저장된 조회조건 — UX-07 · search-form-contract.md §5. 초기화 오른쪽의 설정 버튼이다.
+ * 저장된 조회조건 — UX-07 · frontend/search-form.md. 초기화 오른쪽의 설정 버튼이다.
  *
  * <p><b>진입할 때 목록을 읽는다.</b> 열 때 읽으면 값싸 보이지만 <b>기본 조건</b>(§5.4)을
  * 적용할 수 없다 — 그것은 화면에 들어오는 순간 폼을 채우는 것이므로 목록이 그때 있어야
@@ -106,7 +106,7 @@ export function SavedCondControl(props: Props) {
       setSaveOpen(false);
       message.success(label(MSG.SEARCH_COND_SAVED));
     } catch (error) {
-      // 상한 초과가 여기로 온다(search-form-contract.md §5.4) — 문구는 서버가 완성해 내려준다(architecture.md §6-1.2).
+      // 상한 초과가 여기로 온다(frontend/search-form.md) — 문구는 서버가 완성해 내려준다(backend/packages.md).
       message.error(error instanceof Error ? error.message : String(error));
     }
   };
@@ -189,7 +189,7 @@ export function SavedCondControl(props: Props) {
           >
             <Input maxLength={100} autoFocus />
           </Form.Item>
-          {/* 막지 않고 덮어쓴다 — 이름이 곧 자리다(search-form-contract.md §5.4). 다만 말은 해 준다. */}
+          {/* 막지 않고 덮어쓴다 — 이름이 곧 자리다(frontend/search-form.md). 다만 말은 해 준다. */}
           {duplicate && (
             <Typography.Text type="warning">{label(MSG.SEARCH_COND_OVERWRITE)}</Typography.Text>
           )}

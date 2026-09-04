@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.AuditorAware;
 
 /**
- * 작업이 실패했을 때 <b>사용자가 읽는 문구</b> — architecture.md §6-1.2 · 68 §9.1.
+ * 작업이 실패했을 때 <b>사용자가 읽는 문구</b> — backend/packages.md · playbook/INDEX.md.
  *
  * <p>이 파일이 지키는 것은 한 문장이다: <b>진행률 창에 개발자용 문자열이 뜨지 않는다.</b>
  * 실기동에서 그 자리에 <i>amount is closed: SO-2026-1021</i> 이 떴고(2026-09-02), 그것은
@@ -128,8 +128,8 @@ class ProgressFailureMessageTest {
 
     /*
       <b>문구가 없으면 키를 보이지 않는다.</b> 화면은 키 문자열을 그대로 내는 것이 규약이지만
-      (43 §7.3) 여기는 <b>서버가 완성해 넘기는 자리</b>라 마지막 수단이 기본 문구다
-      (architecture.md §6-1.2 — 에러 응답과 같다).
+      (sys/code.md) 여기는 <b>서버가 완성해 넘기는 자리</b>라 마지막 수단이 기본 문구다
+      (backend/packages.md — 에러 응답과 같다).
     */
     @Test
     @DisplayName("그 언어의 문구가 없으면 기본 문구다 — 키를 보이지 않는다")
@@ -145,7 +145,7 @@ class ProgressFailureMessageTest {
 
     /*
       <b>예상 밖의 고장은 말할 것이 없다.</b> 예외의 문구를 내면 SQL 조각이나 클래스 이름이
-      창에 뜨는데(security-design.md §8 이 응답에 스택을 담지 않기로 한 것과 같은 자리다), 그것은 사용자가
+      창에 뜨는데(backend/security.md 이 응답에 스택을 담지 않기로 한 것과 같은 자리다), 그것은 사용자가
       할 수 있는 일과 아무 상관이 없다.
     */
     @Test

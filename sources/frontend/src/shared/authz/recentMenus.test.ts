@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { RECENT_LIMIT, readRecentMenus, rememberRecentMenu } from '@/shared/authz/recentMenus';
 
 /**
- * 최근 연 메뉴 — main-shell.md §4.4.
+ * 최근 연 메뉴 — frontend/tabs.md.
  *
  * <p><b>여기서 지키는 것 셋이다.</b> ① 최근이 맨 앞이다, ② 같은 메뉴는 <b>옮기는 것</b>이지
  * 쌓는 것이 아니다, ③ <b>모양이 깨진 저장소를 믿지 않는다</b>.

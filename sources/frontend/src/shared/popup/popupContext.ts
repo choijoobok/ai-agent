@@ -22,8 +22,8 @@ export const PopupContextProvider = PopupContext.Provider;
 export function usePopup(): OpenPopup {
   const open = useContext(PopupContext);
   if (!open) {
-    // 개발자용이라 영어다 — 화면에 나가는 문구가 아니다(eslint 의 43 §3 규칙 주석).
-    throw new Error('No PopupHost in the tree: mount it inside AppProviders (68 §9.4)');
+    // 개발자용이라 영어다 — 화면에 나가는 문구가 아니다(eslint 의 sys/code.md 규칙 주석).
+    throw new Error('No PopupHost in the tree: mount it inside AppProviders (playbook/INDEX.md)');
   }
   return open;
 }

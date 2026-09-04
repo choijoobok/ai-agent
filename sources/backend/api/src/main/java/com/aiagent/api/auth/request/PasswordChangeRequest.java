@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
- * 비밀번호 변경 — AUTH-05 · main-shell.md §8.
+ * 비밀번호 변경 — AUTH-05 · frontend/tabs.md.
  *
  * <p><b>최소 길이를 여기서 못 박지 않는다.</b> 정책은 {@code SYS_CONFIG} 의 값이며
  * ({@code AuthPasswordProps}) 애너테이션에 적으면 <b>같은 규칙이 두 곳</b>에 생겨 설정을

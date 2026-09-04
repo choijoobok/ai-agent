@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 /**
- * 오래 걸리는 작업이 도는 스레드 — 68 §9.1 의 <i>{@code progressExecutor} 분리</i>.
+ * 오래 걸리는 작업이 도는 스레드 — playbook/INDEX.md 의 <i>{@code progressExecutor} 분리</i>.
  *
  * <p><b>일반 {@code @Async} 와 섞지 않는다.</b> 여기 도는 것은 <i>10만 건 재계산</i> 같은
  * 것이라 <b>분 단위</b>로 스레드를 붙잡는데, 같은 풀을 알림 발송·로그 적재가 쓰면 그
@@ -27,7 +27,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
  * 0% 에서 멈춘 것을 보는 것보다 낫다.
  *
  * <p><b>종료 때 기다린다.</b> 안 기다리면 {@code RUNNING} 행이 그대로 남고, 사용자에게는
- * <b>영영 도는 작업</b>으로 보인다 — 만료 청소가 지울 때까지 그렇다(32 §5).
+ * <b>영영 도는 작업</b>으로 보인다 — 만료 청소가 지울 때까지 그렇다(retention.md).
  */
 @Configuration
 public class ProgressExecutorConfig {
@@ -40,7 +40,7 @@ public class ProgressExecutorConfig {
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(4);
         executor.setQueueCapacity(20);
-        // 로그에서 한눈에 가른다 — SQL 로그(system-logging.md §2)가 이 이름을 함께 낸다.
+        // 로그에서 한눈에 가른다 — SQL 로그(backend/logging.md)가 이 이름을 함께 낸다.
         executor.setThreadNamePrefix("progress-");
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setAwaitTerminationSeconds(60);

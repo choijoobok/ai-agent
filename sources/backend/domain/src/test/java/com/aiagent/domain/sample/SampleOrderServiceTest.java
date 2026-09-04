@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * 주문의 저장과 실행 — 68 §3 · §5.4.
+ * 주문의 저장과 실행 — playbook/INDEX.md.
  *
  * <p>여기서 세는 것은 <b>화면이 이미 막은 것을 서버가 다시 막는가</b> 다. 화면의 게이트는
- * UX 이고 판정은 서버여야 하는데(security-design.md §4), 그 이중 방어는 <b>둘 중 하나가 빠져도 평소에는
+ * UX 이고 판정은 서버여야 하는데(backend/security.md), 그 이중 방어는 <b>둘 중 하나가 빠져도 평소에는
  * 아무 증상이 없다</b> — 드러나는 것은 화면 밖 경로가 지나간 뒤다.
  *
  * <p>품목과 태그의 행 편집은 서비스가 갈렸으므로 검사도 갈렸다 —
@@ -85,13 +85,13 @@ class SampleOrderServiceTest {
     }
 
     @Nested
-    @DisplayName("마스터 삭제 게이트 — grid-standard.md §6.2")
+    @DisplayName("마스터 삭제 게이트 — frontend/grid.md")
     class DeleteGate {
 
         /*
           <b>화면이 이미 막았는데 왜 또 보는가.</b> 화면 밖 경로가 실재하고(직접 호출),
           그때 FK 의 RESTRICT 는 <i>제약 위반</i> 이라는 <b>읽을 수 없는 문구</b>로만
-          답한다(48 §5.1) — 사용자에게 그것은 원인도 다음 행동도 말하지 않는다.
+          답한다(playbook/INDEX.md) — 사용자에게 그것은 원인도 다음 행동도 말하지 않는다.
 
           그리고 화면의 itemCnt 는 <b>조회 시점의 값</b>이다: 고른 뒤 남이 품목을 넣었으면
           그 게이트는 낡았다.
@@ -112,7 +112,7 @@ class SampleOrderServiceTest {
         }
 
         @Test
-        @DisplayName("품목이 없으면 지운다 — 물리 삭제다(48 §3.4)")
+        @DisplayName("품목이 없으면 지운다 — 물리 삭제다(playbook/INDEX.md)")
         void deletesWhenEmpty() {
             SmplOrder target = order("SO-2", "RCV");
             when(queries.require(2L)).thenReturn(target);
@@ -125,7 +125,7 @@ class SampleOrderServiceTest {
     }
 
     @Nested
-    @DisplayName("출고 지시 — 68 §5.4")
+    @DisplayName("출고 지시 — playbook/INDEX.md")
     class Ship {
 
         /*
@@ -168,7 +168,7 @@ class SampleOrderServiceTest {
     }
 
     /**
-     * 태그 개수 상한 — 48 §8 의 결정. <b>화면 둘이 한 값을 본다</b>({@code MAX_TAGS}).
+     * 태그 개수 상한 — playbook/INDEX.md 의 결정. <b>화면 둘이 한 값을 본다</b>({@code MAX_TAGS}).
      *
      * <p>여기는 ①의 <b>배열 교체</b> 쪽이다. ⑤의 행 편집은 {@link SampleTagServiceTest} 가
      * 세며, <b>둘이 같은 값을 보는지</b>가 이 상수를 {@link SampleRules} 에 둔 이유다 —
@@ -178,7 +178,7 @@ class SampleOrderServiceTest {
      * 롤백해도 시퀀스는 뛴다 — 그래서 지우기가 나가지 않았음을 확인한다.
      */
     @Nested
-    @DisplayName("태그 개수 상한 — ①의 배열 교체(48 §8)")
+    @DisplayName("태그 개수 상한 — ①의 배열 교체(playbook/INDEX.md)")
     class TagLimit {
 
         @Test
@@ -207,7 +207,7 @@ class SampleOrderServiceTest {
     }
 
     /**
-     * 금액은 <b>서버가 다시 센다</b> — grid-edit-validation.md §2.3 · 원칙 P1.
+     * 금액은 <b>서버가 다시 센다</b> — frontend/grid.md · 원칙 P1.
      *
      * <p>화면도 {@code afterEdit} 으로 같은 계산을 하지만 그것은 <i>보여주기</i> 이고,
      * 요청 본문은 조작할 수 있다. 받는 경로를 두지 않은 것과 여기서 다시 세는 것이 한 짝이다.

@@ -13,14 +13,14 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 /**
- * {@code NOTICE_MGMT} 의 화이트리스트 — 66 §4.7 · api-conventions.md §4.1.
+ * {@code NOTICE_MGMT} 의 화이트리스트 — screen/notice/requirements.md · backend/api.md.
  *
  * <h2><b>정적 상수가 아니라 빈이다</b> — 이 문서군에서 처음이다</h2>
  *
  * <p>다른 스펙은 전부 {@code public static final QuerySpec SPEC} 이다. 여기가 갈리는
  * 이유는 하나다 — <b>{@code 게시 상태} 파생 조건이 <i>지금</i> 을 필요로 한다.</b>
  *
- * <p>그리고 <i>지금</i> 은 DB 가 줄 수 없다: db-portability.md §4.5 가 {@code SYSDATE}·{@code NOW()} 를
+ * <p>그리고 <i>지금</i> 은 DB 가 줄 수 없다: backend/persistence.md 가 {@code SYSDATE}·{@code NOW()} 를
  * <b>애플리케이션에서 값 주입</b>으로 못박았다(4벤더 무수정 기동이 그 대가다). 주입받은
  * {@link Clock} 을 정적 초기화식에서 볼 방법이 없으므로 스펙이 빈이 된다.
  *
@@ -29,13 +29,13 @@ import org.springframework.stereotype.Component;
  *
  * <h2>기간이 필수가 아니다</h2>
  *
- * <p>64 §2.2 의 <i>기간 필수 + 상한</i> 을 상속하지 않는다(66 §3.1) — 근거가 대용량인데
- * 공지는 수백 건이다. 65 §2.1 이 배치 등록에 내린 것과 같은 판단이다.
+ * <p>screen/log/access/requirements.md 의 <i>기간 필수 + 상한</i> 을 상속하지 않는다(screen/notice/requirements.md) — 근거가 대용량인데
+ * 공지는 수백 건이다. screen/batch/schedule/requirements.md 이 배치 등록에 내린 것과 같은 판단이다.
  *
  * <h2>본문이 없다</h2>
  *
  * <p>{@code CONTENT} 는 {@code nclob} 이라 조건으로도 정렬로도 쓸 수 없다 — Oracle 이
- * {@code CLOB} 의 {@code ORDER BY} 를 막고(api-conventions.md §3.7), {@code LIKE} 는 인덱스를 못 타면서
+ * {@code CLOB} 의 {@code ORDER BY} 를 막고(backend/api.md), {@code LIKE} 는 인덱스를 못 타면서
  * <b>되는 것처럼 보인다</b>. {@code BatchHistorySpec} 의 {@code ERR_MSG} 와 같은 자리다.
  */
 @Component
@@ -51,10 +51,10 @@ public class NoticeSpec {
         this.spec = QuerySpec.of("notice")
                 .from(N)
                 .col("title", N.title)
-                // 게시 기간 — 조회조건의 between 이자 기본 정렬의 둘째 키다(66 §4.2.1).
+                // 게시 기간 — 조회조건의 between 이자 기본 정렬의 둘째 키다(screen/notice/requirements.md).
                 .col("noticeFromDtm", N.noticeFromDtm).sortable()
                 .col("popupYn", N.popupYn)
-                // 사람이 정한 순서. 팝업이 이 정렬의 첫 건을 집는다(66 §2.4 C안).
+                // 사람이 정한 순서. 팝업이 이 정렬의 첫 건을 집는다(screen/notice/requirements.md C안).
                 .col("sortNo", N.sortNo).sortable()
                 .col("noticeId", N.noticeId)
                 .derived("noticeStat", this::noticeStat)
@@ -75,7 +75,7 @@ public class NoticeSpec {
      * {@code BatchHistorySpec.rsltGroup} 다음).
      *
      * <p>앞의 넷과 다른 점이 둘이다. <b>{@code in} 을 받는다</b> — 넷은 전부 {@code eq}
-     * 하나였는데 여기는 화면 기본값이 <i>세 개 선택</i>이다(66 §4.7 — {@code DOWN} 을 뺀
+     * 하나였는데 여기는 화면 기본값이 <i>세 개 선택</i>이다(screen/notice/requirements.md — {@code DOWN} 을 뺀
      * 셋). 그리고 <b>값이 컬럼이 아니라 시각과의 관계</b>다.
      *
      * <p><b>모르는 값을 조용히 전체로 흘리지 않는다</b> — {@code ErrorLogSpec} 과 같은
@@ -117,7 +117,7 @@ public class NoticeSpec {
         };
     }
 
-    /** {@code eq} 는 값 하나, {@code in} 은 목록이다 — api-conventions.md §3.3. */
+    /** {@code eq} 는 값 하나, {@code in} 은 목록이다 — backend/api.md. */
     private static List<NoticeStatus> parse(Object value) {
         List<NoticeStatus> parsed = new ArrayList<>();
         if (value instanceof Collection<?> values) {

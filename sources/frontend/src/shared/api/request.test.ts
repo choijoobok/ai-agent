@@ -5,7 +5,7 @@ import { request } from '@/shared/api/request';
 import { ApiError, TRANSPORT_ERROR_CODE } from '@/shared/api/types';
 
 /**
- * 봉투 처리 — api-conventions.md §2.3.
+ * 봉투 처리 — backend/api.md.
  *
  * <p>여기서 지키려는 것은 <b>화면이 실패를 한 가지 모양으로만 만난다</b>는 것이다. 서버가
  * 401 봉투를 주든, 프록시가 HTML 을 주든, 네트워크가 끊기든 화면은 {@link ApiError} 하나만

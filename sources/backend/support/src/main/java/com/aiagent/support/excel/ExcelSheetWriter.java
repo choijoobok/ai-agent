@@ -14,21 +14,21 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 /**
- * 서버가 만드는 엑셀 — ADR-0019 의 <b>세 번째 갈래</b>.
+ * 서버가 만드는 엑셀 — frontend/grid-advanced.md 의 <b>세 번째 갈래</b>.
  *
- * <p>architecture.md §1 이 엑셀을 이 모듈의 책임으로 두었다. <b>여기 있는 것은 시트를 쓰는 도구
+ * <p>backend/packages.md 이 엑셀을 이 모듈의 책임으로 두었다. <b>여기 있는 것은 시트를 쓰는 도구
  * 하나뿐</b>이며 무엇을 쓸지는 도메인이 정한다 — support 가 업무 컬럼을 알면 그 순간
  * 기술 어댑터가 아니게 된다.
  *
  * <h2>{@code SXSSF} 다 — 행을 창으로 흘린다</h2>
  *
- * <p>이 갈래에만 스트리밍이 남는다(10 FILE-05 · ADR-0019). 프론트 생성은 전량을 메모리에
+ * <p>이 갈래에만 스트리밍이 남는다(10 FILE-05 · frontend/grid-advanced.md). 프론트 생성은 전량을 메모리에
  * 올리므로 스트리밍이 성립하지 않고 그래서 상한이 필요했지만, 서버 생성은 <b>합본이라
  * 행이 곱으로</b> 늘 수 있다 — 주문 500건에 품목이 각 20개면 만 행이다.
  *
  * <h2><b>마스킹은 부르는 쪽이 한다</b></h2>
  *
- * <p>ADR-0019 가 짚은 구멍이다: 엑셀 생성은 <b>응답 직렬화가 아니므로</b> 27 §2 의 PII
+ * <p>frontend/grid-advanced.md 가 짚은 구멍이다: 엑셀 생성은 <b>응답 직렬화가 아니므로</b> backend/pii-vault.md 의 PII
  * 계층을 타지 않는다. 셀을 채우는 코드가 마스킹을 건너뛰면 <b>화면에서는 가려진 값이
  * 엑셀에서는 평문으로</b> 나간다. 이 클래스는 받은 값을 그대로 쓰므로, 가려야 하는 값을
  * 가려서 주는 것은 도메인의 일이다.

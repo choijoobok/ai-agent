@@ -20,26 +20,26 @@ import { matchRows } from '@/shared/excelupload/matchRows';
 import { readWorkbook, type ReadText } from '@/shared/excelupload/readWorkbook';
 
 /**
- * 엑셀 업로드 탭 — ADR-0024 · 68 §9.2.
+ * 엑셀 업로드 탭 — frontend/grid-advanced.md · playbook/INDEX.md.
  *
- * <p><b>업로드가 아니라 읽기다.</b> 파일은 서버에 올라가지 않고(ADR-0024 §3) 브라우저가
+ * <p><b>업로드가 아니라 읽기다.</b> 파일은 서버에 올라가지 않고(frontend/grid-advanced.md) 브라우저가
  * 읽어 <b>그리드에 붓는다</b> — 그래서 `SYS_FILE` 에 아무것도 남지 않고 업로드 엔드포인트도
  * 없다. 저장은 <b>업무 탭과 같은 `api.save`</b> 이며 새 경로를 만들지 않는다.
  *
- * <p><b>미리보기가 곧 행 상태다</b>(68 §8.6). 읽은 뒤 같은 조회 API 를 한 번 불러
+ * <p><b>미리보기가 곧 행 상태다</b>(playbook/INDEX.md). 읽은 뒤 같은 조회 API 를 한 번 불러
  * 기존 행과 대조하고, 신규는 `C` · 변경은 `U` · 같은 것은 <b>상태가 없다</b> — 412행짜리
  * 파일에서 세 줄만 고쳤으면 <b>나가는 것도 세 줄</b>이어야 한다.
  *
  * <h2>조회 버튼이 없다</h2>
  *
- * <p>grid-standard.md §6.1.1 이 <i>"디테일도 ①에 조회를 갖는다"</i> 로 닫았지만 <b>업로드 탭은 디테일이
- * 아니다</b>(68 §8.4): 행이 서버가 아니라 <b>파일</b>에서 오므로 조회 버튼이 부를 곳이 없고,
+ * <p>frontend/grid.md 이 <i>"디테일도 ①에 조회를 갖는다"</i> 로 닫았지만 <b>업로드 탭은 디테일이
+ * 아니다</b>(playbook/INDEX.md): 행이 서버가 아니라 <b>파일</b>에서 오므로 조회 버튼이 부를 곳이 없고,
  * 눌리면 <b>읽어들인 412행이 통째로 날아간다</b>. 그래서 {@code read} 를 컨트롤러의
  * {@code api} 가 아니라 <b>이 컴포넌트의 인자</b>로 받는다 — 선언하면 버튼이 선다.
  *
  * <h2>거절은 통째로 한다</h2>
  *
- * <p>헤더가 다르거나 행이 상한을 넘으면 <b>읽지 않는다</b>(68 §8.7). 조용히 자르면
+ * <p>헤더가 다르거나 행이 상한을 넘으면 <b>읽지 않는다</b>(playbook/INDEX.md). 조용히 자르면
  * 사용자는 <i>올린 것이 다 들어간 줄</i> 알고, 열이 밀린 채 읽으면 <b>수량 자리에 단가가</b>
  * 들어간 파일이 저장까지 통과한다.
  */
@@ -61,9 +61,9 @@ export interface ExcelUploadTabHandle {
 export interface ExcelUploadTabProps<T> {
   title: string;
   menuCd: string;
-  /** <b>업무 탭과 같은 배열</b>이다 — 양식이 갈릴 수 없다(68 §9.2). */
+  /** <b>업무 탭과 같은 배열</b>이다 — 양식이 갈릴 수 없다(playbook/INDEX.md). */
   columns: ColumnDef<T>[];
-  /** 기존 행과 대조하는 키 — 68 §9.2 의 {@code keyFields}. */
+  /** 기존 행과 대조하는 키 — playbook/INDEX.md 의 {@code keyFields}. */
   keyFields: string[];
   /** 업무 탭과 <b>같은 조회 API</b>. 버튼이 되지 않으므로 {@code api} 밖에 있다(위). */
   read: ReadApi;
@@ -89,7 +89,7 @@ export interface ExcelUploadTabProps<T> {
 export function ExcelUploadTab<T>(props: ExcelUploadTabProps<T>) {
   const { modal, message } = App.useApp();
   /*
-    <b>상한을 인자로 받지 않는다.</b> 68 §9.2 의 초안은 그렇게 두었지만, 화면마다 값을
+    <b>상한을 인자로 받지 않는다.</b> playbook/INDEX.md 의 초안은 그렇게 두었지만, 화면마다 값을
     넘기면 <b>같은 사실의 원천이 화면 수만큼</b> 생긴다 — 설정을 바꿔도 어떤 화면은 옛
     값으로 남는다.
 
@@ -109,7 +109,7 @@ export function ExcelUploadTab<T>(props: ExcelUploadTabProps<T>) {
   /*
     <b>후보를 파일 읽기 전에 채운다</b>(2026-09-02 실물 — ⑥이 첫 소비자가 되면서 드러났다).
 
-    {@code DataGrid} 는 판에 닿기 전에 이것을 하지만(43 §8), 파일을 읽는 것은 <b>판이
+    {@code DataGrid} 는 판에 닿기 전에 이것을 하지만(sys/code.md), 파일을 읽는 것은 <b>판이
     아니라 이 컴포넌트</b>다 — 선언을 그대로 {@code readWorkbook} 에 넘기면
     {@code parseCell} 이 후보를 못 보고 <b>코드명을 값으로 착각</b>한다.
 
@@ -119,9 +119,9 @@ export function ExcelUploadTab<T>(props: ExcelUploadTabProps<T>) {
     글자다. 그러면 412행짜리 파일이 <b>412행을 전부</b> 저장하러 나가고, 서버가 받는 값은
     코드가 아니라 <b>사람이 읽는 이름</b>이다.
 
-    <b>내려받은 파일이 그 모양이다.</b> 엑셀은 셀에 보이는 대로 쓰므로(grid-standard.md §2.2 의 <i>전체
+    <b>내려받은 파일이 그 모양이다.</b> 엑셀은 셀에 보이는 대로 쓰므로(frontend/grid.md 의 <i>전체
     다운로드가 곧 양식</i>) 코드 칸에는 이름이 들어 있고, 그것을 그대로 올리는 것이
-    사용자의 정상 동선이다 — 68 §11.1 이 <i>"코드는 값과 이름을 둘 다 받는다"</i> 로
+    사용자의 정상 동선이다 — playbook/INDEX.md 이 <i>"코드는 값과 이름을 둘 다 받는다"</i> 로
     적어 둔 그 자리이며, 후보가 없으면 그 규약이 <b>이름 쪽에서만 조용히</b> 깨진다.
   */
   const codeOptions = useCodeOptions(
@@ -176,13 +176,13 @@ export function ExcelUploadTab<T>(props: ExcelUploadTabProps<T>) {
       try {
         const outcome = await readWorkbook(await file.arrayBuffer(), columns, maxRows, text);
         if (!outcome.ok) {
-          // 통째로 거절이다 — 그리드는 손대지 않는다(68 §8.7).
+          // 통째로 거절이다 — 그리드는 손대지 않는다(playbook/INDEX.md).
           modal.error({ content: outcome.detail, okText: label(MSG.GRID_CONFIRM_OK) });
           return;
         }
 
         /*
-          <b>읽은 직후 한 번 조회한다</b>(ADR-0024 §4). 사용자가 누를 일이 아니며, 이것이
+          <b>읽은 직후 한 번 조회한다</b>(frontend/grid-advanced.md). 사용자가 누를 일이 아니며, 이것이
           없으면 모든 행이 신규가 되어 <b>이미 있는 행을 다시 만들려는</b> 저장이 나간다.
         */
         const existing = await fetchExisting<T>(props.read, maxRows);
@@ -193,7 +193,7 @@ export function ExcelUploadTab<T>(props: ExcelUploadTabProps<T>) {
           ...outcome.issues,
           ...matched.duplicated.map((rowId): GridIssue => ({
             rowId,
-            // 어느 칸이라 말할 수 없다 — 키 <b>조합</b>이 겹친 것이다(grid-edit-validation.md §3.2 의 3층).
+            // 어느 칸이라 말할 수 없다 — 키 <b>조합</b>이 겹친 것이다(frontend/grid.md 의 3층).
             message: label(MSG.EXCEL_UPLOAD_DUPLICATED),
           })),
         ]);
@@ -227,7 +227,7 @@ export function ExcelUploadTab<T>(props: ExcelUploadTabProps<T>) {
         <b>숨긴 입력이 파일 선택의 유일한 길이다.</b> AntD 의 업로드 컴포넌트를 쓰지 않는
         것은 그것이 <i>서버로 보내는</i> 것을 전제한 컨트롤이라(요청 URL · 진행률 · 목록)
         여기서는 그 대부분을 꺼야 하고, 끈 것을 다시 읽는 사람이 <b>어디로 올라가는지</b>
-        를 코드에서 확인해야 하기 때문이다 — 올라가지 않는다는 것이 ADR-0024 의 핵심이다.
+        를 코드에서 확인해야 하기 때문이다 — 올라가지 않는다는 것이 frontend/grid-advanced.md 의 핵심이다.
       */}
       <input
         ref={picker}
@@ -248,7 +248,7 @@ export function ExcelUploadTab<T>(props: ExcelUploadTabProps<T>) {
         controls={controls}
         /*
           <b>개인화를 열지 않는다.</b> 이 판의 컬럼은 사용자의 표가 아니라 <b>양식</b>이며
-          (grid-standard.md §2.2), 감추거나 옮겨도 파일이 달라지지 않으므로 <i>여기서만 다르게 보이는
+          (frontend/grid.md), 감추거나 옮겨도 파일이 달라지지 않으므로 <i>여기서만 다르게 보이는
           판</i>이 될 뿐이다. 업무 탭과 나란히 놓고 대조하는 화면에서 그 어긋남은
           <b>양식이 바뀐 것처럼</b> 읽힌다.
         */
@@ -260,7 +260,7 @@ export function ExcelUploadTab<T>(props: ExcelUploadTabProps<T>) {
 }
 
 /**
- * 대조할 기존 행 — <b>업무 탭과 같은 조회 API</b>다(ADR-0024 §4).
+ * 대조할 기존 행 — <b>업무 탭과 같은 조회 API</b>다(frontend/grid-advanced.md).
  *
  * <p><b>조건 없이 전량을 훑는다.</b> 파일에 어떤 키가 올지 모르므로 좁힐 근거가 없고,
  * 상한은 <b>파일 쪽과 같은 값</b>이다 — 그보다 많은 기존 행이 있으면 대조가 반쪽이 되어

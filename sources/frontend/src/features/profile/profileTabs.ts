@@ -1,6 +1,6 @@
 import { MSG } from '@/shared/i18n/messageKeys';
 
-/** 프로필 모달의 탭 — main-shell.md §8. 넷 다 "나에 대한 것" 이다. */
+/** 프로필 모달의 탭 — frontend/tabs.md. 넷 다 "나에 대한 것" 이다. */
 export type ProfileTab = 'info' | 'password' | 'history' | 'roles';
 
 /**
@@ -17,5 +17,5 @@ export const PROFILE_TABS: ReadonlyArray<{ key: ProfileTab; titleKey: string }> 
   { key: 'roles', titleKey: MSG.PROFILE_TAB_ROLES },
 ];
 
-/** 키만 뽑은 차례 — 탭 이동 단축키가 읽는다(`useModalTabHotkeys` · main-shell.md §10). */
+/** 키만 뽑은 차례 — 탭 이동 단축키가 읽는다(`useModalTabHotkeys` · frontend/tabs.md). */
 export const PROFILE_TAB_KEYS: readonly ProfileTab[] = PROFILE_TABS.map((tab) => tab.key);

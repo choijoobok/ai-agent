@@ -5,32 +5,32 @@ import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
 
 /**
- * 긴 텍스트의 <b>넓은 쪽</b> — `textModal`(grid-column-contract.md §5.5 · 68 §9.7).
+ * 긴 텍스트의 <b>넓은 쪽</b> — `textModal`(frontend/grid.md · playbook/INDEX.md).
  *
  * <p>`largeText`(셀 위 팝업)와 <b>같은 어휘의 다른 크기</b>다. 갈리는 것이 셋이다 —
  * 자리(셀 위 vs 화면 중앙) · 크기(셀 너비 기준 vs 넓다) · <b>글자 수</b>. 마지막이
  * 이 편집기의 실질이며, 판의 {@code agLargeTextCellEditor} 에는 <b>글자 수가 없다</b>
- * (grid-column-contract.md §5.5 의 표가 그 칸을 <i>감수한 것</i> 으로 적었다).
+ * (frontend/grid.md 의 표가 그 칸을 <i>감수한 것</i> 으로 적었다).
  *
  * <p><b>글자 수가 왜 필요한가</b> — `nclob` 이라 상한이 화면에만 있다. 서버가 자르면
  * 사용자는 <b>저장한 뒤에</b> 알고, 그때 잘린 앞부분만 남아 있어 무엇이 사라졌는지
  * 화면 어디에도 없다.
  *
- * <p><b>한 행에 모달 대상이 둘일 때</b>(grid-column-contract.md §8 미결) — 샘플은 `MEMO`(`largeText`)와
- * `RMK`(`textModal`)로 <b>에디터를 갈라</b> 두었다(68 §9.7). 64 §5.5 의 *모달 하나 + 탭 둘*
+ * <p><b>한 행에 모달 대상이 둘일 때</b>(frontend/grid.md 미결) — 샘플은 `MEMO`(`largeText`)와
+ * `RMK`(`textModal`)로 <b>에디터를 갈라</b> 두었다(playbook/INDEX.md). screen/log/access/requirements.md 의 *모달 하나 + 탭 둘*
  * 은 읽기 전용의 해법이고, 편집 대상 둘은 <b>여는 모양이 다르면</b> 사용자가 어느 칸을
  * 열었는지 창을 보고 안다.
  *
  * <p><b>취소는 되돌리기이지 비우기가 아니다</b> — {@code onValueChange} 를 부르지 않으면
  * 판이 원래 값을 남긴다. 취소가 값을 지우면 <b>취소가 데이터를 바꾼 것</b>이 된다
- * (grid-column-contract.md §5.7 이 검색 콤보에 대해 적은 것과 같은 규칙이다).
+ * (frontend/grid.md 이 검색 콤보에 대해 적은 것과 같은 규칙이다).
  */
 export interface TextModalCellEditorParams {
   /** 창의 제목 — 컬럼 헤더다. */
   title: string;
   /** 글자 수 상한. 세는 것이 이 편집기의 존재 이유이므로 <b>없을 수 없다</b>. */
   maxLength: number;
-  /** 편집이 닫힌 칸이면 <b>읽고 닫는다</b> — grid-column-contract.md §5.5. */
+  /** 편집이 닫힌 칸이면 <b>읽고 닫는다</b> — frontend/grid.md. */
   readOnly?: boolean;
 }
 
@@ -65,7 +65,7 @@ export function TextModalCellEditor(props: CustomCellEditorProps<unknown, unknow
       onOk={() => close(text)}
       okText={label(MSG.GRID_CONFIRM_OK)}
       cancelText={label(MSG.COMMON_CANCEL)}
-      // 읽기 전용은 <b>읽고 닫는다</b> — 확인이 할 일이 없다(grid-column-contract.md §5.5).
+      // 읽기 전용은 <b>읽고 닫는다</b> — 확인이 할 일이 없다(frontend/grid.md).
       okButtonProps={{ style: params.readOnly ? { display: 'none' } : undefined }}
       width={720}
       destroyOnHidden

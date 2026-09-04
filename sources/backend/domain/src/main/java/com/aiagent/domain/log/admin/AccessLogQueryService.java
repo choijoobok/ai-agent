@@ -34,14 +34,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code ACCESS_LOG} 의 조회 — 64 §3. <b>쓰기가 없다.</b>
+ * {@code ACCESS_LOG} 의 조회 — screen/log/access/requirements.md. <b>쓰기가 없다.</b>
  *
  * <p>짝이 되는 {@code AccessLogAdminService} 가 없다. 이력 행은 불변이며 지우는 것은
- * 파기 배치의 일이다(64 §2.1 · 32 §4) — 화면에 수단을 두면 <b>파기의 원본이 둘</b>이 된다.
+ * 파기 배치의 일이다(screen/log/access/requirements.md · retention.md) — 화면에 수단을 두면 <b>파기의 원본이 둘</b>이 된다.
  *
  * <h2>커서형의 첫 사용처다</h2>
  *
- * <p>{@code COUNT} 가 처음으로 비싼 화면이다(64 §2.3). 상한·근사·생략 중 <b>생략</b>을
+ * <p>{@code COUNT} 가 처음으로 비싼 화면이다(screen/log/access/requirements.md). 상한·근사·생략 중 <b>생략</b>을
  * 골랐으므로 총 건수도 페이지 번호도 없고, 다음 장의 존재는 <b>{@code size + 1} 건을 읽어</b>
  * 판정한다({@link Built#respondCursor}).
  *
@@ -52,15 +52,15 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>전문은 두 번째 호출이다</h2>
  *
- * <p>{@code PARAMETERS} 를 목록에 싣지 않는다(64 §2.4). 셋 중 하나만으로도 실을 수 없다 —
- * Oracle LOB 성능(db-portability.md §6.1 S-2) · 앞 N자 절단의 벤더 차이(db-portability.md §4.5) · 100행 × 1MB.
+ * <p>{@code PARAMETERS} 를 목록에 싣지 않는다(screen/log/access/requirements.md). 셋 중 하나만으로도 실을 수 없다 —
+ * Oracle LOB 성능(backend/persistence.md S-2) · 앞 N자 절단의 벤더 차이(backend/persistence.md) · 100행 × 1MB.
  */
 @Service
 @Transactional(readOnly = true)
 public class AccessLogQueryService {
 
     /**
-     * 이 화면의 조회 기간 상한 — <b>시스템 값 92일을 덮는다</b>(64 §2.2 · §3.3).
+     * 이 화면의 조회 기간 상한 — <b>시스템 값 92일을 덮는다</b>(screen/log/access/requirements.md).
      *
      * <p>세 이력 테이블 중 유일하게 <b>행마다 {@code nclob} 이 달려 있고</b> 보존이 90일로
      * 가장 짧다 — <i>"가장 큰 테이블에 가장 짧은 창"</i> 이 맞다.
@@ -70,7 +70,7 @@ public class AccessLogQueryService {
      */
     public static final int MAX_RANGE_DAYS = 31;
 
-    /** 화면이 처음 채우는 기간 — 시스템 기본값(7일)을 덮는다(64 §3.3). */
+    /** 화면이 처음 채우는 기간 — 시스템 기본값(7일)을 덮는다(screen/log/access/requirements.md). */
     public static final int DEFAULT_RANGE_DAYS = 1;
 
     /** 목록에 싣는 것 — <b>{@code parameters} 가 없다.</b> 있는가만 {@link #HAS_PARAMETERS} 가 낸다. */
@@ -82,7 +82,7 @@ public class AccessLogQueryService {
         AL.creDtm,
         AL.httpStat,
         AL.userId,
-        // 조인 컬럼이다 — 스펙이 leftJoin 을 갖고 있으므로 여기서는 뽑기만 한다(34 §4.4).
+        // 조인 컬럼이다 — 스펙이 leftJoin 을 갖고 있으므로 여기서는 뽑기만 한다(backend/search.md).
         U.userNm,
         AL.menuCd,
         AL.requestUri,
@@ -111,10 +111,10 @@ public class AccessLogQueryService {
     }
 
     /**
-     * 목록 — 커서형이다(api-conventions.md §3.8).
+     * 목록 — 커서형이다(backend/api.md).
      *
      * <p>쿼리가 둘이며 둘째는 <b>메뉴명</b>이다. 조인으로 얻지 않는 것은 이름의 원본이
-     * {@code SYS_MESSAGE} 이고({@code menu.{MENU_CD}} — 43 §3) 폴백(요청 언어 → 기본 언어 →
+     * {@code SYS_MESSAGE} 이고({@code menu.{MENU_CD}} — sys/code.md) 폴백(요청 언어 → 기본 언어 →
      * 키 문자열)이 이미 {@link MessageService} 하나에 있기 때문이다 — {@code ApiCatalogQueryService}
      * 가 같은 판단을 했다.
      *
@@ -123,7 +123,7 @@ public class AccessLogQueryService {
      * 번역도 폴백도 없다 — <b>같은 화면의 두 이름이 다른 길로 오는 것이 우연이 아니다</b>:
      * 갈리는 것은 <i>이름이 어디 있나</i> 이지 <i>어느 컬럼인가</i> 가 아니다.
      *
-     * @param lang 세션 언어 — 컨트롤러가 준다. 도메인은 요청을 모른다(architecture.md §1)
+     * @param lang 세션 언어 — 컨트롤러가 준다. 도메인은 요청을 모른다(backend/packages.md)
      */
     public PageResponse<AccessLogRow> getList(SearchRequest<Void> request, String lang) {
         checkRange(request);
@@ -152,7 +152,7 @@ public class AccessLogQueryService {
     }
 
     /**
-     * 전문 하나 — 64 §2.4. <b>동적 봉투를 태우지 않는다</b>(api-conventions.md §3.0).
+     * 전문 하나 — screen/log/access/requirements.md. <b>동적 봉투를 태우지 않는다</b>(backend/api.md).
      *
      * <p>PK 하나로 한 행을 집는 고정형이다. 조건 목록으로 열면 <b>전문 조회가 임의 조건의
      * 조회</b>가 되고, 그 순간 {@code nclob} 을 목록에서 뺀 이유가 무너진다.
@@ -164,7 +164,7 @@ public class AccessLogQueryService {
                 .fetchOne();
 
         if (parameters == null && !exists(accessLogSeq)) {
-            // 조회한 뒤 파기 배치가 지나갔다(32 §4). 목록은 그대로 둔다 — 64 §3.7.
+            // 조회한 뒤 파기 배치가 지나갔다(retention.md). 목록은 그대로 둔다 — screen/log/access/requirements.md.
             throw new BusinessException(
                     AccessLogErrorCode.PURGED, "사용 이력 행이 없다 — " + accessLogSeq);
         }
@@ -172,15 +172,15 @@ public class AccessLogQueryService {
                 accessLogSeq, parameters, LogText.isTruncated(parameters));
     }
 
-    // ── 기간 검사 (64 §2.2) ──────────────────────────────────────────
+    // ── 기간 검사 (screen/log/access/requirements.md) ──────────────────────────────────────────
 
     /**
      * 기간은 <b>필수 조건이고 상한이 있다</b> — 규칙은 {@link RangeGuard} 가 갖는다.
      *
      * <p>여기 남는 것은 <b>이 화면의 값</b> 둘이다. 상한은 시스템 값과 31일 중 좁은 쪽이고,
      * 추적 ID 를 넣으면 기간이 선택이 된다 — {@code TRACE_ID} 에 별도 인덱스가 있으므로
-     * (45 §4.1) 기간 없이도 인덱스를 탄다. <b>조건 하나가 다른 조건의 필수 여부를 바꾸는
-     * 첫 사례</b>이며 72 프로토콜의 입력이다(64 §2.2).
+     * (sys/logs.md) 기간 없이도 인덱스를 탄다. <b>조건 하나가 다른 조건의 필수 여부를 바꾸는
+     * 첫 사례</b>이며 72 프로토콜의 입력이다(screen/log/access/requirements.md).
      */
     private void checkRange(SearchRequest<Void> request) {
         int maxDays = Math.min(configs.get(SearchRangeProps.class).maxDays(), MAX_RANGE_DAYS);
@@ -194,7 +194,7 @@ public class AccessLogQueryService {
                         AccessLogErrorCode.RANGE_TOO_WIDE));
     }
 
-    // ── 메뉴명 (43 §3) ───────────────────────────────────────────────
+    // ── 메뉴명 (sys/code.md) ───────────────────────────────────────────────
 
     private Map<String, String> menuNamesOf(List<Tuple> rows, String lang) {
         Set<String> menuCds = new HashSet<>();
@@ -208,10 +208,10 @@ public class AccessLogQueryService {
             return Map.of();
         }
         Map<String, String> names = new HashMap<>();
-        // 페이지 하나 분량이라 지금은 최대 1000개인데 그것이 오라클의 한계와 같은 값이다(db-portability.md §4.6).
+        // 페이지 하나 분량이라 지금은 최대 1000개인데 그것이 오라클의 한계와 같은 값이다(backend/persistence.md).
         for (List<String> chunk : InChunks.split(List.copyOf(menuCds))) {
             for (SysMenu menu : menus.findAllById(chunk)) {
-                // MENU_NM 은 메뉴명이 아니라 메시지 키다 — menu.{MENU_CD}(43 §3).
+                // MENU_NM 은 메뉴명이 아니라 메시지 키다 — menu.{MENU_CD}(sys/code.md).
                 names.put(menu.getMenuCd(), messages.text(menu.getMenuNm(), lang));
             }
         }

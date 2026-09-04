@@ -5,7 +5,7 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * 인가 거부 코드 — security-design.md §4.
+ * 인가 거부 코드 — backend/security.md.
  *
  * <p><b>넷 다 403 이지만 코드를 가르는 것이 요점이다.</b> 운영자가 받는 것은 셋 다 403 하나이며,
  * 구분하지 않으면 <i>"권한을 줬는데 403"</i> 문의에서 어디를 봐야 할지 알 수 없다.
@@ -18,7 +18,7 @@ import com.aiagent.core.message.MsgKey;
  *   <tr><td>{@code err.unclassified-api}</td><td>세 프리픽스 밖의 {@code /api/**}</td><td>컨트롤러 경로</td></tr>
  * </table>
  *
- * <p><b>기록처는 {@code SYS_LO_EXCEPTION.ERR_CD} 다</b>(architecture.md §6.3) — 그 테이블은 이력
+ * <p><b>기록처는 {@code SYS_LO_EXCEPTION.ERR_CD} 다</b>(backend/packages.md) — 그 테이블은 이력
  * 슬라이스가 만든다. 지금은 응답 봉투와 애플리케이션 로그에만 남는다.
  *
  * <p>사용자에게 나가는 문구는 <b>넷이 같다.</b> 어느 쪽이든 사용자가 할 수 있는 일은 같고,

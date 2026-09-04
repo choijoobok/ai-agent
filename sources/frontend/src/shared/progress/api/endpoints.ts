@@ -1,5 +1,5 @@
 /**
- * 진행률 폴링 — <b>공통 API</b>다(security-design.md §4 · 30 §6).
+ * 진행률 폴링 — <b>공통 API</b>다(backend/security.md · backend/crosscutting.md).
  *
  * <p>메뉴에 매이지 않는다 — 오래 걸리는 작업을 가진 화면이 늘 때마다 엔드포인트가 늘면
  * 인가 시드가 그것을 전부 나열하게 된다.

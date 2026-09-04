@@ -11,7 +11,7 @@ vi.mock('@/features/profile/api/profileApi', () => ({ changePassword: vi.fn() })
 const submit = vi.mocked(changePassword);
 
 /**
- * 비밀번호 변경 탭 — AUTH-05 · main-shell.md §8.
+ * 비밀번호 변경 탭 — AUTH-05 · frontend/tabs.md.
  *
  * <p><b>모달을 거치지 않고 탭만 그린다.</b> 여기서 재는 것은 전부 이 탭 안의 판정이며,
  * 모달을 세우고 탭을 눌러 들어가면 **antd 폼 검증 두 겹 위에 탭 전환이 얹혀** 느려지고
@@ -97,7 +97,7 @@ describe('비밀번호 변경 탭', () => {
   });
 
   it('임시 비밀번호가 만료 안내보다 앞선다 — 그 상태에서는 남은 날이 뜻이 없다', () => {
-    // 체인 #5 의 독립 조건이라 만료 계산과 무관하다(security-design.md §4).
+    // 체인 #5 의 독립 조건이라 만료 계산과 무관하다(backend/security.md).
     show({ ...BASE, pwdInitYn: true, pwdExpiresInDays: 12 });
 
     expect(screen.queryByText('profile.pwd.temporary')).not.toBeNull();

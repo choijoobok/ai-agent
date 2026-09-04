@@ -1,4 +1,4 @@
-/** 서버 응답 봉투 — api-conventions.md §2.3. 성공도 실패도 같은 모양으로 온다. */
+/** 서버 응답 봉투 — backend/api.md. 성공도 실패도 같은 모양으로 온다. */
 export interface ApiEnvelope<T> {
   success: boolean;
   data?: T;
@@ -17,7 +17,7 @@ export interface FieldError {
 
 /**
  * 화면이 받는 실패. <b>문구를 조립하지 않는다</b> — 서버가 완성한 {@link message} 를 그대로
- * 표시하고, 분기가 필요할 때만 {@link code} 를 본다(architecture.md §6-1.2 · frontend-stack.md §9).
+ * 표시하고, 분기가 필요할 때만 {@link code} 를 본다(backend/packages.md · frontend/packages.md).
  */
 export class ApiError extends Error {
   readonly code: string;

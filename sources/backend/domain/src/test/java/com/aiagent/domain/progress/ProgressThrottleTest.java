@@ -13,7 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 진행률을 <b>언제 쓰는가</b> — 30 §6.2.
+ * 진행률을 <b>언제 쓰는가</b> — backend/crosscutting.md.
  *
  * <p>이 파일이 지키는 것은 한 문장이다: <b>진행률을 보여 주려고 작업을 느리게 만들지
  * 않는다.</b> 건별로 쓰면 10만 건 처리에 {@code UPDATE} 가 10만 번이고, 그 값은 사용자가
@@ -123,7 +123,7 @@ class ProgressThrottleTest {
     }
 
     /*
-      <b>퍼센트만 보면 여기서 굳는다.</b> 전체를 모르는 작업(46 §8 — {@code TOT_CNT} 가
+      <b>퍼센트만 보면 여기서 굳는다.</b> 전체를 모르는 작업(sys/batch.md — {@code TOT_CNT} 가
       {@code NULL})은 퍼센트를 계산할 수 없고, 그때 화면에 남는 것은 도는 막대와
       <b>0건</b>이다 — 사용자는 그것을 <i>멈췄다</i> 로 읽는다.
     */

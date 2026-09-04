@@ -12,7 +12,7 @@ export interface ShellNavigation {
   index: MenuIndex;
   /** 트리·검색·즐겨찾기가 모두 이것을 부른다. `limit` 이 오면 부르는 쪽이 확인을 받는다. */
   openMenu: (node: MenuNode) => OpenOutcome | null;
-  /** main-shell.md §4.7.1 — 이미 열려 있어도 항상 새 인스턴스. */
+  /** frontend/tabs.md — 이미 열려 있어도 항상 새 인스턴스. */
   openMenuInNewTab: (node: MenuNode) => OpenOutcome | null;
   selectTab: (key: string) => void;
   /**
@@ -22,12 +22,12 @@ export interface ShellNavigation {
    * 상태로 새로고침하면 아래 URL → 탭 효과가 <b>그 경로를 다시 열어</b>, 닫은 탭이 되살아난다.
    */
   syncUrlToActiveTab: () => void;
-  /** 상한 확인을 받은 뒤 — 가장 먼저 연 탭을 닫고 연다(frontend-stack.md §4.8). */
+  /** 상한 확인을 받은 뒤 — 가장 먼저 연 탭을 닫고 연다(frontend/packages.md). */
   replaceOldest: (target: OpenTarget, victimKey: string) => void;
 }
 
 /**
- * URL 과 탭을 잇는 <b>단 하나의 자리</b> — frontend-stack.md §4.4 · §5.
+ * URL 과 탭을 잇는 <b>단 하나의 자리</b> — frontend/packages.md.
  *
  * <pre>
  * 탭 전환    → navigate(pathname, {state:{tabKey}})  — 방문 순서가 history 에 쌓인다
@@ -38,7 +38,7 @@ export interface ShellNavigation {
  * 부르면 뒤로가기로 들어온 전환에서 한쪽이 빠지고, <i>"주소는 바뀌었는데 탭은 그대로"</i> 가
  * 생긴다. 그래서 <b>쓰는 쪽은 언제나 `navigate` 만</b> 하고, 탭 활성화는 아래 효과 하나가 한다.
  *
- * <p><b>탭 안의 화면 전환에는 뒤로가기가 동작하지 않는다</b>(frontend-stack.md §4.4 가 감수한 제약) —
+ * <p><b>탭 안의 화면 전환에는 뒤로가기가 동작하지 않는다</b>(frontend/packages.md 가 감수한 제약) —
  * 뒤로가기가 탭 이동에 배정됐기 때문이다. 목록으로 돌아가는 것은 화면의 버튼이 한다.
  */
 export function useShellNavigation(): ShellNavigation {
@@ -84,7 +84,7 @@ export function useShellNavigation(): ShellNavigation {
 
   const openMenu = useCallback(
     (node: MenuNode) =>
-      // 구조 노드는 열 수 없다 — URL 과 자식은 배타다(security-design.md §4).
+      // 구조 노드는 열 수 없다 — URL 과 자식은 배타다(backend/security.md).
       node.menuUrl ? go(useTabStore.getState().open(targetOf(node)), node.menuUrl) : null,
     [go],
   );
@@ -110,7 +110,7 @@ export function useShellNavigation(): ShellNavigation {
     // 이유다.
     const { tabs: current, activeKey: active } = useTabStore.getState();
     const tab = current.find((candidate) => candidate.key === key);
-    // 같은 탭을 다시 클릭하면 history 엔트리를 쌓지 않는다(frontend-stack.md §4.4).
+    // 같은 탭을 다시 클릭하면 history 엔트리를 쌓지 않는다(frontend/packages.md).
     if (!tab || key === active) {
       return;
     }
@@ -138,7 +138,7 @@ export function useShellNavigation(): ShellNavigation {
 
     // state 가 없거나(딥링크·F5) 가리키던 탭이 이미 닫혔다.
     //
-    // frontend-stack.md §4.4 는 죽은 엔트리를 "건너뛰고 다음으로" 로 정했으나, popstate 안에서 다시
+    // frontend/packages.md 는 죽은 엔트리를 "건너뛰고 다음으로" 로 정했으나, popstate 안에서 다시
     // history.go(-1) 을 부르면 남은 엔트리가 전부 죽었을 때 앱 밖으로 걸어 나간다.
     // 경로로 다시 맞추는 쪽이 결과가 예측 가능하고 되돌릴 수 없는 실패가 없다.
     const node = findByUrl(index, location.pathname);
@@ -152,7 +152,7 @@ export function useShellNavigation(): ShellNavigation {
     }
 
     if (location.pathname !== '/dashboard' && location.pathname !== '/') {
-      // 없는 메뉴이거나 권한이 없다 — 프론트는 둘을 구분하지 않는다(frontend-stack.md §5).
+      // 없는 메뉴이거나 권한이 없다 — 프론트는 둘을 구분하지 않는다(frontend/packages.md).
       // 조용히 대시보드로 보내면 사용자는 자기가 잘못 눌렀다고 생각한다.
       message.warning(label(MSG.SCREEN_DENIED));
     }
@@ -161,7 +161,7 @@ export function useShellNavigation(): ShellNavigation {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.key, index]);
 
-  // 활성 탭의 메뉴 코드가 이후 요청의 X-Menu-Code 가 된다(frontend-stack.md §9).
+  // 활성 탭의 메뉴 코드가 이후 요청의 X-Menu-Code 가 된다(frontend/packages.md).
   useEffect(() => {
     const active = tabs.find((tab) => tab.key === activeKey);
     setActiveMenuCode(active?.menuCd ?? null);

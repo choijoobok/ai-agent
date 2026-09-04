@@ -16,7 +16,7 @@ import { getConfigPrefixes } from '@/features/config/api/configApi';
 import type { ConfigRow, ConfigValueType } from '@/features/config/types';
 
 /**
- * `CONFIG_MGMT` — 63 §4. <b>목록이 아우터 조인이다.</b>
+ * `CONFIG_MGMT` — screen/code/requirements.md. <b>목록이 아우터 조인이다.</b>
  *
  * <pre>
  * yml 이 정한 키 목록   LEFT OUTER JOIN   SYS_CONFIG   ON key
@@ -26,24 +26,24 @@ import type { ConfigRow, ConfigValueType } from '@/features/config/types';
  * 고정이며 `SYS_CONFIG` 의 행 수와 무관하다 — 오른쪽이 비어 있는 것이 <b>정상</b>이고,
  * 그 비어 있음은 *값이 없다* 가 아니라 <b>*아무도 안 바꿨다*</b> 를 뜻한다.
  *
- * <p><b>행을 더할 수 없다.</b> `addRow` 를 선언하지 않는다(grid-api-contract.md §3.6) — 왼쪽에 없는 키를
+ * <p><b>행을 더할 수 없다.</b> `addRow` 를 선언하지 않는다(frontend/grid.md) — 왼쪽에 없는 키를
  * 넣으면 <b>아무 데도 읽히지 않는 행</b>이 생기고, 그것은 *저장은 되고 동작하지 않는*
- * 가장 나쁜 실패다(grid-column-contract.md §5.7).
+ * 가장 나쁜 실패다(frontend/grid.md).
  *
  * <p><b>지우기가 아니라 되돌리기다.</b> 행을 지우면 값이 사라지는 것이 아니라 `yml` 이
- * 드러나며(63 §4.4), 그래서 목록에서 그 행이 <b>사라지지 않는다</b> — 이 화면만의
+ * 드러나며(screen/code/requirements.md), 그래서 목록에서 그 행이 <b>사라지지 않는다</b> — 이 화면만의
  * 성질이고 라벨이 그 기대를 만든다.
  *
- * <p><b>화면이 아는 것은 유형까지다</b>(63 §4.5). `@Min` 도 상호 제약도 여기 옮겨 적지
- * 않는다 — 제약의 단일 원본은 서버의 바인딩 객체이고(43 §6.2), 복제하면 어긋날 때 어느
- * 쪽이 맞는지 알 수 없다. 서버의 거부는 <b>그 셀로 되돌아온다</b>(grid-edit-validation.md §3.4).
+ * <p><b>화면이 아는 것은 유형까지다</b>(screen/code/requirements.md). `@Min` 도 상호 제약도 여기 옮겨 적지
+ * 않는다 — 제약의 단일 원본은 서버의 바인딩 객체이고(sys/code.md), 복제하면 어긋날 때 어느
+ * 쪽이 맞는지 알 수 없다. 서버의 거부는 <b>그 셀로 되돌아온다</b>(frontend/grid.md).
  *
- * <p><b>엑셀이 없다</b> — 감춘 것이 아니라 `EXPORT` 액션 자체가 없다(52 §4.2).
+ * <p><b>엑셀이 없다</b> — 감춘 것이 아니라 `EXPORT` 액션 자체가 없다(sys/menu.md).
  */
 
 const MENU_CD = 'CONFIG_MGMT';
 
-/** `auth.password.admin-reset-enabled` 를 끄면 <b>잠긴 계정을 풀 수 없다</b> — 43 §6.3. */
+/** `auth.password.admin-reset-enabled` 를 끄면 <b>잠긴 계정을 풀 수 없다</b> — sys/code.md. */
 const ADMIN_RESET_KEY = 'auth.password.admin-reset-enabled';
 
 const TYPE_LABEL: Record<ConfigValueType, string> = {
@@ -88,20 +88,20 @@ export function ConfigMgmtPage() {
     menuCd: MENU_CD,
     columns,
     api,
-    // `addRow` 가 없다 — 키는 `yml` 이 정한다(63 §4.3).
+    // `addRow` 가 없다 — 키는 `yml` 이 정한다(screen/code/requirements.md).
     params: collectConditions,
     toSavePayload: (rows) => ({
       rows: rows.map((row) => ({
         rowState: row.state,
         cfgKey: row.data.cfgKey,
-        // 되돌리기는 값을 보내지 않는다 — 서버는 행을 지울 뿐이다(63 §4.4).
+        // 되돌리기는 값을 보내지 않는다 — 서버는 행을 지울 뿐이다(screen/code/requirements.md).
         cfgVal: row.state === 'D' ? undefined : row.data.cfgVal,
       })),
     }),
   });
 
   /*
-    접두사는 <b>전 키에서 도출</b>된 고정 집합이라 목록 응답에 실리지 않는다(63 §4.6).
+    접두사는 <b>전 키에서 도출</b>된 고정 집합이라 목록 응답에 실리지 않는다(screen/code/requirements.md).
     지금 걸린 조건의 결과를 후보로 내면 <b>한 번 좁힌 뒤 넓힐 수 없는 콤보</b>가 된다.
 
     `staleTime: Infinity` 인 것은 이 목록이 <b>빌드 산출물</b>이기 때문이다 — 배포가
@@ -129,7 +129,7 @@ export function ConfigMgmtPage() {
       width: 104,
       /*
         취소선은 <b>적용값 한 칸</b>에만 긋는다. 이 화면에서 사라지는 것은 행이 아니라
-        오버라이드 한 줄이고 <b>키는 목록에 남는다</b>(63 §4.4) — 전 셀에 그으면
+        오버라이드 한 줄이고 <b>키는 목록에 남는다</b>(screen/code/requirements.md) — 전 셀에 그으면
         <i>"이 행이 통째로 없어진다"</i> 로 읽혀 저장 뒤에 기대가 어긋난다.
       */
       strikeField: 'cfgVal',
@@ -143,7 +143,7 @@ export function ConfigMgmtPage() {
         handleRef={searchForm}
         fields={searchFields}
         onSubmit={() => void grid.read()}
-        // 조건과 컬럼 필터를 함께 지운다 — grid-standard.md §2.4.
+        // 조건과 컬럼 필터를 함께 지운다 — frontend/grid.md.
         onReset={grid.clearFilters}
         onActiveCountChange={header.onActiveCountChange}
         collapsed={header.collapsed}
@@ -155,7 +155,7 @@ export function ConfigMgmtPage() {
           menuCd={MENU_CD}
           controller={grid}
           /*
-            <b>삭제가 아니라 되돌리기</b>이고 <b>변경됨 인 행만</b> 체크된다(63 §4.4).
+            <b>삭제가 아니라 되돌리기</b>이고 <b>변경됨 인 행만</b> 체크된다(screen/code/requirements.md).
             오버라이드 행이 없는 키는 지울 것이 없다 — 체크하게 두면 저장이 *없는 것을
             지운다* 로 나간다.
           */
@@ -178,12 +178,12 @@ function buildColumns(): ColumnDef<ConfigRow>[] {
       pinned: 'left',
       sortable: true,
       // <b>열리지 않는다.</b> 키를 화면에서 만들거나 고치면 아무 데도 읽히지 않는 행이
-      // 생긴다 — 왼쪽 테이블은 코드다(63 §4.3).
+      // 생긴다 — 왼쪽 테이블은 코드다(screen/code/requirements.md).
       editable: false,
     },
     {
       /*
-        <b>숨기지 않는다</b>(63 §4.3). 되돌리면 무엇이 되는지가 행마다 보여야 §4.4 의
+        <b>숨기지 않는다</b>(screen/code/requirements.md). 되돌리면 무엇이 되는지가 행마다 보여야 §4.4 의
         확인이 놀라움을 주지 않는다 — 그리고 배포가 기본값을 올렸을 때 그 사실이
         드러나는 자리도 여기다.
       */
@@ -202,14 +202,14 @@ function buildColumns(): ColumnDef<ConfigRow>[] {
       editable: true,
       /*
         값이 기본값과 <b>다를 때만</b> 굵다. 배지는 <b>행이 있으면</b> 붙는다 — 근거가
-        다르다(63 §4.3). 값을 기본값과 똑같이 저장해 두면 다음 배포가 `yml` 기본값을
+        다르다(screen/code/requirements.md). 값을 기본값과 똑같이 저장해 두면 다음 배포가 `yml` 기본값을
         올려도 그 키만 옛 값에 묶이는데, 두 값이 같아 눈으로는 구분되지 않으므로
         <b>배지가 유일한 신호</b>다.
       */
       emphasis: (row) => row.overridden && row.cfgVal !== row.defaultVal,
       badge: (row) =>
         row.overridden ? { text: label(MSG.CONFIG_OVERRIDDEN), tone: 'warn' } : null,
-      // 1층 — 유형에 맞는 <b>형식</b>만 본다(grid-edit-validation.md §3.2 · 63 §4.5).
+      // 1층 — 유형에 맞는 <b>형식</b>만 본다(frontend/grid.md · screen/code/requirements.md).
       validate: (value, row) => formatIssue(value, row.cfgType),
     },
     {
@@ -217,14 +217,14 @@ function buildColumns(): ColumnDef<ConfigRow>[] {
       header: MSG.CONFIG_COL_TYPE,
       type: 'code',
       width: 110,
-      // 코드값이 아니라 이름을 보여준다 — 43 §4.4. 값 집합이 닫혀 있어 고르는 필터다.
+      // 코드값이 아니라 이름을 보여준다 — sys/code.md. 값 집합이 닫혀 있어 고르는 필터다.
       options: typeOptions(),
       editable: false,
     },
     {
       /*
         <b>읽기 전용이다.</b> 편집하게 두면 값을 안 바꿨는데 오버라이드 행이 생기고,
-        그 키가 <i>변경됨</i> 이 된다(63 §4.2). 원천은 필드 Javadoc 이다.
+        그 키가 <i>변경됨</i> 이 된다(screen/code/requirements.md). 원천은 필드 Javadoc 이다.
 
         필터를 끈다 — 훑어 읽는 칸이지 거르는 칸이 아니고, 같은 말을 조회조건의
         *키 · 설명* 한 칸이 이미 한다.
@@ -239,22 +239,22 @@ function buildColumns(): ColumnDef<ConfigRow>[] {
         그리드에서 합이 넘쳤다).
       */
       width: 200,
-      // 남는 폭을 이 칸이 먹는다 — 마지막 컬럼과 판 사이에 빈 띠가 남지 않는다(grid-standard.md §2).
+      // 남는 폭을 이 칸이 먹는다 — 마지막 컬럼과 판 사이에 빈 띠가 남지 않는다(frontend/grid.md).
       fill: true,
       filter: false,
       editable: false,
       /*
         <b>셀 한 줄로는 다 못 읽는다.</b> 필드 Javadoc 이라 두세 문장짜리가 흔하다 —
-        더블클릭하면 펼쳐 읽는다(grid-column-contract.md §5.5).
+        더블클릭하면 펼쳐 읽는다(frontend/grid.md).
 
         <b>편집기가 아니다.</b> 편집하게 두면 값을 안 바꿨는데 오버라이드 행이 생기고
-        그 키가 <i>변경됨</i> 이 된다(63 §4.2) — 여는 순간 고칠 수 있는 것처럼 보이는
+        그 키가 <i>변경됨</i> 이 된다(screen/code/requirements.md) — 여는 순간 고칠 수 있는 것처럼 보이는
         것부터가 사고의 시작이다.
       */
       viewer: 'largeText',
     },
     /*
-      감사 4컬럼은 `visible: false` 다 — 설정 창에서 켤 수 있다(grid-column-contract.md §2.1).
+      감사 4컬럼은 `visible: false` 다 — 설정 창에서 켤 수 있다(frontend/grid.md).
 
       메시지 화면과 달리 `hidden` 이 아닌 것은, 여기 값이 <b>사람이 남긴 것</b>이기
       때문이다. 이 테이블의 쓰기 경로는 이 화면 하나이므로 *누가 언제 이 설정을 바꿨나*
@@ -271,19 +271,19 @@ function typeOptions(): SelectOption[] {
   }));
 }
 
-// ── 검증 (grid-edit-validation.md §3.2 의 1층) ─────────────────────────────────────────
+// ── 검증 (frontend/grid.md 의 1층) ─────────────────────────────────────────
 
 /**
- * 유형에 맞는 <b>형식</b>만 본다 — 63 §4.5.
+ * 유형에 맞는 <b>형식</b>만 본다 — screen/code/requirements.md.
  *
- * <p><b>범위를 보지 않는다.</b> `0` 이 *끔* 인 키가 있고(43 §6.3) 상한을 원하는 조직도
+ * <p><b>범위를 보지 않는다.</b> `0` 이 *끔* 인 키가 있고(sys/code.md) 상한을 원하는 조직도
  * 다르다 — 그 판단은 서버의 바인딩 객체 하나가 갖는다.
  */
 function formatIssue(value: unknown, type: ConfigValueType): string | null {
   // 셀의 값은 문자열이다 — 아닌 것이 오면 그것은 형식 오류가 아니라 선언의 오류다.
   const text = typeof value === 'string' ? value.trim() : '';
   if (text === '') {
-    // 필수 검증이 이미 말한다 — 같은 칸에 문구 둘을 붙이지 않는다(grid-column-contract.md §5.1).
+    // 필수 검증이 이미 말한다 — 같은 칸에 문구 둘을 붙이지 않는다(frontend/grid.md).
     return null;
   }
   if (type === 'NUMBER' && !/^-?\d+(\.\d+)?$/.test(text)) {
@@ -295,7 +295,7 @@ function formatIssue(value: unknown, type: ConfigValueType): string | null {
   return null;
 }
 
-// ── 저장 전 경고 (63 §4.4 · §4.5) ─────────────────────────────────
+// ── 저장 전 경고 (screen/code/requirements.md) ─────────────────────────────────
 
 /**
  * 건수가 말하지 못하는 둘을 말한다.
@@ -305,7 +305,7 @@ function formatIssue(value: unknown, type: ConfigValueType): string | null {
  * *"지웠는데 그대로다"* 로 읽힌다.
  *
  * <p><b>관리자 재설정을 끄는 것</b>은 되돌릴 수는 있지만 <b>되돌릴 사람이 못 들어올 수</b>
- * 있다. 62 §4.5.3 이 *"되돌리기가 안 되니까 묻는다"* 고 한 것의 변형이며, 여기서는
+ * 있다. screen/menu/requirements.md 이 *"되돌리기가 안 되니까 묻는다"* 고 한 것의 변형이며, 여기서는
  * 되돌리기가 <i>안 되는</i> 것이 아니라 <b><i>닿을 수 없는</i></b> 것이다.
  */
 function buildWarnings(rows: GridRow<ConfigRow>[]): string[] {
@@ -327,7 +327,7 @@ function buildWarnings(rows: GridRow<ConfigRow>[]): string[] {
   return warnings;
 }
 
-// ── 서버 거부 → 셀 (grid-edit-validation.md §3.4) ──────────────────────────────────────
+// ── 서버 거부 → 셀 (frontend/grid.md) ──────────────────────────────────────
 
 /**
  * 서버의 `field` 가 곧 `CFG_KEY` 다 — 이 화면에서는 그것이 <b>행의 이름</b>이다.
@@ -349,13 +349,13 @@ function locateFieldErrors(
   return issues;
 }
 
-// ── 조회조건 (63 §4.6) ────────────────────────────────────────────
+// ── 조회조건 (screen/code/requirements.md) ────────────────────────────────────────────
 
 /**
  * 분류가 없으니 <b>접두사와 검색</b>이다.
  *
  * <p>`CFG_GRP_CD` 를 두지 않은 이유는 *"설정 하나는 한 영역에만 속한다"* 가 참이 아니기
- * 때문이다(43 §6.1) — `auth.login.deny-empty-authority` 는 인증이면서 화면 랜딩 정책이다.
+ * 때문이다(sys/code.md) — `auth.login.deny-empty-authority` 는 인증이면서 화면 랜딩 정책이다.
  * 탭이나 트리로 나누면 등록할 때마다 판단해야 하고, 그 판단이 읽는 사람의 기대와
  * 어긋나도 <b>조용하다</b>.
  */
@@ -373,16 +373,16 @@ function buildSearchFields(prefixes: string[]): SearchField[] {
       field: 'prefix',
       label: MSG.CONFIG_SEARCH_PREFIX,
       type: 'select',
-      // 접두사는 <b>시작</b> 하나다 — 후보가 하나면 셀렉터가 나타나지 않는다(search-form-contract.md §3.4).
+      // 접두사는 <b>시작</b> 하나다 — 후보가 하나면 셀렉터가 나타나지 않는다(frontend/search-form.md).
       ops: ['startsWith'],
-      // <b>관리하지 않는다.</b> 전 키에서 도출한 것을 서버가 준다(63 §4.6).
+      // <b>관리하지 않는다.</b> 전 키에서 도출한 것을 서버가 준다(screen/code/requirements.md).
       options: prefixes.map((prefix) => ({ value: prefix, text: prefix })),
     },
     {
       field: 'overridden',
       label: MSG.CONFIG_SEARCH_OVERRIDDEN,
       type: 'select',
-      // 서버가 `=` 만 받는다 — 판정은 <b>행의 존재</b>이지 값 비교가 아니다(63 §4.3).
+      // 서버가 `=` 만 받는다 — 판정은 <b>행의 존재</b>이지 값 비교가 아니다(screen/code/requirements.md).
       ops: ['eq'],
       options: [
         { value: 'Y', text: label(MSG.CONFIG_OVERRIDDEN) },

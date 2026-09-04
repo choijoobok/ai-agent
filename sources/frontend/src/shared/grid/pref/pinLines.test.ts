@@ -22,7 +22,7 @@ const col = (field: string, pinned?: 'left' | 'right'): ColumnDef<Row> => ({
 });
 
 /**
- * 틀고정 경계선 — grid-standard.md §4·§5.
+ * 틀고정 경계선 — frontend/grid.md.
  *
  * <p><b>고정은 컬럼의 속성이 아니라 자리의 결과다.</b> 그 뒤집힘이 이 파일의 전부이며,
  * 잘못되면 <b>고정 아닌 컬럼이 고정 구역에 섞인다</b> — 화면은 그려지고 저장도 되므로

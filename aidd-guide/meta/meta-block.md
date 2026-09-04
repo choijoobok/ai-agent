@@ -61,7 +61,6 @@ tags: [tag1, tag2]
 | LLM-FWK | 06-framework |
 | LLM-PLY | 11-playbook |
 | LLM-KNW | 09-knowledge |
-| LLM-REC | 10-records |
 
 서브 카테고리는 추가 prefix:
 - `LLM-PMT-OVR-{SEQ}` — 03-prompt/overlays

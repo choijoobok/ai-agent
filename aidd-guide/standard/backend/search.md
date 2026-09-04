@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/core/search/", "sources/backend/domain/search/", "aidd-guide/standard/backend/_study/api-conventions.md", "aidd-guide/standard/backend/search.md"]
+sources: ["sources/backend/core/search/", "sources/backend/domain/search/", "aidd-guide/standard/backend/api.md", "aidd-guide/standard/backend/search.md"]
 author: Bong Jong Hyeon
 tier: 2
 tags: [backend, query, search, whitelist, paging]
@@ -17,7 +17,6 @@ tags: [backend, query, search, whitelist, paging]
 > **조회는 둘이다.** 검색 폼이 있으면 **동적형**, 없으면 **고정형**.
 > 이 문서는 동적형이다 — 고정형은 그냥 전용 `record` 를 받는 평범한 API 다.
 >
-> 유도과정은 [`_study/api-conventions.md`](./_study/api-conventions.md) §3~5.
 
 ## 1. 어느 쪽인가
 
@@ -197,4 +196,3 @@ RangeGuard.check(request, new RangeGuard.Rule(
 
 - [api.md](./api.md) — 경로·봉투·헤더
 - [persistence.md](./persistence.md) — `IN` 쪼개기 · tie-breaker 의 벤더 근거
-- [`_study/api-conventions.md`](./_study/api-conventions.md) — 원문

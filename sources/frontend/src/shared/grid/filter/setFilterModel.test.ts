@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { keyOf, toModel } from '@/shared/grid/filter/setFilterModel';
 
 /**
- * `set` 필터의 판정 둘 — grid-column-contract.md §4.3.
+ * `set` 필터의 판정 둘 — frontend/grid.md.
  *
  * <p><b>키 만들기</b>와 <b>전부 고른 상태</b>다. 둘 다 조용히 깨진다 — 키가 어긋나면
  * 체크는 되는데 아무것도 안 걸리고, 전부 고른 것을 필터로 두면 화면은 정상인데

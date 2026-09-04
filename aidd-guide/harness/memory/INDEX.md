@@ -40,10 +40,8 @@ tags: [memory, logs, index]
 
 | 무엇 | 어디 |
 |---|---|
-| **아키텍처 결정 · 버린 안** | [`10-records/adr/`](../../records/adr/INDEX.md) — 스물여덟이 이미 그 일을 한다 |
 | **그보다 가벼운 결정** | **커밋 메시지**. `CLAUDE.md` §4-3 이 *왜* 를 본문에 적게 한다 |
 | **불변 진실** | Claude Code auto-memory(`~/.claude/…/memory/`) — 세션 진입에 자동으로 실린다 |
-| **폐지된 설계 문서의 결정** | [`10-records/legacy-doc-map.md`](../../records/legacy-doc-map.md) |
 
 > **레지스트리를 하나 더 만들지 않는 것이 결정이다.** 결정을 적는 자리가 둘이면
 > 언젠가 갈리고, 갈렸을 때 어느 쪽이 참인지 알 방법이 없다.
@@ -55,20 +53,18 @@ tags: [memory, logs, index]
 | 분류 | 정의 | 위치 |
 |------|------|-------------|
 | **Short-term** | 현재 컨텍스트 윈도우 | Claude Code 세션 |
-| **Long-term** | 영속 파일 메모리 | [`10-records/adr/`](../../records/adr/INDEX.md) · 커밋 메시지 · Claude Code auto-memory(`~/.claude/…/memory/`) |
 | **Episodic** | 시간 순 로그 | `chat-history/YYYY-MM/{raw,summary}/` — 형상 관리 제외 (CLAUDE.md §9) |
 | **Semantic** | 개념·관계 지식 | `09-knowledge/`, `06-framework/`, `11-playbook/` |
 
 ## Structured Note-Taking (Anthropic)
 
 > 외부 메모리(파일)를 컨텍스트의 **연장**으로 활용. 이 저장소에서 그 구현은 **`logs`(원문·요약)와
-> `10-records/adr/`(결정), 그리고 커밋 메시지** 셋이다.
+> 그리고 커밋 메시지** 둘이다.
 
 ## 신뢰 우선순위 (충돌 시)
 
 ```
 1. 현재 소스 코드             ← 가장 신뢰 (CLAUDE.md §2)
-2. llm-guide/                ← 표준·패턴·지식 (10-records/adr 포함)
 3. docs/menu · docs/screen   ← 화면 문서 셋
 4. chat-history 요약 · 기억   ← 검증 후 사용
 ```
@@ -79,12 +75,11 @@ tags: [memory, logs, index]
 |-------|----------|
 | logs (raw) | 훅이 남긴다. 사람도 AI 도 손대지 않는다 (CLAUDE.md §9) |
 | logs (summary) | AI 가 세션 끝에 작성 — 결정·산출물·미결만 남긴다 |
-| ADR | 아키텍처 판단에서 **버린 안이 생겼을 때**. 형식은 [adr/INDEX.md](../../records/adr/INDEX.md) |
+| ADR | 아키텍처 판단에서 **버린 안이 생겼을 때**. 형식은 adr/INDEX.md |
 
 > 실제 저장 경로는 [logs.md](./logs.md) 에 정의. 로그 폴더는 **형상 관리 대상이 아니다**(CLAUDE.md §9).
 
 ## 관련 카테고리
 
 - [INDEX](../../INDEX.md)
-- [10-records](../../records/INDEX.md) — 실제 형식·템플릿
 - [05-harness](../INDEX.md) — 자동화 vs AI 책임 매트릭스

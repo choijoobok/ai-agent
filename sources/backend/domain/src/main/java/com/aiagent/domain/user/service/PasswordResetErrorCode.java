@@ -10,7 +10,7 @@ import com.aiagent.core.message.MsgKey;
  * <p><b>{@code AuthErrorCode}(api) 와 갈라 둔 것이 요건이다.</b>
  * 저쪽은 전부 401 인데({@code UNAUTHENTICATED}) 이쪽은 <b>인증을 시도한 것이 아니다</b> —
  * 401 로 내보내면 프론트의 세션 신호가 그것을 <i>세션이 끊겼다</i> 로 읽고 재인증 모달을
- * 띄우려 든다(frontend-stack.md §9). 로그인 화면에서는 세션이 없어 지금은 조용하지만, 그 침묵은
+ * 띄우려 든다(frontend/packages.md). 로그인 화면에서는 세션이 없어 지금은 조용하지만, 그 침묵은
  * <b>우연이지 설계가 아니다</b>.
  *
  * <p><b>발송 실패의 코드가 없다.</b> 계정이 없어도 메일이 안 나가도 응답이 같아야 하므로

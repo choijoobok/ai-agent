@@ -9,7 +9,7 @@ import { getSystemInfo } from '@/features/notification/api/notificationApi';
 import type { SystemInfo } from '@/features/notification/types';
 
 /**
- * 시스템 정보 — main-shell.md §7.3. 알림 모달 우측 하단의 버튼과 그 팝오버다.
+ * 시스템 정보 — frontend/tabs.md. 알림 모달 우측 하단의 버튼과 그 팝오버다.
  *
  * <p><b>답하는 물음이 하나다 — *"지금 도는 서버가 어느 빌드인가"*.</b> 운영 문의는 언제나
  * 거기서 시작하고, 사용자가 화면에서 읽어 줄 수 없으면 확인 경로가 **서버에 접속하는 것**

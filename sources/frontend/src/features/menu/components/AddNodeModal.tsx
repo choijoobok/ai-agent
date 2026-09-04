@@ -4,16 +4,16 @@ import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
 
 /**
- * 신규 노드 — <b>칸이 하나짜리 모달</b>이다(62 §4.6).
+ * 신규 노드 — <b>칸이 하나짜리 모달</b>이다(screen/menu/requirements.md).
  *
- * <p><b>grid-standard.md §1.1 의 편집 폼이 아니다.</b> 그 절이 없앤 것은 <i>행을 편집하는 폼</i>이고 여기는
- * {@code createNode(upMenuCd, menuCd)} 라는 <b>한 연산의 인자</b>를 받는다 — grid-api-contract.md §8 의 파라미터
+ * <p><b>frontend/grid.md 의 편집 폼이 아니다.</b> 그 절이 없앤 것은 <i>행을 편집하는 폼</i>이고 여기는
+ * {@code createNode(upMenuCd, menuCd)} 라는 <b>한 연산의 인자</b>를 받는다 — frontend/grid.md 의 파라미터
  * 모달이며, <b>칸이 하나뿐인 것이 그 증거</b>다. 나머지 여섯은 사람이 정하는 값이 아니다:
  * 부모는 선택 노드, 순서는 형제의 맨 끝, 이름은 {@code menu.{MENU_CD}}, 사용 여부는 켬,
  * URL·아이콘은 <b>만든 뒤 셀에서</b> 채운다.
  *
  * <p><b>중복은 여기서 막지 않는다</b> — 다른 사람이 방금 만든 것을 클라이언트가 알 수 없다.
- * 서버 검증이며(grid-edit-validation.md §3.4) 실패는 이 모달의 칸으로 되돌아온다.
+ * 서버 검증이며(frontend/grid.md) 실패는 이 모달의 칸으로 되돌아온다.
  */
 interface Props {
   /** {@code null} 이면 최상위 — 제목이 갈린다. */
@@ -22,7 +22,7 @@ interface Props {
   onCancel: () => void;
 }
 
-/** 52 §3.1 의 명명 규약 — 대문자·숫자·밑줄. 시드의 26개가 전부 이 모양이다. */
+/** sys/menu.md 의 명명 규약 — 대문자·숫자·밑줄. 시드의 26개가 전부 이 모양이다. */
 const MENU_CD_PATTERN = /^[A-Z][A-Z0-9_]*$/;
 
 /**

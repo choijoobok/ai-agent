@@ -10,10 +10,10 @@ import { CODE_ENDPOINTS } from '@/features/code/api/endpoints';
 import type { CodeRefDefRow } from '@/features/code/types';
 
 /**
- * 참조 코드 <b>정의</b> 관리 — 63 §2.4.
+ * 참조 코드 <b>정의</b> 관리 — screen/code/requirements.md.
  *
  * <p><b>값은 컬럼이고 정의만 모달이다.</b> 이전 판은 값 목록을 모달에 담았는데 그러면
- * <b>한 코드씩만 보여</b> *"어느 코드가 아직 안 채워졌나"* 에 답할 수 없었다(ADR-0025).
+ * <b>한 코드씩만 보여</b> *"어느 코드가 아직 안 채워졌나"* 에 답할 수 없었다(sys/code.md).
  * 정의는 <b>자주 열지 않는 관리 행위</b>라 상시 자리를 줄 값이 없다.
  *
  * <p><b>저장이 모달 안에서 닫힌다</b> — 바깥 그리드의 미저장 편집과 섞이지 않는다. 닫으면
@@ -29,7 +29,7 @@ interface RefDefModalProps {
   grpCd: string | null;
   grpNm: string;
   menuCd: string;
-  /** `CODE_REF_KEY` 화이트리스트 — 신규 행의 `REF_CD` 후보다(43 §4.3). */
+  /** `CODE_REF_KEY` 화이트리스트 — 신규 행의 `REF_CD` 후보다(sys/code.md). */
   refCdOptions: SelectOption[];
   /**
    * 닫힐 때. <b>저장 여부와 무관하게 하단을 재조회한다</b> — 저장하고 닫았는지 아닌지를
@@ -49,14 +49,14 @@ export function RefDefModal(props: RefDefModalProps) {
       save: {
         url: CODE_ENDPOINTS.saveRefDef,
         validate: { grid: validateRefCds },
-        // 값이 함께 사라진다는 것을 건수보다 **먼저** 말한다(grid-api-contract.md §6 · 63 §2.5).
+        // 값이 함께 사라진다는 것을 건수보다 **먼저** 말한다(frontend/grid.md · screen/code/requirements.md).
         warn: deleteWarnings,
       },
     }),
     [],
   );
 
-  // 부모 키는 조건이 아니라 `params` 다 — 화면의 구조이지 사용자가 좁힌 것이 아니다(api-conventions.md §3.1.1).
+  // 부모 키는 조건이 아니라 `params` 다 — 화면의 구조이지 사용자가 좁힌 것이 아니다(backend/api.md).
   const searchParams = useCallback(() => ({ grpCd }), [grpCd]);
 
   const grid = useGridController<CodeRefDefRow>({
@@ -75,13 +75,13 @@ export function RefDefModal(props: RefDefModalProps) {
       })),
     }),
     addRow: {
-      // 새 정의는 컬럼 하나를 더한다 — 이름이 비면 헤더가 빈 컬럼이 생긴다(43 §5.2).
+      // 새 정의는 컬럼 하나를 더한다 — 이름이 비면 헤더가 빈 컬럼이 생긴다(sys/code.md).
       defaults: () => ({ refCd: '', refNm: '', refDesc: null, valueCount: 0 }),
     },
   });
 
   /*
-    열릴 때 한 번 조회한다. 그리드가 스스로 조회하지 않는 것은 규약이고(grid-api-contract.md §5 — 조회는
+    열릴 때 한 번 조회한다. 그리드가 스스로 조회하지 않는 것은 규약이고(frontend/grid.md — 조회는
     사용자의 행위다), 모달은 **여는 것 자체가 그 행위**다 — 열자마자 빈 판을 보여 주고
     조회를 한 번 더 누르게 하면 누구도 그 이유를 설명할 수 없다.
   */
@@ -108,9 +108,9 @@ export function RefDefModal(props: RefDefModalProps) {
           menuCd={menuCd}
           gridId="refDef"
           controller={grid}
-          // 정의는 물리 삭제다 — 값 → 정의 순서라 게이트가 아니라 확인이다(63 §2.5).
+          // 정의는 물리 삭제다 — 값 → 정의 순서라 게이트가 아니라 확인이다(screen/code/requirements.md).
           deletable
-          // 컬럼 넷이 전부 필요하다 — 끄거나 옮길 것이 없으면 설정 창도 뜻이 없다(grid-standard.md §2.1).
+          // 컬럼 넷이 전부 필요하다 — 끄거나 옮길 것이 없으면 설정 창도 뜻이 없다(frontend/grid.md).
           settings={false}
         />
       </div>
@@ -127,10 +127,10 @@ function buildColumns(refCdOptions: SelectOption[]): ColumnDef<CodeRefDefRow>[] 
       header: MSG.CODE_COL_REF_CD,
       type: 'code',
       width: 180,
-      // 그룹과 복합 PK 다 — 신규 행에서만 열린다(grid-column-contract.md §5.1).
+      // 그룹과 복합 PK 다 — 신규 행에서만 열린다(frontend/grid.md).
       pk: true,
       // **화이트리스트에서 고른다** — 소스가 이 값을 문자열로 참조하므로 정의 테이블이
-      // 그 통제를 대신하지 않는다(43 §4.3).
+      // 그 통제를 대신하지 않는다(sys/code.md).
       editor: 'select',
       options: refCdOptions,
     },
@@ -140,7 +140,7 @@ function buildColumns(refCdOptions: SelectOption[]): ColumnDef<CodeRefDefRow>[] 
       type: 'text',
       width: 200,
       // **필수다.** 이 값이 하단 그리드의 컬럼 헤더가 되므로 비면 그리드를 못 읽는다.
-      // 전역 코드명으로 폴백하지 않는다 — 명칭의 원천이 둘이 된다(43 §5.2).
+      // 전역 코드명으로 폴백하지 않는다 — 명칭의 원천이 둘이 된다(sys/code.md).
       required: true,
       editable: true,
     },
@@ -158,7 +158,7 @@ function buildColumns(refCdOptions: SelectOption[]): ColumnDef<CodeRefDefRow>[] 
       header: MSG.CODE_COL_REF_COUNT,
       type: 'number',
       width: 120,
-      // 파생이라 정렬 대상이 아니다(grid-column-contract.md §3) — 서버 화이트리스트에도 없다.
+      // 파생이라 정렬 대상이 아니다(frontend/grid.md) — 서버 화이트리스트에도 없다.
       filter: false,
     },
   ];
@@ -183,7 +183,7 @@ function validateRefCds(rows: GridRow<CodeRefDefRow>[]): GridIssue[] {
 }
 
 /**
- * 정의를 지우면 <b>그 정의로 입력된 값이 함께 사라진다</b>(63 §2.5).
+ * 정의를 지우면 <b>그 정의로 입력된 값이 함께 사라진다</b>(screen/code/requirements.md).
  *
  * <p>게이트가 아니라 확인인 이유는 <b>DB 가 거부하지 않기</b> 때문이다 — 값 → 정의 순서로
  * 지우면 FK 가 막을 것이 없다. 막을 것이 없으면 <b>묻는다</b>.

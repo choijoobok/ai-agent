@@ -7,7 +7,7 @@ import {
 } from '@/shared/stores/tabStore';
 
 /**
- * 멀티탭의 규칙 — frontend-stack.md §4 · main-shell.md §2.1 · §4.7.1.
+ * 멀티탭의 규칙 — frontend/packages.md · frontend/tabs.md.
  *
  * <p>여기서 지키는 것은 <b>탭이 사라지거나 늘어나는 경로가 예측 가능한가</b>이다.
  * 사용자가 잃는 것이 <b>입력 중이던 값</b>이므로, 조용히 닫히는 경로가 하나라도 있으면
@@ -53,7 +53,7 @@ describe('tabStore', () => {
 
     const orders = useTabStore.getState().tabs.filter((tab) => tab.menuCd === 'ORDER');
     expect(orders).toHaveLength(2);
-    // key 가 pathname 이면 둘을 구분할 수 없다 — 이것이 frontend-stack.md §4.2 의 핵심이다.
+    // key 가 pathname 이면 둘을 구분할 수 없다 — 이것이 frontend/packages.md 의 핵심이다.
     expect(orders[0].key).not.toBe(orders[1].key);
     expect(orders.map((tab) => tab.instance)).toEqual([1, 2]);
   });
@@ -80,7 +80,7 @@ describe('tabStore', () => {
       const outcome = useTabStore.getState().open(target('ONE_TOO_MANY'));
 
       expect(outcome.type).toBe('limit');
-      // 취소하면 새 탭을 열지 않는다 — 현재 화면 그대로다(frontend-stack.md §4.8).
+      // 취소하면 새 탭을 열지 않는다 — 현재 화면 그대로다(frontend/packages.md).
       expect(useTabStore.getState().tabs).toHaveLength(TAB_LIMIT + 1);
     });
 
@@ -162,7 +162,7 @@ describe('tabStore', () => {
     });
   });
 
-  describe('권한 변경 정리 (50 §8.2)', () => {
+  describe('권한 변경 정리', () => {
     it('권한을 잃은 메뉴의 탭을 닫고 무엇을 닫았는지 돌려준다', () => {
       useTabStore.getState().open(target('KEEP'));
       useTabStore.getState().open(target('REVOKED'));
@@ -216,7 +216,7 @@ function keyOf(outcome: { type: string } & Record<string, unknown>): string {
 }
 
 /**
- * 드래그 순서 변경 — frontend-stack.md §4.7.
+ * 드래그 순서 변경 — frontend/packages.md.
  *
  * <p><b>고정 탭은 두 방향을 다 막아야 한다.</b> 집는 것만 막으면 대시보드는 못 옮기는데
  * <b>다른 탭이 그 왼쪽으로 들어간다</b> — 결과는 같다: 대시보드가 맨 왼쪽이 아니게 된다.

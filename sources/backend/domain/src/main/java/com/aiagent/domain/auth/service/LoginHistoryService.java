@@ -13,17 +13,17 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 로그인 이력 적재 — 45 §5.
+ * 로그인 이력 적재 — sys/logs.md.
  *
  * <p><b>{@code REQUIRES_NEW} 인 것이 요건이다.</b> 실패 로그인은 본 트랜잭션이 롤백될 수
  * 있는데(예: 잠금 갱신 중 예외) 그때 이력까지 사라지면 <i>"왜 로그인이 안 되나"</i> 에
- * 답할 근거가 없어진다 — 이력 기록은 본 트랜잭션과 분리한다(architecture.md §4).
+ * 답할 근거가 없어진다 — 이력 기록은 본 트랜잭션과 분리한다(backend/packages.md).
  */
 @Service
 public class LoginHistoryService {
 
     /**
-     * 내 이력 화면이 한 번에 받는 줄 수 — main-shell.md §8.
+     * 내 이력 화면이 한 번에 받는 줄 수 — frontend/tabs.md.
      *
      * <p>30 인 것은 <b>한 달 남짓</b>이라는 뜻이다. 모르는 접속을 알아채는 것이 목적이므로
      * 기간이 너무 짧으면 놓치고, 길면 스크롤만 길어진다. 페이징은 두지 않는다 — 더 깊이
@@ -52,9 +52,9 @@ public class LoginHistoryService {
     }
 
     /**
-     * 내 로그인 이력 — LOG-02 · main-shell.md §8. <b>읽기이며 {@code REQUIRES_NEW} 가 아니다</b>.
+     * 내 로그인 이력 — LOG-02 · frontend/tabs.md. <b>읽기이며 {@code REQUIRES_NEW} 가 아니다</b>.
      *
-     * <p><b>건수를 설정으로 두지 않았다.</b> 43 §6.3 의 값들은 <i>운영이 바꿀 이유가 있는
+     * <p><b>건수를 설정으로 두지 않았다.</b> sys/code.md 의 값들은 <i>운영이 바꿀 이유가 있는
      * 것</i>이고 이것은 화면이 한 번에 보여 줄 줄 수다 — 키를 하나 늘리면 yml·프로퍼티
      * 레코드·문서·{@code SYS_CONFIG} 가 함께 늘고, 그것을 바꿔야 할 상황이 떠오르지 않는다.
      * 필요해지면 그때 옮긴다.
@@ -71,13 +71,13 @@ public class LoginHistoryService {
     }
 
     /**
-     * 성공한 로그인 최근 몇 건 — <b>활성 세션 탭이 어디서 들어왔나를 채운다</b>(61 §3.8.2).
+     * 성공한 로그인 최근 몇 건 — <b>활성 세션 탭이 어디서 들어왔나를 채운다</b>(screen/user/requirements.md).
      *
      * <p>세션 스토어는 IP 도 User-Agent 도 갖고 있지 않고, 담지도 않는다 — 원본은 이 이력
-     * 하나다(45 §5). 부르는 쪽이 <b>세션 생성 시각으로 짝짓는다</b>.
+     * 하나다(sys/logs.md). 부르는 쪽이 <b>세션 생성 시각으로 짝짓는다</b>.
      *
      * <p><b>짝짓기를 여기서 하지 않는다.</b> 그것은 세션을 아는 일이고 세션은 {@code api}
-     * 의 것이다(architecture.md §1) — 도메인이 {@code FindByIndexNameSessionRepository} 를 알게 되면
+     * 의 것이다(backend/packages.md) — 도메인이 {@code FindByIndexNameSessionRepository} 를 알게 되면
      * 그 경계가 갈린다.
      *
      * <p><b>성공만 읽는 것이 요점이다.</b> 실패한 시도는 세션을 만들지 않으므로 짝의 후보가
@@ -98,7 +98,7 @@ public class LoginHistoryService {
     public record LoginContext(String clientIp, String userAgent, String traceId) {}
 
     /**
-     * 성공 로그인 하나의 <b>출처</b> — 61 §3.8.2.
+     * 성공 로그인 하나의 <b>출처</b> — screen/user/requirements.md.
      *
      * <p>{@link MyLoginRecord} 와 달리 결과 코드가 없다. 성공만 담기므로 그 칸이 <b>언제나
      * 같은 값</b>이 되고, 같은 값을 나르는 칸은 읽는 사람에게 <i>다를 수 있다</i> 고

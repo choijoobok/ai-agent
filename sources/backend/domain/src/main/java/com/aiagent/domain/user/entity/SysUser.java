@@ -16,16 +16,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 사용자 계정 — 41 §4.
+ * 사용자 계정 — sys/user-role.md.
  *
- * <p><b>PK 는 자연키다</b>(41 §3). 로그인 ID 는 업무에서 부여되고 사실상 불변이며, 이력
+ * <p><b>PK 는 자연키다</b>(sys/user-role.md). 로그인 ID 는 업무에서 부여되고 사실상 불변이며, 이력
  * 테이블이 이미 {@code USER_ID} 를 <b>값으로</b> 보관한다 — 대리키를 두면 이력에 숫자를
  * 남기고 조회할 때마다 조인해야 한다.
  *
- * <p><b>이름·이메일을 암호화하지 않는다</b>(41 §4.1). 사내 직원 명부이고, 참조키를 담으면
+ * <p><b>이름·이메일을 암호화하지 않는다</b>(sys/user-role.md). 사내 직원 명부이고, 참조키를 담으면
  * 이름 정렬·LIKE 검색이 불가능해져 사용자 목록의 가장 흔한 요구가 막힌다.
  *
- * <p><b>계정을 못 쓰게 만드는 것이 넷이고 축이 다르다</b>(41 §4.2) — {@code USE_YN}(관리자),
+ * <p><b>계정을 못 쓰게 만드는 것이 넷이고 축이 다르다</b>(sys/user-role.md) — {@code USE_YN}(관리자),
  * 기간 만료(예정된 것), {@code LOCK_YN}(시스템·일시적), {@code DORMANT_YN}(배치). 서로 덮지
  * 않는다. 그래서 아래 메서드들이 각각 하나만 건드린다.
  */
@@ -45,7 +45,7 @@ public class SysUser extends BaseAuditEntity {
     @Column(name = "EMAIL", length = 255)
     private String email;
 
-    /** BCrypt 해시. {@code DelegatingPasswordEncoder} 접두({@code {bcrypt}})를 포함한다 — security-design.md §6. */
+    /** BCrypt 해시. {@code DelegatingPasswordEncoder} 접두({@code {bcrypt}})를 포함한다 — backend/security.md. */
     @Column(name = "PWD", length = 100, nullable = false)
     private String pwd;
 
@@ -54,7 +54,7 @@ public class SysUser extends BaseAuditEntity {
     @Column(name = "USE_YN", length = 1, nullable = false)
     private Boolean useYn;
 
-    /** 사용 기간 시작. 체인 #3. 업무 시간대 기준·<b>양끝 포함</b> — 40 §4.3. */
+    /** 사용 기간 시작. 체인 #3. 업무 시간대 기준·<b>양끝 포함</b> — sys/INDEX.md. */
     @Column(name = "VALID_FROM_DT")
     private LocalDate validFromDt;
 
@@ -76,7 +76,7 @@ public class SysUser extends BaseAuditEntity {
     @Column(name = "PWD_CHG_DTM")
     private Instant pwdChgDtm;
 
-    /** 현재 저장된 값이 발급된 임시 비밀번호다. 체인 #5 의 <b>독립 조건</b> — security-design.md §4. */
+    /** 현재 저장된 값이 발급된 임시 비밀번호다. 체인 #5 의 <b>독립 조건</b> — backend/security.md. */
     @Convert(converter = YnConverter.class)
     @Column(name = "PWD_INIT_YN", length = 1, nullable = false)
     private Boolean pwdInitYn;
@@ -84,7 +84,7 @@ public class SysUser extends BaseAuditEntity {
     @Column(name = "LAST_LOGIN_DTM")
     private Instant lastLoginDtm;
 
-    /** 휴면. {@code UserDetails} 플래그에 대응이 없어 로그인 후처리가 판정한다 — 41 §4.4. */
+    /** 휴면. {@code UserDetails} 플래그에 대응이 없어 로그인 후처리가 판정한다 — sys/user-role.md. */
     @Convert(converter = YnConverter.class)
     @Column(name = "DORMANT_YN", length = 1, nullable = false)
     private Boolean dormantYn;
@@ -116,10 +116,10 @@ public class SysUser extends BaseAuditEntity {
     }
 
     /**
-     * 사용자가 자기 언어를 바꾼다 — UX-09 · main-shell.md §9.1.
+     * 사용자가 자기 언어를 바꾼다 — UX-09 · frontend/tabs.md.
      *
      * <p><b>이 컬럼만 서버에 있는 이유</b>는 서버가 알아야 하기 때문이다. 메일·알림을 어느
-     * 언어로 보낼지 정하는 것은 서버이고 {@code localStorage} 는 서버가 볼 수 없다(41 §4.3).
+     * 언어로 보낼지 정하는 것은 서버이고 {@code localStorage} 는 서버가 볼 수 없다(sys/user-role.md).
      *
      * <p><b>지원 언어인지는 여기서 보지 않는다.</b> 목록의 원본이 설정(장차 공통코드)이라
      * 엔티티가 그것을 알면 도메인이 설정을 읽게 된다 — 판정은 서비스가 한다.
@@ -129,11 +129,11 @@ public class SysUser extends BaseAuditEntity {
     }
 
     /**
-     * 본인이 고칠 수 있는 것 둘 — USER-05 · main-shell.md §8.
+     * 본인이 고칠 수 있는 것 둘 — USER-05 · frontend/tabs.md.
      *
-     * <p><b>여기 없는 것이 결정이다.</b> {@code USER_ID} 는 자연키라 바꿀 수 없고(41 §3),
-     * 사용 기간·잠금·휴면은 <b>관리자의 축</b>이며(41 §4.2), 언어는 설정 모달의 것이다
-     * (main-shell.md §9.1). 본인 화면이 건드릴 수 있는 표면을 이 메서드가 정의한다 — 넓히면 그
+     * <p><b>여기 없는 것이 결정이다.</b> {@code USER_ID} 는 자연키라 바꿀 수 없고(sys/user-role.md),
+     * 사용 기간·잠금·휴면은 <b>관리자의 축</b>이며(sys/user-role.md), 언어는 설정 모달의 것이다
+     * (frontend/tabs.md). 본인 화면이 건드릴 수 있는 표면을 이 메서드가 정의한다 — 넓히면 그
      * 순간 <i>"자기 계정으로 자기 권한을 늘리는"</i> 경로가 열린다.
      */
     public void changeProfile(String userNm, String email) {
@@ -146,7 +146,7 @@ public class SysUser extends BaseAuditEntity {
      *
      * <p><b>{@code PWD_INIT_YN} 을 함께 내리는 것이 핵심이다.</b> 임시 비밀번호로 들어온
      * 사람이 바꾸고 나면 그것은 더 이상 임시가 아니며, 내리지 않으면 체인 #5 가 계속
-     * 강제 변경으로 보내 <b>같은 화면에 갇힌다</b>(security-design.md §4).
+     * 강제 변경으로 보내 <b>같은 화면에 갇힌다</b>(backend/security.md).
      *
      * <p>해시는 밖에서 만들어 온다 — 엔티티가 {@code PasswordEncoder} 를 알면 도메인이
      * 인코딩 전략에 묶인다.
@@ -157,17 +157,17 @@ public class SysUser extends BaseAuditEntity {
         this.pwdInitYn = false;
     }
 
-    // ── 관리자가 하는 것 (61 §2.3 · §3.6) ────────────────────────────────
+    // ── 관리자가 하는 것 (screen/user/requirements.md) ────────────────────────────────
 
     /**
-     * 관리자가 셀에서 고치는 것 — 61 §2.3 의 <b>관리자 축</b>이 이 메서드의 표면이다.
+     * 관리자가 셀에서 고치는 것 — screen/user/requirements.md 의 <b>관리자 축</b>이 이 메서드의 표면이다.
      *
      * <p>계정을 못 쓰게 하는 넷 중 <b>둘만</b> 있다({@code USE_YN} · 사용 기간). 나머지 둘은
      * 시스템이 걸고 <b>전용 메서드가 자기 컬럼만</b> 쓴다({@link #unlock} · {@link
-     * #releaseDormant}) — 41 §4.2 규칙 3(서로 덮지 않는다)을 <b>메서드 경계가 집행</b>한다.
+     * #releaseDormant}) — sys/user-role.md 규칙 3(서로 덮지 않는다)을 <b>메서드 경계가 집행</b>한다.
      *
-     * <p>{@code USER_ID} 는 자연키라 여기 없고(41 §3), {@code PWD} 도 없다 — 관리자는 값을
-     * 정하지 않는다(security-design.md §4 · AUTH-07).
+     * <p>{@code USER_ID} 는 자연키라 여기 없고(sys/user-role.md), {@code PWD} 도 없다 — 관리자는 값을
+     * 정하지 않는다(backend/security.md · AUTH-07).
      */
     public void changeByAdmin(
             String userNm, String email, boolean useYn, LocalDate validFromDt, LocalDate validToDt,
@@ -184,7 +184,7 @@ public class SysUser extends BaseAuditEntity {
      * 잠금 해제 — AUTH-04. <b>두 컬럼만 쓴다.</b>
      *
      * <p>{@code LOGIN_FAIL_CNT} 를 함께 0 으로 두지 않으면 <b>다음 한 번의 실패로 곧바로 다시
-     * 잠긴다</b> — 임계값에 이미 닿아 있기 때문이다(security-design.md §4 잠금 전이표).
+     * 잠긴다</b> — 임계값에 이미 닿아 있기 때문이다(backend/security.md 잠금 전이표).
      *
      * <p><b>{@code USE_YN} · {@code DORMANT_YN} 을 보지 않는다.</b> 잠금을 풀어도 여전히
      * 미사용일 수 있고 그것이 정상이다 — 화면의 상태 컬럼은 그때 <i>미사용</i> 을 낸다.
@@ -196,11 +196,11 @@ public class SysUser extends BaseAuditEntity {
     }
 
     /**
-     * 휴면 해제 — 61 §3.6. <b>메일이 안 되는 환경을 위한 관리자 경로</b>다.
+     * 휴면 해제 — screen/user/requirements.md. <b>메일이 안 되는 환경을 위한 관리자 경로</b>다.
      *
-     * <p>정상 경로는 본인의 비밀번호 재설정이며 그것이 곧 본인 재인증이다(41 §4.2 · 60 §3.8).
+     * <p>정상 경로는 본인의 비밀번호 재설정이며 그것이 곧 본인 재인증이다(sys/user-role.md · screen/_standalone/README.md).
      *
-     * <p><b>잠금은 같이 풀리지 않는다.</b> 60 §3.8 이 자기 재설정에서 같은 판단을 했다 —
+     * <p><b>잠금은 같이 풀리지 않는다.</b> screen/_standalone/README.md 이 자기 재설정에서 같은 판단을 했다 —
      * 함께 풀면 <i>실패 5회 → 해제 → 다시 5회</i> 가 무한 반복되고, 무엇보다 <b>축이 다르다</b>.
      */
     public void releaseDormant() {
@@ -208,13 +208,13 @@ public class SysUser extends BaseAuditEntity {
     }
 
     /**
-     * 관리자 발급 임시 비밀번호 — AUTH-07 · security-design.md §4 체인 #5.
+     * 관리자 발급 임시 비밀번호 — AUTH-07 · backend/security.md 체인 #5.
      *
      * <p>{@link #changePassword} 와 <b>{@code PWD_INIT_YN} 이 반대</b>다. 본인 변경은 그것을
      * 내리고 여기는 <b>세운다</b> — 세워 두어야 다음 로그인이 강제 변경으로 가고,
      * {@code tempValidHours} 가 지나면 로그인 자체가 막힌다({@link #isTemporaryPasswordExpired}).
      *
-     * <p><b>잠금도 휴면도 건드리지 않는다</b>(61 §3.6). 발송만으로 잠금이 풀리면
+     * <p><b>잠금도 휴면도 건드리지 않는다</b>(screen/user/requirements.md). 발송만으로 잠금이 풀리면
      * <i>실패 5회 → 초기화 → 다시 5회</i> 가 무한 반복된다.
      */
     public void resetPasswordByAdmin(String encodedPwd, Instant now) {
@@ -223,7 +223,7 @@ public class SysUser extends BaseAuditEntity {
         this.pwdInitYn = true;
     }
 
-    // ── 접근 제어 체인이 읽는 것 (security-design.md §4) ─────────────────────────────────
+    // ── 접근 제어 체인이 읽는 것 (backend/security.md) ─────────────────────────────────
 
     /** 체인 #3. <b>양끝을 포함</b>하며 NULL 은 제한 없음이다. */
     public boolean isWithinValidPeriod(LocalDate businessToday) {
@@ -235,7 +235,7 @@ public class SysUser extends BaseAuditEntity {
 
     /**
      * 체인 #4. <b>컬럼이 아니라 계산 결과다</b> — 자동 해제를 배치로 하면 지연이 생겨
-     * "30분 지났는데 아직 잠김" 이 된다(security-design.md §4).
+     * "30분 지났는데 아직 잠김" 이 된다(backend/security.md).
      *
      * @param lockReleaseMinutes 0 이면 시간 경과로 풀리지 않는다 — 관리자 해제만
      */
@@ -251,7 +251,7 @@ public class SysUser extends BaseAuditEntity {
 
     /**
      * 체인 #5. <b>두 조건의 OR 이다</b> — 임시 비밀번호에 정상 유효기간(90일)을 주면 안
-     * 되므로 {@code PWD_INIT_YN} 이 독립 조건이다(security-design.md §4).
+     * 되므로 {@code PWD_INIT_YN} 이 독립 조건이다(backend/security.md).
      *
      * @param expireDays 0 이면 주기 만료를 쓰지 않는다
      */
@@ -265,14 +265,14 @@ public class SysUser extends BaseAuditEntity {
         return pwdChgDtm.plus(Duration.ofDays(expireDays)).isBefore(now);
     }
 
-    /** 관리자 발급 임시 비밀번호가 방치된 채 만료됐는가 — {@code FAIL_TEMP_EXPIRED}(security-design.md §4). */
+    /** 관리자 발급 임시 비밀번호가 방치된 채 만료됐는가 — {@code FAIL_TEMP_EXPIRED}(backend/security.md). */
     public boolean isTemporaryPasswordExpired(Instant now, int tempValidHours) {
         return Boolean.TRUE.equals(pwdInitYn)
                 && pwdChgDtm != null
                 && pwdChgDtm.plus(Duration.ofHours(tempValidHours)).isBefore(now);
     }
 
-    // ── 전이 (security-design.md §4 잠금 전이 표) ────────────────────────────────────────
+    // ── 전이 (backend/security.md 잠금 전이 표) ────────────────────────────────────────
 
     /**
      * 비밀번호 불일치. 임계값에 닿으면 잠근다.

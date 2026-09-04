@@ -9,17 +9,17 @@ import { keyOf, toModel, type SetFilterModel } from '@/shared/grid/filter/setFil
 import type { SelectOption } from '@/shared/grid/types';
 
 /**
- * `set` 필터 — grid-column-contract.md §4.3. <b>고르는 필터</b>이며 치는 필터가 아니다.
+ * `set` 필터 — frontend/grid.md. <b>고르는 필터</b>이며 치는 필터가 아니다.
  *
  * <p><b>코드 컬럼에 텍스트 필터를 두면 안 된다.</b> 사용자는 화면에 보이는 <i>이름</i> 을
  * 치는데 판은 <i>코드값</i> 을 비교한다 — 아무것도 안 걸리고, 왜 안 걸리는지 알 수 없다.
  *
  * <p><b>판의 Enterprise 기능을 쓰지 않는다.</b> AG Grid 의 `agSetColumnFilter` 는 유료판의
- * 것이고 이 저장소는 Community 다(ADR-0018 · ADR-0004 의 <i>유료 라이선스는 배제한다</i>).
+ * 것이고 이 저장소는 Community 다(frontend/grid.md · stack.md 의 <i>유료 라이선스는 배제한다</i>).
  * 판이 여는 <b>커스텀 필터</b> 확장점으로 직접 만든다 — 어휘는 우리 것이므로 판을 바꿔도
  * 이 파일만 바뀐다.
  *
- * <p><b>목록은 로드된 행에서 모은다</b>(grid-column-contract.md §4.4) — 결과 내 필터이므로(§4.1) <b>지금 화면에
+ * <p><b>목록은 로드된 행에서 모은다</b>(frontend/grid.md) — 결과 내 필터이므로(§4.1) <b>지금 화면에
  * 없는 값을 고를 이유가 없다.</b> 코드 마스터 전체를 내려받으면 목록의 대부분이 0건이고,
  * 사용자는 <i>"골랐는데 아무것도 안 나온다"</i> 를 겪는다.
  *
@@ -28,7 +28,7 @@ import type { SelectOption } from '@/shared/grid/types';
  * 사용자가 물을 수 있는 질문이다.
  *
  * <p><b>전부 고른 상태는 필터가 아니다.</b> 모델을 {@code null} 로 되돌린다 — 그러지 않으면
- * 푸터의 <i>N건 중 M건</i> 표기가 걸리지 않은 필터를 걸린 것으로 말한다(grid-standard.md §2.3).
+ * 푸터의 <i>N건 중 M건</i> 표기가 걸리지 않은 필터를 걸린 것으로 말한다(frontend/grid.md).
  */
 export interface SetFilterParams {
   kind: 'code' | 'ynFlag';

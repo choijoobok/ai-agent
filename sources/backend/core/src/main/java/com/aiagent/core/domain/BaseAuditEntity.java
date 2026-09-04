@@ -20,19 +20,19 @@ import org.springframework.data.annotation.LastModifiedDate;
  *
  * <p><b>식별자는 여기 없다.</b> {@code @TableGenerator} 의 {@code pkColumnValue} 가
  * 엔티티마다 다르므로(논리 시퀀스명 = 테이블명) 상위 클래스로 올릴 수 없다.
- * 선언 형태는 aidd-guide/records/adr/0015-table-based-id-generation.md 가 고정한다.
+ * 선언 형태는 backend/persistence.md 가 고정한다.
  *
  * <p>시점은 UTC {@link Instant} 다. 업무 달력 날짜({@code _DT})는 시간대가 없는 다른
- * 것이며 이 클래스의 대상이 아니다 — 40 §4.3
+ * 것이며 이 클래스의 대상이 아니다 — sys/INDEX.md
  *
  * <p><b>값은 자동으로 채워진다</b> — 누가는 {@code SecurityContext}, 언제는 주입된
  * {@code Clock} 이다. 시각을 SQL 로 구하지 않는 것이 규약이므로({@code SYSDATE} 금지 —
- * db-portability.md §4.5) 두 출처 모두 애플리케이션 안에 있다. 설정은
+ * backend/persistence.md) 두 출처 모두 애플리케이션 안에 있다. 설정은
  * {@code com.aiagent.domain.config.JpaAuditingConfig}.
  *
  * <p><b>{@code @EntityListeners} 가 여기 없는 것이 의도다.</b> {@code AuditingEntityListener}
  * 는 {@code spring-data-jpa} 의 클래스이고, 그것을 여기 걸면 core 가 Hibernate 까지 끌고
- * 온다 — core 는 프레임워크 의존을 최소로 두는 커널이다(architecture.md §1). 대신 bootstrap 의
+ * 온다 — core 는 프레임워크 의존을 최소로 두는 커널이다(backend/packages.md). 대신 bootstrap 의
  * {@code META-INF/orm.xml} 이 <b>전 엔티티에</b> 리스너를 건다. 엔티티마다 애너테이션을
  * 붙이는 방식은 <b>빠뜨려도 조용하다</b> — 감사 컬럼이 그냥 NULL 로 남는다.
  */

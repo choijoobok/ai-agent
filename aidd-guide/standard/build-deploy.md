@@ -102,5 +102,5 @@ React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌�
 - [stack.md](./stack.md) — 무엇으로 만드나
 - [seed.md](./seed.md) — 시드 생성 절차와 검증
 - [sources/backend/persistence.md](./backend/persistence.md) — DB 중립을 지키는 규칙
-- [ADR-0001](../records/adr/0001-repository-layout.md) — 단일 저장소 + 임베드 빌드
-- [ADR-0003](../records/adr/0003-liquibase-for-db-portability.md) · [ADR-0002](../records/adr/0002-selectable-session-store.md)
+- — 단일 저장소 + 임베드 빌드
+- [`backend/persistence.md`](./backend/persistence.md) · [`backend/session.md`](./backend/session.md)

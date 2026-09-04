@@ -15,9 +15,9 @@ import { HandleModal } from '@/features/notirequest/components/HandleModal';
 import type { NotiRequestRow, ReqStatus, ReqType } from '@/features/notirequest/types';
 
 /**
- * `NOTI_REQUEST` — 66 §5. <b>62~65 를 통틀어 편집 열이 통째로 없는 첫 화면이다.</b>
+ * `NOTI_REQUEST` — screen/notice/requirements.md. <b>62~65 를 통틀어 편집 열이 통째로 없는 첫 화면이다.</b>
  *
- * <p>grid-standard.md §1.1 의 *"그리드가 목록이자 편집 화면"* 의 예외이며 이유가 셋이다(§5.2).
+ * <p>frontend/grid.md 의 *"그리드가 목록이자 편집 화면"* 의 예외이며 이유가 셋이다(§5.2).
  * 처리는 <b>저장이 아니라 판정</b>이고, <b>부수 효과가 있고</b>(요청자에게 알림이 나간다),
  * <b>반려는 두 값을 함께 강제</b>해야 하는데 셀 하나로는 안 된다.
  *
@@ -41,7 +41,7 @@ import type { NotiRequestRow, ReqStatus, ReqType } from '@/features/notirequest/
 
 const MENU_CD = 'NOTI_REQUEST';
 
-/** 처리 대기를 훑는 화면이다 — 넘기며 보는 것보다 한눈에 보는 것이 낫다(66 §3.3). */
+/** 처리 대기를 훑는 화면이다 — 넘기며 보는 것보다 한눈에 보는 것이 낫다(screen/notice/requirements.md). */
 const PAGE_SIZE = 50;
 const PAGE_SIZES = [50, 100, 500];
 
@@ -127,14 +127,14 @@ export function NotiRequestPage() {
     pageSize: PAGE_SIZE,
     params: collectConditions,
     /*
-      <b>편집을 열지 않는다</b>(66 §5.2). 열면 저장할 곳이 없는 셀이 생기고, 이 화면에는
+      <b>편집을 열지 않는다</b>(screen/notice/requirements.md). 열면 저장할 곳이 없는 셀이 생기고, 이 화면에는
       `save` API 자체가 없다 — 상태는 모달로만 바뀐다.
     */
     editable: false,
   });
 
   /**
-   * 고른 것 중 <b>처리 가능한가</b> — 66 §5.7.
+   * 고른 것 중 <b>처리 가능한가</b> — screen/notice/requirements.md.
    *
    * <p>하나라도 `RECEIVED` 가 아니면 버튼이 비활성이다. <b>처리 가능한 것만 골라 실행하지
    * 않는다</b> — 일부만 처리하면 알림이 일부에게만 나가고 사용자는 무엇이 처리됐는지
@@ -158,7 +158,7 @@ export function NotiRequestPage() {
         setHandling(null);
         message.success(label(MSG.GRID_ACTION_DONE, { count: selected.length }));
         /*
-          <b>다시 읽는다.</b> 상태와 처리자·처리일시가 서버에서 채워지고(grid-api-contract.md §6), 기본
+          <b>다시 읽는다.</b> 상태와 처리자·처리일시가 서버에서 채워지고(frontend/grid.md), 기본
           조건이 `접수` 라 처리한 행은 <b>목록에서 사라진다</b> — 그것이 대기열의 정상
           동작이며 *처리됐다* 의 가장 분명한 신호다.
         */
@@ -189,13 +189,13 @@ export function NotiRequestPage() {
           pageSizes={PAGE_SIZES}
           emptyText={MSG.NOTI_REQUEST_EMPTY}
           /*
-            <b>다중이다</b>(66 §5.3 — 확인 모달이 *요청 N건* 을 말한다). 하단 pane 이
-            없으므로 grid-standard.md §4 의 제약(다중이면 행 클릭 선택이 꺼진다)이 잃을 것을 만들지
-            않는다 — `BATCH_HISTORY` 가 같은 이유로 다중이다(65 §5-19).
+            <b>다중이다</b>(screen/notice/requirements.md — 확인 모달이 *요청 N건* 을 말한다). 하단 pane 이
+            없으므로 frontend/grid.md 의 제약(다중이면 행 클릭 선택이 꺼진다)이 잃을 것을 만들지
+            않는다 — `BATCH_HISTORY` 가 같은 이유로 다중이다(screen/batch/schedule/requirements.md).
           */
           selection="multiple"
           /*
-            처리·반려는 `api.actions` 가 아니라 <b>임의 컨트롤</b>이다(grid-standard.md §2.1 의 Ⓐ).
+            처리·반려는 `api.actions` 가 아니라 <b>임의 컨트롤</b>이다(frontend/grid.md 의 Ⓐ).
             `actions` 는 *고른 행을 서버에 넘긴다* 는 한 모양인데, 여기는 <b>모달이 값을
             하나 더 받아야</b> 하고(사유) 그 값의 필수 여부가 방향마다 다르다.
           */
@@ -209,7 +209,7 @@ export function NotiRequestPage() {
               menuCd: MENU_CD,
               disabled: blocked,
               /*
-                <b>왜 눌리지 않는지 말한다</b>(grid-api-contract.md §3.6 · 63 §2.4). 선택이 0건인 것은 눈에
+                <b>왜 눌리지 않는지 말한다</b>(frontend/grid.md · screen/code/requirements.md). 선택이 0건인 것은 눈에
                 보이지만 <b>이미 처리된 것이 섞인 것</b>은 안 보인다 — 고른 행이 다섯인데
                 버튼이 죽어 있으면 사용자는 권한을 의심한다.
               */
@@ -250,14 +250,14 @@ export function NotiRequestPage() {
   );
 }
 
-// ── 컬럼 (66 §5.2) ────────────────────────────────────────────────
+// ── 컬럼 (screen/notice/requirements.md) ────────────────────────────────────────────────
 
 /**
  * <b>편집 열이 하나도 없다.</b> `editable` 이 붙은 컬럼이 없는 것이 이 표의 요점이며,
- * 62~65 를 통틀어 처음이다(66 §5.2).
+ * 62~65 를 통틀어 처음이다(screen/notice/requirements.md).
  *
  * <p>요청 내용과 처리 메모는 <b>읽기 모드로 열린다</b> — `VARCHAR(2000)` 이라 셀 한 줄에
- * 안 들어가고, grid-column-contract.md §5.5 가 <i>"`editable: false` 가 못 본다를 뜻하지 않는다"</i> 고 한
+ * 안 들어가고, frontend/grid.md 가 <i>"`editable: false` 가 못 본다를 뜻하지 않는다"</i> 고 한
  * 그 자리다. `nclob` 이 아닌 컬럼에 그 규약이 적용되는 첫 사례이기도 하다.
  */
 function buildColumns(): ColumnDef<NotiRequestRow>[] {
@@ -268,7 +268,7 @@ function buildColumns(): ColumnDef<NotiRequestRow>[] {
       type: 'dateTime',
       width: 160,
       /*
-        <b>기본이 오름차순이다</b>(66 §5.2.1) — 서버가 그렇게 정렬해 준다. 정렬을 여는
+        <b>기본이 오름차순이다</b>(screen/notice/requirements.md) — 서버가 그렇게 정렬해 준다. 정렬을 여는
         것은 *가장 최근 요청* 을 보고 싶은 경우가 실제로 있어서다(방금 낸 것을 확인).
       */
       sortable: true,
@@ -279,11 +279,11 @@ function buildColumns(): ColumnDef<NotiRequestRow>[] {
       type: 'text',
       width: 140,
       /*
-        <b>미사용 계정이면 이름 옆에 표시가 붙는다</b>(66 §5.7.1). *지금 로그인할 수 없는
+        <b>미사용 계정이면 이름 옆에 표시가 붙는다</b>(screen/notice/requirements.md). *지금 로그인할 수 없는
         사람* 임을 알리되 <b>처리는 막지 않는다</b> — 요청은 계정이 살아 있을 때 낸 것이다.
 
         <b>`(삭제된 사용자)` 는 없다</b>. `SYS_USER` 는 물리 삭제를 하지 않으므로
-        (USER-02 · 41 §4.5) 65 §4.2 의 `(삭제된 배치)` 같은 고아가 생기지 않는다.
+        (USER-02 · sys/user-role.md) screen/batch/schedule/requirements.md 의 `(삭제된 배치)` 같은 고아가 생기지 않는다.
       */
       derive: (row) => (row.userUseYn ? row.userNm : `${row.userNm} (${label(MSG.NOTI_REQUEST_USER_DISABLED)})`),
     },
@@ -293,8 +293,8 @@ function buildColumns(): ColumnDef<NotiRequestRow>[] {
       type: 'text',
       width: 110,
       /*
-        <b>값은 코드이고 글자만 라벨이다</b>(grid-column-contract.md §5.4). 공통코드가 아니라 소스의 값이며
-        (47 §10) 관리자가 늘리면 처리 코드가 없는 값이 생긴다.
+        <b>값은 코드이고 글자만 라벨이다</b>(frontend/grid.md). 공통코드가 아니라 소스의 값이며
+        (sys/notification.md) 관리자가 늘리면 처리 코드가 없는 값이 생긴다.
       */
       renderer: 'badge',
       tone: TYPE_TONE,
@@ -308,8 +308,8 @@ function buildColumns(): ColumnDef<NotiRequestRow>[] {
       fill: true,
       filter: false,
       /*
-        <b>읽기 전용이어도 열린다</b>(grid-column-contract.md §5.5). 긴 텍스트는 열어야만 보이므로 읽기 전용
-        컬럼도 뷰어를 연다 — grid-edit-validation.md §2.1 의 *"읽기 전용 셀입니다"* 가 <b>여기서는 나오지
+        <b>읽기 전용이어도 열린다</b>(frontend/grid.md). 긴 텍스트는 열어야만 보이므로 읽기 전용
+        컬럼도 뷰어를 연다 — frontend/grid.md 의 *"읽기 전용 셀입니다"* 가 <b>여기서는 나오지
         않는다</b>: 거부할 것이 아니라 보여줄 것이기 때문이다.
       */
       viewer: 'largeText',
@@ -366,7 +366,7 @@ function buildColumns(): ColumnDef<NotiRequestRow>[] {
   ];
 }
 
-// ── 조회조건 (66 §5.5) ────────────────────────────────────────────
+// ── 조회조건 (screen/notice/requirements.md) ────────────────────────────────────────────
 
 /**
  * 넷이며 <b>상태의 기본값이 `접수` 하나</b>다.
@@ -374,7 +374,7 @@ function buildColumns(): ColumnDef<NotiRequestRow>[] {
  * <p>처리함은 <b>할 일 목록</b>이다. 전체를 기본으로 두면 <b>처리된 것이 대기 중인 것을
  * 덮는다</b> — `NOTICE_MGMT` 의 게시 상태 기본값과 방향이 같고 <b>더 좁다</b>.
  *
- * <p>기간은 필수가 아니다(66 §3.1) — 64 §2.2 의 근거가 대용량인데 요청은 수천 건이다.
+ * <p>기간은 필수가 아니다(screen/notice/requirements.md) — screen/log/access/requirements.md 의 근거가 대용량인데 요청은 수천 건이다.
  *
  * <p><b>처리 메모 조건이 없다</b> — `VARCHAR(2000)` 이라 실을 수는 있지만 <b>관리자가
  * 그때 쓴 문장</b>이라 형식이 없다. 조건으로 열면 `LIKE` 가 되고, 그 물음에 답하는 것은
@@ -388,7 +388,7 @@ function buildSearchFields(): SearchField[] {
       type: 'dateRange',
       required: false,
       /*
-        <b>기본값이 비어 있다</b>(66 §5.5). 대기열에서 기간을 기본으로 걸면 <b>가장 오래
+        <b>기본값이 비어 있다</b>(screen/notice/requirements.md). 대기열에서 기간을 기본으로 걸면 <b>가장 오래
         방치된 요청이 기본 조회에서 사라진다</b> — 그것이 이 화면이 정확히 보여줘야 하는
         행이다(§5.2.1). 좁히기는 `상태` 가 한다(기본 `접수`).
       */
@@ -400,7 +400,7 @@ function buildSearchFields(): SearchField[] {
       type: 'select',
       op: 'in',
       ops: ['in'],
-      // <b>대기열의 기본값</b>이다 — 66 §5.5.
+      // <b>대기열의 기본값</b>이다 — screen/notice/requirements.md.
       defaultValue: ['RECEIVED'],
       options: [
         { value: 'RECEIVED', text: label(MSG.NOTI_REQUEST_STAT_RECEIVED) },

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 연산자가 타입을 제한한다 — api-conventions.md §3.4.
+ * 연산자가 타입을 제한한다 — backend/api.md.
  *
  * <p><b>이 판정이 화이트리스트의 절반이다.</b> {@code .col(…)} 이 <i>"이 필드가 존재하는가"</i>
  * 만 보고, 나머지는 여기서 나온다 — 필드마다 허용 연산자를 적으면 그것이 곧 미러링이다.
@@ -66,7 +66,7 @@ class OpTest {
     }
 
     /**
-     * api-conventions.md §3.3 이 <b>열둘</b>이라고 적었는데 그 표에는 열셋이 있다.
+     * backend/api.md 이 <b>열둘</b>이라고 적었는데 그 표에는 열셋이 있다.
      *
      * <p>같은 절이 <i>"처음에 <b>아홉</b>으로 닫으며 {@code endsWith}·{@code ne}·{@code isNull}
      * 을 뺐다 … <b>넷</b>을 되돌려"</i> 라고 적었으므로 <b>9 + 4 = 13</b> 이다. 되돌린 넷은
@@ -74,7 +74,7 @@ class OpTest {
      * 되돌린 것이 어긋난 자리다.
      *
      * <p>숫자를 여기서 못 박는 이유 — 그 수가 <b>MyBatis 공통 조각의 {@code <choose>} 분기
-     * 수</b>이기도 하다(34 §5.5). 문서의 수와 코드의 수가 갈리면 그 조각을 짤 때 하나를
+     * 수</b>이기도 하다(backend/search.md). 문서의 수와 코드의 수가 갈리면 그 조각을 짤 때 하나를
      * 빠뜨리고, 빠뜨린 연산자는 <b>조용히 조건이 사라진다.</b>
      */
     @Test

@@ -23,11 +23,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * 화이트리스트가 실제로 막는가 — api-conventions.md §3·§4.
+ * 화이트리스트가 실제로 막는가 — backend/api.md.
  *
  * <p><b>DB 가 없어도 도는 검사다.</b> {@code JPAQuery} 는 {@code EntityManager} 없이도 JPQL 을
  * 조립할 수 있으므로, 조건이 <b>어떤 SQL 이 되는가</b>를 문자열로 확인할 수 있다 — 그래야
- * PR 마다 도는 값싼 게이트가 된다(db-portability.md §2 의 Testcontainers 는 그 위층이다).
+ * PR 마다 도는 값싼 게이트가 된다(backend/persistence.md 의 Testcontainers 는 그 위층이다).
  */
 class QueryDslBuilderTest {
 
@@ -184,7 +184,7 @@ class QueryDslBuilderTest {
                     .toString();
 
             // 콜레이션에 맡기면 같은 조건이 MySQL 에서는 걸리고 PostgreSQL 에서는 안 걸린다
-            // — db-portability.md §1 의 *무수정 기동* 은 기동이 아니라 **같은 답**이다(api-conventions.md §3.3).
+            // — backend/persistence.md 의 *무수정 기동* 은 기동이 아니라 **같은 답**이다(backend/api.md).
             assertThat(rendered).contains("lower").contains("shell.");
         }
 

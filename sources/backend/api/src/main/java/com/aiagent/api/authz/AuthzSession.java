@@ -4,11 +4,11 @@ import com.aiagent.domain.authz.EffectiveAuthority;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * 유효 권한이 사는 자리 — security-design.md §4 권한 캐싱.
+ * 유효 권한이 사는 자리 — backend/security.md 권한 캐싱.
  *
  * <p><b>공유 캐시(Redis)가 아니라 세션인 이유</b> — 세션은 어차피 매 요청 조회되므로 추가
  * 왕복이 없고, 세션 스토어가 공유라 다중 노드에서 노드마다 다른 값을 가질 수 없다. 그리고
- * 그 사용자의 세션만 건드리면 되므로 <b>폴링 지연 없이 즉시</b> 반영된다(ADR-0017).
+ * 그 사용자의 세션만 건드리면 되므로 <b>폴링 지연 없이 즉시</b> 반영된다(backend/caching.md).
  *
  * <p><b>재계산 신호가 둘이고 둘을 함께 봐야 한다.</b>
  *
@@ -35,7 +35,7 @@ public final class AuthzSession {
      *
      * <p>{@code null} 이면 인터셉터가 돌지 않았다는 뜻이며 그것은 배선 결함이다.
      * 부르는 쪽은 <b>계산으로 메우지 말고 실패시켜야</b> 한다 — 조용히 메우면 판정 자리가
-     * 둘이 되고, security-design.md §4 가 인터셉터 한 곳으로 모아 둔 것이 흩어진다.
+     * 둘이 되고, backend/security.md 가 인터셉터 한 곳으로 모아 둔 것이 흩어진다.
      */
     public static EffectiveAuthority read(HttpSession session) {
         Object value = session.getAttribute(AUTHORITY);
@@ -64,7 +64,7 @@ public final class AuthzSession {
      * <p><b>권한 집합을 미리 계산해 넣지 않는다.</b> 역할 하나를 바꾸면 보유자가 100명일 수
      * 있고, 플래그를 세우는 편이 훨씬 가벼우며 로그인하지 않은 사용자는 계산조차 하지 않는다.
      *
-     * <p><b>지금 이 메서드를 부르는 곳은 이 사용자의 세션 하나뿐이다.</b> security-design.md §4 는 역할 권한이
+     * <p><b>지금 이 메서드를 부르는 곳은 이 사용자의 세션 하나뿐이다.</b> backend/security.md 는 역할 권한이
      * 바뀌면 {@code SYS_USER_ROLE} 역방향 조회로 <b>보유자 전원</b>의 세션을 찾아 같은 플래그를
      * 세우라고 한다 — 그 세션 검색은 {@code FindByIndexNameSessionRepository} 를 쓰며
      * ({@code §4-1} 의 {@code SpringSessionBackedSessionRegistry} 와 같은 부품),

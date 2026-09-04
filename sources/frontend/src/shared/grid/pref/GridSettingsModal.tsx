@@ -23,9 +23,9 @@ import {
 import type { ColumnDef } from '@/shared/grid/types';
 
 /**
- * ③ 그리드 설정 창 — UX-06 · grid-standard.md §5. <b>설정 모달(main-shell.md §9)과 다른 것이다.</b>
+ * ③ 그리드 설정 창 — UX-06 · frontend/grid.md. <b>설정 모달(frontend/tabs.md)과 다른 것이다.</b>
  *
- * <p>main-shell.md §9.6 이 경계를 그었다 — 저쪽은 <i>전역 표시 속성</i>(글꼴·색·행 높이)이고 여기는
+ * <p>frontend/tabs.md 이 경계를 그었다 — 저쪽은 <i>전역 표시 속성</i>(글꼴·색·행 높이)이고 여기는
  * <i>이 화면의 컬럼 구성</i>이다.
  *
  * <p><b>제목에 그리드 이름이 붙는다.</b> 마스터-디테일 화면에서는 설정 창이 둘이고
@@ -34,7 +34,7 @@ import type { ColumnDef } from '@/shared/grid/types';
  * <p><b>적용과 저장은 다른 일이다.</b> 컬럼을 옮기거나 끄면 <b>그 자리에서 그리드에
  * 반영</b>되고, 저장 버튼은 <b>DB 에 남기는 일</b>만 한다 — <i>껐다 켜보며 맞춘다</i> 는
  * 것이 창을 닫아야 보인다면 맞춰 볼 수가 없다. 저장 버튼이 남는 이유는 저장처가 DB 라
- * 토글마다 API 를 부르면 요청이 폭증하기 때문이다(grid-standard.md §5).
+ * 토글마다 API 를 부르면 요청이 폭증하기 때문이다(frontend/grid.md).
  *
  * <p><b>닫는 길이 셋이고 남기는 것이 다 다르다.</b> <b>저장</b>은 DB 에 남기고, <b>적용</b>은
  * <i>화면에만</i> 두며, <b>취소</b>(와 `X`)는 <b>마지막으로 남기기로 한 자리</b>로 되감는다.
@@ -60,7 +60,7 @@ import type { ColumnDef } from '@/shared/grid/types';
  * 하나의 속성이 아니다. 선 둘이 그 사실을 그대로 그린다: 위 선보다 <b>위</b>가 왼쪽 고정,
  * 아래 선보다 <b>아래</b>가 오른쪽 고정이며 <b>위 선이 아래 선을 넘지 못한다</b>.
  *
- * <p><b>목록에 없는 것 셋</b>(grid-standard.md §5) — 시스템 컬럼(보이지만 끌 수 없다) · `hidden`(처음부터
+ * <p><b>목록에 없는 것 셋</b>(frontend/grid.md) — 시스템 컬럼(보이지만 끌 수 없다) · `hidden`(처음부터
  * 없다) · 동적 컬럼(데이터가 정한다). 앞의 둘은 `settableColumns` 가 거른다.
  *
  * <p><b>목록이 스크롤한다.</b> 컬럼 수는 화면이 정하므로 상한이 없다 — 창이 화면보다
@@ -77,7 +77,7 @@ interface Props<T> {
    * <b>저장된 개인화가 있는가</b> — <i>초기화</i> 가 이것으로 켜지고 꺼진다.
    *
    * <p>화면이 선언과 다른가가 아니라 <b>DB 에 행이 있는가</b> 다. 저장하지 않은 변경을
-   * 물리는 일은 <i>취소</i> 가 맡는다(grid-standard.md §5).
+   * 물리는 일은 <i>취소</i> 가 맡는다(frontend/grid.md).
    */
   saved: boolean;
   /** 고칠 때마다 부른다 — <b>화면에만</b> 입힌다. 미리보기이지 <i>적용</i> 버튼이 아니다. */
@@ -94,7 +94,7 @@ interface Props<T> {
 /** 목록의 최대 높이 — 넘으면 스크롤한다. 창이 화면보다 길어지지 않게 하는 값이다. */
 const LIST_MAX_HEIGHT = 380;
 
-/** 버튼 사이의 간격 — 그리드 헤더의 `<Space size={8}>` 과 같은 값이다(grid-standard.md §2.1). */
+/** 버튼 사이의 간격 — 그리드 헤더의 `<Space size={8}>` 과 같은 값이다(frontend/grid.md). */
 const BUTTON_GAP = 8;
 
 /**
@@ -171,7 +171,7 @@ export function GridSettingsModal<T>(props: Props<T>) {
   };
 
   /**
-   * <b>전부 꺼진 채로 남기지 않는다</b> — grid-standard.md §5.
+   * <b>전부 꺼진 채로 남기지 않는다</b> — frontend/grid.md.
    *
    * <p><b>저장과 적용이 함께 본다.</b> 막는 것은 <i>DB 에 넣는 것</i>이 아니라 <b>빈 그리드가
    * 되돌아갈 자리가 되는 것</b>이다 — 적용도 이제 취소가 돌아오는 자리를 옮기므로(§5) 저기서만
@@ -213,7 +213,7 @@ export function GridSettingsModal<T>(props: Props<T>) {
 
   /**
    * <b>적용</b> — 고친 것을 화면에 둔 채 닫고, <b>취소가 돌아올 자리를 여기로 옮긴다</b>
-   * (grid-standard.md §5).
+   * (frontend/grid.md).
    *
    * <p>화면은 {@code change} 가 이미 매번 입혀 두었으므로 <b>새로 그릴 것이 없다.</b> 이
    * 버튼이 하는 일은 <i>여기까지를 남기겠다</i> 를 말하는 것이며, 그것이 없으면 나중에 창을
@@ -307,7 +307,7 @@ export function GridSettingsModal<T>(props: Props<T>) {
         </Tooltip>,
       ]}
       /*
-        <b>버튼 사이를 그리드 헤더와 같은 값으로 벌린다</b> — 8px(grid-standard.md §2.1 의 `<Space size={8}>`).
+        <b>버튼 사이를 그리드 헤더와 같은 값으로 벌린다</b> — 8px(frontend/grid.md 의 `<Space size={8}>`).
         <b>간격을 정하는 것은 이 값 하나</b>이며, 판이 따로 넣는 여백은 버튼마다 `NO_OWN_GAP`
         으로 꺼 둔다 — 그러지 않으면 <b>툴팁이 감싼 초기화 앞에서만 좁아진다</b>.
         왼쪽 무리와 오른쪽 무리를 가르는 것은 <i>적용</i> 의 자동 여백이라 이 값과 무관하다.

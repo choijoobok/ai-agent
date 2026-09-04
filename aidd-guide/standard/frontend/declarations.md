@@ -16,7 +16,7 @@ tags: [frontend, grid, column, searchform, vocabulary, reference]
 
 > **이 문서의 일은 *빠짐없음* 하나다.** 뜻의 상세와 *왜 그렇게 정했나* 는
 > [grid.md](./grid.md) · [grid-advanced.md](./grid-advanced.md) ·
-> [search-form.md](./search-form.md) 와 그 `_study/` 원문이 갖는다.
+> [search-form.md](./search-form.md) 가 갖는다.
 >
 > **여기 없는 이름은 없는 것이다.** 선언 키를 추정해 새로 만들지 않는다 —
 > 필요한 것이 없으면 `shared/` 를 고치고 이 표를 함께 고친다.
@@ -62,7 +62,7 @@ tags: [frontend, grid, column, searchform, vocabulary, reference]
 | `options` | 없다 | 고정 목록 |
 | `grpCd` | 없다 | **공통코드 그룹** — 목록을 데이터가 준다 |
 | `derive` | 없다 | 셀 값을 파생시킨다(엑셀에도 그 값이 나간다) |
-| `dynamic` | `false` | **컬럼 자체가 데이터에서 온다**([_study](./_study/grid-column-contract.md) §2.2) |
+| `dynamic` | `false` | **컬럼 자체가 데이터에서 온다**([`frontend/grid.md`](./grid.md)) |
 | `patch` | 없다 | 동적 컬럼의 값 경로 |
 
 **편집**
@@ -155,5 +155,5 @@ api: {
 - [grid.md](./grid.md) — 뼈대 · 저장 흐름 · `api` 를 언제 쓰나
 - [grid-advanced.md](./grid-advanced.md) — 유형 13종 · 편집 · 검증 · 마스터-디테일
 - [search-form.md](./search-form.md) — 필드 하나를 고르는 판단
-- [`_study/grid-column-contract.md`](./_study/grid-column-contract.md) — 컬럼 계약 원문
-- [`_study/search-form-contract.md`](./_study/search-form-contract.md) — 검색 폼 계약 원문
+- [`frontend/grid.md`](./grid.md) — 컬럼 계약 원문
+- [`frontend/search-form.md`](./search-form.md) — 검색 폼 계약 원문

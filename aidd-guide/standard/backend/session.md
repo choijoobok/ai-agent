@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/bootstrap/src/main/resources/application.yml", "aidd-guide/standard/backend/_study/security-design.md"]
+sources: ["sources/backend/bootstrap/src/main/resources/application.yml", "aidd-guide/standard/backend/security.md"]
 author: Bong Jong Hyeon
 tier: 2
 tags: [backend, session, spring-session, redis, jdbc]
@@ -93,4 +93,3 @@ spring:
 
 - [security.md](./security.md) — 접근 제어 체인 · 계층 셋
 - [caching.md](./caching.md) — 대상마다 다른 캐시 백엔드
-- [`_study/security-design.md`](./_study/security-design.md) §2 · §4-1 — 원문(동시 접속 제어 포함)

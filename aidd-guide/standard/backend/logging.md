@@ -6,7 +6,7 @@ type: operation
 created: 2026-09-03
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/api/", "sources/backend/support/logging/", "aidd-guide/standard/backend/_study/architecture.md", "aidd-guide/standard/backend/_study/system-logging.md"]
+sources: ["sources/backend/api/", "sources/backend/support/logging/", "aidd-guide/standard/backend/packages.md", "aidd-guide/standard/backend/logging.md"]
 author: Bong Jong Hyeon
 tier: 2
 tags: [backend, logging, audit, masking, p6spy]
@@ -128,14 +128,14 @@ MyBatis ──┘
 Logback `SiftingAppender` + MDC `userId` 로 나눈다(`logs/users/${userId}/app.log`).
 **사용자별 파일만 쓰지 않는다** — 통합 파일을 함께 남긴다.
 
-## 6. 로그 문구는 영어로 쓴다
+## 6. 로그 문구는 한국어로 쓴다
 
-개발자용 로그·예외 메시지는 **영어**다(CLAUDE.md §4-5). 사용자에게 보이는 문구만
-`SYS_MESSAGE` 를 거친다.
+소스에 남는 로그·예외의 기본 메시지는 **한국어**다(CLAUDE.md §5-5). 정본은
+`SYS_MESSAGE` 이고 소스의 것은 폴백·진단이며, **그것을 읽는 사람이 한국어 운영자**다.
+사용자에게 보이는 문구만 `SYS_MESSAGE` 를 거친다.
 
 ## 관련
 
 - [crosscutting.md](./crosscutting.md) — 인터셉터 순서 · body 캐싱 상한
 - [exception.md](./exception.md) — `ERR_CD` · `ERR_MSG` 를 만드는 곳
 - [`../../09-knowledge/sys/logs.md`](../../knowledge/sys/logs.md) — 로그 도메인
-- [`_study/architecture.md`](./_study/architecture.md) §6 — 원문

@@ -3,7 +3,7 @@ import { label } from '@/shared/i18n/label';
 import { useMessageStore } from '@/shared/i18n/messageStore';
 
 /**
- * 문구 조립 — 43 §7.3.
+ * 문구 조립 — sys/code.md.
  *
  * <p>여기서 지키는 것은 **누락이 조용하지 않은가**이다. 빈 문자열이나 "—" 를 내면 화면은
  * 멀쩡해 보이고 빠진 문구는 아무도 모른다 — 키가 그대로 보여야 즉시 신고된다.

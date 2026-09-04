@@ -1,7 +1,7 @@
 import { get, post } from '@/shared/api';
 import { MENU_STAT_ENDPOINTS } from '@/shared/menustat/api/endpoints';
 
-/** 서버가 내는 한 줄 — <b>이름이 없다</b>. 이름의 원본은 메뉴 트리다(43 §4.4). */
+/** 서버가 내는 한 줄 — <b>이름이 없다</b>. 이름의 원본은 메뉴 트리다(sys/code.md). */
 export interface FrequentMenu {
   menuCd: string;
   useCnt: number;
@@ -20,7 +20,7 @@ export interface FrequentMenus {
 }
 
 /**
- * 메뉴를 골랐다고 알린다 — <b>부수 효과다</b>(42 §8).
+ * 메뉴를 골랐다고 알린다 — <b>부수 효과다</b>(sys/menu.md).
  *
  * <p><b>응답을 기다리지 않는다.</b> 실패가 화면 진입을 막으면 기능의 무게가 목적보다
  * 커진다 — 그래서 부르는 쪽도 `void` 로 던지고 잊는다.

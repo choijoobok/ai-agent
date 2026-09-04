@@ -16,7 +16,7 @@ interface Row {
 }
 
 /**
- * 에디터 셋의 <b>배선</b> — 68 §9.15 의 4단계(§9.5 · §9.6 · §9.7).
+ * 에디터 셋의 <b>배선</b> — playbook/INDEX.md 의 4단계(§9.5 · §9.6 · §9.7).
  *
  * <p><b>어댑터 층에서 잰다.</b> 셋 다 모달·드롭다운을 여는 컴포넌트라 UI 로 몰면 검사가
  * 흔들리고(2026-09-02 — 날짜 필터에서 그것을 겪고 지웠다), <b>흔들리는 검사는 없는 것보다
@@ -45,7 +45,7 @@ describe('에디터 셋의 배선', () => {
     return def;
   };
 
-  describe('richSelect — 검색 콤보(grid-column-contract.md §5.7)', () => {
+  describe('richSelect — 검색 콤보(frontend/grid.md)', () => {
     const column: ColumnDef<Row> = {
       field: 'chnlCd',
       header: 'h',
@@ -69,7 +69,7 @@ describe('에디터 셋의 배선', () => {
     });
 
     /*
-      <b>후보를 편집기가 다시 묻지 않는다</b>(grid-column-contract.md §5.7). {@code grpCd} 인 컬럼은 판에 닿기
+      <b>후보를 편집기가 다시 묻지 않는다</b>(frontend/grid.md). {@code grpCd} 인 컬럼은 판에 닿기
       전에 {@code options} 가 채워지므로(`DataGrid`), 여기 빈 배열이 오는 것은
       <i>아직 안 왔다</i> 이지 <i>없다</i> 가 아니다 — 그래도 편집기는 열려야 한다.
     */
@@ -81,7 +81,7 @@ describe('에디터 셋의 배선', () => {
     });
   });
 
-  describe('listModal — 배열 편집(grid-column-contract.md §5.6)', () => {
+  describe('listModal — 배열 편집(frontend/grid.md)', () => {
     const column: ColumnDef<Row> = {
       field: 'tagList',
       header: 'h',
@@ -103,7 +103,7 @@ describe('에디터 셋의 배선', () => {
     });
 
     /*
-      <b>선언이 반쪽이면 열지 않는다</b> — `popupRef` 와 같은 규칙(68 §9.4). 고를 팝업이
+      <b>선언이 반쪽이면 열지 않는다</b> — `popupRef` 와 같은 규칙(playbook/INDEX.md). 고를 팝업이
       없는 창을 띄우면 <i>추가</i> 가 아무 일도 하지 않는 버튼이 되고, 판의 기본 편집기로
       떨어지면 적어도 <b>배열이 글자로 보여</b> 무엇이 잘못됐는지 읽힌다.
     */
@@ -114,7 +114,7 @@ describe('에디터 셋의 배선', () => {
     });
 
     /*
-      <b>읽기 전용이어도 열린다</b>(grid-column-contract.md §5.5 와 같은 자리) — 배열은 셀에서 다 볼 수 없다.
+      <b>읽기 전용이어도 열린다</b>(frontend/grid.md 와 같은 자리) — 배열은 셀에서 다 볼 수 없다.
       다만 고칠 수 없으므로 창이 그것을 알아야 한다: 모르면 확인 버튼이 남고, 눌러도
       아무 일이 없다.
     */
@@ -126,7 +126,7 @@ describe('에디터 셋의 배선', () => {
     });
   });
 
-  describe('textModal — 긴 글의 넓은 쪽(grid-column-contract.md §5.5)', () => {
+  describe('textModal — 긴 글의 넓은 쪽(frontend/grid.md)', () => {
     const column: ColumnDef<Row> = {
       field: 'rmk',
       header: 'h',
@@ -158,7 +158,7 @@ describe('에디터 셋의 배선', () => {
 });
 
 /**
- * `tags` 셀 — <b>넘친 것이 사라지지 않는다</b>(68 §9.6).
+ * `tags` 셀 — <b>넘친 것이 사라지지 않는다</b>(playbook/INDEX.md).
  *
  * <p>전부 그리면 판이 셀을 한 줄로 자르므로 <b>열 개 붙은 행과 세 개 붙은 행이 같아
  * 보인다</b>. 그러면 사용자는 세 개인 줄 알고 저장하며, 화면은 그 오해를 만든 쪽이다.

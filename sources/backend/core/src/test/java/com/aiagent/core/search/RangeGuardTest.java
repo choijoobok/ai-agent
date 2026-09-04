@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * 기간 문지기 — 64 §2.2. <b>이력 화면 셋이 공유한다.</b>
+ * 기간 문지기 — screen/log/access/requirements.md. <b>이력 화면 셋이 공유한다.</b>
  *
  * <p>여기서 지키는 것은 <i>막았는가</i> 만이 아니라 <b>무엇으로 막았는가</b> 다. 화면마다
  * {@link ErrorCode} 가 다르고(상한과 보존이 다르므로 문구가 다르다) 그것이 섞이면
@@ -81,7 +81,7 @@ class RangeGuardTest {
         }
 
         @Test
-        @DisplayName("추적 ID 를 넣으면 기간이 선택이 된다 — TRACE_ID 에 별도 인덱스가 있다(45 §4.1)")
+        @DisplayName("추적 ID 를 넣으면 기간이 선택이 된다 — TRACE_ID 에 별도 인덱스가 있다(sys/logs.md)")
         void 추적ID_는_기간을_면제한다() {
             Condition trace = new Condition("traceId", Op.eq, "abc");
 
@@ -131,7 +131,7 @@ class RangeGuardTest {
         }
 
         @Test
-        @DisplayName("한쪽이 열린 범위는 상한 초과로 본다 — 열린 쪽이 곧 무제한이다(api-conventions.md §3.3)")
+        @DisplayName("한쪽이 열린 범위는 상한 초과로 본다 — 열린 쪽이 곧 무제한이다(backend/api.md)")
         void 단측_범위는_거부() {
             assertThatThrownBy(() -> RangeGuard.check(
                             request(range("2026-08-01T00:00:00Z", null)), RULE))
@@ -141,7 +141,7 @@ class RangeGuardTest {
         }
 
         @Test
-        @DisplayName("오프셋이 붙은 값도 읽는다 — 화면이 보내는 것은 +09:00 이다(architecture.md §6-1)")
+        @DisplayName("오프셋이 붙은 값도 읽는다 — 화면이 보내는 것은 +09:00 이다(backend/packages.md)")
         void 오프셋_값도_읽는다() {
             assertThatCode(() -> RangeGuard.check(
                             request(range("2026-08-01T00:00:00+09:00", "2026-08-08T00:00:00+09:00")),

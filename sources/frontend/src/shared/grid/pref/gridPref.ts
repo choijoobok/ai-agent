@@ -1,10 +1,10 @@
 import type { ColumnDef } from '@/shared/grid/types';
 
 /**
- * 그리드 개인화의 값 — UX-06 · UX-13 · grid-standard.md §5.
+ * 그리드 개인화의 값 — UX-06 · UX-13 · frontend/grid.md.
  *
  * <p>**너비는 여기 없다.** 27인치에서 맞춘 폭이 노트북에서는 틀리므로 **기기의 속성**이고
- * (41 §4.3) `localStorage` 다. 표시 여부·순서·틀고정은 *"이 컬럼을 붙잡고 나머지를
+ * (sys/user-role.md) `localStorage` 다. 표시 여부·순서·틀고정은 *"이 컬럼을 붙잡고 나머지를
  * 스크롤한다"* 는 **읽는 방식**이라 사람의 속성이다.
  */
 export interface ColumnPref {
@@ -19,12 +19,12 @@ export interface GridPrefValue {
 }
 
 /**
- * 설정 창에 나오는 컬럼 — grid-standard.md §5의 *목록에 없는 셋* 을 뺀 것이다.
+ * 설정 창에 나오는 컬럼 — frontend/grid.md의 *목록에 없는 셋* 을 뺀 것이다.
  *
  * <p>시스템 컬럼(번호·상태·삭제)은 **선언에 없으므로** 자연히 빠지고, `hidden` 과 **동적
  * 컬럼**은 여기서 뺀다.
  *
- * <p>**동적 컬럼을 빼는 것이 시그니처에서 특히 중요하다**(grid-column-contract.md §2.2 · ADR-0025). 그 집합은
+ * <p>**동적 컬럼을 빼는 것이 시그니처에서 특히 중요하다**(frontend/grid.md · sys/code.md). 그 집합은
  * *고른 그룹* 을 따라 바뀌므로, 넣으면 그룹을 옮길 때마다 시그니처가 달라져 **자기 설정이
  * 자기를 폐기한다** — 사용자가 겪는 것은 *"설정이 저장되지 않는다"* 이고 원인을 짐작할 수
  * 없다. 목록에서 빼는 이유는 하나 더 있다: **끄거나 옮겨도 저장할 곳이 없다**.
@@ -36,7 +36,7 @@ export function settableColumns<T>(columns: ColumnDef<T>[]): ColumnDef<T>[] {
 /**
  * 시그니처(UX-13) — **화면의 컬럼 목록이 바뀌면 저장된 설정을 폐기한다**.
  *
- * <p>계산식은 grid-standard.md §5 그대로다: `전체 − 시스템 − hidden − 동적`. 저장된 설정에 들어 있지도
+ * <p>계산식은 frontend/grid.md 그대로다: `전체 − 시스템 − hidden − 동적`. 저장된 설정에 들어 있지도
  * 않은 컬럼이 늘거나 줄었다고 사용자의 표시·순서·고정을 버릴 이유가 없다.
  *
  * <p>**순서를 보지 않는다** — 이름을 정렬해 해시한다. 사용자가 바꾼 순서가 섞이면 순서를
@@ -98,7 +98,7 @@ export function applyPref<T>(
   return ordered;
 }
 
-/** 저장된 문자열을 값으로 — 깨진 JSON 은 없는 것으로 친다(grid-standard.md §5 의 폐기와 같은 태도). */
+/** 저장된 문자열을 값으로 — 깨진 JSON 은 없는 것으로 친다(frontend/grid.md 의 폐기와 같은 태도). */
 export function parsePref(prefJson: string): GridPrefValue | null {
   try {
     const parsed: unknown = JSON.parse(prefJson);

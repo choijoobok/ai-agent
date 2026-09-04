@@ -5,7 +5,7 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * 조회 프로토콜 위반 — api-conventions.md §3·§4.
+ * 조회 프로토콜 위반 — backend/api.md.
  *
  * <p><b>전부 400 이다.</b> 사용자가 넣은 값의 문제가 아니라 <b>화면이 만든 요청</b>이 규약과
  * 어긋난 것이며, 개발 중에 드러나야 하는 종류다. 다만 500 으로 올리지 않는다 — 요청 본문이

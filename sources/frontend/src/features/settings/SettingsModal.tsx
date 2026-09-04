@@ -32,14 +32,14 @@ import { useResolvedDark } from '@/shared/theme/useResolvedDark';
 import { saveLocale } from '@/features/settings/api/settingsApi';
 
 /**
- * 설정 모달 — main-shell.md §9.
+ * 설정 모달 — frontend/tabs.md.
  *
  * <p><b>저장 버튼이 없다</b>(§9.2). 설정을 바꾸면 화면이 바로 바뀌며 미리보기 영역을 따로
  * 만들지 않는다 — <b>셸 전체가 미리보기</b>이고, 글자 크기나 행 높이는 실제 화면에서 봐야
  * 판단할 수 있다.
  *
  * <p><b>예외는 언어 하나다.</b> 리렌더로 갈아치울 수 없는 것들이 있어 재로드한다
- * (50 §5.3) — 번들 자체 · 코드 라벨 · <b>이미 떠 있는 서버 에러 문구</b> · 탭에 보존된
+ * — 번들 자체 · 코드 라벨 · <b>이미 떠 있는 서버 에러 문구</b> · 탭에 보존된
  * 조회 결과.
  *
  * <p><b>그룹별 초기화와 전체 초기화를 둔다</b>(§9.2). 항목이 열 개를 넘으면 <i>"뭘 건드려서
@@ -79,14 +79,14 @@ export function SettingsModal({ open, onClose, hasUnsaved }: Props) {
 
     try {
       // 서버가 먼저다 — 실패하면 여기서 멈추고 localStorage 를 건드리지 않는다.
-      // 둘이 갈리면 다음 로그인의 1순위가 어긋난다(50 §5.3 의 ②).
+      // 둘이 갈리면 다음 로그인의 1순위가 어긋난다(의 ②).
       await saveLocale(next);
     } catch (error) {
       message.error(error instanceof Error ? error.message : String(error));
       return;
     }
     rememberLang(next as Lang);
-    // 재로드가 탭 비우기를 함께 한다 — frontend-stack.md §4.1 이 새로고침에 탭을 복원하지 않기로 했다.
+    // 재로드가 탭 비우기를 함께 한다 — frontend/packages.md 이 새로고침에 탭을 복원하지 않기로 했다.
     window.location.reload();
   };
 
@@ -109,9 +109,9 @@ export function SettingsModal({ open, onClose, hasUnsaved }: Props) {
             style={{ width: 160 }}
             value={lang}
             onChange={(next: string) => void changeLanguage(next)}
-            // 코드가 아니라 이름이다 — 명칭의 단일 원본은 SYS_MESSAGE 다(43 §4.4).
+            // 코드가 아니라 이름이다 — 명칭의 단일 원본은 SYS_MESSAGE 다(sys/code.md).
             // `title: ''` — 판은 고른 항목의 글자를 그대로 브라우저 툴팁으로 단다.
-            // 보이는 글자를 한 번 더 띄우는 것이고, 모양도 셸의 툴팁과 다르다(grid-standard.md §2.1).
+            // 보이는 글자를 한 번 더 띄우는 것이고, 모양도 셸의 툴팁과 다르다(frontend/grid.md).
             options={langs.map((code) => ({
               value: code,
               title: '',
@@ -123,7 +123,7 @@ export function SettingsModal({ open, onClose, hasUnsaved }: Props) {
           <SettingSwitch checked={ui.headerAutoHide} onChange={ui.setHeaderAutoHide} />
         </Row>
         {/* 접기가 아니라 자동 숨기기다 — 접기는 헤더 왼쪽 버튼이 이미 하고 있어, 설정에
-            같은 것을 한 번 더 두면 조작점만 둘이 된다(main-shell.md §9.5). */}
+            같은 것을 한 번 더 두면 조작점만 둘이 된다(frontend/tabs.md). */}
         <Row title={MSG.SETTINGS_SIDER_AUTOHIDE}>
           <SettingSwitch checked={ui.siderAutoHide} onChange={ui.setSiderAutoHide} />
         </Row>
@@ -162,7 +162,7 @@ export function SettingsModal({ open, onClose, hasUnsaved }: Props) {
         </Row>
         {/*
           모드의 네 번째 칸이 아니라 <b>다른 축</b>이다 — 그래야 "시스템 따름 + 회색" 이
-          성립한다(main-shell.md §9.7).
+          성립한다(frontend/tabs.md).
 
           <b>라벨이 모드를 따라간다.</b> 라이트에서는 흰색의 농도이고 다크에서는 검은색의
           농도라, 한 이름으로 부르면 절반은 거짓말이 된다 — 값과 눈금은 하나이고
@@ -194,7 +194,7 @@ export function SettingsModal({ open, onClose, hasUnsaved }: Props) {
         <Row title={MSG.SETTINGS_FONT_SIZE} range={range(12, 18, 'px')}>
           <NumberField value={ui.fontSize} min={12} max={18} onChange={ui.setFontSize} />
         </Row>
-        {/* 크기와 다른 축이다 — 굵기는 <b>자리를 그대로 두고</b> 또렷해진다(main-shell.md §9.3). */}
+        {/* 크기와 다른 축이다 — 굵기는 <b>자리를 그대로 두고</b> 또렷해진다(frontend/tabs.md). */}
         <Row title={MSG.SETTINGS_FONT_WEIGHT}>
           <Segmented<FontWeight>
             value={ui.fontWeight}
@@ -289,7 +289,7 @@ function SettingSwitch(props: { checked: boolean; onChange: (checked: boolean) =
 }
 
 /**
- * 슬라이더 양옆에 <b>한 칸씩 옮기는 버튼</b>을 둔다 — main-shell.md §9.2.
+ * 슬라이더 양옆에 <b>한 칸씩 옮기는 버튼</b>을 둔다 — frontend/tabs.md.
  *
  * <p>범위가 좁아서(글자 크기는 12~18) <b>슬라이더만으로는 한 칸을 정확히 집기 어렵다</b>.
  * 끌다 보면 원하는 값을 지나치고, 되돌리려다 또 지나친다.
@@ -328,7 +328,7 @@ function NumberField(props: {
 const GAUGE_WIDTH = 110;
 
 /**
- * 값이 <b>손잡이 안에</b> 있는 눈금 — main-shell.md §9.7.2.
+ * 값이 <b>손잡이 안에</b> 있는 눈금 — frontend/tabs.md.
  *
  * <p>판의 슬라이더가 아니다. 끌 수 없게 만든 순간 남은 일은 <b>읽는 것</b>뿐인데, 판의
  * 손잡이는 동그라미라 <i>지금 값이 얼마인지</i> 를 말하지 못한다 — 자리만 말한다
@@ -392,7 +392,7 @@ function Gauge(props: { value: number; min: number; max: number; disabled?: bool
 }
 
 /**
- * <b>프리셋을 기본 경로로 둔다</b> — main-shell.md §9.4. 커스텀은 열되 대비가 모자라면 경고하고
+ * <b>프리셋을 기본 경로로 둔다</b> — frontend/tabs.md. 커스텀은 열되 대비가 모자라면 경고하고
  * <b>막지는 않는다</b>: 조직 CI 색을 써야 하는 경우가 있다(01 P9).
  */
 function PrimaryColorField() {
@@ -446,7 +446,7 @@ function hasEnoughContrast(hex: string): boolean {
 }
 
 /**
- * 설치 글꼴 목록은 <b>사용자가 열 때</b> 읽는다 — main-shell.md §9.3.
+ * 설치 글꼴 목록은 <b>사용자가 열 때</b> 읽는다 — frontend/tabs.md.
  *
  * <p>모달을 여는 것만으로 권한 프롬프트가 뜨면 <b>대부분의 사용자가 이유를 모른 채
  * 거부한다.</b> 못 읽어도 기능 실패가 아니다 — 웹 세이프 목록으로 떨어진다.

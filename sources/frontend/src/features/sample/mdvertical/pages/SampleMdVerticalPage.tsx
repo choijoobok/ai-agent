@@ -18,18 +18,18 @@ import type { SampleOrder, SampleOrderItem } from '@/features/sample/types';
 import { buildItemColumns } from '@/features/sample/itemColumns';
 
 /**
- * `SMPL_MD_VERT` — 68 §5. <b>참조 구현이지 업무 화면이 아니다.</b>
+ * `SMPL_MD_VERT` — playbook/INDEX.md. <b>참조 구현이지 업무 화면이 아니다.</b>
  *
- * <p>이 화면이 <b>유일한 실물</b>로 갖는 것 셋(68 §2 의 굵은 ●): 스플리터 상하 분할 ·
+ * <p>이 화면이 <b>유일한 실물</b>로 갖는 것 셋(playbook/INDEX.md 의 굵은 ●): 스플리터 상하 분할 ·
  * <b>마스터 삭제 게이트</b> · {@code editable} 함수. 지우면 템플릿에서 그 어휘의 예가
  * 사라진다.
  *
  * <h2>저장 단위가 둘이다</h2>
  *
- * <p>마스터와 디테일이 <b>각자 저장한다</b>(68 §5.1). 저장 버튼이 그리드마다 따로이며
- * (grid-standard.md §2.1), 묶으면 <i>품목만 고쳤는데 주문도 갱신됨</i> 이 되어 감사 컬럼이 거짓말을 한다.
+ * <p>마스터와 디테일이 <b>각자 저장한다</b>(playbook/INDEX.md). 저장 버튼이 그리드마다 따로이며
+ * (frontend/grid.md), 묶으면 <i>품목만 고쳤는데 주문도 갱신됨</i> 이 되어 감사 컬럼이 거짓말을 한다.
  *
- * <h2>②가 <b>서버 생성</b>이다 — ADR-0019 의 세 번째 갈래</h2>
+ * <h2>②가 <b>서버 생성</b>이다 — frontend/grid-advanced.md 의 세 번째 갈래</h2>
  *
  * <p>이 화면이 그 갈래의 <b>원래 사례</b>다. ADR 은 <i>"헤더 1건 + 상품 N건이고 화면은
  * 상단과 하단으로 쪼개 보여주지만, 사용자는 헤더와 상품을 합친 엑셀 하나를 원한다"</i> 로
@@ -41,13 +41,13 @@ import { buildItemColumns } from '@/features/sample/itemColumns';
 
 const MENU_CD = 'SMPL_MD_VERT';
 
-/** 주문 상태 넷 — 48 §3.2 의 전이표. <b>소스가 값을 갖는다</b>(43 §4.4). */
+/** 주문 상태 넷 — playbook/INDEX.md 의 전이표. <b>소스가 값을 갖는다</b>(sys/code.md). */
 const STAT_RCV = 'RCV';
 const STAT_CFM = 'CFM';
 const STAT_DON = 'DON';
 
 /**
- * 편집이 열리는가 — 48 §3.2 의 전이표를 그대로 편다.
+ * 편집이 열리는가 — playbook/INDEX.md 의 전이표를 그대로 편다.
  *
  * <p><b>{@code LOCK_YN} 이 먼저다.</b> 상태는 <i>일이 어디까지 갔나</i> 이고 잠금은
  * <i>운영이 잠갔나</i> 이며, 잠긴 것은 상태와 무관하게 닫힌다.
@@ -57,7 +57,7 @@ const STAT_DON = 'DON';
 function amountEditable(row: SampleOrder, state: RowState): boolean | { ok: false; message: string } {
   if (state === 'C') return true;
   if (row.lockYn) return { ok: false, message: label(MSG.SAMPLE_LOCKED) };
-  // 확정부터는 금액이 잠긴다 — 확정된 금액이다(48 §3.2).
+  // 확정부터는 금액이 잠긴다 — 확정된 금액이다(playbook/INDEX.md).
   return row.ordStatCd === STAT_RCV;
 }
 
@@ -98,17 +98,17 @@ export function SampleMdVerticalPage() {
           label: MSG.SAMPLE_ACTION_SHIP,
           url: SAMPLE_VERT_ENDPOINTS.shipOrders,
           /*
-            <b>프로그레스가 없다</b>(68 §5.4). 상태 하나를 바꾸는 일이라 즉시 끝나며,
-            창이 떴다가 바로 닫히는 깜빡임은 <i>무언가 잘못됐나</i> 로 읽힌다(30 §6).
+            <b>프로그레스가 없다</b>(playbook/INDEX.md). 상태 하나를 바꾸는 일이라 즉시 끝나며,
+            창이 떴다가 바로 닫히는 깜빡임은 <i>무언가 잘못됐나</i> 로 읽힌다(backend/crosscutting.md).
           */
           target: 'selected' as const,
-          // 확정만 출고로 간다 — 거르는 것은 UX 이고 판정은 서버다(grid-api-contract.md §7 · grid-edit-validation.md §3.4).
+          // 확정만 출고로 간다 — 거르는 것은 UX 이고 판정은 서버다(frontend/grid.md).
           eligible: (row: GridRow<SampleOrder>) =>
             row.data.ordStatCd === STAT_CFM && !row.data.lockYn,
           hint: MSG.SAMPLE_ACTION_SHIP_HINT,
           confirm: MSG.SAMPLE_ACTION_SHIP_CONFIRM,
           /*
-            **봉투의 이름은 `targets` 로 고정이다**(grid-api-contract.md §8) — `toTargets` 는 *모양만 바꾸는
+            **봉투의 이름은 `targets` 로 고정이다**(frontend/grid.md) — `toTargets` 는 *모양만 바꾸는
             자리* 라 그 이름을 바꾸지 못한다. 여기서 `{ ordIds: [...] }` 를 돌려주고 있었고,
             그러면 몸통이 `{ targets: { ordIds: [...] } }` 가 되어 서버의 `@NotEmpty` 에
             걸린다 — **이 실행은 한 번도 서버에 닿은 적이 없었다**(2026-09-02. ①에서 같은
@@ -118,13 +118,13 @@ export function SampleMdVerticalPage() {
         },
         {
           /*
-            **품목 금액 재계산 — 이 템플릿의 행×디테일 진행률이다**(30 §6 · 68 §5.4).
+            **품목 금액 재계산 — 이 템플릿의 행×디테일 진행률이다**(backend/crosscutting.md · playbook/INDEX.md).
 
             바로 위의 출고 지시와 **나란히 서는 것이 요점이다**: 같은 `EXECUTE`, 같은
             `target:'selected'` 인데 하나는 응답이 곧 끝이고 이쪽은 **고른 주문마다 딸린
             품목 전건**을 돈다 — 주문 하나가 수천 건일 수 있다.
 
-            **화면은 폴링 코드를 쓰지 않는다**(68 §9.1). `progress: true` 한 줄이면 그리드가
+            **화면은 폴링 코드를 쓰지 않는다**(playbook/INDEX.md). `progress: true` 한 줄이면 그리드가
             응답의 `jobId` 를 진행률 훅에 넘기고, 창은 서버가 구간마다 갈아 끼우는 소제목과
             건수를 그린다 — *지금 어느 주문* 은 서버만 알 수 있는 사실이다.
 
@@ -134,7 +134,7 @@ export function SampleMdVerticalPage() {
 
             ── **대상이 `all` 인 이유 — 이 화면의 마스터는 한 행만 고를 수 있다** ──
 
-            `all` 은 *전체* 가 아니라 **지금 그리드에 들어 있는 행**이다(grid-api-contract.md §7). 그래서
+            `all` 은 *전체* 가 아니라 **지금 그리드에 들어 있는 행**이다(frontend/grid.md). 그래서
             사용자가 조회조건으로 좁힌 그 묶음이 대상이며, 아래 `eligible` 이 그중 대상이
             되는 것만 남긴다.
 
@@ -159,7 +159,7 @@ export function SampleMdVerticalPage() {
             주문**을 빼는 것이다: 품목이 0건이면 그 구간은 `0/0` 이라 진행률 창이 **완료로
             보이는 구간**을 하나 그린다.
 
-            거르는 것은 UX 이고 판정은 서버다(grid-api-contract.md §7 · grid-edit-validation.md §3.4). **여기서 거르므로 서버의
+            거르는 것은 UX 이고 판정은 서버다(frontend/grid.md). **여기서 거르므로 서버의
             게이트가 화면 경로에서는 걸리지 않는다** — 걸리면 전건 거부이고(절반만 반영된
             금액은 되돌릴 지점이 없다), 조회 결과에 확정된 주문이 섞이는 것은 늘 있는 일이다.
 
@@ -302,7 +302,7 @@ export function SampleMdVerticalPage() {
 
   /**
    * <b>화면이 묻는다.</b> 그리드에 맡기면 물음의 결과를 화면이 알 수 없고, 그 답을 알아야
-   * 선택을 받아들일지 정할 수 있다(grid-standard.md §6.1).
+   * 선택을 받아들일지 정할 수 있다(frontend/grid.md).
    */
   const confirmDiscard = useCallback(
     () =>
@@ -320,7 +320,7 @@ export function SampleMdVerticalPage() {
   );
 
   /**
-   * 주문 선택 — grid-standard.md §6.1 의 상태 셋을 그대로 편다.
+   * 주문 선택 — frontend/grid.md 의 상태 셋을 그대로 편다.
    *
    * <p><b>거부할 수 있다.</b> 아래에 미저장 편집이 있으면 묻고, 아니라고 하면 판의 선택이
    * 되돌아간다(UX-10). 거부권이 없으면 <i>보고 있는 것</i>과 <i>고른 것</i>이 갈리고, 그
@@ -334,7 +334,7 @@ export function SampleMdVerticalPage() {
       setSelected(row);
 
       if (!row || row.state === 'C') {
-        // 신규 행은 부모 키가 아직 DB 에 없다 — 붙이려 하면 FK 위반이다(grid-standard.md §6.1).
+        // 신규 행은 부모 키가 아직 DB 에 없다 — 붙이려 하면 FK 위반이다(frontend/grid.md).
         selectedOrdId.current = null;
         detail.setRows([]);
         return true;
@@ -347,7 +347,7 @@ export function SampleMdVerticalPage() {
   );
 
   /**
-   * 마스터 조회는 <b>아래를 리셋한다</b> — grid-standard.md §6.1.
+   * 마스터 조회는 <b>아래를 리셋한다</b> — frontend/grid.md.
    *
    * <p>조회는 목록을 통째로 바꾸므로 이전에 보던 행이 결과에 없을 수도 있다. 아래가 남아
    * 있으면 <b>다른 주문의 품목을 그 주문 것으로 보게 된다</b>.
@@ -360,7 +360,7 @@ export function SampleMdVerticalPage() {
   }, [detail, master]);
 
   /**
-   * ②의 셋 — <b>이름은 그대로 두고 경로만 서버</b>다(ADR-0019).
+   * ②의 셋 — <b>이름은 그대로 두고 경로만 서버</b>다(frontend/grid-advanced.md).
    *
    * <p>마스터의 아홉 컬럼을 내리지 않는다: 두 항목 모두 서버가 주문과 품목을 조인해 만든
    * <b>한 장</b>을 준다. 그 표는 화면에 없으므로 프론트가 만들 수 없다.
@@ -373,7 +373,7 @@ export function SampleMdVerticalPage() {
     () => ({
       page: {
         url: SAMPLE_VERT_ENDPOINTS.exportOrderPage,
-        // 지금 보이는 것을 화면이 지목한다 — 컬럼 필터와 정렬은 서버가 모른다(grid-column-contract.md §4.1).
+        // 지금 보이는 것을 화면이 지목한다 — 컬럼 필터와 정렬은 서버가 모른다(frontend/grid.md).
         body: () => ({ ordNos: master.rows.map((row) => row.data.ordNo) }),
       },
       all: {
@@ -396,7 +396,7 @@ export function SampleMdVerticalPage() {
   );
 
   /**
-   * 지울 수 있는가 — <b>마스터 삭제 게이트</b>(grid-standard.md §6.2). 이 화면의 유일한 실물이다.
+   * 지울 수 있는가 — <b>마스터 삭제 게이트</b>(frontend/grid.md). 이 화면의 유일한 실물이다.
    *
    * <p>게이트가 <b>건수 컬럼</b>에서 나온다: 마스터 응답이 품목 수를 갖고 있으므로 행마다
    * 답할 수 있다 — 아래를 조회해야만 아는 것이 아니다. 잠긴 주문도 닫힌다.
@@ -421,7 +421,7 @@ export function SampleMdVerticalPage() {
     [],
   );
 
-  /** 고른 주문의 번호를 아래 제목에 붙인다 — 디테일은 자기가 누구의 것인지 말하지 못한다(grid-standard.md §6.1). */
+  /** 고른 주문의 번호를 아래 제목에 붙인다 — 디테일은 자기가 누구의 것인지 말하지 못한다(frontend/grid.md). */
   const detailSuffix = useMemo(
     () => (selected ? { parent: master, fields: ['ordNo', 'ordNm'] } : undefined),
     [selected, master],
@@ -439,14 +439,14 @@ export function SampleMdVerticalPage() {
       />
 
       <div style={{ flex: 1, minHeight: 0 }}>
-        {/* 축이 상하다 — 마스터가 컬럼 아홉으로 넓다(grid-standard.md §6.3 · 62 §3.1). */}
+        {/* 축이 상하다 — 마스터가 컬럼 아홉으로 넓다(frontend/grid.md · screen/menu/requirements.md). */}
         <SplitPane
           storageKey="smplMdVert"
           first={(collapsed, expand, axis) => (
             <DataGrid<SampleOrder>
               title={MSG.SAMPLE_ORDER_GRID_TITLE}
               menuCd={MENU_CD}
-              // 개인화의 키다 — 같으면 위아래 설정이 서로를 덮는다(grid-standard.md §5).
+              // 개인화의 키다 — 같으면 위아래 설정이 서로를 덮는다(frontend/grid.md).
               gridId="master"
               controller={master}
               deletable={masterDeletable}
@@ -466,7 +466,7 @@ export function SampleMdVerticalPage() {
               controller={detail}
               deletable={detailDeletable}
               titleSuffix={detailSuffix}
-              // 대상이 없으면 ①②③이 통째로 잠긴다 — 탭이 아니라 버튼이다(grid-standard.md §6.1).
+              // 대상이 없으면 ①②③이 통째로 잠긴다 — 탭이 아니라 버튼이다(frontend/grid.md).
               disabled={selectedOrdId.current === null}
               emptyText={MSG.SAMPLE_ITEM_EMPTY}
               collapsed={collapsed}
@@ -481,10 +481,10 @@ export function SampleMdVerticalPage() {
 }
 
 /**
- * 마스터 컬럼 아홉 — 68 §5.2.
+ * 마스터 컬럼 아홉 — playbook/INDEX.md.
  *
- * <p>테이블에는 컬럼이 스물여섯이지만(48 §3) 이 화면이 그리는 것은 아홉이다. 나머지는
- * <b>그 어휘를 맡은 화면</b>이 그린다 — 여기서 전부 그리면 이 화면 하나가 grid-column-contract.md §5 의 어휘를
+ * <p>테이블에는 컬럼이 스물여섯이지만(playbook/INDEX.md) 이 화면이 그리는 것은 아홉이다. 나머지는
+ * <b>그 어휘를 맡은 화면</b>이 그린다 — 여기서 전부 그리면 이 화면 하나가 frontend/grid.md 의 어휘를
  * 통째로 시연하게 되고, 그러면 <i>레이아웃</i> 이라는 이 화면의 주제가 묻힌다.
  */
 function buildOrderColumns(): ColumnDef<SampleOrder>[] {
@@ -496,7 +496,7 @@ function buildOrderColumns(): ColumnDef<SampleOrder>[] {
       width: 160,
       pinned: 'left',
       sortable: true,
-      // 업무 키다 — 신규 행에서만 열리고 고치려면 지우고 다시 만든다(grid-column-contract.md §5.1).
+      // 업무 키다 — 신규 행에서만 열리고 고치려면 지우고 다시 만든다(frontend/grid.md).
       pk: true,
       required: true,
     },
@@ -524,10 +524,10 @@ function buildOrderColumns(): ColumnDef<SampleOrder>[] {
       type: 'code',
       width: 110,
       sortable: true,
-      // 후보가 공통코드에서 온다 — 이름과 순서는 운영이 정한다(43 §8).
+      // 후보가 공통코드에서 온다 — 이름과 순서는 운영이 정한다(sys/code.md).
       grpCd: 'SMPL_ORD_STAT',
       renderer: 'badge',
-      // 값이 색을 고른다 — tone 맵(grid-column-contract.md §5.4.1).
+      // 값이 색을 고른다 — tone 맵(frontend/grid.md).
       tone: { RCV: 'none', CFM: 'ok', SHP: 'warn', DON: 'muted' },
     },
     {
@@ -549,7 +549,7 @@ function buildOrderColumns(): ColumnDef<SampleOrder>[] {
       editable: (row, ctx) => amountEditable(row, ctx.state),
       editor: 'number',
       /*
-        <b>계산은 한 곳에서 둘 다 한다</b>(grid-edit-validation.md §2.3). 수량이 바뀌면 금액이 바뀌고 금액이
+        <b>계산은 한 곳에서 둘 다 한다</b>(frontend/grid.md). 수량이 바뀌면 금액이 바뀌고 금액이
         바뀌면 부가세가 바뀌는데, 연쇄로 두면 <b>어느 순서로 도는가</b>가 숨은 규칙이 된다.
         여기서 멈추고 <b>서버가 다시 센다</b> — 이것은 보여주기다(원칙 P1).
       */
@@ -564,7 +564,7 @@ function buildOrderColumns(): ColumnDef<SampleOrder>[] {
       type: 'number',
       width: 130,
       sortable: true,
-      // 파생이다 — 편집 선언이 없으면 읽기 전용이다(grid-column-contract.md §2).
+      // 파생이다 — 편집 선언이 없으면 읽기 전용이다(frontend/grid.md).
     },
     {
       field: 'urgentYn',
@@ -572,7 +572,7 @@ function buildOrderColumns(): ColumnDef<SampleOrder>[] {
       type: 'ynFlag',
       width: 90,
       sortable: true,
-      // 스위치다 — 체크박스가 아니다(grid-column-contract.md §5.2).
+      // 스위치다 — 체크박스가 아니다(frontend/grid.md).
       editable: (row, ctx) => textEditable(row, ctx.state),
       editor: 'switch',
     },
@@ -583,7 +583,7 @@ function buildOrderColumns(): ColumnDef<SampleOrder>[] {
       width: 90,
       sortable: true,
       /*
-        <b>{@code LOCK_YN} 이 근거다</b>(48 §3.2) — 그 컬럼은 그리지 않지만 여기서 읽는다.
+        <b>{@code LOCK_YN} 이 근거다</b>(playbook/INDEX.md) — 그 컬럼은 그리지 않지만 여기서 읽는다.
         숨긴 컬럼이 판단에만 쓰이는 자리이며, 그것이 <i>숨김 두 층</i> 중 위쪽의 뜻이다.
       */
       editable: (row, ctx) => textEditable(row, ctx.state),
@@ -595,10 +595,10 @@ function buildOrderColumns(): ColumnDef<SampleOrder>[] {
 
 
 /**
- * 조회조건 넷 — 68 §5.3. <b>마스터에만 있다.</b>
+ * 조회조건 넷 — playbook/INDEX.md. <b>마스터에만 있다.</b>
  *
  * <p>디테일은 조회조건을 갖지 않는다 — 대상이 마스터의 선택이며 그것은 `searchParams`
- * (구조)이지 `conditions`(사용자가 좁힌 것)가 아니다(api-conventions.md §3.1.1).
+ * (구조)이지 `conditions`(사용자가 좁힌 것)가 아니다(backend/api.md).
  */
 function buildSearchFields(): SearchField[] {
   return [
@@ -631,7 +631,7 @@ function buildSearchFields(): SearchField[] {
       type: 'dateRange',
       // **`DATE` 컬럼이다** — 적지 않으면 시각까지 보내고 서버가 그 값을 못 읽는다.
       precision: 'day',
-      // 기간이 필수가 아니다 — 이 표는 대용량 이력이 아니다(64 §2.2 와 갈리는 자리).
+      // 기간이 필수가 아니다 — 이 표는 대용량 이력이 아니다(screen/log/access/requirements.md 와 갈리는 자리).
       required: false,
       rangeDays: { default: 30, max: 365 },
     },

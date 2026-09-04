@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/domain/message/", "sources/backend/bootstrap/src/main/resources/application.yml", "aidd-guide/standard/backend/_study/security-design.md"]
+sources: ["sources/backend/domain/message/", "sources/backend/bootstrap/src/main/resources/application.yml", "aidd-guide/standard/backend/security.md"]
 author: Bong Jong Hyeon
 tier: 2
 tags: [backend, cache, invalidation]
@@ -79,4 +79,3 @@ CODE_MGMT 저장 ─→ CacheVersionService.bump("code") ─→ SYS_CACHE_VERSIO
 - [session.md](./session.md) — 세션 스토어 선택
 - [security.md](./security.md) — 유효 권한이 세션에 있는 이유
 - [`../../09-knowledge/sys/message.md`](../../knowledge/sys/message.md) — `SYS_CACHE_VERSION` 도메인
-- [`_study/security-design.md`](./_study/security-design.md) §2 — 원문

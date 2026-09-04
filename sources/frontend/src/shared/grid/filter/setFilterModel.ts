@@ -1,5 +1,5 @@
 /**
- * `set` 필터의 <b>판정 둘</b> — grid-column-contract.md §4.3.
+ * `set` 필터의 <b>판정 둘</b> — frontend/grid.md.
  *
  * <p>컴포넌트에서 갈라 둔 이유는 <b>화면 없이 잴 수 있어야</b> 하기 때문이다. 판의 필터는
  * 그리드 안에서만 살아 있어 컴포넌트째로는 단위 테스트가 서지 않는데, 조용히 깨지는 것은
@@ -25,7 +25,7 @@ export function keyOf(value: unknown): string {
  * 고른 것 → 모델. <b>전부 고른 것은 아무것도 안 고른 것과 같다.</b>
  *
  * <p>{@code null} 로 되돌리지 않으면 푸터의 <i>N건 중 M건</i> 표기가 <b>걸리지 않은
- * 필터를 걸린 것으로</b> 말하고(grid-standard.md §2.3), 헤더에도 필터 표시가 남아 사용자가
+ * 필터를 걸린 것으로</b> 말하고(frontend/grid.md), 헤더에도 필터 표시가 남아 사용자가
  * <i>"필터를 풀었는데 표시가 남는다"</i> 를 겪는다.
  */
 export function toModel(next: string[], total: number): SetFilterModel | null {

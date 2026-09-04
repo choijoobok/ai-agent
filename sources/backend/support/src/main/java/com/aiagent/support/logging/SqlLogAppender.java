@@ -3,7 +3,7 @@ package com.aiagent.support.logging;
 import com.p6spy.engine.spy.appender.Slf4JLogger;
 
 /**
- * 빈 줄을 삼킨다 — system-logging.md §2.3.
+ * 빈 줄을 삼킨다 — backend/logging.md.
  *
  * <p>{@link SqlLogFormat} 이 걸러낸 SQL(세션 테이블 등)에는 빈 문자열을 낸다. 판의
  * 기본 appender 는 그것을 <b>그대로 한 줄로</b> 찍으므로, 걸러 낸 만큼 <b>빈 줄이

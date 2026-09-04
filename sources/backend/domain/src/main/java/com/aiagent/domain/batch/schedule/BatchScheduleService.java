@@ -16,29 +16,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code BATCH_SCHEDULE} 의 저장 — 65 §3. <b>위험한 편집을 다루는 첫 화면</b>이다.
+ * {@code BATCH_SCHEDULE} 의 저장 — screen/batch/schedule/requirements.md. <b>위험한 편집을 다루는 첫 화면</b>이다.
  *
- * <p>62 §4 의 메뉴 트리는 잘못 고치면 화면이 안 보인다. 배치는 <b>잘못 고치면 조용히
- * 안 돈다</b> — 그것이 이 서비스의 검증이 촘촘한 이유이며, 65 §3.4 와 §3.6 의 전제다.
+ * <p>screen/menu/requirements.md 의 메뉴 트리는 잘못 고치면 화면이 안 보인다. 배치는 <b>잘못 고치면 조용히
+ * 안 돈다</b> — 그것이 이 서비스의 검증이 촘촘한 이유이며, screen/batch/schedule/requirements.md 와 §3.6 의 전제다.
  *
  * <h2>검증이 넷이고 <b>둘은 서버만 할 수 있다</b></h2>
  *
  * <table><caption></caption>
- *   <tr><td>이름 · 설명 필수</td><td>화면도 한다 — 여기는 마지막 방어다(security-design.md §4)</td></tr>
- *   <tr><td>{@code PARAM_JSON} 구문</td><td>화면이 {@code JSON.parse} 로 먼저 본다(65 §3.5)</td></tr>
+ * <tr><td>이름 · 설명 필수</td><td>화면도 한다 — 여기는 마지막 방어다(backend/security.md)</td></tr>
+ * <tr><td>{@code PARAM_JSON} 구문</td><td>화면이 {@code JSON.parse} 로 먼저 본다(screen/batch/schedule/requirements.md)</td></tr>
  *   <tr><td><b>{@code BEAN_ID} 가 실재하는가</b></td>
- *       <td><b>서버만</b> — 목록의 출처가 스프링 컨텍스트다(65 §3.3)</td></tr>
+ * <td><b>서버만</b> — 목록의 출처가 스프링 컨텍스트다(screen/batch/schedule/requirements.md)</td></tr>
  *   <tr><td><b>쿨다운 × 크론</b></td>
- *       <td><b>서버만</b> — 크론 파서가 프론트 의존성에 없다(65 §3.4 · grid-edit-validation.md §3.4)</td></tr>
+ * <td><b>서버만</b> — 크론 파서가 프론트 의존성에 없다(screen/batch/schedule/requirements.md · frontend/grid.md)</td></tr>
  * </table>
  *
  * <h2>삭제 게이트가 <b>자식이 아니라 상태</b>다</h2>
  *
- * <p>grid-standard.md §6.2 의 게이트가 여기서는 다른 모양으로 나타난다 — {@code ROLE_MGMT} 는 자식
- * 건수를 셌고 여기는 <b>켜져 있는가</b>와 <b>도는가</b>를 본다(65 §3.8).
+ * <p>frontend/grid.md 의 게이트가 여기서는 다른 모양으로 나타난다 — {@code ROLE_MGMT} 는 자식
+ * 건수를 셌고 여기는 <b>켜져 있는가</b>와 <b>도는가</b>를 본다(screen/batch/schedule/requirements.md).
  *
- * <p><b>실행 이력은 게이트가 아니다.</b> 이력에 FK 가 없으므로(46 §2.2) 등록을 지워도
- * 행은 남으며 남아야 한다 — 45 §2.2 의 <i>"존재하지 않는 주체의 기록도 남아야 한다"</i>
+ * <p><b>실행 이력은 게이트가 아니다.</b> 이력에 FK 가 없으므로(sys/batch.md) 등록을 지워도
+ * 행은 남으며 남아야 한다 — sys/logs.md 의 <i>"존재하지 않는 주체의 기록도 남아야 한다"</i>
  * 와 같은 규칙이고, 게이트로 삼으면 <b>오래된 배치는 영영 못 지운다</b>.
  */
 @Service
@@ -76,7 +76,7 @@ public class BatchScheduleService {
     }
 
     /**
-     * 일괄 저장 — grid-standard.md §3.1. <b>한 트랜잭션이다</b>(UX-14).
+     * 일괄 저장 — frontend/grid.md. <b>한 트랜잭션이다</b>(UX-14).
      *
      * <p>커밋 뒤에 {@link BatchScheduleChanged} 가 나가고 스케줄러가 전건을 다시 건다.
      * <b>여기서 스케줄러를 직접 부르지 않는다</b> — 롤백된 저장으로 크론을 걸면 없던
@@ -147,7 +147,7 @@ public class BatchScheduleService {
     }
 
     /**
-     * 삭제 — <b>물리 삭제다</b>(65 §3.8). {@code SYS_USER} 와 갈리는 자리다.
+     * 삭제 — <b>물리 삭제다</b>(screen/batch/schedule/requirements.md). {@code SYS_USER} 와 갈리는 자리다.
      *
      * <p>지울 수 있는 것은 <b>꺼져 있고 돌지 않는</b> 등록뿐이다. 도는 배치를 지우면
      * <i>다음 주기가 조용히 사라지고</i>, 실행 중인 것을 지우면 <b>락이 잡힌 채 등록이
@@ -173,7 +173,7 @@ public class BatchScheduleService {
         batches.delete(batch);
     }
 
-    // ── 검증 (65 §3.4 · §3.5) ───────────────────────────────────────
+    // ── 검증 (screen/batch/schedule/requirements.md) ───────────────────────────────────────
 
     private void validate(BatchScheduleSaveRow row) {
         requireText(row.batchNm(), BatchScheduleErrorCode.NAME_REQUIRED, "batchNm", "배치명은 필수입니다");
@@ -202,10 +202,10 @@ public class BatchScheduleService {
     }
 
     /**
-     * 빈 문자열은 {@code NULL} 이다 — <b>검증하지 않는다</b>(46 §5).
+     * 빈 문자열은 {@code NULL} 이다 — <b>검증하지 않는다</b>(sys/batch.md).
      *
      * <p>파라미터 없는 배치가 정상이며, 엔티티가 빈 문자열을 {@code NULL} 로 바꿔 넣는다
-     * (Oracle 에서 둘이 같다 — db-portability.md §4.5).
+     * (Oracle 에서 둘이 같다 — backend/persistence.md).
      */
     private void requireJson(BatchScheduleSaveRow row) {
         String paramJson = row.paramJson();
@@ -224,14 +224,14 @@ public class BatchScheduleService {
     }
 
     /**
-     * <b>쿨다운 ≥ 크론 최소 간격이면 거부</b> — 31 §7 · 65 §3.4.
+     * <b>쿨다운 ≥ 크론 최소 간격이면 거부</b> — backend/persistence.md · screen/batch/schedule/requirements.md.
      *
      * <p><b>같은 값도 거부한다.</b> 경계에서 한 주기가 통째로 누락될 수 있고, 그 누락이
-     * 조용하다(실행이 건너뛰어지는 것을 아무도 안 본다). 그 조용함이 31 §7 이 이 검증을
+     * 조용하다(실행이 건너뛰어지는 것을 아무도 안 본다). 그 조용함이 backend/persistence.md 이 이 검증을
      * <i>등록 시점</i>에 요구한 이유 전부다.
      *
      * <p><b>오류를 두 셀에 건다.</b> 어느 쪽이 틀렸는지 서버가 말할 수 없다 — 틀린 것은
-     * 값이 아니라 <b>관계</b>다(grid-edit-validation.md §3.3 이 셀 단위 표시를 요구하므로 둘 다 표시하고
+     * 값이 아니라 <b>관계</b>다(frontend/grid.md 이 셀 단위 표시를 요구하므로 둘 다 표시하고
      * 문구가 관계를 말한다).
      *
      * <p><b>최소 간격을 못 재면 건너뛴다.</b> 표본에서 간격이 하나도 안 나오는 크론

@@ -22,23 +22,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code CODE_MGMT} — 63 §2. <b>그리드가 셋이라 경로가 여섯이다.</b>
+ * {@code CODE_MGMT} — screen/code/requirements.md. <b>그리드가 셋이라 경로가 여섯이다.</b>
  *
  * <p>마스터(그룹) · 하단(코드) · 정의 모달이 각각 조회와 저장을 갖는다. 하나로 합치지 않는
- * 것은 <b>저장 단위가 셋</b>이기 때문이다 — 63 §3 의 메시지 화면이 하단을 마스터의
+ * 것은 <b>저장 단위가 셋</b>이기 때문이다 — screen/code/requirements.md 의 메시지 화면이 하단을 마스터의
  * {@code list} 컬럼으로 접은 것과 갈리는 자리이며, 여기 하단은 <b>자기 테이블에 붙어
  * 있다</b>(FK 도 걸린다).
  *
- * <p><b>{@code getRefDefList} 를 화면이 두 자리에서 부른다</b>(63 §2.4) — 모달의 조회 버튼과
+ * <p><b>{@code getRefDefList} 를 화면이 두 자리에서 부른다</b>(screen/code/requirements.md) — 모달의 조회 버튼과
  * 하단 조회가 <b>병렬로</b> 부른다. 하단 응답에 정의를 얹지 않는 이유는 같은 목록이 두 경로로
  * 생기기 때문이고, 병렬인 이유는 컬럼 없이 행을 그리면 값이 갈 자리가 없어서다.
  *
- * <p>액션은 <b>경로 접두가 정한다</b>(ADR-0020) — {@code get*} 는 {@code READ},
+ * <p>액션은 <b>경로 접두가 정한다</b>(backend/api.md) — {@code get*} 는 {@code READ},
  * {@code save*} 는 {@code SAVE}. 선언에 또 적지 않는다: 같은 사실이 두 곳에 표현되면 시드와
  * 어긋난다.
  *
  * <p><b>{@code EXPORT} 에는 경로가 없다.</b> 엑셀 다운로드는 마스터에만 있고 그것은
- * <b>프론트 생성</b>이다(grid-standard.md §2.2 · ADR-0019 첫째) — 서버가 낼 것이 없다. 권한은 시드에 있고
+ * <b>프론트 생성</b>이다(frontend/grid.md · frontend/grid-advanced.md 첫째) — 서버가 낼 것이 없다. 권한은 시드에 있고
  * 버튼은 {@code <DataGrid>} 가 그린다.
  */
 @RestController
@@ -81,8 +81,8 @@ public class CodeAdminController {
     /**
      * <b>페이징하지 않는다</b>({@code mode: 'all'}).
      *
-     * <p>참조값을 컬럼 필터로 거르기로 했으므로(63 §2.8) 하단의 범위가 곧 전부여야 한다 —
-     * 컬럼 필터는 현재 페이지 안에서만 걸리고(grid-column-contract.md §4.1), 페이징하면 <i>어느 코드가 아직 안
+     * <p>참조값을 컬럼 필터로 거르기로 했으므로(screen/code/requirements.md) 하단의 범위가 곧 전부여야 한다 —
+     * 컬럼 필터는 현재 페이지 안에서만 걸리고(frontend/grid.md), 페이징하면 <i>어느 코드가 아직 안
      * 채워졌나</i> 의 답이 장마다 달라진다.
      */
     @Operation(
@@ -96,7 +96,7 @@ public class CodeAdminController {
 
     /**
      * 저장 하나가 테이블 셋을 쓴다 — {@code SYS_CODE} · {@code SYS_MESSAGE} · {@code SYS_CODE_REF}
-     * (63 §2.4).
+     * (screen/code/requirements.md).
      *
      * <p><b>언어를 요청이 나르지 않는다.</b> 코드명이 쓰이는 행의 언어는 <i>지금 이 사람이
      * 보고 있는 언어</i> 이며 그것은 세션이 갖는다 — 본문에 두면 화면이 다른 언어의 값을

@@ -28,7 +28,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 /**
- * 저장된 조회조건 — UX-07 · search-form-contract.md §5.
+ * 저장된 조회조건 — UX-07 · frontend/search-form.md.
  *
  * <p>여기서 지키는 것 셋이다 — ① <b>기본은 하나</b>(DB 가 강제하지 않으므로 이 코드가
  * 유일한 보증이다), ② <b>상한은 새로 만들 때만</b> 본다, ③ <b>같은 이름은 덮어쓴다</b>.
@@ -84,7 +84,7 @@ class SearchCondServiceTest {
 
             service.save(USER, MENU, "오늘", JSON, true);
 
-            // 부분 유니크 인덱스는 벤더마다 문법이 다르다(db-portability.md §4) — 그래서 여기가 유일한 보증이다.
+            // 부분 유니크 인덱스는 벤더마다 문법이 다르다(backend/persistence.md) — 그래서 여기가 유일한 보증이다.
             assertThat(old.getDfltYn()).isFalse();
         }
 

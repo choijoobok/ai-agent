@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * 메뉴 전건을 <b>전위 순회</b>로 편다 — 부모 바로 뒤에 그 자식들이 온다.
  *
- * <p><b>권한 트리 둘이 같은 순서를 봐야 한다</b>(62 §2.4 · 61 §4.4). 역할 쪽과 개인 예외 쪽은
+ * <p><b>권한 트리 둘이 같은 순서를 봐야 한다</b>(screen/menu/requirements.md · screen/user/requirements.md). 역할 쪽과 개인 예외 쪽은
  * <i>같은 컴포넌트</i> 로 정해져 있고(AUTHZ-07), 순서가 갈리면 같은 트리가 두 화면에서 다르게
  * 보인다 — 화면이 정렬하지 않기 때문이다(정렬하면 계층이 깨진다).
  *
@@ -23,11 +23,11 @@ import java.util.Set;
  * 없어진다</b>. 그래서 닿지 못한 것들을 <b>맨 뒤에 붙인다</b>.
  *
  * <p>순회에 방문 집합과 깊이 제한을 걸어 <b>순환이 들어온 데이터에서도 터지지 않는다</b>
- * (42 §4 의 3층 방어). 재귀가 아니라 명시적 제한인 것은 그 때문이다.
+ * (sys/menu.md 의 3층 방어). 재귀가 아니라 명시적 제한인 것은 그 때문이다.
  */
 public final class MenuPreOrder {
 
-    /** 42 §4 — {@code UNIQUE(UP_MENU_CD, SORT_NO)} 를 걸 수 없으므로 tie-breaker 가 필수다. */
+    /** sys/menu.md — {@code UNIQUE(UP_MENU_CD, SORT_NO)} 를 걸 수 없으므로 tie-breaker 가 필수다. */
     private static final Comparator<SysMenu> SIBLING_ORDER =
             Comparator.comparing(SysMenu::getSortNo).thenComparing(SysMenu::getMenuCd);
 

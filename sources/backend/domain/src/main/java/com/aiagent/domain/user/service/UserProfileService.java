@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 내 프로필 — USER-05 · main-shell.md §8 의 <b>내 정보</b> 탭.
+ * 내 프로필 — USER-05 · frontend/tabs.md 의 <b>내 정보</b> 탭.
  *
  * <p><b>대상은 언제나 세션의 주인이다.</b> {@code userId} 를 인자로 받되 그것은 컨트롤러가
  * {@code Principal} 에서 꺼낸 값이며 요청 본문에서 오지 않는다 — 본문에 두는 순간
@@ -41,7 +41,7 @@ public class UserProfileService {
     }
 
     /**
-     * 정책까지 함께 내린다 — main-shell.md §8. 모달을 여는 데 왕복이 하나여야 한다.
+     * 정책까지 함께 내린다 — frontend/tabs.md. 모달을 여는 데 왕복이 하나여야 한다.
      *
      * @throws BusinessException 세션은 살아 있는데 계정이 사라졌을 때
      */
@@ -68,7 +68,7 @@ public class UserProfileService {
     }
 
     /**
-     * 이름과 메일 — main-shell.md §8. <b>이 둘이 표면의 전부다</b>({@link SysUser#changeProfile}).
+     * 이름과 메일 — frontend/tabs.md. <b>이 둘이 표면의 전부다</b>({@link SysUser#changeProfile}).
      *
      * @throws BusinessException 계정이 사라졌을 때
      */

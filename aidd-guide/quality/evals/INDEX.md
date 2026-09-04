@@ -6,7 +6,6 @@ type: operation
 created: 2026-05-04
 updated: 2026-05-04
 status: active
-sources: [Hamel Husain "Your AI Product Needs Evals", 12-references/summaries/11-hamel-evals.md]
 author: Bong Jong Hyeon
 tier: 3
 tags: [evals, golden-set, regression, ab-testing, index]
@@ -36,7 +35,6 @@ tags: [evals, golden-set, regression, ab-testing, index]
 | LLM-EVL-002 | [regression.md](./regression.md) | 회귀 검출 절차 (변경 전/후 비교) |
 | LLM-EVL-003 | [ab-testing.md](./ab-testing.md) | 프롬프트 변형 A/B 비교 방법 |
 | LLM-EVL-004 | [screen-reproduction.md](./screen-reproduction.md) | **화면 재현 회귀** — 문서만으로 같은 화면이 나오는가 |
-| (study) | [../12-references/summaries/11-hamel-evals.md](../../reference/summary/11-hamel-evals.md) | Hamel 외부 문헌 요약 |
 
 ## 골든셋 카테고리 (3종)
 
@@ -56,4 +54,3 @@ tags: [evals, golden-set, regression, ab-testing, index]
 
 - [08-observability/routing-accuracy.md](../observability/routing-accuracy.md) — 라우팅 골든셋의 측정
 - [13-safety/prompt-injection.md](../../standard/safety/prompt-injection.md) — 안전 골든셋 입력
-- [12-references/summaries/11-hamel-evals.md](../../reference/summary/11-hamel-evals.md) — 출처

@@ -1,5 +1,5 @@
 /**
- * 최근 연 메뉴 — main-shell.md §4.4.
+ * 최근 연 메뉴 — frontend/tabs.md.
  *
  * <p><b>원본이 `localStorage` 다.</b> 즐겨찾기(`SYS_USER_FAVORITE`)·자주 쓰는 메뉴
  * (`SYS_USER_MENU_STAT`)와 달리 이것만 서버에 두지 않기로 되어 있다 — <i>"방금 뭘 보고

@@ -3,21 +3,21 @@ package com.aiagent.domain.progress;
 import java.util.Optional;
 
 /**
- * 진행 상태가 사는 곳 — 30 §6.2.
+ * 진행 상태가 사는 곳 — backend/crosscutting.md.
  *
- * <p><b>인터페이스인 것이 30 §6.1 의 요구다</b>: 배포 형태에 따라 저장소가 갈린다
+ * <p><b>인터페이스인 것이 backend/crosscutting.md 의 요구다</b>: 배포 형태에 따라 저장소가 갈린다
  * ({@code jdbc} · {@code redis} · {@code caffeine} · {@code inmemory}). <b>지금 서 있는
  * 것은 {@code jdbc} 하나</b>이며(구현된 것만 담는다) 그것이 템플릿의 기본 가정이기
  * 때문이다 — <i>다중화이면서 Redis 가 없는 배포</i>.
  *
  * <p><b>나머지를 미리 만들지 않는 이유</b>는 그 셋이 전부 <b>노드 로컬</b>이라, 폴링이
- * 작업을 실행한 노드가 아닌 곳으로 가면 <b>조용히 못 찾기</b> 때문이다(30 §6.1 — 29 §5 와
+ * 작업을 실행한 노드가 아닌 곳으로 가면 <b>조용히 못 찾기</b> 때문이다(backend/crosscutting.md — backend/crosscutting.md 와
  * 같은 함정). 골라 쓸 수 있게 두면 <i>단일 인스턴스에서 잘 돌던 것</i>이 배포에서 깨지고,
  * 그 고장은 <b>가끔 못 찾는다</b> 로만 보인다.
  */
 public interface JobProgressStore {
 
-    /** {@code RUNNING} 사전 등록 — 첫 폴링이 <i>없음</i> 을 받지 않게 한다(30 §6). */
+    /** {@code RUNNING} 사전 등록 — 첫 폴링이 <i>없음</i> 을 받지 않게 한다(backend/crosscutting.md). */
     void start(String jobId, String userId, Long totCnt);
 
     /**
@@ -37,14 +37,14 @@ public interface JobProgressStore {
      */
     void reset(String jobId, String subTitle, Long totCnt);
 
-    /** 종료는 <b>즉시 쓴다</b> — 늦으면 끝난 작업이 99% 에서 멈춰 보인다(30 §6.2). */
+    /** 종료는 <b>즉시 쓴다</b> — 늦으면 끝난 작업이 99% 에서 멈춰 보인다(backend/crosscutting.md). */
     void complete(String jobId);
 
     /** 〃 실패. */
     void fail(String jobId, String errMsg);
 
     /**
-     * 그 사람의 것만 — <b>다른 사람의 {@code jobId} 는 없는 것</b>이다(46 §8.1).
+     * 그 사람의 것만 — <b>다른 사람의 {@code jobId} 는 없는 것</b>이다(sys/batch.md).
      *
      * <p>가르지 않고 돌려주면 <i>존재는 한다</i> 가 새어 나가는데, 진행률 문구에는
      * 업무 데이터가 섞이므로(<i>"주문 A-1023 처리 중"</i>) 그것은 진행률이 아니라

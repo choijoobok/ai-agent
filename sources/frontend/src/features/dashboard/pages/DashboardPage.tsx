@@ -4,14 +4,14 @@ import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
 
 /**
- * 대시보드 — main-shell.md §2.1.
+ * 대시보드 — frontend/tabs.md.
  *
- * <p><b>위젯 슬롯만 둔다.</b> 무엇을 놓을지는 main-shell.md §12 의 미결이고, 업무 데이터 위젯을 두면
+ * <p><b>위젯 슬롯만 둔다.</b> 무엇을 놓을지는 frontend/tabs.md 의 미결이고, 업무 데이터 위젯을 두면
  * <b>위젯 단위 권한</b>이 따라온다 — 그것은 위젯을 정할 때 함께 정한다. 차트 라이브러리도
- * 미포함이다(frontend-stack.md §10).
+ * 미포함이다(frontend/packages.md).
  *
  * <p><b>고정 탭이라 항상 살아 있다.</b> 그래서 여기에 폴링이나 무거운 그리드를 두면 그 비용을
- * 모든 사용자가 로그인 내내 낸다 — 위젯을 채울 때 그것부터 생각해야 한다(frontend-stack.md §4.3).
+ * 모든 사용자가 로그인 내내 낸다 — 위젯을 채울 때 그것부터 생각해야 한다(frontend/packages.md).
  */
 export function DashboardPage() {
   const user = useAuthStore((state) => state.user);

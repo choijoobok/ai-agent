@@ -20,7 +20,7 @@
 **주제로 나누지 않았다.** "테스트" 는 규칙·절차·산출물·코드 넷에 걸치는데, 주제로 나누면
 그 넷이 한 폴더에 섞이고 **읽는 사람이 자기 것을 못 찾는다.** 독자로 나누면 각 폴더가 한
 종류의 독자에게만 답하므로, **새 문서를 어디 둘지가 물어보지 않아도 정해진다.**
-→ [ADR-0030](aidd-guide/records/adr/0030-merge-three-repositories.md)
+→ [`CLAUDE.md`](./CLAUDE.md)
 
 그 밖에 [`CLAUDE.md`](CLAUDE.md)(**헌법** — AI 가 매 세션 읽는 유일한 문서) ·
 [`.claude/`](.claude/settings.json)(훅 열하나 · 스킬 열둘) · `.github/`(CI) 가 루트에 있다.

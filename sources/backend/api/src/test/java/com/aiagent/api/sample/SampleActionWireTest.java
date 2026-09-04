@@ -18,7 +18,7 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * 실행의 <b>몸통 모양</b> — grid-api-contract.md §8 · 68 §3.4.
+ * 실행의 <b>몸통 모양</b> — frontend/grid.md · playbook/INDEX.md.
  *
  * <p><b>여기 있는 JSON 은 그리드가 실제로 보내는 것이다</b>({@code useGridController} 의
  * {@code post(action.url, { targets, params })}). 옮겨 적은 것이 아니라 <b>브라우저의
@@ -137,7 +137,7 @@ class SampleActionWireTest {
     }
 
     /**
-     * 품목 금액 재계산 — ③의 <b>행×디테일</b> 실행(30 §6 · 68 §5.4).
+     * 품목 금액 재계산 — ③의 <b>행×디테일</b> 실행(backend/crosscutting.md · playbook/INDEX.md).
      *
      * <p>{@code target:'selected'} 이고 {@code params} 가 없다 — 다시 세는 기준은 품목이
      * 이미 들고 있는 수량과 단가이므로 사람이 줄 값이 없다. 봉투에는 {@code params} 가

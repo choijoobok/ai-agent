@@ -1,5 +1,5 @@
 /**
- * HTTP 층의 <b>유일한 입구</b>다 — frontend-stack.md §9.
+ * HTTP 층의 <b>유일한 입구</b>다 — frontend/packages.md.
  *
  * <p><b>바깥은 이 파일만 부른다.</b> `shared/api/*` 를 직접 가리키면 같은 헬퍼가 두 경로로
  * 들어오고(`@/shared/api` 와 `@/shared/api/request`), 그러면 *어디서 가져오는가* 가 파일마다

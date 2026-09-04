@@ -46,15 +46,15 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 
 /**
- * 저장 셋이 무엇을 지키는가 — 63 §2.
+ * 저장 셋이 무엇을 지키는가 — screen/code/requirements.md.
  *
  * <p><b>여기서 지키는 것 넷이다.</b> ① 그룹 삭제의 <b>게이트</b>와 코드·정의 삭제의
  * <b>확인</b>이 다른 것이다(§2.5), ② {@code SYS_YN} 은 화면이 아니라 <b>여기서도</b>
- * 막는다(43 §4.3), ③ 코드명은 <b>비우면 지운다</b>(§2.3), ④ 참조값은 <b>정의 목록을</b>
+ * 막는다(sys/code.md), ③ 코드명은 <b>비우면 지운다</b>(§2.3), ④ 참조값은 <b>정의 목록을</b>
  * 루프한다(§2.4).
  *
  * <p>③과 ④가 특히 조용히 깨진다. 빈 문자열을 저장해도 성공하고 그 뒤에 폴백이 <b>기본
- * 언어로 가지 않고 빈 이름</b>을 내며(43 §7.3), 맵을 루프하면 <b>지우는 경로가 아예
+ * 언어로 가지 않고 빈 이름</b>을 내며(sys/code.md), 맵을 루프하면 <b>지우는 경로가 아예
  * 사라진다</b> — 둘 다 저장은 되고 화면만 이상해진다.
  */
 class CodeAdminServiceTest {
@@ -118,7 +118,7 @@ class CodeAdminServiceTest {
     }
 
     /**
-     * {@code SYS_YN} 을 켤 <b>수단이 없는 것</b>이 설계라(43 §4.3) 테스트도 정상 경로로는
+     * {@code SYS_YN} 을 켤 <b>수단이 없는 것</b>이 설계라(sys/code.md) 테스트도 정상 경로로는
      * 만들 수 없다. 시드만 이 값을 넣으므로 여기서는 리플렉션으로 그 상태를 재현한다 —
      * <b>세터를 열면 그 순간 설계가 무너진다.</b>
      */
@@ -189,8 +189,8 @@ class CodeAdminServiceTest {
         }
 
         /**
-         * 43 §4.1 이 그룹의 {@code USE_YN} 을 없앤 뒤 <b>남은 셋은 시스템 그룹에서도
-         * 열려 있다</b> — 43 §4.3 이 원래 허용한 것들이다. 이 테스트가 지키는 것은
+         * sys/code.md 이 그룹의 {@code USE_YN} 을 없앤 뒤 <b>남은 셋은 시스템 그룹에서도
+         * 열려 있다</b> — sys/code.md 이 원래 허용한 것들이다. 이 테스트가 지키는 것은
          * <i>그룹의 {@code SYS_YN} 이 삭제 하나만 막는다</i> 는 사실이다.
          */
         @Test
@@ -381,7 +381,7 @@ class CodeAdminServiceTest {
         }
 
         @Test
-        @DisplayName("빈 값도 지운다 — 없는 값의 표현은 하나다(43 §5.4)")
+        @DisplayName("빈 값도 지운다 — 없는 값의 표현은 하나다(sys/code.md)")
         void blankValueDeletesTheValue() {
             existingCode("B2B", false);
             SysCodeRef current = SysCodeRef.of(GRP, "B2B", "PARENT", "SEOUL");

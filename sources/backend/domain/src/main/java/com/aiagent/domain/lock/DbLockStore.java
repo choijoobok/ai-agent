@@ -15,10 +15,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code SYS_DATA_LOCK} 을 저장소로 쓰는 기본 구현 — 31 §3.
+ * {@code SYS_DATA_LOCK} 을 저장소로 쓰는 기본 구현 — backend/persistence.md.
  *
  * <p><b>Redis 를 쓰지 않는 배포에서도 동작해야 하므로 DB 가 기본이다.</b> Redis 구현을
- * 템플릿에 넣을지는 31 §12 의 미결이며(Phase 8), 그때 이 클래스를 고치는 것이 아니라
+ * 템플릿에 넣을지는 backend/persistence.md 의 미결이며(Phase 8), 그때 이 클래스를 고치는 것이 아니라
  * {@link LockStore} 의 다른 구현이 온다.
  *
  * <h2>{@code flush()} 를 부르는 것이 이 클래스의 핵심이다</h2>
@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <table>
  *   <tr><td>{@link #tryAcquire} · {@link #release}</td>
- *       <td>{@code REQUIRES_NEW} — 업무 롤백이 선점·해제를 되돌리면 안 된다(31 §3)</td></tr>
+ * <td>{@code REQUIRES_NEW} — 업무 롤백이 선점·해제를 되돌리면 안 된다(backend/persistence.md)</td></tr>
  *   <tr><td>{@link #acquireInTransaction} · {@link #releaseInTransaction}</td>
  *       <td>{@code MANDATORY} — <b>없으면 터진다.</b> {@code WAIT} 의 원자성은 부르는 쪽의
  *           트랜잭션에 참여하는 것으로만 성립하므로, 없을 때 조용히 새로 여는 것은
@@ -44,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 쓰지 않는 배포에서도 <b>락은 반드시 동작해야</b> 하므로 DB 가 기본이다. 값을 코드가 아는
  * 것은 <b>기본값이 문서에만 있으면 갈리기</b> 때문이다.
  *
- * <p><b>아직 없는 값을 적으면 기동이 죽는다.</b> {@code redis} 는 31 §12 의 미결이라 구현이
+ * <p><b>아직 없는 값을 적으면 기동이 죽는다.</b> {@code redis} 는 backend/persistence.md 의 미결이라 구현이
  * 없고, 그러면 {@link LockStore} 를 받는 락 애스펙트가 실패한다 — Boot 의 실패 분석기가
  * <i>이 조건 때문에 빠졌다</i> 를 프로퍼티 이름과 함께 찍는다. <b>조용히 DB 로 떨어지는
  * 쪽이 더 나쁘다</b>: 그때는 락이 <i>걸리기는 하므로</i> 아무 증상이 없고, 배포는 Redis 를
@@ -94,7 +94,7 @@ public class DbLockStore implements LockStore {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void release(String type, String key) {
-        // 쿨다운이 남았으면 만료를 그 시각으로 낮춰 <b>행을 남긴다</b> — 31 §5.
+        // 쿨다운이 남았으면 만료를 그 시각으로 낮춰 <b>행을 남긴다</b> — backend/persistence.md.
         if (locks.holdForCooldown(type, key, clock.instant()) == 0) {
             locks.deleteLock(type, key);
         }
@@ -113,7 +113,7 @@ public class DbLockStore implements LockStore {
           누수시킨 경우뿐이며, 그 하나 때문에 이 줄이 있다.
         */
         locks.deleteExpired(type, key, now);
-        // 쿨다운은 여기 없다 — WAIT 와 상호 배타이며 기동 시점에 거부한다(31 §6).
+        // 쿨다운은 여기 없다 — WAIT 와 상호 배타이며 기동 시점에 거부한다(backend/persistence.md).
         insert(type, key, expiresAt, null, now);
     }
 
@@ -170,7 +170,7 @@ public class DbLockStore implements LockStore {
                 expiresAt,
                 releasableAt,
                 nodeId.value(),
-                // 진단용이라 없어도 된다 — 배치·부팅 경로에는 주체가 없다(46 §2.2).
+                // 진단용이라 없어도 된다 — 배치·부팅 경로에는 주체가 없다(sys/batch.md).
                 auditor.getCurrentAuditor().orElse(null),
                 now));
         entityManager.flush();

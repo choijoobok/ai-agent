@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface SysMenuRepository extends JpaRepository<SysMenu, String> {
 
     /**
-     * 자식이 하나라도 있는가 — <b>삭제 게이트</b>가 묻는다(62 §4.8).
+     * 자식이 하나라도 있는가 — <b>삭제 게이트</b>가 묻는다(screen/menu/requirements.md).
      *
      * <p>{@code findAll} 로 세어도 되지만, 삭제는 트리를 다 읽을 이유가 없는 자리다 —
      * 게이트 넷이 전부 {@code exists} 한 번이라 <b>모양이 같아야</b> 읽힌다.

@@ -22,21 +22,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code SMPL_SINGLE_OFFSET} — 68 §3. <b>어휘의 본진이다.</b>
+ * {@code SMPL_SINGLE_OFFSET} — playbook/INDEX.md. <b>어휘의 본진이다.</b>
  *
- * <p>68 §2 의 커버리지 표에서 굵은 점이 열둘인 화면이며, 지우면 템플릿에서 그 어휘의 예가
+ * <p>playbook/INDEX.md 의 커버리지 표에서 굵은 점이 열둘인 화면이며, 지우면 템플릿에서 그 어휘의 예가
  * <b>통째로</b> 사라진다 — 에디터 셋 · {@code viewer} · 숨김 두 층 · {@code params} 모달 ·
  * 진행률 · {@code bigint} 가 전부 여기에만 있다.
  *
  * <h2>실행 둘이 갈리는 것이 이 화면의 핵심 시연이다</h2>
  *
  * <p>{@code confirmOrders} 와 {@code recalculateOrders} 는 <b>둘 다 {@code X} 액션</b>인데
- * 사용자 경험이 다르다. 30 §6 이 <i>"오래 걸리는 작업은 jobId 를 발급하고 요청 스레드를
+ * 사용자 경험이 다르다. backend/crosscutting.md 이 <i>"오래 걸리는 작업은 jobId 를 발급하고 요청 스레드를
  * 붙잡지 않는다"</i> 고 정했고, <b>그 갈림이 화면에서 어떻게 보이는지</b> 는 지금까지
  * 어디에도 실물이 없었다.
  *
  * <table border="1">
- *   <caption>68 §3.4 의 표</caption>
+ * <caption>playbook/INDEX.md 의 표</caption>
  *   <tr><td></td><td>확정</td><td>일괄 재계산</td></tr>
  *   <tr><td>대상</td><td>{@code selected}</td><td>{@code all}</td></tr>
  *   <tr><td>인자</td><td>없다</td><td>{@code params} 모달 — 기준일·세율</td></tr>
@@ -46,15 +46,15 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <h2>엑셀 선언이 없다</h2>
  *
- * <p>③과 갈리는 자리다(68 §3.4 의 <i>엑셀 ▾ — 선언 없음</i>). 이 화면이 그리는 표가 곧
+ * <p>③과 갈리는 자리다(playbook/INDEX.md 의 <i>엑셀 ▾ — 선언 없음</i>). 이 화면이 그리는 표가 곧
  * 내려받을 표이므로 <b>프론트가 만든다</b> — 왕복이 0 인 것을 왕복 하나로 만들 이유가 없고,
- * {@code EXPORT} 권한은 메뉴가 선언한다(ADR-0027).
+ * {@code EXPORT} 권한은 메뉴가 선언한다(sys/menu.md).
  *
  * <h2>{@code /api/service/sample} 를 ③과 나눠 쓴다</h2>
  *
- * <p>도메인 마디는 <b>애그리거트 이름</b>이고(api-conventions.md §2.2) 여섯 화면의 애그리거트는 하나다.
+ * <p>도메인 마디는 <b>애그리거트 이름</b>이고(backend/api.md) 여섯 화면의 애그리거트는 하나다.
  * 갈리는 것은 <b>패키지와 메서드명</b>이며, 인가는 화면 폴더의 {@code endpoints.ts} 가
- * 가른다(68 §10.2 · ADR-0020).
+ * 가른다(playbook/INDEX.md · backend/api.md).
  */
 @RestController
 @RequestMapping("/api/service/sample")
@@ -72,10 +72,10 @@ public class SampleSingleOffsetController {
     }
 
     /**
-     * 목록 — 컬럼 서른(68 §3.2).
+     * 목록 — 컬럼 서른(playbook/INDEX.md).
      *
      * <p>③의 {@code getOrderList} 와 <b>같은 테이블 · 같은 페이징 모드</b>인데 엔드포인트가
-     * 갈린다. 무엇을 실을지는 테이블이 아니라 <b>부르는 화면</b>이 정하기 때문이며, 68 §4.2 가
+     * 갈린다. 무엇을 실을지는 테이블이 아니라 <b>부르는 화면</b>이 정하기 때문이며, playbook/INDEX.md 가
      * <i>"모드는 엔드포인트가 정한다"</i> 고 적은 것과 같은 규칙이다.
      */
     @Operation(
@@ -88,7 +88,7 @@ public class SampleSingleOffsetController {
     }
 
     /**
-     * 참조 팝업의 후보 — 68 §9.4.
+     * 참조 팝업의 후보 — playbook/INDEX.md.
      *
      * <p><b>이 화면의 엔드포인트다.</b> 팝업이 자기 메뉴를 갖는 것처럼 굴면 어느 메뉴로도
      * 인가되지 않는 요청이 되어 403 이 난다({@code OpenPopup} 의 {@code menuCd}) — 팝업의
@@ -114,7 +114,7 @@ public class SampleSingleOffsetController {
      *
      * <p><b>이것이 없으면 태그를 더할 수 없다.</b> 레지스트리에 없는 키로 열면 팝업 호스트가
      * <i>취소</i> 로 돌려주므로({@code PopupHost}) 창의 <b>추가 버튼이 아무 일도 하지
-     * 않는다</b> &mdash; 68 §9.6 이 <i>섰다</i> 로 적어 둔 동안 그 자리가 비어 있었다.
+     * 않는다</b> &mdash; playbook/INDEX.md 이 <i>섰다</i> 로 적어 둔 동안 그 자리가 비어 있었다.
      */
     @Operation(
             summary = "샘플 태그 후보 조회",
@@ -134,10 +134,10 @@ public class SampleSingleOffsetController {
     }
 
     /**
-     * 확정 — <b>프로그레스가 없다</b>(68 §3.4).
+     * 확정 — <b>프로그레스가 없다</b>(playbook/INDEX.md).
      *
      * <p>고른 행 몇의 상태 하나를 바꾸는 일이라 응답이 곧 끝이다. 여기에 진행률을 붙이면
-     * 창이 떴다가 바로 닫히고, 그 깜빡임은 <i>무언가 잘못됐나</i> 로 읽힌다(30 §6).
+     * 창이 떴다가 바로 닫히고, 그 깜빡임은 <i>무언가 잘못됐나</i> 로 읽힌다(backend/crosscutting.md).
      */
     @Operation(
             summary = "샘플 주문 확정",
@@ -150,7 +150,7 @@ public class SampleSingleOffsetController {
     }
 
     /**
-     * 일괄 재계산 — <b>{@code jobId} 를 즉시 돌려준다</b>(30 §6 · 68 §9.1).
+     * 일괄 재계산 — <b>{@code jobId} 를 즉시 돌려준다</b>(backend/crosscutting.md · playbook/INDEX.md).
      *
      * <p>요청 스레드를 붙잡지 않는 것이 전부다. 붙잡으면 그 요청이 타임아웃까지 열려 있고,
      * 사용자는 <i>화면이 멈췄다</i> 를 겪으며 새로고침한다 — 그러면 <b>같은 작업이 또</b>
@@ -158,7 +158,7 @@ public class SampleSingleOffsetController {
      *
      * <p><b>{@code totCnt} 를 {@code null} 로 준다.</b> 대상 건수를 미리 세려면 같은 조건으로
      * {@code COUNT} 를 한 번 더 돌아야 하는데, 그 사이에 늘어난 행은 어차피 세어지지 않는다 —
-     * 화면은 불확정 막대를 그리고(46 §8) {@code STEP_MSG} 가 어디까지 갔는지 말한다.
+     * 화면은 불확정 막대를 그리고(sys/batch.md) {@code STEP_MSG} 가 어디까지 갔는지 말한다.
      */
     @Operation(
             summary = "샘플 주문 일괄 재계산",

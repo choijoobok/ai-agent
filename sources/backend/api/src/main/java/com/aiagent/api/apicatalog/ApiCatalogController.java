@@ -17,15 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code API_CATALOG} — 62 §5. <b>{@code get*} 둘뿐이다.</b>
+ * {@code API_CATALOG} — screen/menu/requirements.md. <b>{@code get*} 둘뿐이다.</b>
  *
- * <p>이 컨트롤러가 <b>이 화면이 조회 전용이라는 사실의 집행</b>이다(62 §5.6). {@code save*} 를
- * 두지 않았으므로 시드 생성기가 {@code SAVE} 액션을 만들 수 없고(ADR-0020 — 접두가 액션을
+ * <p>이 컨트롤러가 <b>이 화면이 조회 전용이라는 사실의 집행</b>이다(screen/menu/requirements.md). {@code save*} 를
+ * 두지 않았으므로 시드 생성기가 {@code SAVE} 액션을 만들 수 없고(backend/api.md — 접두가 액션을
  * 정한다), 만들 수 없으므로 <b>어느 역할에도 줄 수 없다</b>. 화면에서 버튼을 감추는 것과
  * 층이 다르다.
  *
- * <p><b>{@code EXPORT} 에도 경로가 없다.</b> 엑셀은 있지만(52 §4.2 의 액션 열이 {@code R E} 다)
- * 그것은 <b>프론트 생성</b>이다(grid-standard.md §2.2 · ADR-0019 첫째) — 서버가 낼 것이 없다. 권한은 시드에
+ * <p><b>{@code EXPORT} 에도 경로가 없다.</b> 엑셀은 있지만(sys/menu.md 의 액션 열이 {@code R E} 다)
+ * 그것은 <b>프론트 생성</b>이다(frontend/grid.md · frontend/grid-advanced.md 첫째) — 서버가 낼 것이 없다. 권한은 시드에
  * 있고 버튼은 {@code <DataGrid>} 가 그린다.
  *
  * <p><b>이 화면 자신이 카탈로그에 실린다.</b> 아래 둘은 {@code /api/service/**} 이므로
@@ -56,11 +56,11 @@ public class ApiCatalogController {
     /**
      * <b>페이징하지 않는다</b>({@code mode: 'all'}).
      *
-     * <p>한 API 를 쓰는 화면은 많아야 몇이고, 62 §5.5 가 <i>"0 건이면 §5.4 의 진단을 낸다"</i> 고
+     * <p>한 API 를 쓰는 화면은 많아야 몇이고, screen/menu/requirements.md 가 <i>"0 건이면 §5.4 의 진단을 낸다"</i> 고
      * 적은 것은 <b>이 목록의 크기가 곧 답</b>이라는 뜻이다.
      *
      * <p><b>세션 언어를 받는다.</b> 메뉴 경로의 이름이 {@code SYS_MESSAGE} 에서 오기 때문이며
-     * (43 §3), 요청 본문에 언어를 두지 않는 것은 63 §2 의 코드 저장과 같은 이유다 — 언어는
+     * (sys/code.md), 요청 본문에 언어를 두지 않는 것은 screen/code/requirements.md 의 코드 저장과 같은 이유다 — 언어는
      * <i>지금 이 사람이 보고 있는 것</i> 이고 그것은 세션이 갖는다.
      */
     @Operation(

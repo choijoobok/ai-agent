@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { auditColumns } from '@/shared/grid/auditColumns';
 
 /**
- * 감사 넷 — 40 §4.2 · grid-column-contract.md §2.1.
+ * 감사 넷 — sys/INDEX.md · frontend/grid.md.
  *
  * <p>열두 화면이 각자 적던 것을 한 자리로 모은 뒤(2026-09-02), <b>모으기 전에 벌어져 있던
  * 축 셋</b>을 여기서 고정한다 — 순서 · 켤 수 있는 숨김인지 · 정렬이 어느 칸에 붙는지.

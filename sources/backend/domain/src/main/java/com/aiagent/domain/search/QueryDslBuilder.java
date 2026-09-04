@@ -21,9 +21,9 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 /**
- * 동적 조회의 검증 + 조립 — 34 §4.5. <b>검증과 조립이 한 호출이다.</b>
+ * 동적 조회의 검증 + 조립 — backend/search.md. <b>검증과 조립이 한 호출이다.</b>
  *
- * <p>가르면 서비스가 검증만 부르고 조립을 직접 할 수 있게 되고, 그러면 api-conventions.md §4.2 의
+ * <p>가르면 서비스가 검증만 부르고 조립을 직접 할 수 있게 되고, 그러면 backend/api.md 의
  * <i>"검증 없이 빌더에 들어갈 수 없다"</i> 가 규약으로만 남는다.
  *
  * <p><b>{@code c.field()} 가 쓰이는 곳은 맵 조회의 인자 자리뿐이다.</b> QueryDSL 은 컬럼을
@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 public class QueryDslBuilder {
 
     /**
-     * @param mode <b>엔드포인트가 정한다</b>(api-conventions.md §3.8). 요청에도 화면 선언에도 없으며 응답이 나른다
+     * @param mode <b>엔드포인트가 정한다</b>(backend/api.md). 요청에도 화면 선언에도 없으며 응답이 나른다
      */
     public Built build(SearchRequest<?> request, QuerySpec spec, PageMode mode) {
         BooleanBuilder where = new BooleanBuilder();
@@ -42,7 +42,7 @@ public class QueryDslBuilder {
         for (Condition condition : request.conditionsOrEmpty()) {
             FieldSpec field = resolve(spec, condition.field());
 
-            // 같은 필드가 두 번 오지 않는다 — 범위는 between 이, 다중은 in 이 받는다(api-conventions.md §3.1).
+            // 같은 필드가 두 번 오지 않는다 — 범위는 between 이, 다중은 in 이 받는다(backend/api.md).
             if (!seen.add(condition.field())) {
                 throw duplicate(condition.field());
             }
@@ -72,7 +72,7 @@ public class QueryDslBuilder {
     }
 
     /**
-     * 커서형의 정렬 키 — <b>하나뿐이다</b>(api-conventions.md §3.8 · 64 §2.3).
+     * 커서형의 정렬 키 — <b>하나뿐이다</b>(backend/api.md · screen/log/access/requirements.md).
      *
      * <p>번호 없는 이동은 <b>직전 페이지의 마지막 행을 기준점으로</b> 다음을 읽는다. 기준점이
      * 성립하려면 정렬 키가 고정이어야 하므로 <b>둘 이상은 400</b> 이다 — 조용히 첫 것만 쓰면
@@ -97,13 +97,13 @@ public class QueryDslBuilder {
     }
 
     /**
-     * {@code ORDER BY {요청}, {PK}} — tie-breaker 를 <b>언제나</b> 붙인다(api-conventions.md §3.7).
+     * {@code ORDER BY {요청}, {PK}} — tie-breaker 를 <b>언제나</b> 붙인다(backend/api.md).
      *
-     * <p>db-portability.md §4.5 가 {@code NULL} 정렬 순서의 벤더 차이를 근거로 <i>"항상 명시적
+     * <p>backend/persistence.md 가 {@code NULL} 정렬 순서의 벤더 차이를 근거로 <i>"항상 명시적
      * tie-breaker"</i> 를 정했다. 화면에 맡기면 빠뜨린 곳에서만 페이징이 흔들린다.
      *
      * <p><b>{@code all} 모드는 요청의 정렬을 읽지 않는다.</b> 페이지가 없으므로 정렬을 서버가
-     * 할 이유가 없고, 클라이언트가 즉시 정렬한다(api-conventions.md §3.8) — 화면이 보내지 않는 것이 규약이며
+     * 할 이유가 없고, 클라이언트가 즉시 정렬한다(backend/api.md) — 화면이 보내지 않는 것이 규약이며
      * 보내와도 무시한다.
      *
      * <p><b>{@code cursor} 모드에서는 PK 도 정렬 키를 따라간다.</b> 기준점이

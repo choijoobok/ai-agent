@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * API 마스터 — 42 §5 · ADR-0016.
+ * API 마스터 — sys/menu.md · backend/api.md.
  *
  * <p><b>{@code ACTION_CD} 는 이 API 의 속성이지 (API, 메뉴) 조합의 속성이 아니다.</b>
  * 여기 한 번만 존재하므로 <i>같은 API 가 메뉴 A 에서는 READ, 메뉴 B 에서는 SAVE</i> 라는
@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SysApi extends BaseAuditEntity {
 
-    /** 고정 문자열이다 — 경로 변수·와일드카드가 없으므로 매칭이 해시 한 번이다(security-design.md §4). */
+    /** 고정 문자열이다 — 경로 변수·와일드카드가 없으므로 매칭이 해시 한 번이다(backend/security.md). */
     @Id
     @Column(name = "API_URL", length = 200, nullable = false)
     private String apiUrl;

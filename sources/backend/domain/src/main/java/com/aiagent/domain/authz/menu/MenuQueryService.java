@@ -30,11 +30,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code MENU_TREE} 의 조회 — 62 §4.
+ * {@code MENU_TREE} 의 조회 — screen/menu/requirements.md.
  *
  * <h2>{@code QueryDslBuilder} 를 쓰지 않는다</h2>
  *
- * 이 화면에는 <b>서버 조건이 하나도 없다</b>. 62 §4.10 이 <i>"트리에서 검색은 필터가
+ * 이 화면에는 <b>서버 조건이 하나도 없다</b>. screen/menu/requirements.md 이 <i>"트리에서 검색은 필터가
  * 아니다"</i> 라고 정했기 때문이다 — 조건에 맞는 노드만 남기면 부모가 사라져 <b>트리가
  * 아니게 된다</b>. 검색은 강조와 이동이며 <b>클라이언트가 한다</b>.
  *
@@ -46,10 +46,10 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * 트리 한 번에 <b>파생 셋</b>(매핑 API · 접근 가능 인원 · 매핑 역할)이 붙는데, 셋 다 다른
  * 테이블을 센다. 스칼라 서브쿼리로 얹으면 <b>행마다 세 번</b>이 되고, 조인해 {@code GROUP BY}
- * 하면 페이징 단위가 메뉴가 아니게 될 위험을 매번 확인해야 한다 — 63 §2 가 코드 그룹에서
+ * 하면 페이징 단위가 메뉴가 아니게 될 위험을 매번 확인해야 한다 — screen/code/requirements.md 가 코드 그룹에서
  * 쿼리를 가른 것과 같은 판단이다.
  *
- * <p><b>파생 셋이 삭제 게이트의 근거이기도 하다</b>(62 §4.8) — 조회 응답이 이미 갖고 있으므로
+ * <p><b>파생 셋이 삭제 게이트의 근거이기도 하다</b>(screen/menu/requirements.md) — 조회 응답이 이미 갖고 있으므로
  * 화면이 <i>지울 수 있는가</i> 에 답하는 데 왕복이 늘지 않는다.
  */
 @Service
@@ -92,23 +92,23 @@ public class MenuQueryService {
     // ── 트리 ─────────────────────────────────────────────────────────
 
     /**
-     * 트리 전건 — <b>전위 순회 순서</b>로 낸다(62 §4.9).
+     * 트리 전건 — <b>전위 순회 순서</b>로 낸다(screen/menu/requirements.md).
      *
-     * <p><b>페이징하지 않는다</b>({@code mode: 'all'} — api-conventions.md §3.8). 트리를 페이징하면 <b>부모 없는
+     * <p><b>페이징하지 않는다</b>({@code mode: 'all'} — backend/api.md). 트리를 페이징하면 <b>부모 없는
      * 자식 페이지</b>가 생기고, 2페이지만 봐서는 그것이 트리인지 알 수 없다. 메뉴는 수십~수백
-     * 건이라 전건이 무겁지 않다 — 42 §4 가 형제 전체 재작성에서 내린 것과 같은 판단이다.
+     * 건이라 전건이 무겁지 않다 — sys/menu.md 가 형제 전체 재작성에서 내린 것과 같은 판단이다.
      *
      * <p><b>순서를 서버가 정하는 것이 결정이다.</b> 응답의 행 순서가 곧 트리의 모양이므로
      * ({@code SORT_NO} 를 컬럼으로 싣지 않는다 — {@link MenuTreeRow}) 클라이언트가 다시
      * 정렬하면 트리가 아니게 된다. 엑셀이 <i>"다시 정렬하면 트리가 아니게 된다"</i> 고 적은
-     * 그것과 같은 사실이다(62 §4.9).
+     * 그것과 같은 사실이다(screen/menu/requirements.md).
      *
      * <p><b>고아·순환에 걸린 노드도 목록에 낸다.</b> {@code MenuTreeService} 는 조상 역산이
      * 목적이라 그것들을 빼지만, 여기는 <b>고치러 오는 화면</b>이다 — 화면에서 사라지면 고칠
      * 수단이 없어진다. 순회에 방문 집합을 걸어 <b>터지지 않게</b> 하고, 뿌리에 닿지 못한
      * 나머지는 <b>맨 뒤에 붙인다</b>.
      *
-     * @param lang 세션 언어 — 컨트롤러가 준다. 도메인은 요청을 모른다(architecture.md §1)
+     * @param lang 세션 언어 — 컨트롤러가 준다. 도메인은 요청을 모른다(backend/packages.md)
      */
     public PageResponse<MenuTreeRow> getTree(String lang) {
         List<SysMenu> all = menus.findAll();
@@ -124,15 +124,15 @@ public class MenuQueryService {
             rows.add(new MenuTreeRow(
                     menuCd,
                     menu.getUpMenuCd(),
-                    // MENU_NM 은 메뉴명이 아니라 메시지 키다 — `menu.{MENU_CD}`(42 §4).
+                    // MENU_NM 은 메뉴명이 아니라 메시지 키다 — `menu.{MENU_CD}`(sys/menu.md).
                     messages.text(menu.getMenuNm(), lang),
                     menu.getMenuUrl(),
                     menu.getIconCd(),
                     menu.getUseYn(),
-                    // 선언에서 사라진 메뉴는 ORPHAN 이다 — 화면이 배지를 붙인다(ADR-0028).
+                    // 선언에서 사라진 메뉴는 ORPHAN 이다 — 화면이 배지를 붙인다(seed.md).
                     menu.getSrcCd(),
                     apiCounts.getOrDefault(menuCd, 0L),
-                    // 구조 노드는 권한 대상이 아니라 세는 것이 정의되지 않는다(security-design.md §4).
+                    // 구조 노드는 권한 대상이 아니라 세는 것이 정의되지 않는다(backend/security.md).
                     menu.getMenuUrl() == null ? 0L : userCounts.getOrDefault(menuCd, 0L),
                     roleCounts.getOrDefault(menuCd, 0L),
                     menu.getRegId(),
@@ -146,9 +146,9 @@ public class MenuQueryService {
     // ── 탭 1 — 매핑 API ──────────────────────────────────────────────
 
     /**
-     * 이 메뉴가 쓰는 API — <b>{@code 0} 건이면 진단이다</b>(62 §4.11).
+     * 이 메뉴가 쓰는 API — <b>{@code 0} 건이면 진단이다</b>(screen/menu/requirements.md).
      *
-     * <p><i>"매핑된 API 가 없습니다. 이 화면의 기능을 아무도 쓸 수 없습니다."</i> — 42 §5 의
+     * <p><i>"매핑된 API 가 없습니다. 이 화면의 기능을 아무도 쓸 수 없습니다."</i> — sys/menu.md 의
      * <b>미매핑</b>이며 {@code API_CATALOG} 가 반대 축에서 보는 것과 같은 사실이다.
      */
     public PageResponse<MenuApiRow> getApiList(String menuCd) {
@@ -168,7 +168,7 @@ public class MenuQueryService {
     // ── 탭 3 — 매핑 역할 ─────────────────────────────────────────────
 
     /**
-     * 이 메뉴에 권한을 준 역할 — <b>{@code USE_YN='N'} 인 역할도 나온다</b>(62 §4.11).
+     * 이 메뉴에 권한을 준 역할 — <b>{@code USE_YN='N'} 인 역할도 나온다</b>(screen/menu/requirements.md).
      *
      * <p>권한 행은 살아 있고 FK 도 살아 있다. 삭제 게이트가 막는 것은 <b>행의 존재</b>이지
      * 역할의 상태가 아니므로, 꺼진 역할을 감추면 <i>"게이트가 막는데 목록은 비었다"</i> 가
@@ -214,24 +214,24 @@ public class MenuQueryService {
     // ── 탭 2 — 사용 가능 사용자 (AUTHZ-13) ───────────────────────────
 
     /**
-     * 이 메뉴에 닿는 사람 — <b>경유마다 한 행</b>이다(62 §4.11).
+     * 이 메뉴에 닿는 사람 — <b>경유마다 한 행</b>이다(screen/menu/requirements.md).
      *
-     * <p><b>security-design.md §4 의 ①②를 펴고 ③을 하지 않는다.</b> 합집합은 유효 권한 계산의 일이고, 이 탭이
+     * <p><b>backend/security.md 의 ①②를 펴고 ③을 하지 않는다.</b> 합집합은 유효 권한 계산의 일이고, 이 탭이
      * 하는 일은 <b>그 앞의 출처를 보여주는 것</b>이다 — 합쳐 버리면 <i>"이 사람의 권한을
      * 회수하려면 어느 역할을 건드려야 하나"</i> 에 답할 수 없다.
      *
      * <p><b>기간으로 거르지 않는다.</b> 만료된 부여도 목록에 내고 상태로 말한다 — 감추면
-     * <i>"어제까지 되던 것이 왜 안 되나"</i> 에 답할 것이 없어진다(main-shell.md §8 의 내 역할 탭과 같은
+     * <i>"어제까지 되던 것이 왜 안 되나"</i> 에 답할 것이 없어진다(frontend/tabs.md 의 내 역할 탭과 같은
      * 판단이다).
      *
      * <p><b>게이트 ④(메뉴 생존)도 적용하지 않는다.</b> 이 화면이 그 스위치를 들고 있으므로
-     * (62 §4.7) 꺼진 메뉴에서 목록이 비면 <i>끄기 전에 누가 쓰고 있었나</i> 를 볼 수 없다.
+     * (screen/menu/requirements.md) 꺼진 메뉴에서 목록이 비면 <i>끄기 전에 누가 쓰고 있었나</i> 를 볼 수 없다.
      */
     public PageResponse<MenuUserRow> getAccessibleUsers(String menuCd) {
         LocalDate today = calendar.today();
         List<MenuUserRow> rows = new ArrayList<>();
 
-        // ① + ② 역할 경유 — 역할이 활성이어야 한다(security-design.md §4 의 입력 필터).
+        // ① + ② 역할 경유 — 역할이 활성이어야 한다(backend/security.md 의 입력 필터).
         Map<String, MenuUserAccumulator> viaRole = new LinkedHashMap<>();
         for (Tuple row : query.select(
                         U.userId, U.userNm, U.useYn, U.validFromDt, U.validToDt,
@@ -268,7 +268,7 @@ public class MenuQueryService {
                 .orderBy(U.userNm.asc(), U.userId.asc())
                 .fetch()) {
             /*
-              기간까지 키에 넣는다. 42 §3.1 이 개인 예외를 **부여 작업 단위**로 정의했으므로
+              기간까지 키에 넣는다. sys/menu.md 이 개인 예외를 **부여 작업 단위**로 정의했으므로
               같은 사람에게 기간이 다른 예외가 둘 있을 수 있고, 그 둘은 회수 단위가 다르다.
             */
             String key = row.get(U.userId) + KEY_SEP
@@ -289,7 +289,7 @@ public class MenuQueryService {
         return PageResponse.all(rows);
     }
 
-    /** 계정이 <b>관리자가 정한 뜻으로</b> 살아 있는가 — 잠금·휴면은 보지 않는다(41 §4.2). */
+    /** 계정이 <b>관리자가 정한 뜻으로</b> 살아 있는가 — 잠금·휴면은 보지 않는다(sys/user-role.md). */
     private static boolean usable(Boolean useYn, LocalDate from, LocalDate to, LocalDate today) {
         return Boolean.TRUE.equals(useYn)
                 && (from == null || !from.isAfter(today))
@@ -336,7 +336,7 @@ public class MenuQueryService {
                     validToDt);
         }
 
-        /** 42 §3.1 — <b>양끝 포함</b>이고 {@code null} 은 제한 없음이다(40 §4.3). */
+        /** sys/menu.md — <b>양끝 포함</b>이고 {@code null} 은 제한 없음이다(sys/INDEX.md). */
         private MenuUserRow.GrantState state(LocalDate today) {
             if (validFromDt != null && validFromDt.isAfter(today)) {
                 return MenuUserRow.GrantState.SCHEDULED;
@@ -348,9 +348,9 @@ public class MenuQueryService {
         }
     }
 
-    // ── 파생 셋 (62 §4.2 · §4.8) ─────────────────────────────────────
+    // ── 파생 셋 (screen/menu/requirements.md) ─────────────────────────────────────
 
-    /** {@code IN} 을 쪼갠다 — 오라클의 1000 한계다(db-portability.md §4.6). 트리 전건이라 넘을 수 있다. */
+    /** {@code IN} 을 쪼갠다 — 오라클의 1000 한계다(backend/persistence.md). 트리 전건이라 넘을 수 있다. */
     private Map<String, Long> apiCounts(List<String> menuCds) {
         return countBy(menuCds, chunk -> query.select(MA.menuCd, MA.count())
                 .from(MA)
@@ -375,9 +375,9 @@ public class MenuQueryService {
     }
 
     /**
-     * 접근 가능 인원 — <b>합집합을 자바에서 한다</b>(security-design.md §4 ③).
+     * 접근 가능 인원 — <b>합집합을 자바에서 한다</b>(backend/security.md ③).
      *
-     * <p>두 경로를 SQL {@code UNION} 으로 합치면 벤더마다 다른 문법을 쓰게 되고(db-portability.md §4),
+     * <p>두 경로를 SQL {@code UNION} 으로 합치면 벤더마다 다른 문법을 쓰게 되고(backend/persistence.md),
      * 무엇보다 <b>같은 사람이 두 경로로 오는 것이 정상</b>이라 중복 제거가 계산의 일부다 —
      * {@code EffectiveAuthorityService} 가 같은 모양이며 이유도 같다.
      */

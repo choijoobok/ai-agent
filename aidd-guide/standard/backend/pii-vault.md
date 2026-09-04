@@ -6,7 +6,7 @@ type: operation
 created: 2026-09-04
 updated: 2026-09-04
 status: active
-sources: ["aidd-guide/records/adr/0008-pii-vault-pattern.md"]
+sources: ["sources/backend/domain/", "documents/spec/22-authz.yaml"]
 author: Bong Jong Hyeon
 tier: 3
 tags: [backend, pii, privacy, vault, constraint]
@@ -14,7 +14,7 @@ tags: [backend, pii, privacy, vault, constraint]
 
 # 개인정보 분리보관 — **아직 없다.** 지금 지켜야 할 제약만 있다
 
-> **구현이 없고 스키마는 재설계 대상이다**([ADR-0008](../../records/adr/0008-pii-vault-pattern.md) —
+> **구현이 없고 스키마는 재설계 대상이다**(
 > 2026-08-26 개정으로 **적용을 미루고 테이블 설계를 처음부터 다시 하기로** 했다).
 >
 > 그래서 이 파일은 **설계서가 아니다.** 지금 만드는 화면과 로그가 **나중에 vault 를
@@ -70,12 +70,12 @@ tags: [backend, pii, privacy, vault, constraint]
 
 ## 4. 붙이는 날 다시 정할 것
 
-- 테이블 설계 전부(ADR-0008 이 재설계 대상으로 남겼다)
+- 테이블 설계 전부(이 재설계 대상으로 남겼다)
 - 마스킹 규칙의 코드 구현과 규칙 코드 체계
 - 마스킹 해제 보기의 권한과 **접근 이력**
 
 ## 관련
 
-- [ADR-0008](../../records/adr/0008-pii-vault-pattern.md) — 왜 컬럼 암호화가 아닌가, 왜 미뤘나
+- — 왜 컬럼 암호화가 아닌가, 왜 미뤘나
 - [logging.md](./logging.md) — 요청 전문을 저장하는 그 자리
 - [`13-safety/pii.md`](../safety/pii.md) — **다른 주제**(AI 작업 규칙)

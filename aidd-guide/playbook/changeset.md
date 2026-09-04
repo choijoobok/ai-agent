@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/bootstrap/src/main/resources/db/changelog/", "aidd-guide/standard/backend/_study/db-portability.md"]
+sources: ["sources/backend/bootstrap/src/main/resources/db/changelog/", "aidd-guide/standard/backend/persistence.md"]
 author: Bong Jong Hyeon
 tier: 2
 tags: [playbook, liquibase, changeset, seed, schema]

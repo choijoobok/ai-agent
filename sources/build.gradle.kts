@@ -4,7 +4,7 @@ plugins {
 }
 
 // 모듈 공통 규약. 모듈별 책임과 의존 방향은
-// aidd-guide/standard/backend/_study/architecture.md §1 이 단일 원본이다.
+// aidd-guide/standard/backend/packages.md §1 이 단일 원본이다.
 subprojects {
     apply(plugin = "java-library")
 
@@ -17,7 +17,7 @@ subprojects {
     }
 
     dependencies {
-        // Spring Boot BOM. 관리 대상 아티팩트는 버전을 명시하지 않는다 — 20 §4.1
+        // Spring Boot BOM. 관리 대상 아티팩트는 버전을 명시하지 않는다 — stack.md
         add("implementation", platform(rootProject.libs.spring.boot.bom))
         add("annotationProcessor", platform(rootProject.libs.spring.boot.bom))
         add("testImplementation", platform(rootProject.libs.spring.boot.bom))

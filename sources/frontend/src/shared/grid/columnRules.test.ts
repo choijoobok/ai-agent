@@ -24,7 +24,7 @@ const column = (extra: Partial<ColumnDef<Row>>): ColumnDef<Row> => ({
 });
 
 /**
- * 편집·필수 판단 — grid-column-contract.md §5.1 · grid-edit-validation.md §2.1.
+ * 편집·필수 판단 — frontend/grid.md.
  *
  * <p><b>이 규칙이 두 곳에 있었다</b> — 어댑터와 검증이 각자 같은 것을 썼다. 그 상태에서
  * 규칙을 하나 더하면 한쪽만 알게 되고, 그러면 <b>셀은 잠기는데 검증은 값을 요구한다</b>:
@@ -44,7 +44,7 @@ describe('컬럼 규칙', () => {
       expect(isEditable(column({ pk: true }), row, edited)).toBe(false);
     });
 
-    it('거부에 이유가 붙는다 — 잠긴 칸은 왜 잠겼는지를 말해야 한다(grid-edit-validation.md §2.1)', () => {
+    it('거부에 이유가 붙는다 — 잠긴 칸은 왜 잠겼는지를 말해야 한다(frontend/grid.md)', () => {
       const verdict = editableOf(column({ pk: true }), row, saved);
 
       expect(verdict).not.toBe(false);
@@ -74,7 +74,7 @@ describe('컬럼 규칙', () => {
   });
 
   describe('editable · required — pk 가 아닌 컬럼', () => {
-    it('선언이 없으면 닫혀 있다 — 편집은 명시해야 열린다(grid-column-contract.md §2)', () => {
+    it('선언이 없으면 닫혀 있다 — 편집은 명시해야 열린다(frontend/grid.md)', () => {
       expect(isEditable(column({}), row, isNew)).toBe(false);
     });
 
@@ -85,7 +85,7 @@ describe('컬럼 규칙', () => {
       expect(isEditable(only, row, saved)).toBe(false);
     });
 
-    it('편집할 수 없는 칸은 필수가 아니다 — 채울 방법이 없다(grid-column-contract.md §5.1)', () => {
+    it('편집할 수 없는 칸은 필수가 아니다 — 채울 방법이 없다(frontend/grid.md)', () => {
       expect(requiredOf(column({ required: true, editable: false }), row, isNew)).toBe(false);
     });
 

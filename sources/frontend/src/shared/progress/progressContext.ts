@@ -38,6 +38,6 @@ export function requireProgress(open: OpenProgress | null): OpenProgress {
 }
 
 function missingHost(): Error {
-  // 개발자용이라 영어다 — 화면에 나가는 문구가 아니다(eslint 의 43 §3 규칙 주석).
-  return new Error('No ProgressHost in the tree: mount it inside AppProviders (30 §6)');
+  // 개발자용이라 영어다 — 화면에 나가는 문구가 아니다(eslint 의 sys/code.md 규칙 주석).
+  return new Error('No ProgressHost in the tree: mount it inside AppProviders (backend/crosscutting.md)');
 }

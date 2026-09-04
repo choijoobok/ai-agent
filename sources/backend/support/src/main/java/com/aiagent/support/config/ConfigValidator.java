@@ -6,9 +6,9 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 /**
- * 저장하려는 값이 <b>바인딩을 통과하는가</b> — 63 §4.5 · ADR-0026 §3.
+ * 저장하려는 값이 <b>바인딩을 통과하는가</b> — screen/code/requirements.md · sys/config.md.
  *
- * <p>43 §6.2 가 제약의 단일 원본을 {@code @Validated} 바인딩 객체로 정했다. <b>화면이 그
+ * <p>sys/code.md 가 제약의 단일 원본을 {@code @Validated} 바인딩 객체로 정했다. <b>화면이 그
  * 규칙을 복제하면 원본이 둘이 된다</b> — 그래서 저장 경로는 규칙을 다시 적는 대신
  * <b>실제로 바인딩해 본다.</b> {@code @Min} 도, {@code window-months ≤ keep-months} 같은
  * 상호 제약도, 타입 변환 실패도 <b>같은 문 하나</b>에서 걸린다.

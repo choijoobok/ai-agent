@@ -25,13 +25,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code MESSAGE_MGMT} 의 조회 — 63 §3.
+ * {@code MESSAGE_MGMT} 의 조회 — screen/code/requirements.md.
  *
  * <p><b>쿼리가 둘이고 그것이 설계다.</b> 마스터 페이지를 먼저 확정한 뒤 <b>그 키들의 값만</b>
  * 읽는다. 한 번에 조인해 뽑으면 언어 수만큼 행이 불어나 <b>페이징 단위가 키가 아니라 (키 ×
  * 언어)</b> 가 되고, 20건을 요청한 사용자가 키 10개를 받는다.
  *
- * <p>값 조회는 <b>키 목록에 대한 고정형</b>이다(api-conventions.md §3.0) — 동적 봉투를 태울 이유가 없고,
+ * <p>값 조회는 <b>키 목록에 대한 고정형</b>이다(backend/api.md) — 동적 봉투를 태울 이유가 없고,
  * 태우면 부모 키 제약이 클라이언트가 보낸 조건이 된다.
  */
 @Service
@@ -92,7 +92,7 @@ public class MessageQueryService {
     /**
      * 마스터 페이지의 키들에 대한 값.
      *
-     * <p><b>{@code IN} 을 쪼갠다</b>(db-portability.md §4.6). 페이지 하나 분량이라 지금은 최대 1000개인데
+     * <p><b>{@code IN} 을 쪼갠다</b>(backend/persistence.md). 페이지 하나 분량이라 지금은 최대 1000개인데
      * 그것이 <b>오라클의 한계와 같은 값</b>이다 — 상한을 한 칸만 올려도 깨지고, 그 실패는
      * <b>오라클로 배포한 뒤에야</b> 나타난다.
      *

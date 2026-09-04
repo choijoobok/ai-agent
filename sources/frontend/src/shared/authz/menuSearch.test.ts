@@ -3,13 +3,13 @@ import { indexMenuTree, type MenuNode } from '@/shared/authz/menuTree';
 import { normalizeForSearch, searchMenus } from '@/shared/authz/menuSearch';
 
 /**
- * 메뉴 검색 — main-shell.md §4.2.
+ * 메뉴 검색 — frontend/tabs.md.
  *
  * <p><b>번역된 이름으로 비교하는 것이 이 기능의 전제다.</b> 키(`menu.USER_MGMT`)로 비교하면
  * 사용자가 보는 것과 다른 것을 찾게 되고, 그것이 이 기능을 메시지 슬라이스 뒤로 미룬 이유다.
  */
 describe('메뉴 검색', () => {
-  /** 이름은 메시지 키다 — 화면이 `label()` 로 옮긴다(43 §3). */
+  /** 이름은 메시지 키다 — 화면이 `label()` 로 옮긴다(sys/code.md). */
   const node = (menuCd: string, menuUrl: string | null, children: MenuNode[] = []): MenuNode => ({
     menuCd,
     menuNm: `menu.${menuCd}`,
@@ -84,7 +84,7 @@ describe('메뉴 검색', () => {
   });
 
   it('번역이 없으면 키로 걸린다 — 미번역이 조용히 사라지지 않는다', () => {
-    // 43 §7.3 의 폴백이 화면에 키를 그대로 내므로, 검색도 그 키를 찾을 수 있어야 한다.
+    // sys/code.md 의 폴백이 화면에 키를 그대로 내므로, 검색도 그 키를 찾을 수 있어야 한다.
     const raw = (key: string) => key;
     expect(searchMenus(index, 'USER_MGMT', raw).map((hit) => hit.node.menuCd)).toEqual([
       'USER_MGMT',

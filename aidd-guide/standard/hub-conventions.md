@@ -140,7 +140,7 @@ modules/agent/         controller · service · dto(record)
 - **품질 신고와 시스템 오류를 섞지 않는다** — 신고(REQ-110)는 응답 품질의 경로이고 시스템
   오류는 참조 코드로 추적한다.
 - 서버 문구의 언어 규칙은 템플릿과 같다 — 로그와 예외의 기본 메시지는 **한국어**
-  ([ADR-0029](../records/adr/0029-server-text-language.md)).
+  ([`CLAUDE.md`](../../CLAUDE.md)).
 
 ## 8. 시각과 타임존
 

@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code USER_MGMT} 의 디테일 탭 다섯 — 61 §3.8. <b>경로가 일곱이다.</b>
+ * {@code USER_MGMT} 의 디테일 탭 다섯 — screen/user/requirements.md. <b>경로가 일곱이다.</b>
  *
  * <table>
  *   <tr><th>탭</th><th>경로</th><th>액션</th></tr>
@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <p>{@code UserController} 가 <i>"{@code X} 에 대응하는 경로도 아직 없다 — 활성 세션
  * 탭이 서는 슬라이스가 가져온다"</i> 고 적어 둔 자리다. {@code killSession} 은 접두 규칙의
- * <i>그 외</i> 에 걸려 {@code EXECUTE} 가 되고(ADR-0020), 그 판정이 61 §3.4.1 의 기준과
+ * <i>그 외</i> 에 걸려 {@code EXECUTE} 가 되고(backend/api.md), 그 판정이 screen/user/requirements.md 의 기준과
  * 일치한다 — <b>우리 테이블의 컬럼을 쓰지 않는다.</b> 세션 스토어를 비울 뿐이며
  * {@code SYS_USER} 는 그대로다.
  *
@@ -62,7 +62,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 매달린 것들의 일이다.
  *
  * <p><b>활성 세션만 도메인 서비스가 아니다</b>({@link UserSessionService}) — 원천이 DB 가
- * 아니라 세션 스토어라 {@code api} 의 것이며, 도메인이 그것을 알면 architecture.md §1 이 갈린다.
+ * 아니라 세션 스토어라 {@code api} 의 것이며, 도메인이 그것을 알면 backend/packages.md 이 갈린다.
  */
 @RestController
 @RequestMapping("/api/service/user")
@@ -105,7 +105,7 @@ public class UserDetailController {
      * 세운다 — 먼저 세우면 롤백된 변경에 대해 재계산이 돌고, 그 계산은 옛 값을 다시 읽어
      * <b>이유 없는 부하</b>가 된다.
      *
-     * <p><b>자기 역할을 회수하는 것은 허용</b>이다(61 §3.7.1). 유효 권한이 공집합이 되면
+     * <p><b>자기 역할을 회수하는 것은 허용</b>이다(screen/user/requirements.md). 유효 권한이 공집합이 되면
      * <b>다음 로그인부터</b> 차단되며 현재 세션은 살아 있어 되돌릴 수 있다 — 사용 여부
      * {@code 'N'} 이 <i>그 자리에서</i> 밀어내는 것과 갈리는 자리다.
      */
@@ -127,10 +127,10 @@ public class UserDetailController {
      * 역할 후보 — <b>이 화면이 자기 경로를 갖는다</b>({@link RoleCandidate}).
      *
      * <p>{@code ROLE_MGMT} 의 목록을 부르면 그 요청이 <b>역할 관리의 {@code READ}</b> 를
-     * 요구하게 되고(ADR-0020 — 매핑이 경로를 따라간다), 그러면 사용자 관리만 가진 사람이
+     * 요구하게 되고(backend/api.md — 매핑이 경로를 따라간다), 그러면 사용자 관리만 가진 사람이
      * 역할을 부여할 수 없다.
      *
-     * <p><b>조회조건도 이것을 쓴다</b>(61 §3.3). 마스터의 <i>역할</i> 칸은 후보가 공통코드가
+     * <p><b>조회조건도 이것을 쓴다</b>(screen/user/requirements.md). 마스터의 <i>역할</i> 칸은 후보가 공통코드가
      * 아니라 비어 있었고, 그 자리를 이 경로가 채운다.
      */
     @Operation(
@@ -144,15 +144,15 @@ public class UserDetailController {
     // ── 탭 2 — 개인 예외 (AUTHZ-07 조회) ────────────────────────────
 
     /**
-     * 개인 예외 조회 — <b>{@code USER_AUTH_MGMT} 와 경로를 공유하지 않는다</b>(61 §5).
+     * 개인 예외 조회 — <b>{@code USER_AUTH_MGMT} 와 경로를 공유하지 않는다</b>(screen/user/requirements.md).
      *
      * <p>반환 형태가 다르기 때문이다: 저쪽은 트리 체크 상태를 함께 내야 해 <b>메뉴 전건</b>이
-     * 실리고, 여기는 <b>부여된 행만</b> 나오는 납작한 목록이다. security-design.md §4 의 <i>"화면마다 허용
+     * 실리고, 여기는 <b>부여된 행만</b> 나오는 납작한 목록이다. backend/security.md 의 <i>"화면마다 허용
      * 범위가 달라야 한다면 그것은 분리해야 할 두 API"</i> 와 방향이 같다.
      *
      * <p><b>여기에 저장이 없는 것은 권한 때문</b>이다. 사용자 관리 권한이 있다고 예외 권한
      * 부여 권한이 따라오면 안 되며, 권한은 {@code (MENU_CD, ACTION_CD)} 쌍이므로 <b>메뉴가
-     * 갈려야 갈린다</b>(61 §5).
+     * 갈려야 갈린다</b>(screen/user/requirements.md).
      */
     @Operation(
             summary = "개인 예외 조회",
@@ -179,7 +179,7 @@ public class UserDetailController {
      * 허용 대역 저장 — <b>세션을 건드리지 않는다</b>.
      *
      * <p>{@code saveRole} 과 갈리는 자리다. 허용 IP 는 <b>인가가 아니라 인증의 검사</b>이며
-     * (41 §4.2 — 로그인 후처리 핸들러 체인) 세션에 캐시되는 유효 권한과 아무 관계가 없다 —
+     * (sys/user-role.md — 로그인 후처리 핸들러 체인) 세션에 캐시되는 유효 권한과 아무 관계가 없다 —
      * 다음 <b>로그인</b>에서 읽히지 다음 <b>요청</b>에서 읽히지 않는다.
      */
     @Operation(
@@ -206,14 +206,14 @@ public class UserDetailController {
     }
 
     /**
-     * 강제 로그아웃 — <b>이 화면의 유일한 {@code EXECUTE}</b>(52 §4.2 의 {@code X}).
+     * 강제 로그아웃 — <b>이 화면의 유일한 {@code EXECUTE}</b>(sys/menu.md 의 {@code X}).
      *
-     * <p><b>자기 계정은 막는다</b>(61 §3.7.1). 그 자리에서 화면 밖으로 밀려나기 때문이며,
+     * <p><b>자기 계정은 막는다</b>(screen/user/requirements.md). 그 자리에서 화면 밖으로 밀려나기 때문이며,
      * 되돌릴 사람이 그 사람 자신이다 — 화면도 버튼을 비활성으로 두고 사유를 붙이지만,
-     * 요청 본문은 조작할 수 있으므로 서버가 다시 본다(42 §6 원칙 P1).
+     * 요청 본문은 조작할 수 있으므로 서버가 다시 본다(sys/menu.md 원칙 P1).
      *
      * <p><b>끊어도 {@code SYS_USER} 는 바뀌지 않는다</b> — 다시 로그인할 수 있다. 막으려면
-     * {@code USE_YN='N'} 이고 그것은 <b>다른 축</b>이다(41 §4.2).
+     * {@code USE_YN='N'} 이고 그것은 <b>다른 축</b>이다(sys/user-role.md).
      */
     @Operation(
             summary = "세션 강제 종료",
@@ -230,13 +230,13 @@ public class UserDetailController {
                 sessions.kill(request.userId(), request.targets()), TraceId.current());
     }
 
-    // ── 탭 5 — 유효 권한 (61 §3.8.1) ────────────────────────────────
+    // ── 탭 5 — 유효 권한 (screen/user/requirements.md) ────────────────────────────────
 
     /**
-     * <i>"이 사용자가 왜 이 메뉴를 못 보나"</i> — 52 §8 의 미결을 닫는 경로.
+     * <i>"이 사용자가 왜 이 메뉴를 못 보나"</i> — sys/menu.md 의 미결을 닫는 경로.
      *
      * <p><b>읽기만 한다.</b> 관리자 세션을 바꾸지 않으며 어떤 캐시도 건드리지 않는다 —
-     * security-design.md §4 가 AUTHZ-09(권한 시뮬레이션)를 되살릴 때의 조건으로 건 것이고, <b>미리보기가
+     * backend/security.md 가 AUTHZ-09(권한 시뮬레이션)를 되살릴 때의 조건으로 건 것이고, <b>미리보기가
      * 권한 상승 경로가 되면 안 된다</b>.
      */
     @Operation(

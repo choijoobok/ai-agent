@@ -17,14 +17,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 로그인 이력 — 45 §5. 성공·실패에 더해 <b>세션 종료</b>까지 담는다.
+ * 로그인 이력 — sys/logs.md. 성공·실패에 더해 <b>세션 종료</b>까지 담는다.
  *
- * <p><b>감사 4컬럼이 없다</b>(45 §2.1) — {@code USER_ID + CRE_DTM} 이 곧 "누가 언제" 다.
- * <b>FK 도 없다</b>(45 §2.2) — 존재하지 않는 ID 의 시도도 기록해야 한다.
+ * <p><b>감사 4컬럼이 없다</b>(sys/logs.md) — {@code USER_ID + CRE_DTM} 이 곧 "누가 언제" 다.
+ * <b>FK 도 없다</b>(sys/logs.md) — 존재하지 않는 ID 의 시도도 기록해야 한다.
  *
  * <p>{@code allocationSize} 가 1000 인 것은 이력이 <b>고빈도 INSERT</b> 이기 때문이다.
- * {@code TABLE} 전략은 할당 시 행 락을 잡으므로(ADR-0015) 기본 50 이면 50건마다 경합한다.
- * 재기동 시 번호에 구멍이 생기지만 <b>이력 PK 에 연속성은 요구되지 않는다</b>(45 §2.3).
+ * {@code TABLE} 전략은 할당 시 행 락을 잡으므로(backend/persistence.md) 기본 50 이면 50건마다 경합한다.
+ * 재기동 시 번호에 구멍이 생기지만 <b>이력 PK 에 연속성은 요구되지 않는다</b>(sys/logs.md).
  */
 @Entity
 @Table(name = "SYS_LO_LOGIN")
@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SysLoginLog {
 
-    /** {@code User-Agent} 는 초과분을 절단한다(45 §5). */
+    /** {@code User-Agent} 는 초과분을 절단한다(sys/logs.md). */
     public static final int USER_AGENT_MAX = 500;
 
     @Id

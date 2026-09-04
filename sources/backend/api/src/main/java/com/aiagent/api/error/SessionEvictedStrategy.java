@@ -12,7 +12,7 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
 import org.springframework.stereotype.Component;
 
 /**
- * 밀려난 세션의 다음 요청에 답한다 — security-design.md §4-1.
+ * 밀려난 세션의 다음 요청에 답한다 — backend/security.md.
  *
  * <p><b>이 자리가 비어 있으면 동시 접속 제어가 조용히 무력해진다.</b> {@code expireNow()} 는
  * 세션을 <b>지우지 않고 표시만</b> 하므로, 이것을 읽어 끊는 쪽이 없으면 밀려난 사용자의

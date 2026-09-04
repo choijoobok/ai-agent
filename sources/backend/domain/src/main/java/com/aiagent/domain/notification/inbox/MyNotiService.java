@@ -13,16 +13,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * <i>내 알림</i> — main-shell.md §7 · 60 §8. {@link com.aiagent.domain.notification.NotificationSender}
+ * <i>내 알림</i> — frontend/tabs.md · screen/_standalone/README.md. {@link com.aiagent.domain.notification.NotificationSender}
  * 가 <b>넣는 쪽</b>이고 여기가 <b>읽는 쪽</b>이다.
  *
  * <h2>대상이 언제나 세션의 주인이다</h2>
  *
  * <p>모든 메서드가 {@code userId} 를 <b>조건으로</b> 받으며, 그것이 이 서비스의 인가
- * 전부다 — 알림 모달에는 {@code MENU_CD} 가 없어(60 §1.1) {@code (메뉴, 액션)} 판정을
+ * 전부다 — 알림 모달에는 {@code MENU_CD} 가 없어(screen/_standalone/README.md) {@code (메뉴, 액션)} 판정을
  * 걸 자리가 없다. 판정 대신 <b>범위가 좁다</b>: 남의 번호를 넣으면 <i>없는 것</i>이다.
  *
- * <h2>읽음은 두 경로뿐이다 — main-shell.md §7.2</h2>
+ * <h2>읽음은 두 경로뿐이다 — frontend/tabs.md</h2>
  *
  * <table><caption></caption>
  * <tr><td>항목을 열었다</td><td>그 항목만</td></tr>
@@ -61,7 +61,7 @@ public class MyNotiService {
     }
 
     /**
-     * 배지 하나 — main-shell.md §7.1.
+     * 배지 하나 — frontend/tabs.md.
      *
      * <p><b>목록과 따로 부를 수 있어야 한다.</b> 벨은 모달을 열지 않은 채로도 숫자를
      * 보여야 하고, 그때 알림 본문을 통째로 받는 것은 낭비다.
@@ -86,7 +86,7 @@ public class MyNotiService {
     }
 
     /**
-     * 모두 읽음 — main-shell.md §7.2 가 <b>두기로 한</b> 명시적 경로다.
+     * 모두 읽음 — frontend/tabs.md 가 <b>두기로 한</b> 명시적 경로다.
      *
      * <p><b>벌크 UPDATE 가 아니라 엔티티를 읽어 고친다.</b> 한 줄로 끝나는 것을 굳이
      * 그러는 이유는 {@link SysNotiInbox#markRead} 가 갖는 규칙 때문이다 — <i>이미 읽은
@@ -94,7 +94,7 @@ public class MyNotiService {
      * 생기고, 한쪽만 고치는 날이 온다.
      *
      * <p>양이 문제가 되지 않는 것은 대상이 <b>한 사람의 안 읽은 것</b>이고 보존이
-     * 90일이기 때문이다(32 §3).
+     * 90일이기 때문이다(retention.md).
      *
      * @return 읽음으로 바꾼 건수 — 화면이 <i>"N건을 읽음으로 표시했습니다"</i> 를 낼 수 있다
      */

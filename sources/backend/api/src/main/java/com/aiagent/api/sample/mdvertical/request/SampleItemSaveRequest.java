@@ -13,7 +13,7 @@ import java.util.List;
  * <p>행마다 받으면 한 요청에 여러 주문의 품목이 섞일 수 있고, 그러면 <i>이 주문을
  * 저장한다</i> 는 화면의 뜻과 요청이 갈린다.
  *
- * <p>{@code ordId} 가 문자열인 것은 {@code bigint} 어휘의 규약이다(frontend-stack.md §6.1).
+ * <p>{@code ordId} 가 문자열인 것은 {@code bigint} 어휘의 규약이다(frontend/packages.md).
  */
 public record SampleItemSaveRequest(
         @NotBlank String ordId,

@@ -3,7 +3,7 @@ package com.aiagent.core.search;
 import java.util.List;
 
 /**
- * 조회 응답 — api-conventions.md §3.9. <b>{@code mode} 가 첫 키다.</b>
+ * 조회 응답 — backend/api.md. <b>{@code mode} 가 첫 키다.</b>
  *
  * <p><b>타입을 셋으로 가르지 않는다.</b> 가르면 {@code <DataGrid>} 가 셋을 받아야 한다 —
  * 한 타입에 {@code mode} 한 키가 화면의 분기를 한 곳에 모은다.
@@ -28,9 +28,9 @@ public record PageResponse<T>(
     }
 
     /**
-     * 커서형 — api-conventions.md §3.8 · 64 §2.3. <b>{@code totalElements}·{@code totalPages} 가 없다.</b>
+     * 커서형 — backend/api.md · screen/log/access/requirements.md. <b>{@code totalElements}·{@code totalPages} 가 없다.</b>
      *
-     * <p>{@code COUNT} 를 세지 않기로 한 것이 이 모드의 전부다(64 §2.3). 상한도 근사도
+     * <p>{@code COUNT} 를 세지 않기로 한 것이 이 모드의 전부다(screen/log/access/requirements.md). 상한도 근사도
      * 아닌 <b>생략</b>이며, 그래서 페이지 번호를 만들 수 없고 푸터가
      * {@code ‹ 이전 · 다음 ›} 이 된다.
      *
@@ -47,7 +47,7 @@ public record PageResponse<T>(
      * 전량. {@code size} 는 {@code null} 이고 {@code hasNext} 는 <b>언제나 {@code false}</b> 다.
      *
      * <p>상한을 넘었는지는 <b>부르는 쪽이 판정한다</b> — 조용히 자르면 <i>전량</i> 이
-     * 거짓말이 된다(api-conventions.md §3.8).
+     * 거짓말이 된다(backend/api.md).
      */
     public static <T> PageResponse<T> all(List<T> content) {
         return new PageResponse<>(

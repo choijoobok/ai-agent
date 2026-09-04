@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@code IN} 목록을 <b>DB 가 받아 주는 크기로 쪼갠다</b> — db-portability.md §4.6.
+ * {@code IN} 목록을 <b>DB 가 받아 주는 크기로 쪼갠다</b> — backend/persistence.md.
  *
  * <p><b>목록 길이에 한계가 있다.</b> 오라클은 {@code IN} 의 표현식을 <b>1000개</b>까지만
  * 받고 넘으면 {@code ORA-01795} 다. SQL Server 는 개수가 아니라 <b>바인드 파라미터

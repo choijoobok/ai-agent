@@ -3,22 +3,22 @@ import { MSG } from '@/shared/i18n/messageKeys';
 import type { Tone } from '@/shared/grid/types';
 
 /**
- * 배치의 코드 셋 — 65 §2.3. <b>공통코드가 아니다.</b>
+ * 배치의 코드 셋 — screen/batch/schedule/requirements.md. <b>공통코드가 아니다.</b>
  *
  * <p>그 절이 근거를 넷 들었다: 값을 아는 것은 <b>배치 러너의 분기</b>이고, 관리자가 늘릴
  * 일이 없으며, 늘리려면 소스를 고쳐야 하고, 공통코드로 두면 `SYS_YN='Y'` 로 잠가야 하는데
- * <b>잠가 두면 관리자에게 남는 것이 없다</b>(43 §4.3). 그래서 값은 여기, 라벨은 메시지다.
+ * <b>잠가 두면 관리자에게 남는 것이 없다</b>(sys/code.md). 그래서 값은 여기, 라벨은 메시지다.
  *
  * <p><b>화면 둘이 함께 쓴다.</b> `BATCH_SCHEDULE` 의 *최근 결과* 와 `BATCH_HISTORY` 의
- * *결과* 가 같은 값을 그리므로(65 §3.9 — <i>"하단 pane 첫 행과 같은 값"</i>) 여기 한 벌만
+ * *결과* 가 같은 값을 그리므로(screen/batch/schedule/requirements.md — <i>"하단 pane 첫 행과 같은 값"</i>) 여기 한 벌만
  * 둔다. 화면마다 맵을 두면 <b>색이 갈리고</b>, 갈린 색은 같은 사실을 다르게 읽힌다.
  *
- * <p><b>`features/` 가 아니라 `shared/` 인 것이 그 때문이다.</b> seed-generation.md §2 의 *폴더가 인가
+ * <p><b>`features/` 가 아니라 `shared/` 인 것이 그 때문이다.</b> seed.md 의 *폴더가 인가
  * 경계* 는 <b>엔드포인트</b>의 규칙이며(그것이 `SYS_MENU_API` 시드의 입력이다), 여기에는
  * URL 이 없다.
  */
 
-/** 서버 `BatchResultCode` 와 1:1 — 46 §6.1. */
+/** 서버 `BatchResultCode` 와 1:1 — sys/batch.md. */
 export type BatchResultCode =
   | 'RUNNING'
   | 'SUCCESS'
@@ -28,7 +28,7 @@ export type BatchResultCode =
   | 'CANCELED'
   | 'LOST';
 
-/** 서버 `BatchExecType` 과 1:1 — 46 §6. */
+/** 서버 `BatchExecType` 과 1:1 — sys/batch.md. */
 export type BatchExecType = 'SCHEDULE' | 'MANUAL';
 
 const RSLT_LABEL: Record<BatchResultCode, string> = {
@@ -47,17 +47,17 @@ const EXEC_LABEL: Record<BatchExecType, string> = {
 };
 
 /**
- * 결과의 색 — 65 §4.3. <b>값이 일곱이고 색이 넷이다.</b>
+ * 결과의 색 — screen/batch/schedule/requirements.md. <b>값이 일곱이고 색이 넷이다.</b>
  *
- * <p>그래서 `SYS_CODE` 에 색을 넣을 자리가 애초에 없고, grid-column-contract.md §5.4.1 의 `tone` 맵이 그 자리다.
+ * <p>그래서 `SYS_CODE` 에 색을 넣을 자리가 애초에 없고, frontend/grid.md 의 `tone` 맵이 그 자리다.
  *
  * <h2>`SKIP_LOCK` 이 `muted` 인 것이 결정이다</h2>
  *
  * <p>노드 3대면 <b>매 주기 2건</b>이 쌓인다. 그것을 빨강으로 두면 목록의 3분의 2가 경고가
- * 되고 <b>진짜 문제가 묻힌다</b> — 64 §3.2.2 의 *"정상이 압도적인 목록에서는 칠하지
+ * 되고 <b>진짜 문제가 묻힌다</b> — screen/log/access/requirements.md 의 *"정상이 압도적인 목록에서는 칠하지
  * 않는다"* 와 같은 판단이다.
  *
- * <p>반대로 <b>`SKIP_COOLDOWN` 은 `warn`</b> 이다. 31 §7 이 막으려던 바로 그 사고이며
+ * <p>반대로 <b>`SKIP_COOLDOWN` 은 `warn`</b> 이다. backend/persistence.md 이 막으려던 바로 그 사고이며
  * <b>나면 안 된다</b> — 둘이 한 코드였을 때 화면이 색을 줄 수 없었던 것이 코드를 가른
  * 이유 전부다.
  *
@@ -113,7 +113,7 @@ function codeText(value: unknown): string {
   return typeof value === 'string' ? value : '';
 }
 
-/** 조회조건의 후보 일곱 — 순서가 46 §6.1 의 전이 순서다(시작 → 끝 → 건너뜀 → 유실). */
+/** 조회조건의 후보 일곱 — 순서가 sys/batch.md 의 전이 순서다(시작 → 끝 → 건너뜀 → 유실). */
 export function rsltOptions() {
   return (Object.keys(RSLT_LABEL) as BatchResultCode[]).map((code) => ({
     value: code,

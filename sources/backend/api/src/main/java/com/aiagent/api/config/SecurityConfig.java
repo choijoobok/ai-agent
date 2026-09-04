@@ -43,13 +43,13 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 
 /**
- * 인증·인가 필터 체인 — security-design.md §1 · §5 · §8.
+ * 인증·인가 필터 체인 — backend/security.md.
  *
  * <p><b>세션 기반이다</b>(JWT 아님). 강제 로그아웃·동시 접속 제어·만료 예고가 요구사항에
  * 있고 그것들은 stateless 토큰으로는 별도 블랙리스트 저장소를 요구한다 — 결국 서버 상태가
- * 생긴다(security-design.md §1).
+ * 생긴다(backend/security.md).
  *
- * <p><b>계층 마디 하나가 접근 정책을 정리한다</b>(security-design.md §4 · api-conventions.md §2.1) — {@code public} 하나가
+ * <p><b>계층 마디 하나가 접근 정책을 정리한다</b>(backend/security.md · backend/api.md) — {@code public} 하나가
  * {@code permitAll} 과 CSRF 예외를 함께 나타내므로 규칙이 흩어지지 않는다.
  */
 @Configuration
@@ -59,7 +59,7 @@ public class SecurityConfig {
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     /**
-     * 보안 헤더의 CSP — security-design.md §8. <b>인라인을 여는 것은 {@code style-src} 하나이고,
+     * 보안 헤더의 CSP — backend/security.md. <b>인라인을 여는 것은 {@code style-src} 하나이고,
      * {@code data:} 를 여는 것은 {@code img-src} 하나다.</b>
      *
      * <p><b>{@code default-src 'self'} 하나로는 화면이 뜨지 않았다</b>(2026-08-30 실측).
@@ -77,7 +77,7 @@ public class SecurityConfig {
      * 읽혔다.
      *
      * <p><b>개발에서는 둘 다 보이지 않는다.</b> Vite 가 {@code index.html} 을 주고
-     * {@code /api} 만 프록시하므로 이 헤더를 만나지 않는다(25 §4) — <b>단일 JAR 배포에서만</b>
+     * {@code /api} 만 프록시하므로 이 헤더를 만나지 않는다(build-deploy.md) — <b>단일 JAR 배포에서만</b>
      * 나타나고 그래서 배포 뒤에 처음 발견된다.
      *
      * <h2>nonce 를 고르지 않았다</h2>
@@ -85,7 +85,7 @@ public class SecurityConfig {
      * AntD 의 {@code ConfigProvider csp={{nonce}}} 와 AG Grid 의 nonce 를 함께 쓰면
      * {@code 'unsafe-inline'} 없이 닫을 수 있다. 대가는 <b>요청마다 nonce 를 만들어
      * {@code index.html} 에 심는 것</b>이며, 그러려면 지금 <b>정적 리소스로 나가는 그
-     * 파일</b>을 서버가 렌더해야 한다 — 캐시 정책과 서빙 경로가 함께 바뀐다(ADR-0001 의
+     * 파일</b>을 서버가 렌더해야 한다 — 캐시 정책과 서빙 경로가 함께 바뀐다(build-deploy.md 의
      * 단일 JAR 배포가 전제한 모양이 아니다). <b>{@code img-src} 에는 해당하지 않는다</b> —
      * nonce 는 인라인 스크립트·스타일의 장치이고 {@code data:} 이미지에는 걸 자리가 없다.
      *
@@ -115,7 +115,7 @@ public class SecurityConfig {
      * {@code DelegatingPasswordEncoder} 다 — 해시에 {@code {bcrypt}} 접두가 붙는다.
      *
      * <p>알고리즘을 코드에 고정하지 않으므로 나중에 Argon2id 로 옮길 때 <b>기존 해시를
-     * 그대로 둔 채</b> 새로 저장되는 것만 바뀐다(security-design.md §6).
+     * 그대로 둔 채</b> 새로 저장되는 것만 바뀐다(backend/security.md).
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -126,7 +126,7 @@ public class SecurityConfig {
      * <b>{@code hideUserNotFoundExceptions} 를 끈다.</b> 기본값(켬)이면 없는 ID 도
      * {@code BadCredentialsException} 이 되어 로그인 이력에서 {@code FAIL_NO_USER} 와
      * {@code FAIL_PWD} 를 가를 수 없다 — 이력의 목적(진단)과 응답의 목적(정보 노출 최소화)이
-     * 다르므로 이 비대칭은 의도된 것이다(45 §5.2).
+     * 다르므로 이 비대칭은 의도된 것이다(sys/logs.md).
      *
      * <p><b>응답에서 둘을 합치는 책임은 {@code LoginService} 가 진다</b> — 프레임워크가
      * 가려 주는 것에 기대지 않는다.
@@ -141,7 +141,7 @@ public class SecurityConfig {
     }
 
     /**
-     * 세션 레지스트리 — security-design.md §4-1.
+     * 세션 레지스트리 — backend/security.md.
      *
      * <p><b>기본 {@code SessionRegistryImpl} 을 쓸 수 없다.</b> 그것은 <b>JVM 힙의 맵</b>이라
      * 노드가 둘이면 각자 다른 목록을 보고, 계정당 1세션이 <b>노드당 1세션</b>이 된다.
@@ -171,7 +171,7 @@ public class SecurityConfig {
      * <p>그리고 {@code spring.session.data.redis.repository-type} 의 <b>기본값이
      * {@code default}</b> — 인덱스 없는 쪽이다. 즉 <b>스토어를 Redis 로 바꾸기만 하면</b>
      * 이 메서드가 조용히 {@link SessionRegistryImpl} 로 떨어지고, 동시 접속 제어가
-     * <b>다중화에서 무력해진다</b>(security-design.md §4-1). {@code warn} 한 줄이 남지만 그것도 제어를
+     * <b>다중화에서 무력해진다</b>(backend/security.md). {@code warn} 한 줄이 남지만 그것도 제어를
      * <i>켜 두었을 때만</i> 찍힌다 — 꺼 둔 배포에는 아무 신호가 없다.
      *
      * <p><b>가르는 기준은 벤더가 아니라 "스토어가 있는가" 다.</b> 스토어 자체가 없으면
@@ -179,7 +179,7 @@ public class SecurityConfig {
      * 인덱스가 없는 것은 <b>고르다 만 상태</b>이고, 그 구분이 벤더 이름을 몰라도 성립하므로
      * 다음에 어떤 스토어가 와도 같은 문이 지킨다.
      *
-     * <p>ADR-0026 §3 이 나쁜 설정값에 대해 내린 것과 <b>같은 판단</b>이다 —
+     * <p>sys/config.md 이 나쁜 설정값에 대해 내린 것과 <b>같은 판단</b>이다 —
      * <i>"yml 로 조용히 폴백하지 않는다"</i>. 조용한 폴백이 만드는 것은 <b>제어가 걸려
      * 있다고 믿는 무제한 배포</b>이며, 그것은 배포자가 보아야 할 실패다.
      */
@@ -198,7 +198,7 @@ public class SecurityConfig {
                     "세션 스토어 " + store.getClass().getName() + " 에 principal 인덱스가 없다 —"
                             + " 동시 접속 제어와 활성 세션 조회가 다중화에서 동작하지 않는다."
                             + " Redis 라면 spring.session.data.redis.repository-type: indexed 를 둔다"
-                            + " (기본값이 default 이며 그것은 인덱스가 없다). security-design.md §4-1 · ADR-0002");
+                            + " (기본값이 default 이며 그것은 인덱스가 없다). backend/security.md · backend/session.md");
         }
         // 스토어가 아예 없다 — 서블릿 컨테이너 세션이며 "제한 없음" 이 선택된 동작이다.
         return new SessionRegistryImpl();
@@ -206,7 +206,7 @@ public class SecurityConfig {
 
     /**
      * 로그인 시 세션 ID 를 바꾼다(세션 고정 공격 방어) — 그리고 <b>그 앞에</b> 동시 접속
-     * 제어가 붙는다(security-design.md §4-1).
+     * 제어가 붙는다(backend/security.md).
      *
      * <p><b>순서가 규약이다.</b> 밀어내기가 먼저 일어나고 세션 ID 교체가 뒤다 — 뒤바뀌면
      * {@code ConcurrentSessionControl} 이 <b>방금 만든 새 세션</b>을 기존 세션으로 세어
@@ -229,7 +229,7 @@ public class SecurityConfig {
                 // 켜 두었는데 세지 못하는 상태다. 조용히 두면 "제한이 걸려 있다" 고 믿는
                 // 배포가 실제로는 무제한이 된다.
                 log.warn("동시 접속 제어를 켰으나 세션 스토어가 principal 인덱스를 제공하지 않는다"
-                        + " — spring.session 스토어를 jdbc 또는 redis 로 둔다(security-design.md §4-1)");
+                        + " — spring.session 스토어를 jdbc 또는 redis 로 둔다(backend/security.md)");
             }
             EvictionRecordingStrategy concurrent =
                     new EvictionRecordingStrategy(sessionRegistry, loginHistoryService);
@@ -257,14 +257,14 @@ public class SecurityConfig {
             SessionInformationExpiredStrategy expiredStrategy)
             throws Exception {
 
-        // 프론트가 XSRF-TOKEN 쿠키를 읽어 X-XSRF-TOKEN 헤더로 보낸다 — axios 기본 동작(security-design.md §5).
+        // 프론트가 XSRF-TOKEN 쿠키를 읽어 X-XSRF-TOKEN 헤더로 보낸다 — axios 기본 동작(backend/security.md).
         CsrfTokenRequestAttributeHandler csrfHandler = new CsrfTokenRequestAttributeHandler();
         // null 이면 토큰을 지연 없이 즉시 해석한다. 기본(지연)이면 아무도 값을 읽지 않는 요청에서
         // 쿠키가 내려가지 않아, 로그인 직후 첫 쓰기 요청이 403 으로 튕긴다 — SPA 의 고전적 함정이다.
         csrfHandler.setCsrfRequestAttributeName(null);
 
         return http
-                // 동일 오리진 배포다. 개발은 Vite 프록시로 우회한다(security-design.md §8 · 25 §4).
+                // 동일 오리진 배포다. 개발은 Vite 프록시로 우회한다(backend/security.md · build-deploy.md).
                 .cors(cors -> cors.disable())
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -274,23 +274,23 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 // 밀려난 세션을 읽어 끊는 자리. 없으면 expireNow() 가 표시만 남기고
-                // 밀려난 사용자가 계속 일한다 — 제어가 조용히 무력해진다(security-design.md §4-1).
+                // 밀려난 사용자가 계속 일한다 — 제어가 조용히 무력해진다(backend/security.md).
                 .addFilterBefore(
                         new ConcurrentSessionFilter(sessionRegistry, expiredStrategy),
                         AuthorizationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/public/**").permitAll()
                         // 그 밖의 /api/** 는 인증을 요구한다. 메뉴×액션 판정은 여기가 아니라
-                        // 인가 인터셉터의 몫이며(security-design.md §4 판정은 한 곳에서), 그것은 인가 슬라이스다.
+                        // 인가 인터셉터의 몫이며(backend/security.md 판정은 한 곳에서), 그것은 인가 슬라이스다.
                         .requestMatchers("/api/**").authenticated()
                         // 정적 리소스와 SPA 라우트. JS 청크는 막지 않는다 — 보호 대상은
-                        // 화면(코드)이 아니라 데이터다(security-design.md §4).
+                        // 화면(코드)이 아니라 데이터다(backend/security.md).
                         .requestMatchers(HttpMethod.GET, "/", "/index.html", "/assets/**", "/favicon.ico")
                         .permitAll()
                         .anyRequest().permitAll())
                 .exceptionHandling(handling -> handling
                         // 폼 로그인 리다이렉트가 아니라 401 JSON 이다 — 프론트가 재인증 모달을
-                        // 띄운다(frontend-stack.md §9). 302 를 보내면 axios 가 로그인 HTML 을 데이터로 받는다.
+                        // 띄운다(frontend/packages.md). 302 를 보내면 axios 가 로그인 HTML 을 데이터로 받는다.
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler))
                 .headers(headers -> headers

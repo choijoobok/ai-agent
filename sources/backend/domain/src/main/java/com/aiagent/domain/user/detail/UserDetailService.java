@@ -20,9 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 디테일 탭의 저장 — <b>편집이 있는 탭은 둘뿐이다</b>(61 §3.8 탭 1 · 탭 3).
+ * 디테일 탭의 저장 — <b>편집이 있는 탭은 둘뿐이다</b>(screen/user/requirements.md 탭 1 · 탭 3).
  *
- * <p>개인 예외는 조회 전용이고(61 §5 — 사용자 관리 권한이 예외 부여 권한을 끌고 오면 안
+ * <p>개인 예외는 조회 전용이고(screen/user/requirements.md — 사용자 관리 권한이 예외 부여 권한을 끌고 오면 안
  * 된다), 유효 권한은 계산 결과이며, 활성 세션은 우리 테이블이 아니다.
  *
  * <h2>두 저장이 같은 뼈대를 쓴다</h2>
@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
  * <h2>세션 무효화를 여기서 하지 않는다</h2>
  *
  * <p>역할 부여가 바뀌면 그 사람의 유효 권한이 바뀌므로 세션에 재계산 표시를 세워야 하지만
- * (security-design.md §4) {@code AuthzInvalidator} 는 {@code api} 의 것이다 — 도메인이 세션을 알면 architecture.md §1 이
+ * (backend/security.md) {@code AuthzInvalidator} 는 {@code api} 의 것이다 — 도메인이 세션을 알면 backend/packages.md 이
  * 갈린다. {@code UserAuthController} 가 이미 같은 자리에서 그렇게 한다.
  */
 @Service
@@ -62,13 +62,13 @@ public class UserDetailService {
     // ── 탭 1 — 보유 역할 (USER-03) ───────────────────────────────────
 
     /**
-     * 역할 부여 일괄 저장 — grid-standard.md §3.1. <b>한 트랜잭션이다</b>(UX-14).
+     * 역할 부여 일괄 저장 — frontend/grid.md. <b>한 트랜잭션이다</b>(UX-14).
      *
-     * <p><b>{@code roleId} 는 {@code U} 에서 바뀌지 않는다</b> — PK 의 절반이다(42 §3.2).
+     * <p><b>{@code roleId} 는 {@code U} 에서 바뀌지 않는다</b> — PK 의 절반이다(sys/menu.md).
      * 다른 역할을 주려면 이 행을 정리하고 새로 만든다.
      *
      * <p><b>역할의 {@code USE_YN} 을 보지 않는다.</b> 꺼진 역할도 부여할 수 있으며 판정에서
-     * 걸릴 뿐이다(42 §3.1 의 AND) — <i>켜기 전에 부여를 구성해 두는</i> 동선이 정상이고,
+     * 걸릴 뿐이다(sys/menu.md 의 AND) — <i>켜기 전에 부여를 구성해 두는</i> 동선이 정상이고,
      * {@code UserAuthService} 가 꺼진 메뉴에 예외를 허용한 것과 같은 판단이다.
      *
      * @return 유효 권한이 바뀐 사람 — 부른 쪽이 세션 무효화에 쓴다. 아무것도 바뀌지 않았으면
@@ -131,13 +131,13 @@ public class UserDetailService {
         return rows.isEmpty() ? Set.of() : Set.of(userId);
     }
 
-    /** <b>양끝 포함</b>이라 같은 날은 통과다 — 40 §4.3. {@code null} 은 제한 없음이다. */
+    /** <b>양끝 포함</b>이라 같은 날은 통과다 — sys/INDEX.md. {@code null} 은 제한 없음이다. */
     private static void validatePeriod(UserRoleSaveRow row) {
         validatePeriod(row.validFromDt(), row.validToDt(), "부여");
     }
 
     /**
-     * 기간이 뒤집혔는가 — <b>양끝 포함이라 같은 날은 통과</b>다(40 §4.3).
+     * 기간이 뒤집혔는가 — <b>양끝 포함이라 같은 날은 통과</b>다(sys/INDEX.md).
      *
      * <p>역할 부여와 허용 IP 가 <b>같은 판정</b>을 쓴다. 오류 코드도 하나다 — 사용자가 읽는
      * 말이 <i>기간이 뒤집혔다</i> 로 같고, 무엇의 기간인지는 <b>그 화면이 이미 말하고
@@ -170,13 +170,13 @@ public class UserDetailService {
     // ── 탭 3 — 접속 IP (AUTH-08) ────────────────────────────────────
 
     /**
-     * 허용 대역 일괄 저장 — 61 §3.8 탭 3.
+     * 허용 대역 일괄 저장 — screen/user/requirements.md 탭 3.
      *
      * <p><b>{@code D} 가 있는 유일한 탭</b>이다. 여기서 지우는 것은 <i>부여의 기록</i> 이
      * 아니라 <i>사무실이 어디인가</i> 라는 <b>지금의 사실</b>이라, 이사한 대역을 남겨 둘
      * 이유가 없다 — 잠시 막는 것은 {@code USE_YN} 이 맡는다.
      *
-     * <p><b>전부 지워도 막지 않는다.</b> 행이 없으면 제한 없음이며(41 §7) 그것이 정상 상태다 —
+     * <p><b>전부 지워도 막지 않는다.</b> 행이 없으면 제한 없음이며(sys/user-role.md) 그것이 정상 상태다 —
      * 마지막 한 줄을 지우지 못하게 하면 <b>한 번 켠 제한을 영영 못 끄게</b> 된다.
      */
     @Transactional
@@ -256,7 +256,7 @@ public class UserDetailService {
     }
 
     /**
-     * 단일 IP 또는 CIDR 인가 — 41 §7 이 DDL 에 두지 않은 검사다.
+     * 단일 IP 또는 CIDR 인가 — sys/user-role.md 이 DDL 에 두지 않은 검사다.
      *
      * <p><b>{@code InetAddress.getByName} 을 쓰지 않는다.</b> 그것은 리터럴이 아니면
      * <b>DNS 를 조회</b>하므로, 오타 하나가 저장 요청을 이름 해석 타임아웃만큼 붙잡는다 —
