@@ -21,7 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  * <b>대응이 없는 검사(휴면·허용 IP·유효 권한 공집합)는 여기가 아니라 로그인 후처리다</b>
  * (41 §4.4).
  */
-public class BackofficeUserDetails implements UserDetails, Serializable {
+public class AppUserDetails implements UserDetails, Serializable {
 
     @Serial private static final long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ public class BackofficeUserDetails implements UserDetails, Serializable {
     private final boolean accountNonLocked;
     private final boolean credentialsNonExpired;
 
-    private BackofficeUserDetails(
+    private AppUserDetails(
             String userId,
             String userNm,
             String localeCd,
@@ -53,13 +53,13 @@ public class BackofficeUserDetails implements UserDetails, Serializable {
         this.credentialsNonExpired = credentialsNonExpired;
     }
 
-    static BackofficeUserDetails of(
+    static AppUserDetails of(
             SysUser user,
             Instant now,
             java.time.LocalDate businessToday,
             int lockReleaseMinutes,
             int passwordExpireDays) {
-        return new BackofficeUserDetails(
+        return new AppUserDetails(
                 user.getUserId(),
                 user.getUserNm(),
                 user.getLocaleCd(),
@@ -80,8 +80,8 @@ public class BackofficeUserDetails implements UserDetails, Serializable {
      *
      * <p>필드를 늘리는 것이 아니라 <b>같은 모양의 새 인스턴스</b>이므로 직렬화 호환은 그대로다.
      */
-    public BackofficeUserDetails withLocale(String newLocaleCd) {
-        return new BackofficeUserDetails(
+    public AppUserDetails withLocale(String newLocaleCd) {
+        return new AppUserDetails(
                 userId,
                 userNm,
                 newLocaleCd,
@@ -99,8 +99,8 @@ public class BackofficeUserDetails implements UserDetails, Serializable {
      * 옛 이름을 보이고, 새로고침해도 <b>세션이 살아 있는 동안은 계속 옛 이름</b>이다 —
      * {@link #withLocale} 이 잡은 것과 같은 어긋남이다.
      */
-    public BackofficeUserDetails withUserNm(String newUserNm) {
-        return new BackofficeUserDetails(
+    public AppUserDetails withUserNm(String newUserNm) {
+        return new AppUserDetails(
                 userId,
                 newUserNm,
                 localeCd,

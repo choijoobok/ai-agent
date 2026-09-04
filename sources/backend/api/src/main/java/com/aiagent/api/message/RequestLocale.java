@@ -1,6 +1,6 @@
 package com.aiagent.api.message;
 
-import com.aiagent.api.auth.BackofficeUserDetails;
+import com.aiagent.api.auth.AppUserDetails;
 import com.aiagent.domain.progress.RequestLang;
 import com.aiagent.support.config.ConfigLookup;
 import com.aiagent.support.config.props.MessageProps;
@@ -72,7 +72,7 @@ public class RequestLocale implements RequestLang {
     private static String principalLocale() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null
-                        && authentication.getPrincipal() instanceof BackofficeUserDetails details
+                        && authentication.getPrincipal() instanceof AppUserDetails details
                 ? details.localeCd()
                 : null;
     }

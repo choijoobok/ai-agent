@@ -48,12 +48,12 @@ public class SessionPrincipal {
      * 없지만, 조용히 넘기는 편이 500 보다 낫다.
      */
     private void replace(
-            UnaryOperator<BackofficeUserDetails> change,
+            UnaryOperator<AppUserDetails> change,
             HttpServletRequest request,
             HttpServletResponse response) {
 
         Authentication current = SecurityContextHolder.getContext().getAuthentication();
-        if (current == null || !(current.getPrincipal() instanceof BackofficeUserDetails details)) {
+        if (current == null || !(current.getPrincipal() instanceof AppUserDetails details)) {
             return;
         }
 

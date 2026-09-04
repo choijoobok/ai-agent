@@ -23,13 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
  * 않는다(security-design.md §4).
  */
 @Service
-public class BackofficeUserDetailsService implements UserDetailsService {
+public class AppUserDetailsService implements UserDetailsService {
 
     private final UserAccountService userAccountService;
     private final ConfigLookup configs;
     private final BusinessCalendar calendar;
 
-    public BackofficeUserDetailsService(
+    public AppUserDetailsService(
             UserAccountService userAccountService, ConfigLookup configs, BusinessCalendar calendar) {
         this.userAccountService = userAccountService;
         this.configs = configs;
@@ -41,7 +41,7 @@ public class BackofficeUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         return userAccountService
                 .find(userId)
-                .map(user -> BackofficeUserDetails.of(
+                .map(user -> AppUserDetails.of(
                         user,
                         calendar.now(),
                         calendar.today(),
