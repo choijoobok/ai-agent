@@ -103,7 +103,7 @@ DataSource dataSource(DataSource real) {
 
 ```
 [2026-08-23 14:23:11.482] | resultset | thread=http-nio-8080-exec-3 | conn=12 | 27ms | readOnly | rows=42
-  <- com.ordinary.backoffice.domain.user.service.UserService.searchPage(UserService.java:88)
+  <- com.aiagent.domain.user.service.UserService.searchPage(UserService.java:88)
 select
     u.user_id, u.login_id, u.phone_no
 from

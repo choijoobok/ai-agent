@@ -69,7 +69,7 @@ ai-agent/
 ## 2. 패키지 규칙
 
 ```
-com.ordinary.backoffice
+com.aiagent
 ├── core
 │   ├── response        # ApiResponse, PageResponse
 │   ├── error           # ErrorCode, BusinessException, ErrorType

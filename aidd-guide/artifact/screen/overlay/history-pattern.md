@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/features/accesslog/", "sources/frontend/src/features/sample/singlecursor/", "sources/backend/domain/src/main/java/com/ordinary/backoffice/domain/log/entity/"]
+sources: ["sources/frontend/src/features/accesslog/", "sources/frontend/src/features/sample/singlecursor/", "sources/backend/domain/src/main/java/com/aiagent/domain/log/entity/"]
 author: Bong Jong Hyeon
 tier: 1
 tags: [prompt, overlay, history, cursor]

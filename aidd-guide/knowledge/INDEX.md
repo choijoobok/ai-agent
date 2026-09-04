@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-04
 status: active
-sources: ["sources/backend/domain/src/main/java/com/ordinary/backoffice/domain/", "sources/backend/bootstrap/src/main/resources/db/changelog/schema/"]
+sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/", "sources/backend/bootstrap/src/main/resources/db/changelog/schema/"]
 author: Bong Jong Hyeon
 tier: 3
 tags: [knowledge, domain, index]

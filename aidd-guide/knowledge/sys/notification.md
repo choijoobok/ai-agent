@@ -6,7 +6,7 @@ type: operation
 created: 2026-09-03
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/domain/src/main/java/com/ordinary/backoffice/domain/notification/entity/"]
+sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/notification/entity/"]
 author: Bong Jong Hyeon
 tier: 3
 tags: [knowledge, notice, notification, request]

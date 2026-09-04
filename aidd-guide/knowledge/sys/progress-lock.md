@@ -6,7 +6,7 @@ type: operation
 created: 2026-09-03
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/domain/src/main/java/com/ordinary/backoffice/domain/progress/entity/SysJobProgress.java", "sources/backend/domain/src/main/java/com/ordinary/backoffice/domain/lock/entity/SysDataLock.java"]
+sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/progress/entity/SysJobProgress.java", "sources/backend/domain/src/main/java/com/aiagent/domain/lock/entity/SysDataLock.java"]
 author: Bong Jong Hyeon
 tier: 3
 tags: [knowledge, progress, lock, transient]

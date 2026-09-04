@@ -6,7 +6,7 @@ type: operation
 created: 2026-09-04
 updated: 2026-09-04
 status: active
-sources: ["sources/backend/domain/src/main/java/com/ordinary/backoffice/domain/batch/", "sources/backend/bootstrap/src/main/resources/db/changelog/data/069-init-schedule-batch.yaml"]
+sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/batch/", "sources/backend/bootstrap/src/main/resources/db/changelog/data/069-init-schedule-batch.yaml"]
 author: Bong Jong Hyeon
 tier: 3
 tags: [knowledge, retention, purge, batch, regulation]

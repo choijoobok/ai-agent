@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/domain/src/main/java/com/ordinary/backoffice/domain/log/entity/", "sources/backend/domain/src/main/java/com/ordinary/backoffice/domain/auth/entity/SysLoginLog.java", "sources/backend/bootstrap/src/main/resources/application.yml"]
+sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/log/entity/", "sources/backend/domain/src/main/java/com/aiagent/domain/auth/entity/SysLoginLog.java", "sources/backend/bootstrap/src/main/resources/application.yml"]
 author: Bong Jong Hyeon
 tier: 3
 tags: [knowledge, log, history, retention]

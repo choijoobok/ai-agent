@@ -8,7 +8,7 @@ plugins {
 subprojects {
     apply(plugin = "java-library")
 
-    group = "com.ordinary"
+    group = "com.aiagent"
     version = "0.0.1-SNAPSHOT"
 
     extensions.configure<JavaPluginExtension> {

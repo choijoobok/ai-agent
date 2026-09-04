@@ -388,7 +388,7 @@ fun Project.messageSeedTask(name: String, verify: Boolean) =
         }
         backendKeys.set(
             rootProject.layout.projectDirectory.file(
-                "backend/core/src/main/java/com/ordinary/backoffice/core/message/MsgKey.java",
+                "backend/core/src/main/java/com/aiagent/core/message/MsgKey.java",
             ),
         )
         frontendKeys.set(

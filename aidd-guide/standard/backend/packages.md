@@ -45,7 +45,7 @@ sources/backend/
 > 인터페이스로 갈라 `support` 에 두고, 나머지는 계층형으로 단순하게 간다.
 > 이 프로젝트의 제1 목표는 **짧고 공통화된 소스**다(CLAUDE.md §1).
 
-## 2. 패키지 — `com.ordinary.backoffice`
+## 2. 패키지 — `com.aiagent`
 
 ```
 core        domain · error · grid · message · response · search
@@ -151,7 +151,7 @@ api         {화면·도메인}/
 | `RestrictedSessionPathTest` | 세션 제한 경로 |
 | `ApiOperationSummaryTest` | API 요약 |
 
-전부 `sources/backend/bootstrap/src/test/java/com/ordinary/backoffice/architecture/` 에 있고
+전부 `sources/backend/bootstrap/src/test/java/com/aiagent/architecture/` 에 있고
 `./gradlew check -PskipFrontend` 가 돌린다.
 
 **샘플은 통째로 삭제 가능해야 한다** — 고객사에 넘길 때 지우는 것이 `sample` 하나이도록.

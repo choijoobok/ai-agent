@@ -49,7 +49,7 @@ afterCompletion             SYS_LO_ACCESS — 전 요청 1행
 **뒤에 두면 인가가 막은 요청이 통째로 사라진다** — 그리고 *"권한 없는 접근 시도"* 는
 사용 이력이 가장 자주 답해야 하는 질문이다.
 
-순서가 [`InterceptorConfig`](../../../sources/backend/api/src/main/java/com/ordinary/backoffice/api/config/InterceptorConfig.java)
+순서가 [`InterceptorConfig`](../../../sources/backend/api/src/main/java/com/aiagent/api/config/InterceptorConfig.java)
 **한 파일에서만 표현되므로** `InterceptorOrderTest` 가 지킨다.
 
 ## 3. `addPathPatterns("/api/**")` 로 좁히지 않는다

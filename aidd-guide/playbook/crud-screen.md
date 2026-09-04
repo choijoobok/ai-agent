@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/features/sample/singleoffset/", "sources/frontend/src/features/sample/singlecursor/", "sources/backend/api/src/main/java/com/ordinary/backoffice/api/sample/singleoffset/", "aidd-guide/playbook/INDEX.md"]
+sources: ["sources/frontend/src/features/sample/singleoffset/", "sources/frontend/src/features/sample/singlecursor/", "sources/backend/api/src/main/java/com/aiagent/api/sample/singleoffset/", "aidd-guide/playbook/INDEX.md"]
 author: Bong Jong Hyeon
 tier: 2
 tags: [playbook, crud, grid, paging]

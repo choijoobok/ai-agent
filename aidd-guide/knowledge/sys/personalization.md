@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/domain/src/main/java/com/ordinary/backoffice/domain/favorite/entity/", "sources/backend/domain/src/main/java/com/ordinary/backoffice/domain/gridpref/entity/", "sources/backend/domain/src/main/java/com/ordinary/backoffice/domain/searchcond/entity/", "sources/backend/domain/src/main/java/com/ordinary/backoffice/domain/menustat/entity/"]
+sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/favorite/entity/", "sources/backend/domain/src/main/java/com/aiagent/domain/gridpref/entity/", "sources/backend/domain/src/main/java/com/aiagent/domain/searchcond/entity/", "sources/backend/domain/src/main/java/com/aiagent/domain/menustat/entity/"]
 author: Bong Jong Hyeon
 tier: 3
 tags: [knowledge, personalization, preference]
