@@ -16,7 +16,7 @@ export const AUTH_ENDPOINTS = {
   logout: '/common/auth/logout',
 
   /*
-    분실 비밀번호 재설정 — AUTH-07 · docs/screen/login/requirements.md §7.
+    분실 비밀번호 재설정 — AUTH-07 · documents/screen/_standalone/login/requirements.md §7.
 
     **셋을 `reset` 으로 묶은 것이 결정이다.** 한 묶음임이 경로만 봐도 보이고, 이미 있는
     `/service/user/savePasswordReset`(관리자 임시 비밀번호 발급)과 이름이 겹치지 않는다 —

@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * 메일 발신자 — {@code docs/screen/login/requirements.md} §8.
+ * 메일 발신자 — {@code documents/screen/_standalone/login/requirements.md} §8.
  *
  * <p><b>접속 정보는 여기 없다.</b> 호스트·포트·계정은 {@code spring.mail.*} 이며 Spring Boot
  * 의 자동설정이 그것으로 발송 빈을 만든다 — 같은 값을 두 곳에 두면 <i>어느 쪽이 실제로

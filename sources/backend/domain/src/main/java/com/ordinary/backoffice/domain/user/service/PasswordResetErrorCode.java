@@ -5,7 +5,7 @@ import com.ordinary.backoffice.core.error.ErrorType;
 import com.ordinary.backoffice.core.message.MsgKey;
 
 /**
- * 분실 비밀번호 재설정이 거부되는 자리 — AUTH-07 · {@code docs/screen/login/requirements.md} §6-5.
+ * 분실 비밀번호 재설정이 거부되는 자리 — AUTH-07 · {@code documents/screen/_standalone/login/requirements.md} §6-5.
  *
  * <p><b>{@code AuthErrorCode}(api) 와 갈라 둔 것이 요건이다.</b>
  * 저쪽은 전부 401 인데({@code UNAUTHENTICATED}) 이쪽은 <b>인증을 시도한 것이 아니다</b> —

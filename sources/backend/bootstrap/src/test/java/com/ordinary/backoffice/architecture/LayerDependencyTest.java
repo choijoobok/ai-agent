@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 의존 방향은 규약이 아니라 빌드가 강제한다 — llm-guide/06-framework/backend/packages.md.
+ * 의존 방향은 규약이 아니라 빌드가 강제한다 — aidd-guide/standard/backend/packages.md.
  *
  * <p>Gradle 모듈 경계가 이미 상당 부분을 막지만, 막지 못하는 것이 둘이다 — 한 모듈 안의
  * 패키지 간 순환과, {@code api()} 로 전이 노출된 상위 모듈의 역참조다.

@@ -29,7 +29,7 @@ interface Props {
 }
 
 /**
- * 분실 비밀번호 재설정 3단계 — AUTH-07 · {@code docs/screen/login/requirements.md} §6-3.
+ * 분실 비밀번호 재설정 3단계 — AUTH-07 · {@code documents/screen/_standalone/login/requirements.md} §6-3.
  *
  * <p><b>같은 라우트의 단계 전환이다</b>(§1). 라우트를 나누면 뒤로 가기로 ②에 직접 들어올 수
  * 있고, 그 화면은 아무 상태도 없이 열린다 — 코드를 받은 적 없는 사람이 인증번호 칸을 본다.

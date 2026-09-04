@@ -131,4 +131,5 @@ log:
   - { at: "2026-09-04", by: "[BA]", what: "agentic-ai 설계 3,479줄을 spec 16파일로 재편성했다 — REQ 59 · FEAT 85 · SCR 43 · NFR 19 · 용어 35. 전부 status: migrated(미승인)" }
   - { at: "2026-09-04", by: "[AA]", what: "agentic-ai 12장(개발 표준)을 aidd-guide/standard/hub-conventions.md 로 옮겼다 — 코드 규칙은 spec 이 아니라 가이드의 자리다" }
   - { at: "2026-09-04", by: "[PM]", what: "문서 예산을 기계화했다 — guard-write 가 산출물 지도 40행을 읽어 지도 밖 문서를 차단한다(CLAUDE.md §4)" }
+  - { at: "2026-09-04", by: "[개발]", what: "**템플릿 보수** — sources/ 주석 24곳이 옛 문서 경로(llm-guide/ · docs/screen/)를 가리켜 고쳤다. 주석뿐이라 동작에는 영향이 없으나, 없는 문서를 부르는 주석은 규약을 아무도 확인하지 않게 만든다. 고친 뒤 참조 9개가 전부 실물을 가리키는 것을 대조했다" }
   - { at: "2026-09-04", by: "[PM]", what: "**다음 할 일: OQ-001·OQ-002 에 답을 받고 `/phase-gate` 로 P0 를 승인받는다**" }

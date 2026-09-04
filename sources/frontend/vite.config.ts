@@ -2,7 +2,7 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 
-// 개발은 두 서버를 띄우고 프록시로 잇는다 — llm-guide/06-framework/build-deploy.md §6.
+// 개발은 두 서버를 띄우고 프록시로 잇는다 — aidd-guide/standard/build-deploy.md §6.
 // 그래서 화면 코드의 요청 경로가 개발과 운영에서 같다.
 export default defineConfig({
   plugins: [react()],

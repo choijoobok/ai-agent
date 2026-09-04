@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * 서비스의 <b>이름과 트랜잭션 모양</b>을 빌드가 고정한다 —
- * llm-guide/06-framework/backend/packages.md.
+ * aidd-guide/standard/backend/packages.md.
  *
  * <p><b>왜 검사가 필요한가.</b> 둘 다 "어긋나도 컴파일되고 테스트도 통과하는" 종류다.
  * 조회 서비스 이름이 갈리면(`*AdminQueryService` 여섯 · `*QueryService` 열하나 —

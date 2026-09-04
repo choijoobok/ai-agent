@@ -16,11 +16,11 @@ import org.springframework.data.annotation.LastModifiedDate;
  * 상속한다. 이력 테이블은 {@code USER_ID + CRE_DTM} 이 곧 "누가 언제" 이고, 인프라
  * 테이블은 애플리케이션이 기계적으로 쓰므로 "누가" 가 존재하지 않는다.
  * 무조건 네 컬럼을 박으면 항상 NULL 인 컬럼이 절반의 테이블에 생기고, 그러면 이
- * 컬럼 자체를 신뢰할 수 없게 된다 — llm-guide/09-knowledge/sys/INDEX.md
+ * 컬럼 자체를 신뢰할 수 없게 된다 — aidd-guide/knowledge/sys/INDEX.md
  *
  * <p><b>식별자는 여기 없다.</b> {@code @TableGenerator} 의 {@code pkColumnValue} 가
  * 엔티티마다 다르므로(논리 시퀀스명 = 테이블명) 상위 클래스로 올릴 수 없다.
- * 선언 형태는 llm-guide/10-records/adr/0015-table-based-id-generation.md 가 고정한다.
+ * 선언 형태는 aidd-guide/records/adr/0015-table-based-id-generation.md 가 고정한다.
  *
  * <p>시점은 UTC {@link Instant} 다. 업무 달력 날짜({@code _DT})는 시간대가 없는 다른
  * 것이며 이 클래스의 대상이 아니다 — 40 §4.3

@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 분실 비밀번호 재설정 토큰 — AUTH-07 · {@code docs/screen/login/requirements.md} §6-3.
+ * 분실 비밀번호 재설정 토큰 — AUTH-07 · {@code documents/screen/_standalone/login/requirements.md} §6-3.
  *
  * <p><b>사용자당 한 행이다.</b> 발급 이력이 아니라 <i>지금 유효한 토큰 하나</i> 를 담으므로
  * 재요청은 같은 행을 갈아 끼운다 — 그래서 시퀀스도 청소 배치도 없다.

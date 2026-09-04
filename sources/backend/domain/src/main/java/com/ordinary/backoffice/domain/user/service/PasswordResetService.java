@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 분실 비밀번호 자기 재설정 — AUTH-07 · {@code docs/screen/login/requirements.md} §6-3.
+ * 분실 비밀번호 자기 재설정 — AUTH-07 · {@code documents/screen/_standalone/login/requirements.md} §6-3.
  *
  * <h2>응답이 언제나 같다 — 그것이 이 클래스 모양의 대부분을 정한다</h2>
  *

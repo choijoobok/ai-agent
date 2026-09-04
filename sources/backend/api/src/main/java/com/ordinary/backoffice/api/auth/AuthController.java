@@ -91,7 +91,7 @@ public class AuthController {
     }
 
     /**
-     * 비밀번호 규칙 목록 — {@code docs/screen/login/requirements.md} §7-1.
+     * 비밀번호 규칙 목록 — {@code documents/screen/_standalone/login/requirements.md} §7-1.
      *
      * <p><b>{@code public} 인데 {@code GET} 인 것이 규약이다</b> — {@code common}·{@code public}
      * 의 조회는 GET 이고 나머지는 POST 다(api-conventions.md §2.1). 인가 판정을 받지 않으므로 접두

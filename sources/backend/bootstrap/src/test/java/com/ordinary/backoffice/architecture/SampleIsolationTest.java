@@ -19,7 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 샘플은 <b>통째로 지울 수 있어야 한다</b> — llm-guide/06-framework/conventions.md §7.
+ * 샘플은 <b>통째로 지울 수 있어야 한다</b> — aidd-guide/standard/conventions.md §7.
  *
  * <p>[10] §L 이 샘플을 <i>"참조 구현"</i> 으로 정의하면서 함께 요구한 것이 격리다. 사용
  * 프로젝트는 샘플을 베낀 다음 걷어내는데, 그 삭제가 <b>폴더 하나와 선언 몇 줄</b>이 아니면

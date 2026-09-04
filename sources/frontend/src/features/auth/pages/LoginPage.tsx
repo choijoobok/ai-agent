@@ -24,7 +24,7 @@ const RECOVERABLE_CODES: ReadonlySet<string> = new Set([
 ]);
 
 /**
- * 로그인 — 60 §3 · {@code docs/screen/login/requirements.md}.
+ * 로그인 — 60 §3 · {@code documents/screen/_standalone/login/requirements.md}.
  *
  * <p><b>실패 문구를 화면이 만들지 않는다.</b> 서버가 완성해 내려준 {@code message} 를 배너에
  * 그대로 넣는다(architecture.md §6-1.2). 존재하지 않는 ID 와 비밀번호 불일치를 같은 문구로 유지하는

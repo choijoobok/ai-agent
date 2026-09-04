@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
- * 재설정 ③ 완료 — {@code docs/screen/login/requirements.md} §4-2.
+ * 재설정 ③ 완료 — {@code documents/screen/_standalone/login/requirements.md} §4-2.
  *
  * <p><b>②를 통과했다는 증표가 코드 그 자체다.</b> 서버에 <i>확인됨</i> 상태를 남기지 않기로
  * 했으므로(그 상태의 수명·무효화를 또 정하는 것은 토큰을 하나 더 만드는 일이다) 같은 코드를

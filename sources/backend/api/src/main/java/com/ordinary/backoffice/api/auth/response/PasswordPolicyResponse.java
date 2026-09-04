@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 비밀번호 규칙 목록 — {@code docs/screen/pwd-change/requirements.md} §6-2 의 계약.
+ * 비밀번호 규칙 목록 — {@code documents/screen/_standalone/pwd-change/requirements.md} §6-2 의 계약.
  *
  * <p><b>규칙 목록의 출처가 서버 하나다.</b> 프론트는 <i>식별자 → 검증 함수</i> 매핑만 갖고
  * 파라미터도 문구도 갖지 않는다 — 그래야 즉시 검증 문구와 제출 뒤 거절 문구가 같은
