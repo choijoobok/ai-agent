@@ -36,6 +36,7 @@ tags: [playbook, recipe, index]
   ├─ 부모 하나에 자식 표 **둘 이상**               → master-tabs.md
   ├─ 엑셀 —— 내려받기 · 올려받기                   → excel.md
   ├─ 창을 띄운다 —— 인자 · 참조 · 배열 · 장문      → modal.md
+  │     └─ 창 안에 **표를 통째로** 담는다            →   §1-1 그리드 모달
   ├─ 계층을 보여주거나 고친다 —— 트리              → tree-screen.md
   └─ DB 에 무엇을 넣어야 한다 —— 표 · 코드 · 문구  → changeset.md
 ```
@@ -49,7 +50,7 @@ tags: [playbook, recipe, index]
 | LLM-PLY-002 | [master-detail.md](./master-detail.md) | 마스터-디테일 — 상하 · 좌우 | ③④ |
 | LLM-PLY-003 | [master-tabs.md](./master-tabs.md) | 하단 디테일 탭 — 자식 표 둘 이상 | ⑤ |
 | LLM-PLY-005 | [excel.md](./excel.md) | 엑셀 다운로드 세 갈래 · 업로드 탭 | ③⑥ |
-| LLM-PLY-006 | [modal.md](./modal.md) | 실행 인자 · 참조 팝업 · 배열 · 장문 | ①④⑤ |
+| LLM-PLY-006 | [modal.md](./modal.md) | 실행 인자 · 참조 팝업 · 배열 · 장문 · **그리드** | ①④⑤ · `code` |
 | LLM-PLY-007 | [tree-screen.md](./tree-screen.md) | 트리 — 계층 표시·권한 부여·드래그 | **샘플 없음** · 업무 셋 |
 | LLM-PLY-004 | [changeset.md](./changeset.md) | Liquibase — 표를 만들고 시드를 더한다 | changelog |
 
