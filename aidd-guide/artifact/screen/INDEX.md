@@ -42,8 +42,13 @@ tags: [prompt, requirements, overlay, index]
   ├─ "화면 하나 만들어줘"                  → screen.md   (절차 일곱 단계)
   ├─ "이 표로 조회·저장 화면"              → crud.md     (가장 흔한 요청의 실제 대화)
   ├─ 요건서를 쓰다 빈 칸을 만났다          → auto-completion.md (채울 수 있나 물어야 하나)
+  ├─ **요건서에서 목업을 만든다**           → `.claude/skills/mockup/SKILL.md` (`/mockup`)
   └─ 화면에 이 특성이 있다                 → overlay/INDEX.md
 ```
+
+**목업은 이 폴더가 아니라 스킬이 만든다.** 골격은 `scaffold.mjs` 가 요건서에서 뽑고
+**그림만 AI 가 그린다**(CLAUDE.md §5-11) — 여기로 들어온 사람이 그 사실에 닿지 못해
+2026-09-06 재현이 스킬을 스스로 찾아가야 했다.
 
 ## 파일
 
