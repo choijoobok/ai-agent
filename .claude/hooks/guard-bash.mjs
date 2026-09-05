@@ -79,7 +79,22 @@ if (!command) pass();
 const state = readState();
 if (!state?.current) pass();
 
-const flat = command.split(/\s+/).join(' ');
+/**
+ * <b>커밋 메시지는 명령이 아니다.</b> {@code git commit -F -} 의 heredoc 본문까지 훑으면
+ * <i>production</i> · <i>prod</i> 가 든 <b>정직한 커밋 메시지가 막힌다</b> — 실제로
+ * 2026-09-05 에 <i>"백엔드 production 클래스"</i> 라고 적은 메시지가 운영환경 신호로
+ * 걸렸다. 그때 사람이 배우는 것은 <b>메시지에서 낱말을 빼는 법</b>이고, 그것은 게이트가
+ * 기록을 무르게 만든 것이다.
+ *
+ * <p><b>{@code git commit} 일 때만</b> 뺀다. {@code sh <<EOF} 의 본문은 진짜 명령이므로
+ * 그대로 검사한다 — 여기를 넓히면 heredoc 하나로 전체 가드를 우회하게 된다.
+ */
+function withoutCommitMessage(cmd) {
+  if (!/^\s*git\s+commit\b/.test(cmd)) return cmd;
+  return cmd.replace(/<<-?\s*'?"?([A-Za-z_][A-Za-z0-9_]*)'?"?[\s\S]*?^\s*\1\s*$/gm, '<<HEREDOC');
+}
+
+const flat = withoutCommitMessage(command).split(/\s+/).join(' ');
 const hit = check(flat);
 if (!hit) pass();
 
