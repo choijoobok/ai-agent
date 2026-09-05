@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-BE-009
 title: "횡단 관심사 — 필터 · 인터셉터 · 순서 · 비동기 · 중복 요청"
-category: "06-framework/backend"
+category: standard/backend
 type: operation
 created: 2026-09-03
 updated: 2026-09-04

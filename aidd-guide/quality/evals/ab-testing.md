@@ -1,7 +1,7 @@
 ---
 id: LLM-EVL-003
 title: "프롬프트 변형 A/B 테스트"
-category: 07-evals
+category: quality/evals
 type: operation
 created: 2026-05-04
 updated: 2026-05-04

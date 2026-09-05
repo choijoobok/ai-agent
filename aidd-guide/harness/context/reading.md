@@ -1,7 +1,7 @@
 ---
 id: LLM-CTX-002
 title: "seek-read 원칙 — 찾고 나서 읽는다"
-category: "02-context"
+category: harness/context
 type: operation
 created: "2026-04-30"
 updated: "2026-09-03"
@@ -22,7 +22,7 @@ tags: [context, seek-read, grep]
 1. **200줄 이상은 통째로 읽지 않는다** — 문서도 소스도 같다.
 2. **찾기가 먼저다** — `Grep` 으로 절을 찾고 그 줄번호를 입구로 쓴다.
 3. 키워드가 여러 절에 걸치면 **인접 절을 더 읽는다** — 끊어 읽고 추측하지 않는다.
-4. **Overlay 트리거가 맞으면 Overlay 가 먼저다** ([03-prompt/overlays](../../artifact/screen/overlay/INDEX.md)).
+4. **Overlay 트리거가 맞으면 Overlay 가 먼저다** ([artifact/screen/overlay](../../artifact/screen/overlay/INDEX.md)).
 
 > **색인을 따로 두지 않는다.** 절마다 `offset`/`limit` 을 적어둔 지도를 유지하는 방식도
 > 있지만, 원본이 바뀌는 순간 숫자가 거짓말이 된다. **`Grep` 은 늘 현재를 말한다.**
@@ -78,6 +78,6 @@ Grep(pattern="^\s*(public|private|protected).*\(", path="긴파일.java", -n=tru
 
 ## 관련 카테고리
 
-- [03-prompt/overlays/INDEX.md](../../artifact/screen/overlay/INDEX.md) — Overlay 가 우선
-- [02-context/budget.md](./budget.md) — 토큰 예산
+- [artifact/screen/overlay/INDEX.md](../../artifact/screen/overlay/INDEX.md) — Overlay 가 우선
+- [harness/context/budget.md](./budget.md) — 토큰 예산
 - [CLAUDE.md §3](../../../CLAUDE.md) — 진입 규칙의 *읽는 방법*

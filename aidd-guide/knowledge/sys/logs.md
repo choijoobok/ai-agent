@@ -1,7 +1,7 @@
 ---
 id: LLM-KNW-SYS-005
 title: "이력 셋 — 사용 · 에러 · 로그인"
-category: "09-knowledge/sys"
+category: knowledge/sys
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -17,7 +17,7 @@ tags: [knowledge, log, history, retention]
 > 표 셋: `SYS_LO_ACCESS` · `SYS_LO_EXCEPTION` · `SYS_LO_LOGIN`.
 > **클래스명과 표명이 갈린다**(`SysAccessLog` → `SYS_LO_ACCESS`).
 >
-> **어떻게 쌓이는가**는 [06-framework/backend/logging.md](../../standard/backend/logging.md)
+> **어떻게 쌓이는가**는 [standard/backend/logging.md](../../standard/backend/logging.md)
 > 가 갖는다. 여기는 **쌓인 것의 모양**이다.
 
 ## 1. 이력 셋의 공통 규칙
@@ -103,4 +103,4 @@ tags: [knowledge, log, history, retention]
 
 - [batch.md](./batch.md) — 파기 배치의 실행 이력
 - [user-role.md](./user-role.md) — 로그인 실패가 계정을 잠근다
-- [06-framework/backend/logging.md](../../standard/backend/logging.md) — 마스킹과 파이프라인
+- [standard/backend/logging.md](../../standard/backend/logging.md) — 마스킹과 파이프라인

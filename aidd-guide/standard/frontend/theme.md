@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-FE-009
 title: "테마 — 토큰 한 곳 · 다크 모드 · 개인 설정"
-category: "06-framework/frontend"
+category: standard/frontend
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

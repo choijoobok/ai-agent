@@ -1,19 +1,19 @@
 ---
 id: LLM-MET-002
 title: "문서 작성 스타일"
-category: "00-meta"
+category: meta
 type: operation
 created: "2026-04-30"
 updated: "2026-09-04"
 status: active
-sources: [orchestration/]
+sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
 author: Bong Jong Hyeon
 tier: 3
 tags: [meta, style, conventions]
 ---
 # 문서 작성 스타일
 
-> orchestration 의 모든 MD 가 따라야 하는 작성 규칙. **LLM 학습 누락을 피하고 가독성을 확보**하기 위한 최소 표준.
+> `aidd-guide` 의 모든 MD 가 따라야 하는 작성 규칙. **LLM 학습 누락을 피하고 가독성을 확보**하기 위한 최소 표준.
 
 ## 분량 규칙
 

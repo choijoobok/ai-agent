@@ -1,7 +1,7 @@
 ---
 id: LLM-SAF-004
 title: "외부 API 호출 Rate Limit 가드"
-category: 13-safety
+category: standard/safety
 type: operation
 created: 2026-05-04
 updated: 2026-05-04
@@ -60,6 +60,6 @@ tags: [safety, rate-limit, api, cost-guard]
 
 ## 관련
 
-- [02-context/budget.md](../../harness/context/budget.md) — Cache-Aware 5분 TTL
-- [05-harness/tool-curation.md](../../harness/tool-curation.md) — 외부 도구 추가 게이트
-- [08-observability/token-economics.md](../../quality/observability/token-economics.md) — 비용 측정
+- [harness/context/budget.md](../../harness/context/budget.md) — Cache-Aware 5분 TTL
+- [harness/tool-curation.md](../../harness/tool-curation.md) — 외부 도구 추가 게이트
+- [quality/observability/token-economics.md](../../quality/observability/token-economics.md) — 비용 측정

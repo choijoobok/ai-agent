@@ -1,7 +1,7 @@
 ---
 id: LLM-PMT-IDX
 title: "03-prompt — 요건서를 받아내는 절차 INDEX"
-category: "03-prompt"
+category: artifact/screen
 type: operation
 created: 2026-04-30
 updated: 2026-09-03
@@ -32,7 +32,7 @@ tags: [prompt, requirements, overlay, index]
 ```
 
 **여기는 창의 영역이다** — 같은 의도에 표현이 여럿일 수 있다. 반대편(결정론)은
-[06-framework](../../standard/INDEX.md) 와 [09-knowledge](../../knowledge/INDEX.md) 이며
+[standard](../../standard/INDEX.md) 와 [knowledge](../../knowledge/INDEX.md) 이며
 **거기서는 변형하지 않는다.**
 
 ## 진입 결정 트리
@@ -82,5 +82,5 @@ tags: [prompt, requirements, overlay, index]
 
 - [INDEX](../../INDEX.md) — 마스터
 - [`documents/screen/README.md`](../../../documents/screen/README.md) — 화면 문서의 형식과 시작 방법
-- [11-playbook](../../playbook/INDEX.md) — 승인 뒤의 절차
+- [playbook](../../playbook/INDEX.md) — 승인 뒤의 절차
 - [CLAUDE.md §6](../../../CLAUDE.md) — 화면 문서 게이트

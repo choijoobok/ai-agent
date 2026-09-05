@@ -1,7 +1,7 @@
 ---
 id: LLM-CTX-IDX
 title: "02-context — 컨텍스트 엔지니어링 INDEX"
-category: 02-context
+category: harness/context
 type: operation
 created: 2026-04-30
 updated: 2026-05-04
@@ -42,4 +42,4 @@ tags: [context, rag, reading-map, budget, attention-budget, jit, index]
 
 - [INDEX](../../INDEX.md) — 마스터
 - [CLAUDE.md](../../../CLAUDE.md) — 헌법·신뢰 순서
-- [03-prompt/overlays](../../artifact/screen/overlay/INDEX.md) — Overlay 트리거 (읽기보다 먼저)
+- [artifact/screen/overlay](../../artifact/screen/overlay/INDEX.md) — Overlay 트리거 (읽기보다 먼저)

@@ -1,12 +1,12 @@
 ---
 id: LLM-HRN-IDX
 title: "05-harness — 훅·스킬·자동화 INDEX"
-category: "05-harness"
+category: harness
 type: operation
 created: "2026-04-30"
 updated: "2026-09-03"
 status: active
-sources: [orchestration/]
+sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
 author: Bong Jong Hyeon
 tier: 2
 tags: [harness, hooks, skills, automation, index]
@@ -61,4 +61,4 @@ tags: [harness, hooks, skills, automation, index]
 ## 관련 카테고리
 
 - [INDEX](../INDEX.md)
-- [04-memory](./memory/INDEX.md) — 메모리 갱신 정책
+- [harness/memory](./memory/INDEX.md) — 메모리 갱신 정책

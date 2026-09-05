@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-FE-IDX
 title: "Frontend Framework INDEX"
-category: "06-framework/frontend"
+category: standard/frontend
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

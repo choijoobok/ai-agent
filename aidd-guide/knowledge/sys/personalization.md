@@ -1,7 +1,7 @@
 ---
 id: LLM-KNW-SYS-004
 title: "개인화 넷 — 즐겨찾기 · 그리드 · 조회조건 · 통계"
-category: "09-knowledge/sys"
+category: knowledge/sys
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -55,7 +55,7 @@ tags: [knowledge, personalization, preference]
   **판정은 서버 한 곳**이며 화면은 지금의 시그니처를 들고 물을 뿐이다.
 - **`PREF_JSON` 을 서버가 열어 보지 않는다.** 무엇이 유효한 컬럼인지 아는 것은 **화면
   선언**이고, 서버가 검증하려면 선언을 서버에도 한 벌 두어야 한다 — **그것이 미러링이다.**
-- **양식 그리드는 개인화를 열지 않는다** — [11-playbook/excel.md §8](../../playbook/excel.md).
+- **양식 그리드는 개인화를 열지 않는다** — [playbook/excel.md](../../playbook/excel.md).
 
 ## 4. `SYS_USER_SEARCH_COND` — 담는 것은 **폼 값**이지 봉투가 아니다
 
@@ -103,5 +103,5 @@ tags: [knowledge, personalization, preference]
 ## 관련
 
 - [menu.md](./menu.md) — 즐겨찾기가 가리키는 메뉴
-- [06-framework/frontend/theme.md](../../standard/frontend/theme.md) — 기기의 속성
-- [11-playbook/crud-screen.md](../../playbook/crud-screen.md) — 조회조건 선언
+- [standard/frontend/theme.md](../../standard/frontend/theme.md) — 기기의 속성
+- [playbook/crud-screen.md](../../playbook/crud-screen.md) — 조회조건 선언

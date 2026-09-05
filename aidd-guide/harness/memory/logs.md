@@ -1,7 +1,7 @@
 ---
 id: LLM-MEM-004
 title: "raw · summary 로그 정책"
-category: "04-memory"
+category: harness/memory
 type: operation
 created: "2026-05-04"
 updated: "2026-09-03"
@@ -55,8 +55,8 @@ tags: [memory, log, episodic, chat-history]
 
 | 남기지 않는다 | 왜 |
 |---|---|
-| 비밀번호 · 토큰 · API 키 · 접속 문자열 | [13-safety/secrets.md](../../standard/safety/secrets.md) |
-| 실제 개인정보 — 주민번호 · 연락처 · 계좌 | [13-safety/pii.md](../../standard/safety/pii.md) |
+| 비밀번호 · 토큰 · API 키 · 접속 문자열 | [standard/safety/secrets.md](../../standard/safety/secrets.md) |
+| 실제 개인정보 — 주민번호 · 연락처 · 계좌 | [standard/safety/pii.md](../../standard/safety/pii.md) |
 | 운영 DB 에서 뽑은 실데이터 행 | 화면 확인은 값이 아니라 **형태**로 적는다 |
 
 - **마스킹은 훅이 한다** — 규칙 파일 하나(`.claude/hooks/log-mask.patterns`)를 원본으로 삼고, 매칭된 줄을 통째로 가린다. **정책을 훅에 나눠 적지 않는다.**
@@ -74,22 +74,22 @@ CLAUDE.md §10 의 셋이 그대로 칸이 된다: **결정 · 만든 것 · 남
 ## 읽을 때 — 얼마나 믿나
 
 ```
-현재 소스 코드  >  llm-guide/  >  documents/screen/  >  chat-history 요약  >  기억
+현재 소스 코드  >  documents/spec/  >  aidd-guide/  >  documents/ 생성 문서  >  chat-history 요약  >  기억
 ```
 
-- **요약은 사실의 원본이 아니다**(CLAUDE.md §2). 요약에 적힌 파일명·함수명·플래그는 **쓰기 전에 실물을 확인한다.**
+- **요약은 사실의 원본이 아니다**(CLAUDE.md §3). 요약에 적힌 파일명·함수명·플래그는 **쓰기 전에 실물을 확인한다.**
 - 요약은 *그때 무엇을 정했나* 의 단서이지 *지금 무엇이 참인가* 의 근거가 아니다. 둘을 섞으면 낡은 사실이 새 코드로 들어간다.
-- **통째로 읽지 않는다** — 날짜나 주제로 좁혀 그 절만 읽는다([02-context/reading.md](../context/reading.md)).
+- **통째로 읽지 않는다** — 날짜나 주제로 좁혀 그 절만 읽는다([harness/context/reading.md](../context/reading.md)).
 - 맥락을 되찾는 순서: **최근 커밋 메시지 → 그날 `summary` → 필요하면 `raw`.** 커밋이 가장 짧고 가장 검증된 기록이다.
 
 ## 보존
 
 - 월 폴더(`YYYY-MM/`)로 나뉜다. **지우는 시점을 정해 두지 않았다** — 형상 관리 밖이라 저장소가 무거워지지 않고, 지워야 할 이유가 생길 때 정한다.
-- 백업하지 않는다. **잃어도 되는 기록이다** — 잃으면 안 되는 것은 `llm-guide/` 와 커밋 메시지로 옮겨 두었어야 한다.
+- 백업하지 않는다. **잃어도 되는 기록이다** — 잃으면 안 되는 것은 `documents/` 와 커밋 메시지로 옮겨 두었어야 한다.
 - 로컬을 옮기거나 새로 받으면 `chat-history/` 는 **비어 있는 것이 정상이다**(`.gitignore`).
 
 ## 관련
 
 - [INDEX.md](./INDEX.md) — Memory Hierarchy · 갱신 조건
-- [05-harness/hooks.md](../hooks.md) — 훅의 상세와 새 훅의 계약
+- [harness/hooks.md](../hooks.md) — 훅의 상세와 새 훅의 계약
 - [CLAUDE.md §10](../../../CLAUDE.md) — 위치 · 형상 관리 제외 · 담을 것

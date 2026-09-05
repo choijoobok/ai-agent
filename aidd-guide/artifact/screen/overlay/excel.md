@@ -1,7 +1,7 @@
 ---
 id: LLM-PMT-OVR-004
 title: "Overlay — 엑셀 (내려받기 · 올려받기)"
-category: "03-prompt/overlays"
+category: artifact/screen/overlay
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -74,4 +74,4 @@ tags: [prompt, overlay, excel]
 
 ## 구현은
 
-[11-playbook/excel.md](../../../playbook/excel.md).
+[playbook/excel.md](../../../playbook/excel.md).

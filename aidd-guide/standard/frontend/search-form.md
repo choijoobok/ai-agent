@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-FE-003
 title: "조회조건 — useSearchFormHeader · 필드 하나의 선언"
-category: "06-framework/frontend"
+category: standard/frontend
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

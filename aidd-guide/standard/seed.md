@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-004
 title: "생성 시드 — 절차와 검증"
-category: "06-framework"
+category: standard
 type: operation
 created: 2026-09-03
 updated: 2026-09-03
@@ -133,7 +133,7 @@ git add . && git rebase --continue
 **섞이지 않는 대신 잊히는 자리가 하나 있다.** 새 파일은 `db.changelog-master.yaml` 에
 **직접 걸어야** 하는데(`includeAll` 이 아니다), 잊어도 `checkSeeds` 는 생성물만 보고
 시드 테스트는 **폴더를 훑으므로** 전부 초록이다. `SeedChangelogIncludeTest` 가 그 대조를
-한다 — 자세한 것은 [11-playbook/changeset.md §2](../playbook/changeset.md).
+한다 — 자세한 것은 [playbook/changeset.md](../playbook/changeset.md).
 
 ## 관련
 

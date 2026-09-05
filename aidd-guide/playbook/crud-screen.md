@@ -1,7 +1,7 @@
 ---
 id: LLM-PLY-001
 title: "단일 그리드 화면 — 조회 · 저장 · 실행"
-category: "11-playbook"
+category: playbook
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -17,7 +17,7 @@ tags: [playbook, crud, grid, paging]
 > **실물 둘**: `features/sample/singleoffset/`(①) · `features/sample/singlecursor/`(②).
 > **여는 것부터 한다** — 이 문서는 그 파일에서 *무엇을 왜 그렇게 골랐는지* 만 적는다.
 >
-> 컴포넌트 계약은 [06-framework/frontend/grid.md](../standard/frontend/grid.md) 가 갖는다.
+> 컴포넌트 계약은 [standard/frontend/grid.md](../standard/frontend/grid.md) 가 갖는다.
 
 ## 1. 먼저 정하는 것 — 페이징 모드
 
@@ -119,7 +119,7 @@ toSavePayload: (rows) => ({
 | 선언 | — | **`progress: true` 한 줄** |
 
 - **화면이 폴링 코드를 쓰지 않는다.** 주기·중단 조건·실패 처리가 화면마다 갈리면 **같은
-  기능이 화면 수만큼** 생긴다 — 계약은 [06-framework/frontend/progress.md](../standard/frontend/progress.md).
+  기능이 화면 수만큼** 생긴다 — 계약은 [standard/frontend/progress.md](../standard/frontend/progress.md).
 - **짧은 일에 진행률을 붙이지 않는다.** 창이 떴다가 바로 닫혀 *무언가 잘못됐나* 로 읽힌다.
 - **`eligible` 로 거르는 것은 UX 이고 판정은 서버다.** 화면에서 걸러도 서버 게이트는 남는다.
 - **`target: 'all'` 은 *전체* 가 아니라 *지금 그리드에 들어 있는 행* 이다.** 대상이 화면과
@@ -151,8 +151,8 @@ toSavePayload: (rows) => ({
 
 ## 관련
 
-- [06-framework/frontend/grid.md](../standard/frontend/grid.md) · [grid-advanced.md](../standard/frontend/grid-advanced.md) · [search-form.md](../standard/frontend/search-form.md)
-- [06-framework/backend/search.md](../standard/backend/search.md) — 화이트리스트와 빌더
-- [06-framework/backend/progress.md](../standard/backend/progress.md) · [sources/frontend/progress.md](../standard/frontend/progress.md) — 진행률
+- [standard/frontend/grid.md](../standard/frontend/grid.md) · [grid-advanced.md](../standard/frontend/grid-advanced.md) · [search-form.md](../standard/frontend/search-form.md)
+- [standard/backend/search.md](../standard/backend/search.md) — 화이트리스트와 빌더
+- [standard/backend/progress.md](../standard/backend/progress.md) · [sources/frontend/progress.md](../standard/frontend/progress.md) — 진행률
 - [modal.md](./modal.md) — 실행 인자 모달 · 참조 팝업
 - [changeset.md](./changeset.md) — 문구와 코드를 넣는다

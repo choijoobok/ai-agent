@@ -1,7 +1,7 @@
 ---
 id: LLM-CTX-005
 title: "컨텍스트 실패 모드 카탈로그"
-category: 02-context
+category: harness/context
 type: operation
 created: 2026-05-04
 updated: 2026-05-04
@@ -27,7 +27,7 @@ tags: [context, failure-mode, rot, distraction, clash, poisoning]
 ## Context Rot
 
 - **선형이 아니다** — 50% 부터 가파르게 저하. 70% 넘으면 단순 반복도 틀림.
-- 측정: [08-observability/context-rot-monitor.md](../../quality/observability/context-rot-monitor.md)
+- 측정: [quality/observability/context-rot-monitor.md](../../quality/observability/context-rot-monitor.md)
 - 예방: 200줄 운용 파일 룰, JIT Context (필요할 때만 fetch).
 
 ## Distraction
@@ -38,8 +38,8 @@ tags: [context, failure-mode, rot, distraction, clash, poisoning]
 ## Clash
 
 - 두 출처가 모순될 때 LLM 은 **마지막에 들어온 것** 또는 **가장 강한 어조**를 채택.
-- 대응: SSoT 우선순위 ([CLAUDE.md §2](../../../CLAUDE.md)) 강제 — 충돌 시 우선순위 표 따른다.
-- 운영 룰: 문서·기억과 코드가 다르면 **코드를 신뢰한다**(CLAUDE.md §2).
+- 대응: SSoT 우선순위 ([CLAUDE.md §3](../../../CLAUDE.md)) 강제 — 충돌 시 우선순위 표 따른다.
+- 운영 룰: 문서·기억과 코드가 다르면 **코드를 신뢰한다**(CLAUDE.md §3).
 
 ## Poisoning
 
@@ -48,7 +48,7 @@ tags: [context, failure-mode, rot, distraction, clash, poisoning]
   1. 발견 즉시 사용자에 알림.
   2. `/clear` 로 컨텍스트 폐기.
   3. 검증 절차(grep, 파일 존재 확인) 후 재시작.
-- 예방: 메모리에서 파일·함수명을 인용할 때 **반드시 grep 으로 현존 검증** ([CLAUDE.md §2](../../../CLAUDE.md) — 검증 없이 과거 기록을 현재 사실로 쓰지 않는다).
+- 예방: 메모리에서 파일·함수명을 인용할 때 **반드시 grep 으로 현존 검증** ([CLAUDE.md §3](../../../CLAUDE.md) — 검증 없이 과거 기록을 현재 사실로 쓰지 않는다).
 
 ## 진단 절차
 
@@ -61,4 +61,4 @@ tags: [context, failure-mode, rot, distraction, clash, poisoning]
 
 - [budget.md](./budget.md) — 컨텍스트 측정·관리
 - [reading.md](./reading.md) — JIT 읽기 전략
-- [08-observability/context-rot-monitor.md](../../quality/observability/context-rot-monitor.md)
+- [quality/observability/context-rot-monitor.md](../../quality/observability/context-rot-monitor.md)

@@ -1,7 +1,7 @@
 ---
 id: LLM-HRN-005
 title: "Sub-Agent Architecture 정책"
-category: 05-harness
+category: harness
 type: operation
 created: 2026-05-04
 updated: 2026-05-04
@@ -78,4 +78,4 @@ tags: [harness, sub-agent, delegation, context-protection]
 
 - [INDEX.md](./INDEX.md)
 - [tool-curation.md](./tool-curation.md) — 서브 에이전트도 도구 추가의 일종
-- [02-context/budget.md](./context/budget.md) — 메인 컨텍스트 보호
+- [harness/context/budget.md](./context/budget.md) — 메인 컨텍스트 보호

@@ -1,19 +1,19 @@
 ---
 id: LLM-MET-001
 title: "메타블록 표준 스펙"
-category: "00-meta"
+category: meta
 type: operation
 created: "2026-04-30"
 updated: "2026-09-03"
 status: active
-sources: [orchestration/]
+sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
 author: Bong Jong Hyeon
 tier: 3
 tags: [meta, frontmatter, spec]
 ---
 # 메타블록 표준 스펙
 
-> orchestration 의 모든 MD 파일은 **상단에 YAML frontmatter** 형식의 메타블록을 둔다. 추적성·검색·자동화의 기반.
+> `aidd-guide` 의 모든 MD 파일은 **상단에 YAML frontmatter** 형식의 메타블록을 둔다. 추적성·검색·자동화의 기반.
 
 ## 표준 형식
 
@@ -52,7 +52,7 @@ tags: [tag1, tag2]
 
 | Prefix | 카테고리 |
 |--------|---------|
-| LLM-IDX | 마스터 인덱스 (orchestration/INDEX.md) |
+| LLM-IDX | 마스터 인덱스 (`aidd-guide/INDEX.md`) |
 | LLM-MET | 00-meta |
 | LLM-CTX | 02-context |
 | LLM-PMT | 03-prompt |

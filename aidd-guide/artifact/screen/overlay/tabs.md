@@ -1,7 +1,7 @@
 ---
 id: LLM-PMT-OVR-005
 title: "Overlay — 탭 (하단 디테일 · 화면 전체)"
-category: "03-prompt/overlays"
+category: artifact/screen/overlay
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -54,5 +54,5 @@ tags: [prompt, overlay, tabs]
 
 ## 구현은
 
-[11-playbook/master-tabs.md](../../../playbook/master-tabs.md)(하단) ·
-[11-playbook/excel.md §7](../../../playbook/excel.md)(최상단).
+[playbook/master-tabs.md](../../../playbook/master-tabs.md)(하단) ·
+[playbook/excel.md](../../../playbook/excel.md)(최상단).

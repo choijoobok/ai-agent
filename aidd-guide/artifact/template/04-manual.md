@@ -1,7 +1,7 @@
 ---
 id: LLM-ART-008
 title: "사용자 메뉴얼 서식"
-category: artifact
+category: artifact/template
 type: template
 created: 2026-09-04
 updated: 2026-09-04

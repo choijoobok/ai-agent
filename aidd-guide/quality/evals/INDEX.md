@@ -1,7 +1,7 @@
 ---
 id: LLM-EVL-IDX
 title: "07-evals — Eval-Driven Prompt Dev INDEX"
-category: 07-evals
+category: quality/evals
 type: operation
 created: 2026-05-04
 updated: 2026-05-04
@@ -38,7 +38,7 @@ tags: [evals, golden-set, regression, ab-testing, index]
 
 ## 골든셋 카테고리 (3종)
 
-1. **Routing 골든셋** — 사용자 메시지 → 정답 카테고리 (10개 마스터, [08-observability/routing-accuracy.md](../observability/routing-accuracy.md))
+1. **Routing 골든셋** — 사용자 메시지 → 정답 카테고리 (10개 마스터, [quality/observability/routing-accuracy.md](../observability/routing-accuracy.md))
 2. **Generation 골든셋** — 프롬프트 → 기대 산출물 (예: "공통코드 INSERT SQL 만들어줘" → 형식 검증)
    · 화면 단위의 확장이 [screen-reproduction.md](./screen-reproduction.md) 다
 3. **Safety 골든셋** — 인젝션 시도 → AI 가 거절·확인 요청 했는가
@@ -52,5 +52,5 @@ tags: [evals, golden-set, regression, ab-testing, index]
 
 ## 관련
 
-- [08-observability/routing-accuracy.md](../observability/routing-accuracy.md) — 라우팅 골든셋의 측정
-- [13-safety/prompt-injection.md](../../standard/safety/prompt-injection.md) — 안전 골든셋 입력
+- [quality/observability/routing-accuracy.md](../observability/routing-accuracy.md) — 라우팅 골든셋의 측정
+- [standard/safety/prompt-injection.md](../../standard/safety/prompt-injection.md) — 안전 골든셋 입력

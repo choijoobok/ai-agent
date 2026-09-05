@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-BE-010
 title: "로깅 — 요청 전문 · 애플리케이션 로그 · 마스킹"
-category: "06-framework/backend"
+category: standard/backend
 type: operation
 created: 2026-09-03
 updated: 2026-09-03

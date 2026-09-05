@@ -1,7 +1,7 @@
 ---
 id: LLM-PMT-001
 title: "화면 요청 → 승인까지 일곱 단계"
-category: "03-prompt"
+category: artifact/screen
 type: operation
 created: 2026-05-04
 updated: 2026-09-04
@@ -57,7 +57,7 @@ cp aidd-guide/artifact/template/02-requirements.md documents/screen/{페이지�
 
 | 확인할 것 | 어디 |
 |---|---|
-| 표와 컬럼이 실제로 있나 | `sources/backend/domain/…/entity/` · [09-knowledge/sys/](../../knowledge/sys/INDEX.md) |
+| 표와 컬럼이 실제로 있나 | `sources/backend/domain/…/entity/` · [knowledge/sys](../../knowledge/sys/INDEX.md) |
 | 코드 그룹이 있나 | 시드 changeset · `SYS_CODE_GROUP` |
 | 메시지 키를 새로 만드나 | `sources/frontend/src/shared/i18n/messageKeys.ts` · `MsgKey.java` |
 | **비슷한 화면이 이미 있나** | `sources/frontend/src/features/` · 샘플 여섯 |
@@ -121,7 +121,7 @@ node .claude/skills/mockup/scaffold.mjs {화면} > documents/screen/{화면}/moc
 
 - §0 의 **문서 상태**에 `승인 YYYY-MM-DD` 를 적는다.
 - **§10 이 비어야 승인이다.** 미결이 남은 채 착수하면 그 항목은 **구현이 임의로 정하게 된다.**
-- 승인 뒤에는 [11-playbook](../../playbook/INDEX.md) 으로 넘어간다.
+- 승인 뒤에는 [playbook](../../playbook/INDEX.md) 으로 넘어간다.
 
 ## 요청이 모호할 때 — 묻는 다섯
 

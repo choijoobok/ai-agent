@@ -1,7 +1,7 @@
 ---
 id: LLM-ART-003
 title: "운영 런북 템플릿"
-category: artifact
+category: artifact/template
 type: template
 created: 2026-09-04
 updated: 2026-09-04

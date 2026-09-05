@@ -1,7 +1,7 @@
 ---
 id: LLM-PMT-005
 title: "Few-shot · Canonical Examples 정책"
-category: 03-prompt
+category: artifact/screen
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -61,5 +61,5 @@ tags: [prompt, few-shot, canonical-example]
 
 ## 관련
 
-- [03-prompt/INDEX.md](./INDEX.md)
-- [03-prompt/overlays/INDEX.md](./overlay/INDEX.md) — Overlay = 조건부 canonical example
+- [artifact/screen/INDEX.md](./INDEX.md)
+- [artifact/screen/overlay/INDEX.md](./overlay/INDEX.md) — Overlay = 조건부 canonical example

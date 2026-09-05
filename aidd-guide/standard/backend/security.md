@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-BE-006
 title: "보안 — 계층 셋 · 인가 모델 · 접근 제어 체인"
-category: "06-framework/backend"
+category: standard/backend
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

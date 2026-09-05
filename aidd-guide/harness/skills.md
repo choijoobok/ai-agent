@@ -1,7 +1,7 @@
 ---
 id: LLM-HRN-002
 title: "스킬 카탈로그 + 작성 규약"
-category: "05-harness"
+category: harness
 type: operation
 created: "2026-05-04"
 updated: "2026-09-03"
@@ -63,7 +63,7 @@ tags: [harness, skill, workflow, convention]
 |---|---|---|---|
 | **훅** | 어겼는지 **검사**하거나 **기록**한다 | 도구 호출·턴이 자동으로 | [hooks.md](./hooks.md) 의 다섯 |
 | **스킬** | 여러 단계를 **순서대로** 해낸다 | 사람 또는 AI 가 부른다 | `/menu-doc` · `/manual-site` |
-| **플레이북** | 화면 하나를 **어떻게 만드나** | AI 가 읽는다 | [11-playbook](../playbook/INDEX.md) |
+| **플레이북** | 화면 하나를 **어떻게 만드나** | AI 가 읽는다 | [playbook](../playbook/INDEX.md) |
 
 > **한 가지를 셋 중 둘에 두지 않는다.** 스킬이 코드 표준을 다시 적으면 플레이북과 갈리고,
 > 갈린 둘은 어느 쪽이 참인지 알 수 없게 된다.
@@ -108,7 +108,7 @@ tags: [harness, skill, workflow, convention]
 
 - 화면의 원본은 `screenRegistry.ts` 와 `menu-tree.yaml` 이다. `screens.mjs` 는 **읽을 뿐**이다.
 - **거기 없는 화면은 없는 화면이다** — 대상이 목록에 없으면 거기서 멈추고 **사용자에게 묻는다**.
-  화면을 먼저 등록할 일인지 경로를 잘못 들은 것인지는 판단이다(CLAUDE.md §2).
+  화면을 먼저 등록할 일인지 경로를 잘못 들은 것인지는 판단이다(CLAUDE.md §3).
 
 ### 보고는 문제부터
 
@@ -131,4 +131,4 @@ tags: [harness, skill, workflow, convention]
 - [hooks.md](./hooks.md) — 훅 다섯의 상세
 - [automation-matrix.md](./automation-matrix.md) — 자동화 vs AI 책임
 - [tool-curation.md](./tool-curation.md) — 도구 추가 게이트
-- [11-playbook](../playbook/INDEX.md) — 화면 레시피
+- [playbook](../playbook/INDEX.md) — 화면 레시피

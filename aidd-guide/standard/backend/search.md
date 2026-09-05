@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-BE-003
 title: "조회 — 봉투 · 화이트리스트 · 빌더"
-category: "06-framework/backend"
+category: standard/backend
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

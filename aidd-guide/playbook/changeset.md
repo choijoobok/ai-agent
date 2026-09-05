@@ -1,7 +1,7 @@
 ---
 id: LLM-PLY-004
 title: "Liquibase changeset — 표를 만들고 시드를 더한다"
-category: "11-playbook"
+category: playbook
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -18,7 +18,7 @@ tags: [playbook, liquibase, changeset, seed, schema]
 > DDL 도 시드도 **Liquibase changeset** 이고 벤더별 SQL 은 실행 시점에 만들어진다.
 >
 > **실물**: `sources/backend/bootstrap/src/main/resources/db/changelog/`.
-> 생성 시드의 절차는 [06-framework/seed.md](../standard/seed.md) 가 갖는다 — 여기는
+> 생성 시드의 절차는 [standard/seed.md](../standard/seed.md) 가 갖는다 — 여기는
 > **사람이 쓰는 쪽**이다.
 
 ## 1. 먼저 가른다 — 누구의 것인가
@@ -63,7 +63,7 @@ tags: [playbook, liquibase, changeset, seed, schema]
 
 - **`createTable` 같은 추상 명령으로 쓴다.** 벤더별 DDL 을 손으로 다섯 벌 관리하면 서로
   어긋나는 것은 시간 문제다.
-- **타입은 표 안에서만 고른다** — [06-framework/backend/persistence.md](../standard/backend/persistence.md) §2.
+- **타입은 표 안에서만 고른다** — [standard/backend/persistence.md](../standard/backend/persistence.md) §2.
 - **표가 늘면 `SYS_SEQUENCE` 에 행이 하나 는다.** 식별자가 `TABLE` 전략이다.
 - **파일 머리에 왜를 적는다.** 이 저장소의 스키마 파일은 *무엇을 만드나* 가 아니라
   *왜 이 모양인가* 를 담는다 — 다음 사람이 컬럼을 지우려 할 때 읽을 유일한 글이다.
@@ -117,7 +117,7 @@ tags: [playbook, liquibase, changeset, seed, schema]
 ```
 
 **올리지 않으면 이미 뜬 인스턴스가 옛 값을 계속 쓴다.** 대상은 `message` · `code` ·
-`config` — [06-framework/backend/caching.md](../standard/backend/caching.md).
+`config` — [standard/backend/caching.md](../standard/backend/caching.md).
 
 ## 7. 지우는 법까지가 한 벌이다
 
@@ -152,6 +152,6 @@ changeset 을 목록에서 빼도 **되돌리지 않는다** — `DATABASECHANGE
 
 ## 관련
 
-- [06-framework/seed.md](../standard/seed.md) — 생성 시드의 절차
-- [06-framework/backend/persistence.md](../standard/backend/persistence.md) — 타입과 벤더
-- [09-knowledge](../knowledge/INDEX.md) — 코드·메시지·메뉴가 무엇인가
+- [standard/seed.md](../standard/seed.md) — 생성 시드의 절차
+- [standard/backend/persistence.md](../standard/backend/persistence.md) — 타입과 벤더
+- [knowledge](../knowledge/INDEX.md) — 코드·메시지·메뉴가 무엇인가

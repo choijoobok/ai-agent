@@ -1,7 +1,7 @@
 ---
 id: LLM-PMT-OVR-002
 title: "Overlay — 마스터-디테일"
-category: "03-prompt/overlays"
+category: artifact/screen/overlay
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -58,4 +58,4 @@ tags: [prompt, overlay, master-detail]
 
 ## 구현은
 
-[11-playbook/master-detail.md](../../../playbook/master-detail.md).
+[playbook/master-detail.md](../../../playbook/master-detail.md).

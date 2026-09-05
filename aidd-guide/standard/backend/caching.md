@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-BE-008
 title: "캐시 — 대상마다 다른 백엔드 · SysCacheVersion"
-category: "06-framework/backend"
+category: standard/backend
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

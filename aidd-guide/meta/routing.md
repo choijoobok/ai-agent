@@ -1,12 +1,12 @@
 ---
 id: LLM-MET-003
 title: "작업 시작 라우팅 결정 트리"
-category: "00-meta"
+category: meta
 type: operation
 created: "2026-04-30"
 updated: "2026-04-30"
 status: active
-sources: [orchestration/]
+sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
 author: Bong Jong Hyeon
 tier: 3
 tags: [meta, routing, decision-tree]
@@ -63,7 +63,7 @@ tags: [meta, routing, decision-tree]
 
 | 도메인 | 키워드 | 진입 |
 |-------|--------|------|
-| SYS | User / Menu / Role / Code / Message | [09-knowledge/sys](../knowledge/sys/INDEX.md) |
+| SYS | User / Menu / Role / Code / Message | [knowledge/sys](../knowledge/sys/INDEX.md) |
 | TODO | 프로젝트 업무 도메인 추가 | `09-knowledge/{도메인}/INDEX.md` |
 
 ## 3차 분류 — 화면 패턴
@@ -94,10 +94,10 @@ tags: [meta, routing, decision-tree]
 
 ## 충돌·모호 처리
 
-- **요청이 모호** → 사용자에게 질문 (추정 금지: [CLAUDE.md §2](../../CLAUDE.md))
+- **요청이 모호** → 사용자에게 질문 (추정 금지: [CLAUDE.md §3](../../CLAUDE.md))
 - **카테고리가 명확하지 않음** → [INDEX.md](../INDEX.md) 마스터로 돌아가서 표 확인
 - **여러 카테고리에 걸침** → 가장 핵심인 1개 진입 후 다른 카테고리는 참조
 
 ## 메모리 우선
 
-이 트리와 문서가 충돌하면 **소스 코드가 가장 우선**이다(CLAUDE.md §2).
+이 트리와 문서가 충돌하면 **소스 코드가 가장 우선**이다(CLAUDE.md §3).

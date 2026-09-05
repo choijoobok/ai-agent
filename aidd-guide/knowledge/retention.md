@@ -1,7 +1,7 @@
 ---
 id: LLM-KNW-003
 title: "보존 기간 — 방향이 둘이다"
-category: "09-knowledge"
+category: knowledge
 type: operation
 created: 2026-09-04
 updated: 2026-09-04
@@ -113,5 +113,5 @@ tags: [knowledge, retention, purge, batch, regulation]
 
 - [sys/logs.md](./sys/logs.md) — 이력 표들의 컬럼
 - [sys/progress-lock.md](./sys/progress-lock.md) — 진행률 · 락의 만료 청소
-- [06-framework/backend/batch.md](../standard/backend/batch.md) — `BatchJob` 계약
-- [06-framework/backend/pii-vault.md](../standard/backend/pii-vault.md) — 하한 대상의 사연
+- [standard/backend/batch.md](../standard/backend/batch.md) — `BatchJob` 계약
+- [standard/backend/pii-vault.md](../standard/backend/pii-vault.md) — 하한 대상의 사연

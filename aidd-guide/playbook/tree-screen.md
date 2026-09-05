@@ -1,7 +1,7 @@
 ---
 id: LLM-PLY-007
 title: "트리 화면 — 계층을 보여주고 고치는 판"
-category: "11-playbook"
+category: playbook
 type: operation
 created: 2026-09-04
 updated: 2026-09-04

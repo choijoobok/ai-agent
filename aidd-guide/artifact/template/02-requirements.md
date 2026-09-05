@@ -1,7 +1,7 @@
 ---
 id: LLM-ART-007
 title: "화면 요건 정의서 서식"
-category: artifact
+category: artifact/template
 type: template
 created: 2026-09-04
 updated: 2026-09-04
@@ -295,7 +295,7 @@ tags: [artifact, template, screen]
 
 ## 10. 미결 · 확인 필요
 
-<!-- 추정으로 메우지 않고 여기 남긴다(CLAUDE.md §2). 비면 "없음". -->
+<!-- 추정으로 메우지 않고 여기 남긴다(CLAUDE.md §3). 비면 "없음". -->
 
 - {없음}
 

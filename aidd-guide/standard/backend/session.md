@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-BE-007
 title: "세션 — 스토어 선택 · 담는 것 · 동시 접속"
-category: "06-framework/backend"
+category: standard/backend
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

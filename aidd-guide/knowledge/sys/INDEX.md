@@ -1,7 +1,7 @@
 ---
 id: LLM-KNW-SYS-IDX
 title: "sys — 시스템 표 INDEX"
-category: "09-knowledge/sys"
+category: knowledge/sys
 type: operation
 created: 2026-05-04
 updated: 2026-09-04

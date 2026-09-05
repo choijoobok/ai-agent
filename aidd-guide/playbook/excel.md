@@ -1,7 +1,7 @@
 ---
 id: LLM-PLY-005
 title: "엑셀 — 내려받기 세 갈래 · 올려받기 탭"
-category: "11-playbook"
+category: playbook
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -158,4 +158,4 @@ const dirtyOf = (key) => key === TAB_UPLOAD ? (upload.current?.dirty() ?? false)
 
 - [crud-screen.md](./crud-screen.md) · [master-detail.md](./master-detail.md)
 - [master-tabs.md §8](./master-tabs.md) — 두 탭의 규칙 차이
-- [06-framework/frontend/grid.md](../standard/frontend/grid.md) — 크롬의 자리
+- [standard/frontend/grid.md](../standard/frontend/grid.md) — 크롬의 자리

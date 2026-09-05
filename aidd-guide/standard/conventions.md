@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-002
 title: "공통 규약 — 이름 · 인코딩 · 주석 · 게이트"
-category: "06-framework"
+category: standard
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

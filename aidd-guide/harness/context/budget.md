@@ -1,7 +1,7 @@
 ---
 id: LLM-CTX-001
 title: "컨텍스트 예산 관리"
-category: "02-context"
+category: harness/context
 type: operation
 created: "2026-04-30"
 updated: "2026-04-30"
@@ -106,6 +106,6 @@ CTX [█████░░░░░░░░░░░░░░░] 11% — 정�
 ## 관련 카테고리
 
 - [CLAUDE.md](../../../CLAUDE.md) — 헌법·응답 규칙
-- [02-context/reading.md](./reading.md) — 토큰 절약 읽기 전략
-- [02-context/failure-modes.md](./failure-modes.md) — Context Rot 등 실패 모드
-- [08-observability/token-economics.md](../../quality/observability/token-economics.md) — 캐시 hit rate 측정
+- [harness/context/reading.md](./reading.md) — 토큰 절약 읽기 전략
+- [harness/context/failure-modes.md](./failure-modes.md) — Context Rot 등 실패 모드
+- [quality/observability/token-economics.md](../../quality/observability/token-economics.md) — 캐시 hit rate 측정

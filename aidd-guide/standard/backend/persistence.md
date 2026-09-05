@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-BE-001
 title: "영속 — JPA / QueryDSL / MyBatis 경계와 DB 중립"
-category: "06-framework/backend"
+category: standard/backend
 type: operation
 created: 2026-05-04
 updated: 2026-09-04

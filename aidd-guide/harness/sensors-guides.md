@@ -1,7 +1,7 @@
 ---
 id: LLM-HRN-007
 title: "Sensors vs Guides 자동화 분류"
-category: 05-harness
+category: harness
 type: operation
 created: 2026-05-04
 updated: 2026-05-04

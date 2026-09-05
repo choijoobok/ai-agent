@@ -1,7 +1,7 @@
 ---
 id: LLM-OBS-002
 title: "토큰 비용 관측"
-category: 08-observability
+category: quality/observability
 type: operation
 created: 2026-05-04
 updated: 2026-05-04
@@ -44,7 +44,7 @@ tags: [observability, token, cost, cache, hit-rate]
 
 | 시나리오 | 신호 | 대응 |
 |---------|------|------|
-| 대용량 Read 반복 | input 토큰 평균 > 100K | seek-read 적용 — [02-context/reading.md](../../harness/context/reading.md) |
+| 대용량 Read 반복 | input 토큰 평균 > 100K | seek-read 적용 — [harness/context/reading.md](../../harness/context/reading.md) |
 | 무한 루프 | 같은 도구 호출이 N회 반복 | 사용자에 알리고 즉시 중단 |
 | 캐시 미스 | hit rate < 40% | prefix 안정화 (CLAUDE.md 안 건드림) |
 | 컨텍스트 포화 | `/context` ≥ 80% | `/compact` 또는 `/clear` |
@@ -61,5 +61,5 @@ Context @ end: 47%
 
 ## 관련
 
-- [02-context/budget.md](../../harness/context/budget.md) — 컨텍스트 측정 정책
-- [13-safety/rate-limit.md](../../standard/safety/rate-limit.md) — 외부 API rate limit
+- [harness/context/budget.md](../../harness/context/budget.md) — 컨텍스트 측정 정책
+- [standard/safety/rate-limit.md](../../standard/safety/rate-limit.md) — 외부 API rate limit

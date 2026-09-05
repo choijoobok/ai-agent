@@ -1,7 +1,7 @@
 ---
 id: LLM-KNW-SYS-003
 title: "공통코드 — 그룹 · 코드 · 참조 코드"
-category: "09-knowledge/sys"
+category: knowledge/sys
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -105,10 +105,10 @@ SYS_CODE_GRP_REF 참조 코드 정의   COLOR · SORT_HINT            ← 열
 ## 6. 값을 넣었으면 캐시 버전을 올린다
 
 코드 행을 바꾸는 changeset 은 `SYS_CACHE_VERSION` 의 `code` 를 함께 올린다 —
-[message.md §4](./message.md) · [11-playbook/changeset.md §6](../../playbook/changeset.md).
+[message.md §4](./message.md) · [playbook/changeset.md](../../playbook/changeset.md).
 
 ## 관련
 
 - [message.md](./message.md) — `DTL_NM` 이 가리키는 곳
 - [config.md](./config.md) — 설정과 코드의 경계
-- [11-playbook/changeset.md](../../playbook/changeset.md) — 코드 시드를 넣는 법
+- [playbook/changeset.md](../../playbook/changeset.md) — 코드 시드를 넣는 법

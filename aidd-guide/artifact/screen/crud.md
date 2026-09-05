@@ -1,7 +1,7 @@
 ---
 id: LLM-PMT-002
 title: "단일 그리드 CRUD — 대화의 실물"
-category: "03-prompt"
+category: artifact/screen
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -99,7 +99,7 @@ tags: [prompt, crud, example]
 
 ## 6. 승인 뒤
 
-[11-playbook/crud-screen.md](../../playbook/crud-screen.md) 로 넘어간다.
+[playbook/crud-screen.md](../../playbook/crud-screen.md) 로 넘어간다.
 **요건서에 없는 판단이 구현에서 필요해지면 요건서를 고치고 알린다** — 조용히 정하지 않는다.
 
 ## 이 대화에서 하지 않은 것
@@ -116,4 +116,4 @@ tags: [prompt, crud, example]
 
 - [screen.md](./screen.md) — 절차 일곱 단계
 - [auto-completion.md](./auto-completion.md) — 🤖 를 붙일 수 있는 것
-- [11-playbook/crud-screen.md](../../playbook/crud-screen.md) — 승인 뒤
+- [playbook/crud-screen.md](../../playbook/crud-screen.md) — 승인 뒤

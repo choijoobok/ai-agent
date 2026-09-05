@@ -63,26 +63,26 @@
 
 ## ID 체계 — 프로젝트의 것
 
-| Prefix | 대상 | 정의 위치 |
-|---|---|---|
-| `GOAL-` `NGOAL-` | 최종 목표 · 비목표 | `00-charter.yaml` |
-| `ACT-` | 액터 | `01-actors.yaml` |
-| `PRN-` | 설계 원칙 | `02-constraints.yaml` |
-| `CON-` | 제약·착수 확정 항목 | 〃 |
-| `TRM-` | 용어 | `03-glossary.yaml` |
-| `REQ-` | 요구사항 | `10-requirements.yaml` |
-| `PRC-` | 업무 프로세스 | `11-processes.yaml` |
-| `ARCH-` | 아키텍처 결정 사항 | `20-architecture.yaml` |
-| `NFR-` | 비기능 목표치 | `21-nfr.yaml` |
-| `AUTHZ-` | 권한 모델 | `22-authz.yaml` |
-| `UC-` | 유즈케이스 | `30-usecases.yaml` |
-| `FEAT-` | 기능 | `31-features.yaml` |
-| `ENT-` | 엔티티 | `40-domain.yaml` |
-| `API-` | Hub 내부 API | `50-api.yaml` |
-| `IF-` | 외부 인터페이스 | `51-interfaces.yaml` |
-| `SCR-` | 화면 | `60-screens.yaml` |
-| `TC-` | 테스트 케이스 | `70-testcases.yaml` |
-| `DES-` | 상세 설계 문서 | `design/` |
+| Prefix                              | 대상                       | 정의 위치                               |
+| ----------------------------------- | ------------------------ | ----------------------------------- |
+| `GOAL-` `NGOAL-`                    | 최종 목표 · 비목표              | `00-charter.yaml`                   |
+| `ACT-`                              | 액터                       | `01-actors.yaml`                    |
+| `PRN-`                              | 설계 원칙                    | `02-constraints.yaml`               |
+| `CON-`                              | 제약·착수 확정 항목              | 〃                                   |
+| `TRM-`                              | 용어                       | `03-glossary.yaml`                  |
+| `REQ-`                              | 요구사항                     | `10-requirements.yaml`              |
+| `PRC-`                              | 업무 프로세스                  | `11-processes.yaml`                 |
+| `ARCH-`                             | 아키텍처 결정 사항               | `20-architecture.yaml`              |
+| `NFR-`                              | 비기능 목표치                  | `21-nfr.yaml`                       |
+| `AUTHZ-`                            | 권한 모델                    | `22-authz.yaml`                     |
+| `UC-`                               | 유즈케이스                    | `30-usecases.yaml`                  |
+| `FEAT-`                             | 기능                       | `31-features.yaml`                  |
+| `ENT-`                              | 엔티티                      | `40-domain.yaml`                    |
+| `API-`                              | Hub 내부 API               | `50-api.yaml`                       |
+| `IF-`                               | 외부 인터페이스                 | `51-interfaces.yaml`                |
+| `SCR-`                              | 화면                       | `60-screens.yaml`                   |
+| `TC-`                               | 테스트 케이스                  | `70-testcases.yaml`                 |
+| `DES-`                              | 상세 설계 문서                 | `design/`                           |
 | `ADR-` `ASM-` `CR-` `DEF-` `SLICE-` | 결정 · 가정 · 변경 · 결함 · 슬라이스 | `decisions/` · `project.state.yaml` |
 
 - 체인과 검사 규칙(T1~T12)은 [`aidd-guide/process/05-traceability.md`](../aidd-guide/process/05-traceability.md).

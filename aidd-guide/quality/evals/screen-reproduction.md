@@ -1,7 +1,7 @@
 ---
 id: LLM-EVL-004
 title: "화면 재현 회귀 — 문서만으로 같은 화면이 나오는가"
-category: 07-evals
+category: quality/evals
 type: operation
 created: 2026-09-04
 updated: 2026-09-04
@@ -23,7 +23,7 @@ tags: [evals, generation, regression, documentation, golden-set]
 
 ## 1. 언제 돌리나
 
-- `llm-guide/` 의 **06-framework · 11-playbook 을 크게 고친 뒤** — 고친 것이 실제로 닿았는지 본다
+- `aidd-guide/` 의 **standard · playbook 을 크게 고친 뒤** — 고친 것이 실제로 닿았는지 본다
 - **새 화면 유형**(트리·차트·업로드 등)을 처음 만든 뒤 — 레시피가 섰는지 본다
 - 요건서 템플릿을 고친 뒤
 - 그 밖에는 분기 1회면 충분하다. **싸지 않다** — 화면 하나에 40만 토큰 안팎이다
@@ -42,7 +42,7 @@ git worktree add --detach <스크래치>/sbx-<화면> HEAD
 |---|---|
 | `sources/frontend/src/features/{도메인}/` 전체 | 그 화면의 `requirements.md` |
 | 그 화면만 쓰는 백엔드 클래스 | 옆 화면이 함께 쓰는 클래스 |
-| `documents/screen/{경로}/mockup.html` · `manual.md` · `manual.html` | `llm-guide/` 전부 · 샘플 여섯 |
+| `documents/screen/{경로}/mockup.html` · `manual.md` · `manual.html` | `aidd-guide/` 전부 · 샘플 여섯 |
 | `screenRegistry.ts` 의 그 줄 | 시드 CSV · `messageKeys.ts` · `menu-tree.yaml` |
 
 - **옆 화면의 실물을 남기는 것이 옳다.** `CLAUDE.md` §3 이 *"비슷한 화면의 실물을 읽는다"* 를
@@ -100,7 +100,7 @@ git worktree add --detach <스크래치>/sbx-<화면> HEAD
 - **`추측` 이 높은 화면이 다음에 쓸 문서를 가리킨다.** 2026-09-04 에는 `/code`(동적 컬럼)와
   `/role-auth`(트리·유효권한 판정)가 그랬다.
 - **`가이드` 가 낮은 화면은 레시피가 없는 화면이다.** `/role-auth` 의 13% 가
-  [11-playbook/tree-screen.md](../../playbook/tree-screen.md) 를 쓰게 했다.
+  [playbook/tree-screen.md](../../playbook/tree-screen.md) 를 쓰게 했다.
 
 ## 5. 한계 — 이 숫자를 어디까지 믿나
 

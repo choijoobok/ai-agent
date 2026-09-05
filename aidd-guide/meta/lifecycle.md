@@ -1,19 +1,19 @@
 ---
 id: LLM-MET-004
 title: "문서 생명주기"
-category: "00-meta"
+category: meta
 type: operation
 created: "2026-04-30"
 updated: "2026-04-30"
 status: active
-sources: [orchestration/]
+sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
 author: Bong Jong Hyeon
 tier: 3
 tags: [meta, lifecycle]
 ---
 # 문서 생명주기
 
-> orchestration 문서의 **생성·수정·폐기** 절차. 추적성과 일관성을 유지하기 위함.
+> `aidd-guide` 문서의 **생성·수정·폐기** 절차. 추적성과 일관성을 유지하기 위함.
 
 ## 생명주기 다이어그램
 

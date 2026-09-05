@@ -1,7 +1,7 @@
 ---
 id: LLM-SAF-002
 title: "프롬프트 인젝션 방어"
-category: 13-safety
+category: standard/safety
 type: operation
 created: 2026-05-04
 updated: 2026-05-04

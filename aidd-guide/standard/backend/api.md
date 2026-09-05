@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-BE-002
 title: "API 규약 — 경로 · 봉투 · 헤더 · 시간"
-category: "06-framework/backend"
+category: standard/backend
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

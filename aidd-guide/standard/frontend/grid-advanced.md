@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-FE-001
 title: "그리드 심화 — 컬럼 계약 · 편집 · 검증 · 마스터-디테일"
-category: "06-framework/frontend"
+category: standard/frontend
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

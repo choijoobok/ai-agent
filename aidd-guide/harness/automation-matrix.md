@@ -1,7 +1,7 @@
 ---
 id: LLM-HRN-003
 title: "자동화 vs AI 책임 매트릭스"
-category: "05-harness"
+category: harness
 type: operation
 created: "2026-04-30"
 updated: "2026-09-03"
@@ -51,7 +51,7 @@ tags: [harness, hooks, automation]
 | 화면 문서 현행화 | AI | `doc-drift` 는 *어느 화면인지* 만 가리킨다. 고칠지 말지는 AI 와 사람이 정한다 |
 | 목업 생성 | AI (`/mockup`) | 요건서에서 만든다. 골격은 기계가 내고 **그림만 AI 가 그린다** |
 | 공통물 승격 | AI | 두 번째 사용을 알아채는 검사가 없다 — 리뷰에서 *이거 다른 화면에도 있지 않나* 를 묻는다 |
-| `chat-history` 요약 | AI | **원문은 `log-raw` 가 남긴다.** 요약은 결정·산출물·미결만(CLAUDE.md §10 · [04-memory/logs.md](./memory/logs.md)) |
+| `chat-history` 요약 | AI | **원문은 `log-raw` 가 남긴다.** 요약은 결정·산출물·미결만(CLAUDE.md §10 · [harness/memory/logs.md](./memory/logs.md)) |
 | 결정 기록 | AI | **커밋 메시지에 *왜* 를 적는다**(CLAUDE.md §9). 버린 안이 있으면 ADR 을 더한다 |
 
 ## 위반 패턴

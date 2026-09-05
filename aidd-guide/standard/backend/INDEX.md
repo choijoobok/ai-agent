@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-BE-IDX
 title: "Backend Framework INDEX"
-category: "06-framework/backend"
+category: standard/backend
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-003
 title: "스택 — 버전과 그 버전이 강요한 것"
-category: "06-framework"
+category: standard
 type: operation
 created: 2026-05-04
 updated: 2026-09-04
@@ -18,7 +18,7 @@ tags: [stack, version, gradle, npm]
 > Boot 4 · JDK 25 · Jackson 3 이 각각 조용한 함정을 하나씩 갖고 있다.
 >
 > **원본은 `sources/gradle/libs.versions.toml` 과 `sources/frontend/package.json` 이다** — 이 문서가
-> 그것과 어긋나면 **이 문서가 낡은 것이다**(CLAUDE.md §2).
+> 그것과 어긋나면 **이 문서가 낡은 것이다**(CLAUDE.md §3).
 
 ## 1. 백엔드
 

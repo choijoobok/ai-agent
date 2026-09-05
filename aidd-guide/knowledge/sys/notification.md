@@ -1,7 +1,7 @@
 ---
 id: LLM-KNW-SYS-008
 title: "공지 · 알림 · 요청 — 셋이 갈리는 축"
-category: "09-knowledge/sys"
+category: knowledge/sys
 type: operation
 created: 2026-09-03
 updated: 2026-09-03
@@ -95,4 +95,4 @@ tags: [knowledge, notice, notification, request]
 
 - [logs.md §6](./logs.md) — 알림함 보존
 - [personalization.md](./personalization.md) — 배지가 세는 것
-- [11-playbook/crud-screen.md](../../playbook/crud-screen.md) — 판정형 실행은 `actions` 다
+- [playbook/crud-screen.md](../../playbook/crud-screen.md) — 판정형 실행은 `actions` 다

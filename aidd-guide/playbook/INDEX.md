@@ -1,7 +1,7 @@
 ---
 id: LLM-PLY-IDX
 title: "11-playbook — 화면 레시피 INDEX"
-category: "11-playbook"
+category: playbook
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -14,7 +14,7 @@ tags: [playbook, recipe, index]
 
 # 11-playbook — 화면 하나를 만드는 절차
 
-> **[06-framework](../standard/INDEX.md) 는 *무엇이 표준인가* 이고 여기는 *어떤 순서로
+> **[standard](../standard/INDEX.md) 는 *무엇이 표준인가* 이고 여기는 *어떤 순서로
 > 하는가* 다.** 표준을 여기에 다시 적지 않는다 — 절차가 표준을 **가리킨다**.
 >
 > **모든 레시피에 실물이 있다.** 대개 `sources/frontend/src/features/sample/` 의 여섯 화면이 그것이며,
@@ -92,14 +92,14 @@ tags: [playbook, recipe, index]
 
 | 물음 | 어디 |
 |---|---|
-| 컴포넌트·prop 의 계약 | [06-framework/frontend/](../standard/frontend/INDEX.md) |
-| 서비스 이름 · 트랜잭션 · API 경로 | [06-framework/backend/](../standard/backend/INDEX.md) |
-| 생성 시드를 언제 다시 만드나 | [06-framework/seed.md](../standard/seed.md) |
-| 코드·메시지·메뉴가 무엇인가 | [09-knowledge/](../knowledge/INDEX.md) |
+| 컴포넌트·prop 의 계약 | [standard/frontend](../standard/frontend/INDEX.md) |
+| 서비스 이름 · 트랜잭션 · API 경로 | [standard/backend](../standard/backend/INDEX.md) |
+| 생성 시드를 언제 다시 만드나 | [standard/seed.md](../standard/seed.md) |
+| 코드·메시지·메뉴가 무엇인가 | [knowledge](../knowledge/INDEX.md) |
 | **이 자리를 실제로 어떻게 썼나** | **샘플 여섯의 소스** |
 
 ## 관련
 
 - [INDEX](../INDEX.md) — 마스터
 - [CLAUDE.md §3 · §6](../../CLAUDE.md) — 진입 카테고리와 화면 문서 게이트
-- [03-prompt](../artifact/screen/INDEX.md) — 화면 프롬프트(이 레시피들을 가리킨다)
+- [artifact/screen](../artifact/screen/INDEX.md) — 화면 프롬프트(이 레시피들을 가리킨다)

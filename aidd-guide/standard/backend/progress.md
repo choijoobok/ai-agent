@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-BE-011
 title: "진행률 — 맡기고 돌아온다"
-category: "06-framework/backend"
+category: standard/backend
 type: operation
 created: 2026-09-03
 updated: 2026-09-03
@@ -18,7 +18,7 @@ tags: [backend, progress, async, executor]
 > 사용자는 *화면이 멈췄다* 를 겪으며 새로고침한다 — 그러면 **같은 작업이 또 시작된다.**
 >
 > 화면 쪽은 [../frontend/progress.md](../frontend/progress.md), 표는
-> [09-knowledge/sys/progress-lock.md](../../knowledge/sys/progress-lock.md).
+> [knowledge/sys/progress-lock.md](../../knowledge/sys/progress-lock.md).
 
 ## 1. 흐름
 

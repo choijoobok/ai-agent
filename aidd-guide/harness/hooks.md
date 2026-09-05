@@ -1,7 +1,7 @@
 ---
 id: LLM-HRN-001
 title: "훅 카탈로그 — 다섯의 상세와 공통 계약"
-category: "05-harness"
+category: harness
 type: operation
 created: "2026-05-04"
 updated: "2026-09-03"
@@ -111,7 +111,7 @@ sources/frontend/src/features/{기능}/…  ─→ screenRegistry.ts 역인덱�
 
 ## `log-raw` — 대화 원문 append
 
-**남긴다**: `chat-history/YYYY-MM/raw/YYYY-MM-DD.md` 에 append only(CLAUDE.md §10 · [04-memory/logs.md](./memory/logs.md)).
+**남긴다**: `chat-history/YYYY-MM/raw/YYYY-MM-DD.md` 에 append only(CLAUDE.md §10 · [harness/memory/logs.md](./memory/logs.md)).
 
 | 이벤트 | 무엇을 남기나 | 어디서 얻나 |
 |---|---|---|

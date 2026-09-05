@@ -1,7 +1,7 @@
 ---
 id: LLM-ART-005
 title: "요건 정의서 템플릿"
-category: artifact
+category: artifact/template/generated
 type: template
 created: 2026-09-04
 updated: 2026-09-04

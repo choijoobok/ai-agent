@@ -1,7 +1,7 @@
 ---
 id: LLM-EVL-001
 title: "골든셋 포맷·관리 정책"
-category: 07-evals
+category: quality/evals
 type: operation
 created: 2026-05-04
 updated: 2026-05-04
@@ -75,4 +75,4 @@ YAML 1건 = 1 케이스:
 
 - [regression.md](./regression.md) — 회귀 시 골든셋 사용법
 - [ab-testing.md](./ab-testing.md) — A/B 시 같은 골든셋 쓰기
-- [08-observability/routing-accuracy.md](../observability/routing-accuracy.md) — routing 골든셋 측정
+- [quality/observability/routing-accuracy.md](../observability/routing-accuracy.md) — routing 골든셋 측정

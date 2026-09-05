@@ -1,7 +1,7 @@
 ---
 id: LLM-PMT-OVR-007
 title: "Overlay — 실행 (확정 · 재계산 · 일괄 처리)"
-category: "03-prompt/overlays"
+category: artifact/screen/overlay
 type: operation
 created: 2026-09-03
 updated: 2026-09-03
@@ -74,6 +74,6 @@ RCV --확정--> CFM --출고--> SHP --완료--> DON
 
 ## 구현은
 
-[11-playbook/crud-screen.md §5](../../../playbook/crud-screen.md) ·
-[06-framework/backend/progress.md](../../../standard/backend/progress.md) ·
-[06-framework/frontend/progress.md](../../../standard/frontend/progress.md).
+[playbook/crud-screen.md](../../../playbook/crud-screen.md) ·
+[standard/backend/progress.md](../../../standard/backend/progress.md) ·
+[standard/frontend/progress.md](../../../standard/frontend/progress.md).

@@ -1,7 +1,7 @@
 ---
 id: LLM-PMT-OVR-003
 title: "Overlay — 창 (실행 인자 · 참조 · 배열 · 장문)"
-category: "03-prompt/overlays"
+category: artifact/screen/overlay
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -66,4 +66,4 @@ tags: [prompt, overlay, modal, popup]
 
 ## 구현은
 
-[11-playbook/modal.md](../../../playbook/modal.md).
+[playbook/modal.md](../../../playbook/modal.md).

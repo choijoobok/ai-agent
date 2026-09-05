@@ -1,7 +1,7 @@
 ---
 id: LLM-KNW-SYS-006
 title: "배치 — 등록과 실행 이력"
-category: "09-knowledge/sys"
+category: knowledge/sys
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -17,7 +17,7 @@ tags: [knowledge, batch, schedule, history]
 > 표 둘: `SYS_SCHEDULE_BATCH`(사람이 관리한다) · `SYS_BATCH_HISTORY`(러너가 쌓는다).
 > **둘의 생애가 다르다는 사실이 감사 넷의 유무로 나타난다.**
 >
-> **메커니즘은 [06-framework/backend/batch.md](../../standard/backend/batch.md)** 가 갖는다 —
+> **메커니즘은 [standard/backend/batch.md](../../standard/backend/batch.md)** 가 갖는다 —
 > 스케줄러 · 러너 · 락 · 하트비트 · 유령 청소 · 취소.
 
 ## 1. `SYS_SCHEDULE_BATCH` — 사람이 관리하는 유일한 배치 표
@@ -103,6 +103,6 @@ tags: [knowledge, batch, schedule, history]
 
 ## 관련
 
-- [06-framework/backend/batch.md](../../standard/backend/batch.md) — 배치 메커니즘
+- [standard/backend/batch.md](../../standard/backend/batch.md) — 배치 메커니즘
 - [progress-lock.md](./progress-lock.md) — 락과 진행률
 - [logs.md](./logs.md) — 보존 정책

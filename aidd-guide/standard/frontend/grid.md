@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-FE-002
 title: "그리드 — 화면 뼈대 · api 선언 · 저장"
-category: "06-framework/frontend"
+category: standard/frontend
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-FE-007
 title: "멀티탭 워크스페이스 — 셸 · 탭 · 라우팅"
-category: "06-framework/frontend"
+category: standard/frontend
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

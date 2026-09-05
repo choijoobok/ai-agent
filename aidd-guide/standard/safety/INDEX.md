@@ -1,7 +1,7 @@
 ---
 id: LLM-SAF-IDX
 title: "13-safety — 가드레일 INDEX"
-category: 13-safety
+category: standard/safety
 type: operation
 created: 2026-05-04
 updated: 2026-05-04
@@ -45,6 +45,6 @@ tags: [safety, security, pii, injection, secrets, rate-limit, index]
 
 ## 관련 카테고리
 
-- [05-harness](../../harness/INDEX.md) — 도구 차단 룰은 훅·permission 으로 구현
+- [harness](../../harness/INDEX.md) — 도구 차단 룰은 훅·permission 으로 구현
 - [CLAUDE.md](../../../CLAUDE.md) — 안전 규칙은 헌법 다음 우선
 - Anthropic critical_injection_defense — 출처

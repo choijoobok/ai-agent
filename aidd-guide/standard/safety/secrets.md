@@ -1,7 +1,7 @@
 ---
 id: LLM-SAF-003
 title: "Secrets 자동 차단 규약"
-category: 13-safety
+category: standard/safety
 type: operation
 created: 2026-05-04
 updated: 2026-05-04

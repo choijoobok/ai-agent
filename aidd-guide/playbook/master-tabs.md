@@ -1,7 +1,7 @@
 ---
 id: LLM-PLY-003
 title: "하단 디테일 탭 — 자식 표가 둘 이상일 때"
-category: "11-playbook"
+category: playbook
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -136,4 +136,4 @@ validate: { grid: (rows) => [...tooManyTagRows(rows), ...duplicatedSortNo(rows)]
 
 - [master-detail.md](./master-detail.md) — 마스터와 스플리터
 - [excel.md](./excel.md) — 화면 안 최상단 탭은 규칙이 다르다
-- [06-framework/frontend/grid-advanced.md](../standard/frontend/grid-advanced.md) §5 — 검증 세 층
+- [standard/frontend/grid-advanced.md](../standard/frontend/grid-advanced.md) §5 — 검증 세 층

@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-IDX
 title: "06-framework — 프레임워크 가이드 INDEX"
-category: "06-framework"
+category: standard
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -15,8 +15,8 @@ tags: [framework, index]
 # 06-framework — 개발 표준의 정본
 
 > **`CLAUDE.md` §8 의 표가 요지이고 여기가 상세와 근거다.**
-> 개발 절차(레시피)는 [11-playbook](../playbook/INDEX.md), 도메인 지식은
-> [09-knowledge](../knowledge/INDEX.md) 가 갖는다. 여기는 **무엇이 어디에 있고
+> 개발 절차(레시피)는 [playbook](../playbook/INDEX.md), 도메인 지식은
+> [knowledge](../knowledge/INDEX.md) 가 갖는다. 여기는 **무엇이 어디에 있고
 > 어떤 규칙을 따르는가** 다.
 
 ## 결정론 영역
@@ -100,6 +100,6 @@ ESLint 셋. 목록은 [conventions.md §5](./conventions.md).
 ## 관련 카테고리
 
 - [INDEX](../INDEX.md) — 마스터
-- [11-playbook](../playbook/INDEX.md) — 화면 레시피 (**이 카테고리 위에 선다**)
-- [09-knowledge](../knowledge/INDEX.md) — 도메인 지식
+- [playbook](../playbook/INDEX.md) — 화면 레시피 (**이 카테고리 위에 선다**)
+- [knowledge](../knowledge/INDEX.md) — 도메인 지식
 - [CLAUDE.md §8](../../CLAUDE.md) — 요지

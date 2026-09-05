@@ -1,7 +1,7 @@
 ---
 id: LLM-KNW-SYS-002
 title: "메뉴 · 인가 데이터 — SYS_MENU · SYS_API · 권한"
-category: "09-knowledge/sys"
+category: knowledge/sys
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -17,7 +17,7 @@ tags: [knowledge, menu, authz, api]
 > 표 다섯: `SYS_MENU` · `SYS_API` · `SYS_MENU_API` · `SYS_ROLE_MENU_AUTH` ·
 > `SYS_USER_MENU_AUTH`.
 >
-> **판정이 어떻게 도는가**는 [06-framework/backend/security.md](../../standard/backend/security.md)
+> **판정이 어떻게 도는가**는 [standard/backend/security.md](../../standard/backend/security.md)
 > 가 갖는다. 여기는 **그 판정이 읽는 다섯 표**다.
 
 ## 1. `SYS_MENU` — `MENU_URL` 의 NULL 여부가 권한 대상 여부다
@@ -128,5 +128,5 @@ API 시드와 달리 **전건 삭제를 하지 않는다.**
 ## 관련
 
 - [user-role.md](./user-role.md) — 역할과 부여
-- [06-framework/seed.md](../../standard/seed.md) — 메뉴·API 시드 생성
-- [11-playbook/changeset.md](../../playbook/changeset.md) — 손으로 넣는 쪽
+- [standard/seed.md](../../standard/seed.md) — 메뉴·API 시드 생성
+- [playbook/changeset.md](../../playbook/changeset.md) — 손으로 넣는 쪽

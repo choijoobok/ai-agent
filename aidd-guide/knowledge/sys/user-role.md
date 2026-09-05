@@ -1,7 +1,7 @@
 ---
 id: LLM-KNW-SYS-001
 title: "계정 · 역할 — SYS_USER · SYS_ROLE · 부여"
-category: "09-knowledge/sys"
+category: knowledge/sys
 type: operation
 created: 2026-05-04
 updated: 2026-09-04
@@ -17,7 +17,7 @@ tags: [knowledge, user, role, account]
 > 표 여섯: `SYS_USER` · `SYS_USER_PWD_HIST` · `SYS_USER_PWD_RESET` ·
 > `SYS_USER_IP_ALLOW` · `SYS_ROLE` · `SYS_USER_ROLE`.
 >
-> **인증 체인이 어떻게 도는가**는 [06-framework/backend/security.md](../../standard/backend/security.md)
+> **인증 체인이 어떻게 도는가**는 [standard/backend/security.md](../../standard/backend/security.md)
 > 가 갖는다. 여기는 **그 판정이 읽는 데이터**다.
 
 ## 1. `SYS_USER` — PK 가 자연키다
@@ -150,5 +150,5 @@ LIKE 검색이 불가능해져** 사용자 목록의 가장 흔한 요구가 막
 
 - [menu.md](./menu.md) — 역할이 무엇을 갖는가
 - [logs.md](./logs.md) — 로그인 이력
-- [06-framework/backend/security.md](../../standard/backend/security.md) — 접근 제어 체인
+- [standard/backend/security.md](../../standard/backend/security.md) — 접근 제어 체인
 - [documents/screen/_standalone/login](../../../documents/screen/_standalone/login/requirements.md) — 재설정 3단계의 요건서(§3 이 읽는 규칙)

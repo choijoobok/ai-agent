@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-FE-008
 title: "선언 어휘 — 컬럼 · 검색 필드 · api · prop 전량"
-category: "06-framework/frontend"
+category: standard/frontend
 type: operation
 created: 2026-09-04
 updated: 2026-09-04

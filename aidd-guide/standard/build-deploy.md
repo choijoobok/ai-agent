@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-005
 title: "빌드 · 배포 — 단일 JAR · 프로파일 · CI"
-category: "06-framework"
+category: standard
 type: operation
 created: 2026-09-04
 updated: 2026-09-04

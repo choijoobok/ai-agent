@@ -1,12 +1,12 @@
 ---
 id: LLM-MEM-IDX
 title: "04-memory — 메모리 시스템 INDEX"
-category: "04-memory"
+category: harness/memory
 type: operation
 created: "2026-04-30"
 updated: "2026-09-04"
 status: active
-sources: [orchestration/]
+sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
 author: Bong Jong Hyeon
 tier: 1
 tags: [memory, logs, index]
@@ -64,7 +64,7 @@ tags: [memory, logs, index]
 ## 신뢰 우선순위 (충돌 시)
 
 ```
-1. 현재 소스 코드             ← 가장 신뢰 (CLAUDE.md §2)
+1. 현재 소스 코드             ← 가장 신뢰 (CLAUDE.md §3)
 3. docs/menu · docs/screen   ← 화면 문서 셋
 4. chat-history 요약 · 기억   ← 검증 후 사용
 ```
@@ -82,4 +82,4 @@ tags: [memory, logs, index]
 ## 관련 카테고리
 
 - [INDEX](../../INDEX.md)
-- [05-harness](../INDEX.md) — 자동화 vs AI 책임 매트릭스
+- [harness](../INDEX.md) — 자동화 vs AI 책임 매트릭스

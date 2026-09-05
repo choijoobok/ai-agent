@@ -1,7 +1,7 @@
 ---
 id: LLM-HRN-006
 title: "Tool Curation 정책"
-category: 05-harness
+category: harness
 type: operation
 created: 2026-05-04
 updated: 2026-05-04
@@ -57,7 +57,7 @@ MCP 서버는 **외부 인젝션 벡터**라서 더 엄격:
 
 - 추가된 MCP/skill 은 [hooks.md](./hooks.md), [skills.md](./skills.md) 에 등록
 - 90일간 미사용 도구는 검토 후 제거
-- 사용 빈도는 [08-observability](../quality/observability/INDEX.md) 추후 확장
+- 사용 빈도는 [quality/observability](../quality/observability/INDEX.md) 추후 확장
 
 ## 안티 패턴
 
@@ -69,4 +69,4 @@ MCP 서버는 **외부 인젝션 벡터**라서 더 엄격:
 
 - [INDEX.md](./INDEX.md)
 - [sub-agents.md](./sub-agents.md)
-- [13-safety/](../standard/safety/INDEX.md) — 외부 도구 안전 검증
+- [standard/safety](../standard/safety/INDEX.md) — 외부 도구 안전 검증

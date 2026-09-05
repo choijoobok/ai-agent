@@ -1,7 +1,7 @@
 ---
 id: LLM-PMT-OVR-006
 title: "Overlay — 대용량 이력 조회"
-category: "03-prompt/overlays"
+category: artifact/screen/overlay
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -63,9 +63,9 @@ tags: [prompt, overlay, history, cursor]
 
 ## 표가 무엇을 담나
 
-[09-knowledge/sys/logs.md](../../../knowledge/sys/logs.md) — 보존 기간과 `TRACE_ID` 가 잇는
+[knowledge/sys/logs.md](../../../knowledge/sys/logs.md) — 보존 기간과 `TRACE_ID` 가 잇는
 두 표.
 
 ## 구현은
 
-[11-playbook/crud-screen.md §6](../../../playbook/crud-screen.md).
+[playbook/crud-screen.md](../../../playbook/crud-screen.md).

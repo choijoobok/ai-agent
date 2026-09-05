@@ -1,7 +1,7 @@
 ---
 id: LLM-ART-002
 title: "산출물 서식 — 정본과 파생"
-category: artifact
+category: artifact/template
 type: operation
 created: 2026-09-04
 updated: 2026-09-04

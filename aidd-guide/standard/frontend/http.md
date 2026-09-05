@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-FE-005
 title: "HTTP — endpoints.ts · 배럴 하나 · 응답 처리"
-category: "06-framework/frontend"
+category: standard/frontend
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

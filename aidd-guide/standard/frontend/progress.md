@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-FE-010
 title: "진행률 — 화면은 폴링 코드를 쓰지 않는다"
-category: "06-framework/frontend"
+category: standard/frontend
 type: operation
 created: 2026-09-03
 updated: 2026-09-03

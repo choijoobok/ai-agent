@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-BE-012
 title: "배치 — 등록이 곧 스케줄이다"
-category: "06-framework/backend"
+category: standard/backend
 type: operation
 created: 2026-09-03
 updated: 2026-09-03
@@ -18,7 +18,7 @@ tags: [backend, batch, scheduler, lock, cancel]
 > `SYS_SCHEDULE_BATCH.CRON` 이다 — **데이터로 등록이 늘어야** 같은 구현을 파라미터만 바꿔
 > 열 벌 돌릴 수 있다.
 >
-> 표는 [09-knowledge/sys/batch.md](../../knowledge/sys/batch.md) · 진행률과의 차이는
+> 표는 [knowledge/sys/batch.md](../../knowledge/sys/batch.md) · 진행률과의 차이는
 > [progress.md](./progress.md).
 
 ## 1. `BatchJob` — 계약 넷

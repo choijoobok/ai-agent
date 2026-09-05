@@ -1,7 +1,7 @@
 ---
 id: LLM-ART-004
 title: "ADR 템플릿"
-category: artifact
+category: artifact/template
 type: template
 created: 2026-09-04
 updated: 2026-09-04

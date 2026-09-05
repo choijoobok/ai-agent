@@ -1,7 +1,7 @@
 ---
 id: LLM-PMT-OVR-001
 title: "Overlay — 조회조건 폼"
-category: "03-prompt/overlays"
+category: artifact/screen/overlay
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -62,5 +62,5 @@ tags: [prompt, overlay, search]
 
 ## 구현은
 
-[11-playbook/crud-screen.md](../../../playbook/crud-screen.md) ·
-[06-framework/frontend/search-form.md](../../../standard/frontend/search-form.md).
+[playbook/crud-screen.md](../../../playbook/crud-screen.md) ·
+[standard/frontend/search-form.md](../../../standard/frontend/search-form.md).

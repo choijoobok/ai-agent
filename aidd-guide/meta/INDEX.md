@@ -1,19 +1,19 @@
 ---
 id: LLM-MET-IDX
 title: "00-meta — 시스템 규약 INDEX"
-category: "00-meta"
+category: meta
 type: operation
 created: "2026-04-30"
 updated: "2026-04-30"
 status: active
-sources: [orchestration/]
+sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
 author: Bong Jong Hyeon
 tier: 3
 tags: [meta, index]
 ---
 # 00-meta — 시스템 자체 규약
 
-> 이 체계(orchestration)를 어떻게 운영하는지 정의한다. AI는 새 문서를 작성하거나 기존 문서를 수정할 때 이 카테고리의 규칙을 가장 먼저 따른다.
+> 이 체계(`aidd-guide`)를 어떻게 운영하는지 정의한다. AI는 새 문서를 작성하거나 기존 문서를 수정할 때 이 카테고리의 규칙을 가장 먼저 따른다.
 
 ## 진입 조건
 

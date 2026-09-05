@@ -1,7 +1,7 @@
 ---
 id: LLM-PMT-003
 title: "보완 경계 — 채워도 되는 것과 물어야 하는 것"
-category: "03-prompt"
+category: artifact/screen
 type: operation
 created: 2026-04-30
 updated: 2026-09-03
@@ -17,7 +17,7 @@ tags: [prompt, auto-completion, rules]
 > **임의 생성은 결함의 원천이다.** 요건서의 빈 칸을 만났을 때 *규칙에서 나오는가* 를
 > 묻는다 — 규칙에서 나오면 채우고 🤖 를 붙이고, 나오지 않으면 §9 로 보낸다.
 >
-> 규칙의 원본은 [06-framework](../../standard/INDEX.md) 다. 여기는 **그 규칙이 빈 칸을
+> 규칙의 원본은 [standard](../../standard/INDEX.md) 다. 여기는 **그 규칙이 빈 칸을
 > 채울 수 있는지의 판정**이다.
 
 ## 판정 한 줄
@@ -107,6 +107,6 @@ tags: [prompt, auto-completion, rules]
 ## 관련
 
 - [screen.md](./screen.md) · [crud.md](./crud.md)
-- [06-framework/conventions.md](../../standard/conventions.md) — 이름 규칙의 원본
-- [09-knowledge/sys/](../../knowledge/sys/INDEX.md) — 표가 실제로 무엇을 담나
-- [CLAUDE.md §2](../../../CLAUDE.md) — 추정 금지
+- [standard/conventions.md](../../standard/conventions.md) — 이름 규칙의 원본
+- [knowledge/sys](../../knowledge/sys/INDEX.md) — 표가 실제로 무엇을 담나
+- [CLAUDE.md §3](../../../CLAUDE.md) — 추정 금지

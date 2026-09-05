@@ -1,7 +1,7 @@
 ---
 id: LLM-PMT-OVR-IDX
 title: "Overlay 카탈로그 — 화면 특성별로 빠뜨리면 안 되는 것"
-category: "03-prompt/overlays"
+category: artifact/screen/overlay
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -17,7 +17,7 @@ tags: [prompt, overlay, index]
 > **Overlay 는 요건서를 쓸 때 켜지는 체크리스트다.** 화면에 그 특성이 있으면
 > **요건서의 어느 절이 필수가 되고 무엇을 물어야 하는지**를 준다.
 >
-> **구현 방법은 여기 없다** — [11-playbook](../../../playbook/INDEX.md) 이 갖는다.
+> **구현 방법은 여기 없다** — [playbook](../../../playbook/INDEX.md) 이 갖는다.
 > Overlay 는 *승인 전*, 플레이북은 *승인 후* 다.
 
 ## 트리거 표

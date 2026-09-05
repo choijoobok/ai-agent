@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-BE-014
 title: "개인정보 분리보관 — 아직 없다. 지금 지켜야 할 제약만 있다"
-category: "06-framework/backend"
+category: standard/backend
 type: operation
 created: 2026-09-04
 updated: 2026-09-04

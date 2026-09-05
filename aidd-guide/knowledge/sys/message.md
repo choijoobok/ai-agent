@@ -1,7 +1,7 @@
 ---
 id: LLM-KNW-SYS-007
 title: "문구 · 다국어 — SYS_MESSAGE_KEY · SYS_MESSAGE"
-category: "09-knowledge/sys"
+category: knowledge/sys
 type: operation
 created: 2026-09-03
 updated: 2026-09-03
@@ -92,6 +92,6 @@ tags: [knowledge, message, i18n, cache]
 ## 관련
 
 - [code.md](./code.md) — `DTL_NM` 의 반대편
-- [06-framework/frontend/i18n.md](../../standard/frontend/i18n.md) — `label()` 과 언어 추가
-- [06-framework/backend/caching.md](../../standard/backend/caching.md) — 캐시 백엔드
-- [11-playbook/changeset.md §5](../../playbook/changeset.md) — 값 시드를 넣는 법
+- [standard/frontend/i18n.md](../../standard/frontend/i18n.md) — `label()` 과 언어 추가
+- [standard/backend/caching.md](../../standard/backend/caching.md) — 캐시 백엔드
+- [playbook/changeset.md](../../playbook/changeset.md) — 값 시드를 넣는 법

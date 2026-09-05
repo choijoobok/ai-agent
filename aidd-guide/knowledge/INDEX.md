@@ -1,7 +1,7 @@
 ---
 id: LLM-KNW-IDX
 title: "09-knowledge — 도메인 지식 INDEX"
-category: "09-knowledge"
+category: knowledge
 type: operation
 created: 2026-05-04
 updated: 2026-09-04
@@ -14,7 +14,7 @@ tags: [knowledge, domain, index]
 
 # 09-knowledge — 이 백오피스가 무엇을 아는가
 
-> **[06-framework](../standard/INDEX.md) 는 *어떻게 만드나* 이고 여기는 *무엇이 참인가* 다.**
+> **[standard](../standard/INDEX.md) 는 *어떻게 만드나* 이고 여기는 *무엇이 참인가* 다.**
 > 표가 무엇을 담고 어떤 규칙이 그것을 지키는지, **그리고 왜 그 컬럼이 없는지** 를 적는다.
 >
 > **결정론 영역이다.** 여기서 추정하지 않는다 — 어긋나면 **엔티티 소스가 이긴다.**
@@ -75,5 +75,5 @@ tags: [knowledge, domain, index]
 ## 관련
 
 - [INDEX](../INDEX.md) — 마스터
-- [06-framework/backend/](../standard/backend/INDEX.md) — 구조와 계약
-- [11-playbook](../playbook/INDEX.md) — 화면 레시피
+- [standard/backend](../standard/backend/INDEX.md) — 구조와 계약
+- [playbook](../playbook/INDEX.md) — 화면 레시피

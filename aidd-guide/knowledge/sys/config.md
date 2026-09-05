@@ -1,7 +1,7 @@
 ---
 id: LLM-KNW-SYS-009
 title: "환경설정 — SYS_CONFIG 는 오버라이드다"
-category: "09-knowledge/sys"
+category: knowledge/sys
 type: operation
 created: 2026-09-03
 updated: 2026-09-03

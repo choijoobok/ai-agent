@@ -1,7 +1,7 @@
 ---
 id: LLM-PLY-006
 title: "창을 띄운다 — 실행 인자 · 참조 팝업 · 배열 · 장문"
-category: "11-playbook"
+category: playbook
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -146,5 +146,5 @@ popup: { key: 'sample.customer',
 ## 관련
 
 - [crud-screen.md §5](./crud-screen.md) — 실행 두 갈래
-- [06-framework/frontend/grid-advanced.md](../standard/frontend/grid-advanced.md) — 컬럼 계약
-- [06-framework/frontend/search-form.md](../standard/frontend/search-form.md) — 조회조건 칸
+- [standard/frontend/grid-advanced.md](../standard/frontend/grid-advanced.md) — 컬럼 계약
+- [standard/frontend/search-form.md](../standard/frontend/search-form.md) — 조회조건 칸

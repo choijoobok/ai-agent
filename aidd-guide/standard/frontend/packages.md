@@ -1,7 +1,7 @@
 ---
 id: LLM-FWK-FE-004
 title: "프론트엔드 구조 — 폴더 · 공통화 · 상태 경계"
-category: "06-framework/frontend"
+category: standard/frontend
 type: operation
 created: 2026-05-04
 updated: 2026-09-03

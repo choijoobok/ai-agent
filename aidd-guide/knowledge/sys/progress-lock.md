@@ -1,7 +1,7 @@
 ---
 id: LLM-KNW-SYS-010
 title: "진행률 · 분산 락 — 지금 도는 것을 담는 표"
-category: "09-knowledge/sys"
+category: knowledge/sys
 type: operation
 created: 2026-09-03
 updated: 2026-09-03
@@ -39,9 +39,9 @@ tags: [knowledge, progress, lock, transient]
 ### 화면은 이 표를 직접 모른다
 
 실행에 `progress: true` 한 줄을 적으면 그리드가 폴링을 훅에 넘긴다 —
-[11-playbook/crud-screen.md §5](../../playbook/crud-screen.md).
+[playbook/crud-screen.md](../../playbook/crud-screen.md).
 
-**메커니즘은 [06-framework/backend/progress.md](../../standard/backend/progress.md)(맡기고
+**메커니즘은 [standard/backend/progress.md](../../standard/backend/progress.md)(맡기고
 돌아오기 · 조절 · 실행기 · 청소)와 [sources/frontend/progress.md](../../standard/frontend/progress.md)
 (폴링 · 창 · 경과 시간)가 갖는다.**
 
@@ -97,5 +97,5 @@ Hibernate 의 `TABLE` 식별자 전략이 쓴다. **표가 늘 때마다 행이 
 
 - [batch.md](./batch.md) — 락 키와 유령
 - [logs.md](./logs.md) — 보존과 만료의 차이
-- [06-framework/backend/progress.md](../../standard/backend/progress.md) · [sources/frontend/progress.md](../../standard/frontend/progress.md) — 진행률 메커니즘
-- [06-framework/backend/persistence.md](../../standard/backend/persistence.md) — `TABLE` 전략
+- [standard/backend/progress.md](../../standard/backend/progress.md) · [sources/frontend/progress.md](../../standard/frontend/progress.md) — 진행률 메커니즘
+- [standard/backend/persistence.md](../../standard/backend/persistence.md) — `TABLE` 전략

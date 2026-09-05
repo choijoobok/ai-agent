@@ -1,7 +1,7 @@
 ---
 id: LLM-OBS-IDX
 title: "08-observability — 관측·텔레메트리 INDEX"
-category: 08-observability
+category: quality/observability
 type: operation
 created: 2026-05-04
 updated: 2026-05-04
@@ -52,5 +52,5 @@ tags: [observability, telemetry, routing-accuracy, token, monitoring, index]
 
 ## 관련 카테고리
 
-- [07-evals](../evals/INDEX.md) — 골든셋 정의 (관측 데이터의 입력)
-- [02-context/budget.md](../../harness/context/budget.md) — 컨텍스트 측정의 정책
+- [quality/evals](../evals/INDEX.md) — 골든셋 정의 (관측 데이터의 입력)
+- [harness/context/budget.md](../../harness/context/budget.md) — 컨텍스트 측정의 정책

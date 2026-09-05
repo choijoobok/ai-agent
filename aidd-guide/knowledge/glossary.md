@@ -1,7 +1,7 @@
 ---
 id: LLM-KNW-001
 title: "용어 사전 — 이 저장소가 쓰는 말"
-category: "09-knowledge"
+category: knowledge
 type: operation
 created: 2026-05-04
 updated: 2026-09-03
@@ -96,4 +96,4 @@ tags: [knowledge, glossary, vocabulary]
 
 - [sys/INDEX.md](./sys/INDEX.md) — 표 34개
 - [CLAUDE.md](../../CLAUDE.md) — 규칙의 원본
-- [06-framework/](../standard/INDEX.md) — 계약의 상세
+- [standard](../standard/INDEX.md) — 계약의 상세

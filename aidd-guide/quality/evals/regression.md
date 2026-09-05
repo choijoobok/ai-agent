@@ -1,7 +1,7 @@
 ---
 id: LLM-EVL-002
 title: "회귀 검출 절차"
-category: 07-evals
+category: quality/evals
 type: operation
 created: 2026-05-04
 updated: 2026-05-04
@@ -72,4 +72,4 @@ Phase 4 — 판단
 
 - [golden-set.md](./golden-set.md)
 - [ab-testing.md](./ab-testing.md)
-- [08-observability/routing-accuracy.md](../observability/routing-accuracy.md)
+- [quality/observability/routing-accuracy.md](../observability/routing-accuracy.md)
