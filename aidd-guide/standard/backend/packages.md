@@ -86,6 +86,31 @@ api         {화면·도메인}/
 | api 층 요청 | **`*Request`** (`api/{도메인}/request/`) |
 | api 층 응답 | **`*Response`** — API 전용 응답이 필요할 때만. **도메인 레코드를 그대로 내보내는 것이 기본** |
 
+### 메서드 이름 — **URL 마지막 마디와 같다**
+
+```
+POST /api/service/code/saveGroup
+                       ↑
+   CodeAdminController.saveGroup()  →  CodeAdminService.saveGroup()
+                       ↑
+   endpoints.ts        saveGroup: '/service/code/saveGroup'
+```
+
+**넷이 한 낱말이다** — URL 마디 · 컨트롤러 메서드 · 서비스 메서드 · `endpoints.ts` 키.
+[api.md](./api.md) 가 앞의 셋을 이미 묶어 두었고, **서비스까지 같게** 하는 것이 이 줄이다.
+
+- **행을 여럿 받아도 단수다.** `saveGroups` 가 아니라 `saveGroup` 이다 — 일괄 저장은 이
+  저장소의 기본이라 이름에 적을 것이 없고, 적으면 **URL 과 갈린다**. *무엇을 몇 개 받나*
+  는 시그니처가 말한다.
+- **`/service/` 와 `/public/` 에서만 그렇다.** 실측(2026-09-05): `/service/` **81개 전부
+  일치** · `/public/` 4개 전부 일치 · **`/common/` 은 17개 중 8개가 갈린다**(`favorite/save`
+  → `add()` · `noti/saveRead` → `markRead()`). 갈리는 것이 옳다 — 공통 경로는 **URL 접두가
+  인가 액션을 정하므로**([api.md](./api.md)) 접두를 바꿀 수 없고, 그 제약을 자바 메서드
+  이름까지 끌고 가면 `markRead` 가 `saveRead` 가 된다.
+- **왜 못박나.** 2026-09-05 재현 실험에서 **독립한 재현 둘이 모두 `saveCodes` ·
+  `saveGroups` · `saveRefDefs`** 로 갔다. 규칙이 없으면 자연스러운 답이 갈리고, 갈리면
+  화면을 따라 읽는 사람이 **URL 에서 서비스로 건너갈 때마다 이름을 다시 찾는다.**
+
 > **`Admin` 을 이름의 장식으로 쓰지 않는다.** 한때 조회 열일곱 중 여섯이
 > `*AdminQueryService` 였고 그 여섯은 **모두 `<도메인>/admin/` 패키지 안에 있었다** —
 > 같은 말을 두 번 하면서 나머지 열하나와 갈렸다. **새 화면을 만드는 사람은 둘 중 무엇을
