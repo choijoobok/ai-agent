@@ -287,7 +287,7 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 | 화면 뼈대 | 뿌리 `<FillColumn>` · `useSearchFormHeader()` · `auditColumns()` · `useGridController` 선언 | [`standard/frontend/grid.md`](aidd-guide/standard/frontend/grid.md) |
 | 호출 감싸기 | 기능의 HTTP 호출은 `api/{도메인}Api.ts` 함수로. **호출 URL 은 `features/{도메인}/api/endpoints.ts` 에만** — 그 선언이 인가 시드의 입력이다 | [`standard/frontend/http.md`](aidd-guide/standard/frontend/http.md) |
 | 공통물 | **두 번째 사용에** `shared/` 로 올리고 목록에 등재하고 **원본을 지운다.** 복사하지 않는다 | [`standard/frontend/packages.md`](aidd-guide/standard/frontend/packages.md) |
-| 코드 태그 | 소스 파일 머리에 `@feat FEAT-###` — 추적성 T10 | [`process/05-traceability.md`](aidd-guide/process/05-traceability.md) |
+| 코드 태그 | 소스 파일 머리에 `@feat FEAT-###` — 추적성 T10. **템플릿 817파일은 면제 명단에 있다**(새 파일만 센다) | [`process/05-traceability.md`](aidd-guide/process/05-traceability.md) |
 
 > **검사가 없으므로 여기 있는 것이 유일한 방어선이다** — 그래서 요지는 남긴다.
 > 다만 **표가 본문이 되지 않게** 한다: 근거와 예외는 오른쪽 칸이 갖는다.

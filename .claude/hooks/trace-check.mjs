@@ -252,21 +252,31 @@ function fullCheck() {
   }
 
   /*
-    T10 — 코드 태그. **개별 파일을 나열하지 않고 건수로 집계한다.**
+    T10 — 코드 태그. **템플릿은 면제하고 새 코드만 센다.**
 
-    백오피스 템플릿이 이 추적성 체계보다 앞서 들어왔으므로 미태깅이 수백 건이다. 줄줄이
-    나열하면 <b>T6·T8 의 경고가 그 아래 묻힌다</b> — 많은 것을 다 보여주는 것이 아무것도
-    보여주지 않는 것이 된다. 상한까지만 예로 들고 나머지는 수로 말한다.
-    → aidd-guide/process/05-traceability.md §3
+    백오피스 템플릿 817 파일이 이 추적성 체계보다 앞서 들어왔다. 그것을 다 세면 경고가
+    <b>영구히 켜져 있고, 영구히 켜진 경고는 사람에게 경고를 무시하는 법을 가르친다</b> —
+    T6·T8 이 그 아래 묻힌다. 그래서 오늘의 빚을 `feat-baseline.txt` 에 명단으로 고정하고
+    <b>명단 밖만</b> 센다. 규칙은 앞으로 만들 코드에서 살아 있다.
+
+    명단은 **줄어들기만 해야 한다** — 태그를 달면 지우고, 새 파일을 더하는 것은 규칙을
+    끄는 것이다. → aidd-guide/process/05-traceability.md §3
   */
   const src = join(REPO, 'sources');
   if (existsSync(src)) {
+    const exempt = new Set(
+      readText(join(REPO, '.claude/hooks/feat-baseline.txt'))
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l && !l.startsWith('#')),
+    );
     const untagged = [];
     for (const file of walk(src)) {
       const rel = relative(REPO, file).split(sep).join('/');
       if (!/\.(java|kt|ts|tsx|js|jsx)$/.test(rel)) continue;
       if (/\/(node_modules|build|dist|target|\.gradle)\//.test(rel)) continue;
       if (/\/(test|spec)\//.test(rel) || /\.(test|spec)\.[jt]sx?$/.test(rel)) continue;
+      if (exempt.has(rel)) continue;
       if (!readText(file).slice(0, 1500).includes('@feat')) untagged.push(rel);
     }
     if (untagged.length > 0) {
