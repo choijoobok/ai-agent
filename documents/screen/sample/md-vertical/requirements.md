@@ -20,6 +20,7 @@
 | 페이지 경로 | `/sample/md-vertical` |
 | 메뉴코드 | `SMPL_MD_VERT` |
 | 프론트 폴더 | `sources/frontend/src/features/sample/mdvertical/` (+ 공통 `features/sample/itemColumns.ts`) |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/sample/` · `sources/backend/api/…/api/sample/mdvertical/` |
 | 화면 유형 | **마스터-디테일(상하)** |
 | 처리 유형 | CRUD + **실행 둘** |
 | 쓰는 액션 | `R` `S` `E` `X` — `EXPORT_YN` = `Y` |
@@ -76,11 +77,45 @@
 
 ### 4-1. 마스터 — **아홉**
 
-주문번호 · 주문명 · 고객명 · 상태 · 주문일 · 수량 · 금액 · 사용 여부 · **품목 수**.
+| 필드명 | 라벨 키 | 입력방식 | 폭 | 필수 | 편집 | 선택 출처 |
+|---|---|---|---|---|---|---|
+| `ordNo` | `MSG.SAMPLE_COL_ORD_NO` | 텍스트 (PK) | 160 | 필수 | **신규행만** | — |
+| `ordNm` | `MSG.SAMPLE_COL_ORD_NM` | 텍스트 | 200 | 필수 | 조건부(§4-2) | — |
+| `custNm` | `MSG.SAMPLE_COL_CUST_NM` | 텍스트 | 160 | 필수 | 조건부(§4-2) | — |
+| `ordStatCd` | `MSG.SAMPLE_COL_ORD_STAT` | 코드 | 110 | — | **읽기전용** | 코드그룹 `SMPL_ORD_STAT` |
+| `ordDt` | `MSG.SAMPLE_COL_ORD_DT` | 날짜 | 120 | 필수 | 조건부(§4-2) | — |
+| `ordQty` | `MSG.SAMPLE_COL_ORD_QTY` | 숫자 | 100 | — | 조건부(§4-2) | — |
+| `ordAmt` | `MSG.SAMPLE_COL_ORD_AMT` | 숫자 | 130 | — | **읽기전용** | — |
+| `urgentYn` | `MSG.SAMPLE_COL_URGENT` | 스위치 | 90 | — | 조건부(§4-2) | — |
+| `useYn` | `MSG.SAMPLE_COL_USE` | 스위치 | 90 | — | 조건부(§4-2) | — |
 
-### 4-1a. 디테일 — 품목
+- **`itemCnt`(품목 수)는 컬럼이 아니라 서버가 실어 보내는 파생값이다** — 마스터 삭제
+  게이트가 그것을 읽는다(§1-1). 그리드에는 그리지 않는다.
+- **상태는 화면에서 고치지 않는다** — 상태를 옮기는 것은 실행 버튼이다(§5).
 
-**컬럼 선언이 `features/sample/itemColumns.ts` 에 있다** — 좌우 분할 화면과 **같은 표**이며, **갈려야 하는 것은 마스터와 축이지 품목의 정의가 아니다.**
+### 4-1a. 디테일 — 품목 **열** (`features/sample/itemColumns.ts` · **좌우·탭 화면과 같은 표**)
+
+| 필드명 | 라벨 키 | 입력방식 | 폭 | 필수 | 편집 | 선택 출처 |
+|---|---|---|---|---|---|---|
+| `itemSeq` | `MSG.SAMPLE_COL_ITEM_SEQ` | 숫자 | 80 | — | **읽기전용** | — |
+| `itemCd` | `MSG.SAMPLE_COL_ITEM_CD` | 텍스트 (PK) | 140 | 필수 | **신규행만** | — |
+| `itemNm` | `MSG.SAMPLE_COL_ITEM_NM` | 텍스트 | 200 | 필수 | 가능 | — |
+| `uomCd` | `MSG.SAMPLE_COL_UOM` | 셀렉트 | 90 | — | 가능 | 코드그룹 `SMPL_UOM` |
+| `qty` | `MSG.SAMPLE_COL_QTY` | 숫자 | 110 | 필수 | 가능 | — |
+| `unitAmt` | `MSG.SAMPLE_COL_UNIT_AMT` | 숫자 | 120 | 필수 | 가능 | — |
+| `amt` | `MSG.SAMPLE_COL_AMT` | 숫자 | 130 | — | **읽기전용** | — |
+| `dlvrDt` | `MSG.SAMPLE_COL_DLVR_DT` | 날짜(일) | 120 | — | 가능 | — |
+| `itemStatCd` | `MSG.SAMPLE_COL_ITEM_STAT` | 셀렉트(배지) | 110 | — | 가능 | 코드그룹 `SMPL_ITEM_STAT` |
+| `rmk` | `MSG.SAMPLE_COL_RMK` | 장문 | 200(fill) | — | 가능 | — |
+
+- **`ordNo` 와 `useYn` 이 없다** — 부모가 정해져 있고(한 주문 안이다) 품목의 사용 여부는
+  `itemStatCd` 가 말한다. **⑥의 평면 양식과 갈리는 지점**이다(`screen/sample/excel`).
+- **컬럼 선언이 `features/sample/itemColumns.ts` 에 있다** — 좌우 분할 화면과 **같은 표**이며,
+  **갈려야 하는 것은 마스터와 축이지 품목의 정의가 아니다.**
+
+### 4-1b. 남은 서식 절
+
+- 팝업 매핑 · 행 추가 기본값 · 비노출 저장 컬럼: **없다.**
 
 ### 4-2. 편집 가능 판단 — **조건부 편집 함수의 유일한 실물**
 
@@ -188,8 +223,8 @@ LOCK_YN 이 먼저다  →  잠긴 것은 상태와 무관하게 닫힌다
 | `S3-26` | 그때 나가는 요청 | `searchParams` 에 **선택된 주문의 키**가 그대로 간다 — 버튼이 대상을 바꾸지 않는다 |
 | `S3-27` | 디테일 미저장 상태로 **디테일 조회** | **묻는다.** 계속하면 편집이 버려지고 서버 값으로 되돌아온다 |
 | `S3-28` | 마스터 선택 없음 상태의 디테일 **조회** | **비활성** — `<DataGrid disabled>` 가 ①을 통째로 잠근다 |
-| `S3-29` | **마스터** 조회로 디테일을 새로고침하려 한다 | **고른 행을 잃는다** — 마스터 조회는 디테일을 리셋하고 자동 선택도 하지 않는다. **그래서 디테일에 조회가 필요하다** |
 | `S3-24` | 디테일 엑셀 **전체** | **선택된 주문의 품목만**이다 — 부모 키가 `searchParams` 로 함께 간다 |
+| `S3-29` | **마스터** 조회로 디테일을 새로고침하려 한다 | **고른 행을 잃는다** — 마스터 조회는 디테일을 리셋하고 자동 선택도 하지 않는다. **그래서 디테일에 조회가 필요하다** |
 
 ---
 

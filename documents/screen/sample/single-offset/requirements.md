@@ -96,6 +96,43 @@
 - **`itemCnt` 가 없다** — 이 화면에는 마스터 삭제 게이트가 없다. 삭제 컬럼은 있지만 **조건 없이 열리며**, 품목이 있는 주문을 지우려 하면 **서버가 사유를 담아 거절한다.** 게이트는 마스터-디테일 셋의 어휘다.
 - **숨김이 두 층이다** — `visible:false`(설정에서 켤 수 있다)와 `hidden`(켤 수 없다). `LOCK_YN` 이 후자이며 **그리지 않고 편집 판정만 읽는다.**
 
+### 4-1. 주문 — **서른**
+
+**어휘의 전시가 목적이라 입력방식이 한 화면에 다 있다** — 텍스트 · 장문 · 숫자 · 날짜 ·
+일시 · 코드 셋(셀렉트 · 리치셀렉트) · 스위치 · 팝업 칸 · 목록 모달 · 텍스트 모달.
+
+| 필드명 | 라벨 키 | 입력방식 | 폭 | 필수 | 편집 | 선택 출처 |
+|---|---|---|---|---|---|---|
+| `ordId` | `MSG.SAMPLE_COL_ORD_ID` | bigint(문자열) | 90 | — | **읽기전용** | — |
+| `ordNo` | `MSG.SAMPLE_COL_ORD_NO` | 텍스트 | 160 | 필수 | **읽기전용** | — |
+| `ordNm` | `MSG.SAMPLE_COL_ORD_NM` | 텍스트 | 200 | 필수 | 조건부(§4-2) | — |
+| `custId` | `MSG.SAMPLE_COL_CUST_ID` | **팝업 칸** | 120 | 필수 | 조건부(§4-2) | 고객 검색 팝업(§4-4) |
+| `custNm` | `MSG.SAMPLE_COL_CUST_NM` | 텍스트 | 160 | 필수 | 조건부(§4-2) | 〃 (함께 채워진다) |
+| `custGrdCd` | `MSG.SAMPLE_COL_CUST_GRD` | 코드 | 100 | — | 조건부(§4-2) | 코드그룹 `SMPL_CUST_GRD` |
+| `ordStatCd` | `MSG.SAMPLE_COL_ORD_STAT` | 셀렉트(배지) | 110 | — | 조건부(§4-2) | 코드그룹 `SMPL_ORD_STAT` |
+| `chnlCd` | `MSG.SAMPLE_COL_CHNL` | **리치셀렉트** | 130 | — | 조건부(§4-2) | 코드그룹 `SMPL_CHNL` |
+| `priorityCd` | `MSG.SAMPLE_COL_PRIORITY` | 셀렉트 | 100 | — | 조건부(§4-2) | 코드그룹 `SMPL_PRIORITY` |
+| `ordDt` | `MSG.SAMPLE_COL_ORD_DT` | 날짜 | 120 | 필수 | 조건부(§4-2) | — |
+| `dlvrYm` | `MSG.SAMPLE_COL_DLVR_YM` | 날짜(월) | 110 | — | 조건부(§4-2) | — |
+| `ordDtm` | `MSG.SAMPLE_COL_ORD_DTM` | 일시 | 160 | — | 조건부(§4-2) | — |
+| `ordQty` | `MSG.SAMPLE_COL_ORD_QTY` | 숫자 | 100 | 필수 | 조건부(§4-2) | — |
+| `unitAmt` | `MSG.SAMPLE_COL_UNIT_AMT` | 숫자 | 120 | 필수 | 조건부(§4-2) | — |
+| `ordAmt` | `MSG.SAMPLE_COL_ORD_AMT` | 숫자 | 130 | — | 조건부(§4-2) | — |
+| `vatAmt` | `MSG.SAMPLE_COL_VAT_AMT` | 숫자 | 120 | — | 조건부(§4-2) | — |
+| `dcRt` | `MSG.SAMPLE_COL_DC_RT` | 숫자 | 110 | — | 조건부(§4-2) | — |
+| `procMs` | `MSG.SAMPLE_COL_PROC_MS` | 숫자 | 110 | — | 조건부(§4-2) | — |
+| `urgentYn` | `MSG.SAMPLE_COL_URGENT` | 스위치 | 80 | — | 조건부(§4-2) | — |
+| `useYn` | `MSG.SAMPLE_COL_USE` | 스위치 | 80 | — | 조건부(§4-2) | — |
+| `tagList` | `MSG.SAMPLE_COL_TAG_LIST` | **목록 모달** | 240 | — | 조건부(§4-2) | 태그 모달 |
+| `memo` | `MSG.SAMPLE_COL_MEMO` | 장문 | 180 | — | 조건부(§4-2) | — |
+| `rmk` | `MSG.SAMPLE_COL_RMK` | **텍스트 모달** | 180 | — | 조건부(§4-2) | — |
+| `errMsg` | `MSG.SAMPLE_COL_ERR_MSG` | 텍스트 | 180 | — | 조건부(§4-2) | — |
+| `srcSysCd` | `MSG.SAMPLE_COL_SRC_SYS` | 코드 · **`visible:false`** | 110 | — | 조건부(§4-2) | 코드그룹 `SMPL_SRC_SYS` |
+| `lockYn` | `MSG.SAMPLE_COL_LOCK` | 스위치 · **`hidden`** | — | — | **읽기전용** | — |
+
+- **감사 넷**(`regId` · `regDtm` · `modId` · `modDtm`)은 `auditColumns()` 가 붙인다 —
+  이 화면은 **보이게 두는 예외**라 표에는 넣지 않고 여기 적는다(서식 §4).
+
 ### 4-2. 편집 가능 판단 — **전이표를 그대로 편다**
 
 ```

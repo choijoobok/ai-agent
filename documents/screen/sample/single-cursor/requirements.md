@@ -22,6 +22,7 @@
 | 페이지 경로 | `/sample/single-cursor` |
 | 메뉴코드 | `SMPL_SINGLE_CURSOR` |
 | 프론트 폴더 | `sources/frontend/src/features/sample/singlecursor/` |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/sample/` · `sources/backend/api/…/api/sample/singlecursor/` |
 | 화면 유형 | **단일 그리드** |
 | 처리 유형 | **조회 전용** |
 | 쓰는 액션 | `R` `E` — `EXPORT_YN` = `Y`. **`S` 도 `X` 도 없다** |
@@ -72,8 +73,31 @@
 
 ## 4. 컬럼 — **읽기 열둘**
 
-- 편집 선언이 없다.
-- 행 식별키는 오프셋 화면과 같은 `ORD_ID`(문자열).
+- **행 식별키**: `ORD_ID`(문자열) — 오프셋 화면과 같다. 화면에 그리지 않는다.
+- **편집 선언이 하나도 없다.** 조회 전용이라 `editable` · `required` · `pk` 가 없고, 그래서
+  이 화면은 **커서 페이징만** 보여 준다.
+- 감사 넷은 `auditColumns()` 가 붙인다 — 여기 적지 않는다.
+
+### 4-1. 주문 목록
+
+| 필드명 | 라벨 키 | 입력방식 | 폭 | 필수 | 편집 | 선택 출처 |
+|---|---|---|---|---|---|---|
+| `ordNo` | `MSG.SAMPLE_COL_ORD_NO` | 텍스트 | 160 | — | 읽기전용 | — |
+| `ordNm` | `MSG.SAMPLE_COL_ORD_NM` | 텍스트 | 200 | — | 읽기전용 | — |
+| `custNm` | `MSG.SAMPLE_COL_CUST_NM` | 텍스트 | 160 | — | 읽기전용 | — |
+| `custGrdCd` | `MSG.SAMPLE_COL_CUST_GRD` | 코드 | 100 | — | 읽기전용 | 코드그룹 `SMPL_CUST_GRD` |
+| `ordStatCd` | `MSG.SAMPLE_COL_ORD_STAT` | 코드(배지) | 110 | — | 읽기전용 | 코드그룹 `SMPL_ORD_STAT` |
+| `ordDt` | `MSG.SAMPLE_COL_ORD_DT` | 날짜 | 120 | — | 읽기전용 | — |
+| `ordDtm` | `MSG.SAMPLE_COL_ORD_DTM` | 일시 | 160 | — | 읽기전용 | — |
+| `ordQty` | `MSG.SAMPLE_COL_ORD_QTY` | 숫자 | 100 | — | 읽기전용 | — |
+| `ordAmt` | `MSG.SAMPLE_COL_ORD_AMT` | 숫자 | 130 | — | 읽기전용 | — |
+| `dcRt` | `MSG.SAMPLE_COL_DC_RT` | 숫자 | 110 | — | 읽기전용 | — |
+| `procMs` | `MSG.SAMPLE_COL_PROC_MS` | 숫자 | 110 | — | 읽기전용 | — |
+| `errMsg` | `MSG.SAMPLE_COL_ERR_MSG` | 텍스트 | 200 | — | 읽기전용 | — |
+
+### 4-2 ~ 4-6
+
+- 조건부 편집 · 연쇄 · 팝업 매핑 · 행 추가 기본값 · 비노출 저장 컬럼: **전부 없음.**
 
 ---
 
