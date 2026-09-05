@@ -85,9 +85,14 @@ const excel = useMemo<ExcelSpec>(() => ({
 
 ```tsx
 <ExcelUploadTab<SampleOrderItem>
+  title={label(MSG.SAMPLE_EXCEL_TAB_UPLOAD)} menuCd={MENU_CD}
   columns={columns} keyFields={ITEM_KEY_FIELDS}
   read={readApi} save={saveApi} toSavePayload={toSavePayload} handleRef={upload} />
 ```
+
+**`title` 과 `menuCd` 는 선택이 아니다.** 앞의 것은 통째 거절 모달의 제목이고 뒤의 것은
+저장 권한을 보는 자리다 — **둘을 뺀 예시는 컴파일되지 않는다**(2026-09-06 재현 실험에서
+재현 하나가 예시를 그대로 옮겨 적었다).
 
 | 공유하는 것 | 갈리면 |
 |---|---|
@@ -114,6 +119,9 @@ const excel = useMemo<ExcelSpec>(() => ({
   전부 갱신되어 *누가 언제 무엇을 고쳤나* 를 잃는다.
 - **삭제는 업무 탭의 삭제 컬럼이다.** 파일에서 줄을 지운 것과 *"지워라"* 를 구별할 방법이
   없다.
+- **양식에 없는 컬럼은 대조에서도 뺀다.** 기존 행에는 파일에 없는 것이 있다 — 내부 순번·
+  내부 식별자·감사 넷. 통째로 비교하면 **모든 행이 변경**이 되어 *세 줄만 나간다* 가
+  무너진다. 그래서 대조는 **파일에 있는 칸만** 본다(`matchRows.matchesExisting`).
 - **키는 `keyFields` 를 유닛 구분자(`U+001F`)로 이어 붙인다.** 콤마·하이픈이면 `A,B`+`C` 와
   `A`+`B,C` 가 같은 키가 되어 **다른 두 행이 하나로 대조된다.**
 
@@ -148,9 +156,8 @@ const dirtyOf = (key) => key === TAB_UPLOAD ? (upload.current?.dirty() ?? false)
 
 ## 8. 양식 그리드는 개인화를 열지 않는다
 
-```tsx
-<DataGrid ... settings={false} />
-```
+**화면이 선언하지 않는다** — `ExcelUploadTab` 이 자기 그리드에 이미 `settings={false}` 를
+건다. 여기 적는 것은 *왜 그렇게 돼 있나* 이지 화면이 베껴 쓸 코드가 아니다.
 
 이 그리드의 컬럼은 사용자의 표가 아니라 **양식**이다. 하나를 감추거나 순서를 바꾸면 *전체
 다운로드* 가 그 상태로 나가고 **자기가 방금 내려받은 파일을 업로드가 거절한다.**
