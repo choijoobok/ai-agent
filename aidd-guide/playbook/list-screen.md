@@ -37,6 +37,7 @@ tags: [playbook, list, cursor, readonly, log]
 | 8 | `domain/…/{X}QueryService.java` | 조회 하나 |
 | 9 | `api/…/{X}Controller.java` | POST 하나 |
 | 10 | `domain/…/{X}SpecTest.java` | 스펙 단위 |
+| 11 | `features/{도메인}/{도메인}Declarations.test.ts` | **선언 검사** — 컬럼·배지·숨김·정렬을 렌더링 없이 잠근다 |
 
 - **`{도메인}Api.ts` 를 만들지 않는다.** 호출이 그리드 선언뿐이면 감쌀 것이 없다 →
   [standard/frontend/http.md](../standard/frontend/http.md).
@@ -148,10 +149,29 @@ const grid = useGridController<Row>({ menuCd, columns, api, pageSize, params: co
   ESLint 의 한글 리터럴 금지를 지나가는 유일한 길이다.
 - 시스템 상한 같은 설정값은 **`useAuthStore().searchRange`** 에서 읽는다.
 
-## 4. 커밋 전
+## 4. 선언 검사 — **`buildColumns` 를 내보낸다**
+
+요건서 §9 의 *되면 안 되는 것* 절반이 선언 객체에 적혀 있다. 그것을 잠그려면 페이지가
+`buildColumns()` · `buildSearchFields()` · `api` 를 **`export`** 해야 한다 — 안 내보내면
+테스트가 컴포넌트를 마운트해야 하고, 그 순간 잠금이 비싸지고 잘 깨진다.
+
+```ts
+const cols = buildColumns();
+expect(cols.filter((c) => c.sortable)).toHaveLength(1);          // LL-06 정렬은 하나만
+expect(new Set(Object.values(RESULT_TONE)).size).toBe(3);        // LL-07 색 셋
+expect(cols.find((c) => c.field === 'userAgent')?.hidden).toBe(true);  // LL-23 기본 숨김
+expect(cols.some((c) => c.field === 'menuCd')).toBe(false);      // LL-26 없다
+```
+
+**테스트 파일에는 한글을 써도 된다** — `eslint.config` 가 `*.test.ts` 에서
+`no-restricted-syntax` 를 끈다. 단언 문구가 한국어여야 실패했을 때 읽힌다.
+층을 어떻게 가르나는 [quality/test-design.md](../quality/test-design.md) §2.
+
+## 5. 커밋 전
 
 - [ ] `.nullable()` 이 조인 칸마다 붙었나
 - [ ] `minHeight: 0` 래퍼가 있나
+- [ ] 선언 검사가 §9 의 *되면 안 되는 것* 을 잠갔나
 - [ ] `@Operation` 문구가 시드와 같은가 — `./gradlew checkSeeds`
 - [ ] 요건서 §9 의 *되면 안 되는 것* 이 **선언의 부재**로 이뤄졌나(감추는 코드가 아니라)
 
