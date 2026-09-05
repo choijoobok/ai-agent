@@ -3,7 +3,7 @@ package com.aiagent.api.log.request;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * 상세 모달을 여는 요청 — screen/log/access/requirements.md.
+ * 상세 모달을 여는 요청 — screen/log/error/requirements.md.
  *
  * <p>{@link AccessLogDetailRequest} 와 같은 모양이고 같은 이유다 — PK 하나로 한 행을 집는
  * 고정형이며(backend/api.md) 식별자는 경로 변수가 아니라 body 로 온다(backend/packages.md).

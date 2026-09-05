@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 /**
- * 저장 하나가 두 가지를 한다 — screen/code/requirements.md.
+ * 저장 하나가 두 가지를 한다 — screen/config/requirements.md.
  *
  * <p><b>여기서 지키는 것 넷이다.</b> ① 화면이 <b>키를 만들지 못한다</b>(왼쪽 테이블은 코드다),
  * ② 되돌리기는 <b>행 삭제</b>이고 없는 행을 지우려 하면 거부한다, ③ 검증은 <b>저장 후의
@@ -108,7 +108,7 @@ class ConfigServiceTest {
 
         /**
          * <b>기본값과 같은 값도 저장된다.</b> 그것이 <i>변경됨</i> 의 근거가 행의 존재인 이유다
-         * (screen/code/requirements.md) — 값 비교로 판정하면 이 저장이 <b>아무 일도 안 한 것</b>이 되고, 다음
+         * (screen/config/requirements.md) — 값 비교로 판정하면 이 저장이 <b>아무 일도 안 한 것</b>이 되고, 다음
          * 배포가 {@code yml} 을 올렸을 때 그 키가 옛 값에 묶인 사실을 아무도 볼 수 없다.
          */
         @Test

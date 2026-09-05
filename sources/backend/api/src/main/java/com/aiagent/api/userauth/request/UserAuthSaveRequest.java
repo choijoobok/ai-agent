@@ -20,7 +20,7 @@ import java.util.List;
  *
  * <p>상한은 전량 조회 한 장과 같다({@code PageSpec.MAX_SIZE}). 한 사람의 예외가 그보다 많다면
  * 그것은 예외가 아니라 <b>역할</b>이며(sys/menu.md), 화면도 임계치를 넘으면 <i>역할 신설을
- * 검토하세요</i> 를 낸다(screen/user/requirements.md).
+ * 검토하세요</i> 를 낸다(screen/user-auth/requirements.md).
  */
 public record UserAuthSaveRequest(
         @NotBlank @Size(max = 30) String userId,

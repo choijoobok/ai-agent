@@ -5,7 +5,7 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * {@code CONFIG_MGMT} 저장의 거부 — screen/code/requirements.md.
+ * {@code CONFIG_MGMT} 저장의 거부 — screen/config/requirements.md.
  *
  * <p><b>셋 다 화면이 미리 막을 수 없거나, 막았어도 서버가 다시 보는 것이다</b>(frontend/grid.md).
  * 특히 {@link #INVALID_VALUE} 는 <b>화면이 복제해서는 안 되는</b> 판정이다 — 제약의 단일

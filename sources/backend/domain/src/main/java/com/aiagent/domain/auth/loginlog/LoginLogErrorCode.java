@@ -7,7 +7,7 @@ import com.aiagent.core.message.MsgKey;
 /**
  * {@code LOGIN_LOG} 조회의 거부 — screen/log/access/requirements.md.
  *
- * <p><b>둘뿐이고 둘 다 기간이다.</b> 이 화면에는 쓰기가 없고(screen/log/access/requirements.md) 두 번째 호출도 없어
+ * <p><b>둘뿐이고 둘 다 기간이다.</b> 이 화면에는 쓰기가 없고(screen/log/login/requirements.md) 두 번째 호출도 없어
  * (§4.7 — {@code nclob} 컬럼이 없다) 거부할 것이 기간 말고 없다.
  *
  * <p><b>{@code AccessLogErrorCode} 의 같은 둘과 키를 공유하지 않는다.</b> 규칙은
@@ -29,7 +29,7 @@ public enum LoginLogErrorCode implements ErrorCode {
     RANGE_REQUIRED(MsgKey.ERR_LOGIN_LOG_RANGE_REQUIRED, "조회 기간은 필수입니다"),
 
     /**
-     * 기간이 상한(92일)을 넘었다 — screen/log/access/requirements.md.
+     * 기간이 상한(92일)을 넘었다 — screen/log/login/requirements.md.
      *
      * <p><b>보존보다 창이 짧은 유일한 화면이다.</b> 1년치를 봐야 하면 엑셀을 네 번 내린다 —
      * 조용히 잘라 주면 사용자는 <i>"1년치를 봤다"</i> 고 믿은 채 결론을 낸다.

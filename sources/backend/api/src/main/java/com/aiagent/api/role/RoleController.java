@@ -22,11 +22,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code ROLE_MGMT} — screen/menu/requirements.md. <b>경로가 둘뿐이다.</b>
+ * {@code ROLE_MGMT} — screen/role/requirements.md. <b>경로가 둘뿐이다.</b>
  *
  * <p>마스터의 조회와 저장 하나씩이고, <b>하단 pane 의 조회는 여기 없다</b> — 그것은
  * {@code roleAuth/getAffectedUsers} 이며 {@code ROLE_AUTH_MGMT} 와 <b>같은 경로</b>다
- * (screen/menu/requirements.md). screen/menu/requirements.md 가 하단을 <i>"§2.5 와 같은 그리드"</i> 로 정했으므로 경로도 같아야 하고,
+ * (screen/role/requirements.md). screen/role/requirements.md 가 하단을 <i>"§2.5 와 같은 그리드"</i> 로 정했으므로 경로도 같아야 하고,
  * {@code role/getUserList} 를 따로 두면 <b>같은 질문에 답이 둘</b>이 된다.
  *
  * <p>그 결과가 시드에 그대로 나타난다 — {@code SYS_MENU_API} 에 <b>{@code ROLE_MGMT} 행이

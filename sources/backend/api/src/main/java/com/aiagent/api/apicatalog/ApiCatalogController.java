@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code API_CATALOG} — screen/menu/requirements.md. <b>{@code get*} 둘뿐이다.</b>
+ * {@code API_CATALOG} — screen/api-catalog/requirements.md. <b>{@code get*} 둘뿐이다.</b>
  *
- * <p>이 컨트롤러가 <b>이 화면이 조회 전용이라는 사실의 집행</b>이다(screen/menu/requirements.md). {@code save*} 를
+ * <p>이 컨트롤러가 <b>이 화면이 조회 전용이라는 사실의 집행</b>이다(screen/api-catalog/requirements.md). {@code save*} 를
  * 두지 않았으므로 시드 생성기가 {@code SAVE} 액션을 만들 수 없고(backend/api.md — 접두가 액션을
  * 정한다), 만들 수 없으므로 <b>어느 역할에도 줄 수 없다</b>. 화면에서 버튼을 감추는 것과
  * 층이 다르다.
@@ -56,7 +56,7 @@ public class ApiCatalogController {
     /**
      * <b>페이징하지 않는다</b>({@code mode: 'all'}).
      *
-     * <p>한 API 를 쓰는 화면은 많아야 몇이고, screen/menu/requirements.md 가 <i>"0 건이면 §5.4 의 진단을 낸다"</i> 고
+     * <p>한 API 를 쓰는 화면은 많아야 몇이고, screen/api-catalog/requirements.md 가 <i>"0 건이면 §5.4 의 진단을 낸다"</i> 고
      * 적은 것은 <b>이 목록의 크기가 곧 답</b>이라는 뜻이다.
      *
      * <p><b>세션 언어를 받는다.</b> 메뉴 경로의 이름이 {@code SYS_MESSAGE} 에서 오기 때문이며

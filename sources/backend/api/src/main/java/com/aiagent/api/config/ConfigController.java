@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code CONFIG_MGMT} — screen/code/requirements.md. <b>단일 그리드이고 액션은 {@code R} {@code S} 둘이다.</b>
+ * {@code CONFIG_MGMT} — screen/config/requirements.md. <b>단일 그리드이고 액션은 {@code R} {@code S} 둘이다.</b>
  *
  * <p><b>{@code EXPORT} 가 없다</b>(sys/menu.md) — 키 목록이 {@code yml} 에 있고 바뀐 값은
  * <i>변경 여부</i> 조회로 화면에서 끝난다. 수십 건짜리 목록이다.
@@ -51,7 +51,7 @@ public class ConfigController {
     }
 
     /**
-     * 조회조건의 <b>접두사 콤보</b>가 쓴다 — screen/code/requirements.md.
+     * 조회조건의 <b>접두사 콤보</b>가 쓴다 — screen/config/requirements.md.
      *
      * <p><b>목록 응답에 실어 보내지 않는다.</b> 접두사는 <i>지금 걸린 조건의 결과</i> 가
      * 아니라 <b>전 키에서 도출한 고정 집합</b>이라, 페이지에 실으면 <i>거른 뒤의 목록</i> 을

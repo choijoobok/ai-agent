@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
- * 저장이 받는 부여 하나 — screen/menu/requirements.md.
+ * 저장이 받는 부여 하나 — screen/role-auth/requirements.md.
  *
  * <p><b>{@code rowState} 가 없다.</b> 다른 화면의 일괄 저장은 행마다 C·U·D 를 싣지만
  * (frontend/grid.md) 여기 오는 것은 <b>켜진 스위치의 목록 전부</b>이고, 서버가 지금 상태와 비교해

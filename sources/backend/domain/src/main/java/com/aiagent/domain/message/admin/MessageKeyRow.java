@@ -5,7 +5,7 @@ import java.time.Instant;
 import java.util.List;
 
 /**
- * 마스터 그리드의 한 행 — screen/code/requirements.md.
+ * 마스터 그리드의 한 행 — screen/message/requirements.md.
  *
  * <p><b>{@code values} 가 {@code list} 컬럼이다</b>(frontend/grid.md). 하단 그리드는 이것을 그리며
  * <b>서버를 부르지 않는다</b> — 그래서 하단에 조회 버튼이 없고, 편집이 마스터 행에 남으므로

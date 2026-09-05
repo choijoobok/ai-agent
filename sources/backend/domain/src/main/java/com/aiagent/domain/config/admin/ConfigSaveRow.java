@@ -6,12 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
- * 저장 페이로드의 한 행 — screen/code/requirements.md. <b>저장 하나가 두 가지를 한다.</b>
+ * 저장 페이로드의 한 행 — screen/config/requirements.md. <b>저장 하나가 두 가지를 한다.</b>
  *
  * <table><caption></caption>
  * <tr><td>{@code U}</td><td>적용값 수정 — {@code SYS_CONFIG} 행을 <b>만들거나</b> 갱신한다</td></tr>
  * <tr><td>{@code D}</td><td><b>되돌리기</b> — 행을 지운다. 값이 사라지는 것이 아니라
- * {@code yml} 이 드러난다(screen/code/requirements.md)</td></tr>
+ * {@code yml} 이 드러난다(screen/config/requirements.md)</td></tr>
  * </table>
  *
  * <p><b>{@code C} 가 없다.</b> 화면에 행 추가 버튼이 없고({@code addRow} 를 선언하지 않는다)

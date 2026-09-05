@@ -91,7 +91,7 @@ class UserAuthServiceTest {
         when(roleAuths.findGrantsOfUser(anyString(), any(), anyBoolean())).thenReturn(List.of());
     }
 
-    // ── READ 불변식 — 판정은 합집합에서 (screen/user/requirements.md) ────────────────────
+    // ── READ 불변식 — 판정은 합집합에서 (screen/user-auth/requirements.md) ────────────────────
 
     @Nested
     @DisplayName("READ 불변식은 합집합에서 판정한다")
@@ -174,7 +174,7 @@ class UserAuthServiceTest {
         void allowsDeletingAnOrphan() {
             /*
               {@code EXECUTE} 는 정의 밖이다. 그런데도 부여 행이 있는 것이 <b>고아</b>이며,
-              screen/user/requirements.md 이 <i>잘못 등록한 행 정리</i> 를 셋째 수단으로 적어 두었다 — 지우는
+              screen/user-auth/requirements.md 이 <i>잘못 등록한 행 정리</i> 를 셋째 수단으로 적어 두었다 — 지우는
               것까지 막으면 <b>사람이 판단할 길</b>이 사라진다.
             */
             SysUserMenuAuth orphan = grant(ActionType.EXECUTE);
@@ -222,7 +222,7 @@ class UserAuthServiceTest {
         }
     }
 
-    // ── 회수는 삭제가 아니다 (screen/user/requirements.md) ───────────────────────────────
+    // ── 회수는 삭제가 아니다 (screen/user-auth/requirements.md) ───────────────────────────────
 
     @Test
     @DisplayName("회수는 같은 행의 종료일을 고친다 — 행을 지우면 사유가 사라진다")

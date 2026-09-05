@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.env.MockEnvironment;
 
 /**
- * 왼쪽 테이블이 코드에서 나온다 — screen/code/requirements.md.
+ * 왼쪽 테이블이 코드에서 나온다 — screen/config/requirements.md.
  *
  * <p><b>여기서 지키는 것 넷이다.</b> ① 등록 목록을 관리하지 않는다(애노테이션 스캔),
  * ② 중첩 객체는 재귀한다, ③ 컬렉션은 목록에 없다, ④ <b>설명이 빌드 산출물에서 온다</b>.
@@ -101,7 +101,7 @@ class ConfigCatalogTest {
     }
 
     @Nested
-    @DisplayName("설명은 빌드 산출물에서 온다 — screen/code/requirements.md")
+    @DisplayName("설명은 빌드 산출물에서 온다 — screen/config/requirements.md")
     class Descriptions {
 
         /**

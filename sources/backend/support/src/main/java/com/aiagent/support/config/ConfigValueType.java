@@ -4,11 +4,11 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * 설정값의 유형 — screen/code/requirements.md. <b>원천은 필드 타입이다</b>({@code CFG_TYPE_CD} 가 아니다).
+ * 설정값의 유형 — screen/config/requirements.md. <b>원천은 필드 타입이다</b>({@code CFG_TYPE_CD} 가 아니다).
  *
  * <p>화면이 아는 것은 <b>여기까지</b>다. {@code @Min} · {@code @Max} · 상호 제약은 화면이
  * 복제하지 않는다 — 제약의 단일 원본은 바인딩 객체이고(sys/code.md) 옮겨 적으면 원본이 둘이
- * 되어 <b>어긋날 때 어느 쪽이 맞는지 알 수 없다</b>(screen/code/requirements.md).
+ * 되어 <b>어긋날 때 어느 쪽이 맞는지 알 수 없다</b>(screen/config/requirements.md).
  *
  * <p>넷뿐인 것이 요점이다. 자바 타입을 그대로 내면 화면이 {@code java.lang.Integer} 를
  * 알아야 하고, 그것은 <b>서버의 구현을 화면 계약에 새기는 것</b>이다.
@@ -27,7 +27,7 @@ public enum ConfigValueType {
     /**
      * 컬렉션을 한 칸에 담은 문자열 — sys/batch.md 가 쓰는 방식이다.
      *
-     * <p><b>{@code Map}·{@code List} 프로퍼티는 목록에 나오지 않는다</b>(screen/code/requirements.md) — 맵의
+     * <p><b>{@code Map}·{@code List} 프로퍼티는 목록에 나오지 않는다</b>(screen/config/requirements.md) — 맵의
      * 키가 곧 프로퍼티 이름이라 키가 하나로 고정되지 않는다. 컬렉션이 필요하면
      * {@code JSON} 문자열 <b>한 칸</b>으로 선언한다.
      */

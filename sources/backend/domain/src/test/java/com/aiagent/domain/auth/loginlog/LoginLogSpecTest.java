@@ -35,7 +35,7 @@ class LoginLogSpecTest {
                     .orElse(null);
 
             assertThat(matched)
-.as("%s 가 어느 묶음에도 없다 — screen/log/access/requirements.md 의 셋 중 하나를 정한다", code)
+.as("%s 가 어느 묶음에도 없다 — screen/log/login/requirements.md 의 셋 중 하나를 정한다", code)
                     .isNotNull();
         }
     }
@@ -48,7 +48,7 @@ class LoginLogSpecTest {
         String closed = group.toPredicate(Op.eq, "CLOSED").toString();
 
         assertThat(failed).doesNotContain(LoginResultCode.SUCCESS.name());
-        // 만료·밀려남은 실패가 아니라 정상 종료다 — screen/log/access/requirements.md.
+        // 만료·밀려남은 실패가 아니라 정상 종료다 — screen/log/login/requirements.md.
         assertThat(failed).doesNotContain(LoginResultCode.SESSION_TIMEOUT.name());
         assertThat(failed).doesNotContain(LoginResultCode.SESSION_EVICTED.name());
         assertThat(closed).doesNotContain(LoginResultCode.FAIL_CONCURRENT.name());
@@ -66,7 +66,7 @@ class LoginLogSpecTest {
     }
 
     @Test
-    @DisplayName("묶음은 = 만 받는다 — 여럿을 고르는 축은 결과 코드 쪽이다(screen/log/access/requirements.md)")
+    @DisplayName("묶음은 = 만 받는다 — 여럿을 고르는 축은 결과 코드 쪽이다(screen/log/login/requirements.md)")
     void 묶음은_등호만_받는다() {
         FieldSpec group = LoginLogSpec.SPEC.field("rsltGroup");
 
@@ -75,7 +75,7 @@ class LoginLogSpecTest {
     }
 
     @Test
-    @DisplayName("정렬은 일시 하나만 열린다 — 커서의 기준점이다(screen/log/access/requirements.md)")
+    @DisplayName("정렬은 일시 하나만 열린다 — 커서의 기준점이다(screen/log/login/requirements.md)")
     void 정렬은_일시_하나다() {
         assertThat(LoginLogSpec.SPEC.field("creDtm").sortable()).isTrue();
         assertThat(LoginLogSpec.SPEC.field("userId").sortable()).isFalse();
@@ -84,7 +84,7 @@ class LoginLogSpecTest {
     }
 
     @Test
-    @DisplayName("User-Agent 는 조건도 정렬도 아니다 — 500자에 인덱스가 없다(screen/log/access/requirements.md)")
+    @DisplayName("User-Agent 는 조건도 정렬도 아니다 — 500자에 인덱스가 없다(screen/log/login/requirements.md)")
     void userAgent_는_화이트리스트에_없다() {
         // 화이트리스트 밖은 `null` 이고 `QueryDslBuilder` 가 그것을 400 으로 바꾼다.
         assertThat(LoginLogSpec.SPEC.field("userAgent")).isNull();
@@ -95,9 +95,9 @@ class LoginLogSpecTest {
     @DisplayName("사용자 조인은 left 다 — inner 면 없는 계정의 시도가 목록에서 사라진다(sys/logs.md)")
     void 사용자_조인은_left_다() {
         /*
-          이 화면의 두 번째 용도가 침입 시도 탐지이고(screen/log/access/requirements.md) 그 재료가 **없는 ID 의 행**
+          이 화면의 두 번째 용도가 침입 시도 탐지이고(screen/log/login/requirements.md) 그 재료가 **없는 ID 의 행**
           이다. `join` 으로 바뀌면 조회는 성공하는데 그 행만 조용히 빠지므로, 화면을 봐서는
-          **줄어든 것을 알 수 없다** — 총 건수가 없는 커서형이라 더 그렇다(screen/log/access/requirements.md).
+          **줄어든 것을 알 수 없다** — 총 건수가 없는 커서형이라 더 그렇다(screen/log/login/requirements.md).
         */
         assertThat(LoginLogSpec.SPEC.joins()).hasSize(1);
         assertThat(LoginLogSpec.SPEC.joins().getFirst().left()).isTrue();
@@ -114,7 +114,7 @@ class LoginLogSpecTest {
         assertThat(Op.startsWith.accepts(userNm.javaType())).isTrue();
         assertThat(Op.endsWith.accepts(userNm.javaType())).isTrue();
         assertThat(Op.eq.accepts(userNm.javaType())).isTrue();
-        // 정렬은 열지 않는다 — 커서의 기준점은 일시 하나다(screen/log/access/requirements.md).
+        // 정렬은 열지 않는다 — 커서의 기준점은 일시 하나다(screen/log/login/requirements.md).
         assertThat(userNm.sortable()).isFalse();
         // nullable 이라야 `ne` 가 없는 계정의 행을 빼지 않는다(backend/api.md).
         assertThat(userNm.nullable()).isTrue();

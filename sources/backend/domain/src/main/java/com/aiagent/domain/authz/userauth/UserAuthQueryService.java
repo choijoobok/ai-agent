@@ -36,7 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code USER_AUTH_MGMT} 의 조회 — screen/user/requirements.md. <b>경로가 둘이다.</b>
+ * {@code USER_AUTH_MGMT} 의 조회 — screen/user-auth/requirements.md. <b>경로가 둘이다.</b>
  *
  * <table>
  *   <tr><td>{@link #getList}</td><td>좌 pane — 사용자 하나를 고른다. <b>읽기 전용</b>이다</td></tr>
@@ -45,25 +45,25 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>트리와 예외 목록이 <b>같은 응답</b>에서 나온다</h2>
  *
- * <p>screen/user/requirements.md 가 둘을 <i>"같은 데이터의 두 표시"</i> 로 정했다. 그렇다면 <b>원본도 하나여야
+ * <p>screen/user-auth/requirements.md 가 둘을 <i>"같은 데이터의 두 표시"</i> 로 정했다. 그렇다면 <b>원본도 하나여야
  * 한다</b> — 목록을 따로 내려주면 같은 질문에 답이 둘이 되고, 그 둘이 갈리는 순간
  * <i>"트리에는 있는데 목록에 없다"</i> 가 된다.
  *
  * <p>그래서 {@link UserAuthTreeRow#grants} 가 그 메뉴의 개인 예외를 <b>기간과 사유까지</b>
- * 담고, 화면이 그것을 펴서 하단 그리드를 만든다. 저장 API 도 하나다(screen/user/requirements.md) — <b>셋이 다
+ * 담고, 화면이 그것을 펴서 하단 그리드를 만든다. 저장 API 도 하나다(screen/user-auth/requirements.md) — <b>셋이 다
  * 하나</b>여야 <i>트리에서 체크하고 목록에서 기간을 넣은 뒤 한쪽만 저장하는</i> 경로가
  * 열리지 않는다.
  *
  * <h2>{@code QueryDslBuilder} 를 트리에 쓰지 않는다</h2>
  *
  * <p>{@code MENU_TREE}(screen/menu/requirements.md) · {@code ROLE_AUTH_MGMT}(screen/menu/requirements.md)와 같은 이유다 —
- * <b>조건에 맞는 노드만 남기면 부모가 사라져 트리가 아니게 된다</b>. screen/user/requirements.md 은 <i>메뉴명</i>
+ * <b>조건에 맞는 노드만 남기면 부모가 사라져 트리가 아니게 된다</b>. screen/user-auth/requirements.md 은 <i>메뉴명</i>
  * 을 조회조건으로 적었지만 그것은 <b>거르기가 아니라 찾아가기</b>이며, 폴더의 파생 3-state
  * 가 <b>보이는 자식만으로</b> 요약해 거짓을 말하는 것을 막는다.
  *
  * <h2>역할 경유는 <b>지금 유효한 것</b>만 낸다</h2>
  *
- * <p>배지가 말해야 하는 것은 <i>"지금 역할로도 갖고 있다"</i> 이므로(screen/user/requirements.md), 만료된 역할
+ * <p>배지가 말해야 하는 것은 <i>"지금 역할로도 갖고 있다"</i> 이므로(screen/user-auth/requirements.md), 만료된 역할
  * 부여와 꺼진 역할은 여기 오지 않는다 — 그것을 배지로 내면 <b>관리자가 예외를 주지 않고
  * 넘어간다</b>.
  */
@@ -98,7 +98,7 @@ public class UserAuthQueryService {
         this.actions = actions;
     }
 
-    // ── 좌 pane (screen/user/requirements.md) ────────────────────────────────────────────
+    // ── 좌 pane (screen/user-auth/requirements.md) ────────────────────────────────────────────
 
     /**
      * 사용자 목록 — <b>계정 상태가 함께 실린다</b>.
@@ -135,7 +135,7 @@ public class UserAuthQueryService {
     }
 
     /**
-     * <b>지금 유효한</b> 개인 예외의 건수 — 좌 pane 의 컬럼 하나(screen/user/requirements.md).
+     * <b>지금 유효한</b> 개인 예외의 건수 — 좌 pane 의 컬럼 하나(screen/user-auth/requirements.md).
      *
      * <p><b>하단 그리드의 <i>상태</i> 컬럼과 같은 규칙</b>이다({@link #stateOf}) — 기간이
      * 오늘을 품은 행만 센다. 전건을 세면 <b>만료된 예외가 쌓인 계정이 영영 큰 수</b>로
@@ -143,7 +143,7 @@ public class UserAuthQueryService {
      *
      * <p><b>고아 부여도 센다.</b> API 가 사라져 미정의가 된 조합이지만(seed.md) 그 행은
      * 여전히 하단 목록에 <i>유효</i> 로 서 있고, 세는 규칙이 갈리면 <b>화면에서 눈으로 센
-     * 수와 컬럼의 수가 다르다</b> — 지울지는 사람이 판단한다(screen/user/requirements.md).
+     * 수와 컬럼의 수가 다르다</b> — 지울지는 사람이 판단한다(screen/user-auth/requirements.md).
      *
      * <p>기간이 <b>둘 다 필수</b>라(sys/menu.md) {@code null} 분기가 없다 — 역할 부여와 갈리는
      * 자리이며(무기한이 있다) 그쪽의 {@code holderCounts} 는 {@code isNull().or(...)} 를 쓴다.
@@ -196,7 +196,7 @@ public class UserAuthQueryService {
         return Boolean.TRUE.equals(user.get(U.dormantYn)) ? AccountStat.DORMANT : AccountStat.NORMAL;
     }
 
-    // ── 우 + 하 (screen/user/requirements.md) ────────────────────────────────────────────
+    // ── 우 + 하 (screen/user-auth/requirements.md) ────────────────────────────────────────────
 
     /**
      * 메뉴 계층 × 액션 4열 + 이 사용자의 개인 예외 + 역할 경유 — <b>전건이고 전위 순회다</b>.
@@ -236,7 +236,7 @@ public class UserAuthQueryService {
     /**
      * 이 사용자의 개인 예외 <b>전부</b> — 기간으로 거르지 않는다.
      *
-     * <p>screen/user/requirements.md 이 <i>부여 상태</i> 를 조회조건에서 <b>뺀</b> 이유가 여기 있다: 트리는
+     * <p>screen/user-auth/requirements.md 이 <i>부여 상태</i> 를 조회조건에서 <b>뺀</b> 이유가 여기 있다: 트리는
      * 만료 배지를 그려야 하므로 전건을 보고, 목록만 걸러져 있으면 <i>"같은 데이터의 두
      * 표시"</i> 라는 원칙이 성립하지 않는다.
      *
@@ -263,7 +263,7 @@ public class UserAuthQueryService {
         return byMenu;
     }
 
-    /** screen/user/requirements.md — <b>양끝 포함</b>이고 판정은 <b>조회 시 계산</b>이다(배치가 갱신하지 않는다). */
+    /** screen/user-auth/requirements.md — <b>양끝 포함</b>이고 판정은 <b>조회 시 계산</b>이다(배치가 갱신하지 않는다). */
     static GrantState stateOf(LocalDate from, LocalDate to, LocalDate today) {
         if (today.isBefore(from)) {
             return GrantState.SCHEDULED;

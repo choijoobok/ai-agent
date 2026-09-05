@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code BATCH_HISTORY} — screen/batch/schedule/requirements.md. <b>조회 전용인데 개입한다.</b>
+ * {@code BATCH_HISTORY} — screen/batch/history/requirements.md. <b>조회 전용인데 개입한다.</b>
  *
  * <p>sys/menu.md 의 액션 열이 {@code R E X} 다 — {@code S} 가 없는데 {@code X} 가 있다.
  * screen/menu/requirements.md 의 조회 전용 모양에서 <b>{@code X} 하나가 더 있는</b> 형태이며, 그 하나가
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <h2>{@code cancel} 이 {@code SAVE} 가 아닌 이유</h2>
  *
- * <p>screen/batch/schedule/requirements.md — {@code CANCEL_REQ_DTM} 을 쓰지만 <b>컬럼 쓰기가 결과 그 자체가 아니라</b>
+ * <p>screen/batch/history/requirements.md — {@code CANCEL_REQ_DTM} 을 쓰지만 <b>컬럼 쓰기가 결과 그 자체가 아니라</b>
  * 실행 중인 절차에 요청을 전달하는 <b>통로</b>다. 아무도 읽지 않으면 아무 일도 일어나지
  * 않으며, screen/user/requirements.md 의 잠금 해제(컬럼 값을 바꾸는 것이 목적)와 갈리는 지점이 그것이다.
  * 경로 접두({@code cancel} → <i>그 외</i> → {@code EXECUTE})와 판단이 <b>일치</b>하므로
@@ -57,7 +57,7 @@ public class BatchHistoryController {
     }
 
     /**
-     * 목록 — <b>번호 페이징이고 총 건수를 센다</b>(screen/batch/schedule/requirements.md).
+     * 목록 — <b>번호 페이징이고 총 건수를 센다</b>(screen/batch/history/requirements.md).
      *
      * <p>이력 넷 중 유일하다. 커서형으로 두면 임의 컬럼 정렬이 성립하지 않고, 정렬이
      * 없으면 <i>"뭐가 오래 걸리나"</i> 에 답할 수 없다 — 그 질문이 sys/batch.md 이
@@ -76,7 +76,7 @@ public class BatchHistoryController {
     }
 
     /**
-     * <b>탭 둘을 한 번에</b> 준다 — 결과 상세와 오류(screen/batch/schedule/requirements.md).
+     * <b>탭 둘을 한 번에</b> 준다 — 결과 상세와 오류(screen/batch/history/requirements.md).
      *
      * <p>왕복을 나누면 <b>두 번째가 실패했을 때 절반만 열린 모달</b>이 된다(screen/log/access/requirements.md).
      * 여기는 둘이 같은 행의 두 컬럼이라 조인조차 없다.
@@ -91,7 +91,7 @@ public class BatchHistoryController {
     }
 
     /**
-     * 중단 요청 — <b>요청까지가 화면의 책임이다</b>(screen/batch/schedule/requirements.md).
+     * 중단 요청 — <b>요청까지가 화면의 책임이다</b>(screen/batch/history/requirements.md).
      *
      * <p>확인 문구가 <i>"중단합니다"</i> 가 아니라 <i>"중단을 요청합니다 —
      * <b>즉시 멈추지 않을 수 있습니다</b>"</i> 인 것이 의도다. 협조적 중단이므로 안 멈췄을

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code MESSAGE_MGMT} — screen/code/requirements.md. <b>이 저장소의 첫 업무 API 다.</b>
+ * {@code MESSAGE_MGMT} — screen/message/requirements.md. <b>이 저장소의 첫 업무 API 다.</b>
  *
  * <p>경로가 {@code /api/service/**} 이므로 {@code SYS_API}·{@code SYS_MENU_API} 판정을 받는다
  * (backend/security.md). 시드가 없으면 <b>전부 403</b> 이며 그것이 fail-closed 의 정상 동작이다 —

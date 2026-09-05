@@ -41,7 +41,7 @@ public final class MessageSpec {
             .build();
 
     /**
-     * <b>어느 언어든 걸린다</b> — screen/code/requirements.md.
+     * <b>어느 언어든 걸린다</b> — screen/message/requirements.md.
      *
      * <p>운영자는 <i>"화면에 보이는 이 문구"</i> 를 들고 오지 키를 들고 오지 않는다. 어느
      * 언어의 값인지도 모르므로 언어를 묻지 않는다 — <b>이 조건이 이 화면의 핵심</b>이다.
@@ -62,7 +62,7 @@ public final class MessageSpec {
     }
 
     /**
-     * 미번역 탐지(MASTER-06) — <b>서버 조건이다</b>(screen/code/requirements.md).
+     * 미번역 탐지(MASTER-06) — <b>서버 조건이다</b>(screen/message/requirements.md).
      *
      * <p>컬럼 필터로 두지 않는다. <i>"en 이 안 채워진 키"</i> 는 <b>전량을 물어야 하는 질문</b>
      * 인데 컬럼 필터는 현재 페이지 안에서만 걸린다(frontend/grid.md).

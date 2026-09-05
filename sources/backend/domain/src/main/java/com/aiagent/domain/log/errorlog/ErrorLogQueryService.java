@@ -35,11 +35,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code ERROR_LOG} 의 조회 — screen/log/access/requirements.md. <b>쓰기가 없다.</b>
+ * {@code ERROR_LOG} 의 조회 — screen/log/error/requirements.md. <b>쓰기가 없다.</b>
  *
  * <p>쓰는 쪽은 {@code ExceptionLogRecorder} 이고 <b>예외 처리 흐름이 부른다</b> — 화면이
  * 아니다. 로그인 이력이 {@code LoginHistoryService} 와 갈라진 것과 같은 모양이며, 셋 다
- * 이력 행이 불변이라는 한 가지 사실에서 나온다(screen/log/access/requirements.md).
+ * 이력 행이 불변이라는 한 가지 사실에서 나온다(screen/log/error/requirements.md).
  *
  * <h2>{@code getDetail} 이 두 테이블을 읽는다 — 이 서비스만 그렇다</h2>
  *
@@ -48,12 +48,12 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <p><b>그래도 진단은 자립한다.</b> {@code ERR_CD} · {@code ERR_MSG} · 스택이 자기 테이블에
  * 있고, 180일 된 오류에서 필요한 것은 <i>"무엇이 몇 번 났나"</i> 이지 그때 보낸 body 가
- * 아니다 — 그것이 §1.4 의 대가를 받아들인 근거다(screen/log/access/requirements.md).
+ * 아니다 — 그것이 §1.4 의 대가를 받아들인 근거다(screen/log/error/requirements.md).
  *
  * <h2>쿼리가 셋인데 셋 다 이유가 다르다</h2>
  *
  * <table><caption></caption>
- * <tr><td>목록</td><td>커서형 한 번 — {@code size + 1} 건으로 다음 장을 판정한다(screen/log/access/requirements.md)</td></tr>
+ * <tr><td>목록</td><td>커서형 한 번 — {@code size + 1} 건으로 다음 장을 판정한다(screen/log/error/requirements.md)</td></tr>
  * <tr><td>메뉴명</td><td>이름의 원본이 {@code SYS_MESSAGE} 라 조인으로 얻지 못한다(sys/code.md) —
  *     {@code AccessLogQueryService} 와 같다. <b>사용자명은 여기 오지 않는다</b>: 원본이
  *     {@code SYS_USER.USER_NM} 컬럼 그대로라 목록 쿼리의 {@code leftJoin} 이 함께 가져온다
@@ -69,7 +69,7 @@ public class ErrorLogQueryService {
     private static final QSysAccessLog AL = QSysAccessLog.sysAccessLog;
 
     /**
-     * 화면이 처음 채우는 기간 — <b>시스템 기본값(7일)을 그대로 쓴다</b>(screen/log/access/requirements.md).
+     * 화면이 처음 채우는 기간 — <b>시스템 기본값(7일)을 그대로 쓴다</b>(screen/log/error/requirements.md).
      *
      * <p>사용 이력만 1일로 좁혔고(행마다 {@code nclob}) 이 화면은 그럴 이유가 없다 —
      * 오류는 <b>드물게 나는 것</b>이라 하루로 자르면 대개 빈 화면이 된다.
@@ -81,7 +81,7 @@ public class ErrorLogQueryService {
      *
      * <p>{@code errMsg} 는 <b>있다</b>. {@code VARCHAR(1000)} 이라 실을 수 있고, 실려야
      * <i>"무엇이 났나"</i> 를 목록에서 읽는다 — 그것이 sys/logs.md 가 이 컬럼을 {@code nclob} 으로
-     * 두지 않은 이유 전부다(screen/log/access/requirements.md).
+     * 두지 않은 이유 전부다(screen/log/error/requirements.md).
      */
     private static final NumberExpression<Integer> HAS_STACK =
             new CaseBuilder().when(EL.rootCauseStack.isNotNull()).then(1).otherwise(0);
@@ -204,7 +204,7 @@ public class ErrorLogQueryService {
                 LogText.isTruncated(parameters));
     }
 
-    // ── 기간 검사 (screen/log/access/requirements.md) ──────────────────────────────────────────
+    // ── 기간 검사 (screen/log/error/requirements.md) ──────────────────────────────────────────
 
     /**
      * 기간은 <b>필수 조건이고 상한이 있다</b> — 규칙은 {@link RangeGuard} 가 갖는다.
@@ -213,7 +213,7 @@ public class ErrorLogQueryService {
      * 로그인 이력과 같고 사용 이력(31일)과 갈린다.
      *
      * <p><b>추적 ID 를 넣으면 기간이 선택이 된다</b> — 셋 중 이 화면에서 그것이 가장 흔하다.
-     * 사용자가 5xx 토스트에서 복사한 값을 들고 오는 것이 이 화면의 주된 동선이며(screen/log/access/requirements.md),
+     * 사용자가 5xx 토스트에서 복사한 값을 들고 오는 것이 이 화면의 주된 동선이며(screen/log/error/requirements.md),
      * 그때 <i>언제 났는지</i> 는 대개 모른다.
      */
     private void checkRange(SearchRequest<Void> request) {

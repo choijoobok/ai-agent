@@ -14,7 +14,7 @@ import java.util.List;
  *
  * <h2>정렬이 셋 열려 있다 — 이력 화면 중 유일하다</h2>
  *
- * <p>screen/log/access/requirements.md 이 이력의 정렬을 <b>고정</b>으로 두었고(커서형 이동의 전제) screen/batch/schedule/requirements.md 이
+ * <p>screen/log/access/requirements.md 이 이력의 정렬을 <b>고정</b>으로 두었고(커서형 이동의 전제) screen/batch/history/requirements.md 이
  * 그것을 <b>상속하지 않는다</b>고 항목별로 따져 결정했다. 근거는 하나다 —
  * sys/batch.md 이 {@code ELAPSED_MS} 를 <b>저장하기로</b> 한 이유가 <i>"오래 걸린 배치 정렬이
  * 인덱스를 못 탄다"</i> 였고, <b>정렬을 끄면 그 컬럼을 저장할 이유가 사라진다</b>.
@@ -25,7 +25,7 @@ import java.util.List;
  *
  * <h2>{@code RSLT_DTL_MSG} 와 {@code ERR_MSG} 가 여기 없다</h2>
  *
- * <p>조건으로도 정렬로도 쓸 수 없다 — 값이 목록에 없고(screen/batch/schedule/requirements.md), Oracle 이 {@code CLOB}
+ * <p>조건으로도 정렬로도 쓸 수 없다 — 값이 목록에 없고(screen/batch/history/requirements.md), Oracle 이 {@code CLOB}
  * 을 {@code ORDER BY} 에 쓰지 못한다(backend/api.md). <b>여기 없는 것이 그 집행</b>이며
  * {@code ErrorLogSpec} 의 {@code rootCauseStack} 과 같다.
  *
@@ -40,7 +40,7 @@ public final class BatchHistorySpec {
 
     static final QSysScheduleBatch B = QSysScheduleBatch.sysScheduleBatch;
 
-    /** 화면의 <b>결과 묶음</b> 콤보와 같은 문자열이다(screen/batch/schedule/requirements.md). */
+    /** 화면의 <b>결과 묶음</b> 콤보와 같은 문자열이다(screen/batch/history/requirements.md). */
     static final String FAILED_ONLY = "FAILED";
 
     static final String SKIPPED_ONLY = "SKIPPED";
@@ -49,7 +49,7 @@ public final class BatchHistorySpec {
             /*
               FK 가 없으므로(sys/batch.md) 등록이 지워진 이력이 남는다 — leftJoin 이라야 그 행이
               사라지지 않는다. 조인을 안 하면 배치명을 못 얻고, inner 로 하면 고아가
-              **목록에서 통째로 없어진다**. screen/batch/schedule/requirements.md 이 "이력은 남아야 한다" 고 한 것을
+              **목록에서 통째로 없어진다**. screen/batch/history/requirements.md 이 "이력은 남아야 한다" 고 한 것을
               집행하는 자리가 이 한 글자다.
             */
             .from(H)
@@ -59,7 +59,7 @@ public final class BatchHistorySpec {
             .col("batchId", H.batchId).sortable()
             .col("execTypeCd", H.execTypeCd)
             .col("rsltCd", H.rsltCd)
-            // 이 화면의 성능 진단 동선 — 정렬과 조건이 짝이다(screen/batch/schedule/requirements.md).
+            // 이 화면의 성능 진단 동선 — 정렬과 조건이 짝이다(screen/batch/history/requirements.md).
             .col("elapsedMs", H.elapsedMs).sortable().nullable()
             .col("nodeId", H.nodeId)
             .col("histId", H.histId)
@@ -70,7 +70,7 @@ public final class BatchHistorySpec {
             .build();
 
     /**
-     * <b>실패만</b> · <b>건너뜀만</b> — screen/batch/schedule/requirements.md 의 <i>결과 묶음</i>. 파생 조건의 <b>네 번째
+     * <b>실패만</b> · <b>건너뜀만</b> — screen/batch/history/requirements.md 의 <i>결과 묶음</i>. 파생 조건의 <b>네 번째
      * 사례</b>다({@code AccessLogSpec.outcome} · {@code LoginLogSpec.rsltGroup} ·
      * {@code ErrorLogSpec.statusGroup} 다음).
      *
@@ -80,9 +80,9 @@ public final class BatchHistorySpec {
      * 매번 둘 고르게 하면 <b>한쪽을 빠뜨린다</b>.
      *
      * <p><b>{@code 건너뜀만} 은 둘 다 낸다.</b> {@code SKIP_LOCK} 이 정상이고
-     * {@code SKIP_COOLDOWN} 이 결함이지만(screen/batch/schedule/requirements.md), <i>건너뛴 것을 보자</i> 는 질문에
+     * {@code SKIP_COOLDOWN} 이 결함이지만(screen/batch/history/requirements.md), <i>건너뛴 것을 보자</i> 는 질문에
      * 정상만 빼면 <b>비율을 볼 수 없다</b> — 셋 중 둘이 락이면 락이 제대로 도는 것이고
-     * (screen/batch/schedule/requirements.md) 그 비교는 함께 볼 때만 성립한다.
+     * (screen/batch/history/requirements.md) 그 비교는 함께 볼 때만 성립한다.
      *
      * <p><b>모르는 값을 조용히 전체로 흘리지 않는다</b> — {@code ErrorLogSpec} 과 같은
      * 규칙이다. 흘려보내면 <b>거르지 않은 목록을 거른 것으로 읽는다</b>.

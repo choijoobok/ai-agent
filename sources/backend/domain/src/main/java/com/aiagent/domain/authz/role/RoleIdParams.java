@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Size;
  * 되고, 화면이 빠뜨린 요청 하나가 전 역할의 보유자를 한 판에 쏟는다 — {@code @NotBlank} 가
  * 그것을 400 으로 만든다.
  *
- * <p><b>두 화면이 같은 레코드를 쓴다.</b> screen/menu/requirements.md 가 하단을 <i>"§2.5 와 같은 그리드"</i> 로
+ * <p><b>두 화면이 같은 레코드를 쓴다.</b> screen/role/requirements.md 가 하단을 <i>"§2.5 와 같은 그리드"</i> 로
  * 정했고 §3.7 이 <i>"경로도 같아야 한다"</i> 고 했으므로, 요청의 모양도 하나여야 한다 —
  * 같은 질문에 답이 둘이 되지 않게 하는 것이 그 결정의 목적이다.
  */

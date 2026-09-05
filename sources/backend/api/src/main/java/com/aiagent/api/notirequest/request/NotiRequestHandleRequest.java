@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 처리·반려의 입력 — screen/notice/requirements.md.
  *
- * <p><b>{@code SaveRow} 가 아니다.</b> 이 화면은 셀을 고치지 않으므로(screen/notice/requirements.md) 행 단위
+ * <p><b>{@code SaveRow} 가 아니다.</b> 이 화면은 셀을 고치지 않으므로(screen/noti-request/requirements.md) 행 단위
  * 저장이 성립하지 않는다 — 입력은 <b>대상 목록 + 상태 + 메모</b> 셋뿐이며 그 셋이 곧
  * 하나의 판정이다.
  *

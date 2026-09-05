@@ -4,7 +4,7 @@ import com.aiagent.support.config.ConfigValueType;
 import java.time.Instant;
 
 /**
- * 그리드의 한 행 — screen/code/requirements.md. <b>아우터 조인의 결과 한 줄이다.</b>
+ * 그리드의 한 행 — screen/config/requirements.md. <b>아우터 조인의 결과 한 줄이다.</b>
  *
  * <pre>
  * yml 이 정한 키 목록   LEFT OUTER JOIN   SYS_CONFIG   ON key
@@ -17,11 +17,11 @@ import java.time.Instant;
  *     보여야 §4.4 의 확인이 놀라움을 주지 않으므로 <b>숨기지 않는다</b>
  * @param cfgVal 적용값 — {@code SYS_CONFIG} 행이 있으면 그 값, 없으면 <b>기본값을 복사해</b>
  *     보여준다. 이 화면의 <b>유일한 입력 칸</b>이다
- * @param cfgType 필드 타입에서 온 유형. 화면은 이것에 맞는 <b>형식</b>만 검사한다(screen/code/requirements.md)
+ * @param cfgType 필드 타입에서 온 유형. 화면은 이것에 맞는 <b>형식</b>만 검사한다(screen/config/requirements.md)
  * @param cfgDesc 필드 Javadoc. <b>{@code SYS_CONFIG} 행이 없어도 비지 않는다</b> — 원천이
- * 빌드 산출물이기 때문이다(screen/code/requirements.md)
+ * 빌드 산출물이기 때문이다(screen/config/requirements.md)
  * @param overridden {@code 변경됨} 의 근거. <b>값이 다른가가 아니라 행이 있는가</b>다 —
- * 기본값과 같은 값으로 저장해 둔 키가 있고, 그것도 <b>되돌릴 수 있어야</b> 한다(screen/code/requirements.md)
+ * 기본값과 같은 값으로 저장해 둔 키가 있고, 그것도 <b>되돌릴 수 있어야</b> 한다(screen/config/requirements.md)
  * @param regId 감사 4컬럼은 <b>{@code SYS_CONFIG} 행이 있는 키에만</b> 값이 있다
  */
 public record ConfigRow(

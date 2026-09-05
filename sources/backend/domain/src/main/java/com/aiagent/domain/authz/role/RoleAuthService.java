@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code ROLE_AUTH_MGMT} 의 저장 — screen/menu/requirements.md. <b>저장 대상은 트리뿐이다.</b>
+ * {@code ROLE_AUTH_MGMT} 의 저장 — screen/role-auth/requirements.md. <b>저장 대상은 트리뿐이다.</b>
  *
  * <p>screen/user/requirements.md 의 개인 예외와 갈리는 자리다. 거기서는 <i>"목록이 원본이고 트리는 그 투영"</i>
  * 이었지만 <b>여기는 원본이 트리 하나</b>다 — {@code SYS_ROLE_MENU_AUTH} 에 기간도 사유도
@@ -132,7 +132,7 @@ public class RoleAuthService {
           유효 권한을 다시 계산시킬 이유가 없다.
 
           <b>꺼진 역할이면 아무에게도 영향이 없다</b>(backend/security.md ② — 입력 필터에서 걸린다).
-          screen/menu/requirements.md 가 비활성 역할의 편집을 <i>"가장 안전한 편집"</i> 이라 부른 것이 이것이다.
+          screen/role-auth/requirements.md 가 비활성 역할의 편집을 <i>"가장 안전한 편집"</i> 이라 부른 것이 이것이다.
         */
         if ((removed.isEmpty() && added.isEmpty()) || !Boolean.TRUE.equals(role.getUseYn())) {
             return Set.of();
@@ -155,7 +155,7 @@ public class RoleAuthService {
 
             /*
               <b>{@code MENU_URL IS NULL} 이면 거부한다</b>(sys/menu.md). 구조 노드에는 화면이
-              스위치를 그리지 않으므로(screen/menu/requirements.md) 정상 경로로는 오지 않는다 — 여기 닿는 것은
+              스위치를 그리지 않으므로(screen/role-auth/requirements.md) 정상 경로로는 오지 않는다 — 여기 닿는 것은
               화면 밖 경로이거나, 트리를 열어 둔 사이에 그 메뉴가 폴더가 된 경우다.
 
               <b>{@code USE_YN} 은 보지 않는다.</b> 꺼진 메뉴에도 권한은 줄 수 있고 게이트

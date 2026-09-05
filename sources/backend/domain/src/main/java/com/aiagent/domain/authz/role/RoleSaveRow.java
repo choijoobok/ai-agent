@@ -15,7 +15,7 @@ import jakarta.validation.constraints.Size;
  *
  * <p>{@code roleId} 는 신규 행에서만 뜻이 있고 수정·삭제에서는 <b>대상을 가리키는 값</b>이다 —
  * PK 라 고칠 수 없다(sys/user-role.md). 고치려면 지우고 다시 만드는데, <b>쓰인 역할은 지울 수 없으므로</b>
- * (screen/menu/requirements.md) 실질적으로 한 번 정하면 끝이다.
+ * (screen/role/requirements.md) 실질적으로 한 번 정하면 끝이다.
  */
 public record RoleSaveRow(
         @NotNull RowState rowState,
@@ -25,7 +25,7 @@ public record RoleSaveRow(
         Boolean useYn) {
 
     /**
-     * <b>{@code null} 이면 켜진 것으로 본다.</b> screen/menu/requirements.md 의 {@code defaults} 가
+     * <b>{@code null} 이면 켜진 것으로 본다.</b> screen/role/requirements.md 의 {@code defaults} 가
      * {@code useYn: 'Y'} 하나뿐이라 화면은 언제나 값을 싣지만, 화면 밖 경로에서 빠뜨린 것을
      * <i>끈 것</i> 으로 읽으면 <b>만들자마자 아무에게도 안 듣는 역할</b>이 생긴다.
      */

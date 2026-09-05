@@ -36,7 +36,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 
 /**
- * 저장이 세 상태를 무엇으로 옮기는가 — screen/code/requirements.md.
+ * 저장이 세 상태를 무엇으로 옮기는가 — screen/message/requirements.md.
  *
  * <p><b>여기서 지키는 것 셋이다.</b> ① 화면이 {@code USE_SCOPE} 를 정하지 못한다(시드의
  * 소유다), ② 빈 값은 <b>행 삭제</b>이지 빈 문자열 저장이 아니다, ③ 캐시 버전은 <b>저장 한

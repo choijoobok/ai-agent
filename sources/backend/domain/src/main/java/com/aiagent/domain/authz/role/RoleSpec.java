@@ -12,7 +12,7 @@ import com.aiagent.domain.user.entity.QSysUser;
  * <h2>스펙이 둘이고 <b>거의 같다</b></h2>
  *
  * 두 화면의 역할 목록이 같은 테이블을 같은 조건으로 본다. 그래도 <b>합치지 않는 것</b>은
- * screen/menu/requirements.md 가 왼쪽 목록을 <i>"읽기 전용 — 고르기만 한다"</i> 로 정했기 때문이다: 거기서는
+ * screen/role/requirements.md 가 왼쪽 목록을 <i>"읽기 전용 — 고르기만 한다"</i> 로 정했기 때문이다: 거기서는
  * <b>사용 여부가 조회조건이 아니다</b>(§2.3 의 표에 없다 — 비활성 역할도 고를 수 있어야
  * 하며, 그것이 <i>켜기 전에 권한을 구성하는</i> 정상 동선이다).
  *
@@ -21,7 +21,7 @@ import com.aiagent.domain.user.entity.QSysUser;
  *
  * <h2>기본 정렬이 {@code ROLE_NM, ROLE_ID} 다</h2>
  *
- * screen/menu/requirements.md 가 정한 것이다. <b>tie-breaker 없이는 동명 역할에서 순서가 비결정적</b>이며
+ * screen/role/requirements.md 가 정한 것이다. <b>tie-breaker 없이는 동명 역할에서 순서가 비결정적</b>이며
  * (backend/persistence.md) 페이징이 그 위에서 돌면 같은 행이 두 장에 나오거나 아예 빠진다.
  *
  * <p><b>{@code SORT_NO} 로 정렬하지 않는다 — 컬럼이 없다</b>(sys/menu.md). 역할의 <i>자연스러운
@@ -29,7 +29,7 @@ import com.aiagent.domain.user.entity.QSysUser;
  *
  * <h2>파생 셋이 화이트리스트에 없다</h2>
  *
- * 보유 인원 · 유효 인원 · 권한 건수는 <b>쿼리 셋이 따로 세는 값</b>이라(screen/menu/requirements.md) 정렬도
+ * 보유 인원 · 유효 인원 · 권한 건수는 <b>쿼리 셋이 따로 세는 값</b>이라(screen/role/requirements.md) 정렬도
  * 조건도 걸 자리가 없다. 화면도 그 컬럼들의 {@code sortable} 을 켜지 않는다 — 켜면 400 이다.
  */
 public final class RoleSpec {
@@ -39,11 +39,11 @@ public final class RoleSpec {
     static final QSysUser U = QSysUser.sysUser;
 
     /**
-     * {@code ROLE_MGMT} 의 마스터 — screen/menu/requirements.md.
+     * {@code ROLE_MGMT} 의 마스터 — screen/role/requirements.md.
      *
      * <p><b>사용 여부의 기본값이 <i>전체</i> 다</b>(화면이 정한다 — 여기는 후보만 연다).
      * 끈 역할을 감추면 <b>같은 것을 또 만드는</b> 사고가 나고, 그때 {@code ROLE_ID} 가 PK 라
-     * 저장이 실패한다 — 운영자는 <i>"왜 저장이 안 되나"</i> 만 본다(screen/menu/requirements.md).
+     * 저장이 실패한다 — 운영자는 <i>"왜 저장이 안 되나"</i> 만 본다(screen/role/requirements.md).
      */
     public static final QuerySpec ROLE_SPEC = QuerySpec.of("role")
             .from(R)
@@ -59,9 +59,9 @@ public final class RoleSpec {
             .build();
 
     /**
-     * {@code ROLE_AUTH_MGMT} 의 왼쪽 목록 — screen/menu/requirements.md. <b>역할명 하나뿐이다.</b>
+     * {@code ROLE_AUTH_MGMT} 의 왼쪽 목록 — screen/role/requirements.md. <b>역할명 하나뿐이다.</b>
      *
-     * <p><b>사용 여부가 없다.</b> screen/menu/requirements.md 의 목록은 고르기만 하는 것이고, 비활성 역할의 권한을
+     * <p><b>사용 여부가 없다.</b> screen/role/requirements.md 의 목록은 고르기만 하는 것이고, 비활성 역할의 권한을
      * 고치는 것은 <b>아무에게도 영향이 없어 가장 안전한 편집</b>이다 — 감출 이유가 없다.
      *
      * <p><b>부여 상태도 없다</b> — {@code SYS_ROLE_MENU_AUTH} 에 기간 컬럼이 없으므로
@@ -79,13 +79,13 @@ public final class RoleSpec {
             .build();
 
     /**
-     * 하단 — <b>이 역할을 가진 사람</b>(AUTHZ-13). 두 화면이 <b>같은 그리드</b>다(screen/menu/requirements.md).
+     * 하단 — <b>이 역할을 가진 사람</b>(AUTHZ-13). 두 화면이 <b>같은 그리드</b>다(screen/role/requirements.md).
      *
      * <p><b>{@code roleId} 가 조건에 없다.</b> 부모 키는 {@code params} 로 오며(backend/api.md)
      * 서비스가 이름으로 직접 읽는다 — 조건으로 열면 부모 제약이 <b>클라이언트가 보낸 값</b>이
      * 되고, 화면이 그것을 빠뜨린 요청 하나가 전 역할의 보유자를 한 판에 쏟는다.
      *
-     * <p><b>부여 상태로 거르지 않는다</b>(screen/menu/requirements.md) — 만료된 부여도 <b>다시 유효해질 수
+     * <p><b>부여 상태로 거르지 않는다</b>(screen/role/requirements.md) — 만료된 부여도 <b>다시 유효해질 수
      * 있다</b>. 감추면 <i>"영향 없다고 해서 지웠는데 다음 달에 문제가 생겼다"</i> 가 된다.
      * 걸러 보고 싶으면 컬럼 필터다(frontend/grid.md).
      */

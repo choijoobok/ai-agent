@@ -26,7 +26,7 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
 
 /**
- * 설정 키의 <b>왼쪽 테이블</b> — screen/code/requirements.md. {@code yml} 이 정한 키 목록이 여기서 나온다.
+ * 설정 키의 <b>왼쪽 테이블</b> — screen/config/requirements.md. {@code yml} 이 정한 키 목록이 여기서 나온다.
  *
  * <p><b>등록 목록을 관리하지 않는다.</b> props 클래스는 빈으로 등록되지 않으므로
  * (sys/config.md) {@code getBeansWithAnnotation} 이 아무것도 돌려주지 않는다 —
@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
  * <p><b>인스턴스를 만들지 않는다.</b> 층이 셋이던 판은 기본값을 읽으려고
  * {@code new AuthLoginProps()} 를 만들었고 그 때문에 JavaBean 바인딩을 강제해야 했다.
  * 층이 둘이 되면서 그 제약이 통째로 사라진다 — 이 클래스에게 props 클래스는 <b>이름과
- * 타입을 얻는 수단</b>일 뿐이라 {@code record} 로 써도 된다(screen/code/requirements.md).
+ * 타입을 얻는 수단</b>일 뿐이라 {@code record} 로 써도 된다(screen/config/requirements.md).
  *
  * <p><b>셋의 원천이 셋이다.</b>
  *
@@ -85,7 +85,7 @@ public class ConfigCatalog {
         log.info("시스템 설정 키 {}개 — props 클래스 {}개", keys.size(), propsClasses.size());
     }
 
-    /** 키 목록. <b>키 오름차순</b>이며 이것이 화면의 기본 정렬이다(screen/code/requirements.md). */
+    /** 키 목록. <b>키 오름차순</b>이며 이것이 화면의 기본 정렬이다(screen/config/requirements.md). */
     public List<ConfigKey> keys() {
         return keys;
     }
@@ -93,7 +93,7 @@ public class ConfigCatalog {
     /**
      * 재바인딩의 대상 — {@code sys-config.} 아래의 props 클래스 전부.
      *
-     * <p>저장 검증이 이것을 돈다(screen/code/requirements.md). 여기 없는 클래스는 이 화면이 건드릴 수 없다.
+     * <p>저장 검증이 이것을 돈다(screen/config/requirements.md). 여기 없는 클래스는 이 화면이 건드릴 수 없다.
      */
     public List<Class<?>> propsClasses() {
         return propsClasses;
@@ -185,7 +185,7 @@ public class ConfigCatalog {
             ConfigValueType valueType = ConfigValueType.of(member.type());
 
             if (valueType == null) {
-                // 컬렉션·맵은 목록에 내지 않는다(screen/code/requirements.md). 우리 패키지의 객체는 펴 낸다.
+                // 컬렉션·맵은 목록에 내지 않는다(screen/config/requirements.md). 우리 패키지의 객체는 펴 낸다.
                 if (isNested(member.type())) {
                     collect(member.type(), key, descriptions, binder, result, seen, depth + 1);
                 }
@@ -238,13 +238,13 @@ public class ConfigCatalog {
      *
      * <p>{@code Environment.getProperty} 는 정확한 이름만 본다. 배포가 환경변수
      * ({@code SYS_CONFIG_AUTH_LOGIN_FAIL_LIMIT})로 덮은 값이 <b>기본값 컬럼에서 사라지면</b>
-     * 화면이 배포가 정한 값을 말하지 못한다(screen/code/requirements.md).
+     * 화면이 배포가 정한 값을 말하지 못한다(screen/config/requirements.md).
      */
     private static String defaultOf(Binder binder, String fullKey) {
         return binder.bind(fullKey, Bindable.of(String.class)).orElse(null);
     }
 
-    /** {@code camelCase → kebab-case} — 완화 바인딩의 <b>정규 표기</b>다(screen/code/requirements.md). */
+    /** {@code camelCase → kebab-case} — 완화 바인딩의 <b>정규 표기</b>다(screen/config/requirements.md). */
     static String kebab(String name) {
         return CAMEL_BOUNDARY.matcher(name).replaceAll("$1-$2").toLowerCase(java.util.Locale.ROOT);
     }
@@ -252,7 +252,7 @@ public class ConfigCatalog {
     // ── 설명(빌드 산출물) ───────────────────────────────────────────
 
     /**
-     * {@code META-INF/spring-configuration-metadata.json} — screen/code/requirements.md.
+     * {@code META-INF/spring-configuration-metadata.json} — screen/config/requirements.md.
      *
      * <p><b>여러 개일 수 있다.</b> 모듈마다 하나씩 나오므로 {@code classpath*:} 로 전부
      * 읽어 합친다.
@@ -279,7 +279,7 @@ public class ConfigCatalog {
             readInto(resource, descriptions);
         }
         if (descriptions.isEmpty()) {
-            log.warn("설정 메타데이터가 비었다 — spring-boot-configuration-processor 가 붙었는지 본다(screen/code/requirements.md)");
+            log.warn("설정 메타데이터가 비었다 — spring-boot-configuration-processor 가 붙었는지 본다(screen/config/requirements.md)");
         }
         return descriptions;
     }

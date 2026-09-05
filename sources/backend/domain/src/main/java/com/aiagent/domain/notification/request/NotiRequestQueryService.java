@@ -63,7 +63,7 @@ public class NotiRequestQueryService {
 
     /**
      * 대기열 — 기본 정렬이 <b>요청일시 오름차순</b>이고 조회조건 기본값이
-     * {@code RECEIVED} 하나다(screen/notice/requirements.md).
+     * {@code RECEIVED} 하나다(screen/noti-request/requirements.md).
      */
     public PageResponse<NotiRequestRow> getList(SearchRequest<Void> request) {
         Built built = builder.build(request, SPEC, PageMode.offset);

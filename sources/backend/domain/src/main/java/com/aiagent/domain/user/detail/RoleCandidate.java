@@ -6,8 +6,8 @@ package com.aiagent.domain.user.detail;
  *
  * <h2>{@code ROLE_MGMT} 의 경로를 쓰지 않는다</h2>
  *
- * <p>screen/menu/requirements.md 이 <i>"같은 그리드이면 경로도 같아야 한다"</i> 고 했지만 <b>이것은 그리드가
- * 아니다</b> — 콤보의 후보이며, screen/menu/requirements.md 의 목록이 답하는 <i>"이 역할을 가진 사람"</i> 과
+ * <p>screen/role/requirements.md 이 <i>"같은 그리드이면 경로도 같아야 한다"</i> 고 했지만 <b>이것은 그리드가
+ * 아니다</b> — 콤보의 후보이며, screen/role/requirements.md 의 목록이 답하는 <i>"이 역할을 가진 사람"</i> 과
  * 아무 관계가 없다.
  *
  * <p>무엇보다 <b>권한이 갈린다.</b> 역할 화면의 경로를 부르면 그 요청이

@@ -4,17 +4,17 @@ import com.aiagent.domain.authz.ActionType;
 import java.time.Instant;
 
 /**
- * 마스터 그리드의 한 행 — screen/menu/requirements.md.
+ * 마스터 그리드의 한 행 — screen/api-catalog/requirements.md.
  *
  * <p><b>전 컬럼이 읽기 전용이다.</b> 원본이 시드이고 시드는 생성된다(backend/api.md) — 여기서
- * 고칠 수 있게 하면 다음 배포에서 사라진다(screen/menu/requirements.md). 그래서 이 레코드에 짝이 되는
+ * 고칠 수 있게 하면 다음 배포에서 사라진다(screen/api-catalog/requirements.md). 그래서 이 레코드에 짝이 되는
  * {@code SaveRow} 가 없다.
  *
- * @param menuCount 이 API 를 쓰는 메뉴 수 — <b>{@code 0} 이 곧 진단이다</b>(screen/menu/requirements.md).
+ * @param menuCount 이 API 를 쓰는 메뉴 수 — <b>{@code 0} 이 곧 진단이다</b>(screen/api-catalog/requirements.md).
  *     {@code SYS_MENU_API} 에 행이 없으면 유효 권한의 원소가 되는 {@code (MENU_CD,
  * ACTION_CD)} 쌍이 만들어지지 않아 <b>아무도 이 API 를 부를 수 없다</b>(backend/security.md).
  *     하단을 조회하기 전에 답해야 하므로 마스터 응답이 갖는다
- * @param regDtm 감사 4컬럼이 아니라 <b>최종 시드 반영</b>이다(screen/menu/requirements.md). 시드는 전건 삭제 후
+ * @param regDtm 감사 4컬럼이 아니라 <b>최종 시드 반영</b>이다(screen/api-catalog/requirements.md). 시드는 전건 삭제 후
  * 전건 삽입이라(seed.md) 전 행이 매번 다시 쓰이며 <b>전 행이 같은 값</b>이다 —
  *     <i>등록일</i> 로 보여주면 거짓말이 된다.
  *     <p><b>나머지 셋이 없다.</b> {@code REG_ID}·{@code MOD_ID} 는 언제나 시드 실행자 하나라

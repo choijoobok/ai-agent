@@ -12,15 +12,15 @@ import com.querydsl.core.types.dsl.BooleanExpression;
  *
  * <h2>조건이 하나다</h2>
  *
- * <p>screen/user/requirements.md 의 표에 둘이 적혀 있지만 <b>서버로 나가는 것은 하나</b>다 — <i>메뉴명</i> 은
+ * <p>screen/user-auth/requirements.md 의 표에 둘이 적혀 있지만 <b>서버로 나가는 것은 하나</b>다 — <i>메뉴명</i> 은
  * 트리 필터이고 트리는 <b>거르지 않는다</b>(강조하고 찾아간다 — screen/menu/requirements.md 과 같은 어휘).
  * 걸러 내려보내면 폴더의 파생 3-state 가 <b>보이는 자식만으로</b> 요약해 거짓을 말한다.
  *
  * <h2>그 하나가 파생이다 — ID 와 이름을 함께 본다</h2>
  *
- * <p>screen/user/requirements.md 이 <i>{@code LIKE} (ID · 이름)</i> 로 적었다. 칸을 둘로 가르면 운영자가
+ * <p>screen/user-auth/requirements.md 이 <i>{@code LIKE} (ID · 이름)</i> 로 적었다. 칸을 둘로 가르면 운영자가
  * <b>어느 칸에 넣을지</b> 를 먼저 정해야 하는데, 사람을 찾을 때 손에 있는 것은 <i>ID 이거나
- * 이름</i> 이고 <b>어느 쪽인지는 대개 상관없다</b> — {@code USER_MGMT}(screen/user/requirements.md)와 갈리는
+ * 이름</i> 이고 <b>어느 쪽인지는 대개 상관없다</b> — {@code USER_MGMT}(screen/user-auth/requirements.md)와 갈리는
  * 자리이며, 그쪽은 <b>목록 자체가 일</b>이라 칸이 여덟이다.
  *
  * <p>{@code OR} 를 파생 함수가 갖는 이유는 화이트리스트가 <b>필드 하나 = 조건 하나</b> 로

@@ -23,7 +23,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
- * {@code MESSAGE_MGMT} 의 저장 — screen/code/requirements.md. <b>한 트랜잭션이다.</b>
+ * {@code MESSAGE_MGMT} 의 저장 — screen/message/requirements.md. <b>한 트랜잭션이다.</b>
  *
  * <p>키와 값이 같은 요청에 있어야 FK 순서를 서버가 정할 수 있다 — 추가는 키 → 값, 삭제는
  * <b>값 → 키</b> 다. 그래서 frontend/grid.md 의 삭제 게이트가 필요 없다: DB 가 거부할 것이 없다.
@@ -61,7 +61,7 @@ public class MessageAdminService {
         Set<String> seen = new HashSet<>();
 
         for (MessageSaveRow row : rows) {
-            // 같은 요청 안의 중복은 화면이 막지만(screen/code/requirements.md), 막혔다고 서버가 안 봐도 되는 것은
+            // 같은 요청 안의 중복은 화면이 막지만(screen/message/requirements.md), 막혔다고 서버가 안 봐도 되는 것은
             // 아니다 — 두 번째 C 의 존재 확인이 첫 번째의 flush 를 만나지 못해 조용히 덮인다.
             if (!seen.add(row.msgKey())) {
                 throw duplicate(row.msgKey());

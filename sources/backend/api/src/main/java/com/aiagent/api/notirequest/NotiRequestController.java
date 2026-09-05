@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code NOTI_REQUEST} — screen/notice/requirements.md. <b>경로가 둘이고 액션이 둘이다.</b>
+ * {@code NOTI_REQUEST} — screen/noti-request/requirements.md. <b>경로가 둘이고 액션이 둘이다.</b>
  *
  * <table><caption></caption>
  *   <tr><td>{@code getList}</td><td>{@code READ}</td><td>대기열 — §5.2</td></tr>
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <h2>처리와 반려가 한 경로다</h2>
  *
- * <p>쓰는 컬럼이 같고 트랜잭션이 같다(screen/notice/requirements.md). 둘로 가르면 <b>알림 INSERT 코드가 두
+ * <p>쓰는 컬럼이 같고 트랜잭션이 같다(screen/noti-request/requirements.md). 둘로 가르면 <b>알림 INSERT 코드가 두
  * 벌</b>이 되고 한쪽만 고치는 날이 온다 — {@code reqStatCd} 가 가른다.
  *
  * <h2>사용자 측은 여기 없다</h2>
@@ -66,7 +66,7 @@ public class NotiRequestController {
     }
 
     /**
-     * 처리 · 반려 — <b>섞이면 전부 막는다</b>(screen/notice/requirements.md).
+     * 처리 · 반려 — <b>섞이면 전부 막는다</b>(screen/noti-request/requirements.md).
      *
      * <p>선택에 이미 처리된 것이 하나라도 있으면 아무것도 처리하지 않는다. 일부만
      * 처리하면 <b>알림이 일부에게만 나가고</b> 사용자는 무엇이 처리됐는지 모른다.

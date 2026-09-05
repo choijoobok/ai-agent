@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code USER_AUTH_MGMT} — screen/user/requirements.md. <b>경로가 셋이다.</b>
+ * {@code USER_AUTH_MGMT} — screen/user-auth/requirements.md. <b>경로가 셋이다.</b>
  *
  * <table>
  *   <tr><td>{@code getList}</td><td>좌 pane — 사용자 목록. <b>읽기 전용</b>(계정 생성은 {@code USER_MGMT})</td></tr>
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <h2>왜 예외 목록에 경로를 따로 두지 않았나</h2>
  *
- * <p>screen/user/requirements.md 가 트리와 목록을 <i>"같은 데이터의 두 표시"</i> 로 정했다. 표시가 둘이라고 원본이
+ * <p>screen/user-auth/requirements.md 가 트리와 목록을 <i>"같은 데이터의 두 표시"</i> 로 정했다. 표시가 둘이라고 원본이
  * 둘이 되면 <b>같은 질문에 답이 둘</b>이 되고, 그 둘이 갈리는 순간 <i>"트리에는 있는데 목록에
  * 없다"</i> 가 된다 — {@code ROLE_MGMT} 의 하단이 {@code roleAuth/getAffectedUsers} 를 그대로
  * 부르는 것과 <b>같은 규칙</b>이다(screen/menu/requirements.md).
@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <h2>{@code USER_MGMT} 의 탭 2 와는 경로를 나눈다</h2>
  *
- * <p>screen/user/requirements.md 가 <i>"조회 API 를 공유하지 않는다 — 반환 형태가 다르다"</i> 고 정했다. 거기는
+ * <p>screen/user-auth/requirements.md 가 <i>"조회 API 를 공유하지 않는다 — 반환 형태가 다르다"</i> 고 정했다. 거기는
  * <b>목록</b>이고 여기는 <b>트리 체크 상태를 함께 낸다</b>. backend/security.md 가 <i>"화면마다 허용 범위가
  * 달라야 한다면 그것은 분리해야 할 두 API"</i> 라고 한 것과 방향이 같다 — <b>편집을 탭 2 에
  * 두지 않는 것</b>이 그 분리의 이유다: 사용자 관리 권한이 있다고 <b>예외 권한 부여 권한이
@@ -77,7 +77,7 @@ public class UserAuthController {
     }
 
     /**
-     * 좌 pane — <b>못 쓰는 계정도 나온다</b>(screen/user/requirements.md · {@code UserAuthSpec}).
+     * 좌 pane — <b>못 쓰는 계정도 나온다</b>(screen/user-auth/requirements.md · {@code UserAuthSpec}).
      *
      * <p>screen/menu/requirements.md 가 비활성 역할을 목록에 둔 것과 같은 논리다 — 못 쓰는 계정의 권한을 고치는
      * 것은 아무에게도 영향이 없어 <b>가장 안전한 편집</b>이고, 감추면 <i>계정을 살리기 전에

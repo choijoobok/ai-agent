@@ -15,7 +15,7 @@ import org.springframework.validation.annotation.Validated;
  * 여기 적어 두지 않으면, 공통코드가 생긴 날 목록이 두 곳에 남는다.</b>
  *
  * @param supported 화면에 낼 수 있는 언어. 공통코드가 생기면 이 값이 그 목록으로 옮겨 간다.
- * <b>{@code List} 라 관리 화면 목록에 나오지 않는다</b> — 스칼라만 낸다(screen/code/requirements.md).
+ * <b>{@code List} 라 관리 화면 목록에 나오지 않는다</b> — 스칼라만 낸다(screen/message/requirements.md).
  * @param defaultLang 요청 언어의 값이 비었을 때 폴백할 언어 — sys/code.md. 어느 언어에도 값이
  *     없으면 <b>키 문자열을 그대로</b> 보여준다. 빈 문자열이나 "—" 를 보여주면 누락이
  *     숨는다(원칙 P1).

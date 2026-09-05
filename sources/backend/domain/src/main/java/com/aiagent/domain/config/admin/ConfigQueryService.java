@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code CONFIG_MGMT} 의 조회 — screen/code/requirements.md.
+ * {@code CONFIG_MGMT} 의 조회 — screen/config/requirements.md.
  *
  * <p><b>{@code QuerySpec} 을 쓰지 않는 유일한 목록이다.</b> 그 기계는 <b>왼쪽 테이블이
  * DB 에 있을 때</b>의 것이고, 여기는 왼쪽이 <b>코드</b>다(`yml` 이 정한 키 목록). 아우터
@@ -51,10 +51,10 @@ public class ConfigQueryService {
     /** 키와 설명을 <b>한 칸이 함께 건다</b> — sys/code.md 이 분류 컬럼 대신 고른 것이다. */
     private static final String KEYWORD = "keyword";
 
-    /** 전 키에서 <b>도출</b>한다 — 목록을 관리하지 않는다(screen/code/requirements.md). */
+    /** 전 키에서 <b>도출</b>한다 — 목록을 관리하지 않는다(screen/config/requirements.md). */
     private static final String PREFIX = "prefix";
 
-    /** {@code Y}(변경됨) · {@code N}(기본값). 판정은 <b>행의 존재</b>다(screen/code/requirements.md). */
+    /** {@code Y}(변경됨) · {@code N}(기본값). 판정은 <b>행의 존재</b>다(screen/config/requirements.md). */
     private static final String OVERRIDDEN = "overridden";
 
     /** 정렬은 키 하나만 연다 — 나머지는 값이라 <b>정렬해서 얻을 것이 없다</b>(frontend/grid.md). */
@@ -86,7 +86,7 @@ public class ConfigQueryService {
     }
 
     /**
-     * 접두사 콤보의 후보 — screen/code/requirements.md.
+     * 접두사 콤보의 후보 — screen/config/requirements.md.
      *
      * <p><b>관리하지 않는다.</b> 전 키에서 마디 단위로 도출하므로 <i>"새로 관리할 것도,
      * 어긋날 것도 없다"</i>(sys/code.md). 키를 하나 더하면 그 접두사가 <b>저절로</b> 목록에 선다.
@@ -115,7 +115,7 @@ public class ConfigQueryService {
 
         List<ConfigRow> rows = new ArrayList<>(catalog.keys().size());
         for (ConfigKey key : catalog.keys()) {
-            // 오른쪽이 비어 있는 것이 정상이다 — screen/code/requirements.md.
+            // 오른쪽이 비어 있는 것이 정상이다 — screen/config/requirements.md.
             SysConfig override = byKey.get(key.key());
             rows.add(new ConfigRow(
                     key.key(),
@@ -135,7 +135,7 @@ public class ConfigQueryService {
     // ── 조회조건 ─────────────────────────────────────────────────────
 
     /**
-     * 화이트리스트는 <b>셋</b>이다 — screen/code/requirements.md.
+     * 화이트리스트는 <b>셋</b>이다 — screen/config/requirements.md.
      *
      * <p>{@code QuerySpec} 이 없다고 화이트리스트까지 없는 것은 아니다. 모르는 필드는
      * <b>조용히 무시하지 않고 400</b> 이며(backend/api.md), 무시하면 화면의 오타가 <i>"조건이 안
@@ -162,7 +162,7 @@ public class ConfigQueryService {
      * <b>한 칸이 키와 설명을 함께 건다</b> — sys/code.md.
      *
      * <p>분류 컬럼({@code CFG_GRP_CD})을 두지 않았으므로 <i>"여러 영역에 걸치는 설정"</i> 을
-     * 찾는 수단이 검색뿐이다. 설명의 원천은 메타데이터라(screen/code/requirements.md) 이 조건이 <b>DB 에 없는
+     * 찾는 수단이 검색뿐이다. 설명의 원천은 메타데이터라(screen/config/requirements.md) 이 조건이 <b>DB 에 없는
      * 문자열</b>을 건다 — SQL 로는 표현할 수 없는 조건이며, 그것이 이 목록이 메모리인 또
      * 하나의 이유다.
      */

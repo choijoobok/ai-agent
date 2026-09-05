@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code ROLE_AUTH_MGMT} — screen/menu/requirements.md. <b>경로가 넷이다.</b>
+ * {@code ROLE_AUTH_MGMT} — screen/role-auth/requirements.md. <b>경로가 넷이다.</b>
  *
  * <table>
  *   <tr><td>{@code getList}</td><td>왼쪽 역할 목록 — <b>읽기 전용</b>(생성은 {@code ROLE_MGMT})</td></tr>
@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
  *   <tr><td>{@code getAffectedUsers}</td><td>영향 인원 — <b>{@code ROLE_MGMT} 도 이것을 부른다</b></td></tr>
  * </table>
  *
- * <p><b>넷째가 두 화면의 것이다.</b> screen/menu/requirements.md 가 {@code ROLE_MGMT} 의 하단을 <i>"§2.5 와 같은
+ * <p><b>넷째가 두 화면의 것이다.</b> screen/role-auth/requirements.md 가 {@code ROLE_MGMT} 의 하단을 <i>"§2.5 와 같은
  * 그리드"</i> 로 정했고 §3.7 이 <i>"경로도 같아야 한다"</i> 고 못박았다 — 제목만 다르고
  * (<i>보유 사용자</i> · <i>영향 인원</i>) 묻는 것은 하나다: <i>"이 역할을 가진 사람이
  * 누구인가"</i>.
@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
  * <i>"액션 미정의"</i> 를 <b>셀 단위</b>로 말했는데 여기서는 <b>화면 단위</b>로 나타난다 —
  * ②의 자리가 통째로 빈다(frontend/grid.md).
  *
- * <p><b>{@code getSaveImpact} 같은 경로가 없다.</b> screen/menu/requirements.md 의 저장 확인은 세 줄이고 그 셋째가
+ * <p><b>{@code getSaveImpact} 같은 경로가 없다.</b> screen/role-auth/requirements.md 의 저장 확인은 세 줄이고 그 셋째가
  * <i>공집합이 되어 차단될 사람</i> 인데, 그 계산의 입력은 <b>하단 그리드가 이미 갖고 있다</b>
  * — {@code hasPersonalGrant} · {@code hasOtherRole} 두 열이 그것이며(목업 §4 주석 6) 화면이
  * 그 자리에서 센다. 새 경로를 내면 <b>같은 질문에 답이 둘</b>이 된다.
@@ -71,7 +71,7 @@ public class RoleAuthController {
     }
 
     /**
-     * 왼쪽 목록 — <b>비활성 역할도 나온다</b>(screen/menu/requirements.md).
+     * 왼쪽 목록 — <b>비활성 역할도 나온다</b>(screen/role-auth/requirements.md).
      *
      * <p>권한 구성은 <b>켜기 전에</b> 해 두는 것이 정상이고, 꺼진 역할의 권한을 고치는 것은
      * 아무에게도 영향이 없어 <b>가장 안전한 편집</b>이다 — 그래서 조회조건에 사용 여부가 없다
@@ -94,7 +94,7 @@ public class RoleAuthController {
      * 하므로 자손 전부가 클라이언트에 있어야 다시 계산된다({@code RoleQueryService}).
      *
      * <p>그래서 요청 본문이 {@code SearchRequest} 조차 아니다 — 받을 것이 없는 자리에 봉투를
-     * 두면 <i>조건을 보내면 걸릴 것</i> 이라는 기대를 만든다(screen/menu/requirements.md 와 같은 판단).
+     * 두면 <i>조건을 보내면 걸릴 것</i> 이라는 기대를 만든다(screen/role-auth/requirements.md 와 같은 판단).
      */
     @Operation(
             summary = "역할 권한 트리 조회",
@@ -111,7 +111,7 @@ public class RoleAuthController {
      *
      * <p>저장이 커밋된 뒤에 보유자 전원의 세션에 재계산 표시를 세운다(backend/security.md). <b>역할 권한을
      * 고치는 것은 그 역할을 가진 모든 사용자의 유효 권한을 바꾸는 일</b>이며, 그것이 확인
-     * 문구의 둘째·셋째 줄이 말하는 바다(screen/menu/requirements.md).
+     * 문구의 둘째·셋째 줄이 말하는 바다(screen/role-auth/requirements.md).
      */
     @Operation(
             summary = "역할 권한 저장",

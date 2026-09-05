@@ -39,7 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code API_CATALOG} 의 조회 — screen/menu/requirements.md. <b>쓰기가 없다.</b>
+ * {@code API_CATALOG} 의 조회 — screen/api-catalog/requirements.md. <b>쓰기가 없다.</b>
  *
  * <p>짝이 되는 {@code ApiCatalogService} 가 없는 것이 이 화면의 형태다 — 원본이 시드이고
  * 시드는 생성되므로(backend/api.md) 여기서 고친 것은 <b>다음 배포에서 사라진다</b>(screen/menu/requirements.md).
@@ -48,7 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * {@code SYS_API} 네 컬럼과 매핑 행은 시드가 가지고 있어 git 에서 읽을 수 있다. 그런데 화면이
  * 묻는 <b>매핑 메뉴 수</b>와 <b>접근 가능 인원</b>은 <b>어디에도 없다 — 계산해야 나온다</b>
- * (screen/menu/requirements.md). 이 클래스의 절반이 그 둘이다.
+ * (screen/api-catalog/requirements.md). 이 클래스의 절반이 그 둘이다.
  *
  * <h2>메뉴 경로는 조인이 아니라 메시지 캐시에서 온다</h2>
  *
@@ -61,7 +61,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ApiCatalogQueryService {
 
-    /** 메뉴 경로 구분자 — {@code 시스템 › 이력 · 로그 › 에러 로그}(screen/menu/requirements.md). */
+    /** 메뉴 경로 구분자 — {@code 시스템 › 이력 · 로그 › 에러 로그}(screen/api-catalog/requirements.md). */
     private static final String PATH_SEPARATOR = " › ";
 
     private static final QSysRoleMenuAuth RMA = QSysRoleMenuAuth.sysRoleMenuAuth;
@@ -96,12 +96,12 @@ public class ApiCatalogQueryService {
     /**
      * API 마스터 — 쿼리가 둘이다.
      *
-     * <p>둘째가 <b>매핑 메뉴 수</b>이며 그것이 <i>미매핑</i> 배지의 근거다(screen/menu/requirements.md). 첫 쿼리에
+     * <p>둘째가 <b>매핑 메뉴 수</b>이며 그것이 <i>미매핑</i> 배지의 근거다(screen/api-catalog/requirements.md). 첫 쿼리에
      * 스칼라 서브쿼리로 얹지 않는 이유는 <b>행마다 한 번씩 도는 것</b>이 되기 때문이고, 조인해
      * {@code GROUP BY} 하면 <b>페이징 단위가 API 가 아니게</b> 될 위험을 매번 다시 확인해야
      * 한다 — screen/code/requirements.md 가 코드 그룹에서 쿼리를 둘로 가른 것과 같은 판단이다.
      *
-     * <p><b>{@code offset} 이다.</b> screen/menu/requirements.md 이 엑셀 항목을 <i>현재 페이지 · 전체</i> 둘로 두며
+     * <p><b>{@code offset} 이다.</b> screen/api-catalog/requirements.md 이 엑셀 항목을 <i>현재 페이지 · 전체</i> 둘로 두며
      * <i>"§4.9 의 트리와 달리 페이징이 있다"</i> 고 적었고, 업무 API 가 수백 개로 자라는 것이
      * §6 의 실측 항목이다.
      */
@@ -131,7 +131,7 @@ public class ApiCatalogQueryService {
      * {@code API_URL → 그 API 를 쓰는 메뉴 수}.
      *
      * <p><b>{@code 0} 인 API 는 맵에 없다</b> — {@code GROUP BY} 가 행 없는 키를 내지 않으므로
-     * 부르는 쪽이 {@code getOrDefault} 로 받는다. 그 없음이 곧 <i>미매핑</i> 이다(screen/menu/requirements.md).
+     * 부르는 쪽이 {@code getOrDefault} 로 받는다. 그 없음이 곧 <i>미매핑</i> 이다(screen/api-catalog/requirements.md).
      *
      * <p>{@code IN} 을 쪼갠다 — 페이지 하나가 최대 1000개이고 그것이 오라클의 한계다(backend/persistence.md).
      */
@@ -155,9 +155,9 @@ public class ApiCatalogQueryService {
     // ── 하단 ─────────────────────────────────────────────────────────
 
     /**
-     * 이 API 를 쓰는 메뉴 — screen/menu/requirements.md.
+     * 이 API 를 쓰는 메뉴 — screen/api-catalog/requirements.md.
      *
-     * <p><b>페이징하지 않는다</b>({@code all}). 한 API 를 쓰는 화면은 많아야 몇이며, screen/menu/requirements.md 가
+     * <p><b>페이징하지 않는다</b>({@code all}). 한 API 를 쓰는 화면은 많아야 몇이며, screen/api-catalog/requirements.md 가
      * <i>"0 건이면 §5.4 의 진단을 낸다"</i> 고 적은 것은 <b>이 목록의 크기가 곧 답</b>이라는
      * 뜻이다 — 페이징하면 그 문장이 장마다 달라진다.
      *
@@ -190,7 +190,7 @@ public class ApiCatalogQueryService {
     }
 
     /**
-     * {@code 시스템 › 이력 · 로그 › 에러 로그} — <b>전체 경로</b>다(screen/menu/requirements.md).
+     * {@code 시스템 › 이력 · 로그 › 에러 로그} — <b>전체 경로</b>다(screen/api-catalog/requirements.md).
      *
      * <p>메뉴명만으로는 어느 것인지 모른다. <i>목록</i> 이라는 이름의 리프가 모듈마다 있을 수
      * 있고, 이 화면에 오는 사람은 그 메뉴를 <b>모르는 상태</b>다 — 403 하나를 들고 왔을 뿐이다.
@@ -217,7 +217,7 @@ public class ApiCatalogQueryService {
     }
 
     /**
-     * {@code MENU_CD → 이 메뉴에 닿는 사람 수} — AUTHZ-13 · screen/menu/requirements.md.
+     * {@code MENU_CD → 이 메뉴에 닿는 사람 수} — AUTHZ-13 · screen/api-catalog/requirements.md.
      *
      * <p><b>backend/security.md 의 ①②③ 을 그대로 밟고 ④를 밟지 않는다.</b> 두 출처가 각자 자격 검사를
      * 통과한 행을 내고(①②), 합집합은 <b>여기 자바에서</b> 한다(③) —

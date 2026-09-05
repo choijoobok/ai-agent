@@ -14,24 +14,24 @@ import com.querydsl.core.types.dsl.BooleanExpression;
  * <h2>정렬이 하나뿐인 것이 셋에 공통이다</h2>
  *
  * <p>{@code creDtm} 에만 {@code .sortable()} 이 붙는다 — 번호 없는 이동의 기준점이
- * 고정이어야 하고(screen/log/access/requirements.md) 나머지 컬럼은 인덱스가 없어 전체 정렬이 된다.
+ * 고정이어야 하고(screen/log/error/requirements.md) 나머지 컬럼은 인덱스가 없어 전체 정렬이 된다.
  *
  * <h2>{@code rootCauseStack} 이 여기 없다</h2>
  *
- * <p>조건으로도 정렬로도 쓸 수 없다 — 값이 목록에 없고(screen/log/access/requirements.md), Oracle 이 {@code CLOB} 을
+ * <p>조건으로도 정렬로도 쓸 수 없다 — 값이 목록에 없고(screen/log/error/requirements.md), Oracle 이 {@code CLOB} 을
  * {@code ORDER BY} 에 쓰지 못한다(backend/api.md). <b>여기 없는 것이 그 집행</b>이며
  * {@code AccessLogSpec} 의 {@code parameters} 와 같다.
  *
  * <p><b>{@code errMsg} 도 없다.</b> 이쪽은 이유가 다르다 — {@code VARCHAR(1000)} 이라 실을 수
  * 있지만, 문구는 <b>사용자 언어로 남는다</b>(backend/packages.md). 조건으로 열면 같은 사건이 언어마다
  * 다른 문자열이라 <i>"이 오류를 모아 보자"</i> 가 반쪽만 나온다. 그 물음에 답하는 것은
- * {@code errCd} 이며 그것이 <b>문자열 상수</b>인 이유가 이것이다(screen/log/access/requirements.md).
+ * {@code errCd} 이며 그것이 <b>문자열 상수</b>인 이유가 이것이다(screen/log/error/requirements.md).
  *
  * <h2>사용자와 메뉴가 <b>각각 칸 둘</b>이다 — 2026-09-01</h2>
  *
  * <p>아이디·이름 넷이 <b>문자열 비교 넷</b>(같음 · 시작 · 포함 · 끝)을 함께 받는다. 근거는
  * {@code AccessLogSpec} 이 갖고 여기서도 같다 — <b>기간이 먼저 좁히므로</b> 부분 일치가
- * 전체 스캔이 되지 않는다(screen/log/access/requirements.md).
+ * 전체 스캔이 되지 않는다(screen/log/error/requirements.md).
  *
  * <p>이름의 출처가 둘로 갈린다. 사용자명은 {@code SYS_USER} 의 <b>컬럼</b>이라
  * {@code leftJoin}({@link #U})이고, 메뉴명은 {@code SYS_MENU} → {@code SYS_MESSAGE} <b>두
@@ -47,17 +47,17 @@ public final class ErrorLogSpec {
      * <p>근거가 {@code AccessLogSpec.U} 와 같다: FK 가 없어(sys/logs.md) 계정이 지워진 뒤에도
      * 오류 이력은 남아야 하고, {@code join} 으로 두면 <b>그 행이 목록에서 사라진다</b>.
      * 이력 셋 중 <b>여기가 그 손실을 가장 감당할 수 없는 화면</b>이다 — 사용자가 {@code traceId}
-     * 를 들고 오는데(screen/log/access/requirements.md) 그 한 행이 조인 때문에 없으면 <i>로그 유실</i> 로 읽힌다.
+     * 를 들고 오는데(screen/log/error/requirements.md) 그 한 행이 조인 때문에 없으면 <i>로그 유실</i> 로 읽힌다.
      */
     static final QSysUser U = QSysUser.sysUser;
 
     /** 4xx 의 아래 끝 — 그 아래는 이 테이블에 오지 않는다(2xx 는 예외가 아니다). */
     private static final short CLIENT_FROM = 400;
 
-    /** 5xx 의 아래 끝이자 <b>스택이 남는 선</b>이다 — screen/log/access/requirements.md. */
+    /** 5xx 의 아래 끝이자 <b>스택이 남는 선</b>이다 — screen/log/error/requirements.md. */
     private static final short SERVER_FROM = 500;
 
-    /** 사용자가 고르는 두 값 — 화면의 콤보와 같은 문자열이다(screen/log/access/requirements.md). */
+    /** 사용자가 고르는 두 값 — 화면의 콤보와 같은 문자열이다(screen/log/error/requirements.md). */
     static final String CLIENT_ERROR = "4XX";
 
     static final String SERVER_ERROR = "5XX";
@@ -65,7 +65,7 @@ public final class ErrorLogSpec {
     public static final QuerySpec SPEC = QuerySpec.of("errorLog")
             .from(EL)
             .leftJoin(U).on(U.userId.eq(EL.userId))
-            // 정렬이 열린 유일한 컬럼이고 커서의 기준점이다 — screen/log/access/requirements.md.
+            // 정렬이 열린 유일한 컬럼이고 커서의 기준점이다 — screen/log/error/requirements.md.
             .col("creDtm", EL.creDtm).sortable()
             .col("errCd", EL.errCd).nullable()
             .col("userId", EL.userId).nullable()
@@ -82,17 +82,17 @@ public final class ErrorLogSpec {
             .pk(EL.exceptionLogSeq)
             .build();
 
-    /** 메뉴명 조건 — 규칙은 {@link LogMenuName} 이 갖고 이음매만 여기 있다(screen/log/access/requirements.md). */
+    /** 메뉴명 조건 — 규칙은 {@link LogMenuName} 이 갖고 이음매만 여기 있다(screen/log/error/requirements.md). */
     private static BooleanExpression menuNamed(Op op, Object value) {
         return LogMenuName.matches(EL.menuCd, op, value);
     }
 
     /**
-     * <b>{@code 4xx 만} · {@code 5xx 만}</b> — screen/log/access/requirements.md 의 <i>상태</i> 조건. 파생 조건의 셋째
+     * <b>{@code 4xx 만} · {@code 5xx 만}</b> — screen/log/error/requirements.md 의 <i>상태</i> 조건. 파생 조건의 셋째
      * 사례다({@code AccessLogSpec.outcome} · {@code LoginLogSpec.rsltGroup} 다음).
      *
      * <p><b>{@code HTTP_STAT} 을 범위로 열지 않는다.</b> {@code 400~499} 를 사람이 입력하게
-     * 하면 <b>경계를 틀린다</b> — 묶음 둘이면 틀릴 자리가 없다(screen/log/access/requirements.md).
+     * 하면 <b>경계를 틀린다</b> — 묶음 둘이면 틀릴 자리가 없다(screen/log/error/requirements.md).
      *
      * <p><b>{@code 5xx 만} 이 이 화면의 가장 흔한 조회다.</b> 403 이 압도적으로 많고 그것은
      * 대개 정상 동작이므로(권한 없는 사람이 눌렀다), <i>"고쳐야 할 것"</i> 만 보려면 5xx 다.

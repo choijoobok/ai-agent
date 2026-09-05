@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * {@code CONFIG_MGMT} 의 저장 페이로드 — screen/code/requirements.md.
+ * {@code CONFIG_MGMT} 의 저장 페이로드 — screen/config/requirements.md.
  *
  * <p><b>봉투가 따로 있는 이유는 목록에 {@code @Valid} 를 걸기 위해서다.</b> 컨트롤러가
  * {@code List} 를 직접 받으면 원소 검증이 돌지 않는다.

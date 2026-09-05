@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code MESSAGE_MGMT} 의 조회 — screen/code/requirements.md.
+ * {@code MESSAGE_MGMT} 의 조회 — screen/message/requirements.md.
  *
  * <p><b>쿼리가 둘이고 그것이 설계다.</b> 마스터 페이지를 먼저 확정한 뒤 <b>그 키들의 값만</b>
  * 읽는다. 한 번에 조인해 뽑으면 언어 수만큼 행이 불어나 <b>페이징 단위가 키가 아니라 (키 ×
