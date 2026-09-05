@@ -6,7 +6,7 @@ type: operation
 created: 2026-09-05
 updated: 2026-09-05
 status: active
-sources: ["sources/frontend/src/features/loginlog/", "sources/frontend/src/features/accesslog/", "sources/backend/domain/src/main/java/com/aiagent/domain/auth/loginlog/", "2026-09-05 재현 실험 /log/login"]
+sources: ["sources/frontend/src/features/accesslog/", "sources/backend/domain/src/main/java/com/aiagent/domain/log/admin/", "2026-09-05 재현 실험 /log/login"]
 tier: 2
 tags: [playbook, list, cursor, readonly, log]
 ---
@@ -47,15 +47,16 @@ tags: [playbook, list, cursor, readonly, log]
 ## 2. 백엔드 — 빌더 순서가 문법이다
 
 ```java
-public static final QuerySpec SPEC = QuerySpec.of("loginLog")
-        .from(LL)
-        .leftJoin(U).on(U.userId.eq(LL.userId))   // .on() 은 .leftJoin() 바로 뒤
-        .col("creDtm", LL.creDtm).sortable()      // .sortable() 은 직전 .col() 에 붙는다
-        .col("userId", LL.userId).nullable()      // .nullable() 도 직전 .col() 에
+public static final QuerySpec SPEC = QuerySpec.of("accessLog")
+        .from(AL)
+        .leftJoin(U).on(U.userId.eq(AL.userId))   // .on() 은 .leftJoin() 바로 뒤
+        .col("creDtm", AL.creDtm).sortable()      // .sortable() 은 직전 .col() 에 붙는다
+        .col("userId", AL.userId).nullable()      // .nullable() 도 직전 .col() 에
         .col("userNm", U.userNm).nullable()
-        .derived("rsltGroup", LoginLogSpec::resultGroup)   // 컬럼이 아닌 조건
+        .col("menuCd", AL.menuCd).nullable()
+        .derived("outcome", AccessLogSpec::outcome)   // 컬럼이 아닌 조건
         .defaultSort("creDtm", SortDir.desc)
-        .pk(LL.loginLogSeq)                        // 커서의 tie-breaker
+        .pk(AL.accessLogSeq)                       // 커서의 tie-breaker
         .build();
 ```
 
@@ -70,15 +71,15 @@ public static final QuerySpec SPEC = QuerySpec.of("loginLog")
 ```java
 @Service
 @Transactional(readOnly = true)          // 클래스 레벨. 메서드에 붙이지 않는다
-public class LoginLogQueryService {
-    private static final Expression<?>[] LIST = { LL.creDtm, LL.userId, U.userNm, … };
+public class AccessLogQueryService {
+    private static final Expression<?>[] LIST = { AL.creDtm, AL.userId, U.userNm, … };
 
-    public PageResponse<LoginLogRow> getList(SearchRequest<Void> request) {
+    public PageResponse<AccessLogRow> getList(SearchRequest<Void> request) {
         checkRange(request);
         Built built = builder.build(request, SPEC, PageMode.cursor);
         List<Tuple> found = built.apply(query.select(Projections.tuple(LIST))).fetch();
         …
-        return built.respondCursor(rows, LoginLogRow::creDtm, LoginLogRow::loginLogSeq);
+        return built.respondCursor(rows, AccessLogRow::creDtm, AccessLogRow::accessLogSeq);
     }
 }
 ```
@@ -92,10 +93,10 @@ public class LoginLogQueryService {
 ### 컨트롤러
 
 ```java
-@RequestMapping("/api/service/loginLog")     // /api/{계층}/{도메인} — 접두가 액션을 정한다
-@Operation(summary = "로그인 이력 목록 조회", description = "…")   // 시드 CSV 와 글자까지 같다
+@RequestMapping("/api/service/accessLog")    // /api/{계층}/{도메인} — 접두가 액션을 정한다
+@Operation(summary = "사용 이력 목록 조회", description = "…")     // 시드 CSV 와 글자까지 같다
 @PostMapping("/getList")
-public ApiResponse<PageResponse<LoginLogRow>> getList(@RequestBody @Valid SearchRequest<Void> request) {
+public ApiResponse<PageResponse<AccessLogRow>> getList(@RequestBody @Valid SearchRequest<Void> request) {
     return ApiResponse.success(queries.getList(request), TraceId.current());
 }
 ```
@@ -136,7 +137,7 @@ const grid = useGridController<Row>({ menuCd, columns, api, pageSize, params: co
 ### 공통코드 컬럼 — 네 키를 **함께** 쓴다
 
 ```ts
-{ field: 'loginRsltCd', header: MSG.X_COL_RESULT,
+{ field: 'stsCd', header: MSG.X_COL_STATUS,
   type: 'code', grpCd: RESULT_GRP_CD,      // 이름은 공통코드가 붙인다
   renderer: 'badge', tone: RESULT_TONE }   // 색은 소스가 정한다 — 값 집합이 닫혔으면 맵
 ```
