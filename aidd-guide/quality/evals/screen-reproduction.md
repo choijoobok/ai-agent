@@ -100,16 +100,32 @@ node aidd-guide/quality/evals/score-screen.mjs log/login <sbx-A> <sbx-B>
 두 번째 실험이 첫 번째와 같은 기준으로 세었는지 아무도 모르고, 그 순간 회귀가 아니라
 인상평이 된다.** 아래 표는 그 스크립트가 실제로 세는 것이다.
 
-| 축 | 세는 법 |
-|---|---|
-| 계약 | `endpoints.ts` 키·URL 집합의 차 |
-| 타입 | `types.ts` 의 이름·순서·nullable |
-| 화면 | 컬럼 `field`·`width`·`type` · 조회조건 · 버튼 |
-| 문구 | 쓰인 `MSG.*` 키 집합의 대칭차 |
-| 뼈대 | `@/shared/*` import 집합 |
-| 백엔드 | 클래스 목록 · public 메서드 시그니처 · `QuerySpec` 체인 |
-| **기계 규칙** | 한글 리터럴 · JSX 한글 · 딥 임포트 · `features` 간 import · URL 리터럴 |
-| **근거 분포** | `SOURCES.md` 행 중 각 분류가 낀 비율 |
+| 묶음 | 축 | 세는 법 |
+|---|---|---|
+| 계약 | `계약 (endpoints)` | `endpoints.ts` 키·URL 집합의 차 |
+| 〃 | `api 선언 · 액션` | `read`·`save`·`actions` 중 무엇이 섰나 · 액션 `key` |
+| 〃 | `컨트롤러 · 저장 옵션` | `confirm`·`warn`·`toSavePayload`·`locateFieldErrors` 등 §3·§4 어휘 |
+| 타입 | `타입 이름` · `타입 필드` | `interface`/`type` 이름과 필드 |
+| 화면 | `그리드 컬럼` · `컬럼 폭` · `셀 유형` | 컬럼 `field` · `width` · `type` |
+| 〃 | `조회조건` | **`SearchField[]` 블록 안의 `field`** — 컬럼과 갈라 센다 |
+| 편집 | `편집 열린 컬럼` | `editable: true` 인 컬럼 |
+| 〃 | `필수 · PK` | `required` · `pk` 가 붙은 컬럼 |
+| 〃 | `검증 · 연쇄 · 여는 것` | `validate`·`afterEdit`·`popup`·`listModal`·`viewer` |
+| 〃 | `값의 출처` | `grpCd` 값 · `options` · `dynamic` |
+| 문구 | `문구 키 (MSG)` | 쓰인 `MSG.*` 키 집합의 대칭차 |
+| 뼈대 | `공통물 import` | `@/shared/*` import 집합 |
+| 백엔드 | `백엔드 클래스` · `public 메서드` | 클래스 목록 · 메서드 이름 |
+| — | **기계 규칙** | 한글 리터럴 · JSX 한글 · 딥 임포트 · `features` 간 import · URL 리터럴 |
+| — | **근거 분포** | `SOURCES.md` 행 중 각 분류가 낀 비율 |
+
+**편집 묶음 다섯은 2026-09-05 에 더했다** — 처음 세 차수가 **조회 전용 화면**이었고, 그
+채점기로 저장이 있는 화면을 재면 **저장이 통째로 빠진 재현도 만점이 나온다**. 축을
+결과를 본 뒤에 고르면 그것은 채점이 아니라 사후 해석이므로 **재현을 돌리는 동안, 산출물을
+열기 전에** 더했다.
+
+**축은 `declarations.md` 의 어휘에서만 만든다.** 재려는 화면의 코드를 보고 축을 정하면
+그 화면에만 맞는 자가 되고, §2-3 이 가이드에 대해 금지한 것과 같은 오염이 채점기에서
+일어난다.
 
 ## 4. 베이스라인 — `/log/login` × 2, **두 차례**
 

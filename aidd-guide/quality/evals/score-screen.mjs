@@ -87,6 +87,43 @@ function strip(src) {
   return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
 }
 
+/**
+ * 선언 블록을 잘라 낸다 — `): ColumnDef<T>[] {` 같은 <b>함수 서명부터 열 첫머리의 `}` 까지</b>.
+ *
+ * <p>컬럼과 조회조건이 둘 다 `field:` 를 쓰므로 전역 정규식으로는 갈리지 않는다. 이 저장소는
+ * 선언을 <b>반환 타입이 붙은 함수</b>로 내보내는 것이 관용구라(declarations.md) 서명이 경계다.
+ */
+function blocks(src, re) {
+  const out = [];
+  for (const m of src.matchAll(re)) {
+    const start = m.index + m[0].length;
+    const end = src.indexOf('\n}', start);
+    out.push(src.slice(start, end === -1 ? src.length : end));
+  }
+  return out;
+}
+
+/**
+ * 블록을 <b>컬럼 하나씩</b>으로 쪼갠다 — `field:` 부터 다음 `field:` 앞까지.
+ *
+ * <p>이 저장소는 `field` 를 객체 맨 위에 적는다(declarations.md §1 의 첫 줄이다). 그 관용구를
+ * 어긴 재현은 속성이 앞 컬럼에 붙어 <b>차이로 드러난다</b> — 그것도 결과다.
+ */
+function cells(block) {
+  return block
+    .split(/\bfield:\s*'/)
+    .slice(1)
+    .map((p) => ({ name: p.slice(0, p.indexOf("'")), body: p }));
+}
+
+/** 속성이 붙은 컬럼 이름 — `editable: true` 처럼 값이 참인 것만. */
+const flagged = (cs, key) =>
+  cs.filter((c) => new RegExp(`\\b${key}:\\s*true\\b`).test(c.body)).map((c) => c.name);
+
+/** 값이 있는 속성 — `validate:` 처럼 있고 없고가 결정인 것. */
+const present = (cs, key) =>
+  cs.filter((c) => new RegExp(`\\b${key}:`).test(c.body)).map((c) => `${c.name}:${key}`);
+
 const set = (arr) => [...new Set(arr)].sort();
 const diff = (a, b) => a.filter((x) => !b.includes(x));
 
@@ -169,6 +206,14 @@ function facts(root) {
       .join('\n'),
   );
 
+  /*
+   * 선언 블록 — 컬럼과 조회조건을 갈라 센다. 조회 전용 화면에서는 둘의 구분이 없어도
+   * 됐지만(조회조건 field 가 대개 컬럼 field 의 부분집합이었다) 저장이 있는 화면에서는
+   * <b>편집 가능 여부가 컬럼에만 있는 축</b>이라 갈리지 않으면 아무것도 못 본다.
+   */
+  const colCells = blocks(feCode, /:\s*ColumnDef<[^>]*>(?:\[\])?\s*\{/g).flatMap(cells);
+  const searchCells = blocks(feCode, /:\s*SearchField\[\]\s*\{/g).flatMap(cells);
+
   return {
     feature,
     files: {
@@ -183,6 +228,52 @@ function facts(root) {
     /* [화면] 그리드 컬럼 field */
     columns: set([...feCode.matchAll(/\bfield:\s*'(\w+)'/g)].map((m) => m[1])),
     widths: set([...feCode.matchAll(/\bfield:\s*'(\w+)'[\s\S]{0,120}?\bwidth:\s*(\d+)/g)].map((m) => `${m[1]}=${m[2]}`)),
+    /* [화면] 조회조건 — 컬럼과 갈라 센다 */
+    searchFields: set(searchCells.map((c) => c.name)),
+    /* [화면] 셀 유형 — 같은 컬럼을 다른 유형으로 그렸는지 */
+    colTypes: set(
+      colCells
+        .map((c) => [c.name, c.body.match(/\btype:\s*'(\w+)'/)?.[1]])
+        .filter(([, t]) => t)
+        .map(([n, t]) => `${n}=${t}`),
+    ),
+    /* [편집] 편집이 열린 컬럼 — 기본이 false 라 <b>명시한 것만</b> 열린다(declarations.md §1) */
+    editables: set(flagged(colCells, 'editable')),
+    /* [편집] 필수·PK — 저장을 거부하는 자리 */
+    guards: set([...flagged(colCells, 'required').map((n) => `${n}:required`), ...flagged(colCells, 'pk').map((n) => `${n}:pk`)]),
+    /* [편집] 검증·연쇄·여는 것 — 규칙이 어느 셀에 붙었나 */
+    rules: set([
+      ...present(colCells, 'validate'),
+      ...present(colCells, 'afterEdit'),
+      ...present(colCells, 'popup'),
+      ...present(colCells, 'listModal'),
+      ...present(colCells, 'viewer'),
+    ]),
+    /* [편집] 값의 출처 — 공통코드 그룹 · 고정 목록 · 동적 컬럼 */
+    valueSrc: set([
+      ...[...feCode.matchAll(/\bgrpCd:\s*'([^']+)'/g)].map((m) => `grpCd:${m[1]}`),
+      ...present(colCells, 'options'),
+      ...flagged(colCells, 'dynamic').map((n) => `${n}:dynamic`),
+    ]),
+    /* [계약] api 선언 — 무엇이 서는가. `read` 가 없으면 조회 버튼이 없다(declarations.md §3) */
+    apiDecl: set([
+      ...[...feCode.matchAll(/\b(read|save|actions):\s*[{[]/g)].map((m) => m[1]),
+      ...[...feCode.matchAll(/\bkey:\s*'(\w+)'/g)].map((m) => `action:${m[1]}`),
+    ]),
+    /*
+     * [계약] 컨트롤러·저장 옵션 — declarations.md §3·§4 의 어휘를 그대로 센다.
+     *
+     * <p>컬럼에 붙지 않는 결정이 여기 있다. 저장 전 확인 창을 띄우나, 서버 필드 오류를
+     * 셀에 꽂나, 저장 본문을 화면이 만드나 — <b>조회 전용 화면에는 아예 없던 축</b>이라
+     * 컬럼만 세면 저장이 통째로 빠진 재현도 만점이 나온다.
+     */
+    ctrlOpts: set(
+      [
+        ...feCode.matchAll(
+          /\b(confirm|warn|reloadAfter|locateFieldErrors|onSuccess|toSavePayload|addRow|canAdd|defaults|emptyNotice|searchParams|pageSize|menuCd|progress|eligible|target|toTargets):/g,
+        ),
+      ].map((m) => m[1]),
+    ),
     /* [문구] MSG 키 */
     msg: set([...feCode.matchAll(/\bMSG\.([A-Z0-9_]+)/g)].map((m) => m[1])),
     /* [뼈대] shared import */
@@ -236,6 +327,14 @@ const AXES = [
   ['타입 필드', 'fields'],
   ['그리드 컬럼', 'columns'],
   ['컬럼 폭', 'widths'],
+  ['셀 유형', 'colTypes'],
+  ['조회조건', 'searchFields'],
+  ['편집 열린 컬럼', 'editables'],
+  ['필수 · PK', 'guards'],
+  ['검증 · 연쇄 · 여는 것', 'rules'],
+  ['값의 출처', 'valueSrc'],
+  ['api 선언 · 액션', 'apiDecl'],
+  ['컨트롤러 · 저장 옵션', 'ctrlOpts'],
   ['문구 키 (MSG)', 'msg'],
   ['공통물 import', 'shared'],
   ['백엔드 클래스', 'classes'],
