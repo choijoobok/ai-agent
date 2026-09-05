@@ -13,6 +13,10 @@ tags: [decision-card, reverse-question]
 
 # 인지 부채 — 사용자가 이해하지 못한 채 승인하는 문제
 
+> **여기는 *승인을 어떻게 받나* 다.** *게이트가 언제 열리나* 는
+> [process/04-gates.md](./04-gates.md) 가 갖는다 — 게이트 일곱과 Exit Criteria, 되돌리기.
+> 아래 장치 넷은 저쪽 §3 의 승인 요청 봉투 안에서 쓰인다.
+
 ## 1. 무엇이 문제인가
 
 Thoughtworks Technology Radar Vol.34(2026)가 이름 붙인 **cognitive debt**:
