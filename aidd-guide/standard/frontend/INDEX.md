@@ -71,7 +71,7 @@ tags: [frontend, index]
 
 | ESLint | 무엇 |
 |---|---|
-| `no-restricted-syntax` | 한글 문자열·JSX 텍스트·템플릿 리터럴 · `label()` 리터럴 · `/api`·계층 경로 리터럴 |
+| `no-restricted-syntax` | 문자열·JSX 텍스트·템플릿 문자열 **속 한글** · `label()` 리터럴 · `/api`·계층 경로 리터럴 |
 | `no-restricted-imports` | `@/shared/api/*` 딥 임포트 금지 |
 | `import-x/no-restricted-paths` | `features/*` 끼리 직접 import 금지 |
 

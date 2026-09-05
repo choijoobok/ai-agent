@@ -109,7 +109,7 @@ features/user/
 |---|---|
 | `import-x/no-restricted-paths` | **`features/*` 끼리 직접 import 금지** |
 | `no-restricted-imports` | `@/shared/api/*` **딥 임포트 금지** — 배럴 하나 |
-| `no-restricted-syntax` | 한글 문자열·JSX 텍스트·템플릿 리터럴 · `label()` 리터럴 · `/api`·계층 경로 리터럴 |
+| `no-restricted-syntax` | 문자열·JSX 텍스트·템플릿 문자열 **속 한글** · `label()` 리터럴 · `/api`·계층 경로 리터럴 |
 
 > **존은 기능마다 하나씩이다.** `target` 과 `from` 을 둘 다 `./src/features` 로 두면
 > **`auth` 안에서 `auth` 를 import 하는 것까지 막힌다** — 규칙이 뜻하는 것은 *기능 사이*

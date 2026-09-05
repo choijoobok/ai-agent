@@ -250,7 +250,7 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 
 | 게이트 | 무엇 |
 |---|---|
-| ESLint `no-restricted-syntax` | 한글 문자열·JSX 텍스트·템플릿 리터럴 금지 · `label()` 리터럴 금지 · `/api`·계층 경로 리터럴 금지 |
+| ESLint `no-restricted-syntax` | 문자열·JSX 텍스트·템플릿 문자열 **속 한글** 금지 · `label()` 리터럴 금지 · `/api`·계층 경로 리터럴 금지 |
 | ESLint `no-restricted-imports` | `@/shared/api/*` 딥 임포트 금지 — HTTP 는 **배럴 `@/shared/api`** 하나 |
 | ESLint `import-x/no-restricted-paths` | `features/*` 끼리 직접 import 금지 |
 | ArchUnit `LayerDependencyTest` | 모듈 의존 방향(core ← support ← domain ← api) |
