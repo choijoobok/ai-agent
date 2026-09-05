@@ -107,6 +107,8 @@ out.push('');
 const countIssues = checkCatalogCounts();
 if (countIssues.length > 0) violations.push(['INDEX.md', lineCount(join(GUIDE, 'INDEX.md')), countIssues]);
 
+for (const [rel, issues] of checkScreenRequirements()) violations.push([rel, 0, issues]);
+
 const totalStale = [...stale.values()].reduce((a, b) => a + b, 0);
 out.push(`링크형 인용 중 대상에 그 절이 없는 것: ${totalStale} 곳 / ${stale.size} 파일 — 줄어들기만 해야 한다.`);
 for (const [rel, n] of [...stale].sort((a, b) => b[1] - a[1]).slice(0, 5)) {
@@ -271,6 +273,54 @@ function checkCatalogCounts() {
     }
   }
   return issues;
+}
+
+/**
+ * <b>화면 요건서가 서식의 필수 칸을 갖는가</b> — `artifact/template/02-requirements.md`.
+ *
+ * <p>서식은 있는데 <b>지키는지 보는 것이 없었다.</b> 2026-09-06 에 세어 보니 업무 화면
+ * 17개는 §4 컬럼 표를 전부 갖고(12~38행) <b>샘플 여섯은 전부 0</b> 이었다 — 그런데
+ * `CLAUDE.md` §3 이 <i>표준을 추정하지 말고 읽으라</i> 고 지정한 것이 그 여섯이다.
+ * 같은 날 재현 실험에서 재현 둘이 컬럼을 정하려고 공통 컴포넌트의 javadoc 까지 읽었고,
+ * 그러고도 <b>양식 컬럼 하나가 갈렸다</b>.
+ *
+ * <p><b>`_standalone/` 은 보지 않는다</b> — 메뉴가 없는 모달·팝업이라 그리드도 백엔드도
+ * 없는 것이 정상이다. 여기서 재는 것은 <b>메뉴 화면</b>이다.
+ */
+function checkScreenRequirements() {
+  const root = join(REPO, 'documents', 'screen');
+  if (!existsSync(root)) return [];
+  const out = [];
+  for (const file of walk(root)) {
+    if (!file.endsWith('requirements.md')) continue;
+    const rel = relative(REPO, file).split(sep).join('/');
+    if (rel.includes('/_standalone/')) continue;
+    const text = readFileSync(file, 'utf8');
+    const issues = [];
+
+    if (!/^\| 백엔드 패키지 \|/m.test(text)) {
+      issues.push('§0 메타에 `백엔드 패키지` 칸이 없다 — 구현자가 자리를 추측한다');
+    }
+
+    const four = text.match(/^## 4\.[\s\S]*?(?=^## 5\.)/m);
+    const rows = four ? (four[0].match(/^\|.*\|.*\|$/gm) || []).length : 0;
+    if (rows < 3) {
+      issues.push(`§4 에 컬럼 표가 없다(표 ${rows}행) — 폭·타입·편집이 어디에도 없으면 화면마다 갈린다`);
+    }
+
+    let prev = -1;
+    for (const m of text.matchAll(/^\| `[A-Z]+\d*-(\d+)`/gm)) {
+      const n = Number(m[1]);
+      if (n < prev) {
+        issues.push(`§9 테스트 케이스 번호가 뒤집혔다: ${prev} 다음에 ${n} — 목업이 그대로 옮긴다`);
+        break;
+      }
+      prev = n;
+    }
+
+    if (issues.length > 0) out.push([rel, issues]);
+  }
+  return out;
 }
 
 function countMd(dir) {
