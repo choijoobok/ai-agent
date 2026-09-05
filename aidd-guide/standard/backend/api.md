@@ -144,6 +144,10 @@ tags: [backend, api, rest, response, header]
   비우면 운영자가 `/service/roleAuth/getMenuTree` 를 보고 무엇인지 판단해야 한다.
 - 한국어로 쓴다(CLAUDE.md §5-6). 컨트롤러 javadoc 과 같은 말을 두 번 적지 않는다 —
   **`summary` 는 운영자의 말, javadoc 은 다음 개발자의 말**이다.
+- **고치면 시드가 어긋난다.** `006-init-api.csv` 는 이 문장의 **생성물**이라 한 글자만
+  달라도 `checkSeeds` 가 빨개진다 — 문구를 손보면 `./gradlew generateApiSeed` 를 돌려
+  **CSV 를 같은 커밋에** 담는다(CLAUDE.md §5-8). **이미 있는 화면을 다시 만들 때는 반대로
+  읽는다**: CSV 가 정답이므로 문장을 거기 맞춘다.
 
 ## 5. 헤더 넷
 
