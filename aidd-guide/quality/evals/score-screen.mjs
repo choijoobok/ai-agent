@@ -155,6 +155,20 @@ function facts(root) {
   /* URL 선언은 `endpoints.ts` 의 <b>일</b>이다 — 거기서 센 리터럴은 위반이 아니라 규약이다. */
   const notEndpoints = strip(fe.filter((p) => !/endpoints\.ts$/.test(p)).map((p) => read(p)).join('\n'));
 
+  /*
+   * 기계 규칙은 <b>테스트를 뺀 것</b>에만 센다 — `eslint.config` 가 `**\/*.test.ts` 에서
+   * `no-restricted-syntax` 를 끄기 때문이다. 빼지 않으면 <b>선언 검사를 쓴 재현이
+   * 위반 스물아홉으로 나오고</b>, 잘한 쪽이 벌을 받는다.
+   */
+  const linted = strip(
+    fe.filter((p) => !/\.(test|spec)\.tsx?$/.test(p)).map((p) => read(p)).join('\n'),
+  );
+  const lintedNoEndpoints = strip(
+    fe.filter((p) => !/\.(test|spec)\.tsx?$/.test(p) && !/endpoints\.ts$/.test(p))
+      .map((p) => read(p))
+      .join('\n'),
+  );
+
   return {
     feature,
     files: {
@@ -185,11 +199,11 @@ function facts(root) {
      * 자기 폴더를 별칭으로 부르는 것은 표준이 권하는 쪽이다.
      */
     violations: [
-      ...rule(feCode, /['"`][^'"`\n]*[가-힣][^'"`\n]*['"`]/g, '한글 리터럴'),
-      ...rule(feCode, />\s*[^<>{}\n]*[가-힣][^<>{}\n]*\s*</g, 'JSX 한글'),
-      ...rule(feCode, /from\s+'@\/shared\/api\/[^']+'/g, '딥 임포트(@/shared/api/*)'),
-      ...rule(feCode, new RegExp(`from\\s+'@/features/(?!${feature ?? '__none__'}/)`, 'g'), 'features 간 import'),
-      ...rule(notEndpoints, /['"`]\/(?:api|service)\/[^'"`]*['"`]/g, 'URL 리터럴(endpoints.ts 밖)'),
+      ...rule(linted, /['"`][^'"`\n]*[가-힣][^'"`\n]*['"`]/g, '한글 리터럴'),
+      ...rule(linted, />\s*[^<>{}\n]*[가-힣][^<>{}\n]*\s*</g, 'JSX 한글'),
+      ...rule(linted, /from\s+'@\/shared\/api\/[^']+'/g, '딥 임포트(@/shared/api/*)'),
+      ...rule(linted, new RegExp(`from\\s+'@/features/(?!${feature ?? '__none__'}/)`, 'g'), 'features 간 import'),
+      ...rule(lintedNoEndpoints, /['"`]\/(?:api|service)\/[^'"`]*['"`]/g, 'URL 리터럴(endpoints.ts 밖)'),
     ],
     /* [근거 분포] _EVAL/SOURCES.md */
     sources: evidence(root),
