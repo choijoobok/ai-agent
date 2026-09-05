@@ -60,9 +60,9 @@ tags: [frontend, grid, column, searchform, vocabulary, reference]
 |---|---|---|
 | `options` | 없다 | 고정 목록 |
 | `grpCd` | 없다 | **공통코드 그룹** — 목록을 데이터가 준다 |
-| `derive` | 없다 | 셀 값을 파생시킨다(엑셀에도 그 값이 나간다) |
-| `dynamic` | `false` | **컬럼 자체가 데이터에서 온다**([`frontend/grid.md`](./grid.md)) |
-| `patch` | 없다 | 동적 컬럼의 값 경로 |
+| `derive` | 없다 | 셀 값을 파생시킨다(엑셀에도 그 값이 나간다). `(row) => unknown` |
+| `dynamic` | `false` | **컬럼 자체가 데이터에서 온다** — 계약은 [grid-advanced.md](./grid-advanced.md) §5-1 |
+| `patch` | 없다 | 동적 컬럼의 **쓰기** 경로. `(row, value) => Partial<T>` — 빠지면 없는 필드에 얹힌다 |
 
 **편집**
 
