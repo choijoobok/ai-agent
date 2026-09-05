@@ -146,6 +146,11 @@ echo '{"tool_input":{"file_path":"sources/backend/bootstrap/src/main/resources/d
 - 아무 훅도 안 도는 것 같으면 `REPO` 탐색을 먼저 의심한다 — `CLAUDE.md` 를 6단계 위까지 찾는다.
 - `doc-drift` 가 한 번 말하고 조용하면 정상이다. 다시 보려면 tmp 의 세션 파일을 지운다.
 
+## 아직 없는 것
+
+- **컨텍스트 게이지** — 남은 훅 하나다. 세션이 문맥을 얼마나 썼는지 보여 준다.
+  @defer ? — 기한을 정하지 않았다. 급하지 않고, 없다고 막히는 것도 없다
+
 ## 관련
 
 - [automation-matrix.md](./automation-matrix.md) — 무엇을 언제 · 강도가 셋인 이유 · AI 가 하는 것

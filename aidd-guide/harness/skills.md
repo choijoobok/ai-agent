@@ -123,7 +123,7 @@ tags: [harness, skill, workflow, convention]
 2. 훅·플레이북과 경계가 겹치지 않는지 위 표로 확인한다.
 3. `description` 에 **트리거 어휘**를 넣는다.
 4. 절차만 적고 형식·표준은 링크한다.
-5. 이 파일의 카탈로그와 [INDEX.md](./INDEX.md) 의 스킬 표에 행을 더한다. CLAUDE.md §11 의 진행 표도 본다.
+5. 이 파일의 카탈로그와 [INDEX.md](./INDEX.md) 의 스킬 표에 행을 더한다. `documents/project.state.yaml` 의 진행 상태도 본다.
 
 ## 관련
 
