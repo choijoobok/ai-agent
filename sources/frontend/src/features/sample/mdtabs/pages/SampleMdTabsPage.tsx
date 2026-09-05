@@ -41,7 +41,7 @@ import type { SampleOrder } from '@/features/sample/types';
  *
  * <p>playbook/INDEX.md — 마스터의 선택을 바꿀 때 탭 둘 중 하나라도 미저장이면 묻는다. 탭마다 물으면
  * 사용자는 같은 물음에 두 번 답하면서도 **무엇을 잃는지는 여전히 모른다**. 탭을 오가는
- * 것으로는 묻지 않는다 — 표시가 바뀔 뿐 데이터를 버리지 않는다(§7.7).
+ * 것으로는 묻지 않는다 — 표시가 바뀔 뿐 데이터를 버리지 않는다.
  */
 
 const MENU_CD = 'SMPL_MD_TABS';

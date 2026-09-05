@@ -13,7 +13,7 @@ export function getRoleAuthTree(roleId: string): Promise<PageResponse<RoleAuthTr
 }
 
 /**
- * 부여 저장 — <b>화면이 든 전건을 보낸다</b>(screen/menu/requirements.md).
+ * 부여 저장 — <b>화면이 든 전건을 보낸다</b>(screen/role-auth/requirements.md).
  *
  * <p>차이만 보내면 <i>지운 것</i>을 표현할 자리가 없다. 서버는 이 목록을 그 역할의
  * 부여 전부로 보고 맞춘다.

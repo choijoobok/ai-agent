@@ -1,6 +1,6 @@
-/** 서버 `ConfigRow` 와 1:1 — screen/code/requirements.md. */
+/** 서버 `ConfigRow` 와 1:1 — screen/config/requirements.md. */
 
-/** 서버 `ConfigValueType` 과 1:1. 화면이 아는 것은 <b>여기까지</b>다(screen/code/requirements.md). */
+/** 서버 `ConfigValueType` 과 1:1. 화면이 아는 것은 <b>여기까지</b>다(screen/config/requirements.md). */
 export type ConfigValueType = 'STRING' | 'NUMBER' | 'BOOLEAN' | 'JSON';
 
 export interface ConfigRow {
@@ -13,11 +13,11 @@ export interface ConfigRow {
   cfgType: ConfigValueType;
   /**
    * 필드 Javadoc. <b>오버라이드 행이 없어도 비지 않는다</b> — 원천이 빌드 산출물이다
-   * (screen/code/requirements.md). 프로세서가 빠진 배포에서만 `null` 이다.
+   * (screen/config/requirements.md). 프로세서가 빠진 배포에서만 `null` 이다.
    */
   cfgDesc: string | null;
   /**
-   * `변경됨` 의 근거 — <b>값이 다른가가 아니라 행이 있는가</b>다(screen/code/requirements.md).
+   * `변경됨` 의 근거 — <b>값이 다른가가 아니라 행이 있는가</b>다(screen/config/requirements.md).
    *
    * <p>되돌릴 수 있는 행인지도 이것이 정한다. 값이 기본값과 같아도 행이 있으면
    * <b>되돌릴 것이 있다</b>.

@@ -62,7 +62,7 @@ public class ConfigBinder {
      * <p><b>바인딩 실패를 기본값으로 덮지 않는다.</b> {@code yml} 키 누락은 기동 실패여야
      * 하고(sys/code.md), 런타임 재바인딩 실패는 <b>예외여야 한다</b> — 그 키만 {@code yml} 로
      * 되돌리면 <b>화면은 {@code 변경됨} 이라 말하는데 동작은 기본값</b>인, sys/config.md 이
-     * 닫으려는 바로 그 실패가 된다(§3).
+     * 닫으려는 바로 그 실패가 된다.
      *
      * @param overrides {@code CFG_KEY → CFG_VAL}. 루트({@code sys-config.})가 붙지 않은 키다
      */

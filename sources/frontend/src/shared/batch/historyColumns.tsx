@@ -46,7 +46,7 @@ export function historyColumns(
         <b>행이 아니라 칸이다</b>(screen/log/access/requirements.md 와 같은 규칙). 이 화면은 <b>행 더블 클릭이 이미
         상세 모달</b>이므로 축이 다르면 자리도 달라야 한다 — 겹치면 하나가 다른 하나를 가린다.
 
-        §3.9 의 반대 방향이며 둘이 왕복을 만든다(§1.1) — <b>등록이 원인이고 이력이 결과</b>다.
+        §3.9 의 반대 방향이며 둘이 왕복을 만든다 — <b>등록이 원인이고 이력이 결과</b>다.
       */
       onDoubleClick: openSchedule,
     },

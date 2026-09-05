@@ -16,7 +16,7 @@ import { getConfigPrefixes } from '@/features/config/api/configApi';
 import type { ConfigRow, ConfigValueType } from '@/features/config/types';
 
 /**
- * `CONFIG_MGMT` — screen/code/requirements.md. <b>목록이 아우터 조인이다.</b>
+ * `CONFIG_MGMT` — screen/config/requirements.md. <b>목록이 아우터 조인이다.</b>
  *
  * <pre>
  * yml 이 정한 키 목록   LEFT OUTER JOIN   SYS_CONFIG   ON key
@@ -31,10 +31,10 @@ import type { ConfigRow, ConfigValueType } from '@/features/config/types';
  * 가장 나쁜 실패다(frontend/grid.md).
  *
  * <p><b>지우기가 아니라 되돌리기다.</b> 행을 지우면 값이 사라지는 것이 아니라 `yml` 이
- * 드러나며(screen/code/requirements.md), 그래서 목록에서 그 행이 <b>사라지지 않는다</b> — 이 화면만의
+ * 드러나며(screen/config/requirements.md), 그래서 목록에서 그 행이 <b>사라지지 않는다</b> — 이 화면만의
  * 성질이고 라벨이 그 기대를 만든다.
  *
- * <p><b>화면이 아는 것은 유형까지다</b>(screen/code/requirements.md). `@Min` 도 상호 제약도 여기 옮겨 적지
+ * <p><b>화면이 아는 것은 유형까지다</b>(screen/config/requirements.md). `@Min` 도 상호 제약도 여기 옮겨 적지
  * 않는다 — 제약의 단일 원본은 서버의 바인딩 객체이고(sys/code.md), 복제하면 어긋날 때 어느
  * 쪽이 맞는지 알 수 없다. 서버의 거부는 <b>그 셀로 되돌아온다</b>(frontend/grid.md).
  *
@@ -88,20 +88,20 @@ export function ConfigMgmtPage() {
     menuCd: MENU_CD,
     columns,
     api,
-    // `addRow` 가 없다 — 키는 `yml` 이 정한다(screen/code/requirements.md).
+    // `addRow` 가 없다 — 키는 `yml` 이 정한다(screen/config/requirements.md).
     params: collectConditions,
     toSavePayload: (rows) => ({
       rows: rows.map((row) => ({
         rowState: row.state,
         cfgKey: row.data.cfgKey,
-        // 되돌리기는 값을 보내지 않는다 — 서버는 행을 지울 뿐이다(screen/code/requirements.md).
+        // 되돌리기는 값을 보내지 않는다 — 서버는 행을 지울 뿐이다(screen/config/requirements.md).
         cfgVal: row.state === 'D' ? undefined : row.data.cfgVal,
       })),
     }),
   });
 
   /*
-    접두사는 <b>전 키에서 도출</b>된 고정 집합이라 목록 응답에 실리지 않는다(screen/code/requirements.md).
+    접두사는 <b>전 키에서 도출</b>된 고정 집합이라 목록 응답에 실리지 않는다(screen/config/requirements.md).
     지금 걸린 조건의 결과를 후보로 내면 <b>한 번 좁힌 뒤 넓힐 수 없는 콤보</b>가 된다.
 
     `staleTime: Infinity` 인 것은 이 목록이 <b>빌드 산출물</b>이기 때문이다 — 배포가
@@ -129,7 +129,7 @@ export function ConfigMgmtPage() {
       width: 104,
       /*
         취소선은 <b>적용값 한 칸</b>에만 긋는다. 이 화면에서 사라지는 것은 행이 아니라
-        오버라이드 한 줄이고 <b>키는 목록에 남는다</b>(screen/code/requirements.md) — 전 셀에 그으면
+        오버라이드 한 줄이고 <b>키는 목록에 남는다</b>(screen/config/requirements.md) — 전 셀에 그으면
         <i>"이 행이 통째로 없어진다"</i> 로 읽혀 저장 뒤에 기대가 어긋난다.
       */
       strikeField: 'cfgVal',
@@ -155,7 +155,7 @@ export function ConfigMgmtPage() {
           menuCd={MENU_CD}
           controller={grid}
           /*
-            <b>삭제가 아니라 되돌리기</b>이고 <b>변경됨 인 행만</b> 체크된다(screen/code/requirements.md).
+            <b>삭제가 아니라 되돌리기</b>이고 <b>변경됨 인 행만</b> 체크된다(screen/config/requirements.md).
             오버라이드 행이 없는 키는 지울 것이 없다 — 체크하게 두면 저장이 *없는 것을
             지운다* 로 나간다.
           */
@@ -178,12 +178,12 @@ function buildColumns(): ColumnDef<ConfigRow>[] {
       pinned: 'left',
       sortable: true,
       // <b>열리지 않는다.</b> 키를 화면에서 만들거나 고치면 아무 데도 읽히지 않는 행이
-      // 생긴다 — 왼쪽 테이블은 코드다(screen/code/requirements.md).
+      // 생긴다 — 왼쪽 테이블은 코드다(screen/config/requirements.md).
       editable: false,
     },
     {
       /*
-        <b>숨기지 않는다</b>(screen/code/requirements.md). 되돌리면 무엇이 되는지가 행마다 보여야 §4.4 의
+        <b>숨기지 않는다</b>(screen/config/requirements.md). 되돌리면 무엇이 되는지가 행마다 보여야 §4.4 의
         확인이 놀라움을 주지 않는다 — 그리고 배포가 기본값을 올렸을 때 그 사실이
         드러나는 자리도 여기다.
       */
@@ -202,7 +202,7 @@ function buildColumns(): ColumnDef<ConfigRow>[] {
       editable: true,
       /*
         값이 기본값과 <b>다를 때만</b> 굵다. 배지는 <b>행이 있으면</b> 붙는다 — 근거가
-        다르다(screen/code/requirements.md). 값을 기본값과 똑같이 저장해 두면 다음 배포가 `yml` 기본값을
+        다르다(screen/config/requirements.md). 값을 기본값과 똑같이 저장해 두면 다음 배포가 `yml` 기본값을
         올려도 그 키만 옛 값에 묶이는데, 두 값이 같아 눈으로는 구분되지 않으므로
         <b>배지가 유일한 신호</b>다.
       */
@@ -224,7 +224,7 @@ function buildColumns(): ColumnDef<ConfigRow>[] {
     {
       /*
         <b>읽기 전용이다.</b> 편집하게 두면 값을 안 바꿨는데 오버라이드 행이 생기고,
-        그 키가 <i>변경됨</i> 이 된다(screen/code/requirements.md). 원천은 필드 Javadoc 이다.
+        그 키가 <i>변경됨</i> 이 된다(screen/config/requirements.md). 원천은 필드 Javadoc 이다.
 
         필터를 끈다 — 훑어 읽는 칸이지 거르는 칸이 아니고, 같은 말을 조회조건의
         *키 · 설명* 한 칸이 이미 한다.
@@ -248,7 +248,7 @@ function buildColumns(): ColumnDef<ConfigRow>[] {
         더블클릭하면 펼쳐 읽는다(frontend/grid.md).
 
         <b>편집기가 아니다.</b> 편집하게 두면 값을 안 바꿨는데 오버라이드 행이 생기고
-        그 키가 <i>변경됨</i> 이 된다(screen/code/requirements.md) — 여는 순간 고칠 수 있는 것처럼 보이는
+        그 키가 <i>변경됨</i> 이 된다(screen/config/requirements.md) — 여는 순간 고칠 수 있는 것처럼 보이는
         것부터가 사고의 시작이다.
       */
       viewer: 'largeText',
@@ -274,7 +274,7 @@ function typeOptions(): SelectOption[] {
 // ── 검증 (frontend/grid.md 의 1층) ─────────────────────────────────────────
 
 /**
- * 유형에 맞는 <b>형식</b>만 본다 — screen/code/requirements.md.
+ * 유형에 맞는 <b>형식</b>만 본다 — screen/config/requirements.md.
  *
  * <p><b>범위를 보지 않는다.</b> `0` 이 *끔* 인 키가 있고(sys/code.md) 상한을 원하는 조직도
  * 다르다 — 그 판단은 서버의 바인딩 객체 하나가 갖는다.
@@ -349,7 +349,7 @@ function locateFieldErrors(
   return issues;
 }
 
-// ── 조회조건 (screen/code/requirements.md) ────────────────────────────────────────────
+// ── 조회조건 (screen/config/requirements.md) ────────────────────────────────────────────
 
 /**
  * 분류가 없으니 <b>접두사와 검색</b>이다.
@@ -375,14 +375,14 @@ function buildSearchFields(prefixes: string[]): SearchField[] {
       type: 'select',
       // 접두사는 <b>시작</b> 하나다 — 후보가 하나면 셀렉터가 나타나지 않는다(frontend/search-form.md).
       ops: ['startsWith'],
-      // <b>관리하지 않는다.</b> 전 키에서 도출한 것을 서버가 준다(screen/code/requirements.md).
+      // <b>관리하지 않는다.</b> 전 키에서 도출한 것을 서버가 준다(screen/config/requirements.md).
       options: prefixes.map((prefix) => ({ value: prefix, text: prefix })),
     },
     {
       field: 'overridden',
       label: MSG.CONFIG_SEARCH_OVERRIDDEN,
       type: 'select',
-      // 서버가 `=` 만 받는다 — 판정은 <b>행의 존재</b>이지 값 비교가 아니다(screen/code/requirements.md).
+      // 서버가 `=` 만 받는다 — 판정은 <b>행의 존재</b>이지 값 비교가 아니다(screen/config/requirements.md).
       ops: ['eq'],
       options: [
         { value: 'Y', text: label(MSG.CONFIG_OVERRIDDEN) },

@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <p>screen/user/requirements.md 의 개인 예외와 갈리는 자리다. 거기서는 <i>"목록이 원본이고 트리는 그 투영"</i>
  * 이었지만 <b>여기는 원본이 트리 하나</b>다 — {@code SYS_ROLE_MENU_AUTH} 에 기간도 사유도
- * 없으므로(sys/menu.md) 넣을 것이 없고, 하단은 <b>읽기 전용</b>이다(§2.2).
+ * 없으므로(sys/menu.md) 넣을 것이 없고, 하단은 <b>읽기 전용</b>이다.
  *
  * <h2>받는 것은 <b>켜진 스위치 전부</b>다</h2>
  *

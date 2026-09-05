@@ -31,7 +31,7 @@ interface Props {
 /**
  * 분실 비밀번호 재설정 3단계 — AUTH-07 · {@code documents/screen/_standalone/login/requirements.md} §6-3.
  *
- * <p><b>같은 라우트의 단계 전환이다</b>(§1). 라우트를 나누면 뒤로 가기로 ②에 직접 들어올 수
+ * <p><b>같은 라우트의 단계 전환이다</b>. 라우트를 나누면 뒤로 가기로 ②에 직접 들어올 수
  * 있고, 그 화면은 아무 상태도 없이 열린다 — 코드를 받은 적 없는 사람이 인증번호 칸을 본다.
  *
  * <p><b>인증번호는 메모리에만 둔다.</b> ③이 같은 코드를 다시 실어야 하므로 상태로 갖되
@@ -39,7 +39,7 @@ interface Props {
  * 다시 하는 것이 맞다.
  *
  * <p><b>재발송 타이머를 화면이 센다.</b> 서버는 언제나 같은 응답을 주며 남은 시간을 알려주지
- * 않는다(§6-3) — 알려주면 <b>존재하는 계정에만 쿨다운이 걸린다</b>는 사실이 계정 열거의
+ * 않는다 — 알려주면 <b>존재하는 계정에만 쿨다운이 걸린다</b>는 사실이 계정 열거의
  * 단서가 된다. 그래서 정책 API 가 <i>간격</i> 만 내려주고 <i>경과</i> 는 여기서 잰다.
  */
 export function PasswordResetFlow({ initialLoginId, onExit }: Props) {
@@ -130,7 +130,7 @@ export function PasswordResetFlow({ initialLoginId, onExit }: Props) {
       />
 
       {error ? <Alert type="error" showIcon title={error} /> : null}
-      {/* 발송 안내는 성공을 단정하지 않는다 — 계정이 없어도 같은 문구가 나간다(§6-3). */}
+      {/* 발송 안내는 성공을 단정하지 않는다 — 계정이 없어도 같은 문구가 나간다. */}
       {!error && notice ? <Alert type="info" showIcon title={notice} /> : null}
 
       {step === 'request' ? (

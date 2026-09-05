@@ -1,5 +1,5 @@
 /**
- * 시스템 환경설정 API — screen/code/requirements.md.
+ * 시스템 환경설정 API — screen/config/requirements.md.
  *
  * <p>호출 URL 은 이 파일에만 둔다(frontend/packages.md). <b>이 선언이 `SYS_MENU_API` 시드의 입력</b>이므로
  * (backend/api.md) *선언 = 사용* 이 구조적으로 보장돼야 한다 — `generateApiSeed` 가
@@ -14,7 +14,7 @@
  */
 export const CONFIG_ENDPOINTS = {
   getList: '/service/config/getList',
-  /** 조회조건의 접두사 콤보가 부른다 — 목록 응답에 실리지 않는다(screen/code/requirements.md). */
+  /** 조회조건의 접두사 콤보가 부른다 — 목록 응답에 실리지 않는다(screen/config/requirements.md). */
   getPrefixes: '/service/config/getPrefixes',
   save: '/service/config/save',
 } as const;

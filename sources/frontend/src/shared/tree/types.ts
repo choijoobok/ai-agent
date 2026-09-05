@@ -117,7 +117,7 @@ export interface TreeColumn<T> {
  *
  * <p>Ⓑ 의 <i>모두 접기 · 모두 펼치기</i> 는 화면이 {@link TreeGridProps.controls} 로
  * 선언하는데(screen/menu/requirements.md · frontend/grid.md) 그 버튼이 눌러야 하는 것은 여기 안에 있다. 접힘을 화면의
- * 상태로 끌어올리면 <b>드래그 중 자동 펼침</b>(§4.5.1)까지 화면이 들고 있어야 하고, 그것은
+ * 상태로 끌어올리면 <b>드래그 중 자동 펼침</b>까지 화면이 들고 있어야 하고, 그것은
  * 컴포넌트의 일이다.
  *
  * <p>{@code SearchFormHandle} 과 같은 모양이다 — 명령은 ref 로, 값은 props 로.
@@ -285,7 +285,7 @@ export interface TreeGridProps<T> {
   /**
    * 이 노드가 자식을 가질 수 있는가 — <b>가운데 구역이 사는 조건</b>이다(screen/menu/requirements.md).
    *
-   * <p>죽는 경우가 둘이다: <b>URL 이 있는 리프</b>(§4.3)와 <b>깊이 5단에 닿은 노드</b>
+   * <p>죽는 경우가 둘이다: <b>URL 이 있는 리프</b>와 <b>깊이 5단에 닿은 노드</b>
    * (sys/menu.md). 위·아래 1/4 는 살아 있다.
    */
   canHaveChildren?: (row: T, node: TreeNode<T>) => boolean;

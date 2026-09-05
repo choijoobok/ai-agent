@@ -8,7 +8,7 @@ import { getErrorLogDetail } from '@/features/errorlog/api/errorLogApi';
 /**
  * 상세 — screen/log/access/requirements.md 의 <b>탭 둘</b>. 각각 `textModal` 읽기 전용(frontend/grid.md).
  *
- * <p><b>편집기가 아니다.</b> 이력 행은 불변이며(screen/log/access/requirements.md) 여는 순간 고칠 수 있는 것처럼
+ * <p><b>편집기가 아니다.</b> 이력 행은 불변이며(screen/log/error/requirements.md) 여는 순간 고칠 수 있는 것처럼
  * 보이면 안 된다 — 큰 textarea 지만 잠겨 있고, 여기서 하는 일은 <b>읽고 복사하는 것</b>뿐이다.
  *
  * <h2>왕복이 하나다</h2>
@@ -19,9 +19,9 @@ import { getErrorLogDetail } from '@/features/errorlog/api/errorLogApi';
  * <h2>비어 있는 이유를 탭마다 <b>따로</b> 말한다</h2>
  *
  * <table><caption></caption>
- * <tr><td>스택이 없다</td><td><b>4xx 라 저장하지 않았다</b>(screen/log/access/requirements.md). 인가 거부의 스택은
+ * <tr><td>스택이 없다</td><td><b>4xx 라 저장하지 않았다</b>(screen/log/error/requirements.md). 인가 거부의 스택은
  *     인터셉터 프레임뿐이고 전 행이 같아서 <b>일부러</b> 비운 것이다</td></tr>
- * <tr><td>전문이 없다</td><td><b>사용 이력 90일이 지났다</b>(screen/log/access/requirements.md). 오류 행은 180일을
+ * <tr><td>전문이 없다</td><td><b>사용 이력 90일이 지났다</b>(screen/log/error/requirements.md). 오류 행은 180일을
  *     살아 멀쩡히 있는데 <b>전문만 다른 테이블에 있어</b> 먼저 파기된다</td></tr>
  * </table>
  *
@@ -43,7 +43,7 @@ export function ErrorDetailModal(props: { exceptionLogSeq: number | null; onClos
     queryFn:
       exceptionLogSeq === null ? skipToken : () => getErrorLogDetail(exceptionLogSeq),
     /*
-      <b>이력은 불변이다</b>(screen/log/access/requirements.md) — 한 번 읽은 스택이 바뀔 일이 없으므로 다시 물을
+      <b>이력은 불변이다</b>(screen/log/error/requirements.md) — 한 번 읽은 스택이 바뀔 일이 없으므로 다시 물을
       이유도 없다. 같은 행을 두 번 열어도 왕복은 한 번이다.
     */
     staleTime: Infinity,
@@ -98,7 +98,7 @@ export function ErrorDetailModal(props: { exceptionLogSeq: number | null; onClos
               labelKey: MSG.ERROR_LOG_TAB_PAYLOAD,
               text: data?.parameters ?? null,
               truncated: data?.parametersTruncated ?? false,
-              // 파기된 것과 원래 없는 것을 가른다 — 서버가 그 둘을 따로 준다(screen/log/access/requirements.md).
+              // 파기된 것과 원래 없는 것을 가른다 — 서버가 그 둘을 따로 준다(screen/log/error/requirements.md).
               emptyKey: data?.parametersFound
                 ? MSG.ERROR_LOG_PAYLOAD_NONE
                 : MSG.ERROR_LOG_PAYLOAD_PURGED,
@@ -108,7 +108,7 @@ export function ErrorDetailModal(props: { exceptionLogSeq: number | null; onClos
               labelKey: MSG.ERROR_LOG_TAB_STACK,
               text: data?.rootCauseStack ?? null,
               truncated: data?.stackTruncated ?? false,
-              // 4xx 는 저장하지 않았다 — 없는 것이 아니라 두지 않은 것이다(screen/log/access/requirements.md).
+              // 4xx 는 저장하지 않았다 — 없는 것이 아니라 두지 않은 것이다(screen/log/error/requirements.md).
               emptyKey: MSG.ERROR_LOG_STACK_NONE,
             }),
           ]}
@@ -119,7 +119,7 @@ export function ErrorDetailModal(props: { exceptionLogSeq: number | null; onClos
 }
 
 /**
- * 탭 하나 — <b>비었으면 꺼지고, 꺼진 이유는 이름에 붙는다</b>(screen/log/access/requirements.md).
+ * 탭 하나 — <b>비었으면 꺼지고, 꺼진 이유는 이름에 붙는다</b>(screen/log/error/requirements.md).
  *
  * <p>둘을 한 함수가 만드는 것이 요점이다. 따로 두면 <i>꺼지는 조건</i> 과 <i>사유를 다는
  * 자리</i> 가 한쪽에서만 빠지고, 빠진 쪽은 <b>이유 없이 꺼진 탭</b>이 된다.

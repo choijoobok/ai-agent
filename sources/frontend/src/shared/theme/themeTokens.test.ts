@@ -114,7 +114,7 @@ describe('테마 씨앗', () => {
     expect(Math.abs(warmth(green))).toBeLessThan(8);
   });
 
-  it('다크의 씨앗은 라이트보다 옅다 — 판이 다크에서 색조를 세 배로 키운다(§9.7.3)', () => {
+  it('다크의 씨앗은 라이트보다 옅다 — 판이 다크에서 색조를 세 배로 키운다', () => {
     for (const tone of ['warm', 'cold'] as const) {
       const light = warmth(themeSeed({ ...BASE, colorTone: tone })?.bg ?? '');
       const dark = warmth(themeSeed({ ...BASE, dark: true, colorTone: tone })?.bg ?? '');

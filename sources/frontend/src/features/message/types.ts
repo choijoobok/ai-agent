@@ -1,4 +1,4 @@
-/** 서버 `MessageKeyRow` · `MessageValue` 와 1:1 — screen/code/requirements.md. */
+/** 서버 `MessageKeyRow` · `MessageValue` 와 1:1 — screen/message/requirements.md. */
 
 export type MessageScope = 'FRONT' | 'BACK' | 'BOTH' | 'DATA' | 'NONE';
 

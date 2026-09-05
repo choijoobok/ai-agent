@@ -14,7 +14,7 @@ import { parseCondJson, type SavedCond, type SavedCondValues } from '@/shared/se
 /**
  * 저장된 조회조건 — UX-07 · frontend/search-form.md. 초기화 오른쪽의 설정 버튼이다.
  *
- * <p><b>진입할 때 목록을 읽는다.</b> 열 때 읽으면 값싸 보이지만 <b>기본 조건</b>(§5.4)을
+ * <p><b>진입할 때 목록을 읽는다.</b> 열 때 읽으면 값싸 보이지만 <b>기본 조건</b>을
  * 적용할 수 없다 — 그것은 화면에 들어오는 순간 폼을 채우는 것이므로 목록이 그때 있어야
  * 한다. 요청 하나의 값이 그 기능이다.
  *
@@ -23,7 +23,7 @@ import { parseCondJson, type SavedCond, type SavedCondValues } from '@/shared/se
  * 없는 경고이고, 조회조건 폼 자체는 그것 없이도 제 일을 한다.
  *
  * <p><b>목록이 내용을 함께 갖고 있다.</b> 고를 때 서버를 다시 부르지 않는다 — 조건 하나가
- * 기본값을 뺀 칸만 담아 작기 때문이며(§5.2), 따로 부르면 목록과 내용이 어긋나는 순간이
+ * 기본값을 뺀 칸만 담아 작기 때문이며, 따로 부르면 목록과 내용이 어긋나는 순간이
  * 생긴다.
  */
 interface Props {

@@ -34,7 +34,7 @@ import { saveLocale } from '@/features/settings/api/settingsApi';
 /**
  * 설정 모달 — frontend/tabs.md.
  *
- * <p><b>저장 버튼이 없다</b>(§9.2). 설정을 바꾸면 화면이 바로 바뀌며 미리보기 영역을 따로
+ * <p><b>저장 버튼이 없다</b>. 설정을 바꾸면 화면이 바로 바뀌며 미리보기 영역을 따로
  * 만들지 않는다 — <b>셸 전체가 미리보기</b>이고, 글자 크기나 행 높이는 실제 화면에서 봐야
  * 판단할 수 있다.
  *
@@ -42,7 +42,7 @@ import { saveLocale } from '@/features/settings/api/settingsApi';
  * — 번들 자체 · 코드 라벨 · <b>이미 떠 있는 서버 에러 문구</b> · 탭에 보존된
  * 조회 결과.
  *
- * <p><b>그룹별 초기화와 전체 초기화를 둔다</b>(§9.2). 항목이 열 개를 넘으면 <i>"뭘 건드려서
+ * <p><b>그룹별 초기화와 전체 초기화를 둔다</b>. 항목이 열 개를 넘으면 <i>"뭘 건드려서
  * 이렇게 됐는지 모르겠다"</i> 가 반드시 생기고, 되돌릴 경로가 없으면 사용자는 설정을 피한다.
  */
 
@@ -95,7 +95,7 @@ export function SettingsModal({ open, onClose, hasUnsaved }: Props) {
       open={open}
       onCancel={onClose}
       title={label(MSG.SETTINGS_TITLE)}
-      // 저장 버튼을 두지 않는다 — 닫기 하나다(§9.2).
+      // 저장 버튼을 두지 않는다 — 닫기 하나다.
       footer={
         <Button onClick={ui.resetAll}>
           {label(MSG.SETTINGS_RESET_ALL)}

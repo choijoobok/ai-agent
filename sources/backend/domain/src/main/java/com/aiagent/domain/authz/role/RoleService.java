@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * {@code ROLE_MGMT} 의 저장 — screen/menu/requirements.md. <b>역할 자체의 생애를 다룬다.</b>
  *
- * <p>만들고 · 이름을 바꾸고 · 끄고 · 지운다. 권한을 붙이는 것은 {@link RoleAuthService}(§2)이고
+ * <p>만들고 · 이름을 바꾸고 · 끄고 · 지운다. 권한을 붙이는 것은 {@link RoleAuthService}이고
  * 역할을 사람에게 주는 것은 {@code USER_MGMT}(screen/user/requirements.md)다 — <b>셋이 각자 다른 테이블을 쓴다.</b>
  *
  * <h2>삭제 게이트가 처음 실물이 된다 — 자식 둘, 디테일 하나</h2>
@@ -125,7 +125,7 @@ public class RoleService {
      *
      * <p><b>막는 것은 보유 인원이지 유효 인원이 아니다.</b> 만료된 부여도
      * {@code SYS_USER_ROLE} 행이며 <b>FK 는 날짜를 보지 않는다</b> — 유효 인원이 {@code 0} 인데
-     * 삭제가 막히는 것이 정상이고, 그래서 화면이 컬럼을 둘 다 둔다(§3.2.1).
+     * 삭제가 막히는 것이 정상이고, 그래서 화면이 컬럼을 둘 다 둔다.
      *
      * <p>돌려줄 것이 없다 — 보유자가 {@code 0} 명이어야 여기 닿는다.
      */

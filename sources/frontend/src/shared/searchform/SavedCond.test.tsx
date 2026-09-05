@@ -24,8 +24,8 @@ const remove = vi.mocked(deleteSavedCond);
 /**
  * 저장된 조회조건 — UX-07 · frontend/search-form.md.
  *
- * <p>여기서 지키는 것 셋이다 — ① <b>담기는 것은 기본값과 다른 칸뿐</b>(§5.2), ② <b>선언이
- * 바뀌면 조용히 버린다</b>(§5.3), ③ <b>기본 조건은 진입할 때 폼을 채운다</b>(§5.4).
+ * <p>여기서 지키는 것 셋이다 — ① <b>담기는 것은 기본값과 다른 칸뿐</b>, ② <b>선언이
+ * 바뀌면 조용히 버린다</b>, ③ <b>기본 조건은 진입할 때 폼을 채운다</b>.
  *
  * <p>①이 이 기능의 값어치를 지탱한다. 전부 담으면 <i>최근 7일</i> 이 절대값으로 굳어
  * <b>내일 열었을 때 어제 것</b>이 나온다.
@@ -149,7 +149,7 @@ describe('저장된 조회조건', () => {
     });
   });
 
-  describe('선언이 바뀌었을 때 — 조용히 버린다(§5.3)', () => {
+  describe('선언이 바뀌었을 때 — 조용히 버린다', () => {
     const pick = async () => {
       await waitFor(() => expect(list).toHaveBeenCalledTimes(1));
       await openMenu('옛것');

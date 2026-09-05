@@ -521,7 +521,7 @@ export interface SaveApi<T> {
 /**
  * `read` · `save` 가 아닌 <b>그 밖의 모든 버튼</b> — frontend/grid.md. <b>screen/user/requirements.md 가 처음 요구했다.</b>
  *
- * <p>`controls`(§3.2)와 갈리는 자리는 하나다 — <b>서버를 부르는가</b>. 부르면 여기다
+ * <p>`controls`와 갈리는 자리는 하나다 — <b>서버를 부르는가</b>. 부르면 여기다
  * (frontend/grid.md — *"그래도 서버를 부르면 `actions` 다"*).
  *
  * <p><b>액션 코드를 선언하지 않는다.</b> `controls` 는 `actionCd` 를 손으로 적지만 여기는

@@ -123,7 +123,7 @@ public class AuthController {
      * 부를 수 있는 경로라 그것이 곧 고갈 경로가 된다.
      *
      * <p><b>발송 실패도 같은 응답이다.</b> {@code Mailer} 가 결과를 돌려주지만 그것으로 할 수
-     * 있는 일이 없다 — 실패는 서버 로그에 남고 토큰은 발급된 채 만료를 기다린다(§6-3).
+     * 있는 일이 없다 — 실패는 서버 로그에 남고 토큰은 발급된 채 만료를 기다린다.
      */
     @PostMapping("/api/public/auth/sendResetCode")
     public ApiResponse<Void> sendResetCode(@Valid @RequestBody ResetCodeRequest request) {

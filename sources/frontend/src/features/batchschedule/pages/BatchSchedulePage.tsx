@@ -33,7 +33,7 @@ import type { BatchHistoryRow } from '@/shared/batch/historyRow';
  * `BATCH_SCHEDULE` — screen/batch/schedule/requirements.md. <b>screen/menu/requirements.md 이후 처음으로 *위험한 편집* 을 다룬다.</b>
  *
  * <p>메뉴 트리는 잘못 고치면 화면이 안 보인다. 배치는 <b>잘못 고치면 조용히 안 돈다</b> —
- * 그것이 이 화면의 검증(§3.4)과 확인(§3.6)이 촘촘한 이유다.
+ * 그것이 이 화면의 검증과 확인이 촘촘한 이유다.
  *
  * <h2>엑셀이 없는 첫 화면이다</h2>
  *
@@ -45,16 +45,16 @@ import type { BatchHistoryRow } from '@/shared/batch/historyRow';
  *
  * <h2>끄는 것이 켜는 것과 다르다</h2>
  *
- * <p>저장 확인이 `BATCH_DESC` 를 <b>그대로 읽어 준다</b>(§3.6). sys/batch.md 이 그 컬럼을
+ * <p>저장 확인이 `BATCH_DESC` 를 <b>그대로 읽어 준다</b>. sys/batch.md 이 그 컬럼을
  * *"끄면 무슨 일이 생기는가를 적는 자리"* 로 정했고, 그 문장을 <b>끄는 순간에</b> 보여주지
  * 않으면 적어 둔 의미가 없다. <b>켜는 것은 확인하지 않는다</b> — 켜는 것은 되돌릴 수 있고
  * 끄는 것은 시간이 간다.
  *
  * <h2>이력과 왕복한다</h2>
  *
- * <p>하단 pane 에서 행을 더블 클릭하면 `BATCH_HISTORY` 가 그 배치로 열리고(§3.9), 반대로
- * 그 화면에서 `배치 ID` 를 더블 클릭하면 여기가 그 배치로 열린다(§4.7). <b>등록이 원인이고
- * 이력이 결과</b>라 운영자가 하는 일은 거의 언제나 둘을 왕복한다(§1.1).
+ * <p>하단 pane 에서 행을 더블 클릭하면 `BATCH_HISTORY` 가 그 배치로 열리고, 반대로
+ * 그 화면에서 `배치 ID` 를 더블 클릭하면 여기가 그 배치로 열린다. <b>등록이 원인이고
+ * 이력이 결과</b>라 운영자가 하는 일은 거의 언제나 둘을 왕복한다.
  */
 
 const MENU_CD = 'BATCH_SCHEDULE';
@@ -215,7 +215,7 @@ export function BatchSchedulePage() {
       });
       /*
         <b>하단 pane 을 다시 읽는다</b>(screen/batch/schedule/requirements.md) — `RUNNING` 행이 바로 보인다. 마스터가
-        아니라 pane 인 것이 요점이다: 진행률 모달을 두지 않기로 했으므로(§2.4) 진행을
+        아니라 pane 인 것이 요점이다: 진행률 모달을 두지 않기로 했으므로 진행을
         보여줄 자리가 그 행 하나다.
 
         <b>고른 배치가 없으면 읽지 않는다.</b> 여러 건을 골라 실행할 수 있고 pane 은
@@ -380,7 +380,7 @@ export function BatchSchedulePage() {
   /**
    * 하단 행 더블 클릭 → `BATCH_HISTORY` 를 그 배치로 연다(UX-02 멀티탭 — screen/batch/schedule/requirements.md).
    *
-   * <p>§4.7 의 <b>반대 방향</b>이며 둘이 왕복을 만든다(§1.1). <b>볼 권한이 없으면 열지
+   * <p>§4.7 의 <b>반대 방향</b>이며 둘이 왕복을 만든다. <b>볼 권한이 없으면 열지
    * 않는다</b>(frontend/tabs.md) — 열어 놓고 403 을 보여주는 것보다 아무 일도 일어나지 않는 편이 낫다.
    */
   const openHistory = useCallback(
@@ -405,7 +405,7 @@ export function BatchSchedulePage() {
    * 대신 그 화면에 고아가 생기고 `(삭제된 배치)` 로 그린다.
    *
    * <p><b>왜 막히는지 말하고 대안까지 말한다</b> — 사람이 실제로 하려는 일은 대개
-   * <i>끄는 것</i>이다(§3.6).
+   * <i>끄는 것</i>이다.
    */
   const deletable = useMemo<DeleteColumnSpec<BatchScheduleRow>>(
     () => ({
@@ -460,7 +460,7 @@ export function BatchSchedulePage() {
               controller={recent}
               emptyText={recentEmpty}
               /*
-                <b>하단에 ②가 없다</b>(screen/menu/requirements.md) — 그리고 이 화면은 마스터에도 없다(§3.10).
+                <b>하단에 ②가 없다</b>(screen/menu/requirements.md) — 그리고 이 화면은 마스터에도 없다.
                 전량을 묻는 질문에는 `BATCH_HISTORY` 가 답하며 그쪽에 `E` 가 있다.
               */
               onRowDoubleClick={(row) => openHistory(row.data)}
@@ -479,7 +479,7 @@ export function BatchSchedulePage() {
 /**
  * frontend/grid.md 대로 <b>편집 폼이 없다</b> — 이 표가 목록이자 편집 화면이다.
  *
- * <p><b>`BATCH_DESC` 가 기본 숨김이 아닌 것</b>이 sys/batch.md 의 화면 쪽 절반이다(§3.3).
+ * <p><b>`BATCH_DESC` 가 기본 숨김이 아닌 것</b>이 sys/batch.md 의 화면 쪽 절반이다.
  * 장애 대응 중에 소스를 열 시간은 없고, 컬럼 설정에서 꺼 둘 수는 있지만 <b>기본은 보인다</b>.
  */
 function buildColumns(beanOptions: SelectOption[]): ColumnDef<BatchScheduleRow>[] {
@@ -507,7 +507,7 @@ function buildColumns(beanOptions: SelectOption[]): ColumnDef<BatchScheduleRow>[
       pinned: 'left',
       /*
         PK 이자 <b>락 키</b>다(backend/persistence.md). 신규 행에서만 열리고, 필수이고, 헤더에 필수 표시가
-        붙는다(frontend/grid.md). 이 테이블은 <b>물리 삭제가 있으므로</b>(§3.8) 고치려면 지우고 다시
+        붙는다(frontend/grid.md). 이 테이블은 <b>물리 삭제가 있으므로</b> 고치려면 지우고 다시
         만드는 길이 실제로 열려 있다 — 역할과 갈리는 점이다.
       */
       pk: true,
@@ -531,7 +531,7 @@ function buildColumns(beanOptions: SelectOption[]): ColumnDef<BatchScheduleRow>[
       filter: false,
       /*
         <b>필수다</b> — sys/batch.md · screen/batch/schedule/requirements.md. 비워 둔 채 저장할 수 없고, 이 문장을 <b>끄는
-        확인 창이 그대로 읽어 준다</b>(§3.6).
+        확인 창이 그대로 읽어 준다</b>.
       */
       required: true,
       editable: true,
@@ -594,12 +594,12 @@ function buildColumns(beanOptions: SelectOption[]): ColumnDef<BatchScheduleRow>[
         <b>`nclob` 이 아니다</b>(`VARCHAR(2000)`). 값이 손에 있으므로 screen/batch/schedule/requirements.md 의 `[보기]`
         규약이 아니라 frontend/grid.md 의 <b>`textModal`</b> 이며, 셀은 한 줄로 잘리고 툴팁에 전체다.
 
-        <b>JSON 포맷터를 두지 않는다</b>(§3.5) — 모달 안에 *정렬* 버튼 같은 것을 넣으면
+        <b>JSON 포맷터를 두지 않는다</b> — 모달 안에 *정렬* 버튼 같은 것을 넣으면
         그것도 규약이 된다. 값은 2000자 상한이고 대개 한 줄이다.
       */
       editor: 'largeText',
       /*
-        <b>구문 검증은 프론트가 한다</b> — 크론과 반대다(§3.5). `JSON.parse` 는 브라우저에
+        <b>구문 검증은 프론트가 한다</b> — 크론과 반대다. `JSON.parse` 는 브라우저에
         이미 있고 <b>파서를 들여오지 않는다</b>. 서버도 저장 시 다시 본다(frontend/grid.md).
 
         <b>비어 있어도 된다</b> — `NULL` 허용이다(sys/batch.md). 빈 문자열은 서버가 `NULL` 로
@@ -667,7 +667,7 @@ function buildColumns(beanOptions: SelectOption[]): ColumnDef<BatchScheduleRow>[
       width: 120,
       filter: false,
       /*
-        <b>하단 pane 첫 행과 같은 값</b>이다(§3.9) — 목록에서 훑고 pane 에서 확인한다.
+        <b>하단 pane 첫 행과 같은 값</b>이다 — 목록에서 훑고 pane 에서 확인한다.
         한쪽은 20행을 한눈에, 한쪽은 한 배치를 깊이 본다.
 
         <b>값은 코드이고 글자만 라벨이다</b>(frontend/grid.md) — `tone` 맵이 코드를 키로 봐야 하고,

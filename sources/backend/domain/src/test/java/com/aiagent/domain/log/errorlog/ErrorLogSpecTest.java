@@ -89,7 +89,7 @@ class ErrorLogSpecTest {
         /*
           사용자가 `traceId` 를 들고 오는 화면이다(screen/log/access/requirements.md). 그 한 행이 조인 때문에 없으면
           운영자는 **로그 유실**로 읽고, 0건 문구는 *"그 요청은 오류가 아니었다"* 라고
-          말한다 — 둘 다 틀린 답이다(§5.8).
+          말한다 — 둘 다 틀린 답이다.
         */
         assertThat(ErrorLogSpec.SPEC.joins()).hasSize(1);
         assertThat(ErrorLogSpec.SPEC.joins().getFirst().left()).isTrue();

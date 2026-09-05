@@ -64,7 +64,7 @@ public final class RoleSpec {
      * <p><b>사용 여부가 없다.</b> screen/menu/requirements.md 의 목록은 고르기만 하는 것이고, 비활성 역할의 권한을
      * 고치는 것은 <b>아무에게도 영향이 없어 가장 안전한 편집</b>이다 — 감출 이유가 없다.
      *
-     * <p><b>부여 상태도 없다</b>(§2.3) — {@code SYS_ROLE_MENU_AUTH} 에 기간 컬럼이 없으므로
+     * <p><b>부여 상태도 없다</b> — {@code SYS_ROLE_MENU_AUTH} 에 기간 컬럼이 없으므로
      * (sys/menu.md) <b>상태 자체가 없다</b>. screen/user/requirements.md 이 개인 예외에서 그것을 넣었다 뺐다 한 것과
      * 갈리는 자리다.
      */

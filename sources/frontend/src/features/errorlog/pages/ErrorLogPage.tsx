@@ -17,33 +17,33 @@ import { ErrorDetailModal } from '@/features/errorlog/components/ErrorDetailModa
 import type { ErrorLogRow } from '@/features/errorlog/types';
 
 /**
- * `ERROR_LOG` — screen/log/access/requirements.md. <b>셋 중 유일하게 사람이 먼저 찾아오는 화면</b>이다.
+ * `ERROR_LOG` — screen/log/error/requirements.md. <b>셋 중 유일하게 사람이 먼저 찾아오는 화면</b>이다.
  *
  * <p>사용 이력과 로그인 이력은 *"뒤져 본다"* 이지만 여기는 <b>사용자가 들고 온 `traceId` 나
- * URL 로 들어온다</b>(§5.4) — 5xx 토스트가 띄운 값을 복사해 오는 것이 가장 흔한 동선이고,
- * 그래서 <b>추적 ID 를 넣으면 기간이 선택이 된다</b>(§2.2).
+ * URL 로 들어온다</b> — 5xx 토스트가 띄운 값을 복사해 오는 것이 가장 흔한 동선이고,
+ * 그래서 <b>추적 ID 를 넣으면 기간이 선택이 된다</b>.
  *
  * <h2>이 화면이 답하는 물음 셋</h2>
  *
  * <table><caption></caption>
  * <tr><td>*"이 오류가 왜 났나"*</td><td>`오류 코드` + `메시지` + 상세의 <b>스택 탭</b>.
- *     셋 다 자기 테이블에 있어 <b>진단이 자립한다</b>(§5.5)</td></tr>
+ *     셋 다 자기 테이블에 있어 <b>진단이 자립한다</b></td></tr>
  * <tr><td>*"그때 무엇을 보냈나"*</td><td>상세의 <b>전문 탭</b> — `TRACE_ID` 로 사용 이력에서
  *     온다. 배타를 없앤 §1.4 가 성립시킨 것이며, 배타였을 때 이 물음은 <b>언제나 0건</b>
- *     이었다(§2.5)</td></tr>
- * <tr><td>*"왜 403 인가"*</td><td>`오류 코드` 가 세 갈래를 나르고(§5.3), `요청 URI` 더블
- *     클릭이 `API_CATALOG` 로 넘긴다(§5.4). <b>세 화면이 한 동선</b>이다</td></tr>
+ *     이었다</td></tr>
+ * <tr><td>*"왜 403 인가"*</td><td>`오류 코드` 가 세 갈래를 나르고, `요청 URI` 더블
+ *     클릭이 `API_CATALOG` 로 넘긴다. <b>세 화면이 한 동선</b>이다</td></tr>
  * </table>
  *
  * <h2>기본이 <i>전체</i> 인 것이 판단이다</h2>
  *
- * <p>*5xx 만* 이 이 화면의 가장 흔한 조회지만(§5.6) 기본으로 두지 않는다. 403 을 진단하러
+ * <p>*5xx 만* 이 이 화면의 가장 흔한 조회지만 기본으로 두지 않는다. 403 을 진단하러
  * 온 사람이 <b>빈 화면을 먼저 보게 되고</b>, 그 빈 화면은 *"기록이 없다"* 로 읽힌다 —
- * 사용 이력이 *일어난 요청 전부* 를 기본으로 두는 것과 같은 이유다(§3.2.2).
+ * 사용 이력이 *일어난 요청 전부* 를 기본으로 두는 것과 같은 이유다.
  *
  * <h2>쓰기 경로가 아예 없다</h2>
  *
- * <p>`api.save` 도 `addRow` 도 `editable` 도 선언하지 않는다(§2.1) — 감춘 것이 아니라
+ * <p>`api.save` 도 `addRow` 도 `editable` 도 선언하지 않는다 — 감춘 것이 아니라
  * <b>선언이 없어서</b> 저장·행 추가·상태 컬럼·삭제 컬럼이 나오지 않는다(frontend/grid.md).
  */
 
@@ -68,18 +68,18 @@ const PAGE_SIZES = [100, 500, 1000];
  */
 const TEXT_OPS: SearchOp[] = ['eq', 'startsWith', 'contains', 'endsWith'];
 
-/** 상태 묶음의 값 — 서버의 `statusGroup` 파생 조건이 범위로 번역한다(screen/log/access/requirements.md). */
+/** 상태 묶음의 값 — 서버의 `statusGroup` 파생 조건이 범위로 번역한다(screen/log/error/requirements.md). */
 const GROUP_SERVER = '5XX';
 const GROUP_CLIENT = '4XX';
 
-/** 넘겨주기의 도착지 — screen/log/access/requirements.md. 사용 이력도 같은 곳으로 간다. */
+/** 넘겨주기의 도착지 — screen/log/error/requirements.md. 사용 이력도 같은 곳으로 간다. */
 const API_CATALOG_CD = 'API_CATALOG';
 
 export function ErrorLogPage() {
   const searchForm = useRef<SearchFormHandle>(null);
   const permissions = useAuthStore((state) => state.permissions);
   /**
-   * 조회 기간의 시스템 값 — 이 화면은 <b>덮지 않는다</b>(screen/log/access/requirements.md).
+   * 조회 기간의 시스템 값 — 이 화면은 <b>덮지 않는다</b>(screen/log/error/requirements.md).
    *
    * <p>사용 이력이 1 · 31 로 좁힌 것과 갈린다. 저 테이블은 행마다 `nclob` 이 달려 있지만
    * 여기는 <b>스택이 목록에 실리지 않아</b> 행이 가볍다. 기본 7일도 그대로 쓴다 — 오류는
@@ -87,10 +87,10 @@ export function ErrorLogPage() {
    */
   const searchRange = useAuthStore((state) => state.searchRange);
   const shell = useShellNavigation();
-  /** 상세 모달이 열린 행 — `null` 이면 닫혀 있다(screen/log/access/requirements.md). */
+  /** 상세 모달이 열린 행 — `null` 이면 닫혀 있다(screen/log/error/requirements.md). */
   const [detailOf, setDetailOf] = useState<number | null>(null);
   /**
-   * 0건 문구가 <b>조건에 따라 셋으로 갈린다</b> — screen/log/access/requirements.md.
+   * 0건 문구가 <b>조건에 따라 셋으로 갈린다</b> — screen/log/error/requirements.md.
    *
    * <p>이 화면의 0건은 대개 <b>답이지 빈 결과가 아니다</b>. *5xx 만* 으로 물어 0건이면
    * *"이 기간에 서버 오류가 없다"* 이고, `traceId` 로 물어 0건이면 *"그 요청은 오류가
@@ -120,15 +120,15 @@ export function ErrorLogPage() {
   }, []);
 
   /**
-   * `요청 URI` 셀 더블 클릭 → <b>`API_CATALOG` 를 그 URL 로 조회한 상태로 연다</b>(screen/log/access/requirements.md).
+   * `요청 URI` 셀 더블 클릭 → <b>`API_CATALOG` 를 그 URL 로 조회한 상태로 연다</b>(screen/log/error/requirements.md).
    *
    * <p>403 의 세 갈래를 잇는 동선의 <b>가운데 칸</b>이다 — 이 화면이 `오류 코드` 로
    * *어느 갈래인지* 말하고, 더블 클릭이 `API_CATALOG` 로 넘기고, 거기 하단 pane 이 다시
    * `MENU_TREE` 로 넘긴다(screen/menu/requirements.md).
    *
    * <p><b>행이 아니라 칸이다.</b> 이 화면은 <b>행 더블 클릭이 이미 상세 모달</b>이므로
-   * (§5.5) 축이 다르면 자리도 달라야 한다. 사용 이력이 같은 컬럼에 같은 제스처를 둔 것도
-   * (§3.2) 이 화면 때문이었다 — <b>같은 컬럼이 화면마다 다르게 동작하면</b> 그것이 더 나쁘다.
+   * 축이 다르면 자리도 달라야 한다. 사용 이력이 같은 컬럼에 같은 제스처를 둔 것도
+   * 이 화면 때문이었다 — <b>같은 컬럼이 화면마다 다르게 동작하면</b> 그것이 더 나쁘다.
    *
    * <p><b>볼 권한이 없으면 열지 않는다</b>(frontend/tabs.md). 열어 놓고 403 을 보여주는 것보다 아무 일도
    * 일어나지 않는 편이 낫다 — 더블 클릭은 눌러야만 알 수 있는 제스처라 실패가 더 혼란스럽다.
@@ -190,14 +190,14 @@ export function ErrorLogPage() {
           controller={grid}
           pageSizes={PAGE_SIZES}
           /*
-            총 건수를 잃은 자리를 메운다 — screen/log/access/requirements.md 의 푸터 왼쪽이 `N건 조회됨 · 최근 {기간}`
+            총 건수를 잃은 자리를 메운다 — screen/log/error/requirements.md 의 푸터 왼쪽이 `N건 조회됨 · 최근 {기간}`
             이다. 무엇을 물어서 나온 N건인지가 함께 있어야 <i>"전부가 N건"</i> 으로 읽히지
             않는다.
           */
           footerNote={label(MSG.ERROR_LOG_FOOTER_RANGE, { days: searchRange.maxDays })}
           emptyText={emptyText}
           /*
-            <b>행 더블 클릭이 상세 모달이다</b>(screen/log/access/requirements.md). `[보기]` 와 제스처가 둘인 것은
+            <b>행 더블 클릭이 상세 모달이다</b>(screen/log/error/requirements.md). `[보기]` 와 제스처가 둘인 것은
             같은 일에 경로가 둘인 것이 아니라 <b>같은 문 앞의 손잡이가 둘</b>인 것이다 —
             목록을 훑는 사람은 행을, 칸을 겨냥한 사람은 링크를 쓴다.
 
@@ -213,12 +213,12 @@ export function ErrorLogPage() {
   );
 }
 
-// ── 컬럼 (screen/log/access/requirements.md) ────────────────────────────────────────────────
+// ── 컬럼 (screen/log/error/requirements.md) ────────────────────────────────────────────────
 
 /**
- * <b>편집 선언이 한 줄도 없다</b>(screen/log/access/requirements.md) — 그래서 상태 컬럼도 삭제 컬럼도 붙지 않는다.
+ * <b>편집 선언이 한 줄도 없다</b>(screen/log/error/requirements.md) — 그래서 상태 컬럼도 삭제 컬럼도 붙지 않는다.
  *
- * <p><b>정렬은 일시 하나만</b> 열린다(screen/log/access/requirements.md). 나머지는 인덱스가 없어 전체 정렬이 되고,
+ * <p><b>정렬은 일시 하나만</b> 열린다(screen/log/error/requirements.md). 나머지는 인덱스가 없어 전체 정렬이 되고,
  * 무엇보다 <b>커서의 기준점이 흔들린다</b>.
  */
 function buildColumns(
@@ -232,12 +232,12 @@ function buildColumns(
       type: 'dateTime',
       width: 170,
       pinned: 'left',
-      // 유일하게 열린 정렬이다 — 커서의 기준점이므로 여기가 곧 페이지 경계다(screen/log/access/requirements.md).
+      // 유일하게 열린 정렬이다 — 커서의 기준점이므로 여기가 곧 페이지 경계다(screen/log/error/requirements.md).
       sortable: true,
     },
     {
       /*
-        <b>여기서는 4xx 와 5xx 를 가른다</b>(screen/log/access/requirements.md) — 사용 이력의 같은 컬럼이 성공과
+        <b>여기서는 4xx 와 5xx 를 가른다</b>(screen/log/error/requirements.md) — 사용 이력의 같은 컬럼이 성공과
         실패를 갈랐던 것과 축이 다르다. 이 테이블에 2xx 는 오지 않으므로 <b>칠하지 않는
         구간이 없다</b>: 4xx 는 주의색, 5xx 는 오류색이다.
 
@@ -256,7 +256,7 @@ function buildColumns(
     },
     {
       /*
-        <b>이 컬럼이 이 화면의 요점이다</b>(screen/log/access/requirements.md). *"같은 오류가 몇 건인가"* 를 묻는
+        <b>이 컬럼이 이 화면의 요점이다</b>(screen/log/error/requirements.md). *"같은 오류가 몇 건인가"* 를 묻는
         축이며, 문자열 상수라 흔들리지 않는다(backend/packages.md) — 그래서 <b>컬럼 필터가 이
         페이지 안에서</b> 묶어 세고, 조회조건이 완전 일치로 다시 좁힌다.
 
@@ -304,27 +304,27 @@ function buildColumns(
     },
     {
       /*
-        <b>요청 URI 앞에 선다</b>(2026-09-01). 기본 숨김이었고 맨 뒤에 있었는데(screen/log/access/requirements.md),
+        <b>요청 URI 앞에 선다</b>(2026-09-01). 기본 숨김이었고 맨 뒤에 있었는데(screen/log/error/requirements.md),
         <i>어느 화면에서 난 오류인가</i> 가 <b>URI 를 읽기 전에</b> 먼저 오는 물음이다 —
-        사용 이력이 이 컬럼을 같은 자리에 <b>보이게</b> 둔 것과 이제 같다(§3.2). URI 로
+        사용 이력이 이 컬럼을 같은 자리에 <b>보이게</b> 둔 것과 이제 같다. URI 로
         화면을 알아내는 것은 개발자만 할 수 있는 일이고, 그 URI 는 <b>바로 옆에 그대로</b>
         있다.
 
         메뉴명으로 그리며 <b>비어 있을 수 있다</b> — 로그인·하트비트는 셸 진입 전이라
-        현재 메뉴가 존재하지 않는다(screen/log/access/requirements.md).
+        현재 메뉴가 존재하지 않는다(screen/log/error/requirements.md).
       */
       field: 'menuNm',
       header: MSG.ERROR_LOG_COL_MENU,
       type: 'text',
       width: 140,
-      // 붙이지 않으면 이 화면의 메뉴별 집계가 <b>감사 근거로 인용된다</b>(screen/log/access/requirements.md).
+      // 붙이지 않으면 이 화면의 메뉴별 집계가 <b>감사 근거로 인용된다</b>(screen/log/error/requirements.md).
       headerTooltip: MSG.ERROR_LOG_MENU_CLIENT_CLAIM,
       // 이름이 없으면 코드라도 낸다 — `SYS_MENU` 에서 지워진 메뉴의 이력이 그렇다.
       derive: (row) => row.menuNm ?? row.menuCd ?? label(MSG.ERROR_LOG_NO_MENU),
     },
     {
       /*
-        <b>더블 클릭이 `API_CATALOG` 로 건너뛴다</b> — screen/log/access/requirements.md. 링크로 그리지 않는 이유는
+        <b>더블 클릭이 `API_CATALOG` 로 건너뛴다</b> — screen/log/error/requirements.md. 링크로 그리지 않는 이유는
         사용 이력과 같다: 이 칸의 값은 눈으로 확인하고 복사하는 대상이기도 한데, 링크면
         한 번 누르기만 해도 다른 탭이 열린다.
       */
@@ -337,9 +337,9 @@ function buildColumns(
     {
       /*
         <b>파생 컬럼이다</b> — 셀에 그려지는 것은 `[보기]` 이고 원본 값은 <b>스택 유무</b>다
-        (screen/log/access/requirements.md). 사용 이력이 `hasParameters` 를 그대로 쓴 것과 같은 모양인데, 여기는
+        (screen/log/error/requirements.md). 사용 이력이 `hasParameters` 를 그대로 쓴 것과 같은 모양인데, 여기는
         모달에 탭이 둘이라 <b>둘 중 하나만</b>이 값이 된다: 전문은 다른 테이블에 있어
-        목록이 알지 못한다(§5.5).
+        목록이 알지 못한다.
 
         그래서 <b>링크는 언제나 켜져 있다</b>. 스택이 없어도 전문 탭이 열릴 수 있고,
         둘 다 비어도 <b>왜 비었는지</b> 를 모달이 말해야 한다 — 링크를 끄면 그 말을 할
@@ -359,7 +359,7 @@ function buildColumns(
     {
       /*
         값 자체가 문의의 열쇠다 — <b>셋 중 이 화면에서 가장 그렇다</b>. frontend/packages.md 가 5xx
-        토스트에 이 값을 띄우고 사용자가 복사해 온다(screen/log/access/requirements.md).
+        토스트에 이 값을 띄우고 사용자가 복사해 온다(screen/log/error/requirements.md).
       */
       field: 'traceId',
       header: MSG.ERROR_LOG_COL_TRACE_ID,
@@ -376,7 +376,7 @@ function buildColumns(
     },
     {
       /*
-        tie-breaker 이며 <b>기본 숨김</b>이다(screen/log/access/requirements.md) — `⚙` 에서 켜면 보인다.
+        tie-breaker 이며 <b>기본 숨김</b>이다(screen/log/error/requirements.md) — `⚙` 에서 켜면 보인다.
         `hidden` 이 아닌 것은 <b>운영자가 켜서 보면 안 되는 컬럼이 이력에는 없기</b> 때문이다.
       */
       field: 'exceptionLogSeq',
@@ -388,10 +388,10 @@ function buildColumns(
   ];
 }
 
-// ── 조회조건 (screen/log/access/requirements.md) ────────────────────────────────────────────
+// ── 조회조건 (screen/log/error/requirements.md) ────────────────────────────────────────────
 
 /**
- * <b>기간이 필수이고 상한이 있다</b>(screen/log/access/requirements.md).
+ * <b>기간이 필수이고 상한이 있다</b>(screen/log/error/requirements.md).
  *
  * <p>연산자를 <b>완전 일치로 좁힌 칸이 셋</b>이다(상태 · 오류 코드 · 추적 ID). 근거는 사용
  * 이력과 같다 — <b>인덱스가 둘뿐</b>이다(`CRE_DTM` · `TRACE_ID`).
@@ -403,18 +403,18 @@ function buildColumns(
 function buildSearchFields(): SearchField[] {
   return [
     {
-      // 비우고 조회할 수 없다 — 서버도 같은 것을 다시 본다(screen/log/access/requirements.md).
+      // 비우고 조회할 수 없다 — 서버도 같은 것을 다시 본다(screen/log/error/requirements.md).
       field: 'creDtm',
       label: MSG.ERROR_LOG_SEARCH_PERIOD,
       type: 'dateRange',
       required: true,
-      // `rangeDays` 를 두지 않는다 — 이 화면은 시스템 값(7 · 92)을 덮지 않는다(screen/log/access/requirements.md).
+      // `rangeDays` 를 두지 않는다 — 이 화면은 시스템 값(7 · 92)을 덮지 않는다(screen/log/error/requirements.md).
     },
     {
       /*
         <b>파생 조건이며 셋째 사례다</b>(사용 이력의 `outcome` · 로그인 이력의 `rsltGroup`
         다음). `HTTP_STAT` 을 범위로 열지 않는 이유가 이 조건의 전부다 — `400~499` 를
-        사람이 입력하게 하면 <b>경계를 틀린다</b>. 묶음 둘이면 틀릴 자리가 없다(screen/log/access/requirements.md).
+        사람이 입력하게 하면 <b>경계를 틀린다</b>. 묶음 둘이면 틀릴 자리가 없다(screen/log/error/requirements.md).
 
         <b>기본이 전체다.</b> *5xx 만* 이 가장 흔한 조회지만 기본으로 두면 403 을 진단하러
         온 사람이 빈 화면을 먼저 본다.
@@ -431,7 +431,7 @@ function buildSearchFields(): SearchField[] {
     {
       /*
         <b>완전 일치다</b> — 값이 문자열 상수라 흔들리지 않고(backend/packages.md), <b>목록에서 셀을
-        복사해 넣는 동선</b>이다(screen/log/access/requirements.md). 앞 일치를 열면 `err.` 하나로 전건이 나온다.
+        복사해 넣는 동선</b>이다(screen/log/error/requirements.md). 앞 일치를 열면 `err.` 하나로 전건이 나온다.
       */
       field: 'errCd',
       label: MSG.ERROR_LOG_SEARCH_ERR_CD,
@@ -481,7 +481,7 @@ function buildSearchFields(): SearchField[] {
     },
     {
       /*
-        <b>넣으면 기간이 선택이 된다</b>(screen/log/access/requirements.md) — 이 화면에서 그것은 예외가 아니라
+        <b>넣으면 기간이 선택이 된다</b>(screen/log/error/requirements.md) — 이 화면에서 그것은 예외가 아니라
         <b>주된 동선</b>이다. 판정은 서버가 한다: 폼은 아직 그 규칙을 알지 못한다.
       */
       field: 'traceId',
@@ -492,7 +492,7 @@ function buildSearchFields(): SearchField[] {
   ];
 }
 
-// ── 0건 문구 (screen/log/access/requirements.md) ────────────────────────────────────────────
+// ── 0건 문구 (screen/log/error/requirements.md) ────────────────────────────────────────────
 
 /**
  * 0건에 무엇이라 말할까 — <b>물은 것에 따라 다르다</b>.
@@ -500,7 +500,7 @@ function buildSearchFields(): SearchField[] {
  * <p><b>추적 ID 가 가장 먼저다.</b> 그것으로 물은 0건은 유실이 아니라 <i>"그 요청은 오류가
  * 아니었다"</i> 이며(§1.4 이후 모든 요청은 사용 이력에 있다), 그 문구가 사용자를
  * <b>사용 이력으로 보낸다</b>. 이 말이 없으면 `traceId` 를 들고 온 사람이 <b>로그 유실로
- * 읽는다</b>(screen/log/access/requirements.md).
+ * 읽는다</b>(screen/log/error/requirements.md).
  *
  * <p>`5xx 만` 과 겹치면 추적 ID 가 이긴다 — 둘 다 물었다면 찾고 있는 것은 <b>그 한 요청</b>
  * 이지 기간의 통계가 아니다.

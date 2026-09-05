@@ -3,7 +3,7 @@ package com.aiagent.domain.authz.role;
 /**
  * {@code ROLE_AUTH_MGMT} 왼쪽 목록의 한 행 — screen/menu/requirements.md. <b>읽기 전용이다.</b>
  *
- * <p>생성·비활성화·삭제는 {@code ROLE_MGMT}(§3)의 일이므로 <b>고르기만 하는 목록</b>이며,
+ * <p>생성·비활성화·삭제는 {@code ROLE_MGMT}의 일이므로 <b>고르기만 하는 목록</b>이며,
  * 그래서 삭제 컬럼도 행 추가 버튼도 없다(frontend/grid.md).
  *
  * <p><b>{@link RoleRow} 를 재사용하지 않는다.</b> 저기 있는 파생 셋 중 둘(유효 인원 · 권한

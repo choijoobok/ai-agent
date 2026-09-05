@@ -12,14 +12,14 @@ import type { GridButtonControl } from '@/shared/grid/types';
 import { cellKey, type GrantState, type UserAuthTreeRow } from '@/features/userauth/types';
 
 /**
- * 개인 예외의 권한 트리 — <b>screen/user/requirements.md 가 정의를 갖는 그것</b>이다.
+ * 개인 예외의 권한 트리 — <b>screen/user-auth/requirements.md 가 정의를 갖는 그것</b>이다.
  *
  * <p>`<AuthTree>`(screen/menu/requirements.md)가 <b>덜어 낸</b> 쪽이고 여기가 <b>원본</b>이다. 셀 상태가 넷에서
  * 일곱으로 늘고, 는 셋이 전부 <b>배지</b>다 — *예정* · *만료* · *역할 경유*.
  *
  * <h2>체크박스는 *"지금 유효한가"*, 배지는 *"행이 있는가"*</h2>
  *
- * 둘을 한 칸에 겹치지 않게 가른 것이 이 컴포넌트의 전부다(screen/user/requirements.md). **만료를 켜짐으로 두지
+ * 둘을 한 칸에 겹치지 않게 가른 것이 이 컴포넌트의 전부다(screen/user-auth/requirements.md). **만료를 켜짐으로 두지
  * 않는 이유** — 스위치가 답해야 하는 질문은 *"이 사람 지금 이거 되나"* 이고, 만료 행이 켜져
  * 보이면 **그 질문에 거짓으로 답한다**. 행의 존재는 배지가 말한다.
  *
@@ -33,18 +33,18 @@ import { cellKey, type GrantState, type UserAuthTreeRow } from '@/features/usera
  *
  * 트리에는 행 상태 컬럼이 없다(그리드가 아니다). 대신 메뉴명 옆에 **`✎` 하나**를 붙이고,
  * *무엇이 바뀌었나* 는 **목록이 말한다**(`＋` · `✎` · `✕`). 셋으로 나누지 않는 것은 **한
- * 행에 액션이 넷**이라 같은 행에서 추가와 삭제가 동시에 일어나기 때문이다(screen/user/requirements.md).
+ * 행에 액션이 넷**이라 같은 행에서 추가와 삭제가 동시에 일어나기 때문이다(screen/user-auth/requirements.md).
  *
  * <h2>저장 버튼이 여기 없다</h2>
  *
  * `<AuthTree>` 는 트리가 저장 단위였지만 여기는 **예외 목록이 저장 단위**다 — 기간과 사유가
- * 들어가는 곳이 목록뿐이므로 **데이터는 목록에 있고 트리는 그것을 읽어 그린다**(screen/user/requirements.md).
+ * 들어가는 곳이 목록뿐이므로 **데이터는 목록에 있고 트리는 그것을 읽어 그린다**(screen/user-auth/requirements.md).
  * frontend/grid.md 가 *"상태 컬럼은 저장 단위 그리드에 달린다"* 고 정한 것과 같은 자리다.
  */
 
 /** 한 칸이 지금 무엇인가 — <b>목록의 행에서 계산해</b> 화면이 넘겨준다. */
 export interface CellState {
-  /** 기간에서 파생한다 — 조회 시점의 판정을 붙잡아 두지 않는다(screen/user/requirements.md). */
+  /** 기간에서 파생한다 — 조회 시점의 판정을 붙잡아 두지 않는다(screen/user-auth/requirements.md). */
   state: GrantState;
   /** 목록에서 `✕` 를 눌렀다 — <b>스위치는 꺼지고 배지에 취소선</b>이다. */
   deleted: boolean;
@@ -57,7 +57,7 @@ interface Props {
   menuCd: string;
   handleRef?: Ref<TreeGridHandle>;
   rows: UserAuthTreeRow[];
-  /** `${menuCd}|${actionCd}` → 그 칸의 상태. <b>목록이 원본</b>이다(screen/user/requirements.md). */
+  /** `${menuCd}|${actionCd}` → 그 칸의 상태. <b>목록이 원본</b>이다(screen/user-auth/requirements.md). */
   cells: ReadonlyMap<string, CellState>;
   /** 미저장 변경이 있는 메뉴들 — 메뉴명 옆의 `✎` 다. */
   dirtyMenus: ReadonlySet<string>;
@@ -191,7 +191,7 @@ export function PersonalAuthTree(props: Props) {
       emptyText={props.emptyText}
       /*
         <b>선택도 드래그도 없다.</b> 행 하나는 그 자체로 편집 대상이고 아래를 정하지 않는다 —
-        하단은 <b>고른 사용자</b>의 것이다(screen/user/requirements.md — 둘은 마스터-디테일이 아니라 형제다).
+        하단은 <b>고른 사용자</b>의 것이다(screen/user-auth/requirements.md — 둘은 마스터-디테일이 아니라 형제다).
         순서와 부모는 `MENU_TREE` 의 것이다(sys/menu.md).
 
         <b>저장도 없다</b> — 저장 단위는 예외 목록이다(클래스 주석).
@@ -243,7 +243,7 @@ const STATE_LABEL: Record<GrantState, string> = {
  * 리프의 한 칸 — <b>스위치 + 배지 둘</b>.
  *
  * <p>`—` 가 되는 경우가 둘이고 <b>뜻이 다르다</b>. 정의에 없는 액션은 *줄 것이 없다* 이고
- * (screen/user/requirements.md), 거기에 부여가 남아 있으면 <b>고아</b>다 — API 가 사라진 조합이며 지우는 것은
+ * (screen/user-auth/requirements.md), 거기에 부여가 남아 있으면 <b>고아</b>다 — API 가 사라진 조합이며 지우는 것은
  * 사람이 판단한다(seed.md). 둘을 같은 툴팁으로 두면 <i>왜 여기만 이러지</i> 를 물을 때
  * 화면이 답하지 못한다.
  */
@@ -276,7 +276,7 @@ function ActionCell({
       {roles && roles.length > 0 && (
         /*
           <b>역할명을 태그 글자로 쓰지 않는다.</b> 칸이 124px 이고 역할이 여럿일 수 있어
-          이름을 그대로 두면 셀이 무너진다 — screen/user/requirements.md 가 *"역할이 여럿이면 배지도 여럿"* 이라
+          이름을 그대로 두면 셀이 무너진다 — screen/user-auth/requirements.md 가 *"역할이 여럿이면 배지도 여럿"* 이라
           한 것은 <b>여럿임이 보여야 한다</b>는 뜻이고, 그것은 수로 말할 수 있다.
           이름은 툴팁이 온전히 말한다.
         */
@@ -291,7 +291,7 @@ function ActionCell({
 
   if (!row.definedActions.includes(action)) {
     /*
-      <b>빈 스위치로 두면 안 된다</b>(screen/user/requirements.md) — *"줄 수 있는데 안 준 것"* 으로 읽힌다.
+      <b>빈 스위치로 두면 안 된다</b>(screen/user-auth/requirements.md) — *"줄 수 있는데 안 준 것"* 으로 읽힌다.
       관리자가 켜서 저장했는데 사용자는 여전히 못 한다면 <b>화면이 거짓말을 한 것</b>이다.
 
       <b>고정이 아니다</b>(backend/api.md) — 그 화면에 그 액션으로 떨어지는 API 가 하나 생기면
@@ -317,7 +317,7 @@ function ActionCell({
           `small`(28px)로는 켜짐·꺼짐의 손잡이 위치가 몇 px 차이라는 문제도 그대로다.
         */
         style={{ minWidth: SWITCH_WIDTH }}
-        // <b>유효 하나만 켜짐</b>이다 — 예정·만료·삭제는 꺼진 채 배지가 말한다(screen/user/requirements.md).
+        // <b>유효 하나만 켜짐</b>이다 — 예정·만료·삭제는 꺼진 채 배지가 말한다(screen/user-auth/requirements.md).
         checked={cell !== undefined && !cell.deleted && cell.state === 'ACTIVE'}
         /*
           <b>`SAVE` 가 없으면 스위치도 잠긴다</b>(screen/menu/requirements.md 과 같은 판단). 저장 버튼만 감추면
@@ -334,7 +334,7 @@ function ActionCell({
 /**
  * 폴더 한 칸 — <b>전체 · 부분 · 없음</b>(AUTHZ-03).
  *
- * <p>문구를 `roleAuth.tri.*` 에서 그대로 가져온다 — screen/user/requirements.md 가 <i>"읽는 것은 마찰의 대상이
+ * <p>문구를 `roleAuth.tri.*` 에서 그대로 가져온다 — screen/user-auth/requirements.md 가 <i>"읽는 것은 마찰의 대상이
  * 아니므로 표시는 양쪽 공통"</i> 이라고 정했다. 같은 트리를 두 화면에서 다른 말로 부르면
  * 그것이 학습 비용이다.
  *

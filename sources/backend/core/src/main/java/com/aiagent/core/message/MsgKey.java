@@ -345,7 +345,7 @@ public final class MsgKey {
     //
     // 앞의 넷이 **역할 자체의 생애**(screen/menu/requirements.md)이고 뒤의 셋이 **권한 부여**(screen/menu/requirements.md)다. 파일을
     // 가르지 않는 것은 화면 둘이 같은 저장 서비스 하나를 쓰지 않기 때문이 아니라, 두 화면이
-    // **같은 테이블 짝**을 다루기 때문이다 — 역할을 지우려면 부여가 0 건이어야 한다(§3.5).
+    // **같은 테이블 짝**을 다루기 때문이다 — 역할을 지우려면 부여가 0 건이어야 한다.
 
     /** {@code ROLE_ID} 중복 — 다른 사람이 방금 만든 것을 클라이언트가 알 수 없다(frontend/grid.md). */
     public static final String ERR_ROLE_DUPLICATE = "err.role.duplicate";
@@ -682,7 +682,7 @@ public final class MsgKey {
      * <b>이미 처리된 요청이 선택에 섞였다</b> — screen/notice/requirements.md.
      *
      * <p>처리 가능한 것만 골라 실행하지 않는다. 일부만 처리하면 <b>알림이 일부에게만
-     * 나가고</b> 사용자는 무엇이 처리됐는지 모른다 — 되돌리는 길이 없으므로(§5.7)
+     * 나가고</b> 사용자는 무엇이 처리됐는지 모른다 — 되돌리는 길이 없으므로
      * 부분 성공을 만들지 않는다.
      */
     public static final String ERR_NOTI_REQ_NOT_RECEIVED = "err.noti-req.not-received";

@@ -17,7 +17,7 @@ import type { NoticeRow, NoticeStatus } from '@/features/notice/types';
  * `NOTICE_MGMT` — screen/notice/requirements.md. <b>여기서 만든 것이 전 사용자에게 뜬다.</b>
  *
  * <p>62~65 의 관리 화면은 잘못 고치면 <b>관리자가</b> 곤란하다. 이 화면에서 잘못 올린 글은
- * <b>다음 로그인부터 전원에게 팝업으로</b> 뜨며, 그것이 저장 검증이 넷인 이유다(§4.5).
+ * <b>다음 로그인부터 전원에게 팝업으로</b> 뜨며, 그것이 저장 검증이 넷인 이유다.
  *
  * <h2>축이 셋이라 컬럼이 여섯이다</h2>
  *

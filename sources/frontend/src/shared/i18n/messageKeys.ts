@@ -66,7 +66,7 @@ export const MSG = {
   /**
    * ① 성공 안내 — **계정이 있든 없든 이 문구가 나간다**.
    *
-   * <p>*"등록된 메일로 보냈습니다"* 라고 단정하지 않는 것이 요건이다(§6-3). 마스킹한
+   * <p>*"등록된 메일로 보냈습니다"* 라고 단정하지 않는 것이 요건이다. 마스킹한
    * 주소도 보여주지 않는다 — 그것만으로 계정의 존재가 드러난다.
    */
   RESET_SENT: 'reset.sent',
@@ -80,7 +80,7 @@ export const MSG = {
   RESET_VERIFY: 'reset.verify',
   /** 재발송 버튼 — 쿨다운이 끝난 뒤에만 눌린다. */
   RESET_RESEND: 'reset.resend',
-  /** 재발송까지 남은 시간 — `{seconds}`. **서버가 아니라 화면이 센다**(§6-3). */
+  /** 재발송까지 남은 시간 — `{seconds}`. **서버가 아니라 화면이 센다**. */
   RESET_RESEND_IN: 'reset.resendIn',
   /** ③ 안내 — 새 비밀번호를 정하면 잠금도 함께 풀린다는 사실을 말한다. */
   RESET_DONE_DESC: 'reset.done.desc',
@@ -1330,7 +1330,7 @@ export const MSG = {
    * <b>여기가 진단이다</b> — URL 칸에만 값을 넣었는데 0건일 때(screen/menu/requirements.md).
    *
    * <p>미등록은 화면이 <i>보여줄 수</i> 없다 — 없는 행을 목록에 낼 방법이 없기 때문이다.
-   * *"조회 결과가 없습니다"* 로 끝내면 이 화면의 세 갈래 중 하나가 사라진다(§5.2).
+   * *"조회 결과가 없습니다"* 로 끝내면 이 화면의 세 갈래 중 하나가 사라진다.
    */
   API_CATALOG_NOT_REGISTERED: 'apiCatalog.notRegistered',
   /** 마스터에서 API 를 고르기 전 하단의 빈 상태(frontend/grid.md). */
@@ -1461,7 +1461,7 @@ export const MSG = {
   // ── 로그인 이력 (screen/log/access/requirements.md) ────────────────────────────────────
   //
   // 접두가 `loginLog.` 다. 이 화면에는 **모달도 파생 컬럼도 없어** 사용 이력보다 키가
-  // 적다 — `nclob` 컬럼이 하나도 없는 유일한 화면이라 목록이 곧 전부다(§4.1).
+  // 적다 — `nclob` 컬럼이 하나도 없는 유일한 화면이라 목록이 곧 전부다.
   //
   // **결과 코드 15종의 이름이 여기 없다.** 그것은 공통코드이며 `code.LOGIN_RSLT_CD.{코드}`
   // 로 데이터에서 온다(sys/code.md) — 소스 상수로 두면 코드를 더할 때 시드와 이 파일 둘을
@@ -1547,7 +1547,7 @@ export const MSG = {
   // ── 에러 로그 (screen/log/access/requirements.md) ──────────────────────────────────────
   //
   // 접두가 `errorLog.` 다. 셋 중 <b>키가 가장 많다</b> — 상세 모달에 탭이 둘이고, 그 둘이
-  // 각각 <i>비어 있는 이유</i> 를 따로 말해야 하기 때문이다(§5.5): 스택이 없는 것은 4xx 라
+  // 각각 <i>비어 있는 이유</i> 를 따로 말해야 하기 때문이다: 스택이 없는 것은 4xx 라
   // 저장하지 않은 것이고, 전문이 없는 것은 사용 이력 90일이 지난 것이다. <b>둘은 다른
   // 사실이므로 문구도 둘</b>이며, 하나로 합치면 4xx 를 본 사람이 <i>데이터가 날아갔다</i>
   // 로 읽는다.
@@ -1679,7 +1679,7 @@ export const MSG = {
   /*
     ── 메뉴 트리 (screen/menu/requirements.md) ───────────────────────────────────────
 
-    <b>여기에 저장 문구가 없다.</b> 통째로 즉시 저장이라(§4.4) 저장 버튼도 미저장 상태도
+    <b>여기에 저장 문구가 없다.</b> 통째로 즉시 저장이라 저장 버튼도 미저장 상태도
     없기 때문이며, 대신 <b>확인 문구가 많다</b> — 되돌릴 수 없는 조작마다 놓기 전에 묻는다.
   */
   /** 트리 그리드의 제목. */
@@ -1688,7 +1688,7 @@ export const MSG = {
   MENU_COL_MENU_NM: 'menuTree.col.menuNm',
   /** 메뉴 코드 컬럼 — PK 이며 <b>신규 행에서도 셀이 아니다</b>(§4.6 의 모달이 받는다). */
   MENU_COL_MENU_CD: 'menuTree.col.menuCd',
-  /** URL 컬럼 — <b>라우트 목록에서 고른다</b>(§4.3). 자식이 있으면 잠긴다. */
+  /** URL 컬럼 — <b>라우트 목록에서 고른다</b>. 자식이 있으면 잠긴다. */
   MENU_COL_MENU_URL: 'menuTree.col.menuUrl',
   /** 아이콘 컬럼 — 아이콘 세트는 frontend/packages.md 이다. */
   MENU_COL_ICON: 'menuTree.col.iconCd',
@@ -1704,29 +1704,29 @@ export const MSG = {
   MENU_COL_USER_COUNT: 'menuTree.col.accessibleUserCount',
   /** 매핑 역할 수 — 삭제 게이트의 근거다. */
   MENU_COL_ROLE_COUNT: 'menuTree.col.roleCount',
-  /** URL 콤보의 첫 항목 — <b>URL 을 비워 폴더로 되돌리는 유일한 경로</b>다(§4.3). */
+  /** URL 콤보의 첫 항목 — <b>URL 을 비워 폴더로 되돌리는 유일한 경로</b>다. */
   MENU_URL_NONE: 'menuTree.url.none',
-  /** 라우트가 없는 URL 에 붙는 배지 — <b>사후 진단</b>이다(§4.3). */
+  /** 라우트가 없는 URL 에 붙는 배지 — <b>사후 진단</b>이다. */
   MENU_UNLINKED: 'menuTree.unlinked',
-  /** Ⓑ — 모두 접기. <b>드래그의 전제</b>다(§4.5.1). */
+  /** Ⓑ — 모두 접기. <b>드래그의 전제</b>다. */
   MENU_COLLAPSE_ALL: 'menuTree.collapseAll',
   /** Ⓑ — 모두 펼치기. */
   MENU_EXPAND_ALL: 'menuTree.expandAll',
-  /** ① — 최상위 메뉴 추가. <b>언제나 활성</b>이며 트리의 맨 아래에 붙는다(§4.6). */
+  /** ① — 최상위 메뉴 추가. <b>언제나 활성</b>이며 트리의 맨 아래에 붙는다. */
   MENU_ADD_ROOT: 'menuTree.addRoot',
   /** ① — 하위 메뉴 추가. 선택이 없으면 비활성이다. */
   MENU_ADD_CHILD: 'menuTree.addChild',
   /** *하위 메뉴 추가* 가 잠긴 이유 — 선택이 없다. */
   MENU_ADD_CHILD_NO_SELECTION: 'menuTree.addChild.noSelection',
-  /** 〃 — URL 이 있는 노드다(§4.3). 드롭의 가운데 구역이 죽는 조건과 같다. */
+  /** 〃 — URL 이 있는 노드다. 드롭의 가운데 구역이 죽는 조건과 같다. */
   MENU_ADD_CHILD_LEAF: 'menuTree.addChild.leaf',
   /** 〃 — 깊이 5단에 닿았다(sys/menu.md). */
   MENU_ADD_CHILD_DEPTH: 'menuTree.addChild.depth',
-  /** ① — 삭제. 게이트 넷이 전부 `0` 일 때만 활성이다(§4.8). */
+  /** ① — 삭제. 게이트 넷이 전부 `0` 일 때만 활성이다. */
   MENU_DELETE: 'menuTree.delete',
   /** 삭제가 잠긴 이유 — `{blockers}` 가 <b>어느 쪽이 막는지</b> 말한다. */
   MENU_DELETE_BLOCKED: 'menuTree.delete.blocked',
-  /** 삭제 확인 — `{name}`. 즐겨찾기가 함께 지워지는 것을 말한다(§4.8). */
+  /** 삭제 확인 — `{name}`. 즐겨찾기가 함께 지워지는 것을 말한다. */
   MENU_DELETE_CONFIRM: 'menuTree.delete.confirm',
   /** 신규 모달의 제목 — `{parent}` 가 어디 아래인지 말한다. */
   MENU_ADD_TITLE: 'menuTree.add.title',
@@ -1737,7 +1737,7 @@ export const MSG = {
   /** 그 칸의 안내 — 대문자·숫자·밑줄. */
   MENU_ADD_CODE_HINT: 'menuTree.add.menuCdHint',
   /**
-   * 드롭 문장 — <b>안에 넣는다</b>(§4.5.2). `{name}`.
+   * 드롭 문장 — <b>안에 넣는다</b>. `{name}`.
    *
    * <p>표시가 최종 판정이 아니라 <b>문장이 최종 판정</b>이다.
    */
@@ -1746,15 +1746,15 @@ export const MSG = {
   MENU_DROP_BEFORE: 'menuTree.drop.before',
   /** 드롭 문장 — 이 행 <b>다음</b>에 형제로. `{name}`. */
   MENU_DROP_AFTER: 'menuTree.drop.after',
-  /** 드롭 문장 — 펼친 폴더의 아래 1/4 는 <b>첫 자식 앞</b>이다(§4.5.2). `{name}`. */
+  /** 드롭 문장 — 펼친 폴더의 아래 1/4 는 <b>첫 자식 앞</b>이다. `{name}`. */
   MENU_DROP_FIRST_CHILD: 'menuTree.drop.firstChild',
-  /** 놓을 수 없다 — 자기 자손이다. <b>이유를 낸다</b>(§4.5). */
+  /** 놓을 수 없다 — 자기 자손이다. <b>이유를 낸다</b>. */
   MENU_DROP_SELF: 'menuTree.drop.self',
   /** 놓을 수 없다 — 그 노드는 화면이 있다. `{name}`. */
   MENU_DROP_LEAF: 'menuTree.drop.leaf',
   /** 놓을 수 없다 — 깊이 상한을 넘는다. `{max}`. */
   MENU_DROP_DEPTH: 'menuTree.drop.depth',
-  /** 드롭 확인의 제목 — `{name}` 을 옮긴다(§4.5.3). */
+  /** 드롭 확인의 제목 — `{name}` 을 옮긴다. */
   MENU_MOVE_TITLE: 'menuTree.move.title',
   /** 드롭 확인 — <b>지금</b> 자리. `{path}` · `{index}`. */
   MENU_MOVE_FROM: 'menuTree.move.from',
@@ -1762,13 +1762,13 @@ export const MSG = {
   MENU_MOVE_TO: 'menuTree.move.to',
   /** 드롭 확인의 마지막 줄 — <b>되돌리려면 다시 끌어야 한다</b>. */
   MENU_MOVE_WARN: 'menuTree.move.warn',
-  /** 사용 여부를 끌 때 — `{name}`(§4.7). */
+  /** 사용 여부를 끌 때 — `{name}`. */
   MENU_USE_OFF_TITLE: 'menuTree.useOff.title',
   /** 〃 자손이 함께 꺼진다 — `{count}`. <b>`0` 이면 이 줄을 내지 않는다</b>. */
   MENU_USE_OFF_DESCENDANTS: 'menuTree.useOff.descendants',
   /** 〃 접근할 수 있던 인원 — `{count}`. */
   MENU_USE_OFF_USERS: 'menuTree.useOff.users',
-  /** 사용 여부를 켤 때 — `{name}`. <b>켜는 방향에도 경고가 있다</b>(§4.7). */
+  /** 사용 여부를 켤 때 — `{name}`. <b>켜는 방향에도 경고가 있다</b>. */
   MENU_USE_ON_TITLE: 'menuTree.useOn.title',
   /** 〃 개별로 꺼 두었던 것까지 켜진다 — `{count}` · `{off}`. */
   MENU_USE_ON_DESCENDANTS: 'menuTree.useOn.descendants',
@@ -1778,7 +1778,7 @@ export const MSG = {
   MENU_TAB_USER: 'menuTree.tab.user',
   /** 하단 탭 — 매핑된 역할. */
   MENU_TAB_ROLE: 'menuTree.tab.role',
-  /** 탭 1 이 0건일 때 — <b>진단이다</b>(§4.11). */
+  /** 탭 1 이 0건일 때 — <b>진단이다</b>. */
   MENU_TAB_API_EMPTY: 'menuTree.tab.apiEmpty',
   /** 마스터에서 메뉴를 고르기 전 하단의 빈 상태(frontend/grid.md). */
   MENU_DETAIL_EMPTY: 'menuTree.detail.empty',
@@ -1814,7 +1814,7 @@ export const MSG = {
   MENU_ACCOUNT_USABLE: 'menuTree.account.usable',
   /** 계정이 막힌 상태 — 관리자가 정한 뜻이다(`USE_YN` 또는 기간). */
   MENU_ACCOUNT_BLOCKED: 'menuTree.account.blocked',
-  /** 조회조건 — 메뉴명. <b>거르지 않는다</b>(§4.10). */
+  /** 조회조건 — 메뉴명. <b>거르지 않는다</b>. */
   /**
    * 트리 검색 — <b>칸 하나가 셋을 함께 본다</b>(2026-08-31 요청 · screen/menu/requirements.md).
    *
@@ -1846,7 +1846,7 @@ export const MSG = {
   MENU_SEARCH_PREV: 'menuTree.search.prev',
   /** 검색 이동 — 다음. */
   MENU_SEARCH_NEXT: 'menuTree.search.next',
-  /** 엑셀의 맨 앞 컬럼 — <b>경로</b>다. 들여쓰기는 정렬 한 번에 무너진다(§4.9). */
+  /** 엑셀의 맨 앞 컬럼 — <b>경로</b>다. 들여쓰기는 정렬 한 번에 무너진다. */
   MENU_EXCEL_PATH: 'menuTree.excel.path',
 
   // ── 역할 관리 (screen/menu/requirements.md) · 역할 권한 관리 (screen/menu/requirements.md) ────────────────

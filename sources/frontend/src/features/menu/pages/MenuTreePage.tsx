@@ -23,7 +23,7 @@ import type { MenuSiblingGroup, MenuTreeRow } from '@/features/menu/types';
 /**
  * `MENU_TREE` — screen/menu/requirements.md. <b>통째로 즉시 저장이다.</b>
  *
- * <p>이 화면의 절반이 그 한 줄에서 나온다(§4.4). 위치 변경은 <b>즉시일 수밖에 없고</b>(형제
+ * <p>이 화면의 절반이 그 한 줄에서 나온다. 위치 변경은 <b>즉시일 수밖에 없고</b>(형제
  * 전체가 다시 쓰이며 `@CustomLock(WAIT)` 로 직렬화된다 — sys/menu.md), 한 그리드 안에서 일괄과
  * 즉시를 섞지 않으므로 <b>전부 즉시</b>가 됐다.
  *
@@ -32,10 +32,10 @@ import type { MenuSiblingGroup, MenuTreeRow } from '@/features/menu/types';
  * ────────────────────────────────────────────────
  * 행 상태 컬럼                 없다 — 미저장 상태가 존재하지 않는다
  * 저장 버튼                    없다
- * 삭제 컬럼                    ① 의 삭제 버튼 + 확인(§4.8)
- * addRow 의 미저장 신규 행     ① 의 추가 버튼 둘 + 모달(§4.6)
+ * 삭제 컬럼                    ① 의 삭제 버튼 + 확인
+ * addRow 의 미저장 신규 행     ① 의 추가 버튼 둘 + 모달
  * 되돌리기                     셀은 다시 고치고 스위치는 다시 누른다.
- *                              <b>드래그만 그것으로 부족해</b> 놓기 전에 묻는다(§4.5.3)
+ *                              <b>드래그만 그것으로 부족해</b> 놓기 전에 묻는다
  * </pre>
  *
  * <h2>이 화면이 실제로 하는 일 — 리프를 만드는 곳이 아니다</h2>
@@ -44,12 +44,12 @@ import type { MenuSiblingGroup, MenuTreeRow } from '@/features/menu/types';
  * 그 URL 에 컴포넌트가 없다. 자주 하는 일은 <b>구조 정리</b>(폴더 추가 · 순서 · 부모 바꾸기)와
  * <b>아이콘 · 사용 여부</b>이며, 리프 추가는 <b>배포 뒤에</b> 트리에 붙이는 드문 일이다.
  *
- * <p>그래서 <b>URL 은 고르는 것</b>이다(§4.3) — 손으로 치게 두면 오타가 곧 404 이고, 그 값은
+ * <p>그래서 <b>URL 은 고르는 것</b>이다 — 손으로 치게 두면 오타가 곧 404 이고, 그 값은
  * <b>저장은 되지만 열리지 않는다</b>. 목록이 이미 있는데 자유 입력을 두는 것은 근거가 없다.
  *
  * <h2>검색은 필터가 아니다 — 그리고 칸이 하나다</h2>
  *
- * 조건에 맞는 노드만 남기면 부모가 사라져 <b>트리가 아니게 된다</b>(§4.10). 일치 노드를
+ * 조건에 맞는 노드만 남기면 부모가 사라져 <b>트리가 아니게 된다</b>. 일치 노드를
  * 강조하고 <b>그 경로를 펼치며</b>, 첫 일치로 스크롤한다.
  *
  * <p><b>칸 셋이 하나가 됐다</b>(2026-08-31 요청). 이름·코드·URL 을 각각 받고 {@code AND} 로
@@ -87,7 +87,7 @@ export function MenuTreePage() {
   /**
    * 고른 메뉴 — <b>행이 아니라 코드로 든다</b>.
    *
-   * <p>즉시 저장이라 셀 하나를 고칠 때마다 트리를 다시 읽는데(§4.4), 행 객체를 들고 있으면
+   * <p>즉시 저장이라 셀 하나를 고칠 때마다 트리를 다시 읽는데, 행 객체를 들고 있으면
    * 그 뒤로 <b>낡은 객체</b>를 가리킨다 — 하단 탭이 방금 바꾼 값을 못 보고, 삭제 게이트가
    * 옛 건수로 판정한다. 코드로 들면 <b>매번 지금 트리에서 다시 찾는다</b>.
    */
@@ -98,7 +98,7 @@ export function MenuTreePage() {
   const tree = useRef<TreeGridHandle>(null);
 
   /*
-    조회조건 셋 — 거르지 않고 찾아간다(§4.10).
+    조회조건 셋 — 거르지 않고 찾아간다.
 
     넘겨받았으면 <b>메뉴 코드 칸이 채워진 채로</b> 시작한다. 그 메뉴는 접힌 폴더 안에 있을
     수 있는데, 이 화면에서 <i>경로를 펼치고 스크롤하는</i> 수단이 이미 검색이다 — 같은 일을
@@ -129,7 +129,7 @@ export function MenuTreePage() {
     () =>
       onHandoff(MENU_CD, (menuCd) => {
         setSelectedCd(menuCd);
-        // 접힌 폴더 안에 있을 수 있다 — 펼치고 스크롤하는 수단이 검색이다(§4.10).
+        // 접힌 폴더 안에 있을 수 있다 — 펼치고 스크롤하는 수단이 검색이다.
         setTerm(menuCd);
       }),
     [],
@@ -137,7 +137,7 @@ export function MenuTreePage() {
 
   /*
     <b>첫 진입에 스스로 부른다.</b> 트리가 곧 목록이라 빈 판으로 시작할 이유가 없고, 조건이
-    거르지 않으므로(§4.10) 조회가 언제나 전건이라 <b>누르기 전과 뒤가 같다</b> — 조회 버튼을
+    거르지 않으므로 조회가 언제나 전건이라 <b>누르기 전과 뒤가 같다</b> — 조회 버튼을
     기다리는 다른 화면들과 갈리는 자리다.
 
     <b>{@code useGridController} 가 아니라 {@code useQuery} 다.</b> 저것은 조건·정렬·페이징·
@@ -167,7 +167,7 @@ export function MenuTreePage() {
   /**
    * 저장 뒤의 다시 읽기 — <b>선택을 놓지 않는다</b>. {@link read} 와 갈리는 자리다.
    *
-   * <p>즉시 저장이라 셀 하나를 고칠 때마다 트리를 다시 읽는데(§4.4), 그때마다 선택이
+   * <p>즉시 저장이라 셀 하나를 고칠 때마다 트리를 다시 읽는데, 그때마다 선택이
    * 풀리면 <b>아이콘 하나 바꿨다고 읽던 하단이 사라진다</b>(2026-08-30 실물). frontend/grid.md 이
    * 선택을 놓으라고 한 것은 <i>사람이 조회를 눌렀을 때</i> 이고, 그 근거는 <b>목록이 통째로
    * 바뀌었을 수 있다</b> 는 것이다 — 자기가 방금 고친 한 행을 다시 읽는 것은 그 경우가 아니다.
@@ -238,7 +238,7 @@ export function MenuTreePage() {
   // ── 쓰기 넷 (screen/menu/requirements.md) ───────────────────────────────────────────
 
   /**
-   * 셀 하나에 요청 하나 — <b>응답을 받고 값을 바꾼다</b>(§4.4).
+   * 셀 하나에 요청 하나 — <b>응답을 받고 값을 바꾼다</b>.
    *
    * <p>즉시 저장은 낙관적 반영이 아니다. 되돌리기 수단이 없는 화면에서 화면과 DB 가 어긋나면
    * 고칠 방법이 없으므로, 실패하면 <b>조회로 되돌린다</b> — 셀이 제자리로 간다.
@@ -254,7 +254,7 @@ export function MenuTreePage() {
   );
 
   /**
-   * 사용 여부 — <b>확인이 무엇을 바꾸는지 전부 말한다</b>(§4.7).
+   * 사용 여부 — <b>확인이 무엇을 바꾸는지 전부 말한다</b>.
    *
    * <p>끌 때는 자손 수와 <b>접근할 수 있던 인원</b>을, 켤 때는 <b>개별로 꺼 두었던 것까지
    * 켜진다</b>는 것을 말한다. 켜는 방향에 경고가 있는 것이 §3.6 과 갈리는 자리이며, 이유는
@@ -308,7 +308,7 @@ export function MenuTreePage() {
   );
 
   /**
-   * 드롭 — <b>놓으면 묻는다</b>(§4.5.3).
+   * 드롭 — <b>놓으면 묻는다</b>.
    *
    * <p>즉시 저장이라 드롭이 곧 저장이다. 셀 편집은 다시 고치면 되고 스위치는 다시 누르면
    * 되지만, <b>드래그는 원래 자리를 사람이 기억해야</b> 되돌릴 수 있다 — 형제가 스무 개인
@@ -358,7 +358,7 @@ export function MenuTreePage() {
     [modal, nodes, refresh, rows],
   );
 
-  /** 삭제 — 게이트 넷이 전부 `0` 일 때만 활성이다(§4.8). 즐겨찾기는 함께 지운다. */
+  /** 삭제 — 게이트 넷이 전부 `0` 일 때만 활성이다. 즐겨찾기는 함께 지운다. */
   const removeNode = useCallback(() => {
     if (!selected) return;
     modal.confirm({
@@ -378,11 +378,11 @@ export function MenuTreePage() {
       await saveNode(addParent?.menuCd ?? null, menuCd);
       await refresh();
       /*
-        <b>추가 직후 그 행을 선택한다</b>(§4.6). 맨 끝이라 화면 밖에 생길 수 있고, 만든
+        <b>추가 직후 그 행을 선택한다</b>. 맨 끝이라 화면 밖에 생길 수 있고, 만든
         사람은 곧바로 URL·아이콘을 채운다 — 모달이 받지 않는 값이다.
 
         검색어 칸에도 넣는다: 트리가 접혀 있으면 새 행이 보이지 않는데, 이 화면에서 경로를
-        펼치고 스크롤하는 수단이 검색이다(§4.10).
+        펼치고 스크롤하는 수단이 검색이다.
       */
       setSelectedCd(menuCd);
       setTerm(menuCd);
@@ -394,7 +394,7 @@ export function MenuTreePage() {
 
   // ── 컬럼과 버튼 ─────────────────────────────────────────────────
 
-  /** 라우트 목록에서 고른다 — <b>다른 메뉴가 이미 쓰는 URL 은 뺀다</b>(§4.3). */
+  /** 라우트 목록에서 고른다 — <b>다른 메뉴가 이미 쓰는 URL 은 뺀다</b>. */
   const urlOptions = useCallback(
     (row: MenuTreeRow) => {
       const taken = new Set(
@@ -440,7 +440,7 @@ export function MenuTreePage() {
         header: MSG.MENU_COL_MENU_URL,
         width: 210,
         /*
-          <b>자식이 있으면 잠긴다</b>(§4.3) — URL 과 자식은 배타다. 화면이 미리 막고
+          <b>자식이 있으면 잠긴다</b> — URL 과 자식은 배타다. 화면이 미리 막고
           저장 서비스가 다시 막는다: 화면의 방어는 UX 이지 방어가 아니다(backend/security.md).
 
           이제 그 잠금이 <b>색으로도 보인다</b> — 열리지 않는 칸은 읽기 전용 색조가 깔린다
@@ -594,10 +594,10 @@ export function MenuTreePage() {
   const controls = useMemo<GridButtonControl[]>(
     () => [
       /*
-        Ⓑ 의 둘은 <b>`actionCd` 를 선언하지 않는다</b>(§4.12) — 표시를 바꿀 뿐 데이터를 읽지도
+        Ⓑ 의 둘은 <b>`actionCd` 를 선언하지 않는다</b> — 표시를 바꿀 뿐 데이터를 읽지도
         쓰지도 않는다. frontend/grid.md 은 선언한 것만 권한 판정을 받는다고 정했다.
 
-        <b>토글 하나로 두지 않는다</b>(§4.5.1) — 일부만 펼친 중간 상태에서 토글이 무엇을
+        <b>토글 하나로 두지 않는다</b> — 일부만 펼친 중간 상태에서 토글이 무엇을
         가리키는지 말할 수 없다.
       */
       {
@@ -759,7 +759,7 @@ export function MenuTreePage() {
 const idOf = (row: MenuTreeRow) => row.menuCd;
 const parentOf = (row: MenuTreeRow) => row.upMenuCd;
 
-/** 라우트 맵에 없는 URL — <b>프론트만 아는 사실</b>이라 서버가 판정할 수 없다(§4.3). */
+/** 라우트 맵에 없는 URL — <b>프론트만 아는 사실</b>이라 서버가 판정할 수 없다. */
 function hasUnlinked(row: MenuTreeRow): boolean {
   return row.menuUrl !== null && !(row.menuUrl in SCREENS);
 }
@@ -790,7 +790,7 @@ function pathOf(nodes: Map<string, TreeNode<MenuTreeRow>>, parentId: string | nu
   return names.join(' › ');
 }
 
-/** 그 형제 안에서 몇 번째인가 — 확인 문구가 <b>되돌릴 근거</b>로 쓴다(§4.5.3). */
+/** 그 형제 안에서 몇 번째인가 — 확인 문구가 <b>되돌릴 근거</b>로 쓴다. */
 function siblingIndex(rows: MenuTreeRow[], menuCd: string): number {
   const row = rows.find((candidate) => candidate.menuCd === menuCd);
   if (!row) return 0;
@@ -842,7 +842,7 @@ function verdictOf(
     if (target.data.menuUrl !== null) {
       return { ok: false, text: label(MSG.MENU_DROP_LEAF, { name: target.data.menuNm }) };
     }
-    // 서브트리를 통째로 끌면 <b>그 서브트리의 높이까지 더해</b> 판정한다(§4.5).
+    // 서브트리를 통째로 끌면 <b>그 서브트리의 높이까지 더해</b> 판정한다.
     if (target.depth + heightOf(drag) > MAX_DEPTH) {
       return { ok: false, text: label(MSG.MENU_DROP_DEPTH, { max: MAX_DEPTH }) };
     }
@@ -862,7 +862,7 @@ function verdictOf(
 }
 
 /**
- * 엑셀 — <b>계층을 경로 컬럼으로 편다</b>(§4.9).
+ * 엑셀 — <b>계층을 경로 컬럼으로 편다</b>.
  *
  * <p>엑셀의 들여쓰기는 <b>필터·정렬 한 번에 무너진다</b>. 행 순서는 화면 그대로 전위 순회이며
  * 다시 정렬하면 트리가 아니게 된다.

@@ -6,7 +6,7 @@ import type { SavedCond } from '@/shared/searchform/savedCond';
  * 저장된 조회조건 — UX-07 · frontend/search-form.md.
  *
  * <p><b>셋 다 목록 전체를 돌려받는다.</b> 저장이 남기는 변화가 요청에 없기 때문이다 —
- * 이전 기본 조건이 내려오는 것(§5.4)은 서버가 하는 일이고, 화면이 그것을 스스로 계산하면
+ * 이전 기본 조건이 내려오는 것은 서버가 하는 일이고, 화면이 그것을 스스로 계산하면
  * 서버와 어긋난다.
  */
 export function getSavedConds(menuCd: string): Promise<SavedCond[]> {

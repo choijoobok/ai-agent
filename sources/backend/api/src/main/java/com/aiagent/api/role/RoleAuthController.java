@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  * <table>
  *   <tr><td>{@code getList}</td><td>왼쪽 역할 목록 — <b>읽기 전용</b>(생성은 {@code ROLE_MGMT})</td></tr>
  *   <tr><td>{@code getMenuTree}</td><td>메뉴 계층 + 이 역할의 체크 상태</td></tr>
- * <tr><td>{@code save}</td><td><b>저장 대상은 트리뿐</b>이다 — screen/user/requirements.md 와 갈리는 자리(§2.2)</td></tr>
+ * <tr><td>{@code save}</td><td><b>저장 대상은 트리뿐</b>이다 — screen/user/requirements.md 와 갈리는 자리</td></tr>
  *   <tr><td>{@code getAffectedUsers}</td><td>영향 인원 — <b>{@code ROLE_MGMT} 도 이것을 부른다</b></td></tr>
  * </table>
  *
@@ -75,7 +75,7 @@ public class RoleAuthController {
      *
      * <p>권한 구성은 <b>켜기 전에</b> 해 두는 것이 정상이고, 꺼진 역할의 권한을 고치는 것은
      * 아무에게도 영향이 없어 <b>가장 안전한 편집</b>이다 — 그래서 조회조건에 사용 여부가 없다
-     * (§2.3).
+     *.
      */
     @Operation(
             summary = "역할 목록 조회",

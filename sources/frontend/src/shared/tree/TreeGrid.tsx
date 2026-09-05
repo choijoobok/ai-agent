@@ -36,15 +36,15 @@ import type { DropZone, TreeColumn, TreeGridProps, TreeNode } from '@/shared/tre
  * <h2>여기 없는 것이 이 컴포넌트의 절반이다</h2>
  *
  * <table>
- *   <tr><td>페이징</td><td>트리를 나누면 <b>부모 없는 자식 페이지</b>가 생긴다(§4.2.2)</td></tr>
- *   <tr><td>컬럼 필터</td><td>헤더 필터가 행을 감추면 트리가 아니게 된다(§4.10)</td></tr>
- *   <tr><td>그리드 설정</td><td>계층 컬럼은 맨 왼쪽 고정이고 남는 것이 표시 여부뿐이다(§4.2)</td></tr>
- *   <tr><td>상태 컬럼 · 삭제 컬럼 · 저장 버튼</td><td><b>즉시 저장</b>이라 미저장 상태가 없다(§4.4)</td></tr>
+ *   <tr><td>페이징</td><td>트리를 나누면 <b>부모 없는 자식 페이지</b>가 생긴다</td></tr>
+ *   <tr><td>컬럼 필터</td><td>헤더 필터가 행을 감추면 트리가 아니게 된다</td></tr>
+ *   <tr><td>그리드 설정</td><td>계층 컬럼은 맨 왼쪽 고정이고 남는 것이 표시 여부뿐이다</td></tr>
+ *   <tr><td>상태 컬럼 · 삭제 컬럼 · 저장 버튼</td><td><b>즉시 저장</b>이라 미저장 상태가 없다</td></tr>
  * </table>
  *
  * <h2>드래그가 이 컴포넌트의 본체다</h2>
  *
- * 행 하나를 <b>세로로 셋</b>으로 나눈다(§4.5.2) — 위 1/4 는 앞 형제, 가운데 1/2 는 자식 맨 끝,
+ * 행 하나를 <b>세로로 셋</b>으로 나눈다 — 위 1/4 는 앞 형제, 가운데 1/2 는 자식 맨 끝,
  * 아래 1/4 는 <i>보이는 다음 행</i> 앞이다. 선과 테두리는 <b>모양이 다르다</b>: 선은
  * <i>사이에 끼운다</i>, 테두리는 <i>안에 넣는다</i> — 같은 표시를 굵기나 색으로만 구분하지
  * 않는다(frontend/grid.md).
@@ -78,7 +78,7 @@ import type { DropZone, TreeColumn, TreeGridProps, TreeNode } from '@/shared/tre
  *
  * <p><b>열린 셀은 하나다</b>({@code editing}). 판과 같은 규칙이며, 여럿이 열려 있으면
  * <i>어느 값이 아직 안 저장된 것인지</i> 를 화면이 말하지 못한다 — 이 트리는 즉시 저장이라
- * (§4.4) 더 그렇다: 열린 채로 남은 칸은 <b>아무것도 하지 않은 칸</b>이다. 조회를 누르면
+ * 더 그렇다: 열린 채로 남은 칸은 <b>아무것도 하지 않은 칸</b>이다. 조회를 누르면
  * 그 칸이 닫힌다.
  *
  * <p><b>잠긴 칸은 칠한다</b>({@code TreeColumn.editable}) — `.bo-cell-readonly` 와 같은 값
@@ -118,7 +118,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
    */
   const [editing, setEditing] = useState<{ id: string; column: string } | null>(null);
   const body = useRef<HTMLDivElement>(null);
-  /** hover 자동 펼침의 타이머 — 접힌 폴더 위에 잠시 머무르면 펼친다(§4.5.1). */
+  /** hover 자동 펼침의 타이머 — 접힌 폴더 위에 잠시 머무르면 펼친다. */
   const expandTimer = useRef<{ id: string; handle: number } | null>(null);
 
   const roots = useMemo(
@@ -136,7 +136,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
   }, [roots]);
 
   /**
-   * 검색은 <b>접힘을 이긴다</b>(§4.10) — 일치 노드의 경로를 펼친다. 강조만 하고 펼치지 않으면
+   * 검색은 <b>접힘을 이긴다</b> — 일치 노드의 경로를 펼친다. 강조만 하고 펼치지 않으면
    * <i>접힌 채로 "찾았다"</i> 가 된다.
    *
    * <p><b>접힘을 고쳐 쓰지 않고 덮어 읽는다.</b> {@code collapsed} 는 <i>사람이 접은 것</i>
@@ -210,7 +210,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
   /**
    * 편집을 연다 · 닫는다 — <b>여는 것은 더블 클릭이고 닫는 것은 고른 값과 {@code Escape} 다</b>.
    *
-   * <p>즉시 저장이라(§4.4) 값을 고르는 순간 화면이 {@code done} 을 부르고, 그래서 <b>저장
+   * <p>즉시 저장이라 값을 고르는 순간 화면이 {@code done} 을 부르고, 그래서 <b>저장
    * 뒤의 다시 읽기에는 열린 셀이 없다</b>.
    */
   const openEdit = useCallback((id: string, column: string) => {
@@ -241,7 +241,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
   }, []);
 
   /**
-   * 모두 접기 · 펼치기 — <b>드래그의 전제</b>다(§4.5.1).
+   * 모두 접기 · 펼치기 — <b>드래그의 전제</b>다.
    *
    * <p>24행이 전부 펼쳐진 트리에서 노드 하나를 다른 폴더로 끄는 것은 어렵다. 접으면 폴더 몇
    * 줄만 남고, 그 상태에서 끄는 것이 트리 이동의 정상 동선이다 — <b>접기가 놓을 수 있는
@@ -259,7 +259,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
   const expandAll = useCallback(() => setCollapsed(new Set()), []);
 
   /*
-    <b>토글 하나로 두지 않는다</b>(§4.5.1) — 일부만 펼친 중간 상태에서 토글이 무엇을
+    <b>토글 하나로 두지 않는다</b> — 일부만 펼친 중간 상태에서 토글이 무엇을
     가리키는지 말할 수 없다. 버튼 둘은 누르면 무슨 일이 일어나는지가 라벨 그대로다.
   */
   useImperativeHandle(props.handleRef, () => ({ collapseAll, expandAll }), [collapseAll, expandAll]);
@@ -290,7 +290,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
 
     const rect = event.currentTarget.getBoundingClientRect();
     let zone = zoneAt(event.clientY - rect.top, rect.height);
-    // 자식을 가질 수 없는 행은 <b>가운데 구역이 죽는다</b> — 위·아래는 살아 있다(§4.5.2).
+    // 자식을 가질 수 없는 행은 <b>가운데 구역이 죽는다</b> — 위·아래는 살아 있다.
     if (zone === 'inside' && props.canHaveChildren && !props.canHaveChildren(target.data, target)) {
       zone = event.clientY - rect.top < rect.height / 2 ? 'before' : 'after';
     }
@@ -299,7 +299,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
 
     /*
       접힌 폴더 위에 잠시 머무르면 펼친다 — 접어 두고 끌기 시작하면 목적지가 접혀 있다.
-      **되돌리지 않는다**(§4.5.1): 드래그가 끝나도 펼쳐진 채로 둔다. 되돌리면 방금 놓은
+      **되돌리지 않는다**: 드래그가 끝나도 펼쳐진 채로 둔다. 되돌리면 방금 놓은
       노드가 눈앞에서 사라진다.
     */
     if (zone === 'inside' && shown.has(target.id)) {
@@ -459,7 +459,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
           ))}
           {/*
             ② — 도구는 언제나 맨 오른쪽이다(frontend/grid.md). <b>항목이 하나라</b> 드롭다운을 열지
-            않고 아이콘이 바로 내린다 — 페이지가 없어 *현재 페이지* 와 *전체* 가 같다(§4.9).
+            않고 아이콘이 바로 내린다 — 페이지가 없어 *현재 페이지* 와 *전체* 가 같다.
           */}
           {excel && hasPermission(permissions, props.menuCd, 'EXPORT') && (
             <Tooltip title={label(MSG.GRID_EXCEL)}>
@@ -576,7 +576,7 @@ export function TreeGrid<T>(props: TreeGridProps<T>) {
 
       {/*
         푸터가 한 칸이 된다 — 트리에는 페이지가 없으므로 중앙(네비게이션)과 오른쪽(페이지
-        사이즈)이 사라지고 <b>왼쪽의 건수만</b> 남는다(§4.2.2).
+        사이즈)이 사라지고 <b>왼쪽의 건수만</b> 남는다.
 
         <b>높이는 그리드 푸터와 같다</b>(2026-08-31 실물). 칸이 하나라고 낮게 두면, 위아래로
         놓인 트리와 그리드의 <b>판 바닥이 어긋나</b> 스플리터를 옮길 때마다 그 차이가 눈에
@@ -701,7 +701,7 @@ function hierarchyCell(width: number | null): React.CSSProperties {
  * <p>아래 1/4 가 갈리는 것은 <b>가로선이 화면에 보이는 두 행 사이를 뜻하기</b> 때문이다 —
  * 폴더가 펼쳐져 있으면 그 아래에 보이는 행이 <b>첫 자식</b>이므로, 그 사이의 선은
  * <i>첫 자식 앞</i>이다. 그래서 <b>펼친 폴더의 다음 형제 자리에 놓으려면 그 폴더를 접는다</b> —
- * 접기가 보기 좋으라고 있는 것이 아니라 <b>놓을 수 있는 자리를 바꾼다</b>(§4.5.1).
+ * 접기가 보기 좋으라고 있는 것이 아니라 <b>놓을 수 있는 자리를 바꾼다</b>.
  */
 function resolve<T>(
   target: TreeNode<T>,
@@ -723,7 +723,7 @@ function resolve<T>(
   };
 
   if (zone === 'inside') {
-    // 자식 맨 끝 — 신규 노드가 가는 자리와 같다(§4.6).
+    // 자식 맨 끝 — 신규 노드가 가는 자리와 같다.
     return { parentId: target.id, index: target.children.length };
   }
   const expandedFolder = target.children.length > 0 && !shown.has(target.id);
@@ -813,9 +813,9 @@ interface RowProps<T> {
 }
 
 /**
- * 행 하나. <b>표시가 셋</b>이다 — 위·아래는 가로선, 가운데는 테두리(§4.5.2).
+ * 행 하나. <b>표시가 셋</b>이다 — 위·아래는 가로선, 가운데는 테두리.
  *
- * <p><b>금지 대상은 끄는 동안 회색</b>이 된다(§4.5) — 놓아 본 뒤 에러를 내는 것보다 낫다.
+ * <p><b>금지 대상은 끄는 동안 회색</b>이 된다 — 놓아 본 뒤 에러를 내는 것보다 낫다.
  */
 function Row<T>({ node, props, ...state }: RowProps<T>) {
   const { token } = theme.useToken();
@@ -987,7 +987,7 @@ function Row<T>({ node, props, ...state }: RowProps<T>) {
       </div>
 
       {/*
-        <b>문장이 최종 판정이다</b>(§4.5.2). 선과 테두리 위에 그 자리를 문장으로 띄우며,
+        <b>문장이 최종 판정이다</b>. 선과 테두리 위에 그 자리를 문장으로 띄우며,
         <b>놓을 수 없는 자리에서도 이유를 낸다</b> — 왜 안 놓이는지 모르면 버그로 읽힌다.
       */}
       {state.hover && state.hover.text && (

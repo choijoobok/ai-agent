@@ -24,7 +24,7 @@ import { VIA_PERSONAL } from '@/features/menu/types';
  * 이 화면이 <i>무엇을 쓰는가</i>(탭 1) · <i>누가 닿는가</i>(탭 2) · <i>누가 줬는가</i>(탭 3).
  *
  * <p><b>셋 다 조회 전용이다.</b> 매핑은 시드로만 바뀌고(backend/api.md), 권한 편집은
- * {@code ROLE_AUTH_MGMT}(§2)와 개인 예외(screen/user/requirements.md)의 일이다 — 여기서 고칠 수 있게 하면
+ * {@code ROLE_AUTH_MGMT}와 개인 예외(screen/user/requirements.md)의 일이다 — 여기서 고칠 수 있게 하면
  * <b>같은 사실을 고치는 화면이 둘</b>이 된다.
  *
  * <h2>판이 antd `Table` 이었다 — 2026-08-31 에 그리드가 됐다</h2>
@@ -58,12 +58,12 @@ import { VIA_PERSONAL } from '@/features/menu/types';
  *       마스터가 선택을 <i>거부</i> 할 이유가 없고, 그 거부권이 핸들의 존재 이유였다</td></tr>
  *   <tr><td><b>부를 자리가 다섯</b></td><td>이 화면의 선택은 행 클릭 · 조회 · 노드 추가 ·
  *       넘겨받기 · 첫 진입에서 바뀐다. 사건마다 핸들을 부르게 두면 <b>한 곳을 빠뜨려도
- *       조용하다</b> — 고른 메뉴는 <b>매번 트리에서 다시 찾은 값</b>이므로(§4.4) 그것을
+ *       조용하다</b> — 고른 메뉴는 <b>매번 트리에서 다시 찾은 값</b>이므로 그것을
  *       그대로 내려받는 편이 원본이 하나다</td></tr>
  * </table>
  *
  * <p>그래서 <b>{@code menu} 가 바뀌면</b> 효과가 셋을 비우고 열린 탭을 부른다. 즉시 저장이
- * 셀마다 트리를 다시 읽지만(§4.4) <b>선택은 유지되므로</b>(코드가 그대로다) 그때 하단은
+ * 셀마다 트리를 다시 읽지만 <b>선택은 유지되므로</b>(코드가 그대로다) 그때 하단은
  * 조용하다 — 아이콘 하나 바꿨다고 하단이 세 번 깜빡이지 않는다.
  */
 
@@ -261,7 +261,7 @@ export function MenuDetailTabs(props: Props) {
                 gridId="detailApi"
                 controller={apis}
                 /*
-                  <b>0 건이면 진단을 낸다</b>(§4.11) — *"매핑된 API 가 없습니다. 이 화면의
+                  <b>0 건이면 진단을 낸다</b> — *"매핑된 API 가 없습니다. 이 화면의
                   기능을 아무도 쓸 수 없습니다."* sys/menu.md 의 미매핑이며, <b>고르기 전에는 그
                   말을 하지 않는다</b>: 안 물어본 것을 두고 없다고 하면 그것이 거짓말이다.
                 */
@@ -497,7 +497,7 @@ function buildRoleColumns(): ColumnDef<MenuRoleRow>[] {
     { field: 'roleId', header: MSG.MENU_COL_ROLE_ID, type: 'text', width: 160, sortable: true },
     {
       /*
-        <b>`USE_YN='N'` 인 역할도 나온다</b>(§4.11) — 권한 행은 살아 있고 FK 도 살아 있다.
+        <b>`USE_YN='N'` 인 역할도 나온다</b> — 권한 행은 살아 있고 FK 도 살아 있다.
         삭제 게이트가 막는 것은 <b>행의 존재</b>이지 역할의 상태가 아니다.
       */
       field: 'useYn',

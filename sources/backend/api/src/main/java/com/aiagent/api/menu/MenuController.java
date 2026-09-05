@@ -35,10 +35,10 @@ import org.springframework.web.bind.annotation.RestController;
  * <p>그래서 <b>연산마다 경로가 하나</b>다.
  *
  * <table>
- *   <tr><td>{@code saveNode}</td><td>신규 노드 — 모달이 받는 칸은 {@code MENU_CD} 하나(§4.6)</td></tr>
- *   <tr><td>{@code save}</td><td>속성 — URL · 아이콘 · 사용 여부. <b>셀 하나에 요청 하나</b>(§4.4)</td></tr>
+ *   <tr><td>{@code saveNode}</td><td>신규 노드 — 모달이 받는 칸은 {@code MENU_CD} 하나</td></tr>
+ *   <tr><td>{@code save}</td><td>속성 — URL · 아이콘 · 사용 여부. <b>셀 하나에 요청 하나</b></td></tr>
  * <tr><td>{@code saveTree}</td><td>위치 — 형제 목록을 통째로(sys/menu.md)</td></tr>
- *   <tr><td>{@code deleteNode}</td><td>삭제 — 게이트 넷(§4.8)</td></tr>
+ *   <tr><td>{@code deleteNode}</td><td>삭제 — 게이트 넷</td></tr>
  * </table>
  *
  * <p><b>{@code save} 와 {@code saveTree} 를 합치지 않는다.</b> sys/menu.md 가 저장 DTO 에서
@@ -73,7 +73,7 @@ public class MenuController {
      * <b>페이징도 조건도 없다.</b>
      *
      * <p>트리를 페이징하면 부모 없는 자식 페이지가 생기고(screen/menu/requirements.md), 조건으로 거르면 부모가
-     * 사라져 <b>트리가 아니게 된다</b>(§4.10) — 검색은 강조와 이동이며 클라이언트가 한다.
+     * 사라져 <b>트리가 아니게 된다</b> — 검색은 강조와 이동이며 클라이언트가 한다.
      * 그래서 요청 본문이 {@code SearchRequest} 조차 아니다: 받을 것이 없는 자리에 봉투를 두면
      * <i>조건을 보내면 걸릴 것</i> 이라는 기대를 만든다.
      */

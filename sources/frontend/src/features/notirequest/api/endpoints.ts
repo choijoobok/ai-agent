@@ -1,5 +1,5 @@
 /**
- * 요청함 처리 API — screen/notice/requirements.md.
+ * 요청함 처리 API — screen/noti-request/requirements.md.
  *
  * <p>공지와 폴더가 갈린 이유는 `features/notice/api/endpoints.ts` 에 적었다 —
  * <b>폴더가 인가 경계</b>다(seed.md).
@@ -10,7 +10,7 @@
  * (screen/batch/schedule/requirements.md), 그쪽은 요청만 남기고 종결은 배치가 했지만 여기는 <b>이 호출이 끝나면
  * 상태가 끝난 상태</b>다.
  *
- * <p><b>처리와 반려가 한 경로다</b>(screen/notice/requirements.md) — 쓰는 컬럼이 같고 트랜잭션이 같다.
+ * <p><b>처리와 반려가 한 경로다</b>(screen/noti-request/requirements.md) — 쓰는 컬럼이 같고 트랜잭션이 같다.
  * 둘로 가르면 알림 INSERT 코드가 두 벌이 되고 한쪽만 고치는 날이 온다.
  *
  * <p><b>사용자 측이 여기 없다.</b> 자기 요청의 상태 확인은 알림 모달의 *내 요청* 탭이며
@@ -18,6 +18,6 @@
  */
 export const NOTI_REQUEST_ENDPOINTS = {
   getList: '/service/notiRequest/getList',
-  /** 처리 · 반려 — `reqStatCd` 가 가른다(screen/notice/requirements.md). */
+  /** 처리 · 반려 — `reqStatCd` 가 가른다(screen/noti-request/requirements.md). */
   updateHandle: '/service/notiRequest/updateHandle',
 } as const;

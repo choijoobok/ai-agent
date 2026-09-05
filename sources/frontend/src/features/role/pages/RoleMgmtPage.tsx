@@ -17,15 +17,15 @@ import { blockedUsers, fetchAllHolders, useRoleHolders } from '@/shared/authz/ro
 import type { RoleRow } from '@/features/role/types';
 
 /**
- * `ROLE_MGMT` — screen/menu/requirements.md. <b>역할 자체의 생애를 다룬다.</b>
+ * `ROLE_MGMT` — screen/role/requirements.md. <b>역할 자체의 생애를 다룬다.</b>
  *
- * <p>만들고 · 이름을 바꾸고 · 끄고 · 지운다. 권한을 붙이는 것은 `ROLE_AUTH_MGMT`(§2)이고
+ * <p>만들고 · 이름을 바꾸고 · 끄고 · 지운다. 권한을 붙이는 것은 `ROLE_AUTH_MGMT`이고
  * 역할을 사람에게 주는 것은 `USER_MGMT` 의 보유 역할 탭(screen/user/requirements.md)이다 — <b>셋이 각자 다른
  * 테이블을 쓴다.</b>
  *
  * <h2>기본정보 탭이 컬럼이 됐다</h2>
  *
- * sys/menu.md 이 탭 셋을 적었는데 <b>하나가 된다</b>(§3.4). 기본정보는 frontend/grid.md(편집 폼을 두지
+ * sys/menu.md 이 탭 셋을 적었는데 <b>하나가 된다</b>. 기본정보는 frontend/grid.md(편집 폼을 두지
  * 않는다)에 따라 <b>마스터 그리드의 셀</b>이 되고, <i>보유 사용자</i> 와 <i>비활성화 시 영향
  * 인원</i> 은 <b>같은 것</b>이라 하단 pane 하나가 된다 — 나누면 같은 조회를 두 번 하고 두
  * 탭이 항상 같은 내용을 보여준다.
@@ -35,7 +35,7 @@ import type { RoleRow } from '@/features/role/types';
  * frontend/grid.md 는 *"디테일이 전부 도착한 뒤 판정"* 이라고만 적었다. <b>디테일이 자식 전부를
  * 보여주지 않는 화면</b>이 여기서 처음 나온다 — `SYS_USER_ROLE` 은 하단이 보여주지만
  * `SYS_ROLE_MENU_AUTH` 는 <b>이 화면에 디테일이 없다</b>. <b>마스터의 건수 컬럼이 그 자리를
- * 대신한다</b>(§3.2.1).
+ * 대신한다</b>.
  *
  * <h2>스위치 하나가 확인 세 줄을 낸다</h2>
  *
@@ -68,7 +68,7 @@ export function RoleMgmtPage() {
   const header = useSearchFormHeader();
 
   /*
-    <b>URL 을 여기서 넘긴다</b>(screen/menu/requirements.md). 공용 훅이 경로를 들면 `features/role` 의
+    <b>URL 을 여기서 넘긴다</b>(screen/role/requirements.md). 공용 훅이 경로를 들면 `features/role` 의
     `endpoints.ts` 에 그 줄이 없어지고, 그러면 `SYS_MENU_API` 시드가 <b>`ROLE_MGMT` 행을
     만들지 못해</b> 이 화면의 하단이 403 이 된다(backend/api.md).
   */
@@ -84,14 +84,14 @@ export function RoleMgmtPage() {
   const searchFields = useMemo(() => buildSearchFields(), []);
 
   /**
-   * <b>끄는 변경에만 둘째·셋째 줄이 붙는다</b>(screen/menu/requirements.md).
+   * <b>끄는 변경에만 둘째·셋째 줄이 붙는다</b>(screen/role/requirements.md).
    *
    * <p>이름만 고친 저장은 한 줄이다(frontend/grid.md). <b>켜는 방향에는 경고가 없다</b> — 권한이
    * 늘어나는 것은 되돌릴 수 있고, 경고를 양쪽에 두면 읽지 않게 된다.
    *
    * <p><b>비동기다.</b> 셋째 줄이 세는 것(<i>유효 권한이 공집합이 되어 다음 로그인부터
    * 차단될 사람</i>)은 이 그리드가 들고 있지 않다 — 보유자 전원의 <b>다른 역할</b>과
-   * <b>개인 예외</b>를 물어야 하고, 그 답이 하단 그리드의 열 둘이다(screen/menu/requirements.md 목업 §4 주석 6).
+   * <b>개인 예외</b>를 물어야 하고, 그 답이 하단 그리드의 열 둘이다(screen/role/requirements.md 목업 §4 주석 6).
    * 하단은 <b>고른 역할 하나</b>만 보여주므로 여기서 <b>끄는 역할마다</b> 따로 묻는다.
    */
   const warnDisable = useCallback(async (rows: GridRow<RoleRow>[]): Promise<string[]> => {
@@ -114,7 +114,7 @@ export function RoleMgmtPage() {
       const sample = await fetchAllHolders(ROLE_ENDPOINTS.getAffectedUsers, row.data.roleId);
       const blocked = blockedUsers(sample.holders);
       /*
-        <b>공집합 인원이 0 이면 그 줄을 내지 않는다</b>(screen/menu/requirements.md) — 항상 보이면 읽히지 않는다.
+        <b>공집합 인원이 0 이면 그 줄을 내지 않는다</b>(screen/role/requirements.md) — 항상 보이면 읽히지 않는다.
 
         <b>이름을 함께 낸다.</b> 건수만 알려주면 *"그 2명이 누구지"* 를 찾으러 다른 화면에
         가야 하고, 그러면 확인 문구가 스스로 완결되지 않는다(§4 주석 5).
@@ -123,7 +123,7 @@ export function RoleMgmtPage() {
         lines.push(label(MSG.ROLE_DISABLE_BLOCKED, { count: blocked.length }));
         lines.push(blocked.map((user) => `  · ${user.userNm} (${user.userId})`).join('\n'));
       }
-      // 한 장에 다 담기지 않았다 — <b>0명이라고 말하지 않는다</b>(screen/menu/requirements.md 미결).
+      // 한 장에 다 담기지 않았다 — <b>0명이라고 말하지 않는다</b>(screen/role/requirements.md 미결).
       if (sample.truncated) {
         lines.push(
           label(MSG.ROLE_BLOCKED_PARTIAL, {
@@ -169,7 +169,7 @@ export function RoleMgmtPage() {
         // 켜 두는 것이 정상이다 — 만든 직후에는 보유자도 권한도 없어 영향이 없다.
         useYn: true,
         /*
-          건수 셋은 <b>`null` 이다</b>(screen/menu/requirements.md 주석 8) — 읽기 전용이고 <b>서버가 센다</b>.
+          건수 셋은 <b>`null` 이다</b>(screen/role/requirements.md 주석 8) — 읽기 전용이고 <b>서버가 센다</b>.
           `0` 으로 채우면 *"세어 보니 0"* 과 구분되지 않는데, 그 구분이 곧 삭제 게이트가
           열리는 이유의 차이다: 신규 행은 <b>게이트를 타지 않고</b> 즉시 제거된다(frontend/grid.md).
         */
@@ -235,14 +235,14 @@ export function RoleMgmtPage() {
   /**
    * 지울 수 있는가 — <b>매 렌더 새 객체로 만들지 않는다</b>(frontend/grid.md).
    *
-   * <p><b>게이트가 건수 컬럼 둘이다</b>(screen/menu/requirements.md). 마스터 응답이 그 수를 갖고 있으므로
+   * <p><b>게이트가 건수 컬럼 둘이다</b>(screen/role/requirements.md). 마스터 응답이 그 수를 갖고 있으므로
    * <b>행마다</b> 답할 수 있고, 하단을 조회해야만 아는 것이 아니다.
    *
    * <p><b>막는 것은 보유 인원이지 유효 인원이 아니다.</b> 만료된 부여도 `SYS_USER_ROLE`
    * 행이며 <b>FK 는 날짜를 보지 않는다</b> — 유효 `0` 인데 막히는 것이 정상이다.
    *
    * <p><b>왜 막히는지 말하고 대안까지 말한다</b> — 회색 아이콘은 이유를 말하지 못하고,
-   * 여기서 사람이 실제로 하려는 일은 대개 <b>끄는 것</b>이다(§3.6).
+   * 여기서 사람이 실제로 하려는 일은 대개 <b>끄는 것</b>이다.
    */
   const deletable = useMemo<DeleteColumnSpec<RoleRow>>(
     () => ({
@@ -311,7 +311,7 @@ export function RoleMgmtPage() {
   );
 }
 
-// ── 컬럼 (screen/menu/requirements.md) ────────────────────────────────────────────────
+// ── 컬럼 (screen/role/requirements.md) ────────────────────────────────────────────────
 
 function buildColumns(): ColumnDef<RoleRow>[] {
   return [
@@ -325,7 +325,7 @@ function buildColumns(): ColumnDef<RoleRow>[] {
       /*
         PK 다 — <b>신규 행에서만</b> 열리고, 필수이고, 헤더에 필수 표시가 붙는다(frontend/grid.md).
         등록 후 수정 불가이며(sys/user-role.md) 고치려면 지우고 다시 만드는데, <b>쓰인 역할은 지울 수
-        없으므로</b>(§3.5) 실질적으로 한 번 정하면 끝이다.
+        없으므로</b> 실질적으로 한 번 정하면 끝이다.
 
         그래서 <b>헤더는 필수(*) 인데 저장된 행의 셀은 회색</b>이며 <b>어긋나는 것이
         정상</b>이다(frontend/grid.md) — 헤더는 컬럼 선언을, 셀 배경은 그 행의 실제 상태를 말한다.
@@ -360,7 +360,7 @@ function buildColumns(): ColumnDef<RoleRow>[] {
       sortable: true,
       /*
         값이 둘인 데이터 칸은 전부 스위치다(frontend/grid.md). <b>끄면 보유자 전원이 바뀌므로</b>
-        저장 확인이 세 줄이 된다(§3.6) — 스위치가 즉시 저장을 뜻하지는 않는다.
+        저장 확인이 세 줄이 된다 — 스위치가 즉시 저장을 뜻하지는 않는다.
       */
       editable: true,
     },
@@ -372,11 +372,11 @@ function buildColumns(): ColumnDef<RoleRow>[] {
       // 파생이라 정렬 대상이 아니다(frontend/grid.md) — 서버 화이트리스트에도 없다.
       filter: false,
       /*
-        <b>신규 행에서는 `—` 다</b>(screen/menu/requirements.md 주석 8). 읽기 전용이고 <b>서버가 센다</b> —
+        <b>신규 행에서는 `—` 다</b>(screen/role/requirements.md 주석 8). 읽기 전용이고 <b>서버가 센다</b> —
         `0` 으로 그리면 *"세어 보니 0"* 과 구분되지 않고, 그 구분이 곧 삭제 게이트가
         열리는 이유의 차이다(신규 행은 게이트를 타지 않는다).
       */
-      // `null` 은 <b>아직 세지 않았다</b> 이며 `0` 과 다른 사실이다(screen/menu/requirements.md 주석 8).
+      // `null` 은 <b>아직 세지 않았다</b> 이며 `0` 과 다른 사실이다(screen/role/requirements.md 주석 8).
       derive: (row) => row.holderCount ?? '—',
     },
     {
@@ -386,7 +386,7 @@ function buildColumns(): ColumnDef<RoleRow>[] {
       width: 100,
       filter: false,
       /*
-        <b>보유와 유효를 하나로 접지 않는다</b>(screen/menu/requirements.md). 게이트가 보는 것은 <b>보유</b>이고
+        <b>보유와 유효를 하나로 접지 않는다</b>(screen/role/requirements.md). 게이트가 보는 것은 <b>보유</b>이고
         운영자가 궁금한 것은 <b>유효</b>다 — 접으면 *"0명인데 왜 못 지우나"* 가 된다.
       */
       derive: (row) => row.activeHolderCount ?? '—',
@@ -397,7 +397,7 @@ function buildColumns(): ColumnDef<RoleRow>[] {
       type: 'number',
       width: 100,
       filter: false,
-      // <b>디테일이 없는 자식</b>의 건수다 — 이 컬럼이 게이트의 다른 한쪽을 대신한다(§3.5).
+      // <b>디테일이 없는 자식</b>의 건수다 — 이 컬럼이 게이트의 다른 한쪽을 대신한다.
       derive: (row) => row.authCount ?? '—',
     },
     // 감사 4컬럼은 켤 수 있다 — 이 행은 사람이 만들고 사람이 고치므로 감사가 실제로 갈린다.
@@ -405,13 +405,13 @@ function buildColumns(): ColumnDef<RoleRow>[] {
   ];
 }
 
-// ── 조회조건 (screen/menu/requirements.md) ────────────────────────────────────────────
+// ── 조회조건 (screen/role/requirements.md) ────────────────────────────────────────────
 
 /**
  * 둘뿐이다 — 역할명과 사용 여부.
  *
  * <p><b>사용 여부의 기본값을 `Y` 로 두지 않는다.</b> 끈 역할을 감추면 <b>같은 것을 또
- * 만드는</b> 사고가 나고, 그때 `ROLE_ID` 가 PK 라 저장이 실패한다(§3.9) — 운영자는
+ * 만드는</b> 사고가 나고, 그때 `ROLE_ID` 가 PK 라 저장이 실패한다 — 운영자는
  * *"왜 저장이 안 되나"* 만 본다. 역할은 많아야 수십 건이라 전부 내려도 무겁지 않다.
  *
  * <p><b>역할 ID 조건이 없다.</b> 역할 ID 는 사람이 외워 다니는 값이 아니라 <b>이름으로
@@ -433,8 +433,8 @@ function buildSearchFields(): SearchField[] {
         <b>*전체* 를 표현할 자리가 없다</b>. 그리드 컬럼과 어휘가 갈리는 것이 아니라
         <b>묻는 것이 다르다</b> — 저기는 값이고 여기는 <i>무엇을 걸러 볼까</i> 다.
 
-        <b>기본값이 없다(*전체*)</b>(screen/menu/requirements.md) — 끈 역할을 감추면 <b>같은 것을 또 만드는</b>
-        사고가 나고, 그때 `ROLE_ID` 가 PK 라 저장이 실패한다(§3.9).
+        <b>기본값이 없다(*전체*)</b>(screen/role/requirements.md) — 끈 역할을 감추면 <b>같은 것을 또 만드는</b>
+        사고가 나고, 그때 `ROLE_ID` 가 PK 라 저장이 실패한다.
       */
       field: 'useYn',
       label: MSG.ROLE_SEARCH_USE_YN,

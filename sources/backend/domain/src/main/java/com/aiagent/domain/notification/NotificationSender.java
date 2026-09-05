@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>왜 서비스 하나를 두는가</h2>
  *
- * <p>생산자가 넷이다(screen/notice/requirements.md) — 요청 처리(§5.4) · 비밀번호 만료 예고(AUTH-05) · 권한
+ * <p>생산자가 넷이다(screen/notice/requirements.md) — 요청 처리 · 비밀번호 만료 예고(AUTH-05) · 권한
  * 만료 예정(AUTHZ-08) · 배치 실패(BATCH-06). 각자 {@code SYS_NOTI_INBOX} 에 직접 쓰면
  * {@link NotiType} 선택과 제목 형식이 <b>넷으로 갈린다</b>.
  *

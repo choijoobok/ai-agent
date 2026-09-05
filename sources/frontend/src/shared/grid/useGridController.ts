@@ -621,7 +621,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
    * <pre>
    * ① 대상 확인   ── 선택 0건이면 애초에 버튼이 비활성이다
    * ② 검증        ── 실패 → 중단
-   * ③ params()    ── 모달이 있으면 열고 기다린다(§8). 취소 → 중단
+   * ③ params()    ── 모달이 있으면 열고 기다린다. 취소 → 중단
    * ④ 확인        ── ③ 이 있으면 모달이 겸한다
    * ⑤ 호출 → 성공 모달 → 재조회 → 콜백
    * </pre>

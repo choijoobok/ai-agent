@@ -870,7 +870,7 @@ function defaultOpOf(field: SearchField): SearchOp {
  * 화면 단위 → 저장 단위 — frontend/search-form.md 의 {@code scale}.
  *
  * <p><b>나가는 순간에만 곱한다.</b> 폼의 상태에는 사람이 입력한 값 그대로 남아야
- * 저장된 조건이 화면 단위로 남고(§5.2), 다시 열었을 때 <b>또 곱해지지 않는다</b>.
+ * 저장된 조건이 화면 단위로 남고, 다시 열었을 때 <b>또 곱해지지 않는다</b>.
  *
  * <p><b>숫자로 읽히지 않으면 그대로 보낸다.</b> 서버의 화이트리스트가 타입을 강제하므로
  * ({@code ValueCoercion}) 여기서 조용히 버리면 <i>조건을 넣었는데 안 걸렸다</i> 가 되고,
@@ -1038,7 +1038,7 @@ function restore(
 
       {@code between} 을 빠뜨리고 있었다(2026-08-31). 저장된 기간은 배열인데 문자열만
       맞는 것으로 봐서 <b>조용히 버려졌고</b>, 저장한 조건을 다시 열면 그 칸만 비어 있었다 —
-      *"맞지 않는 것은 조용히 버린다"* 는 규칙(§5.3)이 <b>맞는 것까지</b> 버리고 있었다.
+      *"맞지 않는 것은 조용히 버린다"* 는 규칙이 <b>맞는 것까지</b> 버리고 있었다.
     */
     const wantsList = op === 'in' || op === 'between';
     const fits = wantsList ? Array.isArray(value) : typeof value === 'string';

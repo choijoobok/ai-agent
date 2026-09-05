@@ -336,7 +336,7 @@ function toColDef<T>(column: ColumnDef<T>, options: AdapterOptions<T>): ColDef<G
     sortable: column.sortable ?? false,
     valueGetter: (params: ValueGetterParams<GridRow<T>>) =>
       // 파생 컬럼은 저장되는 값이 아니라 행에서 계산한 것이고(frontend/grid.md), 동적 컬럼은 맵의 한
-      // 칸이다(§2.2) — 읽는 규칙은 `cell.ts` 한 곳이다.
+      // 칸이다 — 읽는 규칙은 `cell.ts` 한 곳이다.
       params.data ? cellValue(column, params.data.data) : undefined,
   };
 

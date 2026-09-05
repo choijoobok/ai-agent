@@ -17,7 +17,7 @@ import type { GridButtonControl } from '@/shared/grid/types';
 import type { RoleAuthTreeRow } from '@/features/roleauth/types';
 
 /**
- * 권한 트리 — <b>정의는 screen/user/requirements.md 가 갖고 여기는 덜어 내기만 한다</b>(screen/menu/requirements.md).
+ * 권한 트리 — <b>정의는 screen/user/requirements.md 가 갖고 여기는 덜어 내기만 한다</b>(screen/role-auth/requirements.md).
  *
  * <p>셀 상태가 <b>일곱에서 넷</b>으로 준다: 켜짐 · 꺼짐 · `—` · 구조 노드. `SYS_ROLE_MENU_AUTH`
  * 에 기간 컬럼이 없으므로(sys/menu.md) *예정*·*만료* 배지가 사라지고, <b>역할 자신이 원본</b>이라
@@ -26,7 +26,7 @@ import type { RoleAuthTreeRow } from '@/features/roleauth/types';
  * <h2>`<AuthTree>` 가 `<TreeGrid>` 다</h2>
  *
  * screen/user/requirements.md 는 이것을 <i>AntD Table 의 트리 행</i> 으로 적었다. 그 문장이 쓰였을 때는 판이
- * AG Grid 냐 AntD 냐만 있었는데, 그 뒤 `MENU_TREE`(screen/menu/requirements.md)가 <b>직접 그린 트리</b>를 어휘로
+ * AG Grid 냐 AntD 냐만 있었는데, 그 뒤 `MENU_TREE`(screen/role-auth/requirements.md)가 <b>직접 그린 트리</b>를 어휘로
  * 들여왔다 — 계층 컬럼 · 접힘 · 검색 강조 · 크롬(53)이 이미 거기 있다. 판을 하나 더 들이면
  * <b>같은 화면 두 개가 다른 판으로 그려지고</b>, 53 의 크롬을 두 번 맞춰야 한다.
  *
@@ -39,7 +39,7 @@ import type { RoleAuthTreeRow } from '@/features/roleauth/types';
  * 아래를 얼마나 줬는지</b>를 액션 열마다 <b>따로</b> 요약한다 — 조회 열이 *전체* 라고 저장
  * 열이 그런 것은 아니다.
  *
- * <p><b>일괄 토글을 두지 않는다 — 어느 화면에도</b>(screen/menu/requirements.md · screen/user/requirements.md). 3-state 를 그리면
+ * <p><b>일괄 토글을 두지 않는다 — 어느 화면에도</b>(screen/role-auth/requirements.md · screen/user/requirements.md). 3-state 를 그리면
  * *"누르면 자식 전부가 켜지는 것"* 이 자연스러워 보이지만 이유가 셋이다: ① 폴더 하나가 리프
  * 열댓 개이고 그것이 곧 <b>보유자 전원의 유효 권한 변경</b>이다 ② 껐다 켜면 <i>원래 켜져
  * 있던 것만</i> 복원해야 하는데 그 규칙을 정해야 한다 ③ 액션 미정의 건너뛰기와 `READ`
@@ -74,7 +74,7 @@ interface Props {
   emptyText?: string;
   /** 제목 뒤 — <b>누구의 트리인가</b>(frontend/grid.md). 역할을 고르기 전에는 빈 문자열이다. */
   titleSuffix?: string;
-  /** ①의 검색 칸 — <b>브레드크럼이 아니라 여기다</b>(screen/menu/requirements.md · {@link TreeSearch}). */
+  /** ①의 검색 칸 — <b>브레드크럼이 아니라 여기다</b>(screen/role-auth/requirements.md · {@link TreeSearch}). */
   search?: TreeSearch;
   /** ①을 통째로 잠근다 — <b>역할을 고르기 전</b>이다(frontend/grid.md 의 빈 상태). */
   disabled?: boolean;
@@ -103,7 +103,7 @@ export function AuthTree(props: Props) {
         header: ACTION_HEADER[action],
         /*
           스위치 하나에 <b>배지가 없다</b> — 기간도 역할 경유도 이 화면에는 없으므로
-          (screen/menu/requirements.md) 개인 예외의 152px 이 필요 없다. 그리드의 스위치 폭(56) + 셀 여백이
+          (screen/role-auth/requirements.md) 개인 예외의 152px 이 필요 없다. 그리드의 스위치 폭(56) + 셀 여백이
           들어가는 값이다.
         */
         width: 92,
@@ -143,7 +143,7 @@ export function AuthTree(props: Props) {
               style={{ minWidth: SWITCH_WIDTH }}
               checked={granted.get(row.menuCd)?.has(action) === true}
               /*
-                <b>`SAVE` 가 없으면 스위치도 잠긴다</b>(screen/menu/requirements.md 주석 4). 저장 버튼만 감추면
+                <b>`SAVE` 가 없으면 스위치도 잠긴다</b>(screen/role-auth/requirements.md 주석 4). 저장 버튼만 감추면
                 <b>체크는 되는데 저장할 수 없는 상태</b>가 된다(frontend/tabs.md).
               */
               disabled={!canSave}
@@ -205,7 +205,7 @@ export function AuthTree(props: Props) {
             (2026-09-01 요청). 두 화면이 같은 일을 하는데 표시가 다르면 그것이 학습 비용이다.
 
             <b>목록이 아니라 트리가 낸다.</b> 이 화면에는 하단 예외 목록 같은 <i>바뀐 것의
-            목록</i>이 없으므로(저장 단위가 트리다 — screen/menu/requirements.md) 이 표시가 <b>무엇을 만졌나에
+            목록</i>이 없으므로(저장 단위가 트리다 — screen/role-auth/requirements.md) 이 표시가 <b>무엇을 만졌나에
             답하는 유일한 자리</b>다.
           */}
           {props.dirtyMenus.has(row.menuCd) && (
@@ -213,14 +213,14 @@ export function AuthTree(props: Props) {
           )}
         </span>
       )}
-      /* 폭을 내용에서 내고 잘린 이름은 툴팁이 말한다 — screen/menu/requirements.md. */
+      /* 폭을 내용에서 내고 잘린 이름은 툴팁이 말한다 — screen/role-auth/requirements.md. */
       hierarchyText={(row) => row.menuNm}
       columns={columns}
       loading={props.loading}
       emptyText={props.emptyText}
       /*
         <b>선택이 없다.</b> 여기서 행 하나는 그 자체로 편집 대상이고 <b>아래를 정하지
-        않는다</b> — 하단은 역할의 것이다(screen/menu/requirements.md). 선택 하이라이트만 남으면 <i>고르면
+        않는다</b> — 하단은 역할의 것이다(screen/role-auth/requirements.md). 선택 하이라이트만 남으면 <i>고르면
         무언가 일어날 것</i> 이라는 기대를 만든다.
 
         <b>드래그도 없다.</b> 순서와 부모는 `MENU_TREE` 의 것이며(sys/menu.md) 여기서 옮길 수 있게
@@ -254,7 +254,7 @@ const ACTION_HEADER: Record<Action, string> = {
 /**
  * 폴더 한 칸 — <b>전체 · 부분 · 없음</b>(AUTHZ-03).
  *
- * <p><b>액션이 없는 자식(`—`)은 요약에서 뺀다</b>(screen/menu/requirements.md 목업 §3 주석 4) — <i>줄 수 없는
+ * <p><b>액션이 없는 자식(`—`)은 요약에서 뺀다</b>(screen/role-auth/requirements.md 목업 §3 주석 4) — <i>줄 수 없는
  * 것</i>을 <i>안 줬다</i> 로 세면 폴더가 영영 *전체* 가 되지 않는다. 셀 수 있는 자식이 아예
  * 없으면 <b>아무것도 그리지 않는다</b>: 그 자리에 *없음* 을 두면 <i>줄 수 있는데 안 줬다</i>
  * 로 읽힌다.

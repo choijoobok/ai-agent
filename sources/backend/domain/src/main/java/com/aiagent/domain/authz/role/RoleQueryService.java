@@ -111,7 +111,7 @@ public class RoleQueryService {
      * 때문이다({@code LISTAGG} · {@code GROUP_CONCAT} · {@code string_agg} — backend/persistence.md).
      * <b>{@code COUNT} 에는 그 문제가 없다</b> — 그래서 세는 것은 컬럼으로 둔다.
      *
-     * <p>셋 중 둘이 <b>삭제 게이트의 근거</b>다(§3.5). 조회 응답이 이미 갖고 있으므로
+     * <p>셋 중 둘이 <b>삭제 게이트의 근거</b>다. 조회 응답이 이미 갖고 있으므로
      * <b>자식이 화면에 없어도 게이트가 닫힌다</b> — {@code SYS_ROLE_MENU_AUTH} 는 이 화면에
      * 디테일이 없고(편집은 §2 다) frontend/grid.md 의 <i>"디테일이 전부 도착한 뒤 판정"</i> 이 그대로는
      * 성립하지 않는 첫 화면이다.
@@ -411,7 +411,7 @@ public class RoleQueryService {
      *
      * <p>screen/menu/requirements.md 의 <i>매핑 역할</i> 이 {@code countDistinct} 인 것과 갈리는 자리다. 거기서는
      * 같은 수를 탭 3 의 목록이 다시 세지만, 여기 <b>권한 건수는 목록이 없다</b> — 세는 것이
-     * 곧 {@code SYS_ROLE_MENU_AUTH} 의 행이고, 그것이 <b>FK 가 막는 것</b>과 같은 단위다(§3.5).
+     * 곧 {@code SYS_ROLE_MENU_AUTH} 의 행이고, 그것이 <b>FK 가 막는 것</b>과 같은 단위다.
      */
     private Map<String, Long> authCounts(List<String> roleIds) {
         if (roleIds.isEmpty()) {

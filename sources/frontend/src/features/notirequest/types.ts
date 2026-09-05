@@ -5,21 +5,21 @@ export type ReqType = 'ROLE_GRANT' | 'UNLOCK' | 'ETC';
 export type ReqStatus = 'RECEIVED' | 'DONE' | 'REJECTED';
 
 /**
- * 서버 `NotiRequestRow` 와 1:1 — screen/notice/requirements.md.
+ * 서버 `NotiRequestRow` 와 1:1 — screen/noti-request/requirements.md.
  *
- * <p><b>짝이 되는 `SaveRow` 가 없다.</b> 이 화면은 셀을 고치지 않으므로(screen/notice/requirements.md) 행 단위
+ * <p><b>짝이 되는 `SaveRow` 가 없다.</b> 이 화면은 셀을 고치지 않으므로(screen/noti-request/requirements.md) 행 단위
  * 저장이 성립하지 않는다 — 입력은 대상 목록 + 상태 + 메모 셋뿐이며 그 셋이 곧 하나의
  * 판정이다.
  */
 export interface NotiRequestRow {
   reqId: number;
-  /** <b>오름차순</b>이 기본이다 — 대기열은 오래 기다린 것이 먼저다(screen/notice/requirements.md). */
+  /** <b>오름차순</b>이 기본이다 — 대기열은 오래 기다린 것이 먼저다(screen/noti-request/requirements.md). */
   creDtm: string;
   userId: string;
   /** 요청자 이름 — `USER_ID` 만으로는 누가 낸 것인지 판단할 수 없다. */
   userNm: string;
   /**
-   * <b>미사용 계정인가</b> — screen/notice/requirements.md.
+   * <b>미사용 계정인가</b> — screen/noti-request/requirements.md.
    *
    * <p>이름 옆에 `(미사용)` 을 붙여 *지금 로그인할 수 없는 사람* 임을 알리되
    * <b>처리는 막지 않는다</b>: 요청은 계정이 살아 있을 때 낸 것이다.

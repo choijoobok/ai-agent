@@ -78,7 +78,7 @@ export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
   /*
     샘플 — 68. **참조 구현이지 업무 화면이 아니다.** 걷어낼 때 지우는 줄이 여기 있고
     (playbook/INDEX.md) `generateApiSeed` 가 이 줄을 따라와 `@/features/sample/mdvertical/api/endpoints.ts` 를
-    읽으므로, 지우면 006·007 시드에서 샘플 API 가 저절로 사라진다(§7.1).
+    읽으므로, 지우면 006·007 시드에서 샘플 API 가 저절로 사라진다.
   */
   '/sample/single-offset': lazy(async () => ({
     default: (await import('@/features/sample/singleoffset/pages/SampleSingleOffsetPage'))
