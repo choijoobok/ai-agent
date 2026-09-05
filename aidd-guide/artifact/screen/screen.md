@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-04
 status: active
 sources: ["aidd-guide/artifact/template/02-requirements.md", "documents/screen/README.md", "CLAUDE.md"]
-author: Bong Jong Hyeon
 tier: 1
 tags: [prompt, requirements, procedure]
 ---

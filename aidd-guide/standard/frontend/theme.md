@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-03
 status: active
 sources: ["sources/frontend/src/shared/theme/", "sources/frontend/src/shared/stores/uiStore.ts"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [frontend, theme, dark-mode, antd, ag-grid]
 ---

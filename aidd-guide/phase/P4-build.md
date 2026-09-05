@@ -7,7 +7,6 @@ created: 2026-09-04
 updated: 2026-09-04
 status: active
 sources: []
-author: Bong Jong Hyeon
 tier: 1
 tags: [build, slice]
 ---
@@ -60,7 +59,7 @@ tags: [build, slice]
 
 ```
 sources/
-  <도메인영역>/            # 입고, 출고, 재고, 기준정보, 시스템
+  <도메인영역>/            # 조회, 카탈로그, 실행, 운영, 시스템
     <feature>/
       *.controller.*       # @feat FEAT-###
       *.service.*

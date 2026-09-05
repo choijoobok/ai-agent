@@ -7,7 +7,6 @@ created: 2026-09-04
 updated: 2026-09-04
 status: active
 sources: []
-author: Bong Jong Hyeon
 tier: 2
 tags: [duplication, minigate, defect]
 ---
@@ -69,7 +68,7 @@ python .claude/hooks/quality-check.mjs
 
 | ID | 발견단계 | 심각도 | FEAT | 내용 | 원인분류 | 상태 | 조치 |
 |---|---|---|---|---|---|---|---|
-| DEF-013 | P5 | High | FEAT-021 | 동시 출고 시 재고 마이너스 | 설계결함 | 수정완료 | ADR-011 낙관락 도입 |
+| DEF-013 | P5 | High | FEAT-021 | 동시 질의 시 토큰 쿼터 마이너스 | 설계결함 | 수정완료 | ADR-011 낙관락 도입 |
 
 **심각도**: Critical(업무 불가/데이터 손상) · High(주요 기능 오동작) · Medium(우회 가능) · Low(경미)
 **원인분류**: 요구사항누락 · 설계결함 · 구현오류 · 환경 · 데이터 — 분류를 남겨야 어느 단계를 보강할지 안다.

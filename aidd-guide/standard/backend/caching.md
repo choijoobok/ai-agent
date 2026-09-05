@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-03
 status: active
 sources: ["sources/backend/domain/message/", "sources/backend/bootstrap/src/main/resources/application.yml", "aidd-guide/standard/backend/security.md"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [backend, cache, invalidation]
 ---

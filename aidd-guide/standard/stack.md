@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-04
 status: active
 sources: ["sources/gradle/libs.versions.toml", "sources/frontend/package.json", "aidd-guide/standard/stack.md"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [stack, version, gradle, npm]
 ---

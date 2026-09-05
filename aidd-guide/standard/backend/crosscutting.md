@@ -7,7 +7,6 @@ created: 2026-09-03
 updated: 2026-09-04
 status: active
 sources: ["sources/backend/api/config/InterceptorConfig.java", "sources/backend/api/", "sources/backend/bootstrap/src/main/resources/application.yml"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [backend, filter, interceptor, aop, order, async, virtual-thread, dedup]
 ---

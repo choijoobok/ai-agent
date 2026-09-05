@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-03
 status: active
 sources: ["sources/backend/", "sources/frontend/", "sources/gradle/libs.versions.toml"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [framework, index]
 ---

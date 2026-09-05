@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-05-04
 status: active
 sources: [Drew Breunig "How long contexts fail", Chroma Context Rot]
-author: Bong Jong Hyeon
 tier: 1
 tags: [context, failure-mode, rot, distraction, clash, poisoning]
 ---

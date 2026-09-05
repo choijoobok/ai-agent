@@ -7,7 +7,6 @@ created: 2026-09-04
 updated: 2026-09-04
 status: active
 sources: ["aidd-guide/artifact/INDEX.md", "documents/screen/"]
-author: Bong Jong Hyeon
 tier: 3
 tags: [artifact, template, format]
 ---

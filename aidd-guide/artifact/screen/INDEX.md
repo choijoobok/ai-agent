@@ -7,7 +7,6 @@ created: 2026-04-30
 updated: 2026-09-03
 status: active
 sources: ["aidd-guide/artifact/template/02-requirements.md", "documents/screen/README.md", "CLAUDE.md"]
-author: Bong Jong Hyeon
 tier: 1
 tags: [prompt, requirements, overlay, index]
 ---

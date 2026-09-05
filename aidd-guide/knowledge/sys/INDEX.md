@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-04
 status: active
 sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/"]
-author: Bong Jong Hyeon
 tier: 3
 tags: [knowledge, sys, index]
 ---

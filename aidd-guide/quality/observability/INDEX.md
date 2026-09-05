@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-05-04
 status: active
 sources: [Hamel Husain Evals, Anthropic 비용 가이드]
-author: Bong Jong Hyeon
 tier: 3
 tags: [observability, telemetry, routing-accuracy, token, monitoring, index]
 ---

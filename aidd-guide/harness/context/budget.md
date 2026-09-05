@@ -7,7 +7,6 @@ created: "2026-04-30"
 updated: "2026-04-30"
 status: active
 sources: 
-author: Bong Jong Hyeon
 tier: 1
 tags: [context, budget, compact, clear]
 ---

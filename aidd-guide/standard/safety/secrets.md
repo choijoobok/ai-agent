@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-05-04
 status: active
 sources: [git-secrets, OWASP Top 10 A07]
-author: Bong Jong Hyeon
 tier: 4
 tags: [safety, secrets, credentials, env]
 ---

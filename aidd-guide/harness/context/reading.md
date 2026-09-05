@@ -7,7 +7,6 @@ created: "2026-04-30"
 updated: "2026-09-03"
 status: active
 sources:
-author: Bong Jong Hyeon
 tier: 1
 tags: [context, seek-read, grep]
 ---

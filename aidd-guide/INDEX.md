@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-04
 status: active
 sources: []
-author: Bong Jong Hyeon
 tier: 1
 tags: [index, routing, master, decision-tree]
 ---

@@ -7,7 +7,6 @@ created: 2026-09-04
 updated: 2026-09-04
 status: active
 sources: [“ordinary-backoffice docs/menu/_TEMPLATE/manual.md”, "documents/screen/"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [artifact, template, screen]
 ---

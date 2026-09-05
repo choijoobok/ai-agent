@@ -7,7 +7,6 @@ created: 2026-09-04
 updated: 2026-09-04
 status: active
 sources: ["sources/backend/domain/", "documents/spec/22-authz.yaml"]
-author: Bong Jong Hyeon
 tier: 3
 tags: [backend, pii, privacy, vault, constraint]
 ---

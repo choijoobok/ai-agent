@@ -7,7 +7,6 @@ created: "2026-04-30"
 updated: "2026-09-03"
 status: active
 sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
-author: Bong Jong Hyeon
 tier: 3
 tags: [meta, frontmatter, spec]
 ---
@@ -24,7 +23,6 @@ title: "사람이 읽는 제목"
 category: "{카테고리 경로}"
 created: "YYYY-MM-DD"
 updated: "YYYY-MM-DD"
-author: "문서 작성자 이름"
 sources:
   - "참고 원본 경로 또는 URL"
 status: active
@@ -38,10 +36,9 @@ tags: [tag1, tag2]
 |------|-----|------|
 | `id` | ✅ | 전역 유일 ID. 형식: `LLM-{3char}-{3digit}` 또는 `LLM-{3char}-IDX` (인덱스) |
 | `title` | ✅ | 한국어 제목 (큰따옴표) |
-| `category` | ✅ | 카테고리 폴더 상대 경로 (예: `06-framework/backend`) |
+| `category` | ✅ | **파일이 실제로 있는 폴더**의 `aidd-guide/` 기준 경로 (예: `standard/backend`). 폴더를 옮기면 이 값도 함께 옮긴다 |
 | `created` | ✅ | 최초 생성일 (변경 불가) |
 | `updated` | ✅ | 최종 수정일 (수정 시 반드시 갱신) |
-| `author` | ⭕ | 문서 작성자 이름. 이 저장소는 `Bong Jong Hyeon` 하나다 |
 | `sources` | ⭕ | 참고한 원본 문서·URL 목록 (배열) |
 | `status` | ✅ | `active` / `deprecated` / `replaced` |
 | `tags` | ⭕ | 검색용 키워드 배열 |
@@ -84,7 +81,12 @@ tags: [tag1, tag2]
 
 1. **`updated` 갱신 필수** — 본문 변경 시 반드시 갱신
 2. **`id` 변경 금지** — 신규 발급 외 불변
-3. **`sources` 는 가능한 모든 원본 명시** — 추적성 확보
+3. **`sources` 는 가능한 모든 원본 명시** — 추적성 확보.
+   **다른 저장소에서 온 것은 그 저장소를 밝힌다** — `wms5/orchestration/00-meta` 처럼.
+   폴더 이름만 적으면 어디 것인지 알 수 없고, 그러면 *여기에 맞는 규칙인가* 를 의심할 근거가 사라진다.
+4. **`author` 를 두지 않는다** — 저자는 git 이 갖는다(`git blame`). frontmatter 의 이름은
+   고쳐도 안 고쳐도 틀린다: 이 저장소는 다른 프로젝트의 원저자 이름을 131 파일에 달고
+   있었고, 그중 상당수는 여기서 다시 쓰인 것이었다.
 4. **신규 문서 등록 시** 해당 카테고리 INDEX.md 의 표에 추가
 
 ## 검증 (수동)

@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-05
 status: active
 sources: ["aidd-guide/INDEX.md 결정 트리", "Hamel Husain Evals", "wms5/orchestration/00-meta (외부 프로젝트 — 골든셋의 원형)"]
-author: Bong Jong Hyeon
 tier: 3
 tags: [observability, routing, accuracy, golden-set]
 ---

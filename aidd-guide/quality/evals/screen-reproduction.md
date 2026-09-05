@@ -7,7 +7,6 @@ created: 2026-09-04
 updated: 2026-09-04
 status: active
 sources: ["2026-09-04 재현 실험 4화면", "Hamel Husain 'Look at your data'"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [evals, generation, regression, documentation, golden-set]
 ---

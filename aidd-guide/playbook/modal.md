@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-03
 status: active
 sources: ["sources/frontend/src/shared/formmodal/", "sources/frontend/src/shared/popup/", "sources/frontend/src/features/sample/popups.ts", "sources/frontend/src/features/sample/singleoffset/pages/SampleSingleOffsetPage.tsx"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [playbook, modal, popup, editor]
 ---

@@ -7,7 +7,6 @@ created: 2026-09-04
 updated: 2026-09-04
 status: active
 sources: []
-author: Bong Jong Hyeon
 tier: 1
 tags: [inception, charter]
 ---
@@ -78,28 +77,28 @@ tags: [inception, charter]
 
 ### `documents/spec/00-charter.yaml`
 ```yaml
-purpose: "협력사 입고부터 출고까지 재고를 실시간으로 파악해, 월말 재고 실사 오차를 없앤다"
+purpose: "업무 시스템 여럿에 흩어진 데이터를 자연어로 한 번에 조회해, 화면을 번갈아 열고 손으로 대조하는 일을 없앤다"
 problem:
-  - "현재 엑셀 취합으로 재고 파악에 이틀이 걸리고 오차가 5%대"
-  - "협력사 입고 예정을 전화로 받아 누락이 잦음"
+  - "한 건을 확인하려고 시스템 셋을 열고 엑셀에 붙여 맞춘다 — 건당 20분"
+  - "테이블 뜻을 아는 사람이 부서마다 한둘이라 조회 요청이 그 사람에게 몰린다"
 success_criteria:            # 측정 가능하게. 최대 3개.
   - id: SC-01
-    metric: "월말 재고 실사 오차율"
-    baseline: "5%"
-    target: "0.5% 이하"
+    metric: "자연어 조회 성공률 — 사람 손을 거치지 않고 끝난 비율"
+    baseline: "0% (신규)"
+    target: "80% 이상"
   - id: SC-02
-    metric: "입고 처리 소요 시간"
-    baseline: "건당 15분"
-    target: "건당 3분 이하"
+    metric: "시스템 경계를 넘는 조회 1건의 소요 시간"
+    baseline: "건당 20분"
+    target: "건당 2분 이하"
 scope_in:
-  - "입고 예정/검수/적치"
-  - "출고 지시/피킹/출고 확정"
-  - "재고 조회 및 조정"
+  - "스키마 카탈로그 등록/검수"
+  - "자연어 조회 — 계획 제시·SQL 생성·검증·실행"
+  - "결과 그리드·차트·다운로드"
 scope_out:                   # ★ 반드시 채운다. 비면 게이트 미충족.
-  - item: "운송사 연동"
-    reason: "2차 범위. 현재 운송사 API 미제공"
-  - item: "모바일 앱"
-    reason: "PDA 웹으로 대체"
+  - item: "자연어 기능 실행"
+    reason: "2차 범위. 조회가 서기 전에는 실행의 위험을 감당할 수 없다"
+  - item: "워크플로우 자동화"
+    reason: "3차 범위"
 track: standard              # lite | standard | full
 deadline: "2026-12-31"
 operator: "정보시스템팀 (2명)"
@@ -114,29 +113,29 @@ expectations:                # §2-A 기대치 정렬 결과. 비어 있으면 G
 ### `documents/spec/01-actors.yaml`
 ```yaml
 - id: ACT-001
-  name: 창고작업자
+  name: 현업 담당자
   type: human                # human | system | external
-  count: 25
-  goals: ["입고 검수를 빠르게", "PDA로 현장에서 처리"]
-  environment: "창고 현장, PDA(안드로이드 웹브라우저)"
-  authority: "본인 담당 창고 데이터만"
+  count: 120
+  goals: ["화면을 찾아다니지 않고 답을 얻는다", "받은 숫자를 그대로 보고에 쓴다"]
+  environment: "사내망 PC 브라우저"
+  authority: "본인 소속 조직의 데이터만"
 - id: ACT-010
   name: 사내 ERP
   type: system
-  goals: ["품목 마스터 제공", "출고 확정 결과 수신"]
-  interface_direction: bidirectional
+  goals: ["자기 데이터를 읽게 열어 준다", "코드와 스키마는 바꾸지 않는다"]
+  interface_direction: inbound
 ```
 
 ### `documents/spec/02-constraints.yaml`
 ```yaml
 - id: CON-001
   type: technical            # technical | organizational | budget | schedule | regulatory
-  description: "사내 표준: Java 17 + Spring Boot, Oracle 19c"
+  description: "사내 표준: JDK 25 + Spring Boot, PostgreSQL. 폐쇄망 구축"
   source: "정보시스템팀 표준 가이드"
   negotiable: false
 - id: CON-002
   type: regulatory
-  description: "협력사 담당자 개인정보(성명·연락처) 수집 — 개인정보처리방침 반영 필요"
+  description: "조회 결과에 포함되는 개인정보(성명·연락처) 열람 — 개인정보처리방침 반영 필요"
   negotiable: false
 ```
 

@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-05-04
 status: active
 sources: [Hamel Husain Evals, 일반 A/B 방법론]
-author: Bong Jong Hyeon
 tier: 3
 tags: [evals, ab-testing, variants]
 ---

@@ -7,7 +7,6 @@ created: 2026-09-04
 updated: 2026-09-04
 status: active
 sources: []
-author: Bong Jong Hyeon
 tier: 1
 tags: [design, baseline]
 ---
@@ -40,36 +39,36 @@ tags: [design, baseline]
 
 ```yaml
 - id: UC-004
-  name: 입고 예정 등록
+  name: 스키마 카탈로그 등록
   actors: { primary: ACT-004, secondary: [ACT-003] }
   reqs: [REQ-011, REQ-012]
   process_step: PRC-01-01
-  precondition: "협력사담당자로 로그인, 유효한 발주가 존재"
-  trigger: "협력사가 납품 일정을 확정"
+  precondition: "업무 지식 관리자로 로그인, 대상 DB 연결이 등록되어 있음"
+  trigger: "새 업무 시스템을 조회 대상으로 붙인다"
   main_flow:
-    - "1. 발주번호를 선택한다"
-    - "2. 시스템이 발주 잔량을 표시한다"
-    - "3. 품목별 예정 수량과 예정일을 입력한다"
+    - "1. 대상 DB 연결을 고른다"
+    - "2. 시스템이 대상 DB 의 테이블·컬럼 목록을 읽어 온다"
+    - "3. 컬럼마다 업무 의미와 예시 값을 입력한다"
     - "4. 저장한다"
-    - "5. 시스템이 예정번호를 채번하고 창고담당자에게 알림을 보낸다"
+    - "5. 시스템이 항목을 검수대기로 두고 검수자에게 알림을 보낸다"
   alternative_flows:
     - id: A1
       at_step: 1
-      condition: "발주 없이 긴급 납품"
-      flow: ["발주 없음 선택 → 사유 입력 → 창고담당자 승인 대기 상태로 저장"]
+      condition: "물리 스키마에 없는 논리 컬럼을 등록"
+      flow: ["직접 입력 선택 → 근거 입력 → 검수자 승인 대기 상태로 저장"]
   exception_flows:                      # ★ 최소 1개 필수
     - id: E1
       at_step: 4
-      condition: "예정 수량 > 발주 잔량"
-      flow: ["오류 표시 '발주 잔량(N)을 초과했습니다' → 저장 중단"]
+      condition: "물리 스키마에 없는 컬럼명을 입력"
+      flow: ["오류 표시 '대상 테이블에 없는 컬럼입니다' → 저장 중단"]
     - id: E2
       at_step: 4
-      condition: "동일 발주·품목의 예정이 이미 존재"
-      flow: ["기존 예정 표시 → 수정 또는 추가 등록 선택"]
-  postcondition: "입고예정(상태=예정) 생성, 발주 잔량 차감(예약)"
+      condition: "동일 테이블의 카탈로그 항목이 이미 존재"
+      flow: ["기존 항목 표시 → 수정 또는 컬럼만 추가 선택"]
+  postcondition: "카탈로그 항목(상태=검수대기) 생성"
   business_rules:
-    - "예정일은 오늘 이후만 가능"
-    - "예정 수량 합계는 발주 수량을 초과할 수 없다"
+    - "검수를 거치지 않은 항목은 조회 계획에 쓰이지 않는다"
+    - "컬럼 하나에 업무 의미는 하나만 등록한다"
 ```
 
 **규칙**: `exception_flows` 가 비면 게이트 미충족. 예외 없는 업무는 없다.
@@ -83,18 +82,18 @@ UC는 **업무 관점**, FEAT는 **시스템이 제공하는 것** — 1:N일 �
 ```yaml
 menu:                                    # 메뉴 트리 = 사용자가 보는 구조
   - id: MNU-01
-    name: 입고관리
+    name: 업무 지식 관리
     children:
-      - { id: MNU-01-01, name: 입고예정등록, feature: FEAT-012, roles: [ROLE-004, ROLE-003] }
-      - { id: MNU-01-02, name: 입고예정조회, feature: FEAT-013, roles: [ROLE-001, ROLE-003, ROLE-004] }
+      - { id: MNU-01-01, name: 카탈로그등록, feature: FEAT-012, roles: [ROLE-004, ROLE-003] }
+      - { id: MNU-01-02, name: 카탈로그조회, feature: FEAT-013, roles: [ROLE-001, ROLE-003, ROLE-004] }
 
 features:
   - id: FEAT-012
-    name: 입고 예정 등록
+    name: 스키마 카탈로그 등록
     usecases: [UC-004]
     reqs: [REQ-011, REQ-012]
     type: transaction                    # transaction | inquiry | master | batch | report | interface
-    description: "협력사가 납품 예정을 등록한다"
+    description: "관리자가 테이블에 업무 의미를 붙여 등록한다"
     entities: [ENT-004, ENT-005]
     apis: [API-031, API-032]
     screens: [SCR-008]
@@ -112,11 +111,11 @@ features:
 ```yaml
 entities:
   - id: ENT-004
-    name: inbound_plan
-    display_name: 입고예정
-    term: TRM-001                        # 용어사전 연결
+    name: schema_catalog
+    display_name: 스키마 카탈로그
+    term: TRM-004                        # 용어사전 연결
     features: [FEAT-012, FEAT-013]
-    description: "협력사가 통보한 납품 예정"
+    description: "테이블·컬럼에 붙인 업무 의미"
     attributes:
       - { name: plan_id,      type: "BIGINT",        pk: true,  generated: sequence }
       - { name: plan_no,      type: "VARCHAR(20)",   null: false, unique: true, rule: "IP-YYYYMMDD-NNN" }
@@ -168,8 +167,8 @@ conventions:
 - id: API-031
   feature: FEAT-012
   method: POST
-  path: /api/inbound-plans
-  summary: 입고예정 등록
+  path: /api/admin/schema-catalog/create
+  summary: 스키마 카탈로그 등록
   auth: required
   roles: [ROLE-004, ROLE-003]
   request:
@@ -181,9 +180,9 @@ conventions:
   responses:
     201: { plan_id: integer, plan_no: string }
     400: "VALIDATION_ERROR"
-    409: "DUPLICATE_PLAN — UC-004 E2"
-    422: "EXCEEDS_ORDER_QTY — UC-004 E1"
-  transaction: "예정 생성 + 발주 잔량 예약을 단일 트랜잭션"
+    409: "DUPLICATE_CATALOG — UC-004 E2"
+    422: "COLUMN_NOT_FOUND — UC-004 E1"
+  transaction: "카탈로그 생성 + 컬럼 항목 등록을 단일 트랜잭션"
   idempotency: "요청 헤더 Idempotency-Key 지원"
 ```
 
@@ -196,23 +195,23 @@ conventions:
 ```yaml
 - id: SCR-008
   feature: FEAT-012
-  name: 입고예정등록
+  name: 카탈로그등록
   menu: MNU-01-01
   type: form                             # list | form | list_detail | dashboard | popup | wizard
   roles: [ROLE-004, ROLE-003]
-  layout_note: "상단 발주 선택, 하단 품목 그리드(행 추가/삭제)"
+  layout_note: "상단 대상 테이블 선택, 하단 컬럼 그리드(행 추가/삭제)"
   fields:
-    - { name: 발주번호,   control: search_popup, required: true, source: API-020 }
-    - { name: 예정일,     control: datepicker,   required: true, validation: "오늘 이후" }
-    - { name: 품목그리드, control: grid, min_rows: 1,
-        columns: [품목코드, 품목명, 발주잔량, 예정수량],
-        validation: "예정수량 > 0, 예정수량 ≤ 발주잔량" }
+    - { name: 대상테이블, control: search_popup, required: true, source: API-020 }
+    - { name: 업무영역,   control: code_select,  required: true, group: "CATALOG_DOMAIN" }
+    - { name: 컬럼그리드, control: grid, min_rows: 1,
+        columns: [컬럼명, 물리타입, 업무의미, 예시값],
+        validation: "업무의미 필수, 컬럼명은 물리 스키마에 존재" }
   actions:
-    - { name: 저장, api: API-031, confirm: false, on_success: "목록으로 이동 + 예정번호 표시" }
+    - { name: 저장, api: API-031, confirm: false, on_success: "목록으로 이동 + 카탈로그ID 표시" }
     - { name: 취소, action: "변경분 있으면 확인 후 목록으로" }
   error_display:
-    - { code: EXCEEDS_ORDER_QTY, message: "발주 잔량을 초과했습니다", target: "해당 그리드 행" }
-  empty_state: "선택한 발주에 잔량이 없습니다"
+    - { code: COLUMN_NOT_FOUND, message: "대상 테이블에 없는 컬럼입니다", target: "해당 그리드 행" }
+  empty_state: "선택한 테이블에 등록할 컬럼이 없습니다"
   loading: "저장 중 버튼 비활성화 (중복 제출 방지)"
 ```
 
@@ -227,30 +226,30 @@ conventions:
 ```mermaid
 sequenceDiagram
   autonumber
-  actor V as 협력사담당자
+  actor V as 업무지식관리자
   participant UI as SCR-008
   participant API as API-031
   participant SVC as InboundPlanService
   participant DB as DB
   participant NOTI as 알림
 
-  V->>UI: 발주 선택
-  UI->>API: GET /orders/{id}/remaining
-  API-->>UI: 잔량
+  V->>UI: 대상 테이블 선택
+  UI->>API: GET /api/admin/schema-catalog/columns
+  API-->>UI: 컬럼 목록
   V->>UI: 수량 입력 후 저장
   UI->>API: POST /api/inbound-plans
   API->>SVC: create(cmd)
   SVC->>DB: BEGIN
-  SVC->>DB: SELECT 발주잔량 FOR UPDATE
-  alt 잔량 초과
-    SVC-->>API: 422 EXCEEDS_ORDER_QTY
+  SVC->>DB: SELECT 카탈로그 FOR UPDATE
+  alt 이미 검수된 항목
+    SVC-->>API: 422 ALREADY_REVIEWED
     API-->>UI: 오류 (UC-004 E1)
   else 정상
-    SVC->>DB: INSERT inbound_plan
-    SVC->>DB: UPDATE order_item 예약수량
+    SVC->>DB: INSERT schema_catalog
+    SVC->>DB: UPDATE catalog_column 검수상태
     SVC->>DB: COMMIT
-    SVC->>NOTI: 창고담당자 알림 (비동기)
-    API-->>UI: 201 예정번호
+    SVC->>NOTI: 검수자 알림 (비동기)
+    API-->>UI: 201 카탈로그ID
   end
 ```
 
@@ -288,4 +287,4 @@ sequenceDiagram
 | 화면 정의가 행복 경로뿐 | `error_display`/`empty_state` 필수 필드 |
 | 상태 컬럼에 전이 정의가 없다 | `state_machine` 필수 |
 | ASM을 남긴 채 게이트 통과 시도 | G3는 미해결 ASM 0건이 조건 |
-| 설계가 너무 길어져 사용자가 지친다 | 도메인 영역별로 쪼개 부분 승인 (입고 영역 먼저, 출고 영역 다음) |
+| 설계가 너무 길어져 사용자가 지친다 | 도메인 영역별로 쪼개 부분 승인 (조회 영역 먼저, 실행 영역 다음) |

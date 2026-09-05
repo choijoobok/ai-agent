@@ -6,7 +6,6 @@ type: operation
 created: 2026-05-04
 updated: 2026-05-04
 status: active
-author: Bong Jong Hyeon
 tier: 3
 tags: [observability, context-rot, attention-budget, decay]
 ---

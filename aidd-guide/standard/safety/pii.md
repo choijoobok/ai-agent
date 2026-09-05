@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-05-04
 status: active
 sources: [Anthropic user_privacy block, GDPR Article 4]
-author: Bong Jong Hyeon
 tier: 4
 tags: [safety, pii, privacy]
 ---

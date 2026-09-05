@@ -7,7 +7,6 @@ created: 2026-09-04
 updated: 2026-09-04
 status: active
 sources: ["sources/frontend/src/features/menu/pages/MenuTreePage.tsx", "sources/frontend/src/features/roleauth/", "sources/frontend/src/features/userauth/", "sources/frontend/src/shared/tree/"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [playbook, tree, splitpane, authz, menu]
 ---

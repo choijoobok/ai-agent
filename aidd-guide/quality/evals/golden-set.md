@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-05-04
 status: active
 sources: [Hamel Husain Evals]
-author: Bong Jong Hyeon
 tier: 3
 tags: [evals, golden-set, fixture]
 ---

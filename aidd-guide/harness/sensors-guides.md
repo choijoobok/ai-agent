@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-05-04
 status: active
 sources: [Birgitta Böckeler / Thoughtworks "Engineering with AI"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [harness, sensors, guides, automation, classification]
 ---

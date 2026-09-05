@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-03
 status: active
 sources: ["sources/backend/core/search/", "sources/backend/domain/search/", "aidd-guide/standard/backend/api.md", "aidd-guide/standard/backend/search.md"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [backend, query, search, whitelist, paging]
 ---

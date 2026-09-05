@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-03
 status: active
 sources: ["sources/frontend/src/features/sample/singleoffset/pages/SampleSingleOffsetPage.tsx", "sources/frontend/src/shared/searchform/types.ts"]
-author: Bong Jong Hyeon
 tier: 1
 tags: [prompt, overlay, search]
 ---

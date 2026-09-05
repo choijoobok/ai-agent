@@ -7,7 +7,6 @@ created: 2026-09-03
 updated: 2026-09-03
 status: active
 sources: ["sources/backend/bootstrap/build.gradle.kts", "aidd-guide/standard/seed.md"]
-author: Bong Jong Hyeon
 tier: 1
 tags: [seed, liquibase, gradle, authz, message]
 ---

@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-05-04
 status: active
 sources: [Anthropic API 문서, Bash sleep 정책]
-author: Bong Jong Hyeon
 tier: 4
 tags: [safety, rate-limit, api, cost-guard]
 ---

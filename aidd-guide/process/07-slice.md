@@ -7,7 +7,6 @@ created: 2026-09-04
 updated: 2026-09-04
 status: active
 sources: []
-author: Bong Jong Hyeon
 tier: 1
 tags: [slice, vertical]
 ---
@@ -20,7 +19,7 @@ tags: [slice, vertical]
 계층별(전체 DB 먼저 → 전체 API → 전체 UI)로 만들지 않는다. 계층별 구현은 마지막에 전부 터진다.
 
 ```
-SLICE-007 = FEAT-012 입고 예정 등록
+SLICE-007 = FEAT-012 스키마 카탈로그 등록
   ├─ DB   : ENT-004 테이블 + 마이그레이션
   ├─ API  : API-031 POST, API-032 GET
   ├─ UI   : SCR-008 등록 화면
@@ -81,12 +80,12 @@ AI는 코드를 먼저 쓰면 그 코드에 맞는 테스트를 쓴다. 이건 �
 ## 6. 슬라이스 완료 보고 포맷
 
 ```markdown
-## ✅ SLICE-007 완료 — FEAT-012 입고 예정 등록
+## ✅ SLICE-007 완료 — FEAT-012 스키마 카탈로그 등록
 
 **구현**
 - ENT-004 `inbound_plan` 테이블 (migration V007) — 롤백: V007_rollback.sql
 - API-031 `POST /api/inbound-plans`, API-032 `GET /api/inbound-plans`
-- SCR-008 입고예정등록 화면
+- SCR-008 카탈로그등록 화면
 
 **테스트**  3/3 통과
 - TC-0121 정상 등록 ✅
@@ -99,5 +98,5 @@ AI는 코드를 먼저 쓰면 그 코드에 맞는 테스트를 쓴다. 이건 �
 **발견 사항**
 - spec에 예정수량 상한이 없어 CR-003 등록 (999,999로 임시 적용 [ASM-011])
 
-**다음**: SLICE-008 (FEAT-013 입고 예정 조회/수정)
+**다음**: SLICE-008 (FEAT-013 카탈로그 조회/수정)
 ```

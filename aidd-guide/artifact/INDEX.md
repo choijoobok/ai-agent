@@ -7,7 +7,6 @@ created: 2026-09-04
 updated: 2026-09-04
 status: active
 sources: []
-author: Bong Jong Hyeon
 tier: 1
 tags: [artifact, map, index]
 ---
@@ -131,7 +130,7 @@ ERD, 시퀀스, 상태도, 플로우차트 전부 Mermaid 코드블록. 텍스�
 ```markdown
 ---
 id: FEAT-012
-title: 입고 예정 등록
+title: 스키마 카탈로그 등록
 traces_to: [UC-004, REQ-011]
 status: baselined      # draft | reviewed | baselined | changed
 generated_from: documents/spec/31-features.yaml

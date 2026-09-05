@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-05-04
 status: active
 sources: [Anthropic critical_injection_defense, OWASP LLM Top 10]
-author: Bong Jong Hyeon
 tier: 4
 tags: [safety, security, pii, injection, secrets, rate-limit, index]
 ---

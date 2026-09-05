@@ -7,7 +7,6 @@ created: 2026-09-03
 updated: 2026-09-03
 status: active
 sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/batch/", "sources/backend/support/src/main/java/com/aiagent/support/lock/", "sources/frontend/src/shared/batch/"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [backend, batch, scheduler, lock, cancel]
 ---

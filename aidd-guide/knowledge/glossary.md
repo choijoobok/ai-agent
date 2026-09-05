@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-03
 status: active
 sources: ["sources/backend/core/src/main/java/com/aiagent/core/search/Op.java", "sources/frontend/src/shared/grid/rows.ts", "sources/backend/domain/", "CLAUDE.md"]
-author: Bong Jong Hyeon
 tier: 3
 tags: [knowledge, glossary, vocabulary]
 ---

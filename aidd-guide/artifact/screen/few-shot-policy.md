@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-03
 status: active
 sources: [Anthropic "Effective context engineering"]
-author: Bong Jong Hyeon
 tier: 1
 tags: [prompt, few-shot, canonical-example]
 ---

@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-05-04
 status: active
 sources: [Anthropic prompt cache 5분 TTL, /cost 명령]
-author: Bong Jong Hyeon
 tier: 3
 tags: [observability, token, cost, cache, hit-rate]
 ---

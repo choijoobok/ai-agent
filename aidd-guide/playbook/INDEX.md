@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-03
 status: active
 sources: ["sources/frontend/src/features/sample/", "sources/backend/api/src/main/java/com/aiagent/api/sample/", "aidd-guide/playbook/INDEX.md"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [playbook, recipe, index]
 ---

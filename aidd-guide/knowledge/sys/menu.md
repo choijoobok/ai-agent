@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-03
 status: active
 sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/authz/entity/", "sources/backend/bootstrap/src/main/resources/menu/menu-tree.yaml"]
-author: Bong Jong Hyeon
 tier: 3
 tags: [knowledge, menu, authz, api]
 ---

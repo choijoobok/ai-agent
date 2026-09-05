@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-04
 status: active
 sources: ["sources/backend/domain/", "sources/backend/core/search/", "aidd-guide/standard/backend/packages.md", "aidd-guide/standard/backend/persistence.md"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [backend, jpa, querydsl, mybatis, liquibase, portability]
 ---

@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-03
 status: active
 sources: ["sources/frontend/src/shared/screentabs/", "sources/frontend/src/layouts/", "aidd-guide/standard/frontend/packages.md", "aidd-guide/standard/frontend/tabs.md"]
-author: Bong Jong Hyeon
 tier: 1
 tags: [frontend, tabs, shell, routing]
 ---

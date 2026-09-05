@@ -7,7 +7,6 @@ created: 2026-04-30
 updated: 2026-09-03
 status: active
 sources: ["sources/frontend/src/shared/i18n/messageKeys.ts", "sources/frontend/src/shared/grid/types.ts", "CLAUDE.md"]
-author: Bong Jong Hyeon
 tier: 1
 tags: [prompt, auto-completion, rules]
 ---

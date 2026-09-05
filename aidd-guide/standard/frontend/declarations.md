@@ -7,7 +7,6 @@ created: 2026-09-04
 updated: 2026-09-04
 status: active
 sources: ["sources/frontend/src/shared/grid/types.ts", "sources/frontend/src/shared/grid/useGridController.ts", "sources/frontend/src/shared/grid/DataGrid.tsx", "sources/frontend/src/shared/searchform/types.ts"]
-author: Bong Jong Hyeon
 tier: 1
 tags: [frontend, grid, column, searchform, vocabulary, reference]
 ---

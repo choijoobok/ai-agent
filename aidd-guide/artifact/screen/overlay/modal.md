@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-03
 status: active
 sources: ["sources/frontend/src/shared/formmodal/", "sources/frontend/src/shared/popup/", "sources/frontend/src/features/sample/popups.ts"]
-author: Bong Jong Hyeon
 tier: 1
 tags: [prompt, overlay, modal, popup]
 ---

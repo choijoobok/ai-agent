@@ -7,7 +7,6 @@ created: 2026-09-03
 updated: 2026-09-03
 status: active
 sources: ["sources/frontend/src/shared/progress/"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [frontend, progress, polling, modal]
 ---

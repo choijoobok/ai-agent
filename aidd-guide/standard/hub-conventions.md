@@ -7,7 +7,6 @@ created: 2026-09-04
 updated: 2026-09-04
 status: active
 sources: ["agentic-ai/docs/design/foundation/12-standards.md"]
-author: Bong Jong Hyeon
 tier: 2
 tags: [hub, convention, module, transaction, logging, timezone]
 ---

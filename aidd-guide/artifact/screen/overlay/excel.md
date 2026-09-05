@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-09-03
 status: active
 sources: ["sources/frontend/src/shared/grid/excel/types.ts", "sources/frontend/src/features/sample/excel/", "sources/frontend/src/features/sample/mdvertical/pages/SampleMdVerticalPage.tsx"]
-author: Bong Jong Hyeon
 tier: 1
 tags: [prompt, overlay, excel]
 ---

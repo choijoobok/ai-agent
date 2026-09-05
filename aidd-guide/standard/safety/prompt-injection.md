@@ -7,7 +7,6 @@ created: 2026-05-04
 updated: 2026-05-04
 status: active
 sources: [Anthropic critical_injection_defense, system-prompt: critical_security_rules]
-author: Bong Jong Hyeon
 tier: 4
 tags: [safety, prompt-injection, trust-boundary]
 ---

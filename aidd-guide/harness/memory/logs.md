@@ -7,7 +7,6 @@ created: "2026-05-04"
 updated: "2026-09-03"
 status: active
 sources: ["CLAUDE.md §10", "chat-history/"]
-author: Bong Jong Hyeon
 tier: 1
 tags: [memory, log, episodic, chat-history]
 ---

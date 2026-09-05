@@ -7,7 +7,6 @@ created: "2026-04-30"
 updated: "2026-09-04"
 status: active
 sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
-author: Bong Jong Hyeon
 tier: 1
 tags: [memory, logs, index]
 ---
