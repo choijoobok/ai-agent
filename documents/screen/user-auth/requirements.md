@@ -109,12 +109,12 @@
 
 ### 4-1. 좌 — 사용자 목록 (**읽기 전용**)
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 폭 | 정렬 | 필터 |
-|---|---|---|---|---|---|
-| 이름 | `MSG.USER_COL_USER_NM` | `USER_NM` | 110 | ○ | ○ |
-| 로그인 ID | `MSG.USER_COL_USER_ID` | `USER_ID` | 110 | ○ | ○ |
-| 계정 상태 | `MSG.USER_COL_STAT` | **파생** | 90 | **불가** | ○ |
-| 예외 건수 | `MSG.USER_AUTH_COL_GRANT_CNT` | **파생** | 90 | **불가** | 끔 |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 폭 | 정렬 | 필터 |
+|---|---|---|---|---|---|---|
+| 이름 | `MSG.USER_COL_USER_NM` | `USER_NM` | `userNm` | 110 | ○ | ○ |
+| 로그인 ID | `MSG.USER_COL_USER_ID` | `USER_ID` | `userId` | 110 | ○ | ○ |
+| 계정 상태 | `MSG.USER_COL_STAT` | **파생** | `accountStat` | 90 | **불가** | ○ |
+| 예외 건수 | `MSG.USER_AUTH_COL_GRANT_CNT` | **파생** | `activeGrantCnt` | 90 | **불가** | 끔 |
 
 - **넷뿐이고 고르기만 하는 목록이다.** 행 추가 버튼도 삭제 컬럼도 없다.
 - **`계정 상태` 는 `USER_MGMT` 와 같은 파생 규칙이다** — 같은 계정이 두 화면에서 다르게 보이면 안 되므로 타입도 라벨도 공통물 하나가 갖는다. **부여하는 자리에서 계정 상태가 보여야** 못 쓰는 계정에 예외를 열심히 주고 나서 *왜 안 되나* 를 묻는 일이 없다. 헤더 툴팁이 파생임을 말한다.
@@ -142,14 +142,14 @@
 
 ### 4-3. 하 — 예외 목록 (**기간과 사유가 들어가는 유일한 자리**)
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 폭 | 필수 | 편집 |
-|---|---|---|---|---|---|
-| 메뉴 | `MSG.USER_AUTH_COL_MENU` | 파생 — `사용자 > 사용자 관리` | 260(fill) | — | **불가** |
-| 액션 | `MSG.USER_AUTH_COL_ACTION` | `ACTION_CD` | 90 | — | **불가** |
-| 상태 | `MSG.USER_AUTH_COL_STATE` | **파생** | 80 | — | 불가 |
-| 시작일 | `MSG.USER_AUTH_COL_FROM` | `VALID_FROM_DT` | 130 | **필수** | 가능 |
-| 종료일 | `MSG.USER_AUTH_COL_TO` | `VALID_TO_DT` | 130 | **필수** | 가능 |
-| 부여 사유 | `MSG.USER_AUTH_COL_REASON` | `GRANT_RSN` | 280(fill) | **필수** | 가능(큰 텍스트) |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 폭 | 필수 | 편집 |
+|---|---|---|---|---|---|---|
+| 메뉴 | `MSG.USER_AUTH_COL_MENU` | 파생 — `사용자 > 사용자 관리` | `menuPath` | 260(fill) | — | **불가** |
+| 액션 | `MSG.USER_AUTH_COL_ACTION` | `ACTION_CD` | `actionCd` | 90 | — | **불가** |
+| 상태 | `MSG.USER_AUTH_COL_STATE` | **파생** | `grantState` | 80 | — | 불가 |
+| 시작일 | `MSG.USER_AUTH_COL_FROM` | `VALID_FROM_DT` | `validFromDt` | 130 | **필수** | 가능 |
+| 종료일 | `MSG.USER_AUTH_COL_TO` | `VALID_TO_DT` | `validToDt` | 130 | **필수** | 가능 |
+| 부여 사유 | `MSG.USER_AUTH_COL_REASON` | `GRANT_RSN` | `grantRsn` | 280(fill) | **필수** | 가능(큰 텍스트) |
 
 - **메뉴와 액션이 읽기 전용이다.** 그 둘은 PK 의 일부이고 고치는 것은 *다른 행을 만드는 일* 이며, 만드는 자리는 트리다 — 목록에서 메뉴 코드를 고칠 수 있게 하면 **트리를 둔 이유가 사라진다.**
 - **`행 추가` 버튼이 없다.** 부여는 **트리에서 켜는 것**이며, 목록에 빈 행을 만들 수 있게 하면 *메뉴 코드를 손으로 적는* 경로가 열린다.

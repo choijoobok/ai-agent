@@ -108,21 +108,21 @@
 
 ### 4-1. 마스터 — 배치 등록
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 입력방식 | 폭 | 필수 | 편집 |
-|---|---|---|---|---|---|---|
-| 정렬 | `MSG.BATCH_SCHEDULE_COL_SORT_NO` | `SORT_NO` | 숫자 | 80 | — | 가능 |
-| 배치 ID | `MSG.BATCH_SCHEDULE_COL_BATCH_ID` | `BATCH_ID` | 텍스트 | 180 | **PK** | **신규행만** |
-| 배치명 | `MSG.BATCH_SCHEDULE_COL_BATCH_NM` | `BATCH_NM` | 텍스트 | 180 | **필수** | 가능 |
-| **설명** | `MSG.BATCH_SCHEDULE_COL_BATCH_DESC` | `BATCH_DESC` | 텍스트 | 280 | **필수** | 가능 |
-| 배치 구현 | `MSG.BATCH_SCHEDULE_COL_BEAN_ID` | `BEAN_ID` | **셀렉트** | 200 | **필수** | 가능 |
-| 크론 | `MSG.BATCH_SCHEDULE_COL_CRON` | `CRON` | 텍스트 | 150 | **필수** | 가능 |
-| 다음 실행 | `MSG.BATCH_SCHEDULE_COL_NEXT_EXEC` | **파생** | 일시 | 160 | — | **불가** |
-| 파라미터 | `MSG.BATCH_SCHEDULE_COL_PARAM` | `PARAM_JSON` | 큰 텍스트 | 220 | — | 가능 |
-| 쿨다운(초) | `MSG.BATCH_SCHEDULE_COL_COOLDOWN` | `LOCK_MIN_INTERVAL_SEC` | 숫자 | 110 | — | 가능 |
-| 락 만료(초) | `MSG.BATCH_SCHEDULE_COL_LOCK_EXPIRY` | `LOCK_EXPIRY_SEC` | 숫자 | 110 | — | 가능 |
-| 사용 | `MSG.BATCH_SCHEDULE_COL_USE_YN` | `USE_YN` | 스위치 | 80 | — | 가능 |
-| 최근 결과 | `MSG.BATCH_SCHEDULE_COL_LAST_RSLT` | **파생** | 배지 | 120 | — | **불가** |
-| 감사 4 | (공통) | — | — | — | — | 불가 |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 필수 | 편집 |
+|---|---|---|---|---|---|---|---|
+| 정렬 | `MSG.BATCH_SCHEDULE_COL_SORT_NO` | `SORT_NO` | `sortNo` | 숫자 | 80 | — | 가능 |
+| 배치 ID | `MSG.BATCH_SCHEDULE_COL_BATCH_ID` | `BATCH_ID` | `batchId` | 텍스트 | 180 | **PK** | **신규행만** |
+| 배치명 | `MSG.BATCH_SCHEDULE_COL_BATCH_NM` | `BATCH_NM` | `batchNm` | 텍스트 | 180 | **필수** | 가능 |
+| **설명** | `MSG.BATCH_SCHEDULE_COL_BATCH_DESC` | `BATCH_DESC` | `batchDesc` | 텍스트 | 280 | **필수** | 가능 |
+| 배치 구현 | `MSG.BATCH_SCHEDULE_COL_BEAN_ID` | `BEAN_ID` | `beanId` | **셀렉트** | 200 | **필수** | 가능 |
+| 크론 | `MSG.BATCH_SCHEDULE_COL_CRON` | `CRON` | `cron` | 텍스트 | 150 | **필수** | 가능 |
+| 다음 실행 | `MSG.BATCH_SCHEDULE_COL_NEXT_EXEC` | **파생** | `nextExecDtm` | 일시 | 160 | — | **불가** |
+| 파라미터 | `MSG.BATCH_SCHEDULE_COL_PARAM` | `PARAM_JSON` | `paramJson` | 큰 텍스트 | 220 | — | 가능 |
+| 쿨다운(초) | `MSG.BATCH_SCHEDULE_COL_COOLDOWN` | `LOCK_MIN_INTERVAL_SEC` | `lockMinIntervalSec` | 숫자 | 110 | — | 가능 |
+| 락 만료(초) | `MSG.BATCH_SCHEDULE_COL_LOCK_EXPIRY` | `LOCK_EXPIRY_SEC` | `lockExpirySec` | 숫자 | 110 | — | 가능 |
+| 사용 | `MSG.BATCH_SCHEDULE_COL_USE_YN` | `USE_YN` | `useYn` | 스위치 | 80 | — | 가능 |
+| 최근 결과 | `MSG.BATCH_SCHEDULE_COL_LAST_RSLT` | **파생** | `lastRsltCd` | 배지 | 120 | — | **불가** |
+| 감사 4 | (공통) | — | — | — | — | — | 불가 |
 
 - **`설명` 이 기본 숨김이 아니다.** 그 컬럼은 *끄면 무슨 일이 생기는가를 적는 자리* 이며 **장애 대응 중에 소스를 열 시간은 없다.** 컬럼 설정에서 꺼 둘 수는 있지만 **기본은 보인다.**
 - **`설명` 이 필수인 것이 그 자리의 값이다** — 비어 있으면 §5-1 의 확인이 아무 말도 못 한다.

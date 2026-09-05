@@ -103,23 +103,23 @@
 
 **표시 다섯 · 기본 숨김 아홉.** 숨김도 응답에는 들어 있고 그리드 설정에서 켜면 보인다 — **목록이 곧 상세이며 `getDetail` 이 없다.**
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 |
-|---|---|---|---|---|---|---|---|---|
-| 로그인 ID | `MSG.USER_COL_USER_ID` | `USER_ID` | 텍스트 | 160/좌고정 | 필수 | **신규행만**(PK) | — | 그리드 내 중복 금지 |
-| 이름 | `MSG.USER_COL_USER_NM` | `USER_NM` | 텍스트 | 140 | 필수 | 가능 | — | — |
-| 이메일 | `MSG.USER_COL_EMAIL` | `EMAIL` | 텍스트 | 220 | **필수** | 가능 | — | — |
-| 상태 | `MSG.USER_COL_STAT` | **파생**(§6-3) | 텍스트·배지 | 100 | — | 읽기전용 | — | — |
-| 사용 여부 | `MSG.USER_COL_USE_YN` | `USE_YN` | 스위치 | 90 | — | **조건부**(§4-2) | — | — |
-| 사용 시작일 | `MSG.USER_COL_VALID_FROM` | `VALID_FROM_DT` | 날짜 | 120 | — | 가능 | — | 종료일보다 늦으면 거부 |
-| 사용 종료일 | `MSG.USER_COL_VALID_TO` | `VALID_TO_DT` | 날짜 | 120 | — | 가능 | — | 〃 |
-| 최종 로그인 | `MSG.USER_COL_LAST_LOGIN` | `LAST_LOGIN_DTM` | 일시 | 160 | — | 읽기전용 | — | — |
-| 언어 ○ | `MSG.USER_COL_LOCALE` | `LOCALE_CD` | 셀렉트 | 100 | — | 가능 | **상수** `ko`·`en` | — |
-| 잠금 ○ | `MSG.USER_COL_LOCK_YN` | `LOCK_YN` | 스위치 | 90 | — | **읽기전용** | — | — |
-| 잠금 시각 ○ | `MSG.USER_COL_LOCK_DTM` | `LOCK_DTM` | 일시 | 160 | — | 읽기전용 | — | — |
-| 실패 횟수 ○ | `MSG.USER_COL_FAIL_CNT` | `LOGIN_FAIL_CNT` | 숫자 | 100 | — | **읽기전용** | — | — |
-| 휴면 ○ | `MSG.USER_COL_DORMANT_YN` | `DORMANT_YN` | 스위치 | 80 | — | **읽기전용** | — | — |
-| 임시 비밀번호 ○ | `MSG.USER_COL_PWD_INIT` | `PWD_INIT_YN` | 스위치 | 110 | — | 읽기전용 | — | — |
-| 비밀번호 변경일 ○ | `MSG.USER_COL_PWD_CHG` | `PWD_CHG_DTM` | 일시 | 160 | — | 읽기전용 | — | — |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 |
+|---|---|---|---|---|---|---|---|---|---|
+| 로그인 ID | `MSG.USER_COL_USER_ID` | `USER_ID` | `userId` | 텍스트 | 160/좌고정 | 필수 | **신규행만**(PK) | — | 그리드 내 중복 금지 |
+| 이름 | `MSG.USER_COL_USER_NM` | `USER_NM` | `userNm` | 텍스트 | 140 | 필수 | 가능 | — | — |
+| 이메일 | `MSG.USER_COL_EMAIL` | `EMAIL` | `email` | 텍스트 | 220 | **필수** | 가능 | — | — |
+| 상태 | `MSG.USER_COL_STAT` | **파생**(§6-3) | `accountStat` | 텍스트·배지 | 100 | — | 읽기전용 | — | — |
+| 사용 여부 | `MSG.USER_COL_USE_YN` | `USE_YN` | `useYn` | 스위치 | 90 | — | **조건부**(§4-2) | — | — |
+| 사용 시작일 | `MSG.USER_COL_VALID_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 120 | — | 가능 | — | 종료일보다 늦으면 거부 |
+| 사용 종료일 | `MSG.USER_COL_VALID_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 120 | — | 가능 | — | 〃 |
+| 최종 로그인 | `MSG.USER_COL_LAST_LOGIN` | `LAST_LOGIN_DTM` | `lastLoginDtm` | 일시 | 160 | — | 읽기전용 | — | — |
+| 언어 ○ | `MSG.USER_COL_LOCALE` | `LOCALE_CD` | `localeCd` | 셀렉트 | 100 | — | 가능 | **상수** `ko`·`en` | — |
+| 잠금 ○ | `MSG.USER_COL_LOCK_YN` | `LOCK_YN` | `lockYn` | 스위치 | 90 | — | **읽기전용** | — | — |
+| 잠금 시각 ○ | `MSG.USER_COL_LOCK_DTM` | `LOCK_DTM` | `lockDtm` | 일시 | 160 | — | 읽기전용 | — | — |
+| 실패 횟수 ○ | `MSG.USER_COL_FAIL_CNT` | `LOGIN_FAIL_CNT` | `loginFailCnt` | 숫자 | 100 | — | **읽기전용** | — | — |
+| 휴면 ○ | `MSG.USER_COL_DORMANT_YN` | `DORMANT_YN` | `dormantYn` | 스위치 | 80 | — | **읽기전용** | — | — |
+| 임시 비밀번호 ○ | `MSG.USER_COL_PWD_INIT` | `PWD_INIT_YN` | `pwdInitYn` | 스위치 | 110 | — | 읽기전용 | — | — |
+| 비밀번호 변경일 ○ | `MSG.USER_COL_PWD_CHG` | `PWD_CHG_DTM` | `pwdChgDtm` | 일시 | 160 | — | 읽기전용 | — | — |
 
 `○` = 기본 숨김. **감춘 컬럼(`hidden`)은 없다** — 운영자가 켜서 보면 안 되는 컬럼이 이 화면에는 없다.
 
@@ -129,34 +129,46 @@
 
 ### 4-1a. 디테일 탭 1 — 보유 역할 (편집 가능)
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 입력방식 | 필수 | 편집 |
-|---|---|---|---|---|---|
-| 역할 | `MSG.USER_ROLE_COL_ROLE` | `ROLE_ID` | 셀렉트 | 필수 | **신규행만**(PK 절반) |
-| 역할명 ○ | `MSG.USER_ROLE_COL_ROLE_NM` | `SYS_ROLE.ROLE_NM` | 텍스트 | — | 읽기전용 |
-| 설명 ○ | `MSG.USER_ROLE_COL_ROLE_DESC` | `SYS_ROLE.ROLE_DESC` | 텍스트 | — | 읽기전용 |
-| 역할 사용 | `MSG.USER_ROLE_COL_USE_YN` | `SYS_ROLE.USE_YN` | 스위치 | — | **읽기전용** — 이 부여의 값이 아니라 역할의 값이다 |
-| 시작일 | `MSG.USER_ROLE_COL_FROM` | `VALID_FROM_DT` | 날짜 | — | 가능 |
-| 종료일 | `MSG.USER_ROLE_COL_TO` | `VALID_TO_DT` | 날짜 | — | 가능 |
-| 부여 상태 | `MSG.USER_ROLE_COL_STATE` | **파생**(§6-3) | 배지 | — | 읽기전용 |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 필수 | 편집 |
+|---|---|---|---|---|---|---|---|
+| 역할 | `MSG.USER_ROLE_COL_ROLE` | `ROLE_ID` | `roleId` | 셀렉트 | 220 | 필수 | **신규행만**(PK 절반) |
+| 역할명 ○ | `MSG.USER_ROLE_COL_ROLE_NM` | `SYS_ROLE.ROLE_NM` | `roleNm` | 텍스트 | 160 | — | 읽기전용 |
+| 설명 ○ | `MSG.USER_ROLE_COL_ROLE_DESC` | `SYS_ROLE.ROLE_DESC` | `roleDesc` | 텍스트 | 240 | — | 읽기전용 |
+| 역할 사용 | `MSG.USER_ROLE_COL_USE_YN` | `SYS_ROLE.USE_YN` | `roleUseYn` | 스위치 | 110 | — | **읽기전용** — 이 부여의 값이 아니라 역할의 값이다 |
+| 시작일 | `MSG.USER_ROLE_COL_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 130 | — | 가능 |
+| 종료일 | `MSG.USER_ROLE_COL_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 130 | — | 가능 |
+| 부여 상태 | `MSG.USER_ROLE_COL_STATE` | **파생**(§6-3) | `grantState` | 배지 | 90 | — | 읽기전용 |
 
 - 후보 콤보의 글자는 `역할명 (역할ID)` 이며 **꺼진 역할도 후보다** — 켜기 전에 부여를 구성해 두는 동선이 정상이다. 꺼져 있다는 사실은 `역할 사용` 컬럼과 상태 배지 옆 경고 배지가 말한다.
 - 행 삭제 **허용**. 삭제는 *잘못 등록한 행 정리* 이고 **회수가 아니다** — 회수는 종료일을 어제로 두는 것이며 그때 행은 남는다(변경 이력 테이블이 없으므로 그 컬럼이 유일한 기록이다).
 
 ### 4-1b. 디테일 탭 2 — 개인 예외 (**조회 전용**)
 
-메뉴 · 액션 · 부여 상태 · 시작일 · 종료일 · 대상 유효 · 부여 사유 · 감사 넷 · (숨김) 메뉴코드.
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 편집 |
+|---|---|---|---|---|---|---|
+| 메뉴 | `MSG.USER_GRANT_COL_MENU` | **파생** — 메뉴 경로 | `menuPath` | 텍스트 | 280 | 읽기전용 |
+| 액션 | `MSG.USER_GRANT_COL_ACTION` | `ACTION_CD` | `actionCd` | **코드** | 100 | 읽기전용 |
+| 부여 상태 | `MSG.USER_AUTH_COL_STATE` | **파생**(§6-3) | `grantState` | 배지 | 90 | 읽기전용 |
+| 시작일 | `MSG.USER_AUTH_COL_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 130 | 읽기전용 |
+| 종료일 | `MSG.USER_AUTH_COL_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 130 | 읽기전용 |
+| 대상 유효 | `MSG.USER_GRANT_COL_MENU_OK` | **파생** | `menuAuthorizable` | 스위치 | 100 | 읽기전용 |
+| 부여 사유 | `MSG.USER_GRANT_COL_REASON` | `GRANT_RSN` | `grantRsn` | 텍스트 | 240 | 읽기전용 |
+| (숨김) 메뉴코드 | `MSG.USER_AUTH_COL_MENU` | `MENU_CD` | `menuCd` | 텍스트 | 160 | 읽기전용 |
+
+- **`액션` 은 `code` 다** — 공통코드에서 라벨을 가져온다. `text` 로 두면 `R`·`S` 가 그대로 보인다.
+- 감사 넷은 `auditColumns()` 가 붙인다.
 
 - **저장 경로가 없다.** 사용자 관리 권한이 있다고 예외 권한 부여 권한이 따라오면 안 되며, 시드 생성기가 `SAVE` 를 만들 수 없으므로 **어느 역할에도 줄 수 없다.** 부여는 `/user-auth` 에서 한다.
 - `대상 유효`(`menuAuthorizable`)가 거짓이면 **부여는 살아 있는데 대상이 죽은 것**이다.
 
 ### 4-1c. 디테일 탭 3 — 접속 IP (편집 가능)
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 필수 | 편집 |
-|---|---|---|---|---|
-| IP · CIDR | `MSG.USER_IP_COL_CIDR` | `IP_CIDR` | 필수 | **신규행만**(PK 절반) |
-| 사용 | `MSG.USER_IP_COL_USE_YN` | `USE_YN` | — | 가능 |
-| 허용 시작 | `MSG.USER_IP_COL_FROM` | `VALID_FROM_DT` | — | 가능 |
-| 허용 종료 | `MSG.USER_IP_COL_TO` | `VALID_TO_DT` | — | 가능 |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 필수 | 편집 |
+|---|---|---|---|---|---|---|---|
+| IP · CIDR | `MSG.USER_IP_COL_CIDR` | `IP_CIDR` | `ipCidr` | 텍스트 | 220 | 필수 | **신규행만**(PK 절반) |
+| 사용 | `MSG.USER_IP_COL_USE_YN` | `USE_YN` | `useYn` | 스위치 | 90 | — | 가능 |
+| 허용 시작 | `MSG.USER_IP_COL_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 130 | — | 가능 |
+| 허용 종료 | `MSG.USER_IP_COL_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 130 | — | 가능 |
 
 - **행이 없으면 제한 없음이다.** 빈 판의 문구가 그 사실을 말한다 — *허용 대역이 없습니다 — 이 계정은 어느 IP 에서도 접속할 수 있습니다.*
 - **꺼진 행도 조회된다** — 다시 켜는 곳이 이 화면이다.
@@ -165,7 +177,19 @@
 
 ### 4-1d. 디테일 탭 4 — 활성 세션 (조회 + 실행)
 
-세션(앞 8자만 표시) · 현재 세션 · 생성 시각 · 최근 접근(기본 정렬) · 만료 예정 · 접속 IP · 브라우저.
+**DB 컬럼 칸이 없는 유일한 표다** — 원천이 세션 스토어이고 IP·브라우저만 로그인 이력에서 붙는다.
+
+| 컬럼 | 라벨 키 | **필드명** | 입력방식 | 폭 | 편집 |
+|---|---|---|---|---|---|
+| 세션 | `MSG.USER_SESSION_COL_ID` | `sessionId` | 텍스트(앞 8자) | 140 | 읽기전용 |
+| 현재 세션 | `MSG.USER_SESSION_COL_CURRENT` | `current` | 스위치 | 110 | 읽기전용 |
+| 생성 시각 | `MSG.USER_SESSION_COL_CREATED` | `createdDtm` | 일시 | 170 | 읽기전용 |
+| 최근 접근 | `MSG.USER_SESSION_COL_ACCESS` | `lastAccessedDtm` | 일시 | 170 | 읽기전용 |
+| 만료 예정 | `MSG.USER_SESSION_COL_EXPIRY` | `expiryDtm` | 일시 | 170 | 읽기전용 |
+| 접속 IP | `MSG.USER_SESSION_COL_IP` | `clientIp` | 텍스트 | 140 | 읽기전용 |
+| 브라우저 | `MSG.USER_SESSION_COL_AGENT` | `userAgent` | 텍스트 | 240 | 읽기전용 |
+
+**기본 정렬은 `lastAccessedDtm` 내림차순이다.**
 
 - 원천이 DB 가 아니라 **세션 스토어**다.
 - **접속 IP · 브라우저는 로그인 이력에서 붙인다.** 못 찾으면 **빈 칸**이며 그것이 정직하다 — 다른 로그인의 IP 를 끌어다 채우면 *어디서 들어왔나* 에 틀린 답을 하게 된다.
@@ -173,7 +197,23 @@
 
 ### 4-1e. 디테일 탭 5 — 유효 권한 (**조회 전용** · 진단)
 
-메뉴 · 액션 4열(`R` `S` `E` `X`) · 출처 · 상태 · 시작일 · 종료일 · 부여 사유 · (숨김) 메뉴코드 · 역할ID.
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 편집 |
+|---|---|---|---|---|---|---|
+| 액션 4열 | `ACTION_LABEL[액션]` | **파생** | **`act.{액션}`** — 동적 | 배지 | 76 | 읽기전용 |
+| 메뉴 | `MSG.USER_EFF_COL_MENU` | **파생** — 메뉴 경로 | `menuPath` | 텍스트 | 300 | 읽기전용 |
+| 출처 | `MSG.USER_EFF_COL_VIA` | **파생** | `via` | 텍스트 | 180 | 읽기전용 |
+| 상태 | `MSG.USER_EFF_COL_STATE` | **파생**(§6-3) | `grantState` | 배지 | 90 | 읽기전용 |
+| 시작일 | `MSG.USER_AUTH_COL_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 130 | 읽기전용 |
+| 종료일 | `MSG.USER_AUTH_COL_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 130 | 읽기전용 |
+| 부여 사유 | `MSG.USER_EFF_COL_REASON` | `GRANT_RSN` | `grantRsn` | 텍스트 | 240 | 읽기전용 |
+| (숨김) 메뉴코드 | `MSG.USER_AUTH_COL_MENU` | `MENU_CD` | `menuCd` | 텍스트 | 160 | 읽기전용 |
+| (숨김) 역할ID | `MSG.USER_ROLE_COL_ROLE` | `ROLE_ID` | `roleId` | 텍스트 | 140 | 읽기전용 |
+
+- **액션 4열이 동적 컬럼이다** — 필드가 `act.R` · `act.S` · `act.E` · `act.X` 이고 **액션이 늘면
+  열이 는다.** 이 저장소에서 `derive`/`patch` 계약을 쓰는 자리이며 규칙은
+  [standard/frontend/grid-advanced.md](../../../aidd-guide/standard/frontend/grid-advanced.md) §5-1 이 갖는다.
+  **폭을 정하지 않으면 재현이 갈린다** — 76 이다.
+- 순서는 **액션 4열이 먼저**이고 그다음이 메뉴다.
 
 - **메뉴 하나가 여러 행일 수 있다** — 경유가 둘이면 행이 둘이다. 합쳐서 한 행으로 내면 액션 합집합은 맞아도 *어느 부여를 건드려야 하는지* 를 잃는다.
 - 액션 4열은 세 값이다: `●` 준다 · `·` 안 준다 · `—` **정의되지 않았다**(부여할 칸 자체가 없다).

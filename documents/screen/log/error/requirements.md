@@ -104,20 +104,20 @@
 
 ### 4-1. 그리드 — 에러 로그
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 입력방식 | 폭/정렬 | 편집 |
-|---|---|---|---|---|---|
-| 일시 | `MSG.ERROR_LOG_COL_CRE_DTM` | `CRE_DTM` | 일시 | 170/좌고정 | 읽기전용 |
-| 상태 | `MSG.ERROR_LOG_COL_HTTP_STAT` | `HTTP_STAT` | 숫자·배지 | 90 | 읽기전용 |
-| 오류 코드 | `MSG.ERROR_LOG_COL_ERR_CD` | `ERR_CD`(≤50자) | 텍스트 | 200 | 읽기전용 |
-| 메시지 | `MSG.ERROR_LOG_COL_ERR_MSG` | `ERR_MSG`(≤1000자) | 텍스트(툴팁) | 280 | 읽기전용 |
-| 사용자 ID | `MSG.ERROR_LOG_COL_USER_ID` | `USER_ID` | 텍스트 | 120 | 읽기전용 |
-| 사용자명 | `MSG.ERROR_LOG_COL_USER_NM` | `SYS_USER.USER_NM` | 텍스트 | 120 | 읽기전용 |
-| 메뉴 | `MSG.ERROR_LOG_COL_MENU` | `MENU_CD` → 번역 | 텍스트 | 140 | 읽기전용 |
-| 요청 URI | `MSG.ERROR_LOG_COL_REQUEST_URI` | `REQUEST_URI` | 텍스트 | 260 | 읽기전용 |
-| 상세 | `MSG.ERROR_LOG_COL_DETAIL` | **파생** — `ROOT_CAUSE_STACK IS NOT NULL` | 링크 | 80 | 읽기전용 |
-| 추적 ID | `MSG.ERROR_LOG_COL_TRACE_ID` | `TRACE_ID` | 텍스트 | 280 | 읽기전용 |
-| 접속 IP ○ | `MSG.ERROR_LOG_COL_CLIENT_IP` | `CLIENT_IP` | 텍스트 | 130 | 읽기전용 |
-| 순번 ○ | `MSG.ERROR_LOG_COL_SEQ` | `EXCEPTION_LOG_SEQ` | 숫자 | 100 | 읽기전용 |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭/정렬 | 편집 |
+|---|---|---|---|---|---|---|
+| 일시 | `MSG.ERROR_LOG_COL_CRE_DTM` | `CRE_DTM` | `creDtm` | 일시 | 170/좌고정 | 읽기전용 |
+| 상태 | `MSG.ERROR_LOG_COL_HTTP_STAT` | `HTTP_STAT` | `httpStat` | 숫자·배지 | 90 | 읽기전용 |
+| 오류 코드 | `MSG.ERROR_LOG_COL_ERR_CD` | `ERR_CD`(≤50자) | `errCd` | 텍스트 | 200 | 읽기전용 |
+| 메시지 | `MSG.ERROR_LOG_COL_ERR_MSG` | `ERR_MSG`(≤1000자) | `errMsg` | 텍스트(툴팁) | 280 | 읽기전용 |
+| 사용자 ID | `MSG.ERROR_LOG_COL_USER_ID` | `USER_ID` | `userId` | 텍스트 | 120 | 읽기전용 |
+| 사용자명 | `MSG.ERROR_LOG_COL_USER_NM` | `SYS_USER.USER_NM` | `userNm` | 텍스트 | 120 | 읽기전용 |
+| 메뉴 | `MSG.ERROR_LOG_COL_MENU` | `MENU_CD` → 번역 | `menuNm` | 텍스트 | 140 | 읽기전용 |
+| 요청 URI | `MSG.ERROR_LOG_COL_REQUEST_URI` | `REQUEST_URI` | `requestUri` | 텍스트 | 260 | 읽기전용 |
+| 상세 | `MSG.ERROR_LOG_COL_DETAIL` | **파생** — `ROOT_CAUSE_STACK IS NOT NULL` | `hasStack` | 링크 | 80 | 읽기전용 |
+| 추적 ID | `MSG.ERROR_LOG_COL_TRACE_ID` | `TRACE_ID` | `traceId` | 텍스트 | 280 | 읽기전용 |
+| 접속 IP ○ | `MSG.ERROR_LOG_COL_CLIENT_IP` | `CLIENT_IP` | `clientIp` | 텍스트 | 130 | 읽기전용 |
+| 순번 ○ | `MSG.ERROR_LOG_COL_SEQ` | `EXCEPTION_LOG_SEQ` | `exceptionLogSeq` | 숫자 | 100 | 읽기전용 |
 
 `○` = 기본 숨김.
 

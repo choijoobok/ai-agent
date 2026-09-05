@@ -128,7 +128,7 @@
 | `rmk` | `MSG.SAMPLE_COL_RMK` | **텍스트 모달** | 180 | — | 조건부(§4-2) | — |
 | `errMsg` | `MSG.SAMPLE_COL_ERR_MSG` | 텍스트 | 180 | — | 조건부(§4-2) | — |
 | `srcSysCd` | `MSG.SAMPLE_COL_SRC_SYS` | 코드 · **`visible:false`** | 110 | — | 조건부(§4-2) | 코드그룹 `SMPL_SRC_SYS` |
-| `lockYn` | `MSG.SAMPLE_COL_LOCK` | 스위치 · **`hidden`** | — | — | **읽기전용** | — |
+| `lockYn` | `MSG.SAMPLE_COL_LOCK` | 스위치 · **`hidden`** | `lockYn` | — | **읽기전용** | — |
 
 - **감사 넷**(`regId` · `regDtm` · `modId` · `modDtm`)은 `auditColumns()` 가 붙인다 —
   이 화면은 **보이게 두는 예외**라 표에는 넣지 않고 여기 적는다(서식 §4).

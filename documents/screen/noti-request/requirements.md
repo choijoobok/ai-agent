@@ -97,18 +97,18 @@
 
 ### 4-1. 그리드 — 요청
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 입력방식 | 폭 | 편집 | 정렬 | 필터 |
-|---|---|---|---|---|---|---|---|
-| 요청일시 | `MSG.NOTI_REQUEST_COL_CRE_DTM` | `CRE_DTM` | 일시 | 160 | 불가 | ○ | ○ |
-| 요청자 | `MSG.NOTI_REQUEST_COL_USER` | `SYS_USER.USER_NM` | 텍스트 | 140 | 불가 | — | ○ |
-| 유형 | `MSG.NOTI_REQUEST_COL_TYPE` | `REQ_TYPE_CD` | 배지 | 110 | 불가 | — | ○ |
-| 요청 내용 | `MSG.NOTI_REQUEST_COL_CONTENT` | `REQ_CONTENT`(2000자) | 텍스트(**펼쳐 보기**) | 320(fill) | 불가 | — | 끔 |
-| 상태 | `MSG.NOTI_REQUEST_COL_STAT` | `REQ_STAT_CD` | 배지 | 90 | 불가 | — | ○ |
-| 처리자 | `MSG.NOTI_REQUEST_COL_HANDLER` | `SYS_USER.USER_NM` | 텍스트 | 120 | 불가 | — | 끔 |
-| 처리일시 | `MSG.NOTI_REQUEST_COL_HANDLE_DTM` | `HANDLE_DTM` | 일시 | 160 | 불가 | — | 끔 |
-| 처리 메모 | `MSG.NOTI_REQUEST_COL_MEMO` | `HANDLE_MEMO` | 텍스트(**펼쳐 보기**) | 240 | 불가 | — | 끔 |
-| 요청 ID ○ | `MSG.NOTI_REQUEST_COL_REQ_ID` | `REQ_ID` | 숫자 | 90 | 불가 | — | — |
-| 요청자 ID ○ | `MSG.GRID_COL_REG_ID` | `USER_ID` | 텍스트 | 120 | 불가 | — | — |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 편집 | 정렬 | 필터 |
+|---|---|---|---|---|---|---|---|---|
+| 요청일시 | `MSG.NOTI_REQUEST_COL_CRE_DTM` | `CRE_DTM` | `creDtm` | 일시 | 160 | 불가 | ○ | ○ |
+| 요청자 | `MSG.NOTI_REQUEST_COL_USER` | `SYS_USER.USER_NM` | `userNm` | 텍스트 | 140 | 불가 | — | ○ |
+| 유형 | `MSG.NOTI_REQUEST_COL_TYPE` | `REQ_TYPE_CD` | `reqTypeCd` | 배지 | 110 | 불가 | — | ○ |
+| 요청 내용 | `MSG.NOTI_REQUEST_COL_CONTENT` | `REQ_CONTENT`(2000자) | `reqContent` | 텍스트(**펼쳐 보기**) | 320(fill) | 불가 | — | 끔 |
+| 상태 | `MSG.NOTI_REQUEST_COL_STAT` | `REQ_STAT_CD` | `reqStatCd` | 배지 | 90 | 불가 | — | ○ |
+| 처리자 | `MSG.NOTI_REQUEST_COL_HANDLER` | `SYS_USER.USER_NM` | `handlerNm` | 텍스트 | 120 | 불가 | — | 끔 |
+| 처리일시 | `MSG.NOTI_REQUEST_COL_HANDLE_DTM` | `HANDLE_DTM` | `handleDtm` | 일시 | 160 | 불가 | — | 끔 |
+| 처리 메모 | `MSG.NOTI_REQUEST_COL_MEMO` | `HANDLE_MEMO` | `handleMemo` | 텍스트(**펼쳐 보기**) | 240 | 불가 | — | 끔 |
+| 요청 ID ○ | `MSG.NOTI_REQUEST_COL_REQ_ID` | `REQ_ID` | `reqId` | 숫자 | 90 | 불가 | — | — |
+| 요청자 ID ○ | `MSG.GRID_COL_REG_ID` | `USER_ID` | `userId` | 텍스트 | 120 | 불가 | — | — |
 
 `○` = 기본 숨김.
 

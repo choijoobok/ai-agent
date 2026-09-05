@@ -100,16 +100,16 @@
 
 ### 4-1. 그리드 — 로그인 이력
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 입력방식 | 폭/정렬 | 편집 | 선택 출처 |
-|---|---|---|---|---|---|---|
-| 일시 | `MSG.LOGIN_LOG_COL_CRE_DTM` | `CRE_DTM` | 일시 | 170/좌고정 | 읽기전용 | — |
-| 사용자 아이디 | `MSG.LOGIN_LOG_COL_USER_ID` | `USER_ID` | 텍스트 | 140 | 읽기전용 | — |
-| 사용자명 | `MSG.LOGIN_LOG_COL_USER_NM` | `SYS_USER.USER_NM` | 텍스트 + 배지 | 140 | 읽기전용 | — |
-| 결과 | `MSG.LOGIN_LOG_COL_RESULT` | `LOGIN_RSLT_CD` | 코드·배지 | 150 | 읽기전용 | **코드그룹 `LOGIN_RSLT_CD`** |
-| 접속 IP | `MSG.LOGIN_LOG_COL_CLIENT_IP` | `CLIENT_IP` | 텍스트 | 130 | 읽기전용 | — |
-| 추적 ID | `MSG.LOGIN_LOG_COL_TRACE_ID` | `TRACE_ID` | 텍스트 | 280 | 읽기전용 | — |
-| 브라우저 ○ | `MSG.LOGIN_LOG_COL_USER_AGENT` | `USER_AGENT` | 텍스트(툴팁) | 320 | 읽기전용 | — |
-| 순번 ○ | `MSG.LOGIN_LOG_COL_SEQ` | `LOGIN_LOG_SEQ` | 숫자 | 100 | 읽기전용 | — |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭/정렬 | 편집 | 선택 출처 |
+|---|---|---|---|---|---|---|---|
+| 일시 | `MSG.LOGIN_LOG_COL_CRE_DTM` | `CRE_DTM` | `creDtm` | 일시 | 170/좌고정 | 읽기전용 | — |
+| 사용자 아이디 | `MSG.LOGIN_LOG_COL_USER_ID` | `USER_ID` | `userId` | 텍스트 | 140 | 읽기전용 | — |
+| 사용자명 | `MSG.LOGIN_LOG_COL_USER_NM` | `SYS_USER.USER_NM` | `userNm` | 텍스트 + 배지 | 140 | 읽기전용 | — |
+| 결과 | `MSG.LOGIN_LOG_COL_RESULT` | `LOGIN_RSLT_CD` | `loginRsltCd` | 코드·배지 | 150 | 읽기전용 | **코드그룹 `LOGIN_RSLT_CD`** |
+| 접속 IP | `MSG.LOGIN_LOG_COL_CLIENT_IP` | `CLIENT_IP` | `clientIp` | 텍스트 | 130 | 읽기전용 | — |
+| 추적 ID | `MSG.LOGIN_LOG_COL_TRACE_ID` | `TRACE_ID` | `traceId` | 텍스트 | 280 | 읽기전용 | — |
+| 브라우저 ○ | `MSG.LOGIN_LOG_COL_USER_AGENT` | `USER_AGENT` | `userAgent` | 텍스트(툴팁) | 320 | 읽기전용 | — |
+| 순번 ○ | `MSG.LOGIN_LOG_COL_SEQ` | `LOGIN_LOG_SEQ` | `loginLogSeq` | 숫자 | 100 | 읽기전용 | — |
 
 `○` = 기본 숨김.
 

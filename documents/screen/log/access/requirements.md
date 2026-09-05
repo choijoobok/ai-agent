@@ -103,18 +103,18 @@
 
 ### 4-1. 그리드 — 사용 이력
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 |
-|---|---|---|---|---|---|---|---|---|
-| 일시 | `MSG.ACCESS_LOG_COL_CRE_DTM` | `CRE_DTM` | 일시 | 170/좌고정 | — | 읽기전용 | — | — |
-| 상태 | `MSG.ACCESS_LOG_COL_HTTP_STAT` | `HTTP_STAT` | 숫자·배지 | 90 | — | 읽기전용 | — | — |
-| 사용자 ID | `MSG.ACCESS_LOG_COL_USER_ID` | `USER_ID` | 텍스트 | 120 | — | 읽기전용 | — | — |
-| 사용자명 | `MSG.ACCESS_LOG_COL_USER_NM` | `SYS_USER.USER_NM` | 텍스트 | 120 | — | 읽기전용 | — | — |
-| 메뉴 | `MSG.ACCESS_LOG_COL_MENU` | `MENU_CD` → 번역 | 텍스트 | 140 | — | 읽기전용 | — | — |
-| 요청 URI | `MSG.ACCESS_LOG_COL_REQUEST_URI` | `REQUEST_URI` | 텍스트 | 260 | — | 읽기전용 | — | — |
-| 전문 | `MSG.ACCESS_LOG_COL_PAYLOAD` | **파생** — `PARAMETERS IS NOT NULL` | 링크 | 80 | — | 읽기전용 | — | — |
-| 접속 IP | `MSG.ACCESS_LOG_COL_CLIENT_IP` | `CLIENT_IP` | 텍스트 | 130 | — | 읽기전용 | — | — |
-| 추적 ID | `MSG.ACCESS_LOG_COL_TRACE_ID` | `TRACE_ID` | 텍스트 | 280 | — | 읽기전용 | — | — |
-| 순번 ○ | `MSG.ACCESS_LOG_COL_SEQ` | `ACCESS_LOG_SEQ` | 숫자 | 100 | — | 읽기전용 | — | — |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 |
+|---|---|---|---|---|---|---|---|---|---|
+| 일시 | `MSG.ACCESS_LOG_COL_CRE_DTM` | `CRE_DTM` | `creDtm` | 일시 | 170/좌고정 | — | 읽기전용 | — | — |
+| 상태 | `MSG.ACCESS_LOG_COL_HTTP_STAT` | `HTTP_STAT` | `httpStat` | 숫자·배지 | 90 | — | 읽기전용 | — | — |
+| 사용자 ID | `MSG.ACCESS_LOG_COL_USER_ID` | `USER_ID` | `userId` | 텍스트 | 120 | — | 읽기전용 | — | — |
+| 사용자명 | `MSG.ACCESS_LOG_COL_USER_NM` | `SYS_USER.USER_NM` | `userNm` | 텍스트 | 120 | — | 읽기전용 | — | — |
+| 메뉴 | `MSG.ACCESS_LOG_COL_MENU` | `MENU_CD` → 번역 | `menuNm` | 텍스트 | 140 | — | 읽기전용 | — | — |
+| 요청 URI | `MSG.ACCESS_LOG_COL_REQUEST_URI` | `REQUEST_URI` | `requestUri` | 텍스트 | 260 | — | 읽기전용 | — | — |
+| 전문 | `MSG.ACCESS_LOG_COL_PAYLOAD` | **파생** — `PARAMETERS IS NOT NULL` | `hasParameters` | 링크 | 80 | — | 읽기전용 | — | — |
+| 접속 IP | `MSG.ACCESS_LOG_COL_CLIENT_IP` | `CLIENT_IP` | `clientIp` | 텍스트 | 130 | — | 읽기전용 | — | — |
+| 추적 ID | `MSG.ACCESS_LOG_COL_TRACE_ID` | `TRACE_ID` | `traceId` | 텍스트 | 280 | — | 읽기전용 | — | — |
+| 순번 ○ | `MSG.ACCESS_LOG_COL_SEQ` | `ACCESS_LOG_SEQ` | `accessLogSeq` | 숫자 | 100 | — | 읽기전용 | — | — |
 
 `○` = 기본 숨김. **`hidden` 은 없다** — 운영자가 켜서 보면 안 되는 컬럼이 이력에는 없다.
 

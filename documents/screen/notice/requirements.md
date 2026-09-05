@@ -91,20 +91,20 @@
 
 ### 4-1. 그리드 — 공지
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 입력방식 | 폭 | 필수 | 편집 | 정렬 | 필터 |
-|---|---|---|---|---|---|---|---|---|
-| 순서 | `MSG.NOTICE_COL_SORT_NO` | `SORT_NO` | 숫자 | 80 | — | 가능 | ○ | ○ |
-| 번호 ○ | `MSG.NOTICE_COL_NOTICE_ID` | `NOTICE_ID` | 숫자 | 90 | — | **불가** | — | — |
-| 제목 | `MSG.NOTICE_COL_TITLE` | `TITLE` | 텍스트 | 260 | **필수** | 가능 | **불가** | ○ |
-| 본문 | `MSG.NOTICE_COL_CONTENT` | `CONTENT`(nclob) | 큰 텍스트 | 320(fill) | **필수** | 가능 | **불가** | **끔** |
-| 게시 시작 | `MSG.NOTICE_COL_FROM_DTM` | `NOTICE_FROM_DTM` | 일시 | 160 | **필수** | 가능 | ○ | ○ |
-| 게시 종료 | `MSG.NOTICE_COL_TO_DTM` | `NOTICE_TO_DTM` | 일시 | 160 | — | 가능 | — | ○ |
-| 게시 상태 | `MSG.NOTICE_COL_STAT` | **파생** | 배지 | 100 | — | **불가** | — | **끔** |
-| 사용 | `MSG.NOTICE_COL_USE_YN` | `USE_YN` | 스위치 | 80 | — | 가능 | **불가** | ○ |
-| 팝업 | `MSG.NOTICE_COL_POPUP_YN` | `POPUP_YN` | 스위치 | 80 | — | 가능 | — | ○ |
-| 팝업 시작 ○ | `MSG.NOTICE_COL_POPUP_FROM` | `POPUP_FROM_DTM` | 일시 | 160 | 조건부 | 가능 | — | — |
-| 팝업 종료 ○ | `MSG.NOTICE_COL_POPUP_TO` | `POPUP_TO_DTM` | 일시 | 160 | 조건부 | 가능 | — | — |
-| 감사 4 | (공통) | — | — | — | — | 불가 | — | — |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 필수 | 편집 | 정렬 | 필터 |
+|---|---|---|---|---|---|---|---|---|---|
+| 순서 | `MSG.NOTICE_COL_SORT_NO` | `SORT_NO` | `sortNo` | 숫자 | 80 | — | 가능 | ○ | ○ |
+| 번호 ○ | `MSG.NOTICE_COL_NOTICE_ID` | `NOTICE_ID` | `noticeId` | 숫자 | 90 | — | **불가** | — | — |
+| 제목 | `MSG.NOTICE_COL_TITLE` | `TITLE` | `title` | 텍스트 | 260 | **필수** | 가능 | **불가** | ○ |
+| 본문 | `MSG.NOTICE_COL_CONTENT` | `CONTENT`(nclob) | `content` | 큰 텍스트 | 320(fill) | **필수** | 가능 | **불가** | **끔** |
+| 게시 시작 | `MSG.NOTICE_COL_FROM_DTM` | `NOTICE_FROM_DTM` | `noticeFromDtm` | 일시 | 160 | **필수** | 가능 | ○ | ○ |
+| 게시 종료 | `MSG.NOTICE_COL_TO_DTM` | `NOTICE_TO_DTM` | `noticeToDtm` | 일시 | 160 | — | 가능 | — | ○ |
+| 게시 상태 | `MSG.NOTICE_COL_STAT` | **파생** | `noticeStat` | 배지 | 100 | — | **불가** | — | **끔** |
+| 사용 | `MSG.NOTICE_COL_USE_YN` | `USE_YN` | `useYn` | 스위치 | 80 | — | 가능 | **불가** | ○ |
+| 팝업 | `MSG.NOTICE_COL_POPUP_YN` | `POPUP_YN` | `popupYn` | 스위치 | 80 | — | 가능 | — | ○ |
+| 팝업 시작 ○ | `MSG.NOTICE_COL_POPUP_FROM` | `POPUP_FROM_DTM` | `popupFromDtm` | 일시 | 160 | 조건부 | 가능 | — | — |
+| 팝업 종료 ○ | `MSG.NOTICE_COL_POPUP_TO` | `POPUP_TO_DTM` | `popupToDtm` | 일시 | 160 | 조건부 | 가능 | — | — |
+| 감사 4 | (공통) | — | — | — | — | — | 불가 | — | — |
 
 `○` = 기본 숨김.
 

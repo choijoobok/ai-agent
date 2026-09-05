@@ -107,20 +107,20 @@
 
 ### 4-1. 그리드 — 실행 이력
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 입력방식 | 폭 | 정렬 | 필터 |
-|---|---|---|---|---|---|---|
-| 배치 ID | `MSG.BATCH_HISTORY_COL_BATCH_ID` | `BATCH_ID` | 텍스트 | 160 | ○ | ○ |
-| 배치명 | `MSG.BATCH_HISTORY_COL_BATCH_NM` | `SYS_SCHEDULE_BATCH.BATCH_NM` | 텍스트 | 180 | — | ○ |
-| 시작 | `MSG.BATCH_HISTORY_COL_START` | `START_DTM` | 일시 | 160 | **○** | ○ |
-| 종료 ○ | `MSG.BATCH_HISTORY_COL_END` | `END_DTM` | 일시 | 160 | — | — |
-| **소요** | `MSG.BATCH_HISTORY_COL_ELAPSED` | `ELAPSED_MS` | 기간 | 120 | **○** | 끔 |
-| 결과 | `MSG.BATCH_HISTORY_COL_RSLT` | `RSLT_CD` | 배지 | 150 | — | ○ |
-| 실행 구분 | `MSG.BATCH_HISTORY_COL_EXEC_TYPE` | `EXEC_TYPE_CD` | 텍스트 | 100 | — | ○ |
-| 결과 메시지 | `MSG.BATCH_HISTORY_COL_RSLT_MSG` | `RSLT_MSG` | 텍스트 | 260 | — | 끔 |
-| 상세 | `MSG.BATCH_HISTORY_COL_DETAIL` | **파생** | 링크 | 80 | — | 끔 |
-| 노드 ○ | `MSG.BATCH_HISTORY_COL_NODE` | `NODE_ID` | 텍스트 | 160 | — | — |
-| 중단 요청 ○ | `MSG.BATCH_HISTORY_COL_CANCEL_REQ` | `CANCEL_REQ_DTM` | 일시 | 160 | — | — |
-| 이력 ID ○ | `MSG.BATCH_HISTORY_COL_HIST_ID` | `HIST_ID` | 숫자 | 100 | — | — |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 정렬 | 필터 |
+|---|---|---|---|---|---|---|---|
+| 배치 ID | `MSG.BATCH_HISTORY_COL_BATCH_ID` | `BATCH_ID` | `batchId` | 텍스트 | 160 | ○ | ○ |
+| 배치명 | `MSG.BATCH_HISTORY_COL_BATCH_NM` | `SYS_SCHEDULE_BATCH.BATCH_NM` | `batchNm` | 텍스트 | 180 | — | ○ |
+| 시작 | `MSG.BATCH_HISTORY_COL_START` | `START_DTM` | `startDtm` | 일시 | 160 | **○** | ○ |
+| 종료 ○ | `MSG.BATCH_HISTORY_COL_END` | `END_DTM` | `endDtm` | 일시 | 160 | — | — |
+| **소요** | `MSG.BATCH_HISTORY_COL_ELAPSED` | `ELAPSED_MS` | `elapsedMs` | 기간 | 120 | **○** | 끔 |
+| 결과 | `MSG.BATCH_HISTORY_COL_RSLT` | `RSLT_CD` | `rsltCd` | 배지 | 150 | — | ○ |
+| 실행 구분 | `MSG.BATCH_HISTORY_COL_EXEC_TYPE` | `EXEC_TYPE_CD` | `execTypeCd` | 텍스트 | 100 | — | ○ |
+| 결과 메시지 | `MSG.BATCH_HISTORY_COL_RSLT_MSG` | `RSLT_MSG` | `rsltMsg` | 텍스트 | 260 | — | 끔 |
+| 상세 | `MSG.BATCH_HISTORY_COL_DETAIL` | **파생** | `hasDetail` | 링크 | 80 | — | 끔 |
+| 노드 ○ | `MSG.BATCH_HISTORY_COL_NODE` | `NODE_ID` | `nodeId` | 텍스트 | 160 | — | — |
+| 중단 요청 ○ | `MSG.BATCH_HISTORY_COL_CANCEL_REQ` | `CANCEL_REQ_DTM` | `cancelReqDtm` | 일시 | 160 | — | — |
+| 이력 ID ○ | `MSG.BATCH_HISTORY_COL_HIST_ID` | `HIST_ID` | `histId` | 숫자 | 100 | — | — |
 
 `○` = 기본 숨김.
 

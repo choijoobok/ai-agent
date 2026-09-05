@@ -111,16 +111,16 @@
 
 ### 4-1. 트리 그리드
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 폭 | 편집 |
-|---|---|---|---|---|
-| 메뉴명(계층) | `MSG.MENU_COL_MENU_NM` | `MENU_NM`(번역) | 내용에 맞춤 | **불가** |
-| 메뉴코드 | `MSG.MENU_COL_MENU_CD` | `MENU_CD` | 170 | **불가** |
-| 화면 URL | `MSG.MENU_COL_MENU_URL` | `MENU_URL` | 210 | **조건부**(§4-2) — **콤보** |
-| 아이콘 | `MSG.MENU_COL_ICON` | `ICON_CD` | 150 | 가능 — **콤보** |
-| 사용 | `MSG.MENU_COL_USE_YN` | `USE_YN` | 90 | 가능 — **스위치** |
-| API 수 | `MSG.MENU_COL_API_COUNT` | 파생 | 100/우 | 불가 |
-| 사용자 수 | `MSG.MENU_COL_USER_COUNT` | 파생 | 120/우 | 불가 |
-| 역할 수 | `MSG.MENU_COL_ROLE_COUNT` | 파생 | 100/우 | 불가 |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 폭 | 편집 |
+|---|---|---|---|---|---|
+| 메뉴명(계층) | `MSG.MENU_COL_MENU_NM` | `MENU_NM`(번역) | `menuNm` — **계층 헤더**다 | 내용에 맞춤 | **불가** |
+| 메뉴코드 | `MSG.MENU_COL_MENU_CD` | `MENU_CD` | `menuCd` | 170 | **불가** |
+| 화면 URL | `MSG.MENU_COL_MENU_URL` | `MENU_URL` | `menuUrl` | 210 | **조건부**(§4-2) — **콤보** |
+| 아이콘 | `MSG.MENU_COL_ICON` | `ICON_CD` | `iconCd` | 150 | 가능 — **콤보** |
+| 사용 | `MSG.MENU_COL_USE_YN` | `USE_YN` | `useYn` | 90 | 가능 — **스위치** |
+| API 수 | `MSG.MENU_COL_API_COUNT` | 파생 | `apiCount` | 100/우 | 불가 |
+| 사용자 수 | `MSG.MENU_COL_USER_COUNT` | 파생 | `accessibleUserCount` | 120/우 | 불가 |
+| 역할 수 | `MSG.MENU_COL_ROLE_COUNT` | 파생 | `roleCount` | 100/우 | 불가 |
 
 - **메뉴명에 아이콘이 붙고 사이더와 같은 것을 쓴다** — **폴백까지 공유**하므로 아이콘을 비워 둔 메뉴가 여기서는 폴더로, 사이더에서는 다른 모양으로 보이던 일이 없다.
 - **꺼진 메뉴는 이름이 흐리다** — 최종 게이트에서 걸린다.

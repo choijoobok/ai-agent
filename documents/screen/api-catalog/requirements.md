@@ -109,14 +109,14 @@
 
 ### 4-1. 마스터 — API
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 입력방식 | 폭 | 정렬 | 필터 |
-|---|---|---|---|---|---|---|
-| API URL | `MSG.API_CATALOG_COL_API_URL` | `API_URL` | 텍스트 | 300/좌고정 | ○ | ○ |
-| API 이름 | `MSG.API_CATALOG_COL_API_NM` | `API_NM` | 텍스트 | 220 | ○ | ○ |
-| 액션 | `MSG.API_CATALOG_COL_ACTION_CD` | `ACTION_CD` | 코드 | 110 | ○ | ○(고르는 필터) |
-| 설명 | `MSG.API_CATALOG_COL_API_DESC` | `API_DESC` | 텍스트(펼쳐 보기) | 200(fill) | — | 끔 |
-| **매핑 메뉴 수** | `MSG.API_CATALOG_COL_MENU_COUNT` | **파생** | 숫자 + 배지 | 120 | **불가** | 끔 |
-| 최종 시드 반영 ○ | `MSG.API_CATALOG_COL_SEED_DTM` | `REG_DTM` | 일시 | 160 | ○ | — |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 정렬 | 필터 |
+|---|---|---|---|---|---|---|---|
+| API URL | `MSG.API_CATALOG_COL_API_URL` | `API_URL` | `apiUrl` | 텍스트 | 300/좌고정 | ○ | ○ |
+| API 이름 | `MSG.API_CATALOG_COL_API_NM` | `API_NM` | `apiNm` | 텍스트 | 220 | ○ | ○ |
+| 액션 | `MSG.API_CATALOG_COL_ACTION_CD` | `ACTION_CD` | `actionCd` | 코드 | 110 | ○ | ○(고르는 필터) |
+| 설명 | `MSG.API_CATALOG_COL_API_DESC` | `API_DESC` | `apiDesc` | 텍스트(펼쳐 보기) | 200(fill) | — | 끔 |
+| **매핑 메뉴 수** | `MSG.API_CATALOG_COL_MENU_COUNT` | **파생** | `menuCount` | 숫자 + 배지 | 120 | **불가** | 끔 |
+| 최종 시드 반영 ○ | `MSG.API_CATALOG_COL_SEED_DTM` | `REG_DTM` | `regDtm` | 일시 | 160 | ○ | — |
 
 `○` = 기본 숨김.
 
@@ -130,12 +130,12 @@
 
 ### 4-2. 하단 — 이 API 를 쓰는 메뉴
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 폭 | 정렬 | 필터 |
-|---|---|---|---|---|---|
-| 메뉴 경로 | `MSG.API_CATALOG_COL_MENU_PATH` | 파생 — `시스템 › 로그 › 에러 로그` | 260(fill) | ○ | ○ |
-| 메뉴코드 | `MSG.API_CATALOG_COL_MENU_CD` | `MENU_CD` | 160 | ○ | ○ |
-| 메뉴 사용 | `MSG.API_CATALOG_COL_MENU_USE_YN` | `SYS_MENU.USE_YN` | 100 | ○ | ○ |
-| **닿는 인원** | `MSG.API_CATALOG_COL_USER_COUNT` | 파생 | 130 | 불가 | 끔 |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 폭 | 정렬 | 필터 |
+|---|---|---|---|---|---|---|
+| 메뉴 경로 | `MSG.API_CATALOG_COL_MENU_PATH` | 파생 — `시스템 › 로그 › 에러 로그` | `menuPath` | 260(fill) | ○ | ○ |
+| 메뉴코드 | `MSG.API_CATALOG_COL_MENU_CD` | `MENU_CD` | `menuCd` | 160 | ○ | ○ |
+| 메뉴 사용 | `MSG.API_CATALOG_COL_MENU_USE_YN` | `SYS_MENU.USE_YN` | `useYn` | 100 | ○ | ○ |
+| **닿는 인원** | `MSG.API_CATALOG_COL_USER_COUNT` | 파생 | `accessibleUserCount` | 130 | 불가 | 끔 |
 
 - **메뉴명이 아니라 전체 경로다** — 이 화면에 오는 사람은 403 하나를 들고 왔을 뿐이라 그 메뉴를 **모르는 상태**다.
 - **`메뉴 사용` 과 `닿는 인원` 이 다른 것을 말한다** — 앞은 *대상이 살아 있나*, 뒤는 *줄 사람이 있나*. **둘을 합치면 꺼진 메뉴의 인원이 전부 `0` 이 되어** 관리자가 무엇을 고쳐야 할지 알 수 없다.
