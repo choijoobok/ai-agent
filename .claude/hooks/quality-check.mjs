@@ -99,7 +99,29 @@ function normalize(line) {
   return flat.length > 12 ? flat : null;
 }
 
+/**
+ * `@feat` 면제 명단 — <b>{@code trace-check.mjs} 와 같은 파일을 읽는다</b>.
+ *
+ * <p>읽지 않으면 같은 규칙(T10)에 게이트가 둘이고 답이 갈린다. 실제로 그랬다:
+ * 2026-09-05 에 {@code trace-check} 만 명단을 보게 고쳐 T10 경고가 0 이 됐는데
+ * 여기는 그대로라 <b>963개 ❌ 로 빨간 채</b>였다. <b>영구히 빨간 게이트는 없는
+ * 게이트다</b> — 사람이 숫자를 보지 않게 되고, 그때 새로 생긴 한 건이 묻힌다.
+ */
+function exemptPaths() {
+  try {
+    return new Set(
+      readFileSync(join(REPO, '.claude/hooks/feat-baseline.txt'), 'utf8')
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l && !l.startsWith('#')),
+    );
+  } catch {
+    return new Set();
+  }
+}
+
 function scan() {
+  const exempt = exemptPaths();
   const windows = new Map();
   const swallowed = [];
   const untagged = [];
@@ -115,7 +137,14 @@ function scan() {
       continue;
     }
 
-    if (!text.slice(0, 1500).includes('@feat')) untagged.push(rel);
+    /*
+      <b>파일 집합도 {@code trace-check} T10 과 같아야 한다.</b> 명단만 맞추고 집합이
+      갈리면 답은 여전히 다르다 — 실제로 명단을 읽게 한 뒤에도 963 대 0 이 145 대 0 으로
+      줄었을 뿐이었고, 남은 145 는 전부 <b>테스트 소스</b>였다. 테스트는 `@feat` 가 아니라
+      TC 로 엮인다(process/05-traceability.md).
+    */
+    const isTestSrc = /\/(test|spec)\//.test(rel) || /\.(test|spec)\.[jt]sx?$/.test(rel);
+    if (!isTestSrc && !exempt.has(rel) && !text.slice(0, 1500).includes('@feat')) untagged.push(rel);
 
     for (const [pattern, label] of SWALLOW) {
       for (const m of text.matchAll(pattern)) {
