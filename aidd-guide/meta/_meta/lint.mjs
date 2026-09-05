@@ -308,6 +308,30 @@ function checkScreenRequirements() {
       issues.push(`§4 에 컬럼 표가 없다(표 ${rows}행) — 폭·타입·편집이 어디에도 없으면 화면마다 갈린다`);
     }
 
+    for (const m of (four ? four[0].match(/^\| 컬럼 \| 라벨 키 \| DB 컬럼 \|.*$/gm) || [] : [])) {
+      if (!/필드명/.test(m)) {
+        issues.push('§4 표에 `필드명` 칸이 없다 — DB 컬럼의 camelCase 는 관례일 뿐이라 파생·조인 컬럼에서 갈린다');
+        break;
+      }
+    }
+
+    // 그리드를 가리키는 소절인데 표도, 표를 가진 다른 요건서로 가는 링크도 없다
+    let head = '';
+    let bodyRows = 0;
+    let link = false;
+    const flush = () => {
+      if (head && bodyRows < 2 && !link && /그리드|탭|마스터|디테일|목록|양식|트리|폼/.test(head)) {
+        issues.push(`§4 ${head.replace(/^###\s*/, '').slice(0, 40)} 에 컬럼 표가 없다`);
+      }
+    };
+    for (const line of (four ? four[0].split('\n') : [])) {
+      if (/^### 4-1/.test(line)) { flush(); head = line; bodyRows = 0; link = false; continue; }
+      if (/^### 4-[2-9]/.test(line)) { flush(); head = ''; continue; }
+      if (head && /^\|.*\|.*\|/.test(line)) bodyRows += 1;
+      if (head && /requirements\.md\)/.test(line)) link = true;
+    }
+    flush();
+
     let prev = -1;
     for (const m of text.matchAll(/^\| `[A-Z]+\d*-(\d+)`/gm)) {
       const n = Number(m[1]);
