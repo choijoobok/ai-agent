@@ -55,6 +55,7 @@ const VOCAB_SOURCES = [
 
 const YAML_RE = /^---\n([\s\S]*?)\n---\n/;
 const LINK_RE = /\]\(([^)#\s]+\.md)(?:#[^)]*)?\)/g;
+const LABEL_RE = /\[([^\]\n]+)\]\(([^)\s]+)\)/g;
 const LINK_SEC_RE = /\[([^\]]*)\]\(([^)\s]+\.md)\)\s*§\s*([0-9][0-9.\-]*)/g;
 const HEAD_NUM_RE = /^#{2,4}\s*([0-9][0-9.\-]*)[.\s]/gm;
 const FENCE_RE = /^```[\s\S]*?^```/gm;
@@ -103,6 +104,9 @@ for (const [rel, why] of LENGTH_EXEMPT) {
 }
 
 out.push('');
+const countIssues = checkCatalogCounts();
+if (countIssues.length > 0) violations.push(['INDEX.md', lineCount(join(GUIDE, 'INDEX.md')), countIssues]);
+
 const totalStale = [...stale.values()].reduce((a, b) => a + b, 0);
 out.push(`링크형 인용 중 대상에 그 절이 없는 것: ${totalStale} 곳 / ${stale.size} 파일 — 줄어들기만 해야 한다.`);
 for (const [rel, n] of [...stale].sort((a, b) => b[1] - a[1]).slice(0, 5)) {
@@ -135,6 +139,8 @@ function lintFile(file, rel) {
   const lines = countLines(text);
 
   issues.push(...checkLinks(file, text));
+
+  issues.push(...checkLabels(file, text));
 
   const m = text.match(YAML_RE);
   if (!m) {
@@ -192,6 +198,36 @@ function checkLinks(file, text) {
   return issues;
 }
 
+/**
+ * <b>라벨이 경로를 주장하는데 그 경로가 없는 링크.</b>
+ *
+ * <p>깨진 링크 검사는 <b>타깃</b>만 본다. 그래서 폴더 이름이 바뀌면 타깃은 함께 고쳐지고
+ * <b>라벨만 옛 이름으로 남는다</b> — 링크는 멀쩡히 열리므로 아무 검사도 울지 않는다.
+ * 그런데 읽는 사람은 <b>라벨을 보고 판단한다</b>: 클릭하지 않고 <i>"아 그건 sources/ 에
+ * 있구나"</i> 로 넘어가고, 그 다음부터 없는 폴더를 찾는다.
+ *
+ * <p>2026-09-05 에 64곳이 그 상태였다 — `sources/`(→`standard/`) · `overlays/`(→`overlay/`) ·
+ * `09-knowledge/` · `11-playbook/` · `06-framework/` · `02-context/` · `13-safety/` 처럼
+ * <b>합치기 전 저장소의 폴더 이름</b>이 라벨에만 화석으로 남아 있었다.
+ *
+ * <p><b>슬래시가 든 라벨만 본다.</b> 파일명 하나짜리 라벨(`grid.md`)은 경로를 주장하지
+ * 않으므로 정상이고, 그것까지 막으면 짧게 쓰는 관용구가 죽는다.
+ */
+function checkLabels(file, text) {
+  const issues = [];
+  const base = dirname(file);
+  for (const m of text.matchAll(LABEL_RE)) {
+    const label = m[1].split(/\s/)[0].replace(/[`*]/g, '');
+    if (!label.includes('/')) continue;
+    if (!/^[A-Za-z0-9_./-]+\.(md|mjs|ts|tsx|java|html|yaml)$/.test(label)) continue;
+    const found = [join(REPO, label), join(GUIDE, label), join(base, label)].some((p) =>
+      existsSync(normalize(p)),
+    );
+    if (!found) issues.push(`label lies: ${label} — 타깃은 ${m[2]}`);
+  }
+  return issues;
+}
+
 /** 대상 파일에 없는 절을 가리키는 `](./경로.md) §N` 참조 수. */
 function staleSectionRefs(file) {
   const body = strip(readFileSync(file, 'utf8'));
@@ -199,8 +235,50 @@ function staleSectionRefs(file) {
   for (const m of body.matchAll(LINK_SEC_RE)) {
     const target = normalize(join(dirname(file), m[2]));
     if (!existsSync(target)) continue;
-    const want = m[3].replace(/\.+$/, '');
+    /*
+      <b>제목 쪽과 같은 방식으로 정규화한다</b>(`headings()`). 전에는 여기만 끝 점을
+      떼고 하이픈을 그대로 두어, `§5-1` 인용이 제목 `5.1` 과 어긋나 <b>멀쩡한 인용이
+      위반으로 세어졌다</b>. 검사기의 오탐은 그 검사를 무시하는 법을 가르친다.
+    */
+    const want = m[3].replace(/-/g, '.').replace(/\.+$/, '');
     if (!headings(target).has(want)) n += 1;
+  }
+  return n;
+}
+
+/**
+ * <b>카탈로그가 주장하는 문서 수 ↔ 실제.</b>
+ *
+ * <p>개수는 <b>아무도 모르게 낡는다</b> — 파일 하나를 더할 때 그 숫자를 고칠 이유가 그
+ * 순간에는 없다. 2026-09-05 에 아홉 칸 중 <b>여섯이 어긋나 있었고</b> `standard` 는
+ * 48 대 36 이었다. `CLAUDE.md` §4-2 가 헌법에 현황을 적지 말라고 한 것과 같은 이유이며,
+ * <b>적을 것이면 기계가 지켜야 한다.</b>
+ */
+function checkCatalogCounts() {
+  const file = join(GUIDE, 'INDEX.md');
+  if (!existsSync(file)) return [];
+  const issues = [];
+  const rows = readFileSync(file, 'utf8').matchAll(/^\| \[([a-z]+)\]\([^)]+\)[^|]*\|[^|]*\|\s*\d+\s*\|\s*(\d+)\s*\|$/gm);
+  for (const m of rows) {
+    const dir = join(GUIDE, m[1]);
+    if (!existsSync(dir)) {
+      issues.push(`카탈로그가 없는 폴더를 적었다: ${m[1]}`);
+      continue;
+    }
+    const actual = countMd(dir);
+    if (actual !== Number(m[2])) {
+      issues.push(`문서 수가 다르다: ${m[1]} — 적힌 값 ${m[2]}, 실제 ${actual}`);
+    }
+  }
+  return issues;
+}
+
+function countMd(dir) {
+  let n = 0;
+  for (const name of readdirSync(dir)) {
+    const p = join(dir, name);
+    if (statSync(p).isDirectory()) n += countMd(p);
+    else if (name.endsWith('.md')) n += 1;
   }
   return n;
 }
