@@ -23,7 +23,7 @@
 → [`CLAUDE.md`](./CLAUDE.md)
 
 그 밖에 [`CLAUDE.md`](CLAUDE.md)(**헌법** — AI 가 매 세션 읽는 유일한 문서) ·
-[`.claude/`](.claude/settings.json)(훅 열 · 스킬 열셋) · `.github/`(CI) 가 루트에 있다.
+[`.claude/`](.claude/settings.json)(훅 · 스킬 — 목록은 [user-guide/07-harness.md](user-guide/07-harness.md)) · `.github/`(CI) 가 루트에 있다.
 
 ---
 

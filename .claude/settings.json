@@ -78,6 +78,13 @@
             "args": [".claude/hooks/doc-drift.mjs"],
             "timeout": 15,
             "statusMessage": "문서 셋 대조"
+          },
+          {
+            "type": "command",
+            "command": "node",
+            "args": [".claude/hooks/harness-doc.mjs"],
+            "timeout": 10,
+            "statusMessage": "하네스 문서 현행화"
           }
         ]
       }

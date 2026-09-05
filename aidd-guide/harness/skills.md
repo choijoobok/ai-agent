@@ -24,7 +24,7 @@ tags: [harness, skill, workflow, convention]
 - 새 스킬을 만들거나 기존 스킬의 절차를 고칠 때
 - 스킬이 **안 불릴 때** — 대개 `description` 문제다
 
-## 스킬 열셋
+## 스킬 카탈로그
 
 ### 프로젝트를 굴리는 것 — 단계와 게이트
 
@@ -127,7 +127,7 @@ tags: [harness, skill, workflow, convention]
 ## 관련
 
 - [INDEX.md](./INDEX.md)
-- [hooks.md](./hooks.md) — 훅 다섯의 상세
+- [hooks.md](./hooks.md) — 훅 하나하나의 상세
 - [automation-matrix.md](./automation-matrix.md) — 자동화 vs AI 책임
 - [tool-curation.md](./tool-curation.md) — 도구 추가 게이트
 - [playbook](../playbook/INDEX.md) — 화면 레시피

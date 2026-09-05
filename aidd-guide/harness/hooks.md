@@ -1,6 +1,6 @@
 ---
 id: LLM-HRN-001
-title: "훅 카탈로그 — 다섯의 상세와 공통 계약"
+title: "훅 카탈로그 — 하나하나의 상세와 공통 계약"
 category: harness
 type: operation
 created: "2026-05-04"
@@ -11,7 +11,7 @@ tier: 2
 tags: [harness, hooks, gate, automation]
 ---
 
-# 훅 카탈로그 — 다섯의 상세
+# 훅 카탈로그 — 하나하나의 상세
 
 > **무엇을 언제 · 왜 강도가 넷인가**는 [automation-matrix.md](./automation-matrix.md) 가 갖는다.
 > 여기는 **각 훅이 실제로 무엇을 보고 무엇을 말하는가**, 그리고 훅을 더하거나 고칠 때의 계약이다.

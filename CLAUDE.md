@@ -100,7 +100,7 @@ ai-agent/
 5. **정본이면 커밋하고 파생이면 제외한다.** 정본에서 얼마든지 다시 만들 수 있는 것을 형상 관리에 넣으면, 정본을 한 줄 고칠 때마다 파생물이 diff 를 덮어 **무엇이 바뀌었는지 보이지 않게** 된다.
    - **정본** — `documents/spec/*.yaml` · `documents/screen/*/requirements.md` · `manual.md` · `decisions/`
    - **파생(`.gitignore`)** — `mockup.html` · `manual.html` · `documents/screen/index.html` · `documents/generated/` · `build/manual/`
-   - **예외는 빌드가 소비하는 것뿐이다** — 생성 시드 CSV 는 파생물이지만 Liquibase 가 기동에 읽으므로 커밋한다(§5-8). 빼면 새로 클론한 사람이 앱을 띄울 수 없다.
+   - **예외 둘은 커밋한다.** 생성 시드 CSV 는 파생물이지만 Liquibase 가 기동에 읽으므로 커밋한다(§5-8) — 빼면 새로 클론한 사람이 앱을 띄울 수 없다. `user-guide/07-harness.md`(훅·스킬 목록)도 커밋한다 — **읽는 사람이 저장소를 브라우저로 여는 사람**이고 그 사람은 생성기를 돌리지 않는다.
    - 파생물은 **손으로 고치지 않는다** — 다음 생성에서 사라지고, 훅이 막는다.
 
 ---
@@ -230,6 +230,7 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 |---|---|
 | `documents/spec/**` | `node .claude/hooks/trace-check.mjs --all` (훅이 자동으로도 돈다) |
 | `aidd-guide/**` | `node aidd-guide/meta/_meta/lint.mjs` — **위반 0 이어야 한다** |
+| `.claude/hooks/**` · `.claude/skills/**` · `settings.json` | `node .claude/hooks/harness-doc.mjs --check` — 훅이 자동으로 다시 만들지만, **커밋에 담겼는지**는 이것이 본다 |
 | `menu-tree.yaml` | `cd sources && ./gradlew generateMenuSeed` |
 | 컨트롤러 · `endpoints.ts` · `screenRegistry.ts` | `cd sources && ./gradlew generateApiSeed` |
 | `messageKeys.ts` · `MsgKey.java` | `cd sources && ./gradlew generateMessageSeed` (값은 **새 changeset** 으로) |
@@ -267,6 +268,7 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 | `normalize-encoding` | PostToolUse | BOM · CRLF 를 쓰기 직후 **고친다**(§5-1) |
 | `trace-check` | PostToolUse | spec 변경 직후 추적성 오류 — **경고** |
 | `doc-drift` | PostToolUse | 화면 소스 ↔ 문서 셋 — **경고**(§6.5) |
+| `harness-doc` | PostToolUse | `.claude/` 가 바뀌면 [`user-guide/07-harness.md`](user-guide/07-harness.md) 를 **스스로 다시 만든다** |
 | `context-gauge` | UserPromptSubmit | 문맥이 **창의 60% 를 넘으면 압축을 권한다** — 경고. 아래면 한 글자도 쓰지 않는다 |
 | `log-raw` | UserPromptSubmit·Stop | 막지 않고 **대화 원문을 `chat-history/` 에 남긴다**(§10) |
 

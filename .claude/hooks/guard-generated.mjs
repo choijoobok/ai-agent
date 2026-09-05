@@ -24,6 +24,7 @@ const GENERATED = new Map([
   [`${SAMPLE}/902-sample-bulk-order.csv`, './gradlew generateSampleBulkSeed'],
   [`${SAMPLE}/902-sample-bulk-item.csv`, './gradlew generateSampleBulkSeed'],
   [`${SAMPLE}/904-sample-bulk-item-dense.csv`, './gradlew generateSampleBulkSeed'],
+  ['user-guide/07-harness.md', 'node .claude/hooks/harness-doc.mjs --write'],
 ]);
 
 /** 무엇을 고쳐야 그 생성물이 바뀌나 — 막기만 하면 사람이 다음에 갈 곳을 모른다. */
@@ -35,6 +36,7 @@ const SOURCE_OF = new Map([
     '008-init-message-key.csv',
     'sources/frontend/src/shared/i18n/messageKeys.ts · sources/backend/core/.../message/MsgKey.java',
   ],
+  ['07-harness.md', '.claude/hooks/ · .claude/skills/ · .claude/settings.json 의 실물'],
   ['902-sample-bulk-order.csv', 'generateSampleBulkSeed 의 파라미터'],
   ['902-sample-bulk-item.csv', '〃'],
   ['904-sample-bulk-item-dense.csv', '〃'],
@@ -48,11 +50,18 @@ const task = GENERATED.get(path);
 if (!task) pass();
 
 const name = path.slice(path.lastIndexOf('/') + 1);
+
+/* 시드에만 해당하는 말을 모든 생성물에 붙이지 않는다 — 마크다운 문서에 대고
+   *CSV 를 커밋하라* · *changeset 이 checksum 으로 죽는다* 를 말하면 읽는 사람이
+   무엇을 해야 하는지 흐려지고, 훅이 자기가 무엇을 막는지 모른다는 표시가 된다. */
+const isSeed = path.endsWith('.csv');
 deny(
   [
     `${path} 는 생성물이다 — 손으로 고치지 않는다(CLAUDE.md §5-8 · §5-11).`,
     `고칠 곳: ${SOURCE_OF.get(name) ?? '생성 태스크의 입력'}`,
-    `고친 뒤: \`${task}\` 를 돌리고 CSV 를 같은 커밋에 담는다.`,
-    '이미 적재된 changeset 은 고치지 않는다 — 고치면 남의 로컬이 checksum 으로 죽는다.',
+    `고친 뒤: \`${task}\` 를 돌리고 산출물을 같은 커밋에 담는다(CLAUDE.md §9).`,
+    ...(isSeed
+      ? ['이미 적재된 changeset 은 고치지 않는다 — 고치면 남의 로컬이 checksum 으로 죽는다.']
+      : []),
   ].join('\n'),
 );
