@@ -309,7 +309,14 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 
 > **폴더 넷 · 헌법 · 훅 열하나 · 스킬 열셋 · `aidd-guide/` 는 섰다**(2026-09-04). 남은 것만 적는다.
 
-- **P1 발견을 마치지 않았다.** `documents/spec/` 의 P0·P2·P3 산출물은 agentic-ai 설계에서 재편성해 들어왔으나 **사용자 승인을 받지 않았다** — 각 파일의 `status: migrated` 가 그 표시다. `/phase-gate` 로 P0 부터 되짚는다.
-- **`documents/spec/30-usecases.yaml` · `40-domain.yaml` · `70-testcases.yaml` 이 비어 있다.** 유즈케이스·ERD·테스트케이스는 원본에 없었고, **지어내지 않았다.** P3 에서 만든다.
+> **미룬 것은 여기 모으지 않는다.** 각자의 자리에 `@defer <기한>` 을 달아 두고
+> **`node .claude/skills/pm-status/deferred.mjs`** 가 긁어 모은다(§4-2 — 목록을 따로 두면
+> 정본이 둘이 된다). 여기 적는 것은 *자리가 없는* 큰 덩어리뿐이다.
+
+- **P0 는 승인됐고 P1·P2·P3 가 남았다**(2026-09-05). `documents/spec/` 의 P2·P3 산출물은 agentic-ai 설계에서 재편성해 들어왔으나 **아직 승인 전이다** — 각 파일의 `status: migrated` 가 그 표시다. `/phase-gate` 로 하나씩 되짚는다. **P1 은 지금 닫을 수 없다** — 고객사가 없어 대상 업무가 없다(`project.state.yaml` 의 OQ-002).
+- **`documents/spec/30-usecases.yaml` · `40-domain.yaml` · `70-testcases.yaml` 이 비어 있다.** 유즈케이스·ERD·테스트케이스는 원본에 없었고, **지어내지 않았다.**
+  @defer P3 — 유즈케이스 · 도메인 모델 · 테스트 케이스 셋을 만든다
 - **`documents/screen/` 은 백오피스 템플릿의 화면 문서 셋이다.** Agentic AI Hub 의 메뉴 43개(admin 32 · portal 11)는 아직 문서가 없다 — `documents/spec/60-screens.yaml` 에 목록만 있다.
+  @defer P3 — Hub 메뉴 43개의 화면 문서 셋을 시작한다
 - **컨텍스트 게이지** — 훅에서 남은 하나.
+  @defer ? — 기한을 정하지 않았다. 남은 훅 하나이며 급하지 않다
