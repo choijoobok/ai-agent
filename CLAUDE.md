@@ -267,6 +267,7 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 | `normalize-encoding` | PostToolUse | BOM · CRLF 를 쓰기 직후 **고친다**(§5-1) |
 | `trace-check` | PostToolUse | spec 변경 직후 추적성 오류 — **경고** |
 | `doc-drift` | PostToolUse | 화면 소스 ↔ 문서 셋 — **경고**(§6.5) |
+| `context-gauge` | UserPromptSubmit | 문맥이 **창의 60% 를 넘으면 압축을 권한다** — 경고. 아래면 한 글자도 쓰지 않는다 |
 | `log-raw` | UserPromptSubmit·Stop | 막지 않고 **대화 원문을 `chat-history/` 에 남긴다**(§10) |
 
 > 훅은 [`.claude/hooks/`](.claude/hooks/) 에 있고 [`.claude/settings.json`](.claude/settings.json) 이 건다.

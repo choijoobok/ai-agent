@@ -91,6 +91,13 @@
             "args": [".claude/hooks/log-raw.mjs"],
             "timeout": 10,
             "statusMessage": "대화 기록"
+          },
+          {
+            "type": "command",
+            "command": "node",
+            "args": [".claude/hooks/context-gauge.mjs"],
+            "timeout": 10,
+            "statusMessage": "문맥 게이지"
           }
         ]
       }
