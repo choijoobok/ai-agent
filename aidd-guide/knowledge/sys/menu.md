@@ -28,7 +28,7 @@ tags: [knowledge, menu, authz, api]
 | `MENU_NM` | **메뉴명이 아니라 메시지 키다** — `menu.{MENU_CD}` |
 | `MENU_URL` | **NULL 이면 순수 구조 노드** — 권한 표에 들어오면 거부한다 |
 | `ICON_CD` · `SORT_NO` · `USE_YN` | |
-| `EXPORT_YN` | 서버 경로 없이 프론트가 엑셀을 만드는 화면의 `EXPORT` 근거 |
+| `EXPORT_YN` | 서버 경로 없이 프론트가 엑셀을 만드는 화면의 `EXPORT` 근거. **메뉴 단위다** — 한 화면의 그리드 하나만 막는 것은 `excel={false}`(frontend/grid.md) |
 | `SRC_CD` | `SEED` / `ORPHAN` — §2 |
 
 - **URL 과 자식은 배타다.** `MENU_URL IS NULL` 과 *자식이 있다* 가 **같은 사실**이라

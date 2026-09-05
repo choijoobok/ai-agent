@@ -136,7 +136,7 @@ api: {
 |---|---|
 | 필수 | `title`(**`MSG` 키**) · `controller` |
 | 판 | `height` · `settings` · `gridId` · `menuCd` · `disabled` |
-| 머리 | `controls` · `titleSuffix` · `excel` |
+| 머리 | `controls` · `titleSuffix` · **`excel`**(`ExcelSpec` \| **`false`** — `false` 면 ②를 안 세운다) |
 | 발 | `pageSizes` · `footerNote` · **`emptyText`**(0건 문구를 화면이 바꾼다) |
 | 선택 | `selection` · `onSelect` · `onSelectionChange` · `onRowDoubleClick` |
 | 편집 | `deletable` · `onRead` |
