@@ -38,8 +38,10 @@ tags: [framework, index]
   ├─ "어떻게 빌드·배포하나 · CI 가 뭘 도나"        → build-deploy.md
   ├─ "이름을 어떻게 짓나 · 인코딩 · 게이트 · 커밋"  → conventions.md
   ├─ "시드를 언제 어떻게 다시 만드나"              → seed.md
-  ├─ 백엔드 —— 구조 · API · 영속 · 조회 · 보안 …   → sources/backend/INDEX.md
-  └─ 프론트 —— 뼈대 · 그리드 · 조회조건 · 문구 …   → sources/frontend/INDEX.md
+  ├─ 백엔드 —— 구조 · API · 영속 · 조회 · 보안 …   → backend/INDEX.md
+  ├─ 프론트 —— 뼈대 · 그리드 · 조회조건 · 문구 …   → frontend/INDEX.md
+  ├─ PII · 프롬프트 인젝션 · 비밀값 · 호출 제한    → safety/INDEX.md
+  └─ Hub 를 얹을 때만 더해지는 규약                → hub-conventions.md
 ```
 
 ## 파일
@@ -50,8 +52,10 @@ tags: [framework, index]
 | LLM-FWK-005 | [build-deploy.md](./build-deploy.md) | 단일 JAR · 프로파일 · CI — **워크플로가 가리키는 원본** | ✅ |
 | LLM-FWK-002 | [conventions.md](./conventions.md) | 이름 · 인코딩 · 주석 · 게이트 · 커밋 | ✅ |
 | LLM-FWK-004 | [seed.md](./seed.md) | 생성 시드 — 절차와 검증 | ✅ |
-| LLM-FWK-IDX-BE | [sources/backend/INDEX.md](./backend/INDEX.md) | 백엔드 표준 10 | ✅ |
-| LLM-FWK-IDX-FE | [sources/frontend/INDEX.md](./frontend/INDEX.md) | 프론트엔드 표준 8 | ✅ |
+| LLM-FWK-010 | [hub-conventions.md](./hub-conventions.md) | **Hub 를 얹을 때만** 더해지는 규약 — 템플릿 표준이 먼저다 | ✅ |
+| LLM-FWK-IDX-BE | [standard/backend/INDEX.md](./backend/INDEX.md) | 백엔드 표준 13 | ✅ |
+| LLM-FWK-IDX-FE | [standard/frontend/INDEX.md](./frontend/INDEX.md) | 프론트엔드 표준 10 | ✅ |
+| LLM-FWK-IDX-SF | [standard/safety/INDEX.md](./safety/INDEX.md) | 안전 넷 — PII · 인젝션 · 비밀값 · 호출 제한 | ✅ |
 
 ## 스택 한눈에
 

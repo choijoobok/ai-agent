@@ -18,8 +18,8 @@ tags: [hub, convention, module, transaction, logging, timezone]
 > 링크만 둔다.
 >
 > **결정의 근거는 `documents/spec/` 이 갖는다** — 여기는 *그래서 코드를 어떻게 쓰나* 다.
-> 원칙 ID(`PRN-`)와 제약 ID(`CON-`)는 [`spec/02-constraints.yaml`](../../documents/spec/02-constraints.yaml),
-> 구조 ID(`ARCH-`)는 [`spec/20-architecture.yaml`](../../documents/spec/20-architecture.yaml).
+> 원칙 ID(`PRN-`)와 제약 ID(`CON-`)는 [documents/spec/02-constraints.yaml](../../documents/spec/02-constraints.yaml),
+> 구조 ID(`ARCH-`)는 [documents/spec/20-architecture.yaml](../../documents/spec/20-architecture.yaml).
 
 ## 1. 결정 트리
 
@@ -42,7 +42,7 @@ Hub 코드를 쓴다
 - **서브모듈 키는 명명 구분용이다.** 테이블의 **소유·접근 권한을 뜻하지 않는다**(ARCH-010).
 - PK 는 **서로게이트 키**를 쓰고, 자연키(예: 카탈로그의 `(데이터소스, DB 스키마, 테이블명)`)에는
   **유니크 제약**을 둔다. 참조는 서로게이트 키로 하여 **이름 변경이 참조를 깨지 않게** 한다.
-- 명명의 어휘는 [`spec/03-glossary.yaml`](../../documents/spec/03-glossary.yaml) 의 `key` 다 — §8 도 참조.
+- 명명의 어휘는 [documents/spec/03-glossary.yaml](../../documents/spec/03-glossary.yaml) 의 `key` 다 — §8 도 참조.
 
 ## 3. 설정 파일
 

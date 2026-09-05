@@ -76,5 +76,5 @@ tags: [backend, index]
 
 - [../INDEX.md](../INDEX.md) — 프레임워크 카테고리
 - [../frontend/INDEX.md](../frontend/INDEX.md) — 프론트엔드 표준
-- [../../11-playbook/INDEX.md](../../playbook/INDEX.md) — 화면 레시피
-- [../../09-knowledge/INDEX.md](../../knowledge/INDEX.md) — 도메인 지식
+- [playbook/INDEX.md](../../playbook/INDEX.md) — 화면 레시피
+- [knowledge/INDEX.md](../../knowledge/INDEX.md) — 도메인 지식

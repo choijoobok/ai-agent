@@ -42,7 +42,7 @@ tags: [prompt, requirements, overlay, index]
   ├─ "화면 하나 만들어줘"                  → screen.md   (절차 일곱 단계)
   ├─ "이 표로 조회·저장 화면"              → crud.md     (가장 흔한 요청의 실제 대화)
   ├─ 요건서를 쓰다 빈 칸을 만났다          → auto-completion.md (채울 수 있나 물어야 하나)
-  └─ 화면에 이 특성이 있다                 → overlays/INDEX.md
+  └─ 화면에 이 특성이 있다                 → overlay/INDEX.md
 ```
 
 ## 파일
@@ -53,7 +53,7 @@ tags: [prompt, requirements, overlay, index]
 | LLM-PMT-002 | [crud.md](./crud.md) | 단일 그리드 CRUD — **대화의 실물** | ✅ |
 | LLM-PMT-003 | [auto-completion.md](./auto-completion.md) | 채워도 되는 것 / 물어야 하는 것 | ✅ |
 | LLM-PMT-005 | [few-shot-policy.md](./few-shot-policy.md) | 예시를 몇 개 어디에 두나 | ✅ |
-| LLM-PMT-OVR-IDX | [overlays/INDEX.md](./overlay/INDEX.md) | Overlay **일곱** — 트리거 표 | ✅ |
+| LLM-PMT-OVR-IDX | [artifact/screen/overlay/INDEX.md](./overlay/INDEX.md) | Overlay **일곱** — 트리거 표 | ✅ |
 
 ## 핵심 규칙 넷
 
@@ -75,7 +75,7 @@ tags: [prompt, requirements, overlay, index]
 | 대용량 이력 조회 | [history-pattern.md](./overlay/history-pattern.md) |
 
 상세와 **각 Overlay 가 요건서의 어느 절을 요구하는지**는
-[overlays/INDEX.md](./overlay/INDEX.md).
+[artifact/screen/overlay/INDEX.md](./overlay/INDEX.md).
 
 ## 관련
 

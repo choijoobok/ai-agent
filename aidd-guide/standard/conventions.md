@@ -37,7 +37,7 @@ tags: [convention, naming, encoding, comment]
 | 메시지 키 | 점 표기 — `err.duplicate-code` · `col.product.id` · `code.LANG_CD.ko` |
 
 **이름은 패키지·경로가 못 하는 말만 해야 한다.** 같은 말을 두 번 하면 그 자리에서
-규칙이 갈린다([sources/backend/packages.md §3](./backend/packages.md) 의 `Admin` 사례).
+규칙이 갈린다([standard/backend/packages.md §3](./backend/packages.md) 의 `Admin` 사례).
 
 ## 3. 문구 — 소스에 박지 않는다
 
@@ -56,10 +56,13 @@ tags: [convention, naming, encoding, comment]
 - **되돌리기 쉬운 것에는 주석이 필요 없다.** 다음 사람이 *"이거 왜 이렇게 했지"* 하고
   고칠 만한 자리에 적는다 — 그 자리가 곧 실패가 재발하는 자리다.
 - **순서·자리가 규약인 곳에는 반드시 적는다.** 주석만으로는 못 막으니 **테스트를 함께
-  둔다**([sources/backend/crosscutting.md §2](./backend/crosscutting.md)).
+  둔다**([standard/backend/crosscutting.md §2](./backend/crosscutting.md)).
 - 설계 문서를 가리킬 때는 **절 번호까지** 적는다.
 
 ## 5. 게이트 — 고쳤으면 돌린다
+
+> **아래 명령은 전부 `sources/` 에서 돈다**(CLAUDE.md §1 — 빌드 루트가 거기다).
+> 저장소 루트에서 치면 `./gradlew` 가 없다.
 
 ```bash
 ./gradlew check -PskipFrontend
@@ -95,5 +98,5 @@ cd frontend && npm run lint && npx tsc -b --noEmit && npm run test
 ## 관련
 
 - [CLAUDE.md §5 · §7 · §8 · §9](../../CLAUDE.md) — 요지
-- [sources/backend/packages.md](./backend/packages.md) · [sources/frontend/packages.md](./frontend/packages.md)
+- [standard/backend/packages.md](./backend/packages.md) · [standard/frontend/packages.md](./frontend/packages.md)
 - [seed.md](./seed.md) — 생성물과 손으로 쓰는 것

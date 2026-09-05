@@ -84,4 +84,4 @@ cd frontend && npm run lint && npx tsc -b --noEmit && npm run test
 - [../INDEX.md](../INDEX.md) — 프레임워크 카테고리
 - [../backend/INDEX.md](../backend/INDEX.md) — 백엔드 표준
 - [../seed.md](../seed.md) — `endpoints.ts` 가 시드의 입력이다
-- [../../11-playbook/INDEX.md](../../playbook/INDEX.md) — 화면 레시피
+- [playbook/INDEX.md](../../playbook/INDEX.md) — 화면 레시피

@@ -13,6 +13,10 @@ tags: [artifact, map, index]
 
 # 산출물 지도 — 무엇을, 언제, 어디에
 
+> **이 폴더의 다른 문서** — [spec-schema.md](./spec-schema.md)(SSOT `documents/spec/` 의
+> 파일과 작성 단계) · [template/](./template/02-requirements.md)(산출물 서식) ·
+> [screen/INDEX.md](./screen/INDEX.md)(화면 요건서 절차).
+
 ## 1. 전체 산출물 목록
 
 `S` = SSOT(명세, 직접 작성) · `G` = 생성물(spec에서 파생) · `L` = 원장(누적 기록)

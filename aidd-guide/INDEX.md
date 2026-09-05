@@ -45,7 +45,7 @@ tags: [index, routing, master, decision-tree]
   ├─ "지금 어디인가 · 다음에 무엇을"           → documents/project.state.yaml · /pm-status
   ├─ "단계별로 무엇을 하나"                    → phase/         P0~P6 플레이북
   ├─ "게이트·역할·질문·추적성·결정·변경"       → process/       방법론 열하나
-  ├─ "무엇을 언제 어디에 만드나 · 문서 예산"   → artifact/      산출물 지도 39
+  ├─ "무엇을 언제 어디에 만드나 · 문서 예산"   → artifact/      산출물 지도 40
   ├─ "화면 요건서를 쓴다 · 무엇을 물어야 하나" → artifact/screen/  절차 + Overlay 7
   │
   │  ── 개발 표준 ────────────────────────────────
@@ -70,18 +70,20 @@ tags: [index, routing, master, decision-tree]
 
 ## 카테고리 카탈로그
 
-| 카테고리 | 역할 | Tier | 운용 |
+| 카테고리 | 역할 | Tier | 문서 |
 |---|---|---|---|
-| [meta](meta/INDEX.md) | 메타블록·200줄·라우팅·문서 스타일 | 3 | 4 |
-| [process](process/01-overview.md) | 방법론 — 역할·질문·게이트·추적성·결정·변경·인지부채·검증비용 | 1 | 11 |
+| [meta](meta/INDEX.md) | 메타블록·200줄·라우팅·문서 스타일 | 3 | 5 |
+| [process](process/01-overview.md) | 방법론 — 역할·질문·게이트·추적성·결정·변경·인지부채·검증비용 | 1 | 12 |
 | [phase](phase/P0-inception.md) | P0~P6 실행 플레이북 | 1 | 7 |
-| [artifact](artifact/INDEX.md) | **산출물 지도 39 = 문서 예산** · 템플릿 · 화면 요건서 절차 | 1 | 20 |
-| [standard](standard/INDEX.md) | 백엔드·프론트 표준의 상세와 근거 | 2 | 48 |
-| [playbook](playbook/INDEX.md) | 화면 레시피 (샘플 여섯과 대응) | 2 | 7 |
+| [artifact](artifact/INDEX.md) | **산출물 지도 40 = 문서 예산** · 템플릿 · 화면 요건서 절차 | 1 | 22 |
+| [standard](standard/INDEX.md) | 백엔드·프론트 표준의 상세와 근거 | 2 | 36 |
+| [playbook](playbook/INDEX.md) | 화면 레시피 (샘플 여섯과 대응) | 2 | 9 |
 | [quality](quality/INDEX.md) | 테스트 설계 · 레드팀 · 코드 품질 · 골든셋 · 관측 | 2 | 13 |
-| [knowledge](knowledge/INDEX.md) | 표 34개 — 인가·코드·문구·이력·운영 | 3 | 15 |
+| [knowledge](knowledge/INDEX.md) | 표 34개 — 인가·코드·문구·이력·운영 | 3 | 14 |
 | [harness](harness/INDEX.md) | 훅 · 스킬 · 문맥 예산 · 로그 — **지금 무엇이 있나는 [user-guide/07-harness.md](../user-guide/07-harness.md)**(생성물) | 2 | 13 |
 
+
+**`문서` 는 그 폴더의 `.md` 개수다**(하위 폴더 · `INDEX.md` 포함). `lint.mjs` 가 실제와 대조한다 — 전에는 `운용` 이었는데 무엇을 세는지가 적혀 있지 않아 **아홉 중 여섯이 어긋나 있었다**(`standard` 는 48 대 36).
 ## SSoT 우선순위 (정보 충돌 시)
 
 1. **현재 소스 코드** — 가장 신뢰
