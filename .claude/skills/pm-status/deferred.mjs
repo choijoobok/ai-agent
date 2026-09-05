@@ -118,9 +118,14 @@ for (const f of files) {
   const block = read(join(REPO, rel)).split(/^undecided:/m)[1]?.split(/^\S/m)[0] ?? '';
   for (const chunk of block.split(/^\s+- id: /m).slice(1)) {
     const id = chunk.match(/^(UND-\S+)/)?.[1];
+    if (!id) continue;
+    // `resolved:` 가 붙었으면 끝난 것이다 — 행은 이력으로 남기고 여기서는 세지 않는다.
+    if (/^\s+resolved:/m.test(chunk)) continue;
+    // `@defer` 를 품고 있으면 ① 이 이미 기한과 함께 잡았다 — 두 번 세지 않는다.
+    if (/@defer\s/.test(chunk)) continue;
     const item = chunk.match(/item:\s*"([^"]*)"/)?.[1];
     const when = chunk.match(/when:\s*"([^"]*)"/)?.[1] ?? '';
-    if (id) add(when.match(/G[0-6]|P[0-6]/)?.[0], id, `${item} — ${when}`, rel);
+    add(when.match(/G[0-6]|P[0-6]/)?.[0], id, `${item} — ${when}`, rel);
   }
 }
 
