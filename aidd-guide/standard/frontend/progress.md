@@ -142,5 +142,5 @@ getOne: (jobId) => `/common/progress/${encodeURIComponent(jobId)}`
 
 - [../backend/progress.md](../backend/progress.md) — 서버 쪽
 - [grid.md](./grid.md) — `api.actions` 선언
-- [../../11-playbook/crud-screen.md](../../playbook/crud-screen.md) §5 — 실행 두 갈래
-- [../../11-playbook/modal.md](../../playbook/modal.md) — 인자 모달
+- [playbook/crud-screen.md](../../playbook/crud-screen.md) §5 — 실행 두 갈래
+- [playbook/modal.md](../../playbook/modal.md) — 인자 모달

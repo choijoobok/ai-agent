@@ -17,7 +17,7 @@ tags: [backend, jpa, querydsl, mybatis, liquibase, portability]
 > 벤더 차이는 *나중에 고치는 버그* 가 아니라 **그 벤더로 배포한 뒤에야 나타나는 버그**다 —
 > 개발용 PostgreSQL 은 다 받아준다.
 >
-> 유도과정·실측은 [`backend/persistence.md`](./persistence.md).
+> 유도과정·실측은 [standard/backend/persistence.md](./persistence.md).
 
 ## 1. 셋의 경계
 

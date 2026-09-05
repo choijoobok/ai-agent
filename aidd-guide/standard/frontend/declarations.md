@@ -154,5 +154,5 @@ api: {
 - [grid.md](./grid.md) — 뼈대 · 저장 흐름 · `api` 를 언제 쓰나
 - [grid-advanced.md](./grid-advanced.md) — 유형 13종 · 편집 · 검증 · 마스터-디테일
 - [search-form.md](./search-form.md) — 필드 하나를 고르는 판단
-- [`frontend/grid.md`](./grid.md) — 컬럼 계약 원문
-- [`frontend/search-form.md`](./search-form.md) — 검색 폼 계약 원문
+- [standard/frontend/grid.md](./grid.md) — 컬럼 계약 원문
+- [standard/frontend/search-form.md](./search-form.md) — 검색 폼 계약 원문

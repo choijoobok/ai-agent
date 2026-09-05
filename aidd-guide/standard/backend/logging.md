@@ -137,4 +137,4 @@ Logback `SiftingAppender` + MDC `userId` 로 나눈다(`logs/users/${userId}/app
 
 - [crosscutting.md](./crosscutting.md) — 인터셉터 순서 · body 캐싱 상한
 - [exception.md](./exception.md) — `ERR_CD` · `ERR_MSG` 를 만드는 곳
-- [`../../09-knowledge/sys/logs.md`](../../knowledge/sys/logs.md) — 로그 도메인
+- [knowledge/sys/logs.md](../../knowledge/sys/logs.md) — 로그 도메인

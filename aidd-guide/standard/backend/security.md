@@ -17,7 +17,7 @@ tags: [backend, security, authorization, menu, action]
 > 프론트가 든 권한 사본은 재조회 전까지 낡을 수 있다 — 방금 회수된 권한의 버튼이 아직
 > 보일 수 있고, **그 클릭을 막는 것은 서버다.**
 >
-> 유도과정·비밀번호 정책·PII·보안 헤더는 [`backend/security.md`](./security.md).
+> 유도과정·비밀번호 정책·PII·보안 헤더는 [standard/backend/security.md](./security.md).
 
 ## 1. 계층 셋 — 프리픽스가 보안 등급이다
 
@@ -153,4 +153,4 @@ API 하나를 인가하는 데 필요한 사실은 둘이고 **성격이 달라 
 
 - [api.md](./api.md) — 경로 세 마디 · 접두가 액션을 정한다
 - [session.md](./session.md) — 세션 스토어 · 동시 접속
-- [`../../09-knowledge/sys/menu.md`](../../knowledge/sys/menu.md) — `SYS_MENU` · `SYS_MENU_API` 도메인
+- [knowledge/sys/menu.md](../../knowledge/sys/menu.md) — `SYS_MENU` · `SYS_MENU_API` 도메인

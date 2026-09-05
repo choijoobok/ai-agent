@@ -194,5 +194,5 @@ core 2 · max 4 · queue 100 · 종료 시 대기(상한 있음)
 ## 관련
 
 - [progress.md](./progress.md) — 요청이 시작하는 작업 · **다른 풀**
-- [../../09-knowledge/sys/batch.md](../../knowledge/sys/batch.md) — 표 둘 · [progress-lock.md](../../knowledge/sys/progress-lock.md) — `SYS_DATA_LOCK`
+- [knowledge/sys/batch.md](../../knowledge/sys/batch.md) — 표 둘 · [progress-lock.md](../../knowledge/sys/progress-lock.md) — `SYS_DATA_LOCK`
 - [../frontend/packages.md](../frontend/packages.md) — 화면 둘이 나눠 쓰는 `shared/batch`

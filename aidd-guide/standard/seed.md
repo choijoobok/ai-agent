@@ -136,7 +136,7 @@ git add . && git rebase --continue
 
 ## 관련
 
-- [sources/backend/api.md](./backend/api.md) — 접두가 액션을 정한다
-- [sources/backend/security.md](./backend/security.md) — 인가 사실이 데이터인 이유
-- [sources/frontend/http.md](./frontend/http.md) — `endpoints.ts` 선언
+- [standard/backend/api.md](./backend/api.md) — 접두가 액션을 정한다
+- [standard/backend/security.md](./backend/security.md) — 인가 사실이 데이터인 이유
+- [standard/frontend/http.md](./frontend/http.md) — `endpoints.ts` 선언
 - [CLAUDE.md §5-8 · §7](../../CLAUDE.md) — 시드는 생성물이다 · 게이트

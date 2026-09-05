@@ -93,7 +93,7 @@ tags: [knowledge, retention, purge, batch, regulation]
 | 진행률 작업 | 종료 후 `ttl`(30m) 경과분 + `RUNNING` 인 채 `ghost-after`(24h) 를 넘긴 행 | 주기 실행 | ✅ `JdbcProgressSweeper` |
 | 분산 락 | `EXPIRE_DTM` 을 넘겨 회수되지 못한 행 | **선점할 때**(배치가 아니다) | ✅ `DbLockStore` → `deleteExpired` |
 | 중복 요청 방어 | `ttl-seconds` 경과분 | — | ❌ `RequestDedupInterceptor` 가 없다([crosscutting.md](../standard/backend/crosscutting.md)) |
-| PII vault 고아 | 소유 행이 사라진 vault 행 | — | ❌ vault 가 없다([`backend/pii-vault.md`](../standard/backend/pii-vault.md)) |
+| PII vault 고아 | 소유 행이 사라진 vault 행 | — | ❌ vault 가 없다([standard/backend/pii-vault.md](../standard/backend/pii-vault.md)) |
 | 자주 쓰는 메뉴 버킷 | 보존 개월을 넘긴 `STAT_YM` 행 | — | ❌ 삭제가 없다. 설정도 **조회 창**(`menu-stat.months`)뿐이고 보존 키가 없다 |
 | 고아 파일 | 참조 0 인 행 | — | ❌ **`SYS_FILE` 테이블 자체가 없다** — 파일 기능이 서는 날 |
 

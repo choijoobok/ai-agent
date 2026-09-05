@@ -110,5 +110,5 @@ MsgKey.java (서버)  ·  messageKeys.ts (프론트)
 ## 관련
 
 - [api.md](./api.md) — 봉투 · 서버가 문구를 완성하는 이유
-- [`../../09-knowledge/sys/message.md`](../../knowledge/sys/message.md) — `SYS_MESSAGE` 도메인
+- [knowledge/sys/message.md](../../knowledge/sys/message.md) — `SYS_MESSAGE` 도메인
 - [CLAUDE.md §5-6 · §5-8](../../../CLAUDE.md) — 문구를 박지 않는다 · 시드는 생성물이다

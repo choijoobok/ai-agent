@@ -79,7 +79,7 @@ public PageResponse<XxxTreeRow> getMenuTree(String roleId, String lang)
   공통물이 그것을 알면 도메인 용어가 `shared/` 로 새어 든다.
 - **`columns` 는 `ColumnDef` 가 아니라 `TreeColumn` 이다** — `header` · `width` · `cell` 셋이
   기본이고 편집은 `editable` · `editor` 로 연다. 전량은
-  [`06-framework/frontend/declarations.md`](../standard/frontend/declarations.md) 가 아니라
+  [standard/frontend/declarations.md](../standard/frontend/declarations.md) 가 아니라
   `shared/tree/types.ts` 가 갖는다(트리는 그리드 어휘를 쓰지 않는다).
 
 ## 5. 편집 상태를 화면이 든다
@@ -139,4 +139,4 @@ const dirty = diff.added > 0 || diff.removed > 0;
 
 - [crud-screen.md](./crud-screen.md) — 왼쪽 그리드의 규칙 전부
 - [master-detail.md](./master-detail.md) — `SplitPane` 선언 · 선택 거부
-- [../09-knowledge/INDEX.md](../knowledge/INDEX.md) — 인가 · 메뉴 · 액션의 도메인 지식
+- [knowledge/INDEX.md](../knowledge/INDEX.md) — 인가 · 메뉴 · 액션의 도메인 지식

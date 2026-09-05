@@ -77,4 +77,4 @@ tags: [backend, pii, privacy, vault, constraint]
 
 - — 왜 컬럼 암호화가 아닌가, 왜 미뤘나
 - [logging.md](./logging.md) — 요청 전문을 저장하는 그 자리
-- [`13-safety/pii.md`](../safety/pii.md) — **다른 주제**(AI 작업 규칙)
+- [standard/safety/pii.md](../safety/pii.md) — **다른 주제**(AI 작업 규칙)

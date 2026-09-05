@@ -210,7 +210,7 @@ JDK 25 이므로 `synchronized` 핀닝 제약이 없다(JEP 491).
 | `SecurityContextHolder` | ✅ **필수** | 비동기 작업에서 사용자 식별·권한 검사 |
 | **MDC**(`requestId` · `userId`) | ✅ **필수** | 없으면 **비동기 로그가 요청과 끊긴다** |
 | `LocaleContextHolder` | ✅ | 다국어 메시지 |
-| **시스템 설정 스냅샷** | ✅ **복사** | 한 덩어리 일 안에서 값이 바뀌면 안 된다([`sys/config.md`](../../knowledge/sys/config.md)) |
+| **시스템 설정 스냅샷** | ✅ **복사** | 한 덩어리 일 안에서 값이 바뀌면 안 된다([knowledge/sys/config.md](../../knowledge/sys/config.md)) |
 | Micrometer `Observation` | ⬜ 향후 | 채택 구현은 MDC·Locale 만 옮긴다 |
 | **`TransactionSynchronizationManager`** | ❌ **절대 금지** | §7.2 |
 | `RequestContextHolder` | ⚠️ **원칙 금지** | §7.3 |
@@ -280,4 +280,4 @@ MDC·Locale·설정 스냅샷을 함께 옮기려면 `TaskDecorator` 가 필요�
 - [security.md](./security.md) — 인가 인터셉터가 하는 일
 - [logging.md](./logging.md) — 사용 이력 · 에러 로그의 저장 규약
 - [progress.md](./progress.md) — 오래 걸리는 작업의 진행률
-- · [`sys/config.md`](../../knowledge/sys/config.md)
+- · [knowledge/sys/config.md](../../knowledge/sys/config.md)

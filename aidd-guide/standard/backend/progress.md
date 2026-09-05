@@ -187,5 +187,5 @@ core 2 · max 4 · queue 20 · thread "progress-" · shutdown 대기 60초
 - [../frontend/progress.md](../frontend/progress.md) — 화면 쪽
 - [batch.md](./batch.md) — **크론이 시작하는 작업** · 진행률을 쓰지 않는 이유
 - [crosscutting.md](./crosscutting.md) · [exception.md](./exception.md)
-- [../../09-knowledge/sys/progress-lock.md](../../knowledge/sys/progress-lock.md) — `SYS_JOB_PROGRESS`
-- [../../11-playbook/crud-screen.md](../../playbook/crud-screen.md) §5 — 실행 선언
+- [knowledge/sys/progress-lock.md](../../knowledge/sys/progress-lock.md) — `SYS_JOB_PROGRESS`
+- [playbook/crud-screen.md](../../playbook/crud-screen.md) §5 — 실행 선언

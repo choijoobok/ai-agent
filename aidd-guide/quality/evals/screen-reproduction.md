@@ -197,4 +197,4 @@ node aidd-guide/quality/evals/score-screen.mjs log/login <sbx-A> <sbx-B>
 
 - [golden-set.md](./golden-set.md) — 골든셋 3종. 이 문서는 그중 Generation 의 확장이다
 - [regression.md](./regression.md) — 변경 전/후 비교 절차
-- [../02-context/INDEX.md](../../harness/context/INDEX.md) — 문맥 예산 · seek-read
+- [harness/context/INDEX.md](../../harness/context/INDEX.md) — 문맥 예산 · seek-read

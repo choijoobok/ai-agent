@@ -152,6 +152,6 @@ toSavePayload: (rows) => ({
 
 - [standard/frontend/grid.md](../standard/frontend/grid.md) · [grid-advanced.md](../standard/frontend/grid-advanced.md) · [search-form.md](../standard/frontend/search-form.md)
 - [standard/backend/search.md](../standard/backend/search.md) — 화이트리스트와 빌더
-- [standard/backend/progress.md](../standard/backend/progress.md) · [sources/frontend/progress.md](../standard/frontend/progress.md) — 진행률
+- [standard/backend/progress.md](../standard/backend/progress.md) · [standard/frontend/progress.md](../standard/frontend/progress.md) — 진행률
 - [modal.md](./modal.md) — 실행 인자 모달 · 참조 팝업
 - [changeset.md](./changeset.md) — 문구와 코드를 넣는다

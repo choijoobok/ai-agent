@@ -189,4 +189,4 @@ const grid = useGridController<UserRow>({
 - [grid-advanced.md](./grid-advanced.md) — 컬럼 계약 · 편집 · 검증 · 마스터-디테일
 - [search-form.md](./search-form.md) — 조회조건 헤더
 - [../backend/search.md](../backend/search.md) — 서버 쪽 봉투
-- [`frontend/grid.md`](./grid.md) · [`frontend/grid.md`](./grid.md)
+- [standard/frontend/grid.md](./grid.md) · [standard/frontend/grid.md](./grid.md)

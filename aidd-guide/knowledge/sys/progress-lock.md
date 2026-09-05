@@ -41,7 +41,7 @@ tags: [knowledge, progress, lock, transient]
 [playbook/crud-screen.md](../../playbook/crud-screen.md).
 
 **메커니즘은 [standard/backend/progress.md](../../standard/backend/progress.md)(맡기고
-돌아오기 · 조절 · 실행기 · 청소)와 [sources/frontend/progress.md](../../standard/frontend/progress.md)
+돌아오기 · 조절 · 실행기 · 청소)와 [standard/frontend/progress.md](../../standard/frontend/progress.md)
 (폴링 · 창 · 경과 시간)가 갖는다.**
 
 ## 2. `SYS_DATA_LOCK` — **선점 판정이 PK INSERT 의 성공 여부**다
@@ -96,5 +96,5 @@ Hibernate 의 `TABLE` 식별자 전략이 쓴다. **표가 늘 때마다 행이 
 
 - [batch.md](./batch.md) — 락 키와 유령
 - [logs.md](./logs.md) — 보존과 만료의 차이
-- [standard/backend/progress.md](../../standard/backend/progress.md) · [sources/frontend/progress.md](../../standard/frontend/progress.md) — 진행률 메커니즘
+- [standard/backend/progress.md](../../standard/backend/progress.md) · [standard/frontend/progress.md](../../standard/frontend/progress.md) — 진행률 메커니즘
 - [standard/backend/persistence.md](../../standard/backend/persistence.md) — `TABLE` 전략

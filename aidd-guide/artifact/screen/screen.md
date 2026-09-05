@@ -69,7 +69,7 @@ cp aidd-guide/artifact/template/02-requirements.md documents/screen/{페이지�
 
 ## 4. Overlay 를 고른다
 
-화면 특성 → [overlays/INDEX.md](./overlay/INDEX.md). Overlay 는 **요건서의 어느 절이
+화면 특성 → [artifact/screen/overlay/INDEX.md](./overlay/INDEX.md). Overlay 는 **요건서의 어느 절이
 필수가 되는지**와 **무엇을 물어야 하는지**를 준다.
 
 **둘 이상 겹치는 것이 정상이다** — 마스터-디테일 + 조회조건 + 엑셀은 흔한 조합이다.
@@ -143,5 +143,5 @@ node .claude/skills/mockup/scaffold.mjs {화면} > documents/screen/{화면}/moc
 
 - [crud.md](./crud.md) — 가장 흔한 요청의 실제 대화
 - [auto-completion.md](./auto-completion.md) — 채울 것과 물을 것
-- [overlays/INDEX.md](./overlay/INDEX.md) — 화면 특성별 질문
+- [artifact/screen/overlay/INDEX.md](./overlay/INDEX.md) — 화면 특성별 질문
 - [`documents/screen/README.md`](../../../documents/screen/README.md) — 화면 문서의 역할

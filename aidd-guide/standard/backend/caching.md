@@ -77,4 +77,4 @@ CODE_MGMT 저장 ─→ CacheVersionService.bump("code") ─→ SYS_CACHE_VERSIO
 
 - [session.md](./session.md) — 세션 스토어 선택
 - [security.md](./security.md) — 유효 권한이 세션에 있는 이유
-- [`../../09-knowledge/sys/message.md`](../../knowledge/sys/message.md) — `SYS_CACHE_VERSION` 도메인
+- [knowledge/sys/message.md](../../knowledge/sys/message.md) — `SYS_CACHE_VERSION` 도메인
