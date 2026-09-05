@@ -6,6 +6,9 @@
 # **줄어들기만 해야 한다.** 태그를 단 파일은 여기서 지운다. 새 파일을 여기에
 # 더하는 것은 규칙을 끄는 것이며, 그럴 이유가 있으면 커밋 메시지에 적는다.
 #
+# **예외 하나 — 템플릿 안에서의 이동.** 면제의 기준은 날짜가 아니라 *템플릿의 코드인가* 다.
+# 템플릿 파일을 쪼개 새 파일이 생기면 빚이 는 것이 아니라 옮겨 간 것이므로 명단도 따라간다.
+#
 # 생성: node .claude/hooks/trace-check.mjs --feat-baseline
 
 sources/backend/api/src/main/java/com/aiagent/api/apicatalog/ApiCatalogController.java
@@ -182,6 +185,7 @@ sources/backend/core/src/main/java/com/aiagent/core/search/SortDir.java
 sources/backend/core/src/main/java/com/aiagent/core/search/SortSpec.java
 sources/backend/core/src/main/java/com/aiagent/core/search/ValueCoercion.java
 sources/backend/domain/src/main/java/com/aiagent/domain/auth/LoginResultCode.java
+sources/backend/domain/src/main/java/com/aiagent/domain/auth/LoginResultGroup.java
 sources/backend/domain/src/main/java/com/aiagent/domain/auth/MyLoginRecord.java
 sources/backend/domain/src/main/java/com/aiagent/domain/auth/entity/SysLoginLog.java
 sources/backend/domain/src/main/java/com/aiagent/domain/auth/loginlog/LoginLogErrorCode.java

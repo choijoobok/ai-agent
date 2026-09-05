@@ -70,8 +70,6 @@ public class AccessLogQueryService {
      */
     public static final int MAX_RANGE_DAYS = 31;
 
-    /** 화면이 처음 채우는 기간 — 시스템 기본값(7일)을 덮는다(screen/log/access/requirements.md). */
-    public static final int DEFAULT_RANGE_DAYS = 1;
 
     /** 목록에 싣는 것 — <b>{@code parameters} 가 없다.</b> 있는가만 {@link #HAS_PARAMETERS} 가 낸다. */
     private static final NumberExpression<Integer> HAS_PARAMETERS =

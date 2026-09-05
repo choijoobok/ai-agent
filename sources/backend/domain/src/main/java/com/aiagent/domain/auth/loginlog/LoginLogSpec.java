@@ -4,13 +4,10 @@ import com.aiagent.core.search.Op;
 import com.aiagent.core.search.QuerySpec;
 import com.aiagent.core.search.SortDir;
 import com.aiagent.domain.auth.LoginResultCode;
+import com.aiagent.domain.auth.LoginResultGroup;
 import com.aiagent.domain.auth.entity.QSysLoginLog;
 import com.aiagent.domain.user.entity.QSysUser;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -59,41 +56,6 @@ public final class LoginLogSpec {
      */
     static final QSysUser U = QSysUser.sysUser;
 
-    /**
-     * <b>실패 열</b> — {@link LoginResultCode} 의 {@code FAIL_} 접두가 곧 이 묶음이다.
-     *
-     * <p>이름으로 접두를 보지 않고 <b>집합을 적는다</b>. {@code startsWith("FAIL_")} 로
-     * 두면 {@code enum} 에 이름을 더하는 순간 <b>묶음이 조용히 바뀐다</b> — 집합으로 적어
-     * 두면 새 코드가 어느 쪽인지 정하지 않은 채로는 <b>기동하지 못한다</b>({@link #GROUPS}).
-     */
-    private static final Set<LoginResultCode> FAILED = Set.of(
-            LoginResultCode.FAIL_NO_USER,
-            LoginResultCode.FAIL_PWD,
-            LoginResultCode.FAIL_DISABLED,
-            LoginResultCode.FAIL_EXPIRED,
-            LoginResultCode.FAIL_LOCKED,
-            LoginResultCode.FAIL_DORMANT,
-            LoginResultCode.FAIL_IP,
-            LoginResultCode.FAIL_NO_AUTHORITY,
-            LoginResultCode.FAIL_TEMP_EXPIRED,
-            LoginResultCode.FAIL_CONCURRENT);
-
-    /**
-     * <b>종료 넷</b> — 로그아웃 · 만료 · 강제 · 밀려남.
-     *
-     * <p><b>만료와 밀려남이 여기 있는 것이 의도다</b>(screen/log/login/requirements.md). 사용자에게는 <i>"갑자기
-     * 로그아웃됐다"</i> 이지만 시스템으로서는 <b>정상 종료</b>이며, 실패 쪽에 두면 문의를
-     * 받은 운영자가 장애로 읽는다.
-     */
-    private static final Set<LoginResultCode> CLOSED = Set.of(
-            LoginResultCode.LOGOUT,
-            LoginResultCode.SESSION_TIMEOUT,
-            LoginResultCode.FORCED_LOGOUT,
-            LoginResultCode.SESSION_EVICTED);
-
-    /** 성공은 코드 하나다 — 그래서 묶음 후보에 없다({@link #resultGroup} 의 주석). */
-    private static final Set<LoginResultCode> SUCCEEDED = Set.of(LoginResultCode.SUCCESS);
-
     public static final QuerySpec SPEC = QuerySpec.of("loginLog")
             .from(LL)
             .leftJoin(U).on(U.userId.eq(LL.userId))
@@ -135,33 +97,11 @@ public final class LoginLogSpec {
         if (op != Op.eq) {
             throw new IllegalArgumentException("결과 묶음은 = 만 받는다 — " + op);
         }
-        String group = String.valueOf(value).toUpperCase(Locale.ROOT);
-        Set<LoginResultCode> codes = GROUPS.get(group);
+        Set<LoginResultCode> codes = LoginResultGroup.codesOf(String.valueOf(value));
         if (codes == null) {
             throw new IllegalArgumentException("없는 결과 묶음이다 — " + value);
         }
         return LL.loginRsltCd.in(codes);
-    }
-
-    /**
-     * 묶음 이름 → 코드 집합.
-     *
-     * <p><b>셋이 {@link LoginResultCode} 전부를 덮는다.</b> 아래 정적 초기화가 그것을
-     * 지킨다 — 코드를 더하면서 묶음을 정하지 않으면 <b>기동이 실패</b>한다. 조용히 두면
-     * 새 코드는 <i>실패만</i> 에도 <i>종료만</i> 에도 걸리지 않아, 그 조회를 하는 사람의
-     * 목록에서 <b>말없이 빠진다</b>.
-     */
-    private static final Map<String, Set<LoginResultCode>> GROUPS =
-            Map.of("SUCCESS", SUCCEEDED, "FAILED", FAILED, "CLOSED", CLOSED);
-
-    static {
-        List<LoginResultCode> uncovered = Arrays.stream(LoginResultCode.values())
-                .filter(code -> GROUPS.values().stream().noneMatch(group -> group.contains(code)))
-                .toList();
-        if (!uncovered.isEmpty()) {
-            throw new IllegalStateException(
-                    "묶음이 정해지지 않은 로그인 결과 코드가 있다 — " + uncovered + " (screen/log/login/requirements.md)");
-        }
     }
 
     private LoginLogSpec() {}

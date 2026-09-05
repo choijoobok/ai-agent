@@ -68,13 +68,6 @@ public class ErrorLogQueryService {
 
     private static final QSysAccessLog AL = QSysAccessLog.sysAccessLog;
 
-    /**
-     * 화면이 처음 채우는 기간 — <b>시스템 기본값(7일)을 그대로 쓴다</b>(screen/log/error/requirements.md).
-     *
-     * <p>사용 이력만 1일로 좁혔고(행마다 {@code nclob}) 이 화면은 그럴 이유가 없다 —
-     * 오류는 <b>드물게 나는 것</b>이라 하루로 자르면 대개 빈 화면이 된다.
-     */
-    public static final int DEFAULT_RANGE_DAYS = 7;
 
     /**
      * 목록에 싣는 것 — <b>{@code rootCauseStack} 이 없다.</b> 있는가만 {@link #HAS_STACK} 이 낸다.

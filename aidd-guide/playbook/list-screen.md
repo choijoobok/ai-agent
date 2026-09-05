@@ -65,6 +65,11 @@ public static final QuerySpec SPEC = QuerySpec.of("accessLog")
 - **`.derived()` 가 파생 조회조건이다** — 화면의 `결과 묶음` 처럼 컬럼이 아닌 것.
   번역기가 던지는 `IllegalArgumentException` 을 `FieldSpec` 이 **400 으로 감싼다** —
   `BusinessException` 을 직접 던지지 않는다(던지면 문구가 둘이 된다).
+- **묶음표는 `Spec` 이 갖지 않는다.** *"로그인 실패란 무엇인가"* 는 도메인 지식이고
+  *"이 화면이 어느 컬럼으로 물 수 있나"* 는 화면의 것이다 — 한 파일에 두면 두 번째로
+  쓰는 곳(통계·알림)이 **화면을 import 하게 된다.** 열거형 옆에 두고 `Spec` 은 번역만
+  한다(`domain/auth/LoginResultGroup`). **전수 커버는 테스트가 잠근다** →
+  [quality/test-design.md](../quality/test-design.md) §3.
 - 계약의 전문은 [standard/backend/search.md](../standard/backend/search.md).
 
 ### 서비스 — 커서형 한 벌
@@ -88,8 +93,11 @@ public class AccessLogQueryService {
 - **`respondCursor` 의 인자는 셋** — 행 · 정렬 키 · PK. 순서가 `defaultSort` · `pk` 와 같다.
 - **기간 상한은 `RangeGuard.Rule` 다섯 칸**: 기간 컬럼 · **면제 조건** · 상한 · 필수 오류 · 초과 오류.
   면제 조건(`traceId`)이 있으면 그것만으로 조회가 열린다.
-- **상한을 화면이 덮지 않으면 상수를 두지 않는다.** 시스템 값과 같은 숫자를 다시 적으면
-  설정을 고친 날 조용히 갈린다.
+- **상한을 좁히려면 `Math.min(설정값, 상수)` 로 서버가 덮는다** — 화면만 막으면 도구·스크립트가
+  그대로 지나간다. **넓히는 쪽으로는 덮지 않는다.**
+- **기본 기간은 화면이 갖고 서버는 상수를 두지 않는다.** 서버에 같은 숫자를 다시 적으면
+  **아무도 안 읽는 사본**이 되고, 설정을 고친 날 소스가 거짓말을 한다 — 실제로 죽은 상수
+  둘이 그렇게 남아 있었다(2026-09-05 에 지웠다).
 
 ### 컨트롤러
 
