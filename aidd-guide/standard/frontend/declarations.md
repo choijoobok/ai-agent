@@ -73,7 +73,7 @@ tags: [frontend, grid, column, searchform, vocabulary, reference]
 | `required` | `false` | |
 | `editor` | 유형이 정한다 | |
 | `maxLength` | 유형이 정한다 | |
-| `validate` | 없다 | `(v, row, ctx) => msg \| null` |
+| `validate` | 없다 | `(value, row) => msg \| null` — **인자는 둘이다**(`shared/grid/types.ts`) |
 | `afterEdit` | 없다 | 값 변경 후 연쇄 |
 
 **여는 것**
