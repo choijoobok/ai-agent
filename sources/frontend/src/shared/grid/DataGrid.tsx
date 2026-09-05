@@ -214,8 +214,22 @@ interface DataGridProps<T> {
    *
    * <p><b>이 선언에 판(AG Grid)의 어휘가 없다</b>(frontend/grid.md) — URL 과 메시지 키뿐이므로
    * Enterprise 로 갈아타도 화면이 적은 것은 바뀌지 않는다.
+   *
+   * <h2>{@code false} — <b>②를 아예 세우지 않는다</b></h2>
+   *
+   * <p>전에는 이 선언이 <i>무엇을 주는가</i> 만 말하고 <b><i>줄 것이 없다</i> 를 말하지
+   * 못했다.</b> ②는 {@code api} 와 {@code EXPORT} 권한만 보고 섰으므로, 내려받기를 막으려면
+   * {@code api} 를 통째로 빼는 수밖에 없었고 그러면 저장 버튼도 함께 사라졌다.
+   *
+   * <p><b>메뉴의 {@code EXPORT_YN} 으로 끄는 것과 다른 자리다.</b> 저쪽은 <i>이 메뉴에서
+   * 내려받을 수 있나</i> 라 메뉴 하나에 하나뿐인데, 마스터-디테일은 <b>한 메뉴에 그리드가
+   * 둘</b>이다 — 하단만 막을 자리가 없었다.
+   *
+   * <p><b>쓸 자리는 좁다.</b> 개인정보처럼 <i>화면으로 보는 것은 되지만 파일로 나가면 안
+   * 되는</i> 표에 쓴다. <b>마스터에 딸린 목록이라는 이유로는 끄지 않는다</b> — 그것은
+   * 내려받으면 안 되는 이유가 아니다.
    */
-  excel?: ExcelSpec;
+  excel?: ExcelSpec | false;
   /** 접히면 <b>제목 줄만</b> 남는다 — 본문·푸터·버튼이 함께 접힌다(frontend/grid.md). */
   collapsed?: boolean;
   /**
@@ -1314,9 +1328,10 @@ function GridHeader<T>(
           <b>{@code read} 가 아니라 {@code api} 를 본다</b>(2026-08-30 — screen/user/requirements.md). 조회를
           다른 응답이 먹이는 저장 그리드가 생겼고(개인 예외 목록), 그 그리드도 내려받을
           것이 있다 — {@code fetchAll} 이 그때 <b>화면이 든 행 전부</b>를 돌려준다.
-          {@code api} 가 아예 없는 그리드(screen/code/requirements.md 의 하단)는 여전히 ②가 없다.
+          {@code api} 가 아예 없는 그리드는 여전히 ②가 없고, <b>{@code excel={false}} 로
+          명시해 끈 그리드</b>도 없다 — 뒤쪽이 2026-09-05 에 생겼다.
         */}
-        {controller.api && hasPermission(permissions, menuCd, 'EXPORT') && (
+        {props.excel !== false && controller.api && hasPermission(permissions, menuCd, 'EXPORT') && (
           <ExcelButton<T>
             fileName={label(props.title)}
             columns={props.excelColumns}
