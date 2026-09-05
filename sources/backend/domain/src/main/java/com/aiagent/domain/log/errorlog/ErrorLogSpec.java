@@ -9,7 +9,7 @@ import com.aiagent.domain.user.entity.QSysUser;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 /**
- * {@code ERROR_LOG} 의 화이트리스트 — screen/log/access/requirements.md · backend/api.md.
+ * {@code ERROR_LOG} 의 화이트리스트 — screen/log/error/requirements.md · backend/api.md.
  *
  * <h2>정렬이 하나뿐인 것이 셋에 공통이다</h2>
  *

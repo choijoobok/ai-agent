@@ -6,7 +6,7 @@ import com.aiagent.domain.notification.entity.QSysNotiRequest;
 import com.aiagent.domain.user.entity.QSysUser;
 
 /**
- * {@code NOTI_REQUEST} 의 화이트리스트 — screen/notice/requirements.md · backend/api.md.
+ * {@code NOTI_REQUEST} 의 화이트리스트 — screen/noti-request/requirements.md · backend/api.md.
  *
  * <h2>기본 정렬이 <b>오름차순</b>이다 — 로그 3종과 반대다</h2>
  *

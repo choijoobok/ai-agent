@@ -27,7 +27,7 @@ public interface SysNotiRequestRepository extends JpaRepository<SysNotiRequest, 
     /**
      * <i>내 요청</i> 탭 — <b>최신이 위</b>다.
      *
-     * <p>{@code NOTI_REQUEST} 메뉴의 오름차순과 <b>반대</b>이며 그것이 의도다(screen/notice/requirements.md):
+     * <p>{@code NOTI_REQUEST} 메뉴의 오름차순과 <b>반대</b>이며 그것이 의도다(screen/noti-request/requirements.md):
      * 저쪽은 <b>대기열</b>이라 오래 기다린 것이 먼저지만, 여기는 <b>내 이력</b>이라
      * 방금 낸 것이 위여야 한다 — 내가 낸 요청이 어떻게 됐는지가 물음이다.
      *

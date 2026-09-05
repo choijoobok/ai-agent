@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code NOTI_REQUEST} 의 조회 — screen/notice/requirements.md.
+ * {@code NOTI_REQUEST} 의 조회 — screen/noti-request/requirements.md.
  *
  * <h2>처리자 이름을 두 번째 조인으로 얻지 않는다</h2>
  *

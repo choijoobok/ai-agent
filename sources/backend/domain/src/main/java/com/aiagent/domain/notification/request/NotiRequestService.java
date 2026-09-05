@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code NOTI_REQUEST} 의 처리 — screen/notice/requirements.md.
+ * {@code NOTI_REQUEST} 의 처리 — screen/noti-request/requirements.md.
  *
  * <h2>이 서비스가 {@code SYS_NOTI_INBOX} 의 첫 생산자다</h2>
  *

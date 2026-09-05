@@ -30,7 +30,7 @@ public class SysCacheVersion {
     /** 프론트가 {@code localStorage} 를 버리는 단위 — {@code code} · {@code config} · {@code message}. */
     public static final String MESSAGE = "message";
 
-    /** 시스템 환경설정 — {@code CONFIG_MGMT} 의 저장이 올린다(screen/code/requirements.md). */
+    /** 시스템 환경설정 — {@code CONFIG_MGMT} 의 저장이 올린다(screen/config/requirements.md). */
     public static final String CONFIG = "config";
 
     /**

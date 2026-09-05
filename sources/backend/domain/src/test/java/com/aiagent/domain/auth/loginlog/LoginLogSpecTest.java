@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * {@code LOGIN_LOG} 화이트리스트 — screen/log/access/requirements.md.
+ * {@code LOGIN_LOG} 화이트리스트 — screen/log/login/requirements.md.
  *
  * <p><b>여기서 지키는 것은 묶음 셋이 코드 열다섯을 빠짐없이 덮는가</b> 다. 덮지 못하면
  * 새 코드가 <i>실패만</i> 에도 <i>종료만</i> 에도 걸리지 않아 그 조회를 하는 사람의

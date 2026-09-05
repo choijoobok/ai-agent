@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>파생 컬럼이 하나뿐이고 그것도 세지 않는다</h2>
  *
- * <p>{@code ROLE_MGMT} 는 마스터 한 번에 {@code COUNT} 셋이 붙었지만(screen/menu/requirements.md) 여기는
+ * <p>{@code ROLE_MGMT} 는 마스터 한 번에 {@code COUNT} 셋이 붙었지만(screen/role/requirements.md) 여기는
  * <b>계정 상태 하나</b>이고 그것은 <b>이미 읽은 네 컬럼의 함수</b>다 — 쿼리를 하나도 더하지
  * 않는다.
  *

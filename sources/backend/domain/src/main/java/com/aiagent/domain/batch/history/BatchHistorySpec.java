@@ -10,7 +10,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.List;
 
 /**
- * {@code BATCH_HISTORY} 의 화이트리스트 — screen/batch/schedule/requirements.md · backend/api.md.
+ * {@code BATCH_HISTORY} 의 화이트리스트 — screen/batch/history/requirements.md · backend/api.md.
  *
  * <h2>정렬이 셋 열려 있다 — 이력 화면 중 유일하다</h2>
  *

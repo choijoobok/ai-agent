@@ -5,7 +5,7 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * {@code ERROR_LOG} 조회의 거부 — screen/log/access/requirements.md.
+ * {@code ERROR_LOG} 조회의 거부 — screen/log/error/requirements.md.
  *
  * <p>{@code AccessLogErrorCode} 와 셋이 같다. 다른 것은 <b>기간의 상한을 덮지 않는다</b>는
  * 것뿐이며(행이 가볍다 — screen/log/error/requirements.md) 그 사실은 코드가 아니라 서비스에 있다.

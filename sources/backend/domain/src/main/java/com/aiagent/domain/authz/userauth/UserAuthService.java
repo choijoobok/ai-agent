@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code USER_AUTH_MGMT} 의 저장 — screen/user/requirements.md. <b>행 상태가 있는 일괄 저장이다.</b>
+ * {@code USER_AUTH_MGMT} 의 저장 — screen/user-auth/requirements.md. <b>행 상태가 있는 일괄 저장이다.</b>
  *
  * <h2>{@code RoleAuthService} 와 갈리는 자리</h2>
  *

@@ -5,7 +5,7 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * {@code LOGIN_LOG} 조회의 거부 — screen/log/access/requirements.md.
+ * {@code LOGIN_LOG} 조회의 거부 — screen/log/login/requirements.md.
  *
  * <p><b>둘뿐이고 둘 다 기간이다.</b> 이 화면에는 쓰기가 없고(screen/log/login/requirements.md) 두 번째 호출도 없어
  * (§4.7 — {@code nclob} 컬럼이 없다) 거부할 것이 기간 말고 없다.

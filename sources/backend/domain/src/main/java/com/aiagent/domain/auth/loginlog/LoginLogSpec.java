@@ -11,7 +11,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.Set;
 
 /**
- * {@code LOGIN_LOG} 의 화이트리스트 — screen/log/access/requirements.md · backend/api.md.
+ * {@code LOGIN_LOG} 의 화이트리스트 — screen/log/login/requirements.md · backend/api.md.
  *
  * <p>모양이 {@code AccessLogSpec} 과 같다. <b>같은 이유에서 같다</b> — 커서형이라 정렬이
  * {@code creDtm} 하나로 고정되고(screen/log/login/requirements.md), 인덱스가 {@code CRE_DTM} · {@code TRACE_ID}

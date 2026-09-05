@@ -8,7 +8,7 @@ import com.aiagent.domain.user.entity.QSysUser;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 /**
- * {@code USER_AUTH_MGMT} 좌 pane 의 화이트리스트 — screen/user/requirements.md · backend/api.md.
+ * {@code USER_AUTH_MGMT} 좌 pane 의 화이트리스트 — screen/user-auth/requirements.md · backend/api.md.
  *
  * <h2>조건이 하나다</h2>
  *

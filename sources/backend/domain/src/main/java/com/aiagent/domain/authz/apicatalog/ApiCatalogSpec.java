@@ -10,7 +10,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 
 /**
- * {@code API_CATALOG} 의 화이트리스트 — screen/menu/requirements.md · backend/api.md. <b>스펙이 둘이다.</b>
+ * {@code API_CATALOG} 의 화이트리스트 — screen/api-catalog/requirements.md · backend/api.md. <b>스펙이 둘이다.</b>
  *
  * <p>마스터(API 목록)와 하단(이 API 를 쓰는 메뉴)이 각각 자기 것을 갖는다.
  *

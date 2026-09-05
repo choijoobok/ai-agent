@@ -10,7 +10,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 
 /**
- * {@code MESSAGE_MGMT} 의 화이트리스트 — screen/code/requirements.md · backend/api.md.
+ * {@code MESSAGE_MGMT} 의 화이트리스트 — screen/message/requirements.md · backend/api.md.
  *
  * <p><b>조건 넷 중 둘이 파생이다.</b> 이 화면이 실제로 묻는 것은 <i>"이 문구가 어느 키인가"</i>
  * 와 <i>"이 언어가 안 채워진 키"</i> 인데, 둘 다 <b>값 테이블에 대한 질문</b>이고 마스터는

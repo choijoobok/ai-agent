@@ -7,7 +7,7 @@ import com.aiagent.domain.authz.entity.QSysUserRole;
 import com.aiagent.domain.user.entity.QSysUser;
 
 /**
- * {@code ROLE_MGMT} · {@code ROLE_AUTH_MGMT} 의 화이트리스트 — screen/menu/requirements.md · backend/api.md.
+ * {@code ROLE_MGMT} · {@code ROLE_AUTH_MGMT} 의 화이트리스트 — screen/role/requirements.md · backend/api.md.
  *
  * <h2>스펙이 둘이고 <b>거의 같다</b></h2>
  *
@@ -59,7 +59,7 @@ public final class RoleSpec {
             .build();
 
     /**
-     * {@code ROLE_AUTH_MGMT} 의 왼쪽 목록 — screen/role/requirements.md. <b>역할명 하나뿐이다.</b>
+     * {@code ROLE_AUTH_MGMT} 의 왼쪽 목록 — screen/role-auth/requirements.md. <b>역할명 하나뿐이다.</b>
      *
      * <p><b>사용 여부가 없다.</b> screen/role/requirements.md 의 목록은 고르기만 하는 것이고, 비활성 역할의 권한을
      * 고치는 것은 <b>아무에게도 영향이 없어 가장 안전한 편집</b>이다 — 감출 이유가 없다.
