@@ -102,9 +102,13 @@ MsgKey.java (서버)  ·  messageKeys.ts (프론트)
 | `HttpMessageNotReadableException` | 400 | `err.malformed-body` — **어느 필드인지 알 수 없다** |
 | `Exception` | 500 | `err.internal` — **`traceId` 하나만 나간다** |
 
-- **예외 로그는 비동기로 저장한다.** 로그 저장 실패가 원본 응답에 영향을 주면 안 된다.
-- **4xx 는 `ROOT_CAUSE_STACK` 을 저장하지 않는다.** 인가 거부의 스택은 인터셉터 프레임뿐이고
-  **전 행이 같다** — 180일치 노이즈다. `NULL` 로 둔다.
+- **예외 로그는 `REQUIRES_NEW` 독립 트랜잭션으로 저장한다** — 비동기가 아니다. 부르는
+  시점이 **언제나 예외 처리 중**이라 본 트랜잭션이 이미 rollback-only 이고, 같은
+  트랜잭션에 얹으면 **예외가 난 요청의 기록만 골라서 사라진다.** 실패를 삼키는 자리는
+  경계 **밖**(`ExceptionLogRecorder`)이다 — 서비스 안에서 잡으면 프록시가 커밋하며
+  `UnexpectedRollbackException` 을 던진다. 상세는 [logging.md](./logging.md).
+- **4xx 는 `ROOT_CAUSE_STACK` 을 저장하지 않는다** — 규칙의 정본은
+  [logging.md](./logging.md) 다. 여기서는 예외 처리 흐름이 그것을 지킨다는 것만 적는다.
 - **소스에 남는 로그·예외의 기본 메시지는 한국어로 쓴다**(CLAUDE.md §5-6). 사용자 문구는 `SYS_MESSAGE` 다.
 
 ## 관련
