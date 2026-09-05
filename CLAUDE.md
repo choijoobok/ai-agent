@@ -72,7 +72,9 @@ ai-agent/
 | **요구사항·설계 산출물** | [`aidd-guide/artifact/INDEX.md`](aidd-guide/artifact/INDEX.md) — 산출물 지도(무엇을 언제 어디에) |
 | **단계를 마감한다** | `/phase-gate` → [`aidd-guide/process/04-gates.md`](aidd-guide/process/04-gates.md) |
 | **메뉴 화면 신규·수정** | **먼저 §6.3 워크플로** → `documents/screen/{페이지경로}/requirements.md` → [`aidd-guide/artifact/screen/INDEX.md`](aidd-guide/artifact/screen/INDEX.md) |
+| **승인된 요건서로 화면을 만든다** | [`aidd-guide/playbook/INDEX.md`](aidd-guide/playbook/INDEX.md) 의 **결정 트리** — 화면 모양이 레시피를 정한다 |
 | **기능 하나를 구현한다** | `/slice` → [`aidd-guide/process/07-slice.md`](aidd-guide/process/07-slice.md) |
+| **테스트를 무엇으로 짜나** | [`aidd-guide/quality/test-design.md`](aidd-guide/quality/test-design.md) — 층별로 무엇을 잠그나 |
 | 백엔드 구조·이름·트랜잭션 | [`aidd-guide/standard/backend/INDEX.md`](aidd-guide/standard/backend/INDEX.md) |
 | 공통 컴포넌트 추가·변경 | [`aidd-guide/standard/frontend/INDEX.md`](aidd-guide/standard/frontend/INDEX.md) — 올리는 조건과 **공통물 목록** |
 | CRUD·마스터디테일·엑셀 레시피 | [`aidd-guide/playbook/INDEX.md`](aidd-guide/playbook/INDEX.md) |

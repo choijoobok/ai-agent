@@ -29,6 +29,7 @@ tags: [playbook, recipe, index]
   │
   ├─ 그리드 하나 —— 조회·저장·실행                → crud-screen.md
   │     └─ 총 건수가 없어야 한다(대용량 이력)      → crud-screen.md §6 커서형
+  ├─ 그리드 하나 —— **조회만** 한다(이력·로그)     → list-screen.md
   ├─ 부모 하나에 자식 표 하나                      → master-detail.md
   │     └─ 마스터가 넓다(컬럼 대여섯 이상)         →   §2 상하
   │     └─ 마스터가 좁다(컬럼 서넛)                →   §3 좌우
@@ -44,6 +45,7 @@ tags: [playbook, recipe, index]
 | ID | 파일 | 레시피 | 실물 |
 |----|------|--------|------|
 | LLM-PLY-001 | [crud-screen.md](./crud-screen.md) | 단일 그리드 — 조회·저장·실행·페이징 | ①② |
+| LLM-PLY-008 | [list-screen.md](./list-screen.md) | 조회 전용 — 배선 관용구 한 벌 | **샘플 아님** · 이력 셋 |
 | LLM-PLY-002 | [master-detail.md](./master-detail.md) | 마스터-디테일 — 상하 · 좌우 | ③④ |
 | LLM-PLY-003 | [master-tabs.md](./master-tabs.md) | 하단 디테일 탭 — 자식 표 둘 이상 | ⑤ |
 | LLM-PLY-005 | [excel.md](./excel.md) | 엑셀 다운로드 세 갈래 · 업로드 탭 | ③⑥ |
