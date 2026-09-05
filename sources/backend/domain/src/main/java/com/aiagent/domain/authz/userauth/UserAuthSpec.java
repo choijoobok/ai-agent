@@ -29,7 +29,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
  *
  * <h2>계정 상태가 조건에 없다</h2>
  *
- * <p>{@code USER_MGMT} 는 <i>사용중</i> 셋을 기본값으로 두지만(미사용 계정이 영구 누적된다)
+ * <p>{@code USER_MGMT} 는 기본값을 두지 않지만(끈 계정을 찾으러 오는 화면이다)
  * 여기는 <b>거르지 않는다</b>. screen/menu/requirements.md 가 역할 목록에서 사용 여부를 뺀 것과 같은 논리다 —
  * <b>못 쓰는 계정의 권한을 고치는 것은 아무에게도 영향이 없어 가장 안전한 편집</b>이고,
  * 감추면 <i>계정을 살리기 전에 권한을 구성해 두는</i> 동선이 막힌다.

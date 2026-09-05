@@ -98,7 +98,7 @@ export function matchRows<T>(parsed: T[], existing: T[], keyFields: string[]): M
 /**
  * 값이 같은가 — <b>파일에 있는 칸만 본다</b>.
  *
- * <p>기존 행에는 파일에 없는 컬럼이 있다(`ITEM_SEQ`·`ORD_ID`·감사 4 — playbook/INDEX.md). 통째로
+ * <p>기존 행에는 파일에 없는 컬럼이 있다(`ITEM_SEQ`·`ORD_ID`·감사 4 — playbook/excel.md §4). 통째로
  * 비교하면 <b>모든 행이 변경</b>이 되고, 그러면 위의 <i>세 줄만 나간다</i> 가 성립하지
  * 않는다.
  */

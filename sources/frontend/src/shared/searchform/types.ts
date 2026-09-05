@@ -100,9 +100,13 @@ export interface SearchField {
    * 초기화는 <b>빈칸이 아니라 기본값</b>으로 되돌린다(frontend/search-form.md).
    *
    * <p><b>배열이면 다중 선택의 기본값</b>이다 — `op: 'in'` 인 콤보에서만 뜻이 있다.
-   * screen/user/requirements.md 의 *계정 상태* 가 첫 실물이며 기본값이 **셋**이다(`정상`+`잠김`+`휴면` =
-   * 사용중): 물리 삭제가 없어 미사용 계정이 영구 누적되므로, 전체가 기본이면 시간이
-   * 갈수록 목록이 퇴사자로 채워진다. 문자열 하나를 주면 원소 하나짜리 배열이 된다.
+   * 실물은 공지의 *상태* 셋(`SCHEDULED`+`ACTIVE`+`EXPIRED` — screen/notice/requirements.md)과 알림 요청의
+   * `RECEIVED` 하나다. 문자열 하나를 주면 원소 하나짜리 배열이 된다.
+   *
+   * <p><b>기본값을 두는 것이 늘 옳지는 않다.</b> 사용자 관리의 *계정 상태* 는 한동안
+   * <i>사용중</i> 셋이었는데 2026-08-31 에 <b>비웠다</b>(screen/user/requirements.md) — 끈 계정을 찾으러
+   * 오는 것이 그 화면의 흔한 동선이라, 기본 필터가 걸려 있으면 <b>방금 끈 그 계정이 첫
+   * 조회에 없다</b>. 거르는 것을 사용자가 고르게 둘 것인지는 <b>화면마다 다르다</b>.
    *
    * <p><b>`dateRange` 에서 빈 문자열은 *비워 둔다* 는 뜻이다</b>(2026-08-30 — screen/user/requirements.md).
    * 적지 않으면 시스템 기본 기간(`ui.search.range-days.default-days`)으로 채워지는데,

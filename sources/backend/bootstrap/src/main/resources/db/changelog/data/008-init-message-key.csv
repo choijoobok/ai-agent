@@ -47,7 +47,7 @@ apiCatalog.mapped,FRONT,조회조건 `매핑 상태` 의 반대쪽 — 이 API �
 apiCatalog.menu.empty,FRONT,마스터에서 API 를 고르기 전 하단의 빈 상태(frontend/grid.md).
 apiCatalog.menu.title,FRONT,하단 pane 의 제목 — 탭이 아니다(screen/menu/requirements.md).
 apiCatalog.menu.unmapped,FRONT,하단이 0건일 때 — 배지와 같은 말을 pane 에서도 한다(screen/menu/requirements.md).
-apiCatalog.notRegistered,FRONT,"여기가 진단이다 — URL 칸에만 값을 넣었는데 0건일 때(screen/menu/requirements.md). 미등록은 화면이 보여줄 수 없다 — 없는 행을 목록에 낼 방법이 없기 때문이다. *""조회 결과가 없습니다""* 로 끝내면 이 화면의 세 갈래 중 하나가 사라진다(§5.2). /"
+apiCatalog.notRegistered,FRONT,"여기가 진단이다 — URL 칸에만 값을 넣었는데 0건일 때(screen/menu/requirements.md). 미등록은 화면이 보여줄 수 없다 — 없는 행을 목록에 낼 방법이 없기 때문이다. *""조회 결과가 없습니다""* 로 끝내면 이 화면의 세 갈래 중 하나가 사라진다. /"
 apiCatalog.search.actionCd,FRONT,조회조건 — 액션. 기본은 전체다.
 apiCatalog.search.apiNm,FRONT,조회조건 — API 명.
 apiCatalog.search.apiUrl,FRONT,조회조건 — API URL. 로그에서 얻은 URL 하나가 들어오는 칸이다(screen/log/access/requirements.md).
@@ -268,7 +268,7 @@ err.noti-req.content-required,BACK,요청 내용이 비었다 — sys/notificati
 err.noti-req.duplicate,BACK,"같은 유형의 접수 상태 요청이 이미 있다. 워크플로가 없으므로 요청은 한 번 내면 답이 올 때까지 그대로다 — 같은 것을 또 내도 진행이 빨라지지 않고 대기열만 늘어난다. 그리고 관리자는 그 여벌을 하나씩 반려해야 하는데, 반려마다 요청자에게 알림이 나간다(screen/notice/requirements.md). 막는 것은 같은 유형뿐이다. 권한 신청과 잠금 해제는 서로 다른 답을 기다리는 것이라 함께 열려 있어야 한다. /"
 err.noti-req.memo-required,BACK,"반려인데 사유가 비었다 — sys/notification.md 이 필수로 정했다. 사유 없는 반려는 요청자에게 아무 정보도 주지 않는다. 그러면 같은 요청을 다시 내고, 그것이 워크플로를 만들지 않기로 한 대가를 실제 비용으로 바꾼다 — 단계가 없으므로 한 번의 답이 전부여야 한다. /"
 err.noti-req.not-found,BACK,없는 요청이다.
-err.noti-req.not-received,BACK,이미 처리된 요청이 선택에 섞였다 — screen/notice/requirements.md. 처리 가능한 것만 골라 실행하지 않는다. 일부만 처리하면 알림이 일부에게만 나가고 사용자는 무엇이 처리됐는지 모른다 — 되돌리는 길이 없으므로(§5.7) 부분 성공을 만들지 않는다. /
+err.noti-req.not-received,BACK,이미 처리된 요청이 선택에 섞였다 — screen/notice/requirements.md. 처리 가능한 것만 골라 실행하지 않는다. 일부만 처리하면 알림이 일부에게만 나가고 사용자는 무엇이 처리됐는지 모른다 — 되돌리는 길이 없으므로 부분 성공을 만들지 않는다. /
 err.notice.not-found,BACK,없는 공지다 — 화면이 낡았거나 화면 밖 경로다.
 err.notice.period,BACK,게시 종료가 시작보다 앞이다.
 err.notice.popup-period,BACK,팝업을 켰는데 팝업 기간이 비었다 — screen/notice/requirements.md.
@@ -537,9 +537,9 @@ menuTree.add.title,FRONT,신규 모달의 제목 — `{parent}` 가 어디 아�
 menuTree.add.titleRoot,FRONT,신규 모달의 제목 — 최상위일 때.
 menuTree.addChild,FRONT,① — 하위 메뉴 추가. 선택이 없으면 비활성이다.
 menuTree.addChild.depth,FRONT,〃 — 깊이 5단에 닿았다(sys/menu.md).
-menuTree.addChild.leaf,FRONT,〃 — URL 이 있는 노드다(§4.3). 드롭의 가운데 구역이 죽는 조건과 같다.
+menuTree.addChild.leaf,FRONT,〃 — URL 이 있는 노드다. 드롭의 가운데 구역이 죽는 조건과 같다.
 menuTree.addChild.noSelection,FRONT,*하위 메뉴 추가* 가 잠긴 이유 — 선택이 없다.
-menuTree.addRoot,FRONT,① — 최상위 메뉴 추가. 언제나 활성이며 트리의 맨 아래에 붙는다(§4.6).
+menuTree.addRoot,FRONT,① — 최상위 메뉴 추가. 언제나 활성이며 트리의 맨 아래에 붙는다.
 menuTree.col.accessibleUserCount,FRONT,접근 가능 인원 — AUTHZ-13. 리프만 값이 있다.
 menuTree.col.accountUsable,FRONT,탭 2 — 계정 상태. `USE_YN` 과 기간만 본다(sys/user-role.md).
 menuTree.col.actions,FRONT,탭 2 — 액션 4열을 한 칸에 묶은 헤더.
@@ -548,33 +548,33 @@ menuTree.col.grantState,FRONT,탭 2 — 부여 상태.
 menuTree.col.iconCd,FRONT,아이콘 컬럼 — 아이콘 세트는 frontend/packages.md 이다.
 menuTree.col.menuCd,FRONT,메뉴 코드 컬럼 — PK 이며 신규 행에서도 셀이 아니다(§4.6 의 모달이 받는다).
 menuTree.col.menuNm,FRONT,계층 컬럼 — 서버가 만든다. 고치는 곳은 `MESSAGE_MGMT` 하나다(sys/menu.md).
-menuTree.col.menuUrl,FRONT,URL 컬럼 — 라우트 목록에서 고른다(§4.3). 자식이 있으면 잠긴다.
+menuTree.col.menuUrl,FRONT,URL 컬럼 — 라우트 목록에서 고른다. 자식이 있으면 잠긴다.
 menuTree.col.period,FRONT,탭 2 — 부여 기간.
 menuTree.col.roleCount,FRONT,매핑 역할 수 — 삭제 게이트의 근거다.
 menuTree.col.roleId,FRONT,탭 3 — 역할 ID 컬럼. 메뉴 쪽 라벨을 돌려쓰지 않는다. 한때 MENU_COL_MENU_CD 를 그대로 썼는데 헤더가 메뉴 코드 인 칸에 역할 ID 가 들어가 있었다(2026-08-30 실물) — 같은 화면 안에서 컬럼 폭과 자리가 맞으면 틀린 라벨이 눈에 띄지 않는다. /
 menuTree.col.roleNm,FRONT,탭 3 — 역할명 컬럼.
 menuTree.col.useYn,FRONT,사용 여부 컬럼 — 최종 게이트다(backend/security.md). 구조 노드에 놓으면 자손 전체에 쓴다.
 menuTree.col.via,FRONT,탭 2 — 경유 컬럼의 헤더.
-menuTree.collapseAll,FRONT,Ⓑ — 모두 접기. 드래그의 전제다(§4.5.1).
-menuTree.delete,FRONT,① — 삭제. 게이트 넷이 전부 `0` 일 때만 활성이다(§4.8).
+menuTree.collapseAll,FRONT,Ⓑ — 모두 접기. 드래그의 전제다.
+menuTree.delete,FRONT,① — 삭제. 게이트 넷이 전부 `0` 일 때만 활성이다.
 menuTree.delete.blocked,FRONT,삭제가 잠긴 이유 — `{blockers}` 가 어느 쪽이 막는지 말한다.
-menuTree.delete.confirm,FRONT,삭제 확인 — `{name}`. 즐겨찾기가 함께 지워지는 것을 말한다(§4.8).
+menuTree.delete.confirm,FRONT,삭제 확인 — `{name}`. 즐겨찾기가 함께 지워지는 것을 말한다.
 menuTree.detail.empty,FRONT,마스터에서 메뉴를 고르기 전 하단의 빈 상태(frontend/grid.md).
 menuTree.drop.after,FRONT,드롭 문장 — 이 행 다음에 형제로. `{name}`.
 menuTree.drop.before,FRONT,드롭 문장 — 이 행 앞에 형제로. `{name}`.
 menuTree.drop.depth,FRONT,놓을 수 없다 — 깊이 상한을 넘는다. `{max}`.
-menuTree.drop.firstChild,FRONT,드롭 문장 — 펼친 폴더의 아래 1/4 는 첫 자식 앞이다(§4.5.2). `{name}`.
-menuTree.drop.inside,FRONT,드롭 문장 — 안에 넣는다(§4.5.2). `{name}`. 표시가 최종 판정이 아니라 문장이 최종 판정이다. /
+menuTree.drop.firstChild,FRONT,드롭 문장 — 펼친 폴더의 아래 1/4 는 첫 자식 앞이다. `{name}`.
+menuTree.drop.inside,FRONT,드롭 문장 — 안에 넣는다. `{name}`. 표시가 최종 판정이 아니라 문장이 최종 판정이다. /
 menuTree.drop.leaf,FRONT,놓을 수 없다 — 그 노드는 화면이 있다. `{name}`.
-menuTree.drop.self,FRONT,놓을 수 없다 — 자기 자손이다. 이유를 낸다(§4.5).
-menuTree.excel.path,FRONT,엑셀의 맨 앞 컬럼 — 경로다. 들여쓰기는 정렬 한 번에 무너진다(§4.9).
+menuTree.drop.self,FRONT,놓을 수 없다 — 자기 자손이다. 이유를 낸다.
+menuTree.excel.path,FRONT,엑셀의 맨 앞 컬럼 — 경로다. 들여쓰기는 정렬 한 번에 무너진다.
 menuTree.expandAll,FRONT,Ⓑ — 모두 펼치기.
 menuTree.grant.ACTIVE,FRONT,부여 상태 — 유효.
 menuTree.grant.EXPIRED,FRONT,부여 상태 — 만료. 감추지 않는다 — *어제까지 되던 것* 에 답해야 한다.
 menuTree.grant.SCHEDULED,FRONT,부여 상태 — 예정.
 menuTree.grid.title,FRONT,트리 그리드의 제목.
 menuTree.move.from,FRONT,드롭 확인 — 지금 자리. `{path}` · `{index}`.
-menuTree.move.title,FRONT,드롭 확인의 제목 — `{name}` 을 옮긴다(§4.5.3).
+menuTree.move.title,FRONT,드롭 확인의 제목 — `{name}` 을 옮긴다.
 menuTree.move.to,FRONT,드롭 확인 — 이동할 자리. `{path}` · `{index}`.
 menuTree.move.warn,FRONT,드롭 확인의 마지막 줄 — 되돌리려면 다시 끌어야 한다.
 menuTree.orphan,FRONT,선언에서 사라진 메뉴의 배지 — screen/menu/requirements.md · seed.md.
@@ -587,16 +587,16 @@ menuTree.search.next,FRONT,검색 이동 — 다음.
 menuTree.search.position,FRONT,검색 결과의 위치 — `{index}` / `{total}`. 강조만 하고 이동 수단이 없으면 소용없다.
 menuTree.search.prev,FRONT,검색 이동 — 이전.
 menuTree.tab.api,FRONT,하단 탭 — 매핑 API(§4.11 탭 1).
-menuTree.tab.apiEmpty,FRONT,탭 1 이 0건일 때 — 진단이다(§4.11).
+menuTree.tab.apiEmpty,FRONT,탭 1 이 0건일 때 — 진단이다.
 menuTree.tab.role,FRONT,하단 탭 — 매핑된 역할.
 menuTree.tab.user,FRONT,하단 탭 — 사용 가능 사용자(AUTHZ-13).
-menuTree.unlinked,FRONT,라우트가 없는 URL 에 붙는 배지 — 사후 진단이다(§4.3).
-menuTree.url.none,FRONT,URL 콤보의 첫 항목 — URL 을 비워 폴더로 되돌리는 유일한 경로다(§4.3).
+menuTree.unlinked,FRONT,라우트가 없는 URL 에 붙는 배지 — 사후 진단이다.
+menuTree.url.none,FRONT,URL 콤보의 첫 항목 — URL 을 비워 폴더로 되돌리는 유일한 경로다.
 menuTree.useOff.descendants,FRONT,〃 자손이 함께 꺼진다 — `{count}`. `0` 이면 이 줄을 내지 않는다.
-menuTree.useOff.title,FRONT,사용 여부를 끌 때 — `{name}`(§4.7).
+menuTree.useOff.title,FRONT,사용 여부를 끌 때 — `{name}`.
 menuTree.useOff.users,FRONT,〃 접근할 수 있던 인원 — `{count}`.
 menuTree.useOn.descendants,FRONT,〃 개별로 꺼 두었던 것까지 켜진다 — `{count}` · `{off}`.
-menuTree.useOn.title,FRONT,사용 여부를 켤 때 — `{name}`. 켜는 방향에도 경고가 있다(§4.7).
+menuTree.useOn.title,FRONT,사용 여부를 켤 때 — `{name}`. 켜는 방향에도 경고가 있다.
 menuTree.via.personal,FRONT,탭 2 의 경유 컬럼 — 역할명 또는 이 문구(개인 예외).
 message.col.bundled,FRONT,번들 컬럼 — 사용처의 파생이다(sys/code.md).
 message.col.langCd,FRONT,하단의 언어 컬럼.
@@ -797,9 +797,9 @@ reset.newPwd.mismatch,FRONT,두 칸의 값이 다를 때 — **화면이 판정�
 reset.newPwd.required,FRONT,새 비밀번호를 비운 채 제출했을 때.
 reset.request.desc,FRONT,① 안내 — 아이디만 받고 메일 주소는 묻지 않는다는 사실을 말한다.
 reset.resend,FRONT,재발송 버튼 — 쿨다운이 끝난 뒤에만 눌린다.
-reset.resendIn,FRONT,재발송까지 남은 시간 — `{seconds}`. **서버가 아니라 화면이 센다**(§6-3).
+reset.resendIn,FRONT,재발송까지 남은 시간 — `{seconds}`. **서버가 아니라 화면이 센다**.
 reset.send,FRONT,① 제출 버튼.
-reset.sent,FRONT,"① 성공 안내 — **계정이 있든 없든 이 문구가 나간다**. *""등록된 메일로 보냈습니다""* 라고 단정하지 않는 것이 요건이다(§6-3). 마스킹한 주소도 보여주지 않는다 — 그것만으로 계정의 존재가 드러난다. /"
+reset.sent,FRONT,"① 성공 안내 — **계정이 있든 없든 이 문구가 나간다**. *""등록된 메일로 보냈습니다""* 라고 단정하지 않는 것이 요건이다. 마스킹한 주소도 보여주지 않는다 — 그것만으로 계정의 존재가 드러난다. /"
 reset.step.done,FRONT,단계 표시의 ③ 이름.
 reset.step.request,FRONT,단계 표시의 ① 이름.
 reset.step.verify,FRONT,단계 표시의 ② 이름.
@@ -1185,7 +1185,7 @@ user.role.empty,FRONT,부여가 하나도 없다 — 이 계정은 개인 예외
 user.role.off,FRONT,역할이 꺼져 있다 — **기간이 유효해도 지금은 아무 권한도 주지 않는다**. 배지의 사유다.
 user.role.title,FRONT,탭 1 의 제목.
 user.role.warn.revoke,FRONT,저장 확인 앞의 경고 — 회수하는 `{count}` 건은 **다음 로그인부터** 반영된다(backend/security.md).
-user.search.accountStat,FRONT,조회조건 — 계정 상태(다중). 기본값이 *사용중* 셋이다(screen/user/requirements.md).
+user.search.accountStat,FRONT,조회조건 — 계정 상태(다중). **기본값이 없다** — 끈 계정을 찾으러 오는 화면이다(screen/user/requirements.md).
 user.search.days,FRONT,그 후보의 표시 — `{days}` 일 이내.
 user.search.email,FRONT,조회조건 — 이메일. 〃
 user.search.lastLoginDtm,FRONT,조회조건 — 최종 로그인 기간.

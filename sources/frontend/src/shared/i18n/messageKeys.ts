@@ -2030,7 +2030,7 @@ export const MSG = {
   USER_SEARCH_USER_NM: 'user.search.userNm',
   /** 조회조건 — 이메일. 〃 */
   USER_SEARCH_EMAIL: 'user.search.email',
-  /** 조회조건 — 계정 상태(다중). 기본값이 *사용중* 셋이다(screen/user/requirements.md). */
+  /** 조회조건 — 계정 상태(다중). **기본값이 없다** — 끈 계정을 찾으러 오는 화면이다(screen/user/requirements.md). */
   USER_SEARCH_STAT: 'user.search.accountStat',
   /** 조회조건 — 보유 역할. `EXISTS` 라 벤더 중립이다(screen/user/requirements.md). */
   USER_SEARCH_ROLE: 'user.search.roleId',
