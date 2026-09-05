@@ -182,12 +182,20 @@ function frontFiles(root, feature) {
 function facts(root) {
   const feature = featureDir(root);
   const fe = frontFiles(root, feature);
-  const feSrc = fe.map((p) => read(p)).join('\n');
+  /*
+   * <b>축은 선언만 센다.</b> 테스트를 섞으면 픽스처의 `grpCd: 'ORD_STAT'` 가 <i>값의 출처</i> 로,
+   * JUnit 의 {@code @Nested class CodeNames} 가 <i>백엔드 클래스</i> 로 세어진다 — 둘 다
+   * 설계 결정이 아니고, 그 자리에서 실제 차이를 <b>가린다</b>. 기계 규칙이 이미 같은 이유로
+   * 테스트를 뺐는데(eslint 가 거기서 꺼진다) 나머지 축이 따라가지 않았다.
+   */
+  const isFeTest = (p) => /\.(test|spec)\.tsx?$/.test(p);
+  const feSrc = fe.filter((p) => !isFeTest(p)).map((p) => read(p)).join('\n');
   const feCode = strip(feSrc);
   const endpoints = set([...feCode.matchAll(/(\w+):\s*'(\/[^']+)'/g)].map((m) => `${m[1]} → ${m[2]}`));
 
   const be = backendFiles(root, backendPrefix(feature, endpoints));
-  const beSrc = be.map((p) => read(p)).join('\n');
+  const isBeTest = (p) => /Test\.java$/.test(p) || p.includes(`${sep}src${sep}test${sep}`);
+  const beSrc = be.filter((p) => !isBeTest(p)).map((p) => read(p)).join('\n');
 
   /* URL 선언은 `endpoints.ts` 의 <b>일</b>이다 — 거기서 센 리터럴은 위반이 아니라 규약이다. */
   const notEndpoints = strip(fe.filter((p) => !/endpoints\.ts$/.test(p)).map((p) => read(p)).join('\n'));
@@ -219,6 +227,8 @@ function facts(root) {
     files: {
       front: fe.map((p) => relative(join(root, 'sources/frontend/src/features'), p).split(sep).join('/')),
       back: be.map((p) => p.split(sep).pop()),
+      /* 테스트는 축에서 빼되 <b>몇 벌 썼는지는 남긴다</b> — 안 쓴 재현과 갈려야 한다. */
+      tests: [...fe.filter(isFeTest), ...be.filter(isBeTest)].length,
     },
     /* [계약] endpoints 의 키와 URL */
     endpoints,
@@ -346,10 +356,12 @@ const say = (s = '') => out.push(s);
 
 say(`# 화면 재현 채점 — ${screenPath}`);
 say();
-say(`| 트리 | 기능 폴더 | 프론트 파일 | 백엔드 파일 |`);
-say(`|---|---|---|---|`);
+say(`| 트리 | 기능 폴더 | 프론트 파일 | 백엔드 파일 | 그중 테스트 |`);
+say(`|---|---|---|---|---|`);
 for (const d of data) {
-  say(`| ${d.name} | ${d.feature ?? '**등록 없음**'} | ${d.files.front.length} | ${d.files.back.length} |`);
+  say(
+    `| ${d.name} | ${d.feature ?? '**등록 없음**'} | ${d.files.front.length} | ${d.files.back.length} | ${d.files.tests} |`,
+  );
 }
 
 say();
