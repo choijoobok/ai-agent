@@ -63,6 +63,7 @@ tags: [artifact, map, index]
 | 38 | 화면 문서 서식·열람 페이지 | 상시 | S+G | `aidd-guide/artifact/template/` · `documents/screen/README.md` · `documents/screen/index.html` | ● | ● | ● |
 | 39 | **상세 설계 문서** | P3 | S | `documents/design/{주제}.md` | ○ | ● | ● |
 | 40 | 산출물 대장 (이 지도의 현재 상태) | 상시 | S | `documents/INDEX.md` | ● | ● | ● |
+| 41 | **재현 회귀의 근거 기록** | 상시 | S | `documents/evals/{차수}/{재현}/SOURCES.md` · `documents/evals/{차수}/{재현}/GAPS.md` | ○ | ○ | ● |
 
 ● 필수 · △ 축약형 · ○ 선택
 
@@ -77,6 +78,24 @@ tags: [artifact, map, index]
 만든다 — 골격·표·확인 목록은 기계가 옮기고 **그림만 AI 가 그린다.** 목업이 정본이던 시절에는
 *근거는 목업 §N 에 있다* 는 케이스가 쌓였고, 그 절이 사라지면 근거도 사라졌다. 지금은
 **결정과 그 검증이 같은 문서(33)에 있어** 어느 한쪽만 낡는 일이 생기지 않는다.
+
+### 41 — 재현 회귀의 근거는 왜 자리를 갖나
+
+**샌드박스가 사라지면 다시 만들 수 없다.** 재현 회귀([quality/evals/screen-reproduction.md](../quality/evals/screen-reproduction.md))는
+독립한 재현 둘을 스크래치 worktree 에서 돌리고, 끝나면 그 트리를 버린다. 그런데 그
+문서가 *"`SOURCES.md`·`GAPS.md` 가 이 실험의 산출물이다 — 소스는 대조 대상일 뿐"* 이라고
+선언한다. **버리면 남는 것은 집계 비율뿐이고, 그러면 잰 값을 아무도 되짚을 수 없다.**
+
+- **목적** — *이 비율이 어디서 나왔나* 와 *독립한 둘이 정말 같은 자리를 짚었나* 를 답한다.
+  뒤엣것이 미룬 것의 근거이므로(§2-0 의 `A ≒ B ≠ 실물` 판독) **되읽을 수 없으면 그
+  판정도 근거가 없다.** 기존 셋으로 답할 수 없다 — 커밋 메시지는 결론만, ADR 은 결정만,
+  `project.state.yaml` 은 **값만** 갖는다.
+- **포맷** — [screen-reproduction.md](../quality/evals/screen-reproduction.md) §2-2 의 4·5 가
+  서식이다(분류 넷 · 최소 25행 · GAPS 항목 다섯). **`artifact/template/` 에 따로 두지
+  않는다** — 프롬프트가 곧 서식이고, 갈라 두면 프롬프트를 고칠 때마다 둘이 갈린다.
+- **누가 소유하나** — **정본(`S`)이다.** 생성물이 아니라 재현이 쓴 것이며 다시 만들 수
+  없으므로 **커밋한다.** 잰 값 자체(차수 · 비율 · 축 일치)는 여기 두지 않는다 —
+  `project.state.yaml` 의 `reproduction_baseline` 이 갖고, 여기는 **그 값의 근거**다.
 
 ### 39 — 상세 설계 문서는 무엇을 담나
 
