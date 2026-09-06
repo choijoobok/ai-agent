@@ -70,6 +70,7 @@ function toApiError(envelope: ApiEnvelope<unknown>, status: number): ApiError {
     status,
     traceId: envelope.traceId,
     fields: envelope.fields,
+    rows: envelope.rows,
   });
 }
 

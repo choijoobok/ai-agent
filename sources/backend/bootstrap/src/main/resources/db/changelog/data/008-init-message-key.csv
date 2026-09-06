@@ -230,6 +230,7 @@ err.code.system-locked,BACK,시스템 코드(SYS_YN='Y')를 지우거나 끄려 
 err.config.invalid-value,BACK,재바인딩이 값을 거부했다 — 타입·@Min·상호 제약이 전부 여기로 온다.
 err.config.key-unknown,BACK,코드가 정하지 않은 CFG_KEY 가 왔다 — 아우터 조인의 왼쪽에 없는 키다.
 err.config.not-overridden,BACK,되돌리려는데 오버라이드 행이 없다 — 다른 사람이 먼저 되돌렸다.
+err.conflict,BACK,"다른 사용자가 먼저 같은 값을 저장했다 — DB 제약이 막은 경우다. 화면의 중복 검사도 서버의 존재 확인도 읽은 시점과 쓰는 시점 사이를 막지 못한다. 그 틈으로 들어온 것이 여기로 오며, 사용자가 할 일은 다시 조회다. /"
 err.error-log.purged,BACK,상세를 열려는데 그 행이 없다 — 조회 뒤에 파기 배치가 지나갔다.
 err.error-log.range-required,BACK,기간 없이 조회하려 했다 — 추적 ID 를 넣으면 건너뛴다(이 화면의 주된 동선이다).
 err.error-log.range-too-wide,BACK,기간이 92일을 넘었다 — 보존은 180일이라 잘라 주면 못 본 절반이 남는다.
@@ -450,6 +451,9 @@ grid.footer.filtered,FRONT,컬럼 필터가 걸렸을 때 덧붙는 문구 — `
 grid.footer.loaded,FRONT,커서형 푸터의 왼쪽 — `{count}`(screen/log/access/requirements.md). `GRID_FOOTER_TOTAL` 과 다른 말이다. 저것은 전부가 몇 건이고 이것은 이 장이 몇 건이다 — 총 건수를 세지 않기로 한 화면에서 총 이라고 쓰면 거짓말이 된다. /
 grid.footer.pageSize,FRONT,
 grid.footer.total,FRONT,푸터 왼쪽 — `{total}` · `{pages}`.
+grid.issue.column,FRONT,"저장 실패 표의 머리 셋 — `컬럼` · `값` · `사유`(frontend/grid.md ④). 행 번호 칸이 없다. 판에 클라이언트 정렬이 걸리면 우리가 센 배열 순서와 화면의 번호가 어긋나고, *틀린 번호는 없는 번호보다 나쁘다*. 어느 줄인지는 붉은 셀이 말하고 판이 첫 실패로 데려간다. /"
+grid.issue.reason,FRONT,그 표의 사유 칸. 서버가 완성한 문구를 그대로 싣는다(backend/packages.md).
+grid.issue.value,FRONT,그 표의 값 칸 — *무엇이* 중복인가에 답하는 자리다(frontend/grid.md ④).
 grid.list.add,FRONT,항목을 고르는 팝업을 연다 — 여기서 타이핑을 받지 않는다(목록에 없는 값이 생긴다).
 grid.list.down,FRONT,〃 아래로.
 grid.list.empty,FRONT,항목이 하나도 없을 때 — 비었다고 말한다. 빈 창을 그냥 두면 아직 안 불러온 것과 구별되지 않는다. /

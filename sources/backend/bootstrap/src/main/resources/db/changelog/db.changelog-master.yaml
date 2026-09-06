@@ -419,3 +419,8 @@ databaseChangeLog:
   # 072 뒤이기만 하면 되므로 끝에 붙인다.
   - include:
       file: db/changelog/data/108-notice-period-message.yaml
+
+  # 109 의 키(err.conflict · grid.issue.*)는 008 이 만든다(FK). 008 은 runOnChange 라 이
+  # 파일보다 앞에서 매번 다시 돌고, 그래서 신규 설치에서도 순서가 선다.
+  - include:
+      file: db/changelog/data/109-init-message.yaml

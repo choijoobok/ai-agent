@@ -42,6 +42,14 @@ public final class MsgKey {
     /** 요청 본문을 파싱하지 못했다. 어느 필드인지는 알 수 없다. */
     public static final String ERR_MALFORMED_BODY = "err.malformed-body";
 
+    /**
+     * 다른 사용자가 먼저 같은 값을 저장했다 — DB 제약이 막은 경우다.
+     *
+     * <p>화면의 중복 검사도 서버의 존재 확인도 <b>읽은 시점과 쓰는 시점 사이</b>를 막지
+     * 못한다. 그 틈으로 들어온 것이 여기로 오며, 사용자가 할 일은 <b>다시 조회</b>다.
+     */
+    public static final String ERR_CONFLICT = "err.conflict";
+
     /** 처리하지 못한 예외. 사용자에게는 {@code traceId} 하나만 나간다(backend/security.md). */
     public static final String ERR_INTERNAL = "err.internal";
 

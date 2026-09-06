@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -60,7 +61,29 @@ public class GlobalExceptionHandler {
           <b>403 의 세 갈래가 여기를 지난다</b> — 인가 인터셉터가 던지는 것이 이 예외이며
           (backend/security.md), 그 갈래를 나르는 것이 `ERR_CD` 다(screen/log/access/requirements.md). 401 만 기록기가 걸러 낸다.
         */
-        return envelope(request, code.type().status(), code, e.fieldErrors(), e);
+        return envelope(request, code.type().status(), code, e.fieldErrors(), e.rowErrors(), e);
+    }
+
+    /**
+     * <b>읽은 뒤 쓰기 전에 남이 먼저 썼다</b> — 409 다.
+     *
+     * <p>화면의 중복 검사도 서비스의 존재 확인도 이 틈을 막지 못한다. 막는 것은 DB 제약
+     * 하나뿐이고, 그것이 걸리면 여기로 온다. <b>500 이면 안 된다</b>: 서버가 고장난 것이
+     * 아니라 <i>정상적으로 일어나는 경합</i> 이며, 500 로그는 사람을 깨운다(위의 405 와 같은 이유).
+     *
+     * <p><b>{@code rows} 를 채우지 않는다.</b> 제약 위반은 flush 시점에 나므로 여기서는
+     * <i>어느 행이었나</i> 를 알 수 없다 — 짐작해 채우면 없는 정보를 있는 것처럼 보이게
+     * 한다(위의 {@code handleMalformedBody} 와 같은 규칙). 행을 짚어야 하는 화면은
+     * <b>서비스가 이 예외를 잡아 다시 검사하고</b> {@link BusinessException#rows} 로 바꿔
+     * 던진다 — 그 비용은 예외 경로에서만 든다(backend/api.md).
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleConflict(
+            HttpServletRequest request, DataIntegrityViolationException e) {
+        ErrorCode code = CommonErrorCode.CONFLICT;
+        // WARN 이다 — 정상 흐름은 아니지만 고장도 아니라, 잦아지면 보고 싶은 종류다.
+        log.warn("무결성 제약 위반 — {}", e.getMostSpecificCause().getMessage());
+        return envelope(request, code.type().status(), code, List.of(), e);
     }
 
     /** 필드별 오류는 <b>배열</b>이다 — 관계가 틀린 검증은 같은 문구가 두 필드에 실린다(backend/api.md). */
@@ -152,9 +175,19 @@ public class GlobalExceptionHandler {
             ErrorCode code,
             List<BusinessException.FieldError> fields,
             Throwable cause) {
+        return envelope(request, status, code, fields, List.of(), cause);
+    }
+
+    private ResponseEntity<ApiResponse<Void>> envelope(
+            HttpServletRequest request,
+            int status,
+            ErrorCode code,
+            List<BusinessException.FieldError> fields,
+            List<BusinessException.RowError> rows,
+            Throwable cause) {
         String message = errorMessages.of(code);
         exceptionLogs.record(request, status, code, message, cause);
         return ResponseEntity.status(status)
-                .body(ApiResponse.failure(code.code(), message, fields, TraceId.current()));
+                .body(ApiResponse.failure(code.code(), message, fields, rows, TraceId.current()));
     }
 }

@@ -17,7 +17,8 @@ import {
   toggleDelete as toggleDeleteIn,
   type GridRow,
 } from '@/shared/grid/rows';
-import { cellValue, headerText } from '@/shared/grid/cell';
+import { cellValue } from '@/shared/grid/cell';
+import { entriesOfIssues, issueTable, serverIssues } from '@/shared/grid/saveIssues';
 import { validateAll, validateCell } from '@/shared/grid/validate';
 
 /**
@@ -65,8 +66,31 @@ export interface GridControllerOptions<T> {
    * <p>매 렌더 새 함수를 넘기지 않는다 — 조회·저장 콜백이 전부 새것이 된다.
    */
   searchParams?: () => unknown;
-  /** 저장 페이로드를 만드는 것은 화면이다 — 행 모양이 화면마다 다르다. */
+  /**
+   * 저장 페이로드를 만드는 것은 화면이다 — 행 모양이 화면마다 다르다.
+   *
+   * @deprecated {@link toSaveRow} 를 쓴다. <b>이 통로로는 서버 오류를 셀에 꽂지 못한다.</b>
+   *   서버는 <i>요청 배열의 몇 번째</i> 로 행을 가리키는데, 배열을 화면이 만들면 배관은
+   *   그 순번이 화면의 어느 행인지 알 수 없다. 오늘의 구현이 전부 `rows.map()` 이라는
+   *   것은 <b>관행이지 규약이 아니다</b> — `filter` 하나가 끼면 <b>엉뚱한 행이 붉어지고
+   *   아무도 그것을 모른다</b>(frontend/grid.md).
+   */
   toSavePayload?: (rows: GridRow<T>[]) => unknown;
+  /**
+   * 행 <b>하나</b>를 요청 모양으로 바꾼다. 배열을 만드는 것은 배관이다.
+   *
+   * <p><b>순서를 화면에서 뺏는 것이 목적이다.</b> 배관이 `changed.map(toSaveRow)` 를 하므로
+   * 보낸 배열과 화면이 든 배열이 <b>구조적으로</b> 같고, 그래서 서버가 준 순번으로 행을
+   * 되찾아 셀을 칠할 수 있다(frontend/grid.md).
+   */
+  toSaveRow?: (row: GridRow<T>) => unknown;
+  /**
+   * {@link toSaveRow} 가 만든 배열에 봉투를 씌운다. <b>기본은 `{ rows }`</b> 다.
+   *
+   * <p>부모 키가 필요한 디테일 그리드만 쓴다 — `(rows) => ({ ordId, rows })`.
+   * <b>배열을 손대지 않는다</b>: 여기서 걸러 내거나 정렬하면 순번이 다시 어긋난다.
+   */
+  saveEnvelope?: (rows: unknown[]) => unknown;
   /** 화면 기본값. 시스템 기본값과 개인 설정 사이의 층이다 — frontend/grid.md. */
   pageSize?: number;
   /**
@@ -237,42 +261,6 @@ function recheck<T>(
 }
 
 /**
- * 저장 검증 실패 모달의 <b>줄들</b> — frontend/grid.md ④.
- *
- * <p>첫 줄이 <b>건수</b>이고 그 아래가 <b>어긋난 규칙</b>이다. 컬럼 이름을 앞에 붙이는 것은
- * 같은 문구가 여러 컬럼에서 날 수 있기 때문이며({@code 필수 항목입니다}), 컬럼이 없는 실패
- * (그리드 검증 — 합계·최소 건수)는 <b>문구만</b> 낸다.
- *
- * <p><b>같은 줄은 한 번만</b>이다. 열 행이 같은 규칙을 어기면 열 줄이 아니라 한 줄이며,
- * 고치는 일이 하나이기 때문이다.
- *
- * <p><b>열 줄에서 끊는다.</b> 그보다 길면 모달이 스크롤되고, 스크롤되는 목록은 <i>고칠
- * 것을 고르는</i> 화면이 아니라 <b>읽기를 포기하게 하는</b> 화면이다 — 남은 수는 말한다.
- */
-const VALIDATION_LINES = 10;
-
-function validationLines<T>(issues: GridIssue[], columns: ColumnDef<T>[]): string[] {
-  const header = new Map(columns.map((column) => [column.field, headerText(column)]));
-  const seen = new Set<string>();
-
-  for (const issue of issues) {
-    const name = issue.field === undefined ? undefined : header.get(issue.field);
-    seen.add(
-      name === undefined
-        ? issue.message
-        : label(MSG.GRID_VALIDATION_LINE, { column: name, message: issue.message }),
-    );
-  }
-
-  const lines = [...seen];
-  const shown = lines.slice(0, VALIDATION_LINES);
-  if (lines.length > VALIDATION_LINES) {
-    shown.push(label(MSG.GRID_VALIDATION_MORE, { count: lines.length - VALIDATION_LINES }));
-  }
-  return [label(MSG.GRID_VALIDATION_COUNT, { count: issues.length }), ...shown];
-}
-
-/**
  * 실행 하나의 대상 — <b>{@code DataGrid} 의 버튼 활성 판정도 이것을 부른다</b>(frontend/grid.md).
  *
  * <p>두 곳이 같은 답을 내야 한다. 버튼이 켜져 있는데 눌렀을 때 대상이 0건이면
@@ -303,7 +291,8 @@ function jobIdOf(result: unknown): string | null {
 }
 
 export function useGridController<T>(options: GridControllerOptions<T>): GridController<T> {
-  const { menuCd, columns, api, params, searchParams, toSavePayload } = options;
+  const { menuCd, columns, api, params, searchParams, toSavePayload, toSaveRow, saveEnvelope } =
+    options;
   const { modal, message } = App.useApp();
   /*
     <b>진행률 창을 여는 통로</b> — backend/crosscutting.md · playbook/INDEX.md. 화면이 아니라 여기가 든다: 화면마다
@@ -495,7 +484,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
 
   const save = useCallback(async () => {
     const saveApi = api?.save;
-    if (!saveApi || !toSavePayload || inFlight.current) return;
+    if (!saveApi || (!toSavePayload && !toSaveRow) || inFlight.current) return;
 
     const changed = changedRows(rows);
     if (changed.length === 0) {
@@ -517,15 +506,12 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
         틀린 번호는 없는 번호보다 나쁘다. 어느 셀인지는 판이 이미 첫 실패로 데려간다
         (frontend/grid.md ②).
 
-        <b>같은 말은 한 번만</b> 낸다. 열 행이 같은 규칙을 어기면 열 줄이 아니라 한 줄이며,
-        그 규칙을 고치는 일이 하나이기 때문이다.
+        <b>같은 줄은 한 번만</b> 낸다. 값이 비어 있는 실패(필수값 누락)는 열 행이 같은 줄을
+        만들어 하나로 접히고, 값이 다른 실패(중복·형식)는 <b>행마다 펴진다</b> — 앞은 규칙
+        하나를 고치면 다 낫지만 뒤는 <b>값 하나하나가 별개의 사건</b>이기 때문이다(saveIssues.ts).
       */
       modal.error({
-        content: createElement(
-          'div',
-          { style: { whiteSpace: 'pre-line' } },
-          validationLines(found, options.columns).join('\n'),
-        ),
+        content: issueTable(entriesOfIssues(found, rows, options.columns)),
         okText: label(MSG.GRID_CONFIRM_OK),
       });
       return;
@@ -576,10 +562,22 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
       if (!agreed) return;
     }
 
+    /*
+      <b>순번을 보장할 수 있으면 배관이 배열을 만든다</b>(frontend/grid.md).
+
+      서버는 <i>요청 배열의 몇 번째</i> 로 거부된 행을 가리킨다. 그 배열을 화면이
+      만들었다면({@code toSavePayload}) 걸러 냈는지 정렬했는지 배관은 알 수 없으므로 순번을
+      <b>믿지 않는다</b> — {@code sent} 가 `null` 이 되고 아래 {@code catch} 가 셀을 칠하지 않는다.
+    */
+    const sent = toSaveRow ? changed : null;
+    const payload = toSaveRow
+      ? (saveEnvelope ?? ((made: unknown[]) => ({ rows: made })))(changed.map(toSaveRow))
+      : toSavePayload?.(changed);
+
     inFlight.current = true;
     setLoading(true);
     try {
-      const result = await post(saveApi.url, toSavePayload(changed));
+      const result = await post(saveApi.url, payload);
       // ⑤ 성공 모달 — 확인이 다음 단계(재조회)를 트리거한다(frontend/grid.md).
       await new Promise<void>((resolve) => {
         modal.success({
@@ -602,18 +600,47 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
       inFlight.current = false;
       setLoading(false);
       /*
-        <b>서버 실패를 셀로 되돌린다</b> — frontend/grid.md.
+        <b>서버 실패를 셀과 표로 되돌린다</b> — frontend/grid.md.
 
-        모달만 띄우면 <i>"어느 줄이 문제인가"</i> 를 사용자가 문구에서 읽어 내야 하고,
-        일괄 저장은 화면에 안 보이는 행까지 나가므로 그 줄이 지금 화면에 없을 수도 있다.
-        <b>붙일 자리를 화면이 알려 준 경우에만</b> 칠한다 — 규칙이 화면마다 다르다.
+        문구 한 줄만 띄우면 <i>"어느 줄의 무슨 값이 문제인가"</i> 를 사용자가 읽어 낼 수
+        없고, 일괄 저장은 화면에 안 보이는 행까지 나가므로 그 줄이 지금 화면에 없을 수도
+        있다. <b>서버가 행을 짚어 준 경우</b>({@code rows})에는 배관이 셀을 칠하고 표를 낸다.
+
+        {@code locateFieldErrors} 는 <b>행을 짚지 못하는 옛 응답</b>의 통로로 남는다 — 서버가
+        {@code rows} 를 보내기 시작한 화면에서는 필요 없다.
       */
-      if (error instanceof ApiError && saveApi.locateFieldErrors && error.fields.length > 0) {
-        setIssues(saveApi.locateFieldErrors(error.fields, changed));
+      if (error instanceof ApiError && (error.rows.length > 0 || error.fields.length > 0)) {
+        const located = serverIssues(error.rows, error.fields, sent, options.columns);
+        if (located.issues.length > 0) {
+          setIssues(located.issues);
+        } else if (saveApi.locateFieldErrors && error.fields.length > 0) {
+          setIssues(saveApi.locateFieldErrors(error.fields, changed));
+        }
+        // 제목은 <b>서버가 완성한 문구</b>다 — 표는 상세이고 이것이 요약이다(backend/packages.md).
+        modal.error({
+          title: error.message,
+          content: issueTable(located.entries),
+          okText: label(MSG.GRID_CONFIRM_OK),
+        });
+      } else {
+        showError(error);
       }
-      showError(error);
     }
-  }, [api, fetchPage, message, modal, options.columns, page, rows, showError, size, sorts, toSavePayload]);
+  }, [
+    api,
+    fetchPage,
+    message,
+    modal,
+    options.columns,
+    page,
+    rows,
+    saveEnvelope,
+    showError,
+    size,
+    sorts,
+    toSavePayload,
+    toSaveRow,
+  ]);
 
   /**
    * 실행 — frontend/grid.md 의 다섯 단계다.
@@ -662,8 +689,9 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
       const found = validateAll(rows, options.columns, action.validate);
       setIssues(found);
       if (found.length > 0) {
+        // 저장과 <b>같은 표</b>다 — 사용자에게 둘은 구분되지 않는 사건이다(saveIssues.ts).
         modal.error({
-          content: label(MSG.GRID_VALIDATION_COUNT, { count: found.length }),
+          content: issueTable(entriesOfIssues(found, rows, options.columns)),
           okText: label(MSG.GRID_CONFIRM_OK),
         });
         return;

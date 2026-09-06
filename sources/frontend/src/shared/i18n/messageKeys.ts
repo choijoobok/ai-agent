@@ -907,6 +907,18 @@ export const MSG = {
   GRID_VALIDATION_LINE: 'grid.validation.line',
   /** 목록이 열 줄을 넘었다 — `{count}`. 남은 수만 말한다(스크롤되는 목록을 만들지 않는다). */
   GRID_VALIDATION_MORE: 'grid.validation.more',
+  /**
+   * 저장 실패 표의 머리 셋 — `컬럼` · `값` · `사유`(frontend/grid.md ④).
+   *
+   * <p><b>행 번호 칸이 없다.</b> 판에 클라이언트 정렬이 걸리면 우리가 센 배열 순서와 화면의
+   * 번호가 어긋나고, *틀린 번호는 없는 번호보다 나쁘다*. 어느 줄인지는 <b>붉은 셀</b>이
+   * 말하고 판이 첫 실패로 데려간다.
+   */
+  GRID_ISSUE_COLUMN: 'grid.issue.column',
+  /** 그 표의 <b>값</b> 칸 — *무엇이* 중복인가에 답하는 자리다(frontend/grid.md ④). */
+  GRID_ISSUE_VALUE: 'grid.issue.value',
+  /** 그 표의 <b>사유</b> 칸. 서버가 완성한 문구를 그대로 싣는다(backend/packages.md). */
+  GRID_ISSUE_REASON: 'grid.issue.reason',
   /** 필수 컬럼이 비었을 때의 기본 문구(frontend/grid.md). */
   GRID_VALIDATION_REQUIRED: 'grid.validation.required',
   /**

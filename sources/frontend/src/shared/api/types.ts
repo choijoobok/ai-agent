@@ -5,6 +5,7 @@ export interface ApiEnvelope<T> {
   code?: string;
   message?: string;
   fields?: FieldError[];
+  rows?: RowError[];
   /** 성공에도 담긴다 — "저장은 됐는데 값이 이상하다" 는 문의가 이 값으로 요청을 특정한다. */
   traceId?: string;
 }
@@ -13,6 +14,25 @@ export interface ApiEnvelope<T> {
 export interface FieldError {
   field: string;
   message: string;
+  /**
+   * 서버가 보고 거부한 값. <b>행을 되찾은 오류에는 없어도 된다</b> — 그때는 화면이 들고
+   * 있는 값을 쓴다(사용자가 지금 보고 있는 것이 그것이므로).
+   */
+  value?: string;
+}
+
+/**
+ * 요청 배열의 <b>몇 번째 행</b>이 왜 거부됐나 — 그리드 저장의 것이다(backend/api.md).
+ *
+ * <p><b>값이 아니라 순번으로 가리킨다.</b> 중복은 <i>같은 값인 행이 둘 이상</i> 이라는
+ * 뜻이므로, 값으로 찾게 하면 어느 쪽을 칠할지 고를 수 없다.
+ *
+ * <p>{@link fields} 가 배열인 것이 복합 키를 나르는 방법이다 — 키가 두 컬럼이면 두 칸이
+ * 함께 붉어져야 <i>이 조합이 중복</i> 이 표현된다.
+ */
+export interface RowError {
+  index: number;
+  fields: FieldError[];
 }
 
 /**
@@ -24,6 +44,7 @@ export class ApiError extends Error {
   readonly status: number;
   readonly traceId?: string;
   readonly fields: FieldError[];
+  readonly rows: RowError[];
 
   constructor(params: {
     code: string;
@@ -31,6 +52,7 @@ export class ApiError extends Error {
     status: number;
     traceId?: string;
     fields?: FieldError[];
+    rows?: RowError[];
   }) {
     super(params.message);
     this.name = 'ApiError';
@@ -38,6 +60,7 @@ export class ApiError extends Error {
     this.status = params.status;
     this.traceId = params.traceId;
     this.fields = params.fields ?? [];
+    this.rows = params.rows ?? [];
   }
 }
 

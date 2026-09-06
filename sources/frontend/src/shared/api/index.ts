@@ -17,4 +17,4 @@ export { get, post, request } from '@/shared/api/request';
 export { emitResponseSignal, onResponseSignal } from '@/shared/api/responseSignals';
 export type { ResponseSignal } from '@/shared/api/responseSignals';
 export { ApiError, TRANSPORT_ERROR_CODE } from '@/shared/api/types';
-export type { ApiEnvelope, FieldError } from '@/shared/api/types';
+export type { ApiEnvelope, FieldError, RowError } from '@/shared/api/types';

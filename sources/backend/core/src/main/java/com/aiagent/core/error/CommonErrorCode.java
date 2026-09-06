@@ -12,6 +12,7 @@ public enum CommonErrorCode implements ErrorCode {
     METHOD_NOT_ALLOWED(
             MsgKey.ERR_METHOD_NOT_ALLOWED, ErrorType.INVALID_REQUEST, "허용되지 않은 요청 방식입니다"),
     MALFORMED_BODY(MsgKey.ERR_MALFORMED_BODY, ErrorType.INVALID_REQUEST, "요청 본문을 해석할 수 없습니다"),
+    CONFLICT(MsgKey.ERR_CONFLICT, ErrorType.CONFLICT, "다른 사용자가 먼저 저장했습니다 — 다시 조회하세요"),
     INTERNAL(MsgKey.ERR_INTERNAL, ErrorType.INTERNAL_ERROR, "처리 중 오류가 발생했습니다");
 
     private final String code;

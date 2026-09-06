@@ -129,7 +129,7 @@ api: {
   **성공 여부를 돌려주지 않는다** — 그래서 *조회 전* · *실패* · *0건* 이 화면에서 같아 보인다.
   빈 판에 무엇을 쓸지는 `read.emptyNotice` 가 정하고, **그보다 세밀한 판정은 지금 없다**.
 
-## 4. `useGridController` 옵션 — 9
+## 4. `useGridController` 옵션 — 11
 
 | 키 | 한마디 |
 |---|---|
@@ -138,11 +138,22 @@ api: {
 | `params` | **조회조건** — `() => Promise<SearchCondition[] \| null>`. `null` 이면 조회하지 않는다 |
 | `searchParams` | 조건이 아닌 **고정 인자**(마스터의 선택값 등) |
 | `addRow` | `{ canAdd?, defaults? }` |
-| `toSavePayload` | 저장 본문을 화면이 만든다 |
+| **`toSaveRow`** | **행 하나**를 요청 모양으로 바꾼다. **배열은 배관이 만든다** |
+| `saveEnvelope` | 그 배열에 봉투를 씌운다 — 기본 `{ rows }`. 부모 키가 있는 디테일만 |
+| `toSavePayload` | ~~저장 본문을 화면이 만든다~~ — **낡았다**. 아래 |
 | `pageSize` · `editable` | |
 
 > **`params` 와 `read.params` 를 혼동하지 않는다** — 조회조건은 컨트롤러 옵션이고
 > `read` 는 `url` 과 `emptyNotice` 둘뿐이다.
+
+**`toSavePayload` 로는 서버 오류가 셀에 꽂히지 않는다.** 서버는 *요청 배열의 몇 번째* 로
+거부된 행을 가리키는데([standard/backend/api.md](../backend/api.md) §3-1), 배열을 화면이 만들면
+배관은 그 순번이 화면의 어느 행인지 알 수 없다. **`filter` 하나가 끼면 엉뚱한 행이 붉어지고
+아무도 그것을 모른다** — 그래서 배관은 이 통로에서 **아예 칠하지 않는다**(표만 낸다).
+
+`toSaveRow` 는 그 순번을 **구조적으로** 보장한다: `changed.map(toSaveRow)` 를 배관이 하므로
+보낸 배열과 화면이 든 배열이 같다. **`saveEnvelope` 에서 거르거나 정렬하지 않는다** — 거기서
+손대면 보장이 다시 깨진다.
 
 ## 5. `<DataGrid>` prop — 22
 

@@ -1,0 +1,9 @@
+MSG_KEY,LANG_CD,MSG_VAL
+err.conflict,ko,다른 사용자가 먼저 저장했습니다. 다시 조회한 뒤 시도하세요.
+err.conflict,en,Someone else saved first. Please reload and try again.
+grid.issue.column,ko,컬럼
+grid.issue.column,en,Column
+grid.issue.value,ko,값
+grid.issue.value,en,Value
+grid.issue.reason,ko,사유
+grid.issue.reason,en,Reason
