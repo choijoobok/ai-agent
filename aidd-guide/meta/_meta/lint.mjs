@@ -108,6 +108,8 @@ const violations = [];
 const stale = new Map();
 const byCategory = new Map();
 const byType = new Map();
+/** 운용 파일의 줄 수 — 상한에 닿은 것을 아래에서 보인다. */
+const docLines = new Map();
 let total = 0;
 
 for (const file of walk(GUIDE).filter((f) => f.endsWith('.md')).sort()) {
@@ -120,6 +122,7 @@ for (const file of walk(GUIDE).filter((f) => f.endsWith('.md')).sort()) {
 
   const { issues, lineCount, type } = lintFile(file, rel);
   byType.set(type, (byType.get(type) ?? 0) + 1);
+  if (['operation', 'template'].includes(type)) docLines.set(rel, lineCount);
   if (issues.length > 0) violations.push([rel, lineCount, issues]);
 
   const n = staleSectionRefs(file);
@@ -138,6 +141,26 @@ for (const [t, n] of [...byType].sort()) out.push(`  ${t}: ${n}`);
 out.push('', `예외: 200줄 ${LENGTH_EXEMPT.size}건 — 그 밖에는 없다`);
 for (const [rel, why] of LENGTH_EXEMPT) {
   out.push(`    ${String(lineCount(join(GUIDE, rel))).padStart(4)}줄  ${rel} — ${why}`);
+}
+
+/*
+  <b>상한에 닿은 문서를 보이게 한다.</b>
+
+  200줄은 <b>넘으면 빨강</b>이므로, 닿은 문서에 한 줄을 더하려는 사람은 <i>대신 무엇을
+  지울까</i> 를 고민하게 된다. 그 선택은 조용하고, 지워진 것이 <b>방금 배운 것</b>일 때가
+  있다 — 실제로 2026-09-06 에 엑셀 플레이북에서 두 줄을 깎아 새 절을 넣었다.
+
+  세는 것만으로는 못 막는다. 대신 <b>몇 개가 닿아 있나</b> 를 매번 보이게 해서, 쪼갤 때가
+  됐다는 신호가 사람에게 닿게 한다 — 규칙은 <i>넘을 가능성이 보이면 쪼갠다</i> 이고
+  (meta/doc-style.md), <b>이미 닿은 것이 그 가능성</b>이다.
+*/
+const NEAR = 190;
+const pinned = [...docLines]
+  .filter(([rel, n]) => n >= NEAR && !LENGTH_EXEMPT.has(rel))
+  .sort((a, b) => b[1] - a[1]);
+if (pinned.length > 0) {
+  out.push('', `상한에 닿았다: ${NEAR}줄 이상 ${pinned.length}건 — 다음 추가는 쪼개기부터 본다`);
+  for (const [rel, n] of pinned) out.push(`    ${String(n).padStart(4)}줄  ${rel}`);
 }
 
 out.push('');

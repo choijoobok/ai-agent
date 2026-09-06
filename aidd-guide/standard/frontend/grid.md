@@ -64,21 +64,18 @@ tags: [frontend, grid, ag-grid, crud, save]
 
 ## 3. 그리드가 하는 일은 전부 `api` 에 있다
 
-```ts
-api: {
-  read:    { url, params, emptyNotice },                        // 하나
-  save:    { url, params, confirm, reloadAfter, validate, … },  // 하나
-  actions: [ { key, url, label, target, params, confirm, … } ], // 여럿
-}
-```
-
 | 키 | 개수 | 무엇 |
 |---|---|---|
 | `read` | **하나** | 조회 |
 | `save` | **하나** | **일괄 저장 — 등록/수정/삭제로 쪼개지 않는다** |
 | `actions` | **여럿** | 그 밖의 모든 버튼 |
 
-**`params` 는 셋 다 갖는다** — 규칙이 하나면 기억할 것이 없다.
+**칸의 목록은 [declarations.md](./declarations.md) §3 이 갖는다** — 여기에 옮겨 적지 않는다.
+한때 이 자리에 요약이 있었고 **낡았다**: 소스에 없는 `params` 를 `read`·`save` 에 달아
+두었다. 요약이 둘이면 갈렸을 때 **어느 쪽이 참인지 알 방법이 없다**.
+
+**`params` 는 `actions` 만 갖는다.** 조회 조건은 `api` 가 아니라 컨트롤러가 받는다
+(`useGridController({ params })`) — 그것은 **폼이 검증해서 주는 것**이라 층이 다르다.
 **API 를 부르지 않는 버튼은 `controls` 에 선언한다.**
 
 > **`actions` 를 `execute` 라 부르지 않는다** — 액션 `EXECUTE` 와 섞인다.
@@ -147,6 +144,9 @@ api: {
 - 다이얼로그는 **미저장 변경이 있을 때만** 뜬다.
 - **신규 행만이 아니다** — 수정·삭제 상태의 행도 같이 사라진다.
 - **컬럼 필터와 접기는 여기 없다** — 서버를 부르지 않는다.
+- **저장·실행 뒤의 재조회에는 다이얼로그가 없다** — 방금 냈으므로 잃을 편집이 없다. 대신
+  **보던 자리로 간다**: 커서형은 쪽수가 없어 커서로 되돌아간다. 건별 처리 뒤의 갈림은
+  [../backend/row-transaction.md](../backend/row-transaction.md) §7 이 갖는다.
 
 **대부분의 편집 그리드에는 이 상황이 오지 않는다.** 검색 폼이 없는 그리드는 응답이
 `all` 이라 **페이지가 없고 정렬이 클라이언트**다 — 갈아 끼울 일이 없다.
