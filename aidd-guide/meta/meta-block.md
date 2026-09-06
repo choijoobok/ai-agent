@@ -4,7 +4,7 @@ title: "메타블록 표준 스펙"
 category: meta
 type: operation
 created: "2026-04-30"
-updated: "2026-09-03"
+updated: "2026-09-06"
 status: active
 sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
 tier: 3
@@ -47,23 +47,31 @@ tags: [tag1, tag2]
 
 ## ID 체계
 
-| Prefix | 카테고리 |
-|--------|---------|
-| LLM-IDX | 마스터 인덱스 (`aidd-guide/INDEX.md`) |
-| LLM-MET | 00-meta |
-| LLM-CTX | 02-context |
-| LLM-PMT | 03-prompt |
-| LLM-MEM | 04-memory |
-| LLM-HRN | 05-harness |
-| LLM-FWK | 06-framework |
-| LLM-PLY | 11-playbook |
-| LLM-KNW | 09-knowledge |
+**접두는 폴더 하나에 하나씩 붙고, 폴더 이름에서 유도되지 않는다.** 그래서 **지어내지 않고
+이 표에서 찾는다** — 없는 폴더를 새로 만들었으면 **여기에 접두를 먼저 더한다.**
 
-서브 카테고리는 추가 prefix:
-- `LLM-PMT-OVR-{SEQ}` — 03-prompt/overlays
-- `LLM-FWK-BE-{SEQ}` — 06-framework/backend
-- `LLM-FWK-FE-{SEQ}` — 06-framework/frontend
-- `LLM-KNW-SYS-{SEQ}` / `LLM-KNW-{도메인3자}-{SEQ}`
+| Prefix | 폴더 (`category` 값과 같다) |
+|--------|---------|
+| `LLM-IDX` | 마스터 인덱스 `aidd-guide/INDEX.md` 하나 (`LLM-IDX-000`) |
+| `LLM-MET` | `meta` |
+| `LLM-PRO` | `process` |
+| `LLM-PHS` | `phase` |
+| `LLM-ART` | `artifact` · `artifact/template` · `artifact/template/generated` |
+| `LLM-PMT` | `artifact/screen` |
+| `LLM-PMT-OVR` | `artifact/screen/overlay` |
+| `LLM-PLY` | `playbook` |
+| `LLM-FWK` | `standard` |
+| `LLM-FWK-BE` | `standard/backend` |
+| `LLM-FWK-FE` | `standard/frontend` |
+| `LLM-SAF` | `standard/safety` |
+| `LLM-KNW` | `knowledge` |
+| `LLM-KNW-SYS` | `knowledge/sys` — 다른 도메인은 `LLM-KNW-{도메인3자}` |
+| `LLM-HRN` | `harness` |
+| `LLM-CTX` | `harness/context` |
+| `LLM-MEM` | `harness/memory` |
+| `LLM-QLT` | `quality` |
+| `LLM-EVL` | `quality/evals` |
+| `LLM-OBS` | `quality/observability` |
 
 ## 인덱스 ID
 
@@ -87,7 +95,7 @@ tags: [tag1, tag2]
 4. **`author` 를 두지 않는다** — 저자는 git 이 갖는다(`git blame`). frontmatter 의 이름은
    고쳐도 안 고쳐도 틀린다: 이 저장소는 다른 프로젝트의 원저자 이름을 131 파일에 달고
    있었고, 그중 상당수는 여기서 다시 쓰인 것이었다.
-4. **신규 문서 등록 시** 해당 카테고리 INDEX.md 의 표에 추가
+5. **신규 문서 등록 시** 해당 카테고리 INDEX.md 의 표에 추가
 
 ## 검증 (수동)
 
