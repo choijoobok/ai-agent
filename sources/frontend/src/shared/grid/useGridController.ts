@@ -19,6 +19,7 @@ import {
 } from '@/shared/grid/rows';
 import { cellValue } from '@/shared/grid/cell';
 import { entriesOfIssues, issueTable, serverIssues } from '@/shared/grid/saveIssues';
+import { useTabDirty } from '@/shared/grid/useTabDirty';
 import { validateAll, validateCell } from '@/shared/grid/validate';
 
 /**
@@ -353,6 +354,12 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
   const savesItself = Boolean(api?.save);
 
   const dirty = useMemo(() => hasChanges(rows), [rows]);
+
+  /*
+    셸의 미저장 보호가 여는 문이 여기다 — 탭 닫기·로그아웃·새로고침이 이 값을 본다
+    (shared/grid/useTabDirty). 화면은 아무것도 하지 않는다.
+  */
+  useTabDirty(dirty);
 
   const setRows = useCallback((next: GridRow<T>[]) => {
     setRowsState(next);

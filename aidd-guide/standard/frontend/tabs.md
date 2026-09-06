@@ -4,7 +4,7 @@ title: "멀티탭 워크스페이스 — 셸 · 탭 · 라우팅"
 category: standard/frontend
 type: operation
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-06
 status: active
 sources: ["sources/frontend/src/shared/screentabs/", "sources/frontend/src/layouts/", "aidd-guide/standard/frontend/packages.md", "aidd-guide/standard/frontend/tabs.md"]
 tier: 1
@@ -103,7 +103,20 @@ tags: [frontend, tabs, shell, routing]
 | 다른 탭 닫기 | 현재 탭과 **대시보드**를 남긴다 |
 | 모든 탭 닫기 | **대시보드만** 남긴다 — 헤더 로고와 같은 동작 |
 
-닫기 계열은 저장하지 않은 폼을 만나면 **일괄 확인 다이얼로그**를 띄운다.
+닫기 계열은 저장하지 않은 폼을 만나면 **일괄 확인 다이얼로그**를 띄운다. 같은 판정을
+로그아웃 · 로고 새로고침 · 탭 상한 희생이 함께 쓰고, 탭바가 제목 옆에 **·** 을 그린다.
+
+### 그 미저장은 **그리드가 세운다**
+
+**화면은 아무것도 하지 않는다.** `useGridController` 가 자기 `dirty` 를
+`tabStore.setDirty(탭키, dirty, 그리드)` 로 알린다(`shared/grid/useTabDirty`) — 스물두
+화면에 같은 세 줄을 넣는 대신 **한 자리**다.
+
+- **주장하는 쪽을 함께 보낸다.** 한 탭에 그리드가 여럿이라(사용자 상세는 여섯) 탭 열쇠만
+  보내면 **한 그리드가 깨끗해지는 순간 다른 그리드의 미저장이 지워진다.**
+- **탭 밖에서는 아무 일도 하지 않는다** — 로그인 화면에는 지킬 탭이 없다.
+- **그리드가 아닌 미저장은 아직 아무도 세우지 않는다.** 폼만 있는 화면을 만들면
+  그 화면이 직접 `setDirty` 를 부른다.
 
 메뉴 트리의 우클릭 메뉴는 이것과 **대칭**이다 — 트리는 **여는 방식**, 탭바는 **닫는 방식**을
 묻고 즐겨찾기만 공통이다.

@@ -69,6 +69,13 @@ export interface TabState {
   activeKey: string;
   /** 미저장 변경이 있는 탭. 화면이 스스로 세운다 — 스토어는 폼을 모른다. */
   dirtyKeys: string[];
+  /**
+   * 탭마다 <b>미저장을 주장하는 것들</b> — {@link TabState.dirtyKeys} 는 이것의 열쇠다.
+   *
+   * <p>한 탭에 그리드가 여럿이다(사용자 상세는 여섯). 세지 않고 참·거짓만 두면 <b>한
+   * 그리드가 깨끗해지는 순간 다른 그리드의 미저장이 지워진다</b>.
+   */
+  dirtySources: Record<string, string[]>;
 
   open: (target: OpenTarget) => OpenOutcome;
   /** frontend/tabs.md — 이미 열려 있어도 <b>항상 새 인스턴스</b>를 만든다. */
@@ -89,7 +96,11 @@ export interface TabState {
    */
   move: (fromKey: string, toKey: string) => void;
 
-  setDirty: (key: string, dirty: boolean) => void;
+  /**
+   * @param source 주장하는 쪽의 식별자. 한 탭의 그리드들이 서로를 지우지 않게 한다.
+   *     생략하면 <b>탭 전체를 대표하는 하나</b>로 친다
+   */
+  setDirty: (key: string, dirty: boolean, source?: string) => void;
   /** — 권한을 잃은 메뉴의 탭을 정리한다. 닫힌 탭을 돌려준다. */
   retain: (allowedMenuCds: readonly string[]) => WorkTab[];
   /** 로그아웃 정리. */
@@ -128,6 +139,9 @@ function createTab(target: OpenTarget, instance: number): WorkTab {
   };
 }
 
+/** {@code source} 없이 부른 쪽 — 그 탭에 주장하는 것이 하나뿐인 경우다. */
+const WHOLE_TAB = '@tab';
+
 /**
  * 열린 탭과 활성 탭 — frontend/packages.md.
  *
@@ -143,6 +157,7 @@ export const useTabStore = create<TabState>((set, get) => ({
   tabs: [DASHBOARD_TAB],
   activeKey: DASHBOARD_TAB.key,
   dirtyKeys: [],
+  dirtySources: {},
 
   open: (target) => {
     const { tabs } = get();
@@ -207,14 +222,29 @@ export const useTabStore = create<TabState>((set, get) => ({
         .map((tab) => tab.key),
     ),
 
-  setDirty: (key, dirty) =>
-    set((state) => ({
-      dirtyKeys: dirty
-        ? state.dirtyKeys.includes(key)
-          ? state.dirtyKeys
-          : [...state.dirtyKeys, key]
-        : state.dirtyKeys.filter((dirtyKey) => dirtyKey !== key),
-    })),
+  setDirty: (key, dirty, source = WHOLE_TAB) =>
+    set((state) => {
+      const before = state.dirtySources[key] ?? [];
+      const after = dirty
+        ? before.includes(source)
+          ? before
+          : [...before, source]
+        : before.filter((one) => one !== source);
+
+      // 바뀐 것이 없으면 상태를 그대로 돌려준다. 부르는 쪽이 참·거짓의 <b>전환</b>에서만
+      // 부르지만(shared/grid/useTabDirty), 다시 마운트되는 경로에서는 같은 값이 두 번 온다.
+      if (after.length === before.length) {
+        return state;
+      }
+
+      const sources = { ...state.dirtySources };
+      if (after.length === 0) {
+        delete sources[key];
+      } else {
+        sources[key] = after;
+      }
+      return { dirtySources: sources, dirtyKeys: Object.keys(sources) };
+    }),
 
   retain: (allowedMenuCds) => {
     const allowed = new Set(allowedMenuCds);
@@ -231,7 +261,12 @@ export const useTabStore = create<TabState>((set, get) => ({
 
   reset: () => {
     sequence = 0;
-    set({ tabs: [DASHBOARD_TAB], activeKey: DASHBOARD_TAB.key, dirtyKeys: [] });
+    set({
+      tabs: [DASHBOARD_TAB],
+      activeKey: DASHBOARD_TAB.key,
+      dirtyKeys: [],
+      dirtySources: {},
+    });
   },
 }));
 
@@ -267,7 +302,7 @@ function closeTabs(
   keys: readonly string[],
 ): void {
   const doomed = new Set(keys);
-  const { tabs, activeKey, dirtyKeys } = get();
+  const { tabs, activeKey, dirtyKeys, dirtySources } = get();
 
   // 고정 탭은 어떤 경로로도 닫히지 않는다 — 여기 한 줄이 그것을 보장한다.
   const remaining = tabs.filter((tab) => !tab.closable || !doomed.has(tab.key));
@@ -281,5 +316,9 @@ function closeTabs(
     // 활성 탭이 닫히면 첫 탭으로 간다. 남은 탭이 언제나 있으므로(대시보드) 빈 상태가 없다.
     activeKey: activeSurvives ? activeKey : remaining[0].key,
     dirtyKeys: dirtyKeys.filter((key) => !doomed.has(key)),
+    // 주장한 쪽도 함께 버린다 — 남기면 같은 열쇠의 탭이 다시 열릴 때 이미 더러운 채다.
+    dirtySources: Object.fromEntries(
+      Object.entries(dirtySources).filter(([key]) => !doomed.has(key)),
+    ),
   });
 }
