@@ -168,6 +168,37 @@ quality_baseline:
     게이트는 사용자 승인이 연다(CLAUDE.md §5-2).
 
 # ── 슬라이스 백로그 (P4) ───────────────────────────────────────────
+# ── 화면 재현 회귀 (LLM-EVL-004) ──────────────────────────────────
+# 절차·채점기·읽는 법은 `aidd-guide/quality/evals/screen-reproduction.md` 가 갖는다.
+# **여기는 이 저장소를 잰 값이다** — 고객사가 바뀌면 비우고 다시 잰다(CLAUDE.md §1).
+# 근거 분포는 결정 중 그 근거가 낀 비율(중복 있음)이며 `A · B` 는 독립한 재현 둘이다.
+reproduction_baseline:
+  measured_at: 2026-09-07
+  scorer: node aidd-guide/quality/evals/score-screen.mjs <화면> <재현트리…>
+  rounds:
+    - { n: 1, at: 1a5e761, screen: /log/login,     trees: A·B, decisions: 65·79,  req: 78·67%, guide: 31·25%, neighbor: 34·35%, guess: 9·6% }
+    - { n: 2, at: af940e8, screen: /log/login,     trees: C·D, decisions: 64·65,  req: 70·66%, guide: 48·51%, neighbor: 22·31%, guess: 11·9% }
+    - { n: 3, at: 23d13fb, screen: /code,          trees: A·B, decisions: 95·78,  req: 65·65%, guide: 53·53%, neighbor: 38·32%, guess: 18·13%, axes: 7 }
+    - { n: 4, at: c9cd72b, screen: /sample/excel,  trees: A·B, decisions: 56·65,  req: 27·25%, guide: 30·29%, neighbor: 59·52%, guess: 18·25%, axes: 12 }
+    - { n: 5, at: c9cd72b, screen: /user,          trees: A·B, decisions: 125·90, req: 58·61%, guide: 43·54%, neighbor: 38·29%, guess: 19·16%, axes: 4 }
+    - { n: 6, at: b22da0d, screen: /user,          trees: A·B, decisions: 76·76,  req: 75·76%, guide: 38·45%, neighbor: 32·42%, guess: 17·9%,  axes: 6 }
+  # `axes` = 채점 축 열일곱 중 **셋 다 완전 일치**한 수. 기계 규칙 위반은 여섯 차수 내내 0 이다.
+  vertical_finding: >-
+    **세로 비교는 둘뿐이다**(같은 화면을 다시 잰 것 — 그것만 문서의 변화를 말한다).
+    1→2 차는 가이드만 바뀌어 `가이드` 28→50% · `옆화면` 34→27%.
+    5→6 차는 **요건서가 함께 바뀌어 변수가 하나가 아니다** — 5차 이후 `aidd-guide` 와
+    요건서에 커밋 41개가 들어갔고 결정 수도 125·90 → 76·76 이라 **분모도 같지 않다.**
+    그럼에도 방향은 뚜렷하다: `8eacd3c`(요건서 표에 와이어 필드명 180칸)가 닿아
+    **축 일치 4 → 6 · 요건서 근거 58 → 75%** 가 됐고 `추측` 은 19·16 → 17·9% 로 내렸다.
+    `가이드` 가 43·54 → 38·45% 로 내려간 것은 나빠진 것이 아니다 — 비율은 몫이라
+    요건서가 결정을 가져간 만큼 다른 칸이 준다.
+  open_finding: >-
+    **남은 최악은 백엔드 이름이다.** 6차의 대칭차가 가장 큰 축 둘이 클래스와 public
+    메서드이고, 재현 둘이 **서로 닮은 오답**으로 갈렸다 — 패키지가 `user/admin/` 일 때
+    클래스가 `admin` 을 되풀이하는가(`UserAdminService` vs 실물 `UserService`)를 표준이
+    정하지 않았다. `A ≒ B ≠ 실물` 이므로 고칠 곳은 가이드의 모호함이 아니라 **표준의 빈칸**이다.
+    @defer P4 — 서비스·컨트롤러 이름이 패키지 마디를 되풀이하는가를 `standard/backend/packages.md` 가 정한다
+
 slices: []
 
 # ── 최근 활동 로그 (최신 10건만 유지) ─────────────────────────────
