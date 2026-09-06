@@ -363,6 +363,13 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
   */
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [prevCursor, setPrevCursor] = useState<string | null>(null);
+  /*
+    <b>지금 이 페이지를 만든 커서.</b> 앞뒤 두 장과 달리 <i>어디로 갈까</i> 가 아니라
+    <i>어디에 있나</i> 를 말한다 — 저장·실행 뒤 <b>보던 자리를 다시 읽으려면</b> 그것이
+    필요하다. 커서형에는 페이지 번호가 없어 {@code page} 가 늘 0 이므로, 이 값이 없으면
+    재조회가 <b>맨 앞으로 튄다</b>.
+  */
+  const [pageCursor, setPageCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [issues, setIssues] = useState<GridIssue[]>([]);
   const [sorts, setSorts] = useState<SortRequest[]>([]);
@@ -467,6 +474,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
         setNextCursor(response.nextCursor ?? null);
         setPrevCursor(response.prevCursor ?? null);
         setPage(nextPage);
+        setPageCursor(cursor ?? null);
         setSize(nextSize);
         setSorts(nextSorts);
         if (response.content.length === 0 && api.read.emptyNotice) {
@@ -481,6 +489,22 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
       }
     },
     [api, modal, params, searchParams, setRows, showError],
+  );
+
+  /**
+   * <b>보던 자리</b>를 다시 읽는다 — 저장·실행이 끝난 뒤의 재조회다.
+   *
+   * <p><b>모드로 갈라지지 않는다.</b> 오프셋형은 {@code pageCursor} 가 `null` 이라 쪽수로
+   * 가고, 커서형은 {@code page} 가 0 이라 커서로 간다 — 서버가 <b>커서가 있으면 쪽수를
+   * 읽지 않기</b> 때문에 둘을 함께 실어도 분기가 필요 없다(backend/api.md).
+   *
+   * <p><b>같은 목록을 약속하지는 않는다.</b> 커서는 {@code WHERE (키) < (기준점)} 이라
+   * 기준점 행이 지워져도 동작하지만, <b>저장이 정렬 키를 바꾼 행은 자리를 옮긴다</b> —
+   * 커서의 성질이지 결함이 아니다.
+   */
+  const reloadHere = useCallback(
+    () => fetchPage(page, size, sorts, pageCursor),
+    [fetchPage, page, pageCursor, size, sorts],
   );
 
   const read = useCallback(async (confirmed?: boolean) => {
@@ -696,7 +720,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
       inFlight.current = false;
       setLoading(false);
       if (saveApi.reloadAfter !== false) {
-        await fetchPage(page, size, sorts);
+        await reloadHere();
       }
       /*
         <b>응답을 함께 넘긴다</b>(screen/user/requirements.md). 대개 {@code null} 이지만 <b>재조회로는 얻을 수
@@ -736,19 +760,16 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
     }
   }, [
     api,
-    fetchPage,
     message,
     issueColors,
     modal,
     options.columns,
-    page,
+    reloadHere,
     rows,
     reportIfDeclared,
     saveEnvelope,
     showError,
     showReport,
-    size,
-    sorts,
     toSavePayload,
     toSaveRow,
   ]);
@@ -884,7 +905,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
                 그만두는 일이지 작업을 멈추는 일이 아니다.
               */
               onDone: () => {
-                if (action.reloadAfter !== false) void fetchPage(page, size, sorts);
+                if (action.reloadAfter !== false) void reloadHere();
                 action.onSuccess?.(result);
               },
             });
@@ -911,7 +932,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
         inFlight.current = false;
         setLoading(false);
         if (action.reloadAfter !== false) {
-          await fetchPage(page, size, sorts);
+          await reloadHere();
         }
         /*
           <b>재조회 뒤에 부른다.</b> 콜백이 여는 모달(발급된 임시 비밀번호 — screen/user/requirements.md)이 떠
@@ -926,19 +947,16 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
     },
     [
       api,
-      fetchPage,
       issueColors,
       modal,
       open,
       options.columns,
-      page,
+      reloadHere,
       reportIfDeclared,
       rows,
       selected,
       showError,
       showReport,
-      size,
-      sorts,
     ],
   );
 
