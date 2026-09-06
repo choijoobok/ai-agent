@@ -1,6 +1,7 @@
 package com.aiagent.domain.code.admin;
 
 import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.RowErrors;
 import com.aiagent.domain.code.entity.SysCode;
 import com.aiagent.domain.code.entity.SysCodeGroup;
 import com.aiagent.domain.code.entity.SysCodeGrpRef;
@@ -108,21 +109,22 @@ public class CodeAdminService {
     public void saveGroup(List<CodeGroupSaveRow> rows) {
         Set<String> seen = new HashSet<>();
 
-        for (CodeGroupSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             // 같은 요청 안의 중복은 화면이 막지만, 막혔다고 서버가 안 봐도 되는 것은 아니다 —
             // 두 번째 C 의 존재 확인이 첫 번째의 flush 를 만나지 못해 조용히 덮인다.
             if (!seen.add(row.grpCd())) {
                 throw new BusinessException(
                         CodeErrorCode.GROUP_DUPLICATE,
                         "같은 그룹이 두 번 왔다 — " + row.grpCd(),
-                        List.of(new BusinessException.FieldError("grpCd", "이미 있는 코드 그룹입니다")));
+                        List.of(new BusinessException.FieldError(
+                                "grpCd", "이미 있는 코드 그룹입니다", row.grpCd())));
             }
             switch (row.rowState()) {
                 case C -> createGroup(row);
                 case U -> updateGroup(row);
                 case D -> deleteGroup(row);
             }
-        }
+        });
         bump(SysCacheVersion.CODE);
     }
 
@@ -167,7 +169,8 @@ public class CodeAdminService {
             throw new BusinessException(
                     CodeErrorCode.GROUP_HAS_CODE,
                     "코드가 남아 있다 — " + row.grpCd(),
-                    List.of(new BusinessException.FieldError("grpCd", "코드가 있어 그룹을 지울 수 없습니다")));
+                    List.of(new BusinessException.FieldError(
+                            "grpCd", "코드가 있어 그룹을 지울 수 없습니다", row.grpCd())));
         }
         refDefs.deleteAll(refDefs.findByGrpCdOrderByRefCdAsc(row.grpCd()));
         groups.delete(group);
@@ -187,20 +190,21 @@ public class CodeAdminService {
         // 정의 목록을 한 번만 읽는다 — 행마다 읽으면 같은 질의가 코드 수만큼 나간다.
         List<SysCodeGrpRef> defs = refDefs.findByGrpCdOrderByRefCdAsc(grpCd);
         Set<String> seen = new HashSet<>();
-        boolean nameChanged = false;
+        /* 람다 밖으로 값을 내보내는 자리 — 실패한 행이 있어도 마지막에 던지므로 롤백된다. */
+        boolean[] nameChanged = {false};
 
-        for (CodeSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             if (!seen.add(row.dtlCd())) {
                 throw duplicateCode(row.dtlCd());
             }
-            nameChanged |= switch (row.rowState()) {
+            nameChanged[0] |= switch (row.rowState()) {
                 case C -> createCode(grpCd, lang, row, defs);
                 case U -> updateCode(grpCd, lang, row, defs);
                 case D -> deleteCode(grpCd, row);
             };
-        }
+        });
         bump(SysCacheVersion.CODE);
-        if (nameChanged) {
+        if (nameChanged[0]) {
             // 이름의 원본이 SYS_MESSAGE 라 프론트는 그것을 번들에서 읽는다 — code 만 올리면
             // 목록은 새것인데 라벨이 옛것인 화면이 나온다(sys/code.md).
             bump(SysCacheVersion.MESSAGE);
@@ -354,7 +358,7 @@ public class CodeAdminService {
         requireGroup(grpCd);
         Set<String> seen = new HashSet<>();
 
-        for (CodeRefDefSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             if (!seen.add(row.refCd())) {
                 throw duplicateRefDef(row.refCd());
             }
@@ -363,7 +367,7 @@ public class CodeAdminService {
                 case U -> updateRefDef(grpCd, row);
                 case D -> deleteRefDef(grpCd, row);
             }
-        }
+        });
         // 정의가 바뀌면 하단의 **컬럼 집합**이 바뀐다 — 프론트 코드 캐시도 그 축에 있다.
         bump(SysCacheVersion.CODE);
     }
@@ -374,7 +378,8 @@ public class CodeAdminService {
             throw new BusinessException(
                     CodeErrorCode.REF_CD_UNKNOWN,
                     "화이트리스트 밖의 참조 코드다 — " + row.refCd(),
-                    List.of(new BusinessException.FieldError("refCd", "허용되지 않은 참조 코드 값입니다")));
+                    List.of(new BusinessException.FieldError(
+                            "refCd", "허용되지 않은 참조 코드 값입니다", row.refCd())));
         }
         if (refDefs.existsById(new SysCodeGrpRefId(grpCd, row.refCd()))) {
             throw duplicateRefDef(row.refCd());
@@ -463,24 +468,29 @@ public class CodeAdminService {
         return new BusinessException(CodeErrorCode.SYSTEM_LOCKED, detail);
     }
 
+    /*
+      셋 다 <b>값을 함께 싣는다</b>(backend/api.md §3-1). 화면이 행을 되찾으면 화면의 값을
+      쓰므로 대개 쓰이지 않지만, 되찾지 못한 오류에서는 <i>무슨 값이 중복인가</i> 를 말할
+      수 있는 <b>유일한 통로</b>다.
+    */
     private static BusinessException duplicateGroup(String grpCd) {
         return new BusinessException(
                 CodeErrorCode.GROUP_DUPLICATE,
                 "이미 있는 그룹이다 — " + grpCd,
-                List.of(new BusinessException.FieldError("grpCd", "이미 있는 코드 그룹입니다")));
+                List.of(new BusinessException.FieldError("grpCd", "이미 있는 코드 그룹입니다", grpCd)));
     }
 
     private static BusinessException duplicateCode(String dtlCd) {
         return new BusinessException(
                 CodeErrorCode.CODE_DUPLICATE,
                 "이미 있는 코드다 — " + dtlCd,
-                List.of(new BusinessException.FieldError("dtlCd", "이미 있는 코드입니다")));
+                List.of(new BusinessException.FieldError("dtlCd", "이미 있는 코드입니다", dtlCd)));
     }
 
     private static BusinessException duplicateRefDef(String refCd) {
         return new BusinessException(
                 CodeErrorCode.REF_DEF_DUPLICATE,
                 "이미 있는 정의다 — " + refCd,
-                List.of(new BusinessException.FieldError("refCd", "이미 있는 참조 코드입니다")));
+                List.of(new BusinessException.FieldError("refCd", "이미 있는 참조 코드입니다", refCd)));
     }
 }

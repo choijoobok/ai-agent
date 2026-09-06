@@ -238,6 +238,76 @@ class CodeAdminServiceTest {
         }
     }
 
+    // ── 여러 행이 틀렸을 때 ──────────────────────────────────────────
+
+    /**
+     * <b>첫 실패에서 멈추면 사용자가 저장을 N 번 누른다</b> — backend/api.md §3-1.
+     *
+     * <p>여기서 잠그는 것은 셋이다. ① 실패한 행이 있어도 <b>끝까지 돈다</b>. ② 순번이
+     * <b>요청 배열의 것</b>이다 — 성공한 행이 섞여도 어긋나지 않는다(화면이 이 수로 행을
+     * 되찾아 칠하므로, 틀리면 <b>남의 행이 붉어진다</b>). ③ 사유가 행마다 다를 수 있고
+     * 봉투의 코드는 <b>맨 앞 실패의 것</b>이다.
+     */
+    @Nested
+    @DisplayName("여러 행이 틀렸을 때 — 모아서 한 번 던진다")
+    class ManyRows {
+
+        @Test
+        @DisplayName("실패한 행이 있어도 끝까지 돌고, 순번은 요청 배열의 것이다")
+        void collectsEveryFailureWithRequestIndex() {
+            BusinessException thrown = business(() -> service.saveGroup(List.of(
+                    groupRow(RowState.C, "A", "  "),   // 0 — 이름이 없다
+                    groupRow(RowState.C, "B", "정상"),  // 1 — 통과
+                    groupRow(RowState.C, "C", ""))));  // 2 — 이름이 없다
+
+            assertThat(thrown.rowErrors()).extracting(BusinessException.RowError::index)
+                    .containsExactly(0, 2);
+            assertThat(thrown.rowErrors().getFirst().fields().getFirst().field()).isEqualTo("grpNm");
+        }
+
+        @Test
+        @DisplayName("사유가 달라도 함께 모이고, 봉투의 코드는 맨 앞 실패의 것이다")
+        void mixedReasonsKeepTheFirstCode() {
+            BusinessException thrown = business(() -> service.saveGroup(List.of(
+                    groupRow(RowState.C, "A", "가"),   // 0 — 통과
+                    groupRow(RowState.C, "A", "나"),   // 1 — 같은 요청 안 중복
+                    groupRow(RowState.C, "D", " "))));  // 2 — 이름이 없다
+
+            assertThat(thrown.errorCode()).isEqualTo(CodeErrorCode.GROUP_DUPLICATE);
+            assertThat(thrown.rowErrors()).extracting(BusinessException.RowError::index)
+                    .containsExactly(1, 2);
+        }
+
+        @Test
+        @DisplayName("중복 값을 함께 싣는다 — 행을 못 되찾은 화면의 유일한 통로다")
+        void carriesTheOffendingValue() {
+            when(codes.existsById(new SysCodeId(GRP, "B2B"))).thenReturn(true);
+
+            BusinessException thrown = business(() -> service.save(
+                    GRP, "ko", List.of(codeRow(RowState.C, "B2B", "기업 간 거래"))));
+
+            BusinessException.FieldError failed = thrown.rowErrors().getFirst().fields().getFirst();
+            assertThat(failed.field()).isEqualTo("dtlCd");
+            assertThat(failed.value()).isEqualTo("B2B");
+        }
+
+        @Test
+        @DisplayName("정의 저장도 같다 — 세 저장이 같은 규칙을 쓴다")
+        void refDefinitionsCollectToo() {
+            BusinessException thrown = business(() -> service.saveRefDef(GRP, List.of(
+                    new CodeRefDefSaveRow(RowState.C, "REF_A", " ", null),
+                    new CodeRefDefSaveRow(RowState.C, "REF_B", "", null))));
+
+            assertThat(thrown.rowErrors()).extracting(BusinessException.RowError::index)
+                    .containsExactly(0, 1);
+        }
+    }
+
+    /** 던져진 {@link BusinessException} 을 그대로 준다 — 세 테스트가 같은 모양을 본다. */
+    private static BusinessException business(org.junit.jupiter.api.function.Executable body) {
+        return org.junit.jupiter.api.Assertions.assertThrows(BusinessException.class, body);
+    }
+
     // ── 코드 · 코드명 ────────────────────────────────────────────────
 
     @Nested

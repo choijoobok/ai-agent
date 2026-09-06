@@ -173,19 +173,17 @@ export function CodeMgmtPage() {
         sysYn: false,
       }),
     },
-    toSavePayload: (rows) => ({
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        grpCd: row.data.grpCd,
-        // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
-        ...(row.state === 'D'
-          ? {}
-          : {
-              grpNm: row.data.grpNm,
-              grpDesc: row.data.grpDesc,
-              sortNo: row.data.sortNo,
-            }),
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      grpCd: row.data.grpCd,
+      // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
+      ...(row.state === 'D'
+        ? {}
+        : {
+            grpNm: row.data.grpNm,
+            grpDesc: row.data.grpDesc,
+            sortNo: row.data.sortNo,
+          }),
     }),
   });
 
@@ -210,22 +208,21 @@ export function CodeMgmtPage() {
         refs: {},
       }),
     },
-    toSavePayload: (rows) => ({
-      grpCd: selectedGrpCd.current,
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        dtlCd: row.data.dtlCd,
-        ...(row.state === 'D'
-          ? {}
-          : {
-              codeNm: row.data.codeNm,
-              dtlDesc: row.data.dtlDesc,
-              useYn: row.data.useYn,
-              sortNo: row.data.sortNo,
-              refs: row.data.refs,
-            }),
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      dtlCd: row.data.dtlCd,
+      ...(row.state === 'D'
+        ? {}
+        : {
+            codeNm: row.data.codeNm,
+            dtlDesc: row.data.dtlDesc,
+            useYn: row.data.useYn,
+            sortNo: row.data.sortNo,
+            refs: row.data.refs,
+          }),
     }),
+    /* 부모 키만 씌운다 — 배열을 손대면 서버가 준 행 순번이 어긋난다(save-errors.md §3). */
+    saveEnvelope: (rows) => ({ grpCd: selectedGrpCd.current, rows }),
   });
 
   /** 정의 목록 — 컬럼 집합의 원본이다. 하단 조회와 <b>병렬로</b> 나간다(screen/code/requirements.md). */

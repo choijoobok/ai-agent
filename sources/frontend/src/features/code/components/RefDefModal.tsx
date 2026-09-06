@@ -65,15 +65,13 @@ export function RefDefModal(props: RefDefModalProps) {
     api,
     searchParams,
     // 조회조건 폼이 없다 — 정의는 한 그룹의 것이고 그 수가 손에 꼽는다.
-    toSavePayload: (rows) => ({
-      grpCd,
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        refCd: row.data.refCd,
-        refNm: row.data.refNm,
-        refDesc: row.data.refDesc,
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      refCd: row.data.refCd,
+      refNm: row.data.refNm,
+      refDesc: row.data.refDesc,
     }),
+    saveEnvelope: (rows) => ({ grpCd, rows }),
     addRow: {
       // 새 정의는 컬럼 하나를 더한다 — 이름이 비면 헤더가 빈 컬럼이 생긴다(sys/code.md).
       defaults: () => ({ refCd: '', refNm: '', refDesc: null, valueCount: 0 }),
