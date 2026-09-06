@@ -16,6 +16,7 @@
 import { existsSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import {
+  STATE_FILE,
   REPO,
   readHookInput,
   targetPath,
@@ -132,7 +133,31 @@ if (path.startsWith('documents/spec/') && g3 === 'approved') {
   );
 }
 
-// ── ⑤ 단계 밖 spec 선행 작성 ─────────────────────────────────────
+// ── ⑤ 템플릿 보수를 켜는 순간 ────────────────────────────────────
+
+/*
+  <b>켠 사실은 커밋에만 남는다.</b> 훅은 파일의 *현재 값* 만 보므로, 켜고 작업하고
+  끄면 워킹 트리만 오갔을 뿐 **git 에는 아무것도 남지 않는다** — 그러면 G3 이전의
+  `sources/` 커밋을 보고 *승인된 보수였나, 게이트를 무시했나* 를 구별할 방법이 없다.
+
+  **막지 않는다.** 여기서 커밋을 강제하면 세션마다 토글 커밋이 하나씩 붙고, 그
+  마찰이 이 기록의 값보다 크다. `doc-drift`·`guide-drift` 와 같은 강도로 **가리키기만**
+  한다(CLAUDE.md §6.5).
+
+  2026-09-06 에 이것이 없어 실제로 놓쳤다 — 문을 열어 커밋 넷을 찍고 닫았는데
+  기록이 남지 않았고, 게이트는 전부 초록이었다.
+*/
+if (path === STATE_FILE && turnsOnTemplateMode(input)) {
+  warn(
+    [
+      '템플릿 보수를 켠다 — **이 줄을 첫 작업 커밋에 함께 담는다**.',
+      '별도 커밋이 아니다: `ce9e63f` 처럼 `project.state.yaml` 한 줄이 소스 변경과 같은 커밋에 얹힌다.',
+      '담지 않으면 문이 열렸던 사실이 git 에 남지 않고, 끌 때가 되면 되돌릴 수 없다.',
+    ].join('\n'),
+  );
+}
+
+// ── ⑥ 단계 밖 spec 선행 작성 ─────────────────────────────────────
 
 if (path.startsWith('documents/spec/')) {
   const stem = basename(path).replace(/\.[^.]+$/, '');
@@ -150,6 +175,18 @@ if (path.startsWith('documents/spec/')) {
 pass();
 
 // ── 거들기 ────────────────────────────────────────────────────────
+
+/**
+ * 이 쓰기가 <b>플래그를 켜는가</b> — 끄는 쓰기와 무관한 쓰기는 조용히 지나간다.
+ *
+ * <p>{@code Write} 는 본문 전체를, {@code Edit} 는 바뀔 조각을 준다. 어느 쪽이든
+ * <b>새로 들어갈 글자</b>에 켜짐이 있고 <b>지금 파일</b>이 꺼짐일 때만 참이다 —
+ * 이미 켜져 있는데 다른 줄을 고치는 것은 새로 여는 일이 아니다.
+ */
+function turnsOnTemplateMode(hookInput) {
+  const incoming = hookInput?.tool_input?.content ?? hookInput?.tool_input?.new_string ?? '';
+  return /template_maintenance:\s*true/.test(incoming) && !templateMode;
+}
 
 function allowedSpec(currentPhaseId) {
   const out = [];
