@@ -917,6 +917,14 @@ export const MSG = {
   /** 그 요약 — `{total}` · `{done}` · `{failed}`. <b>건수가 먼저다</b>: 표는 그 뒤의 상세다. */
   GRID_PARTIAL_SUMMARY: 'grid.partial.summary',
   /**
+   * <b>목록을 비웠다</b>고 알린다 — `{count}` · `{failed}`. {@code after: 'keepFailed'} 전용.
+   *
+   * <p><b>말하지 않으면 사라진 것으로 보인다.</b> 500건을 저장했는데 화면에 12줄만 남으면
+   * 사용자는 <i>488건도 실패했나</i> 를 먼저 의심한다 — 남은 것이 <b>고칠 것</b>이라는 사실은
+   * 배관만 알고 있으므로 배관이 말해야 한다.
+   */
+  GRID_PARTIAL_KEPT: 'grid.partial.kept',
+  /**
    * 저장 실패 표의 머리 셋 — `컬럼` · `값` · `사유`(frontend/grid.md ④).
    *
    * <p><b>행 번호 칸이 없다.</b> 판에 클라이언트 정렬이 걸리면 우리가 센 배열 순서와 화면의

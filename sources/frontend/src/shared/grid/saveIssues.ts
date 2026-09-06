@@ -206,15 +206,19 @@ export function serverIssues<T>(
 /**
  * 표 하나 — 첫 줄이 요약이고 상한을 넘으면 남은 수만 말한다.
  *
- * <p><b>{@code heading} 은 그 첫 줄을 갈아 끼운다.</b> 건별 처리의 결과는 <i>몇 줄이
+ * <p><b>{@code notes.heading} 은 그 첫 줄을 갈아 끼운다.</b> 건별 처리의 결과는 <i>몇 줄이
  * 틀렸나</i> 가 아니라 <b>몇 건이 되고 몇 건이 안 됐나</b> 를 먼저 말해야 하는데
  * (backend/row-transaction.md), 그 둘을 함께 띄우면 <b>수가 둘</b>이 되어 사용자가 어느
  * 것을 믿을지 고르게 된다 — 표의 줄 수는 같은 사유끼리 접힌 뒤의 수라 실패 건수와 다르다.
+ *
+ * <p><b>{@code notes.footer} 는 표 <i>다음</i> 에 온다.</b> 배관이 그리드에 <b>한 일</b>을
+ * 말하는 자리이고(목록을 비웠다), 그것은 사유를 다 읽은 뒤에 알아야 할 것이다 — 앞에 두면
+ * 무엇이 틀렸는지 보기 전에 <i>왜 목록이 줄었나</i> 부터 읽게 된다.
  */
 export function issueTable(
   entries: IssueEntry[],
   colors: IssueTableColors,
-  heading?: string,
+  notes?: { heading?: string; footer?: string },
 ): ReactElement {
   const collapsed = collapse(entries);
   const shown = collapsed.slice(0, TABLE_ROWS);
@@ -242,7 +246,7 @@ export function issueTable(
     createElement(
       'div',
       { key: 'count', style: { marginBottom: 8 } },
-      heading ?? label(MSG.GRID_VALIDATION_COUNT, { count: collapsed.length }),
+      notes?.heading ?? label(MSG.GRID_VALIDATION_COUNT, { count: collapsed.length }),
     ),
     createElement(
       'div',
@@ -291,6 +295,12 @@ export function issueTable(
         { key: 'more', style: { marginTop: 8 } },
         label(MSG.GRID_VALIDATION_MORE, { count: rest }),
       ),
+    );
+  }
+
+  if (notes?.footer) {
+    children.push(
+      createElement('div', { key: 'footer', style: { marginTop: 8 } }, notes.footer),
     );
   }
 

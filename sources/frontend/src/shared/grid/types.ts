@@ -475,6 +475,36 @@ export interface ReadApi {
   emptyNotice?: boolean;
 }
 
+/**
+ * <b>행마다 커밋되는 처리</b>가 끝난 뒤 그리드를 어떻게 하나 — backend/row-transaction.md §7.
+ *
+ * <p><b>기본값이 없다.</b> 정답이 하나가 아니기 때문이다 — 서버가 채운 값을 보여 줘야 하는
+ * 화면과 실패한 편집을 지키는 화면이 반대 방향을 원한다. 기본값을 두면 <b>아무도 고르지
+ * 않고</b> 둘 중 하나가 조용히 틀린 화면이 된다.
+ *
+ * <p><b>전건 성공은 이 선언과 무관하다</b> — 남길 실패가 없으므로 평소의 {@code reloadAfter}
+ * 규칙대로 보던 자리를 다시 읽는다.
+ */
+export interface PerRowSpec {
+  /**
+   * <b>실패가 남았을 때</b> — 둘 중 하나를 반드시 적는다.
+   *
+   * <table><caption></caption>
+   * <tr><td>{@code 'reload'}</td><td>보던 자리를 다시 읽는다. <b>서버가 정한 값</b>(상태·번호·
+   *     일시)이 화면에 없어 그것을 보여 줘야 할 때다. <b>화면의 편집은 사라진다</b> — 성공한
+   *     것뿐 아니라 <i>실패한 행의 편집도</i> 함께다</td></tr>
+   * <tr><td>{@code 'keepFailed'}</td><td><b>실패한 행만 남기고 목록을 비운다.</b> 성공한 행도,
+   *     손대지 않은 행도 사라진다 — 남는 것이 곧 <b>고쳐서 다시 낼 것</b>이고, 사용자는 이미
+   *     한 일을 다시 고르지 않아도 된다. 비웠다는 사실은 결과 모달이 말한다</td></tr>
+   * </table>
+   *
+   * <p><b>{@code 'keepFailed'} 는 순번 대응이 서는 화면에만 쓴다.</b> 저장이
+   * {@code toSavePayload} 로 배열을 직접 만들면 배관은 보낸 것과 화면의 행을 잇지 못하고,
+   * 그때는 <b>비우지 않고 표만 낸다</b>(개발자 콘솔에 남는다).
+   */
+  after: 'reload' | 'keepFailed';
+}
+
 export interface SaveApi<T> {
   url: string;
   /** <b>기본 `true`</b> — 건수를 알리고 묻는다(frontend/grid.md). */
@@ -487,11 +517,8 @@ export interface SaveApi<T> {
    * <p>서버가 {@code RowReport} 를 200 으로 돌려주고, 실패가 있으면 성공 모달 대신
    * <b>결과 표</b>가 뜬다(건수 + 사유). <b>선언이 이긴다</b> — 응답 모양을 훔쳐보고 정하면
    * 서버가 칸 하나를 바꾼 날 화면이 조용히 다른 길로 간다.
-   *
-   * <p><b>저장에 켤 때는 §7 을 먼저 읽는다.</b> 재조회는 <b>실패한 행의 편집까지</b>
-   * 지우므로, 그대로 두면 사용자가 다시 낼 입력이 사라진다.
    */
-  perRow?: boolean;
+  perRow?: PerRowSpec;
   validate?: ApiValidation<T>;
   /**
    * 건수 확인 <b>앞</b>에 서는 경고 — screen/code/requirements.md 가 처음 요구했다.
@@ -628,7 +655,7 @@ export interface ActionApi<T> {
    * <p>{@code progress} 와 함께 켜지 않는다 — 진행률은 <i>접수했다</i> 로 답하고 이쪽은
    * <i>끝났고 이러이러하다</i> 로 답한다. 둘을 함께 켜면 진행률이 이긴다.
    */
-  perRow?: boolean;
+  perRow?: PerRowSpec;
   /** 실행 <b>앞</b>에 도는 검증 — 미저장 변경을 막는 것도 여기다(frontend/grid.md). */
   validate?: ApiValidation<T>;
   /**

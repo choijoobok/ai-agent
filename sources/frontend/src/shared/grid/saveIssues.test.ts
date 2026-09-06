@@ -194,6 +194,42 @@ describe('저장 실패 표', () => {
     return found;
   };
 
+  /**
+   * <b>표 앞뒤의 한 줄씩</b> — backend/row-transaction.md §7.
+   *
+   * <p>앞은 <b>무엇이 몇 건인가</b>(건별 처리의 요약)이고 뒤는 <b>배관이 그리드에 한 일</b>
+   * (목록을 비웠다)이다. 순서가 뒤집히면 사용자는 무엇이 틀렸는지 보기 전에 <i>왜 목록이
+   * 줄었나</i> 부터 읽게 된다.
+   */
+  describe('표 앞뒤의 문구', () => {
+    const ENTRY = [{ column: '코드', value: 'A1', message: '이미 있습니다' }];
+    /** 바깥 {@code div} 의 자식 배열 — 순서가 곧 화면의 위아래다. */
+    const parts = (node: unknown) =>
+      ((node as { props: { children: { key: string; props: { children: unknown } }[] } }).props
+        .children);
+
+    it('heading 이 건수 줄을 갈아 끼운다 — 수가 둘이 되지 않는다', () => {
+      const made = parts(issueTable(ENTRY, COLORS, { heading: '총 3건 중 1건 실패' }));
+
+      expect(made[0].props.children).toBe('총 3건 중 1건 실패');
+      expect(made).toHaveLength(2);
+    });
+
+    it('footer 는 표 다음에 온다', () => {
+      const made = parts(issueTable(ENTRY, COLORS, { heading: 'H', footer: '2건을 비웠습니다' }));
+
+      expect(made[made.length - 1].props.children).toBe('2건을 비웠습니다');
+      expect(made[made.length - 2].key).toBe('scroll');
+    });
+
+    it('아무것도 안 주면 예전 그대로다 — 건수 줄과 표뿐이다', () => {
+      const made = parts(issueTable(ENTRY, COLORS));
+
+      expect(made).toHaveLength(2);
+      expect(made[0].key).toBe('count');
+    });
+  });
+
   describe('선 색은 밖에서 들어온다', () => {
     /**
      * 하드코딩한 `rgba(0,0,0,…)` 이 <b>다크 모드에서 검정 위의 검정</b>이라 표가 줄 없는 글

@@ -130,7 +130,7 @@ describe('건별 처리의 결과 — backend/row-transaction.md', () => {
   it('실패가 있으면 결과 표가 성공 모달을 대신한다', async () => {
     post.mockResolvedValue(report(500, [3, 17]));
 
-    await run({ actions: [action({ perRow: true })] });
+    await run({ actions: [action({ perRow: { after: 'reload' } })] });
 
     // 판의 확인 모달은 제목을 두 자리에 그린다(읽어 주는 것과 보이는 것).
     await waitFor(() => expect(screen.getAllByText(TITLE).length).toBeGreaterThan(0));
@@ -145,7 +145,7 @@ describe('건별 처리의 결과 — backend/row-transaction.md', () => {
   it('전건이 성공하면 평소의 성공 모달이다 — 결과 표를 띄우지 않는다', async () => {
     post.mockResolvedValue(report(500, []));
 
-    await run({ actions: [action({ perRow: true })] });
+    await run({ actions: [action({ perRow: { after: 'reload' } })] });
 
     await waitFor(() => expect(screen.getByText(DONE)).toBeTruthy());
     expect(screen.queryAllByText(TITLE)).toHaveLength(0);
@@ -155,7 +155,7 @@ describe('건별 처리의 결과 — backend/row-transaction.md', () => {
   it('전건이 실패해도 같은 결과 표다', async () => {
     post.mockResolvedValue(report(2, [0, 1]));
 
-    await run({ actions: [action({ perRow: true })] });
+    await run({ actions: [action({ perRow: { after: 'reload' } })] });
 
     await waitFor(() => expect(screen.getByText('총 2건 · 성공 0건 · 실패 2건')).toBeTruthy());
   });
@@ -181,7 +181,7 @@ describe('건별 처리의 결과 — backend/row-transaction.md', () => {
     const complain = vi.spyOn(console, 'error').mockImplementation(() => {});
     post.mockResolvedValue({ ok: true });
 
-    await run({ actions: [action({ perRow: true })] });
+    await run({ actions: [action({ perRow: { after: 'reload' } })] });
 
     await waitFor(() => expect(screen.getByText(DONE)).toBeTruthy());
     expect(complain).toHaveBeenCalledTimes(1);
@@ -216,7 +216,7 @@ describe('건별 처리의 결과 — backend/row-transaction.md', () => {
             url: '/service/x/save',
             confirm: false,
             reloadAfter: false,
-            perRow: true,
+            perRow: { after: 'reload' },
           },
         }}
         saves
@@ -237,7 +237,7 @@ describe('건별 처리의 결과 — backend/row-transaction.md', () => {
 
     render(
       <Harness
-        api={{ save: { url: '/service/x/save', confirm: false, reloadAfter: false, perRow: true } }}
+        api={{ save: { url: '/service/x/save', confirm: false, reloadAfter: false, perRow: { after: 'reload' } } }}
         saves
       />,
     );

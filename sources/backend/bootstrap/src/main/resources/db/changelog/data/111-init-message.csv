@@ -1,0 +1,3 @@
+MSG_KEY,LANG_CD,MSG_VAL
+grid.partial.kept,ko,성공한 건과 손대지 않은 행 {count}건을 목록에서 비웠습니다. 남은 {failed}건을 고쳐 다시 시도하세요.
+grid.partial.kept,en,Cleared {count} succeeded or untouched row(s). Fix the remaining {failed} and retry.

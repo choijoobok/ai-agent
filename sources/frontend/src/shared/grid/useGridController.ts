@@ -48,6 +48,7 @@ import type {
   GridApi,
   GridIssue,
   PageMode,
+  PerRowSpec,
   PageResponse,
   SearchCondition,
   SortRequest,
@@ -607,32 +608,62 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
    * <p><b>성공 모달을 쓰지 않는다.</b> 12건이 안 된 저장을 <i>저장했습니다</i> 로 닫으면
    * 화면이 거짓말한 것이 된다.
    *
-   * <p><b>셀도 칠한다.</b> 뒤이어 재조회가 돌면 {@code setRows} 가 이 표시를 지우므로
-   * (재조회한 목록에는 그 행이 없을 수도 있다) 남는 것은 {@code reloadAfter: false} 인
-   * 화면뿐이다 — 거기서는 사용자가 <b>실패한 행을 그 자리에서 고친다</b>.
+   * <p><b>셀도 칠한다.</b> {@code 'reload'} 를 고른 화면에서는 뒤이은 재조회가
+   * {@code setRows} 로 이 표시를 지운다 — 남는 것은 {@code 'keepFailed'} 쪽이고, 거기서는
+   * 사용자가 <b>실패한 행을 그 자리에서 고친다</b>.
+   *
+   * <p><b>{@code 'keepFailed'} 는 여기서 목록을 비운다.</b> 모달이 뜨기 전에 비우는 것은,
+   * 사용자가 <i>확인</i> 을 누르고 나서 목록이 바뀌면 <b>모달이 가린 사이에 무슨 일이
+   * 있었는지</b> 를 못 보기 때문이다 — 비운 사실은 표 아래 한 줄이 말한다.
+   *
+   * <p>{@code setRows} 가 표시를 지우므로 <b>비운 다음에 칠한다</b>. 순서가 뒤집히면
+   * 붉은 셀이 하나도 남지 않는다.
    */
   const showReport = useCallback(
-    (report: RowReport, sent: GridRow<T>[] | null) =>
+    (report: RowReport, sent: GridRow<T>[] | null, after: PerRowSpec['after']) =>
       new Promise<void>((resolve) => {
         const located = serverIssues(report.rows, [], sent, options.columns);
+        /*
+          <b>순번 대응이 서지 않으면 비우지 않는다.</b> {@code toSavePayload} 로 배열을 직접
+          만든 저장은 보낸 것과 화면의 행을 이을 수 없고({@code sent} 가 `null` 이다), 그때
+          비우면 <b>엉뚱한 행을 지운다</b> — 표만 내고 목록은 그대로 둔다.
+        */
+        let cleared = 0;
+        if (after === 'keepFailed') {
+          if (sent === null) {
+            // 개발자용이라 영어다 — 화면에 나가는 문구가 아니다(sys/code.md).
+            console.error('Declared keepFailed but the sent rows cannot be located');
+          } else {
+            const failed = new Set(report.rows.map((one) => one.index));
+            const keep = sent.filter((_, index) => failed.has(index));
+            cleared = rows.length - keep.length;
+            setRows(keep);
+          }
+        }
         setIssues(located.issues);
         modal.warning({
           width: ISSUE_MODAL_WIDTH,
           title: label(MSG.GRID_PARTIAL_TITLE),
-          content: issueTable(
-            located.entries,
-            issueColors,
-            label(MSG.GRID_PARTIAL_SUMMARY, {
+          content: issueTable(located.entries, issueColors, {
+            heading: label(MSG.GRID_PARTIAL_SUMMARY, {
               total: report.total,
               done: report.done,
               failed: report.failed,
             }),
-          ),
+            /*
+              <b>비운 것이 없으면 말하지 않는다.</b> 전건이 실패하면 지울 성공 행이 없어
+              목록이 그대로인데, 그때 비웠다고 하면 <b>사실이 아닌 안내</b>가 된다.
+            */
+            footer:
+              cleared > 0
+                ? label(MSG.GRID_PARTIAL_KEPT, { count: cleared, failed: report.failed })
+                : undefined,
+          }),
           okText: label(MSG.GRID_CONFIRM_OK),
           onOk: () => resolve(),
         });
       }),
-    [issueColors, modal, options.columns],
+    [issueColors, modal, options.columns, rows, setRows],
   );
 
   /**
@@ -642,7 +673,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
    * 띄우는 것보다 <b>아무 일 없었던 것처럼 성공을 말하는 편</b>이 낫다 — 어긋난 것은
    * 응답이지 사용자의 입력이 아니다.
    */
-  const reportIfDeclared = useCallback((declared: boolean, result: unknown, url: string) => {
+  const reportIfDeclared = useCallback((declared: PerRowSpec | undefined, result: unknown, url: string) => {
     if (!declared) return null;
     const report = reportOf(result);
     // 개발자용이라 영어다 — 화면에 나가는 문구가 아니다(sys/code.md).
@@ -749,16 +780,31 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
       const result = await post(saveApi.url, payload);
       // ⑤ 성공 모달 — 확인이 다음 단계(재조회)를 트리거한다(frontend/grid.md).
       //    <b>건별 저장은 실패가 있으면 결과 표가 그 자리를 대신한다</b>(row-transaction.md).
-      const report = reportIfDeclared(saveApi.perRow === true, result, saveApi.url);
-      await (report !== null && report.failed > 0
-        ? showReport(report, sent)
-        : new Promise<void>((resolve) => {
-            modal.success({
-              content: label(MSG.GRID_SAVE_DONE),
-              okText: label(MSG.GRID_CONFIRM_OK),
-              onOk: () => resolve(),
-            });
-          }));
+      const perRow = saveApi.perRow;
+      const report = reportIfDeclared(perRow, result, saveApi.url);
+      if (perRow && report !== null && report.failed > 0) {
+        await showReport(report, sent, perRow.after);
+        inFlight.current = false;
+        setLoading(false);
+        /*
+          <b>{@code 'keepFailed'} 는 읽지 않는다.</b> 방금 남긴 실패 행이 재조회로 지워지면
+          비운 의미가 사라진다 — 사용자가 고칠 것이 화면에서 없어진다.
+
+          <b>{@code onSuccess} 도 부르지 않는다.</b> 그 콜백은 <i>저장이 만들어 낸 값</i>을
+          받는 자리인데(신규 계정의 임시 비밀번호) 여기서 오는 것은 결과표다.
+        */
+        if (perRow.after === 'reload') {
+          await reloadHere();
+        }
+        return;
+      }
+      await new Promise<void>((resolve) => {
+        modal.success({
+          content: label(MSG.GRID_SAVE_DONE),
+          okText: label(MSG.GRID_CONFIRM_OK),
+          onOk: () => resolve(),
+        });
+      });
       inFlight.current = false;
       setLoading(false);
       if (saveApi.reloadAfter !== false) {
@@ -944,16 +990,25 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
           {@code targets} 이므로 순번으로 행을 되찾을 수 있다 — {@code toTargets} 는
           <b>거르는 자리가 아니라</b> 모양을 바꾸는 자리라 순서가 유지된다.
         */
-        const report = reportIfDeclared(action.perRow === true, result, action.url);
-        await (report !== null && report.failed > 0
-          ? showReport(report, targets)
-          : new Promise<void>((resolve) => {
-              modal.success({
-                content: label(MSG.GRID_ACTION_DONE),
-                okText: label(MSG.GRID_CONFIRM_OK),
-                onOk: () => resolve(),
-              });
-            }));
+        const perRow = action.perRow;
+        const report = reportIfDeclared(perRow, result, action.url);
+        if (perRow && report !== null && report.failed > 0) {
+          await showReport(report, targets, perRow.after);
+          inFlight.current = false;
+          setLoading(false);
+          // 저장과 같은 규칙이다 — 남긴 것을 지우지 않고, onSuccess 는 성공의 자리다.
+          if (perRow.after === 'reload') {
+            await reloadHere();
+          }
+          return;
+        }
+        await new Promise<void>((resolve) => {
+          modal.success({
+            content: label(MSG.GRID_ACTION_DONE),
+            okText: label(MSG.GRID_CONFIRM_OK),
+            onOk: () => resolve(),
+          });
+        });
         inFlight.current = false;
         setLoading(false);
         if (action.reloadAfter !== false) {
