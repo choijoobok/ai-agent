@@ -35,6 +35,7 @@ import {
 import { cellValue } from '@/shared/grid/cell';
 import { downloadFailures, stamp } from '@/shared/grid/excel/workbook';
 import { entriesOfIssues, issueTable, serverIssues } from '@/shared/grid/saveIssues';
+import { useConfirmDiscard } from '@/shared/grid/useConfirmDiscard';
 import { useTabDirty } from '@/shared/grid/useTabDirty';
 import { validateAll, validateCell } from '@/shared/grid/validate';
 
@@ -374,6 +375,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
   const { menuCd, columns, api, params, searchParams, toSavePayload, toSaveRow, saveEnvelope } =
     options;
   const { modal, message } = App.useApp();
+  const askDiscard = useConfirmDiscard();
   /*
     실패 표의 선 색 — `rgba(0,0,0,…)` 을 박으면 <b>다크 모드에서 검정 위의 검정</b>이라
     표가 줄 없는 글 뭉치가 된다(theme.md). 머리 아래는 글자에 가깝게, 행 사이는 한 단계
@@ -468,20 +470,15 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
    *
    * <p><b>{@code mode: 'all'} 에서는 정렬이 재조회가 아니다</b> — 페이지가 없어 갈아 끼울
    * 일이 없으므로 그쪽 경로는 애초에 이 문을 지나지 않는다(backend/api.md).
+   *
+   * <p><b>문지기가 안에 있는 것은 여기뿐이다.</b> 그리드는 자기 {@code dirty} 를 알지만
+   * 화면은 <i>무엇이</i> 더러운지를 스스로 정해야 한다(마스터-디테일은 아래쪽만이다) —
+   * 그래서 {@code useConfirmDiscard} 는 판정하지 않고 <b>묻기만 한다</b>.
    */
-  const confirmDiscard = useCallback(async (): Promise<boolean> => {
-    if (!dirty) return true;
-    return new Promise((resolve) => {
-      modal.confirm({
-        title: label(MSG.GRID_DISCARD_TITLE),
-        content: label(MSG.GRID_DISCARD_BODY),
-        okText: label(MSG.GRID_CONFIRM_OK),
-        cancelText: label(MSG.COMMON_CANCEL),
-        onOk: () => resolve(true),
-        onCancel: () => resolve(false),
-      });
-    });
-  }, [dirty, modal]);
+  const confirmDiscard = useCallback(
+    async (): Promise<boolean> => (dirty ? askDiscard() : true),
+    [askDiscard, dirty],
+  );
 
   const showError = useCallback(
     (error: unknown) => {

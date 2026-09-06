@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useRef } from 'react';
-import { App } from 'antd';
 import { FillColumn } from '@/shared/components/FillColumn';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
 import { auditColumns } from '@/shared/grid/auditColumns';
 import { DataGrid } from '@/shared/grid/DataGrid';
 import { SplitPane } from '@/shared/grid/SplitPane';
+import { useConfirmDiscard } from '@/shared/grid/useConfirmDiscard';
 import { useGridController } from '@/shared/grid/useGridController';
 import type { GridRow, RowState } from '@/shared/grid/rows';
 import type { ColumnDef, DeleteColumnSpec } from '@/shared/grid/types';
@@ -71,7 +71,6 @@ function textEditable(row: SampleOrder, state: RowState): boolean | { ok: false;
 }
 
 export function SampleMdTabsPage() {
-  const { modal } = App.useApp();
   const searchForm = useRef<SearchFormHandle>(null);
   /**
    * 하단이 부르는 손잡이 — 선택을 상태로 들지 않는다.
@@ -160,24 +159,7 @@ export function SampleMdTabsPage() {
     }),
   });
 
-  /**
-   * **화면이 묻는다.** 그리드에 맡기면 물음의 결과를 화면이 알 수 없고, 그 답을 알아야
-   * 선택을 받아들일지 정할 수 있다(frontend/grid.md).
-   */
-  const confirmDiscard = useCallback(
-    () =>
-      new Promise<boolean>((resolve) => {
-        modal.confirm({
-          title: label(MSG.GRID_DISCARD_TITLE),
-          content: label(MSG.GRID_DISCARD_BODY),
-          okText: label(MSG.GRID_CONFIRM_OK),
-          cancelText: label(MSG.COMMON_CANCEL),
-          onOk: () => resolve(true),
-          onCancel: () => resolve(false),
-        });
-      }),
-    [modal],
-  );
+  const confirmDiscard = useConfirmDiscard();
 
   /**
    * 주문 선택 — frontend/grid.md 의 상태 셋을 그대로 편다.

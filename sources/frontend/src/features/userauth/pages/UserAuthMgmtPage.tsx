@@ -7,6 +7,7 @@ import { ACTIONS, hasPermission, type Action } from '@/shared/authz/permission';
 import { useAuthStore } from '@/shared/stores/authStore';
 import { DataGrid } from '@/shared/grid/DataGrid';
 import { SplitPane } from '@/shared/grid/SplitPane';
+import { useConfirmDiscard } from '@/shared/grid/useConfirmDiscard';
 import { useGridController } from '@/shared/grid/useGridController';
 import { addRow as addGridRow, toRows, type GridRow } from '@/shared/grid/rows';
 import type {
@@ -536,20 +537,7 @@ export function UserAuthMgmtPage() {
 
   // ── 선택과 조회 ─────────────────────────────────────────────────
 
-  const confirmDiscard = useCallback(
-    () =>
-      new Promise<boolean>((resolve) => {
-        modal.confirm({
-          title: label(MSG.GRID_DISCARD_TITLE),
-          content: label(MSG.GRID_DISCARD_BODY),
-          okText: label(MSG.GRID_CONFIRM_OK),
-          cancelText: label(MSG.COMMON_CANCEL),
-          onOk: () => resolve(true),
-          onCancel: () => resolve(false),
-        });
-      }),
-    [modal],
-  );
+  const confirmDiscard = useConfirmDiscard();
 
   /**
    * 사용자 선택 — <b>미저장 편집이 있으면 묻는다</b>(frontend/grid.md · UX-10).

@@ -49,6 +49,10 @@ const detail = useGridController<SampleOrderItem>({ menuCd, columns: detailColum
 ## 3. 선택 — 거부할 수 있어야 한다
 
 ```ts
+import { useConfirmDiscard } from '@/shared/grid/useConfirmDiscard';
+
+const confirmDiscard = useConfirmDiscard();   // ← 공통물이다. 손으로 쓰지 않는다
+
 const selectOrder = async (row) => {
   if (detail.dirty && !(await confirmDiscard())) return false;   // ← 판의 선택이 되돌아간다
   setSelected(row);
@@ -62,6 +66,7 @@ const selectOrder = async (row) => {
 | 규칙 | 없으면 |
 |---|---|
 | **화면이 묻는다** — 그리드가 아니다 | 물음의 결과를 화면이 알 수 없어 **선택을 받아들일지 정하지 못한다** |
+| **물음은 `useConfirmDiscard()` 가 갖는다** | 이 줄이 없던 동안 화면 여섯이 같은 열세 줄을 손으로 다시 썼다 — **문구 하나를 고치는 데 일곱 곳** |
 | **거부권이 있다**(`false` 를 돌려준다) | *보고 있는 것* 과 *고른 것* 이 갈리고, 그 상태로 저장하면 **A 의 품목이 B 로 나간다** |
 | **신규 행(`C`)은 빈 상태다** | 부모 키가 아직 DB 에 없다 — 붙이려 하면 **FK 위반** |
 | **마스터 조회는 아래를 리셋한다** | 이전에 보던 행이 결과에 없을 수 있다 — **다른 주문의 품목을 그 주문 것으로 본다** |

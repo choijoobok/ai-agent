@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { App } from 'antd';
 import { FillColumn } from '@/shared/components/FillColumn';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
 import { DataGrid } from '@/shared/grid/DataGrid';
 import { SplitPane } from '@/shared/grid/SplitPane';
+import { useConfirmDiscard } from '@/shared/grid/useConfirmDiscard';
 import { useGridController } from '@/shared/grid/useGridController';
 import type { GridRow, RowState } from '@/shared/grid/rows';
 import type { ColumnDef, DeleteColumnSpec } from '@/shared/grid/types';
@@ -63,7 +63,6 @@ function textEditable(
 }
 
 export function SampleMdHorizontalPage() {
-  const { modal } = App.useApp();
   const searchForm = useRef<SearchFormHandle>(null);
   const selectedOrdId = useRef<string | null>(null);
   const [selected, setSelected] = useState<GridRow<SampleOrder> | null>(null);
@@ -192,20 +191,7 @@ export function SampleMdHorizontalPage() {
     saveEnvelope: (rows) => ({ ordId: selectedOrdId.current, rows }),
   });
 
-  const confirmDiscard = useCallback(
-    () =>
-      new Promise<boolean>((resolve) => {
-        modal.confirm({
-          title: label(MSG.GRID_DISCARD_TITLE),
-          content: label(MSG.GRID_DISCARD_BODY),
-          okText: label(MSG.GRID_CONFIRM_OK),
-          cancelText: label(MSG.COMMON_CANCEL),
-          onOk: () => resolve(true),
-          onCancel: () => resolve(false),
-        });
-      }),
-    [modal],
-  );
+  const confirmDiscard = useConfirmDiscard();
 
   const selectOrder = useCallback(
     async (row: GridRow<SampleOrder> | null): Promise<boolean> => {

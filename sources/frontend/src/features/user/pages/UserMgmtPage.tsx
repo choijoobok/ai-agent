@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { App } from 'antd';
 import { FillColumn } from '@/shared/components/FillColumn';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
@@ -9,6 +8,7 @@ import { accountStatText } from '@/shared/user/accountStat';
 import { auditColumns } from '@/shared/grid/auditColumns';
 import { DataGrid } from '@/shared/grid/DataGrid';
 import { SplitPane } from '@/shared/grid/SplitPane';
+import { useConfirmDiscard } from '@/shared/grid/useConfirmDiscard';
 import { useGridController } from '@/shared/grid/useGridController';
 import type { GridRow } from '@/shared/grid/rows';
 import type { ColumnDef, GridIssue, SelectOption } from '@/shared/grid/types';
@@ -61,7 +61,6 @@ import type { IssuedPassword, UserRow } from '@/features/user/types';
 const MENU_CD = 'USER_MGMT';
 
 export function UserMgmtPage() {
-  const { modal } = App.useApp();
   const searchForm = useRef<SearchFormHandle>(null);
   const tabs = useRef<UserDetailTabsHandle | null>(null);
   /**
@@ -252,24 +251,7 @@ export function UserMgmtPage() {
 
   const issuedDone = useCallback(() => setIssued([]), []);
 
-  /**
-   * <b>화면이 묻는다</b> — 그리드가 스스로 묻는 것과 같은 문구이며(frontend/grid.md) 여기로 올라온
-   * 이유는 <i>답을 알아야 선택을 받아들일지 정할 수 있기</i> 때문이다.
-   */
-  const confirmDiscard = useCallback(
-    () =>
-      new Promise<boolean>((resolve) => {
-        modal.confirm({
-          title: label(MSG.GRID_DISCARD_TITLE),
-          content: label(MSG.GRID_DISCARD_BODY),
-          okText: label(MSG.GRID_CONFIRM_OK),
-          cancelText: label(MSG.COMMON_CANCEL),
-          onOk: () => resolve(true),
-          onCancel: () => resolve(false),
-        });
-      }),
-    [modal],
-  );
+  const confirmDiscard = useConfirmDiscard();
 
   /**
    * 사용자 선택 — frontend/grid.md 의 상태 셋을 그대로 편다(screen/user/requirements.md).
