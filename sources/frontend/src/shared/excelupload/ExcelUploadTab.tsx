@@ -70,17 +70,20 @@ export interface ExcelUploadTabProps<T> {
   /** 업무 탭과 <b>같은 저장 API</b>. */
   save: SaveApi<T>;
   /**
-   * 저장 페이로드를 만든다 &mdash; <b>업무 탭과 같은 함수</b>다.
+   * 행 하나를 요청 모양으로 바꾼다 &mdash; <b>업무 탭과 같은 함수</b>다.
    *
    * <p><b>인자로 받는 것이 결정이다.</b> 이 컴포넌트가 스스로 만들면 <i>행 봉투를 그대로
    * 보낸다</i> 같은 모양이 되는데, 그러면 서버가 <b>파생 컬럼과 감사 컬럼까지</b> 받게 되고
    * (원칙 P1) 업무 탭이 보내는 것과 갈린다 — 같은 경로에 두 가지 요청이 도착한다.
    *
+   * <p><b>배열이 아니라 행 하나인 것이 규약이다</b>(standard/frontend/save-errors.md §3). 배열을 화면이
+   * 만들면 서버가 준 행 순번을 배관이 믿을 수 없어 <b>서버 오류가 셀에 꽂히지 않는다</b>.
+   *
    * <p><b>없으면 저장이 조용히 아무 일도 하지 않는다</b>(2026-09-02 실물). 컨트롤러의
-   * {@code save} 는 {@code toSavePayload} 가 없으면 <b>첫 줄에서 돌아가며</b>, 사용자에게는
-   * 버튼을 눌렀는데 아무 반응이 없는 것으로 보인다 — 실패 문구조차 없다. 필수로 둔다.
+   * {@code save} 는 만들 방법이 없으면 <b>첫 줄에서 돌아가며</b>, 사용자에게는 버튼을
+   * 눌렀는데 아무 반응이 없는 것으로 보인다 — 실패 문구조차 없다. 필수로 둔다.
    */
-  toSavePayload: (rows: GridRow<T>[]) => unknown;
+  toSaveRow: (row: GridRow<T>) => unknown;
   /** 화면이 미저장 여부를 묻는 손잡이 — {@link ExcelUploadTabHandle}. */
   handleRef?: React.RefObject<ExcelUploadTabHandle | null>;
   height?: number;
@@ -142,7 +145,7 @@ export function ExcelUploadTab<T>(props: ExcelUploadTabProps<T>) {
     columns,
     // 조회가 없다 — 위 클래스 주석. 저장은 업무 탭과 같은 것이다.
     api: { save: props.save },
-    toSavePayload: props.toSavePayload,
+    toSaveRow: props.toSaveRow,
     editable: true,
   });
 

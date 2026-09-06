@@ -104,25 +104,23 @@ export function SampleExcelPage() {
    * <p>**삭제도 키 둘은 보낸다.** 다른 화면에서는 삭제가 대상만 가리키지만 여기서는
    * `(주문번호, 품목코드)` **가 곧 대상**이라(playbook/INDEX.md) 뺄 수가 없다.
    */
-  const toSavePayload = useCallback(
-    (rows: GridRow<SampleOrderItem>[]) => ({
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        ordNo: row.data.ordNo,
-        itemCd: row.data.itemCd,
-        ...(row.state === 'D'
-          ? {}
-          : {
-              itemNm: row.data.itemNm,
-              uomCd: row.data.uomCd,
-              qty: row.data.qty,
-              unitAmt: row.data.unitAmt,
-              dlvrDt: row.data.dlvrDt,
-              itemStatCd: row.data.itemStatCd,
-              useYn: row.data.useYn,
-              rmk: row.data.rmk,
-            }),
-      })),
+  const toSaveRow = useCallback(
+    (row: GridRow<SampleOrderItem>) => ({
+      rowState: row.state,
+      ordNo: row.data.ordNo,
+      itemCd: row.data.itemCd,
+      ...(row.state === 'D'
+        ? {}
+        : {
+            itemNm: row.data.itemNm,
+            uomCd: row.data.uomCd,
+            qty: row.data.qty,
+            unitAmt: row.data.unitAmt,
+            dlvrDt: row.data.dlvrDt,
+            itemStatCd: row.data.itemStatCd,
+            useYn: row.data.useYn,
+            rmk: row.data.rmk,
+          }),
     }),
     [],
   );
@@ -155,7 +153,7 @@ export function SampleExcelPage() {
         modDtm: null,
       }),
     },
-    toSavePayload,
+    toSaveRow,
   });
 
   /** **삭제는 업무 탭의 삭제 컬럼이다**(playbook/INDEX.md) — 업로드에는 `D` 가 생기지 않는다. */
@@ -230,7 +228,7 @@ export function SampleExcelPage() {
             keyFields={ITEM_KEY_FIELDS}
             read={readApi}
             save={saveApi}
-            toSavePayload={toSavePayload}
+            toSaveRow={toSaveRow}
             handleRef={upload}
           />
         ),
@@ -245,7 +243,7 @@ export function SampleExcelPage() {
       readApi,
       saveApi,
       searchFields,
-      toSavePayload,
+      toSaveRow,
     ],
   );
 

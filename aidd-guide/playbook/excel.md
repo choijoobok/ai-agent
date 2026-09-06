@@ -87,7 +87,7 @@ const excel = useMemo<ExcelSpec>(() => ({
 <ExcelUploadTab<SampleOrderItem>
   title={label(MSG.SAMPLE_EXCEL_TAB_UPLOAD)} menuCd={MENU_CD}
   columns={columns} keyFields={ITEM_KEY_FIELDS}
-  read={readApi} save={saveApi} toSavePayload={toSavePayload} handleRef={upload} />
+  read={readApi} save={saveApi} toSaveRow={toSaveRow} handleRef={upload} />
 ```
 
 **`title` 과 `menuCd` 는 선택이 아니다.** 앞의 것은 통째 거절 모달의 제목이고 뒤의 것은
@@ -98,9 +98,9 @@ const excel = useMemo<ExcelSpec>(() => ({
 |---|---|
 | **컬럼 배열** | *전체 다운로드* 가 **양식이 아니게 된다** |
 | **조회 API** | *화면이 보는 표* 와 *대조하는 표* 가 달라져 **이미 있는 행이 신규로** 잡힌다 |
-| **저장 API + `toSavePayload`** | 같은 표에 규칙이 둘 생기고, **그 둘은 반드시 갈린다** |
+| **저장 API + `toSaveRow`** | 같은 표에 규칙이 둘 생기고, **그 둘은 반드시 갈린다** |
 
-**`toSavePayload` 를 인자로 받는 것이 결정이다.** 컴포넌트가 스스로 만들면 서버가 **파생
+**`toSaveRow` 를 인자로 받는 것이 결정이다.** 컴포넌트가 스스로 만들면 서버가 **파생
 컬럼과 감사 컬럼까지** 받게 되어 업무 탭이 보내는 것과 갈린다 — 같은 경로에 두 가지 요청이
 도착한다. **넘기지 않으면 저장이 조용히 아무 일도 하지 않는다.**
 

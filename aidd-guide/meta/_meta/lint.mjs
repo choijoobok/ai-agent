@@ -1,5 +1,6 @@
 /**
- * `aidd-guide/` 문서 게이트 — 메타블록 · 200줄 · BOM · 링크 · 폐지 번호 인용 · 선언 어휘.
+ * `aidd-guide/` 문서 게이트 — 메타블록 · 200줄 · BOM · 링크 · 폐지 번호 인용 · 선언 어휘 ·
+ * 폐지 어휘.
  *
  * <pre>
  *   node aidd-guide/meta/_meta/lint.mjs
@@ -21,6 +22,10 @@
  *       <b>집계</b>이며 줄어들기만 해야 한다.</li>
  *   <li>선언 어휘 대조 — 소스에 있고 `standard/frontend/declarations.md` 에 없는 키.
  *       '빠짐없음' 을 사람이 지키게 두면 낡는다.</li>
+ *   <li><b>폐지 어휘 대조</b> — 소스가 `@deprecated` 로 폐지한 이름을 <b>아직 가르치는</b>
+ *       문서. 위의 검사와 <b>방향이 반대</b>다: 저것은 <i>새 이름이 들어왔나</i> 를 보고
+ *       이것은 <i>낡은 이름이 남았나</i> 를 본다. 앞만 있으면 표준은 고쳐지고 <b>레시피는
+ *       낡은 통로를 계속 가르친다</b>(2026-09-06 에 다섯이 그랬다).</li>
  * </ul>
  */
 
@@ -51,6 +56,23 @@ const VOCAB_SOURCES = [
   ['sources/frontend/src/shared/searchform/types.ts', 'SearchField'],
   ['sources/frontend/src/shared/grid/useGridController.ts', 'GridControllerOptions'],
   ['sources/frontend/src/shared/grid/DataGrid.tsx', 'DataGridProps'],
+];
+
+/**
+ * 폐지 어휘를 찾을 곳 — <b>가이드가 설명하는 것만</b> 본다.
+ *
+ * <p>`features/**` 는 넣지 않는다. 거기서 무엇을 폐지하든 가이드의 어휘가 아니며,
+ * 넣으면 화면 하나의 사정으로 <b>표준 문서가 붉어진다</b>.
+ */
+const DEPRECATED_ROOTS = ['sources/frontend/src/shared', 'sources/backend'];
+
+/** 선언의 이름을 뽑는 순서 — <b>느슨한 것이 뒤</b>다(TS 멤버가 다른 것들을 삼킨다). */
+const DECL_RE = [
+  /^\s*(?:export\s+)?(?:default\s+)?(?:abstract\s+)?(?:class|interface|type|enum|record)\s+([A-Za-z_$][\w$]*)/,
+  /^\s*(?:export\s+)?(?:declare\s+)?(?:async\s+)?function\s+([A-Za-z_$][\w$]*)/,
+  /^\s*(?:export\s+)?(?:const|let|var)\s+([A-Za-z_$][\w$]*)/,
+  /^\s*(?:public|private|protected)\s+(?:static\s+)?(?:final\s+)?[\w<>[\],.\s?]*?\b([A-Za-z_$][\w$]*)\s*\(/,
+  /^\s*(?:readonly\s+)?([A-Za-z_$][\w$]*)\s*[?!]?\s*[:(]/,
 ];
 
 const YAML_RE = /^---\n([\s\S]*?)\n---\n/;
@@ -108,6 +130,7 @@ const countIssues = checkCatalogCounts();
 if (countIssues.length > 0) violations.push(['INDEX.md', lineCount(join(GUIDE, 'INDEX.md')), countIssues]);
 
 for (const [rel, issues] of checkScreenRequirements()) violations.push([rel, 0, issues]);
+for (const [rel, issues] of checkDeprecated()) violations.push([rel, 0, issues]);
 
 const totalStale = [...stale.values()].reduce((a, b) => a + b, 0);
 out.push(`링크형 인용 중 대상에 그 절이 없는 것: ${totalStale} 곳 / ${stale.size} 파일 — 줄어들기만 해야 한다.`);
@@ -372,6 +395,106 @@ function checkVocabulary() {
   }
   if (missing.length === 0) return [];
   return [`선언 어휘 누락 ${missing.length}건 — 소스에 있고 문서에 없다: ${missing.slice(0, 12).join(' · ')}`];
+}
+
+/**
+ * 소스가 폐지한 이름을 <b>아직 가르치는</b> 가이드 문서.
+ *
+ * <p>이번 실패의 모양이 이것이었다(2026-09-06). `toSaveRow` 를 놓고 `toSavePayload` 를
+ * 폐지했는데, <b>새 이름이 문서에 들어갔는지</b> 는 {@link checkVocabulary} 가 강제했고
+ * <b>낡은 이름이 문서에 남았는지</b> 는 아무도 보지 않아 <b>레시피 다섯이 낡은 통로를
+ * 계속 가르쳤다</b>. 레시피대로 만든 화면은 서버 오류가 셀에 꽂히지 않는다.
+ *
+ * <h2>예외 목록을 두지 않는다</h2>
+ *
+ * <p>판별식은 <b>대안을 말하는가</b> 다. `@deprecated` 가 이름 댄 대안을 그 파일이
+ * 한 번도 쓰지 않으면 <i>낡은 것을 가르치는</i> 문서이고, 함께 쓰면 <i>옮겨 가는 길을
+ * 설명하는</i> 문서다. 사람이 관리하는 면제 명단은 <b>스스로 낡는다</b>.
+ *
+ * <p>그래서 <b>대안 없는 폐지도 위반</b>이다 — 판별식의 입력이 없으면 이 검사가 조용히
+ * 아무것도 못 한다.
+ */
+function checkDeprecated() {
+  const found = [];
+  const names = new Map(); // 폐지된 이름 → { 대안, 소스 }
+
+  for (const root of DEPRECATED_ROOTS) {
+    const base = join(REPO, root);
+    if (!existsSync(base)) continue;
+    for (const file of walk(base)) {
+      if (!/\.(ts|tsx|java)$/.test(file)) continue;
+      if (/[/\\]src[/\\]test[/\\]|\.test\.tsx?$/.test(file)) continue;
+      if (root === 'sources/backend' && !file.includes(`${sep}main${sep}java${sep}`)) continue;
+
+      const rel = relative(REPO, file).split(sep).join('/');
+      for (const hit of deprecations(readFileSync(file, 'utf8'), rel)) {
+        if (hit.replacement === null) {
+          found.push([rel, [`폐지에 대안이 없다 — \`${hit.name}\` 의 @deprecated 가 {@link 대안} 을 대지 않는다`]]);
+          continue;
+        }
+        names.set(hit.name, hit);
+      }
+    }
+  }
+
+  if (names.size === 0) return found;
+
+  for (const file of walk(GUIDE)) {
+    if (!file.endsWith('.md')) continue;
+    const text = readFileSync(file, 'utf8');
+    const rel = relative(GUIDE, file).split(sep).join('/');
+    const issues = [];
+
+    for (const [name, hit] of names) {
+      const teaches = (text.match(INLINE_RE) ?? []).some((span) =>
+        new RegExp(`(?:^|[^\\w$])${name}(?![\\w$])`).test(span),
+      );
+      // 대안을 함께 말하면 *옮겨 가는 길* 을 설명하는 문서다 — 백틱 밖의 언급도 인정한다.
+      if (!teaches || new RegExp(`(?:^|[^\\w$])${hit.replacement}(?![\\w$])`).test(text)) continue;
+      issues.push(
+        `폐지된 \`${name}\` 를 아직 가르친다 — 대안은 \`${hit.replacement}\` 다(${hit.source})`,
+      );
+    }
+    if (issues.length > 0) found.push([rel, issues]);
+  }
+  return found;
+}
+
+/** `@deprecated` 태그 하나 → 폐지된 이름과 대안. 이름을 못 읽으면 건너뛴다(주석 속 언급). */
+function deprecations(text, rel) {
+  const lines = text.split('\n');
+  const hits = [];
+
+  for (let i = 0; i < lines.length; i += 1) {
+    if (!/@deprecated\b/i.test(lines[i])) continue;
+
+    let tag = '';
+    let j = i;
+    while (j < lines.length) {
+      tag += ` ${lines[j]}`;
+      if (lines[j].includes('*/')) break;
+      j += 1;
+    }
+    j += 1;
+    while (j < lines.length && /^\s*(?:$|@|\/\/)/.test(lines[j])) j += 1;
+
+    const name = declaredName(lines[j] ?? '');
+    if (name === null) continue;
+    hits.push({
+      name,
+      replacement: tag.match(/\{@link\s+([A-Za-z_$][\w$]*)/)?.[1] ?? null,
+      source: rel,
+    });
+  }
+  return hits;
+}
+
+function declaredName(line) {
+  for (const re of DECL_RE) {
+    const m = line.match(re);
+    if (m) return m[1];
+  }
+  return null;
 }
 
 function interfaceKeys(text, name) {
