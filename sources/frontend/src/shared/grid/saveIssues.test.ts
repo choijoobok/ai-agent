@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { FieldError, RowError } from '@/shared/api';
 import { toRows, type GridRow } from '@/shared/grid/rows';
 import type { ColumnDef, GridIssue } from '@/shared/grid/types';
-import { collapse, entriesOfIssues, serverIssues } from '@/shared/grid/saveIssues';
+import { collapse, entriesOfIssues, issueTable, serverIssues } from '@/shared/grid/saveIssues';
 
 interface Row {
   code: string;
@@ -152,6 +152,43 @@ describe('저장 실패 표', () => {
       ];
 
       expect(collapse(entries)).toHaveLength(2);
+    });
+  });
+
+  describe('선 색은 밖에서 들어온다', () => {
+    /**
+     * 하드코딩한 `rgba(0,0,0,…)` 이 <b>다크 모드에서 검정 위의 검정</b>이라 표가 줄 없는 글
+     * 뭉치로 보였다. 색을 인자로 받게 고쳤고, 여기서 잠그는 것은 <b>그 값이 실제로
+     * 선까지 닿는가</b> 다 — 인자만 받고 안 쓰면 조용히 예전으로 돌아간다.
+     */
+    const borders = (node: unknown): string[] => {
+      const found: string[] = [];
+      const walk = (value: unknown): void => {
+        if (!value || typeof value !== 'object') return;
+        if (Array.isArray(value)) {
+          value.forEach(walk);
+          return;
+        }
+        const element = value as { props?: Record<string, unknown> };
+        const style = element.props?.style as { borderBottom?: string } | undefined;
+        if (style?.borderBottom) found.push(style.borderBottom);
+        if (element.props?.children !== undefined) walk(element.props.children);
+      };
+      walk(node);
+      return found;
+    };
+
+    it('머리와 행이 각자 받은 색을 쓴다', () => {
+      const table = issueTable([{ column: '코드', value: 'A1', message: '이미 있습니다' }], {
+        head: 'rgba(255,255,255,0.45)',
+        row: '#424242',
+      });
+      const lines = borders(table);
+
+      expect(lines.filter((line) => line.includes('rgba(255,255,255,0.45)'))).toHaveLength(3);
+      expect(lines.filter((line) => line.includes('#424242'))).toHaveLength(3);
+      // 검정을 박아 두면 다크 모드에서 사라진다 — 다시 들어오지 못하게 잠근다.
+      expect(lines.some((line) => line.includes('rgba(0,0,0'))).toBe(false);
     });
   });
 

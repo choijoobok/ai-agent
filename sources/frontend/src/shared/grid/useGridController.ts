@@ -1,5 +1,5 @@
 import { createElement, useCallback, useMemo, useRef, useState } from 'react';
-import { App } from 'antd';
+import { App, theme } from 'antd';
 import { post, ApiError } from '@/shared/api';
 import { hasPermission } from '@/shared/authz/permission';
 import { label } from '@/shared/i18n/label';
@@ -295,6 +295,16 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
     options;
   const { modal, message } = App.useApp();
   /*
+    실패 표의 선 색 — `rgba(0,0,0,…)` 을 박으면 <b>다크 모드에서 검정 위의 검정</b>이라
+    표가 줄 없는 글 뭉치가 된다(theme.md). 머리 아래는 글자에 가깝게, 행 사이는 한 단계
+    옅게 둔다. 토큰은 훅으로만 얻을 수 있어 여기서 받아 넘긴다.
+  */
+  const { token } = theme.useToken();
+  const issueColors = useMemo(
+    () => ({ head: token.colorTextTertiary, row: token.colorBorder }),
+    [token.colorBorder, token.colorTextTertiary],
+  );
+  /*
     <b>진행률 창을 여는 통로</b> — backend/crosscutting.md · playbook/INDEX.md. 화면이 아니라 여기가 든다: 화면마다
     폴링을 쓰면 주기·중단 조건·실패 처리가 갈리고, 같은 기능이 <b>화면 수만큼</b> 생긴다.
 
@@ -511,7 +521,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
         하나를 고치면 다 낫지만 뒤는 <b>값 하나하나가 별개의 사건</b>이기 때문이다(saveIssues.ts).
       */
       modal.error({
-        content: issueTable(entriesOfIssues(found, rows, options.columns)),
+        content: issueTable(entriesOfIssues(found, rows, options.columns), issueColors),
         okText: label(MSG.GRID_CONFIRM_OK),
       });
       return;
@@ -619,7 +629,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
         // 제목은 <b>서버가 완성한 문구</b>다 — 표는 상세이고 이것이 요약이다(backend/packages.md).
         modal.error({
           title: error.message,
-          content: issueTable(located.entries),
+          content: issueTable(located.entries, issueColors),
           okText: label(MSG.GRID_CONFIRM_OK),
         });
       } else {
@@ -630,6 +640,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
     api,
     fetchPage,
     message,
+    issueColors,
     modal,
     options.columns,
     page,
@@ -691,7 +702,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
       if (found.length > 0) {
         // 저장과 <b>같은 표</b>다 — 사용자에게 둘은 구분되지 않는 사건이다(saveIssues.ts).
         modal.error({
-          content: issueTable(entriesOfIssues(found, rows, options.columns)),
+          content: issueTable(entriesOfIssues(found, rows, options.columns), issueColors),
           okText: label(MSG.GRID_CONFIRM_OK),
         });
         return;
@@ -803,7 +814,20 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
         showError(error);
       }
     },
-    [api, fetchPage, modal, open, options.columns, page, rows, selected, showError, size, sorts],
+    [
+      api,
+      fetchPage,
+      issueColors,
+      modal,
+      open,
+      options.columns,
+      page,
+      rows,
+      selected,
+      showError,
+      size,
+      sorts,
+    ],
   );
 
   const addRow = useCallback(() => {
