@@ -112,6 +112,7 @@ describe('전건 롤백의 얼굴 — backend/row-transaction.md §7', () => {
         'grid.issue.column': '컬럼',
         'grid.issue.value': '값',
         'grid.issue.reason': '사유',
+        'grid.issue.excel': '실패분 내려받기',
         'grid.confirm.ok': '확인',
       },
     });
@@ -166,6 +167,18 @@ describe('전건 롤백의 얼굴 — backend/row-transaction.md §7', () => {
     await waitFor(() => expect(screen.getByText('처리 중 오류가 발생했습니다')).toBeTruthy());
     expect(screen.queryByText('사유')).toBeNull();
     expect(controller?.issues).toHaveLength(0);
+  });
+
+  /**
+   * <b>전건 롤백에 더 필요하다.</b> 되돌아간 오백 행 전부가 다시 낼 것이므로, 사용자가
+   * 고쳐야 하는 것은 <i>그중 어느 열둘인가</i> 하나다.
+   */
+  it('전건 롤백 표에도 실패분 내려받기가 있다', async () => {
+    post.mockRejectedValue(pointed());
+
+    await runGo(actionApi());
+
+    await waitFor(() => expect(screen.getByText('실패분 내려받기')).toBeTruthy());
   });
 
   /** 저장은 원래 이 얼굴이었다 — 함수를 함께 쓰게 바꾸면서 <b>깨지지 않았나</b> 를 본다. */

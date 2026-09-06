@@ -162,6 +162,7 @@ describe('건별 처리의 뒤처리 — backend/row-transaction.md §7', () => 
         'grid.issue.column': '컬럼',
         'grid.issue.value': '값',
         'grid.issue.reason': '사유',
+        'grid.issue.excel': '실패분 내려받기',
         'grid.confirm.ok': OK,
       },
     });
@@ -253,6 +254,18 @@ describe('건별 처리의 뒤처리 — backend/row-transaction.md §7', () => 
     expect(controller?.rows).toHaveLength(1);
   });
 
+  /**
+   * <b>표는 읽을 수는 있어도 고쳐서 다시 낼 수는 없다.</b> 화면에서 원본 파일로 옮겨 적는
+   * 일이 남고, 그 옮겨 적기가 새로운 오타를 만든다.
+   */
+  it('결과 표 아래에 실패분 내려받기가 있다', async () => {
+    post.mockResolvedValue(report(4, [2]));
+
+    await runGo(actionApi('keepFailed'));
+
+    await waitFor(() => expect(screen.getByText('실패분 내려받기')).toBeTruthy());
+  });
+
   /** {@code 'reload'} 는 반대다 — 서버가 정한 값을 보여 주는 대신 편집을 버린다. */
   it('reload 는 실패가 있어도 보던 자리를 다시 읽는다', async () => {
     post.mockImplementation((url: string) =>
@@ -297,5 +310,10 @@ describe('건별 처리의 뒤처리 — backend/row-transaction.md §7', () => 
 
     await waitFor(() => expect(complain).toHaveBeenCalledTimes(1));
     expect(controller?.rows).toHaveLength(4);
+    /*
+      <b>내려받기도 달지 않는다.</b> 행을 되찾을 수 없으면 파일에 실을 것이 사유뿐이고,
+      그것은 표가 이미 보여 주고 있다 — 같은 것을 파일로 한 번 더 주는 셈이 된다.
+    */
+    expect(screen.queryByText('실패분 내려받기')).toBeNull();
   });
 });

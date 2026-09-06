@@ -1,6 +1,21 @@
-import { createElement, useCallback, useMemo, useRef, useState } from 'react';
-import { App, theme } from 'antd';
-import { post, ApiError, type FieldError, type RowReport } from '@/shared/api';
+import {
+  createElement,
+  Fragment,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+  type ReactElement,
+  type ReactNode,
+} from 'react';
+import { App, Button, theme } from 'antd';
+import {
+  post,
+  ApiError,
+  type FieldError,
+  type RowError,
+  type RowReport,
+} from '@/shared/api';
 import { hasPermission } from '@/shared/authz/permission';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
@@ -18,6 +33,7 @@ import {
   type GridRow,
 } from '@/shared/grid/rows';
 import { cellValue } from '@/shared/grid/cell';
+import { downloadFailures, stamp } from '@/shared/grid/excel/workbook';
 import { entriesOfIssues, issueTable, serverIssues } from '@/shared/grid/saveIssues';
 import { useTabDirty } from '@/shared/grid/useTabDirty';
 import { validateAll, validateCell } from '@/shared/grid/validate';
@@ -313,6 +329,22 @@ function reportOf(result: unknown): RowReport | null {
   return value as unknown as RowReport;
 }
 
+/**
+ * 표 아래에 붙일 것 둘을 잇는다 — <b>안내</b>와 <b>내려받기</b>.
+ *
+ * <p>둘 다 없으면 `undefined` 라 표만 남는다. 빈 {@code div} 를 만들면 모달 아래에 <b>이유
+ * 없는 여백</b>이 생기고, 그것은 무언가가 안 떴다는 신호처럼 보인다.
+ */
+function tail(notice: string | null, file: ReactElement | null): ReactNode {
+  if (notice === null && file === null) return undefined;
+  return createElement(
+    Fragment,
+    null,
+    notice === null ? null : createElement('div', { key: 'notice' }, notice),
+    file,
+  );
+}
+
 function jobIdOf(result: unknown): string | null {
   if (result === null || typeof result !== 'object') return null;
   const value = (result as Record<string, unknown>).jobId;
@@ -557,6 +589,58 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
   );
 
   /**
+   * 표 아래의 <b>실패분 내려받기</b> — backend/row-transaction.md §7.
+   *
+   * <p><b>표는 읽을 수는 있어도 고쳐서 다시 낼 수는 없다.</b> 오백 행을 올려 열둘이 걸린
+   * 자리에서 남는 일은 화면에서 원본 파일로 <b>옮겨 적는 것</b>이고, 그 옮겨 적기가 새로운
+   * 오타를 만든다.
+   *
+   * <p><b>전건 롤백에도 단다.</b> 오히려 그쪽이 더 필요하다 — 되돌아간 오백 행 전부가
+   * 다시 낼 것이므로, 사용자가 고쳐야 하는 것은 <i>그중 어느 열둘인가</i> 하나다.
+   *
+   * <p><b>순번을 못 이으면 달지 않는다</b>({@code sent} 가 `null` — {@code toSavePayload}).
+   * 행을 되찾을 수 없으면 파일에 실을 것이 사유뿐이고, 그것은 표가 이미 보여 주고 있다.
+   */
+  const failureFile = useCallback(
+    (rowErrors: RowError[], sent: GridRow<T>[] | null): ReactElement | null => {
+      if (sent === null) return null;
+      const failures = rowErrors
+        .map((one) => ({
+          row: sent[one.index],
+          // 한 행에 사유가 여럿일 수 있다 — 칸마다 하나씩이다.
+          reason: one.fields.map((field) => field.message).join(' / '),
+        }))
+        .filter((one) => one.row !== undefined)
+        .map((one) => ({ data: one.row.data, reason: one.reason }));
+      if (failures.length === 0) return null;
+
+      return createElement(
+        Button,
+        {
+          type: 'link',
+          size: 'small',
+          style: { padding: 0 },
+          onClick: () => {
+            void downloadFailures(
+              `${options.menuCd}_${label(MSG.GRID_ISSUE_EXCEL_FILE)}`,
+              options.columns,
+              failures,
+              stamp(),
+              {
+                sheet: label(MSG.GRID_ISSUE_EXCEL_SHEET),
+                row: label(MSG.GRID_ISSUE_ROW),
+                reason: label(MSG.GRID_ISSUE_REASON),
+              },
+            );
+          },
+        },
+        label(MSG.GRID_ISSUE_EXCEL),
+      );
+    },
+    [options.columns, options.menuCd],
+  );
+
+  /**
    * <b>서버가 행을 짚은 실패</b>를 셀과 표로 되돌린다 — frontend/grid.md.
    *
    * <p>문구 한 줄만 띄우면 <i>어느 줄의 무슨 값이 문제인가</i> 를 사용자가 읽어 낼 수 없고,
@@ -590,12 +674,14 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
       modal.error({
         width: ISSUE_MODAL_WIDTH,
         title: error.message,
-        content: issueTable(located.entries, issueColors),
+        content: issueTable(located.entries, issueColors, {
+          footer: failureFile(error.rows, sent) ?? undefined,
+        }),
         okText: label(MSG.GRID_CONFIRM_OK),
       });
       return true;
     },
-    [issueColors, modal, options.columns],
+    [failureFile, issueColors, modal, options.columns],
   );
 
   /**
@@ -654,16 +740,18 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
               <b>비운 것이 없으면 말하지 않는다.</b> 전건이 실패하면 지울 성공 행이 없어
               목록이 그대로인데, 그때 비웠다고 하면 <b>사실이 아닌 안내</b>가 된다.
             */
-            footer:
+            footer: tail(
               cleared > 0
                 ? label(MSG.GRID_PARTIAL_KEPT, { count: cleared, failed: report.failed })
-                : undefined,
+                : null,
+              failureFile(report.rows, sent),
+            ),
           }),
           okText: label(MSG.GRID_CONFIRM_OK),
           onOk: () => resolve(),
         });
       }),
-    [issueColors, modal, options.columns, rows, setRows],
+    [failureFile, issueColors, modal, options.columns, rows, setRows],
   );
 
   /**

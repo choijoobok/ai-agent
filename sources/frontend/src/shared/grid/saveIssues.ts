@@ -1,4 +1,4 @@
-import { createElement, type ReactElement } from 'react';
+import { createElement, type ReactElement, type ReactNode } from 'react';
 import type { FieldError, RowError } from '@/shared/api';
 import { cellValue, headerText } from '@/shared/grid/cell';
 import type { GridRow } from '@/shared/grid/rows';
@@ -212,13 +212,13 @@ export function serverIssues<T>(
  * 것을 믿을지 고르게 된다 — 표의 줄 수는 같은 사유끼리 접힌 뒤의 수라 실패 건수와 다르다.
  *
  * <p><b>{@code notes.footer} 는 표 <i>다음</i> 에 온다.</b> 배관이 그리드에 <b>한 일</b>을
- * 말하는 자리이고(목록을 비웠다), 그것은 사유를 다 읽은 뒤에 알아야 할 것이다 — 앞에 두면
- * 무엇이 틀렸는지 보기 전에 <i>왜 목록이 줄었나</i> 부터 읽게 된다.
+ * 말하고(목록을 비웠다) <b>여기서 할 수 있는 일</b>을 주는 자리다(실패분 내려받기). 둘 다
+ * 사유를 읽은 뒤에 필요한 것이라 앞에 두면 <i>왜 목록이 줄었나</i> 부터 읽게 된다.
  */
 export function issueTable(
   entries: IssueEntry[],
   colors: IssueTableColors,
-  notes?: { heading?: string; footer?: string },
+  notes?: { heading?: string; footer?: ReactNode },
 ): ReactElement {
   const collapsed = collapse(entries);
   const shown = collapsed.slice(0, TABLE_ROWS);

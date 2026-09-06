@@ -936,6 +936,25 @@ export const MSG = {
   GRID_ISSUE_VALUE: 'grid.issue.value',
   /** 그 표의 <b>사유</b> 칸. 서버가 완성한 문구를 그대로 싣는다(backend/packages.md). */
   GRID_ISSUE_REASON: 'grid.issue.reason',
+  /**
+   * 그 표 아래의 <b>실패분 내려받기</b> — backend/row-transaction.md §7.
+   *
+   * <p>표는 <i>읽을</i> 수는 있어도 <b>고쳐서 다시 낼</b> 수는 없다. 오백 행을 올려 열둘이
+   * 걸린 자리에서 남는 일은 <b>화면에서 원본 파일로 옮겨 적는 것</b>이며, 그것이 이 버튼이
+   * 없앤다.
+   */
+  GRID_ISSUE_EXCEL: 'grid.issue.excel',
+  /** 그 파일 이름의 가운데 토막 — 메뉴 코드와 시각 사이에 들어간다. */
+  GRID_ISSUE_EXCEL_FILE: 'grid.issue.excel.file',
+  /**
+   * 그 파일의 <b>둘째 시트</b> 이름.
+   *
+   * <p>사유가 둘째 시트인 것이 결정이다 — 첫 시트에 열로 붙이면 양식이 달라져 <b>다시
+   * 올릴 수 없다</b>({@code readWorkbook} 이 뒤에 붙은 열까지 세어 막는다).
+   */
+  GRID_ISSUE_EXCEL_SHEET: 'grid.issue.excel.sheet',
+  /** 그 시트의 첫 머리 — 첫 시트의 <b>몇 번째 데이터 줄</b>인가. */
+  GRID_ISSUE_ROW: 'grid.issue.row',
   /** 필수 컬럼이 비었을 때의 기본 문구(frontend/grid.md). */
   GRID_VALIDATION_REQUIRED: 'grid.validation.required',
   /**

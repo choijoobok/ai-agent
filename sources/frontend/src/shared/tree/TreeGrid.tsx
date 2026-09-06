@@ -15,7 +15,7 @@ import { useAuthStore } from '@/shared/stores/authStore';
 import { FONT_WEIGHT_VALUE, useUiStore } from '@/shared/stores/uiStore';
 import { useResolvedDark } from '@/shared/theme/useResolvedDark';
 import { CELL_PADDING, treeSkin, type TreeSkin } from '@/shared/tree/treeSkin';
-import { downloadRows } from '@/shared/grid/excel/workbook';
+import { downloadRows, stamp } from '@/shared/grid/excel/workbook';
 import { headerMinWidth, textWidth } from '@/shared/grid/headerWidth';
 import { SEARCH_VALUE_WIDTH } from '@/shared/searchform/fieldWidth';
 import type { GridButtonControl } from '@/shared/grid/types';
@@ -733,12 +733,6 @@ function resolve<T>(
   const siblings = siblingsOf(target.parentId);
   const at = siblings.findIndex((node) => node.id === target.id);
   return { parentId: target.parentId, index: zone === 'before' ? at : at + 1 };
-}
-
-function stamp(): string {
-  const now = new Date();
-  const pad = (value: number) => String(value).padStart(2, '0');
-  return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}`;
 }
 
 /**

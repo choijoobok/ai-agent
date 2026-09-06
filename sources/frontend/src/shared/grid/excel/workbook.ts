@@ -1,5 +1,5 @@
 import ExcelJS from 'exceljs';
-import { cellValue as readCell } from '@/shared/grid/cell';
+import { cellValue as readCell, headerText } from '@/shared/grid/cell';
 import type { ColumnDef } from '@/shared/grid/types';
 import { recordDownload, type ExcelScope } from '@/shared/grid/excel/downloadLog';
 
@@ -134,6 +134,90 @@ export async function downloadRows(
     그래서 버튼도 드롭다운을 열지 않는다(frontend/grid.md).
   */
   recordDownload('ALL', rows.length, columns.map((column) => column.key));
+}
+
+/** 실패한 행 하나와 <b>왜</b> — {@link downloadFailures}. */
+export interface FailedRow<T> {
+  data: T;
+  reason: string;
+}
+
+/** 사유 시트의 글자 셋 — 완성된 문구로 받는다({@code readWorkbook} 의 {@code ReadText} 와 같은 규약). */
+export interface FailureText {
+  sheet: string;
+  row: string;
+  reason: string;
+}
+
+/**
+ * <b>실패한 행만</b> 내린다 — backend/row-transaction.md §7.
+ *
+ * <p>오백 행을 올려 열둘이 걸린 자리에서 사용자가 해야 하는 일은 <b>그 열둘을 찾는 것</b>
+ * 이다. 모달의 표는 읽을 수는 있어도 <i>고쳐서 다시 낼</i> 수는 없다 — 화면에서 원본
+ * 파일로 옮겨 적는 일이 남는다.
+ *
+ * <h2>시트가 둘인 것이 결정이다</h2>
+ *
+ * <p>첫 시트는 <b>양식 그대로</b>다 — 컬럼도 순서도 머리글도. 그래야 <b>고쳐서 그대로 다시
+ * 올릴 수 있다</b>. 사유를 그 시트에 열로 붙이면 {@code readWorkbook} 이 <b>양식이 다르다며
+ * 거절</b>한다(뒤에 붙은 열까지 세어 막는다 — 조용히 버려지는 것을 막으려고 그렇게 만들었다).
+ *
+ * <p>그래서 사유는 <b>둘째 시트</b>로 간다. 읽는 쪽은 {@code worksheets[0]} 만 보므로
+ * 둘째 시트는 <b>있어도 없는 것과 같다</b> — 사람에게는 보이고 파서에게는 보이지 않는다.
+ *
+ * <h2>이력을 남기지 않는다</h2>
+ *
+ * <p>{@code recordDownload} 를 부르지 않는다. 이력의 {@code scope} 는 <i>현재 페이지</i> 와
+ * <i>전체</i> 둘뿐이라(frontend/grid-advanced.md) 이것을 어느 쪽으로 적어도 <b>거짓</b>이며,
+ * 무엇보다 이 파일에 든 것은 <b>방금 사용자가 보낸 자기 입력</b>이지 서버가 준 자료가 아니다.
+ */
+export async function downloadFailures<T>(
+  baseName: string,
+  columns: ColumnDef<T>[],
+  failures: FailedRow<T>[],
+  stamp: string,
+  text: FailureText,
+): Promise<void> {
+  const workbook = new ExcelJS.Workbook();
+
+  const form = workbook.addWorksheet(baseName.slice(0, 31));
+  form.columns = columns.map((column) => ({
+    header: headerText(column),
+    key: column.field,
+    width: widthOf(column),
+  }));
+  form.getRow(1).font = { bold: true };
+  for (const one of failures) {
+    form.addRow(
+      Object.fromEntries(columns.map((column) => [column.field, cellValue(column, one.data)])),
+    );
+  }
+
+  const why = workbook.addWorksheet(text.sheet);
+  why.addRow([text.row, text.reason]);
+  why.getRow(1).font = { bold: true };
+  // 번호는 <b>첫 시트의 데이터 줄</b>이다 — 머리글을 빼고 센 순서라 두 시트가 나란히 읽힌다.
+  failures.forEach((one, index) => why.addRow([index + 1, one.reason]));
+  why.getColumn(1).width = 8;
+  why.getColumn(2).width = 60;
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  saveBlob(new Blob([buffer], { type: XLSX_MIME }), `${baseName}_${stamp}.xlsx`);
+}
+
+/**
+ * 파일 이름의 꼬리 — {@code 20260830_1432}.
+ *
+ * <p>같은 화면을 두 번 내리면 브라우저가 {@code (1)} 을 붙여 주지만, 그 둘 중 어느 것이
+ * 최신인지는 <b>파일 목록만 봐서는 알 수 없다.</b>
+ */
+export function stamp(): string {
+  const now = new Date();
+  const pad = (value: number) => String(value).padStart(2, '0');
+  return (
+    `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`
+    + `_${pad(now.getHours())}${pad(now.getMinutes())}`
+  );
 }
 
 /**

@@ -6,7 +6,7 @@ import { postDownload } from '@/shared/api';
 import { hasPermission } from '@/shared/authz/permission';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
-import { downloadExcel, saveBlob, type ExcelColumn } from '@/shared/grid/excel/workbook';
+import { downloadExcel, saveBlob, stamp, type ExcelColumn } from '@/shared/grid/excel/workbook';
 import type { ExcelScope } from '@/shared/grid/excel/downloadLog';
 import type { ExcelServer, ExcelSpec } from '@/shared/grid/excel/types';
 
@@ -141,17 +141,3 @@ export function ExcelButton<T>(props: Props<T>) {
   );
 }
 
-/**
- * 파일 이름의 꼬리 — {@code 20260830_1432}.
- *
- * <p>같은 화면을 두 번 내리면 브라우저가 {@code (1)} 을 붙여 주지만, 그 둘 중 어느 것이
- * 최신인지는 <b>파일 목록만 봐서는 알 수 없다.</b>
- */
-function stamp(): string {
-  const now = new Date();
-  const pad = (value: number) => String(value).padStart(2, '0');
-  return (
-    `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`
-    + `_${pad(now.getHours())}${pad(now.getMinutes())}`
-  );
-}

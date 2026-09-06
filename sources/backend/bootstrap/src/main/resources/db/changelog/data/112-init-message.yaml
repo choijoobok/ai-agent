@@ -1,0 +1,56 @@
+# 메시지 값 — 실패분 엑셀 내려받기(backend/row-transaction.md §7).
+#
+# 앞의 것을 고치지 않고 파일을 더한다(playbook/changeset.md). loadData 는 CSV 의 내용을
+# 체크섬에 넣으므로 111 에 줄을 더하면 그 changeset 이 이미 돈 DB 에서 기동이 죽는다.
+#
+# 키는 008 이 소스에서 만든다 — 여기서 또 넣으면 loadData 가 중복 키로 죽는다.
+#
+# ── 왜 표만으로는 부족한가 ─────────────────────────────────────────────
+#
+# 표는 **읽을** 수는 있어도 고쳐서 다시 낼 수는 없다. 오백 행을 올려 열둘이 걸린 자리에서
+# 남는 일은 화면에서 원본 파일로 **옮겨 적는 것** 이고, 그 옮겨 적기가 새로운 오타를 만든다.
+#
+# ── 파일 이름과 시트 이름이 왜 메시지인가 ──────────────────────────────
+#
+# 사용자가 보는 글자는 전부 SYS_MESSAGE 가 갖는다(CLAUDE.md §5-6). 파일 이름과 시트 이름도
+# 사용자가 읽는 것이며, 소스에 박으면 영어 화면에서도 한국어 파일이 떨어진다.
+#
+# `grid.issue.row` 는 사유 시트의 첫 머리다 — 첫 시트의 **몇 번째 데이터 줄** 인가.
+# 사유가 둘째 시트인 것이 결정이다: 첫 시트에 열로 붙이면 양식이 달라져 다시 올릴 수 없다.
+databaseChangeLog:
+  - changeSet:
+      id: data-112-message
+      author: template
+      comment: 실패분 엑셀 내려받기의 문구 넷 — backend/row-transaction.md §7
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/112-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-112-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — sys/message.md
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

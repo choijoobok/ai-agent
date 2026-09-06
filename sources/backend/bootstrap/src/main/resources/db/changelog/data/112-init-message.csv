@@ -1,0 +1,9 @@
+MSG_KEY,LANG_CD,MSG_VAL
+grid.issue.excel,ko,실패분 내려받기
+grid.issue.excel,en,Download failed rows
+grid.issue.excel.file,ko,실패분
+grid.issue.excel.file,en,failures
+grid.issue.excel.sheet,ko,실패 사유
+grid.issue.excel.sheet,en,Reasons
+grid.issue.row,ko,행
+grid.issue.row,en,Row

@@ -12,7 +12,12 @@ const downloadExcel = vi.hoisted(() => vi.fn());
 const saveBlob = vi.hoisted(() => vi.fn());
 
 vi.mock('@/shared/api/download', () => ({ postDownload }));
-vi.mock('@/shared/grid/excel/workbook', () => ({ downloadExcel, saveBlob }));
+// 시각은 고정한다 — 이 파일이 보는 것은 <b>이름의 모양</b>이지 지금 몇 시인가가 아니다.
+vi.mock('@/shared/grid/excel/workbook', () => ({
+  downloadExcel,
+  saveBlob,
+  stamp: () => '20260906_1200',
+}));
 
 interface Row {
   ordNo: string;
