@@ -467,6 +467,7 @@ grid.page.jumpNext,FRONT,다섯 쪽 뒤로 — 판의 점 셋이 그 뜻이다.
 grid.page.jumpPrev,FRONT,다섯 쪽 앞으로 — 판의 점 셋이 그 뜻이다.
 grid.page.next,FRONT,한 쪽 뒤로.
 grid.page.prev,FRONT,페이지 이동 — 한 쪽 앞으로.
+grid.partial.gone,FRONT,"곧 다시 읽는다고 미리 알린다 — after: 'reload' 전용. 닫는 순간 이 표가 사라진다. 재조회가 목록을 갈아 끼우므로 어느 넷이 왜 안 됐나 를 다시 볼 방법이 없고, 남는 것은 내려받아 둔 파일뿐이다. 그래서 닫기 전에 말한다. 사후 통보이면 사용자가 아무 일도 하지 못한다 — 이미 사라진 뒤이며, 그 안내는 알림이 아니라 부고 다. #GRID_PARTIAL_KEPT 와 함께 뜨지 않는다. 앞은 *목록을 비웠다* 이고 여기는 *목록을 새로 읽는다* 라 서로를 부정한다 — 뒤처리가 둘 중 하나뿐이므로 문구도 하나만 선다. /"
 grid.partial.kept,FRONT,목록을 비웠다고 알린다 — `{count}` · `{failed}`. after: 'keepFailed' 전용. 말하지 않으면 사라진 것으로 보인다. 500건을 저장했는데 화면에 12줄만 남으면 사용자는 488건도 실패했나 를 먼저 의심한다 — 남은 것이 고칠 것이라는 사실은 배관만 알고 있으므로 배관이 말해야 한다. /
 grid.partial.summary,FRONT,그 요약 — `{total}` · `{done}` · `{failed}`. 건수가 먼저다: 표는 그 뒤의 상세다.
 grid.partial.title,FRONT,"건별 처리의 결과 제목 — backend/row-transaction.md. 성공도 실패도 아닌 이름이어야 한다. 488건이 저장되고 12건이 안 된 일은 둘 중 어느 쪽도 아니며, 어느 한쪽으로 부르면 화면이 거짓말을 한다. /"

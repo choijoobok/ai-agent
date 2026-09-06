@@ -1,0 +1,56 @@
+# 메시지 값 — 재조회 전에 미리 알린다(backend/row-transaction.md §7).
+#
+# 앞의 것을 고치지 않고 파일을 더한다(playbook/changeset.md). loadData 는 CSV 의 내용을
+# 체크섬에 넣으므로 112 에 줄을 더하면 그 changeset 이 이미 돈 DB 에서 기동이 죽는다.
+#
+# 키는 008 이 소스에서 만든다 — 여기서 또 넣으면 loadData 가 중복 키로 죽는다.
+#
+# ── 왜 미리 말하나 ────────────────────────────────────────────────────
+#
+# `reload` 는 확인을 누르는 순간 목록을 새로 읽는다. 그러면 **어느 넷이 왜 안 됐나** 를
+# 다시 볼 방법이 없고, 남는 것은 내려받아 둔 파일뿐이다.
+#
+# 그래서 **닫기 전에** 말한다. 사후 통보이면 사용자가 아무 일도 하지 못한다 — 이미
+# 사라진 뒤이며, 그 안내는 알림이 아니라 부고다.
+#
+# ── 왜 111 과 함께 뜨지 않나 ──────────────────────────────────────────
+#
+# 111 은 *목록을 비웠다* 이고 여기는 *목록을 새로 읽는다* 라 서로를 부정한다.
+# 뒤처리가 둘 중 하나뿐이므로 문구도 하나만 선다.
+databaseChangeLog:
+  - changeSet:
+      id: data-113-message
+      author: template
+      comment: 재조회 전에 미리 알린다 — backend/row-transaction.md §7
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/113-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-113-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — sys/message.md
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

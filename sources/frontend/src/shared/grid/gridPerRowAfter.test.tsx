@@ -6,6 +6,7 @@ import { useGridController, type GridController } from '@/shared/grid/useGridCon
 import type { ColumnDef, GridApi, PerRowSpec } from '@/shared/grid/types';
 import { useAuthStore } from '@/shared/stores/authStore';
 import { useMessageStore } from '@/shared/i18n/messageStore';
+import { ProgressContextProvider } from '@/shared/progress/progressContext';
 
 const post = vi.fn();
 
@@ -29,6 +30,8 @@ vi.mock('@/shared/api/request', () => ({
  *   <li>비웠으면 <b>말한다</b>. 말하지 않으면 사용자는 나머지도 실패한 줄 안다
  *   <li>비운 뒤에 <b>재조회하지 않는다</b> — 방금 남긴 것을 지우게 된다
  *   <li>{@code 'reload'} 는 실패가 있어도 <b>보던 자리를 다시 읽는다</b>
+ *   <li>{@code 'reload'} 는 <b>닫기 전에</b> 다시 볼 수 없다고 말한다 — 사후 통보는 부고다
+ *   <li>두 안내는 <b>함께 뜨지 않는다</b> — 비웠다와 새로 읽는다는 서로를 부정한다
  *   <li><b>전건 성공은 선언과 무관하다</b> — 남길 실패가 없으므로 평소대로 재조회한다
  * </ol>
  */
@@ -44,6 +47,7 @@ describe('건별 처리의 뒤처리 — backend/row-transaction.md §7', () => 
   const SAVE = '/service/x/save';
   const OK = '확인';
   const KEPT = '비웠습니다';
+  const GONE = '다시 볼 수 없습니다';
 
   const report = (total: number, failures: number[]) => ({
     total,
@@ -159,6 +163,7 @@ describe('건별 처리의 뒤처리 — backend/row-transaction.md §7', () => 
         'grid.partial.title': '처리 결과',
         'grid.partial.summary': '총 {total}건 · 성공 {done}건 · 실패 {failed}건',
         'grid.partial.kept': '{count}건을 목록에서 비웠습니다. 남은 {failed}건을 고치세요.',
+        'grid.partial.gone': '확인을 누르면 목록을 다시 읽습니다. 내려받지 않으면 다시 볼 수 없습니다.',
         'grid.issue.column': '컬럼',
         'grid.issue.value': '값',
         'grid.issue.reason': '사유',
@@ -302,6 +307,96 @@ describe('건별 처리의 뒤처리 — backend/row-transaction.md §7', () => 
    * 순번 대응이 서지 않으면 <b>비우지 않는다</b>. 화면이 배열을 직접 만들었으면 걸러 냈는지
    * 정렬했는지 배관은 알 수 없고, 그 상태로 비우면 <b>엉뚱한 행을 지운다</b>.
    */
+  /**
+   * <b>닫는 순간 표가 사라진다.</b> 재조회가 목록을 갈아 끼우므로 <i>어느 넷이 왜 안 됐나</i>
+   * 를 다시 볼 방법이 없고, 남는 것은 <b>내려받아 둔 파일</b>뿐이다 — 그래서 닫기 전에 말한다.
+   */
+  it('reload 는 닫기 전에 다시 볼 수 없다고 말한다', async () => {
+    post.mockResolvedValue(report(4, [2]));
+
+    await runGo(actionApi('reload'));
+
+    await waitFor(() => expect(screen.getByText(new RegExp(GONE))).toBeTruthy());
+  });
+
+  /** 닫는 순간 사라지는 것은 <b>실패가 몇 건이든 같다</b> — 조건 없이 말한다. */
+  it('reload 는 전건이 실패해도 말한다', async () => {
+    post.mockResolvedValue(report(4, [0, 1, 2, 3]));
+
+    await runGo(actionApi('reload'));
+
+    await waitFor(() => expect(screen.getByText(new RegExp(GONE))).toBeTruthy());
+  });
+
+  /**
+   * <b>서로를 부정한다.</b> 하나는 *목록을 비웠다* 이고 하나는 *목록을 새로 읽는다* 라,
+   * 함께 뜨면 사용자가 <b>어느 쪽이 참인지 고르게</b> 된다.
+   */
+  it('keepFailed 에는 그 안내가 없다', async () => {
+    post.mockResolvedValue(report(4, [2]));
+
+    await runGo(actionApi('keepFailed'));
+
+    await waitFor(() => expect(screen.getByText(new RegExp(KEPT))).toBeTruthy());
+    expect(screen.queryByText(new RegExp(GONE))).toBeNull();
+  });
+
+  /** 그 반대도 같다 — {@code reload} 는 비운 것이 없으므로 비웠다고 말하지 않는다. */
+  it('reload 에는 비웠다는 안내가 없다', async () => {
+    post.mockResolvedValue(report(4, [2]));
+
+    await runGo(actionApi('reload'));
+
+    await waitFor(() => expect(screen.getByText(new RegExp(GONE))).toBeTruthy());
+    expect(screen.queryByText(new RegExp(KEPT))).toBeNull();
+  });
+
+  /**
+   * <b>진행률이 이긴다</b>(types.ts). 그때 {@code perRow} 는 <b>조용히 무시되고</b>,
+   * 선언한 사람은 오지 않을 결과 모달을 기다린다 — 막지는 않되 <b>말한다</b>.
+   */
+  it('progress 와 perRow 를 함께 켜면 개발자에게 말한다', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const open = vi.fn(() => Promise.resolve());
+    post.mockResolvedValue({ jobId: 'J-1' });
+
+    render(
+      <App>
+        <ProgressContextProvider value={open}>
+          <Inner
+            api={{
+              read: { url: READ },
+              actions: [
+                {
+                  key: 'go',
+                  label: 'go',
+                  url: GO,
+                  target: 'all',
+                  confirm: false,
+                  progress: true,
+                  perRow: { after: 'reload' },
+                },
+              ],
+            }}
+          />
+        </ProgressContextProvider>
+      </App>,
+    );
+    act(() => {
+      controller?.setRows(four());
+    });
+    act(() => {
+      void controller?.runAction('go');
+    });
+    await settle();
+
+    expect(spy).toHaveBeenCalledWith(expect.stringContaining('progress and perRow'));
+    // 진행률이 이긴다 — 결과 모달은 뜨지 않고 창을 여는 통로가 불린다.
+    expect(open).toHaveBeenCalledWith('J-1', expect.anything());
+    expect(screen.queryByText('처리 결과')).toBeNull();
+    spy.mockRestore();
+  });
+
   it('toSavePayload 로 보낸 저장은 비우지 않고 개발자에게 말한다', async () => {
     const complain = vi.spyOn(console, 'error').mockImplementation(() => {});
     post.mockResolvedValue(report(2, [1]));

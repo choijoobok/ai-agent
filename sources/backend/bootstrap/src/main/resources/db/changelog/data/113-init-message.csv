@@ -1,0 +1,3 @@
+MSG_KEY,LANG_CD,MSG_VAL
+grid.partial.gone,ko,확인을 누르면 목록을 다시 읽습니다. 실패분을 내려받지 않으면 이 목록은 다시 볼 수 없습니다.
+grid.partial.gone,en,The list reloads when you confirm. Download the failures now or you cannot see them again.

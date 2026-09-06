@@ -436,3 +436,7 @@ databaseChangeLog:
   # 112 의 키(grid.issue.excel* · grid.issue.row)도 008 이 만든다 — 111 과 같은 이유다.
   - include:
       file: db/changelog/data/112-init-message.yaml
+
+  # 113 의 키(grid.partial.gone)도 008 이 만든다 — 112 와 같은 이유다.
+  - include:
+      file: db/changelog/data/113-init-message.yaml

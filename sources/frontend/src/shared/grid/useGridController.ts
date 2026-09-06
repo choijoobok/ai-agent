@@ -335,6 +335,25 @@ function reportOf(result: unknown): RowReport | null {
  * <p>둘 다 없으면 `undefined` 라 표만 남는다. 빈 {@code div} 를 만들면 모달 아래에 <b>이유
  * 없는 여백</b>이 생기고, 그것은 무언가가 안 떴다는 신호처럼 보인다.
  */
+/**
+ * 표 아래 <b>첫 줄</b> — 배관이 그리드에 <i>한 일</i>, 또는 <i>곧 할 일</i>.
+ *
+ * <p><b>뒤처리마다 다르고 함께 뜨지 않는다</b>(backend/row-transaction.md §7). {@code 'keepFailed'} 는
+ * *목록을 비웠다* 이고 {@code 'reload'} 는 *목록을 새로 읽는다* 라 <b>서로를 부정한다</b> —
+ * 뒤처리가 둘 중 하나뿐이므로 문구도 하나만 선다.
+ *
+ * <p><b>{@code 'reload'} 는 조건 없이 말한다.</b> 닫는 순간 표가 사라지는 것은 실패가 몇
+ * 건이든 같으며, <b>닫기 전에</b> 말하지 않으면 사용자가 <b>아무 일도 하지 못한다</b> —
+ * 이미 사라진 뒤라 그 안내는 알림이 아니라 부고다.
+ *
+ * <p><b>{@code 'keepFailed'} 는 비운 것이 있을 때만 말한다.</b> 전건이 실패하면 지울 성공
+ * 행이 없어 목록이 그대로인데, 그때 비웠다고 하면 <b>사실이 아닌 안내</b>가 된다.
+ */
+function partialNotice(after: PerRowSpec['after'], cleared: number, failed: number): string | null {
+  if (after === 'reload') return label(MSG.GRID_PARTIAL_GONE);
+  return cleared > 0 ? label(MSG.GRID_PARTIAL_KEPT, { count: cleared, failed }) : null;
+}
+
 function tail(notice: string | null, file: ReactElement | null): ReactNode {
   if (notice === null && file === null) return undefined;
   return createElement(
@@ -736,16 +755,8 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
               done: report.done,
               failed: report.failed,
             }),
-            /*
-              <b>비운 것이 없으면 말하지 않는다.</b> 전건이 실패하면 지울 성공 행이 없어
-              목록이 그대로인데, 그때 비웠다고 하면 <b>사실이 아닌 안내</b>가 된다.
-            */
-            footer: tail(
-              cleared > 0
-                ? label(MSG.GRID_PARTIAL_KEPT, { count: cleared, failed: report.failed })
-                : null,
-              failureFile(report.rows, sent),
-            ),
+            // 안내는 뒤처리마다 다르다 — partialNotice 가 고른다.
+            footer: tail(partialNotice(after, cleared, report.failed), failureFile(report.rows, sent)),
           }),
           okText: label(MSG.GRID_CONFIRM_OK),
           onOk: () => resolve(),
@@ -1044,6 +1055,18 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
           <b>화면이 폴링 코드를 쓰지 않는다</b>(playbook/INDEX.md) — 여기가 그 약속의 자리다.
         */
         if (action.progress === true) {
+          /*
+            <b>둘을 함께 켜면 진행률이 이긴다</b>(types.ts). 여기서 리턴하므로 아래의
+            건별 분기까지 오지 않으며, 그러면 {@code perRow} 가 <b>조용히 무시된다</b> —
+            선언한 사람은 결과 모달을 기다리는데 영영 오지 않는다.
+
+            <b>막지 않고 말한다.</b> 셋이 다 정당한 선언이라 하나를 틀렸다고 할 수 없고,
+            어느 쪽을 지울지는 화면의 결정이다. 조용한 것만이 문제다.
+          */
+          if (action.perRow) {
+            // 개발자용이라 영어다 — 화면에 나가는 문구가 아니다(sys/code.md).
+            console.error(`Declared both progress and perRow: ${action.key} — progress wins`);
+          }
           inFlight.current = false;
           setLoading(false);
           const jobId = jobIdOf(result);
