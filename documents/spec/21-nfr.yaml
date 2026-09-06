@@ -10,6 +10,11 @@
 # 추적성 T7: 모든 NFR 은 `measurement` 와 `test_case` 를 가져야 한다.
 # **아직 TC 가 없다** — 70-testcases.yaml 이 비어 있고 P3 에서 만든다.
 # 그래서 `trace-check` 가 T7 오류를 낸다: **그것이 사실이며 G2 를 통과할 수 없다는 뜻이다.**
+#
+# **응답성(MET-03)의 정본이 여기로 넘어왔는데 받은 항목이 없다.** 00-charter.yaml 이
+# 성공 기준에서 응답성을 내리며 정본을 NFR 로 지목했으나 아래 19건에 지연·처리 시간을
+# 재는 항목이 없다 — 설계를 세우는 일은 ASSUMPTIONS.md 의 ASM-002 가 갖는다(기한 P1).
+# @defer P4 응답성 계측을 심는다 — 설계가 선 뒤이고, G3 승인 전에는 guard-write 가 sources/ 를 막는다
 
 meta:
   status: migrated
