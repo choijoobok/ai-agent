@@ -103,9 +103,28 @@ tags: [frontend, grid, validation, error, duplicate]
   아니라 세상이 바뀐 것이므로, 문구가 말할 것은 *고치세요* 가 아니라 **다시 조회하세요** 다.
 - 행을 짚어야 하는 화면은 **서비스가 그 예외를 잡아 다시 검사해** `rows` 로 바꿔 던진다.
 
+## 5. 건별 처리는 **실패가 아니라 결과**다
+
+행마다 커밋되는 목록은 200 으로 오고([../backend/row-transaction.md](../backend/row-transaction.md)),
+`perRow: true` 를 선언한 저장·실행이 그것을 읽는다.
+
+- **성공 모달을 쓰지 않는다.** 12건이 안 된 일을 *저장했습니다* 로 닫으면 사용자는 그 12건을
+  **영영 모른다** — 예외도 경고도 나지 않는다.
+- **표는 같은 것이다.** 사용자에게 검증 실패·서버 실패·건별 실패는 구분되지 않는 사건이며
+  (*안 됐고 이유가 있다*), 표시가 갈리면 같은 일이 세 얼굴로 보인다.
+- **첫 줄만 갈아 끼운다**(`issueTable(entries, colors, heading)`). 건별의 첫 줄은 *몇 줄이
+  틀렸나* 가 아니라 **몇 건이 되고 몇 건이 안 됐나** 다. 둘을 함께 띄우면 **수가 둘**이 되어
+  사용자가 어느 것을 믿을지 고르게 된다 — 표의 줄 수는 접힌 뒤의 수라 실패 건수와 다르다.
+- **선언이 이긴다.** 응답 모양을 훔쳐보고 갈라지면 서버가 칸 하나를 바꾼 날 화면이 조용히
+  다른 길로 간다. 선언했는데 모양이 어긋나면 **콘솔에 적고 평소대로 닫는다** — 어긋난 것은
+  응답이지 사용자의 입력이 아니다.
+- **뒤에 무엇을 할지는 화면이 정한다** — 재조회냐, 성공 행만 지우기냐. 정답이 하나가 아니며
+  무엇을 보고 정하는지는 [../backend/row-transaction.md](../backend/row-transaction.md) §7 이 갖는다.
+
 ## 관련
 
 - [grid.md](./grid.md) — 저장 흐름 ①~⑤
 - [grid-advanced.md](./grid-advanced.md) — 검증의 두 시점, 세 층
 - [declarations.md](./declarations.md) — `toSaveRow` · `saveEnvelope` 선언
 - [../backend/api.md](../backend/api.md) — `fields` 와 `rows` · 409
+- [../backend/row-transaction.md](../backend/row-transaction.md) — 한 덩이냐 건별이냐 · 결과 뒤의 그리드

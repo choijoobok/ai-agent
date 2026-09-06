@@ -1,0 +1,5 @@
+MSG_KEY,LANG_CD,MSG_VAL
+grid.partial.title,ko,처리 결과
+grid.partial.title,en,Result
+grid.partial.summary,ko,총 {total}건 중 {done}건이 처리되고 {failed}건이 실패했습니다.
+grid.partial.summary,en,"{done} of {total} processed, {failed} failed."

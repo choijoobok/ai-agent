@@ -36,6 +36,22 @@ export interface RowError {
 }
 
 /**
+ * <b>행마다 커밋되는 목록</b>의 결과 — backend/row-transaction.md.
+ *
+ * <p><b>오류가 아니라 데이터로 온다</b>(200 · {@code data}). 부분 성공을 오류 봉투로
+ * 보내면 488건이 저장된 요청도 화면에서 <i>실패</i> 로 읽히기 때문이며, <b>전건이 실패해도
+ * 같은 모양</b>이다 — 둘 다 사용자가 할 일이 같다(표를 보고 고쳐 다시 낸다).
+ *
+ * <p>{@link rows} 의 순번은 <b>요청 배열</b>의 것이다({@link RowError}).
+ */
+export interface RowReport {
+  total: number;
+  done: number;
+  failed: number;
+  rows: RowError[];
+}
+
+/**
  * 화면이 받는 실패. <b>문구를 조립하지 않는다</b> — 서버가 완성한 {@link message} 를 그대로
  * 표시하고, 분기가 필요할 때만 {@link code} 를 본다(backend/packages.md · frontend/packages.md).
  */

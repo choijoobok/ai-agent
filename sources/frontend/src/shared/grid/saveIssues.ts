@@ -203,8 +203,19 @@ export function serverIssues<T>(
   return { issues, entries };
 }
 
-/** 표 하나 — 첫 줄이 건수이고 열 줄을 넘으면 남은 수만 말한다. */
-export function issueTable(entries: IssueEntry[], colors: IssueTableColors): ReactElement {
+/**
+ * 표 하나 — 첫 줄이 요약이고 상한을 넘으면 남은 수만 말한다.
+ *
+ * <p><b>{@code heading} 은 그 첫 줄을 갈아 끼운다.</b> 건별 처리의 결과는 <i>몇 줄이
+ * 틀렸나</i> 가 아니라 <b>몇 건이 되고 몇 건이 안 됐나</b> 를 먼저 말해야 하는데
+ * (backend/row-transaction.md), 그 둘을 함께 띄우면 <b>수가 둘</b>이 되어 사용자가 어느
+ * 것을 믿을지 고르게 된다 — 표의 줄 수는 같은 사유끼리 접힌 뒤의 수라 실패 건수와 다르다.
+ */
+export function issueTable(
+  entries: IssueEntry[],
+  colors: IssueTableColors,
+  heading?: string,
+): ReactElement {
   const collapsed = collapse(entries);
   const shown = collapsed.slice(0, TABLE_ROWS);
   const rest = collapsed.length - shown.length;
@@ -231,7 +242,7 @@ export function issueTable(entries: IssueEntry[], colors: IssueTableColors): Rea
     createElement(
       'div',
       { key: 'count', style: { marginBottom: 8 } },
-      label(MSG.GRID_VALIDATION_COUNT, { count: collapsed.length }),
+      heading ?? label(MSG.GRID_VALIDATION_COUNT, { count: collapsed.length }),
     ),
     createElement(
       'div',

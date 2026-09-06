@@ -1,0 +1,55 @@
+# 메시지 값 — 건별 처리의 결과 문구 둘(backend/row-transaction.md).
+#
+# 앞의 것을 고치지 않고 파일을 더한다(playbook/changeset.md). loadData 는 CSV 의 내용을
+# 체크섬에 넣으므로 109 에 줄을 더하면 그 changeset 이 이미 돈 DB 에서 기동이 죽는다.
+#
+# 키는 008 이 소스에서 만든다 — 여기서 또 넣으면 loadData 가 중복 키로 죽는다.
+#
+# ── 제목이 `처리 결과` 인 것이 결정이다 ─────────────────────────────────
+#
+# 성공도 실패도 아닌 이름이어야 한다. 488건이 저장되고 12건이 안 된 일은 둘 중 어느 쪽도
+# 아니며, 어느 한쪽으로 부르면 **화면이 거짓말을 한다** — `저장 실패` 라 하면 488건을
+# 버린 줄 알고 다시 올리고, `저장 완료` 라 하면 12건을 영영 모른다.
+#
+# ── 요약이 셋을 다 말한다 ───────────────────────────────────────────────
+#
+# 총·성공·실패를 함께 낸다. 둘만 내면 나머지 하나를 사용자가 빼야 하고, 그 뺄셈은
+# **500건짜리 화면에서 아무도 하지 않는다**. 표의 줄 수는 이 수와 다르다 — 같은 사유끼리
+# 접힌 뒤의 수라서다(frontend/save-errors.md).
+databaseChangeLog:
+  - changeSet:
+      id: data-110-message
+      author: template
+      comment: 건별 처리 결과의 제목과 요약 — backend/row-transaction.md
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/110-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-110-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — sys/message.md
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

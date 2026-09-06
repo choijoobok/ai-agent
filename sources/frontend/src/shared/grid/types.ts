@@ -481,6 +481,17 @@ export interface SaveApi<T> {
   confirm?: boolean;
   /** <b>기본 `true`</b> — 서버가 채운 값이 화면에 없다(frontend/grid.md). */
   reloadAfter?: boolean;
+  /**
+   * 이 저장이 <b>행마다 커밋된다</b> — backend/row-transaction.md.
+   *
+   * <p>서버가 {@code RowReport} 를 200 으로 돌려주고, 실패가 있으면 성공 모달 대신
+   * <b>결과 표</b>가 뜬다(건수 + 사유). <b>선언이 이긴다</b> — 응답 모양을 훔쳐보고 정하면
+   * 서버가 칸 하나를 바꾼 날 화면이 조용히 다른 길로 간다.
+   *
+   * <p><b>저장에 켤 때는 §7 을 먼저 읽는다.</b> 재조회는 <b>실패한 행의 편집까지</b>
+   * 지우므로, 그대로 두면 사용자가 다시 낼 입력이 사라진다.
+   */
+  perRow?: boolean;
   validate?: ApiValidation<T>;
   /**
    * 건수 확인 <b>앞</b>에 서는 경고 — screen/code/requirements.md 가 처음 요구했다.
@@ -608,6 +619,16 @@ export interface ActionApi<T> {
   hint?: string;
   /** <b>기본 `true`</b> — 서버가 바꾼 값이 화면에 없다(frontend/grid.md 과 같은 꼬리). */
   reloadAfter?: boolean;
+  /**
+   * 이 실행이 <b>행마다 커밋된다</b> — backend/row-transaction.md.
+   *
+   * <p>{@code SaveApi.perRow} 와 같은 칸이다. <b>저장이냐 실행이냐가 가르지 않는다</b> —
+   * 가르는 것은 <i>실패했을 때 무엇이 남아야 하는가</i> 하나다.
+   *
+   * <p>{@code progress} 와 함께 켜지 않는다 — 진행률은 <i>접수했다</i> 로 답하고 이쪽은
+   * <i>끝났고 이러이러하다</i> 로 답한다. 둘을 함께 켜면 진행률이 이긴다.
+   */
+  perRow?: boolean;
   /** 실행 <b>앞</b>에 도는 검증 — 미저장 변경을 막는 것도 여기다(frontend/grid.md). */
   validate?: ApiValidation<T>;
   /**

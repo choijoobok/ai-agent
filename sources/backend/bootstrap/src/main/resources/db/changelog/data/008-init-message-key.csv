@@ -463,6 +463,8 @@ grid.page.jumpNext,FRONT,다섯 쪽 뒤로 — 판의 점 셋이 그 뜻이다.
 grid.page.jumpPrev,FRONT,다섯 쪽 앞으로 — 판의 점 셋이 그 뜻이다.
 grid.page.next,FRONT,한 쪽 뒤로.
 grid.page.prev,FRONT,페이지 이동 — 한 쪽 앞으로.
+grid.partial.summary,FRONT,그 요약 — `{total}` · `{done}` · `{failed}`. 건수가 먼저다: 표는 그 뒤의 상세다.
+grid.partial.title,FRONT,"건별 처리의 결과 제목 — backend/row-transaction.md. 성공도 실패도 아닌 이름이어야 한다. 488건이 저장되고 12건이 안 된 일은 둘 중 어느 쪽도 아니며, 어느 한쪽으로 부르면 화면이 거짓말을 한다. /"
 grid.pk.locked,FRONT,"저장된 행의 PK 칸을 고치려 했을 때 — frontend/grid.md 의 `pk`. *""고치려면 지우고 다시 만든다""* 가 답인데 그것은 화면 어디에도 적혀 있지 않다 — 잠긴 칸은 왜 잠겼는지를 말하지 않으면 버그로 읽힌다. /"
 grid.read,FRONT,그리드 헤더 ①의 조회 버튼.
 grid.read.empty,FRONT,조회 결과가 0건일 때의 알림 — 마스터만 기본으로 켠다(frontend/grid.md).
@@ -497,7 +499,7 @@ grid.split.collapseSecond,FRONT,스플리터의 아래 화살표 — 막대를 �
 grid.split.expand,FRONT,접힌 상태에 남는 화살표 하나 — 누르면 되돌린다(frontend/grid.md).
 grid.validation.count,FRONT,검증 실패 건수 — `{count}`(frontend/grid.md).
 grid.validation.line,FRONT,검증 실패 한 줄 — `{column}` · `{message}`(frontend/grid.md ④의 *목록*). 건수만으로는 **무엇이 틀렸는지** 알 수 없다. 붉은 셀이 *어디* 를 말하고 이 줄이 *무엇* 을 말한다 — 컬럼 이름을 앞에 붙이는 것은 같은 문구가 여러 컬럼에서 날 수 있기 때문이다(`필수 항목입니다`). /
-grid.validation.more,FRONT,목록이 열 줄을 넘었다 — `{count}`. 남은 수만 말한다(스크롤되는 목록을 만들지 않는다).
+grid.validation.more,FRONT,표의 상한을 넘었다 — `{count}`. 남은 수만 말한다(frontend/save-errors.md).
 grid.validation.required,FRONT,필수 컬럼이 비었을 때의 기본 문구(frontend/grid.md).
 login.forgotPassword,FRONT,로그인 폼 아래의 재설정 진입 링크.
 login.id,FRONT,로그인 ID 입력 칸의 라벨.

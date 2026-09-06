@@ -905,8 +905,17 @@ export const MSG = {
    * 때문이다(`필수 항목입니다`).
    */
   GRID_VALIDATION_LINE: 'grid.validation.line',
-  /** 목록이 열 줄을 넘었다 — `{count}`. 남은 수만 말한다(스크롤되는 목록을 만들지 않는다). */
+  /** 표의 상한을 넘었다 — `{count}`. 남은 수만 말한다(frontend/save-errors.md). */
   GRID_VALIDATION_MORE: 'grid.validation.more',
+  /**
+   * <b>건별 처리의 결과</b> 제목 — backend/row-transaction.md.
+   *
+   * <p><b>성공도 실패도 아닌 이름이어야 한다.</b> 488건이 저장되고 12건이 안 된 일은
+   * 둘 중 어느 쪽도 아니며, 어느 한쪽으로 부르면 <b>화면이 거짓말을 한다</b>.
+   */
+  GRID_PARTIAL_TITLE: 'grid.partial.title',
+  /** 그 요약 — `{total}` · `{done}` · `{failed}`. <b>건수가 먼저다</b>: 표는 그 뒤의 상세다. */
+  GRID_PARTIAL_SUMMARY: 'grid.partial.summary',
   /**
    * 저장 실패 표의 머리 셋 — `컬럼` · `값` · `사유`(frontend/grid.md ④).
    *

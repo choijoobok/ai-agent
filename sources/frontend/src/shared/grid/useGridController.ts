@@ -1,6 +1,6 @@
 import { createElement, useCallback, useMemo, useRef, useState } from 'react';
 import { App, theme } from 'antd';
-import { post, ApiError } from '@/shared/api';
+import { post, ApiError, type RowReport } from '@/shared/api';
 import { hasPermission } from '@/shared/authz/permission';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
@@ -297,6 +297,21 @@ export function actionTargets<T>(
  * 런타임에만 안다 — 캐스팅으로 지나가면 {@code undefined} 가 {@code jobId} 인 척
  * 흘러가 <b>없는 작업을 폴링</b>한다.
  */
+/**
+ * 응답에서 <b>건별 결과</b>를 꺼낸다 — backend/row-transaction.md.
+ *
+ * <p><b>네 칸을 다 본다.</b> 하나라도 없으면 `null` 이고 부르는 쪽이 평소의 성공 모달로
+ * 떨어뜨린다 — `progress` 가 {@code jobId} 를 못 찾았을 때와 같은 처리다. <b>선언과 응답이
+ * 어긋난 것</b>은 사용자에게 숨길 일이 아니라 개발자가 볼 일이다.
+ */
+function reportOf(result: unknown): RowReport | null {
+  if (result === null || typeof result !== 'object') return null;
+  const value = result as Record<string, unknown>;
+  const counts = ['total', 'done', 'failed'].every((key) => typeof value[key] === 'number');
+  if (!counts || !Array.isArray(value.rows)) return null;
+  return value as unknown as RowReport;
+}
+
 function jobIdOf(result: unknown): string | null {
   if (result === null || typeof result !== 'object') return null;
   const value = (result as Record<string, unknown>).jobId;
@@ -516,6 +531,59 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
     [confirmDiscard, fetchPage, size],
   );
 
+  /**
+   * <b>건별 처리의 결과</b>를 낸다 — backend/row-transaction.md §7.
+   *
+   * <p><b>저장과 실행이 같은 함수를 쓴다.</b> 사용자에게 둘은 구분되지 않는 사건이며
+   * (<i>일부는 됐고 일부는 안 됐다</i>), 표시가 갈리면 같은 일이 두 얼굴로 보인다 —
+   * 검증 실패와 서버 실패가 이미 같은 표를 쓰는 것과 같은 이유다(saveIssues.ts).
+   *
+   * <p><b>성공 모달을 쓰지 않는다.</b> 12건이 안 된 저장을 <i>저장했습니다</i> 로 닫으면
+   * 화면이 거짓말한 것이 된다.
+   *
+   * <p><b>셀도 칠한다.</b> 뒤이어 재조회가 돌면 {@code setRows} 가 이 표시를 지우므로
+   * (재조회한 목록에는 그 행이 없을 수도 있다) 남는 것은 {@code reloadAfter: false} 인
+   * 화면뿐이다 — 거기서는 사용자가 <b>실패한 행을 그 자리에서 고친다</b>.
+   */
+  const showReport = useCallback(
+    (report: RowReport, sent: GridRow<T>[] | null) =>
+      new Promise<void>((resolve) => {
+        const located = serverIssues(report.rows, [], sent, options.columns);
+        setIssues(located.issues);
+        modal.warning({
+          width: ISSUE_MODAL_WIDTH,
+          title: label(MSG.GRID_PARTIAL_TITLE),
+          content: issueTable(
+            located.entries,
+            issueColors,
+            label(MSG.GRID_PARTIAL_SUMMARY, {
+              total: report.total,
+              done: report.done,
+              failed: report.failed,
+            }),
+          ),
+          okText: label(MSG.GRID_CONFIRM_OK),
+          onOk: () => resolve(),
+        });
+      }),
+    [issueColors, modal, options.columns],
+  );
+
+  /**
+   * 선언대로 왔나 — 아니면 <b>개발자에게 말하고</b> 평소의 성공 모달로 떨어진다.
+   *
+   * <p>{@code progress} 가 {@code jobId} 를 못 찾았을 때와 같은 처리다. 사용자에게 빈 표를
+   * 띄우는 것보다 <b>아무 일 없었던 것처럼 성공을 말하는 편</b>이 낫다 — 어긋난 것은
+   * 응답이지 사용자의 입력이 아니다.
+   */
+  const reportIfDeclared = useCallback((declared: boolean, result: unknown, url: string) => {
+    if (!declared) return null;
+    const report = reportOf(result);
+    // 개발자용이라 영어다 — 화면에 나가는 문구가 아니다(sys/code.md).
+    if (report === null) console.error(`Declared perRow but returned no report: ${url}`);
+    return report;
+  }, []);
+
   const save = useCallback(async () => {
     const saveApi = api?.save;
     if (!saveApi || (!toSavePayload && !toSaveRow) || inFlight.current) return;
@@ -614,13 +682,17 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
     try {
       const result = await post(saveApi.url, payload);
       // ⑤ 성공 모달 — 확인이 다음 단계(재조회)를 트리거한다(frontend/grid.md).
-      await new Promise<void>((resolve) => {
-        modal.success({
-          content: label(MSG.GRID_SAVE_DONE),
-          okText: label(MSG.GRID_CONFIRM_OK),
-          onOk: () => resolve(),
-        });
-      });
+      //    <b>건별 저장은 실패가 있으면 결과 표가 그 자리를 대신한다</b>(row-transaction.md).
+      const report = reportIfDeclared(saveApi.perRow === true, result, saveApi.url);
+      await (report !== null && report.failed > 0
+        ? showReport(report, sent)
+        : new Promise<void>((resolve) => {
+            modal.success({
+              content: label(MSG.GRID_SAVE_DONE),
+              okText: label(MSG.GRID_CONFIRM_OK),
+              onOk: () => resolve(),
+            });
+          }));
       inFlight.current = false;
       setLoading(false);
       if (saveApi.reloadAfter !== false) {
@@ -671,8 +743,10 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
     options.columns,
     page,
     rows,
+    reportIfDeclared,
     saveEnvelope,
     showError,
+    showReport,
     size,
     sorts,
     toSavePayload,
@@ -817,14 +891,23 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
             return;
           }
         }
-        // 성공 모달 — 확인이 다음 단계(재조회)를 트리거한다(frontend/grid.md).
-        await new Promise<void>((resolve) => {
-          modal.success({
-            content: label(MSG.GRID_ACTION_DONE),
-            okText: label(MSG.GRID_CONFIRM_OK),
-            onOk: () => resolve(),
-          });
-        });
+        /*
+          성공 모달 — 확인이 다음 단계(재조회)를 트리거한다(frontend/grid.md).
+
+          <b>건별 실행은 여기서 갈린다</b>(backend/row-transaction.md). 대상 배열이 곧
+          {@code targets} 이므로 순번으로 행을 되찾을 수 있다 — {@code toTargets} 는
+          <b>거르는 자리가 아니라</b> 모양을 바꾸는 자리라 순서가 유지된다.
+        */
+        const report = reportIfDeclared(action.perRow === true, result, action.url);
+        await (report !== null && report.failed > 0
+          ? showReport(report, targets)
+          : new Promise<void>((resolve) => {
+              modal.success({
+                content: label(MSG.GRID_ACTION_DONE),
+                okText: label(MSG.GRID_CONFIRM_OK),
+                onOk: () => resolve(),
+              });
+            }));
         inFlight.current = false;
         setLoading(false);
         if (action.reloadAfter !== false) {
@@ -849,9 +932,11 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
       open,
       options.columns,
       page,
+      reportIfDeclared,
       rows,
       selected,
       showError,
+      showReport,
       size,
       sorts,
     ],
