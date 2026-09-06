@@ -46,6 +46,35 @@ function read(p) {
   }
 }
 
+/** 앞뒤의 마크다운 꾸밈을 턴다 — 뜻이 아니라 서식이다. */
+const strip = (s) => s.replace(/^[-—\s`*|]+/, '').replace(/[\s|"'`*]+$/, '');
+
+/**
+ * 다음 줄로 넘어간 문장을 붙인다 — <b>최대 둘</b>.
+ *
+ * <p>줄바꿈은 글쓴이가 폭을 맞춘 흔적이지 문장의 끝이 아니다. 붙이지 않으면 목록의
+ * 항목이 문장 중간에서 잘려 <b>무엇을 미뤘는지 읽을 수 없다</b>.
+ *
+ * <p><b>새로 시작하는 것에서 멈춘다</b> — 빈 줄 · 다음 항목 · 제목 · 표 · YAML 의 키.
+ * 거기서 멈추지 않으면 남의 문장을 이 항목의 것으로 싣게 된다.
+ *
+ * <p><b>마크다운에서만 붙인다.</b> YAML 은 줄이 곧 값이라 다음 줄은 이어지는 문장이
+ * 아니라 <b>다음 필드</b>다 — 붙이면 <i>…정한다 swallowed_errors: 1 # 임계 0</i> 이 된다.
+ */
+function continuation(lines, at, file) {
+  if (!/\.md$/.test(file)) return '';
+  let out = '';
+  for (let i = at + 1; i <= at + 2 && i < lines.length; i += 1) {
+    const next = lines[i];
+    if (!next.trim()) break;
+    if (/^\s*([-*+]\s|#{1,6}\s|\||```|\d+\.\s)/.test(next)) break;
+    if (/^\s*[\w.-]+:\s/.test(next)) break; // YAML 의 키가 왔다
+    if (!/^\s{2,}/.test(next)) break; // 이어지는 줄은 들여쓰여 있다
+    out += ' ' + next.trim();
+  }
+  return out;
+}
+
 function walk(p, out = []) {
   let st;
   try {
@@ -66,6 +95,10 @@ function walk(p, out = []) {
 
 // ── ① `@defer <기한>` 토큰 — 산문 어디에 있든 잡는다 ─────────────
 // 형식: `@defer G1` · `@defer P4` · `@defer 지금`. 그 줄의 나머지를 내용으로 쓴다.
+//
+// **읽을 수 있게 낸다.** 마크다운 안에 사는 태그라 앞뒤에 백틱과 별표가 붙고, 문장이
+// 다음 줄로 넘어간다 — 그대로 실으면 `` ` — 부분 실패가 남긴…`` 처럼 앞이 깨지고 뒤가
+// 잘린 채 목록에 선다. **읽을 수 없는 항목은 없는 항목과 같다.**
 const files = SCAN.flatMap((s) => walk(join(REPO, s)));
 for (const f of files) {
   const rel = relative(REPO, f).split('\\').join('/');
@@ -73,10 +106,10 @@ for (const f of files) {
   lines.forEach((line, i) => {
     const m = line.match(/@defer\s+([A-Z]?[0-9]|지금|\?)[:\s]*(.*)$/);
     if (!m) return;
-    // 앞의 이음표와, 표 칸 안에 있을 때 딸려 오는 뒤쪽 `|` · 꾸밈 문자를 턴다.
-    const tail = m[2].replace(/^[-—\s]+/, '').replace(/[\s|"'`*]+$/, '');
+    // 앞뒤의 꾸밈(백틱 · 별표 · 이음표)과, 표 칸에서 딸려 오는 `|` 를 턴다.
+    const tail = strip(m[2] + continuation(lines, i, f));
     // `?` 는 **기한을 아직 못 정했다**는 정직한 표시다 — 기한 없음 칸으로 간다.
-    add(m[1] === '?' ? null : m[1], null, tail || line.trim(), `${rel}:${i + 1}`);
+    add(m[1] === '?' ? null : m[1], null, tail || strip(line), `${rel}:${i + 1}`);
   });
 }
 
