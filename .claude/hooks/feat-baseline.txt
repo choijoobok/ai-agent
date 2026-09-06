@@ -415,6 +415,7 @@ sources/backend/domain/src/main/java/com/aiagent/domain/sample/SampleErrorCode.j
 sources/backend/domain/src/main/java/com/aiagent/domain/sample/SampleExcelService.java
 sources/backend/domain/src/main/java/com/aiagent/domain/sample/SampleItemService.java
 sources/backend/domain/src/main/java/com/aiagent/domain/sample/SampleItemSpec.java
+sources/backend/domain/src/main/java/com/aiagent/domain/sample/SampleOrderRowRunner.java
 sources/backend/domain/src/main/java/com/aiagent/domain/sample/SampleOrderService.java
 sources/backend/domain/src/main/java/com/aiagent/domain/sample/SampleOrderSpec.java
 sources/backend/domain/src/main/java/com/aiagent/domain/sample/SampleQueryService.java

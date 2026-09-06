@@ -4,6 +4,7 @@ import com.aiagent.api.sample.singleoffset.request.SampleConfirmRequest;
 import com.aiagent.api.sample.singleoffset.request.SampleOffsetSaveRequest;
 import com.aiagent.api.sample.singleoffset.request.SampleRecalcRequest;
 import com.aiagent.api.trace.TraceId;
+import com.aiagent.core.error.RowReport;
 import com.aiagent.core.response.ApiResponse;
 import com.aiagent.core.search.PageResponse;
 import com.aiagent.core.search.SearchRequest;
@@ -124,13 +125,21 @@ public class SampleSingleOffsetController {
         return ApiResponse.success(queries.getTagCandidateList(), TraceId.current());
     }
 
+    /**
+     * 저장 — <b>행마다 커밋한다</b>(backend/row-transaction.md §4).
+     *
+     * <p><b>부분 실패도 200 이다.</b> 요청은 받아들여졌고 열 건을 시도했으며 그중 셋이
+     * 안 됐다 — {@code 400} 은 <i>요청이 틀려 아무것도 시도하지 못했다</i> 는 뜻이라
+     * 사실과 다르다. 전건이 실패해도 같다: 사용자가 할 일이 같기 때문이다(표를 보고
+     * 고쳐 다시 낸다).
+     */
     @Operation(
             summary = "샘플 주문 저장 — 전 컬럼",
-            description = "신규·수정·삭제를 한 트랜잭션으로 반영한다. 태그는 배열을 받아 자식 테이블 행으로 편다.")
+            description = "신규·수정·삭제를 행마다 커밋한다. 실패한 행만 되돌아가고 결과를 건별로 돌려준다.")
     @PostMapping("/saveOffsetOrders")
-    public ApiResponse<Void> saveOffsetOrders(@RequestBody @Valid SampleOffsetSaveRequest request) {
-        orderService.saveFullOrders(request.rows());
-        return ApiResponse.success(null, TraceId.current());
+    public ApiResponse<RowReport> saveOffsetOrders(
+            @RequestBody @Valid SampleOffsetSaveRequest request) {
+        return ApiResponse.success(orderService.saveFullOrders(request.rows()), TraceId.current());
     }
 
     /**
@@ -138,15 +147,18 @@ public class SampleSingleOffsetController {
      *
      * <p>고른 행 몇의 상태 하나를 바꾸는 일이라 응답이 곧 끝이다. 여기에 진행률을 붙이면
      * 창이 떴다가 바로 닫히고, 그 깜빡임은 <i>무언가 잘못됐나</i> 로 읽힌다(backend/crosscutting.md).
+     *
+     * <p><b>건수를 돌려주지 않는다.</b> {@code {count: 16}} 이었는데, 그 수로는 <i>어느 넷이
+     * 왜</i> 안 됐는지 말할 수 없다 — 그리고 그때는 하나라도 걸리면 <b>스물 전부를 거절</b>했다.
      */
     @Operation(
             summary = "샘플 주문 확정",
-            description = "접수 상태의 주문을 확정으로 옮긴다. 하나라도 대상이 아니면 전부 거부한다.")
+            description = "접수 상태의 주문을 확정으로 옮긴다. 행마다 커밋하고 안 된 행의 사유를 돌려준다.")
     @PostMapping("/confirmOrders")
-    public ApiResponse<Map<String, Integer>> confirmOrders(
-            @RequestBody @Valid SampleConfirmRequest request) {
-        int confirmed = orderService.confirm(request.targets().stream().map(Long::valueOf).toList());
-        return ApiResponse.success(Map.of("count", confirmed), TraceId.current());
+    public ApiResponse<RowReport> confirmOrders(@RequestBody @Valid SampleConfirmRequest request) {
+        RowReport report =
+                orderService.confirm(request.targets().stream().map(Long::valueOf).toList());
+        return ApiResponse.success(report, TraceId.current());
     }
 
     /**

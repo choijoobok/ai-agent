@@ -115,7 +115,19 @@ export function SampleSingleOffsetPage() {
   const api = useMemo(
     () => ({
       read: { url: SAMPLE_OFFSET_ENDPOINTS.getOrderOffsetList, emptyNotice: true },
-      save: { url: SAMPLE_OFFSET_ENDPOINTS.saveOffsetOrders },
+      /*
+        **저장은 `keepFailed` 다**(screen/sample/single-offset/requirements.md §6-1). 가르는 물음은
+        하나다 — *실패한 행을 사용자가 이 화면에서 고쳐 다시 내나?* 저장이 거부되는
+        이유는 대개 **값이 틀린 것**이라 답이 예이고, 그때 재조회하면 **고치던 값이
+        서버 값으로 되돌아간다** — 방금 읽은 사유가 가리키는 자리를 다시 찾아 들어가야 한다.
+
+        치르는 값은 **성공한 신규 행의 채번값이 화면에 오지 않는 것**이다. 재조회하지
+        않기 때문이며, 고쳐 낼 것이 남은 화면에서는 그쪽이 더 싸다.
+      */
+      save: {
+        url: SAMPLE_OFFSET_ENDPOINTS.saveOffsetOrders,
+        perRow: { after: 'keepFailed' as const },
+      },
       actions: [
         {
           /*
@@ -131,6 +143,17 @@ export function SampleSingleOffsetPage() {
             row.data.ordStatCd === STAT_RCV && !row.data.lockYn,
           hint: MSG.SAMPLE_ACTION_CONFIRM_HINT,
           confirm: MSG.SAMPLE_ACTION_CONFIRM_CONFIRM,
+          /*
+            **확정은 `reload` 다** — 같은 화면인데 저장과 답이 다르다. 선언이 화면이 아니라
+            `save` 와 `actions[]` **각각**에 붙는 것이 그래서다.
+
+            실행 실패는 *값이 틀린 것* 이 아니라 **그 사이 상태가 바뀐 것**이라 이 화면에서
+            고칠 수 없다. 남겨 두면 손댈 수 없는 행이 목록에 박혀 다음 조회까지 남는다.
+
+            대신 **닫는 순간 실패 목록이 사라지므로** 결과 모달이 그 사실을 먼저 말한다
+            (`grid.partial.gone`) — 남는 것은 내려받아 둔 파일뿐이다.
+          */
+          perRow: { after: 'reload' as const },
           /*
             **봉투의 이름은 `targets` 로 고정이다**(frontend/grid.md) — `toTargets` 는 *모양만 바꾸는
             자리* 라 그 이름을 바꾸지 못한다. 여기서 `{ ordIds: [...] }` 를 돌려주면 몸통이

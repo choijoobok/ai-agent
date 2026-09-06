@@ -49,6 +49,18 @@ public final class SampleRules {
     /** 태그 유형의 기본 — 사용자가 유형까지 고르지 않으면 <i>일반</i> 이다(playbook/INDEX.md). */
     static final String DEFAULT_TAG_TYPE = "GEN";
 
+    /*
+      샘플에서 채널·우선순위는 화면이 그리지 않는다(playbook/INDEX.md 의 아홉 컬럼). NOT NULL 이라
+      값은 있어야 하므로 신규 행에 기본을 준다 — 그 컬럼을 그리는 화면이 서는 날 그
+      화면이 사용자에게 묻는다.
+
+      **둘을 쓰는 곳이 둘이 됐다** — 아홉 컬럼의 저장(SampleOrderService)과 서른 컬럼의
+      저장(SampleOrderRowRunner). 한쪽에 두고 빌려 쓰면 *왜 저 클래스의 상수인가* 가
+      남으므로 규칙이 사는 자리로 옮겼다.
+    */
+    static final String DEFAULT_CHNL = "WEB";
+    static final String DEFAULT_PRIORITY = "NORMAL";
+
     private SampleRules() {}
 
     /**

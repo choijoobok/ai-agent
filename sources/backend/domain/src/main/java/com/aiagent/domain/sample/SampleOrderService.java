@@ -1,22 +1,21 @@
 package com.aiagent.domain.sample;
 
-import static com.aiagent.domain.sample.SampleRules.DEFAULT_TAG_TYPE;
+import static com.aiagent.domain.sample.SampleRules.DEFAULT_CHNL;
+import static com.aiagent.domain.sample.SampleRules.DEFAULT_PRIORITY;
 import static com.aiagent.domain.sample.SampleRules.MAX_TAGS;
 import static com.aiagent.domain.sample.SampleRules.requireText;
 import static com.aiagent.domain.sample.SampleRules.requireUnlocked;
 
 import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.RowReport;
 import com.aiagent.core.error.RowTx;
 import com.aiagent.core.grid.RowState;
 import com.aiagent.domain.progress.Progress;
 import com.aiagent.domain.sample.entity.SmplOrder;
-import com.aiagent.domain.sample.entity.SmplOrderTag;
 import com.aiagent.domain.sample.repository.SmplOrderRepository;
-import com.aiagent.domain.sample.repository.SmplOrderTagRepository;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,27 +42,40 @@ import org.springframework.transaction.annotation.Transactional;
  * <td>{@code LOCK_YN} 은 상태와 다른 축이다(playbook/INDEX.md) — {@link SampleRules} 가 본다</td></tr>
  * </table>
  *
- * <h2>전건을 먼저 보고 그다음에 쓴다</h2>
+ * <h2>커밋 경계가 저장마다 다르다</h2>
  *
- * <p>섞으면 거부되는 요청이 쓰기를 한 번 내고 돌아가며, 롤백해도 <b>시퀀스는 뛴다</b> —
- * 이 테이블은 채번을 쓰므로 실제로 일어난다({@code NoticeService} 와 같은 순서).
+ * <table><caption></caption>
+ *   <tr><td>{@link #saveOrders}</td><td><b>전건 한 덩이</b> — 전건을 먼저 보고 그다음에 쓴다.
+ *       섞으면 거부되는 요청이 쓰기를 한 번 내고 돌아가며, 롤백해도 <b>시퀀스는 뛴다</b></td></tr>
+ *   <tr><td>{@link #saveFullOrders} · {@link #confirm}</td><td><b>행마다</b>(backend/row-transaction.md §4) —
+ *       실패한 행만 되돌아간다. 쓰기는 {@link SampleOrderRowRunner} 가 갖는다</td></tr>
+ * </table>
+ *
+ * <p><b>건별이라고 검증이 사라지지 않는다.</b> 행 하나 안에서 <i>검증 → 쓰기</i> 순서가
+ * 그대로 서며, 그래서 <b>채번은 그 행의 검증을 통과한 뒤</b>에 온다. 통과하지 못한 행은
+ * 번호를 먹지 않는다 — 먹고 나서 실패하면 그 번호는 <b>아무 주문도 갖지 못한 채 버려진다</b>
+ * (screen/sample/single-offset/requirements.md §6-1). 그렇게 생긴 구멍은 정상이다:
+ * {@code ORD_ID} 는 <b>식별자이지 연번이 아니다</b>.
+ *
+ * <p><b>이 둘에 {@code @Transactional} 이 없다.</b> 걸면 행마다 커밋되지 않는다 —
+ * {@code RowTxConventionTest} 가 그것을 센다.
  */
 @Service
 public class SampleOrderService {
 
     private final SmplOrderRepository orders;
-    private final SmplOrderTagRepository tags;
     private final SampleQueryService queries;
+    private final SampleOrderRowRunner runner;
     private final Clock clock;
 
     public SampleOrderService(
             SmplOrderRepository orders,
-            SmplOrderTagRepository tags,
             SampleQueryService queries,
+            SampleOrderRowRunner runner,
             Clock clock) {
         this.orders = orders;
-        this.tags = tags;
         this.queries = queries;
+        this.runner = runner;
         this.clock = clock;
     }
 
@@ -93,15 +105,23 @@ public class SampleOrderService {
     }
 
     /**
-     * (1)의 저장 — 68 &sect;3. <b>{@link #saveOrders} 와 받는 컬럼이 다르다.</b>
+     * (1)의 저장 — <b>행마다 커밋한다</b>(backend/row-transaction.md §4).
      *
-     * <p>{@link SmplOrderFullSaveRow} 가 왜 갈리는지를 적어 두었다. 여기서 더 하는 일은
-     * <b>태그를 행으로 펴는 것</b> 하나다.
+     * <p>{@link #saveOrders} 와 받는 컬럼이 다르고({@link SmplOrderFullSaveRow} 가 이유를 적어
+     * 두었다) <b>경계도 다르다</b>. 열 건을 냈는데 셋이 걸렸을 때 일곱을 함께 되돌리면,
+     * 사용자는 <b>고칠 것 셋을 찾으려고 열 건을 다시 훑는다</b>.
+     *
+     * <p><b>검증이 쓰기보다 앞이다</b> — 행 하나 안에서. 그래서 통과하지 못한 행은 번호를
+     * 먹지 않는다(클래스 머리말).
+     *
+     * <p><b>요청 안의 중복은 여기서 본다.</b> 러너는 행 하나만 알고 있어 <i>같은 주문이 두 번
+     * 왔다</i> 를 판정할 수 없다 — 그 사실은 <b>배열이 갖는다</b>.
+     *
+     * @return 몇 건을 했고 무엇이 왜 안 됐나. <b>던지지 않는다</b>
      */
-    @Transactional
-    public void saveFullOrders(List<SmplOrderFullSaveRow> rows) {
+    public RowReport saveFullOrders(List<SmplOrderFullSaveRow> rows) {
         Set<String> seen = new HashSet<>();
-        RowTx.oneTxForAll(rows, row -> {
+        return RowTx.oneTxPerRow(rows, row -> {
             if (row.ordId() != null && !seen.add(row.ordId())) {
                 throw new BusinessException(
                         SampleErrorCode.NOT_FOUND,
@@ -112,40 +132,27 @@ public class SampleOrderService {
             if (row.rowState() != RowState.D) {
                 validateFull(row);
             }
-        });
-
-        RowTx.oneTxForAll(rows, row -> {
-            switch (row.rowState()) {
-                case C -> createFullOrder(row);
-                case U -> updateFullOrder(row);
-                case D -> deleteFullOrder(row);
-            }
+            runner.writeFull(row);
         });
     }
 
     /**
-     * 확정 &mdash; {@code RCV} 만 간다(48 &sect;3.2). <b>프로그레스가 없다</b>(68 &sect;3.4).
+     * 확정 — {@code RCV} 만 간다. <b>프로그레스가 없다</b>(playbook/INDEX.md).
      *
      * <p>고른 행 몇의 상태 하나를 바꾸는 일이라 응답이 곧 끝이며, 그 사실이 <b>같은 {@code X}
      * 액션인 일괄 재계산과 갈리는 지점</b>이다 &mdash; 이 화면이 시연하려는 것이 그 갈림이다.
      *
-     * <p><b>화면이 이미 걸렀어도 다시 본다</b>({@code eligible} &middot; 55 &sect;7). 고른 뒤
-     * 남이 상태를 바꿨을 수 있고, 걸러진 목록은 <b>조회 시점의 값</b>이다.
+     * <p><b>행마다 커밋한다.</b> 예전에는 스물 중 하나가 걸리면 <b>스물 전부를 거절</b>했는데,
+     * 확정은 행끼리 아무 관계가 없는 일이라 그럴 이유가 없었다 — 그 사이 남이 상태를 바꾼
+     * 주문 하나가 나머지 열아홉을 막았다.
+     *
+     * <p><b>여기서는 아무것도 보지 않는다.</b> 판정도 쓰기도 러너의 트랜잭션 안이어야
+     * 하는데, 바깥에서 미리 읽으면 그 값은 <b>커밋 시점의 것이 아니다</b>.
+     *
+     * @return 몇 건을 확정했고 무엇이 왜 안 됐나
      */
-    @Transactional
-    public int confirm(List<Long> ordIds) {
-        List<SmplOrder> targets = orders.findByOrdIdIn(ordIds);
-        if (targets.size() != ordIds.size()) {
-            throw new BusinessException(SampleErrorCode.NOT_FOUND, "some orders are gone");
-        }
-        for (SmplOrder order : targets) {
-            if (!order.confirmable()) {
-                throw new BusinessException(
-                        SampleErrorCode.NOT_CONFIRMABLE, "not confirmable: " + order.getOrdNo());
-            }
-        }
-        targets.forEach(SmplOrder::confirm);
-        return targets.size();
+    public RowReport confirm(List<Long> ordIds) {
+        return RowTx.oneTxPerRow(ordIds, runner::confirmOne);
     }
 
     /**
@@ -284,113 +291,6 @@ public class SampleOrderService {
         orders.delete(order);
     }
 
-    private void createFullOrder(SmplOrderFullSaveRow row) {
-        if (orders.existsByOrdNo(row.ordNo())) {
-            throw new BusinessException(
-                    SampleErrorCode.DUPLICATED,
-                    "duplicated: " + row.ordNo(),
-                    List.of(new BusinessException.FieldError(
-                            "ordNo", "이미 있는 주문번호입니다", row.ordNo())));
-        }
-        SmplOrder order = SmplOrder.create(
-                row.ordNo(),
-                row.ordNm(),
-                row.custId(),
-                row.custNm(),
-                row.ordStatCd() == null ? OrderStatus.RCV.name() : row.ordStatCd(),
-                row.chnlCd() == null ? DEFAULT_CHNL : row.chnlCd(),
-                row.priorityCd() == null ? DEFAULT_PRIORITY : row.priorityCd(),
-                row.ordDt(),
-                clock.instant());
-        applyFull(order, row);
-        orders.save(order);
-        // 채번이 끝난 뒤라야 태그가 붙을 부모가 있다 — save 가 ORD_ID 를 정한다.
-        replaceTags(order.getOrdId(), row);
-    }
-
-    private void updateFullOrder(SmplOrderFullSaveRow row) {
-        SmplOrder order = queries.require(Long.valueOf(row.ordId()));
-        requireUnlocked(order);
-        applyFull(order, row);
-        replaceTags(order.getOrdId(), row);
-    }
-
-    private void deleteFullOrder(SmplOrderFullSaveRow row) {
-        SmplOrder order = queries.require(Long.valueOf(row.ordId()));
-        requireUnlocked(order);
-        if (queries.itemCount(order.getOrdId()) > 0) {
-            throw new BusinessException(
-                    SampleErrorCode.HAS_ITEMS,
-                    "order still has items: " + order.getOrdNo(),
-                    List.of(new BusinessException.FieldError(
-                            "ordNo", "품목이 남아 있어 지울 수 없습니다", order.getOrdNo())));
-        }
-        /*
-          태그를 먼저 지운다. FK 가 RESTRICT 라(playbook/INDEX.md) 남겨 두면 주문 삭제가 제약 위반으로
-          막히고, 그 실패는 "제약 위반" 이라는 읽을 수 없는 문구로만 사용자에게 닿는다.
-        */
-        tags.deleteByOrdId(order.getOrdId());
-        orders.delete(order);
-    }
-
-    private void applyFull(SmplOrder order, SmplOrderFullSaveRow row) {
-        order.modifyFull(
-                row.ordNm(),
-                row.custId(),
-                row.custNm(),
-                row.custGrdCd(),
-                row.ordStatCd() == null ? order.getOrdStatCd() : row.ordStatCd(),
-                row.chnlCd() == null ? order.getChnlCd() : row.chnlCd(),
-                row.priorityCd() == null ? order.getPriorityCd() : row.priorityCd(),
-                row.ordDt(),
-                row.dlvrYm(),
-                row.ordQtyOrZero(),
-                row.unitAmtOrZero(),
-                row.dcRtOrZero(),
-                row.urgentYnOrFalse(),
-                row.useYnOrTrue(),
-                row.memo(),
-                row.rmk());
-    }
-
-    /**
-     * 태그를 <b>전량 교체</b>한다 &mdash; 화면이 배열을 통째로 보내기 때문이다.
-     *
-     * <p>diff 를 뜨지 않는 것은 <b>순서가 값이기 때문</b>이다(48 &sect;4.1 의 {@code SORT_NO}).
-     * 항목 하나를 앞으로 끌면 이름은 하나도 안 바뀌었는데 순서가 전부 바뀌고, 그때 diff 는
-     * <i>바뀐 것이 없다</i> 로 읽는다.
-     *
-     * <p><b>{@code TAG_SEQ} 와 {@code SORT_NO} 가 같은 값이다.</b> 갈리는 편집(순번을 유지한
-     * 채 순서만 바꾸기)은 {@link SampleTagService} 에 있다 &mdash; 어휘가 둘이라 클래스도
-     * 둘이며, 두 갈래가 보는 개수 상한은 {@link SampleRules#MAX_TAGS} 하나다.
-     */
-    private void replaceTags(Long ordId, SmplOrderFullSaveRow row) {
-        // 개수는 validateFull 이 전건 앞에서 이미 봤다 — 여기서 또 보면 첫 행의 쓰기가 나간다.
-        List<SmplOrderTagRow> wanted = row.tagListOrEmpty();
-
-        tags.deleteByOrdId(ordId);
-        // 지우고 곧바로 같은 키를 넣는다 — flush 를 강제하지 않으면 INSERT 가 먼저 나간다.
-        tags.flush();
-
-        List<SmplOrderTag> saved = new ArrayList<>(wanted.size());
-        for (int index = 0; index < wanted.size(); index++) {
-            SmplOrderTagRow tag = wanted.get(index);
-            if (tag == null || tag.tagNm() == null || tag.tagNm().isBlank()) {
-                throw new BusinessException(
-                        SampleErrorCode.REQUIRED,
-                        "tag name is required",
-                        List.of(new BusinessException.FieldError("tagList", "태그명이 비어 있습니다")));
-            }
-            saved.add(SmplOrderTag.of(
-                    ordId,
-                    index + 1,
-                    tag.tagNm().trim(),
-                    tag.tagTypeCd() == null ? DEFAULT_TAG_TYPE : tag.tagTypeCd(),
-                    index + 1));
-        }
-        tags.saveAll(saved);
-    }
-
     private static void validateFull(SmplOrderFullSaveRow row) {
         requireText(row.ordNo(), "ordNo");
         requireText(row.ordNm(), "ordNm");
@@ -452,12 +352,4 @@ public class SampleOrderService {
             OrderStatus.of(row.ordStatCd());
         }
     }
-
-    /*
-      샘플에서 채널·우선순위는 화면이 그리지 않는다(playbook/INDEX.md 의 아홉 컬럼). NOT NULL 이라
-      값은 있어야 하므로 신규 행에 기본을 준다 — 그 컬럼을 그리는 화면이 서는 날 그
-      화면이 사용자에게 묻는다.
-    */
-    private static final String DEFAULT_CHNL = "WEB";
-    private static final String DEFAULT_PRIORITY = "NORMAL";
 }

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.RowReport;
 import com.aiagent.core.grid.RowState;
 import com.aiagent.domain.sample.entity.SmplOrder;
 import com.aiagent.domain.sample.repository.SmplOrderRepository;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -42,8 +44,16 @@ class SampleOrderServiceTest {
     private final SmplOrderTagRepository tags = mock(SmplOrderTagRepository.class);
     private final SampleQueryService queries = mock(SampleQueryService.class);
 
+    /**
+     * <b>러너는 진짜다.</b> 건별 커밋의 본문이 거기 있어(backend/row-transaction.md §4) 목으로 두면
+     * <i>몇 건이 됐나</i> 만 남고 <b>무엇이 쓰였나</b> 가 사라진다 — 태그 상한 검사가
+     * 보는 것이 바로 그 쓰기다.
+     */
+    private final SampleOrderRowRunner runner =
+            new SampleOrderRowRunner(orders, tags, queries, Clock.fixed(NOW, ZoneOffset.UTC));
+
     private final SampleOrderService service =
-            new SampleOrderService(orders, tags, queries, Clock.fixed(NOW, ZoneOffset.UTC));
+            new SampleOrderService(orders, queries, runner, Clock.fixed(NOW, ZoneOffset.UTC));
 
     static SmplOrder order(String ordNo, String stat) {
         return SmplOrder.create(
@@ -186,23 +196,177 @@ class SampleOrderServiceTest {
         void acceptsUpToLimit() {
             when(queries.require(1L)).thenReturn(order("SO-1", "RCV"));
 
-            service.saveFullOrders(List.of(update("1", SampleRules.MAX_TAGS)));
+            assertThat(service.saveFullOrders(List.of(update("1", SampleRules.MAX_TAGS))).done())
+                    .isEqualTo(1);
 
             verify(tags).saveAll(any());
         }
 
+        /** <b>던지지 않는다.</b> 건별은 실패를 <i>결과</i> 로 답한다(backend/row-transaction.md §4). */
         @Test
-        @DisplayName("하나 넘으면 거부하고 — 지우기가 나가지 않는다")
+        @DisplayName("하나 넘으면 그 행만 실패하고 — 지우기가 나가지 않는다")
         void rejectsOverLimitBeforeWriting() {
             when(queries.require(1L)).thenReturn(order("SO-1", "RCV"));
 
-            assertThatThrownBy(() ->
-                            service.saveFullOrders(List.of(update("1", SampleRules.MAX_TAGS + 1))))
-                    .isInstanceOf(BusinessException.class)
-                    .hasMessageContaining("too many tags");
+            RowReport report = service.saveFullOrders(List.of(update("1", SampleRules.MAX_TAGS + 1)));
 
+            assertThat(report.failed()).isEqualTo(1);
+            assertThat(report.rows().getFirst().fields().getFirst().field()).isEqualTo("tagList");
             verify(tags, never()).deleteByOrdId(any());
             verify(tags, never()).saveAll(any());
+        }
+    }
+
+    /**
+     * 건별 커밋 — backend/row-transaction.md §4 · screen/sample/single-offset/requirements.md §6-1.
+     *
+     * <p>여기서 세는 것은 <b>실패한 행이 나머지를 데려가지 않는가</b> 다. 예전에는 스물 중
+     * 하나가 걸리면 <b>스물 전부가 거절</b>됐고, 그러면 사용자는 고칠 것 하나를 찾으려고
+     * 스물을 다시 훑었다.
+     *
+     * <p><b>사유가 어느 칸을 짚는지도 함께 센다</b>(§6-2). 순번만 돌려주면 화면은 붉힐 셀도
+     * 표에 적을 줄도 없어 <b>빈 표</b>를 띄운다 — 그때 게이트는 초록이다.
+     */
+    @Nested
+    @DisplayName("건별 커밋 — 실패한 행만 되돌아간다")
+    class PerRow {
+
+        @Test
+        @DisplayName("확정 — 접수 아닌 것이 섞여도 나머지는 확정된다")
+        void confirmsTheRest() {
+            SmplOrder rcv1 = order("SO-1", "RCV");
+            SmplOrder cfm = order("SO-2", "CFM");
+            SmplOrder rcv2 = order("SO-3", "RCV");
+            when(orders.findById(1L)).thenReturn(Optional.of(rcv1));
+            when(orders.findById(2L)).thenReturn(Optional.of(cfm));
+            when(orders.findById(3L)).thenReturn(Optional.of(rcv2));
+
+            RowReport report = service.confirm(List.of(1L, 2L, 3L));
+
+            assertThat(report.total()).isEqualTo(3);
+            assertThat(report.done()).isEqualTo(2);
+            assertThat(report.failed()).isEqualTo(1);
+            assertThat(rcv1.getOrdStatCd()).isEqualTo("CFM");
+            assertThat(rcv2.getOrdStatCd()).isEqualTo("CFM");
+        }
+
+        /** 순번은 <b>요청 배열의 것</b>이다 — 서버는 그 순서를 바꾸지 않는다. */
+        @Test
+        @DisplayName("확정 — 실패한 행의 순번이 요청 배열의 자리다")
+        void keepsRequestOrder() {
+            when(orders.findById(1L)).thenReturn(Optional.of(order("SO-1", "CFM")));
+            when(orders.findById(2L)).thenReturn(Optional.of(order("SO-2", "RCV")));
+
+            RowReport report = service.confirm(List.of(1L, 2L));
+
+            assertThat(report.rows().getFirst().index()).isZero();
+        }
+
+        /** 확정 불가의 이유는 <b>상태</b>다 — 그 칸이 붉어져야 사용자가 무엇을 볼지 안다. */
+        @Test
+        @DisplayName("확정 — 접수가 아니면 주문 상태 칸을 짚는다")
+        void pointsAtStatus() {
+            when(orders.findById(1L)).thenReturn(Optional.of(order("SO-1", "DON")));
+
+            RowReport report = service.confirm(List.of(1L));
+
+            BusinessException.FieldError field = report.rows().getFirst().fields().getFirst();
+            assertThat(field.field()).isEqualTo("ordStatCd");
+            assertThat(field.message()).contains("접수");
+            assertThat(field.value()).isEqualTo("DON");
+        }
+
+        /**
+         * <b>잠금도 상태 칸이 받는다.</b> {@code LOCK_YN} 은 화면에서 {@code hidden} 이라
+         * 칠할 칸이 없다 — 없는 칸을 가리키면 표의 줄만 남고 붉은 셀이 서지 않는다.
+         */
+        @Test
+        @DisplayName("확정 — 잠긴 주문도 상태 칸을 짚고 사유만 갈린다")
+        void lockedPointsAtStatusToo() {
+            SmplOrder locked = mock(SmplOrder.class);
+            when(locked.confirmable()).thenReturn(false);
+            when(locked.getLockYn()).thenReturn(Boolean.TRUE);
+            when(locked.getOrdStatCd()).thenReturn("RCV");
+            when(orders.findById(1L)).thenReturn(Optional.of(locked));
+
+            RowReport report = service.confirm(List.of(1L));
+
+            BusinessException.FieldError field = report.rows().getFirst().fields().getFirst();
+            assertThat(field.field()).isEqualTo("ordStatCd");
+            assertThat(field.message()).contains("잠긴");
+        }
+
+        /** 그 사이 남이 지웠다 — <b>식별자가 사라진 것</b>이라 주문번호 칸이 받는다. */
+        @Test
+        @DisplayName("확정 — 없어진 주문은 주문번호 칸을 짚는다")
+        void missingPointsAtOrdNo() {
+            when(orders.findById(1L)).thenReturn(Optional.of(order("SO-1", "RCV")));
+            when(orders.findById(9L)).thenReturn(Optional.empty());
+
+            RowReport report = service.confirm(List.of(1L, 9L));
+
+            assertThat(report.done()).isEqualTo(1);
+            assertThat(report.rows().getFirst().fields().getFirst().field()).isEqualTo("ordNo");
+        }
+
+        /**
+         * <b>검증이 채번보다 앞이다</b>(§6-1). 통과하지 못한 행이 번호를 먹으면 그 번호는
+         * 아무 주문도 갖지 못한 채 버려진다 — 구멍은 감수하는 것이지 만들 이유가 없다.
+         */
+        @Test
+        @DisplayName("저장 — 검증에서 걸린 행은 쓰기까지 가지 않는다")
+        void validationComesBeforeWriting() {
+            when(queries.require(1L)).thenReturn(order("SO-1", "RCV"));
+
+            RowReport report = service.saveFullOrders(
+                    List.of(update("1", SampleRules.MAX_TAGS + 1), update("1", 1)));
+
+            // 첫 행은 태그 상한, 둘째 행은 같은 주문이 두 번 — 둘 다 쓰기 앞에서 걸린다.
+            assertThat(report.failed()).isEqualTo(2);
+            verify(tags, never()).saveAll(any());
+        }
+
+        /**
+         * <b>요청 안의 중복은 바깥이 본다.</b> 러너는 행 하나만 알고 있어 <i>같은 주문이 두 번
+         * 왔다</i> 를 판정할 수 없다 — 그 사실은 배열이 갖는다.
+         */
+        @Test
+        @DisplayName("저장 — 같은 주문이 두 번 오면 뒤엣것만 실패한다")
+        void duplicateFailsOnlyTheSecond() {
+            when(queries.require(1L)).thenReturn(order("SO-1", "RCV"));
+
+            RowReport report = service.saveFullOrders(List.of(update("1", 1), update("1", 1)));
+
+            assertThat(report.done()).isEqualTo(1);
+            assertThat(report.rows().getFirst().index()).isEqualTo(1);
+            assertThat(report.rows().getFirst().fields().getFirst().field()).isEqualTo("ordNo");
+        }
+
+        /** 전건이 실패해도 <b>던지지 않는다</b> — 사용자가 할 일이 같다(표를 보고 고쳐 다시 낸다). */
+        @Test
+        @DisplayName("확정 — 전건이 실패해도 결과로 답한다")
+        void allFailedIsStillAReport() {
+            when(orders.findById(1L)).thenReturn(Optional.of(order("SO-1", "DON")));
+            when(orders.findById(2L)).thenReturn(Optional.of(order("SO-2", "SHP")));
+
+            RowReport report = service.confirm(List.of(1L, 2L));
+
+            assertThat(report.done()).isZero();
+            assertThat(report.failed()).isEqualTo(2);
+        }
+
+        /**
+         * <b>업무 예외가 아닌 것은 잡지 않는다.</b> 그것은 그 행이 틀린 것이 아니라 시스템이
+         * 고장 난 것이고, 고장 난 채로 남은 행을 계속 미는 것은 손해를 키운다.
+         */
+        @Test
+        @DisplayName("확정 — 시스템 오류는 그대로 올라간다")
+        void systemFailureIsNotARowFailure() {
+            when(orders.findById(1L)).thenReturn(Optional.of(order("SO-1", "RCV")));
+            when(orders.findById(2L)).thenThrow(new IllegalStateException("connection lost"));
+
+            assertThatThrownBy(() -> service.confirm(List.of(1L, 2L)))
+                    .isInstanceOf(IllegalStateException.class);
         }
     }
 
