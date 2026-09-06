@@ -48,14 +48,18 @@ YAML 1건 = 1 케이스:
 `aidd-guide/quality/evals/fixtures/` 하위에 카테고리별 1 YAML:
 
 ```
-07-evals/
-└── fixtures/                  ← (선택) 골든셋 데이터
+quality/evals/
+└── fixtures/            ← 아직 없다. 아래를 보라
     ├── routing.yaml
     ├── generation.yaml
     └── safety.yaml
 ```
 
-> 본 단계에선 정의만 하고 fixture 폴더는 향후 운용 단계에서 채운다.
+> **이 폴더는 아직 만들지 않았다 — 계획이다.** 지금 서 있는 것은 *무엇을 어떤 형식으로
+> 모으나* 의 정의뿐이고 데이터는 없다. **없는 것을 있는 것처럼 적지 않기 위해 여기 적는다.**
+>
+> @defer ? 골든셋 fixtures 를 만든다 — 채울 거리가 실 운용의 실패에서 나오므로(아래 추가
+> 절차) 그전에 만들면 빈 폴더가 *있다* 고 말하게 된다. 기한은 첫 운용에 달렸다.
 
 ## 추가 절차
 
