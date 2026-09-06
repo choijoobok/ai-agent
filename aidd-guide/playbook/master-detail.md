@@ -33,9 +33,10 @@ tags: [playbook, master-detail, splitpane]
 
 ```ts
 const master = useGridController<SampleOrder>({ menuCd, columns: masterColumns, api: masterApi,
-                                                params: collectConditions, addRow, toSavePayload });
+                                                params: collectConditions, addRow, toSaveRow });
 const detail = useGridController<SampleOrderItem>({ menuCd, columns: detailColumns, api: detailApi,
-                                                    searchParams: detailSearchParams, addRow, toSavePayload });
+                                                    searchParams: detailSearchParams, addRow, toSaveRow,
+                                                    saveEnvelope: (rows) => ({ ordId, rows }) });
 ```
 
 - **저장 버튼이 그리드마다 따로다.** 묶으면 *품목만 고쳤는데 주문도 갱신됨* 이 되어 **감사

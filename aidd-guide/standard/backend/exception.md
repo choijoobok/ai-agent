@@ -22,7 +22,7 @@ tags: [backend, exception, error, message]
 ```
 ErrorCode (interface)          code() · type() · defaultMessage()
    └ {도메인}ErrorCode (enum)  도메인마다 하나 — CommonErrorCode · AuthErrorCode …
-BusinessException              ErrorCode + message + List<FieldError>
+BusinessException              ErrorCode + message + List<FieldError> + List<RowError>
 GlobalExceptionHandler         @RestControllerAdvice — 봉투로 감싸고 로그에 남긴다
 ```
 
@@ -39,6 +39,7 @@ GlobalExceptionHandler         @RestControllerAdvice — 봉투로 감싸고 로
 | `INVALID_REQUEST` | **400** | 검증 실패 · 조회조건 위반. 폼이 필드별 오류를 표시한다 |
 | `UNAUTHENTICATED` | **401** | 세션 만료. 프론트는 **재인증 모달** — 로그아웃하지 않는다 |
 | `FORBIDDEN` | **403** | 인가 거부. **`code` 가 갈래를 나른다** |
+| `CONFLICT` | **409** | 읽은 뒤 쓰기 전에 남이 먼저 썼다. **입력이 틀린 것이 아니다** — 답은 *다시 조회* |
 | `INTERNAL_ERROR` | **500** | 그 밖. **스택트레이스를 응답에 담지 않는다** — `traceId` 만 준다 |
 
 **상태 코드를 컨트롤러가 고르지 않는다.** 예외가 나르는 `ErrorType` 이 정한다.
@@ -53,8 +54,24 @@ throw new BusinessException(CommonErrorCode.VALIDATION, msg, List.of(
         new FieldError("lockMinIntervalSec", "〃")));
 ```
 
+**그리드 저장은 행을 짚는다** — `fields` 로는 *어느 줄* 인지 말할 수 없다.
+
+```java
+throw BusinessException.rows(CodeErrorCode.DUPLICATE_CODE, msg, List.of(
+        RowError.of(3, "dtlCd", "이미 있는 코드입니다", "STAT_A"),
+        RowError.of(7, "dtlCd", "이미 있는 코드입니다", "STAT_B")));
+```
+
+- **루프 안에서 던지지 않는다.** 모아서 한 번 던진다 — 하나씩 던지면 사용자가 저장을
+  N 번 눌러 오류를 하나씩 발견하고, **고칠 것이 몇 개인지** 를 끝까지 모른다.
+- **순번은 요청 배열의 것이다.** 행을 `added`·`removed` 로 갈라 담고 **나중 순회의 루프
+  번호**를 실으면 화면에서 **남의 행이 붉어진다**([api.md](./api.md) §3-1).
+- **DB 제약 위반은 여기로 오지 않는다.** flush 시점이라 행을 알 수 없어 전역 핸들러가
+  409 로 돌린다. 행을 짚어야 하면 **서비스가 그 예외를 잡아 다시 검사해** 이 모양으로
+  바꿔 던진다 — 예외 경로에서만 드는 비용이다.
 - **`fieldErrors` 는 배열이다.** 같은 문구가 두 필드에 실릴 수 있다 — *어느 쪽이 틀렸는지
-  서버가 말할 수 없는*, **관계가 틀린** 경우가 있다.
+  서버가 말할 수 없는*, **관계가 틀린** 경우가 있다. `RowError.fields` 가 배열인 것은
+  다른 이유다 — **복합 키**를 나른다.
 - `BusinessException` 이 나르는 `message` 는 **서버 언어**이고 그대로 로그에 남는다.
   응답에 나가는 문구는 **다시 읽은 사용자 언어**다(§4).
 

@@ -67,7 +67,7 @@ SampleSingleOffsetController  /api/service/sample/getOrderOffsetList
 | 조회조건 | `buildSearchFields()` | 파일 아래쪽 함수 |
 | 컬럼 | `buildColumns()` | 〃 (`useMemo` 로 한 번만) |
 | `api` | `read` · `save` · `actions` | `useMemo` |
-| 컨트롤러 | `useGridController({ menuCd, columns, api, params, addRow, toSavePayload })` | |
+| 컨트롤러 | `useGridController({ menuCd, columns, api, params, addRow, toSaveRow })` | |
 | 컨트롤 | `controls` — `beforeRead` 좌 · `beforeTools` 우 | `useMemo` |
 
 **`useMemo` 를 습관으로 두지 않는다 — 근거가 있다.** 컬럼 선언과 `deletable` 이 매 렌더
@@ -82,17 +82,19 @@ SampleSingleOffsetController  /api/service/sample/getOrderOffsetList
 **컨트롤이 컨트롤러를 직접 부르지 않는다.** 고른 값은 `searchParams` 로 흘려보낸다 —
 부르면 셀렉트 하나가 그리드의 미저장 편집을 말없이 버릴 수 있다.
 
-## 4. 저장 — `toSavePayload` 가 인가 경계다
+## 4. 저장 — `toSaveRow` 가 인가 경계다
 
 ```ts
-toSavePayload: (rows) => ({
-  rows: rows.map((row) => ({
-    rowState: row.state,
-    ordId: row.data.ordId,
-    ...(row.state === 'D' ? {} : { /* 고칠 수 있는 컬럼만 */ }),
-  })),
+toSaveRow: (row) => ({
+  rowState: row.state,
+  ordId: row.data.ordId,
+  ...(row.state === 'D' ? {} : { /* 고칠 수 있는 컬럼만 */ }),
 })
 ```
+
+**행 하나만 바꾸고 배열은 배관이 만든다.** 화면이 배열을 만들면 서버가 준 행 순번을
+믿을 수 없어 **서버 오류가 셀에 꽂히지 않는다**
+([standard/frontend/save-errors.md](../standard/frontend/save-errors.md) §3).
 
 | 보내지 않는다 | 왜 |
 |---|---|

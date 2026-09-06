@@ -85,7 +85,7 @@ const loadTab = async (key) => {
 - **`controllerOf` 가 삼항식이 아니라 표다.** 탭 키로 컨트롤러를 찾는 자리가 늘어나므로
   `switch` 나 `Record<TabKey, Controller>` 로 바꾼다 — 삼항을 겹쳐 쓰면 탭을 더할 때마다
   **네 곳을 고치게** 된다.
-- **저장 없는 탭의 컨트롤러는 `api.save` 를 두지 않는다.** `addRow`·`toSavePayload` 도 함께
+- **저장 없는 탭의 컨트롤러는 `api.save` 를 두지 않는다.** `addRow`·`toSaveRow` 도 함께
   뺀다 — 그러면 저장·행 추가 버튼이 서지 않는다([standard/frontend/grid.md](../standard/frontend/grid.md) §3).
   조회 전용 탭이 섞인 화면에서 **탭마다 컨트롤러의 모양이 다른 것이 정상**이다.
 

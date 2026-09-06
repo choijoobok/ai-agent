@@ -101,7 +101,7 @@ node aidd-guide/quality/evals/score-screen.mjs log/login <sbx-A> <sbx-B>
 
 | 묶음 | 세는 법 |
 |---|---|
-| 계약 | `endpoints` 키·URL · `api` 선언(`read`·`save`·`actions`·액션 `key`) · 컨트롤러 옵션(`confirm`·`warn`·`toSavePayload` …) |
+| 계약 | `endpoints` 키·URL · `api` 선언(`read`·`save`·`actions`·액션 `key`) · 컨트롤러 옵션(`confirm`·`warn`·`toSaveRow` …) |
 | 타입 | `interface`/`type` 이름과 필드 |
 | 화면 | 컬럼 `field`·`width`·`type` · **조회조건**(`SearchField[]` 블록에서 따로 뽑는다) |
 | **편집** | `editable` · `required`·`pk` · `validate`·`afterEdit`·`popup`·`listModal`·`viewer` · 값의 출처(`grpCd`·`options`·`dynamic`) |
