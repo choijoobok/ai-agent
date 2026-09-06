@@ -1,6 +1,6 @@
 import { createElement, useCallback, useMemo, useRef, useState } from 'react';
 import { App, theme } from 'antd';
-import { post, ApiError, type RowReport } from '@/shared/api';
+import { post, ApiError, type FieldError, type RowReport } from '@/shared/api';
 import { hasPermission } from '@/shared/authz/permission';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
@@ -556,6 +556,48 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
   );
 
   /**
+   * <b>서버가 행을 짚은 실패</b>를 셀과 표로 되돌린다 — frontend/grid.md.
+   *
+   * <p>문구 한 줄만 띄우면 <i>어느 줄의 무슨 값이 문제인가</i> 를 사용자가 읽어 낼 수 없고,
+   * 일괄 처리는 화면에 안 보이는 행까지 나가므로 그 줄이 지금 화면에 없을 수도 있다.
+   *
+   * <p><b>저장과 실행이 같은 함수를 쓴다.</b> 전건 롤백에서 사용자에게 벌어진 일은 둘이
+   * 같다 — <i>아무것도 안 됐고, 화면에 있는 것이 곧 다시 낼 입력이다</i>. 실행만 문구 한
+   * 줄로 닫으면 서버가 짚어 준 행을 <b>화면이 버리는 것</b>이 된다.
+   *
+   * <p>{@code locate} 는 <b>행을 짚지 못하는 옛 응답</b>의 통로다 — 저장에만 있고, 서버가
+   * {@code rows} 를 보내기 시작한 화면에서는 필요 없다.
+   *
+   * @return 짚어 냈으면 {@code true} — 아니면 부르는 쪽이 평소의 오류 모달로 떨어뜨린다
+   */
+  const showRowFailure = useCallback(
+    (
+      error: unknown,
+      sent: GridRow<T>[] | null,
+      locate?: (fields: FieldError[]) => GridIssue[],
+    ): boolean => {
+      if (!(error instanceof ApiError) || (error.rows.length === 0 && error.fields.length === 0)) {
+        return false;
+      }
+      const located = serverIssues(error.rows, error.fields, sent, options.columns);
+      if (located.issues.length > 0) {
+        setIssues(located.issues);
+      } else if (locate && error.fields.length > 0) {
+        setIssues(locate(error.fields));
+      }
+      // 제목은 <b>서버가 완성한 문구</b>다 — 표는 상세이고 이것이 요약이다(backend/packages.md).
+      modal.error({
+        width: ISSUE_MODAL_WIDTH,
+        title: error.message,
+        content: issueTable(located.entries, issueColors),
+        okText: label(MSG.GRID_CONFIRM_OK),
+      });
+      return true;
+    },
+    [issueColors, modal, options.columns],
+  );
+
+  /**
    * <b>건별 처리의 결과</b>를 낸다 — backend/row-transaction.md §7.
    *
    * <p><b>저장과 실행이 같은 함수를 쓴다.</b> 사용자에게 둘은 구분되지 않는 사건이며
@@ -731,30 +773,12 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
       inFlight.current = false;
       setLoading(false);
       /*
-        <b>서버 실패를 셀과 표로 되돌린다</b> — frontend/grid.md.
-
-        문구 한 줄만 띄우면 <i>"어느 줄의 무슨 값이 문제인가"</i> 를 사용자가 읽어 낼 수
-        없고, 일괄 저장은 화면에 안 보이는 행까지 나가므로 그 줄이 지금 화면에 없을 수도
-        있다. <b>서버가 행을 짚어 준 경우</b>({@code rows})에는 배관이 셀을 칠하고 표를 낸다.
-
-        {@code locateFieldErrors} 는 <b>행을 짚지 못하는 옛 응답</b>의 통로로 남는다 — 서버가
-        {@code rows} 를 보내기 시작한 화면에서는 필요 없다.
+        <b>전건 롤백이다 — 그리드를 건드리지 않는다.</b> 아무것도 커밋되지 않았으므로 지울
+        성공 행이 없고, 화면에 있는 편집이 곧 <b>다시 낼 입력</b>이다. 여기서 재조회하면
+        그것을 지워 재시도를 불가능하게 만든다(backend/row-transaction.md §7).
       */
-      if (error instanceof ApiError && (error.rows.length > 0 || error.fields.length > 0)) {
-        const located = serverIssues(error.rows, error.fields, sent, options.columns);
-        if (located.issues.length > 0) {
-          setIssues(located.issues);
-        } else if (saveApi.locateFieldErrors && error.fields.length > 0) {
-          setIssues(saveApi.locateFieldErrors(error.fields, changed));
-        }
-        // 제목은 <b>서버가 완성한 문구</b>다 — 표는 상세이고 이것이 요약이다(backend/packages.md).
-        modal.error({
-          width: ISSUE_MODAL_WIDTH,
-          title: error.message,
-          content: issueTable(located.entries, issueColors),
-          okText: label(MSG.GRID_CONFIRM_OK),
-        });
-      } else {
+      const locate = saveApi.locateFieldErrors;
+      if (!showRowFailure(error, sent, locate && ((fields) => locate(fields, changed)))) {
         showError(error);
       }
     }
@@ -767,6 +791,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
     reloadHere,
     rows,
     reportIfDeclared,
+    showRowFailure,
     saveEnvelope,
     showError,
     showReport,
@@ -942,7 +967,16 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
       } catch (error) {
         inFlight.current = false;
         setLoading(false);
-        showError(error);
+        /*
+          <b>실행도 서버가 행을 짚는다.</b> 500건 확정이 12건 때문에 전건 롤백됐을 때
+          문구 한 줄만 띄우면 사용자는 <b>어느 12건인지 알 방법이 없다</b>.
+
+          {@code targets} 가 곧 보낸 배열이라 순번으로 행을 되찾는다 — {@code toTargets} 는
+          거르는 자리가 아니라 모양을 바꾸는 자리라 순서가 유지된다.
+        */
+        if (!showRowFailure(error, targets)) {
+          showError(error);
+        }
       }
     },
     [
@@ -953,6 +987,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
       options.columns,
       reloadHere,
       reportIfDeclared,
+      showRowFailure,
       rows,
       selected,
       showError,
