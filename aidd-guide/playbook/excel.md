@@ -4,7 +4,7 @@ title: "엑셀 — 내려받기 세 갈래 · 올려받기 탭"
 category: playbook
 type: operation
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-06
 status: active
 sources: ["sources/frontend/src/shared/grid/excel/", "sources/frontend/src/shared/excelupload/", "sources/frontend/src/features/sample/excel/", "sources/frontend/src/features/sample/mdvertical/pages/SampleMdVerticalPage.tsx"]
 tier: 2
@@ -80,6 +80,8 @@ const excel = useMemo<ExcelSpec>(() => ({
 | 업로드 엔드포인트 | **없다** |
 | `SYS_FILE` | 아무것도 남지 않는다 |
 | 저장 | **업무 탭과 같은 `save`** — 새 경로를 만들지 않는다 |
+| 저장에 성공하면 | **판을 비운다.** 조회가 없어 재조회가 그 일을 못 하고, 남아 있으면 *저장이 안 된 것* 과 구분되지 않는다 |
+| 건별 커밋 | **못 쓴다.** `save` 가 `perRow` 를 받지 않는다 — 규칙이 아니라 타입이 막는다(§5-1) |
 
 ## 3. 최상단 탭 둘이 **같은 것 셋**을 나눠 쓴다
 
@@ -132,6 +134,26 @@ const excel = useMemo<ExcelSpec>(() => ({
 - **조용히 자르면** 사용자는 *올린 것이 다 들어간 줄* 안다.
 - **열이 밀린 채 읽으면** 수량 자리에 단가가 들어간 파일이 **저장까지 통과한다.**
 
+## 5-1. 실패도 통째로 — 대신 **실패분을 파일로** 준다
+
+전건 롤백이 이 화면의 답이다. 488행이 커밋되고 12행이 걸리면 그 파일은 **그대로 다시 못
+올린다**(성공분이 중복으로 걸린다) — 사용자가 힘들게 만든 파일을 **지우는 편집부터 하게
+만드는** 것이 부분 커밋의 대가라면 값이 맞지 않는다
+→ [standard/backend/row-transaction.md](../standard/backend/row-transaction.md) §2.
+
+대신 실패 표 아래에 **실패분 내려받기**가 선다. 표는 읽을 수는 있어도 **고쳐서 다시 낼**
+수는 없어서, 남는 일이 화면에서 원본 파일로 옮겨 적는 것이 되기 때문이다.
+
+**시트가 둘인 것이 규약이다.**
+
+| 시트 | 무엇 | 왜 |
+|---|---|---|
+| 첫째 | **양식 그대로** — 컬럼·순서·머리글 | 고쳐서 **그대로 다시 올린다** |
+| 둘째 | 행 번호와 사유 | 읽는 쪽은 첫 시트만 본다 — **사람에게만 보인다** |
+
+**사유를 첫 시트에 열로 붙이면 안 된다.** 읽기가 *양식이 다르다* 며 거절하고(§5), 그러면
+사용자는 **그 열을 지우는 편집**을 해야 한다 — 이 절이 없애려던 바로 그 일이다.
+
 ## 6. 업로드 탭에 조회 버튼이 없다
 
 행이 서버가 아니라 **파일**에서 오므로 부를 곳이 없고, 눌리면 **읽어들인 412행이 통째로
@@ -169,6 +191,7 @@ const dirtyOf = (key) => key === TAB_UPLOAD ? (upload.current?.dirty() ?? false)
 - [ ] 프론트 생성만 쓰는 화면에 `menu-tree.yaml` 의 `export: true` 가 있는가
 - [ ] 업로드 탭과 업무 탭이 **컬럼·조회·저장·페이로드 넷을 공유**하는가
 - [ ] 양식 그리드에 `settings={false}` 가 있는가
+- [ ] 실패분 내려받기가 만든 파일을 **그 화면이 다시 읽는가**(첫 시트가 양식 그대로인가)
 
 ## 관련
 

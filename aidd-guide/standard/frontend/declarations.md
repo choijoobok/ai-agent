@@ -4,7 +4,7 @@ title: "선언 어휘 — 컬럼 · 검색 필드 · api · prop 전량"
 category: standard/frontend
 type: operation
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-06
 status: active
 sources: ["sources/frontend/src/shared/grid/types.ts", "sources/frontend/src/shared/grid/useGridController.ts", "sources/frontend/src/shared/grid/DataGrid.tsx", "sources/frontend/src/shared/searchform/types.ts"]
 tier: 1
@@ -103,9 +103,9 @@ tags: [frontend, grid, column, searchform, vocabulary, reference]
 ```ts
 api: {
   read:    { url, emptyNotice? },
-  save:    { url, confirm?, reloadAfter?, validate?, warn?,
+  save:    { url, confirm?, reloadAfter?, validate?, warn?, perRow?,
              locateFieldErrors?, onSuccess? },
-  actions: [{ key, label, url, target?, eligible?, toTargets?, params?,
+  actions: [{ key, label, url, target?, eligible?, toTargets?, params?, perRow?,
               confirm?, hint?, reloadAfter?, validate?, progress?, onSuccess? }],
 }
 ```
@@ -114,6 +114,11 @@ api: {
   그 값에 **`/api` 를 붙이지 않는다** — 배럴이 붙인다([http.md](./http.md)).
 - `read` 가 없으면 **전량 모드**다 — 조회 버튼이 서지 않는다.
 - `locateFieldErrors` 는 서버 필드 오류를 셀에 꽂는 자리다.
+- **`perRow` 는 저장·실행이 같은 칸을 쓴다** — `{ after: 'reload' | 'keepFailed' }`. 서버가
+  행마다 커밋한다는 선언이며 **기본값이 없다**: 실패가 남았을 때 그리드를 어떻게 할지
+  고르지 않으면 컴파일이 안 된다 → [../backend/row-transaction.md](../backend/row-transaction.md) §7.
+  `progress` 와 함께 켜지 않는다 — 진행률은 *접수했다* 로 답하고 이쪽은 *끝났고 이러이러하다*
+  로 답한다.
 
 **콜백이 *어느 행들* 을 받는지가 계약이다** — 셋 다 틀려도 예외가 나지 않는다.
 
