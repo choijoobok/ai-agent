@@ -29,6 +29,18 @@ import { validateAll, validateCell } from '@/shared/grid/validate';
  * 조용히 실패하므로 <b>바꿀 때 둘을 함께 본다</b>.
  */
 const FETCH_ALL_PAGE_SIZE = 1000;
+
+/**
+ * 실패 표 모달의 폭 — AntD 기본은 416px 이다.
+ *
+ * <p><b>세 칸짜리 표에는 좁다.</b> 그 폭에서 사유 칸은 200px 이 채 안 되고, *이미 있는
+ * 코드 그룹입니다* 한 줄이 <b>세 줄로 접힌다</b> — 열 건이면 표가 서른 줄이 된다.
+ *
+ * <p><b>더 넓히지도 않는다.</b> 오류 모달은 화면을 덮는 것이 목적이 아니고, 뒤에 있는
+ * <b>붉게 칠해진 판</b>이 함께 보여야 사용자가 표와 판을 오가며 고칠 수 있다.
+ */
+const ISSUE_MODAL_WIDTH = 640;
+
 import type {
   ActionApi,
   AddRowSpec,
@@ -302,8 +314,13 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
   */
   const { token } = theme.useToken();
   const issueColors = useMemo(
-    () => ({ head: token.colorTextTertiary, row: token.colorBorder }),
-    [token.colorBorder, token.colorTextTertiary],
+    () => ({
+      head: token.colorTextTertiary,
+      row: token.colorBorder,
+      // 모달의 바닥색이다 — 머리글이 그 위에 붙어 있어야 행이 아래로 지나간다.
+      bg: token.colorBgElevated,
+    }),
+    [token.colorBgElevated, token.colorBorder, token.colorTextTertiary],
   );
   /*
     <b>진행률 창을 여는 통로</b> — backend/crosscutting.md · playbook/INDEX.md. 화면이 아니라 여기가 든다: 화면마다
@@ -528,6 +545,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
         하나를 고치면 다 낫지만 뒤는 <b>값 하나하나가 별개의 사건</b>이기 때문이다(saveIssues.ts).
       */
       modal.error({
+        width: ISSUE_MODAL_WIDTH,
         content: issueTable(entriesOfIssues(found, rows, options.columns), issueColors),
         okText: label(MSG.GRID_CONFIRM_OK),
       });
@@ -635,6 +653,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
         }
         // 제목은 <b>서버가 완성한 문구</b>다 — 표는 상세이고 이것이 요약이다(backend/packages.md).
         modal.error({
+          width: ISSUE_MODAL_WIDTH,
           title: error.message,
           content: issueTable(located.entries, issueColors),
           okText: label(MSG.GRID_CONFIRM_OK),
@@ -709,6 +728,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
       if (found.length > 0) {
         // 저장과 <b>같은 표</b>다 — 사용자에게 둘은 구분되지 않는 사건이다(saveIssues.ts).
         modal.error({
+          width: ISSUE_MODAL_WIDTH,
           content: issueTable(entriesOfIssues(found, rows, options.columns), issueColors),
           okText: label(MSG.GRID_CONFIRM_OK),
         });

@@ -29,10 +29,24 @@ export interface IssueEntry {
 }
 
 /**
- * <b>열 줄에서 끊는다.</b> 그보다 길면 모달이 스크롤되고, 스크롤되는 목록은 <i>고칠 것을
- * 고르는</i> 화면이 아니라 <b>읽기를 포기하게 하는</b> 화면이다 — 남은 수는 말한다.
+ * <b>표가 스크롤되는 높이</b> — 열 줄쯤이다.
+ *
+ * <p>한때 <b>열 줄에서 잘라 버렸다</b>. 잘린 목록은 남은 것을 <i>볼 방법이 없고</i>, 그
+ * 상태에서 사용자가 할 수 있는 일은 <b>고친 뒤 다시 저장해 보는 것</b>뿐이다 — 엑셀로
+ * 오백 행을 올리고 중복 서른 건을 만난 자리에서 그것은 서른 번의 왕복이다.
+ *
+ * <p>그래서 <b>끊지 않고 스크롤한다.</b> 처음 보이는 양은 같으므로 흔한 경우(한두 건)의
+ * 모달 크기는 그대로이고, 많을 때만 안에서 굴러간다.
  */
-const TABLE_ROWS = 10;
+const TABLE_MAX_HEIGHT = 320;
+
+/**
+ * 그래도 <b>상한은 둔다</b> — 오천 건을 DOM 에 그리면 모달이 뜨는 데 시간이 걸린다.
+ *
+ * <p>이 수를 넘으면 남은 수만 말한다. 여기까지 왔다는 것은 <b>한 줄씩 고칠 상황이
+ * 아니라</b>는 뜻이고, 그때 필요한 것은 목록이 아니라 <i>무엇이 얼마나 틀렸나</i> 다.
+ */
+const TABLE_ROWS = 200;
 
 /**
  * 선 색은 <b>판이 쓰는 토큰</b>에서 온다 — `rgba(0,0,0,…)` 은 다크 모드에서 <b>검정 위의
@@ -45,15 +59,25 @@ export interface IssueTableColors {
   head: string;
   /** 행 사이 선. */
   row: string;
+  /** 머리글의 배경 — 스크롤할 때 행이 그 아래로 지나가야 한다. */
+  bg: string;
 }
 
-function th(color: string): React.CSSProperties {
+function th(colors: IssueTableColors): React.CSSProperties {
   return {
     textAlign: 'left',
     padding: '4px 8px',
-    borderBottom: `1px solid ${color}`,
+    borderBottom: `1px solid ${colors.head}`,
     fontWeight: 500,
     whiteSpace: 'nowrap',
+    /*
+      <b>굴러가도 머리는 남는다.</b> 스무 줄째에서 가운데 칸이 *값* 인지 *사유* 인지
+      알 수 없으면 표가 아니라 글 뭉치다. 배경을 함께 주지 않으면 <b>지나가는 행이
+      머리글에 겹쳐 보인다</b> — 투명한 sticky 의 언제나 같은 함정이다.
+    */
+    position: 'sticky',
+    top: 0,
+    background: colors.bg,
   };
 }
 
@@ -63,7 +87,15 @@ function td(color: string): React.CSSProperties {
     padding: '4px 8px',
     borderBottom: `1px solid ${color}`,
     verticalAlign: 'top',
-    wordBreak: 'break-all',
+    /*
+      <b>{@code break-all} 이 아니다.</b> 그것은 넘치지 않아도 아무 데서나 끊어
+      {@code SO-2026-1005} 를 <i>SO-202</i> / <i>6-1005</i> 로 갈라 놓는다 — 값은 사용자가
+      <b>화면에서 찾아야 하는 문자열</b>이라 모양이 유지돼야 한다.
+
+      {@code anywhere} 는 <b>넘칠 때만</b> 끊는다. 한글은 원래 아무 데서나 접히므로
+      사유 문구는 어느 쪽이든 같고, 갈리는 것은 코드값 쪽이다.
+    */
+    overflowWrap: 'anywhere',
   };
 }
 
@@ -180,9 +212,9 @@ export function issueTable(entries: IssueEntry[], colors: IssueTableColors): Rea
   const head = createElement(
     'tr',
     null,
-    createElement('th', { style: th(colors.head) }, label(MSG.GRID_ISSUE_COLUMN)),
-    createElement('th', { style: th(colors.head) }, label(MSG.GRID_ISSUE_VALUE)),
-    createElement('th', { style: th(colors.head) }, label(MSG.GRID_ISSUE_REASON)),
+    createElement('th', { style: th(colors) }, label(MSG.GRID_ISSUE_COLUMN)),
+    createElement('th', { style: th(colors) }, label(MSG.GRID_ISSUE_VALUE)),
+    createElement('th', { style: th(colors) }, label(MSG.GRID_ISSUE_REASON)),
   );
 
   const body = shown.map((entry, index) =>
@@ -202,10 +234,42 @@ export function issueTable(entries: IssueEntry[], colors: IssueTableColors): Rea
       label(MSG.GRID_VALIDATION_COUNT, { count: collapsed.length }),
     ),
     createElement(
-      'table',
-      { key: 'table', style: { width: '100%', borderCollapse: 'collapse' } },
-      createElement('thead', null, head),
-      createElement('tbody', null, body),
+      'div',
+      {
+        key: 'scroll',
+        /*
+          <b>가로 스크롤은 만들지 않는다.</b> 오류 모달에서 옆으로 미는 일은 <i>고치는
+          일</i> 과 아무 상관이 없고, 사유 칸이 오른쪽으로 사라지면 표가 무용해진다.
+          아래 {@code tableLayout: 'fixed'} 가 칸 폭을 미리 정해 <b>넘칠 일 자체를
+          없앤다</b> — 이 {@code hidden} 은 그것이 어긋났을 때의 마지막 방어다.
+        */
+        style: { maxHeight: TABLE_MAX_HEIGHT, overflowY: 'auto', overflowX: 'hidden' },
+      },
+      createElement(
+        'table',
+        {
+          style: {
+            width: '100%',
+            borderCollapse: 'collapse',
+            /*
+              <b>칸 폭을 내용이 정하지 않게 한다.</b> 자동 배치는 긴 값 하나가 표를
+              밀어내고, 그때 넘치는 것은 <b>맨 오른쪽의 사유</b>다 — 사용자가 가장
+              읽어야 하는 칸이다.
+            */
+            tableLayout: 'fixed',
+          },
+        },
+        createElement(
+          'colgroup',
+          null,
+          // 사유가 가장 넓다 — 문장이고 나머지 둘은 이름과 값이다.
+          createElement('col', { key: 'c', style: { width: '24%' } }),
+          createElement('col', { key: 'v', style: { width: '28%' } }),
+          createElement('col', { key: 'm', style: { width: '48%' } }),
+        ),
+        createElement('thead', null, head),
+        createElement('tbody', null, body),
+      ),
     ),
   ];
 

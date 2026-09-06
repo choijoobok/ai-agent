@@ -155,6 +155,45 @@ describe('저장 실패 표', () => {
     });
   });
 
+  /** 다크 모드의 실제 토큰값이다 — 검정 위의 검정이 다시 들어오지 못하게 한다. */
+  const COLORS = { head: 'rgba(255,255,255,0.45)', row: '#424242', bg: '#1f1f1f' };
+
+  /** 만들어진 엘리먼트 트리에서 그 태그의 {@code style} 을 전부 모은다. */
+  const styles = (node: unknown, tag?: string): Record<string, unknown>[] => {
+    const found: Record<string, unknown>[] = [];
+    const walk = (value: unknown): void => {
+      if (!value || typeof value !== 'object') return;
+      if (Array.isArray(value)) {
+        value.forEach(walk);
+        return;
+      }
+      const element = value as { type?: unknown; props?: Record<string, unknown> };
+      if ((tag === undefined || element.type === tag) && element.props?.style) {
+        found.push(element.props.style as Record<string, unknown>);
+      }
+      if (element.props?.children !== undefined) walk(element.props.children);
+    };
+    walk(node);
+    return found;
+  };
+
+  /** 그 태그가 몇 개인가 — 줄 수를 센다. */
+  const count = (node: unknown, tag: string): number => {
+    let found = 0;
+    const walk = (value: unknown): void => {
+      if (!value || typeof value !== 'object') return;
+      if (Array.isArray(value)) {
+        value.forEach(walk);
+        return;
+      }
+      const element = value as { type?: unknown; props?: Record<string, unknown> };
+      if (element.type === tag) found += 1;
+      if (element.props?.children !== undefined) walk(element.props.children);
+    };
+    walk(node);
+    return found;
+  };
+
   describe('선 색은 밖에서 들어온다', () => {
     /**
      * 하드코딩한 `rgba(0,0,0,…)` 이 <b>다크 모드에서 검정 위의 검정</b>이라 표가 줄 없는 글
@@ -179,16 +218,81 @@ describe('저장 실패 표', () => {
     };
 
     it('머리와 행이 각자 받은 색을 쓴다', () => {
-      const table = issueTable([{ column: '코드', value: 'A1', message: '이미 있습니다' }], {
-        head: 'rgba(255,255,255,0.45)',
-        row: '#424242',
-      });
+      const table = issueTable([{ column: '코드', value: 'A1', message: '이미 있습니다' }], COLORS);
       const lines = borders(table);
 
       expect(lines.filter((line) => line.includes('rgba(255,255,255,0.45)'))).toHaveLength(3);
       expect(lines.filter((line) => line.includes('#424242'))).toHaveLength(3);
       // 검정을 박아 두면 다크 모드에서 사라진다 — 다시 들어오지 못하게 잠근다.
       expect(lines.some((line) => line.includes('rgba(0,0,0'))).toBe(false);
+    });
+  });
+
+  /**
+   * <b>모달이 옆으로 밀리지 않는다.</b>
+   *
+   * <p>오류 모달에서 가로로 미는 일은 <i>고치는 일</i> 과 상관이 없고, 밀리면 맨 오른쪽의
+   * <b>사유</b> 가 사라진다 — 사용자가 가장 읽어야 하는 칸이다.
+   *
+   * <p>지키는 것이 셋이다: 칸 폭을 <b>내용이 정하지 않고</b>({@code table-layout: fixed}),
+   * 긴 값은 <b>넘칠 때 접히며</b>({@code overflow-wrap: anywhere}), 그래도 넘치면 잘라
+   * 낸다({@code overflow-x: hidden}).
+   */
+  describe('가로로 넘치지 않는다', () => {
+    const LONG = 'A'.repeat(400);
+    const table = () => issueTable([{ column: '코드', value: LONG, message: '깁니다' }], COLORS);
+
+    it('칸 폭을 내용이 정하지 않는다 — 긴 값 하나가 사유를 밀어내면 안 된다', () => {
+      expect(styles(table(), 'table')[0].tableLayout).toBe('fixed');
+    });
+
+    it('긴 값은 접힌다 — 다만 넘칠 때만이다', () => {
+      const cells = styles(table(), 'td');
+
+      expect(cells).not.toHaveLength(0);
+      for (const cell of cells) {
+        expect(cell.overflowWrap).toBe('anywhere');
+        // `break-all` 은 넘치지 않아도 끊어 `SO-2026-1005` 를 갈라 놓는다.
+        expect(cell.wordBreak).toBeUndefined();
+      }
+    });
+
+    it('가로 스크롤을 만들지 않는다 — 세로만 굴러간다', () => {
+      const box = styles(table()).find((style) => style.overflowY !== undefined);
+
+      expect(box?.overflowY).toBe('auto');
+      expect(box?.overflowX).toBe('hidden');
+    });
+  });
+
+  /**
+   * <b>길면 자르지 않고 굴린다.</b> 한때 열 줄에서 잘라 버렸는데, 잘린 목록은 남은 것을
+   * 볼 방법이 없어 <b>고치고 다시 저장해 보는 왕복</b>만 남았다 — 엑셀로 오백 행을 올리고
+   * 중복 서른 건을 만난 자리에서 그것은 서른 번이다.
+   */
+  describe('목록이 길 때', () => {
+    const many = (rows: number) =>
+      Array.from({ length: rows }, (_, index) => ({
+        column: '코드',
+        value: `A${index}`,
+        message: '이미 있습니다',
+      }));
+
+    it('스무 건이면 스무 줄이 다 있다 — 열 줄에서 자르지 않는다', () => {
+      // 머리 한 줄 + 본문 스무 줄.
+      expect(count(issueTable(many(20), COLORS), 'tr')).toBe(21);
+    });
+
+    it('굴러가도 머리는 남는다 — 스무 줄째에서 어느 칸인지 알 수 있어야 한다', () => {
+      for (const head of styles(issueTable(many(20), COLORS), 'th')) {
+        expect(head.position).toBe('sticky');
+        // 배경이 없으면 지나가는 행이 머리글에 겹쳐 보인다.
+        expect(head.background).toBe(COLORS.bg);
+      }
+    });
+
+    it('상한을 넘으면 남은 수만 말한다 — 오천 건을 DOM 에 그리지 않는다', () => {
+      expect(count(issueTable(many(250), COLORS), 'tr')).toBe(201);
     });
   });
 
