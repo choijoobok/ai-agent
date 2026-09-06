@@ -19,26 +19,20 @@
 | **개발 방식** | **AI 주도 개발이 표준이다.** 사용자는 **고객이자 의사결정자**, AI 는 **PM·BA·AA·DBA·개발자·테스터**를 겸임한다. 따라서 표준은 *사람이 외우는 관행* 이 아니라 **AI 가 읽는 문서**(`aidd-guide/`)와 **기계가 막는 게이트**(§8)로 존재해야 한다 |
 | **폐쇄망 대비** | 고객사 서버에 직접 구축하며 AI 를 쓸 수 없는 환경이 실재한다. 그래서 *짧고 공통화된 소스* 와 *읽을 수 있는 문서* 가 기능보다 앞선다. **둘은 같은 목표를 다르게 요구하지 않는다** — AI 에게는 문맥 비용이고 사람에게는 이해 비용이며, 줄이는 방법이 같다 |
 
-### 폴더 넷 — 나누는 축은 *주제* 가 아니라 **누가 읽나** 다
-
 ```
 ai-agent/
-├── aidd-guide/   ★ AI 가 읽는 규칙 — 프로세스(단계·게이트·추적성) + 개발 표준(백엔드·프론트·레시피)
-├── documents/    ★ AI 가 만드는 산출물 — spec(SSOT) · 결정 · 화면 문서 셋 · 생성 문서
-├── user-guide/   ★ 사람이 읽는 안내 — 수행 방법 · 환경 구축 · 개발 · 빌드·배포 · 운영
-└── sources/      ★ 코드 — 백엔드 · 프론트엔드. 빌드 루트가 여기다
+├── aidd-guide/   ★ AI 가 읽는 규칙 — 프로세스 + 개발 표준
+├── documents/    ★ AI 가 만드는 산출물 — spec(SSOT) · 결정 · 화면 문서 셋
+├── user-guide/   ★ 사람이 읽는 안내 — 환경 구축 · 개발 · 빌드·배포 · 운영
+└── sources/      ★ 코드. **빌드 루트가 여기다** — `./gradlew` · `npm` 은 여기서 돈다
 ```
 
-- **`aidd-guide` 는 *어떻게 하는가*, `documents` 는 *무엇을 만드는가* 다.** 갈릴 때 대는 판별식은
-  하나다 — **고객사가 바뀌어도 그대로 쓰는가?** 예면 `aidd-guide`, 아니면 `documents`.
-  코딩 방법 · 설정을 바꾸는 방법 · 프로세스를 진행하고 사용자와 합의하는 방법 · **산출물의
-  서식**은 다음 고객사에서도 그대로 쓰므로 `aidd-guide` 다. 이 프로젝트가 만들 업무 기능의
-  **결정과 지식**은 프로젝트와 함께 닫히므로 `documents` 다.
-  - 그래서 `knowledge/sys/` 열하나는 `aidd-guide` 에 있다 — 템플릿이 이미 준 기능이
-    *어떻게 동작하고 어떻게 설정을 바꾸나* 이며, 이것을 모르면 AI 가 있는 기능을 다시 만든다.
-  - 그래서 **서식은 `aidd-guide/artifact/template/` 이고 채운 것은 `documents/` 다.**
-- **`aidd-guide/` 와 `user-guide/` 를 헷갈리지 않는다.** 같은 주제라도 *AI 가 지킬 규칙* 은 앞쪽, *사람이 따라할 절차* 는 뒤쪽이다. 한쪽에 적었으면 다른 쪽은 **링크만** 둔다.
-- **`sources/` 가 빌드 루트다.** `./gradlew` · `npm` 명령은 `sources/` 에서 돈다. 문서에 적는 **파일 경로는 저장소 루트 기준**(`sources/backend/...`)이고, **빌드 명령은 `sources/` 기준**이다.
+**나누는 축은 *주제* 가 아니라 *누가 읽나* 다.** 갈릴 때의 판별식은 하나다 — **고객사가
+바뀌어도 그대로 쓰는가?** 예면 `aidd-guide`, 아니면 `documents`.
+→ [`aidd-guide/INDEX.md`](aidd-guide/INDEX.md)
+
+**문서에 적는 파일 경로는 저장소 루트 기준**(`sources/backend/...`)이고 **빌드 명령은
+`sources/` 기준**이다.
 
 ---
 
@@ -88,22 +82,13 @@ ai-agent/
 
 ## 4. 문서 예산 — **자리가 정해진 것만 만든다**
 
-> 이 프로젝트는 세 저장소를 합쳐 만들었고, 셋이 공통으로 앓던 병이 하나였다:
-> **문서를 정리하면 정리 내역을 적는 문서가 생기고, 그 근거를 적는 문서가 또 생긴다.**
-> 그러다 어느 것이 참인지 알 수 없게 되고, 문서 사이의 모순이 늘어난다.
-> **그래서 문서는 예산 안에서만 만든다.**
-
-1. **`documents/` 에는 [산출물 지도](aidd-guide/artifact/INDEX.md)에 등재된 자리만 만든다.** `guard-write` 훅이 지도를 읽어 **차단한다.** 정말 새 종류가 필요하면 **지도에 먼저 행을 더하고** 사용자에게 왜 필요한지 보고한다.
+1. **`documents/` 에는 [산출물 지도](aidd-guide/artifact/INDEX.md)에 등재된 자리만 만든다.** `guard-write` 훅이 지도를 읽어 **차단한다.** 새 종류가 정말 필요하면 **지도에 먼저 행을 더하고** — 목적·서식·소유자 셋을 함께 — 사용자에게 왜 필요한지 보고한다.
 2. **정리·현황·근거를 적는 별도 문서를 만들지 않는다.** 무엇을 왜 그렇게 했는가는 **커밋 메시지**가 갖고(§9), 되돌리기 비용이 큰 것만 **ADR** 이 갖는다. *지금 어디까지 왔나* 는 `project.state.yaml` 하나다.
-   - **미룬 것의 목록도 만들지 않는다.** 미룬 결정은 **그것이 사는 자리에 `@defer <기한>` 을 달아 두고**, `node .claude/skills/pm-status/deferred.mjs` 가 긁어 모은다. 기한을 모르면 `?` 를 쓴다 — 아는 척한 기한보다 낫고 경고 칸으로 모인다. 규약은 [`pm-status`](.claude/skills/pm-status/SKILL.md).
+   - **미룬 것의 목록도 만들지 않는다.** 미룬 결정은 **그것이 사는 자리에 `@defer <기한>` 을 달아 두고**, `node .claude/skills/pm-status/deferred.mjs` 가 긁어 모은다. 기한을 모르면 `?` 를 쓴다 — 아는 척한 기한보다 낫고 경고 칸으로 모인다.
    - **이 파일에도 현황을 적지 않는다.** 개수와 날짜를 헌법에 박으면 아무도 모르게 낡는다 — 그래서 여기엔 *어디를 보라* 만 있고 *지금 몇 개인가* 는 없다.
 3. **한 사실은 한 곳에서만 정의한다.** 다른 곳은 **링크**다. 요약을 옮겨 적으면 그 순간부터 두 사실이 되고, 갈렸을 때 어느 쪽이 참인지 알 방법이 없다.
 4. **문서를 지우는 것도 작업이다.** 낡은 문서를 남겨 두는 것은 *보존* 이 아니라 *거짓말의 유지* 다. 지울 때 그 사실을 커밋 메시지에 적고, **지웠다는 목록을 따로 파일로 남기지 않는다**(git 이 갖는다).
-5. **정본이면 커밋하고 파생이면 제외한다.** 정본에서 얼마든지 다시 만들 수 있는 것을 형상 관리에 넣으면, 정본을 한 줄 고칠 때마다 파생물이 diff 를 덮어 **무엇이 바뀌었는지 보이지 않게** 된다.
-   - **정본** — `documents/spec/*.yaml` · `documents/screen/*/requirements.md` · `manual.md` · `decisions/`
-   - **파생(`.gitignore`)** — `mockup.html` · `manual.html` · `documents/screen/index.html` · `documents/generated/` · `build/manual/`
-   - **예외 둘은 커밋한다.** 생성 시드 CSV 는 파생물이지만 Liquibase 가 기동에 읽으므로 커밋한다(§5-8) — 빼면 새로 클론한 사람이 앱을 띄울 수 없다. `user-guide/07-harness.md`(훅·스킬 목록)도 커밋한다 — **읽는 사람이 저장소를 브라우저로 여는 사람**이고 그 사람은 생성기를 돌리지 않는다.
-   - 파생물은 **손으로 고치지 않는다** — 다음 생성에서 사라지고, 훅이 막는다.
+5. **정본이면 커밋하고 파생이면 제외한다.** 정본을 한 줄 고칠 때마다 파생물이 diff 를 덮으면 **무엇이 바뀌었는지 보이지 않게** 된다. **파생물은 손으로 고치지 않는다** — 다음 생성에서 사라지고, 훅이 막는다. 무엇이 어느 쪽이고 **커밋하는 예외 둘**이 무엇인지 → [산출물 지도 §2](aidd-guide/artifact/INDEX.md).
 
 ---
 
@@ -175,14 +160,11 @@ ai-agent/
 
 ## 7. 검증 — 고쳤으면 돌린다
 
-**게이트는 셋이다** — 문서 · 추적성 · 소스. 초록을 확인하지 않은 변경은 완료가 아니다.
+**초록을 확인하지 않은 변경은 완료가 아니다.** 게이트는 셋이다 — 문서 · 추적성 · 소스.
+**무엇을 고치면 무엇을 더 돌리는지** → [`quality/INDEX.md`](aidd-guide/quality/INDEX.md).
 
 ```bash
-node aidd-guide/meta/_meta/lint.mjs
-```
-
-```bash
-node .claude/hooks/trace-check.mjs --all
+node aidd-guide/meta/_meta/lint.mjs && node .claude/hooks/trace-check.mjs --all
 ```
 
 ```bash
@@ -192,18 +174,6 @@ cd sources && ./gradlew check -PskipFrontend
 ```bash
 cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 ```
-
-| 무엇을 고쳤나 | 추가로 돌릴 것 |
-|---|---|
-| `documents/spec/**` | `node .claude/hooks/trace-check.mjs --all` (훅이 자동으로도 돈다) |
-| `aidd-guide/**` · `documents/screen/**` | `node aidd-guide/meta/_meta/lint.mjs` — **위반 0 이어야 한다** |
-| `.claude/hooks/**` · `.claude/skills/**` · `settings.json` | `node .claude/hooks/harness-doc.mjs --check` — 훅이 자동으로 다시 만들지만, **커밋에 담겼는지**는 이것이 본다 |
-| `menu-tree.yaml` | `cd sources && ./gradlew generateMenuSeed` |
-| 컨트롤러 · `endpoints.ts` · `screenRegistry.ts` | `cd sources && ./gradlew generateApiSeed` |
-| `messageKeys.ts` · `MsgKey.java` | `cd sources && ./gradlew generateMessageSeed` (값은 **새 changeset** 으로) |
-| **changelog 파일을 더했다** | **`master` 에 include** — 안 걸면 파일만 있고 적재되지 않는다(§6.3 ④-b) |
-| 슬라이스를 마쳤다 | `node .claude/hooks/quality-check.mjs` — 중복률 ≤5% · 예외 삼킴 0 · `@feat` 미태깅 0 |
-| 전부 | `cd sources && ./gradlew generateSeeds && ./gradlew checkSeeds` |
 
 ---
 

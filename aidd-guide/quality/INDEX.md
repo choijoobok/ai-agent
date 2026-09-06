@@ -53,6 +53,23 @@ tags: [index, quality, test, redteam, evals]
   숫자를 여기서 다시 적지 않는다.
 - **임계값을 올려서 통과시키지 않는다**(CLAUDE.md §5-10). 복사한 것은 추출한다.
 
+## 무엇을 고쳤나 → 무엇을 더 돌리나
+
+**위 셋과 소스 빌드가 기본이고**(CLAUDE.md §7), 아래는 **고친 것이 생성물의 입력일 때** 더 돈다.
+빠뜨리면 남의 트리에서 깨진다 — 생성물이 소스와 갈리기 때문이다.
+
+| 무엇을 고쳤나 | 추가로 돌릴 것 |
+|---|---|
+| `documents/spec/**` | `node .claude/hooks/trace-check.mjs --all` (훅이 자동으로도 돈다) |
+| `aidd-guide/**` · `documents/screen/**` | `node aidd-guide/meta/_meta/lint.mjs` — **위반 0 이어야 한다** |
+| `.claude/hooks/**` · `.claude/skills/**` · `settings.json` | `node .claude/hooks/harness-doc.mjs --check` — 훅이 자동으로 다시 만들지만, **커밋에 담겼는지**는 이것이 본다 |
+| `menu-tree.yaml` | `cd sources && ./gradlew generateMenuSeed` |
+| 컨트롤러 · `endpoints.ts` · `screenRegistry.ts` | `cd sources && ./gradlew generateApiSeed` |
+| `messageKeys.ts` · `MsgKey.java` | `cd sources && ./gradlew generateMessageSeed` (값은 **새 changeset** 으로) |
+| **changelog 파일을 더했다** | **`master` 에 include** — 안 걸면 파일만 있고 적재되지 않는다([artifact/screen/screen.md](../artifact/screen/screen.md) ④-b) |
+| 슬라이스를 마쳤다 | `node .claude/hooks/quality-check.mjs` — 중복률 ≤5% · 예외 삼킴 0 · `@feat` 미태깅 0 |
+| 전부 | `cd sources && ./gradlew generateSeeds && ./gradlew checkSeeds` |
+
 ## 왜 넷으로 나눠 두었나
 
 **한 문서에 담았더니 209줄이 되었고, 그 안에서 서로 다른 시점의 규칙이 섞였다.** 테스트 설계를
