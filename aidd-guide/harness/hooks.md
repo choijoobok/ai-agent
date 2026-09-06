@@ -28,7 +28,7 @@ tags: [harness, hooks, gate, automation]
 |---|---|---|---|
 | `PreToolUse` | `Write\|Edit` | `guard-generated.mjs` | 10s |
 | `PreToolUse` | `Bash\|PowerShell` | `guard-commit.mjs` | 10s |
-| `PostToolUse` | `Write\|Edit` | `normalize-encoding.mjs` → `doc-drift.mjs` | 10s · 15s |
+| `PostToolUse` | `Write\|Edit` | `normalize-encoding.mjs` → `doc-drift.mjs` → `guide-drift.mjs` | 10s · 15s · 15s |
 | `UserPromptSubmit` | — | `log-raw.mjs` | 10s |
 | `Stop` | — | `log-raw.mjs` | 15s |
 
@@ -107,6 +107,30 @@ sources/frontend/src/features/{기능}/…  ─→ screenRegistry.ts 역인덱�
 - **백엔드는 패키지 이름으로 기능 폴더를 맞히지 않는다.** 둘은 닮았을 뿐 규칙이 아니라(`accesslog` ↔ `api/log`), 맞히기 시작하면 **틀린 화면의 문서를 가리키는 훅**이 된다. 대신 그 경로를 **실제로 부르는 `endpoints.ts` 선언**을 찾는다.
 - 정본 둘이 **다 없음 / 하나 없음 / 다 있음** 셋으로 갈라 말이 달라진다. **목업은 세지 않는다** — 파생물이라 없는 것이 정상이고, 그것을 결손으로 세면 화면마다 경고가 떠 경고가 배경음이 된다.
 - **한 화면당 세션에 한 번만** 말한다. 말한 화면은 `os.tmpdir()/ai-agent-doc-drift/{세션}.json` 에 적는다(저장소를 더럽히지 않는다). 매번 같은 말을 하면 **읽히지 않는 경고**가 되고, 그때부터 다른 경고까지 함께 묻힌다.
+
+## `guide-drift` — 공통물·표준 소스 ↔ `aidd-guide/` 경고
+
+**`doc-drift` 와 축이 다르다.** 저것은 화면 소스를 화면 문서로 데려가고 `features/**` 와
+컨트롤러만 매핑한다 — **`shared/` 는 매핑 자체가 없다**. 그래서 공통 컴포넌트를 고쳐도
+아무도 `aidd-guide/` 를 가리키지 않았고, 2026-09-06 에 표준 넷은 고쳐지고 **레시피 다섯이
+낡은 통로를 계속 가르쳤다**.
+
+**역인덱스는 새로 만들지 않는다** — 가이드 문서 메타블록의 `sources:` 가 그것이다.
+그 값이 낡으면 `lint.mjs` 가 잡는다(실물과 맞지 않는 엔트리는 위반이다).
+
+- **축약 경로를 허용한다.** `sources/backend/api/error/` 의 실물은
+  `.../api/src/main/java/com/aiagent/api/error/` 다 — 모듈 안쪽의 관례 경로를 접는다.
+  **세그먼트가 순서대로 나타나면** 맞는 것으로 본다.
+- **세그먼트 넷 미만은 넣지 않는다.** `sources/frontend/src/` 는 *프론트 전부* 를 주장하는
+  값이고, 그것까지 태우면 프론트를 건드릴 때마다 같은 이름이 떠 **경고가 배경음**이 된다.
+- **`sources/` 밖과 테스트는 통과한다.** 가이드를 고치는 것은 드리프트의 반대이고,
+  테스트는 계약을 바꾸지 않는다.
+- **한 문서당 세션에 한 번만** 말한다 — `os.tmpdir()/ai-agent-guide-drift/{세션}.txt`.
+  `doc-drift` 와 같은 이유이며 같은 방법이다.
+
+**이름을 바꾼 것이라면** 옛 이름에 `@deprecated {@link 새이름}` 을 달아 둔다 — `lint.mjs` 가
+**그것을 아직 가르치는 문서를 전부 열거한다**([standard/frontend/packages.md](../standard/frontend/packages.md) §3).
+경고를 읽고 넘길 수 있는 이 훅과 달리 그쪽은 **차단**이다.
 
 ## `log-raw` — 대화 원문 append
 

@@ -26,6 +26,7 @@ tags: [harness, hooks, automation]
 | [`guard-commit.mjs`](../../.claude/hooks/guard-commit.mjs) | `PreToolUse` | `Bash`·`PowerShell` | **차단** — 경로 없는 커밋 · `-a` · 큰따옴표 메시지 |
 | [`normalize-encoding.mjs`](../../.claude/hooks/normalize-encoding.mjs) | `PostToolUse` | `Write`·`Edit` | **교정** — BOM · CRLF 를 쓰기 직후 고친다 |
 | [`doc-drift.mjs`](../../.claude/hooks/doc-drift.mjs) | `PostToolUse` | `Write`·`Edit` | **경고** — 화면 소스 ↔ 화면 문서 |
+| [`guide-drift.mjs`](../../.claude/hooks/guide-drift.mjs) | `PostToolUse` | `Write`·`Edit` | **경고** — 공통물·표준 소스 ↔ `aidd-guide/` |
 | [`log-raw.mjs`](../../.claude/hooks/log-raw.mjs) | `UserPromptSubmit` · `Stop` | 턴 전체 | **기록** — 대화 원문을 `chat-history/` 에 append |
 
 배선은 [`.claude/settings.json`](../../.claude/settings.json) 이 한다.

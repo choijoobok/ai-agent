@@ -204,7 +204,7 @@ documents/screen/_standalone/{화면이름}/   메뉴가 없는 화면 (로그�
 
 ### 6.5 소스 ↔ 문서 매핑 — 훅이 계산한다
 
-**바뀐 파일에서 페이지 경로를 뽑아 그 화면의 문서 셋을 가리킨다**(`doc-drift` · 화면당 세션에 한 번). **차단이 아니라 경고다**: *문서를 고쳐야 하는가* 는 판단이고(§6.4 — 일치하면 고치지 않는다) 판단은 사람과 AI 의 몫이다. 사슬의 상세는 [`harness/hooks.md`](aidd-guide/harness/hooks.md).
+**바뀐 파일에서 페이지 경로를 뽑아 그 화면의 문서 셋을 가리킨다**(`doc-drift` · 화면당 세션에 한 번). **`shared/` 는 이 훅의 대상이 아니다** — 화면이 없기 때문이며, 그쪽은 `guide-drift` 가 `sources:` 메타로 `aidd-guide/` 를 가리킨다. **차단이 아니라 경고다**: *문서를 고쳐야 하는가* 는 판단이고(§6.4 — 일치하면 고치지 않는다) 판단은 사람과 AI 의 몫이다. 사슬의 상세는 [`harness/hooks.md`](aidd-guide/harness/hooks.md).
 
 **역방향도 본다** — 그 파일의 주석이 **자기 화면의 요건서를 한 번도 안 가리키면** 말한다. `lint.mjs` 의 깨진 링크 검사는 *파일이 있기만 하면* 통과하므로, 화면 문서를 나누며 링크가 대표 화면 하나로 눌린 것을 아무도 잡지 못했다(2026-09-05 에 650곳을 고쳤다). **제 화면이 함께 끼어 있으면 말하지 않는다** — 화면끼리의 상호참조는 정상이다.
 
@@ -257,7 +257,7 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 | ArchUnit `ServiceConventionTest` | 조회 서비스는 클래스 레벨 `readOnly` · 메서드 레벨 없음 / 컨트롤러에 트랜잭션 없음 |
 | ArchUnit `SampleIsolationTest` | 밖에서 샘플 참조 금지 · 샘플은 `SMPL_` 테이블만 |
 | `checkSeeds` · `SeedMessageTest` · `SeedChangelogIncludeTest` | 시드가 소스와 일치 · 값 시드의 키가 키 시드에 있음 · changelog 를 `master` 에 걸었음 |
-| `lint.mjs` | 메타블록 · 200줄 · BOM · **깨진 링크** · 선언 어휘 누락 · **폐지 어휘**(`@deprecated` 를 아직 가르치는 문서) · **요건서 서식**(백엔드 칸 · 컬럼 표 · **필드명 칸** · 케이스 번호) |
+| `lint.mjs` | 메타블록 · 200줄 · BOM · **깨진 링크** · 선언 어휘 누락 · **폐지 어휘**(`@deprecated` 를 아직 가르치는 문서) · **`sources:` 메타**(비었나 · 실물과 맞나) · **요건서 서식**(백엔드 칸 · 컬럼 표 · **필드명 칸** · 케이스 번호) |
 | `trace-check.mjs` | 추적성 T1~T12 — dangling ID · 미실현 요구사항 · 고아 기능 · TC 없는 FEAT |
 
 ### 훅이 막는다 (**차단** · **경고** · **기록** 세 강도 — 어느 것인지는 표의 오른쪽 칸에 있다)
@@ -272,6 +272,7 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 | `normalize-encoding` | PostToolUse | BOM · CRLF 를 쓰기 직후 **고친다**(§5-1) |
 | `trace-check` | PostToolUse | spec 변경 직후 추적성 오류 — **경고** |
 | `doc-drift` | PostToolUse | 화면 소스 ↔ 문서 셋 · **주석이 남의 화면을 가리키나** — **경고**(§6.5) |
+| `guide-drift` | PostToolUse | **공통물·표준 소스 ↔ `aidd-guide/`** — 그 소스를 `sources:` 에 적은 문서를 가리킨다. **경고** |
 | `harness-doc` | PostToolUse | `.claude/` 가 바뀌면 [`user-guide/07-harness.md`](user-guide/07-harness.md) 를 **스스로 다시 만든다** |
 | `context-gauge` | UserPromptSubmit | 문맥이 **창의 60% 를 넘으면 압축을 권한다** — 경고. 아래면 한 글자도 쓰지 않는다 |
 | `log-raw` | UserPromptSubmit·Stop | 막지 않고 **대화 원문을 `chat-history/` 에 남긴다**(§10) |

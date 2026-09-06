@@ -82,6 +82,13 @@
           {
             "type": "command",
             "command": "node",
+            "args": [".claude/hooks/guide-drift.mjs"],
+            "timeout": 15,
+            "statusMessage": "가이드 대조"
+          },
+          {
+            "type": "command",
+            "command": "node",
             "args": [".claude/hooks/harness-doc.mjs"],
             "timeout": 10,
             "statusMessage": "하네스 문서 현행화"

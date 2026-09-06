@@ -1,6 +1,6 @@
 /**
  * `aidd-guide/` 문서 게이트 — 메타블록 · 200줄 · BOM · 링크 · 폐지 번호 인용 · 선언 어휘 ·
- * 폐지 어휘.
+ * 폐지 어휘 · `sources:` 메타.
  *
  * <pre>
  *   node aidd-guide/meta/_meta/lint.mjs
@@ -26,6 +26,9 @@
  *       문서. 위의 검사와 <b>방향이 반대</b>다: 저것은 <i>새 이름이 들어왔나</i> 를 보고
  *       이것은 <i>낡은 이름이 남았나</i> 를 본다. 앞만 있으면 표준은 고쳐지고 <b>레시피는
  *       낡은 통로를 계속 가르친다</b>(2026-09-06 에 다섯이 그랬다).</li>
+ *   <li><b>`sources:` 메타</b> — `standard/`·`playbook/` 은 비울 수 없고, 저장소 경로처럼
+ *       생긴 엔트리는 실물과 맞아야 한다. 그 값이 `guide-drift` 훅의 <b>역인덱스 원본</b>
+ *       이라, 낡으면 훅이 <b>조용히 눈이 먼다</b>.</li>
  * </ul>
  */
 
@@ -65,6 +68,12 @@ const VOCAB_SOURCES = [
  * 넣으면 화면 하나의 사정으로 <b>표준 문서가 붉어진다</b>.
  */
 const DEPRECATED_ROOTS = ['sources/frontend/src/shared', 'sources/backend'];
+
+/** `sources:` 의 값 중 <b>저장소 경로</b>로 볼 접두. 그 밖은 인용이라 실물이 없다. */
+const REPO_ROOTS = ['sources/', 'aidd-guide/', 'documents/', 'user-guide/', '.claude/', '.github/'];
+
+/** 실물 목록을 만들 때 건너뛸 폴더 — 생성물이 들어오면 없는 경로가 있는 것처럼 보인다. */
+const SOURCE_SKIP = new Set(['node_modules', '.git', 'build', 'dist', '.gradle', 'out', 'bin']);
 
 /** 선언의 이름을 뽑는 순서 — <b>느슨한 것이 뒤</b>다(TS 멤버가 다른 것들을 삼킨다). */
 const DECL_RE = [
@@ -131,6 +140,7 @@ if (countIssues.length > 0) violations.push(['INDEX.md', lineCount(join(GUIDE, '
 
 for (const [rel, issues] of checkScreenRequirements()) violations.push([rel, 0, issues]);
 for (const [rel, issues] of checkDeprecated()) violations.push([rel, 0, issues]);
+for (const [rel, issues] of checkSourcesMeta()) violations.push([rel, 0, issues]);
 
 const totalStale = [...stale.values()].reduce((a, b) => a + b, 0);
 out.push(`링크형 인용 중 대상에 그 절이 없는 것: ${totalStale} 곳 / ${stale.size} 파일 — 줄어들기만 해야 한다.`);
@@ -395,6 +405,80 @@ function checkVocabulary() {
   }
   if (missing.length === 0) return [];
   return [`선언 어휘 누락 ${missing.length}건 — 소스에 있고 문서에 없다: ${missing.slice(0, 12).join(' · ')}`];
+}
+
+/**
+ * `sources:` 가 <b>역인덱스의 원본</b>이라 낡으면 `guide-drift` 훅이 조용히 눈이 먼다.
+ *
+ * <p>둘을 본다. ① `standard/`·`playbook/` 은 <b>소스를 설명하는 문서</b>이므로 비워 둘 수
+ * 없다. ② 저장소 경로처럼 생긴 엔트리는 <b>실물과 맞아야 한다</b>.
+ *
+ * <p><b>축약 경로를 허용한다.</b> `sources/backend/api/error/` 의 실물은
+ * `.../api/src/main/java/com/aiagent/api/error/` 다 — 사람이 적는 값이라 모듈 안쪽의 관례
+ * 경로를 접는다. 세그먼트가 <b>순서대로</b> 나타나면 맞는 것으로 본다.
+ *
+ * <p><b>인용은 건드리지 않는다.</b> `sources:` 에는 외부 문서와 실험 기록도 들어간다
+ * (`Anthropic …` · `2026-09-05 재현 실험 …`). 저장소 최상위 폴더로 시작하는 것만 경로로 본다.
+ */
+function checkSourcesMeta() {
+  const found = [];
+  let real = null;
+
+  for (const file of walk(GUIDE)) {
+    if (!file.endsWith('.md')) continue;
+    const rel = relative(GUIDE, file).split(sep).join('/');
+    const line = readFileSync(file, 'utf8').match(/^sources:\s*(\[.*\])\s*$/m)?.[1] ?? '';
+    const entries = [...line.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+    const issues = [];
+
+    const bare = line.replace(/[[\]\s]/g, '');
+    if (bare === '' && (rel.startsWith('standard/') || rel.startsWith('playbook/'))) {
+      issues.push('`sources:` 가 비었다 — 소스를 설명하는 문서이며 그 값이 guide-drift 훅의 역인덱스다');
+    }
+    for (const entry of entries) {
+      if (!REPO_ROOTS.some((root) => entry.startsWith(root))) continue;
+      real ??= repoPaths();
+      if (!real.some((p) => segmentsMatch(entry, p))) {
+        issues.push(`\`sources:\` 가 없는 경로를 가리킨다 — ${entry}`);
+      }
+    }
+    if (issues.length > 0) found.push([rel, issues]);
+  }
+  return found;
+}
+
+/** 실물 경로 — 디렉터리도 담는다(`sources:` 는 폴더를 가리키는 일이 더 많다). */
+function repoPaths() {
+  const acc = [];
+  const visit = (dir) => {
+    let names;
+    try {
+      names = readdirSync(dir);
+    } catch {
+      return;
+    }
+    for (const name of names) {
+      if (SOURCE_SKIP.has(name)) continue;
+      const full = join(dir, name);
+      let st;
+      try {
+        st = statSync(full);
+      } catch {
+        continue;
+      }
+      acc.push(relative(REPO, full).split(sep).join('/'));
+      if (st.isDirectory()) visit(full);
+    }
+  };
+  visit(REPO);
+  return acc;
+}
+
+function segmentsMatch(entry, path) {
+  const want = entry.replace(/\/$/, '').split('/');
+  let i = 0;
+  for (const seg of path.split('/')) if (seg === want[i]) i += 1;
+  return i === want.length;
 }
 
 /**
