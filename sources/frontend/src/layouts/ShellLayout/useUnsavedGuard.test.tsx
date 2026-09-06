@@ -56,7 +56,7 @@ describe('브라우저 이탈에서 미저장을 지킨다 — frontend/tabs.md'
     window.dispatchEvent(event);
     return {
       prevented: event.defaultPrevented,
-      returnValue: (event as unknown as BeforeUnloadEvent).returnValue,
+      returnValue: event.returnValue,
     };
   }
 
