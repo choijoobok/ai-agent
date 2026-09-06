@@ -6,6 +6,7 @@ import static com.aiagent.domain.sample.SampleRules.requireText;
 import static com.aiagent.domain.sample.SampleRules.requireUnlocked;
 
 import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.RowErrors;
 import com.aiagent.core.grid.RowState;
 import com.aiagent.domain.progress.Progress;
 import com.aiagent.domain.sample.entity.SmplOrder;
@@ -69,23 +70,26 @@ public class SampleOrderService {
     @Transactional
     public void saveOrders(List<SmplOrderSaveRow> rows) {
         Set<String> seen = new HashSet<>();
-        for (SmplOrderSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             if (row.ordId() != null && !seen.add(row.ordId())) {
                 throw new BusinessException(
-                        SampleErrorCode.NOT_FOUND, "same order came twice: " + row.ordId());
+                        SampleErrorCode.NOT_FOUND,
+                        "same order came twice: " + row.ordId(),
+                        List.of(new BusinessException.FieldError(
+                                "ordNo", "같은 주문이 두 번 왔습니다", row.ordNo())));
             }
             if (row.rowState() != RowState.D) {
                 validate(row);
             }
-        }
+        });
 
-        for (SmplOrderSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             switch (row.rowState()) {
                 case C -> createOrder(row);
                 case U -> updateOrder(row);
                 case D -> deleteOrder(row);
             }
-        }
+        });
     }
 
     /**
@@ -97,23 +101,26 @@ public class SampleOrderService {
     @Transactional
     public void saveFullOrders(List<SmplOrderFullSaveRow> rows) {
         Set<String> seen = new HashSet<>();
-        for (SmplOrderFullSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             if (row.ordId() != null && !seen.add(row.ordId())) {
                 throw new BusinessException(
-                        SampleErrorCode.NOT_FOUND, "same order came twice: " + row.ordId());
+                        SampleErrorCode.NOT_FOUND,
+                        "same order came twice: " + row.ordId(),
+                        List.of(new BusinessException.FieldError(
+                                "ordNo", "같은 주문이 두 번 왔습니다", row.ordNo())));
             }
             if (row.rowState() != RowState.D) {
                 validateFull(row);
             }
-        }
+        });
 
-        for (SmplOrderFullSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             switch (row.rowState()) {
                 case C -> createFullOrder(row);
                 case U -> updateFullOrder(row);
                 case D -> deleteFullOrder(row);
             }
-        }
+        });
     }
 
     /**
@@ -211,7 +218,11 @@ public class SampleOrderService {
 
     private void createOrder(SmplOrderSaveRow row) {
         if (orders.existsByOrdNo(row.ordNo())) {
-            throw new BusinessException(SampleErrorCode.DUPLICATED, "duplicated: " + row.ordNo());
+            throw new BusinessException(
+                    SampleErrorCode.DUPLICATED,
+                    "duplicated: " + row.ordNo(),
+                    List.of(new BusinessException.FieldError(
+                            "ordNo", "이미 있는 주문번호입니다", row.ordNo())));
         }
         SmplOrder order = SmplOrder.create(
                 row.ordNo(),
@@ -265,14 +276,21 @@ public class SampleOrderService {
         requireUnlocked(order);
         if (queries.itemCount(order.getOrdId()) > 0) {
             throw new BusinessException(
-                    SampleErrorCode.HAS_ITEMS, "order still has items: " + order.getOrdNo());
+                    SampleErrorCode.HAS_ITEMS,
+                    "order still has items: " + order.getOrdNo(),
+                    List.of(new BusinessException.FieldError(
+                            "ordNo", "품목이 남아 있어 지울 수 없습니다", order.getOrdNo())));
         }
         orders.delete(order);
     }
 
     private void createFullOrder(SmplOrderFullSaveRow row) {
         if (orders.existsByOrdNo(row.ordNo())) {
-            throw new BusinessException(SampleErrorCode.DUPLICATED, "duplicated: " + row.ordNo());
+            throw new BusinessException(
+                    SampleErrorCode.DUPLICATED,
+                    "duplicated: " + row.ordNo(),
+                    List.of(new BusinessException.FieldError(
+                            "ordNo", "이미 있는 주문번호입니다", row.ordNo())));
         }
         SmplOrder order = SmplOrder.create(
                 row.ordNo(),
@@ -302,7 +320,10 @@ public class SampleOrderService {
         requireUnlocked(order);
         if (queries.itemCount(order.getOrdId()) > 0) {
             throw new BusinessException(
-                    SampleErrorCode.HAS_ITEMS, "order still has items: " + order.getOrdNo());
+                    SampleErrorCode.HAS_ITEMS,
+                    "order still has items: " + order.getOrdNo(),
+                    List.of(new BusinessException.FieldError(
+                            "ordNo", "품목이 남아 있어 지울 수 없습니다", order.getOrdNo())));
         }
         /*
           태그를 먼저 지운다. FK 가 RESTRICT 라(playbook/INDEX.md) 남겨 두면 주문 삭제가 제약 위반으로
@@ -355,7 +376,10 @@ public class SampleOrderService {
         for (int index = 0; index < wanted.size(); index++) {
             SmplOrderTagRow tag = wanted.get(index);
             if (tag == null || tag.tagNm() == null || tag.tagNm().isBlank()) {
-                throw new BusinessException(SampleErrorCode.REQUIRED, "tag name is required");
+                throw new BusinessException(
+                        SampleErrorCode.REQUIRED,
+                        "tag name is required",
+                        List.of(new BusinessException.FieldError("tagList", "태그명이 비어 있습니다")));
             }
             saved.add(SmplOrderTag.of(
                     ordId,
@@ -373,7 +397,10 @@ public class SampleOrderService {
         requireText(row.custId(), "custId");
         requireText(row.custNm(), "custNm");
         if (row.ordDt() == null) {
-            throw new BusinessException(SampleErrorCode.REQUIRED, "ordDt is required");
+            throw new BusinessException(
+                    SampleErrorCode.REQUIRED,
+                    "ordDt is required",
+                    List.of(new BusinessException.FieldError("ordDt", "필수 값이 비어 있습니다")));
         }
         if (row.ordStatCd() != null) {
             OrderStatus.of(row.ordStatCd());
@@ -385,7 +412,10 @@ public class SampleOrderService {
         */
         if (row.dcRtOrZero().signum() > 0 && (row.rmk() == null || row.rmk().isBlank())) {
             throw new BusinessException(
-                    SampleErrorCode.RMK_REQUIRED, "rmk is required when dcRt > 0");
+                    SampleErrorCode.RMK_REQUIRED,
+                    "rmk is required when dcRt > 0",
+                    List.of(new BusinessException.FieldError(
+                            "rmk", "할인율이 있으면 비고가 필요합니다")));
         }
         /*
           태그 개수 — playbook/INDEX.md. **전건 앞에서 본다**(이 클래스의 머리말): replaceTags 에 두면
@@ -398,7 +428,11 @@ public class SampleOrderService {
         if (row.tagListOrEmpty().size() > MAX_TAGS) {
             throw new BusinessException(
                     SampleErrorCode.TAG_TOO_MANY,
-                    "too many tags: " + row.tagListOrEmpty().size());
+                    "too many tags: " + row.tagListOrEmpty().size(),
+                    List.of(new BusinessException.FieldError(
+                            "tagList",
+                            "태그가 너무 많습니다",
+                            String.valueOf(row.tagListOrEmpty().size()))));
         }
     }
 
@@ -408,7 +442,10 @@ public class SampleOrderService {
         requireText(row.custId(), "custId");
         requireText(row.custNm(), "custNm");
         if (row.ordDt() == null) {
-            throw new BusinessException(SampleErrorCode.REQUIRED, "ordDt is required");
+            throw new BusinessException(
+                    SampleErrorCode.REQUIRED,
+                    "ordDt is required",
+                    List.of(new BusinessException.FieldError("ordDt", "필수 값이 비어 있습니다")));
         }
         if (row.ordStatCd() != null) {
             // 모르는 상태를 조용히 받지 않는다 — 그 행은 화면에서 정상으로 보인다.

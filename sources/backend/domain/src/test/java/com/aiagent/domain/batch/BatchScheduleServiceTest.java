@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -52,6 +53,16 @@ class BatchScheduleServiceTest {
                 batches, histories, registry, mock(ApplicationEventPublisher.class));
     }
 
+    /**
+     * 그 <b>첫 행</b>의 칸들 — 행 단위로 모으면 칸이 `rowErrors[i].fields` 로 간다.
+     *
+     * <p>한 행만 보낸 저장이라 <i>첫 행</i> 이 곧 <i>그 행</i> 이다.
+     */
+    private static List<BusinessException.FieldError> fieldsOfFirstRow(BusinessException thrown) {
+        assertThat(thrown.rowErrors()).isNotEmpty();
+        return thrown.rowErrors().getFirst().fields();
+    }
+
     private static BatchScheduleSaveRow row(RowState state) {
         return new BatchScheduleSaveRow(
                 state, "SETTLE_DAILY", "야간 정산", "끄면 정산 화면이 전일 데이터를 못 본다",
@@ -75,7 +86,7 @@ class BatchScheduleServiceTest {
 
         assertThat(thrown.errorCode().code()).isEqualTo("err.batch.bean-unknown");
         // 셀에 붙어야 사용자가 어느 칸을 고칠지 안다(frontend/grid.md).
-        assertThat(thrown.fieldErrors()).extracting(BusinessException.FieldError::field)
+        assertThat(fieldsOfFirstRow(thrown)).extracting(BusinessException.FieldError::field)
                 .containsExactly("beanId");
         verify(batches, never()).save(any());
     }
@@ -110,7 +121,7 @@ class BatchScheduleServiceTest {
           <b>오류가 두 셀에 걸린다</b>(screen/batch/schedule/requirements.md) — 어느 쪽이 틀렸는지 서버가 말할 수 없다.
           틀린 것은 값이 아니라 <b>관계</b>이며, 문구가 두 값을 함께 읽어 준다.
         */
-        assertThat(thrown.fieldErrors()).extracting(BusinessException.FieldError::field)
+        assertThat(fieldsOfFirstRow(thrown)).extracting(BusinessException.FieldError::field)
                 .containsExactly("cron", "lockMinIntervalSec");
     }
 
@@ -215,5 +226,58 @@ class BatchScheduleServiceTest {
                 .isInstanceOf(BusinessException.class)
                 .satisfies(e -> assertThat(((BusinessException) e).errorCode().code())
                         .isEqualTo("err.batch.duplicate"));
+    }
+
+    /**
+     * <b>고칠 것이 몇 개인지 한 번에 말한다</b> — core/error/RowErrors.
+     *
+     * <p>하나씩 던지면 사용자가 저장을 N 번 눌러 오류를 하나씩 발견하고, 끝까지
+     * <i>몇 개가 남았나</i> 를 모른다.
+     */
+    @Nested
+    @DisplayName("여러 행이 걸리면 함께 모인다")
+    class ManyRows {
+
+        @Test
+        @DisplayName("실패한 행이 있어도 끝까지 돌고, 순번은 요청 배열의 것이다")
+        void collectsEveryFailureWithRequestIndex() {
+            BusinessException thrown = saveAll(
+                    // 0 — 없는 빈
+                    new BatchScheduleSaveRow(RowState.C, "A", "이름", "설명",
+                            "noSuchJob", "0 0 2 * * *", null, 300, 0, true, 0),
+                    // 1 — 통과
+                    new BatchScheduleSaveRow(RowState.C, "B", "이름", "설명",
+                            "settleDailyJob", "0 0 2 * * *", null, 300, 0, true, 0),
+                    // 2 — 쿨다운이 크론 주기 이상
+                    new BatchScheduleSaveRow(RowState.C, "C", "이름", "설명",
+                            "settleDailyJob", "0 */5 * * * *", null, 300, 600, true, 0));
+
+            assertThat(thrown.rowErrors()).extracting(BusinessException.RowError::index)
+                    .containsExactly(0, 2);
+            verify(batches, never()).save(any());
+        }
+
+        @Test
+        @DisplayName("사유가 달라도 함께 모이고, 봉투의 코드는 맨 앞 실패의 것이다")
+        void mixedReasonsKeepTheFirstCode() {
+            BusinessException thrown = saveAll(
+                    new BatchScheduleSaveRow(RowState.C, "A", "이름", "설명",
+                            "noSuchJob", "0 0 2 * * *", null, 300, 0, true, 0),
+                    new BatchScheduleSaveRow(RowState.C, "B", "이름", "  ",
+                            "settleDailyJob", "0 0 2 * * *", null, 300, 0, true, 0));
+
+            assertThat(thrown.errorCode().code()).isEqualTo("err.batch.bean-unknown");
+            assertThat(thrown.rowErrors()).extracting(BusinessException.RowError::index)
+                    .containsExactly(0, 1);
+        }
+
+        private BusinessException saveAll(BatchScheduleSaveRow... rows) {
+            try {
+                service.save(List.of(rows));
+                throw new AssertionError("거부됐어야 한다");
+            } catch (BusinessException e) {
+                return e;
+            }
+        }
     }
 }

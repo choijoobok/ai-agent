@@ -1,6 +1,7 @@
 package com.aiagent.domain.message.admin;
 
 import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.RowErrors;
 import com.aiagent.domain.message.entity.SysCacheVersion;
 import com.aiagent.domain.message.entity.SysMessage;
 import com.aiagent.domain.message.entity.SysMessageKey;
@@ -60,7 +61,7 @@ public class MessageAdminService {
         Set<String> supported = Set.copyOf(configs.get(MessageProps.class).supported());
         Set<String> seen = new HashSet<>();
 
-        for (MessageSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             // 같은 요청 안의 중복은 화면이 막지만(screen/message/requirements.md), 막혔다고 서버가 안 봐도 되는 것은
             // 아니다 — 두 번째 C 의 존재 확인이 첫 번째의 flush 를 만나지 못해 조용히 덮인다.
             if (!seen.add(row.msgKey())) {
@@ -71,7 +72,7 @@ public class MessageAdminService {
                 case U -> update(row, supported);
                 case D -> delete(row);
             }
-        }
+        });
         bumpVersion();
         evictAfterCommit();
     }
@@ -159,13 +160,19 @@ public class MessageAdminService {
     private SysMessageKey requireKey(String msgKey) {
         return keys.findById(msgKey)
                 .orElseThrow(() -> new BusinessException(
-                        MessageErrorCode.KEY_MISSING, "이미 지워진 키다 — " + msgKey));
+                        MessageErrorCode.KEY_MISSING,
+                        "이미 지워진 키다 — " + msgKey,
+                        List.of(new BusinessException.FieldError(
+                                "msgKey", "이미 지워진 메시지 키입니다", msgKey))));
     }
 
     private static void checkLang(MessageValue value, Set<String> supported) {
         if (!supported.contains(value.langCd())) {
             throw new BusinessException(
-                    MessageErrorCode.LANG_UNKNOWN, "지원하지 않는 언어 — " + value.langCd());
+                    MessageErrorCode.LANG_UNKNOWN,
+                    "지원하지 않는 언어 — " + value.langCd(),
+                    List.of(new BusinessException.FieldError(
+                            "langCd", "지원하지 않는 언어입니다", value.langCd())));
         }
     }
 
@@ -173,6 +180,7 @@ public class MessageAdminService {
         return new BusinessException(
                 MessageErrorCode.KEY_DUPLICATE,
                 "이미 있는 키다 — " + msgKey,
-                List.of(new BusinessException.FieldError("msgKey", "이미 있는 메시지 키입니다")));
+                List.of(new BusinessException.FieldError(
+                        "msgKey", "이미 있는 메시지 키입니다", msgKey)));
     }
 }

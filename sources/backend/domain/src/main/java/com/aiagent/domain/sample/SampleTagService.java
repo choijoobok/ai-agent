@@ -5,6 +5,7 @@ import static com.aiagent.domain.sample.SampleRules.MAX_TAGS;
 import static com.aiagent.domain.sample.SampleRules.requireUnlocked;
 
 import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.RowErrors;
 import com.aiagent.core.grid.RowState;
 import com.aiagent.domain.sample.entity.SmplOrder;
 import com.aiagent.domain.sample.entity.SmplOrderTag;
@@ -73,7 +74,7 @@ public class SampleTagService {
         for (SmplOrderTag tag : tags.findByOrdIdOrderBySortNoAscTagSeqAsc(ordId)) {
             current.put(tag.getTagSeq(), tag);
         }
-        int nextSeq = current.keySet().stream().mapToInt(Integer::intValue).max().orElse(0) + 1;
+        int[] nextSeq = {current.keySet().stream().mapToInt(Integer::intValue).max().orElse(0) + 1};
 
         /*
           전건을 먼저 본다. 섞으면 거부되는 요청이 쓰기를 한 번 내고 돌아가며, 순서 중복은
@@ -81,17 +82,17 @@ public class SampleTagService {
         */
         Map<Integer, Integer> wanted = new LinkedHashMap<>();
         current.forEach((tagSeq, tag) -> wanted.put(tagSeq, tag.getSortNo()));
-        int probe = nextSeq;
-        for (SmplTagSaveRow row : rows) {
+        int[] probe = {nextSeq[0]};
+        RowErrors.each(rows, row -> {
             if (row.rowState() == RowState.D) {
                 wanted.remove(requireTag(current, row).getTagSeq());
-                continue;
+                return;
             }
             validateTag(row);
             wanted.put(
-                    row.rowState() == RowState.C ? probe++ : requireTag(current, row).getTagSeq(),
+                    row.rowState() == RowState.C ? probe[0]++ : requireTag(current, row).getTagSeq(),
                     row.sortNo());
-        }
+        });
         /*
           개수를 먼저 본다 — wanted 가 저장 뒤의 모습이라(지울 것은 빠졌다) 여기서 센 수가
           곧 결과다. 순서 중복보다 앞에 두는 것은 상한을 넘은 판에서 사용자가 할 일이
@@ -102,28 +103,34 @@ public class SampleTagService {
         */
         if (wanted.size() > MAX_TAGS) {
             throw new BusinessException(
-                    SampleErrorCode.TAG_TOO_MANY, "too many tags: " + wanted.size());
+                    SampleErrorCode.TAG_TOO_MANY,
+                    "too many tags: " + wanted.size(),
+                    List.of(new BusinessException.FieldError(
+                            "tagNm", "태그가 너무 많습니다", String.valueOf(wanted.size()))));
         }
         Set<Integer> seenSort = new HashSet<>();
         for (Integer sortNo : wanted.values()) {
             if (!seenSort.add(sortNo)) {
                 throw new BusinessException(
-                        SampleErrorCode.TAG_SORT_DUPLICATED, "duplicated sortNo: " + sortNo);
+                        SampleErrorCode.TAG_SORT_DUPLICATED,
+                        "duplicated sortNo: " + sortNo,
+                        List.of(new BusinessException.FieldError(
+                                "sortNo", "순서가 겹칩니다", String.valueOf(sortNo))));
             }
         }
 
-        for (SmplTagSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             String tagTypeCd = row.tagTypeCd() == null ? DEFAULT_TAG_TYPE : row.tagTypeCd();
             switch (row.rowState()) {
                 case C -> {
                     tags.save(SmplOrderTag.of(
-                            ordId, nextSeq, row.tagNm().trim(), tagTypeCd, row.sortNo()));
-                    nextSeq += 1;
+                            ordId, nextSeq[0], row.tagNm().trim(), tagTypeCd, row.sortNo()));
+                    nextSeq[0] += 1;
                 }
                 case U -> requireTag(current, row).modify(row.tagNm().trim(), tagTypeCd, row.sortNo());
                 case D -> tags.delete(requireTag(current, row));
             }
-        }
+        });
     }
 
     /**
@@ -134,10 +141,16 @@ public class SampleTagService {
      */
     private static void validateTag(SmplTagSaveRow row) {
         if (row.tagNm() == null || row.tagNm().isBlank()) {
-            throw new BusinessException(SampleErrorCode.TAG_REQUIRED, "tag name is required");
+            throw new BusinessException(
+                    SampleErrorCode.TAG_REQUIRED,
+                    "tag name is required",
+                    List.of(new BusinessException.FieldError("tagNm", "필수 값이 비어 있습니다")));
         }
         if (row.sortNo() == null) {
-            throw new BusinessException(SampleErrorCode.TAG_REQUIRED, "sortNo is required");
+            throw new BusinessException(
+                    SampleErrorCode.TAG_REQUIRED,
+                    "sortNo is required",
+                    List.of(new BusinessException.FieldError("sortNo", "필수 값이 비어 있습니다")));
         }
     }
 
@@ -151,7 +164,11 @@ public class SampleTagService {
     private static SmplOrderTag requireTag(Map<Integer, SmplOrderTag> current, SmplTagSaveRow row) {
         SmplOrderTag found = row.tagSeq() == null ? null : current.get(row.tagSeq());
         if (found == null) {
-            throw new BusinessException(SampleErrorCode.NOT_FOUND, "no such tag: " + row.tagSeq());
+            throw new BusinessException(
+                    SampleErrorCode.NOT_FOUND,
+                    "no such tag: " + row.tagSeq(),
+                    List.of(new BusinessException.FieldError(
+                            "tagNm", "없는 태그입니다", String.valueOf(row.tagSeq()))));
         }
         return found;
     }

@@ -1,6 +1,7 @@
 package com.aiagent.domain.authz.role;
 
 import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.RowErrors;
 import com.aiagent.domain.authz.entity.SysRole;
 import com.aiagent.domain.authz.repository.SysRoleMenuAuthRepository;
 import com.aiagent.domain.authz.repository.SysRoleRepository;
@@ -65,7 +66,7 @@ public class RoleService {
         Set<String> seen = new HashSet<>();
         Set<String> affected = new LinkedHashSet<>();
 
-        for (RoleSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             /*
               같은 요청 안의 중복은 화면이 막지만, 막혔다고 서버가 안 봐도 되는 것은 아니다 —
               두 번째 C 의 존재 확인이 첫 번째의 flush 를 만나지 못해 조용히 덮인다.
@@ -78,7 +79,7 @@ public class RoleService {
                 case U -> affected.addAll(update(row));
                 case D -> affected.addAll(delete(row));
             }
-        }
+        });
         return affected;
     }
 
@@ -139,7 +140,7 @@ public class RoleService {
                     RoleErrorCode.NOT_DELETABLE,
                     "보유 " + holders + "명 · 권한 " + authorities + "건이 남아 있다 — " + row.roleId(),
                     List.of(new BusinessException.FieldError(
-                            "roleId", "보유 사용자나 권한이 있어 삭제할 수 없습니다")));
+                            "roleId", "보유 사용자나 권한이 있어 삭제할 수 없습니다", row.roleId())));
         }
         roles.delete(role);
         return Set.of();
@@ -157,13 +158,17 @@ public class RoleService {
     private SysRole require(String roleId) {
         return roles.findById(roleId)
                 .orElseThrow(() -> new BusinessException(
-                        RoleErrorCode.NOT_FOUND, "없는 역할이다 — " + roleId));
+                        RoleErrorCode.NOT_FOUND,
+                        "없는 역할이다 — " + roleId,
+                        List.of(new BusinessException.FieldError(
+                                "roleId", "없는 역할입니다", roleId))));
     }
 
     private BusinessException duplicate(String roleId) {
         return new BusinessException(
                 RoleErrorCode.DUPLICATE_ID,
                 "이미 있는 역할 ID 다 — " + roleId,
-                List.of(new BusinessException.FieldError("roleId", "이미 있는 역할 ID 입니다")));
+                List.of(new BusinessException.FieldError(
+                        "roleId", "이미 있는 역할 ID 입니다", roleId)));
     }
 }

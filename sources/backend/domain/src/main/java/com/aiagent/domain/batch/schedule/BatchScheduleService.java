@@ -2,6 +2,7 @@ package com.aiagent.domain.batch.schedule;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.RowErrors;
 import com.aiagent.core.grid.RowState;
 import com.aiagent.domain.batch.BatchJobRegistry;
 import com.aiagent.domain.batch.entity.SysScheduleBatch;
@@ -95,22 +96,22 @@ public class BatchScheduleService {
           flush 를 만나지 못해 <b>조용히 덮인다</b>(RoleService 와 같은 자리다).
         */
         Set<String> seen = new HashSet<>();
-        for (BatchScheduleSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             if (!seen.add(row.batchId())) {
                 throw duplicate(row.batchId());
             }
             if (row.rowState() != RowState.D) {
                 validate(row);
             }
-        }
+        });
 
-        for (BatchScheduleSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             switch (row.rowState()) {
                 case C -> create(row);
                 case U -> update(row);
                 case D -> delete(row);
             }
-        }
+        });
         events.publishEvent(new BatchScheduleChanged());
     }
 
@@ -280,6 +281,7 @@ public class BatchScheduleService {
         return new BusinessException(
                 BatchScheduleErrorCode.DUPLICATE_ID,
                 "이미 있는 배치 ID 다 — " + batchId,
-                List.of(new BusinessException.FieldError("batchId", "이미 있는 배치 ID 입니다")));
+                List.of(new BusinessException.FieldError(
+                        "batchId", "이미 있는 배치 ID 입니다", batchId)));
     }
 }

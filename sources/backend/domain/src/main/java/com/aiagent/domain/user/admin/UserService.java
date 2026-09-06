@@ -1,6 +1,7 @@
 package com.aiagent.domain.user.admin;
 
 import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.RowErrors;
 import com.aiagent.domain.user.entity.SysUser;
 import com.aiagent.domain.user.repository.SysUserRepository;
 import com.aiagent.domain.user.service.PasswordHistory;
@@ -93,28 +94,38 @@ public class UserService {
         Set<String> seen = new HashSet<>();
         List<IssuedPassword> issued = new ArrayList<>();
 
-        for (UserSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             /*
               같은 요청 안의 중복은 화면이 막지만, 막혔다고 서버가 안 봐도 되는 것은
               아니다 — 두 번째 C 의 존재 확인이 첫 번째의 flush 를 만나지 못해 조용히 덮인다.
             */
             if (!seen.add(row.userId())) {
                 throw new BusinessException(
-                        UserAdminErrorCode.DUPLICATE_ID, "같은 요청에 같은 ID 가 둘이다 — " + row.userId());
+                        UserAdminErrorCode.DUPLICATE_ID,
+                        "같은 요청에 같은 ID 가 둘이다 — " + row.userId(),
+                        List.of(new BusinessException.FieldError(
+                                "userId", "같은 ID 가 두 번 왔습니다", row.userId())));
             }
             switch (row.rowState()) {
                 case C -> issued.add(create(row, policy, now));
                 case U -> update(row, actorId);
                 case D -> throw new BusinessException(
-                        UserAdminErrorCode.DELETE_NOT_SUPPORTED, "계정 삭제 요청 — " + row.userId());
+                        UserAdminErrorCode.DELETE_NOT_SUPPORTED,
+                        "계정 삭제 요청 — " + row.userId(),
+                        List.of(new BusinessException.FieldError(
+                                "userId", "계정은 지울 수 없습니다 — 사용 여부를 끄세요", row.userId())));
             }
-        }
+        });
         return issued;
     }
 
     private IssuedPassword create(UserSaveRow row, AuthPasswordProps policy, Instant now) {
         if (users.existsById(row.userId())) {
-            throw new BusinessException(UserAdminErrorCode.DUPLICATE_ID, "이미 있다 — " + row.userId());
+            throw new BusinessException(
+                    UserAdminErrorCode.DUPLICATE_ID,
+                    "이미 있다 — " + row.userId(),
+                    List.of(new BusinessException.FieldError(
+                            "userId", "이미 있는 사용자 ID 입니다", row.userId())));
         }
         validate(row);
 
@@ -153,7 +164,11 @@ public class UserService {
 
         // screen/user/requirements.md — 그 자리에서 화면 밖으로 밀려난다. 되돌릴 사람이 그 사람 자신이다.
         if (!row.useYnOrTrue() && row.userId().equals(actorId)) {
-            throw new BusinessException(UserAdminErrorCode.SELF_DISABLE);
+            throw new BusinessException(
+                    UserAdminErrorCode.SELF_DISABLE,
+                    "자기 계정을 끄려 한다 — " + row.userId(),
+                    List.of(new BusinessException.FieldError(
+                            "useYn", "자기 계정은 끌 수 없습니다")));
         }
         user.changeByAdmin(
                 row.userNm(), row.email(), row.useYnOrTrue(),
@@ -168,18 +183,27 @@ public class UserService {
      */
     private static void validate(UserSaveRow row) {
         if (row.userNm() == null || row.userNm().isBlank()) {
-            throw new BusinessException(UserAdminErrorCode.NAME_REQUIRED, "이름이 비었다 — " + row.userId());
+            throw new BusinessException(
+                    UserAdminErrorCode.NAME_REQUIRED,
+                    "이름이 비었다 — " + row.userId(),
+                    List.of(new BusinessException.FieldError("userNm", "필수 값이 비어 있습니다")));
         }
         if (row.email() == null || row.email().isBlank()) {
             throw new BusinessException(
-                    UserAdminErrorCode.EMAIL_REQUIRED, "이메일이 비었다 — " + row.userId());
+                    UserAdminErrorCode.EMAIL_REQUIRED,
+                    "이메일이 비었다 — " + row.userId(),
+                    List.of(new BusinessException.FieldError("email", "필수 값이 비어 있습니다")));
         }
         if (row.validFromDt() != null
                 && row.validToDt() != null
                 && row.validFromDt().isAfter(row.validToDt())) {
             throw new BusinessException(
                     UserAdminErrorCode.PERIOD_REVERSED,
-                    "기간이 뒤집혔다 — " + row.validFromDt() + " ~ " + row.validToDt());
+                    "기간이 뒤집혔다 — " + row.validFromDt() + " ~ " + row.validToDt(),
+                    List.of(new BusinessException.FieldError(
+                            "validToDt",
+                            "종료일이 시작일보다 빠릅니다",
+                            row.validToDt().toString())));
         }
     }
 
@@ -251,6 +275,9 @@ public class UserService {
     private SysUser find(String userId) {
         return users.findById(userId)
                 .orElseThrow(() -> new BusinessException(
-                        UserAdminErrorCode.NOT_FOUND, "없는 계정이다 — " + userId));
+                        UserAdminErrorCode.NOT_FOUND,
+                        "없는 계정이다 — " + userId,
+                        List.of(new BusinessException.FieldError(
+                                "userId", "없는 계정입니다", userId))));
     }
 }

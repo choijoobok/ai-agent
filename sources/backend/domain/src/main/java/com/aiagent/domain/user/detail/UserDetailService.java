@@ -1,6 +1,7 @@
 package com.aiagent.domain.user.detail;
 
 import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.RowErrors;
 import com.aiagent.domain.authz.entity.SysUserRole;
 import com.aiagent.domain.authz.repository.SysRoleRepository;
 import com.aiagent.domain.authz.repository.SysUserRoleRepository;
@@ -87,7 +88,7 @@ public class UserDetailService {
         List<SysUserRole> added = new ArrayList<>();
         List<SysUserRole> removed = new ArrayList<>();
 
-        for (UserRoleSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             String roleId = row.roleId();
             /*
               같은 요청 안의 중복은 화면이 만들 수 없지만(PK 가 하나라 목록에 행이 하나다)
@@ -96,7 +97,10 @@ public class UserDetailService {
             */
             if (!seen.add(roleId)) {
                 throw new BusinessException(
-                        UserDetailErrorCode.ROLE_DUPLICATE, "같은 요청에 같은 역할이 둘이다 — " + roleId);
+                        UserDetailErrorCode.ROLE_DUPLICATE,
+                        "같은 요청에 같은 역할이 둘이다 — " + roleId,
+                        List.of(new BusinessException.FieldError(
+                                "roleId", "같은 역할이 두 번 왔습니다", roleId)));
             }
             switch (row.rowState()) {
                 case C -> {
@@ -104,7 +108,10 @@ public class UserDetailService {
                     validatePeriod(row);
                     if (current.containsKey(roleId)) {
                         throw new BusinessException(
-                                UserDetailErrorCode.ROLE_DUPLICATE, "이미 가진 역할이다 — " + roleId);
+                                UserDetailErrorCode.ROLE_DUPLICATE,
+                                "이미 가진 역할이다 — " + roleId,
+                                List.of(new BusinessException.FieldError(
+                                        "roleId", "이미 가진 역할입니다", roleId)));
                     }
                     added.add(SysUserRole.granted(
                             userId, roleId, row.validFromDt(), row.validToDt()));
@@ -121,7 +128,7 @@ public class UserDetailService {
                 */
                 case D -> removed.add(require(current.get(roleId), roleId));
             }
-        }
+        });
         if (!added.isEmpty()) {
             grants.saveAll(added);
         }
@@ -149,21 +156,29 @@ public class UserDetailService {
         if (from != null && to != null && from.isAfter(to)) {
             throw new BusinessException(
                     UserDetailErrorCode.PERIOD_REVERSED,
-                    what + " 기간이 뒤집혔다 — " + from + " ~ " + to);
+                    what + " 기간이 뒤집혔다 — " + from + " ~ " + to,
+                    List.of(new BusinessException.FieldError(
+                            "validToDt", "종료일이 시작일보다 빠릅니다", to.toString())));
         }
     }
 
     private static SysUserRole require(SysUserRole found, String roleId) {
         if (found == null) {
             throw new BusinessException(
-                    UserDetailErrorCode.ROLE_MISSING, "고치려는 역할 부여가 없다 — " + roleId);
+                    UserDetailErrorCode.ROLE_MISSING,
+                    "고치려는 역할 부여가 없다 — " + roleId,
+                    List.of(new BusinessException.FieldError(
+                            "roleId", "고치려는 역할 부여가 없습니다", roleId)));
         }
         return found;
     }
 
     private void requireRole(String roleId) {
         if (!roles.existsById(roleId)) {
-            throw new BusinessException(UserDetailErrorCode.ROLE_NOT_FOUND, "없는 역할이다 — " + roleId);
+            throw new BusinessException(
+                    UserDetailErrorCode.ROLE_NOT_FOUND,
+                    "없는 역할이다 — " + roleId,
+                    List.of(new BusinessException.FieldError("roleId", "없는 역할입니다", roleId)));
         }
     }
 
@@ -192,11 +207,14 @@ public class UserDetailService {
         List<SysUserIpAllow> added = new ArrayList<>();
         List<SysUserIpAllow> removed = new ArrayList<>();
 
-        for (UserIpSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             String cidr = row.ipCidr().trim();
             if (!seen.add(cidr)) {
                 throw new BusinessException(
-                        UserDetailErrorCode.IP_DUPLICATE, "같은 요청에 같은 대역이 둘이다 — " + cidr);
+                        UserDetailErrorCode.IP_DUPLICATE,
+                        "같은 요청에 같은 대역이 둘이다 — " + cidr,
+                        List.of(new BusinessException.FieldError(
+                                "ipCidr", "같은 대역이 두 번 왔습니다", cidr)));
             }
             switch (row.rowState()) {
                 case C -> {
@@ -204,7 +222,10 @@ public class UserDetailService {
                     validatePeriod(row.validFromDt(), row.validToDt(), "허용");
                     if (current.containsKey(cidr)) {
                         throw new BusinessException(
-                                UserDetailErrorCode.IP_DUPLICATE, "이미 등록된 대역이다 — " + cidr);
+                                UserDetailErrorCode.IP_DUPLICATE,
+                                "이미 등록된 대역이다 — " + cidr,
+                                List.of(new BusinessException.FieldError(
+                                        "ipCidr", "이미 등록된 대역입니다", cidr)));
                     }
                     added.add(SysUserIpAllow.created(
                             userId, cidr, row.useYnOrTrue(), row.validFromDt(), row.validToDt()));
@@ -225,7 +246,7 @@ public class UserDetailService {
                 */
                 case D -> removed.add(requireIp(current.get(cidr), cidr));
             }
-        }
+        });
         if (!added.isEmpty()) {
             ipAllows.saveAll(added);
         }
@@ -237,7 +258,10 @@ public class UserDetailService {
     private static SysUserIpAllow requireIp(SysUserIpAllow found, String cidr) {
         if (found == null) {
             throw new BusinessException(
-                    UserDetailErrorCode.IP_MISSING, "고치려는 허용 대역이 없다 — " + cidr);
+                    UserDetailErrorCode.IP_MISSING,
+                    "고치려는 허용 대역이 없다 — " + cidr,
+                    List.of(new BusinessException.FieldError(
+                            "ipCidr", "고치려는 허용 대역이 없습니다", cidr)));
         }
         return found;
     }
@@ -251,7 +275,10 @@ public class UserDetailService {
     private static void requireWellFormed(String cidr) {
         if (!isIpOrCidr(cidr)) {
             throw new BusinessException(
-                    UserDetailErrorCode.IP_MALFORMED, "IP 주소도 CIDR 도 아니다 — " + cidr);
+                    UserDetailErrorCode.IP_MALFORMED,
+                    "IP 주소도 CIDR 도 아니다 — " + cidr,
+                    List.of(new BusinessException.FieldError(
+                            "ipCidr", "IP 주소도 CIDR 도 아닙니다", cidr)));
         }
     }
 

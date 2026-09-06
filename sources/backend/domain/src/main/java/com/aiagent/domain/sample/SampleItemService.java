@@ -4,6 +4,7 @@ import static com.aiagent.domain.sample.SampleRules.requireText;
 import static com.aiagent.domain.sample.SampleRules.requireUnlocked;
 
 import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.RowErrors;
 import com.aiagent.domain.progress.Progress;
 import com.aiagent.domain.sample.entity.SmplOrder;
 import com.aiagent.domain.sample.entity.SmplOrderItem;
@@ -67,17 +68,17 @@ public class SampleItemService {
         requireUnlocked(order);
 
         // 신규 행의 번호는 서버가 정한다 — 화면이 정하면 두 사람이 같은 번호를 만든다.
-        int nextSeq = items.findByOrdIdOrderByItemSeq(ordId).stream()
+        int[] nextSeq = {items.findByOrdIdOrderByItemSeq(ordId).stream()
                 .mapToInt(SmplOrderItem::getItemSeq)
                 .max()
-                .orElse(0) + 1;
+                .orElse(0) + 1};
 
-        for (SmplOrderItemSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             switch (row.rowState()) {
                 case C -> {
                     items.save(SmplOrderItem.create(
                             ordId,
-                            nextSeq,
+                            nextSeq[0],
                             order.getOrdNo(),
                             row.itemCd(),
                             row.itemNm(),
@@ -88,7 +89,7 @@ public class SampleItemService {
                             row.itemStatCd(),
                             row.useYnOrTrue(),
                             row.rmk()));
-                    nextSeq += 1;
+                    nextSeq[0] += 1;
                 }
                 case U -> requireItem(ordId, row.itemSeq())
                         .modify(
@@ -103,7 +104,7 @@ public class SampleItemService {
                                 row.rmk());
                 case D -> items.delete(requireItem(ordId, row.itemSeq()));
             }
-        }
+        });
     }
 
     /**
@@ -125,22 +126,25 @@ public class SampleItemService {
      */
     @Transactional
     public void saveFlatItems(List<SmplFlatItemSaveRow> rows) {
-        for (SmplFlatItemSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             requireText(row.ordNo(), "ordNo");
             requireText(row.itemCd(), "itemCd");
-        }
+        });
 
         /*
           같은 (주문번호, 품목코드) 가 두 번 오면 거부한다. 뒤엣것이 앞엣것을 덮어 조용히
           한 행만 남는데, 사용자에게는 두 줄을 다 올렸는데 한 줄만 들어간 것으로 보인다.
         */
         Set<String> seen = new HashSet<>();
-        for (SmplFlatItemSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             if (!seen.add(row.where())) {
                 throw new BusinessException(
-                        SampleErrorCode.ITEM_DUPLICATED, "same item came twice: " + row.where());
+                        SampleErrorCode.ITEM_DUPLICATED,
+                        "same item came twice: " + row.where(),
+                        List.of(new BusinessException.FieldError(
+                                "itemCd", "같은 주문의 같은 품목이 두 번 왔습니다", row.itemCd())));
             }
-        }
+        });
 
         List<String> ordNos = rows.stream().map(SmplFlatItemSaveRow::ordNo).distinct().toList();
         Map<String, SmplOrder> byOrdNo = new LinkedHashMap<>();
@@ -162,12 +166,15 @@ public class SampleItemService {
             lastSeq.merge(item.getOrdId(), item.getItemSeq(), Math::max);
         }
 
-        for (SmplFlatItemSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             SmplOrder order = byOrdNo.get(row.ordNo());
             if (order == null) {
                 // playbook/INDEX.md — ORD_NO 가 DB 에 없으면 ORD_ID 를 풀 수 없다. 그 행이 오류다.
                 throw new BusinessException(
-                        SampleErrorCode.NO_SUCH_ORDER, "no such order: " + row.ordNo());
+                        SampleErrorCode.NO_SUCH_ORDER,
+                        "no such order: " + row.ordNo(),
+                        List.of(new BusinessException.FieldError(
+                                "ordNo", "없는 주문번호입니다", row.ordNo())));
             }
             requireUnlocked(order);
 
@@ -176,19 +183,25 @@ public class SampleItemService {
                 case C -> {
                     if (found != null) {
                         throw new BusinessException(
-                                SampleErrorCode.ITEM_DUPLICATED, "already there: " + row.where());
+                                SampleErrorCode.ITEM_DUPLICATED,
+                                "already there: " + row.where(),
+                                List.of(new BusinessException.FieldError(
+                                        "itemCd", "그 주문에 이미 있는 품목입니다", row.itemCd())));
                     }
                 }
                 case U, D -> {
                     if (found == null) {
                         throw new BusinessException(
-                                SampleErrorCode.NOT_FOUND, "no such item: " + row.where());
+                                SampleErrorCode.NOT_FOUND,
+                                "no such item: " + row.where(),
+                                List.of(new BusinessException.FieldError(
+                                        "itemCd", "그 주문에 없는 품목입니다", row.itemCd())));
                     }
                 }
             }
-        }
+        });
 
-        for (SmplFlatItemSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             SmplOrder order = byOrdNo.get(row.ordNo());
             SmplOrderItem found = current.get(itemKey(row.ordNo(), row.itemCd()));
             switch (row.rowState()) {
@@ -220,7 +233,7 @@ public class SampleItemService {
                         row.rmk());
                 case D -> items.delete(found);
             }
-        }
+        });
     }
 
     /**
@@ -317,12 +330,18 @@ public class SampleItemService {
 
     private SmplOrderItem requireItem(long ordId, Integer itemSeq) {
         if (itemSeq == null) {
-            throw new BusinessException(SampleErrorCode.NOT_FOUND, "item seq is missing");
+            throw new BusinessException(
+                    SampleErrorCode.NOT_FOUND,
+                    "item seq is missing",
+                    List.of(new BusinessException.FieldError("itemSeq", "필수 값이 비어 있습니다")));
         }
         return items.findByOrdIdOrderByItemSeq(ordId).stream()
                 .filter(item -> itemSeq.equals(item.getItemSeq()))
                 .findFirst()
                 .orElseThrow(() -> new BusinessException(
-                        SampleErrorCode.NOT_FOUND, "no such item: " + ordId + "/" + itemSeq));
+                        SampleErrorCode.NOT_FOUND,
+                        "no such item: " + ordId + "/" + itemSeq,
+                        List.of(new BusinessException.FieldError(
+                                "itemSeq", "없는 품목입니다", String.valueOf(itemSeq)))));
     }
 }

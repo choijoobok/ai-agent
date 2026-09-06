@@ -1,6 +1,7 @@
 package com.aiagent.domain.sample;
 
 import com.aiagent.core.error.BusinessException;
+import java.util.List;
 import com.aiagent.domain.sample.entity.SmplOrder;
 
 /**
@@ -58,14 +59,21 @@ public final class SampleRules {
      */
     static void requireUnlocked(SmplOrder order) {
         if (Boolean.TRUE.equals(order.getLockYn())) {
-            throw new BusinessException(SampleErrorCode.LOCKED, "locked: " + order.getOrdNo());
+            throw new BusinessException(
+                    SampleErrorCode.LOCKED,
+                    "locked: " + order.getOrdNo(),
+                    List.of(new BusinessException.FieldError(
+                            "lockYn", "잠긴 주문입니다", order.getOrdNo())));
         }
     }
 
     /** 필수 문자열 — 화면이 이미 막았어도 다시 본다(frontend/grid.md). */
     static void requireText(String value, String field) {
         if (value == null || value.isBlank()) {
-            throw new BusinessException(SampleErrorCode.REQUIRED, field + " is required");
+            throw new BusinessException(
+                    SampleErrorCode.REQUIRED,
+                    field + " is required",
+                    List.of(new BusinessException.FieldError(field, "필수 값이 비어 있습니다")));
         }
     }
 }

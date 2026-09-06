@@ -1,6 +1,7 @@
 package com.aiagent.domain.authz.userauth;
 
 import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.RowErrors;
 import com.aiagent.domain.authz.ActionType;
 import com.aiagent.domain.authz.MenuAction;
 import com.aiagent.domain.authz.entity.SysMenu;
@@ -112,7 +113,7 @@ public class UserAuthService {
         List<SysUserMenuAuth> added = new ArrayList<>();
         List<SysUserMenuAuth> removed = new ArrayList<>();
 
-        for (UserAuthSaveRow row : rows) {
+        RowErrors.each(rows, row -> {
             MenuAction pair = new MenuAction(row.menuCd(), row.actionCd());
             /*
               같은 요청 안의 중복은 화면이 만들 수 없지만(PK 가 하나라 목록에 행이 하나다)
@@ -121,7 +122,10 @@ public class UserAuthService {
             */
             if (!seen.add(pair)) {
                 throw new BusinessException(
-                        UserAuthErrorCode.DUPLICATE, "같은 요청에 같은 조합이 둘이다 — " + pair);
+                        UserAuthErrorCode.DUPLICATE,
+                        "같은 요청에 같은 조합이 둘이다 — " + pair,
+                        List.of(new BusinessException.FieldError(
+                                "menuPath", "같은 메뉴·액션 조합이 두 번 왔습니다", pair.toString())));
             }
             switch (row.rowState()) {
                 case C -> {
@@ -129,7 +133,10 @@ public class UserAuthService {
                     validateValues(row);
                     if (current.containsKey(pair)) {
                         throw new BusinessException(
-                                UserAuthErrorCode.DUPLICATE, "이미 있는 부여다 — " + pair);
+                                UserAuthErrorCode.DUPLICATE,
+                                "이미 있는 부여다 — " + pair,
+                                List.of(new BusinessException.FieldError(
+                                        "menuPath", "이미 있는 부여입니다", pair.toString())));
                     }
                     added.add(SysUserMenuAuth.created(
                             userId, row.menuCd(), row.actionCd(),
@@ -143,7 +150,7 @@ public class UserAuthService {
                 }
                 case D -> removed.add(require(current.get(pair), pair));
             }
-        }
+        });
         /*
           <b>불변식이 쓰기보다 앞이다.</b> 트랜잭션 안이라 뒤에 둬도 롤백되지만, 그러면
           거부되는 요청이 <b>INSERT 를 한 번 내고</b> 돌아온다 — 로그에 남고, 시퀀스가 있는
@@ -190,11 +197,16 @@ public class UserAuthService {
         if (menu == null || menu.getMenuUrl() == null) {
             throw new BusinessException(
                     UserAuthErrorCode.MENU_NOT_AUTHORIZABLE,
-                    "권한을 줄 수 없는 메뉴다 — " + pair.menuCd());
+                    "권한을 줄 수 없는 메뉴다 — " + pair.menuCd(),
+                    List.of(new BusinessException.FieldError(
+                            "menuPath", "권한을 줄 수 없는 메뉴입니다", pair.menuCd())));
         }
         if (!definable.getOrDefault(pair.menuCd(), Set.of()).contains(pair.action())) {
             throw new BusinessException(
-                    UserAuthErrorCode.ACTION_UNDEFINED, "그 메뉴에 정의되지 않은 액션이다 — " + pair);
+                    UserAuthErrorCode.ACTION_UNDEFINED,
+                    "그 메뉴에 정의되지 않은 액션이다 — " + pair,
+                    List.of(new BusinessException.FieldError(
+                            "actionCd", "그 메뉴에 정의되지 않은 액션입니다", pair.action().name())));
         }
     }
 
@@ -207,22 +219,32 @@ public class UserAuthService {
     private static void validateValues(UserAuthSaveRow row) {
         if (row.validFromDt() == null || row.validToDt() == null) {
             throw new BusinessException(
-                    UserAuthErrorCode.PERIOD_REQUIRED, "부여 기간이 비었다 — " + row.menuCd());
+                    UserAuthErrorCode.PERIOD_REQUIRED,
+                    "부여 기간이 비었다 — " + row.menuCd(),
+                    List.of(new BusinessException.FieldError("validFromDt", "필수 값이 비어 있습니다")));
         }
         if (row.validFromDt().isAfter(row.validToDt())) {
             throw new BusinessException(
                     UserAuthErrorCode.PERIOD_REVERSED,
-                    "기간이 뒤집혔다 — " + row.validFromDt() + " ~ " + row.validToDt());
+                    "기간이 뒤집혔다 — " + row.validFromDt() + " ~ " + row.validToDt(),
+                    List.of(new BusinessException.FieldError(
+                            "validToDt", "종료일이 시작일보다 빠릅니다", row.validToDt().toString())));
         }
         if (row.grantRsn() == null || row.grantRsn().isBlank()) {
             throw new BusinessException(
-                    UserAuthErrorCode.REASON_REQUIRED, "부여 사유가 비었다 — " + row.menuCd());
+                    UserAuthErrorCode.REASON_REQUIRED,
+                    "부여 사유가 비었다 — " + row.menuCd(),
+                    List.of(new BusinessException.FieldError("grantRsn", "필수 값이 비어 있습니다")));
         }
     }
 
     private static SysUserMenuAuth require(SysUserMenuAuth found, MenuAction pair) {
         if (found == null) {
-            throw new BusinessException(UserAuthErrorCode.MISSING, "고칠 부여가 없다 — " + pair);
+            throw new BusinessException(
+                    UserAuthErrorCode.MISSING,
+                    "고칠 부여가 없다 — " + pair,
+                    List.of(new BusinessException.FieldError(
+                            "menuPath", "고칠 부여가 없습니다", pair.toString())));
         }
         return found;
     }
@@ -261,7 +283,11 @@ public class UserAuthService {
             if (!held.contains(ActionType.READ) && !readViaRole.contains(entry.getKey())) {
                 throw new BusinessException(
                         UserAuthErrorCode.READ_REQUIRED,
-                        "조회 없이 다른 액션만 남는다 — " + entry.getKey() + " " + held);
+                        "조회 없이 다른 액션만 남는다 — " + entry.getKey() + " " + held,
+                        List.of(new BusinessException.FieldError(
+                                "menuPath",
+                                "조회 권한 없이 다른 액션만 남습니다",
+                                entry.getKey())));
             }
         }
     }
