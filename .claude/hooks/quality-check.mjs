@@ -33,6 +33,28 @@ const SKIP_DIR = new Set([
 /** 임계값 — 넘으면 G4 미충족이며 슬라이스를 done 으로 표시할 수 없다. */
 const THRESHOLD = { duplicationPct: 5.0, swallowedErrors: 0, untaggedFiles: 0 };
 
+/**
+ * <b>삼키는 것이 맞는 자리</b> — `@swallow <이유>` 를 그 catch 위에 단다.
+ *
+ * <p>드물지만 실재한다. {@code scheduleWithFixedDelay} 는 작업이 던지면 <b>다시 부르지
+ * 않으므로</b>, 거기서 올려 보내면 DB 가 잠깐 흔들린 것 때문에 <b>청소가 영영 멈춘다</b>.
+ *
+ * <h2>명단이 아니라 표시다</h2>
+ *
+ * <p>{@code feat-baseline} 과 {@code FEATURELESS} 의 갈림과 같다 — 명단은 <b>빚</b>이고
+ * 표시는 <b>영구 규칙</b>이다. 이건 언젠가 갚을 것이 아니라 <i>맞는 코드</i> 라, 그
+ * 사실은 <b>코드 옆</b>에 있어야 한다. 명단에 넣으면 언젠가 <i>왜 여기 있지</i> 가 된다.
+ *
+ * <h2>이유 없는 태그는 태그가 아니다</h2>
+ *
+ * <p>뒤에 글자가 없으면 인정하지 않는다. 그리고 <b>면제도 보고에 뜬다</b> — 조용히
+ * 사라지면 그것은 면제가 아니라 <b>검사를 끈 것</b>이다.
+ */
+const SWALLOW_TAG = /@swallow\s+\S/;
+
+/** 태그는 catch 바로 위에 산다 — 그 앞 400자를 본다. */
+const tagged = (text, at) => SWALLOW_TAG.test(text.slice(Math.max(0, at - 400), at));
+
 /** 중복 판정 최소 연속 라인 수. */
 const WINDOW = 6;
 
@@ -92,9 +114,26 @@ function files(dir, acc = []) {
 }
 
 /** 비교용 정규화 — 공백을 접고, 주석과 너무 짧은 줄을 버린다. */
+/**
+ * 이 줄을 <b>코드로 세는가</b> — 아니면 {@code null}.
+ *
+ * <h2>{@code import} 와 {@code package} 는 세지 않는다</h2>
+ *
+ * <p>세면 <b>파일이 늘수록 중복률이 오른다</b>. 같은 배럴을 여는 컨트롤러 열셋은 같은
+ * 세 줄로 시작하지만 그것은 복사한 것이 아니라 <b>같은 것을 쓰는 것</b>이고, 추출할
+ * 대상도 아니다 — 뽑아낼 로직이 한 줄도 없다.
+ *
+ * <p>2026-09-06 에 재 보니 <b>672 그룹 중 282 가 순전히 {@code import}</b> 였고,
+ * 12.46% 가 7.37% 로 내려갔다. <b>임계는 그대로 5% 다</b> — 고친 것은 *무엇을 코드로
+ * 세는가* 이지 *얼마까지 봐주는가* 가 아니다(CLAUDE.md — 임계를 올려 통과시키지 않는다).
+ *
+ * <p><b>애너테이션 단독 줄은 그대로 센다.</b> 함께 재 봤더니 7.37 이 7.42 로 <b>오히려
+ * 올랐다</b> — 분모만 줄고 중복은 그대로였다. 값이 없는 예외는 두지 않는다.
+ */
 function normalize(line) {
   const s = line.trim();
   if (!s || s.startsWith('//') || s.startsWith('#') || s.startsWith('*') || s.startsWith('/*')) return null;
+  if (/^(import|package)\s/.test(s)) return null;
   const flat = s.replace(/\s+/g, ' ');
   return flat.length > 12 ? flat : null;
 }
@@ -124,6 +163,7 @@ function scan() {
   const exempt = exemptPaths();
   const windows = new Map();
   const swallowed = [];
+  const exempted = [];
   const untagged = [];
   let totalLines = 0;
   const list = files(join(REPO, 'sources'));
@@ -153,11 +193,13 @@ function scan() {
 
     for (const [pattern, label] of SWALLOW) {
       for (const m of text.matchAll(pattern)) {
-        swallowed.push({ file: rel, line: lineOf(text, m.index), kind: label });
+        const hit = { file: rel, line: lineOf(text, m.index), kind: label };
+        (tagged(text, m.index) ? exempted : swallowed).push(hit);
       }
     }
     for (const m of text.matchAll(LOG_ONLY)) {
-      swallowed.push({ file: rel, line: lineOf(text, m.index), kind: '로그만 찍고 원인 미평가' });
+      const hit = { file: rel, line: lineOf(text, m.index), kind: '로그만 찍고 원인 미평가' };
+      (tagged(text, m.index) ? exempted : swallowed).push(hit);
     }
 
     const norm = [];
@@ -188,6 +230,8 @@ function scan() {
       .slice(0, 10),
     swallowedErrors: swallowed.length,
     swallowedDetail: swallowed.slice(0, 20),
+    exemptedSwallows: exempted.length,
+    exemptedDetail: exempted.slice(0, 20),
     untaggedFiles: untagged.length,
     untaggedDetail: untagged.slice(0, 20),
   };
@@ -238,6 +282,15 @@ function report(m) {
   if (m.swallowedDetail.length > 0) {
     out.push('', '### 예외 삼킴', '');
     for (const s of m.swallowedDetail.slice(0, 10)) out.push(`- ${s.file}:${s.line} — ${s.kind}`);
+  }
+  /*
+    <b>면제는 보이는 자리에 선다.</b> 태그가 붙었다고 목록에서 사라지면 그것은 면제가
+    아니라 <b>검사를 끈 것</b>이고, 늘어나도 아무도 모른다. 판정에는 들어가지 않되
+    <b>세어서 보인다</b> — 셋이 넘어가면 그때는 태그가 관행이 된 것이다.
+  */
+  if (m.exemptedDetail.length > 0) {
+    out.push('', `### 삼킴 면제 — @swallow ${m.exemptedSwallows}건 (판정에 들지 않는다)`, '');
+    for (const s of m.exemptedDetail.slice(0, 10)) out.push(`- ${s.file}:${s.line} — ${s.kind}`);
   }
   if (m.untaggedDetail.length > 0) {
     out.push('', '### @feat 태그 없는 파일', '');

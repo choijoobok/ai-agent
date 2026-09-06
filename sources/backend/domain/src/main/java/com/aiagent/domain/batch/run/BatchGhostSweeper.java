@@ -136,9 +136,13 @@ public class BatchGhostSweeper {
 
     private void sweepQuietly() {
         /*
-          예외를 삼킨다 — scheduleWithFixedDelay 는 작업이 던지면 **다시 부르지 않는다**.
+          @swallow scheduleWithFixedDelay 는 작업이 던지면 **다시 부르지 않는다**.
+
           DB 가 잠깐 흔들린 것 때문에 청소가 영영 멈추면, 그 뒤로 쌓이는 유령을 아무도
           치우지 않는다. 다음 주기에 다시 시도하는 편이 언제나 낫다.
+
+          태그는 검사를 끄는 것이 아니라 **이 판단을 검출기에 알리는 것**이다 — 면제도
+          보고에 뜬다(quality-check.mjs 의 SWALLOW_TAG).
         */
         try {
             sweep();
