@@ -1,6 +1,6 @@
 /**
  * `aidd-guide/` 문서 게이트 — 메타블록 · 200줄 · BOM · 링크 · 폐지 번호 인용 · 선언 어휘 ·
- * 폐지 어휘 · `sources:` 메타.
+ * 폐지 어휘 · `sources:` 메타 · 헌법 인용.
  *
  * <pre>
  *   node aidd-guide/meta/_meta/lint.mjs
@@ -26,6 +26,9 @@
  *       문서. 위의 검사와 <b>방향이 반대</b>다: 저것은 <i>새 이름이 들어왔나</i> 를 보고
  *       이것은 <i>낡은 이름이 남았나</i> 를 본다. 앞만 있으면 표준은 고쳐지고 <b>레시피는
  *       낡은 통로를 계속 가르친다</b>(2026-09-06 에 다섯이 그랬다).</li>
+ *   <li><b>맨 텍스트 헌법 인용</b> — `CLAUDE.md §5-8` 이 <b>있는 절과 있는 항목</b>을
+ *       가리키나. 위의 링크형 집계는 `[x](y.md) §3` 꼴만 보고 <b>절 번호까지만</b> 보는데,
+ *       저장소의 헌법 인용은 대부분 맨 텍스트이고 절반이 항목 번호를 단다.</li>
  *   <li><b>`sources:` 메타</b> — `standard/`·`playbook/` 은 비울 수 없고, 저장소 경로처럼
  *       생긴 엔트리는 실물과 맞아야 한다. 그 값이 `guide-drift` 훅의 <b>역인덱스 원본</b>
  *       이라, 낡으면 훅이 <b>조용히 눈이 먼다</b>.</li>
@@ -88,6 +91,9 @@ const YAML_RE = /^---\n([\s\S]*?)\n---\n/;
 const LINK_RE = /\]\(([^)#\s]+\.md)(?:#[^)]*)?\)/g;
 const LABEL_RE = /\[([^\]\n]+)\]\(([^)\s]+)\)/g;
 const LINK_SEC_RE = /\[([^\]]*)\]\(([^)\s]+\.md)\)\s*§\s*([0-9][0-9.\-]*)/g;
+
+/** `CLAUDE.md §5-8` — 링크형이든 아니든. 링크 꼬리 `)` 를 건너뛴다. */
+const CLAUDE_SEC_RE = /CLAUDE\.md\s*(?:#[^)]*\)\s*)?§\s*([0-9]+(?:\.[0-9]+)?)(?:-([0-9]+))?/g;
 const HEAD_NUM_RE = /^#{2,4}\s*([0-9][0-9.\-]*)[.\s]/gm;
 const FENCE_RE = /^```[\s\S]*?^```/gm;
 const INLINE_RE = /`[^`\n]*`/g;
@@ -141,6 +147,7 @@ if (countIssues.length > 0) violations.push(['INDEX.md', lineCount(join(GUIDE, '
 for (const [rel, issues] of checkScreenRequirements()) violations.push([rel, 0, issues]);
 for (const [rel, issues] of checkDeprecated()) violations.push([rel, 0, issues]);
 for (const [rel, issues] of checkSourcesMeta()) violations.push([rel, 0, issues]);
+for (const [rel, issues] of checkConstitutionCitations()) violations.push([rel, 0, issues]);
 
 const totalStale = [...stale.values()].reduce((a, b) => a + b, 0);
 out.push(`링크형 인용 중 대상에 그 절이 없는 것: ${totalStale} 곳 / ${stale.size} 파일 — 줄어들기만 해야 한다.`);
@@ -420,6 +427,58 @@ function checkVocabulary() {
  * <p><b>인용은 건드리지 않는다.</b> `sources:` 에는 외부 문서와 실험 기록도 들어간다
  * (`Anthropic …` · `2026-09-05 재현 실험 …`). 저장소 최상위 폴더로 시작하는 것만 경로로 본다.
  */
+/**
+ * <b>맨 텍스트 헌법 인용</b> — `CLAUDE.md §5-8` 이 살아 있는 절과 항목을 가리키나.
+ *
+ * <p><b>링크형 검사가 이것을 보지 못한다.</b> 저것은 `[x](y.md) §3` 꼴만 보고, 게다가
+ * <b>절 번호까지만</b> 본다. 그런데 저장소의 헌법 인용은 백 곳이 넘고 <b>거의 전부가 맨
+ * 텍스트</b>이며, 절반은 `§4-5` 처럼 <b>항목 번호</b>를 달고 있다.
+ *
+ * <p>그래서 2026-09-06 에 `artifact/template/02-requirements.md` 가 <b>존재한 적 없는</b>
+ * `§4-6` 과 `§4-8` 을 가리키고 있었는데도 lint 가 초록이었다. 그 파일은 <b>화면마다
+ * 복사되는 서식</b>이라 틀린 인용이 화면 수만큼 번진다.
+ *
+ * <p><b>집계가 아니라 위반이다.</b> 링크형은 대상이 남의 문서라 절이 사라지는 데 사정이
+ * 있을 수 있지만, 헌법은 이 저장소가 소유하므로 <b>가리킨 절은 있어야 한다</b>.
+ */
+function checkConstitutionCitations() {
+  const file = join(REPO, 'CLAUDE.md');
+  if (!existsSync(file)) return [];
+  const text = readFileSync(file, 'utf8');
+
+  // 절 → 그 절의 번호 목록에서 가장 큰 항목 번호(목록이 없으면 0).
+  const items = new Map();
+  const marks = [...text.matchAll(/^#{2,4}\s+([0-9]+(?:\.[0-9]+)?)\.?\s/gm)];
+  for (let i = 0; i < marks.length; i += 1) {
+    const to = i + 1 < marks.length ? marks[i + 1].index : undefined;
+    const nums = [...text.slice(marks[i].index, to).matchAll(/^([0-9]+)\. /gm)].map((m) =>
+      Number(m[1]),
+    );
+    items.set(marks[i][1], nums.length > 0 ? Math.max(...nums) : 0);
+  }
+
+  const out = [];
+  for (const root of ['aidd-guide', 'documents', 'user-guide', '.claude']) {
+    const dir = join(REPO, root);
+    if (!existsSync(dir)) continue;
+    for (const f of walk(dir)) {
+      if (!f.endsWith('.md')) continue;
+      const issues = [];
+      const lines = strip(readFileSync(f, 'utf8')).split('\n');
+      for (let i = 0; i < lines.length; i += 1) {
+        for (const [, sec, item] of lines[i].matchAll(CLAUDE_SEC_RE)) {
+          if (!items.has(sec)) issues.push(`${i + 1}줄: §${sec} — 헌법에 그런 절이 없다`);
+          else if (item && Number(item) > items.get(sec)) {
+            issues.push(`${i + 1}줄: §${sec}-${item} — §${sec} 의 항목은 ${items.get(sec)} 개뿐이다`);
+          }
+        }
+      }
+      if (issues.length > 0) out.push([relative(REPO, f).split(sep).join('/'), issues]);
+    }
+  }
+  return out;
+}
+
 function checkSourcesMeta() {
   const found = [];
   let real = null;

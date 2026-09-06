@@ -30,7 +30,7 @@ tags: [harness, hooks, automation]
 | ArchUnit `ServiceConventionTest` | 조회 서비스는 클래스 레벨 `readOnly` · 메서드 레벨 없음 / 컨트롤러에 트랜잭션 없음 |
 | ArchUnit `SampleIsolationTest` | 밖에서 샘플 참조 금지 · 샘플은 `SMPL_` 테이블만 |
 | `checkSeeds` · `SeedMessageTest` · `SeedChangelogIncludeTest` | 시드가 소스와 일치 · 값 시드의 키가 키 시드에 있음 · changelog 를 `master` 에 걸었음 |
-| `lint.mjs` | 메타블록 · 200줄 · BOM · **깨진 링크** · 선언 어휘 누락 · **폐지 어휘**(`@deprecated` 를 아직 가르치는 문서) · **`sources:` 메타**(비었나 · 실물과 맞나) · **요건서 서식**(백엔드 칸 · 컬럼 표 · **필드명 칸** · 케이스 번호) |
+| `lint.mjs` | 메타블록 · 200줄 · BOM · **깨진 링크** · 선언 어휘 누락 · **폐지 어휘**(`@deprecated` 를 아직 가르치는 문서) · **`sources:` 메타**(비었나 · 실물과 맞나) · **헌법 인용**(맨 텍스트 `CLAUDE.md §N-M` 이 있는 절·항목인가) · **요건서 서식**(백엔드 칸 · 컬럼 표 · **필드명 칸** · 케이스 번호) |
 | `trace-check.mjs` | 추적성 T1~T12 — dangling ID · 미실현 요구사항 · 고아 기능 · TC 없는 FEAT |
 
 ## 훅이 막는다 — 목록은 생성물이 갖는다
