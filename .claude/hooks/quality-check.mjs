@@ -58,6 +58,109 @@ const tagged = (text, at) => SWALLOW_TAG.test(text.slice(Math.max(0, at - 400), 
 /** 중복 판정 최소 연속 라인 수. */
 const WINDOW = 6;
 
+/**
+ * 창을 <b>클론으로 접는다</b> — 같은 줄을 여러 번 세지 않기 위해서다.
+ *
+ * <h2>창은 겹친다</h2>
+ *
+ * <p>6줄 창을 <b>한 줄씩</b> 미끄러뜨리므로, 7줄짜리 복사 한 곳은 창 <b>둘</b>에 걸린다.
+ * 창마다 {@code (벌수-1)*6} 을 더하면 23벌짜리 {@code *ErrorCode} 블록이 <b>264줄</b>로
+ * 세어지는데, 실제로 지울 수 있는 줄은 {@code 22 × 7 = 154} 다. 블록이 길수록 더 부푼다 —
+ * 13줄 복사 한 쌍은 창 여덟에 걸려 <b>48줄</b>이 되고 참값은 13이다.
+ *
+ * <p>2026-09-06 에 재 보니 <b>6.95% 가 1.96% 였다</b>. 임계 5%는 GitClear 의 관찰에서 온
+ * 값이고 <b>그쪽은 겹쳐 세지 않는다</b> — 즉 지금까지 우리는 <b>다른 자로 재고 같은 눈금을
+ * 읽고 있었다</b>. 고친 것은 *무엇을 중복이라 부르는가* 이지 *얼마까지 봐주는가* 가
+ * 아니다(CLAUDE.md §5-10 — 임계를 올려 통과시키지 않는다). <b>임계는 그대로 5% 다.</b>
+ *
+ * <h2>어떻게 접나 — 네 걸음</h2>
+ *
+ * <ol>
+ *   <li>중복 창이 덮은 줄에 <b>표시</b>한다(같은 줄에 창이 몇 개 걸리든 한 번).
+ *   <li>이어진 표시를 <b>한 덩이</b>로 묶는다 — 이것이 클론 하나의 실제 길이다.
+ *   <li>같은 창을 공유하는 덩이끼리 <b>한 클래스</b>로 잇는다.
+ *   <li>클래스마다 <b>가장 긴 한 벌을 남기고</b> 나머지 줄이 *지울 수 있는 줄* 이다.
+ * </ol>
+ *
+ * <p><b>③이 없으면 경계가 갈린 짝을 놓친다.</b> 복사 둘이 나란히 붙은 파일에서는 덩이가
+ * 15줄 하나로 뭉치고, 다른 파일의 7줄짜리와 <i>글자가 달라</i> 짝이 되지 못한다 — 그렇게
+ * 놓친 것이 544줄이었다. 창을 공유하면 잇는 방식은 그 15줄을 7줄·8줄짜리 둘과 함께 묶어
+ * {@code 30 - 15 = 15} 를 낸다(참값과 같다).
+ *
+ * <p>④에서 <b>가장 긴 것</b>을 남기는 이유도 같다. 짧은 쪽을 대표로 두면 대표가 남기지
+ * 못한 줄이 중복으로 세어져 <b>다시 부푼다</b>.
+ */
+function clones(windows, sources) {
+  const dupWindows = [...windows.values()].filter((v) => v.length > 1);
+
+  // ① 덮인 줄에 표시한다 — 창이 몇 개 걸리든 한 번이다.
+  const covered = new Map();
+  for (const hits of dupWindows) {
+    for (const { rel, at } of hits) {
+      let set = covered.get(rel);
+      if (!set) covered.set(rel, (set = new Set()));
+      for (let k = 0; k < WINDOW; k += 1) set.add(at + k);
+    }
+  }
+
+  // ② 이어진 표시를 한 덩이로 묶는다.
+  const regions = [];
+  const owner = new Map();
+  for (const [rel, set] of covered) {
+    const norm = sources.get(rel);
+    const idxs = [...set].sort((a, b) => a - b);
+    for (let i = 0; i < idxs.length; ) {
+      let j = i;
+      while (j + 1 < idxs.length && idxs[j + 1] === idxs[j] + 1) j += 1;
+      const id = regions.length;
+      regions.push({ rel, line: norm[idxs[i]][0], len: idxs[j] - idxs[i] + 1, root: id });
+      for (let k = i; k <= j; k += 1) owner.set(`${rel}:${idxs[k]}`, id);
+      i = j + 1;
+    }
+  }
+
+  // ③ 같은 창을 가진 덩이끼리 잇는다.
+  const find = (x) => {
+    let cur = x;
+    while (regions[cur].root !== cur) {
+      regions[cur].root = regions[regions[cur].root].root;
+      cur = regions[cur].root;
+    }
+    return cur;
+  };
+  for (const hits of dupWindows) {
+    const first = find(owner.get(`${hits[0].rel}:${hits[0].at}`));
+    for (let i = 1; i < hits.length; i += 1) {
+      const other = find(owner.get(`${hits[i].rel}:${hits[i].at}`));
+      if (other !== first) regions[other].root = first;
+    }
+  }
+
+  // ④ 클래스마다 가장 긴 한 벌을 남긴다.
+  const byClass = new Map();
+  for (let i = 0; i < regions.length; i += 1) {
+    const root = find(i);
+    if (!byClass.has(root)) byClass.set(root, []);
+    byClass.get(root).push(regions[i]);
+  }
+  let dupLines = 0;
+  const list = [];
+  for (const rs of byClass.values()) {
+    const keep = Math.max(...rs.map((r) => r.len));
+    const gone = rs.reduce((s, r) => s + r.len, 0) - keep;
+    if (gone === 0) continue;
+    dupLines += gone;
+    list.push({
+      count: rs.length,
+      lines: keep,
+      gone,
+      locations: rs.slice(0, 4).map((r) => `${r.rel}:${r.line}`),
+    });
+  }
+  list.sort((a, b) => b.gone - a.gone);
+  return { dupLines, cloneCount: list.length, top: list.slice(0, 10) };
+}
+
 const SWALLOW = [
   [/catch\s*\([^)]*\)\s*\{\s*\}/g, '빈 catch 블록'],
   [/catch\s*\([^)]*\)\s*\{\s*\/\/[^\n]*\s*\}/g, '주석만 있는 catch'],
@@ -162,6 +265,8 @@ function exemptPaths() {
 function scan() {
   const exempt = exemptPaths();
   const windows = new Map();
+  /** 파일별 정규화 줄 — 창을 클론으로 접을 때 덩이의 길이와 줄번호를 여기서 읽는다. */
+  const sources = new Map();
   const swallowed = [];
   const exempted = [];
   const untagged = [];
@@ -208,26 +313,24 @@ function scan() {
       if (n) norm.push([i + 1, n]);
     });
     totalLines += norm.length;
+    sources.set(rel, norm);
     for (let i = 0; i + WINDOW <= norm.length; i += 1) {
       const chunk = norm.slice(i, i + WINDOW).map(([, n]) => n).join('\n');
       const h = createHash('md5').update(chunk).digest('hex');
       if (!windows.has(h)) windows.set(h, []);
-      windows.get(h).push(`${rel}:${norm[i][0]}`);
+      windows.get(h).push({ rel, at: i });
     }
   }
 
-  const dupGroups = [...windows.values()].filter((v) => v.length > 1);
-  const dupLines = dupGroups.reduce((sum, v) => sum + (v.length - 1) * WINDOW, 0);
+  const dup = clones(windows, sources);
 
   return {
     files: list.length,
     codeLines: totalLines,
-    duplicationPct: totalLines ? Math.round((dupLines * 10000) / totalLines) / 100 : 0,
-    duplicateGroups: dupGroups.length,
-    topDuplicates: dupGroups
-      .map((v) => ({ count: v.length, locations: v.slice(0, 4) }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 10),
+    duplicationPct: totalLines ? Math.round((dup.dupLines * 10000) / totalLines) / 100 : 0,
+    duplicateLines: dup.dupLines,
+    cloneCount: dup.cloneCount,
+    topDuplicates: dup.top,
     swallowedErrors: swallowed.length,
     swallowedDetail: swallowed.slice(0, 20),
     exemptedSwallows: exempted.length,
@@ -267,7 +370,7 @@ function report(m) {
   out.push('', '| 지표 | 값 | 임계 | 판정 |', '|---|---|---|---|');
   const rows = [
     ['중복률', `${m.duplicationPct}%`, `≤ ${THRESHOLD.duplicationPct}%`, m.duplicationPct <= THRESHOLD.duplicationPct],
-    ['중복 그룹', String(m.duplicateGroups), '—', true],
+    ['중복 덩이', `${m.cloneCount}개 / ${m.duplicateLines}줄`, '—', true],
     ['예외 삼킴', `${m.swallowedErrors}건`, '0', m.swallowedErrors === 0],
     ['@feat 미태깅', `${m.untaggedFiles}개`, '0', m.untaggedFiles === 0],
   ];
@@ -275,9 +378,16 @@ function report(m) {
     out.push(`| ${name} | ${value} | ${threshold} | ${ok ? '✅' : '❌'} |`);
   }
 
+  /*
+    <b>*회* 가 아니라 *벌 × 줄* 로 적는다.</b> 뽑을지 정하려면 <i>몇 군데인가</i> 만으로는
+    모자라고 <b>한 벌이 몇 줄인가</b> 를 함께 봐야 한다 — 두 줄짜리가 스무 군데인 것과
+    스무 줄짜리가 둘인 것은 <b>같은 수를 내면서 할 일이 다르다</b>.
+  */
   if (m.topDuplicates.length > 0) {
-    out.push('', '### 중복이 많은 블록', '');
-    for (const d of m.topDuplicates.slice(0, 5)) out.push(`- ${d.count}회: ${d.locations.join(', ')}`);
+    out.push('', '### 지울 수 있는 줄이 많은 덩이', '');
+    for (const d of m.topDuplicates.slice(0, 5)) {
+      out.push(`- ${d.count}벌 × ${d.lines}줄 → ${d.gone}줄: ${d.locations.join(', ')}`);
+    }
   }
   if (m.swallowedDetail.length > 0) {
     out.push('', '### 예외 삼킴', '');
