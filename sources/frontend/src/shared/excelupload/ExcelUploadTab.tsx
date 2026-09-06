@@ -67,8 +67,18 @@ export interface ExcelUploadTabProps<T> {
   keyFields: string[];
   /** 업무 탭과 <b>같은 조회 API</b>. 버튼이 되지 않으므로 {@code api} 밖에 있다(위). */
   read: ReadApi;
-  /** 업무 탭과 <b>같은 저장 API</b>. */
-  save: SaveApi<T>;
+  /**
+   * 업무 탭과 <b>같은 저장 API</b>. 다만 <b>{@code perRow} 는 받지 않는다</b>.
+   *
+   * <p>건별 커밋은 <b>사용자가 만든 파일을 못 쓰게 만든다</b>(backend/row-transaction.md §2-2).
+   * 오백 행 중 열둘이 실패하고 나머지가 커밋되면, 같은 파일을 다시 올리는 순간 이미 저장된
+   * 488행이 <i>중복</i> 으로 걸린다 — 사용자는 <b>자기 엑셀을 편집해</b> 성공한 행을 지워야
+   * 하고, 그 편집은 우리가 시킨 일이다.
+   *
+   * <p>재시도할 입력을 <b>사용자가 소유</b>하는 자리에서는 전건 롤백이 답이다. 실패 사유를
+   * 파일로 받아 원본을 고친 뒤 <b>같은 파일을 그대로</b> 다시 올린다.
+   */
+  save: Omit<SaveApi<T>, 'perRow'>;
   /**
    * 행 하나를 요청 모양으로 바꾼다 &mdash; <b>업무 탭과 같은 함수</b>다.
    *
@@ -140,11 +150,40 @@ export function ExcelUploadTab<T>(props: ExcelUploadTabProps<T>) {
     [props.columns, codeOptions],
   );
 
+  /*
+    <b>비우기 위한 손잡이.</b> 저장 선언이 컨트롤러보다 먼저 만들어져야 해서(아래) 컨트롤러를
+    직접 부를 수 없다 — 렌더 중에 ref 를 쓰지 않는 규칙 때문에 대입은 효과에서 한다.
+  */
+  const grid = useRef<{ clear: () => void } | null>(null);
+
+  /**
+   * <b>전건 성공이면 판을 비운다.</b>
+   *
+   * <p>업무 탭이라면 재조회가 그 일을 한다 — 저장된 것이 서버에서 다시 와 화면이 갱신된다.
+   * <b>여기에는 조회가 없다</b>(위 클래스 주석). 그래서 아무것도 하지 않으면 <b>방금 올린
+   * 파일이 그대로 남고</b>, 사용자에게 그것은 <i>저장이 안 된 것</i> 과 구분되지 않는다 —
+   * 그 상태로 저장을 한 번 더 누르면 전부 중복으로 걸린다.
+   *
+   * <p><b>실패하면 비우지 않는다.</b> 전건 롤백이므로 화면에 있는 것이 곧 다시 낼 입력이다.
+   */
+  const save = useMemo<SaveApi<T>>(() => {
+    // perRow 를 명시적으로 지운다 — 타입이 막는 것은 리터럴뿐이다(위 props).
+    const given = props.save;
+    return {
+      ...given,
+      perRow: undefined,
+      onSuccess: (result) => {
+        grid.current?.clear();
+        given.onSuccess?.(result);
+      },
+    };
+  }, [props.save]);
+
   const controller = useGridController<T>({
     menuCd: props.menuCd,
     columns,
     // 조회가 없다 — 위 클래스 주석. 저장은 업무 탭과 같은 것이다.
-    api: { save: props.save },
+    api: { save },
     toSaveRow: props.toSaveRow,
     editable: true,
   });
@@ -158,6 +197,11 @@ export function ExcelUploadTab<T>(props: ExcelUploadTabProps<T>) {
   useEffect(() => {
     if (handleRef) handleRef.current = { dirty: () => dirty };
   }, [handleRef, dirty]);
+
+  const setRows = controller.setRows;
+  useEffect(() => {
+    grid.current = { clear: () => setRows([]) };
+  }, [setRows]);
 
   const text = useMemo<ReadText>(
     () => ({
