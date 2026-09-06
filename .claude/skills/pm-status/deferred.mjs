@@ -47,7 +47,8 @@ function read(p) {
 }
 
 /** 앞뒤의 마크다운 꾸밈을 턴다 — 뜻이 아니라 서식이다. */
-const strip = (s) => s.replace(/^[-—\s`*|]+/, '').replace(/[\s|"'`*]+$/, '');
+// 굵게는 **줄 안에서도** 턴다 — 줄을 이으면 닫는 `**` 가 문장 한가운데 남는다.
+const strip = (s) => s.replace(/\*\*/g, '').replace(/^[-—\s`*|]+/, '').replace(/[\s|"'`*]+$/, '');
 
 /**
  * 다음 줄로 넘어간 문장을 붙인다 — <b>최대 둘</b>.
@@ -60,20 +61,50 @@ const strip = (s) => s.replace(/^[-—\s`*|]+/, '').replace(/[\s|"'`*]+$/, '');
  *
  * <p><b>마크다운에서만 붙인다.</b> YAML 은 줄이 곧 값이라 다음 줄은 이어지는 문장이
  * 아니라 <b>다음 필드</b>다 — 붙이면 <i>…정한다 swallowed_errors: 1 # 임계 0</i> 이 된다.
+ *
+ * <p><b>인용문 안에서는 들여쓰기가 아니라 `&gt;` 가 이음을 말한다.</b> `aidd-guide` 의
+ * 콜아웃 관용구가 인용문이라 미룬 것이 거기 사는 일이 잦은데, 인용문의 다음 줄은
+ * 들여쓸 자리가 없어 <i>들여쓰였는가</i> 로 물으면 <b>언제나 아니오</b>다 — 그래서
+ * golden-set.md 의 항목이 <i>…나오므로(아래 추가</i> 에서 괄호도 못 닫고 잘렸다.
+ * 태그가 인용문에 있으면 <b>같은 인용문에 남아 있는가</b> 로 묻는다.
  */
 function continuation(lines, at, file) {
-  if (!/\.md$/.test(file)) return '';
+  if (!/\.md$/.test(file)) return { text: '', cut: false };
+  const quoted = /^\s*>/.test(lines[at]);
+  const goes = (i) => {
+    const raw = lines[i];
+    if (i >= lines.length) return null;
+    if (quoted && !/^\s*>/.test(raw)) return null; // 인용문 밖으로 나갔다
+    const next = quoted ? raw.replace(/^\s*>\s?/, '') : raw;
+    if (!next.trim()) return null;
+    if (/^\s*([-*+]\s|#{1,6}\s|\||```|\d+\.\s)/.test(next)) return null;
+    if (/^\s*[\w.-]+:\s/.test(next)) return null; // YAML 의 키가 왔다
+    if (!quoted && !/^\s{2,}/.test(next)) return null; // 이어지는 줄은 들여쓰여 있다
+    return next.trim();
+  };
   let out = '';
-  for (let i = at + 1; i <= at + 2 && i < lines.length; i += 1) {
-    const next = lines[i];
-    if (!next.trim()) break;
-    if (/^\s*([-*+]\s|#{1,6}\s|\||```|\d+\.\s)/.test(next)) break;
-    if (/^\s*[\w.-]+:\s/.test(next)) break; // YAML 의 키가 왔다
-    if (!/^\s{2,}/.test(next)) break; // 이어지는 줄은 들여쓰여 있다
-    out += ' ' + next.trim();
+  let i = at + 1;
+  for (; i <= at + 2; i += 1) {
+    const next = goes(i);
+    if (next === null) return { text: out, cut: false };
+    out += ' ' + next;
   }
-  return out;
+  // 상한에서 멈췄다 — 더 갈 줄이 남았으면 문장이 잘린 것이다.
+  return { text: out, cut: goes(i) !== null };
 }
+
+/**
+ * <b>문장 한가운데서 끊지 않는다.</b> 상한에 걸려 잘렸으면 마지막 온전한 문장까지만 싣는다 —
+ * <i>…길이 없는 것보다 목적지가</i> 로 끝나는 항목은 <b>읽을 수 없고, 읽을 수 없는 항목은
+ * 없는 항목과 같다</b>.
+ *
+ * <p>파일 이름의 점은 문장 끝이 아니다({@code master-tabs.md 의}) — 뒤에 공백이나 줄끝이
+ * 와야 문장으로 본다.
+ */
+const toSentence = (s) => {
+  const ends = [...s.matchAll(/[.!?](?=\s|$)/g)];
+  return ends.length ? s.slice(0, ends[ends.length - 1].index + 1) : s;
+};
 
 function walk(p, out = []) {
   let st;
@@ -107,7 +138,9 @@ for (const f of files) {
     const m = line.match(/@defer\s+([A-Z]?[0-9]|지금|\?)[:\s]*(.*)$/);
     if (!m) return;
     // 앞뒤의 꾸밈(백틱 · 별표 · 이음표)과, 표 칸에서 딸려 오는 `|` 를 턴다.
-    const tail = strip(m[2] + continuation(lines, i, f));
+    const more = continuation(lines, i, f);
+    const joined = strip(m[2] + more.text);
+    const tail = more.cut ? toSentence(joined) : joined;
     // `?` 는 **기한을 아직 못 정했다**는 정직한 표시다 — 기한 없음 칸으로 간다.
     add(m[1] === '?' ? null : m[1], null, tail || strip(line), `${rel}:${i + 1}`);
   });
