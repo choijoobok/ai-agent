@@ -71,6 +71,11 @@ tags: [artifact, template, screen]
 | 페이징 | {offset / cursor / 없음} |
 | 문서 상태 | {초안 / 승인 YYYY-MM-DD / 구현됨} |
 
+> **한 글자는 이 표에서만 쓰는 약칭이다** — `R`=`READ` · `S`=`SAVE` · `E`=`EXPORT` ·
+> `X`=`EXECUTE`. **데이터에도 소스에도 한 글자는 없다**: `ACTION_CD` 의 값과 `ActionCd`
+> 타입이 전부 전체 이름이고 필드도 `act.READ` 다([knowledge/sys/menu.md](../../knowledge/sys/menu.md) §3).
+> **아래 본문에서는 약칭을 쓰지 않는다** — 6차 재현이 이 표를 보고 `act.R` 로 갔다.
+
 ---
 
 ## 1. 화면 구성
