@@ -32,6 +32,7 @@ import { ShellHeader } from '@/layouts/ShellLayout/ShellHeader';
 import { ShellSider } from '@/layouts/ShellLayout/ShellSider';
 import { ShellTabBar } from '@/layouts/ShellLayout/ShellTabBar';
 import { TabPanes } from '@/layouts/ShellLayout/TabPanes';
+import { allowNextUnload, useUnsavedGuard } from '@/layouts/ShellLayout/useUnsavedGuard';
 import { useShellNavigation } from '@/layouts/ShellLayout/useShellNavigation';
 import { useTabHotkeys } from '@/layouts/ShellLayout/useTabHotkeys';
 import { MSG } from '@/shared/i18n/messageKeys';
@@ -57,6 +58,17 @@ export function ShellLayout() {
   const { token } = theme.useToken();
   const { modal } = App.useApp();
   const cleanup = useSessionCleanup();
+
+  /*
+    <b>브라우저가 하는 이탈</b>은 아래의 확인들이 볼 수 없다 — 새로고침 · 주소창 · 브라우저
+    탭 닫기 · 뒤로 가기. 그 넷은 이 훅이 브라우저에게 물어 달라고 요청한다.
+
+    <b>돌려받은 값을 구독으로 쓴다.</b> 예전에는 이 사실을 `useTabStore.getState()` 로
+    렌더 도중 한 번 읽었는데, 그러면 값이 바뀌어도 셸이 다시 그려지지 않아 <b>낡은 값을
+    들고 있게</b> 된다. 지금까지 안 틀린 것은 설정 모달을 <i>여는 클릭</i> 이 마침
+    리렌더를 일으켰기 때문이고, 그것은 규칙이 아니라 우연이다.
+  */
+  const hasUnsaved = useUnsavedGuard();
 
   const { index, openMenu, openMenuInNewTab, selectTab, replaceOldest, syncUrlToActiveTab } =
     useShellNavigation();
@@ -122,7 +134,13 @@ export function ShellLayout() {
     const dirty = tabs.filter((tab) => dirtyKeys.includes(tab.key));
     // 되돌아올 자리가 없는 이동이라 히스토리에 남기지 않는다 — 뒤로 가면 방금 버린
     // 상태의 주소로 돌아가는데, 그 상태는 이미 없다.
-    const go = () => window.location.replace('/');
+    //
+    // <b>브라우저에게는 묻지 말라고 한다</b> — 어느 탭인지 이름까지 대며 이미 물었고,
+    // 그 뒤의 브라우저 창은 같은 결정을 무엇을 잃는지도 못 밝힌 채 다시 시킨다.
+    const go = () => {
+      allowNextUnload();
+      window.location.replace('/');
+    };
 
     if (dirty.length === 0) {
       go();
@@ -462,7 +480,7 @@ export function ShellLayout() {
       <SettingsModal
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
-        hasUnsaved={useTabStore.getState().dirtyKeys.length > 0}
+        hasUnsaved={hasUnsaved}
       />
       <ExpiryWarningModal
         open={expiry.warning && !expiryDismissed}
