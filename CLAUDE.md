@@ -246,41 +246,8 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 
 ## 8. 소스 규약 — 기계가 지키는 것 / 사람이 지키는 것
 
-### 기계가 막는다 (어기면 빌드가 깨진다)
-
-| 게이트 | 무엇 |
-|---|---|
-| ESLint `no-restricted-syntax` | 문자열·JSX 텍스트·템플릿 문자열 **속 한글** 금지 · `label()` 리터럴 금지 · `/api`·계층 경로 리터럴 금지 |
-| ESLint `no-restricted-imports` | `@/shared/api/*` 딥 임포트 금지 — HTTP 는 **배럴 `@/shared/api`** 하나 |
-| `check-save-envelope.mjs` | **`saveEnvelope` 의 키가 서버 `record` 의 칸인가** — 부모 키를 빠뜨렸거나 이름이 어긋나면 차단(`npm run lint` 가 이어서 돈다) |
-| ESLint `import-x/no-restricted-paths` | `features/*` 끼리 직접 import 금지 |
-| ArchUnit `LayerDependencyTest` | 모듈 의존 방향(core ← support ← domain ← api) |
-| ArchUnit `ServiceConventionTest` | 조회 서비스는 클래스 레벨 `readOnly` · 메서드 레벨 없음 / 컨트롤러에 트랜잭션 없음 |
-| ArchUnit `SampleIsolationTest` | 밖에서 샘플 참조 금지 · 샘플은 `SMPL_` 테이블만 |
-| `checkSeeds` · `SeedMessageTest` · `SeedChangelogIncludeTest` | 시드가 소스와 일치 · 값 시드의 키가 키 시드에 있음 · changelog 를 `master` 에 걸었음 |
-| `lint.mjs` | 메타블록 · 200줄 · BOM · **깨진 링크** · 선언 어휘 누락 · **폐지 어휘**(`@deprecated` 를 아직 가르치는 문서) · **`sources:` 메타**(비었나 · 실물과 맞나) · **요건서 서식**(백엔드 칸 · 컬럼 표 · **필드명 칸** · 케이스 번호) |
-| `trace-check.mjs` | 추적성 T1~T12 — dangling ID · 미실현 요구사항 · 고아 기능 · TC 없는 FEAT |
-
-### 훅이 막는다 (**차단** · **경고** · **기록** 세 강도 — 어느 것인지는 표의 오른쪽 칸에 있다)
-
-| 훅 | 시점 | 하는 일 |
-|---|---|---|
-| `session-brief` | SessionStart | 프로젝트 상태를 문맥에 넣고 3줄 브리핑을 강제한다 |
-| `guard-write` | PreToolUse | **G3 전 구현 코드 차단** · 생성물 수정 차단 · **산출물 지도 밖 문서 차단**(§4) · spec 변경 경고 |
-| `guard-generated` | PreToolUse | 생성 시드 CSV 손편집 — **차단**(§5-8) |
-| `guard-bash` | PreToolUse | **파괴적 명령 차단**(§5-2) |
-| `guard-commit` | PreToolUse | 경로 없는 커밋 · `-a` · 큰따옴표 메시지 — **차단**(§9) |
-| `normalize-encoding` | PostToolUse | BOM · CRLF 를 쓰기 직후 **고친다**(§5-1) |
-| `trace-check` | PostToolUse | spec 변경 직후 추적성 오류 — **경고** |
-| `doc-drift` | PostToolUse | 화면 소스 ↔ 문서 셋 · **주석이 남의 화면을 가리키나** — **경고**(§6.5) |
-| `guide-drift` | PostToolUse | **공통물·표준 소스 ↔ `aidd-guide/`** — 그 소스를 `sources:` 에 적은 문서를 가리킨다. **경고** |
-| `harness-doc` | PostToolUse | `.claude/` 가 바뀌면 [`user-guide/07-harness.md`](user-guide/07-harness.md) 를 **스스로 다시 만든다** |
-| `context-gauge` | UserPromptSubmit | 문맥이 **창의 60% 를 넘으면 압축을 권한다** — 경고. 아래면 한 글자도 쓰지 않는다 |
-| `log-raw` | UserPromptSubmit·Stop | 막지 않고 **대화 원문을 `chat-history/` 에 남긴다**(§10) |
-
-> 훅은 [`.claude/hooks/`](.claude/hooks/) 에 있고 [`.claude/settings.json`](.claude/settings.json) 이 건다.
-> **`node` 하나로 돌며 의존성이 없다** — 이유는 [`harness/hooks.md`](./aidd-guide/harness/hooks.md).
-> **전부 fail-open 이다** — 훅이 죽어도 세션을 막지 않는다. 죽은 훅이 세션을 막으면 사람이 훅을 끄고, 꺼진 훅은 없는 훅이다.
+**기계가 막는 것의 목록은 [`harness/automation-matrix.md`](aidd-guide/harness/automation-matrix.md) 가 갖는다** — 빌드 게이트 열 개와 훅 열두 개. **훅의 현재 목록은 생성물이다**
+([`user-guide/07-harness.md`](user-guide/07-harness.md)) — 손으로 적은 목록은 훅을 더할 때마다 낡고, 낡은 목록은 **없는 것보다 나쁘다**(있다고 믿게 한다).
 
 ### 사람이 지킨다 (검사가 없다)
 

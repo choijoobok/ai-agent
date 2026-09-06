@@ -4,7 +4,7 @@ title: "자동화 vs AI 책임 매트릭스"
 category: harness
 type: operation
 created: "2026-04-30"
-updated: "2026-09-03"
+updated: "2026-09-06"
 status: active
 sources: [".claude/settings.json", ".claude/hooks/"]
 tier: 1
@@ -16,20 +16,29 @@ tags: [harness, hooks, automation]
 > **기계가 지킬 수 있는 것을 사람에게 외우게 하지 않는다.** 구현 주체가 AI 이므로
 > 표준은 문서와 **게이트**로 존재해야 한다(CLAUDE.md §8).
 >
-> 훅은 다섯이고 [`.claude/hooks/`](../../.claude/hooks) 에 있다. `node` 하나로 돌며 의존성이 없다 — **폐쇄망에서도 돈다.**
+> 훅은 [`.claude/hooks/`](../../.claude/hooks) 에 있고 [`.claude/settings.json`](../../.claude/settings.json) 이 건다. `node` 하나로 돌며 의존성이 없다 — **폐쇄망에서도 돈다.**
 
-## 훅 — 무엇을 언제
+## 빌드가 막는다 — 어기면 빌드가 깨진다
 
-| 훅 | 시점 | 대상 | 강도 |
-|---|---|---|---|
-| [`guard-generated.mjs`](../../.claude/hooks/guard-generated.mjs) | `PreToolUse` | `Write`·`Edit` | **차단** — 생성 시드 CSV 손편집 |
-| [`guard-commit.mjs`](../../.claude/hooks/guard-commit.mjs) | `PreToolUse` | `Bash`·`PowerShell` | **차단** — 경로 없는 커밋 · `-a` · 큰따옴표 메시지 |
-| [`normalize-encoding.mjs`](../../.claude/hooks/normalize-encoding.mjs) | `PostToolUse` | `Write`·`Edit` | **교정** — BOM · CRLF 를 쓰기 직후 고친다 |
-| [`doc-drift.mjs`](../../.claude/hooks/doc-drift.mjs) | `PostToolUse` | `Write`·`Edit` | **경고** — 화면 소스 ↔ 화면 문서 |
-| [`guide-drift.mjs`](../../.claude/hooks/guide-drift.mjs) | `PostToolUse` | `Write`·`Edit` | **경고** — 공통물·표준 소스 ↔ `aidd-guide/` |
-| [`log-raw.mjs`](../../.claude/hooks/log-raw.mjs) | `UserPromptSubmit` · `Stop` | 턴 전체 | **기록** — 대화 원문을 `chat-history/` 에 append |
+| 게이트 | 무엇 |
+|---|---|
+| ESLint `no-restricted-syntax` | 문자열·JSX 텍스트·템플릿 문자열 **속 한글** 금지 · `label()` 리터럴 금지 · `/api`·계층 경로 리터럴 금지 |
+| ESLint `no-restricted-imports` | `@/shared/api/*` 딥 임포트 금지 — HTTP 는 **배럴 `@/shared/api`** 하나 |
+| `check-save-envelope.mjs` | **`saveEnvelope` 의 키가 서버 `record` 의 칸인가** — 부모 키를 빠뜨렸거나 이름이 어긋나면 차단(`npm run lint` 가 이어서 돈다) |
+| ESLint `import-x/no-restricted-paths` | `features/*` 끼리 직접 import 금지 |
+| ArchUnit `LayerDependencyTest` | 모듈 의존 방향(core ← support ← domain ← api) |
+| ArchUnit `ServiceConventionTest` | 조회 서비스는 클래스 레벨 `readOnly` · 메서드 레벨 없음 / 컨트롤러에 트랜잭션 없음 |
+| ArchUnit `SampleIsolationTest` | 밖에서 샘플 참조 금지 · 샘플은 `SMPL_` 테이블만 |
+| `checkSeeds` · `SeedMessageTest` · `SeedChangelogIncludeTest` | 시드가 소스와 일치 · 값 시드의 키가 키 시드에 있음 · changelog 를 `master` 에 걸었음 |
+| `lint.mjs` | 메타블록 · 200줄 · BOM · **깨진 링크** · 선언 어휘 누락 · **폐지 어휘**(`@deprecated` 를 아직 가르치는 문서) · **`sources:` 메타**(비었나 · 실물과 맞나) · **요건서 서식**(백엔드 칸 · 컬럼 표 · **필드명 칸** · 케이스 번호) |
+| `trace-check.mjs` | 추적성 T1~T12 — dangling ID · 미실현 요구사항 · 고아 기능 · TC 없는 FEAT |
 
-배선은 [`.claude/settings.json`](../../.claude/settings.json) 이 한다.
+## 훅이 막는다 — 목록은 생성물이 갖는다
+
+어느 훅이 언제 무엇에 걸리고 **강도가 무엇인가**는 [`user-guide/07-harness.md`](../../user-guide/07-harness.md) 가 갖는다 —
+`harness-doc` 훅이 **실물에서 계산해** 다시 만든다. 여기에 베껴 적지 않는다 — 베낀 순간 **훅을 더할 때마다 낡는다**.
+
+**여기는 *왜 그런 강도인가* 를 갖는다.**
 
 ## 강도가 넷인 이유
 
