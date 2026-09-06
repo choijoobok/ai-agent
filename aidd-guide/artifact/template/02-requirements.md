@@ -212,7 +212,7 @@ tags: [artifact, template, screen]
 - ***없어야 한다* 를 §9 케이스에 적기 전에 끄는 수단이 있는지 본다.** 수단이 없으면
   `<DataGrid>` 의 계약을 고쳐야 하고 그것은 **화면 하나의 판단이 아니다**
   ([standard/frontend/packages.md](../../standard/frontend/packages.md)). 지금 있는 수단: 엑셀은
-  **`excel={false}`**([playbook/excel.md](../../playbook/excel.md)), 조회·저장은 `api` 선언
+  **`excel={false}`**([playbook/excel-download.md](../../playbook/excel-download.md)), 조회·저장은 `api` 선언
   자체를 두지 않는 것뿐이다.
 - **마스터-디테일이면 그리드마다 이 표를 쓴다.** 하단에도 조회 버튼이 선다 — 마스터에만
   적고 넘어가면 그 버튼이 표 밖에 남는다.

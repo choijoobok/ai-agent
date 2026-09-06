@@ -136,7 +136,7 @@ validate: { grid: (rows) => [...tooManyTagRows(rows), ...duplicatedSortNo(rows)]
 
 | | 하단 디테일 탭(⑤) | 화면 안 최상단 탭(⑥) |
 |---|---|---|
-| 전환할 때 | **묻지 않는다** — 표시가 바뀔 뿐 데이터를 버리지 않는다 | **묻는다** — [excel.md §5](./excel.md) |
+| 전환할 때 | **묻지 않는다** — 표시가 바뀔 뿐 데이터를 버리지 않는다 | **묻는다** — [excel-upload.md §7](./excel-upload.md) |
 | 갈리는 것 | 한 화면 안의 **부분** | **화면 전체** |
 
 ## 9. 커밋 전 체크리스트
@@ -150,5 +150,5 @@ validate: { grid: (rows) => [...tooManyTagRows(rows), ...duplicatedSortNo(rows)]
 ## 관련
 
 - [master-detail.md](./master-detail.md) — 마스터와 스플리터
-- [excel.md](./excel.md) — 화면 안 최상단 탭은 규칙이 다르다
+- [excel-upload.md](./excel-upload.md) — 화면 안 최상단 탭은 규칙이 다르다
 - [standard/frontend/grid-advanced.md](../standard/frontend/grid-advanced.md) §5 — 검증 세 층

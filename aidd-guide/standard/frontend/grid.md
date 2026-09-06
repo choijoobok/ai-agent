@@ -103,7 +103,7 @@ tags: [frontend, grid, ag-grid, crud, save]
 설정은 개인화다. **서버가 만드는 엑셀만** `actions` 의 하나가 된다.
 
 **그래서 ②를 끄는 것도 `api` 로 하지 않는다.** `api` 를 빼면 저장 버튼이 함께 사라진다 —
-**`excel={false}`** 가 그 자리다([playbook/excel.md](../../playbook/excel.md) 넷째 갈래).
+**`excel={false}`** 가 그 자리다([playbook/excel-download.md](../../playbook/excel-download.md) 넷째 갈래).
 
 ## 4. 저장은 버튼을 누를 때 한 번 일어난다
 

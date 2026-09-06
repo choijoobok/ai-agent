@@ -140,4 +140,4 @@ onRead={() => void detail.read(true)}
 
 - [master-tabs.md](./master-tabs.md) — 자식 표가 둘 이상이면
 - [standard/frontend/grid-advanced.md](../standard/frontend/grid-advanced.md) §6
-- [excel.md](./excel.md) — ③이 서버 생성 엑셀의 실물이다
+- [excel-download.md](./excel-download.md) — ③이 서버 생성 엑셀의 실물이다

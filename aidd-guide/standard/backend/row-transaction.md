@@ -169,7 +169,7 @@ perRow: { after: 'reload' | 'keepFailed' }   // 저장·실행이 같은 칸을 
 
 **시트가 둘인 것이 규약이다.** 첫 시트는 **양식 그대로**여서 고쳐 그대로 다시 올릴 수 있고,
 사유는 **둘째 시트**로 간다 — 첫 시트에 열로 붙이면 업로드 파서가 *양식이 다르다* 며
-거절한다. → [../../playbook/excel.md](../../playbook/excel.md) §5-1
+거절한다. → [../../playbook/excel-upload.md](../../playbook/excel-upload.md) §5
 
 표시(표 · 붉은 셀 · 건수)는 저장 실패와 **같은 자리**를 쓴다 →
 [../frontend/save-errors.md](../frontend/save-errors.md).

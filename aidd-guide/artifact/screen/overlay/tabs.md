@@ -54,4 +54,4 @@ tags: [prompt, overlay, tabs]
 ## 구현은
 
 [playbook/master-tabs.md](../../../playbook/master-tabs.md)(하단) ·
-[playbook/excel.md](../../../playbook/excel.md)(최상단).
+[playbook/excel-upload.md](../../../playbook/excel-upload.md)(최상단).

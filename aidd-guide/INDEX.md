@@ -79,7 +79,7 @@ ai-agent/
   ├─ "서비스 이름·트랜잭션·API 경로·영속화"    → standard/backend/
   ├─ "그리드·조회폼·공통물·i18n·테마"          → standard/frontend/
   ├─ "PII·인젝션·secrets·rate-limit"           → standard/safety/
-  ├─ "CRUD·마스터디테일·엑셀·모달·시드 레시피" → playbook/      레시피 일곱
+  ├─ "CRUD·마스터디테일·엑셀·모달·시드 레시피" → playbook/      레시피 여덟
   ├─ "표가 무엇을 담나 · 이 말이 무슨 뜻인가"  → knowledge/     표 34 · 용어
   │
   │  ── 품질과 운영 ──────────────────────────────
@@ -103,7 +103,7 @@ ai-agent/
 | [phase](phase/P0-inception.md) | P0~P6 실행 플레이북 | 1 | 7 |
 | [artifact](artifact/INDEX.md) | **산출물 지도 40 = 문서 예산** · 템플릿 · 화면 요건서 절차 | 1 | 22 |
 | [standard](standard/INDEX.md) | 백엔드·프론트 표준의 상세와 근거 | 2 | 38 |
-| [playbook](playbook/INDEX.md) | 화면 레시피 (샘플 여섯과 대응) | 2 | 9 |
+| [playbook](playbook/INDEX.md) | 화면 레시피 (샘플 여섯과 대응) | 2 | 10 |
 | [quality](quality/INDEX.md) | 테스트 설계 · 레드팀 · 코드 품질 · 골든셋 · 관측 | 2 | 13 |
 | [knowledge](knowledge/INDEX.md) | 표 34개 — 인가·코드·문구·이력·운영 | 3 | 14 |
 | [harness](harness/INDEX.md) | 훅 · 스킬 · 문맥 예산 · 로그 — **지금 무엇이 있나는 [user-guide/07-harness.md](../user-guide/07-harness.md)**(생성물) | 2 | 13 |

@@ -91,4 +91,5 @@ tags: [prompt, overlay, excel]
 
 ## 구현은
 
-[playbook/excel.md](../../../playbook/excel.md).
+[playbook/excel-download.md](../../../playbook/excel-download.md) ·
+[playbook/excel-upload.md](../../../playbook/excel-upload.md).
