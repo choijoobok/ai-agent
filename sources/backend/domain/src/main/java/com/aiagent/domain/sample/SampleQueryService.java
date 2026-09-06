@@ -205,7 +205,7 @@ public class SampleQueryService {
     }
 
     /**
-     * 조건 그대로 <b>전량</b> — 엑셀의 <i>전체</i> 항목이 쓴다(frontend/grid-advanced.md).
+     * 조건 그대로 <b>전량</b> — 엑셀의 <i>전체</i> 항목이 쓴다(playbook/excel-download.md).
      *
      * <p>페이징이 없으므로 상한은 부르는 쪽이 건다({@link SampleExcelService}).
      */
@@ -386,7 +386,7 @@ public class SampleQueryService {
      * 품목이라 조회조건이 없고(파라미터다), 이것은 사용자가 좁히는 조회조건 넷을 받는다
      * (주문번호 · 품목코드 · 품목상태 · 납기일).
      *
-     * <p><b>엑셀 업로드 탭도 이 경로를 쓴다</b>(frontend/grid-advanced.md). 파일을 읽은 직후 기존 행을
+     * <p><b>엑셀 업로드 탭도 이 경로를 쓴다</b>(playbook/excel-upload.md). 파일을 읽은 직후 기존 행을
      * 받아 대조하는 자리이며, 새 경로를 만들면 <i>화면이 보는 표</i> 와 <i>대조하는 표</i>
      * 가 갈릴 수 있다 — 그 어긋남은 <b>이미 있는 행이 신규로</b> 잡히는 모습으로 나온다.
      */

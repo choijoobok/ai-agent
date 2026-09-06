@@ -16,7 +16,7 @@ import java.time.LocalDate;
  * <table><caption></caption>
  *   <tr><td><b>{@code ordId} 가 요청에 없다</b></td>
  *       <td>한 파일에 <b>여러 주문의 품목</b>이 섞인다. 그것이 평면 엑셀 한 장이라는
- * 전제(frontend/grid-advanced.md)이며, 요청 하나에 주문 하나를 강요하면 사용자가 파일을 주문
+ * 전제(playbook/excel-upload.md)이며, 요청 하나에 주문 하나를 강요하면 사용자가 파일을 주문
  *           수만큼 쪼개야 한다</td></tr>
  *   <tr><td><b>{@code itemSeq} 가 파일에 없다</b></td>
  *       <td>서버가 정하는 값이라 양식에 넣지 않았다(68 &sect;8.2) &mdash; 넣으면 사람이

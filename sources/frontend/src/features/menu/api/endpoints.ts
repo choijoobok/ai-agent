@@ -12,7 +12,7 @@
  * 않으므로 전부 즉시가 됐다. 저장 버튼이 없는 대신 경로가 연산마다 하나다.
  *
  * <p><b>`exportExcel` 이 없다.</b> 엑셀은 있지만(sys/menu.md 의 액션 열이 `R S E` 다) 그것은
- * **프론트 생성**이다(frontend/grid.md · frontend/grid-advanced.md 첫째 · screen/menu/requirements.md) — 서버가 낼 것이 없다.
+ * **프론트 생성**이다(frontend/grid.md · playbook/excel-download.md 첫째 · screen/menu/requirements.md) — 서버가 낼 것이 없다.
  */
 export const MENU_ENDPOINTS = {
   getTree: '/service/menu/getTree',

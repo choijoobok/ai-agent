@@ -13,7 +13,7 @@
  * 사실의 집행이며(screen/api-catalog/requirements.md), 그래서 시드가 `SAVE` 를 만들지 못하고 어느 역할에도 줄 수 없다.
  *
  * <p><b>`exportExcel` 이 없다.</b> 엑셀은 있지만(sys/menu.md 의 액션 열이 `R E` 다) 그것은
- * **프론트 생성**이다(frontend/grid.md · frontend/grid-advanced.md 첫째) — 서버가 낼 것이 없으므로 경로도 없다.
+ * **프론트 생성**이다(frontend/grid.md · playbook/excel-download.md 첫째) — 서버가 낼 것이 없으므로 경로도 없다.
  * 권한은 시드에 있고 버튼은 `<DataGrid>` 가 그린다.
  */
 export const API_CATALOG_ENDPOINTS = {

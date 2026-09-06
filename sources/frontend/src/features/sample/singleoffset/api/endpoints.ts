@@ -10,7 +10,7 @@
  * `export*` 는 `EXPORT`, 나머지는 `EXECUTE`.
  *
  * <p>**`export*` 가 하나도 없다** — ③과 갈리는 자리다. 이 화면이 그리는 표가 곧 내려받을
- * 표이므로 엑셀은 프론트가 만들고(frontend/grid-advanced.md 의 앞 두 갈래), `EXPORT` 권한은 메뉴가
+ * 표이므로 엑셀은 프론트가 만들고(playbook/excel-download.md 의 앞 두 갈래), `EXPORT` 권한은 메뉴가
  * 선언한다(sys/menu.md · `menu-tree.yaml` 의 `export: true`).
  *
  * <p>**③의 `getOrderList` 를 재사용하지 않는다.** 같은 테이블·같은 페이징 모드지만 투영이

@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 /**
- * 엑셀을 내렸다 — frontend/grid-advanced.md · frontend/grid.md.
+ * 엑셀을 내렸다 — playbook/excel-download.md · frontend/grid.md.
  *
  * <p><b>이 요청은 자기 자신이 기록이다.</b> 컨트롤러가 저장하는 것이 아니라
  * {@code UserActionLogInterceptor} 가 <b>모든 {@code /api/**} 요청</b>을 남기며(sys/logs.md)
@@ -15,7 +15,7 @@ import java.util.List;
  *
  * <h2>{@code menuCd} 를 받지 않는다</h2>
  *
- * <p>frontend/grid-advanced.md 는 payload 를 {@code {menuCd, rowCount, columnKeys}} 로 적었다. <b>첫째를
+ * <p>playbook/excel-download.md 는 payload 를 {@code {menuCd, rowCount, columnKeys}} 로 적었다. <b>첫째를
  * 뺀다</b> — 그 값은 이미 {@code X-Menu-Code} 헤더로 와서 {@code SYS_LO_ACCESS.MENU_CD}
  * <b>컬럼</b>이 되며(backend/packages.md · sys/logs.md), body 에도 담으면 <b>같은 사실이 한 행에 두 벌</b>
  * 생긴다. 둘이 어긋나는 날 어느 쪽이 맞는지 알 수 없고, 이력 화면이 메뉴로 거를 때 보는
@@ -25,13 +25,13 @@ import java.util.List;
  *
  * <p>대신 <b>어느 항목을 눌렀는가</b>를 받는다(frontend/grid.md 의 드롭다운 둘). {@code rowCount} 만
  * 으로는 <i>100건짜리 화면의 현재 페이지</i> 와 <i>마침 100건이던 전량</i> 이 같아 보이는데,
- * frontend/grid-advanced.md 가 <b>전량에만 상한을 둔</b> 이유가 그 둘의 위험이 다르기 때문이다.
+ * playbook/excel-download.md 가 <b>전량에만 상한을 둔</b> 이유가 그 둘의 위험이 다르기 때문이다.
  *
  * @param scope 현재 페이지인가 전량인가. <b>트리는 언제나 {@link ExcelScope#ALL}</b> 이다 —
  * 페이지가 없어 둘이 같다(screen/menu/requirements.md)
  * @param rowCount 파일에 들어간 행 수. 0건은 파일을 만들지 않으므로 오지 않는다(frontend/grid.md)
  * @param columnKeys 내려간 컬럼의 <b>식별자</b>다 — 화면에 보이는 이름이 아니다. Phase 12 의
- * PII 판정이 이것을 읽는다(frontend/grid-advanced.md · backend/pii-vault.md). 사용자가 끈 컬럼은 여기 없다
+ * PII 판정이 이것을 읽는다(playbook/excel-download.md · backend/pii-vault.md). 사용자가 끈 컬럼은 여기 없다
  */
 public record ExcelLogRequest(
         @NotNull ExcelScope scope,

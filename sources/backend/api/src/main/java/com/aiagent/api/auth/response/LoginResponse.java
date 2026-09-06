@@ -33,7 +33,7 @@ import java.util.Map;
  * 두는 이유는 <b>부팅 직후부터 타이머가 필요하기 때문</b>이다 — 없으면 셸이 그 값을 얻으려
  * 하트비트를 한 번 불러야 하고, 그것은 사람이 누르지 않은 세션 연장이다.
  *
- * <p><b>{@code excelMaxRows} 는 {@code cacheVersions} 와 같은 성격이다</b>(frontend/grid-advanced.md · sys/code.md) —
+ * <p><b>{@code excelMaxRows} 는 {@code cacheVersions} 와 같은 성격이다</b>(playbook/excel-download.md · sys/code.md) —
  * 사용자별이 아니고 값도 아니지만 <b>화면이 판단하는 데 필요한 기준</b>이며 몇 바이트다.
  * 엑셀 <i>전체</i> 를 누른 순간 <b>총 건수와 이 상한을 비교</b>해야 하는데, 그때 물으면
  * 클릭에 왕복이 하나 붙고 프론트에 숫자를 박아 두면 {@code SYS_CONFIG} 와 어긋난다 —

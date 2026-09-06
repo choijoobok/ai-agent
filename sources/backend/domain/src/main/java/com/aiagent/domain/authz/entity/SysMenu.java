@@ -70,7 +70,7 @@ public class SysMenu extends BaseAuditEntity {
      *
      * <p>다른 셋과 층이 다르다. {@code READ}·{@code SAVE}·{@code EXECUTE} 는 <b>매핑된 API 가
      * 말하고</b>(backend/api.md) 그것을 담을 자리는 {@code SYS_API.ACTION_CD} 다. {@code EXPORT} 만
-     * 그 말이 닿지 않는다 — 엑셀은 <b>프론트가 만들고</b>(frontend/grid-advanced.md) 서버 호출이 없어
+     * 그 말이 닿지 않는다 — 엑셀은 <b>프론트가 만들고</b>(playbook/excel-download.md) 서버 호출이 없어
      * {@code SYS_API} 행이 생기지 않는다. 그래서 이 액션만 <b>메뉴가 직접 선언</b>한다.
      *
      * <p><b>{@code USE_YN} 과 혼동하지 않는다.</b> 저쪽은 유효 권한의 최종 게이트라 끄면

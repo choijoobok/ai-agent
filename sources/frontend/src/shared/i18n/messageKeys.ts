@@ -575,7 +575,7 @@ export const MSG = {
    */
   SCREEN_TABS_DIRTY_CONTENT: 'screenTabs.dirty.content',
 
-  // ── 엑셀 업로드 탭 (frontend/grid-advanced.md · playbook/INDEX.md) ────────────────
+  // ── 엑셀 업로드 탭 (playbook/excel-upload.md · playbook/INDEX.md) ────────────────
   //
   // **올라가지 않는다** — 브라우저가 읽어 그리드에 붓는다. 그래서 여기 없는 것이
   // 진행률·업로드 실패·파일 목록이고, 있는 것은 **읽기의 거절 사유**들이다.
@@ -690,12 +690,12 @@ export const MSG = {
   /** 조회 결과가 0건일 때의 알림 — 마스터만 기본으로 켠다(frontend/grid.md). */
   GRID_READ_EMPTY: 'grid.read.empty',
 
-  // ── 엑셀 다운로드 (frontend/grid.md · frontend/grid-advanced.md) ─────────────────────
+  // ── 엑셀 다운로드 (frontend/grid.md · playbook/excel-download.md) ─────────────────────
   /** ②의 아이콘 버튼 이름 — 항목이 둘이라 어느 라벨도 대표하지 못해 글자가 없다. */
   GRID_EXCEL: 'grid.excel',
   /** 항목 ① — 지금 화면에 보이는 행. 컬럼 필터가 걸려 있으면 걸러진 결과다(frontend/grid.md). */
   GRID_EXCEL_PAGE: 'grid.excel.page',
-  /** 항목 ② — 조회조건으로 전량 재조회. 상한이 있다(frontend/grid-advanced.md). */
+  /** 항목 ② — 조회조건으로 전량 재조회. 상한이 있다(playbook/excel-download.md). */
   GRID_EXCEL_ALL: 'grid.excel.all',
   /** 전량이 상한을 넘었을 때 — 조용히 자르지 않고 거절한다. */
   GRID_EXCEL_TOO_MANY: 'grid.excel.tooMany',
@@ -2853,7 +2853,7 @@ export const MSG = {
    * ②의 <b>세 번째 항목</b> — 품목이 없는 주문만 내린다.
    *
    * <p>조회로는 낼 수 없는 표다: 마스터는 주문을 내고 디테일은 고른 하나의 품목을 내므로,
-   * *품목이 하나도 없는 주문들* 은 어느 그리드의 결과도 아니다(frontend/grid-advanced.md 의 임의 API).
+   * *품목이 하나도 없는 주문들* 은 어느 그리드의 결과도 아니다(playbook/excel-download.md 의 임의 API).
    */
   SAMPLE_EXCEL_NO_ITEM: 'sample.excel.noItem',
 

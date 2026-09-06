@@ -1,5 +1,5 @@
 /**
- * 엑셀 다운로드 이력의 API — frontend/grid-advanced.md · LOG-08.
+ * 엑셀 다운로드 이력의 API — playbook/excel-download.md · LOG-08.
  *
  * <p>호출 URL 은 `api/endpoints.ts` 에만 둔다(frontend/packages.md). **`common` 계층이라 `SYS_MENU_API`
  * 시드의 입력이 아니다** — 엑셀 버튼이 있는 모든 화면이 부르므로 매핑하려면 **메뉴를

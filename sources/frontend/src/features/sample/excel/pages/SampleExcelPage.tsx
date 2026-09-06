@@ -29,7 +29,7 @@ import type { SampleOrderItem } from '@/features/sample/types';
  *
  * <h2>대상이 `SMPL_ORDER_ITEM` 이다 — `SMPL_ORDER` 가 아니다</h2>
  *
- * <p>frontend/grid-advanced.md 가 평면 엑셀 한 장을 전제하는데 주문에는 `list` 컬럼(`TAG_LIST`)이 있어
+ * <p>playbook/excel-upload.md 가 평면 엑셀 한 장을 전제하는데 주문에는 `list` 컬럼(`TAG_LIST`)이 있어
  * **같은 이유로 기각**된다(playbook/INDEX.md) — `CODE_MGMT`(2단계)와 `MESSAGE_MGMT`(`list`)를 그
  * ADR 이 이미 같은 기준으로 기각했다. 부모는 `ORD_NO` 로 나른다(playbook/INDEX.md).
  *
@@ -39,7 +39,7 @@ import type { SampleOrderItem } from '@/features/sample/types';
  *
  * - **컬럼**이 갈리면 ②의 전체 다운로드가 양식이 아니게 된다(frontend/grid.md)
  * - **조회**가 갈리면 *화면이 보는 표* 와 *대조하는 표* 가 달라져 **이미 있는 행이
- * 신규로** 잡힌다(frontend/grid-advanced.md)
+ * 신규로** 잡힌다(playbook/excel-upload.md)
  * - **저장**이 갈리면 같은 표에 규칙이 둘 생기고, 그 둘은 반드시 갈린다
  *
  * <h2>업로드 탭이 `S` 권한에 매인다</h2>
@@ -71,7 +71,7 @@ export function SampleExcelPage() {
   const searchFields = useMemo(() => buildSearchFields(), []);
 
   /**
-   * **두 탭이 같은 저장 API 를 쓴다** — frontend/grid-advanced.md 가 업로드에 새 경로를 두지 않기로
+   * **두 탭이 같은 저장 API 를 쓴다** — playbook/excel-upload.md 가 업로드에 새 경로를 두지 않기로
    * 한 자리다.
    *
    * <p>3층 검증이 함께 붙으므로 **양쪽에서 같은 규칙이 돈다**(frontend/grid.md): 업로드가 읽는

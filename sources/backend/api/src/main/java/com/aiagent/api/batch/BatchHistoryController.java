@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <h2>{@code EXPORT} 에는 경로가 없다 — 그런데 버튼은 있다</h2>
  *
- * <p>프론트 생성 엑셀이라 서버 호출이 없다(frontend/grid.md · frontend/grid-advanced.md). sys/menu.md 의 액션 열에
+ * <p>프론트 생성 엑셀이라 서버 호출이 없다(frontend/grid.md · playbook/excel-download.md). sys/menu.md 의 액션 열에
  * {@code E} 가 있고 그것은 {@code SYS_MENU.EXPORT_YN} 이 선언한다(sys/menu.md) — 056 시드가
  * 이 메뉴를 이미 켜 두었다. <b>여기 경로가 없는 것이 정상</b>이며, 내려받은 사실은
  * {@code /api/common/excel/saveLog} 가 남긴다(2026-08-30).

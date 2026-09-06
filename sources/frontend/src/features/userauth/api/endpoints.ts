@@ -11,7 +11,7 @@
  * `roleAuth/getAffectedUsers` 를 그대로 부르는 것과 같은 규칙이다(screen/menu/requirements.md).
  *
  * <p><b>`exportExcel` 이 없다.</b> 액션 열은 `R S E` 인데(sys/menu.md) `E` 에 대응하는 경로가
- * 없다 — 엑셀은 프론트가 만들고(frontend/grid-advanced.md) `EXPORT` 는 `SYS_MENU.EXPORT_YN` 이 선언한다
+ * 없다 — 엑셀은 프론트가 만들고(playbook/excel-download.md) `EXPORT` 는 `SYS_MENU.EXPORT_YN` 이 선언한다
  * (sys/menu.md).
  *
  * <p><b>`USER_MGMT` 의 탭 2 와 경로를 나눈다</b>(screen/user-auth/requirements.md). 거기는 *"이 사람이 무슨 예외를 갖고

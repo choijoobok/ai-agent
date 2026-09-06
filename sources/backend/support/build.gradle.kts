@@ -46,7 +46,7 @@ dependencies {
     // **테스트에서만 틀렸고**, 그것이 이 종류 실패의 최악이다.
     implementation("org.springframework.boot:spring-boot-configuration-metadata")
 
-    // 서버 생성 엑셀 — frontend/grid-advanced.md 의 세 번째 갈래. backend/packages.md 이 엑셀을 이 모듈에 준 책임이다.
+    // 서버 생성 엑셀 — playbook/excel-download.md 의 세 번째 갈래. backend/packages.md 이 엑셀을 이 모듈에 준 책임이다.
     //
     // 프론트 생성(exceljs)이 기본이고 이쪽은 화면 구조와 엑셀 구조가 다를 때만 쓴다.
     // 여기 있는 것은 시트를 쓰는 도구 하나뿐이며, 무엇을 쓸지는 도메인이 정한다 —

@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * 엑셀의 행 상한 <b>둘</b> — FILE-05 · sys/code.md · frontend/grid-advanced.md.
+ * 엑셀의 행 상한 <b>둘</b> — FILE-05 · sys/code.md · playbook/excel-download.md.
  *
  * <h2>내려받기와 올리기가 다른 값이다 (2026-09-02 실측)</h2>
  *
@@ -32,7 +32,7 @@ import org.springframework.validation.annotation.Validated;
  * 의 {@code @Size}) — 화면이 통과시킨 것을 서버가 거절하면 사용자는 <b>왜 안 되는지</b> 를
  * 알 수 없다.
  *
- * <p><b>프론트가 생성하므로 전량을 메모리에 올린다</b>(frontend/grid-advanced.md). 상한이 없으면 브라우저가
+ * <p><b>프론트가 생성하므로 전량을 메모리에 올린다</b>(playbook/excel-download.md). 상한이 없으면 브라우저가
  * 죽으며, <b>서버 생성으로 폴백하지 않는다</b> — 경로가 하나 늘고 사용자가 <i>"왜 어떤
  * 때만 느린가"</i> 를 알 수 없다.
  *

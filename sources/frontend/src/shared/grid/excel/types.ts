@@ -1,7 +1,7 @@
 import type { Action } from '@/shared/authz/permission';
 
 /**
- * ②가 부를 수 있는 <b>세 번째 갈래</b> — frontend/grid-advanced.md.
+ * ②가 부를 수 있는 <b>세 번째 갈래</b> — playbook/excel-download.md.
  *
  * <p>ADR 은 갈래를 셋으로 갈랐고(현재 페이지 · 전체 · <b>임의 API</b>) *"사용자에게는 셋이
  * 같은 버튼 묶음으로 보일 수 있다 — 임의 API 경로도 현재 페이지·전체 라는 이름을 그대로
@@ -19,7 +19,7 @@ import type { Action } from '@/shared/authz/permission';
  *
  * <p>frontend/grid.md 의 요구다. 여기 있는 것은 <b>URL 과 메시지 키</b>뿐이라 AG Grid 의 판본과
  * 아무 접점이 없고, Enterprise 로 갈아타도 화면이 적은 것은 한 글자도 바뀌지 않는다.
- * Enterprise 의 Excel Export 를 쓰지 않는 이유도 frontend/grid-advanced.md 가 이미 적었다 — <b>그것은
+ * Enterprise 의 Excel Export 를 쓰지 않는 이유도 playbook/excel-download.md 가 이미 적었다 — <b>그것은
  * 그리드가 가진 것만 내보내므로</b> 이 갈래를 대신하지 못한다.
  */
 export interface ExcelServer {
@@ -29,7 +29,7 @@ export interface ExcelServer {
    * 그 요청에 실을 것 — <b>화면이 만든다</b>.
    *
    * <p>컨트롤러의 조회조건을 자동으로 싣지 않는다. 이 갈래의 정의가 <i>그리드와 다른
-   * 조회</i> 이므로(frontend/grid-advanced.md) 무엇이 조건인지는 <b>그 API 만 안다</b> — 짐작해서 실으면
+   * 조회</i> 이므로(playbook/excel-download.md) 무엇이 조건인지는 <b>그 API 만 안다</b> — 짐작해서 실으면
    * 서버가 모르는 필드가 가고, 그 요청은 <b>조용히 조건 없이</b> 처리된다.
    */
   body?: () => unknown;
@@ -40,7 +40,7 @@ export interface ExcelServer {
  *
  * <p><b>서버 생성만 받는다.</b> 프론트에서 만들 수 있는 것은 이미 두 기본 항목이 덮으며,
  * 여기에 프론트 갈래를 열면 <i>고른 행만</i> 같은 항목이 생기는데 그것은 이력의
- * {@code scope} 가 표현하지 못한다(frontend/grid-advanced.md — {@code PAGE}·{@code ALL} 둘이다). 서버 생성은
+ * {@code scope} 가 표현하지 못한다(playbook/excel-download.md — {@code PAGE}·{@code ALL} 둘이다). 서버 생성은
  * <b>요청이 도착하는 것 자체가 기록</b>이라 그 문제가 없다.
  */
 export interface ExcelExtraItem {
@@ -63,14 +63,14 @@ export interface ExcelExtraItem {
  *
  * <p>{@code page}·{@code all} 을 주면 <b>이름은 그대로 두고 경로만</b> 서버로 돌린다.
  * 사용자에게 보이는 것은 여전히 <i>현재 페이지</i>·<i>전체</i> 이며, 어느 경로인지는
- * <b>알 필요가 없다</b>(frontend/grid-advanced.md).
+ * <b>알 필요가 없다</b>(playbook/excel-download.md).
  */
 export interface ExcelSpec {
   /**
    * <i>현재 페이지</i> 를 서버가 만든다.
    *
    * <p><b>이쪽을 돌리는 일은 드물다.</b> 현재 페이지는 이미 브라우저에 있어 왕복이 0
-   * 이기 때문이다(frontend/grid-advanced.md). 그럼에도 자리를 두는 것은 <b>화면의 표와 파일의 표가 다른</b>
+   * 이기 때문이다(playbook/excel-download.md). 그럼에도 자리를 두는 것은 <b>화면의 표와 파일의 표가 다른</b>
    * 화면 때문이다 — 상단-하단을 조인해 한 장으로 내리는 화면에서는 <i>현재 페이지</i> 도
    * 서버가 조인해야 나온다.
    */

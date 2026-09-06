@@ -110,7 +110,7 @@ public class SampleItemService {
     /**
      * ⑤의 저장 — playbook/INDEX.md. <b>업무 데이터 탭과 엑셀 업로드 탭이 같은 경로를 쓴다.</b>
      *
-     * <p>frontend/grid-advanced.md 가 업로드에 새 경로를 두지 않기로 한 자리다: 업로드는 <i>파일을 서버에
+     * <p>playbook/excel-upload.md 가 업로드에 새 경로를 두지 않기로 한 자리다: 업로드는 <i>파일을 서버에
      * 올리는 일</i>이 아니라 <b>브라우저가 읽어 그리드에 부은 행을 저장하는 일</b>이라,
      * 업무 탭의 저장과 <b>같은 요청</b>이 된다. 경로를 가르면 같은 표에 규칙이 둘 생기고
      * 그 둘은 반드시 갈린다.

@@ -12,7 +12,7 @@
  * `SYS_API` 판정을 받는다는 뜻이다(backend/security.md).
  *
  * <p>**엑셀 다운로드(`exportExcel`)가 아직 없다.** screen/message/requirements.md 이 정한 것은 서버 POI 경로이고
- * (frontend/grid-advanced.md 셋째) 그것은 다운로드 이력·상한과 함께 와야 한다 — 지금 넣으면 `EXPORT` 권한이
+ * (playbook/excel-download.md 셋째) 그것은 다운로드 이력·상한과 함께 와야 한다 — 지금 넣으면 `EXPORT` 권한이
  * 있는데 아무 데도 닿지 않는 버튼이 생긴다.
  */
 export const MESSAGE_ADMIN_ENDPOINTS = {

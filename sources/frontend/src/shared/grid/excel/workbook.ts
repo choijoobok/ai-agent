@@ -4,14 +4,14 @@ import type { ColumnDef } from '@/shared/grid/types';
 import { recordDownload, type ExcelScope } from '@/shared/grid/excel/downloadLog';
 
 /**
- * 엑셀 파일을 <b>브라우저에서 만든다</b> — frontend/grid-advanced.md.
+ * 엑셀 파일을 <b>브라우저에서 만든다</b> — playbook/excel-download.md.
  *
  * <p><b>왜 서버가 아닌가</b> — 현재 페이지는 이미 브라우저에 있는 데이터이므로 서버 생성이면
  * *다시 조회해서 다시 내려보내는* 일이 된다. 그리고 **마스킹이 자동으로 지켜진다**: 화면에
  * 마스킹된 값을 그대로 쓰므로 응답 직렬화 계층(backend/pii-vault.md)을 이미 통과한 값이다.
  *
  * <p><b>`exceljs` 다.</b> SheetJS(`xlsx`)는 npm 배포를 중단했고 registry 에 남은 마지막
- * 버전에 미수정 취약점이 있다 — 폐쇄망 빌드와 보안 검사 둘 다에서 막힌다(frontend/grid-advanced.md).
+ * 버전에 미수정 취약점이 있다 — 폐쇄망 빌드와 보안 검사 둘 다에서 막힌다(playbook/excel-download.md).
  *
  * <p><b>값은 화면의 어휘로 만든다</b>(frontend/grid.md). 판(AG Grid)의 렌더러를 거치지 않는 이유는
  * *전체* 경로에 판이 없기 때문이다 — 거기서만 다른 규칙을 쓰면 두 파일의 같은 컬럼이
@@ -168,7 +168,7 @@ export interface FailureText {
  * <h2>이력을 남기지 않는다</h2>
  *
  * <p>{@code recordDownload} 를 부르지 않는다. 이력의 {@code scope} 는 <i>현재 페이지</i> 와
- * <i>전체</i> 둘뿐이라(frontend/grid-advanced.md) 이것을 어느 쪽으로 적어도 <b>거짓</b>이며,
+ * <i>전체</i> 둘뿐이라(playbook/excel-download.md) 이것을 어느 쪽으로 적어도 <b>거짓</b>이며,
  * 무엇보다 이 파일에 든 것은 <b>방금 사용자가 보낸 자기 입력</b>이지 서버가 준 자료가 아니다.
  */
 export async function downloadFailures<T>(
@@ -223,7 +223,7 @@ export function stamp(): string {
 /**
  * 표를 직접 만드는 쪽의 컬럼 — <b>키와 이름이 함께 온다</b>.
  *
- * <p>이력이 요구했다(frontend/grid-advanced.md 의 {@code columnKeys}). 헤더만 받던 때는 보낼 것이 <b>번역된
+ * <p>이력이 요구했다(playbook/excel-download.md 의 {@code columnKeys}). 헤더만 받던 때는 보낼 것이 <b>번역된
  * 이름</b>뿐이었는데, 그러면 같은 컬럼이 언어마다 다른 값으로 남아 <i>무엇을 내려받았나</i>
  * 를 세지 못한다. 키는 {@code ColumnDef.field} 와 같은 층이며 <b>파생 컬럼도 이름을
  * 갖는다</b>(트리의 경로 컬럼 — 어느 행에도 없지만 식별자는 있어야 한다).
@@ -243,7 +243,7 @@ function widthOf<T>(column: ColumnDef<T>): number {
 /**
  * 파일을 사용자의 디스크로 — <b>세 갈래가 같은 자리를 쓴다</b>.
  *
- * <p>서버 생성 경로도 이것을 부른다(frontend/grid-advanced.md). 저장하는 방법이 갈래마다 다르면 어느
+ * <p>서버 생성 경로도 이것을 부른다(playbook/excel-download.md). 저장하는 방법이 갈래마다 다르면 어느
  * 하나에서만 {@code revokeObjectURL} 을 빠뜨리는 날이 오고, 그 누수는 <b>탭이 닫힐
  * 때까지 파일 크기만큼</b>이라 눈에 띄지 않는다.
  */

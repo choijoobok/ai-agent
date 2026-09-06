@@ -32,7 +32,7 @@ swagger-annotations = { module = "io.swagger.core.v3:swagger-annotations-jakarta
 # 이유는 없다" 며 2단계(직접 래핑)를 미리 열어 두었고, 그 길을 택했다.
 p6spy = { module = "p6spy:p6spy", version.ref = "p6spy" }
 
-# 서버 생성 엑셀 — frontend/grid-advanced.md 의 세 번째 갈래(임의 API). Boot BOM 관리 대상이 아니라 버전을 적는다.
+# 서버 생성 엑셀 — playbook/excel-download.md 의 세 번째 갈래(임의 API). Boot BOM 관리 대상이 아니라 버전을 적는다.
 #
 # 프론트 생성(exceljs)이 기본이고 이쪽은 화면 구조와 엑셀 구조가 다를 때만 쓴다 — 헤더
 # 블록 + 상품 표, 병합, 다중 시트. 그리드가 가진 것만 내보내는 방식으로는 나오지 않는다.

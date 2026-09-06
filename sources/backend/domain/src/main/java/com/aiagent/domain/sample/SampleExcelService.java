@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 주문 + 품목 <b>합본</b> — frontend/grid-advanced.md 의 세 번째 갈래이자 그 ADR 이 든 <b>바로 그 사례</b>다.
+ * 주문 + 품목 <b>합본</b> — playbook/excel-download.md 의 세 번째 갈래이자 그 ADR 이 든 <b>바로 그 사례</b>다.
  *
- * <p>frontend/grid-advanced.md 는 갈래를 열면서 이렇게 적었다: <i>"입출고 주문은 헤더 1건 + 상품 N건이고
+ * <p>playbook/excel-download.md 는 갈래를 열면서 이렇게 적었다: <i>"입출고 주문은 헤더 1건 + 상품 N건이고
  * 화면은 상단 폼과 하단 그리드로 쪼개 보여주지만, <b>사용자는 헤더와 상품을 합친 엑셀
  * 하나를 원한다</b>. 그리드 데이터를 모아 붙이는 방식으로는 나오지 않는다."</i>
  *
@@ -39,7 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
  * <b>행을 받지 않으므로</b> 셀 수 있는 것이 없다. 같은 설정({@code ui.excel.max-rows})을
  * 여기서 읽는다 — 값이 갈리면 <i>화면에서는 되는데 파일은 잘린</i> 상태가 된다.
  *
- * <p><b>넘으면 자르지 않고 거절한다</b>(frontend/grid-advanced.md). 조용히 자르면 사용자는 <i>올린 것이 다
+ * <p><b>넘으면 자르지 않고 거절한다</b>(playbook/excel-upload.md). 조용히 자르면 사용자는 <i>올린 것이 다
  * 들어간 줄</i> 알고, 그 파일로 다음 일을 한다.
  */
 @Service

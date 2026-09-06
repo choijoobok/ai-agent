@@ -13,7 +13,7 @@
  * 자리이며, 여기 하단은 **자기 테이블에 붙어 있다**(FK 도 걸린다).
  *
  * <p><b>`exportExcel` 이 없다.</b> 엑셀은 있지만(MASTER-07) 그것은 **프론트 생성**이다
- * (frontend/grid.md · frontend/grid-advanced.md 첫째) — 서버가 낼 것이 없으므로 경로도 없다. screen/code/requirements.md 의 메시지
+ * (frontend/grid.md · playbook/excel-download.md 첫째) — 서버가 낼 것이 없으므로 경로도 없다. screen/code/requirements.md 의 메시지
  * 다운로드가 서버 POI 인 것과 갈린다.
  */
 export const CODE_ENDPOINTS = {

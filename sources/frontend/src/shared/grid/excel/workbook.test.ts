@@ -12,7 +12,7 @@ interface Row {
 }
 
 /**
- * 엑셀 셀 하나의 글자 — frontend/grid.md · frontend/grid-advanced.md.
+ * 엑셀 셀 하나의 글자 — frontend/grid.md · playbook/excel-download.md.
  *
  * <p><b>파일에는 화면에 보이는 것이 들어간다.</b> 코드값 대신 이름, 배열 대신 사람이 읽는
  * 나열이다 — *"화면의 이름이 파일에서는 코드"* 는 그 자체로 문의가 된다.

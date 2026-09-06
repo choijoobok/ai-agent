@@ -152,7 +152,7 @@ export function buildItemFormColumns(): ColumnDef<SampleOrderItem>[] {
 }
 
 /**
- * 업로드가 기존 행과 대조하는 키 — frontend/grid-advanced.md · playbook/INDEX.md.
+ * 업로드가 기존 행과 대조하는 키 — playbook/excel-upload.md · playbook/INDEX.md.
  *
  * <p>**서버의 저장이 가리키는 것과 같은 쌍**이며(`SmplFlatItemSaveRow`), 900 의
  * `UK_SMPL_ITEM_CD` 가 그 유일성을 보증한다. 셋이 같은 쌍을 말해야 대조와 저장이 같은

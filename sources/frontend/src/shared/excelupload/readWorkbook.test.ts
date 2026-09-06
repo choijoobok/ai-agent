@@ -50,7 +50,7 @@ async function file(rows: (string | number | null)[][], header = HEADER): Promis
 const HEADER = ['col.ordNo', 'col.qty', 'col.statCd'];
 
 /**
- * 파일 → 행 — frontend/grid-advanced.md · playbook/INDEX.md.
+ * 파일 → 행 — playbook/excel-upload.md · playbook/INDEX.md.
  *
  * <p><b>진짜 통합 지점이다.</b> `exceljs` 가 어떤 모양으로 셀을 주는지는 문서가 아니라
  * 실물이 답하며(문자열 · 숫자 · {@code Date} · 수식 객체), 여기서 흉내를 내면 <b>흉내가

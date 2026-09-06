@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 어긋난다.
  *
  * <p><b>{@code EXPORT} 에는 경로가 없다.</b> 엑셀 다운로드는 마스터에만 있고 그것은
- * <b>프론트 생성</b>이다(frontend/grid.md · frontend/grid-advanced.md 첫째) — 서버가 낼 것이 없다. 권한은 시드에 있고
+ * <b>프론트 생성</b>이다(frontend/grid.md · playbook/excel-download.md 첫째) — 서버가 낼 것이 없다. 권한은 시드에 있고
  * 버튼은 {@code <DataGrid>} 가 그린다.
  */
 @RestController

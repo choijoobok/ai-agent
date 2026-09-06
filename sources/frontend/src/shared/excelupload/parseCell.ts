@@ -1,7 +1,7 @@
 import type { ColumnDef } from '@/shared/grid/types';
 
 /**
- * 파일의 <b>글자</b> → 컬럼의 <b>값</b> — `workbook.cellValue` 의 반대편이다(frontend/grid-advanced.md).
+ * 파일의 <b>글자</b> → 컬럼의 <b>값</b> — `workbook.cellValue` 의 반대편이다(playbook/excel-upload.md).
  *
  * <p><b>양식이 곧 다운로드다</b>(frontend/grid.md · playbook/INDEX.md) — ②의 *전체* 가 만든 파일을 사람이
  * 고쳐서 올린다. 그래서 여기서 읽어야 하는 것은 <b>그쪽이 쓴 것</b>이며, 두 규칙이

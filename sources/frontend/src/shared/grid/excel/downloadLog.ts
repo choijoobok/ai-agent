@@ -5,7 +5,7 @@ import { EXCEL_LOG_ENDPOINTS } from '@/shared/grid/excel/api/endpoints';
 export type ExcelScope = 'PAGE' | 'ALL';
 
 /**
- * 내렸다는 사실을 서버에 알린다 — frontend/grid-advanced.md.
+ * 내렸다는 사실을 서버에 알린다 — playbook/excel-download.md.
  *
  * <p>sys/notification.md 는 *"다운로드는 API 요청이므로 `SYS_LO_ACCESS` 가 이미 기록한다"* 로
  * 전용 테이블을 두지 않았는데, **프론트 생성에서는 그 전제가 깨진다** — 호출이 없으므로

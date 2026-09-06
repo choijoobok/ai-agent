@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 정해진 사실이고 경로 접두가 그것을 말한다. 뒤엣것은 그 규칙이 <b>닿지 못하는 자리</b>이며,
  * {@code EXPORT} 하나뿐이다(sys/menu.md).
  *
- * <p><b>엑셀은 프론트가 만든다</b>(frontend/grid-advanced.md — 현재 페이지·전체). 서버 호출이 없으므로
+ * <p><b>엑셀은 프론트가 만든다</b>(playbook/excel-download.md — 현재 페이지·전체). 서버 호출이 없으므로
  * {@code SYS_API} 행이 생기지 않고, API 에서 액션을 뽑는 사슬은 그 화면에 <b>아무것도
  * 주지 못한다.</b> 그 결과가 실물로 드러난 것이 역할 권한 화면이었다 — sys/menu.md 가 {@code E}
  * 를 준 메뉴 10개에 스위치가 서지 않았고, 004 가 준 부여는 <b>회수할 수단이 없는 고아</b>로
@@ -41,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
  * {@code READ} 다 — 조회할 수 있는 사람은 화면에 뜬 것을 어떻게든 옮겨 적을 수 있다.
  *
  * <p><b>그래도 권한으로 두는 값이 있다.</b> <i>"이 사람에게 내려받기를 허용했는가"</i> 가
- * 데이터로 남고, 다운로드 기록(frontend/grid-advanced.md · {@code SYS_LO_ACCESS})과 짝을 이룬다. 유출을
+ * 데이터로 남고, 다운로드 기록(playbook/excel-download.md · {@code SYS_LO_ACCESS})과 짝을 이룬다. 유출을
  * <b>막는</b> 장치로 읽으면 안 되고, <b>정한 대로 운영되고 있는가</b> 를 묻는 장치다.
  *
  * <h2>매 호출 읽는다</h2>

@@ -1,7 +1,7 @@
 import type { GridRow } from '@/shared/grid/rows';
 
 /**
- * 읽은 행 ↔ 기존 행 대조 — frontend/grid-advanced.md · playbook/INDEX.md.
+ * 읽은 행 ↔ 기존 행 대조 — playbook/excel-upload.md · playbook/INDEX.md.
  *
  * <p><b>붙는 상태가 셋이다.</b> DB 에 없으면 신규(`C`), 있고 값이 다르면 변경(`U`),
  * 있고 같으면 <b>상태가 없다</b> — 마지막이 요점이다: 사람이 412행짜리 파일에서 세 줄만
@@ -58,7 +58,7 @@ export interface MatchResult<T> {
 /**
  * @param parsed 파일에서 읽은 행들 — <b>순서가 파일 순서</b>다. 정렬하지 않는 것은
  *     사용자가 자기 파일의 몇째 줄인지로 오류를 찾기 때문이다
- * @param existing 같은 조회 API 가 준 기존 행(frontend/grid-advanced.md)
+ * @param existing 같은 조회 API 가 준 기존 행(playbook/excel-upload.md)
  */
 export function matchRows<T>(parsed: T[], existing: T[], keyFields: string[]): MatchResult<T> {
   const byKey = new Map<string, T>();

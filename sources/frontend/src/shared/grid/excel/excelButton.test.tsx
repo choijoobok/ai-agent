@@ -24,7 +24,7 @@ interface Row {
 }
 
 /**
- * ②가 <b>세 갈래를 덮는가</b> — frontend/grid-advanced.md · frontend/grid.md.
+ * ②가 <b>세 갈래를 덮는가</b> — playbook/excel-download.md · frontend/grid.md.
  *
  * <p>ADR 은 갈래를 셋으로 갈랐고 frontend/packages.md 이 <i>"하나의 인터페이스로 덮는다"</i> 고 적었는데
  * <b>구현이 두 개에 박혀 있었다</b>. 그래서 여기서 세는 것은 <i>드롭다운이 열리는가</i> 가
@@ -86,7 +86,7 @@ describe('② 엑셀 다운로드 — 세 갈래', () => {
   });
 
   /*
-    <b>이름은 그대로 두고 경로만 돌린다</b>(frontend/grid-advanced.md). 상단-하단을 조인해 한 장으로 내리는
+    <b>이름은 그대로 두고 경로만 돌린다</b>(playbook/excel-download.md). 상단-하단을 조인해 한 장으로 내리는
     화면에서는 <i>전체</i> 도 서버가 조인해야 나오며, 사용자는 <b>어느 경로인지 알 필요가
     없다</b>.
   */
@@ -102,7 +102,7 @@ describe('② 엑셀 다운로드 — 세 갈래', () => {
 
   /*
     <b>이것이 두 번 세지면 안 된다.</b> 서버 생성은 요청이 도착하는 것 자체가 기록이므로
-    (frontend/grid-advanced.md) 프론트 이력을 또 부르면 한 번 내려받은 것이 <b>두 행</b>이 된다 — 이력은
+    (playbook/excel-download.md) 프론트 이력을 또 부르면 한 번 내려받은 것이 <b>두 행</b>이 된다 — 이력은
     유출 조사에서 유일한 단서가 될 수 있고, 그때 건수가 배로 보인다.
   */
   it('서버 경로는 프론트 이력을 부르지 않는다 — 요청 자체가 기록이다', async () => {

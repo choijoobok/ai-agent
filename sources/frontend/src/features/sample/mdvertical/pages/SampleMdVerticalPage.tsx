@@ -29,7 +29,7 @@ import { buildItemColumns } from '@/features/sample/itemColumns';
  * <p>마스터와 디테일이 <b>각자 저장한다</b>(playbook/INDEX.md). 저장 버튼이 그리드마다 따로이며
  * (frontend/grid.md), 묶으면 <i>품목만 고쳤는데 주문도 갱신됨</i> 이 되어 감사 컬럼이 거짓말을 한다.
  *
- * <h2>②가 <b>서버 생성</b>이다 — frontend/grid-advanced.md 의 세 번째 갈래</h2>
+ * <h2>②가 <b>서버 생성</b>이다 — playbook/excel-download.md 의 세 번째 갈래</h2>
  *
  * <p>이 화면이 그 갈래의 <b>원래 사례</b>다. ADR 은 <i>"헤더 1건 + 상품 N건이고 화면은
  * 상단과 하단으로 쪼개 보여주지만, 사용자는 헤더와 상품을 합친 엑셀 하나를 원한다"</i> 로
@@ -356,7 +356,7 @@ export function SampleMdVerticalPage() {
   }, [detail, master]);
 
   /**
-   * ②의 셋 — <b>이름은 그대로 두고 경로만 서버</b>다(frontend/grid-advanced.md).
+   * ②의 셋 — <b>이름은 그대로 두고 경로만 서버</b>다(playbook/excel-download.md).
    *
    * <p>마스터의 아홉 컬럼을 내리지 않는다: 두 항목 모두 서버가 주문과 품목을 조인해 만든
    * <b>한 장</b>을 준다. 그 표는 화면에 없으므로 프론트가 만들 수 없다.

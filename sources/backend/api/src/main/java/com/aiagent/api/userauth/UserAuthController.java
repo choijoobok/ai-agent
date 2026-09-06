@@ -54,7 +54,7 @@ import org.springframework.web.bind.annotation.RestController;
  * <h2>{@code exportExcel} 이 없다</h2>
  *
  * <p>액션 열이 {@code R S E} 인데(sys/menu.md) {@code E} 에 대응하는 경로가 없다 — 엑셀은 프론트가
- * 만들고(frontend/grid-advanced.md) {@code EXPORT} 는 {@code SYS_MENU.EXPORT_YN} 이 선언한다(sys/menu.md).
+ * 만들고(playbook/excel-download.md) {@code EXPORT} 는 {@code SYS_MENU.EXPORT_YN} 이 선언한다(sys/menu.md).
  */
 @RestController
 @RequestMapping("/api/service/userAuth")

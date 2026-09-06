@@ -436,7 +436,7 @@ grid.duration.s,FRONT,`12초` — `{s}`.
 grid.duration.sub,FRONT,`1초 미만` — `0초` 라고 쓰지 않는다. `SKIP_*` 이력이 실제로 0ms 이므로(sys/batch.md) 둘이 같은 글자가 되면 안 걸린 것과 빨리 끝난 것이 구분되지 않는다. /
 grid.empty,FRONT,행이 없을 때 그리드 본문에 나오는 표시.
 grid.excel,FRONT,②의 아이콘 버튼 이름 — 항목이 둘이라 어느 라벨도 대표하지 못해 글자가 없다.
-grid.excel.all,FRONT,항목 ② — 조회조건으로 전량 재조회. 상한이 있다(frontend/grid-advanced.md).
+grid.excel.all,FRONT,항목 ② — 조회조건으로 전량 재조회. 상한이 있다(playbook/excel-download.md).
 grid.excel.empty,FRONT,내려받을 행이 없을 때 — 빈 파일을 만들지 않는다.
 grid.excel.page,FRONT,항목 ① — 지금 화면에 보이는 행. 컬럼 필터가 걸려 있으면 걸러진 결과다(frontend/grid.md).
 grid.excel.tooMany,FRONT,전량이 상한을 넘었을 때 — 조용히 자르지 않고 거절한다.
@@ -954,7 +954,7 @@ sample.delete.blocked,FRONT,품목이 있어 삭제 체크가 열리지 않는 �
 sample.excel.data.title,FRONT,
 sample.excel.empty,FRONT,
 sample.excel.keyDuplicated,FRONT,"파일 안에서 같은 `(주문번호, 품목코드)` 가 두 번이다 — 그리드 층(frontend/grid.md)."
-sample.excel.noItem,FRONT,"②의 세 번째 항목 — 품목이 없는 주문만 내린다. 조회로는 낼 수 없는 표다: 마스터는 주문을 내고 디테일은 고른 하나의 품목을 내므로, *품목이 하나도 없는 주문들* 은 어느 그리드의 결과도 아니다(frontend/grid-advanced.md 의 임의 API). /"
+sample.excel.noItem,FRONT,"②의 세 번째 항목 — 품목이 없는 주문만 내린다. 조회로는 낼 수 없는 표다: 마스터는 주문을 내고 디테일은 고른 하나의 품목을 내므로, *품목이 하나도 없는 주문들* 은 어느 그리드의 결과도 아니다(playbook/excel-download.md 의 임의 API). /"
 sample.excel.seg.data,FRONT,세그먼트 둘 — **한 화면의 두 모드**이지 화면 둘이 아니다(playbook/INDEX.md).
 sample.excel.seg.upload,FRONT,
 sample.excel.upload.title,FRONT,업로드 탭의 제목 — **미리보기가 곧 행 상태다**(playbook/INDEX.md).

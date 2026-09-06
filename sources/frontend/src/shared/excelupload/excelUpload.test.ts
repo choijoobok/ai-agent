@@ -21,7 +21,7 @@ const text: ParseText = {
 };
 
 /**
- * 파일의 글자 → 컬럼의 값 — frontend/grid-advanced.md · playbook/INDEX.md.
+ * 파일의 글자 → 컬럼의 값 — playbook/excel-upload.md · playbook/INDEX.md.
  *
  * <p><b>양식이 곧 ②의 전체 다운로드다</b>(frontend/grid.md). 그러므로 여기서 읽어야 하는 것은
  * <b>내려받기가 쓴 것</b>이며, 두 규칙이 갈리는 순간 <i>내려받아 그대로 올렸는데 전부
@@ -126,7 +126,7 @@ describe('엑셀 셀 읽기', () => {
 });
 
 /**
- * 읽은 행 ↔ 기존 행 대조 — frontend/grid-advanced.md · playbook/INDEX.md.
+ * 읽은 행 ↔ 기존 행 대조 — playbook/excel-upload.md · playbook/INDEX.md.
  *
  * <p><b>변경 행만 나간다.</b> 412행짜리 파일에서 세 줄만 고쳐 올렸는데 전량이 나가면
  * 감사 컬럼이 전부 갱신되어 <b>누가 언제 무엇을 고쳤나</b> 를 잃는다 — 그 손실은

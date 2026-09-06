@@ -4,7 +4,7 @@ import { ApiError, TRANSPORT_ERROR_CODE, type ApiEnvelope } from '@/shared/api/t
 import { staticText } from '@/locales/staticText';
 
 /**
- * 파일을 받아 온다 — <b>봉투가 아니라 바이트다</b>(frontend/grid-advanced.md 의 세 번째 갈래).
+ * 파일을 받아 온다 — <b>봉투가 아니라 바이트다</b>(playbook/excel-download.md 의 세 번째 갈래).
  *
  * <p>{@code request()} 를 쓸 수 없다. 그쪽은 응답을 {@code ApiEnvelope} 로 읽어 알맹이를
  * 꺼내는데(backend/api.md), 파일 응답에는 벗길 봉투가 없다 — 통째로 파일이다.

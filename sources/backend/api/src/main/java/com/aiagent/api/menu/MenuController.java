@@ -50,7 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
  * {@code save*}·{@code delete*} 는 {@code SAVE}. 선언에 또 적지 않는다.
  *
  * <p><b>{@code EXPORT} 에는 경로가 없다</b> — 엑셀은 <b>프론트 생성</b>이다(frontend/grid.md ·
- * frontend/grid-advanced.md 첫째 · screen/menu/requirements.md).
+ * playbook/excel-download.md 첫째 · screen/menu/requirements.md).
  */
 @RestController
 @RequestMapping("/api/service/menu")

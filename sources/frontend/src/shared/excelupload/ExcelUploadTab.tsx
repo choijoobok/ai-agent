@@ -20,9 +20,9 @@ import { matchRows } from '@/shared/excelupload/matchRows';
 import { readWorkbook, type ReadText } from '@/shared/excelupload/readWorkbook';
 
 /**
- * 엑셀 업로드 탭 — frontend/grid-advanced.md · playbook/INDEX.md.
+ * 엑셀 업로드 탭 — playbook/excel-upload.md · playbook/INDEX.md.
  *
- * <p><b>업로드가 아니라 읽기다.</b> 파일은 서버에 올라가지 않고(frontend/grid-advanced.md) 브라우저가
+ * <p><b>업로드가 아니라 읽기다.</b> 파일은 서버에 올라가지 않고(playbook/excel-upload.md) 브라우저가
  * 읽어 <b>그리드에 붓는다</b> — 그래서 `SYS_FILE` 에 아무것도 남지 않고 업로드 엔드포인트도
  * 없다. 저장은 <b>업무 탭과 같은 `api.save`</b> 이며 새 경로를 만들지 않는다.
  *
@@ -229,7 +229,7 @@ export function ExcelUploadTab<T>(props: ExcelUploadTabProps<T>) {
         }
 
         /*
-          <b>읽은 직후 한 번 조회한다</b>(frontend/grid-advanced.md). 사용자가 누를 일이 아니며, 이것이
+          <b>읽은 직후 한 번 조회한다</b>(playbook/excel-upload.md). 사용자가 누를 일이 아니며, 이것이
           없으면 모든 행이 신규가 되어 <b>이미 있는 행을 다시 만들려는</b> 저장이 나간다.
         */
         const existing = await fetchExisting<T>(props.read, maxRows);
@@ -274,7 +274,7 @@ export function ExcelUploadTab<T>(props: ExcelUploadTabProps<T>) {
         <b>숨긴 입력이 파일 선택의 유일한 길이다.</b> AntD 의 업로드 컴포넌트를 쓰지 않는
         것은 그것이 <i>서버로 보내는</i> 것을 전제한 컨트롤이라(요청 URL · 진행률 · 목록)
         여기서는 그 대부분을 꺼야 하고, 끈 것을 다시 읽는 사람이 <b>어디로 올라가는지</b>
-        를 코드에서 확인해야 하기 때문이다 — 올라가지 않는다는 것이 frontend/grid-advanced.md 의 핵심이다.
+        를 코드에서 확인해야 하기 때문이다 — 올라가지 않는다는 것이 playbook/excel-upload.md 의 핵심이다.
       */}
       <input
         ref={picker}
@@ -307,7 +307,7 @@ export function ExcelUploadTab<T>(props: ExcelUploadTabProps<T>) {
 }
 
 /**
- * 대조할 기존 행 — <b>업무 탭과 같은 조회 API</b>다(frontend/grid-advanced.md).
+ * 대조할 기존 행 — <b>업무 탭과 같은 조회 API</b>다(playbook/excel-upload.md).
  *
  * <p><b>조건 없이 전량을 훑는다.</b> 파일에 어떤 키가 올지 모르므로 좁힐 근거가 없고,
  * 상한은 <b>파일 쪽과 같은 값</b>이다 — 그보다 많은 기존 행이 있으면 대조가 반쪽이 되어

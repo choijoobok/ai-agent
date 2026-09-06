@@ -870,7 +870,7 @@ function verdictOf(
 function excelTable(rows: MenuTreeRow[], nodes: Map<string, TreeNode<MenuTreeRow>>) {
   return {
     /*
-      <b>키가 함께 간다</b> — 다운로드 이력이 컬럼 식별자를 남긴다(frontend/grid-advanced.md). `path` 만
+      <b>키가 함께 간다</b> — 다운로드 이력이 컬럼 식별자를 남긴다(playbook/excel-download.md). `path` 만
       행에 없는 파생이며(계층을 편 것) 나머지 일곱은 {@link MenuTreeRow} 의 필드명 그대로다.
     */
     columns: [

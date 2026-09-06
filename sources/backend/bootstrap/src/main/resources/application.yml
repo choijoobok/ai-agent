@@ -229,10 +229,10 @@ sys-config:
   # 화면 공통 UI 값 — sys/code.md.
   ui:
     excel:
-      # FILE-05 · frontend/grid-advanced.md. 프론트가 전량을 메모리에 올리므로 없으면 브라우저가 죽는다.
+      # FILE-05 · playbook/excel-download.md. 프론트가 전량을 메모리에 올리므로 없으면 브라우저가 죽는다.
       # 넘으면 조용히 자르지 않고 거부한다 — 일부만 받은 파일을 전부로 알고 쓰게 된다.
       max-rows: 50000
-      # frontend/grid-advanced.md · playbook/INDEX.md. 내려받기와 다른 값인 것이 실측의 결론이다(UiExcelProps 주석) —
+      # playbook/excel-download.md · playbook/INDEX.md. 내려받기와 다른 값인 것이 실측의 결론이다(UiExcelProps 주석) —
       # 파싱은 5만 행이 1.5초로 싸지만 저장이 한 트랜잭션이라 2만이 12.5초다. 그 위는
       # 화면의 저장 버튼이 아니라 배치다.
       max-upload-rows: 5000

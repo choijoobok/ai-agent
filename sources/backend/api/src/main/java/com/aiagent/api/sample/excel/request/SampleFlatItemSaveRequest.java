@@ -10,7 +10,7 @@ import java.util.List;
  * &#9317;의 저장 &mdash; 68 &sect;8. <b>{@code ordId} 가 요청에 없다.</b>
  *
  * <p>{@code SampleItemSaveRequest} 가 대상 주문을 요청 하나에 하나로 못박은 것과 갈리는
- * 자리이며, 근거는 <b>한 파일에 여러 주문의 품목이 섞이기</b> 때문이다(frontend/grid-advanced.md 의 평면
+ * 자리이며, 근거는 <b>한 파일에 여러 주문의 품목이 섞이기</b> 때문이다(playbook/excel-upload.md 의 평면
  * 엑셀 한 장). 부모는 행마다 {@code ORD_NO} 로 온다(48 &sect;4.3).
  *
  * <p><b>상한이 {@code ui.excel.max-rows} 와 같은 층의 값이다.</b> 화면이 파일을 읽을 때

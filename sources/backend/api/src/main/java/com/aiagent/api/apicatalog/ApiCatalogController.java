@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 층이 다르다.
  *
  * <p><b>{@code EXPORT} 에도 경로가 없다.</b> 엑셀은 있지만(sys/menu.md 의 액션 열이 {@code R E} 다)
- * 그것은 <b>프론트 생성</b>이다(frontend/grid.md · frontend/grid-advanced.md 첫째) — 서버가 낼 것이 없다. 권한은 시드에
+ * 그것은 <b>프론트 생성</b>이다(frontend/grid.md · playbook/excel-download.md 첫째) — 서버가 낼 것이 없다. 권한은 시드에
  * 있고 버튼은 {@code <DataGrid>} 가 그린다.
  *
  * <p><b>이 화면 자신이 카탈로그에 실린다.</b> 아래 둘은 {@code /api/service/**} 이므로

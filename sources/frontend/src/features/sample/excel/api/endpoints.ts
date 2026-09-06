@@ -6,7 +6,7 @@
  * `screenRegistry` 의 `/sample/excel` → `@/features/sample/excel` 을 따라와 여기를 읽는다.
  *
  * <p>**둘뿐이고, 세그먼트 둘이 그 둘을 함께 쓴다.** 탭마다 경로가 하나가 아니다 —
- * frontend/grid-advanced.md 가 업로드에 새 경로를 두지 않기로 했기 때문이다:
+ * playbook/excel-upload.md 가 업로드에 새 경로를 두지 않기로 했기 때문이다:
  *
  * - `getFlatItemList` 는 업무 탭의 조회이자, 업로드 탭이 **파일을 읽은 직후 한 번**
  * 부르는 대조용 조회다. 업로드 탭에는 조회 **버튼**이 없다(playbook/INDEX.md).
@@ -14,7 +14,7 @@
  *   일이 아니라 브라우저가 읽어 그리드에 부은 행을 저장하는 일이라, 새 경로를 만들 근거가
  *   없다.
  *
- * <p>**업로드 엔드포인트가 없다**(frontend/grid-advanced.md). 파일이 서버에 올라가지 않으므로 받을 곳이
+ * <p>**업로드 엔드포인트가 없다**(playbook/excel-upload.md). 파일이 서버에 올라가지 않으므로 받을 곳이
  * 없고 `SYS_FILE` 에도 아무것도 남지 않는다 — 이 파일에 그 경로가 없는 것이 그 결정의
  * 실물이다.
  *

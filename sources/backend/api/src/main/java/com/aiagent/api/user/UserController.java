@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
  * <h2>{@code exportExcel} 이 없다</h2>
  *
  * <p>이 화면의 액션 열은 {@code R S E X} 인데(sys/menu.md) <b>{@code E} 에 대응하는 경로가
- * 없다</b> — 엑셀 두 갈래는 프론트가 만들고(frontend/grid-advanced.md) {@code EXPORT} 는
+ * 없다</b> — 엑셀 두 갈래는 프론트가 만들고(playbook/excel-download.md) {@code EXPORT} 는
  * {@code SYS_MENU.EXPORT_YN} 이 선언한다(sys/menu.md). 056 이 이 메뉴에 이미 {@code 'Y'} 를
  * 넣어 두었으므로 <b>스위치는 화면이 서기 전부터 서 있었다</b>.
  *

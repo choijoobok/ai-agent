@@ -15,7 +15,7 @@
  * 판단이 일치한다.
  *
  * <p><b>`exportExcel` 이 없다 — 그런데 엑셀 버튼은 있다.</b> 프론트 생성이라 서버 호출이
- * 없다(frontend/grid.md · frontend/grid-advanced.md). `E` 액션은 `SYS_MENU.EXPORT_YN` 이 선언하며(sys/menu.md) 056 시드가
+ * 없다(frontend/grid.md · playbook/excel-download.md). `E` 액션은 `SYS_MENU.EXPORT_YN` 이 선언하며(sys/menu.md) 056 시드가
  * 이 메뉴를 이미 켜 두었다.
  */
 export const BATCH_HISTORY_ENDPOINTS = {

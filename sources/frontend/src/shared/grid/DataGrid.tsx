@@ -205,9 +205,9 @@ interface DataGridProps<T> {
    */
   titleSuffix?: TitleSuffixSpec | string;
   /**
-   * ②가 무엇을 주는가 — <b>선언하지 않으면 프론트 생성 둘</b>이다(frontend/grid-advanced.md · frontend/grid.md).
+   * ②가 무엇을 주는가 — <b>선언하지 않으면 프론트 생성 둘</b>이다(playbook/excel-download.md · frontend/grid.md).
    *
-   * <p>frontend/grid-advanced.md 는 갈래를 셋으로 갈랐고 <i>"임의 API 경로도 현재 페이지·전체 라는 이름을
+   * <p>playbook/excel-download.md 는 갈래를 셋으로 갈랐고 <i>"임의 API 경로도 현재 페이지·전체 라는 이름을
    * 그대로 쓸 수 있다"</i> 고 적었다. 그것이 이 선언이다 — {@code page}·{@code all} 을
    * 주면 <b>이름은 그대로 두고 경로만</b> 서버로 돌아가고, {@code extra} 는 화면 고유
    * 항목을 구분선 아래에 붙인다.

@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  * <p><b>{@code getDetail} 도 {@code READ} 다</b> — 접두 규칙에 예외가 없다(backend/api.md · backend/packages.md).
  *
  * <p><b>{@code EXPORT} 에도 경로가 없다.</b> 엑셀은 있지만(sys/menu.md 의 액션 열이 {@code R E} 다)
- * 프론트 생성이며(frontend/grid-advanced.md 첫째) 서버가 낼 것이 없다. 다운로드 이력은
+ * 프론트 생성이며(playbook/excel-download.md 첫째) 서버가 낼 것이 없다. 다운로드 이력은
  * {@link ExcelLogController} 가 받는 {@code POST /api/common/excel/saveLog} 로 남으며, 그 행은
  * <b>이 화면이 조회하는 바로 그 테이블</b>에 들어간다 — LOG-08 이 그것으로 충족된다.
  *

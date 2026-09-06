@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 엑셀을 내린 사실을 알린다 — frontend/grid-advanced.md · LOG-08.
+ * 엑셀을 내린 사실을 알린다 — playbook/excel-download.md · LOG-08.
  *
  * <h2>몸이 비어 있는 것이 이 컨트롤러의 설계다</h2>
  *
@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <h2>응답을 기다리지 않는 쪽이 정상이다</h2>
  *
- * <p>부수 효과다(frontend/grid-advanced.md) — 실패해도 다운로드는 이미 끝났고 화면은 알릴 것이 없다.
+ * <p>부수 효과다(playbook/excel-download.md) — 실패해도 다운로드는 이미 끝났고 화면은 알릴 것이 없다.
  * 프론트가 응답을 버리므로 <b>여기서 무엇을 돌려주든 보이지 않는다.</b> 그래도 형태를
  * 맞추는 것은 실패가 <b>이력에 4xx 로 남기</b> 때문이다 — 조용히 200 을 주면 잘못 보낸
  * 클라이언트가 영원히 드러나지 않는다.
@@ -58,7 +58,7 @@ public class ExcelLogController {
         /*
           <b>{@code request} 를 쓰지 않는 것이 맞다.</b> 값은 인터셉터가 body 에서 읽어
           PARAMETERS 로 넣으며, 여기서 다시 저장하면 같은 사실이 두 곳에 생긴다 —
-          frontend/grid-advanced.md 가 전용 테이블을 두지 않기로 한 것이 그 말이다.
+          playbook/excel-download.md 가 전용 테이블을 두지 않기로 한 것이 그 말이다.
         */
         return ApiResponse.success(null, TraceId.current());
     }

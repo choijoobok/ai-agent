@@ -187,7 +187,7 @@ export interface GridController<T> {
    */
   read: (confirmed?: boolean) => Promise<void>;
   /**
-   * 조회조건 그대로 <b>페이징 없이</b> 전량 — 엑셀 *전체* 가 부른다(frontend/grid-advanced.md).
+   * 조회조건 그대로 <b>페이징 없이</b> 전량 — 엑셀 *전체* 가 부른다(playbook/excel-download.md).
    *
    * <p>거절되거나 실패하면 {@code null} 이며 <b>이유는 여기서 이미 말했다</b>.
    */

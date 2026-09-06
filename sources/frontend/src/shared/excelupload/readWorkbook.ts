@@ -5,9 +5,9 @@ import { parseCell, type ParseText } from '@/shared/excelupload/parseCell';
 import type { GridIssue } from '@/shared/grid/types';
 
 /**
- * 파일 → 행 배열 — frontend/grid-advanced.md · playbook/INDEX.md 의 <i>하는 일 다섯</i> 중 1·2·5.
+ * 파일 → 행 배열 — playbook/excel-upload.md · playbook/INDEX.md 의 <i>하는 일 다섯</i> 중 1·2·5.
  *
- * <p><b>서버에 올리지 않는다</b>(frontend/grid-advanced.md). 브라우저가 읽으므로 `SYS_FILE` 에 아무것도
+ * <p><b>서버에 올리지 않는다</b>(playbook/excel-upload.md). 브라우저가 읽으므로 `SYS_FILE` 에 아무것도
  * 남지 않고, 업로드 엔드포인트도 없다 — 저장은 <b>업무 탭과 같은 `api.save`</b> 다.
  *
  * <p><b>양식이 곧 ②의 전체 다운로드다</b>(frontend/grid.md · playbook/INDEX.md). 그래서 헤더는 컬럼의

@@ -8,7 +8,7 @@
  * <p><b>액션은 접두가 정한다</b>(backend/api.md): `get*` 은 `READ`, `save*` 는 `SAVE`,
  * `export*` 는 `EXPORT`, 나머지는 `EXECUTE`.
  *
- * <p><b>`export*` 셋이 ②의 세 항목이다</b>(frontend/grid-advanced.md 의 임의 API). 화면의 아홉 컬럼이
+ * <p><b>`export*` 셋이 ②의 세 항목이다</b>(playbook/excel-download.md 의 임의 API). 화면의 아홉 컬럼이
  * 아니라 <b>주문 × 품목 합본</b>을 내리므로 프론트가 만들 수 없다 — 그 표는 화면에 없다.
  */
 export const SAMPLE_VERT_ENDPOINTS = {
@@ -26,7 +26,7 @@ export const SAMPLE_VERT_ENDPOINTS = {
    * 수천 건일 수 있어 창이 소제목으로 <i>지금 어느 주문</i>을 말한다.
    */
   recalcItems: '/service/sample/recalcItems',
-  /** ②의 <i>현재 페이지</i> — 이름은 그대로 두고 경로만 서버다(frontend/grid-advanced.md). */
+  /** ②의 <i>현재 페이지</i> — 이름은 그대로 두고 경로만 서버다(playbook/excel-download.md). */
   exportOrderPage: '/service/sample/exportOrderPage',
   /** ②의 <i>전체</i> — 상한 판정도 서버가 한다. */
   exportOrderAll: '/service/sample/exportOrderAll',

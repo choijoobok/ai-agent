@@ -315,7 +315,7 @@ export interface TreeGridProps<T> {
      * 없다(screen/menu/requirements.md).
      *
      * **`headers: string[]` 였다**(2026-08-30). 다운로드 이력이 컬럼 **식별자**를 요구하는데
-     * (frontend/grid-advanced.md 의 `columnKeys`) 번역된 이름만으로는 같은 컬럼이 언어마다 다른 값으로 남아
+     * (playbook/excel-download.md 의 `columnKeys`) 번역된 이름만으로는 같은 컬럼이 언어마다 다른 값으로 남아
      * *무엇을 내려받았나* 를 셀 수 없다.
      */
     build: () => { columns: PlainColumn[]; rows: (string | number | null)[][] };

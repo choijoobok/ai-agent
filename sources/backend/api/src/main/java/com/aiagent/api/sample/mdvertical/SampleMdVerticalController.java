@@ -59,7 +59,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <h2>다운로드 이력이 <b>저절로 남는다</b></h2>
  *
- * <p>frontend/grid-advanced.md 가 프론트 생성에만 {@code POST /api/common/excel/saveLog} 를 둔 이유가 여기서
+ * <p>playbook/excel-download.md 가 프론트 생성에만 {@code POST /api/common/excel/saveLog} 를 둔 이유가 여기서
  * 보인다: 이 경로는 <b>요청이 도착하는 것 자체가 기록</b>이다(사용 이력 인터셉터가 모든
  * {@code /api/**} 를 남긴다). 프론트가 이력을 또 부르면 <b>한 번 내려받은 것이 두 행</b>이
  * 된다.
@@ -176,7 +176,7 @@ public class SampleMdVerticalController {
     }
 
     /**
-     * ②의 <i>현재 페이지</i> — <b>주문 + 품목 합본</b>이다(frontend/grid-advanced.md).
+     * ②의 <i>현재 페이지</i> — <b>주문 + 품목 합본</b>이다(playbook/excel-download.md).
      *
      * <p>화면의 아홉 컬럼을 내리지 않는다. 이 파일의 표는 <b>화면에 없는 표</b>이며,
      * 그것이 이 갈래가 서버에 있는 이유다.

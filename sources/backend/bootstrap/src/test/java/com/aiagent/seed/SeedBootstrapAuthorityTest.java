@@ -153,7 +153,7 @@ class SeedBootstrapAuthorityTest {
     void exportGrantsAreDeclared() {
         /*
           다른 셋과 달리 EXPORT 는 매핑된 API 가 말해 주지 않는다 — 엑셀은 프론트가 만들어
-          SYS_API 행이 없다(frontend/grid-advanced.md · sys/menu.md). 그래서 이 검사가 없으면 어긋남이 조용하다:
+          SYS_API 행이 없다(playbook/excel-download.md · sys/menu.md). 그래서 이 검사가 없으면 어긋남이 조용하다:
           기동은 성공하고, 역할 권한 화면의 트리에 그 칸이 — 로 그려지며, 004 가 준 부여는
           <b>화면에서 회수할 수 없는 고아</b>로 남는다(seed.md — 정의 밖은 건드리지 않는다).
 

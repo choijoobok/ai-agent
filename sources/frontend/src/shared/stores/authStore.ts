@@ -44,7 +44,7 @@ export interface AuthState {
   /** 만료까지의 예산(초) — 셸이 예고 타이머를 거는 근거다. 0 이면 세션이 없다. */
   expiresInSeconds: number;
   /**
-   * 엑셀 <b>전체</b> 다운로드의 행 상한 — frontend/grid-advanced.md · sys/code.md.
+   * 엑셀 <b>전체</b> 다운로드의 행 상한 — playbook/excel-download.md · sys/code.md.
    *
    * <p>`cacheVersions` 처럼 사용자별이 아니지만 <b>담는다</b> — 엑셀을 누른 순간 총 건수와
    * 비교해야 하고, 그때 물으면 클릭에 왕복이 하나 붙는다.

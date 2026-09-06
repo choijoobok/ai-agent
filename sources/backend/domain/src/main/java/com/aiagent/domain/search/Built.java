@@ -74,7 +74,7 @@ public final class Built {
               <b>{@code OFFSET} 이 없다.</b> 커서가 곧 {@code WHERE} 이므로 건너뛸 것이 없고,
               그래서 이 모드만 벤더 분기를 요구하지 않는다(backend/persistence.md · backend/api.md).
 
-              한 건 더 읽는 것이 다음 장의 존재 판정이다 — frontend/grid-advanced.md 가 엑셀 상한을
+              한 건 더 읽는 것이 다음 장의 존재 판정이다 — playbook/excel-download.md 가 엑셀 상한을
               "상한 + 1 건까지만 조회" 로 판정한 것과 같은 수법이며, COUNT 를 세지 않기로 한
               이 모드에서 "다음이 있나" 에 답하는 유일한 수단이다.
             */

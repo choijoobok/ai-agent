@@ -10,7 +10,7 @@
  * 쓰는가**이기 때문이며(screen/user/requirements.md), 셋 다 `SYS_USER` 를 쓴다.
  *
  * <p><b>`exportExcel` 이 없다.</b> 액션 열은 `R S E X` 인데 `E` 에 대응하는 경로가 없다 —
- * 엑셀 두 갈래는 프론트가 만들고(frontend/grid-advanced.md) `EXPORT` 는 `SYS_MENU.EXPORT_YN` 이 선언한다
+ * 엑셀 두 갈래는 프론트가 만들고(playbook/excel-download.md) `EXPORT` 는 `SYS_MENU.EXPORT_YN` 이 선언한다
  * (sys/menu.md). `ROLE_MGMT` 가 ②를 통째로 비운 것과 **반대 방향의 같은 사실**이다: 거기는
  * 엑셀이 없어서 비었고 여기는 엑셀이 있는데 **경로가 없다**.
  *
