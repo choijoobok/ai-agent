@@ -17,7 +17,7 @@
 - **Gradle 은 따로 설치하지 않는다** — 래퍼가 9.5.1 을 받아온다.
 - **Node 는 `nvm` 을 권한다** — `sources/.nvmrc` 가 있으므로 `nvm use` 한 줄이면 맞는다.
 - **AI 도구는 `node` 하나만 요구한다.** 훅과 문서 린터가 의존성 0 으로 돈다 —
-  폐쇄망에서 `npm i` 없이 서야 하기 때문이다([`harness/hooks.md`](../aidd-guide/harness/hooks.md)).
+  폐쇄망에서 `npm i` 없이 서야 하기 때문이다([`harness/hooks-contract.md`](../aidd-guide/harness/hooks-contract.md)).
 
 ## 2. 받는 순서
 

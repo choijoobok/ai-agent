@@ -24,7 +24,8 @@ tags: [harness, hooks, skills, automation, index]
 
 | ID | 파일 | 역할 |
 |----|------|------|
-| LLM-HRN-001 | [hooks.md](./hooks.md) | 훅 하나하나의 상세 · 공통 계약(`lib.mjs`) · 새 훅 추가 |
+| LLM-HRN-001 | [hooks.md](./hooks.md) | 훅 하나하나가 무엇을 보고 무엇을 말하나 |
+| LLM-HRN-008 | [hooks-contract.md](./hooks-contract.md) | 배선 · `lib.mjs` 계약 · 새 훅을 더할 때 |
 | LLM-HRN-002 | [skills.md](./skills.md) | 스킬 둘의 카탈로그 + 작성 규약 · 훅/플레이북 경계 |
 | LLM-HRN-003 | [automation-matrix.md](./automation-matrix.md) | 자동화 vs AI 책임 매트릭스 |
 | LLM-HRN-005 | [sub-agents.md](./sub-agents.md) | 서브에이전트 위임 정책 — **넷 다 Claude Code 기본 제공**. 프로젝트 정의는 없다 |

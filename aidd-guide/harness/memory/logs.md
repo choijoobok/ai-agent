@@ -90,5 +90,6 @@ CLAUDE.md §10 의 셋이 그대로 칸이 된다: **결정 · 만든 것 · 남
 ## 관련
 
 - [INDEX.md](./INDEX.md) — Memory Hierarchy · 갱신 조건
-- [harness/hooks.md](../hooks.md) — 훅의 상세와 새 훅의 계약
+- [harness/hooks.md](../hooks.md) — `log-raw` 가 무엇을 보고 무엇을 남기나
+- [harness/hooks-contract.md](../hooks-contract.md) — 새 훅의 계약
 - [CLAUDE.md §10](../../../CLAUDE.md) — 위치 · 형상 관리 제외 · 담을 것

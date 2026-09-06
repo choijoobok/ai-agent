@@ -106,7 +106,7 @@ ai-agent/
 | [playbook](playbook/INDEX.md) | 화면 레시피 (샘플 여섯과 대응) | 2 | 10 |
 | [quality](quality/INDEX.md) | 테스트 설계 · 레드팀 · 코드 품질 · 골든셋 · 관측 | 2 | 13 |
 | [knowledge](knowledge/INDEX.md) | 표 34개 — 인가·코드·문구·이력·운영 | 3 | 14 |
-| [harness](harness/INDEX.md) | 훅 · 스킬 · 문맥 예산 · 로그 — **지금 무엇이 있나는 [user-guide/07-harness.md](../user-guide/07-harness.md)**(생성물) | 2 | 13 |
+| [harness](harness/INDEX.md) | 훅 · 스킬 · 문맥 예산 · 로그 — **지금 무엇이 있나는 [user-guide/07-harness.md](../user-guide/07-harness.md)**(생성물) | 2 | 14 |
 
 
 **`문서` 는 그 폴더의 `.md` 개수다**(하위 폴더 · `INDEX.md` 포함). `lint.mjs` 가 실제와 대조한다 — 전에는 `운용` 이었는데 무엇을 세는지가 적혀 있지 않아 **아홉 중 여섯이 어긋나 있었다**(`standard` 는 48 대 36).

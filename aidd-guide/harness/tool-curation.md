@@ -54,7 +54,7 @@ MCP 서버는 **외부 인젝션 벡터**라서 더 엄격:
 
 ## 본 프로젝트 도구 인벤토리 관리
 
-- 추가된 MCP/skill 은 [hooks.md](./hooks.md), [skills.md](./skills.md) 에 등록
+- 추가된 MCP/skill 은 [hooks-contract.md](./hooks-contract.md), [skills.md](./skills.md) 에 등록
 - 90일간 미사용 도구는 검토 후 제거
 - 사용 빈도는 [quality/observability](../quality/observability/INDEX.md) 추후 확장
 
