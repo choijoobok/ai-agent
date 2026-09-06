@@ -252,6 +252,7 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 |---|---|
 | ESLint `no-restricted-syntax` | 문자열·JSX 텍스트·템플릿 문자열 **속 한글** 금지 · `label()` 리터럴 금지 · `/api`·계층 경로 리터럴 금지 |
 | ESLint `no-restricted-imports` | `@/shared/api/*` 딥 임포트 금지 — HTTP 는 **배럴 `@/shared/api`** 하나 |
+| `check-save-envelope.mjs` | **`saveEnvelope` 의 키가 서버 `record` 의 칸인가** — 부모 키를 빠뜨렸거나 이름이 어긋나면 차단(`npm run lint` 가 이어서 돈다) |
 | ESLint `import-x/no-restricted-paths` | `features/*` 끼리 직접 import 금지 |
 | ArchUnit `LayerDependencyTest` | 모듈 의존 방향(core ← support ← domain ← api) |
 | ArchUnit `ServiceConventionTest` | 조회 서비스는 클래스 레벨 `readOnly` · 메서드 레벨 없음 / 컨트롤러에 트랜잭션 없음 |
