@@ -1,7 +1,7 @@
 package com.aiagent.domain.code.admin;
 
 import com.aiagent.core.error.BusinessException;
-import com.aiagent.core.error.RowErrors;
+import com.aiagent.core.error.RowTx;
 import com.aiagent.domain.code.entity.SysCode;
 import com.aiagent.domain.code.entity.SysCodeGroup;
 import com.aiagent.domain.code.entity.SysCodeGrpRef;
@@ -109,7 +109,7 @@ public class CodeAdminService {
     public void saveGroup(List<CodeGroupSaveRow> rows) {
         Set<String> seen = new HashSet<>();
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             // 같은 요청 안의 중복은 화면이 막지만, 막혔다고 서버가 안 봐도 되는 것은 아니다 —
             // 두 번째 C 의 존재 확인이 첫 번째의 flush 를 만나지 못해 조용히 덮인다.
             if (!seen.add(row.grpCd())) {
@@ -193,7 +193,7 @@ public class CodeAdminService {
         /* 람다 밖으로 값을 내보내는 자리 — 실패한 행이 있어도 마지막에 던지므로 롤백된다. */
         boolean[] nameChanged = {false};
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             if (!seen.add(row.dtlCd())) {
                 throw duplicateCode(row.dtlCd());
             }
@@ -358,7 +358,7 @@ public class CodeAdminService {
         requireGroup(grpCd);
         Set<String> seen = new HashSet<>();
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             if (!seen.add(row.refCd())) {
                 throw duplicateRefDef(row.refCd());
             }

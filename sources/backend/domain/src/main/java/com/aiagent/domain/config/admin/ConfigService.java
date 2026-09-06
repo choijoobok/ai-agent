@@ -1,7 +1,7 @@
 package com.aiagent.domain.config.admin;
 
 import com.aiagent.core.error.BusinessException;
-import com.aiagent.core.error.RowErrors;
+import com.aiagent.core.error.RowTx;
 import com.aiagent.domain.config.entity.SysConfig;
 import com.aiagent.domain.config.repository.SysConfigRepository;
 import com.aiagent.domain.message.entity.SysCacheVersion;
@@ -61,7 +61,7 @@ public class ConfigService {
         checkKeys(rows);
         checkValues(rows);
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             switch (row.rowState()) {
                 case U -> upsert(row);
                 case D -> revert(row);
@@ -112,7 +112,7 @@ public class ConfigService {
         catalog.keys().forEach(key -> known.add(key.key()));
 
         Set<String> seen = new HashSet<>();
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             if (!known.contains(row.cfgKey())) {
                 throw new BusinessException(
                         ConfigErrorCode.KEY_UNKNOWN,
@@ -143,7 +143,7 @@ public class ConfigService {
         overrides.findAll().forEach(entity -> effective.put(entity.getCfgKey(), entity.getCfgVal()));
 
         /*
-          <b>여기는 RowErrors.each 가 아니다</b>(core/error/RowErrors). 이 루프는 행마다
+          <b>여기는 RowTx.oneTxForAll 이 아니다</b>(core/error/RowTx). 이 루프는 행마다
           판정하지 않고 <b>저장 뒤의 전체 상태를 만들 뿐</b>이며, 판정은 그 상태 하나에
           대해 아래에서 한 번 일어난다. 틀린 것이 값이 아니라 <b>값들 사이의 관계</b>라
           어느 행의 잘못인지 말할 수 없고, 굳이 한 행에 붙이면 <b>애먼 행이 붉어진다</b>.

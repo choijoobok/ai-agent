@@ -5,7 +5,7 @@ import static com.aiagent.domain.sample.SampleRules.MAX_TAGS;
 import static com.aiagent.domain.sample.SampleRules.requireUnlocked;
 
 import com.aiagent.core.error.BusinessException;
-import com.aiagent.core.error.RowErrors;
+import com.aiagent.core.error.RowTx;
 import com.aiagent.core.grid.RowState;
 import com.aiagent.domain.sample.entity.SmplOrder;
 import com.aiagent.domain.sample.entity.SmplOrderTag;
@@ -83,7 +83,7 @@ public class SampleTagService {
         Map<Integer, Integer> wanted = new LinkedHashMap<>();
         current.forEach((tagSeq, tag) -> wanted.put(tagSeq, tag.getSortNo()));
         int[] probe = {nextSeq[0]};
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             if (row.rowState() == RowState.D) {
                 wanted.remove(requireTag(current, row).getTagSeq());
                 return;
@@ -119,7 +119,7 @@ public class SampleTagService {
             }
         }
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             String tagTypeCd = row.tagTypeCd() == null ? DEFAULT_TAG_TYPE : row.tagTypeCd();
             switch (row.rowState()) {
                 case C -> {

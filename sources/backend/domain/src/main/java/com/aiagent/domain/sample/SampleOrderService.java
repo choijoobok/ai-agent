@@ -6,7 +6,7 @@ import static com.aiagent.domain.sample.SampleRules.requireText;
 import static com.aiagent.domain.sample.SampleRules.requireUnlocked;
 
 import com.aiagent.core.error.BusinessException;
-import com.aiagent.core.error.RowErrors;
+import com.aiagent.core.error.RowTx;
 import com.aiagent.core.grid.RowState;
 import com.aiagent.domain.progress.Progress;
 import com.aiagent.domain.sample.entity.SmplOrder;
@@ -70,7 +70,7 @@ public class SampleOrderService {
     @Transactional
     public void saveOrders(List<SmplOrderSaveRow> rows) {
         Set<String> seen = new HashSet<>();
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             if (row.ordId() != null && !seen.add(row.ordId())) {
                 throw new BusinessException(
                         SampleErrorCode.NOT_FOUND,
@@ -83,7 +83,7 @@ public class SampleOrderService {
             }
         });
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             switch (row.rowState()) {
                 case C -> createOrder(row);
                 case U -> updateOrder(row);
@@ -101,7 +101,7 @@ public class SampleOrderService {
     @Transactional
     public void saveFullOrders(List<SmplOrderFullSaveRow> rows) {
         Set<String> seen = new HashSet<>();
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             if (row.ordId() != null && !seen.add(row.ordId())) {
                 throw new BusinessException(
                         SampleErrorCode.NOT_FOUND,
@@ -114,7 +114,7 @@ public class SampleOrderService {
             }
         });
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             switch (row.rowState()) {
                 case C -> createFullOrder(row);
                 case U -> updateFullOrder(row);

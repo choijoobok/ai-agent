@@ -2,7 +2,7 @@ package com.aiagent.domain.batch.schedule;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.aiagent.core.error.BusinessException;
-import com.aiagent.core.error.RowErrors;
+import com.aiagent.core.error.RowTx;
 import com.aiagent.core.grid.RowState;
 import com.aiagent.domain.batch.BatchJobRegistry;
 import com.aiagent.domain.batch.entity.SysScheduleBatch;
@@ -96,7 +96,7 @@ public class BatchScheduleService {
           flush 를 만나지 못해 <b>조용히 덮인다</b>(RoleService 와 같은 자리다).
         */
         Set<String> seen = new HashSet<>();
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             if (!seen.add(row.batchId())) {
                 throw duplicate(row.batchId());
             }
@@ -105,7 +105,7 @@ public class BatchScheduleService {
             }
         });
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             switch (row.rowState()) {
                 case C -> create(row);
                 case U -> update(row);

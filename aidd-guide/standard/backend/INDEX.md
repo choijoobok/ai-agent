@@ -31,6 +31,7 @@ tags: [backend, index]
   ├─ "JPA 냐 QueryDSL 이냐 MyBatis 냐 · DB 중립"
   │                                        → persistence.md
   ├─ "예외를 어떻게 던지나 · 메시지 키"      → exception.md
+  ├─ "목록의 트랜잭션을 한 덩이로 · 건별로"  → row-transaction.md
   ├─ "누가 부를 수 있나 · 계층 · 세션"       → security.md · session.md
   ├─ "캐시를 언제 비우나"                    → caching.md
   ├─ "필터·인터셉터 순서 · 요청 로깅"        → crosscutting.md · logging.md
@@ -49,6 +50,7 @@ tags: [backend, index]
 | LLM-FWK-BE-001 | [persistence.md](./persistence.md) | JPA / QueryDSL / MyBatis 경계 · DB 중립 | ✅ |
 | LLM-FWK-BE-003 | [search.md](./search.md) | 조회 요청 · 화이트리스트 · 빌더 | ✅ |
 | LLM-FWK-BE-005 | [exception.md](./exception.md) | `ErrorCode` · `BusinessException` · 핸들러 | ✅ |
+| LLM-FWK-BE-013 | [row-transaction.md](./row-transaction.md) | 목록 처리의 트랜잭션 경계 — 한 덩이 / 건별 | ✅ |
 | LLM-FWK-BE-006 | [security.md](./security.md) | 계층 셋 · 인가 모델 · 접근 제어 체인 | ✅ |
 | LLM-FWK-BE-007 | [session.md](./session.md) | 세션 스토어 · 담는 것 · 만료 | ✅ |
 | LLM-FWK-BE-008 | [caching.md](./caching.md) | 대상마다 다른 백엔드 · `SysCacheVersion` | ✅ |
@@ -66,6 +68,7 @@ tags: [backend, index]
 | `LayerDependencyTest` | 모듈 의존 방향 |
 | `ServiceConventionTest` | 조회 서비스 규약 · 컨트롤러 트랜잭션 금지 |
 | `SampleIsolationTest` | 샘플 격리 |
+| `RowTxConventionTest` | 목록 처리의 트랜잭션 경계가 이름과 맞는가 |
 | `checkSeeds` | 메뉴·API·메시지 시드가 소스와 일치 |
 
 ```bash

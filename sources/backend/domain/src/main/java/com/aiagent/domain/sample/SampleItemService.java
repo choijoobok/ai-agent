@@ -4,7 +4,7 @@ import static com.aiagent.domain.sample.SampleRules.requireText;
 import static com.aiagent.domain.sample.SampleRules.requireUnlocked;
 
 import com.aiagent.core.error.BusinessException;
-import com.aiagent.core.error.RowErrors;
+import com.aiagent.core.error.RowTx;
 import com.aiagent.domain.progress.Progress;
 import com.aiagent.domain.sample.entity.SmplOrder;
 import com.aiagent.domain.sample.entity.SmplOrderItem;
@@ -73,7 +73,7 @@ public class SampleItemService {
                 .max()
                 .orElse(0) + 1};
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             switch (row.rowState()) {
                 case C -> {
                     items.save(SmplOrderItem.create(
@@ -126,7 +126,7 @@ public class SampleItemService {
      */
     @Transactional
     public void saveFlatItems(List<SmplFlatItemSaveRow> rows) {
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             requireText(row.ordNo(), "ordNo");
             requireText(row.itemCd(), "itemCd");
         });
@@ -136,7 +136,7 @@ public class SampleItemService {
           한 행만 남는데, 사용자에게는 두 줄을 다 올렸는데 한 줄만 들어간 것으로 보인다.
         */
         Set<String> seen = new HashSet<>();
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             if (!seen.add(row.where())) {
                 throw new BusinessException(
                         SampleErrorCode.ITEM_DUPLICATED,
@@ -166,7 +166,7 @@ public class SampleItemService {
             lastSeq.merge(item.getOrdId(), item.getItemSeq(), Math::max);
         }
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             SmplOrder order = byOrdNo.get(row.ordNo());
             if (order == null) {
                 // playbook/INDEX.md — ORD_NO 가 DB 에 없으면 ORD_ID 를 풀 수 없다. 그 행이 오류다.
@@ -201,7 +201,7 @@ public class SampleItemService {
             }
         });
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             SmplOrder order = byOrdNo.get(row.ordNo());
             SmplOrderItem found = current.get(itemKey(row.ordNo(), row.itemCd()));
             switch (row.rowState()) {

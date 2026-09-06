@@ -229,7 +229,7 @@ class BatchScheduleServiceTest {
     }
 
     /**
-     * <b>고칠 것이 몇 개인지 한 번에 말한다</b> — core/error/RowErrors.
+     * <b>고칠 것이 몇 개인지 한 번에 말한다</b> — core/error/RowTx.
      *
      * <p>하나씩 던지면 사용자가 저장을 N 번 눌러 오류를 하나씩 발견하고, 끝까지
      * <i>몇 개가 남았나</i> 를 모른다.

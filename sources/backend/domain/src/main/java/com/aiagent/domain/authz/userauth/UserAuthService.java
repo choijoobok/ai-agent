@@ -1,7 +1,7 @@
 package com.aiagent.domain.authz.userauth;
 
 import com.aiagent.core.error.BusinessException;
-import com.aiagent.core.error.RowErrors;
+import com.aiagent.core.error.RowTx;
 import com.aiagent.domain.authz.ActionType;
 import com.aiagent.domain.authz.MenuAction;
 import com.aiagent.domain.authz.entity.SysMenu;
@@ -113,7 +113,7 @@ public class UserAuthService {
         List<SysUserMenuAuth> added = new ArrayList<>();
         List<SysUserMenuAuth> removed = new ArrayList<>();
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             MenuAction pair = new MenuAction(row.menuCd(), row.actionCd());
             /*
               같은 요청 안의 중복은 화면이 만들 수 없지만(PK 가 하나라 목록에 행이 하나다)

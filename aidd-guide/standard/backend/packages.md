@@ -161,6 +161,9 @@ POST /api/service/code/saveGroup
 - **트랜잭션·`EntityManager` 를 다른 스레드로 전파하지 않는다.** 비동기 작업은 자기
   트랜잭션을 시작한다.
 - 이력 기록처럼 본 트랜잭션의 롤백과 갈라야 하는 것은 `REQUIRES_NEW`.
+- **목록을 처리할 때는 경계가 선택이다** — 전체에 하나냐 행마다 하나냐. **저장이냐 실행이냐가
+  가르지 않는다**: 실패했을 때 무엇이 남아야 하는가가 가른다 →
+  [row-transaction.md](./row-transaction.md).
 
 > **①만 기계가 강제한다**(`ServiceConventionTest`). ②는 **붙이지 않는 것이 맞는 경우**가
 > 있어 — `MenuService` 는 이미 락의 트랜잭션 안이다 — 기계로 셀 수 없다.

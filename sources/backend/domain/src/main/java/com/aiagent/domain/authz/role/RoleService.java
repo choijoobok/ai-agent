@@ -1,7 +1,7 @@
 package com.aiagent.domain.authz.role;
 
 import com.aiagent.core.error.BusinessException;
-import com.aiagent.core.error.RowErrors;
+import com.aiagent.core.error.RowTx;
 import com.aiagent.domain.authz.entity.SysRole;
 import com.aiagent.domain.authz.repository.SysRoleMenuAuthRepository;
 import com.aiagent.domain.authz.repository.SysRoleRepository;
@@ -66,7 +66,7 @@ public class RoleService {
         Set<String> seen = new HashSet<>();
         Set<String> affected = new LinkedHashSet<>();
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             /*
               같은 요청 안의 중복은 화면이 막지만, 막혔다고 서버가 안 봐도 되는 것은 아니다 —
               두 번째 C 의 존재 확인이 첫 번째의 flush 를 만나지 못해 조용히 덮인다.

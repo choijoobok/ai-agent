@@ -1,7 +1,7 @@
 package com.aiagent.domain.notification.notice;
 
 import com.aiagent.core.error.BusinessException;
-import com.aiagent.core.error.RowErrors;
+import com.aiagent.core.error.RowTx;
 import com.aiagent.core.grid.RowState;
 import com.aiagent.domain.notification.entity.SysNotice;
 import com.aiagent.domain.notification.repository.SysNoticeRepository;
@@ -67,7 +67,7 @@ public class NoticeService {
           신규(C)는 채번이라 noticeId 가 null 이므로 이 검사에서 제외된다.
         */
         Set<Long> seen = new HashSet<>();
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             if (row.noticeId() != null && !seen.add(row.noticeId())) {
                 throw new BusinessException(
                         NoticeErrorCode.NOT_FOUND,
@@ -80,7 +80,7 @@ public class NoticeService {
             }
         });
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             switch (row.rowState()) {
                 case C -> create(row);
                 case U -> update(row);

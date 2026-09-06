@@ -62,9 +62,12 @@ throw BusinessException.rows(CodeErrorCode.DUPLICATE_CODE, msg, List.of(
         RowError.of(7, "dtlCd", "이미 있는 코드입니다", "STAT_B")));
 ```
 
-- **루프 안에서 던지지 않는다.** `RowErrors.each(rows, row -> …)` 가 그 루프다 — 몸통이
-  던지면 그 행의 실패로 모이고 끝에 한 번 던진다. **순번을 몸통에 주지 않는다**: 세는
-  자리가 하나여야 다른 수를 실어 보낼 길이 없다.
+- **루프 안에서 던지지 않는다.** `RowTx.oneTxForAll(rows, row -> …)` 이 그 루프다 —
+  몸통이 던지면 그 행의 실패로 모이고 끝에 한 번 던진다. **순번을 몸통에 주지 않는다**:
+  세는 자리가 하나여야 다른 수를 실어 보낼 길이 없다.
+- **한 덩이로 묶을지 건별로 나눌지는 여기서 정하지 않는다.** 목록의 성질이 정하며,
+  건별을 고르면 던지지 않고 `RowReport` 를 돌려준다 →
+  [row-transaction.md](./row-transaction.md).
 - **순번은 요청 배열의 것이다.** 행을 `added`·`removed` 로 갈라 담고 **나중 순회의 루프
   번호**를 실으면 화면에서 **남의 행이 붉어진다**([api.md](./api.md) §3-1).
 - **칸 없는 실패를 던지지 않는다.** 화면은 `RowError.fields` 를 돌며 표를 만들므로
@@ -73,7 +76,7 @@ throw BusinessException.rows(CodeErrorCode.DUPLICATE_CODE, msg, List.of(
   `new BusinessException(code, msg)` 로 끝내지 말고 **어느 칸인지 붙인다**.
 - **필수 누락에는 값을 싣지 않고, 중복·형식 위반에는 싣는다.** 빈 값을 실으면 표의
   값 칸이 비고, 같은 줄이 여러 번 접힌다([save-errors.md](../frontend/save-errors.md)).
-- **행에 매이지 않는 검사는 `RowErrors.each` 밖에 둔다.** 저장 뒤의 *전체 상태* 를
+- **행에 매이지 않는 검사는 `RowTx.oneTxForAll` 밖에 둔다.** 저장 뒤의 *전체 상태* 를
   판정하는 검사가 그렇다(`ConfigService.checkValues`) — 틀린 것이 값이 아니라 **값들
   사이의 관계**라 한 행에 붙이면 **애먼 행이 붉어진다**. 그쪽은 `fields` 로 나간다.
 - **DB 제약 위반은 여기로 오지 않는다.** flush 시점이라 행을 알 수 없어 전역 핸들러가

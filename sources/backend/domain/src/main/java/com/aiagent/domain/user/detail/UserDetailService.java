@@ -1,7 +1,7 @@
 package com.aiagent.domain.user.detail;
 
 import com.aiagent.core.error.BusinessException;
-import com.aiagent.core.error.RowErrors;
+import com.aiagent.core.error.RowTx;
 import com.aiagent.domain.authz.entity.SysUserRole;
 import com.aiagent.domain.authz.repository.SysRoleRepository;
 import com.aiagent.domain.authz.repository.SysUserRoleRepository;
@@ -88,7 +88,7 @@ public class UserDetailService {
         List<SysUserRole> added = new ArrayList<>();
         List<SysUserRole> removed = new ArrayList<>();
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             String roleId = row.roleId();
             /*
               같은 요청 안의 중복은 화면이 만들 수 없지만(PK 가 하나라 목록에 행이 하나다)
@@ -207,7 +207,7 @@ public class UserDetailService {
         List<SysUserIpAllow> added = new ArrayList<>();
         List<SysUserIpAllow> removed = new ArrayList<>();
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             String cidr = row.ipCidr().trim();
             if (!seen.add(cidr)) {
                 throw new BusinessException(

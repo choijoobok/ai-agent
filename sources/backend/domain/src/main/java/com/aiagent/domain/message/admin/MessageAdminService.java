@@ -1,7 +1,7 @@
 package com.aiagent.domain.message.admin;
 
 import com.aiagent.core.error.BusinessException;
-import com.aiagent.core.error.RowErrors;
+import com.aiagent.core.error.RowTx;
 import com.aiagent.domain.message.entity.SysCacheVersion;
 import com.aiagent.domain.message.entity.SysMessage;
 import com.aiagent.domain.message.entity.SysMessageKey;
@@ -61,7 +61,7 @@ public class MessageAdminService {
         Set<String> supported = Set.copyOf(configs.get(MessageProps.class).supported());
         Set<String> seen = new HashSet<>();
 
-        RowErrors.each(rows, row -> {
+        RowTx.oneTxForAll(rows, row -> {
             // 같은 요청 안의 중복은 화면이 막지만(screen/message/requirements.md), 막혔다고 서버가 안 봐도 되는 것은
             // 아니다 — 두 번째 C 의 존재 확인이 첫 번째의 flush 를 만나지 못해 조용히 덮인다.
             if (!seen.add(row.msgKey())) {
