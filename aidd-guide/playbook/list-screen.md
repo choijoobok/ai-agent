@@ -186,6 +186,6 @@ expect(cols.some((c) => c.field === 'menuCd')).toBe(false);      // LL-26 없다
 ## 관련
 
 - [crud-screen.md](./crud-screen.md) — 페이징 모드 · 저장 · 실행. **고르는 일은 저기가 한다**
-- [standard/backend/search.md](../standard/backend/search.md) — `QuerySpec` 계약 전문
+- [standard/backend/search-spec.md](../standard/backend/search-spec.md) — `QuerySpec` 계약 전문
 - [standard/frontend/grid.md](../standard/frontend/grid.md) — 컴포넌트 계약
 - [standard/frontend/declarations.md](../standard/frontend/declarations.md) — 컬럼 선언 키

@@ -27,7 +27,7 @@ import java.util.function.Function;
  * 없으므로 <i>"검증 호출을 빠뜨렸다"</i> 가 <b>런타임 500 이 아니라 컴파일 실패</b>가 된다.
  * AOP 통과 표식은 배포 후에 알려 주고, 자료형은 빌드에서 막는다 — 원칙 P1.
  *
- * <p><b>{@code FROM}·{@code JOIN} 도 여기서 붙는다</b>(backend/search.md). 서비스에 남는 것은
+ * <p><b>{@code FROM}·{@code JOIN} 도 여기서 붙는다</b>(backend/search-spec.md). 서비스에 남는 것은
  * <i>"무엇을 뽑나"</i>({@code PROJECTION})뿐이다 — 조인이 스펙과 서비스 두 곳에 있으면
  * 어긋났을 때 <b>묵시적 크로스 조인</b>으로 결과가 조용히 틀린다.
  */

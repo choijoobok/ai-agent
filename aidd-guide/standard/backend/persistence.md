@@ -230,5 +230,5 @@ private String parameters;
 
 ## 관련
 
-- [search.md](./search.md) — 화이트리스트와 빌더
+- [search-spec.md](./search-spec.md) — 화이트리스트와 빌더
 - [packages.md](./packages.md) — 트랜잭션 경계

@@ -1,20 +1,24 @@
 ---
 id: LLM-FWK-BE-003
-title: "조회 — 봉투 · 화이트리스트 · 빌더"
+title: "조회 — 봉투 · 연산자 · 페이징"
 category: standard/backend
 type: operation
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-06
 status: active
-sources: ["sources/backend/core/search/", "sources/backend/domain/search/", "aidd-guide/standard/backend/api.md", "aidd-guide/standard/backend/search.md"]
+sources: ["sources/backend/core/search/", "sources/backend/domain/search/"]
 tier: 2
 tags: [backend, query, search, whitelist, paging]
 ---
 
-# 조회 — 봉투 · 화이트리스트 · 빌더
+# 조회 — 봉투 · 연산자 · 페이징
 
 > **조회는 둘이다.** 검색 폼이 있으면 **동적형**, 없으면 **고정형**. 이 문서는 동적형이
 > 중심이다 — 다만 **고정형도 그리드가 부르면 같은 봉투를 받는다**(§1).
+>
+> **서버가 무엇을 막는가**(스펙 객체 · 빌더 · 기간 상한)는
+> [search-spec.md](./search-spec.md) 가 갖는다. 200줄 상한에 닿아 갈랐고, 갈린 축은
+> **읽는 사람**이다 — 이 문서는 프론트도 읽는다.
 
 ## 1. 어느 쪽인가
 
@@ -24,7 +28,7 @@ tags: [backend, query, search, whitelist, paging]
 | 어디 | 디테일 그리드 · 코드·콤보 · 트리 · 단건 | **검색 폼이 있는 마스터 그리드** |
 | 요청 | 그리드면 봉투 `SearchRequest<부모키Params>` · 아니면 전용 `record` | 봉투(§2) |
 | 부모 키가 어디에 | **`params`** — `conditions` 가 아니다 | 폼이 만든 `conditions` |
-| 화이트리스트 | **없다** | **필요하다**(§4) |
+| 화이트리스트 | **없다** | **필요하다** — [search-spec.md](./search-spec.md) |
 | 개수 | 대부분 | 화면당 **최대 하나** |
 
 조회조건 폼은 화면에 하나뿐이므로 **디테일 탭이 다섯이면 고정형이 다섯, 동적형이 하나**다.
@@ -104,58 +108,7 @@ tags: [backend, query, search, whitelist, paging]
 > `DLVR_YM` 이 같은 `String` 이고, 앞의 것에 범위를 열면 **말이 되지 않는 결과가 조용히
 > 나온다.** *"이 문자열의 사전순이 시간순이다"* 는 컬럼을 아는 자리에서만 할 수 있는 말이다.
 
-## 4. 화이트리스트 — 스펙 객체가 그것이다
-
-```java
-public static final QuerySpec SPEC = QuerySpec.of("accessLog")
-    .from(AL)
-    .leftJoin(U).on(U.userId.eq(AL.userId))    // 조인도 여기 있다
-    .col("creDtm",  AL.creDtm).sortable()
-    .col("userNm",  U.userNm)                  // 조인 컬럼 — 별칭을 Q타입이 안다
-    .col("menuCd",  AL.menuCd).nullable()
-    .derived("status", AccessLogSpec::status)  // 컬럼이 아니다 — 정렬 불가
-    .defaultSort("creDtm", DESC)
-    .pk(AL.seq)                                // tie-breaker
-    .build();
-```
-
-**`.col(…)` 로 열지 않은 이름이 오면 400 이다.** 대상이 `Path` 객체라 **타입이 곧 허용
-연산자**이며, 프론트 선언을 미러링하지 않는다.
-
-> **레코드 리플렉션이 아닌 이유 둘.** ① 그 레코드는 **바인딩되지 않는다** — `between` 의
-> 값은 2원소 배열이고 `in` 은 리스트라 `OffsetDateTime`·`String` 필드에 담기지 않는다.
-> ② 리플렉션은 **절반만 준다** — 이름 집합은 나오지만 **어느 컬럼·별칭인지**는 안 나온다.
-
-### 검증 없이 빌더에 들어갈 수 없다 — 자료형으로 막는다
-
-**빌더의 산출물 `Built` 만 쿼리에 들어간다.** 생성자를 패키지 전용으로 닫으면
-**빌더 말고는 아무도 만들 수 없다.**
-
-| | AOP 통과 표식 | **자료형** |
-|---|---|---|
-| 검증을 건너뛰면 | 런타임 500 | **컴파일 실패** |
-| 조회 서비스가 받는 것 | 무엇이든 | **`Built` 하나** — `apply` · `count` · `respond` 를 그것이 갖는다 |
-
-**그래도 런타임에 뚫리면 400 이 아니라 500 이다.** 사용자 입력 문제가 아니라 **우리 코드의
-버그**이므로, 조용히 400 으로 돌리면 *"조회가 안 된다"* 로 묻힌다.
-
-## 4-1. 조회 기간 상한 — `RangeGuard` 하나가 판정한다
-
-이력 화면은 기간 없이 열면 표 전체를 훑는다. **화면마다 다시 짜지 않는다.**
-
-```java
-RangeGuard.check(request, new RangeGuard.Rule(
-        "creDtm", "traceId",                        // 기간 조건의 field · 면제 조건
-        configs.get(SearchRangeProps.class).maxDays(),
-        XxxErrorCode.RANGE_REQUIRED, XxxErrorCode.RANGE_TOO_WIDE));
-```
-
-- **상한은 시스템 설정**(`SearchRangeProps`)이다. 더 좁히는 것은 `Math.min(시스템, N)` 이며
-  **요건서가 그렇게 말한 화면만** 한다 — 사용 이력은 31일, 로그인 이력은 좁히지 않는다.
-- **`bypassField` 는 한 건을 정확히 집는 조건**이다. 그것이 오면 기간이 선택이 된다.
-- 쓰는 곳 넷 — `AccessLog` · `LoginLog` · `ErrorLog` · `Sample` 의 `QueryService`.
-
-## 5. 정렬 — tie-breaker 는 서버가 붙인다
+## 4. 정렬 — tie-breaker 는 서버가 붙인다
 
 - **처음부터 배열**이다. 기본이 원소 하나일 뿐.
 - **비어 있으면 서버의 기본 정렬** — 화면이 아니라 API 가 가진 것이다.
@@ -164,7 +117,7 @@ RangeGuard.check(request, new RangeGuard.Rule(
   증상이 *"2페이지에 1페이지 행이 또 있다"* 라 원인을 짐작하기 어렵다. **커서형에서는 곧바로 깨진다.**
 - **파생 필드 · `params` 키 · `nclob` 컬럼은 `sorts` 에 올 수 없다** — 400.
 
-## 6. 페이징 — 모드 셋. 화면이 선언하지 않는다
+## 5. 페이징 — 모드 셋. 화면이 선언하지 않는다
 
 **모드는 엔드포인트가 정하고 응답이 나른다.** 요청에도 화면 선언에도 없다.
 
@@ -181,7 +134,7 @@ RangeGuard.check(request, new RangeGuard.Rule(
 **커서 토큰은 다섯 마디다** — `field | dir | backward | value | pk`. 앞의 둘이 *정렬이
 바뀌면 무효* 를 집행한다(값만 담으면 바뀐 정렬에 옛 기준점이 먹혀 **결과가 조용히 틀린다**).
 
-## 7. 응답 — `PageResponse<T>` 의 첫 키가 `mode`
+## 6. 응답 — `PageResponse<T>` 의 첫 키가 `mode`
 
 ```jsonc
 { "mode": "offset", "content": [ … ], "size": 100, "hasNext": true,
@@ -196,5 +149,6 @@ RangeGuard.check(request, new RangeGuard.Rule(
 
 ## 관련
 
+- [search-spec.md](./search-spec.md) — 화이트리스트 · 빌더 · 조회 기간 상한
 - [api.md](./api.md) — 경로·봉투·헤더
 - [persistence.md](./persistence.md) — `IN` 쪼개기 · tie-breaker 의 벤더 근거

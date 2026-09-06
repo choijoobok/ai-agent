@@ -134,4 +134,4 @@ tags: [frontend, search, form, condition]
 
 - [grid.md](./grid.md) — 조회 버튼이 그리드에 있는 이유
 - [grid-advanced.md](./grid-advanced.md) — 컬럼 필터와의 역할 차이
-- [../backend/search.md](../backend/search.md) — 봉투 · 연산자 열셋 · 화이트리스트
+- [../backend/search.md](../backend/search.md) — 봉투 · 연산자 열셋 · 페이징

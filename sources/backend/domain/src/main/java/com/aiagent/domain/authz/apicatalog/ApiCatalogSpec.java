@@ -66,7 +66,7 @@ public final class ApiCatalogSpec {
      *
      * <p><b>조회조건 폼이 없는 그리드다</b>(screen/api-catalog/requirements.md — 하단의 버튼은 조회 하나다). 그래도 스펙이
      * 있어야 하는 것은 빌더가 {@code FROM}·{@code JOIN}·{@code ORDER BY} 를 여기서 붙이기
-     * 때문이다(backend/search.md) — 조인이 스펙과 서비스 두 곳에 있으면 어긋났을 때 <b>묵시적 크로스
+     * 때문이다(backend/search-spec.md) — 조인이 스펙과 서비스 두 곳에 있으면 어긋났을 때 <b>묵시적 크로스
      * 조인</b>으로 결과가 조용히 틀린다.
      *
      * <p><b>{@code .sortable()} 을 걸어 두되 이 모드에서는 쓰이지 않는다.</b> 전량({@code all})

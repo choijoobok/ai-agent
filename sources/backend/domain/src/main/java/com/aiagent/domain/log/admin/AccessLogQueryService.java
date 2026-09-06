@@ -80,7 +80,7 @@ public class AccessLogQueryService {
         AL.creDtm,
         AL.httpStat,
         AL.userId,
-        // 조인 컬럼이다 — 스펙이 leftJoin 을 갖고 있으므로 여기서는 뽑기만 한다(backend/search.md).
+        // 조인 컬럼이다 — 스펙이 leftJoin 을 갖고 있으므로 여기서는 뽑기만 한다(backend/search-spec.md).
         U.userNm,
         AL.menuCd,
         AL.requestUri,

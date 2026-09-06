@@ -194,7 +194,7 @@ tags: [backend, api, rest, response, header]
 
 ## 관련
 
-- [search.md](./search.md) — 조회 요청·화이트리스트·빌더
+- [search.md](./search.md) · [search-spec.md](./search-spec.md) — 조회 요청 · 화이트리스트
 - [packages.md](./packages.md) — 도메인 마디의 원본
 - [exception.md](./exception.md) — `code`·`message` 를 만드는 곳
 - [CLAUDE.md §8](../../../CLAUDE.md) — 호출 URL 은 `endpoints.ts` 에만

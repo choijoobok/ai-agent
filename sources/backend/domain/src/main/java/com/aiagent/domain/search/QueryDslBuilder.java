@@ -21,7 +21,7 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 /**
- * 동적 조회의 검증 + 조립 — backend/search.md. <b>검증과 조립이 한 호출이다.</b>
+ * 동적 조회의 검증 + 조립 — backend/search-spec.md. <b>검증과 조립이 한 호출이다.</b>
  *
  * <p>가르면 서비스가 검증만 부르고 조립을 직접 할 수 있게 되고, 그러면 backend/api.md 의
  * <i>"검증 없이 빌더에 들어갈 수 없다"</i> 가 규약으로만 남는다.
