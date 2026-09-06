@@ -28,8 +28,10 @@ tags: [frontend, index]
   ├─ "폴더를 어디에 만드나 · 언제 shared/ 로 올리나 · 상태를 어디에 두나"
   │                                          → packages.md
   ├─ "화면 뼈대 · 버튼 · 저장 흐름"           → grid.md
-  ├─ "컬럼 선언 · 타입 · 편집 · 검증 · 마스터-디테일"
-  │                                          → grid-advanced.md
+  ├─ "컬럼 하나를 어떻게 선언하나 · 타입 13종"
+  │                                          → grid-columns.md
+  ├─ "정렬·필터 · 편집 · 검증 · 마스터-디테일"
+  │                                          → grid-validation.md
   ├─ "저장이 거부됐을 때 무엇을 보여주나"     → save-errors.md
   ├─ "조회조건 칸 하나를 어떻게 선언하나"     → search-form.md
   ├─ "API 를 어떻게 부르나 · endpoints.ts"    → http.md
@@ -46,7 +48,8 @@ tags: [frontend, index]
 | LLM-FWK-FE-008 | [declarations.md](./declarations.md) | **선언 어휘 전량** — 컬럼 36 · 필드 15 · prop 22 | ✅ |
 | LLM-FWK-FE-004 | [packages.md](./packages.md) | 폴더 · 공통화 · 상태 경계 | ✅ |
 | LLM-FWK-FE-002 | [grid.md](./grid.md) | 화면 뼈대 · `api` 선언 · 저장 | ✅ |
-| LLM-FWK-FE-001 | [grid-advanced.md](./grid-advanced.md) | 컬럼 계약 · 편집 · 검증 · 마스터-디테일 | ✅ |
+| LLM-FWK-FE-001 | [grid-columns.md](./grid-columns.md) | 컬럼 계약 · 유형 13종 · 동적 컬럼 | ✅ |
+| LLM-FWK-FE-012 | [grid-validation.md](./grid-validation.md) | 정렬·필터 · 편집 · 검증 세 층 · 마스터-디테일 | ✅ |
 | LLM-FWK-FE-011 | [save-errors.md](./save-errors.md) | 붉은 셀 · 실패 표 · 행 순번 보장 | ✅ |
 | LLM-FWK-FE-003 | [search-form.md](./search-form.md) | 필드 하나의 선언 | ✅ |
 | LLM-FWK-FE-005 | [http.md](./http.md) | `endpoints.ts` · 배럴 하나 · 응답 처리 | ✅ |
@@ -61,7 +64,7 @@ tags: [frontend, index]
 1. tabs.md §1     같은 화면이 여러 개 살아 있을 수 있다는 전제
 2. grid.md        뼈대와 api 선언
 3. search-form.md 조회조건이 있는 화면이면
-4. grid-advanced.md 컬럼을 선언할 때 — 무엇을 고를까
+4. grid-columns.md 컬럼을 선언할 때 — 무엇을 고를까
 5. declarations.md 그 선언에 쓸 이름과 기본값 — 곁에 두고 본다
 6. http.md        endpoints.ts 와 시드
 7. save-errors.md 저장이 거부됐을 때 — toSaveRow 를 쓰는 이유

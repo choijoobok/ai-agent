@@ -129,7 +129,7 @@ tags: [frontend, grid, validation, error, duplicate]
 ## 관련
 
 - [grid.md](./grid.md) — 저장 흐름 ①~⑤
-- [grid-advanced.md](./grid-advanced.md) — 검증의 두 시점, 세 층
+- [grid-validation.md](./grid-validation.md) — 검증의 두 시점, 세 층
 - [declarations.md](./declarations.md) — `toSaveRow` · `saveEnvelope` 선언
 - [../backend/api.md](../backend/api.md) — `fields` 와 `rows` · 409
 - [../backend/row-transaction.md](../backend/row-transaction.md) — 한 덩이냐 건별이냐 · 결과 뒤의 그리드

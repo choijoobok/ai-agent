@@ -16,7 +16,7 @@ tags: [frontend, grid, ag-grid, crud, save]
 > **편집 폼을 두지 않는다. 이것이 나머지의 전제다.**
 > 화면에 남는 폼은 조회조건 하나뿐이며, **등록은 그리드의 새 행이고 수정은 셀 편집**이다.
 >
-> 컬럼 선언·정렬·필터는 [grid-advanced.md](./grid-advanced.md).
+> 컬럼은 [grid-columns.md](./grid-columns.md), 정렬·필터·검증은 [grid-validation.md](./grid-validation.md).
 
 ## 1. 왜 폼이 없나
 
@@ -194,7 +194,7 @@ const grid = useGridController<UserRow>({
 
 ## 관련
 
-- [grid-advanced.md](./grid-advanced.md) — 컬럼 계약 · 편집 · 검증 · 마스터-디테일
+- [grid-columns.md](./grid-columns.md) · [grid-validation.md](./grid-validation.md) — 컬럼과 그 동작
 - [search-form.md](./search-form.md) — 조회조건 헤더
 - [../backend/search.md](../backend/search.md) — 서버 쪽 봉투
 - [standard/frontend/grid.md](./grid.md) · [standard/frontend/grid.md](./grid.md)

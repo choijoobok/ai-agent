@@ -151,4 +151,4 @@ validate: { grid: (rows) => [...tooManyTagRows(rows), ...duplicatedSortNo(rows)]
 
 - [master-detail.md](./master-detail.md) — 마스터와 스플리터
 - [excel-upload.md](./excel-upload.md) — 화면 안 최상단 탭은 규칙이 다르다
-- [standard/frontend/grid-advanced.md](../standard/frontend/grid-advanced.md) §5 — 검증 세 층
+- [standard/frontend/grid-validation.md](../standard/frontend/grid-validation.md) §3 — 검증 세 층

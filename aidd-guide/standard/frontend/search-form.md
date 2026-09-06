@@ -38,7 +38,7 @@ tags: [frontend, search, form, condition]
 **키를 늘리기 전에 파생을 먼저 본다** — 필요해 보이는 것의 상당수는 **조건의 번역**이며
 서버가 갖는다.
 
-**`type` 은 컬럼 계약의 어휘를 그대로 쓴다**([grid-advanced.md §2](./grid-advanced.md)) —
+**`type` 은 컬럼 계약의 어휘를 그대로 쓴다**([grid-columns.md §2](./grid-columns.md)) —
 **새로 만들지 않는다.**
 
 ## 2. 서버가 주는 것과 화면이 적는 것
@@ -133,5 +133,5 @@ tags: [frontend, search, form, condition]
 ## 관련
 
 - [grid.md](./grid.md) — 조회 버튼이 그리드에 있는 이유
-- [grid-advanced.md](./grid-advanced.md) — 컬럼 필터와의 역할 차이
+- [grid-validation.md](./grid-validation.md) — 컬럼 필터와의 역할 차이
 - [../backend/search.md](../backend/search.md) — 봉투 · 연산자 열셋 · 페이징

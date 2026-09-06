@@ -211,7 +211,7 @@
 
 - **액션 4열이 동적 컬럼이다** — 필드가 `act.R` · `act.S` · `act.E` · `act.X` 이고 **액션이 늘면
   열이 는다.** 이 저장소에서 `derive`/`patch` 계약을 쓰는 자리이며 규칙은
-  [standard/frontend/grid-advanced.md](../../../aidd-guide/standard/frontend/grid-advanced.md) §5-1 이 갖는다.
+  [standard/frontend/grid-columns.md](../../../aidd-guide/standard/frontend/grid-columns.md) §3 이 갖는다.
   **폭을 정하지 않으면 재현이 갈린다** — 76 이다.
 - 순서는 **액션 4열이 먼저**이고 그다음이 메뉴다.
 

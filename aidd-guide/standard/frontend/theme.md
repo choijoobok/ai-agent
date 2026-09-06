@@ -62,7 +62,7 @@ const dark = useResolvedDark();   // system 이면 OS 를 따른다
 그 자리만 남는다.
 
 행·셀의 색이 겹칠 때의 우선순위는 정해져 있다 — **헤더가 컬럼을 말하고, 셀이 그 셀을
-말한다**([grid-advanced.md](./grid-advanced.md)).
+말한다**([grid-columns.md](./grid-columns.md)).
 
 ## 5. `uiStore` 는 기기의 속성이다
 
@@ -85,5 +85,5 @@ const dark = useResolvedDark();   // system 이면 OS 를 따른다
 ## 관련
 
 - [packages.md](./packages.md) — 스토어 넷과 `persist`
-- [grid-advanced.md](./grid-advanced.md) — 셀·행의 색
+- [grid-columns.md](./grid-columns.md) — 셀·행의 색
 - [tabs.md](./tabs.md) — 셸 레이아웃

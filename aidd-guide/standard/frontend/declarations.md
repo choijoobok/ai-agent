@@ -14,7 +14,7 @@ tags: [frontend, grid, column, searchform, vocabulary, reference]
 # 선언 어휘 — 쓸 수 있는 이름의 전량
 
 > **이 문서의 일은 *빠짐없음* 하나다.** 뜻의 상세와 *왜 그렇게 정했나* 는
-> [grid.md](./grid.md) · [grid-advanced.md](./grid-advanced.md) ·
+> [grid.md](./grid.md) · [grid-columns.md](./grid-columns.md) ·
 > [search-form.md](./search-form.md) 가 갖는다.
 >
 > **여기 없는 이름은 없는 것이다.** 선언 키를 추정해 새로 만들지 않는다 —
@@ -31,7 +31,7 @@ tags: [frontend, grid, column, searchform, vocabulary, reference]
 |---|---|---|
 | `field` | **필수** | 행 객체의 속성명. 서버 `Row` 와 1:1 |
 | `header` | **필수** | **`MSG` 키다** — 문자열이 아니다 |
-| `type` | **필수** | 유형 13종([grid-advanced.md](./grid-advanced.md) §2) |
+| `type` | **필수** | 유형 13종([grid-columns.md](./grid-columns.md) §2) |
 | `width` | `0` | 픽셀 |
 | `pinned` | `null` | `'left'` · `'right'` |
 | `fill` | 없다 | 남는 폭을 이 컬럼이 먹는다 |
@@ -61,7 +61,7 @@ tags: [frontend, grid, column, searchform, vocabulary, reference]
 | `options` | 없다 | 고정 목록 |
 | `grpCd` | 없다 | **공통코드 그룹** — 목록을 데이터가 준다 |
 | `derive` | 없다 | 셀 값을 파생시킨다(엑셀에도 그 값이 나간다). `(row) => unknown` |
-| `dynamic` | `false` | **컬럼 자체가 데이터에서 온다** — 계약은 [grid-advanced.md](./grid-advanced.md) §5-1 |
+| `dynamic` | `false` | **컬럼 자체가 데이터에서 온다** — 계약은 [grid-columns.md](./grid-columns.md) §3 |
 | `patch` | 없다 | 동적 컬럼의 **쓰기** 경로. `(row, value) => Partial<T>` — 빠지면 없는 필드에 얹힌다 |
 
 **편집**
@@ -182,7 +182,8 @@ api: {
 ## 관련
 
 - [grid.md](./grid.md) — 뼈대 · 저장 흐름 · `api` 를 언제 쓰나
-- [grid-advanced.md](./grid-advanced.md) — 유형 13종 · 편집 · 검증 · 마스터-디테일
+- [grid-columns.md](./grid-columns.md) — 유형 13종 · 동적 컬럼
+- [grid-validation.md](./grid-validation.md) — 정렬·필터 · 편집 · 검증 · 마스터-디테일
 - [search-form.md](./search-form.md) — 필드 하나를 고르는 판단
 - [standard/frontend/grid.md](./grid.md) — 컬럼 계약 원문
 - [standard/frontend/search-form.md](./search-form.md) — 검색 폼 계약 원문

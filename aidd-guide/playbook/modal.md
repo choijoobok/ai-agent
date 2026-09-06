@@ -190,5 +190,5 @@ popup: { key: 'sample.customer',
 ## 관련
 
 - [crud-screen.md §5](./crud-screen.md) — 실행 두 갈래
-- [standard/frontend/grid-advanced.md](../standard/frontend/grid-advanced.md) — 컬럼 계약
+- [standard/frontend/grid-columns.md](../standard/frontend/grid-columns.md) — 컬럼 계약
 - [standard/frontend/search-form.md](../standard/frontend/search-form.md) — 조회조건 칸
