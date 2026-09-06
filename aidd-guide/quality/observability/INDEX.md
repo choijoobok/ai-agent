@@ -1,17 +1,17 @@
 ---
 id: LLM-OBS-IDX
-title: "08-observability — 관측·텔레메트리 INDEX"
+title: "quality/observability — 관측·텔레메트리 INDEX"
 category: quality/observability
 type: operation
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-06
 status: active
 sources: [Hamel Husain Evals, Anthropic 비용 가이드]
 tier: 3
 tags: [observability, telemetry, routing-accuracy, token, monitoring, index]
 ---
 
-# 08-observability — 관측·텔레메트리
+# quality/observability — 관측·텔레메트리
 
 > 본 메타-시스템 자체의 **건강 상태**를 측정. AI 가 이 카테고리를 잘 따르고 있는가, 어디서 새는가.
 

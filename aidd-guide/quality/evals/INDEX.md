@@ -1,16 +1,16 @@
 ---
 id: LLM-EVL-IDX
-title: "07-evals — Eval-Driven Prompt Dev INDEX"
+title: "quality/evals — Eval-Driven Prompt Dev INDEX"
 category: quality/evals
 type: operation
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-06
 status: active
 tier: 3
 tags: [evals, golden-set, regression, ab-testing, index]
 ---
 
-# 07-evals — Eval-Driven Prompt Dev
+# quality/evals — Eval-Driven Prompt Dev
 
 > 프롬프트를 **코드처럼** 관리. 골든셋 + 회귀 검출 + A/B 테스트로 변경의 안전성을 정량 보장.
 

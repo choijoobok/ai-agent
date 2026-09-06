@@ -4,14 +4,14 @@ title: "Backend Framework INDEX"
 category: standard/backend
 type: operation
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-06
 status: active
 sources: ["sources/backend/"]
 tier: 2
 tags: [backend, index]
 ---
 
-# 06-framework/backend — 백엔드 표준
+# standard/backend — 백엔드 표준
 
 > **`CLAUDE.md` §8 의 표가 요지이고, 여기가 상세와 근거다.**
 > 요지와 상세가 어긋나면 **소스를 확인하고 둘 다 고친다** — 요지만 고치면 근거가 남고,

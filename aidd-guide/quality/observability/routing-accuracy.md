@@ -4,9 +4,9 @@ title: "라우팅 정확도 측정"
 category: quality/observability
 type: operation
 created: 2026-05-04
-updated: 2026-09-05
+updated: 2026-09-06
 status: active
-sources: ["aidd-guide/INDEX.md", "Hamel Husain Evals — 결정 트리 평가", "wms5/orchestration/00-meta (외부 프로젝트 — 골든셋의 원형)"]
+sources: ["aidd-guide/INDEX.md"]
 tier: 3
 tags: [observability, routing, accuracy, golden-set]
 ---

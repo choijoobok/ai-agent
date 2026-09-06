@@ -4,9 +4,9 @@ title: "컨텍스트 실패 모드 카탈로그"
 category: harness/context
 type: operation
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-06
 status: active
-sources: [Drew Breunig "How long contexts fail", Chroma Context Rot]
+sources: []
 tier: 1
 tags: [context, failure-mode, rot, distraction, clash, poisoning]
 ---
@@ -54,7 +54,7 @@ tags: [context, failure-mode, rot, distraction, clash, poisoning]
 1. AI 응답이 이상하면 어느 모드인지 분류.
 2. 같은 입력 재실행 → flaky (모드 무관) vs persistent (4모드 중 하나).
 3. 모드별 대응 즉시 실행.
-4. 사례를 `08-observability/context-rot-monitor.md` 데이터에 1줄 기록.
+4. 사례를 `quality/observability/context-rot-monitor.md` 데이터에 1줄 기록.
 
 ## 관련
 

@@ -4,9 +4,9 @@ title: "seek-read 원칙 — 찾고 나서 읽는다"
 category: harness/context
 type: operation
 created: "2026-04-30"
-updated: "2026-09-03"
+updated: "2026-09-06"
 status: active
-sources:
+sources: []
 tier: 1
 tags: [context, seek-read, grep]
 ---
@@ -39,7 +39,7 @@ tags: [context, seek-read, grep]
 ## 우선순위
 
 ```
-[03-prompt/overlays] (트리거 매칭)      ← 최우선
+[artifact/screen/overlay] (트리거 매칭)   ← 최우선
         ↓
 [Grep 으로 위치 확정]
         ↓

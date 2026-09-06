@@ -4,7 +4,7 @@ title: "골든셋 포맷·관리 정책"
 category: quality/evals
 type: operation
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-06
 status: active
 sources: [Hamel Husain Evals]
 tier: 3
@@ -23,7 +23,7 @@ YAML 1건 = 1 케이스:
 - id: GS-ROUTE-001
   category: routing
   input: "공통코드 마스터 화면 만들어줘"
-  expected_category: 11-playbook
+  expected_category: playbook
   rationale: "마스터 화면 만들기 = 실전 레시피"
   added_at: 2026-05-04
   source: master-prompt

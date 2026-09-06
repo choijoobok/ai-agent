@@ -4,9 +4,9 @@ title: "작업 시작 라우팅 결정 트리"
 category: meta
 type: operation
 created: "2026-04-30"
-updated: "2026-04-30"
+updated: "2026-09-06"
 status: active
-sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
+sources: []
 tier: 3
 tags: [meta, routing, decision-tree]
 ---

@@ -1,17 +1,17 @@
 ---
 id: LLM-CTX-IDX
-title: "02-context — 컨텍스트 엔지니어링 INDEX"
+title: "harness/context — 컨텍스트 엔지니어링 INDEX"
 category: harness/context
 type: operation
 created: 2026-04-30
-updated: 2026-05-04
+updated: 2026-09-06
 status: active
-sources: [Anthropic "Effective context engineering", Chroma Context Rot]
+sources: []
 tier: 1
 tags: [context, rag, reading-map, budget, attention-budget, jit, index]
 ---
 
-# 02-context — 컨텍스트 엔지니어링
+# harness/context — 컨텍스트 엔지니어링
 
 > 무엇을 언제 읽고, 토큰 예산을 어떻게 관리할지에 대한 규약. **AI attention 은 무한이 아니라 유한 예산** (Chroma Context Rot, Anthropic Effective Context Engineering) — 컨텍스트의 20~40% 부터 정확도가 저하된다. 명시적 관리가 필수.
 

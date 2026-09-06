@@ -4,7 +4,7 @@ title: "개인정보 분리보관 — 아직 없다. 지금 지켜야 할 제약
 category: standard/backend
 type: operation
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-06
 status: active
 sources: ["sources/backend/domain/", "documents/spec/22-authz.yaml"]
 tier: 3
@@ -19,7 +19,7 @@ tags: [backend, pii, privacy, vault, constraint]
 > 그래서 이 파일은 **설계서가 아니다.** 지금 만드는 화면과 로그가 **나중에 vault 를
 > 붙일 수 있게** 남겨 둬야 하는 것 둘만 적는다 — 그 둘을 지금 어기면 **나중에 못 붙인다.**
 
-> **`13-safety/pii.md` 와 다른 주제다.** 그쪽은 *AI 가 로그·요약에 개인정보를 쓰지 않는
+> **`standard/safety/pii.md` 와 다른 주제다.** 그쪽은 *AI 가 로그·요약에 개인정보를 쓰지 않는
 > 작업 규칙* 이고, 여기는 *애플리케이션이 개인정보를 어떻게 담는가* 다. 낱말이 같을 뿐이다.
 
 ## 1. 방향 — 컬럼 암호화가 아니라 분리보관

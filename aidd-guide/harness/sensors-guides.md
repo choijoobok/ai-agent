@@ -4,9 +4,9 @@ title: "Sensors vs Guides 자동화 분류"
 category: harness
 type: operation
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-06
 status: active
-sources: [Birgitta Böckeler / Thoughtworks "Engineering with AI"]
+sources: []
 tier: 2
 tags: [harness, sensors, guides, automation, classification]
 ---

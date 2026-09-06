@@ -4,9 +4,9 @@ title: "Sub-Agent Architecture 정책"
 category: harness
 type: operation
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-06
 status: active
-sources: [Anthropic "Effective context engineering"]
+sources: []
 tier: 2
 tags: [harness, sub-agent, delegation, context-protection]
 ---

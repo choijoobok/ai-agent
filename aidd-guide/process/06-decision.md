@@ -4,7 +4,7 @@ title: "의사결정 정책 — 누가 무엇을 결정하나"
 category: process
 type: operation
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-06
 status: active
 sources: []
 tier: 1
@@ -45,7 +45,7 @@ AI는 모든 선택 앞에서 **되돌리기 비용**을 먼저 판정한다.
 
 ## 2. ADR (Architecture Decision Record)
 
-`documents/decisions/ADR-###-슬러그.md`. 템플릿은 `aidd-guide/artifact/template/adr.md`.
+`documents/decisions/ADR-###-슬러그.md`. 템플릿은 [`aidd-guide/artifact/template/01-adr.md`](../artifact/template/01-adr.md).
 
 **작성 원칙**
 - **대안을 최소 2개** 적는다. 대안 없는 ADR은 결정이 아니라 통보다.

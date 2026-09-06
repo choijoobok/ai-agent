@@ -1,17 +1,17 @@
 ---
 id: LLM-PLY-IDX
-title: "11-playbook — 화면 레시피 INDEX"
+title: "playbook — 화면 레시피 INDEX"
 category: playbook
 type: operation
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-06
 status: active
 sources: ["sources/frontend/src/features/sample/", "sources/backend/api/src/main/java/com/aiagent/api/sample/", "aidd-guide/playbook/INDEX.md"]
 tier: 2
 tags: [playbook, recipe, index]
 ---
 
-# 11-playbook — 화면 하나를 만드는 절차
+# playbook — 화면 하나를 만드는 절차
 
 > **[standard](../standard/INDEX.md) 는 *무엇이 표준인가* 이고 여기는 *어떤 순서로
 > 하는가* 다.** 표준을 여기에 다시 적지 않는다 — 절차가 표준을 **가리킨다**.

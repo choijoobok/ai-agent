@@ -6,7 +6,7 @@ type: operation
 created: 2026-09-04
 updated: 2026-09-06
 status: active
-sources: ["2026-09-05~06 재현 실험 다섯 차례 — /log/login 2 · /code · /sample/excel · /user", "Hamel Husain 'Look at your data'"]
+sources: []
 tier: 2
 tags: [evals, generation, regression, documentation, golden-set]
 ---

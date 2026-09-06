@@ -4,9 +4,9 @@ title: "컨텍스트 예산 관리"
 category: harness/context
 type: operation
 created: "2026-04-30"
-updated: "2026-04-30"
+updated: "2026-09-06"
 status: active
-sources: 
+sources: []
 tier: 1
 tags: [context, budget, compact, clear]
 ---
@@ -90,7 +90,7 @@ CTX [█████░░░░░░░░░░░░░░░] 11% — 정�
 > Anthropic "Effective context engineering": 모든 컨텍스트를 미리 적재하지 않고 **필요한 순간에 fetch**. Reading Map · seek-read 의 이론적 근거.
 
 - 큰 문서는 통째 Read 금지 — `Grep` 으로 찾고 `Read(offset, limit)` ([reading.md](./reading.md)).
-- 도메인 지식은 사용 시점에만 진입 (`09-knowledge/` 결정 트리).
+- 도메인 지식은 사용 시점에만 진입 (`knowledge/` 결정 트리).
   *규칙은 알겠는데 왜 그런가* 가 남을 때만 들어간다. **금지가 아니라 순서다** —
   근거를 못 읽으면 다음 사람이 규칙을 뒤집는다.
 

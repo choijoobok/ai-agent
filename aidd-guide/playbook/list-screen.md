@@ -4,9 +4,9 @@ title: "조회 전용 화면 — 이력 셋이 세 번 베낀 배선"
 category: playbook
 type: operation
 created: 2026-09-05
-updated: 2026-09-05
+updated: 2026-09-06
 status: active
-sources: ["sources/frontend/src/features/accesslog/", "sources/backend/domain/src/main/java/com/aiagent/domain/log/admin/", "2026-09-05 재현 실험 /log/login"]
+sources: ["sources/frontend/src/features/accesslog/", "sources/backend/domain/src/main/java/com/aiagent/domain/log/admin/"]
 tier: 2
 tags: [playbook, list, cursor, readonly, log]
 ---

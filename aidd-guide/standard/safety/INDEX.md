@@ -1,17 +1,17 @@
 ---
 id: LLM-SAF-IDX
-title: "13-safety — 가드레일 INDEX"
+title: "standard/safety — 가드레일 INDEX"
 category: standard/safety
 type: operation
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-06
 status: active
 sources: [Anthropic critical_injection_defense, OWASP LLM Top 10]
 tier: 4
 tags: [safety, security, pii, injection, secrets, rate-limit, index]
 ---
 
-# 13-safety — 가드레일
+# standard/safety — 가드레일
 
 > AI 가 다루지 말아야 할 데이터·따르지 말아야 할 명령·노출되면 안 되는 자산을 정의. **외부 데이터 도입 시 첫 번째로 확인하는 카테고리.**
 

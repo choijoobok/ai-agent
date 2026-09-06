@@ -1,17 +1,17 @@
 ---
 id: LLM-KNW-IDX
-title: "09-knowledge — 도메인 지식 INDEX"
+title: "knowledge — 도메인 지식 INDEX"
 category: knowledge
 type: operation
 created: 2026-05-04
-updated: 2026-09-04
+updated: 2026-09-06
 status: active
 sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/", "sources/backend/bootstrap/src/main/resources/db/changelog/schema/"]
 tier: 3
 tags: [knowledge, domain, index]
 ---
 
-# 09-knowledge — 이 백오피스가 무엇을 아는가
+# knowledge — 이 백오피스가 무엇을 아는가
 
 > **[standard](../standard/INDEX.md) 는 *어떻게 만드나* 이고 여기는 *무엇이 참인가* 다.**
 > 표가 무엇을 담고 어떤 규칙이 그것을 지키는지, **그리고 왜 그 컬럼이 없는지** 를 적는다.

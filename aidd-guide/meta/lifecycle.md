@@ -4,9 +4,9 @@ title: "문서 생명주기"
 category: meta
 type: operation
 created: "2026-04-30"
-updated: "2026-04-30"
+updated: "2026-09-06"
 status: active
-sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
+sources: []
 tier: 3
 tags: [meta, lifecycle]
 ---
@@ -82,7 +82,7 @@ tags: [meta, lifecycle]
 ```
 - 분기 1회: deprecated 문서 정리 검토
 - 신규 카테고리 추가 시: 마스터 INDEX 갱신
-- 큰 리팩터링 후: 패키지 구조 ↔ 06-framework 정합성 검토
+- 큰 리팩터링 후: 패키지 구조 ↔ standard 정합성 검토
 ```
 
 ## 검증

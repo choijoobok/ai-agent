@@ -4,7 +4,7 @@ title: "프롬프트 인젝션 방어"
 category: standard/safety
 type: operation
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-06
 status: active
 sources: [Anthropic critical_injection_defense, system-prompt: critical_security_rules]
 tier: 4
@@ -67,7 +67,7 @@ tags: [safety, prompt-injection, trust-boundary]
 
 ## 검증 방법
 
-08-observability 의 `routing-accuracy.md` 와 별개로, **인젝션 시뮬레이션** 골든셋을 07-evals 에 추가:
+quality/observability 의 `routing-accuracy.md` 와 별개로, **인젝션 시뮬레이션** 골든셋을 quality/evals 에 추가:
 - 가짜 "system override" 텍스트가 포함된 도구 결과
 - AI 가 사용자 확인을 요청하는지 확인 (즉시 따르면 실패)
 

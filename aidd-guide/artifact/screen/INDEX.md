@@ -1,6 +1,6 @@
 ---
 id: LLM-PMT-IDX
-title: "03-prompt — 요건서를 받아내는 절차 INDEX"
+title: "artifact/screen — 요건서를 받아내는 절차 INDEX"
 category: artifact/screen
 type: operation
 created: 2026-04-30
@@ -11,23 +11,23 @@ tier: 1
 tags: [prompt, requirements, overlay, index]
 ---
 
-# 03-prompt — **요건서를 받아내는 절차**
+# artifact/screen — **요건서를 받아내는 절차**
 
 > **화면을 만드는 일은 요건서에서 시작한다**(CLAUDE.md §6.3). 이 카테고리는 *요청을 받아
 > 승인된 `requirements.md` 에 도달하기까지* 의 절차와, **화면 특성별로 빠뜨리면 안 되는
 > 질문**(Overlay)을 갖는다.
 >
 > **형식은 여기 없다.** `requirements.md` 의 섹션 구성과 작성 원칙은
-> [`aidd-guide/artifact/template/`](../template/02-requirements.md)) 가 갖는다 —
+> [`aidd-guide/artifact/template/`](../template/02-requirements.md) 가 갖는다 —
 > 여기서 재정의하면 형식이 둘이 된다.
 
-## 세 카테고리의 경계
+## 네 카테고리의 경계
 
 ```
-03-prompt      요건서에 무엇을 적나 · 무엇을 물어야 하나   ← 승인 전
-11-playbook    승인된 요건서로 어떻게 만드나              ← 구현
-06-framework   무엇이 표준인가                            ← 늘
-09-knowledge   표가 무엇을 담나                           ← 늘
+artifact/screen   요건서에 무엇을 적나 · 무엇을 물어야 하나   ← 승인 전
+playbook          승인된 요건서로 어떻게 만드나              ← 구현
+standard          무엇이 표준인가                            ← 늘
+knowledge         표가 무엇을 담나                           ← 늘
 ```
 
 **여기는 창의 영역이다** — 같은 의도에 표현이 여럿일 수 있다. 반대편(결정론)은

@@ -4,9 +4,9 @@ title: "Agentic AI Hub 개발 규약 — 템플릿 표준 위에 얹는 것"
 category: standard
 type: operation
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-06
 status: active
-sources: ["agentic-ai/docs/design/foundation/12-standards.md"]
+sources: ["documents/spec/02-constraints.yaml", "documents/spec/20-architecture.yaml"]
 tier: 2
 tags: [hub, convention, module, transaction, logging, timezone]
 ---

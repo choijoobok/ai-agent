@@ -1,16 +1,16 @@
 ---
 id: LLM-MEM-IDX
-title: "04-memory — 메모리 시스템 INDEX"
+title: "harness/memory — 메모리 시스템 INDEX"
 category: harness/memory
 type: operation
 created: "2026-04-30"
-updated: "2026-09-04"
+updated: "2026-09-06"
 status: active
-sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
+sources: []
 tier: 1
 tags: [memory, logs, index]
 ---
-# 04-memory — 메모리 시스템
+# harness/memory — 메모리 시스템
 
 > 세션을 넘어 영속되는 것의 정책 — **무엇을 어디에 남기고, 읽을 때 얼마나 믿는가.**
 >
@@ -53,7 +53,7 @@ tags: [memory, logs, index]
 |------|------|-------------|
 | **Short-term** | 현재 컨텍스트 윈도우 | Claude Code 세션 |
 | **Episodic** | 시간 순 로그 | `chat-history/YYYY-MM/{raw,summary}/` — 형상 관리 제외 (CLAUDE.md §10) |
-| **Semantic** | 개념·관계 지식 | `09-knowledge/`, `06-framework/`, `11-playbook/` |
+| **Semantic** | 개념·관계 지식 | `knowledge/`, `standard/`, `playbook/` |
 
 ## Structured Note-Taking (Anthropic)
 

@@ -4,14 +4,14 @@ title: "Frontend Framework INDEX"
 category: standard/frontend
 type: operation
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-06
 status: active
 sources: ["sources/frontend/src/"]
 tier: 2
 tags: [frontend, index]
 ---
 
-# 06-framework/frontend — 프론트엔드 표준
+# standard/frontend — 프론트엔드 표준
 
 > **어휘는 우리 것이고 판은 어댑터가 고른다.** 화면 선언에 AG Grid·AntD 의 이름이
 > 나오지 않는다 — 판을 바꿔도 화면이 바뀌지 않아야 한다.

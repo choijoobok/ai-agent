@@ -4,9 +4,9 @@ title: "문서 작성 스타일"
 category: meta
 type: operation
 created: "2026-04-30"
-updated: "2026-09-04"
+updated: "2026-09-06"
 status: active
-sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
+sources: []
 tier: 3
 tags: [meta, style, conventions]
 ---

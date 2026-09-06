@@ -4,7 +4,7 @@ title: "외부 API 호출 Rate Limit 가드"
 category: standard/safety
 type: operation
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-06
 status: active
 sources: [Anthropic API 문서, Bash sleep 정책]
 tier: 4
@@ -53,7 +53,7 @@ tags: [safety, rate-limit, api, cost-guard]
 
 ## 비용 모니터링
 
-- 08-observability 의 [token-economics.md](../../quality/observability/token-economics.md) 와 연동
+- quality/observability 의 [token-economics.md](../../quality/observability/token-economics.md) 와 연동
 - 작업 종료 시 사용한 토큰 수를 사용자에 보고 (긴 자동화 시)
 - 캐시 hit rate 가 50% 미만이면 prefix 안정화 검토
 

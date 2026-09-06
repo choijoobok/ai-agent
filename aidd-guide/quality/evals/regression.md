@@ -4,7 +4,7 @@ title: "회귀 검출 절차"
 category: quality/evals
 type: operation
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-06
 status: active
 sources: [Hamel Husain Evals]
 tier: 3
@@ -20,7 +20,7 @@ tags: [evals, regression, before-after]
 | 변경 | 회귀 범위 |
 |------|----------|
 | `aidd-guide/INDEX.md` 결정 트리 변경 | routing 골든셋 전체 |
-| `CLAUDE.md` 또는 `.claude/CLAUDE.md` 수정 | routing + safety |
+| `CLAUDE.md` 수정 | routing + safety |
 | 카테고리 추가/이동/삭제 | routing 전체 + 영향 카테고리 generation |
 | 모델 교체 (Opus 4.6 → 4.7 등) | 3종 전체 |
 | 시스템 프롬프트 (skill SKILL.md 등) 수정 | 영향 받는 카테고리만 |

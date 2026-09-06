@@ -4,9 +4,9 @@ title: "Few-shot · Canonical Examples 정책"
 category: artifact/screen
 type: operation
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-06
 status: active
-sources: [Anthropic "Effective context engineering"]
+sources: []
 tier: 1
 tags: [prompt, few-shot, canonical-example]
 ---
@@ -47,10 +47,10 @@ tags: [prompt, few-shot, canonical-example]
 
 | 카테고리 | 예시 위치 | 형태 |
 |---------|----------|------|
-| 03-prompt/crud.md · screen.md | 인라인 대화 블록 | 요건서를 받아내는 대화 |
-| 11-playbook/crud-screen.md | 단계별 명령어 | 실행 가능한 레시피 |
-| 03-prompt/overlays/* | 트리거 + 흔한 누락 | 조건부 체크리스트 |
-| 06-framework/conventions.md | 참조 파일 링크 | 실제 코드를 가리킴 |
+| `artifact/screen/crud.md` · `screen.md` | 인라인 대화 블록 | 요건서를 받아내는 대화 |
+| `playbook/crud-screen.md` | 단계별 명령어 | 실행 가능한 레시피 |
+| `artifact/screen/overlay/*` | 트리거 + 흔한 누락 | 조건부 체크리스트 |
+| `standard/conventions.md` | 참조 파일 링크 | 실제 코드를 가리킴 |
 
 ## 안티 패턴
 

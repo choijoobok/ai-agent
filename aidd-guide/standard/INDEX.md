@@ -1,17 +1,17 @@
 ---
 id: LLM-FWK-IDX
-title: "06-framework — 프레임워크 가이드 INDEX"
+title: "standard — 프레임워크 가이드 INDEX"
 category: standard
 type: operation
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-06
 status: active
 sources: ["sources/backend/", "sources/frontend/", "sources/gradle/libs.versions.toml"]
 tier: 2
 tags: [framework, index]
 ---
 
-# 06-framework — 개발 표준의 정본
+# standard — 개발 표준의 정본
 
 > **`CLAUDE.md` §8 의 표가 요지이고 여기가 상세와 근거다.**
 > 개발 절차(레시피)는 [playbook](../playbook/INDEX.md), 도메인 지식은
@@ -25,8 +25,8 @@ tags: [framework, index]
 
 | 영역 | 어디 | 규약 |
 |---|---|---|
-| **결정론** | **06-framework**(여기) · 09-knowledge | 사실 검증 · 창의적 변형 금지 |
-| 창의 | 03-prompt · 11-playbook | 변형·추론 가능 |
+| **결정론** | **standard**(여기) · knowledge | 사실 검증 · 창의적 변형 금지 |
+| 창의 | artifact/screen · playbook | 변형·추론 가능 |
 
 **여기서 추정이 발견되면 즉시 사용자에게 보고한다.**
 

@@ -1,16 +1,16 @@
 ---
 id: LLM-HRN-IDX
-title: "05-harness — 훅·스킬·자동화 INDEX"
+title: "harness — 훅·스킬·자동화 INDEX"
 category: harness
 type: operation
 created: "2026-04-30"
-updated: "2026-09-03"
+updated: "2026-09-06"
 status: active
-sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
+sources: []
 tier: 2
 tags: [harness, hooks, skills, automation, index]
 ---
-# 05-harness — 훅·스킬·자동화
+# harness — 훅·스킬·자동화
 
 > Claude Code 의 외부 도구 (훅·스킬·플래그) 카탈로그와 **자동화 vs AI 책임** 분리 매트릭스.
 

@@ -4,9 +4,9 @@ title: "Tool Curation 정책"
 category: harness
 type: operation
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-06
 status: active
-sources: [Anthropic "Effective context engineering"]
+sources: []
 tier: 2
 tags: [harness, tool, mcp, curation, gate]
 ---
@@ -47,7 +47,7 @@ tags: [harness, tool, mcp, curation, gate]
 
 MCP 서버는 **외부 인젝션 벡터**라서 더 엄격:
 
-1. 13-safety/prompt-injection.md 를 만족하는가
+1. standard/safety/prompt-injection.md 를 만족하는가
 2. 인증·rate-limit 가 명확한가
 3. 응답 데이터에 PII 가 섞일 가능성은
 4. 차단·삭제·게시 같은 위험 동작이 있는가 → explicit_permission 처리
