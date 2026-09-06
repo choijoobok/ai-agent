@@ -115,6 +115,14 @@ POST /api/service/code/saveGroup
 > `*AdminQueryService` 였고 그 여섯은 **모두 `<도메인>/admin/` 패키지 안에 있었다** —
 > 같은 말을 두 번 하면서 나머지 열하나와 갈렸다. **새 화면을 만드는 사람은 둘 중 무엇을
 > 따라야 할지 알 수 없다.** 이름은 패키지가 못 하는 말만 해야 한다.
+>
+> **그래서 `<기능>` 은 마디 둘을 가른다.** `detail`·`menu`·`schedule` 은 **기능**이라 이름에
+> 들어가고(`UserDetailService`·`BatchScheduleService`), `admin`·`service` 는 **역할**이라
+> 들어가지 않는다(`user/admin/UserService`·`code/service/CodeService`). **역할 마디는 이름이
+> 부딪힐 때만 드러나며, 그때도 명령만 그렇다** — `code/admin` 이 `CodeAdminService`(↔공통
+> `CodeService`)이면서 조회는 `CodeQueryService` 다. **2026-09-07 에 이 문단을 더했다** —
+> 6차 재현 둘이 `user/admin` 을 보고 `UserAdminService` 로 갔다. `user/detail` 은 마디를
+> 붙이는데 `user/admin` 은 안 붙이는 것이 위 표에서 읽히지 않았다.
 
 ### `ErrorCode` 상수 — 술어 어휘를 고정한다
 
