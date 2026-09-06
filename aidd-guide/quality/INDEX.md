@@ -4,7 +4,7 @@ title: "quality — 테스트 설계 · 레드팀 · 코드 품질 · 골든셋 
 category: quality
 type: operation
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-06
 status: active
 sources: []
 tier: 2
@@ -46,7 +46,7 @@ tags: [index, quality, test, redteam, evals]
 | 명령 | 무엇을 막나 | 임계 |
 |---|---|---|
 | `node .claude/hooks/quality-check.mjs` | 중복 · 예외 삼킴 · 태깅 누락 | 중복률 ≤5% · 삼킴 0 · 미태깅 0 |
-| `node .claude/hooks/trace-check.mjs --all` | 추적성 T1~T12 | 오류 0 |
+| `node .claude/hooks/trace-check.mjs --all` | 추적성 T1~T12 — **규칙의 정의는 [process/05-traceability.md](../process/05-traceability.md) 가 갖는다** | 오류 0 |
 | `node aidd-guide/meta/_meta/lint.mjs` | 문서 메타블록·200줄·깨진 링크 | 위반 0 |
 
 - **임계값의 근거는 [code-quality.md](code-quality.md) 가 갖는다** — 2026 GitClear·CodeRabbit 실증.
