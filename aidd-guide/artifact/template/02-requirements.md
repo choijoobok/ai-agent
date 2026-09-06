@@ -265,7 +265,7 @@ tags: [artifact, template, screen]
 
 ## 7. API
 
-<!-- endpoints.ts 의 선언이 인가 시드의 입력이다(CLAUDE.md §4-6). 콤보·팝업용 부가 경로도 빠짐없이. -->
+<!-- endpoints.ts 의 선언이 인가 시드의 입력이다(CLAUDE.md §8). 콤보·팝업용 부가 경로도 빠짐없이. -->
 <!-- 경로 칸은 endpoints.ts 에 적는 값 그대로다 — /api 를 붙이지 않는다(배럴이 붙인다).
      2026-09-04: 스무 화면 중 열여덟이 /api/service/… 로 적고 있었다. 그대로 옮기면 /api/api/… 가 된다.
      컨트롤러의 @RequestMapping 과 시드 CSV 는 /api/service/… 가 맞다 — 여기와 다른 값이다. -->
@@ -281,7 +281,7 @@ tags: [artifact, template, screen]
 ## 8. 시드 · 데이터 전제
 
 - 코드그룹: {없음 / `{ORD_STS}` — 값과 뜻}
-- 신규 메시지 키: 화면 {`MSG.{…}`} · 서버 {`MsgKey.{…}`} — 값은 **새 changeset** 으로 넣는다(CLAUDE.md §4-8)
+- 신규 메시지 키: 화면 {`MSG.{…}`} · 서버 {`MsgKey.{…}`} — 값은 **새 changeset** 으로 넣는다(CLAUDE.md §5-8)
 - 메뉴 시드: `menu-tree.yaml` 에 {코드 · 이름 키 · url · 액션 플래그}
 - 초기 데이터 전제: {없음 / 예: 이 화면은 `{X}` 가 먼저 등록되어 있어야 동작한다}
 - 설정 키(`SYS_CONFIG`): {없음 / 키와 영향}
