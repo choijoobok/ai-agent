@@ -6,7 +6,7 @@ type: operation
 created: "2026-04-30"
 updated: "2026-09-06"
 status: active
-sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
+sources: []
 tier: 3
 tags: [meta, frontmatter, spec]
 ---
@@ -23,8 +23,7 @@ title: "사람이 읽는 제목"
 category: "{카테고리 경로}"
 created: "YYYY-MM-DD"
 updated: "YYYY-MM-DD"
-sources:
-  - "참고 원본 경로 또는 URL"
+sources: ["저장소 안 경로", "…"]
 status: active
 tags: [tag1, tag2]
 ---
@@ -39,7 +38,7 @@ tags: [tag1, tag2]
 | `category` | ✅ | **파일이 실제로 있는 폴더**의 `aidd-guide/` 기준 경로 (예: `standard/backend`). 폴더를 옮기면 이 값도 함께 옮긴다 |
 | `created` | ✅ | 최초 생성일 (변경 불가) |
 | `updated` | ✅ | 최종 수정일 (수정 시 반드시 갱신) |
-| `sources` | ⭕ | 참고한 원본 문서·URL 목록 (배열) |
+| `sources` | ⭕ | 이 문서가 설명하는 **저장소 안 경로** 목록 (배열). 외부 출처는 넣지 않는다 — 아래 작성 규칙 3 |
 | `status` | ✅ | `active` / `deprecated` / `replaced` |
 | `tags` | ⭕ | 검색용 키워드 배열 |
 | `replaces` | ⭕ | (status=replaced 시) 대체 대상 ID |
@@ -47,35 +46,13 @@ tags: [tag1, tag2]
 
 ## ID 체계
 
-**접두는 폴더 하나에 하나씩 붙고, 폴더 이름에서 유도되지 않는다.** 그래서 **지어내지 않고
-이 표에서 찾는다** — 없는 폴더를 새로 만들었으면 **여기에 접두를 먼저 더한다.**
+**접두 ↔ 폴더 표는 [`aidd-guide/INDEX.md`](../INDEX.md) 의 `ID 체계` 절이 갖는다** —
+여기서 다시 적지 않는다. 카테고리 지도와 같은 자리에 있어야 폴더를 더할 때 함께 눈에 든다.
 
-| Prefix | 폴더 (`category` 값과 같다) |
-|--------|---------|
-| `LLM-IDX` | 마스터 인덱스 `aidd-guide/INDEX.md` 하나 (`LLM-IDX-000`) |
-| `LLM-MET` | `meta` |
-| `LLM-PRO` | `process` |
-| `LLM-PHS` | `phase` |
-| `LLM-ART` | `artifact` · `artifact/template` · `artifact/template/generated` |
-| `LLM-PMT` | `artifact/screen` |
-| `LLM-PMT-OVR` | `artifact/screen/overlay` |
-| `LLM-PLY` | `playbook` |
-| `LLM-FWK` | `standard` |
-| `LLM-FWK-BE` | `standard/backend` |
-| `LLM-FWK-FE` | `standard/frontend` |
-| `LLM-SAF` | `standard/safety` |
-| `LLM-KNW` | `knowledge` |
-| `LLM-KNW-SYS` | `knowledge/sys` — 다른 도메인은 `LLM-KNW-{도메인3자}` |
-| `LLM-HRN` | `harness` |
-| `LLM-CTX` | `harness/context` |
-| `LLM-MEM` | `harness/memory` |
-| `LLM-QLT` | `quality` |
-| `LLM-EVL` | `quality/evals` |
-| `LLM-OBS` | `quality/observability` |
-
-## 인덱스 ID
-
-각 폴더의 `INDEX.md` 는 `{prefix}-IDX` 형식 (예: `LLM-MET-IDX`).
+- 형식은 `LLM-{CAT3}[-{SUB3}]-{NNN}`, 각 폴더의 `INDEX.md` 는 `{prefix}-IDX` 다.
+- **접두는 폴더 이름에서 유도되지 않는다** — `artifact/screen` 이 `LLM-PMT` 다.
+  **지어내지 말고 표에서 찾는다.** 없는 폴더를 새로 만들었으면 **그 표에 먼저 더한다.**
+- **한 번 발급한 접두는 바꾸지 않는다.** 폴더가 이름을 바꿔도 ID 는 앵커로 남는다.
 
 ## status 값
 
@@ -89,9 +66,13 @@ tags: [tag1, tag2]
 
 1. **`updated` 갱신 필수** — 본문 변경 시 반드시 갱신
 2. **`id` 변경 금지** — 신규 발급 외 불변
-3. **`sources` 는 가능한 모든 원본 명시** — 추적성 확보.
-   **다른 저장소에서 온 것은 그 저장소를 밝힌다** — `wms5/orchestration/00-meta` 처럼.
-   폴더 이름만 적으면 어디 것인지 알 수 없고, 그러면 *여기에 맞는 규칙인가* 를 의심할 근거가 사라진다.
+3. **`sources` 에는 이 저장소에서 열 수 있는 경로만 적는다** — `sources/…` · `documents/…` ·
+   `aidd-guide/…` · `.claude/…` 처럼. 그 값이 `guide-drift` 훅의 역인덱스 입력이고,
+   `lint.mjs` 가 **실물과 맞는지 검사한다.**
+   **다른 저장소·외부 글·URL 은 적지 않는다.** 열어 볼 수 없는 출처는 참고가 되지 못하면서
+   *어딘가에 근거가 있다* 는 인상만 남긴다 — 확인할 방법이 없으므로 반박도 못 한다.
+   근거를 남겨야 하면 **본문에 문장으로** 쓴다. 적을 것이 없으면 `[]` 로 둔다
+   (`standard/` 와 `playbook/` 은 비울 수 없다 — 소스를 설명하는 문서라서다).
 4. **`author` 를 두지 않는다** — 저자는 git 이 갖는다(`git blame`). frontmatter 의 이름은
    고쳐도 안 고쳐도 틀린다: 이 저장소는 다른 프로젝트의 원저자 이름을 131 파일에 달고
    있었고, 그중 상당수는 여기서 다시 쓰인 것이었다.
