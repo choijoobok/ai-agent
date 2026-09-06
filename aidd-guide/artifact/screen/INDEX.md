@@ -4,7 +4,7 @@ title: "03-prompt — 요건서를 받아내는 절차 INDEX"
 category: artifact/screen
 type: operation
 created: 2026-04-30
-updated: 2026-09-03
+updated: 2026-09-06
 status: active
 sources: ["aidd-guide/artifact/template/02-requirements.md", "documents/screen/README.md", "CLAUDE.md"]
 tier: 1
@@ -39,7 +39,7 @@ tags: [prompt, requirements, overlay, index]
 ```
 요청이 왔다
   │
-  ├─ "화면 하나 만들어줘"                  → screen.md   (절차 일곱 단계)
+  ├─ "화면 하나 만들어줘"                  → screen.md   (워크플로 ①~⑥ · 절차 일곱)
   ├─ "이 표로 조회·저장 화면"              → crud.md     (가장 흔한 요청의 실제 대화)
   ├─ 요건서를 쓰다 빈 칸을 만났다          → auto-completion.md (채울 수 있나 물어야 하나)
   ├─ **요건서에서 목업을 만든다**           → `.claude/skills/mockup/SKILL.md` (`/mockup`)
@@ -54,7 +54,7 @@ tags: [prompt, requirements, overlay, index]
 
 | ID | 파일 | 역할 | 상태 |
 |----|------|------|------|
-| LLM-PMT-001 | [screen.md](./screen.md) | 요청 → 승인까지 **일곱 단계** | ✅ |
+| LLM-PMT-001 | [screen.md](./screen.md) | **워크플로 ①~⑥** · 요청 → 승인까지 **일곱 단계** | ✅ |
 | LLM-PMT-002 | [crud.md](./crud.md) | 단일 그리드 CRUD — **대화의 실물** | ✅ |
 | LLM-PMT-003 | [auto-completion.md](./auto-completion.md) | 채워도 되는 것 / 물어야 하는 것 | ✅ |
 | LLM-PMT-005 | [few-shot-policy.md](./few-shot-policy.md) | 예시를 몇 개 어디에 두나 | ✅ |

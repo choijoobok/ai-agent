@@ -1,7 +1,11 @@
 # `documents/screen/` — 화면 문서
 
-화면 하나 = **정본 둘 + 파생 둘**. 규칙은 [`CLAUDE.md` §6](../../CLAUDE.md) 가 갖고,
-**형식은 [`aidd-guide/artifact/template/`](../../aidd-guide/artifact/template/README.md) 가** 갖는다.
+화면 하나 = **정본 둘 + 파생 둘**.
+
+**이 문서가 정본이다** — 폴더 규칙 · 셋의 역할 · 현행화 시점을 여기가 갖는다(`CLAUDE.md` §6 이
+여기를 가리킨다). 곁의 둘은 다른 것을 갖는다: **형식**은
+[`aidd-guide/artifact/template/`](../../aidd-guide/artifact/template/README.md), **순서**(①~⑥)는
+[`aidd-guide/artifact/screen/screen.md`](../../aidd-guide/artifact/screen/screen.md).
 
 ```
 documents/screen/{페이지경로}/
@@ -49,13 +53,23 @@ cp aidd-guide/artifact/template/02-requirements.md documents/screen/{페이지�
 
 ## 폴더 이름은 페이지 경로다
 
+**페이지 경로는 소스가 소유한다.** 주소창에 보이는 그것이며, 바꾸는 주체가 개발이다.
 `sources/frontend/src/shared/routes/screenRegistry.ts` 의 키를 그대로 미러링한다 — `/log/access` → `documents/screen/log/access/`.
-**경로를 바꾸면 폴더도 같은 커밋에서 `git mv` 한다.** 메뉴 트리(`menu-tree.yaml` 의 위치)는 운영 중에 옮겨질 수 있으므로 폴더 기준이 아니다.
 
-`_` 로 시작하는 폴더는 페이지 경로가 아니다 — `_standalone/` 은 메뉴 없는 화면이다(`CLAUDE.md` §6.1). 페이지 경로는 `_` 로 시작하지 않는다.
+- **대상은 `screenRegistry.ts` 의 경로 전부**다. 그 목록은 `menu-tree.yaml` 의 `url` 과 1:1 이며 생성기가 그것을 지킨다 — 한쪽에만 있으면 시드 생성이 막힌다.
+- **경로를 바꾸면 폴더도 같은 커밋에서 `git mv` 한다.** `screenRegistry` 의 키를 고치는 것과 폴더를 옮기는 것은 **한 작업**이다. 메뉴 트리(`menu-tree.yaml` 의 위치)는 운영 중에 옮겨질 수 있으므로 폴더 기준이 아니다.
+- **`_` 로 시작하는 폴더는 페이지 경로가 아니다.** `_standalone/{화면이름}/` 은 **메뉴가 없는 화면**(로그인·프로필·설정·알림)이며, 경로가 없어 미러링할 것이 없으므로 화면 이름으로 둔다. `MENU_CD` 가 없어 **액션 권한을 걸 자리가 없고**(모달에 담은 기능은 전 사용자에게 열린다) `manual.md` 도 없다 — 사용자 메뉴얼은 메뉴 단위로 엮인다.
 
 ## 현행화
 
-**소스가 바뀌면 그 화면의 요건서·메뉴얼을 즉시 대조하고, 소스와 문서를 같은 커밋에 담는다.** 나누면 그 사이의 커밋이 거짓말을 한다.
-대조 사슬은 `CLAUDE.md` §6.5 에 있다.
-**요건서를 고쳤으면 `/mockup` 으로 목업을 다시 만든다** — 목업을 손으로 맞추지 않는다.
+| 시점 | 해야 하는 것 |
+|---|---|
+| **소스가 바뀔 때마다** | 그 화면의 셋을 **즉시** 대조한다. 컬럼·버튼·API·조회조건·검증·문구가 달라졌으면 문서를 고친다. **일치하면 고치지 않는다** |
+| **페이지 경로가 바뀔 때** | 폴더를 같은 커밋에서 옮긴다(위 「폴더 이름은 페이지 경로다」) |
+| **요건서를 고쳤을 때** | `/mockup` 으로 목업을 다시 만든다 — **손으로 맞추지 않는다** |
+| **커밋** | 소스와 문서를 **같은 커밋**에 담는다 — 나누면 그 사이의 커밋이 거짓말을 한다 |
+
+**어느 화면을 봐야 하는지는 훅이 계산한다** — `doc-drift` 가 바뀐 파일에서 페이지 경로를 뽑아
+가리킨다. **가리키기만 하고 막지 않는다**: *고쳐야 하는가* 는 판단이고, 위 표의 첫 줄대로
+일치하면 고치지 않는다. 사슬은
+[`aidd-guide/harness/hooks.md`](../../aidd-guide/harness/hooks.md) 가 갖는다.
