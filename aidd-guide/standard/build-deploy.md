@@ -4,7 +4,7 @@ title: "빌드 · 배포 — 단일 JAR · 프로파일 · CI"
 category: standard
 type: operation
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-06
 status: active
 sources: ["sources/build.gradle.kts", "sources/backend/bootstrap/build.gradle.kts", ".github/workflows/", "sources/backend/bootstrap/src/main/resources/application.yml", "sources/frontend/vite.config.ts"]
 tier: 2
@@ -54,6 +54,11 @@ React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌�
 
 **비밀값은 파일에 두지 않고 환경변수로 주입한다**(`DB_PASSWORD` · `REDIS_PASSWORD`).
 다만 **암호화 키는 운영에서 키 파일이 기본**이고 환경변수는 로컬·개발용이다.
+
+> **기본 프로파일을 아는 자리는 `bootRun` 태스크 하나다.** `application.yml` 에 기본값을
+> 두지 않았다 — 두면 운영에서 잘못된 프로파일로 조용히 뜬다. 대신 `bootRun` 이
+> `-Pprofile` 을 읽어 `local` 을 기본으로 주며, **IDE 실행 구성도 그 태스크를 부른다.**
+> `java -jar` 은 이 경로 밖이라 프로파일을 직접 받는다.
 
 > **`application-local.yml` 은 저장소에 넣는다**(2026-08-28 개정). 전에는 `.gitignore`
 > 대상이었는데, 그러면 **템플릿을 받은 사람이 "로컬을 어떻게 띄우나" 의 답을 갖지 못한다.**

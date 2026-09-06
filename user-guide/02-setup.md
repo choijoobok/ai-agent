@@ -60,12 +60,12 @@ psql -U postgres -c "CREATE DATABASE bo" -c "CREATE USER bo_admin PASSWORD '<비
 
 ## 4. 띄우는 법
 
-두 가지 방식이 있고 목적이 다르다.
+세 가지 방식이 있고 목적이 다르다.
 
 ### 개발 중 — 백엔드와 프론트를 따로
 
 ```bash
-cd sources && ./gradlew :backend:bootstrap:bootRun --args='--spring.profiles.active=local'
+cd sources && ./gradlew :backend:bootstrap:bootRun -PskipFrontend
 ```
 
 ```bash
@@ -73,8 +73,19 @@ cd sources/frontend && npm run dev
 ```
 
 - 프론트는 **3000** 포트, 백엔드는 **8080**. Vite 가 `/api` 를 백엔드로 프록시한다
-  (`VITE_API_TARGET` 으로 바꿀 수 있다).
+  (`VITE_API_TARGET` 으로 바꿀 수 있다). **화면은 3000 으로 본다.**
+- **`-PskipFrontend` 를 붙인다.** 빼면 기동할 때마다 `npm run build`(`tsc -b && vite build`)가
+  함께 돈다 — `processResources` 가 프론트 산출물을 정적 리소스로 받기 때문이다.
+  **개발 중에는 그 산출물을 아무도 안 쓴다.** 화면을 주는 것은 Vite dev 서버다.
+- **그래서 8080 루트는 404 다.** 프론트를 안 실었으니 맞다 — 없는 것을 있는 척하지 않는다.
+- **프로파일은 적지 않는다.** `bootRun` 태스크가 `local` 을 기본으로 준다. 다른 프로파일은
+  **`-Pprofile=dev`** 로 바꾸며, `--args=` 나 `SPRING_PROFILES_ACTIVE` 로 넣지 않는다 —
+  전자는 태스크가 주는 인자와 겹치고, 후자는 Gradle 데몬의 환경이라 조용히 안 먹는다.
+- **`application.yml` 에는 기본 프로파일이 없다.** 기본값을 갖는 것은 `bootRun` **태스크**다.
+  그래서 `java -jar` 과 IDE 직접 실행에서는 **반드시 준다**(아래 두 절) — 안 주면
+  `Failed to configure a DataSource` 로 죽고, 그 메시지는 프로파일 얘기를 하지 않는다.
 - **프론트만 고칠 때는 백엔드를 재기동하지 않는다** — HMR 이 받는다.
+- 프로파일 넷의 용도는 [04-release.md](04-release.md) §3 이 갖는다.
 
 ### 배포본 확인 — 단일 JAR
 
@@ -90,6 +101,24 @@ java -jar sources/backend/bootstrap/build/libs/bootstrap-0.0.1-SNAPSHOT.jar --sp
 **임베드가 조용히 빠지면 배포본이 빈 화면이 되므로** CI 가 그것을 검사한다([04-release.md](04-release.md)).
 
 > Claude Code 에서는 `.claude/launch.json` 의 `frontend` · `packaged` 로 띄울 수 있다.
+
+### IntelliJ 로 띄울 때 — **빌드·실행 위임을 Gradle 로 둔다**
+
+`Settings → Build, Execution, Deployment → Build Tools → Gradle` 에서
+*Build and run using* · *Run tests using* 를 **Gradle** 로 둔다.
+
+- **IDEA 빌더로 두면 `check` 가 돌지 않는다.** 그러면 `checkSeeds` 도 돌지 않아
+  **시드가 소스와 어긋난 사실을 아무도 말해 주지 않는다.** 증상은 화면의 **403** 으로만
+  나타나고([seed.md](../aidd-guide/standard/seed.md) §3), 원인이 시드라고 적힌 곳이 없다.
+- **시드는 어느 방식으로도 자동 생성되지 않는다.** `generateSeeds` 는 `bootRun` 에도
+  `build` 에도 걸려 있지 않다. 선언(`menu-tree.yaml` · 컨트롤러 · `endpoints.ts` ·
+  `messageKeys.ts` · **그 상수 바로 앞 주석**)을 고쳤으면 **그 자리에서** 손으로 돌린다 —
+  `cd sources && ./gradlew generateSeeds`. 절차는 [seed.md](../aidd-guide/standard/seed.md) §2.
+- **`main()` 을 직접 실행하면 프로파일이 없다.** 실행 구성의 *Program arguments* 에
+  `--spring.profiles.active=local` 을 넣거나, **`bootRun` 태스크를 부르는 Gradle 실행 구성**을
+  쓴다 — 후자가 낫다. 기본 프로파일을 아는 자리가 태스크 하나로 유지된다.
+- QueryDSL 의 `Q` 클래스와 `build-info.properties`(`/api/system/info` 의 커밋·빌드 시각)도
+  Gradle 이 만든다. **위임을 Gradle 로 두면 셋이 한꺼번에 해결된다.**
 
 ## 5. 잘 됐는지 확인 — 게이트 넷
 
@@ -126,6 +155,10 @@ cd sources/frontend && npm run lint && npm run typecheck && npm run test
 |---|---|
 | `./gradlew` 가 안 돈다 | `sources/` 에서 돌리고 있는지 본다 — **빌드 루트는 저장소 루트가 아니다** |
 | 백엔드 테스트에서 `npm` 을 찾는다 | `-PskipFrontend` 를 빼먹었다 |
+| 백엔드만 띄우는데 **프론트가 통째로 빌드된다** | `bootRun` 에 `-PskipFrontend` 를 빼먹었다(§4) |
+| **8080 이 404** (개발 중) | **정상이다.** 프론트를 안 실었다 — 화면은 **3000** 으로 본다 |
+| `Failed to configure a DataSource` | **프로파일이 없다.** 기본값을 갖는 것은 `bootRun` 태스크뿐이다 — `java -jar` · IDE 직접 실행에는 `--spring.profiles.active=local` 을 직접 준다 |
+| 화면이 **403** 인데 코드는 맞다 | 선언을 고치고 시드를 다시 안 만들었다 → `./gradlew generateSeeds`. **IntelliJ 를 IDEA 빌더로 쓰면 `checkSeeds` 가 안 돌아 이것이 안 잡힌다**(§4) |
 | `checkSeeds` 가 깨진다 | 선언(`menu-tree.yaml` · 컨트롤러 · `endpoints.ts` · `messageKeys.ts`)을 고치고 시드를 다시 만들지 않았다 → `cd sources && ./gradlew generateSeeds` |
 | Liquibase `checksum` 오류 | **이미 적재된 changeset 을 고쳤다.** 되돌리고 **새 파일을 더한다** — 고치면 남의 로컬이 죽는다 |
 | 문서 린터가 `broken link` | 파일을 옮기고 링크를 안 고쳤다. **경로를 손으로 세지 말고** 린터가 가리키는 자리를 본다 |
