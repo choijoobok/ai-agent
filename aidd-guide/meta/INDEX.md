@@ -4,7 +4,7 @@ title: "00-meta — 시스템 규약 INDEX"
 category: meta
 type: operation
 created: "2026-04-30"
-updated: "2026-04-30"
+updated: "2026-09-06"
 status: active
 sources: ["wms5/orchestration/00-meta (외부 프로젝트 — 이 저장소에 없다)"]
 tier: 3
@@ -29,11 +29,10 @@ tags: [meta, index]
 | LLM-MET-003 | [routing.md](./routing.md) | 작업 시작 라우팅 결정 트리 (상세) |
 | LLM-MET-004 | [lifecycle.md](./lifecycle.md) | 문서 생성·수정·폐기 생명주기 |
 
-> **`templates/` 여섯을 지웠다**(2026-09-04). `100-prompts/` · `200-context/` · `700-evals/`
-> 를 위한 남의 템플릿이었고, `templates/meta-block.md` 는 **메타블록 표준의 두 번째 정의**로
-> `type:` 열거값이 실물과 달랐다(§3 의 중복 정의 금지). 새 문서를 쓸 때는
-> **[meta-block.md](./meta-block.md) 의 표준 형식과 [doc-style.md](./doc-style.md) 를 따르고,
-> 같은 카테고리의 기존 파일 하나를 복사한다** — 실물이 가장 정확한 템플릿이다.
+> **새 문서를 쓸 때 템플릿 파일을 찾지 않는다.** [meta-block.md](./meta-block.md) 의 표준
+> 형식과 [doc-style.md](./doc-style.md) 를 따르고, **같은 카테고리의 기존 파일 하나를 복사해
+> 고친다** — 실물이 가장 정확한 템플릿이다. 별도의 템플릿을 두면 그것이 **표준의 두 번째
+> 정의**가 되고, 갈렸을 때 어느 쪽이 참인지 알 방법이 없다(아래 **핵심 불변 규칙 3**).
 
 ## 핵심 불변 규칙
 
