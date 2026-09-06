@@ -296,18 +296,47 @@ function fullCheck() {
 
 // ── 리포트 ────────────────────────────────────────────────────────
 
+/**
+ * <b>같은 사유는 한 줄로 접는다</b> — 대상은 세어서 옆에 적는다.
+ *
+ * <p>펴 두면 <b>한 사실이 백 번 운다</b>. 2026-09-06 에 오류 104건이 전부
+ * <i>테스트 케이스 없음</i> 하나였고, 원인도 하나였다({@code 70-testcases.yaml} 이 비었다).
+ * 그 백 줄이 흐르는 동안 <b>새로 생긴 한 건은 보이지 않는다</b> — 표가 길어서가 아니라
+ * <b>읽히지 않게 되어서</b>다.
+ *
+ * <p><b>건수를 줄이지 않는다.</b> 머리말의 <i>오류 N건</i> 은 그대로이고 게이트도 그대로
+ * 빨갛다 — 접는 것은 <b>보고</b> 이지 판정이 아니다.
+ */
+function fold(rows) {
+  const byReason = new Map();
+  for (const [rule, target, msg] of rows) {
+    const key = `${rule}\u0000${msg}`;
+    if (!byReason.has(key)) byReason.set(key, { rule, msg, targets: [] });
+    byReason.get(key).targets.push(target ?? '');
+  }
+  return [...byReason.values()];
+}
+
+/** 접힌 한 줄 — 하나면 대상을 그대로, 여럿이면 <b>건수와 보기 셋</b>. */
+function foldedRow({ rule, msg, targets }) {
+  if (targets.length === 1) return `| ${rule} | ${targets[0]} | ${msg} |`;
+  const sample = targets.slice(0, 3).join(' · ');
+  const more = targets.length > 3 ? ` 외 ${targets.length - 3}` : '';
+  return `| ${rule} | **${targets.length}건** — ${sample}${more} | ${msg} |`;
+}
+
+function section(out, rows, title, cap) {
+  if (rows.length === 0) return;
+  const folded = fold(rows);
+  out.push('', title, '', '| 규칙 | 대상 | 내용 |', '|---|---|---|');
+  for (const row of folded.slice(0, cap)) out.push(foldedRow(row));
+  if (folded.length > cap) out.push(`| … | | 외 ${folded.length - cap}종 |`);
+}
+
 function report(errors, warnings) {
   const out = ['## 추적성 검사 결과', '', `**오류 ${errors.length}건 / 경고 ${warnings.length}건**`];
-  if (errors.length > 0) {
-    out.push('', '### 오류 (게이트 통과 불가)', '', '| 규칙 | 대상 | 내용 |', '|---|---|---|');
-    for (const [rule, target, msg] of errors.slice(0, 80)) out.push(`| ${rule} | ${target} | ${msg} |`);
-    if (errors.length > 80) out.push(`| … | | 외 ${errors.length - 80}건 |`);
-  }
-  if (warnings.length > 0) {
-    out.push('', '### 경고', '', '| 규칙 | 대상 | 내용 |', '|---|---|---|');
-    for (const [rule, target, msg] of warnings.slice(0, 60)) out.push(`| ${rule} | ${target} | ${msg} |`);
-    if (warnings.length > 60) out.push(`| … | | 외 ${warnings.length - 60}건 |`);
-  }
+  section(out, errors, '### 오류 (게이트 통과 불가)', 40);
+  section(out, warnings, '### 경고', 30);
   if (errors.length === 0 && warnings.length === 0) out.push('', '모든 추적성 규칙을 통과했다.');
   return out.join('\n');
 }
