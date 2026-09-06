@@ -76,6 +76,39 @@ export function readText(path) {
 // ── 프로젝트 상태 ─────────────────────────────────────────────────
 
 /** 단계 순서 — `documents/project.state.yaml` 의 `gates:` 키와 짝이다. */
+/**
+ * <b>어느 기능에도 속하지 않는 층</b> — `@feat` 태그를 묻지 않는다(T10).
+ *
+ * <p>여기 있는 코드의 존재 이유가 <b>여러 기능이 함께 쓴다</b>는 것이다. 공통물은 두 번째
+ * 사용에 올라오므로(CLAUDE.md §8) <b>정의상 둘 이상의 기능</b>에 속하고, 그중 하나를 골라
+ * 적으면 나머지와의 연결이 조용히 사라진다. 프레임워크 최하층(`core`)·설정(`support`·
+ * `bootstrap`)·셸(`layouts`·`app`)은 아예 어느 기능도 아니다.
+ *
+ * <p><b>태그를 요구하면 결국 아무 FEAT 나 붙는다.</b> 거짓 연결은 빈칸보다 나쁘다 — 빈칸은
+ * 모른다고 말하지만 거짓 연결은 <b>안다고 말한다</b>. T4·T9 가 그 위에서 초록이 된다.
+ *
+ * <p><b>전제는 기능 코드가 여기 살지 않는다는 것</b>이다. 백엔드는 `domain`·`api`, 프론트는
+ * `features` 가 그 자리다(standard/backend/packages.md · standard/frontend/packages.md).
+ * 경계가 무너지면 이 면제도 함께 무너지므로 <b>여기에 기능을 넣지 않는 것</b>이 규칙의
+ * 절반이다.
+ *
+ * <p><b>면제 명단(`feat-baseline.txt`)과 뜻이 다르다.</b> 저것은 갚아야 할 빚이라 줄어들기만
+ * 하고, 이것은 영구 규칙이다. 한 파일을 둘이 함께 덮지 않는다 — 덮으면 이 목록을 고쳐도
+ * <b>아무 일도 일어나지 않는다</b>. → process/05-traceability.md §3
+ */
+export const FEATURELESS = [
+  /^sources\/backend\/(core|support|bootstrap)\//,
+  /^sources\/frontend\/src\/(shared|layouts|app|locales)\//,
+  // 진입점과 빌드 설정 — 코드이지만 업무가 아니다.
+  /^sources\/frontend\/src\/main\.tsx$/,
+  /^sources\/frontend\/[^/]+\.(ts|js|cjs|mjs)$/,
+];
+
+/** 그 층 밖인가 — <b>두 게이트가 이 함수 하나를 쓴다</b>(T10 의 답이 갈리지 않게). */
+export function needsFeatTag(rel) {
+  return !FEATURELESS.some((zone) => zone.test(rel));
+}
+
 export const PHASES = ['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6'];
 
 export const PHASE_NAME = {

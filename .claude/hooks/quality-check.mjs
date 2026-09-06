@@ -22,7 +22,7 @@
 import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { extname, join, relative, sep } from 'node:path';
-import { REPO } from './lib.mjs';
+import { REPO, needsFeatTag } from './lib.mjs';
 
 const CODE_EXT = new Set(['.java', '.kt', '.ts', '.tsx', '.js', '.jsx', '.py', '.cs', '.go', '.rb']);
 const SKIP_DIR = new Set([
@@ -144,7 +144,12 @@ function scan() {
       TC 로 엮인다(process/05-traceability.md).
     */
     const isTestSrc = /\/(test|spec)\//.test(rel) || /\.(test|spec)\.[jt]sx?$/.test(rel);
-    if (!isTestSrc && !exempt.has(rel) && !text.slice(0, 1500).includes('@feat')) untagged.push(rel);
+    /*
+      <b>층 규칙도 {@code trace-check} 와 같은 것을 쓴다</b>({@code needsFeatTag}). 명단만
+      맞추고 층이 갈리면 답은 여전히 다르다 — 위 두 주석이 적은 사고가 그것이다.
+    */
+    const asks = !isTestSrc && needsFeatTag(rel) && !exempt.has(rel);
+    if (asks && !text.slice(0, 1500).includes('@feat')) untagged.push(rel);
 
     for (const [pattern, label] of SWALLOW) {
       for (const m of text.matchAll(pattern)) {

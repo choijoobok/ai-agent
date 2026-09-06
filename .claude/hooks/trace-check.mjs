@@ -13,7 +13,7 @@
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
-import { REPO, readHookInput, targetPath, repoRelative, readText, parseYaml, warn, pass } from './lib.mjs';
+import { REPO, readHookInput, targetPath, repoRelative, readText, parseYaml, warn, pass, needsFeatTag } from './lib.mjs';
 
 const SPEC_DIR = 'documents/spec';
 const SPEC = {
@@ -252,12 +252,14 @@ function fullCheck() {
   }
 
   /*
-    T10 — 코드 태그. **템플릿은 면제하고 새 코드만 센다.**
+    T10 — 코드 태그. **면제가 둘이고 뜻이 다르다.**
 
-    백오피스 템플릿 817 파일이 이 추적성 체계보다 앞서 들어왔다. 그것을 다 세면 경고가
-    <b>영구히 켜져 있고, 영구히 켜진 경고는 사람에게 경고를 무시하는 법을 가르친다</b> —
-    T6·T8 이 그 아래 묻힌다. 그래서 오늘의 빚을 `feat-baseline.txt` 에 명단으로 고정하고
-    <b>명단 밖만</b> 센다. 규칙은 앞으로 만들 코드에서 살아 있다.
+    ① <b>기능 없는 층</b>({@link FEATURELESS} — lib.mjs). 영구 규칙이다.
+    ② <b>템플릿 명단</b>(`feat-baseline.txt`). 갚아야 할 빚이다.
+
+    백오피스 템플릿이 이 추적성 체계보다 앞서 들어왔다. 그것을 다 세면 경고가 <b>영구히
+    켜져 있고, 영구히 켜진 경고는 사람에게 경고를 무시하는 법을 가르친다</b> — T6·T8 이 그
+    아래 묻힌다. 그래서 오늘의 빚을 명단으로 고정하고 <b>명단 밖만</b> 센다.
 
     명단은 **줄어들기만 해야 한다** — 태그를 달면 지우고, 새 파일을 더하는 것은 규칙을
     끄는 것이다. → aidd-guide/process/05-traceability.md §3
@@ -276,6 +278,7 @@ function fullCheck() {
       if (!/\.(java|kt|ts|tsx|js|jsx)$/.test(rel)) continue;
       if (/\/(node_modules|build|dist|target|\.gradle)\//.test(rel)) continue;
       if (/\/(test|spec)\//.test(rel) || /\.(test|spec)\.[jt]sx?$/.test(rel)) continue;
+      if (!needsFeatTag(rel)) continue;
       if (exempt.has(rel)) continue;
       if (!readText(file).slice(0, 1500).includes('@feat')) untagged.push(rel);
     }
