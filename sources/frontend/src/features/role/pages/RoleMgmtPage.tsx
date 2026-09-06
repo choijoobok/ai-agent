@@ -178,19 +178,17 @@ export function RoleMgmtPage() {
         authCount: null,
       }),
     },
-    toSavePayload: (rows) => ({
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        roleId: row.data.roleId,
-        // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
-        ...(row.state === 'D'
-          ? {}
-          : {
-              roleNm: row.data.roleNm,
-              roleDesc: row.data.roleDesc,
-              useYn: row.data.useYn,
-            }),
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      roleId: row.data.roleId,
+      // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
+      ...(row.state === 'D'
+        ? {}
+        : {
+            roleNm: row.data.roleNm,
+            roleDesc: row.data.roleDesc,
+            useYn: row.data.useYn,
+          }),
     }),
   });
 

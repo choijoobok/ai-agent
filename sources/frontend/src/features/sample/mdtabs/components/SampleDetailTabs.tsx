@@ -143,26 +143,24 @@ export function SampleDetailTabs(props: Props) {
         modDtm: null,
       }),
     },
-    toSavePayload: (rows) => ({
-      ordId: ordId.current,
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        itemSeq: row.data.itemSeq,
-        ...(row.state === 'D'
-          ? {}
-          : {
-              itemCd: row.data.itemCd,
-              itemNm: row.data.itemNm,
-              uomCd: row.data.uomCd,
-              qty: row.data.qty,
-              unitAmt: row.data.unitAmt,
-              dlvrDt: row.data.dlvrDt,
-              itemStatCd: row.data.itemStatCd,
-              useYn: row.data.useYn,
-              rmk: row.data.rmk,
-            }),
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      itemSeq: row.data.itemSeq,
+      ...(row.state === 'D'
+        ? {}
+        : {
+            itemCd: row.data.itemCd,
+            itemNm: row.data.itemNm,
+            uomCd: row.data.uomCd,
+            qty: row.data.qty,
+            unitAmt: row.data.unitAmt,
+            dlvrDt: row.data.dlvrDt,
+            itemStatCd: row.data.itemStatCd,
+            useYn: row.data.useYn,
+            rmk: row.data.rmk,
+          }),
     }),
+    saveEnvelope: (rows) => ({ ordId: ordId.current, rows }),
   });
 
   // ── 탭 2 — 태그 ────────────────────────────────────────────────
@@ -220,20 +218,18 @@ export function SampleDetailTabs(props: Props) {
         modDtm: null,
       }),
     },
-    toSavePayload: (rows) => ({
-      ordId: ordId.current,
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        tagSeq: row.data.tagSeq,
-        ...(row.state === 'D'
-          ? {}
-          : {
-              tagNm: row.data.tagNm,
-              tagTypeCd: row.data.tagTypeCd,
-              sortNo: row.data.sortNo,
-            }),
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      tagSeq: row.data.tagSeq,
+      ...(row.state === 'D'
+        ? {}
+        : {
+            tagNm: row.data.tagNm,
+            tagTypeCd: row.data.tagTypeCd,
+            sortNo: row.data.sortNo,
+          }),
     }),
+    saveEnvelope: (rows) => ({ ordId: ordId.current, rows }),
   });
 
   useEffect(() => {

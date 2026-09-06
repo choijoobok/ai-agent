@@ -225,22 +225,20 @@ export function UserAuthMgmtPage() {
       행을 만들 수 있게 하면 <i>메뉴 코드를 손으로 적는</i> 경로가 열린다 — screen/user-auth/requirements.md 가
       *"목록만 두면 메뉴를 코드로 찾아야 한다"* 며 트리를 둔 이유가 그것이다.
     */
-    toSavePayload: (rows) => ({
-      userId: selectedUserId.current,
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        menuCd: row.data.menuCd,
-        actionCd: row.data.actionCd,
-        // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
-        ...(row.state === 'D'
-          ? {}
-          : {
-              validFromDt: row.data.validFromDt,
-              validToDt: row.data.validToDt,
-              grantRsn: row.data.grantRsn,
-            }),
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      menuCd: row.data.menuCd,
+      actionCd: row.data.actionCd,
+      // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
+      ...(row.state === 'D'
+        ? {}
+        : {
+            validFromDt: row.data.validFromDt,
+            validToDt: row.data.validToDt,
+            grantRsn: row.data.grantRsn,
+          }),
     }),
+    saveEnvelope: (rows) => ({ userId: selectedUserId.current, rows }),
   });
 
   /*

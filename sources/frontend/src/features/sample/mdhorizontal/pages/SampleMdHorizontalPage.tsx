@@ -116,31 +116,29 @@ export function SampleMdHorizontalPage() {
       **그 어휘는 이미 실물이 있다** — ③의 마스터와 ①이 행 추가를 그린다. 여기서 빠지는
       것은 버튼 하나이지 어휘가 아니다.
     */
-    toSavePayload: (rows) => ({
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        ordId: row.data.ordId,
-        /*
-          **그리지 않는 칸도 보낸다.** 화면은 셋만 그리지만 행은 조회가 실어 준 아홉을
-          그대로 들고 있다 — 보내지 않으면 서버가 그 칸을 `null` 로 읽어 **안 보이는
-          컬럼이 지워진다**(`SmplOrderSaveRow` 가 적은 *받는 컬럼이 곧 고칠 수 있는 컬럼*).
-        */
-        ...(row.state === 'D'
-          ? {}
-          : {
-              ordNo: row.data.ordNo,
-              ordNm: row.data.ordNm,
-              custId: row.data.custId,
-              custNm: row.data.custNm,
-              ordStatCd: row.data.ordStatCd,
-              ordDt: row.data.ordDt,
-              ordQty: row.data.ordQty,
-              unitAmt: row.data.unitAmt,
-              dcRt: row.data.dcRt,
-              urgentYn: row.data.urgentYn,
-              useYn: row.data.useYn,
-            }),
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      ordId: row.data.ordId,
+      /*
+        **그리지 않는 칸도 보낸다.** 화면은 셋만 그리지만 행은 조회가 실어 준 아홉을
+        그대로 들고 있다 — 보내지 않으면 서버가 그 칸을 `null` 로 읽어 **안 보이는
+        컬럼이 지워진다**(`SmplOrderSaveRow` 가 적은 *받는 컬럼이 곧 고칠 수 있는 컬럼*).
+      */
+      ...(row.state === 'D'
+        ? {}
+        : {
+            ordNo: row.data.ordNo,
+            ordNm: row.data.ordNm,
+            custId: row.data.custId,
+            custNm: row.data.custNm,
+            ordStatCd: row.data.ordStatCd,
+            ordDt: row.data.ordDt,
+            ordQty: row.data.ordQty,
+            unitAmt: row.data.unitAmt,
+            dcRt: row.data.dcRt,
+            urgentYn: row.data.urgentYn,
+            useYn: row.data.useYn,
+          }),
     }),
   });
 
@@ -174,26 +172,24 @@ export function SampleMdHorizontalPage() {
         modDtm: null,
       }),
     },
-    toSavePayload: (rows) => ({
-      ordId: selectedOrdId.current,
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        itemSeq: row.data.itemSeq,
-        ...(row.state === 'D'
-          ? {}
-          : {
-              itemCd: row.data.itemCd,
-              itemNm: row.data.itemNm,
-              uomCd: row.data.uomCd,
-              qty: row.data.qty,
-              unitAmt: row.data.unitAmt,
-              dlvrDt: row.data.dlvrDt,
-              itemStatCd: row.data.itemStatCd,
-              useYn: row.data.useYn,
-              rmk: row.data.rmk,
-            }),
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      itemSeq: row.data.itemSeq,
+      ...(row.state === 'D'
+        ? {}
+        : {
+            itemCd: row.data.itemCd,
+            itemNm: row.data.itemNm,
+            uomCd: row.data.uomCd,
+            qty: row.data.qty,
+            unitAmt: row.data.unitAmt,
+            dlvrDt: row.data.dlvrDt,
+            itemStatCd: row.data.itemStatCd,
+            useYn: row.data.useYn,
+            rmk: row.data.rmk,
+          }),
     }),
+    saveEnvelope: (rows) => ({ ordId: selectedOrdId.current, rows }),
   });
 
   const confirmDiscard = useCallback(

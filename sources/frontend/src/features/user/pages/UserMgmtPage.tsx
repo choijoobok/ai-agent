@@ -233,22 +233,20 @@ export function UserMgmtPage() {
         modDtm: null,
       }),
     },
-    toSavePayload: (rows) => ({
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        userId: row.data.userId,
-        userNm: row.data.userNm,
-        email: row.data.email,
-        useYn: row.data.useYn,
-        validFromDt: row.data.validFromDt,
-        validToDt: row.data.validToDt,
-        localeCd: row.data.localeCd,
-        /*
-          <b>시스템 축 셋을 보내지 않는다.</b> 읽기 전용은 화면에서만 읽기 전용이고 요청
-          본문은 조작할 수 있다(sys/menu.md 원칙 P1) — 서버의 `UserSaveRow` 에도 그 필드가
-          없어서, 보내도 받을 자리가 없다.
-        */
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      userId: row.data.userId,
+      userNm: row.data.userNm,
+      email: row.data.email,
+      useYn: row.data.useYn,
+      validFromDt: row.data.validFromDt,
+      validToDt: row.data.validToDt,
+      localeCd: row.data.localeCd,
+      /*
+        <b>시스템 축 셋을 보내지 않는다.</b> 읽기 전용은 화면에서만 읽기 전용이고 요청
+        본문은 조작할 수 있다(sys/menu.md 원칙 P1) — 서버의 `UserSaveRow` 에도 그 필드가
+        없어서, 보내도 받을 자리가 없다.
+      */
     }),
   });
 

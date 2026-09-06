@@ -229,40 +229,38 @@ export function SampleSingleOffsetPage() {
         modDtm: null,
       }),
     },
-    toSavePayload: (rows) => ({
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        ordId: row.data.ordId,
-        // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
-        ...(row.state === 'D'
-          ? {}
-          : {
-              ordNo: row.data.ordNo,
-              ordNm: row.data.ordNm,
-              custId: row.data.custId,
-              custNm: row.data.custNm,
-              custGrdCd: row.data.custGrdCd,
-              ordStatCd: row.data.ordStatCd,
-              chnlCd: row.data.chnlCd,
-              priorityCd: row.data.priorityCd,
-              ordDt: row.data.ordDt,
-              dlvrYm: row.data.dlvrYm,
-              ordQty: row.data.ordQty,
-              unitAmt: row.data.unitAmt,
-              dcRt: row.data.dcRt,
-              urgentYn: row.data.urgentYn,
-              useYn: row.data.useYn,
-              tagList: row.data.tagList,
-              memo: row.data.memo,
-              rmk: row.data.rmk,
-            }),
-        /*
-          **`ordAmt`·`vatAmt`·`procMs`·`lockYn`·`srcSysCd`·`errMsg` 를 보내지 않는다.**
-          앞의 셋은 서버가 만드는 파생이고 뒤의 셋은 운영·시스템의 것이다 — 보낼 경로를
-          두면 화면이 금액을 스스로 정하거나 **잠긴 주문이 스스로 잠금을 푸는** 요청이
-          성립한다(원칙 P1). 화면에서 읽기 전용인 것과 요청이 조작될 수 있는 것은 다르다.
-        */
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      ordId: row.data.ordId,
+      // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
+      ...(row.state === 'D'
+        ? {}
+        : {
+            ordNo: row.data.ordNo,
+            ordNm: row.data.ordNm,
+            custId: row.data.custId,
+            custNm: row.data.custNm,
+            custGrdCd: row.data.custGrdCd,
+            ordStatCd: row.data.ordStatCd,
+            chnlCd: row.data.chnlCd,
+            priorityCd: row.data.priorityCd,
+            ordDt: row.data.ordDt,
+            dlvrYm: row.data.dlvrYm,
+            ordQty: row.data.ordQty,
+            unitAmt: row.data.unitAmt,
+            dcRt: row.data.dcRt,
+            urgentYn: row.data.urgentYn,
+            useYn: row.data.useYn,
+            tagList: row.data.tagList,
+            memo: row.data.memo,
+            rmk: row.data.rmk,
+          }),
+      /*
+        **`ordAmt`·`vatAmt`·`procMs`·`lockYn`·`srcSysCd`·`errMsg` 를 보내지 않는다.**
+        앞의 셋은 서버가 만드는 파생이고 뒤의 셋은 운영·시스템의 것이다 — 보낼 경로를
+        두면 화면이 금액을 스스로 정하거나 **잠긴 주문이 스스로 잠금을 푸는** 요청이
+        성립한다(원칙 P1). 화면에서 읽기 전용인 것과 요청이 조작될 수 있는 것은 다르다.
+      */
     }),
   });
 

@@ -300,25 +300,23 @@ export function BatchSchedulePage() {
         modDtm: null,
       }),
     },
-    toSavePayload: (rows) => ({
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        batchId: row.data.batchId,
-        // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
-        ...(row.state === 'D'
-          ? {}
-          : {
-              batchNm: row.data.batchNm,
-              batchDesc: row.data.batchDesc,
-              beanId: row.data.beanId,
-              cron: row.data.cron,
-              paramJson: row.data.paramJson,
-              lockExpirySec: row.data.lockExpirySec,
-              lockMinIntervalSec: row.data.lockMinIntervalSec,
-              useYn: row.data.useYn,
-              sortNo: row.data.sortNo,
-            }),
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      batchId: row.data.batchId,
+      // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
+      ...(row.state === 'D'
+        ? {}
+        : {
+            batchNm: row.data.batchNm,
+            batchDesc: row.data.batchDesc,
+            beanId: row.data.beanId,
+            cron: row.data.cron,
+            paramJson: row.data.paramJson,
+            lockExpirySec: row.data.lockExpirySec,
+            lockMinIntervalSec: row.data.lockMinIntervalSec,
+            useYn: row.data.useYn,
+            sortNo: row.data.sortNo,
+          }),
     }),
   });
 

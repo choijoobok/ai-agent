@@ -213,17 +213,15 @@ export function UserDetailTabs(props: Props) {
         modDtm: null,
       }),
     },
-    toSavePayload: (rows) => ({
-      userId: userId.current,
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        roleId: row.data.roleId,
-        // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
-        ...(row.state === 'D'
-          ? {}
-          : { validFromDt: row.data.validFromDt, validToDt: row.data.validToDt }),
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      roleId: row.data.roleId,
+      // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
+      ...(row.state === 'D'
+        ? {}
+        : { validFromDt: row.data.validFromDt, validToDt: row.data.validToDt }),
     }),
+    saveEnvelope: (rows) => ({ userId: userId.current, rows }),
   });
 
   /**
@@ -289,20 +287,18 @@ export function UserDetailTabs(props: Props) {
         modDtm: null,
       }),
     },
-    toSavePayload: (rows) => ({
-      userId: userId.current,
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        ipCidr: row.data.ipCidr,
-        ...(row.state === 'D'
-          ? {}
-          : {
-              useYn: row.data.useYn,
-              validFromDt: row.data.validFromDt,
-              validToDt: row.data.validToDt,
-            }),
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      ipCidr: row.data.ipCidr,
+      ...(row.state === 'D'
+        ? {}
+        : {
+            useYn: row.data.useYn,
+            validFromDt: row.data.validFromDt,
+            validToDt: row.data.validToDt,
+          }),
     }),
+    saveEnvelope: (rows) => ({ userId: userId.current, rows }),
   });
 
   /** 지우는 것이 정상이다 — 이사한 사무실의 대역을 남겨 둘 이유가 없다(sys/user-role.md). */

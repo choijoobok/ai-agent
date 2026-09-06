@@ -159,30 +159,28 @@ export function NoticeMgmtPage() {
         modDtm: null,
       }),
     },
-    toSavePayload: (rows) => ({
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        noticeId: row.data.noticeId,
-        // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
-        ...(row.state === 'D'
-          ? {}
-          : {
-              title: row.data.title,
-              content: row.data.content,
-              noticeFromDtm: row.data.noticeFromDtm,
-              noticeToDtm: row.data.noticeToDtm,
-              popupYn: row.data.popupYn,
-              popupFromDtm: row.data.popupFromDtm,
-              popupToDtm: row.data.popupToDtm,
-              useYn: row.data.useYn,
-              sortNo: row.data.sortNo,
-            }),
-        /*
-          <b>`noticeStat` 을 보내지 않는다</b>(screen/notice/requirements.md 의 `NoticeSaveRow`). 서버가 계산하는
-          파생 값이라 보낼 경로를 두면 <b>화면이 게시 여부를 스스로 정하는</b> 셈이 된다 —
-          읽기 전용은 화면에서만 읽기 전용이고 요청 본문은 조작할 수 있다(원칙 P1).
-        */
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      noticeId: row.data.noticeId,
+      // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
+      ...(row.state === 'D'
+        ? {}
+        : {
+            title: row.data.title,
+            content: row.data.content,
+            noticeFromDtm: row.data.noticeFromDtm,
+            noticeToDtm: row.data.noticeToDtm,
+            popupYn: row.data.popupYn,
+            popupFromDtm: row.data.popupFromDtm,
+            popupToDtm: row.data.popupToDtm,
+            useYn: row.data.useYn,
+            sortNo: row.data.sortNo,
+          }),
+      /*
+        <b>`noticeStat` 을 보내지 않는다</b>(screen/notice/requirements.md 의 `NoticeSaveRow`). 서버가 계산하는
+        파생 값이라 보낼 경로를 두면 <b>화면이 게시 여부를 스스로 정하는</b> 셈이 된다 —
+        읽기 전용은 화면에서만 읽기 전용이고 요청 본문은 조작할 수 있다(원칙 P1).
+      */
     }),
   });
 

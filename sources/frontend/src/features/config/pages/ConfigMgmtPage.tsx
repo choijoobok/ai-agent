@@ -90,13 +90,11 @@ export function ConfigMgmtPage() {
     api,
     // `addRow` 가 없다 — 키는 `yml` 이 정한다(screen/config/requirements.md).
     params: collectConditions,
-    toSavePayload: (rows) => ({
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        cfgKey: row.data.cfgKey,
-        // 되돌리기는 값을 보내지 않는다 — 서버는 행을 지울 뿐이다(screen/config/requirements.md).
-        cfgVal: row.state === 'D' ? undefined : row.data.cfgVal,
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      cfgKey: row.data.cfgKey,
+      // 되돌리기는 값을 보내지 않는다 — 서버는 행을 지울 뿐이다(screen/config/requirements.md).
+      cfgVal: row.state === 'D' ? undefined : row.data.cfgVal,
     }),
   });
 

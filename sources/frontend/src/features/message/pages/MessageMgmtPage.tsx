@@ -110,13 +110,11 @@ export function MessageMgmtPage() {
     api: masterApi,
     // `addRow` 가 없다 — 이 화면은 <b>키를 만드는 화면이 아니다</b>(위 주석 · screen/message/requirements.md).
     params: collectConditions,
-    toSavePayload: (rows) => ({
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        msgKey: row.data.msgKey,
-        // 삭제는 값을 보내지 않는다 — 서버가 값 → 키 순서로 지운다(screen/message/requirements.md).
-        values: row.state === 'D' ? undefined : row.data.values,
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      msgKey: row.data.msgKey,
+      // 삭제는 값을 보내지 않는다 — 서버가 값 → 키 순서로 지운다(screen/message/requirements.md).
+      values: row.state === 'D' ? undefined : row.data.values,
     }),
   });
 

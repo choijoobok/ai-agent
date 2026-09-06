@@ -133,32 +133,30 @@ export function SampleMdTabsPage() {
         modDtm: null,
       }),
     },
-    toSavePayload: (rows) => ({
-      rows: rows.map((row) => ({
-        rowState: row.state,
-        ordId: row.data.ordId,
-        // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
-        ...(row.state === 'D'
-          ? {}
-          : {
-              ordNo: row.data.ordNo,
-              ordNm: row.data.ordNm,
-              custId: row.data.custId,
-              custNm: row.data.custNm,
-              ordStatCd: row.data.ordStatCd,
-              ordDt: row.data.ordDt,
-              ordQty: row.data.ordQty,
-              unitAmt: row.data.unitAmt,
-              dcRt: row.data.dcRt,
-              urgentYn: row.data.urgentYn,
-              useYn: row.data.useYn,
-            }),
-        /*
-          **`ordAmt`·`vatAmt`·`lockYn` 을 보내지 않는다.** 앞의 둘은 서버가 계산하는
-          파생이고 마지막은 운영이 정하는 값이다 — 보낼 경로를 두면 화면이 금액을 스스로
-          정하거나 **잠긴 주문이 스스로 잠금을 푸는** 요청이 성립한다(원칙 P1).
-        */
-      })),
+    toSaveRow: (row) => ({
+      rowState: row.state,
+      ordId: row.data.ordId,
+      // 삭제는 대상만 가리킨다 — 나머지를 보내면 서버가 쓰지 않을 값을 검증하게 된다.
+      ...(row.state === 'D'
+        ? {}
+        : {
+            ordNo: row.data.ordNo,
+            ordNm: row.data.ordNm,
+            custId: row.data.custId,
+            custNm: row.data.custNm,
+            ordStatCd: row.data.ordStatCd,
+            ordDt: row.data.ordDt,
+            ordQty: row.data.ordQty,
+            unitAmt: row.data.unitAmt,
+            dcRt: row.data.dcRt,
+            urgentYn: row.data.urgentYn,
+            useYn: row.data.useYn,
+          }),
+      /*
+        **`ordAmt`·`vatAmt`·`lockYn` 을 보내지 않는다.** 앞의 둘은 서버가 계산하는
+        파생이고 마지막은 운영이 정하는 값이다 — 보낼 경로를 두면 화면이 금액을 스스로
+        정하거나 **잠긴 주문이 스스로 잠금을 푸는** 요청이 성립한다(원칙 P1).
+      */
     }),
   });
 
