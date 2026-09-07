@@ -5,7 +5,11 @@ description: documents/spec/ 의 YAML에서 사람이 읽는 산출물 문서를
 
 # 문서 생성 (spec → docs)
 
-인자: 없음(전체) / `요건정의서` `ERD` `API` `화면` `유즈케이스` `권한` `테스트` `매뉴얼` `추적성`
+인자: 없음(전체) / `아키텍처` `기능목록` `화면` `권한` `요건정의서` `유즈케이스` `ERD` `DDL` `API`
+`시퀀스` `테스트` `매뉴얼` `추적성`
+
+**목록의 정본은 아래 「생성 대상」 표다.** 이 줄은 그 표의 첫 칸을 줄인 것이며,
+**표에 행을 더하면 이 줄도 함께 고친다** — 갈리면 표가 이긴다.
 
 ## 원칙
 - **`documents/generated/` 는 파생물이다.** 항상 `documents/spec/` 에서 다시 만든다. 손으로 고친 내용은 덮어써진다.
@@ -44,6 +48,7 @@ description: documents/spec/ 의 YAML에서 사람이 읽는 산출물 문서를
 | 화면정의서 | `documents/generated/60-화면정의서.md` | 60-screens |
 | 권한매트릭스 | `documents/generated/22-권한매트릭스.md` (역할×기능 표) | 22-authz + 31-features |
 | 테스트케이스 | `documents/generated/70-테스트케이스.md` | 70-testcases |
+| 시퀀스 | `documents/generated/33-시퀀스/UC-###.md` (Mermaid sequenceDiagram) + `_index.md` | 30-usecases + 50-api |
 | 아키텍처 | `documents/generated/20-아키텍처.md` (C4 Mermaid) | 20-architecture + ADR |
 | 추적성 | `documents/generated/90-추적성매트릭스.md` | 전체 |
 | 사용자매뉴얼 | `documents/generated/81-사용자매뉴얼.md` | 31-features menu + 60-screens + 30-usecases |
