@@ -4,7 +4,7 @@
 #       6.10 메타데이터 · 6.11 저장된 조회)
 # status: migrated — 사용자 승인 전이다.
 #
-# 재채번: Q-n → REQ-0n (같은 순서). 8장·6.10·6.11 의 정책은 REQ-1xx·2xx·3xx 로 새로 채번했다.
+# 채번: 질의 처리는 `REQ-0xx` · 보안·거버넌스와 저장된 조회·메타데이터는 `REQ-1xx`·`2xx`·`3xx`.
 # 비기능 목표치는 21-nfr.yaml 이, 권한 모델은 22-authz.yaml 이 갖는다.
 
 meta:
@@ -15,21 +15,18 @@ meta:
 requirements:
 # ── 질의 처리 ───────────────────────────────────────────────
   - id: REQ-001
-    legacy: Q-1
     type: functional
     priority: must
     actors: [ACT-001]
     title: "세션 내 맥락 유지"
     detail: "같은 세션 안에서는 이전 대화 맥락을 유지한다"
   - id: REQ-002
-    legacy: Q-2
     type: functional
     priority: must
     actors: [ACT-001]
     title: "과거 턴 결과 재참조"
     detail: "직전 턴이 아닌 **과거 턴의 결과를 다시 참조**할 수 있어야 한다 (중간에 다른 주제를 거친 뒤 '아까 조회했던 것' 을 지시)"
   - id: REQ-003
-    legacy: Q-3
     type: functional
     priority: must
     actors: [ACT-001]
@@ -37,35 +34,30 @@ requirements:
     detail: "세션에 대화가 과도하게 누적되지 않도록 컨텍스트 총량을 제한할 수 있어야 한다"
     note: "**과거 턴 요약과 원본 재조회 참조를 병행**하는 방식으로 구현한다. 최근 N턴만 남기는 슬라이딩 윈도우 단독 방식은 REQ-002 를 만족하지 못한다"
   - id: REQ-004
-    legacy: Q-4
     type: functional
     priority: must
     actors: [ACT-001]
     title: "연속 도구 호출"
     detail: "한 턴 처리 중 LLM 은 agent 에게 도구 호출을 **연속적으로** 요청할 수 있다"
   - id: REQ-005
-    legacy: Q-5
     type: functional
     priority: must
     actors: [ACT-001]
     title: "처리 중 사용자 개입과 재개"
     detail: "턴 처리 중 사용자에게 추가 정보를 요구하거나 승인을 요청할 수 있고, 응답을 받아 처리를 재개할 수 있다"
   - id: REQ-006
-    legacy: Q-6
     type: functional
     priority: must
     actors: [ACT-001]
     title: "처리 진행 상황 단계별 표시"
     detail: "질의 분석 중 · 조회 쿼리 작성 중 · 조회 중 등을 화면에 표시한다"
   - id: REQ-007
-    legacy: Q-7
     type: functional
     priority: must
     actors: [ACT-001]
     title: "사용자 중단"
     detail: "처리 중 사용자가 중단할 수 있다. 중단 시 진행 중인 액션의 처리 방침을 정의해야 한다"
   - id: REQ-008
-    legacy: Q-8
     type: functional
     priority: must
     actors: [ACT-001]
@@ -73,21 +65,18 @@ requirements:
     detail: "처리 중 사용자가 새 입력을 넣으면 **그 의도를 먼저 분류**한 뒤 처리한다. 새 입력이 항상 진행 중 턴에 대한 보강인 것은 아니며 — 전제를 뒤집는 교정일 수도, 무관한 별개 질의일 수도, 그만두라는 뜻일 수도 있다"
     traces_to: [REQ-030, REQ-031, REQ-032, REQ-033]
   - id: REQ-009
-    legacy: Q-9
     type: functional
     priority: must
     actors: [ACT-001]
     title: "요청·응답 포맷 규약 확정"
     detail: "portal ↔ agent ↔ LLM 사이의 데이터 포맷 규약을 문서로 확정한다"
   - id: REQ-010
-    legacy: Q-10
     type: functional
     priority: must
     actors: [ACT-001]
     title: "전체 흐름도 작성"
     detail: "연속 도구 호출 · 사용자 개입 · 중단 · 과거 턴 참조 · 신규 입력 끼어들기를 포함하는 흐름도를 작성한다"
   - id: REQ-011
-    legacy: Q-11
     type: functional
     priority: must
     actors: [ACT-001]
@@ -96,7 +85,6 @@ requirements:
     hard_rule: "**엑셀·이미지 내보내기는 클라이언트 컴포넌트의 기능이고 서버는 파일을 생성하지 않는다**"
     traces_to: [NGOAL-10]
   - id: REQ-012
-    legacy: Q-12
     type: functional
     priority: must
     actors: [ACT-001]
@@ -104,56 +92,48 @@ requirements:
     detail: "처리 결과가 데이터 조회일 때는 기준 시각(DW 사용 시 동기화 시점)을 함께 제공한다"
     why: "사용자가 동기화 지연을 인지하지 못한 채 낡은 데이터로 판단하는 것을 막는다"
   - id: REQ-013
-    legacy: Q-13
     type: functional
     priority: must
     actors: [ACT-001]
     title: "중단된 턴의 재시도"
     detail: "턴이 정상 응답 없이 **중단된 경우**(서버 장애·수동 중단·오류) 사용자가 **재시도를 요구**할 수 있다. 중단된 턴은 재개 가능 상태로 기록한다"
   - id: REQ-014
-    legacy: Q-14
     type: functional
     priority: should
     actors: [ACT-001]
     title: "중단 턴 재개 여부를 되묻지 않는다"
     detail: "중단 이후 **무관한 새 질의**를 한 경우, 중단된 턴의 재개 여부를 되묻는 것은 **프롬프트 규칙에 그렇게 명시된 경우에만** 수행한다. 명시가 없으면 묻지 않는다"
   - id: REQ-015
-    legacy: Q-15
     type: functional
     priority: must
     actors: [ACT-001]
     title: "질의 해석문"
     detail: "LLM 은 사용자 질의를 **명료하게 재정리한 해석문**을 만들고, 이를 지식 검색·SQL 생성·실행 API 탐색의 입력으로 사용한다. 결과에는 이 해석문을 함께 제시해 사용자가 자신의 의도와 대조할 수 있게 한다"
   - id: REQ-016
-    legacy: Q-16
     type: functional
     priority: must
     actors: [ACT-001]
     title: "화면 세션과 무관한 턴 처리"
     detail: "세션 창·브라우저를 닫거나 로그아웃해도 진행 중인 턴은 계속 처리되고 결과가 저장된다. agent 는 질의 접수 시점에 필요한 사용자·권한 정보를 **처리 문맥으로 복사해 보유**하며, 이후 처리 과정에서 화면 세션에 의존하지 않는다"
   - id: REQ-017
-    legacy: Q-17
     type: functional
     priority: must
     actors: [ACT-001]
     title: "명시적 승인이 아닌 모든 입력은 비승인"
     detail: "사용자대기 상태에서 승인·거절이 아닌 다른 입력을 하면 **비승인으로 취급**한다. 대기 중이던 액션은 실행하지 않고, 그 입력을 LLM 에 피드백으로 전달해 같은 턴을 계속 처리한다. 나중에 다시 승인 여부를 되묻지 않는다"
   - id: REQ-018
-    legacy: Q-18
     type: functional
     priority: must
     actors: [ACT-001]
     title: "현재 상태와 경과 시간 표시"
     detail: "처리 중에는 현재 상태와 **경과 시간**을 화면에 표시한다"
   - id: REQ-019
-    legacy: Q-19
     type: functional
     priority: must
     actors: [ACT-001]
     title: "세션 재진입 시 역방향 페이징"
     detail: "세션을 다시 열면 마지막 턴만 표시하고, 이전 턴은 위로 스크롤할 때 일정 건수 단위로 추가 조회해 붙인다"
   - id: REQ-020
-    legacy: Q-20
     type: functional
     priority: could
     actors: [ACT-001]
@@ -162,7 +142,6 @@ requirements:
     phase: P4
     note: "번역 과정에서 업무 용어가 왜곡되면 태그 매칭이 실패한다 — 지식 태그의 **동의어에 외국어 표현을 함께 등록**할 수 있어야 한다"
   - id: REQ-021
-    legacy: Q-21
     type: functional
     priority: must
     actors: [ACT-001]
@@ -171,7 +150,6 @@ requirements:
     hard_rule: "주입이 확정된 지식·인증 예제 쿼리의 **참조 테이블은 테이블 선별 결과에 합류**시킨다 — 키워드 선별이 놓친 테이블을 링크가 결정적으로 메꾼다"
     traces_to: [REQ-003]
   - id: REQ-022
-    legacy: Q-22
     type: functional
     priority: must
     actors: [ACT-001]
@@ -180,7 +158,6 @@ requirements:
     hard_rule: "**테이블·컬럼의 물리명과 SQL 원문은 노출하지 않는다.** 사용자는 계획을 보고 **자연어로 교정**하며, 물리명이나 SQL 을 직접 편집하게 하지 않는다"
     traces_to: [REQ-015, REQ-104]
   - id: REQ-023
-    legacy: Q-23
     type: functional
     priority: must
     actors: [ACT-001]
@@ -189,7 +166,6 @@ requirements:
     hard_rule: "**③에서 계획 확인과 실행 승인을 하나로 합치지 않는다** — 전자는 '무엇을 하려는지 맞나' 를, 후자는 '되돌릴 수 없는 것을 실행해도 되나' 를 묻는다"
     why: "매 조회마다 확인을 요구하면 대화가 느려지고 사용자가 확인을 습관적으로 넘긴다"
   - id: REQ-024
-    legacy: Q-24
     type: functional
     priority: must
     actors: [ACT-001]
@@ -197,7 +173,6 @@ requirements:
     detail: "처리는 정상 종료됐지만 결과가 의도와 다른 경우, 이전 턴의 해석문·조회 계획·생성 SQL 을 재작성의 입력으로 사용한다. 사용자가 같은 질의를 처음부터 다시 입력하게 하지 않는다"
     note: "REQ-013(중단 턴 재시도)과 **다른 경로**다"
   - id: REQ-025
-    legacy: Q-25
     type: functional
     priority: must
     actors: [ACT-001]
@@ -206,7 +181,6 @@ requirements:
     hard_rule: "**자율 처리 비율보다 처리한 것의 정확도를 우선한다**"
     traces_to: [SUC-02, SUC-03]
   - id: REQ-026
-    legacy: Q-26
     type: functional
     priority: must
     actors: [ACT-001]
@@ -472,8 +446,8 @@ requirements:
     hard_rule: "**이 점검 쿼리는 조회 이력에 남기지 않거나 별도 구분으로 기록한다** — 테이블 수만큼 발생하므로 감사 이력에 섞이면 실제 사용자 조회를 찾을 수 없게 된다. 신규 컬럼은 그룹 매핑이 없는 상태이므로 **관리자가 매핑을 부여할 때까지 접근이 차단된다**"
     note: "**인라인 값 후보 샘플링은 다른 동작이다** — 실제 데이터를 읽으므로 ① 관리자가 대상 컬럼을 지정해 수동 실행 ② distinct 값 수 상한과 조회 행 상한 적용 ③ **조회 이력에 시스템 조회로 구분해 기록**. **개인정보 컬럼은 샘플링 대상에서 제외한다** — 값을 보여주는 것이 목적인 기능이므로 마스킹으로 해결되지 않는다"
 
-# ── 원본에 명시되지 않았고 로드맵·제약에서 유도한 것 ─────────────
-# **지어낸 사실이 아니라 함축을 드러낸 것이다.** 원본 로드맵이 "알림 발송" 을 P3 포함
+# ── 로드맵·제약에서 유도한 것 ─────────────
+# **지어낸 사실이 아니라 함축을 드러낸 것이다.** 로드맵이 "알림 발송" 을 P3 포함
 # 항목으로, 개발 표준이 "프로파일 로컬/개발/운영" 을 규정했으나 요구사항으로 적힌 적이
 # 없어 실현체(FEAT-214 · FEAT-302)가 역추적되지 않았다. `derived: true` 가 그 표시이며
 # **P1 게이트에서 사용자 확인 대상이다.**

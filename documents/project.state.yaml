@@ -22,7 +22,7 @@ current:
 # ── 단계 게이트 ────────────────────────────────────────────────────
 # status: not_started | in_progress | self_verified | approved
 gates:
-  P0_inception:    { status: approved, approved_at: "2026-09-05", note: "**Exit Criteria 8/8.** 목적 한 문장 · 성공 기준 셋(정확성 1 · 유효성 2 · 절제 3, 목표값은 ASM-002 로 P1) · 범위 In 7/Out 10 · 액터 11 전원 목적 보유 · 제약 44 · 트랙 full · 기존 시스템 병행 · 기대치 balanced. **ASM-001(이관 설계 승계)이 이 승인으로 닫혔다.** 안고 넘어간 것 셋은 아래 gate_note" }
+  P0_inception:    { status: approved, approved_at: "2026-09-05", note: "**Exit Criteria 8/8.** 목적 한 문장 · 성공 기준 셋(정확성 1 · 유효성 2 · 절제 3, 목표값은 ASM-002 로 P1) · 범위 In 7/Out 10 · 액터 11 전원 목적 보유 · 제약 44 · 트랙 full · 기존 시스템 병행 · 기대치 balanced. 안고 넘어간 것 셋은 아래 gate_note" }
   P1_discovery:    { status: in_progress, approved_at: null, note: "03·10 이관 완료. **11-processes.yaml 이 비어 있다** — 프로세스 정의는 CON-017 에 막혀 있다" }
   P2_architecture: { status: in_progress, approved_at: null, note: "20·21·22 이관 완료. **NFR 19건의 목표 수치가 전부 null** 이고 TC 가 없어 T7 오류가 난다" }
   P3_design:       { status: in_progress, approved_at: null, note: "31·51·60 이관 완료. **30·40·50·70 이 비어 있다** — UC·ERD·API·TC 를 지어내지 않았다" }
@@ -106,7 +106,7 @@ counters:
   SCR: 43
   TC: 0
   ADR: 0      # documents/decisions/ 의 것. 결정 기록은 이 프로젝트에서 새로 시작한다
-  ASM: 4      # 001 확인됨(G0) · 002·003 기한 G2 · 004 기한 G1 — 미확인 셋
+  ASM: 3      # 002·003 기한 G2 · 004 기한 G1 — 셋 다 미확인
   SLICE: 0
   DEF: 0
 
