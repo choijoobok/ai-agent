@@ -1,5 +1,5 @@
 ---
-id: LLM-FWK-BE-014
+id: LLM-FWK-BE-017
 title: "조회 화이트리스트 — 스펙 객체와 기간 상한"
 category: standard/backend
 type: operation

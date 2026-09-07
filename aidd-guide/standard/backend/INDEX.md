@@ -51,7 +51,7 @@ tags: [backend, index]
 | LLM-FWK-BE-004 | [packages.md](./packages.md) | 모듈 · 패키지 · 이름 · 트랜잭션 | ✅ |
 | LLM-FWK-BE-001 | [persistence.md](./persistence.md) | JPA / QueryDSL / MyBatis 경계 · DB 중립 | ✅ |
 | LLM-FWK-BE-003 | [search.md](./search.md) | 조회 봉투 · 연산자 열셋 · 페이징 모드 셋 | ✅ |
-| LLM-FWK-BE-014 | [search-spec.md](./search-spec.md) | 화이트리스트 · 빌더 · 조회 기간 상한 | ✅ |
+| LLM-FWK-BE-017 | [search-spec.md](./search-spec.md) | 화이트리스트 · 빌더 · 조회 기간 상한 | ✅ |
 | LLM-FWK-BE-005 | [exception.md](./exception.md) | `ErrorCode` · `BusinessException` · 핸들러 | ✅ |
 | LLM-FWK-BE-013 | [row-transaction.md](./row-transaction.md) | 목록 처리의 트랜잭션 경계 — 한 덩이 / 건별 | ✅ |
 | LLM-FWK-BE-006 | [security.md](./security.md) | 계층 셋 · 인가 모델 · 접근 제어 체인 | ✅ |
