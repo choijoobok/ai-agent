@@ -66,6 +66,7 @@ ai-agent/
 | **요구사항·설계 산출물** | [`aidd-guide/artifact/INDEX.md`](aidd-guide/artifact/INDEX.md) — 산출물 지도(무엇을 언제 어디에) |
 | **단계를 마감한다** | `/phase-gate` → [`aidd-guide/process/04-gates.md`](aidd-guide/process/04-gates.md) |
 | **메뉴 화면 신규·수정** | **먼저 §6.3 워크플로** → `documents/screen/{페이지경로}/requirements.md` → [`aidd-guide/artifact/screen/INDEX.md`](aidd-guide/artifact/screen/INDEX.md) |
+| **이미 구현된 것을 고친다** | 화면이면 **§6.3 으로 되돌아간다** — 요건서의 달라지는 절만 고치고 → `/mockup` → 승인 → 구현([`aidd-guide/artifact/screen/screen.md`](aidd-guide/artifact/screen/screen.md) 의 「기존 화면을 고칠 때」). 화면이 아니면 `guide-drift` 가 가리키는 가이드를 **소스와 같은 커밋에** 고친다. `G3`(설계 베이스라인) 승인 뒤면 앞에 `/change-request` 가 붙는다 |
 | **승인된 요건서로 화면을 만든다** | [`aidd-guide/playbook/INDEX.md`](aidd-guide/playbook/INDEX.md) 의 **결정 트리** — 화면 모양이 레시피를 정한다 |
 | **기능 하나를 구현한다** | `/slice` → [`aidd-guide/process/07-slice.md`](aidd-guide/process/07-slice.md) |
 | **테스트를 무엇으로 짜나** | [`aidd-guide/quality/test-design.md`](aidd-guide/quality/test-design.md) — 층별로 무엇을 잠그나 |
