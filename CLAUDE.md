@@ -180,7 +180,7 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 
 ## 8. 소스 규약 — 기계가 지키는 것 / 사람이 지키는 것
 
-**기계가 막는 것의 목록은 [`harness/automation-matrix.md`](aidd-guide/harness/automation-matrix.md) 가 갖는다** — 빌드 게이트 열 개와 훅 열두 개. **훅의 현재 목록은 생성물이다**
+**기계가 막는 것의 목록은 [`harness/automation-matrix.md`](aidd-guide/harness/automation-matrix.md) 가 갖는다** — 빌드 게이트와 훅 전부. **훅의 현재 목록은 생성물이다**
 ([`user-guide/07-harness.md`](user-guide/07-harness.md)) — 손으로 적은 목록은 훅을 더할 때마다 낡고, 낡은 목록은 **없는 것보다 나쁘다**(있다고 믿게 한다).
 
 ### 사람이 지킨다 (검사가 없다)
