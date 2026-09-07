@@ -70,23 +70,27 @@ const CONTRACT_RE = /^##\s.*보장하는 것/m;
  * `.claude/hooks/feat-baseline.txt` 와 같은 성격이고, 같은 규칙을 따른다:
  * <b>줄어들기만 한다.</b>
  *
+ * <p><b>이유에 줄 수를 적지 않는다.</b> 처음엔 적었고 <b>하루 만에 아홉 중 일곱이
+ * 어긋났다</b> — `class:` 한 줄이 들어가고 자기 링크를 지운 문서는 줄었다. 줄 수는
+ * 아래에서 <b>셈이 낸다</b>(200줄 예외 블록과 같은 방식이다).
+ *
  * <p>여기에 있는 문서에 절이 <b>생기면 실패한다.</b> 그 방향이 없으면 목록이 영구 주석이
  * 되고, 남아 있는 항목은 다음 사람에게 <i>여기는 원래 없는 곳</i> 이라고 가르친다.
  */
 const CONTRACT_DEBT = new Map([
-  ['standard/backend/api.md', '200줄 — 압축이 함께 필요하다'],
-  ['standard/backend/batch.md', '198줄 — 압축이 함께 필요하다'],
-  ['standard/backend/crosscutting.md', '282줄(길이 예외) — 더 늘리지 않고 쓰려면 압축이 앞선다'],
-  ['standard/backend/packages.md', '199줄 — 압축이 함께 필요하다'],
-  ['standard/backend/persistence.md', '234줄(길이 예외) — 위와 같다'],
+  ['standard/backend/api.md', '상한에 닿았다 — 압축이 함께 필요하다'],
+  ['standard/backend/batch.md', '상한에 닿았다 — 압축이 함께 필요하다'],
+  ['standard/backend/crosscutting.md', '길이 예외 — 더 늘리지 않고 쓰려면 압축이 앞선다'],
+  ['standard/backend/packages.md', '상한에 닿았다 — 압축이 함께 필요하다'],
+  ['standard/backend/persistence.md', '길이 예외 — 위와 같다'],
   ['standard/backend/pii-vault.md', '아직 구현이 없는 제약 문서다 — 보장할 것이 서기 전이다'],
-  ['standard/backend/progress.md', '191줄 — 압축이 함께 필요하다'],
-  ['standard/backend/row-transaction.md', '196줄 — 압축이 함께 필요하다'],
+  ['standard/backend/progress.md', '상한에 닿았다 — 압축이 함께 필요하다'],
+  ['standard/backend/row-transaction.md', '상한에 닿았다 — 압축이 함께 필요하다'],
   ['standard/backend/search-spec.md', '오해의 비용 순서에서 뒤다'],
-  ['standard/frontend/grid.md', '200줄 — 압축이 함께 필요하다'],
+  ['standard/frontend/grid.md', '상한에 닿았다 — 압축이 함께 필요하다'],
   ['standard/frontend/http.md', '오해의 비용 순서에서 뒤다'],
   ['standard/frontend/i18n.md', '오해의 비용 순서에서 뒤다'],
-  ['standard/frontend/packages.md', '198줄 — 압축이 함께 필요하다'],
+  ['standard/frontend/packages.md', '상한에 닿았다 — 압축이 함께 필요하다'],
   ['standard/frontend/progress.md', '오해의 비용 순서에서 뒤다'],
   ['standard/frontend/tabs.md', '오해의 비용 순서에서 뒤다'],
   ['standard/frontend/theme.md', '오해의 비용 순서에서 뒤다'],
@@ -243,7 +247,9 @@ if (pinned.length > 0) {
   목록은 줄어들지 않는다 — 200줄 예외를 위에서 찍는 것과 같은 이유다.
 */
 out.push('', `「보장하는 것」 절이 아직 없는 정책형: ${CONTRACT_DEBT.size}건 — 줄어들기만 해야 한다`);
-for (const [rel, why] of CONTRACT_DEBT) out.push(`    ${rel} — ${why}`);
+for (const [rel, why] of CONTRACT_DEBT) {
+  out.push(`    ${String(lineCount(join(GUIDE, rel))).padStart(4)}줄  ${rel} — ${why}`);
+}
 
 out.push('');
 const countIssues = checkCatalogCounts();
