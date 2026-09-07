@@ -18,6 +18,16 @@
  * <p><b>빈 칸을 숨기지 않는다.</b> 아무 문서도 지목하지 않은 공통물이 목록의 값이다 —
  * 그것이 *다음에 쓸 문서* 의 목록이기 때문이다.
  *
+ * <h2>ID 는 원장이 갖는다 — 목록이 아니라</h2>
+ * <p>`CMP-###` 을 <b>정렬 순서에서 뽑으면 안 된다</b>: 폴더 하나를 더하면 그 뒤의 번호가
+ * 전부 밀리고, 어제의 `CMP-014` 와 오늘의 `CMP-014` 가 다른 것을 가리킨다. <b>번호가 밀리는
+ * ID 는 ID 가 아니다.</b> 그래서 발번을 {@link IDS} 원장에 <b>덧붙이기만</b> 하고, 지운
+ * 번호는 비워 둔다(05-traceability.md 의 발번 규칙).
+ *
+ * <p><b>원장이 있으면 사라진 것이 보인다.</b> 목록만 있으면 공통물이 없어져도 <i>다른
+ * 목록이 나올</i> 뿐이라 아무도 모르는데, 원장에 남은 ID 의 폴더가 없으면 <b>지워진 것이냐
+ * 이름이 바뀐 것이냐</b> 를 물어야 한다 — 그것이 이 훅이 새로 잡는 어긋남이다.
+ *
  * <h2>한 줄 설명을 짓지 않는다</h2>
  * <p>폴더 이름 옆에 <i>무엇을 하는 것인가</i> 를 적으려면 어디선가 가져와야 하는데,
  * `shared/` 21개 중 `index.ts` 를 가진 것은 하나뿐이고 폴더 단위 주석 규약이 없다.
@@ -50,6 +60,28 @@ import {
 
 const OUT = 'aidd-guide/standard/registry.md';
 
+/** `CMP-###` 발번 원장 — <b>덧붙이기만 한다.</b> 사람이 고치는 것은 이름이 바뀔 때뿐이다. */
+const IDS = '.claude/hooks/commons-ids.txt';
+
+/** 원장이 없을 때 얹는 머리말. 이미 있으면 <b>손댄 그대로 보존한다</b>. */
+const IDS_HEAD = `# CMP-### 원장 — 공통물 폴더의 ID.
+#
+# 이 파일은 **생성기의 입력이지 출력이 아니다.** \`commons-doc.mjs\` 가 새 폴더에만
+# 번호를 덧붙이고, 이미 있는 줄은 건드리지 않는다. 그래서 번호가 밀리지 않는다.
+#
+# **번호를 다시 쓰지 않는다.** 공통물을 지우면 그 줄을 여기 남겨 둔다 — 지난 커밋과
+# 결정 기록이 그 번호로 그것을 부르고 있고, 번호를 다시 쓰면 **그 인용이 다른 것을
+# 가리키게** 된다(process/05-traceability.md 의 발번 규칙).
+#
+# ── 사람이 고치는 자리 하나 — 이름이 바뀔 때 ──────────────────────────
+#
+# 폴더 이름이 바뀌면 **그 줄의 경로만 고친다.** 그대로 두면 생성기가 *사라진 것* 으로
+# 보고 새 번호를 붙여, **같은 공통물이 ID 둘**을 갖는다. 무엇이 사라졌는지는
+# aidd-guide/standard/registry.md 의 「없어진 자리」가 보인다.
+#
+# 형식: CMP-###<공백>저장소 루트 기준 폴더 경로
+`;
+
 /**
  * 훑는 뿌리 셋 — <b>공통물이 사는 곳</b>.
  *
@@ -77,7 +109,12 @@ const MAX_DOCS = 3;
 const mode = process.argv[2];
 
 if (mode === '--write' || mode === '--check') {
-  const made = render();
+  /* `--check` 는 <b>아무것도 쓰지 않는다</b> — 발번은 쓰기이고, 게이트가 원장을 늘리면
+     검사를 돌린 것만으로 커밋할 것이 생긴다. 발번이 안 된 폴더는 `CMP-???` 로 나와
+     어긋남으로 잡히며, 그것이 이 모드가 낼 답이다. */
+  const ledger = readLedger();
+  const ids = mode === '--write' ? syncLedger(ledger) : ledger.byFolder;
+  const made = render(ids, ledger);
   const now = readText(join(REPO, OUT));
   if (mode === '--check') {
     if (made === now) {
@@ -88,8 +125,12 @@ if (mode === '--write' || mode === '--check') {
     process.exit(1);
   }
   writeFileSync(join(REPO, OUT), made, 'utf8');
-  const all = units();
-  console.log(`${OUT} — 공통물 ${all.length} · 문서 없음 ${all.filter((u) => u.docs.length === 0).length}`);
+  const all = units(ids);
+  const gone = retired(readLedger());
+  console.log(
+    `${OUT} — 공통물 ${all.length} · 문서 없음 ${all.filter((u) => u.docs.length === 0).length}` +
+      ` · 없어진 자리 ${gone.length}`,
+  );
   process.exit(0);
 }
 
@@ -99,40 +140,129 @@ const path = repoRelative(targetPath(input));
 if (!path) pass();
 if (!ROOTS.some(({ base }) => path.startsWith(`${base}/`))) pass();
 
-const made = render();
+const before = readLedger();
+const wasGone = new Set(retired(before).map((r) => r.id));
+const ids = syncLedger(before);
+const after = readLedger();
+
+const made = render(ids, after);
 if (made === readText(join(REPO, OUT))) pass();
 writeFileSync(join(REPO, OUT), made, 'utf8');
+
+/* <b>새로 사라진 것만 말한다.</b> 남아 있는 「없어진 자리」를 매번 되짚으면 배경음이 되고,
+   배경음이 된 경고는 실제로 사라진 순간에도 눈에 들지 않는다 — 기록은 문서가 갖는다. */
+const gone = retired(after).filter((r) => !wasGone.has(r.id));
 warn(
   [
     `${OUT} 를 다시 만들었다 — 공통물 폴더가 바뀌었다.`,
+    ...(gone.length === 0
+      ? []
+      : [
+          '',
+          `**공통물이 없어졌다 — ${gone.map((r) => `${r.id}(\`${r.folder}\`)`).join(' · ')}.**`,
+          '**이름이 바뀐 것이면** `.claude/hooks/commons-ids.txt` 의 그 줄에서 경로만 고친다 —',
+          '그대로 두면 같은 공통물이 ID 둘을 갖는다.',
+          '**정말 지운 것이면** 그 공통물을 설명하던 문서를 함께 처리한다(CLAUDE.md §4-4).',
+        ]),
+    '',
     '**소스와 같은 커밋에 담는다**(CLAUDE.md §9) — 빠지면 목록이 실물보다 낡는다.',
+    '**원장도 함께 담는다** — 빠지면 남의 트리에서 같은 폴더에 다른 번호가 붙는다.',
   ].join('\n'),
 );
 
 // ── 실물에서 센다 ─────────────────────────────────────────────────
 
-/** 공통물 하나 = 뿌리 아래의 폴더 하나. 파일 수는 <b>테스트를 뺀</b> 소스 수다. */
-function units() {
-  const index = guideSourceIndex();
+/**
+ * 공통물 하나 = 뿌리 아래의 폴더 하나 — <b>실물의 순서 그대로</b>.
+ *
+ * <p>발번이 이 순서를 따르므로 <b>여기의 정렬을 바꾸면 첫 발번의 번호가 달라진다.</b>
+ * 이미 발번한 뒤에는 아무 영향이 없다(원장이 이긴다).
+ */
+function folders() {
   const out = [];
   for (const { area, base, show } of ROOTS) {
     const dir = join(REPO, base);
     if (!existsSync(dir)) continue;
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       if (!entry.isDirectory()) continue;
-      const folder = `${base}/${entry.name}`;
-      out.push({
-        area,
-        name: entry.name,
-        show: `${show}${entry.name}/`,
-        files: walkFiles(join(REPO, folder)).filter(
-          (f) => /\.(ts|tsx|java)$/.test(f) && !/[/\\]src[/\\]test[/\\]|\.(test|spec)\.[jt]sx?$/.test(f),
-        ).length,
-        docs: rank(guidesForFolder(folder, index)),
-      });
+      out.push({ area, show: `${show}${entry.name}/`, folder: `${base}/${entry.name}` });
     }
   }
   return out;
+}
+
+/** 파일 수는 <b>테스트를 뺀</b> 소스 수다. ID 는 원장에서 온다. */
+function units(ids) {
+  const index = guideSourceIndex();
+  return folders().map((u) => ({
+    ...u,
+    id: ids.get(u.folder) ?? UNASSIGNED,
+    files: walkFiles(join(REPO, u.folder)).filter(
+      (f) => /\.(ts|tsx|java)$/.test(f) && !/[/\\]src[/\\]test[/\\]|\.(test|spec)\.[jt]sx?$/.test(f),
+    ).length,
+    docs: rank(guidesForFolder(u.folder, index)),
+  }));
+}
+
+// ── 원장 ──────────────────────────────────────────────────────────
+
+/** `--check` 가 발번 안 된 폴더를 만났을 때 쓰는 자리표. <b>어긋남으로 잡히게</b> 한다. */
+const UNASSIGNED = 'CMP-???';
+
+/**
+ * 원장을 읽는다 — 머리말은 <b>그대로 되돌려 준다</b>(사람이 손댄 설명이 살아야 한다).
+ *
+ * <p>첫 `CMP-` 줄 앞의 모든 줄이 머리말이다. 그 뒤의 주석은 버린다 — 발번 줄 사이에
+ * 주석을 끼우면 정렬 때 자리가 흔들려 <b>어디에 붙은 설명인지 모르게</b> 되기 때문이다.
+ */
+function readLedger() {
+  const text = readText(join(REPO, IDS));
+  const head = [];
+  const rows = [];
+  for (const line of text.split('\n')) {
+    /* `\d{3,}` — 세 자리를 넘겨도 읽는다. `{3}` 로 두면 네 자리 줄을 <b>조용히 버리고</b>
+       그 폴더에 새 번호를 붙여, 같은 공통물이 ID 둘을 갖는다. */
+    const m = line.match(/^(CMP-(\d{3,}))\s+(\S+)\s*$/);
+    if (m) rows.push({ id: m[1], no: Number(m[2]), folder: m[3] });
+    else if (rows.length === 0) head.push(line);
+  }
+  return {
+    head: rows.length === 0 && text.trim() === '' ? null : head,
+    rows,
+    byFolder: new Map(rows.map((r) => [r.folder, r.id])),
+  };
+}
+
+/** 원장에 <b>없는 폴더에만</b> 다음 번호를 붙여 덧붙인다. 반환은 `폴더 → ID`. */
+function syncLedger(ledger) {
+  const { head, rows, byFolder } = ledger;
+  let next = rows.reduce((max, r) => Math.max(max, r.no), 0) + 1;
+  let added = 0;
+
+  for (const { folder } of folders()) {
+    if (byFolder.has(folder)) continue;
+    const id = `CMP-${String(next).padStart(3, '0')}`;
+    rows.push({ id, no: next, folder });
+    byFolder.set(folder, id);
+    next += 1;
+    added += 1;
+  }
+
+  if (added > 0 || head === null) {
+    const body = [...rows]
+      .sort((a, b) => a.no - b.no)
+      .map((r) => `${r.id}  ${r.folder}`)
+      .join('\n');
+    const lead = head === null ? IDS_HEAD : `${head.join('\n')}\n`;
+    writeFileSync(join(REPO, IDS), `${lead}${body}\n`, 'utf8');
+  }
+  return byFolder;
+}
+
+/** 원장에 있는데 <b>실물이 없는</b> 것 — 지워졌거나 이름이 바뀌었다. */
+function retired(ledger) {
+  const live = new Set(folders().map((u) => u.folder));
+  return ledger.rows.filter((r) => !live.has(r.folder)).sort((a, b) => a.no - b.no);
 }
 
 /**
@@ -148,9 +278,10 @@ function rank(docs) {
 
 // ── 그린다 ────────────────────────────────────────────────────────
 
-function render() {
-  const all = units();
+function render(ids, ledger) {
+  const all = units(ids);
   const blank = all.filter((u) => u.docs.length === 0);
+  const gone = retired(ledger);
   const today = new Date().toISOString().slice(0, 10);
   const created = readText(join(REPO, OUT)).match(/^created:\s*(\S+)/m)?.[1] ?? today;
 
@@ -161,7 +292,7 @@ function render() {
     });
     const rest = u.docs.length - shown.length;
     const cell = shown.length === 0 ? '**— 없음**' : shown.join(' · ') + (rest > 0 ? ` 외 ${rest}` : '');
-    return `| ${u.area} | \`${u.show}\` | ${u.files} | ${cell} |`;
+    return `| \`${u.id}\` | ${u.area} | \`${u.show}\` | ${u.files} | ${cell} |`;
   });
 
   return `---
@@ -189,16 +320,32 @@ tags: [standard, registry, shared, commons]
 
 **고치는 절차는 [INDEX.md](./INDEX.md) 의 「이미 있는 것을 고칠 때」가 갖는다.**
 
-| 영역 | 사는 곳 | 파일 | 어디를 읽나 |
-|---|---|--:|---|
+| ID | 영역 | 사는 곳 | 파일 | 어디를 읽나 |
+|---|---|---|--:|---|
 ${rows.join('\n')}
 
+- **\`CMP-###\` 은 폴더가 아니라 공통물을 가리킨다.** 발번은
+  [\`.claude/hooks/commons-ids.txt\`](../../.claude/hooks/commons-ids.txt) 원장이 갖고
+  **덧붙이기만** 한다 — 폴더를 더해도 남의 번호가 밀리지 않고, **폴더 이름이 바뀌어도
+  같은 ID** 다(원장의 그 줄에서 경로만 고친다). 지운 번호는 다시 쓰지 않는다.
 - **「사는 곳」의 뿌리 셋**: \`shared/\` = \`sources/frontend/src/shared/\` ·
   \`core/\` = \`sources/backend/core/…/com/aiagent/core/\` ·
   \`support/\` = \`sources/backend/support/…/com/aiagent/support/\`
 - **「파일」은 테스트를 뺀 소스 수**다. 크기의 눈금이지 품질의 눈금이 아니다.
 - **「어디를 읽나」는 계산이다** — 가이드 문서의 \`sources:\` 메타를 뒤집어 얻는다.
   \`guide-drift\` 훅과 **같은 매처**를 쓰므로, 여기가 빈 공통물은 **그 훅도 가리키지 못한다.**
+
+## 없어진 자리 — ${gone.length}
+
+${
+  gone.length === 0
+    ? '없다. **원장의 모든 ID 가 실물을 가리킨다.**'
+    : gone.map((r) => `- \`${r.id}\` — \`${r.folder}\` 가 없다`).join('\n')
+}
+
+**이 절이 비어 있지 않으면 둘 중 하나다.** ① 이름이 바뀌었는데 원장을 안 고쳤다 —
+그러면 **같은 공통물이 ID 둘**을 갖는다. ② 정말 지웠다 — 그러면 그것을 설명하던 문서가
+아직 있는지 본다(CLAUDE.md §4-4). **번호는 어느 쪽이든 비워 둔 채로 남는다.**
 
 ## 어디를 읽나가 빈 것 — ${blank.length} / ${all.length}
 

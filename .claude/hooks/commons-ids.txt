@@ -1,0 +1,49 @@
+# CMP-### 원장 — 공통물 폴더의 ID.
+#
+# 이 파일은 **생성기의 입력이지 출력이 아니다.** `commons-doc.mjs` 가 새 폴더에만
+# 번호를 덧붙이고, 이미 있는 줄은 건드리지 않는다. 그래서 번호가 밀리지 않는다.
+#
+# **번호를 다시 쓰지 않는다.** 공통물을 지우면 그 줄을 여기 남겨 둔다 — 지난 커밋과
+# 결정 기록이 그 번호로 그것을 부르고 있고, 번호를 다시 쓰면 **그 인용이 다른 것을
+# 가리키게** 된다(process/05-traceability.md 의 발번 규칙).
+#
+# ── 사람이 고치는 자리 하나 — 이름이 바뀔 때 ──────────────────────────
+#
+# 폴더 이름이 바뀌면 **그 줄의 경로만 고친다.** 그대로 두면 생성기가 *사라진 것* 으로
+# 보고 새 번호를 붙여, **같은 공통물이 ID 둘**을 갖는다. 무엇이 사라졌는지는
+# aidd-guide/standard/registry.md 의 「없어진 자리」가 보인다.
+#
+# 형식: CMP-###<공백>저장소 루트 기준 폴더 경로
+CMP-001  sources/frontend/src/shared/api
+CMP-002  sources/frontend/src/shared/authz
+CMP-003  sources/frontend/src/shared/batch
+CMP-004  sources/frontend/src/shared/code
+CMP-005  sources/frontend/src/shared/components
+CMP-006  sources/frontend/src/shared/excelupload
+CMP-007  sources/frontend/src/shared/favorite
+CMP-008  sources/frontend/src/shared/formmodal
+CMP-009  sources/frontend/src/shared/grid
+CMP-010  sources/frontend/src/shared/hooks
+CMP-011  sources/frontend/src/shared/i18n
+CMP-012  sources/frontend/src/shared/menustat
+CMP-013  sources/frontend/src/shared/popup
+CMP-014  sources/frontend/src/shared/progress
+CMP-015  sources/frontend/src/shared/routes
+CMP-016  sources/frontend/src/shared/screentabs
+CMP-017  sources/frontend/src/shared/searchform
+CMP-018  sources/frontend/src/shared/stores
+CMP-019  sources/frontend/src/shared/theme
+CMP-020  sources/frontend/src/shared/tree
+CMP-021  sources/frontend/src/shared/user
+CMP-022  sources/backend/core/src/main/java/com/aiagent/core/domain
+CMP-023  sources/backend/core/src/main/java/com/aiagent/core/error
+CMP-024  sources/backend/core/src/main/java/com/aiagent/core/grid
+CMP-025  sources/backend/core/src/main/java/com/aiagent/core/message
+CMP-026  sources/backend/core/src/main/java/com/aiagent/core/response
+CMP-027  sources/backend/core/src/main/java/com/aiagent/core/search
+CMP-028  sources/backend/support/src/main/java/com/aiagent/support/config
+CMP-029  sources/backend/support/src/main/java/com/aiagent/support/excel
+CMP-030  sources/backend/support/src/main/java/com/aiagent/support/lock
+CMP-031  sources/backend/support/src/main/java/com/aiagent/support/logging
+CMP-032  sources/backend/support/src/main/java/com/aiagent/support/mail
+CMP-033  sources/backend/support/src/main/java/com/aiagent/support/time

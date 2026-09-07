@@ -4,7 +4,7 @@ title: "standard — 프레임워크 가이드 INDEX"
 category: standard
 type: operation
 created: 2026-05-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/", "sources/frontend/", "sources/gradle/libs.versions.toml"]
 tier: 2
@@ -50,7 +50,8 @@ tags: [framework, index]
 
 > **화면이 아닌 것의 진입이다.** 화면이면 `CLAUDE.md` §6.3 으로 되돌아간다 — 요건서 ·
 > 목업 · 승인이 앞에 선다. 여기는 **공통물과 횡단 정책**, 즉 `shared/` · `core/` ·
-> `support/` 와 프레임워크 설정이다. 목록은 [registry.md](./registry.md) 가 갖는다.
+> `support/` 와 프레임워크 설정이다. 목록은 [registry.md](./registry.md) 가 갖는다 —
+> **거기서 `CMP-###` 을 받아 ⑦ 에서 그 이름으로 보고한다**(폴더 경로는 바뀌고 ID 는 남는다).
 
 ```
 ① 부류를 가른다   계약형인가 정책형인가 — 아래 표. 방어선이 다르므로 ④가 달라진다
@@ -120,7 +121,7 @@ sources/backend/
 sources/frontend/src/
   app        진입 · 라우터 · 프로바이더
   layouts    앱 셸
-  shared     도메인 비종속 공통 (관심사별 폴더 21)
+  shared     도메인 비종속 공통 (관심사별 폴더 — 개수는 registry.md 가 센다)
   features   화면 기능 단위
 ```
 
