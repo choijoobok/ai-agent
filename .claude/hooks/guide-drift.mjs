@@ -23,23 +23,10 @@
  * 작업이 자주 막힌다. 훅이 하는 일은 <b>사슬을 계산해 주는 것</b>뿐이다.
  */
 
-import { readdirSync, readFileSync, mkdirSync, existsSync, writeFileSync, statSync } from 'node:fs';
-import { join, relative, sep } from 'node:path';
+import { readFileSync, mkdirSync, existsSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { REPO, readHookInput, targetPath, repoRelative, warn, pass } from './lib.mjs';
-
-/**
- * 역인덱스에 넣을 엔트리의 최소 세그먼트.
- *
- * <p><b>넷이다.</b> `sources/frontend/src/` 셋은 <i>프론트 전부</i> 를 주장하는 값이고,
- * 그것까지 태우면 프론트를 건드릴 때마다 같은 문서 이름이 뜬다. 넷이면
- * `sources/frontend/src/shared/grid/` · `sources/backend/api/error/` 처럼
- * <b>무엇에 대한 문서인지 말하는 값</b>만 남는다.
- */
-const MIN_SEGMENTS = 4;
-
-/** 저장소 경로로 볼 접두 — 그 밖은 인용(외부 문서·실험 기록)이라 경로가 아니다. */
-const REPO_ROOTS = ['sources/', 'aidd-guide/', 'documents/', 'user-guide/', '.claude/', '.github/'];
+import { readHookInput, targetPath, repoRelative, guidesForSource, warn, pass } from './lib.mjs';
 
 const input = await readHookInput();
 const path = repoRelative(targetPath(input));
@@ -49,7 +36,7 @@ if (!path) pass();
 if (!path.startsWith('sources/')) pass();
 if (/[/\\]src[/\\]test[/\\]|\.(test|spec)\.[jt]sx?$/.test(path)) pass();
 
-const docs = guidesFor(path);
+const docs = guidesForSource(path);
 if (docs.length === 0) pass();
 
 const fresh = docs.filter((doc) => !alreadyToldThisSession(input?.session_id, doc));
@@ -65,63 +52,6 @@ warn(
     'lint.mjs 가 그것을 아직 가르치는 문서를 전부 열거한다(standard/frontend/packages.md §3).',
   ].join('\n'),
 );
-
-// ── 역인덱스 ──────────────────────────────────────────────────────
-
-/** 이 소스를 `sources:` 에 적은 가이드 문서들. */
-function guidesFor(changed) {
-  const found = [];
-  for (const file of walk(join(REPO, 'aidd-guide'))) {
-    if (!file.endsWith('.md')) continue;
-    let text;
-    try {
-      text = readFileSync(file, 'utf8');
-    } catch {
-      continue;
-    }
-    const line = text.match(/^sources:\s*(\[.*\])\s*$/m)?.[1];
-    if (!line) continue;
-
-    for (const [, entry] of line.matchAll(/"([^"]+)"/g)) {
-      if (!REPO_ROOTS.some((root) => entry.startsWith(root))) continue;
-      if (entry.split('/').filter(Boolean).length < MIN_SEGMENTS) continue;
-      if (!matches(entry, changed)) continue;
-      found.push(relative(REPO, file).split(sep).join('/'));
-      break;
-    }
-  }
-  return found.sort();
-}
-
-/** 엔트리의 세그먼트가 경로에 <b>순서대로</b> 나타나면 맞다 — 축약 경로를 허용한다. */
-function matches(entry, path) {
-  const want = entry.replace(/\/$/, '').split('/');
-  let i = 0;
-  for (const seg of path.split('/')) if (seg === want[i]) i += 1;
-  return i === want.length;
-}
-
-function walk(dir, acc = []) {
-  let names;
-  try {
-    names = readdirSync(dir);
-  } catch {
-    return acc;
-  }
-  for (const name of names) {
-    if (name === 'node_modules' || name === '.git') continue;
-    const full = join(dir, name);
-    let st;
-    try {
-      st = statSync(full);
-    } catch {
-      continue;
-    }
-    if (st.isDirectory()) walk(full, acc);
-    else acc.push(full);
-  }
-  return acc;
-}
 
 // ── 같은 말을 두 번 하지 않는다 ────────────────────────────────────
 

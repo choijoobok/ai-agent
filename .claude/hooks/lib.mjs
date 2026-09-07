@@ -10,7 +10,7 @@
  * 규율이 사라지지만, <b>죽은 훅이 세션을 막으면 사람이 훅을 끈다</b> — 꺼진 훅은 없는 훅이다.
  */
 
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { dirname, isAbsolute, join, resolve, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -351,4 +351,111 @@ function unquote(s) {
     return t.slice(1, -1);
   }
   return t;
+}
+
+// ── 가이드 역인덱스 (`sources:` 메타) ─────────────────────────────
+
+/**
+ * 역인덱스에 넣을 엔트리의 최소 세그먼트 — <b>넷이다.</b>
+ *
+ * <p>`sources/frontend/src/` 셋은 <i>프론트 전부</i> 를 주장하는 값이고, 그것까지 태우면
+ * 프론트를 건드릴 때마다 같은 문서 이름이 뜬다. 넷이면 `sources/frontend/src/shared/grid/`
+ * 처럼 <b>무엇에 대한 문서인지 말하는 값</b>만 남는다.
+ */
+const MIN_SEGMENTS = 4;
+
+/** 저장소 경로로 볼 접두 — 그 밖은 인용(외부 문서·실험 기록)이라 경로가 아니다. */
+const REPO_ROOTS = ['sources/', 'aidd-guide/', 'documents/', 'user-guide/', '.claude/', '.github/'];
+
+/**
+ * 엔트리의 세그먼트가 경로에 <b>순서대로</b> 나타나면 맞다 — 축약 경로를 허용한다.
+ *
+ * <p>`sources/backend/support/logging/` 의 실물은
+ * `.../support/src/main/java/com/aiagent/support/logging/` 다. 사람이 적는 값이라 모듈
+ * 안쪽의 관례 경로를 접는다.
+ */
+export function sourceEntryMatches(entry, path) {
+  const want = entry.replace(/\/$/, '').split('/');
+  let i = 0;
+  for (const seg of path.split('/')) if (seg === want[i]) i += 1;
+  return i === want.length;
+}
+
+/**
+ * `aidd-guide/` 전체의 `sources:` 메타를 한 번 읽어 만든 역인덱스.
+ *
+ * <p><b>둘이 쓴다</b> — `guide-drift`(소스를 고쳤을 때 대조할 문서)와 `commons-doc`(공통물
+ * 목록의 「어디를 읽나」 칸). 매처를 양쪽에 두면 갈리고, 갈리면 <b>훅과 목록이 서로 다른
+ * 사실을 말한다</b>(CLAUDE.md §4-3).
+ *
+ * @returns {{doc: string, title: string, entries: string[]}[]}
+ */
+export function guideSourceIndex() {
+  const out = [];
+  for (const file of walkFiles(join(REPO, 'aidd-guide'))) {
+    if (!file.endsWith('.md')) continue;
+    const text = readText(file);
+    const line = text.match(/^sources:\s*(\[.*\])\s*$/m)?.[1];
+    if (!line) continue;
+    const entries = [...line.matchAll(/"([^"]+)"/g)]
+      .map(([, e]) => e)
+      .filter((e) => REPO_ROOTS.some((root) => e.startsWith(root)))
+      .filter((e) => e.split('/').filter(Boolean).length >= MIN_SEGMENTS);
+    if (entries.length === 0) continue;
+    out.push({
+      doc: relative(REPO, file).split(sep).join('/'),
+      title: (text.match(/^title:\s*"?(.*?)"?\s*$/m)?.[1] ?? '').trim(),
+      entries,
+    });
+  }
+  return out.sort((a, b) => a.doc.localeCompare(b.doc));
+}
+
+/** 이 소스 경로를 `sources:` 에 적은 가이드 문서들 — 저장소 기준 경로로. */
+export function guidesForSource(path, index = guideSourceIndex()) {
+  return index
+    .filter(({ entries }) => entries.some((e) => sourceEntryMatches(e, path)))
+    .map(({ doc }) => doc);
+}
+
+/** `node_modules` · `.git` 을 뺀 파일 전수. */
+export function walkFiles(dir, acc = []) {
+  let names;
+  try {
+    names = readdirSync(dir);
+  } catch {
+    return acc;
+  }
+  for (const name of names) {
+    if (name === 'node_modules' || name === '.git') continue;
+    const full = join(dir, name);
+    let st;
+    try {
+      st = statSync(full);
+    } catch {
+      continue;
+    }
+    if (st.isDirectory()) walkFiles(full, acc);
+    else acc.push(full);
+  }
+  return acc;
+}
+
+/**
+ * 이 <b>폴더</b>를 지목한 가이드 문서들 — {@link guidesForSource} 와 질의가 다르다.
+ *
+ * <p>파일 단위 질의는 <i>엔트리가 이 파일을 덮나</i> 를 묻는다.
+ * `sources/.../shared/grid/excel/` 은 `grid/DataGrid.tsx` 를 덮지 않으므로 맞지 않고,
+ * 드리프트 훅에서는 그것이 옳다 — 안 고친 파일의 문서를 가리키면 경고가 배경음이 된다.
+ *
+ * <p>폴더 단위는 반대로 <b>엔트리가 이 폴더 안을 가리키기만 해도</b> 맞다. 목록의
+ * 「어디를 읽나」 칸이 묻는 것은 <i>이 공통물에 대해 쓰인 문서가 있나</i> 이기 때문이다.
+ * 그래서 <b>어느 쪽이든 부분 수열이면</b> 맞는 것으로 본다(축약 경로 양방향).
+ */
+export function guidesForFolder(folder, index = guideSourceIndex()) {
+  return index
+    .filter(({ entries }) =>
+      entries.some((e) => sourceEntryMatches(e, folder) || sourceEntryMatches(folder, e)),
+    )
+    .map(({ doc, title }) => ({ doc, title }));
 }
