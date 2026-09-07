@@ -75,6 +75,7 @@ tags: [backend, index]
 | `SampleIsolationTest` | 샘플 격리 |
 | `RowTxConventionTest` | 목록 처리의 트랜잭션 경계가 이름과 맞는가 |
 | `TimeSourceConventionTest` | 시각의 단일 출처 — 맨 `now()` 금지([time.md](./time.md) §2) |
+| `ProjectionCoverageTest` | `Tuple` 에서 **고르지 않은 컬럼을 읽는 것**([search.md](./search.md)) |
 | `checkSeeds` | 메뉴·API·메시지 시드가 소스와 일치 |
 
 ```bash

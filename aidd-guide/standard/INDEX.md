@@ -134,7 +134,8 @@ cd frontend && npm run lint && npx tsc -b --noEmit && npm run test
 ```
 
 `LayerDependencyTest` · `ServiceConventionTest` · `SampleIsolationTest` ·
-`RowTxConventionTest` · `TimeSourceConventionTest` · `checkSeeds` · ESLint 셋. 목록은 [conventions.md §5](./conventions.md).
+`RowTxConventionTest` · `TimeSourceConventionTest` · `ProjectionCoverageTest` ·
+`checkSeeds` · ESLint 셋. 목록은 [conventions.md §5](./conventions.md).
 
 ## 관련 카테고리
 
