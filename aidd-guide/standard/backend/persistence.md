@@ -21,7 +21,7 @@ tags: [backend, jpa, querydsl, mybatis, liquibase, portability]
 
 ## 1. 셋의 경계
 
-> **MyBatis 는 아직 클래스패스에 없다**(2026-09-04 확인 — `libs.versions.toml` 에 좌표가 없다).
+> **MyBatis 는 아직 클래스패스에 없다**(`libs.versions.toml` 에 좌표가 없다).
 > **쓰지 않기로 한 것이 아니라 아직 쓸 일이 없는 것**이며, 아래 규칙은 **들여오는 날의 계약**이다.
 > 자리를 미리 정해 두지 않으면 처음 쓰는 사람이 동적 조건까지 그리로 가져간다.
 

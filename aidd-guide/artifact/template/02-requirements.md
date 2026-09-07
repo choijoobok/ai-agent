@@ -6,7 +6,7 @@ type: template
 created: 2026-09-04
 updated: 2026-09-04
 status: active
-sources: [“ordinary-backoffice docs/menu/_TEMPLATE/requirements.md”, "documents/screen/"]
+sources: ["documents/screen/"]
 tier: 2
 tags: [artifact, template, screen]
 ---
@@ -74,7 +74,8 @@ tags: [artifact, template, screen]
 > **한 글자는 이 표에서만 쓰는 약칭이다** — `R`=`READ` · `S`=`SAVE` · `E`=`EXPORT` ·
 > `X`=`EXECUTE`. **데이터에도 소스에도 한 글자는 없다**: `ACTION_CD` 의 값과 `ActionCd`
 > 타입이 전부 전체 이름이고 필드도 `act.READ` 다([knowledge/sys/menu.md](../../knowledge/sys/menu.md) §3).
-> **아래 본문에서는 약칭을 쓰지 않는다** — 6차 재현이 이 표를 보고 `act.R` 로 갔다.
+> **아래 본문에서는 약칭을 쓰지 않는다** — 이 표의 약칭이 본문의 필드명 칸까지 번지면
+> `act.R` 이 된다.
 
 ---
 
@@ -221,8 +222,6 @@ tags: [artifact, template, screen]
   자체를 두지 않는 것뿐이다.
 - **마스터-디테일이면 그리드마다 이 표를 쓴다.** 하단에도 조회 버튼이 선다 — 마스터에만
   적고 넘어가면 그 버튼이 표 밖에 남는다.
-- 2026-09-05 재현 실험에서 **재현 둘 다** 이 자리를 짚었다: 요건서 §5 에 없는 하단 조회
-  버튼이 서고, *하단에 엑셀이 없어야 한다* 는 케이스는 그때 이룰 수단이 없었다.
 
 - 엑셀 다운로드: {사용 / 미사용} — 사용하면 `EXPORT_YN='Y'`.
   **그리드가 둘 이상이면 어느 그리드가 내려받나까지 적는다** — 하나만 막는 것은
@@ -272,7 +271,7 @@ tags: [artifact, template, screen]
 
 <!-- endpoints.ts 의 선언이 인가 시드의 입력이다(CLAUDE.md §8). 콤보·팝업용 부가 경로도 빠짐없이. -->
 <!-- 경로 칸은 endpoints.ts 에 적는 값 그대로다 — /api 를 붙이지 않는다(배럴이 붙인다).
-     2026-09-04: 스무 화면 중 열여덟이 /api/service/… 로 적고 있었다. 그대로 옮기면 /api/api/… 가 된다.
+     스무 화면 중 열여덟이 /api/service/… 로 적고 있었다 — 그대로 옮기면 /api/api/… 가 된다.
      컨트롤러의 @RequestMapping 과 시드 CSV 는 /api/service/… 가 맞다 — 여기와 다른 값이다. -->
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |

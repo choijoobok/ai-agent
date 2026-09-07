@@ -15,8 +15,6 @@ tags: [backend, module, package, naming, transaction]
 
 > **무엇을 어디에 두고 무엇이라 부르는가.** 새 기능을 만들 때 가장 먼저 정해지고,
 > 한 번 틀리면 가장 늦게 드러나는 것들이다.
->
-> 유도과정·대안 검토는 [standard/backend/packages.md](./packages.md) 에 있다.
 
 ## 1. 모듈 다섯
 
@@ -102,14 +100,14 @@ POST /api/service/code/saveGroup
 - **행을 여럿 받아도 단수다.** `saveGroups` 가 아니라 `saveGroup` 이다 — 일괄 저장은 이
   저장소의 기본이라 이름에 적을 것이 없고, 적으면 **URL 과 갈린다**. *무엇을 몇 개 받나*
   는 시그니처가 말한다.
-- **`/service/` 와 `/public/` 에서만 그렇다.** 실측(2026-09-05): `/service/` **81개 전부
+- **`/service/` 와 `/public/` 에서만 그렇다.** 실측: `/service/` **81개 전부
   일치** · `/public/` 4개 전부 일치 · **`/common/` 은 17개 중 8개가 갈린다**(`favorite/save`
   → `add()` · `noti/saveRead` → `markRead()`). 갈리는 것이 옳다 — 공통 경로는 **URL 접두가
   인가 액션을 정하므로**([api.md](./api.md)) 접두를 바꿀 수 없고, 그 제약을 자바 메서드
   이름까지 끌고 가면 `markRead` 가 `saveRead` 가 된다.
-- **왜 못박나.** 2026-09-05 재현 실험에서 **독립한 재현 둘이 모두 `saveCodes` ·
-  `saveGroups` · `saveRefDefs`** 로 갔다. 규칙이 없으면 자연스러운 답이 갈리고, 갈리면
-  화면을 따라 읽는 사람이 **URL 에서 서비스로 건너갈 때마다 이름을 다시 찾는다.**
+- **왜 못박나.** 규칙이 없으면 자연스러운 답이 갈린다 — 여럿을 받으니 `saveCodes` ·
+  `saveGroups` 로 쓰는 쪽이 그만큼 자연스럽다. 갈리면 화면을 따라 읽는 사람이 **URL 에서
+  서비스로 건너갈 때마다 이름을 다시 찾는다.**
 
 > **`Admin` 을 이름의 장식으로 쓰지 않는다.** 한때 조회 열일곱 중 여섯이
 > `*AdminQueryService` 였고 그 여섯은 **모두 `<도메인>/admin/` 패키지 안에 있었다** —
@@ -120,9 +118,10 @@ POST /api/service/code/saveGroup
 > 들어가고(`UserDetailService`·`BatchScheduleService`), `admin`·`service` 는 **역할**이라
 > 들어가지 않는다(`user/admin/UserService`·`code/service/CodeService`). **역할 마디는 이름이
 > 부딪힐 때만 드러나며, 그때도 명령만 그렇다** — `code/admin` 이 `CodeAdminService`(↔공통
-> `CodeService`)이면서 조회는 `CodeQueryService` 다. **2026-09-07 에 이 문단을 더했다** —
-> 6차 재현 둘이 `user/admin` 을 보고 `UserAdminService` 로 갔다. `user/detail` 은 마디를
-> 붙이는데 `user/admin` 은 안 붙이는 것이 위 표에서 읽히지 않았다.
+> `CodeService`)이면서 조회는 `CodeQueryService` 다.
+>
+> **위 표만으로는 읽히지 않는 자리다** — `user/detail` 이 마디를 붙이니 `user/admin` 도
+> 붙일 것처럼 보이고, 그러면 `UserAdminService` 가 나온다.
 
 ### `ErrorCode` 상수 — 술어 어휘를 고정한다
 

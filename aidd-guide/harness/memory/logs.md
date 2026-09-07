@@ -24,7 +24,7 @@ tags: [memory, log, episodic, chat-history]
 
 ## 자동화는 절반이다
 
-- **`raw` 는 훅이 남긴다** — [`log-raw.mjs`](../../../.claude/hooks/log-raw.mjs), `UserPromptSubmit` 과 `Stop` 에 걸린다(2026-09-03 부터).
+- **`raw` 는 훅이 남긴다** — [`log-raw.mjs`](../../../.claude/hooks/log-raw.mjs), `UserPromptSubmit` 과 `Stop` 에 걸린다.
 - **`summary` 는 자동이 아니다.** 무엇이 결정이고 무엇이 미결인지는 판단이라 **AI 가 세션 끝에 직접 쓴다.** 훅이 초안을 만들지는 정하지 않았다.
 - 요약을 쓰지 않고 세션을 마치면 **그 세션은 원문만 남는다** — 다음 세션이 그것을 다 읽지는 않는다.
 

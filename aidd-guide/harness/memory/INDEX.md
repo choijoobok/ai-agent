@@ -14,7 +14,7 @@ tags: [memory, logs, index]
 
 > 세션을 넘어 영속되는 것의 정책 — **무엇을 어디에 남기고, 읽을 때 얼마나 믿는가.**
 >
-> **결정은 여기 없다.** 2026-09-04 에 DEC 레지스트리를 접었다(아래 “결정은 어디 있나”).
+> **결정은 여기 없다** — 아래 “결정은 어디 있나”.
 
 ## 진입 조건
 
@@ -28,12 +28,12 @@ tags: [memory, logs, index]
 |----|------|------|
 | LLM-MEM-004 | [logs.md](./logs.md) | raw / summary 로그 정책 — 책임 · 남기지 않을 것 · 신뢰 수준 |
 
-> **`LLM-MEM-001`(decisions) · `LLM-MEM-002`(project-memory) 는 2026-09-04 에 폐기했다.**
+> **`LLM-MEM-001`(decisions) · `LLM-MEM-002`(project-memory) 는 폐기됐다.**
 > ID 는 재사용하지 않는다.
 
 ## 결정은 어디 있나 — 여기가 아니다
 
-**DEC 레지스트리를 접었다**(2026-09-04). 두 파일이 `docs/decisions.md` · `docs/memory.md` ·
+**DEC 레지스트리를 접었다.** 두 파일이 `docs/decisions.md` · `docs/memory.md` ·
 `docs/stack.md` 를 *실제 데이터* 로 지목했는데 **셋 다 없었고**, `DEC-` 는 한 건도 등록된
 적이 없다. 정책만 있고 데이터가 없는 레지스트리는 **다음 세션을 없는 파일로 보낸다.**
 
