@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/api/", "sources/backend/core/response/ApiResponse.java", "aidd-guide/standard/backend/api.md"]
+sources: ["sources/backend/api/", "sources/backend/core/response/ApiResponse.java", "aidd-guide/standard/backend/api.md", "sources/backend/core/response/"]
 tier: 2
 tags: [backend, api, rest, response, header]
 ---

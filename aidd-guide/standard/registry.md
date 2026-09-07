@@ -26,34 +26,34 @@ tags: [standard, registry, shared, commons]
 | 영역 | 사는 곳 | 파일 | 어디를 읽나 |
 |---|---|--:|---|
 | 프론트 | `shared/api/` | 7 | [./frontend/http.md](./frontend/http.md) |
-| 프론트 | `shared/authz/` | 9 | **— 없음** |
+| 프론트 | `shared/authz/` | 9 | [../knowledge/sys/menu.md](../knowledge/sys/menu.md) |
 | 프론트 | `shared/batch/` | 3 | [./backend/batch.md](./backend/batch.md) |
-| 프론트 | `shared/code/` | 5 | **— 없음** |
-| 프론트 | `shared/components/` | 1 | **— 없음** |
+| 프론트 | `shared/code/` | 5 | [../knowledge/sys/code.md](../knowledge/sys/code.md) |
+| 프론트 | `shared/components/` | 1 | [./frontend/grid.md](./frontend/grid.md) |
 | 프론트 | `shared/excelupload/` | 4 | [../playbook/excel-upload.md](../playbook/excel-upload.md) |
-| 프론트 | `shared/favorite/` | 3 | **— 없음** |
+| 프론트 | `shared/favorite/` | 3 | [../knowledge/sys/personalization.md](../knowledge/sys/personalization.md) |
 | 프론트 | `shared/formmodal/` | 3 | [../playbook/modal.md](../playbook/modal.md) · [../artifact/screen/overlay/modal.md](../artifact/screen/overlay/modal.md) |
 | 프론트 | `shared/grid/` | 44 | [./frontend/declarations.md](./frontend/declarations.md) · [./frontend/grid-columns.md](./frontend/grid-columns.md) · [./frontend/grid-validation.md](./frontend/grid-validation.md) 외 7 |
-| 프론트 | `shared/hooks/` | 2 | **— 없음** |
+| 프론트 | `shared/hooks/` | 2 | [./frontend/tabs.md](./frontend/tabs.md) |
 | 프론트 | `shared/i18n/` | 7 | [./frontend/i18n.md](./frontend/i18n.md) · [../artifact/screen/auto-completion.md](../artifact/screen/auto-completion.md) |
-| 프론트 | `shared/menustat/` | 3 | **— 없음** |
+| 프론트 | `shared/menustat/` | 3 | [../knowledge/sys/personalization.md](../knowledge/sys/personalization.md) |
 | 프론트 | `shared/popup/` | 4 | [../playbook/modal.md](../playbook/modal.md) · [../artifact/screen/overlay/modal.md](../artifact/screen/overlay/modal.md) |
 | 프론트 | `shared/progress/` | 6 | [./frontend/progress.md](./frontend/progress.md) |
-| 프론트 | `shared/routes/` | 2 | **— 없음** |
+| 프론트 | `shared/routes/` | 2 | [./frontend/tabs.md](./frontend/tabs.md) |
 | 프론트 | `shared/screentabs/` | 1 | [./frontend/tabs.md](./frontend/tabs.md) |
 | 프론트 | `shared/searchform/` | 9 | [./frontend/declarations.md](./frontend/declarations.md) · [./frontend/search-form.md](./frontend/search-form.md) · [../artifact/screen/overlay/search-condition.md](../artifact/screen/overlay/search-condition.md) |
 | 프론트 | `shared/stores/` | 3 | [./frontend/theme.md](./frontend/theme.md) |
 | 프론트 | `shared/theme/` | 3 | [./frontend/theme.md](./frontend/theme.md) |
 | 프론트 | `shared/tree/` | 4 | [../playbook/tree-screen.md](../playbook/tree-screen.md) |
-| 프론트 | `shared/user/` | 1 | **— 없음** |
-| core | `core/domain/` | 2 | **— 없음** |
+| 프론트 | `shared/user/` | 1 | [../knowledge/sys/user-role.md](../knowledge/sys/user-role.md) |
+| core | `core/domain/` | 2 | [./backend/persistence.md](./backend/persistence.md) |
 | core | `core/error/` | 6 | [./backend/exception.md](./backend/exception.md) · [./backend/row-transaction.md](./backend/row-transaction.md) |
-| core | `core/grid/` | 1 | **— 없음** |
-| core | `core/message/` | 2 | **— 없음** |
-| core | `core/response/` | 1 | **— 없음** |
+| core | `core/grid/` | 1 | [./frontend/grid.md](./frontend/grid.md) |
+| core | `core/message/` | 2 | [../knowledge/sys/message.md](../knowledge/sys/message.md) |
+| core | `core/response/` | 1 | [./backend/api.md](./backend/api.md) |
 | core | `core/search/` | 19 | [./backend/persistence.md](./backend/persistence.md) · [./backend/search-spec.md](./backend/search-spec.md) · [./backend/search.md](./backend/search.md) 외 1 |
-| support | `support/config/` | 26 | **— 없음** |
-| support | `support/excel/` | 1 | **— 없음** |
+| support | `support/config/` | 26 | [../knowledge/sys/config.md](../knowledge/sys/config.md) |
+| support | `support/excel/` | 1 | [../playbook/excel-download.md](../playbook/excel-download.md) |
 | support | `support/lock/` | 9 | [./backend/batch.md](./backend/batch.md) |
 | support | `support/logging/` | 5 | [./backend/logging.md](./backend/logging.md) |
 | support | `support/mail/` | 1 | **— 없음** |
@@ -66,9 +66,9 @@ tags: [standard, registry, shared, commons]
 - **「어디를 읽나」는 계산이다** — 가이드 문서의 `sources:` 메타를 뒤집어 얻는다.
   `guide-drift` 훅과 **같은 매처**를 쓰므로, 여기가 빈 공통물은 **그 훅도 가리키지 못한다.**
 
-## 어디를 읽나가 빈 것 — 16 / 33
+## 어디를 읽나가 빈 것 — 2 / 33
 
-`shared/authz/` · `shared/code/` · `shared/components/` · `shared/favorite/` · `shared/hooks/` · `shared/menustat/` · `shared/routes/` · `shared/user/` · `core/domain/` · `core/grid/` · `core/message/` · `core/response/` · `support/config/` · `support/excel/` · `support/mail/` · `support/time/`
+`support/mail/` · `support/time/`
 
 **둘 중 하나다.** ① 문서가 정말 없다, 또는 ② 문서는 있는데 그 문서의 `sources:` 가 이
 폴더를 적지 않았다. **②가 먼저다** — 적는 것이 한 줄이고, 적으면 `guide-drift` 가 그

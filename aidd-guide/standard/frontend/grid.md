@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/shared/grid/", "aidd-guide/standard/frontend/grid.md", "aidd-guide/standard/frontend/grid.md"]
+sources: ["sources/frontend/src/shared/grid/", "aidd-guide/standard/frontend/grid.md", "aidd-guide/standard/frontend/grid.md", "sources/frontend/src/shared/components/", "sources/backend/core/grid/"]
 tier: 1
 tags: [frontend, grid, ag-grid, crud, save]
 ---

@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/favorite/entity/", "sources/backend/domain/src/main/java/com/aiagent/domain/gridpref/entity/", "sources/backend/domain/src/main/java/com/aiagent/domain/searchcond/entity/", "sources/backend/domain/src/main/java/com/aiagent/domain/menustat/entity/"]
+sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/favorite/entity/", "sources/backend/domain/src/main/java/com/aiagent/domain/gridpref/entity/", "sources/backend/domain/src/main/java/com/aiagent/domain/searchcond/entity/", "sources/backend/domain/src/main/java/com/aiagent/domain/menustat/entity/", "sources/frontend/src/shared/favorite/", "sources/frontend/src/shared/menustat/"]
 tier: 3
 tags: [knowledge, personalization, preference]
 ---

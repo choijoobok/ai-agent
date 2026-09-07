@@ -6,7 +6,7 @@ type: operation
 created: 2026-09-03
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/message/entity/"]
+sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/message/entity/", "sources/backend/core/message/"]
 tier: 3
 tags: [knowledge, message, i18n, cache]
 ---

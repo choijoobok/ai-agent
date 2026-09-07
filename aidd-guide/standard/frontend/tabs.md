@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-06
 status: active
-sources: ["sources/frontend/src/shared/screentabs/", "sources/frontend/src/layouts/", "aidd-guide/standard/frontend/packages.md", "aidd-guide/standard/frontend/tabs.md"]
+sources: ["sources/frontend/src/shared/screentabs/", "sources/frontend/src/layouts/", "aidd-guide/standard/frontend/packages.md", "aidd-guide/standard/frontend/tabs.md", "sources/frontend/src/shared/hooks/", "sources/frontend/src/shared/routes/"]
 tier: 1
 tags: [frontend, tabs, shell, routing]
 ---

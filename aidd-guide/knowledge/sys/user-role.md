@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-04
 status: active
-sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/user/entity/", "sources/backend/domain/src/main/java/com/aiagent/domain/authz/entity/SysRole.java", "sources/backend/domain/src/main/java/com/aiagent/domain/authz/entity/SysUserRole.java"]
+sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/user/entity/", "sources/backend/domain/src/main/java/com/aiagent/domain/authz/entity/SysRole.java", "sources/backend/domain/src/main/java/com/aiagent/domain/authz/entity/SysUserRole.java", "sources/frontend/src/shared/user/"]
 tier: 3
 tags: [knowledge, user, role, account]
 ---

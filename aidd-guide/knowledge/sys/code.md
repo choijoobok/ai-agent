@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/code/entity/"]
+sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/code/entity/", "sources/frontend/src/shared/code/"]
 tier: 3
 tags: [knowledge, code, master-data]
 ---

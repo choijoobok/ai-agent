@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-06
 status: active
-sources: ["sources/frontend/src/shared/grid/excel/", "sources/frontend/src/features/sample/mdvertical/pages/SampleMdVerticalPage.tsx"]
+sources: ["sources/frontend/src/shared/grid/excel/", "sources/frontend/src/features/sample/mdvertical/pages/SampleMdVerticalPage.tsx", "sources/backend/support/excel/"]
 tier: 2
 tags: [playbook, excel, download]
 ---
