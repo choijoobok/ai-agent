@@ -49,7 +49,7 @@ tags: [index, quality, test, redteam, evals]
 | `node .claude/hooks/trace-check.mjs --all` | 추적성 T1~T12 — **규칙의 정의는 [process/05-traceability.md](../process/05-traceability.md) 가 갖는다** | 오류 0 |
 | `node aidd-guide/meta/_meta/lint.mjs` | 문서 메타블록·200줄·깨진 링크 | 위반 0 |
 
-- **임계값과 그 뜻은 [code-quality.md](code-quality.md) 가 갖는다.**
+- **임계값의 근거는 [code-quality.md](code-quality.md) 가 갖는다** — 2026 GitClear·CodeRabbit 실증.
   숫자를 여기서 다시 적지 않는다.
 - **임계값을 올려서 통과시키지 않는다**(CLAUDE.md §5-10). 복사한 것은 추출한다.
 
