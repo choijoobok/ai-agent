@@ -92,6 +92,15 @@ const LINK_RE = /\]\(([^)#\s]+\.md)(?:#[^)]*)?\)/g;
 const LABEL_RE = /\[([^\]\n]+)\]\(([^)\s]+)\)/g;
 const LINK_SEC_RE = /\[([^\]]*)\]\(([^)\s]+\.md)\)\s*§\s*([0-9][0-9.\-]*)/g;
 
+/**
+ * `aidd-guide/quality/INDEX.md` §1 — 링크가 아닌 백틱 경로 꼴의 절 인용.
+ *
+ * <p><b>`CLAUDE.md` 는 뺀다</b> — 헌법 인용은 `§5-3` 처럼 <b>절-항목</b> 꼴이라 제목이
+ * `5.3` 인 절을 찾으면 멀쩡한 인용이 위반으로 세어진다. 그 꼴은 {@link CLAUDE_SEC_RE} 가
+ * 항목 번호까지 보고 따로 검사한다.
+ */
+const TICK_SEC_RE = /`((?!CLAUDE\.md)[A-Za-z0-9_./-]+\.md)`\s*§\s*([0-9][0-9.\-]*)/g;
+
 /** `CLAUDE.md §5-8` — 링크형이든 아니든. 링크 꼬리 `)` 를 건너뛴다. */
 const CLAUDE_SEC_RE = /CLAUDE\.md\s*(?:#[^)]*\)\s*)?§\s*([0-9]+(?:\.[0-9]+)?)(?:-([0-9]+))?/g;
 const HEAD_NUM_RE = /^#{2,4}\s*([0-9][0-9.\-]*)[.\s]/gm;
@@ -293,10 +302,26 @@ function checkLabels(file, text) {
   return issues;
 }
 
-/** 대상 파일에 없는 절을 가리키는 `](./경로.md) §N` 참조 수. */
+/**
+ * 대상 파일에 없는 절을 가리키는 `](./경로.md) §N` 참조 수.
+ *
+ * <p><b>백틱 경로 꼴도 함께 본다</b> — {@code `aidd-guide/quality/INDEX.md` §1} 처럼 링크가
+ * 아닌 인용이 저장소에 흔하고, 링크 꼴만 보던 동안 <b>파일 이름이 바뀌면서 절 번호가
+ * 따라가지 않은 둘</b>이 그 틈에 숨어 있었다(가리킨 문서에 번호 붙은 절이 하나도 없었다).
+ * 그것은 <b>펜스만 걷어낸 원문</b>에서 봐야 한다 — {@link strip} 이 인라인 코드를 지운다.
+ */
 function staleSectionRefs(file) {
-  const body = strip(readFileSync(file, 'utf8'));
+  const text = readFileSync(file, 'utf8');
+  const body = strip(text);
   let n = 0;
+  for (const m of text.replace(FENCE_RE, '').matchAll(TICK_SEC_RE)) {
+    const target = [join(REPO, m[1]), join(dirname(file), m[1])]
+      .map((p) => normalize(p))
+      .find((p) => existsSync(p));
+    if (!target) continue;
+    const want = m[2].replace(/-/g, '.').replace(/\.+$/, '');
+    if (!headings(target).has(want)) n += 1;
+  }
   for (const m of body.matchAll(LINK_SEC_RE)) {
     const target = normalize(join(dirname(file), m[2]));
     if (!existsSync(target)) continue;
