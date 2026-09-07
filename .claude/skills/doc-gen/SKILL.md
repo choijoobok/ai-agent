@@ -39,6 +39,7 @@ description: documents/spec/ 의 YAML에서 사람이 읽는 산출물 문서를
 
 | 대상 | 출력 | 원본 |
 |---|---|---|
+| **요구사항정의서** | `documents/generated/10-요구사항정의서/{장}.md` + `_index.md` | 00-charter · 01-actors · 02-constraints · 03-glossary · 10-requirements · 11-processes · 21-nfr · 51-interfaces |
 | 요건정의서 | `documents/generated/32-요건정의서/FEAT-###.md` + `_index.md` | 31-features + 30-usecases + 10-requirements |
 | 유즈케이스 | `documents/generated/30-유즈케이스.md` | 30-usecases |
 | 기능목록·메뉴 | `documents/generated/31-기능목록.md` | 31-features |
@@ -52,6 +53,35 @@ description: documents/spec/ 의 YAML에서 사람이 읽는 산출물 문서를
 | 아키텍처 | `documents/generated/20-아키텍처.md` (C4 Mermaid) | 20-architecture + ADR |
 | 추적성 | `documents/generated/90-추적성매트릭스.md` | 전체 |
 | 사용자매뉴얼 | `documents/generated/81-사용자매뉴얼.md` | 31-features menu + 60-screens + 30-usecases |
+
+## 요구사항 정의서 — 지도 43행 (`요구사항정의서`)
+
+**요건정의서(32)와 다른 것이다.** 32 는 *기능 하나* 를 구현하려는 AI 가 읽고, 이것은
+**P0~P2 정본 여덟을 사용자(고객·의사결정자)가 순서대로** 읽는다 — 판단하는 것은
+*이대로 만들어도 되는가* 이고, 그 판단이 곧 게이트 승인이다.
+
+- **왜 자리를 갖나** — spec 여덟이 `S` 라 파생 뷰가 없었고, **게이트 승인의 대상을
+  YAML 로 내밀고 있었다.** CLAUDE.md §5-12(이해하지 못한 승인을 받아내지 않는다)가
+  요구하는 것을 이 문서가 뒷받침한다.
+- **소유** — **파생(`G`)이다.** `.gitignore` 대상이며 커밋하지 않는다. 고칠 것은 spec 이다.
+- **장 나눔** (원칙 B — 한 장이 한 파일이다)
+
+| 파일 | 원본 | 담는 것 |
+|---|---|---|
+| `_index.md` | — | 장 목록 + 한 줄 요약 + 승인 상태 |
+| `00-개요.md` | 00-charter | 문제 · 경제성 · 목적 · 목표 · 비목표 · 성공 기준 · 로드맵 |
+| `01-이해관계자.md` | 01-actors | 액터 · 모듈 |
+| `02-제약과-원칙.md` | 02-constraints | 설계 원칙 · 기술 제약 · 배포 전제 · 착수 시 확정 항목 |
+| `03-용어.md` | 03-glossary | 용어 · 턴 상태 · 프레임워크 어휘 · **헷갈리는 짝** |
+| `04-요구사항.md` | 10-requirements | 기능 요구사항 (FR) |
+| `05-업무프로세스.md` | 11-processes | As-Is / To-Be |
+| `06-비기능요구.md` | 21-nfr | 성능 · 비용 · 안정성 |
+| `07-외부인터페이스.md` | 51-interfaces | 나가는 · 들어오는 연동 |
+
+- **비어 있는 spec 은 빈 장으로 낸다** — *왜 비어 있고 무엇에 막혀 있는지* 를 그 장에
+  적는다. 장을 빼면 읽는 사람이 **그 주제를 다룬 줄 알게 된다.**
+- **`meta.status` 와 `baselined` 를 각 장 머리에 싣는다.** `migrated` 는 승인 전이라는
+  뜻이며, 그 표시가 없으면 파생 뷰가 합의된 것처럼 읽힌다.
 
 ## 요건정의서 한 장 포맷 (핵심 산출물)
 ```markdown
