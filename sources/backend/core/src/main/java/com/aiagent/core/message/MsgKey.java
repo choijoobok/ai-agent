@@ -489,6 +489,15 @@ public final class MsgKey {
     public static final String ERR_BATCH_CRON_INVALID = "err.batch.cron-invalid";
 
     /**
+     * <b>아는 시간대 이름이 아니다</b> — screen/batch/schedule/requirements.md §6-1 의 13.
+     *
+     * <p>화면은 셀렉트라 이 값이 만들어지지 않는다. <b>API 를 직접 부르는 경로</b>의 마지막
+     * 방어이며, 고정 오프셋(<code>+09:00</code>)도 여기서 걸린다 — 파싱은 되지만 서머타임이
+     * 없어 <i>현지 시각을 유지한다</i> 는 그 컬럼의 목적을 조용히 깬다(backend/time.md).
+     */
+    public static final String ERR_BATCH_TIMEZONE_INVALID = "err.batch.timezone-invalid";
+
+    /**
      * <b>쿨다운이 크론 최소 간격보다 길다</b> — backend/persistence.md 이 <i>등록 거부</i> 로 정한 그것.
      *
      * <p>같은 값이어도 거부한다 — 경계에서 한 주기가 통째로 누락될 수 있다. 이 조건이

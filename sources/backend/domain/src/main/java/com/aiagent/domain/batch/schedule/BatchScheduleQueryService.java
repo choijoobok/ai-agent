@@ -15,6 +15,7 @@ import com.aiagent.domain.batch.repository.SysBatchHistoryRepository;
 import com.aiagent.domain.batch.repository.SysScheduleBatchRepository;
 import com.aiagent.domain.search.Built;
 import com.aiagent.domain.search.QueryDslBuilder;
+import com.aiagent.support.time.Timezones;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
@@ -22,6 +23,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -68,6 +70,7 @@ public class BatchScheduleQueryService {
         B.batchDesc,
         B.beanId,
         B.cron,
+        B.timezone,
         B.paramJson,
         B.lockExpirySec,
         B.lockMinIntervalSec,
@@ -122,6 +125,7 @@ public class BatchScheduleQueryService {
                     row.get(B.batchDesc),
                     row.get(B.beanId),
                     row.get(B.cron),
+                    row.get(B.timezone),
                     nextExecutionOf(row, now),
                     row.get(B.paramJson),
                     row.get(B.lockExpirySec),
@@ -172,7 +176,15 @@ public class BatchScheduleQueryService {
         if (!Boolean.TRUE.equals(row.get(B.useYn))) {
             return null;
         }
-        return CronRules.nextExecution(row.get(B.cron), now).orElse(null);
+        /*
+          **시간대가 깨져 있어도 비운다** — 크론과 같은 규칙이다. 저장이 막지만 시드나 직접
+          UPDATE 는 그 검증을 지나지 않고, 그때 이 칸이 비는 것이 고장의 신호다.
+        */
+        String zone = row.get(B.timezone);
+        if (!Timezones.isKnown(zone)) {
+            return null;
+        }
+        return CronRules.nextExecution(row.get(B.cron), now, ZoneId.of(zone)).orElse(null);
     }
 
     /**

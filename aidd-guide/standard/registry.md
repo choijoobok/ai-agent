@@ -57,7 +57,7 @@ tags: [standard, registry, shared, commons]
 | support | `support/lock/` | 9 | [./backend/batch.md](./backend/batch.md) |
 | support | `support/logging/` | 5 | [./backend/logging.md](./backend/logging.md) |
 | support | `support/mail/` | 1 | [./backend/mail.md](./backend/mail.md) |
-| support | `support/time/` | 1 | [./backend/time.md](./backend/time.md) |
+| support | `support/time/` | 2 | [./backend/time.md](./backend/time.md) |
 
 - **「사는 곳」의 뿌리 셋**: `shared/` = `sources/frontend/src/shared/` ·
   `core/` = `sources/backend/core/…/com/aiagent/core/` ·

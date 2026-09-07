@@ -76,15 +76,12 @@ class TimeSourceConventionTest {
      *
      * <p><b>비어 가는 방향으로만 움직인다.</b> 더하려면 이유를 함께 적고, 이유가 *나중에
      * 하겠다* 뿐이면 그것은 면제가 아니라 미룬 것이다.
+     *
+     * <p><b>지금 비어 있다.</b> {@code CronRules#nextExecution} 이 유일한 면제였고,
+     * 배치별 시간대가 들어오면서(screen/batch/schedule/requirements.md §4-1) 사라졌다 —
+     * {@link #everyExemptionIsStillEarned} 가 그 사실을 알려 주었다.
      */
-    private static final Map<String, String> EXEMPT = Map.of(
-            "com.aiagent.domain.batch.schedule.CronRules"
-                    + ".nextExecution(java.lang.String, java.time.Instant)",
-            "배치 목록의 파생 컬럼 *다음 실행* 을 계산한다. **여기만 업무 시간대로 고치면 "
-                    + "표시와 실행이 어긋난다** — 실행 시각은 BatchScheduler 의 CronTrigger 가 "
-                    + "정하고 그것도 JVM 기본 시간대를 쓰며, 스프링 안쪽이라 이 검사가 보지 "
-                    + "못한다. 둘을 함께 바꾸는 것은 배치 동작의 변경이므로 사용자 결정이 "
-                    + "앞선다(standard/INDEX.md 의 「이미 있는 것을 고칠 때」 ③·⑦).");
+    private static final Map<String, String> EXEMPT = Map.of();
 
     private final JavaClasses classes = new ClassFileImporter()
             .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)

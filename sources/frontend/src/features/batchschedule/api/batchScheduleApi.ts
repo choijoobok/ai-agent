@@ -11,3 +11,13 @@ import { BATCH_SCHEDULE_ENDPOINTS } from '@/features/batchschedule/api/endpoints
 export function getBeanList(): Promise<string[]> {
   return post<string[]>(BATCH_SCHEDULE_ENDPOINTS.getBeanList, {});
 }
+
+/**
+ * 시간대 후보 — <b>tzdb 가 원본</b>이고 600개가 넘는다(screen/batch/schedule/requirements.md §4-1).
+ *
+ * <p>배포마다 고정이라 부르는 쪽이 {@code staleTime: Infinity} 를 준다 — 빈 목록과 같은
+ * 이유다. <b>맨 앞이 업무 시간대</b>이고 나머지는 오름차순이다.
+ */
+export function getTimezoneList(): Promise<string[]> {
+  return post<string[]>(BATCH_SCHEDULE_ENDPOINTS.getTimezoneList, {});
+}

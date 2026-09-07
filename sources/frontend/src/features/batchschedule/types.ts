@@ -23,6 +23,8 @@ export interface BatchScheduleRow {
   beanId: string;
   /** 크론 표현식. 저장이 쿨다운과의 <b>관계</b>를 검증한다(screen/batch/schedule/requirements.md). */
   cron: string;
+  /** 크론을 어느 시간대로 읽나 — 요건서 §4-1. 식은 변환되지 않고 그대로 저장된다. */
+  timezone: string;
   /**
    * 파생 — <b>서버가 계산한다</b>(screen/batch/schedule/requirements.md). 크론 파서가 프론트 의존성에 없다.
    *

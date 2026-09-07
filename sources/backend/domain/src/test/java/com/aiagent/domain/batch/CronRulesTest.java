@@ -18,6 +18,9 @@ import org.junit.jupiter.api.Test;
  */
 class CronRulesTest {
 
+    private static final ZoneId SEOUL = ZoneId.of("Asia/Seoul");
+    private static final ZoneId NEW_YORK = ZoneId.of("America/New_York");
+
     @Test
     @DisplayName("스프링이 읽는 것만 통과시킨다 — 다른 파서를 쓰면 통과했는데 안 도는 크론이 생긴다")
     void acceptsWhatTheSchedulerAccepts() {
@@ -57,20 +60,69 @@ class CronRulesTest {
     void unreadableCronHasNoInterval() {
         // 모르는 것과 짧은 것은 다르다. 모르는 것을 짧다고 읽으면 정상 크론이 저장되지 않는다.
         assertThat(CronRules.minIntervalSeconds("매일 두시")).isEmpty();
-        assertThat(CronRules.nextExecution("매일 두시", Instant.now())).isEmpty();
+        assertThat(CronRules.nextExecution("매일 두시", Instant.now(), SEOUL)).isEmpty();
     }
 
     @Test
     @DisplayName("다음 실행이 크론을 눈으로 확인시킨다 — 평일 크론은 주말을 건너뛴다")
     void nextExecutionSkipsTheWeekend() {
         // 토요일 정오에서 물으면 다음은 **월요일 아침 9시**다 — 화면이 그것을 그린다(screen/batch/schedule/requirements.md).
-        Instant saturdayNoon =
-                ZonedDateTime.of(2026, 8, 29, 12, 0, 0, 0, ZoneId.systemDefault()).toInstant();
+        Instant saturdayNoon = ZonedDateTime.of(2026, 8, 29, 12, 0, 0, 0, SEOUL).toInstant();
 
-        Instant next = CronRules.nextExecution("0 0 9 * * MON-FRI", saturdayNoon).orElseThrow();
-        ZonedDateTime at = next.atZone(ZoneId.systemDefault());
+        Instant next = CronRules.nextExecution("0 0 9 * * MON-FRI", saturdayNoon, SEOUL).orElseThrow();
+        ZonedDateTime at = next.atZone(SEOUL);
 
         assertThat(at.getDayOfWeek().getValue()).isEqualTo(1);
         assertThat(at.getHour()).isEqualTo(9);
+    }
+
+    // ── 시간대 (screen/batch/schedule/requirements.md §4-1 · BS-38~40 · BS-46) ──
+
+    @Test
+    @DisplayName("같은 식이 시간대마다 다른 순간을 낸다 — 현지 시각은 둘 다 06:00 이다")
+    void sameExpressionDiffersByZone() {
+        Instant from = ZonedDateTime.of(2026, 9, 7, 12, 0, 0, 0, SEOUL).toInstant();
+
+        Instant seoul = CronRules.nextExecution("0 0 6 * * *", from, SEOUL).orElseThrow();
+        Instant newYork = CronRules.nextExecution("0 0 6 * * *", from, NEW_YORK).orElseThrow();
+
+        assertThat(seoul.atZone(SEOUL).getHour()).isEqualTo(6);
+        assertThat(newYork.atZone(NEW_YORK).getHour()).isEqualTo(6);
+        // **실제 순간이 다르다** — 이것이 이 컬럼이 있는 이유다(BS-39).
+        assertThat(seoul).isNotEqualTo(newYork);
+    }
+
+    @Test
+    @DisplayName("서머타임 경계에서 현지 시각이 유지된다 — 오프셋만 옮겨 간다")
+    void localTimeSurvivesDaylightSaving() {
+        /*
+          미국 동부는 2026-11-01 에 서머타임이 끝난다. **저장할 때 시차를 굳혀 넣는 방식이면
+          여기서 한 시간 틀어진다** — 그래서 식을 변환하지 않고 시간대를 함께 넘긴다.
+        */
+        // **10/30 에서 시작해야 경계를 걸친다** — 10/31 정오에서 물으면 첫 실행이 이미
+        // 전환 뒤(11/1)라 둘 다 표준시가 되어 24시간이 나오고, 검사가 아무것도 잠그지 않는다.
+        Instant beforeSwitch = ZonedDateTime.of(2026, 10, 30, 12, 0, 0, 0, NEW_YORK).toInstant();
+
+        Instant first = CronRules.nextExecution("0 0 6 * * *", beforeSwitch, NEW_YORK).orElseThrow();
+        Instant second = CronRules.nextExecution("0 0 6 * * *", first, NEW_YORK).orElseThrow();
+
+        assertThat(first.atZone(NEW_YORK).getHour()).isEqualTo(6);
+        assertThat(second.atZone(NEW_YORK).getHour()).isEqualTo(6);
+        // 현지 06:00 을 지키느라 **UTC 로는 25시간**이 지난다.
+        assertThat(second.getEpochSecond() - first.getEpochSecond()).isEqualTo(25 * 3600L);
+    }
+
+    @Test
+    @DisplayName("일 자리를 쓴 식은 매일이 아니다 — 여섯 칸의 셋째가 시(時)다")
+    void dayOfMonthIsNotHour() {
+        Instant from = ZonedDateTime.of(2026, 9, 7, 12, 0, 0, 0, SEOUL).toInstant();
+
+        // `0 0 0 6 * *` 는 **매월 6일 자정**이다 — 매일 06시는 `0 0 6 * * *` 다.
+        Instant monthly = CronRules.nextExecution("0 0 0 6 * *", from, SEOUL).orElseThrow();
+        assertThat(monthly.atZone(SEOUL).getDayOfMonth()).isEqualTo(6);
+        assertThat(monthly.atZone(SEOUL).getHour()).isZero();
+
+        Instant daily = CronRules.nextExecution("0 0 6 * * *", from, SEOUL).orElseThrow();
+        assertThat(daily.atZone(SEOUL).getHour()).isEqualTo(6);
     }
 }

@@ -87,12 +87,14 @@ new BusinessCalendar("Asia/Seoul", Clock.fixed(NOW, ZoneId.of("Asia/Seoul")))
 바이트코드에 그 호출이 없으므로 검사가 보지 못한다. **바이트코드를 보는 검사의 한계이며,
 프레임워크에 시간대를 맡기는 API 를 쓸 때는 시간대를 명시로 넘긴다.**
 
-### 지금 면제된 자리 하나
+### 면제는 지금 비어 있다
 
-`CronRules#nextExecution` — 배치 목록의 파생 컬럼 *다음 실행* 이다. **여기만 업무 시간대로
-고치면 표시와 실행이 어긋난다**: 실행 시각은 `BatchScheduler` 의 `CronTrigger` 가 정하고
-그것도 JVM 기본 시간대를 쓴다. 둘을 함께 바꾸는 것은 **배치 동작의 변경**이므로
-[INDEX.md](../INDEX.md) 의 「이미 있는 것을 고칠 때」 ③·⑦ 을 탄다.
+유일한 면제였던 `CronRules#nextExecution` 이 사라졌다 — 배치가 **자기 시간대를 갖게**
+되면서(`screen/batch/schedule/requirements.md` §4-1) 표시와 실행이 같은 값을 쓴다.
+**그 사실을 알려 준 것이 「면제가 아직 유효한가」 검사다** — 고친 쪽이 면제를 지우는 것을
+잊어도 빌드가 빨개진다.
+
+`CronTrigger` 에는 이제 시간대를 **명시로 넘긴다** — 바로 위 절이 말한 그 규칙이다.
 
 ## 관련
 

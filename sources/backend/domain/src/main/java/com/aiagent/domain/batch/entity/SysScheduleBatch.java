@@ -58,6 +58,9 @@ public class SysScheduleBatch extends BaseAuditEntity {
 
     public static final int CRON_MAX = 50;
 
+    /** IANA 이름의 최댓값은 `America/Argentina/ComodRivadavia`(32) — tzdb 가 자라므로 두 배를 둔다. */
+    public static final int TIMEZONE_MAX = 64;
+
     /** sys/batch.md — 대개 한 줄이고, 넘치면 자식 테이블로 옮길 때가 된 것이다. */
     public static final int PARAM_JSON_MAX = 2000;
 
@@ -80,6 +83,19 @@ public class SysScheduleBatch extends BaseAuditEntity {
     /** 크론 표현식. 쿨다운과의 관계를 저장이 검증한다(backend/persistence.md · screen/batch/schedule/requirements.md). */
     @Column(name = "CRON", length = CRON_MAX, nullable = false)
     private String cron;
+
+    /**
+     * 크론을 <b>어느 시간대로 읽나</b> — screen/batch/schedule/requirements.md §4-1.
+     *
+     * <p><b>{@code CRON} 은 사용자가 입력한 그대로다.</b> 시차만큼 옮긴 식을 저장하지 않는
+     * 것이 이 컬럼이 있는 이유다 — 서머타임 지역은 오프셋이 연 2회 바뀌고, 시각과 요일을
+     * 함께 옮겨야 하는 입력은 cron 한 식으로 표현되지 않는다(backend/time.md).
+     *
+     * <p><b>스케줄러와 화면이 이 값을 함께 쓴다</b> — 갈리면 도는 시각과 그려지는 시각이
+     * 달라진다. 그래서 {@code CronRules#nextExecution} 이 시간대에 기본값을 두지 않는다.
+     */
+    @Column(name = "TIMEZONE", length = TIMEZONE_MAX, nullable = false)
+    private String timezone;
 
     /** {@code NULL} 허용 — 파라미터 없는 배치가 정상이다(sys/batch.md). */
     @Column(name = "PARAM_JSON", length = PARAM_JSON_MAX)
@@ -133,6 +149,7 @@ public class SysScheduleBatch extends BaseAuditEntity {
             String batchDesc,
             String beanId,
             String cron,
+            String timezone,
             String paramJson,
             int lockExpirySec,
             int lockMinIntervalSec,
@@ -141,7 +158,7 @@ public class SysScheduleBatch extends BaseAuditEntity {
         SysScheduleBatch batch = new SysScheduleBatch();
         batch.batchId = batchId;
         batch.apply(
-                batchNm, batchDesc, beanId, cron, paramJson,
+                batchNm, batchDesc, beanId, cron, timezone, paramJson,
                 lockExpirySec, lockMinIntervalSec, useYn, sortNo);
         return batch;
     }
@@ -159,6 +176,7 @@ public class SysScheduleBatch extends BaseAuditEntity {
             String batchDesc,
             String beanId,
             String cron,
+            String timezone,
             String paramJson,
             int lockExpirySec,
             int lockMinIntervalSec,
@@ -168,6 +186,7 @@ public class SysScheduleBatch extends BaseAuditEntity {
         this.batchDesc = batchDesc;
         this.beanId = beanId;
         this.cron = cron;
+        this.timezone = timezone;
         this.paramJson = paramJson == null || paramJson.isBlank() ? null : paramJson;
         this.lockExpirySec = lockExpirySec;
         this.lockMinIntervalSec = lockMinIntervalSec;

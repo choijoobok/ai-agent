@@ -25,6 +25,7 @@ public enum BatchScheduleErrorCode implements ErrorCode {
     DESC_REQUIRED(MsgKey.ERR_BATCH_DESC_REQUIRED, "설명은 필수입니다"),
     BEAN_UNKNOWN(MsgKey.ERR_BATCH_BEAN_UNKNOWN, "등록된 배치 구현이 아닙니다"),
     CRON_INVALID(MsgKey.ERR_BATCH_CRON_INVALID, "크론 표현식이 올바르지 않습니다"),
+    TIMEZONE_INVALID(MsgKey.ERR_BATCH_TIMEZONE_INVALID, "시간대가 올바르지 않습니다"),
     COOLDOWN_TOO_LONG(MsgKey.ERR_BATCH_COOLDOWN_TOO_LONG, "쿨다운이 크론 주기보다 깁니다"),
     PARAM_JSON_INVALID(MsgKey.ERR_BATCH_PARAM_JSON, "파라미터가 올바른 JSON 이 아닙니다"),
     NOT_DELETABLE(MsgKey.ERR_BATCH_NOT_DELETABLE, "켜져 있거나 실행 중이어서 삭제할 수 없습니다"),

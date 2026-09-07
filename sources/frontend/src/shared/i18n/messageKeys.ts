@@ -2506,6 +2506,12 @@ export const MSG = {
   BATCH_SCHEDULE_COL_BEAN_ID: 'batchSchedule.col.beanId',
   /** 크론 컬럼 — 저장이 쿨다운과의 관계를 검증한다(screen/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_COL_CRON: 'batchSchedule.col.cron',
+  /**
+   * 시간대 컬럼 — 크론을 <b>어느 시간대로 읽나</b>(screen/batch/schedule/requirements.md §4-1).
+   *
+   * <p>식은 변환되지 않고 그대로 저장된다. 신규 행은 서버의 업무 시간대로 채워진다.
+   */
+  BATCH_SCHEDULE_COL_TIMEZONE: 'batchSchedule.col.timezone',
   /** 다음 실행 컬럼 — <b>서버가 계산한다</b>. 크론을 눈으로 확인시킨다(screen/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_COL_NEXT_EXEC: 'batchSchedule.col.nextExec',
   /** 파라미터 컬럼 — `nclob` 이 아니므로 `[보기]` 가 아니라 `textModal` 이다(screen/batch/schedule/requirements.md). */
@@ -2556,6 +2562,16 @@ export const MSG = {
    * <b>끄는 순간에</b> 읽히게 하는 것이 이 확인의 목적 전부다.
    */
   BATCH_SCHEDULE_WARN_DISABLE_ITEM: 'batchSchedule.warn.disableItem',
+
+  /**
+   * 저장 확인 — 시간대를 바꾼 배치가 `{count}` 건 있다(screen/batch/schedule/requirements.md §5-1).
+   *
+   * <p><b>크론이 그대로라 경고가 필요하다.</b> 화면상 달라진 것은 한 칸인데 실제 실행
+   * 시각은 몇 시간 옮겨진다 — 보이는 변화의 크기와 결과의 크기가 어긋나는 자리다.
+   */
+  BATCH_SCHEDULE_WARN_TIMEZONE: 'batchSchedule.warn.timezone',
+  /** 그 목록의 한 줄 — `{name}` `{batchId}` `{from}` `{to}`. <b>바뀐 값 둘을 나란히</b> 놓는다. */
+  BATCH_SCHEDULE_WARN_TIMEZONE_ITEM: 'batchSchedule.warn.timezoneItem',
 
   /** 삭제 게이트 — 켜져 있다. <b>대안까지 말한다</b>(먼저 끄세요). */
   BATCH_SCHEDULE_DELETE_ENABLED: 'batchSchedule.delete.enabled',

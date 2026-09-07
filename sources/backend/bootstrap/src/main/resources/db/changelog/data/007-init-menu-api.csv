@@ -9,6 +9,7 @@ BATCH_HISTORY,/api/service/batchHistory/getList
 BATCH_SCHEDULE,/api/service/batchSchedule/getBeanList
 BATCH_SCHEDULE,/api/service/batchSchedule/getList
 BATCH_SCHEDULE,/api/service/batchSchedule/getRecentHistory
+BATCH_SCHEDULE,/api/service/batchSchedule/getTimezoneList
 BATCH_SCHEDULE,/api/service/batchSchedule/runNow
 BATCH_SCHEDULE,/api/service/batchSchedule/save
 CODE_MGMT,/api/service/code/getGroupList

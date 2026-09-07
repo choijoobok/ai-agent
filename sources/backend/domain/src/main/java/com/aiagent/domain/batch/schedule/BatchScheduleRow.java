@@ -32,6 +32,7 @@ public record BatchScheduleRow(
         String batchDesc,
         String beanId,
         String cron,
+        String timezone,
         Instant nextExecDtm,
         String paramJson,
         Integer lockExpirySec,

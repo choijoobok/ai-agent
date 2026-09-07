@@ -9,6 +9,7 @@ import com.aiagent.domain.batch.entity.SysScheduleBatch;
 import com.aiagent.domain.batch.repository.SysBatchHistoryRepository;
 import com.aiagent.domain.batch.repository.SysScheduleBatchRepository;
 import java.util.HashSet;
+import com.aiagent.support.time.Timezones;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -126,6 +127,7 @@ public class BatchScheduleService {
                 row.batchDesc(),
                 row.beanId(),
                 row.cron(),
+                row.timezone(),
                 row.paramJson(),
                 row.lockExpirySec(),
                 row.lockMinIntervalSec(),
@@ -140,6 +142,7 @@ public class BatchScheduleService {
                         row.batchDesc(),
                         row.beanId(),
                         row.cron(),
+                        row.timezone(),
                         row.paramJson(),
                         row.lockExpirySec(),
                         row.lockMinIntervalSec(),
@@ -197,6 +200,18 @@ public class BatchScheduleService {
                     "크론을 파서가 읽지 못했다 — " + row.cron(),
                     List.of(new BusinessException.FieldError(
                             "cron", "크론 표현식이 올바르지 않습니다")));
+        }
+        /*
+          화면은 셀렉트라 이 값이 만들어지지 않는다 — **API 를 직접 부르는 경로**의 마지막
+          방어다(요건서 §6-1 의 13). 고정 오프셋(`+09:00`)도 거부한다: 파싱은 되지만
+          서머타임이 없어 *현지 시각을 유지한다* 는 이 컬럼의 목적을 조용히 깬다.
+        */
+        if (!Timezones.isKnown(row.timezone())) {
+            throw new BusinessException(
+                    BatchScheduleErrorCode.TIMEZONE_INVALID,
+                    "아는 시간대 이름이 아니다 — " + row.timezone(),
+                    List.of(new BusinessException.FieldError(
+                            "timezone", "시간대가 올바르지 않습니다")));
         }
         requireJson(row);
         requireCooldownShorterThanCron(row);

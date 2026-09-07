@@ -14,6 +14,8 @@ import com.aiagent.domain.batch.run.BatchRunner;
 import com.aiagent.domain.batch.schedule.BatchScheduleService;
 import com.aiagent.domain.batch.schedule.BatchScheduleQueryService;
 import com.aiagent.domain.batch.schedule.BatchScheduleRow;
+import com.aiagent.support.time.BusinessCalendar;
+import com.aiagent.support.time.Timezones;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
@@ -68,16 +70,19 @@ public class BatchScheduleController {
     private final BatchScheduleService admin;
     private final BatchHistoryQueryService histories;
     private final BatchRunner runner;
+    private final BusinessCalendar calendar;
 
     public BatchScheduleController(
             BatchScheduleQueryService queries,
             BatchScheduleService admin,
             BatchHistoryQueryService histories,
-            BatchRunner runner) {
+            BatchRunner runner,
+            BusinessCalendar calendar) {
         this.queries = queries;
         this.admin = admin;
         this.histories = histories;
         this.runner = runner;
+        this.calendar = calendar;
     }
 
     @Operation(
@@ -101,6 +106,23 @@ public class BatchScheduleController {
     @PostMapping("/getBeanList")
     public ApiResponse<List<String>> getBeanList() {
         return ApiResponse.success(queries.getBeanIds(), TraceId.current());
+    }
+
+    /**
+     * {@code TIMEZONE} 셀렉트의 후보 — <b>tzdb 가 원본</b>이다(screen/batch/schedule/requirements.md §4-1).
+     *
+     * <p><b>후보를 좁히지 않는다.</b> 자주 쓰는 것만 골라 두면 고객사가 바뀔 때마다 소스를
+     * 고쳐야 한다 — 600개는 화면의 검색이 감당한다.
+     *
+     * <p><b>맨 앞이 업무 시간대다.</b> 그 값이 신규 행의 기본값이라 가장 자주 고르며,
+     * 목록 안 제자리에도 남아 있다(알파벳 순으로 찾는 사람이 그 자리에서 찾는다).
+     */
+    @Operation(
+            summary = "시간대 후보 조회",
+            description = "크론의 기준 시간대로 고를 수 있는 IANA 시간대 이름을 반환한다. 맨 앞이 서버의 업무 시간대이고 나머지는 오름차순이다.")
+    @PostMapping("/getTimezoneList")
+    public ApiResponse<List<String>> getTimezoneList() {
+        return ApiResponse.success(Timezones.candidates(calendar.zone()), TraceId.current());
     }
 
     /**

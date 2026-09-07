@@ -1,0 +1,9 @@
+MSG_KEY,LANG_CD,MSG_VAL
+batchSchedule.col.timezone,ko,시간대
+batchSchedule.col.timezone,en,Time zone
+batchSchedule.warn.timezone,ko,"시간대가 바뀌는 배치가 {count}건 있습니다. 크론은 그대로지만 실행 시각이 옮겨집니다."
+batchSchedule.warn.timezone,en,"{count} batch(es) change time zone. The cron stays the same but the run time moves."
+batchSchedule.warn.timezoneItem,ko,"· {name}({batchId}) — {from} → {to}"
+batchSchedule.warn.timezoneItem,en,"· {name}({batchId}) — {from} → {to}"
+err.batch.timezone-invalid,ko,시간대가 올바르지 않습니다.
+err.batch.timezone-invalid,en,The time zone is not valid.

@@ -1,0 +1,33 @@
+# SYS_SCHEDULE_BATCH.TIMEZONE — 크론을 어느 시간대로 읽나 (screen/batch/schedule/requirements.md §4-1).
+#
+# 이 컬럼이 없던 동안 크론의 기준은 **서버 JVM 의 기본 시간대**였다. 그 전제가 어디에도 적혀
+# 있지 않아, JVM 시간대가 업무 시간대와 다른 배포에서는 `0 0 6 * * *` 이 현지 06시가 아닌
+# 시각에 돌았고 아무 오류도 나지 않았다(backend/time.md).
+#
+# **식을 변환해 저장하지 않는다.** 시차만큼 옮겨 넣는 방식은 둘에서 깨진다 — 서머타임 지역은
+# 오프셋이 연 2회 바뀌어 저장 시점의 시차가 반년 뒤 한 시간 틀리고, 시각과 요일을 함께 옮겨야
+# 하는 입력은 cron 한 식으로 표현되지 않는다(`0 0 2,10 * * MON-FRI` 를 +5:30 옮기면 요일
+# 집합이 둘로 갈린다). 그래서 CRON 은 입력 그대로 두고 이 컬럼을 함께 넘긴다.
+#
+# **기본값을 `Asia/Seoul` 로 박지 않는다.** `${business-timezone}` 은 `spring.liquibase.parameters`
+# 가 `app.business-timezone` 을 그대로 넘긴 값이다(application.yml) — 같은 프로퍼티가 마이그레이션과
+# 런타임의 기준을 함께 정하므로 **고객사가 그 값을 바꾸면 기존 행도 그 시간대로 채워진다.**
+# 상수로 박으면 이 changeSet 이 *한국에 배포한다* 는 전제를 데이터로 굳혀 버린다.
+#
+# 길이 64 — IANA 이름의 최댓값은 `America/Argentina/ComodRivadavia`(32)이고, 두 배를 둔 것은
+# tzdb 가 자라기 때문이다. 컬럼 폭을 늘리는 마이그레이션이 값 채우기보다 비싸다.
+databaseChangeLog:
+  - changeSet:
+      id: schema-030-batch-timezone
+      author: template
+      comment: 배치별 크론 기준 시간대 — 서버 JVM 에 기대던 것을 명시로 바꾼다
+      changes:
+        - addColumn:
+            tableName: SYS_SCHEDULE_BATCH
+            columns:
+              - column:
+                  name: TIMEZONE
+                  type: VARCHAR(64)
+                  defaultValue: ${business-timezone}
+                  constraints:
+                    nullable: false

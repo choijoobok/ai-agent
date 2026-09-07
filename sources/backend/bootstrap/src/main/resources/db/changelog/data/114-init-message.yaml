@@ -1,0 +1,52 @@
+# 메시지 값 — 배치별 크론 기준 시간대(screen/batch/schedule/requirements.md §4-1 · §5-1).
+#
+# 앞의 것을 고치지 않고 파일을 더한다(playbook/changeset.md). loadData 는 CSV 의 내용을
+# 체크섬에 넣으므로 113 에 줄을 더하면 그 changeset 이 이미 돈 DB 에서 기동이 죽는다.
+#
+# 키는 008 이 소스에서 만든다 — 여기서 또 넣으면 loadData 가 중복 키로 죽는다.
+#
+# ── 왜 시간대 변경에 확인이 붙나 ──────────────────────────────────────
+#
+# 크론이 그대로라 **화면상 달라진 것은 한 칸**인데 실제 실행 시각은 몇 시간 옮겨진다 —
+# 보이는 변화의 크기와 결과의 크기가 어긋나는 자리다. 그래서 문구가 *크론은 그대로* 를
+# 함께 말한다: 운영자가 *식도 바뀌었나* 를 의심하지 않게 한다.
+#
+# 한 줄 문구는 **바뀐 값 둘을 나란히** 놓는다(`{from}` → `{to}`). 새 값만 내면 무엇이
+# 바뀌었는지 모르며, *어느 시간대에서 어느 시간대로* 가 판단의 전부다.
+databaseChangeLog:
+  - changeSet:
+      id: data-114-message
+      author: template
+      comment: 배치 시간대 컬럼과 변경 확인 문구 — screen/batch/schedule/requirements.md §4-1 · §5-1
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/114-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-114-cache-version
+      author: template
+      comment: 값을 넣었으면 버전을 올린다 — sys/message.md
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

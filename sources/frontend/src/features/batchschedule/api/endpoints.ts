@@ -25,6 +25,13 @@ export const BATCH_SCHEDULE_ENDPOINTS = {
    * <i>고를 수 있는데 실행되지 않는</i> 빈을 보여준다.
    */
   getBeanList: '/service/batchSchedule/getBeanList',
+  /**
+   * `TIMEZONE` 셀렉트의 후보 — <b>tzdb 가 원본</b>이다(screen/batch/schedule/requirements.md §4-1).
+   *
+   * <p>후보를 좁히지 않는다 — 자주 쓰는 것만 골라 두면 <b>고객사가 바뀔 때마다 소스를
+   * 고쳐야</b> 한다. 맨 앞이 업무 시간대이고 나머지는 오름차순이다.
+   */
+  getTimezoneList: '/service/batchSchedule/getTimezoneList',
   /** 하단 pane — 이 배치의 최근 실행 이력(screen/batch/schedule/requirements.md). 페이징이 없다. */
   getRecentHistory: '/service/batchSchedule/getRecentHistory',
   /**

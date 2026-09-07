@@ -68,7 +68,7 @@ class BatchCooldownTest {
     private static SysScheduleBatch batch(int cooldownSec) {
         return SysScheduleBatch.created(
                 BATCH_ID, "야간 정산", "설명", "settleDailyJob",
-                "0 */5 * * * *", null, 300, cooldownSec, true, 0);
+                "0 */5 * * * *", "Asia/Seoul", null, 300, cooldownSec, true, 0);
     }
 
     @Test

@@ -17,6 +17,10 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
+    # 마이그레이션이 런타임과 **같은 프로퍼티**를 읽는다 — schema/030 의 TIMEZONE 기본값이
+    # 이 값이다. 상수로 박으면 그 changeSet 이 *한국에 배포한다* 를 데이터로 굳힌다.
+    parameters:
+      business-timezone: ${app.business-timezone}
 
   # 메일 — 분실 비밀번호 재설정(AUTH-07)이 인증번호를 나르는 유일한 경로다.
   #

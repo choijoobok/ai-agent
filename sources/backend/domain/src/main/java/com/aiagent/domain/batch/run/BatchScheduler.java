@@ -5,6 +5,7 @@ import com.aiagent.domain.batch.repository.SysScheduleBatchRepository;
 import com.aiagent.domain.batch.schedule.BatchScheduleChanged;
 import com.aiagent.domain.batch.schedule.CronRules;
 import jakarta.annotation.PreDestroy;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -156,7 +157,13 @@ public class BatchScheduler {
                     batch.getBatchId(),
                     scheduler.schedule(
                             () -> runner.runScheduled(batch),
-                            new CronTrigger(batch.getCron().trim())));
+                            /*
+                              **시간대를 명시로 넘긴다.** 한 인자 생성자는 JVM 기본 시간대를
+                              쓰며(backend/time.md §6), 그것이 이 컬럼을 만든 원인이다.
+                              화면의 *다음 실행* 이 같은 값으로 계산되므로 **둘이 같아야 한다**.
+                            */
+                            new CronTrigger(
+                                    batch.getCron().trim(), ZoneId.of(batch.getTimezone()))));
         }
         log.info("배치 크론을 걸었다 — 등록 {}건 중 {}건", all.size(), scheduled.size());
         if (!rejected.isEmpty()) {

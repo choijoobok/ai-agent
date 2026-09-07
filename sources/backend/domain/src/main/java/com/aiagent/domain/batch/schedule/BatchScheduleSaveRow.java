@@ -33,6 +33,7 @@ public record BatchScheduleSaveRow(
         @Size(max = SysScheduleBatch.BATCH_DESC_MAX) String batchDesc,
         @Size(max = SysScheduleBatch.BEAN_ID_MAX) String beanId,
         @Size(max = SysScheduleBatch.CRON_MAX) String cron,
+        @Size(max = SysScheduleBatch.TIMEZONE_MAX) String timezone,
         @Size(max = SysScheduleBatch.PARAM_JSON_MAX) String paramJson,
         @Min(1) Integer lockExpirySec,
         @Min(0) Integer lockMinIntervalSec,

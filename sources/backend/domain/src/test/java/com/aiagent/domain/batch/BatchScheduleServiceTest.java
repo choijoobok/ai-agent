@@ -66,7 +66,7 @@ class BatchScheduleServiceTest {
     private static BatchScheduleSaveRow row(RowState state) {
         return new BatchScheduleSaveRow(
                 state, "SETTLE_DAILY", "야간 정산", "끄면 정산 화면이 전일 데이터를 못 본다",
-                "settleDailyJob", "0 0 2 * * *", null, 300, 0, true, 10);
+                "settleDailyJob", "0 0 2 * * *", "Asia/Seoul", null, 300, 0, true, 10);
     }
 
     private static BusinessException save(BatchScheduleService service, BatchScheduleSaveRow row) {
@@ -82,7 +82,7 @@ class BatchScheduleServiceTest {
     @DisplayName("등록되지 않은 빈은 막는다 — 통과시키면 크론이 깨운 새벽에 터진다")
     void rejectsUnknownBean() {
         BusinessException thrown = save(service, new BatchScheduleSaveRow(
-                RowState.C, "X", "이름", "설명", "noSuchJob", "0 0 2 * * *", null, 300, 0, true, 0));
+                RowState.C, "X", "이름", "설명", "noSuchJob", "0 0 2 * * *", "Asia/Seoul", null, 300, 0, true, 0));
 
         assertThat(thrown.errorCode().code()).isEqualTo("err.batch.bean-unknown");
         // 셀에 붙어야 사용자가 어느 칸을 고칠지 안다(frontend/grid.md).
@@ -95,7 +95,7 @@ class BatchScheduleServiceTest {
     @DisplayName("설명이 비면 막는다 — 끄는 확인 창이 읽어 줄 문장이 없다")
     void rejectsEmptyDescription() {
         BusinessException thrown = save(service, new BatchScheduleSaveRow(
-                RowState.C, "X", "이름", "  ", "settleDailyJob", "0 0 2 * * *", null, 300, 0, true, 0));
+                RowState.C, "X", "이름", "  ", "settleDailyJob", "0 0 2 * * *", "Asia/Seoul", null, 300, 0, true, 0));
 
         assertThat(thrown.errorCode().code()).isEqualTo("err.batch.desc-required");
     }
@@ -104,7 +104,7 @@ class BatchScheduleServiceTest {
     @DisplayName("파서가 못 읽는 크론은 막는다 — 스케줄러가 쓰는 그 파서다")
     void rejectsUnreadableCron() {
         BusinessException thrown = save(service, new BatchScheduleSaveRow(
-                RowState.C, "X", "이름", "설명", "settleDailyJob", "매일 두시", null, 300, 0, true, 0));
+                RowState.C, "X", "이름", "설명", "settleDailyJob", "매일 두시", "Asia/Seoul", null, 300, 0, true, 0));
 
         assertThat(thrown.errorCode().code()).isEqualTo("err.batch.cron-invalid");
     }
@@ -114,7 +114,7 @@ class BatchScheduleServiceTest {
     void rejectsCooldownLongerThanCron() {
         // 5분 주기(300초)에 쿨다운 600초 — 한 주기 걸러 한 번씩만 돈다.
         BusinessException thrown = save(service, new BatchScheduleSaveRow(
-                RowState.C, "X", "이름", "설명", "settleDailyJob", "0 */5 * * * *", null, 300, 600, true, 0));
+                RowState.C, "X", "이름", "설명", "settleDailyJob", "0 */5 * * * *", "Asia/Seoul", null, 300, 600, true, 0));
 
         assertThat(thrown.errorCode().code()).isEqualTo("err.batch.cooldown-too-long");
         /*
@@ -129,7 +129,7 @@ class BatchScheduleServiceTest {
     @DisplayName("같은 값도 막는다 — 경계에서 한 주기가 통째로 누락된다")
     void rejectsCooldownEqualToCron() {
         BusinessException thrown = save(service, new BatchScheduleSaveRow(
-                RowState.C, "X", "이름", "설명", "settleDailyJob", "0 */5 * * * *", null, 300, 300, true, 0));
+                RowState.C, "X", "이름", "설명", "settleDailyJob", "0 */5 * * * *", "Asia/Seoul", null, 300, 300, true, 0));
 
         assertThat(thrown.errorCode().code()).isEqualTo("err.batch.cooldown-too-long");
     }
@@ -138,7 +138,7 @@ class BatchScheduleServiceTest {
     @DisplayName("JSON 이 아닌 파라미터는 막는다 — 화면도 보지만 화면 밖 경로가 있다")
     void rejectsBrokenParamJson() {
         BusinessException thrown = save(service, new BatchScheduleSaveRow(
-                RowState.C, "X", "이름", "설명", "settleDailyJob", "0 0 2 * * *", "{oops", 300, 0, true, 0));
+                RowState.C, "X", "이름", "설명", "settleDailyJob", "0 0 2 * * *", "Asia/Seoul", "{oops", 300, 0, true, 0));
 
         assertThat(thrown.errorCode().code()).isEqualTo("err.batch.param-json");
     }
@@ -149,7 +149,7 @@ class BatchScheduleServiceTest {
         when(batches.existsById(anyString())).thenReturn(false);
 
         service.save(List.of(new BatchScheduleSaveRow(
-                RowState.C, "X", "이름", "설명", "settleDailyJob", "0 0 2 * * *", "  ", 300, 0, true, 0)));
+                RowState.C, "X", "이름", "설명", "settleDailyJob", "0 0 2 * * *", "Asia/Seoul", "  ", 300, 0, true, 0)));
 
         verify(batches).save(any());
     }
@@ -158,7 +158,7 @@ class BatchScheduleServiceTest {
     @DisplayName("켜져 있으면 못 지운다 — 다음 주기가 조용히 사라진다")
     void cannotDeleteWhileEnabled() {
         SysScheduleBatch enabled = SysScheduleBatch.created(
-                "SETTLE_DAILY", "이름", "설명", "settleDailyJob", "0 0 2 * * *", null, 300, 0, true, 0);
+                "SETTLE_DAILY", "이름", "설명", "settleDailyJob", "0 0 2 * * *", "Asia/Seoul", null, 300, 0, true, 0);
         when(batches.findById("SETTLE_DAILY")).thenReturn(Optional.of(enabled));
 
         BusinessException thrown = save(service, row(RowState.D));
@@ -171,7 +171,7 @@ class BatchScheduleServiceTest {
     @DisplayName("실행 중이면 못 지운다 — 락이 잡힌 채 등록이 사라진다")
     void cannotDeleteWhileRunning() {
         SysScheduleBatch off = SysScheduleBatch.created(
-                "SETTLE_DAILY", "이름", "설명", "settleDailyJob", "0 0 2 * * *", null, 300, 0, false, 0);
+                "SETTLE_DAILY", "이름", "설명", "settleDailyJob", "0 0 2 * * *", "Asia/Seoul", null, 300, 0, false, 0);
         when(batches.findById("SETTLE_DAILY")).thenReturn(Optional.of(off));
         when(histories.findRunningBatchIds(List.of("SETTLE_DAILY")))
                 .thenReturn(List.of("SETTLE_DAILY"));
@@ -186,7 +186,7 @@ class BatchScheduleServiceTest {
     @DisplayName("꺼져 있고 돌지 않으면 지운다 — 실행 이력은 게이트가 아니다")
     void deletesWhenOffAndIdle() {
         SysScheduleBatch off = SysScheduleBatch.created(
-                "SETTLE_DAILY", "이름", "설명", "settleDailyJob", "0 0 2 * * *", null, 300, 0, false, 0);
+                "SETTLE_DAILY", "이름", "설명", "settleDailyJob", "0 0 2 * * *", "Asia/Seoul", null, 300, 0, false, 0);
         when(batches.findById("SETTLE_DAILY")).thenReturn(Optional.of(off));
         when(histories.findRunningBatchIds(List.of("SETTLE_DAILY"))).thenReturn(List.of());
 
@@ -202,9 +202,9 @@ class BatchScheduleServiceTest {
         when(batches.existsById(anyString())).thenReturn(false);
 
         BatchScheduleSaveRow good = new BatchScheduleSaveRow(
-                RowState.C, "A", "이름", "설명", "settleDailyJob", "0 0 2 * * *", null, 300, 0, true, 0);
+                RowState.C, "A", "이름", "설명", "settleDailyJob", "0 0 2 * * *", "Asia/Seoul", null, 300, 0, true, 0);
         BatchScheduleSaveRow bad = new BatchScheduleSaveRow(
-                RowState.C, "B", "이름", "설명", "noSuchJob", "0 0 2 * * *", null, 300, 0, true, 0);
+                RowState.C, "B", "이름", "설명", "noSuchJob", "0 0 2 * * *", "Asia/Seoul", null, 300, 0, true, 0);
 
         assertThatThrownBy(() -> service.save(List.of(good, bad)))
                 .isInstanceOf(BusinessException.class);
@@ -220,7 +220,7 @@ class BatchScheduleServiceTest {
     @DisplayName("같은 요청 안의 중복 ID 를 막는다 — 두 번째의 존재 확인이 첫 번째를 못 본다")
     void rejectsDuplicateIdsInOneRequest() {
         BatchScheduleSaveRow first = new BatchScheduleSaveRow(
-                RowState.C, "SAME", "이름", "설명", "settleDailyJob", "0 0 2 * * *", null, 300, 0, true, 0);
+                RowState.C, "SAME", "이름", "설명", "settleDailyJob", "0 0 2 * * *", "Asia/Seoul", null, 300, 0, true, 0);
 
         assertThatThrownBy(() -> service.save(List.of(first, first)))
                 .isInstanceOf(BusinessException.class)
@@ -244,13 +244,13 @@ class BatchScheduleServiceTest {
             BusinessException thrown = saveAll(
                     // 0 — 없는 빈
                     new BatchScheduleSaveRow(RowState.C, "A", "이름", "설명",
-                            "noSuchJob", "0 0 2 * * *", null, 300, 0, true, 0),
+                            "noSuchJob", "0 0 2 * * *", "Asia/Seoul", null, 300, 0, true, 0),
                     // 1 — 통과
                     new BatchScheduleSaveRow(RowState.C, "B", "이름", "설명",
-                            "settleDailyJob", "0 0 2 * * *", null, 300, 0, true, 0),
+                            "settleDailyJob", "0 0 2 * * *", "Asia/Seoul", null, 300, 0, true, 0),
                     // 2 — 쿨다운이 크론 주기 이상
                     new BatchScheduleSaveRow(RowState.C, "C", "이름", "설명",
-                            "settleDailyJob", "0 */5 * * * *", null, 300, 600, true, 0));
+                            "settleDailyJob", "0 */5 * * * *", "Asia/Seoul", null, 300, 600, true, 0));
 
             assertThat(thrown.rowErrors()).extracting(BusinessException.RowError::index)
                     .containsExactly(0, 2);
@@ -262,9 +262,9 @@ class BatchScheduleServiceTest {
         void mixedReasonsKeepTheFirstCode() {
             BusinessException thrown = saveAll(
                     new BatchScheduleSaveRow(RowState.C, "A", "이름", "설명",
-                            "noSuchJob", "0 0 2 * * *", null, 300, 0, true, 0),
+                            "noSuchJob", "0 0 2 * * *", "Asia/Seoul", null, 300, 0, true, 0),
                     new BatchScheduleSaveRow(RowState.C, "B", "이름", "  ",
-                            "settleDailyJob", "0 0 2 * * *", null, 300, 0, true, 0));
+                            "settleDailyJob", "0 0 2 * * *", "Asia/Seoul", null, 300, 0, true, 0));
 
             assertThat(thrown.errorCode().code()).isEqualTo("err.batch.bean-unknown");
             assertThat(thrown.rowErrors()).extracting(BusinessException.RowError::index)

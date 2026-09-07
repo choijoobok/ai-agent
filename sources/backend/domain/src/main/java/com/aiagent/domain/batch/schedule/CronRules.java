@@ -67,10 +67,15 @@ public final class CronRules {
      * <p><b>{@code USE_YN='N'} 이면 부르는 쪽이 비운다.</b> 여기서 판단하지 않는 것은 이
      * 클래스가 크론만 알기 때문이며, 꺼 둔 배치에 다음 실행을 그리면 <i>돌 것처럼</i>
      * 보인다(screen/batch/schedule/requirements.md — 스케줄러가 등록조차 하지 않는다).
+     *
+     * <p><b>{@code zone} 은 그 배치의 시간대다</b>(요건서 §4-1). 기본값을 두지 않는 것이
+     * 요점이다 — 두면 넘기지 않은 호출이 <b>조용히 서버 시간대로</b> 돌아가고, 그것이
+     * 이 컬럼을 만든 원인이었다. 스케줄러가 {@code CronTrigger} 에 넘기는 값과 <b>같아야
+     * 한다</b>: 갈리면 화면이 도는 시각과 다른 시각을 그린다.
      */
-    public static Optional<Instant> nextExecution(String cron, Instant from) {
+    public static Optional<Instant> nextExecution(String cron, Instant from, ZoneId zone) {
         return parse(cron)
-                .map(expression -> expression.next(from.atZone(ZoneId.systemDefault())))
+                .map(expression -> expression.next(from.atZone(zone)))
                 .map(next -> next == null ? null : next.toInstant());
     }
 

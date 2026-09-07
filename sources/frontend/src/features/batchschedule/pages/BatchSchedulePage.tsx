@@ -24,7 +24,7 @@ import { hasPermission } from '@/shared/authz/permission';
 import { useAuthStore } from '@/shared/stores/authStore';
 import { rsltLabel, RSLT_TONE } from '@/shared/batch/batchCodes';
 import { BATCH_SCHEDULE_ENDPOINTS } from '@/features/batchschedule/api/endpoints';
-import { getBeanList } from '@/features/batchschedule/api/batchScheduleApi';
+import { getBeanList, getTimezoneList } from '@/features/batchschedule/api/batchScheduleApi';
 import type { BatchRunResponse, BatchScheduleRow } from '@/features/batchschedule/types';
 import { recentHistoryColumns } from '@/shared/batch/historyColumns';
 import type { BatchHistoryRow } from '@/shared/batch/historyRow';
@@ -118,12 +118,35 @@ export function BatchSchedulePage() {
     [beans.data],
   );
 
+  /**
+   * 시간대 후보 — <b>tzdb 가 원본</b>이고 600개가 넘는다(screen/batch/schedule/requirements.md §4-1).
+   *
+   * <p>빈 목록과 같은 이유로 `staleTime` 이 무한이다. <b>맨 앞이 업무 시간대</b>이며 서버가
+   * 그 순서를 정한다 — 화면이 다시 정렬하면 *무엇이 기본인가* 를 두 곳이 알아야 한다.
+   */
+  const timezones = useQuery({
+    queryKey: ['batchSchedule', 'timezones'],
+    queryFn: () => getTimezoneList(),
+    staleTime: Infinity,
+  });
+
+  const timezoneOptions = useMemo<SelectOption[]>(
+    () => (timezones.data ?? []).map((zone) => ({ value: zone, text: zone })),
+    [timezones.data],
+  );
+
+  /** 신규 행의 기본 시간대 — 서버가 내린 목록의 <b>맨 앞</b>이 업무 시간대다. */
+  const defaultTimezone = timezones.data?.[0] ?? '';
+
   const collectConditions = useCallback(
     () => Promise.resolve(searchForm.current?.collect() ?? []),
     [],
   );
 
-  const columns = useMemo(() => buildColumns(beanOptions), [beanOptions]);
+  const columns = useMemo(
+    () => buildColumns(beanOptions, timezoneOptions),
+    [beanOptions, timezoneOptions],
+  );
   const searchFields = useMemo(() => buildSearchFields(handoff ?? ''), [handoff]);
 
   /**
@@ -140,22 +163,52 @@ export function BatchSchedulePage() {
    * 그 문장이 그대로 읽혀야 한다.
    */
   const warnDisable = useCallback((rows: GridRow<BatchScheduleRow>[]): string[] => {
+    const lines: string[] = [];
+
     const disabled = rows.filter(
       (row) => row.state === 'U' && row.original?.useYn === true && row.data.useYn === false,
     );
-    if (disabled.length === 0) {
-      return [];
+    if (disabled.length > 0) {
+      lines.push(label(MSG.BATCH_SCHEDULE_WARN_DISABLE, { count: disabled.length }));
+      for (const row of disabled) {
+        lines.push(
+          label(MSG.BATCH_SCHEDULE_WARN_DISABLE_ITEM, {
+            name: row.data.batchNm,
+            batchId: row.data.batchId,
+          }),
+        );
+        lines.push(`  ${row.data.batchDesc}`);
+      }
     }
-    const lines = [label(MSG.BATCH_SCHEDULE_WARN_DISABLE, { count: disabled.length })];
-    for (const row of disabled) {
-      lines.push(
-        label(MSG.BATCH_SCHEDULE_WARN_DISABLE_ITEM, {
-          name: row.data.batchNm,
-          batchId: row.data.batchId,
-        }),
-      );
-      lines.push(`  ${row.data.batchDesc}`);
+
+    /*
+      <b>시간대 변경도 확인을 받는다</b>(screen/batch/schedule/requirements.md §5-1). 크론이 그대로라 화면상
+      달라진 것은 한 칸인데 <b>실제 실행 시각은 몇 시간 옮겨진다</b> — 보이는 변화의
+      크기와 결과의 크기가 어긋난다.
+
+      <b>기존 행만이다.</b> 신규 행에는 옮겨지는 실행이 없다 — *켜는 것은 확인하지
+      않는다* 와 같은 규칙이다.
+    */
+    const moved = rows.filter(
+      (row) =>
+        row.state === 'U' &&
+        row.original != null &&
+        row.original.timezone !== row.data.timezone,
+    );
+    if (moved.length > 0) {
+      lines.push(label(MSG.BATCH_SCHEDULE_WARN_TIMEZONE, { count: moved.length }));
+      for (const row of moved) {
+        lines.push(
+          label(MSG.BATCH_SCHEDULE_WARN_TIMEZONE_ITEM, {
+            name: row.data.batchNm,
+            batchId: row.data.batchId,
+            from: row.original?.timezone ?? '',
+            to: row.data.timezone,
+          }),
+        );
+      }
     }
+
     return lines;
   }, []);
 
@@ -279,6 +332,11 @@ export function BatchSchedulePage() {
         batchDesc: '',
         beanId: '',
         cron: '',
+        /*
+          <b>빈 칸이 아니라 업무 시간대다</b>(screen/batch/schedule/requirements.md §4-1). 필수 칸을 비워 내면
+          *대개 맞는 값* 을 매번 손으로 고르게 되고, 빠뜨리면 저장이 막힌다.
+        */
+        timezone: defaultTimezone,
         paramJson: null,
         // backend/persistence.md 의 기본값과 같다 — `@CustomLock` 의 `expirySeconds` 가 300 이다.
         lockExpirySec: 300,
@@ -480,7 +538,10 @@ export function BatchSchedulePage() {
  * <p><b>`BATCH_DESC` 가 기본 숨김이 아닌 것</b>이 sys/batch.md 의 화면 쪽 절반이다.
  * 장애 대응 중에 소스를 열 시간은 없고, 컬럼 설정에서 꺼 둘 수는 있지만 <b>기본은 보인다</b>.
  */
-function buildColumns(beanOptions: SelectOption[]): ColumnDef<BatchScheduleRow>[] {
+function buildColumns(
+  beanOptions: SelectOption[],
+  timezoneOptions: SelectOption[],
+): ColumnDef<BatchScheduleRow>[] {
   return [
     {
       field: 'sortNo',
@@ -567,10 +628,44 @@ function buildColumns(beanOptions: SelectOption[]): ColumnDef<BatchScheduleRow>[
       editable: true,
     },
     {
+      field: 'timezone',
+      header: MSG.BATCH_SCHEDULE_COL_TIMEZONE,
+      type: 'text',
+      width: 200,
+      /*
+        <b>크론 바로 오른쪽이다</b>(screen/batch/schedule/requirements.md §4-1) — 둘이 한 뜻이라 떨어뜨리면
+        *어느 시간대의 6시인가* 를 두 곳에서 읽어야 한다.
+
+        <b>고르는 것이지 타이핑이 아니다.</b> 자유 입력을 열면 `Korea/Seoul` 처럼 있을 듯한
+        오타가 들어오고, 그것을 잡는 것이 오로지 서버 검증이 된다.
+      */
+      required: true,
+      editable: true,
+      /*
+        <b>`select` 이 아니라 `richSelect` 다</b> — 후보가 600개다. playbook/INDEX.md 이 스무
+        개를 경계로 둔 이유가 그것이며, 검색 없는 콤보에서 600개는 <b>고르는 것이 아니라
+        뒤지는 것</b>이 된다(screen/batch/schedule/requirements.md §4-1 — *검색으로 좁힌다*).
+      */
+      editor: 'richSelect',
+      options: timezoneOptions,
+    },
+    {
       field: 'nextExecDtm',
       header: MSG.BATCH_SCHEDULE_COL_NEXT_EXEC,
-      type: 'dateTime',
-      width: 160,
+      type: 'text',
+      width: 200,
+      /*
+        <b>그 배치의 시간대로 표시한다</b>(screen/batch/schedule/requirements.md §4-1). 브라우저 시간대로 보이면
+        `America/New_York` 로 설정한 운영자가 서울에서 `19:00` 을 보고, <b>자기가 넣은
+        06:00 이 맞는지 확인할 근거가 사라진다</b> — 이 칸의 목적 전부가 그 확인이다.
+
+        <b>시간대를 함께 적는다.</b> 그리드의 다른 일시(감사 4)는 보는 사람의 시간대라
+        <b>시계가 둘</b>이며, 구별할 표식이 없으면 같은 시계로 읽힌다.
+
+        `dateTime` 이 아니라 `text` + `derive` 인 것이 그 때문이다 — 공통 포매터는
+        브라우저 시간대로 옮긴다(shared/grid/dateFormat.ts).
+      */
+      derive: (row) => formatInZone(row.nextExecDtm, row.timezone),
       filter: false,
       /*
         <b>파생이며 읽기 전용이다</b>(screen/batch/schedule/requirements.md). 이 칸이 <b>크론을 눈으로 확인시킨다</b> —
@@ -799,4 +894,42 @@ function timeText(value: string | null): string {
   return Number.isNaN(at.getTime())
     ? ''
     : `${String(at.getHours()).padStart(2, '0')}:${String(at.getMinutes()).padStart(2, '0')}`;
+}
+
+/**
+ * 그 배치의 시간대로 읽은 <b>다음 실행</b> — screen/batch/schedule/requirements.md §4-1.
+ *
+ * <p>공통 포매터(`shared/grid/dateFormat.ts`)는 <b>브라우저 시간대</b>로 옮긴다 — 감사
+ * 4컬럼처럼 *보는 사람의 시각* 이 맞는 칸에서는 그것이 옳다. 이 칸은 반대로 <b>설정한
+ * 시간대의 시각</b>을 물으므로 여기서 따로 만든다.
+ *
+ * <p><b>아직 `shared/` 로 올리지 않는다</b> — 첫 사용이다(frontend/packages.md 는 두 번째
+ * 사용에 올린다). 두 번째 화면이 같은 것을 물으면 그때 올리고 원본을 지운다.
+ *
+ * <p>`Intl.DateTimeFormat` 을 쓰는 것은 <b>의존성이 늘지 않기</b> 때문이다 — `dayjs` 의
+ * 시간대 플러그인은 이 저장소에 없다.
+ */
+function formatInZone(value: string | null, zone: string): string {
+  if (!value || !zone) {
+    return '';
+  }
+  try {
+    const parts = new Intl.DateTimeFormat('sv-SE', {
+      timeZone: zone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).format(new Date(value));
+    // `sv-SE` 가 `YYYY-MM-DD HH:mm` 을 낸다 — 자리 맞춤을 손으로 하지 않는다.
+    return `${parts} (${zone})`;
+  } catch {
+    /*
+      시간대가 깨져 있으면 <b>비운다</b> — 서버도 같은 규칙이다(BatchScheduleQueryService).
+      깨진 값에 그럴듯한 시각을 그리면 그것이 고장을 감춘다.
+    */
+    return '';
+  }
 }
