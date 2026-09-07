@@ -3,6 +3,7 @@ package com.aiagent.domain.batch.schedule;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import org.springframework.scheduling.support.CronExpression;
@@ -43,9 +44,13 @@ public final class CronRules {
      *
      * <p>요일 패턴이 주 초에서 시작해야 한 주가 온전히 표본에 들어온다. 임의의 과거
      * 시각을 쓰면 같은 크론이 <i>수요일 기준</i>일 때와 다른 최솟값을 낼 수 있다.
+     *
+     * <p><b>시간대는 UTC 다</b> — backend/time.md §2. 재는 것이 <i>인접 실행의 간격</i> 이라
+     * 기준점의 시간대는 결과에 들어오지 않지만, {@code systemDefault()} 를 두면 상수가
+     * <b>배포 환경에 따라 달라지고</b> 서머타임이 있는 지역에서는 간격 최솟값까지 흔들린다.
      */
     private static final ZonedDateTime EPOCH_MONDAY =
-            ZonedDateTime.of(2024, 1, 1, 0, 0, 0, 0, ZoneId.systemDefault());
+            ZonedDateTime.of(2024, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
 
     /** 표현식이 문법에 맞는가 — 틀리면 {@link CronExpression} 이 던진다. */
     public static boolean isValid(String cron) {

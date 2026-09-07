@@ -34,6 +34,7 @@ tags: [backend, time, clock, timezone, business-calendar]
 | 쓰지 않는다 | 대신 |
 |---|---|
 | `Instant.now()` · `LocalDateTime.now()` · `new Date()` | `clock.instant()` |
+| `System.currentTimeMillis()` | 〃 — 시간대 문제는 없지만 **고정할 수 없는** 출처다 |
 | `LocalDate.now()` | `calendar.today()` |
 | `ZoneId.systemDefault()` | `calendar.zone()` |
 | DB 함수 `SYSDATE` · `NOW()` | 위와 같다 — **금지의 뿌리가 같다**([persistence.md](./persistence.md)) |
@@ -73,14 +74,29 @@ new BusinessCalendar("Asia/Seoul", Clock.fixed(NOW, ZoneId.of("Asia/Seoul")))
 읽힐 수 있고, 그 변화는 어느 이력에도 남지 않는다. 무엇을 `sys-config` 에 두나의 판단
 기준은 [knowledge/sys/config.md](../../knowledge/sys/config.md) 가 갖는다.
 
-## 6. 검사가 없다
+## 6. 빌드가 §2 를 지킨다 — `TimeSourceConventionTest`
 
-**이 문서의 §2 를 지키는 기계가 없다.** 프로덕션 코드에 맨 `now()` 는 현재 0건이지만,
-새로 하나가 들어와도 빌드는 초록이다 — 정책형 규약의 전형이며([INDEX.md](../INDEX.md) 의
-「이미 있는 것을 고칠 때」), *돌아갔다* 가 *맞다* 의 증거가 되지 않는 자리다.
+`./gradlew check` 가 프로덕션 코드(테스트 제외)의 바이트코드를 훑는다. **면제는 양방향으로
+실패한다**: 목록에 없는 위반이 생기면 실패하고, **면제인데 위반이 사라져도 실패한다** —
+뒤쪽이 없으면 면제가 영구 주석이 되고, 남은 면제는 다음 사람에게 *여기는 원래 그런 곳*
+이라고 가르친다.
+
+### 검사가 못 보는 것 — 프레임워크가 우리 대신 부를 때
+
+`new CronTrigger(cron)` 은 시간대를 **스프링 안에서** `systemDefault()` 로 정한다. 우리
+바이트코드에 그 호출이 없으므로 검사가 보지 못한다. **바이트코드를 보는 검사의 한계이며,
+프레임워크에 시간대를 맡기는 API 를 쓸 때는 시간대를 명시로 넘긴다.**
+
+### 지금 면제된 자리 하나
+
+`CronRules#nextExecution` — 배치 목록의 파생 컬럼 *다음 실행* 이다. **여기만 업무 시간대로
+고치면 표시와 실행이 어긋난다**: 실행 시각은 `BatchScheduler` 의 `CronTrigger` 가 정하고
+그것도 JVM 기본 시간대를 쓴다. 둘을 함께 바꾸는 것은 **배치 동작의 변경**이므로
+[INDEX.md](../INDEX.md) 의 「이미 있는 것을 고칠 때」 ③·⑦ 을 탄다.
 
 ## 관련
 
 - [persistence.md](./persistence.md) — DB 함수 금지 · 저장은 UTC
 - [knowledge/sys/config.md](../../knowledge/sys/config.md) — `sys-config` 에 둘 것과 두지 않을 것
 - [INDEX.md](../INDEX.md) — 고칠 때의 절차 · 부류 둘
+- `backend/bootstrap/src/test/java/com/aiagent/architecture/TimeSourceConventionTest.java` — §2 를 세는 것
