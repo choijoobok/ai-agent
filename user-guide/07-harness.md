@@ -67,6 +67,7 @@
 
 | 스킬 | 스크립트 | 직접 돌리려면 |
 |---|---|---|
+| `/doc-gen` | `gen.mjs` | `node .claude/skills/doc-gen/gen.mjs` |
 | `/manual-site` | `build.mjs` | `node .claude/skills/manual-site/build.mjs` |
 | `/manual-site` | `capture.mjs` | `node .claude/skills/manual-site/capture.mjs` |
 | `/menu-doc` | `screens.mjs` | `node .claude/skills/menu-doc/screens.mjs` |
