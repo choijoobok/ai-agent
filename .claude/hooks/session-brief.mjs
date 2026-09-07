@@ -60,6 +60,14 @@ const lines = [
 ];
 if (running.length > 0) lines.push(`진행 중 슬라이스: ${running.join(', ')}`);
 if (openQuestions.length > 0) lines.push(`진행을 막고 있는 것: ${openQuestions.join(', ')}`);
+/*
+  **브리핑의 셋째 줄에 재료를 준다.** 아래에서 *다음 할 일* 을 요구하면서 그 값을 주지
+  않고 있었다 — 그러면 AI 가 상태 파일을 뒤져 짐작하거나, 어제 사용자가 고른 것을 모른 채
+  같은 질문을 다시 한다. **한 문장만 싣는다**(`tasks` 는 아니다) — 여기 출력이 매 세션의
+  예산에서 빠지므로 목록까지 넣으면 일할 자리가 줄어든다. 상세는 AI 가 파일에서 읽는다.
+*/
+const nextUp = typeof state?.next_up?.choice === 'string' ? state.next_up.choice.trim() : '';
+if (nextUp) lines.push(`다음 할 일(사용자가 택했다): ${nextUp}`);
 
 lines.push(
   '',
