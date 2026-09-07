@@ -1,7 +1,6 @@
 # 외부 인터페이스 — 연동 방식과 전제
 #
 # 작성 단계: P3
-# 원본: agentic-ai DESIGN-00 6.6 · 6.7 · 8.4 · 10.6
 # status: migrated — 사용자 승인 전이다.
 #
 # **인터페이스의 개별 명세는 여기에 담지 않는다** — 대상 시스템·API·데이터소스의 실물
@@ -10,8 +9,6 @@
 
 meta:
   status: migrated
-  migrated_from: "agentic-ai/docs/design/foundation/06-architecture.md · 08-security-governance.md 8.4"
-  migrated_at: 2026-09-04
   baselined: null
 
 interfaces:

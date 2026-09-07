@@ -3,14 +3,12 @@ id: DES-001
 title: 턴 실행 점유 — 리스와 점유 토큰
 status: migrated
 traces_to: [ARCH-070, REQ-013, REQ-030, REQ-033, FEAT-216, FEAT-031]
-migrated_from: "agentic-ai/docs/design/agent/01-turn-execution-lease.md (DESIGN-04)"
-migrated_at: 2026-09-04
 verified: "2026-08-31 (리스 L1~L6) · 2026-09-01 (회차) — PoC 실행 검증 완료"
 ---
 
 # 턴 실행 점유 — 리스와 점유 토큰
 
-> **status: migrated — 사용자 승인 전이다.** 원본 설계에서 재편성해 들어왔고
+> **status: migrated — 사용자 승인 전이다.** 재편성해 들어왔고
 > P3 게이트를 통과하지 않았다.
 >
 > **규범은 [`spec/20-architecture.yaml`](../spec/20-architecture.yaml) 의 `execution_lease`(ARCH-070) 가 갖는다.**
@@ -427,7 +425,7 @@ BeforeCall 훅  →  interrupt() 판정  →  WrapCall 체인  →  노드 본�
 
 **이 설계는 PoC 에 구현해 실행 검증을 마쳤다** (리스 L1~L6: 2026-08-31 · 회차: 2026-09-01).
 PoC 코드는 **이 저장소에 들어오지 않았다** — 제품 코드가 아니며 판단이 끝나면 폐기하기로 한
-검증 코드다. 실행 방법과 원문은 아카이브된 agentic-ai 저장소의 `poc/` 에 있다.
+검증 코드다. **그래서 아래 결과는 다시 돌려 확인할 수 없다**(ASM-003).
 
 | # | 시나리오 | 성공 판정 | 결과 |
 |---|---|---|---|

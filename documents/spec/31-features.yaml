@@ -1,7 +1,6 @@
 # 기능 목록 — admin 34 · portal 25 · agent 21 · 공통 5 = 85
 #
 # 작성 단계: P3
-# 원본: agentic-ai DESIGN-00 10장 (핵심 기능 목록)
 # status: migrated — 사용자 승인 전이다.
 #
 # 재채번: ADM/POR/AGT/CMN- → FEAT-. 원본 ID 는 `legacy` 칸에 **이관 대조용으로만** 남긴다 —
@@ -13,8 +12,6 @@
 
 meta:
   status: migrated
-  migrated_from: "agentic-ai/docs/design/foundation/10-features.md"
-  migrated_at: 2026-09-04
   baselined: null
   numbering: "FEAT-001~034 admin · 101~125 portal · 201~221 agent · 301~305 공통"
 

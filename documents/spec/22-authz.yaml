@@ -1,15 +1,12 @@
 # 권한 모델 — 사용자 그룹 · 매핑 구조 · 행 스코프 · SQL 통제 4단계
 #
 # 작성 단계: P2
-# 원본: agentic-ai DESIGN-00 8.3 (데이터 접근 통제) · 8.4 (API·도구 실행 통제) · 8.11 (응답 경로)
 # status: migrated — 사용자 승인 전이다.
 #
 # **요구사항은 10-requirements.yaml(REQ-103·105·111)이 갖는다** — 여기는 *모델* 이다.
 
 meta:
   status: migrated
-  migrated_from: "agentic-ai/docs/design/foundation/08-security-governance.md 8.3·8.4·8.11"
-  migrated_at: 2026-09-04
   baselined: null
 
 # ── 통제의 축 ──────────────────────────────────────────────────────

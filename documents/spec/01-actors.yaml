@@ -1,15 +1,12 @@
 # 액터 — 사용자 유형과 외부 시스템
 #
 # 작성 단계: P0
-# 원본: agentic-ai DESIGN-00 (6.2 모듈 구성 · 6.7 인증·계정 · 6.9 고객사 협의) · DESIGN-06 (5장 통제 경계)
 # status: migrated — 사용자 승인 전이다.
 #
 # **액터는 요구사항의 근거다**(추적성 T1). REQ 는 최소 하나의 ACT 와 연결된다.
 
 meta:
   status: migrated
-  migrated_from: "agentic-ai/docs/design/foundation/06-architecture.md · menus/01-menu-tree.md"
-  migrated_at: 2026-09-04
   baselined: null
 
 # ── 사람 ───────────────────────────────────────────────────────────
