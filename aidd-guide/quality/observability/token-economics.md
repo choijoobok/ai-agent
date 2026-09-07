@@ -4,9 +4,9 @@ title: "토큰 비용 관측"
 category: quality/observability
 type: operation
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-07
 status: active
-sources: [Anthropic prompt cache 5분 TTL, /cost 명령]
+sources: []
 tier: 3
 tags: [observability, token, cost, cache, hit-rate]
 ---
@@ -62,3 +62,4 @@ Context @ end: 47%
 
 - [harness/context/budget.md](../../harness/context/budget.md) — 컨텍스트 측정 정책
 - [standard/safety/rate-limit.md](../../standard/safety/rate-limit.md) — 외부 API rate limit
+- **근거** — Anthropic 의 prompt cache TTL 문서와 하네스의 `/cost`. **저장소 안에 없다**(그래서 `sources:` 가 비어 있다)

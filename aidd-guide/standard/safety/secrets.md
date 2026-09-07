@@ -7,7 +7,7 @@ class: policy
 created: 2026-05-04
 updated: 2026-09-07
 status: active
-sources: [git-secrets, OWASP Top 10 A07]
+sources: [".gitignore"]
 tier: 4
 tags: [safety, secrets, credentials, env]
 ---
@@ -53,7 +53,8 @@ AKIA[0-9A-Z]{16}                     # AWS Access Key
 
 ## 도구·훅 연동
 
-- `.gitignore` 에 `.env`, `*.key`, `*.pem` 등록 확인 (Step 0)
+- [`.gitignore`](../../../.gitignore) 에 `.env` · `*.key` · `*.pem` 등록 확인 (Step 0).
+  **2026-09-07 에 실제로 빠져 있었다** — 추적되는 파일은 없었으나 막아 둔 것이 없었다.
 - 가능하면 `gitleaks` / `git-secrets` 훅 도입 권장
 - Claude Code permission 에서 `.env` 류 read를 ask 모드로 강제 가능
 

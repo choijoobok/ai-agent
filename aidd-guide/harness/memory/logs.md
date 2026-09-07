@@ -4,9 +4,9 @@ title: "raw · summary 로그 정책"
 category: harness/memory
 type: operation
 created: "2026-05-04"
-updated: "2026-09-03"
+updated: 2026-09-07
 status: active
-sources: ["CLAUDE.md §10", "chat-history/"]
+sources: ["CLAUDE.md", ".claude/hooks/log-raw.mjs", ".claude/hooks/log-mask.patterns"]
 tier: 1
 tags: [memory, log, episodic, chat-history]
 ---

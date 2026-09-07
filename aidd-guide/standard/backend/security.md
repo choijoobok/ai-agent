@@ -7,7 +7,7 @@ class: policy
 created: 2026-05-04
 updated: 2026-09-07
 status: active
-sources: ["sources/backend/api/", "aidd-guide/standard/backend/security.md"]
+sources: ["sources/backend/api/"]
 tier: 1
 tags: [backend, security, authorization, menu, action]
 ---
@@ -18,7 +18,9 @@ tags: [backend, security, authorization, menu, action]
 > 프론트가 든 권한 사본은 재조회 전까지 낡을 수 있다 — 방금 회수된 권한의 버튼이 아직
 > 보일 수 있고, **그 클릭을 막는 것은 서버다.**
 >
-> 유도과정·비밀번호 정책·PII·보안 헤더는 [standard/backend/security.md](./security.md).
+> 개인정보는 [standard/safety/pii.md](../safety/pii.md) · [pii-vault.md](./pii-vault.md), 비밀번호
+> 정책은 [knowledge/sys/user-role.md](../../knowledge/sys/user-role.md) 가 갖는다.
+> **보안 헤더 규약은 아직 없다** — 이 문서에도 없다.
 
 ## 1. 계층 셋 — 프리픽스가 보안 등급이다
 

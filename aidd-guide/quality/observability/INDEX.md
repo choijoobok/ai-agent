@@ -4,9 +4,9 @@ title: "quality/observability — 관측·텔레메트리 INDEX"
 category: quality/observability
 type: operation
 created: 2026-05-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
-sources: [Hamel Husain Evals, Anthropic 비용 가이드]
+sources: []
 tier: 3
 tags: [observability, telemetry, routing-accuracy, token, monitoring, index]
 ---
@@ -53,3 +53,4 @@ tags: [observability, telemetry, routing-accuracy, token, monitoring, index]
 
 - [quality/evals](../evals/INDEX.md) — 골든셋 정의 (관측 데이터의 입력)
 - [harness/context/budget.md](../../harness/context/budget.md) — 컨텍스트 측정의 정책
+- **근거** — Hamel Husain 의 evals 글과 Anthropic 비용 가이드. **저장소 안에 없다**(그래서 `sources:` 가 비어 있다)

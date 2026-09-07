@@ -7,7 +7,7 @@ class: policy
 created: 2026-05-04
 updated: 2026-09-07
 status: active
-sources: ["sources/backend/", "aidd-guide/standard/backend/packages.md"]
+sources: ["sources/backend/"]
 tier: 2
 tags: [backend, module, package, naming, transaction]
 ---

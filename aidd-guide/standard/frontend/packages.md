@@ -7,7 +7,7 @@ class: policy
 created: 2026-05-04
 updated: 2026-09-07
 status: active
-sources: ["sources/frontend/src/", "sources/frontend/eslint.config.js", "aidd-guide/standard/frontend/packages.md"]
+sources: ["sources/frontend/src/", "sources/frontend/eslint.config.js"]
 tier: 2
 tags: [frontend, structure, shared, state, zustand]
 ---

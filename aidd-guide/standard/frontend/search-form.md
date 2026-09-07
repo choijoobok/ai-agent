@@ -7,7 +7,7 @@ class: contract
 created: 2026-05-04
 updated: 2026-09-07
 status: active
-sources: ["sources/frontend/src/shared/searchform/", "aidd-guide/standard/frontend/search-form.md"]
+sources: ["sources/frontend/src/shared/searchform/"]
 tier: 1
 tags: [frontend, search, form, condition]
 ---

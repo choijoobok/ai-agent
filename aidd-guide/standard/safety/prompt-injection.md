@@ -7,7 +7,7 @@ class: policy
 created: 2026-05-04
 updated: 2026-09-07
 status: active
-sources: [Anthropic critical_injection_defense, system-prompt: critical_security_rules]
+sources: []
 tier: 4
 tags: [safety, prompt-injection, trust-boundary]
 ---
@@ -74,6 +74,8 @@ quality/observability 의 `routing-accuracy.md` 와 별개로, **인젝션 시�
 
 ## 관련
 
-- 시스템 프롬프트 `<critical_injection_defense>` · `<critical_security_rules>` — 상위 헌법
+- 시스템 프롬프트 `<critical_injection_defense>` · `<critical_security_rules>` — 상위 헌법.
+  이 문서의 근거이며 **저장소 안에 없다** — 그래서 `sources:` 가 비어 있다.
+  OWASP LLM Top 10 의 프롬프트 인젝션 항목과 같은 방향이다
 - [pii.md](./pii.md) — PII 추출 시도 차단
 - [secrets.md](./secrets.md) — 비밀 노출 차단

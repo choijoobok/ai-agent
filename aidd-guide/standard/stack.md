@@ -7,7 +7,7 @@ class: none
 created: 2026-05-04
 updated: 2026-09-07
 status: active
-sources: ["sources/gradle/libs.versions.toml", "sources/frontend/package.json", "aidd-guide/standard/stack.md"]
+sources: ["sources/gradle/libs.versions.toml", "sources/frontend/package.json"]
 tier: 2
 tags: [stack, version, gradle, npm]
 ---

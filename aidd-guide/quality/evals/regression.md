@@ -4,9 +4,9 @@ title: "회귀 검출 절차"
 category: quality/evals
 type: operation
 created: 2026-05-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
-sources: [Hamel Husain Evals]
+sources: []
 tier: 3
 tags: [evals, regression, before-after]
 ---
@@ -72,3 +72,4 @@ Phase 4 — 판단
 - [golden-set.md](./golden-set.md)
 - [ab-testing.md](./ab-testing.md)
 - [quality/observability/routing-accuracy.md](../observability/routing-accuracy.md)
+- **근거** — Hamel Husain 의 evals 글. **저장소 안에 없다**(그래서 `sources:` 가 비어 있다)

@@ -7,7 +7,7 @@ class: policy
 created: 2026-05-04
 updated: 2026-09-07
 status: active
-sources: ["sources/frontend/src/shared/screentabs/", "sources/frontend/src/layouts/", "aidd-guide/standard/frontend/packages.md", "aidd-guide/standard/frontend/tabs.md", "sources/frontend/src/shared/hooks/", "sources/frontend/src/shared/routes/"]
+sources: ["sources/frontend/src/shared/screentabs/", "sources/frontend/src/layouts/", "aidd-guide/standard/frontend/packages.md", "sources/frontend/src/shared/hooks/", "sources/frontend/src/shared/routes/"]
 tier: 1
 tags: [frontend, tabs, shell, routing]
 ---
@@ -16,8 +16,6 @@ tags: [frontend, tabs, shell, routing]
 
 > **가장 구조적 영향이 큰 결정이다.** 화면 하나를 만들 때도 *같은 화면이 동시에 여러 개
 > 살아 있을 수 있다* 는 전제가 따라온다.
->
-> 유도과정·인터랙션 상세는 [standard/frontend/tabs.md](./tabs.md).
 
 ## 1. 화면 컴포넌트 작성 전제 — 여기가 제일 중요하다
 
@@ -167,4 +165,3 @@ menu-tree.yaml  →  MENU_URL  →  screenRegistry.ts  →  화면 컴포넌트
 - [packages.md](./packages.md) — 스토어 넷 · `tabStore`
 - [grid.md](./grid.md) — `<FillColumn>` 뼈대
 - [../backend/security.md](../backend/security.md) — SPA 에는 화면 로드 요청이 없다
-- [standard/frontend/tabs.md](./tabs.md) — 셸 인터랙션 원문

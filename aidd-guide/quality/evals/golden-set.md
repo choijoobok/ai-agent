@@ -4,9 +4,9 @@ title: "골든셋 포맷·관리 정책"
 category: quality/evals
 type: operation
 created: 2026-05-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
-sources: [Hamel Husain Evals]
+sources: []
 tier: 3
 tags: [evals, golden-set, fixture]
 ---
@@ -79,3 +79,4 @@ quality/evals/
 - [regression.md](./regression.md) — 회귀 시 골든셋 사용법
 - [ab-testing.md](./ab-testing.md) — A/B 시 같은 골든셋 쓰기
 - [quality/observability/routing-accuracy.md](../observability/routing-accuracy.md) — routing 골든셋 측정
+- **근거** — Hamel Husain 의 evals 글. **저장소 안에 없다**(그래서 `sources:` 가 비어 있다)

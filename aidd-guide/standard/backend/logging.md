@@ -7,7 +7,7 @@ class: policy
 created: 2026-09-03
 updated: 2026-09-07
 status: active
-sources: ["sources/backend/api/", "sources/backend/support/logging/", "aidd-guide/standard/backend/packages.md", "aidd-guide/standard/backend/logging.md"]
+sources: ["sources/backend/api/", "sources/backend/support/logging/", "aidd-guide/standard/backend/packages.md"]
 tier: 2
 tags: [backend, logging, audit, masking, p6spy]
 ---

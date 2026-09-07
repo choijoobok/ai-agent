@@ -4,9 +4,9 @@ title: "playbook — 화면 레시피 INDEX"
 category: playbook
 type: operation
 created: 2026-05-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
-sources: ["sources/frontend/src/features/sample/", "sources/backend/api/src/main/java/com/aiagent/api/sample/", "aidd-guide/playbook/INDEX.md"]
+sources: ["sources/frontend/src/features/sample/", "sources/backend/api/src/main/java/com/aiagent/api/sample/"]
 tier: 2
 tags: [playbook, recipe, index]
 ---

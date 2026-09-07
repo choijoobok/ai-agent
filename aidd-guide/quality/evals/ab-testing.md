@@ -4,9 +4,9 @@ title: "프롬프트 변형 A/B 테스트"
 category: quality/evals
 type: operation
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-07
 status: active
-sources: [Hamel Husain Evals, 일반 A/B 방법론]
+sources: []
 tier: 3
 tags: [evals, ab-testing, variants]
 ---
@@ -81,3 +81,4 @@ Variant B (수정): 29/30 pass (97%)
 
 - [golden-set.md](./golden-set.md)
 - [regression.md](./regression.md)
+- **근거** — Hamel Husain 의 evals 글과 일반 A/B 방법론. **저장소 안에 없다**(그래서 `sources:` 가 비어 있다)

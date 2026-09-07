@@ -7,7 +7,7 @@ class: policy
 created: 2026-05-04
 updated: 2026-09-07
 status: active
-sources: [Anthropic user_privacy block, GDPR Article 4]
+sources: [".claude/hooks/log-mask.patterns", ".claude/hooks/log-raw.mjs"]
 tier: 4
 tags: [safety, pii, privacy]
 ---
@@ -27,7 +27,9 @@ tags: [safety, pii, privacy]
 ## 작업 규칙
 
 1. **소스 코드 작업 시** — 테스트/예시 데이터에 실제 PII 사용 금지. `홍길동`, `010-0000-0000`, `test@example.com` 같은 명백한 더미만 사용.
-2. **로그·summary 작성 시** — 사용자 메시지 인용 시 PII 발견되면 `***` 마스킹. raw 로그는 훅이 별도 보호.
+2. **로그·summary 작성 시** — 사용자 메시지 인용 시 PII 발견되면 `***` 마스킹.
+   raw 로그는 훅이 별도 보호한다 — 패턴은 [`.claude/hooks/log-mask.patterns`](../../../.claude/hooks/log-mask.patterns) 이고
+   읽는 것은 `log-raw.mjs` 다. **여기의 규칙과 그 파일은 같은 것을 노린다** — 어긋나면 그 파일을 고친다.
 3. **외부 전송 시** — 외부 API/사이트로 사용자 데이터를 전송할 때는 **반드시 사용자 확인**. URL 파라미터 PII 금지(브라우저 히스토리·Referer 노출).
 4. **DB 마이그레이션·덤프 시** — 운영 데이터를 개발 DB로 옮길 때 익명화 필수. SQL 결과를 그대로 채팅에 붙여넣지 않음.
 

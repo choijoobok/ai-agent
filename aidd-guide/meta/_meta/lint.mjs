@@ -115,6 +115,32 @@ const DEPRECATED_ROOTS = ['sources/frontend/src/shared', 'sources/backend'];
 /** `sources:` 의 값 중 <b>저장소 경로</b>로 볼 접두. 그 밖은 인용이라 실물이 없다. */
 const REPO_ROOTS = ['sources/', 'aidd-guide/', 'documents/', 'user-guide/', '.claude/', '.github/'];
 
+/**
+ * `standard/`·`playbook/` 인데 <b>`sources:` 를 비울 수 있는</b> 곳.
+ *
+ * <p>「비울 수 없다」의 근거는 <i>소스를 설명하는 문서라서</i> 다(meta/meta-block.md 작성
+ * 규칙 3). `standard/safety/` 는 <b>그 전제에 해당하지 않는다</b> — AI 가 다루지 말아야
+ * 할 데이터와 따르지 말아야 할 명령을 정하는 <b>작업 규칙</b>이고, 설명하는 소스가 없다.
+ *
+ * <p>그래서 넷이 규칙을 지키려고 <b>외부 출처를 적어 두었다</b>(Anthropic · OWASP ·
+ * GDPR). 규칙을 지킬 수 없는 문서에 규칙을 물리면 <b>지키는 척하는 값</b>이 들어오고,
+ * 그것이 검사를 통과하며 필드 전체의 뜻을 떨어뜨린다. 실물이 있는 둘(`pii.md` ·
+ * `secrets.md`)은 비워 두지 않았다 — <b>면제가 아니라 해당하지 않는 것</b>이다.
+ */
+const SOURCELESS = ['standard/safety/'];
+
+/**
+ * 이 엔트리가 <b>저장소 경로</b>인가 — 접두 목록이거나 <b>루트에 바로 있는 파일</b>.
+ *
+ * <p>{@link REPO_ROOTS} 는 폴더 접두만 담아서 `CLAUDE.md` · `.gitignore` 처럼 루트에 있는
+ * 파일을 <b>경로로 보지 않았다.</b> 그래서 그것을 적은 문서 다섯의 엔트리는 <b>실물
+ * 대조를 건너뛰고 있었다</b> — 파일 이름이 바뀌어도 아무 일이 없었다.
+ */
+function isRepoPath(entry) {
+  if (REPO_ROOTS.some((root) => entry.startsWith(root))) return true;
+  return !entry.includes('/') && existsSync(join(REPO, entry));
+}
+
 /** 실물 목록을 만들 때 건너뛸 폴더 — 생성물이 들어오면 없는 경로가 있는 것처럼 보인다. */
 const SOURCE_SKIP = new Set(['node_modules', '.git', 'build', 'dist', '.gradle', 'out', 'bin']);
 
@@ -647,11 +673,41 @@ function checkSourcesMeta() {
     const issues = [];
 
     const bare = line.replace(/[[\]\s]/g, '');
-    if (bare === '' && (rel.startsWith('standard/') || rel.startsWith('playbook/'))) {
+    const needsSource =
+      (rel.startsWith('standard/') || rel.startsWith('playbook/')) &&
+      !SOURCELESS.some((prefix) => rel.startsWith(prefix));
+    if (bare === '' && needsSource) {
       issues.push('`sources:` 가 비었다 — 소스를 설명하는 문서이며 그 값이 guide-drift 훅의 역인덱스다');
     }
+
+    /*
+      <b>값이 있는데 저장소 경로가 하나도 없으면 위반이다.</b>
+
+      `sources: [Anthropic critical_injection_defense, OWASP LLM Top 10]` 은 <i>비어 있지도
+      않고 경로도 아니라</i> 두 검사 사이로 빠져나갔다 — 아래의 실물 대조는 저장소 접두로
+      시작하는 엔트리만 보고, 위의 비었나 검사는 문자가 있으면 통과시킨다. 그 상태로
+      `standard/safety/` 넷과 `quality/` 다섯이 <b>규칙 3 을 어긴 채 초록</b>이었다.
+    */
+    if (bare !== '' && !entries.some(isRepoPath)) {
+      issues.push(
+        '`sources:` 에 저장소 경로가 하나도 없다 — 외부 출처는 본문 문장으로 쓴다(meta/meta-block.md 작성 규칙 3)',
+      );
+    }
+
     for (const entry of entries) {
-      if (!REPO_ROOTS.some((root) => entry.startsWith(root))) continue;
+      /*
+        <b>자기 자신을 가리키는 엔트리.</b> 실물이 있으므로 아래 대조를 통과하고, 뜻은
+        없다 — *이 문서가 설명하는 소스* 가 이 문서일 수는 없다. `guide-drift` 는
+        `sources/` 로 시작하지 않는 경로에서 즉시 통과하므로 <b>훅을 헛짚게 하지는
+        않지만</b>, 필드를 읽어 *무엇에 대한 문서인가* 를 판단하는 쪽을 헛짚게 한다.
+
+        문서 열두 개에 있었고 전부 한 뿌리였다 — 옛 원문을 가리키던 값이 문서가 흡수될
+        때 자기를 가리키게 됐다. 같은 흡수가 본문에도 자기 링크 넷을 남겼다.
+      */
+      if (entry === `aidd-guide/${rel}`) {
+        issues.push(`\`sources:\` 가 이 문서 자신을 가리킨다 — ${entry}`);
+      }
+      if (!isRepoPath(entry)) continue;
       real ??= repoPaths();
       if (!real.some((p) => segmentsMatch(entry, p))) {
         issues.push(`\`sources:\` 가 없는 경로를 가리킨다 — ${entry}`);

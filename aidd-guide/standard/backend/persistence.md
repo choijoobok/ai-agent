@@ -7,7 +7,7 @@ class: policy
 created: 2026-05-04
 updated: 2026-09-07
 status: active
-sources: ["sources/backend/domain/", "sources/backend/core/search/", "aidd-guide/standard/backend/packages.md", "aidd-guide/standard/backend/persistence.md", "sources/backend/core/domain/"]
+sources: ["sources/backend/domain/", "sources/backend/core/search/", "aidd-guide/standard/backend/packages.md", "sources/backend/core/domain/"]
 tier: 2
 tags: [backend, jpa, querydsl, mybatis, liquibase, portability]
 ---
@@ -17,8 +17,6 @@ tags: [backend, jpa, querydsl, mybatis, liquibase, portability]
 > **다섯 벤더에서 같은 소스가 돈다**(PostgreSQL · Oracle · MSSQL · MySQL · MariaDB).
 > 벤더 차이는 *나중에 고치는 버그* 가 아니라 **그 벤더로 배포한 뒤에야 나타나는 버그**다 —
 > 개발용 PostgreSQL 은 다 받아준다.
->
-> 유도과정·실측은 [standard/backend/persistence.md](./persistence.md).
 
 ## 1. 셋의 경계
 

@@ -7,7 +7,7 @@ class: policy
 created: 2026-05-04
 updated: 2026-09-07
 status: active
-sources: [Anthropic API 문서, Bash sleep 정책]
+sources: []
 tier: 4
 tags: [safety, rate-limit, api, cost-guard]
 ---
@@ -29,7 +29,9 @@ tags: [safety, rate-limit, api, cost-guard]
 
 1. **루프 사전 종료 조건 설정** — `for/while` 안에서 외부 호출 시 max iteration · max cost · timeout 명시.
 2. **백오프**: 실패 시 기하급수 백오프 (1s → 2s → 4s → 8s, 최대 60s).
-3. **간격 최소값**: 외부 API 폴링은 최소 5초 간격. 본 시스템 `Bash sleep` 정책과 일치 (300s 미만은 캐시 보존).
+3. **간격 최소값**: 외부 API 폴링은 최소 5초 간격. 하네스의 `Bash sleep` 정책과 일치한다
+   (300s 미만은 캐시 보존) — **그 정책은 하네스의 것이고 이 저장소의 훅이 아니다.**
+   `guard-bash` 는 되돌릴 수 없는 명령을 막을 뿐 간격을 보지 않는다.
 4. **비용 인식**: 작업당 예상 호출 수 × 비용 ≥ $1 면 사용자에 사전 안내.
 5. **idempotency**: 같은 입력으로 동일 결과여야 — 재시도 시 부작용 없음 확인.
 
