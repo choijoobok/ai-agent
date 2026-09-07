@@ -42,7 +42,7 @@ knowledge         표가 무엇을 담나                           ← 늘
   ├─ "화면 하나 만들어줘"                  → screen.md   (워크플로 ①~⑥ · 절차 일곱)
   ├─ "이 표로 조회·저장 화면"              → crud.md     (가장 흔한 요청의 실제 대화)
   ├─ 요건서를 쓰다 빈 칸을 만났다          → auto-completion.md (채울 수 있나 물어야 하나)
-  ├─ **요건서에서 목업을 만든다**           → `.claude/skills/mockup/SKILL.md` (`/mockup`)
+  ├─ **요건서에서 목업을 만든다**           → [SKILL.md](../../../.claude/skills/mockup/SKILL.md) (`/mockup`)
   └─ 화면에 이 특성이 있다                 → overlay/INDEX.md
 ```
 

@@ -71,7 +71,7 @@ tests/
 db/migrations/             # 순번_설명.sql + 순번_설명_rollback.sql
 ```
 
-- 모든 소스 파일 상단에 `@feat FEAT-###` 태그 (→ `aidd-guide/process/05-traceability.md` §4)
+- 모든 소스 파일 상단에 `@feat FEAT-###` 태그 (→ [05-traceability.md](../process/05-traceability.md) §4)
 - 업무 규칙은 컨트롤러가 아니라 서비스/도메인에 둔다 (테스트 가능하게)
 - 권한 검사는 API 레벨. 화면 숨김만으로는 미충족
 - 에러는 spec의 에러코드로 던진다. 임의 메시지 금지
@@ -124,6 +124,6 @@ db/migrations/             # 순번_설명.sql + 순번_설명_rollback.sql
 | 사용자가 중간에 새 기능 요청 | CR 절차. 현재 슬라이스는 끝내고 처리 |
 
 ## 7. G4 미니게이트 (슬라이스마다)
-→ `aidd-guide/process/04-gates.md` G4 체크리스트
+→ [04-gates.md](../process/04-gates.md) 의 G4 체크리스트
 
 전 슬라이스 done → `/phase-gate P4` → P5로.

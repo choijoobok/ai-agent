@@ -126,4 +126,4 @@ REQ 47개 / 이행 45 / 미이행 2 (CR-009로 2차 이관, 사용자 합의)
 **회고 결과는 [`process/`](../process/01-overview.md) 와 [`phase/`](P0-inception.md) 에 반영한다.** 프레임워크가 프로젝트마다 자란다.
 
 ## 7. G6 게이트
-→ `aidd-guide/process/04-gates.md` G6
+→ [04-gates.md](../process/04-gates.md) 의 G6
