@@ -259,7 +259,7 @@ sequenceDiagram
 
 ## 8. ⑦ 테스트 케이스
 
-`aidd-guide/quality/INDEX.md` §1 참조. FEAT마다 최소 세트(정상·입력검증·업무예외·권한)를 채운다.
+`aidd-guide/quality/test-design.md` §1 참조. FEAT마다 최소 세트(정상·입력검증·업무예외·권한)를 채운다.
 **구현 전에 TC가 존재해야 한다.** 이것이 P4의 TEST-FIRST를 가능하게 한다.
 
 ## 9. ⑧ 슬라이스 백로그

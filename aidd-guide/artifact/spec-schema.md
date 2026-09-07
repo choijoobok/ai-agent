@@ -34,7 +34,7 @@ tags: [spec, ssot, yaml]
 | `50-api.yaml` | P3 | API 명세 | 〃 §5 |
 | `51-interfaces.yaml` | P3 | 외부 시스템 연동 | 〃 |
 | `60-screens.yaml` | P3 | 화면 정의 | 〃 §6 |
-| `70-testcases.yaml` | P3~ | 테스트 케이스 | `aidd-guide/quality/INDEX.md` §1 |
+| `70-testcases.yaml` | P3~ | 테스트 케이스 | `aidd-guide/quality/test-design.md` §1 |
 
 ## 공통 규칙
 
