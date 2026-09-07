@@ -68,7 +68,13 @@ public class MessageService {
         return snapshot(lang).bundled();
     }
 
-    /** 메시지를 고친 뒤 부른다 — 관리 화면(63)이 생기면 그 저장이 이 자리를 부른다. */
+    /**
+     * 메시지를 고친 뒤 부른다 — {@code MessageAdminService} · {@code CodeAdminService} 의
+     * 저장이 부른다(코드명의 원본이 {@code SYS_MESSAGE} 라 코드 저장도 함께 비운다).
+     *
+     * <p><b>부른 노드만 비운다.</b> {@link #snapshots} 가 노드마다 따로 있어 다중 노드에서는
+     * 나머지 노드가 최대 TTL 만큼 옛 문구를 계속 낸다 — backend/caching.md 의 「보장하는 것」.
+     */
     public void evict() {
         snapshots.clear();
     }
