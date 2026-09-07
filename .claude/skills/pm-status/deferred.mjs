@@ -137,6 +137,12 @@ for (const f of files) {
   lines.forEach((line, i) => {
     const m = line.match(/@defer\s+([A-Z]?[0-9]|지금|\?)[:\s]*(.*)$/);
     if (!m) return;
+    /*
+     * **인라인 코드 안의 것은 태그가 아니라 태그를 가리키는 말이다.** `@defer ?` 로 남겼다 ·
+     * ASM-002(`@defer P1`)처럼 **설명하는 문장**이 항목으로 서면, 목록이 남의 문장 꼬리를
+     * 미룬 것으로 싣는다(2026-09-07 에 하루 세 번 걸렸다). 여는 백틱의 수가 홀수면 안이다.
+     */
+    if (((line.slice(0, m.index).match(/`/g) || []).length % 2) === 1) return;
     // 앞뒤의 꾸밈(백틱 · 별표 · 이음표)과, 표 칸에서 딸려 오는 `|` 를 턴다.
     const more = continuation(lines, i, f);
     const joined = strip(m[2] + more.text);
