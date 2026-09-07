@@ -103,10 +103,11 @@ features/user/
 > 로 올리면 목록이 길어지고 아무도 다 읽지 않는다. **조건은 *두 번째 사용* 이지
 > *공통일 것 같음* 이 아니다.**
 
-> **@defer P4 — 공통물 `shared/authz/roleHolder.ts` 가 `SCHEDULED` 를 `warn` 으로, 화면 둘은 `none` 으로 칠한다 — 공통물을 맞춘다**
-> `features/menu` 와 `features/user` 가 `none` 이고, 게다가 앞의 주석은 *같은 맵이다* 라고
-> 적어 두었다. 화면 둘이 같으므로 공통물을 맞추는 쪽이며, **등재만으로는 갈림을 막지
-> 못한다**는 실례다(6차 재현이 찾았다).
+> **등재만으로는 갈림을 막지 못한다** — 목록에 올린 뒤에도 공통물과 화면이 **같은 상태에
+> 다른 색**을 주고 있었다(`SCHEDULED` 가 `roleHolder.ts` 에서 `warn`, `features/menu`·
+> `features/user` 에서 `none`). 6차 재현이 찾아 2026-09-07 에 `none` 으로 맞췄다.
+> **색의 정본이 아직 세 곳**이라 다시 갈릴 수 있다 — 무엇을 올려야 그것이 막히는지는
+> 아래 *언제 올리나* 의 판정이 아니라 **선언 검사**가 답한다([quality/test-design.md](../../quality/test-design.md)).
 
 ### 이름을 바꿀 때 — `@deprecated` 가 인용처를 열거하게 한다
 

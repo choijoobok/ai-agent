@@ -204,8 +204,14 @@ function holderColumns(): ColumnDef<RoleHolderRow>[] {
         감추지 않는 것이 요점이며, *지금은 영향이 없지만 다시 유효해질 수 있다*.
       */
       derive: (row) => label(GRANT_LABEL[row.grantState]),
+      /*
+        <b>예정은 `none` 이다</b>(사용자 결정 2026-09-07). 한때 여기만 `warn` 이고
+        {@code features/menu} · {@code features/user} 는 `none` 이었다 — <b>같은 상태에 다른 색</b>이라
+        화면을 오가는 사람이 <i>다른 뜻인가</i> 를 묻게 됐다. 예정은 경고할 일이 아니다:
+        <b>아직 아무 영향이 없을 뿐</b>이며 관리자가 그렇게 넣은 것이다.
+      */
       tone: {
-        [label(GRANT_LABEL.SCHEDULED)]: 'warn',
+        [label(GRANT_LABEL.SCHEDULED)]: 'none',
         [label(GRANT_LABEL.ACTIVE)]: 'ok',
         [label(GRANT_LABEL.EXPIRED)]: 'muted',
       },
