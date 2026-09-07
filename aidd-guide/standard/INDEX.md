@@ -89,7 +89,7 @@ cd sources/frontend && npx tsc -b --noEmit   # 계약이 깨지면 여기서 전
 | LLM-FWK-004 | [seed.md](./seed.md) | 생성 시드 — 절차와 검증 | ✅ |
 | LLM-FWK-010 | [hub-conventions.md](./hub-conventions.md) | **Hub 를 얹을 때만** 더해지는 규약 — 템플릿 표준이 먼저다 | ✅ |
 | LLM-FWK-011 | [registry.md](./registry.md) | **공통물 목록 — 생성물.** 이미 있는 것과 **문서가 없는 것** | ✅ |
-| LLM-FWK-IDX-BE | [standard/backend/INDEX.md](./backend/INDEX.md) | 백엔드 표준 13 | ✅ |
+| LLM-FWK-IDX-BE | [standard/backend/INDEX.md](./backend/INDEX.md) | 백엔드 표준 15 | ✅ |
 | LLM-FWK-IDX-FE | [standard/frontend/INDEX.md](./frontend/INDEX.md) | 프론트엔드 표준 10 | ✅ |
 | LLM-FWK-IDX-SF | [standard/safety/INDEX.md](./safety/INDEX.md) | 안전 넷 — PII · 인젝션 · 비밀값 · 호출 제한 | ✅ |
 

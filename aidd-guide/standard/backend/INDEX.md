@@ -38,6 +38,8 @@ tags: [backend, index]
   ├─ "비동기 · Virtual Thread · 중복 요청"    → crosscutting.md
   ├─ "어떤 락을 쓰나"                        → persistence.md
   ├─ "개인정보를 어떻게 담나"                → pii-vault.md
+  ├─ "지금 몇 시인가 · 오늘이 언제인가"      → time.md  (`now()` 를 직접 부르지 않는다)
+  ├─ "메일을 보내려면"                       → mail.md  (**없을 수 있는 경로다**)
   └─ "시드를 언제 어떻게 다시 만드나"        → ../seed.md
 ```
 
@@ -60,6 +62,8 @@ tags: [backend, index]
 | LLM-FWK-BE-010 | [logging.md](./logging.md) | 요청 전문 · SQL 로그 · 마스킹 | ✅ |
 | LLM-FWK-BE-011 | [progress.md](./progress.md) | 진행률 — 맡기고 돌아온다 · 실행기 · 청소 | ✅ |
 | LLM-FWK-BE-012 | [batch.md](./batch.md) | 배치 — 등록이 곧 스케줄 · 락 · 유령 | ✅ |
+| LLM-FWK-BE-015 | [time.md](./time.md) | 시각의 단일 출처 · 업무 달력 날짜 — **`now()` 금지** | ✅ |
+| LLM-FWK-BE-016 | [mail.md](./mail.md) | 메일 — 설정이 스위치 · 던지지 않는다 · 없을 수 있다 | ✅ |
 | LLM-FWK-004 | [../seed.md](../seed.md) | 생성 시드 — 절차와 검증 (백엔드 밖) | ✅ |
 
 ## 기계가 지키는 것

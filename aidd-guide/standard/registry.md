@@ -56,8 +56,8 @@ tags: [standard, registry, shared, commons]
 | support | `support/excel/` | 1 | [../playbook/excel-download.md](../playbook/excel-download.md) |
 | support | `support/lock/` | 9 | [./backend/batch.md](./backend/batch.md) |
 | support | `support/logging/` | 5 | [./backend/logging.md](./backend/logging.md) |
-| support | `support/mail/` | 1 | **— 없음** |
-| support | `support/time/` | 1 | **— 없음** |
+| support | `support/mail/` | 1 | [./backend/mail.md](./backend/mail.md) |
+| support | `support/time/` | 1 | [./backend/time.md](./backend/time.md) |
 
 - **「사는 곳」의 뿌리 셋**: `shared/` = `sources/frontend/src/shared/` ·
   `core/` = `sources/backend/core/…/com/aiagent/core/` ·
@@ -66,9 +66,9 @@ tags: [standard, registry, shared, commons]
 - **「어디를 읽나」는 계산이다** — 가이드 문서의 `sources:` 메타를 뒤집어 얻는다.
   `guide-drift` 훅과 **같은 매처**를 쓰므로, 여기가 빈 공통물은 **그 훅도 가리키지 못한다.**
 
-## 어디를 읽나가 빈 것 — 2 / 33
+## 어디를 읽나가 빈 것 — 0 / 33
 
-`support/mail/` · `support/time/`
+없다.
 
 **둘 중 하나다.** ① 문서가 정말 없다, 또는 ② 문서는 있는데 그 문서의 `sources:` 가 이
 폴더를 적지 않았다. **②가 먼저다** — 적는 것이 한 줄이고, 적으면 `guide-drift` 가 그
