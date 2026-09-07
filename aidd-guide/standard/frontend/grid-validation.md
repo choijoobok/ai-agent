@@ -3,8 +3,9 @@ id: LLM-FWK-FE-012
 title: "그리드 동작 — 정렬·필터 · 편집 · 검증 세 층"
 category: standard/frontend
 type: operation
+class: contract
 created: 2026-09-06
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: ["sources/frontend/src/shared/grid/", "sources/frontend/src/features/sample/"]
 tier: 2

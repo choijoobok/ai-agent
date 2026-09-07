@@ -3,8 +3,9 @@ id: LLM-FWK-FE-008
 title: "선언 어휘 — 컬럼 · 검색 필드 · api · prop 전량"
 category: standard/frontend
 type: operation
+class: contract
 created: 2026-09-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: ["sources/frontend/src/shared/grid/types.ts", "sources/frontend/src/shared/grid/useGridController.ts", "sources/frontend/src/shared/grid/DataGrid.tsx", "sources/frontend/src/shared/searchform/types.ts"]
 tier: 1

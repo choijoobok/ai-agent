@@ -3,8 +3,9 @@ id: LLM-FWK-BE-010
 title: "로깅 — 요청 전문 · 애플리케이션 로그 · 마스킹"
 category: standard/backend
 type: operation
+class: policy
 created: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/api/", "sources/backend/support/logging/", "aidd-guide/standard/backend/packages.md", "aidd-guide/standard/backend/logging.md"]
 tier: 2
@@ -132,6 +133,21 @@ Logback `SiftingAppender` + MDC `userId` 로 나눈다(`logs/users/${userId}/app
 소스에 남는 로그·예외의 기본 메시지는 **한국어**다(CLAUDE.md §5-5). 정본은
 `SYS_MESSAGE` 이고 소스의 것은 폴백·진단이며, **그것을 읽는 사람이 한국어 운영자**다.
 사용자에게 보이는 문구만 `SYS_MESSAGE` 를 거친다.
+
+## 7. 보장하는 것 — 무엇을 믿고 쓰나
+
+| 부르는 쪽이 기대해도 되는 것 | 근거 |
+|---|---|
+| **전 요청이 한 행 남는다** — 2xx · 4xx · 5xx. 403 은 양쪽에 | §1 |
+| 로그 저장 실패가 **응답을 깨지 않는다** — 독립 트랜잭션에 `warn` 만 남기고 삼킨다 | §1 |
+| 비동기 로그가 **조용히 버려지지 않는다** — `discardingThreshold: 0` | §4 |
+
+| 기대하면 안 되는 것 | 대신 무엇을 하나 |
+|---|---|
+| **마스킹이 민감값 전부를 덮는다** | 덮는 것은 **키 이름과 `SYS_PII_DEF` 등록 컬럼**이다. 지정하지 않은 값이 SQL 조건절에 들어가면 평문으로 남는다(§3) |
+| **180일 된 에러의 요청 전문이 있다** | `PARAMETERS` 는 **사용 이력에만** 있고 보존이 90일이다. 그 뒤로는 `ERR_CD`·`ERR_MSG`·스택으로 진단한다(§1) |
+| **데이터 변경 전후를 조회할 수 있다** | 감사 이력을 만들지 않는다 — **요청 전문이 그 대체**이며, 그래서 무엇도 빠뜨리지 않는 것이 조건이다(머리말) |
+| **`MENU_CD` 를 신뢰할 수 있다** | 클라이언트가 헤더로 밝힌 값이라 **기록 전용**이다. 인가 판정에 쓰지 않는다(§1) |
 
 ## 관련
 

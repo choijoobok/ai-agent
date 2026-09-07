@@ -3,8 +3,9 @@ id: LLM-FWK-FE-003
 title: "조회조건 — useSearchFormHeader · 필드 하나의 선언"
 category: standard/frontend
 type: operation
+class: contract
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-07
 status: active
 sources: ["sources/frontend/src/shared/searchform/", "aidd-guide/standard/frontend/search-form.md"]
 tier: 1

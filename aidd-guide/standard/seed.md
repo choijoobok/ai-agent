@@ -3,8 +3,9 @@ id: LLM-FWK-004
 title: "생성 시드 — 절차와 검증"
 category: standard
 type: operation
+class: none
 created: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/bootstrap/build.gradle.kts", "aidd-guide/standard/seed.md"]
 tier: 1

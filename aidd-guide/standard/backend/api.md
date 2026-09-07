@@ -3,8 +3,9 @@ id: LLM-FWK-BE-002
 title: "API 규약 — 경로 · 봉투 · 헤더 · 시간"
 category: standard/backend
 type: operation
+class: policy
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/api/", "sources/backend/core/response/ApiResponse.java", "aidd-guide/standard/backend/api.md", "sources/backend/core/response/"]
 tier: 2
@@ -186,8 +187,7 @@ tags: [backend, api, rest, response, header]
 2026-08-28T09:14:02+09:00
 ```
 
-- **서버가 현재시각을 SQL 로 구하지 않는다**(`SYSDATE`·`NOW()`·`GETDATE()` 금지).
-  애플리케이션이 주입하므로 **경계 판단이 한 곳**이다.
+- **현재시각을 SQL 로 구하지 않는다** — 시각의 출처는 [time.md](./time.md) 가 갖는다.
 - **조회조건의 날짜에도 오프셋을 붙인다.** 빠지면 **서버 타임존에 따라 하루가 밀린다.**
 - **날짜만 다루는 필드**는 `2026-08-28` · `2026-08` 로 보낸다. **오프셋을 붙이지 않는다** —
   시점이 아니라 달력 값이다.

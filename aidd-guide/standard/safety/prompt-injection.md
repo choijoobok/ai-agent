@@ -3,8 +3,9 @@ id: LLM-SAF-002
 title: "프롬프트 인젝션 방어"
 category: standard/safety
 type: operation
+class: policy
 created: 2026-05-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: [Anthropic critical_injection_defense, system-prompt: critical_security_rules]
 tier: 4

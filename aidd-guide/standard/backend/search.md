@@ -3,8 +3,9 @@ id: LLM-FWK-BE-003
 title: "조회 — 봉투 · 연산자 · 페이징"
 category: standard/backend
 type: operation
+class: contract
 created: 2026-05-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/core/search/", "sources/backend/domain/search/"]
 tier: 2

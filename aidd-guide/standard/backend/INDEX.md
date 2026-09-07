@@ -3,8 +3,9 @@ id: LLM-FWK-BE-IDX
 title: "Backend Framework INDEX"
 category: standard/backend
 type: operation
+class: none
 created: 2026-05-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/"]
 tier: 2

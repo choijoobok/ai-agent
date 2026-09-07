@@ -3,8 +3,9 @@ id: LLM-SAF-001
 title: "PII 식별·차단 규약"
 category: standard/safety
 type: operation
+class: policy
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-07
 status: active
 sources: [Anthropic user_privacy block, GDPR Article 4]
 tier: 4

@@ -3,8 +3,9 @@ id: LLM-FWK-FE-001
 title: "그리드 컬럼 — 하나의 계약 · 유형 13종 · 동적 컬럼"
 category: standard/frontend
 type: operation
+class: contract
 created: 2026-05-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: ["sources/frontend/src/shared/grid/", "sources/frontend/src/features/sample/"]
 tier: 2

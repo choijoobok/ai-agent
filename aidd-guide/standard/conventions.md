@@ -3,8 +3,9 @@ id: LLM-FWK-002
 title: "공통 규약 — 이름 · 인코딩 · 주석 · 게이트"
 category: standard
 type: operation
+class: none
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/", "sources/frontend/", "CLAUDE.md"]
 tier: 2

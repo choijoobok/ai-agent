@@ -3,8 +3,9 @@ id: LLM-FWK-BE-004
 title: "백엔드 구조 — 모듈 · 패키지 · 이름 · 트랜잭션"
 category: standard/backend
 type: operation
+class: policy
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/", "aidd-guide/standard/backend/packages.md"]
 tier: 2

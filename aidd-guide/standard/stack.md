@@ -3,8 +3,9 @@ id: LLM-FWK-003
 title: "스택 — 버전과 그 버전이 강요한 것"
 category: standard
 type: operation
+class: none
 created: 2026-05-04
-updated: 2026-09-04
+updated: 2026-09-07
 status: active
 sources: ["sources/gradle/libs.versions.toml", "sources/frontend/package.json", "aidd-guide/standard/stack.md"]
 tier: 2

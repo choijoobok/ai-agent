@@ -3,8 +3,9 @@ id: LLM-FWK-FE-007
 title: "멀티탭 워크스페이스 — 셸 · 탭 · 라우팅"
 category: standard/frontend
 type: operation
+class: policy
 created: 2026-05-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: ["sources/frontend/src/shared/screentabs/", "sources/frontend/src/layouts/", "aidd-guide/standard/frontend/packages.md", "aidd-guide/standard/frontend/tabs.md", "sources/frontend/src/shared/hooks/", "sources/frontend/src/shared/routes/"]
 tier: 1

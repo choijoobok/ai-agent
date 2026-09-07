@@ -3,8 +3,9 @@ id: LLM-FWK-BE-009
 title: "횡단 관심사 — 필터 · 인터셉터 · 순서 · 비동기 · 중복 요청"
 category: standard/backend
 type: operation
+class: policy
 created: 2026-09-03
-updated: 2026-09-04
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/api/config/InterceptorConfig.java", "sources/backend/api/", "sources/backend/bootstrap/src/main/resources/application.yml"]
 tier: 2

@@ -3,8 +3,9 @@ id: LLM-FWK-FE-005
 title: "HTTP — endpoints.ts · 배럴 하나 · 응답 처리"
 category: standard/frontend
 type: operation
+class: policy
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-07
 status: active
 sources: ["sources/frontend/src/shared/api/", "sources/frontend/eslint.config.js", "aidd-guide/standard/frontend/packages.md"]
 tier: 2

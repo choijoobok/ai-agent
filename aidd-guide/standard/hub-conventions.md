@@ -3,8 +3,9 @@ id: LLM-FWK-010
 title: "Agentic AI Hub 개발 규약 — 템플릿 표준 위에 얹는 것"
 category: standard
 type: operation
+class: none
 created: 2026-09-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: ["documents/spec/02-constraints.yaml", "documents/spec/20-architecture.yaml"]
 tier: 2

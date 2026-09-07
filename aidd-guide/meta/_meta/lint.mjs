@@ -56,6 +56,46 @@ const LENGTH_EXEMPT = new Map([
   ['phase/P3-design.md', '가장 무거운 단계의 절차를 끝까지 읽는 문서다 — 쪼개면 spec 일곱 개의 작성 순서와 동결 조건을 두 파일에서 읽는다'],
 ]);
 
+/** `class:` 의 값 셋 — 뜻은 `standard/INDEX.md` 의 「부류 둘」 이 갖는다. */
+const CLASSES = ['contract', 'policy', 'none'];
+
+/** h2 하나로 알아본다 — 번호가 붙어도(`## 3. 보장하는 것 — …`) 잡힌다. */
+const CONTRACT_RE = /^##\s.*보장하는 것/m;
+
+/**
+ * 「보장하는 것」 절이 <b>아직 없는</b> 정책형 문서 — <b>면제가 아니라 빚이다.</b>
+ *
+ * <p>이유가 *나중에 하겠다* 뿐이면 면제가 아니라 미룬 것이므로(`TimeSourceConventionTest`
+ * 의 판단과 같다), 이 목록은 <b>면제 명단이 아니라 남은 일의 목록</b>이다 —
+ * `.claude/hooks/feat-baseline.txt` 와 같은 성격이고, 같은 규칙을 따른다:
+ * <b>줄어들기만 한다.</b>
+ *
+ * <p>여기에 있는 문서에 절이 <b>생기면 실패한다.</b> 그 방향이 없으면 목록이 영구 주석이
+ * 되고, 남아 있는 항목은 다음 사람에게 <i>여기는 원래 없는 곳</i> 이라고 가르친다.
+ */
+const CONTRACT_DEBT = new Map([
+  ['standard/backend/api.md', '200줄 — 압축이 함께 필요하다'],
+  ['standard/backend/batch.md', '198줄 — 압축이 함께 필요하다'],
+  ['standard/backend/crosscutting.md', '282줄(길이 예외) — 더 늘리지 않고 쓰려면 압축이 앞선다'],
+  ['standard/backend/packages.md', '199줄 — 압축이 함께 필요하다'],
+  ['standard/backend/persistence.md', '234줄(길이 예외) — 위와 같다'],
+  ['standard/backend/pii-vault.md', '아직 구현이 없는 제약 문서다 — 보장할 것이 서기 전이다'],
+  ['standard/backend/progress.md', '191줄 — 압축이 함께 필요하다'],
+  ['standard/backend/row-transaction.md', '196줄 — 압축이 함께 필요하다'],
+  ['standard/backend/search-spec.md', '오해의 비용 순서에서 뒤다'],
+  ['standard/frontend/grid.md', '200줄 — 압축이 함께 필요하다'],
+  ['standard/frontend/http.md', '오해의 비용 순서에서 뒤다'],
+  ['standard/frontend/i18n.md', '오해의 비용 순서에서 뒤다'],
+  ['standard/frontend/packages.md', '198줄 — 압축이 함께 필요하다'],
+  ['standard/frontend/progress.md', '오해의 비용 순서에서 뒤다'],
+  ['standard/frontend/tabs.md', '오해의 비용 순서에서 뒤다'],
+  ['standard/frontend/theme.md', '오해의 비용 순서에서 뒤다'],
+  ['standard/safety/pii.md', '오해의 비용 순서에서 뒤다'],
+  ['standard/safety/prompt-injection.md', '오해의 비용 순서에서 뒤다'],
+  ['standard/safety/rate-limit.md', '오해의 비용 순서에서 뒤다'],
+  ['standard/safety/secrets.md', '오해의 비용 순서에서 뒤다'],
+]);
+
 const VOCAB_DOC = 'standard/frontend/declarations.md';
 const VOCAB_SOURCES = [
   ['sources/frontend/src/shared/grid/types.ts', 'ColumnDef'],
@@ -172,6 +212,13 @@ if (pinned.length > 0) {
   for (const [rel, n] of pinned) out.push(`    ${String(n).padStart(4)}줄  ${rel}`);
 }
 
+/*
+  <b>남은 빚을 매번 찍는다.</b> 목록이 코드 안에만 있으면 아무도 세지 않고, 세지 않는
+  목록은 줄어들지 않는다 — 200줄 예외를 위에서 찍는 것과 같은 이유다.
+*/
+out.push('', `「보장하는 것」 절이 아직 없는 정책형: ${CONTRACT_DEBT.size}건 — 줄어들기만 해야 한다`);
+for (const [rel, why] of CONTRACT_DEBT) out.push(`    ${rel} — ${why}`);
+
 out.push('');
 const countIssues = checkCatalogCounts();
 if (countIssues.length > 0) violations.push(['INDEX.md', lineCount(join(GUIDE, 'INDEX.md')), countIssues]);
@@ -179,6 +226,7 @@ if (countIssues.length > 0) violations.push(['INDEX.md', lineCount(join(GUIDE, '
 for (const [rel, issues] of checkScreenRequirements()) violations.push([rel, 0, issues]);
 for (const [rel, issues] of checkDeprecated()) violations.push([rel, 0, issues]);
 for (const [rel, issues] of checkSourcesMeta()) violations.push([rel, 0, issues]);
+for (const [rel, issues] of checkContractSections()) violations.push([rel, 0, issues]);
 for (const [rel, issues] of checkConstitutionCitations()) violations.push([rel, 0, issues]);
 
 const totalStale = [...stale.values()].reduce((a, b) => a + b, 0);
@@ -235,6 +283,18 @@ function lintFile(file, rel) {
 
   if (['operation', 'template'].includes(type) && !LENGTH_EXEMPT.has(rel) && lines > 200) {
     issues.push(`exceeds 200 lines: ${lines}`);
+  }
+
+  /*
+    `class` — <b>`standard/` 만</b> 요구한다. 부류를 INDEX 한 곳에 산문으로 모아 두면
+    <b>문서를 더할 때 함께 고쳐지지 않아</b> 새 표준이 어느 부류인지 아무 데도 남지
+    않는다(meta/meta-block.md 작성 규칙 5). 그래서 문서가 스스로 밝힌다.
+  */
+  if (rel.startsWith('standard/')) {
+    const cls = (fields.get('class') ?? '').replace(/^["']|["']$/g, '');
+    if (!CLASSES.includes(cls)) {
+      issues.push(`invalid class: ${cls || '(없음)'} — ${CLASSES.join(' · ')} 중 하나다`);
+    }
   }
   return { issues, lineCount: lines, type: type || 'unknown' };
 }
@@ -525,6 +585,54 @@ function checkConstitutionCitations() {
     }
   }
   return out;
+}
+
+/** `standard/` 문서의 `class:` — 파일에서 바로 읽는다(`lintFile` 의 결과를 나르지 않는다). */
+function docClass(rel) {
+  return (readFileSync(join(GUIDE, rel), 'utf8').match(/^class:\s*(\S+)\s*$/m)?.[1] ?? '').replace(
+    /^["']|["']$/g,
+    '',
+  );
+}
+
+/**
+ * 정책형에 「보장하는 것」 절이 있나 — <b>양방향으로 본다</b>({@link CONTRACT_DEBT}).
+ *
+ * <p>없는데 명단에도 없으면 실패하고, <b>명단에 있는데 절이 생겨도 실패한다.</b>
+ * 명단이 실물보다 낡으면 남은 개수가 거짓이 되고, 거짓인 개수는 <i>줄어들기만 한다</i>
+ * 는 규칙을 지킬 수 없게 만든다.
+ */
+function checkContractSections() {
+  const found = [];
+
+  for (const file of walk(GUIDE)) {
+    if (!file.endsWith('.md')) continue;
+    const rel = relative(GUIDE, file).split(sep).join('/');
+    if (!rel.startsWith('standard/') || docClass(rel) !== 'policy') continue;
+
+    /* <b>펜스를 걷고 본다.</b> 걷지 않으면 서식을 코드 블록으로 보여 주는 것만으로
+       검사가 통과한다 — `standard/INDEX.md` 가 실제로 그 꼴을 담고 있다. */
+    const has = CONTRACT_RE.test(readFileSync(file, 'utf8').replace(FENCE_RE, ''));
+    if (!has && !CONTRACT_DEBT.has(rel)) {
+      found.push([
+        rel,
+        ['정책형인데 「보장하는 것」 절이 없다 — 계약이 코드에 없으므로 문서가 갖는다(standard/INDEX.md)'],
+      ]);
+    }
+    if (has && CONTRACT_DEBT.has(rel)) {
+      found.push([rel, ['「보장하는 것」 절이 생겼다 — `CONTRACT_DEBT` 에서 지운다']]);
+    }
+  }
+
+  /* 명단이 <b>실물을 가리키는지</b> — 지워진 문서나 부류가 바뀐 문서가 남으면 개수가 거짓이 된다. */
+  for (const [rel] of CONTRACT_DEBT) {
+    if (!existsSync(join(GUIDE, rel))) {
+      found.push([rel, ['`CONTRACT_DEBT` 가 없는 문서를 가리킨다 — 지운다']]);
+    } else if (docClass(rel) !== 'policy') {
+      found.push([rel, [`\`CONTRACT_DEBT\` 에 있는데 class 가 policy 가 아니다(${docClass(rel)}) — 지운다`]]);
+    }
+  }
+  return found;
 }
 
 function checkSourcesMeta() {

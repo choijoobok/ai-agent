@@ -3,6 +3,7 @@ id: LLM-FWK-BE-016
 title: "메일 — 설정이 스위치다 · 던지지 않는다"
 category: standard/backend
 type: operation
+class: policy
 created: 2026-09-07
 updated: 2026-09-07
 status: active
@@ -26,7 +27,7 @@ tags: [backend, mail, smtp, notification]
 *호스트는 있는데 꺼져 있다* 와 *켜져 있는데 호스트가 없다*. 어느 쪽도 기동을 막지 않고,
 둘 다 "메일이 안 온다" 로만 드러난다.
 
-## 2. 부르는 쪽의 계약 셋
+## 2. 보장하는 것 — 부르는 쪽의 계약 셋
 
 | | |
 |---|---|

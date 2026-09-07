@@ -3,8 +3,9 @@ id: LLM-FWK-BE-012
 title: "배치 — 등록이 곧 스케줄이다"
 category: standard/backend
 type: operation
+class: policy
 created: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/batch/", "sources/backend/support/src/main/java/com/aiagent/support/lock/", "sources/frontend/src/shared/batch/"]
 tier: 2

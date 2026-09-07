@@ -3,10 +3,11 @@ id: LLM-FWK-FE-002
 title: "그리드 — 화면 뼈대 · api 선언 · 저장"
 category: standard/frontend
 type: operation
+class: policy
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-07
 status: active
-sources: ["sources/frontend/src/shared/grid/", "aidd-guide/standard/frontend/grid.md", "aidd-guide/standard/frontend/grid.md", "sources/frontend/src/shared/components/", "sources/backend/core/grid/"]
+sources: ["sources/frontend/src/shared/grid/", "sources/frontend/src/shared/components/", "sources/backend/core/grid/"]
 tier: 1
 tags: [frontend, grid, ag-grid, crud, save]
 ---
@@ -197,4 +198,3 @@ const grid = useGridController<UserRow>({
 - [grid-columns.md](./grid-columns.md) · [grid-validation.md](./grid-validation.md) — 컬럼과 그 동작
 - [search-form.md](./search-form.md) — 조회조건 헤더
 - [../backend/search.md](../backend/search.md) — 서버 쪽 봉투
-- [standard/frontend/grid.md](./grid.md) · [standard/frontend/grid.md](./grid.md)

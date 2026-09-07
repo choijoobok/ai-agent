@@ -300,6 +300,7 @@ id: LLM-FWK-011
 title: "공통물 목록 — 이미 있는 것"
 category: standard
 type: operation
+class: none
 created: ${created}
 updated: ${today}
 status: active

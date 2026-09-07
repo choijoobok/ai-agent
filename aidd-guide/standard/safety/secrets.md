@@ -3,8 +3,9 @@ id: LLM-SAF-003
 title: "Secrets 자동 차단 규약"
 category: standard/safety
 type: operation
+class: policy
 created: 2026-05-04
-updated: 2026-05-04
+updated: 2026-09-07
 status: active
 sources: [git-secrets, OWASP Top 10 A07]
 tier: 4

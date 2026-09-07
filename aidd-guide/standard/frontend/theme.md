@@ -3,8 +3,9 @@ id: LLM-FWK-FE-009
 title: "테마 — 토큰 한 곳 · 다크 모드 · 개인 설정"
 category: standard/frontend
 type: operation
+class: policy
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-07
 status: active
 sources: ["sources/frontend/src/shared/theme/", "sources/frontend/src/shared/stores/uiStore.ts"]
 tier: 2

@@ -3,8 +3,9 @@ id: LLM-FWK-005
 title: "빌드 · 배포 — 단일 JAR · 프로파일 · CI"
 category: standard
 type: operation
+class: none
 created: 2026-09-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: ["sources/build.gradle.kts", "sources/backend/bootstrap/build.gradle.kts", ".github/workflows/", "sources/backend/bootstrap/src/main/resources/application.yml", "sources/frontend/vite.config.ts"]
 tier: 2

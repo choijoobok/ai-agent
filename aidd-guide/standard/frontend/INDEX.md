@@ -3,8 +3,9 @@ id: LLM-FWK-FE-IDX
 title: "Frontend Framework INDEX"
 category: standard/frontend
 type: operation
+class: none
 created: 2026-05-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: ["sources/frontend/src/"]
 tier: 2

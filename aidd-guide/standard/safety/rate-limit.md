@@ -3,8 +3,9 @@ id: LLM-SAF-004
 title: "외부 API 호출 Rate Limit 가드"
 category: standard/safety
 type: operation
+class: policy
 created: 2026-05-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: [Anthropic API 문서, Bash sleep 정책]
 tier: 4

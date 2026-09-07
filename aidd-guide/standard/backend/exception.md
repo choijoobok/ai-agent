@@ -3,8 +3,9 @@ id: LLM-FWK-BE-005
 title: "예외 — ErrorCode · BusinessException · GlobalExceptionHandler"
 category: standard/backend
 type: operation
+class: policy
 created: 2026-05-04
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/core/error/", "sources/backend/core/message/MsgKey.java", "sources/backend/api/error/"]
 tier: 2
@@ -140,6 +141,21 @@ MsgKey.java (서버)  ·  messageKeys.ts (프론트)
 - **4xx 는 `ROOT_CAUSE_STACK` 을 저장하지 않는다** — 규칙의 정본은
   [logging.md](./logging.md) 다. 여기서는 예외 처리 흐름이 그것을 지킨다는 것만 적는다.
 - **소스에 남는 로그·예외의 기본 메시지는 한국어로 쓴다**(CLAUDE.md §5-6). 사용자 문구는 `SYS_MESSAGE` 다.
+
+## 7. 보장하는 것 — 무엇을 믿고 쓰나
+
+| 부르는 쪽이 기대해도 되는 것 | 근거 |
+|---|---|
+| 상태 코드는 **예외가 정한다** — 컨트롤러가 고르지 않는다 | §2 |
+| `SYS_MESSAGE` 조회가 실패해도 **응답은 나간다** — `defaultMessage()` 로 떨어지고 `warn` 만 남는다 | §4 |
+| 500 응답에 **스택트레이스가 없다** — `traceId` 하나다 | §2 · §6 |
+| 예외 로그는 **본 트랜잭션이 롤백돼도 남는다** — `REQUIRES_NEW` | §6 |
+
+| 기대하면 안 되는 것 | 대신 무엇을 하나 |
+|---|---|
+| **칸 없는 행 실패가 화면에 뜬다** | 화면은 `RowError.fields` 를 돌므로 비면 **빈 표가 뜬 모달**이 된다. 어느 칸인지 붙인다(§3) |
+| **DB 제약 위반이 행을 짚어 온다** | flush 시점이라 행을 알 수 없어 409 로 나간다. 짚어야 하면 **서비스가 잡아 다시 검사한다**(§3) |
+| **로그 문구와 응답 문구가 같다** | 로그는 **서버 언어**, 응답은 `code()` 로 다시 읽은 **사용자 언어**다(§4) |
 
 ## 관련
 

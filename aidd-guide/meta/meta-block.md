@@ -4,7 +4,7 @@ title: "메타블록 표준 스펙"
 category: meta
 type: operation
 created: "2026-04-30"
-updated: "2026-09-06"
+updated: "2026-09-07"
 status: active
 sources: []
 tier: 3
@@ -39,6 +39,7 @@ tags: [tag1, tag2]
 | `created` | ✅ | 최초 생성일 (변경 불가) |
 | `updated` | ✅ | 최종 수정일 (수정 시 반드시 갱신) |
 | `sources` | ⭕ | 이 문서가 설명하는 **저장소 안 경로** 목록 (배열). 외부 출처는 넣지 않는다 — 아래 작성 규칙 3 |
+| `class` | ⭕ | **`standard/` 전용.** 어겼을 때 무엇이 막는가 — `contract`(컴파일) / `policy`(아무 일도 일어나지 않는다) / `none`(부류 밖). 무엇을 쓰나는 [standard/INDEX.md](../standard/INDEX.md) 의 「부류 둘」 이 갖는다 |
 | `status` | ✅ | `active` / `deprecated` / `replaced` |
 | `tags` | ⭕ | 검색용 키워드 배열 |
 | `replaces` | ⭕ | (status=replaced 시) 대체 대상 ID |
@@ -76,7 +77,11 @@ tags: [tag1, tag2]
 4. **`author` 를 두지 않는다** — 저자는 git 이 갖는다(`git blame`). frontmatter 의 이름은
    고쳐도 안 고쳐도 틀린다: 이 저장소는 다른 프로젝트의 원저자 이름을 131 파일에 달고
    있었고, 그중 상당수는 여기서 다시 쓰인 것이었다.
-5. **신규 문서 등록 시** 해당 카테고리 INDEX.md 의 표에 추가
+5. **`standard/` 문서는 `class` 를 비울 수 없다** — 부류를 한 곳에 산문으로 모아 두면
+   **문서를 더할 때 함께 고쳐지지 않는다.** 그렇게 낡은 목록은 새 표준 문서가 어느
+   부류인지 **아무 데도 말하지 않는 상태**를 만든다. `lint.mjs` 가 값이 달렸는지와
+   **`policy` 가 「보장하는 것」 절을 갖는지** 를 본다.
+6. **신규 문서 등록 시** 해당 카테고리 INDEX.md 의 표에 추가
 
 ## 검증 (수동)
 

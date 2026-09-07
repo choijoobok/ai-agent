@@ -3,6 +3,7 @@ id: LLM-FWK-BE-015
 title: "시간 — 시각의 단일 출처 · 업무 달력 날짜"
 category: standard/backend
 type: operation
+class: policy
 created: 2026-09-07
 updated: 2026-09-07
 status: active
@@ -95,6 +96,20 @@ new BusinessCalendar("Asia/Seoul", Clock.fixed(NOW, ZoneId.of("Asia/Seoul")))
 잊어도 빌드가 빨개진다.
 
 `CronTrigger` 에는 이제 시간대를 **명시로 넘긴다** — 바로 위 절이 말한 그 규칙이다.
+
+## 7. 보장하는 것 — 무엇을 믿고 쓰나
+
+| 부르는 쪽이 기대해도 되는 것 | 근거 |
+|---|---|
+| `calendar.today()` 는 **업무 시간대의 오늘**이다 — 서버 JVM 시간대와 무관하다 | §5 |
+| 테스트는 시각을 **고정할 수 있다** — `Clock` 이 빈이다 | §4 |
+| 저장되는 값은 **UTC `Instant`** 다 | `TimeConfig` 의 `Clock.systemUTC()` |
+
+| 기대하면 안 되는 것 | 대신 무엇을 하나 |
+|---|---|
+| **한 요청 안에서 `clock.instant()` 가 같은 값을 준다** — `systemUTC()` 는 부를 때마다 새 값이다 | **한 번 받아 변수에 담는다.** 시작·종료를 각자 물으면 둘이 어긋나고, 같은 행의 두 컬럼이 다른 밀리초를 갖는다 |
+| **`app.business-timezone` 을 운영 중에 바꾼다** | 배포 시 고정이다 — `sys-config` 가 아니다. 배치마다 다른 기준이 필요하면 그 행의 `TIMEZONE` 이다 |
+| **DB 가 채우는 시각도 이 출처를 지난다** | 지나지 않는다. 그래서 §2 가 `SYSDATE`·`NOW()` 를 함께 금지한다 |
 
 ## 관련
 

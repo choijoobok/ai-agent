@@ -3,8 +3,9 @@ id: LLM-FWK-BE-011
 title: "진행률 — 맡기고 돌아온다"
 category: standard/backend
 type: operation
+class: policy
 created: 2026-09-03
-updated: 2026-09-03
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/domain/src/main/java/com/aiagent/domain/progress/"]
 tier: 2

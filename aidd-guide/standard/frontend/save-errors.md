@@ -3,8 +3,9 @@ id: LLM-FWK-FE-011
 title: "저장 실패를 보여주는 법 — 붉은 셀 · 표 · 행 순번"
 category: standard/frontend
 type: operation
+class: contract
 created: 2026-09-06
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: ["sources/frontend/src/shared/grid/saveIssues.ts", "sources/frontend/src/shared/grid/useGridController.ts", "aidd-guide/standard/backend/api.md"]
 tier: 1

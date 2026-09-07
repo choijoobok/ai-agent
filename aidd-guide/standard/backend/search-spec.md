@@ -3,8 +3,9 @@ id: LLM-FWK-BE-017
 title: "조회 화이트리스트 — 스펙 객체와 기간 상한"
 category: standard/backend
 type: operation
+class: policy
 created: 2026-09-06
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/core/search/", "sources/backend/domain/search/"]
 tier: 2

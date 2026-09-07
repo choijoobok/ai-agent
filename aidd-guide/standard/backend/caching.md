@@ -3,8 +3,9 @@ id: LLM-FWK-BE-008
 title: "캐시 — 대상마다 다른 백엔드 · SysCacheVersion"
 category: standard/backend
 type: operation
+class: policy
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/domain/message/", "sources/backend/bootstrap/src/main/resources/application.yml", "aidd-guide/standard/backend/security.md"]
 tier: 2
@@ -72,6 +73,20 @@ CODE_MGMT 저장 ─→ CacheVersionService.bump("code") ─→ SYS_CACHE_VERSIO
 3. **노드 간 공유가 필요한가** — 필요하다면 그 판단을 먼저 검토한다. 지금은 하나도 없다.
 4. **프론트 캐시를 버려야 하는가** — 그렇다면 `SYS_CACHE_VERSION` 에 이름을 더하고
    **저장 경로에서 `bump`** 한다.
+
+## 5. 보장하는 것 — 무엇을 믿고 쓰나
+
+| 부르는 쪽이 기대해도 되는 것 | 근거 |
+|---|---|
+| 유효 권한은 **낡지 않는다** — 세션에 있고 매 요청 재검사한다 | §1 · [session.md](./session.md) |
+| 시스템 설정은 **한 작업 안에서 바뀌지 않는다** — 작업 스코프다 | §1 |
+| `bump` 한 뒤 **다음 로그인·번들 요청**에서 프론트가 캐시를 버린다 | §2 |
+
+| 기대하면 안 되는 것 | 대신 무엇을 하나 |
+|---|---|
+| **`bump` 가 열려 있는 화면을 갱신한다** | 폴링이 없다. 읽는 시점은 **로그인과 번들 요청 둘뿐**이라 열린 탭은 옛 값을 계속 쓴다(§2) |
+| **메시지 캐시가 노드 간에 무효화된다** | 스냅샷이 **노드마다** 있고 `MessageService.evict()` 는 **부른 노드만** 비운다 — 다중 노드에서는 최대 TTL 만큼 노드마다 다른 문구가 나간다 |
+| **운영 중 캐시를 비우는 수단이 있다** | `@Cacheable` 을 쓰지 않아 `CacheManager` 가 없다. 수단은 **저장 경로의 `evict`** · TTL 만료 · 재기동뿐이다 |
 
 ## 관련
 

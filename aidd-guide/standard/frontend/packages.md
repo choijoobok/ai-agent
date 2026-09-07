@@ -3,8 +3,9 @@ id: LLM-FWK-FE-004
 title: "프론트엔드 구조 — 폴더 · 공통화 · 상태 경계"
 category: standard/frontend
 type: operation
+class: policy
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-07
 status: active
 sources: ["sources/frontend/src/", "sources/frontend/eslint.config.js", "aidd-guide/standard/frontend/packages.md"]
 tier: 2

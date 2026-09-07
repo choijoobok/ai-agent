@@ -3,8 +3,9 @@ id: LLM-FWK-BE-013
 title: "목록 처리의 트랜잭션 경계 — 한 덩이냐 건별이냐"
 category: standard/backend
 type: operation
+class: policy
 created: 2026-09-06
-updated: 2026-09-06
+updated: 2026-09-07
 status: active
 sources: ["sources/backend/core/src/main/java/com/aiagent/core/error/RowTx.java", "sources/backend/core/src/main/java/com/aiagent/core/error/RowReport.java"]
 tier: 2
