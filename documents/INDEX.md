@@ -46,7 +46,7 @@
 | [`03-glossary.yaml`](spec/03-glossary.yaml) | P1 | **용어 54**(TRM- · 대화·실행·정책·실행기반·처리중입력) · **프레임워크 어휘 24** · **헷갈리는 짝 10** · 턴 상태 6 · 대기 유형 3 · 회차 규칙 5 | 이관 |
 | [`10-requirements.yaml`](spec/10-requirements.yaml) | P1 | **요구사항 59**(REQ-) — 질의 처리 26 · 처리 중 입력 6 · 보안·거버넌스 14 · 저장된 조회 7 · 메타데이터 4 · **유도 2** | 이관 |
 | [`11-processes.yaml`](spec/11-processes.yaml) | P1 | 업무 프로세스 As-Is / To-Be | **비어 있다** |
-| [`20-architecture.yaml`](spec/20-architecture.yaml) | P2 | 구성 · 모듈 경계 6 · 딥링크 · 데이터소스 · LLM 연동 · 신원 매핑 · 지식 검색 · **실행 점유**(ARCH-) | 이관 |
+| [`20-architecture.yaml`](spec/20-architecture.yaml) | P2 | 구성 · **논리 구성도**(노드 14 · 간선 16 · 불변식 4) · 모듈 경계 6 · 딥링크 · 데이터소스 · LLM 연동 · 신원 매핑 · 지식 검색 · **실행 점유**(ARCH-) | 이관 |
 | [`21-nfr.yaml`](spec/21-nfr.yaml) | P2 | **비기능 19**(NFR-) — 성능 5 · 비용 8 · 안정성 6 (**목표 수치 전부 미정**) | 이관 |
 | [`22-authz.yaml`](spec/22-authz.yaml) | P2 | 그룹 판정 · 매핑 6 · 행 스코프 · **SQL 통제 4단계** · 주입 통제 · 기본 필터 · 책임 층(AUTHZ-) | 이관 |
 | [`30-usecases.yaml`](spec/30-usecases.yaml) | P3 | 유즈케이스 (기본·대안·예외 흐름) | **비어 있다** |
