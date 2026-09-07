@@ -21,49 +21,49 @@ tags: [artifact, map, index]
 
 `S` = SSOT(명세, 직접 작성) · `G` = 생성물(spec에서 파생) · `L` = 원장(누적 기록)
 
-| # | 산출물 | 단계 | 종류 | 경로 | Lite | Std | Full |
-|---|---|---|---|---|:-:|:-:|:-:|
-| 1 | 프로젝트 헌장 (목적·범위·성공기준) | P0 | S | `documents/spec/00-charter.yaml` | ● | ● | ● |
-| 2 | 이해관계자 / 액터 정의 | P0 | S | `documents/spec/01-actors.yaml` | ● | ● | ● |
-| 3 | 제약사항 · 전제 | P0 | S | `documents/spec/02-constraints.yaml` | ● | ● | ● |
-| 4 | 용어사전 (유비쿼터스 언어) | P1 | S | `documents/spec/03-glossary.yaml` | ● | ● | ● |
-| 5 | 업무 프로세스 정의 (As-Is / To-Be) | P1 | S | `documents/spec/11-processes.yaml` | ○ | ● | ● |
-| 6 | 요구사항 목록 (FR/NFR) | P1 | S | `documents/spec/10-requirements.yaml` | ● | ● | ● |
-| 7 | 아키텍처 결정 기록 | P2 | L | `documents/decisions/ADR-{번호}-{제목}.md` | ● | ● | ● |
-| 8 | 기술 스택 · 인프라 구성도 | P2 | S+G | `documents/spec/20-architecture.yaml` → `documents/generated/20-아키텍처.md` | ● | ● | ● |
-| 9 | 비기능 목표치 (성능·가용성·보안) | P2 | S | `documents/spec/21-nfr.yaml` | ○ | ● | ● |
-| 10 | 유즈케이스 명세 (기본/대안/예외 흐름) | P3 | S+G | `documents/spec/30-usecases.yaml` → `documents/generated/30-유즈케이스.md` | △ | ● | ● |
-| 11 | 기능 목록 · 메뉴 구조 | P3 | S+G | `documents/spec/31-features.yaml` → `documents/generated/31-기능목록.md` | ● | ● | ● |
-| 12 | 기능별 요건 정의서 | P3 | G | `documents/generated/32-요건정의서/FEAT-{###}.md` | ● | ● | ● |
-| 13 | 도메인/데이터 모델 · ERD | P3 | S+G | `documents/spec/40-domain.yaml` → `documents/generated/40-ERD.md` (Mermaid) | ● | ● | ● |
-| 14 | 물리 스키마 | P3 | S | `documents/spec/40-domain.yaml` → **Liquibase changeset** `sources/backend/bootstrap/src/main/resources/db/changelog/` | ● | ● | ● |
-| 15 | API 명세 | P3 | S+G | `documents/spec/50-api.yaml` (OpenAPI) → `documents/generated/50-API.md` | ● | ● | ● |
-| 16 | 화면 목록 · 화면 정의서 | P3 | S+G | `documents/spec/60-screens.yaml` → `documents/generated/60-화면정의서.md` | ● | ● | ● |
-| 17 | 시퀀스 다이어그램 | P3 | G | `documents/generated/33-시퀀스/UC-{###}.md` (Mermaid) | △ | ● | ● |
-| 18 | 인터페이스 정의서 (외부 연동) | P3 | S | `documents/spec/51-interfaces.yaml` | ○ | ● | ● |
-| 19 | 권한 매트릭스 | P3 | S+G | `documents/spec/22-authz.yaml` → `documents/generated/22-권한매트릭스.md` | ○ | ● | ● |
-| 20 | 슬라이스 백로그 | P4 | L | `documents/project.state.yaml` `slices:` | ● | ● | ● |
-| 21 | 소스 코드 | P4 | - | `sources/` | ● | ● | ● |
-| 22 | 단위/통합 테스트 코드 | P4 | - | `sources/backend/*/src/test/` · `sources/frontend/src/**/*.test.ts` | ● | ● | ● |
-| 23 | 테스트 케이스 | P3~P5 | S+G | `documents/spec/70-testcases.yaml` → `documents/generated/70-테스트케이스.md` | ● | ● | ● |
-| 24 | 테스트 수행 결과서 | P5 | G | `documents/generated/71-테스트결과서.md` | ● | ● | ● |
-| 25 | 결함 관리 대장 | P5 | L | `documents/generated/72-결함대장.md` | ○ | ● | ● |
-| 26 | 추적성 매트릭스 | P3~P5 | G | `documents/generated/90-추적성매트릭스.md` | ○ | ● | ● |
-| 27 | 가정 원장 | 상시 | L | `documents/decisions/ASSUMPTIONS.md` | ● | ● | ● |
-| 28 | 변경 요청 대장 | P3~ | L | `documents/decisions/CHANGES.md` | ○ | ● | ● |
-| 29 | 배포/운영 런북 | P6 | S | `documents/generated/80-운영런북.md` | ○ | ● | ● |
-| 30 | 사용자 매뉴얼 | P6 | G | `documents/generated/81-사용자매뉴얼.md` | ● | ● | ● |
-| 31 | 데이터 이행 계획 | P6 | S | `documents/generated/82-데이터이행.md` | ○ | ○ | ● |
-| 32 | 인수 확인서 | P6 | G | `documents/generated/99-인수확인서.md` | ○ | ● | ● |
-| 33 | **화면 요건 정의서 + 테스트케이스** | P3~P4 | S | `documents/screen/{페이지경로}/requirements.md` | ● | ● | ● |
-| 34 | **화면 목업** | P3~P4 | G | `documents/screen/{페이지경로}/mockup.html` — `/mockup` 이 33 에서 만든다 | ● | ● | ● |
-| 35 | **화면 사용자 메뉴얼** | P4 | S | `documents/screen/{페이지경로}/manual.md` | ● | ● | ● |
-| 36 | 〃 파생 · 화면 그림 · 구현 기록 | P4 | G | `documents/screen/{페이지경로}/manual.html` · `screen.png` · `impl.md` | ○ | ● | ● |
-| 37 | 메뉴 없는 화면의 문서 | P3~P4 | S | `documents/screen/_standalone/{화면이름}/` | ○ | ● | ● |
-| 38 | 화면 문서 서식·열람 페이지 | 상시 | S+G | `aidd-guide/artifact/template/` · `documents/screen/README.md` · `documents/screen/index.html` | ● | ● | ● |
-| 39 | **상세 설계 문서** | P3 | S | `documents/design/{주제}.md` | ○ | ● | ● |
-| 40 | 산출물 대장 (이 지도의 현재 상태) | 상시 | S | `documents/INDEX.md` | ● | ● | ● |
-| 41 | **재현 회귀의 근거 기록** | 상시 | S | `documents/evals/{차수}/{재현}/SOURCES.md` · `documents/evals/{차수}/{재현}/GAPS.md` | ○ | ○ | ● |
+| #   | 산출물                        | 단계    | 종류  | 경로                                                                                                                     | Lite | Std | Full |
+| --- | -------------------------- | ----- | --- | ---------------------------------------------------------------------------------------------------------------------- | :--: | :-: | :--: |
+| 1   | 프로젝트 헌장 (목적·범위·성공기준)       | P0    | S   | `documents/spec/00-charter.yaml`                                                                                       |  ●   |  ●  |  ●   |
+| 2   | 이해관계자 / 액터 정의              | P0    | S   | `documents/spec/01-actors.yaml`                                                                                        |  ●   |  ●  |  ●   |
+| 3   | 제약사항 · 전제                  | P0    | S   | `documents/spec/02-constraints.yaml`                                                                                   |  ●   |  ●  |  ●   |
+| 4   | 용어사전 (유비쿼터스 언어)            | P1    | S   | `documents/spec/03-glossary.yaml`                                                                                      |  ●   |  ●  |  ●   |
+| 5   | 업무 프로세스 정의 (As-Is / To-Be) | P1    | S   | `documents/spec/11-processes.yaml`                                                                                     |  ○   |  ●  |  ●   |
+| 6   | 요구사항 목록 (FR/NFR)           | P1    | S   | `documents/spec/10-requirements.yaml`                                                                                  |  ●   |  ●  |  ●   |
+| 7   | 아키텍처 결정 기록                 | P2    | L   | `documents/decisions/ADR-{번호}-{제목}.md`                                                                                 |  ●   |  ●  |  ●   |
+| 8   | 기술 스택 · 인프라 구성도            | P2    | S+G | `documents/spec/20-architecture.yaml` → `documents/generated/20-아키텍처.md`                                               |  ●   |  ●  |  ●   |
+| 9   | 비기능 목표치 (성능·가용성·보안)        | P2    | S   | `documents/spec/21-nfr.yaml`                                                                                           |  ○   |  ●  |  ●   |
+| 10  | 유즈케이스 명세 (기본/대안/예외 흐름)     | P3    | S+G | `documents/spec/30-usecases.yaml` → `documents/generated/30-유즈케이스.md`                                                  |  △   |  ●  |  ●   |
+| 11  | 기능 목록 · 메뉴 구조              | P3    | S+G | `documents/spec/31-features.yaml` → `documents/generated/31-기능목록.md`                                                   |  ●   |  ●  |  ●   |
+| 12  | 기능별 요건 정의서                 | P3    | G   | `documents/generated/32-요건정의서/FEAT-{###}.md`                                                                           |  ●   |  ●  |  ●   |
+| 13  | 도메인/데이터 모델 · ERD           | P3    | S+G | `documents/spec/40-domain.yaml` → `documents/generated/40-ERD.md` (Mermaid)                                            |  ●   |  ●  |  ●   |
+| 14  | 물리 스키마                     | P3    | S   | `documents/spec/40-domain.yaml` → **Liquibase changeset** `sources/backend/bootstrap/src/main/resources/db/changelog/` |  ●   |  ●  |  ●   |
+| 15  | API 명세                     | P3    | S+G | `documents/spec/50-api.yaml` (OpenAPI) → `documents/generated/50-API.md`                                               |  ●   |  ●  |  ●   |
+| 16  | 화면 목록 · 화면 정의서             | P3    | S+G | `documents/spec/60-screens.yaml` → `documents/generated/60-화면정의서.md`                                                   |  ●   |  ●  |  ●   |
+| 17  | 시퀀스 다이어그램                  | P3    | G   | `documents/generated/33-시퀀스/UC-{###}.md` (Mermaid)                                                                     |  △   |  ●  |  ●   |
+| 18  | 인터페이스 정의서 (외부 연동)          | P3    | S   | `documents/spec/51-interfaces.yaml`                                                                                    |  ○   |  ●  |  ●   |
+| 19  | 권한 매트릭스                    | P3    | S+G | `documents/spec/22-authz.yaml` → `documents/generated/22-권한매트릭스.md`                                                    |  ○   |  ●  |  ●   |
+| 20  | 슬라이스 백로그                   | P4    | L   | `documents/project.state.yaml` `slices:`                                                                               |  ●   |  ●  |  ●   |
+| 21  | 소스 코드                      | P4    | -   | `sources/`                                                                                                             |  ●   |  ●  |  ●   |
+| 22  | 단위/통합 테스트 코드               | P4    | -   | `sources/backend/*/src/test/` · `sources/frontend/src/**/*.test.ts`                                                    |  ●   |  ●  |  ●   |
+| 23  | 테스트 케이스                    | P3~P5 | S+G | `documents/spec/70-testcases.yaml` → `documents/generated/70-테스트케이스.md`                                                |  ●   |  ●  |  ●   |
+| 24  | 테스트 수행 결과서                 | P5    | G   | `documents/generated/71-테스트결과서.md`                                                                                     |  ●   |  ●  |  ●   |
+| 25  | 결함 관리 대장                   | P5    | L   | `documents/generated/72-결함대장.md`                                                                                       |  ○   |  ●  |  ●   |
+| 26  | 추적성 매트릭스                   | P3~P5 | G   | `documents/generated/90-추적성매트릭스.md`                                                                                    |  ○   |  ●  |  ●   |
+| 27  | 가정 원장                      | 상시    | L   | `documents/decisions/ASSUMPTIONS.md`                                                                                   |  ●   |  ●  |  ●   |
+| 28  | 변경 요청 대장                   | P3~   | L   | `documents/decisions/CHANGES.md`                                                                                       |  ○   |  ●  |  ●   |
+| 29  | 배포/운영 런북                   | P6    | S   | `documents/generated/80-운영런북.md`                                                                                       |  ○   |  ●  |  ●   |
+| 30  | 사용자 매뉴얼                    | P6    | G   | `documents/generated/81-사용자매뉴얼.md`                                                                                     |  ●   |  ●  |  ●   |
+| 31  | 데이터 이행 계획                  | P6    | S   | `documents/generated/82-데이터이행.md`                                                                                      |  ○   |  ○  |  ●   |
+| 32  | 인수 확인서                     | P6    | G   | `documents/generated/99-인수확인서.md`                                                                                      |  ○   |  ●  |  ●   |
+| 33  | **화면 요건 정의서 + 테스트케이스**     | P3~P4 | S   | `documents/screen/{페이지경로}/requirements.md`                                                                             |  ●   |  ●  |  ●   |
+| 34  | **화면 목업**                  | P3~P4 | G   | `documents/screen/{페이지경로}/mockup.html` — `/mockup` 이 33 에서 만든다                                                         |  ●   |  ●  |  ●   |
+| 35  | **화면 사용자 메뉴얼**             | P4    | S   | `documents/screen/{페이지경로}/manual.md`                                                                                   |  ●   |  ●  |  ●   |
+| 36  | 〃 파생 · 화면 그림 · 구현 기록       | P4    | G   | `documents/screen/{페이지경로}/manual.html` · `screen.png` · `impl.md`                                                      |  ○   |  ●  |  ●   |
+| 37  | 메뉴 없는 화면의 문서               | P3~P4 | S   | `documents/screen/_standalone/{화면이름}/`                                                                                 |  ○   |  ●  |  ●   |
+| 38  | 화면 문서 서식·열람 페이지            | 상시    | S+G | `aidd-guide/artifact/template/` · `documents/screen/README.md` · `documents/screen/index.html`                         |  ●   |  ●  |  ●   |
+| 39  | **상세 설계 문서**               | P3    | S   | `documents/design/{주제}.md`                                                                                             |  ○   |  ●  |  ●   |
+| 40  | 산출물 대장 (이 지도의 현재 상태)       | 상시    | S   | `documents/INDEX.md`                                                                                                   |  ●   |  ●  |  ●   |
+| 41  | **재현 회귀의 근거 기록**           | 상시    | S   | `documents/evals/{차수}/{재현}/SOURCES.md` · `documents/evals/{차수}/{재현}/GAPS.md`                                           |  ○   |  ○  |  ●   |
 
 ● 필수 · △ 축약형 · ○ 선택
 
