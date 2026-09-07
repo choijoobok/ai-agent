@@ -18,7 +18,7 @@ current:
   phase: P1                  # P0~P6 — P0 는 2026-09-05 승인됐다
   slice: null                # 구현 단계에서만: SLICE-###
   blocked_by: [OQ-002]   # **지금 단계를 막는다.** P0 는 승인됐고 P1 이 여기서 막힌다
-  template_maintenance: false
+  template_maintenance: true   # 2026-09-07 — 부여 상태(타입 4벌·색 3벌·패턴 1곳)를 공통물로 모은다. 끝나면 끈다
   # ↑ true 로 켜면 G3 전에도 sources/ 를 고칠 수 있다(guard-write ①).
   #   **템플릿 자체의 보수에만 켠다.** 켠 사실이 여기 남아 무엇을 왜 열었는지 추적된다.
 
