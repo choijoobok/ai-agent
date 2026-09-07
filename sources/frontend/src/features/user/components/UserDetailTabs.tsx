@@ -15,8 +15,8 @@ import type {
   GridIssue,
   SelectOption,
   TitleSuffixSpec,
-  Tone,
 } from '@/shared/grid/types';
+import { GRANT_TONE, grantDisplay } from '@/shared/authz/grantState';
 import { USER_ENDPOINTS } from '@/features/user/api/endpoints';
 import { isIpOrCidr, warnRevoke } from '@/features/user/detailRules';
 import type {
@@ -648,25 +648,14 @@ export function UserDetailTabs(props: Props) {
 
 // ── 공용 어휘 ──────────────────────────────────────────────────────
 
-/** 상태 배지의 색 — 세 탭이 같은 맵을 본다(frontend/grid.md). */
-const STATE_TONE: Record<string, Tone> = {
-  SCHEDULED: 'none',
-  ACTIVE: 'ok',
-  EXPIRED: 'muted',
-};
-
 const STATE_LABEL: Record<GrantState, string> = {
   SCHEDULED: MSG.USER_STATE_SCHEDULED,
   ACTIVE: MSG.USER_STATE_ACTIVE,
   EXPIRED: MSG.USER_STATE_EXPIRED,
 };
 
-/** 코드 그대로 두고 <b>글자만</b> 바꾼다 — 그래야 정렬·필터·엑셀이 코드를 본다(frontend/grid.md). */
-function stateText(value: unknown): string {
-  // `unknown` 을 그대로 잇지 않는다 — 객체가 오면 `[object Object]` 가 셀에 박힌다.
-  const code = typeof value === 'string' ? value : '';
-  return code in STATE_LABEL ? label(STATE_LABEL[code as GrantState]) : code;
-}
+/** 색과 방식은 <b>공통물이 갖는다</b> — 화면 넷이 같은 것을 본다(shared/authz/grantState.ts). */
+const stateText = grantDisplay(STATE_LABEL);
 
 /** 액션 넷의 라벨 — `authz.action.*` 를 그대로 쓴다(054). */
 const ACTION_LABEL: Record<ActionCd, string> = {
@@ -751,7 +740,7 @@ function buildRoleColumns(roleOptions: SelectOption[]): ColumnDef<UserRoleRow>[]
       type: 'text',
       width: 90,
       renderer: 'badge',
-      tone: STATE_TONE,
+      tone: GRANT_TONE,
       display: stateText,
       /*
         <b>꺼진 역할이면 배지가 하나 더 붙는다</b>(screen/code/requirements.md 의 값-뒤 배지). 상태는 기간만
@@ -819,7 +808,7 @@ function buildGrantColumns(): ColumnDef<UserGrantRow>[] {
       type: 'text',
       width: 90,
       renderer: 'badge',
-      tone: STATE_TONE,
+      tone: GRANT_TONE,
       display: stateText,
     },
     { field: 'validFromDt', header: MSG.USER_AUTH_COL_FROM, type: 'date', width: 130, sortable: true },
@@ -1118,7 +1107,7 @@ function buildEffectiveColumns(): ColumnDef<EffectiveAuthRow>[] {
       type: 'text',
       width: 90,
       renderer: 'badge',
-      tone: STATE_TONE,
+      tone: GRANT_TONE,
       display: stateText,
     },
     { field: 'validFromDt', header: MSG.USER_AUTH_COL_FROM, type: 'date', width: 130, sortable: true },

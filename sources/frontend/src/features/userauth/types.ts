@@ -10,7 +10,9 @@ import type { AccountStat } from '@/shared/user/accountStat';
  * <p>**기간에서 파생**한다. 컬럼으로 두면 배치가 그것을 갱신해야 하고, 배치가 실패한 동안
  * 화면과 판정이 갈린다 — 계정 잠금 자동 해제를 조회 시 계산으로 둔 것과 같은 구조다.
  */
-export type GrantState = 'SCHEDULED' | 'ACTIVE' | 'EXPIRED';
+import type { GrantState } from '@/shared/authz/grantState';
+
+export type { GrantState };
 
 /**
  * 좌 — **읽기 전용**이다. 계정 생성은 `USER_MGMT`(screen/user-auth/requirements.md)의 일이다.

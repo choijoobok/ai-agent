@@ -67,7 +67,7 @@ features/user/
 | `api` | HTTP 배럴 · 인터셉터 · request-id · 다운로드 |
 | `grid` | `useGridController` · `DataGrid` · 컬럼 계약 · 셀 에디터 · 엑셀 · 개인설정 |
 | `searchform` | `useSearchFormHeader` · `SearchForm` · 저장된 조건 |
-| `authz` | 권한 판정 · 메뉴 트리 색인 |
+| `authz` | 권한 판정 · 메뉴 트리 색인 · **부여 상태**(타입 · `tone` 맵 · `display` — 화면 넷이 이것 하나를 본다) |
 | `i18n` | `MSG` 상수 · 번들 캐시 · `label()` |
 | `screentabs` · `tree` · `popup` · `formmodal` | 셸·공통 UI |
 | `code` · `user` · `favorite` · `menustat` | 공통 조회 |
@@ -103,11 +103,12 @@ features/user/
 > 로 올리면 목록이 길어지고 아무도 다 읽지 않는다. **조건은 *두 번째 사용* 이지
 > *공통일 것 같음* 이 아니다.**
 
-> **등재만으로는 갈림을 막지 못한다** — 목록에 올린 뒤에도 공통물과 화면이 **같은 상태에
-> 다른 색**을 주고 있었다(`SCHEDULED` 가 `roleHolder.ts` 에서 `warn`, `features/menu`·
-> `features/user` 에서 `none`). 6차 재현이 찾아 2026-09-07 에 `none` 으로 맞췄다.
-> **색의 정본이 아직 세 곳**이라 다시 갈릴 수 있다 — 무엇을 올려야 그것이 막히는지는
-> 아래 *언제 올리나* 의 판정이 아니라 **선언 검사**가 답한다([quality/test-design.md](../../quality/test-design.md)).
+> **등재만으로는 갈림을 막지 못한다.** `authz` 가 목록에 있는데도 공통물과 화면이 **같은
+> 상태에 다른 색**을 주고 있었다 — 6차 재현이 **사람 눈으로** 찾았고 아무 검사도 울지 않았다.
+> 정본이 여럿이었기 때문이다(타입 네 벌 · 색 맵 세 벌 · 셀 값 방식 한 곳만 다름).
+> **모은 것으로도 부족하다** — 다음 화면이 색을 손으로 적으면 그 순간 다시 갈린다. 막는 것은
+> 등재가 아니라 **"없다" 를 검사하는 것**이고([quality/test-design.md](../../quality/test-design.md) §2),
+> `scripts/check-grant-tone.mjs` 가 **그 파일 이름을 대고** `npm run lint` 를 실패시킨다.
 
 ### 이름을 바꿀 때 — `@deprecated` 가 인용처를 열거하게 한다
 

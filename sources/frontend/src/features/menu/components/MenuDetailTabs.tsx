@@ -5,8 +5,9 @@ import { MSG } from '@/shared/i18n/messageKeys';
 import { DataGrid } from '@/shared/grid/DataGrid';
 import { DetailTabs } from '@/shared/grid/DetailTabs';
 import { useGridController } from '@/shared/grid/useGridController';
-import type { ColumnDef, SelectOption, Tone } from '@/shared/grid/types';
+import type { ColumnDef, SelectOption } from '@/shared/grid/types';
 import { ACTIONS, type Action } from '@/shared/authz/permission';
+import { GRANT_TONE, grantDisplay } from '@/shared/authz/grantState';
 import { MENU_ENDPOINTS } from '@/features/menu/api/endpoints';
 import type {
   GrantState,
@@ -331,19 +332,8 @@ const GRANT_LABEL: Record<GrantState, string> = {
   EXPIRED: MSG.MENU_GRANT_EXPIRED,
 };
 
-/** 상태 배지의 색 — screen/user/requirements.md 의 세 탭과 <b>같은 맵</b>이다(frontend/grid.md). */
-const GRANT_TONE: Record<string, Tone> = {
-  SCHEDULED: 'none',
-  ACTIVE: 'ok',
-  EXPIRED: 'muted',
-};
-
-/** 코드 그대로 두고 <b>글자만</b> 바꾼다 — 그래야 정렬·필터·엑셀이 코드를 본다(frontend/grid.md). */
-function grantText(value: unknown): string {
-  // `unknown` 을 그대로 잇지 않는다 — 객체가 오면 `[object Object]` 가 셀에 박힌다.
-  const code = typeof value === 'string' ? value : '';
-  return code in GRANT_LABEL ? label(GRANT_LABEL[code as GrantState]) : code;
-}
+/** 색과 방식은 <b>공통물이 갖는다</b> — 화면 넷이 같은 것을 본다(shared/authz/grantState.ts). */
+const grantText = grantDisplay(GRANT_LABEL);
 
 /**
  * 액션 <b>한 칸</b>씩 넷 — 권한은 (메뉴, 액션) 단위이며 <i>"쓸 수 있다"</i> 가 액션마다

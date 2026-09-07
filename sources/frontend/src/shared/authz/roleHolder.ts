@@ -4,6 +4,7 @@ import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
 import { useGridController, type GridController } from '@/shared/grid/useGridController';
 import type { ColumnDef, PageResponse } from '@/shared/grid/types';
+import { GRANT_TONE, grantDisplay, type GrantState } from '@/shared/authz/grantState';
 
 /**
  * 역할 보유자 그리드의 어휘 — <b>두 화면이 같은 그리드다</b>(screen/menu/requirements.md).
@@ -23,7 +24,7 @@ import type { ColumnDef, PageResponse } from '@/shared/grid/types';
  * *경로가 하나* 라는 사실을 <b>두 시드 행</b>으로 만든다.
  */
 
-export type GrantState = 'SCHEDULED' | 'ACTIVE' | 'EXPIRED';
+export type { GrantState } from './grantState';
 
 /** 서버 `RoleHolderRow` 와 1:1. <b>읽기 전용이며 저장 대상이 아니다</b>(screen/user/requirements.md 이 고친다). */
 export interface RoleHolderRow {
@@ -203,18 +204,13 @@ function holderColumns(): ColumnDef<RoleHolderRow>[] {
         <b>예정 · 유효 · 만료를 구분 표시한다</b> — AUTHZ-13 의 요구다(screen/menu/requirements.md). 만료를
         감추지 않는 것이 요점이며, *지금은 영향이 없지만 다시 유효해질 수 있다*.
       */
-      derive: (row) => label(GRANT_LABEL[row.grantState]),
       /*
-        <b>예정은 `none` 이다</b>(사용자 결정 2026-09-07). 한때 여기만 `warn` 이고
-        {@code features/menu} · {@code features/user} 는 `none` 이었다 — <b>같은 상태에 다른 색</b>이라
-        화면을 오가는 사람이 <i>다른 뜻인가</i> 를 묻게 됐다. 예정은 경고할 일이 아니다:
-        <b>아직 아무 영향이 없을 뿐</b>이며 관리자가 그렇게 넣은 것이다.
+        <b>코드를 셀에 두고 글자만 바꾼다</b> — 2026-09-07 까지 여기만 {@code derive} 로
+        라벨을 셀 값으로 만들었고, 그래서 <b>이 화면만 정렬·필터·엑셀이 라벨을 봤다</b>
+        (frontend/declarations.md). 색과 방식 모두 공통물이 갖는다.
       */
-      tone: {
-        [label(GRANT_LABEL.SCHEDULED)]: 'none',
-        [label(GRANT_LABEL.ACTIVE)]: 'ok',
-        [label(GRANT_LABEL.EXPIRED)]: 'muted',
-      },
+      tone: GRANT_TONE,
+      display: grantDisplay(GRANT_LABEL),
     },
     {
       field: 'period',

@@ -77,8 +77,10 @@ export interface IssuedPassword {
 // 상태 셋(예정 · 유효 · 만료)은 **기간에서 파생**한다 — 컬럼이 아니라 조회 시 계산이라
 // 배치가 실패해도 화면과 판정이 갈리지 않는다(sys/menu.md).
 
-/** 예정 · 유효 · 만료 — 세 탭이 함께 쓴다(보유 역할 · 개인 예외 · 유효 권한). */
-export type GrantState = 'SCHEDULED' | 'ACTIVE' | 'EXPIRED';
+/** 예정 · 유효 · 만료 — 세 탭이 함께 쓴다(보유 역할 · 개인 예외 · 유효 권한). 정의는 공통물이 갖는다. */
+import type { GrantState } from '@/shared/authz/grantState';
+
+export type { GrantState };
 
 /** 액션 넷 — 서버 `ActionType` 과 1:1. */
 export type ActionCd = 'READ' | 'SAVE' | 'EXPORT' | 'EXECUTE';

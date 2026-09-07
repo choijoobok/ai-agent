@@ -69,8 +69,10 @@ export interface MenuRoleRow {
   actions: Action[];
 }
 
-/** 부여가 지금 어디에 있는가 — **기간에서 파생**한다(sys/menu.md). */
-export type GrantState = 'SCHEDULED' | 'ACTIVE' | 'EXPIRED';
+/** 부여가 지금 어디에 있는가 — **기간에서 파생**한다(sys/menu.md). 정의는 공통물이 갖는다. */
+import type { GrantState } from '@/shared/authz/grantState';
+
+export type { GrantState };
 
 /** 탭 2 — AUTHZ-13. **경유마다 한 행**이다(screen/menu/requirements.md). */
 export interface MenuUserRow {
