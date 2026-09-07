@@ -4,7 +4,7 @@ title: "산출물 서식 — 정본과 파생"
 category: artifact/template
 type: operation
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-07
 status: active
 sources: ["aidd-guide/artifact/INDEX.md", "documents/screen/"]
 tier: 3
@@ -22,11 +22,14 @@ tags: [artifact, template, format]
 
 | 서식 | 단계 | 채우면 어디로 | 독자 |
 |---|---|---|---|
+| [`00-research.md`](./00-research.md) | P2~ | `documents/research/{주제}.md` | 다음 사람 |
 | [`01-adr.md`](./01-adr.md) | P2~ | `documents/decisions/ADR-{번호}-{제목}.md` | 다음 사람 |
 | [`02-requirements.md`](./02-requirements.md) | P3 | `documents/screen/{페이지경로}/requirements.md` | **AI**(구현 주체) |
 | [`04-manual.md`](./04-manual.md) | P4 | `documents/screen/{페이지경로}/manual.md` | **운영자·사용자** |
 | [`05-runbook.md`](./05-runbook.md) | P6 | `documents/generated/80-운영런북.md` | 운영 |
 
+- **00 이 01 앞인 것이 순서다** — 조사가 결정보다 앞선다. `00` 은 **비규범**이고 `01` 이
+  규범의 입구다: 조사 자료를 인용하는 것은 ADR 뿐이며, spec 은 ADR 을 인용한다.
 - **02·04 가 화면 하나의 정본 둘이다.** 읽는 사람이 다르고, 같은 사실을 두 번 적지 않는다 —
   요건서가 규칙의 정본이고 메뉴얼은 그것을 사용자의 말로 옮긴다. 워크플로는 `CLAUDE.md` §6 이 갖는다.
 - **02·04 는 화면 서른한 곳에 쓰이면서 자란 서식이다.** 지어낸 형식이 아니므로, 고칠
