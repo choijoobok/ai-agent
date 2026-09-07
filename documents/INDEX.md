@@ -43,7 +43,7 @@
 | [`00-charter.yaml`](spec/00-charter.yaml) | P0 | 문제 5 · 경제성 5 · **목표 5**(GOAL-) · **비목표 10**(NGOAL-) · 성공 기준 7 · 로드맵 4 | 이관 |
 | [`01-actors.yaml`](spec/01-actors.yaml) | P0 | **액터 11**(ACT-) — 사람 5 · 외부 시스템 3 · 외부 조직 3 + 모듈 3 | 이관 |
 | [`02-constraints.yaml`](spec/02-constraints.yaml) | P0 | **설계 원칙 10**(PRN-) · 기술 제약 11 · 배포 3 · **착수 시 확정 18**(CON-) · 개발 제약 2 | 이관 |
-| [`03-glossary.yaml`](spec/03-glossary.yaml) | P1 | **용어 35**(TRM-) · 턴 상태 6 · 대기 유형 3 · 회차 규칙 5 | 이관 |
+| [`03-glossary.yaml`](spec/03-glossary.yaml) | P1 | **용어 54**(TRM- · 대화·실행·정책·실행기반·처리중입력) · **프레임워크 어휘 24** · **헷갈리는 짝 10** · 턴 상태 6 · 대기 유형 3 · 회차 규칙 5 | 이관 |
 | [`10-requirements.yaml`](spec/10-requirements.yaml) | P1 | **요구사항 59**(REQ-) — 질의 처리 26 · 처리 중 입력 6 · 보안·거버넌스 14 · 저장된 조회 7 · 메타데이터 4 · **유도 2** | 이관 |
 | [`11-processes.yaml`](spec/11-processes.yaml) | P1 | 업무 프로세스 As-Is / To-Be | **비어 있다** |
 | [`20-architecture.yaml`](spec/20-architecture.yaml) | P2 | 구성 · 모듈 경계 6 · 딥링크 · 데이터소스 · LLM 연동 · 신원 매핑 · 지식 검색 · **실행 점유**(ARCH-) | 이관 |
@@ -90,8 +90,6 @@
 
 - 체인과 검사 규칙(T1~T12)은 [`aidd-guide/process/05-traceability.md`](../aidd-guide/process/05-traceability.md).
 - **`LLM-` 접두는 여기 것이 아니다** — `aidd-guide/` 의 문서 ID 다. 두 체계는 섞이지 않는다.
-  (0001~0031), `documents/decisions/` 는 **이 프로젝트**의 결정이다. 프로젝트가 끝나면 앞쪽은
-  남고 뒤쪽은 프로젝트와 함께 닫힌다.
 
 ## 검증
 

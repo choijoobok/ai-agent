@@ -5,6 +5,11 @@
 #
 # **이 사전이 모든 문서·DB 테이블·API 필드 명명의 기준이다.** 동의어를 섞어 쓰지 않는다.
 # `key` 는 영문 키이며, DB 컬럼 값과 코드 상수는 이 키를 대문자 스네이크로 쓴다.
+#
+# 절이 셋이고 **성격이 다르다** — 섞으면 남의 어휘가 우리 명명의 근거가 된다:
+#   terms:            우리 용어. `key` 를 갖고 **명명의 기준이다**
+#   framework_terms:  남의 어휘(LangGraph4j · Spring AI). `key` 가 **없다** — 읽기 위해 싣는다
+#   confusions:       **실제로 어긋난 짝.** 정의를 나란히 두는 것으로 막히지 않는 것만 더한다
 
 meta:
   status: migrated
@@ -198,6 +203,114 @@ terms:
     group: 정책
     definition: "행 단위 접근 제한(담당 조직·거래처·창고 등). 대상 데이터소스 안의 사용자 권한 정보 테이블과의 조인 또는 서브쿼리로 구현하며, 테이블당 0..1개 규칙을 둔다"
 
+# ── 실행 기반 어휘 (구현 수준) ───────────────────────────────
+# **업무 용어가 아니라 구현 어휘다.** 그래도 우리가 정한 것이므로 `key` 를 갖고 명명의
+# 기준이 된다 — 정본은 documents/design/turn-execution.md 이고 여기는 그 색인이다.
+  - id: TRM-060
+    term: 획득
+    key: acquire
+    group: 실행기반
+    definition: "진입 가능한 상태의 턴을 잡고 **점유 토큰을 +1** 한다"
+  - id: TRM-061
+    term: 갱신
+    key: renew
+    group: 실행기반
+    definition: "처리 중에 점유 만료 시각을 미룬다. **중단 요청과 처리 중 입력도 이 왕복에서 함께 읽는다**"
+  - id: TRM-062
+    term: 해제
+    key: release
+    group: 실행기반
+    definition: "처리를 끝내고 점유를 놓으면서 다음 상태로 전이시킨다"
+  - id: TRM-063
+    term: 회수
+    key: sweep
+    group: 실행기반
+    definition: "만료된 점유를 찾아 중단 상태로 돌리는 배치. 그 배치를 **스위퍼**라 부른다"
+  - id: TRM-064
+    term: 점유 상실 신호
+    key: leaseLost
+    group: 실행기반
+    definition: "점유를 잃었다는 신호(`LeaseLostException`). 받으면 **아무 상태도 쓰지 않고 포기한다** — 실패로 기록하는 것조차 하지 않는다"
+  - id: TRM-065
+    term: 점유 유지 시간
+    key: leaseDuration
+    group: 실행기반
+    definition: "기호 **L**. 갱신 없이 이 시간을 넘기면 만료된다"
+    note: "값은 미확정이다 — 실측이 필요하다"
+  - id: TRM-066
+    term: 갱신 주기
+    key: renewInterval
+    group: 실행기반
+    definition: "기호 **R**. `L / 3` 이하로 둔다"
+  - id: TRM-067
+    term: 회수 주기
+    key: sweepInterval
+    group: 실행기반
+    definition: "기호 **S**. 스위퍼가 도는 주기"
+    note: "**인스턴스가 죽고 회수되기까지 최악 `L + S` 가 걸린다** — 사용자에게 보이는 복구 시간의 상한은 L 이 아니라 이 합이다"
+  - id: TRM-068
+    term: 창 A
+    key: windowA
+    group: 실행기반
+    definition: "중복 실행이 열리는 구간 하나 — **프로세스가 정지했다가 회수된 뒤 되살아날 때**"
+    note: "현실성이 낮다 — 최소 L 동안 얼어 있어야 한다"
+  - id: TRM-069
+    term: 창 B
+    key: windowB
+    group: 실행기반
+    definition: "중복 실행이 열리는 구간 둘 — **도구 실행이 L 보다 길어져 정상 처리 중인 인스턴스가 회수될 때**"
+    note: "**장애 없이도 열린다.** 그래서 L 은 실행 API 의 타임아웃·재시도까지 포함해 산정한다 — exactly-once 를 약속하지 않는 근거가 이 창이다"
+  - id: TRM-070
+    term: 액션 실행 표시
+    key: actionExecuted
+    group: 실행기반
+    definition: "**이 턴에서 액션이 나갔을 수 있다**는 표시. **성공 여부가 아니다.** 호출 디스패치 직전에 쓴다"
+    note: "응답을 기다렸다가 쓰면 회수와 재개 사이에 값이 거짓으로 남아 재개가 같은 액션을 다시 낸다"
+  - id: TRM-071
+    term: 조건부 쓰기
+    key: conditionalWrite
+    group: 실행기반
+    definition: "`WHERE` 절에 점유 조건을 걸어 **0행이면 점유 상실로 판정하는** 쓰기 방식"
+  - id: TRM-072
+    term: 체크포인트 upsert
+    key: checkpointUpsert
+    group: 실행기반
+    definition: "갱신할 행이 없으면 삽입으로 흘러내리는 것. **시간여행이 저장소에 없는 id 로 갱신을 걸기 때문에 필요하다**"
+
+# ── 처리 중 입력의 어휘 ──────────────────────────────────────
+  - id: TRM-080
+    term: 해석문
+    key: interpretation
+    group: 처리중입력
+    definition: "LLM 이 사용자 질의를 명료하게 재정리한 문장(REQ-015). **지식 검색·SQL 생성·의도 분류의 입력**이며 조회 계획의 일부로 사용자에게 제시된다"
+  - id: TRM-081
+    term: 처리 중 입력의 네 갈래
+    key: inflightIntent
+    group: 처리중입력
+    definition: "처리 중 들어온 입력의 분류 넷 — **보강**(`BOOST`) · **교정**(`CORRECT`) · **별개**(`NEW`) · **중단**(`STOP`)"
+    note: "보수적 우선순위는 `CORRECT > STOP > NEW > BOOST` 다. 그 순위가 실제로 안전한지는 실모델로만 확인된다"
+  - id: TRM-082
+    term: 분류 불능
+    key: UNSURE
+    group: 처리중입력
+    definition: "분류가 서지 않을 때. **차단형 확인으로 넘긴다** — 추측해서 갈래를 고르지 않는다(REQ-025)"
+  - id: TRM-083
+    term: 병행형 확인
+    key: inlineConfirm
+    group: 처리중입력
+    definition: "턴을 **멈추지 않고** 분류 결과를 기본값으로 보여주며 되돌릴 창을 주는 것. **기본값이다**"
+  - id: TRM-084
+    term: 차단형 확인
+    key: blockingConfirm
+    group: 처리중입력
+    definition: "`의도 확인 대기`(WT-03)로 전이해 **사용자 선택 없이는 진행하지 않는** 것. **되돌릴 수 없는 것이 걸렸을 때만** 쓴다"
+    note: "확인 때문에 멈추는 것 자체가 비용이다"
+  - id: TRM-085
+    term: 일괄 승인
+    key: batchApproval
+    group: 처리중입력
+    definition: "연속 실행에서 예정된 액션 전체를 한 번에 승인받는 것(REQ-026)"
+    note: "**파라미터가 앞 액션의 결과에 의존하는 액션은 개별 승인한다** — 일괄에 넣으면 승인 시점에 무엇을 승인하는지 알 수 없다"
 # ── 개념 계층 ────────────────────────────────────────────────
 hierarchy: "세션 → 턴 → { 스텝 → 도구 호출 } · 사용자 개입"
 
@@ -283,3 +396,232 @@ revision_notes:
   - "**버려진 회차의 기록도 남긴다**(PRN-07). 버려졌다는 것과 기록하지 않는다는 것은 다르며, 그 회차에서 이미 발생한 토큰과 이미 실행된 도구가 거기 있다. 이력은 append-only 이므로 지난 회차의 행을 수정해 표시하지 않는다"
   - "**감사 이력에는 기록 당시의 회차를 함께 남긴다.** 점유 토큰과 **두 값은 직교한다** — 점유 토큰은 '어느 인스턴스가 처리했나', 회차는 '무엇을 하려던 시도인가' 에 답한다"
   - "**되돌림에는 상한을 둔다.** 교정이 반복되면 이력과 비용이 함께 늘어난다. 상한 값은 미확정이다"
+
+# ── 프레임워크 용어 ─────────────────────────────────────────
+# **`terms:` 와 갈라 둔 이유가 있다 — 이것은 우리 명명의 기준이 아니다.** 그래서 `key` 가
+# 없다. 남의 어휘이며, 구현이나 documents/design/turn-execution.md 를 읽을 때 필요해서
+# 싣는다. 오케스트레이션이 LangGraph4j 로 확정된 전제 위에 있고(ASM-003) 그 전제가
+# 바뀌면 이 절은 통째로 갈린다 — 그때 `terms:` 는 흔들리지 않는다. **그것이 가른 값이다.**
+framework_terms:
+# 그래프 실행 (LangGraph4j)
+  - id: TRM-100
+    term: StateGraph
+    origin: LangGraph4j
+    group: 그래프
+    definition: "노드와 엣지로 짠 실행 그래프의 **정의**"
+    relation: "우리 스텝 루프의 뼈대"
+  - id: TRM-101
+    term: CompiledGraph
+    origin: LangGraph4j
+    group: 그래프
+    definition: "정의를 컴파일해 실제로 돌릴 수 있게 만든 것"
+  - id: TRM-102
+    term: 노드 (Node)
+    origin: LangGraph4j
+    group: 그래프
+    definition: "그래프의 작업 단위. 임의의 자바 코드다"
+    relation: "**스텝(TRM-003)과 1:1 이 아니다** — confusions 의 첫 항목을 본다"
+  - id: TRM-103
+    term: 엣지 (Edge)
+    origin: LangGraph4j
+    group: 그래프
+    definition: "노드에서 노드로 가는 화살표. 조건부 분기가 가능하다"
+    relation: "우리 흐름의 제어"
+  - id: TRM-104
+    term: 상태 (AgentState)
+    origin: LangGraph4j
+    group: 그래프
+    definition: "노드 사이를 흐르는 값 뭉치. 체크포인트에 통째로 저장된다"
+    relation: "대화 메시지·진행 위치가 여기 담긴다"
+  - id: TRM-105
+    term: 채널 (Channel) · Reducer
+    origin: LangGraph4j
+    group: 그래프
+    definition: "상태의 각 키를 **어떻게 병합할지** 정하는 규칙 (덮어쓰기 / 이어붙이기)"
+    relation: "메시지는 이어붙이기, 나머지는 덮어쓰기"
+  - id: TRM-106
+    term: GraphInput.args · resume
+    origin: LangGraph4j
+    group: 그래프
+    definition: "새로 시작 / 멈춘 지점에서 재개"
+    relation: "우리 `start()` · `resume()`·`retry()` 에 대응한다"
+# 멈춤과 재개
+  - id: TRM-110
+    term: 인터럽트 (interrupt)
+    origin: LangGraph4j
+    group: 멈춤
+    definition: "노드에 들어가기 **직전에** *여기서 멈출까* 를 판정하는 것"
+    relation: "**상태의 순수 함수다.** 재개하면 다시 평가되므로 *이미 물었다* 는 사실이 상태에 없으면 무한 반복된다 — PoC 에서 실제로 무한 루프에 빠졌다"
+  - id: TRM-111
+    term: InterruptableAction
+    origin: LangGraph4j
+    group: 멈춤
+    definition: "노드가 인터럽트 판정을 갖도록 만드는 인터페이스"
+    relation: "승인 게이트·중단·의도 분기가 전부 여기 붙는다"
+  - id: TRM-112
+    term: InterruptionMetadata
+    origin: LangGraph4j
+    group: 멈춤
+    definition: "멈춘 이유를 담아 올려보내는 것 (`APPROVAL_REQUIRED` · `INTENT_CORRECT` 등)"
+  - id: TRM-113
+    term: 체크포인트 (Checkpoint)
+    origin: LangGraph4j
+    group: 멈춤
+    definition: "어느 시점의 상태 전체를 저장한 것. **재개의 유일한 근거**"
+    relation: "우리 `ai_agent_checkpoint` 테이블에 쓴다 — **감사 이력과 다른 것이다**(confusions)"
+  - id: TRM-114
+    term: CheckpointSaver
+    origin: LangGraph4j
+    group: 멈춤
+    definition: "체크포인트를 읽고 쓰는 저장소 인터페이스"
+    relation: "**우리 테이블을 이 구현체로 만들었다** — 그래서 상태 원천이 하나다"
+  - id: TRM-115
+    term: StateSnapshot
+    origin: LangGraph4j
+    group: 멈춤
+    definition: "체크포인트 하나를 상태·노드·설정으로 감싼 조회 결과"
+    relation: "되돌림 지점을 고를 때 쓴다"
+  - id: TRM-116
+    term: 시간여행 (time travel)
+    origin: LangGraph4j
+    group: 멈춤
+    definition: "과거 체크포인트로 되돌아가 거기서 다시 실행하는 것"
+    relation: "**회차(TRM-004)를 올리는 경로다.** 갱신이 저장소에 없는 id 로 오므로 upsert 가 필요하다(TRM-072)"
+# 실행 문맥과 훅
+  - id: TRM-120
+    term: RunnableConfig
+    origin: LangGraph4j
+    group: 문맥
+    definition: "한 번의 실행에 딸려 다니는 설정 보따리"
+  - id: TRM-121
+    term: threadId
+    origin: LangGraph4j
+    group: 문맥
+    definition: "그 실행을 식별하는 값"
+    relation: "**우리는 여기에 턴 ID 를 싣는다**"
+  - id: TRM-122
+    term: checkPointId
+    origin: LangGraph4j
+    group: 문맥
+    definition: "어느 체크포인트에서 시작할지. 되돌림에서 쓴다"
+  - id: TRM-123
+    term: metadata
+    origin: LangGraph4j
+    group: 문맥
+    definition: "임의의 값을 실어 노드·훅·저장소 어디서나 꺼내 쓰는 자리"
+    relation: "**점유 토큰(TRM-012)과 회차(TRM-004)를 여기로 나른다**"
+  - id: TRM-124
+    term: BeforeCall 훅
+    origin: LangGraph4j
+    group: 문맥
+    definition: "노드 본문 **전에** 도는 것. 인터럽트 판정보다도 앞이다"
+    relation: "**점유 갱신·중단 확인·의도 분류를 여기 둔다** — 앞에서 읽은 값을 뒤의 `interrupt()` 가 쓴다"
+  - id: TRM-125
+    term: WrapCall 훅
+    origin: LangGraph4j
+    group: 문맥
+    definition: "노드 본문을 **감싸는** 것. 성공·실패·소요시간을 다 잡는다"
+    relation: "스텝 이력을 여기서 남긴다. **다만 인터럽트로 멈춘 노드는 이 훅을 타지 않는다**"
+  - id: TRM-126
+    term: AfterCall 훅
+    origin: LangGraph4j
+    group: 문맥
+    definition: "노드 본문 **뒤에** 도는 것"
+# 모델 계층 (Spring AI)
+  - id: TRM-130
+    term: ChatModel
+    origin: Spring AI
+    group: 모델
+    definition: "공급사를 감춘 대화 모델 인터페이스"
+    relation: "**FEAT-304(외부 모델 호출 공통 컴포넌트)의 내부 구현으로만 쓴다.** 도메인 코드는 우리 인터페이스만 본다 — 노출하면 공급사 교체 가능성을 얻는 대신 **프레임워크가 교체 불가능한 종속**이 된다(PRN-05)"
+  - id: TRM-131
+    term: Prompt · Message
+    origin: Spring AI
+    group: 모델
+    definition: "모델에 보내는 입력"
+    relation: "ChatModel 과 같은 경계 — FEAT-304 안에만 둔다"
+  - id: TRM-132
+    term: Usage
+    origin: Spring AI
+    group: 모델
+    definition: "입력·출력 토큰 수"
+    relation: "정산의 근거다. **정본은 API Provider 다**(CON-034) — 개발 기간 CLI 의 값은 정산에 쓰지 않는다"
+
+# 훅과 인터럽트의 실행 순서 — **우리 설계가 이 순서에 의존한다.**
+hook_order: "BeforeCall 훅 → interrupt() 판정 → WrapCall 체인 → 노드 본문 → AfterCall 훅"
+hook_order_notes:
+  - "**점유 갱신·중단 확인·의도 분류를 `BeforeCall` 에 둔 이유가 이것이다** — 앞에서 읽은 값을 뒤의 `interrupt()` 가 쓴다"
+  - "**인터럽트로 멈춘 노드는 `WrapCall` 을 타지 않는다.** 그래서 승인 대기·중단의 이력은 훅이 아니라 오케스트레이터가 남긴다"
+  - "**프레임워크 버전이 올라가 이 순서가 바뀌면 우리 설계가 깨진다** — 올릴 때 documents/design/turn-execution.md 를 함께 확인한다"
+
+# ── 헷갈리는 짝 ─────────────────────────────────────────────
+# **이 절이 사전의 본론이다.** 정의를 나란히 두는 것으로는 혼동이 막히지 않는다 —
+# 실제로 어긋난 지점을 *무엇과 무엇이 다른가* 로 적어야 막힌다(CLAUDE.md §5-13 과 같은 뿌리).
+#
+# **미리 채우지 않는다.** 설계 논의·코드 리뷰·재현 실험에서 **실제로 혼동이 일어난 것만**
+# 더한다. 짝은 별도 ID 를 갖지 않고 `pair` 의 두 ID 로 식별한다 — 짝은 산출물이 아니라
+# 두 용어 사이의 관계이고, 새 접두를 만들면 `trace-check` 가 검사하지 않는 ID 가 늘어난다.
+confusions:
+  - pair: [TRM-102, TRM-003]
+    title: "노드 ≠ 스텝"
+    severity: "가장 자주 어긋난다"
+    left: "**노드** — LangGraph4j 가 정한 그래프의 작업 하나. 쓰임은 **실행 편의**"
+    right: "**스텝** — 우리가 정한 agent ↔ LLM 1회 왕복. 쓰임은 **감사·과금**"
+    evidence: "PoC 에서 훅을 전 노드에 걸었더니 스텝 이력이 5행이 아니라 **9행**으로 나왔다 — `reason` 노드와 `tool` 노드가 각각 행을 만들었다"
+    rule: "**노드 분할은 구현 사정이고 스텝은 과금 단위다.** 둘이 우연히 일치할 때만 훅을 전역으로 건다"
+
+  - pair: [TRM-012, TRM-004]
+    title: "점유 토큰 ≠ 회차"
+    left: "**점유 토큰** — 어느 **인스턴스**가 처리했나. 인프라 층. 점유가 바뀔 때 오른다"
+    right: "**회차** — 무엇을 하려던 **시도**인가. 업무 흐름 층. 되돌려 다시 할 때 오른다"
+    evidence: "**직교한다.** 한 회차가 여러 점유에 걸칠 수 있고(인스턴스가 죽어 회수·재개), 한 점유 안에서 회차가 오를 수도 있다(교정) — 후자가 실측으로 확인됐다: fence 는 1 로 고정인데 회차만 0→1"
+    rule: "둘 다 이력에 함께 남긴다. 하나로 합치지 않는다"
+
+  - pair: [TS-04, TS-05]
+    title: "중단 ≠ 실패"
+    left: "**중단** — **다시 해볼 여지가 있는** 멈춤. 서버 재시작 · 점유 만료 · 대기 만료 · 사용자 중단. **재시도 가능**"
+    right: "**실패** — 다시 해도 같은 종결. 쿼터 소진 · 권한 부족 · 복구 불가 오류. 재시도 불가"
+    rule: "**액션 실패를 보고할 때 이 구분을 담는다** — 사용자의 다음 행동이 갈린다"
+
+  - pair: [REQ-013, REQ-024]
+    title: "재시도 ≠ 교정 ≠ 결과 교정 재요청"
+    severity: "셋 다 *다시 한다* 인데 전부 다르다"
+    left: "**재시도**(REQ-013) — 턴이 **중단**됐을 때. 멈춘 지점에서 **이어간다.** 회차 안 올린다"
+    middle: "**교정**(REQ-030~035 의 네 갈래 중 `CORRECT`) — 턴이 **처리 중**일 때. **되돌려서** 다시 한다. 회차 **올린다**"
+    right: "**결과 교정 재요청**(REQ-024) — 턴이 **완료**됐을 때. **새 턴**을 만든다. 회차 해당 없음"
+
+  - pair: [TRM-044, NFR-001]
+    title: "조회 계획 ≠ DBMS 실행 계획(EXPLAIN)"
+    left: "**조회 계획** — 실행 전에 사용자에게 **업무 용어로** 보여주는 예정 내역. 물리명과 SQL 은 보여주지 않는다"
+    right: "**DBMS 실행 계획(EXPLAIN)** — DB 가 쿼리를 어떻게 처리할지에 대한 내부 계획. 대량 조회 방어의 사전 판정(NFR-001)에 쓴다"
+    rule: "이름이 비슷하지만 **대상도 독자도 다르다**"
+    note: "조회 계획은 액션이 포함된 턴에서 실행할 액션과 순서도 담게 되어(REQ-026) **이름과 범위가 어긋난 상태다.** 용어를 바꿀지는 미확정이다"
+
+  - pair: [TRM-025, TRM-026]
+    title: "질의 즐겨찾기 ≠ 저장된 조회"
+    left: "**질의 즐겨찾기** — **자연어 문장**을 저장한다. 실행하면 새 턴이 생기고 LLM 을 거친다. 결과가 매번 달라질 수 있고 **토큰을 소모한다**"
+    right: "**저장된 조회** — **확정 SQL + 파라미터 명세**를 저장한다. 턴이 생기지 않고 LLM 도 거치지 않는다. **결정적이고 토큰을 쓰지 않는다**"
+
+  - pair: [TRM-113, REQ-107]
+    title: "체크포인트 ≠ 감사 이력"
+    severity: "같은 DB 에 있고 같은 턴을 다루지만 목적이 다르다"
+    left: "**체크포인트** — **어디서부터 다시 시작하나.** 턴 종결 시 정리되고 이전 회차는 교정 시 정리된다. **갱신된다**"
+    right: "**감사 이력** — **무슨 일이 있었나.** 보관 기간 정책을 따른다. **append-only** 이며 지난 행을 수정하지 않는다"
+    rule: "원천은 하나이고 표가 둘인 것은 **분업이다** — 어느 한쪽을 다른 쪽으로 대신할 수 없다"
+
+  - pair: [TRM-110, TS-04]
+    title: "인터럽트 ≠ 중단(상태)"
+    left: "**인터럽트** — LangGraph4j 가 노드 진입 직전에 멈추는 것. **재개 가능한 멈춤**을 뜻하며 **승인 대기도 인터럽트다**"
+    right: "**중단** — 턴 상태 여섯 중 하나(TS-04)"
+    rule: "승인 대기로 멈춘 것은 인터럽트지만 **중단 상태가 아니다.** 그리고 **점유를 잃었을 때는 인터럽트가 아니라 예외여야 한다** — 점유를 잃은 인스턴스는 그 턴에 아무 권한이 없어 *재개 가능한 멈춤* 이 성립하지 않는다"
+
+  - pair: [TRM-040, TRM-041]
+    title: "대상 시스템 ≠ 데이터소스"
+    left: "**대상 시스템** — 레거시 시스템 하나. **API(실행·조회 기능)가 여기 귀속된다**"
+    right: "**데이터소스** — 조회할 DB/DW 연결 하나. **테이블·컬럼이 여기 귀속된다**"
+    rule: "**둘은 서로 관계를 갖지 않는다**(ARCH-030) — *이 대상 시스템의 DB 는 저 데이터소스* 라는 연결을 두지 않는다. 조회 경로와 실행 경로가 독립한 두 축이고 권한 매핑도 각각 따로 걸린다"
+
+  - pair: [TRM-045, TRM-046]
+    title: "사용자 그룹 ≠ 쿼터 등급"
+    left: "**사용자 그룹** — 무엇에 **접근**할 수 있나. **여러 개** 가질 수 있고 범위는 합집합이다"
+    right: "**쿼터 등급** — 얼마나 **쓸** 수 있나. **사용자당 하나**이며 그룹과 무관하다"
