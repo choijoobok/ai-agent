@@ -71,7 +71,7 @@ ai-agent/
 | **기능 하나를 구현한다** | `/slice` → [`aidd-guide/process/07-slice.md`](aidd-guide/process/07-slice.md) |
 | **테스트를 무엇으로 짜나** | [`aidd-guide/quality/test-design.md`](aidd-guide/quality/test-design.md) — 층별로 무엇을 잠그나 |
 | 백엔드 구조·이름·트랜잭션 | [`aidd-guide/standard/backend/INDEX.md`](aidd-guide/standard/backend/INDEX.md) |
-| 공통 컴포넌트 추가·변경 | [`aidd-guide/standard/frontend/INDEX.md`](aidd-guide/standard/frontend/INDEX.md) — 올리는 조건과 **공통물 목록** |
+| 공통 컴포넌트 추가·변경 | [`aidd-guide/standard/frontend/INDEX.md`](aidd-guide/standard/frontend/INDEX.md) — 올리는 조건. **이미 있나**는 [`aidd-guide/standard/registry.md`](aidd-guide/standard/registry.md)(생성물), **고치는 절차**는 [`aidd-guide/standard/INDEX.md`](aidd-guide/standard/INDEX.md) 의 「이미 있는 것을 고칠 때」 |
 | CRUD·마스터디테일·엑셀 레시피 | [`aidd-guide/playbook/INDEX.md`](aidd-guide/playbook/INDEX.md) |
 | 도메인 지식(인가·메뉴·코드·메시지) | [`aidd-guide/knowledge/INDEX.md`](aidd-guide/knowledge/INDEX.md) |
 | 훅·스킬·컨텍스트 예산 | [`aidd-guide/harness/INDEX.md`](aidd-guide/harness/INDEX.md) |

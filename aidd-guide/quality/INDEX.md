@@ -63,6 +63,7 @@ tags: [index, quality, test, redteam, evals]
 | `documents/spec/**` | `node .claude/hooks/trace-check.mjs --all` (훅이 자동으로도 돈다) |
 | `aidd-guide/**` · `documents/screen/**` | `node aidd-guide/meta/_meta/lint.mjs` — **위반 0 이어야 한다** |
 | `.claude/hooks/**` · `.claude/skills/**` · `settings.json` | `node .claude/hooks/harness-doc.mjs --check` — 훅이 자동으로 다시 만들지만, **커밋에 담겼는지**는 이것이 본다 |
+| `shared/**` · `core/**` · `support/**` 에 **폴더를 더하거나 지웠다** · 가이드의 `sources:` 를 고쳤다 | `node .claude/hooks/commons-doc.mjs --check` — 공통물 목록이 실물과 어긋났는지. 위와 같은 이유로 **커밋 누락**을 본다 |
 | `menu-tree.yaml` | `cd sources && ./gradlew generateMenuSeed` |
 | 컨트롤러 · `endpoints.ts` · `screenRegistry.ts` | `cd sources && ./gradlew generateApiSeed` |
 | `messageKeys.ts` · `MsgKey.java` | `cd sources && ./gradlew generateMessageSeed` (값은 **새 changeset** 으로) |

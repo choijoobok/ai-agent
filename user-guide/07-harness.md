@@ -10,7 +10,7 @@
 
 ---
 
-## 훅 — 12 개가 걸려 있다
+## 훅 — 13 개가 걸려 있다
 
 **강도는 그 훅이 실제로 부르는 함수에서 계산한다** — 주석에 적힌 말이 아니다.
 
@@ -26,6 +26,7 @@
 | `PostToolUse` | `Write\|Edit` | `doc-drift` | 화면 소스를 고치면 그 화면의 문서를 대조하라고, 요건서가 승인 전이면 승인부터 받으라고 알린다 | 경고 | 15s |
 | `PostToolUse` | `Write\|Edit` | `guide-drift` | 공통물·표준 소스를 고치면 그것을 설명하는 가이드 문서를 대조하라고 알린다. | 경고 | 15s |
 | `PostToolUse` | `Write\|Edit` | `harness-doc` | 훅·스킬 목록을 `user-guide/07-harness.md` 로 만든다 | **차단** · 경고 | 10s |
+| `PostToolUse` | `Write\|Edit` | `commons-doc` | 공통물 목록을 `aidd-guide/standard/registry.md` 로 만든다 | 경고 | 15s |
 | `UserPromptSubmit` | — | `log-raw` | 대화 원문을 `chat-history/` 에 append 한다 | 조용히 한다 | 10s |
 | `UserPromptSubmit` | — | `context-gauge` | 컨텍스트 게이지 — 문맥이 차오르면 압축할 여지가 남아 있을 때 알린다. | 문맥에 넣는다 | 10s |
 | `Stop` | — | `log-raw` | 대화 원문을 `chat-history/` 에 append 한다 | 조용히 한다 | 15s |

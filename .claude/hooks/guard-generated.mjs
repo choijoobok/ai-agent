@@ -25,6 +25,7 @@ const GENERATED = new Map([
   [`${SAMPLE}/902-sample-bulk-item.csv`, './gradlew generateSampleBulkSeed'],
   [`${SAMPLE}/904-sample-bulk-item-dense.csv`, './gradlew generateSampleBulkSeed'],
   ['user-guide/07-harness.md', 'node .claude/hooks/harness-doc.mjs --write'],
+  ['aidd-guide/standard/registry.md', 'node .claude/hooks/commons-doc.mjs --write'],
 ]);
 
 /** 무엇을 고쳐야 그 생성물이 바뀌나 — 막기만 하면 사람이 다음에 갈 곳을 모른다. */
@@ -37,6 +38,10 @@ const SOURCE_OF = new Map([
     'sources/frontend/src/shared/i18n/messageKeys.ts · sources/backend/core/.../message/MsgKey.java',
   ],
   ['07-harness.md', '.claude/hooks/ · .claude/skills/ · .claude/settings.json 의 실물'],
+  [
+    'registry.md',
+    'sources/frontend/src/shared/ · sources/backend/core/ · support/ 의 폴더와, 가이드 문서의 `sources:` 메타',
+  ],
   ['902-sample-bulk-order.csv', 'generateSampleBulkSeed 의 파라미터'],
   ['902-sample-bulk-item.csv', '〃'],
   ['904-sample-bulk-item-dense.csv', '〃'],

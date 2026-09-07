@@ -92,6 +92,13 @@
             "args": [".claude/hooks/harness-doc.mjs"],
             "timeout": 10,
             "statusMessage": "하네스 문서 현행화"
+          },
+          {
+            "type": "command",
+            "command": "node",
+            "args": [".claude/hooks/commons-doc.mjs"],
+            "timeout": 15,
+            "statusMessage": "공통물 목록 현행화"
           }
         ]
       }

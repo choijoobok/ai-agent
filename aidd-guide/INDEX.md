@@ -102,7 +102,7 @@ ai-agent/
 | [process](process/01-overview.md) | 방법론 — 역할·질문·게이트·추적성·결정·변경·인지부채·검증비용 | 1 | 12 |
 | [phase](phase/P0-inception.md) | P0~P6 실행 플레이북 | 1 | 7 |
 | [artifact](artifact/INDEX.md) | **산출물 지도 40 = 문서 예산** · 템플릿 · 화면 요건서 절차 | 1 | 22 |
-| [standard](standard/INDEX.md) | 백엔드·프론트 표준의 상세와 근거 | 2 | 40 |
+| [standard](standard/INDEX.md) | 백엔드·프론트 표준의 상세와 근거 | 2 | 41 |
 | [playbook](playbook/INDEX.md) | 화면 레시피 (샘플 여섯과 대응) | 2 | 10 |
 | [quality](quality/INDEX.md) | 테스트 설계 · 레드팀 · 코드 품질 · 골든셋 · 관측 | 2 | 13 |
 | [knowledge](knowledge/INDEX.md) | 표 34개 — 인가·코드·문구·이력·운영 | 3 | 14 |
