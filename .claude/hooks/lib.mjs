@@ -356,16 +356,46 @@ function unquote(s) {
 // ── 가이드 역인덱스 (`sources:` 메타) ─────────────────────────────
 
 /**
- * 역인덱스에 넣을 엔트리의 최소 세그먼트 — <b>넷이다.</b>
+ * 역인덱스에 넣을 <b>폴더</b> 엔트리의 최소 세그먼트 — 넷이다.
  *
  * <p>`sources/frontend/src/` 셋은 <i>프론트 전부</i> 를 주장하는 값이고, 그것까지 태우면
  * 프론트를 건드릴 때마다 같은 문서 이름이 뜬다. 넷이면 `sources/frontend/src/shared/grid/`
  * 처럼 <b>무엇에 대한 문서인지 말하는 값</b>만 남는다.
+ *
+ * <p><b>파일 엔트리에는 걸지 않는다</b>({@link namesFile}). 문턱의 목적은 <i>너무 넓은
+ * 값을 빼는 것</i> 인데 파일은 하나를 가리키므로 넓을 수가 없다 — 세그먼트로만 재면
+ * `CLAUDE.md`(하나) · `sources/build.gradle.kts`(둘) · `.claude/hooks/log-mask.patterns`(셋)
+ * 처럼 <b>가장 구체적인 값이 가장 먼저 빠진다.</b> 실제로 그랬다: 문서 다섯이
+ * `"CLAUDE.md"` 를, 둘이 빌드 파일을, 둘이 마스킹 패턴을 적어 두었는데 역인덱스에 하나도
+ * 오르지 않아 <b>그 파일을 고쳐도 아무 문서도 지목되지 않았다.</b>
  */
 const MIN_SEGMENTS = 4;
 
-/** 저장소 경로로 볼 접두 — 그 밖은 인용(외부 문서·실험 기록)이라 경로가 아니다. */
+/**
+ * 저장소 경로로 볼 접두 — 그 밖은 인용(외부 문서·실험 기록)이라 경로가 아니다.
+ *
+ * <p><b>같은 목록이 `aidd-guide/meta/_meta/lint.mjs` 에도 있다</b> — 저쪽은 문서 게이트고
+ * 이쪽은 훅이라 서로 import 하지 않는다. <b>하나를 고치면 다른 하나도 고친다.</b>
+ */
 const REPO_ROOTS = ['sources/', 'aidd-guide/', 'documents/', 'user-guide/', '.claude/', '.github/'];
+
+/** 파일을 가리키는 엔트리인가 — 마지막 마디에 확장자가 있으면 파일이다. */
+function namesFile(entry) {
+  const last = entry.split('/').filter(Boolean).at(-1) ?? '';
+  return /\.[A-Za-z0-9]+$/.test(last);
+}
+
+/**
+ * 저장소 안의 경로인가 — 접두 목록이거나 <b>루트에 바로 있는 파일</b>.
+ *
+ * <p>{@link REPO_ROOTS} 가 폴더 접두만 담아서 `CLAUDE.md` · `.gitignore` 는 접두에 걸리지
+ * 않는다. 문서 다섯이 `"CLAUDE.md"` 를 적어 두었고 <b>그 값은 역인덱스에 오른 적이
+ * 없다</b> — 헌법을 고쳐도 그것을 근거로 적은 문서가 지목되지 않았다.
+ */
+function isRepoEntry(entry) {
+  if (REPO_ROOTS.some((root) => entry.startsWith(root))) return true;
+  return !entry.includes('/') && namesFile(entry) && existsSync(join(REPO, entry));
+}
 
 /**
  * 엔트리의 세그먼트가 경로에 <b>순서대로</b> 나타나면 맞다 — 축약 경로를 허용한다.
@@ -399,8 +429,8 @@ export function guideSourceIndex() {
     if (!line) continue;
     const entries = [...line.matchAll(/"([^"]+)"/g)]
       .map(([, e]) => e)
-      .filter((e) => REPO_ROOTS.some((root) => e.startsWith(root)))
-      .filter((e) => e.split('/').filter(Boolean).length >= MIN_SEGMENTS);
+      .filter(isRepoEntry)
+      .filter((e) => namesFile(e) || e.split('/').filter(Boolean).length >= MIN_SEGMENTS);
     if (entries.length === 0) continue;
     out.push({
       doc: relative(REPO, file).split(sep).join('/'),

@@ -154,7 +154,7 @@ ai-agent/
 
 ### 6.5 소스 ↔ 문서 매핑 — 훅이 계산한다
 
-`doc-drift`(화면) · `guide-drift`(공통물·표준)가 **가리키기만 하고 막지 않는다** — *고쳐야 하는가* 는
+`doc-drift`(화면) · `guide-drift`(그 파일을 `sources:` 에 적은 문서)가 **가리키기만 하고 막지 않는다** — *고쳐야 하는가* 는
 판단이고(§6.4), 판단은 사람과 AI 의 몫이다. → [`harness/hooks.md`](aidd-guide/harness/hooks.md)
 
 ---
