@@ -9,7 +9,7 @@ description: 추적성 체인을 검사한다. REQ→UC→FEAT→ENT/API/SCR→T
 
 ## 검사 실행
 `.claude/hooks/trace-check.mjs` 를 실행한다. 없으면 documents/spec/*.yaml 을 직접 파싱해
-`aidd-guide/process/05-traceability.md` §3 의 T1~T12 규칙을 검사한다.
+`aidd-guide/process/05-traceability.md` §3 의 T1~T13 규칙을 검사한다.
 
 ```bash
 node .claude/hooks/trace-check.mjs --all

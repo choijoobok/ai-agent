@@ -7,13 +7,25 @@
  *   (인자 없이 표준 입력으로 훅 입력을 받으면 spec 변경 직후 축약 검사)
  * </pre>
  *
- * <p>규칙은 `aidd-guide/process/05-traceability.md` 의 T1~T12 다. <b>여기는 집행이고 정의는
+ * <p>규칙은 `aidd-guide/process/05-traceability.md` 의 T1~T13 다. <b>여기는 집행이고 정의는
  * 그쪽이다</b> — 규칙을 두 곳에 적으면 갈리고, 갈리면 초록불이 거짓이 된다.
  */
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
-import { REPO, readHookInput, targetPath, repoRelative, readText, parseYaml, warn, pass, needsFeatTag } from './lib.mjs';
+import {
+  REPO,
+  readHookInput,
+  targetPath,
+  repoRelative,
+  readText,
+  parseYaml,
+  warn,
+  pass,
+  needsFeatTag,
+  readState,
+  gateStatus,
+} from './lib.mjs';
 
 const SPEC_DIR = 'documents/spec';
 const SPEC = {
@@ -265,7 +277,8 @@ function fullCheck() {
     끄는 것이다. → aidd-guide/process/05-traceability.md §3
   */
   const src = join(REPO, 'sources');
-  if (existsSync(src)) {
+  const srcFiles = existsSync(src) ? walk(src) : [];
+  if (srcFiles.length > 0) {
     const exempt = new Set(
       readText(join(REPO, '.claude/hooks/feat-baseline.txt'))
         .split('\n')
@@ -273,7 +286,7 @@ function fullCheck() {
         .filter((l) => l && !l.startsWith('#')),
     );
     const untagged = [];
-    for (const file of walk(src)) {
+    for (const file of srcFiles) {
       const rel = relative(REPO, file).split(sep).join('/');
       if (!/\.(java|kt|ts|tsx|js|jsx)$/.test(rel)) continue;
       if (/\/(node_modules|build|dist|target|\.gradle)\//.test(rel)) continue;
@@ -287,6 +300,63 @@ function fullCheck() {
         'T10',
         `소스 ${untagged.length}개`,
         `@feat FEAT-### 태그 없음 — 예: ${untagged.slice(0, 3).join(' · ')}${untagged.length > 3 ? ' …' : ''}`,
+      ]);
+    }
+  }
+
+  /*
+    T13 — <b>TC 가 테스트 코드에 있는가.</b> 방향이 T10 과 반대다.
+
+    <p>T10 은 <i>모든 소스가 태그를 갖는가</i> 라서, 템플릿이 먼저 들어온 이 저장소에서
+    817건이 한꺼번에 위반이 됐고 명단으로 고정해야 했다. <b>T13 은 <i>모든 TC 가 코드에
+    있는가</i> 다</b> — 이미 선 테스트는 대상이 아니므로 <b>면제 명단이 없고 앞으로도
+    필요 없다.</b>
+
+    <p><b>비어 있을 때 켜는 것이 맞는 시점이다.</b> `70-testcases.yaml` 이 빈 지금 켜면
+    위반 0 으로 시작하고 첫 TC 부터 규칙이 돈다 — 나중에 켜면 그때 쌓인 TC 가 전부 위반이
+    되고 <b>다시 명단을 만들게 된다</b>(사용자 결정 2026-09-08).
+
+    <p><b>이름에 박는다 — 파일 머리 태그가 아니다.</b> {@code @DisplayName("TC-0122 …")} ·
+    {@code it('TC-0122 …')}. 케이스 단위로 잠기고, <b>실패 리포트에 TC 번호가 그대로 떠서</b>
+    어느 요건이 깨졌는지 바로 보인다 — 검사보다 이쪽이 더 값이 크다.
+
+    <p><b>강도는 게이트가 정한다</b>(T7 이 G2 를 쓰는 것과 같은 방식). G3 승인 전에는 TC 가
+    먼저 서고 코드가 나중이라 그 사이가 늘 빨갛다 — <b>경고</b>. 승인 이후는 <b>오류</b>다.
+    다만 <b>거꾸로는 언제나 오류다</b>: spec 에 없는 TC 를 테스트가 부르는 것은 미구현이
+    아니라 <b>없는 것을 가리키는 이름</b>이다(T11 과 같은 성격이며 T11 은 spec 안만 본다).
+
+    → aidd-guide/process/05-traceability.md §3
+  */
+  if (srcFiles.length > 0) {
+    const inCode = new Map();
+    for (const file of srcFiles) {
+      const rel = relative(REPO, file).split(sep).join('/');
+      if (!/\.(java|kt|ts|tsx|js|jsx)$/.test(rel)) continue;
+      if (/\/(node_modules|build|dist|target|\.gradle)\//.test(rel)) continue;
+      if (!/\/(test|spec)\//.test(rel) && !/\.(test|spec)\.[jt]sx?$/.test(rel)) continue;
+      for (const m of readText(file).matchAll(/\bTC-[0-9]{2,}\b/g)) {
+        if (!inCode.has(m[0])) inCode.set(m[0], new Set());
+        inCode.get(m[0]).add(rel);
+      }
+    }
+    const declared = new Set(tcs.map((t) => t?.id).filter(Boolean));
+    const strict = gateStatus(readState(), 'P3_design') === 'approved';
+
+    const missing = [...declared].filter((id) => !inCode.has(id)).sort();
+    if (missing.length > 0) {
+      (strict ? errors : warnings).push([
+        'T13',
+        `TC ${missing.length}건`,
+        `테스트 코드에 없다 — 테스트 이름에 ID 를 적는다. 예: ${missing.slice(0, 3).join(' · ')}${missing.length > 3 ? ' …' : ''}`,
+      ]);
+    }
+
+    const unknown = [...inCode.keys()].filter((id) => !declared.has(id)).sort();
+    if (unknown.length > 0) {
+      errors.push([
+        'T13',
+        `TC ${unknown.length}건`,
+        `spec 에 없는 TC 를 테스트가 부른다 — ${unknown.slice(0, 3).join(' · ')}${unknown.length > 3 ? ' …' : ''}`,
       ]);
     }
   }

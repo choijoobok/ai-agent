@@ -93,7 +93,7 @@
 | `DES-`                              | 상세 설계 문서                 | `design/`                           |
 | `ADR-` `ASM-` `CR-` `DEF-` `SLICE-` | 결정 · 가정 · 변경 · 결함 · 슬라이스 | `decisions/` · `project.state.yaml` |
 
-- 체인과 검사 규칙(T1~T12)은 [`aidd-guide/process/05-traceability.md`](../aidd-guide/process/05-traceability.md).
+- 체인과 검사 규칙(T1~T13)은 [`aidd-guide/process/05-traceability.md`](../aidd-guide/process/05-traceability.md).
 - **`LLM-` 접두는 여기 것이 아니다** — `aidd-guide/` 의 문서 ID 다. 두 체계는 섞이지 않는다.
 
 ## 검증
