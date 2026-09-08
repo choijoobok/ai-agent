@@ -187,7 +187,7 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 
 | 규약 | 요지 | 본문 |
 |---|---|---|
-| 서비스 이름 · 트랜잭션 | 조회는 `<기능>QueryService` + 클래스 `readOnly` / 명령은 `<기능>Service` + 쓰기 메서드마다 | [`standard/backend/packages.md`](aidd-guide/standard/backend/packages.md) |
+| 서비스 이름 · **명령의** 트랜잭션 | 조회는 `<기능>QueryService` / 명령은 `<기능>Service` + 쓰기 메서드마다. **조회의 `readOnly` 는 `ServiceConventionTest` 가 빌드에서 막는다** — 사람 몫은 **어느 이름을 고르나**와 **명령 쪽 표시**다 | [`standard/backend/packages.md`](aidd-guide/standard/backend/packages.md) |
 | API 경로 · 액션 | `/api/{계층}/{도메인}/{동작}` · **접두가 액션을 정한다** · `service` 는 전부 POST | [`standard/backend/api.md`](aidd-guide/standard/backend/api.md) |
 | 화면 뼈대 | 뿌리 `<FillColumn>` · `useSearchFormHeader()` · `auditColumns()` · `useGridController` 선언 | [`standard/frontend/grid.md`](aidd-guide/standard/frontend/grid.md) |
 | 호출 감싸기 | 기능의 HTTP 호출은 `api/{도메인}Api.ts` 함수로. **호출 URL 은 `features/{도메인}/api/endpoints.ts` 에만** — 그 선언이 인가 시드의 입력이다 | [`standard/frontend/http.md`](aidd-guide/standard/frontend/http.md) |
