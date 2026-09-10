@@ -36,6 +36,15 @@ jobs:
         with:
           node-version: '22'
 
+      # 구문이 깨진 훅은 **사전 chain 을 통째로 죽여 모든 쓰기를 막는다**(hooks-contract.md).
+      # 로컬에서 잠기는 것은 수리 경로로 빠져나올 수 있지만, main 에 들어가면 남의 트리가
+      # clone 하자마자 잠긴다. 그래서 여기서 먼저 막는다.
+      - name: 훅 구문 검사
+        run: |
+          for f in .claude/hooks/*.mjs .codex/hooks/*.mjs aidd-guide/harness/runtime/*.mjs; do
+            node --check "$f"
+          done
+
       - name: 스킬 생성물과 provider 배선 대조
         run: |
           node aidd-guide/harness/runtime/sync-skills.mjs --check

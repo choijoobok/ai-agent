@@ -3,7 +3,12 @@
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readHookInput, REPO } from '../../.claude/hooks/lib.mjs';
-import { emitHookResults, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
+import {
+  allowHookRepair,
+  emitHookResults,
+  runHookChain,
+  RECOVERY,
+} from '../../.claude/hooks/hook-chain.mjs';
 
 const PRE = ['guard-write.mjs', 'guard-generated.mjs'];
 const POST = [
@@ -47,7 +52,10 @@ export async function runFileChain(input) {
         new_string: command,
       },
     };
-    const current = await runHookChain(normalized, scripts);
+    const current = allowHookRepair(
+      normalized,
+      await runHookChain(normalized, scripts, event === 'PreToolUse' ? RECOVERY.write : undefined),
+    );
     outputs.push(...current);
     if (current.some((x) => x?.hookSpecificOutput?.permissionDecision === 'deny')) break;
   }

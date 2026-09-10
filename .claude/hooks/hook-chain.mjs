@@ -1,9 +1,22 @@
 /** 순서가 필요한 훅들을 자식 프로세스로 직렬 실행하고 결과 하나로 합친다. */
 
 import { join } from 'node:path';
-import { REPO, runEmbeddedHook } from './lib.mjs';
+import { REPO, runEmbeddedHook, repoRelative, targetPath } from './lib.mjs';
 
-export async function runHookChain(input, scripts) {
+/**
+ * 훅이 깨졌을 때 <b>무엇으로 고치나</b> — chain 마다 다르다.
+ *
+ * <p>사전 chain 이 죽으면 그 chain 이 지키던 도구가 통째로 막힌다. 그런데 <b>고칠 때
+ * 쓰는 도구가 바로 그것</b>인 경우가 있다(쓰기 chain 이 죽으면 훅 파일을 `Edit` 로 열 수
+ * 없다). 막는 것까지는 옳지만 <b>어디로 나가는지 말해 주지 않으면</b> 같은 차단을
+ * 반복해서 받는다.
+ */
+export const RECOVERY = {
+  write: '**쓰기 도구가 막혔다** — 훅은 Bash 로 고친다. 원인은 `node --check .claude/hooks/<이름>.mjs` 가 말해 준다.\n`.claude/hooks/*.mjs` 를 고치는 쓰기 하나만 열려 있다.',
+  shell: '**셸이 막혔다** — 훅은 편집 도구(`Edit`)로 고친다. 원인은 `node --check` 가 말해 준다.',
+};
+
+export async function runHookChain(input, scripts, recovery = '보호 훅을 복구한 뒤 다시 시도한다.') {
   const outputs = [];
   for (const script of scripts) {
     try {
@@ -14,10 +27,13 @@ export async function runHookChain(input, scripts) {
       const message = `${script} 실행 실패: ${error instanceof Error ? error.message : String(error)}`;
       if (input?.hook_event_name === 'PreToolUse') {
         outputs.push({
+          /* 정책이 막은 것과 <b>훅이 죽어서 막힌 것</b>은 다르다 — 표식을 남겨야
+             수리 경로를 열지 말지 아래에서 가릴 수 있다. */
+          crashed: script,
           hookSpecificOutput: {
             hookEventName: 'PreToolUse',
             permissionDecision: 'deny',
-            permissionDecisionReason: `${message}\n보호 훅을 복구한 뒤 다시 시도한다.`,
+            permissionDecisionReason: `${message}\n${recovery}`,
           },
         });
         break;
@@ -32,6 +48,36 @@ export async function runHookChain(input, scripts) {
     }
   }
   return outputs;
+}
+
+/** 훅 파일 자신 — 여기만 수리 경로로 연다. 깊이 하나, `.mjs` 하나. */
+const REPAIR_PATH = /^\.claude\/hooks\/[^/]+\.mjs$/;
+
+/**
+ * <b>깨진 보호가 자기 수리까지 막지 않게 한다.</b>
+ *
+ * <p>사전 chain 이 <i>죽어서</i> 막았고(정책이 막은 것이 아니고) 쓰려는 것이
+ * <b>훅 파일 자신</b>이면 통과시킨다 — 그 경로에는 지키는 생성물이 없다
+ * (`SKILL.md` 는 `.claude/skills/` 에 있고 그쪽은 계속 닫혀 있다).
+ * 여는 범위가 <b>수리하는 자리 하나</b>인 것이 이 예외의 전부다.
+ *
+ * <p><b>정책 차단은 절대 열지 않는다.</b> `crashed` 표식이 없으면 그대로 돌려준다 —
+ * 게이트를 우회하는 문이 되면 그 순간 게이트가 없는 것과 같다.
+ */
+export function allowHookRepair(input, outputs) {
+  if (!outputs.some((output) => output?.crashed)) return outputs;
+  if (!REPAIR_PATH.test(repoRelative(targetPath(input)))) return outputs;
+
+  const broken = outputs.map((output) => output?.crashed).filter(Boolean).join(' · ');
+  const message = [
+    `**보호 훅이 깨져 있다**(${broken}). 지금은 훅을 고치는 쓰기 하나만 열려 있다.`,
+    '**다른 파일의 쓰기는 전부 막혀 있다** — 게이트가 서 있지 않은 상태에서 작업하지 않는다.',
+    '고친 뒤 `node --check` 로 확인하고, 그다음에 하던 일로 돌아간다.',
+  ].join('\n');
+  return [{
+    systemMessage: message,
+    hookSpecificOutput: { hookEventName: 'PreToolUse', additionalContext: message },
+  }];
 }
 
 export function emitHookResults(outputs, eventName) {

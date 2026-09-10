@@ -67,7 +67,12 @@ Claude의 Write/Edit 계열 입력은 `tool_input.file_path`와 `content`/`new_s
 ```bash
 node aidd-guide/harness/runtime/harness-check.mjs
 node .claude/hooks/harness-doc.mjs --check
+for f in .claude/hooks/*.mjs; do node --check "$f"; done
 ```
+
+**`Write`·`Edit`이 전부 막히면** 사전 chain이 죽은 것이다. 차단 사유가 어느 훅인지 말해 주며,
+그때는 **Bash로** 고친다 — `.claude/hooks/*.mjs` 를 고치는 쓰기만 열려 있다
+([hooks-contract.md](../hooks-contract.md)의 「깨진 보호에서 빠져나오는 길」).
 
 새로 clone한 환경에서는 Claude Code가 프로젝트 훅 실행 권한을 요청할 수 있다. 배선을 바꾼 뒤
 실제 Claude 세션에서 SessionStart와 대표 차단·경고 fixture를 한 번 확인한다.

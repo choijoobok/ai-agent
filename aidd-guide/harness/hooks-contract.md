@@ -49,6 +49,20 @@ tags: [harness, hooks, contract, wiring]
 - 실행은 `node` 하나다. `package.json`도 `node_modules`도 보지 않는다(AGENTS.md §1).
 - 사전 보호 chain에서 내부 오류가 나면 차단한다. 사후 chain 오류는 되돌릴 수 없으므로 경고한다.
 
+### 깨진 보호에서 빠져나오는 길
+
+사전 chain이 죽으면 **그 chain이 지키던 도구가 통째로 막힌다.** 그런데 고칠 때 쓰는 도구가
+바로 그것이다 — 쓰기 chain이 죽으면 훅 파일을 `Edit`으로 열 수 없다. 셋으로 막는다.
+
+| | 무엇 |
+|---|---|
+| 길을 알린다 | 차단 사유에 `RECOVERY` 를 붙인다 — 쓰기가 막혔으면 *Bash로 고친다*, 셸이 막혔으면 *편집 도구로 고친다* |
+| 수리 자리만 연다 | `allowHookRepair()` — **죽어서 막힌 경우에만**, 대상이 `.claude/hooks/*.mjs` 일 때만 통과시킨다. 그 경로에는 지키는 생성물이 없다(`SKILL.md`는 `.claude/skills/`이며 계속 닫힌다). **정책 차단은 절대 열지 않는다** |
+| 남의 트리로 안 퍼지게 | CI가 훅 전부에 `node --check` 를 돌린다 — 구문이 깨진 훅이 `main`에 들어가면 **clone하는 사람이 즉시 잠긴다** |
+
+fixture는 `.codex/hooks/self-test.mjs`가 갖는다 — 여는 쪽과 **닫히는 쪽을 함께** 센다.
+여는 쪽만 시험하면 게이트가 통째로 열린 것을 보지 못한다.
+
 ## `git-sync` — 세션 시작의 원격 동기화
 
 | 칸 | 값 |

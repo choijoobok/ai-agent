@@ -3,7 +3,7 @@
 import { strict as assert } from 'node:assert';
 import { join } from 'node:path';
 import { REPO, provider, skillRef } from '../../.claude/hooks/lib.mjs';
-import { runHookChain } from '../../.claude/hooks/hook-chain.mjs';
+import { allowHookRepair, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
 import { patchTargets, runFileChain } from './file-chain.mjs';
 
 const generated = 'sources/backend/bootstrap/src/main/resources/db/changelog/data/003-init-menu.csv';
@@ -70,5 +70,18 @@ assert.equal(skillSrc.some((x) => String(x?.systemMessage ?? '').includes('실�
    틀리면 커밋 표식과 대화 기록이 **조용히 남의 이름으로 남는다.** */
 assert.equal(provider(), 'codex');
 assert.equal(skillRef('trace'), '`$trace`');
+
+/* 수리 경로 — 훅이 죽었을 때 **훅 파일만** 열리고 나머지는 닫혀 있어야 한다.
+   여는 쪽만 시험하면 게이트가 통째로 열린 것을 못 본다. 양쪽을 다 센다. */
+const crashed = [{ crashed: 'guard-write.mjs', hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: 'x' } }];
+const asWrite = (rel) => ({ hook_event_name: 'PreToolUse', tool_input: { file_path: join(REPO, ...rel.split('/')) } });
+
+assert.equal(allowHookRepair(asWrite('.claude/hooks/guard-write.mjs'), crashed)[0]?.hookSpecificOutput?.permissionDecision, undefined);
+assert.equal(allowHookRepair(asWrite('documents/INDEX.md'), crashed)[0]?.hookSpecificOutput?.permissionDecision, 'deny');
+assert.equal(allowHookRepair(asWrite('.claude/skills/trace/SKILL.md'), crashed)[0]?.hookSpecificOutput?.permissionDecision, 'deny');
+
+/* 정책 차단(`crashed` 없음)은 훅 파일이라도 절대 열리지 않는다. */
+const policy = [{ hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: 'x' } }];
+assert.equal(allowHookRepair(asWrite('.claude/hooks/guard-write.mjs'), policy)[0]?.hookSpecificOutput?.permissionDecision, 'deny');
 
 console.log('Codex hook adapter self-test 통과');
