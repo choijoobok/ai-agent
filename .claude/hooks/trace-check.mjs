@@ -230,10 +230,22 @@ function fullCheck() {
     }
   }
 
-  // T7 — NFR 측정
+  /*
+    T7 — NFR 측정. **칸 셋을 본다**: 무엇을 재나(measurement) · 어디서 나오나(source) ·
+    무엇이 그것을 잠그나(test_case).
+
+    <p><b>`source` 가 규칙에 들어온 이유</b>: 2026-09-10 이전에는 19건 중 수집 주체를 적은
+    것이 하나뿐이었다. 재는 방법만 있고 어디서 나오는지가 없으면 <b>계측을 심을 때 「어디에
+    심나」부터 다시 정해야 하고, 그때 정하면 지표마다 다르게 정해진다.</b>
+
+    <p><b>빠진 칸을 이름으로 말한다</b> — 셋을 뭉쳐 하나의 문장으로 보고하면 어느 칸이
+    비었는지 파일을 열어야 안다.
+  */
+  const T7_FIELDS = [['measurement', '측정 방법'], ['source', '측정 원천'], ['test_case', 'TC']];
   for (const n of nfrs) {
-    if (!n?.measurement || !n?.test_case) {
-      errors.push(['T7', n?.id, '측정 방법 또는 TC 없음 — 측정 못 하는 목표는 목표가 아니다']);
+    const missing = T7_FIELDS.filter(([k]) => !n?.[k]).map(([, ko]) => ko);
+    if (missing.length > 0) {
+      errors.push(['T7', n?.id, `${missing.join(' · ')} 없음 — 측정 못 하는 목표는 목표가 아니다`]);
     }
   }
 
