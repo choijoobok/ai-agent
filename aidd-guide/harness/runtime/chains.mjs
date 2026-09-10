@@ -14,9 +14,14 @@ export const POST_FILE = Object.freeze([
 ]);
 export const SESSION_START = Object.freeze(['git-sync.mjs', 'session-brief.mjs']);
 
+/* 작업 중간의 재주입(`resume`·`clear`·`compact`)은 <b>당기지 않는다</b> — 그때 파일이
+   바뀌면 AI 가 방금 읽은 것과 디스크가 어긋난다. 그래서 `git-sync` 가 빠진 별도 chain 이다. */
+export const SESSION_RESUME = Object.freeze(['session-brief.mjs']);
+
 export const CHAINS = Object.freeze({
   pre_file: PRE_FILE,
   pre_shell: PRE_SHELL,
   post_file: POST_FILE,
   session_start: SESSION_START,
+  session_resume: SESSION_RESUME,
 });

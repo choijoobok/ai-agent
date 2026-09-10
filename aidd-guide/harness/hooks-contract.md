@@ -136,6 +136,11 @@ AI가 만드는 커밋은 `-F -`로 본문을 명령에 드러낸다. POSIX here
 
 `warn()` 은 `systemMessage`(사람)와 `additionalContext`(모델)를 **둘 다** 보낸다 — *사람이 봤는데 AI 는 모르는* 상태를 만들지 않는다.
 
+**`SessionStart` 의 출력 형태는 provider 마다 다르다** — Claude 는 날 것의 텍스트, Codex 는
+JSON. `emitHookResults` 한 곳에서 `provider()` 로 가르고 **어댑터가 따로 stdout 에 쓰지
+않는다**(섞이면 파싱되지 않아 훅 전체가 실패로 잡힌다) — 사례는
+[providers/codex.md](./providers/codex.md).
+
 ## Codex 훅 revision — 승인하지 않은 세션에서 업무를 보류한다
 
 | 칸 | 값 |
@@ -145,24 +150,26 @@ AI가 만드는 커밋은 `-F -`로 본문을 명령에 드러낸다. POSIX here
 | 동기화 | 훅 작성자가 `node aidd-guide/harness/runtime/codex-hook-revision.mjs --sync`를 실행해 startup 명령의 인자에 고정한다 |
 | 실행 확인 | Codex `SessionStart` adapter가 실행 전후 revision과 설정값이 모두 같을 때만 `[Codex 훅 실행 확인]`을 문맥에 넣는다 |
 | 판정 | AGENTS.md의 Codex 전용 preflight가 매 요청에서 문맥 revision과 현재 실행면을 대조한다 |
-| 강도 | 불일치·확인 부재면 모델이 일반 응답과 도구를 보류한다. `harness-check`와 CI는 stale revision을 오류로 막는다 |
+| 강도 | 불일치·확인 부재면 모델이 **일반 업무**를 보류한다. `harness-check`와 CI는 stale revision을 오류로 막는다 |
+| 수리 차선 | 확인이 없어도 **읽기 전부 · `harness-sync` · 하네스 경로 한정 커밋**은 연다(아래) |
 | 실패 정책 | 자동 승인·신뢰 저장소 읽기·우회 플래그를 쓰지 않는다. `/hooks` 검토와 새 task를 안내한다 |
-| fixture | `.codex/hooks/self-test.mjs` — 일치·확인 부재·잘못된 revision을 함께 센다 |
+| fixture | `.codex/hooks/self-test.mjs` — 일치·확인 부재·잘못된 revision **과 어댑터가 실제로 내는 출력의 모양**을 함께 센다 |
 
 **부트스트랩 한계가 있다.** 승인되지 않은 훅은 자기 자신을 실행해 차단할 수 없다. 그래서
 runtime hard block이라고 가장하지 않고, 항상 로드되는 `AGENTS.md`의 preflight와 승인된
 `SessionStart`의 문맥 증명을 결합한다. 훅 구현이 바뀌면 설정의 revision도 함께 바뀌므로
-그 변경을 받은 각 Codex 환경에서 `/hooks` 재승인이 발생한다.
+그 변경을 받은 각 Codex 환경에서 `/hooks` 재승인이 발생한다. **그 대가로 확인이 오지 않는
+상태가 실제로 생기며**, 그때 나가는 문이 수리 차선 하나다 — 없으면 하네스가 자기 자신을
+잠근다.
 
 Claude Code에는 이 preflight와 revision 문맥을 주입하지 않는다. Claude의 프로젝트 훅 실행
 동의는 Claude runtime이 관리하며, 공통 훅 수정 때 Codex revision을 갱신하는 것은 작성·검증
 절차일 뿐 Claude 세션의 요청을 막거나 설정을 자동으로 쓰지 않는다.
 
-**작성 세션에는 좁은 종료 예외가 있다.** 변경 전 revision 검사를 통과한 task가 사용자의
-요청으로 훅을 고쳤다면, revision 동기화·필수 검증·그 변경만 경로 지정한 커밋 한 번까지
-완결한다. 그 뒤 일반 작업은 하지 않는다. 시작부터 불일치했거나 startup pull로 새 훅을 받은
-task에는 적용하지 않는다. 이는 승인을 우회하는 예외가 아니라 **미커밋 하네스를 남기지 않는
-종료 절차**다.
+**수리 차선이 종료 절차를 겸한다.** 무엇이 열리는지는 [`AGENTS.md`](../../AGENTS.md) §2 가,
+왜는 [providers/codex.md](./providers/codex.md) 가 갖는다. 우회가 아니라 **미커밋 하네스를
+남기지 않는 종료 절차**이며 옛 「좁은 종료 예외」를 대신한다 — 그것은 *변경을 작성한 task*
+만 위한 것이라 **표식 없이 시작한 task, 바로 원인을 조사해야 할 task 를 잠갔다.**
 
 ## 새 훅을 더할 때
 

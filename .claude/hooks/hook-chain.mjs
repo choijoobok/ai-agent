@@ -1,7 +1,7 @@
 /** 순서가 필요한 훅들을 자식 프로세스로 직렬 실행하고 결과 하나로 합친다. */
 
 import { join } from 'node:path';
-import { REPO, runEmbeddedHook, repoRelative, targetPath } from './lib.mjs';
+import { REPO, provider, runEmbeddedHook, repoRelative, targetPath } from './lib.mjs';
 
 /**
  * 훅이 깨졌을 때 <b>무엇으로 고치나</b> — chain 마다 다르다.
@@ -111,9 +111,24 @@ export function emitHookResults(outputs, eventName) {
   if (!messages.length) return;
   const message = [...new Set(messages)].join('\n\n');
 
-  /* `SessionStart` 의 표준 출력은 <b>그대로 모델의 문맥</b>이다(`inject()`). JSON 으로
-     감싸면 문맥에 JSON 이 들어가므로, 이 이벤트만 날 것으로 낸다. */
+  /*
+    `SessionStart` 의 출력 형태는 <b>provider 마다 다르다</b>(hooks-contract.md).
+
+    <p>Claude 는 표준 출력이 <b>그대로 모델의 문맥</b>이므로 날 것으로 낸다 — JSON 으로
+    감싸면 문맥에 JSON 이 들어간다. <b>Codex 는 반대로 JSON 만 읽는다</b>: 날 것을 내면
+    파싱하지 못해 <b>훅 전체를 실패로 잡고 출력을 통째로 버린다.</b>
+
+    <p>2026-09-11 에 이것 때문에 Codex 의 실행 확인이 문맥에 닿지 못해 하네스가 자기
+    자신을 잠갔다. 훅은 셸·`commandWindows`·`codex sandbox` 어디서 직접 돌려도 `exit 0`
+    이라 <b>직접 실행으로는 보이지 않는다</b> — 그래서 self-test 가 출력의 *모양* 을 센다.
+  */
   if (eventName === 'SessionStart') {
+    if (provider() === 'codex') {
+      process.stdout.write(JSON.stringify({
+        hookSpecificOutput: { hookEventName: 'SessionStart', additionalContext: message },
+      }));
+      return;
+    }
     process.stdout.write(message.endsWith('\n') ? message : `${message}\n`);
     return;
   }

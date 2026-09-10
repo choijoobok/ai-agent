@@ -1,14 +1,15 @@
 /** Codex 어댑터의 patch 정규화와 공통 차단 연결을 실제 자식 프로세스로 확인한다. */
 
 import { strict as assert } from 'node:assert';
-import { rmSync, writeFileSync } from 'node:fs';
+import { readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { REPO, provider, skillRef } from '../../.claude/hooks/lib.mjs';
-import { allowHookRepair, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
+import { allowHookRepair, emitHookResults, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
 import { patchTargets, runFileChain } from './file-chain.mjs';
 import { crashOutput, patchTargets as bootstrapTargets } from '../../aidd-guide/harness/runtime/pretool-bootstrap.mjs';
 import {
   checkCodexHookContext,
+  codexHookAttestationLine,
   codexHookSurface,
   configuredCodexHookRevision,
   currentCodexHookRevision,
@@ -182,6 +183,52 @@ for (const [subject, shouldDeny] of [
 ]) {
   const denied = isDenied(await preShell(posixCommit(`${subject}\n\nAgent: Codex`)));
   assert.equal(denied, shouldDeny, `커밋 제목 판정이 틀렸다: ${subject}`);
+}
+
+/*
+  `SessionStart` 출력의 **모양** — 판정 함수만 시험하면 `checkCodexHookContext` 가
+  `ok:true` 인데도 **실행 확인이 문맥에 닿지 못하는** 상태를 못 본다. 2026-09-11 에 실제로
+  그랬다: 훅은 셸·`commandWindows`·`codex sandbox` 어디서 직접 돌려도 `exit 0` 이었고,
+  Codex 만 `Failed` 로 잡아 하네스가 자기 자신을 잠갔다. **여기서 세는 것은 실제로 쓰인
+  바이트다.**
+*/
+function captureEmit(outputs, eventName) {
+  const chunks = [];
+  const original = process.stdout.write.bind(process.stdout);
+  process.stdout.write = (chunk) => (chunks.push(String(chunk)), true);
+  try {
+    emitHookResults(outputs, eventName);
+  } finally {
+    process.stdout.write = original;
+  }
+  return chunks.join('');
+}
+
+const attestation = codexHookAttestationLine(hookRevision);
+
+/* Codex 는 JSON 만 읽는다 — 날 것이면 `JSON.parse` 가 던지고, 그것이 이 시험의 요점이다. */
+const codexStart = JSON.parse(captureEmit([attestation, '[프로젝트 상태] …'], 'SessionStart'));
+assert.equal(codexStart.hookSpecificOutput.hookEventName, 'SessionStart');
+assert.equal(codexStart.hookSpecificOutput.additionalContext.includes(attestation), true);
+assert.equal(codexStart.hookSpecificOutput.additionalContext.includes('[프로젝트 상태] …'), true);
+
+/* Claude 는 반대다 — 여기까지 JSON 으로 바꾸면 문맥에 JSON 이 그대로 들어간다. */
+process.env.AI_HOOK_PROVIDER = 'claude';
+const claudeStart = captureEmit([attestation], 'SessionStart');
+if (savedProvider === undefined) delete process.env.AI_HOOK_PROVIDER;
+else process.env.AI_HOOK_PROVIDER = savedProvider;
+assert.equal(claudeStart.trim(), attestation);
+assert.throws(() => JSON.parse(claudeStart));
+
+/* 어댑터는 emitter 밖에서 stdout 에 쓰지 않는다 — **두 곳에서 쓰면 형태가 섞이고**,
+   섞인 출력은 파싱되지 않아 훅 전체가 실패로 잡힌다. 그것이 위 버그의 실제 모양이었다. */
+for (const adapter of ['session-start.mjs', 'session-brief.mjs']) {
+  const source = readFileSync(join(REPO, '.codex', 'hooks', adapter), 'utf8');
+  assert.equal(
+    /process\.stdout\.write/.test(source),
+    false,
+    `${adapter} 가 emitter 밖에서 stdout 에 쓴다 — outputs 배열에 넣어 emitHookResults 로 보낸다`,
+  );
 }
 
 console.log('Codex hook adapter self-test 통과');
