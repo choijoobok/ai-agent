@@ -8,6 +8,7 @@ import { CHAINS } from './chains.mjs';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 const MARK = /\s*--hook-revision=([0-9a-f]{64})/g;
+export const CODEX_PRETOOL_CANARY_PREFIX = '[Codex PreToolUse 생존 확인]';
 const DATA_FILES = [
   '.claude/hooks/commons-ids.txt',
   '.claude/hooks/feat-baseline.txt',
@@ -114,6 +115,23 @@ export function codexHookAttestationLine(revision = currentCodexHookRevision()) 
   return `[Codex 훅 실행 확인] revision=${revision}`;
 }
 
+/** 새 실행이 현재 PreToolUse 배선을 실제로 싣고 있는지 확인하는 무해한 명령이다. */
+export function codexPretoolCanaryCommand(revision = currentCodexHookRevision()) {
+  return `node aidd-guide/harness/runtime/codex-hook-revision.mjs --pretool-canary ${revision}`;
+}
+
+/** guard-bash가 카나리만 정확히 찾아 실행 전에 막도록 revision을 꺼낸다. */
+export function codexPretoolCanaryRevision(command) {
+  const match = String(command ?? '').replace(/\\/g, '/').match(
+    /(?:^|[\s"'/])codex-hook-revision\.mjs["']?\s+--pretool-canary\s+([0-9a-f]{64})(?:\s|$)/,
+  );
+  return match?.[1] ?? '';
+}
+
+export function codexPretoolCanaryDenial(revision) {
+  return `${CODEX_PRETOOL_CANARY_PREFIX} revision=${revision} — 정상적으로 명령 실행 전에 차단했다.`;
+}
+
 /** startup 훅처럼 제품 컨텍스트를 직접 받지 못하는 자리의 보조 판정이다. */
 export function codexClientSurface(env = process.env) {
   const originator = String(env?.CODEX_INTERNAL_ORIGINATOR_OVERRIDE ?? '').trim().toLowerCase();
@@ -130,10 +148,10 @@ export function codexHookReentryMessage(surface = codexClientSurface()) {
   if (surface === 'desktop') {
     return [
       common,
-      '사용자에게 **완료된 대화 기록을 복사한 새 task로 이동할까요?**라고 묻는다.',
-      '승인되면 현재 턴을 끝낸 뒤 Codex 앱에서 현재 task를 같은 작업 폴더(same-directory)로 fork하고, 반환된 child task로 화면을 이동한다. fork는 새 task ID를 만들고 완료된 턴만 복사하며 기존 task는 남긴다.',
-      '새 task에서 현재 revision의 SessionStart 실행 확인을 다시 검사한다. 앱에 hook 검토 화면이 보이면 사용자가 현재 정의를 승인하고, 보이지 않으면 자동 승인하지 말고 CLI의 `/hooks`가 필요한 제약을 보고한다.',
-      '데스크톱 앱 사용자에게 CLI 명령 입력을 요구하지 않는다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.',
+      '사용자에게 **현재 작업 맥락을 인계한 새 task로 이동할까요?**라고 묻는다.',
+      '승인되면 현재 턴을 끝낸 뒤 같은 saved project를 직접 쓰는 새 local task를 `thread/start`로 만들고, 완료한 일·남은 일·원본 task를 읽는 방법을 첫 prompt에 인계한 다음 그 task로 화면을 이동한다. 기존 task는 남기며 `thread/fork`는 쓰지 않는다.',
+      `새 task에서 현재 revision의 SessionStart 실행 확인 뒤 \`${codexPretoolCanaryCommand('<SessionStart revision>')}\`를 별도 호출한다. ${CODEX_PRETOOL_CANARY_PREFIX} 차단이 와야 업무를 재개하고, 스크립트가 실행되면 훅 미적용으로 보고 계속 보류한다.`,
+      '앱에 hook 검토 화면이 보이면 사용자가 현재 정의를 승인한다. 보이지 않으면 자동 승인하지 말고 CLI의 `/hooks`가 한 번 필요한 제약을 보고한다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.',
     ].join('\n');
   }
   if (surface === 'cli') {
@@ -147,7 +165,7 @@ export function codexHookReentryMessage(surface = codexClientSurface()) {
   return [
     common,
     '현재 client를 확정할 수 없으므로 사용자에게 **Codex 데스크톱 앱인지 CLI(TUI)인지** 한 번 묻는다.',
-    '데스크톱 앱이면 완료된 대화를 같은 작업 폴더의 child task로 fork해 이동하고, CLI면 `/hooks` 검토·승인 뒤 같은 task를 `codex resume`로 재개한다.',
+    '데스크톱 앱이면 작업 맥락을 인계한 새 local task를 만들고, CLI면 `/hooks` 검토·승인 뒤 같은 task를 `codex resume`로 재개한다.',
     'client를 확정하기 전에는 어느 경로도 강제하지 않는다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.',
   ].join('\n');
 }
@@ -214,6 +232,11 @@ if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
     console.log(result.changed
       ? `Codex hook revision 갱신 — ${result.revision}`
       : `Codex hook revision 일치 — ${result.revision}`);
+  } else if (process.argv.includes('--pretool-canary')) {
+    const index = process.argv.indexOf('--pretool-canary');
+    const revision = process.argv[index + 1] ?? '(없음)';
+    console.error(`[Codex PreToolUse 생존 확인 실패] revision=${revision} — 카나리 스크립트가 실행됐다. 일반 업무를 보류하고 hook 신뢰·새 실행 여부를 확인한다.`);
+    process.exitCode = 3;
   } else if (process.argv.includes('--check')) {
     const index = process.argv.indexOf('--check');
     const surfaceIndex = process.argv.indexOf('--surface');
@@ -227,6 +250,6 @@ if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
       process.exitCode = 2;
     }
   } else {
-    console.log('사용법: node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <SessionStart revision> [--surface desktop|cli]|--sync');
+    console.log('사용법: node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <SessionStart revision> [--surface desktop|cli]|--pretool-canary <SessionStart revision>|--sync');
   }
 }

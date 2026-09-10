@@ -12,6 +12,10 @@
  */
 
 import { readHookInput, readState, deny, pass } from './lib.mjs';
+import {
+  codexPretoolCanaryDenial,
+  codexPretoolCanaryRevision,
+} from '../../aidd-guide/harness/runtime/codex-hook-revision.mjs';
 
 /** [정규식, 분류, 왜 위험한가] */
 const BLOCK = [
@@ -75,6 +79,11 @@ const READ_ONLY = /\b(get|list|describe|show|status|logs?|plan|diff|cat|grep|hea
 const input = await readHookInput();
 const command = String(input?.tool_input?.command ?? '').trim();
 if (!command) pass();
+
+/* 새 Codex 실행이 이 사전 훅을 실제로 싣고 있는지 보는 무해한 카나리다. 스크립트가
+   실행되기 전에 여기서 막혀야 하며, 실행됐다면 앱이 현재 훅 배선을 싣지 않은 것이다. */
+const canaryRevision = codexPretoolCanaryRevision(command);
+if (canaryRevision) deny(codexPretoolCanaryDenial(canaryRevision));
 
 const state = readState();
 if (!state?.current) pass();

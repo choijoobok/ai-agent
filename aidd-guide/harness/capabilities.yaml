@@ -36,6 +36,6 @@ verification:
   ci_required: true
   restart_after_harness_pull: true
   codex_reentry:
-    desktop: fork-child-task       # 완료된 이력을 복사한 새 task로 앱 화면을 옮긴다
+    desktop: fresh-local-task-handoff # 새 실행에 작업 맥락을 인계하고 revision·PreToolUse를 실측한다
     cli: resume-same-task          # 저장된 같은 task에 새 CLI 실행으로 다시 붙는다
     unknown: ask-client-surface    # 지원하지 않는 경로를 지어내지 않는다

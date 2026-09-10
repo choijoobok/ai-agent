@@ -14,6 +14,8 @@ import {
   codexHookBlockMessage,
   codexHookReentryMessage,
   codexHookSurface,
+  codexPretoolCanaryCommand,
+  CODEX_PRETOOL_CANARY_PREFIX,
   configuredCodexHookRevision,
   currentCodexHookRevision,
 } from '../../aidd-guide/harness/runtime/codex-hook-revision.mjs';
@@ -124,15 +126,30 @@ assert.equal(codexClientSurface({ CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex CLI
 assert.equal(codexClientSurface({}), 'unknown');
 const desktopReentry = codexHookReentryMessage('desktop');
 assert.match(desktopReentry, /새 task로 이동/);
-assert.match(desktopReentry, /same-directory.*fork/);
+assert.match(desktopReentry, /thread\/start/);
+assert.match(desktopReentry, /새 local task/);
+assert.match(desktopReentry, /PreToolUse 생존 확인/);
+assert.match(desktopReentry, /thread\/fork.*쓰지 않는다/);
 assert.doesNotMatch(desktopReentry, /codex resume/);
 const cliReentry = codexHookReentryMessage('cli');
 assert.match(cliReentry, /같은 task를 새 실행으로 재개/);
 assert.match(cliReentry, /codex resume <SESSION_ID>/);
 const unknownReentry = codexHookReentryMessage('unknown');
 assert.match(unknownReentry, /데스크톱 앱인지 CLI/);
-assert.match(codexHookBlockMessage({ reason: 'attestation-missing' }, 'desktop'), /child task/);
+assert.match(codexHookBlockMessage({ reason: 'attestation-missing' }, 'desktop'), /새 local task/);
 assert.match(cliReentry, /사용자 승인은 낡은 훅.*우회하는 허가가 아니다/);
+const canaryCommand = codexPretoolCanaryCommand(hookRevision);
+const canary = await runHookChain({
+  cwd: REPO,
+  hook_event_name: 'PreToolUse',
+  tool_name: 'Bash',
+  tool_input: { command: canaryCommand },
+}, ['guard-bash.mjs']);
+assert.equal(isDenied(canary), true);
+assert.equal(
+  canary[0].hookSpecificOutput.permissionDecisionReason.includes(CODEX_PRETOOL_CANARY_PREFIX),
+  true,
+);
 const hookConfig = JSON.parse(readFileSync(join(REPO, '.codex', 'hooks.json'), 'utf8'));
 const resumeGroup = hookConfig.hooks.SessionStart.find((group) => group.matcher === 'resume|clear|compact');
 assert.equal(resumeGroup?.hooks?.[0]?.command.includes('session-brief.mjs'), true);

@@ -63,12 +63,20 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <SessionStart가
 
 - 종료 코드 `0`이면 아래 브리핑과 작업을 계속한다.
 - 실행 확인이 없거나 종료 코드 `2`이면 **일반 업무를 보류**하고 현재 client에 맞게 승인받는다.
-  - **데스크톱 앱**: 사용자에게 **“완료된 대화 기록을 복사한 새 task로 이동할까요?”**라고
-    묻는다. 승인되면 현재 턴을 끝낸 뒤 현재 task를 **같은 작업 폴더(same-directory)로 fork**하고,
-    반환된 child task로 앱 화면을 이동한다. fork는 새 task ID를 만들고 완료된 턴만 복사하며
-    기존 task는 남긴다. 새 task에서 현재 revision의 실행 확인을 다시 검사한다. 앱에 hook 검토
-    화면이 보이면 사용자가 승인하고, 보이지 않으면 자동 승인하지 말고 CLI `/hooks`가 필요한
-    제약을 보고한다. **앱 사용자에게 CLI 명령 입력을 기본 절차로 요구하지 않는다.**
+  - **데스크톱 앱**: 사용자에게 **“현재 작업 맥락을 인계한 새 task로 이동할까요?”**라고 묻는다.
+    승인되면 현재 턴을 끝낸 뒤 같은 saved project를 직접 쓰는 **새 local task**를 만들고, 완료한
+    일·남은 일·원본 task를 읽는 방법을 첫 prompt에 인계한 다음 앱 화면을 이동한다. 기존 task는
+    남긴다. **fork는 훅 배선을 새로 싣지 않는 것이 실측됐으므로 쓰지 않는다.** 새 task에서는
+    현재 revision 검사 뒤 아래 카나리를 **별도 도구 호출**로 실행한다.
+
+    ```bash
+    node aidd-guide/harness/runtime/codex-hook-revision.mjs --pretool-canary <SessionStart가 넣은 revision>
+    ```
+
+    `[Codex PreToolUse 생존 확인]` 차단이 오면 업무를 재개하고, 스크립트가 실행되면 훅 미적용으로
+    보고 계속 보류한다. 앱에 hook 검토 화면이 보이면 사용자가 승인하고, 보이지 않으면 자동
+    승인하지 말고 CLI `/hooks`가 한 번 필요한 제약을 보고한다. **앱 사용자에게 CLI 명령 입력을
+    기본 절차로 요구하지 않는다.**
   - **CLI**: 사용자에게 **“대화 기록을 유지한 채 같은 task를 새 실행으로 재개할까요?”**라고
     묻는다. 승인되면 `/hooks`로 현재 정의를 검토·승인하고 현재 실행을 끝낸 뒤
     `codex resume <SESSION_ID>`로 재개한다. 가장 최근 task면 `codex resume --last`를 쓴다.
@@ -103,7 +111,7 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <SessionStart가
 4. 하네스 불일치가 있으면 `harness-sync` 스킬로 먼저 복구한다. 그다음에야 작업을 시작한다.
    브리핑 없이 산출물을 만들지 않는다.
 5. **하네스 재시작 알림이 있으면 그 실행에서 작업하지 않는다.** Claude Code는 새 세션을 연다.
-   Codex 데스크톱 앱은 승인 뒤 현재 task를 같은 작업 폴더로 fork해 child task로 이동하고,
+   Codex 데스크톱 앱은 승인 뒤 작업 맥락을 인계한 새 local task를 만들어 이동하고,
    CLI는 `/hooks` 검토·승인 뒤 `codex resume`로 같은 task에 다시 들어온다. 어느 쪽인지
    불명확하면 먼저 묻는다. 위 작성 실행 종료 예외로 커밋 중이라면 그 커밋까지만 끝낸다.
 
