@@ -64,6 +64,7 @@ const LABEL = {
   account_source: '계정 원천', mapping_rules: '매핑 규칙', handling: '처리', limits: '한계',
   complement: '보완', notes: '비고', edge_invariants: '불변식', retired_at: '폐기일',
   reason: '사유', replaced_by: '대체', nodes: '구성요소', edges: '간선',
+  l1: 'Level 1 에서', deploy: '배포 단위', systems: '상자', units: '배포 단위',
 };
 const lab = (k) => LABEL[k] ?? k;
 
@@ -337,9 +338,52 @@ const ZLABEL = {
  *  셰이프 종료로 읽히면 **그림이 통째로 렌더되지 않고, 생성물이라 아무도 고치지 않는다.** */
 const mmEscape = (s) => s.replace(/\(/g, '#40;').replace(/\)/g, '#41;');
 
-function 아키텍처() {
-  const d = load('20-architecture');
-  const t = d.topology;
+/** 노드 하나를 Mermaid 상자로 — 원통은 DB 다. */
+function mmBox(nd) {
+  const label = mmEscape(nd.label + (nd.note ? `<br/>${nd.note}` : ''));
+  const db = nd.kind === 'db';
+  return `${nd.key}[${db ? '(' : ''}"${label}"${db ? ')' : ''}]`;
+}
+
+/**
+ * C4 Level 1 — 시스템 컨텍스트. **노드를 `l1:` 로 접어서 그린다.**
+ *
+ * <p>상자와 간선을 두 벌 적지 않는 것이 요점이다(20-architecture.yaml 의 불변식) —
+ * 두 벌이면 한쪽만 고쳤을 때 <b>어느 그림이 참인지 알 방법이 없다</b>. 같은 상자로
+ * 접힌 간선(예: portal → AI 전용 DB)은 사라지고, 남은 간선의 라벨은 합친다.
+ */
+function 컨텍스트도(t) {
+  const fold = new Map(t.nodes.map((n) => [n.key, n.l1]));
+  const L = ['```mermaid', 'flowchart LR'];
+  for (const s of t.context.systems) {
+    L.push(`  ${s.key}["${mmEscape(s.label + (s.note ? `<br/>${s.note}` : ''))}"]`);
+  }
+  const merged = new Map();
+  for (const e of t.edges) {
+    const a = fold.get(e.from);
+    const b = fold.get(e.to);
+    if (!a || !b || a === b) continue;
+    const k = `${a}>${b}`;
+    if (!merged.has(k)) merged.set(k, new Set());
+    if (e.label) merged.get(k).add(e.label);
+  }
+  for (const [k, labels] of merged) {
+    const [a, b] = k.split('>');
+    const l = [...labels].join(' · ');
+    L.push(`  ${a} -->${l ? `|"${l}"|` : ''} ${b}`);
+  }
+  L.push('```');
+  return L.join('\n');
+}
+
+/**
+ * C4 Level 2 — 컨테이너. 구역 안에서 <b>배포 단위</b>(`deploy:`)로 한 겹 더 묶는다.
+ *
+ * <p>상자가 하나뿐인 배포 단위는 감싸지 않는다 — 테두리가 상자를 한 겹 덧그릴 뿐이고,
+ * 그 테두리를 <i>무언가 더 있다</i> 로 읽게 만든다.
+ */
+function 컨테이너도(t) {
+  const unit = new Map((t.containers?.units ?? []).map((u) => [u.key, u]));
   const byZone = new Map();
   for (const nd of t.nodes) {
     const z = ZONE[nd.zone] ?? 'CUST';
@@ -351,28 +395,53 @@ function 아키텍처() {
     const ns = byZone.get(z) ?? [];
     if (!ns.length) continue;
     L.push(`  subgraph ${z}["${ZLABEL[z]}"]`);
+    const groups = new Map();
     for (const nd of ns) {
-      const label = mmEscape(nd.label + (nd.note ? `<br/>${nd.note}` : ''));
-      const db = nd.kind === 'db';
-      L.push(`    ${nd.key}[${db ? '(' : ''}"${label}"${db ? ')' : ''}]`);
+      const g = nd.deploy ?? '';
+      if (!groups.has(g)) groups.set(g, []);
+      groups.get(g).push(nd);
+    }
+    for (const [g, list] of groups) {
+      if (!g || list.length < 2) {
+        for (const nd of list) L.push(`    ${mmBox(nd)}`);
+        continue;
+      }
+      L.push(`    subgraph U_${g}["${mmEscape(unit.get(g)?.label ?? g)}"]`);
+      for (const nd of list) L.push(`      ${mmBox(nd)}`);
+      L.push('    end');
     }
     L.push('  end');
   }
   for (const e of t.edges) L.push(`  ${e.from} -->${e.label ? `|"${e.label}"|` : ''} ${e.to}`);
   L.push('```');
+  return L.join('\n');
+}
+
+function 아키텍처() {
+  const d = load('20-architecture');
+  const t = d.topology;
 
   const p = [head('ARCH', '아키텍처 — 구성 · 경계 · 연동', `${SPEC}20-architecture.yaml`,
-    d.meta.status, d.meta.baselined, [t.id, ...d.module_boundaries.map((x) => x.id)],
+    d.meta.status, d.meta.baselined,
+    [t.id, t.context.id, t.containers.id, ...d.module_boundaries.map((x) => x.id)],
     '> **이 아키텍처를 세운 결정**은 [`ADR-001`](../decisions/ADR-001-오케스트레이션-프레임워크.md) ·\n'
     + '> [`ADR-002`](../decisions/ADR-002-플랫폼-노선.md) · [`ADR-003`](../decisions/ADR-003-상태-원천-단일화.md) 이며,\n'
     + '> 그 **근거 자료**는 [`documents/research/`](../research/agent-frameworks.md) 가 갖는다.\n')];
-  p.push(`## 1. 논리 구성도\n\n${L.join('\n')}\n\n**${flat(t.core_claim)}**\n\n${bullets(t.notes)}`);
-  p.push('### 1.1 이 그림이 지켜야 하는 불변식\n\n'
+  p.push(`## 1. 논리 구성도 — C4 두 계층\n\n${flat(t.core_claim)}\n\n${bullets(t.notes)}\n\n`
+    + '> **두 그림은 한 원본에서 나온다.** 아래 노드·간선이 정본이고, Level 1 은 그것을 시스템\n'
+    + '> 단위로 접은 것이다 — 따로 그린 그림이 아니므로 둘이 어긋날 수 없다.');
+  p.push(`### 1.1 Level 1 — 시스템 컨텍스트 (${t.context.id})\n\n${컨텍스트도(t)}\n\n`
+    + `${flat(t.context.claim)}\n\n${flat(t.context.note)}\n\n`
+    + `${auto(t.context.systems, { titleKey: 'label', level: '####' })}`);
+  p.push(`### 1.2 Level 2 — 컨테이너 (${t.containers.id})\n\n${컨테이너도(t)}\n\n`
+    + `${flat(t.containers.claim)}\n\n`
+    + `${auto(t.containers.units, { titleKey: 'label', level: '####' })}`);
+  p.push('### 1.3 이 그림이 지켜야 하는 불변식\n\n'
     + '**그림이 예쁜 것으로는 낡음을 알 수 없다.** 아래 중 하나가 깨진 그림은 틀린 그림이다.\n\n'
     + t.edge_invariants.map((x, n) => `${n + 1}. ${flat(x)}`).join('\n'));
-  p.push(`### 1.2 구역\n\n${auto(t.zones, { titleKey: 'zone' })}`);
-  p.push(`### 1.3 구성요소\n\n${auto(t.nodes, { titleKey: 'label' })}`);
-  p.push(`### 1.4 간선 — 무엇이 무엇을 부르나\n\n${auto(t.edges, { titleKey: 'label' })}`);
+  p.push(`### 1.4 구역\n\n${auto(t.zones, { titleKey: 'zone', level: '####' })}`);
+  p.push(`### 1.5 구성요소\n\n${auto(t.nodes, { titleKey: 'label', level: '####' })}`);
+  p.push(`### 1.6 간선 — 무엇이 무엇을 부르나\n\n${auto(t.edges, { titleKey: 'label', level: '####' })}`);
   p.push('## 2. 모듈 경계\n\n'
     + '> 모듈의 정의와 책임은 [`01-이해관계자.md`](./10-요구사항정의서/01-이해관계자.md) 가 갖는다. 여기는 **경계** 다.\n\n'
     + blocks(d.module_boundaries, ['id'], 'rule'));
