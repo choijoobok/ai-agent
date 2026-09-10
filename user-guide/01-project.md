@@ -60,7 +60,7 @@ P0 착수 ─▶ P1 발견 ─▶ P2 아키텍처 ─▶ P3 설계 ══▶ P4 
 node .claude/hooks/trace-check.mjs --all
 ```
 
-또는 Claude Code 에서 `/pm-status` — [`documents/project.state.yaml`](../documents/project.state.yaml)
+또는 Claude Code에서 `/pm-status`, Codex에서 `$pm-status` — [`documents/project.state.yaml`](../documents/project.state.yaml)
 을 읽어 단계·게이트·미결 질문·다음 할 일을 한 화면에 보여준다.
 
 > **현재 상태는 그 파일 하나가 갖는다.** 현황을 적는 다른 문서를 만들지 않는다.
@@ -131,7 +131,7 @@ documents/정리내역.md 는 산출물 지도에 없는 자리다 — 새 문�
 |---|---|
 | [`documents/project.state.yaml`](../documents/project.state.yaml) | *지금 어디인가* — 세션 시작에 훅이 문맥에 넣는다 |
 | **추적성 체인** (`REQ → UC → FEAT → ENT/API/SCR → TC`) | *이 코드가 왜 여기 있나* — AI 의 외장 기억 |
-| [`CLAUDE.md`](../CLAUDE.md) | *무엇을 해야 하나* — 매 세션 반드시 읽힌다 |
+| [`AGENTS.md`](../AGENTS.md) | *무엇을 해야 하나* — 매 세션 반드시 읽힌다 |
 | **훅**([07-harness.md](07-harness.md)) | 규칙을 잊어도 기계가 막는다 |
 
 **누가 언제 어디서 작업해도 같은 판단이 나오는 근거가 이 넷이다.** 그래서 이 넷을 손대는

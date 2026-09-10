@@ -1,5 +1,5 @@
 /**
- * 세션이 열릴 때 <b>지금 어디인가</b>를 문맥에 넣는다 — CLAUDE.md §2.
+ * 세션이 열릴 때 <b>지금 어디인가</b>를 문맥에 넣는다 — AGENTS.md §2.
  *
  * <p>AI 는 세션이 바뀌면 맥락을 잃는다. `documents/project.state.yaml` 을 읽는 것을
  * 잊지 않게 하고, <b>3줄 브리핑</b>(지금 여기 / 막힌 것 / 다음 할 일)을 강제한다.
@@ -23,15 +23,18 @@ import {
   STATE_FILE,
   inject,
 } from './lib.mjs';
+import { checkHarness } from '../../aidd-guide/harness/runtime/harness-check.mjs';
 
 await readHookInput(); // 입력은 쓰지 않지만 표준 입력을 비워야 훅이 매달리지 않는다
+const harnessIssues = checkHarness();
 
 if (!existsSync(join(REPO, STATE_FILE))) {
   inject(
     [
       '[프로젝트 상태]',
       `${STATE_FILE} 이 없다 — 아직 프로젝트가 시작되지 않았다.`,
-      '사용자가 시스템 구축을 요청하면 `/kickoff` 로 P0 착수를 개시한다.',
+      '사용자가 시스템 구축을 요청하면 kickoff 스킬로 P0 착수를 개시한다.',
+      ...harnessNotice(),
     ].join('\n'),
   );
 }
@@ -74,9 +77,10 @@ lines.push(
   '이번 세션에 반드시:',
   `1) \`${STATE_FILE}\` 과 \`${PHASE_FILE[phase] ?? ''}\` 를 읽는다`,
   '2) 사용자에게 **3줄 브리핑**(지금 여기 / 막힌 것 / 다음 할 일)을 먼저 제시한다',
-  '3) CLAUDE.md §5 절대 규칙 — 게이트 건너뛰기 금지 · ID 없는 산출물 금지 ·',
+  '3) AGENTS.md §5 절대 규칙 — 게이트 건너뛰기 금지 · ID 없는 산출물 금지 ·',
   '   `documents/spec/` 이 SSOT · **산출물 지도에 없는 문서를 만들지 않는다**',
 );
+lines.push(...harnessNotice());
 if (oqs.length > 0) lines.push('', '답변 대기 중인 질문이 있다. 브리핑에 포함해 다시 제시한다.');
 
 inject(lines.join('\n'));
@@ -100,4 +104,13 @@ function openAssumptions() {
     for (const m of cells[1].matchAll(/ASM-\d+/g)) ids.push(m[0]);
   }
   return { count: ids.length, ids };
+}
+
+function harnessNotice() {
+  if (!harnessIssues.length) return [];
+  return [
+    '',
+    `[하네스 불일치] ${harnessIssues.length}건 — 일반 작업보다 harness-sync 복구가 먼저다.`,
+    ...harnessIssues.slice(0, 3).map((issue) => `- ${issue}`),
+  ];
 }

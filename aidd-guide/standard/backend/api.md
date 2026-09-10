@@ -162,11 +162,11 @@ tags: [backend, api, rest, response, header]
 - **문서용이 아니라 시드용이다.** `generateApiSeed` 가 이 문장을 읽어
   `SYS_API.API_NM` 을 채우고, 그것이 **권한 화면에서 운영자가 보는 이름**이 된다.
   비우면 운영자가 `/service/roleAuth/getMenuTree` 를 보고 무엇인지 판단해야 한다.
-- 한국어로 쓴다(CLAUDE.md §5-6). 컨트롤러 javadoc 과 같은 말을 두 번 적지 않는다 —
+- 한국어로 쓴다(AGENTS.md §5-6). 컨트롤러 javadoc 과 같은 말을 두 번 적지 않는다 —
   **`summary` 는 운영자의 말, javadoc 은 다음 개발자의 말**이다.
 - **고치면 시드가 어긋난다.** `006-init-api.csv` 는 이 문장의 **생성물**이라 한 글자만
   달라도 `checkSeeds` 가 빨개진다 — 문구를 손보면 `./gradlew generateApiSeed` 를 돌려
-  **CSV 를 같은 커밋에** 담는다(CLAUDE.md §5-8). **이미 있는 화면을 다시 만들 때는 반대로
+  **CSV 를 같은 커밋에** 담는다(AGENTS.md §5-8). **이미 있는 화면을 다시 만들 때는 반대로
   읽는다**: CSV 가 정답이므로 문장을 거기 맞춘다.
 
 ## 5. 헤더 넷
@@ -197,4 +197,4 @@ tags: [backend, api, rest, response, header]
 - [search.md](./search.md) · [search-spec.md](./search-spec.md) — 조회 요청 · 화이트리스트
 - [packages.md](./packages.md) — 도메인 마디의 원본
 - [exception.md](./exception.md) — `code`·`message` 를 만드는 곳
-- [CLAUDE.md §8](../../../CLAUDE.md) — 호출 URL 은 `endpoints.ts` 에만
+- [AGENTS.md §8](../../../AGENTS.md) — 호출 URL 은 `endpoints.ts` 에만

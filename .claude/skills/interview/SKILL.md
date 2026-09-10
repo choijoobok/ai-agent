@@ -3,6 +3,8 @@ name: interview
 description: 현재 단계에서 사용자에게 물어야 할 것을 질문 배치로 만들어 제시한다. 각 질문에 권장안·영향범위·되돌리기비용을 붙인다. 정보가 부족해 진행이 막혔을 때 사용.
 ---
 
+<!-- generated_from: aidd-guide/harness/skill-src/interview.md; do not edit -->
+
 # 질문 배치 생성
 
 ## 절차

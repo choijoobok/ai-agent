@@ -1,0 +1,46 @@
+---
+name: harness-sync
+description: Claude Code와 Codex가 함께 쓰는 스킬·훅을 추가하거나 수정하고 양쪽 구현의 누락·불일치를 복구한다. "새 스킬", "새 훅", "Claude와 Codex에 같이 추가", "하네스 동기화", "하네스 불일치" 요청이나 SessionStart parity 경고가 있을 때 쓴다.
+---
+
+# 하네스 동기화
+
+공통 명세를 먼저 바꾸고 provider 구현과 검증을 같은 변경으로 완성한다. 한 AI 구현을 다른
+AI 디렉터리에 그대로 복사하는 것이 아니라, 공통 결과와 각 runtime 입력을 분리한다.
+
+## 1. 추가 가치와 경계를 판정한다
+
+[`aidd-guide/harness/tool-curation.md`](../../../aidd-guide/harness/tool-curation.md)의 추가 게이트를
+통과한다. 자동 이벤트 검사면 훅, 사용자가 시작하는 여러 단계 절차면 스킬, 사람이 읽는 설명이면
+가이드다. 같은 규칙을 둘에 중복하지 않는다.
+
+## 2. 공통 명세부터 고친다
+
+- 스킬: `aidd-guide/harness/skill-src/{name}.md`를 먼저 추가·수정한다.
+- 훅: `aidd-guide/harness/hooks-contract.md`에 이벤트, 입력, 판정, 강도, 출력, 실패 정책,
+  test fixture를 먼저 적는다.
+- 능력 매핑: `aidd-guide/harness/capabilities.yaml`에 공통 목적과 provider 전략을 반영한다.
+- 목록: `aidd-guide/harness/skills.md`, `hooks.md`, `INDEX.md`의 해당 카탈로그를 갱신한다.
+
+## 3. provider별로 구현한다
+
+- Claude Code: `.claude/settings.json`, `.claude/hooks/`, `/스킬명` 문법을 따른다.
+- Codex: `.codex/hooks.json`, `.codex/hooks/`, `$스킬명` 문법을 따른다.
+- 공통 정책 엔진을 공유하되 runtime 입력은 adapter가 정규화한다.
+- 컨텍스트는 예외다. Claude는 실측 usage 경고, Codex는 자동 압축 후 재주입으로 구현한다.
+- 대상 runtime에서 지원하지 않는 기능은 흉내 내지 말고 provider 문서에 `미검증` 또는
+  `미지원`으로 기록한다.
+
+## 4. 생성하고 검증한다
+
+```bash
+node aidd-guide/harness/runtime/sync-skills.mjs --write
+node aidd-guide/harness/runtime/harness-check.mjs
+node .codex/hooks/self-test.mjs
+node .claude/hooks/harness-doc.mjs --write
+node aidd-guide/meta/_meta/lint.mjs
+```
+
+스킬 폴더의 `SKILL.md`를 직접 고치지 않는다. 검사가 불일치를 찾으면 공통 원본 또는 생성기를
+고친 뒤 다시 생성한다. 실제 Claude와 Codex 세션에서 각각 대표 trigger 하나와 차단/경고 하나를
+smoke test하고, 실행하지 못한 쪽은 완료로 가장하지 않고 남은 검증을 보고한다.

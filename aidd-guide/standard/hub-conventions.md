@@ -102,7 +102,7 @@ modules/agent/         controller · service · dto(record)
   그래야 "portal·admin 은 대화·추론 LLM 을 호출하지 않는다"(ARCH-013)를 **참조 관계로 검사할 수
   있다.** 호출 기록에 **호출 용도**를 함께 남겨 사후 감사에서 조회로 검증한다.
 - **위반 여부는 의존성 규칙 검사(아키텍처 테스트)로 확인한다. 리뷰에만 의존하지 않는다** —
-  템플릿의 `LayerDependencyTest` 와 같은 자리에 규칙을 더한다(CLAUDE.md §8).
+  템플릿의 `LayerDependencyTest` 와 같은 자리에 규칙을 더한다(AGENTS.md §8).
 
 ## 6. 트랜잭션 경계
 
@@ -140,7 +140,7 @@ modules/agent/         controller · service · dto(record)
 - **품질 신고와 시스템 오류를 섞지 않는다** — 신고(REQ-110)는 응답 품질의 경로이고 시스템
   오류는 참조 코드로 추적한다.
 - 서버 문구의 언어 규칙은 템플릿과 같다 — 로그와 예외의 기본 메시지는 **한국어**
-  ([`CLAUDE.md`](../../CLAUDE.md)).
+  ([`AGENTS.md`](../../AGENTS.md)).
 
 ## 8. 시각과 타임존
 

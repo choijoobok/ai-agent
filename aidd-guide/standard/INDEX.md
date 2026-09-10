@@ -14,7 +14,7 @@ tags: [framework, index]
 
 # standard — 개발 표준의 정본
 
-> **`CLAUDE.md` §8 의 표가 요지이고 여기가 상세와 근거다.**
+> **`AGENTS.md` §8 의 표가 요지이고 여기가 상세와 근거다.**
 > 개발 절차(레시피)는 [playbook](../playbook/INDEX.md), 도메인 지식은
 > [knowledge](../knowledge/INDEX.md) 가 갖는다. 여기는 **무엇이 어디에 있고
 > 어떤 규칙을 따르는가** 다.
@@ -49,7 +49,7 @@ tags: [framework, index]
 
 ## 이미 있는 것을 고칠 때
 
-> **화면이 아닌 것의 진입이다.** 화면이면 `CLAUDE.md` §6.3 으로 되돌아간다 — 요건서 ·
+> **화면이 아닌 것의 진입이다.** 화면이면 `AGENTS.md` §6.3 으로 되돌아간다 — 요건서 ·
 > 목업 · 승인이 앞에 선다. 여기는 **공통물과 횡단 정책**, 즉 `shared/` · `core/` ·
 > `support/` 와 프레임워크 설정이다. 목록은 [registry.md](./registry.md) 가 갖는다 —
 > **거기서 `CMP-###` 을 받아 ⑦ 에서 그 이름으로 보고한다**(폴더 경로는 바뀌고 ID 는 남는다).
@@ -64,7 +64,7 @@ tags: [framework, index]
 ⑦ 보고            사용처가 화면 둘 이상이면 무엇이 함께 바뀌는지 사용자에게 먼저
 ```
 
-**②는 이렇게 센다** — 사용처는 **소스가 갖는다**(`CLAUDE.md` §3). 목록이 아니라 참조를 센다:
+**②는 이렇게 센다** — 사용처는 **소스가 갖는다**(`AGENTS.md` §3). 목록이 아니라 참조를 센다:
 
 ```bash
 cd sources/frontend && npx tsc -b --noEmit   # 계약이 깨지면 여기서 전부 뜬다
@@ -89,7 +89,7 @@ cd sources/frontend && npx tsc -b --noEmit   # 계약이 깨지면 여기서 전
 
 **정책형이 위험한 쪽이다.** 계약형은 틀리면 빨간 줄이 뜨고, 정책형은 **초록인 채로 틀린다.**
 그래서 정책형을 고칠 때 ④를 건너뛰면 *돌아갔다* 가 *맞다* 의 증거가 되지 않는다
-(`CLAUDE.md` §5-10 · [quality/redteam.md](../quality/redteam.md) 의 규칙 뒤집기).
+(`AGENTS.md` §5-10 · [quality/redteam.md](../quality/redteam.md) 의 규칙 뒤집기).
 
 ### 「보장하는 것」 절 — 정책형이 갖는다
 
@@ -175,4 +175,4 @@ cd frontend && npm run lint && npx tsc -b --noEmit && npm run test
 - [INDEX](../INDEX.md) — 마스터
 - [playbook](../playbook/INDEX.md) — 화면 레시피 (**이 카테고리 위에 선다**)
 - [knowledge](../knowledge/INDEX.md) — 도메인 지식
-- [CLAUDE.md §8](../../CLAUDE.md) — 요지
+- [AGENTS.md §8](../../AGENTS.md) — 요지

@@ -51,7 +51,7 @@ git worktree add --detach <스크래치>/sbx-A HEAD
 git worktree add --detach <스크래치>/sbx-B HEAD
 ```
 
-**다른 드라이브에 두면 게이트가 저절로 꺼진다** — 훅이 `CLAUDE.md` 를 찾아 올라가 저장소를
+**다른 드라이브에 두면 게이트가 저절로 꺼진다** — 훅이 `AGENTS.md` 를 찾아 올라가 저장소를
 정하므로(`hooks/lib.mjs`), 밖의 경로는 `repoRelative()` 가 빈 문자열을 돌려 조용히 통과한다.
 
 그 사본에서 **그 화면의 것만** 지운다.
@@ -72,7 +72,7 @@ git worktree add --detach <스크래치>/sbx-B HEAD
   정한다.** 긁어서 주석 아홉 곳을 지운 뒤에도 재현이 **열째를 스스로 찾아낸 적이 있다**
   (옆 화면의 javadoc 이 지운 DTO 를 인용했다) — **긁는 것으로 끝나지 않으므로, 무엇을
   보고 알았는지는 `SOURCES.md` 로 되짚는다.**
-- **옆 화면의 실물을 남기는 것이 옳다.** `CLAUDE.md` §3 이 *"비슷한 화면의 실물을 읽는다"* 를
+- **옆 화면의 실물을 남기는 것이 옳다.** `AGENTS.md` §3 이 *"비슷한 화면의 실물을 읽는다"* 를
   표준으로 정했으므로, 그것을 뺀 실험은 실제 개발 조건이 아니다. 대신 **어디서 근거를
   얻었는지 세어** 문서가 한 몫과 소스가 한 몫을 가른다.
 - **게이트는 끈다.** 샌드박스에 `node_modules` 가 없다. 이것도 설계다 — ESLint 가 한글
@@ -134,7 +134,7 @@ node aidd-guide/quality/evals/score-screen.mjs log/login <sbx-A> <sbx-B>
 
 ## 4. 베이스라인 — **값은 여기 두지 않는다**
 
-잰 값은 이 저장소를 잰 것이라 **고객사가 바뀌면 한 줄도 살아남지 않는다**(CLAUDE.md §1 의
+잰 값은 이 저장소를 잰 것이라 **고객사가 바뀌면 한 줄도 살아남지 않는다**(AGENTS.md §1 의
 판별식). 차수 · 화면 · 근거 분포 · 축 일치는
 [`documents/project.state.yaml`](../../../documents/project.state.yaml) 의
 `reproduction_baseline` 이 갖는다 — G4 기계 검사 수치가 이미 그 옆에 있었다.

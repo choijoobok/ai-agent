@@ -1,5 +1,5 @@
 /**
- * 쓰기의 다섯 사고를 막는다 — CLAUDE.md §5 · §7.
+ * 쓰기의 다섯 사고를 막는다 — AGENTS.md §5 · §7.
  *
  * <p>① <b>G3 승인 전 구현 코드</b> — 차단. AI 의 과속을 막는 자리다.
  * <p>② <b>생성물 직접 수정</b> — 차단. SSOT 위반이며 다음 생성에서 조용히 되돌아간다.
@@ -68,10 +68,10 @@ const templateMode = state?.current?.template_maintenance === true;
 if (path.startsWith('sources/') && g3 !== 'approved' && !templateMode) {
   deny(
     [
-      `설계 베이스라인(G3)이 승인되지 않아 구현 코드를 쓸 수 없다 — CLAUDE.md §5-2.`,
+      `설계 베이스라인(G3)이 승인되지 않아 구현 코드를 쓸 수 없다 — AGENTS.md §5-2.`,
       `현재 단계: ${phase} / G3: ${g3}`,
       '',
-      '지금 할 일은 현재 단계의 산출물을 완성하고 `/phase-gate` 로 승인을 받는 것이다.',
+      '지금 할 일은 현재 단계의 산출물을 완성하고 phase-gate 스킬로 승인을 받는 것이다.',
       '',
       '**템플릿 자체의 보수라면 게이트의 대상이 아니다.** 그 작업이면 사용자에게 확인받고',
       `\`documents/project.state.yaml\` 의 \`current.template_maintenance: true\` 를 켠다 —`,
@@ -91,9 +91,9 @@ if (path.startsWith('documents/generated/') && existsSync(abs)) {
     const src = head.match(/generated_from:\s*(\S+)/)?.[1] ?? 'documents/spec/';
     deny(
       [
-        `${path} 는 생성물이다 — 손으로 고치면 다음 \`/doc-gen\` 에서 덮어써진다.`,
-        `원본을 고친다: ${src} → 고친 뒤 \`/doc-gen\` 재생성.`,
-        'CLAUDE.md §5-4: `documents/spec/` 이 유일한 진실이다.',
+        `${path} 는 생성물이다 — 손으로 고치면 다음 doc-gen 실행에서 덮어써진다.`,
+        `원본을 고친다: ${src} → 고친 뒤 doc-gen 스킬로 재생성.`,
+        'AGENTS.md §5-4: `documents/spec/` 이 유일한 진실이다.',
       ].join('\n'),
     );
   }
@@ -106,7 +106,7 @@ if (path.startsWith('documents/') && !existsSync(abs)) {
   if (slots.length > 0 && !slots.some((slot) => slot.test(path))) {
     deny(
       [
-        `${path} 는 산출물 지도에 없는 자리다 — 새 문서를 만들 수 없다(CLAUDE.md §4).`,
+        `${path} 는 산출물 지도에 없는 자리다 — 새 문서를 만들 수 없다(AGENTS.md §4).`,
         '',
         '**이 규칙이 이 프로젝트가 세 저장소에서 물려받은 가장 큰 문제를 막는다** —',
         '정리한 내역을 적는 문서, 근거를 적는 문서, 그 문서를 설명하는 문서가 늘어나',
@@ -127,7 +127,7 @@ if (path.startsWith('documents/spec/') && g3 === 'approved') {
   warn(
     [
       `spec 베이스라인 이후 변경이다: ${path}`,
-      '`/change-request` 로 영향 분석 → 3옵션 → 사용자 판정을 거쳤는지 확인한다.',
+      'change-request 스킬로 영향 분석 → 3옵션 → 사용자 판정을 거쳤는지 확인한다.',
       '이미 CR-### 로 승인된 변경이면 그대로 진행하고, 아니면 지금 CR 을 먼저 연다.',
     ].join('\n'),
   );
@@ -142,7 +142,7 @@ if (path.startsWith('documents/spec/') && g3 === 'approved') {
 
   **막지 않는다.** 여기서 커밋을 강제하면 세션마다 토글 커밋이 하나씩 붙고, 그
   마찰이 이 기록의 값보다 크다. `doc-drift`·`guide-drift` 와 같은 강도로 **가리키기만**
-  한다(CLAUDE.md §6.5).
+  한다(AGENTS.md §6.5).
 
   2026-09-06 에 이것이 없어 실제로 놓쳤다 — 문을 열어 커밋 넷을 찍고 닫았는데
   기록이 남지 않았고, 게이트는 전부 초록이었다.

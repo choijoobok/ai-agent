@@ -2,7 +2,7 @@
 
 > **빌드 루트는 `sources/` 다.** `./gradlew` · `npm` 명령은 거기서 돈다.
 > 문서에 적히는 **파일 경로는 저장소 루트 기준**(`sources/backend/…`)이고
-> **빌드 명령은 `sources/` 기준**이다 — CLAUDE.md §1 이 그 규칙의 정본이다.
+> **빌드 명령은 `sources/` 기준**이다 — AGENTS.md §1 이 그 규칙의 정본이다.
 
 ## 1. 필요한 것
 
@@ -18,6 +18,8 @@
 - **Node 는 `nvm` 을 권한다** — `sources/.nvmrc` 가 있으므로 `nvm use` 한 줄이면 맞는다.
 - **AI 도구는 `node` 하나만 요구한다.** 훅과 문서 린터가 의존성 0 으로 돈다 —
   폐쇄망에서 `npm i` 없이 서야 하기 때문이다([`harness/hooks-contract.md`](../aidd-guide/harness/hooks-contract.md)).
+- Claude Code는 `CLAUDE.md`가 공통 헌법을 가져온다. Codex는 `AGENTS.md`를 직접 읽고,
+  첫 실행이나 훅 변경 뒤 `/hooks`에서 프로젝트 훅을 검토·신뢰해야 한다.
 
 ## 2. 받는 순서
 
@@ -163,9 +165,9 @@ cd sources/frontend && npm run lint && npm run typecheck && npm run test
 | Liquibase `checksum` 오류 | **이미 적재된 changeset 을 고쳤다.** 되돌리고 **새 파일을 더한다** — 고치면 남의 로컬이 죽는다 |
 | 문서 린터가 `broken link` | 파일을 옮기고 링크를 안 고쳤다. **경로를 손으로 세지 말고** 린터가 가리키는 자리를 본다 |
 | 화면이 빈 페이지 (JAR 실행) | 프론트 임베드가 빠졌다 → `./gradlew :backend:bootstrap:bootJar` 를 `-PskipFrontend` **없이** 돌린다 |
-| ESLint 가 한글 문자열을 막는다 | **의도된 차단이다.** 화면 문구는 `MSG` 키 + `label()` 로 쓴다(CLAUDE.md §5-6) |
+| ESLint 가 한글 문자열을 막는다 | **의도된 차단이다.** 화면 문구는 `MSG` 키 + `label()` 로 쓴다(AGENTS.md §5-6) |
 | 커밋이 훅에 막힌다 | 경로를 지정하지 않았거나 메시지에 큰따옴표를 썼다 → `git commit -F - -- <경로…>` |
-| AI 가 `documents/` 에 문서를 못 만든다 | **문서 예산이다**(CLAUDE.md §4). 산출물 지도에 자리가 없다 |
+| AI 가 `documents/` 에 문서를 못 만든다 | **문서 예산이다**(AGENTS.md §4). 산출물 지도에 자리가 없다 |
 | AI 가 `sources/` 를 못 고친다 | **G3 미승인이다.** 템플릿 보수라면 `project.state.yaml` 의 `template_maintenance: true` |
 
 ## 7. 편집기 설정

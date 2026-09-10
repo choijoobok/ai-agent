@@ -3,14 +3,16 @@ name: manual-site
 description: 화면별 manual.md 에서 사용자 메뉴얼 산출물을 만든다 — 저장소용 manual.html·열람 페이지와, 고객사에 통째로 복사해 전달하는 build/manual/ 폴더(화면 그림 포함 · 인쇄용 PDF · 선택 PPTX). 메뉴얼을 고친 뒤, 제출본을 만들 때, 실제 화면을 캡처해 넣을 때 쓴다. "메뉴얼 HTML" · "메뉴얼 사이트" · "제출본" · "PDF" · "PPT" · "화면 캡처" 요청에 쓴다.
 ---
 
+<!-- generated_from: aidd-guide/harness/skill-src/manual-site.md; do not edit -->
+
 # 사용자 메뉴얼 — 산출물 생성
 
-`CLAUDE.md` §6.2. **`manual.md` 가 원본이고 나머지는 전부 파생이다.**
+`AGENTS.md` §6.2. **`manual.md` 가 원본이고 나머지는 전부 파생이다.**
 
 ## 0. 먼저 — 목업이 있어야 한다
 
 화면 그림은 **목업에서 나온다**(아래 *화면 그림*). 목업도 파생물이라 형상 관리에 없으므로
-(`CLAUDE.md` §4-5) **새로 클론한 트리에는 없다.** 없으면 그림 없는 메뉴얼이 나간다.
+(`AGENTS.md` §4-5) **새로 클론한 트리에는 없다.** 없으면 그림 없는 메뉴얼이 나간다.
 
 ```bash
 node .claude/skills/mockup/scaffold.mjs --check
@@ -182,7 +184,7 @@ node .claude/skills/manual-site/build.mjs --pptx            # 이제 캡처를 �
 ## 커밋
 
 **정본만 커밋한다**(§9). `manual.html` · `index.html` · `build/manual/` 은 전부 파생이라
-`.gitignore` 대상이다(CLAUDE.md §4-5) — 담을 것은 `manual.md` 하나다.
+`.gitignore` 대상이다(AGENTS.md §4-5) — 담을 것은 `manual.md` 하나다.
 
 ```bash
 git commit -F - -- documents/screen/{경로}/manual.md <<'EOF'

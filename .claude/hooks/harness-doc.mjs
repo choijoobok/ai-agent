@@ -2,9 +2,9 @@
  * 훅·스킬 목록을 `user-guide/07-harness.md` 로 만든다 — `PostToolUse` 훅 겸 생성기.
  *
  * <h2>왜 손으로 쓰지 않나</h2>
- * <p>훅과 스킬의 목록은 이미 세 곳에 있다 — `CLAUDE.md` §8(헌법의 요지) ·
+ * <p>훅과 스킬의 목록은 이미 세 곳에 있다 — `AGENTS.md` §8(헌법의 요지) ·
  * `aidd-guide/harness/hooks.md`(왜 그렇게 만들었나) · `harness/skills.md`(작성 규약).
- * <b>손으로 쓴 네 번째를 만들면 그 순간 네 사실이 된다</b>(CLAUDE.md §4-3). 그래서 이것은
+ * <b>손으로 쓴 네 번째를 만들면 그 순간 네 사실이 된다</b>(AGENTS.md §4-3). 그래서 이것은
  * 정본이 아니라 <b>실물에서 계산한 파생물</b>이다 — 훅을 지우면 다음 생성에서 사라진다.
  *
  * <h2>강도를 산문에서 읽지 않는다</h2>
@@ -13,7 +13,7 @@
  * 문서가 거짓말을 한다. <i>동작에서 유도하면 낡을 수가 없다.</i>
  *
  * <h2>커밋한다</h2>
- * <p>파생물은 형상 관리에서 빼는 것이 규칙이지만(CLAUDE.md §4-5) 이것은 예외다 —
+ * <p>파생물은 형상 관리에서 빼는 것이 규칙이지만(AGENTS.md §4-5) 이것은 예외다 —
  * <b>읽는 사람이 저장소를 브라우저로 여는 사람</b>이고, 그 사람은 생성기를 돌리지 않는다.
  * 시드 CSV 를 커밋하는 것과 같은 이유다: 없으면 그 자리에서 쓸 수 없다.
  *
@@ -22,7 +22,7 @@
  *   node .claude/hooks/harness-doc.mjs --check    어긋났는지만 본다 (게이트용)
  * </pre>
  *
- * <p>훅으로 걸리면 `.claude/` 아래가 바뀔 때 <b>스스로 다시 만든다.</b> 의존성이 없다.
+ * <p>훅으로 걸리면 공통 원본이나 provider 배선이 바뀔 때 <b>스스로 다시 만든다.</b>
  */
 
 import { readdirSync, readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
@@ -33,9 +33,16 @@ const OUT = 'user-guide/07-harness.md';
 const HOOK_DIR = join(REPO, '.claude/hooks');
 const SKILL_DIR = join(REPO, '.claude/skills');
 const SETTINGS = join(REPO, '.claude/settings.json');
+const CODEX_SETTINGS = join(REPO, '.codex/hooks.json');
 
 /** `lib.mjs` 는 훅이 아니라 훅들이 함께 쓰는 것이다. */
-const NOT_A_HOOK = new Set(['lib.mjs']);
+const NOT_A_HOOK = new Set([
+  'lib.mjs',
+  'hook-chain.mjs',
+  'pre-write.mjs',
+  'post-write.mjs',
+  'session-start.mjs',
+]);
 
 const mode = process.argv[2];
 
@@ -51,25 +58,41 @@ if (mode === '--write' || mode === '--check') {
     process.exit(1);
   }
   writeFileSync(join(REPO, OUT), made, 'utf8');
-  console.log(`${OUT} — 훅 ${countHooks()} · 스킬 ${skills().length}`);
+  console.log(`${OUT} — Claude 훅 ${countHooks('claude')} · Codex 훅 ${countHooks('codex')} · 스킬 ${skills().length}`);
   process.exit(0);
 }
 
 /* ── 훅으로 불렸을 때 — `.claude/` 가 바뀌었으면 스스로 다시 만든다 ── */
 const input = await readHookInput();
 const path = repoRelative(targetPath(input));
-if (!path || !/^\.claude\/(hooks|skills)\/|^\.claude\/settings\.json$/.test(path)) pass();
+if (
+  !path
+  || !/^(\.claude\/(hooks|skills)\/|\.claude\/settings\.json$|\.agents\/skills\/|\.codex\/|aidd-guide\/harness\/skill-src\/)/.test(path)
+) pass();
 
+/*
+  <b>`try` 가 감싸는 것은 계산과 쓰기뿐이다.</b> `warn()` 은 chain 안에서 예외를 던져
+  결과를 회수하므로(`lib.mjs` 의 `finish`), `try` 안에 두면 그 예외를 아래 `catch` 가
+  삼킨다 — 파일은 다시 쓰이는데 <b>아무도 그 사실을 듣지 못한다</b>. 커밋에서 빠지고
+  CI 의 `--check` 가 거기서 죽는다. 조용한 실패라 눈에 띄지 않는다.
+*/
+let made = '';
 try {
-  const made = render();
-  if (made !== read(join(REPO, OUT))) {
-    writeFileSync(join(REPO, OUT), made, 'utf8');
-    warn(`${OUT} 를 다시 만들었다 — 훅·스킬이 바뀌었다. **소스와 같은 커밋에 담는다**(CLAUDE.md §9).`);
-  }
+  made = render();
 } catch {
   /* 문서를 못 만드는 것보다 나쁜 것은 그것 때문에 작업이 멈추는 것이다. */
+  pass();
 }
-pass();
+
+if (made === read(join(REPO, OUT))) pass();
+
+try {
+  writeFileSync(join(REPO, OUT), made, 'utf8');
+} catch {
+  pass();
+}
+
+warn(`${OUT} 를 다시 만들었다 — 훅·스킬이 바뀌었다. **소스와 같은 커밋에 담는다**(AGENTS.md §9).`);
 
 // ── 읽는 것 ───────────────────────────────────────────────────────
 
@@ -81,42 +104,61 @@ function read(p) {
   }
 }
 
-/** `.claude/settings.json` 이 무엇을 어느 이벤트에 거는가 — 순서까지 그대로. */
-function bound() {
+/** provider 설정이 무엇을 어느 이벤트에 거는가. chain은 논리 훅으로 펼친다. */
+function bound(provider) {
   const rows = [];
   let cfg;
   try {
-    cfg = JSON.parse(read(SETTINGS));
+    cfg = JSON.parse(read(provider === 'claude' ? SETTINGS : CODEX_SETTINGS));
   } catch {
     return rows;
   }
   for (const [event, groups] of Object.entries(cfg?.hooks ?? {})) {
     for (const group of groups) {
       for (const h of group.hooks ?? []) {
-        const file = (h.args ?? []).find((a) => a.endsWith('.mjs'));
+        const file = provider === 'claude'
+          ? (h.args ?? []).find((a) => a.endsWith('.mjs'))
+          : h.command?.match(/([A-Za-z0-9-]+\.mjs)/)?.[1];
         if (!file) continue;
-        rows.push({
+        const row = {
           event,
           matcher: group.matcher ?? '',
           name: file.slice(file.lastIndexOf('/') + 1).replace(/\.mjs$/, ''),
           file,
           timeout: h.timeout,
-        });
+        };
+        rows.push(...expand(row, provider));
       }
     }
   }
   return rows;
 }
 
-function countHooks() {
-  return new Set(bound().map((r) => r.name)).size;
+function countHooks(provider) {
+  return new Set(bound(provider).map((r) => r.name)).size;
+}
+
+function expand(row, provider) {
+  const chains = {
+    'pre-write': ['guard-write', 'guard-generated'],
+    'post-write': ['normalize-encoding', 'trace-check', 'doc-drift', 'guide-drift', 'skill-sync', 'harness-doc', 'commons-doc'],
+    'pre-shell': ['guard-bash', 'guard-commit'],
+    'session-start': ['git-sync', 'session-brief'],
+  };
+  if (provider === 'codex' && row.name === 'file-chain') {
+    chains['file-chain'] = row.event === 'PreToolUse' ? chains['pre-write'] : chains['post-write'];
+  }
+  const names = chains[row.name] ?? [row.name];
+  return names.map((name) => ({ ...row, name, file: `.claude/hooks/${name}.mjs` }));
 }
 
 /**
  * 훅이 하는 일 — <b>부르는 함수에서 유도한다.</b> 주석을 믿지 않는다.
  */
 function strength(file) {
-  const src = read(join(REPO, file));
+  const src = read(join(REPO, file))
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/^\s*\/\/.*$/gm, '');
   const has = (fn) => new RegExp(`\\b${fn}\\(`).test(src);
   const out = [];
   if (has('deny')) out.push('**차단**');
@@ -173,8 +215,9 @@ function skills() {
 // ── 만드는 것 ─────────────────────────────────────────────────────
 
 function render() {
-  const rows = bound();
-  const boundNames = new Set(rows.map((r) => r.name));
+  const claudeRows = bound('claude');
+  const codexRows = bound('codex');
+  const boundNames = new Set([...claudeRows, ...codexRows].map((r) => r.name));
   const files = readdirSync(HOOK_DIR)
     .filter((f) => f.endsWith('.mjs') && !NOT_A_HOOK.has(f))
     .map((f) => f.replace(/\.mjs$/, ''));
@@ -185,8 +228,8 @@ function render() {
   out.push('# 07. 훅과 스킬 — 지금 무엇이 있나');
   out.push('');
   out.push('> **이 파일은 생성물이다. 손으로 고치지 않는다** — 다음 생성에서 사라지고, 훅이 막는다.');
-  out.push('> 정본은 `.claude/` 의 실물이며 `node .claude/hooks/harness-doc.mjs --write` 가 만든다.');
-  out.push('> `.claude/` 아래를 고치면 **훅이 스스로 다시 만든다.**');
+  out.push('> 정본은 `aidd-guide/harness/`의 명세와 provider 배선이며');
+  out.push('> `node .claude/hooks/harness-doc.mjs --write` 가 만든다.');
   out.push('>');
   out.push('> **여기는 *지금 무엇이 있나* 다.** *왜 그렇게 만들었나* 는');
   out.push('> [`aidd-guide/harness/hooks.md`](../aidd-guide/harness/hooks.md) 와');
@@ -194,22 +237,14 @@ function render() {
   out.push('');
   out.push('---');
   out.push('');
-  out.push(`## 훅 — ${boundNames.size} 개가 걸려 있다`);
+  out.push('## 훅');
   out.push('');
-  out.push('**강도는 그 훅이 실제로 부르는 함수에서 계산한다** — 주석에 적힌 말이 아니다.');
-  out.push('');
-  out.push('| 이벤트 | 언제 | 훅 | 하는 일 | 강도 | 제한 |');
-  out.push('|---|---|---|---|---|---|');
-  for (const r of rows) {
-    out.push(
-      /* matcher 의 `|` 는 표 칸을 가른다 — 반드시 걸러 넣는다. */
-      `| \`${r.event}\` | ${r.matcher ? `\`${r.matcher.replace(/\|/g, '\\|')}\`` : '—'} | \`${r.name}\` | ${summary(r.file)} | ${strength(r.file)} | ${r.timeout ?? '—'}s |`,
-    );
-  }
-  out.push('');
-  out.push('- **전부 fail-open 이다** — 훅이 죽어도 세션을 막지 않는다. 죽은 훅이 세션을 막으면');
-  out.push('  사람이 훅을 끄고, 꺼진 훅은 없는 훅이다.');
+  out.push('같은 의미의 정책 엔진을 공유하고 입력 adapter와 컨텍스트 전략만 다르게 둔다.');
+  renderHookTable(out, `Claude Code — ${new Set(claudeRows.map((r) => r.name)).size}개`, claudeRows);
+  renderHookTable(out, `Codex — ${new Set(codexRows.map((r) => r.name)).size}개`, codexRows);
+  out.push('- 사전 보호 chain 내부 오류는 해당 쓰기를 차단한다. 사후 검사 오류는 명시 경고한다.');
   out.push('- **`node` 하나로 돌며 의존성이 없다.**');
+  out.push('- 컨텍스트는 Claude만 사용량 경고를 내고, Codex는 자동 압축 뒤 SessionStart로 재주입한다.');
 
   if (loose.length) {
     out.push('');
@@ -227,12 +262,12 @@ function render() {
   out.push('');
   out.push(`## 스킬 — ${list.length} 개`);
   out.push('');
-  out.push('슬래시로 부른다. **AI 가 정해진 절차를 따르게 하는 지시서**이며, 사람이 외울 것이 아니다.');
+  out.push('공통 원본에서 두 발견 경로로 생성한다. **AI가 정해진 절차를 따르게 하는 지시서**다.');
   out.push('');
-  out.push('| 부르는 법 | 무엇을 | 언제 쓰나 |');
-  out.push('|---|---|---|');
+  out.push('| Claude | Codex | 무엇을 | 언제 쓰나 |');
+  out.push('|---|---|---|---|');
   for (const s of list) {
-    out.push(`| \`/${s.name}\` | ${s.what} | ${s.rest || '—'} |`);
+    out.push(`| \`/${s.name}\` | \`\$${s.name}\` | ${s.what} | ${s.rest || '—'} |`);
   }
 
   const withScripts = list.filter((s) => s.scripts.length);
@@ -251,4 +286,17 @@ function render() {
 
   out.push('');
   return out.join('\n') + '\n';
+}
+
+function renderHookTable(out, title, rows) {
+  out.push('');
+  out.push(`### ${title}`);
+  out.push('');
+  out.push('| 이벤트 | 언제 | 훅 | 하는 일 | 강도 | 제한 |');
+  out.push('|---|---|---|---|---|---|');
+  for (const r of rows) {
+    out.push(
+      `| \`${r.event}\` | ${r.matcher ? `\`${r.matcher.replace(/\|/g, '\\|')}\`` : '—'} | \`${r.name}\` | ${summary(r.file)} | ${strength(r.file)} | ${r.timeout ?? '—'}s |`,
+    );
+  }
 }

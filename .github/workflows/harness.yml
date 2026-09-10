@@ -1,0 +1,48 @@
+# Claude Code/Codex 하네스 정합성 — 공통 명세와 양쪽 생성물·배선을 함께 막는다.
+name: AI 하네스 정합성
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'aidd-guide/harness/**'
+      - '.claude/**'
+      - '.agents/**'
+      - '.codex/**'
+      - 'user-guide/07-harness.md'
+      - '.github/workflows/harness.yml'
+  pull_request:
+    paths:
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'aidd-guide/harness/**'
+      - '.claude/**'
+      - '.agents/**'
+      - '.codex/**'
+      - 'user-guide/07-harness.md'
+      - '.github/workflows/harness.yml'
+  workflow_dispatch:
+
+jobs:
+  parity:
+    name: 공통 정본 · Claude · Codex 동등성
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - name: 스킬 생성물과 provider 배선 대조
+        run: |
+          node aidd-guide/harness/runtime/sync-skills.mjs --check
+          node aidd-guide/harness/runtime/harness-check.mjs
+          node .codex/hooks/self-test.mjs
+
+      - name: 생성 문서와 AIDD 문서 검사
+        run: |
+          node .claude/hooks/harness-doc.mjs --check
+          node aidd-guide/meta/_meta/lint.mjs

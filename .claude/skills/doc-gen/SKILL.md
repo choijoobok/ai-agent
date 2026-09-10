@@ -3,6 +3,8 @@ name: doc-gen
 description: documents/spec/ 의 YAML에서 사람이 읽는 산출물 문서를 생성한다. 요건정의서, 유즈케이스 명세, ERD, API 문서, 화면정의서, 권한 매트릭스, 테스트 케이스, 사용자 매뉴얼 등을 documents/generated/ 아래에 만든다.
 ---
 
+<!-- generated_from: aidd-guide/harness/skill-src/doc-gen.md; do not edit -->
+
 # 문서 생성 (spec → docs)
 
 인자: 없음(전체) / `아키텍처` `기능목록` `화면` `권한` `요건정의서` `유즈케이스` `ERD` `DDL` `API`
@@ -89,7 +91,7 @@ node .claude/skills/doc-gen/gen.mjs --check            # 생성물이 spec 을 �
 *이대로 만들어도 되는가* 이고, 그 판단이 곧 게이트 승인이다.
 
 - **왜 자리를 갖나** — spec 여덟이 `S` 라 파생 뷰가 없었고, **게이트 승인의 대상을
-  YAML 로 내밀고 있었다.** CLAUDE.md §5-12(이해하지 못한 승인을 받아내지 않는다)가
+  YAML 로 내밀고 있었다.** AGENTS.md §5-12(이해하지 못한 승인을 받아내지 않는다)가
   요구하는 것을 이 문서가 뒷받침한다.
 - **소유** — **파생(`G`)이다.** `.gitignore` 대상이며 커밋하지 않는다. 고칠 것은 spec 이다.
 - **장 나눔** (원칙 B — 한 장이 한 파일이다)

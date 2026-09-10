@@ -115,7 +115,7 @@ MsgKey.java (서버)  ·  messageKeys.ts (프론트)
                                              SYS_MESSAGE 값은 새 changeset 으로
 ```
 
-- **문구를 소스에 박지 않는다**(CLAUDE.md §5-6). 서버는 `MsgKey` 상수 + `SYS_MESSAGE`.
+- **문구를 소스에 박지 않는다**(AGENTS.md §5-6). 서버는 `MsgKey` 상수 + `SYS_MESSAGE`.
 - **키 시드는 생성물이다.** `MsgKey.java` 를 고쳤으면 생성 태스크를 돌려 **CSV 를 같은
   커밋에** 담는다. 값(`SYS_MESSAGE`)은 **이미 적재된 changeset 을 고치지 않고 새 파일로** 더한다.
 - `SeedMessageTest` 가 **값 시드의 키가 키 시드에 있는가**를 검사한다.
@@ -140,7 +140,7 @@ MsgKey.java (서버)  ·  messageKeys.ts (프론트)
   `UnexpectedRollbackException` 을 던진다. 상세는 [logging.md](./logging.md).
 - **4xx 는 `ROOT_CAUSE_STACK` 을 저장하지 않는다** — 규칙의 정본은
   [logging.md](./logging.md) 다. 여기서는 예외 처리 흐름이 그것을 지킨다는 것만 적는다.
-- **소스에 남는 로그·예외의 기본 메시지는 한국어로 쓴다**(CLAUDE.md §5-6). 사용자 문구는 `SYS_MESSAGE` 다.
+- **소스에 남는 로그·예외의 기본 메시지는 한국어로 쓴다**(AGENTS.md §5-6). 사용자 문구는 `SYS_MESSAGE` 다.
 
 ## 7. 보장하는 것 — 무엇을 믿고 쓰나
 
@@ -161,4 +161,4 @@ MsgKey.java (서버)  ·  messageKeys.ts (프론트)
 
 - [api.md](./api.md) — 봉투 · 서버가 문구를 완성하는 이유
 - [knowledge/sys/message.md](../../knowledge/sys/message.md) — `SYS_MESSAGE` 도메인
-- [CLAUDE.md §5-6 · §5-8](../../../CLAUDE.md) — 문구를 박지 않는다 · 시드는 생성물이다
+- [AGENTS.md §5-6 · §5-8](../../../AGENTS.md) — 문구를 박지 않는다 · 시드는 생성물이다

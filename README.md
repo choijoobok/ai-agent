@@ -20,10 +20,12 @@
 **주제로 나누지 않았다.** "테스트" 는 규칙·절차·산출물·코드 넷에 걸치는데, 주제로 나누면
 그 넷이 한 폴더에 섞이고 **읽는 사람이 자기 것을 못 찾는다.** 독자로 나누면 각 폴더가 한
 종류의 독자에게만 답하므로, **새 문서를 어디 둘지가 물어보지 않아도 정해진다.**
-→ [`CLAUDE.md`](./CLAUDE.md)
+→ [`AGENTS.md`](./AGENTS.md)
 
-그 밖에 [`CLAUDE.md`](CLAUDE.md)(**헌법** — AI 가 매 세션 읽는 유일한 문서) ·
-[`.claude/`](.claude/settings.json)(훅 · 스킬 — 목록은 [user-guide/07-harness.md](user-guide/07-harness.md)) · `.github/`(CI) 가 루트에 있다.
+그 밖에 [`AGENTS.md`](AGENTS.md)(**공통 헌법**) · [`CLAUDE.md`](CLAUDE.md)(Claude import
+adapter) · [`.claude/`](.claude/settings.json)(Claude 배선) · [`.codex/`](.codex/hooks.json)
+(Codex 배선) · `.github/`(CI)가 루트에 있다. 현재 훅·스킬 목록은
+[user-guide/07-harness.md](user-guide/07-harness.md)가 갖는다.
 
 ---
 
@@ -33,7 +35,7 @@
 ① 이 파일                     무엇을 만드는 프로젝트인가            5분
 ② user-guide/01-project.md    어떻게 굴러가는가 · 내 역할          15분
 ③ user-guide/02-setup.md      환경을 만든다                      30분~2시간
-④ CLAUDE.md                   AI 가 지키는 규칙 — 사람도 한 번은   20분
+④ AGENTS.md                   AI 가 지키는 공통 규칙 — 사람도 한 번은 20분
 ⑤ aidd-guide/INDEX.md         규칙이 어디 있는지의 지도 (통독 금지)
 ```
 
@@ -53,7 +55,7 @@ cd sources && ./gradlew build -PskipFrontend
 ## 지금 어디까지 왔나
 
 **[`documents/project.state.yaml`](documents/project.state.yaml) 하나가 그 답이다.**
-Claude Code 에서는 `/pm-status`.
+Claude Code에서는 `/pm-status`, Codex에서는 `$pm-status`.
 
 | | |
 |---|---|
@@ -82,13 +84,17 @@ node .claude/hooks/trace-check.mjs --all
 **셋이 공통으로 앓던 병이 하나였다** — 문서를 정리하면 정리 내역을 적는 문서가 생기고,
 그 근거를 적는 문서가 또 생긴다. 그래서 **문서 예산**을 기계로 강제한다:
 `documents/` 에 만들 수 있는 자리는 [산출물 지도 40행](aidd-guide/artifact/INDEX.md)이 정하고
-`guard-write` 훅이 **지도 밖의 새 문서를 차단한다**(CLAUDE.md §4).
+`guard-write` 훅이 **지도 밖의 새 문서를 차단한다**(AGENTS.md §4).
 
 **옛 저장소를 지우지 않는다** — 재편성에서 잃은 것이 있는지 확인할 유일한 수단이다.
 
 ---
 
-## 검증 — 게이트 넷
+## 검증 — 게이트 다섯
+
+```bash
+node aidd-guide/harness/runtime/harness-check.mjs
+```
 
 ```bash
 node aidd-guide/meta/_meta/lint.mjs
@@ -111,7 +117,7 @@ cd sources/frontend && npm run lint && npm run typecheck && npm run test
 
 ---
 
-## 규칙 다섯 — 나머지는 CLAUDE.md 가 갖는다
+## 규칙 다섯 — 나머지는 AGENTS.md가 갖는다
 
 1. **한국어 · UTF-8(BOM 없음) · LF.**
 2. **게이트를 건너뛰지 않는다.** 되돌릴 수 없는 것은 사용자가 직접 하거나 명시 승인한다.

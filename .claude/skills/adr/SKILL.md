@@ -3,6 +3,8 @@ name: adr
 description: 아키텍처 의사결정 기록(ADR)을 작성한다. 되돌리기 비용이 큰 기술·설계 선택을 대안·근거·포기한 것과 함께 남긴다. 기술 스택, DB, 인증, 아키텍처 스타일 등을 정할 때 사용.
 ---
 
+<!-- generated_from: aidd-guide/harness/skill-src/adr.md; do not edit -->
+
 # ADR 작성
 
 ## 먼저 판정: 이게 ADR 대상인가

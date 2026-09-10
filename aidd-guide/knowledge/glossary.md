@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/backend/core/src/main/java/com/aiagent/core/search/Op.java", "sources/frontend/src/shared/grid/rows.ts", "sources/backend/domain/", "CLAUDE.md"]
+sources: ["sources/backend/core/src/main/java/com/aiagent/core/search/Op.java", "sources/frontend/src/shared/grid/rows.ts", "sources/backend/domain/", "AGENTS.md"]
 tier: 3
 tags: [knowledge, glossary, vocabulary]
 ---
@@ -94,5 +94,5 @@ tags: [knowledge, glossary, vocabulary]
 ## 관련
 
 - [sys/INDEX.md](./sys/INDEX.md) — 표 34개
-- [CLAUDE.md](../../CLAUDE.md) — 규칙의 원본
+- [AGENTS.md](../../AGENTS.md) — 규칙의 원본
 - [standard](../standard/INDEX.md) — 계약의 상세

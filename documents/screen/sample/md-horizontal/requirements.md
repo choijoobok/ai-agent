@@ -93,7 +93,7 @@
 ### 4-1a. 우 — 품목 **열**
 
 `features/sample/itemColumns.ts` 의 공용 선언을 쓴다 — 표는
-[상하 화면 §4-1a](../md-vertical/requirements.md) 가 갖는다. **여기 옮겨 적지 않는다**(CLAUDE.md §4-3).
+[상하 화면 §4-1a](../md-vertical/requirements.md) 가 갖는다. **여기 옮겨 적지 않는다**(AGENTS.md §4-3).
 
 ### 4-4. 팝업 · 모달 선택 결과 매핑
 

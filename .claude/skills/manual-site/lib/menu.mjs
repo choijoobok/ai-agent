@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url';
 export const REPO = (() => {
   let dir = dirname(fileURLToPath(import.meta.url));
   for (let i = 0; i < 8; i += 1) {
-    if (existsSync(join(dir, 'CLAUDE.md'))) return dir;
+    if (existsSync(join(dir, 'AGENTS.md')) || existsSync(join(dir, 'CLAUDE.md'))) return dir;
     dir = dirname(dir);
   }
   return process.cwd();

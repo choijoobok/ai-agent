@@ -19,7 +19,7 @@ tags: [harness, sensors, guides, automation, classification]
 
 | 타입 | 역할 | 예 |
 |------|------|---|
-| **Guide** | "이렇게 해라" — AI 의 동작을 직접 안내 | CLAUDE.md, INDEX 결정 트리, skill SKILL.md |
+| **Guide** | "이렇게 해라" — AI 의 동작을 직접 안내 | AGENTS.md, INDEX 결정 트리, skill SKILL.md |
 | **Sensor** | "이건 이렇다" — 환경 상태를 관측해 알려줌 | `git status` · 게이트 결과 · `/context` 출력 |
 
 ## 본 프로젝트의 매핑
@@ -28,7 +28,7 @@ tags: [harness, sensors, guides, automation, classification]
 
 | 자산 | 역할 |
 |------|------|
-| `CLAUDE.md` | 최상위 규칙 |
+| `AGENTS.md` | 최상위 규칙 |
 | `aidd-guide/INDEX.md` · 카테고리 INDEX | 라우팅 결정 트리 |
 | `documents/screen/{경로}/requirements.md` | 화면 하나의 구현 지시 |
 | `.claude/skills/*/SKILL.md` | 사용자 트리거 시 발동 |

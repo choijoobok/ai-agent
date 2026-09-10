@@ -4,9 +4,9 @@ title: "훅 카탈로그 — 하나하나가 무엇을 보고 무엇을 말하�
 category: harness
 type: operation
 created: "2026-05-04"
-updated: "2026-09-06"
+updated: "2026-09-10"
 status: active
-sources: [".claude/hooks/", ".claude/settings.json"]
+sources: ["aidd-guide/harness/capabilities.yaml", ".claude/hooks/", ".codex/hooks.json"]
 tier: 2
 tags: [harness, hooks, gate, automation]
 ---
@@ -71,7 +71,7 @@ tags: [harness, hooks, gate, automation]
 
 ## `doc-drift` — 화면 소스 ↔ 화면 문서 경고
 
-**계산한다**: 바뀐 파일 → 페이지 경로 → `documents/screen/{경로}/`(CLAUDE.md §6.5). 사슬은 두 갈래다.
+**계산한다**: 바뀐 파일 → 페이지 경로 → `documents/screen/{경로}/`(AGENTS.md §6.5). 사슬은 두 갈래다.
 
 ```
 sources/frontend/src/features/{기능}/…  ─→ screenRegistry.ts 역인덱스 ─→ 페이지 경로
@@ -101,7 +101,7 @@ sources/frontend/src/features/{기능}/…  ─→ screenRegistry.ts 역인덱�
   주장하는 값이고, 그것까지 태우면 프론트를 건드릴 때마다 같은 이름이 떠 **경고가
   배경음**이 된다.
 - **파일 엔트리에는 그 문턱을 걸지 않는다.** 문턱의 목적이 *너무 넓은 값을 빼는 것* 인데
-  파일은 하나를 가리키므로 넓을 수가 없다. 세그먼트로만 재면 `CLAUDE.md`(하나) ·
+  파일은 하나를 가리키므로 넓을 수가 없다. 세그먼트로만 재면 `AGENTS.md`(하나) ·
   `sources/build.gradle.kts`(둘) · `.claude/hooks/log-mask.patterns`(셋)처럼 **가장 구체적인
   값이 가장 먼저 빠진다** — 실제로 그랬고, 그 엔트리 서른한 개가 아무것도 하지 않았다.
 - **테스트는 통과한다.** 계약을 바꾸지 않는다.
@@ -114,7 +114,7 @@ sources/frontend/src/features/{기능}/…  ─→ screenRegistry.ts 역인덱�
 드리프트가 아니라 그 반대다* 라는 이유였고, **엔트리가 소스 경로뿐일 때는 맞았다.**
 
 역인덱스에는 다른 것들도 있다 — 가이드가 가이드를(`logging.md` → `packages.md`), 문서가
-설정을(`safety/pii.md` → `log-mask.patterns`), 문서가 헌법을(`conventions.md` → `CLAUDE.md`)
+설정을(`safety/pii.md` → `log-mask.patterns`), 문서가 헌법을(`conventions.md` → `AGENTS.md`)
 근거로 적은 값들이다. **그쪽은 반대 방향이 쓸모 있는 방향이다**: 근거가 바뀌면 그것을
 근거로 규약을 적은 문서가 낡는다. 그래서 문구를 둘로 나눴다.
 
@@ -126,7 +126,7 @@ sources/frontend/src/features/{기능}/…  ─→ screenRegistry.ts 역인덱�
 **자기 자신은 뺀다.** `lint.mjs` 가 자기 참조를 막지만 검사보다 훅이 먼저 도는 순간이
 있고, 그때 *이 문서를 고쳤으니 이 문서를 보라* 고 말하면 훅 전체가 우스워진다.
 
-**`CLAUDE.md` 를 고치면 여섯이 뜬다** — 가장 많이 인용되는 파일이라서다. 배경음이 아니라
+**`AGENTS.md` 를 고치면 여섯이 뜬다** — 가장 많이 인용되는 파일이라서다. 배경음이 아니라
 **그 여섯이 헌법을 근거로 규약을 적었다는 사실**이며, 세션에 한 번씩만 뜬다.
 
 **이름을 바꾼 것이라면** 옛 이름에 `@deprecated {@link 새이름}` 을 달아 둔다 — `lint.mjs` 가
@@ -135,7 +135,7 @@ sources/frontend/src/features/{기능}/…  ─→ screenRegistry.ts 역인덱�
 
 ## `log-raw` — 대화 원문 append
 
-**남긴다**: `chat-history/YYYY-MM/raw/YYYY-MM-DD.md` 에 append only(CLAUDE.md §10 · [harness/memory/logs.md](./memory/logs.md)).
+**남긴다**: `chat-history/YYYY-MM/raw/YYYY-MM-DD.md` 에 append only(AGENTS.md §10 · [harness/memory/logs.md](./memory/logs.md)).
 
 | 이벤트 | 무엇을 남기나 | 어디서 얻나 |
 |---|---|---|
@@ -152,7 +152,16 @@ sources/frontend/src/features/{기능}/…  ─→ screenRegistry.ts 역인덱�
 
 > **`let` 선언을 실행 블록 아래에 두지 않는다.** 마스킹 규칙의 memo 를 아래에 두었더니 첫 턴이 TDZ 로 죽었고, **조용히 실패하도록 만들어 둔 탓에 그 죽음이 보이지 않았다.** 조용한 훅일수록 손으로 한 번 돌려 확인한다.
 
-## 컨텍스트 게이지 — 마지막으로 선 훅
+## `git-sync` — 세션 시작에 원격을 당긴다
+
+**깨끗한 트리에서 `startup` 일 때만** `git pull --ff-only` 를 돌린다. 더러우면 당기지 않고 이유와 다음 할 일을 말한다 — 미커밋 변경 위로 남의 커밋을 얹을지는 **사람의 판단**이고(AGENTS.md §5-2), 푸시는 사용자가 말할 때만이다(§9). 판정·실패 정책·fixture 는 [hooks-contract.md](./hooks-contract.md) 가 갖는다.
+
+## 컨텍스트 관리 — 같은 목적, 다른 구현
+
+공통 목적은 **성능이 무너지기 전에 작업 연속성을 보존하는 것**이다. token 관측값과 압축
+lifecycle이 provider마다 다르므로 구현 동일성을 요구하지 않는다.
+
+### Claude Code — 사용량 조기 경보
 
 **자동 압축은 마지막 안전망이지 조기 경보가 아니다.** 관측된 발동 지점이
 `preTokens: 1006239` 로 창의 100% 근처이며, 그때의 압축은 *무엇을 남길지 고를 여지가 없는*
@@ -174,6 +183,14 @@ sources/frontend/src/features/{기능}/…  ─→ screenRegistry.ts 역인덱�
 - **5%p 마다 한 번씩만 말한다.** 넘긴 뒤 매 턴 말하면 그것이 곧 소음이다. 워터마크는
   `os.tmpdir()/ai-agent-context-gauge/{세션}.txt` 이며 `log-raw` · `doc-drift` 와 같은 방식이다.
 - **압축하면 다시 말할 수 있게 워터마크를 낮춘다** — 압축 뒤 또 차오르는 것이 정상이다.
+
+### Codex — 자동 압축 뒤 재주입
+
+Codex에는 수치 경고 훅을 연결하지 않는다. hook의 안정된 입력에 실제 token usage가 없고, 임의
+추정 백분율은 실측처럼 보이기 때문이다. 자동 또는 수동 압축 뒤
+`SessionStart(source=compact)`가 즉시 실행되며 `session-brief`가 프로젝트 상태·현재 단계·하네스
+정합성을 다시 넣는다. 압축 이벤트 자체를 경고로 만들지 않는다 — 정상 lifecycle을 소음으로
+만들 이유가 없다. 상세는 [`providers/codex.md`](./providers/codex.md)가 갖는다.
 
 ## 관련
 

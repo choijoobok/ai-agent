@@ -60,5 +60,5 @@ documents/generated/
 # macOS
 .DS_Store
 
-# AI 대화 기록 — CLAUDE.md §10. 결론은 documents/ 와 커밋 메시지가 갖는다.
+# AI 대화 기록 — AGENTS.md §10. 결론은 documents/ 와 커밋 메시지가 갖는다.
 chat-history/

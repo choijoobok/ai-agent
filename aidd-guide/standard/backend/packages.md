@@ -41,7 +41,7 @@ sources/backend/
 > **왜 헥사고날이 아닌가.** 백오피스 CRUD 가 대부분인 템플릿에서 포트/어댑터를 전면
 > 도입하면 **파일 수가 3배**가 된다. 교체 가능성이 실제로 있는 지점(락·엑셀·스토리지)만
 > 인터페이스로 갈라 `support` 에 두고, 나머지는 계층형으로 단순하게 간다.
-> 이 프로젝트의 제1 목표는 **짧고 공통화된 소스**다(CLAUDE.md §1).
+> 이 프로젝트의 제1 목표는 **짧고 공통화된 소스**다(AGENTS.md §1).
 
 ## 2. 패키지 — `com.aiagent`
 
@@ -197,4 +197,4 @@ POST /api/service/code/saveGroup
 - [persistence.md](./persistence.md) — JPA / QueryDSL / MyBatis 경계
 - [api.md](./api.md) — 경로·응답·액션 판정
 - [INDEX.md](./INDEX.md) — 백엔드 카테고리 진입
-- [CLAUDE.md §8](../../../CLAUDE.md) — 기계가 막는 것 / 사람이 지키는 것
+- [AGENTS.md §8](../../../AGENTS.md) — 기계가 막는 것 / 사람이 지키는 것

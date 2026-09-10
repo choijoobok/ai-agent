@@ -1,5 +1,5 @@
 /**
- * 대화 원문을 `chat-history/` 에 append 한다 — CLAUDE.md §10 · aidd-guide/harness/memory/logs.md.
+ * 대화 원문을 `chat-history/` 에 append 한다 — AGENTS.md §10 · aidd-guide/harness/memory/logs.md.
  *
  * <p><b>아무 말도 하지 않는다.</b> 매 턴 도는 훅이라 한 마디라도 내면 그 말이 모든 턴에
  * 쌓인다. 특히 `UserPromptSubmit` 의 표준 출력은 <b>모델의 문맥에 그대로 들어가므로</b>,
@@ -9,7 +9,8 @@
  * 것이다 — 기록은 작업의 부산물이지 작업이 아니다.
  *
  * <p>두 이벤트가 한 파일을 나눠 쓴다: `UserPromptSubmit` 이 USER 를, `Stop` 이 AI 를.
- * 사람의 말은 훅 입력에 그대로 오지만 AI 의 말은 오지 않아, `Stop` 은 transcript 를 읽는다.
+ * 사람의 말은 훅 입력에 그대로 온다. Claude의 `Stop`은 transcript를 읽고, Codex는 안정된
+ * `last_assistant_message` 필드를 먼저 쓴다.
  */
 
 import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -48,6 +49,16 @@ function appendUser(hook) {
  * 저장소에 두지 않는 것은 워터마크가 기록이 아니라 <i>어디까지 적었나</i> 이기 때문이다.
  */
 function appendAssistant(hook) {
+  const direct = String(hook?.last_assistant_message ?? '').trim();
+  if (direct) {
+    const mark = watermark(hook?.session_id);
+    const id = String(hook?.turn_id ?? direct);
+    if (mark.read() === id) return;
+    mark.write(id);
+    append(`### AI\n\n${mask(direct)}\n\n---\n\n`);
+    return;
+  }
+
   const rows = transcript(hook?.transcript_path);
   if (rows.length === 0) return;
 

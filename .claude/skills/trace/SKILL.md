@@ -3,6 +3,8 @@ name: trace
 description: 추적성 체인을 검사한다. REQ→UC→FEAT→ENT/API/SCR→TC 연결이 끊긴 곳, 고아 산출물, 미실현 요구사항, dangling ID를 찾아 보고하고 추적성 매트릭스를 생성한다.
 ---
 
+<!-- generated_from: aidd-guide/harness/skill-src/trace.md; do not edit -->
+
 # 추적성 검사
 
 인자: 없음(검사만) / `--report`(매트릭스 생성) / `--impact ID`(변경 영향 분석)

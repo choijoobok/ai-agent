@@ -1,0 +1,33 @@
+version: 1
+
+constitution:
+  common: AGENTS.md
+  claude_entry: CLAUDE.md
+  codex_entry: AGENTS.md
+
+skills:
+  source: aidd-guide/harness/skill-src/
+  claude_output: .claude/skills/
+  codex_output: .agents/skills/
+  sync: aidd-guide/harness/runtime/sync-skills.mjs
+
+hooks:
+  contract: aidd-guide/harness/hooks-contract.md
+  shared_policy_engine: .claude/hooks/
+  claude_wiring: .claude/settings.json
+  codex_wiring: .codex/hooks.json
+  pre_file: [guard-write, guard-generated]
+  pre_shell: [guard-bash, guard-commit]
+  post_file: [normalize-encoding, trace-check, doc-drift, guide-drift, skill-sync, harness-doc, commons-doc]
+  session_start: [git-sync, session-brief]   # 순서가 의미다 — 당긴 뒤에 상태를 읽는다
+  conversation: [session-brief, log-raw]
+
+context:
+  common_outcome: continuity
+  claude_strategy: measured-warning
+  codex_strategy: compact-rehydrate
+
+verification:
+  check: aidd-guide/harness/runtime/harness-check.mjs
+  session_start: true
+  ci_required: true

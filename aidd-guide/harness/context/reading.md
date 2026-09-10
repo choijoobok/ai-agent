@@ -14,7 +14,7 @@ tags: [context, seek-read, grep]
 
 > 큰 파일을 통째로 읽으면 **정작 필요한 구간이 나머지에 묻힌다.**
 > 먼저 `Grep` 으로 위치를 찾고, `Read(offset, limit)` 로 그 구간만 읽는다.
-> 이것은 `CLAUDE.md` §3 의 *읽는 방법* 을 상세화한 것이다.
+> 이것은 `AGENTS.md` §3 의 *읽는 방법* 을 상세화한 것이다.
 
 ## 핵심 원칙
 
@@ -79,4 +79,4 @@ Grep(pattern="^\s*(public|private|protected).*\(", path="긴파일.java", -n=tru
 
 - [artifact/screen/overlay/INDEX.md](../../artifact/screen/overlay/INDEX.md) — Overlay 가 우선
 - [harness/context/budget.md](./budget.md) — 토큰 예산
-- [CLAUDE.md §3](../../../CLAUDE.md) — 진입 규칙의 *읽는 방법*
+- [AGENTS.md §3](../../../AGENTS.md) — 진입 규칙의 *읽는 방법*

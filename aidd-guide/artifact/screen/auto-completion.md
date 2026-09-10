@@ -6,7 +6,7 @@ type: operation
 created: 2026-04-30
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/shared/i18n/messageKeys.ts", "sources/frontend/src/shared/grid/types.ts", "CLAUDE.md"]
+sources: ["sources/frontend/src/shared/i18n/messageKeys.ts", "sources/frontend/src/shared/grid/types.ts", "AGENTS.md"]
 tier: 1
 tags: [prompt, auto-completion, rules]
 ---
@@ -108,4 +108,4 @@ tags: [prompt, auto-completion, rules]
 - [screen.md](./screen.md) · [crud.md](./crud.md)
 - [standard/conventions.md](../../standard/conventions.md) — 이름 규칙의 원본
 - [knowledge/sys](../../knowledge/sys/INDEX.md) — 표가 실제로 무엇을 담나
-- [CLAUDE.md §3](../../../CLAUDE.md) — 추정 금지
+- [AGENTS.md §3](../../../AGENTS.md) — 추정 금지

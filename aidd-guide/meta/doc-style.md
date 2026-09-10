@@ -140,7 +140,7 @@ const columns: ColumnDef<UserRow>[] = [
 
 > **예시도 실물의 어휘로 쓴다.** 위 둘은 이 저장소의 규약이다 —
 > API 경로는 `/api/{계층}/{도메인}/{동작}`([standard/backend/api.md](../standard/backend/api.md)),
-> 컬럼 문구는 `MSG` 키다(`CLAUDE.md` §5-6). 남의 프로젝트 어휘로 예시를 쓰면
+> 컬럼 문구는 `MSG` 키다(`AGENTS.md` §5-6). 남의 프로젝트 어휘로 예시를 쓰면
 > **읽는 사람이 그것을 표준으로 베낀다.**
 
 ## 자주 쓰는 ASCII 다이어그램
@@ -159,7 +159,7 @@ const columns: ColumnDef<UserRow>[] = [
 
 ## 응답 게이지 (사용자 응답 시)
 
-응답 마지막 줄에 항상 `CTX [█...] %` 게이지 출력 — 본 문서 외부 규약([CLAUDE.md](../../CLAUDE.md) 참조). **아직 도입 전이다.**
+응답 마지막 줄에 항상 `CTX [█...] %` 게이지 출력 — 본 문서 외부 규약([AGENTS.md](../../AGENTS.md) 참조). **아직 도입 전이다.**
 
 ## 검증 체크리스트
 

@@ -26,7 +26,8 @@
  *       문서. 위의 검사와 <b>방향이 반대</b>다: 저것은 <i>새 이름이 들어왔나</i> 를 보고
  *       이것은 <i>낡은 이름이 남았나</i> 를 본다. 앞만 있으면 표준은 고쳐지고 <b>레시피는
  *       낡은 통로를 계속 가르친다</b>(2026-09-06 에 다섯이 그랬다).</li>
- *   <li><b>맨 텍스트 헌법 인용</b> — `CLAUDE.md §5-8` 이 <b>있는 절과 있는 항목</b>을
+ *   <li><b>맨 텍스트 헌법 인용</b> — `AGENTS.md §5-8` 또는 호환 별칭 `CLAUDE.md`가
+ *       <b>있는 절과 있는 항목</b>을
  *       가리키나. 위의 링크형 집계는 `[x](y.md) §3` 꼴만 보고 <b>절 번호까지만</b> 보는데,
  *       저장소의 헌법 인용은 대부분 맨 텍스트이고 절반이 항목 번호를 단다.</li>
  *   <li><b>`sources:` 메타</b> — `standard/`·`playbook/` 은 비울 수 없고, 저장소 경로처럼
@@ -117,7 +118,10 @@ const VOCAB_SOURCES = [
 const DEPRECATED_ROOTS = ['sources/frontend/src/shared', 'sources/backend'];
 
 /** `sources:` 의 값 중 <b>저장소 경로</b>로 볼 접두. 그 밖은 인용이라 실물이 없다. */
-const REPO_ROOTS = ['sources/', 'aidd-guide/', 'documents/', 'user-guide/', '.claude/', '.github/'];
+const REPO_ROOTS = [
+  'sources/', 'aidd-guide/', 'documents/', 'user-guide/',
+  '.claude/', '.agents/', '.codex/', '.github/',
+];
 
 /**
  * `standard/`·`playbook/` 인데 <b>`sources:` 를 비울 수 있는</b> 곳.
@@ -165,14 +169,15 @@ const LINK_SEC_RE = /\[([^\]]*)\]\(([^)\s]+\.md)\)\s*§\s*([0-9][0-9.\-]*)/g;
 /**
  * `aidd-guide/quality/INDEX.md` §1 — 링크가 아닌 백틱 경로 꼴의 절 인용.
  *
- * <p><b>`CLAUDE.md` 는 뺀다</b> — 헌법 인용은 `§5-3` 처럼 <b>절-항목</b> 꼴이라 제목이
- * `5.3` 인 절을 찾으면 멀쩡한 인용이 위반으로 세어진다. 그 꼴은 {@link CLAUDE_SEC_RE} 가
+ * <p><b>`AGENTS.md`와 `CLAUDE.md`는 뺀다</b> — 헌법 인용은 `§5-3`처럼 <b>절-항목</b>
+ * 꼴이라 제목이 `5.3`인 절을 찾으면 멀쩡한 인용이 위반으로 세어진다. 그 꼴은
+ * {@link CONSTITUTION_SEC_RE}가
  * 항목 번호까지 보고 따로 검사한다.
  */
-const TICK_SEC_RE = /`((?!CLAUDE\.md)[A-Za-z0-9_./-]+\.md)`\s*§\s*([0-9][0-9.\-]*)/g;
+const TICK_SEC_RE = /`((?!(?:AGENTS|CLAUDE)\.md)[A-Za-z0-9_./-]+\.md)`\s*§\s*([0-9][0-9.\-]*)/g;
 
-/** `CLAUDE.md §5-8` — 링크형이든 아니든. 링크 꼬리 `)` 를 건너뛴다. */
-const CLAUDE_SEC_RE = /CLAUDE\.md\s*(?:#[^)]*\)\s*)?§\s*([0-9]+(?:\.[0-9]+)?)(?:-([0-9]+))?/g;
+/** 헌법 정본 또는 Claude 호환 별칭의 `§5-8` — 링크 꼬리 `)`를 건너뛴다. */
+const CONSTITUTION_SEC_RE = /(?:AGENTS|CLAUDE)\.md\s*(?:#[^)]*\)\s*)?§\s*([0-9]+(?:\.[0-9]+)?)(?:-([0-9]+))?/g;
 const HEAD_NUM_RE = /^#{2,4}\s*([0-9][0-9.\-]*)[.\s]/gm;
 const FENCE_RE = /^```[\s\S]*?^```/gm;
 const INLINE_RE = /`[^`\n]*`/g;
@@ -193,7 +198,7 @@ let total = 0;
 
 for (const file of walk(GUIDE).filter((f) => f.endsWith('.md')).sort()) {
   const rel = relative(GUIDE, file).split(sep).join('/');
-  if (rel.startsWith('_meta/')) continue;
+  if (rel.startsWith('_meta/') || rel.startsWith('harness/skill-src/')) continue;
   total += 1;
 
   const category = rel.includes('/') ? rel.split('/')[0] : 'root';
@@ -531,7 +536,10 @@ function countMd(dir) {
   let n = 0;
   for (const name of readdirSync(dir)) {
     const p = join(dir, name);
-    if (statSync(p).isDirectory()) n += countMd(p);
+    if (statSync(p).isDirectory()) {
+      if (resolve(p) === resolve(GUIDE, 'harness/skill-src')) continue;
+      n += countMd(p);
+    }
     else if (name.endsWith('.md')) n += 1;
   }
   return n;
@@ -568,7 +576,7 @@ function checkVocabulary() {
  * (`Anthropic …` · `2026-09-05 재현 실험 …`). 저장소 최상위 폴더로 시작하는 것만 경로로 본다.
  */
 /**
- * <b>맨 텍스트 헌법 인용</b> — `CLAUDE.md §5-8` 이 살아 있는 절과 항목을 가리키나.
+ * <b>맨 텍스트 헌법 인용</b> — `AGENTS.md §5-8`과 호환 별칭이 살아 있는 절과 항목을 가리키나.
  *
  * <p><b>링크형 검사가 이것을 보지 못한다.</b> 저것은 `[x](y.md) §3` 꼴만 보고, 게다가
  * <b>절 번호까지만</b> 본다. 그런데 저장소의 헌법 인용은 백 곳이 넘고 <b>거의 전부가 맨
@@ -582,7 +590,7 @@ function checkVocabulary() {
  * 있을 수 있지만, 헌법은 이 저장소가 소유하므로 <b>가리킨 절은 있어야 한다</b>.
  */
 function checkConstitutionCitations() {
-  const file = join(REPO, 'CLAUDE.md');
+  const file = join(REPO, 'AGENTS.md');
   if (!existsSync(file)) return [];
   const text = readFileSync(file, 'utf8');
 
@@ -598,7 +606,7 @@ function checkConstitutionCitations() {
   }
 
   const out = [];
-  for (const root of ['aidd-guide', 'documents', 'user-guide', '.claude']) {
+  for (const root of ['aidd-guide', 'documents', 'user-guide', '.claude', '.agents', '.codex']) {
     const dir = join(REPO, root);
     if (!existsSync(dir)) continue;
     for (const f of walk(dir)) {
@@ -606,7 +614,7 @@ function checkConstitutionCitations() {
       const issues = [];
       const lines = strip(readFileSync(f, 'utf8')).split('\n');
       for (let i = 0; i < lines.length; i += 1) {
-        for (const [, sec, item] of lines[i].matchAll(CLAUDE_SEC_RE)) {
+        for (const [, sec, item] of lines[i].matchAll(CONSTITUTION_SEC_RE)) {
           if (!items.has(sec)) issues.push(`${i + 1}줄: §${sec} — 헌법에 그런 절이 없다`);
           else if (item && Number(item) > items.get(sec)) {
             issues.push(`${i + 1}줄: §${sec}-${item} — §${sec} 의 항목은 ${items.get(sec)} 개뿐이다`);

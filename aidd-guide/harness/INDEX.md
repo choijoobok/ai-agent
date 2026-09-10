@@ -4,7 +4,7 @@ title: "harness — 훅·스킬·자동화 INDEX"
 category: harness
 type: operation
 created: "2026-04-30"
-updated: "2026-09-06"
+updated: "2026-09-10"
 status: active
 sources: []
 tier: 2
@@ -12,7 +12,7 @@ tags: [harness, hooks, skills, automation, index]
 ---
 # harness — 훅·스킬·자동화
 
-> Claude Code 의 외부 도구 (훅·스킬·플래그) 카탈로그와 **자동화 vs AI 책임** 분리 매트릭스.
+> Claude Code와 Codex가 함께 쓰는 훅·스킬 카탈로그와 **자동화 vs AI 책임** 분리 매트릭스.
 
 ## 진입 조건
 
@@ -27,8 +27,10 @@ tags: [harness, hooks, skills, automation, index]
 | LLM-HRN-001 | [hooks.md](./hooks.md) | 훅 하나하나가 무엇을 보고 무엇을 말하나 |
 | LLM-HRN-008 | [hooks-contract.md](./hooks-contract.md) | 배선 · `lib.mjs` 계약 · 새 훅을 더할 때 |
 | LLM-HRN-002 | [skills.md](./skills.md) | 스킬 둘의 카탈로그 + 작성 규약 · 훅/플레이북 경계 |
+| LLM-HRN-009 | [providers/claude.md](./providers/claude.md) | Claude Code 발견 경로·컨텍스트 경고 |
+| LLM-HRN-010 | [providers/codex.md](./providers/codex.md) | Codex 배선·`apply_patch` adapter·압축 재주입 |
 | LLM-HRN-003 | [automation-matrix.md](./automation-matrix.md) | 자동화 vs AI 책임 매트릭스 |
-| LLM-HRN-005 | [sub-agents.md](./sub-agents.md) | 서브에이전트 위임 정책 — **넷 다 Claude Code 기본 제공**. 프로젝트 정의는 없다 |
+| LLM-HRN-005 | [sub-agents.md](./sub-agents.md) | 서브에이전트 위임 정책 — provider 기능을 쓰되 같은 tree 동시 쓰기는 금지 |
 | LLM-HRN-006 | [tool-curation.md](./tool-curation.md) | 도구 추가 게이트 (MCP·skill·sub-agent 추가 시) |
 | LLM-HRN-007 | [sensors-guides.md](./sensors-guides.md) | Sensors vs Guides 자동화 분류 |
 
@@ -42,7 +44,7 @@ tags: [harness, hooks, skills, automation, index]
 | `guard-commit` | **차단** | 경로 없는 커밋 · `-a` · 큰따옴표 메시지 |
 | `normalize-encoding` | **교정** | BOM · CRLF |
 | `doc-drift` | **경고** | 화면 소스 ↔ 화면 문서(정본 둘) |
-| `log-raw` | **기록** | 대화 원문 → `chat-history/`(CLAUDE.md §10) |
+| `log-raw` | **기록** | 대화 원문 → `chat-history/`(AGENTS.md §10) |
 
 상세: [automation-matrix.md](./automation-matrix.md)
 
@@ -57,6 +59,17 @@ tags: [harness, hooks, skills, automation, index]
 | `/mockup` | 요건서 → `mockup.html` (파생) |
 | `/manual-site` | 메뉴얼 열람 페이지 + 고객사 제출본(`build/manual/`) 생성 |
 | `/trace` · `/redteam` | 추적성 검사 · 적대적 검토 |
+| `/harness-sync` · `$harness-sync` | 공통 명세부터 양쪽 스킬·훅을 추가·복구 |
+
+## 정본과 생성물
+
+`AGENTS.md`가 공통 헌법이고 `AGENTS.md`는 import adapter다. 스킬 원본은 `skill-src/*.md`,
+Claude/Codex 발견 경로의 `SKILL.md`는 생성물이다. 훅 동등성은 `hooks-contract.md`, 기계가 읽는
+경로 매핑은 `capabilities.yaml`이 갖는다. 세션 시작과 CI에서 아래 검사를 실행한다.
+
+```bash
+node aidd-guide/harness/runtime/harness-check.mjs
+```
 
 ## 관련 카테고리
 

@@ -1,5 +1,5 @@
 /**
- * 생성물을 손으로 고치는 것을 막는다 — CLAUDE.md §5-8 · §5-11.
+ * 생성물을 손으로 고치는 것을 막는다 — AGENTS.md §5-8 · §5-11.
  *
  * <p><b>차단이다.</b> 손편집이 성공하면 그 파일은 다음 `generateXxxSeed` 에서 되돌아가고,
  * 그 사이에 `checkSeeds` 가 초록이었다면 <b>고친 사람은 고쳐졌다고 믿는다</b> — 되돌리기
@@ -51,10 +51,16 @@ const input = await readHookInput();
 const path = repoRelative(targetPath(input));
 if (!path) pass();
 
-const task = GENERATED.get(path);
+const skill = path.match(/^\.(?:claude|agents)\/skills\/([^/]+)\/SKILL\.md$/)?.[1];
+const task = skill
+  ? 'node aidd-guide/harness/runtime/sync-skills.mjs --write'
+  : GENERATED.get(path);
 if (!task) pass();
 
 const name = path.slice(path.lastIndexOf('/') + 1);
+const source = skill
+  ? `aidd-guide/harness/skill-src/${skill}.md`
+  : SOURCE_OF.get(name) ?? '생성 태스크의 입력';
 
 /* 시드에만 해당하는 말을 모든 생성물에 붙이지 않는다 — 마크다운 문서에 대고
    *CSV 를 커밋하라* · *changeset 이 checksum 으로 죽는다* 를 말하면 읽는 사람이
@@ -62,9 +68,9 @@ const name = path.slice(path.lastIndexOf('/') + 1);
 const isSeed = path.endsWith('.csv');
 deny(
   [
-    `${path} 는 생성물이다 — 손으로 고치지 않는다(CLAUDE.md §5-8 · §5-11).`,
-    `고칠 곳: ${SOURCE_OF.get(name) ?? '생성 태스크의 입력'}`,
-    `고친 뒤: \`${task}\` 를 돌리고 산출물을 같은 커밋에 담는다(CLAUDE.md §9).`,
+    `${path} 는 생성물이다 — 손으로 고치지 않는다(AGENTS.md §5-8 · §5-11).`,
+    `고칠 곳: ${source}`,
+    `고친 뒤: \`${task}\` 를 돌리고 산출물을 같은 커밋에 담는다(AGENTS.md §9).`,
     ...(isSeed
       ? ['이미 적재된 changeset 은 고치지 않는다 — 고치면 남의 로컬이 checksum 으로 죽는다.']
       : []),

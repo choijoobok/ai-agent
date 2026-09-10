@@ -3,9 +3,11 @@ name: menu-doc
 description: 메뉴 화면의 문서(requirements.md · manual.md)를 시작하거나, 소스와 대조해 현행화하거나, 전체 화면의 결손 현황을 센다. 새 화면 착수 전 요건서를 쓸 때, 화면 소스를 고친 뒤 문서를 맞출 때, "화면 문서" · "요건서" · "메뉴얼" 을 만들거나 점검하라는 요청에 쓴다. 목업은 /mockup 이 요건서에서 생성한다.
 ---
 
+<!-- generated_from: aidd-guide/harness/skill-src/menu-doc.md; do not edit -->
+
 # 화면 문서 — 시작 · 현행화 · 점검
 
-규칙은 [`CLAUDE.md` §6](../../../CLAUDE.md) 가, **형식은 [`aidd-guide/artifact/template/`](../../../aidd-guide/artifact/template) 의 머리 주석이** 갖는다.
+규칙은 [`AGENTS.md` §6](../../../AGENTS.md) 가, **형식은 [`aidd-guide/artifact/template/`](../../../aidd-guide/artifact/template) 의 머리 주석이** 갖는다.
 **이 스킬은 형식을 재정의하지 않는다** — 순서와 대조 방법만 정한다.
 
 인자로 화면을 받는다: 페이지 경로(`/user`) · 메뉴코드(`USER_MGMT`) · 기능 폴더(`user`) 아무거나.
@@ -38,7 +40,7 @@ node .claude/skills/menu-doc/screens.mjs
    - 해당 없는 절은 **"없음" 이라고 쓴다.** 섹션을 지우지 않는다.
    - **§9 테스트 케이스는 비우지 않는다.** 여기가 목업의 뼈대이고 테스트 코드의 입력이다.
      **되면 안 되는 것**을 반드시 넣는다 — 빠지면 케이스가 *돌아가는가* 만 묻는다.
-3. **모르는 것을 추정으로 메우지 않는다** — §10 미결에 남기고 사용자에게 묻는다(`CLAUDE.md` §3).
+3. **모르는 것을 추정으로 메우지 않는다** — §10 미결에 남기고 사용자에게 묻는다(`AGENTS.md` §3).
 4. **`/mockup` 으로 목업을 만든다** — 요건서에서 생성된다. 승인은 *요건서와 목업을 함께* 보는 판단이다.
 5. **사용자 검토를 받는다.** 승인 뒤에 구현으로 간다.
 6. 구현과 **동시에** `manual.md` 를 만든다.

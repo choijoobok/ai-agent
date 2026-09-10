@@ -16,7 +16,7 @@ tags: [scope, reduction, verification-cost, gate]
 > **왜 절차가 무거운가는 [verification-cost.md](11-verification-cost.md) 가 갖는다** —
 > DORA J-커브와 verification tax. 여기는 **"줄이자" 는 요구에 어떻게 답하는가** 하나다.
 >
-> **이 문서만 따로 있는 이유**: `CLAUDE.md` §5-12 가 여기를 직접 가리킨다. 요구가 들어오는
+> **이 문서만 따로 있는 이유**: `AGENTS.md` §5-12 가 여기를 직접 가리킨다. 요구가 들어오는
 > 순간 읽혀야 하는 문서이므로, 긴 문서의 한 절로 두면 그 링크가 중간을 가리키게 되고
 > **중간을 가리키는 링크는 읽히지 않는다.**
 

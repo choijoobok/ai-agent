@@ -21,7 +21,7 @@ tags: [frontend, grid, column, searchform, vocabulary, reference]
 > **여기 없는 이름은 없는 것이다.** 선언 키를 추정해 새로 만들지 않는다 —
 > 필요한 것이 없으면 `shared/` 를 고치고 이 표를 함께 고친다.
 >
-> **기본값의 정본은 소스다**(`CLAUDE.md` §2). 아래 *없으면* 칸이 소스와 어긋나면
+> **기본값의 정본은 소스다**(`AGENTS.md` §2). 아래 *없으면* 칸이 소스와 어긋나면
 > 소스가 이기고 이 표를 고친다 — `lint.mjs` 가 키 누락을 센다(§6).
 
 ## 1. `ColumnDef` — 36 키
@@ -111,7 +111,7 @@ api: {
 }
 ```
 
-- **`url` 은 `endpoints.ts` 의 값을 넣는다** — 리터럴을 적으면 ESLint 가 막는다(`CLAUDE.md` §8).
+- **`url` 은 `endpoints.ts` 의 값을 넣는다** — 리터럴을 적으면 ESLint 가 막는다(`AGENTS.md` §8).
   그 값에 **`/api` 를 붙이지 않는다** — 배럴이 붙인다([http.md](./http.md)).
 - `read` 가 없으면 **전량 모드**다 — 조회 버튼이 서지 않는다.
 - `locateFieldErrors` 는 서버 필드 오류를 셀에 꽂는 자리다.

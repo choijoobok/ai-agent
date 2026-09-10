@@ -13,14 +13,14 @@ tags: [evals, regression, before-after]
 
 # 회귀 검출 절차
 
-> 시스템 프롬프트·CLAUDE.md·INDEX 결정 트리·모델 버전을 변경했을 때 **기존 골든셋 통과율이 떨어지지 않았는가** 확인.
+> 시스템 프롬프트·AGENTS.md·INDEX 결정 트리·모델 버전을 변경했을 때 **기존 골든셋 통과율이 떨어지지 않았는가** 확인.
 
 ## 트리거 (반드시 회귀 실행)
 
 | 변경 | 회귀 범위 |
 |------|----------|
 | `aidd-guide/INDEX.md` 결정 트리 변경 | routing 골든셋 전체 |
-| `CLAUDE.md` 수정 | routing + safety |
+| `AGENTS.md` 수정 | routing + safety |
 | 카테고리 추가/이동/삭제 | routing 전체 + 영향 카테고리 generation |
 | 모델 교체 (Opus 4.6 → 4.7 등) | 3종 전체 |
 | 시스템 프롬프트 (skill SKILL.md 등) 수정 | 영향 받는 카테고리만 |

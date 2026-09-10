@@ -3,6 +3,8 @@ name: mockup
 description: 화면 목업(mockup.html)을 요건서에서 생성하거나, 있는 목업이 요건서·메뉴얼과 어긋나지 않는지 검사한다. 요건서를 고친 뒤 목업을 맞출 때, 새 화면의 목업을 처음 만들 때, "목업을 만들어" · "목업 다시 그려" · "목업 검사" 요청에 쓴다. 목업은 파생물이라 형상 관리에 없으므로 /manual-site 를 돌리기 전에 이 스킬로 먼저 만든다.
 ---
 
+<!-- generated_from: aidd-guide/harness/skill-src/mockup.md; do not edit -->
+
 # 목업 — 요건서에서 생성한다
 
 **목업은 파생물이다.** 결정도 테스트 케이스도 [`requirements.md`](../../../aidd-guide/artifact/template/02-requirements.md) 가 갖고,
@@ -27,7 +29,7 @@ node .claude/skills/mockup/scaffold.mjs --list
 
 - 화면은 폴더 이름으로 받는다 — `log/access` · `access` · `user`.
   **맨 앞에 `/` 를 붙이지 않는다** — Git Bash 가 그것을 윈도 경로로 바꿔 버린다.
-- **요건서가 없는 화면은 목업을 만들지 않는다.** 그 순서는 거꾸로다(`CLAUDE.md` §6 ①→②).
+- **요건서가 없는 화면은 목업을 만들지 않는다.** 그 순서는 거꾸로다(`AGENTS.md` §6 ①→②).
 
 ---
 
@@ -105,6 +107,6 @@ for s in $(node .claude/skills/mockup/scaffold.mjs --list | sed -n '2,$p' | awk 
 
 ## 넘어가지 못하는 조건
 
-- **요건서 없이 목업을 만들지 않는다**(`CLAUDE.md` §6 — ①이 없으면 ②를 시작하지 않는다).
+- **요건서 없이 목업을 만들지 않는다**(`AGENTS.md` §6 — ①이 없으면 ②를 시작하지 않는다).
 - **목업에만 있는 규칙을 남기지 않는다.** 그림을 그리다 결정이 필요해지면 **요건서에 적고 나서** 그린다.
 - **`manual.html` 을 만들지 않는다** — `/manual-site` 의 몫이다.

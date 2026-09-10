@@ -5,7 +5,7 @@ category: standard
 type: operation
 class: none
 created: 2026-09-07
-updated: 2026-09-07
+updated: 2026-09-10
 status: active
 sources: ["sources/frontend/src/", "sources/backend/core/", "sources/backend/support/"]
 tier: 1
@@ -15,7 +15,7 @@ tags: [standard, registry, shared, commons]
 # 공통물 목록 — 이미 있는 것
 
 > **생성물이다. 손으로 고치지 않는다** — `node .claude/hooks/commons-doc.mjs --write` 가
-> `shared/` · `core/` · `support/` 의 실물에서 만든다(CLAUDE.md §5-11).
+> `shared/` · `core/` · `support/` 의 실물에서 만든다(AGENTS.md §5-11).
 > `guard-generated` 가 손편집을 막는다.
 
 **목록에 없는 공통물은 없는 것과 같다** — 다음 사람이 찾지 못해 또 만든다
@@ -77,7 +77,7 @@ tags: [standard, registry, shared, commons]
 
 **이 절이 비어 있지 않으면 둘 중 하나다.** ① 이름이 바뀌었는데 원장을 안 고쳤다 —
 그러면 **같은 공통물이 ID 둘**을 갖는다. ② 정말 지웠다 — 그러면 그것을 설명하던 문서가
-아직 있는지 본다(CLAUDE.md §4-4). **번호는 어느 쪽이든 비워 둔 채로 남는다.**
+아직 있는지 본다(AGENTS.md §4-4). **번호는 어느 쪽이든 비워 둔 채로 남는다.**
 
 ## 어디를 읽나가 빈 것 — 0 / 33
 

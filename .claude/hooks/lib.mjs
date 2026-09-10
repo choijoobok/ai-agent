@@ -2,7 +2,7 @@
  * 훅들이 함께 쓰는 것 — 표준 입력 · 저장소 뿌리 · 프로젝트 상태 · 결과 내보내기.
  *
  * <p><b>의존성이 없다. `node` 하나로 돈다</b> — 폐쇄망에서 `npm i` 없이 훅이 서야 하고
- * (CLAUDE.md §1), 훅이 자기 의존성을 갖는 순간 그 설치가 새 사람의 첫 관문이 된다.
+ * (AGENTS.md §1), 훅이 자기 의존성을 갖는 순간 그 설치가 새 사람의 첫 관문이 된다.
  * 두 저장소에서 합칠 때 <b>런타임을 Node 하나로 고른 이유</b>가 이것이다 —
  * [`harness/hooks-contract.md`](../../aidd-guide/harness/hooks-contract.md).
  *
@@ -12,10 +12,28 @@
 
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { dirname, isAbsolute, join, resolve, relative, sep } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+let embeddedInput = null;
+let embeddedRun = 0;
+
+/**
+ * chain 안에서 `pass`·`warn`·`deny` 가 결과를 들고 빠져나오는 방법.
+ *
+ * <p><b>그래서 셋을 `try` 안에 두지 않는다</b> — 바로 옆 `catch` 가 이것을 삼키면
+ * 훅은 <i>일은 하고 아무 말도 안 하는</i> 상태가 된다(hooks-contract.md).
+ */
+class HookExit extends Error {
+  constructor(output) {
+    super('embedded hook completed');
+    this.name = 'HookExit';
+    this.output = output;
+  }
+}
 
 /** 훅 입력 — 표준 입력의 JSON 한 덩이. 못 읽으면 빈 객체다(훅이 조용히 통과한다). */
 export async function readHookInput() {
+  if (embeddedInput !== null) return embeddedInput;
   const chunks = [];
   for await (const chunk of process.stdin) chunks.push(chunk);
   try {
@@ -34,7 +52,7 @@ export async function readHookInput() {
 export const REPO = (() => {
   let dir = dirname(fileURLToPath(import.meta.url));
   for (let i = 0; i < 6; i += 1) {
-    if (existsSync(join(dir, 'CLAUDE.md'))) return dir;
+    if (existsSync(join(dir, 'AGENTS.md')) || existsSync(join(dir, 'CLAUDE.md'))) return dir;
     dir = dirname(dir);
   }
   return process.cwd();
@@ -80,7 +98,7 @@ export function readText(path) {
  * <b>어느 기능에도 속하지 않는 층</b> — `@feat` 태그를 묻지 않는다(T10).
  *
  * <p>여기 있는 코드의 존재 이유가 <b>여러 기능이 함께 쓴다</b>는 것이다. 공통물은 두 번째
- * 사용에 올라오므로(CLAUDE.md §8) <b>정의상 둘 이상의 기능</b>에 속하고, 그중 하나를 골라
+ * 사용에 올라오므로(AGENTS.md §8) <b>정의상 둘 이상의 기능</b>에 속하고, 그중 하나를 골라
  * 적으면 나머지와의 연결이 조용히 사라진다. 프레임워크 최하층(`core`)·설정(`support`·
  * `bootstrap`)·셸(`layouts`·`app`)은 아예 어느 기능도 아니다.
  *
@@ -152,7 +170,7 @@ export function gateStatus(state, key) {
 
 /** 통과 — 아무 말도 하지 않는다. */
 export function pass() {
-  process.exit(0);
+  finish(null);
 }
 
 /**
@@ -163,16 +181,13 @@ export function pass() {
  * 꺼진 훅은 없는 훅이다.
  */
 export function deny(reason) {
-  process.stdout.write(
-    JSON.stringify({
-      hookSpecificOutput: {
-        hookEventName: 'PreToolUse',
-        permissionDecision: 'deny',
-        permissionDecisionReason: reason,
-      },
-    }),
-  );
-  process.exit(0);
+  finish({
+    hookSpecificOutput: {
+      hookEventName: 'PreToolUse',
+      permissionDecision: 'deny',
+      permissionDecisionReason: reason,
+    },
+  });
 }
 
 /**
@@ -182,18 +197,37 @@ export function deny(reason) {
  * <i>사람이 봤는데 AI 는 모르는</i> 상태를 만들지 않기 위해서다.
  */
 export function warn(message) {
-  process.stdout.write(
-    JSON.stringify({
-      systemMessage: message,
-      hookSpecificOutput: { hookEventName: 'PostToolUse', additionalContext: message },
-    }),
-  );
-  process.exit(0);
+  finish({
+    systemMessage: message,
+    hookSpecificOutput: { hookEventName: 'PostToolUse', additionalContext: message },
+  });
 }
 
 /** 세션 시작에 문맥을 넣는다 — 표준 출력이 그대로 모델의 문맥이 된다. */
 export function inject(text) {
-  process.stdout.write(text);
+  finish(text);
+}
+
+/** 같은 프로세스에서 기존 top-level 훅을 한 번 실행한다 — 직렬 chain 전용. */
+export async function runEmbeddedHook(scriptPath, input) {
+  embeddedInput = input;
+  try {
+    const url = `${pathToFileURL(scriptPath).href}?embedded=${embeddedRun++}`;
+    await import(url);
+    return null;
+  } catch (error) {
+    if (error instanceof HookExit) return error.output;
+    throw error;
+  } finally {
+    embeddedInput = null;
+  }
+}
+
+function finish(output) {
+  if (embeddedInput !== null) throw new HookExit(output);
+  if (output !== null && output !== undefined) {
+    process.stdout.write(typeof output === 'string' ? output : JSON.stringify(output));
+  }
   process.exit(0);
 }
 
@@ -364,9 +398,9 @@ function unquote(s) {
  *
  * <p><b>파일 엔트리에는 걸지 않는다</b>({@link namesFile}). 문턱의 목적은 <i>너무 넓은
  * 값을 빼는 것</i> 인데 파일은 하나를 가리키므로 넓을 수가 없다 — 세그먼트로만 재면
- * `CLAUDE.md`(하나) · `sources/build.gradle.kts`(둘) · `.claude/hooks/log-mask.patterns`(셋)
+ * `AGENTS.md`(하나) · `sources/build.gradle.kts`(둘) · `.claude/hooks/log-mask.patterns`(셋)
  * 처럼 <b>가장 구체적인 값이 가장 먼저 빠진다.</b> 실제로 그랬다: 문서 다섯이
- * `"CLAUDE.md"` 를, 둘이 빌드 파일을, 둘이 마스킹 패턴을 적어 두었는데 역인덱스에 하나도
+ * `"AGENTS.md"` 를, 둘이 빌드 파일을, 둘이 마스킹 패턴을 적어 두었는데 역인덱스에 하나도
  * 오르지 않아 <b>그 파일을 고쳐도 아무 문서도 지목되지 않았다.</b>
  */
 const MIN_SEGMENTS = 4;
@@ -377,7 +411,16 @@ const MIN_SEGMENTS = 4;
  * <p><b>같은 목록이 `aidd-guide/meta/_meta/lint.mjs` 에도 있다</b> — 저쪽은 문서 게이트고
  * 이쪽은 훅이라 서로 import 하지 않는다. <b>하나를 고치면 다른 하나도 고친다.</b>
  */
-const REPO_ROOTS = ['sources/', 'aidd-guide/', 'documents/', 'user-guide/', '.claude/', '.github/'];
+const REPO_ROOTS = [
+  'sources/',
+  'aidd-guide/',
+  'documents/',
+  'user-guide/',
+  '.claude/',
+  '.agents/',
+  '.codex/',
+  '.github/',
+];
 
 /** 파일을 가리키는 엔트리인가 — 마지막 마디에 확장자가 있으면 파일이다. */
 function namesFile(entry) {
@@ -388,8 +431,8 @@ function namesFile(entry) {
 /**
  * 저장소 안의 경로인가 — 접두 목록이거나 <b>루트에 바로 있는 파일</b>.
  *
- * <p>{@link REPO_ROOTS} 가 폴더 접두만 담아서 `CLAUDE.md` · `.gitignore` 는 접두에 걸리지
- * 않는다. 문서 다섯이 `"CLAUDE.md"` 를 적어 두었고 <b>그 값은 역인덱스에 오른 적이
+ * <p>{@link REPO_ROOTS} 가 폴더 접두만 담아서 `AGENTS.md` · `.gitignore` 는 접두에 걸리지
+ * 않는다. 문서 다섯이 `"AGENTS.md"` 를 적어 두었고 <b>그 값은 역인덱스에 오른 적이
  * 없다</b> — 헌법을 고쳐도 그것을 근거로 적은 문서가 지목되지 않았다.
  */
 function isRepoEntry(entry) {
@@ -416,7 +459,7 @@ export function sourceEntryMatches(entry, path) {
  *
  * <p><b>둘이 쓴다</b> — `guide-drift`(소스를 고쳤을 때 대조할 문서)와 `commons-doc`(공통물
  * 목록의 「어디를 읽나」 칸). 매처를 양쪽에 두면 갈리고, 갈리면 <b>훅과 목록이 서로 다른
- * 사실을 말한다</b>(CLAUDE.md §4-3).
+ * 사실을 말한다</b>(AGENTS.md §4-3).
  *
  * @returns {{doc: string, title: string, entries: string[]}[]}
  */

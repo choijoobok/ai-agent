@@ -7,9 +7,9 @@
           {
             "type": "command",
             "command": "node",
-            "args": [".claude/hooks/session-brief.mjs"],
-            "timeout": 15,
-            "statusMessage": "프로젝트 상태 확인"
+            "args": [".claude/hooks/session-start.mjs"],
+            "timeout": 60,
+            "statusMessage": "원격 동기화·프로젝트 상태 확인"
           }
         ]
       }
@@ -21,16 +21,9 @@
           {
             "type": "command",
             "command": "node",
-            "args": [".claude/hooks/guard-write.mjs"],
-            "timeout": 15,
+            "args": [".claude/hooks/pre-write.mjs"],
+            "timeout": 45,
             "statusMessage": "게이트·산출물 지도 확인"
-          },
-          {
-            "type": "command",
-            "command": "node",
-            "args": [".claude/hooks/guard-generated.mjs"],
-            "timeout": 10,
-            "statusMessage": "생성물 보호 확인"
           }
         ]
       },
@@ -61,44 +54,9 @@
           {
             "type": "command",
             "command": "node",
-            "args": [".claude/hooks/normalize-encoding.mjs"],
-            "timeout": 10,
-            "statusMessage": "인코딩 정리"
-          },
-          {
-            "type": "command",
-            "command": "node",
-            "args": [".claude/hooks/trace-check.mjs"],
-            "timeout": 30,
-            "statusMessage": "추적성 검사"
-          },
-          {
-            "type": "command",
-            "command": "node",
-            "args": [".claude/hooks/doc-drift.mjs"],
-            "timeout": 15,
-            "statusMessage": "문서 셋 대조"
-          },
-          {
-            "type": "command",
-            "command": "node",
-            "args": [".claude/hooks/guide-drift.mjs"],
-            "timeout": 15,
-            "statusMessage": "가이드 대조"
-          },
-          {
-            "type": "command",
-            "command": "node",
-            "args": [".claude/hooks/harness-doc.mjs"],
-            "timeout": 10,
-            "statusMessage": "하네스 문서 현행화"
-          },
-          {
-            "type": "command",
-            "command": "node",
-            "args": [".claude/hooks/commons-doc.mjs"],
-            "timeout": 15,
-            "statusMessage": "공통물 목록 현행화"
+            "args": [".claude/hooks/post-write.mjs"],
+            "timeout": 90,
+            "statusMessage": "인코딩·추적성·문서 현행화"
           }
         ]
       }
@@ -140,6 +98,7 @@
   "permissions": {
     "allow": [
       "Bash(node .claude/hooks/*)",
+      "Bash(node aidd-guide/harness/runtime/*)",
       "Bash(node aidd-guide/meta/_meta/lint.mjs*)",
       "Bash(git status)",
       "Bash(git diff:*)",

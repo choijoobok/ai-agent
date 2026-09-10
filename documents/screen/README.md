@@ -2,7 +2,7 @@
 
 화면 하나 = **정본 둘 + 파생 둘**.
 
-**이 문서가 정본이다** — 폴더 규칙 · 셋의 역할 · 현행화 시점을 여기가 갖는다(`CLAUDE.md` §6 이
+**이 문서가 정본이다** — 폴더 규칙 · 셋의 역할 · 현행화 시점을 여기가 갖는다(`AGENTS.md` §6 이
 여기를 가리킨다). 곁의 둘은 다른 것을 갖는다: **형식**은
 [`aidd-guide/artifact/template/`](../../aidd-guide/artifact/template/README.md), **순서**(①~⑥)는
 [`aidd-guide/artifact/screen/screen.md`](../../aidd-guide/artifact/screen/screen.md).
@@ -17,7 +17,7 @@ documents/screen/{페이지경로}/
     impl.md              (선택) 구현 기록 — 만든 파일과 요건서 대비 이탈
 ```
 
-**파생물은 형상 관리에 없다**(`CLAUDE.md` §4-5). 새로 클론한 트리에 목업과 메뉴얼 HTML 이
+**파생물은 형상 관리에 없다**(`AGENTS.md` §4-5). 새로 클론한 트리에 목업과 메뉴얼 HTML 이
 **없는 것이 정상**이고, 필요할 때 만든다. 결손이 아니다.
 
 그래서 **`manual.md` 의 `./mockup.html#…` 링크는 클론 상태에서 열리지 않는다** — 깨진
@@ -47,7 +47,7 @@ cp aidd-guide/artifact/template/02-requirements.md documents/screen/{페이지�
 
 1. `requirements.md` 를 쓰고 **`/mockup` 으로 목업을 만들어 함께 사용자 승인을 받는다.**
    승인 전 BE/FE/시드 착수 금지 — 승인은 *둘을 함께* 보는 판단이라, 요건서만 승인받고
-   목업에서 뒤집히면 그 승인이 무효가 된다(`CLAUDE.md` §6.3 ①·②·③).
+   목업에서 뒤집히면 그 승인이 무효가 된다(`AGENTS.md` §6.3 ①·②·③).
 2. 승인 뒤 구현하면서 `manual.md` 를 만든다(같은 §6.3 ④). **화면이 서기 전의 사용법은
    추측이고, 추측한 메뉴얼은 고칠 곳을 알려 주지 않는다.**
 3. `manual.html` 은 `/manual-site` 가 만든다 — `node .claude/skills/manual-site/build.mjs`.

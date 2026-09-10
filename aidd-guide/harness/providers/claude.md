@@ -1,0 +1,60 @@
+---
+id: LLM-HRN-009
+title: "Claude Code 하네스 어댑터"
+category: harness
+type: operation
+created: "2026-09-10"
+updated: "2026-09-10"
+status: active
+sources: ["CLAUDE.md", ".claude/settings.json", ".claude/hooks/"]
+tier: 2
+tags: [harness, claude, adapter]
+---
+
+# Claude Code 하네스 어댑터
+
+> 공통 의미는 [`hooks-contract.md`](../hooks-contract.md)가 갖는다. 여기는 Claude Code에서만
+> 달라지는 발견 경로·입출력·검증 방법이다.
+
+## 진입
+
+- 공통 헌법: `CLAUDE.md` 첫 줄의 `@AGENTS.md` import
+- 스킬 발견 경로: `.claude/skills/{name}/SKILL.md`
+- 훅 배선: `.claude/settings.json`
+- 정책 엔진: `.claude/hooks/*.mjs`
+
+## 스킬
+
+공통 원본은 `aidd-guide/harness/skill-src/*.md`다. Claude용 `SKILL.md`는 생성물이므로 직접
+고치지 않는다.
+
+```bash
+node aidd-guide/harness/runtime/sync-skills.mjs --write
+```
+
+직접 호출 문법은 `/스킬명`이다. 스킬 옆의 실행 스크립트는 기존 경로를 유지한다. 이 파일들은
+Node 정책 엔진이며 Claude API에 묶이지 않았으므로 Codex도 같은 실물을 실행할 수 있다.
+
+## 훅
+
+Claude의 Write/Edit 계열 입력은 `tool_input.file_path`와 `content`/`new_string`을 사용한다.
+같은 matcher group의 실행 순서에 기대지 않고, 순서가 필요한 검사는 한 chain 안에서 실행한다.
+
+`SessionStart`는 matcher 없이 `session-start.mjs` 하나를 걸고, **작업 중간(`resume`·`clear`·
+`compact`)인지는 훅 입력의 `source`로 판정한다** — matcher 문자열이 어긋나면 브리핑 자체가
+사라지는 반면, `source` 판정은 틀려도 브리핑은 남기 때문이다. Codex는 같은 결과를 matcher 분리로
+얻는다(`providers/codex.md`).
+
+컨텍스트만 공통 구현에서 제외한다. `context-gauge.mjs`는 Claude transcript의 실제 usage를
+측정해 60%부터 5%p 간격으로 `/compact`를 권한다. 분모·입력 형식이 바뀌면 Claude 쪽에서
+재측정하고 이 문서와 훅을 함께 고친다.
+
+## 확인
+
+```bash
+node aidd-guide/harness/runtime/harness-check.mjs
+node .claude/hooks/harness-doc.mjs --check
+```
+
+새로 clone한 환경에서는 Claude Code가 프로젝트 훅 실행 권한을 요청할 수 있다. 배선을 바꾼 뒤
+실제 Claude 세션에서 SessionStart와 대표 차단·경고 fixture를 한 번 확인한다.

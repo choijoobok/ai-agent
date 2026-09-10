@@ -28,7 +28,7 @@ tags: [observability, routing, accuracy, golden-set]
 | 3 | "공통코드 그룹을 어떻게 등록하지" | `knowledge/sys` | 템플릿이 이미 준 기능의 동작·설정 |
 | 4 | "프롬프트 품질을 어떻게 측정해야 해" | `quality/evals` | 평가 프레임워크 |
 | 5 | "조회 서비스에 트랜잭션 어떻게 걸지" | `standard/backend` | 서비스 이름·트랜잭션 규약 |
-| 6 | "이 프로젝트 헌법이 뭐야" | `CLAUDE.md` | 헌법 직접 명시 (가이드 안이 아니다) |
+| 6 | "이 프로젝트 헌법이 뭐야" | `AGENTS.md` | 헌법 직접 명시 (가이드 안이 아니다) |
 | 7 | "P2 를 닫으려면 무엇이 필요해" | `process` | 게이트의 Exit Criteria |
 | 8 | "민감한 데이터 다루는 규약" | `standard/safety` | PII·secrets |
 | 9 | "요건 정의서에 무엇을 적어야 해" | `artifact/screen` | 산출물의 서식과 묻는 절차 |

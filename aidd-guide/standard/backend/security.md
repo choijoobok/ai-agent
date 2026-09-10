@@ -125,7 +125,7 @@ API 하나를 인가하는 데 필요한 사실은 둘이고 **성격이 달라 
 ```
 
 **선언하지 않고 부르면 403, 선언만 하고 안 부르면 접근 범위가 조용히 넓어진다**
-(CLAUDE.md §8). 호출 URL 은 `features/{도메인}/api/endpoints.ts` 에만 둔다.
+(AGENTS.md §8). 호출 URL 은 `features/{도메인}/api/endpoints.ts` 에만 둔다.
 
 ## 5. 접근 제어 체인 — 일곱
 

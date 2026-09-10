@@ -78,7 +78,7 @@ tags: [playbook, recipe, index]
 ## 화면 하나 — 순서는 하나다
 
 ```
-0. requirements.md · mockup.html   함께 쓰고 **사용자 승인을 받는다** (CLAUDE.md §6.3 ①②③)
+0. requirements.md · mockup.html   함께 쓰고 **사용자 승인을 받는다** (AGENTS.md §6.3 ①②③)
                                    ─── 승인 전에는 아래를 하나도 시작하지 않는다 ───
 1. changeset.md             표가 없으면 만든다 · 코드·문구를 넣는다
 2. 백엔드                   entity → repository → Spec → QueryService/Service → Controller
@@ -87,7 +87,7 @@ tags: [playbook, recipe, index]
 5. screenRegistry · menu-tree.yaml   경로 하나를 양쪽에 — 한쪽만이면 시드 생성이 막힌다
 6. ./gradlew generateSeeds  생성물을 **소스와 같은 커밋**에
 7. manual.md                화면이 선 뒤에 쓴다 — 그 전의 사용법은 추측이다
-8. 게이트                   CLAUDE.md §7 — 초록을 보지 않은 변경은 완료가 아니다
+8. 게이트                   AGENTS.md §7 — 초록을 보지 않은 변경은 완료가 아니다
 ```
 
 **0 과 7 은 건너뛸 수 없다.** 나머지는 순서를 바꿔도 결과가 같지만, 요건서 없이 시작한
@@ -110,5 +110,5 @@ tags: [playbook, recipe, index]
 ## 관련
 
 - [INDEX](../INDEX.md) — 마스터
-- [CLAUDE.md §3 · §6](../../CLAUDE.md) — 진입 카테고리와 화면 문서 게이트
+- [AGENTS.md §3 · §6](../../AGENTS.md) — 진입 카테고리와 화면 문서 게이트
 - [artifact/screen](../artifact/screen/INDEX.md) — 화면 프롬프트(이 레시피들을 가리킨다)

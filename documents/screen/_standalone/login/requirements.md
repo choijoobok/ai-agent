@@ -12,7 +12,7 @@
 > 로그인도 **재설정 3단계도 서 있다** — `sources/frontend/src/features/auth/`(`LoginPage` ·
 > `PasswordResetFlow` · `passwordRules`) · `AuthController` · `PasswordResetService`.
 >
-> **⑤ 사용자 테스트가 남았다.** 게이트 초록이 그것을 갈음하지 않는다(CLAUDE.md §6.3).
+> **⑤ 사용자 테스트가 남았다.** 게이트 초록이 그것을 갈음하지 않는다(AGENTS.md §6.3).
 
 ---
 

@@ -13,9 +13,9 @@ tags: [index, routing, master, decision-tree]
 
 # aidd-guide — 마스터 진입점
 
-> **헌법은 [`CLAUDE.md`](../CLAUDE.md) 가 갖는다.** 여기는 **AI 가 읽는 규칙**의 단일 원본이다 —
+> **공통 헌법은 [`AGENTS.md`](../AGENTS.md)가 갖는다.** 여기는 **AI가 읽는 규칙**의 단일 원본이다 —
 > *프로젝트를 어떻게 굴리나*(프로세스)와 *코드를 어떻게 쓰나*(개발 표준)가 한 지붕 아래 있다.
-> `CLAUDE.md` §3 이 요청 종류별로 이 INDEX 의 어느 카테고리로 들어갈지 정한다.
+> `AGENTS.md` §3이 요청 종류별로 이 INDEX의 어느 카테고리로 들어갈지 정한다.
 >
 > **단일 입구 정책**: 한 사실은 한 곳에서만 정의. 다른 카테고리는 링크.
 > **사람이 읽는 안내는 [`user-guide/`](../user-guide/INDEX.md) 다** — 같은 주제라도 *지킬 규칙* 은
@@ -56,7 +56,7 @@ ai-agent/
 
 **둘의 접합부가 `artifact/` 다.** 프로세스가 *무엇을 만들라* 고 말하고, 산출물 지도가
 *어디에 어떤 형식으로* 를 말하며, 개발 표준이 *그것을 코드로 어떻게 옮기나* 를 말한다.
-→ [`CLAUDE.md`](../CLAUDE.md)
+→ [`AGENTS.md`](../AGENTS.md)
 
 ## 작업 시작 결정 트리 (Routing-as-Code)
 
@@ -64,7 +64,7 @@ ai-agent/
 질문/요청 도착
   ↓
 ① 무엇을 하려는가?
-  ├─ "규칙·헌법·금지·우선순위"                → CLAUDE.md (여기 아님)
+  ├─ "규칙·헌법·금지·우선순위"                → AGENTS.md (여기 아님)
   ├─ "개발 환경 구축 · 빌드 · 배포 · 운영 절차" → user-guide/ (여기 아님)
   │
   │  ── 프로세스 ──────────────────────────────────
@@ -106,7 +106,7 @@ ai-agent/
 | [playbook](playbook/INDEX.md) | 화면 레시피 (샘플 여섯과 대응) | 2 | 10 |
 | [quality](quality/INDEX.md) | 테스트 설계 · 레드팀 · 코드 품질 · 골든셋 · 관측 | 2 | 13 |
 | [knowledge](knowledge/INDEX.md) | 표 34개 — 인가·코드·문구·이력·운영 | 3 | 14 |
-| [harness](harness/INDEX.md) | 훅 · 스킬 · 문맥 예산 · 로그 — **지금 무엇이 있나는 [user-guide/07-harness.md](../user-guide/07-harness.md)**(생성물) | 2 | 14 |
+| [harness](harness/INDEX.md) | 훅 · 스킬 · 문맥 예산 · 로그 — **지금 무엇이 있나는 [user-guide/07-harness.md](../user-guide/07-harness.md)**(생성물) | 2 | 16 |
 
 
 **`문서` 는 그 폴더의 `.md` 개수다**(하위 폴더 · `INDEX.md` 포함). `lint.mjs` 가 실제와 대조한다 — 전에는 `운용` 이었는데 무엇을 세는지가 적혀 있지 않아 **아홉 중 여섯이 어긋나 있었다**(`standard` 는 48 대 36).
@@ -118,7 +118,7 @@ ai-agent/
 4. **`documents/` 생성 문서 · chat-history 요약 / 기억** — 검증 후 사용
 
 > **규칙과 사실은 다투지 않는다.** *무엇이 참인가* 는 위 순서가 정하고,
-> *무엇을 해야 하는가* 는 [CLAUDE.md](../CLAUDE.md) 가 정한다 (단일 정의처).
+> *무엇을 해야 하는가*는 [AGENTS.md](../AGENTS.md)가 정한다(단일 정의처).
 
 ## ID 체계 (LLM-{CAT3}[-{SUB3}]-{NNN})
 
@@ -164,4 +164,4 @@ ai-agent/
   분기 검토 (3) `lint.mjs` 초록 확인. **파일 목록을 따로 유지하지 않는다** — 사람이
   유지하는 목록은 반드시 낙고, 낙은 목록은 없는 것보다 나쀼다.
 - **위 카탈로그의 수는 `INDEX.md` 를 뺀 운용 파일 수다.** 세는 기준이 행마다 갈리면 어느 쪽도 믿을 수 없게 된다.
-- 카테고리 구성 자체를 바꾸려면 헌법([CLAUDE.md](../CLAUDE.md)) 수준의 결정. **ADR 로 남긴다.**
+- 카테고리 구성 자체를 바꾸려면 헌법([AGENTS.md](../AGENTS.md)) 수준의 결정. **ADR로 남긴다.**

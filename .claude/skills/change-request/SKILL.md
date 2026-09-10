@@ -3,6 +3,8 @@ name: change-request
 description: 베이스라인 이후의 변경 요청(CR)을 처리한다. 영향 분석, 3옵션 제시, 사용자 판정, spec 반영, 재작업 범위 산정. G3 승인 후 설계나 요구사항을 바꿔야 할 때 사용.
 ---
 
+<!-- generated_from: aidd-guide/harness/skill-src/change-request.md; do not edit -->
+
 # 변경 요청 처리
 
 ## 먼저 확인: CR이 필요한가

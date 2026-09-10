@@ -7,7 +7,7 @@ class: none
 created: 2026-05-04
 updated: 2026-09-07
 status: active
-sources: ["sources/backend/", "sources/frontend/", "CLAUDE.md"]
+sources: ["sources/backend/", "sources/frontend/", "AGENTS.md"]
 tier: 2
 tags: [convention, naming, encoding, comment]
 ---
@@ -62,7 +62,7 @@ tags: [convention, naming, encoding, comment]
 
 ## 5. 게이트 — 고쳤으면 돌린다
 
-> **아래 명령은 전부 `sources/` 에서 돈다**(CLAUDE.md §1 — 빌드 루트가 거기다).
+> **아래 명령은 전부 `sources/` 에서 돈다**(AGENTS.md §1 — 빌드 루트가 거기다).
 > 저장소 루트에서 치면 `./gradlew` 가 없다.
 
 ```bash
@@ -98,6 +98,6 @@ cd frontend && npm run lint && npx tsc -b --noEmit && npm run test
 
 ## 관련
 
-- [CLAUDE.md §5 · §7 · §8 · §9](../../CLAUDE.md) — 요지
+- [AGENTS.md §5 · §7 · §8 · §9](../../AGENTS.md) — 요지
 - [standard/backend/packages.md](./backend/packages.md) · [standard/frontend/packages.md](./frontend/packages.md)
 - [seed.md](./seed.md) — 생성물과 손으로 쓰는 것

@@ -3,6 +3,8 @@ name: slice
 description: 수직 슬라이스 하나를 구현한다. 스펙 재확인 → 테스트 먼저 → DB → API → UI → 테스트 통과 → 미니게이트 순으로 진행한다. P4 구현 단계에서 기능 하나를 만들 때 사용.
 ---
 
+<!-- generated_from: aidd-guide/harness/skill-src/slice.md; do not edit -->
+
 # 슬라이스 구현
 
 인자: `SLICE-###` 또는 생략(백로그의 다음 todo)

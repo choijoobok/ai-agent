@@ -3,6 +3,8 @@ name: phase-gate
 description: 단계 게이트를 점검하고 통과를 요청한다. Exit Criteria 자체검증 → 레드팀 자기반박 → 사용자 승인 요청의 4단계를 실행한다. 한 단계를 마치고 다음으로 넘어갈 때 반드시 사용.
 ---
 
+<!-- generated_from: aidd-guide/harness/skill-src/phase-gate.md; do not edit -->
+
 # 게이트 점검 및 통과 요청
 
 인자: `G0`~`G6` 또는 생략(현재 단계 자동 판정)

@@ -14,7 +14,7 @@ tags: [frontend, http, axios, endpoints, request-id]
 
 # HTTP — `endpoints.ts` · 배럴 하나 · 응답 처리
 
-> **호출 URL 은 `features/{도메인}/api/endpoints.ts` 에만 둔다**(CLAUDE.md §8).
+> **호출 URL 은 `features/{도메인}/api/endpoints.ts` 에만 둔다**(AGENTS.md §8).
 > 그 선언이 **인가 시드의 입력**이다 — **선언하지 않고 부르면 403, 선언만 하고 안 부르면
 > 접근 범위가 조용히 넓어진다.**
 
@@ -122,4 +122,4 @@ import { post } from '@/shared/api/request';                    // ❌ ESLint
 - [../seed.md](../seed.md) — 선언이 시드의 입력인 이유
 - [../backend/api.md](../backend/api.md) — 경로 세 마디 · 봉투
 - [packages.md](./packages.md) — 폴더 구조 · ESLint 게이트
-- [CLAUDE.md §8](../../../CLAUDE.md)
+- [AGENTS.md §8](../../../AGENTS.md)

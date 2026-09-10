@@ -3,6 +3,8 @@ name: kickoff
 description: 새 시스템 구축 프로젝트를 시작한다. 사용자가 "○○ 시스템을 만들고 싶다"고 할 때 AI-SDLC 방법론에 따라 P0 착수를 개시하고, 프로젝트 뼈대와 첫 질문 배치를 만든다.
 ---
 
+<!-- generated_from: aidd-guide/harness/skill-src/kickoff.md; do not edit -->
+
 # 프로젝트 킥오프
 
 ## 실행 순서
@@ -14,13 +16,13 @@ description: 새 시스템 구축 프로젝트를 시작한다. 사용자가 "�
 > 여기는 프레임워크 템플릿 폴더입니다. 실제 프로젝트는 복사본에서 시작해야 규율(훅)이 작동합니다.
 > 1. 이 폴더를 프로젝트 폴더로 복사
 > 2. 복사본에서 `.ai-sdlc-template` 삭제
-> 3. 복사본을 Claude Code 로 열고 `/kickoff`
+> 3. 복사본을 지원 AI로 열고 `kickoff` 스킬을 호출
 >
 > 지금 폴더에서 그대로 진행하길 원하시면 `.ai-sdlc-template` 를 삭제할까요?
 
 ### 1. 방법론 숙지
 아래를 순서대로 읽는다.
-- `CLAUDE.md`
+- `AGENTS.md`
 - `aidd-guide/process/01-overview.md`
 - `aidd-guide/process/03-interview.md`
 - `aidd-guide/phase/P0-inception.md`

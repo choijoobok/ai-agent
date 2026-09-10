@@ -35,7 +35,7 @@ tags: [observability, token, cost, cache, hit-rate]
 
 | 좋음 | 나쁨 |
 |------|------|
-| 시스템 프롬프트·CLAUDE.md 변경 안 함 (5분 이내 재호출) | 매 호출마다 다른 prefix |
+| 시스템 프롬프트·AGENTS.md 변경 안 함 (5분 이내 재호출) | 매 호출마다 다른 prefix |
 | Reading Map 으로 같은 파일 같은 offset 재사용 | 매번 다른 offset 으로 Read |
 | INDEX 결정 트리 변경 자제 (자주 변경 시 캐시 미스 증가) | INDEX 매일 수정 |
 
@@ -45,7 +45,7 @@ tags: [observability, token, cost, cache, hit-rate]
 |---------|------|------|
 | 대용량 Read 반복 | input 토큰 평균 > 100K | seek-read 적용 — [harness/context/reading.md](../../harness/context/reading.md) |
 | 무한 루프 | 같은 도구 호출이 N회 반복 | 사용자에 알리고 즉시 중단 |
-| 캐시 미스 | hit rate < 40% | prefix 안정화 (CLAUDE.md 안 건드림) |
+| 캐시 미스 | hit rate < 40% | prefix 안정화 (AGENTS.md 안 건드림) |
 | 컨텍스트 포화 | `/context` ≥ 80% | `/compact` 또는 `/clear` |
 
 ## 보고 형식

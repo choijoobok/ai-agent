@@ -3,6 +3,8 @@ name: redteam
 description: 현재 산출물을 적대적으로 검토한다. AI가 자기가 만든 설계·요구사항·코드를 인수 심사자 입장에서 공격해 실패 시나리오, 누락, 사용자가 반대할 지점을 찾아낸다. 게이트 전이나 중요 산출물 완료 후 사용.
 ---
 
+<!-- generated_from: aidd-guide/harness/skill-src/redteam.md; do not edit -->
+
 # 레드팀 자기반박
 
 AI의 최대 실패 모드는 **자기 산출물에 대한 무비판**이다. 이 스킬은 그것을 절차로 강제한다.

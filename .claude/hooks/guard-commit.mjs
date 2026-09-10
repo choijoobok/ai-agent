@@ -1,5 +1,5 @@
 /**
- * 커밋의 두 사고를 막는다 — CLAUDE.md §9.
+ * 커밋의 두 사고를 막는다 — AGENTS.md §9.
  *
  * <p>① <b>경로를 지정하지 않은 커밋.</b> 한 트리에서 세션이 둘일 수 있고, 낡은 인덱스가
  * <b>남의 커밋을 되돌린다</b>. 되돌리기 어려운 쪽이라 차단이다.
@@ -34,7 +34,7 @@ for (const commit of commits) {
   if (/-m\s*"/.test(args)) {
     deny(
       [
-        '커밋 메시지에 큰따옴표를 쓰지 않는다 — CLAUDE.md §9.',
+        '커밋 메시지에 큰따옴표를 쓰지 않는다 — AGENTS.md §9.',
         'PowerShell 에서 here-string 인자가 깨져 pathspec 오류가 난다.',
         "메시지는 heredoc 으로 넘긴다:  git commit -F - -- <경로…> <<'EOF'",
       ].join('\n'),
@@ -44,7 +44,7 @@ for (const commit of commits) {
   if (/\s(-a|--all)(\s|$)/.test(args)) {
     deny(
       [
-        'git commit -a 는 추적 중인 모든 변경을 담는다 — 경로를 지정해 커밋한다(CLAUDE.md §9).',
+        'git commit -a 는 추적 중인 모든 변경을 담는다 — 경로를 지정해 커밋한다(AGENTS.md §9).',
         '한 트리에서 세션이 둘일 수 있고, 낡은 인덱스가 남의 커밋을 되돌린다.',
         "형태:  git commit -F - -- <경로…> <<'EOF'",
       ].join('\n'),
@@ -54,7 +54,7 @@ for (const commit of commits) {
   if (!/\s--(\s|$)/.test(args)) {
     deny(
       [
-        '경로를 지정하지 않은 커밋이다 — CLAUDE.md §9.',
+        '경로를 지정하지 않은 커밋이다 — AGENTS.md §9.',
         '한 트리에서 세션이 둘일 수 있고, 낡은 인덱스가 남의 커밋을 되돌린다.',
         "형태:  git commit -F - -- <경로…> <<'EOF'",
         '한 커밋은 한 가지 일이다(§5-3) — 담을 경로를 세는 것이 그 규칙을 지키는 자리이기도 하다.',

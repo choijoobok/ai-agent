@@ -44,4 +44,4 @@ tags: [meta, index]
 ## 관련 카테고리
 
 - [INDEX](../INDEX.md) — 마스터 진입점
-- [CLAUDE.md](../../CLAUDE.md) — 헌법 (이 메타 규약 위에서 동작)
+- [AGENTS.md](../../AGENTS.md) — 헌법 (이 메타 규약 위에서 동작)

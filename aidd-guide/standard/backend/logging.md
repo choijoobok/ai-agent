@@ -130,7 +130,7 @@ Logback `SiftingAppender` + MDC `userId` 로 나눈다(`logs/users/${userId}/app
 
 ## 6. 로그 문구는 한국어로 쓴다
 
-소스에 남는 로그·예외의 기본 메시지는 **한국어**다(CLAUDE.md §5-5). 정본은
+소스에 남는 로그·예외의 기본 메시지는 **한국어**다(AGENTS.md §5-5). 정본은
 `SYS_MESSAGE` 이고 소스의 것은 폴백·진단이며, **그것을 읽는 사람이 한국어 운영자**다.
 사용자에게 보이는 문구만 `SYS_MESSAGE` 를 거친다.
 

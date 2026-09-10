@@ -1,6 +1,6 @@
 # 03. 개발 방법 — 화면 하나를 만드는 순서
 
-> **규칙의 정본은 [`CLAUDE.md` §6](../CLAUDE.md) 와
+> **규칙의 정본은 [`AGENTS.md` §6](../AGENTS.md) 와
 > [`aidd-guide/process/07-slice.md`](../aidd-guide/process/07-slice.md) 다.**
 > 여기는 *사람이 무엇을 언제 보게 되는가* 를 옮긴 것이다.
 
