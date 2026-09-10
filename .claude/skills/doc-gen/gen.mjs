@@ -47,7 +47,7 @@ const LABEL = {
   measurement: '측정 방법', test_case: '테스트 케이스', target: '목표값', direction: '방향',
   aggregation: '집계 규칙',
   peer: '상대', protocol: '프로토콜', prerequisites: '전제', status: '상태', screen: '화면',
-  phase: 'Phase', feature: '기능', agent_contact: 'agent 와의 접점', undecided: '미확정',
+  roadmap: '차수', feature: '기능', agent_contact: 'agent 와의 접점', undecided: '미확정',
   claim: '주장', axis: '축', rank: '순위', metrics: '지표', why_first: '왜 첫째인가',
   was: '전에는', why_demoted: '왜 내렸나', includes: '포함', excludes: '제외', goal: '목표',
   object: '대상', mapping: '매핑', meaning: '뜻', users: '사용자', form: '형태',
@@ -169,20 +169,24 @@ function 요구사항정의서() {
     c.meta.status, c.meta.baselined, c.goals.map((g) => g.id))];
   p.push(`## 1. 목적\n\n**${flat(c.purpose)}**\n\n${flat(c.purpose_note)}`);
   p.push(`## 2. 배경 — 현행 시스템의 한계\n\n${auto(c.problems)}`);
-  p.push(`## 3. 이 제품의 경제성\n\n**목적이 참인가는 이 다섯이 참인가에 달려 있다.**\n\n${auto(c.economics, { titleKey: 'claim' })}`);
-  p.push(`## 4. 최종 목표\n\n${auto(c.goals)}`);
-  p.push(`## 5. 비목표 — 하지 않는 것\n\n**하지 않겠다고 적지 않은 것은 하겠다고 읽힌다.**\n\n${auto(c.non_goals)}`);
-  p.push(`## 6. 범위 (In)\n\n${bullets(c.scope_in)}\n\n**방향** — ${flat(c.direction)}`);
+  p.push('## 3. 구축 형태 — 둘을 수용한다\n\n'
+    + '> **제품은 하나다.** 차이는 업무 시스템이 저장소 **밖에** 있느냐 **안에** 있느냐뿐이며,\n'
+    + '> 형태에 따라 **가치의 근거가 달라진다**.\n\n'
+    + auto(c.deployment_shapes));
+  p.push(`## 4. 이 제품의 경제성\n\n**목적이 참인가는 이 다섯이 참인가에 달려 있다.**\n\n${auto(c.economics, { titleKey: 'claim' })}`);
+  p.push(`## 5. 최종 목표\n\n${auto(c.goals)}`);
+  p.push(`## 6. 비목표 — 하지 않는 것\n\n**하지 않겠다고 적지 않은 것은 하겠다고 읽힌다.**\n\n${auto(c.non_goals)}`);
+  p.push(`## 7. 범위 (In)\n\n${bullets(c.scope_in)}\n\n**방향** — ${flat(c.direction)}`);
   const policy = c.measurement_first
     ? '**방침 — 측정을 먼저 만든다(`measurement_first: true`).** 목표를 미리 세우지 않고\n'
       + '*재는 것을 먼저 만들고 → 정확히 재고 → 개선이 필요한지 판단한다*. 그래서 `목표값` 의\n'
       + '빈칸은 **빠진 것이 아니라 아직 재지 않았다**는 뜻이다.'
     : '**방침** — 목표를 먼저 세운다.';
-  p.push(`## 7. 성공 기준\n\n${policy}\n\n${auto(c.success_criteria)}`);
-  p.push(`### 7.1 성공 기준에서 내린 지표 — 추적은 계속한다\n\n${auto(c.tracked_metrics, { level: '####' })}`);
-  p.push(`### 7.2 불변식\n\n${auto(c.invariants, { level: '####' })}\n\n${bullets(c.success_notes)}`);
-  p.push(`## 8. 로드맵\n\n${auto(c.roadmap)}\n\n${bullets(c.roadmap_notes)}`);
-  p.push(`## 9. 트랙과 기대치\n\n- **트랙** — ${flat(c.track)} · ${flat(c.track_why)}\n`
+  p.push(`## 8. 성공 기준\n\n${policy}\n\n${auto(c.success_criteria)}`);
+  p.push(`### 8.1 성공 기준에서 내린 지표 — 추적은 계속한다\n\n${auto(c.tracked_metrics, { level: '####' })}`);
+  p.push(`### 8.2 불변식\n\n${auto(c.invariants, { level: '####' })}\n\n${bullets(c.success_notes)}`);
+  p.push(`## 9. 로드맵\n\n${auto(c.roadmap)}\n\n${bullets(c.roadmap_notes)}`);
+  p.push(`## 10. 트랙과 기대치\n\n- **트랙** — ${flat(c.track)} · ${flat(c.track_why)}\n`
     + Object.entries(c.expectations).map(([k, v]) => `- **${lab(k)}** — ${flat(v)}`).join('\n'));
   write(`${RQ}00-개요.md`, p);
 
@@ -448,6 +452,11 @@ function 아키텍처() {
     + '> 모듈의 정의와 책임은 [`01-이해관계자.md`](./10-요구사항정의서/01-이해관계자.md) 가 갖는다. 여기는 **경계** 다.\n\n'
     + blocks(d.module_boundaries, ['id'], 'rule'));
 
+  p.push('## 3. 업무 확장 경계 (SHAPE-02)\n\n'
+    + '> 업무 확장은 Hub 모듈이 아니다 — ARCH-010 의 공통 Entity·DB 규칙이 적용되지 않는다.\n'
+    + '> **구현은 Hub 완성 뒤이며, 지금 굳으면 나중에 뜯어야 하는 자리 셋만 연다.**\n\n'
+    + blocks(d.business_extension, ['id'], 'rule'));
+
   const SECTIONS = [['write_ownership', '쓰기 책임'], ['deeplink', 'portal 진입 경로 — 레거시 딥링크'],
     ['datasource', '데이터소스 전략'], ['llm_layer', 'LLM 연동 계층'],
     ['identity', '인증 · 계정 원천과 신원 매핑'], ['knowledge_search', '지식 검색 구성'],
@@ -481,15 +490,15 @@ function 기능목록() {
   const mods = [...new Set(f.features.map((x) => x.module))];
   const p = [head('FEAT-LIST', '기능 목록 · 메뉴 구조', `${SPEC}31-features.yaml`,
     f.meta.status, f.meta.baselined, null, `> **채번** — ${f.meta.numbering}\n`)];
-  p.push('## 요약\n\n| 모듈 | 기능 수 | Phase 분포 |\n|---|---:|---|\n'
+  p.push('## 요약\n\n| 모듈 | 기능 수 | 차수 분포 |\n|---|---:|---|\n'
     + mods.map((m) => {
       const sel = f.features.filter((x) => x.module === m);
-      const phases = [...new Set(sel.map((x) => x.phase).filter(Boolean))].sort();
-      return `| ${m} | ${sel.length} | ${phases.map((ph) => `${ph} ${sel.filter((x) => x.phase === ph).length}`).join(' · ')} |`;
+      const phases = [...new Set(sel.map((x) => x.roadmap).filter(Boolean))].sort();
+      return `| ${m} | ${sel.length} | ${phases.map((ph) => `${ph} ${sel.filter((x) => x.roadmap === ph).length}`).join(' · ')} |`;
     }).join('\n'));
   for (const m of mods) {
     const sel = f.features.filter((x) => x.module === m);
-    p.push(`## ${m} (${sel.length}건)\n\n${table(sel, ['id', 'title', 'screen', 'phase', 'reqs'])}`
+    p.push(`## ${m} (${sel.length}건)\n\n${table(sel, ['id', 'title', 'screen', 'roadmap', 'reqs'])}`
       + `\n\n### 상세\n\n${blocks(sel, ['id'], 'title', '####')}`);
   }
   p.push('## 폐기한 기능\n\n**ID 는 재사용하지 않는다** — 결번으로 남기고 사유를 적는다.\n\n'
@@ -517,12 +526,12 @@ function 화면정의서() {
     p.push(`## ${n}. ${m} 화면 (${sel.length}건)`);
     for (const grp of [...new Set(sel.map((x) => x.group))]) {
       const gs = sel.filter((x) => x.group === grp);
-      p.push(`### ${grp ?? '(분류 없음)'}\n\n${table(gs, ['id', 'title', 'feature', 'phase'])}`
+      p.push(`### ${grp ?? '(분류 없음)'}\n\n${table(gs, ['id', 'title', 'feature', 'roadmap'])}`
         + `\n\n${blocks(gs, ['id'], 'title', '####')}`);
     }
   }
-  p.push(`## ${n + 1}. Phase 별 노출\n\n`
-    + Object.entries(s.phase_rollout).map(([k, v]) => `- **${k}** — ${flat(v)}`).join('\n'));
+  p.push(`## ${n + 1}. 차수별 노출\n\n`
+    + Object.entries(s.roadmap_rollout).map(([k, v]) => `- **${k}** — ${flat(v)}`).join('\n'));
   p.push(`## ${n + 2}. 메뉴로 나타나지 않는 것\n\n${auto(s.not_menus, { titleKey: 'name' })}`);
   p.push(`## ${n + 3}. 미확정 (${s.undecided.length}건)\n\n${auto(s.undecided)}`);
   p.push(`## ${n + 4}. 화면 문서의 단위와 순서\n\n`

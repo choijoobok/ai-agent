@@ -88,7 +88,7 @@ interfaces:
     detail: "자체 메일 전송 에이전트를 보유한 고객사가 있고, 메일 서버를 직접 구성해야 하는 고객사도 있다"
     prerequisites: "발송 경로 확정"
     traces_to: [CON-031]
-    phase: P3
+    roadmap: RM-P3
 
 # ── 들어오는 연동 (외부 → Hub) ────────────────────────────────────
   - id: IF-006

@@ -74,7 +74,7 @@ nfrs:
     test_case: null
     target: null
     note: "**하드 상한은 실측 후 정한다** — 처음부터 걸면 정상 사용을 막는다"
-    phase: P2
+    roadmap: RM-P2
 
 # ── 응답성 ──────────────────────────────────────────────────
 # **넷이 정하는 것은 목표가 아니라 재는 방법이다**(ASM-002). 그래서 target 은 비어 있고,
@@ -252,7 +252,7 @@ nfrs:
     source: "**잡 실행 기록.** 중복 실행은 *같은 잡의 같은 실행 창에 점유가 둘 생긴 것* 으로 세고(ARCH-070 과 같은 구조), 재시도는 원 실행과 이어 남긴다"
     test_case: null
     target: null
-    phase: P3
+    roadmap: RM-P3
   - id: NFR-025
     category: 안정성
     title: "워크플로우 부하는 근무 시간에 겹친다"
@@ -261,4 +261,4 @@ nfrs:
     source: "**잡 실행 기록의 시작 시각.** 시간대는 **고객사의 근무 시작 시각을 기준**으로 잘라야 의미가 생긴다 — 고객사마다 다르므로 그 값이 운영 설정에 있어야 한다"
     test_case: null
     target: null
-    phase: P3
+    roadmap: RM-P3
