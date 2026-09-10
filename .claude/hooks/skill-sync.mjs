@@ -59,10 +59,17 @@ if (failure) {
 }
 
 const stale = [...new Set(issues.map((line) => line.split(':')[1]?.trim().split(' ')[0]).filter(Boolean))];
+if (result?.failures?.length) {
+  warn(
+    [
+      `공통 스킬 생성이 **일부 실패했다** — ${result.failures.join(', ')}.`,
+      '성공이라고 간주하지 않는다. 권한과 실행 환경을 확인한 뒤 `node aidd-guide/harness/runtime/sync-skills.mjs --write`를 다시 돌린다.',
+    ].join('\n'),
+  );
+}
 warn(
   [
     `공통 스킬 원본이 바뀌어 **\`SKILL.md\` 를 다시 만들었다** — ${stale.join(' · ')}.`,
     'Claude(`.claude/skills/`)와 Codex(`.agents/skills/`) 양쪽이며, **소스와 같은 커밋에 담는다**(AGENTS.md §9).',
-    ...(result?.failures?.length ? [`쓰지 못한 것: ${result.failures.join(', ')}`] : []),
   ].join('\n'),
 );

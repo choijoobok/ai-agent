@@ -86,9 +86,10 @@ cd frontend && npm run lint && npx tsc -b --noEmit && npm run test
 
 - **경로를 지정해 커밋한다** — `git commit -F - -- <경로…>`. 한 트리에서 세션이 둘일 수
   있고, **낡은 인덱스가 남의 커밋을 되돌린다.**
-- **PowerShell 에서 커밋 메시지에 큰따옴표를 쓰지 않는다** — here-string 인자가 깨진다.
+- **메시지는 stdin(`-F -`)으로 넘긴다** — POSIX heredoc 또는 PowerShell here-string pipe.
 - **생성물은 소스와 같은 커밋에** 담는다.
-- 훅 `guard-commit` 이 위 셋을 **차단**한다.
+- **AI 커밋은 마지막 trailer 묶음에 provider의 `Agent:` 표식**을 둔다.
+- 훅 `guard-commit` 이 위 규칙을 **차단**한다.
 
 ## 7. 샘플은 통째로 지울 수 있어야 한다
 

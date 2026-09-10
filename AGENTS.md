@@ -39,9 +39,10 @@ ai-agent/
 
 ## 2. 세션이 열리면 — 3줄 브리핑부터
 
-세션 시작(`startup`)에 `git-sync` 훅이 **원격을 먼저 당기고**(깨끗한 트리에서 `--ff-only` 로만),
-이어서 `session-brief` 훅이 [`documents/project.state.yaml`](documents/project.state.yaml) 과
-하네스 정합성 결과를 문맥에 넣는다. 그다음:
+세션 시작(`startup`)에 `git-sync` 훅이 **브리핑보다 먼저 원격을 당기고**(깨끗한 트리에서
+`--ff-only` 로만), 이어서 `session-brief` 훅이 [`documents/project.state.yaml`](documents/project.state.yaml) 과
+하네스 정합성 결과를 문맥에 넣는다. 진입 문서와 훅 설정은 그보다 먼저 로드되므로, pull로
+`AGENTS.md`·`CLAUDE.md`·하네스가 바뀌었다는 알림이 나오면 **새 세션을 열어야 적용된다.** 그다음:
 
 1. `documents/project.state.yaml` 과 **현재 단계의** [`aidd-guide/phase/P{n}-*.md`](aidd-guide/phase/P0-inception.md) 를 읽는다.
 2. 사용자에게 **3줄 브리핑**을 먼저 제시한다 — `지금 여기 / 막힌 것 / 다음 할 일`.
@@ -49,6 +50,8 @@ ai-agent/
    위에서 만든 산출물은 합칠 때 두 번 만든 것이 된다.
 4. 하네스 불일치가 있으면 `harness-sync` 스킬로 먼저 복구한다. 그다음에야 작업을 시작한다.
    브리핑 없이 산출물을 만들지 않는다.
+5. **하네스 재시작 알림이 있으면 그 세션에서 작업하지 않는다.** 새 세션을 열고, Codex는
+   `/hooks`에서 현재 hook 정의를 검토·승인한다.
 
 ---
 
@@ -209,9 +212,9 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 
 - **푸시는 요청할 때만.**
 - **경로를 지정해 커밋한다**: `git commit -F - -- <경로…>`. 한 트리에서 세션이 둘일 수 있고, 낡은 인덱스가 남의 커밋을 되돌린다.
-- **PowerShell 에서 커밋 메시지에 큰따옴표를 쓰지 않는다** — here-string 인자가 깨져 pathspec 오류가 난다. 메시지는 heredoc(`-F -`)으로 넘긴다.
+- 커밋 메시지는 stdin(`-F -`)으로 넘긴다 — POSIX는 heredoc, PowerShell은 here-string pipe를 쓴다. `-m`·`-F <파일>`은 훅이 본문을 확정할 수 없어 막는다.
 - **커밋하는 생성물은 시드 CSV 뿐이다** — 소스와 같은 커밋에 담는다(빼면 새로 클론한 사람이 앱을 띄울 수 없다). `mockup.html` · `manual.html` · `documents/generated/` 는 **`.gitignore` 대상**이다 → [산출물 지도 §2](aidd-guide/artifact/INDEX.md).
-- **AI 가 만든 커밋에는 만든 주체를 남긴다** — 메시지 끝에 `Agent: <이름>` 한 줄.
+- **AI 가 만든 커밋에는 만든 주체를 남긴다** — 메시지의 마지막 trailer 묶음에 `Agent: <이름>` 한 줄.
   두 AI 가 한 저장소에 커밋하므로 표식이 없으면 **이 줄을 누가 썼나**를 나중에 알 방법이
   없다(`guard-commit` 이 차단한다). **무엇을 적나는 각 provider 문서가 갖는다** —
   이름은 저장소가 정하는 값이며, 남의 도구의 신원을 지어내지 않는다.

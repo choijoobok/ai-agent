@@ -29,6 +29,8 @@ AI 디렉터리에 그대로 복사하는 것이 아니라, 공통 결과와 각
 - Claude Code: `.claude/settings.json`, `.claude/hooks/`, `/스킬명` 문법을 따른다.
 - Codex: `.codex/hooks.json`, `.codex/hooks/`, `$스킬명` 문법을 따른다.
 - 공통 정책 엔진을 공유하되 runtime 입력은 adapter가 정규화한다.
+- chain 순서는 `aidd-guide/harness/runtime/chains.mjs` 한 곳에서만 고친다.
+- 사전 훅 진입부를 바꾸면 정상 policy fixture뿐 아니라 **adapter import 실패 fixture**도 돌린다.
 - 컨텍스트는 예외다. Claude는 실측 usage 경고, Codex는 자동 압축 후 재주입으로 구현한다.
 - 대상 runtime에서 지원하지 않는 기능은 흉내 내지 말고 provider 문서에 `미검증` 또는
   `미지원`으로 기록한다.
@@ -46,3 +48,5 @@ node aidd-guide/meta/_meta/lint.mjs
 스킬 폴더의 `SKILL.md`를 직접 고치지 않는다. 검사가 불일치를 찾으면 공통 원본 또는 생성기를
 고친 뒤 다시 생성한다. 실제 Claude와 Codex 세션에서 각각 대표 trigger 하나와 차단/경고 하나를
 smoke test하고, 실행하지 못한 쪽은 완료로 가장하지 않고 남은 검증을 보고한다.
+하네스 파일을 pull하거나 고친 세션은 이미 읽은 진입 문서·hook hash를 새 것으로 간주하지 않는다.
+새 세션을 열고 Codex는 `/hooks`에서 현재 정의를 승인한 뒤 smoke test한다.

@@ -10,6 +10,6 @@
   [`aidd-guide/harness/providers/claude-code.md`](aidd-guide/harness/providers/claude-code.md)를 따른다.
 - 컨텍스트는 `.claude/hooks/context-gauge.mjs`가 Claude transcript의 실측 usage를 보고
   임계값에서 `/compact`를 권한다. Codex의 압축 정책과 수치를 공유하지 않는다.
-- 커밋 메시지 끝은 `Agent: Claude`다(AGENTS.md §9 — 두 AI 가 같은 형식으로 적는다).
-  **Claude가 커밋을 만들도록 사용자가 요청한 경우에는** 그 아래에
+- 커밋 메시지의 마지막 trailer 묶음은 `Agent: Claude`로 시작한다(AGENTS.md §9).
+  **Claude가 커밋을 만들도록 사용자가 요청한 경우에는** 바로 그 아래에
   `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`를 함께 붙인다.

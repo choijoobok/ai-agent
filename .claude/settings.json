@@ -20,8 +20,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node",
-            "args": [".claude/hooks/pre-write.mjs"],
+            "command": "node aidd-guide/harness/runtime/pretool-bootstrap.mjs claude .claude/hooks/pre-write.mjs || { echo 'pretool-bootstrap 실행 실패 — Bash로 bootstrap을 복구한다.' >&2; exit 2; }",
+            "shell": "bash",
             "timeout": 45,
             "statusMessage": "게이트·산출물 지도 확인"
           }
@@ -32,17 +32,10 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node",
-            "args": [".claude/hooks/guard-bash.mjs"],
-            "timeout": 15,
-            "statusMessage": "파괴적 명령 확인"
-          },
-          {
-            "type": "command",
-            "command": "node",
-            "args": [".claude/hooks/guard-commit.mjs"],
-            "timeout": 10,
-            "statusMessage": "커밋 형태 확인"
+            "command": "node .claude/hooks/pre-shell.mjs || { echo 'shell 보호 진입 실패 — Edit로 훅을 복구한다.' >&2; exit 2; }",
+            "shell": "bash",
+            "timeout": 20,
+            "statusMessage": "파괴적 명령과 커밋 형태 확인"
           }
         ]
       }

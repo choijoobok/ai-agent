@@ -41,7 +41,7 @@ tags: [harness, hooks, skills, automation, index]
 | 훅 | 강도 | 무엇 |
 |------|------|------|
 | `guard-generated` | **차단** | 생성 시드 CSV 손편집 |
-| `guard-commit` | **차단** | 경로 없는 커밋 · `-a` · 큰따옴표 메시지 |
+| `guard-commit` | **차단** | 경로 없는 커밋 · `-a` · 본문을 못 보는 메시지 · 잘못된 `Agent:` trailer |
 | `normalize-encoding` | **교정** | BOM · CRLF |
 | `doc-drift` | **경고** | 화면 소스 ↔ 화면 문서(정본 둘) |
 | `log-raw` | **기록** | 대화 원문 → `chat-history/`(AGENTS.md §10) |

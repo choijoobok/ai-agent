@@ -13,6 +13,8 @@ skills:
 
 hooks:
   contract: aidd-guide/harness/hooks-contract.md
+  chain_source: aidd-guide/harness/runtime/chains.mjs
+  pretool_bootstrap: aidd-guide/harness/runtime/pretool-bootstrap.mjs
   shared_policy_engine: .claude/hooks/
   claude_wiring: .claude/settings.json
   codex_wiring: .codex/hooks.json
@@ -31,3 +33,4 @@ verification:
   check: aidd-guide/harness/runtime/harness-check.mjs
   session_start: true
   ci_required: true
+  restart_after_harness_pull: true

@@ -3,24 +3,13 @@
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readHookInput, REPO } from '../../.claude/hooks/lib.mjs';
+import { POST_FILE, PRE_FILE } from '../../aidd-guide/harness/runtime/chains.mjs';
 import {
   allowHookRepair,
   emitHookResults,
   runHookChain,
   RECOVERY,
 } from '../../.claude/hooks/hook-chain.mjs';
-
-const PRE = ['guard-write.mjs', 'guard-generated.mjs'];
-const POST = [
-  'normalize-encoding.mjs',
-  'hook-syntax.mjs',
-  'trace-check.mjs',
-  'doc-drift.mjs',
-  'guide-drift.mjs',
-  'skill-sync.mjs',
-  'harness-doc.mjs',
-  'commons-doc.mjs',
-];
 
 export function patchTargets(input) {
   const direct = input?.tool_input?.file_path ?? input?.tool_input?.path;
@@ -39,7 +28,7 @@ export function patchTargets(input) {
 
 export async function runFileChain(input) {
   const event = input?.hook_event_name;
-  const scripts = event === 'PreToolUse' ? PRE : event === 'PostToolUse' ? POST : [];
+  const scripts = event === 'PreToolUse' ? PRE_FILE : event === 'PostToolUse' ? POST_FILE : [];
   if (!scripts.length) return [];
   const command = String(input?.tool_input?.command ?? '');
   const outputs = [];
@@ -63,7 +52,8 @@ export async function runFileChain(input) {
   return outputs;
 }
 
-if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
+const self = fileURLToPath(import.meta.url);
+if (resolve(process.argv[1] ?? '') === self || process.env.AI_HOOK_BOOTSTRAP_ENTRY === self) {
   const input = await readHookInput();
   emitHookResults(await runFileChain(input), input?.hook_event_name || 'PostToolUse');
 }

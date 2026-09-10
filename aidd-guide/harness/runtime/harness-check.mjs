@@ -5,6 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseYaml } from '../../../.claude/hooks/lib.mjs';
 import { skillDiffs, sourceSkills } from './sync-skills.mjs';
+import { CHAINS } from './chains.mjs';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 
@@ -15,6 +16,8 @@ export function checkHarness() {
     manifest?.constitution?.common,
     manifest?.constitution?.claude_entry,
     manifest?.hooks?.contract,
+    manifest?.hooks?.chain_source,
+    manifest?.hooks?.pretool_bootstrap,
     manifest?.hooks?.claude_wiring,
     manifest?.hooks?.codex_wiring,
     'aidd-guide/harness/providers/claude-code.md',
@@ -26,6 +29,13 @@ export function checkHarness() {
     for (const policy of manifest?.hooks?.[group] ?? []) {
       const path = `${manifest.hooks.shared_policy_engine}${policy}.mjs`;
       if (!existsSync(join(REPO, path))) issues.push(`공통 정책 엔진 없음: ${path}`);
+    }
+  }
+  for (const group of ['pre_file', 'pre_shell', 'post_file', 'session_start']) {
+    const declared = manifest?.hooks?.[group] ?? [];
+    const running = (CHAINS[group] ?? []).map((name) => name.replace(/\.mjs$/, ''));
+    if (JSON.stringify(declared) !== JSON.stringify(running)) {
+      issues.push(`${group} chain이 capabilities.yaml과 다르다: manifest [${declared}] · runtime [${running}]`);
     }
   }
 
@@ -56,16 +66,48 @@ export function checkHarness() {
   const claude = json('.claude/settings.json', issues);
   if (!claude?.hooks?.SessionStart) issues.push('Claude SessionStart 훅이 없다.');
   const claudeText = read('.claude/settings.json');
-  for (const adapter of ['session-start.mjs', 'pre-write.mjs', 'post-write.mjs', 'log-raw.mjs', 'context-gauge.mjs']) {
+  for (const adapter of ['session-start.mjs', 'pre-write.mjs', 'pre-shell.mjs', 'post-write.mjs', 'log-raw.mjs', 'context-gauge.mjs']) {
     if (!claudeText.includes(adapter)) issues.push(`Claude adapter 배선 없음: ${adapter}`);
   }
-  /* `lib.mjs` 의 provider() 가 **진입 경로로** 누구인지 판정한다. 그 전제가 배선이다 —
-     Codex 가 `.claude/hooks/` 를 직접 부르면 그 판정이 조용히 틀린다. */
+  if (!claudeText.includes('pretool-bootstrap.mjs')) issues.push('Claude 파일 사전 훅이 bootstrap을 거치지 않는다.');
+  if (!codexText.includes('pretool-bootstrap.mjs')) issues.push('Codex 파일 사전 훅이 bootstrap을 거치지 않는다.');
+  for (const [name, cfg] of [['Claude', claude], ['Codex', codex]]) {
+    for (const group of cfg?.hooks?.PreToolUse ?? []) {
+      for (const hook of group?.hooks ?? []) {
+        const command = String(hook?.commandWindows ?? hook?.command ?? '');
+        if (!command.includes('exit 2') && !command.includes('permissionDecision')) {
+          issues.push(`${name} PreToolUse 진입 실패를 명시적 deny로 바꾸는 wrapper가 없다: ${group?.matcher ?? '*'}`);
+        }
+        if (name === 'Codex' && hook?.commandWindows && !command.includes('ConvertTo-Json -Compress')) {
+          issues.push(`Codex Windows deny wrapper가 객체 직렬화를 쓰지 않는다 — inline JSON은 cmd.exe에서 따옴표가 깨진다: ${group?.matcher ?? '*'}`);
+        }
+      }
+    }
+  }
+
+  const chainAdapters = [
+    '.claude/hooks/session-start.mjs',
+    '.claude/hooks/pre-write.mjs',
+    '.claude/hooks/pre-shell.mjs',
+    '.claude/hooks/post-write.mjs',
+    '.codex/hooks/session-start.mjs',
+    '.codex/hooks/file-chain.mjs',
+    '.codex/hooks/pre-shell.mjs',
+  ];
+  for (const adapter of chainAdapters) {
+    if (!read(adapter).includes('harness/runtime/chains.mjs')) {
+      issues.push(`공통 chain 원본을 쓰지 않는 adapter: ${adapter}`);
+    }
+  }
+  /* `lib.mjs` 의 provider() 는 adapter 진입 경로나 bootstrap의 명시값으로 판정한다. */
   for (const [event, groups] of Object.entries(codex?.hooks ?? {})) {
     for (const group of groups) {
       for (const hook of group?.hooks ?? []) {
-        if (!String(hook?.command ?? '').includes('/.codex/hooks/')) {
-          issues.push(`Codex ${event} 배선이 .codex/hooks/ 어댑터를 거치지 않는다 — provider 판정이 틀어진다.`);
+        const wiring = `${hook?.command ?? ''} ${hook?.commandWindows ?? ''}`;
+        const adapter = wiring.includes('.codex/hooks/');
+        const bootstrap = wiring.includes('pretool-bootstrap.mjs') && /\bcodex\b/.test(wiring);
+        if (!adapter && !bootstrap) {
+          issues.push(`Codex ${event} 배선에 .codex adapter나 codex bootstrap 표식이 없다 — provider 판정이 틀어진다.`);
         }
       }
     }

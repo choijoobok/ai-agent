@@ -34,6 +34,13 @@ class HookExit extends Error {
 /** 훅 입력 — 표준 입력의 JSON 한 덩이. 못 읽으면 빈 객체다(훅이 조용히 통과한다). */
 export async function readHookInput() {
   if (embeddedInput !== null) return embeddedInput;
+  if (process.env.AI_HOOK_INPUT) {
+    try {
+      return JSON.parse(process.env.AI_HOOK_INPUT);
+    } catch {
+      return {};
+    }
+  }
   const chunks = [];
   for await (const chunk of process.stdin) chunks.push(chunk);
   try {
@@ -220,6 +227,8 @@ export function inject(text) {
  * 둘 다 모르면 <b>`unknown` 이다</b> — 모르는 것을 아는 척하지 않는다(AGENTS.md §3).
  */
 export function provider() {
+  const bootstrapped = String(process.env.AI_HOOK_PROVIDER ?? '').toLowerCase();
+  if (bootstrapped === 'claude' || bootstrapped === 'codex') return bootstrapped;
   const entry = String(process.argv[1] ?? '').replace(/\\/g, '/');
   if (entry.includes('/.codex/')) return 'codex';
   if (entry.includes('/.claude/')) return 'claude';

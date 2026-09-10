@@ -71,7 +71,7 @@ tags: [harness, hooks, automation]
 
 ```
 ❌ 생성 시드 CSV 를 손으로 고친다            → guard-generated 가 막는다
-❌ git commit -a / git commit -m "..."       → guard-commit 이 막는다
+❌ git commit -a / 본문 없는 메시지 / 잘못된 Agent trailer → guard-commit 이 막는다
 ❌ 소스만 고치고 화면 문서를 그대로 둔다      → doc-drift 가 가리키지만 막지는 않는다
 ❌ 이미 적재된 changeset 을 수정한다          → 남의 로컬이 checksum 으로 죽는다 (검사 없음)
 ```

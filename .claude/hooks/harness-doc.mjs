@@ -28,6 +28,7 @@
 import { readdirSync, readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { REPO, readHookInput, repoRelative, targetPath, pass, warn } from './lib.mjs';
+import { CHAINS } from '../../aidd-guide/harness/runtime/chains.mjs';
 
 const OUT = 'user-guide/07-harness.md';
 const HOOK_DIR = join(REPO, '.claude/hooks');
@@ -41,6 +42,7 @@ const NOT_A_HOOK = new Set([
   'hook-chain.mjs',
   'pre-write.mjs',
   'post-write.mjs',
+  'pre-shell.mjs',
   'session-start.mjs',
 ]);
 
@@ -116,9 +118,7 @@ function bound(provider) {
   for (const [event, groups] of Object.entries(cfg?.hooks ?? {})) {
     for (const group of groups) {
       for (const h of group.hooks ?? []) {
-        const file = provider === 'claude'
-          ? (h.args ?? []).find((a) => a.endsWith('.mjs'))
-          : h.command?.match(/([A-Za-z0-9-]+\.mjs)/)?.[1];
+        const file = adapterFile(h, provider);
         if (!file) continue;
         const row = {
           event,
@@ -140,16 +140,30 @@ function countHooks(provider) {
 
 function expand(row, provider) {
   const chains = {
-    'pre-write': ['guard-write', 'guard-generated'],
-    'post-write': ['normalize-encoding', 'hook-syntax', 'trace-check', 'doc-drift', 'guide-drift', 'skill-sync', 'harness-doc', 'commons-doc'],
-    'pre-shell': ['guard-bash', 'guard-commit'],
-    'session-start': ['git-sync', 'session-brief'],
+    'pre-write': logical(CHAINS.pre_file),
+    'post-write': logical(CHAINS.post_file),
+    'pre-shell': logical(CHAINS.pre_shell),
+    'session-start': logical(CHAINS.session_start),
   };
   if (provider === 'codex' && row.name === 'file-chain') {
     chains['file-chain'] = row.event === 'PreToolUse' ? chains['pre-write'] : chains['post-write'];
   }
   const names = chains[row.name] ?? [row.name];
   return names.map((name) => ({ ...row, name, file: `.claude/hooks/${name}.mjs` }));
+}
+
+function adapterFile(h, provider) {
+  const wiring = `${(h.args ?? []).join(' ')} ${h.command ?? ''}`.replace(/\\/g, '/');
+  const paths = [...wiring.matchAll(/((?:\.claude|\.codex)\/hooks\/[A-Za-z0-9-]+\.mjs)/g)]
+    .map((match) => match[1]);
+  const prefix = provider === 'claude' ? '.claude/' : '.codex/';
+  return paths.filter((path) => path.startsWith(prefix)).at(-1)
+    ?? paths.at(-1)
+    ?? wiring.match(/([A-Za-z0-9-]+\.mjs)/)?.[1];
+}
+
+function logical(chain) {
+  return chain.map((name) => name.replace(/\.mjs$/, ''));
 }
 
 /**

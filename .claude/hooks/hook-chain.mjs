@@ -12,7 +12,7 @@ import { REPO, runEmbeddedHook, repoRelative, targetPath } from './lib.mjs';
  * 반복해서 받는다.
  */
 export const RECOVERY = {
-  write: '**쓰기 도구가 막혔다** — 훅은 Bash 로 고친다. 원인은 `node --check .claude/hooks/<이름>.mjs` 가 말해 준다.\n`.claude/hooks/*.mjs` 를 고치는 쓰기 하나만 열려 있다.',
+  write: '**쓰기 도구가 막혔다** — 훅은 Bash 로 고친다. 원인은 최상위 shell의 `node --check <훅 경로>`가 말해 준다.\n`.claude/hooks/*.mjs`·`.codex/hooks/*.mjs`를 고치는 쓰기만 열려 있다.',
   shell: '**셸이 막혔다** — 훅은 편집 도구(`Edit`)로 고친다. 원인은 `node --check` 가 말해 준다.',
 };
 
@@ -51,13 +51,13 @@ export async function runHookChain(input, scripts, recovery = '보호 훅을 복
 }
 
 /** 훅 파일 자신 — 여기만 수리 경로로 연다. 깊이 하나, `.mjs` 하나. */
-const REPAIR_PATH = /^\.claude\/hooks\/[^/]+\.mjs$/;
+const REPAIR_PATH = /^(?:\.claude|\.codex)\/hooks\/[^/]+\.mjs$/;
 
 /**
  * <b>깨진 보호가 자기 수리까지 막지 않게 한다.</b>
  *
  * <p>사전 chain 이 <i>죽어서</i> 막았고(정책이 막은 것이 아니고) 쓰려는 것이
- * <b>훅 파일 자신</b>이면 통과시킨다 — 그 경로에는 지키는 생성물이 없다
+ * <b>provider 훅 파일 자신</b>이면 통과시킨다 — 그 경로에는 지키는 생성물이 없다
  * (`SKILL.md` 는 `.claude/skills/` 에 있고 그쪽은 계속 닫혀 있다).
  * 여는 범위가 <b>수리하는 자리 하나</b>인 것이 이 예외의 전부다.
  *

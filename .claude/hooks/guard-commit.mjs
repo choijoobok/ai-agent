@@ -4,14 +4,13 @@
  * <p>① <b>경로를 지정하지 않은 커밋.</b> 한 트리에서 세션이 둘일 수 있고, 낡은 인덱스가
  * <b>남의 커밋을 되돌린다</b>. 되돌리기 어려운 쪽이라 차단이다.
  *
- * <p>② <b>큰따옴표 커밋 메시지.</b> PowerShell 에서 here-string 인자가 깨져 pathspec 오류로
- * 떨어진다 — 실패가 조용하지는 않지만 <b>원인이 메시지에 안 보여</b> 매번 같은 자리에서
- * 시간을 쓴다.
+ * <p>② <b>본문을 확인할 수 없는 커밋 메시지.</b> `-m`·`-F <파일>`은 provider 표식을
+ * 확인할 수 없다. POSIX heredoc 또는 PowerShell here-string을 stdin(`-F -`)으로 넘긴다.
  *
  * <p>③ <b>누가 만들었는지 없는 커밋.</b> 두 AI 가 한 저장소에 커밋하므로, 표식이 없으면
  * <i>이 줄을 누가 썼나</i> 를 나중에 알 방법이 없다 — 되돌아가 물을 수도 없다.
- * <b>메시지가 명령에 보일 때만</b> 본다(`-F -` · heredoc). 파일로 넘긴 메시지는 훅이
- * 읽을 수 없고, <b>읽지 못한 것을 없다고 말하지 않는다.</b>
+ * <b>메시지가 명령에 보여야</b> 통과한다. 파일로 넘긴 메시지는 훅이 읽을 수 없으므로
+ * stdin(`-F -`) 형태로 다시 시도하게 한다.
  */
 
 import { readHookInput, deny, pass, provider, PROVIDER_NAME } from './lib.mjs';
@@ -31,17 +30,25 @@ if (commits.length === 0) pass();
 
 for (const commit of commits) {
   /*
-    here-string 뒤(`<<'EOF'`)는 메시지 본문이다 — 본문에 든 `--` 나 `-m "` 를 인자로 세면
+    heredoc 뒤(`<<'EOF'`)는 메시지 본문이다 — 본문에 든 `--` 나 `-m "` 를 인자로 세면
     안 된다. 첫 줄까지만 인자로 본다.
   */
   const args = commit.split('\n')[0];
 
-  if (/-m\s*"/.test(args)) {
+  if (/(?:^|\s)(?:-m|--message)(?:\s|=)/.test(args)) {
     deny(
       [
-        '커밋 메시지에 큰따옴표를 쓰지 않는다 — AGENTS.md §9.',
-        'PowerShell 에서 here-string 인자가 깨져 pathspec 오류가 난다.',
-        "메시지는 heredoc 으로 넘긴다:  git commit -F - -- <경로…> <<'EOF'",
+        '커밋 메시지를 `-m`으로 넘기면 provider trailer를 확정할 수 없다 — AGENTS.md §9.',
+        '메시지는 stdin으로 넘긴다: POSIX heredoc 또는 PowerShell here-string | git commit -F - -- <경로…>',
+      ].join('\n'),
+    );
+  }
+
+  if (!/(?:^|\s)(?:-F|--file)(?:\s+|=)-(?=\s|$)/.test(args)) {
+    deny(
+      [
+        '커밋 메시지 본문이 훅에 보이지 않는다 — AGENTS.md §9.',
+        '`-F <파일>`은 쓰지 않고 stdin(`-F -`)으로 본문과 provider trailer를 함께 넘긴다.',
       ].join('\n'),
     );
   }
@@ -69,23 +76,69 @@ for (const commit of commits) {
 
 }
 
-/*
-  <b>메시지 본문은 세그먼트에 없다.</b> {@link SEGMENT_BREAK} 가 줄바꿈에서도 자르므로
-  `commit` 은 언제나 한 줄이다 — 본문을 보려면 <b>명령 전체</b>를 봐야 한다.
-  (처음에 세그먼트에서 찾다가 검사가 한 번도 걸리지 않았다. 훅을 더할 때는 <b>막히는
-  쪽 fixture 를 반드시 돌린다</b> — 통과만 확인하면 아무것도 안 막는 훅이 초록으로 보인다.)
-
-  <b>heredoc 일 때만 본다.</b> `-F <파일>` 은 본문이 명령에 없고, 읽지 못한 것을 없다고
-  말하지 않는다. `-m` 은 §9 가 이미 heredoc 을 쓰라고 정해 두었다.
-*/
-if (command.includes('<<') && !/^Agent:\s*\S/m.test(command)) {
+const who = provider();
+const bodies = visibleMessageBodies(command);
+if (who === 'unknown' || bodies.length < commits.length) {
   deny(
     [
-      `커밋에 만든 주체가 없다 — AGENTS.md §9. 메시지 끝에 \`Agent: ${PROVIDER_NAME[provider()]}\` 를 붙인다.`,
-      '두 AI 가 한 저장소에 커밋한다. 표식이 없으면 이 줄을 누가 썼는지 나중에 알 방법이 없다.',
-      '무엇을 적나는 provider 문서가 갖는다 — `aidd-guide/harness/providers/`.',
+      '커밋 메시지 본문이나 실행 provider를 확정할 수 없다 — AGENTS.md §9.',
+      'POSIX heredoc 또는 PowerShell here-string으로 `git commit -F - -- <경로…>`에 본문을 넘긴다.',
     ].join('\n'),
   );
 }
 
+for (const body of bodies.slice(-commits.length)) {
+  const problem = trailerProblem(body, who);
+  if (problem) {
+    deny(
+      [
+        problem,
+        `마지막 trailer 묶음은 provider 문서대로 \`Agent: ${PROVIDER_NAME[who]}\`를 포함해야 한다.`,
+        '값과 순서: `aidd-guide/harness/providers/`.',
+      ].join('\n'),
+    );
+  }
+}
+
 pass();
+
+function visibleMessageBodies(source) {
+  const bodies = [];
+  for (const pattern of [/@'\r?\n([\s\S]*?)\r?\n'@/g, /@"\r?\n([\s\S]*?)\r?\n"@/g]) {
+    for (const match of source.matchAll(pattern)) bodies.push(match[1]);
+  }
+
+  const starts = /<<-?\s*(?:'([^']+)'|"([^"]+)"|([A-Za-z_][A-Za-z0-9_]*))[^\r\n]*\r?\n/g;
+  for (const match of source.matchAll(starts)) {
+    const tag = match[1] ?? match[2] ?? match[3];
+    const rest = source.slice((match.index ?? 0) + match[0].length);
+    const end = rest.match(new RegExp(`^${escapeRegex(tag)}\\s*$`, 'm'));
+    if (end?.index !== undefined) bodies.push(rest.slice(0, end.index).replace(/\r?\n$/, ''));
+  }
+  return bodies;
+}
+
+function trailerProblem(body, who) {
+  const lines = String(body).replace(/\r\n/g, '\n').trimEnd().split('\n');
+  const agentLines = lines
+    .map((line, index) => ({ line: line.trim(), index }))
+    .filter(({ line }) => /^Agent:\s*/.test(line));
+  const expected = `Agent: ${PROVIDER_NAME[who]}`;
+  if (agentLines.length !== 1) return '커밋에는 `Agent:` trailer가 정확히 한 줄 있어야 한다.';
+  if (agentLines[0].line !== expected) return `provider 표식이 틀렸다: 기대값은 \`${expected}\`다.`;
+
+  const at = agentLines[0].index;
+  if (at > 0 && lines[at - 1].trim()) return '`Agent:` 앞에는 빈 줄을 두어 trailer 묶음을 분리한다.';
+  const after = lines.slice(at + 1).map((line) => line.trim()).filter(Boolean);
+  if (who === 'claude') {
+    const coauthor = 'Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>';
+    if (after.length !== 1 || after[0] !== coauthor) return `Claude trailer의 마지막 줄은 \`${coauthor}\`다.`;
+  } else if (after.length) {
+    return '`Agent: Codex` 뒤에는 다른 본문을 두지 않는다.';
+  }
+  return '';
+}
+
+function escapeRegex(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}

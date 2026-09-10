@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { REPO, provider, skillRef } from '../../.claude/hooks/lib.mjs';
 import { allowHookRepair, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
 import { patchTargets, runFileChain } from './file-chain.mjs';
+import { crashOutput, patchTargets as bootstrapTargets } from '../../aidd-guide/harness/runtime/pretool-bootstrap.mjs';
 
 const generated = 'sources/backend/bootstrap/src/main/resources/db/changelog/data/003-init-menu.csv';
 const patch = `*** Begin Patch\n*** Update File: ${generated}\n@@\n-old\n+new\n*** End Patch`;
@@ -48,6 +49,33 @@ const shell = await runHookChain({
   tool_input: { command: 'DROP TABLE customer' },
 }, ['guard-bash.mjs', 'guard-commit.mjs']);
 assert.equal(shell.some((x) => x?.hookSpecificOutput?.permissionDecision === 'deny'), true);
+
+/* 커밋 본문은 POSIX heredoc과 PowerShell here-string을 모두 읽고 provider의 정확한 마지막
+   trailer를 요구한다. Codex에서 실제로 쓰는 PowerShell 쪽을 빼면 표식 없이 통과한다. */
+const preShell = (command) => runHookChain({
+  cwd: REPO,
+  hook_event_name: 'PreToolUse',
+  tool_name: 'Bash',
+  tool_input: { command },
+}, ['guard-commit.mjs']);
+const posixCommit = (body) => `git commit -F - -- AGENTS.md <<'EOF'\n${body}\nEOF`;
+const powershellCommit = (body) => `$message = @'\n${body}\n'@\n$message | git commit -F - -- AGENTS.md`;
+const isDenied = (outputs) => outputs.some((x) => x?.hookSpecificOutput?.permissionDecision === 'deny');
+
+assert.equal(isDenied(await preShell(posixCommit('subject\n\nAgent: Codex'))), false);
+assert.equal(isDenied(await preShell(posixCommit('subject'))), true);
+assert.equal(isDenied(await preShell(powershellCommit('subject'))), true);
+assert.equal(isDenied(await preShell(posixCommit('subject\n\nAgent: Potato'))), true);
+assert.equal(isDenied(await preShell(posixCommit('subject\n\nAgent: Codex\ntrailing body'))), true);
+assert.equal(isDenied(await preShell("git commit -m 'subject' -- AGENTS.md")), true);
+
+const savedProvider = process.env.AI_HOOK_PROVIDER;
+process.env.AI_HOOK_PROVIDER = 'claude';
+assert.equal(isDenied(await preShell(posixCommit(
+  'subject\n\nAgent: Claude\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>',
+))), false);
+if (savedProvider === undefined) delete process.env.AI_HOOK_PROVIDER;
+else process.env.AI_HOOK_PROVIDER = savedProvider;
 /* `git-sync` 는 작업 중간(`compact`)에 아무것도 하지 않는다 — 여기서 원격을 당기면 AI 가
    방금 읽은 파일과 디스크가 어긋난다. **당기는 쪽은 시험하지 않는다**: 시험이 네트워크를
    타고 CI 의 트리를 실제로 바꾸게 된다. */
@@ -78,8 +106,15 @@ const crashed = [{ crashed: 'guard-write.mjs', hookSpecificOutput: { hookEventNa
 const asWrite = (rel) => ({ hook_event_name: 'PreToolUse', tool_input: { file_path: join(REPO, ...rel.split('/')) } });
 
 assert.equal(allowHookRepair(asWrite('.claude/hooks/guard-write.mjs'), crashed)[0]?.hookSpecificOutput?.permissionDecision, undefined);
+assert.equal(allowHookRepair(asWrite('.codex/hooks/file-chain.mjs'), crashed)[0]?.hookSpecificOutput?.permissionDecision, undefined);
 assert.equal(allowHookRepair(asWrite('documents/INDEX.md'), crashed)[0]?.hookSpecificOutput?.permissionDecision, 'deny');
 assert.equal(allowHookRepair(asWrite('.claude/skills/trace/SKILL.md'), crashed)[0]?.hookSpecificOutput?.permissionDecision, 'deny');
+
+/* adapter나 lib import 전 오류는 bootstrap이 같은 범위만 열어야 한다. */
+const adapterError = new SyntaxError('adapter parse failed');
+assert.deepEqual(bootstrapTargets(asWrite('.codex/hooks/file-chain.mjs')), [join(REPO, '.codex', 'hooks', 'file-chain.mjs')]);
+assert.equal(crashOutput(asWrite('.codex/hooks/file-chain.mjs'), 'file-chain.mjs', adapterError)?.hookSpecificOutput?.permissionDecision, undefined);
+assert.equal(crashOutput(asWrite('documents/INDEX.md'), 'file-chain.mjs', adapterError)?.hookSpecificOutput?.permissionDecision, 'deny');
 
 /* 구문이 깨진 훅을 **그 자리에서** 잡는다. 깨진 파일을 실제로 만들어야 의미가 있으므로
    `finally` 로 반드시 지운다 — 시험이 저장소에 쓰레기를 남기면 다음 사람이 그것을 의심한다. */
@@ -90,7 +125,7 @@ try {
     { hook_event_name: 'PostToolUse', tool_input: { file_path: probe } },
     ['hook-syntax.mjs'],
   );
-  assert.match(String(broken[0]?.systemMessage ?? ''), /구문이 깨졌다/);
+  assert.match(String(broken[0]?.systemMessage ?? ''), /구문이 깨졌다|구문 검사를 실행하지 못했다/);
 } finally {
   rmSync(probe, { force: true });
 }
@@ -99,7 +134,12 @@ const healthy = await runHookChain(
   { hook_event_name: 'PostToolUse', tool_input: { file_path: join(REPO, '.claude', 'hooks', 'lib.mjs') } },
   ['hook-syntax.mjs'],
 );
-assert.deepEqual(healthy, []);
+if (healthy.length) {
+  assert.match(String(healthy[0]?.systemMessage ?? ''), /구문 검사를 실행하지 못했다/);
+  assert.doesNotMatch(String(healthy[0]?.systemMessage ?? ''), /구문이 깨졌다/);
+} else {
+  assert.deepEqual(healthy, []);
+}
 
 /* 정책 차단(`crashed` 없음)은 훅 파일이라도 절대 열리지 않는다. */
 const policy = [{ hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: 'x' } }];

@@ -42,18 +42,19 @@ tags: [harness, hooks, gate, automation]
 - **목록은 손으로 유지한다.** 원본은 `sources/backend/bootstrap/build.gradle.kts` 의 생성 태스크다 — 태스크가 파일을 더하면 훅에도 더한다. 스스로 계산하지 않는 이유는 Gradle 스크립트를 파싱해야 하고, **틀리게 파싱한 훅은 아무것도 안 막는 훅**이기 때문이다.
 - 차단인 이유: 손편집이 성공하면 다음 생성에서 되돌아가는데, 그 사이 `checkSeeds` 가 초록이었다면 **고친 사람은 고쳐졌다고 믿는다**.
 
-## `guard-commit` — 커밋의 두 사고 차단
+## `guard-commit` — 커밋 범위와 만든 주체를 확정한다
 
 **본다**: 명령을 `\n ; & | && ||` 로 자른 뒤 **각 조각의 시작 자리에 있는 `git commit`** 만. 조각의 **첫 줄까지만** 인자로 센다.
 
 | 걸리는 것 | 왜 |
 |---|---|
-| `-m "` | PowerShell 에서 here-string 인자가 깨져 pathspec 오류가 난다 |
+| `-m` · `-F <파일>` | 메시지 본문과 provider trailer를 훅이 확인할 수 없다 |
 | `-a` · `--all` | 추적 중인 모든 변경을 담는다 |
 | `--` 가 없다 | 경로 없는 커밋 — 낡은 인덱스가 **남의 커밋을 되돌린다** |
+| `-F -`가 아니거나 provider trailer가 틀리다 | 본문과 만든 주체를 확인할 수 없다 |
 
 - **두 가지 좁힘이 없으면 훅이 자기 자신의 커밋을 막는다**: 문자열 안에 우연히 든 `git commit`(예: `echo`), here-string 본문에 든 `--` 나 `-m "`.
-- 통과하는 형태는 하나다: `git commit -F - -- <경로…> <<'EOF'`.
+- POSIX heredoc과 PowerShell here-string pipe를 모두 읽는다. Claude는 마지막 trailer 묶음의 `Agent: Claude` + 정해진 `Co-Authored-By:`, Codex는 마지막 줄 `Agent: Codex`여야 한다.
 
 ## `normalize-encoding` — BOM · CRLF 교정
 

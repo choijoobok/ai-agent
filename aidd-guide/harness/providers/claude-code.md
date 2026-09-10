@@ -4,7 +4,7 @@ title: "Claude Code 하네스 어댑터"
 category: harness
 type: operation
 created: "2026-09-10"
-updated: "2026-09-10"
+updated: "2026-09-11"
 status: active
 sources: ["CLAUDE.md", ".claude/settings.json", ".claude/hooks/"]
 tier: 2
@@ -46,12 +46,15 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 
 `Agent:`는 **이 저장소의 표식**이고 두 AI 가 같은 형식으로 적는다(AGENTS.md §9) — 하나의
 grep 으로 누가 만들었는지 셀 수 있어야 하기 때문이다. `Co-Authored-By:`는 **Claude Code 자체의
-관례**이며 forge 가 공동 작성자로 읽는다. 붙이는 조건은 `CLAUDE.md`가 갖는다.
+관례**이며 forge 가 공동 작성자로 읽는다. 둘은 메시지의 마지막 trailer 묶음이어야 하며,
+붙이는 조건은 `CLAUDE.md`가 갖는다.
 
 ## 훅
 
 Claude의 Write/Edit 계열 입력은 `tool_input.file_path`와 `content`/`new_string`을 사용한다.
 같은 matcher group의 실행 순서에 기대지 않고, 순서가 필요한 검사는 한 chain 안에서 실행한다.
+파일 사전 chain은 `pretool-bootstrap`을 거쳐 adapter import 전 오류까지 deny로 바꾼다. bootstrap
+자체가 깨지면 쓰기는 닫히고 Bash는 남으므로 그 파일을 Bash로 복구한다.
 
 `SessionStart`는 matcher 없이 `session-start.mjs` 하나를 걸고, **작업 중간(`resume`·`clear`·
 `compact`)인지는 훅 입력의 `source`로 판정한다** — matcher 문자열이 어긋나면 브리핑 자체가
@@ -71,8 +74,11 @@ for f in .claude/hooks/*.mjs; do node --check "$f"; done
 ```
 
 **`Write`·`Edit`이 전부 막히면** 사전 chain이 죽은 것이다. 차단 사유가 어느 훅인지 말해 주며,
-그때는 **Bash로** 고친다 — `.claude/hooks/*.mjs` 를 고치는 쓰기만 열려 있다
+그때는 **Bash로** 고친다 — `.claude/hooks/*.mjs`·`.codex/hooks/*.mjs`를 고치는 쓰기만 열려 있다
 ([hooks-contract.md](../hooks-contract.md)의 「깨진 보호에서 빠져나오는 길」).
+
+startup pull이 `CLAUDE.md`·`AGENTS.md`·하네스를 바꿨으면 이미 읽은 규칙과 배선은 갱신되지
+않는다. 그 세션에서 작업하지 않고 새 Claude Code 세션을 연다.
 
 새로 clone한 환경에서는 Claude Code가 프로젝트 훅 실행 권한을 요청할 수 있다. 배선을 바꾼 뒤
 실제 Claude 세션에서 SessionStart와 대표 차단·경고 fixture를 한 번 확인한다.

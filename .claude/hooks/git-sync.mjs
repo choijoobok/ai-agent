@@ -57,7 +57,11 @@ const dirty = git(['status', '--porcelain'], LOCAL_MS).out.split('\n').filter(Bo
 const tail = ahead > 0 ? ` 푸시하지 않은 커밋 ${ahead}개가 있다 — 푸시는 사용자가 말할 때만 한다(AGENTS.md §9).` : '';
 
 if (behind === 0) {
-  inject(line(`\`${branch}\` 는 \`${upstream.out}\` 와 같다 — 당길 것이 없다.${tail}`));
+  inject(line(
+    ahead > 0
+      ? `\`${branch}\` 는 \`${upstream.out}\` 보다 ${ahead} 커밋 앞서 있다 — 당길 것은 없고, 푸시는 사용자가 말할 때만 한다(AGENTS.md §9).`
+      : `\`${branch}\` 는 \`${upstream.out}\` 와 같다 — 당길 것이 없다.`,
+  ));
 }
 
 if (dirty > 0) {
@@ -86,6 +90,7 @@ if (!pulled.ok) {
 }
 
 const files = changed();
+const reload = files.filter(needsRestart);
 inject(
   line(
     [
@@ -93,6 +98,12 @@ inject(
       '**방금 바뀐 파일 위에서 일한다** — 문서·훅·가이드가 달라졌을 수 있으니 기억이 아니라 실물을 읽는다(AGENTS.md §3).',
       ...(files.length > 0
         ? [`바뀐 것 ${files.length}건: ${files.slice(0, 8).join(' · ')}${files.length > 8 ? ' …' : ''}`]
+        : []),
+      ...(reload.length > 0
+        ? [
+            `**새 세션을 연다** — 진입 문서·하네스 ${reload.length}건이 바뀌었지만 현재 세션은 이미 이전 것을 읽었다.`,
+            '이 세션에서 작업을 계속하면 디스크의 규칙과 AI가 따르는 규칙이 갈린다. Codex는 새 task에서 `/hooks` 승인도 확인한다.',
+          ]
         : []),
     ].join('\n') + tail,
   ),
@@ -126,6 +137,10 @@ function counts() {
 /** 당긴 뒤 바뀐 파일 — 무엇을 다시 읽어야 하는지 알려면 이름이 필요하다. */
 function changed() {
   return git(['diff', '--name-only', 'ORIG_HEAD..HEAD'], LOCAL_MS).out.split('\n').filter(Boolean);
+}
+
+function needsRestart(path) {
+  return /^(?:AGENTS\.md|CLAUDE\.md|\.claude\/|\.agents\/|\.codex\/|aidd-guide\/harness\/)/.test(path);
 }
 
 /** 한 줄짜리 stderr 로 줄인다 — 세션 문맥에 git 의 여러 줄을 그대로 붓지 않는다. */

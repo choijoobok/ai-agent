@@ -4,7 +4,7 @@ title: "Codex 하네스 어댑터"
 category: harness
 type: operation
 created: "2026-09-10"
-updated: "2026-09-10"
+updated: "2026-09-11"
 status: active
 sources: ["AGENTS.md", ".codex/hooks.json", ".codex/hooks/", ".agents/skills/"]
 tier: 2
@@ -26,6 +26,8 @@ tags: [harness, codex, adapter]
 
 프로젝트 훅은 저장소를 신뢰한 뒤 `/hooks`에서 현재 hash를 검토·승인해야 실행된다. 훅 파일이나
 배선을 바꾸면 hash가 달라져 다시 검토해야 한다.
+기존 task는 새 `AGENTS.md`와 hook 설정을 다시 읽지 않으므로 하네스를 pull·수정한 뒤에는
+**새 task를 열고 `/hooks` 승인을 다시 확인한다.**
 
 ## 입력 차이
 
@@ -33,6 +35,10 @@ Codex shell은 hook에서 `Bash`로 보이고 명령은 `tool_input.command`에 
 `tool_name: apply_patch`이며 patch 전체가 같은 `command`에 온다. `.codex/hooks/file-chain.mjs`가
 patch의 Add/Update/Delete/Move 대상들을 꺼내 Claude 정책 엔진이 이해하는 `file_path` 입력으로
 바꾼다. 여러 파일이면 각 파일을 순서대로 검사하고 deny 하나라도 있으면 전체 patch를 막는다.
+파일 사전 chain은 `pretool-bootstrap`을 거쳐 adapter import 전 오류도 deny로 바꾸되,
+`.claude/hooks/*.mjs`·`.codex/hooks/*.mjs`만 수리 쓰기로 연다.
+Windows fail-closed wrapper는 JSON 문자열을 명령에 직접 넣지 않고 PowerShell 객체를
+`ConvertTo-Json -Compress`로 직렬화한다 — `cmd.exe` 경계에서 따옴표가 벗겨지는 것을 막는다.
 
 ## 세션 시작
 
@@ -57,6 +63,9 @@ Codex에는 사용량 백분율 훅을 만들지 않는다. 자동 압축 뒤
 Agent: Codex
 ```
 
+Windows에서는 PowerShell here-string을 `git commit -F - -- <경로…>`에 pipe한다. 훅은 이 본문을
+읽어 `Agent: Codex`가 마지막 줄인지 확인한다.
+
 **이 값은 저장소가 정한 것이다.** Codex 자체의 커밋 표기 관례를 확인하지 못했고, 확인하지
 못한 것을 표준인 양 적지 않는다 — 특히 남의 도구 이름으로 된 이메일 주소를 지어내지 않는다.
 Codex 쪽에 문서화된 trailer 가 있으면 그것으로 바꾸고 이 절을 고친다.
@@ -73,3 +82,7 @@ node .codex/hooks/self-test.mjs
 adapter self-test까지만 검증되고, 지원 버전으로 올린 뒤 `/hooks` 신뢰 승인과 실제
 SessionStart/PreToolUse/PostToolUse smoke test가 남는다. 훅은 유용한 guardrail이지 모든 도구를
 포괄하는 보안 경계가 아니므로 CI의 동일 검사를 제거하지 않는다.
+
+관리형 Windows sandbox가 hook 안의 자식 `node --check`를 `EPERM`으로 거절하면 `hook-syntax`는
+이를 구문 오류로 부르지 않고 **검사 불가**로 알린다. 그때 AI가 최상위 shell에서 같은 명령을
+실행하며, 다음 사전 쓰기는 bootstrap이 실제 import 오류를 차단한다.

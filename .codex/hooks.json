@@ -35,8 +35,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/file-chain.mjs\"",
-            "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/file-chain.mjs')\"",
+            "command": "node \"$(git rev-parse --show-toplevel)/aidd-guide/harness/runtime/pretool-bootstrap.mjs\" codex .codex/hooks/file-chain.mjs || { printf '%s' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"file protection entry failed; repair the bootstrap or adapter with the shell.\"}}'; exit 0; }",
+            "commandWindows": "powershell -NoProfile -Command \"& node (Join-Path (git rev-parse --show-toplevel) 'aidd-guide/harness/runtime/pretool-bootstrap.mjs') codex '.codex/hooks/file-chain.mjs'; if ($LASTEXITCODE -ne 0) { $fallback = @{hookSpecificOutput = @{hookEventName = 'PreToolUse'; permissionDecision = 'deny'; permissionDecisionReason = 'file protection entry failed; repair the bootstrap or adapter with the shell.'}} | ConvertTo-Json -Compress -Depth 3; [Console]::Out.Write($fallback); exit 0 }\"",
             "timeout": 45,
             "statusMessage": "쓰기 게이트 확인"
           }
@@ -47,8 +47,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/pre-shell.mjs\"",
-            "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/pre-shell.mjs')\"",
+            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/pre-shell.mjs\" || { printf '%s' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"shell protection entry failed; repair hooks with Edit.\"}}'; exit 0; }",
+            "commandWindows": "powershell -NoProfile -Command \"& node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/pre-shell.mjs'); if ($LASTEXITCODE -ne 0) { $fallback = @{hookSpecificOutput = @{hookEventName = 'PreToolUse'; permissionDecision = 'deny'; permissionDecisionReason = 'shell protection entry failed; repair hooks with Edit.'}} | ConvertTo-Json -Compress -Depth 3; [Console]::Out.Write($fallback); exit 0 }\"",
             "timeout": 20,
             "statusMessage": "파괴적 명령과 커밋 형태 확인"
           }

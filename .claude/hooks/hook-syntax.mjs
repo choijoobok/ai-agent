@@ -30,7 +30,7 @@ if (!path || !HOOK_FILE.test(path)) pass();
 const absolute = join(REPO, path);
 if (!existsSync(absolute)) pass();
 
-let error = '';
+let failure = null;
 try {
   execFileSync(process.execPath, ['--check', absolute], {
     timeout: 10_000,
@@ -39,10 +39,14 @@ try {
     windowsHide: true,
   });
 } catch (thrown) {
-  error = String(thrown?.stderr || thrown?.message || '').trim();
+  failure = thrown;
 }
 
-if (!error) pass();
+if (!failure) pass();
+
+const error = String(failure?.stderr || failure?.message || '').trim();
+const syntaxError = failure?.status === 1
+  && /(?:SyntaxError|Unexpected token|Unexpected end of input|ERR_INVALID_[A-Z_]*SYNTAX)/i.test(error);
 
 /* `node --check` 의 stderr 는 파일 경로 · 문제의 줄 · 캐럿 · 오류 이름 순이다.
    스택은 버린다 — 훅 자신의 내부 경로라 고치는 사람에게 쓸모가 없다. */
@@ -52,12 +56,22 @@ const head = error
   .slice(0, 5)
   .join('\n');
 
+if (syntaxError) {
+  warn(
+    [
+      `**${path} 의 구문이 깨졌다** — 지금 고친다.`,
+      head,
+      '',
+      '이대로 두면 **다음 쓰기부터 보호 진입부가 차단한다**.',
+      '막힌 뒤에는 `.claude/hooks/*.mjs`·`.codex/hooks/*.mjs` 수리만 열린다.',
+    ].join('\n'),
+  );
+}
+
 warn(
   [
-    `**${path} 의 구문이 깨졌다** — 지금 고친다.`,
-    head,
-    '',
-    '이대로 두면 **다음 쓰기부터 전부 막힌다**(사전 chain 이 이 파일을 불러오다 죽는다).',
-    '막힌 뒤에는 `.claude/hooks/*.mjs` 를 고치는 쓰기 하나만 열리며, 그때는 Bash 로 고친다.',
+    `**${path} 의 구문 검사를 실행하지 못했다** — 구문 오류라고 단정하지 않는다.`,
+    head || 'node --check 실행 실패',
+    'Codex 샌드박스의 자식 프로세스 제한일 수 있다. 최상위 shell에서 `node --check <경로>`를 실행한다.',
   ].join('\n'),
 );
