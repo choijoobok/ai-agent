@@ -45,6 +45,7 @@ const LABEL = {
   relation: '우리 것과의 관계', type: '유형', priority: '우선순위', actors: '액터',
   open: '미확정', open2: '미확정', category: '분류', requirement: '요구',
   measurement: '측정 방법', test_case: '테스트 케이스', target: '목표값', direction: '방향',
+  aggregation: '집계 규칙',
   peer: '상대', protocol: '프로토콜', prerequisites: '전제', status: '상태', screen: '화면',
   phase: 'Phase', feature: '기능', agent_contact: 'agent 와의 접점', undecided: '미확정',
   claim: '주장', axis: '축', rank: '순위', metrics: '지표', why_first: '왜 첫째인가',
@@ -266,7 +267,7 @@ function 요구사항정의서() {
   ]);
 
   const n = load('21-nfr');
-  const p6 = [head('RQ-21-nfr', '비기능 요구 — 성능 · 비용 · 안정성', `${SPEC}21-nfr.yaml`,
+  const p6 = [head('RQ-21-nfr', '비기능 요구 — 성능 · 응답성 · 비용 · 안정성', `${SPEC}21-nfr.yaml`,
     n.meta.status, n.meta.baselined, null,
     '> **목표값이 전부 `—` 다.** 미리 세우지 않고 *측정을 만들고 → 재고 → 개선이 필요한지\n'
     + '> 판단한다* 는 방침을 택했다(`ASM-002`). 그래서 빈칸은 **빠진 것이 아니라 아직 재지\n'
