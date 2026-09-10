@@ -65,8 +65,13 @@ common/                Entity · QueryDSL Q타입 · Repository · 권한 판정
 modules/admin/         controller · service · dto(record) · 화면
 modules/portal/        controller · service · dto(record) · 화면
 modules/agent/         controller · service · dto(record)
+extensions/{시스템}/    업무 확장 — 빌드에 넣을 때만 있다 (WMS · OMS · TMS …)
 ```
 
+- **`modules/` 셋은 Hub 모듈이고 늘지 않는다. 늘어나는 것은 `extensions/` 다**(ARCH-016~018).
+  업무 확장은 **자기 업무 DB 를 소유하고**(별도 `DataSource`·별도 Liquibase master),
+  **Hub 를 참조하되 Hub 는 확장을 참조하지 않는다** — 그래서 넣지 않고 빌드해도 Hub 가 선다.
+  좌측 메뉴 트리에는 **형제 노드**로 붙는다. **자리만 열어 둔 상태이며 구현은 Hub 완성 뒤다.**
 - **공통 계층은 어떤 모듈에도 의존하지 않는다.** 역방향 의존이 생기면 **agent 분리가
   불가능해진다**(CON-009).
 - **모듈 간 서비스 참조를 금지한다.** 예외는 **portal → agent(채팅 처리) 하나**이며, 이 호출은

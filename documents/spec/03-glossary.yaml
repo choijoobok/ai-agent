@@ -127,7 +127,8 @@ terms:
     term: 대상 시스템
     key: targetSystem
     group: 정책
-    definition: "연동되는 레거시 업무 시스템 단위. 복수를 전제한다. API(기능)의 귀속처이며, **데이터소스와는 관계를 갖지 않는다**"
+    definition: "연동되는 업무 시스템 단위. 복수를 전제한다. API(기능)의 귀속처이며, **데이터소스와는 관계를 갖지 않는다**"
+    note: "**저장소 밖의 레거시든(SHAPE-01) 함께 짓는 업무 확장이든(SHAPE-02) 대상 시스템이다** — 차이는 연동 방식(TRM-135)뿐이며, agent 위쪽의 등록·권한·감사 계약은 같다"
   - id: TRM-041
     term: 데이터소스
     key: dataSource
@@ -590,6 +591,32 @@ framework_terms:
     definition: "입력·출력 토큰 수"
     relation: "정산의 근거다. **정본은 API Provider 다**(CON-034) — 개발 기간 CLI 의 값은 정산에 쓰지 않는다"
 
+# 구축 구조 (00-charter.yaml deployment_shapes)
+  - id: TRM-133
+    term: Hub 모듈
+    key: hubModule
+    group: 구조
+    definition: "AI Agent Hub 를 이루는 논리 구획. **admin · portal · agent 셋이며 늘지 않는다.** AI 전용 DB 를 공유하고 한 WAS 안에 있다"
+    relation: "정의와 책임은 01-actors.yaml 의 `modules`, 경계는 20-architecture.yaml 의 ARCH-010~014 가 갖는다. **셋 중 하나를 빼면 제품이 성립하지 않지만**(엔진과 타이어), 서로 호출하지는 않는다(ARCH-011) — 영향도를 낮춰 갈아 끼울 수 있게 한 것이다"
+  - id: TRM-134
+    term: 업무 확장
+    key: businessExtension
+    group: 구조
+    definition: "업무 시스템을 같은 빌드에 넣어 함께 구축할 때의 코드 단위(SHAPE-02). **자기 업무 DB 를 소유하고**, 좌측 메뉴 트리에 형제 노드로 자기 메뉴를 기여한다"
+    relation: "**Hub 모듈이 아니다** — ARCH-010(Entity·DB 공통)이 적용되지 않는다. 빌드에 넣지 않아도 Hub 가 선다. **빼는 것이 아니라 애초에 넣지 않는 것이며**, 한 번 넣은 뒤 제거하는 경로는 설계하지 않는다"
+  - id: TRM-135
+    term: 연동 방식
+    key: integrationMode
+    group: 정책
+    definition: "대상 시스템에 닿는 방법. `http`(업무 API 호출) 또는 `inProcess`(같은 빌드 안의 업무 확장을 서비스 빈으로 호출)"
+    relation: "**agent 위쪽의 계약은 같다** — 등록 · 권한 · 감사 · 호출 결과. **인프라 설계는 다르다** — 인증·타임아웃·재시도·멱등성 대 데이터소스·트랜잭션 경계·기동 순서"
+  - id: TRM-136
+    term: 차수
+    key: roadmap
+    group: 구조
+    definition: "제품 출시 단계. `RM-P1`(조회) · `RM-P2`(실행) · `RM-P3`(자동화) · `RM-P4`(심화)"
+    relation: "**방법론 단계(P0~P6)와 다른 축이다** — 차수 하나를 만들기 위해 P0~P6 을 한 바퀴 돈다(00-charter.yaml `roadmap_notes`). spec 항목의 `roadmap:` 필드가 이 값을 갖는다"
+
 # 훅과 인터럽트의 실행 순서 — **우리 설계가 이 순서에 의존한다.**
 hook_order: "BeforeCall 훅 → interrupt() 판정 → WrapCall 체인 → 노드 본문 → AfterCall 훅"
 hook_order_notes:
@@ -668,3 +695,23 @@ confusions:
     title: "사용자 그룹 ≠ 쿼터 등급"
     left: "**사용자 그룹** — 무엇에 **접근**할 수 있나. **여러 개** 가질 수 있고 범위는 합집합이다"
     right: "**쿼터 등급** — 얼마나 **쓸** 수 있나. **사용자당 하나**이며 그룹과 무관하다"
+
+  - pair: [TRM-133, TRM-134]
+    title: "Hub 모듈 ≠ 업무 확장"
+    severity: "**낱말 하나로 규칙이 잘못 적용된다**"
+    left: "**Hub 모듈** — admin·portal·agent. **AI 전용 DB 를 공유한다**(ARCH-010). 셋으로 고정이다"
+    right: "**업무 확장** — 함께 짓는 업무 시스템(WMS 등). **자기 업무 DB 를 소유한다.** 고객사마다 는다"
+    rule: >-
+      **ARCH-010(Entity·DB 를 모듈 경계 없이 공통으로 둔다)의 적용 대상은 Hub 모듈 셋뿐이다.**
+      업무 확장을 *모듈* 이라 부르면 이 규칙이 **업무 DB 를 AI 전용 DB 에 합치라고 말하게 된다** —
+      DB 분리 요구와 정면으로 어긋난다. 늘어나는 것은 Hub 모듈이 아니라 **대상 시스템과 업무 확장**이다.
+
+  - pair: [TRM-136, TRM-133]
+    title: "차수(RM-Pn) ≠ 방법론 단계(P0~P6)"
+    severity: "**같은 글자 `P1` 이 두 뜻이다**"
+    left: "**차수** `RM-P1` — *무엇을 언제 출시하나*. 제품 출시 단계이며 spec 항목의 `roadmap:` 이 갖는다"
+    right: "**단계** `P1` — *지금 어디까지 설계했나*. 방법론 단계이며 `project.state.yaml` 의 `current.phase` 가 갖는다"
+    rule: >-
+      **차수 하나를 만들기 위해 P0~P6 을 한 바퀴 돈다**(00-charter.yaml `roadmap_notes`).
+      그래서 같은 화면이 다음 차수에 다시 P1(요구사항)부터 시작할 수 있으며 **그것은 후퇴가 아니다.**
+      spec 에서 차수를 적는 필드 이름은 `roadmap:` 이다 — `phase:` 로 적으면 두 축이 같은 글자를 쓴다.
