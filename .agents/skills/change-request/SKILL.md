@@ -9,6 +9,9 @@ description: 베이스라인 이후의 변경 요청(CR)을 처리한다. 영향
 
 ## 먼저 확인: CR이 필요한가
 `gates.P3_design.status != approved` 면 CR 불필요. 그냥 spec을 고친다.
+**`gates` 는 현재 차수(`current.roadmap`)의 것이다** — 차수를 넘기면 일곱이 `not_started` 로
+돌아가므로 `G3` 승인 전 상태가 되고, 그 구간의 spec 변경은 다시 CR 없이 고친다
+(`process/04-gates.md` §5). **다만 지난 차수가 이미 구현한 것을 건드리면 CR 이다.**
 G3 승인 이후에만 CR 절차를 탄다. → `aidd-guide/process/08-change-control.md`
 
 ## 절차

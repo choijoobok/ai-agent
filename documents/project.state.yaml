@@ -12,15 +12,24 @@ project:
   owner: "사용자 (고객·의사결정자)"
 
 current:
-  phase: P1                  # P0~P6 — P0 는 2026-09-05 승인됐다
+  phase: P1                  # P0~P6 — **방법론 단계**. P0 는 2026-09-05 승인됐다
+  roadmap: RM-P1             # RM-P1~RM-P4 — **로드맵 차수**. 지금 짓고 있는 제품 차수다
+  # ↑ **축이 둘이고 글자가 같다.** 차수는 *무엇을 내는가*(00-charter.yaml roadmap),
+  #   단계는 *어디까지 만들었는가*(P0~P6)다. 한 차수가 P0~P6 을 한 바퀴 돈다.
+  #   `trace-check` 가 이 값을 읽어 **뒤 차수의 결손을 오류가 아니라 경고로** 센다.
   slice: null                # 구현 단계에서만: SLICE-###
   blocked_by: [OQ-002]   # **지금 단계를 막는다.** P0 는 승인됐고 P1 이 여기서 막힌다
   template_maintenance: false
   # ↑ true 로 켜면 G3 전에도 sources/ 를 고칠 수 있다(guard-write ①).
   #   **템플릿 자체의 보수에만 켠다.** 켠 사실이 여기 남아 무엇을 왜 열었는지 추적된다.
 
-# ── 단계 게이트 ────────────────────────────────────────────────────
+# ── 단계 게이트 — **현재 차수(`current.roadmap`)의 것이다** ────────
 # status: not_started | in_progress | self_verified | approved
+#
+# **게이트는 차수마다 한 벌 돈다**(process/04-gates.md §5). 여기 있는 일곱은 지금 도는
+# 차수의 게이트이고, 차수를 넘길 때 `phase-gate` 가 **아래 `roadmap_closed` 로 접어 넣고
+# 일곱을 `not_started` 로 되돌린다.** 차수별로 표를 늘리지 않는 이유는 읽는 사람과 훅이
+# *지금 어디인가* 하나만 물어보기 때문이고, 지난 차수는 요약 한 줄이면 족하다.
 gates:
   P0_inception:    { status: approved, approved_at: "2026-09-05", note: "**Exit Criteria 8/8.** 목적 한 문장 · 성공 기준 셋(정확성 1 · 유효성 2 · 절제 3, 목표값은 ASM-002 로 P1) · 범위 In 7/Out 10 · 액터 11 전원 목적 보유 · 제약 44 · 트랙 full · 기존 시스템 병행 · 기대치 balanced. 안고 넘어간 것 셋은 아래 gate_note" }
   P1_discovery:    { status: in_progress, approved_at: null, note: "03·10 이관 완료. **11-processes.yaml 이 비어 있다** — 프로세스 정의는 CON-017 에 막혀 있다" }
@@ -52,6 +61,11 @@ gate_note: >-
   NFR-006~009 가 재는 방법을 정한다. ③ 이 말한 *아무도 판정하지 않는다* 는 이제
   **재기 전이라 판정하지 않는다** 로 성격이 바뀌었고, 남은 것은 계측을 P4 에서
   실제로 심는 일 하나다(`21-nfr.yaml` 머리의 `@defer P4`).
+
+# ── 닫힌 차수 ──────────────────────────────────────────────────────
+# 차수를 넘길 때 위 `gates` 를 접어 한 줄로 남긴다: { roadmap, closed_at, note }
+# **아직 없다** — RM-P1 이 첫 차수이고 돌고 있다.
+roadmap_closed: []
 
 # ── 다음 작업 (사용자가 택했다) ─────────────────────────────────────
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
@@ -134,8 +148,10 @@ counters:
 
 counter_note: >-
   **UC · ENT · API · TC 가 0 이라 추적성 체인이 끊겨 있다.**
-  `node .claude/hooks/trace-check.mjs --all` 이 그 사실을 오류로 보고한다 —
-  FEAT 85건에 TC 가 없어 T5, NFR 23건에 TC 가 없어 T7. **G3 를 통과할 수 없다.**
+  `node .claude/hooks/trace-check.mjs --all` 이 그 사실을 보고한다 — **오류 86 · 경고 22.**
+  현재 차수(RM-P1)의 것만 오류다: T5 66 · T7 20. 뒤 차수의 22건은 경고로 내려간다 —
+  **결손이 아니라 순서이기 때문**이고, 오류로 세면 RM-P1 의 G3 가 RM-P4 때문에 안 열린다.
+  **그래도 G3 를 통과할 수 없다** — 지금 차수의 86건이 그대로 남아 있다.
   이것은 결함이 아니라 **현재 상태의 정직한 표시**다.
   @defer P3 — 30-usecases · 40-domain · 50-api · 70-testcases 넷을 만든다. 지어내지 않았다
 

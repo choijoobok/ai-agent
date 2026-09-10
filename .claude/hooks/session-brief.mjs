@@ -42,6 +42,11 @@ if (!existsSync(join(REPO, STATE_FILE))) {
 
 const state = readState();
 const phase = currentPhase(state);
+/*
+  **차수와 단계는 다른 축인데 글자가 같다**(`RM-P1` 과 `P1`). 브리핑에 단계만 실으면 읽는
+  쪽이 게이트 표를 *제품 전체의 진척* 으로 읽는다 — 실제로는 **이 차수의 진척**이다.
+*/
+const roadmap = state?.current?.roadmap || '차수 미정';
 const name = state?.project?.name || '(이름 미정)';
 const openQuestions = Array.isArray(state?.current?.blocked_by) ? state.current.blocked_by : [];
 const oqs = Array.isArray(state?.open_questions) ? state.open_questions : [];
@@ -58,8 +63,8 @@ const running = slices.filter((s) => s?.status === 'in_progress').map((s) => s?.
 
 const lines = [
   '[프로젝트 상태]',
-  `프로젝트: ${name} · 단계: ${phase} ${PHASE_NAME[phase] ?? ''}`,
-  `게이트: ${gates}`,
+  `프로젝트: ${name} · 차수: ${roadmap} · 단계: ${phase} ${PHASE_NAME[phase] ?? ''}`,
+  `게이트: ${gates}   ← ${roadmap} 의 것이다(차수마다 한 벌 돈다)`,
   `미결 질문(OQ) ${oqs.length}건 · 미확인 가정(ASM) ${asmCount}건${asmIds.length ? ` — ${asmIds.slice(0, 5).join(', ')}` : ''}`,
 ];
 if (running.length > 0) lines.push(`진행 중 슬라이스: ${running.join(', ')}`);

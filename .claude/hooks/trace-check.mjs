@@ -147,6 +147,21 @@ function walk(dir, acc = []) {
   return acc;
 }
 
+/** `RM-P2` → 2. 차수가 없으면 0 — <b>모든 차수에 걸린다</b>는 뜻이다. */
+function roadmapOrder(v) {
+  const m = /^RM-P([0-9]+)$/.exec(String(v ?? '').trim());
+  return m ? Number(m[1]) : 0;
+}
+
+/**
+ * 항목이 <b>현재 차수보다 뒤</b>면 그 차수 이름을, 아니면 `null` 을 준다.
+ * `current.roadmap` 을 읽지 못하면 아무것도 뒤가 아니다 — 강도를 낮추지 않는다.
+ */
+function laterThanCurrentRoadmap() {
+  const cur = roadmapOrder(readState()?.current?.roadmap) || Infinity;
+  return (x) => (roadmapOrder(x?.roadmap) > cur ? x.roadmap : null);
+}
+
 function fullCheck() {
   const errors = [];
   const warnings = [];
@@ -214,7 +229,17 @@ function fullCheck() {
     }
   }
 
-  // T5 · T6 — FEAT → TC
+  /*
+    T5 · T6 — FEAT → TC. **차수가 강도를 정한다.**
+
+    <p>`FEAT` 와 `NFR` 은 로드맵 차수(`roadmap: RM-Pn`)를 갖고, 게이트는 <b>차수마다 한 번씩</b>
+    돈다(`process/04-gates.md` §5). 그러므로 <b>아직 오지 않은 차수의 항목에 TC 가 없는 것은
+    결손이 아니라 순서다</b> — 그것을 오류로 세면 RM-P1 의 `G3` 가 RM-P4 때문에 영영 열리지
+    않고, 열려면 아직 설계하지 않은 것의 테스트를 지어내야 한다.
+
+    <p><b>현재 차수를 모르면 낮추지 않는다</b> — `current.roadmap` 이 없거나 읽을 수 없으면
+    전부 오류로 둔다. 모르는 것을 이유로 게이트를 비우는 것이 가장 나쁜 실패다.
+  */
   const tcByFeat = new Map();
   for (const t of tcs) {
     const key = t?.feature;
@@ -222,10 +247,16 @@ function fullCheck() {
     tcByFeat.get(key).push(t);
   }
   const EXCEPTION_TYPES = ['business_exception', 'validation', 'permission', 'exception'];
+  const later = laterThanCurrentRoadmap();
   for (const f of feats) {
     const mine = tcByFeat.get(f?.id) ?? [];
     if (mine.length === 0) {
-      errors.push(['T5', f?.id, '테스트 케이스 없음']);
+      const ahead = later(f);
+      (ahead ? warnings : errors).push([
+        'T5',
+        f?.id,
+        ahead ? `테스트 케이스 없음 — ${ahead} 은 아직 오지 않았다` : '테스트 케이스 없음',
+      ]);
     } else if (!mine.some((t) => EXCEPTION_TYPES.includes(t?.type))) {
       warnings.push(['T6', f?.id, '정상 케이스만 있다 — 예외 TC 필요']);
     }
@@ -246,7 +277,13 @@ function fullCheck() {
   for (const n of nfrs) {
     const missing = T7_FIELDS.filter(([k]) => !n?.[k]).map(([, ko]) => ko);
     if (missing.length > 0) {
-      errors.push(['T7', n?.id, `${missing.join(' · ')} 없음 — 측정 못 하는 목표는 목표가 아니다`]);
+      const ahead = later(n);
+      (ahead ? warnings : errors).push([
+        'T7',
+        n?.id,
+        `${missing.join(' · ')} 없음 — ` +
+          (ahead ? `${ahead} 은 아직 오지 않았다` : '측정 못 하는 목표는 목표가 아니다'),
+      ]);
     }
   }
 

@@ -107,7 +107,8 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <SessionStart가
 | 요청 | 진입 |
 |---|---|
 | **지금 어디까지 됐나** | `documents/project.state.yaml` → `pm-status` 스킬 |
-| **새 시스템·모듈 착수** | `kickoff` 스킬 → [`aidd-guide/phase/P0-inception.md`](aidd-guide/phase/P0-inception.md) |
+| **새 프로젝트 착수** | `kickoff` 스킬 → [`aidd-guide/phase/P0-inception.md`](aidd-guide/phase/P0-inception.md). **이 저장소 안에서 무언가를 새로 여는 것은 여기가 아니다** — `kickoff` 는 빈 템플릿에서 프로젝트 하나를 세운다 |
+| **다음 차수를 연다** | `phase-gate` 스킬의 `G6` 승인이 차수를 넘긴다 → [`aidd-guide/process/04-gates.md`](aidd-guide/process/04-gates.md) §5. **업무 시스템 확장(SHAPE-02)은 Hub 완성 뒤이며 그때 이 자리를 다시 본다** |
 | **요구사항·설계 산출물** | [`aidd-guide/artifact/INDEX.md`](aidd-guide/artifact/INDEX.md) — 산출물 지도(무엇을 언제 어디에) |
 | **단계를 마감한다** | `phase-gate` 스킬 → [`aidd-guide/process/04-gates.md`](aidd-guide/process/04-gates.md) |
 | **메뉴 화면 신규·수정** | **먼저 §6.3 워크플로** → `documents/screen/{페이지경로}/requirements.md` → [`aidd-guide/artifact/screen/INDEX.md`](aidd-guide/artifact/screen/INDEX.md) |

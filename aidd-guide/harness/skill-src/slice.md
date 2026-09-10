@@ -9,6 +9,8 @@ description: 수직 슬라이스 하나를 구현한다. 스펙 재확인 → �
 
 ## 전제 조건 확인
 - `gates.P3_design.status == approved` 여야 한다. 아니면 **거부하고 이유를 보고**한다.
+  `gates` 는 **현재 차수(`current.roadmap`)의 것**이다 — 지난 차수의 `G3` 승인이 이번 차수를
+  열지 않는다(`process/04-gates.md` §5).
 - 의존 슬라이스가 `done` 인지 확인.
 
 ## 절차 — `aidd-guide/process/07-slice.md` §3
