@@ -1,4 +1,4 @@
-version: 1
+version: 2
 
 constitution:
   common: AGENTS.md
@@ -15,6 +15,7 @@ hooks:
   contract: aidd-guide/harness/hooks-contract.md
   chain_source: aidd-guide/harness/runtime/chains.mjs
   pretool_bootstrap: aidd-guide/harness/runtime/pretool-bootstrap.mjs
+  codex_revision: aidd-guide/harness/runtime/codex-hook-revision.mjs
   shared_policy_engine: .claude/hooks/
   claude_wiring: .claude/settings.json
   codex_wiring: .codex/hooks.json

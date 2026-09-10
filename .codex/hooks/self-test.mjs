@@ -7,6 +7,12 @@ import { REPO, provider, skillRef } from '../../.claude/hooks/lib.mjs';
 import { allowHookRepair, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
 import { patchTargets, runFileChain } from './file-chain.mjs';
 import { crashOutput, patchTargets as bootstrapTargets } from '../../aidd-guide/harness/runtime/pretool-bootstrap.mjs';
+import {
+  checkCodexHookContext,
+  codexHookSurface,
+  configuredCodexHookRevision,
+  currentCodexHookRevision,
+} from '../../aidd-guide/harness/runtime/codex-hook-revision.mjs';
 
 const generated = 'sources/backend/bootstrap/src/main/resources/db/changelog/data/003-init-menu.csv';
 const patch = `*** Begin Patch\n*** Update File: ${generated}\n@@\n-old\n+new\n*** End Patch`;
@@ -100,6 +106,19 @@ assert.equal(skillSrc.some((x) => String(x?.systemMessage ?? '').includes('실�
    틀리면 커밋 표식과 대화 기록이 **조용히 남의 이름으로 남는다.** */
 assert.equal(provider(), 'codex');
 assert.equal(skillRef('trace'), '`$trace`');
+
+/* `/hooks` 승인 확인은 현재 실행면과 설정 revision, SessionStart가 넣은 값을 모두 센다.
+   통과만 시험하면 확인값을 아예 보지 않는 구현도 초록이 된다. */
+const hookRevision = currentCodexHookRevision();
+assert.equal(configuredCodexHookRevision(), hookRevision);
+assert.equal(checkCodexHookContext(hookRevision).ok, true);
+assert.equal(checkCodexHookContext('').ok, false);
+assert.equal(checkCodexHookContext('0'.repeat(64)).ok, false);
+const hookSurface = codexHookSurface().map((path) => path.replace(/\\/g, '/'));
+assert.equal(hookSurface.some((path) => path.endsWith('/.claude/hooks/guard-write.mjs')), true);
+assert.equal(hookSurface.some((path) => path.endsWith('/.codex/hooks/session-start.mjs')), true);
+assert.equal(hookSurface.some((path) => path.endsWith('/.claude/hooks/context-gauge.mjs')), false);
+assert.equal(hookSurface.some((path) => path.endsWith('/.codex/hooks/self-test.mjs')), false);
 
 /* 수리 경로 — 훅이 죽었을 때 **훅 파일만** 열리고 나머지는 닫혀 있어야 한다.
    여는 쪽만 시험하면 게이트가 통째로 열린 것을 못 본다. 양쪽을 다 센다. */

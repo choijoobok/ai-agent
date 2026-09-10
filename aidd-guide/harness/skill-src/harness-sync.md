@@ -37,6 +37,7 @@ AI 디렉터리에 그대로 복사하는 것이 아니라, 공통 결과와 각
 
 ```bash
 node aidd-guide/harness/runtime/sync-skills.mjs --write
+node aidd-guide/harness/runtime/codex-hook-revision.mjs --sync
 node aidd-guide/harness/runtime/harness-check.mjs
 node .codex/hooks/self-test.mjs
 node .claude/hooks/harness-doc.mjs --write
@@ -47,4 +48,6 @@ node aidd-guide/meta/_meta/lint.mjs
 고친 뒤 다시 생성한다. 실제 Claude와 Codex 세션에서 각각 대표 trigger 하나와 차단/경고 하나를
 smoke test하고, 실행하지 못한 쪽은 완료로 가장하지 않고 남은 검증을 보고한다.
 하네스 파일을 pull하거나 고친 세션은 이미 읽은 진입 문서·hook hash를 새 것으로 간주하지 않는다.
-새 세션을 열고 Codex는 `/hooks`에서 현재 정의를 승인한 뒤 smoke test한다.
+단, 변경 전 Codex revision 검사를 통과한 작성 task는 위 검증과 **해당 변경만 경로 지정한 커밋
+한 번**까지 끝낸다. 시작부터 불일치했거나 pull로 받은 task에는 이 예외가 없다. 커밋 뒤 새
+세션을 열고 Codex는 `/hooks`에서 현재 정의를 승인한 뒤 smoke test한다.

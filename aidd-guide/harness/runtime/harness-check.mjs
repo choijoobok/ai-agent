@@ -6,6 +6,10 @@ import { fileURLToPath } from 'node:url';
 import { parseYaml } from '../../../.claude/hooks/lib.mjs';
 import { skillDiffs, sourceSkills } from './sync-skills.mjs';
 import { CHAINS } from './chains.mjs';
+import {
+  configuredCodexHookRevision,
+  currentCodexHookRevision,
+} from './codex-hook-revision.mjs';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 
@@ -18,6 +22,7 @@ export function checkHarness() {
     manifest?.hooks?.contract,
     manifest?.hooks?.chain_source,
     manifest?.hooks?.pretool_bootstrap,
+    manifest?.hooks?.codex_revision,
     manifest?.hooks?.claude_wiring,
     manifest?.hooks?.codex_wiring,
     'aidd-guide/harness/providers/claude-code.md',
@@ -52,6 +57,11 @@ export function checkHarness() {
   if (codexText.includes('context-gauge')) {
     issues.push('Codex에 Claude 전용 context-gauge가 연결되어 있다.');
   }
+  const currentRevision = currentCodexHookRevision(REPO);
+  const configuredRevision = configuredCodexHookRevision(REPO);
+  if (!configuredRevision || configuredRevision !== currentRevision) {
+    issues.push(`Codex hook revision이 실행면과 다르다: 설정 ${configuredRevision || '(없음)'} · 현재 ${currentRevision}`);
+  }
   for (const adapter of ['session-start.mjs', 'session-brief.mjs', 'file-chain.mjs', 'pre-shell.mjs', 'log-raw.mjs']) {
     if (!codexText.includes(adapter)) issues.push(`Codex adapter 배선 없음: ${adapter}`);
   }
@@ -66,11 +76,18 @@ export function checkHarness() {
   const claude = json('.claude/settings.json', issues);
   if (!claude?.hooks?.SessionStart) issues.push('Claude SessionStart 훅이 없다.');
   const claudeText = read('.claude/settings.json');
+  if (claudeText.includes('codex-hook-revision') || claudeText.includes('Codex 훅 실행 확인')) {
+    issues.push('Claude 배선에 Codex 전용 훅 승인 검사가 연결되어 있다.');
+  }
   for (const adapter of ['session-start.mjs', 'pre-write.mjs', 'pre-shell.mjs', 'post-write.mjs', 'log-raw.mjs', 'context-gauge.mjs']) {
     if (!claudeText.includes(adapter)) issues.push(`Claude adapter 배선 없음: ${adapter}`);
   }
   if (!claudeText.includes('pretool-bootstrap.mjs')) issues.push('Claude 파일 사전 훅이 bootstrap을 거치지 않는다.');
   if (!codexText.includes('pretool-bootstrap.mjs')) issues.push('Codex 파일 사전 훅이 bootstrap을 거치지 않는다.');
+  const agentsText = read('AGENTS.md');
+  if (!agentsText.includes('codex-hook-revision.mjs --check')) {
+    issues.push('AGENTS.md에 Codex hook revision preflight가 없다.');
+  }
   for (const [name, cfg] of [['Claude', claude], ['Codex', codex]]) {
     for (const group of cfg?.hooks?.PreToolUse ?? []) {
       for (const hook of group?.hooks ?? []) {

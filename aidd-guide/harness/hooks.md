@@ -155,7 +155,7 @@ sources/frontend/src/features/{기능}/…  ─→ screenRegistry.ts 역인덱�
 
 ## `git-sync` — 세션 시작에 원격을 당긴다
 
-**깨끗한 트리에서 `startup` 일 때만** `git pull --ff-only` 를 돌린다. 더러우면 당기지 않고 이유와 다음 할 일을 말한다 — 미커밋 변경 위로 남의 커밋을 얹을지는 **사람의 판단**이고(AGENTS.md §5-2), 푸시는 사용자가 말할 때만이다(§9). 판정·실패 정책·fixture 는 [hooks-contract.md](./hooks-contract.md) 가 갖는다.
+**깨끗한 트리에서 `startup` 일 때만** `git pull --ff-only` 를 돌린다. 더러우면 당기지 않고 이유와 다음 할 일을 말한다 — 미커밋 변경 위로 남의 커밋을 얹을지는 **사람의 판단**이고(AGENTS.md §5-2), 푸시는 사용자가 말할 때만이다(§9). Codex adapter는 시작 전후 훅 revision이 같을 때만 실행 확인을 문맥에 넣으며, 승인 절차와 fixture는 [hooks-contract.md](./hooks-contract.md)가 갖는다.
 
 ## 컨텍스트 관리 — 같은 목적, 다른 구현
 

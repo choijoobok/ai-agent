@@ -29,6 +29,21 @@ tags: [harness, codex, adapter]
 기존 task는 새 `AGENTS.md`와 hook 설정을 다시 읽지 않으므로 하네스를 pull·수정한 뒤에는
 **새 task를 열고 `/hooks` 승인을 다시 확인한다.**
 
+`aidd-guide/harness/runtime/codex-hook-revision.mjs`는 Codex adapter와 공통 정책의 실행면을
+SHA-256 revision으로 묶는다. 훅 작성자는 `--sync`로 그 값을 `.codex/hooks.json`의 startup
+실행 명령 인자에 반영한다. 그러면 공통 정책만 바뀌어도 실제 명령이 바뀌어 팀원별 재승인을
+요구한다. `harness-check`와 CI가 revision 갱신 누락을 막는다.
+
+승인된 `SessionStart`만 `[Codex 훅 실행 확인] revision=…`을 문맥에 넣는다. `AGENTS.md`의
+Codex 전용 검사는 매 요청에서 그 값과 현재 실행면을 대조하며, 없거나 다르면 일반 작업을
+보류한다. 이는 Codex 엔진의 보안 경계가 아니라 저장소 절차의 강제 장치다. 승인되지 않은 훅은
+스스로 실행될 수 없다는 부트스트랩 한계는 남으며, 우회용 trust 플래그는 사용하지 않는다.
+
+변경 전 revision 검사를 통과한 task가 사용자의 요청으로 훅을 작성한 경우에는
+`harness-sync`의 검증과 그 변경만 담은 경로 지정 커밋 한 번까지 끝낸다. 시작부터 불일치했거나
+pull로 새 훅을 받은 task는 이 종료 예외를 쓸 수 없다. 커밋 뒤에는 `/hooks` 승인과 새 task가
+필요하다.
+
 ## 입력 차이
 
 Codex shell은 hook에서 `Bash`로 보이고 명령은 `tool_input.command`에 온다. 파일 편집은
@@ -74,6 +89,7 @@ Codex 쪽에 문서화된 trailer 가 있으면 그것으로 바꾸고 이 절�
 ## 확인과 제약
 
 ```bash
+node aidd-guide/harness/runtime/codex-hook-revision.mjs --sync
 node aidd-guide/harness/runtime/harness-check.mjs
 node .codex/hooks/self-test.mjs
 ```
