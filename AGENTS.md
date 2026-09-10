@@ -211,7 +211,10 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 - **경로를 지정해 커밋한다**: `git commit -F - -- <경로…>`. 한 트리에서 세션이 둘일 수 있고, 낡은 인덱스가 남의 커밋을 되돌린다.
 - **PowerShell 에서 커밋 메시지에 큰따옴표를 쓰지 않는다** — here-string 인자가 깨져 pathspec 오류가 난다. 메시지는 heredoc(`-F -`)으로 넘긴다.
 - **커밋하는 생성물은 시드 CSV 뿐이다** — 소스와 같은 커밋에 담는다(빼면 새로 클론한 사람이 앱을 띄울 수 없다). `mockup.html` · `manual.html` · `documents/generated/` 는 **`.gitignore` 대상**이다 → [산출물 지도 §2](aidd-guide/artifact/INDEX.md).
-- AI별 커밋 표기처럼 실행 환경에만 해당하는 규칙은 각 provider 문서가 갖는다.
+- **AI 가 만든 커밋에는 만든 주체를 남긴다** — 메시지 끝에 `Agent: <이름>` 한 줄.
+  두 AI 가 한 저장소에 커밋하므로 표식이 없으면 **이 줄을 누가 썼나**를 나중에 알 방법이
+  없다(`guard-commit` 이 차단한다). **무엇을 적나는 각 provider 문서가 갖는다** —
+  이름은 저장소가 정하는 값이며, 남의 도구의 신원을 지어내지 않는다.
 
 ---
 

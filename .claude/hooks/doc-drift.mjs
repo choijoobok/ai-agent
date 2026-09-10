@@ -31,7 +31,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { REPO, readHookInput, targetPath, repoRelative, readText, warn, pass } from './lib.mjs';
+import { REPO, readHookInput, targetPath, repoRelative, readText, warn, pass, skillRef } from './lib.mjs';
 
 const input = await readHookInput();
 const path = repoRelative(targetPath(input));
@@ -129,7 +129,7 @@ warn(
     `${path} 를 고쳤다 — 이 화면(${screenUrl})의 문서를 **지금 대조한다**(AGENTS.md §6.4).`,
     `대상: ${docDir}/{requirements.md, manual.md}`,
     '볼 것: 컬럼 · 버튼 · API · 조회조건 · 검증 · 문구 · 테스트 케이스. **일치하면 고치지 않는다.**',
-    '요건서를 고쳤으면 mockup 스킬로 목업을 다시 만든다 — 목업을 손으로 맞추지 않는다.',
+    `요건서를 고쳤으면 ${skillRef('mockup')} 으로 목업을 다시 만든다 — 목업을 손으로 맞추지 않는다.`,
     '고쳤으면 소스와 문서를 **같은 커밋**에 담는다 — 나누면 그 사이의 커밋이 거짓말을 한다.',
     ...(misdirected
       ? [

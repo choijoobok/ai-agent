@@ -35,6 +35,19 @@ node aidd-guide/harness/runtime/sync-skills.mjs --write
 직접 호출 문법은 `/스킬명`이다. 스킬 옆의 실행 스크립트는 기존 경로를 유지한다. 이 파일들은
 Node 정책 엔진이며 Claude API에 묶이지 않았으므로 Codex도 같은 실물을 실행할 수 있다.
 
+## 커밋
+
+메시지 끝에 두 줄이 붙는다. **역할이 다르므로 둘 다 남긴다.**
+
+```
+Agent: Claude
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+```
+
+`Agent:`는 **이 저장소의 표식**이고 두 AI 가 같은 형식으로 적는다(AGENTS.md §9) — 하나의
+grep 으로 누가 만들었는지 셀 수 있어야 하기 때문이다. `Co-Authored-By:`는 **Claude Code 자체의
+관례**이며 forge 가 공동 작성자로 읽는다. 붙이는 조건은 `CLAUDE.md`가 갖는다.
+
 ## 훅
 
 Claude의 Write/Edit 계열 입력은 `tool_input.file_path`와 `content`/`new_string`을 사용한다.

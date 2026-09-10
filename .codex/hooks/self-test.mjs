@@ -2,7 +2,7 @@
 
 import { strict as assert } from 'node:assert';
 import { join } from 'node:path';
-import { REPO } from '../../.claude/hooks/lib.mjs';
+import { REPO, provider, skillRef } from '../../.claude/hooks/lib.mjs';
 import { runHookChain } from '../../.claude/hooks/hook-chain.mjs';
 import { patchTargets, runFileChain } from './file-chain.mjs';
 
@@ -65,5 +65,10 @@ const skillSrc = await runFileChain({
   },
 });
 assert.equal(skillSrc.some((x) => String(x?.systemMessage ?? '').includes('실행 실패')), false);
+
+/* provider 판정의 전제 — 이 파일 자체가 `.codex/hooks/` 에서 돌므로 codex 로 보여야 한다.
+   틀리면 커밋 표식과 대화 기록이 **조용히 남의 이름으로 남는다.** */
+assert.equal(provider(), 'codex');
+assert.equal(skillRef('trace'), '`$trace`');
 
 console.log('Codex hook adapter self-test 통과');

@@ -28,6 +28,7 @@ import {
   deny,
   warn,
   pass,
+  skillRef,
 } from './lib.mjs';
 
 /*
@@ -71,7 +72,7 @@ if (path.startsWith('sources/') && g3 !== 'approved' && !templateMode) {
       `설계 베이스라인(G3)이 승인되지 않아 구현 코드를 쓸 수 없다 — AGENTS.md §5-2.`,
       `현재 단계: ${phase} / G3: ${g3}`,
       '',
-      '지금 할 일은 현재 단계의 산출물을 완성하고 phase-gate 스킬로 승인을 받는 것이다.',
+      `지금 할 일은 현재 단계의 산출물을 완성하고 ${skillRef('phase-gate')} 로 승인을 받는 것이다.`,
       '',
       '**템플릿 자체의 보수라면 게이트의 대상이 아니다.** 그 작업이면 사용자에게 확인받고',
       `\`documents/project.state.yaml\` 의 \`current.template_maintenance: true\` 를 켠다 —`,
@@ -92,7 +93,7 @@ if (path.startsWith('documents/generated/') && existsSync(abs)) {
     deny(
       [
         `${path} 는 생성물이다 — 손으로 고치면 다음 doc-gen 실행에서 덮어써진다.`,
-        `원본을 고친다: ${src} → 고친 뒤 doc-gen 스킬로 재생성.`,
+        `원본을 고친다: ${src} → 고친 뒤 ${skillRef('doc-gen')} 으로 재생성.`,
         'AGENTS.md §5-4: `documents/spec/` 이 유일한 진실이다.',
       ].join('\n'),
     );
@@ -127,7 +128,7 @@ if (path.startsWith('documents/spec/') && g3 === 'approved') {
   warn(
     [
       `spec 베이스라인 이후 변경이다: ${path}`,
-      'change-request 스킬로 영향 분석 → 3옵션 → 사용자 판정을 거쳤는지 확인한다.',
+      `${skillRef('change-request')} 로 영향 분석 → 3옵션 → 사용자 판정을 거쳤는지 확인한다.`,
       '이미 CR-### 로 승인된 변경이면 그대로 진행하고, 아니면 지금 CR 을 먼저 연다.',
     ].join('\n'),
   );

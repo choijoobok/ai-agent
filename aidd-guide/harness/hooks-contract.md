@@ -93,10 +93,13 @@ rebase 중 무엇으로 합칠지는 AI 가 고르지 않는다. ③ **푸시하
 | `repoRelative(abs)` | 저장소 기준 상대 경로(슬래시 통일). **바깥이면 빈 문자열** |
 | `pass()` · `deny(reason)` · `warn(message)` | 통과 · 차단 · 알림. chain 안에서는 결과 객체로 회수한다 |
 | `runEmbeddedHook()` | 자식 process 없이 기존 정책 엔진을 한 번 실행한다 |
+| `provider()` · `PROVIDER_NAME` | 지금 부른 것이 `claude`인가 `codex`인가 — **진입 경로가 정한다**(Codex는 `.codex/hooks/` 어댑터를 거친다). 모르면 `unknown` |
+| `skillRef(name)` | 그 runtime에서 **실행되는 형태**의 스킬 표기 — `/이름` · `$이름` · 모르면 `이름 스킬` |
 
 **두 가지가 설계 결정이다** — 고칠 때 되돌리지 않는다:
 
 - **`REPO` 를 `process.cwd()` 로 바꾸지 않는다.** 훅이 어느 경로에서 불릴지는 하네스가 정하고, 그것이 바뀌면 **훅이 조용히 아무것도 안 하게** 된다.
+- **provider 판정을 훅 입력의 필드로 하지 않는다.** 안정 계약에 없는 필드로 분기하면 조용히 틀린다. 판정의 근거는 **우리가 만든 배선**이고, `harness-check`가 그 전제(Codex는 어댑터를 거친다)를 검사한다.
 - **`repoRelative` 는 저장소 밖을 빈 문자열로 돌려준다.** `normalize-encoding` 은 파일을 *고치므로* 밖을 상대 경로로 오인하면 남의 파일을 손댄다. **다른 드라이브**가 그 자리다 — 윈도우에서 `relative('D:\repo', 'C:\tmp\x')` 는 `..` 로 시작하지 않고 **절대 경로 그대로**를 돌려준다.
 
 `warn()` 은 `systemMessage`(사람)와 `additionalContext`(모델)를 **둘 다** 보낸다 — *사람이 봤는데 AI 는 모르는* 상태를 만들지 않는다.

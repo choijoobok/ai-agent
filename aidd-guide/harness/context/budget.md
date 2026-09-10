@@ -74,7 +74,7 @@ PreCompact/PostCompact는 실제로 저장할 별도 상태가 생길 때만 추
 ## 관련 카테고리
 
 - [AGENTS.md](../../../AGENTS.md) — 헌법·응답 규칙
-- [../providers/claude.md](../providers/claude.md) · [../providers/codex.md](../providers/codex.md)
+- [../providers/claude-code.md](../providers/claude-code.md) · [../providers/codex.md](../providers/codex.md)
 - [harness/context/reading.md](./reading.md) — 토큰 절약 읽기 전략
 - [harness/context/failure-modes.md](./failure-modes.md) — Context Rot 등 실패 모드
 - [quality/observability/token-economics.md](../../quality/observability/token-economics.md) — 캐시 hit rate 측정

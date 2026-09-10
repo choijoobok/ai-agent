@@ -27,7 +27,7 @@ tags: [harness, hooks, skills, automation, index]
 | LLM-HRN-001 | [hooks.md](./hooks.md) | 훅 하나하나가 무엇을 보고 무엇을 말하나 |
 | LLM-HRN-008 | [hooks-contract.md](./hooks-contract.md) | 배선 · `lib.mjs` 계약 · 새 훅을 더할 때 |
 | LLM-HRN-002 | [skills.md](./skills.md) | 스킬 둘의 카탈로그 + 작성 규약 · 훅/플레이북 경계 |
-| LLM-HRN-009 | [providers/claude.md](./providers/claude.md) | Claude Code 발견 경로·컨텍스트 경고 |
+| LLM-HRN-009 | [providers/claude-code.md](./providers/claude-code.md) | Claude Code 발견 경로·컨텍스트 경고 |
 | LLM-HRN-010 | [providers/codex.md](./providers/codex.md) | Codex 배선·`apply_patch` adapter·압축 재주입 |
 | LLM-HRN-003 | [automation-matrix.md](./automation-matrix.md) | 자동화 vs AI 책임 매트릭스 |
 | LLM-HRN-005 | [sub-agents.md](./sub-agents.md) | 서브에이전트 위임 정책 — provider 기능을 쓰되 같은 tree 동시 쓰기는 금지 |

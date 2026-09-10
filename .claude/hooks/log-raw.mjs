@@ -11,12 +11,16 @@
  * <p>두 이벤트가 한 파일을 나눠 쓴다: `UserPromptSubmit` 이 USER 를, `Stop` 이 AI 를.
  * 사람의 말은 훅 입력에 그대로 온다. Claude의 `Stop`은 transcript를 읽고, Codex는 안정된
  * `last_assistant_message` 필드를 먼저 쓴다.
+ *
+ * <p><b>어느 AI 와의 대화인지 제목에 적는다.</b> 한 날짜 파일을 둘이 나눠 쓰므로,
+ * 적지 않으면 <i>누구에게 한 말인지</i> 를 나중에 복원할 방법이 없다 — 워터마크도
+ * 프로바이더별로 따로 둔다(둘이 한 파일을 쓰면 서로의 진도를 지운다).
  */
 
 import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { REPO, readHookInput, readText, pass } from './lib.mjs';
+import { REPO, readHookInput, readText, pass, provider, PROVIDER_NAME } from './lib.mjs';
 
 /* 마스킹 규칙의 memo. **선언이 실행보다 위에 있어야 한다** — 아래 두면 첫 턴이 TDZ 로
    죽고, 훅이 조용히 실패하도록 만들어 두었기에 그 죽음이 보이지 않는다(2026-09-03 실물). */
@@ -24,6 +28,7 @@ let cached = null;
 
 const input = await readHookInput();
 const event = input?.hook_event_name ?? '';
+const who = PROVIDER_NAME[provider()];
 
 try {
   if (event === 'UserPromptSubmit') appendUser(input);
@@ -38,7 +43,7 @@ pass();
 function appendUser(hook) {
   const prompt = String(hook?.prompt ?? '').trim();
   if (!prompt) return;
-  append(`## [${stamp()}]\n\n### USER\n\n${mask(prompt)}\n\n`);
+  append(`## [${stamp()}] ${who}\n\n### USER\n\n${mask(prompt)}\n\n`);
 }
 
 /**
@@ -55,7 +60,7 @@ function appendAssistant(hook) {
     const id = String(hook?.turn_id ?? direct);
     if (mark.read() === id) return;
     mark.write(id);
-    append(`### AI\n\n${mask(direct)}\n\n---\n\n`);
+    append(`### AI (${who})\n\n${mask(direct)}\n\n---\n\n`);
     return;
   }
 
@@ -79,7 +84,7 @@ function appendAssistant(hook) {
 
   mark.write(fresh[fresh.length - 1]?.uuid);
   if (!text) return;
-  append(`### AI\n\n${mask(text)}\n\n---\n\n`);
+  append(`### AI (${who})\n\n${mask(text)}\n\n---\n\n`);
 }
 
 function append(chunk) {
@@ -149,7 +154,9 @@ function watermark(sessionId) {
   const file = join(
     tmpdir(),
     'ai-agent-log-raw',
-    `${String(sessionId ?? 'none').replace(/[^\w-]/g, '')}.txt`,
+    /* 프로바이더를 파일 이름에 넣는다 — 둘이 한 워터마크를 쓰면 서로의 진도를 지우고,
+       두 갈래(transcript · last_assistant_message)가 저장하는 값의 종류도 다르다. */
+    `${provider()}-${String(sessionId ?? 'none').replace(/[^\w-]/g, '')}.txt`,
   );
   return {
     read() {

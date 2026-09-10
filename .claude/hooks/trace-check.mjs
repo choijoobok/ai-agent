@@ -23,6 +23,7 @@ import {
   warn,
   pass,
   needsFeatTag,
+  skillRef,
   readState,
   gateStatus,
 } from './lib.mjs';
@@ -66,7 +67,7 @@ warn(
   [
     `추적성 오류 ${errors.length}건이 남아 있다 (게이트 통과 불가):`,
     ...head,
-    errors.length > 8 ? `  … 외 ${errors.length - 8}건. trace 스킬로 전체 확인` : '',
+    errors.length > 8 ? `  … 외 ${errors.length - 8}건. ${skillRef('trace')} 로 전체 확인` : '',
   ]
     .filter(Boolean)
     .join('\n'),

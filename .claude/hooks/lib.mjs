@@ -208,6 +208,44 @@ export function inject(text) {
   finish(text);
 }
 
+/**
+ * 지금 이 훅을 부른 것이 누구인가 — `claude` · `codex` · `unknown`.
+ *
+ * <p><b>배선 경로가 정한다.</b> Codex 는 언제나 `.codex/hooks/*.mjs` 어댑터를 거치고
+ * Claude 는 `.claude/hooks/*.mjs` 를 직접 부른다 — <b>우리가 그렇게 배선했으므로</b>
+ * 짐작이 아니라 사실이다(`harness-check` 가 그 전제를 검사한다). 훅 입력의 필드를
+ * 뒤지지 않는 이유가 이것이다: 안정 계약에 없는 필드로 분기하면 <b>조용히 틀린다.</b>
+ *
+ * <p>손으로 `node .claude/hooks/…` 를 돌린 경우처럼 배선 밖이면 환경 변수를 본다.
+ * 둘 다 모르면 <b>`unknown` 이다</b> — 모르는 것을 아는 척하지 않는다(AGENTS.md §3).
+ */
+export function provider() {
+  const entry = String(process.argv[1] ?? '').replace(/\\/g, '/');
+  if (entry.includes('/.codex/')) return 'codex';
+  if (entry.includes('/.claude/')) return 'claude';
+  if (process.env.CLAUDECODE || process.env.CLAUDE_CODE_ENTRYPOINT) return 'claude';
+  if (process.env.CODEX_HOME || process.env.CODEX_SANDBOX) return 'codex';
+  return 'unknown';
+}
+
+/** 사람에게 보이는 이름 — 로그와 커밋 표식이 함께 쓴다. */
+export const PROVIDER_NAME = { claude: 'Claude', codex: 'Codex', unknown: 'AI' };
+
+/**
+ * 스킬을 <b>그 자리에서 실행할 수 있는 형태</b>로 적는다 — Claude 는 `/이름`,
+ * Codex 는 `$이름`.
+ *
+ * <p>공통 훅이 한쪽 문법을 박으면 다른 쪽에서 <i>실행되지 않는 말</i>이 되고, 둘 다
+ * 피해 "이름 스킬" 로만 적으면 <b>양쪽 모두에게 한 단계 멀어진다.</b> 아는 쪽에서는
+ * 부를 수 있게 적고, 모르면 중립으로 적는다.
+ */
+export function skillRef(name) {
+  const who = provider();
+  if (who === 'claude') return `\`/${name}\``;
+  if (who === 'codex') return `\`$${name}\``;
+  return `${name} 스킬`;
+}
+
 /** 같은 프로세스에서 기존 top-level 훅을 한 번 실행한다 — 직렬 chain 전용. */
 export async function runEmbeddedHook(scriptPath, input) {
   embeddedInput = input;

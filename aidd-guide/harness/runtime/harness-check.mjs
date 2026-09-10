@@ -17,7 +17,7 @@ export function checkHarness() {
     manifest?.hooks?.contract,
     manifest?.hooks?.claude_wiring,
     manifest?.hooks?.codex_wiring,
-    'aidd-guide/harness/providers/claude.md',
+    'aidd-guide/harness/providers/claude-code.md',
     'aidd-guide/harness/providers/codex.md',
     '.github/workflows/harness.yml',
   ].filter(Boolean);
@@ -59,6 +59,18 @@ export function checkHarness() {
   for (const adapter of ['session-start.mjs', 'pre-write.mjs', 'post-write.mjs', 'log-raw.mjs', 'context-gauge.mjs']) {
     if (!claudeText.includes(adapter)) issues.push(`Claude adapter 배선 없음: ${adapter}`);
   }
+  /* `lib.mjs` 의 provider() 가 **진입 경로로** 누구인지 판정한다. 그 전제가 배선이다 —
+     Codex 가 `.claude/hooks/` 를 직접 부르면 그 판정이 조용히 틀린다. */
+  for (const [event, groups] of Object.entries(codex?.hooks ?? {})) {
+    for (const group of groups) {
+      for (const hook of group?.hooks ?? []) {
+        if (!String(hook?.command ?? '').includes('/.codex/hooks/')) {
+          issues.push(`Codex ${event} 배선이 .codex/hooks/ 어댑터를 거치지 않는다 — provider 판정이 틀어진다.`);
+        }
+      }
+    }
+  }
+
   /* 같은 chain 이 도는데 예산이 다르면 좁은 쪽만 잘린다 — 한 번 갈렸던 자리다. */
   for (const [event, claudeHook] of [['PreToolUse', 'pre-write.mjs'], ['PostToolUse', 'post-write.mjs']]) {
     const mine = timeoutOf(claude, event, claudeHook);

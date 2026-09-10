@@ -22,6 +22,7 @@ import {
   PHASE_FILE,
   STATE_FILE,
   inject,
+  skillRef,
 } from './lib.mjs';
 import { checkHarness } from '../../aidd-guide/harness/runtime/harness-check.mjs';
 
@@ -33,7 +34,7 @@ if (!existsSync(join(REPO, STATE_FILE))) {
     [
       '[프로젝트 상태]',
       `${STATE_FILE} 이 없다 — 아직 프로젝트가 시작되지 않았다.`,
-      '사용자가 시스템 구축을 요청하면 kickoff 스킬로 P0 착수를 개시한다.',
+      `사용자가 시스템 구축을 요청하면 ${skillRef('kickoff')} 로 P0 착수를 개시한다.`,
       ...harnessNotice(),
     ].join('\n'),
   );
