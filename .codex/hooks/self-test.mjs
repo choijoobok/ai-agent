@@ -253,6 +253,14 @@ assert.equal(codexStart.hookSpecificOutput.hookEventName, 'SessionStart');
 assert.equal(codexStart.hookSpecificOutput.additionalContext.includes(attestation), true);
 assert.equal(codexStart.hookSpecificOutput.additionalContext.includes('[프로젝트 상태] …'), true);
 
+/* 공식 계약상 빈 출력도 성공이지만, 실측된 `PreToolUse Failed` 표시를 되살리지 않도록
+   허용 경로도 결정 없는 JSON 하나를 낸다. `allow`를 쓰면 Codex가 지원하지 않는 결정이다. */
+const codexPretoolPass = JSON.parse(captureEmit([], 'PreToolUse'));
+assert.deepEqual(codexPretoolPass, {
+  hookSpecificOutput: { hookEventName: 'PreToolUse' },
+});
+assert.equal(codexPretoolPass.hookSpecificOutput.permissionDecision, undefined);
+
 /* Claude 는 반대다 — 여기까지 JSON 으로 바꾸면 문맥에 JSON 이 그대로 들어간다. */
 process.env.AI_HOOK_PROVIDER = 'claude';
 const claudeStart = captureEmit([attestation], 'SessionStart');

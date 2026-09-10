@@ -115,8 +115,12 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --pretool-canary <Sessio
 현재 `guard-bash`가 실행 중이면 스크립트 진입 전에 `[Codex PreToolUse 생존 확인]` 사유로 차단한다.
 훅이 빠졌거나 실패해 열린 경우에는 스크립트가 실행되어 0이 아닌 종료와 실패 문구를 낸다. 파일이나
 외부 상태를 바꾸지 않으므로 실패 경로도 무해하다. revision과 카나리 중 하나라도 실패하면 일반
-업무를 보류한다. 공식 문서도 `exec_command`와 코드 모드의 중첩 호출이 `Bash` matcher를 탄다고
-명시하지만, 일부 특수 도구 경로는 예외일 수 있으므로 이 실측을 설정 확인으로 대신하지 않는다.
+업무를 보류한다. [Codex Hooks 공식 문서](https://developers.openai.com/codex/hooks)는
+`exec_command`와 코드 모드의 중첩 호출도 `Bash` matcher를 탄다고 설명하지만, 2026-09-11 실측에서
+데스크톱 내장 CLI 0.153.4와 CLI 0.154.0 모두 코드 모드 안쪽 `exec_command`에 `PreToolUse`를
+호출하지 않았다. matcher를 넓혀도 처리기 자체가 시작되지 않았고, 코드 모드 호스트를 끄면 직접
+shell로 바뀌지 않고 도구가 닫혔다. **승인한 새 실행에서 revision은 맞는데 카나리만 실행되면
+재승인·새 task를 반복하지 않는다.** 이때는 제품의 중첩 호출 결손으로 보고하고 계속 보류한다.
 
 **출력은 JSON이다** — `{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":…}}`.
 Claude는 같은 자리에서 날 것의 텍스트를 쓰며, 두 갈래는 `emitHookResults` 한 곳에서
@@ -124,6 +128,12 @@ Claude는 같은 자리에서 날 것의 텍스트를 쓰며, 두 갈래는 `emi
 Codex가 훅 전체를 실패로 잡는다. 낼 것은 `outputs` 배열에 넣어 같은 emitter로 보낸다.
 2026-09-11에 이것 때문에 실행 확인이 문맥에 닿지 못했고, 훅은 셸·`commandWindows`·
 `codex sandbox` 어디서 직접 돌려도 `exit 0`이라 **직접 실행으로는 보이지 않았다.**
+
+`PreToolUse` 허용도 Codex에서는 결정 없는 중립 JSON을 낸다. 공식 계약상 종료 코드 0의 빈 출력은
+성공이지만, CLI 0.154.0의 직접 shell 기록은 안전한 명령마다 `PreToolUse Failed`를 표시한 뒤
+명령을 실행했다. 그 기록에는 처리기 stderr가 없어 과거 실패의 단일 원인은 확정할 수 없다.
+중립 JSON은 침묵을 실패로 오인하는 실행면을 피하는 호환 조치이며, 위 코드 모드 결손을 고친다고
+주장하지 않는다. adapter self-test는 이 실제 출력 바이트까지 고정한다.
 
 ## 컨텍스트
 

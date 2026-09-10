@@ -6,8 +6,9 @@
  * 두 저장소에서 합칠 때 <b>런타임을 Node 하나로 고른 이유</b>가 이것이다 —
  * [`harness/hooks-contract.md`](../../aidd-guide/harness/hooks-contract.md).
  *
- * <p><b>전부 fail-open 이다.</b> 훅이 죽어도 세션을 막지 않는다. 막는 훅이 죽으면
- * 규율이 사라지지만, <b>죽은 훅이 세션을 막으면 사람이 훅을 끈다</b> — 꺼진 훅은 없는 훅이다.
+ * <p>사후 경고와 세션 문맥은 fail-open, 사전 보호는 fail-closed다. 사전 chain이 죽으면
+ * 작업은 막되 하네스 자체를 고치는 좁은 수리 경로만 연다 — 꺼진 훅이나 전면 잠금 어느
+ * 쪽도 정상 상태로 가장하지 않는다.
  */
 
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';

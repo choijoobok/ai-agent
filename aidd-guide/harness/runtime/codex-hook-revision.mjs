@@ -237,7 +237,7 @@ if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
   } else if (process.argv.includes('--pretool-canary')) {
     const index = process.argv.indexOf('--pretool-canary');
     const revision = process.argv[index + 1] ?? '(없음)';
-    console.error(`[Codex PreToolUse 생존 확인 실패] revision=${revision} — 카나리 스크립트가 실행됐다. 일반 업무를 보류하고 hook 신뢰·새 실행 여부를 확인한다.`);
+    console.error(`[Codex PreToolUse 생존 확인 실패] revision=${revision} — 이 도구 경로가 명령 실행 전 차단을 거치지 않았다. 먼저 hook 신뢰와 새 실행을 확인한다. 이미 승인된 새 실행에서 revision 검사가 통과했다면 같은 재진입을 반복하지 말고 코드 모드 중첩 호출의 제품 결손으로 보고한다. 일반 업무는 계속 보류한다.`);
     process.exitCode = 3;
   } else if (process.argv.includes('--check')) {
     const index = process.argv.indexOf('--check');

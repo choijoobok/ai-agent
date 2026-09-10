@@ -135,10 +135,10 @@ AI가 만드는 커밋은 `-F -`로 본문을 명령에 드러낸다. POSIX here
 
 `warn()` 은 `systemMessage`(사람)와 `additionalContext`(모델)를 **둘 다** 보낸다 — *사람이 봤는데 AI 는 모르는* 상태를 만들지 않는다.
 
-**`SessionStart` 의 출력 형태는 provider 마다 다르다** — Claude 는 날 것의 텍스트, Codex 는
-JSON. `emitHookResults` 한 곳에서 `provider()` 로 가르고 **어댑터가 따로 stdout 에 쓰지
-않는다**(섞이면 파싱되지 않아 훅 전체가 실패로 잡힌다) — 사례는
-[providers/codex.md](./providers/codex.md).
+**Codex가 읽는 출력은 JSON 하나다.** `SessionStart`는 `additionalContext`, `PreToolUse` 허용은
+결정 없는 중립 `hookSpecificOutput`을 낸다. 종료 코드 0의 빈 출력도 계약상 허용되지만 일부
+실행면이 침묵을 `Failed`로 표시한 이력이 있어 호환 형태를 명시한다. Claude `SessionStart`는
+날것이며, `emitHookResults` 한 곳에서 가르고 어댑터가 stdout을 섞지 않는다 — 사례는 [providers/codex.md](./providers/codex.md).
 
 ## Codex 훅 revision — 승인하지 않은 세션에서 업무를 보류한다
 
@@ -151,8 +151,8 @@ JSON. `emitHookResults` 한 곳에서 `provider()` 로 가르고 **어댑터가 
 | 판정 | AGENTS.md의 Codex 전용 preflight가 매 요청에서 문맥 revision과 현재 실행면을 대조한다 |
 | 강도 | 불일치·확인 부재면 모델이 **일반 업무**를 보류한다. `harness-check`와 CI는 stale revision을 오류로 막는다 |
 | 수리 차선 | 확인이 없어도 **읽기 전부 · `harness-sync` · 하네스 경로 한정 커밋**은 연다(아래) |
-| 실패 정책 | 자동 승인·신뢰 저장소 읽기·우회 플래그를 쓰지 않는다. 데스크톱 앱은 hook 검토 화면 또는 CLI `/hooks` 승인 완료 확인 → 새 task 이동 승인 → 현재 턴 종료 → 새 local task에 맥락 인계 → revision·`PreToolUse` 생존 카나리 확인 순서다. CLI는 재개 승인 → `/hooks` 검토 → 현재 실행 종료 → `codex resume`다. client가 불명확하면 먼저 묻는다 |
-| fixture | `.codex/hooks/self-test.mjs` — 일치·확인 부재·잘못된 revision, **desktop·CLI·불명 세 갈래 안내**, desktop에서 `/hooks` 완료 확인이 새 task 질문보다 앞서는 순서, 실제 `PreToolUse`가 카나리를 차단하는지와 어댑터 출력 모양을 함께 센다 |
+| 실패 정책 | 자동 승인·신뢰 저장소 읽기·우회 플래그를 쓰지 않는다. 데스크톱 앱은 hook 검토 화면 또는 CLI `/hooks` 승인 완료 확인 → 새 task 이동 승인 → 현재 턴 종료 → 새 local task에 맥락 인계 → revision·`PreToolUse` 생존 카나리 확인 순서다. CLI는 재개 승인 → `/hooks` 검토 → 현재 실행 종료 → `codex resume`다. **승인된 새 실행에서 revision은 맞는데 카나리만 실행되면 같은 재진입을 반복하지 않고 실제 도구 경로의 제품 결손으로 보고한다.** |
+| fixture | `.codex/hooks/self-test.mjs` — 일치·확인 부재·잘못된 revision, **desktop·CLI·불명 세 갈래 안내**, 승인→재진입 순서, 카나리 deny, Codex `PreToolUse` 허용의 중립 JSON과 어댑터 출력 모양을 함께 센다 |
 
 **부트스트랩 한계가 있다.** 승인되지 않은 훅은 자기 자신을 실행해 차단할 수 없다. runtime
 hard block이라고 가장하지 않고 `AGENTS.md` preflight와 승인된 `SessionStart`의 문맥 증명을

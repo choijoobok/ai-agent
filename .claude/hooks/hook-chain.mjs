@@ -108,7 +108,17 @@ export function emitHookResults(outputs, eventName) {
   }
 
   const messages = outputs.flatMap(messagesOf).filter(Boolean);
-  if (!messages.length) return;
+  if (!messages.length) {
+    /* Codex 공식 계약은 exit 0의 빈 출력을 허용하지만, 일부 실행면은 침묵한
+       PreToolUse를 `Failed`로 표시했다. 허용 결정(`allow`)은 지원하지 않으므로
+       이벤트 이름만 든 중립 JSON을 내서 정책을 바꾸지 않고 파싱 성공을 고정한다. */
+    if (eventName === 'PreToolUse' && provider() === 'codex') {
+      process.stdout.write(JSON.stringify({
+        hookSpecificOutput: { hookEventName: 'PreToolUse' },
+      }));
+    }
+    return;
+  }
   const message = [...new Set(messages)].join('\n\n');
 
   /*
