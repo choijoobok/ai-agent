@@ -67,18 +67,25 @@ for (const commit of commits) {
     );
   }
 
-  /* 메시지 본문은 첫 줄 다음이다 — heredoc 이 명령에 실려 오는 경우에만 볼 수 있다. */
-  const body = commit.slice(commit.indexOf('\n') + 1);
-  const hasBody = commit.includes('\n') && body.trim().length > 0;
-  if (hasBody && !/^Agent:\s*\S/m.test(body)) {
-    deny(
-      [
-        `커밋에 만든 주체가 없다 — AGENTS.md §9. 메시지 끝에 \`Agent: ${PROVIDER_NAME[provider()]}\` 를 붙인다.`,
-        '두 AI 가 한 저장소에 커밋한다. 표식이 없으면 이 줄을 누가 썼는지 나중에 알 방법이 없다.',
-        '무엇을 적나는 provider 문서가 갖는다 — `aidd-guide/harness/providers/`.',
-      ].join('\n'),
-    );
-  }
+}
+
+/*
+  <b>메시지 본문은 세그먼트에 없다.</b> {@link SEGMENT_BREAK} 가 줄바꿈에서도 자르므로
+  `commit` 은 언제나 한 줄이다 — 본문을 보려면 <b>명령 전체</b>를 봐야 한다.
+  (처음에 세그먼트에서 찾다가 검사가 한 번도 걸리지 않았다. 훅을 더할 때는 <b>막히는
+  쪽 fixture 를 반드시 돌린다</b> — 통과만 확인하면 아무것도 안 막는 훅이 초록으로 보인다.)
+
+  <b>heredoc 일 때만 본다.</b> `-F <파일>` 은 본문이 명령에 없고, 읽지 못한 것을 없다고
+  말하지 않는다. `-m` 은 §9 가 이미 heredoc 을 쓰라고 정해 두었다.
+*/
+if (command.includes('<<') && !/^Agent:\s*\S/m.test(command)) {
+  deny(
+    [
+      `커밋에 만든 주체가 없다 — AGENTS.md §9. 메시지 끝에 \`Agent: ${PROVIDER_NAME[provider()]}\` 를 붙인다.`,
+      '두 AI 가 한 저장소에 커밋한다. 표식이 없으면 이 줄을 누가 썼는지 나중에 알 방법이 없다.',
+      '무엇을 적나는 provider 문서가 갖는다 — `aidd-guide/harness/providers/`.',
+    ].join('\n'),
+  );
 }
 
 pass();
