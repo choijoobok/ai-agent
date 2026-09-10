@@ -81,14 +81,23 @@ if (oqs.length > 0) lines.push('', '답변 대기 중인 질문이 있다. 브�
 
 inject(lines.join('\n'));
 
-/** `documents/decisions/ASSUMPTIONS.md` 의 미확인 행을 센다. */
+/**
+ * `documents/decisions/ASSUMPTIONS.md` 의 미확인 행을 센다.
+ *
+ * <p><b>행 전체가 아니라 상태 칸을 본다.</b> 이전에는 줄 어디에든 *미확인* 이 있으면 셌는데,
+ * 결과 칸은 <i>확인되지 않으면 이렇게 된다</i> 같은 서술을 담는 자리라 <b>확인됨으로 판정한
+ * 가정이 계속 미확인으로 세어졌다</b>(ASM-002 · 2026-09-10). 브리핑의 수가 틀리면 그 수를
+ * 근거로 게이트를 판단하게 된다.
+ */
 function openAssumptions() {
   const text = readText(join(REPO, 'documents/decisions/ASSUMPTIONS.md'));
   if (!text) return { count: 0, ids: [] };
   const ids = [];
   for (const line of text.split('\n')) {
-    if (!line.trim().startsWith('|') || !line.includes('ASM-') || !line.includes('미확인')) continue;
-    for (const m of line.matchAll(/ASM-\d+/g)) ids.push(m[0]);
+    if (!line.trim().startsWith('|') || !line.includes('ASM-')) continue;
+    const cells = line.split('|');
+    if (cells.length < 8 || !cells[6]?.includes('미확인')) continue; // 확인됨·기각됨은 끝났다
+    for (const m of cells[1].matchAll(/ASM-\d+/g)) ids.push(m[0]);
   }
   return { count: ids.length, ids };
 }
