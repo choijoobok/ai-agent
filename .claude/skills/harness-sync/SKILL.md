@@ -52,9 +52,12 @@ smoke test하고, 실행하지 못한 쪽은 완료로 가장하지 않고 남�
 하네스 파일을 pull하거나 고친 세션은 이미 읽은 진입 문서·hook hash를 새 것으로 간주하지 않는다.
 Codex는 실행 확인이 없어도 **수리 차선**으로 이 절차를 끝까지 밟는다 — 위 검증과 **해당
 변경만 경로 지정한 커밋 한 번**까지다(AGENTS.md §2). 그 밖의 일반 업무는 보류한다. 커밋 뒤 새
-실행이 필요하다. Claude Code는 새 세션을 연다. Codex 데스크톱 앱은 사용자에게 완료된 대화를
-인계한 새 local task로 이동할지 묻고, 승인되면 현재 턴을 끝낸 뒤 같은 saved project에 새 task를
-만들어 완료한 일·남은 일을 첫 prompt로 넘기고 이동한다. 새 task는 revision 검사와 무해한
+실행이 필요하다. Claude Code는 새 세션을 연다. Codex 데스크톱 앱은 앱의 hook 검토 화면이나
+Codex CLI TUI의 `/hooks`로 현재 정의를 승인했는지 먼저 확인한다. 앱에 검토 화면이 없으면 저장소
+루트에서 `codex`를 실행한 뒤 그 대화 화면 안에서 `/hooks`를 쓰게 하며, PowerShell에 `/hooks`를
+직접 입력하게 하지 않는다. 사용자가 완료했다고 확인하기 전에는 새 task 이동을 묻거나 만들지
+않는다. 완료 확인 뒤 대화를 인계한 새 local task로 이동할지 묻고, 승인되면 현재 턴을 끝낸 뒤
+같은 saved project에 새 task를 만들어 완료한 일·남은 일을 첫 prompt로 넘기고 이동한다. 새 task는 revision 검사와 무해한
 `PreToolUse` 생존 카나리를 모두 통과해야 한다. Codex CLI는 같은 task 재개 여부를 묻고, 승인되면
 `/hooks`에서 현재 정의를 승인하고 현재 실행을 끝낸 뒤 `codex resume <SESSION_ID>`(가장 최근
 task면 `codex resume --last`)로 돌아와 smoke test한다. client가 불명확하면 어느 쪽인지 먼저

@@ -148,10 +148,12 @@ export function codexHookReentryMessage(surface = codexClientSurface()) {
   if (surface === 'desktop') {
     return [
       common,
-      '사용자에게 **현재 작업 맥락을 인계한 새 task로 이동할까요?**라고 묻는다.',
+      '새 task 이동을 묻기 전에 변경된 훅의 신뢰 승인을 먼저 끝낸다. 앱에 hook 검토 화면이 보이면 사용자가 현재 정의를 승인한다.',
+      '앱에 검토 화면이 보이지 않으면 저장소 루트에서 Codex CLI를 열고, 그 TUI 안의 `/hooks`로 현재 정의를 검토·승인하도록 안내한다. PowerShell에 `/hooks`를 직접 입력하게 하지 않는다.',
+      '사용자가 훅 승인 완료를 확인하기 전에는 새 task 이동을 묻거나 만들지 않는다. 완료가 확인되면 **현재 작업 맥락을 인계한 새 task로 이동할까요?**라고 묻는다.',
       '승인되면 현재 턴을 끝낸 뒤 같은 saved project를 직접 쓰는 새 local task를 `thread/start`로 만들고, 완료한 일·남은 일·원본 task를 읽는 방법을 첫 prompt에 인계한 다음 그 task로 화면을 이동한다. 기존 task는 남기며 `thread/fork`는 쓰지 않는다.',
       `새 task에서 현재 revision의 SessionStart 실행 확인 뒤 \`${codexPretoolCanaryCommand('<SessionStart revision>')}\`를 별도 호출한다. ${CODEX_PRETOOL_CANARY_PREFIX} 차단이 와야 업무를 재개하고, 스크립트가 실행되면 훅 미적용으로 보고 계속 보류한다.`,
-      '앱에 hook 검토 화면이 보이면 사용자가 현재 정의를 승인한다. 보이지 않으면 자동 승인하지 말고 CLI의 `/hooks`가 한 번 필요한 제약을 보고한다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.',
+      '앱 사용자에게 CLI를 기본 절차로 요구하지는 않되, 앱에 검토 화면이 없으면 `/hooks` 승인은 새 task를 만들기 전의 필수 차선이다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.',
     ].join('\n');
   }
   if (surface === 'cli') {

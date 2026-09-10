@@ -89,7 +89,7 @@ rebase 중 무엇으로 합칠지는 AI 가 고르지 않는다. ③ **푸시하
 
 startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로 바뀐 것을 현재 실행에 적용됐다고
 가장하지 않는다. Claude Code는 새 세션을 열고, Codex 앱은 승인 뒤 작업 맥락을 인계한 새 local
-task를 만들며, CLI는 승인·`/hooks` 검토 뒤 `codex resume <SESSION_ID>`(최근 task면 `--last`)로 돌아온다.
+task를 만들되, 앱에 hook 검토 화면이 없으면 **새 task를 묻기 전에** CLI `/hooks`로 현재 정의를 승인하고 완료를 확인한다. CLI 사용자는 승인·`/hooks` 검토 뒤 `codex resume <SESSION_ID>`(최근 task면 `--last`)로 돌아온다.
 
 ## `skill-sync` — 공통 스킬 원본 → 두 AI 의 `SKILL.md`
 
@@ -151,8 +151,8 @@ JSON. `emitHookResults` 한 곳에서 `provider()` 로 가르고 **어댑터가 
 | 판정 | AGENTS.md의 Codex 전용 preflight가 매 요청에서 문맥 revision과 현재 실행면을 대조한다 |
 | 강도 | 불일치·확인 부재면 모델이 **일반 업무**를 보류한다. `harness-check`와 CI는 stale revision을 오류로 막는다 |
 | 수리 차선 | 확인이 없어도 **읽기 전부 · `harness-sync` · 하네스 경로 한정 커밋**은 연다(아래) |
-| 실패 정책 | 자동 승인·신뢰 저장소 읽기·우회 플래그를 쓰지 않는다. 데스크톱 앱은 사용자 승인 → 현재 턴 종료 → 새 local task에 맥락 인계 → revision·`PreToolUse` 생존 카나리 확인, CLI는 사용자 승인 → `/hooks` 검토 → 현재 실행 종료 → `codex resume`다. client가 불명확하면 먼저 묻는다 |
-| fixture | `.codex/hooks/self-test.mjs` — 일치·확인 부재·잘못된 revision, **desktop·CLI·불명 세 갈래 안내**, 실제 `PreToolUse`가 카나리를 차단하는지와 어댑터 출력 모양을 함께 센다 |
+| 실패 정책 | 자동 승인·신뢰 저장소 읽기·우회 플래그를 쓰지 않는다. 데스크톱 앱은 hook 검토 화면 또는 CLI `/hooks` 승인 완료 확인 → 새 task 이동 승인 → 현재 턴 종료 → 새 local task에 맥락 인계 → revision·`PreToolUse` 생존 카나리 확인 순서다. CLI는 재개 승인 → `/hooks` 검토 → 현재 실행 종료 → `codex resume`다. client가 불명확하면 먼저 묻는다 |
+| fixture | `.codex/hooks/self-test.mjs` — 일치·확인 부재·잘못된 revision, **desktop·CLI·불명 세 갈래 안내**, desktop에서 `/hooks` 완료 확인이 새 task 질문보다 앞서는 순서, 실제 `PreToolUse`가 카나리를 차단하는지와 어댑터 출력 모양을 함께 센다 |
 
 **부트스트랩 한계가 있다.** 승인되지 않은 훅은 자기 자신을 실행해 차단할 수 없다. runtime
 hard block이라고 가장하지 않고 `AGENTS.md` preflight와 승인된 `SessionStart`의 문맥 증명을
@@ -160,7 +160,7 @@ hard block이라고 가장하지 않고 `AGENTS.md` preflight와 승인된 `Sess
 
 **승인은 훅 우회가 아니라 작업 맥락을 보존한 재연결 승인이다.** CLI의 `resume`은 저장된 대화를 잇고, 앱은 `thread/start`로 새 local task를 만들어 완료한 일·남은 일·원본 task를 읽는 방법을 첫 prompt에 인계한다.
 `thread/fork` 뒤에는 startup 훅이 오지 않고 사전 훅 카나리도 통과한 것이 2026-09-11 실측됐으므로 재시작 수단으로 쓰지 않는다.
-앱은 새 `SessionStart` revision과 `PreToolUse` 카나리 차단을 모두 확인한 뒤 업무를 재개하며, hook 검토 화면이 없으면 자동 승인하지 않고 CLI `/hooks`가 한 번 필요한 제약을 보고한다.
+앱에 hook 검토 화면이 없으면 자동 승인하지 않고, 저장소 루트에서 Codex CLI를 연 뒤 그 TUI의 `/hooks`로 승인하게 한다. **사용자가 승인 완료를 확인하기 전에는 새 task 이동을 묻거나 만들지 않는다.** 완료 확인 뒤 이동 승인을 받고 새 task를 만들며, 그 task의 새 `SessionStart` revision과 `PreToolUse` 카나리 차단을 모두 확인한 뒤 업무를 재개한다.
 
 Claude Code에는 이 preflight와 revision 문맥을 주입하지 않는다. Claude의 프로젝트 훅 실행
 동의는 Claude runtime이 관리하며, 공통 훅 수정 때 Codex revision을 갱신하는 것은 작성·검증

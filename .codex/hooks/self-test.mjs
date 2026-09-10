@@ -126,6 +126,9 @@ assert.equal(codexClientSurface({ CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex CLI
 assert.equal(codexClientSurface({}), 'unknown');
 const desktopReentry = codexHookReentryMessage('desktop');
 assert.match(desktopReentry, /새 task로 이동/);
+assert.match(desktopReentry, /PowerShell에 `\/hooks`를 직접 입력하게 하지 않는다/);
+assert.match(desktopReentry, /승인 완료.*전에는 새 task 이동을 묻거나 만들지 않는다/);
+assert.equal(desktopReentry.indexOf('`/hooks`') < desktopReentry.indexOf('새 task로 이동할까요'), true);
 assert.match(desktopReentry, /thread\/start/);
 assert.match(desktopReentry, /새 local task/);
 assert.match(desktopReentry, /PreToolUse 생존 확인/);
