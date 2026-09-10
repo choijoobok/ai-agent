@@ -35,4 +35,7 @@ verification:
   session_start: true
   ci_required: true
   restart_after_harness_pull: true
-  codex_reentry: resume-same-task  # 새 빈 task가 아니라 저장된 대화에 새 실행으로 다시 붙는다
+  codex_reentry:
+    desktop: fork-child-task       # 완료된 이력을 복사한 새 task로 앱 화면을 옮긴다
+    cli: resume-same-task          # 저장된 같은 task에 새 CLI 실행으로 다시 붙는다
+    unknown: ask-client-surface    # 지원하지 않는 경로를 지어내지 않는다

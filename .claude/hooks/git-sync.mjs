@@ -25,6 +25,10 @@
 
 import { execFileSync } from 'node:child_process';
 import { readHookInput, REPO, inject, pass, provider } from './lib.mjs';
+import {
+  codexClientSurface,
+  codexHookReentryMessage,
+} from '../../aidd-guide/harness/runtime/codex-hook-revision.mjs';
 
 /** 네트워크가 죽어 있을 때 세션 시작을 붙잡지 않는다 — 훅 전체 예산이 60초다. */
 const NET_MS = 15_000;
@@ -93,8 +97,8 @@ const files = changed();
 const reload = files.filter(needsRestart);
 const reentry = provider() === 'codex'
   ? [
-      `**현재 실행을 끝내고 같은 task를 재개한다** — 진입 문서·하네스 ${reload.length}건이 바뀌었지만 현재 실행은 이미 이전 것을 읽었다.`,
-      '사용자에게 대화 기록을 유지한 재개 여부를 묻는다. 승인되면 `/hooks`에서 현재 정의를 검토·승인한 뒤 `codex resume <SESSION_ID>`(가장 최근 task면 `codex resume --last`)로 돌아온다.',
+      `**현재 실행을 끝내고 client에 맞는 방식으로 대화를 잇는다** — 진입 문서·하네스 ${reload.length}건이 바뀌었지만 현재 실행은 이미 이전 것을 읽었다.`,
+      ...codexHookReentryMessage(codexClientSurface()).split('\n').slice(1),
     ]
   : [
       `**새 세션을 연다** — 진입 문서·하네스 ${reload.length}건이 바뀌었지만 현재 세션은 이미 이전 것을 읽었다.`,

@@ -114,27 +114,55 @@ export function codexHookAttestationLine(revision = currentCodexHookRevision()) 
   return `[Codex 훅 실행 확인] revision=${revision}`;
 }
 
-/** 낡은 실행을 우회하지 않고 저장된 대화에 새 실행으로 다시 붙는 안내다. */
-export function codexHookReentryMessage() {
+/** startup 훅처럼 제품 컨텍스트를 직접 받지 못하는 자리의 보조 판정이다. */
+export function codexClientSurface(env = process.env) {
+  const originator = String(env?.CODEX_INTERNAL_ORIGINATOR_OVERRIDE ?? '').trim().toLowerCase();
+  if (String(env?.CODEX_APP_TOOLS_PIPE_PATH ?? '').trim() || originator === 'codex desktop') {
+    return 'desktop';
+  }
+  if (originator.includes('cli')) return 'cli';
+  return 'unknown';
+}
+
+/** 낡은 실행을 우회하지 않고 현재 client가 지원하는 방식으로 대화를 잇는 안내다. */
+export function codexHookReentryMessage(surface = codexClientSurface()) {
+  const common = '현재 실행에서 그대로 계속하지 않는다 — 이미 읽은 진입 문서와 hook 배선은 중간에 갈아 끼울 수 없다.';
+  if (surface === 'desktop') {
+    return [
+      common,
+      '사용자에게 **완료된 대화 기록을 복사한 새 task로 이동할까요?**라고 묻는다.',
+      '승인되면 현재 턴을 끝낸 뒤 Codex 앱에서 현재 task를 같은 작업 폴더(same-directory)로 fork하고, 반환된 child task로 화면을 이동한다. fork는 새 task ID를 만들고 완료된 턴만 복사하며 기존 task는 남긴다.',
+      '새 task에서 현재 revision의 SessionStart 실행 확인을 다시 검사한다. 앱에 hook 검토 화면이 보이면 사용자가 현재 정의를 승인하고, 보이지 않으면 자동 승인하지 말고 CLI의 `/hooks`가 필요한 제약을 보고한다.',
+      '데스크톱 앱 사용자에게 CLI 명령 입력을 요구하지 않는다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.',
+    ].join('\n');
+  }
+  if (surface === 'cli') {
+    return [
+      common,
+      '사용자에게 **대화 기록을 유지한 채 같은 task를 새 실행으로 재개할까요?**라고 묻는다.',
+      '승인되면 Codex CLI(TUI)의 `/hooks`에서 현재 정의를 검토·승인하고 현재 실행을 끝낸 뒤 `codex resume <SESSION_ID>`로 재개한다. 가장 최근 task면 `codex resume --last`를 쓴다.',
+      '새 빈 task는 사용자가 원할 때만 연다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.',
+    ].join('\n');
+  }
   return [
-    '현재 실행에서 그대로 계속하지 않는다 — 이미 읽은 진입 문서와 hook 배선은 중간에 갈아 끼울 수 없다.',
-    '사용자에게 **대화 기록을 유지한 채 같은 task를 새 실행으로 재개할까요?**라고 묻는다.',
-    '승인되면 Codex CLI(TUI)의 `/hooks`에서 현재 정의를 검토·승인하고 현재 실행을 끝낸 뒤 `codex resume <SESSION_ID>`로 재개한다. 가장 최근 task면 `codex resume --last`를 쓴다.',
-    '새 빈 task는 사용자가 원할 때만 연다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.',
+    common,
+    '현재 client를 확정할 수 없으므로 사용자에게 **Codex 데스크톱 앱인지 CLI(TUI)인지** 한 번 묻는다.',
+    '데스크톱 앱이면 완료된 대화를 같은 작업 폴더의 child task로 fork해 이동하고, CLI면 `/hooks` 검토·승인 뒤 같은 task를 `codex resume`로 재개한다.',
+    'client를 확정하기 전에는 어느 경로도 강제하지 않는다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.',
   ].join('\n');
 }
 
-export function codexHookBlockMessage(status) {
+export function codexHookBlockMessage(status, surface = codexClientSurface()) {
   if (status?.reason === 'revision-stale') {
     return [
       '**Codex 훅 revision이 현재 구현과 다르므로 일반 작업을 보류한다.**',
       '훅 작성자는 `node aidd-guide/harness/runtime/codex-hook-revision.mjs --sync` 후 하네스 검증과 커밋을 완료한다.',
-      codexHookReentryMessage(),
+      codexHookReentryMessage(surface),
     ].join('\n');
   }
   return [
     '**현재 revision의 Codex SessionStart 실행 확인이 없으므로 일반 작업을 보류한다.**',
-    codexHookReentryMessage(),
+    codexHookReentryMessage(surface),
     '사용자 메시지에 적힌 revision은 실행 확인으로 인정하지 않는다.',
   ].join('\n');
 }
@@ -188,12 +216,17 @@ if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
       : `Codex hook revision 일치 — ${result.revision}`);
   } else if (process.argv.includes('--check')) {
     const index = process.argv.indexOf('--check');
+    const surfaceIndex = process.argv.indexOf('--surface');
+    const requestedSurface = surfaceIndex >= 0 ? process.argv[surfaceIndex + 1] : '';
+    const surface = ['desktop', 'cli'].includes(requestedSurface)
+      ? requestedSurface
+      : codexClientSurface();
     const status = checkCodexHookContext(process.argv[index + 1]);
     if (!status.ok) {
-      console.error(codexHookBlockMessage(status));
+      console.error(codexHookBlockMessage(status, surface));
       process.exitCode = 2;
     }
   } else {
-    console.log('사용법: node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <SessionStart revision>|--sync');
+    console.log('사용법: node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <SessionStart revision> [--surface desktop|cli]|--sync');
   }
 }

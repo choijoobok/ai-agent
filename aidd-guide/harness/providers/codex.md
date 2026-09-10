@@ -27,12 +27,27 @@ tags: [harness, codex, adapter]
 프로젝트 훅은 저장소를 신뢰한 뒤 `/hooks`에서 현재 hash를 검토·승인해야 실행된다. 훅 파일이나
 배선을 바꾸면 hash가 달라져 다시 검토해야 한다.
 현재 실행은 새 `AGENTS.md`와 hook 설정을 중간에 갈아 끼우지 못하므로 하네스를 pull·수정한
-뒤 그 자리에서 업무를 계속하지 않는다. 대신 사용자에게 **대화 기록을 유지한 채 같은 task를
-새 실행으로 재개할지** 묻는다. 승인되면 `/hooks`에서 현재 hash를 검토·승인하고 현재 실행을
-끝낸 뒤 `codex resume <SESSION_ID>`(가장 최근 task면 `codex resume --last`)로 돌아온다.
-Codex 공식 문서도 `resume`이 기존 대화를 그대로 잇고, 그때 `SessionStart`의 source가
-`resume`이라고 명시한다([CLI 명령](https://learn.chatgpt.com/docs/developer-commands?surface=cli),
-[Hooks](https://learn.chatgpt.com/docs/hooks)). 새 빈 task는 사용자가 원할 때만 연다.
+뒤 그 자리에서 업무를 계속하지 않는다. 대신 **현재 client가 지원하는 방식**으로 사용자 승인을
+받아 대화를 잇는다.
+
+- **Codex 데스크톱 앱**: 완료된 대화 기록을 복사한 새 task로 이동할지 묻는다. 승인되면 현재
+  턴을 끝낸 뒤 현재 task를 같은 작업 폴더로 fork하고 반환된 child task로 앱 화면을 이동한다.
+  `thread/fork`는 새 thread ID에 저장된 기록을 복사하고 `thread/started`를 내며, 진행 중인 턴은
+  완성된 기록으로 복사하지 않는다([App Server](https://learn.chatgpt.com/docs/app-server)). 기존
+  task는 지우지 않는다. 앱의 hook 검토 화면은 공식 문서에서 확인하지 못했으므로, 화면이 없으면
+  자동 승인했다고 가장하지 않고 CLI `/hooks`가 필요한 제약을 보고한다.
+- **Codex CLI**: 같은 task를 새 실행으로 재개할지 묻는다. 승인되면 `/hooks`에서 현재 hash를
+  검토·승인하고 현재 실행을 끝낸 뒤 `codex resume <SESSION_ID>`(가장 최근 task면
+  `codex resume --last`)로 돌아온다. 공식 문서도 `resume`이 기존 대화를 잇고 그때
+  `SessionStart`의 source가 `resume`이라고 명시한다
+  ([CLI 명령](https://learn.chatgpt.com/docs/developer-commands?surface=cli),
+  [Hooks](https://learn.chatgpt.com/docs/hooks)).
+- **client 불명**: 앱인지 CLI인지 사용자에게 한 번 묻고, 확정 전에는 어느 경로도 강제하지 않는다.
+
+일반 요청의 preflight는 제품 컨텍스트를 `--surface desktop|cli`로 명시한다. startup 훅처럼
+그 컨텍스트가 없는 자리는 `CODEX_APP_TOOLS_PIPE_PATH` 또는 `CODEX_INTERNAL_ORIGINATOR_OVERRIDE`
+의 관측값으로 데스크톱 앱만 보조 판정하고, 아무 표식도 없으면 CLI로 추정하지 않고 `unknown`으로
+남긴다. 이 환경변수는 공식 계약으로 확인되지 않았으므로 안전한 기본값은 질문이다.
 
 `aidd-guide/harness/runtime/codex-hook-revision.mjs`는 Codex adapter와 공통 정책의 실행면을
 SHA-256 revision으로 묶는다. 훅 작성자는 `--sync`로 그 값을 `.codex/hooks.json`의 startup
@@ -60,7 +75,8 @@ Codex 전용 검사는 매 요청에서 그 값과 현재 실행면을 대조하
 **이 저장소가 이미 한 번 푼 문제의 같은 해법이다** — `allowHookRepair`는 훅이 죽었을 때
 *훅 파일만* 열고 나머지는 닫는다(`ee6ee49`: *"훅 하나가 깨지면 그 훅을 고칠 도구까지 함께
 잠겼다 — 길을 알리고 수리 자리만 연다"*). **차단의 반대말은 전면 개방이 아니라 좁은 수리
-자리다.** 커밋 뒤에는 사용자 승인 → `/hooks` 검토 → 같은 task 재개가 필요하다.
+자리다.** 커밋 뒤에는 사용자 승인을 받고, 데스크톱 앱이면 child task fork·이동, CLI면
+`/hooks` 검토 뒤 같은 task 재개가 필요하다.
 
 ## 입력 차이
 
@@ -79,8 +95,10 @@ Windows fail-closed wrapper는 JSON 문자열을 명령에 직접 넣지 않고 
 `resume|clear|compact`는 `session-brief.mjs`만 돈다. Codex는 `SessionStart.source`와 matcher를
 정식 계약으로 제공한다. **matcher에서 먼저 가르는 이유**는 `git-sync`를 `startup` 경로에서만
 실행해 압축·재개 중 파일을 바꾸지 않기 위해서다. Claude는 같은 결과를 adapter 안에서 입력의
-`source`로 판정한다. 같은 task를 `codex resume`로 다시 열면 두 번째 그룹이 현재 revision 실행
-확인과 프로젝트 상태를 새 문맥에 넣는다. 그 확인이 들어오기 전에는 일반 업무를 재개하지 않는다.
+`source`로 판정한다. CLI에서 같은 task를 `codex resume`로 다시 열면 두 번째 그룹이 현재
+revision 실행 확인과 프로젝트 상태를 새 문맥에 넣는다. 데스크톱 앱의 child task가 startup
+그룹을 실행해 같은 결과를 내는지는 실제 fork smoke test로 확정한다. 그 확인이 들어오기 전에는
+일반 업무를 재개하지 않는다.
 
 **출력은 JSON이다** — `{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":…}}`.
 Claude는 같은 자리에서 날 것의 텍스트를 쓰며, 두 갈래는 `emitHookResults` 한 곳에서
@@ -125,10 +143,11 @@ adapter self-test까지만 검증되고, 지원 버전으로 올린 뒤 `/hooks`
 SessionStart/PreToolUse/PostToolUse smoke test가 남는다. 훅은 유용한 guardrail이지 모든 도구를
 포괄하는 보안 경계가 아니므로 CI의 동일 검사를 제거하지 않는다.
 
-재개 smoke test는 `/hooks` 승인 뒤 현재 실행을 끝내고 `codex resume <SESSION_ID>`로 돌아와
-첫 요청에서 `[Codex 훅 실행 확인] revision=…`이 주입되는지, 직전 대화 내용을 물었을 때 기존
-기록을 근거로 답하는지를 함께 본다. 둘 중 하나라도 실패하면 새 빈 task로 폴백하고 재개 지원을
-완료로 쓰지 않는다.
+재연결 smoke test는 client별로 나눈다. CLI는 `/hooks` 승인 뒤 현재 실행을 끝내고
+`codex resume <SESSION_ID>`로 돌아온다. 데스크톱 앱은 현재 턴이 끝난 뒤 같은 작업 폴더로 fork하고
+child task로 이동한다. 양쪽 모두 첫 요청에서 `[Codex 훅 실행 확인] revision=…`이 주입되는지,
+직전 완료 대화 내용을 물었을 때 기존 기록을 근거로 답하는지를 함께 본다. 둘 중 하나라도 실패하면
+해당 client의 재연결 지원을 완료로 쓰지 않는다.
 
 관리형 Windows sandbox가 hook 안의 자식 `node --check`를 `EPERM`으로 거절하면 `hook-syntax`는
 이를 구문 오류로 부르지 않고 **검사 불가**로 알린다. 그때 AI가 최상위 shell에서 같은 명령을

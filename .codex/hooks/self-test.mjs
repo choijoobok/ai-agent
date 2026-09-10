@@ -9,6 +9,7 @@ import { patchTargets, runFileChain } from './file-chain.mjs';
 import { crashOutput, patchTargets as bootstrapTargets } from '../../aidd-guide/harness/runtime/pretool-bootstrap.mjs';
 import {
   checkCodexHookContext,
+  codexClientSurface,
   codexHookAttestationLine,
   codexHookBlockMessage,
   codexHookReentryMessage,
@@ -117,11 +118,21 @@ assert.equal(configuredCodexHookRevision(), hookRevision);
 assert.equal(checkCodexHookContext(hookRevision).ok, true);
 assert.equal(checkCodexHookContext('').ok, false);
 assert.equal(checkCodexHookContext('0'.repeat(64)).ok, false);
-const reentry = codexHookReentryMessage();
-assert.match(reentry, /같은 task를 새 실행으로 재개/);
-assert.match(reentry, /codex resume <SESSION_ID>/);
-assert.match(reentry, /사용자 승인은 낡은 훅.*우회하는 허가가 아니다/);
-assert.doesNotMatch(codexHookBlockMessage({ reason: 'attestation-missing' }), /새 task를 연다/);
+assert.equal(codexClientSurface({ CODEX_APP_TOOLS_PIPE_PATH: 'pipe' }), 'desktop');
+assert.equal(codexClientSurface({ CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex Desktop' }), 'desktop');
+assert.equal(codexClientSurface({ CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex CLI' }), 'cli');
+assert.equal(codexClientSurface({}), 'unknown');
+const desktopReentry = codexHookReentryMessage('desktop');
+assert.match(desktopReentry, /새 task로 이동/);
+assert.match(desktopReentry, /same-directory.*fork/);
+assert.doesNotMatch(desktopReentry, /codex resume/);
+const cliReentry = codexHookReentryMessage('cli');
+assert.match(cliReentry, /같은 task를 새 실행으로 재개/);
+assert.match(cliReentry, /codex resume <SESSION_ID>/);
+const unknownReentry = codexHookReentryMessage('unknown');
+assert.match(unknownReentry, /데스크톱 앱인지 CLI/);
+assert.match(codexHookBlockMessage({ reason: 'attestation-missing' }, 'desktop'), /child task/);
+assert.match(cliReentry, /사용자 승인은 낡은 훅.*우회하는 허가가 아니다/);
 const hookConfig = JSON.parse(readFileSync(join(REPO, '.codex', 'hooks.json'), 'utf8'));
 const resumeGroup = hookConfig.hooks.SessionStart.find((group) => group.matcher === 'resume|clear|compact');
 assert.equal(resumeGroup?.hooks?.[0]?.command.includes('session-brief.mjs'), true);

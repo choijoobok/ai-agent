@@ -87,9 +87,9 @@ rebase 중 무엇으로 합칠지는 AI 가 고르지 않는다. ③ **푸시하
 
 `resume`·`clear`·`compact` 에서 돌지 않는다 — 작업 중간에 파일이 바뀌면 AI가 읽은 것과 디스크가 어긋난다.
 
-startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로 진입 문서·하네스가 바뀌면
-현재 실행에 적용됐다고 가장하지 않는다. Claude Code는 새 세션을 열고, Codex는 같은 task 재개를
-승인받아 `/hooks` 검토 뒤 `codex resume <SESSION_ID>`(최근 task면 `--last`)로 돌아온다.
+startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로 바뀐 것을 현재 실행에 적용됐다고
+가장하지 않는다. Claude Code는 새 세션을 열고, Codex 앱은 승인 뒤 같은 작업 폴더의 child task로
+fork하며, CLI는 승인·`/hooks` 검토 뒤 `codex resume <SESSION_ID>`(최근 task면 `--last`)로 돌아온다.
 
 ## `skill-sync` — 공통 스킬 원본 → 두 AI 의 `SKILL.md`
 
@@ -151,16 +151,16 @@ JSON. `emitHookResults` 한 곳에서 `provider()` 로 가르고 **어댑터가 
 | 판정 | AGENTS.md의 Codex 전용 preflight가 매 요청에서 문맥 revision과 현재 실행면을 대조한다 |
 | 강도 | 불일치·확인 부재면 모델이 **일반 업무**를 보류한다. `harness-check`와 CI는 stale revision을 오류로 막는다 |
 | 수리 차선 | 확인이 없어도 **읽기 전부 · `harness-sync` · 하네스 경로 한정 커밋**은 연다(아래) |
-| 실패 정책 | 자동 승인·신뢰 저장소 읽기·우회 플래그를 쓰지 않는다. 사용자에게 같은 task 재개 여부를 묻고, 승인되면 `/hooks` 검토 → 현재 실행 종료 → `codex resume`를 안내한다. 새 빈 task는 사용자가 원할 때만 연다 |
-| fixture | `.codex/hooks/self-test.mjs` — 일치·확인 부재·잘못된 revision, 재개 안내, **어댑터가 실제로 내는 출력의 모양**을 함께 센다 |
+| 실패 정책 | 자동 승인·신뢰 저장소 읽기·우회 플래그를 쓰지 않는다. 데스크톱 앱은 사용자 승인 → 현재 턴 종료 → 같은 작업 폴더로 task fork → child task 이동, CLI는 사용자 승인 → `/hooks` 검토 → 현재 실행 종료 → `codex resume`다. client가 불명확하면 먼저 묻는다 |
+| fixture | `.codex/hooks/self-test.mjs` — 일치·확인 부재·잘못된 revision, **desktop·CLI·불명 세 갈래 안내**, 어댑터가 실제로 내는 출력의 모양을 함께 센다 |
 
 **부트스트랩 한계가 있다.** 승인되지 않은 훅은 자기 자신을 실행해 차단할 수 없다. runtime
 hard block이라고 가장하지 않고 `AGENTS.md` preflight와 승인된 `SessionStart`의 문맥 증명을
 결합한다. 구현이 바뀌면 `/hooks` 재승인이 필요하고, 확인이 없는 동안은 수리 차선만 열린다.
 
-**사용자 승인은 훅 우회가 아니라 대화 이력을 보존한 재연결 승인이다.** `resume`은 저장된 대화를
-잇고 `SessionStart(source=resume)`를 다시 내므로, `session-brief`의 현재 revision 실행 확인까지
-들어온 뒤 일반 업무를 재개한다.
+**승인은 훅 우회가 아니라 대화 이력을 보존한 재연결 승인이다.** CLI의 `resume`은 저장된 대화를
+잇고, 앱의 `thread/fork`는 완료 이력을 새 task ID에 복사한다. 둘 다 새 `SessionStart`의 현재
+revision 확인 뒤 업무를 재개한다. 앱에 hook 검토 화면이 없으면 자동 승인하지 않고 CLI `/hooks` 제약을 보고한다.
 
 Claude Code에는 이 preflight와 revision 문맥을 주입하지 않는다. Claude의 프로젝트 훅 실행
 동의는 Claude runtime이 관리하며, 공통 훅 수정 때 Codex revision을 갱신하는 것은 작성·검증
