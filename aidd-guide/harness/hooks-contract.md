@@ -56,6 +56,7 @@ tags: [harness, hooks, contract, wiring]
 
 | | 무엇 |
 |---|---|
+| 애초에 안 잠기게 | `hook-syntax` 가 사후 chain에서 **방금 쓴 훅**에 `node --check` 를 돌린다 — CI는 커밋 뒤라 그 사이에 **깨뜨린 사람이 먼저 잠긴다**. 깨뜨린 턴에 말하면 잠기지 않는다 |
 | 길을 알린다 | 차단 사유에 `RECOVERY` 를 붙인다 — 쓰기가 막혔으면 *Bash로 고친다*, 셸이 막혔으면 *편집 도구로 고친다* |
 | 수리 자리만 연다 | `allowHookRepair()` — **죽어서 막힌 경우에만**, 대상이 `.claude/hooks/*.mjs` 일 때만 통과시킨다. 그 경로에는 지키는 생성물이 없다(`SKILL.md`는 `.claude/skills/`이며 계속 닫힌다). **정책 차단은 절대 열지 않는다** |
 | 남의 트리로 안 퍼지게 | CI가 훅 전부에 `node --check` 를 돌린다 — 구문이 깨진 훅이 `main`에 들어가면 **clone하는 사람이 즉시 잠긴다** |

@@ -13,6 +13,7 @@ import {
 const PRE = ['guard-write.mjs', 'guard-generated.mjs'];
 const POST = [
   'normalize-encoding.mjs',
+  'hook-syntax.mjs',
   'trace-check.mjs',
   'doc-drift.mjs',
   'guide-drift.mjs',

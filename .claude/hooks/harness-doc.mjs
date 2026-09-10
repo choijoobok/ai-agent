@@ -141,7 +141,7 @@ function countHooks(provider) {
 function expand(row, provider) {
   const chains = {
     'pre-write': ['guard-write', 'guard-generated'],
-    'post-write': ['normalize-encoding', 'trace-check', 'doc-drift', 'guide-drift', 'skill-sync', 'harness-doc', 'commons-doc'],
+    'post-write': ['normalize-encoding', 'hook-syntax', 'trace-check', 'doc-drift', 'guide-drift', 'skill-sync', 'harness-doc', 'commons-doc'],
     'pre-shell': ['guard-bash', 'guard-commit'],
     'session-start': ['git-sync', 'session-brief'],
   };

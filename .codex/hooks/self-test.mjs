@@ -1,6 +1,7 @@
 /** Codex 어댑터의 patch 정규화와 공통 차단 연결을 실제 자식 프로세스로 확인한다. */
 
 import { strict as assert } from 'node:assert';
+import { rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { REPO, provider, skillRef } from '../../.claude/hooks/lib.mjs';
 import { allowHookRepair, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
@@ -79,6 +80,26 @@ const asWrite = (rel) => ({ hook_event_name: 'PreToolUse', tool_input: { file_pa
 assert.equal(allowHookRepair(asWrite('.claude/hooks/guard-write.mjs'), crashed)[0]?.hookSpecificOutput?.permissionDecision, undefined);
 assert.equal(allowHookRepair(asWrite('documents/INDEX.md'), crashed)[0]?.hookSpecificOutput?.permissionDecision, 'deny');
 assert.equal(allowHookRepair(asWrite('.claude/skills/trace/SKILL.md'), crashed)[0]?.hookSpecificOutput?.permissionDecision, 'deny');
+
+/* 구문이 깨진 훅을 **그 자리에서** 잡는다. 깨진 파일을 실제로 만들어야 의미가 있으므로
+   `finally` 로 반드시 지운다 — 시험이 저장소에 쓰레기를 남기면 다음 사람이 그것을 의심한다. */
+const probe = join(REPO, '.claude', 'hooks', '_syntax-probe.mjs');
+writeFileSync(probe, 'const x = `닫히지 않은 템플릿;\n', 'utf8');
+try {
+  const broken = await runHookChain(
+    { hook_event_name: 'PostToolUse', tool_input: { file_path: probe } },
+    ['hook-syntax.mjs'],
+  );
+  assert.match(String(broken[0]?.systemMessage ?? ''), /구문이 깨졌다/);
+} finally {
+  rmSync(probe, { force: true });
+}
+
+const healthy = await runHookChain(
+  { hook_event_name: 'PostToolUse', tool_input: { file_path: join(REPO, '.claude', 'hooks', 'lib.mjs') } },
+  ['hook-syntax.mjs'],
+);
+assert.deepEqual(healthy, []);
 
 /* 정책 차단(`crashed` 없음)은 훅 파일이라도 절대 열리지 않는다. */
 const policy = [{ hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: 'x' } }];

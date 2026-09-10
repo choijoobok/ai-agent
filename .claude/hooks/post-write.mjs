@@ -6,6 +6,7 @@ const input = await readHookInput();
 emitHookResults(
   await runHookChain(input, [
     'normalize-encoding.mjs',
+    'hook-syntax.mjs',
     'trace-check.mjs',
     'doc-drift.mjs',
     'guide-drift.mjs',

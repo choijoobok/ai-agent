@@ -14,7 +14,7 @@
 
 같은 의미의 정책 엔진을 공유하고 입력 adapter와 컨텍스트 전략만 다르게 둔다.
 
-### Claude Code — 15개
+### Claude Code — 16개
 
 | 이벤트 | 언제 | 훅 | 하는 일 | 강도 | 제한 |
 |---|---|---|---|---|---|
@@ -25,6 +25,7 @@
 | `PreToolUse` | `Bash\|PowerShell` | `guard-bash` | 되돌릴 수 없는 명령을 막는다 | **차단** | 15s |
 | `PreToolUse` | `Bash\|PowerShell` | `guard-commit` | 커밋의 세 사고를 막는다 | **차단** | 10s |
 | `PostToolUse` | `Write\|Edit` | `normalize-encoding` | BOM 과 CRLF 를 방금 쓴 파일에서 걷어낸다 | 경고 | 90s |
+| `PostToolUse` | `Write\|Edit` | `hook-syntax` | 방금 고친 훅이 구문부터 깨졌는지 그 자리에서 본다 | 경고 | 90s |
 | `PostToolUse` | `Write\|Edit` | `trace-check` | 추적성 검사 — `PostToolUse`(`documents/spec/**` 쓰기) 훅 겸 `/trace` 스킬의 실행기. | 경고 | 90s |
 | `PostToolUse` | `Write\|Edit` | `doc-drift` | 화면 소스를 고치면 그 화면의 문서를 대조하라고, 요건서가 승인 전이면 승인부터 받으라고 알린다 | 경고 | 90s |
 | `PostToolUse` | `Write\|Edit` | `guide-drift` | `sources:` 에 이 파일을 적은 가이드 문서를 대조하라고 알린다 | 경고 | 90s |
@@ -35,7 +36,7 @@
 | `UserPromptSubmit` | — | `context-gauge` | 컨텍스트 게이지 — 문맥이 차오르면 압축할 여지가 남아 있을 때 알린다. | 문맥에 넣는다 | 10s |
 | `Stop` | — | `log-raw` | 대화 원문을 `chat-history/` 에 append 한다 | 조용히 한다 | 15s |
 
-### Codex — 14개
+### Codex — 15개
 
 | 이벤트 | 언제 | 훅 | 하는 일 | 강도 | 제한 |
 |---|---|---|---|---|---|
@@ -47,6 +48,7 @@
 | `PreToolUse` | `Bash` | `guard-bash` | 되돌릴 수 없는 명령을 막는다 | **차단** | 20s |
 | `PreToolUse` | `Bash` | `guard-commit` | 커밋의 세 사고를 막는다 | **차단** | 20s |
 | `PostToolUse` | `Edit\|Write` | `normalize-encoding` | BOM 과 CRLF 를 방금 쓴 파일에서 걷어낸다 | 경고 | 90s |
+| `PostToolUse` | `Edit\|Write` | `hook-syntax` | 방금 고친 훅이 구문부터 깨졌는지 그 자리에서 본다 | 경고 | 90s |
 | `PostToolUse` | `Edit\|Write` | `trace-check` | 추적성 검사 — `PostToolUse`(`documents/spec/**` 쓰기) 훅 겸 `/trace` 스킬의 실행기. | 경고 | 90s |
 | `PostToolUse` | `Edit\|Write` | `doc-drift` | 화면 소스를 고치면 그 화면의 문서를 대조하라고, 요건서가 승인 전이면 승인부터 받으라고 알린다 | 경고 | 90s |
 | `PostToolUse` | `Edit\|Write` | `guide-drift` | `sources:` 에 이 파일을 적은 가이드 문서를 대조하라고 알린다 | 경고 | 90s |
