@@ -114,17 +114,27 @@ export function codexHookAttestationLine(revision = currentCodexHookRevision()) 
   return `[Codex 훅 실행 확인] revision=${revision}`;
 }
 
+/** 낡은 실행을 우회하지 않고 저장된 대화에 새 실행으로 다시 붙는 안내다. */
+export function codexHookReentryMessage() {
+  return [
+    '현재 실행에서 그대로 계속하지 않는다 — 이미 읽은 진입 문서와 hook 배선은 중간에 갈아 끼울 수 없다.',
+    '사용자에게 **대화 기록을 유지한 채 같은 task를 새 실행으로 재개할까요?**라고 묻는다.',
+    '승인되면 Codex CLI(TUI)의 `/hooks`에서 현재 정의를 검토·승인하고 현재 실행을 끝낸 뒤 `codex resume <SESSION_ID>`로 재개한다. 가장 최근 task면 `codex resume --last`를 쓴다.',
+    '새 빈 task는 사용자가 원할 때만 연다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.',
+  ].join('\n');
+}
+
 export function codexHookBlockMessage(status) {
   if (status?.reason === 'revision-stale') {
     return [
       '**Codex 훅 revision이 현재 구현과 다르므로 일반 작업을 보류한다.**',
       '훅 작성자는 `node aidd-guide/harness/runtime/codex-hook-revision.mjs --sync` 후 하네스 검증과 커밋을 완료한다.',
-      '그다음 **Codex CLI(TUI)의 `/hooks`에서 현재 정의를 검토·승인하고 새 task를 연다.**',
+      codexHookReentryMessage(),
     ].join('\n');
   }
   return [
     '**현재 revision의 Codex SessionStart 실행 확인이 없으므로 일반 작업을 보류한다.**',
-    '**Codex CLI(TUI)의 `/hooks`에서 현재 정의를 검토·승인하고 새 task를 연다.**',
+    codexHookReentryMessage(),
     '사용자 메시지에 적힌 revision은 실행 확인으로 인정하지 않는다.',
   ].join('\n');
 }

@@ -26,8 +26,13 @@ tags: [harness, codex, adapter]
 
 프로젝트 훅은 저장소를 신뢰한 뒤 `/hooks`에서 현재 hash를 검토·승인해야 실행된다. 훅 파일이나
 배선을 바꾸면 hash가 달라져 다시 검토해야 한다.
-기존 task는 새 `AGENTS.md`와 hook 설정을 다시 읽지 않으므로 하네스를 pull·수정한 뒤에는
-**새 task를 열고 `/hooks` 승인을 다시 확인한다.**
+현재 실행은 새 `AGENTS.md`와 hook 설정을 중간에 갈아 끼우지 못하므로 하네스를 pull·수정한
+뒤 그 자리에서 업무를 계속하지 않는다. 대신 사용자에게 **대화 기록을 유지한 채 같은 task를
+새 실행으로 재개할지** 묻는다. 승인되면 `/hooks`에서 현재 hash를 검토·승인하고 현재 실행을
+끝낸 뒤 `codex resume <SESSION_ID>`(가장 최근 task면 `codex resume --last`)로 돌아온다.
+Codex 공식 문서도 `resume`이 기존 대화를 그대로 잇고, 그때 `SessionStart`의 source가
+`resume`이라고 명시한다([CLI 명령](https://learn.chatgpt.com/docs/developer-commands?surface=cli),
+[Hooks](https://learn.chatgpt.com/docs/hooks)). 새 빈 task는 사용자가 원할 때만 연다.
 
 `aidd-guide/harness/runtime/codex-hook-revision.mjs`는 Codex adapter와 공통 정책의 실행면을
 SHA-256 revision으로 묶는다. 훅 작성자는 `--sync`로 그 값을 `.codex/hooks.json`의 startup
@@ -55,7 +60,7 @@ Codex 전용 검사는 매 요청에서 그 값과 현재 실행면을 대조하
 **이 저장소가 이미 한 번 푼 문제의 같은 해법이다** — `allowHookRepair`는 훅이 죽었을 때
 *훅 파일만* 열고 나머지는 닫는다(`ee6ee49`: *"훅 하나가 깨지면 그 훅을 고칠 도구까지 함께
 잠겼다 — 길을 알리고 수리 자리만 연다"*). **차단의 반대말은 전면 개방이 아니라 좁은 수리
-자리다.** 커밋 뒤에는 `/hooks` 승인과 새 task가 필요한 것도 그대로다.
+자리다.** 커밋 뒤에는 사용자 승인 → `/hooks` 검토 → 같은 task 재개가 필요하다.
 
 ## 입력 차이
 
@@ -71,10 +76,11 @@ Windows fail-closed wrapper는 JSON 문자열을 명령에 직접 넣지 않고 
 ## 세션 시작
 
 `SessionStart`를 두 그룹으로 나눈다. `startup`은 `session-start.mjs`(`git-sync` → `session-brief`),
-`resume|clear|compact`는 `session-brief.mjs`만 돈다. **matcher로 가르는 이유**는 Codex hook 입력의
-`source` 필드가 안정 계약에 없기 때문이다 — 필드를 짐작해 분기하면 압축 뒤에 원격을 당기게 되고,
-그때 파일이 바뀌면 AI가 방금 읽은 것과 디스크가 어긋난다. Claude는 같은 결과를 입력의 `source`로
-판정한다.
+`resume|clear|compact`는 `session-brief.mjs`만 돈다. Codex는 `SessionStart.source`와 matcher를
+정식 계약으로 제공한다. **matcher에서 먼저 가르는 이유**는 `git-sync`를 `startup` 경로에서만
+실행해 압축·재개 중 파일을 바꾸지 않기 위해서다. Claude는 같은 결과를 adapter 안에서 입력의
+`source`로 판정한다. 같은 task를 `codex resume`로 다시 열면 두 번째 그룹이 현재 revision 실행
+확인과 프로젝트 상태를 새 문맥에 넣는다. 그 확인이 들어오기 전에는 일반 업무를 재개하지 않는다.
 
 **출력은 JSON이다** — `{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":…}}`.
 Claude는 같은 자리에서 날 것의 텍스트를 쓰며, 두 갈래는 `emitHookResults` 한 곳에서
@@ -118,6 +124,11 @@ node .codex/hooks/self-test.mjs
 adapter self-test까지만 검증되고, 지원 버전으로 올린 뒤 `/hooks` 신뢰 승인과 실제
 SessionStart/PreToolUse/PostToolUse smoke test가 남는다. 훅은 유용한 guardrail이지 모든 도구를
 포괄하는 보안 경계가 아니므로 CI의 동일 검사를 제거하지 않는다.
+
+재개 smoke test는 `/hooks` 승인 뒤 현재 실행을 끝내고 `codex resume <SESSION_ID>`로 돌아와
+첫 요청에서 `[Codex 훅 실행 확인] revision=…`이 주입되는지, 직전 대화 내용을 물었을 때 기존
+기록을 근거로 답하는지를 함께 본다. 둘 중 하나라도 실패하면 새 빈 task로 폴백하고 재개 지원을
+완료로 쓰지 않는다.
 
 관리형 Windows sandbox가 hook 안의 자식 `node --check`를 `EPERM`으로 거절하면 `hook-syntax`는
 이를 구문 오류로 부르지 않고 **검사 불가**로 알린다. 그때 AI가 최상위 shell에서 같은 명령을

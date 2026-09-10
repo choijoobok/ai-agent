@@ -24,7 +24,7 @@
  */
 
 import { execFileSync } from 'node:child_process';
-import { readHookInput, REPO, inject, pass } from './lib.mjs';
+import { readHookInput, REPO, inject, pass, provider } from './lib.mjs';
 
 /** 네트워크가 죽어 있을 때 세션 시작을 붙잡지 않는다 — 훅 전체 예산이 60초다. */
 const NET_MS = 15_000;
@@ -91,6 +91,15 @@ if (!pulled.ok) {
 
 const files = changed();
 const reload = files.filter(needsRestart);
+const reentry = provider() === 'codex'
+  ? [
+      `**현재 실행을 끝내고 같은 task를 재개한다** — 진입 문서·하네스 ${reload.length}건이 바뀌었지만 현재 실행은 이미 이전 것을 읽었다.`,
+      '사용자에게 대화 기록을 유지한 재개 여부를 묻는다. 승인되면 `/hooks`에서 현재 정의를 검토·승인한 뒤 `codex resume <SESSION_ID>`(가장 최근 task면 `codex resume --last`)로 돌아온다.',
+    ]
+  : [
+      `**새 세션을 연다** — 진입 문서·하네스 ${reload.length}건이 바뀌었지만 현재 세션은 이미 이전 것을 읽었다.`,
+      '이 세션에서 작업을 계속하면 디스크의 규칙과 AI가 따르는 규칙이 갈린다.',
+    ];
 inject(
   line(
     [
@@ -100,10 +109,7 @@ inject(
         ? [`바뀐 것 ${files.length}건: ${files.slice(0, 8).join(' · ')}${files.length > 8 ? ' …' : ''}`]
         : []),
       ...(reload.length > 0
-        ? [
-            `**새 세션을 연다** — 진입 문서·하네스 ${reload.length}건이 바뀌었지만 현재 세션은 이미 이전 것을 읽었다.`,
-            '이 세션에서 작업을 계속하면 디스크의 규칙과 AI가 따르는 규칙이 갈린다. Codex는 새 task에서 `/hooks` 승인도 확인한다.',
-          ]
+        ? reentry
         : []),
     ].join('\n') + tail,
   ),

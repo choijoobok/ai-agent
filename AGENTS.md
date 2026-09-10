@@ -42,7 +42,8 @@ ai-agent/
 세션 시작(`startup`)에 `git-sync` 훅이 **브리핑보다 먼저 원격을 당기고**(깨끗한 트리에서
 `--ff-only` 로만), 이어서 `session-brief` 훅이 [`documents/project.state.yaml`](documents/project.state.yaml) 과
 하네스 정합성 결과를 문맥에 넣는다. 진입 문서와 훅 설정은 그보다 먼저 로드되므로, pull로
-`AGENTS.md`·`CLAUDE.md`·하네스가 바뀌었다는 알림이 나오면 **새 세션을 열어야 적용된다.** 그다음:
+`AGENTS.md`·`CLAUDE.md`·하네스가 바뀌었다는 알림이 나오면 **새 실행으로 다시 들어와야
+적용된다.** Claude Code는 새 세션을 열고, Codex는 아래 승인 절차로 같은 task를 재개한다. 그다음:
 
 ### Codex 훅 실행 확인 — 매 요청에서 업무보다 먼저
 
@@ -56,9 +57,12 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <SessionStart가
 ```
 
 - 종료 코드 `0`이면 아래 브리핑과 작업을 계속한다.
-- 실행 확인이 없거나 종료 코드 `2`이면 **일반 업무를 보류**하고, “Codex CLI의 `TUI`(터미널
-  안의 대화형 화면)에서 `/hooks`로 현재 정의를 검토·승인한 뒤 새 task를 열라”고 안내한다.
-  **다만 아래 수리 차선은 보류하지 않는다.**
+- 실행 확인이 없거나 종료 코드 `2`이면 **일반 업무를 보류**하고 사용자에게 **“대화 기록을
+  유지한 채 같은 task를 새 실행으로 재개할까요?”**라고 묻는다. 승인되면 Codex CLI의
+  `TUI`(터미널 안의 대화형 화면)에서 `/hooks`로 현재 정의를 검토·승인하고 현재 실행을 끝낸 뒤
+  `codex resume <SESSION_ID>`로 재개한다. 가장 최근 task면 `codex resume --last`를 쓴다.
+  **새 빈 task는 사용자가 원할 때만 연다.** 이 승인은 낡은 훅을 현재 실행에서 우회해도 된다는
+  뜻이 아니다. **다만 아래 수리 차선은 보류하지 않는다.**
 - 단, **이 task에서 변경 전 revision 검사가 이미 통과했고**, 사용자의 요청으로
   `harness-sync` 절차에 따라 훅을 바꾼 경우에는 작성 작업을 버려 두지 않는다. 일반 업무는
   보류하되 **revision 동기화 → 필수 검증 → 그 하네스 변경 경로만 지정한 커밋 한 번**까지
@@ -85,9 +89,10 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <SessionStart가
    위에서 만든 산출물은 합칠 때 두 번 만든 것이 된다.
 4. 하네스 불일치가 있으면 `harness-sync` 스킬로 먼저 복구한다. 그다음에야 작업을 시작한다.
    브리핑 없이 산출물을 만들지 않는다.
-5. **하네스 재시작 알림이 있으면 그 세션에서 작업하지 않는다.** 새 세션을 열고, Codex는
-   `/hooks`에서 현재 hook 정의를 검토·승인한다. 위 작성 세션 종료 예외로 커밋 중이라면
-   그 커밋까지만 끝내고 새 세션을 연다.
+5. **하네스 재시작 알림이 있으면 그 실행에서 작업하지 않는다.** Claude Code는 새 세션을 연다.
+   Codex는 사용자에게 같은 task 재개 여부를 묻고, 승인되면 `/hooks`에서 현재 hook 정의를
+   검토·승인한 뒤 `codex resume`로 다시 들어온다. 위 작성 실행 종료 예외로 커밋 중이라면
+   그 커밋까지만 끝낸다.
 
 ---
 

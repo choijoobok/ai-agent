@@ -35,3 +35,4 @@ verification:
   session_start: true
   ci_required: true
   restart_after_harness_pull: true
+  codex_reentry: resume-same-task  # 새 빈 task가 아니라 저장된 대화에 새 실행으로 다시 붙는다

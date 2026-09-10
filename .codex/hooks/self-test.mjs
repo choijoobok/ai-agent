@@ -10,6 +10,8 @@ import { crashOutput, patchTargets as bootstrapTargets } from '../../aidd-guide/
 import {
   checkCodexHookContext,
   codexHookAttestationLine,
+  codexHookBlockMessage,
+  codexHookReentryMessage,
   codexHookSurface,
   configuredCodexHookRevision,
   currentCodexHookRevision,
@@ -115,6 +117,14 @@ assert.equal(configuredCodexHookRevision(), hookRevision);
 assert.equal(checkCodexHookContext(hookRevision).ok, true);
 assert.equal(checkCodexHookContext('').ok, false);
 assert.equal(checkCodexHookContext('0'.repeat(64)).ok, false);
+const reentry = codexHookReentryMessage();
+assert.match(reentry, /같은 task를 새 실행으로 재개/);
+assert.match(reentry, /codex resume <SESSION_ID>/);
+assert.match(reentry, /사용자 승인은 낡은 훅.*우회하는 허가가 아니다/);
+assert.doesNotMatch(codexHookBlockMessage({ reason: 'attestation-missing' }), /새 task를 연다/);
+const hookConfig = JSON.parse(readFileSync(join(REPO, '.codex', 'hooks.json'), 'utf8'));
+const resumeGroup = hookConfig.hooks.SessionStart.find((group) => group.matcher === 'resume|clear|compact');
+assert.equal(resumeGroup?.hooks?.[0]?.command.includes('session-brief.mjs'), true);
 const hookSurface = codexHookSurface().map((path) => path.replace(/\\/g, '/'));
 assert.equal(hookSurface.some((path) => path.endsWith('/.claude/hooks/guard-write.mjs')), true);
 assert.equal(hookSurface.some((path) => path.endsWith('/.codex/hooks/session-start.mjs')), true);

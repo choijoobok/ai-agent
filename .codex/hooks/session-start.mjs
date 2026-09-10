@@ -4,6 +4,7 @@ import { emitHookResults, runHookChain } from '../../.claude/hooks/hook-chain.mj
 import { SESSION_START } from '../../aidd-guide/harness/runtime/chains.mjs';
 import {
   codexHookAttestationLine,
+  codexHookReentryMessage,
   configuredCodexHookRevision,
   currentCodexHookRevision,
 } from '../../aidd-guide/harness/runtime/codex-hook-revision.mjs';
@@ -22,7 +23,10 @@ const configured = configuredCodexHookRevision();
 if (before === after && configured === after) {
   outputs.push(codexHookAttestationLine(after));
 } else {
-  outputs.push('[Codex 훅 승인] 시작 중 훅이 바뀌었거나 revision이 맞지 않아 실행 확인을 발급하지 않았다. CLI(TUI)의 `/hooks`에서 승인하고 새 task를 연다.');
+  outputs.push([
+    '[Codex 훅 승인] 시작 중 훅이 바뀌었거나 revision이 맞지 않아 실행 확인을 발급하지 않았다.',
+    codexHookReentryMessage(),
+  ].join('\n'));
 }
 
 emitHookResults(outputs, 'SessionStart');

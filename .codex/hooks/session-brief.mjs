@@ -1,4 +1,4 @@
-/** Codex SessionStart 어댑터 — compact 뒤에도 공통 상태와 훅 실행 확인을 다시 주입한다. */
+/** Codex SessionStart 어댑터 — resume·compact 뒤 공통 상태와 현재 훅 실행 확인을 다시 주입한다. */
 import { readHookInput } from '../../.claude/hooks/lib.mjs';
 import { emitHookResults, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
 import { SESSION_RESUME } from '../../aidd-guide/harness/runtime/chains.mjs';
