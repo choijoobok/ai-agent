@@ -16,7 +16,7 @@ description: 아키텍처 의사결정 기록(ADR)을 작성한다. 되돌리기
 2. **포기한 것(trade-off)** 을 반드시 적는다.
 3. **되돌리기 방법과 비용**을 적는다. 미래의 AI가 이걸 뒤집을 때 필요하다.
 4. 번호는 `documents/project.state.yaml` `counters.ADR` + 1.
-5. 파일명 `documents/decisions/ADR-###-슬러그.md`. 템플릿은 `aidd-guide/artifact/template/adr.md`.
+5. 파일명 `documents/decisions/ADR-###-슬러그.md`. 템플릿은 `aidd-guide/artifact/template/01-adr.md`.
 
 ## 상태 관리
 `proposed` → 사용자 승인 → `accepted` (또는 `rejected`)
