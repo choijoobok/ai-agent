@@ -65,6 +65,7 @@ const LABEL = {
   complement: '보완', notes: '비고', edge_invariants: '불변식', retired_at: '폐기일',
   reason: '사유', replaced_by: '대체', nodes: '구성요소', edges: '간선',
   l1: 'Level 1 에서', deploy: '배포 단위', systems: '상자', units: '배포 단위',
+  decided_at: '확정일',
 };
 const lab = (k) => LABEL[k] ?? k;
 
