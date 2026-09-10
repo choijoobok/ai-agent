@@ -63,7 +63,7 @@ tags: [harness, hooks, contract, wiring]
 | 애초에 안 잠기게 | `hook-syntax` 가 사후 chain에서 **방금 쓴 훅**에 `node --check` 를 돌린다. 실행 권한·timeout 실패는 구문 오류라고 하지 않고 **검사 불가**로 알린다 |
 | 길을 알린다 | 차단 사유에 `RECOVERY` 를 붙인다 — 쓰기가 막혔으면 *Bash로 고친다*, 셸이 막혔으면 *편집 도구로 고친다* |
 | import 전부터 닫는다 | `pretool-bootstrap`이 파일 사전 chain의 입력을 먼저 보관하고 adapter import 실패를 구조화된 deny로 바꾼다. shell 진입 실패도 provider command wrapper가 명시적 deny로 바꾼다 |
-| 수리 자리만 연다 | **죽어서 막힌 경우에만** `.claude/hooks/*.mjs`·`.codex/hooks/*.mjs` 쓰기를 통과시킨다. 정책 차단과 다른 경로는 절대 열지 않는다 |
+| 수리 자리만 연다 | **죽어서 막힌 경우에만** 훅 adapter(`.claude/hooks/`·`.codex/hooks/`)와 **그들이 함께 쓰는 실행 원본**(`aidd-guide/harness/runtime/`)의 `.mjs` 쓰기를 통과시킨다 — `chains.mjs` 가 깨지면 모든 chain 이 서지 못하는데 열지 않으면 **잠긴 사람이 잠근 파일을 못 고친다**. 정책 차단과 다른 경로는 절대 열지 않는다 |
 | 남의 트리로 안 퍼지게 | CI가 훅 전부에 `node --check` 를 돌린다 — 구문이 깨진 훅이 `main`에 들어가면 **clone하는 사람이 즉시 잠긴다** |
 
 fixture는 `.codex/hooks/self-test.mjs`가 갖는다 — 여는 쪽과 **닫히는 쪽을 함께** 센다.

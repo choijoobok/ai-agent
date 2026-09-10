@@ -106,7 +106,7 @@ ai-agent/
 
 1. **한국어로 답한다.** 파일은 **UTF-8(BOM 없음)**, 줄끝은 **LF**(`.gitattributes` 가 `eol=lf`). 편집 도구가 CRLF 를 섞어 넣지 않게 한다 — `normalize-encoding` 훅이 쓰기 직후 고친다.
 2. **게이트를 건너뛰지 않는다.** 현재 단계의 Exit Criteria 를 모두 충족하고 사용자가 **명시 승인**해야 다음 단계로 간다. **한 턴에 하나의 게이트만** 넘는다 — "설계도 하고 구현도 했습니다" 는 금지다. **되돌릴 수 없는 것은 AI 가 하지 않는다** — DB DROP/TRUNCATE, `terraform apply`, `kubectl delete`, `git push --force`, 프로덕션 변경은 사용자가 직접 하거나 명시 승인한다(`guard-bash` 훅이 차단한다).
-3. **한 커밋은 한 가지 일이다.** 메시지는 `<타입>: <현상> — <조치>` 이며 **왜** 를 본문에 적는다. **경로를 지정해** 커밋한다(§9). **푸시는 사용자가 말할 때만** 한다.
+3. **한 커밋은 한 가지 일이다.** 메시지는 `<타입>: <현상> — <조치>` 이며 **한국어로 쓰고** **왜** 를 본문에 적는다(`guard-commit` 이 형식과 언어를 막는다). **경로를 지정해** 커밋한다(§9). **푸시는 사용자가 말할 때만** 한다.
 4. **`documents/spec/` 이 유일한 진실이다.** `documents/generated/` 는 파생 뷰다 — 그쪽을 고치지 말고 spec 을 고친 뒤 `doc-gen` 스킬로 재생성한다.
 5. **ID 없는 산출물은 만들지 않는다.** 요구사항·유즈케이스·기능·엔티티·API·화면·테스트는 ID 를 갖고 **상위 ID 에 연결된다** → [`process/05-traceability.md`](aidd-guide/process/05-traceability.md). **추측을 사실처럼 쓰지 않는다** — 미확인 전제는 `ASM-###` 으로 [`documents/decisions/ASSUMPTIONS.md`](documents/decisions/ASSUMPTIONS.md) 에 적고 산출물 안에서 `[ASM-###]` 로 표시한다.
 6. **문구를 소스에 박지 않는다.** 화면 문구는 `MSG` 키 + `label()`, 서버 문구는 `MsgKey` + `SYS_MESSAGE`. **소스에 남는 서버 문구 — 로그와 예외의 기본 메시지 — 는 한국어로 쓴다**(정본은 `SYS_MESSAGE` 이고 소스의 것은 폴백·진단이며, 그것을 읽는 사람이 한국어 운영자다).

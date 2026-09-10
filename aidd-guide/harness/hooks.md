@@ -51,10 +51,10 @@ tags: [harness, hooks, gate, automation]
 | `-m` · `-F <파일>` | 메시지 본문과 provider trailer를 훅이 확인할 수 없다 |
 | `-a` · `--all` | 추적 중인 모든 변경을 담는다 |
 | `--` 가 없다 | 경로 없는 커밋 — 낡은 인덱스가 **남의 커밋을 되돌린다** |
-| `-F -`가 아니거나 provider trailer가 틀리다 | 본문과 만든 주체를 확인할 수 없다 |
+| `-F -`가 아니거나 · trailer·제목 형식·언어가 틀리다 | 본문 · 만든 주체 · **무엇을 왜 했나**를 확인할 수 없다 |
 
 - **두 가지 좁힘이 없으면 훅이 자기 자신의 커밋을 막는다**: 문자열 안에 우연히 든 `git commit`(예: `echo`), here-string 본문에 든 `--` 나 `-m "`.
-- POSIX heredoc과 PowerShell here-string pipe를 모두 읽는다. Claude는 마지막 trailer 묶음의 `Agent: Claude` + 정해진 `Co-Authored-By:`, Codex는 마지막 줄 `Agent: Codex`여야 한다.
+- POSIX heredoc과 PowerShell here-string pipe를 모두 읽는다. Claude는 마지막 trailer 묶음의 `Agent: Claude` + 정해진 `Co-Authored-By:`, Codex는 마지막 줄 `Agent: Codex`여야 한다. 제목은 `<타입>: <현상> — <조치>` 이고 **제목·본문 모두 한국어**여야 한다(§5-3) — trailer 는 영문 키라서 언어를 묻지 않는다.
 
 ## `normalize-encoding` — BOM · CRLF 교정
 

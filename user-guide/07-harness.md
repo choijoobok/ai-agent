@@ -23,7 +23,7 @@
 | `PreToolUse` | `Write\|Edit\|NotebookEdit` | `guard-write` | 쓰기의 다섯 사고를 막는다 | **차단** · 경고 | 45s |
 | `PreToolUse` | `Write\|Edit\|NotebookEdit` | `guard-generated` | 생성물을 손으로 고치는 것을 막는다 | **차단** | 45s |
 | `PreToolUse` | `Bash\|PowerShell` | `guard-bash` | 되돌릴 수 없는 명령을 막는다 | **차단** | 20s |
-| `PreToolUse` | `Bash\|PowerShell` | `guard-commit` | 커밋의 세 사고를 막는다 | **차단** | 20s |
+| `PreToolUse` | `Bash\|PowerShell` | `guard-commit` | 커밋의 네 사고를 막는다 | **차단** | 20s |
 | `PostToolUse` | `Write\|Edit` | `normalize-encoding` | BOM 과 CRLF 를 방금 쓴 파일에서 걷어낸다 | 경고 | 90s |
 | `PostToolUse` | `Write\|Edit` | `hook-syntax` | 방금 고친 훅이 구문부터 깨졌는지 그 자리에서 본다 | 경고 | 90s |
 | `PostToolUse` | `Write\|Edit` | `trace-check` | 추적성 검사 — `PostToolUse`(`documents/spec/**` 쓰기) 훅 겸 `/trace` 스킬의 실행기. | 경고 | 90s |
@@ -46,7 +46,7 @@
 | `PreToolUse` | `Edit\|Write` | `guard-write` | 쓰기의 다섯 사고를 막는다 | **차단** · 경고 | 45s |
 | `PreToolUse` | `Edit\|Write` | `guard-generated` | 생성물을 손으로 고치는 것을 막는다 | **차단** | 45s |
 | `PreToolUse` | `Bash` | `guard-bash` | 되돌릴 수 없는 명령을 막는다 | **차단** | 20s |
-| `PreToolUse` | `Bash` | `guard-commit` | 커밋의 세 사고를 막는다 | **차단** | 20s |
+| `PreToolUse` | `Bash` | `guard-commit` | 커밋의 네 사고를 막는다 | **차단** | 20s |
 | `PostToolUse` | `Edit\|Write` | `normalize-encoding` | BOM 과 CRLF 를 방금 쓴 파일에서 걷어낸다 | 경고 | 90s |
 | `PostToolUse` | `Edit\|Write` | `hook-syntax` | 방금 고친 훅이 구문부터 깨졌는지 그 자리에서 본다 | 경고 | 90s |
 | `PostToolUse` | `Edit\|Write` | `trace-check` | 추적성 검사 — `PostToolUse`(`documents/spec/**` 쓰기) 훅 겸 `/trace` 스킬의 실행기. | 경고 | 90s |

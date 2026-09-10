@@ -1,5 +1,5 @@
 /**
- * 커밋의 세 사고를 막는다 — AGENTS.md §9.
+ * 커밋의 네 사고를 막는다 — AGENTS.md §5-3 · §9.
  *
  * <p>① <b>경로를 지정하지 않은 커밋.</b> 한 트리에서 세션이 둘일 수 있고, 낡은 인덱스가
  * <b>남의 커밋을 되돌린다</b>. 되돌리기 어려운 쪽이라 차단이다.
@@ -11,9 +11,22 @@
  * <i>이 줄을 누가 썼나</i> 를 나중에 알 방법이 없다 — 되돌아가 물을 수도 없다.
  * <b>메시지가 명령에 보여야</b> 통과한다. 파일로 넘긴 메시지는 훅이 읽을 수 없으므로
  * stdin(`-F -`) 형태로 다시 시도하게 한다.
+ *
+ * <p>④ <b>형식과 언어가 어긋난 제목.</b> `<타입>: <현상> — <조치>` 이고 <b>한국어</b>다
+ * (AGENTS.md §5-3). 형식은 <i>무엇이 잘못됐고 무엇을 했나</i> 를 제목 한 줄에 세우게
+ * 하고, 언어는 <b>읽는 사람이 한국어 운영자</b>라서다 — 이 저장소의 이력이 두 언어로
+ * 갈리면 나중에 <b>같은 사실을 두 말로 찾아야</b> 한다.
  */
 
 import { readHookInput, deny, pass, provider, PROVIDER_NAME } from './lib.mjs';
+
+/**
+ * 이 저장소가 쓰는 타입 — <b>실물에서 셌다</b>(docs 72 · fix 58 · feat 54 · refactor 13 ·
+ * chore 12 · style 1). 나머지 넷은 관행상 함께 쓰는 것이며, 좁게 잡아 정당한 커밋을 막느니
+ * 넓게 잡고 <b>형식과 언어</b>를 지키게 한다.
+ */
+const TYPES = new Set(['feat', 'fix', 'docs', 'refactor', 'chore', 'style', 'test', 'perf', 'build', 'ci']);
+const HANGUL = /[가-힣]/;
 
 const input = await readHookInput();
 const command = String(input?.tool_input?.command ?? '');
@@ -88,6 +101,17 @@ if (who === 'unknown' || bodies.length < commits.length) {
 }
 
 for (const body of bodies.slice(-commits.length)) {
+  const format = subjectProblem(body);
+  if (format) {
+    deny(
+      [
+        format,
+        '형태: `<타입>: <현상> — <조치>` · **왜** 는 본문에 · **한국어로 쓴다**(AGENTS.md §5-3).',
+        `타입: ${[...TYPES].join(' · ')}`,
+      ].join('\n'),
+    );
+  }
+
   const problem = trailerProblem(body, who);
   if (problem) {
     deny(
@@ -116,6 +140,30 @@ function visibleMessageBodies(source) {
     if (end?.index !== undefined) bodies.push(rest.slice(0, end.index).replace(/\r?\n$/, ''));
   }
   return bodies;
+}
+
+/** 제목 한 줄과 본문의 언어 — 형식이 맞아도 영어로 적으면 이력이 두 언어로 갈린다. */
+function subjectProblem(body) {
+  const lines = String(body).replace(/\r\n/g, '\n').trimEnd().split('\n');
+  const subject = (lines[0] ?? '').trim();
+  if (!subject) return '커밋 메시지의 첫 줄이 비어 있다.';
+
+  const head = subject.match(/^([a-z]+):\s+(.+)$/);
+  if (!head) return `제목에 타입이 없다: \`${subject.slice(0, 60)}\``;
+  if (!TYPES.has(head[1])) return `모르는 타입이다: \`${head[1]}\``;
+
+  const [phenomenon, ...rest] = head[2].split(' — ');
+  if (rest.length === 0 || !phenomenon.trim() || !rest.join(' — ').trim()) {
+    return '제목이 **현상 — 조치** 로 갈려 있지 않다. `—`(em dash) 앞뒤에 각각 내용이 있어야 한다.';
+  }
+
+  if (!HANGUL.test(subject)) return '제목에 한국어가 없다.';
+
+  /* 본문은 trailer 묶음 앞까지다 — trailer 는 영문 키라서 언어를 묻지 않는다. */
+  const at = lines.findIndex((line) => /^Agent:\s*/.test(line.trim()));
+  const prose = lines.slice(1, at < 0 ? lines.length : at).join('\n');
+  if (prose.trim() && !HANGUL.test(prose)) return '본문에 한국어가 없다.';
+  return '';
 }
 
 function trailerProblem(body, who) {

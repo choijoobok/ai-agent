@@ -11,7 +11,13 @@ import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
-const REPAIR_PATH = /^(?:\.claude|\.codex)\/hooks\/[^/]+\.mjs$/;
+/*
+  수리하는 자리 — 훅 adapter 둘과 **그것들이 함께 쓰는 실행 원본**이다.
+  `chains.mjs` 나 `pretool-bootstrap.mjs` 가 깨지면 모든 chain 이 서지 못하는데, 그 둘을
+  열지 않으면 <b>잠긴 사람이 잠근 파일을 못 고친다</b>. 이 폴더에는 훅이 지키는 생성물이
+  없어(`SKILL.md` 는 `.claude/skills/`) 여는 위험이 없다.
+*/
+const REPAIR_PATH = /^(?:\.claude\/hooks|\.codex\/hooks|aidd-guide\/harness\/runtime)\/[^/]+\.mjs$/;
 
 export function patchTargets(input) {
   const cwd = input?.cwd || REPO;
@@ -46,7 +52,7 @@ export function crashOutput(input, entry, error) {
   const reason = [
     `파일 보호 진입부 실행 실패: ${entry}: ${cause}`,
     '**쓰기를 차단했다.** shell로 원인을 확인하고 훅을 복구한 뒤 다시 시도한다.',
-    '수리 쓰기는 `.claude/hooks/*.mjs`와 `.codex/hooks/*.mjs`에만 열린다.',
+    '수리 쓰기는 훅 adapter(`.claude/hooks/` · `.codex/hooks/`)와 `aidd-guide/harness/runtime/` 의 `.mjs` 에만 열린다.',
   ].join('\n');
   return {
     hookSpecificOutput: {

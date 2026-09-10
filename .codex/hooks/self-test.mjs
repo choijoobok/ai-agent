@@ -58,21 +58,22 @@ const preShell = (command) => runHookChain({
   tool_name: 'Bash',
   tool_input: { command },
 }, ['guard-commit.mjs']);
+const SUBJECT = 'fix: 훅이 아무것도 막지 않았다 — 본문이 있는 자리에서 본다';
 const posixCommit = (body) => `git commit -F - -- AGENTS.md <<'EOF'\n${body}\nEOF`;
 const powershellCommit = (body) => `$message = @'\n${body}\n'@\n$message | git commit -F - -- AGENTS.md`;
 const isDenied = (outputs) => outputs.some((x) => x?.hookSpecificOutput?.permissionDecision === 'deny');
 
-assert.equal(isDenied(await preShell(posixCommit('subject\n\nAgent: Codex'))), false);
-assert.equal(isDenied(await preShell(posixCommit('subject'))), true);
-assert.equal(isDenied(await preShell(powershellCommit('subject'))), true);
-assert.equal(isDenied(await preShell(posixCommit('subject\n\nAgent: Potato'))), true);
-assert.equal(isDenied(await preShell(posixCommit('subject\n\nAgent: Codex\ntrailing body'))), true);
-assert.equal(isDenied(await preShell("git commit -m 'subject' -- AGENTS.md")), true);
+assert.equal(isDenied(await preShell(posixCommit(`${SUBJECT}\n\nAgent: Codex`))), false);
+assert.equal(isDenied(await preShell(posixCommit(SUBJECT))), true);
+assert.equal(isDenied(await preShell(powershellCommit(SUBJECT))), true);
+assert.equal(isDenied(await preShell(posixCommit(`${SUBJECT}\n\nAgent: Potato`))), true);
+assert.equal(isDenied(await preShell(posixCommit(`${SUBJECT}\n\nAgent: Codex\ntrailing body`))), true);
+assert.equal(isDenied(await preShell(`git commit -m '${SUBJECT}' -- AGENTS.md`)), true);
 
 const savedProvider = process.env.AI_HOOK_PROVIDER;
 process.env.AI_HOOK_PROVIDER = 'claude';
 assert.equal(isDenied(await preShell(posixCommit(
-  'subject\n\nAgent: Claude\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>',
+  `${SUBJECT}\n\nAgent: Claude\nCo-Authored-By: Claude Opus 5 <noreply@anthropic.com>`,
 ))), false);
 if (savedProvider === undefined) delete process.env.AI_HOOK_PROVIDER;
 else process.env.AI_HOOK_PROVIDER = savedProvider;
@@ -141,8 +142,27 @@ if (healthy.length) {
   assert.deepEqual(healthy, []);
 }
 
+/* 수리 경로는 chain 의 **실행 원본**까지 연다 — 그것이 깨지면 모든 chain 이 서지 못하는데
+   열어 주지 않으면 잠긴 사람이 잠근 파일을 못 고친다. */
+assert.equal(allowHookRepair(asWrite('aidd-guide/harness/runtime/chains.mjs'), crashed)[0]?.hookSpecificOutput?.permissionDecision, undefined);
+assert.equal(allowHookRepair(asWrite('aidd-guide/harness/runtime/pretool-bootstrap.mjs'), crashed)[0]?.hookSpecificOutput?.permissionDecision, undefined);
+assert.equal(allowHookRepair(asWrite('aidd-guide/harness/skill-src/adr.md'), crashed)[0]?.hookSpecificOutput?.permissionDecision, 'deny');
+
 /* 정책 차단(`crashed` 없음)은 훅 파일이라도 절대 열리지 않는다. */
 const policy = [{ hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: 'x' } }];
 assert.equal(allowHookRepair(asWrite('.claude/hooks/guard-write.mjs'), policy)[0]?.hookSpecificOutput?.permissionDecision, 'deny');
+
+/* 커밋 제목의 형식과 언어 — **막히는 쪽을 함께 센다.** 통과만 확인하면 아무것도 안
+   막는 검사가 초록으로 보인다(2026-09-11 에 실제로 그랬다). */
+for (const [subject, shouldDeny] of [
+  ['fix: 훅이 아무것도 막지 않았다 — 본문이 있는 자리에서 본다', false],
+  ['feat: harness was out of sync — align both providers', true],
+  ['fix: 대시가 없는 제목이다', true],
+  ['wip: 모르는 타입이다 — 고친다', true],
+  ['타입이 없다 — 고친다', true],
+]) {
+  const denied = isDenied(await preShell(posixCommit(`${subject}\n\nAgent: Codex`)));
+  assert.equal(denied, shouldDeny, `커밋 제목 판정이 틀렸다: ${subject}`);
+}
 
 console.log('Codex hook adapter self-test 통과');

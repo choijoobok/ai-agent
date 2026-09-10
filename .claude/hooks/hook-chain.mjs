@@ -51,7 +51,13 @@ export async function runHookChain(input, scripts, recovery = '보호 훅을 복
 }
 
 /** 훅 파일 자신 — 여기만 수리 경로로 연다. 깊이 하나, `.mjs` 하나. */
-const REPAIR_PATH = /^(?:\.claude|\.codex)\/hooks\/[^/]+\.mjs$/;
+/*
+  수리하는 자리 — 훅 adapter 둘과 **그것들이 함께 쓰는 실행 원본**이다.
+  `chains.mjs` 나 `pretool-bootstrap.mjs` 가 깨지면 모든 chain 이 서지 못하는데, 그 둘을
+  열지 않으면 <b>잠긴 사람이 잠근 파일을 못 고친다</b>. 이 폴더에는 훅이 지키는 생성물이
+  없어(`SKILL.md` 는 `.claude/skills/`) 여는 위험이 없다.
+*/
+const REPAIR_PATH = /^(?:\.claude\/hooks|\.codex\/hooks|aidd-guide\/harness\/runtime)\/[^/]+\.mjs$/;
 
 /**
  * <b>깨진 보호가 자기 수리까지 막지 않게 한다.</b>
