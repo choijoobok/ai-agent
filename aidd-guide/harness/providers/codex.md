@@ -115,11 +115,13 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --pretool-canary <Sessio
 현재 `guard-bash`가 실행 중이면 스크립트 진입 전에 `[Codex PreToolUse 생존 확인]` 사유로 차단한다.
 훅이 빠졌거나 실패해 열린 경우에는 스크립트가 실행되어 0이 아닌 종료와 실패 문구를 낸다. 파일이나
 외부 상태를 바꾸지 않으므로 실패 경로도 무해하다. revision과 카나리 중 하나라도 실패하면 일반
-업무를 보류한다. [Codex Hooks 공식 문서](https://developers.openai.com/codex/hooks)는
+업무를 보류한다. [Codex Hooks 공식 문서](https://learn.chatgpt.com/docs/hooks#tool-calls-from-code-mode)는
 `exec_command`와 코드 모드의 중첩 호출도 `Bash` matcher를 탄다고 설명하지만, 2026-09-11 실측에서
-데스크톱 내장 CLI 0.153.4와 CLI 0.154.0 모두 코드 모드 안쪽 `exec_command`에 `PreToolUse`를
-호출하지 않았다. matcher를 넓혀도 처리기 자체가 시작되지 않았고, 코드 모드 호스트를 끄면 직접
-shell로 바뀌지 않고 도구가 닫혔다. **승인한 새 실행에서 revision은 맞는데 카나리만 실행되면
+데스크톱 앱 26.901.6511.0(내장 CLI 0.153.4)과 CLI 0.154.0 모두 코드 모드 안쪽
+`exec_command`에 `PreToolUse`를 호출하지 않았다. 같은 결손은
+[openai/codex#23411](https://github.com/openai/codex/issues/23411)에서 공개 추적 중이며, 현재 릴리스
+실측에서도 재현된다. matcher를 넓혀도 처리기 자체가 시작되지 않았고, 코드 모드 호스트를 끄면
+직접 shell로 바뀌지 않고 도구가 닫혔다. **승인한 새 실행에서 revision은 맞는데 카나리만 실행되면
 재승인·새 task를 반복하지 않는다.** 이때는 제품의 중첩 호출 결손으로 보고하고 계속 보류한다.
 
 **출력은 JSON이다** — `{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":…}}`.
