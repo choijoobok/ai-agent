@@ -55,8 +55,9 @@ Codex CLI TUI의 `/hooks`로 현재 정의를 승인했는지 먼저 확인한�
 루트에서 `codex`를 실행한 뒤 그 대화 화면 안에서 `/hooks`를 쓰게 하며, PowerShell에 `/hooks`를
 직접 입력하게 하지 않는다. 사용자가 완료했다고 확인하기 전에는 새 task 이동을 묻거나 만들지
 않는다. 완료 확인 뒤 대화를 인계한 새 local task로 이동할지 묻고, 승인되면 현재 턴을 끝낸 뒤
-같은 saved project에 새 task를 만들어 완료한 일·남은 일을 첫 prompt로 넘기고 이동한다. 새 task는 revision 검사와 무해한
-`PreToolUse` 생존 카나리를 모두 통과해야 한다. Codex CLI는 같은 task 재개 여부를 묻고, 승인되면
+같은 saved project에 새 task를 만들어 완료한 일·남은 일을 첫 prompt로 넘기고 이동한다. 새 task는
+revision 검사를 반드시 통과해야 하고 무해한 `PreToolUse` 생존 카나리도 한 번 실행한다. 카나리만
+실패하면 자동 사전 차단의 결손을 사용자에게 알리고 문서 규칙을 직접 적용하며 계속한다. Codex CLI는 같은 task 재개 여부를 묻고, 승인되면
 `/hooks`에서 현재 정의를 승인하고 현재 실행을 끝낸 뒤 `codex resume <SESSION_ID>`(가장 최근
-task면 `codex resume --last`)로 돌아와 smoke test한다. client가 불명확하면 어느 쪽인지 먼저
+task면 `codex resume --last`)로 돌아와 revision 검사와 같은 카나리를 실행한다. client가 불명확하면 어느 쪽인지 먼저
 묻는다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.

@@ -47,9 +47,11 @@ tags: [harness, hooks, automation]
 Codex 훅 승인 확인은 훅 자체의 hard block이 아니다. 승인되지 않은 훅은 실행될 수 없으므로,
 승인된 `SessionStart`의 revision 문맥과 `AGENTS.md` preflight가 일반 업무 응답을 보류하고
 CI는 revision 누락을 막는다. 불일치 때의 사용자 승인은 현재 실행의 우회가 아니라 **client가
-지원하는 방식으로 작업 맥락을 잇는 선택**이다. 데스크톱 앱은 새 local task에 맥락을 인계하고
-revision·`PreToolUse` 생존을 확인하며, CLI는 같은 task를 `codex resume`로 새 실행에 다시 붙인다.
-Claude Code의 요청 흐름에는 이 검사를 연결하지 않는다.
+지원하는 방식으로 작업 맥락을 잇는 선택**이다. 데스크톱 앱은 새 local task에 맥락을 인계하고,
+CLI는 같은 task를 `codex resume`로 새 실행에 다시 붙인다. 양쪽 모두 revision을 확인하고
+`PreToolUse` 카나리로 자동 사전 차단의 생존 여부를 사용자에게 알린다. revision이 맞는데
+카나리만 실패하면 문서 규칙을 AI가 직접 집행하며 계속한다. Claude Code의 요청 흐름에는 이
+검사를 연결하지 않는다.
 
 ## 강도가 넷인 이유
 
@@ -73,6 +75,7 @@ Claude Code의 요청 흐름에는 이 검사를 연결하지 않는다.
 | 공통물 승격 | AI | 두 번째 사용을 알아채는 검사가 없다 — 리뷰에서 *이거 다른 화면에도 있지 않나* 를 묻는다 |
 | `chat-history` 요약 | AI | **원문은 `log-raw` 가 남긴다.** 요약은 결정·산출물·미결만(AGENTS.md §10 · [harness/memory/logs.md](./memory/logs.md)) |
 | 결정 기록 | AI | **커밋 메시지에 *왜* 를 적는다**(AGENTS.md §9). 버린 안이 있으면 ADR 을 더한다 |
+| Codex 사전 훅 결손 보완 | AI | 카나리 실패를 사용자에게 알리고 `guard-write`·`guard-generated`·`guard-bash`·`guard-commit`의 근거 규칙을 직접 적용한다 |
 
 ## 위반 패턴
 

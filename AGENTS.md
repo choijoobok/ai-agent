@@ -78,15 +78,20 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <SessionStart가
     node aidd-guide/harness/runtime/codex-hook-revision.mjs --pretool-canary <SessionStart가 넣은 revision>
     ```
 
-    `[Codex PreToolUse 생존 확인]` 차단이 오면 업무를 재개하고, 스크립트가 실행되면 훅 미적용으로
-    보고 계속 보류한다. **이미 승인한 새 task에서 revision 검사가 통과했는데 카나리만 실행되면
-    같은 승인·새 task 이동을 반복하지 않는다** — 실제 도구 경로가 `PreToolUse`를 건너뛴 제품
-    결손으로 보고하고 수리 차선만 연다. **앱 사용자에게 CLI를 기본 절차로 요구하지는 않되, 앱에 검토 화면이
+    `[Codex PreToolUse 생존 확인]` 차단이 오면 사전 명령 훅이 살아 있는 것이다. 스크립트가
+    실행되면 그 도구 경로의 훅 미적용이다. **이미 승인한 새 task에서 revision 검사가 통과했는데
+    카나리만 실행되면 같은 승인·새 task 이동을 반복하지 않는다** — 코드 모드의 중첩 호출이
+    `PreToolUse`를 건너뛴 제품 결손으로 보고, 사용자에게 사전 가드(`guard-write`·
+    `guard-generated`·`guard-bash`·`guard-commit`)의 자동 차단이 코드 모드에서 보장되지
+    않는다고 한 번 알린 뒤 **문서의 동일 규칙을 AI가 직접 지키며
+    일반 업무를 계속한다.** 카나리는 보호 상태를 알리는 경고이지 별도의 게이트가 아니다.
+    **앱 사용자에게 CLI를 기본 절차로 요구하지는 않되, 앱에 검토 화면이
     없으면 `/hooks` 승인은 새 task를 만들기 전의 필수 차선이다.**
   - **CLI**: 사용자에게 **“대화 기록을 유지한 채 같은 task를 새 실행으로 재개할까요?”**라고
     묻는다. 승인되면 `/hooks`로 현재 정의를 검토·승인하고 현재 실행을 끝낸 뒤
     `codex resume <SESSION_ID>`로 재개한다. 가장 최근 task면 `codex resume --last`를 쓴다.
-    새 빈 task는 사용자가 원할 때만 연다.
+    재개한 실행에서도 revision 검사 뒤 카나리를 한 번 실행하며, 실패하면 위와 같이 사용자에게
+    자동 차단의 결손을 알리고 문서 규칙을 직접 지키며 계속한다. 새 빈 task는 사용자가 원할 때만 연다.
   - **불명**: 앱인지 CLI인지 먼저 묻고, 확정 전에는 어느 경로도 강제하지 않는다.
   어느 경우든 승인은 낡은 훅을 현재 실행에서 우회해도 된다는 뜻이 아니다. **다만 아래 수리
   차선은 보류하지 않는다.**
@@ -174,7 +179,7 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <SessionStart가
 ## 5. 절대 규칙 (매 응답 적용)
 
 1. **한국어로 답한다.** 파일은 **UTF-8(BOM 없음)**, 줄끝은 **LF**(`.gitattributes` 가 `eol=lf`). 편집 도구가 CRLF 를 섞어 넣지 않게 한다 — `normalize-encoding` 훅이 쓰기 직후 고친다.
-2. **게이트를 건너뛰지 않는다.** 전역 또는 소유 작업흐름의 Exit Criteria 를 모두 충족하고 사용자가 **명시 승인**해야 다음 단계로 간다. **한 턴에 하나의 게이트만** 넘는다 — "설계도 하고 구현도 했습니다" 는 금지다. 소스 쓰기는 기능을 소유한 작업흐름 G3가 열고, 전역 G3는 차수 통합을 잠근다([`process/13-workstreams.md`](aidd-guide/process/13-workstreams.md)). **되돌릴 수 없는 것은 AI 가 하지 않는다** — DB DROP/TRUNCATE, `terraform apply`, `kubectl delete`, `git push --force`, 프로덕션 변경은 사용자가 직접 하거나 명시 승인한다(`guard-bash` 훅이 차단한다).
+2. **게이트를 건너뛰지 않는다.** 전역 또는 소유 작업흐름의 Exit Criteria 를 모두 충족하고 사용자가 **명시 승인**해야 다음 단계로 간다. **한 턴에 하나의 게이트만** 넘는다 — "설계도 하고 구현도 했습니다" 는 금지다. 소스 쓰기는 기능을 소유한 작업흐름 G3가 열고, 전역 G3는 차수 통합을 잠근다([`process/13-workstreams.md`](aidd-guide/process/13-workstreams.md)). G3 전 템플릿 자체 보수 예외를 열 때는 사용자 확인 뒤 `current.template_maintenance: true`를 켜고, **그 줄을 첫 소스 변경 커밋에 함께 담아** 문이 열렸던 사실을 남긴다. **되돌릴 수 없는 것은 AI 가 하지 않는다** — DB DROP/TRUNCATE, `terraform apply`, `kubectl delete`, `git push --force`, 프로덕션 변경은 사용자가 직접 하거나 명시 승인한다(`guard-bash` 훅이 차단한다).
 3. **한 커밋은 한 가지 일이다.** 메시지는 `<타입>: <현상> — <조치>` 이며 **한국어로 쓰고** **왜** 를 본문에 적는다(`guard-commit` 이 형식과 언어를 막는다). **경로를 지정해** 커밋한다(§9). **푸시는 사용자가 말할 때만** 한다.
 4. **`documents/spec/` 이 유일한 진실이다.** `documents/generated/` 는 파생 뷰다 — 그쪽을 고치지 말고 spec 을 고친 뒤 `doc-gen` 스킬로 재생성한다.
 5. **ID 없는 산출물은 만들지 않는다.** 요구사항·유즈케이스·기능·엔티티·API·화면·테스트는 ID 를 갖고 **상위 ID 에 연결된다** → [`process/05-traceability.md`](aidd-guide/process/05-traceability.md). **추측을 사실처럼 쓰지 않는다** — 미확인 전제는 `ASM-###` 으로 [`documents/decisions/ASSUMPTIONS.md`](documents/decisions/ASSUMPTIONS.md) 에 적고 산출물 안에서 `[ASM-###]` 로 표시한다.
@@ -260,6 +265,11 @@ cd sources/frontend && npm run lint && npx tsc -b --noEmit && npm run test
 
 **기계가 막는 것의 목록은 [`harness/automation-matrix.md`](aidd-guide/harness/automation-matrix.md) 가 갖는다** — 빌드 게이트와 훅 전부. **훅의 현재 목록은 생성물이다**
 ([`user-guide/07-harness.md`](user-guide/07-harness.md)) — 손으로 적은 목록은 훅을 더할 때마다 낡고, 낡은 목록은 **없는 것보다 나쁘다**(있다고 믿게 한다).
+
+**훅은 규칙의 원본이 아니다.** 차단·교정·경고하는 모든 프로젝트 정책은 먼저 이 파일이나
+`aidd-guide/`에 사람과 AI가 읽을 수 있는 규칙으로 존재해야 한다. 훅에만 있는 판정은 규칙으로
+승격하거나 제거한다. 제품 결손으로 훅이 실행되지 않더라도 규칙은 그대로 유효하며, AI는 사용자에게
+자동 집행이 빠진 범위를 알리고 같은 규칙을 직접 적용한다.
 
 ### 사람이 지킨다 (검사가 없다)
 

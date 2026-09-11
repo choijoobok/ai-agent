@@ -161,11 +161,14 @@ assert.equal(desktopReentry.indexOf('`/hooks`') < desktopReentry.indexOf('새 ta
 assert.match(desktopReentry, /thread\/start/);
 assert.match(desktopReentry, /새 local task/);
 assert.match(desktopReentry, /PreToolUse 생존 확인/);
+assert.match(desktopReentry, /문서 규칙을 직접 적용하며 업무를 계속/);
 assert.match(desktopReentry, /thread\/fork.*쓰지 않는다/);
 assert.doesNotMatch(desktopReentry, /codex resume/);
 const cliReentry = codexHookReentryMessage('cli');
 assert.match(cliReentry, /같은 task를 새 실행으로 재개/);
 assert.match(cliReentry, /codex resume <SESSION_ID>/);
+assert.match(cliReentry, /PreToolUse 생존 확인/);
+assert.match(cliReentry, /문서 규칙을 직접 적용하며 계속/);
 const unknownReentry = codexHookReentryMessage('unknown');
 assert.match(unknownReentry, /데스크톱 앱인지 CLI/);
 assert.match(codexHookBlockMessage({ reason: 'attestation-missing' }, 'desktop'), /새 local task/);

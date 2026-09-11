@@ -102,7 +102,7 @@ Windows fail-closed wrapper는 JSON 문자열을 명령에 직접 넣지 않고 
 `source`로 판정한다. CLI에서 같은 task를 `codex resume`로 다시 열면 두 번째 그룹이 현재
 revision 실행 확인과 프로젝트 상태를 새 문맥에 넣는다. 데스크톱 앱의 새 local task가 startup
 그룹을 실행해 같은 결과를 내는지는 smoke test로 확인한다. revision만으로 사전 훅
-실행까지 추정하지 않고, 아래 생존 카나리까지 통과하기 전에는 일반 업무를 재개하지 않는다.
+실행까지 추정하지 않고 아래 생존 카나리로 사전 명령 훅의 자동 집행 여부를 따로 알린다.
 
 ### `PreToolUse` 생존 카나리
 
@@ -114,15 +114,21 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --pretool-canary <Sessio
 
 현재 `guard-bash`가 실행 중이면 스크립트 진입 전에 `[Codex PreToolUse 생존 확인]` 사유로 차단한다.
 훅이 빠졌거나 실패해 열린 경우에는 스크립트가 실행되어 0이 아닌 종료와 실패 문구를 낸다. 파일이나
-외부 상태를 바꾸지 않으므로 실패 경로도 무해하다. revision과 카나리 중 하나라도 실패하면 일반
-업무를 보류한다. [Codex Hooks 공식 문서](https://learn.chatgpt.com/docs/hooks#tool-calls-from-code-mode)는
+외부 상태를 바꾸지 않으므로 실패 경로도 무해하다. **revision 불일치·확인 부재는 업무를 보류하지만,
+revision이 맞는 새 실행에서 카나리만 실패하면 자동 집행 결손을 사용자에게 한 번 알리고
+`AGENTS.md`·`aidd-guide/`의 동일 규칙을 직접 적용하며 일반 업무를 계속한다.**
+[Codex Hooks 공식 문서](https://learn.chatgpt.com/docs/hooks#tool-calls-from-code-mode)는
 `exec_command`와 코드 모드의 중첩 호출도 `Bash` matcher를 탄다고 설명하지만, 2026-09-11 실측에서
 데스크톱 앱 26.901.6511.0(내장 CLI 0.153.4)과 CLI 0.154.0 모두 코드 모드 안쪽
 `exec_command`에 `PreToolUse`를 호출하지 않았다. 같은 결손은
 [openai/codex#23411](https://github.com/openai/codex/issues/23411)에서 공개 추적 중이며, 현재 릴리스
 실측에서도 재현된다. matcher를 넓혀도 처리기 자체가 시작되지 않았고, 코드 모드 호스트를 끄면
 직접 shell로 바뀌지 않고 도구가 닫혔다. **승인한 새 실행에서 revision은 맞는데 카나리만 실행되면
-재승인·새 task를 반복하지 않는다.** 이때는 제품의 중첩 호출 결손으로 보고하고 계속 보류한다.
+재승인·새 task를 반복하지 않는다.** 이때는 제품의 중첩 호출 결손으로 보고하되 카나리를 별도
+게이트로 만들지 않는다. 같은 코드 모드의 `apply_patch`도 2026-09-11 실측에서 파일 사전 가드가
+호출되지 않았고, 유효한 패치 뒤의 `PostToolUse`는 호출됐다. 플랫폼 sandbox와 승인 절차는 그대로
+두고, 네 사전 가드(`guard-write`·`guard-generated`·`guard-bash`·`guard-commit`)가 집행하던
+문서 규칙을 AI가 직접 지킨다.
 
 **출력은 JSON이다** — `{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":…}}`.
 Claude는 같은 자리에서 날 것의 텍스트를 쓰며, 두 갈래는 `emitHookResults` 한 곳에서
@@ -175,9 +181,10 @@ SessionStart/PreToolUse/PostToolUse smoke test가 남는다. 훅은 유용한 gu
 
 재연결 smoke test는 client별로 나눈다. CLI는 `/hooks` 승인 뒤 현재 실행을 끝내고
 `codex resume <SESSION_ID>`로 돌아온다. 데스크톱 앱은 새 local task에 작업 맥락을 넘겨 이동한다.
-양쪽 모두 첫 요청에서 `[Codex 훅 실행 확인] revision=…`이 주입되는지, 데스크톱은 `PreToolUse`
-카나리가 차단되는지, 직전 완료 작업을 인계받았는지를 함께 본다. 하나라도 실패하면
-해당 client의 재연결 지원을 완료로 쓰지 않는다.
+양쪽 모두 첫 요청에서 `[Codex 훅 실행 확인] revision=…`이 주입되는지, `PreToolUse` 카나리가
+차단되는지, 직전 완료 작업을 인계받았는지를 함께 본다. revision이나 맥락 인계가 실패하면 해당
+client의 재연결 지원을 완료로 쓰지 않는다. 카나리만 실패하면 자동 사전 차단은 미지원으로 기록하고
+사용자에게 알리되, 문서 규칙을 직접 적용하며 작업은 계속한다.
 
 관리형 Windows sandbox가 hook 안의 자식 `node --check`를 `EPERM`으로 거절하면 `hook-syntax`는
 이를 구문 오류로 부르지 않고 **검사 불가**로 알린다. 그때 AI가 최상위 shell에서 같은 명령을

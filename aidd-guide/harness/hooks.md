@@ -4,7 +4,7 @@ title: "훅 카탈로그 — 하나하나가 무엇을 보고 무엇을 말하�
 category: harness
 type: operation
 created: "2026-05-04"
-updated: "2026-09-10"
+updated: "2026-09-11"
 status: active
 sources: ["aidd-guide/harness/capabilities.yaml", ".claude/hooks/", ".codex/hooks.json"]
 tier: 2
@@ -155,7 +155,7 @@ sources/frontend/src/features/{기능}/…  ─→ screenRegistry.ts 역인덱�
 
 ## `git-sync` — 세션 시작에 원격을 당긴다
 
-**깨끗한 트리에서 `startup` 일 때만** `git pull --ff-only` 를 돌린다. 더러우면 당기지 않고 이유와 다음 할 일을 말한다 — 미커밋 변경 위로 남의 커밋을 얹을지는 **사람의 판단**이고(AGENTS.md §5-2), 푸시는 사용자가 말할 때만이다(§9). Codex adapter는 시작 전후 훅 revision이 같을 때만 실행 확인을 문맥에 넣는다. 달라졌으면 데스크톱 앱은 앱 검토 화면 또는 CLI `/hooks`의 완료를 먼저 확인한 뒤 이동 승인을 받아 작업 맥락을 인계한 새 local task에서 revision·`PreToolUse` 생존을 확인하고, CLI는 같은 task를 `codex resume`로 재개한다. 상세 절차와 fixture는 [hooks-contract.md](./hooks-contract.md)가 갖는다.
+**깨끗한 트리에서 `startup` 일 때만** `git pull --ff-only` 를 돌린다. 더러우면 당기지 않고 이유와 다음 할 일을 말한다 — 미커밋 변경 위로 남의 커밋을 얹을지는 **사람의 판단**이고(AGENTS.md §5-2), 푸시는 사용자가 말할 때만이다(§9). Codex adapter는 시작 전후 훅 revision이 같을 때만 실행 확인을 문맥에 넣는다. 달라졌으면 데스크톱 앱은 앱 검토 화면 또는 CLI `/hooks`의 완료를 먼저 확인한 뒤 이동 승인을 받아 작업 맥락을 인계한 새 local task로 가고, CLI는 같은 task를 `codex resume`로 재개한다. 새 실행은 revision을 확인하고 `PreToolUse` 카나리 결과를 알리되, revision이 맞고 카나리만 실패하면 문서 규칙을 직접 적용하며 계속한다. 상세 절차와 fixture는 [hooks-contract.md](./hooks-contract.md)가 갖는다.
 
 ## 컨텍스트 관리 — 같은 목적, 다른 구현
 

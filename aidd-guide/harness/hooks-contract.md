@@ -44,12 +44,12 @@ tags: [harness, hooks, contract, wiring]
 | `UserPromptSubmit` | `log-raw` + `context-gauge` | `log-raw` | 사용자 대화 기록 |
 | `Stop` | `log-raw` | `log-raw` | AI 대화 기록 |
 
-- 같은 matcher의 command hook은 동시 실행될 수 있다. 그래서 순서가 필요한 정책은 handler를
-  여러 개 배선하지 않고 **chain 하나**가 직렬 실행한다.
+- 같은 matcher의 command hook은 동시 실행될 수 있다. 그래서 순서가 필요한 정책은 handler를 여러 개 배선하지 않고 **chain 하나**가 직렬 실행한다.
 - **같은 chain에는 같은 timeout을 준다.** 예산이 갈리면 좁은 쪽에서만 뒤쪽 훅이 통째로
   잘리고, 잘렸다는 사실은 보이지 않는다. `harness-check`가 파일 chain 둘을 비교해 막는다.
 - 실행은 `node` 하나다. `package.json`도 `node_modules`도 보지 않는다(AGENTS.md §1).
 - 사전 보호 chain에서 내부 오류가 나면 차단한다. 사후 chain 오류는 되돌릴 수 없으므로 경고한다.
+- **정책의 원본은 훅 코드가 아니다.** 차단·교정·경고의 근거는 먼저 `AGENTS.md` 또는 `aidd-guide/`에 있어야 하고, 훅은 그 규칙을 기계적으로 집행한다. matcher와 입력 정규화 같은 구현 상세만 훅이 단독으로 가질 수 있다.
 - chain 순서는 코드에 다시 쓰지 않는다. `runtime/chains.mjs`를 adapter와 문서 생성기가 직접
   읽고, `harness-check`가 `capabilities.yaml`과 대조한다.
 
@@ -151,8 +151,8 @@ AI가 만드는 커밋은 `-F -`로 본문을 명령에 드러낸다. POSIX here
 | 판정 | AGENTS.md의 Codex 전용 preflight가 매 요청에서 문맥 revision과 현재 실행면을 대조한다 |
 | 강도 | 불일치·확인 부재면 모델이 **일반 업무**를 보류한다. `harness-check`와 CI는 stale revision을 오류로 막는다 |
 | 수리 차선 | 확인이 없어도 **읽기 전부 · `harness-sync` · 하네스 경로 한정 커밋**은 연다(아래) |
-| 실패 정책 | 자동 승인·신뢰 저장소 읽기·우회 플래그를 쓰지 않는다. 데스크톱 앱은 hook 검토 화면 또는 CLI `/hooks` 승인 완료 확인 → 새 task 이동 승인 → 현재 턴 종료 → 새 local task에 맥락 인계 → revision·`PreToolUse` 생존 카나리 확인 순서다. CLI는 재개 승인 → `/hooks` 검토 → 현재 실행 종료 → `codex resume`다. **승인된 새 실행에서 revision은 맞는데 카나리만 실행되면 같은 재진입을 반복하지 않고 실제 도구 경로의 제품 결손으로 보고한다.** |
-| fixture | `.codex/hooks/self-test.mjs` — 일치·확인 부재·잘못된 revision, **desktop·CLI·불명 세 갈래 안내**, 승인→재진입 순서, 카나리 deny, Codex `PreToolUse` 허용의 중립 JSON과 어댑터 출력 모양을 함께 센다 |
+| 실패 정책 | 자동 승인·신뢰 저장소 읽기·우회 플래그를 쓰지 않는다. 데스크톱 앱은 hook 검토 화면 또는 CLI `/hooks` 승인 완료 확인 → 새 task 이동 승인 → 현재 턴 종료 → 새 local task에 맥락 인계 → revision·`PreToolUse` 생존 카나리 확인 순서다. CLI는 재개 승인 → `/hooks` 검토 → 현재 실행 종료 → `codex resume` → revision·카나리 확인 순서다. **revision 불일치·확인 부재는 일반 업무를 보류하지만, 승인된 새 실행에서 revision이 맞고 카나리만 실행되면 제품 결손을 사용자에게 한 번 알리고 문서 규칙을 AI가 직접 적용하며 업무를 계속한다.** 같은 재진입과 경고를 반복하지 않는다. |
+| fixture | `.codex/hooks/self-test.mjs` — 일치·확인 부재·잘못된 revision, **desktop·CLI·불명 세 갈래 안내**, 승인→재진입 순서, 양쪽 client의 카나리 경고 후 계속 정책, 카나리 deny, Codex `PreToolUse` 허용의 중립 JSON과 어댑터 출력 모양을 함께 센다 |
 
 **부트스트랩 한계가 있다.** 승인되지 않은 훅은 자기 자신을 실행해 차단할 수 없다. runtime
 hard block이라고 가장하지 않고 `AGENTS.md` preflight와 승인된 `SessionStart`의 문맥 증명을
@@ -160,7 +160,7 @@ hard block이라고 가장하지 않고 `AGENTS.md` preflight와 승인된 `Sess
 
 **승인은 훅 우회가 아니라 작업 맥락을 보존한 재연결 승인이다.** CLI의 `resume`은 저장된 대화를 잇고, 앱은 `thread/start`로 새 local task를 만들어 완료한 일·남은 일·원본 task를 읽는 방법을 첫 prompt에 인계한다.
 `thread/fork` 뒤에는 startup 훅이 오지 않고 사전 훅 카나리도 통과한 것이 2026-09-11 실측됐으므로 재시작 수단으로 쓰지 않는다.
-앱에 hook 검토 화면이 없으면 자동 승인하지 않고, 저장소 루트에서 Codex CLI를 연 뒤 그 TUI의 `/hooks`로 승인하게 한다. **사용자가 승인 완료를 확인하기 전에는 새 task 이동을 묻거나 만들지 않는다.** 완료 확인 뒤 이동 승인을 받고 새 task를 만들며, 그 task의 새 `SessionStart` revision과 `PreToolUse` 카나리 차단을 모두 확인한 뒤 업무를 재개한다.
+앱에 hook 검토 화면이 없으면 자동 승인하지 않고, 저장소 루트에서 Codex CLI를 연 뒤 그 TUI의 `/hooks`로 승인하게 한다. **사용자가 승인 완료를 확인하기 전에는 새 task 이동을 묻거나 만들지 않는다.** 완료 확인 뒤 이동 승인을 받고 새 task를 만든다. 그 task의 새 `SessionStart` revision은 반드시 일치해야 한다. `PreToolUse` 카나리는 자동 집행의 생존 여부를 알려 주며, 차단되지 않으면 사용자에게 결손 범위를 알리고 문서 규칙을 직접 적용하며 업무를 재개한다.
 
 Claude Code에는 이 preflight와 revision 문맥을 주입하지 않는다. Claude의 프로젝트 훅 실행
 동의는 Claude runtime이 관리하며, 공통 훅 수정 때 Codex revision을 갱신하는 것은 작성·검증
@@ -173,7 +173,7 @@ Claude Code에는 이 preflight와 revision 문맥을 주입하지 않는다. Cl
 
 ## 새 훅을 더할 때
 
-1. `harness-sync` 스킬로 이 문서에 이벤트·입력·판정·강도·출력·실패 정책·fixture를 먼저 적는다.
+1. `harness-sync` 스킬로 이 문서에 이벤트·입력·판정·강도·출력·실패 정책·fixture를 먼저 적는다. 판정의 `AGENTS.md`·`aidd-guide/` 근거가 없으면 훅보다 규칙을 먼저 쓴다.
 2. Claude와 Codex 입력이 같으면 정책 엔진을 공유하고 adapter만 둔다. 다르면 결과 동등성을 적는다.
 3. `lib.mjs`만 import하고 런타임 의존성을 더하지 않는다.
    **`pass`·`warn`·`deny`를 `try` 안에 두지 않는다** — chain에서 이 셋은 예외로 빠져나오므로
