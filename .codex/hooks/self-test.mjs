@@ -18,6 +18,10 @@ import {
 } from '../../.claude/hooks/lib.mjs';
 import { allowHookRepair, emitHookResults, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
 import { patchTargets, runFileChain } from './file-chain.mjs';
+import {
+  parseScreenRegistry,
+  screenUrlOfFrontend,
+} from '../../.claude/hooks/screen-registry.mjs';
 import { crashOutput, patchTargets as bootstrapTargets } from '../../aidd-guide/harness/runtime/pretool-bootstrap.mjs';
 import {
   checkCodexHookContext,
@@ -88,6 +92,31 @@ const workstreamFixture = {
 assert.equal(workstreamGateStatus(workstreamFixture, 'admin'), 'approved');
 assert.equal(workstreamGateStatus(workstreamFixture, 'missing'), null);
 assert.equal(currentWorkstream(workstreamFixture)?.phase, 'P3');
+
+/* 화면 역인덱스는 과도기 features와 제품 module 경로를 같은 결과로 읽는다. */
+const screenRegistryFixture = parseScreenRegistry(`
+  '/legacy': lazy(async () => ({
+    default: (await import('@/features/legacy/pages/LegacyPage')).LegacyPage,
+  })),
+  '/admin/system/role': lazy(async () => ({
+    default: (await import('@/modules/system/features/role/pages/RolePage')).RolePage,
+  })),
+`);
+assert.deepEqual(screenRegistryFixture, [
+  { url: '/legacy', sourceDir: 'features/legacy', feature: 'legacy' },
+  {
+    url: '/admin/system/role',
+    sourceDir: 'modules/system/features/role',
+    feature: 'role',
+  },
+]);
+assert.equal(
+  screenUrlOfFrontend(
+    'sources/frontend/src/modules/system/features/role/pages/RolePage.tsx',
+    screenRegistryFixture,
+  ),
+  '/admin/system/role',
+);
 
 /* T2는 P3 연결을 P1·P2에 강요하지 않되, G3 청구에서 소유 REQ를 빠뜨리지 않는다. */
 const traceState = {

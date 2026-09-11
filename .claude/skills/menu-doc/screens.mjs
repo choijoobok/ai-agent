@@ -12,6 +12,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseScreenRegistry } from '../../hooks/screen-registry.mjs';
 
 const REPO = (() => {
   let dir = dirname(fileURLToPath(import.meta.url));
@@ -33,11 +34,7 @@ const read = (rel) => {
 // ── 원본 셋 ────────────────────────────────────────────────────────
 
 /** 페이지 경로 → 기능 폴더. 정적 맵이라 파싱할 수 있다. */
-const screens = [
-  ...read('sources/frontend/src/shared/routes/screenRegistry.ts').matchAll(
-    /'(\/[^']*)':[\s\S]{0,200}?await import\('@\/features\/(.+?)\/pages\//g,
-  ),
-].map((m) => ({ url: m[1], feature: m[2] }));
+const screens = parseScreenRegistry(read('sources/frontend/src/shared/routes/screenRegistry.ts'));
 
 /** 메뉴코드 → url. `url` 이 있는 줄만 화면이다(없으면 구조 노드다). */
 const menuByUrl = new Map();
@@ -78,12 +75,12 @@ function docFolders(base = DOCS) {
 // ── 표 ─────────────────────────────────────────────────────────────
 
 const rows = screens
-  .map(({ url, feature }) => {
+  .map(({ url, sourceDir }) => {
     const have = SET.filter((name) => existsSync(join(REPO, DOCS + url, name)));
     return {
       url,
       code: menuByUrl.get(url) ?? '(menu-tree 없음)',
-      feature,
+      feature: sourceDir,
       have,
       state: have.length === SET.length ? '완' : have.length === 0 ? '없음' : `부분(${have.length}/${SET.length})`,
     };

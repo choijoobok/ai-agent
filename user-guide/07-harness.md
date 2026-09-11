@@ -66,6 +66,7 @@
 | 파일 | 하는 일 | 언제 |
 |---|---|---|
 | `quality-check` | 코드 품질 기계 검사 — 슬라이스 미니게이트(G4)의 기계가 세는 부분. | 필요할 때 `node .claude/hooks/quality-check.mjs` |
+| `screen-registry` |  | 필요할 때 `node .claude/hooks/screen-registry.mjs` |
 
 ---
 

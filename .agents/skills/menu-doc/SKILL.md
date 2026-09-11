@@ -61,10 +61,10 @@ node .claude/skills/menu-doc/screens.mjs
 
 | 무엇을 | 어디서 | 문서의 어디와 맞대나 |
 |---|---|---|
-| 컬럼 · 편집 가능 · 검증 | `features/{도메인}/pages/*.tsx` 의 `buildColumns` | req §4 |
+| 컬럼 · 편집 가능 · 검증 | `screenRegistry.ts`가 가리킨 `features/{도메인}/pages/*.tsx` 의 `buildColumns` | req §4 |
 | 조회조건 | 〃 `buildSearchFields` | req §2 |
 | 버튼 · 액션 · 경고 | 〃 `api.actions` · `warn` | req §5 |
-| API 경로 · 액션 | `features/{도메인}/api/endpoints.ts` | req §7 |
+| API 경로 · 액션 | 같은 기능 폴더의 `api/endpoints.ts` | req §7 |
 | DB 컬럼 · 널 허용 | `db/changelog/schema/*.yaml` | req §4 · §6-2 |
 | 서버 검증 · 오류 | `domain/.../{도메인}/*ErrorCode.java` · `*Service.java` | req §6-1 |
 | 조회 화이트리스트 · 기본 정렬 | `domain/.../{도메인}/*Spec.java` | req §2 · §3-2 |

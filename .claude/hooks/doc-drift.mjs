@@ -32,6 +32,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { REPO, readHookInput, targetPath, repoRelative, readText, warn, pass, skillRef } from './lib.mjs';
+import { parseScreenRegistry, screenUrlOfFrontend } from './screen-registry.mjs';
 
 const input = await readHookInput();
 const path = repoRelative(targetPath(input));
@@ -151,26 +152,12 @@ warn(
  */
 function registry() {
   const source = readText(join(REPO, 'sources/frontend/src/shared/routes/screenRegistry.ts'));
-  const pairs = [];
-  const pattern = /'(\/[^']*)':[\s\S]{0,200}?await import\('@\/features\/(.+?)\/pages\//g;
-  for (const match of source.matchAll(pattern)) {
-    pairs.push({ url: match[1], feature: match[2] });
-  }
-  return pairs;
+  return parseScreenRegistry(source);
 }
 
-/** `frontend/src/features/{기능}/…` → 페이지 경로. 가장 긴 기능 폴더가 이긴다(`sample/…`). */
+/** 레지스트리가 가리킨 실제 기능 폴더 → 페이지 경로. 가장 긴 소스 폴더가 이긴다. */
 function urlOfFrontend(changed) {
-  const prefix = 'sources/frontend/src/features/';
-  if (!changed.startsWith(prefix)) return null;
-  const tail = changed.slice(prefix.length);
-  let best = null;
-  for (const { url, feature } of registry()) {
-    if (tail.startsWith(`${feature}/`) && (!best || feature.length > best.feature.length)) {
-      best = { url, feature };
-    }
-  }
-  return best?.url ?? null;
+  return screenUrlOfFrontend(changed, registry());
 }
 
 /**
@@ -188,8 +175,8 @@ function urlOfBackend(changed) {
   if (!base) return null;
   const declared = `${base.replace(/^\/api/, '')}/`;
 
-  for (const { url, feature } of registry()) {
-    const endpoints = join(REPO, 'sources/frontend/src/features', feature, 'api/endpoints.ts');
+  for (const { url, sourceDir } of registry()) {
+    const endpoints = join(REPO, 'sources/frontend/src', sourceDir, 'api/endpoints.ts');
     if (existsSync(endpoints) && readText(endpoints).includes(`'${declared}`)) return url;
   }
   return null;

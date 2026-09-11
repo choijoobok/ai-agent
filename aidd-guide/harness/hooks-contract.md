@@ -25,7 +25,7 @@ tags: [harness, hooks, contract, wiring]
 | 공통 스킬 | `skill-src/*.md` | 절차와 trigger |
 | Claude adapter | `.claude/settings.json` | Claude 이벤트·입력·컨텍스트 게이지 |
 | Codex adapter | `.codex/hooks.json` · `.codex/hooks/` | `apply_patch` 정규화·압축 뒤 재주입 |
-| 정책 엔진 | `.claude/hooks/*.mjs` | 역사적 경로를 유지한 공용 Node 로직 |
+| 정책 엔진 | `.claude/hooks/*.mjs` | 역사적 경로를 유지한 공용 Node 로직. 화면 역인덱스는 `screen-registry.mjs` 하나를 훅·스킬이 함께 쓴다 |
 | 공통 chain | `runtime/chains.mjs` | 실행 순서의 유일한 원본 — manifest·adapter·생성 문서가 함께 읽는다 |
 | 사전 진입 | `runtime/pretool-bootstrap.mjs` | 파일 chain이 import 전부터 깨져도 차단하고 훅 파일 수리만 연다 |
 
