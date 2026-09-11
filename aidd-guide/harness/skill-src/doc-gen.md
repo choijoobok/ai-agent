@@ -69,18 +69,18 @@ node .claude/skills/doc-gen/gen.mjs --check            # 생성물이 spec 을 �
 | 권한매트릭스 | `gen` | `documents/generated/22-권한매트릭스.md` | 22-authz |
 | 추적성 | `gen` | `documents/generated/90-추적성매트릭스.md` | `trace-check --report` |
 | 요건정의서 | `prose` | `documents/generated/32-요건정의서/FEAT-###.md` + `_index.md` | 31-features + 30-usecases + 10-requirements |
-| 유즈케이스 | `prose` | `documents/generated/30-유즈케이스.md` | 30-usecases |
-| ERD | `prose` | `documents/generated/40-ERD.md` (Mermaid erDiagram) | 40-domain |
+| 유즈케이스 | `gen` | `documents/generated/30-유즈케이스.md` | 30-usecases |
+| ERD | `gen` | `documents/generated/40-ERD.md` (Mermaid erDiagram) | 40-domain |
 | DDL | `prose` | `db/ddl/*.sql` | 40-domain + conventions |
-| API | `prose` | `documents/generated/50-API.md` + `documents/generated/50-openapi.yaml` | 50-api |
-| 테스트케이스 | `prose` | `documents/generated/70-테스트케이스.md` | 70-testcases |
+| API | `gen` | `documents/generated/50-API.md` + `documents/generated/50-openapi.yaml` | 50-api |
+| 테스트케이스 | `gen` | `documents/generated/70-테스트케이스.md` | 70-testcases |
 | 시퀀스 | `prose` | `documents/generated/33-시퀀스/UC-###.md` (Mermaid sequenceDiagram) + `_index.md` | 30-usecases + 50-api |
 | 사용자매뉴얼 | `prose` | `documents/generated/81-사용자매뉴얼.md` | 31-features menu + 60-screens + 30-usecases |
 
-**`prose` 여덟이 아직 `gen` 이 아닌 이유는 하나다 — 원본 spec 이 비어 있다**(30·40·50·70).
-서식을 지어 코드로 박으면 그 서식이 실물을 만나 보기 전에 굳는다. **spec 을 채운 뒤
-한 번 손으로 내고, 그 결과를 `gen.mjs` 로 옮긴다.** `gen.mjs` 의 `NOT_YET` 이 같은
-목록을 갖고 있어 부르면 *왜 아직 아닌지* 를 말한다 — 조용히 빠지지 않게 하기 위함이다.
+**`prose` 넷은 아직 결정 생성으로 옮기지 않았다.** DDL은 승인된 물리 변경이 생길 때,
+시퀀스와 기능별 요건정의서는 첫 실물의 구조를 검증한 뒤, 매뉴얼은 P6에서 생성기로 옮긴다.
+유즈케이스·ERD·API·테스트는 P3 정본이 채워졌으므로 `gen.mjs`가 모든 필드를 빠뜨리지 않고
+재현한다. `gen.mjs`의 `NOT_YET`은 남은 넷을 부르면 *왜 아직 아닌지*를 말한다.
 
 ## 요구사항 정의서 — 지도 43행 (`요구사항정의서`)
 

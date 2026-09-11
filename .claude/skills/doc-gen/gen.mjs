@@ -249,7 +249,8 @@ function 요구사항정의서() {
   const p4 = [head('RQ-10-requirements', '기능 요구사항 (FR)', `${SPEC}10-requirements.yaml`,
     r.meta.status, r.meta.baselined, null, `> **채번** — ${r.meta.numbering}\n`)];
   const GROUPS = [[1, 29, '질의 처리'], [30, 99, '처리 중 입력'], [100, 199, '보안·거버넌스'],
-    [200, 299, '저장된 조회·개인 대시보드'], [300, 399, '업무 메타데이터'], [400, 499, '로드맵·제약에서 유도한 것']];
+    [200, 299, '저장된 조회·개인 대시보드'], [300, 399, '업무 메타데이터'],
+    [400, 499, '로드맵·제약에서 유도한 것'], [500, 599, '백오피스 공통 운영 기반']];
   for (const [lo, hi, ttl] of GROUPS) {
     const sel = r.requirements.filter((x) => {
       const n = Number(x.id.split('-')[1]);
@@ -257,21 +258,28 @@ function 요구사항정의서() {
     });
     if (sel.length) p4.push(`## ${ttl} (${sel.length}건)\n\n${blocks(sel, ['id'], 'title')}`);
   }
+  if (r.consistency_review) {
+    p4.push(`## 요구사항 일관성 검토\n\n${blocks([{ id: 'consistency-review', ...r.consistency_review }], ['id'], 'name')}`);
+  }
   write(`${RQ}04-요구사항.md`, p4);
 
   const pr = load('11-processes');
   const why = rawSpec('11-processes').split('\n').filter((l) => l.startsWith('#'))
     .map((l) => l.replace(/^#\s?/, '').trimEnd()).join('\n');
-  write(`${RQ}05-업무프로세스.md`, [
-    head('RQ-11-processes', '업무 프로세스 (As-Is / To-Be)', `${SPEC}11-processes.yaml`,
-      pr.meta.status, pr.meta.baselined, null,
-      `> **막고 있는 것** — ${flat(pr.meta.blocked_by)}\n`),
-    `## 왜 비어 있나\n\n${why}`,
-    '## 이 장이 비어 있는 결과\n\n'
-      + '- **P1 을 닫을 수 없다** — 채울 근거가 없다(`project.state.yaml` 의 `OQ-002`).\n'
-      + '- **효과 측정의 기준선이 없다** — 성공 기준이 그 값을 기다린다.\n'
-      + '- **장을 빼지 않고 비워 둔다** — 빼면 읽는 사람이 이 주제를 다룬 줄 알게 된다.',
-  ]);
+  const processParts = [head('RQ-11-processes', '업무 프로세스 (As-Is / To-Be)', `${SPEC}11-processes.yaml`,
+    pr.meta.status, pr.meta.baselined, (pr.processes ?? []).map((x) => x.id),
+    pr.meta.blocked_by ? `> **막고 있는 것** — ${flat(pr.meta.blocked_by)}\n` : '')];
+  if (pr.processes?.length) {
+    processParts.push(`## 범용 Hub 프로세스 ${pr.processes.length}건\n\n${blocks(pr.processes, ['id'], 'name')}`);
+    if (pr.customer_pilot) processParts.push(`## 고객 파일럿\n\n${blocks([{ id: 'customer-pilot', ...pr.customer_pilot }], ['id'], 'name')}`);
+  } else {
+    processParts.push(`## 왜 비어 있나\n\n${why}`,
+      '## 이 장이 비어 있는 결과\n\n'
+        + '- **P1 을 닫을 수 없다** — 채울 근거가 없다(`project.state.yaml` 의 `OQ-002`).\n'
+        + '- **효과 측정의 기준선이 없다** — 성공 기준이 그 값을 기다린다.\n'
+        + '- **장을 빼지 않고 비워 둔다** — 빼면 읽는 사람이 이 주제를 다룬 줄 알게 된다.');
+  }
+  write(`${RQ}05-업무프로세스.md`, processParts);
 
   const n = load('21-nfr');
   const p6 = [head('RQ-21-nfr', '비기능 요구 — 성능 · 응답성 · 비용 · 안정성', `${SPEC}21-nfr.yaml`,
@@ -308,7 +316,7 @@ function 요구사항정의서() {
     ['02-제약과-원칙.md', `설계 원칙 ${k.principles.length} · 기술 제약 ${k.technical.length} · 배포 전제 ${k.deployment.length} · 착수 확정 ${k.customer_agreements.length} · 개발 제약 ${k.development.length}`, '02-constraints', k.meta.status],
     ['03-용어.md', `용어 ${g.terms.length} · 프레임워크 어휘 ${g.framework_terms.length} · **헷갈리는 짝 ${g.confusions.length}** · 턴 상태 ${g.turn_states.length}`, '03-glossary', g.meta.status],
     ['04-요구사항.md', `기능 요구사항 ${r.requirements.length}`, '10-requirements', r.meta.status],
-    ['05-업무프로세스.md', `**비어 있다** — ${flat(pr.meta.blocked_by)} 에 막혀 있다`, '11-processes', pr.meta.status],
+    ['05-업무프로세스.md', pr.processes?.length ? `범용 Hub 프로세스 ${pr.processes.length}건` : `**비어 있다** — ${flat(pr.meta.blocked_by)} 에 막혀 있다`, '11-processes', pr.meta.status],
     ['06-비기능요구.md', `비기능 ${n.nfrs.length} (**목표값 전부 미정**)`, '21-nfr', n.meta.status],
     ['07-외부인터페이스.md', `외부 인터페이스 ${i.interfaces.length}`, '51-interfaces', i.meta.status],
   ];
@@ -460,6 +468,8 @@ function 아키텍처() {
 
   const SECTIONS = [['write_ownership', '쓰기 책임'], ['deeplink', 'portal 진입 경로 — 레거시 딥링크'],
     ['application_entry', '화면 영역 · API 경로 · 로그인 진입'],
+    ['system_transition', 'system 모듈 이행 경계'],
+    ['portal_agent_contract', 'portal-agent 계약 경계'],
     ['datasource', '데이터소스 전략'], ['llm_layer', 'LLM 연동 계층'],
     ['identity', '인증 · 계정 원천과 신원 매핑'], ['knowledge_search', '지식 검색 구성'],
     ['execution_lease', '턴 실행 점유']];
@@ -467,7 +477,6 @@ function 아키텍처() {
     const body = [];
     const walk = (obj, lvl) => {
       for (const [k, v] of Object.entries(obj)) {
-        if (k === 'id') continue;
         if (Array.isArray(v) && v.length && typeof v[0] === 'object' && v[0] !== null) {
           body.push('', `${'#'.repeat(lvl)} ${lab(k)}`, '', auto(v), '');
         } else if (Array.isArray(v)) {
@@ -492,6 +501,9 @@ function 기능목록() {
   const mods = [...new Set(f.features.map((x) => x.module))];
   const p = [head('FEAT-LIST', '기능 목록 · 메뉴 구조', `${SPEC}31-features.yaml`,
     f.meta.status, f.meta.baselined, null, `> **채번** — ${f.meta.numbering}\n`)];
+  if (f.delivery_strategy) {
+    p.push(`## 전달 전략\n\n${blocks([{ id: 'delivery-strategy', ...f.delivery_strategy }], ['id'], 'name')}`);
+  }
   p.push('## 요약\n\n| 모듈 | 기능 수 | 차수 분포 |\n|---|---:|---|\n'
     + mods.map((m) => {
       const sel = f.features.filter((x) => x.module === m);
@@ -517,6 +529,9 @@ function 화면정의서() {
     '> **화면 하나의 컬럼·검증·테스트 케이스는 여기 없다.** 그것은\n'
     + '> `documents/screen/{모듈}/{화면경로}/requirements.md` 가 갖는다(산출물 지도 33행) — 설계자가\n'
     + '> 목업과 함께 보고 승인하는 대상이며 spec 에 담기지 않는 분량이다. 여기는 **목록과 소속**이다.\n')];
+  if (s.delivery_strategy) {
+    p.push(`## 전달 전략\n\n${blocks([{ id: 'delivery-strategy', ...s.delivery_strategy }], ['id'], 'name')}`);
+  }
   p.push(`## 1. 무엇을 메뉴로 두는가\n\n**${flat(mc.claim)}** — ${flat(mc.why)}\n\n${bullets(mc.tests)}`
     + (mc.note ? `\n\n> ${flat(mc.note)}` : ''));
   p.push(`## 2. 통제 경계\n\n${auto(s.control_boundaries)}`);
@@ -559,7 +574,8 @@ function 권한매트릭스() {
   p.push(`## 4. 매핑 구조 — 역할 × 대상\n\n${auto(z.mappings)}\n\n${bullets(z.mapping_rules)}`);
   const SEC = [['row_scope', '행 스코프'], ['sql_control', 'SQL 통제'], ['injection_control', '주입 통제'],
     ['default_filter', '기본 필터'], ['operational_means', '운영 수단'],
-    ['responsibility_layers', '책임의 층'], ['rate_limit_ownership', '유량 제한의 소유']];
+    ['responsibility_layers', '책임의 층'], ['rate_limit_ownership', '유량 제한의 소유'],
+    ['operational_role_boundary', '운영 역할 경계']];
   for (const [key, ttl] of SEC) {
     const v = z[key];
     const body = [];
@@ -593,8 +609,102 @@ function 추적성() {
   ]);
 }
 
+// ── P3 설계 산출물 ────────────────────────────────────────────────
+/** P3 정본의 모든 필드를 사람이 읽는 블록으로 낸다. */
+function 유즈케이스() {
+  const d = load('30-usecases');
+  const items = d.usecases ?? [];
+  write(`${OUT}30-유즈케이스.md`, [
+    head('UC', '유즈케이스 명세', `${SPEC}30-usecases.yaml`, d.meta.status,
+      d.meta.baselined, items.map((x) => x.id)),
+    `## 유즈케이스 ${items.length}건\n\n${blocks(items, ['id'], 'name', '###')}`,
+  ]);
+}
+
+/** 괄호가 Mermaid 셰이프를 닫지 않도록 공통 escape를 적용한다. */
+const mermaidLabel = (v) => flat(v).replace(/\(/g, '#40;').replace(/\)/g, '#41;').replace(/"/g, '&quot;');
+
+function ERD() {
+  const d = load('40-domain');
+  const items = d.entities ?? [];
+  const diagram = ['```mermaid', 'erDiagram'];
+  for (const ent of items) {
+    diagram.push(`  ${ent.table ?? ent.id} {`);
+    for (const attr of ent.attributes ?? []) {
+      const flags = [attr.pk ? 'PK' : '', attr.fk ? 'FK' : ''].filter(Boolean).join(',');
+      diagram.push(`    ${String(attr.type ?? 'string').replace(/[^A-Za-z0-9_]/g, '_')} ${attr.name}${flags ? ` ${flags}` : ''}`);
+    }
+    diagram.push('  }');
+  }
+  diagram.push('```');
+  write(`${OUT}40-ERD.md`, [
+    head('ERD', '도메인·데이터 모델', `${SPEC}40-domain.yaml`, d.meta.status,
+      d.meta.baselined, items.map((x) => x.id)),
+    `## 공통 규약\n\n${blocks([{ id: 'conventions', ...(d.conventions ?? {}) }], ['id'], 'name', '###')}`,
+    `## 관계 개요\n\n${diagram.join('\n')}`,
+    `## 엔티티 ${items.length}건\n\n${blocks(items, ['id', 'table'], 'name', '###')}`,
+  ]);
+}
+
+function openApiText(d) {
+  const lines = [
+    'openapi: 3.1.0',
+    'info:',
+    '  title: system API',
+    `  version: ${JSON.stringify(TODAY)}`,
+    `  description: ${JSON.stringify(flat(d.meta?.cutover ?? 'documents/spec/50-api.yaml에서 생성'))}`,
+    'paths:',
+  ];
+  for (const api of d.apis ?? []) {
+    const contract = d.feature_contracts?.[api.feature] ?? {};
+    lines.push(`  ${JSON.stringify(api.path)}:`, `    ${String(api.method).toLowerCase()}:`,
+      `      operationId: ${api.id}`, `      summary: ${JSON.stringify(flat(api.summary))}`,
+      `      x-feature: ${api.feature}`, `      x-action: ${api.action}`,
+      `      description: ${JSON.stringify(`${flat(contract.request_rule)} / ${flat(contract.response_rule)}`)}`);
+    if (String(api.method).toUpperCase() !== 'GET') {
+      lines.push('      requestBody:', '        required: true', '        description: ' + JSON.stringify(flat(contract.request_rule)),
+        '        content:', '          application/json:', '            schema:', '              type: object');
+    }
+    lines.push('      responses:', '        "200":', `          description: ${JSON.stringify(flat(contract.response_rule))}`);
+    for (const [code, name] of Object.entries(d.meta?.common_errors ?? {})) {
+      lines.push(`        ${JSON.stringify(String(code))}:`, `          description: ${JSON.stringify(flat(name))}`);
+    }
+  }
+  return `${lines.join('\n')}\n`;
+}
+
+function API() {
+  const d = load('50-api');
+  const items = d.apis ?? [];
+  const contracts = Object.entries(d.feature_contracts ?? {}).map(([id, value]) => ({ id, ...value }));
+  write(`${OUT}50-API.md`, [
+    head('API', 'API 명세', `${SPEC}50-api.yaml`, d.meta.status,
+      d.meta.baselined, items.map((x) => x.id)),
+    `## 공통 계약\n\n${blocks([{ id: 'meta', ...d.meta }], ['id'], 'name', '###')}`,
+    `## 기능별 계약\n\n${blocks(contracts, ['id'], 'name', '###')}`,
+    `## API ${items.length}건\n\n${auto(items)}`,
+  ]);
+  const path = `${OUT}50-openapi.yaml`;
+  const full = join(REPO, path);
+  mkdirSync(dirname(full), { recursive: true });
+  const text = openApiText(d);
+  writeFileSync(full, text, 'utf8');
+  written.push([path, text.split('\n').length]);
+}
+
+function 테스트() {
+  const d = load('70-testcases');
+  const items = d.testcases ?? [];
+  write(`${OUT}70-테스트케이스.md`, [
+    head('TC', '테스트 케이스', `${SPEC}70-testcases.yaml`, d.meta.status,
+      d.meta.baselined, items.map((x) => x.id)),
+    `## 공통 시험 계약\n\n${blocks([{ id: 'meta', ...d.meta }], ['id'], 'name', '###')}`,
+    `## 테스트 케이스 ${items.length}건\n\n${blocks(items, ['id', 'feature'], 'title', '###')}`,
+  ]);
+}
+
 // ── 대상 등록 ─────────────────────────────────────────────────────
-const TARGETS = { 요구사항정의서, 아키텍처, 기능목록, 화면정의서, 권한매트릭스, 추적성 };
+const TARGETS = { 요구사항정의서, 아키텍처, 기능목록, 화면정의서, 권한매트릭스, 유즈케이스, ERD, API, 테스트, 추적성 };
 
 /**
  * 같은 대상의 다른 이름. `SKILL.md` 의 인자 줄은 짧은 이름(`화면`·`권한`)을 쓰고
@@ -613,13 +723,9 @@ const resolve = (a) => ALIAS[a] ?? a;
  * 부르지 않고, 부르지 않으면 없는 기능이 된다.
  */
 const NOT_YET = {
-  유즈케이스: '30-usecases.yaml 이 비어 있다',
-  시퀀스: '30-usecases.yaml 이 비어 있다',
-  ERD: '40-domain.yaml 이 비어 있다',
-  DDL: '40-domain.yaml 이 비어 있다',
-  API: '50-api.yaml 이 비어 있다',
-  테스트: '70-testcases.yaml 이 비어 있다',
-  요건정의서: '30-usecases · 40-domain · 50-api · 70-testcases 를 참조한다 — 지금 만들면 빈 칸이 든 85장이 생긴다',
+  시퀀스: '핵심 UC별 첫 실물의 구조를 검증한 뒤 결정 생성으로 옮긴다',
+  DDL: '기존 system 물리 구조는 보존하며, 승인된 신규 물리 변경이 생길 때 생성기로 옮긴다',
+  요건정의서: '작업흐름별 P3 범위가 채워질 때 기능별 첫 실물의 구조를 검증한 뒤 결정 생성으로 옮긴다',
   매뉴얼: 'P6 산출물이다',
 };
 
