@@ -657,15 +657,42 @@ function openApiText(d) {
   ];
   for (const api of d.apis ?? []) {
     const contract = d.feature_contracts?.[api.feature] ?? {};
+    const requestContract = flat(api.request ?? 'none');
+    const responseContract = flat(api.response ?? contract.response_rule ?? 'unspecified');
     lines.push(`  ${JSON.stringify(api.path)}:`, `    ${String(api.method).toLowerCase()}:`,
       `      operationId: ${api.id}`, `      summary: ${JSON.stringify(flat(api.summary))}`,
       `      x-feature: ${api.feature}`, `      x-action: ${api.action}`,
+      `      x-source-contract: ${JSON.stringify(flat(api.source_contract ?? 'unspecified'))}`,
+      `      x-request-contract: ${JSON.stringify(requestContract)}`,
+      `      x-response-contract: ${JSON.stringify(responseContract)}`,
+      `      x-business-errors: ${JSON.stringify(flat(contract.exception_map ?? {}))}`,
       `      description: ${JSON.stringify(`${flat(contract.request_rule)} / ${flat(contract.response_rule)}`)}`);
-    if (String(api.method).toUpperCase() !== 'GET') {
-      lines.push('      requestBody:', '        required: true', '        description: ' + JSON.stringify(flat(contract.request_rule)),
-        '        content:', '          application/json:', '            schema:', '              type: object');
+    const body = requestContract.match(/(?:^|; )body=([^;]+)/)?.[1];
+    const parameters = [];
+    for (const [kind, where] of [['query', 'query'], ['path', 'path']]) {
+      const group = requestContract.match(new RegExp(`(?:^|; )${kind}=([^;]+)`))?.[1];
+      for (const item of group?.split('|') ?? []) {
+        const [name, ...typeParts] = item.split(':');
+        const rawType = typeParts.join(':');
+        parameters.push({ name, where, type: rawType.replace(/\?$/, ''), optional: rawType.endsWith('?') });
+      }
     }
-    lines.push('      responses:', '        "200":', `          description: ${JSON.stringify(flat(contract.response_rule))}`);
+    if (parameters.length) {
+      lines.push('      parameters:');
+      for (const parameter of parameters) {
+        lines.push(`        - name: ${JSON.stringify(parameter.name)}`, `          in: ${parameter.where}`,
+          `          required: ${parameter.where === 'path' || !parameter.optional}`, '          schema:', '            type: string',
+          `            x-java-type: ${JSON.stringify(parameter.type)}`);
+      }
+    }
+    if (body) {
+      lines.push('      requestBody:', '        required: true', '        description: ' + JSON.stringify(flat(contract.request_rule)),
+        '        content:', '          application/json:', '            schema:', '              type: object',
+        `              x-java-type: ${JSON.stringify(body)}`);
+    }
+    lines.push('      responses:', '        "200":', `          description: ${JSON.stringify(flat(contract.response_rule))}`,
+      '          content:', '            application/json:', '              schema:', '                type: object',
+      `                x-java-type: ${JSON.stringify(responseContract)}`);
     for (const [code, name] of Object.entries(d.meta?.common_errors ?? {})) {
       lines.push(`        ${JSON.stringify(String(code))}:`, `          description: ${JSON.stringify(flat(name))}`);
     }
