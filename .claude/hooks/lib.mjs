@@ -188,6 +188,12 @@ export function workstreamGateStatus(state, workstream, key = 'P3_design') {
   return state.workstreams[workstream]?.gates?.[key]?.status || 'not_started';
 }
 
+/** T13 코드 부재를 오류로 올릴 시점 — 명세 TC가 먼저 서는 G3 승인 전에는 항상 false다. */
+export function testcaseCodeRequired(state, feature) {
+  return gateStatus(state, 'P3_design') === 'approved'
+    || workstreamGateStatus(state, featureWorkstream(feature)) === 'approved';
+}
+
 /** 현재 초점 작업흐름. 없으면 null로 두어 전역 상태와 구분한다. */
 export function currentWorkstream(state) {
   const key = String(state?.current?.workstream ?? '').trim();

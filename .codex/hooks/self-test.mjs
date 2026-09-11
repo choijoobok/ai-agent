@@ -14,6 +14,7 @@ import {
   gateStatus,
   requirementBelongsToWorkstream,
   unrealizedRequirementDeferral,
+  testcaseCodeRequired,
 } from '../../.claude/hooks/lib.mjs';
 import { allowHookRepair, emitHookResults, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
 import { patchTargets, runFileChain } from './file-chain.mjs';
@@ -99,6 +100,15 @@ assert.equal(unrealizedRequirementDeferral({ ...systemRequirement, roadmap: 'RM-
 assert.equal(unrealizedRequirementDeferral(systemRequirement, traceState, 'system'), null);
 assert.equal(requirementBelongsToWorkstream(systemRequirement, 'system'), true);
 assert.equal(requirementBelongsToWorkstream(systemRequirement, 'admin'), false);
+
+/* T13은 G3 청구(--workstream) 자체가 아니라 실제 승인 뒤부터 코드 부재를 오류로 올린다. */
+const systemFeature = { id: 'FEAT-901', module: 'system' };
+assert.equal(testcaseCodeRequired(traceState, systemFeature), false);
+const approvedTraceState = {
+  ...traceState,
+  workstreams: { system: { gates: { P3_design: { status: 'approved' } } } },
+};
+assert.equal(testcaseCodeRequired(approvedTraceState, systemFeature), true);
 
 const post = await runFileChain({
   ...input,

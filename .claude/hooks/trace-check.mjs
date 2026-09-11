@@ -29,6 +29,7 @@ import {
   gateStatus,
   featureWorkstream,
   workstreamGateStatus,
+  testcaseCodeRequired,
   requirementBelongsToWorkstream,
   unrealizedRequirementDeferral,
 } from './lib.mjs';
@@ -460,9 +461,7 @@ function fullCheck(targetWorkstream = null) {
     const deferredMissing = [];
     for (const id of missing) {
       const feature = featureById.get(tcFeature.get(id));
-      const strict = Boolean(targetWorkstream)
-        || gateStatus(state, 'P3_design') === 'approved'
-        || workstreamGateStatus(state, featureWorkstream(feature)) === 'approved';
+      const strict = testcaseCodeRequired(state, feature);
       (strict ? strictMissing : deferredMissing).push(id);
     }
     if (strictMissing.length > 0) {
