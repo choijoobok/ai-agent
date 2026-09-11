@@ -45,13 +45,13 @@ gates:
 # P0/G0과 G6은 전역이다. 소스 쓰기는 기능을 소유한 작업흐름 P3_design 승인으로 열린다.
 workstreams:
   system:
-    phase: P1
+    phase: P2
     required_in: [RM-P1]
     blocked_by: []
     deferred_until: null
     gates:
-      P1_discovery:    { status: self_verified, approved_at: null, note: "**Exit Criteria 8/8 자체검증.** ACT-012, PRC-06~08, REQ-501~510을 현재 소스·Liquibase·화면 문서에서 역추적했다. SYSTEM 하위 16개·공통 대시보드 1개·메뉴 없는 공통 화면 8개와 근거 테이블 31개를 대조했고 추적성 오류 0건이다. 레드팀에서 전 수명주기·변조 불가·소스 키 한정·요청 승인이라는 과잉 표현을 현재 구현 범위로 바로잡았다. 사용자 승인 대기" }
-      P2_architecture: { status: not_started, approved_at: null, note: "ADR-007의 모듈·인가·데이터 소유 경계를 system 관점에서 판정한다" }
+      P1_discovery:    { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 8/8.** ACT-012, PRC-06~08, REQ-501~510을 현재 소스·Liquibase·화면 문서에서 역추적했다. SYSTEM 하위 16개·공통 대시보드 1개·메뉴 없는 공통 화면 8개와 근거 테이블 31개를 대조했고 추적성 오류 0건이다. 레드팀에서 전 수명주기·변조 불가·소스 키 한정·요청 승인이라는 과잉 표현을 현재 구현 범위로 바로잡았다. 역질문 권장안에 따라 설치용 ADMIN은 설치 시점의 전체 권한 기준선으로 한정하고, 운영에서는 시스템 관리자와 감사·품질 역할을 분리한다. 일반 계정·권한 공지와 요청은 system, AI 품질·정책 관련 알림은 admin이 소유한다" }
+      P2_architecture: { status: in_progress, approved_at: null, note: "ADR-007의 모듈·인가·데이터 소유 경계를 system 관점에서 판정한다" }
       P3_design:       { status: not_started, approved_at: null, note: "기존 소스·DB·화면 문서의 무손실 이행과 회귀 테스트를 설계한다" }
       P4_build:        { status: not_started, approved_at: null, note: "" }
       P5_verify:       { status: not_started, approved_at: null, note: "" }
@@ -143,18 +143,17 @@ roadmap_closed: []
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
 next_up:
   decided_at: 2026-09-12
-  choice: "system G1 결정 카드와 레드팀 결과를 검토하고 승인·보류·재작업 중 하나를 결정한다"
+  choice: "system의 소스·API·DB·화면 목표 경계와 무손실 이행 원칙을 아키텍처 정본에 반영하고 G2를 검증한다"
   why: >-
-    현재 소스·Liquibase·화면 문서에서 system 요구와 프로세스를 역추적했고 G1 Exit Criteria
-    8개를 모두 충족했다. 다음 단계 산출물을 만들기 전에 사용자가 이 소유 경계와 우선순위를
-    제품 요구사항 기준선으로 받아들일지 판정해야 한다.
+    system G1과 역질문 권장안이 승인됐다. 이제 현재 구현을 이동시키지 않은 채 ADR-007의
+    4모듈 구조와 인가·데이터 소유 경계를 system 관점의 목표 구조와 호환 이행 원칙으로
+    구체화해야 P3에서 구현 계약과 회귀 시험을 동결할 수 있다.
   tasks:
-    - "REQ-501~510의 system 소유 범위와 Must 9건·Should 1건을 검토한다"
-    - "설치용 ADMIN과 운영 역할 분리, 공지·알림 요청의 system 소유 경계에 답한다"
-    - "system G1을 승인하거나 보류·재작업 사유를 지정한다"
+    - "승인된 설치용 ADMIN·운영 역할 분리와 system/admin 알림 소유 경계를 P2 인가·모듈 책임에 반영한다"
+    - "현재 system 근거의 목표 소스 경로·API 계층·DB 소유·화면 진입 경계를 정한다"
+    - "소스 이동 전 호환성과 데이터 무손실 이행 원칙을 정하고 G2 자체검증·레드팀을 수행한다"
   then: >-
-    system G1 승인 뒤 P2에서 소스·API·DB·화면 문서의 목표 모듈 경로와 호환 이행 원칙을 정하고,
-    P3에서 FEAT·ENT·API·TC와 로그인·권한·메뉴·DB 무손실 회귀 계약을 동결한다.
+    system G2 승인 뒤 P3에서 FEAT·ENT·API·TC와 로그인·권한·메뉴·DB 무손실 회귀 계약을 동결한다.
 
 # ── 미결 질문 (Open Questions) ─────────────────────────────────────
 # 사용자 답변이 필요한 것. 답변되면 삭제하고 결과를 spec·ADR 에 반영한다.
