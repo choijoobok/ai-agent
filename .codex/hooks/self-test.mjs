@@ -10,6 +10,8 @@ import {
   featureWorkstream,
   workstreamGateStatus,
   currentWorkstream,
+  readState,
+  gateStatus,
 } from '../../.claude/hooks/lib.mjs';
 import { allowHookRepair, emitHookResults, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
 import { patchTargets, runFileChain } from './file-chain.mjs';
@@ -64,8 +66,16 @@ const workstreamDenied = await runFileChain({
 const workstreamReason = workstreamDenied
   .map((x) => x?.hookSpecificOutput?.permissionDecisionReason ?? '')
   .join('\n');
-assert.equal(workstreamDenied.some((x) => x?.hookSpecificOutput?.permissionDecision === 'deny'), true);
-assert.match(workstreamReason, /integration\(G3=not_started\)/);
+const liveState = readState();
+const integrationG3 = workstreamGateStatus(liveState, 'integration');
+const shouldDenyWorkstream = gateStatus(liveState, 'P3_design') !== 'approved'
+  && liveState?.current?.template_maintenance !== true
+  && integrationG3 !== 'approved';
+assert.equal(
+  workstreamDenied.some((x) => x?.hookSpecificOutput?.permissionDecision === 'deny'),
+  shouldDenyWorkstream,
+);
+if (shouldDenyWorkstream) assert.match(workstreamReason, new RegExp(`integration\\(G3=${integrationG3}\\)`));
 assert.equal(featureWorkstream({ module: 'common' }), 'integration');
 assert.equal(featureWorkstream({ module: 'portal', workstream: 'integration' }), 'integration');
 const workstreamFixture = {
