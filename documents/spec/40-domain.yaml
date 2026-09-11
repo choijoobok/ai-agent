@@ -1,41 +1,369 @@
-# 도메인 · 데이터 모델 (엔티티 · 속성 · 인덱스 · 상태 전이)
-#
-# 작성 단계: P3
-# status: empty — **비어 있다. 지어내지 않았다.**
-#
-# **DB 설계가 agent 설계보다 앞선다** — 아직 그 단계에 도달하지 않았다.
-# 이력 스키마는 agent 설계의 산출물이
-# 아니라 **입력**이다 — 턴·스텝·회차·실행 점유의 구조는 이미 규정됐고
-# (03-glossary.yaml 의 turn_states · 20-architecture.yaml 의 execution_lease),
-# 재개 상태·감사 이력·사용량이 그 스키마 위에서만 정의된다.
-#
-# **스키마를 뒤에 두면 앞선 결정들이 근거 없이 떠 있게 된다.**
-#
-# 네이밍 규약 — **확정된 것이므로 여기 적는다**:
-#   - 모든 테이블에 접두어 `ai_` · 형식 `ai_<서브모듈>_<상세>`
-#   - 서브모듈 키는 모듈명 또는 기능 영역 (`ai_admin_*` · `ai_portal_*` · `ai_agent_*`)
-#   - **서브모듈 키는 명명 구분용이다.** 테이블의 소유·접근 권한을 뜻하지 않는다
-#   - PK 는 **서로게이트 키**, 자연키(예: `(데이터소스, DB 스키마, 테이블명)`)에는
-#     **유니크 제약**을 둔다. 참조는 서로게이트 키로 하여 이름 변경이 참조를 깨지 않게 한다
-#   - 모든 일시 컬럼은 **`timestamptz`**
-#
-# 채우는 방법: aidd-guide/phase/P3-design.md §4
-
+# 도메인·데이터 모델 — system은 기존 31개 테이블의 물리 구조·데이터를 바꾸지 않고 쓰기 소유권만 인수한다.
 meta:
-  status: empty
+  status: in_progress
   baselined: null
-  naming: "ai_<서브모듈>_<상세> · 서로게이트 PK + 자연키 유니크 · timestamptz"
+  workstreams: { system: reviewed }
+  physical_policy: "ARCH-024 — 기존 이름·스키마·컬럼·제약·데이터 유지, 복제와 이중 쓰기 금지"
 
-entities: []
+conventions:
+  naming: "기존 SYS_* 이름 보존; 신규 system 테이블이 필요할 때만 승인된 changeset 규칙 적용"
+  time: "현재 컬럼 타입과 의미를 보존하고 신규 일시는 timestamptz"
+  audit: "REG_ID/REG_DTM/MOD_ID/MOD_DTM이 있는 테이블은 기존 감사 4컬럼 유지"
+  delete: "이력은 사용자·관리 API로 삭제하지 않고 설정된 보존 기간이 지난 행만 파기 배치가 hard delete한다. 계정·권한 기준은 참조 무결성 또는 비활성화, 사용자 UI 상태는 소유 범위 행만 hard delete한다"
+  source: "sources/backend/bootstrap/src/main/resources/db/changelog/schema/*.yaml"
+  requiredness: "PK attributes are non-null. All other nullable/default constraints are the currently applied Liquibase constraints; a system module move may not loosen or tighten them"
+  history_policy:
+    immutable_history: [ENT-505, ENT-521, ENT-522]
+    append_then_finalize: [ENT-524]
+    state_history: [ENT-527]
+    audit_columns_only: [ENT-501, ENT-502, ENT-503, ENT-506, ENT-507, ENT-508, ENT-509, ENT-510, ENT-511, ENT-512, ENT-513, ENT-514, ENT-515, ENT-516, ENT-517, ENT-518, ENT-520, ENT-523, ENT-525, ENT-526, ENT-528, ENT-529, ENT-531]
+    no_history: [ENT-504, ENT-519, ENT-530]
 
-# 채울 때의 형식 (예시 — 실제 값이 아니다)
-# entities:
-#   - id: ENT-001
-#     name: "턴"
-#     table: ai_agent_turn
-#     terms: [TRM-002]
-#     attributes:
-#       - { name: turn_id, type: bigint, pk: true }
-#       - { name: status, type: varchar, enum: [RECEIVED, RUNNING, WAITING_USER, ABORTED, FAILED, DONE] }
-#     state_machine: "03-glossary.yaml 의 turn_states 를 따른다"
-#     delete_policy: "물리 삭제하지 않는다 — 보관 기간 정책의 일괄 처리만 (REQ-109)"
+entities:
+  - id: ENT-501
+    name: "사용자 계정"
+    table: SYS_USER
+    features: [FEAT-501]
+    attributes: [{ name: USER_ID, type: varchar, pk: true }]
+    columns: [USER_ID, USER_NM, EMAIL, PWD, USE_YN, VALID_FROM_DT, VALID_TO_DT, LOCK_YN, LOCK_DTM, LOGIN_FAIL_CNT, PWD_CHG_DTM, PWD_INIT_YN, LAST_LOGIN_DTM, DORMANT_YN, LOCALE_CD, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    rules: ["물리 삭제 금지", "상태·기간·잠금·휴면·IP를 로그인 때 함께 판정"]
+    indexes: [{ name: IX_SYS_USER_01, purpose: "사용자 목록·로그인 후보 조회" }]
+    audit: standard
+    delete_policy: never
+
+  - id: ENT-502
+    name: "사용자 비밀번호 이력"
+    table: SYS_USER_PWD_HIST
+    features: [FEAT-501]
+    attributes: [{ name: USER_ID, type: varchar, pk: true }, { name: CHG_SEQ, type: bigint, pk: true }]
+    columns: [USER_ID, CHG_SEQ, PWD, REG_ID, REG_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID"]
+    rules: ["비밀번호 재사용 판정용", "계정 변경과 같은 수명주기로 보존"]
+    audit: created_only
+    delete_policy: never
+
+  - id: ENT-503
+    name: "사용자 접속 허용 IP"
+    table: SYS_USER_IP_ALLOW
+    features: [FEAT-501]
+    attributes: [{ name: USER_ID, type: varchar, pk: true }, { name: IP_CIDR, type: varchar, pk: true }]
+    columns: [USER_ID, IP_CIDR, USE_YN, VALID_FROM_DT, VALID_TO_DT, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID"]
+    rules: ["IPv4·IPv6 CIDR은 서버 리터럴 파서로 검증", "유효 기간과 사용 여부를 로그인 때 판정"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-504
+    name: "비밀번호 재설정 토큰"
+    table: SYS_USER_PWD_RESET
+    features: [FEAT-501]
+    attributes: [{ name: USER_ID, type: varchar, pk: true }]
+    columns: [USER_ID, TOKEN_HASH, ISSUE_DTM, EXPIRE_DTM, TRY_CNT, USED_YN]
+    relations: ["USER_ID -> ENT-501.USER_ID"]
+    state_machine: { ISSUED: [VERIFIED, EXPIRED], VERIFIED: [USED, EXPIRED], USED: [], EXPIRED: [] }
+    rules: ["원문 토큰 저장 금지", "사용·만료 토큰 재사용 금지"]
+    audit: none
+    delete_policy: hard
+
+  - id: ENT-505
+    name: "로그인 이력"
+    table: SYS_LO_LOGIN
+    features: [FEAT-501, FEAT-507]
+    attributes: [{ name: LOGIN_LOG_SEQ, type: bigint, pk: true }]
+    columns: [LOGIN_LOG_SEQ, USER_ID, LOGIN_RSLT_CD, CLIENT_IP, USER_AGENT, TRACE_ID, CRE_DTM]
+    indexes: []
+    index_policy: "현재 물리 인덱스를 그대로 두며 모듈 이동에서 새 인덱스를 만들지 않는다"
+    rules: ["없는 계정의 시도 ID도 보존", "결과 코드 전수 분류", "기본 365일 보존 뒤 파기 배치가 삭제"]
+    audit: created_only
+    delete_policy: never
+
+  - id: ENT-506
+    name: "역할"
+    table: SYS_ROLE
+    features: [FEAT-502]
+    attributes: [{ name: ROLE_ID, type: varchar, pk: true }]
+    columns: [ROLE_ID, ROLE_NM, ROLE_DESC, USE_YN, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    rules: ["역할명은 권한 판정 근거가 아님", "역할 간 겸임 금지 하드코딩 없음"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-507
+    name: "사용자 역할 부여"
+    table: SYS_USER_ROLE
+    features: [FEAT-502]
+    attributes: [{ name: USER_ID, type: varchar, pk: true }, { name: ROLE_ID, type: varchar, pk: true }]
+    columns: [USER_ID, ROLE_ID, VALID_FROM_DT, VALID_TO_DT, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID", "ROLE_ID -> ENT-506.ROLE_ID"]
+    rules: ["유효 기간 안의 행만 합성", "회수는 현재 구현대로 대상 행을 물리 삭제"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-508
+    name: "역할별 메뉴 액션 권한"
+    table: SYS_ROLE_MENU_AUTH
+    features: [FEAT-502, FEAT-503]
+    attributes: [{ name: ROLE_ID, type: varchar, pk: true }, { name: MENU_CD, type: varchar, pk: true }, { name: ACTION_CD, type: varchar, pk: true }]
+    columns: [ROLE_ID, MENU_CD, ACTION_CD, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["ROLE_ID -> ENT-506.ROLE_ID", "MENU_CD -> ENT-510.MENU_CD"]
+    rules: ["ACTION_CD는 READ/SAVE/EXECUTE/EXPORT", "역할 코드와 메뉴 코드 조합 금지 없음", "회수는 현재 구현대로 대상 행을 물리 삭제"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-509
+    name: "사용자별 메뉴 액션 예외"
+    table: SYS_USER_MENU_AUTH
+    features: [FEAT-502, FEAT-503]
+    attributes: [{ name: USER_ID, type: varchar, pk: true }, { name: MENU_CD, type: varchar, pk: true }, { name: ACTION_CD, type: varchar, pk: true }]
+    columns: [USER_ID, MENU_CD, ACTION_CD, VALID_FROM_DT, VALID_TO_DT, GRANT_RSN, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID", "MENU_CD -> ENT-510.MENU_CD"]
+    rules: ["유효 기간 안의 행만 합성", "개인 예외가 역할 권한과 만나는 규칙은 AUTHZ-090", "회수는 현재 구현대로 대상 행을 물리 삭제"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-510
+    name: "메뉴 트리"
+    table: SYS_MENU
+    features: [FEAT-503]
+    attributes: [{ name: MENU_CD, type: varchar, pk: true }]
+    columns: [MENU_CD, UP_MENU_CD, MENU_NM, MENU_URL, ICON_CD, SORT_NO, USE_YN, EXPORT_YN, SRC_CD, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["UP_MENU_CD -> ENT-510.MENU_CD"]
+    indexes: []
+    index_policy: "URL 중복은 현재 서비스 검증을 보존하며 모듈 이동에서 새 제약을 만들지 않는다"
+    rules: ["순환 트리 금지", "screenRegistry와 시드 URL 1:1"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-511
+    name: "서비스 API 카탈로그"
+    table: SYS_API
+    features: [FEAT-503]
+    attributes: [{ name: API_URL, type: varchar, pk: true }]
+    columns: [API_URL, API_NM, API_DESC, ACTION_CD, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    rules: ["service API는 생성 입력에서만 등록", "미등록 API 실패 폐쇄"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-512
+    name: "메뉴와 API 매핑"
+    table: SYS_MENU_API
+    features: [FEAT-503]
+    attributes: [{ name: MENU_CD, type: varchar, pk: true }, { name: API_URL, type: varchar, pk: true }]
+    columns: [MENU_CD, API_URL, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["MENU_CD -> ENT-510.MENU_CD", "API_URL -> ENT-511.API_URL"]
+    rules: ["다대다 허용", "매핑 없는 service API 실패 폐쇄"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-513
+    name: "공통코드 그룹"
+    table: SYS_CODE_GROUP
+    features: [FEAT-504]
+    attributes: [{ name: GRP_CD, type: varchar, pk: true }]
+    columns: [GRP_CD, GRP_NM, GRP_DESC, SYS_YN, SORT_NO, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    rules: ["SYS_YN=Y 삭제·비활성화 금지", "자식 코드가 있으면 삭제 금지"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-514
+    name: "공통코드"
+    table: SYS_CODE
+    features: [FEAT-504]
+    attributes: [{ name: GRP_CD, type: varchar, pk: true }, { name: DTL_CD, type: varchar, pk: true }]
+    columns: [GRP_CD, DTL_CD, DTL_NM, DTL_DESC, SYS_YN, USE_YN, SORT_NO, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["GRP_CD -> ENT-513.GRP_CD"]
+    rules: ["SYS_YN=Y 삭제·비활성화 금지", "코드명 메시지는 같은 수명주기로 정리"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-515
+    name: "코드 그룹 참조 정의"
+    table: SYS_CODE_GRP_REF
+    features: [FEAT-504]
+    attributes: [{ name: GRP_CD, type: varchar, pk: true }, { name: REF_CD, type: varchar, pk: true }]
+    columns: [GRP_CD, REF_CD, REF_NM, REF_DESC, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["GRP_CD -> ENT-513.GRP_CD"]
+    rules: ["참조값보다 정의가 먼저 존재"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-516
+    name: "공통코드 참조값"
+    table: SYS_CODE_REF
+    features: [FEAT-504]
+    attributes: [{ name: GRP_CD, type: varchar, pk: true }, { name: DTL_CD, type: varchar, pk: true }, { name: REF_CD, type: varchar, pk: true }]
+    columns: [GRP_CD, DTL_CD, REF_CD, REF_VAL, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["(GRP_CD,DTL_CD) -> ENT-514", "(GRP_CD,REF_CD) -> ENT-515"]
+    rules: ["원 코드 또는 정의 삭제 시 같은 트랜잭션으로 정리"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-517
+    name: "메시지 키"
+    table: SYS_MESSAGE_KEY
+    features: [FEAT-505]
+    attributes: [{ name: MSG_KEY, type: varchar, pk: true }]
+    columns: [MSG_KEY, USE_SCOPE, MSG_DESC, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    rules: ["키 생성은 소스·시드 생성기만 수행", "관리 화면 임의 생성 금지"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-518
+    name: "언어별 메시지 값"
+    table: SYS_MESSAGE
+    features: [FEAT-505]
+    attributes: [{ name: MSG_KEY, type: varchar, pk: true }, { name: LANG_CD, type: varchar, pk: true }]
+    columns: [MSG_KEY, LANG_CD, MSG_VAL, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["MSG_KEY -> ENT-517.MSG_KEY"]
+    rules: ["요청 언어→기본 언어→키 문자열 폴백"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-519
+    name: "공통 캐시 버전"
+    table: SYS_CACHE_VERSION
+    features: [FEAT-505, FEAT-506]
+    attributes: [{ name: CACHE_NAME, type: varchar, pk: true }]
+    columns: [CACHE_NAME, VERSION, MOD_DTM]
+    rules: ["성공한 메시지·설정 저장마다 해당 버전 한 번 증가"]
+    audit: none
+    delete_policy: never
+
+  - id: ENT-520
+    name: "시스템 설정 오버라이드"
+    table: SYS_CONFIG
+    features: [FEAT-506]
+    attributes: [{ name: CFG_KEY, type: varchar, pk: true }]
+    columns: [CFG_KEY, CFG_VAL, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    rules: ["등록된 키만 저장", "행 삭제는 배포 기본값 복원"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-521
+    name: "API 접근 이력"
+    table: SYS_LO_ACCESS
+    features: [FEAT-507]
+    attributes: [{ name: ACCESS_LOG_SEQ, type: bigint, pk: true }]
+    columns: [ACCESS_LOG_SEQ, USER_ID, MENU_CD, REQUEST_URI, HTTP_STAT, PARAMETERS, CLIENT_IP, TRACE_ID, CRE_DTM]
+    indexes: []
+    index_policy: "현재 물리 인덱스를 그대로 두며 모듈 이동에서 새 인덱스를 만들지 않는다"
+    rules: ["열람·권한 변경을 포함한 모든 API 접근 기록", "원문 수정·삭제 경로 없음", "권한 부여·회수 전용 원장이 아니라 시스템 사용 이력", "기본 90일 보존 뒤 파기 배치가 삭제"]
+    audit: created_only
+    delete_policy: never
+
+  - id: ENT-522
+    name: "예외 이력"
+    table: SYS_LO_EXCEPTION
+    features: [FEAT-507]
+    attributes: [{ name: EXCEPTION_LOG_SEQ, type: bigint, pk: true }]
+    columns: [EXCEPTION_LOG_SEQ, USER_ID, MENU_CD, REQUEST_URI, HTTP_STAT, ERR_CD, ERR_MSG, ROOT_CAUSE_STACK, CLIENT_IP, TRACE_ID, CRE_DTM]
+    indexes: []
+    index_policy: "현재 물리 인덱스를 그대로 두며 모듈 이동에서 새 인덱스를 만들지 않는다"
+    rules: ["상세 전문은 독립 READ 판정", "원문 수정·삭제 경로 없음", "기본 180일 보존 뒤 파기 배치가 삭제"]
+    audit: created_only
+    delete_policy: never
+
+  - id: ENT-523
+    name: "배치 일정"
+    table: SYS_SCHEDULE_BATCH
+    features: [FEAT-508]
+    attributes: [{ name: BATCH_ID, type: varchar, pk: true }]
+    columns: [BATCH_ID, BATCH_NM, BATCH_DESC, BEAN_ID, CRON, TIMEZONE, PARAM_JSON, LOCK_EXPIRY_SEC, LOCK_MIN_INTERVAL_SEC, USE_YN, SORT_NO, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    rules: ["등록 BatchJob·cron·timezone 검증", "잠금 만료와 최소 실행 간격은 양수"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-524
+    name: "배치 실행 이력"
+    table: SYS_BATCH_HISTORY
+    features: [FEAT-508]
+    attributes: [{ name: HIST_ID, type: bigint, pk: true }]
+    columns: [HIST_ID, BATCH_ID, EXEC_TYPE_CD, NODE_ID, START_DTM, END_DTM, ELAPSED_MS, RSLT_CD, RSLT_MSG, RSLT_DTL_MSG, ERR_MSG, CANCEL_REQ_DTM]
+    relations: ["BATCH_ID -> ENT-523.BATCH_ID"]
+    indexes: []
+    index_policy: "현재 물리 인덱스를 그대로 두며 모듈 이동에서 새 인덱스를 만들지 않는다"
+    state_machine: { RUNNING: [SUCCESS, FAIL, CANCELED, LOST], SUCCESS: [], FAIL: [], SKIP_LOCK: [], SKIP_COOLDOWN: [], CANCELED: [], LOST: [] }
+    rules: ["SKIP_LOCK·SKIP_COOLDOWN은 RUNNING을 거치지 않는 종결 시도", "CANCEL_REQ_DTM은 상태가 아니라 중단 요청 시각", "LOST의 ELAPSED_MS는 null"]
+    audit: created_only
+    delete_policy: never
+
+  - id: ENT-525
+    name: "공지"
+    table: SYS_NOTICE
+    features: [FEAT-509]
+    attributes: [{ name: NOTICE_ID, type: bigint, pk: true }]
+    columns: [NOTICE_ID, TITLE, CONTENT, CONTENT_TYPE_CD, NOTICE_FROM_DTM, NOTICE_TO_DTM, POPUP_YN, POPUP_FROM_DTM, POPUP_TO_DTM, USE_YN, SORT_NO, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    rules: ["게시와 팝업 기간을 독립 판정", "기간 밖 팝업 노출 금지"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-526
+    name: "사용자 알림함"
+    table: SYS_NOTI_INBOX
+    features: [FEAT-509]
+    attributes: [{ name: NOTI_ID, type: bigint, pk: true }]
+    columns: [NOTI_ID, USER_ID, NOTI_TYPE_CD, TITLE, CONTENT, LINK_MENU_CD, LINK_PARAM, READ_YN, READ_DTM, CRE_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID", "LINK_MENU_CD -> ENT-510.MENU_CD (nullable)"]
+    state_machine: { UNREAD: [READ], READ: [] }
+    rules: ["수신자 자신의 행만 조회·읽음 처리", "admin은 public 계약으로 전달"]
+    audit: created_only
+    delete_policy: hard
+
+  - id: ENT-527
+    name: "계정·권한 관리 요청"
+    table: SYS_NOTI_REQUEST
+    features: [FEAT-509]
+    attributes: [{ name: REQ_ID, type: bigint, pk: true }]
+    columns: [REQ_ID, USER_ID, REQ_TYPE_CD, REQ_CONTENT, REQ_STAT_CD, HANDLER_ID, HANDLE_DTM, HANDLE_MEMO, CRE_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID", "HANDLER_ID -> ENT-501.USER_ID (nullable)"]
+    indexes: []
+    index_policy: "현재 물리 인덱스를 그대로 두며 모듈 이동에서 새 인덱스를 만들지 않는다"
+    state_machine: { RECEIVED: [DONE, REJECTED], DONE: [], REJECTED: [] }
+    rules: ["판정은 계정·권한 변경과 분리", "종결 요청 재처리 금지", "REJECTED는 처리 메모 필수"]
+    audit: full
+    delete_policy: never
+
+  - id: ENT-528
+    name: "사용자 즐겨찾기"
+    table: SYS_USER_FAVORITE
+    features: [FEAT-510]
+    attributes: [{ name: USER_ID, type: varchar, pk: true }, { name: MENU_CD, type: varchar, pk: true }]
+    columns: [USER_ID, MENU_CD, SORT_NO, CRE_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID", "MENU_CD -> ENT-510.MENU_CD"]
+    rules: ["세션 사용자 범위 고정", "메뉴 삭제 시 고아 행 정리"]
+    audit: created_only
+    delete_policy: hard
+
+  - id: ENT-529
+    name: "사용자 그리드 설정"
+    table: SYS_USER_GRID_PREF
+    features: [FEAT-510]
+    attributes: [{ name: USER_ID, type: varchar, pk: true }, { name: MENU_CD, type: varchar, pk: true }, { name: GRID_ID, type: varchar, pk: true }]
+    columns: [USER_ID, MENU_CD, GRID_ID, PREF_JSON, SIGNATURE, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID", "MENU_CD -> ENT-510.MENU_CD"]
+    rules: ["선언 signature 불일치는 기본 설정으로 복원", "타 사용자 키 금지"]
+    audit: standard
+    delete_policy: hard
+
+  - id: ENT-530
+    name: "사용자 메뉴 월별 통계"
+    table: SYS_USER_MENU_STAT
+    features: [FEAT-510]
+    attributes: [{ name: USER_ID, type: varchar, pk: true }, { name: MENU_CD, type: varchar, pk: true }, { name: STAT_YM, type: varchar, pk: true }]
+    columns: [USER_ID, MENU_CD, STAT_YM, USE_CNT, LAST_USE_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID", "MENU_CD -> ENT-510.MENU_CD"]
+    indexes: []
+    index_policy: "현재 물리 인덱스를 그대로 두며 모듈 이동에서 새 인덱스를 만들지 않는다"
+    rules: ["월 키는 YYYYMM", "선택 횟수는 원자 증가"]
+    audit: none
+    delete_policy: hard
+
+  - id: ENT-531
+    name: "사용자 저장 조회조건"
+    table: SYS_USER_SEARCH_COND
+    features: [FEAT-510]
+    attributes: [{ name: USER_ID, type: varchar, pk: true }, { name: MENU_CD, type: varchar, pk: true }, { name: COND_NM, type: varchar, pk: true }]
+    columns: [USER_ID, MENU_CD, COND_NM, COND_JSON, DFLT_YN, SORT_NO, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID", "MENU_CD -> ENT-510.MENU_CD"]
+    rules: ["사용자·메뉴별 기본값은 최대 하나", "타 사용자 키 금지"]
+    audit: standard
+    delete_policy: hard

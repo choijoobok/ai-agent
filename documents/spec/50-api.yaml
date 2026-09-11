@@ -1,37 +1,173 @@
-# API 명세 (Hub 내부 API — portal·admin 화면이 부르는 것)
-#
-# 작성 단계: P3
-# status: empty — **비어 있다. 지어내지 않았다.**
-#
-# **혼동하지 않는다**: 여기는 *우리가 만드는* API 다. *레거시가 제공하는* 업무 API 는
-# 런타임에 admin 이 등록하는 데이터이며(FEAT-004) 그 연동 규약은 51-interfaces.yaml
-# (IF-002)이 갖는다.
-#
-# 경로 규약은 백오피스 템플릿의 보안 계층을 유지하고 모듈을 그 뒤에 둔다 —
-# `/api/{계층}/{모듈}/{도메인}/{동작}` ·
-# **접두가 액션을 정한다** · `service` 는 전부 POST.
-# 상세: aidd-guide/standard/backend/api.md · aidd-guide/standard/hub-conventions.md §4.1
-#
-# **호출 URL 은 `sources/frontend/src/modules/{모듈}/features/{도메인}/api/endpoints.ts` 에만 둔다** —
-# 그 선언이 인가 시드의 입력이다(CLAUDE.md §8). 선언하지 않고 부르면 403, 선언만 하고
-# 안 부르면 접근 범위가 조용히 넓어진다.
-#
-# 채우는 방법: aidd-guide/phase/P3-design.md §5
-
+# Hub 내부 API — system 목표 경로. 현재 응답 DTO와 검증 의미를 보존하며 모듈 접두만 전환한다.
 meta:
-  status: empty
+  status: in_progress
   baselined: null
-  path_convention: "/api/{계층}/{모듈}/{도메인}/{동작} — 보안 계층이 먼저이고 접두가 액션을 정한다 (ARCH-021)"
+  workstreams: { system: reviewed }
+  path_convention: "/api/{public|common|service}/system/{domain}/{action}"
+  cutover: "각 슬라이스에서 호출자·SYS_API·SYS_MENU_API를 함께 바꾸고 회귀 시험 뒤 system 없는 구 경로를 같은 커밋에서 삭제한다"
+  common_errors: { 400: VALIDATION_ERROR, 401: AUTHENTICATION_REQUIRED, 403: AUTHORIZATION_DENIED, 404: RESOURCE_NOT_FOUND, 409: STATE_CONFLICT, 500: INTERNAL_ERROR }
+  contract_rule: "각 API의 request·response 타입과 source_contract 메서드의 DTO 필드·Bean Validation을 G3 입력 계약으로 동결한다. P4에서는 패키지와 경로만 옮기며 타입·필드·null·페이징 의미를 바꾸지 않는다"
+  error_inheritance: "모든 API는 common_errors를 상속하고, feature_contracts의 exception_map에 연결된 UC 예외를 추가로 반환한다"
 
-apis: []
+feature_contracts:
+  FEAT-501:
+    request_rule: "관리 API의 userId는 필수이며 자기 서비스의 사용자 ID는 세션에서 얻는다; 비밀번호·토큰 원문은 응답·로그에 쓰지 않는다"
+    response_rule: "현재 DTO 필드·null 의미·페이징을 보존하고 세션에는 authzVersion을 포함한다"
+    transaction: "계정/역할/IP/비밀번호 이력 변경은 각 명령 단위로 원자적"
+    exception_map: { UC-501.E1: LOGIN_CONDITION_DENIED, UC-501.E2: CREDENTIAL_OR_SESSION_CONFLICT }
+  FEAT-502:
+    request_rule: "부여 대상 사용자·역할·메뉴·액션과 유효 기간을 명시한다"
+    response_rule: "저장 전 영향 사용자와 저장 후 유효 권한을 같은 합성 규칙으로 계산한다"
+    transaction: "한 저장 요청의 부여·회수와 권한 버전 증가는 원자적"
+    concurrency: "같은 역할의 권한 전체 저장이 겹치면 나중에 완료된 전체 스냅샷이 이기고 서버는 두 요청을 자동 병합하지 않는다"
+    exception_map: { UC-502.E1: AUTHZ_TARGET_INVALID, UC-502.E2: AUTHZ_VERSION_STALE }
+  FEAT-503:
+    request_rule: "메뉴 위치 변경은 전용 트리 명령으로만 받고 API는 배포 선언에서 생성된 후보만 매핑한다"
+    response_rule: "미등록·미매핑·액션 불일치는 모두 업무 서비스 호출 전 403"
+    transaction: "노드·트리·API 매핑 명령은 각각 원자적"
+    exception_map: { UC-503.E1: AUTHORIZATION_DENIED, UC-503.E2: MENU_TREE_CONFLICT }
+  FEAT-504:
+    request_rule: "그룹·코드·참조 정의·참조값의 행 상태와 키를 함께 보낸다"
+    response_rule: "조회는 사용 중 값과 명시된 정렬을 유지한다"
+    transaction: "원본 코드와 코드명·참조값 정리는 한 트랜잭션"
+    exception_map: { UC-504.E1: SYSTEM_CODE_PROTECTED, UC-504.E2: CODE_REFERENCE_CONFLICT }
+  FEAT-505:
+    request_rule: "생성된 MSG_KEY의 언어별 값만 변경 가능"
+    response_rule: "번들은 요청 언어→기본 언어→키 문자열 폴백과 cacheVersion을 제공한다"
+    transaction: "메시지 값과 MESSAGE 캐시 버전 증가를 원자 처리"
+    exception_map: { UC-505.E1: MESSAGE_KEY_CREATION_FORBIDDEN, UC-505.E2: MESSAGE_VERSION_ROLLBACK }
+  FEAT-506:
+    request_rule: "등록된 편집 가능 키와 타입에 맞는 값만 받으며 비밀값은 받거나 돌려주지 않는다"
+    response_rule: "배포 기본값과 오버라이드를 합성하고 값 원천·경고를 함께 표시한다"
+    transaction: "오버라이드와 CONFIG 캐시 버전 증가를 원자 처리"
+    exception_map: { UC-506.E1: CONFIG_VALUE_INVALID, UC-506.E2: CONFIG_VERSION_ROLLBACK }
+  FEAT-507:
+    request_rule: "기간·사용자·경로·결과·traceId와 제한된 페이지 범위를 받는다"
+    response_rule: "목록과 상세를 분리하고 요청·오류 전문은 별도 READ 판정을 거친다"
+    transaction: "조회 전용; 열람 요청의 접근 이력만 새로 기록"
+    exception_map: { UC-507.E1: LOG_DETAIL_FORBIDDEN, UC-507.E2: LOG_QUERY_RANGE_INVALID }
+  FEAT-508:
+    request_rule: "등록 beanId·유효 cron·IANA timezone·양수 잠금/쿨다운과 JSON 파라미터를 받는다"
+    response_rule: "실행 ID와 RUNNING/SUCCESS/FAIL/SKIP_LOCK/SKIP_COOLDOWN/CANCELED/LOST 결과를 구분한다"
+    transaction: "일정 저장, 실행 시작, 결과 확정은 각각 원자적이며 분산 잠금과 함께 판정"
+    exception_map: { UC-508.E1: BATCH_DEFINITION_INVALID, UC-508.E2: BATCH_EXECUTION_CONFLICT }
+  FEAT-509:
+    request_rule: "공지 기간과 요청 판정 사유를 검증하고 알림 소유자는 세션·계약 발신자로 고정한다"
+    response_rule: "현재 노출 가능 공지와 자기 요청·자기 알림만 반환한다"
+    transaction: "요청 판정과 결과 알림 생성은 원자적이되 계정·권한 데이터는 건드리지 않는다"
+    exception_map: { UC-509.E1: NOTICE_OUTSIDE_WINDOW, UC-509.E2: NOTIFICATION_REQUEST_STATE_CONFLICT }
+  FEAT-510:
+    request_rule: "userId는 세션에서, menuCd/gridId/conditionName은 등록된 범위에서 얻는다"
+    response_rule: "모듈과 무관하게 같은 사용자·메뉴 키에 같은 값을 반환한다"
+    transaction: "개별 사용자 상태 저장/초기화와 월별 사용 횟수 증가는 원자적"
+    exception_map: { UC-510.E1: USER_STATE_OWNER_MISMATCH, UC-510.E2: USER_STATE_ORPHAN }
 
-# 채울 때의 형식 (예시 — 실제 값이 아니다)
-# apis:
-#   - id: API-001
-#     feature: FEAT-101
-#     method: POST
-#     path: /api/service/portal/chat/ask
-#     action: EXEC
-#     request: { sessionId: "long", prompt: "string" }
-#     response: { turnId: "long" }
-#     note: "질의를 접수하고 즉시 반환한다 — 진행 상태는 폴링으로 조회한다 (ARCH-015)"
+apis:
+  - { id: API-501, feature: FEAT-501, method: POST, path: /api/public/system/auth/login, action: PUBLIC, summary: "로그인", request: "body=LoginRequest", response: "ApiResponse<LoginResponse>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/auth/AuthController.java#login" }
+  - { id: API-502, feature: FEAT-501, method: GET, path: /api/public/system/auth/getPasswordPolicy, action: PUBLIC, summary: "비밀번호 정책 조회", request: "none", response: "ApiResponse<PasswordPolicyResponse>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/auth/AuthController.java#getPasswordPolicy" }
+  - { id: API-503, feature: FEAT-501, method: POST, path: /api/public/system/auth/sendResetCode, action: PUBLIC, summary: "재설정 코드 발송", request: "body=ResetCodeRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/auth/AuthController.java#sendResetCode" }
+  - { id: API-504, feature: FEAT-501, method: POST, path: /api/public/system/auth/verifyResetCode, action: PUBLIC, summary: "재설정 코드 검증", request: "body=ResetVerifyRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/auth/AuthController.java#verifyResetCode" }
+  - { id: API-505, feature: FEAT-501, method: POST, path: /api/public/system/auth/saveResetPassword, action: PUBLIC, summary: "재설정 비밀번호 저장", request: "body=ResetPasswordRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/auth/AuthController.java#saveResetPassword" }
+  - { id: API-506, feature: FEAT-501, method: GET, path: /api/common/system/auth/getMe, action: AUTHENTICATED, summary: "현재 사용자와 권한 버전 조회", request: "none", response: "ApiResponse<LoginResponse>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/auth/AuthController.java#me" }
+  - { id: API-507, feature: FEAT-501, method: POST, path: /api/common/system/auth/heartbeat, action: AUTHENTICATED, summary: "세션과 권한 버전 확인", request: "none", response: "ApiResponse<HeartbeatResponse>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/auth/AuthController.java#heartbeat" }
+  - { id: API-508, feature: FEAT-501, method: POST, path: /api/common/system/auth/changePassword, action: AUTHENTICATED, summary: "내 비밀번호 변경", request: "body=PasswordChangeRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/auth/AuthController.java#changePassword" }
+  - { id: API-509, feature: FEAT-501, method: POST, path: /api/common/system/auth/logout, action: AUTHENTICATED, summary: "로그아웃", request: "none", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/auth/AuthController.java#logout" }
+  - { id: API-510, feature: FEAT-501, method: POST, path: /api/service/system/user/getList, action: READ, summary: "사용자 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<UserRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserController.java#getList" }
+  - { id: API-511, feature: FEAT-501, method: POST, path: /api/service/system/user/save, action: SAVE, summary: "사용자 저장", request: "body=UserSaveRequest", response: "ApiResponse<List<IssuedPassword>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserController.java#save" }
+  - { id: API-512, feature: FEAT-501, method: POST, path: /api/service/system/user/saveUnlock, action: SAVE, summary: "잠금 해제", request: "body=UserTargetRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserController.java#saveUnlock" }
+  - { id: API-513, feature: FEAT-501, method: POST, path: /api/service/system/user/saveDormantRelease, action: SAVE, summary: "휴면 해제", request: "body=UserTargetRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserController.java#saveDormantRelease" }
+  - { id: API-514, feature: FEAT-501, method: POST, path: /api/service/system/user/savePasswordReset, action: SAVE, summary: "관리자 비밀번호 초기화", request: "body=UserTargetRequest", response: "ApiResponse<List<IssuedPassword>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserController.java#savePasswordReset" }
+  - { id: API-515, feature: FEAT-501, method: POST, path: /api/service/system/user/getIpList, action: READ, summary: "허용 IP 목록", request: "body=SearchRequest<UserIdParams>", response: "ApiResponse<PageResponse<UserIpRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserDetailController.java#getIpList" }
+  - { id: API-516, feature: FEAT-501, method: POST, path: /api/service/system/user/saveIp, action: SAVE, summary: "허용 IP 저장", request: "body=UserIpSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserDetailController.java#saveIp" }
+  - { id: API-517, feature: FEAT-501, method: POST, path: /api/service/system/user/getSessionList, action: READ, summary: "활성 세션 목록", request: "body=SearchRequest<UserIdParams>", response: "ApiResponse<PageResponse<UserSessionRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserDetailController.java#getSessionList" }
+  - { id: API-518, feature: FEAT-501, method: POST, path: /api/service/system/user/killSession, action: EXECUTE, summary: "활성 세션 강제 종료", request: "body=UserSessionKillRequest", response: "ApiResponse<Integer>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserDetailController.java#killSession" }
+  - { id: API-519, feature: FEAT-501, method: GET, path: /api/common/system/user/getMyProfile, action: AUTHENTICATED, summary: "내 프로필 조회", request: "none", response: "ApiResponse<MyProfile>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserProfileController.java#getMyProfile" }
+  - { id: API-520, feature: FEAT-501, method: POST, path: /api/common/system/user/saveMyProfile, action: AUTHENTICATED, summary: "내 프로필 저장", request: "body=ProfileRequest", response: "ApiResponse<MyProfile>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserProfileController.java#saveMyProfile" }
+  - { id: API-521, feature: FEAT-501, method: GET, path: /api/common/system/user/getMyLoginHistory, action: AUTHENTICATED, summary: "내 로그인 이력", request: "none", response: "ApiResponse<List<MyLoginRecord>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserProfileController.java#getMyLoginHistory" }
+  - { id: API-522, feature: FEAT-501, method: GET, path: /api/common/system/user/getMyRoles, action: AUTHENTICATED, summary: "내 역할 조회", request: "none", response: "ApiResponse<MyAuthority>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserProfileController.java#getMyRoles" }
+  - { id: API-523, feature: FEAT-501, method: POST, path: /api/common/system/user/saveLocale, action: AUTHENTICATED, summary: "내 언어 저장", request: "body=LocaleRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserPreferenceController.java#saveLocale" }
+
+  - { id: API-524, feature: FEAT-502, method: POST, path: /api/service/system/role/getList, action: READ, summary: "역할 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<RoleRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/role/RoleController.java#getList" }
+  - { id: API-525, feature: FEAT-502, method: POST, path: /api/service/system/role/save, action: SAVE, summary: "역할 저장", request: "body=RoleSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/role/RoleController.java#save" }
+  - { id: API-526, feature: FEAT-502, method: POST, path: /api/service/system/roleAuth/getList, action: READ, summary: "역할 권한 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<RolePickRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/role/RoleAuthController.java#getList" }
+  - { id: API-527, feature: FEAT-502, method: POST, path: /api/service/system/roleAuth/getMenuTree, action: READ, summary: "역할 권한 메뉴 트리", request: "body=RoleMenuTreeRequest", response: "ApiResponse<PageResponse<RoleAuthTreeRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/role/RoleAuthController.java#getMenuTree" }
+  - { id: API-528, feature: FEAT-502, method: POST, path: /api/service/system/roleAuth/save, action: SAVE, summary: "역할 권한 저장", request: "body=RoleAuthSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/role/RoleAuthController.java#save" }
+  - { id: API-529, feature: FEAT-502, method: POST, path: /api/service/system/roleAuth/getAffectedUsers, action: READ, summary: "영향 사용자 조회", request: "body=SearchRequest<RoleIdParams>", response: "ApiResponse<PageResponse<RoleHolderRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/role/RoleAuthController.java#getAffectedUsers" }
+  - { id: API-530, feature: FEAT-502, method: POST, path: /api/service/system/userAuth/getList, action: READ, summary: "개인 예외 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<UserPickRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/userauth/UserAuthController.java#getList" }
+  - { id: API-531, feature: FEAT-502, method: POST, path: /api/service/system/userAuth/getMenuTree, action: READ, summary: "개인 예외 메뉴 트리", request: "body=UserAuthTreeRequest", response: "ApiResponse<PageResponse<UserAuthTreeRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/userauth/UserAuthController.java#getMenuTree" }
+  - { id: API-532, feature: FEAT-502, method: POST, path: /api/service/system/userAuth/save, action: SAVE, summary: "개인 예외 저장", request: "body=UserAuthSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/userauth/UserAuthController.java#save" }
+  - { id: API-533, feature: FEAT-502, method: POST, path: /api/service/system/user/getRoleList, action: READ, summary: "사용자 보유 역할", request: "body=SearchRequest<UserIdParams>", response: "ApiResponse<PageResponse<UserRoleRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserDetailController.java#getRoleList" }
+  - { id: API-534, feature: FEAT-502, method: POST, path: /api/service/system/user/saveRole, action: SAVE, summary: "사용자 역할 저장", request: "body=UserRoleSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserDetailController.java#saveRole" }
+  - { id: API-535, feature: FEAT-502, method: POST, path: /api/service/system/user/getRoleCandidates, action: READ, summary: "역할 후보", request: "none", response: "ApiResponse<PageResponse<RoleCandidate>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserDetailController.java#getRoleCandidates" }
+  - { id: API-536, feature: FEAT-502, method: POST, path: /api/service/system/user/getUserMenuAuth, action: READ, summary: "사용자 개인 예외 요약", request: "body=SearchRequest<UserIdParams>", response: "ApiResponse<PageResponse<UserGrantRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserDetailController.java#getUserMenuAuth" }
+  - { id: API-537, feature: FEAT-502, method: POST, path: /api/service/system/user/getEffectiveAuthList, action: READ, summary: "현재 유효 권한", request: "body=SearchRequest<EffectiveAuthParams>", response: "ApiResponse<PageResponse<EffectiveAuthRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/user/UserDetailController.java#getEffectiveAuthList" }
+
+  - { id: API-538, feature: FEAT-503, method: POST, path: /api/service/system/menu/getTree, action: READ, summary: "메뉴 트리", request: "none", response: "ApiResponse<PageResponse<MenuTreeRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/menu/MenuController.java#getTree" }
+  - { id: API-539, feature: FEAT-503, method: POST, path: /api/service/system/menu/saveNode, action: SAVE, summary: "메뉴 노드 저장", request: "body=MenuNodeRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/menu/MenuController.java#saveNode" }
+  - { id: API-540, feature: FEAT-503, method: POST, path: /api/service/system/menu/save, action: SAVE, summary: "메뉴 속성 저장", request: "body=MenuSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/menu/MenuController.java#save" }
+  - { id: API-541, feature: FEAT-503, method: POST, path: /api/service/system/menu/saveTree, action: SAVE, summary: "메뉴 위치 저장", request: "body=MenuTreeSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/menu/MenuController.java#saveTree" }
+  - { id: API-542, feature: FEAT-503, method: POST, path: /api/service/system/menu/deleteNode, action: SAVE, summary: "메뉴 노드 삭제", request: "body=MenuDeleteRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/menu/MenuController.java#deleteNode" }
+  - { id: API-543, feature: FEAT-503, method: POST, path: /api/service/system/menu/getApiList, action: READ, summary: "메뉴별 API 목록", request: "body=SearchRequest<MenuCdParams>", response: "ApiResponse<PageResponse<MenuApiRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/menu/MenuController.java#getApiList" }
+  - { id: API-544, feature: FEAT-503, method: POST, path: /api/service/system/menu/getAccessibleUsers, action: READ, summary: "메뉴 접근 가능 사용자", request: "body=SearchRequest<MenuCdParams>", response: "ApiResponse<PageResponse<MenuUserRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/menu/MenuController.java#getAccessibleUsers" }
+  - { id: API-545, feature: FEAT-503, method: POST, path: /api/service/system/menu/getRoleList, action: READ, summary: "메뉴 보유 역할", request: "body=SearchRequest<MenuCdParams>", response: "ApiResponse<PageResponse<MenuRoleRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/menu/MenuController.java#getRoleList" }
+  - { id: API-546, feature: FEAT-503, method: POST, path: /api/service/system/apiCatalog/getList, action: READ, summary: "API 카탈로그", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<ApiCatalogRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/apicatalog/ApiCatalogController.java#getList" }
+  - { id: API-547, feature: FEAT-503, method: POST, path: /api/service/system/apiCatalog/getMenuList, action: READ, summary: "API 사용 메뉴", request: "body=SearchRequest<ApiUrlParams>", response: "ApiResponse<PageResponse<ApiMenuRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/apicatalog/ApiCatalogController.java#getMenuList" }
+
+  - { id: API-548, feature: FEAT-504, method: POST, path: /api/service/system/code/getGroupList, action: READ, summary: "코드 그룹 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<CodeGroupRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/code/CodeAdminController.java#getGroupList" }
+  - { id: API-549, feature: FEAT-504, method: POST, path: /api/service/system/code/saveGroup, action: SAVE, summary: "코드 그룹 저장", request: "body=CodeGroupSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/code/CodeAdminController.java#saveGroup" }
+  - { id: API-550, feature: FEAT-504, method: POST, path: /api/service/system/code/getList, action: READ, summary: "관리 코드 목록", request: "body=SearchRequest<CodeGroupParams>", response: "ApiResponse<PageResponse<CodeRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/code/CodeAdminController.java#getList" }
+  - { id: API-551, feature: FEAT-504, method: POST, path: /api/service/system/code/save, action: SAVE, summary: "코드 저장", request: "body=CodeSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/code/CodeAdminController.java#save" }
+  - { id: API-552, feature: FEAT-504, method: POST, path: /api/service/system/code/getRefDefList, action: READ, summary: "참조 정의 목록", request: "body=SearchRequest<CodeGroupParams>", response: "ApiResponse<PageResponse<CodeRefDefRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/code/CodeAdminController.java#getRefDefList" }
+  - { id: API-553, feature: FEAT-504, method: POST, path: /api/service/system/code/saveRefDef, action: SAVE, summary: "참조 정의 저장", request: "body=CodeRefDefSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/code/CodeAdminController.java#saveRefDef" }
+  - { id: API-554, feature: FEAT-504, method: POST, path: /api/common/system/code/getList, action: AUTHENTICATED, summary: "공통 코드 후보", request: "body=CodeListRequest", response: "ApiResponse<CodeListResponse>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/code/CodeController.java#getList" }
+
+  - { id: API-555, feature: FEAT-505, method: POST, path: /api/service/system/message/getList, action: READ, summary: "메시지 키와 값 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<MessageKeyRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/message/MessageAdminController.java#getList" }
+  - { id: API-556, feature: FEAT-505, method: POST, path: /api/service/system/message/save, action: SAVE, summary: "언어별 메시지 값 저장", request: "body=MessageSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/message/MessageAdminController.java#save" }
+  - { id: API-557, feature: FEAT-505, method: GET, path: /api/public/system/message/getBundle, action: PUBLIC, summary: "언어별 메시지 번들", request: "query=lang:String?|v:Long?", response: "ApiResponse<MessageBundleResponse>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/message/MessageController.java#getBundle" }
+
+  - { id: API-558, feature: FEAT-506, method: POST, path: /api/service/system/config/getList, action: READ, summary: "시스템 설정 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<ConfigRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/config/ConfigController.java#getList" }
+  - { id: API-559, feature: FEAT-506, method: POST, path: /api/service/system/config/getPrefixes, action: READ, summary: "설정 접두사 후보", request: "none", response: "ApiResponse<List<String>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/config/ConfigController.java#getPrefixes" }
+  - { id: API-560, feature: FEAT-506, method: POST, path: /api/service/system/config/save, action: SAVE, summary: "설정 오버라이드 저장·복원", request: "body=ConfigSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/config/ConfigController.java#save" }
+
+  - { id: API-561, feature: FEAT-507, method: POST, path: /api/service/system/loginLog/getList, action: READ, summary: "로그인 이력 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<LoginLogRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/log/LoginLogController.java#getList" }
+  - { id: API-562, feature: FEAT-507, method: POST, path: /api/service/system/accessLog/getList, action: READ, summary: "사용 이력 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<AccessLogRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/log/AccessLogController.java#getList" }
+  - { id: API-563, feature: FEAT-507, method: POST, path: /api/service/system/accessLog/getDetail, action: READ, summary: "사용 이력 상세", request: "body=AccessLogDetailRequest", response: "ApiResponse<AccessLogDetail>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/log/AccessLogController.java#getDetail" }
+  - { id: API-564, feature: FEAT-507, method: POST, path: /api/service/system/errorLog/getList, action: READ, summary: "오류 이력 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<ErrorLogRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/log/ErrorLogController.java#getList" }
+  - { id: API-565, feature: FEAT-507, method: POST, path: /api/service/system/errorLog/getDetail, action: READ, summary: "오류 이력 상세", request: "body=ErrorLogDetailRequest", response: "ApiResponse<ErrorLogDetail>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/log/ErrorLogController.java#getDetail" }
+  - { id: API-566, feature: FEAT-507, method: POST, path: /api/common/system/excel/saveLog, action: AUTHENTICATED, summary: "클라이언트 엑셀 다운로드 이력", request: "body=ExcelLogRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/log/ExcelLogController.java#log" }
+
+  - { id: API-567, feature: FEAT-508, method: POST, path: /api/service/system/batchSchedule/getList, action: READ, summary: "배치 일정 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<BatchScheduleRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/batch/BatchScheduleController.java#getList" }
+  - { id: API-568, feature: FEAT-508, method: POST, path: /api/service/system/batchSchedule/getBeanList, action: READ, summary: "등록 BatchJob 후보", request: "none", response: "ApiResponse<List<String>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/batch/BatchScheduleController.java#getBeanList" }
+  - { id: API-569, feature: FEAT-508, method: POST, path: /api/service/system/batchSchedule/getTimezoneList, action: READ, summary: "시간대 후보", request: "none", response: "ApiResponse<List<String>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/batch/BatchScheduleController.java#getTimezoneList" }
+  - { id: API-570, feature: FEAT-508, method: POST, path: /api/service/system/batchSchedule/getRecentHistory, action: READ, summary: "배치 최근 이력", request: "body=SearchRequest<BatchIdParams>", response: "ApiResponse<PageResponse<BatchHistoryRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/batch/BatchScheduleController.java#getRecentHistory" }
+  - { id: API-571, feature: FEAT-508, method: POST, path: /api/service/system/batchSchedule/save, action: SAVE, summary: "배치 일정 저장", request: "body=BatchScheduleSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/batch/BatchScheduleController.java#save" }
+  - { id: API-572, feature: FEAT-508, method: POST, path: /api/service/system/batchSchedule/runNow, action: EXECUTE, summary: "배치 즉시 실행", request: "body=BatchRunRequest", response: "ApiResponse<BatchRunResponse>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/batch/BatchScheduleController.java#runNow" }
+  - { id: API-573, feature: FEAT-508, method: POST, path: /api/service/system/batchHistory/getList, action: READ, summary: "배치 전체 이력", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<BatchHistoryRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/batch/BatchHistoryController.java#getList" }
+  - { id: API-574, feature: FEAT-508, method: POST, path: /api/service/system/batchHistory/getDetail, action: READ, summary: "배치 이력 상세", request: "body=BatchHistoryDetailRequest", response: "ApiResponse<BatchHistoryDetail>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/batch/BatchHistoryController.java#getDetail" }
+  - { id: API-575, feature: FEAT-508, method: POST, path: /api/service/system/batchHistory/cancel, action: EXECUTE, summary: "배치 실행 중단 요청", request: "body=BatchCancelRequest", response: "ApiResponse<BatchCancelService.CancelResult>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/batch/BatchHistoryController.java#cancel" }
+
+  - { id: API-576, feature: FEAT-509, method: POST, path: /api/service/system/notice/getList, action: READ, summary: "공지 관리 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<NoticeRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/notice/NoticeController.java#getList" }
+  - { id: API-577, feature: FEAT-509, method: POST, path: /api/service/system/notice/save, action: SAVE, summary: "공지 저장", request: "body=NoticeSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/notice/NoticeController.java#save" }
+  - { id: API-578, feature: FEAT-509, method: GET, path: /api/common/system/notice/getList, action: AUTHENTICATED, summary: "사용자 공지 목록", request: "query=includeExpired:boolean?", response: "ApiResponse<List<NoticeBrief>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/notice/NoticeFeedController.java#getList" }
+  - { id: API-579, feature: FEAT-509, method: GET, path: /api/common/system/notice/getOne, action: AUTHENTICATED, summary: "사용자 공지 상세", request: "query=noticeId:Long|includeExpired:boolean?", response: "ApiResponse<NoticeDetail>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/notice/NoticeFeedController.java#getOne" }
+  - { id: API-580, feature: FEAT-509, method: GET, path: /api/common/system/notice/getPopup, action: AUTHENTICATED, summary: "현재 공지 팝업", request: "none", response: "ApiResponse<NoticePopup>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/notice/NoticeFeedController.java#getPopup" }
+  - { id: API-581, feature: FEAT-509, method: POST, path: /api/service/system/notiRequest/getList, action: READ, summary: "관리 요청 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<NotiRequestRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/notirequest/NotiRequestController.java#getList" }
+  - { id: API-582, feature: FEAT-509, method: POST, path: /api/service/system/notiRequest/updateHandle, action: SAVE, summary: "관리 요청 판정", request: "body=NotiRequestHandleRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/notirequest/NotiRequestController.java#updateHandle" }
+  - { id: API-583, feature: FEAT-509, method: GET, path: /api/common/system/notiRequest/getMyList, action: AUTHENTICATED, summary: "내 요청 목록", request: "none", response: "ApiResponse<MyRequests>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/notirequest/MyNotiRequestController.java#getMyList" }
+  - { id: API-584, feature: FEAT-509, method: POST, path: /api/common/system/notiRequest/save, action: AUTHENTICATED, summary: "내 관리 요청 등록", request: "body=MyNotiRequestCreateRequest", response: "ApiResponse<MyRequests>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/notirequest/MyNotiRequestController.java#create" }
+  - { id: API-585, feature: FEAT-509, method: GET, path: /api/common/system/noti/getList, action: AUTHENTICATED, summary: "내 알림함", request: "none", response: "ApiResponse<MyNotifications>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/notification/NotiInboxController.java#getList" }
+  - { id: API-586, feature: FEAT-509, method: GET, path: /api/common/system/noti/getUnreadCount, action: AUTHENTICATED, summary: "안 읽은 알림 수", request: "none", response: "ApiResponse<Long>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/notification/NotiInboxController.java#getUnreadCount" }
+  - { id: API-587, feature: FEAT-509, method: POST, path: /api/common/system/noti/saveRead, action: AUTHENTICATED, summary: "알림 읽음", request: "body=NotiReadRequest", response: "ApiResponse<MyNotifications>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/notification/NotiInboxController.java#markRead" }
+  - { id: API-588, feature: FEAT-509, method: POST, path: /api/common/system/noti/saveAllRead, action: AUTHENTICATED, summary: "알림 전체 읽음", request: "none", response: "ApiResponse<MyNotifications>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/notification/NotiInboxController.java#markAllRead" }
+
+  - { id: API-589, feature: FEAT-510, method: GET, path: /api/common/system/favorite/getList, action: AUTHENTICATED, summary: "즐겨찾기 목록", request: "none", response: "ApiResponse<List<FavoriteMenu>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/favorite/FavoriteController.java#getList" }
+  - { id: API-590, feature: FEAT-510, method: POST, path: /api/common/system/favorite/save, action: AUTHENTICATED, summary: "즐겨찾기 저장", request: "body=FavoriteMenuRequest", response: "ApiResponse<List<FavoriteMenu>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/favorite/FavoriteController.java#add" }
+  - { id: API-591, feature: FEAT-510, method: POST, path: /api/common/system/favorite/delete, action: AUTHENTICATED, summary: "즐겨찾기 삭제", request: "body=FavoriteMenuRequest", response: "ApiResponse<List<FavoriteMenu>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/favorite/FavoriteController.java#remove" }
+  - { id: API-592, feature: FEAT-510, method: GET, path: /api/common/system/gridPref/getOne, action: AUTHENTICATED, summary: "그리드 설정 조회", request: "query=menuCd:String|gridId:String|signature:String", response: "ApiResponse<GridPref>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/gridpref/GridPrefController.java#getOne" }
+  - { id: API-593, feature: FEAT-510, method: POST, path: /api/common/system/gridPref/save, action: AUTHENTICATED, summary: "그리드 설정 저장", request: "body=GridPrefSaveRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/gridpref/GridPrefController.java#save" }
+  - { id: API-594, feature: FEAT-510, method: POST, path: /api/common/system/gridPref/delete, action: AUTHENTICATED, summary: "그리드 설정 초기화", request: "body=GridPrefResetRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/gridpref/GridPrefController.java#reset" }
+  - { id: API-595, feature: FEAT-510, method: GET, path: /api/common/system/searchCond/getList, action: AUTHENTICATED, summary: "저장 조회조건 목록", request: "query=menuCd:String", response: "ApiResponse<List<SavedSearchCond>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/searchcond/SearchCondController.java#getList" }
+  - { id: API-596, feature: FEAT-510, method: POST, path: /api/common/system/searchCond/save, action: AUTHENTICATED, summary: "조회조건 저장", request: "body=SearchCondSaveRequest", response: "ApiResponse<List<SavedSearchCond>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/searchcond/SearchCondController.java#save" }
+  - { id: API-597, feature: FEAT-510, method: POST, path: /api/common/system/searchCond/delete, action: AUTHENTICATED, summary: "조회조건 삭제", request: "body=SearchCondDeleteRequest", response: "ApiResponse<List<SavedSearchCond>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/searchcond/SearchCondController.java#delete" }
+  - { id: API-598, feature: FEAT-510, method: POST, path: /api/common/system/menu/saveSelect, action: AUTHENTICATED, summary: "메뉴 선택 통계 누적", request: "body=MenuSelectRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/menustat/MenuStatController.java#select" }
+  - { id: API-599, feature: FEAT-510, method: GET, path: /api/common/system/menu/getFrequent, action: AUTHENTICATED, summary: "자주 쓰는 메뉴", request: "none", response: "ApiResponse<FrequentMenus>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/menustat/MenuStatController.java#frequent" }
