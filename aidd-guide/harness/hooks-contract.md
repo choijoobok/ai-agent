@@ -4,7 +4,7 @@ title: "훅 계약 — 배선 · lib.mjs · 새 훅을 더할 때"
 category: harness
 type: operation
 created: "2026-09-06"
-updated: "2026-09-11"
+updated: "2026-09-12"
 status: active
 sources: ["aidd-guide/harness/capabilities.yaml", ".claude/hooks/", ".claude/settings.json", ".codex/hooks.json"]
 tier: 2
@@ -50,7 +50,7 @@ tags: [harness, hooks, contract, wiring]
 - 실행은 `node` 하나다. `package.json`도 `node_modules`도 보지 않는다(AGENTS.md §1).
 - 사전 보호 chain에서 내부 오류가 나면 차단한다. 사후 chain 오류는 되돌릴 수 없으므로 경고한다.
 - **정책의 원본은 훅 코드가 아니다.** 차단·교정·경고의 근거는 먼저 `AGENTS.md` 또는 `aidd-guide/`에 있어야 하고, 훅은 그 규칙을 기계적으로 집행한다. matcher와 입력 정규화 같은 구현 상세만 훅이 단독으로 가질 수 있다.
-- `trace-check` 강도는 `process/05-traceability.md`가 정한다. T2·T5·T7의 P3 설계 결손은 뒤 차수나 소유 작업흐름 G3 전에는 경고이고, `--workstream <키>` G3 검사에서 그 소유 범위를 오류로 올린다. T2는 FEAT 미연결 `REQ.workstream`도 엄격 검사한다. **T13은 예외다** — G3 승인 전에는 테스트 명세가 코드보다 먼저 서야 하므로 `--workstream` 검사에서도 경고이고, 전역 또는 소유 작업흐름 G3가 승인된 뒤에만 오류다.
+- `trace-check` 강도는 `process/05-traceability.md`가 정한다. T2·T5·T7의 P3 설계 결손은 뒤 차수나 소유 작업흐름 G3 전에는 경고이고, `--workstream <키>` G3 검사에서 그 소유 범위를 오류로 올린다. T2는 FEAT 미연결 `REQ.workstream`도 엄격 검사한다. **T13은 예외다** — G3 승인 뒤에도 `planned` 슬라이스의 TC는 경고이고, `slices[].testcases`로 매핑된 소유 슬라이스가 `in_progress` 이상이 된 뒤부터 코드 부재를 오류로 올린다. 구형 상태처럼 TC 매핑이 없으면 그 기능의 슬라이스가 모두 `done`이거나 P4가 승인된 뒤 엄격하게 검사한다. spec에 없는 TC를 코드가 부르는 역방향은 언제나 오류다.
 - chain 순서는 코드에 다시 쓰지 않는다. `runtime/chains.mjs`를 adapter와 문서 생성기가 직접 읽고, `harness-check`가 `capabilities.yaml`과 대조한다.
 
 ### 깨진 보호에서 빠져나오는 길

@@ -4,7 +4,7 @@ title: "슬라이스 규약 — 구현은 어떻게 도는가"
 category: process
 type: operation
 created: 2026-09-04
-updated: 2026-09-11
+updated: 2026-09-12
 status: active
 sources: []
 tier: 1
@@ -40,8 +40,10 @@ SLICE-007 = FEAT-012 스키마 카탈로그 등록
 
 ## 3. 슬라이스 실행 절차 (매 슬라이스 동일)
 
-시작 전에 `slices[]`의 `workstream`과 `features`를 확인하고, 소유 작업흐름 G3가 승인됐는지
-검사한다. 작업흐름 G3 뒤에 추가된 기능은 승인된 변경 요청의 미니 설계가 먼저다.
+시작 전에 `slices[]`의 `workstream`·`features`·`testcases`를 확인하고, 소유 작업흐름 G3가
+승인됐는지 검사한다. 각 TC는 구현 슬라이스 하나에만 배정한다. 그래야 T13이 현재 슬라이스의
+테스트 코드만 강제하고 뒤 슬라이스의 TC를 미리 구현하게 만들지 않는다. 작업흐름 G3 뒤에
+추가된 기능은 승인된 변경 요청의 미니 설계가 먼저다.
 
 ```
 ① 스펙 재확인   해당 FEAT/UC/ENT/API/SCR/TC spec 을 읽는다. 기억에 의존하지 않는다.

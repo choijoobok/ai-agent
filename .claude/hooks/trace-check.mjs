@@ -432,8 +432,9 @@ function fullCheck(targetWorkstream = null) {
     {@code it('TC-0122 …')}. 케이스 단위로 잠기고, <b>실패 리포트에 TC 번호가 그대로 떠서</b>
     어느 요건이 깨졌는지 바로 보인다 — 검사보다 이쪽이 더 값이 크다.
 
-    <p><b>강도는 게이트가 정한다</b>(T7 이 G2 를 쓰는 것과 같은 방식). G3 승인 전에는 TC 가
-    먼저 서고 코드가 나중이라 그 사이가 늘 빨갛다 — <b>경고</b>. 승인 이후는 <b>오류</b>다.
+    <p><b>강도는 소유 구현 슬라이스가 정한다.</b> G3 승인 뒤에도 뒤 슬라이스의 TC를 전부
+    요구하면 수직 슬라이스와 TEST-FIRST가 서로를 막는다. `planned`는 <b>경고</b>이고,
+    `slices[].testcases`로 매핑된 슬라이스가 시작된 뒤부터 그 TC만 <b>오류</b>다.
     다만 <b>거꾸로는 언제나 오류다</b>: spec 에 없는 TC 를 테스트가 부르는 것은 미구현이
     아니라 <b>없는 것을 가리키는 이름</b>이다(T11 과 같은 성격이며 T11 은 spec 안만 본다).
 
@@ -454,6 +455,7 @@ function fullCheck(targetWorkstream = null) {
     const declared = new Set(tcs.map((t) => t?.id).filter(Boolean));
     const selectedDeclared = new Set(selectedTcs.map((t) => t?.id).filter(Boolean));
     const tcFeature = new Map(tcs.map((tc) => [tc?.id, tc?.feature]));
+    const testcaseById = new Map(tcs.map((tc) => [tc?.id, tc]));
     const featureById = new Map(feats.map((feature) => [feature?.id, feature]));
 
     const missing = [...selectedDeclared].filter((id) => !inCode.has(id)).sort();
@@ -461,7 +463,7 @@ function fullCheck(targetWorkstream = null) {
     const deferredMissing = [];
     for (const id of missing) {
       const feature = featureById.get(tcFeature.get(id));
-      const strict = testcaseCodeRequired(state, feature);
+      const strict = testcaseCodeRequired(state, testcaseById.get(id), feature);
       (strict ? strictMissing : deferredMissing).push(id);
     }
     if (strictMissing.length > 0) {
@@ -475,7 +477,7 @@ function fullCheck(targetWorkstream = null) {
       warnings.push([
         'T13',
         `TC ${deferredMissing.length}건`,
-        `테스트 코드에 없다 — 소유 작업흐름 G3 전. 예: ${deferredMissing.slice(0, 3).join(' · ')}${deferredMissing.length > 3 ? ' …' : ''}`,
+        `테스트 코드에 없다 — 소유 구현 슬라이스 시작 전. 예: ${deferredMissing.slice(0, 3).join(' · ')}${deferredMissing.length > 3 ? ' …' : ''}`,
       ]);
     }
 

@@ -101,14 +101,31 @@ assert.equal(unrealizedRequirementDeferral(systemRequirement, traceState, 'syste
 assert.equal(requirementBelongsToWorkstream(systemRequirement, 'system'), true);
 assert.equal(requirementBelongsToWorkstream(systemRequirement, 'admin'), false);
 
-/* T13은 G3 청구(--workstream) 자체가 아니라 실제 승인 뒤부터 코드 부재를 오류로 올린다. */
+/* T13은 G3 전체가 아니라 TC를 소유한 구현 슬라이스가 시작된 뒤 코드 부재를 오류로 올린다. */
 const systemFeature = { id: 'FEAT-901', module: 'system' };
-assert.equal(testcaseCodeRequired(traceState, systemFeature), false);
+const systemTestcase = { id: 'TC-9011', feature: 'FEAT-901' };
+assert.equal(testcaseCodeRequired(traceState, systemTestcase, systemFeature), false);
 const approvedTraceState = {
   ...traceState,
   workstreams: { system: { gates: { P3_design: { status: 'approved' } } } },
+  slices: [{ id: 'SLICE-901', features: ['FEAT-901'], testcases: ['TC-9011'], status: 'planned' }],
 };
-assert.equal(testcaseCodeRequired(approvedTraceState, systemFeature), true);
+assert.equal(testcaseCodeRequired(approvedTraceState, systemTestcase, systemFeature), false);
+assert.equal(testcaseCodeRequired({
+  ...approvedTraceState,
+  slices: [{ ...approvedTraceState.slices[0], status: 'in_progress' }],
+}, systemTestcase, systemFeature), true);
+assert.equal(testcaseCodeRequired({
+  ...approvedTraceState,
+  slices: [{ ...approvedTraceState.slices[0], status: 'done' }],
+}, systemTestcase, systemFeature), true);
+assert.equal(testcaseCodeRequired({
+  ...approvedTraceState,
+  slices: [
+    { id: 'SLICE-901', features: ['FEAT-901'], status: 'done' },
+    { id: 'SLICE-902', features: ['FEAT-901'], status: 'planned' },
+  ],
+}, { id: 'TC-9012', feature: 'FEAT-901' }, systemFeature), false);
 
 const post = await runFileChain({
   ...input,

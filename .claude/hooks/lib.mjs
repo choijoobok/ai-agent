@@ -188,10 +188,26 @@ export function workstreamGateStatus(state, workstream, key = 'P3_design') {
   return state.workstreams[workstream]?.gates?.[key]?.status || 'not_started';
 }
 
-/** T13 코드 부재를 오류로 올릴 시점 — 명세 TC가 먼저 서는 G3 승인 전에는 항상 false다. */
-export function testcaseCodeRequired(state, feature) {
-  return gateStatus(state, 'P3_design') === 'approved'
-    || workstreamGateStatus(state, featureWorkstream(feature)) === 'approved';
+/** T13 코드 부재를 오류로 올릴 시점 — G3가 아니라 소유 구현 슬라이스의 시작이 경계다. */
+export function testcaseCodeRequired(state, testcase, feature) {
+  const owner = featureWorkstream(feature);
+  const baselined = gateStatus(state, 'P3_design') === 'approved'
+    || workstreamGateStatus(state, owner) === 'approved';
+  if (!baselined) return false;
+
+  const slices = Array.isArray(state?.slices) ? state.slices : [];
+  const tcId = String(testcase?.id ?? testcase ?? '').trim();
+  const mapped = slices.filter((slice) => Array.isArray(slice?.testcases) && slice.testcases.includes(tcId));
+  if (mapped.length > 0) {
+    return mapped.some((slice) => ['in_progress', 'self_verified', 'blocked', 'done'].includes(slice?.status));
+  }
+
+  const featureId = String(feature?.id ?? '').trim();
+  const featureSlices = slices.filter((slice) => Array.isArray(slice?.features) && slice.features.includes(featureId));
+  if (featureSlices.length > 0) return featureSlices.every((slice) => slice?.status === 'done');
+
+  return gateStatus(state, 'P4_build') === 'approved'
+    || workstreamGateStatus(state, owner, 'P4_build') === 'approved';
 }
 
 /** 현재 초점 작업흐름. 없으면 null로 두어 전역 상태와 구분한다. */
