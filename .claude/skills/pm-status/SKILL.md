@@ -11,7 +11,7 @@ description: 프로젝트 현재 상태를 보고한다. 지금 어느 단계인
 1. `documents/project.state.yaml`
 2. `documents/decisions/ASSUMPTIONS.md` (미확인 ASM)
 3. `documents/decisions/CHANGES.md` (진행 중 CR)
-4. 현재 단계의 `aidd-guide/phase/P?-*.md` (다음 할 일 파악용)
+4. 현재 작업흐름 단계의 `aidd-guide/phase/P?-*.md` (다음 할 일 파악용)
 
 ## 먼저 돌릴 것 — 미룬 것 모으기
 
@@ -33,7 +33,7 @@ node .claude/skills/pm-status/deferred.mjs
 ```markdown
 ## 📊 {프로젝트명} — 현황
 
-**지금 여기**: P3 설계 (진행률 약 60%)
+**지금 여기**: RM-P1 전역 P1 · 현재 작업흐름 integration P2
 **J-커브**: 하강 구간 (P0~P3, 산출물만 쌓이는 시기) — **예상대로입니다**
 **막힌 것**: ASM-007 협력사 계정 승인자 미확인 → G3 통과 불가
 **다음 할 일**: 출고 영역 UC 5건 작성 → 화면 정의 → 테스트 케이스
@@ -45,6 +45,14 @@ node .claude/skills/pm-status/deferred.mjs
 | G1 요구사항 | ✅ 승인 | 2026-09-03 |
 | G2 아키텍처 | ✅ 승인 | 2026-09-04 |
 | G3 설계 | 🔨 진행중 | — |
+
+### 작업흐름
+| 작업흐름 | 단계 | 현재 게이트 | 막힘/의도적 대기 |
+|---|---|---|---|
+| admin | P3 | G3 자체검증 | 없음 |
+| agent | P2 | G2 진행 | admin 계약 초안 대기 |
+| integration | P3 | G3 진행 | 없음 |
+| portal | P1 | G1 진행 | admin·agent 핵심 뒤로 의도적 대기 |
 
 ### 산출물
 REQ 47 · UC 13/18 · FEAT 41/62 · ENT 22 · API 58 · SCR 31 · TC 96 · ADR 10
@@ -101,7 +109,9 @@ REQ 47 · UC 13/18 · FEAT 41/62 · ENT 22 · API 58 · SCR 31 · TC 96 · ADR 1
 - 숫자는 실제 파일을 세서 낸다. `documents/project.state.yaml` 의 counters와 다르면 counters를 갱신한다.
 - **미룬 것 표는 `deferred.mjs` 의 출력을 접어서 낸다.** 손으로 세지 않는다 — 세면 틀린다.
 - **"막힌 것"이 없으면 "없음"이라고 쓴다.** 지어내지 않는다.
-- 진행률은 게이트 체크리스트 충족 비율로 계산한다.
+- 전역 단계와 현재 작업흐름을 함께 쓰고, 전 작업흐름의 단계·게이트·`blocked_by`·
+  `deferred_until`을 한 표로 보인다. 외부 사실이 없는 막힘과 의도적 대기를 섞지 않는다.
+- 진행률은 현재 승인 대상 게이트의 체크리스트 충족 비율로 계산한다.
 - **J-커브 위치를 항상 한 줄로 넣는다** (`aidd-guide/process/11-verification-cost.md` §5).
   하강 구간이면 반드시 **"예상대로입니다"** 를 붙인다. 사용자가 느끼는 답답함이
   실패 신호가 아니라 예정된 구간임을 알아야 절차를 깎지 않는다.

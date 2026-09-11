@@ -1,7 +1,7 @@
 /**
  * 쓰기의 다섯 사고를 막는다 — AGENTS.md §5 · §7.
  *
- * <p>① <b>G3 승인 전 구현 코드</b> — 차단. AI 의 과속을 막는 자리다.
+ * <p>① <b>소유 작업흐름 G3 승인 전 구현 코드</b> — 차단. 전역 G3만 승인된 기존 상태도 호환한다.
  * <p>② <b>생성물 직접 수정</b> — 차단. SSOT 위반이며 다음 생성에서 조용히 되돌아간다.
  * <p>③ <b>산출물 지도에 없는 문서를 새로 만드는 것</b> — 차단. <b>문서 폭증의 유일한
  * 기계적 방어선</b>이다(§4).
@@ -14,7 +14,7 @@
  */
 
 import { existsSync } from 'node:fs';
-import { basename, join } from 'node:path';
+import { basename, join, resolve } from 'node:path';
 import {
   STATE_FILE,
   REPO,
@@ -25,6 +25,10 @@ import {
   readState,
   currentPhase,
   gateStatus,
+  parseYaml,
+  needsFeatTag,
+  featureWorkstream,
+  workstreamGateStatus,
   deny,
   warn,
   pass,
@@ -64,24 +68,99 @@ const phase = currentPhase(state);
 const g3 = gateStatus(state, 'P3_design');
 const templateMode = state?.current?.template_maintenance === true;
 
-// ── ① G3 승인 전 구현 코드 ────────────────────────────────────────
+// ── ① 소유 작업흐름 G3 승인 전 구현 코드 ─────────────────────────
 
 if (path.startsWith('sources/') && g3 !== 'approved' && !templateMode) {
-  deny(
-    [
-      `설계 베이스라인(G3)이 승인되지 않아 구현 코드를 쓸 수 없다 — AGENTS.md §5-2.`,
-      `현재 단계: ${phase} / G3: ${g3}`,
-      '',
-      `지금 할 일은 현재 단계의 산출물을 완성하고 ${skillRef('phase-gate')} 로 승인을 받는 것이다.`,
-      '',
-      '**템플릿 자체의 보수라면 게이트의 대상이 아니다.** 그 작업이면 사용자에게 확인받고',
-      `\`documents/project.state.yaml\` 의 \`current.template_maintenance: true\` 를 켠다 —`,
-      '켜 두었다는 사실이 상태 파일에 남아, 무엇을 왜 열었는지가 추적된다.',
-      '',
-      '기술 검증용 프로토타입이 꼭 필요하면 사용자에게 명시적으로 요청하고',
-      '`prototype/` 아래에 폐기 예정임을 밝히고 만든다.',
-    ].join('\n'),
-  );
+  const { owners, unknown, evidence } = sourceOwners(path, abs, input);
+  if (unknown.length > 0 || owners.length === 0) {
+    deny(
+      [
+        '구현 코드의 소유 작업흐름을 판정할 수 없어 쓸 수 없다 — AGENTS.md §5-2.',
+        unknown.length ? `spec에 없거나 작업흐름이 없는 ID: ${unknown.join(', ')}` : `대상: ${path}`,
+        `근거 ID: ${evidence.length ? evidence.join(', ') : '없음'}`,
+        '',
+        '기능 코드·테스트는 변경 내용 또는 기존 파일에 `@feat FEAT-###`·`TC-###`가 있어야 한다.',
+        '기능 없는 공통 기반은 `integration` 작업흐름이 소유한다.',
+      ].join('\n'),
+    );
+  }
+
+  const closed = owners
+    .map((owner) => ({ owner, status: workstreamGateStatus(state, owner) }))
+    .filter(({ status }) => status !== 'approved');
+  if (closed.length > 0) {
+    deny(
+      [
+        '소유 작업흐름의 설계 베이스라인(G3)이 승인되지 않아 구현 코드를 쓸 수 없다 — AGENTS.md §5-2.',
+        `현재 전역 단계: ${phase} / 전역 G3: ${g3}`,
+        `닫힌 작업흐름: ${closed.map(({ owner, status }) => `${owner}(G3=${status ?? '미등록'})`).join(', ')}`,
+        '',
+        `해당 작업흐름의 산출물과 테스트를 완성하고 ${skillRef('phase-gate')} 로 그 범위의 승인을 받는다.`,
+        '',
+        '**템플릿 자체의 보수라면** 사용자 확인 뒤 `current.template_maintenance: true`를 켠다.',
+        '기술 검증용 프로토타입은 승인받고 `prototype/` 아래에 폐기 예정임을 밝힌다.',
+      ].join('\n'),
+    );
+  }
+}
+
+/** 소스 변경의 FEAT/TC를 spec 소유 작업흐름으로 바꾼다. */
+function sourceOwners(rel, absolute, hookInput) {
+  const featureDoc = parseYaml(readText(join(REPO, 'documents/spec/31-features.yaml')));
+  const testcaseDoc = parseYaml(readText(join(REPO, 'documents/spec/70-testcases.yaml')));
+  const features = Array.isArray(featureDoc?.features) ? featureDoc.features : [];
+  const testcases = Array.isArray(testcaseDoc?.testcases) ? testcaseDoc.testcases : [];
+  const byFeature = new Map(features.map((feature) => [feature?.id, feature]));
+  const tcFeature = new Map(testcases.map((tc) => [tc?.id, tc?.feature]));
+
+  const command = String(hookInput?.tool_input?.command ?? '');
+  const direct = String(hookInput?.tool_input?.new_string ?? hookInput?.tool_input?.content ?? '');
+  const proposed = command.startsWith('*** Begin Patch')
+    ? (needsFeatTag(rel) ? patchSection(command, rel, hookInput?.cwd) : command)
+    : direct;
+  const text = `${readText(absolute)}\n${proposed}`;
+  const evidence = new Set();
+  for (const match of text.matchAll(/@feat\s+(FEAT-[0-9]{2,})\b/g)) evidence.add(match[1]);
+  for (const match of text.matchAll(/\bTC-[0-9]{2,}\b/g)) {
+    evidence.add(match[0]);
+    if (tcFeature.has(match[0])) evidence.add(tcFeature.get(match[0]));
+  }
+  if (evidence.size === 0 && !needsFeatTag(rel)) evidence.add('integration');
+
+  const owners = new Set();
+  const unknown = [];
+  for (const id of evidence) {
+    if (id === 'integration') {
+      owners.add('integration');
+      continue;
+    }
+    if (id.startsWith('TC-')) {
+      if (!tcFeature.has(id)) unknown.push(id);
+      continue;
+    }
+    const feature = byFeature.get(id);
+    const owner = featureWorkstream(feature);
+    if (!feature || !owner || !state?.workstreams?.[owner]) unknown.push(id);
+    else owners.add(owner);
+  }
+  return { owners: [...owners].sort(), unknown: [...new Set(unknown)].sort(), evidence: [...evidence].sort() };
+}
+
+/** Codex의 전체 apply_patch에서 현재 파일 절만 뽑는다. */
+function patchSection(command, rel, cwd) {
+  const out = [];
+  let active = false;
+  for (const line of command.replace(/\r\n/g, '\n').split('\n')) {
+    const header = line.match(/^\*\*\* (?:Add|Update|Delete) File:\s*(.+?)\s*$/)
+      ?? line.match(/^\*\*\* Move to:\s*(.+?)\s*$/);
+    if (header) {
+      const target = repoRelative(resolve(cwd || REPO, header[1]));
+      active = target === rel;
+      continue;
+    }
+    if (active) out.push(line);
+  }
+  return out.join('\n');
 }
 
 // ── ② 생성물 직접 수정 ───────────────────────────────────────────

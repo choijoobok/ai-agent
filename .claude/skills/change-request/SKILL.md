@@ -8,11 +8,11 @@ description: 베이스라인 이후의 변경 요청(CR)을 처리한다. 영향
 # 변경 요청 처리
 
 ## 먼저 확인: CR이 필요한가
-`gates.P3_design.status != approved` 면 CR 불필요. 그냥 spec을 고친다.
-**`gates` 는 현재 차수(`current.roadmap`)의 것이다** — 차수를 넘기면 일곱이 `not_started` 로
-돌아가므로 `G3` 승인 전 상태가 되고, 그 구간의 spec 변경은 다시 CR 없이 고친다
-(`process/04-gates.md` §5). **다만 지난 차수가 이미 구현한 것을 건드리면 CR 이다.**
-G3 승인 이후에만 CR 절차를 탄다. → `aidd-guide/process/08-change-control.md`
+변경 대상 기능의 `workstream:` 또는 `module:`로 소유 작업흐름을 찾는다. 그 작업흐름의
+`P3_design.status != approved`면 CR 없이 spec을 고친다. 승인됐거나 지난 차수에서 이미
+구현한 것을 건드리면 CR이다. 계약 변경은 `integration`도 영향 범위에 넣는다.
+작업흐름 구조가 없는 기존 프로젝트만 전역 `gates.P3_design`을 쓴다.
+→ `aidd-guide/process/08-change-control.md` · `process/13-workstreams.md`
 
 ## 절차
 
@@ -23,6 +23,7 @@ G3 승인 이후에만 CR 절차를 탄다. → `aidd-guide/process/08-change-co
 `/trace --impact <ID>` 로 체인을 타고 영향을 전부 나열한다.
 - 직접 영향: 반드시 수정할 산출물 ID
 - 간접 영향: 검토 필요한 것 (관련 ADR, 인접 화면, 이미 구현된 슬라이스)
+- 작업흐름 영향: 내부 변경 / 호환 계약 확장 / 호환 불가 계약 변경 / 전역 불변식 변경
 - **재작업 규모**: 슬라이스 몇 개 분량인지
 
 ### ③ 3옵션 제시 (반드시 3개)
@@ -35,7 +36,7 @@ G3 승인 이후에만 CR 절차를 탄다. → `aidd-guide/process/08-change-co
 권장안을 표시하되 결정은 사용자가 한다.
 
 ### ④ 반영
-사용자 판정 후: spec 수정 → `/doc-gen` 재생성 → 영향 슬라이스 상태를 `todo` 로 되돌림
+사용자 판정 후: spec 수정 → `/doc-gen` 재생성 → 소유 작업흐름의 영향 슬라이스를 `todo` 로 되돌림
 → 관련 TC 갱신 → 필요 시 ADR 추가
 
 ### ⑤ 기록

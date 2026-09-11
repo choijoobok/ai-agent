@@ -38,7 +38,7 @@ tags: [harness, hooks, contract, wiring]
 | 이벤트 | Claude | Codex | 공통 결과 |
 |---|---|---|---|
 | `SessionStart` | `session-start` chain | `session-start`(`startup`) · `session-brief`(`resume\|clear\|compact`) | `git-sync` → `session-brief` |
-| `PreToolUse` 파일 | `pre-write` chain | `file-chain` | `guard-write` → `guard-generated` |
+| `PreToolUse` 파일 | `pre-write` chain | `file-chain` | `guard-write`(기능 소유 작업흐름 G3) → `guard-generated` |
 | `PreToolUse` shell | `pre-shell` chain | `pre-shell` chain | 파괴 명령·커밋 사고 차단 |
 | `PostToolUse` 파일 | `post-write` chain | `file-chain` | 인코딩 → 추적성 → 문서 현행화 |
 | `UserPromptSubmit` | `log-raw` + `context-gauge` | `log-raw` | 사용자 대화 기록 |
@@ -120,7 +120,7 @@ AI가 만드는 커밋은 `-F -`로 본문을 명령에 드러낸다. POSIX here
 |---|---|
 | `readHookInput()` | 표준 입력 또는 bootstrap이 보관한 JSON 한 덩이. **못 읽으면 빈 객체** — 훅이 조용히 통과한다 |
 | `REPO` | 저장소 뿌리. **작업 디렉터리를 믿지 않고** 훅 파일 위치에서 `AGENTS.md`를 찾아 올라간다 |
-| `targetPath(input)` | `tool_input.file_path` ‖ `tool_response.filePath` — `Write`·`Edit` 이 같은 칸을 쓴다 |
+| `targetPath(input)` · `featureWorkstream()` · `workstreamGateStatus()` | 대상 경로를 읽고, FEAT의 명시 `workstream` 또는 `module`을 소유 작업흐름 G3에 연결한다 |
 | `repoRelative(abs)` | 저장소 기준 상대 경로(슬래시 통일). **바깥이면 빈 문자열** |
 | `pass()` · `deny(reason)` · `warn(message)` | 통과 · 차단 · 알림. chain 안에서는 결과 객체로 회수한다 |
 | `runEmbeddedHook()` | 자식 process 없이 기존 정책 엔진을 한 번 실행한다 |

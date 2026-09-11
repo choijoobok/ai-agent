@@ -3,6 +3,7 @@
  *
  * <pre>
  *   node .claude/hooks/trace-check.mjs --all      전체 검사 후 사람이 읽는 리포트
+ *   node .claude/hooks/trace-check.mjs --all --workstream admin  작업흐름 G3 범위 검사
  *   node .claude/hooks/trace-check.mjs --report   〃 + 추적성 매트릭스
  *   (인자 없이 표준 입력으로 훅 입력을 받으면 spec 변경 직후 축약 검사)
  * </pre>
@@ -26,6 +27,8 @@ import {
   skillRef,
   readState,
   gateStatus,
+  featureWorkstream,
+  workstreamGateStatus,
 } from './lib.mjs';
 
 const SPEC_DIR = 'documents/spec';
@@ -47,8 +50,10 @@ const ID_RE =
 const EXTERNAL = ['ASM-', 'CR-', 'DEF-', 'SLICE-', 'ADR-'];
 
 const argv = process.argv.slice(2);
+const workstreamIndex = argv.indexOf('--workstream');
+const requestedWorkstream = workstreamIndex >= 0 ? String(argv[workstreamIndex + 1] ?? '').trim() : null;
 if (argv.includes('--all') || argv.includes('--report')) {
-  const { errors, warnings } = fullCheck();
+  const { errors, warnings } = fullCheck(requestedWorkstream);
   process.stdout.write(report(errors, warnings));
   if (argv.includes('--report')) process.stdout.write('\n\n' + matrix());
   process.stdout.write('\n');
@@ -162,7 +167,7 @@ function laterThanCurrentRoadmap() {
   return (x) => (roadmapOrder(x?.roadmap) > cur ? x.roadmap : null);
 }
 
-function fullCheck() {
+function fullCheck(targetWorkstream = null) {
   const errors = [];
   const warnings = [];
 
@@ -174,6 +179,28 @@ function fullCheck() {
   const apis = asList(load(SPEC.api), 'apis');
   const scrs = asList(load(SPEC.scr), 'screens');
   const tcs = asList(load(SPEC.tc), 'testcases');
+  const state = readState();
+  if (targetWorkstream && !state?.workstreams?.[targetWorkstream]) {
+    errors.push(['WS', targetWorkstream || '(없음)', '등록되지 않은 작업흐름']);
+  }
+
+  const selectedFeats = targetWorkstream
+    ? feats.filter((feature) => featureWorkstream(feature) === targetWorkstream)
+    : feats;
+  const selectedFeatIds = new Set(selectedFeats.map((feature) => feature?.id).filter(Boolean));
+  const selectedReqIds = new Set(selectedFeats.flatMap((feature) => [...refs(feature, 'reqs')]));
+  const selectedUcIds = new Set(selectedFeats.flatMap((feature) => [...refs(feature, 'usecases')]));
+  const selectedNfrIds = new Set(selectedFeats.flatMap((feature) => [...refs(feature, 'nfrs')]));
+  const selectedEntIds = new Set(selectedFeats.flatMap((feature) => [...refs(feature, 'entities')]));
+  const selectedReqs = targetWorkstream ? reqs.filter((item) => selectedReqIds.has(item?.id)) : reqs;
+  const selectedUcs = targetWorkstream
+    ? ucs.filter((item) => selectedUcIds.has(item?.id) || [...refs(item, 'reqs', 'req')].some((id) => selectedReqIds.has(id)))
+    : ucs;
+  const selectedNfrs = targetWorkstream ? nfrs.filter((item) => selectedNfrIds.has(item?.id)) : nfrs;
+  const selectedEnts = targetWorkstream ? ents.filter((item) => selectedEntIds.has(item?.id)) : ents;
+  const selectedApis = targetWorkstream ? apis.filter((item) => selectedFeatIds.has(item?.feature)) : apis;
+  const selectedScrs = targetWorkstream ? scrs.filter((item) => selectedFeatIds.has(item?.feature)) : scrs;
+  const selectedTcs = targetWorkstream ? tcs.filter((item) => selectedFeatIds.has(item?.feature)) : tcs;
 
   // T12 — ID 중복 정의
   const { defined, referenced } = collectIds();
@@ -195,14 +222,14 @@ function fullCheck() {
   for (const f of feats) for (const r of refs(f, 'usecases', 'reqs')) featUp.add(r);
 
   // T1 — REQ ↔ ACT
-  for (const r of reqs) {
+  for (const r of selectedReqs) {
     if (r?.type === 'functional' && refs(r, 'actors', 'actor').size === 0) {
       errors.push(['T1', r?.id, '액터 연결 없음']);
     }
   }
 
   // T2 — 미실현 REQ
-  for (const r of reqs) {
+  for (const r of selectedReqs) {
     if (r?.type !== 'functional' || r?.priority === 'wont') continue;
     if (!ucReqs.has(r?.id) && !featUp.has(r?.id)) {
       errors.push(['T2', r?.id, '미실현 요구사항 — UC/FEAT 연결 없음']);
@@ -210,7 +237,7 @@ function fullCheck() {
   }
 
   // T3 — UC → REQ
-  for (const u of ucs) {
+  for (const u of selectedUcs) {
     if (refs(u, 'reqs', 'req').size === 0) errors.push(['T3', u?.id, '근거 REQ 없음']);
   }
 
@@ -223,22 +250,21 @@ function fullCheck() {
     되고**, 그 REQ 는 추적성을 위해서만 존재하는 거짓 항목이 된다.
     → aidd-guide/process/05-traceability.md §3
   */
-  for (const f of feats) {
+  for (const f of selectedFeats) {
     if (refs(f, 'usecases', 'reqs', 'nfrs').size === 0) {
       errors.push(['T4', f?.id, '고아 기능 — UC/REQ/NFR 역추적 불가']);
     }
   }
 
   /*
-    T5 · T6 — FEAT → TC. **차수가 강도를 정한다.**
+    T5 · T6 — FEAT → TC. **차수와 소유 작업흐름이 강도를 정한다.**
 
-    <p>`FEAT` 와 `NFR` 은 로드맵 차수(`roadmap: RM-Pn`)를 갖고, 게이트는 <b>차수마다 한 번씩</b>
-    돈다(`process/04-gates.md` §5). 그러므로 <b>아직 오지 않은 차수의 항목에 TC 가 없는 것은
-    결손이 아니라 순서다</b> — 그것을 오류로 세면 RM-P1 의 `G3` 가 RM-P4 때문에 영영 열리지
-    않고, 열려면 아직 설계하지 않은 것의 테스트를 지어내야 한다.
+    <p>`FEAT` 와 `NFR` 은 로드맵 차수와 소유 작업흐름을 갖는다. 아직 오지 않은 차수나
+    G3를 청구하지 않은 작업흐름의 TC 결손은 순서다. 전체 검사에서는 경고로 보이고,
+    `--workstream` 게이트 검사에서는 그 소유 범위만 오류가 된다.
 
-    <p><b>현재 차수를 모르면 낮추지 않는다</b> — `current.roadmap` 이 없거나 읽을 수 없으면
-    전부 오류로 둔다. 모르는 것을 이유로 게이트를 비우는 것이 가장 나쁜 실패다.
+    <p><b>현재 차수나 소유 작업흐름을 모르면 낮추지 않는다.</b> 모르는 것을 이유로
+    게이트를 비우는 것이 가장 나쁜 실패다.
   */
   const tcByFeat = new Map();
   for (const t of tcs) {
@@ -248,14 +274,23 @@ function fullCheck() {
   }
   const EXCEPTION_TYPES = ['business_exception', 'validation', 'permission', 'exception'];
   const later = laterThanCurrentRoadmap();
-  for (const f of feats) {
+  const featureDeferral = (feature) => {
+    const ahead = later(feature);
+    if (ahead) return `${ahead} 은 아직 오지 않았다`;
+    if (targetWorkstream) return null;
+    const owner = featureWorkstream(feature);
+    if (!state?.workstreams) return null;
+    const status = workstreamGateStatus(state, owner);
+    return status && status !== 'approved' ? `${owner} 작업흐름 G3 전이다` : null;
+  };
+  for (const f of selectedFeats) {
     const mine = tcByFeat.get(f?.id) ?? [];
     if (mine.length === 0) {
-      const ahead = later(f);
-      (ahead ? warnings : errors).push([
+      const deferred = featureDeferral(f);
+      (deferred ? warnings : errors).push([
         'T5',
         f?.id,
-        ahead ? `테스트 케이스 없음 — ${ahead} 은 아직 오지 않았다` : '테스트 케이스 없음',
+        deferred ? `테스트 케이스 없음 — ${deferred}` : '테스트 케이스 없음',
       ]);
     } else if (!mine.some((t) => EXCEPTION_TYPES.includes(t?.type))) {
       warnings.push(['T6', f?.id, '정상 케이스만 있다 — 예외 TC 필요']);
@@ -274,37 +309,54 @@ function fullCheck() {
     비었는지 파일을 열어야 안다.
   */
   const T7_FIELDS = [['measurement', '측정 방법'], ['source', '측정 원천'], ['test_case', 'TC']];
-  for (const n of nfrs) {
+  const nfrOwners = new Map();
+  for (const feature of feats) {
+    for (const nfr of refs(feature, 'nfrs')) {
+      if (!nfrOwners.has(nfr)) nfrOwners.set(nfr, new Set());
+      nfrOwners.get(nfr).add(featureWorkstream(feature));
+    }
+  }
+  const nfrDeferral = (nfr) => {
+    const ahead = later(nfr);
+    if (ahead) return `${ahead} 은 아직 오지 않았다`;
+    if (targetWorkstream || !state?.workstreams) return null;
+    const owners = [...(nfrOwners.get(nfr?.id) ?? new Set(['integration']))].filter(Boolean);
+    if (owners.length > 0 && owners.every((owner) => workstreamGateStatus(state, owner) !== 'approved')) {
+      return `${owners.join('·')} 작업흐름 G3 전이다`;
+    }
+    return null;
+  };
+  for (const n of selectedNfrs) {
     const missing = T7_FIELDS.filter(([k]) => !n?.[k]).map(([, ko]) => ko);
     if (missing.length > 0) {
-      const ahead = later(n);
-      (ahead ? warnings : errors).push([
+      const deferred = nfrDeferral(n);
+      (deferred ? warnings : errors).push([
         'T7',
         n?.id,
         `${missing.join(' · ')} 없음 — ` +
-          (ahead ? `${ahead} 은 아직 오지 않았다` : '측정 못 하는 목표는 목표가 아니다'),
+          (deferred || '측정 못 하는 목표는 목표가 아니다'),
       ]);
     }
   }
 
   // T8 — 미사용 ENT
   const usedEnt = new Set();
-  for (const f of feats) for (const e of refs(f, 'entities')) usedEnt.add(e);
-  for (const e of ents) {
+  for (const f of selectedFeats) for (const e of refs(f, 'entities')) usedEnt.add(e);
+  for (const e of selectedEnts) {
     if (!usedEnt.has(e?.id)) warnings.push(['T8', e?.id, '어떤 FEAT 에서도 쓰이지 않는다']);
   }
 
   // T9 — API/SCR → FEAT
-  for (const a of apis) if (!a?.feature) errors.push(['T9', a?.id, '소속 FEAT 없음']);
-  for (const s of scrs) if (!s?.feature) errors.push(['T9', s?.id, '소속 FEAT 없음']);
+  for (const a of selectedApis) if (!a?.feature) errors.push(['T9', a?.id, '소속 FEAT 없음']);
+  for (const s of selectedScrs) if (!s?.feature) errors.push(['T9', s?.id, '소속 FEAT 없음']);
 
   // UC 예외 흐름 (G3 필수)
-  for (const u of ucs) {
+  for (const u of selectedUcs) {
     if (!u?.exception_flows) errors.push(['UC', u?.id, '예외 흐름 없음 — 예외 없는 유즈케이스는 미완성']);
   }
 
   // ENT 필수 속성
-  for (const e of ents) {
+  for (const e of selectedEnts) {
     const attrs = Array.isArray(e?.attributes) ? e.attributes : [];
     if (!attrs.some((a) => a?.pk)) errors.push(['ENT', e?.id, 'PK 없음']);
     if (attrs.some((a) => a?.enum && a?.name === 'status') && !e?.state_machine) {
@@ -390,14 +442,32 @@ function fullCheck() {
       }
     }
     const declared = new Set(tcs.map((t) => t?.id).filter(Boolean));
-    const strict = gateStatus(readState(), 'P3_design') === 'approved';
+    const selectedDeclared = new Set(selectedTcs.map((t) => t?.id).filter(Boolean));
+    const tcFeature = new Map(tcs.map((tc) => [tc?.id, tc?.feature]));
+    const featureById = new Map(feats.map((feature) => [feature?.id, feature]));
 
-    const missing = [...declared].filter((id) => !inCode.has(id)).sort();
-    if (missing.length > 0) {
-      (strict ? errors : warnings).push([
+    const missing = [...selectedDeclared].filter((id) => !inCode.has(id)).sort();
+    const strictMissing = [];
+    const deferredMissing = [];
+    for (const id of missing) {
+      const feature = featureById.get(tcFeature.get(id));
+      const strict = Boolean(targetWorkstream)
+        || gateStatus(state, 'P3_design') === 'approved'
+        || workstreamGateStatus(state, featureWorkstream(feature)) === 'approved';
+      (strict ? strictMissing : deferredMissing).push(id);
+    }
+    if (strictMissing.length > 0) {
+      errors.push([
         'T13',
-        `TC ${missing.length}건`,
-        `테스트 코드에 없다 — 테스트 이름에 ID 를 적는다. 예: ${missing.slice(0, 3).join(' · ')}${missing.length > 3 ? ' …' : ''}`,
+        `TC ${strictMissing.length}건`,
+        `테스트 코드에 없다 — 테스트 이름에 ID 를 적는다. 예: ${strictMissing.slice(0, 3).join(' · ')}${strictMissing.length > 3 ? ' …' : ''}`,
+      ]);
+    }
+    if (deferredMissing.length > 0) {
+      warnings.push([
+        'T13',
+        `TC ${deferredMissing.length}건`,
+        `테스트 코드에 없다 — 소유 작업흐름 G3 전. 예: ${deferredMissing.slice(0, 3).join(' · ')}${deferredMissing.length > 3 ? ' …' : ''}`,
       ]);
     }
 

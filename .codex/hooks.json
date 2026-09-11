@@ -7,8 +7,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/session-start.mjs\" --hook-revision=a208b2f07490996a1fa93fc48e926628c18f9c7b8cdf84ee691d3271fcdee3b7",
-            "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/session-start.mjs') --hook-revision=a208b2f07490996a1fa93fc48e926628c18f9c7b8cdf84ee691d3271fcdee3b7\"",
+            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/session-start.mjs\" --hook-revision=911c1652093fa4201f77794495d327cf9bb10bcd546547a4664736858d9f32f0",
+            "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/session-start.mjs') --hook-revision=911c1652093fa4201f77794495d327cf9bb10bcd546547a4664736858d9f32f0\"",
             "timeout": 60,
             "statusMessage": "원격 동기화와 프로젝트 상태 확인",
             "additionalContextLimit": 5000

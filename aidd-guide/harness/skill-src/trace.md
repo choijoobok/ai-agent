@@ -5,7 +5,8 @@ description: 추적성 체인을 검사한다. REQ→UC→FEAT→ENT/API/SCR→T
 
 # 추적성 검사
 
-인자: 없음(검사만) / `--report`(매트릭스 생성) / `--impact ID`(변경 영향 분석)
+인자: 없음(검사만) / `--workstream <키>`(작업흐름 G3 범위) /
+`--report`(매트릭스 생성) / `--impact ID`(변경 영향 분석)
 
 ## 검사 실행
 `.claude/hooks/trace-check.mjs` 를 실행한다. 없으면 documents/spec/*.yaml 을 직접 파싱해
@@ -13,7 +14,11 @@ description: 추적성 체인을 검사한다. REQ→UC→FEAT→ENT/API/SCR→T
 
 ```bash
 node .claude/hooks/trace-check.mjs --all
+node .claude/hooks/trace-check.mjs --all --workstream admin
 ```
+
+작업흐름 지정 시 그 기능과 연결된 REQ·UC·NFR·ENT·API·SCR·TC만 현재 게이트 오류로 센다.
+dangling ID와 중복 ID처럼 저장소 전체를 깨뜨리는 오류는 항상 포함한다.
 
 ## 결과 보고 포맷
 ```markdown

@@ -7,11 +7,14 @@ description: 단계 게이트를 점검하고 통과를 요청한다. Exit Crite
 
 # 게이트 점검 및 통과 요청
 
-인자: `G0`~`G6` 또는 생략(현재 단계 자동 판정)
+인자: `G0`~`G6` + 선택적 작업흐름 키. 예: `G3 admin`, `G3 integration`, `G3 global`.
+생략하면 현재 단계와 `current.workstream`을 쓴다.
 
 **어느 차수의 게이트인지 먼저 말한다.** `project.state.yaml` 의 `current.roadmap` 을 읽어
 승인 요청 제목에 붙인다 — `G3`(RM-P1). 게이트는 **차수마다 한 벌** 돌고 `gates` 는 언제나
 현재 차수의 것이다(`process/04-gates.md` §5). 2차수 이후의 `G0`·`G1` 은 **달라진 것만** 본다.
+P1~P5에 `workstreams`가 있으면 **전역인지 어느 작업흐름인지도 제목에 붙인다.** G0·G6는
+전역이고, `global`이 아니면 `workstreams.<키>.gates`를 판정한다(`process/13-workstreams.md`).
 
 ## 절차 — 4단계를 순서대로. 건너뛰지 않는다.
 
@@ -20,7 +23,8 @@ description: 단계 게이트를 점검하고 통과를 요청한다. Exit Crite
 
 - 각 항목에 ✅/❌ 와 **근거 파일 경로**를 붙인다. "충족" 만 쓰지 않는다.
 - 자동 검사 가능한 것은 실제로 실행한다:
-  - `$trace` → 추적성 오류 수. **경고로 내려간 뒤 차수 항목을 오류로 세지 않는다** —
+  - 작업흐름 게이트면 `$trace --workstream <키>`, 전역이면 `$trace` → 추적성 오류 수.
+    **경고로 내려간 뒤 차수·다른 작업흐름 항목을 오류로 세지 않는다** —
     거꾸로 그것들을 *해결됨* 으로 보고하지도 않는다. 아직 오지 않은 것이다
   - 미해결 `ASM-###` 수 (`documents/decisions/ASSUMPTIONS.md`)
   - `proposed` 상태 ADR 수
@@ -62,14 +66,16 @@ description: 단계 게이트를 점검하고 통과를 요청한다. Exit Crite
 - 선택지: **승인 / 보류(사유) / 특정 항목 재작업**
 
 ### ⑤ 승인 후 처리
-- `documents/project.state.yaml`: `gates.P?.status = approved`, `approved_at` 기록
+- `documents/project.state.yaml`: 전역이면 `gates.P?`, 작업흐름이면
+  `workstreams.<키>.gates.P?`의 `status = approved`, `approved_at` 기록
 - `cognitive_debt` 갱신: 사용자가 역질문에 답했거나 반박·질문을 했으면
   `silent_approvals: 0` 으로 리셋, 아무 반응 없이 승인만 했으면 +1
-- `current.phase` 를 다음 단계로
+- 승인 대상이 작업흐름이면 그 `phase`를, 전역이면 `current.phase`를 다음 단계로
 - **`G6` 인 경우 차수를 넘긴다** — `gates` 를 `roadmap_closed` 에 한 줄로 접고, 일곱을
   `not_started` 로 되돌리고, `current.roadmap` 을 다음 차수로 · `current.phase` 를 `P0` 로
   (`process/04-gates.md` §5). **접기 전에 다음 차수가 무엇인지 사용자에게 확인받는다**
-- G3인 경우: `documents/spec/` 베이스라인 표시 (각 파일 헤더에 `baselined: YYYY-MM-DD`)
+- 작업흐름 G3는 상태 파일의 승인일이 그 범위의 베이스라인이다. 여러 작업흐름 항목이 섞인
+  spec 파일의 `meta.baselined`는 건드리지 않는다. 그 값은 전역 G3에서만 기록한다
 - 다음 단계의 첫 작업을 한 줄로 제시
 
 ## 금지

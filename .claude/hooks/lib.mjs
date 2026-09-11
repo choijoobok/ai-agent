@@ -174,6 +174,27 @@ export function gateStatus(state, key) {
   return state?.gates?.[key]?.status || 'not_started';
 }
 
+/** 기능이 속한 작업흐름. 명시값이 우선이고 공통 기능은 통합 계약이 소유한다. */
+export function featureWorkstream(feature) {
+  const explicit = String(feature?.workstream ?? '').trim();
+  if (explicit) return explicit;
+  const module = String(feature?.module ?? '').trim();
+  return module === 'common' ? 'integration' : module;
+}
+
+/** 작업흐름 게이트 상태. 작업흐름 구조가 없거나 소유자가 미등록이면 null이다. */
+export function workstreamGateStatus(state, workstream, key = 'P3_design') {
+  if (!state?.workstreams || !workstream || !state.workstreams[workstream]) return null;
+  return state.workstreams[workstream]?.gates?.[key]?.status || 'not_started';
+}
+
+/** 현재 초점 작업흐름. 없으면 null로 두어 전역 상태와 구분한다. */
+export function currentWorkstream(state) {
+  const key = String(state?.current?.workstream ?? '').trim();
+  if (!key || !state?.workstreams?.[key]) return null;
+  return { key, ...state.workstreams[key] };
+}
+
 // ── 결과 내보내기 ─────────────────────────────────────────────────
 
 /** 통과 — 아무 말도 하지 않는다. */

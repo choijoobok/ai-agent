@@ -110,8 +110,8 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <SessionStart가
 커밋. 열린 자리에서 일반 업무를 하지 않는다. 근거와 판례는
 [`hooks-contract.md`](aidd-guide/harness/hooks-contract.md) 의 「수리 차선」이 갖는다.
 
-1. `documents/project.state.yaml` 과 **현재 단계의** [`aidd-guide/phase/P{n}-*.md`](aidd-guide/phase/P0-inception.md) 를 읽는다.
-2. 사용자에게 **3줄 브리핑**을 먼저 제시한다 — `지금 여기 / 막힌 것 / 다음 할 일`.
+1. `documents/project.state.yaml` 과 **현재 작업흐름 단계의** [`aidd-guide/phase/P{n}-*.md`](aidd-guide/phase/P0-inception.md) 를 읽는다.
+2. 사용자에게 **3줄 브리핑**을 먼저 제시한다 — `지금 여기(전역 단계 + 작업흐름) / 막힌 것 / 다음 할 일`.
 3. **당기지 못했다고 하면 먼저 정리한다** — 커밋하거나 `git stash` 한 뒤 당긴다. 낡은 트리
    위에서 만든 산출물은 합칠 때 두 번 만든 것이 된다.
 4. 하네스 불일치가 있으면 `harness-sync` 스킬로 먼저 복구한다. 그다음에야 작업을 시작한다.
@@ -142,11 +142,11 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <SessionStart가
 | **새 프로젝트 착수** | `kickoff` 스킬 → [`aidd-guide/phase/P0-inception.md`](aidd-guide/phase/P0-inception.md). **이 저장소 안에서 무언가를 새로 여는 것은 여기가 아니다** — `kickoff` 는 빈 템플릿에서 프로젝트 하나를 세운다 |
 | **다음 차수를 연다** | `phase-gate` 스킬의 `G6` 승인이 차수를 넘긴다 → [`aidd-guide/process/04-gates.md`](aidd-guide/process/04-gates.md) §5. **업무 시스템 확장(SHAPE-02)은 Hub 완성 뒤이며 그때 이 자리를 다시 본다** |
 | **요구사항·설계 산출물** | [`aidd-guide/artifact/INDEX.md`](aidd-guide/artifact/INDEX.md) — 산출물 지도(무엇을 언제 어디에) |
-| **단계를 마감한다** | `phase-gate` 스킬 → [`aidd-guide/process/04-gates.md`](aidd-guide/process/04-gates.md) |
+| **단계를 마감한다** | 전역인지 작업흐름인지 먼저 정하고 `phase-gate` 스킬 → [`aidd-guide/process/04-gates.md`](aidd-guide/process/04-gates.md) · 작업흐름이면 [`process/13-workstreams.md`](aidd-guide/process/13-workstreams.md) |
 | **메뉴 화면 신규·수정** | **먼저 §6.3 워크플로** → `documents/screen/{페이지경로}/requirements.md` → [`aidd-guide/artifact/screen/INDEX.md`](aidd-guide/artifact/screen/INDEX.md) |
 | **이미 구현된 것을 고친다** | 화면이면 **§6.3 으로 되돌아간다** — 요건서의 달라지는 절만 고치고 → `mockup` 스킬 → 승인 → 구현([`aidd-guide/artifact/screen/screen.md`](aidd-guide/artifact/screen/screen.md) 의 「기존 화면을 고칠 때」). 화면이 아니면 `guide-drift` 가 가리키는 가이드를 **소스와 같은 커밋에** 고친다. `G3`(설계 베이스라인) 승인 뒤면 앞에 `change-request` 스킬이 붙는다 |
 | **승인된 요건서로 화면을 만든다** | [`aidd-guide/playbook/INDEX.md`](aidd-guide/playbook/INDEX.md) 의 **결정 트리** — 화면 모양이 레시피를 정한다 |
-| **기능 하나를 구현한다** | `slice` 스킬 → [`aidd-guide/process/07-slice.md`](aidd-guide/process/07-slice.md) |
+| **기능 하나를 구현한다** | 소유 작업흐름 G3 승인 확인 → `slice` 스킬 → [`aidd-guide/process/07-slice.md`](aidd-guide/process/07-slice.md) |
 | **테스트를 무엇으로 짜나** | [`aidd-guide/quality/test-design.md`](aidd-guide/quality/test-design.md) — 층별로 무엇을 잠그나 |
 | 백엔드 구조·이름·트랜잭션 | [`aidd-guide/standard/backend/INDEX.md`](aidd-guide/standard/backend/INDEX.md) |
 | 공통 컴포넌트 추가·변경 | [`aidd-guide/standard/frontend/INDEX.md`](aidd-guide/standard/frontend/INDEX.md) — 올리는 조건. **이미 있나**는 [`aidd-guide/standard/registry.md`](aidd-guide/standard/registry.md)(생성물), **고치는 절차**는 [`aidd-guide/standard/INDEX.md`](aidd-guide/standard/INDEX.md) 의 「이미 있는 것을 고칠 때」 |
@@ -174,7 +174,7 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <SessionStart가
 ## 5. 절대 규칙 (매 응답 적용)
 
 1. **한국어로 답한다.** 파일은 **UTF-8(BOM 없음)**, 줄끝은 **LF**(`.gitattributes` 가 `eol=lf`). 편집 도구가 CRLF 를 섞어 넣지 않게 한다 — `normalize-encoding` 훅이 쓰기 직후 고친다.
-2. **게이트를 건너뛰지 않는다.** 현재 단계의 Exit Criteria 를 모두 충족하고 사용자가 **명시 승인**해야 다음 단계로 간다. **한 턴에 하나의 게이트만** 넘는다 — "설계도 하고 구현도 했습니다" 는 금지다. **되돌릴 수 없는 것은 AI 가 하지 않는다** — DB DROP/TRUNCATE, `terraform apply`, `kubectl delete`, `git push --force`, 프로덕션 변경은 사용자가 직접 하거나 명시 승인한다(`guard-bash` 훅이 차단한다).
+2. **게이트를 건너뛰지 않는다.** 전역 또는 소유 작업흐름의 Exit Criteria 를 모두 충족하고 사용자가 **명시 승인**해야 다음 단계로 간다. **한 턴에 하나의 게이트만** 넘는다 — "설계도 하고 구현도 했습니다" 는 금지다. 소스 쓰기는 기능을 소유한 작업흐름 G3가 열고, 전역 G3는 차수 통합을 잠근다([`process/13-workstreams.md`](aidd-guide/process/13-workstreams.md)). **되돌릴 수 없는 것은 AI 가 하지 않는다** — DB DROP/TRUNCATE, `terraform apply`, `kubectl delete`, `git push --force`, 프로덕션 변경은 사용자가 직접 하거나 명시 승인한다(`guard-bash` 훅이 차단한다).
 3. **한 커밋은 한 가지 일이다.** 메시지는 `<타입>: <현상> — <조치>` 이며 **한국어로 쓰고** **왜** 를 본문에 적는다(`guard-commit` 이 형식과 언어를 막는다). **경로를 지정해** 커밋한다(§9). **푸시는 사용자가 말할 때만** 한다.
 4. **`documents/spec/` 이 유일한 진실이다.** `documents/generated/` 는 파생 뷰다 — 그쪽을 고치지 말고 spec 을 고친 뒤 `doc-gen` 스킬로 재생성한다.
 5. **ID 없는 산출물은 만들지 않는다.** 요구사항·유즈케이스·기능·엔티티·API·화면·테스트는 ID 를 갖고 **상위 ID 에 연결된다** → [`process/05-traceability.md`](aidd-guide/process/05-traceability.md). **추측을 사실처럼 쓰지 않는다** — 미확인 전제는 `ASM-###` 으로 [`documents/decisions/ASSUMPTIONS.md`](documents/decisions/ASSUMPTIONS.md) 에 적고 산출물 안에서 `[ASM-###]` 로 표시한다.

@@ -3,7 +3,14 @@
 import { strict as assert } from 'node:assert';
 import { readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { REPO, provider, skillRef } from '../../.claude/hooks/lib.mjs';
+import {
+  REPO,
+  provider,
+  skillRef,
+  featureWorkstream,
+  workstreamGateStatus,
+  currentWorkstream,
+} from '../../.claude/hooks/lib.mjs';
 import { allowHookRepair, emitHookResults, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
 import { patchTargets, runFileChain } from './file-chain.mjs';
 import { crashOutput, patchTargets as bootstrapTargets } from '../../aidd-guide/harness/runtime/pretool-bootstrap.mjs';
@@ -46,6 +53,28 @@ const safe = await runFileChain({
   tool_input: { command: '*** Begin Patch\n*** Update File: AGENTS.md\n*** End Patch' },
 });
 assert.equal(safe.some((x) => x?.hookSpecificOutput?.permissionDecision === 'deny'), false);
+
+/* 전역 G3가 열리지 않아도 소유 작업흐름을 정확히 찾아 그 작업흐름 상태로 막는다. */
+const workstreamDenied = await runFileChain({
+  ...input,
+  tool_input: {
+    command: '*** Begin Patch\n*** Add File: sources/frontend/src/features/_workstream-probe.ts\n+/** @feat FEAT-126 */\n*** End Patch',
+  },
+});
+const workstreamReason = workstreamDenied
+  .map((x) => x?.hookSpecificOutput?.permissionDecisionReason ?? '')
+  .join('\n');
+assert.equal(workstreamDenied.some((x) => x?.hookSpecificOutput?.permissionDecision === 'deny'), true);
+assert.match(workstreamReason, /integration\(G3=not_started\)/);
+assert.equal(featureWorkstream({ module: 'common' }), 'integration');
+assert.equal(featureWorkstream({ module: 'portal', workstream: 'integration' }), 'integration');
+const workstreamFixture = {
+  current: { workstream: 'admin' },
+  workstreams: { admin: { phase: 'P3', gates: { P3_design: { status: 'approved' } } } },
+};
+assert.equal(workstreamGateStatus(workstreamFixture, 'admin'), 'approved');
+assert.equal(workstreamGateStatus(workstreamFixture, 'missing'), null);
+assert.equal(currentWorkstream(workstreamFixture)?.phase, 'P3');
 
 const post = await runFileChain({
   ...input,

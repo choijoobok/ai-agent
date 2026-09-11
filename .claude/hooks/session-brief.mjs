@@ -17,6 +17,7 @@ import {
   readState,
   currentPhase,
   gateStatus,
+  currentWorkstream,
   PHASES,
   PHASE_NAME,
   PHASE_FILE,
@@ -42,13 +43,17 @@ if (!existsSync(join(REPO, STATE_FILE))) {
 
 const state = readState();
 const phase = currentPhase(state);
+const focus = currentWorkstream(state);
+const focusPhase = focus?.phase || phase;
 /*
   **차수와 단계는 다른 축인데 글자가 같다**(`RM-P1` 과 `P1`). 브리핑에 단계만 실으면 읽는
   쪽이 게이트 표를 *제품 전체의 진척* 으로 읽는다 — 실제로는 **이 차수의 진척**이다.
 */
 const roadmap = state?.current?.roadmap || '차수 미정';
 const name = state?.project?.name || '(이름 미정)';
-const openQuestions = Array.isArray(state?.current?.blocked_by) ? state.current.blocked_by : [];
+const globalBlocks = Array.isArray(state?.current?.blocked_by) ? state.current.blocked_by : [];
+const focusBlocks = Array.isArray(focus?.blocked_by) ? focus.blocked_by : [];
+const openQuestions = [...new Set([...globalBlocks, ...focusBlocks])];
 const oqs = Array.isArray(state?.open_questions) ? state.open_questions : [];
 
 const MARK = { approved: '✅', self_verified: '🔍', in_progress: '🔨', not_started: '⬜' };
@@ -56,6 +61,12 @@ const gates = PHASES.map((p) => {
   const key = Object.keys(state?.gates ?? {}).find((k) => k.startsWith(`${p}_`));
   return `${p}${MARK[gateStatus(state, key)] ?? '⬜'}`;
 }).join(' ');
+const workstreamLine = Object.entries(state?.workstreams ?? {}).map(([key, value]) => {
+  const wsPhase = value?.phase || 'P?';
+  const gateKey = Object.keys(value?.gates ?? {}).find((candidate) => candidate.startsWith(`${wsPhase}_`));
+  const mark = MARK[value?.gates?.[gateKey]?.status] ?? '⬜';
+  return `${key} ${wsPhase}${mark}${value?.deferred_until ? '⏸' : ''}`;
+}).join(' · ');
 
 const { count: asmCount, ids: asmIds } = openAssumptions();
 const slices = Array.isArray(state?.slices) ? state.slices : [];
@@ -63,8 +74,10 @@ const running = slices.filter((s) => s?.status === 'in_progress').map((s) => s?.
 
 const lines = [
   '[프로젝트 상태]',
-  `프로젝트: ${name} · 차수: ${roadmap} · 단계: ${phase} ${PHASE_NAME[phase] ?? ''}`,
+  `프로젝트: ${name} · 차수: ${roadmap} · 전역 단계: ${phase} ${PHASE_NAME[phase] ?? ''}` +
+    (focus ? ` · 현재 작업흐름: ${focus.key} ${focusPhase} ${PHASE_NAME[focusPhase] ?? ''}` : ''),
   `게이트: ${gates}   ← ${roadmap} 의 것이다(차수마다 한 벌 돈다)`,
+  ...(workstreamLine ? [`작업흐름: ${workstreamLine}  (⏸ 의도적 대기)`] : []),
   `미결 질문(OQ) ${oqs.length}건 · 미확인 가정(ASM) ${asmCount}건${asmIds.length ? ` — ${asmIds.slice(0, 5).join(', ')}` : ''}`,
 ];
 if (running.length > 0) lines.push(`진행 중 슬라이스: ${running.join(', ')}`);
@@ -81,7 +94,7 @@ if (nextUp) lines.push(`다음 할 일(사용자가 택했다): ${nextUp}`);
 lines.push(
   '',
   '이번 세션에 반드시:',
-  `1) \`${STATE_FILE}\` 과 \`${PHASE_FILE[phase] ?? ''}\` 를 읽는다`,
+  `1) \`${STATE_FILE}\` 과 현재 작업흐름 단계의 \`${PHASE_FILE[focusPhase] ?? ''}\` 를 읽는다`,
   '2) 사용자에게 **3줄 브리핑**(지금 여기 / 막힌 것 / 다음 할 일)을 먼저 제시한다',
   '3) AGENTS.md §5 절대 규칙 — 게이트 건너뛰기 금지 · ID 없는 산출물 금지 ·',
   '   `documents/spec/` 이 SSOT · **산출물 지도에 없는 문서를 만들지 않는다**',

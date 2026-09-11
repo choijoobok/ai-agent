@@ -1,6 +1,6 @@
 ---
 name: slice
-description: 수직 슬라이스 하나를 구현한다. 스펙 재확인 → 테스트 먼저 → DB → API → UI → 테스트 통과 → 미니게이트 순으로 진행한다. P4 구현 단계에서 기능 하나를 만들 때 사용.
+description: 수직 슬라이스 하나를 구현한다. 소유 작업흐름과 스펙 확인 → 테스트 먼저 → 필요한 층 구현 → 계약·테스트 통과 → 미니게이트 순으로 진행한다. P4 구현 단계에서 기능 하나를 만들 때 사용.
 ---
 
 <!-- generated_from: aidd-guide/harness/skill-src/slice.md; do not edit -->
@@ -10,9 +10,10 @@ description: 수직 슬라이스 하나를 구현한다. 스펙 재확인 → �
 인자: `SLICE-###` 또는 생략(백로그의 다음 todo)
 
 ## 전제 조건 확인
-- `gates.P3_design.status == approved` 여야 한다. 아니면 **거부하고 이유를 보고**한다.
-  `gates` 는 **현재 차수(`current.roadmap`)의 것**이다 — 지난 차수의 `G3` 승인이 이번 차수를
-  열지 않는다(`process/04-gates.md` §5).
+- `slices[]`의 `workstream`과 `features`가 있어야 하고 기능의 `workstream:` 또는 `module:`과
+  일치해야 한다. 공통 기능은 `integration`이 소유한다.
+- `workstreams.<키>.gates.P3_design.status == approved` 여야 한다. 작업흐름 구조가 없는
+  기존 프로젝트만 전역 `gates.P3_design`을 쓴다. 아니면 **거부하고 이유를 보고**한다.
 - 의존 슬라이스가 `done` 인지 확인.
 
 ## 절차 — `aidd-guide/process/07-slice.md` §3
@@ -28,16 +29,15 @@ description: 수직 슬라이스 하나를 구현한다. 스펙 재확인 → �
 **실패하는 것을 확인**한 뒤 구현을 시작한다.
 > 코드를 먼저 쓰면 AI는 그 코드에 맞는 테스트를 쓴다. 그건 검증이 아니라 자기 확인이다.
 
-### ④ DB
-마이그레이션 + **롤백 스크립트**. `documents/spec/40-domain.yaml` 의 인덱스·제약·감사컬럼 반영.
+### ④ 필요한 층
+DB → 서비스/API → UI 중 기능에 존재하는 층만 구현한다. 마이그레이션이 있으면 롤백을,
+API·화면이 있으면 각 spec 계약과 권한·예외를 확인한다. 없는 UI를 agent 기능에 만들지 않는다.
 
-### ⑤ API
-`documents/spec/50-api.yaml` 의 요청/응답/에러코드와 정확히 일치. UC 예외 흐름 → 에러코드 매핑 확인.
+### ⑤ 계약·통합
+외부에서 관찰 가능한 API·이벤트·응답 블록을 확인한다. 모듈 간 계약 변경은 `integration`
+계약 슬라이스를 먼저 닫고 제공자·소비자 슬라이스가 그 버전을 따른다.
 
-### ⑥ UI
-`documents/spec/60-screens.yaml` 의 `error_display` · `empty_state` · `loading` · 권한별 차이 포함.
-
-### ⑦ 통과 확인
+### ⑥ 통과 확인
 전 테스트 통과. **skip / xfail 0건.** 실패를 우회하지 않는다.
 
 ### ⑦-1 규칙 뒤집기 검사 (필수)
