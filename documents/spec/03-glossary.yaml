@@ -659,7 +659,7 @@ framework_terms:
     key: businessExtension
     group: 구조
     definition: "업무 시스템을 같은 빌드에 넣어 함께 구축할 때의 코드 단위(SHAPE-02). **자기 업무 DB 를 소유하고**, 좌측 메뉴 트리에 형제 노드로 자기 메뉴를 기여한다"
-    relation: "**Hub 모듈이 아니다** — ARCH-010(Entity·DB 공통)이 적용되지 않는다. 빌드에 넣지 않아도 Hub 가 선다. **빼는 것이 아니라 애초에 넣지 않는 것이며**, 한 번 넣은 뒤 제거하는 경로는 설계하지 않는다"
+    relation: "**Hub 제품 모듈이 아니다** — ARCH-010의 네 모듈 고정 목록에 포함되지 않고 자기 업무 DB를 별도 소유한다(ARCH-017). 빌드에 넣지 않아도 Hub가 선다. **빼는 것이 아니라 애초에 넣지 않는 것이며**, 한 번 넣은 뒤 제거하는 경로는 설계하지 않는다"
   - id: TRM-135
     term: 연동 방식
     key: integrationMode

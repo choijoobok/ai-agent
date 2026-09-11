@@ -100,7 +100,7 @@ extensions/{시스템}/   업무 확장 — 빌드에 넣을 때만 있다 (WMS 
 ### 4.1 API와 화면 경로
 - API는 `/api/{public|common|service}/{module}/{domain}/{action}`이다. **보안 계층이 먼저**이며 `/api/{module}/service/**`는 403이다(ARCH-021).
 - 한 SPA에서 portal은 `/`·`/portal/**`, system은 `/admin/system/**`, admin은 `/admin/hub/**`, 메뉴 없는 내부 시험 화면은 `/internal/**`을 쓴다.
-- 소스는 `src/modules/{module}/features/{domain}/`, 화면 정본은 `documents/screen/{module}/{화면경로}/`가 목표다. 실제 이동은 작업흐름 G3 승인 뒤 호환 슬라이스로 수행한다.
+- 프론트 소스는 `src/modules/{module}/features/{domain}/`가 목표다. 화면 정본은 브라우저 경로를 그대로 미러링해 system은 `documents/screen/admin/system/**`, admin은 `documents/screen/admin/hub/**`, portal은 `documents/screen/portal/**`에 둔다. URL이 없는 공통 오버레이는 `documents/screen/_standalone/{module}/**`에 둔다. 실제 이동은 작업흐름 G3 승인 뒤 호환 슬라이스로 수행한다(ARCH-025).
 
 ## 5. 외부 모델 호출 규칙
 

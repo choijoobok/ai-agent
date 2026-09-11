@@ -84,7 +84,8 @@ technical:
     note: "**런타임 버전은 연동 전제다** — 고객사 서버에 이 JDK 를 요구한다. 빌드 toolchain 이 그 값이며(`sources/build.gradle.kts`) 둘이 갈리면 소스가 이긴다"
   - id: CON-008
     area: "모듈 구조"
-    constraint: "admin / portal / agent 를 **하나의 애플리케이션으로 통합 개발·배포**한다. 모듈 경계는 화면 소스와 컨트롤러·서비스·DTO 에 한정하고 Entity·DB 는 공통으로 둔다"
+    constraint: "system / admin / portal / agent 를 **하나의 애플리케이션으로 통합 개발·배포**한다. 하나의 AI 전용 DB를 공유하되 화면·API·서비스·Entity/Repository·테이블 쓰기 소유권은 제품 모듈별로 나눈다"
+    why: "물리 배포와 DB를 하나로 유지해 폐쇄망 운영 복잡도를 늘리지 않으면서, 기존 백오피스 기반과 AI 기능의 변경 책임을 분리한다(ADR-007 · ARCH-010 · ARCH-024)"
   - id: CON-009
     area: "분리 배포"
     constraint: "필요 시 **agent 만** 분리해 스케일 아웃한다. DB 는 분리하지 않는다"
