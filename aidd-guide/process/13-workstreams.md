@@ -31,6 +31,7 @@ tags: [methodology, workstream, gate, slice]
 
 | 키 | 소유하는 것 |
 |---|---|
+| `system` | 계정·메뉴·역할·권한·공통코드·다국어 메시지와 백오피스 공통 운영 기반 |
 | `admin` | admin 기능·화면과 그 내부 설계 |
 | `agent` | agent 기능과 턴 실행·검색·정책 집행 내부 설계 |
 | `portal` | 최종 사용자 portal 기능·화면과 표현 어댑터 |

@@ -355,6 +355,62 @@ terms:
     definition: "**모델별 추론 레벨**(낮음 · 중간 · 높음 등). **토큰 소모량과 응답 소요 시간에 영향을 주고 단가에는 영향을 주지 않는다**"
     relation: "**그래서 단가의 키가 아니라 사용량 기록의 축이다**(NFR-010). 소비량이 달라지므로 *어느 effort 로 얼마를 썼나* 를 남겨야 역할별 라우팅을 조정할 수 있다(ARCH-040)"
     note: "**단가 행에 한정자 자리는 남긴다** — 비워 두는 것이 기본이고, 나중에 effort 별로 단가가 갈리면 그 행을 더한다. 미리 조합을 다 만들면 운영자가 같은 값을 셋 입력한다"
+
+# system 공통 운영 언어
+  - id: TRM-142
+    term: 시스템 관리자
+    key: systemAdministrator
+    group: 운영
+    definition: "계정·메뉴·역할·권한·공통코드·다국어 메시지·시스템 설정과 공통 운영 기능을 관리하는 사람"
+    relation: "AI 지식·정책을 관리하는 ACT-002~005와 구분하며 ACT-012가 이 역할을 맡는다"
+  - id: TRM-143
+    term: 유효 권한
+    key: effectiveAuthority
+    group: 인가
+    definition: "현재 시점의 계정·역할·메뉴 상태와 역할 권한·개인 예외를 합성해 사용자가 실제로 행사할 수 있다고 판정한 메뉴 액션 집합"
+    relation: "메뉴 노출과 서비스 API 허용은 같은 유효 권한을 사용하며 역할명이나 URL 자체는 허용 근거가 아니다"
+  - id: TRM-144
+    term: 메뉴 액션
+    key: menuAction
+    group: 인가
+    definition: "메뉴 하나에서 허용할 수 있는 읽기·저장·내보내기·실행 권한 단위"
+    relation: "역할 권한과 개인 예외가 이 단위로 부여되고 서비스 API가 요구하는 액션과 일치해야 호출이 허용된다"
+  - id: TRM-145
+    term: 공통코드
+    key: commonCode
+    group: 기준정보
+    definition: "여러 화면과 서버가 같은 값의 뜻과 선택 후보를 공유하기 위해 사용하는 코드 그룹·코드·참조 속성"
+    relation: "코드명은 다국어 메시지 값이며 시스템 보호 코드와 운영 코드의 변경 규칙이 다르다"
+  - id: TRM-146
+    term: 메시지 키
+    key: messageKey
+    group: 기준정보
+    definition: "화면·서버·메뉴·공통코드가 문구를 직접 쓰지 않고 언어별 값을 찾기 위해 사용하는 안정된 식별자"
+    relation: "소스 상수·시드 생성 또는 데이터가 만들고 관리 화면은 언어별 값을 채우거나 미사용 키를 정리한다"
+  - id: TRM-147
+    term: 캐시 버전
+    key: cacheVersion
+    group: 운영
+    definition: "공통코드·메시지·시스템 설정의 원천 값이 바뀌었음을 다른 인스턴스와 클라이언트에 알리는 증가 번호"
+    relation: "저장한 행 수가 아니라 성공한 저장 요청 한 번에 한 번 증가한다"
+  - id: TRM-148
+    term: 운영 이력
+    key: operationalLog
+    group: 감사
+    definition: "로그인·API 사용·예외·배치 실행처럼 시스템에서 실제로 일어난 일을 사후 재구성하기 위해 업무 화면에서는 수정·삭제할 수 없게 한 기록"
+    relation: "화면에는 저장·삭제 경로를 두지 않고 보존·파기는 별도 정책과 배치가 맡는다"
+  - id: TRM-149
+    term: 알림 요청
+    key: notificationRequest
+    group: 운영
+    definition: "사용자가 계정·권한 관련 조치를 관리자에게 요청하고 관리자가 처리 또는 반려 상태와 사유를 남기는 기록"
+    relation: "처리 판정 자체가 실제 계정·권한 변경을 수행하지 않는다"
+  - id: TRM-150
+    term: 사용자 공통 상태
+    key: sharedUserState
+    group: 운영
+    definition: "즐겨찾기·그리드 설정·저장 조회조건·메뉴 사용 통계처럼 관리 콘솔과 portal이 함께 사용하는 사용자별 상태"
+    relation: "portal 전용 대화·개인화 상태와 구분하며 system이 한 번만 소유한다"
 # ── 개념 계층 ────────────────────────────────────────────────
 hierarchy: "세션 → 턴 → { 스텝 → 도구 호출 } · 사용자 개입"
 
@@ -596,8 +652,8 @@ framework_terms:
     term: Hub 모듈
     key: hubModule
     group: 구조
-    definition: "AI Agent Hub 를 이루는 논리 구획. **admin · portal · agent 셋이며 늘지 않는다.** AI 전용 DB 를 공유하고 한 WAS 안에 있다"
-    relation: "정의와 책임은 01-actors.yaml 의 `modules`, 경계는 20-architecture.yaml 의 ARCH-010~014 가 갖는다. **셋 중 하나를 빼면 제품이 성립하지 않지만**(엔진과 타이어), 서로 호출하지는 않는다(ARCH-011) — 영향도를 낮춰 갈아 끼울 수 있게 한 것이다"
+    definition: "AI Agent Hub 를 이루는 논리 구획. **system · admin · portal · agent 넷이며 늘지 않는다.** AI 전용 DB 를 공유하고 한 WAS 안에 있다"
+    relation: "정의와 책임은 01-actors.yaml 의 `modules`, 경계는 20-architecture.yaml 의 ARCH-010~014 가 갖는다. system은 공통 백오피스 기반을, admin은 AI 기준·정책을, portal은 사용자 경험을, agent는 실행을 소유한다"
   - id: TRM-134
     term: 업무 확장
     key: businessExtension
@@ -620,7 +676,7 @@ framework_terms:
     term: 작업흐름
     key: workstream
     group: 구조
-    definition: "한 차수 안에서 설계·구현·검증 진척을 따로 관리하는 소유 범위. 기본은 admin · agent · portal · integration이며 고객사 업무 확장은 `extension:<이름>`으로 추가한다"
+    definition: "한 차수 안에서 설계·구현·검증 진척을 따로 관리하는 소유 범위. 기본은 system · admin · agent · portal · integration이며 고객사 업무 확장은 `extension:<이름>`으로 추가한다"
     relation: "**차수와 슬라이스의 중간 축이다.** 차수는 무엇을 출시하는지, 작업흐름은 어느 모듈·계약이 어디까지 성숙했는지, 슬라이스는 기능 변경 하나를 뜻한다. 상세는 ADR-006과 aidd-guide/process/13-workstreams.md가 갖는다"
   - id: TRM-138
     term: API 계약

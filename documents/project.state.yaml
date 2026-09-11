@@ -14,12 +14,12 @@ project:
 current:
   phase: P1                  # P0~P6 — **방법론 단계**. P0 는 2026-09-05 승인됐다
   roadmap: RM-P1             # RM-P1~RM-P4 — **로드맵 차수**. 지금 짓고 있는 제품 차수다
-  workstream: integration    # 현재 초점. 모듈 간 계약과 공통 기반 작업흐름
+  workstream: system         # 현재 초점. 기존 백오피스 코어를 독립 모듈로 이행하는 작업흐름
   # ↑ **축이 둘이고 글자가 같다.** 차수는 *무엇을 내는가*(00-charter.yaml roadmap),
   #   단계는 *어디까지 만들었는가*(P0~P6)다. 한 차수가 P0~P6 을 한 바퀴 돈다.
   #   `trace-check` 가 이 값을 읽어 **뒤 차수의 결손을 오류가 아니라 경고로** 센다.
   slice: null                # 구현 단계에서만: SLICE-###
-  blocked_by: [OQ-003] # 계약 버전 기간은 integration G3를 막는다. OQ-002는 첫 고객 파일럿 P5만 막는다
+  blocked_by: [] # OQ-003은 integration G3, OQ-002는 첫 고객 파일럿 P5만 막는다
   template_maintenance: false
   # ↑ true 로 켜면 G3 전에도 sources/ 를 고칠 수 있다(guard-write ①).
   #   **템플릿 자체의 보수에만 켠다.** 켠 사실이 여기 남아 무엇을 왜 열었는지 추적된다.
@@ -50,7 +50,7 @@ workstreams:
     blocked_by: []
     deferred_until: null
     gates:
-      P1_discovery:    { status: in_progress, approved_at: null, note: "이미 구현된 사용자·메뉴·권한·공통코드·다국어 메시지를 system 소유 요구와 기능으로 재분류한다" }
+      P1_discovery:    { status: self_verified, approved_at: null, note: "**Exit Criteria 8/8 자체검증.** ACT-012, PRC-06~08, REQ-501~510을 현재 소스·Liquibase·화면 문서에서 역추적했다. SYSTEM 하위 16개·공통 대시보드 1개·메뉴 없는 공통 화면 8개와 근거 테이블 31개를 대조했고 추적성 오류 0건이다. 레드팀에서 전 수명주기·변조 불가·소스 키 한정·요청 승인이라는 과잉 표현을 현재 구현 범위로 바로잡았다. 사용자 승인 대기" }
       P2_architecture: { status: not_started, approved_at: null, note: "ADR-007의 모듈·인가·데이터 소유 경계를 system 관점에서 판정한다" }
       P3_design:       { status: not_started, approved_at: null, note: "기존 소스·DB·화면 문서의 무손실 이행과 회귀 테스트를 설계한다" }
       P4_build:        { status: not_started, approved_at: null, note: "" }
@@ -143,18 +143,18 @@ roadmap_closed: []
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
 next_up:
   decided_at: 2026-09-12
-  choice: "4모듈 구조와 portal·관리 콘솔 진입 경계를 아키텍처 정본에 반영하고 G2를 재검증한다"
+  choice: "system G1 결정 카드와 레드팀 결과를 검토하고 승인·보류·재작업 중 하나를 결정한다"
   why: >-
-    이미 구현된 백오피스 시스템 관리가 제품 명세에서 admin에 섞여 있고, 소스·문서·API 경로에
-    모듈 소유권이 없다. AI 기능을 더 만들기 전에 system·admin·agent·portal 경계와 `/`·`/admin`,
-    `/api/{계층}/{모듈}` 규칙을 먼저 세워야 이후 이동과 회귀 시험의 기준이 생긴다.
+    현재 소스·Liquibase·화면 문서에서 system 요구와 프로세스를 역추적했고 G1 Exit Criteria
+    8개를 모두 충족했다. 다음 단계 산출물을 만들기 전에 사용자가 이 소유 경계와 우선순위를
+    제품 요구사항 기준선으로 받아들일지 판정해야 한다.
   tasks:
-    - "ADR-007의 모듈·화면 영역·API·인가·DB 소유 경계를 01·20·22·50·60 spec에 반영한다"
-    - "모듈 경로를 전제로 한 표준·훅·시드 생성기 변경 범위를 확정하고 동기화한다"
-    - "integration G2와 전역 G2를 다시 검증한 뒤 작업흐름별 P1~P3를 순서대로 진행한다"
+    - "REQ-501~510의 system 소유 범위와 Must 9건·Should 1건을 검토한다"
+    - "설치용 ADMIN과 운영 역할 분리, 공지·알림 요청의 system 소유 경계에 답한다"
+    - "system G1을 승인하거나 보류·재작업 사유를 지정한다"
   then: >-
-    system의 기존 구현 이행 설계를 먼저 동결하고 admin·agent를 진행한다. integration G3에서
-    portal↔agent 계약과 내부 시험 화면을 설계한 뒤 portal 제품 화면을 상세화한다.
+    system G1 승인 뒤 P2에서 소스·API·DB·화면 문서의 목표 모듈 경로와 호환 이행 원칙을 정하고,
+    P3에서 FEAT·ENT·API·TC와 로그인·권한·메뉴·DB 무손실 회귀 계약을 동결한다.
 
 # ── 미결 질문 (Open Questions) ─────────────────────────────────────
 # 사용자 답변이 필요한 것. 답변되면 삭제하고 결과를 spec·ADR 에 반영한다.
@@ -207,7 +207,7 @@ cognitive_debt:
 # ── 진행 지표 ──────────────────────────────────────────────────────
 # 이관으로 들어온 것을 센 값이다. 승인받은 것의 수가 아니다.
 counters:
-  REQ: 60
+  REQ: 70
   UC: 0
   FEAT: 86
   ENT: 0

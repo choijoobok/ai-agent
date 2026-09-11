@@ -10,7 +10,7 @@
 meta:
   status: migrated
   baselined: null
-  numbering: "REQ-001~027 질의 처리(Q-1~27) · 030~035 처리 중 입력 · 101~114 보안·거버넌스 · 201~207 저장된 조회 · 301~304 메타데이터 · 401~402 유도(derived)"
+  numbering: "REQ-001~027 질의 처리(Q-1~27) · 030~035 처리 중 입력 · 101~114 보안·거버넌스 · 201~207 저장된 조회 · 301~304 메타데이터 · 401~402 유도(derived) · 501~510 system 기반"
 
 requirements:
 # ── 질의 처리 ───────────────────────────────────────────────
@@ -499,11 +499,198 @@ requirements:
     detail: "프로파일은 **로컬 / 개발 / 운영**으로 구분하고 모듈별 yml 을 파일로 분리한다. **비밀 값은 설정 파일에 평문으로 두지 않는다.** LLM Provider 선택(개발기 CLI ↔ 운영 API)도 프로파일 설정으로 전환된다"
     hard_rule: "**업무 DB·DW 데이터소스와 API 자격증명은 yml 에만 둔다** — 화면은 매핑과 참조 키만 관리한다"
 
+# ── system — 현재 백오피스 코어의 요구사항과 구현 근거 ───────────
+# **신규 기능을 상상해 적은 것이 아니다.** 2026-09-12 현재 소스·Liquibase·화면 문서의
+# 구현 사실을 역추적해 system 소유 요구로 올렸다. P2는 이 경계를 이동 규칙으로, P3는
+# FEAT·ENT·API·TC와 무손실 회귀 계약으로 구체화한다. G3 승인 전에는 소스를 옮기지 않는다.
+  - id: REQ-501
+    type: functional
+    priority: must
+    priority_reason: "계정 판정이 없으면 모든 화면과 API의 인증 전제가 성립하지 않으며 현재 백오피스의 기존 동작을 잃으므로 RM-P1 필수다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-06-01
+    title: "계정 상태와 접속 조건을 한 판정으로 관리한다"
+    detail: "시스템 관리자는 계정 등록·수정, 역할 부여, 사용 기간, 잠금·휴면, 접속 허용 IP, 비밀번호 변경·초기화와 활성 세션 종료를 관리할 수 있어야 한다"
+    acceptance: "상태·기간·잠금·휴면·IP 중 하나라도 실패한 계정은 세션을 얻지 못하고, 비밀번호와 세션 변경은 이력·만료 규칙을 우회하지 않는다"
+    source: "현재 구현 역추적 — 사용자 관리와 로그인·프로필·설정·비밀번호 변경·세션 만료 화면"
+    evidence:
+      frontend: ["features/user", "features/auth", "features/profile", "features/settings"]
+      backend: ["api/auth", "api/user", "domain/auth", "domain/user"]
+      tables: [SYS_USER, SYS_USER_PWD_HIST, SYS_USER_IP_ALLOW, SYS_USER_PWD_RESET, SYS_LO_LOGIN]
+      screens: ["/user", "_standalone/login", "_standalone/profile", "_standalone/settings", "_standalone/pwd-change", "_standalone/session-expire"]
+    roadmap: RM-P1
+
+  - id: REQ-502
+    type: functional
+    priority: must
+    priority_reason: "역할과 개인 예외가 하나의 유효 권한으로 합성되지 않으면 같은 사용자에게 화면과 API가 서로 다른 답을 하므로 RM-P1 필수다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-06-02
+    title: "역할 권한과 개인 예외를 합성해 현재 유효 권한을 계산한다"
+    detail: "시스템 관리자는 역할, 사용자별 역할, 역할별 메뉴 액션과 사용자별 예외를 부여·회수하고 영향 사용자를 확인할 수 있어야 한다"
+    acceptance: "동일 메뉴 액션의 역할 부여와 개인 예외가 정해진 규칙으로 하나의 유효 권한이 되고, 변경 뒤 오래 열린 세션도 이전 권한을 계속 사용하지 않는다"
+    source: "현재 구현 역추적 — 역할·역할 권한·개인 권한 화면과 유효 권한 버전 검사"
+    evidence:
+      frontend: ["features/role", "features/roleauth", "features/userauth", "shared/authz"]
+      backend: ["api/role", "api/userauth", "api/authz", "domain/authz"]
+      tables: [SYS_ROLE, SYS_USER_ROLE, SYS_ROLE_MENU_AUTH, SYS_USER_MENU_AUTH]
+      screens: ["/role", "/role-auth", "/user-auth"]
+    roadmap: RM-P1
+
+  - id: REQ-503
+    type: functional
+    priority: must
+    priority_reason: "미등록·미매핑 API를 허용하면 메뉴 권한을 우회하므로 실패 폐쇄 권한 사슬은 RM-P1 보안 기준선이다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-06-03
+    title: "메뉴·화면·서비스 API의 권한 사슬을 실패 폐쇄로 유지한다"
+    detail: "시스템 관리자는 메뉴 트리와 API 카탈로그의 화면·액션·서비스 API 매핑을 확인하고, 사용자는 유효 권한이 있는 메뉴와 API만 사용할 수 있어야 한다"
+    hard_rule: "메뉴가 보인다는 사실, URL을 안다는 사실, 역할 이름 중 어느 것도 API 허용 근거가 아니다. `/api/service/**`는 등록 API와 메뉴 액션의 완전 일치가 없으면 403이다"
+    acceptance: "메뉴·화면 등록·API 등록·메뉴 API 매핑 중 하나를 제거한 회귀 시험이 반드시 접근 거부로 끝난다"
+    source: "현재 구현 역추적 — 메뉴 트리·API 카탈로그·screenRegistry·AuthorizationInterceptor"
+    evidence:
+      frontend: ["features/menu", "features/apicatalog", "shared/routes", "shared/authz"]
+      backend: ["api/menu", "api/apicatalog", "api/authz", "domain/authz"]
+      tables: [SYS_MENU, SYS_API, SYS_MENU_API, SYS_ROLE_MENU_AUTH, SYS_USER_MENU_AUTH]
+      screens: ["/menu", "/api-catalog", "_standalone/menu-modal"]
+    roadmap: RM-P1
+
+  - id: REQ-504
+    type: functional
+    priority: must
+    priority_reason: "공통코드는 모든 화면의 후보와 상태 해석을 함께 바꾸며 보호·참조 무결성이 깨지면 기존 데이터의 뜻이 달라지므로 RM-P1 필수다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-07-01
+    title: "공통코드와 참조 코드의 무결성을 보존한다"
+    detail: "시스템 관리자는 코드 그룹·코드와 참조 정의·값을 관리하되 시스템 보호 그룹·코드는 삭제하거나 끌 수 없어야 하고 파생된 참조값과 코드명은 원본의 수명주기를 따라야 한다"
+    acceptance: "시스템 그룹·코드의 삭제 또는 비활성화와 코드가 남은 그룹의 삭제, 정의에 없는 참조값 저장은 서버에서 거부되고, 코드·정의 삭제 시 그에 딸린 참조값과 코드명은 같은 트랜잭션에서 정리된다"
+    source: "현재 구현 역추적 — 공통코드 관리와 공통 CodeSelect"
+    evidence:
+      frontend: ["features/code", "shared/stores"]
+      backend: ["api/code", "domain/code"]
+      tables: [SYS_CODE_GROUP, SYS_CODE, SYS_CODE_GRP_REF, SYS_CODE_REF]
+      screens: ["/code"]
+    roadmap: RM-P1
+
+  - id: REQ-505
+    type: functional
+    priority: must
+    priority_reason: "화면·서버·메뉴·코드명이 같은 문구 원천을 쓰지 않으면 언어와 배포 시점에 따라 서로 다른 안내가 나오므로 RM-P1 필수다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-07-02
+    title: "생성된 메시지 키에 언어별 값을 일관되게 제공한다"
+    detail: "시스템 관리자는 생성된 메시지 키의 언어별 값을 관리하고 미사용 키를 식별·삭제하며, 화면·서버·메뉴·공통코드가 같은 메시지 원천을 사용하게 해야 한다"
+    hard_rule: "키 생성은 소스 상수와 시드 생성기가 소유한다. 관리 화면에서 임의 키를 추가하지 않는다"
+    acceptance: "요청 언어 값이 없을 때 기본 언어와 키 문자열 순의 폴백이 동작하고, 값 저장 한 번에 메시지 캐시 버전이 한 번 증가하며 커밋한 인스턴스는 즉시, 다른 인스턴스는 설정된 TTL 안에 새 값을 읽는다"
+    source: "현재 구현 역추적 — 다국어 메시지 관리, label(), MsgKey, 메시지 시드"
+    evidence:
+      frontend: ["features/message", "shared/i18n"]
+      backend: ["api/message", "domain/message", "core/message"]
+      tables: [SYS_MESSAGE_KEY, SYS_MESSAGE, SYS_CACHE_VERSION]
+      screens: ["/message"]
+    roadmap: RM-P1
+
+  - id: REQ-506
+    type: functional
+    priority: must
+    priority_reason: "런타임 설정은 인증·보존·조회 범위에 직접 영향을 주므로 검증과 원자적 적용 없이 운영 변경을 허용할 수 없어 RM-P1 필수다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-07-03
+    title: "시스템 설정은 검증된 값만 적용하고 배포 기본값으로 되돌릴 수 있어야 한다"
+    detail: "시스템 관리자는 런타임 공통 설정을 조회·변경할 수 있어야 하며, 키별 형식·범위·보호 규칙과 변경 영향 경고를 따라야 한다"
+    acceptance: "잘못된 형식·범위·보호 키 변경은 저장되지 않고, 성공한 변경은 설정 캐시 버전과 함께 한 트랜잭션으로 적용되며 되돌리면 오버라이드 행이 사라져 배포 기본값이 다시 드러난다"
+    source: "현재 구현 역추적 — 시스템 환경설정 화면과 사용자 설정 모달"
+    evidence:
+      frontend: ["features/config", "features/settings"]
+      backend: ["api/config", "domain/config"]
+      tables: [SYS_CONFIG, SYS_CACHE_VERSION]
+      screens: ["/config", "_standalone/settings"]
+    roadmap: RM-P1
+
+  - id: REQ-507
+    type: functional
+    priority: must
+    priority_reason: "인증·인가·오류의 사후 재구성은 보안 사고와 운영 장애를 판정하는 최소 근거이므로 RM-P1 필수다"
+    workstream: system
+    actors: [ACT-005, ACT-012]
+    process_step: PRC-08-01
+    title: "로그인·사용·오류 이력을 수정·삭제 경로 없이 조회하고 원인을 추적한다"
+    detail: "감사·시스템 관리자는 기간·사용자·경로·결과로 이력을 조회하고 허용된 경우 요청·오류 전문까지 확인할 수 있어야 한다"
+    acceptance: "이력 화면에는 저장·삭제 경로가 없고, 요청·오류 전문을 받는 상세 API도 해당 이력 메뉴의 READ 권한 사슬을 독립적으로 통과해야 한다"
+    source: "현재 구현 역추적 — 로그인 이력·사용 이력·에러 로그 화면"
+    evidence:
+      frontend: ["features/loginlog", "features/accesslog", "features/errorlog"]
+      backend: ["api/log", "domain/log", "domain/auth/loginlog"]
+      tables: [SYS_LO_LOGIN, SYS_LO_ACCESS, SYS_LO_EXCEPTION]
+      screens: ["/log/login", "/log/access", "/log/error"]
+    roadmap: RM-P1
+
+  - id: REQ-508
+    type: functional
+    priority: must
+    priority_reason: "배치의 중복·유령 실행을 성공으로 오인하면 자동화 결과를 신뢰할 수 없으므로 현재 운영 기준선을 RM-P1에서 보존해야 한다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-08-02
+    title: "등록된 배치를 일정과 시간대에 따라 실행하고 결과를 추적한다"
+    detail: "시스템 관리자는 배치 일정 등록·활성화·즉시 실행·중단과 최근·전체 이력 조회를 할 수 있어야 한다"
+    acceptance: "존재하지 않는 구현, 잘못된 크론·시간대, 쿨다운 위반과 중복 실행은 거부되고 유령·중단 경합은 성공과 다른 결과로 기록된다"
+    source: "현재 구현 역추적 — 배치 스케줄·실행 이력 화면과 스케줄러"
+    evidence:
+      frontend: ["features/batchschedule", "features/batchhistory", "shared/batch"]
+      backend: ["api/batch", "domain/batch"]
+      tables: [SYS_SCHEDULE_BATCH, SYS_BATCH_HISTORY]
+      screens: ["/batch/schedule", "/batch/history"]
+    roadmap: RM-P1
+
+  - id: REQ-509
+    type: functional
+    priority: must
+    priority_reason: "공지 노출과 계정·권한 요청의 판정을 실제 권한 변경과 분리해야 운영자가 요청 처리만으로 권한을 암묵 변경하지 않으므로 RM-P1 필수다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-08-03
+    title: "공지 노출과 사용자의 관리 요청 판정을 분리해 운영한다"
+    detail: "시스템 관리자는 공지의 게시 기간·팝업 노출을 관리하고, 사용자가 보낸 권한·계정 관련 알림 요청의 상태와 처리 사유를 기록할 수 있어야 한다"
+    acceptance: "게시 기간 밖 공지는 팝업으로 보이지 않고, 요청 처리·반려가 실제 권한·계정 변경을 암묵적으로 수행하지 않는다"
+    source: "현재 구현 역추적 — 공지·알림 요청·알림함·공지 팝업"
+    evidence:
+      frontend: ["features/notice", "features/notirequest", "features/notification"]
+      backend: ["api/notice", "api/notirequest", "api/notification", "domain/notification"]
+      tables: [SYS_NOTICE, SYS_NOTI_REQUEST, SYS_NOTI_INBOX]
+      screens: ["/notice", "/noti-request", "_standalone/noti-inbox", "_standalone/notice-popup"]
+    roadmap: RM-P1
+
+  - id: REQ-510
+    type: functional
+    priority: should
+    priority_reason: "공통 사용자 상태의 단일 소유는 중복 저장을 막지만 핵심 인증·인가·운영 기능이 먼저 성립할 수 있어 should로 둔다"
+    workstream: system
+    actors: [ACT-001, ACT-012]
+    process_step: PRC-08-04
+    title: "모듈 공통 사용자 상태는 system이 한 번만 소유한다"
+    detail: "즐겨찾기·그리드 설정·저장 조회조건·메뉴 사용 통계처럼 관리 콘솔과 portal에서 함께 쓰는 사용자 상태는 특정 화면 모듈에 복제하지 않아야 한다"
+    hard_rule: "portal 전용 대화·개인화 상태는 이 범위에 포함하지 않는다. `SYS_SEQUENCE`·`SYS_DATA_LOCK`·`SYS_JOB_PROGRESS`·Spring Session은 업무 기능이 아니라 platform 기반이다"
+    acceptance: "같은 사용자가 어느 화면 영역에서 접근해도 공통 상태가 하나이고, 모듈별 테이블·서비스 복제 없이 system 공개 계약으로 읽고 쓴다"
+    source: "현재 구현 역추적 — 공통 즐겨찾기·그리드·검색조건·메뉴 통계 저장소"
+    evidence:
+      frontend: ["shared/favorite", "shared/grid", "shared/searchform", "shared/menustat"]
+      backend: ["api/favorite", "api/gridpref", "api/searchcond", "api/menustat", "domain/favorite", "domain/gridpref", "domain/searchcond", "domain/menustat"]
+      tables: [SYS_USER_FAVORITE, SYS_USER_GRID_PREF, SYS_USER_SEARCH_COND, SYS_USER_MENU_STAT]
+      screens: ["/dashboard"]
+    roadmap: RM-P1
+
 # ── 요구사항 모순 검사 ─────────────────────────────────────────────
 # 별도 현황 문서를 만들지 않는다. 판정은 요구사항 정본의 충돌하기 쉬운 쌍 옆에서 관리한다.
 consistency_review:
-  reviewed_at: 2026-09-11
-  scope: "integration G1 — FEAT-126·FEAT-301~305가 역추적하는 요구사항"
+  reviewed_at: 2026-09-12
+  scope: "integration G1과 system G1 — 기존 계약 요구와 REQ-501~510"
   unresolved: []
   pairs:
     - ids: [REQ-009, REQ-027]
@@ -518,6 +705,12 @@ consistency_review:
     - ids: [REQ-105, REQ-113]
       tension: "Hub의 실행 통제와 대상 시스템의 중복 실행 책임이 겹칠 수 있다"
       resolution: "한 턴 안의 중복은 Hub의 점유와 실행 통제가 막고, 서로 다른 턴 사이의 업무 중복은 대상 시스템이 막는다"
+    - ids: [REQ-502, REQ-503]
+      tension: "권한을 편집하는 모델과 실제 화면·API 접근 판정이 서로 다른 원천을 볼 수 있다"
+      resolution: "역할과 개인 예외는 유효 권한 하나로 합성하고 메뉴 렌더링·로그인 이동·서비스 API가 모두 그 결과를 사용한다"
+    - ids: [REQ-505, REQ-506]
+      tension: "메시지 값과 시스템 설정을 즉시 반영하면 다중 인스턴스의 캐시가 서로 다른 값을 볼 수 있다"
+      resolution: "두 기능 모두 공유 캐시 버전을 올리고 각 인스턴스가 버전 변경을 감지해 다시 읽는다. 값 저장과 버전 변경은 부분 성공으로 남기지 않는다"
     - ids: [REQ-107, REQ-109]
       tension: "전량 감사와 조회 결과 원문의 차등 보관이 충돌할 수 있다"
       resolution: "처리 사실·판정·결과 메타데이터와 지문은 전량 보존하고, 조회 결과 원문만 정책에 따라 차등 보관한다"
