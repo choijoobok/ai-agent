@@ -126,13 +126,14 @@ interfaces:
   - id: IF-008
     direction: inbound
     peer: ACT-009
-    name: "헬스 상태·지표 노출"
-    protocol: "고객사 모니터링 도구가 수집 (형식 미확정)"
-    ownership: "**지표의 주인은 우리이고 수집·보관은 고객사 도구다.** 우리는 노출만 하며 **시계열을 보관하지 않는다**(CON-037)"
-    detail: "**모니터링 화면은 제품 기능이 아니다** — 고객사가 자체 도구를 보유한 것을 전제로 한다. 다만 도구가 긁어 갈 지점은 우리 쪽에 있어야 한다"
-    prerequisites: "고객사 도구와 **무엇을 어떤 형식으로 노출할지**"
+    name: "기술 운영 헬스·지표 노출"
+    protocol: "**내부 HTTPS pull** · Prometheus/OpenMetrics 호환 형식 기본"
+    ownership: "**애플리케이션 지표의 주인은 Hub 이고 수집·시계열 보관은 고객사 전사 표준 도구가 맡는다.** 고객사 도구가 없을 때만 Prometheus·Grafana 기본 구성을 선택 설치한다(CON-037)"
+    detail: "Spring Boot Actuator·Micrometer로 JVM·프로세스·HTTP·커넥션 풀·구성요소 헬스를 노출한다. 호스트 네트워크와 업무 DB 슬로우 쿼리는 고객사 인프라·DB 도구의 영역이고, 비용·쿼터·품질 신고·턴 상태는 admin 제품 기능의 영역이다"
+    security: "내부 관리망에서만 열고 인증·접근 허용 대역을 적용한다. **사용자 ID·턴 ID·질의문·업무 키를 라벨로 내보내지 않는다**"
+    prerequisites: "고객사 표준 도구의 유무 · 수집 주체와 접근 허용 대역 · 노출 지표 범위 · 기본 구성 설치 여부"
     traces_to: [CON-027]
-    status: undecided
+    status: decided
 
 # ── 인터페이스가 아닌 것 ──────────────────────────────────────────
 not_interfaces:

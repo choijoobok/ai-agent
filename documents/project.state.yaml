@@ -67,14 +67,14 @@ workstreams:
       P4_build:        { status: not_started, approved_at: null, note: "" }
       P5_verify:       { status: not_started, approved_at: null, note: "" }
   integration:
-    phase: P2
+    phase: P3
     required_in: [RM-P1]
     blocked_by: []
     deferred_until: null
     gates:
       P1_discovery:    { status: approved, approved_at: "2026-09-11", note: "**Exit Criteria 8/8 · 사용자 승인.** 범용 Hub 프로세스 5개와 integration 소유 요구사항의 단계 연결을 확정했다. 작업흐름 G1은 우선순위 근거를 판정하고 Must 70% 상한은 전역 G1에서 적용한다. 계약 시험 원문은 합성 데이터가 기본이며 운영 원문은 권한·감사 아래 예외 열람한다. 서버군 격리·일괄 전환이 불가능하면 무중단으로 간주하지 않는다" }
-      P2_architecture: { status: in_progress, approved_at: null, note: "ARCH-019가 계약 경계를 정했고 정확한 스키마는 P3에서 정한다" }
-      P3_design:       { status: not_started, approved_at: null, note: "FEAT-126·SCR-112와 portal↔agent 계약을 함께 설계한다" }
+      P2_architecture: { status: approved, approved_at: "2026-09-11", note: "**Exit Criteria 8/8 · 사용자 조건부 승인.** 기술 운영 모니터링은 고객사 표준 도구 우선·부재 시 Prometheus/Grafana 기본 구성, 업무 운영 현황은 admin 기능과 고객사별 대시보드로 분리했다. 종료되지 않은 턴은 접속 여부가 아니라 활성 작업 현황으로 판정하고, 접수·처리중·사용자대기와 중단을 분리한다. ARCH-019가 계약 경계를 정했고 정확한 스키마는 P3에서 정한다" }
+      P3_design:       { status: in_progress, approved_at: null, note: "FEAT-126·SCR-112와 portal↔agent 계약을 함께 설계한다" }
       P4_build:        { status: not_started, approved_at: null, note: "" }
       P5_verify:       { status: not_started, approved_at: null, note: "" }
   portal:
@@ -132,14 +132,14 @@ roadmap_closed: []
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
 next_up:
   decided_at: 2026-09-11
-  choice: "integration G2를 재검증한 뒤 계약 설계를 시작한다"
+  choice: "integration G3에서 portal↔agent 계약 스키마와 계약 시험을 설계한다"
   why: >-
     admin 과 agent 를 먼저 만들면서 서로의 결손을 되돌려 고치고, 제품 portal 상세 설계는
     핵심 안정 뒤에 해야 한다. 기존 전역 G3 하나로는 승인되지 않은 portal까지 열리거나
     admin 구현이 portal을 기다리는 문제가 생겨 ADR-006의 세 축 구조로 바꿨다.
   tasks:
-    - "integration G2의 아키텍처 경계·비기능 목표·외부 연동·운영 전환을 다시 검증하고 승인을 요청한다"
-    - "integration G3 범위로 portal↔agent 계약 스키마와 FEAT-126·SCR-112의 테스트를 설계한다"
+    - "portal↔agent 계약의 envelope·상태·오류·표현 블록과 지원 버전 기간을 설계한다"
+    - "FEAT-126·SCR-112의 정상·경계·거부·예외 계약 테스트를 설계한다"
     - "admin 작업흐름 P1→P3를 먼저 진행하고, 승인된 admin 슬라이스부터 구현한다"
   then: >-
     admin 계약 초안 위에서 agent 작업흐름을 진행한다. agent 핵심과 계약 시험이 안정되면
