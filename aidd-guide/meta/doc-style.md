@@ -125,7 +125,7 @@ tags: [meta, style, conventions]
 
 ```java
 @RestController
-@RequestMapping("/api/service/user")
+@RequestMapping("/api/service/system/user")
 public class UserController {
     @PostMapping("/getList")
     public ApiResponse<PageRes<UserRes>> getList(@RequestBody UserSearchReq req) { ... }
@@ -139,7 +139,8 @@ const columns: ColumnDef<UserRow>[] = [
 ```
 
 > **예시도 실물의 어휘로 쓴다.** 위 둘은 이 저장소의 규약이다 —
-> API 경로는 `/api/{계층}/{도메인}/{동작}`([standard/backend/api.md](../standard/backend/api.md)),
+> API 경로는 기본 `/api/{계층}/{도메인}/{동작}`, 모듈러 제품은
+> `/api/{계층}/{모듈}/{도메인}/{동작}`([standard/backend/api.md](../standard/backend/api.md)),
 > 컬럼 문구는 `MSG` 키다(`AGENTS.md` §5-6). 남의 프로젝트 어휘로 예시를 쓰면
 > **읽는 사람이 그것을 표준으로 베낀다.**
 

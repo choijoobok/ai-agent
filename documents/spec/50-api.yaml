@@ -7,11 +7,12 @@
 # 런타임에 admin 이 등록하는 데이터이며(FEAT-004) 그 연동 규약은 51-interfaces.yaml
 # (IF-002)이 갖는다.
 #
-# 경로 규약은 백오피스 템플릿의 표준을 따른다 — `/api/{계층}/{도메인}/{동작}` ·
+# 경로 규약은 백오피스 템플릿의 보안 계층을 유지하고 모듈을 그 뒤에 둔다 —
+# `/api/{계층}/{모듈}/{도메인}/{동작}` ·
 # **접두가 액션을 정한다** · `service` 는 전부 POST.
-# 상세: aidd-guide/standard/backend/api.md
+# 상세: aidd-guide/standard/backend/api.md · aidd-guide/standard/hub-conventions.md §4.1
 #
-# **호출 URL 은 `sources/frontend/src/features/{도메인}/api/endpoints.ts` 에만 둔다** —
+# **호출 URL 은 `sources/frontend/src/modules/{모듈}/features/{도메인}/api/endpoints.ts` 에만 둔다** —
 # 그 선언이 인가 시드의 입력이다(CLAUDE.md §8). 선언하지 않고 부르면 403, 선언만 하고
 # 안 부르면 접근 범위가 조용히 넓어진다.
 #
@@ -20,7 +21,7 @@
 meta:
   status: empty
   baselined: null
-  path_convention: "/api/{계층}/{도메인}/{동작} — 접두가 액션을 정한다"
+  path_convention: "/api/{계층}/{모듈}/{도메인}/{동작} — 보안 계층이 먼저이고 접두가 액션을 정한다 (ARCH-021)"
 
 apis: []
 
@@ -29,7 +30,7 @@ apis: []
 #   - id: API-001
 #     feature: FEAT-101
 #     method: POST
-#     path: /api/portal/chat/service/ask
+#     path: /api/service/portal/chat/ask
 #     action: EXEC
 #     request: { sessionId: "long", prompt: "string" }
 #     response: { turnId: "long" }

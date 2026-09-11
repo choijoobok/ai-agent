@@ -92,7 +92,7 @@ AI는 코드를 먼저 쓰면 그 코드에 맞는 테스트를 쓴다. 이건 �
 
 **구현**
 - ENT-004 `inbound_plan` 테이블 (migration V007) — 롤백: V007_rollback.sql
-- API-031 `POST /api/inbound-plans`, API-032 `GET /api/inbound-plans`
+- API-031 `POST /api/service/admin/schemaCatalog/create`, API-032 `POST /api/service/admin/schemaCatalog/getOne`
 - SCR-008 카탈로그등록 화면
 
 **테스트**  3/3 통과
@@ -101,7 +101,7 @@ AI는 코드를 먼저 쓰면 그 코드에 맞는 테스트를 쓴다. 이건 �
 - TC-0123 권한 없는 사용자 차단 ✅
 
 **확인 방법**
-`npm run dev` → http://localhost:3000/inbound/plan (계정: test-wh01)
+`npm run dev` → http://localhost:3000/admin/hub/schemaCatalog (계정: test-admin)
 
 **발견 사항**
 - spec에 예정수량 상한이 없어 CR-003 등록 (999,999로 임시 적용 [ASM-011])

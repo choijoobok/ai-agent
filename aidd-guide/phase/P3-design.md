@@ -4,7 +4,7 @@ title: "P3 설계 — 베이스라인을 만든다"
 category: phase
 type: operation
 created: 2026-09-04
-updated: 2026-09-11
+updated: 2026-09-12
 status: active
 sources: []
 tier: 1
@@ -171,7 +171,7 @@ conventions:
 - id: API-031
   feature: FEAT-012
   method: POST
-  path: /api/admin/schema-catalog/create
+  path: /api/service/admin/schemaCatalog/create
   summary: 스키마 카탈로그 등록
   auth: required
   roles: [ROLE-004, ROLE-003]
@@ -238,10 +238,10 @@ sequenceDiagram
   participant NOTI as 알림
 
   V->>UI: 대상 테이블 선택
-  UI->>API: GET /api/admin/schema-catalog/columns
+  UI->>API: POST /api/service/admin/schemaCatalog/getColumns
   API-->>UI: 컬럼 목록
   V->>UI: 수량 입력 후 저장
-  UI->>API: POST /api/inbound-plans
+  UI->>API: POST /api/service/admin/schemaCatalog/create
   API->>SVC: create(cmd)
   SVC->>DB: BEGIN
   SVC->>DB: SELECT 카탈로그 FOR UPDATE

@@ -5,7 +5,7 @@ category: standard
 type: operation
 class: none
 created: 2026-09-04
-updated: 2026-09-11
+updated: 2026-09-12
 status: active
 sources: ["documents/spec/02-constraints.yaml", "documents/spec/20-architecture.yaml"]
 tier: 2
@@ -38,9 +38,10 @@ Hub 코드를 쓴다
 
 ## 2. DB 테이블 네이밍
 
-- **모든 테이블에 접두어 `ai_`** 를 붙인다. 형식은 `ai_<서브모듈>_<상세>`.
-- 서브모듈 키는 모듈명 또는 기능 영역 — `ai_admin_*` · `ai_portal_*` · `ai_agent_*`.
-- **서브모듈 키는 명명 구분용이다.** 테이블의 **소유·접근 권한을 뜻하지 않는다**(ARCH-010).
+- 기존 백오피스의 공통 테이블은 `SYS_` 접두를 유지하고 **system 모듈이 소유한다**.
+- AI 기능의 새 테이블은 `AI_<모듈>_<상세>`이며 모듈 키는 `ADMIN`·`PORTAL`·`AGENT`다.
+- 테이블 이름의 모듈 키와 `40-domain.yaml`의 쓰기 소유 모듈은 일치해야 한다(ARCH-010).
+  같은 DB를 쓴다는 이유로 Entity·Repository를 공통 폴더에 두지 않는다.
 - PK 는 **서로게이트 키**를 쓰고, 자연키(예: 카탈로그의 `(데이터소스, DB 스키마, 테이블명)`)에는
   **유니크 제약**을 둔다. 참조는 서로게이트 키로 하여 **이름 변경이 참조를 깨지 않게** 한다.
 - 명명의 어휘는 [documents/spec/03-glossary.yaml](../../documents/spec/03-glossary.yaml) 의 `key` 다 — §8 도 참조.
@@ -61,28 +62,32 @@ Hub 코드를 쓴다
 ## 4. 모듈 패키지와 계층
 
 ```
-common/                Entity · QueryDSL Q타입 · Repository · 권한 판정 컴포넌트(FEAT-303) · 공용 유틸
-modules/admin/         controller · service · dto(record) · 화면
-modules/portal/        controller · service · dto(record) · 화면
-modules/agent/         controller · service · dto(record)
-extensions/{시스템}/    업무 확장 — 빌드에 넣을 때만 있다 (WMS · OMS · TMS …)
+platform/              프레임워크·인프라 기반. 업무 규칙을 두지 않는다
+shared/                도메인 비종속 공통물. 두 번째 사용에서만 올린다
+modules/system/        사용자 · 메뉴 · 역할 · 권한 · 공통코드 · 다국어 메시지
+modules/admin/         AI 기준 정보 · 지식 · 정책 · 설정 · 운영 화면/API
+modules/portal/        사용자 portal 화면/API
+modules/agent/         질의 · 실행 · LLM/업무 시스템 연동. UI 없음
+extensions/{시스템}/   업무 확장 — 빌드에 넣을 때만 있다 (WMS · OMS · TMS …)
 ```
 
-- **`modules/` 셋은 Hub 모듈이고 늘지 않는다. 늘어나는 것은 `extensions/` 다**(ARCH-016~018).
+- **`modules/` 넷은 제품 모듈이고 늘지 않는다. 늘어나는 것은 `extensions/`다**
+  (ADR-007 · ARCH-016~018).
   업무 확장은 **자기 업무 DB 를 소유하고**(별도 `DataSource`·별도 Liquibase master),
   **Hub 를 참조하되 Hub 는 확장을 참조하지 않는다** — 그래서 넣지 않고 빌드해도 Hub 가 선다.
   좌측 메뉴 트리에는 **형제 노드**로 붙는다. **자리만 열어 둔 상태이며 구현은 Hub 완성 뒤다.**
-- **공통 계층은 어떤 모듈에도 의존하지 않는다.** 역방향 의존이 생기면 **agent 분리가
-  불가능해진다**(CON-009).
-- **모듈 간 서비스 참조를 금지한다.** 예외는 **portal → agent(채팅 처리) 하나**이며, 이 호출은
-  인터페이스를 경유하고 **트랜잭션을 공유하지 않는다**(ARCH-011 · ARCH-015).
+- **platform·shared는 어떤 제품 모듈에도 의존하지 않는다.** 역방향 의존이 생기면 agent
+  분리가 불가능해진다(CON-009). 업무 규칙이나 Entity를 공통으로 빼서 이 규칙을 우회하지 않는다.
+- **모듈의 내부 서비스·Entity·Repository 참조를 금지한다.** 허용되는 것은 system의
+  인증·유효 권한 공개 계약과 portal → agent 채팅 계약이며, 둘 다 인터페이스와 DTO를 경유한다
+  (ARCH-011·012·015).
 - portal → agent 응답은 **버전이 있는 의미 블록 계약**으로 주고받는다(ARCH-019). agent에
   AG Grid·차트·지도 라이브러리 옵션을 넣지 않고 portal 표현 어댑터가 도구 설정으로 바꾼다.
   모르는 블록은 버리지 않고 원문 대체 표시가 가능해야 한다.
-- DTO·Record 는 모듈 안에 둔다. **모듈 간에 DTO 를 공유하지 않으며 Entity 를 컨트롤러 응답으로
-  직접 반환하지 않는다.**
-- 모듈 간 서비스 참조를 금지한 결과 같은 규칙이 여러 모듈 서비스에 중복 구현될 수 있다.
-  **중복 구현이 발견되면 공통 컴포넌트로 승격한다** — 그룹 판정(FEAT-303)이 그 선례다.
+- DTO·Record는 모듈 안에 둔다. 모듈 간 계약 DTO는 생산자가 소유한 공개 계약 패키지에 두고,
+  **Entity를 컨트롤러 응답이나 모듈 간 계약으로 직접 반환하지 않는다.**
+- 같은 기술 코드가 두 번 쓰이면 `shared`로 올리되, 같은 업무 규칙이 두 모듈에 필요하면 소유
+  모듈의 공개 계약으로 호출한다. 그룹·유효 권한 판정(FEAT-303)은 system 소유 계약이다.
   이것은 템플릿 표준의 "두 번째 사용에 올린다"([frontend/packages.md](frontend/packages.md))와
   같은 규칙이다.
 - **프레임워크의 추상 클래스를 상속한 빈에는 Spring AOP 어노테이션(`@Transactional` 등)을
@@ -91,6 +96,11 @@ extensions/{시스템}/    업무 확장 — 빌드에 넣을 때만 있다 (WMS
 - **대화 이력의 논리 삭제 조회에 Repository 전역 필터를 걸지 않는다.** 전역 필터를 걸면
   admin 이 삭제 표시분을 볼 수 없어 **감사가 불가능해진다**(REQ-109). 대신 조회 메서드를
   표시 대상용과 전량용으로 나누고 **이름으로 구분한다** — `findVisible…` / `findAllIncludingDeleted…`.
+
+### 4.1 API와 화면 경로
+- API는 `/api/{public|common|service}/{module}/{domain}/{action}`이다. **보안 계층이 먼저**이며 `/api/{module}/service/**`는 403이다(ARCH-021).
+- 한 SPA에서 portal은 `/`·`/portal/**`, system은 `/admin/system/**`, admin은 `/admin/hub/**`, 메뉴 없는 내부 시험 화면은 `/internal/**`을 쓴다.
+- 소스는 `src/modules/{module}/features/{domain}/`, 화면 정본은 `documents/screen/{module}/{화면경로}/`가 목표다. 실제 이동은 작업흐름 G3 승인 뒤 호환 슬라이스로 수행한다.
 
 ## 5. 외부 모델 호출 규칙
 

@@ -5,7 +5,7 @@ category: standard/backend
 type: operation
 class: policy
 created: 2026-05-04
-updated: 2026-09-07
+updated: 2026-09-12
 status: active
 sources: ["sources/backend/api/", "sources/backend/core/response/ApiResponse.java", "sources/backend/core/response/"]
 tier: 2
@@ -34,6 +34,7 @@ tags: [backend, api, rest, response, header]
 | **도메인** | 애그리거트 이름 그대로 — [packages.md §2](./packages.md) 의 패키지와 같다 |
 | **동작** | **접두가 액션을 정한다** — 아래 §2 |
 
+> **모듈러 제품은 계층 바로 뒤에 모듈을 넣는다.** Hub는 `/api/{계층}/{모듈}/{도메인}/{동작}`이며, 계층을 먼저 둬야 `ApiLayer`와 인가 시드의 실패 폐쇄 판정이 보존된다(ADR-007 · `standard/hub-conventions.md` §4.1).
 **표기는 camelCase 단수다.** 도메인도 동작도. 복수형·케밥을 쓰지 않는다.
 
 | | 왜 |
@@ -191,7 +192,6 @@ tags: [backend, api, rest, response, header]
 - **조회조건의 날짜에도 오프셋을 붙인다.** 빠지면 **서버 타임존에 따라 하루가 밀린다.**
 - **날짜만 다루는 필드**는 `2026-08-28` · `2026-08` 로 보낸다. **오프셋을 붙이지 않는다** —
   시점이 아니라 달력 값이다.
-
 ## 관련
 
 - [search.md](./search.md) · [search-spec.md](./search-spec.md) — 조회 요청 · 화이트리스트

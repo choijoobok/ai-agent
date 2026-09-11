@@ -429,7 +429,8 @@ function 아키텍처() {
 
   const p = [head('ARCH', '아키텍처 — 구성 · 경계 · 연동', `${SPEC}20-architecture.yaml`,
     d.meta.status, d.meta.baselined,
-    [t.id, t.context.id, t.containers.id, ...d.module_boundaries.map((x) => x.id)],
+    [t.id, t.context.id, t.containers.id, d.application_entry.id,
+      ...d.module_boundaries.map((x) => x.id)],
     '> **이 아키텍처를 세운 결정**은 [`ADR-001`](../decisions/ADR-001-오케스트레이션-프레임워크.md) ·\n'
     + '> [`ADR-002`](../decisions/ADR-002-플랫폼-노선.md) · [`ADR-003`](../decisions/ADR-003-상태-원천-단일화.md) 이며,\n'
     + '> 그 **근거 자료**는 [`documents/research/`](../research/agent-frameworks.md) 가 갖는다.\n')];
@@ -458,6 +459,7 @@ function 아키텍처() {
     + blocks(d.business_extension, ['id'], 'rule'));
 
   const SECTIONS = [['write_ownership', '쓰기 책임'], ['deeplink', 'portal 진입 경로 — 레거시 딥링크'],
+    ['application_entry', '화면 영역 · API 경로 · 로그인 진입'],
     ['datasource', '데이터소스 전략'], ['llm_layer', 'LLM 연동 계층'],
     ['identity', '인증 · 계정 원천과 신원 매핑'], ['knowledge_search', '지식 검색 구성'],
     ['execution_lease', '턴 실행 점유']];
@@ -513,7 +515,7 @@ function 화면정의서() {
   const p = [head('SCR-LIST', '화면 목록 · 화면 정의서', `${SPEC}60-screens.yaml`,
     s.meta.status, s.meta.baselined, null,
     '> **화면 하나의 컬럼·검증·테스트 케이스는 여기 없다.** 그것은\n'
-    + '> `documents/screen/{페이지경로}/requirements.md` 가 갖는다(산출물 지도 33행) — 설계자가\n'
+    + '> `documents/screen/{모듈}/{화면경로}/requirements.md` 가 갖는다(산출물 지도 33행) — 설계자가\n'
     + '> 목업과 함께 보고 승인하는 대상이며 spec 에 담기지 않는 분량이다. 여기는 **목록과 소속**이다.\n')];
   p.push(`## 1. 무엇을 메뉴로 두는가\n\n**${flat(mc.claim)}** — ${flat(mc.why)}\n\n${bullets(mc.tests)}`
     + (mc.note ? `\n\n> ${flat(mc.note)}` : ''));
@@ -546,11 +548,15 @@ function 권한매트릭스() {
     z.meta.status, z.meta.baselined, null,
     '> **요구사항은 `04-요구사항.md`(REQ-103·105·111)가 갖는다** — 여기는 *모델* 이다.\n')];
   p.push(`## 1. 통제의 축\n\n**${flat(z.axis.claim)}** — ${flat(z.axis.why)}`);
+  const a = z.application_access;
+  p.push(`## 2. 애플리케이션 진입 권한 (${a.id})\n\n`
+    + `- **결정** — ${flat(a.decision)}\n- **주장** — ${flat(a.claim)}\n${bullets(a.rules)}\n\n`
+    + `- **남은 설계** — ${flat(a.unresolved_design)}\n- **추적** — ${flat(a.traces_to)}`);
   const j = z.judgement;
-  p.push(`## 2. 그룹 판정 (${j.id})\n\n**${flat(j.rule)}**\n\n`
+  p.push(`## 3. 그룹 판정 (${j.id})\n\n**${flat(j.rule)}**\n\n`
     + `- **적용 대상** — ${flat(j.applies_to)}\n- **공통 컴포넌트** — ${flat(j.single_component)}\n`
     + bullets(j.rules));
-  p.push(`## 3. 매핑 구조 — 역할 × 대상\n\n${auto(z.mappings)}\n\n${bullets(z.mapping_rules)}`);
+  p.push(`## 4. 매핑 구조 — 역할 × 대상\n\n${auto(z.mappings)}\n\n${bullets(z.mapping_rules)}`);
   const SEC = [['row_scope', '행 스코프'], ['sql_control', 'SQL 통제'], ['injection_control', '주입 통제'],
     ['default_filter', '기본 필터'], ['operational_means', '운영 수단'],
     ['responsibility_layers', '책임의 층'], ['rate_limit_ownership', '유량 제한의 소유']];
