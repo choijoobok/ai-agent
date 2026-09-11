@@ -4,7 +4,7 @@ title: "P4 구현 — 수직 슬라이스 반복"
 category: phase
 type: operation
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-11
 status: active
 sources: []
 tier: 1
@@ -18,6 +18,10 @@ tags: [build, slice]
 > 소요: 프로젝트의 35%
 
 ## 1. 슬라이스 시작 전 (매번)
+
+`project.state.yaml`에서 슬라이스의 `workstream`을 확인하고 **그 작업흐름 G3 승인**을 먼저
+검사한다. 전역 G3가 아직 열리지 않았어도 해당 작업흐름 G3가 승인되면 그 기능은 구현할 수
+있다. 기능 소유권과 공통 기반 예외는 [`process/13-workstreams.md`](../process/13-workstreams.md)가 갖는다.
 
 ```
 1. documents/project.state.yaml 에서 다음 슬라이스 확인

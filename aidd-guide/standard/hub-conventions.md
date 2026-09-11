@@ -5,7 +5,7 @@ category: standard
 type: operation
 class: none
 created: 2026-09-04
-updated: 2026-09-07
+updated: 2026-09-11
 status: active
 sources: ["documents/spec/02-constraints.yaml", "documents/spec/20-architecture.yaml"]
 tier: 2
@@ -76,6 +76,9 @@ extensions/{시스템}/    업무 확장 — 빌드에 넣을 때만 있다 (WMS
   불가능해진다**(CON-009).
 - **모듈 간 서비스 참조를 금지한다.** 예외는 **portal → agent(채팅 처리) 하나**이며, 이 호출은
   인터페이스를 경유하고 **트랜잭션을 공유하지 않는다**(ARCH-011 · ARCH-015).
+- portal → agent 응답은 **버전이 있는 의미 블록 계약**으로 주고받는다(ARCH-019). agent에
+  AG Grid·차트·지도 라이브러리 옵션을 넣지 않고 portal 표현 어댑터가 도구 설정으로 바꾼다.
+  모르는 블록은 버리지 않고 원문 대체 표시가 가능해야 한다.
 - DTO·Record 는 모듈 안에 둔다. **모듈 간에 DTO 를 공유하지 않으며 Entity 를 컨트롤러 응답으로
   직접 반환하지 않는다.**
 - 모듈 간 서비스 참조를 금지한 결과 같은 규칙이 여러 모듈 서비스에 중복 구현될 수 있다.

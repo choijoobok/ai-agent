@@ -1,16 +1,30 @@
-# 기능 목록 — admin 34 · portal 25 · agent 21 · 공통 5 = 85
+# 기능 목록 — admin 34 · portal 26 · agent 21 · 공통 5 = 86
 #
 # 작성 단계: P3
 # status: migrated — 사용자 승인 전이다.
 #
 # **추적성**: 모든 FEAT 는 `reqs` 로 역추적되고(T4) 최소 1개 TC 를 가져야 한다(T5).
-#   **TC 는 아직 없다** — 70-testcases.yaml 이 비어 있고 P3 에서 만든다. `trace-check` 의
-#   T5 오류 85건이 그 사실이며, G3 를 통과할 수 없다는 뜻이다.
+#   **TC 는 아직 없다** — 70-testcases.yaml 이 비어 있고 작업흐름별 P3에서 만든다.
+#   G3 전 작업흐름은 경고지만, 그 작업흐름 G3를 청구하면 결손이 오류가 된다.
 
 meta:
   status: migrated
   baselined: null
-  numbering: "FEAT-001~034 admin · 101~125 portal · 201~221 agent · 301~305 공통"
+  numbering: "FEAT-001~034 admin · 101~126 portal · 201~221 agent · 301~305 공통"
+
+delivery_strategy:
+  decision: ADR-006
+  order: "admin 기준 정보·지식·정책 → agent 핵심과 계약 시험 → 제품 portal 상세 설계·구현"
+  workstream_rule: "기능의 `workstream:`이 있으면 그것이 소유하고, 없으면 `module:`과 같은 이름의 작업흐름이 소유한다"
+  portal_horizons:
+    - name: contract_debug
+      maturity: identified
+      features: [FEAT-126]
+      rule: "agent 계약을 검증하기 위한 최소 화면이다. 제품 portal 완료율에 합산하지 않는다"
+    - name: product_portal
+      maturity: identified
+      features: [FEAT-101, FEAT-102, FEAT-103, FEAT-104, FEAT-105, FEAT-106, FEAT-107, FEAT-108, FEAT-109, FEAT-110, FEAT-111, FEAT-112, FEAT-113, FEAT-114, FEAT-115, FEAT-116, FEAT-117, FEAT-118, FEAT-119, FEAT-120, FEAT-121, FEAT-122, FEAT-123, FEAT-124, FEAT-125]
+      rule: "요구는 유지하고 핵심 계약 영향만 먼저 검사한다. 화면 배치·도구 선택·세부 상호작용은 admin·agent 핵심 뒤 portal 작업흐름 P3에서 정한다"
 
 features:
 # ══ admin — 시스템 관리 (10.1) ═══════════════════════════════════
@@ -316,7 +330,7 @@ features:
     screen: SCR-101
     roadmap: RM-P1
     title: "응답 렌더링 — 텍스트 · 그리드 · 차트"
-    reqs: [REQ-011, REQ-012]
+    reqs: [REQ-011, REQ-012, REQ-027]
   - id: FEAT-104
     module: portal
     screen: SCR-101
@@ -474,6 +488,18 @@ features:
     roadmap: RM-P1
     title: "내 신고 목록과 처리 결과·사유 조회"
     reqs: [REQ-110]
+
+  - id: FEAT-126
+    module: portal
+    workstream: integration
+    screen: SCR-112
+    roadmap: RM-P1
+    title: "agent 응답 계약 시험"
+    detail: "질의를 접수하고 처리 상태를 조회한 뒤, 권한·보안·쿼터·감사를 거친 agent 최종 응답 계약의 원문과 메타데이터를 누락 없이 표시한다"
+    hard_rule: "**제품용 가공·이력 탐색·개인화·시각화는 넣지 않는다.** 모르는 표현 블록도 버리지 않고 원문으로 확인할 수 있어야 한다"
+    lifecycle: "admin·agent 핵심 개발 중 사용하는 내부 시험 기능. 제품 portal의 SCR-101과 별도 승인·별도 슬라이스로 관리한다"
+    reqs: [REQ-009, REQ-027]
+    traces_to: [ARCH-015, ARCH-019]
 
 # ══ agent — 백엔드 (10.5) ════════════════════════════════════════
 # 화면을 갖지 않는다. 상세 흐름은 documents/design/ 이 갖는다.

@@ -4,7 +4,7 @@ title: "게이트 G0~G6 — Exit Criteria"
 category: process
 type: operation
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-11
 status: active
 sources: []
 tier: 1
@@ -82,7 +82,7 @@ tags: [gate, exit-criteria]
 - [ ] 추적성 검사(`/trace`) 오류 0건
 - [ ] **미해결 `ASM-###` 이 0건** ← 가정을 안고 구현에 들어가지 않는다
 - [ ] 슬라이스 백로그가 의존성 순서대로 정렬됨
-- [ ] **★ 사용자 승인 후 documents/spec/ 베이스라인 동결. 이후 변경은 CR 절차 ★**
+- [ ] **★ 사용자 승인 후 승인 범위의 spec 베이스라인 동결. 이후 변경은 CR 절차 ★**
 
 ### G4 — 슬라이스 미니게이트 (슬라이스마다)
 - [ ] 해당 FEAT의 모든 TC가 통과 (skip·xfail 0건)
@@ -145,7 +145,7 @@ tags: [gate, exit-criteria]
 - ASM-007: 개인정보 컬럼 판정 주체를 보안담당으로 가정 — **확인 필요**
 
 ### ④ 승인하시면
-documents/spec/ 을 베이스라인 동결하고 P4 구현에 들어갑니다. 이후 변경은 CR 절차를 탑니다.
+이번 승인 범위의 documents/spec/ 을 동결하고 P4로 갑니다. 이후 그 범위는 CR 절차를 탑니다.
 슬라이스 24개, 의존성 순으로 정렬 완료.
 
 **승인 / 보류(사유) / 특정 항목 재작업** 중에 알려주세요.
@@ -169,6 +169,9 @@ documents/spec/ 을 베이스라인 동결하고 P4 구현에 들어갑니다. �
 한 벌** 돌고, `project.state.yaml` 의 `gates` 는 언제나 **현재 차수(`current.roadmap`)의
 것**이다.
 
+모듈별 프로젝트는 전역 한 벌 아래 `workstreams`를 둔다. **작업흐름 G3가 소유 기능의 구현만
+연다.** 전역·작업흐름 게이트의 역할과 상태 형식은 [13-workstreams.md](13-workstreams.md)가 갖는다.
+
 ### 차수를 넘길 때 (`G6` 승인 직후)
 
 1. 현재 `gates` 를 `roadmap_closed` 에 **한 줄로 접는다** — `{ roadmap, closed_at, note }`.
@@ -184,13 +187,13 @@ documents/spec/ 을 베이스라인 동결하고 P4 구현에 들어갑니다. �
 순서다.** `T5`(FEAT→TC)와 `T7`(NFR 측정)이 그것을 **경고로 내린다**
 ([05-traceability.md](./05-traceability.md)) — 오류로 세면 `RM-P1` 의 `G3` 가 `RM-P4`
 때문에 영영 열리지 않고, 열려면 **아직 설계하지 않은 것의 테스트를 지어내야** 한다.
-기준은 `current.roadmap` 이며 **그 값을 읽지 못하면 강도를 낮추지 않는다** — 모르는 것을
-이유로 게이트를 비우는 것이 가장 나쁜 실패다.
+기준은 `current.roadmap`과 소유 작업흐름 G3다. 뒤 차수·G3 전 결손은 경고로 내리되,
+**값이나 소유권을 읽지 못하면 낮추지 않는다** — 모른다는 이유로 게이트를 비우지 않는다.
 
 ## 6. 게이트 되돌리기
 
 이전 게이트로 되돌아가야 할 때(요구사항 오류 발견 등):
 1. `[PM]` 모자로 **되돌림 영향 분석**을 먼저 제시 — 폐기될 산출물, 재작업 범위, 대안
 2. 사용자 승인 후 해당 게이트 status를 `in_progress` 로 되돌린다
-3. 그 이후 게이트도 전부 `in_progress` 로 내린다 (승인 상태를 남겨두지 않는다)
+3. 그 이후 게이트도 전부 `in_progress` 로 내린다 (승인 상태를 남겨두지 않는다). 작업흐름 내부 변경은 그곳과 영향받는 계약만 내리고, 경계를 넘을 때만 전역 게이트를 내린다([13-workstreams.md](13-workstreams.md) §7).
 4. `documents/decisions/CHANGES.md` 에 CR로 기록한다

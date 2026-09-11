@@ -14,6 +14,7 @@ project:
 current:
   phase: P1                  # P0~P6 — **방법론 단계**. P0 는 2026-09-05 승인됐다
   roadmap: RM-P1             # RM-P1~RM-P4 — **로드맵 차수**. 지금 짓고 있는 제품 차수다
+  workstream: integration    # 현재 초점. 모듈 간 계약과 공통 기반 작업흐름
   # ↑ **축이 둘이고 글자가 같다.** 차수는 *무엇을 내는가*(00-charter.yaml roadmap),
   #   단계는 *어디까지 만들었는가*(P0~P6)다. 한 차수가 P0~P6 을 한 바퀴 돈다.
   #   `trace-check` 가 이 값을 읽어 **뒤 차수의 결손을 오류가 아니라 경고로** 센다.
@@ -39,7 +40,63 @@ gates:
   P5_verify:       { status: not_started, approved_at: null, note: "" }
   P6_deliver:      { status: not_started, approved_at: null, note: "" }
 
+# ── 작업흐름 게이트 — **같은 차수 안의 모듈·계약별 성숙도** ─────────
+# 로드맵은 무엇을 내는지, 전역 gates는 차수 통합 상태, 아래는 어디까지 성숙했는지를 갖는다.
+# P0/G0과 G6은 전역이다. 소스 쓰기는 기능을 소유한 작업흐름 P3_design 승인으로 열린다.
+workstreams:
+  admin:
+    phase: P1
+    required_in: [RM-P1]
+    blocked_by: []
+    deferred_until: null
+    gates:
+      P1_discovery:    { status: in_progress, approved_at: null, note: "기준 정보·지식·정책 요구를 admin 책임으로 재분류한다" }
+      P2_architecture: { status: not_started, approved_at: null, note: "" }
+      P3_design:       { status: not_started, approved_at: null, note: "" }
+      P4_build:        { status: not_started, approved_at: null, note: "" }
+      P5_verify:       { status: not_started, approved_at: null, note: "" }
+  agent:
+    phase: P2
+    required_in: [RM-P1]
+    blocked_by: []
+    deferred_until: "admin 계약 초안"
+    gates:
+      P1_discovery:    { status: in_progress, approved_at: null, note: "질의 처리 요구는 이관됐으나 작업흐름 단위 승인은 아직이다" }
+      P2_architecture: { status: in_progress, approved_at: null, note: "턴·스텝·점유·중단 설계 초안과 ADR-001·003이 있다" }
+      P3_design:       { status: not_started, approved_at: null, note: "" }
+      P4_build:        { status: not_started, approved_at: null, note: "" }
+      P5_verify:       { status: not_started, approved_at: null, note: "" }
+  integration:
+    phase: P2
+    required_in: [RM-P1]
+    blocked_by: []
+    deferred_until: null
+    gates:
+      P1_discovery:    { status: in_progress, approved_at: null, note: "admin↔agent·portal↔agent·업무 확장↔Hub 계약 범위를 식별한다" }
+      P2_architecture: { status: in_progress, approved_at: null, note: "ARCH-019가 계약 경계를 정했고 정확한 스키마는 P3에서 정한다" }
+      P3_design:       { status: not_started, approved_at: null, note: "FEAT-126·SCR-112와 portal↔agent 계약을 함께 설계한다" }
+      P4_build:        { status: not_started, approved_at: null, note: "" }
+      P5_verify:       { status: not_started, approved_at: null, note: "" }
+  portal:
+    phase: P1
+    required_in: [RM-P1]
+    blocked_by: []
+    deferred_until: "admin·agent 핵심과 integration 계약 시험이 안정된 뒤"
+    gates:
+      P1_discovery:    { status: in_progress, approved_at: null, note: "제품 요구는 유지하고 핵심 계약 영향부터 선별한다" }
+      P2_architecture: { status: not_started, approved_at: null, note: "" }
+      P3_design:       { status: not_started, approved_at: null, note: "시각화 도구·화면 배치·사용자 편의 상세는 여기서 정한다" }
+      P4_build:        { status: not_started, approved_at: null, note: "" }
+      P5_verify:       { status: not_started, approved_at: null, note: "" }
+
+# 고객사 구축에서 `extension:wms`처럼 추가한다. Hub 모듈 목록에는 넣지 않는다.
+extension_workstreams: []
+
 gate_note: >-
+  **2026-09-11부터 전역 게이트와 작업흐름 게이트를 함께 쓴다(ADR-006).** 위 `gates`는
+  RM-P1 전체의 통합 상태이고, `workstreams`는 admin·agent·portal·integration의 서로 다른
+  설계·구현·검증 진척을 갖는다. 전역 G3 전에도 작업흐름 G3 승인을 받은 기능만 구현할 수 있다.
+
   **단계가 P0 인데 게이트 넷이 in_progress 인 것은 이상 상태다.** 산출물이 뒤에서
   앞으로 들어왔기 때문이다 — 설계가 먼저 있었고 프로세스를 뒤에 씌웠다. 정상화하는
   방법은 하나다: **P0 부터 `/phase-gate` 를 돌려 순서대로 승인받는다.** 승인 없이
@@ -70,21 +127,20 @@ roadmap_closed: []
 # ── 다음 작업 (사용자가 택했다) ─────────────────────────────────────
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
 next_up:
-  decided_at: 2026-09-07
-  choice: "P2 를 정리해 G2(아키텍처 게이트 · P2 를 닫고 P3 로 넘어가는 관문)로 간다"
-  why_not_p1: >-
-    **P1 은 지금 열 수 없다.** OQ-002(1차 적용 업무 선정)가 고객사 부재로 답할 수 없고
-    11-processes.yaml 을 채울 근거가 없다. 반면 **G2 의 남은 일은 고객사를 필요로 하지
-    않는다** — 측정을 설계하는 일에는 실재하는 업무가 필요하지 않다. 그래서 **G2 쪽이 먼저 열려 있다**.
+  decided_at: 2026-09-11
+  choice: "새 작업흐름 훅을 승인한 뒤 integration 작업흐름의 계약 설계를 시작한다"
+  why: >-
+    admin 과 agent 를 먼저 만들면서 서로의 결손을 되돌려 고치고, 제품 portal 상세 설계는
+    핵심 안정 뒤에 해야 한다. 기존 전역 G3 하나로는 승인되지 않은 portal까지 열리거나
+    admin 구현이 portal을 기다리는 문제가 생겨 ADR-006의 세 축 구조로 바꿨다.
   tasks:
-    - "~~21-nfr.yaml 에 응답성 NFR 을 세운다~~ **끝났다(2026-09-10)** — NFR-006~009 넷을 세우고 카테고리 `응답성` 을 신설했다. ASM-002 의 @defer 를 닫았다"
-    - "~~기존 NFR 19건의 measurement 보강~~ **끝났다(2026-09-10)** — `source` 축을 신설해 **23건 전부**에 어디서 나오는지를 적었다. target 은 그대로 비운다"
-    - "~~논리 구성도를 C4 두 계층으로 가른다~~ **끝났다(2026-09-10)** — ARCH-002·ARCH-003 을 세우고 생성기가 한 원본에서 두 그림을 낸다. 컨테이너를 세다가 **브라우저 SPA 가 노드에 없던 것**을 찾아 더했다"
-    - "~~CON-001 의 ADR~~ **끝났다(2026-09-10)** — 조사 → `ADR-005` → 사용자 승인 → spec 반영까지 마쳤다"
+    - "변경된 훅 정의를 승인하고 새 local task에서 revision 검사와 PreToolUse 생존 확인을 한다"
+    - "integration G3 범위로 portal↔agent 계약 스키마와 FEAT-126·SCR-112의 테스트를 설계한다"
+    - "admin 작업흐름 P1→P3를 먼저 진행하고, 승인된 admin 슬라이스부터 구현한다"
   then: >-
-    **넷 다 끝났다(2026-09-10). 이제 `/phase-gate` 로 G2 를 청구한다.** **다만 G0 만 승인된 상태이므로 G1 이
-    건너뛰어진다** — P1 을 열어 둔 채 G2 를 넘는 것이 맞는지는 그때 사용자에게 묻는다
-    (gate_note 가 *P0 부터 순서대로 승인받는다* 를 정상화 방법으로 적어 두었다).
+    admin 계약 초안 위에서 agent 작업흐름을 진행한다. agent 핵심과 계약 시험이 안정되면
+    portal 요구를 impact_screened 상태에서 상세 설계로 올린다. 전역 G2는 작업흐름별 P2
+    결과와 기존 아키텍처를 다시 통합 판정한 뒤 청구한다.
 
 # ── 미결 질문 (Open Questions) ─────────────────────────────────────
 # 사용자 답변이 필요한 것. 답변되면 삭제하고 결과를 spec·ADR 에 반영한다.
@@ -134,25 +190,23 @@ cognitive_debt:
 # ── 진행 지표 ──────────────────────────────────────────────────────
 # 이관으로 들어온 것을 센 값이다. 승인받은 것의 수가 아니다.
 counters:
-  REQ: 59
+  REQ: 60
   UC: 0
-  FEAT: 85
+  FEAT: 86
   ENT: 0
   API: 0
-  SCR: 43
+  SCR: 44
   TC: 0
-  ADR: 5      # 001 오케스트레이션 · 002 플랫폼 노선 · 003 상태 원천 단일화 · 004 공급 경로 분리 · 005 벡터 저장소. **다섯 다 accepted — proposed 는 없다**
+  ADR: 6      # 001~005 기존 결정 · 006 모듈별 작업흐름. **여섯 다 accepted — proposed 는 없다**
   ASM: 2      # **미확인 둘** — 003(기한 G3 로 이동) · 004(기한 G1). 002 는 2026-09-10 에 확인됨
   SLICE: 0
   DEF: 0
 
 counter_note: >-
   **UC · ENT · API · TC 가 0 이라 추적성 체인이 끊겨 있다.**
-  `node .claude/hooks/trace-check.mjs --all` 이 그 사실을 보고한다 — **오류 86 · 경고 22.**
-  현재 차수(RM-P1)의 것만 오류다: T5 66 · T7 20. 뒤 차수의 22건은 경고로 내려간다 —
-  **결손이 아니라 순서이기 때문**이고, 오류로 세면 RM-P1 의 G3 가 RM-P4 때문에 안 열린다.
-  **그래도 G3 를 통과할 수 없다** — 지금 차수의 86건이 그대로 남아 있다.
-  이것은 결함이 아니라 **현재 상태의 정직한 표시**다.
+  `trace-check`는 뒤 차수뿐 아니라 **아직 G3를 청구하지 않은 다른 작업흐름의 결손도 경고로**
+  센다. 각 작업흐름 G3를 청구할 때 그 소유 범위의 결손은 오류가 되므로, 순서를 미뤘다고
+  검증이 사라지지 않는다. 정확한 개수는 매 실행 결과가 정본이다.
   @defer P3 — 30-usecases · 40-domain · 50-api · 70-testcases 넷을 만든다. 지어내지 않았다
 
 # ── G4 기계 검사 (2026-09-06 · 셋 다 초록) ────────────────────────
@@ -239,6 +293,7 @@ reproduction_baseline:
     역할(안 붙인다)**로 가르는 문단을 §3 에 더했다. `A ≒ B ≠ 실물` 의 판독은 맞았고
     **어디를 고치나만 틀렸다** — 사용자가 규칙 유지를 택했다(2026-09-07).
 
+# 항목 형식: { id, workstream, features, stage, status }. 계약 변경은 integration이 먼저다.
 slices: []
 
 # ── 최근 활동 로그 (최신 10건만 유지) ─────────────────────────────

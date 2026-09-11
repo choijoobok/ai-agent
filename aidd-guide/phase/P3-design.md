@@ -4,7 +4,7 @@ title: "P3 설계 — 베이스라인을 만든다"
 category: phase
 type: operation
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-11
 status: active
 sources: []
 tier: 1
@@ -12,6 +12,10 @@ tags: [design, baseline]
 ---
 
 # P3 설계 — 베이스라인을 만든다 (가장 무거운 단계)
+
+모듈별 진행에서는 **현재 작업흐름이 소유한 범위만** 아래 순서로 설계한다. 다른 작업흐름의
+식별된 요구를 억지로 상세화하지 않는다. 범위·게이트·소스 개방 규칙은
+[`process/13-workstreams.md`](../process/13-workstreams.md)가 갖는다.
 
 > 목표: 구현에 필요한 모든 것을 확정하고 **spec을 동결**한다.
 > 산출물: `documents/spec/30-usecases.yaml` `31-features.yaml` `40-domain.yaml` `50-api.yaml` `51-interfaces.yaml` `60-screens.yaml` `70-testcases.yaml` + `documents/generated/` 생성물
@@ -272,10 +276,11 @@ sequenceDiagram
 ```
 /trace          → 추적성 오류 0 확인
 /doc-gen        → documents/generated/ 전체 생성
-/phase-gate G3  → 체크리스트 + 레드팀 + 승인 요청
+/phase-gate G3 <workstream>  → 체크리스트 + 레드팀 + 승인 요청
 ```
 
-**승인되는 순간 `documents/spec/` 은 베이스라인이다.** 이후 변경은 전부 CR.
+**승인되는 순간 그 작업흐름 소유 범위는 베이스라인이다.** 이후 그 범위의 변경은 전부 CR.
+전역 G3는 현재 차수의 필수 작업흐름 G3가 모두 승인된 뒤 통합 범위를 동결한다.
 
 ## 11. P3 흔한 실패와 방어
 

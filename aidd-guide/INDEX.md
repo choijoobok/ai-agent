@@ -4,7 +4,7 @@ title: "aidd-guide — 마스터 진입점 (11 카테고리)"
 category: root
 type: operation
 created: 2026-05-04
-updated: 2026-09-06
+updated: 2026-09-11
 status: active
 sources: []
 tier: 1
@@ -70,7 +70,7 @@ ai-agent/
   │  ── 프로세스 ──────────────────────────────────
   ├─ "지금 어디인가 · 다음에 무엇을"           → documents/project.state.yaml · /pm-status
   ├─ "단계별로 무엇을 하나"                    → phase/         P0~P6 플레이북
-  ├─ "게이트·역할·질문·추적성·결정·변경"       → process/       방법론 열하나
+  ├─ "게이트·역할·질문·추적성·결정·변경"       → process/       방법론 열셋
   ├─ "무엇을 언제 어디에 만드나 · 문서 예산"   → artifact/      산출물 지도 + 문서 예산
   ├─ "화면 요건서를 쓴다 · 무엇을 물어야 하나" → artifact/screen/  절차 + Overlay 7
   │
@@ -99,7 +99,7 @@ ai-agent/
 | 카테고리 | 역할 | Tier | 문서 |
 |---|---|---|---|
 | [meta](meta/INDEX.md) | 메타블록·200줄·라우팅·문서 스타일 | 3 | 5 |
-| [process](process/01-overview.md) | 방법론 — 역할·질문·게이트·추적성·결정·변경·인지부채·검증비용 | 1 | 12 |
+| [process](process/01-overview.md) | 방법론 — 역할·질문·게이트·추적성·결정·변경·작업흐름·인지부채·검증비용 | 1 | 13 |
 | [phase](phase/P0-inception.md) | P0~P6 실행 플레이북 | 1 | 7 |
 | [artifact](artifact/INDEX.md) | **산출물 지도 = 문서 예산** · 템플릿 · 화면 요건서 절차 | 1 | 23 |
 | [standard](standard/INDEX.md) | 백엔드·프론트 표준의 상세와 근거 | 2 | 43 |
