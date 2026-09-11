@@ -67,9 +67,12 @@ requirements:
   - id: REQ-009
     type: functional
     priority: must
+    priority_reason: "portal과 agent가 나뉘거나 다중화되면 계약 없이는 같은 요청과 응답을 해석할 수 없으므로 RM-P1의 필수 기반이다"
     actors: [ACT-001]
+    process_step: PRC-05-02
     title: "요청·응답 포맷 규약 확정"
     detail: "portal ↔ agent ↔ LLM 사이의 데이터 포맷 규약을 문서로 확정한다"
+    note: "portal↔agent의 제품 API 계약과 agent↔LLM 공급자 프로토콜은 서로 다른 계약이다. 전자는 integration 작업흐름에서, 후자는 FEAT-304와 IF-003에서 각각 버전과 호환성을 관리한다"
   - id: REQ-010
     type: functional
     priority: must
@@ -193,7 +196,9 @@ requirements:
   - id: REQ-027
     type: functional
     priority: must
+    priority_reason: "RM-P1에서 모든 표현을 완성하지 않아도 새 의미 블록이 agent 통제를 바꾸지 않는 확장 경계는 첫 계약부터 있어야 한다"
     actors: [ACT-001]
+    process_step: PRC-02-05
     title: "응답 표현 형식의 확장"
     detail: "portal 은 텍스트·그리드·차트·지도 등 표현 형식을 추가할 수 있어야 하며, 새 표현 형식 때문에 agent 의 질의 처리·권한·보안·쿼터·감사 흐름을 바꾸지 않아야 한다"
     hard_rule: "**agent 계약에 특정 시각화 라이브러리의 옵션을 넣지 않는다.** agent 는 버전이 있는 의미 블록과 데이터를 반환하고 portal 의 표현 어댑터가 도구별 설정으로 변환한다"
@@ -269,7 +274,9 @@ requirements:
   - id: REQ-103
     type: functional
     priority: must
+    priority_reason: "여러 업무 시스템의 데이터를 한 창구에서 다루므로 접근 통제가 없으면 제품을 운영에 투입할 수 없다"
     actors: [ACT-002]
+    process_step: PRC-02-02
     title: "데이터 접근 통제 — 그룹 판정 · 행 스코프 · SQL 4단계"
     detail: "상세 모델은 22-authz.yaml 이 갖는다"
     traces_to: [REQ-104]
@@ -284,7 +291,9 @@ requirements:
   - id: REQ-105
     type: functional
     priority: must
+    priority_reason: "RM-P2 실행 기능의 안전 경계이며 공통 그룹 판정 인터페이스가 이를 수용해야 하므로 우선순위를 유지한다"
     actors: [ACT-001, ACT-002, ACT-006]
+    process_step: PRC-03-01
     title: "API·도구 실행 통제"
     detail: "호출 가능한 API 는 목록으로 등록·관리되며 목록에 없는 호출은 불가능하다. API 는 **유형**(조회/실행)을 갖고 승인 절차는 실행 API 에만 적용된다. 명세에는 **타임아웃·재시도 정책·멱등성 여부**를 함께 등록한다"
     hard_rule: "**판정 미달이면 차단한다.** 중간 상태를 두지 않으며 승인을 받아 실행하는 우회 경로도 없다. **호출 인증은 시스템 단위 연동 계정으로, 실사용자 신원은 매핑된 식별자를 파라미터로 전달한다**"
@@ -292,14 +301,18 @@ requirements:
   - id: REQ-106
     type: functional
     priority: must
+    priority_reason: "외부 모델로 나가는 데이터의 허용 범위를 강제하지 못하면 폐쇄망 고객사에서 모델 호출 자체를 열 수 없다"
     actors: [ACT-002, ACT-007]
+    process_step: PRC-02-03
     title: "LLM 외부 전송 데이터 정책"
     detail: "**전송 허용 여부를 테이블·컬럼 단위 설정**으로 통제한다. 조회 API 응답은 카탈로그에 없으므로 **등록된 응답 스키마의 경로 단위**로 통제한다 — API 단위 플래그 하나로는 같은 응답 안의 개인정보와 업무 데이터를 가를 수 없다. **기본값은 차단이며 허용 목록 방식으로 연다.** 전송 시에도 마스킹 규칙과 행 수 상한을 적용하고 전송된 내용은 전량 기록한다"
     note: "**Hub 는 레거시의 암호화 키·복호화 수단을 보유하지 않는다** — 암호화되어 저장된 개인정보는 조회해도 암호문이며 기술적으로 취급이 불가능하다. **평문으로 저장된 개인정보 컬럼이 통제 대상이다**"
   - id: REQ-107
     type: functional
     priority: must
+    priority_reason: "AI가 만든 조회·실행의 근거를 사후에 재구성할 수 없으면 감사와 장애 조사가 성립하지 않는다"
     actors: [ACT-005]
+    process_step: PRC-02-04
     title: "감사 이력 — 전량 기록과 차등 저장"
     detail: "**요청**(사용자·세션·턴·회차·스텝·원문 질의·전달된 컨텍스트와 프롬프트) · **판정**(업무 연관성·권한·마스킹·차단 내역) · **조회**(생성 SQL·데이터소스·기준 시각·실행 시간·결과 행 수와 컬럼 목록·**결과 지문**) · **실행**(API·파라미터·결과·승인 이력) · **응답**(LLM 응답 원문·최종 응답) · **비용**(스텝 역할·**공급 경로**·모델·effort·**계량 단위별 수량**·산정 비용·**적용한 단가표 판번호** — 판번호가 없으면 나중에 왜 이 값인지 되짚을 수 없다) · **정책 변경**(변경자·시각·대상·이전 값·이후 값)"
     hard_rule: "**조회 결과 원문은 세 계층으로 차등 저장한다** — 메타데이터는 항상 · LLM 전송분은 항상 · **원문은 정책**(기본 미보존). 단 **실행 API 호출로 이어진 턴의 조회 결과는 정책과 무관하게 원문을 보존한다**(잘못 실행된 액션의 사후 조사에서 '어떤 데이터를 보고 실행했는가' 에 답해야 한다). **결과 지문(해시)은 항상 남긴다**"
@@ -477,9 +490,34 @@ requirements:
   - id: REQ-402
     type: functional
     priority: must
+    priority_reason: "고객사별 실행 환경을 분리하고 비밀 값을 평문으로 남기지 않기 위한 배포 전제다"
     derived: true
     derived_from: "CON-011 (비밀 값) · CON-033 (프로파일로 Provider 전환) · hub-conventions §3"
     actors: [ACT-009]
+    process_step: PRC-01-01
     title: "환경별 설정과 프로파일을 분리해 관리한다"
     detail: "프로파일은 **로컬 / 개발 / 운영**으로 구분하고 모듈별 yml 을 파일로 분리한다. **비밀 값은 설정 파일에 평문으로 두지 않는다.** LLM Provider 선택(개발기 CLI ↔ 운영 API)도 프로파일 설정으로 전환된다"
     hard_rule: "**업무 DB·DW 데이터소스와 API 자격증명은 yml 에만 둔다** — 화면은 매핑과 참조 키만 관리한다"
+
+# ── 요구사항 모순 검사 ─────────────────────────────────────────────
+# 별도 현황 문서를 만들지 않는다. 판정은 요구사항 정본의 충돌하기 쉬운 쌍 옆에서 관리한다.
+consistency_review:
+  reviewed_at: 2026-09-11
+  scope: "integration G1 — FEAT-126·FEAT-301~305가 역추적하는 요구사항"
+  unresolved: []
+  pairs:
+    - ids: [REQ-009, REQ-027]
+      tension: "엄격한 요청·응답 계약과 새 표현 형식의 확장이 충돌할 수 있다"
+      resolution: "호환되는 선택 필드·표현 블록은 같은 계약 주 버전에서 추가하고 portal은 모르는 블록만 무시한다. 모르는 계약 주 버전은 전체 실패로 드러낸다"
+    - ids: [REQ-103, REQ-108]
+      tension: "현재 권한 반영과 한 턴 안에서의 정책 일관성이 충돌할 수 있다"
+      resolution: "새 턴의 시작에는 현재 정책을 적용하고, 시작된 턴은 그 시점의 정책으로 끝까지 처리한다. 세션은 일관성 경계가 아니다"
+    - ids: [REQ-106, REQ-107]
+      tension: "외부 전송 최소화와 전송 내용 전량 감사가 충돌할 수 있다"
+      resolution: "허용·마스킹을 먼저 적용한 실제 전송분만 외부로 보내고, 감사 이력도 그 실제 전송분을 기록한다. 차단된 원문을 감사 목적으로 새로 복제하지 않는다"
+    - ids: [REQ-105, REQ-113]
+      tension: "Hub의 실행 통제와 대상 시스템의 중복 실행 책임이 겹칠 수 있다"
+      resolution: "한 턴 안의 중복은 Hub의 점유와 실행 통제가 막고, 서로 다른 턴 사이의 업무 중복은 대상 시스템이 막는다"
+    - ids: [REQ-107, REQ-109]
+      tension: "전량 감사와 조회 결과 원문의 차등 보관이 충돌할 수 있다"
+      resolution: "처리 사실·판정·결과 메타데이터와 지문은 전량 보존하고, 조회 결과 원문만 정책에 따라 차등 보관한다"

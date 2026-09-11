@@ -622,6 +622,30 @@ framework_terms:
     group: 구조
     definition: "한 차수 안에서 설계·구현·검증 진척을 따로 관리하는 소유 범위. 기본은 admin · agent · portal · integration이며 고객사 업무 확장은 `extension:<이름>`으로 추가한다"
     relation: "**차수와 슬라이스의 중간 축이다.** 차수는 무엇을 출시하는지, 작업흐름은 어느 모듈·계약이 어디까지 성숙했는지, 슬라이스는 기능 변경 하나를 뜻한다. 상세는 ADR-006과 aidd-guide/process/13-workstreams.md가 갖는다"
+  - id: TRM-138
+    term: API 계약
+    key: apiContract
+    group: 구조
+    definition: "portal과 agent가 서로 지키기로 한 요청·응답의 필드, 형식, 상태, 오류 의미와 호환성 규칙"
+    relation: "agent는 계약에 맞는 데이터를 만들고 portal은 계약상 알고 있는 데이터의 표시·내부 사용을 결정한다. 계약 버전·호환성·계약 시험은 integration 작업흐름이 소유한다"
+  - id: TRM-139
+    term: 계약 주 버전
+    key: contractMajorVersion
+    group: 구조
+    definition: "기존 소비자가 해석할 수 없는 API 계약 변경을 구분하는 번호. 호환되는 선택 필드 추가나 서버 수정에는 올리지 않는다"
+    relation: "모르는 선택 필드·표현 블록은 해당 부분만 무시하지만, 모르는 계약 주 버전은 조용히 처리하지 않고 지원하지 않는 버전으로 드러낸다"
+  - id: TRM-140
+    term: 의미 블록
+    key: semanticBlock
+    group: 응답
+    definition: "agent가 특정 화면 라이브러리 설정이 아니라 텍스트·표·차트·지도 같은 의미와 데이터를 함께 전달하는 응답 단위"
+    relation: "portal은 아는 블록을 화면 도구에 맞게 변환하고 모르는 블록은 무시한다. 계약 시험 화면은 변환하지 않은 원문을 안전한 텍스트로 표시한다"
+  - id: TRM-141
+    term: 실행 프로파일
+    key: runtimeProfile
+    group: 운영
+    definition: "로컬·개발·운영처럼 환경별 설정 묶음을 선택하는 기준"
+    relation: "모듈별 설정 파일과 비밀 값 주입 경로를 환경별로 분리하되 업무 DB·API 자격증명을 화면이나 평문 설정에 복제하지 않는다"
 
 # 훅과 인터럽트의 실행 순서 — **우리 설계가 이 순서에 의존한다.**
 hook_order: "BeforeCall 훅 → interrupt() 판정 → WrapCall 체인 → 노드 본문 → AfterCall 훅"
