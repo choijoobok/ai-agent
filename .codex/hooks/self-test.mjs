@@ -12,6 +12,8 @@ import {
   currentWorkstream,
   readState,
   gateStatus,
+  requirementBelongsToWorkstream,
+  unrealizedRequirementDeferral,
 } from '../../.claude/hooks/lib.mjs';
 import { allowHookRepair, emitHookResults, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
 import { patchTargets, runFileChain } from './file-chain.mjs';
@@ -85,6 +87,18 @@ const workstreamFixture = {
 assert.equal(workstreamGateStatus(workstreamFixture, 'admin'), 'approved');
 assert.equal(workstreamGateStatus(workstreamFixture, 'missing'), null);
 assert.equal(currentWorkstream(workstreamFixture)?.phase, 'P3');
+
+/* T2는 P3 연결을 P1·P2에 강요하지 않되, G3 청구에서 소유 REQ를 빠뜨리지 않는다. */
+const traceState = {
+  current: { roadmap: 'RM-P1' },
+  workstreams: { system: { gates: { P3_design: { status: 'not_started' } } } },
+};
+const systemRequirement = { id: 'REQ-901', workstream: 'system', roadmap: 'RM-P1' };
+assert.equal(unrealizedRequirementDeferral(systemRequirement, traceState), 'system 작업흐름 G3 전이다');
+assert.equal(unrealizedRequirementDeferral({ ...systemRequirement, roadmap: 'RM-P2' }, traceState), 'RM-P2 은 아직 오지 않았다');
+assert.equal(unrealizedRequirementDeferral(systemRequirement, traceState, 'system'), null);
+assert.equal(requirementBelongsToWorkstream(systemRequirement, 'system'), true);
+assert.equal(requirementBelongsToWorkstream(systemRequirement, 'admin'), false);
 
 const post = await runFileChain({
   ...input,

@@ -35,7 +35,7 @@ tags: [harness, hooks, automation]
 | `ProjectionCoverageTest` | **프로젝션에 없는 컬럼을 `Tuple` 에서 읽는 것** — QueryDSL 이 예외 대신 `null` 을 주므로 응답의 그 칸이 조용히 빈다([standard/backend/search.md](../standard/backend/search.md)) |
 | `checkSeeds` · `SeedMessageTest` · `SeedChangelogIncludeTest` | 시드가 소스와 일치 · 값 시드의 키가 키 시드에 있음 · changelog 를 `master` 에 걸었음 |
 | `lint.mjs` | 메타블록 · 200줄 · BOM · **깨진 링크** · 선언 어휘 누락 · **폐지 어휘**(`@deprecated` 를 아직 가르치는 문서) · **`sources:` 메타**(비었나 · 실물과 맞나 · **자기 자신을 가리키나** · **저장소 경로가 하나도 없나**) · **헌법 인용**(맨 텍스트 `AGENTS.md §N-M` 이 있는 절·항목인가) · **요건서 서식**(백엔드 칸 · 컬럼 표 · **필드명 칸** · 케이스 번호) · **`class:`**(`standard/` 는 부류를 밝힌다) · **「보장하는 것」 절**(`class: policy` 가 갖는다 — 명단은 `CONTRACT_DEBT` 이고 **양방향으로 실패한다**) |
-| `trace-check.mjs` | 추적성 T1~T13 — dangling ID · 미실현 요구사항 · 고아 기능 · TC 없는 FEAT · **코드에 없는 TC**(T13 · 소유 작업흐름 G3 이후 오류) · `--workstream` 범위 검사 |
+| `trace-check.mjs` | 추적성 T1~T13 — dangling ID · 미실현 요구사항(**T2 · 소유 작업흐름 G3 전 경고**) · 고아 기능 · TC 없는 FEAT · **코드에 없는 TC**(T13 · 소유 작업흐름 G3 이후 오류) · `--workstream` 범위 검사 |
 
 ## 훅이 막는다 — 목록은 생성물이 갖는다
 

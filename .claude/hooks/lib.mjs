@@ -195,6 +195,29 @@ export function currentWorkstream(state) {
   return { key, ...state.workstreams[key] };
 }
 
+function roadmapOrder(value) {
+  const match = /^RM-P([0-9]+)$/.exec(String(value ?? '').trim());
+  return match ? Number(match[1]) : 0;
+}
+
+/** T2 미실현 요구사항이 아직 순서상 정상이라면 이유를, 지금 오류라면 null을 준다. */
+export function unrealizedRequirementDeferral(requirement, state, targetWorkstream = null) {
+  const currentRoadmap = roadmapOrder(state?.current?.roadmap) || Infinity;
+  const requirementRoadmap = roadmapOrder(requirement?.roadmap);
+  if (requirementRoadmap > currentRoadmap) return `${requirement.roadmap} 은 아직 오지 않았다`;
+  if (targetWorkstream || !state?.workstreams) return null;
+
+  const owner = featureWorkstream(requirement);
+  if (!owner || !state.workstreams[owner]) return null;
+  const status = workstreamGateStatus(state, owner);
+  return status && status !== 'approved' ? `${owner} 작업흐름 G3 전이다` : null;
+}
+
+/** 명시한 작업흐름이 소유한 REQ인가. FEAT 연결 전의 요구를 G3 검사에서 놓치지 않는다. */
+export function requirementBelongsToWorkstream(requirement, workstream) {
+  return Boolean(workstream) && featureWorkstream(requirement) === workstream;
+}
+
 // ── 결과 내보내기 ─────────────────────────────────────────────────
 
 /** 통과 — 아무 말도 하지 않는다. */

@@ -29,6 +29,8 @@ import {
   gateStatus,
   featureWorkstream,
   workstreamGateStatus,
+  requirementBelongsToWorkstream,
+  unrealizedRequirementDeferral,
 } from './lib.mjs';
 
 const SPEC_DIR = 'documents/spec';
@@ -192,7 +194,9 @@ function fullCheck(targetWorkstream = null) {
   const selectedUcIds = new Set(selectedFeats.flatMap((feature) => [...refs(feature, 'usecases')]));
   const selectedNfrIds = new Set(selectedFeats.flatMap((feature) => [...refs(feature, 'nfrs')]));
   const selectedEntIds = new Set(selectedFeats.flatMap((feature) => [...refs(feature, 'entities')]));
-  const selectedReqs = targetWorkstream ? reqs.filter((item) => selectedReqIds.has(item?.id)) : reqs;
+  const selectedReqs = targetWorkstream
+    ? reqs.filter((item) => selectedReqIds.has(item?.id) || requirementBelongsToWorkstream(item, targetWorkstream))
+    : reqs;
   const selectedUcs = targetWorkstream
     ? ucs.filter((item) => selectedUcIds.has(item?.id) || [...refs(item, 'reqs', 'req')].some((id) => selectedReqIds.has(id)))
     : ucs;
@@ -232,7 +236,12 @@ function fullCheck(targetWorkstream = null) {
   for (const r of selectedReqs) {
     if (r?.type !== 'functional' || r?.priority === 'wont') continue;
     if (!ucReqs.has(r?.id) && !featUp.has(r?.id)) {
-      errors.push(['T2', r?.id, '미실현 요구사항 — UC/FEAT 연결 없음']);
+      const deferred = unrealizedRequirementDeferral(r, state, targetWorkstream);
+      (deferred ? warnings : errors).push([
+        'T2',
+        r?.id,
+        `미실현 요구사항 — UC/FEAT 연결 없음${deferred ? ` — ${deferred}` : ''}`,
+      ]);
     }
   }
 
