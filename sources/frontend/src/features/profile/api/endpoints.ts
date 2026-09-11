@@ -14,5 +14,5 @@ export const PROFILE_ENDPOINTS = {
   saveMyProfile: '/common/user/saveMyProfile',
   getMyLoginHistory: '/common/user/getMyLoginHistory',
   getMyRoles: '/common/user/getMyRoles',
-  changePassword: '/common/auth/changePassword',
+  changePassword: '/common/system/auth/changePassword',
 } as const;

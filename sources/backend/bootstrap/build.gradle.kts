@@ -10,6 +10,7 @@ plugins {
 
 dependencies {
     implementation(project(":backend:api"))
+    implementation(project(":backend:modules:system"))
     implementation("org.springframework.boot:spring-boot-starter")
 
     // 스키마의 유일한 출처. ddl-auto 는 전 환경 validate 다(backend/persistence.md).

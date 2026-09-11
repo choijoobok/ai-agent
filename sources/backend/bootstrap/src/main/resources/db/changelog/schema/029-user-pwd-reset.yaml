@@ -1,4 +1,4 @@
-# 분실 비밀번호 자기 재설정의 토큰 — AUTH-07 · documents/screen/_standalone/login/requirements.md §3-1 · §6-3.
+# 분실 비밀번호 자기 재설정의 토큰 — AUTH-07 · documents/screen/_standalone/system/login/requirements.md §3-1 · §6-3.
 #
 # 요건서가 이 표를 "없다 — 새 changeset" 으로 적어 두었고(§8), 미리 만들어 두지 않은 것이
 # 규약이었다: 쓰지 않는 DDL 은 "됐다" 로 보이지만 한 번도 돌아 본 적이 없다. 재설정 3단계를

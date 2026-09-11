@@ -7,10 +7,10 @@ import {
   type OpenTarget,
   type WorkTab,
 } from '@/shared/stores/tabStore';
-import { useSessionCleanup } from '@/features/auth/session';
+import { useSessionCleanup } from '@/modules/system/public/auth/session';
 import { useUiStore } from '@/shared/stores/uiStore';
-import { useSessionExpiry } from '@/features/auth/useSessionExpiry';
-import { ExpiryWarningModal } from '@/features/auth/components/ExpiryWarningModal';
+import { useSessionExpiry } from '@/modules/system/public/auth/useSessionExpiry';
+import { ExpiryWarningModal } from '@/modules/system/public/auth/components/ExpiryWarningModal';
 import { SettingsModal } from '@/features/settings/SettingsModal';
 import { ProfileModal } from '@/features/profile/ProfileModal';
 import { NotificationModal } from '@/features/notification/NotificationModal';

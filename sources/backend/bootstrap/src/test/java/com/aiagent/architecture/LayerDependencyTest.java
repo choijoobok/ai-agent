@@ -39,7 +39,9 @@ class LayerDependencyTest {
     void importIsNotEmpty() {
         assertThat(classes).isNotEmpty();
         assertThat(classes.stream().map(c -> c.getName()))
-                .contains(BASE + ".core.domain.BaseAuditEntity");
+                .contains(
+                        BASE + ".core.domain.BaseAuditEntity",
+                        BASE + ".system.api.auth.AuthController");
     }
 
     @Test
@@ -71,6 +73,21 @@ class LayerDependencyTest {
                 .that().resideInAPackage(BASE + ".domain..")
                 .should().dependOnClassesThat()
                 .resideInAPackage(BASE + ".api..")
+                .allowEmptyShould(true)
+                .check(classes);
+    }
+
+    @Test
+    @DisplayName("system 은 다른 제품 모듈을 참조하지 않는다")
+    void systemDoesNotDependOnOtherProductModules() {
+        noClasses()
+                .that().resideInAPackage(BASE + ".system..")
+                .should().dependOnClassesThat()
+                .resideInAnyPackage(
+                        BASE + ".admin..",
+                        BASE + ".portal..",
+                        BASE + ".agent..",
+                        BASE + ".extensions..")
                 .allowEmptyShould(true)
                 .check(classes);
     }

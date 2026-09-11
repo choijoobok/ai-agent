@@ -5,7 +5,7 @@ category: standard/frontend
 type: operation
 class: policy
 created: 2026-05-04
-updated: 2026-09-07
+updated: 2026-09-12
 status: active
 sources: ["sources/frontend/src/shared/api/", "sources/frontend/eslint.config.js", "aidd-guide/standard/frontend/packages.md"]
 tier: 2
@@ -14,14 +14,15 @@ tags: [frontend, http, axios, endpoints, request-id]
 
 # HTTP — `endpoints.ts` · 배럴 하나 · 응답 처리
 
-> **호출 URL 은 `features/{도메인}/api/endpoints.ts` 에만 둔다**(AGENTS.md §8).
+> **호출 URL 은 기능의 `api/endpoints.ts` 에만 둔다** — 이행 전에는
+> `features/{도메인}`, 제품 모듈 안에서는 `modules/{모듈}/{features|public}/{도메인}`이다.
 > 그 선언이 **인가 시드의 입력**이다 — **선언하지 않고 부르면 403, 선언만 하고 안 부르면
 > 접근 범위가 조용히 넓어진다.**
 
 ## 1. URL 선언
 
 ```ts
-// features/user/api/endpoints.ts
+// features/user/api/endpoints.ts 또는 modules/system/public/auth/api/endpoints.ts
 export const USER_ENDPOINTS = {
   getList: '/service/user/getList',
   save:    '/service/user/save',
@@ -49,7 +50,7 @@ import { post } from '@/shared/api/request';                    // ❌ ESLint
 
 ## 3. 호출을 감싸는 자리
 
-기능의 HTTP 호출은 **`features/{도메인}/api/{도메인}Api.ts` 함수**로 감싼다 —
+기능의 HTTP 호출은 **그 기능의 `api/{도메인}Api.ts` 함수**로 감싼다 —
 **화면에 `post<T>(URL, {…})` 가 남지 않는다.**
 
 파일 이름은 **폴더 이름 그대로**(`features/code/api/codeApi.ts`)이며, 계층이 다르면

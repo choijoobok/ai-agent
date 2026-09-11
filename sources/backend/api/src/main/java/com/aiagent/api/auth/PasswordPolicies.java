@@ -13,7 +13,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 /**
- * 비밀번호 규칙 목록을 조립한다 — {@code documents/screen/_standalone/pwd-change/requirements.md} §6-2.
+ * 비밀번호 규칙 목록을 조립한다 — {@code documents/screen/_standalone/system/pwd-change/requirements.md} §6-2.
  *
  * <h2>서버가 <b>실제로 판정하는 것만</b> 낸다</h2>
  *

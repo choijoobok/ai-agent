@@ -52,13 +52,28 @@ export default tseslint.config(
       'import-x/no-restricted-paths': [
         'error',
         {
-          zones: FEATURES.map((feature) => ({
-            target: `./src/features/${feature}`,
-            from: './src/features',
-            except: [`./${feature}`],
-            message:
-              'features 끼리 직접 import 할 수 없다. 두 번째 화면이 쓰는 순간 shared/ 로 올린다 — frontend/packages.md',
-          })),
+          zones: [
+            ...FEATURES.map((feature) => ({
+              target: `./src/features/${feature}`,
+              from: './src/features',
+              except: [`./${feature}`],
+              message:
+                'features 끼리 직접 import 할 수 없다. 두 번째 화면이 쓰는 순간 shared/ 로 올린다 — frontend/packages.md',
+            })),
+            ...['admin', 'portal', 'agent'].flatMap((product) => [
+              {
+                target: './src/modules/system',
+                from: `./src/modules/${product}`,
+                message: `system은 ${product} 모듈을 참조할 수 없다 — ARCH-022.`,
+              },
+              {
+                target: `./src/modules/${product}`,
+                from: './src/modules/system',
+                except: ['./public'],
+                message: `${product}는 system public 계약만 참조할 수 있다 — ARCH-022.`,
+              },
+            ]),
+          ],
         },
       ],
 

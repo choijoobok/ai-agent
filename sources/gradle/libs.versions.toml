@@ -8,6 +8,9 @@ archunit = "1.5.0"
 swaggerAnnotations = "2.2.30"
 p6spy = "3.9.1"
 poi = "5.4.1"
+pitestGradle = "1.19.0"
+pitestCore = "1.22.1"
+pitestJunit5 = "1.2.3"
 
 
 [libraries]
@@ -50,3 +53,4 @@ driver-mssql = { module = "com.microsoft.sqlserver:mssql-jdbc" }
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
+pitest = { id = "info.solidsoft.pitest", version.ref = "pitestGradle" }

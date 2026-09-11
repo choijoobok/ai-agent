@@ -158,8 +158,10 @@ public class LoginService {
         //
         // 유효 권한은 후보 객체가 지연 계산한다. 체인의 마지막 검사(공집합)가 부르거나,
         // 그것이 꺼져 있으면 아래 세션 적재가 부른다 — 어느 쪽이든 계산은 한 번이다.
-        LoginCandidate candidate =
-                new LoginCandidate(user, () -> effectiveAuthorityService.calculate(form.loginId()));
+        LoginCandidate candidate = new LoginCandidate(
+                user,
+                () -> effectiveAuthorityService.calculate(form.loginId()),
+                context.clientIp());
 
         for (LoginPostCheck check : postChecks) {
             LoginResultCode blocked = check.check(candidate).orElse(null);

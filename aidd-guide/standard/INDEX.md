@@ -136,6 +136,7 @@ cd sources/frontend && npx tsc -b --noEmit   # 계약이 깨지면 여기서 전
 | Frontend | **React 19** · TypeScript **6.0.3** · Vite 8 |
 | UI | **AntD 6** · **AG Grid Community 36** |
 | 상태 | react-query 5(서버) · zustand 5(클라이언트) |
+| 품질 | ArchUnit 1.5 · PIT 1.22(Full 트랙 슬라이스 뮤테이션) |
 | 배포 | **단일 JAR** — 프론트 임베드 |
 
 상세와 함정은 [stack.md](./stack.md).

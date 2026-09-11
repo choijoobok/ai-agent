@@ -5,7 +5,7 @@ category: standard
 type: operation
 class: none
 created: 2026-05-04
-updated: 2026-09-07
+updated: 2026-09-12
 status: active
 sources: ["sources/gradle/libs.versions.toml", "sources/frontend/package.json"]
 tier: 2
@@ -33,6 +33,7 @@ tags: [stack, version, gradle, npm]
 | 마이그레이션 | **Liquibase** (`spring-boot-starter-liquibase`) |
 | 보안 | Spring Security 7.1.x |
 | **ArchUnit** | **1.5.0** |
+| 뮤테이션 테스트 | PIT **1.22.1** · Gradle 플러그인 **1.19.0** · JUnit 5 플러그인 **1.2.3** |
 | 엑셀 | Apache POI 5.4.1 — **임의 API 경로에만** |
 | SQL 로깅 | **P6Spy** |
 | 테스트 | JUnit 5 · AssertJ · Mockito · **Testcontainers** |

@@ -5,7 +5,7 @@ category: standard/frontend
 type: operation
 class: policy
 created: 2026-05-04
-updated: 2026-09-07
+updated: 2026-09-12
 status: active
 sources: ["sources/frontend/src/", "sources/frontend/eslint.config.js"]
 tier: 2
@@ -24,16 +24,17 @@ tags: [frontend, structure, shared, state, zustand]
 src/
 ├── app/          진입 · 라우터 · 프로바이더(QueryClient · AntdConfig · I18n · Auth)
 ├── layouts/      앱 셸 — ShellLayout(헤더·사이더·탭바·브레드크럼·콘텐츠) · BlankLayout
+├── modules/      제품 모듈 — features/와 다른 모듈에 공개하는 public/ 계약
 ├── shared/       도메인 비종속 공통 — 아래 §2
-├── features/     화면 기능 단위 — api/ · components/ · pages/ · types.ts
+├── features/     모듈 이행 전 화면 기능 단위 — api/ · components/ · pages/ · types.ts
 └── locales/      번들 로드 실패 시의 문구 몇 개만 (전체 폴백이 아니다)
 ```
 
 `locales/` 의 키들은 **`MSG` 에도 `SYS_MESSAGE` 에도 없다** — 서버가 없을 때 쓰는 것이라
 서버에 두면 뜻이 없다.
 
-**`features/` 는 백엔드 애그리거트와 대체로 대응하되 1:1 이 아니다** —
-`auth` · `dashboard` · `errorlog` · `settings` 는 프론트에만 있다.
+**`features/` 는 백엔드 애그리거트와 대체로 대응하되 1:1 이 아니다** — `auth` · `dashboard` · `errorlog` · `settings` 는 프론트에만 있다.
+이행한 기능은 `modules/{모듈}/features/{기능}`, 외부 계약은 `modules/{모듈}/public/{계약}`에 두며 소비자는 system `public/**`만 가져오고 system은 admin·portal·agent를 참조하지 못하도록 ESLint가 막는다.
 
 ### 기능 하나의 모양
 
@@ -132,7 +133,7 @@ toSavePayload?: (rows: GridRow<T>[]) => unknown;
 
 | ESLint 규칙 | 무엇 |
 |---|---|
-| `import-x/no-restricted-paths` | **`features/*` 끼리 직접 import 금지** |
+| `import-x/no-restricted-paths` | **`features/*` 끼리 직접 import 금지** · 제품 모듈 간에는 공개 `public/**` 계약만 허용 |
 | `no-restricted-imports` | `@/shared/api/*` **딥 임포트 금지** — 배럴 하나 |
 | `no-restricted-syntax` | 문자열·JSX 텍스트·템플릿 문자열 **속 한글** · `label()` 리터럴 · `/api`·계층 경로 리터럴 |
 

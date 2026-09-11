@@ -66,7 +66,7 @@ class ExceptionLogRecorderTest {
     void 세션_만료는_기록하지_않는다() {
         ErrorCode code = CommonErrorCode.UNAUTHENTICATED;
 
-        recorder.record(request("/api/common/auth/getMe"), 401, code, "세션이 만료됐습니다", null);
+        recorder.record(request("/api/common/system/auth/getMe"), 401, code, "세션이 만료됐습니다", null);
 
         verify(exceptionLogs, never()).record(any());
     }

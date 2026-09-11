@@ -21,15 +21,25 @@ public final class LoginCandidate {
 
     private final SysUser user;
     private final Supplier<EffectiveAuthority> loader;
+    private final String clientIp;
     private EffectiveAuthority authority;
 
     public LoginCandidate(SysUser user, Supplier<EffectiveAuthority> loader) {
+        this(user, loader, null);
+    }
+
+    public LoginCandidate(SysUser user, Supplier<EffectiveAuthority> loader, String clientIp) {
         this.user = user;
         this.loader = loader;
+        this.clientIp = clientIp;
     }
 
     public SysUser user() {
         return user;
+    }
+
+    public String clientIp() {
+        return clientIp;
     }
 
     /** 처음 부를 때 계산하고 이후로는 같은 값을 돌려준다. */

@@ -112,4 +112,12 @@ Thoughtworks Technology Radar Vol.34는 뮤테이션 테스트를 코딩 에이�
 전체 코드에 돌리지 않는다. **업무 규칙이 사는 계층만** 대상으로 한다.
 컨트롤러·DTO·설정에 뮤테이션을 돌리면 시간만 쓰고 얻는 게 없다.
 
+이 저장소의 Java 슬라이스는 모듈별 `pitest` 태스크에 대상 클래스와 테스트를 명시한다.
+
+```bash
+./gradlew :backend:domain:pitest -PmutationTargets=com.aiagent.domain.order.OrderService -PmutationTests=com.aiagent.domain.order.OrderServiceTest
+```
+
+API 서비스는 `:backend:api:pitest`를 쓴다. 여러 패턴은 쉼표로 잇고, 임계 75는 빌드 설정이 강제한다.
+
 ---

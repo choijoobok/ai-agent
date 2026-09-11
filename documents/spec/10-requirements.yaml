@@ -515,10 +515,10 @@ requirements:
     acceptance: "상태·기간·잠금·휴면·IP 중 하나라도 실패한 계정은 세션을 얻지 못하고, 비밀번호와 세션 변경은 이력·만료 규칙을 우회하지 않는다"
     source: "현재 구현 역추적 — 사용자 관리와 로그인·프로필·설정·비밀번호 변경·세션 만료 화면"
     evidence:
-      frontend: ["features/user", "features/auth", "features/profile", "features/settings"]
+      frontend: ["features/user", "modules/system/public/auth", "features/profile", "features/settings"]
       backend: ["api/auth", "api/user", "domain/auth", "domain/user"]
       tables: [SYS_USER, SYS_USER_PWD_HIST, SYS_USER_IP_ALLOW, SYS_USER_PWD_RESET, SYS_LO_LOGIN]
-      screens: ["/user", "_standalone/login", "_standalone/profile", "_standalone/settings", "_standalone/pwd-change", "_standalone/session-expire"]
+      screens: ["/user", "_standalone/system/login", "_standalone/profile", "_standalone/settings", "_standalone/system/pwd-change", "_standalone/system/session-expire"]
     roadmap: RM-P1
 
   - id: REQ-502

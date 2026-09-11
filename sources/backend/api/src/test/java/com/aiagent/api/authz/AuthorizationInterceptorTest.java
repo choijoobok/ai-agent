@@ -97,7 +97,7 @@ class AuthorizationInterceptorTest {
         @DisplayName("public 은 판정 없이 지나간다 — 세션도 요구하지 않는다")
         void publicPassesWithoutSession() {
             SecurityContextHolder.clearContext();
-            assertThat(interceptor.preHandle(get("/api/public/auth/login", null), response, null))
+            assertThat(interceptor.preHandle(get("/api/public/system/auth/login", null), response, null))
                     .isTrue();
         }
 
@@ -234,7 +234,7 @@ class AuthorizationInterceptorTest {
         @DisplayName("로그아웃은 열려 있다 — 막다른 세션을 만들지 않는다")
         void logoutStaysOpen() {
             givenAuthority();
-            assertThat(interceptor.preHandle(get("/api/common/auth/logout", session), response, null))
+            assertThat(interceptor.preHandle(get("/api/common/system/auth/logout", session), response, null))
                     .isTrue();
         }
     }

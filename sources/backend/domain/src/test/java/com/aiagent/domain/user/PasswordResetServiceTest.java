@@ -42,7 +42,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
- * 분실 비밀번호 자기 재설정 — AUTH-07 · {@code documents/screen/_standalone/login/requirements.md} §6-3.
+ * 분실 비밀번호 자기 재설정 — AUTH-07 · {@code documents/screen/_standalone/system/login/requirements.md} §6-3.
  *
  * <p>재는 것은 셋이다. <b>응답이 갈리지 않는가</b>(계정 열거), <b>토큰이 실제로 닫히는가</b>
  * (만료·사용·시도 한도), <b>③이 한 덩어리인가</b>(비밀번호·이력·잠금·사용 표시).

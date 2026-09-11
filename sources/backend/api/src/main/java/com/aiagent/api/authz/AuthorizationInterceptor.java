@@ -63,10 +63,10 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
      * 핸들러가 없으면 404 다.
      */
     private static final Set<String> RESTRICTED_SESSION_ALLOWED = Set.of(
-            "/api/common/auth/getMe",
-            "/api/common/auth/logout",
-            "/api/common/auth/heartbeat",
-            "/api/common/auth/changePassword");
+            "/api/common/system/auth/getMe",
+            "/api/common/system/auth/logout",
+            "/api/common/system/auth/heartbeat",
+            "/api/common/system/auth/changePassword");
 
     private final ApiAuthorityRegistry registry;
     private final EffectiveAuthorityService authorities;

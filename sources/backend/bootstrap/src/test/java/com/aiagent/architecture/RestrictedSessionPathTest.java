@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
  * 이 목록 밖의 모든 {@code /api/**} 가 403 이 되며, <b>목록의 경로에 핸들러가 없으면
  * 404</b> 다 — 유도의 끝이 막다른 곳이 되고 그 사람은 로그아웃도 못 한다.
  *
- * <p><b>실제로 그런 상태로 한동안 있었다.</b> {@code /api/common/auth/changePassword} 는
+ * <p><b>실제로 그런 상태로 한동안 있었다.</b> {@code /api/common/system/auth/changePassword} 는
  * 화면이 오기 전부터 목록에 적혀 있었고(<i>"없는 경로가 여기 있어도 무해하다 — 핸들러가
  * 없으면 404 다"</i>), 프로필 모달(frontend/tabs.md)이 그 핸들러를 붙이면서 비로소 참이 됐다. 이제
  * <b>반대 방향의 오타</b>도 막는다: 경로를 고치면서 한쪽만 고치는 것이 이 게이트가 잡는 것이다.
@@ -35,7 +35,7 @@ class RestrictedSessionPathTest {
 
     private final JavaClasses classes = new ClassFileImporter()
             .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-            .importPackages("com.aiagent.api");
+            .importPackages("com.aiagent.api", "com.aiagent.system");
 
     @Test
     @DisplayName("화이트리스트의 경로마다 핸들러가 있다 — 없으면 404 라 막다른 세션이 된다")
@@ -53,7 +53,7 @@ class RestrictedSessionPathTest {
     @DisplayName("비밀번호 변경이 그 안에 있다 — 유도의 끝에는 문이 열려야 한다")
     void passwordChangeIsReachable() {
         // 이 경로가 목록에서 빠지면 임시 비밀번호로 들어온 사람이 바꿀 방법이 없다.
-        assertThat(restrictedSessionAllowed()).contains("/api/common/auth/changePassword");
+        assertThat(restrictedSessionAllowed()).contains("/api/common/system/auth/changePassword");
     }
 
     /** 인터셉터의 private 상수를 읽는다 — 목록을 여기 다시 적으면 두 곳이 어긋난다. */

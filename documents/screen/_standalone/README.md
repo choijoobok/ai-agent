@@ -29,9 +29,9 @@ documents/screen/_standalone/{화면}/
 
 | 화면 | 실물 | 자리 |
 |---|---|---|
-| [login](./login) | `features/auth/pages/LoginPage.tsx` · `components/PasswordResetFlow.tsx` | `/login` · 셸 밖 |
-| [pwd-change](./pwd-change) | (Phase 5) | `/password/change` · 셸 밖 |
-| [session-expire](./session-expire) | `features/auth/components/ExpiryWarningModal.tsx` · `ReauthModal.tsx` | 셸 위 모달 |
+| [login](./system/login) | `modules/system/public/auth/pages/LoginPage.tsx` · `components/PasswordResetFlow.tsx` | `/login` · 셸 밖 |
+| [pwd-change](./system/pwd-change) | (Phase 5) | `/password/change` · 셸 밖 |
+| [session-expire](./system/session-expire) | `modules/system/public/auth/components/ExpiryWarningModal.tsx` · `ReauthModal.tsx` | 셸 위 모달 |
 | [profile](./profile) | `features/profile/ProfileModal.tsx` | 헤더 → 모달 |
 | [settings](./settings) | `features/settings/SettingsModal.tsx` | 헤더 → 모달 |
 | [noti-inbox](./noti-inbox) | `features/notification/NotificationModal.tsx` | 헤더 벨 → 모달 |

@@ -150,4 +150,4 @@ LIKE 검색이 불가능해져** 사용자 목록의 가장 흔한 요구가 막
 - [menu.md](./menu.md) — 역할이 무엇을 갖는가
 - [logs.md](./logs.md) — 로그인 이력
 - [standard/backend/security.md](../../standard/backend/security.md) — 접근 제어 체인
-- [documents/screen/_standalone/login](../../../documents/screen/_standalone/login/requirements.md) — 재설정 3단계의 요건서(§3 이 읽는 규칙)
+- [documents/screen/_standalone/system/login](../../../documents/screen/_standalone/system/login/requirements.md) — 재설정 3단계의 요건서(§3 이 읽는 규칙)
