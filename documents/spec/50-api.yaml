@@ -37,8 +37,8 @@ feature_contracts:
     transaction: "메시지 값과 MESSAGE 캐시 버전 증가를 원자 처리"
     exception_map: { UC-505.E1: MESSAGE_KEY_CREATION_FORBIDDEN, UC-505.E2: MESSAGE_VERSION_ROLLBACK }
   FEAT-506:
-    request_rule: "등록된 편집 가능 키와 타입에 맞는 값만 받으며 비밀값은 받거나 돌려주지 않는다"
-    response_rule: "배포 기본값과 오버라이드를 합성하고 값 원천·경고를 함께 표시한다"
+    request_rule: "`sys-config.*` 아래 등록된 화면 노출용 키와 타입에 맞는 값만 받으며, 비밀값·임의 변경 금지 값의 별도 프로퍼티 경로는 받지 않는다"
+    response_rule: "화면 노출용 설정의 배포 기본값과 오버라이드를 합성하고 값 원천·경고를 함께 표시하며, 별도 프로퍼티 경로 값은 응답하지 않는다"
     transaction: "오버라이드와 CONFIG 캐시 버전 증가를 원자 처리"
     exception_map: { UC-506.E1: CONFIG_VALUE_INVALID, UC-506.E2: CONFIG_VERSION_ROLLBACK }
   FEAT-507:

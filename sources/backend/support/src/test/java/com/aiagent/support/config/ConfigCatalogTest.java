@@ -64,7 +64,7 @@ class ConfigCatalogTest {
         }
 
         @Test
-        @DisplayName("sys-config 아래가 아닌 것은 없다 — app.* 은 배포 설정이라 화면에 나오지 않는다")
+        @DisplayName("[TC-5063] sys-config 밖의 비밀·보호 경로는 없다 — 배포 설정이라 화면에 나오지 않는다")
         void 루트_밖은_없다() {
             assertThat(byKey()).doesNotContainKey("security.concurrent-session.max-sessions");
             assertThat(byKey()).doesNotContainKey("logging.sql.enabled");
