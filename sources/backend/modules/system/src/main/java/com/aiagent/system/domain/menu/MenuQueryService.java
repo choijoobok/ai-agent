@@ -1,4 +1,5 @@
-package com.aiagent.domain.authz.menu;
+// @feat FEAT-503
+package com.aiagent.system.domain.menu;
 
 import com.aiagent.core.search.InChunks;
 import com.aiagent.core.search.PageResponse;
@@ -10,6 +11,7 @@ import com.aiagent.domain.authz.entity.QSysRoleMenuAuth;
 import com.aiagent.domain.authz.entity.QSysUserMenuAuth;
 import com.aiagent.domain.authz.entity.QSysUserRole;
 import com.aiagent.domain.authz.entity.SysMenu;
+import com.aiagent.domain.authz.menu.MenuUserRow;
 import com.aiagent.domain.authz.repository.SysMenuRepository;
 import com.aiagent.domain.authz.service.MenuPreOrder;
 import com.aiagent.domain.message.service.MessageService;

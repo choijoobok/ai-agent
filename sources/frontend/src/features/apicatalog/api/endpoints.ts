@@ -17,7 +17,7 @@
  * 권한은 시드에 있고 버튼은 `<DataGrid>` 가 그린다.
  */
 export const API_CATALOG_ENDPOINTS = {
-  getList: '/service/apiCatalog/getList',
+  getList: '/service/system/apiCatalog/getList',
   /** 하단 pane — 마스터에서 고른 한 API 의 매핑 메뉴다(screen/api-catalog/requirements.md). */
-  getMenuList: '/service/apiCatalog/getMenuList',
+  getMenuList: '/service/system/apiCatalog/getMenuList',
 } as const;

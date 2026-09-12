@@ -1,21 +1,22 @@
-package com.aiagent.api.menu;
+// @feat FEAT-503
+package com.aiagent.system.api.menu;
 
-import com.aiagent.api.menu.request.MenuDeleteRequest;
-import com.aiagent.api.menu.request.MenuNodeRequest;
-import com.aiagent.api.menu.request.MenuSaveRequest;
-import com.aiagent.api.menu.request.MenuTreeSaveRequest;
 import com.aiagent.api.message.RequestLocale;
 import com.aiagent.api.trace.TraceId;
 import com.aiagent.core.response.ApiResponse;
 import com.aiagent.core.search.PageResponse;
 import com.aiagent.core.search.SearchRequest;
-import com.aiagent.domain.authz.menu.MenuQueryService;
-import com.aiagent.domain.authz.menu.MenuService;
-import com.aiagent.domain.authz.menu.MenuApiRow;
-import com.aiagent.domain.authz.menu.MenuCdParams;
-import com.aiagent.domain.authz.menu.MenuRoleRow;
-import com.aiagent.domain.authz.menu.MenuTreeRow;
 import com.aiagent.domain.authz.menu.MenuUserRow;
+import com.aiagent.system.api.menu.request.MenuDeleteRequest;
+import com.aiagent.system.api.menu.request.MenuNodeRequest;
+import com.aiagent.system.api.menu.request.MenuSaveRequest;
+import com.aiagent.system.api.menu.request.MenuTreeSaveRequest;
+import com.aiagent.system.domain.menu.MenuApiRow;
+import com.aiagent.system.domain.menu.MenuCdParams;
+import com.aiagent.system.domain.menu.MenuQueryService;
+import com.aiagent.system.domain.menu.MenuRoleRow;
+import com.aiagent.system.domain.menu.MenuService;
+import com.aiagent.system.domain.menu.MenuTreeRow;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,7 +54,7 @@ import org.springframework.web.bind.annotation.RestController;
  * playbook/excel-download.md 첫째 · screen/menu/requirements.md).
  */
 @RestController
-@RequestMapping("/api/service/menu")
+@RequestMapping("/api/service/system/menu")
 public class MenuController {
 
     private final MenuQueryService queries;

@@ -30,7 +30,7 @@
 | 페이지 경로 | `/menu` |
 | 메뉴코드 | `MENU_TREE` |
 | 프론트 폴더 | `sources/frontend/src/features/menu/` (+ 공통물 `shared/tree/` · `shared/authz/menuIcons`) |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/authz/menu/` · `sources/backend/api/…/api/menu/` |
+| 백엔드 패키지 | `sources/backend/modules/system/…/system/domain/menu/` · `sources/backend/modules/system/…/system/api/menu/` |
 | 화면 유형 | **트리-그리드 + 하단 탭 셋** |
 | 처리 유형 | CRUD — **즉시 저장** |
 | 쓰는 액션 | `R` `S` `E` — `EXPORT_YN` = `Y`. **`EXPORT` 가 돌아온 유일한 인가 화면**이다 |
@@ -295,14 +295,14 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 |
 |---|---|---|---|---|
-| 트리 | `getTree` | `/service/menu/getTree` | POST | R |
-| **노드 추가** | `saveNode` | `/service/menu/saveNode` | POST | S |
-| **속성** | `save` | `/service/menu/save` | POST | S |
-| **위치** | `saveTree` | `/service/menu/saveTree` | POST | S |
-| **삭제** | `deleteNode` | `/service/menu/deleteNode` | POST | S |
-| 탭 1 | `getApiList` | `/service/menu/getApiList` | POST | R |
-| 탭 2 | `getAccessibleUsers` | `/service/menu/getAccessibleUsers` | POST | R |
-| 탭 3 | `getRoleList` | `/service/menu/getRoleList` | POST | R |
+| 트리 | `getTree` | `/service/system/menu/getTree` | POST | R |
+| **노드 추가** | `saveNode` | `/service/system/menu/saveNode` | POST | S |
+| **속성** | `save` | `/service/system/menu/save` | POST | S |
+| **위치** | `saveTree` | `/service/system/menu/saveTree` | POST | S |
+| **삭제** | `deleteNode` | `/service/system/menu/deleteNode` | POST | S |
+| 탭 1 | `getApiList` | `/service/system/menu/getApiList` | POST | R |
+| 탭 2 | `getAccessibleUsers` | `/service/system/menu/getAccessibleUsers` | POST | R |
+| 탭 3 | `getRoleList` | `/service/system/menu/getRoleList` | POST | R |
 
 - **여덟인 것이 이 화면의 모양이다** — 조회 하나 · 쓰기 넷 · 탭 셋.
 - **쓰기가 넷인 것이 즉시 저장의 값이다.** 저장 버튼이 없는 대신 **경로가 연산마다 하나**다.

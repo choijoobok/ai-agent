@@ -1,4 +1,5 @@
-package com.aiagent.domain.authz.menu;
+// @feat FEAT-503
+package com.aiagent.system.domain.menu;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

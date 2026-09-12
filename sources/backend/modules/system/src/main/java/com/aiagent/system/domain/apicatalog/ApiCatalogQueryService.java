@@ -1,10 +1,11 @@
-package com.aiagent.domain.authz.apicatalog;
+// @feat FEAT-503
+package com.aiagent.system.domain.apicatalog;
 
-import static com.aiagent.domain.authz.apicatalog.ApiCatalogSpec.A;
-import static com.aiagent.domain.authz.apicatalog.ApiCatalogSpec.API_SPEC;
-import static com.aiagent.domain.authz.apicatalog.ApiCatalogSpec.M;
-import static com.aiagent.domain.authz.apicatalog.ApiCatalogSpec.MA;
-import static com.aiagent.domain.authz.apicatalog.ApiCatalogSpec.MENU_SPEC;
+import static com.aiagent.system.domain.apicatalog.ApiCatalogSpec.A;
+import static com.aiagent.system.domain.apicatalog.ApiCatalogSpec.API_SPEC;
+import static com.aiagent.system.domain.apicatalog.ApiCatalogSpec.M;
+import static com.aiagent.system.domain.apicatalog.ApiCatalogSpec.MA;
+import static com.aiagent.system.domain.apicatalog.ApiCatalogSpec.MENU_SPEC;
 
 import com.aiagent.core.search.InChunks;
 import com.aiagent.core.search.PageMode;

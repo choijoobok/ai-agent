@@ -1,4 +1,5 @@
-package com.aiagent.domain.authz.apicatalog;
+// @feat FEAT-503
+package com.aiagent.system.domain.apicatalog;
 
 /**
  * 하단 pane 의 한 행 — <b>이 API 를 쓰는 메뉴</b>(screen/menu/requirements.md).

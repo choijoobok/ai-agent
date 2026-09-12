@@ -1,6 +1,7 @@
-package com.aiagent.api.menu.request;
+// @feat FEAT-503
+package com.aiagent.system.api.menu.request;
 
-import com.aiagent.domain.authz.menu.MenuSiblingGroup;
+import com.aiagent.system.domain.menu.MenuSiblingGroup;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import java.util.List;

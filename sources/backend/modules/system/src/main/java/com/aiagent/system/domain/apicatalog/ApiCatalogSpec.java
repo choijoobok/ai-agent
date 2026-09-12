@@ -1,4 +1,5 @@
-package com.aiagent.domain.authz.apicatalog;
+// @feat FEAT-503
+package com.aiagent.system.domain.apicatalog;
 
 import com.aiagent.core.search.Op;
 import com.aiagent.core.search.QuerySpec;

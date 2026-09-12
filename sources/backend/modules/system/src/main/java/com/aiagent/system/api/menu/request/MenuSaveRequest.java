@@ -1,4 +1,5 @@
-package com.aiagent.api.menu.request;
+// @feat FEAT-503
+package com.aiagent.system.api.menu.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -29,7 +29,7 @@
 | 페이지 경로 | `/api-catalog` |
 | 메뉴코드 | `API_CATALOG` |
 | 프론트 폴더 | `sources/frontend/src/features/apicatalog/` |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/authz/apicatalog/` · `sources/backend/api/…/api/authz/` |
+| 백엔드 패키지 | `sources/backend/modules/system/…/system/domain/apicatalog/` · `sources/backend/modules/system/…/system/api/apicatalog/` |
 | 화면 유형 | **마스터-디테일(상하)** — 둘 다 읽기 전용 |
 | 처리 유형 | **조회 전용** |
 | 쓰는 액션 | `R` `E` — `EXPORT_YN` = `Y` |
@@ -234,8 +234,8 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |
 |---|---|---|---|---|---|
-| 목록 | `getList` | `/service/apiCatalog/getList` | POST | R | offset |
-| 하단 — 매핑 메뉴 | `getMenuList` | `/service/apiCatalog/getMenuList` | POST | R | offset |
+| 목록 | `getList` | `/service/system/apiCatalog/getList` | POST | R | offset |
+| 하단 — 매핑 메뉴 | `getMenuList` | `/service/system/apiCatalog/getMenuList` | POST | R | offset |
 
 - **둘뿐이고 둘 다 `get*` 이다.** 저장 경로가 없는 것이 **이 화면이 조회 전용이라는 사실의 집행**이며, 그래서 시드가 `SAVE` 를 만들지 못하고 **어느 역할에도 줄 수 없다.**
 - `exportExcel` 없음 — 프론트 생성.

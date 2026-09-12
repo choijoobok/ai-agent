@@ -1,14 +1,15 @@
-package com.aiagent.api.apicatalog;
+// @feat FEAT-503
+package com.aiagent.system.api.apicatalog;
 
 import com.aiagent.api.message.RequestLocale;
 import com.aiagent.api.trace.TraceId;
 import com.aiagent.core.response.ApiResponse;
 import com.aiagent.core.search.PageResponse;
 import com.aiagent.core.search.SearchRequest;
-import com.aiagent.domain.authz.apicatalog.ApiCatalogQueryService;
-import com.aiagent.domain.authz.apicatalog.ApiCatalogRow;
-import com.aiagent.domain.authz.apicatalog.ApiMenuRow;
-import com.aiagent.domain.authz.apicatalog.ApiUrlParams;
+import com.aiagent.system.domain.apicatalog.ApiCatalogQueryService;
+import com.aiagent.system.domain.apicatalog.ApiCatalogRow;
+import com.aiagent.system.domain.apicatalog.ApiMenuRow;
+import com.aiagent.system.domain.apicatalog.ApiUrlParams;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
  * {@code SYS_MENU_API} 를 만든다 — <b>목록의 첫 화면에서 자기 이름을 볼 수 있다</b>.
  */
 @RestController
-@RequestMapping("/api/service/apiCatalog")
+@RequestMapping("/api/service/system/apiCatalog")
 public class ApiCatalogController {
 
     private final ApiCatalogQueryService queries;
