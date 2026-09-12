@@ -1,9 +1,10 @@
+// @feat FEAT-508
 import { skipToken, useQuery } from '@tanstack/react-query';
 import { Alert, Button, Input, Modal, Space, Spin, Tabs, Tooltip, Typography } from 'antd';
 import { ApiError } from '@/shared/api';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
-import { getBatchHistoryDetail } from '@/features/batchhistory/api/batchHistoryApi';
+import { getBatchHistoryDetail } from '@/modules/system/features/batchhistory/api/batchHistoryApi';
 
 /**
  * 실행 상세 — screen/admin/system/batch/schedule/requirements.md 의 <b>탭 둘</b>. 각각 `textModal` 읽기 전용(frontend/grid.md).
@@ -30,7 +31,7 @@ import { getBatchHistoryDetail } from '@/features/batchhistory/api/batchHistoryA
  * 열리지 않아 볼 방법이 없었다"</i> 를 <b>실측으로</b> 적은 자리이며, 이 파일은 그 실측을
  * 그대로 물려받는다 — 같은 실패를 두 번 배우지 않는다.
  *
- * <p><b>둘 다 없으면 이 모달이 열리지 않는다</b> — 목록의 `[보기]` 자체가 없다(screen/batch/history/requirements.md).
+ * <p><b>둘 다 없으면 이 모달이 열리지 않는다</b> — 목록의 `[보기]` 자체가 없다(screen/admin/system/batch/history/requirements.md).
  */
 export function BatchDetailModal(props: { histId: number | null; onClose: () => void }) {
   const { histId } = props;

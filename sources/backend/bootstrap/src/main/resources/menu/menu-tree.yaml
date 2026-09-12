@@ -48,7 +48,7 @@
 #     │   └ ERROR_LOG        에러 로그                /admin/system/log/error
 #     ├ BATCH                배치 · 스케줄
 #     │   ├ BATCH_SCHEDULE   스케줄 관리              /admin/system/batch/schedule
-#     │   └ BATCH_HISTORY    실행 이력                /batch/history
+#     │   └ BATCH_HISTORY    실행 이력                /admin/system/batch/history
 #     └ NOTICE               공지 · 알림
 #         ├ NOTICE_MGMT      공지사항 관리            /notice
 #         └ NOTI_REQUEST     요청함 처리              /noti-request
@@ -134,7 +134,7 @@ menus:
     url: /admin/system/batch/schedule
   - code: BATCH_HISTORY
     parent: BATCH
-    url: /batch/history
+    url: /admin/system/batch/history
     export: true
 
   - code: NOTICE

@@ -1,6 +1,7 @@
+// @feat FEAT-508
 import { post } from '@/shared/api';
-import { BATCH_HISTORY_ENDPOINTS } from '@/features/batchhistory/api/endpoints';
-import type { BatchHistoryDetail } from '@/features/batchhistory/types';
+import { BATCH_HISTORY_ENDPOINTS } from '@/modules/system/features/batchhistory/api/endpoints';
+import type { BatchHistoryDetail } from '@/modules/system/features/batchhistory/types';
 
 /** 배치 실행 이력 — screen/admin/system/batch/schedule/requirements.md. 목록과 중단은 그리드 선언이 부른다(frontend/grid.md). */
 export function getBatchHistoryDetail(histId: number): Promise<BatchHistoryDetail> {

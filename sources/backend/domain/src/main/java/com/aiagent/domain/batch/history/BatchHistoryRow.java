@@ -5,9 +5,9 @@ import com.aiagent.domain.batch.BatchResultCode;
 import java.time.Instant;
 
 /**
- * 실행 이력 한 행 — screen/batch/history/requirements.md. <b>{@code nclob} 둘이 없다.</b>
+ * 실행 이력 한 행 — screen/admin/system/batch/history/requirements.md. <b>{@code nclob} 둘이 없다.</b>
  *
- * <p>{@code RSLT_DTL_MSG} 도 {@code ERR_MSG} 도 컬럼 표에 없다(screen/batch/history/requirements.md) — 목록에 싣지
+ * <p>{@code RSLT_DTL_MSG} 도 {@code ERR_MSG} 도 컬럼 표에 없다(screen/admin/system/batch/history/requirements.md) — 목록에 싣지
  * 않으며 그 자리에 {@link #hasDetail} 한 칸이 온다. {@code ErrorLogRow} 가
  * {@code rootCauseStack} 대신 {@code hasStack} 을 둔 것과 같은 모양이다.
  *
@@ -19,9 +19,9 @@ import java.time.Instant;
  * 화면이 {@code (삭제된 배치)} 로 그리며 <b>이름을 지어내지 않는다</b> — screen/admin/system/log/access/requirements.md 가
  *     없는 계정에 이름을 붙이지 않기로 한 것과 같은 판단이다
  * @param elapsedMs <b>ms 원본</b>이다 — 화면이 {@code duration} 렌더러로 사람 단위로만
- * 바꾼다(screen/batch/history/requirements.md). 서버가 포맷한 문자열을 주면 정렬이 문자열 정렬이 되어
+ * 바꾼다(screen/admin/system/batch/history/requirements.md). 서버가 포맷한 문자열을 주면 정렬이 문자열 정렬이 되어
  *     {@code 9분 > 10분} 이 된다
- * @param hasDetail 상세 모달의 <b>탭 둘 중 하나라도 열 것이 있는가</b>(screen/batch/history/requirements.md).
+ * @param hasDetail 상세 모달의 <b>탭 둘 중 하나라도 열 것이 있는가</b>(screen/admin/system/batch/history/requirements.md).
  *     <b>{@code false} 면 {@code [보기]} 자체가 없다</b> — 열 것이 없는데 링크를 두면
  *     <i>눌러 보고서야 빈 것을 아는 셀</i>이 된다
  * @param cancelReqDtm 있는데 {@code rsltCd} 가 아직 {@code RUNNING} 이면 <b>중단 중</b>이다

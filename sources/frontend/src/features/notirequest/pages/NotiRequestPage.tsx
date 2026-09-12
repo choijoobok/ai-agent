@@ -191,7 +191,7 @@ export function NotiRequestPage() {
           /*
             <b>다중이다</b>(screen/noti-request/requirements.md — 확인 모달이 *요청 N건* 을 말한다). 하단 pane 이
             없으므로 frontend/grid.md 의 제약(다중이면 행 클릭 선택이 꺼진다)이 잃을 것을 만들지
-            않는다 — `BATCH_HISTORY` 가 같은 이유로 다중이다(screen/batch/history/requirements.md).
+            않는다 — `BATCH_HISTORY` 가 같은 이유로 다중이다(screen/admin/system/batch/history/requirements.md).
           */
           selection="multiple"
           /*

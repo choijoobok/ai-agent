@@ -25,10 +25,10 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/batch/history` |
+| 페이지 경로 | `/admin/system/batch/history` |
 | 메뉴코드 | `BATCH_HISTORY` |
-| 프론트 폴더 | `sources/frontend/src/features/batchhistory/` (+ 공통물 `shared/batch/`) |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/batch/history/` · `sources/backend/api/…/api/batch/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/batchhistory/` (+ 공통물 `shared/batch/`) |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/batch/history/` · `sources/backend/modules/system/…/system/api/batch/` |
 | 화면 유형 | 단일 그리드 + 모달 하나(탭 둘) |
 | 처리 유형 | **조회 + 실행** — 저장이 없다 |
 | 쓰는 액션 | `R` `E` `X` — `EXPORT_YN` = `Y`. **`S` 가 없다** |
@@ -259,9 +259,9 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |
 |---|---|---|---|---|---|
-| 목록 | `getList` | `/service/batchHistory/getList` | POST | R | offset |
-| 상세(탭 둘) | `getDetail` | `/service/batchHistory/getDetail` | POST | R | — |
-| **중단 요청** | `cancel` | `/service/batchHistory/cancel` | POST | **X** | — |
+| 목록 | `getList` | `/service/system/batchHistory/getList` | POST | R | offset |
+| 상세(탭 둘) | `getDetail` | `/service/system/batchHistory/getDetail` | POST | R | — |
+| **중단 요청** | `cancel` | `/service/system/batchHistory/cancel` | POST | **X** | — |
 
 - **`save*` 가 없는 것이 이 화면에 쓰기가 없다는 사실의 집행**이다 — 시드가 `SAVE` 를 만들 수 없고, 만들 수 없으므로 **어느 역할에도 줄 수 없다.**
 - **`cancel` 이 `SAVE` 가 아닌 이유**는 §6-2 다.
@@ -274,7 +274,7 @@
 
 - 코드그룹: **없음.** 결과 코드 일곱과 실행 구분은 **소스의 값**이다.
 - 메시지 키: 화면 `MSG.BATCH_HISTORY_*` · `MSG.BATCH_RSLT_*`(공통물) · 서버 `MsgKey.ERR_BATCH_HIST_PURGED` · `ERR_BATCH_HIST_NOT_CANCELABLE`.
-- 메뉴 시드: `menu-tree.yaml` — `code: BATCH_HISTORY` · `parent: BATCH` · `url: /batch/history` · `export: true`.
+- 메뉴 시드: `menu-tree.yaml` — `code: BATCH_HISTORY` · `parent: BATCH` · `url: /admin/system/batch/history` · `export: true`.
 - 초기 데이터 전제: 없음.
 - 설정: `sys-config.retention.batch-history-days`(**365**) · `sys-config.search.range-days.default-days`(7).
 - **파기 배치가 기본 꺼짐이라** 켜지 않으면 365일이 지나도 지워지지 않는다.

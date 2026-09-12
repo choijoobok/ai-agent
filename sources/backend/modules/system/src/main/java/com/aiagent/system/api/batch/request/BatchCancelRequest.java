@@ -1,4 +1,5 @@
-package com.aiagent.api.batch.request;
+// @feat FEAT-508
+package com.aiagent.system.api.batch.request;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

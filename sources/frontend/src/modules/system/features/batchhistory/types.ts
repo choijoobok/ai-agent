@@ -1,5 +1,6 @@
+// @feat FEAT-508
 /**
- * 상세 모달이 받는 것 — screen/batch/history/requirements.md. <b>탭 둘을 한 번에</b>.
+ * 상세 모달이 받는 것 — screen/admin/system/batch/history/requirements.md. <b>탭 둘을 한 번에</b>.
  *
  * <p>`ErrorLogDetail` 과 달리 `*Found` 짝이 없다. 저기는 전문이 <b>다른 테이블</b>에 있어
  * *파기됐다* 와 *원래 없다* 를 갈라야 했지만(screen/admin/system/log/access/requirements.md), 여기는 <b>같은 행의 두 컬럼</b>이라
@@ -18,7 +19,7 @@ export interface BatchCancelResult {
   /** 이번에 세운 것. */
   requested: number;
   /**
-   * 이미 요청돼 있던 것 — <b>오류가 아니다</b>(screen/batch/history/requirements.md).
+   * 이미 요청돼 있던 것 — <b>오류가 아니다</b>(screen/admin/system/batch/history/requirements.md).
    *
    * <p>둘을 가르지 않으면 두 번 누른 사람이 <b>두 번 다 먹었다</b> 고 믿는다.
    */

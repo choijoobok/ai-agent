@@ -3,9 +3,9 @@ ACCESS_LOG,/api/service/system/accessLog/getDetail
 ACCESS_LOG,/api/service/system/accessLog/getList
 API_CATALOG,/api/service/system/apiCatalog/getList
 API_CATALOG,/api/service/system/apiCatalog/getMenuList
-BATCH_HISTORY,/api/service/batchHistory/cancel
-BATCH_HISTORY,/api/service/batchHistory/getDetail
-BATCH_HISTORY,/api/service/batchHistory/getList
+BATCH_HISTORY,/api/service/system/batchHistory/cancel
+BATCH_HISTORY,/api/service/system/batchHistory/getDetail
+BATCH_HISTORY,/api/service/system/batchHistory/getList
 BATCH_SCHEDULE,/api/service/system/batchSchedule/getBeanList
 BATCH_SCHEDULE,/api/service/system/batchSchedule/getList
 BATCH_SCHEDULE,/api/service/system/batchSchedule/getRecentHistory

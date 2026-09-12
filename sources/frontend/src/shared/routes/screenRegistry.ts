@@ -72,8 +72,8 @@ export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
     default: (await import('@/modules/system/features/batchschedule/pages/BatchSchedulePage'))
       .BatchSchedulePage,
   })),
-  '/batch/history': lazy(async () => ({
-    default: (await import('@/features/batchhistory/pages/BatchHistoryPage')).BatchHistoryPage,
+  '/admin/system/batch/history': lazy(async () => ({
+    default: (await import('@/modules/system/features/batchhistory/pages/BatchHistoryPage')).BatchHistoryPage,
   })),
   /*
     샘플 — 68. **참조 구현이지 업무 화면이 아니다.** 걷어낼 때 지우는 줄이 여기 있고

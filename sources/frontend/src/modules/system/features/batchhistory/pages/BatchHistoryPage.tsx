@@ -1,3 +1,4 @@
+// @feat FEAT-508
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { App } from 'antd';
 import { FillColumn } from '@/shared/components/FillColumn';
@@ -15,14 +16,14 @@ import { handOff, onHandoff, useHandoff } from '@/shared/routes/handoffStore';
 import { hasPermission } from '@/shared/authz/permission';
 import { useAuthStore } from '@/shared/stores/authStore';
 import { execTypeOptions, rsltOptions } from '@/shared/batch/batchCodes';
-import { BATCH_HISTORY_ENDPOINTS } from '@/features/batchhistory/api/endpoints';
+import { BATCH_HISTORY_ENDPOINTS } from '@/modules/system/features/batchhistory/api/endpoints';
 import { historyColumns } from '@/shared/batch/historyColumns';
-import { BatchDetailModal } from '@/features/batchhistory/components/BatchDetailModal';
-import type { BatchCancelResult } from '@/features/batchhistory/types';
+import { BatchDetailModal } from '@/modules/system/features/batchhistory/components/BatchDetailModal';
+import type { BatchCancelResult } from '@/modules/system/features/batchhistory/types';
 import type { BatchHistoryRow } from '@/shared/batch/historyRow';
 
 /**
- * `BATCH_HISTORY` — screen/batch/history/requirements.md. <b>조회 전용인데 개입한다.</b>
+ * `BATCH_HISTORY` — screen/admin/system/batch/history/requirements.md. <b>조회 전용인데 개입한다.</b>
  *
  * <p>sys/menu.md 의 액션 열이 `R E X` 다 — `S` 가 없는데 `X` 가 있다. screen/menu/requirements.md 의 조회 전용
  * 모양에서 <b>`X` 하나가 더 있는</b> 형태이며, 그 하나가 <b>중단</b>이다.
@@ -55,11 +56,11 @@ import type { BatchHistoryRow } from '@/shared/batch/historyRow';
 const MENU_CD = 'BATCH_HISTORY';
 const SCHEDULE_CD = 'BATCH_SCHEDULE';
 
-/** 이력이며 64 와 같은 성격이다 — screen/batch/history/requirements.md. */
+/** 이력이며 64 와 같은 성격이다 — screen/admin/system/batch/history/requirements.md. */
 const PAGE_SIZE = 100;
 const PAGE_SIZES = [100, 500, 1000];
 
-/** 서버의 `rsltGroup` 파생 조건이 코드 묶음으로 번역한다(screen/batch/history/requirements.md). */
+/** 서버의 `rsltGroup` 파생 조건이 코드 묶음으로 번역한다(screen/admin/system/batch/history/requirements.md). */
 const GROUP_FAILED = 'FAILED';
 const GROUP_SKIPPED = 'SKIPPED';
 
@@ -75,11 +76,11 @@ export function BatchHistoryPage() {
   const permissions = useAuthStore((state) => state.permissions);
   const shell = useShellNavigation();
 
-  /** 상세 모달이 열린 행 — `null` 이면 닫혀 있다(screen/batch/history/requirements.md). */
+  /** 상세 모달이 열린 행 — `null` 이면 닫혀 있다(screen/admin/system/batch/history/requirements.md). */
   const [detailOf, setDetailOf] = useState<number | null>(null);
 
   /**
-   * 0건 문구가 <b>조건에 따라 셋으로 갈린다</b> — screen/batch/history/requirements.md.
+   * 0건 문구가 <b>조건에 따라 셋으로 갈린다</b> — screen/admin/system/batch/history/requirements.md.
    *
    * <p>*실패만* 으로 물어 0건이면 <b>답이다</b>: *"이 기간에 실패한 배치가 없습니다"*.
    * 한 문구로 뭉치면 셋 다 *"조회 결과가 없습니다"* 가 되어 <b>진단이 사라진다</b> —
@@ -87,7 +88,7 @@ export function BatchHistoryPage() {
    */
   const [emptyText, setEmptyText] = useState<string>(MSG.BATCH_HISTORY_EMPTY);
 
-  /** 넘겨받은 배치 — `BATCH_SCHEDULE` 의 하단 pane 에서 왔다(screen/batch/history/requirements.md). */
+  /** 넘겨받은 배치 — `BATCH_SCHEDULE` 의 하단 pane 에서 왔다(screen/admin/system/batch/history/requirements.md). */
   const handoff = useHandoff(MENU_CD);
 
   const header = useSearchFormHeader();
@@ -117,7 +118,7 @@ export function BatchHistoryPage() {
   const openDetail = useCallback((row: BatchHistoryRow) => setDetailOf(row.histId), []);
 
   /**
-   * `배치 ID` 셀 더블 클릭 → <b>`BATCH_SCHEDULE` 을 그 배치로 연다</b>(UX-02 — screen/batch/history/requirements.md).
+   * `배치 ID` 셀 더블 클릭 → <b>`BATCH_SCHEDULE` 을 그 배치로 연다</b>(UX-02 — screen/admin/system/batch/history/requirements.md).
    *
    * <p>§3.9 의 <b>반대 방향</b>이며 둘이 왕복을 만든다 — *"어제 정산이 안 됐다"* →
    * 이력에서 사유를 보고 → 등록에서 크론이나 쿨다운을 고친다.
@@ -145,7 +146,7 @@ export function BatchHistoryPage() {
   const searchFields = useMemo(() => buildSearchFields(handoff ?? ''), [handoff]);
 
   /**
-   * 중단 요청의 결과 — <b>요청과 이미 요청됨을 가른다</b>(screen/batch/history/requirements.md).
+   * 중단 요청의 결과 — <b>요청과 이미 요청됨을 가른다</b>(screen/admin/system/batch/history/requirements.md).
    *
    * <p>*"N건에 중단을 요청했습니다"* 만 내면 이미 요청돼 있던 것이 그 수에 섞여, 두 번
    * 누른 사람이 <b>두 번 다 먹었다</b> 고 믿는다 — <i>버튼은 한 번만 먹는다</i> 는 사실이
@@ -172,7 +173,7 @@ export function BatchHistoryPage() {
   );
 
   /**
-   * 선언 — <b>`save` 도 `addRow` 도 없다</b>(screen/batch/history/requirements.md).
+   * 선언 — <b>`save` 도 `addRow` 도 없다</b>(screen/admin/system/batch/history/requirements.md).
    *
    * <p>전 컬럼이 읽기 전용이므로 상태 컬럼도 삭제 컬럼도 붙지 않는다(frontend/grid.md) —
    * <b>감추는 코드가 한 줄도 없고 선언이 없어서</b> 나오지 않는다.
@@ -191,7 +192,7 @@ export function BatchHistoryPage() {
           url: BATCH_HISTORY_ENDPOINTS.cancel,
           target: 'selected' as const,
           /*
-            <b>실행 중인 것만 대상이다</b>(screen/batch/history/requirements.md). 걸러진 결과가 비면 버튼이 비활성이고,
+            <b>실행 중인 것만 대상이다</b>(screen/admin/system/batch/history/requirements.md). 걸러진 결과가 비면 버튼이 비활성이고,
             그것이 *"중단 대상 미선택 → 버튼 비활성"* 의 실물이다.
 
             <b>이미 요청된 것을 여기서 빼지 않는다.</b> 그쪽은 <i>대상이 아니다</i> 가
@@ -202,7 +203,7 @@ export function BatchHistoryPage() {
           eligible: (row: GridRow<BatchHistoryRow>) => row.data.rsltCd === 'RUNNING',
           toTargets: (rows: GridRow<BatchHistoryRow>[]) => rows.map((row) => row.data.histId),
           /*
-            <b>문구가 *"중단합니다"* 가 아니다</b>(screen/batch/history/requirements.md). 협조적 중단이라 <b>요청까지가
+            <b>문구가 *"중단합니다"* 가 아니다</b>(screen/admin/system/batch/history/requirements.md). 협조적 중단이라 <b>요청까지가
             화면의 책임</b>이고, 그것을 말하지 않으면 안 멈췄을 때 화면이 거짓말한 것이 된다.
           */
           confirm: MSG.BATCH_HISTORY_CANCEL_CONFIRM,
@@ -230,7 +231,7 @@ export function BatchHistoryPage() {
     await grid.read();
   }, [grid]);
 
-  /** 넘겨받은 배치가 있으면 <b>마운트하며 그 조건으로</b> 조회한다(screen/batch/history/requirements.md). */
+  /** 넘겨받은 배치가 있으면 <b>마운트하며 그 조건으로</b> 조회한다(screen/admin/system/batch/history/requirements.md). */
   const applyHandoff = useCallback(
     (batchId: string) => {
       searchForm.current?.apply({ batchId: { value: batchId } });
@@ -259,7 +260,7 @@ export function BatchHistoryPage() {
           controller={grid}
           pageSizes={PAGE_SIZES}
           /*
-            <b>다중 선택이다</b> — screen/batch/history/requirements.md 의 확인 문구가 *"실행 중인 {count}건"* 이고,
+            <b>다중 선택이다</b> — screen/admin/system/batch/history/requirements.md 의 확인 문구가 *"실행 중인 {count}건"* 이고,
             유령이 여럿 남은 아침에 하나씩 누르게 하면 그 문구가 언제나 *1건* 이 된다.
 
             <b>행 클릭으로는 선택되지 않는다</b>(frontend/grid.md) — 체크박스만이 선택 수단이며,
@@ -279,7 +280,7 @@ export function BatchHistoryPage() {
           footerNote={label(MSG.BATCH_HISTORY_RETENTION)}
           emptyText={emptyText}
           /*
-            <b>행 더블 클릭이 상세 모달이다</b>(screen/batch/history/requirements.md) — `[보기]` 와 제스처가 둘인 것은
+            <b>행 더블 클릭이 상세 모달이다</b>(screen/admin/system/batch/history/requirements.md) — `[보기]` 와 제스처가 둘인 것은
             같은 문 앞의 손잡이가 둘인 것이다(screen/admin/system/log/access/requirements.md 와 같은 규칙).
 
             <b>`배치 ID` 는 여기로 오지 않는다</b> — 컬럼이 자기 더블 클릭을 선언했으면
@@ -299,10 +300,10 @@ export function BatchHistoryPage() {
   );
 }
 
-// ── 조회조건 (screen/batch/history/requirements.md) ────────────────────────────────────────────
+// ── 조회조건 (screen/admin/system/batch/history/requirements.md) ────────────────────────────────────────────
 
 /**
- * 일곱이며 <b>기간이 필수가 아니다</b>(screen/batch/history/requirements.md).
+ * 일곱이며 <b>기간이 필수가 아니다</b>(screen/admin/system/batch/history/requirements.md).
  *
  * <p>screen/admin/system/log/access/requirements.md 의 *기간 필수 + 상한* 을 상속하지 않는다 — 그 근거가 <i>90일에 수천만 행</i>
  * 이었고 여기는 등록 수십 건 × 하루 수십 회다. <b>기본값은 두되 비울 수 있다</b>: 비우면
@@ -324,7 +325,7 @@ function buildSearchFields(batchId: string): SearchField[] {
       label: MSG.BATCH_HISTORY_SEARCH_START,
       type: 'dateRange',
       /*
-        <b>`required` 가 없다</b> — 64 의 이력 셋과 갈리는 자리다(screen/batch/history/requirements.md). 기본값만 두며
+        <b>`required` 가 없다</b> — 64 의 이력 셋과 갈리는 자리다(screen/admin/system/batch/history/requirements.md). 기본값만 두며
         그 값은 시스템 값(7일)을 그대로 쓴다. 상한도 덮지 않는다: 행이 가볍고
         (`nclob` 둘을 싣지 않는다) 무엇보다 <b>비우는 것이 허용된 화면</b>이라 상한이
         마지막 방어가 아니다.
@@ -336,7 +337,7 @@ function buildSearchFields(batchId: string): SearchField[] {
         탭이 그 배치로 열리며, <b>초기화는 빈 칸이 아니라 그 값으로</b> 돌아간다 —
         이 탭은 그것을 보러 열렸다(frontend/search-form.md).
 
-        <b>`richSelect` 가 아니라 `text` 다.</b> screen/batch/history/requirements.md 이 셀렉트로 적었지만 후보의
+        <b>`richSelect` 가 아니라 `text` 다.</b> screen/admin/system/batch/history/requirements.md 이 셀렉트로 적었지만 후보의
         출처가 `SYS_SCHEDULE_BATCH` 이고, <b>지워진 배치의 이력은 그 목록에 없다</b> —
         고아를 찾으려는 사람이 고를 수 없게 된다(§3.8 이 고아를 남기기로 한 결정과
         어긋난다). 목록에서 셀을 복사해 넣는 동선이 남는다.
@@ -406,7 +407,7 @@ function buildSearchFields(batchId: string): SearchField[] {
 }
 
 /**
- * 0건이 <b>답인 경우를 가른다</b> — screen/batch/history/requirements.md.
+ * 0건이 <b>답인 경우를 가른다</b> — screen/admin/system/batch/history/requirements.md.
  *
  * <p>*실패만* 으로 물어 0건이면 *"이 기간에 실패한 배치가 없습니다"* 이고, 그것은
  * 빈 결과가 아니라 <b>진단</b>이다. screen/admin/system/log/access/requirements.md 이 같은 규칙을 적었다.

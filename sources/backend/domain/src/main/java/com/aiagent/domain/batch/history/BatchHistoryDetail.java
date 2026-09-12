@@ -1,7 +1,7 @@
 package com.aiagent.domain.batch.history;
 
 /**
- * 상세 모달이 받는 것 — screen/batch/history/requirements.md. <b>탭 둘을 한 번에</b> 가져온다.
+ * 상세 모달이 받는 것 — screen/admin/system/batch/history/requirements.md. <b>탭 둘을 한 번에</b> 가져온다.
  *
  * <p>{@code ErrorLogDetail} 과 같은 모양이며 이유도 같다(screen/admin/system/log/access/requirements.md) — 왕복을 나누면
  * <b>두 번째가 실패했을 때 절반만 열린 모달</b>이 된다. 다만 이쪽은 <b>두 값이 같은
@@ -28,13 +28,13 @@ package com.aiagent.domain.batch.history;
  * 열리지 않아 볼 방법이 없었다"</i> 를 실측으로 적은 자리다.
  *
  * <p><b>둘 다 {@code null} 이면 이 모달이 열리지 않는다</b> — 목록의 {@code [보기]} 자체가
- * 없다(screen/batch/history/requirements.md). 그래도 이 레코드가 그 상태를 표현할 수 있는 것은, <b>목록을 본 뒤 파기
+ * 없다(screen/admin/system/batch/history/requirements.md). 그래도 이 레코드가 그 상태를 표현할 수 있는 것은, <b>목록을 본 뒤 파기
  * 배치가 지나갈 수 있기</b> 때문이 아니라(그때는 행이 아예 없어 404 다) 화면 밖 경로가
  * 이 API 를 직접 부를 수 있기 때문이다.
  */
 public record BatchHistoryDetail(Long histId, String rsltDtlMsg, String errMsg) {
 
-    /** 결과 상세 탭이 열리는가 — 아니면 비활성 + 툴팁이다(screen/batch/history/requirements.md). */
+    /** 결과 상세 탭이 열리는가 — 아니면 비활성 + 툴팁이다(screen/admin/system/batch/history/requirements.md). */
     public boolean hasDetail() {
         return rsltDtlMsg != null && !rsltDtlMsg.isEmpty();
     }

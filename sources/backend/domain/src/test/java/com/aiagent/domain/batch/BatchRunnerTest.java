@@ -37,6 +37,8 @@ class BatchRunnerTest {
     private SysBatchHistoryRepository histories;
     private BatchHistoryWriter writer;
     private LockStore locks;
+    private BatchHeartbeat heartbeat;
+    private ConfigLookup configs;
     private BatchRunner runner;
 
     @BeforeEach
@@ -44,9 +46,9 @@ class BatchRunnerTest {
         histories = mock(SysBatchHistoryRepository.class);
         writer = mock(BatchHistoryWriter.class);
         locks = mock(LockStore.class);
-        BatchHeartbeat heartbeat = mock(BatchHeartbeat.class);
+        heartbeat = mock(BatchHeartbeat.class);
         BatchHeartbeat.Beat beat = mock(BatchHeartbeat.Beat.class);
-        ConfigLookup configs = mock(ConfigLookup.class);
+        configs = mock(ConfigLookup.class);
 
         when(writer.now()).thenReturn(STARTED_AT);
         when(writer.start(BATCH_ID, BatchExecType.MANUAL)).thenReturn(42L);
@@ -59,7 +61,11 @@ class BatchRunnerTest {
         }).when(configs).inNewSnapshot(any(Runnable.class));
 
         BatchJob job = context -> BatchJobResult.of("정산 완료", "처리 대상 1건");
-        runner = new BatchRunner(
+        runner = runnerFor(job);
+    }
+
+    private BatchRunner runnerFor(BatchJob job) {
+        return new BatchRunner(
                 histories,
                 writer,
                 new BatchJobRegistry(Map.of("settleDailyJob", job)),
@@ -98,5 +104,15 @@ class BatchRunnerTest {
         verify(writer, never()).start(anyString(), any());
         verify(locks, never()).tryAcquire(anyString(), anyString(), any(), any());
         verify(writer, never()).finish(anyLong(), any(), any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("TC-5083 중단을 읽고 끝난 실행만 CANCELED로 확정한다")
+    void manualRunFinishesCanceledOnlyWhenJobReportsCancellation() {
+        runner = runnerFor(context -> BatchJobResult.canceled("300건 처리 후 중단"));
+
+        runner.runNow(batch());
+
+        verify(writer).finish(42L, BatchResultCode.CANCELED, "300건 처리 후 중단", null, null);
     }
 }
