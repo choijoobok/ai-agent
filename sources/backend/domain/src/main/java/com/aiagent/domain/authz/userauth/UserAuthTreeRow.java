@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 권한 트리의 한 행 — <b>screen/user-auth/requirements.md 가 정의를 갖는 그것</b>이다.
+ * 권한 트리의 한 행 — <b>screen/admin/system/user-auth/requirements.md 가 정의를 갖는 그것</b>이다.
  *
  * <p>{@code RoleAuthTreeRow}(screen/menu/requirements.md)가 <i>덜어 낸</i> 쪽이고 여기가 <b>원본</b>이다 —
- * <i>"먼저 쓰는 문서가 정의하고 뒤가 참조한다"</i> 는 screen/user-auth/requirements.md 의 말이 타입에서도 그대로다.
+ * <i>"먼저 쓰는 문서가 정의하고 뒤가 참조한다"</i> 는 screen/admin/system/user-auth/requirements.md 의 말이 타입에서도 그대로다.
  * 셀 상태가 <b>넷에서 일곱으로</b> 는다.
  *
  * <table>
@@ -27,11 +27,11 @@ import java.util.Map;
  * 유효 권한이 <b>역할과 개인 예외의 합집합</b>이므로(backend/security.md ③), 이미 역할로 갖고 있는 칸에
  * 개인 예외를 또 주는 일이 생긴다.
  *
- * <p><b>막지 않는다</b>(screen/user-auth/requirements.md). 중복은 무해하고, 막으면 <b>역할 부여가 곧 만료되는
+ * <p><b>막지 않는다</b>(screen/admin/system/user-auth/requirements.md). 중복은 무해하고, 막으면 <b>역할 부여가 곧 만료되는
  * 경우</b>를 처리할 수 없다 — 역할이 빠질 때 권한도 함께 사라진다. <i>"지금은 역할로도 갖고
  * 있다"</i> 를 알려주는 것까지가 화면의 몫이다.
  *
- * <p><b>색이 아니라 배지</b>다(screen/user-auth/requirements.md). 같은 화면의 예외 목록에 읽기 전용 셀(회색)이 함께
+ * <p><b>색이 아니라 배지</b>다(screen/admin/system/user-auth/requirements.md). 같은 화면의 예외 목록에 읽기 전용 셀(회색)이 함께
  * 있어서, 회색이 <i>못 고치는 칸</i> 과 <i>역할로 이미 있는 칸</i> 두 뜻이 되면 <b>편집할 수
  * 있는 칸을 편집할 수 없다고 읽는다</b>.
  *

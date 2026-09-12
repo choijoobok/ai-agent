@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code USER_AUTH_MGMT} 의 저장 — screen/user-auth/requirements.md. <b>행 상태가 있는 일괄 저장이다.</b>
+ * {@code USER_AUTH_MGMT} 의 저장 — screen/admin/system/user-auth/requirements.md. <b>행 상태가 있는 일괄 저장이다.</b>
  *
  * <h2>{@code RoleAuthService} 와 갈리는 자리</h2>
  *
@@ -36,16 +36,16 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>회수는 삭제가 아니다</h2>
  *
- * <p><b>{@code D} 는 잘못 등록한 행 정리뿐</b>이다(screen/user-auth/requirements.md). 회수는 <b>종료일을 어제로</b>
+ * <p><b>{@code D} 는 잘못 등록한 행 정리뿐</b>이다(screen/admin/system/user-auth/requirements.md). 회수는 <b>종료일을 어제로</b>
  * 하는 {@code U} 이며, 행을 지우면 <b>사유가 사라진다</b> — 변경 이력 테이블을 두지 않았으므로
  * (sys/logs.md) <i>"누구에게 왜 무엇을 언제까지 줬는가"</i> 를 남기는 것이 이 행뿐이다.
  *
  * <p>그래서 이 서비스는 <b>{@code D} 를 막지 않는다</b>. 막으면 오타로 만든 행을 영영 지울 수
- * 없고, screen/user-auth/requirements.md 이 셋째 수단으로 그것을 적어 두었다 — <b>무엇을 위한 삭제인지는 사람이 안다</b>.
+ * 없고, screen/admin/system/user-auth/requirements.md 이 셋째 수단으로 그것을 적어 두었다 — <b>무엇을 위한 삭제인지는 사람이 안다</b>.
  *
  * <h2>{@code READ} 불변식을 <b>합집합</b>에서 본다 — 역할 쪽과 판정이 다르다</h2>
  *
- * <p>screen/user-auth/requirements.md 의 불변식은 <i>다른 액션이 하나라도 켜져 있으면 {@code READ} 가 켜져 있다</i>
+ * <p>screen/admin/system/user-auth/requirements.md 의 불변식은 <i>다른 액션이 하나라도 켜져 있으면 {@code READ} 가 켜져 있다</i>
  * 이고, 그 근거는 <b>화면에 못 들어가면 어느 버튼도 누를 수 없다</b>는 것이다.
  *
  * <p>그렇다면 판정 대상은 <b>유효 권한</b>이어야 한다. 유효 권한은 역할과 개인 예외의
@@ -59,7 +59,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <p><b>기간의 겹침까지 보지는 않는다.</b> 개인 {@code SAVE} 가 8월이고 개인 {@code READ} 가
  * 9월이면 8월에는 도달할 수 없는데 여기서 잡지 못한다 — 그 검사는 <b>액션 넷 × 기간 구간</b>
- * 을 교차해야 하고, 무엇보다 <b>역할 부여의 기간까지</b> 함께 봐야 성립한다. screen/user-auth/requirements.md 가
+ * 을 교차해야 하고, 무엇보다 <b>역할 부여의 기간까지</b> 함께 봐야 성립한다. screen/admin/system/user-auth/requirements.md 가
  * 요구한 것은 그 수준이 아니며, 화면이 기간을 한 번에 받아 <b>같은 값을 복사</b>하므로
  * (backend/security.md — 부여 작업 단위로 사유 하나) 정상 경로에서는 생기지 않는다.
  */
@@ -178,7 +178,7 @@ public class UserAuthService {
      *
      * <p>{@code D} 에 걸지 않는 것이 요점이다. API 가 사라져 <b>고아가 된 부여</b>는 정의
      * 밖이라 여기서 거부되는데, 그 행을 지우는 것은 <b>사람이 판단해 하는 정리</b>이며
-     * screen/user-auth/requirements.md 이 셋째 수단으로 적어 두었다 — 막으면 고아를 영영 지울 수 없다.
+     * screen/admin/system/user-auth/requirements.md 이 셋째 수단으로 적어 두었다 — 막으면 고아를 영영 지울 수 없다.
      */
     private static void validateGrantable(
             MenuAction pair,
@@ -187,7 +187,7 @@ public class UserAuthService {
 
         /*
           <b>{@code MENU_URL IS NULL} 이면 거부한다</b>(sys/menu.md). 구조 노드에는 화면이 스위치를
-          그리지 않으므로(screen/user-auth/requirements.md) 정상 경로로는 오지 않는다 — 여기 닿는 것은 화면 밖
+          그리지 않으므로(screen/admin/system/user-auth/requirements.md) 정상 경로로는 오지 않는다 — 여기 닿는 것은 화면 밖
           경로이거나, 트리를 열어 둔 사이에 그 메뉴가 폴더가 된 경우다.
 
           <b>{@code USE_YN} 은 보지 않는다.</b> 꺼진 메뉴에도 예외는 줄 수 있고 게이트 ④에서

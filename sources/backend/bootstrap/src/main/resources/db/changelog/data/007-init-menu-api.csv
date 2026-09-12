@@ -74,9 +74,9 @@ SMPL_SINGLE_OFFSET,/api/service/sample/getOrderOffsetList
 SMPL_SINGLE_OFFSET,/api/service/sample/getTagCandidateList
 SMPL_SINGLE_OFFSET,/api/service/sample/recalculateOrders
 SMPL_SINGLE_OFFSET,/api/service/sample/saveOffsetOrders
-USER_AUTH_MGMT,/api/service/userAuth/getList
-USER_AUTH_MGMT,/api/service/userAuth/getMenuTree
-USER_AUTH_MGMT,/api/service/userAuth/save
+USER_AUTH_MGMT,/api/service/system/userAuth/getList
+USER_AUTH_MGMT,/api/service/system/userAuth/getMenuTree
+USER_AUTH_MGMT,/api/service/system/userAuth/save
 USER_MGMT,/api/service/system/user/getEffectiveAuthList
 USER_MGMT,/api/service/system/user/getIpList
 USER_MGMT,/api/service/system/user/getList

@@ -15,6 +15,8 @@ const required = [
   'src/modules/system/features/apicatalog/api/endpoints.ts',
   'src/modules/system/features/user/pages/UserMgmtPage.tsx',
   'src/modules/system/features/user/api/endpoints.ts',
+  'src/modules/system/features/userauth/pages/UserAuthMgmtPage.tsx',
+  'src/modules/system/features/userauth/api/endpoints.ts',
   '../backend/bootstrap/src/main/resources/menu/menu-tree.yaml',
 ];
 
@@ -22,6 +24,7 @@ const legacy = [
   'src/features/menu/pages/MenuTreePage.tsx',
   'src/features/apicatalog/pages/ApiCatalogPage.tsx',
   'src/features/user/pages/UserMgmtPage.tsx',
+  'src/features/userauth/pages/UserAuthMgmtPage.tsx',
 ];
 const errors = [];
 
@@ -37,6 +40,7 @@ for (const [route, source] of [
   ['/admin/system/menu', '@/modules/system/features/menu/pages/MenuTreePage'],
   ['/admin/system/api-catalog', '@/modules/system/features/apicatalog/pages/ApiCatalogPage'],
   ['/admin/system/user', '@/modules/system/features/user/pages/UserMgmtPage'],
+  ['/admin/system/user-auth', '@/modules/system/features/userauth/pages/UserAuthMgmtPage'],
 ]) {
   if (!registry.includes(route) || !registry.includes(source)) {
     errors.push(`화면 레지스트리가 ${route} → ${source}를 선언하지 않는다`);
@@ -44,7 +48,7 @@ for (const [route, source] of [
 }
 
 const menuSeed = readFileSync('../backend/bootstrap/src/main/resources/menu/menu-tree.yaml', 'utf8');
-for (const route of ['/admin/system/menu', '/admin/system/api-catalog', '/admin/system/user']) {
+for (const route of ['/admin/system/menu', '/admin/system/api-catalog', '/admin/system/user', '/admin/system/user-auth']) {
   if (!menuSeed.includes(`url: ${route}`)) errors.push(`메뉴 선언에 ${route}가 없다`);
 }
 

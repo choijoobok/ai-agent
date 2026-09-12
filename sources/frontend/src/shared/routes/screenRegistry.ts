@@ -48,8 +48,8 @@ export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
   '/admin/system/user': lazy(async () => ({
     default: (await import('@/modules/system/features/user/pages/UserMgmtPage')).UserMgmtPage,
   })),
-  '/user-auth': lazy(async () => ({
-    default: (await import('@/features/userauth/pages/UserAuthMgmtPage')).UserAuthMgmtPage,
+  '/admin/system/user-auth': lazy(async () => ({
+    default: (await import('@/modules/system/features/userauth/pages/UserAuthMgmtPage')).UserAuthMgmtPage,
   })),
   /*
     배치 둘 — 65. **폴더가 갈려 있는 것이 인가 경계다**(seed.md): 한 폴더에 두면 두 화면의

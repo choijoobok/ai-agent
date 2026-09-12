@@ -1,7 +1,8 @@
 import { post } from '@/shared/api';
-import { USER_AUTH_ENDPOINTS } from '@/features/userauth/api/endpoints';
+// @feat FEAT-502
+import { USER_AUTH_ENDPOINTS } from '@/modules/system/features/userauth/api/endpoints';
 import type { PageResponse } from '@/shared/grid/types';
-import type { UserAuthTreeRow } from '@/features/userauth/types';
+import type { UserAuthTreeRow } from '@/modules/system/features/userauth/types';
 
 /**
  * 개인 예외 권한 — screen/admin/system/user/requirements.md.

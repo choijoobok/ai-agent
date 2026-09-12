@@ -1,11 +1,12 @@
-/** 서버 `UserPickRow` · `UserAuthTreeRow` · `PersonalGrant` 와 1:1 — screen/user-auth/requirements.md. */
+/** 서버 `UserPickRow` · `UserAuthTreeRow` · `PersonalGrant` 와 1:1 — screen/admin/system/user-auth/requirements.md. */
 
 import type { Action } from '@/shared/authz/permission';
 import type { RowState } from '@/shared/grid/rows';
+// @feat FEAT-502
 import type { AccountStat } from '@/shared/user/accountStat';
 
 /**
- * 부여가 **지금** 어디에 있는가 — screen/user-auth/requirements.md.
+ * 부여가 **지금** 어디에 있는가 — screen/admin/system/user-auth/requirements.md.
  *
  * <p>**기간에서 파생**한다. 컬럼으로 두면 배치가 그것을 갱신해야 하고, 배치가 실패한 동안
  * 화면과 판정이 갈린다 — 계정 잠금 자동 해제를 조회 시 계산으로 둔 것과 같은 구조다.
@@ -15,10 +16,10 @@ import type { GrantState } from '@/shared/authz/grantState';
 export type { GrantState };
 
 /**
- * 좌 — **읽기 전용**이다. 계정 생성은 `USER_MGMT`(screen/user-auth/requirements.md)의 일이다.
+ * 좌 — **읽기 전용**이다. 계정 생성은 `USER_MGMT`(screen/admin/system/user-auth/requirements.md)의 일이다.
  *
  * <p>그래서 이 화면에는 **미저장 신규 부모가 생길 수 없고**, frontend/grid.md 의 상태 셋 중
- * *잠긴 상태* 가 없다(screen/user-auth/requirements.md).
+ * *잠긴 상태* 가 없다(screen/admin/system/user-auth/requirements.md).
  */
 export interface UserPickRow {
   userId: string;
@@ -30,12 +31,12 @@ export interface UserPickRow {
    */
   accountStat: AccountStat;
   /**
-   * **지금 유효한** 개인 예외의 건수 — screen/user-auth/requirements.md.
+   * **지금 유효한** 개인 예외의 건수 — screen/admin/system/user-auth/requirements.md.
    *
    * <p>예정·만료는 세지 않는다. 하단 그리드의 *상태* 컬럼과 **같은 규칙**이어야
-   * 화면에서 눈으로 센 수와 이 수가 맞는다(screen/user-auth/requirements.md).
+   * 화면에서 눈으로 센 수와 이 수가 맞는다(screen/admin/system/user-auth/requirements.md).
    *
-   * <p>**조회조건이 아니다**(screen/user-auth/requirements.md) — 거르면 *예외가 없는 사람에게 처음 주는* 동선이
+   * <p>**조회조건이 아니다**(screen/admin/system/user-auth/requirements.md) — 거르면 *예외가 없는 사람에게 처음 주는* 동선이
    * 막힌다. 좁히는 데 쓰는 것은 컬럼 정렬이 아니라 **눈**이다.
    */
   activeGrantCnt: number;
@@ -44,7 +45,7 @@ export interface UserPickRow {
 /** 개인 예외 한 칸 — `SYS_USER_MENU_AUTH` 의 행 하나(sys/menu.md · AUTHZ-07). */
 export interface PersonalGrant {
   actionCd: Action;
-  /** 스위치가 켜지는 것은 `ACTIVE` 하나뿐이다 — 나머지 둘은 **꺼진 채 배지**다(screen/user-auth/requirements.md). */
+  /** 스위치가 켜지는 것은 `ACTIVE` 하나뿐이다 — 나머지 둘은 **꺼진 채 배지**다(screen/admin/system/user-auth/requirements.md). */
   state: GrantState;
   validFromDt: string;
   validToDt: string;
@@ -53,7 +54,7 @@ export interface PersonalGrant {
 }
 
 /**
- * 우 — 권한 트리의 한 행. **screen/user-auth/requirements.md 가 정의를 갖는 그것**이다.
+ * 우 — 권한 트리의 한 행. **screen/admin/system/user-auth/requirements.md 가 정의를 갖는 그것**이다.
  *
  * <p>`RoleAuthTreeRow`(screen/menu/requirements.md)가 *덜어 낸* 쪽이고 여기가 **원본**이다 — 셀 상태가 넷에서
  * 일곱으로 는다: 부여 없음 · 유효 · 예정 · 만료 · 역할 경유 · 액션 미정의 · 구조 노드.
@@ -75,7 +76,7 @@ export interface UserAuthTreeRow {
   menuUrl: string | null;
   /** 최종 게이트(backend/security.md ④). **꺼진 메뉴에도 예외는 줄 수 있다** — 화면은 이름을 흐리게 그린다. */
   useYn: boolean;
-  /** 여기 없는 칸은 `—` 이며 *안 줬다* 가 아니라 **줄 것이 없다** 다(screen/user-auth/requirements.md). */
+  /** 여기 없는 칸은 `—` 이며 *안 줬다* 가 아니라 **줄 것이 없다** 다(screen/admin/system/user-auth/requirements.md). */
   definedActions: Action[];
   /**
    * 이 사용자의 개인 예외 — **기간과 사유까지** 온다.
@@ -89,7 +90,7 @@ export interface UserAuthTreeRow {
    */
   grants: PersonalGrant[];
   /**
-   * 액션 → 그 액션을 주는 **지금 유효한** 역할들의 이름(screen/user-auth/requirements.md).
+   * 액션 → 그 액션을 주는 **지금 유효한** 역할들의 이름(screen/admin/system/user-auth/requirements.md).
    *
    * <p>배지가 말하는 것은 *"지금 역할로도 갖고 있다"* 이므로 만료된 역할 부여와 꺼진 역할은
    * 오지 않는다. **막지 않고 알려만 준다** — 중복은 무해하고(backend/security.md — 합집합), 막으면
@@ -102,14 +103,14 @@ export interface UserAuthTreeRow {
  * 하 — 예외 목록의 한 행. **트리에서 편 것**이며 서버 타입에 대응이 없다.
  *
  * <p>`menuNm` 을 함께 드는 것이 요점이다. 목록만 보면 **메뉴 코드로 무엇인지 알 수 없고**,
- * screen/user-auth/requirements.md 가 *"목록만 두면 메뉴를 코드로 찾아야 한다"* 고 적은 그 자리다.
+ * screen/admin/system/user-auth/requirements.md 가 *"목록만 두면 메뉴를 코드로 찾아야 한다"* 고 적은 그 자리다.
  */
 export interface GrantRow {
   menuCd: string;
   /** 조상 경로를 포함한 표시 이름 — `사용자 > 사용자 관리`(frontend/tabs.md 와 같은 형식). */
   menuPath: string;
   actionCd: Action;
-  /** **필수**다. 신규 행은 오늘로 시작하고 종료일은 비어 있다(screen/user-auth/requirements.md). */
+  /** **필수**다. 신규 행은 오늘로 시작하고 종료일은 비어 있다(screen/admin/system/user-auth/requirements.md). */
   validFromDt: string | null;
   validToDt: string | null;
   grantRsn: string | null;

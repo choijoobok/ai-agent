@@ -91,7 +91,7 @@ class UserAuthServiceTest {
         when(roleAuths.findGrantsOfUser(anyString(), any(), anyBoolean())).thenReturn(List.of());
     }
 
-    // ── READ 불변식 — 판정은 합집합에서 (screen/user-auth/requirements.md) ────────────────────
+    // ── READ 불변식 — 판정은 합집합에서 (screen/admin/system/user-auth/requirements.md) ────────────────────
 
     @Nested
     @DisplayName("READ 불변식은 합집합에서 판정한다")
@@ -174,7 +174,7 @@ class UserAuthServiceTest {
         void allowsDeletingAnOrphan() {
             /*
               {@code EXECUTE} 는 정의 밖이다. 그런데도 부여 행이 있는 것이 <b>고아</b>이며,
-              screen/user-auth/requirements.md 이 <i>잘못 등록한 행 정리</i> 를 셋째 수단으로 적어 두었다 — 지우는
+              screen/admin/system/user-auth/requirements.md 이 <i>잘못 등록한 행 정리</i> 를 셋째 수단으로 적어 두었다 — 지우는
               것까지 막으면 <b>사람이 판단할 길</b>이 사라진다.
             */
             SysUserMenuAuth orphan = grant(ActionType.EXECUTE);
@@ -222,7 +222,7 @@ class UserAuthServiceTest {
         }
     }
 
-    // ── 회수는 삭제가 아니다 (screen/user-auth/requirements.md) ───────────────────────────────
+    // ── 회수는 삭제가 아니다 (screen/admin/system/user-auth/requirements.md) ───────────────────────────────
 
     @Test
     @DisplayName("회수는 같은 행의 종료일을 고친다 — 행을 지우면 사유가 사라진다")
@@ -248,13 +248,14 @@ class UserAuthServiceTest {
     }
 
     @Test
-    @DisplayName("없는 계정이면 거부한다 — 화면이 낡았거나 화면 밖 경로다")
+    @DisplayName("TC-5022 없는 계정 개인 예외 저장은 거부하고 기존 권한을 유지한다")
     void rejectsUnknownUser() {
         when(users.existsById(USER)).thenReturn(false);
 
         assertThatThrownBy(() -> service.save(USER, List.of(add(ActionType.READ))))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("없는 계정");
+        verify(grants, never()).saveAll(any());
     }
 
     // ── 조립 ─────────────────────────────────────────────────────────

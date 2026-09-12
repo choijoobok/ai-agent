@@ -19,10 +19,10 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/user-auth` |
+| 페이지 경로 | `/admin/system/user-auth` |
 | 메뉴코드 | `USER_AUTH_MGMT` |
-| 프론트 폴더 | `sources/frontend/src/features/userauth/` (+ 공통물 `shared/user/` · `shared/tree/`) |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/authz/userauth/` · `sources/backend/api/…/api/user/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/userauth/` (+ 공통물 `shared/user/` · `shared/tree/`) |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/authz/userauth/` · `sources/backend/modules/system/…/system/api/userauth/` |
 | 화면 유형 | **트리-그리드 · 스플리터 둘**(좌우 안에 상하) |
 | 처리 유형 | CRUD(**하단 일괄 저장**) |
 | 쓰는 액션 | `R` `S` `E` — `EXPORT_YN` = `Y` |
@@ -272,9 +272,9 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |
 |---|---|---|---|---|---|
-| 좌 — 사용자 목록 | `getList` | `/service/userAuth/getList` | POST | R | offset |
-| **우 + 하** | `getMenuTree` | `/service/userAuth/getMenuTree` | POST | R | **없음** |
-| 저장 | `save` | `/service/userAuth/save` | POST | S | — |
+| 좌 — 사용자 목록 | `getList` | `/service/system/userAuth/getList` | POST | R | offset |
+| **우 + 하** | `getMenuTree` | `/service/system/userAuth/getMenuTree` | POST | R | **없음** |
+| 저장 | `save` | `/service/system/userAuth/save` | POST | S | — |
 
 - **셋인데 화면은 넷이다** — 우와 하가 **경로 하나**를 나눠 쓴다. 표시가 둘이라고 원본이 둘이 되면 **같은 질문에 답이 둘**이 된다.
 - **`USER_MGMT` 의 개인 예외 탭과 경로를 나눈다.** 거기는 *"이 사람이 무슨 예외를 갖고 있나"* 이고 여기는 *"이 사람에게 예외를 준다"* 다 — 편집을 탭에 두지 않는 이유는 **사용자 관리 권한이 있다고 예외 권한 부여 권한이 따라오면 안 되기** 때문이다. 반환 형태도 다르다(저쪽은 납작한 목록, 여기는 메뉴 전건).
@@ -286,7 +286,7 @@
 
 - 코드그룹: **없음.** 액션 넷과 상태 셋은 상수다.
 - 메시지 키: 화면 `MSG.USER_AUTH_*` · `MSG.AUTHZ_ACTION_*` · 서버 `MsgKey.ERR_USER_AUTH_*` 아홉.
-- 메뉴 시드: `menu-tree.yaml` — `code: USER_AUTH_MGMT` · `parent: AUTHZ` · `url: /user-auth` · `export: true`.
+- 메뉴 시드: `menu-tree.yaml` — `code: USER_AUTH_MGMT` · `parent: USER` · `url: /admin/system/user-auth` · `export: true`.
 - 초기 데이터 전제: `SYS_USER` 에 계정이, `SYS_MENU` 에 메뉴가, **`SYS_MENU_API` 에 매핑이** 있어야 한다.
 
 ---

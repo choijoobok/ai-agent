@@ -78,7 +78,7 @@ menus:
     export: true
   - code: USER_AUTH_MGMT
     parent: USER
-    url: /user-auth
+    url: /admin/system/user-auth
     export: true
 
   - code: MENU
