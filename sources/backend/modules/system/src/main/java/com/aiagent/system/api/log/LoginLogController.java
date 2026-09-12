@@ -1,4 +1,5 @@
-package com.aiagent.api.log;
+// @feat FEAT-507
+package com.aiagent.system.api.log;
 
 import com.aiagent.api.trace.TraceId;
 import com.aiagent.core.response.ApiResponse;
@@ -14,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code LOGIN_LOG} — screen/log/login/requirements.md. <b>경로가 하나다.</b>
+ * {@code LOGIN_LOG} — screen/admin/system/log/login/requirements.md. <b>경로가 하나다.</b>
  *
  * <p>이 템플릿에서 가장 작은 컨트롤러이며 그것이 설계의 결과다. {@code save*} 가 없는 것은
- * 이력 행이 불변이기 때문이고(screen/log/login/requirements.md), {@code getDetail} 마저 없는 것은 <b>{@code nclob}
+ * 이력 행이 불변이기 때문이고(screen/admin/system/log/login/requirements.md), {@code getDetail} 마저 없는 것은 <b>{@code nclob}
  * 컬럼이 하나도 없어</b> 목록이 곧 전부이기 때문이다. 선언이 없으므로 시드 생성기가
  * {@code SAVE} 액션을 만들 수 없고, 만들 수 없으므로 <b>어느 역할에도 줄 수 없다</b>
  * (backend/api.md — 접두가 액션을 정한다).
@@ -31,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 코드인데 그것은 <b>공통코드라 프론트 캐시가 붙인다</b>(sys/code.md).
  */
 @RestController
-@RequestMapping("/api/service/loginLog")
+@RequestMapping("/api/service/system/loginLog")
 public class LoginLogController {
 
     private final LoginLogQueryService queries;

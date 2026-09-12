@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
  * <caption>playbook/INDEX.md</caption>
  *   <tr><td>총 건수</td><td><b>없다</b> — {@code COUNT} 를 돌지 않는 것이 이 모드의 값이다</td></tr>
  * <tr><td>정렬</td><td><b>한 컬럼만</b>. 둘 이상이면 400 이다(backend/api.md)</td></tr>
- * <tr><td>기간</td><td><b>필수 + 상한</b>. screen/log/access/requirements.md 의 규칙을 업무 테이블에서 되풀이한다</td></tr>
+ * <tr><td>기간</td><td><b>필수 + 상한</b>. screen/admin/system/log/access/requirements.md 의 규칙을 업무 테이블에서 되풀이한다</td></tr>
  * </table>
  */
 @RestController
@@ -55,7 +55,7 @@ public class SampleSingleCursorController {
      *
      * <p><b>기간 검증이 서버에도 있다.</b> 화면의 {@code required} 와 {@code rangeDays} 가
      * 먼저 막지만 <b>도구·스크립트는 그 폼을 지나지 않는다</b> — 화면만 막으면 그 상한은
-     * 규약이 아니라 권고다(screen/log/access/requirements.md).
+     * 규약이 아니라 권고다(screen/admin/system/log/access/requirements.md).
      */
     @Operation(
             summary = "샘플 주문 목록 조회 — 커서형",

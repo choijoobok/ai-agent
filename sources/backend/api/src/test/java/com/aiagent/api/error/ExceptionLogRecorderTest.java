@@ -26,7 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
- * 에러 로그 적재의 규칙 — screen/log/access/requirements.md.
+ * 에러 로그 적재의 규칙 — screen/admin/system/log/access/requirements.md.
  *
  * <p><b>실측으로 확인하기 어려운 자리라 테스트가 있다.</b> 401 과 5xx 는 화면을 두드려서
  * 만들기 힘들다 — 이 백엔드는 4xx 를 잘 막아 두어서(2026-08-30 실측 — 깨진 커서도 잘못된
@@ -93,7 +93,7 @@ class ExceptionLogRecorderTest {
         SysExceptionLog entry = recorded();
         assertThat(entry.getRootCauseStack()).isNull();
         assertThat(entry.getHttpStat()).isEqualTo((short) 403);
-        // 갈래를 나르는 것이 이 컬럼이다 — 사용자에게는 셋 다 같은 403 이다(screen/log/access/requirements.md).
+        // 갈래를 나르는 것이 이 컬럼이다 — 사용자에게는 셋 다 같은 403 이다(screen/admin/system/log/access/requirements.md).
         assertThat(entry.getErrCd()).isEqualTo("err.api-not-registered");
     }
 
@@ -107,12 +107,12 @@ class ExceptionLogRecorderTest {
 
         String stack = recorded().getRootCauseStack();
         assertThat(stack).contains("IllegalStateException").contains("겉");
-        // 표준 형식이 근본 원인을 맨 끝에 둔다 — 이름이 말하는 것은 그대로 들어 있다(screen/log/access/requirements.md).
+        // 표준 형식이 근본 원인을 맨 끝에 둔다 — 이름이 말하는 것은 그대로 들어 있다(screen/admin/system/log/access/requirements.md).
         assertThat(stack).contains("Caused by").contains("근본 원인");
     }
 
     @Test
-    @DisplayName("긴 스택은 상한에서 잘리고 잘렸음을 본문이 말한다 — screen/log/access/requirements.md")
+    @DisplayName("긴 스택은 상한에서 잘리고 잘렸음을 본문이 말한다 — screen/admin/system/log/access/requirements.md")
     void 스택은_상한에서_잘린다() {
         Exception deep = new IllegalStateException("x".repeat(64 * 1024));
 

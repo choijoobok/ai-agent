@@ -85,7 +85,7 @@ const SELECT_OPS: SearchOp[] = ['eq', 'ne', 'in'];
  */
 const POPUP_OPS: SearchOp[] = ['eq', 'ne', 'isNull', 'isNotNull'];
 /**
- * <b>기본은 하나뿐이다</b> — screen/log/access/requirements.md 의 연산자 칸이 {@code BETWEEN} 하나다.
+ * <b>기본은 하나뿐이다</b> — screen/admin/system/log/access/requirements.md 의 연산자 칸이 {@code BETWEEN} 하나다.
  *
  * <p>{@code gte}·{@code lte} 를 <b>기본으로 열지 않는다.</b> 한쪽이 열린 범위는 <b>기간
  * 상한 검사를 그대로 통과하는 무제한 조회</b>이고(그 검사는 두 끝의 차를 본다 —
@@ -231,7 +231,7 @@ export interface SearchFormHandle {
   /** 그리드가 <i>"값을 달라"</i> 고 부른다 — frontend/grid.md. 검증 실패면 {@code null} 이다. */
   collect: () => SearchCondition[] | null;
   /**
-   * <b>다른 화면이 건넨 값으로 폼을 채운다</b> — 넘겨주기(screen/log/access/requirements.md · screen/menu/requirements.md).
+   * <b>다른 화면이 건넨 값으로 폼을 채운다</b> — 넘겨주기(screen/admin/system/log/access/requirements.md · screen/menu/requirements.md).
    *
    * <p>선언({@code defaultValue})으로는 안 되는 자리다. 폼의 상태는 <b>첫 렌더에 한 번</b>
    * 만들어지므로 {@code fields} 를 바꿔도 이미 마운트된 폼은 움직이지 않는다 — 그런데
@@ -293,13 +293,13 @@ export function SearchForm(props: SearchFormProps) {
   const identity = useTabIdentity();
 
   /*
-    조회 기간의 <b>시스템 층</b> — sys/code.md · screen/log/access/requirements.md. 로그인 응답이 나른다.
+    조회 기간의 <b>시스템 층</b> — sys/code.md · screen/admin/system/log/access/requirements.md. 로그인 응답이 나른다.
     프론트에 7 · 92 를 박아 두면 {@code SYS_CONFIG} 와 어긋나고, 그 어긋남은 <b>폼이
     통과시킨 조회를 서버가 400 으로 거부하는 것</b>으로만 드러난다.
 
     <b>기본값도 여기서 온다</b>(2026-08-30). 상한만 시스템 층을 보고 기본값은 하루로
     떨어뜨렸더니, `rangeDays` 를 적지 않은 화면이 <i>최근 7일</i> 이어야 할 자리에서
-    <b>최근 하루</b>로 열렸다 — 로그인 이력이 그 첫 사례다(screen/log/access/requirements.md).
+    <b>최근 하루</b>로 열렸다 — 로그인 이력이 그 첫 사례다(screen/admin/system/log/access/requirements.md).
   */
   const systemRange = useAuthStore((session) => session.searchRange);
   const initial = useMemo(() => defaults(props.fields, systemRange), [props.fields, systemRange]);
@@ -346,7 +346,7 @@ export function SearchForm(props: SearchFormProps) {
    * 조회를 누른 순간의 검증 — frontend/grid.md. <b>실패하면 조회가 일어나지 않는다.</b>
    *
    * <p>둘뿐이다: <b>필수인데 비었다</b> 와 <b>기간이 상한을 넘었다</b>. 서버도 같은 것을
-   * 다시 보므로(screen/log/access/requirements.md) 여기서 막는 것은 <i>왕복 하나를 아끼는 것</i> 이지 유일한 방어가
+   * 다시 보므로(screen/admin/system/log/access/requirements.md) 여기서 막는 것은 <i>왕복 하나를 아끼는 것</i> 이지 유일한 방어가
    * 아니다 — 그래서 규칙을 여기 더 복잡하게 적지 않는다.
    */
   const collect = useCallback((): SearchCondition[] | null => {
@@ -552,7 +552,7 @@ function ValueControl(props: {
   }
 
   /*
-    기간 — screen/log/access/requirements.md. <b>시각까지 고른다.</b>
+    기간 — screen/admin/system/log/access/requirements.md. <b>시각까지 고른다.</b>
 
     날짜만 고르게 두면 <i>오늘</i> 이 자정에서 끊겨 <b>방금 일어난 요청이 안 나온다</b> —
     사용 이력에서 가장 흔한 조회가 <i>조금 전 그 요청</i> 이라 그것이 곧 고장으로 읽힌다.
@@ -931,7 +931,7 @@ function defaults(fields: SearchField[], systemRange: SystemRange): Record<strin
     if (op === 'between') {
       /*
         <b>빈 문자열이 *비워 둔다* 다</b>(2026-08-30 — screen/admin/system/user/requirements.md). 기간을 미리 채우는 것은
-        <b>기간이 부하의 상한인 화면</b>의 규약이고(screen/log/access/requirements.md), 사용자 목록의 *최종 로그인*
+        <b>기간이 부하의 상한인 화면</b>의 규약이고(screen/admin/system/log/access/requirements.md), 사용자 목록의 *최종 로그인*
         처럼 <b>선택 필터</b>인 칸에서는 그것이 <i>한 번도 로그인하지 않은 계정을 첫
         조회에서 통째로 빼는</i> 일이 된다.
       */
@@ -979,7 +979,7 @@ function wire(value: Dayjs, field: SearchField): string {
 }
 
 /**
- * 조회를 막는 것 둘 — screen/log/access/requirements.md.
+ * 조회를 막는 것 둘 — screen/admin/system/log/access/requirements.md.
  *
  * <p><b>기간의 상한은 두 층 중 좁은 쪽</b>이다. 화면이 32를 적어도 시스템이 31이면 31이며,
  * 화면 층은 <i>더 좁게</i> 만 갈 수 있다 — 넓히는 쪽으로 덮을 수 있으면 화면 하나가

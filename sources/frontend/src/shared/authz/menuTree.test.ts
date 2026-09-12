@@ -20,7 +20,7 @@ describe('menuTree', () => {
     node('DASHBOARD', '/dashboard'),
     node('SYSTEM', null, [
       node('USER', null, [node('USER_MGMT', '/user'), node('USER_AUTH_MGMT', '/user-auth')]),
-      node('LOG', null, [node('LOGIN_LOG', '/log/login')]),
+      node('LOG', null, [node('LOGIN_LOG', '/admin/system/log/login')]),
     ]),
   ];
 
@@ -58,7 +58,7 @@ describe('menuTree', () => {
   });
 
   it('경로로 메뉴를 찾는다 — 딥링크와 F5 가 URL 하나로 시작한다', () => {
-    expect(findByUrl(index, '/log/login')?.menuCd).toBe('LOGIN_LOG');
+    expect(findByUrl(index, '/admin/system/log/login')?.menuCd).toBe('LOGIN_LOG');
   });
 
   it('트리에 없는 경로는 null 이다 — 그것이 곧 "권한 없음" 이다', () => {

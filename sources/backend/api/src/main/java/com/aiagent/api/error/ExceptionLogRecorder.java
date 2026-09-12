@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * 예외 한 건을 {@code SYS_LO_EXCEPTION} 한 행으로 — backend/packages.md · LOG-03 · screen/log/access/requirements.md.
+ * 예외 한 건을 {@code SYS_LO_EXCEPTION} 한 행으로 — backend/packages.md · LOG-03 · screen/admin/system/log/access/requirements.md.
  *
  * <p><b>부르는 자리가 {@link GlobalExceptionHandler} 하나다.</b> 그 클래스가 <i>예외를
  * 봉투로 바꾸는 유일한 자리</i> 이므로, 적재도 거기 하나여야 <b>봉투에 나간 {@code code} ·
@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
  * <table><caption></caption>
  * <tr><td><b>401</b></td><td>세션 만료는 <b>정상 흐름</b>이고(재인증 모달) 하트비트마다
  *     쌓이면 <b>에러 로그가 만료 로그가 된다</b>. 그 사건은 로그인 이력의
- * {@code SESSION_TIMEOUT} 이 갖는다(sys/logs.md · screen/log/access/requirements.md)</td></tr>
+ * {@code SESSION_TIMEOUT} 이 갖는다(sys/logs.md · screen/admin/system/log/access/requirements.md)</td></tr>
  * <tr><td><b>{@code /api/} 밖</b></td><td>정적 리소스와 SPA 라우트다(backend/packages.md). 사용 이력이
  *     같은 판정을 쓰며({@link ApiLayer#of} 가 {@code null}), 두 테이블의 대상이 어긋나면
  *     {@code TRACE_ID} 로 잇는 화면이 그것을 <b>유실로 보이게</b> 한다</td></tr>
@@ -42,7 +42,7 @@ import org.springframework.stereotype.Component;
  * <h2>4xx 는 스택을 남기지 않는다</h2>
  *
  * <p>{@code AccessDeniedException} 의 스택은 인터셉터의 프레임뿐이고 <b>전 행이 같다</b> —
- * 180일치 노이즈다(screen/log/access/requirements.md). {@code ROOT_CAUSE_STACK} 이 {@code null} 이며 그것이 모달의
+ * 180일치 노이즈다(screen/admin/system/log/access/requirements.md). {@code ROOT_CAUSE_STACK} 이 {@code null} 이며 그것이 모달의
  * 스택 탭이 비활성으로 뜨는 근거다.
  *
  * <h2>여기서 실패해도 응답은 나간다</h2>
@@ -58,13 +58,13 @@ public class ExceptionLogRecorder {
     private static final Logger log = LoggerFactory.getLogger(ExceptionLogRecorder.class);
 
     /**
-     * 스택을 저장하는 하한 — <b>4xx 와 5xx 를 가르는 그 선</b>이다(screen/log/access/requirements.md).
+     * 스택을 저장하는 하한 — <b>4xx 와 5xx 를 가르는 그 선</b>이다(screen/admin/system/log/access/requirements.md).
      *
      * <p>{@code HTTP_STAT} 이 이 값 미만이면 {@code ROOT_CAUSE_STACK} 은 {@code null} 이다.
      */
     private static final int STACK_FROM = 500;
 
-    /** 기록하지 않는 유일한 상태 — 세션 만료는 정상 흐름이다(screen/log/access/requirements.md). */
+    /** 기록하지 않는 유일한 상태 — 세션 만료는 정상 흐름이다(screen/admin/system/log/access/requirements.md). */
     private static final int SKIPPED_STATUS = 401;
 
     /**

@@ -1,13 +1,14 @@
-/** 서버 `AccessLogRow` · `AccessLogDetail` 과 1:1 — screen/log/access/requirements.md. */
+// @feat FEAT-507
+/** 서버 `AccessLogRow` · `AccessLogDetail` 과 1:1 — screen/admin/system/log/access/requirements.md. */
 
 export interface AccessLogRow {
-  /** tie-breaker. 기본 숨김이며 `⚙` 에서 켠다(screen/log/access/requirements.md). */
+  /** tie-breaker. 기본 숨김이며 `⚙` 에서 켠다(screen/admin/system/log/access/requirements.md). */
   accessLogSeq: number;
-  /** ISO-8601. **정렬이 열린 유일한 컬럼**이다(screen/log/access/requirements.md). */
+  /** ISO-8601. **정렬이 열린 유일한 컬럼**이다(screen/admin/system/log/access/requirements.md). */
   creDtm: string;
-  /** 응답 상태. **2xx 도 4xx 도 5xx 도 온다**(screen/log/access/requirements.md). */
+  /** 응답 상태. **2xx 도 4xx 도 5xx 도 온다**(screen/admin/system/log/access/requirements.md). */
   httpStat: number;
-  /** 미인증 요청은 `null` — 셀은 `(익명)` 이다(screen/log/access/requirements.md). */
+  /** 미인증 요청은 `null` — 셀은 `(익명)` 이다(screen/admin/system/log/access/requirements.md). */
   userId: string | null;
   /**
    * 사용자명 — 서버가 `SYS_USER` 를 조인해 얻는다(2026-09-01).
@@ -28,13 +29,13 @@ export interface AccessLogRow {
   menuNm: string | null;
   requestUri: string;
   /**
-   * 전문이 있는가 — **값이 아니라 유무다**(screen/log/access/requirements.md).
+   * 전문이 있는가 — **값이 아니라 유무다**(screen/admin/system/log/access/requirements.md).
    *
    * <p>`link` 렌더러가 이것을 `[보기]` 로 그리고, 엑셀은 원본 값(`true`/`false`)을 쓴다.
    */
   hasParameters: boolean;
   clientIp: string | null;
-  /** 5xx 토스트에 뜨는 그 값이다 — 사용자가 복사해 온다(frontend/packages.md · screen/log/access/requirements.md). */
+  /** 5xx 토스트에 뜨는 그 값이다 — 사용자가 복사해 온다(frontend/packages.md · screen/admin/system/log/access/requirements.md). */
   traceId: string | null;
 }
 
@@ -46,7 +47,7 @@ export interface AccessLogDetail {
    * 상한에서 잘렸는가 — backend/packages.md.
    *
    * <p>말하지 않으면 잘린 JSON 을 받은 사람이 *"저장이 깨졌다"* 로 읽는다. 이 화면에서
-   * 가장 흔한 오독이다(screen/log/access/requirements.md).
+   * 가장 흔한 오독이다(screen/admin/system/log/access/requirements.md).
    */
   truncated: boolean;
 }

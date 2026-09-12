@@ -3,7 +3,7 @@ package com.aiagent.domain.batch.history;
 /**
  * 상세 모달이 받는 것 — screen/batch/history/requirements.md. <b>탭 둘을 한 번에</b> 가져온다.
  *
- * <p>{@code ErrorLogDetail} 과 같은 모양이며 이유도 같다(screen/log/access/requirements.md) — 왕복을 나누면
+ * <p>{@code ErrorLogDetail} 과 같은 모양이며 이유도 같다(screen/admin/system/log/access/requirements.md) — 왕복을 나누면
  * <b>두 번째가 실패했을 때 절반만 열린 모달</b>이 된다. 다만 이쪽은 <b>두 값이 같은
  * 테이블에 있어</b> 조인조차 없다.
  *
@@ -24,7 +24,7 @@ package com.aiagent.domain.batch.history;
  *       <td><i>"실패하지 않았습니다"</i> — 성공한 실행이다</td></tr>
  * </table>
  *
- * <p><b>사유는 탭 이름의 툴팁</b>이다 — screen/log/access/requirements.md 이 <i>"탭 안에 두었더니 비활성 탭이
+ * <p><b>사유는 탭 이름의 툴팁</b>이다 — screen/admin/system/log/access/requirements.md 이 <i>"탭 안에 두었더니 비활성 탭이
  * 열리지 않아 볼 방법이 없었다"</i> 를 실측으로 적은 자리다.
  *
  * <p><b>둘 다 {@code null} 이면 이 모달이 열리지 않는다</b> — 목록의 {@code [보기]} 자체가

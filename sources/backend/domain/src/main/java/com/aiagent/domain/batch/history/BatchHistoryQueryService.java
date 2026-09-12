@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>{@code PageMode.offset} 이다 — 이력 셋 중 유일하다</h2>
  *
- * <p>사용 이력·로그인 이력·에러 로그는 셋 다 커서형이고 총 건수를 세지 않는다(screen/log/access/requirements.md).
+ * <p>사용 이력·로그인 이력·에러 로그는 셋 다 커서형이고 총 건수를 세지 않는다(screen/admin/system/log/access/requirements.md).
  * 여기는 <b>번호 있는 페이징</b>이며 <b>센다</b> — screen/batch/history/requirements.md 이 항목별로 따져 그렇게 정했다.
  * 정렬을 열려면 번호 페이징이 있어야 하고, 정렬을 여는 이유는
  * {@code ELAPSED_MS} 를 저장한 결정 그 자체다(sys/batch.md).
@@ -93,7 +93,7 @@ public class BatchHistoryQueryService {
     /**
      * 목록 — 번호 페이징이고 <b>총 건수를 센다</b>(screen/batch/history/requirements.md).
      *
-     * <p><b>기간이 필수가 아니다</b>(screen/log/access/requirements.md 를 상속하지 않는다). 등록 수십 건 × 하루 수십
+     * <p><b>기간이 필수가 아니다</b>(screen/admin/system/log/access/requirements.md 를 상속하지 않는다). 등록 수십 건 × 하루 수십
      * 회라 90일에 수천만 행이 되는 그 근거가 여기서는 성립하지 않는다 — 기본값은 두되
      * 비우고 조회할 수 있으며, 1년치가 수십만 행이라 <b>느려지지만 막지는 않는다</b>.
      */

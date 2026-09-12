@@ -2,7 +2,7 @@
  * 상세 모달이 받는 것 — screen/batch/history/requirements.md. <b>탭 둘을 한 번에</b>.
  *
  * <p>`ErrorLogDetail` 과 달리 `*Found` 짝이 없다. 저기는 전문이 <b>다른 테이블</b>에 있어
- * *파기됐다* 와 *원래 없다* 를 갈라야 했지만(screen/log/access/requirements.md), 여기는 <b>같은 행의 두 컬럼</b>이라
+ * *파기됐다* 와 *원래 없다* 를 갈라야 했지만(screen/admin/system/log/access/requirements.md), 여기는 <b>같은 행의 두 컬럼</b>이라
  * `null` 이면 곧 *남기지 않았다* 이다.
  */
 export interface BatchHistoryDetail {

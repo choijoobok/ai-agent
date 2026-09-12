@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.session.ConcurrentSession
  *
  * <p><b>남는 IP·UA 는 밀어낸 쪽의 것이다.</b> 밀려난 세션의 접속 정보는 이 자리에서 알 수
  * 없다(그 요청이 아니다). 어긋나 보이지만 <b>답해야 하는 질문에 더 맞는 값</b>이다 —
- * screen/log/access/requirements.md 가 이 코드에 기대하는 것은 <i>"누가 내 세션을 가져갔는가"</i> 이며, 그것이 곧
+ * screen/admin/system/log/access/requirements.md 가 이 코드에 기대하는 것은 <i>"누가 내 세션을 가져갔는가"</i> 이며, 그것이 곧
  * 새 로그인의 IP 다.
  */
 public class EvictionRecordingStrategy extends ConcurrentSessionControlAuthenticationStrategy {

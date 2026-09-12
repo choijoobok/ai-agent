@@ -10,7 +10,7 @@ import java.time.Instant;
  *
  * <p><b>{@code errCd} 와 {@code errMsg} 는 목록에 있다.</b> 그것이 이 테이블의 요점이다 —
  * 셋 다 {@code nclob} 이었다면 <i>"같은 오류가 몇 건인가"</i> 를 물을 수 없었을 것이고,
- * 그래서 sys/logs.md 가 {@code VARCHAR} 로 정했다(screen/log/access/requirements.md).
+ * 그래서 sys/logs.md 가 {@code VARCHAR} 로 정했다(screen/admin/system/log/access/requirements.md).
  *
  * @param httpStat <b>4xx 와 5xx 를 가른다</b> — 403 홍수 속에서 500 을 찾는 유일한 값이다
  * @param userNm 사용자명 — {@code SYS_USER} 를 {@code leftJoin} 해서 얻는다(2026-09-01).

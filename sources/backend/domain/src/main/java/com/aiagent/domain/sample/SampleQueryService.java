@@ -152,7 +152,7 @@ public class SampleQueryService {
     /**
      * 화면 층의 상한 — playbook/INDEX.md 의 {@code rangeDays.max}.
      *
-     * <p><b>넓히는 쪽으로는 못 간다</b>(screen/log/access/requirements.md). 시스템 값이 더 좁으면 그쪽이 이긴다.
+     * <p><b>넓히는 쪽으로는 못 간다</b>(screen/admin/system/log/access/requirements.md). 시스템 값이 더 좁으면 그쪽이 이긴다.
      */
     public static final int MAX_RANGE_DAYS = 31;
 
@@ -237,7 +237,7 @@ public class SampleQueryService {
      * {@code COUNT(*)} 는 매 장마다 전 범위를 훑는다 — 화면의 푸터에 총 건수 자리가 없는
      * 것이(playbook/INDEX.md) 이 사실의 표현이다.
      *
-     * <p><b>기간이 필수다.</b> screen/log/access/requirements.md 의 규칙을 업무 테이블에서 되풀이하는 것이 이 화면의
+     * <p><b>기간이 필수다.</b> screen/admin/system/log/access/requirements.md 의 규칙을 업무 테이블에서 되풀이하는 것이 이 화면의
      * 역할이며(playbook/INDEX.md), 화면만 막으면 <b>도구·스크립트가 그대로 지나간다</b>.
      *
      * <p><b>{@code CURSOR_SPEC} 을 쓴다</b> — 기본 정렬이 하나다. {@code SPEC} 을 그대로
@@ -280,7 +280,7 @@ public class SampleQueryService {
     }
 
     /**
-     * 기간 조건을 <b>서버가 다시 본다</b> — screen/log/access/requirements.md 의 두 층 중 위.
+     * 기간 조건을 <b>서버가 다시 본다</b> — screen/admin/system/log/access/requirements.md 의 두 층 중 위.
      *
      * <p>통과하지 못하면 400 이다. <b>조용히 자르지 않는다</b> — 잘라 주면 사용자는
      * <i>"상한만큼 봤다"</i> 고 믿은 채 더 넓은 기간의 결론을 낸다.

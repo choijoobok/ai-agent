@@ -230,7 +230,7 @@ export interface GridController<T> {
   toggleDelete: (rowId: string) => void;
   goToPage: (page: number) => Promise<void>;
   /**
-   * 커서형의 이동 — {@code ‹ 이전} · {@code 다음 ›}(backend/api.md · screen/log/access/requirements.md).
+   * 커서형의 이동 — {@code ‹ 이전} · {@code 다음 ›}(backend/api.md · screen/admin/system/log/access/requirements.md).
    *
    * <p><b>페이지 번호를 만들 수 없어</b> {@link goToPage} 를 쓸 수 없다. 토큰은
    * <b>불투명</b>하므로 화면도 이 훅도 열어 보지 않는다 — 받은 것을 그대로 되돌려준다.
@@ -578,7 +578,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
   );
 
   /*
-    커서형의 이동 — screen/log/access/requirements.md. <b>페이지 번호가 없다.</b>
+    커서형의 이동 — screen/admin/system/log/access/requirements.md. <b>페이지 번호가 없다.</b>
 
     {@code page} 를 0 으로 고정해 보내는 것은, 서버가 커서가 있으면 {@code page} 를 읽지
     않기 때문이다(커서가 곧 {@code WHERE} 다). 숫자를 늘려 보내면 <b>화면에 없는 페이지
@@ -1259,7 +1259,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
             params: searchParams ? searchParams() : undefined,
           });
           /*
-            <b>커서형은 총 건수를 모른다</b>(screen/log/access/requirements.md) — 첫 장에서 미리 막을 수 없고 아래의
+            <b>커서형은 총 건수를 모른다</b>(screen/admin/system/log/access/requirements.md) — 첫 장에서 미리 막을 수 없고 아래의
             누적 검사가 대신한다. 5만 건까지 읽고 나서 거절하는 것이 그 대가이며, 그것이
             총 건수를 세지 않기로 한 선택의 뒷면이다.
           */

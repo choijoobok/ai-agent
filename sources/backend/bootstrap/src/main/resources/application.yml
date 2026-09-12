@@ -260,15 +260,15 @@ sys-config:
       day: YYYY-MM-DD
       second: YYYY-MM-DD HH:mm:ss
     search:
-      # 조회 기간의 시스템 기본값과 상한 — sys/code.md · screen/log/access/requirements.md.
+      # 조회 기간의 시스템 기본값과 상한 — sys/code.md · screen/admin/system/log/access/requirements.md.
       #
       # 층이 둘이고 아래가 위를 덮는다(frontend/grid.md 의 페이지 사이즈 3층과 같은 방향). 화면
-      # 기본값은 그리드 선언이 갖는다 — 사용 이력만 1 · 31 이다(screen/log/access/requirements.md): 행마다 nclob 이
+      # 기본값은 그리드 선언이 갖는다 — 사용 이력만 1 · 31 이다(screen/admin/system/log/access/requirements.md): 행마다 nclob 이
       # 달려 있고 보존이 90일로 가장 짧아 "가장 큰 테이블에 가장 짧은 창" 이 맞다.
       #
       # 개인 설정 층이 없다 — 조회 기간은 부하의 상한이지 취향이 아니다.
       #
-      # 키가 default-days · max-days 다. sys/code.md · screen/log/access/requirements.md 는 default · max 로 적었는데
+      # 키가 default-days · max-days 다. sys/code.md · screen/admin/system/log/access/requirements.md 는 default · max 로 적었는데
       # 자바에 default 라는 이름의 레코드 컴포넌트를 만들 수 없다 — 예약어다. 한쪽만
       # 줄이면 짝이 어긋나 보이므로 둘 다 -days 를 단다.
       range-days:

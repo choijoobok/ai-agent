@@ -1,9 +1,10 @@
-package com.aiagent.api.log.request;
+// @feat FEAT-507
+package com.aiagent.system.api.log.request;
 
 import jakarta.validation.constraints.NotNull;
 
 /**
- * 전문 하나를 여는 요청 — screen/log/access/requirements.md.
+ * 전문 하나를 여는 요청 — screen/admin/system/log/access/requirements.md.
  *
  * <p><b>{@link com.aiagent.core.search.SearchRequest} 가 아니다.</b> PK 하나로
  * 한 행을 집는 고정형이며(backend/api.md), 동적 봉투를 태우면 <b>전문 조회가 임의 조건의 조회</b>가

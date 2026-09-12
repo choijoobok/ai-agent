@@ -10,7 +10,7 @@ import { getBatchHistoryDetail } from '@/features/batchhistory/api/batchHistoryA
  *
  * <p><b>처음에는 탭 하나였다.</b> *"`RSLT_MSG` 는 `VARCHAR(1000)` 이라 목록 컬럼으로 이미
  * 보인다"* 가 근거였는데, sys/batch.md 이 <b>요약과 상세를 가르면서</b> 한 행에 `nclob` 이 둘이
- * 됐다 — screen/log/access/requirements.md 의 *한 행에 둘* 과 같은 모양이 된다.
+ * 됐다 — screen/admin/system/log/access/requirements.md 의 *한 행에 둘* 과 같은 모양이 된다.
  *
  * <h2>왕복이 하나다</h2>
  *
@@ -26,7 +26,7 @@ import { getBatchHistoryDetail } from '@/features/batchhistory/api/batchHistoryA
  *     비어 있는 것이 정상이다</td></tr>
  * </table>
  *
- * <p><b>사유는 탭 이름의 툴팁이 낸다.</b> screen/log/access/requirements.md 이 <i>"탭 안에 두었더니 비활성 탭이
+ * <p><b>사유는 탭 이름의 툴팁이 낸다.</b> screen/admin/system/log/access/requirements.md 이 <i>"탭 안에 두었더니 비활성 탭이
  * 열리지 않아 볼 방법이 없었다"</i> 를 <b>실측으로</b> 적은 자리이며, 이 파일은 그 실측을
  * 그대로 물려받는다 — 같은 실패를 두 번 배우지 않는다.
  *
@@ -77,14 +77,14 @@ export function BatchDetailModal(props: { histId: number | null; onClose: () => 
           /*
             <b>행마다 새로 세운다.</b> `staleTime: Infinity` 라 두 번째로 여는 행은 대기
             상태를 거치지 않는데, 그러면 `defaultActiveKey` 가 다시 계산되지 않아
-            <b>앞 행의 탭이 그대로 선택된 채</b> 뜬다(screen/log/access/requirements.md 에서 겪은 것과 같다).
+            <b>앞 행의 탭이 그대로 선택된 채</b> 뜬다(screen/admin/system/log/access/requirements.md 에서 겪은 것과 같다).
           */
           key={histId ?? 'none'}
           /*
             <b>오류가 있으면 오류부터 연다.</b> 실패한 실행을 열어 보는 사람이 찾는 것은
             스택이며, 성공한 실행에는 오류 탭이 아예 꺼져 있다.
 
-            에러 로그가 *전문* 을 먼저 연 것과 방향이 반대인데(screen/log/access/requirements.md) 근거는 같다 —
+            에러 로그가 *전문* 을 먼저 연 것과 방향이 반대인데(screen/admin/system/log/access/requirements.md) 근거는 같다 —
             <b>그 화면에서 대개 있는 쪽</b>을 먼저 연다. 저기는 403 이 압도적이라 스택이
             대개 없었고, 여기는 상세를 남기는 배치가 드물다.
           */
@@ -112,7 +112,7 @@ export function BatchDetailModal(props: { histId: number | null; onClose: () => 
 }
 
 /**
- * 탭 하나 — <b>비었으면 꺼지고, 꺼진 이유는 이름에 붙는다</b>(screen/log/access/requirements.md).
+ * 탭 하나 — <b>비었으면 꺼지고, 꺼진 이유는 이름에 붙는다</b>(screen/admin/system/log/access/requirements.md).
  *
  * <p>둘을 한 함수가 만드는 것이 요점이다. 따로 두면 <i>꺼지는 조건</i> 과 <i>사유를 다는
  * 자리</i> 가 한쪽에서만 빠지고, 빠진 쪽은 <b>이유 없이 꺼진 탭</b>이 된다.
@@ -126,7 +126,7 @@ function tab(props: { key: string; labelKey: string; text: string | null; emptyK
         title={label(props.emptyKey)}
         /*
           <b>아래로 연다.</b> 탭 줄이 모달 맨 위라 위쪽에 자리가 없고, 기본값인 위쪽으로
-          두면 화면 밖(음수 좌표)에 그려진다 — screen/log/access/requirements.md 의 실측이다.
+          두면 화면 밖(음수 좌표)에 그려진다 — screen/admin/system/log/access/requirements.md 의 실측이다.
         */
         placement="bottom"
       >
@@ -147,7 +147,7 @@ function tab(props: { key: string; labelKey: string; text: string | null; emptyK
 /**
  * 탭 하나의 속 — <b>둘이 똑같이 생겼다</b>.
  *
- * <p><b>잘림 표시가 없다.</b> 에러 로그는 그것을 냈지만(screen/log/access/requirements.md) 거기서는 서버가 자르는
+ * <p><b>잘림 표시가 없다.</b> 에러 로그는 그것을 냈지만(screen/admin/system/log/access/requirements.md) 거기서는 서버가 자르는
  * 상한이 정해져 있었다. 배치의 상세는 <b>절단 상한이 아직 미결</b>이며(sys/batch.md) 그것이
  * 정해지기 전에 표시부터 두면 <i>언제나 안 잘렸다</i> 고 말하는 칸이 된다.
  */

@@ -54,7 +54,7 @@ const EXEC_LABEL: Record<BatchExecType, string> = {
  * <h2>`SKIP_LOCK` 이 `muted` 인 것이 결정이다</h2>
  *
  * <p>노드 3대면 <b>매 주기 2건</b>이 쌓인다. 그것을 빨강으로 두면 목록의 3분의 2가 경고가
- * 되고 <b>진짜 문제가 묻힌다</b> — screen/log/access/requirements.md 의 *"정상이 압도적인 목록에서는 칠하지
+ * 되고 <b>진짜 문제가 묻힌다</b> — screen/admin/system/log/access/requirements.md 의 *"정상이 압도적인 목록에서는 칠하지
  * 않는다"* 와 같은 판단이다.
  *
  * <p>반대로 <b>`SKIP_COOLDOWN` 은 `warn`</b> 이다. backend/persistence.md 이 막으려던 바로 그 사고이며

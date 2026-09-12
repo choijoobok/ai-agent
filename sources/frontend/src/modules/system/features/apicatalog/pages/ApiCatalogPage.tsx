@@ -231,7 +231,7 @@ export function ApiCatalogPage() {
   }, [clearMenus, master]);
 
   /**
-   * 건네받은 URL 로 <b>스스로 조회한다</b> — screen/log/access/requirements.md 가 이 화면을 도착지로 정했다.
+   * 건네받은 URL 로 <b>스스로 조회한다</b> — screen/admin/system/log/access/requirements.md 가 이 화면을 도착지로 정했다.
    *
    * <p>사용 이력·에러 로그의 `요청 URI` 를 더블 클릭하면 그 URL 이 건네져 온다. 여기가
    * 403 세 갈래의 <b>가운데 칸</b>이다 — 등록됐나(§5.2 첫째) · 어느 메뉴에 매핑됐나(둘째)를
@@ -527,11 +527,11 @@ function buildSearchFields(defaultUrl: string): SearchField[] {
       field: URL_FIELD,
       label: MSG.API_CATALOG_SEARCH_API_URL,
       type: 'text',
-      // 넘겨받아 열린 탭이면 채워진 채로 시작한다 — screen/log/access/requirements.md.
+      // 넘겨받아 열린 탭이면 채워진 채로 시작한다 — screen/admin/system/log/access/requirements.md.
       defaultValue: defaultUrl,
       /*
         <b>기본이 `contains` 다.</b> 로그에서 들고 오는 것은 대개 전체 URL 이라 `eq` 가 맞을
-        것 같지만, screen/log/access/requirements.md 가 <i>"뒷마디로 찾고 싶으면 API_CATALOG 에서 URL 을 확정해 오는
+        것 같지만, screen/admin/system/log/access/requirements.md 가 <i>"뒷마디로 찾고 싶으면 API_CATALOG 에서 URL 을 확정해 오는
         것이 맞는 동선"</i> 이라고 적었다 — 그 동선의 입구가 이 칸이다.
       */
       op: 'contains',

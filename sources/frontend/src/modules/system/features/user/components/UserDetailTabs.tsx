@@ -990,7 +990,7 @@ function buildSessionColumns(): ColumnDef<UserSessionRow>[] {
       ── 어디서 들어왔나 (2026-08-31) ──────────────────────────────
 
       <b>세션 스토어에는 없는 값이다.</b> 로그인 이력({@code SYS_LO_LOGIN})에서 온다 —
-      그래서 헤더에 <b>출처를 적는다</b>(screen/log/access/requirements.md 과 같은 규약: 이 컬럼을 어디까지 믿을
+      그래서 헤더에 <b>출처를 적는다</b>(screen/admin/system/log/access/requirements.md 과 같은 규약: 이 컬럼을 어디까지 믿을
       수 있나를 화면이 말한다).
 
       <b>같은 사실이 두 곳이 되는 것이 아니다.</b> 값의 원본은 여전히 이력 하나이고 세션은

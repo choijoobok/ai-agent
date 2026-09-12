@@ -10,7 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * <p>{@code USER_ID} · {@code MENU_CD} · {@code REQUEST_URI} 를 만드는 규칙이 여기 하나다.
  * 사용 이력은 인터셉터가, 에러 로그는 예외 기록기가 쓰는데 <b>모듈도 시점도 다르다</b> —
  * 규칙을 각자 두면 같은 요청이 두 테이블에 <b>다른 사용자·다른 메뉴</b>로 남고, 그 둘을
- * {@code TRACE_ID} 로 이어 보는 화면이(screen/log/access/requirements.md) 그것을 <b>버그로 드러낸다</b>.
+ * {@code TRACE_ID} 로 이어 보는 화면이(screen/admin/system/log/access/requirements.md) 그것을 <b>버그로 드러낸다</b>.
  */
 public final class RequestFacts {
 
@@ -30,7 +30,7 @@ public final class RequestFacts {
     }
 
     /**
-     * {@code null} 을 허용한다 — screen/log/access/requirements.md.
+     * {@code null} 을 허용한다 — screen/admin/system/log/access/requirements.md.
      *
      * <p>로그인·하트비트는 셸 진입 전이라 현재 메뉴가 존재하지 않는다. <b>빈 문자열로 두지
      * 않는다</b>: Oracle 에서 {@code ''} 는 {@code null} 이라(backend/persistence.md) 넷 중 하나에서만
@@ -46,7 +46,7 @@ public final class RequestFacts {
     }
 
     /**
-     * 미인증이면 {@code null} — 화면이 {@code (익명)} 으로 그린다(screen/log/access/requirements.md).
+     * 미인증이면 {@code null} — 화면이 {@code (익명)} 으로 그린다(screen/admin/system/log/access/requirements.md).
      *
      * <p>{@code anonymousUser} 를 걸러 내는 것이 요점이다. Security 는 익명에도
      * {@link Authentication} 을 채워 두므로 이름을 그대로 쓰면 <b>사용자 조건에

@@ -58,7 +58,7 @@ cp aidd-guide/artifact/template/02-requirements.md documents/screen/{페이지�
 ## 폴더 이름은 페이지 경로다
 
 **페이지 경로는 소스가 소유한다.** 주소창에 보이는 그것이며, 바꾸는 주체가 개발이다.
-`sources/frontend/src/shared/routes/screenRegistry.ts` 의 키를 그대로 미러링한다 — `/log/access` → `documents/screen/log/access/`.
+`sources/frontend/src/shared/routes/screenRegistry.ts` 의 키를 그대로 미러링한다 — `/log/access` → `documents/screen/admin/system/log/access/`.
 
 - **대상은 `screenRegistry.ts` 의 경로 전부**다. 그 목록은 `menu-tree.yaml` 의 `url` 과 1:1 이며 생성기가 그것을 지킨다 — 한쪽에만 있으면 시드 생성이 막힌다.
 - **경로를 바꾸면 폴더도 같은 커밋에서 `git mv` 한다.** `screenRegistry` 의 키를 고치는 것과 폴더를 옮기는 것은 **한 작업**이다. 메뉴 트리(`menu-tree.yaml` 의 위치)는 운영 중에 옮겨질 수 있으므로 폴더 기준이 아니다.

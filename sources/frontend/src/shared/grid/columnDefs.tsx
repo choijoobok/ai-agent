@@ -113,7 +113,7 @@ function durationText(value: unknown): string {
  * 없다: 거기서는 <b>배지가 곧 값</b>이라 복사되는 것이 맞다.
  *
  * <p>{@code tip} 은 <b>왜 붙었는지</b>다. `유령` 세 글자만으로는 무엇을 하면 되는지가
- * 읽히지 않으며, screen/log/access/requirements.md 이 <i>꺼진 것에는 이유를 붙인다</i> 로 적은 규칙과 같은 축이다.
+ * 읽히지 않으며, screen/admin/system/log/access/requirements.md 이 <i>꺼진 것에는 이유를 붙인다</i> 로 적은 규칙과 같은 축이다.
  *
  * <p><b>컴포넌트가 아니라 함수다</b>(이름이 소문자인 이유). 이 파일은 어댑터라 컴포넌트를
  * 내보내지 않으며, 여기에 컴포넌트를 하나 두면 `react-refresh` 가 <i>파일이 컴포넌트만
@@ -386,7 +386,7 @@ function toColDef<T>(column: ColumnDef<T>, options: AdapterOptions<T>): ColDef<G
     if (issue) return issue.message;
     /*
       오류가 없을 때만 값이 온다. 폭보다 긴 값을 <b>펼쳐 읽는</b> 자리이며(로그인 이력의
-      `User-Agent` — screen/log/access/requirements.md), 틀린 칸에서는 무엇이 틀렸는지가 먼저다(frontend/grid.md).
+      `User-Agent` — screen/admin/system/log/access/requirements.md), 틀린 칸에서는 무엇이 틀렸는지가 먼저다(frontend/grid.md).
     */
     return column.cellTooltip ? scalar(params.value) || null : null;
   };
@@ -762,7 +762,7 @@ function applyRenderer<T>(
     <b>{@code onClick} 이 없으면 보통 텍스트다.</b> 링크처럼 보이는데 아무 일도 하지 않는
     셀은 <i>고장</i> 으로 읽힌다.
 
-    <b>값이 아니라 {@code display} 가 그린다</b>(screen/log/access/requirements.md의 {@code [보기]}). 값은 그대로
+    <b>값이 아니라 {@code display} 가 그린다</b>(screen/admin/system/log/access/requirements.md의 {@code [보기]}). 값은 그대로
     남아 엑셀과 복사가 그것을 쓴다.
   */
   if (column.renderer === 'link') {

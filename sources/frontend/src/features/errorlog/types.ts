@@ -1,4 +1,4 @@
-/** 서버 `ErrorLogRow` · `ErrorLogDetail` 과 1:1 — screen/log/access/requirements.md. */
+/** 서버 `ErrorLogRow` · `ErrorLogDetail` 과 1:1 — screen/admin/system/log/access/requirements.md. */
 
 export interface ErrorLogRow {
   /** tie-breaker. 기본 숨김이며 `⚙` 에서 켠다(screen/log/error/requirements.md). */
@@ -45,7 +45,7 @@ export interface ErrorLogRow {
    */
   hasStack: boolean;
   clientIp: string | null;
-  /** 5xx 토스트에 뜨는 그 값이다 — **사용자가 이것을 들고 온다**(frontend/packages.md · screen/log/access/requirements.md). */
+  /** 5xx 토스트에 뜨는 그 값이다 — **사용자가 이것을 들고 온다**(frontend/packages.md · screen/admin/system/log/access/requirements.md). */
   traceId: string | null;
 }
 

@@ -97,7 +97,7 @@ public final class ErrorLogSpec {
      * <p><b>{@code 5xx 만} 이 이 화면의 가장 흔한 조회다.</b> 403 이 압도적으로 많고 그것은
      * 대개 정상 동작이므로(권한 없는 사람이 눌렀다), <i>"고쳐야 할 것"</i> 만 보려면 5xx 다.
      * <b>그래도 기본은 전체</b>다 — 기본을 5xx 로 두면 403 의 세 갈래를 진단하러 온 사람이
-     * (screen/log/access/requirements.md) <b>빈 화면</b>을 먼저 본다.
+     * (screen/admin/system/log/access/requirements.md) <b>빈 화면</b>을 먼저 본다.
      */
     private static BooleanExpression statusGroup(Op op, Object value) {
         if (op != Op.eq) {
@@ -112,7 +112,7 @@ public final class ErrorLogSpec {
         }
         /*
           <b>모르는 값을 조용히 전체로 흘리지 않는다.</b> 던지면 400 이 되고(FieldSpec 이
-          SearchErrors.derivedRejected 로 감싼다 — screen/log/access/requirements.md) 사용자는 <i>조건이 틀렸다</i> 를
+          SearchErrors.derivedRejected 로 감싼다 — screen/admin/system/log/access/requirements.md) 사용자는 <i>조건이 틀렸다</i> 를
           듣는다. 흘려보내면 <b>거르지 않은 목록을 거른 것으로 읽는다.</b>
         */
         throw new IllegalArgumentException("상태 묶음은 " + CLIENT_ERROR + " · " + SERVER_ERROR + " 뿐이다 — " + group);

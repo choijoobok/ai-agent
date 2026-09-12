@@ -33,14 +33,14 @@ import type { BatchHistoryRow } from '@/shared/batch/historyRow';
  * <tr><td>*"어제 안 돌았는데 왜"*</td><td><b>행이 없으면 꺼져 있는 것</b>이고 `SKIP_*` 이
  *     있으면 켜져 있는데 건너뛴 것이다. 이 구분이 이 화면의 첫 질문에 답한다</td></tr>
  * <tr><td>*"뭐가 오래 걸리나"*</td><td><b>소요 정렬</b>이다. 조회조건으로 거를 수
- * 있는 질문이 아니라 screen/log/access/requirements.md 의 <i>정렬이 아니라 거르기</i> 규칙의 <b>반대 사례</b>다</td></tr>
+ * 있는 질문이 아니라 screen/admin/system/log/access/requirements.md 의 <i>정렬이 아니라 거르기</i> 규칙의 <b>반대 사례</b>다</td></tr>
  * <tr><td>*"왜 두 번 돌았나"*</td><td>`노드` 를 켜서 본다. 같으면 재시도나 수동,
  * 다르면 락 선점 실패다 — backend/persistence.md 의 표를 화면이 그대로 쓴다</td></tr>
  * </table>
  *
  * <h2>정렬이 열려 있고 총 건수를 센다 — 이력 넷 중 유일하다</h2>
  *
- * <p>screen/log/access/requirements.md 의 규약을 <b>항목별로 따져</b> 상속하지 않기로 했다. 근거는 하나다:
+ * <p>screen/admin/system/log/access/requirements.md 의 규약을 <b>항목별로 따져</b> 상속하지 않기로 했다. 근거는 하나다:
  * sys/batch.md 이 `ELAPSED_MS` 를 <b>저장하기로</b> 한 이유가 <i>"오래 걸린 배치 정렬이 인덱스를
  * 못 탄다"</i> 였고, <b>정렬을 끄면 그 컬럼을 저장할 이유가 사라진다</b>.
  *
@@ -83,7 +83,7 @@ export function BatchHistoryPage() {
    *
    * <p>*실패만* 으로 물어 0건이면 <b>답이다</b>: *"이 기간에 실패한 배치가 없습니다"*.
    * 한 문구로 뭉치면 셋 다 *"조회 결과가 없습니다"* 가 되어 <b>진단이 사라진다</b> —
-   * screen/log/access/requirements.md 이 같은 규칙을 적었다.
+   * screen/admin/system/log/access/requirements.md 이 같은 규칙을 적었다.
    */
   const [emptyText, setEmptyText] = useState<string>(MSG.BATCH_HISTORY_EMPTY);
 
@@ -97,7 +97,7 @@ export function BatchHistoryPage() {
    *
    * <p>문구를 조회가 끝난 뒤가 아니라 여기서 정하는 것은, 응답이 0건인지 알았을 때는 이미
    * <i>무엇을 물었는지</i> 가 폼에만 남아 있기 때문이다 — 그 사이 사용자가 조건을 고쳐
-   * 놓으면 문구가 <b>묻지 않은 것</b>을 말한다(screen/log/access/requirements.md 과 같은 자리).
+   * 놓으면 문구가 <b>묻지 않은 것</b>을 말한다(screen/admin/system/log/access/requirements.md 과 같은 자리).
    *
    * <p><b>단위 변환은 여기 없다.</b> 소요를 초로 받아 ms 로 보내는 것은 폼의
    * `scale: 1000` 이 한다(frontend/search-form.md) — 그 절이 *"와이어는 언제나 저장 단위, 변환은 화면이
@@ -280,7 +280,7 @@ export function BatchHistoryPage() {
           emptyText={emptyText}
           /*
             <b>행 더블 클릭이 상세 모달이다</b>(screen/batch/history/requirements.md) — `[보기]` 와 제스처가 둘인 것은
-            같은 문 앞의 손잡이가 둘인 것이다(screen/log/access/requirements.md 와 같은 규칙).
+            같은 문 앞의 손잡이가 둘인 것이다(screen/admin/system/log/access/requirements.md 와 같은 규칙).
 
             <b>`배치 ID` 는 여기로 오지 않는다</b> — 컬럼이 자기 더블 클릭을 선언했으면
             그것이 이긴다. 축이 좁은 쪽이 사람이 실제로 겨눈 것이다.
@@ -304,7 +304,7 @@ export function BatchHistoryPage() {
 /**
  * 일곱이며 <b>기간이 필수가 아니다</b>(screen/batch/history/requirements.md).
  *
- * <p>screen/log/access/requirements.md 의 *기간 필수 + 상한* 을 상속하지 않는다 — 그 근거가 <i>90일에 수천만 행</i>
+ * <p>screen/admin/system/log/access/requirements.md 의 *기간 필수 + 상한* 을 상속하지 않는다 — 그 근거가 <i>90일에 수천만 행</i>
  * 이었고 여기는 등록 수십 건 × 하루 수십 회다. <b>기본값은 두되 비울 수 있다</b>: 비우면
  * 전량이고 1년치가 수십만 행이라 느려지지만 <b>막지는 않는다</b>.
  *
@@ -409,7 +409,7 @@ function buildSearchFields(batchId: string): SearchField[] {
  * 0건이 <b>답인 경우를 가른다</b> — screen/batch/history/requirements.md.
  *
  * <p>*실패만* 으로 물어 0건이면 *"이 기간에 실패한 배치가 없습니다"* 이고, 그것은
- * 빈 결과가 아니라 <b>진단</b>이다. screen/log/access/requirements.md 이 같은 규칙을 적었다.
+ * 빈 결과가 아니라 <b>진단</b>이다. screen/admin/system/log/access/requirements.md 이 같은 규칙을 적었다.
  */
 function emptyTextFor(conditions: SearchCondition[]): string {
   const group = conditions.find((condition) => condition.field === 'rsltGroup')?.value;

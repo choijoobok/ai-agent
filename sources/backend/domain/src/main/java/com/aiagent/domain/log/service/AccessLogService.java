@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <p><b>{@code REQUIRES_NEW} 다.</b> 본 트랜잭션이 롤백되어도 <i>그 요청이 일어났다</i> 는
  * 사실은 남아야 한다 — 실패한 시도가 빠지면 sys/logs.md 이 감사 이력을 이 로깅으로 대체한
- * 전제가 깨진다(screen/log/access/requirements.md).
+ * 전제가 깨진다(screen/admin/system/log/access/requirements.md).
  *
  * <p><b>실패를 여기서 삼키지 않는다.</b> {@code try/catch} 를 이 메서드 안에 두면 잡고 나서도
  * <b>프록시가 커밋하며 {@code UnexpectedRollbackException} 을 던진다</b> — 트랜잭션이 이미

@@ -273,7 +273,7 @@ function buildColumns(
         <b>서버가 완성한 문장</b>이다 — 사용자가 그때 본 그 글이며(backend/packages.md) 문의를 받은
         사람이 <i>"이 말이 맞나"</i> 를 대조하는 값이다.
 
-        <b>셀 툴팁을 켠다</b>(frontend/grid.md · screen/log/access/requirements.md). 1000자까지 오는데 셀은 한 줄이라 대개
+        <b>셀 툴팁을 켠다</b>(frontend/grid.md · screen/admin/system/log/access/requirements.md). 1000자까지 오는데 셀은 한 줄이라 대개
         잘려 보이고, 잘린 문장은 <b>다른 오류처럼</b> 읽힌다. `nclob` 이 아니라 값이 손에
         있으므로 툴팁이 성립한다 — 스택이 `[보기]` 인 것과 갈리는 자리다.
       */

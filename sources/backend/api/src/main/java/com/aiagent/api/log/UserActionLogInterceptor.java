@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
- * 사용 이력 — LOG-01 · backend/packages.md · screen/log/access/requirements.md.
+ * 사용 이력 — LOG-01 · backend/packages.md · screen/admin/system/log/access/requirements.md.
  *
  * <p><b>{@code afterCompletion} 이다.</b> 응답이 끝난 뒤라야 {@code HTTP_STAT} 을 알 수 있고,
  * 전문도 컨트롤러가 body 를 다 읽은 뒤라야 캐시에 차 있다.
@@ -29,7 +29,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
  *
  * <h2>전 요청이 한 행이다</h2>
  *
- * <p>2xx 도 4xx 도 5xx 도 남는다(2026-08-28 개정 — screen/log/access/requirements.md). 이전 규약은 예외가 난 요청을
+ * <p>2xx 도 4xx 도 5xx 도 남는다(2026-08-28 개정 — screen/admin/system/log/access/requirements.md). 이전 규약은 예외가 난 요청을
  * 에러 로그에만 두는 배타였고, 그 배타가 sys/logs.md 의 전제를 깼다 — 감사 이력을 요청 전문
  * 로깅으로 <b>대체</b>했는데 실패한 시도가 빠지면 <i>"이 사용자가 무엇을 했나"</i> 에
  * 답하지 못한다.
@@ -45,7 +45,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
  * <p>사용 이력 화면에서 조회하면 그 조회가 이 테이블에 남고 <b>다음 조회에서 자기 행이 맨
  * 위에 보인다</b>. 고장이 아니다 — {@code MENU_CD = ACCESS_LOG} 로 걸러 보면 <i>누가 이력을
  * 얼마나 열람했는가</i> 가 나오며, 감사 이력을 두지 않기로 한 이 템플릿에서
- * <b>열람 감사에 가장 가까운 것</b>이 그 한 줄이다(screen/log/access/requirements.md).
+ * <b>열람 감사에 가장 가까운 것</b>이 그 한 줄이다(screen/admin/system/log/access/requirements.md).
  */
 @Component
 public class UserActionLogInterceptor implements HandlerInterceptor {

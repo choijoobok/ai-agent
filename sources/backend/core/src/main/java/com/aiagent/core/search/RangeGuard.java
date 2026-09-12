@@ -9,7 +9,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 /**
- * 기간은 <b>필수 조건이고 상한이 있다</b> — screen/log/access/requirements.md.
+ * 기간은 <b>필수 조건이고 상한이 있다</b> — screen/admin/system/log/access/requirements.md.
  *
  * <p>이력 화면 셋에 공통인 규칙이다. 사용 이력이 먼저 필요로 했고 로그인 이력이 <b>같은
  * 것을 다시</b> 필요로 하면서 여기로 나왔다 — 에러 로그가 셋째다.
@@ -24,7 +24,7 @@ import java.util.List;
  *
  * <p>{@link Rule#bypassField} 가 그것이다. 추적 ID 에는 별도 인덱스가 있으므로(sys/logs.md)
  * 기간 없이도 인덱스를 타며, 그때는 기간이 <b>선택</b>이 된다 — 72 프로토콜에 없던 모양이라
- * screen/log/access/requirements.md 가 입력으로 적어 두었다.
+ * screen/admin/system/log/access/requirements.md 가 입력으로 적어 두었다.
  *
  * <h2>여기에 문구가 없다</h2>
  *
@@ -38,7 +38,7 @@ public final class RangeGuard {
      * @param field 기간 조건의 필드명 — 이력 셋 모두 {@code creDtm} 이다
      * @param bypassField 이 조건이 있으면 기간이 <b>선택</b>이 된다. 없으면 {@code null}
      * @param maxDays 상한. <b>화면 층과 시스템 값 중 좁은 쪽</b>을 부르는 쪽이 이미 고른다 —
-     * 화면은 <i>더 좁게</i> 만 갈 수 있다(screen/log/access/requirements.md)
+     * 화면은 <i>더 좁게</i> 만 갈 수 있다(screen/admin/system/log/access/requirements.md)
      */
     public record Rule(
             String field, String bypassField, int maxDays, ErrorCode required, ErrorCode tooWide) {}

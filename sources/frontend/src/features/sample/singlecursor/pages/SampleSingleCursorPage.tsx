@@ -32,7 +32,7 @@ import type { SampleOrderCursor } from '@/features/sample/types';
  * <p>**정렬이 한 컬럼만이다.** 둘 이상이면 서버가 400 이다 — 기준점이 성립하려면 정렬 키가
  * 고정이어야 한다. 정렬을 바꾸면 커서를 버리고 첫 장으로 가는 것도 선택이 아니라 필수다.
  *
- * <p>**기간이 필수다.** screen/log/access/requirements.md 가 `ACCESS_LOG` 로 세운 규약을 **업무 테이블에서**
+ * <p>**기간이 필수다.** screen/admin/system/log/access/requirements.md 가 `ACCESS_LOG` 로 세운 규약을 **업무 테이블에서**
  * 되풀이한다 — 이 화면은 *대용량 이력의 대리* 다(playbook/INDEX.md).
  *
  * <h2>저장이 없다</h2>
@@ -178,7 +178,7 @@ function buildSearchFields(): SearchField[] {
   return [
     {
       /*
-        **필수다** — screen/log/access/requirements.md 와 같은 이유(부하 상한). 비우고 조회할 수 있으면 첫 조회가
+        **필수다** — screen/admin/system/log/access/requirements.md 와 같은 이유(부하 상한). 비우고 조회할 수 있으면 첫 조회가
         테이블 전량을 향한다.
 
         **`second` 정밀도다.** 날짜만 고르게 두면 *오늘* 이 자정에서 끊겨 **방금 들어온

@@ -36,11 +36,11 @@ export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
   '/admin/system/role-auth': lazy(async () => ({
     default: (await import('@/modules/system/features/roleauth/pages/RoleAuthMgmtPage')).RoleAuthMgmtPage,
   })),
-  '/log/access': lazy(async () => ({
-    default: (await import('@/features/accesslog/pages/AccessLogPage')).AccessLogPage,
+  '/admin/system/log/access': lazy(async () => ({
+    default: (await import('@/modules/system/features/accesslog/pages/AccessLogPage')).AccessLogPage,
   })),
-  '/log/login': lazy(async () => ({
-    default: (await import('@/features/loginlog/pages/LoginLogPage')).LoginLogPage,
+  '/admin/system/log/login': lazy(async () => ({
+    default: (await import('@/modules/system/features/loginlog/pages/LoginLogPage')).LoginLogPage,
   })),
   '/log/error': lazy(async () => ({
     default: (await import('@/features/errorlog/pages/ErrorLogPage')).ErrorLogPage,

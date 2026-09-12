@@ -14,13 +14,13 @@ import java.util.List;
  *
  * <h2>정렬이 셋 열려 있다 — 이력 화면 중 유일하다</h2>
  *
- * <p>screen/log/access/requirements.md 이 이력의 정렬을 <b>고정</b>으로 두었고(커서형 이동의 전제) screen/batch/history/requirements.md 이
+ * <p>screen/admin/system/log/access/requirements.md 이 이력의 정렬을 <b>고정</b>으로 두었고(커서형 이동의 전제) screen/batch/history/requirements.md 이
  * 그것을 <b>상속하지 않는다</b>고 항목별로 따져 결정했다. 근거는 하나다 —
  * sys/batch.md 이 {@code ELAPSED_MS} 를 <b>저장하기로</b> 한 이유가 <i>"오래 걸린 배치 정렬이
  * 인덱스를 못 탄다"</i> 였고, <b>정렬을 끄면 그 컬럼을 저장할 이유가 사라진다</b>.
  *
  * <p><i>"어떤 배치가 오래 걸리나"</i> 는 이 화면의 핵심 질문이고 <b>조회조건으로 거를 수
- * 있는 질문이 아니다</b> — screen/log/access/requirements.md 이 <i>"정렬이 아니라 거르기가 맞는 도구"</i> 라고 한
+ * 있는 질문이 아니다</b> — screen/admin/system/log/access/requirements.md 이 <i>"정렬이 아니라 거르기가 맞는 도구"</i> 라고 한
  * 것의 <b>반대 사례</b>다. 그래서 총 건수도 함께 센다(둘은 한 결정이다 — frontend/grid.md).
  *
  * <h2>{@code RSLT_DTL_MSG} 와 {@code ERR_MSG} 가 여기 없다</h2>

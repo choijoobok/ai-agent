@@ -23,7 +23,7 @@ export const BATCH_HISTORY_ENDPOINTS = {
   /**
    * <b>탭 둘을 한 번에 가져온다</b> — 결과 상세(`RSLT_DTL_MSG`)와 오류(`ERR_MSG`). screen/batch/history/requirements.md.
    *
-   * <p>탭마다 부르지 않는 이유는 screen/log/access/requirements.md 와 같다 — <b>두 번째가 실패했을 때 절반만 열린
+   * <p>탭마다 부르지 않는 이유는 screen/admin/system/log/access/requirements.md 와 같다 — <b>두 번째가 실패했을 때 절반만 열린
    * 모달</b>이 된다. 여기는 둘이 <b>같은 행의 두 컬럼</b>이라 조인조차 없다.
    */
   getDetail: '/service/batchHistory/getDetail',

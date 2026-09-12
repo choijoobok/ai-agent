@@ -7,7 +7,7 @@
  *
  * <p><b>폴더가 인가 경계다</b>(seed.md). 실행 이력과 한 폴더에 두면 두 화면의 엔드포인트가
  * 서로에게 매핑되어 <b>조회 전용 화면의 권한이 등록 저장을 연다</b> — `features/log` 를
- * 갈랐던 것이 그 사고였다(screen/log/access/requirements.md). 여기서는 특히 나쁘다: `BATCH_HISTORY` 는
+ * 갈랐던 것이 그 사고였다(screen/admin/system/log/access/requirements.md). 여기서는 특히 나쁘다: `BATCH_HISTORY` 는
  * <b>저장이 없는 화면</b>인데(screen/batch/schedule/requirements.md) 합치면 `save` 가 그쪽에도 붙는다.
  *
  * <p><b>`exportExcel` 이 없다 — 엑셀 자체가 없다.</b> sys/menu.md 의 액션 열이 `R S X` 이며

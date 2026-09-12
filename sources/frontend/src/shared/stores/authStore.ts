@@ -59,7 +59,7 @@ export interface AuthState {
    */
   excelMaxUploadRows: number;
   /**
-   * 조회 기간의 <b>시스템 층</b> — sys/code.md · screen/log/access/requirements.md.
+   * 조회 기간의 <b>시스템 층</b> — sys/code.md · screen/admin/system/log/access/requirements.md.
    *
    * <p>`excelMaxRows` 와 같은 성격이다. 화면은 이것을 <i>더 좁게</i> 덮으며(사용 이력이
    * 1 · 31), 프론트에 7 · 92 를 박아 두면 `SYS_CONFIG` 와 어긋난다 — 그 어긋남은

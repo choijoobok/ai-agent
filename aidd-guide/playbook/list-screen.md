@@ -6,7 +6,7 @@ type: operation
 created: 2026-09-05
 updated: 2026-09-06
 status: active
-sources: ["sources/frontend/src/features/accesslog/", "sources/backend/domain/src/main/java/com/aiagent/domain/log/admin/"]
+sources: ["sources/frontend/src/modules/system/features/accesslog/", "sources/backend/domain/src/main/java/com/aiagent/domain/log/admin/"]
 tier: 2
 tags: [playbook, list, cursor, readonly, log]
 ---

@@ -21,7 +21,7 @@ import com.querydsl.core.types.dsl.Expressions;
  *
  * <p><b>PK 가 함께 있어야 한다.</b> 시각만으로 자르면 같은 초에 들어온 행이 여럿일 때
  * 경계가 흔들려 <b>한 행이 두 페이지에 나오거나 아예 빠진다</b>. {@code allocationSize} 가
- * 1000 이라 PK 순서가 시간 순서가 아니므로(screen/log/access/requirements.md) <b>시각이 먼저고 PK 는 동률만 가른다</b>.
+ * 1000 이라 PK 순서가 시간 순서가 아니므로(screen/admin/system/log/access/requirements.md) <b>시각이 먼저고 PK 는 동률만 가른다</b>.
  *
  * <h2>{@code Ops} 로 조립하는 것이 결정이다</h2>
  *

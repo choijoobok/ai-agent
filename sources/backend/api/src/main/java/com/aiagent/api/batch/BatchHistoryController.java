@@ -63,7 +63,7 @@ public class BatchHistoryController {
      * 없으면 <i>"뭐가 오래 걸리나"</i> 에 답할 수 없다 — 그 질문이 sys/batch.md 이
      * {@code ELAPSED_MS} 를 저장하기로 한 이유 전부다.
      *
-     * <p><b>기간이 필수가 아니다.</b> screen/log/access/requirements.md 의 상한 규약을 상속하지 않으며(등록 수십 건 ×
+     * <p><b>기간이 필수가 아니다.</b> screen/admin/system/log/access/requirements.md 의 상한 규약을 상속하지 않으며(등록 수십 건 ×
      * 하루 수십 회다) 기본값만 화면이 채운다 — 비우고 조회하면 전량이고 느리지만 막지 않는다.
      */
     @Operation(
@@ -78,7 +78,7 @@ public class BatchHistoryController {
     /**
      * <b>탭 둘을 한 번에</b> 준다 — 결과 상세와 오류(screen/batch/history/requirements.md).
      *
-     * <p>왕복을 나누면 <b>두 번째가 실패했을 때 절반만 열린 모달</b>이 된다(screen/log/access/requirements.md).
+     * <p>왕복을 나누면 <b>두 번째가 실패했을 때 절반만 열린 모달</b>이 된다(screen/admin/system/log/access/requirements.md).
      * 여기는 둘이 같은 행의 두 컬럼이라 조인조차 없다.
      */
     @Operation(

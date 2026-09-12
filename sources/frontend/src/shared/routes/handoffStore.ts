@@ -6,7 +6,7 @@ import { create } from 'zustand';
  *
  * <p>screen/menu/requirements.md 가 처음 요구했다. `API_CATALOG` 하단에서 행을 더블 클릭하면 `MENU_TREE` 를
  * <b>그 메뉴로</b> 여는데, 여는 쪽이 아는 것은 `MENU_CD` 하나이고 받는 쪽은 <b>아직 마운트되지
- * 않았다</b>. screen/log/access/requirements.md 의 *요청 URI 더블 클릭 → API_CATALOG* 도 같은 모양이며, screen/menu/requirements.md 탭 3 의
+ * 않았다</b>. screen/admin/system/log/access/requirements.md 의 *요청 URI 더블 클릭 → API_CATALOG* 도 같은 모양이며, screen/menu/requirements.md 탭 3 의
  * *역할 더블 클릭 → ROLE_AUTH_MGMT* 이 뒤따른다.
  *
  * <h2>왜 URL 파라미터가 아닌가</h2>

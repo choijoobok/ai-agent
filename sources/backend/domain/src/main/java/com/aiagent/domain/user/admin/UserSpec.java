@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
  * <p>화면이 보내는 것은 {@link AccountStat} 다섯 중 몇 개이고, 서버가 그것을 <b>네 컬럼의
  * 조건</b>으로 번역한다(screen/admin/system/user/requirements.md). 조회 프로토콜(QRY-01)이 <b>파생 조건을 어떻게 싣는지</b> 의
  * 사례이며 backend/api.md 가 <i>"와이어의 문제가 아니라 화이트리스트의 문제"</i> 로 답한 그 자리다 —
- * {@code LoginLogSpec.rsltGroup}(screen/log/access/requirements.md)에 이은 셋째다.
+ * {@code LoginLogSpec.rsltGroup}(screen/admin/system/log/access/requirements.md)에 이은 셋째다.
  *
  * <h2>파생 셋이 정렬 대상이 아니다</h2>
  *

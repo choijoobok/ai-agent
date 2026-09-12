@@ -43,7 +43,7 @@ public final class LoginResultGroup {
     /**
      * <b>성공 하나.</b>
      *
-     * <p>서버는 갖고 있으나 <b>화면은 후보로 내지 않는다</b>(screen/log/login/requirements.md) —
+     * <p>서버는 갖고 있으나 <b>화면은 후보로 내지 않는다</b>(screen/admin/system/log/login/requirements.md) —
      * 성공은 코드 하나라 접을 것이 없고, 결과 콤보가 한 번의 선택으로 이미 답한다.
      */
     public static final String SUCCESS = "SUCCESS";
@@ -97,7 +97,7 @@ public final class LoginResultGroup {
             throw new IllegalStateException(
                     "묶음이 정해지지 않은 로그인 결과 코드가 있다 — "
                             + uncovered
-                            + " (screen/log/login/requirements.md)");
+                            + " (screen/admin/system/log/login/requirements.md)");
         }
     }
 }

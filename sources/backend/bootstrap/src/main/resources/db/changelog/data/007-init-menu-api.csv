@@ -1,6 +1,6 @@
 MENU_CD,API_URL
-ACCESS_LOG,/api/service/accessLog/getDetail
-ACCESS_LOG,/api/service/accessLog/getList
+ACCESS_LOG,/api/service/system/accessLog/getDetail
+ACCESS_LOG,/api/service/system/accessLog/getList
 API_CATALOG,/api/service/system/apiCatalog/getList
 API_CATALOG,/api/service/system/apiCatalog/getMenuList
 BATCH_HISTORY,/api/service/batchHistory/cancel
@@ -23,7 +23,7 @@ CONFIG_MGMT,/api/service/system/config/getPrefixes
 CONFIG_MGMT,/api/service/system/config/save
 ERROR_LOG,/api/service/errorLog/getDetail
 ERROR_LOG,/api/service/errorLog/getList
-LOGIN_LOG,/api/service/loginLog/getList
+LOGIN_LOG,/api/service/system/loginLog/getList
 MENU_TREE,/api/service/system/menu/deleteNode
 MENU_TREE,/api/service/system/menu/getAccessibleUsers
 MENU_TREE,/api/service/system/menu/getApiList

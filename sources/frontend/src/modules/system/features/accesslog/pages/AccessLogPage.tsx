@@ -1,3 +1,4 @@
+// @feat FEAT-507
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { FillColumn } from '@/shared/components/FillColumn';
 import { label } from '@/shared/i18n/label';
@@ -12,20 +13,20 @@ import { useShellNavigation } from '@/layouts/ShellLayout/useShellNavigation';
 import { handOff } from '@/shared/routes/handoffStore';
 import { hasPermission } from '@/shared/authz/permission';
 import { useAuthStore } from '@/shared/stores/authStore';
-import { ACCESS_LOG_ENDPOINTS } from '@/features/accesslog/api/endpoints';
-import { PayloadModal } from '@/features/accesslog/components/PayloadModal';
-import type { AccessLogRow } from '@/features/accesslog/types';
+import { ACCESS_LOG_ENDPOINTS } from '@/modules/system/features/accesslog/api/endpoints';
+import { PayloadModal } from '@/modules/system/features/accesslog/components/PayloadModal';
+import type { AccessLogRow } from '@/modules/system/features/accesslog/types';
 
 /**
- * `ACCESS_LOG` — screen/log/access/requirements.md. <b>일어난 요청 전부</b>를 보여준다.
+ * `ACCESS_LOG` — screen/admin/system/log/access/requirements.md. <b>일어난 요청 전부</b>를 보여준다.
  *
- * <p>이름이 *사용 이력* 이지만 <b>성공한 요청 목록이 아니다</b>(screen/log/access/requirements.md). 2xx 도 4xx 도
+ * <p>이름이 *사용 이력* 이지만 <b>성공한 요청 목록이 아니다</b>(screen/admin/system/log/access/requirements.md). 2xx 도 4xx 도
  * 5xx 도 한 행이며, sys/logs.md 이 감사 이력을 요청 전문 로깅으로 <b>대체</b>한 것이 그
  * 근거다 — *"이 사용자가 무엇을 했나"* 에 실패한 시도가 빠지면 감사가 되지 않는다.
  *
  * <h2>쓰기 경로가 아예 없다</h2>
  *
- * <p>`api.save` 도 `addRow` 도 `editable` 도 선언하지 않는다(screen/log/access/requirements.md) — 감춘 것이 아니라
+ * <p>`api.save` 도 `addRow` 도 `editable` 도 선언하지 않는다(screen/admin/system/log/access/requirements.md) — 감춘 것이 아니라
  * <b>선언이 없어서</b> 저장·행 추가·상태 컬럼·삭제 컬럼이 나오지 않는다(frontend/grid.md).
  * 지우는 것은 파기 배치의 일이며(retention.md) 화면에 수단을 두면 <b>파기의 원본이 둘</b>이 된다.
  *
@@ -33,11 +34,11 @@ import type { AccessLogRow } from '@/features/accesslog/types';
  *
  * <table><caption></caption>
  * <tr><td>총 건수를 세지 않는다</td><td>`COUNT` 가 처음으로 비싸다 — 푸터가
- * `‹ 이전 · 다음 ›` 이 되고 정렬이 <b>일시 하나</b>로 좁아진다(screen/log/access/requirements.md)</td></tr>
+ * `‹ 이전 · 다음 ›` 이 되고 정렬이 <b>일시 하나</b>로 좁아진다(screen/admin/system/log/access/requirements.md)</td></tr>
  * <tr><td>기간이 필수다</td><td>비우면 첫 조회가 <b>90일 전량</b>을 향한다. 상한도
- * 31일이다 — 행마다 `nclob` 이 달려 있고 보존이 90일로 가장 짧다(screen/log/access/requirements.md)</td></tr>
+ * 31일이다 — 행마다 `nclob` 이 달려 있고 보존이 90일로 가장 짧다(screen/admin/system/log/access/requirements.md)</td></tr>
  * <tr><td>전문을 목록에 싣지 않는다</td><td>100행 × 1MB. 셀은 값이 아니라 `[보기]` 이며
- * 누르면 그 한 행만 가져온다(screen/log/access/requirements.md)</td></tr>
+ * 누르면 그 한 행만 가져온다(screen/admin/system/log/access/requirements.md)</td></tr>
  * </table>
  *
  * <h2>자기 참조가 생긴다</h2>
@@ -45,13 +46,13 @@ import type { AccessLogRow } from '@/features/accesslog/types';
  * <p>여기서 조회하면 그 조회가 `SYS_LO_ACCESS` 에 남고 <b>다음 조회에서 자기 행이 맨 위에</b>
  * 보인다. 고장이 아니다 — `메뉴` 를 `사용 이력` 으로 걸러 보면 *누가 이력을 얼마나
  * 열람했는가* 가 나오며, 감사 이력을 두지 않기로 한 이 템플릿에서 <b>열람 감사에 가장
- * 가까운 것</b>이 그 한 줄이다(screen/log/access/requirements.md).
+ * 가까운 것</b>이 그 한 줄이다(screen/admin/system/log/access/requirements.md).
  */
 
 const MENU_CD = 'ACCESS_LOG';
 
 /**
- * 이 화면의 조회 기간 — <b>시스템 값(7 · 92)을 덮는다</b>(screen/log/access/requirements.md).
+ * 이 화면의 조회 기간 — <b>시스템 값(7 · 92)을 덮는다</b>(screen/admin/system/log/access/requirements.md).
  *
  * <p>세 이력 테이블 중 유일하게 행마다 `nclob` 이 달려 있고 보존이 90일로 가장 짧다 —
  * *"가장 큰 테이블에 가장 짧은 창"* 이 맞다. <b>서버도 같은 값을 갖는다</b>
@@ -81,14 +82,14 @@ const PAGE_SIZES = [100, 500, 1000];
 const TEXT_OPS: SearchOp[] = ['eq', 'startsWith', 'contains', 'endsWith'];
 
 
-/** 넘겨주기의 도착지 — screen/log/access/requirements.md. `ERROR_LOG` 도 같은 곳으로 간다. */
+/** 넘겨주기의 도착지 — screen/admin/system/log/access/requirements.md. `ERROR_LOG` 도 같은 곳으로 간다. */
 const API_CATALOG_CD = 'API_CATALOG';
 
 export function AccessLogPage() {
   const searchForm = useRef<SearchFormHandle>(null);
   const permissions = useAuthStore((state) => state.permissions);
   const shell = useShellNavigation();
-  /** 전문 모달이 열린 행 — `null` 이면 닫혀 있다(screen/log/access/requirements.md). */
+  /** 전문 모달이 열린 행 — `null` 이면 닫혀 있다(screen/admin/system/log/access/requirements.md). */
   const [payloadOf, setPayloadOf] = useState<number | null>(null);
 
   const header = useSearchFormHeader();
@@ -104,7 +105,7 @@ export function AccessLogPage() {
   }, []);
 
   /**
-   * `요청 URI` 셀 더블 클릭 → <b>`API_CATALOG` 를 그 URL 로 조회한 상태로 연다</b>(screen/log/access/requirements.md).
+   * `요청 URI` 셀 더블 클릭 → <b>`API_CATALOG` 를 그 URL 로 조회한 상태로 연다</b>(screen/admin/system/log/access/requirements.md).
    *
    * <p>403 의 세 갈래를 잇는 동선의 <b>첫 칸</b>이다 — 여기서 URL 을 넘기면 그 화면이
    * *등록됐나 · 어느 메뉴에 매핑됐나* 를 답하고, 거기 하단이 다시 `MENU_TREE` 로 넘긴다
@@ -170,13 +171,13 @@ export function AccessLogPage() {
           controller={grid}
           pageSizes={PAGE_SIZES}
           /*
-            총 건수를 잃은 자리를 메운다 — screen/log/access/requirements.md 의 푸터 왼쪽이 `N건 조회됨 · 최근 {기간}`
+            총 건수를 잃은 자리를 메운다 — screen/admin/system/log/access/requirements.md 의 푸터 왼쪽이 `N건 조회됨 · 최근 {기간}`
             이다. 무엇을 물어서 나온 N건인지가 함께 있어야 <i>"전부가 N건"</i> 으로 읽히지
             않는다.
           */
           footerNote={label(MSG.ACCESS_LOG_FOOTER_RANGE, { days: RANGE_DAYS.max })}
           /*
-            보존 기간을 문구가 말한다 — screen/log/access/requirements.md. <b>0건에는 언제나 이유가 있고 화면이 아는
+            보존 기간을 문구가 말한다 — screen/admin/system/log/access/requirements.md. <b>0건에는 언제나 이유가 있고 화면이 아는
             이유는 화면이 말한다</b>: 90일보다 오래된 기간을 물으면 조건이 좁은 것이 아니라
             <b>거기 데이터가 없는 것</b>이다.
           */
@@ -189,12 +190,12 @@ export function AccessLogPage() {
   );
 }
 
-// ── 컬럼 (screen/log/access/requirements.md) ────────────────────────────────────────────────
+// ── 컬럼 (screen/admin/system/log/access/requirements.md) ────────────────────────────────────────────────
 
 /**
- * <b>편집 선언이 한 줄도 없다</b>(screen/log/access/requirements.md) — 그래서 상태 컬럼도 삭제 컬럼도 붙지 않는다.
+ * <b>편집 선언이 한 줄도 없다</b>(screen/admin/system/log/access/requirements.md) — 그래서 상태 컬럼도 삭제 컬럼도 붙지 않는다.
  *
- * <p><b>정렬은 일시 하나만</b> 열린다(screen/log/access/requirements.md). 나머지는 인덱스가 없어 전체 정렬이 되고,
+ * <p><b>정렬은 일시 하나만</b> 열린다(screen/admin/system/log/access/requirements.md). 나머지는 인덱스가 없어 전체 정렬이 되고,
  * 무엇보다 <b>커서의 기준점이 흔들린다</b> — 끄는 것이 기능을 뺀 것으로 읽히면 안 되며,
  * *"사용자별로 모아 보고 싶다"* 는 <b>조회조건</b>이 답한다.
  */
@@ -209,12 +210,12 @@ function buildColumns(
       type: 'dateTime',
       width: 170,
       pinned: 'left',
-      // 유일하게 열린 정렬이다 — 커서의 기준점이므로 여기가 곧 페이지 경계다(screen/log/access/requirements.md).
+      // 유일하게 열린 정렬이다 — 커서의 기준점이므로 여기가 곧 페이지 경계다(screen/admin/system/log/access/requirements.md).
       sortable: true,
     },
     {
       /*
-        <b>전 요청을 받으므로 필요하다</b>(screen/log/access/requirements.md). 없으면 성공과 실패가 섞인다.
+        <b>전 요청을 받으므로 필요하다</b>(screen/admin/system/log/access/requirements.md). 없으면 성공과 실패가 섞인다.
 
         배지는 색 둘이다 — `2xx` 는 칠하지 않고 `4xx` 는 주의색 · `5xx` 는 오류색이다.
         <b>정상이 압도적인 목록에서는 칠하지 않는 것이 기본</b>이고 칠한 것만 눈에 남는다
@@ -241,7 +242,7 @@ function buildColumns(
       type: 'text',
       width: 120,
       /*
-        빈칸으로 두지 않는다 — <b>*수집이 안 된 것*과 구분되지 않는다</b>(screen/log/access/requirements.md).
+        빈칸으로 두지 않는다 — <b>*수집이 안 된 것*과 구분되지 않는다</b>(screen/admin/system/log/access/requirements.md).
         미인증 요청은 `USER_ID` 가 `NULL` 이며 그것은 정상이다.
       */
       // `||` 다 — 오라클이 빈 문자열을 `NULL` 로 저장하므로 둘은 같은 값이다(backend/persistence.md).
@@ -253,7 +254,7 @@ function buildColumns(
 
         <b>빈칸을 채우지 않는다.</b> 바로 왼쪽 칸이 이미 `(익명)` 이라고 말하고 있어서
         여기 또 적으면 <b>같은 사실이 한 행에 두 번</b> 나온다 — 위 컬럼이 빈칸을 메우는
-        규칙(screen/log/access/requirements.md)은 <i>그 칸이 유일한 신호일 때</i>의 것이다. 지워진 계정도 같은
+        규칙(screen/admin/system/log/access/requirements.md)은 <i>그 칸이 유일한 신호일 때</i>의 것이다. 지워진 계정도 같은
         빈칸인데, 그것을 가려 말하는 화면은 로그인 이력이다(거기서는 없는 계정이
         <b>찾는 대상</b>이라 배지가 붙는다).
       */
@@ -264,9 +265,9 @@ function buildColumns(
     },
     {
       /*
-        <b>메뉴명으로 그린다</b>(screen/log/access/requirements.md) — 코드는 사람이 읽는 이름이 아니다.
+        <b>메뉴명으로 그린다</b>(screen/admin/system/log/access/requirements.md) — 코드는 사람이 읽는 이름이 아니다.
         비어 있을 수 있으며 그때는 `(메뉴 없음)` 이다: 로그인·하트비트는 셸 진입 전이라
-        현재 메뉴가 존재하지 않는다(screen/log/access/requirements.md).
+        현재 메뉴가 존재하지 않는다(screen/admin/system/log/access/requirements.md).
       */
       field: 'menuNm',
       header: MSG.ACCESS_LOG_COL_MENU,
@@ -275,7 +276,7 @@ function buildColumns(
       /*
         <b>이 컬럼은 클라이언트 주장이다</b>(backend/packages.md · backend/security.md). 인가에 쓰이지 않으며
         통계·추적 외 용도로 신뢰하지 않는다 — 붙이지 않으면 이 화면의 메뉴별 집계가
-        <b>감사 근거로 인용된다</b>(screen/log/access/requirements.md).
+        <b>감사 근거로 인용된다</b>(screen/admin/system/log/access/requirements.md).
       */
       headerTooltip: MSG.ACCESS_LOG_MENU_CLIENT_CLAIM,
       // 이름이 없으면 코드라도 낸다 — `SYS_MENU` 에서 지워진 메뉴의 이력이 그렇다.
@@ -283,7 +284,7 @@ function buildColumns(
     },
     {
       /*
-        <b>더블 클릭이 `API_CATALOG` 로 건너뛴다</b> — screen/log/access/requirements.md.
+        <b>더블 클릭이 `API_CATALOG` 로 건너뛴다</b> — screen/admin/system/log/access/requirements.md.
 
         <b>링크로 그리지 않는다.</b> 이 칸의 값은 눈으로 확인하고 복사하는 대상이기도 한데,
         링크면 한 번 누르기만 해도 화면이 열려 <i>URL 을 읽으려던</i> 사람이 다른 탭에 가
@@ -304,7 +305,7 @@ function buildColumns(
     {
       /*
         <b>파생 컬럼이다</b> — 값은 참·거짓(전문이 있는가)이고 셀에 그려지는 것은 `[보기]`
-        다(screen/log/access/requirements.md). 목록 응답에 전문이 없으므로 <b>미리보기를 두지 않는다</b>: 앞 N자만
+        다(screen/admin/system/log/access/requirements.md). 목록 응답에 전문이 없으므로 <b>미리보기를 두지 않는다</b>: 앞 N자만
         잘라 오는 것은 벤더 중립이 아니고(backend/persistence.md) 100행 × 1MB 는 실을 수 없다.
 
         <b>필터를 끈다</b> — 값이 화면에 없다. 정렬은 선언이 없어 애초에 닫혀 있다.
@@ -322,7 +323,7 @@ function buildColumns(
     {
       /*
         값 자체가 문의의 열쇠다 — frontend/packages.md 가 5xx 토스트에 `traceId` 를 띄우고 사용자가 그것을
-        복사해 온다(screen/log/access/requirements.md). <b>화면 사이를 건너뛰는 버튼은 두지 않는다</b>: 복사는
+        복사해 온다(screen/admin/system/log/access/requirements.md). <b>화면 사이를 건너뛰는 버튼은 두지 않는다</b>: 복사는
         포커스된 셀의 `Ctrl+C` 가 이미 한다(frontend/grid.md).
       */
       field: 'traceId',
@@ -332,7 +333,7 @@ function buildColumns(
     },
     {
       /*
-        tie-breaker 이며 <b>기본 숨김</b>이다(screen/log/access/requirements.md) — `⚙` 에서 켜면 보인다.
+        tie-breaker 이며 <b>기본 숨김</b>이다(screen/admin/system/log/access/requirements.md) — `⚙` 에서 켜면 보인다.
         `hidden` 이 아닌 것은 <b>운영자가 켜서 보면 안 되는 컬럼이 이력에는 없기</b> 때문이다.
       */
       field: 'accessLogSeq',
@@ -344,13 +345,13 @@ function buildColumns(
   ];
 }
 
-// ── 조회조건 (screen/log/access/requirements.md) ────────────────────────────────────────────
+// ── 조회조건 (screen/admin/system/log/access/requirements.md) ────────────────────────────────────────────
 
 /**
- * <b>기간이 필수이고 상한이 있다</b>(screen/log/access/requirements.md).
+ * <b>기간이 필수이고 상한이 있다</b>(screen/admin/system/log/access/requirements.md).
  *
  * <p>연산자를 <b>완전 일치로 좁힌 칸이 셋</b>이다(상태 · IP · 추적 ID). 근거는 하나 —
- * <b>인덱스가 둘뿐</b>이다(screen/log/access/requirements.md): `CRE_DTM` 과 `TRACE_ID` 말고는 없다.
+ * <b>인덱스가 둘뿐</b>이다(screen/admin/system/log/access/requirements.md): `CRE_DTM` 과 `TRACE_ID` 말고는 없다.
  *
  * <p><b>사람과 메뉴 칸 넷은 그 예외다</b>(2026-09-01 — {@link TEXT_OPS}). 이름을 완전
  * 일치로만 물을 수 있으면 조각을 든 사람이 답을 못 얻어 <b>기간을 넓혀 훑고</b>, 그것이
@@ -364,17 +365,17 @@ function buildSearchFields(): SearchField[] {
       field: 'creDtm',
       label: MSG.ACCESS_LOG_SEARCH_PERIOD,
       type: 'dateRange',
-      // 비우고 조회할 수 없다 — 서버도 같은 것을 다시 본다(screen/log/access/requirements.md).
+      // 비우고 조회할 수 없다 — 서버도 같은 것을 다시 본다(screen/admin/system/log/access/requirements.md).
       required: true,
       rangeDays: RANGE_DAYS,
     },
     {
       /*
-        <b>파생 조건이다</b> — `HTTP_STAT` 을 그대로 열지 않는다(screen/log/access/requirements.md). 운영자가 묻는 것은
+        <b>파생 조건이다</b> — `HTTP_STAT` 을 그대로 열지 않는다(screen/admin/system/log/access/requirements.md). 운영자가 묻는 것은
         *"실패한 요청"* 이지 *"403 인 요청"* 이 아니고, 후자는 <b>컬럼 필터가 이 페이지
         안에서</b> 답한다(frontend/grid.md).
 
-        기본이 *전체* 다 — 이 화면은 일어난 요청 전부를 내는 화면이다(screen/log/access/requirements.md).
+        기본이 *전체* 다 — 이 화면은 일어난 요청 전부를 내는 화면이다(screen/admin/system/log/access/requirements.md).
       */
       field: 'outcome',
       label: MSG.ACCESS_LOG_SEARCH_OUTCOME,
@@ -404,7 +405,7 @@ function buildSearchFields(): SearchField[] {
         이력</b>이 생긴다. 그래서 콤보가 아니라 <b>코드를 직접 치는 칸</b>이다.
 
         <b>`메뉴 없음` 항목이 사라졌다</b>(2026-09-01). 콤보였을 때는 `in` 배열의 `null` 이
-        `IS NULL` 로 펴졌는데(screen/log/access/requirements.md) 텍스트 칸에는 그것을 담을 자리가 없다 — 그 물음은
+        `IS NULL` 로 펴졌는데(screen/admin/system/log/access/requirements.md) 텍스트 칸에는 그것을 담을 자리가 없다 — 그 물음은
         이제 <b>메뉴 컬럼의 필터</b>가 답한다(frontend/grid.md).
       */
       field: 'menuCd',
@@ -437,7 +438,7 @@ function buildSearchFields(): SearchField[] {
     { field: 'clientIp', label: MSG.ACCESS_LOG_SEARCH_CLIENT_IP, type: 'text', ops: ['eq'] },
     {
       /*
-        <b>넣으면 기간이 선택이 된다</b>(screen/log/access/requirements.md) — `TRACE_ID` 에 별도 인덱스가 있어 기간
+        <b>넣으면 기간이 선택이 된다</b>(screen/admin/system/log/access/requirements.md) — `TRACE_ID` 에 별도 인덱스가 있어 기간
         없이도 인덱스를 탄다. 판정은 서버가 한다: 조건 하나가 다른 조건의 필수 여부를
         바꾸는 첫 사례이며, 폼은 아직 그 규칙을 알지 못한다.
       */
@@ -448,5 +449,4 @@ function buildSearchFields(): SearchField[] {
     },
   ];
 }
-
 

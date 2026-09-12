@@ -26,7 +26,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
  *
  * <h2>여기가 에러 로그의 유일한 적재 지점이다</h2>
  *
- * <p>{@code SYS_LO_EXCEPTION} 한 행이 여기서 난다(LOG-03 · screen/log/access/requirements.md). <b>봉투를 만드는 자리와
+ * <p>{@code SYS_LO_EXCEPTION} 한 행이 여기서 난다(LOG-03 · screen/admin/system/log/access/requirements.md). <b>봉투를 만드는 자리와
  * 같은 자리</b>여야 하는 이유가 있다 — 테이블의 {@code ERR_CD} · {@code ERR_MSG} 는
  * <i>응답에 나간 바로 그 값</i> 이며(backend/packages.md), 다른 곳에서 적으면 둘이 갈릴 수 있고 갈리는
  * 순간 <b>운영자가 보는 화면과 사용자가 받은 화면이 다른 말을 한다</b>.
@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
         log.debug("업무 예외 {} — {}", code.code(), e.getMessage());
         /*
           <b>403 의 세 갈래가 여기를 지난다</b> — 인가 인터셉터가 던지는 것이 이 예외이며
-          (backend/security.md), 그 갈래를 나르는 것이 `ERR_CD` 다(screen/log/access/requirements.md). 401 만 기록기가 걸러 낸다.
+          (backend/security.md), 그 갈래를 나르는 것이 `ERR_CD` 다(screen/admin/system/log/access/requirements.md). 401 만 기록기가 걸러 낸다.
         */
         return envelope(request, code.type().status(), code, e.fieldErrors(), e.rowErrors(), e);
     }
@@ -145,7 +145,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * <b>스택이 남는 유일한 갈래다</b> — 500 이기 때문이다(screen/log/access/requirements.md).
+     * <b>스택이 남는 유일한 갈래다</b> — 500 이기 때문이다(screen/admin/system/log/access/requirements.md).
      *
      * <p>위의 다섯은 전부 4xx 이고 그 스택은 프레임워크의 프레임뿐이라 전 행이 같다.
      * 여기만 <i>무엇이 어디서 터졌나</i> 를 담는다.

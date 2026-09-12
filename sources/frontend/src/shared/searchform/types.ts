@@ -9,7 +9,7 @@ import type { SelectOption } from '@/shared/grid/types';
  * 쓰게 된다.
  *
  * <p><b>구현된 것만 담는다</b> — {@code text}·{@code select}·{@code dateRange}·
- * {@code popupRef} 넷이다. 셋째는 사용 이력(screen/log/access/requirements.md)이 가져왔다(그 화면에서 <b>기간이
+ * {@code popupRef} 넷이다. 셋째는 사용 이력(screen/admin/system/log/access/requirements.md)이 가져왔다(그 화면에서 <b>기간이
  * 필수 조건</b>이라 처음으로 날짜 칸이 필요해졌다). 넷째는 playbook/INDEX.md 가 가져왔다.
  *
  * <p><b>팝업은 그리드와 <i>같은 레지스트리</i>를 쓴다</b>(playbook/INDEX.md) — 두 벌을
@@ -110,13 +110,13 @@ export interface SearchField {
    *
    * <p><b>`dateRange` 에서 빈 문자열은 *비워 둔다* 는 뜻이다</b>(2026-08-30 — screen/admin/system/user/requirements.md).
    * 적지 않으면 시스템 기본 기간(`ui.search.range-days.default-days`)으로 채워지는데,
-   * 그것은 **기간이 부하의 상한인 화면**의 규약이다([screen/log/access/requirements.md](../../../../../documents/screen/log/access/requirements.md)). 사용자 목록의
+   * 그것은 **기간이 부하의 상한인 화면**의 규약이다([screen/admin/system/log/access/requirements.md](../../../../../documents/screen/admin/system/log/access/requirements.md)). 사용자 목록의
    * *최종 로그인* 은 그런 칸이 아니다 — 미리 채우면 <b>한 번도 로그인하지 않은 계정이
    * 첫 조회에서 통째로 빠진다</b>. 그 칸은 **선택 필터**이지 창이 아니다.
    */
   defaultValue?: string | string[];
   /**
-   * 비우고 조회할 수 없다 — screen/log/access/requirements.md 가 처음 요구했다.
+   * 비우고 조회할 수 없다 — screen/admin/system/log/access/requirements.md 가 처음 요구했다.
    *
    * <p><b>편의가 아니라 부하다.</b> 사용 이력에서 기간을 비우면 첫 조회가 보존 기간
    * 전량(90일)을 향하고, 그 테이블은 행마다 {@code nclob} 이 달려 있다. 그래서 서버도
@@ -138,7 +138,7 @@ export interface SearchField {
    */
   precision?: DatePrecision;
   /**
-   * `dateRange` 의 <b>화면 층</b> — screen/log/access/requirements.md 의 두 층 중 아래.
+   * `dateRange` 의 <b>화면 층</b> — screen/admin/system/log/access/requirements.md 의 두 층 중 아래.
    *
    * <p>없으면 시스템 값({@code ui.search.range-days.*})을 쓴다. <b>넓히는 쪽으로는 덮지
    * 못한다</b> — 화면이 32를 적어도 시스템이 31이면 31이다. 개인 설정 층이 없는 것은

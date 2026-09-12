@@ -15,10 +15,10 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/log/access` |
+| 페이지 경로 | `/admin/system/log/access` |
 | 메뉴코드 | `ACCESS_LOG` |
-| 프론트 폴더 | `sources/frontend/src/features/accesslog/` |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/log/admin/` · `sources/backend/api/…/api/log/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/accesslog/` |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/log/admin/` · `sources/backend/modules/system/…/system/api/log/` |
 | 화면 유형 | 단일 그리드 + 모달 하나 |
 | 처리 유형 | **조회 전용** |
 | 쓰는 액션 | `R` `E` — `EXPORT_YN` = `Y`. **`S` 도 `X` 도 없다**(§5) |
@@ -214,7 +214,7 @@
 - **마스킹을 거친 값이다.** `authorization` · `cookie` 등은 저장 시점에 이미 가려졌다 — 원문이 아니다.
 - **잘렸음을 말한다**(`MSG.ACCESS_LOG_PAYLOAD_TRUNCATED`). 전문은 1MB 에서 잘리며, 말하지 않으면 잘린 JSON 을 받은 사람이 *"저장이 깨졌다"* 로 읽는다 — 이 화면에서 가장 흔한 오독이다.
 - 글자 수를 함께 낸다(`MSG.ACCESS_LOG_PAYLOAD_LENGTH`).
-- **같은 행을 두 번 눌러도 왕복은 한 번**이다 — 이력은 불변이라 캐시를 무기한 유지한다. 파기된 행의 실패에는 **재시도를 걸지 않는다**(고쳐질 실패가 아니다).
+- **같은 행을 두 번 눌러도 왕복은 한 번**이다 — 이력은 불변이라 캐시를 무기한 유지한다. 이 화면의 마스킹된 `PARAMETERS` 는 별도 민감 등급이 정의되지 않은 감사 이력이며, 민감 등급 상세가 추가되면 이 캐시 정책을 그대로 재사용하지 않고 요구사항을 먼저 정한다. `PARAMETERS` 안의 개인정보 등 민감값을 필드별로 판별·마스킹하는 기능은 현재 범위에 넣지 않는다 — Hub 개발 완료 뒤 별도 기능으로 설계한다. @defer ? 파기된 행의 실패에는 **재시도를 걸지 않는다**(고쳐질 실패가 아니다).
 - **이미 파기된 행은 목록을 다시 읽지 않는다.** 모달만 안내하고 화면은 그대로 둔다 — 보던 목록이 눈앞에서 갈리는 것이 더 나쁘다.
 - 오류 문구는 **서버가 완성해 내려준다** — 화면이 `code` 로 분기하지 않는다.
 
@@ -224,8 +224,8 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |
 |---|---|---|---|---|---|
-| 목록 | `getList` | `/service/accessLog/getList` | POST | R | **cursor** |
-| 전문 하나 | `getDetail` | `/service/accessLog/getDetail` | POST | R | — |
+| 목록 | `getList` | `/service/system/accessLog/getList` | POST | R | **cursor** |
+| 전문 하나 | `getDetail` | `/service/system/accessLog/getDetail` | POST | R | — |
 
 - **둘뿐이고 둘 다 `get*` 이다.** 이력 행은 불변이라 저장도 삭제도 없다 — `save*` 경로가 없으므로 시드 생성기가 `SAVE` 액션을 만들 수 없고, 만들 수 없으므로 **어느 역할에도 줄 수 없다.**
 - **`exportExcel` 이 없다.** 엑셀은 있지만 프론트 생성이고, 다운로드 이력은 공통 경로가 남긴다.
@@ -238,7 +238,7 @@
 
 - 코드그룹: **없음.** `상태` 는 상수 둘이고 `HTTP_STAT` 은 숫자다.
 - 메시지 키: 화면 `MSG.ACCESS_LOG_*` · 서버 `MsgKey.ERR_ACCESS_LOG_RANGE_REQUIRED` · `ERR_ACCESS_LOG_RANGE_TOO_WIDE` · `ERR_ACCESS_LOG_PURGED`.
-- 메뉴 시드: `menu-tree.yaml` — `code: ACCESS_LOG` · `parent: LOG` · `url: /log/access` · `export: true`.
+- 메뉴 시드: `menu-tree.yaml` — `code: ACCESS_LOG` · `parent: LOG` · `url: /admin/system/log/access` · `export: true`.
 - 초기 데이터 전제: 없음 — 요청 인터셉터가 행을 쌓는다.
 - 설정: `SearchRangeProps.maxDays`(시스템 조회 기간 상한, 이 화면은 31일과 **좁은 쪽**을 쓴다) · 전문 절단 상한 1MB · 보존 90일(파기 배치).
 - **`MSG.ACCESS_LOG_SEARCH_MENU` 는 남아 있으나 쓰이지 않는다** — 메뉴 칸이 콤보에서 텍스트 둘로 갈리며 버려진 키다. 값 시드의 행을 지울 수 없으므로 선언도 남는다.

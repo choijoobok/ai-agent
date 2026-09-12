@@ -3,7 +3,7 @@ package com.aiagent.domain.log;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 이력의 긴 텍스트가 <b>잘렸는가</b>를 말하는 한 마디 — backend/packages.md · screen/log/access/requirements.md.
+ * 이력의 긴 텍스트가 <b>잘렸는가</b>를 말하는 한 마디 — backend/packages.md · screen/admin/system/log/access/requirements.md.
  *
  * <p>전문도 스택도 상한에서 잘린다. 잘린 사실을 말하지 않으면 <b>잘린 JSON 을 받은 사람이
  * <i>"저장이 깨졌다"</i> 로 읽는다</b> — 이력 화면에서 가장 흔한 오독이다.
@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
  *
  * <p><b>이름에 {@code Access} 가 없는 이유가 있다.</b> 처음에는 {@code AccessLogPayload} 였고
  * 사용 이력의 {@code PARAMETERS} 만 알았는데, 에러 로그의 {@code ROOT_CAUSE_STACK} 이
- * <b>같은 상한과 같은 표시</b>를 쓰게 됐다(screen/log/access/requirements.md). 그때 상수를 저쪽 이름으로 가져다 쓰면
+ * <b>같은 상한과 같은 표시</b>를 쓰게 됐다(screen/admin/system/log/access/requirements.md). 그때 상수를 저쪽 이름으로 가져다 쓰면
  * <i>스택이 사용 이력의 것</i> 으로 읽히고, 복사해 두면 <b>같은 사실이 두 곳</b>이 된다 —
  * 이 클래스가 애초에 막으려던 것이 그것이다.
  *

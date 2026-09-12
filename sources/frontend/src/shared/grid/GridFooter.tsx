@@ -27,7 +27,7 @@ const NAV_TOOLTIP: Record<string, string | undefined> = {
  * 두고 가운데 칸만 페이지 번호가 쓴다. 셋을 오른쪽에 몰아 두면 번호를 누르려고 눈이
  * 화면 끝까지 간다.
  *
- * <p><b>커서형은 세 칸 중 가운데가 다르다</b>(screen/log/access/requirements.md). 총 건수를 세지 않기로 했으므로
+ * <p><b>커서형은 세 칸 중 가운데가 다르다</b>(screen/admin/system/log/access/requirements.md). 총 건수를 세지 않기로 했으므로
  * (상한·근사·생략 중 <b>생략</b>) 페이지 번호를 만들 수 없고, 왼쪽은 <i>총 N건</i> 대신
  * <b>{@code N건 조회됨}</b> 이 된다 — <b>frontend/grid.md 의 3분할에서 한 칸을 잃는 유일한 예외</b>다.
  *
@@ -60,7 +60,7 @@ interface GridFooterProps {
   /** 컬럼 필터를 통과해 지금 보이는 행 수. */
   shown: number;
   /**
-   * 커서형에서 건수 뒤에 덧붙는 한마디 — {@code 최근 1일} 같은 것(screen/log/access/requirements.md).
+   * 커서형에서 건수 뒤에 덧붙는 한마디 — {@code 최근 1일} 같은 것(screen/admin/system/log/access/requirements.md).
    *
    * <p><b>총 건수를 잃은 자리를 메운다.</b> <i>N건 조회됨</i> 만 있으면 <i>"전부가 N건"</i>
    * 으로 읽히는데 실제로는 <b>이 장이 N건</b>이다 — 무엇을 물어서 나온 N건인지가 함께
@@ -105,7 +105,7 @@ export function GridFooter(props: GridFooterProps) {
     >
       <Typography.Text type="secondary">
         {mode === 'all' ? label(MSG.GRID_FOOTER_COUNT, { count: loaded }) : null}
-        {/* 총 건수가 없다 — 이 장이 몇 건인지만 말한다(screen/log/access/requirements.md). */}
+        {/* 총 건수가 없다 — 이 장이 몇 건인지만 말한다(screen/admin/system/log/access/requirements.md). */}
         {cursor ? label(MSG.GRID_FOOTER_LOADED, { count: loaded }) : null}
         {mode === 'offset'
           ? label(MSG.GRID_FOOTER_TOTAL, { total: total ?? 0, pages: totalPages ?? 0 })
@@ -118,7 +118,7 @@ export function GridFooter(props: GridFooterProps) {
       <div style={{ justifySelf: 'center' }}>
         {/*
           <b>번호가 없다</b> — 총 건수를 세지 않으므로 몇 페이지인지 알 수 없고, 알 수 없는
-          것을 그리면 <i>3페이지로 건너뛰기</i> 가 눌리는데 갈 수 없다(screen/log/access/requirements.md).
+          것을 그리면 <i>3페이지로 건너뛰기</i> 가 눌리는데 갈 수 없다(screen/admin/system/log/access/requirements.md).
         */}
         {cursor ? (
           <Space size={4}>

@@ -32,7 +32,7 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
  *     그 요청도 이력에는 남고 전문만 비운다</td></tr>
  * </table>
  *
- * <p><b>상한을 넘으면 조용히 자른다 — 그리고 잘렸음을 화면이 말한다</b>(screen/log/access/requirements.md).
+ * <p><b>상한을 넘으면 조용히 자른다 — 그리고 잘렸음을 화면이 말한다</b>(screen/admin/system/log/access/requirements.md).
  * 판({@link ContentCachingRequestWrapper})이 상한 뒤를 캐시하지 않을 뿐 <b>애플리케이션에는
  * 전량이 전달된다</b> — 잘린 것은 <i>기록</i> 이지 <i>처리</i> 가 아니다.
  */

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * 기간 문지기 — screen/log/access/requirements.md. <b>이력 화면 셋이 공유한다.</b>
+ * 기간 문지기 — screen/admin/system/log/access/requirements.md. <b>이력 화면 셋이 공유한다.</b>
  *
  * <p>여기서 지키는 것은 <i>막았는가</i> 만이 아니라 <b>무엇으로 막았는가</b> 다. 화면마다
  * {@link ErrorCode} 가 다르고(상한과 보존이 다르므로 문구가 다르다) 그것이 섞이면

@@ -34,7 +34,7 @@ import { useBreadcrumbSlot } from '@/layouts/ShellLayout/breadcrumbSlotStore';
  *
  * <p><b>폼의 `ref` 는 화면이 갖는다.</b> 여기로 올리지 않은 이유는 조건을 <i>읽는</i> 쪽이
  * 화면이기 때문이다 — 조회 파라미터를 모으고(`collect`), 넘겨받은 값을 채워 넣는다
- * (`apply` — screen/log/access/requirements.md 의 화면 간 이동). 훅이 들고 있으면 그 둘이 한 번 더 감싸여 돌아간다.
+ * (`apply` — screen/admin/system/log/access/requirements.md 의 화면 간 이동). 훅이 들고 있으면 그 둘이 한 번 더 감싸여 돌아간다.
  *
  * <p><b>슬롯 노드를 매 렌더 새로 만들지 않는다.</b> {@code useBreadcrumbSlot} 은 내용을
  * 효과의 의존으로 받으므로(스토어에 등록한다) 새 노드는 곧 <b>매 렌더 재등록</b>이다 —

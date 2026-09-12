@@ -10,7 +10,7 @@ import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.JPAExpressions;
 
 /**
- * <b>메뉴명으로 이력을 거른다</b> — screen/log/access/requirements.md 의 <i>메뉴명</i> 조건.
+ * <b>메뉴명으로 이력을 거른다</b> — screen/admin/system/log/access/requirements.md 의 <i>메뉴명</i> 조건.
  *
  * <p>이력 테이블에는 {@code MENU_CD} 만 있고 <b>이름은 두 테이블 건너에</b> 있다:
  * {@code SYS_MENU.MENU_NM} 이 담은 것은 이름이 아니라 <b>메시지 키</b>이고(sys/code.md) 이름은
@@ -34,7 +34,7 @@ import com.querydsl.jpa.JPAExpressions;
  *
  * <p>코드 칸은 뿌리 컬럼이라 인덱스가 없어도 값 비교 하나로 끝나지만, 여기는 행마다
  * {@code EXISTS} 가 돈다. <b>기간이 먼저 좁힌 뒤</b> 걸리는 조건이며 그것이 이 화면들에서
- * 기간이 필수인 이유와 같은 근거다(screen/log/access/requirements.md).
+ * 기간이 필수인 이유와 같은 근거다(screen/admin/system/log/access/requirements.md).
  */
 public final class LogMenuName {
 

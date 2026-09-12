@@ -225,7 +225,7 @@ export function BatchSchedulePage() {
     api: recentApi,
     searchParams: recentParams,
     pageSize: RECENT_SIZE,
-    // 이력 행은 불변이다(screen/log/access/requirements.md) — 편집을 열면 저장할 곳이 없는 셀이 생긴다.
+    // 이력 행은 불변이다(screen/admin/system/log/access/requirements.md) — 편집을 열면 저장할 곳이 없는 셀이 생긴다.
     editable: false,
   });
 

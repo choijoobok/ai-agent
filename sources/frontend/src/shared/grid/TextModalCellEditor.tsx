@@ -17,7 +17,7 @@ import { MSG } from '@/shared/i18n/messageKeys';
  * 화면 어디에도 없다.
  *
  * <p><b>한 행에 모달 대상이 둘일 때</b>(frontend/grid.md 미결) — 샘플은 `MEMO`(`largeText`)와
- * `RMK`(`textModal`)로 <b>에디터를 갈라</b> 두었다(playbook/INDEX.md). screen/log/access/requirements.md 의 *모달 하나 + 탭 둘*
+ * `RMK`(`textModal`)로 <b>에디터를 갈라</b> 두었다(playbook/INDEX.md). screen/admin/system/log/access/requirements.md 의 *모달 하나 + 탭 둘*
  * 은 읽기 전용의 해법이고, 편집 대상 둘은 <b>여는 모양이 다르면</b> 사용자가 어느 칸을
  * 열었는지 창을 보고 안다.
  *

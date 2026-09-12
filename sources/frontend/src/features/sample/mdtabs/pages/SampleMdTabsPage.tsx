@@ -403,7 +403,7 @@ function buildSearchFields(): SearchField[] {
       type: 'dateRange',
       // **`DATE` 컬럼이다** — 적지 않으면 시각까지 보내고 서버가 그 값을 못 읽는다.
       precision: 'day',
-      // 기간이 필수가 아니다 — 이 표는 대용량 이력이 아니다(screen/log/access/requirements.md 와 갈리는 자리).
+      // 기간이 필수가 아니다 — 이 표는 대용량 이력이 아니다(screen/admin/system/log/access/requirements.md 와 갈리는 자리).
       required: false,
       rangeDays: { default: 30, max: 365 },
     },

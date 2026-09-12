@@ -174,7 +174,7 @@ export interface UserIpRow {
  * 탭 4 — **활성 세션 하나**(AUTH-10 · screen/admin/system/user/requirements.md).
  *
  * <p>**IP 와 User-Agent 는 이력에서 온다**(2026-08-31). 세션 스토어는 그 값을 갖고 있지
- * 않으며 여기서도 **담지 않는다** — 원본은 여전히 `SYS_LO_LOGIN` 하나이고(sys/logs.md · screen/log/access/requirements.md),
+ * 않으며 여기서도 **담지 않는다** — 원본은 여전히 `SYS_LO_LOGIN` 하나이고(sys/logs.md · screen/admin/system/log/access/requirements.md),
  * 조회 시점에 *그 세션이 만들어진 무렵의 로그인* 을 찾아 붙일 뿐이다. 그래서 이력이
  * 파기되면(retention.md) 그 칸은 빈다.
  *

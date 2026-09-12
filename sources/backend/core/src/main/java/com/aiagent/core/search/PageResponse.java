@@ -28,9 +28,9 @@ public record PageResponse<T>(
     }
 
     /**
-     * 커서형 — backend/api.md · screen/log/access/requirements.md. <b>{@code totalElements}·{@code totalPages} 가 없다.</b>
+     * 커서형 — backend/api.md · screen/admin/system/log/access/requirements.md. <b>{@code totalElements}·{@code totalPages} 가 없다.</b>
      *
-     * <p>{@code COUNT} 를 세지 않기로 한 것이 이 모드의 전부다(screen/log/access/requirements.md). 상한도 근사도
+     * <p>{@code COUNT} 를 세지 않기로 한 것이 이 모드의 전부다(screen/admin/system/log/access/requirements.md). 상한도 근사도
      * 아닌 <b>생략</b>이며, 그래서 페이지 번호를 만들 수 없고 푸터가
      * {@code ‹ 이전 · 다음 ›} 이 된다.
      *

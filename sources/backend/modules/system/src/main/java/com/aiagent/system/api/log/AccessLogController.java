@@ -1,6 +1,6 @@
-package com.aiagent.api.log;
+// @feat FEAT-507
+package com.aiagent.system.api.log;
 
-import com.aiagent.api.log.request.AccessLogDetailRequest;
 import com.aiagent.api.message.RequestLocale;
 import com.aiagent.api.trace.TraceId;
 import com.aiagent.core.response.ApiResponse;
@@ -9,6 +9,7 @@ import com.aiagent.core.search.SearchRequest;
 import com.aiagent.domain.log.admin.AccessLogDetail;
 import com.aiagent.domain.log.admin.AccessLogQueryService;
 import com.aiagent.domain.log.admin.AccessLogRow;
+import com.aiagent.system.api.log.request.AccessLogDetailRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code ACCESS_LOG} — screen/log/access/requirements.md. <b>{@code get*} 둘뿐이다.</b>
+ * {@code ACCESS_LOG} — screen/admin/system/log/access/requirements.md. <b>{@code get*} 둘뿐이다.</b>
  *
  * <p>{@code save*} 를 두지 않은 것이 <i>이 화면에 쓰기가 없다</i> 는 사실의 집행이다 —
  * 시드 생성기가 {@code SAVE} 액션을 만들 수 없고(backend/api.md — 접두가 액션을 정한다), 만들 수
@@ -27,15 +28,15 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <p><b>{@code EXPORT} 에도 경로가 없다.</b> 엑셀은 있지만(sys/menu.md 의 액션 열이 {@code R E} 다)
  * 프론트 생성이며(playbook/excel-download.md 첫째) 서버가 낼 것이 없다. 다운로드 이력은
- * {@link ExcelLogController} 가 받는 {@code POST /api/common/excel/saveLog} 로 남으며, 그 행은
+ * 구 API 모듈의 엑셀 기록기가 받는 {@code POST /api/common/system/excel/saveLog} 로 남으며, 그 행은
  * <b>이 화면이 조회하는 바로 그 테이블</b>에 들어간다 — LOG-08 이 그것으로 충족된다.
  *
  * <p><b>이 컨트롤러의 호출이 자기 테이블에 남는다.</b> 조회하면 그 조회가
  * {@code SYS_LO_ACCESS} 에 기록되고 다음 조회에서 자기 행이 맨 위에 보인다 — 고장이 아니라
- * 이 템플릿에서 <b>열람 감사에 가장 가까운 것</b>이다(screen/log/access/requirements.md · sys/logs.md).
+ * 이 템플릿에서 <b>열람 감사에 가장 가까운 것</b>이다(screen/admin/system/log/access/requirements.md · sys/logs.md).
  */
 @RestController
-@RequestMapping("/api/service/accessLog")
+@RequestMapping("/api/service/system/accessLog")
 public class AccessLogController {
 
     private final AccessLogQueryService queries;

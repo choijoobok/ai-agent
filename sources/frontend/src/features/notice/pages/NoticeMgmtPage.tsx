@@ -196,7 +196,7 @@ export function NoticeMgmtPage() {
   const deletable = useMemo<DeleteColumnSpec<NoticeRow>>(() => ({ enabled: () => true }), []);
 
   /**
-   * 빈 상태가 <b>둘로 갈린다</b> — screen/notice/requirements.md · screen/log/access/requirements.md.
+   * 빈 상태가 <b>둘로 갈린다</b> — screen/notice/requirements.md · screen/admin/system/log/access/requirements.md.
    *
    * <p>`게시중` 하나로 걸렀을 때의 0건은 <b>사실을 말하는 답</b>이다: 지금 사용자에게
    * 아무 공지도 보이지 않는다는 뜻이고, 그것을 알고 싶어서 거른 것이다. 제목으로 걸러
@@ -404,7 +404,7 @@ function buildColumns(): ColumnDef<NoticeRow>[] {
 /**
  * 넷이며 <b>기간이 필수가 아니다</b>.
  *
- * <p>screen/log/access/requirements.md 의 <i>기간 필수 + 상한</i> 을 상속하지 않는다(screen/notice/requirements.md) — 근거가 대용량인데
+ * <p>screen/admin/system/log/access/requirements.md 의 <i>기간 필수 + 상한</i> 을 상속하지 않는다(screen/notice/requirements.md) — 근거가 대용량인데
  * 공지는 수백 건이다. screen/batch/schedule/requirements.md 이 배치 등록에 내린 것과 같은 판단이다.
  *
  * <p><b>`게시 상태` 의 기본값이 `내림` 을 뺀 셋이다.</b> 내려 둔 공지는 *안 보이는 것이

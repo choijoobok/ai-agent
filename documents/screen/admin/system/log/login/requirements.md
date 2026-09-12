@@ -17,10 +17,10 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/log/login` |
+| 페이지 경로 | `/admin/system/log/login` |
 | 메뉴코드 | `LOGIN_LOG` |
-| 프론트 폴더 | `sources/frontend/src/features/loginlog/` |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/auth/loginlog/` · `sources/backend/api/…/api/log/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/loginlog/` |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/auth/loginlog/` · `sources/backend/modules/system/…/system/api/log/` |
 | 화면 유형 | **단일 그리드** — 모달이 없다 |
 | 처리 유형 | **조회 전용** |
 | 쓰는 액션 | `R` `E` — `EXPORT_YN` = `Y` |
@@ -222,7 +222,7 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |
 |---|---|---|---|---|---|
-| 목록 | `getList` | `/service/loginLog/getList` | POST | R | **cursor** |
+| 목록 | `getList` | `/service/system/loginLog/getList` | POST | R | **cursor** |
 
 - **하나뿐이다.** 이력 행은 불변이라 `save*` 가 없고, `getDetail` 마저 없는 것은 **`nclob` 컬럼이 하나도 없어 목록이 곧 전부**이기 때문이다.
 - **폴더가 화면마다 하나여야 한다.** 사용 이력과 한 폴더에 있었는데, 시드 생성기가 `MENU_URL → @/features/{도메인}` 을 따라 도메인마다 `api/endpoints.ts` 를 하나씩 읽으므로 **둘의 API 를 서로에게 준다.** 실제로 그렇게 만들어졌었다(2026-08-30): `LOGIN_LOG` 에 `accessLog/getList` 가, `ACCESS_LOG` 에 `loginLog/getList` 가 붙었다. **화면에 없는 권한이 시드에서 생기는** 것이라 인가의 문제다.
@@ -234,7 +234,7 @@
 
 - **코드그룹 `LOGIN_RSLT_CD`** — 값 열다섯(§6-4). 이름 키는 `code.LOGIN_RSLT_CD.{코드}`.
 - 메시지 키: 화면 `MSG.LOGIN_LOG_*` · 서버 `MsgKey.ERR_LOGIN_LOG_RANGE_REQUIRED` · `ERR_LOGIN_LOG_RANGE_TOO_WIDE`.
-- 메뉴 시드: `menu-tree.yaml` — `code: LOGIN_LOG` · `parent: LOG` · `url: /log/login` · `export: true`.
+- 메뉴 시드: `menu-tree.yaml` — `code: LOGIN_LOG` · `parent: LOG` · `url: /admin/system/log/login` · `export: true`.
 - 초기 데이터 전제: 없음.
 - 설정: `sys-config.search.range-days.default-days`(7) · `max-days`(92) · `sys-config.retention.login-log-days`(365).
 - **파기 배치는 `USE_YN='N'` 로 시드된다** — 켜지 않으면 365일이 지나도 지워지지 않는다.

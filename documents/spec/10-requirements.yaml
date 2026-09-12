@@ -625,10 +625,10 @@ requirements:
     acceptance: "이력 화면에는 저장·삭제 경로가 없고, 요청·오류 전문을 받는 상세 API도 해당 이력 메뉴의 READ 권한 사슬을 독립적으로 통과해야 한다"
     source: "현재 구현 역추적 — 로그인 이력·사용 이력·에러 로그 화면"
     evidence:
-      frontend: ["features/loginlog", "features/accesslog", "features/errorlog"]
-      backend: ["api/log", "domain/log", "domain/auth/loginlog"]
+      frontend: ["modules/system/features/loginlog", "modules/system/features/accesslog", "features/errorlog"]
+      backend: ["modules/system/api/log", "domain/log", "domain/auth/loginlog"]
       tables: [SYS_LO_LOGIN, SYS_LO_ACCESS, SYS_LO_EXCEPTION]
-      screens: ["/log/login", "/log/access", "/log/error"]
+      screens: ["/admin/system/log/login", "/admin/system/log/access", "/log/error"]
     roadmap: RM-P1
 
   - id: REQ-508

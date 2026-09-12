@@ -121,7 +121,7 @@ interface DataGridProps<T> {
    * 행을 <b>더블 클릭했다</b> — 다른 화면으로 <b>넘겨주는</b> 제스처다(UX-02 멀티탭).
    *
    * <p>screen/menu/requirements.md 가 처음 요구했다(API 카탈로그 하단 → `MENU_TREE`). screen/menu/requirements.md 탭 3(→
-   * `ROLE_AUTH_MGMT`)과 screen/log/access/requirements.md(요청 URI → `API_CATALOG`)가 <b>같은 제스처를 같은 뜻으로</b>
+   * `ROLE_AUTH_MGMT`)과 screen/admin/system/log/access/requirements.md(요청 URI → `API_CATALOG`)가 <b>같은 제스처를 같은 뜻으로</b>
    * 쓴다 — 화면이 셋이어도 사용자가 배우는 것은 하나다.
    *
    * <p><b>편집이 열린 그리드에서는 오지 않는다.</b> 거기서 더블 클릭은 편집기를 여는
@@ -161,7 +161,7 @@ interface DataGridProps<T> {
    */
   pageSizes?: number[];
   /**
-   * 커서형 푸터의 건수 뒤에 붙는 한마디 — {@code 최근 1일}(screen/log/access/requirements.md).
+   * 커서형 푸터의 건수 뒤에 붙는 한마디 — {@code 최근 1일}(screen/admin/system/log/access/requirements.md).
    *
    * <p>총 건수를 잃은 자리를 메운다. 무엇을 물어서 나온 N건인지가 함께 있어야
    * <i>"전부가 N건"</i> 으로 읽히지 않는다. 오프셋·전량 모드에서는 무시된다.
@@ -428,7 +428,7 @@ export function DataGrid<T>(props: DataGridProps<T>) {
   );
 
   /**
-   * <b>빈 문구가 바뀌면 오버레이를 다시 세운다</b> — frontend/grid.md · screen/log/access/requirements.md · screen/batch/schedule/requirements.md.
+   * <b>빈 문구가 바뀌면 오버레이를 다시 세운다</b> — frontend/grid.md · screen/admin/system/log/access/requirements.md · screen/batch/schedule/requirements.md.
    *
    * <p>세 화면이 <b>같은 빈 판에 다른 문구</b>를 낸다: *"역할을 선택하세요"* 와 *"저장 후
    * 조회할 수 있습니다"*, *"이 기간에 실패한 배치가 없습니다"* 와 *"조회 결과가 없습니다"*.
@@ -892,7 +892,7 @@ export function DataGrid<T>(props: DataGridProps<T>) {
               return;
             }
             /*
-              <b>넘겨주기</b> — screen/menu/requirements.md · screen/log/access/requirements.md 가 같은 제스처를 쓴다.
+              <b>넘겨주기</b> — screen/menu/requirements.md · screen/admin/system/log/access/requirements.md 가 같은 제스처를 쓴다.
 
               펼쳐 읽는 칸이 <b>먼저다</b>. 같은 더블 클릭에 뜻이 둘일 수 있는데, 그 컬럼에서
               사람이 기대하는 것은 <i>이 긴 글을 읽겠다</i> 이지 <i>다른 화면으로 가겠다</i> 가
@@ -905,7 +905,7 @@ export function DataGrid<T>(props: DataGridProps<T>) {
             if (!event.data || editable) return;
 
             /*
-              <b>칸이 행보다 먼저다</b> — screen/log/access/requirements.md. 컬럼이 자기 더블 클릭을 선언했으면
+              <b>칸이 행보다 먼저다</b> — screen/admin/system/log/access/requirements.md. 컬럼이 자기 더블 클릭을 선언했으면
               그것이 이긴다: 축이 좁은 쪽이 사람이 실제로 겨눈 것이다. 행으로 흘려보내면
               `요청 URI` 를 노려 누른 것이 <i>이 행을 연다</i> 로 처리된다.
             */

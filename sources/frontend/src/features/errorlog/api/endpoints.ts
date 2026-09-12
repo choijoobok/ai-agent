@@ -7,7 +7,7 @@
  *
  * <p><b>폴더가 인가 경계다</b>(seed.md). 사용 이력·로그인 이력과 한 폴더에 두면 세 화면의
  * 엔드포인트가 서로에게 매핑되어 <b>한쪽 권한이 다른 쪽을 연다</b> — `features/log` 를
- * 갈랐던 것이 그 사고였다(screen/log/access/requirements.md).
+ * 갈랐던 것이 그 사고였다(screen/admin/system/log/access/requirements.md).
  *
  * <p><b>둘뿐이고 둘 다 `get*` 이다.</b> 이력 행은 불변이라 저장도 삭제도 없다(screen/log/error/requirements.md) —
  * `save*` 경로가 없으므로 시드 생성기가 `SAVE` 액션을 만들 수 없고, 만들 수 없으므로

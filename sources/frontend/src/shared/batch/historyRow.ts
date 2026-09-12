@@ -22,7 +22,7 @@ export interface BatchHistoryRow {
    * 조인해 온 이름 — <b>`null` 이면 지워진 등록</b>이다(screen/batch/schedule/requirements.md).
    *
    * <p>이력에 FK 가 없으므로(sys/batch.md) 등록을 지워도 행은 남으며 남아야 한다. 화면은
-   * `(삭제된 배치)` 로 그리고 <b>이름을 지어내지 않는다</b> — screen/log/access/requirements.md 가 없는 계정에
+   * `(삭제된 배치)` 로 그리고 <b>이름을 지어내지 않는다</b> — screen/admin/system/log/access/requirements.md 가 없는 계정에
    * 이름을 붙이지 않기로 한 것과 같은 판단이다.
    */
   batchNm: string | null;

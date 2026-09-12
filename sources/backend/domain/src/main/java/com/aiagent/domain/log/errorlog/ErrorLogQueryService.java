@@ -148,7 +148,7 @@ public class ErrorLogQueryService {
     }
 
     /**
-     * 탭 둘을 <b>한 번에</b> — screen/log/access/requirements.md. <b>동적 봉투를 태우지 않는다</b>(backend/api.md).
+     * 탭 둘을 <b>한 번에</b> — screen/admin/system/log/access/requirements.md. <b>동적 봉투를 태우지 않는다</b>(backend/api.md).
      *
      * <p>PK 하나로 한 행을 집는 고정형이다. 조건 목록으로 열면 <b>전문 조회가 임의 조건의
      * 조회</b>가 되고, 그 순간 {@code nclob} 을 목록에서 뺀 이유가 무너진다.
@@ -163,7 +163,7 @@ public class ErrorLogQueryService {
                 .fetchFirst();
 
         if (found == null) {
-            // 조회한 뒤 파기 배치가 지나갔다(retention.md). 목록은 그대로 둔다 — screen/log/access/requirements.md.
+            // 조회한 뒤 파기 배치가 지나갔다(retention.md). 목록은 그대로 둔다 — screen/admin/system/log/access/requirements.md.
             throw new BusinessException(
                     ErrorLogErrorCode.PURGED, "에러 로그 행이 없다 — " + exceptionLogSeq);
         }

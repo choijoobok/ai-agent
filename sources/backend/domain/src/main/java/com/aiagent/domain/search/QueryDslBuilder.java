@@ -72,7 +72,7 @@ public class QueryDslBuilder {
     }
 
     /**
-     * 커서형의 정렬 키 — <b>하나뿐이다</b>(backend/api.md · screen/log/access/requirements.md).
+     * 커서형의 정렬 키 — <b>하나뿐이다</b>(backend/api.md · screen/admin/system/log/access/requirements.md).
      *
      * <p>번호 없는 이동은 <b>직전 페이지의 마지막 행을 기준점으로</b> 다음을 읽는다. 기준점이
      * 성립하려면 정렬 키가 고정이어야 하므로 <b>둘 이상은 400</b> 이다 — 조용히 첫 것만 쓰면

@@ -16,7 +16,7 @@ public enum PageMode {
      * 대용량 이력. 총 건수를 세지 않고 정렬 키가 하나다.
      *
      * <p><b>이력 슬라이스가 만들었다</b>(2026-08-30) — 첫 사용처가 {@code ACCESS_LOG} 다
-     * (screen/log/access/requirements.md). {@code COUNT} 가 처음으로 비싼 화면이며, 상한·근사·생략 중 <b>생략</b>을
+     * (screen/admin/system/log/access/requirements.md). {@code COUNT} 가 처음으로 비싼 화면이며, 상한·근사·생략 중 <b>생략</b>을
      * 골랐기 때문에 페이지 번호를 만들 수 없고 푸터가 {@code ‹ 이전 · 다음 ›} 이 된다.
      *
      * <p>정렬 키가 하나인 것은 기준점 때문이다 — 번호 없는 이동은 직전 페이지의 마지막

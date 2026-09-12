@@ -41,8 +41,8 @@ import java.util.Map;
  * 어긋남은 <b>거부되어야 할 다운로드가 통과하는 것</b>으로만 드러난다.
  *
  * <p><b>{@code searchRangeDefaultDays}·{@code searchRangeMaxDays} 도 같은 자리다</b>(sys/code.md ·
- * screen/log/access/requirements.md). 조회 기간의 <b>시스템 층</b>이며 화면은 그것을 <i>더 좁게</i> 덮는다 — 사용 이력이
- * 1 · 31 이다(screen/log/access/requirements.md). 프론트에 7 · 92 를 박아 두면 {@code SYS_CONFIG} 와 어긋나고, 그
+ * screen/admin/system/log/access/requirements.md). 조회 기간의 <b>시스템 층</b>이며 화면은 그것을 <i>더 좁게</i> 덮는다 — 사용 이력이
+ * 1 · 31 이다(screen/admin/system/log/access/requirements.md). 프론트에 7 · 92 를 박아 두면 {@code SYS_CONFIG} 와 어긋나고, 그
  * 어긋남은 <b>폼이 통과시킨 조회를 서버가 400 으로 거부하는 것</b>으로만 드러난다.
  *
  * <p><b>{@code dateFormat} 도 같은 자리다</b>(sys/code.md · frontend/grid.md). 날짜 표시 형식이며

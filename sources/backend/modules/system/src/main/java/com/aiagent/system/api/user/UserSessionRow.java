@@ -23,7 +23,7 @@ import java.time.Instant;
  * 첫 용도다. {@link #lastAccessedDtm} 은 <i>얼마나 오래</i> 를 말하고 이 둘은
  * <i>어디서</i> 를 말한다.
  *
- * <p><b>헤더가 출처를 밝힌다</b>(screen/log/access/requirements.md 과 같은 규약) — 화면이 <i>마지막 로그인
+ * <p><b>헤더가 출처를 밝힌다</b>(screen/admin/system/log/access/requirements.md 과 같은 규약) — 화면이 <i>마지막 로그인
  * 이력에서</i> 라고 적는다. 그러지 않으면 <b>빈 칸이 결함으로</b> 읽히고 채워진 칸은
  * 세션이 들고 있는 사실처럼 읽힌다.
  *

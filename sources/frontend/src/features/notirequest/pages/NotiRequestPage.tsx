@@ -374,7 +374,7 @@ function buildColumns(): ColumnDef<NotiRequestRow>[] {
  * <p>처리함은 <b>할 일 목록</b>이다. 전체를 기본으로 두면 <b>처리된 것이 대기 중인 것을
  * 덮는다</b> — `NOTICE_MGMT` 의 게시 상태 기본값과 방향이 같고 <b>더 좁다</b>.
  *
- * <p>기간은 필수가 아니다(screen/noti-request/requirements.md) — screen/log/access/requirements.md 의 근거가 대용량인데 요청은 수천 건이다.
+ * <p>기간은 필수가 아니다(screen/noti-request/requirements.md) — screen/admin/system/log/access/requirements.md 의 근거가 대용량인데 요청은 수천 건이다.
  *
  * <p><b>처리 메모 조건이 없다</b> — `VARCHAR(2000)` 이라 실을 수는 있지만 <b>관리자가
  * 그때 쓴 문장</b>이라 형식이 없다. 조건으로 열면 `LIKE` 가 되고, 그 물음에 답하는 것은

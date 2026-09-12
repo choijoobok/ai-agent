@@ -49,6 +49,7 @@ val pitestCoreVersion = libs.versions.pitestCore.get()
 val pitestJunit5Version = libs.versions.pitestJunit5.get()
 configure(listOf(
     project(":backend:api"),
+    project(":backend:core"),
     project(":backend:domain"),
     project(":backend:modules:system"),
 )) {

@@ -29,7 +29,7 @@ import java.util.Base64;
  *     결과를 되집는다 — 두 방향이 <b>같은 토큰 형식</b>을 쓰므로 화면은 둘을 구분하지 않고
  *     받은 것을 돌려준다</td></tr>
  * <tr><td>{@code value}·{@code pk}</td><td>기준점. PK 가 함께 있어야 <b>같은 시각의 행이
- * 여럿</b>일 때 경계가 흔들리지 않는다(screen/log/access/requirements.md)</td></tr>
+ * 여럿</b>일 때 경계가 흔들리지 않는다(screen/admin/system/log/access/requirements.md)</td></tr>
  * </table>
  *
  * <p><b>JSON 이 아니다.</b> {@code core} 는 {@code jackson-databind} 를 갖지 않는다(backend/packages.md —

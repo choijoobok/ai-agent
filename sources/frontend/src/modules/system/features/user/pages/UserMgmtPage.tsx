@@ -624,7 +624,7 @@ function buildSearchFields(roleOptions: SelectOption[]): SearchField[] {
       /*
         <b>화면이 보내는 값과 SQL 컬럼이 1:1 이 아니다</b>(screen/admin/system/user/requirements.md) — 서버가 다섯 값을 네
         컬럼의 조건으로 번역한다. backend/api.md 가 *"와이어의 문제가 아니라 화이트리스트의
-        문제"* 로 답한 그 자리이며, 로그인 이력의 결과 묶음(screen/log/access/requirements.md)에 이은 셋째다.
+        문제"* 로 답한 그 자리이며, 로그인 이력의 결과 묶음(screen/admin/system/log/access/requirements.md)에 이은 셋째다.
       */
       field: 'accountStat',
       label: MSG.USER_SEARCH_STAT,
@@ -679,7 +679,7 @@ function buildSearchFields(roleOptions: SelectOption[]): SearchField[] {
     /*
       <b>기간 둘은 비워 둔다</b>(2026-08-30 · screen/admin/system/user/requirements.md — 기본값이 없다). 적지 않으면 폼이
       시스템 기본 기간으로 채우는데, 그것은 <b>기간이 부하의 상한인 화면</b>의 규약이고
-      (screen/log/access/requirements.md) 여기 둘은 <b>선택 필터</b>다.
+      (screen/admin/system/log/access/requirements.md) 여기 둘은 <b>선택 필터</b>다.
 
       미리 채우면 <b>한 번도 로그인하지 않은 계정이 첫 조회에서 통째로 빠진다</b> — 그리고
       그 계정들이야말로 이 화면에서 찾을 일이 많다.

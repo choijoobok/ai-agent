@@ -24,7 +24,7 @@ import java.util.List;
  * 테이블에 목록이 둘이면 컬럼을 하나 늘릴 때 <b>한쪽만 고쳐 놓고 왜 안 걸리는지</b> 를
  * 찾게 된다. 어느 조건을 <b>낼지</b> 는 화면이 정한다.
  *
- * <p><b>기간이 필수가 아니다</b> — screen/log/access/requirements.md 의 <i>기간 필수 + 상한</i> 은 대용량 이력의
+ * <p><b>기간이 필수가 아니다</b> — screen/admin/system/log/access/requirements.md 의 <i>기간 필수 + 상한</i> 은 대용량 이력의
  * 규칙이고, 이 표는 그렇지 않다. ②({@code SMPL_SINGLE_CURSOR})가 그 규칙 쪽이다.
  *
  * <h2>정렬 키가 커서 인덱스와 같다</h2>

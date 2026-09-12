@@ -19,7 +19,7 @@ import java.util.List;
  * 뺀다</b> — 그 값은 이미 {@code X-Menu-Code} 헤더로 와서 {@code SYS_LO_ACCESS.MENU_CD}
  * <b>컬럼</b>이 되며(backend/packages.md · sys/logs.md), body 에도 담으면 <b>같은 사실이 한 행에 두 벌</b>
  * 생긴다. 둘이 어긋나는 날 어느 쪽이 맞는지 알 수 없고, 이력 화면이 메뉴로 거를 때 보는
- * 것은 <b>컬럼 쪽</b>이다(screen/log/access/requirements.md).
+ * 것은 <b>컬럼 쪽</b>이다(screen/admin/system/log/access/requirements.md).
  *
  * <h2>{@code scope} 를 더한다</h2>
  *

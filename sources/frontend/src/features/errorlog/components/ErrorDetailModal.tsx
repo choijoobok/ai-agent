@@ -6,7 +6,7 @@ import { MSG } from '@/shared/i18n/messageKeys';
 import { getErrorLogDetail } from '@/features/errorlog/api/errorLogApi';
 
 /**
- * 상세 — screen/log/access/requirements.md 의 <b>탭 둘</b>. 각각 `textModal` 읽기 전용(frontend/grid.md).
+ * 상세 — screen/admin/system/log/access/requirements.md 의 <b>탭 둘</b>. 각각 `textModal` 읽기 전용(frontend/grid.md).
  *
  * <p><b>편집기가 아니다.</b> 이력 행은 불변이며(screen/log/error/requirements.md) 여는 순간 고칠 수 있는 것처럼
  * 보이면 안 된다 — 큰 textarea 지만 잠겨 있고, 여기서 하는 일은 <b>읽고 복사하는 것</b>뿐이다.

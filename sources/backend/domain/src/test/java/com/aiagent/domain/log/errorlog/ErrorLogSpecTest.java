@@ -49,7 +49,7 @@ class ErrorLogSpecTest {
     @DisplayName("없는 묶음은 거절한다 — 조용히 전건을 내면 거른 줄 알고 결론을 낸다")
     void 없는_묶음은_거절() {
         assertThatThrownBy(() -> group().toPredicate(Op.eq, "3XX"))
-                // 파생 번역기의 거절은 `FieldSpec` 이 400 으로 감싼다 — screen/log/access/requirements.md.
+                // 파생 번역기의 거절은 `FieldSpec` 이 400 으로 감싼다 — screen/admin/system/log/access/requirements.md.
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("statusGroup");
     }
@@ -105,7 +105,7 @@ class ErrorLogSpecTest {
             assertThat(menuNm.toPredicate(op, "사용 이력").toString()).contains("exists");
         }
         /*
-          `in`·`ne` 는 파생 번역기가 거절하고 `FieldSpec` 이 400 으로 감싼다(screen/log/access/requirements.md).
+          `in`·`ne` 는 파생 번역기가 거절하고 `FieldSpec` 이 400 으로 감싼다(screen/admin/system/log/access/requirements.md).
           흘려보내면 <b>거르지 않은 목록을 거른 것으로</b> 읽는다.
         */
         assertThatThrownBy(() -> menuNm.toPredicate(Op.in, List.of("사용 이력")))

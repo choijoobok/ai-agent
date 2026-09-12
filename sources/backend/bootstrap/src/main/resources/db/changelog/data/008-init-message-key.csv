@@ -1,35 +1,35 @@
 MSG_KEY,USE_SCOPE,MSG_DESC
-accessLog.anonymous,FRONT,사용자 칸이 빈 행의 표시 — screen/log/access/requirements.md. 빈칸으로 두면 *수집이 안 된 것*과 구분되지 않는다. 미인증 요청에 `USER_ID` 가 없는 것은 정상이다. /
+accessLog.anonymous,FRONT,사용자 칸이 빈 행의 표시 — screen/admin/system/log/access/requirements.md. 빈칸으로 두면 *수집이 안 된 것*과 구분되지 않는다. 미인증 요청에 `USER_ID` 가 없는 것은 정상이다. /
 accessLog.col.clientIp,FRONT,IP 컬럼.
-accessLog.col.creDtm,FRONT,일시 컬럼 — 정렬이 열린 유일한 컬럼이다(screen/log/access/requirements.md).
-accessLog.col.httpStat,FRONT,상태 컬럼 — 응답의 HTTP 상태. 전 요청을 받으므로 필요하다(screen/log/access/requirements.md).
+accessLog.col.creDtm,FRONT,일시 컬럼 — 정렬이 열린 유일한 컬럼이다(screen/admin/system/log/access/requirements.md).
+accessLog.col.httpStat,FRONT,상태 컬럼 — 응답의 HTTP 상태. 전 요청을 받으므로 필요하다(screen/admin/system/log/access/requirements.md).
 accessLog.col.menu,FRONT,메뉴 컬럼 — 코드가 아니라 메뉴명으로 그린다(sys/code.md).
-accessLog.col.payload,FRONT,전문 컬럼 — 값이 아니라 `[보기]` 다(screen/log/access/requirements.md).
+accessLog.col.payload,FRONT,전문 컬럼 — 값이 아니라 `[보기]` 다(screen/admin/system/log/access/requirements.md).
 accessLog.col.requestUri,FRONT,요청 URI 컬럼.
-accessLog.col.seq,FRONT,순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/log/access/requirements.md).
-accessLog.col.traceId,FRONT,추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/log/access/requirements.md).
+accessLog.col.seq,FRONT,순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/admin/system/log/access/requirements.md).
+accessLog.col.traceId,FRONT,추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/admin/system/log/access/requirements.md).
 accessLog.col.userId,FRONT,사용자 아이디 컬럼 — 미인증 요청은 #ACCESS_LOG_ANONYMOUS 다.
 accessLog.col.userNm,FRONT,"사용자명 컬럼 — `SYS_USER` 를 조인해 얻는다(2026-09-01). 미인증 요청과 지워진 계정에서 비며, 그 자리를 채우지 않는다 — 바로 왼쪽 칸이 이미 `(익명)` 이라고 말하고 있어 이 칸의 빈칸은 덧말이다. 로그인 이력이 `없는 계정` 배지를 붙이는 것과 갈리는 자리다(거기는 없는 계정이 흔한 일이다). /"
-accessLog.empty,FRONT,"0건일 때 — 보존 기간을 함께 말한다(screen/log/access/requirements.md). *""조회 결과가 없습니다""* 로 끝내면 조건이 좁은 것인지 거기 데이터가 없는 것인지 구분되지 않는다. 0건에는 언제나 이유가 있고 화면이 아는 이유는 화면이 말한다. /"
-accessLog.footer.range,FRONT,푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/log/access/requirements.md).
-accessLog.grid.title,FRONT,마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/log/access/requirements.md).
-accessLog.menu.clientClaim,FRONT,메뉴 컬럼 헤더의 툴팁 — 클라이언트가 밝힌 값이다(backend/packages.md). 붙이지 않으면 이 화면의 메뉴별 집계가 감사 근거로 인용된다(screen/log/access/requirements.md). /
-accessLog.noMenu,FRONT,메뉴 문맥 없는 요청의 표시 — 로그인·하트비트가 그렇다(screen/log/access/requirements.md).
+accessLog.empty,FRONT,"0건일 때 — 보존 기간을 함께 말한다(screen/admin/system/log/access/requirements.md). *""조회 결과가 없습니다""* 로 끝내면 조건이 좁은 것인지 거기 데이터가 없는 것인지 구분되지 않는다. 0건에는 언제나 이유가 있고 화면이 아는 이유는 화면이 말한다. /"
+accessLog.footer.range,FRONT,푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/admin/system/log/access/requirements.md).
+accessLog.grid.title,FRONT,마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/admin/system/log/access/requirements.md).
+accessLog.menu.clientClaim,FRONT,메뉴 컬럼 헤더의 툴팁 — 클라이언트가 밝힌 값이다(backend/packages.md). 붙이지 않으면 이 화면의 메뉴별 집계가 감사 근거로 인용된다(screen/admin/system/log/access/requirements.md). /
+accessLog.noMenu,FRONT,메뉴 문맥 없는 요청의 표시 — 로그인·하트비트가 그렇다(screen/admin/system/log/access/requirements.md).
 accessLog.outcome.failure,FRONT,상태 조건의 항목 — 4xx·5xx.
 accessLog.outcome.success,FRONT,상태 조건의 항목 — 2xx·3xx.
-accessLog.payload.length,FRONT,전문 모달 하단의 글자 수 — `{count}`(screen/log/access/requirements.md).
-accessLog.payload.link,FRONT,전문 셀에 그려지는 글자 — 값이 아니다(screen/log/access/requirements.md).
+accessLog.payload.length,FRONT,전문 모달 하단의 글자 수 — `{count}`(screen/admin/system/log/access/requirements.md).
+accessLog.payload.link,FRONT,전문 셀에 그려지는 글자 — 값이 아니다(screen/admin/system/log/access/requirements.md).
 accessLog.payload.title,FRONT,전문 모달의 제목.
 accessLog.payload.truncated,FRONT,"전문이 상한에서 잘렸다 — backend/packages.md. 말하지 않으면 잘린 JSON 을 받은 사람이 *""저장이 깨졌다""* 로 읽는다. 이 화면에서 가장 흔한 오독이다. /"
 accessLog.search.clientIp,FRONT,조회조건 — IP. 완전 일치다.
 accessLog.search.menu,FRONT,
-accessLog.search.menuCd,FRONT,조회조건 — 메뉴 코드. 뿌리 테이블의 컬럼이라 값 비교 하나로 끝난다. `메뉴 없음` 항목이 여기 없다. 콤보였을 때는 `in` 배열의 `null` 이 `IS NULL` 로 펴졌는데(screen/log/access/requirements.md) 텍스트 칸에는 담을 자리가 없다 — 그 물음은 메뉴 컬럼의 필터가 답한다(frontend/grid.md). /
+accessLog.search.menuCd,FRONT,조회조건 — 메뉴 코드. 뿌리 테이블의 컬럼이라 값 비교 하나로 끝난다. `메뉴 없음` 항목이 여기 없다. 콤보였을 때는 `in` 배열의 `null` 이 `IS NULL` 로 펴졌는데(screen/admin/system/log/access/requirements.md) 텍스트 칸에는 담을 자리가 없다 — 그 물음은 메뉴 컬럼의 필터가 답한다(frontend/grid.md). /
 accessLog.search.menuNm,FRONT,조회조건 — 메뉴명. 이름은 두 테이블 건너에 있다(sys/code.md). `SYS_MENU.MENU_NM` 이 담은 것은 메시지 키이고 이름은 `SYS_MESSAGE` 의 값이라 서버가 `EXISTS` 로 푼다. 어느 언어든 걸린다 — 운영자는 화면에 보이는 그 이름을 들고 오지 어느 언어의 값인지를 들고 오지 않는다(screen/admin/system/code/requirements.md). /
-accessLog.search.outcome,FRONT,조회조건 — 상태. 파생이며 기본은 전체다(screen/log/access/requirements.md).
-accessLog.search.period,FRONT,조회조건 — 기간. 필수이며 상한이 31일이다(screen/log/access/requirements.md).
-accessLog.search.requestUri,FRONT,조회조건 — 요청 URI. 앞 일치다(screen/log/access/requirements.md).
-accessLog.search.traceId,FRONT,조회조건 — 추적 ID. 넣으면 기간이 선택이 된다(screen/log/access/requirements.md).
-accessLog.search.userId,FRONT,"조회조건 — 사용자 아이디. 문자열 비교 넷(같음 · 시작 · 포함 · 끝)이다(2026-09-01). 인덱스가 없는 것은 그대로인데 기간이 먼저 좁힌다(screen/log/access/requirements.md) — 완전 일치만 열어 두면 조각을 든 사람이 기간을 넓혀 훑고, 그것이 더 비싸다. /"
+accessLog.search.outcome,FRONT,조회조건 — 상태. 파생이며 기본은 전체다(screen/admin/system/log/access/requirements.md).
+accessLog.search.period,FRONT,조회조건 — 기간. 필수이며 상한이 31일이다(screen/admin/system/log/access/requirements.md).
+accessLog.search.requestUri,FRONT,조회조건 — 요청 URI. 앞 일치다(screen/admin/system/log/access/requirements.md).
+accessLog.search.traceId,FRONT,조회조건 — 추적 ID. 넣으면 기간이 선택이 된다(screen/admin/system/log/access/requirements.md).
+accessLog.search.userId,FRONT,"조회조건 — 사용자 아이디. 문자열 비교 넷(같음 · 시작 · 포함 · 끝)이다(2026-09-01). 인덱스가 없는 것은 그대로인데 기간이 먼저 좁힌다(screen/admin/system/log/access/requirements.md) — 완전 일치만 열어 두면 조각을 든 사람이 기간을 넓혀 훑고, 그것이 더 비싸다. /"
 accessLog.search.userNm,FRONT,조회조건 — 사용자명. 이름은 `SYS_USER` 조인이 답한다(2026-09-01).
 apiCatalog.col.accessibleUserCount,FRONT,하단 — 접근 가능 인원(AUTHZ-13). 게이트 ④를 먹이지 않은 수다.
 apiCatalog.col.actionCd,FRONT,액션 컬럼 — 공통코드가 아니라 API 의 속성이다(sys/code.md).
@@ -50,7 +50,7 @@ apiCatalog.menu.unmapped,FRONT,하단이 0건일 때 — 배지와 같은 말을
 apiCatalog.notRegistered,FRONT,"여기가 진단이다 — URL 칸에만 값을 넣었는데 0건일 때(screen/menu/requirements.md). 미등록은 화면이 보여줄 수 없다 — 없는 행을 목록에 낼 방법이 없기 때문이다. *""조회 결과가 없습니다""* 로 끝내면 이 화면의 세 갈래 중 하나가 사라진다. /"
 apiCatalog.search.actionCd,FRONT,조회조건 — 액션. 기본은 전체다.
 apiCatalog.search.apiNm,FRONT,조회조건 — API 명.
-apiCatalog.search.apiUrl,FRONT,조회조건 — API URL. 로그에서 얻은 URL 하나가 들어오는 칸이다(screen/log/access/requirements.md).
+apiCatalog.search.apiUrl,FRONT,조회조건 — API URL. 로그에서 얻은 URL 하나가 들어오는 칸이다(screen/admin/system/log/access/requirements.md).
 apiCatalog.search.mapped,FRONT,조회조건 — 매핑 상태. 진단의 입구다(screen/menu/requirements.md). 컬럼 필터로 두면 현재 페이지 안에서만 걸리므로(frontend/grid.md) 서버 조건이다. /
 apiCatalog.unmapped,FRONT,"매핑 메뉴 `0` 에 붙는 배지 — screen/menu/requirements.md 의 `미연결` 과 같은 어휘, 다른 뜻이다. 둘 다 *""연결이 끊겼다""* 이고 고치는 곳만 다르다 — 미연결은 프론트 라우트, 미매핑은 `endpoints.ts` 와 시드다. 화면이 둘이어도 사용자가 배우는 것은 하나다. /"
 authz.action.EXECUTE,FRONT,"절차 발동 — 배치 실행, 승인/반려, 강제 로그아웃."
@@ -83,10 +83,10 @@ batchHistory.col.nodeId,FRONT,노드 컬럼 — 기본 숨김이며 중복이 �
 batchHistory.col.rslt,FRONT,결과 컬럼 — 배지. 색은 `tone` 맵이 정한다(screen/batch/schedule/requirements.md).
 batchHistory.col.rsltMsg,FRONT,요약 컬럼 — `VARCHAR(1000)` 이라 셀에 싣는다(sys/batch.md).
 batchHistory.col.startDtm,FRONT,시작 컬럼 — 기본 정렬(내림)이다.
-batchHistory.deletedBatch,FRONT,배치명이 비었을 때 — 이름을 지어내지 않는다(screen/log/access/requirements.md 와 같은 판단).
+batchHistory.deletedBatch,FRONT,배치명이 비었을 때 — 이름을 지어내지 않는다(screen/admin/system/log/access/requirements.md 와 같은 판단).
 batchHistory.detail.link,FRONT,상세 셀에 그려지는 글자 — 값이 아니다(screen/batch/schedule/requirements.md). 엑셀은 원본 값을 쓴다(frontend/grid.md).
 batchHistory.detail.noError,FRONT,오류 탭이 비활성인 이유 — 성공한 실행이다. 위와 사유가 다르다.
-batchHistory.detail.noResult,FRONT,결과 상세 탭이 비활성인 이유 — 탭 이름의 툴팁이다(screen/log/access/requirements.md). 탭 안에 두면 비활성 탭이 열리지 않아 볼 방법이 없다. 그리고 비어 있는 것과 남기지 않은 것이 다르다 — 대개의 배치는 대상 목록을 남기지 않는다. /
+batchHistory.detail.noResult,FRONT,결과 상세 탭이 비활성인 이유 — 탭 이름의 툴팁이다(screen/admin/system/log/access/requirements.md). 탭 안에 두면 비활성 탭이 열리지 않아 볼 방법이 없다. 그리고 비어 있는 것과 남기지 않은 것이 다르다 — 대개의 배치는 대상 목록을 남기지 않는다. /
 batchHistory.detail.tabError,FRONT,탭 — 오류(`ERR_MSG`). 예외 스택이다.
 batchHistory.detail.tabResult,FRONT,탭 — 결과 상세(`RSLT_DTL_MSG`). 처리한 대상 목록이다(sys/batch.md).
 batchHistory.detail.title,FRONT,상세 모달의 제목 — 탭 둘이다(screen/batch/schedule/requirements.md).
@@ -242,7 +242,7 @@ err.forbidden,BACK,인가 거부의 기본 문구. 원인 넷이 이 하나를 �
 err.internal,BACK,처리하지 못한 예외. 사용자에게는 traceId 하나만 나간다(backend/security.md).
 err.lock.conflict,BACK,같은 자원을 다른 작업이 잡고 있다. 경합은 정상이므로 400 대다.
 err.login-log.range-required,BACK,기간 없이 조회하려 했다 — 보존이 1년이라 조건 없이 열면 그 전량을 향한다.
-err.login-log.range-too-wide,BACK,기간이 92일을 넘었다 — 보존(1년)보다 창이 짧은 유일한 화면이다(screen/log/access/requirements.md).
+err.login-log.range-too-wide,BACK,기간이 92일을 넘었다 — 보존(1년)보다 창이 짧은 유일한 화면이다(screen/admin/system/log/access/requirements.md).
 err.login.concurrent,BACK,prevent-login: true 에서 기존 세션이 살아 있어 신규 로그인을 거부했다.
 err.login.disabled,BACK,사용 중지된 계정(USE_YN='N').
 err.login.dormant,BACK,장기 미접속 휴면. 본인 확인을 마치면 해제된다(sys/user-role.md).
@@ -307,8 +307,8 @@ err.sample.not-confirmable,BACK,"접수 상태가 아니다 — 확정은 RCV �
 err.sample.not-found,BACK,없는 주문이다 — 화면이 낡았거나 화면 밖 경로다.
 err.sample.not-recalculable,BACK,"금액이 잠긴 주문의 품목을 다시 세려 했다 — playbook/INDEX.md 의 행×디테일 재계산. #ERR_SAMPLE_NOT_CONFIRMABLE 와 갈라 두는 것은 사용자가 할 일이 다르기 때문이다. 확정은 지금 하려는 일 이 막힌 것이고, 이쪽은 이미 확정된 금액 이라 막힌 것이다 — 같은 문구로 말하면 확정을 먼저 하라는 뜻으로 읽힌다. /"
 err.sample.not-shippable,BACK,"확정 상태가 아니다 — 출고 지시는 CFM 에서만 열린다(playbook/INDEX.md 의 전이표). 화면이 eligible 로 대상을 거르지만(frontend/grid.md), 고른 뒤 남이 상태를 바꾸면 그 판정은 낡은 값이다. /"
-err.sample.range-required,BACK,기간을 비우고 조회했다 — ②는 기간이 부하의 상한인 화면이다(playbook/INDEX.md · screen/log/access/requirements.md). 화면의 required 가 먼저 막지만 도구·스크립트는 그 폼을 지나지 않는다. /
-err.sample.range-too-wide,BACK,조회 기간이 상한을 넘었다 — 조용히 자르지 않는다(screen/log/access/requirements.md).
+err.sample.range-required,BACK,기간을 비우고 조회했다 — ②는 기간이 부하의 상한인 화면이다(playbook/INDEX.md · screen/admin/system/log/access/requirements.md). 화면의 required 가 먼저 막지만 도구·스크립트는 그 폼을 지나지 않는다. /
+err.sample.range-too-wide,BACK,조회 기간이 상한을 넘었다 — 조용히 자르지 않는다(screen/admin/system/log/access/requirements.md).
 err.sample.required,BACK,주문번호·주문명·고객이 비었다 — 셀 단위 오류로 돌려준다(frontend/grid.md).
 err.sample.rmk-required,BACK,"할인율이 있는데 비고가 없다 — 조건부 필수(playbook/INDEX.md · frontend/grid.md). #ERR_SAMPLE_REQUIRED 와 갈라 두는 것은 그 문구가 주문번호·주문명·고객· 주문일 넷을 열거하기 때문이다. 조건부 필수를 거기 얹으면 사용자에게 틀린 칸을 가리킨다 — 다 채웠는데 왜 필수라는지 알 수 없고, 그 넷을 다시 들여다보게 된다. 실기동에서 드러났다(2026-09-02). 화면의 required 함수가 먼저 막으므로 평소에는 이 문구가 보이지 않지만, 보이는 순간은 화면 밖 경로라 더 정확해야 한다. /"
 err.sample.tag-required,BACK,"태그 행의 필수 — 태그명과 정렬순서(playbook/INDEX.md). #ERR_SAMPLE_REQUIRED 와 갈라 두는 이유가 #ERR_SAMPLE_RMK_REQUIRED 와 같다: 그 문구는 주문 의 넷을 열거하는데 여기서 빈 것은 태그 탭의 행이라, 얹으면 사용자가 마스터를 들여다보게 된다. /"
@@ -351,46 +351,46 @@ err.user.pwd-reused,BACK,최근 N건 안에 있던 비밀번호다 — 건수는
 err.user.pwd-unchanged,BACK,지금 쓰는 것과 같다. 재사용 이력에는 아직 없으므로 별도 판정이다.
 err.user.pwd-weak,BACK,새 비밀번호가 정책의 최소 길이·문자 종류를 못 채웠다.
 err.validation,BACK,요청 값 검증 실패. 필드별 오류가 함께 나간다(backend/api.md).
-errorLog.anonymous,FRONT,사용자 컬럼이 빈 행의 표시 — 빈칸은 *수집이 안 된 것*과 구분되지 않는다(screen/log/access/requirements.md).
-errorLog.col.clientIp,FRONT,IP 컬럼 — 기본 숨김이다(screen/log/access/requirements.md).
-errorLog.col.creDtm,FRONT,일시 컬럼 — 정렬이 열린 유일한 컬럼이다(screen/log/access/requirements.md).
-errorLog.col.detail,FRONT,상세 컬럼 — 파생이며 셀에 그려지는 것은 `[보기]` 다(screen/log/access/requirements.md).
+errorLog.anonymous,FRONT,사용자 컬럼이 빈 행의 표시 — 빈칸은 *수집이 안 된 것*과 구분되지 않는다(screen/admin/system/log/access/requirements.md).
+errorLog.col.clientIp,FRONT,IP 컬럼 — 기본 숨김이다(screen/admin/system/log/access/requirements.md).
+errorLog.col.creDtm,FRONT,일시 컬럼 — 정렬이 열린 유일한 컬럼이다(screen/admin/system/log/access/requirements.md).
+errorLog.col.detail,FRONT,상세 컬럼 — 파생이며 셀에 그려지는 것은 `[보기]` 다(screen/admin/system/log/access/requirements.md).
 errorLog.col.errCd,FRONT,오류 코드 컬럼 — 문자열 상수라 이 값으로 묶어 센다(backend/packages.md).
 errorLog.col.errMsg,FRONT,메시지 컬럼 — 서버가 완성한 문장이며 사용자가 그때 본 그 글이다.
-errorLog.col.httpStat,FRONT,상태 컬럼 — 4xx 와 5xx 를 가른다. 배지의 색이 그 둘이다(screen/log/access/requirements.md).
+errorLog.col.httpStat,FRONT,상태 컬럼 — 4xx 와 5xx 를 가른다. 배지의 색이 그 둘이다(screen/admin/system/log/access/requirements.md).
 errorLog.col.menu,FRONT,메뉴 컬럼 — 요청 URI 앞에 보인다(2026-09-01. 그 전에는 기본 숨김이었다). 클라이언트 주장이라 헤더 툴팁이 그 사실을 말한다(backend/packages.md). /
-errorLog.col.requestUri,FRONT,요청 URI 컬럼 — 더블 클릭이 `API_CATALOG` 로 건너뛴다(screen/log/access/requirements.md).
-errorLog.col.seq,FRONT,순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/log/access/requirements.md).
-errorLog.col.traceId,FRONT,추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/log/access/requirements.md).
+errorLog.col.requestUri,FRONT,요청 URI 컬럼 — 더블 클릭이 `API_CATALOG` 로 건너뛴다(screen/admin/system/log/access/requirements.md).
+errorLog.col.seq,FRONT,순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/admin/system/log/access/requirements.md).
+errorLog.col.traceId,FRONT,추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/admin/system/log/access/requirements.md).
 errorLog.col.userId,FRONT,사용자 아이디 컬럼 — 미인증 요청은 #ERROR_LOG_ANONYMOUS 다.
 errorLog.col.userNm,FRONT,사용자명 컬럼 — `SYS_USER` 를 조인해 얻는다(2026-09-01). 미인증 요청과 지워진 계정에서 빈다 — 왼쪽 칸이 이미 `(익명)` 이라고 말하므로 그 자리를 채우지 않는다(사용 이력과 같은 규칙이다). /
 errorLog.detail.length,FRONT,모달 하단의 글자 수 — `{count}`.
-errorLog.detail.link,FRONT,상세 셀에 그려지는 글자 — 값이 아니라 여는 것이다(screen/log/access/requirements.md).
+errorLog.detail.link,FRONT,상세 셀에 그려지는 글자 — 값이 아니라 여는 것이다(screen/admin/system/log/access/requirements.md).
 errorLog.detail.title,FRONT,상세 모달의 제목.
-errorLog.detail.truncated,FRONT,상한에서 잘렸다 — 말하지 않으면 잘린 값을 깨진 값으로 읽는다(screen/log/access/requirements.md).
-errorLog.empty,FRONT,0건일 때 — 보존 기간(180일)을 함께 말한다(screen/log/access/requirements.md).
-errorLog.empty.server,FRONT,"5xx 만 으로 물었는데 0건이다 — 진단으로 읽히게 한다(screen/log/access/requirements.md). *""조회 결과가 없습니다""* 로 끝내면 답이 빈 결과로 읽힌다. 이 기간에 서버 오류가 없었다는 것은 가장 듣고 싶은 답이다. /"
-errorLog.empty.trace,FRONT,"추적 ID 로 물었는데 0건이다 — 유실이 아니다(screen/log/access/requirements.md). §1.4 이후 모든 요청은 사용 이력에 있고 여기는 예외가 난 것만 받는다. 그래서 0건이면 *""그 요청은 오류가 아니었다""* 는 뜻이며 사용 이력에는 반드시 있다 — 문구가 그 사실을 사용자 말로 옮겨 사용 이력으로 보낸다. /"
-errorLog.footer.range,FRONT,푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/log/access/requirements.md).
-errorLog.grid.title,FRONT,마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/log/access/requirements.md).
+errorLog.detail.truncated,FRONT,상한에서 잘렸다 — 말하지 않으면 잘린 값을 깨진 값으로 읽는다(screen/admin/system/log/access/requirements.md).
+errorLog.empty,FRONT,0건일 때 — 보존 기간(180일)을 함께 말한다(screen/admin/system/log/access/requirements.md).
+errorLog.empty.server,FRONT,"5xx 만 으로 물었는데 0건이다 — 진단으로 읽히게 한다(screen/admin/system/log/access/requirements.md). *""조회 결과가 없습니다""* 로 끝내면 답이 빈 결과로 읽힌다. 이 기간에 서버 오류가 없었다는 것은 가장 듣고 싶은 답이다. /"
+errorLog.empty.trace,FRONT,"추적 ID 로 물었는데 0건이다 — 유실이 아니다(screen/admin/system/log/access/requirements.md). §1.4 이후 모든 요청은 사용 이력에 있고 여기는 예외가 난 것만 받는다. 그래서 0건이면 *""그 요청은 오류가 아니었다""* 는 뜻이며 사용 이력에는 반드시 있다 — 문구가 그 사실을 사용자 말로 옮겨 사용 이력으로 보낸다. /"
+errorLog.footer.range,FRONT,푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/admin/system/log/access/requirements.md).
+errorLog.grid.title,FRONT,마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/admin/system/log/access/requirements.md).
 errorLog.menu.clientClaim,FRONT,메뉴 헤더의 툴팁 — 클라이언트 주장이다(backend/packages.md · backend/security.md).
-errorLog.noMenu,FRONT,메뉴 컬럼이 빈 행의 표시 — 로그인·하트비트는 셸 진입 전이라 메뉴가 없다(screen/log/access/requirements.md).
+errorLog.noMenu,FRONT,메뉴 컬럼이 빈 행의 표시 — 로그인·하트비트는 셸 진입 전이라 메뉴가 없다(screen/admin/system/log/access/requirements.md).
 errorLog.payload.none,FRONT,전문 탭이 비어 있는데 파기는 아니다 — 멀티파트 요청·캐싱이 꺼진 구간이다.
-errorLog.payload.purged,FRONT,"전문 탭이 비어 있는 이유 — 사용 이력 90일이 지났다(screen/log/access/requirements.md). §3.7 의 *""이미 파기된 이력입니다""* 와 같은 어휘다. 보존이 180일 / 90일로 달라 생기는 일이며 고장이 아니다. /"
-errorLog.search.errCd,FRONT,조회조건 — 오류 코드. 완전 일치다. 셀을 복사해 넣는 동선이다(screen/log/access/requirements.md).
+errorLog.payload.purged,FRONT,"전문 탭이 비어 있는 이유 — 사용 이력 90일이 지났다(screen/admin/system/log/access/requirements.md). §3.7 의 *""이미 파기된 이력입니다""* 와 같은 어휘다. 보존이 180일 / 90일로 달라 생기는 일이며 고장이 아니다. /"
+errorLog.search.errCd,FRONT,조회조건 — 오류 코드. 완전 일치다. 셀을 복사해 넣는 동선이다(screen/admin/system/log/access/requirements.md).
 errorLog.search.menu,FRONT,
-errorLog.search.menuCd,FRONT,"조회조건 — 메뉴 코드. 문의 전화가 주는 것이 시각과 화면 이름이다(screen/log/access/requirements.md). 이름을 받는 칸이 아래에 따로 있으므로 이 칸은 코드를 아는 사람의 것이다 — 대개 개발자이며, 오류 코드 칸과 같은 동선(셀을 복사해 넣는다)이다. /"
+errorLog.search.menuCd,FRONT,"조회조건 — 메뉴 코드. 문의 전화가 주는 것이 시각과 화면 이름이다(screen/admin/system/log/access/requirements.md). 이름을 받는 칸이 아래에 따로 있으므로 이 칸은 코드를 아는 사람의 것이다 — 대개 개발자이며, 오류 코드 칸과 같은 동선(셀을 복사해 넣는다)이다. /"
 errorLog.search.menuNm,FRONT,조회조건 — 메뉴명. 이름은 `SYS_MESSAGE` 에 있어 서버가 `EXISTS` 로 푼다(sys/code.md).
-errorLog.search.period,FRONT,조회조건 — 기간. 필수이며 상한은 시스템 값(92일) 그대로다(screen/log/access/requirements.md).
+errorLog.search.period,FRONT,조회조건 — 기간. 필수이며 상한은 시스템 값(92일) 그대로다(screen/admin/system/log/access/requirements.md).
 errorLog.search.requestUri,FRONT,조회조건 — 요청 URI. 앞 일치다(인덱스가 없다).
-errorLog.search.status,FRONT,조회조건 — 상태. 파생이며 묶음 둘이다(screen/log/access/requirements.md).
-errorLog.search.traceId,FRONT,조회조건 — 추적 ID. 넣으면 기간이 선택이 된다(screen/log/access/requirements.md).
+errorLog.search.status,FRONT,조회조건 — 상태. 파생이며 묶음 둘이다(screen/admin/system/log/access/requirements.md).
+errorLog.search.traceId,FRONT,조회조건 — 추적 ID. 넣으면 기간이 선택이 된다(screen/admin/system/log/access/requirements.md).
 errorLog.search.userId,FRONT,조회조건 — 사용자 아이디. 문자열 비교 넷이다 — 기간이 먼저 좁힌다(2026-09-01).
 errorLog.search.userNm,FRONT,조회조건 — 사용자명. 이름은 `SYS_USER` 조인이 답한다(2026-09-01).
-errorLog.stack.none,FRONT,"스택 탭이 비어 있는 이유 — 4xx 라 저장하지 않았다(screen/log/access/requirements.md). *""없습니다""* 로 끝내지 않는다. 인가 거부의 스택은 인터셉터 프레임뿐이고 전 행이 같아서 일부러 저장하지 않은 것이며, 그것을 말하지 않으면 유실로 읽는다. /"
+errorLog.stack.none,FRONT,"스택 탭이 비어 있는 이유 — 4xx 라 저장하지 않았다(screen/admin/system/log/access/requirements.md). *""없습니다""* 로 끝내지 않는다. 인가 거부의 스택은 인터셉터 프레임뿐이고 전 행이 같아서 일부러 저장하지 않은 것이며, 그것을 말하지 않으면 유실로 읽는다. /"
 errorLog.status.client,FRONT,상태 묶음의 항목 — 403 이 대부분이며 대개 정상 동작이다.
-errorLog.status.server,FRONT,상태 묶음의 항목 — 이 화면의 가장 흔한 조회다(screen/log/access/requirements.md).
-errorLog.tab.payload,FRONT,탭 하나 — 요청 전문. 다른 테이블에서 온다(screen/log/access/requirements.md).
+errorLog.status.server,FRONT,상태 묶음의 항목 — 이 화면의 가장 흔한 조회다(screen/admin/system/log/access/requirements.md).
+errorLog.tab.payload,FRONT,탭 하나 — 요청 전문. 다른 테이블에서 온다(screen/admin/system/log/access/requirements.md).
 errorLog.tab.stack,FRONT,탭 하나 — 스택트레이스. 4xx 는 비활성이다.
 excel.upload.ambiguousCode,FRONT,코드명이 두 코드에 걸린다 — `{value}`(playbook/INDEX.md). 둘 중 하나를 조용히 고르지 않는다 — 그렇게 저장된 행은 화면에서 정상으로 보인다. /
 excel.upload.duplicated,FRONT,파일 안에서 키가 겹쳤다 — 어느 칸이라 말할 수 없다(키 조합이다).
@@ -454,7 +454,7 @@ grid.filter.from,FRONT,"날짜 필터의 시작 칸 — frontend/grid.md · play
 grid.filter.to,FRONT,〃 끝 칸. 비워 두면 위쪽이 열린다 — 단측이다.
 grid.footer.count,FRONT,페이징이 없는 그리드(`mode: 'all'`)의 푸터 — `{count}`.
 grid.footer.filtered,FRONT,컬럼 필터가 걸렸을 때 덧붙는 문구 — `{loaded}` · `{shown}`(frontend/grid.md).
-grid.footer.loaded,FRONT,커서형 푸터의 왼쪽 — `{count}`(screen/log/access/requirements.md). `GRID_FOOTER_TOTAL` 과 다른 말이다. 저것은 전부가 몇 건이고 이것은 이 장이 몇 건이다 — 총 건수를 세지 않기로 한 화면에서 총 이라고 쓰면 거짓말이 된다. /
+grid.footer.loaded,FRONT,커서형 푸터의 왼쪽 — `{count}`(screen/admin/system/log/access/requirements.md). `GRID_FOOTER_TOTAL` 과 다른 말이다. 저것은 전부가 몇 건이고 이것은 이 장이 몇 건이다 — 총 건수를 세지 않기로 한 화면에서 총 이라고 쓰면 거짓말이 된다. /
 grid.footer.pageSize,FRONT,
 grid.footer.total,FRONT,푸터 왼쪽 — `{total}` · `{pages}`.
 grid.issue.column,FRONT,"저장 실패 표의 머리 셋 — `컬럼` · `값` · `사유`(frontend/grid.md ④). 행 번호 칸이 없다. 판에 클라이언트 정렬이 걸리면 우리가 센 배열 순서와 화면의 번호가 어긋나고, *틀린 번호는 없는 번호보다 나쁘다*. 어느 줄인지는 붉은 셀이 말하고 판이 첫 실패로 데려간다. /"
@@ -523,28 +523,28 @@ login.submit,FRONT,로그인 제출 버튼.
 login.title,FRONT,로그인 화면의 제목.
 login.traceId,FRONT,5xx 응답에 붙는 문의 번호 안내 — `{traceId}`.
 loginLog.col.clientIp,FRONT,IP 컬럼.
-loginLog.col.creDtm,FRONT,일시 컬럼 — 정렬이 열린 유일한 컬럼이다(screen/log/access/requirements.md).
-loginLog.col.result,FRONT,결과 컬럼 — 공통코드 15종이며 배지의 색은 셋이다(screen/log/access/requirements.md).
-loginLog.col.seq,FRONT,순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/log/access/requirements.md).
-loginLog.col.traceId,FRONT,추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/log/access/requirements.md).
-loginLog.col.userAgent,FRONT,User-Agent 컬럼 — 기본 숨김이다. 켜면 다른 컬럼이 전부 밀린다(screen/log/access/requirements.md).
-loginLog.col.userId,FRONT,"사용자 아이디 컬럼 — 시도한 ID 다(screen/log/access/requirements.md). 헤더가 *시도 ID* 였다(2026-09-01 에 바뀌었다). 이력 셋의 헤더를 사용자 아이디 · 사용자명으로 통일하면서 갈렸는데, *사용자* 라고 쓰면 `SYS_USER` 에 있는 것처럼 읽힌다던 걱정은 이름 칸의 `없는 계정` 배지가 대신 말한다 — 헤더를 화면마다 다르게 부르는 대가가 더 크다. 툴팁(#LOGIN_LOG_USER_ID_ATTEMPTED)은 남는다. /"
+loginLog.col.creDtm,FRONT,일시 컬럼 — 정렬이 열린 유일한 컬럼이다(screen/admin/system/log/access/requirements.md).
+loginLog.col.result,FRONT,결과 컬럼 — 공통코드 15종이며 배지의 색은 셋이다(screen/admin/system/log/access/requirements.md).
+loginLog.col.seq,FRONT,순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/admin/system/log/access/requirements.md).
+loginLog.col.traceId,FRONT,추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/admin/system/log/access/requirements.md).
+loginLog.col.userAgent,FRONT,User-Agent 컬럼 — 기본 숨김이다. 켜면 다른 컬럼이 전부 밀린다(screen/admin/system/log/access/requirements.md).
+loginLog.col.userId,FRONT,"사용자 아이디 컬럼 — 시도한 ID 다(screen/admin/system/log/access/requirements.md). 헤더가 *시도 ID* 였다(2026-09-01 에 바뀌었다). 이력 셋의 헤더를 사용자 아이디 · 사용자명으로 통일하면서 갈렸는데, *사용자* 라고 쓰면 `SYS_USER` 에 있는 것처럼 읽힌다던 걱정은 이름 칸의 `없는 계정` 배지가 대신 말한다 — 헤더를 화면마다 다르게 부르는 대가가 더 크다. 툴팁(#LOGIN_LOG_USER_ID_ATTEMPTED)은 남는다. /"
 loginLog.col.userNm,FRONT,"사용자명 컬럼 — `SYS_USER` 를 조인해 얻는다(2026-09-01). 없는 계정의 시도에서는 비고, 그 자리에 `없는 계정` 배지가 붙는다. 배지의 글자와 색은 결과 컬럼의 `FAIL_NO_USER` 와 같은 것이며 같은 공통코드 행 (`code.LOGIN_RSLT_CD.FAIL_NO_USER`)에서 온다 — 한 행의 두 칸이 같은 사실을 두 글자로 말하면 사람이 둘을 다른 사실로 읽는다. /"
-loginLog.empty,FRONT,0건일 때 — 보존 기간(1년)을 함께 말한다(screen/log/access/requirements.md).
-loginLog.empty.failed,FRONT,"실패만 으로 물었는데 0건이다 — 문구가 다르다(screen/log/access/requirements.md). *""조회 결과가 없습니다""* 로 끝내면 진단이 빈 결과로 읽힌다. 이 기간에 로그인 실패가 없었다는 것은 답이지 실패가 아니다. /"
-loginLog.footer.range,FRONT,푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/log/access/requirements.md).
-loginLog.grid.title,FRONT,마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/log/access/requirements.md).
-loginLog.noUserId,FRONT,시도 ID 가 빈 행의 표시 — 빈칸은 *수집이 안 된 것*과 구분되지 않는다(screen/log/access/requirements.md).
+loginLog.empty,FRONT,0건일 때 — 보존 기간(1년)을 함께 말한다(screen/admin/system/log/access/requirements.md).
+loginLog.empty.failed,FRONT,"실패만 으로 물었는데 0건이다 — 문구가 다르다(screen/admin/system/log/access/requirements.md). *""조회 결과가 없습니다""* 로 끝내면 진단이 빈 결과로 읽힌다. 이 기간에 로그인 실패가 없었다는 것은 답이지 실패가 아니다. /"
+loginLog.footer.range,FRONT,푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/admin/system/log/access/requirements.md).
+loginLog.grid.title,FRONT,마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/admin/system/log/access/requirements.md).
+loginLog.noUserId,FRONT,시도 ID 가 빈 행의 표시 — 빈칸은 *수집이 안 된 것*과 구분되지 않는다(screen/admin/system/log/access/requirements.md).
 loginLog.rsltGroup.closed,FRONT,결과 묶음의 항목 — 로그아웃·만료·강제·밀려남 넷.
-loginLog.rsltGroup.failed,FRONT,결과 묶음의 항목 — `FAIL_*` 열. 이 화면의 기본 동선이다(screen/log/access/requirements.md).
-loginLog.search.clientIp,FRONT,조회조건 — IP. 완전 일치다. 실패 행에서 복사해 다시 조회하는 동선이다(screen/log/access/requirements.md).
-loginLog.search.period,FRONT,조회조건 — 기간. 필수이며 상한은 시스템 값(92일) 그대로다(screen/log/access/requirements.md).
+loginLog.rsltGroup.failed,FRONT,결과 묶음의 항목 — `FAIL_*` 열. 이 화면의 기본 동선이다(screen/admin/system/log/access/requirements.md).
+loginLog.search.clientIp,FRONT,조회조건 — IP. 완전 일치다. 실패 행에서 복사해 다시 조회하는 동선이다(screen/admin/system/log/access/requirements.md).
+loginLog.search.period,FRONT,조회조건 — 기간. 필수이며 상한은 시스템 값(92일) 그대로다(screen/admin/system/log/access/requirements.md).
 loginLog.search.result,FRONT,조회조건 — 결과. 다중 선택이며 후보는 공통코드가 낸다(sys/code.md).
-loginLog.search.rsltGroup,FRONT,조회조건 — 결과 묶음. 파생이며 배지의 색 셋과 같은 축이다(screen/log/access/requirements.md).
-loginLog.search.traceId,FRONT,조회조건 — 추적 ID. 넣으면 기간이 선택이 된다(screen/log/access/requirements.md).
-loginLog.search.userId,FRONT,"조회조건 — 사용자 아이디. 문자열 비교 넷(같음 · 시작 · 포함 · 끝)이다(2026-09-01). 인덱스가 없는 것은 그대로인데 기간이 먼저 좁힌다(screen/log/access/requirements.md). IP 를 완전 일치로 둔 것과 갈리는 자리다 — 대역 검색은 결과만 넓어지는 조건이지만, 부분 아이디는 다른 답을 낸다(`admin` 으로 끝나는 시도가 그렇다). /"
+loginLog.search.rsltGroup,FRONT,조회조건 — 결과 묶음. 파생이며 배지의 색 셋과 같은 축이다(screen/admin/system/log/access/requirements.md).
+loginLog.search.traceId,FRONT,조회조건 — 추적 ID. 넣으면 기간이 선택이 된다(screen/admin/system/log/access/requirements.md).
+loginLog.search.userId,FRONT,"조회조건 — 사용자 아이디. 문자열 비교 넷(같음 · 시작 · 포함 · 끝)이다(2026-09-01). 인덱스가 없는 것은 그대로인데 기간이 먼저 좁힌다(screen/admin/system/log/access/requirements.md). IP 를 완전 일치로 둔 것과 갈리는 자리다 — 대역 검색은 결과만 넓어지는 조건이지만, 부분 아이디는 다른 답을 낸다(`admin` 으로 끝나는 시도가 그렇다). /"
 loginLog.search.userNm,FRONT,조회조건 — 사용자명. 없는 계정의 시도는 이름이 없어 이 조건에 걸리지 않는다.
-loginLog.userId.attempted,FRONT,시도 ID 헤더의 툴팁 — 등록된 계정이 아닐 수 있다(sys/logs.md · screen/log/access/requirements.md). 말하지 않으면 없는 ID 의 행이 결함처럼 보인다. 그 행들이야말로 이 화면의 두 번째 용도(침입 시도 탐지)가 찾는 것이다. /
+loginLog.userId.attempted,FRONT,시도 ID 헤더의 툴팁 — 등록된 계정이 아닐 수 있다(sys/logs.md · screen/admin/system/log/access/requirements.md). 말하지 않으면 없는 ID 의 행이 결함처럼 보인다. 그 행들이야말로 이 화면의 두 번째 용도(침입 시도 탐지)가 찾는 것이다. /
 mail.pwdReset.body,BACK,재설정 인증번호 메일의 본문 — {code} · {minutes}.
 mail.pwdReset.subject,BACK,재설정 인증번호 메일의 제목.
 menuTree.account.blocked,FRONT,계정이 막힌 상태 — 관리자가 정한 뜻이다(`USE_YN` 또는 기간).
@@ -687,7 +687,7 @@ notice.col.toDtm,FRONT,게시 종료 — 비우면 무기한이다(sys/notificat
 notice.col.useYn,FRONT,사용 — 즉시 내림이며 기간과 축이 다르다(sys/notification.md).
 notice.delete.confirm,FRONT,삭제 확인 — 되돌릴 수 없다고 말하고 대안(끄기)을 함께 준다(screen/notice/requirements.md).
 notice.empty,FRONT,조회 0건 — 일반 문구다.
-notice.empty.active,FRONT,"`게시중` 으로 걸렀는데 0건 — 진단으로 읽히게 한다(screen/notice/requirements.md · screen/log/access/requirements.md). 지금 사용자에게 아무 공지도 보이지 않는다는 뜻이고, 그것을 알고 싶어서 거른 것이다. /"
+notice.empty.active,FRONT,"`게시중` 으로 걸렀는데 0건 — 진단으로 읽히게 한다(screen/notice/requirements.md · screen/admin/system/log/access/requirements.md). 지금 사용자에게 아무 공지도 보이지 않는다는 뜻이고, 그것을 알고 싶어서 거른 것이다. /"
 notice.grid.title,FRONT,마스터 그리드의 제목.
 notice.popup.off,FRONT,
 notice.popup.on,FRONT,
@@ -1011,8 +1011,8 @@ search.op.lt,FRONT,연산자 셀렉터 — 미만(`<`). 크기 계열의 다섯�
 search.op.lte,FRONT,연산자 셀렉터 — 이하(`<=`). 크기 계열의 셋째 실물이다(frontend/search-form.md). screen/admin/system/user/requirements.md 의 기간 칸 둘이 처음 요구했다(2026-08-31). *한쪽만 아는 조건* 이 실제로 있다 — 이 날짜 이후로 한 번도 안 들어온 계정 이 `lte` 이고 그 반대가 `gte` 다. /
 search.op.ne,FRONT,연산자 셀렉터 — 같지 않음.
 search.op.startsWith,FRONT,연산자 셀렉터 — 시작 문자 일치.
-search.rangeTooWide,FRONT,기간이 상한을 넘었다 — `{days}`. 조용히 자르지 않는다(screen/log/access/requirements.md).
-search.required,FRONT,필수 조건을 비우고 조회했다 — screen/log/access/requirements.md. 조회 자체가 일어나지 않는다.
+search.rangeTooWide,FRONT,기간이 상한을 넘었다 — `{days}`. 조용히 자르지 않는다(screen/admin/system/log/access/requirements.md).
+search.required,FRONT,필수 조건을 비우고 조회했다 — screen/admin/system/log/access/requirements.md. 조회 자체가 일어나지 않는다.
 search.reset,FRONT,폼의 유일한 버튼 — 조건과 컬럼 필터를 함께 지운다(frontend/grid.md).
 searchCond.default,FRONT,기본 조건 체크박스 — 화면에 들어올 때 이 조건으로 폼이 채워진다.
 searchCond.default.mark,FRONT,목록에서 기본 조건임을 나타내는 표시의 이름.
@@ -1221,7 +1221,7 @@ user.session.col.lastAccess,FRONT,컬럼 — 최근 접근. ***끊을까 말까*
 user.session.col.sessionId,FRONT,컬럼 — 세션. **앞 8자만** 그린다.
 user.session.col.userAgent,FRONT,〃 브라우저(`User-Agent`). `VARCHAR(500)` 이라 셀에서 잘리고 툴팁으로 펼친다.
 user.session.empty,FRONT,활성 세션이 없다 — 지금 아무 데도 들어와 있지 않다.
-user.session.fromLogin,FRONT,"두 컬럼의 헤더 툴팁 — **출처를 말한다**(screen/log/access/requirements.md 과 같은 규약). 이 컬럼을 어디까지 믿을 수 있나가 값의 옆에 없으면, **빈 칸이 결함으로** 읽히고 채워진 칸은 세션이 들고 있는 사실처럼 읽힌다. /"
+user.session.fromLogin,FRONT,"두 컬럼의 헤더 툴팁 — **출처를 말한다**(screen/admin/system/log/access/requirements.md 과 같은 규약). 이 컬럼을 어디까지 믿을 수 있나가 값의 옆에 없으면, **빈 칸이 결함으로** 읽히고 채워진 칸은 세션이 들고 있는 사실처럼 읽힌다. /"
 user.session.kill,FRONT,실행 버튼 — 강제 종료(AUTH-10).
 user.session.kill.confirm,FRONT,"확인 문구 — **계정은 바뀌지 않는다**는 것을 말한다(screen/admin/system/user/requirements.md). *""N건을 종료합니다""* 만으로는 **다시 로그인할 수 있다**는 사실이 빠진다 — 막으려면 `USE_YN='N'` 이고 그것은 **다른 축**이다(sys/user-role.md). 말하지 않으면 이 버튼이 계정을 잠그는 것으로 읽힌다. /"
 user.session.kill.done,FRONT,결과 — `{count}` 건을 끊었다. **고른 수와 다를 수 있고 다른 것이 사실**이다.

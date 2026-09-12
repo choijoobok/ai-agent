@@ -3,9 +3,9 @@ package com.aiagent.domain.log.admin;
 import java.time.Instant;
 
 /**
- * 사용 이력 한 행 — screen/log/access/requirements.md. <b>{@code PARAMETERS} 가 없다.</b>
+ * 사용 이력 한 행 — screen/admin/system/log/access/requirements.md. <b>{@code PARAMETERS} 가 없다.</b>
  *
- * <p>전문은 컬럼이 아니라 {@code getDetail} 의 결과다(screen/log/access/requirements.md). 100행 × 1MB = 100MB 이고,
+ * <p>전문은 컬럼이 아니라 {@code getDetail} 의 결과다(screen/admin/system/log/access/requirements.md). 100행 × 1MB = 100MB 이고,
  * Oracle LOB 성능이 그 앞에서 먼저 무너진다(backend/persistence.md S-2).
  *
  * <p>그래서 이 레코드가 나르는 것은 <b>{@code hasParameters} 한 칸</b>이다 — 값이 아니라
@@ -17,7 +17,7 @@ import java.time.Instant;
  *     {@code userId} 의 유무이며 그 판단은 화면이 한다
  * @param menuNm 메뉴명 — {@code MENU_CD} 가 아니라 <b>번역된 이름</b>이다(sys/code.md).
  *     {@code menuCd} 가 {@code null} 이거나 {@code SYS_MENU} 에 없으면 <b>{@code null}</b>
- * 이며, 그 자리에 무엇을 그릴지는 화면이 정한다(screen/log/access/requirements.md 의 {@code (메뉴 없음)})
+ * 이며, 그 자리에 무엇을 그릴지는 화면이 정한다(screen/admin/system/log/access/requirements.md 의 {@code (메뉴 없음)})
  */
 public record AccessLogRow(
         Long accessLogSeq,

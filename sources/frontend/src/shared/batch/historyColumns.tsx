@@ -12,7 +12,7 @@ import type { BatchHistoryRow } from '@/shared/batch/historyRow';
  * <b>같은 값이 화면마다 다른 색과 다른 단위</b>로 보이고, 그것이 정확히 이 슬라이스가
  * 피하려는 종류의 어긋남이다(sys/batch.md 이 판정을 코드에 둔 이유와 같은 축).
  *
- * <p><b>편집 선언이 한 줄도 없다</b>(screen/log/access/requirements.md) — 그래서 상태 컬럼도 삭제 컬럼도 붙지
+ * <p><b>편집 선언이 한 줄도 없다</b>(screen/admin/system/log/access/requirements.md) — 그래서 상태 컬럼도 삭제 컬럼도 붙지
  * 않는다(frontend/grid.md). 이력 행은 불변이다.
  *
  * <p><b>`RSLT_DTL_MSG` · `ERR_MSG` 가 없다.</b> 둘 다 `nclob` 이라 목록에 싣지 않으며
@@ -43,7 +43,7 @@ export function historyColumns(
       width: 160,
       sortable: true,
       /*
-        <b>행이 아니라 칸이다</b>(screen/log/access/requirements.md 와 같은 규칙). 이 화면은 <b>행 더블 클릭이 이미
+        <b>행이 아니라 칸이다</b>(screen/admin/system/log/access/requirements.md 와 같은 규칙). 이 화면은 <b>행 더블 클릭이 이미
         상세 모달</b>이므로 축이 다르면 자리도 달라야 한다 — 겹치면 하나가 다른 하나를 가린다.
 
         §3.9 의 반대 방향이며 둘이 왕복을 만든다 — <b>등록이 원인이고 이력이 결과</b>다.
@@ -58,7 +58,7 @@ export function historyColumns(
       fill: true,
       /*
         <b>없으면 `(삭제된 배치)`</b> — 고장이 아니다(screen/batch/schedule/requirements.md). 이력에 FK 가 없으므로
-        등록을 지워도 행은 남으며, <b>이름을 지어내지 않는다</b>(screen/log/access/requirements.md 와 같은 판단).
+        등록을 지워도 행은 남으며, <b>이름을 지어내지 않는다</b>(screen/admin/system/log/access/requirements.md 와 같은 판단).
         `BATCH_ID` 는 그대로 보이므로 <i>무엇이었는지</i> 는 남는다.
       */
       derive: (row) => row.batchNm ?? label(MSG.BATCH_HISTORY_DELETED_BATCH),
@@ -90,7 +90,7 @@ export function historyColumns(
       width: 80,
       filter: false,
       /*
-        <b>값이 아니라 유무다</b>(screen/batch/schedule/requirements.md · screen/log/access/requirements.md 의 규약). 셀에 그려지는 것은 `[보기]` 이고
+        <b>값이 아니라 유무다</b>(screen/batch/schedule/requirements.md · screen/admin/system/log/access/requirements.md 의 규약). 셀에 그려지는 것은 `[보기]` 이고
         값은 `true`/`false` 로 남아 <b>엑셀과 복사가 그것을 쓴다</b>(frontend/grid.md).
 
         <b>`false` 면 아무것도 그리지 않는다.</b> `display` 가 빈 문자열을 내면 어댑터가
@@ -213,7 +213,7 @@ function execType(): ColumnDef<BatchHistoryRow> {
       *재시도 또는 수동* 이고, 그 둘을 가르는 유일한 값이 이 칸이다.
 
       <b>배지가 아니다.</b> 값이 둘뿐이고 어느 쪽도 사건이 아니라 <b>둘 다 정상</b>이므로
-      칠할 것이 없다 — screen/log/access/requirements.md 의 *정상이 압도적인 목록에서는 칠하지 않는다* 와 같은 축이다.
+      칠할 것이 없다 — screen/admin/system/log/access/requirements.md 의 *정상이 압도적인 목록에서는 칠하지 않는다* 와 같은 축이다.
     */
     display: execTypeLabel,
     derive: (row) => execTypeLabel(row.execTypeCd),

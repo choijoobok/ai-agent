@@ -17,7 +17,7 @@ import com.aiagent.core.message.MsgKey;
 public enum ErrorLogErrorCode implements ErrorCode {
 
     /**
-     * 기간이 없다 — screen/log/access/requirements.md.
+     * 기간이 없다 — screen/admin/system/log/access/requirements.md.
      *
      * <p><b>추적 ID 를 넣으면 이 검사를 건너뛴다.</b> 이 화면에서 그것은 예외가 아니라
      * <b>주된 동선</b>이다 — 셋 중 유일하게 사람이 먼저 찾아오는 화면이고(screen/log/error/requirements.md), 들고 오는

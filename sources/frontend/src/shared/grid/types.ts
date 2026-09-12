@@ -188,7 +188,7 @@ export interface ColumnDef<T> {
   /**
    * 헤더에 붙는 한 줄 — <b>이 컬럼을 어디까지 믿을 수 있나</b>를 말하는 자리다.
    *
-   * <p>screen/log/access/requirements.md 이 처음 요구했다. 사용 이력의 `메뉴` 는 <b>클라이언트가 밝힌 값</b>이고
+   * <p>screen/admin/system/log/access/requirements.md 이 처음 요구했다. 사용 이력의 `메뉴` 는 <b>클라이언트가 밝힌 값</b>이고
    * (backend/packages.md) 인가에 쓰이지 않는데, 그 사실을 화면이 말하지 않으면 <b>메뉴별 집계가 감사
    * 근거로 인용된다</b>.
    *
@@ -197,7 +197,7 @@ export interface ColumnDef<T> {
    */
   headerTooltip?: string;
   /**
-   * 셀에 <b>값 전체</b>를 툴팁으로 붙인다 — screen/log/access/requirements.md 가 처음 요구했다.
+   * 셀에 <b>값 전체</b>를 툴팁으로 붙인다 — screen/admin/system/log/access/requirements.md 가 처음 요구했다.
    *
    * <p>{@link headerTooltip} 과 축이 다르다. 저것은 <i>컬럼이 무엇인가</i> 를 한 번
    * 말하고, 이것은 <b>이 칸에 지금 담긴 값</b>을 그대로 보여준다 — 폭보다 긴 값이라
@@ -360,7 +360,7 @@ export interface ColumnDef<T> {
   /**
    * `renderer: 'link'` 의 클릭 — frontend/grid.md.
    *
-   * <p><b>링크가 곧 값은 아니다.</b> screen/log/access/requirements.md 의 <i>전문</i> 컬럼이 그 사례로, 값은
+   * <p><b>링크가 곧 값은 아니다.</b> screen/admin/system/log/access/requirements.md 의 <i>전문</i> 컬럼이 그 사례로, 값은
    * `Y`/`N`(전문이 있는가)이고 셀에 그려지는 것은 `[보기]` 다 — 그래서 {@link display} 가
    * 함께 온다. 엑셀은 <b>원본 값</b>을 쓴다(frontend/grid.md).
    *
@@ -369,13 +369,13 @@ export interface ColumnDef<T> {
    */
   onClick?: (row: T) => void;
   /**
-   * 이 <b>칸</b>을 더블 클릭했을 때 — screen/log/access/requirements.md.
+   * 이 <b>칸</b>을 더블 클릭했을 때 — screen/admin/system/log/access/requirements.md.
    *
    * <p>`<DataGrid>` 의 `onRowDoubleClick` 과 <b>다른 축</b>이다. 저것은 *이 행이 가리키는
    * 것을 연다* 이고(screen/menu/requirements.md — 행 하나가 곧 메뉴다), 이것은 *이 칸의 값이 가리키는 것을
    * 연다* 이다.
    *
-   * <p><b>축을 가르는 것이 규약이다.</b> screen/log/access/requirements.md 가 `요청 URI` 를 셀로 둔 이유가 그것인데,
+   * <p><b>축을 가르는 것이 규약이다.</b> screen/admin/system/log/access/requirements.md 가 `요청 URI` 를 셀로 둔 이유가 그것인데,
    * 그 화면들에서 <b>행 더블 클릭은 이미 상세 모달의 제스처</b>라 같은 자리에 둘을 겹치면
    * 하나가 다른 하나를 가린다. 행으로 붙여 두면 `ERROR_LOG` 가 서는 날 그 컬럼만 셀로
    * 옮겨야 하고, 그 순간 **같은 컬럼이 화면마다 다르게 동작한다**.
@@ -403,7 +403,7 @@ export interface ColumnDef<T> {
    * 거기서는 배지가 곧 값이고(`진행 중`) 이 자리가 그 값의 <b>내력</b>을 덧붙인다
    * (`유령` — 락 만료를 넘겼다). 값이 사라지지 않으므로 위 문단의 금지가 걸리지 않는다.
    *
-   * <p>`tip` 은 <b>왜 그 배지가 붙었는지</b>다 — screen/log/access/requirements.md 이 *꺼진 것에는 이유를 붙인다*
+   * <p>`tip` 은 <b>왜 그 배지가 붙었는지</b>다 — screen/admin/system/log/access/requirements.md 이 *꺼진 것에는 이유를 붙인다*
    * 로 적은 규칙의 같은 축이다. `유령` 세 글자만으로는 <i>무엇을 하면 되는지</i> 가
    * 읽히지 않는다.
    */

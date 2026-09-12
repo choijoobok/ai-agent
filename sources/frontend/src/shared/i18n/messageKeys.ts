@@ -668,7 +668,7 @@ export const MSG = {
   /** 페이징이 없는 그리드(`mode: 'all'`)의 푸터 — `{count}`. */
   GRID_FOOTER_COUNT: 'grid.footer.count',
   /**
-   * 커서형 푸터의 왼쪽 — `{count}`(screen/log/access/requirements.md).
+   * 커서형 푸터의 왼쪽 — `{count}`(screen/admin/system/log/access/requirements.md).
    *
    * <p>`GRID_FOOTER_TOTAL` 과 다른 말이다. 저것은 <b>전부가 몇 건</b>이고 이것은
    * <b>이 장이 몇 건</b>이다 — 총 건수를 세지 않기로 한 화면에서 <i>총</i> 이라고 쓰면
@@ -1082,9 +1082,9 @@ export const MSG = {
   SEARCH_OP_GT: 'search.op.gt',
   /** 연산자 셀렉터 — <b>미만</b>(`<`). 크기 계열의 다섯째이자 마지막이다(playbook/INDEX.md). */
   SEARCH_OP_LT: 'search.op.lt',
-  /** 필수 조건을 비우고 조회했다 — screen/log/access/requirements.md. 조회 자체가 일어나지 않는다. */
+  /** 필수 조건을 비우고 조회했다 — screen/admin/system/log/access/requirements.md. 조회 자체가 일어나지 않는다. */
   SEARCH_REQUIRED: 'search.required',
-  /** 기간이 상한을 넘었다 — `{days}`. 조용히 자르지 않는다(screen/log/access/requirements.md). */
+  /** 기간이 상한을 넘었다 — `{days}`. 조용히 자르지 않는다(screen/admin/system/log/access/requirements.md). */
   SEARCH_RANGE_TOO_WIDE: 'search.rangeTooWide',
 
   // ── 저장된 조회조건 (UX-07 · frontend/search-form.md) ────────────────────────
@@ -1374,7 +1374,7 @@ export const MSG = {
   API_CATALOG_COL_MENU_USE_YN: 'apiCatalog.col.menuUseYn',
   /** 하단 — 접근 가능 인원(AUTHZ-13). <b>게이트 ④를 먹이지 않은 수</b>다. */
   API_CATALOG_COL_USER_COUNT: 'apiCatalog.col.accessibleUserCount',
-  /** 조회조건 — API URL. 로그에서 얻은 URL 하나가 들어오는 칸이다(screen/log/access/requirements.md). */
+  /** 조회조건 — API URL. 로그에서 얻은 URL 하나가 들어오는 칸이다(screen/admin/system/log/access/requirements.md). */
   API_CATALOG_SEARCH_API_URL: 'apiCatalog.search.apiUrl',
   /** 조회조건 — API 명. */
   API_CATALOG_SEARCH_API_NM: 'apiCatalog.search.apiNm',
@@ -1400,17 +1400,17 @@ export const MSG = {
   /** 하단이 0건일 때 — <b>배지와 같은 말을 pane 에서도 한다</b>(screen/menu/requirements.md). */
   API_CATALOG_MENU_UNMAPPED: 'apiCatalog.menu.unmapped',
 
-  // ── 사용 이력 (screen/log/access/requirements.md) ──────────────────────────────────────
+  // ── 사용 이력 (screen/admin/system/log/access/requirements.md) ──────────────────────────────────────
   //
   // 접두가 `accessLog.` 다. `log.` 로 두지 않은 것은 이 폴더에 화면이 셋이기 때문이며
   // (사용 이력 · 로그인 이력 · 에러 로그), 셋이 같은 접두를 쓰면 어느 화면의 문구인지
   // 키만 보고 알 수 없다.
 
-  /** 마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/log/access/requirements.md). */
+  /** 마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/admin/system/log/access/requirements.md). */
   ACCESS_LOG_GRID_TITLE: 'accessLog.grid.title',
-  /** 일시 컬럼 — <b>정렬이 열린 유일한 컬럼</b>이다(screen/log/access/requirements.md). */
+  /** 일시 컬럼 — <b>정렬이 열린 유일한 컬럼</b>이다(screen/admin/system/log/access/requirements.md). */
   ACCESS_LOG_COL_CRE_DTM: 'accessLog.col.creDtm',
-  /** 상태 컬럼 — 응답의 HTTP 상태. 전 요청을 받으므로 필요하다(screen/log/access/requirements.md). */
+  /** 상태 컬럼 — 응답의 HTTP 상태. 전 요청을 받으므로 필요하다(screen/admin/system/log/access/requirements.md). */
   ACCESS_LOG_COL_HTTP_STAT: 'accessLog.col.httpStat',
   /** 사용자 아이디 컬럼 — 미인증 요청은 {@link #ACCESS_LOG_ANONYMOUS} 다. */
   ACCESS_LOG_COL_USER_ID: 'accessLog.col.userId',
@@ -1426,34 +1426,34 @@ export const MSG = {
   ACCESS_LOG_COL_MENU: 'accessLog.col.menu',
   /** 요청 URI 컬럼. */
   ACCESS_LOG_COL_REQUEST_URI: 'accessLog.col.requestUri',
-  /** 전문 컬럼 — 값이 아니라 `[보기]` 다(screen/log/access/requirements.md). */
+  /** 전문 컬럼 — 값이 아니라 `[보기]` 다(screen/admin/system/log/access/requirements.md). */
   ACCESS_LOG_COL_PAYLOAD: 'accessLog.col.payload',
   /** IP 컬럼. */
   ACCESS_LOG_COL_CLIENT_IP: 'accessLog.col.clientIp',
-  /** 추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/log/access/requirements.md). */
+  /** 추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/admin/system/log/access/requirements.md). */
   ACCESS_LOG_COL_TRACE_ID: 'accessLog.col.traceId',
-  /** 순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/log/access/requirements.md). */
+  /** 순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/admin/system/log/access/requirements.md). */
   ACCESS_LOG_COL_SEQ: 'accessLog.col.seq',
   /**
-   * 사용자 칸이 빈 행의 표시 — screen/log/access/requirements.md.
+   * 사용자 칸이 빈 행의 표시 — screen/admin/system/log/access/requirements.md.
    *
    * <p>빈칸으로 두면 <b>*수집이 안 된 것*과 구분되지 않는다</b>. 미인증 요청에
    * `USER_ID` 가 없는 것은 정상이다.
    */
   ACCESS_LOG_ANONYMOUS: 'accessLog.anonymous',
-  /** 메뉴 문맥 없는 요청의 표시 — 로그인·하트비트가 그렇다(screen/log/access/requirements.md). */
+  /** 메뉴 문맥 없는 요청의 표시 — 로그인·하트비트가 그렇다(screen/admin/system/log/access/requirements.md). */
   ACCESS_LOG_NO_MENU: 'accessLog.noMenu',
   /**
    * 메뉴 컬럼 헤더의 툴팁 — <b>클라이언트가 밝힌 값</b>이다(backend/packages.md).
    *
-   * <p>붙이지 않으면 이 화면의 메뉴별 집계가 <b>감사 근거로 인용된다</b>(screen/log/access/requirements.md).
+   * <p>붙이지 않으면 이 화면의 메뉴별 집계가 <b>감사 근거로 인용된다</b>(screen/admin/system/log/access/requirements.md).
    */
   ACCESS_LOG_MENU_CLIENT_CLAIM: 'accessLog.menu.clientClaim',
-  /** 전문 셀에 그려지는 글자 — 값이 아니다(screen/log/access/requirements.md). */
+  /** 전문 셀에 그려지는 글자 — 값이 아니다(screen/admin/system/log/access/requirements.md). */
   ACCESS_LOG_PAYLOAD_LINK: 'accessLog.payload.link',
   /** 전문 모달의 제목. */
   ACCESS_LOG_PAYLOAD_TITLE: 'accessLog.payload.title',
-  /** 전문 모달 하단의 글자 수 — `{count}`(screen/log/access/requirements.md). */
+  /** 전문 모달 하단의 글자 수 — `{count}`(screen/admin/system/log/access/requirements.md). */
   ACCESS_LOG_PAYLOAD_LENGTH: 'accessLog.payload.length',
   /**
    * 전문이 상한에서 잘렸다 — backend/packages.md.
@@ -1462,18 +1462,18 @@ export const MSG = {
    * 가장 흔한 오독이다.
    */
   ACCESS_LOG_PAYLOAD_TRUNCATED: 'accessLog.payload.truncated',
-  /** 푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/log/access/requirements.md). */
+  /** 푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/admin/system/log/access/requirements.md). */
   ACCESS_LOG_FOOTER_RANGE: 'accessLog.footer.range',
   /**
-   * 0건일 때 — <b>보존 기간을 함께 말한다</b>(screen/log/access/requirements.md).
+   * 0건일 때 — <b>보존 기간을 함께 말한다</b>(screen/admin/system/log/access/requirements.md).
    *
    * <p>*"조회 결과가 없습니다"* 로 끝내면 조건이 좁은 것인지 거기 데이터가 없는 것인지
    * 구분되지 않는다. <b>0건에는 언제나 이유가 있고 화면이 아는 이유는 화면이 말한다.</b>
    */
   ACCESS_LOG_EMPTY: 'accessLog.empty',
-  /** 조회조건 — 기간. <b>필수</b>이며 상한이 31일이다(screen/log/access/requirements.md). */
+  /** 조회조건 — 기간. <b>필수</b>이며 상한이 31일이다(screen/admin/system/log/access/requirements.md). */
   ACCESS_LOG_SEARCH_PERIOD: 'accessLog.search.period',
-  /** 조회조건 — 상태. 파생이며 기본은 전체다(screen/log/access/requirements.md). */
+  /** 조회조건 — 상태. 파생이며 기본은 전체다(screen/admin/system/log/access/requirements.md). */
   ACCESS_LOG_SEARCH_OUTCOME: 'accessLog.search.outcome',
   /** 상태 조건의 항목 — 2xx·3xx. */
   ACCESS_LOG_OUTCOME_SUCCESS: 'accessLog.outcome.success',
@@ -1482,7 +1482,7 @@ export const MSG = {
   /**
    * 조회조건 — 사용자 아이디. <b>문자열 비교 넷</b>(같음 · 시작 · 포함 · 끝)이다(2026-09-01).
    *
-   * <p>인덱스가 없는 것은 그대로인데 <b>기간이 먼저 좁힌다</b>(screen/log/access/requirements.md) — 완전 일치만
+   * <p>인덱스가 없는 것은 그대로인데 <b>기간이 먼저 좁힌다</b>(screen/admin/system/log/access/requirements.md) — 완전 일치만
    * 열어 두면 조각을 든 사람이 기간을 넓혀 훑고, 그것이 더 비싸다.
    */
   ACCESS_LOG_SEARCH_USER_ID: 'accessLog.search.userId',
@@ -1501,7 +1501,7 @@ export const MSG = {
    * 조회조건 — 메뉴 코드. 뿌리 테이블의 컬럼이라 값 비교 하나로 끝난다.
    *
    * <p><b>`메뉴 없음` 항목이 여기 없다.</b> 콤보였을 때는 `in` 배열의 `null` 이
-   * `IS NULL` 로 펴졌는데(screen/log/access/requirements.md) 텍스트 칸에는 담을 자리가 없다 — 그 물음은
+   * `IS NULL` 로 펴졌는데(screen/admin/system/log/access/requirements.md) 텍스트 칸에는 담을 자리가 없다 — 그 물음은
    * <b>메뉴 컬럼의 필터</b>가 답한다(frontend/grid.md).
    */
   ACCESS_LOG_SEARCH_MENU_CD: 'accessLog.search.menuCd',
@@ -1513,14 +1513,14 @@ export const MSG = {
    * 들고 오지 어느 언어의 값인지를 들고 오지 않는다(screen/admin/system/code/requirements.md).
    */
   ACCESS_LOG_SEARCH_MENU_NM: 'accessLog.search.menuNm',
-  /** 조회조건 — 요청 URI. 앞 일치다(screen/log/access/requirements.md). */
+  /** 조회조건 — 요청 URI. 앞 일치다(screen/admin/system/log/access/requirements.md). */
   ACCESS_LOG_SEARCH_REQUEST_URI: 'accessLog.search.requestUri',
   /** 조회조건 — IP. 완전 일치다. */
   ACCESS_LOG_SEARCH_CLIENT_IP: 'accessLog.search.clientIp',
-  /** 조회조건 — 추적 ID. <b>넣으면 기간이 선택이 된다</b>(screen/log/access/requirements.md). */
+  /** 조회조건 — 추적 ID. <b>넣으면 기간이 선택이 된다</b>(screen/admin/system/log/access/requirements.md). */
   ACCESS_LOG_SEARCH_TRACE_ID: 'accessLog.search.traceId',
 
-  // ── 로그인 이력 (screen/log/access/requirements.md) ────────────────────────────────────
+  // ── 로그인 이력 (screen/admin/system/log/access/requirements.md) ────────────────────────────────────
   //
   // 접두가 `loginLog.` 다. 이 화면에는 **모달도 파생 컬럼도 없어** 사용 이력보다 키가
   // 적다 — `nclob` 컬럼이 하나도 없는 유일한 화면이라 목록이 곧 전부다.
@@ -1529,12 +1529,12 @@ export const MSG = {
   // 로 데이터에서 온다(sys/code.md) — 소스 상수로 두면 코드를 더할 때 시드와 이 파일 둘을
   // 고쳐야 한다.
 
-  /** 마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/log/access/requirements.md). */
+  /** 마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/admin/system/log/access/requirements.md). */
   LOGIN_LOG_GRID_TITLE: 'loginLog.grid.title',
-  /** 일시 컬럼 — <b>정렬이 열린 유일한 컬럼</b>이다(screen/log/access/requirements.md). */
+  /** 일시 컬럼 — <b>정렬이 열린 유일한 컬럼</b>이다(screen/admin/system/log/access/requirements.md). */
   LOGIN_LOG_COL_CRE_DTM: 'loginLog.col.creDtm',
   /**
-   * 사용자 아이디 컬럼 — <b>시도한 ID</b> 다(screen/log/access/requirements.md).
+   * 사용자 아이디 컬럼 — <b>시도한 ID</b> 다(screen/admin/system/log/access/requirements.md).
    *
    * <p>헤더가 *시도 ID* 였다(2026-09-01 에 바뀌었다). 이력 셋의 헤더를 <b>사용자 아이디 ·
    * 사용자명</b>으로 통일하면서 갈렸는데, *사용자* 라고 쓰면 `SYS_USER` 에 있는 것처럼
@@ -1551,42 +1551,42 @@ export const MSG = {
    * 말하면 사람이 <b>둘을 다른 사실로 읽는다</b>.
    */
   LOGIN_LOG_COL_USER_NM: 'loginLog.col.userNm',
-  /** 결과 컬럼 — 공통코드 15종이며 배지의 색은 셋이다(screen/log/access/requirements.md). */
+  /** 결과 컬럼 — 공통코드 15종이며 배지의 색은 셋이다(screen/admin/system/log/access/requirements.md). */
   LOGIN_LOG_COL_RESULT: 'loginLog.col.result',
   /** IP 컬럼. */
   LOGIN_LOG_COL_CLIENT_IP: 'loginLog.col.clientIp',
-  /** User-Agent 컬럼 — <b>기본 숨김</b>이다. 켜면 다른 컬럼이 전부 밀린다(screen/log/access/requirements.md). */
+  /** User-Agent 컬럼 — <b>기본 숨김</b>이다. 켜면 다른 컬럼이 전부 밀린다(screen/admin/system/log/access/requirements.md). */
   LOGIN_LOG_COL_USER_AGENT: 'loginLog.col.userAgent',
-  /** 추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/log/access/requirements.md). */
+  /** 추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/admin/system/log/access/requirements.md). */
   LOGIN_LOG_COL_TRACE_ID: 'loginLog.col.traceId',
-  /** 순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/log/access/requirements.md). */
+  /** 순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/admin/system/log/access/requirements.md). */
   LOGIN_LOG_COL_SEQ: 'loginLog.col.seq',
   /**
-   * 시도 ID 헤더의 툴팁 — <b>등록된 계정이 아닐 수 있다</b>(sys/logs.md · screen/log/access/requirements.md).
+   * 시도 ID 헤더의 툴팁 — <b>등록된 계정이 아닐 수 있다</b>(sys/logs.md · screen/admin/system/log/access/requirements.md).
    *
    * <p>말하지 않으면 없는 ID 의 행이 <b>결함처럼</b> 보인다. 그 행들이야말로 이 화면의
    * 두 번째 용도(침입 시도 탐지)가 찾는 것이다.
    */
   LOGIN_LOG_USER_ID_ATTEMPTED: 'loginLog.userId.attempted',
-  /** 시도 ID 가 빈 행의 표시 — 빈칸은 <b>*수집이 안 된 것*과 구분되지 않는다</b>(screen/log/access/requirements.md). */
+  /** 시도 ID 가 빈 행의 표시 — 빈칸은 <b>*수집이 안 된 것*과 구분되지 않는다</b>(screen/admin/system/log/access/requirements.md). */
   LOGIN_LOG_NO_USER_ID: 'loginLog.noUserId',
-  /** 푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/log/access/requirements.md). */
+  /** 푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/admin/system/log/access/requirements.md). */
   LOGIN_LOG_FOOTER_RANGE: 'loginLog.footer.range',
-  /** 0건일 때 — <b>보존 기간(1년)을 함께 말한다</b>(screen/log/access/requirements.md). */
+  /** 0건일 때 — <b>보존 기간(1년)을 함께 말한다</b>(screen/admin/system/log/access/requirements.md). */
   LOGIN_LOG_EMPTY: 'loginLog.empty',
   /**
-   * <i>실패만</i> 으로 물었는데 0건이다 — <b>문구가 다르다</b>(screen/log/access/requirements.md).
+   * <i>실패만</i> 으로 물었는데 0건이다 — <b>문구가 다르다</b>(screen/admin/system/log/access/requirements.md).
    *
    * <p>*"조회 결과가 없습니다"* 로 끝내면 <b>진단이 빈 결과로 읽힌다</b>. 이 기간에
    * 로그인 실패가 없었다는 것은 답이지 실패가 아니다.
    */
   LOGIN_LOG_EMPTY_FAILED: 'loginLog.empty.failed',
-  /** 조회조건 — 기간. <b>필수</b>이며 상한은 시스템 값(92일) 그대로다(screen/log/access/requirements.md). */
+  /** 조회조건 — 기간. <b>필수</b>이며 상한은 시스템 값(92일) 그대로다(screen/admin/system/log/access/requirements.md). */
   LOGIN_LOG_SEARCH_PERIOD: 'loginLog.search.period',
   /**
    * 조회조건 — 사용자 아이디. <b>문자열 비교 넷</b>(같음 · 시작 · 포함 · 끝)이다(2026-09-01).
    *
-   * <p>인덱스가 없는 것은 그대로인데 <b>기간이 먼저 좁힌다</b>(screen/log/access/requirements.md). IP 를 완전 일치로
+   * <p>인덱스가 없는 것은 그대로인데 <b>기간이 먼저 좁힌다</b>(screen/admin/system/log/access/requirements.md). IP 를 완전 일치로
    * 둔 것과 갈리는 자리다 — 대역 검색은 <i>결과만 넓어지는</i> 조건이지만, 부분 아이디는
    * <b>다른 답</b>을 낸다(`admin` 으로 끝나는 시도가 그렇다).
    */
@@ -1595,18 +1595,18 @@ export const MSG = {
   LOGIN_LOG_SEARCH_USER_NM: 'loginLog.search.userNm',
   /** 조회조건 — 결과. 다중 선택이며 후보는 공통코드가 낸다(sys/code.md). */
   LOGIN_LOG_SEARCH_RESULT: 'loginLog.search.result',
-  /** 조회조건 — 결과 묶음. 파생이며 배지의 색 셋과 같은 축이다(screen/log/access/requirements.md). */
+  /** 조회조건 — 결과 묶음. 파생이며 배지의 색 셋과 같은 축이다(screen/admin/system/log/access/requirements.md). */
   LOGIN_LOG_SEARCH_RSLT_GROUP: 'loginLog.search.rsltGroup',
-  /** 결과 묶음의 항목 — `FAIL_*` 열. <b>이 화면의 기본 동선</b>이다(screen/log/access/requirements.md). */
+  /** 결과 묶음의 항목 — `FAIL_*` 열. <b>이 화면의 기본 동선</b>이다(screen/admin/system/log/access/requirements.md). */
   LOGIN_LOG_RSLT_GROUP_FAILED: 'loginLog.rsltGroup.failed',
   /** 결과 묶음의 항목 — 로그아웃·만료·강제·밀려남 넷. */
   LOGIN_LOG_RSLT_GROUP_CLOSED: 'loginLog.rsltGroup.closed',
-  /** 조회조건 — IP. 완전 일치다. 실패 행에서 복사해 다시 조회하는 동선이다(screen/log/access/requirements.md). */
+  /** 조회조건 — IP. 완전 일치다. 실패 행에서 복사해 다시 조회하는 동선이다(screen/admin/system/log/access/requirements.md). */
   LOGIN_LOG_SEARCH_CLIENT_IP: 'loginLog.search.clientIp',
-  /** 조회조건 — 추적 ID. <b>넣으면 기간이 선택이 된다</b>(screen/log/access/requirements.md). */
+  /** 조회조건 — 추적 ID. <b>넣으면 기간이 선택이 된다</b>(screen/admin/system/log/access/requirements.md). */
   LOGIN_LOG_SEARCH_TRACE_ID: 'loginLog.search.traceId',
 
-  // ── 에러 로그 (screen/log/access/requirements.md) ──────────────────────────────────────
+  // ── 에러 로그 (screen/admin/system/log/access/requirements.md) ──────────────────────────────────────
   //
   // 접두가 `errorLog.` 다. 셋 중 <b>키가 가장 많다</b> — 상세 모달에 탭이 둘이고, 그 둘이
   // 각각 <i>비어 있는 이유</i> 를 따로 말해야 하기 때문이다: 스택이 없는 것은 4xx 라
@@ -1615,13 +1615,13 @@ export const MSG = {
   // 로 읽는다.
   //
   // <b>HTTP 상태의 이름이 여기 없다.</b> 표준이라 번역할 것이 아니고 관리자가 늘릴 것도
-  // 아니다 — 공통코드로도 두지 않는다(screen/log/access/requirements.md).
+  // 아니다 — 공통코드로도 두지 않는다(screen/admin/system/log/access/requirements.md).
 
-  /** 마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/log/access/requirements.md). */
+  /** 마스터 그리드의 제목 — 이 화면에 그리드가 하나다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_GRID_TITLE: 'errorLog.grid.title',
-  /** 일시 컬럼 — <b>정렬이 열린 유일한 컬럼</b>이다(screen/log/access/requirements.md). */
+  /** 일시 컬럼 — <b>정렬이 열린 유일한 컬럼</b>이다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_COL_CRE_DTM: 'errorLog.col.creDtm',
-  /** 상태 컬럼 — <b>4xx 와 5xx 를 가른다</b>. 배지의 색이 그 둘이다(screen/log/access/requirements.md). */
+  /** 상태 컬럼 — <b>4xx 와 5xx 를 가른다</b>. 배지의 색이 그 둘이다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_COL_HTTP_STAT: 'errorLog.col.httpStat',
   /** 오류 코드 컬럼 — 문자열 상수라 <b>이 값으로 묶어 센다</b>(backend/packages.md). */
   ERROR_LOG_COL_ERR_CD: 'errorLog.col.errCd',
@@ -1642,52 +1642,52 @@ export const MSG = {
    * <p>클라이언트 주장이라 헤더 툴팁이 그 사실을 말한다(backend/packages.md).
    */
   ERROR_LOG_COL_MENU: 'errorLog.col.menu',
-  /** 요청 URI 컬럼 — <b>더블 클릭이 `API_CATALOG` 로 건너뛴다</b>(screen/log/access/requirements.md). */
+  /** 요청 URI 컬럼 — <b>더블 클릭이 `API_CATALOG` 로 건너뛴다</b>(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_COL_REQUEST_URI: 'errorLog.col.requestUri',
-  /** 상세 컬럼 — 파생이며 셀에 그려지는 것은 `[보기]` 다(screen/log/access/requirements.md). */
+  /** 상세 컬럼 — 파생이며 셀에 그려지는 것은 `[보기]` 다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_COL_DETAIL: 'errorLog.col.detail',
-  /** 추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/log/access/requirements.md). */
+  /** 추적 ID 컬럼 — 5xx 토스트의 그 값이다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_COL_TRACE_ID: 'errorLog.col.traceId',
-  /** IP 컬럼 — <b>기본 숨김</b>이다(screen/log/access/requirements.md). */
+  /** IP 컬럼 — <b>기본 숨김</b>이다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_COL_CLIENT_IP: 'errorLog.col.clientIp',
-  /** 순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/log/access/requirements.md). */
+  /** 순번 컬럼 — tie-breaker 이며 기본 숨김이다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_COL_SEQ: 'errorLog.col.seq',
-  /** 상세 셀에 그려지는 글자 — 값이 아니라 <b>여는 것</b>이다(screen/log/access/requirements.md). */
+  /** 상세 셀에 그려지는 글자 — 값이 아니라 <b>여는 것</b>이다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_DETAIL_LINK: 'errorLog.detail.link',
-  /** 사용자 컬럼이 빈 행의 표시 — 빈칸은 <b>*수집이 안 된 것*과 구분되지 않는다</b>(screen/log/access/requirements.md). */
+  /** 사용자 컬럼이 빈 행의 표시 — 빈칸은 <b>*수집이 안 된 것*과 구분되지 않는다</b>(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_ANONYMOUS: 'errorLog.anonymous',
-  /** 메뉴 컬럼이 빈 행의 표시 — 로그인·하트비트는 셸 진입 전이라 메뉴가 없다(screen/log/access/requirements.md). */
+  /** 메뉴 컬럼이 빈 행의 표시 — 로그인·하트비트는 셸 진입 전이라 메뉴가 없다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_NO_MENU: 'errorLog.noMenu',
   /** 메뉴 헤더의 툴팁 — <b>클라이언트 주장이다</b>(backend/packages.md · backend/security.md). */
   ERROR_LOG_MENU_CLIENT_CLAIM: 'errorLog.menu.clientClaim',
-  /** 푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/log/access/requirements.md). */
+  /** 푸터 왼쪽의 덧붙임 — `{days}`. 총 건수를 잃은 자리를 메운다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_FOOTER_RANGE: 'errorLog.footer.range',
-  /** 0건일 때 — <b>보존 기간(180일)을 함께 말한다</b>(screen/log/access/requirements.md). */
+  /** 0건일 때 — <b>보존 기간(180일)을 함께 말한다</b>(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_EMPTY: 'errorLog.empty',
   /**
-   * <i>5xx 만</i> 으로 물었는데 0건이다 — <b>진단으로 읽히게 한다</b>(screen/log/access/requirements.md).
+   * <i>5xx 만</i> 으로 물었는데 0건이다 — <b>진단으로 읽히게 한다</b>(screen/admin/system/log/access/requirements.md).
    *
    * <p>*"조회 결과가 없습니다"* 로 끝내면 답이 빈 결과로 읽힌다. 이 기간에 서버 오류가
    * 없었다는 것은 <b>가장 듣고 싶은 답</b>이다.
    */
   ERROR_LOG_EMPTY_SERVER: 'errorLog.empty.server',
   /**
-   * 추적 ID 로 물었는데 0건이다 — <b>유실이 아니다</b>(screen/log/access/requirements.md).
+   * 추적 ID 로 물었는데 0건이다 — <b>유실이 아니다</b>(screen/admin/system/log/access/requirements.md).
    *
    * <p>§1.4 이후 모든 요청은 사용 이력에 있고 여기는 <b>예외가 난 것만</b> 받는다. 그래서
    * 0건이면 *"그 요청은 오류가 아니었다"* 는 뜻이며 <b>사용 이력에는 반드시 있다</b> —
    * 문구가 그 사실을 사용자 말로 옮겨 <b>사용 이력으로 보낸다</b>.
    */
   ERROR_LOG_EMPTY_TRACE: 'errorLog.empty.trace',
-  /** 조회조건 — 기간. <b>필수</b>이며 상한은 시스템 값(92일) 그대로다(screen/log/access/requirements.md). */
+  /** 조회조건 — 기간. <b>필수</b>이며 상한은 시스템 값(92일) 그대로다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_SEARCH_PERIOD: 'errorLog.search.period',
-  /** 조회조건 — 상태. 파생이며 묶음 둘이다(screen/log/access/requirements.md). */
+  /** 조회조건 — 상태. 파생이며 묶음 둘이다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_SEARCH_STATUS: 'errorLog.search.status',
-  /** 상태 묶음의 항목 — <b>이 화면의 가장 흔한 조회</b>다(screen/log/access/requirements.md). */
+  /** 상태 묶음의 항목 — <b>이 화면의 가장 흔한 조회</b>다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_STATUS_SERVER: 'errorLog.status.server',
   /** 상태 묶음의 항목 — 403 이 대부분이며 대개 <b>정상 동작</b>이다. */
   ERROR_LOG_STATUS_CLIENT: 'errorLog.status.client',
-  /** 조회조건 — 오류 코드. <b>완전 일치</b>다. 셀을 복사해 넣는 동선이다(screen/log/access/requirements.md). */
+  /** 조회조건 — 오류 코드. <b>완전 일치</b>다. 셀을 복사해 넣는 동선이다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_SEARCH_ERR_CD: 'errorLog.search.errCd',
   /** 조회조건 — 사용자 아이디. <b>문자열 비교 넷</b>이다 — 기간이 먼저 좁힌다(2026-09-01). */
   ERROR_LOG_SEARCH_USER_ID: 'errorLog.search.userId',
@@ -1699,7 +1699,7 @@ export const MSG = {
   */
   ERROR_LOG_SEARCH_MENU: 'errorLog.search.menu',
   /**
-   * 조회조건 — 메뉴 코드. <b>문의 전화가 주는 것</b>이 시각과 화면 이름이다(screen/log/access/requirements.md).
+   * 조회조건 — 메뉴 코드. <b>문의 전화가 주는 것</b>이 시각과 화면 이름이다(screen/admin/system/log/access/requirements.md).
    *
    * <p>이름을 받는 칸이 아래에 따로 있으므로 <b>이 칸은 코드를 아는 사람의 것</b>이다 —
    * 대개 개발자이며, 오류 코드 칸과 같은 동선(셀을 복사해 넣는다)이다.
@@ -1709,23 +1709,23 @@ export const MSG = {
   ERROR_LOG_SEARCH_MENU_NM: 'errorLog.search.menuNm',
   /** 조회조건 — 요청 URI. 앞 일치다(인덱스가 없다). */
   ERROR_LOG_SEARCH_REQUEST_URI: 'errorLog.search.requestUri',
-  /** 조회조건 — 추적 ID. <b>넣으면 기간이 선택이 된다</b>(screen/log/access/requirements.md). */
+  /** 조회조건 — 추적 ID. <b>넣으면 기간이 선택이 된다</b>(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_SEARCH_TRACE_ID: 'errorLog.search.traceId',
   /** 상세 모달의 제목. */
   ERROR_LOG_DETAIL_TITLE: 'errorLog.detail.title',
-  /** 탭 하나 — 요청 전문. <b>다른 테이블에서 온다</b>(screen/log/access/requirements.md). */
+  /** 탭 하나 — 요청 전문. <b>다른 테이블에서 온다</b>(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_TAB_PAYLOAD: 'errorLog.tab.payload',
   /** 탭 하나 — 스택트레이스. 4xx 는 비활성이다. */
   ERROR_LOG_TAB_STACK: 'errorLog.tab.stack',
   /**
-   * 스택 탭이 비어 있는 이유 — <b>4xx 라 저장하지 않았다</b>(screen/log/access/requirements.md).
+   * 스택 탭이 비어 있는 이유 — <b>4xx 라 저장하지 않았다</b>(screen/admin/system/log/access/requirements.md).
    *
    * <p>*"없습니다"* 로 끝내지 않는다. 인가 거부의 스택은 인터셉터 프레임뿐이고 전 행이
    * 같아서 <b>일부러 저장하지 않은 것</b>이며, 그것을 말하지 않으면 유실로 읽는다.
    */
   ERROR_LOG_STACK_NONE: 'errorLog.stack.none',
   /**
-   * 전문 탭이 비어 있는 이유 — <b>사용 이력 90일이 지났다</b>(screen/log/access/requirements.md).
+   * 전문 탭이 비어 있는 이유 — <b>사용 이력 90일이 지났다</b>(screen/admin/system/log/access/requirements.md).
    *
    * <p>§3.7 의 *"이미 파기된 이력입니다"* 와 같은 어휘다. 보존이 180일 / 90일로 달라
    * 생기는 일이며 <b>고장이 아니다</b>.
@@ -1735,7 +1735,7 @@ export const MSG = {
   ERROR_LOG_PAYLOAD_NONE: 'errorLog.payload.none',
   /** 모달 하단의 글자 수 — `{count}`. */
   ERROR_LOG_DETAIL_LENGTH: 'errorLog.detail.length',
-  /** 상한에서 잘렸다 — 말하지 않으면 잘린 값을 <b>깨진 값</b>으로 읽는다(screen/log/access/requirements.md). */
+  /** 상한에서 잘렸다 — 말하지 않으면 잘린 값을 <b>깨진 값</b>으로 읽는다(screen/admin/system/log/access/requirements.md). */
   ERROR_LOG_DETAIL_TRUNCATED: 'errorLog.detail.truncated',
 
   /*
@@ -2288,7 +2288,7 @@ export const MSG = {
   /** 〃 브라우저(`User-Agent`). `VARCHAR(500)` 이라 셀에서 잘리고 툴팁으로 펼친다. */
   USER_SESSION_COL_AGENT: 'user.session.col.userAgent',
   /**
-   * 두 컬럼의 헤더 툴팁 — **출처를 말한다**(screen/log/access/requirements.md 과 같은 규약).
+   * 두 컬럼의 헤더 툴팁 — **출처를 말한다**(screen/admin/system/log/access/requirements.md 과 같은 규약).
    *
    * <p>이 컬럼을 어디까지 믿을 수 있나가 값의 옆에 없으면, **빈 칸이 결함으로** 읽히고
    * 채워진 칸은 세션이 들고 있는 사실처럼 읽힌다.
@@ -2641,7 +2641,7 @@ export const MSG = {
 
   /** 상세 셀에 그려지는 글자 — 값이 아니다(screen/batch/schedule/requirements.md). 엑셀은 원본 값을 쓴다(frontend/grid.md). */
   BATCH_HISTORY_DETAIL_LINK: 'batchHistory.detail.link',
-  /** 배치명이 비었을 때 — <b>이름을 지어내지 않는다</b>(screen/log/access/requirements.md 와 같은 판단). */
+  /** 배치명이 비었을 때 — <b>이름을 지어내지 않는다</b>(screen/admin/system/log/access/requirements.md 와 같은 판단). */
   BATCH_HISTORY_DELETED_BATCH: 'batchHistory.deletedBatch',
   /** `RUNNING` 인데 락 만료를 넘긴 행의 배지 — 죽었다는 뜻이다(screen/batch/schedule/requirements.md). */
   BATCH_HISTORY_GHOST: 'batchHistory.ghost',
@@ -2699,7 +2699,7 @@ export const MSG = {
   /** 탭 — 오류(`ERR_MSG`). 예외 스택이다. */
   BATCH_HISTORY_DETAIL_TAB_ERROR: 'batchHistory.detail.tabError',
   /**
-   * 결과 상세 탭이 비활성인 이유 — <b>탭 이름의 툴팁</b>이다(screen/log/access/requirements.md).
+   * 결과 상세 탭이 비활성인 이유 — <b>탭 이름의 툴팁</b>이다(screen/admin/system/log/access/requirements.md).
    *
    * <p>탭 안에 두면 비활성 탭이 열리지 않아 볼 방법이 없다. 그리고 <b>비어 있는 것과
    * 남기지 않은 것이 다르다</b> — 대개의 배치는 대상 목록을 남기지 않는다.
@@ -2750,7 +2750,7 @@ export const MSG = {
   /** 조회 0건 — 일반 문구다. */
   NOTICE_EMPTY: 'notice.empty',
   /**
-   * <b>`게시중` 으로 걸렀는데 0건</b> — 진단으로 읽히게 한다(screen/notice/requirements.md · screen/log/access/requirements.md).
+   * <b>`게시중` 으로 걸렀는데 0건</b> — 진단으로 읽히게 한다(screen/notice/requirements.md · screen/admin/system/log/access/requirements.md).
    *
    * <p>지금 사용자에게 아무 공지도 보이지 않는다는 뜻이고, 그것을 알고 싶어서 거른 것이다.
    */

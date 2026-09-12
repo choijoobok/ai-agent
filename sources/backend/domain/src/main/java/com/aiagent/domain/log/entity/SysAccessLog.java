@@ -22,7 +22,7 @@ import org.hibernate.type.SqlTypes;
  * <p><b>전 요청이 한 행이다</b>(2026-08-28 개정). 2xx 도 4xx 도 5xx 도 남으며, 예외가 나면
  * {@code SYS_LO_EXCEPTION} 에 <b>한 행이 더</b> 붙는다 — 배타가 아니다. 배타였을 때
  * <i>"이 에러가 난 요청의 전문을 보자"</i> 가 언제나 0건이었고 사용자는 그것을
- * <b>로그 유실</b>로 읽었다(screen/log/access/requirements.md).
+ * <b>로그 유실</b>로 읽었다(screen/admin/system/log/access/requirements.md).
  *
  * <p><b>감사 4컬럼이 없다</b>(sys/logs.md) — {@code USER_ID + CRE_DTM} 이 곧 "누가 언제" 다.
  * <b>FK 도 없다</b>(sys/logs.md) — 계정이 사라져도 과거 기록의 주체는 남아야 한다.
@@ -31,7 +31,7 @@ import org.hibernate.type.SqlTypes;
  * com.aiagent.domain.auth.entity.SysLoginLog} 와 같은 이유다 — 고빈도 INSERT 라
  * 기본 50 이면 50건마다 행 락에서 경합한다(backend/persistence.md). 그 대가로 <b>PK 순서가 시간 순서가
  * 아니다</b>: 노드마다 다른 블록을 쥐므로 커서 정렬이 시각을 먼저 보고 PK 는 동률만
- * 가른다(screen/log/access/requirements.md).
+ * 가른다(screen/admin/system/log/access/requirements.md).
  */
 @Entity
 @Table(name = "SYS_LO_ACCESS")
@@ -55,7 +55,7 @@ public class SysAccessLog {
     @Column(name = "ACCESS_LOG_SEQ")
     private Long accessLogSeq;
 
-    /** 미인증 요청은 {@code null} 이다 — 화면이 {@code (익명)} 으로 그린다(screen/log/access/requirements.md). */
+    /** 미인증 요청은 {@code null} 이다 — 화면이 {@code (익명)} 으로 그린다(screen/admin/system/log/access/requirements.md). */
     @Column(name = "USER_ID", length = 30)
     private String userId;
 
@@ -63,7 +63,7 @@ public class SysAccessLog {
      * {@code X-Menu-Code} 헤더 값 — <b>클라이언트 주장이다</b>(backend/packages.md · backend/security.md).
      *
      * <p>인가 판정에 쓰지 않는다. 통계·추적 외 용도로 신뢰하지 않으며 그 사실을 화면이
-     * 컬럼 헤더 툴팁으로 말한다(screen/log/access/requirements.md) — 말하지 않으면 이 화면의 메뉴별 집계가
+     * 컬럼 헤더 툴팁으로 말한다(screen/admin/system/log/access/requirements.md) — 말하지 않으면 이 화면의 메뉴별 집계가
      * <b>감사 근거로 인용된다</b>.
      *
      * <p>{@code null} 을 허용한다. 로그인·하트비트는 셸 진입 전이라 현재 메뉴가 존재하지
@@ -79,7 +79,7 @@ public class SysAccessLog {
      * 응답 상태 — <b>전 요청을 받으므로 필요하다</b>(backend/packages.md).
      *
      * <p>없으면 성공과 실패가 섞이고, 이 화면은 *일어난 요청 전부* 를 보여주는 화면이
-     * 되지 못한다(screen/log/access/requirements.md).
+     * 되지 못한다(screen/admin/system/log/access/requirements.md).
      */
     @Column(name = "HTTP_STAT", nullable = false)
     private Short httpStat;
@@ -93,7 +93,7 @@ public class SysAccessLog {
      * PostgreSQL 에서 {@code oid}, MySQL 에서 {@code tinytext}(255바이트)가 되어 전문이
      * 들어가지 않는다.
      *
-     * <p><b>목록 조회가 이 컬럼을 {@code SELECT} 하지 않는다</b>(screen/log/access/requirements.md). 응답 100행 ×
+     * <p><b>목록 조회가 이 컬럼을 {@code SELECT} 하지 않는다</b>(screen/admin/system/log/access/requirements.md). 응답 100행 ×
      * 1MB = 100MB 이고, Oracle LOB 성능이 그 앞에서 먼저 무너진다(backend/persistence.md S-2).
      */
     @Nationalized

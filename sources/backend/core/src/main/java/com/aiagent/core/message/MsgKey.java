@@ -128,7 +128,7 @@ public final class MsgKey {
     /** 커서형에 정렬 컬럼이 둘 이상 왔다 — 기준점이 성립하려면 정렬 키가 하나여야 한다. */
     public static final String ERR_QUERY_CURSOR_SORT_ARITY = "err.query.cursor-sort-arity";
 
-    // ── 사용 이력 — AccessLogErrorCode(screen/log/access/requirements.md) ──────────────
+    // ── 사용 이력 — AccessLogErrorCode(screen/admin/system/log/access/requirements.md) ──────────────
     //
     // 셋 다 부하이거나 시간의 문제다. 이 화면에는 쓰기가 없어 저장 거부라는 것이 없다.
 
@@ -141,7 +141,7 @@ public final class MsgKey {
     /** 전문을 열려는데 그 행이 없다 — 조회 뒤에 파기 배치가 지나갔다. */
     public static final String ERR_ACCESS_LOG_PURGED = "err.access-log.purged";
 
-    // ── 로그인 이력 — LoginLogErrorCode(screen/log/access/requirements.md) ─────────────
+    // ── 로그인 이력 — LoginLogErrorCode(screen/admin/system/log/access/requirements.md) ─────────────
     //
     // 둘뿐이고 둘 다 기간이다. 쓰기도 없고 두 번째 호출도 없어(nclob 컬럼이 없다)
     // 거부할 것이 기간 말고 없다. 위의 access-log 와 키를 나누는 이유는 상한과 보존이
@@ -150,10 +150,10 @@ public final class MsgKey {
     /** 기간 없이 조회하려 했다 — 보존이 1년이라 조건 없이 열면 그 전량을 향한다. */
     public static final String ERR_LOGIN_LOG_RANGE_REQUIRED = "err.login-log.range-required";
 
-    /** 기간이 92일을 넘었다 — 보존(1년)보다 창이 짧은 유일한 화면이다(screen/log/access/requirements.md). */
+    /** 기간이 92일을 넘었다 — 보존(1년)보다 창이 짧은 유일한 화면이다(screen/admin/system/log/access/requirements.md). */
     public static final String ERR_LOGIN_LOG_RANGE_TOO_WIDE = "err.login-log.range-too-wide";
 
-    // ── 에러 로그 — ErrorLogErrorCode(screen/log/access/requirements.md) ───────────────
+    // ── 에러 로그 — ErrorLogErrorCode(screen/admin/system/log/access/requirements.md) ───────────────
     //
     // 사용 이력과 셋이 같다. 키를 나누는 이유도 같다 — 문구가 말하는 숫자가 다르다:
     // 상한은 92일이고 보존은 180일이라 "못 본 절반이 실제로 있다".
@@ -806,13 +806,13 @@ public final class MsgKey {
     public static final String ERR_SAMPLE_NOT_RECALCULABLE = "err.sample.not-recalculable";
 
     /**
-     * 기간을 비우고 조회했다 — ②는 <b>기간이 부하의 상한</b>인 화면이다(playbook/INDEX.md · screen/log/access/requirements.md).
+     * 기간을 비우고 조회했다 — ②는 <b>기간이 부하의 상한</b>인 화면이다(playbook/INDEX.md · screen/admin/system/log/access/requirements.md).
      *
      * <p>화면의 {@code required} 가 먼저 막지만 <b>도구·스크립트는 그 폼을 지나지 않는다</b>.
      */
     public static final String ERR_SAMPLE_RANGE_REQUIRED = "err.sample.range-required";
 
-    /** 조회 기간이 상한을 넘었다 — 조용히 자르지 않는다(screen/log/access/requirements.md). */
+    /** 조회 기간이 상한을 넘었다 — 조용히 자르지 않는다(screen/admin/system/log/access/requirements.md). */
     public static final String ERR_SAMPLE_RANGE_TOO_WIDE = "err.sample.range-too-wide";
 
     /**
