@@ -1,6 +1,7 @@
-package com.aiagent.api.role.request;
+// @feat FEAT-502
+package com.aiagent.system.api.role.request;
 
-import com.aiagent.domain.authz.role.RoleAuthGrant;
+import com.aiagent.system.domain.role.RoleAuthGrant;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,11 +1,12 @@
-package com.aiagent.domain.authz.role;
+// @feat FEAT-502
+package com.aiagent.system.domain.role;
 
-import static com.aiagent.domain.authz.role.RoleSpec.HOLDER_SPEC;
-import static com.aiagent.domain.authz.role.RoleSpec.R;
-import static com.aiagent.domain.authz.role.RoleSpec.ROLE_PICK_SPEC;
-import static com.aiagent.domain.authz.role.RoleSpec.ROLE_SPEC;
-import static com.aiagent.domain.authz.role.RoleSpec.U;
-import static com.aiagent.domain.authz.role.RoleSpec.UR;
+import static com.aiagent.system.domain.role.RoleSpec.HOLDER_SPEC;
+import static com.aiagent.system.domain.role.RoleSpec.R;
+import static com.aiagent.system.domain.role.RoleSpec.ROLE_PICK_SPEC;
+import static com.aiagent.system.domain.role.RoleSpec.ROLE_SPEC;
+import static com.aiagent.system.domain.role.RoleSpec.U;
+import static com.aiagent.system.domain.role.RoleSpec.UR;
 
 import com.aiagent.core.search.InChunks;
 import com.aiagent.core.search.PageMode;

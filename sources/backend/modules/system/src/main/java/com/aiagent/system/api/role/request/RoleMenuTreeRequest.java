@@ -1,4 +1,5 @@
-package com.aiagent.api.role.request;
+// @feat FEAT-502
+package com.aiagent.system.api.role.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

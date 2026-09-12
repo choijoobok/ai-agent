@@ -1,5 +1,6 @@
 // @feat FEAT-502
-package com.aiagent.domain.authz.role;
+// @feat FEAT-502
+package com.aiagent.system.domain.role;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

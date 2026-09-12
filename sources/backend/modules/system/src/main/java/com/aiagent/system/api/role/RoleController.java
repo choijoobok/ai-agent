@@ -2,16 +2,16 @@
 package com.aiagent.system.api.role;
 
 import com.aiagent.api.authz.AuthzInvalidator;
-import com.aiagent.api.role.request.RoleSaveRequest;
 import com.aiagent.api.trace.TraceId;
 import com.aiagent.core.error.BusinessException;
 import com.aiagent.core.error.CommonErrorCode;
 import com.aiagent.core.response.ApiResponse;
 import com.aiagent.core.search.PageResponse;
 import com.aiagent.core.search.SearchRequest;
-import com.aiagent.domain.authz.role.RoleQueryService;
-import com.aiagent.domain.authz.role.RoleRow;
-import com.aiagent.domain.authz.role.RoleService;
+import com.aiagent.system.api.role.request.RoleSaveRequest;
+import com.aiagent.system.domain.role.RoleQueryService;
+import com.aiagent.system.domain.role.RoleRow;
+import com.aiagent.system.domain.role.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;

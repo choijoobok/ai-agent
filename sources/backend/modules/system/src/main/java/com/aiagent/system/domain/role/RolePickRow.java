@@ -1,4 +1,5 @@
-package com.aiagent.domain.authz.role;
+// @feat FEAT-502
+package com.aiagent.system.domain.role;
 
 /**
  * {@code ROLE_AUTH_MGMT} 왼쪽 목록의 한 행 — screen/admin/system/role/requirements.md. <b>읽기 전용이다.</b>

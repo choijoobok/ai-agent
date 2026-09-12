@@ -1,4 +1,5 @@
-package com.aiagent.domain.authz.role;
+// @feat FEAT-502
+package com.aiagent.system.domain.role;
 
 import com.aiagent.core.grid.RowState;
 import jakarta.validation.constraints.NotBlank;

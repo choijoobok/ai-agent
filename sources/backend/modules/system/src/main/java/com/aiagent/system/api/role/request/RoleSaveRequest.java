@@ -1,6 +1,7 @@
-package com.aiagent.api.role.request;
+// @feat FEAT-502
+package com.aiagent.system.api.role.request;
 
-import com.aiagent.domain.authz.role.RoleSaveRow;
+import com.aiagent.system.domain.role.RoleSaveRow;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import java.util.List;

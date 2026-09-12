@@ -9,5 +9,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
+    // 역할 조회가 QueryDSL 조립을 직접 소유한다. domain의 구현 의존성은 전이되지 않는다.
+    implementation(libs.querydsl.jpa)
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
