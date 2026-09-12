@@ -115,6 +115,10 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <revision> --sur
 1. **한국어로 답한다.** 파일은 UTF-8(BOM 없음), LF로 유지한다.
 2. **게이트를 건너뛰지 않는다.** Exit Criteria 충족과 사용자 명시 승인이 있어야 다음 단계로 간다.
    한 턴에 하나의 게이트만 넘는다. 소스 변경은 기능 소유 작업흐름 G3 승인 뒤에만 한다.
+   단, `documents/project.state.yaml`의 `batch_g4`가 활성이고 그 범위에 든 슬라이스는 G4
+   자체검증·레드팀·결정 카드·역질문을 모두 기록해 `self_verified`로만 보류한 뒤 다음
+   슬라이스를 진행할 수 있다. 이 예외는 완료·커밋·배포·다른 작업흐름 진입 권한을 주지 않으며,
+   범위의 모든 슬라이스는 사용자 사후 일괄 승인 뒤에만 각각 `done`·지정 경로 커밋한다.
    G3 전 템플릿 보수는 사용자 확인과 `current.template_maintenance: true`를 첫 소스 커밋에 함께 담는다.
    DROP/TRUNCATE, `terraform apply`, `kubectl delete`, `git push --force`, 프로덕션 변경은 사용자가 직접 하거나 명시 승인한다.
 3. 한 커밋은 한 가지 일이다. `<타입>: <현상> — <조치>` 형식의 한국어 제목과 본문 `왜`,
