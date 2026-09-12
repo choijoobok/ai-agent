@@ -20,7 +20,7 @@ topology:
     - zone: "DMZ"
       contains: "아웃바운드 게이트웨이 (단일 통로 · 인바운드 미허용)"
     - zone: "내부 폐쇄망 — Agentic AI Hub"
-      contains: "system · admin · portal · agent 모듈 · AI 전용 DB(PostgreSQL — 시스템 설정·이력·지식·임베딩 벡터)"
+      contains: "system · admin · portal · agent 모듈 · 공유 PostgreSQL 스키마(시스템 설정·이력·지식·임베딩 벡터)"
     - zone: "내부 폐쇄망 — 레거시 (복수)"
       contains: "업무 시스템 WAS/REST · 업무 운영 DB(여러 시스템이 공유 가능 · 이기종 DBMS) · 통합 DW"
   notes:
@@ -63,7 +63,7 @@ topology:
     units:
       - { key: SPA, label: "브라우저 SPA (React 19 · Vite)", holds: "portal 화면 영역 · system/admin 관리 콘솔 영역", note: "**Hub WAS 가 하나의 정적 번들로 서빙한다.** `/`와 `/admin`은 별도 `index.html`이 아니라 라우터·레이아웃·지연 로딩 경계다(ARCH-021)" }
       - { key: WAS, label: "Hub WAS (Spring Boot 4 · JDK 25)", holds: "system · admin · portal · agent 모듈", note: "**기본은 단일 배포다.** 분리는 agent 만 대상이고 그때도 DB 를 공유한다(ARCH-014). **SHAPE-02(통합 구축)에서는 여기에 업무 확장이 함께 들어가고 업무 DB 노드가 하나 더 생긴다**(ARCH-016~018) — 이 그림은 SHAPE-01 을 그린 것이다" }
-      - { key: DBU, label: "AI 전용 DB (PostgreSQL)", holds: "설정 · 이력 · 지식 · 임베딩 벡터", note: "벡터도 여기 있다 — pgvector 확장을 쓰며 별도 벡터 DB 를 두지 않는다(CON-001 · ADR-005)" }
+      - { key: DBU, label: "Hub 공유 DB (PostgreSQL)", holds: "system 설정 · 이력 · 지식 · 임베딩 벡터", note: "네 모듈이 하나의 스키마를 공유한다. 벡터도 여기 있다 — pgvector 확장을 쓰며 별도 벡터 DB를 두지 않는다(CON-001 · ADR-005 · ADR-008)" }
 
   nodes:
     - { key: USER,   zone: 사용자,    l1: PERSON,                   label: "사용자 PC",              note: "접속 방식은 고객사 정책(CON-015)" }
@@ -75,7 +75,7 @@ topology:
     - { key: PORTAL, zone: Hub,       l1: HUB,        deploy: WAS,  label: "portal 모듈" }
     - { key: ADMIN,  zone: Hub,       l1: HUB,        deploy: WAS,  label: "admin 모듈" }
     - { key: AGENT,  zone: Hub,       l1: HUB,        deploy: WAS,  label: "agent 모듈" }
-    - { key: AIDB,   zone: Hub,       l1: HUB,        deploy: DBU,  label: "AI 전용 DB (PostgreSQL)", kind: db, note: "설정 · 이력 · 지식 · 임베딩 벡터(CON-001)" }
+    - { key: AIDB,   zone: Hub,       l1: HUB,        deploy: DBU,  label: "Hub 공유 DB (PostgreSQL)", kind: db, note: "네 모듈이 공유하는 system 설정 · 이력 · 지식 · 임베딩 벡터(CON-001 · ADR-008)" }
     - { key: WAS1,   zone: 레거시,    l1: LEGACY_SYS,               label: "업무 시스템 A — WAS / REST API" }
     - { key: WAS2,   zone: 레거시,    l1: LEGACY_SYS,               label: "업무 시스템 B — WAS / REST API" }
     - { key: DB1,    zone: 레거시,    l1: LEGACY_SYS,               label: "업무 운영 DB",            kind: db, note: "여러 시스템이 공유할 수 있다" }
@@ -130,14 +130,14 @@ module_boundaries:
     why: "편의의 문제가 아니라 **보안 경계**다. 통합 배포 구조에서는 런타임에 호출자를 신뢰할 수 없으므로 **의존성 규칙 검사로 강제한다** — `modules/admin`·`modules/portal` 이 대화·추론 인터페이스를 참조하면 빌드가 실패해야 한다"
     traces_to: [PRN-01, PRN-02]
   - id: ARCH-014
-    rule: "분리 배포는 **agent 만** 대상으로 한다(부하에 따른 스케일 아웃). 그때도 **DB 는 하나를 공유**하지만 모듈별 테이블 쓰기 소유권은 유지하며, 공유 계약이나 스키마 변경 시 배포 시점을 맞춘다"
+    rule: "분리 배포는 **agent 만** 대상으로 한다(부하에 따른 스케일 아웃). 그때도 네 모듈은 **하나의 PostgreSQL 스키마를 공유**하지만 모듈별 테이블 쓰기 소유권은 유지하며, 공유 계약이나 스키마 변경 시 배포 시점을 맞춘다"
   - id: ARCH-015
     rule: "**portal ↔ agent 통신은 비동기로 한다.** portal 은 질의를 접수시키고 즉시 반환받으며, 진행 상태와 결과는 프론트엔드 폴링으로 조회한다. 폴링은 턴 처리 중에만 수행하고 응답 수신 시 중지하며 **주기는 admin 시스템 설정으로 관리한다**"
     why: "서버 푸시(SSE·WebSocket)를 쓰지 않는 이유는 **프록시·L7 로드밸런서의 유휴 타임아웃과 응답 버퍼링 설정에 좌우되지 않기 위함**이다. 배포 환경이 고객사마다 다르므로 환경 의존을 줄이는 쪽을 택한다"
     note: "이 호출을 **portal 트랜잭션 안에 묶지 않는다** — 분리 시 원격 호출로 바뀔 수 있다"
 
 write_ownership:
-  claim: "AI 전용 DB는 하나지만 **각 테이블과 Entity/Repository에는 쓰기 소유 모듈 하나가 있다.** 다른 모듈은 소유 모듈의 공개 조회 계약을 사용하고 내부 Repository를 직접 참조하지 않는다"
+  claim: "네 모듈이 공유하는 PostgreSQL 스키마는 하나지만 **각 테이블과 Entity/Repository에는 쓰기 소유 모듈 하나가 있다.** 다른 모듈은 소유 모듈의 공개 조회 계약을 사용하고 내부 Repository를 직접 참조하지 않는다"
   why: "같은 DB를 쓴다는 이유로 모든 Entity를 공통화하면 소스 이동만 생기고 캡슐화는 생기지 않는다. 쓰기 소유권이 있어야 상태 전이와 마이그레이션 책임이 한곳에 남는다"
   rules:
     - "사용자·메뉴·역할·권한·공통코드·다국어 메시지는 **system**이 소유한다"

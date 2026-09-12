@@ -23,8 +23,8 @@ principles:
     title: "자율성 최대 보장, 크리티컬 경로만 서버 강제"
     detail: "LLM 의 판단 재량은 넓게 둔다. 단 권한 우회·개인정보 취득·비가역 실행처럼 사고 시 치명적인 영역은 LLM 판단에 맡기지 않고 서버가 규칙으로 직접 처리한다"
   - id: PRN-04
-    title: "DBMS 중립"
-    detail: "업무 DB·DW 는 고객사 환경에 따라 달라진다. 특정 DBMS 문법·기능에 종속되지 않는다. 단 **AI 전용 DB 는 PostgreSQL 로 고정**한다"
+    title: "DBMS 지원 경계 분리"
+    detail: "독립 백오피스 템플릿은 주요 DBMS 지원을 유지한다. 통합 Agentic AI Hub에서는 system·admin·portal·agent가 하나의 PostgreSQL 스키마를 공유하며, 업무 DB·DW는 고객사 환경에 따라 달라지므로 연결 경계에서는 특정 DBMS 문법·기능에 종속되지 않는다"
   - id: PRN-05
     title: "LLM 공급 경로·모델 교체 가능"
     detail: "**공급 경로·모델·effort 는 설정으로 교체된다**(TRM-087). 같은 모델을 제작사 직접 API 로도 게이트웨이로도 살 수 있으므로 **경로와 모델은 따로 고른다.** 특정 경로의 SDK 개념이 도메인 코드로 새지 않도록 추상화 계층을 둔다(ADR-004)"
@@ -54,14 +54,14 @@ principles:
 technical:
   - id: CON-001
     area: "AI 전용 DB"
-    constraint: "PostgreSQL 고정. 설정·이력·지식·**임베딩 벡터**를 모두 이 DB 의 테이블로 관리하며, 벡터 검색은 **pgvector 확장**을 쓴다"
-    why: "**별도 벡터 DB 를 두지 않는다.** 요지는 둘이다 — ① 임베딩을 끄는 구성이 정식이므로(ARCH-060) 별도 저장소는 *끈 고객사도 설치·운영하는* 잉여 구성요소가 된다 ② 저장소를 나눌 때 드는 동기화·이중 쓰기·백업 정합은 **규모와 무관하게 첫날부터** 든다. **대안 비교와 근거는 ADR-005 가 갖는다**"
+    constraint: "통합 Agentic AI Hub의 system·admin·portal·agent는 하나의 PostgreSQL 스키마를 공유한다. 설정·이력·지식·**임베딩 벡터**를 모두 이 스키마의 테이블로 관리하며, 벡터 검색은 **pgvector 확장**을 쓴다. 독립 백오피스 템플릿의 제품 DB와 고객사 업무 DB·DW 연결은 이 제약의 대상이 아니다"
+    why: "**별도 벡터 DB 를 두지 않는다.** 요지는 둘이다 — ① 임베딩을 끄는 구성이 정식이므로(ARCH-060) 별도 저장소는 *끈 고객사도 설치·운영하는* 잉여 구성요소가 된다 ② 저장소를 나눌 때 드는 동기화·이중 쓰기·백업 정합은 **규모와 무관하게 첫날부터** 든다. 벡터 저장소의 대안 비교는 ADR-005, 템플릿 독립 지원·통합 Hub·DW DBMS 경계는 ADR-008이 갖는다"
     review_signal: "**셋 중 둘 이상이 함께 관측되면 재검토한다**(ADR-005 §6) — ① 벡터 인덱스가 일반 조회의 p95 를 밀어낸다 ② HNSW 인덱스가 메모리에 들어가지 않는다 ③ 필터 선택도가 높은 질의가 주 경로가 된다. **하나만으로 반응하지 않는다** — 튜닝으로 회복되는 일이 많아 고칠 수 있는 것을 갈아치우게 된다"
-    traces_to: [ADR-005]
+    traces_to: [ADR-005, ADR-008]
   - id: CON-002
     area: "업무 DB / DW"
-    constraint: "DBMS 중립. 접속 정보는 **yml 에만** 두고 admin 은 매핑만 관리한다"
-    traces_to: [PRN-04]
+    constraint: "DBMS 중립. 고객사 업무 DB·DW는 특정 DBMS로 제한하지 않으며, 접속 정보는 **yml 에만** 두고 admin은 매핑만 관리한다"
+    traces_to: [PRN-04, ADR-008]
   - id: CON-003
     area: "업무 시스템 연동"
     constraint: "**HTTP/HTTPS 표준 RESTful API 로 한정**. 본문은 JSON 기본. SOAP·gRPC·메시지 큐·소켓·DB 프로시저 직접 호출·파일 인터페이스는 지원하지 않는다"
@@ -84,7 +84,7 @@ technical:
     note: "**런타임 버전은 연동 전제다** — 고객사 서버에 이 JDK 를 요구한다. 빌드 toolchain 이 그 값이며(`sources/build.gradle.kts`) 둘이 갈리면 소스가 이긴다"
   - id: CON-008
     area: "모듈 구조"
-    constraint: "system / admin / portal / agent 를 **하나의 애플리케이션으로 통합 개발·배포**한다. 하나의 AI 전용 DB를 공유하되 화면·API·서비스·Entity/Repository·테이블 쓰기 소유권은 제품 모듈별로 나눈다"
+    constraint: "system / admin / portal / agent 를 **하나의 애플리케이션으로 통합 개발·배포**한다. 하나의 PostgreSQL 스키마를 공유하되 화면·API·서비스·Entity/Repository·테이블 쓰기 소유권은 제품 모듈별로 나눈다"
     why: "물리 배포와 DB를 하나로 유지해 폐쇄망 운영 복잡도를 늘리지 않으면서, 기존 백오피스 기반과 AI 기능의 변경 책임을 분리한다(ADR-007 · ARCH-010 · ARCH-024)"
   - id: CON-009
     area: "분리 배포"
