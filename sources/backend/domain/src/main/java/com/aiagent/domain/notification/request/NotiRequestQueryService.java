@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code NOTI_REQUEST} 의 조회 — screen/noti-request/requirements.md.
+ * {@code NOTI_REQUEST} 의 조회 — screen/admin/system/noti-request/requirements.md.
  *
  * <h2>처리자 이름을 두 번째 조인으로 얻지 않는다</h2>
  *
@@ -63,7 +63,7 @@ public class NotiRequestQueryService {
 
     /**
      * 대기열 — 기본 정렬이 <b>요청일시 오름차순</b>이고 조회조건 기본값이
-     * {@code RECEIVED} 하나다(screen/noti-request/requirements.md).
+     * {@code RECEIVED} 하나다(screen/admin/system/noti-request/requirements.md).
      */
     public PageResponse<NotiRequestRow> getList(SearchRequest<Void> request) {
         Built built = builder.build(request, SPEC, PageMode.offset);

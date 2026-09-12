@@ -36,8 +36,8 @@ MESSAGE_MGMT,/api/service/system/message/getList
 MESSAGE_MGMT,/api/service/system/message/save
 NOTICE_MGMT,/api/service/system/notice/getList
 NOTICE_MGMT,/api/service/system/notice/save
-NOTI_REQUEST,/api/service/notiRequest/getList
-NOTI_REQUEST,/api/service/notiRequest/updateHandle
+NOTI_REQUEST,/api/service/system/notiRequest/getList
+NOTI_REQUEST,/api/service/system/notiRequest/updateHandle
 ROLE_AUTH_MGMT,/api/service/system/roleAuth/getAffectedUsers
 ROLE_AUTH_MGMT,/api/service/system/roleAuth/getList
 ROLE_AUTH_MGMT,/api/service/system/roleAuth/getMenuTree

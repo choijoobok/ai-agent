@@ -51,7 +51,7 @@
 #     │   └ BATCH_HISTORY    실행 이력                /admin/system/batch/history
 #     └ NOTICE               공지 · 알림
 #         ├ NOTICE_MGMT      공지사항 관리            /admin/system/notice
-#         └ NOTI_REQUEST     요청함 처리              /noti-request
+#         └ NOTI_REQUEST     요청함 처리              /admin/system/noti-request
 #
 # 위 한글은 주석이며 데이터가 아니다 — 이름은 SYS_MESSAGE 의 menu.{MENU_CD} 다.
 # 트리를 여기 남기는 것은 code/parent 만으로는 사람이 구조를 읽을 수 없기 때문이다.
@@ -144,7 +144,7 @@ menus:
     url: /admin/system/notice
   - code: NOTI_REQUEST
     parent: NOTICE
-    url: /noti-request
+    url: /admin/system/noti-request
 
   # ── 샘플 (68) ─────────────────────────────────────────────────────────
   #

@@ -1,11 +1,16 @@
+// @feat FEAT-509
 package com.aiagent.domain.notification.repository;
 
+import jakarta.persistence.LockModeType;
 import com.aiagent.domain.notification.ReqStatus;
 import com.aiagent.domain.notification.ReqType;
 import com.aiagent.domain.notification.entity.SysNotiRequest;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  * 요청함 — sys/notification.md. 조회는 {@code QuerySpec} 을 지난다(backend/api.md).
@@ -16,18 +21,26 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface SysNotiRequestRepository extends JpaRepository<SysNotiRequest, Long> {
 
     /**
-     * 처리 대상을 <b>한 번에</b> 집는다 — screen/admin/system/notice/requirements.md.
+     * 처리 대상을 <b>한 번에 잠가</b> 집는다 — screen/admin/system/noti-request/requirements.md.
      *
      * <p>행마다 {@code findById} 를 부르지 않는 이유는 N+1 이 아니라 <b>판정 때문</b>이다:
      * 선택에 이미 처리된 것이 섞이면 <b>전부 막아야</b> 하므로(부분 실행하지 않는다)
-     * 전건을 먼저 손에 쥐어야 한다.
+     * 전건을 먼저 손에 쥐어야 한다. PK 오름차순으로 잠가 서로 다른 선택 순서의 동시
+     * 판정도 교착 없이 직렬화한다.
      */
-    List<SysNotiRequest> findAllByReqIdIn(List<Long> reqIds);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+            select request
+              from SysNotiRequest request
+             where request.reqId in :reqIds
+             order by request.reqId
+            """)
+    List<SysNotiRequest> lockAllByReqIdIn(@Param("reqIds") List<Long> reqIds);
 
     /**
      * <i>내 요청</i> 탭 — <b>최신이 위</b>다.
      *
-     * <p>{@code NOTI_REQUEST} 메뉴의 오름차순과 <b>반대</b>이며 그것이 의도다(screen/noti-request/requirements.md):
+     * <p>{@code NOTI_REQUEST} 메뉴의 오름차순과 <b>반대</b>이며 그것이 의도다(screen/admin/system/noti-request/requirements.md):
      * 저쪽은 <b>대기열</b>이라 오래 기다린 것이 먼저지만, 여기는 <b>내 이력</b>이라
      * 방금 낸 것이 위여야 한다 — 내가 낸 요청이 어떻게 됐는지가 물음이다.
      *

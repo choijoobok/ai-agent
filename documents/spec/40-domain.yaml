@@ -318,7 +318,7 @@ entities:
     indexes: []
     index_policy: "현재 물리 인덱스를 그대로 두며 모듈 이동에서 새 인덱스를 만들지 않는다"
     state_machine: { RECEIVED: [DONE, REJECTED], DONE: [], REJECTED: [] }
-    rules: ["판정은 계정·권한 변경과 분리", "종결 요청 재처리 금지", "REJECTED는 처리 메모 필수"]
+    rules: ["판정은 계정·권한 변경과 분리", "종결 요청 재처리 금지", "REJECTED는 처리 메모 필수", "동시 판정은 대상 행 잠금으로 직렬화하고 뒤 요청은 상태 충돌로 거부"]
     audit: full
     delete_policy: never
 

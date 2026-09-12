@@ -13,9 +13,9 @@ import { useSessionExpiry } from '@/modules/system/public/auth/useSessionExpiry'
 import { ExpiryWarningModal } from '@/modules/system/public/auth/components/ExpiryWarningModal';
 import { SettingsModal } from '@/modules/system/public/settings/SettingsModal';
 import { ProfileModal } from '@/features/profile/ProfileModal';
-import { NotificationModal } from '@/features/notification/NotificationModal';
+import { NotificationModal } from '@/modules/system/public/notification/NotificationModal';
 import { NoticePopupModal } from '@/modules/system/public/notice/NoticePopupModal';
-import { getUnreadCount } from '@/features/notification/api/notificationApi';
+import { getUnreadCount } from '@/modules/system/public/notification/api/notificationApi';
 import { handOff } from '@/shared/routes/handoffStore';
 import { rememberRecentMenu } from '@/shared/authz/recentMenus';
 import { useFavoriteStore } from '@/shared/favorite/favoriteStore';

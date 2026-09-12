@@ -1,3 +1,4 @@
+// @feat FEAT-509
 package com.aiagent.domain.notification.request;
 
 import com.aiagent.core.error.BusinessException;
@@ -13,12 +14,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code NOTI_REQUEST} 의 처리 — screen/noti-request/requirements.md.
+ * {@code NOTI_REQUEST} 의 처리 — screen/admin/system/noti-request/requirements.md.
  *
  * <h2>이 서비스가 {@code SYS_NOTI_INBOX} 의 첫 생산자다</h2>
  *
  * <p>frontend/tabs.md 이 요청 탭에 배지를 두지 않으며 <i>"상태가 바뀌면 그것이 내 알림으로 온다"</i>
- * 고 적었다. <b>그 알림을 넣는 곳이 여기</b>이며, screen/noti-request/requirements.md 의 생산자 넷 중 <b>이 슬라이스
+ * 고 적었다. <b>그 알림을 넣는 곳이 여기</b>이며, screen/admin/system/noti-request/requirements.md 의 생산자 넷 중 <b>이 슬라이스
  * 안에서 자급자족하는 유일한 것</b>이다 — 나머지 셋(비밀번호 만료 · 권한 만료 · 배치
  * 실패)은 각자의 기능이 서야 온다.
  *
@@ -30,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>섞이면 전부 막는다</h2>
  *
- * <p>선택에 이미 처리된 것이 하나라도 있으면 <b>아무것도 처리하지 않는다</b>(screen/noti-request/requirements.md).
+ * <p>선택에 이미 처리된 것이 하나라도 있으면 <b>아무것도 처리하지 않는다</b>(screen/admin/system/noti-request/requirements.md).
  * 처리 가능한 것만 골라 실행하면 <b>알림이 일부에게만 나가고</b> 사용자는 무엇이
  * 처리됐는지 모른다 — 되돌리는 길이 없으므로 부분 성공을 만들지 않는다.
  */
@@ -57,7 +58,7 @@ public class NotiRequestService {
      * 처리 또는 반려 — <b>한 트랜잭션이다</b>.
      *
      * <p>{@code updateHandle} 하나가 둘을 다 하는 이유는 <b>쓰는 컬럼이 같고 트랜잭션이
-     * 같기 때문</b>이다(screen/noti-request/requirements.md). 둘로 가르면 알림 INSERT 코드가 두 벌이 되고 한쪽만
+     * 같기 때문</b>이다(screen/admin/system/noti-request/requirements.md). 둘로 가르면 알림 INSERT 코드가 두 벌이 되고 한쪽만
      * 고치는 날이 온다.
      *
      * <p><b>처리자는 인자가 아니라 {@code AuditorAware} 에서 온다</b>({@code DbLockStore} 와
@@ -65,7 +66,7 @@ public class NotiRequestService {
      * {@code HANDLER_ID} 가 답해야 하는 물음은 <b>누가 판정했나</b> 하나다.
      *
      * @param to {@link ReqStatus#DONE} 또는 {@link ReqStatus#REJECTED} 뿐이다 —
-     * {@link ReqStatus#RECEIVED} 로 되돌리는 길은 없다(screen/noti-request/requirements.md)
+     * {@link ReqStatus#RECEIVED} 로 되돌리는 길은 없다(screen/admin/system/noti-request/requirements.md)
      */
     @Transactional
     public void handle(List<Long> reqIds, ReqStatus to, String memo) {
@@ -82,7 +83,8 @@ public class NotiRequestService {
                             "handleMemo", "반려 사유를 입력하세요")));
         }
 
-        List<SysNotiRequest> targets = requests.findAllByReqIdIn(reqIds);
+        List<Long> orderedReqIds = reqIds.stream().sorted().toList();
+        List<SysNotiRequest> targets = requests.lockAllByReqIdIn(orderedReqIds);
         if (targets.size() != reqIds.size()) {
             throw new BusinessException(
                     NotiRequestErrorCode.NOT_FOUND,
@@ -133,7 +135,7 @@ public class NotiRequestService {
         return to == ReqStatus.DONE ? "요청이 처리되었습니다" : "요청이 반려되었습니다";
     }
 
-    /** 메모가 없으면 기본 문구 — 처리는 메모가 선택이다(screen/noti-request/requirements.md). */
+    /** 메모가 없으면 기본 문구 — 처리는 메모가 선택이다(screen/admin/system/noti-request/requirements.md). */
     private static String contentOf(ReqStatus to, String memo) {
         if (memo != null && !memo.isBlank()) {
             return memo;
