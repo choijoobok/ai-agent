@@ -141,11 +141,11 @@ function BootFailure() {
  * 재인증 모달이 뜨지 않는 것도 같은 이유이며, {@code useSessionSignals} 가
  * <b>{@code authStore.user} 가 있을 때만</b> 모달을 띄우므로 여기서 따로 막을 것이 없다.
  *
- * <p><b>두 경로가 번들을 다르게 받는다</b>.
+ * <p><b>두 경로 모두 서버가 알려 준 버전을 확인한다</b>.
  *
  * <table>
  *   <tr><th></th><th>언어</th><th>버전 확인</th></tr>
- *   <tr><td>세션 있음</td><td>{@code LOCALE_CD}</td><td><b>하지 않는다</b> — 캐시를 그대로 쓰고 없을 때만 받는다</td></tr>
+ *   <tr><td>세션 있음</td><td>{@code LOCALE_CD}</td><td>한다 — 로그인 응답의 메시지 버전과 다를 때만 받는다</td></tr>
  *   <tr><td>세션 없음</td><td>브라우저가 정한다</td><td>한다 — 로그인 화면을 그리기 전이다</td></tr>
  * </table>
  *
@@ -164,10 +164,10 @@ function useBoot() {
       .then(async (session) => {
         if (cancelled) return;
         signIn(session);
-        // 번들은 확인하지 않고 캐시를 쓴다. 코드는 <b>확인한다</b> — 판정에 쓸
-        // 버전이 이 응답에 이미 실려 있어 왕복이 늘지 않기 때문이다(sys/code.md).
+        // 코드·메시지 모두 응답의 버전과 맞춘다. 다를 때만 번들을 다시 받으므로
+        // 로컬 저장소 캐시를 무효화하면서도 매 복원에 전량을 받지는 않는다.
         useCodeStore.getState().syncWithSession(session.cacheVersions?.code);
-        await messages.load({ lang: session.user.localeCd, verify: false });
+        await messages.syncWithSession(session.user.localeCd, session.cacheVersions?.message);
       })
       .catch(async () => {
         if (cancelled) return;

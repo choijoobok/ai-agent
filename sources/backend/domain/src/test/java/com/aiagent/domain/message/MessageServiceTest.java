@@ -67,7 +67,7 @@ class MessageServiceTest {
     }
 
     @Test
-    @DisplayName("요청 언어에 값이 없으면 기본 언어로 폴백한다 — sys/code.md")
+    @DisplayName("TC-5053 요청 언어에 값이 없으면 기본 언어로 폴백한다")
     void fallsBackToDefaultLanguage() {
         givenRows(row("login.title", "ko", "백오피스 로그인", MessageScope.FRONT));
 
@@ -75,7 +75,7 @@ class MessageServiceTest {
     }
 
     @Test
-    @DisplayName("어느 언어에도 없으면 키를 그대로 낸다 — 누락이 화면에서 드러나야 한다")
+    @DisplayName("TC-5053 어느 언어에도 없으면 키를 그대로 낸다")
     void missingKeyShowsItself() {
         givenRows();
 
@@ -121,6 +121,22 @@ class MessageServiceTest {
         service.text("login.title", "ko");
 
         assertThat(capturedLangs()).containsExactly("ko");
+    }
+
+    @Test
+    @DisplayName("TC-5055 저장 노드는 즉시 갱신하고 다른 노드는 TTL까지 기존 번들을 유지한다")
+    void cacheEvictionIsLocalToTheSavingNode() {
+        givenRows(row("login.title", "ko", "이전 문구", MessageScope.FRONT));
+        MessageService otherNode = new MessageService(messages, configs, clock);
+
+        assertThat(service.text("login.title", "ko")).isEqualTo("이전 문구");
+        assertThat(otherNode.text("login.title", "ko")).isEqualTo("이전 문구");
+
+        givenRows(row("login.title", "ko", "새 문구", MessageScope.FRONT));
+        service.evict();
+
+        assertThat(service.text("login.title", "ko")).isEqualTo("새 문구");
+        assertThat(otherNode.text("login.title", "ko")).isEqualTo("이전 문구");
     }
 
     @Nested

@@ -40,7 +40,7 @@
 #     │   └ API_CATALOG      API 카탈로그             /admin/system/api-catalog
 #     ├ MASTER               기준정보
 #     │   ├ CODE_MGMT        공통 코드 관리           /admin/system/code
-#     │   ├ MESSAGE_MGMT     다국어 메시지 관리       /message
+#     │   ├ MESSAGE_MGMT     다국어 메시지 관리       /admin/system/message
 #     │   └ CONFIG_MGMT      시스템 환경설정          /config
 #     ├ LOG                  이력 · 로그
 #     │   ├ ACCESS_LOG       사용 이력                /log/access
@@ -106,7 +106,7 @@ menus:
     export: true
   - code: MESSAGE_MGMT
     parent: MASTER
-    url: /message
+    url: /admin/system/message
     export: true
   - code: CONFIG_MGMT
     parent: MASTER

@@ -7,13 +7,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.aiagent.core.error.BusinessException;
 import com.aiagent.core.grid.RowState;
-import com.aiagent.domain.message.MessageScope;
 import com.aiagent.domain.message.entity.SysCacheVersion;
 import com.aiagent.domain.message.entity.SysMessage;
 import com.aiagent.domain.message.entity.SysMessageKey;
@@ -32,14 +30,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 
 /**
- * 저장이 세 상태를 무엇으로 옮기는가 — screen/message/requirements.md.
+ * 저장이 세 상태를 무엇으로 옮기는가 — screen/admin/system/message/requirements.md.
  *
- * <p><b>여기서 지키는 것 셋이다.</b> ① 화면이 {@code USE_SCOPE} 를 정하지 못한다(시드의
- * 소유다), ② 빈 값은 <b>행 삭제</b>이지 빈 문자열 저장이 아니다, ③ 캐시 버전은 <b>저장 한
+ * <p><b>여기서 지키는 것 셋이다.</b> ① 키 생성은 시드 생성기만 하고 API의 {@code C} 행은
+ * 거부한다, ② 빈 값은 <b>행 삭제</b>이지 빈 문자열 저장이 아니다, ③ 캐시 버전은 <b>저장 한
  * 번에 +1</b> 이다.
  *
  * <p>②가 특히 조용히 깨진다 — 빈 문자열을 넣어도 저장은 성공하고, 그 뒤에 sys/code.md 의
@@ -78,61 +75,33 @@ class MessageAdminServiceTest {
     }
 
     private void existing(String key) {
-        when(keys.existsById(key)).thenReturn(true);
         when(keys.findById(key)).thenReturn(Optional.of(SysMessageKey.created(key)));
     }
 
     @Nested
-    @DisplayName("추가")
+    @DisplayName("키 생성 차단")
     class Create {
 
         @Test
-        @DisplayName("화면이 만든 키는 미사용이다 — 사용처를 받을 경로가 없다")
-        void newKeyIsUnused() {
-            service.save(List.of(row(RowState.C, "a.b", new MessageValue("ko", "가"))));
-
-            ArgumentCaptor<SysMessageKey> saved = ArgumentCaptor.forClass(SysMessageKey.class);
-            verify(keys).save(saved.capture());
-            assertThat(saved.getValue().getUseScope()).isEqualTo(MessageScope.NONE);
-        }
-
-        @Test
-        @DisplayName("값이 있는 언어만 행을 만든다 — 빈 행을 만들면 세 번째 상태가 생긴다")
-        void onlyFilledLanguagesGetRows() {
-            service.save(List.of(row(
-                    RowState.C, "a.b", new MessageValue("ko", "가"), new MessageValue("en", null))));
-
-            verify(values, times(1)).save(any(SysMessage.class));
-        }
-
-        @Test
-        @DisplayName("공백만 있는 값은 비어 있는 것이다 — Oracle 에서는 '' 가 곧 NULL 이다")
-        void blankIsEmpty() {
-            service.save(List.of(row(RowState.C, "a.b", new MessageValue("ko", "   "))));
-
-            verify(values, never()).save(any(SysMessage.class));
-        }
-
-        @Test
-        @DisplayName("이미 있는 키는 거부한다 — 현재 페이지 밖은 화면이 모른다")
-        void duplicateKeyIsRejected() {
-            existing("a.b");
-
-            assertThatThrownBy(() -> service.save(List.of(row(RowState.C, "a.b"))))
-                    .isInstanceOf(BusinessException.class)
-                    .extracting(error -> ((BusinessException) error).errorCode())
-                    .isEqualTo(MessageErrorCode.KEY_DUPLICATE);
-        }
-
-        @Test
-        @DisplayName("같은 요청 안의 중복도 거부한다 — 두 번째의 존재 확인이 첫 번째를 못 본다")
-        void duplicateWithinOneRequest() {
+        @DisplayName("TC-5052 관리 화면은 임의 메시지 키를 만들 수 없다")
+        void arbitraryNewKeyIsRejected() {
             assertThatThrownBy(() -> service.save(List.of(
-                            row(RowState.C, "a.b", new MessageValue("ko", "가")),
-                            row(RowState.C, "a.b", new MessageValue("ko", "나")))))
+                            row(RowState.C, "invented.key", new MessageValue("ko", "임의 값")))))
                     .isInstanceOf(BusinessException.class)
                     .extracting(error -> ((BusinessException) error).errorCode())
-                    .isEqualTo(MessageErrorCode.KEY_DUPLICATE);
+                    .isEqualTo(MessageErrorCode.KEY_CREATE_FORBIDDEN);
+
+            existing("seeded.key");
+            assertThatThrownBy(() -> service.save(List.of(
+                            row(RowState.C, "seeded.key", new MessageValue("ko", "우회 값")))))
+                    .isInstanceOf(BusinessException.class)
+                    .extracting(error -> ((BusinessException) error).errorCode())
+                    .isEqualTo(MessageErrorCode.KEY_CREATE_FORBIDDEN);
+
+            verify(keys, never()).save(any(SysMessageKey.class));
+            verify(values, never()).save(any(SysMessage.class));
+            verify(versions, never()).save(any(SysCacheVersion.class));
+            verify(messages, never()).evict();
         }
     }
 
@@ -196,15 +165,18 @@ class MessageAdminServiceTest {
     class Cache {
 
         @Test
-        @DisplayName("버전은 저장 한 번에 +1 이다 — 행 수만큼 올리지 않는다")
+        @DisplayName("TC-5051 저장 한 번의 메시지 버전은 정확히 +1 이다")
         void versionBumpsOncePerSave() {
             SysCacheVersion version = SysCacheVersion.started(SysCacheVersion.MESSAGE, NOW);
             when(versions.findById(SysCacheVersion.MESSAGE)).thenReturn(Optional.of(version));
+            existing("a.b");
+            existing("c.d");
+            existing("e.f");
 
             service.save(List.of(
-                    row(RowState.C, "a.b", new MessageValue("ko", "가")),
-                    row(RowState.C, "c.d", new MessageValue("ko", "나")),
-                    row(RowState.C, "e.f", new MessageValue("ko", "다"))));
+                    row(RowState.U, "a.b", new MessageValue("ko", "가")),
+                    row(RowState.U, "c.d", new MessageValue("ko", "나")),
+                    row(RowState.U, "e.f", new MessageValue("ko", "다"))));
 
             // 행마다 올리면 저장 한 번에 버전이 셋 뛰고, 그 수를 진단에 쓸 수 있다고 착각한다.
             assertThat(version.getVersion()).isEqualTo(2L);
@@ -213,7 +185,8 @@ class MessageAdminServiceTest {
         @Test
         @DisplayName("표에 이름이 없으면 만든다 — 시드가 없어도 저장이 죽지 않는다")
         void createsVersionRowWhenMissing() {
-            service.save(List.of(row(RowState.C, "a.b", new MessageValue("ko", "가"))));
+            existing("a.b");
+            service.save(List.of(row(RowState.U, "a.b", new MessageValue("ko", "가"))));
 
             verify(versions).save(any(SysCacheVersion.class));
         }
@@ -221,7 +194,8 @@ class MessageAdminServiceTest {
         @Test
         @DisplayName("저장이 끝나면 백엔드 캐시를 비운다 — 안 비우면 TTL 만큼 옛 문구가 나간다")
         void evictsAfterSave() {
-            service.save(List.of(row(RowState.C, "a.b", new MessageValue("ko", "가"))));
+            existing("a.b");
+            service.save(List.of(row(RowState.U, "a.b", new MessageValue("ko", "가"))));
 
             verify(messages).evict();
         }
@@ -229,9 +203,7 @@ class MessageAdminServiceTest {
         @Test
         @DisplayName("거부된 저장은 버전을 올리지 않는다 — 전 사용자의 번들이 헛되이 무효가 된다")
         void rejectedSaveDoesNotBump() {
-            existing("a.b");
-
-            assertThatThrownBy(() -> service.save(List.of(row(RowState.C, "a.b"))))
+            assertThatThrownBy(() -> service.save(List.of(row(RowState.C, "invented.key"))))
                     .isInstanceOf(BusinessException.class);
 
             verify(versions, never()).save(any(SysCacheVersion.class));

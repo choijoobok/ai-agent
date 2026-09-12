@@ -15,8 +15,8 @@ export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
   '/dashboard': lazy(async () => ({
     default: (await import('@/features/dashboard/pages/DashboardPage')).DashboardPage,
   })),
-  '/message': lazy(async () => ({
-    default: (await import('@/features/message/pages/MessageMgmtPage')).MessageMgmtPage,
+  '/admin/system/message': lazy(async () => ({
+    default: (await import('@/modules/system/features/message/pages/MessageMgmtPage')).MessageMgmtPage,
   })),
   '/config': lazy(async () => ({
     default: (await import('@/features/config/pages/ConfigMgmtPage')).ConfigMgmtPage,

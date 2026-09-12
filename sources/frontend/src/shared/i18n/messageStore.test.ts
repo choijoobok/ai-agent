@@ -11,7 +11,7 @@ const fetchBundle = vi.mocked(fetchMessageBundle);
  * 번들 캐시 — · sys/code.md.
  *
  * <p>여기서 지키는 것은 셋이다. **두 번째 접속이 전량을 다시 받지 않는가**(버전 확인만),
- * **세션 복원이 확인조차 하지 않는가**, 그리고 **서버가 닿지 않아도 화면이 뜨는가**.
+ * **명시적으로 검증을 생략한 호출은 캐시만 쓰는가**, 그리고 **서버가 닿지 않아도 화면이 뜨는가**.
  *
  * <p>마지막 것이 특히 조용히 깨진다 — 캐시가 있으면 화면이 정상으로 보이므로, 폴백이
  * 동작하는지는 서버를 끄고 눌러 보지 않는 한 알 수 없다.
@@ -48,7 +48,7 @@ describe('messageStore', () => {
     expect(label('login.title')).toBe('백오피스 로그인');
   });
 
-  it('세션 복원 경로는 버전을 확인하지 않는다 — ', async () => {
+  it('검증 생략을 요청하면 캐시만 쓴다', async () => {
     window.localStorage.setItem(CACHE_KEY, JSON.stringify(CACHED));
 
     await useMessageStore.getState().load({ lang: 'ko', verify: false });

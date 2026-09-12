@@ -1,10 +1,11 @@
-package com.aiagent.api.message;
+// @feat FEAT-505
+package com.aiagent.system.api.message;
 
-import com.aiagent.api.message.request.MessageSaveRequest;
 import com.aiagent.api.trace.TraceId;
 import com.aiagent.core.response.ApiResponse;
 import com.aiagent.core.search.PageResponse;
 import com.aiagent.core.search.SearchRequest;
+import com.aiagent.system.api.message.request.MessageSaveRequest;
 import com.aiagent.domain.message.admin.MessageQueryService;
 import com.aiagent.domain.message.admin.MessageAdminService;
 import com.aiagent.domain.message.admin.MessageKeyRow;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code MESSAGE_MGMT} — screen/message/requirements.md. <b>이 저장소의 첫 업무 API 다.</b>
+ * {@code MESSAGE_MGMT} — screen/admin/system/message/requirements.md.
  *
  * <p>경로가 {@code /api/service/**} 이므로 {@code SYS_API}·{@code SYS_MENU_API} 판정을 받는다
  * (backend/security.md). 시드가 없으면 <b>전부 403</b> 이며 그것이 fail-closed 의 정상 동작이다 —
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
  * {@code SAVE}. 선언에 또 적지 않는다: 같은 사실이 두 곳에 표현되면 시드와 어긋난다.
  */
 @RestController
-@RequestMapping("/api/service/message")
+@RequestMapping("/api/service/system/message")
 public class MessageAdminController {
 
     private final MessageQueryService queries;
@@ -57,7 +58,7 @@ public class MessageAdminController {
      */
     @Operation(
             summary = "다국어 메시지 저장",
-            description = "추가·수정·삭제 행을 한 트랜잭션으로 반영하고 메시지 캐시 버전을 올린다.")
+            description = "생성된 키의 수정·삭제 행을 한 트랜잭션으로 반영하고 메시지 캐시 버전을 올린다.")
     @PostMapping("/save")
     public ApiResponse<Void> save(@RequestBody @Valid MessageSaveRequest request) {
         admin.save(request.rows());

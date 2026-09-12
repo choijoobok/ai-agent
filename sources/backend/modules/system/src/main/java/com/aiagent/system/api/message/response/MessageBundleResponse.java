@@ -1,4 +1,5 @@
-package com.aiagent.api.message.response;
+// @feat FEAT-505
+package com.aiagent.system.api.message.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Map;
  * 다음 접속에서 <b>영어 번들을 일본어 칸에</b> 넣고 매번 다시 받는다.
  *
  * @param langs 지원 언어 전부 — <b>{@code unchanged} 여도 함께 온다.</b> sys/code.md 이 이 목록의
- * 원본을 공통코드({@code LANG_CD})로 정했고 screen/message/requirements.md 는 다국어 관리 화면의 하단 행 수가
+ * 원본을 공통코드({@code LANG_CD})로 정했고 screen/admin/system/message/requirements.md 는 다국어 관리 화면의 하단 행 수가
  *     <i>"이미 캐시에 있는"</i> 그 목록에서 온다고 했다. {@code SYS_CODE} 가 없는 동안 이
  *     번들이 그 캐시 자리를 대신한다 — <b>별도 API 를 두면 화면 진입마다 왕복이 하나
  *     늘고</b>, 그 API 는 공통코드가 생기는 날 지울 것이 된다

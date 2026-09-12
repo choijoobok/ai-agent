@@ -22,7 +22,7 @@ describe('메뉴 검색', () => {
     node('DASHBOARD', '/dashboard'),
     node('SYSTEM', null, [
       node('USER', null, [node('USER_MGMT', '/user'), node('USER_AUTH_MGMT', '/user-auth')]),
-      node('MASTER', null, [node('MESSAGE_MGMT', '/message')]),
+      node('MASTER', null, [node('MESSAGE_MGMT', '/admin/system/message')]),
     ]),
   ];
 

@@ -24,10 +24,10 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
- * {@code MESSAGE_MGMT} 의 저장 — screen/message/requirements.md. <b>한 트랜잭션이다.</b>
+ * {@code MESSAGE_MGMT} 의 저장 — screen/admin/system/message/requirements.md. <b>한 트랜잭션이다.</b>
  *
- * <p>키와 값이 같은 요청에 있어야 FK 순서를 서버가 정할 수 있다 — 추가는 키 → 값, 삭제는
- * <b>값 → 키</b> 다. 그래서 frontend/grid.md 의 삭제 게이트가 필요 없다: DB 가 거부할 것이 없다.
+ * <p>키 생성은 시드 생성기만 한다. 이 API의 {@code C} 행은 키·값·버전 모두 바꾸기 전에
+ * 거부하고, 삭제만 <b>값 → 키</b> 순서로 정리한다.
  *
  * <p><b>버전은 저장 한 번에 {@code +1}</b> 이고 행 수만큼 올리지 않는다(sys/code.md).
  */
@@ -62,13 +62,13 @@ public class MessageAdminService {
         Set<String> seen = new HashSet<>();
 
         RowTx.oneTxForAll(rows, row -> {
-            // 같은 요청 안의 중복은 화면이 막지만(screen/message/requirements.md), 막혔다고 서버가 안 봐도 되는 것은
+            // 같은 요청 안의 중복은 화면이 막지만(screen/admin/system/message/requirements.md), 막혔다고 서버가 안 봐도 되는 것은
             // 아니다 — 두 번째 C 의 존재 확인이 첫 번째의 flush 를 만나지 못해 조용히 덮인다.
             if (!seen.add(row.msgKey())) {
                 throw duplicate(row.msgKey());
             }
             switch (row.rowState()) {
-                case C -> create(row, supported);
+                case C -> create(row);
                 case U -> update(row, supported);
                 case D -> delete(row);
             }
@@ -79,18 +79,8 @@ public class MessageAdminService {
 
     // ── 행 상태 셋 ───────────────────────────────────────────────────
 
-    private void create(MessageSaveRow row, Set<String> supported) {
-        if (keys.existsById(row.msgKey())) {
-            throw duplicate(row.msgKey());
-        }
-        keys.save(SysMessageKey.created(row.msgKey()));
-        for (MessageValue value : row.valuesOrEmpty()) {
-            checkLang(value, supported);
-            // 값이 있는 것만 만든다 — 빈 언어의 행을 만들면 MSG_VAL IS NULL 인 행이 남는다.
-            if (!value.blank()) {
-                values.save(SysMessage.of(row.msgKey(), value.langCd(), value.msgVal()));
-            }
-        }
+    private void create(MessageSaveRow row) {
+        throw keyCreationForbidden(row.msgKey());
     }
 
     /** {@code values} 가 전량이므로 <b>없는 언어는 지운다</b> — 서버가 상태를 추론하지 않는다. */
@@ -159,11 +149,7 @@ public class MessageAdminService {
 
     private SysMessageKey requireKey(String msgKey) {
         return keys.findById(msgKey)
-                .orElseThrow(() -> new BusinessException(
-                        MessageErrorCode.KEY_MISSING,
-                        "이미 지워진 키다 — " + msgKey,
-                        List.of(new BusinessException.FieldError(
-                                "msgKey", "이미 지워진 메시지 키입니다", msgKey))));
+                .orElseThrow(() -> missing(msgKey));
     }
 
     private static void checkLang(MessageValue value, Set<String> supported) {
@@ -182,5 +168,21 @@ public class MessageAdminService {
                 "이미 있는 키다 — " + msgKey,
                 List.of(new BusinessException.FieldError(
                         "msgKey", "이미 있는 메시지 키입니다", msgKey)));
+    }
+
+    private static BusinessException missing(String msgKey) {
+        return new BusinessException(
+                MessageErrorCode.KEY_MISSING,
+                "생성 원천에 없는 메시지 키다 — " + msgKey,
+                List.of(new BusinessException.FieldError(
+                        "msgKey", "생성 원천에 없는 메시지 키입니다", msgKey)));
+    }
+
+    private static BusinessException keyCreationForbidden(String msgKey) {
+        return new BusinessException(
+                MessageErrorCode.KEY_CREATE_FORBIDDEN,
+                "메시지 키 생성은 시드 생성기만 할 수 있다 — " + msgKey,
+                List.of(new BusinessException.FieldError(
+                        "msgKey", "메시지 키는 관리 화면에서 만들 수 없습니다", msgKey)));
     }
 }

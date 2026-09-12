@@ -1,11 +1,13 @@
-package com.aiagent.api.message;
+// @feat FEAT-505
+package com.aiagent.system.api.message;
 
-import com.aiagent.api.message.response.MessageBundleResponse;
+import com.aiagent.api.message.RequestLocale;
 import com.aiagent.api.trace.TraceId;
 import com.aiagent.core.response.ApiResponse;
 import com.aiagent.domain.message.entity.SysCacheVersion;
 import com.aiagent.domain.message.service.CacheVersionService;
 import com.aiagent.domain.message.service.MessageService;
+import com.aiagent.system.api.message.response.MessageBundleResponse;
 import com.aiagent.support.config.ConfigLookup;
 import com.aiagent.support.config.props.MessageProps;
 import java.util.List;
@@ -20,9 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
  * 언어({@code LOCALE_CD})는 로그인해야 알 수 있다 — 순환이며, 그것을 끊는 것이 이 호출이다.
  * 정적 폴백 문구로 로그인 화면을 먼저 그리는 대안은 <b>문구의 원본을 둘로 만든다</b>.
  *
- * <p>경로가 의 예시({@code /api/public/messages})와 다르다. backend/api.md 가 <b>소스의
- * 메서드명이 그대로 경로</b>라고 확정했고 {@code AUTH_ENDPOINTS} 가 이미 그것을 따르므로,
- * 규약 쪽을 택하고 그 문서를 고쳤다(2026-08-29).
+ * <p>정식 경로는 {@code /api/public/system/message/getBundle} 하나다. 로그인 전에도 쓰므로
+ * 공개 계층을 유지하되 system 모듈의 소유권을 경로에 드러낸다.
  */
 @RestController
 public class MessageController {
@@ -47,7 +48,7 @@ public class MessageController {
      * @param lang 프론트가 정한 언어(의 2순위 규칙). 없으면 {@code Accept-Language}
      * @param v 클라이언트가 들고 있는 번들의 버전. 같으면 본문 없이 끝낸다(sys/code.md)
      */
-    @GetMapping("/api/public/message/getBundle")
+    @GetMapping("/api/public/system/message/getBundle")
     public ApiResponse<MessageBundleResponse> getBundle(
             @RequestParam(required = false) String lang, @RequestParam(required = false) Long v) {
 

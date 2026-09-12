@@ -95,7 +95,7 @@ describe('그리드 ①의 조회 — frontend/grid.md', () => {
   });
 
   /**
-   * `MESSAGE_MGMT` 의 하단이 이 자리다(screen/message/requirements.md) — 행이 마스터 행의 `list` 값이라
+   * `MESSAGE_MGMT` 의 하단이 이 자리다(screen/admin/system/message/requirements.md) — 행이 마스터 행의 `list` 값이라
    * 부를 곳이 없고, 버튼이 있으면 <b>미저장 편집이 날아간다</b>(frontend/grid.md).
    */
   it('둘 다 없으면 버튼이 아예 없다 — `list` 디테일', () => {

@@ -263,6 +263,7 @@ err.menu.tree-changed,BACK,"보낸 형제 목록이 지금의 자식 집합과 �
 err.menu.url-duplicate,BACK,다른 메뉴가 이미 가진 URL 을 저장하려 했다 — 메뉴 URL은 화면 하나와만 연결된다.
 err.menu.url-on-parent,BACK,자식이 있는 노드에 URL 을 채우려 했다 — URL 과 자식은 배타다(backend/security.md).
 err.menu.url-required,BACK,"권한 행이 있는 노드의 URL 을 비우려 했다 — screen/menu/requirements.md. 비우는 순간 권한 대상이 아닌데 SYS_ROLE_MENU_AUTH 에 행이 남는다 — sys/menu.md 가 ""들어오면 거부"" 라고 한 상태가 거꾸로 만들어진다. /"
+err.message.key-create-forbidden,BACK,메시지 키는 소스 상수와 시드 생성기만 만들며 관리 API의 신규 행은 거부한다.
 err.message.key-duplicate,BACK,이미 있는 MSG_KEY 로 신규 행을 저장했다. 현재 페이지 밖은 화면이 모른다.
 err.message.key-missing,BACK,저장하려는 키가 이미 지워졌다 — 다른 사람이 먼저 지웠다.
 err.message.lang-unknown,BACK,지원하지 않는 언어의 값이 왔다. 지원 언어 목록은 서버가 갖는다.

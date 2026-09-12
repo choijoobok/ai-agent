@@ -589,7 +589,7 @@ requirements:
     acceptance: "요청 언어 값이 없을 때 기본 언어와 키 문자열 순의 폴백이 동작하고, 값 저장 한 번에 메시지 캐시 버전이 한 번 증가하며 커밋한 인스턴스는 즉시, 다른 인스턴스는 설정된 TTL 안에 새 값을 읽는다"
     source: "현재 구현 역추적 — 다국어 메시지 관리, label(), MsgKey, 메시지 시드"
     evidence:
-      frontend: ["features/message", "shared/i18n"]
+      frontend: ["modules/system/features/message", "shared/i18n"]
       backend: ["api/message", "domain/message", "core/message"]
       tables: [SYS_MESSAGE_KEY, SYS_MESSAGE, SYS_CACHE_VERSION]
       screens: ["/message"]

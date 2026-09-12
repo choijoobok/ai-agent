@@ -6,5 +6,5 @@
  * (`**\/api/endpoints.ts`) 위치와 무관하게 성립한다.
  */
 export const MESSAGE_ENDPOINTS = {
-  getBundle: '/public/message/getBundle',
+  getBundle: '/public/system/message/getBundle',
 } as const;

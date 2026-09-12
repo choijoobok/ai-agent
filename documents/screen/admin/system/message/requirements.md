@@ -17,10 +17,10 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/message` |
+| 페이지 경로 | `/admin/system/message` |
 | 메뉴코드 | `MESSAGE_MGMT` |
-| 프론트 폴더 | `sources/frontend/src/features/message/` |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/message/admin/` · `sources/backend/api/…/api/message/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/message/` |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/message/admin/` · `sources/backend/modules/system/…/system/api/message/` |
 | 화면 유형 | **마스터-디테일(상하)** — 다만 하단이 DB 에 붙지 않는다 |
 | 처리 유형 | CRUD(**행 추가 없음**) |
 | 쓰는 액션 | `R` `S` — **`EXPORT_YN` = `Y` 인데 부를 경로가 아직 없다**(§10) |
@@ -193,11 +193,9 @@
 
 | # | 시점 | 위치 | 검사 | 위반 시 메시지 |
 |---|---|---|---|---|
-| 1 | 저장 | 화면 | 같은 요청 안 `MSG_KEY` 중복 금지 | `MSG.MESSAGE_DUPLICATE_KEY` |
-| 2 | 저장 | 서버 | 〃 — **막혔다고 서버가 안 봐도 되는 것은 아니다.** 두 번째 신규의 존재 확인이 첫 번째의 flush 를 만나지 못해 **조용히 덮인다** | `MsgKey.ERR_MESSAGE_KEY_DUPLICATE` |
-| 3 | 저장(신규) | 서버 | 이미 있는 키 | 〃 |
-| 4 | 저장 | 서버 | `langCd` 가 **지원 언어 목록**에 있는가 | `MsgKey.ERR_MESSAGE_LANG_UNKNOWN` |
-| 5 | 저장·삭제 | 서버 | 대상 키가 아직 있는가 | `MsgKey.ERR_MESSAGE_KEY_MISSING` |
+| 1 | 저장(신규) | 서버 | `rowState: C` 인 임의 키 생성 요청 | `MsgKey.ERR_MESSAGE_KEY_CREATE_FORBIDDEN` — 키·값 모두 만들지 않음 |
+| 2 | 저장 | 서버 | `langCd` 가 **지원 언어 목록**에 있는가 | `MsgKey.ERR_MESSAGE_LANG_UNKNOWN` |
+| 3 | 저장·삭제 | 서버 | 대상 키가 아직 있는가 | `MsgKey.ERR_MESSAGE_KEY_MISSING` |
 
 ### 6-2. 영향 테이블
 
@@ -205,7 +203,7 @@
 |---|---|---|---|
 | 저장(수정) | `SYS_MESSAGE` | INSERT · UPDATE · **DELETE** | `values` 가 **전량**이므로 서버가 상태를 추론하지 않는다 — 값이 빈 언어는 **행을 지운다** |
 | 저장(삭제) | `SYS_MESSAGE` → `SYS_MESSAGE_KEY` | DELETE | 값을 먼저, 키를 나중에 |
-| 저장(신규) | `SYS_MESSAGE_KEY` · `SYS_MESSAGE` | INSERT | **서버에는 경로가 있으나 화면이 신규 행을 만들지 않는다.** 값이 있는 언어만 만든다 |
+| 저장(신규) | — | 거부 | **서버에도 키 생성 경로가 없다.** 임의 키 요청은 키·값·버전 모두 바꾸지 않는다 |
 | 어느 저장이든 | `SYS_CACHE_VERSION` | UPDATE | 메시지 캐시 버전을 올린다 |
 
 - 저장은 **한 트랜잭션**이다.
@@ -232,8 +230,8 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |
 |---|---|---|---|---|---|
-| 목록 | `getList` | `/service/message/getList` | POST | R | offset |
-| 저장 | `save` | `/service/message/save` | POST | S | — |
+| 목록 | `getList` | `/service/system/message/getList` | POST | R | offset |
+| 저장 | `save` | `/service/system/message/save` | POST | S | — |
 
 - **둘뿐이다.** 저장 단위가 마스터 하나라 하단의 경로가 없다.
 - **`exportExcel` 이 아직 없다.** 서버 POI 경로는 **다운로드 이력·상한과 함께 와야** 하며, 지금 넣으면 `EXPORT` 권한이 있는데 아무 데도 닿지 않는 버튼이 생긴다. (`CODE_MGMT` 의 엑셀이 프론트 생성이라 경로가 없는 것과 **이유가 다르다.**)
@@ -249,8 +247,8 @@
   - **코드그룹 `LANG_CD` 는 `SYS_CODE` 에 아직 시드되지 않았다.** 시드된 그룹은
     `LOGIN_RSLT_CD` · `CODE_REF_KEY` 둘뿐이다. 그룹 행이 생기면 후보의 출처가 그쪽으로
     넘어오지만 **키 규약이 같아 화면은 바뀌지 않는다**.
-- 메시지 키: 화면 `MSG.MESSAGE_*` · 서버 `MsgKey.ERR_MESSAGE_KEY_DUPLICATE` · `ERR_MESSAGE_LANG_UNKNOWN` · `ERR_MESSAGE_KEY_MISSING`.
-- 메뉴 시드: `menu-tree.yaml` — `code: MESSAGE_MGMT` · `parent: MASTER` · `url: /message` · `export: true`.
+- 메시지 키: 화면 `MSG.MESSAGE_*` · 서버 `MsgKey.ERR_MESSAGE_KEY_DUPLICATE` · `ERR_MESSAGE_KEY_CREATE_FORBIDDEN` · `ERR_MESSAGE_LANG_UNKNOWN` · `ERR_MESSAGE_KEY_MISSING`.
+- 메뉴 시드: `menu-tree.yaml` — `code: MESSAGE_MGMT` · `parent: MASTER` · `url: /admin/system/message` · `export: true`.
 - **키 시드는 생성물이다** — `./gradlew generateMessageSeed`. **값은 새 changeset 으로 넣는다**(이미 적용된 changeset 을 고치면 남의 로컬이 checksum 으로 죽는다).
 - 설정: `sys-config.message.supported`(지원 언어) · `default-lang`(폴백) · `browser-fallback-lang` · `cache-ttl-minutes`.
 
@@ -277,13 +275,13 @@
 | `MS-07` | **`행 추가` 버튼**을 찾는다 | **없다** — `addRow` 를 선언하지 않는다 **(되면 안 되는 것)** |
 | `MS-08` | `메시지 키` 칸을 두 번 누른다 | **열리지 않는다** — 원본이 소스 상수이거나 데이터다 **(되면 안 되는 것)** |
 | `MS-09` | `사용처` · `설명` 칸을 고친다 | **열리지 않는다** — 시드가 소유한다 **(되면 안 되는 것)** |
-| `MS-10` | 요청 본문에 `rowState: C` 를 직접 넣는다 | **서버에는 그 경로가 있다** — 다만 **화면에는 없다**. 이미 있는 키면 거부한다 |
+| `MS-10` | 요청 본문에 `rowState: C` 를 직접 넣는다 | **서버도 거부한다** — 키·값·캐시 버전을 만들지 않는다 |
 | `MS-11` | 지원하지 않는 언어 코드로 저장 | **거부** — `ERR_MESSAGE_LANG_UNKNOWN` |
 | `MS-12` | 기존 키의 **모든 언어**를 비우고 저장 | **값 행이 전부 `DELETE`.** **키 행은 남는다** |
 | `MS-13` | 값을 **빈 문자열**로 저장 | `null` 로 저장된다 — 빈 문자열은 폴백을 죽인다 |
 | `MS-14` | 저장 요청 본문에 `useScope` 를 넣는다 | **무시된다** — 저장 DTO 에 필드가 없다 **(되면 안 되는 것)** |
 | `MS-15` | 마스터 행을 삭제 | **게이트가 없다.** 값 → 키 순서로 지운다. 확인이 건수를 말한다 |
-| `MS-16` | DB 에 이미 있는 키를 신규로 넣는다 | **화면에서는 도달할 수 없다**(신규 행이 없다). API 로 넣으면 **서버가 거부** |
+| `MS-16` | DB 에 이미 있는 키를 신규로 넣는다 | **화면에서는 도달할 수 없다**(신규 행이 없다). API 로 넣어도 **서버가 거부** |
 | `MS-17` | 저장 확인 문구 | **키 단위 건수**다 — 하단 편집은 그 키의 수정으로 묶인다 |
 | `MS-18` | `list` 컬럼 헤더를 클릭 · 필터를 연다 | **둘 다 안 된다** — 배열은 비교 대상이 아니다 **(되면 안 되는 것)** |
 
@@ -297,7 +295,7 @@
 | `MS-22` | `code.ORDER_KIND.IN` | 사용처 **데이터** — **`미사용` 이 아니다** |
 | `MS-23` | 소스에서 리터럴을 지우고 재동기화 | 사용처가 **`미사용`** 이 된다. **행은 남는다** |
 | `MS-24` | 그 키의 **번역** | **그대로 있다** — 전건 동기화가 아니다 |
-| `MS-25` | 화면에서 키를 추가 | 즉시 **`미사용`**. 상수에 넣고 재동기화하면 바뀐다 |
+| `MS-25` | 화면에서 키를 추가 | **추가할 수 없다.** 키는 소스 상수·시드 생성기만 만든다 |
 | `MS-26` | `사용처 = 미사용` 으로 조회 | **전량에서** 걸린다 — 서버 조건이다 |
 | `MS-27` | 번들 여부를 직접 고른다 | **수단이 없다** — 사용처의 파생이다 **(되면 안 되는 것)** |
 | `MS-28` | `미분류` 배지를 찾는다 | **없다** — 그 상태 자체가 없어졌다 **(되면 안 되는 것)** |

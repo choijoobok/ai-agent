@@ -167,10 +167,13 @@ public final class MsgKey {
     /** 상세를 열려는데 그 행이 없다 — 조회 뒤에 파기 배치가 지나갔다. */
     public static final String ERR_ERROR_LOG_PURGED = "err.error-log.purged";
 
-    // ── 다국어 메시지 관리 — MessageErrorCode(screen/admin/system/code/requirements.md) ────────────────
+    // ── 다국어 메시지 관리 — MessageErrorCode(screen/admin/system/message/requirements.md) ─────────────
 
     /** 이미 있는 {@code MSG_KEY} 로 신규 행을 저장했다. 현재 페이지 밖은 화면이 모른다. */
     public static final String ERR_MESSAGE_KEY_DUPLICATE = "err.message.key-duplicate";
+
+    /** 메시지 키는 소스 상수와 시드 생성기만 만들며 관리 API의 신규 행은 거부한다. */
+    public static final String ERR_MESSAGE_KEY_CREATE_FORBIDDEN = "err.message.key-create-forbidden";
 
     /** 지원하지 않는 언어의 값이 왔다. 지원 언어 목록은 서버가 갖는다. */
     public static final String ERR_MESSAGE_LANG_UNKNOWN = "err.message.lang-unknown";

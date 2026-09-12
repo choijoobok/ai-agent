@@ -61,6 +61,7 @@ class AuthorizationInterceptorTest {
     private static final String ORDER_LIST = "/api/service/order/getList";
     private static final String USER_SESSION_KILL = "/api/service/system/user/killSession";
     private static final String CODE_SAVE = "/api/service/system/code/save";
+    private static final String MESSAGE_SAVE = "/api/service/system/message/save";
 
     @Mock private ApiAuthorityRegistry registry;
     @Mock private EffectiveAuthorityService authorities;
@@ -195,6 +196,15 @@ class AuthorizationInterceptorTest {
 
             givenFact(CODE_SAVE, ActionType.SAVE, "CODE_MGMT");
             assertDenied(get(CODE_SAVE, session), AuthzErrorCode.NO_AUTHORITY);
+        }
+
+        @Test
+        @DisplayName("TC-5054 MESSAGE_MGMT SAVE 없는 직접 저장은 403이다")
+        void messageSaveNeedsAuthority() {
+            givenAuthority();
+            givenFact(MESSAGE_SAVE, ActionType.SAVE, "MESSAGE_MGMT");
+
+            assertDenied(get(MESSAGE_SAVE, session), AuthzErrorCode.NO_AUTHORITY);
         }
 
         @Test

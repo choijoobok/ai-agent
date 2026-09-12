@@ -1,3 +1,4 @@
+// @feat FEAT-505
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { FillColumn } from '@/shared/components/FillColumn';
 import { label } from '@/shared/i18n/label';
@@ -13,20 +14,20 @@ import type { ColumnDef, GridIssue, SelectOption, Tone } from '@/shared/grid/typ
 import { SearchForm, type SearchFormHandle } from '@/shared/searchform/SearchForm';
 import { useSearchFormHeader } from '@/shared/searchform/useSearchFormHeader';
 import type { SearchField } from '@/shared/searchform/types';
-import { MESSAGE_ADMIN_ENDPOINTS } from '@/features/message/api/endpoints';
-import type { MessageKeyRow, MessageScope, MessageValue } from '@/features/message/types';
+import { MESSAGE_ADMIN_ENDPOINTS } from '@/modules/system/features/message/api/endpoints';
+import type { MessageKeyRow, MessageScope, MessageValue } from '@/modules/system/features/message/types';
 
 /**
- * `MESSAGE_MGMT` — screen/message/requirements.md. <b>키를 만드는 화면이 아니라 값을 채우고 죽은 키를 찾는 화면이다.</b>
+ * `MESSAGE_MGMT` — screen/admin/system/message/requirements.md. <b>키를 만드는 화면이 아니라 값을 채우고 죽은 키를 찾는 화면이다.</b>
  *
  * <p><b>행을 더할 수 없다</b>(2026-08-30). 키의 원본은 <b>소스 상수</b>(sys/message.md)이거나
  * <b>데이터</b>(`code.*` · `menu.*` — sys/code.md)이고 이 화면은 그 어느 쪽도 아니다. 손으로
  * 더한 키는 태어날 때부터 <i>사용처 없음</i> 이고, 다음 시드 생성도 그것을 알지 못하므로
  * <b>이 화면이 스스로 죽은 키로 표시하는 행</b>을 만드는 셈이 된다 — 지우라고 만드는 행이다.
  *
- * <p><b>지우기는 남는다.</b> 죽은 키를 걷어내는 것이 이 화면의 두 일 중 하나다(screen/message/requirements.md).
+ * <p><b>지우기는 남는다.</b> 죽은 키를 걷어내는 것이 이 화면의 두 일 중 하나다(screen/admin/system/message/requirements.md).
  *
- * <p><b>저장 단위는 마스터 하나다</b>(screen/message/requirements.md). 테이블도 둘이고 화면도 둘이지만 하단의
+ * <p><b>저장 단위는 마스터 하나다</b>(screen/admin/system/message/requirements.md). 테이블도 둘이고 화면도 둘이지만 하단의
  * 언어별 목록은 마스터 행의 <b>`list` 컬럼</b>이며(frontend/grid.md), 그래서 하단에는 <b>버튼이
  * 하나도 없다</b> — 감춘 것이 아니라 `api` 선언이 없는 것이다(frontend/grid.md).
  *
@@ -108,12 +109,12 @@ export function MessageMgmtPage() {
     menuCd: MENU_CD,
     columns: masterColumns,
     api: masterApi,
-    // `addRow` 가 없다 — 이 화면은 <b>키를 만드는 화면이 아니다</b>(위 주석 · screen/message/requirements.md).
+    // `addRow` 가 없다 — 이 화면은 <b>키를 만드는 화면이 아니다</b>(위 주석 · screen/admin/system/message/requirements.md).
     params: collectConditions,
     toSaveRow: (row) => ({
       rowState: row.state,
       msgKey: row.data.msgKey,
-      // 삭제는 값을 보내지 않는다 — 서버가 값 → 키 순서로 지운다(screen/message/requirements.md).
+      // 삭제는 값을 보내지 않는다 — 서버가 값 → 키 순서로 지운다(screen/admin/system/message/requirements.md).
       values: row.state === 'D' ? undefined : row.data.values,
     }),
   });
@@ -121,14 +122,14 @@ export function MessageMgmtPage() {
   const detail = useGridController<MessageValue>({
     menuCd: MENU_CD,
     columns: detailColumns,
-    // 저장 단위가 마스터라 자기 `api.save` 가 없다 — 편집 가능 여부를 넘겨받는다(screen/message/requirements.md).
+    // 저장 단위가 마스터라 자기 `api.save` 가 없다 — 편집 가능 여부를 넘겨받는다(screen/admin/system/message/requirements.md).
     editable: master.canSave,
   });
 
   const selectMaster = useCallback(
     (row: GridRow<MessageKeyRow> | null) => {
       setSelectedId(row?.id ?? null);
-      // 서버를 부르지 않는다 — 하단의 원본은 마스터 행의 `list` 다(screen/message/requirements.md).
+      // 서버를 부르지 않는다 — 하단의 원본은 마스터 행의 `list` 다(screen/admin/system/message/requirements.md).
       detail.setRows(row ? detailRows(row) : []);
     },
     [detail],
@@ -145,7 +146,7 @@ export function MessageMgmtPage() {
    * 전이는 {@code rows.ts} 의 순수 함수를 그대로 태운다.
    */
   /**
-   * 마스터를 되돌리면 <b>하단도 함께 돌아간다</b> — screen/message/requirements.md.
+   * 마스터를 되돌리면 <b>하단도 함께 돌아간다</b> — screen/admin/system/message/requirements.md.
    *
    * <p>하단은 마스터 행의 {@code values} 를 펴 놓은 것이라 <b>한 몸</b>이다. 아래에서
    * 고치면 위가 <i>수정</i> 이 되고, 아래에서 되돌리면 위도 풀린다 — 그런데 <b>위에서
@@ -225,7 +226,7 @@ export function MessageMgmtPage() {
               // 개인화의 키다 — 같으면 위아래 설정이 서로를 덮는다(frontend/grid.md).
               gridId="master"
               controller={masterController}
-              // SYS_MESSAGE_KEY 는 물리 삭제한다 — 값 → 키 순서라 게이트가 필요 없다(screen/message/requirements.md).
+              // SYS_MESSAGE_KEY 는 물리 삭제한다 — 값 → 키 순서라 게이트가 필요 없다(screen/admin/system/message/requirements.md).
               deletable
               onSelect={selectMaster}
               collapsed={collapsed}
@@ -319,7 +320,7 @@ function buildMasterColumns(
       width: 130,
       // 파생이므로 정렬 대상이 아니다(frontend/grid.md) — 서버 화이트리스트에도 없다.
       // 필터도 없다: 이 컬럼이 답하는 질문(*"en 이 안 채워진 키"*)은 전량을 물어야 하고
-      // 그것은 조회조건 쪽에 이미 있다(screen/message/requirements.md).
+      // 그것은 조회조건 쪽에 이미 있다(screen/admin/system/message/requirements.md).
       filter: false,
       renderer: 'badge',
       tone: translatedTone(langs.length),
@@ -403,7 +404,7 @@ function buildSearchFields(langs: string[], scopeOptions: SelectOption[]): Searc
       label: MSG.MESSAGE_SEARCH_VALUE,
       type: 'text',
       op: 'contains',
-      // 파생이라 서버가 문자열 비교만 편다 — 없는 연산자를 열면 400 이다(screen/message/requirements.md).
+      // 파생이라 서버가 문자열 비교만 편다 — 없는 연산자를 열면 400 이다(screen/admin/system/message/requirements.md).
       ops: ['eq', 'startsWith', 'contains', 'endsWith'],
     },
     {
@@ -417,7 +418,7 @@ function buildSearchFields(langs: string[], scopeOptions: SelectOption[]): Searc
       field: 'untranslated',
       label: MSG.MESSAGE_SEARCH_UNTRANSLATED,
       type: 'select',
-      // 파생 서브쿼리가 `=` 만 받는다(screen/message/requirements.md) — 콤보의 기본 후보 셋을 열면 400 이다.
+      // 파생 서브쿼리가 `=` 만 받는다(screen/admin/system/message/requirements.md) — 콤보의 기본 후보 셋을 열면 400 이다.
       ops: ['eq'],
       // 코드값(`ko`)이 아니라 이름(`한국어`)을 보여준다 — sys/code.md.
       options: langs.map((lang) => ({ value: lang, text: codeLabel(LANG_CD, lang) })),

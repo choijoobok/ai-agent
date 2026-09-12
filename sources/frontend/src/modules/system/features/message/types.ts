@@ -1,4 +1,5 @@
-/** 서버 `MessageKeyRow` · `MessageValue` 와 1:1 — screen/message/requirements.md. */
+// @feat FEAT-505
+/** 서버 `MessageKeyRow` · `MessageValue` 와 1:1 — screen/admin/system/message/requirements.md. */
 
 export type MessageScope = 'FRONT' | 'BACK' | 'BOTH' | 'DATA' | 'NONE';
 

@@ -1,4 +1,5 @@
-package com.aiagent.api.message.request;
+// @feat FEAT-505
+package com.aiagent.system.api.message.request;
 
 import com.aiagent.domain.message.admin.MessageSaveRow;
 import jakarta.validation.Valid;
