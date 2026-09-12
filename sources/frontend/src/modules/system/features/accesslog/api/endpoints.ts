@@ -11,7 +11,7 @@
  * **어느 역할에도 줄 수 없다**.
  *
  * <p><b>`exportExcel` 이 없다.</b> 엑셀은 있지만(LOG-08) **프론트 생성**이다(playbook/excel-download.md 첫째).
- * 다운로드 이력은 `POST /api/common/excel/saveLog` 가 남기므로 여기 새로 만들 것이 없다.
+ * 다운로드 이력은 `POST /api/common/system/excel/saveLog` 가 남기므로 여기 새로 만들 것이 없다.
  */
 export const ACCESS_LOG_ENDPOINTS = {
   getList: '/service/system/accessLog/getList',

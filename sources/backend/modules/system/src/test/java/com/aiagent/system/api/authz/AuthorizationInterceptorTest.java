@@ -63,6 +63,8 @@ class AuthorizationInterceptorTest {
     private static final String CODE_SAVE = "/api/service/system/code/save";
     private static final String MESSAGE_SAVE = "/api/service/system/message/save";
     private static final String CONFIG_SAVE = "/api/service/system/config/save";
+    private static final String ACCESS_LOG_DETAIL = "/api/service/system/accessLog/getDetail";
+    private static final String ERROR_LOG_DETAIL = "/api/service/system/errorLog/getDetail";
 
     @Mock private ApiAuthorityRegistry registry;
     @Mock private EffectiveAuthorityService authorities;
@@ -215,6 +217,24 @@ class AuthorizationInterceptorTest {
             givenFact(CONFIG_SAVE, ActionType.SAVE, "CONFIG_MGMT");
 
             assertDenied(get(CONFIG_SAVE, session), AuthzErrorCode.NO_AUTHORITY);
+        }
+
+        @Test
+        @DisplayName("TC-5074 상세 전문은 목록과 같은 이력 메뉴 READ로 통과하고, 없으면 403이다")
+        void logDetailUsesTheSameMenuReadAuthorityAsItsList() {
+            givenAuthority(new MenuAction("ACCESS_LOG", ActionType.READ), new MenuAction("ERROR_LOG", ActionType.READ));
+            givenFact(ACCESS_LOG_DETAIL, ActionType.READ, "ACCESS_LOG");
+            assertThat(interceptor.preHandle(get(ACCESS_LOG_DETAIL, session), response, null)).isTrue();
+
+            givenFact(ERROR_LOG_DETAIL, ActionType.READ, "ERROR_LOG");
+            assertThat(interceptor.preHandle(get(ERROR_LOG_DETAIL, session), response, null)).isTrue();
+
+            givenAuthority();
+            givenFact(ACCESS_LOG_DETAIL, ActionType.READ, "ACCESS_LOG");
+            assertDenied(get(ACCESS_LOG_DETAIL, session), AuthzErrorCode.NO_AUTHORITY);
+
+            givenFact(ERROR_LOG_DETAIL, ActionType.READ, "ERROR_LOG");
+            assertDenied(get(ERROR_LOG_DETAIL, session), AuthzErrorCode.NO_AUTHORITY);
         }
 
         @Test

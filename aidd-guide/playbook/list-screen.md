@@ -13,7 +13,7 @@ tags: [playbook, list, cursor, readonly, log]
 
 # 조회 전용 화면 — 이력 셋이 세 번 베낀 배선
 
-> **실물 셋**: `/log/access` · `/log/login` · `/log/error`. 셋이 같은 모양이고
+> **실물 셋**: `/admin/system/log/access` · `/admin/system/log/login` · `/admin/system/log/error`. 셋이 같은 모양이고
 > **셋 다 서로를 베껴 만들어졌다.**
 >
 > [crud-screen.md](./crud-screen.md) 가 *무엇을 고르나*(페이징 모드 · 저장 · 실행)를 갖는다.

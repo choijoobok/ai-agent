@@ -45,7 +45,7 @@
 #     ├ LOG                  이력 · 로그
 #     │   ├ ACCESS_LOG       사용 이력                /admin/system/log/access
 #     │   ├ LOGIN_LOG        로그인 이력              /admin/system/log/login
-#     │   └ ERROR_LOG        에러 로그                /log/error
+#     │   └ ERROR_LOG        에러 로그                /admin/system/log/error
 #     ├ BATCH                배치 · 스케줄
 #     │   ├ BATCH_SCHEDULE   스케줄 관리              /batch/schedule
 #     │   └ BATCH_HISTORY    실행 이력                /batch/history
@@ -124,7 +124,7 @@ menus:
     export: true
   - code: ERROR_LOG
     parent: LOG
-    url: /log/error
+    url: /admin/system/log/error
     export: true
 
   - code: BATCH

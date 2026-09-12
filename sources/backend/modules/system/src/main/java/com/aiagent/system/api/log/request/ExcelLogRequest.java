@@ -1,4 +1,5 @@
-package com.aiagent.api.log.request;
+// @feat FEAT-507
+package com.aiagent.system.api.log.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;

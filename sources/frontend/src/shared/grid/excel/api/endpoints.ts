@@ -9,5 +9,5 @@
  * 보지 않는다 — 이유는 `ExcelLogController` 가 갖는다.
  */
 export const EXCEL_LOG_ENDPOINTS = {
-  saveLog: '/common/excel/saveLog',
+  saveLog: '/common/system/excel/saveLog',
 } as const;

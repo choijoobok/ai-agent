@@ -1,6 +1,7 @@
-package com.aiagent.api.log;
+// @feat FEAT-507
+package com.aiagent.system.api.log;
 
-import com.aiagent.api.log.request.ExcelLogRequest;
+import com.aiagent.system.api.log.request.ExcelLogRequest;
 import com.aiagent.api.trace.TraceId;
 import com.aiagent.core.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -53,7 +54,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ExcelLogController {
 
-    @PostMapping("/api/common/excel/saveLog")
+    @PostMapping("/api/common/system/excel/saveLog")
     public ApiResponse<Void> log(@Valid @RequestBody ExcelLogRequest request) {
         /*
           <b>{@code request} 를 쓰지 않는 것이 맞다.</b> 값은 인터셉터가 body 에서 읽어

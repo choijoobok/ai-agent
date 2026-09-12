@@ -43,9 +43,9 @@ feature_contracts:
     exception_map: { UC-506.E1: CONFIG_VALUE_INVALID, UC-506.E2: CONFIG_VERSION_ROLLBACK }
   FEAT-507:
     request_rule: "기간·사용자·경로·결과·traceId와 제한된 페이지 범위를 받는다"
-    response_rule: "목록과 상세를 분리하고 요청·오류 전문은 별도 READ 판정을 거친다"
+    response_rule: "목록과 상세를 분리하되 요청·오류 전문은 목록과 같은 해당 이력 메뉴의 현재 READ 판정을 거친다"
     transaction: "조회 전용; 열람 요청의 접근 이력만 새로 기록"
-    exception_map: { UC-507.E1: LOG_DETAIL_FORBIDDEN, UC-507.E2: LOG_QUERY_RANGE_INVALID }
+    exception_map: { UC-507.E1: AUTHORIZATION_DENIED, UC-507.E2: LOG_QUERY_RANGE_INVALID }
   FEAT-508:
     request_rule: "등록 beanId·유효 cron·IANA timezone·양수 잠금/쿨다운과 JSON 파라미터를 받는다"
     response_rule: "실행 ID와 RUNNING/SUCCESS/FAIL/SKIP_LOCK/SKIP_COOLDOWN/CANCELED/LOST 결과를 구분한다"
@@ -132,9 +132,9 @@ apis:
   - { id: API-561, feature: FEAT-507, method: POST, path: /api/service/system/loginLog/getList, action: READ, summary: "로그인 이력 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<LoginLogRow>>", source_contract: "sources/backend/modules/system/src/main/java/com/aiagent/system/api/log/LoginLogController.java#getList" }
   - { id: API-562, feature: FEAT-507, method: POST, path: /api/service/system/accessLog/getList, action: READ, summary: "사용 이력 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<AccessLogRow>>", source_contract: "sources/backend/modules/system/src/main/java/com/aiagent/system/api/log/AccessLogController.java#getList" }
   - { id: API-563, feature: FEAT-507, method: POST, path: /api/service/system/accessLog/getDetail, action: READ, summary: "사용 이력 상세", request: "body=AccessLogDetailRequest", response: "ApiResponse<AccessLogDetail>", source_contract: "sources/backend/modules/system/src/main/java/com/aiagent/system/api/log/AccessLogController.java#getDetail" }
-  - { id: API-564, feature: FEAT-507, method: POST, path: /api/service/system/errorLog/getList, action: READ, summary: "오류 이력 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<ErrorLogRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/log/ErrorLogController.java#getList" }
-  - { id: API-565, feature: FEAT-507, method: POST, path: /api/service/system/errorLog/getDetail, action: READ, summary: "오류 이력 상세", request: "body=ErrorLogDetailRequest", response: "ApiResponse<ErrorLogDetail>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/log/ErrorLogController.java#getDetail" }
-  - { id: API-566, feature: FEAT-507, method: POST, path: /api/common/system/excel/saveLog, action: AUTHENTICATED, summary: "클라이언트 엑셀 다운로드 이력", request: "body=ExcelLogRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/log/ExcelLogController.java#log" }
+  - { id: API-564, feature: FEAT-507, method: POST, path: /api/service/system/errorLog/getList, action: READ, summary: "오류 이력 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<ErrorLogRow>>", source_contract: "sources/backend/modules/system/src/main/java/com/aiagent/system/api/log/ErrorLogController.java#getList" }
+  - { id: API-565, feature: FEAT-507, method: POST, path: /api/service/system/errorLog/getDetail, action: READ, summary: "오류 이력 상세", request: "body=ErrorLogDetailRequest", response: "ApiResponse<ErrorLogDetail>", source_contract: "sources/backend/modules/system/src/main/java/com/aiagent/system/api/log/ErrorLogController.java#getDetail" }
+  - { id: API-566, feature: FEAT-507, method: POST, path: /api/common/system/excel/saveLog, action: AUTHENTICATED, summary: "클라이언트 엑셀 다운로드 이력", request: "body=ExcelLogRequest", response: "ApiResponse<Void>", source_contract: "sources/backend/modules/system/src/main/java/com/aiagent/system/api/log/ExcelLogController.java#log" }
 
   - { id: API-567, feature: FEAT-508, method: POST, path: /api/service/system/batchSchedule/getList, action: READ, summary: "배치 일정 목록", request: "body=SearchRequest<Void>", response: "ApiResponse<PageResponse<BatchScheduleRow>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/batch/BatchScheduleController.java#getList" }
   - { id: API-568, feature: FEAT-508, method: POST, path: /api/service/system/batchSchedule/getBeanList, action: READ, summary: "등록 BatchJob 후보", request: "none", response: "ApiResponse<List<String>>", source_contract: "sources/backend/api/src/main/java/com/aiagent/api/batch/BatchScheduleController.java#getBeanList" }

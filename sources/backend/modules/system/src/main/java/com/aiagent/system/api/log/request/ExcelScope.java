@@ -1,4 +1,5 @@
-package com.aiagent.api.log.request;
+// @feat FEAT-507
+package com.aiagent.system.api.log.request;
 
 /**
  * 엑셀 두 갈래 — frontend/grid.md 의 드롭다운 항목 그대로다.

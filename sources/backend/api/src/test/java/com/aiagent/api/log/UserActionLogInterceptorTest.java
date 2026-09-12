@@ -2,7 +2,9 @@
 package com.aiagent.api.log;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -16,6 +18,7 @@ import com.aiagent.support.time.BusinessCalendar;
 import java.time.Instant;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -74,6 +77,21 @@ class UserActionLogInterceptorTest {
         interceptor.afterCompletion(roleAuthSave(), response, new Object(), null);
 
         verify(accessLogs, times(2)).record(any(SysAccessLog.class));
+    }
+
+    @Test
+    @DisplayName("TC-5076 사용 이력 기록 실패는 이미 완성된 업무 응답을 바꾸지 않는다")
+    void accessLogFailureDoesNotAffectTheCompletedBusinessResponse() {
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        response.setStatus(200);
+        doThrow(new IllegalStateException("저장소 장애"))
+                .when(accessLogs)
+                .record(any(SysAccessLog.class));
+
+        assertThatCode(() -> interceptor.afterCompletion(roleAuthSave(), response, new Object(), null))
+                .doesNotThrowAnyException();
+        assertThat(response.getStatus()).isEqualTo(200);
+        verify(accessLogs).record(any(SysAccessLog.class));
     }
 
     private static MockHttpServletRequest roleAuthSave() {

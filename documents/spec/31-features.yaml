@@ -740,7 +740,7 @@ features:
     type: inquiry
     title: "로그인·사용·오류 감사 이력 조회"
     detail: "세 이력과 요청·오류 상세를 기간·사용자·경로·결과·trace ID로 조회해 사건을 재구성한다"
-    hard_rule: "원 이력의 수정·삭제 API를 만들지 않고 상세 전문도 해당 메뉴 READ 권한을 독립적으로 검사한다"
+    hard_rule: "원 이력의 수정·삭제 API를 만들지 않고 상세 전문도 목록과 같은 해당 메뉴의 현재 READ 권한을 검사한다"
     reqs: [REQ-507]
     usecases: [UC-507]
     entities: [ENT-505, ENT-521, ENT-522]

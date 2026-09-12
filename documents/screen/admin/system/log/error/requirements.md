@@ -17,10 +17,10 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/log/error` |
+| 페이지 경로 | `/admin/system/log/error` |
 | 메뉴코드 | `ERROR_LOG` |
-| 프론트 폴더 | `sources/frontend/src/features/errorlog/` |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/log/errorlog/` · `sources/backend/api/…/api/log/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/errorlog/` |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/log/errorlog/` · `sources/backend/modules/system/…/system/api/log/` |
 | 화면 유형 | 단일 그리드 + 모달 하나(탭 둘) |
 | 처리 유형 | **조회 전용** |
 | 쓰는 액션 | `R` `E` — `EXPORT_YN` = `Y` |
@@ -225,6 +225,7 @@
 - **사유는 탭 이름의 툴팁이 낸다.** 처음에는 탭 *안* 에 두었는데, **비활성 탭은 열리지 않으므로 그 안내를 볼 방법이 없었다**(2026-08-30 실측). 꺼진 것에 이유를 붙이는 자리는 툴팁이다.
 - **`TRACE_ID` 가 없으면 전문을 찾지 않는다.** 실제로 비는 일은 없지만 컬럼이 `nullable` 이라 여기서 판단해 둔다 — 없는 값으로 조회하면 언제나 0건이고, 그 0건은 *파기됨* 과 구분되지 않는다.
 - **편집기가 아니다.** 둘 다 읽기 전용이며 버튼은 [닫기] 하나다. 잘렸으면 그 사실을 각 탭이 말한다.
+- `authorization` · `cookie` 등 이미 정한 값은 저장 시점에 마스킹한다. `PARAMETERS` 안 개인정보 등 민감값을 필드별로 판별·마스킹하는 기능은 현재 범위에 넣지 않고, Hub 개발 완료 뒤 별도 기능으로 설계한다(CR-007).
 - 같은 행을 두 번 열어도 왕복은 한 번. 파기된 행의 실패에는 재시도를 걸지 않는다.
 
 ---
@@ -233,8 +234,8 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |
 |---|---|---|---|---|---|
-| 목록 | `getList` | `/service/errorLog/getList` | POST | R | **cursor** |
-| 상세(탭 둘) | `getDetail` | `/service/errorLog/getDetail` | POST | R | — |
+| 목록 | `getList` | `/service/system/errorLog/getList` | POST | R | **cursor** |
+| 상세(탭 둘) | `getDetail` | `/service/system/errorLog/getDetail` | POST | R | — |
 
 - **둘뿐이고 둘 다 `get*` 이다.** `save*` 가 없으므로 시드 생성기가 `SAVE` 를 만들 수 없고, 만들 수 없으므로 **어느 역할에도 줄 수 없다.**
 - **폴더가 인가 경계다.** 사용 이력·로그인 이력과 한 폴더에 두면 세 화면의 엔드포인트가 서로에게 매핑되어 **한쪽 권한이 다른 쪽을 연다** — `features/log` 를 갈랐던 것이 그 사고였다.
@@ -247,7 +248,7 @@
 
 - 코드그룹: **없음.** `상태` 는 상수 둘이고 `오류 코드` 는 소스의 `ErrorCode.code()` 문자열이다.
 - 메시지 키: 화면 `MSG.ERROR_LOG_*` · 서버 `MsgKey.ERR_ERROR_LOG_RANGE_REQUIRED` · `ERR_ERROR_LOG_RANGE_TOO_WIDE` · `ERR_ERROR_LOG_PURGED`.
-- 메뉴 시드: `menu-tree.yaml` — `code: ERROR_LOG` · `parent: LOG` · `url: /log/error` · `export: true`.
+- 메뉴 시드: `menu-tree.yaml` — `code: ERROR_LOG` · `parent: LOG` · `url: /admin/system/log/error` · `export: true`.
 - 초기 데이터 전제: 없음.
 - 설정: `sys-config.search.range-days.default-days`(7) · `max-days`(92) · `sys-config.retention.exception-log-days`(**180**) · `access-log-days`(90 — 전문 탭이 이것에 매인다).
 - **파기 배치는 `USE_YN='N'` 로 시드된다.**

@@ -103,7 +103,7 @@ class ExceptionLogRecorderTest {
         Exception cause =
                 new IllegalStateException("겉", new IllegalArgumentException("근본 원인"));
 
-        recorder.record(request("/api/service/errorLog/getList"), 500, CommonErrorCode.INTERNAL, "오류", cause);
+        recorder.record(request("/api/service/system/errorLog/getList"), 500, CommonErrorCode.INTERNAL, "오류", cause);
 
         String stack = recorded().getRootCauseStack();
         assertThat(stack).contains("IllegalStateException").contains("겉");
@@ -116,7 +116,7 @@ class ExceptionLogRecorderTest {
     void 스택은_상한에서_잘린다() {
         Exception deep = new IllegalStateException("x".repeat(64 * 1024));
 
-        recorder.record(request("/api/service/errorLog/getList"), 500, CommonErrorCode.INTERNAL, "오류", deep);
+        recorder.record(request("/api/service/system/errorLog/getList"), 500, CommonErrorCode.INTERNAL, "오류", deep);
 
         String stack = recorded().getRootCauseStack();
         assertThat(LogText.isTruncated(stack)).isTrue();
@@ -126,7 +126,7 @@ class ExceptionLogRecorderTest {
     @DisplayName("응답에 나간 문구가 그대로 남는다 — 갈리면 운영자와 사용자가 다른 말을 본다")
     void 문구는_응답과_같은_값이다() {
         recorder.record(
-                request("/api/service/errorLog/getList"),
+                request("/api/service/system/errorLog/getList"),
                 400,
                 CommonErrorCode.VALIDATION,
                 "조회 기간은 필수입니다",
@@ -141,6 +141,6 @@ class ExceptionLogRecorderTest {
         doThrow(new IllegalStateException("DB 가 닿지 않는다")).when(exceptionLogs).record(any());
 
         // 던지면 사용자가 봉투 대신 500 HTML 을 받고 진짜 원인이 응답에서 사라진다.
-        recorder.record(request("/api/service/errorLog/getList"), 500, CommonErrorCode.INTERNAL, "오류", null);
+        recorder.record(request("/api/service/system/errorLog/getList"), 500, CommonErrorCode.INTERNAL, "오류", null);
     }
 }

@@ -622,13 +622,13 @@ requirements:
     process_step: PRC-08-01
     title: "로그인·사용·오류 이력을 수정·삭제 경로 없이 조회하고 원인을 추적한다"
     detail: "감사·시스템 관리자는 기간·사용자·경로·결과로 이력을 조회하고 허용된 경우 요청·오류 전문까지 확인할 수 있어야 한다"
-    acceptance: "이력 화면에는 저장·삭제 경로가 없고, 요청·오류 전문을 받는 상세 API도 해당 이력 메뉴의 READ 권한 사슬을 독립적으로 통과해야 한다"
+    acceptance: "이력 화면에는 저장·삭제 경로가 없고, 요청·오류 전문을 받는 상세 API는 목록과 같은 해당 이력 메뉴의 현재 READ 권한 사슬을 통과해야 한다"
     source: "현재 구현 역추적 — 로그인 이력·사용 이력·에러 로그 화면"
     evidence:
-      frontend: ["modules/system/features/loginlog", "modules/system/features/accesslog", "features/errorlog"]
+      frontend: ["modules/system/features/loginlog", "modules/system/features/accesslog", "modules/system/features/errorlog"]
       backend: ["modules/system/api/log", "domain/log", "domain/auth/loginlog"]
       tables: [SYS_LO_LOGIN, SYS_LO_ACCESS, SYS_LO_EXCEPTION]
-      screens: ["/admin/system/log/login", "/admin/system/log/access", "/log/error"]
+      screens: ["/admin/system/log/login", "/admin/system/log/access", "/admin/system/log/error"]
     roadmap: RM-P1
 
   - id: REQ-508

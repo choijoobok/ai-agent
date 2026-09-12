@@ -1,3 +1,4 @@
+// @feat FEAT-507
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { FillColumn } from '@/shared/components/FillColumn';
 import { label } from '@/shared/i18n/label';
@@ -12,9 +13,9 @@ import { useShellNavigation } from '@/layouts/ShellLayout/useShellNavigation';
 import { handOff } from '@/shared/routes/handoffStore';
 import { hasPermission } from '@/shared/authz/permission';
 import { useAuthStore } from '@/shared/stores/authStore';
-import { ERROR_LOG_ENDPOINTS } from '@/features/errorlog/api/endpoints';
-import { ErrorDetailModal } from '@/features/errorlog/components/ErrorDetailModal';
-import type { ErrorLogRow } from '@/features/errorlog/types';
+import { ERROR_LOG_ENDPOINTS } from '@/modules/system/features/errorlog/api/endpoints';
+import { ErrorDetailModal } from '@/modules/system/features/errorlog/components/ErrorDetailModal';
+import type { ErrorLogRow } from '@/modules/system/features/errorlog/types';
 
 /**
  * `ERROR_LOG` — screen/log/error/requirements.md. <b>셋 중 유일하게 사람이 먼저 찾아오는 화면</b>이다.
@@ -518,5 +519,3 @@ function emptyTextFor(conditions: SearchCondition[]): string {
   }
   return MSG.ERROR_LOG_EMPTY;
 }
-
-

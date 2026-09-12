@@ -258,7 +258,7 @@ entities:
     columns: [EXCEPTION_LOG_SEQ, USER_ID, MENU_CD, REQUEST_URI, HTTP_STAT, ERR_CD, ERR_MSG, ROOT_CAUSE_STACK, CLIENT_IP, TRACE_ID, CRE_DTM]
     indexes: []
     index_policy: "현재 물리 인덱스를 그대로 두며 모듈 이동에서 새 인덱스를 만들지 않는다"
-    rules: ["상세 전문은 독립 READ 판정", "원문 수정·삭제 경로 없음", "기본 180일 보존 뒤 파기 배치가 삭제"]
+    rules: ["상세 전문은 목록과 같은 ERROR_LOG 현재 READ 판정", "원문 수정·삭제 경로 없음", "기본 180일 보존 뒤 파기 배치가 삭제"]
     audit: created_only
     delete_policy: never
 

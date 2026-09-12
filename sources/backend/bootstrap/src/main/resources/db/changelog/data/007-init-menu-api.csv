@@ -21,8 +21,8 @@ CODE_MGMT,/api/service/system/code/saveRefDef
 CONFIG_MGMT,/api/service/system/config/getList
 CONFIG_MGMT,/api/service/system/config/getPrefixes
 CONFIG_MGMT,/api/service/system/config/save
-ERROR_LOG,/api/service/errorLog/getDetail
-ERROR_LOG,/api/service/errorLog/getList
+ERROR_LOG,/api/service/system/errorLog/getDetail
+ERROR_LOG,/api/service/system/errorLog/getList
 LOGIN_LOG,/api/service/system/loginLog/getList
 MENU_TREE,/api/service/system/menu/deleteNode
 MENU_TREE,/api/service/system/menu/getAccessibleUsers
