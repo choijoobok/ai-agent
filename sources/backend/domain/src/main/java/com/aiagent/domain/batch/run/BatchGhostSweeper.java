@@ -13,7 +13,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 /**
- * 유령 정리 — screen/batch/schedule/requirements.md. <b>죽은 프로세스가 남긴 {@code RUNNING} 행을 종결시킨다.</b>
+ * 유령 정리 — screen/admin/system/batch/schedule/requirements.md. <b>죽은 프로세스가 남긴 {@code RUNNING} 행을 종결시킨다.</b>
  *
  * <h2>유령은 보기 싫은 것이 아니라 <b>막는 것</b>이다</h2>
  *

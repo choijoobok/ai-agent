@@ -5,11 +5,11 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * 배치 등록의 저장·실행이 거부하는 것 — screen/batch/schedule/requirements.md.
+ * 배치 등록의 저장·실행이 거부하는 것 — screen/admin/system/batch/schedule/requirements.md.
  *
  * <p><b>화면이 앞서 막는 것이 둘뿐이다</b>({@link #NOT_DELETABLE} 의 <i>켜져 있음</i> 과
  * {@link #PARAM_JSON_INVALID}). 나머지는 <b>서버만 아는 사실</b>에 걸린다 — 크론의 최소
- * 간격은 파서가 있어야 알고(screen/batch/schedule/requirements.md), 등록된 빈 목록은 스프링 컨텍스트가 안다.
+ * 간격은 파서가 있어야 알고(screen/admin/system/batch/schedule/requirements.md), 등록된 빈 목록은 스프링 컨텍스트가 안다.
  * {@code RoleErrorCode} 에서 화면이 미리 막던 것이 <i>건수 컬럼</i> 이었던 것과
  * 대비되는 자리다.
  *

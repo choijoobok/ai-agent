@@ -142,7 +142,7 @@ const OP_ORDER: SearchOp[] = [
   'isNull',
   // 크기 계열의 첫 실물 — 나머지 넷은 그것을 요구하는 화면이 이 뒤에 붙인다(frontend/search-form.md).
   'between',
-  // 둘째 — screen/batch/schedule/requirements.md 의 *소요 시간 이상*. 위 주석이 정한 순서(gte · gt · lte · lt)의 첫 칸이다.
+  // 둘째 — screen/admin/system/batch/schedule/requirements.md 의 *소요 시간 이상*. 위 주석이 정한 순서(gte · gt · lte · lt)의 첫 칸이다.
   'gte',
   // 크기 계열의 넷째·다섯째 — playbook/INDEX.md(2026-09-02). 위 주석이 정한 순서(gte · gt ·
   // lte · lt)의 남은 두 칸이며, 이로써 backend/api.md 의 열셋이 전부 열렸다.

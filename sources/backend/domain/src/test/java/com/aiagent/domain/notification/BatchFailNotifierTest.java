@@ -23,7 +23,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 배치 실패 알림 — BATCH-06 · screen/batch/schedule/requirements.md · screen/notice/requirements.md.
+ * 배치 실패 알림 — BATCH-06 · screen/admin/system/batch/schedule/requirements.md · screen/notice/requirements.md.
  *
  * <p>지키는 것 셋이다 — ① <b>무엇이 실패인가</b>(유령을 포함하고 건너뜀·중단을 뺀다),
  * ② <b>역할을 비우면 보내지 않는가</b>, ③ <b>이동 링크에 <i>받는 쪽이 기대하는 값</i>이
@@ -57,7 +57,7 @@ class BatchFailNotifierTest {
     @DisplayName("실패와 유령만 알린다 — 건너뜀·중단·성공은 아니다")
     void onlyFailuresAreNotified() {
         assertThat(BatchFailNotifier.isFailure(BatchResultCode.FAIL)).isTrue();
-        // 프로세스가 죽어 결과를 못 적은 실행이다 — 운영에서 실패보다 나쁘다(screen/batch/schedule/requirements.md).
+        // 프로세스가 죽어 결과를 못 적은 실행이다 — 운영에서 실패보다 나쁘다(screen/admin/system/batch/schedule/requirements.md).
         assertThat(BatchFailNotifier.isFailure(BatchResultCode.LOST)).isTrue();
 
         assertThat(BatchFailNotifier.isFailure(BatchResultCode.SUCCESS)).isFalse();
@@ -85,7 +85,7 @@ class BatchFailNotifierTest {
                         /*
                           **실행 번호(77)가 아니라 배치 ID 다.** 넘겨주기 채널은 화면당 값
                           하나이고 무엇인지 모르는 문자열이며, BATCH_HISTORY 의 그 자리는
-                          이미 배치 ID 가 쓰고 있다(screen/batch/schedule/requirements.md). 실행 번호를 넣으면 받는 화면이
+                          이미 배치 ID 가 쓰고 있다(screen/admin/system/batch/schedule/requirements.md). 실행 번호를 넣으면 받는 화면이
                           그것을 배치 ID 로 읽어 0건을 보인다 — 열리기는 하는데 아무 데도
                           가 있지 않은, 가장 헷갈리는 실패다.
                         */

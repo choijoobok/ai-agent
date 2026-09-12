@@ -5,7 +5,7 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * 실행 이력 화면이 거부하는 것 — screen/batch/schedule/requirements.md. <b>둘뿐이다.</b>
+ * 실행 이력 화면이 거부하는 것 — screen/admin/system/batch/schedule/requirements.md. <b>둘뿐이다.</b>
  *
  * <p>조회 전용 화면이라 저장이 없고({@code api.save} 를 선언하지 않는다 — screen/batch/history/requirements.md) 그래서
  * 거부할 것도 <b>{@code X} 하나에 딸린 것</b>과 <b>파기</b>뿐이다.

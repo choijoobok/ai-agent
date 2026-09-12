@@ -21,7 +21,7 @@ import java.time.Instant;
  * 브라우저가 아니라 <b>서버의 {@code Clock}</b> 이다. <b>{@code app.business-timezone} 은
  * 여기에 개입하지 않는다</b> — 판정이 {@code Instant} 비교라 시간대가 들어갈 자리가 없다.
  * 그 설정은 {@code BusinessCalendar} 의 것이며 {@code LocalDate} 로 자르는 쪽이 쓴다
- * (sys/INDEX.md). screen/batch/schedule/requirements.md 에서 {@code 유령}
+ * (sys/INDEX.md). screen/admin/system/batch/schedule/requirements.md 에서 {@code 유령}
  * 배지가 서버 판정으로 옮겨 간 것과 같은 이유이며, 여기는 하나가 더 있다 —
  * <b>지금을 DB 가 아니라 애플리케이션이 준다</b>(backend/persistence.md).
  */

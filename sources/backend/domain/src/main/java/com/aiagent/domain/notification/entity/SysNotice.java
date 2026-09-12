@@ -141,7 +141,7 @@ public class SysNotice extends BaseAuditEntity {
     private Boolean useYn;
 
     /**
-     * 목록 상단 고정 — screen/notice/requirements.md. <b>드래그가 아니라 숫자다</b>(screen/batch/schedule/requirements.md 과 같은 판단).
+     * 목록 상단 고정 — screen/notice/requirements.md. <b>드래그가 아니라 숫자다</b>(screen/admin/system/batch/schedule/requirements.md 과 같은 판단).
      *
      * <p>중복을 막지 않는다. 결정성은 tie-breaker({@code NOTICE_ID})가 주며, 그 결정성이
      * <b>화면에 직접 보인다</b> — 팝업이 이 정렬의 첫 건을 집는다(screen/notice/requirements.md C안).

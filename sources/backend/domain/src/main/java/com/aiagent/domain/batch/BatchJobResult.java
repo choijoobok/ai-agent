@@ -9,9 +9,9 @@ package com.aiagent.domain.batch;
  * <table><caption></caption>
  *   <tr><th></th><th>무엇</th><th>어디로</th></tr>
  *   <tr><td>{@link #summary()}</td><td><i>"대상 1,204건 중 1,201건 처리 · 3건 제외"</i></td>
- * <td>{@code RSLT_MSG} — <b>목록 컬럼</b>이다(screen/batch/schedule/requirements.md)</td></tr>
+ * <td>{@code RSLT_MSG} — <b>목록 컬럼</b>이다(screen/admin/system/batch/schedule/requirements.md)</td></tr>
  *   <tr><td>{@link #detail()}</td><td>처리한 대상의 목록 — 주문번호·창고코드가 수백 줄</td>
- * <td>{@code RSLT_DTL_MSG} — {@code nclob}, 모달의 탭(screen/batch/schedule/requirements.md)</td></tr>
+ * <td>{@code RSLT_DTL_MSG} — {@code nclob}, 모달의 탭(screen/admin/system/batch/schedule/requirements.md)</td></tr>
  *   <tr><td>{@link #canceled()}</td><td><b>중단 요청을 읽고 스스로 멈췄는가</b></td>
  * <td>{@code RSLT_CD} — {@code CANCELED} 인가 {@code SUCCESS} 인가(sys/batch.md)</td></tr>
  * </table>
@@ -28,7 +28,7 @@ package com.aiagent.domain.batch;
  * ({@code SUCCESS}·{@code FAIL})를 다른 줄로 두었는데, 둘 다 {@code CANCEL_REQ_DTM} 이
  * 있고 둘 다 배치가 정상 반환한 경우다 — <b>러너는 구분할 수단이 없다.</b> 요청 시각만
  * 보고 {@code CANCELED} 로 적으면 <i>확인하지 않는 구현</i> 이 멈춘 것처럼 기록되고,
- * 그것이 screen/batch/schedule/requirements.md 가 <b>"화면은 그것을 거짓말하지 않는다"</b> 로 금지한 바로 그 상태다.
+ * 그것이 screen/admin/system/batch/schedule/requirements.md 가 <b>"화면은 그것을 거짓말하지 않는다"</b> 로 금지한 바로 그 상태다.
  *
  * <p>그래서 <b>멈춘 쪽이 말한다</b>. sys/batch.md 이 이 레코드의 필드를 둘로 적었을 때 그
  * 구분이 아직 없었고, 여기서 셋이 된다 — 문서로 되돌려 준다.
@@ -54,7 +54,7 @@ public record BatchJobResult(String summary, String detail, boolean canceled) {
         return new BatchJobResult(summary, null, false);
     }
 
-    /** 요약과 상세 둘 다 — 상세 탭이 열린다(screen/batch/schedule/requirements.md). */
+    /** 요약과 상세 둘 다 — 상세 탭이 열린다(screen/admin/system/batch/schedule/requirements.md). */
     public static BatchJobResult of(String summary, String detail) {
         return new BatchJobResult(summary, detail, false);
     }

@@ -1,8 +1,6 @@
-package com.aiagent.api.batch;
+// @feat FEAT-508
+package com.aiagent.system.api.batch;
 
-import com.aiagent.api.batch.request.BatchRunRequest;
-import com.aiagent.api.batch.request.BatchScheduleSaveRequest;
-import com.aiagent.api.batch.response.BatchRunResponse;
 import com.aiagent.api.trace.TraceId;
 import com.aiagent.core.response.ApiResponse;
 import com.aiagent.core.search.PageResponse;
@@ -16,6 +14,9 @@ import com.aiagent.domain.batch.schedule.BatchScheduleQueryService;
 import com.aiagent.domain.batch.schedule.BatchScheduleRow;
 import com.aiagent.support.time.BusinessCalendar;
 import com.aiagent.support.time.Timezones;
+import com.aiagent.system.api.batch.request.BatchRunRequest;
+import com.aiagent.system.api.batch.request.BatchScheduleSaveRequest;
+import com.aiagent.system.api.batch.response.BatchRunResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code BATCH_SCHEDULE} — screen/batch/schedule/requirements.md. <b>경로가 넷이고 액션이 셋이다.</b>
+ * {@code BATCH_SCHEDULE} — screen/admin/system/batch/schedule/requirements.md. <b>경로가 넷이고 액션이 셋이다.</b>
  *
  * <table><caption></caption>
  *   <tr><td>{@code getList}</td><td>{@code READ}</td><td>마스터 목록</td></tr>
@@ -42,28 +43,28 @@ import org.springframework.web.bind.annotation.RestController;
  * <h2>{@code EXPORT} 에 경로가 없다 — 그리고 화면에도 없다</h2>
  *
  * <p>sys/menu.md 의 액션 열이 {@code R S X} 이며 <b>엑셀 버튼(②)이 통째로 사라지는 첫
- * 화면</b>이다(screen/batch/schedule/requirements.md · frontend/grid.md). {@code ROLE_MGMT} · {@code ROLE_AUTH_MGMT} 에 이어
+ * 화면</b>이다(screen/admin/system/batch/schedule/requirements.md · frontend/grid.md). {@code ROLE_MGMT} · {@code ROLE_AUTH_MGMT} 에 이어
  * 셋째이지만, 앞의 둘은 <i>액션 미정의</i> 였고 여기는 <b>일부러 뺐다</b> — 등록이 수십
  * 건이고 <b>원본이 화면</b>이며(시드가 아니다), {@code PARAM_JSON} 중괄호가 셀에 들어간
  * 파일은 읽기도 어렵다.
  *
  * <h2>{@code runNow} 가 {@code EXECUTE} 인 것에 예외가 없다</h2>
  *
- * <p>screen/batch/schedule/requirements.md — screen/admin/system/user/requirements.md 의 기준(<i>"우리 테이블의 컬럼을 쓰는가"</i>)으로 봐도 그렇다.
+ * <p>screen/admin/system/batch/schedule/requirements.md — screen/admin/system/user/requirements.md 의 기준(<i>"우리 테이블의 컬럼을 쓰는가"</i>)으로 봐도 그렇다.
  * 즉시 실행은 {@code SYS_SCHEDULE_BATCH} 를 <b>읽기만</b> 하고 쓰는 것은 이력이다.
  * <b>절차 발동이지 저장이 아니다.</b>
  *
  * <h2>{@code getRecentHistory} 가 이력 서비스를 부른다</h2>
  *
- * <p>경로는 이 화면의 것이고(screen/batch/schedule/requirements.md) 계산은 {@code BatchHistoryQueryService} 의
- * 것이다 — screen/batch/schedule/requirements.md 가 하단 pane 을 <i>"§4.2 와 같은 컬럼"</i> 으로 정했으므로 유령 판정도
+ * <p>경로는 이 화면의 것이고(screen/admin/system/batch/schedule/requirements.md) 계산은 {@code BatchHistoryQueryService} 의
+ * 것이다 — screen/admin/system/batch/schedule/requirements.md 가 하단 pane 을 <i>"§4.2 와 같은 컬럼"</i> 으로 정했으므로 유령 판정도
  * 같아야 하고, 서비스를 나누면 <b>같은 사실을 두 곳이 계산</b>하게 된다.
  * {@code RoleController} 가 하단 pane 의 경로를 {@code roleAuth} 로 둔 것과 방향이
  * 반대인데(그쪽은 경로를 합쳤고 여기는 서비스를 합쳤다), 근거는 같다 — <b>같은 질문에
  * 답이 둘이면 안 된다</b>.
  */
 @RestController
-@RequestMapping("/api/service/batchSchedule")
+@RequestMapping("/api/service/system/batchSchedule")
 public class BatchScheduleController {
 
     private final BatchScheduleQueryService queries;
@@ -95,7 +96,7 @@ public class BatchScheduleController {
     }
 
     /**
-     * {@code BEAN_ID} 셀렉트의 후보 — <b>스프링 컨텍스트가 원본</b>이다(screen/batch/schedule/requirements.md).
+     * {@code BEAN_ID} 셀렉트의 후보 — <b>스프링 컨텍스트가 원본</b>이다(screen/admin/system/batch/schedule/requirements.md).
      *
      * <p><b>비어 있는 것이 정상이다.</b> 템플릿에는 {@code BatchJob} 구현이 하나도 없으며,
      * 그 비어 있음은 고장이 아니라 <i>아직 배치가 없다</i> 는 사실이다.
@@ -109,7 +110,7 @@ public class BatchScheduleController {
     }
 
     /**
-     * {@code TIMEZONE} 셀렉트의 후보 — <b>tzdb 가 원본</b>이다(screen/batch/schedule/requirements.md §4-1).
+     * {@code TIMEZONE} 셀렉트의 후보 — <b>tzdb 가 원본</b>이다(screen/admin/system/batch/schedule/requirements.md §4-1).
      *
      * <p><b>후보를 좁히지 않는다.</b> 자주 쓰는 것만 골라 두면 고객사가 바뀔 때마다 소스를
      * 고쳐야 한다 — 600개는 화면의 검색이 감당한다.
@@ -126,7 +127,7 @@ public class BatchScheduleController {
     }
 
     /**
-     * 하단 pane — <b>이 배치의</b> 최근 실행(screen/batch/schedule/requirements.md).
+     * 하단 pane — <b>이 배치의</b> 최근 실행(screen/admin/system/batch/schedule/requirements.md).
      *
      * <p>배치를 <b>조건이 아니라 파라미터로</b> 받는다({@code SearchRequest<BatchIdParams>}) —
      * 조건 목록에 담으면 사용자가 지울 수 있고, 지우면 이 pane 이 <b>전 배치의 최근
@@ -162,7 +163,7 @@ public class BatchScheduleController {
     }
 
     /**
-     * 즉시 실행 — <b>던지고 끝낸다</b>(screen/batch/schedule/requirements.md).
+     * 즉시 실행 — <b>던지고 끝낸다</b>(screen/admin/system/batch/schedule/requirements.md).
      *
      * <p>진행률 모달이 뜨지 않는다. 진행 상황을 보여줄 자리는 이미 있다 — 실행 이력의
      * {@code RUNNING} 행이며, 화면은 응답을 받고 <b>하단 pane 을 재조회</b>한다.

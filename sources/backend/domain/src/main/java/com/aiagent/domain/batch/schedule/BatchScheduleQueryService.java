@@ -34,17 +34,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code BATCH_SCHEDULE} 의 조회 — screen/batch/schedule/requirements.md.
+ * {@code BATCH_SCHEDULE} 의 조회 — screen/admin/system/batch/schedule/requirements.md.
  *
  * <h2>파생 셋이 세 곳에서 온다</h2>
  *
  * <table><caption></caption>
- * <tr><td><b>다음 실행</b></td><td>크론 파서 — 프론트에 없다(screen/batch/schedule/requirements.md)</td></tr>
+ * <tr><td><b>다음 실행</b></td><td>크론 파서 — 프론트에 없다(screen/admin/system/batch/schedule/requirements.md)</td></tr>
  *   <tr><td><b>최근 결과</b></td><td>{@code SYS_BATCH_HISTORY} 의 가장 최근 행</td></tr>
  *   <tr><td><b>실행 중</b></td><td>같은 테이블의 {@code RUNNING} 행 — 삭제 게이트가 본다</td></tr>
  * </table>
  *
- * <p><b>API 를 늘리지 않는다</b>(screen/batch/schedule/requirements.md) — 셋 다 목록 조회가 계산해 내려주며, 저장 후
+ * <p><b>API 를 늘리지 않는다</b>(screen/admin/system/batch/schedule/requirements.md) — 셋 다 목록 조회가 계산해 내려주며, 저장 후
  * 재조회(frontend/grid.md)에서 새 값이 온다. 크론을 고치고 <i>다음 실행</i> 이 월요일로 바뀌는 것을
  * 보는 것이 이 화면에서 크론을 눈으로 확인하는 유일한 방법이다.
  *
@@ -103,7 +103,7 @@ public class BatchScheduleQueryService {
         this.clock = clock;
     }
 
-    /** 마스터 목록 — 기본 정렬이 {@code SORT_NO} 이고 페이지 사이즈가 50 이다(screen/batch/schedule/requirements.md). */
+    /** 마스터 목록 — 기본 정렬이 {@code SORT_NO} 이고 페이지 사이즈가 50 이다(screen/admin/system/batch/schedule/requirements.md). */
     public PageResponse<BatchScheduleRow> getList(SearchRequest<Void> request) {
         Built built = builder.build(request, SPEC, PageMode.offset);
 
@@ -142,7 +142,7 @@ public class BatchScheduleQueryService {
     }
 
     /**
-     * {@code BEAN_ID} 셀렉트의 후보 — <b>스프링 컨텍스트가 원본</b>이다(screen/batch/schedule/requirements.md).
+     * {@code BEAN_ID} 셀렉트의 후보 — <b>스프링 컨텍스트가 원본</b>이다(screen/admin/system/batch/schedule/requirements.md).
      *
      * <p>시드가 아니다. 시드로 두면 배포마다 구현과 목록이 어긋날 수 있고, 어긋나면
      * 화면이 <i>고를 수 있는데 실행되지 않는</i> 빈을 보여준다.
@@ -163,11 +163,11 @@ public class BatchScheduleQueryService {
     // ── 파생 ────────────────────────────────────────────────────────
 
     /**
-     * <b>꺼 둔 배치는 비운다</b> — screen/batch/schedule/requirements.md.
+     * <b>꺼 둔 배치는 비운다</b> — screen/admin/system/batch/schedule/requirements.md.
      *
      * <p>{@code USE_YN='N'} 이면 스케줄러가 등록조차 하지 않으므로 시각을 그리면
      * <i>돌 것처럼</i> 보인다. 크론이 남아 있는 것과 그 크론이 걸려 있는 것은 다른 사실이며,
-     * 실행 이력에서 <b>행이 없으면 꺼져 있는 것</b>이라는 판정(screen/batch/schedule/requirements.md)과 짝을 이룬다.
+     * 실행 이력에서 <b>행이 없으면 꺼져 있는 것</b>이라는 판정(screen/admin/system/batch/schedule/requirements.md)과 짝을 이룬다.
      *
      * <p>크론이 깨져 있어도 비운다 — 저장이 막지만 시드나 직접 UPDATE 는 그 검증을 지나지
      * 않는다. 그때 이 칸이 비는 것이 <b>고장의 신호</b>다.
@@ -188,7 +188,7 @@ public class BatchScheduleQueryService {
     }
 
     /**
-     * 배치마다 <b>가장 최근 실행의 결과</b> — 하단 pane 첫 행과 같은 값이다(screen/batch/schedule/requirements.md).
+     * 배치마다 <b>가장 최근 실행의 결과</b> — 하단 pane 첫 행과 같은 값이다(screen/admin/system/batch/schedule/requirements.md).
      *
      * <p>상관 서브쿼리로 {@code MAX(START_DTM)} 을 맞춘다. {@code LIMIT 1} 서브쿼리를 쓰지
      * 않는 것은 JPQL 이 그것을 이식성 있게 표현하지 못하기 때문이며, 여기 인덱스가

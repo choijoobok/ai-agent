@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 크론을 읽는 규칙 — backend/persistence.md · screen/batch/schedule/requirements.md.
+ * 크론을 읽는 규칙 — backend/persistence.md · screen/admin/system/batch/schedule/requirements.md.
  *
  * <p><b>화면이 이것을 못 한다.</b> 크론 파서가 프론트 의존성에 없어(stack.md) 쿨다운과의
  * 관계는 서버만 판정할 수 있고, 그래서 frontend/grid.md 의 <i>서버 검증이 남는 자리</i> 다 —
@@ -66,7 +66,7 @@ class CronRulesTest {
     @Test
     @DisplayName("다음 실행이 크론을 눈으로 확인시킨다 — 평일 크론은 주말을 건너뛴다")
     void nextExecutionSkipsTheWeekend() {
-        // 토요일 정오에서 물으면 다음은 **월요일 아침 9시**다 — 화면이 그것을 그린다(screen/batch/schedule/requirements.md).
+        // 토요일 정오에서 물으면 다음은 **월요일 아침 9시**다 — 화면이 그것을 그린다(screen/admin/system/batch/schedule/requirements.md).
         Instant saturdayNoon = ZonedDateTime.of(2026, 8, 29, 12, 0, 0, 0, SEOUL).toInstant();
 
         Instant next = CronRules.nextExecution("0 0 9 * * MON-FRI", saturdayNoon, SEOUL).orElseThrow();
@@ -76,7 +76,7 @@ class CronRulesTest {
         assertThat(at.getHour()).isEqualTo(9);
     }
 
-    // ── 시간대 (screen/batch/schedule/requirements.md §4-1 · BS-38~40 · BS-46) ──
+    // ── 시간대 (screen/admin/system/batch/schedule/requirements.md §4-1 · BS-38~40 · BS-46) ──
 
     @Test
     @DisplayName("같은 식이 시간대마다 다른 순간을 낸다 — 현지 시각은 둘 다 06:00 이다")

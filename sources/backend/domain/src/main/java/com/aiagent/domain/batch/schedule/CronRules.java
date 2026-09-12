@@ -9,9 +9,9 @@ import java.util.Optional;
 import org.springframework.scheduling.support.CronExpression;
 
 /**
- * 크론을 <b>읽는 규칙</b> — backend/persistence.md · screen/batch/schedule/requirements.md.
+ * 크론을 <b>읽는 규칙</b> — backend/persistence.md · screen/admin/system/batch/schedule/requirements.md.
  *
- * <p>화면이 이것을 못 하는 것이 이 클래스가 서버에 있는 이유다. screen/batch/schedule/requirements.md 가
+ * <p>화면이 이것을 못 하는 것이 이 클래스가 서버에 있는 이유다. screen/admin/system/batch/schedule/requirements.md 가
  * <i>"크론 파서가 필요하고, 그것은 stack.md 의 프론트 의존성에 없다"</i> 고 적었고,
  * frontend/grid.md 의 <b>서버 검증이 남는 자리</b>가 정확히 여기다.
  *
@@ -58,7 +58,7 @@ public final class CronRules {
     }
 
     /**
-     * 다음 실행 시각 — 파생 컬럼 <b>다음 실행</b>이 이 값이다(screen/batch/schedule/requirements.md).
+     * 다음 실행 시각 — 파생 컬럼 <b>다음 실행</b>이 이 값이다(screen/admin/system/batch/schedule/requirements.md).
      *
      * <p>그 컬럼이 <i>크론을 눈으로 확인시킨다</i> — {@code 0 0 9 * * MON-FRI} 를 넣고
      * 다음 실행이 월요일이면 맞게 쓴 것이다. <b>API 를 늘리지 않고</b> 목록 조회가 계산해
@@ -66,7 +66,7 @@ public final class CronRules {
      *
      * <p><b>{@code USE_YN='N'} 이면 부르는 쪽이 비운다.</b> 여기서 판단하지 않는 것은 이
      * 클래스가 크론만 알기 때문이며, 꺼 둔 배치에 다음 실행을 그리면 <i>돌 것처럼</i>
-     * 보인다(screen/batch/schedule/requirements.md — 스케줄러가 등록조차 하지 않는다).
+     * 보인다(screen/admin/system/batch/schedule/requirements.md — 스케줄러가 등록조차 하지 않는다).
      *
      * <p><b>{@code zone} 은 그 배치의 시간대다</b>(요건서 §4-1). 기본값을 두지 않는 것이
      * 요점이다 — 두면 넘기지 않은 호출이 <b>조용히 서버 시간대로</b> 돌아가고, 그것이
@@ -80,7 +80,7 @@ public final class CronRules {
     }
 
     /**
-     * 인접 실행 간격의 <b>최솟값(초)</b> — 쿨다운과 비교되는 값이다(backend/persistence.md · screen/batch/schedule/requirements.md).
+     * 인접 실행 간격의 <b>최솟값(초)</b> — 쿨다운과 비교되는 값이다(backend/persistence.md · screen/admin/system/batch/schedule/requirements.md).
      *
      * <p>표본을 다 못 뽑으면(연 1회 크론이 상한에 걸린다) 뽑은 것까지로 잰다. 하나도 못
      * 뽑으면 비어 있고, 그때 부르는 쪽은 <b>검증을 건너뛴다</b> — 간격을 모르는 것과
@@ -124,7 +124,7 @@ public final class CronRules {
     private CronRules() {}
 
     /**
-     * 쿨다운이 <b>주기를 통째로 삼키는가</b> — screen/batch/schedule/requirements.md 가 저장에서 막는 그 관계다.
+     * 쿨다운이 <b>주기를 통째로 삼키는가</b> — screen/admin/system/batch/schedule/requirements.md 가 저장에서 막는 그 관계다.
      *
      * <p><b>판정이 두 곳에서 필요하다.</b> 저장은 사람이 넣는 값을 막고(그 자리에서
      * 고칠 수 있으므로 거부한다), 기동은 <b>시드와 직접 UPDATE 로 들어온 값</b>을 본다

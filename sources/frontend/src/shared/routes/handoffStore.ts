@@ -113,7 +113,7 @@ export function useHandoff(menuCd: string): string | null {
 
   마운트 경로에서는 <b>사람이 조회를 한 번 누른다.</b> 그것을 맞추려면 받는 화면 넷이
   각자 "넘겨받았으면 마운트하며 조회" 를 갖게 되는데, 그 화면들의 첫 조회 시점은 지금
-  제각각이라(기간 기본값·권한 확인) 한 줄로 정리되지 않는다 — screen/batch/schedule/requirements.md 가 요구한 것은
+  제각각이라(기간 기본값·권한 확인) 한 줄로 정리되지 않는다 — screen/admin/system/batch/schedule/requirements.md 가 요구한 것은
   "그 배치로 열린다" 이고 조건이 채워진 것으로 그 절반은 지켜진다.
 */
 

@@ -78,7 +78,7 @@ export function SearchSelectCellEditor(props: CustomCellEditorProps<unknown, unk
         /*
           <b>열두 줄이 한 번에 보인다</b>(판의 기본은 256px — 여덟 줄). 이 편집기가 서는
           자리는 <b>후보가 스무 개를 넘는 칸</b>이고(playbook/INDEX.md), 여덟 줄은 검색으로
-          좁힌 뒤에도 <i>뒤지는 느낌</i>을 남긴다 — screen/batch/schedule/requirements.md §4-1
+          좁힌 뒤에도 <i>뒤지는 느낌</i>을 남긴다 — screen/admin/system/batch/schedule/requirements.md §4-1
           이 시간대 600개에 대고 *열 줄 이상* 을 요구한 것이 그 이유다.
         */
         listHeight={LIST_HEIGHT}

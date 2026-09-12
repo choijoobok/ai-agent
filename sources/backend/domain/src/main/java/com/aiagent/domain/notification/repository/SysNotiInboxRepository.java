@@ -70,7 +70,7 @@ public interface SysNotiInboxRepository extends JpaRepository<SysNotiInbox, Long
     /**
      * 최근에 <b>이 종류를 이미 받은</b> 사람 — 만료 예고 배치의 중복 방지(screen/notice/requirements.md).
      *
-     * <p><b>배치가 하루 두 번 돌 수 있다</b>(즉시 실행 · screen/batch/schedule/requirements.md). 그리고 예고 창은 며칠
+     * <p><b>배치가 하루 두 번 돌 수 있다</b>(즉시 실행 · screen/admin/system/batch/schedule/requirements.md). 그리고 예고 창은 며칠
      * 짜리라 창이 열려 있는 동안 <b>매일 같은 사람에게</b> 같은 말을 하게 된다 — 그것은
      * 알림이 아니라 소음이고, 소음이 되는 순간 사람은 배지를 보지 않는다.
      *

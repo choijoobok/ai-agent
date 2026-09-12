@@ -134,7 +134,7 @@ public class BatchHistoryQueryService {
     }
 
     /**
-     * 탭 둘을 <b>한 번에</b> — screen/batch/schedule/requirements.md. <b>동적 봉투를 태우지 않는다</b>(backend/api.md).
+     * 탭 둘을 <b>한 번에</b> — screen/admin/system/batch/schedule/requirements.md. <b>동적 봉투를 태우지 않는다</b>(backend/api.md).
      *
      * <p>PK 하나로 한 행을 집는 고정형이다. 조건 목록으로 열면 <b>{@code nclob} 조회가 임의
      * 조건의 조회</b>가 되고, 그 순간 그것을 목록에서 뺀 이유가 무너진다.
@@ -146,7 +146,7 @@ public class BatchHistoryQueryService {
                 .fetchFirst();
 
         if (found == null) {
-            // 목록을 본 뒤 파기 배치가 지나갔다(retention.md) — 목록은 그대로 둔다(screen/batch/schedule/requirements.md).
+            // 목록을 본 뒤 파기 배치가 지나갔다(retention.md) — 목록은 그대로 둔다(screen/admin/system/batch/schedule/requirements.md).
             throw new BusinessException(
                     BatchHistoryErrorCode.PURGED, "배치 실행 이력 행이 없다 — " + histId);
         }
@@ -177,7 +177,7 @@ public class BatchHistoryQueryService {
     }
 
     /**
-     * 죽었는가 — screen/batch/schedule/requirements.md.
+     * 죽었는가 — screen/admin/system/batch/schedule/requirements.md.
      *
      * <p><b>임계값을 새로 만들지 않는다.</b> {@code LOCK_EXPIRY_SEC} 가 이미 그 값이며
      * (sys/batch.md <i>만료 안전망</i>) 조인해서 쓴다.

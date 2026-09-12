@@ -20,7 +20,7 @@ import org.hibernate.annotations.Nationalized;
 import org.hibernate.type.SqlTypes;
 
 /**
- * 배치 실행 이력 — sys/batch.md · screen/batch/schedule/requirements.md. <b>이력인데 갱신된다.</b>
+ * 배치 실행 이력 — sys/batch.md · screen/admin/system/batch/schedule/requirements.md. <b>이력인데 갱신된다.</b>
  *
  * <p>sys/logs.md 이 이력 행을 <i>불변</i> 으로 규정했고 이 테이블만 예외다. 이유는 하나다 —
  * <b>{@code RUNNING} 을 미리 넣기</b> 때문이며(sys/batch.md), 그렇게 하지 않으면 프로세스가
@@ -28,7 +28,7 @@ import org.hibernate.type.SqlTypes;
  *
  * <p>그 대가로 <b>{@code END_DTM} 이 NULL 인 채 오래 남은 행</b>이 생기고, 그것이 곧
  * 비정상 종료의 증거다 — 화면이 {@code LOCK_EXPIRY_SEC} 를 조인해 <b>유령</b>으로
- * 판정한다(screen/batch/schedule/requirements.md). <b>화면이 정리하지는 않는다</b>: 유령을 {@code FAIL} 로 바꾸는 것은
+ * 판정한다(screen/admin/system/batch/schedule/requirements.md). <b>화면이 정리하지는 않는다</b>: 유령을 {@code FAIL} 로 바꾸는 것은
  * 락 만료 안전망의 일이며, 버튼을 두면 정리 주체가 둘이 된다.
  *
  * <h2>감사 4컬럼이 없다</h2>
@@ -41,13 +41,13 @@ import org.hibernate.type.SqlTypes;
  *
  * <p>sys/batch.md. 등록을 지워도 이 행은 남으며 <b>남아야 한다</b> — sys/logs.md 의 <i>"존재하지
  * 않는 주체의 기록도 남아야 한다"</i> 와 같은 규칙이다. 이력이 삭제 게이트가 되면
- * <b>오래된 배치는 영영 못 지운다</b>(screen/batch/schedule/requirements.md). 대가는 화면의 고아이며 그것을
+ * <b>오래된 배치는 영영 못 지운다</b>(screen/admin/system/batch/schedule/requirements.md). 대가는 화면의 고아이며 그것을
  * {@code (삭제된 배치)} 로 그린다.
  *
  * <h2>긴 문자열이 <b>둘</b>이다</h2>
  *
  * <p>{@code RSLT_DTL_MSG}(처리한 대상 목록)와 {@code ERR_MSG}(예외 스택). 둘 다
- * {@code nclob} 이라 <b>목록 조회가 SELECT 하지 않고</b>(screen/batch/schedule/requirements.md) 상세 모달의 <b>탭 둘</b>이
+ * {@code nclob} 이라 <b>목록 조회가 SELECT 하지 않고</b>(screen/admin/system/batch/schedule/requirements.md) 상세 모달의 <b>탭 둘</b>이
  * 된다. 합치지 않는 이유는 축이 다르기 때문이다 — 상세는 <b>성공한 실행에도</b> 남고
  * 오류는 실패한 실행에만 남는다(sys/batch.md).
  */
@@ -98,7 +98,7 @@ public class SysBatchHistory {
     @Column(name = "START_DTM", nullable = false)
     private Instant startDtm;
 
-    /** 진행 중이면 {@code null} — screen/batch/schedule/requirements.md. */
+    /** 진행 중이면 {@code null} — screen/admin/system/batch/schedule/requirements.md. */
     @Column(name = "END_DTM")
     private Instant endDtm;
 
@@ -106,7 +106,7 @@ public class SysBatchHistory {
      * 소요 밀리초 — <b>파생 값이지만 저장한다</b>(sys/batch.md).
      *
      * <p>{@code END_DTM - START_DTM} 으로 계산하면 조회마다 벤더별 시간 차 함수를 쓰게
-     * 되고(22) <i>"오래 걸린 배치"</i> 정렬이 인덱스를 못 탄다. 그 정렬이 screen/batch/schedule/requirements.md 이 이
+     * 되고(22) <i>"오래 걸린 배치"</i> 정렬이 인덱스를 못 탄다. 그 정렬이 screen/admin/system/batch/schedule/requirements.md 이 이
      * 화면에서 정렬을 열어 둔 이유 전부다.
      */
     @Column(name = "ELAPSED_MS")
@@ -132,10 +132,10 @@ public class SysBatchHistory {
     private String errMsg;
 
     /**
-     * 중단 요청 시각 — <b>결과가 아니라 요청이다</b>(sys/batch.md · screen/batch/schedule/requirements.md).
+     * 중단 요청 시각 — <b>결과가 아니라 요청이다</b>(sys/batch.md · screen/admin/system/batch/schedule/requirements.md).
      *
      * <p>배치가 <b>체크포인트에서 읽어 가는 플래그</b>이며, 그래서 이 컬럼을 쓰는 API 가
-     * {@code SAVE} 가 아니라 {@code EXECUTE} 다(screen/batch/schedule/requirements.md) — 컬럼 쓰기가 결과 그 자체가
+     * {@code SAVE} 가 아니라 {@code EXECUTE} 다(screen/admin/system/batch/schedule/requirements.md) — 컬럼 쓰기가 결과 그 자체가
      * 아니라 <b>절차가 지나가는 통로</b>다.
      */
     @Column(name = "CANCEL_REQ_DTM")
@@ -194,7 +194,7 @@ public class SysBatchHistory {
      * <p><b>{@code CANCEL_REQ_DTM} 을 건드리지 않는다.</b> 중단을 요청했는데 배치가 그것을
      * 읽지 않고 그냥 끝난 경우가 sys/batch.md 표의 넷째 줄이며, 그때 {@code RSLT_CD} 는
      * {@code SUCCESS} 이고 요청 시각은 <b>남아 있어야 한다</b> — 화면은 그것을 거짓말하지
-     * 않는다(screen/batch/schedule/requirements.md).
+     * 않는다(screen/admin/system/batch/schedule/requirements.md).
      */
     public void finish(
             BatchResultCode rsltCd,
@@ -211,7 +211,7 @@ public class SysBatchHistory {
     }
 
     /**
-     * 유령 판정 — <b>결과를 모른 채 종결시킨다</b>(screen/batch/schedule/requirements.md).
+     * 유령 판정 — <b>결과를 모른 채 종결시킨다</b>(screen/admin/system/batch/schedule/requirements.md).
      *
      * <p>{@link #finish} 를 쓰지 않는 것이 요점이다. 그 메서드는 <b>끝난 시각을 안다</b>는
      * 전제로 소요를 계산하는데, 여기서 아는 것은 <i>판정한 시각</i>뿐이다 — 노드는 그보다
@@ -242,7 +242,7 @@ public class SysBatchHistory {
     }
 
     /**
-     * 중단 요청 — <b>한 번만 먹는다</b>(screen/batch/schedule/requirements.md).
+     * 중단 요청 — <b>한 번만 먹는다</b>(screen/admin/system/batch/schedule/requirements.md).
      *
      * <p>이미 요청된 행에 다시 시각을 쓰면 <i>언제 눌렀나</i> 가 뒤로 밀리고, 화면이 그
      * 값으로 <b>버튼을 비활성</b>하며 문구에 시각을 싣기 때문에 두 번째 요청이 첫 번째의

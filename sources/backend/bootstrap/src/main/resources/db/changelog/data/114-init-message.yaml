@@ -1,4 +1,4 @@
-# 메시지 값 — 배치별 크론 기준 시간대(screen/batch/schedule/requirements.md §4-1 · §5-1).
+# 메시지 값 — 배치별 크론 기준 시간대(screen/admin/system/batch/schedule/requirements.md §4-1 · §5-1).
 #
 # 앞의 것을 고치지 않고 파일을 더한다(playbook/changeset.md). loadData 는 CSV 의 내용을
 # 체크섬에 넣으므로 113 에 줄을 더하면 그 changeset 이 이미 돈 DB 에서 기동이 죽는다.
@@ -17,7 +17,7 @@ databaseChangeLog:
   - changeSet:
       id: data-114-message
       author: template
-      comment: 배치 시간대 컬럼과 변경 확인 문구 — screen/batch/schedule/requirements.md §4-1 · §5-1
+      comment: 배치 시간대 컬럼과 변경 확인 문구 — screen/admin/system/batch/schedule/requirements.md §4-1 · §5-1
       changes:
         - loadData:
             tableName: SYS_MESSAGE

@@ -44,16 +44,16 @@ import org.springframework.transaction.event.TransactionalEventListener;
  *
  * <h2>{@code USE_YN='N'} 은 <b>등록조차 하지 않는다</b></h2>
  *
- * <p>screen/batch/schedule/requirements.md — 크론이 남아 있어도 돌지 않으며 <b>{@code SKIP} 이력도 남지 않는다</b>.
+ * <p>screen/admin/system/batch/schedule/requirements.md — 크론이 남아 있어도 돌지 않으며 <b>{@code SKIP} 이력도 남지 않는다</b>.
  * 걸어 두고 실행할 때 끄면 <i>건너뛰었다</i> 가 되는데, <i>"안 돈다"</i> 와
- * <i>"건너뛰었다"</i> 는 다른 사건이고 실행 이력이 그 둘을 갈라야 한다(screen/batch/schedule/requirements.md).
+ * <i>"건너뛰었다"</i> 는 다른 사건이고 실행 이력이 그 둘을 갈라야 한다(screen/admin/system/batch/schedule/requirements.md).
  *
  * <h2>모든 노드가 건다 — 락이 하나만 실행시킨다</h2>
  *
  * <p>backend/persistence.md. 노드마다 크론이 깨어나고 <b>먼저 잡은 하나만</b> 돈다. 나머지는
  * {@code SKIP_LOCK} 을 남기며 그것이 <b>다중화에서는 정상</b>이다 — 노드 3대에서 한 주기에
  * {@code SUCCESS} 1 + {@code SKIP_LOCK} 2 가 나오면 락이 제대로 동작한 것이고, 그 셋이
- * 안 보이면 오히려 이상하다(screen/batch/schedule/requirements.md).
+ * 안 보이면 오히려 이상하다(screen/admin/system/batch/schedule/requirements.md).
  *
  * <h2>기동 시 전건 재검증 — 저장이 막는 것을 여기서 <b>다시</b> 본다</h2>
  *
@@ -73,7 +73,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
  *           바꾸는</b> 셈이고, 그것은 고치는 것이 아니라 키우는 것이다</td></tr>
  * </table>
  *
- * <p>둘째는 screen/batch/schedule/requirements.md 가 저장에서 막는 바로 그 관계이며, 막힌 그것이 <b>왜 사고인가</b> 는
+ * <p>둘째는 screen/admin/system/batch/schedule/requirements.md 가 저장에서 막는 바로 그 관계이며, 막힌 그것이 <b>왜 사고인가</b> 는
  * {@code SysBatchHistoryRepository#findLastAttemptStart} 에 적혀 있다 — 그 톱니바퀴가
  * 지금은 풀렸지만, 풀렸다고 해서 <b>매 주기 건너뜀이 쌓이는 등록</b>이 정상이 되지는
  * 않는다. 로그가 그것을 이름으로 부르는 유일한 자리다.
@@ -118,7 +118,7 @@ public class BatchScheduler {
     }
 
     /**
-     * 저장이 <b>커밋된 뒤</b> — screen/batch/schedule/requirements.md 의 저장 후 재조회와 같은 순서 규약이다.
+     * 저장이 <b>커밋된 뒤</b> — screen/admin/system/batch/schedule/requirements.md 의 저장 후 재조회와 같은 순서 규약이다.
      *
      * <p>{@code AFTER_COMMIT} 이 아니면 롤백된 저장으로 크론을 걸게 되고, 그러면
      * <b>DB 에 없는 등록이 돌아</b> 이력에 행을 남긴다 — 그 행의 {@code BATCH_ID} 로는
@@ -172,7 +172,7 @@ public class BatchScheduler {
         if (!cooldownTooLong.isEmpty()) {
             log.warn(
                     "쿨다운이 크론 주기 이상이라 주기마다 건너뛰는 등록 — {}."
-                            + " 저장 화면은 이 조합을 거부한다(screen/batch/schedule/requirements.md) — 시드나 직접 UPDATE 로 들어온 값이다",
+                            + " 저장 화면은 이 조합을 거부한다(screen/admin/system/batch/schedule/requirements.md) — 시드나 직접 UPDATE 로 들어온 값이다",
                     cooldownTooLong);
         }
     }

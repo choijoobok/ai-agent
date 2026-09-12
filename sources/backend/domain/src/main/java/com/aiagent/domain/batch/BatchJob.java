@@ -9,7 +9,7 @@ package com.aiagent.domain.batch;
  * <p><b>시스템 배치는 다르다.</b> 보존 파기({@code RetentionPurgeJob} · LOG-07)가 하나 있고,
  * 그것은 지어낸 것이 아니라 32 가 <b>이미 정책으로 정해 둔</b> 기능이다 — 없으면 이력
  * 테이블이 무한히 자란다. 그래서 스케줄 관리 화면의 {@code BEAN_ID} 셀렉트에는 <b>값이
- * 하나</b> 있고, 사용 프로젝트가 늘리는 것은 그 옆이다(screen/batch/schedule/requirements.md).
+ * 하나</b> 있고, 사용 프로젝트가 늘리는 것은 그 옆이다(screen/admin/system/batch/schedule/requirements.md).
  *
  * <h2>빈 이름이 곧 {@code BEAN_ID} 다</h2>
  *
@@ -26,7 +26,7 @@ package com.aiagent.domain.batch;
  *
  * <h2>취소는 <b>물어보는 쪽</b>이 협조해야 성립한다</h2>
  *
- * <p>screen/batch/schedule/requirements.md · sys/batch.md — 배치는 <b>다른 노드에서 돌 수 있으므로</b> 스레드를 직접 끊을 수
+ * <p>screen/admin/system/batch/schedule/requirements.md · sys/batch.md — 배치는 <b>다른 노드에서 돌 수 있으므로</b> 스레드를 직접 끊을 수
  * 없다. {@link BatchJobContext#isCancelRequested()} 를 체크포인트마다 읽고 스스로 멈추는
  * 것이 <b>이 인터페이스의 계약</b>이며, 읽지 않는 구현은 끝까지 돌고 {@code SUCCESS} 로
  * 끝난다 — <b>화면은 그것을 거짓말하지 않는다</b>(sys/batch.md 표의 넷째 줄).
@@ -35,7 +35,7 @@ package com.aiagent.domain.batch;
  * 그냥 {@code of(...)} 로 돌려주면 러너는 <i>확인하지 않고 끝까지 돈 배치</i> 와 구분할
  * 수 없고, 그 구분이 sys/batch.md 표의 셋째 줄과 넷째 줄이다.
  *
- * <p><b>확인하지 않는 구현을 빌드가 막지 못한다</b>(screen/batch/schedule/requirements.md 의 미결). 인터페이스로 표현할 수
+ * <p><b>확인하지 않는 구현을 빌드가 막지 못한다</b>(screen/admin/system/batch/schedule/requirements.md 의 미결). 인터페이스로 표현할 수
  * 있는 것은 <i>물어볼 수단을 준다</i> 까지이며, <i>물어봤는가</i> 는 정적으로 알 수 없다.
  * 그래서 여기서는 <b>계약을 문서로 못박고</b> 화면이 그 결과를 정직하게 그리는 쪽을 택했다.
  *

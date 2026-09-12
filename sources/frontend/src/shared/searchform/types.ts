@@ -38,7 +38,7 @@ export type SearchOp =
   | 'isNotNull'
   | 'between'
   /**
-   * 크기 계열의 <b>둘째 실물</b> — screen/batch/schedule/requirements.md 이 처음 요구했다.
+   * 크기 계열의 <b>둘째 실물</b> — screen/admin/system/batch/schedule/requirements.md 이 처음 요구했다.
    *
    * <p>*"10분 넘게 걸린 것"* 으로 좁힌 뒤 소요 정렬로 훑는 것이 배치 실행 이력의 성능
    * 진단 동선이며, 그 조건이 {@code >=} 다.
@@ -149,7 +149,7 @@ export interface SearchField {
    * <b>화면 단위 → 저장 단위</b>의 배수 — frontend/search-form.md.
    *
    * <p>`{ field: 'elapsedMs', op: 'gte', scale: 1000 }` 이면 <b>초로 받아 ms 로 보낸다</b>.
-   * screen/batch/schedule/requirements.md 의 *소요 시간 이상* 이 첫 사례이며, 저장이 ms 인 것은 sys/batch.md 의 결정이다
+   * screen/admin/system/batch/schedule/requirements.md 의 *소요 시간 이상* 이 첫 사례이며, 저장이 ms 인 것은 sys/batch.md 의 결정이다
    * (벤더별 시간 차 함수를 피한다) — 그렇다고 사람이 `600000` 을 입력하지는 않는다.
    *
    * <p><b>함수가 아니라 배수인 이유</b>: 비선형 변환이 필요해지면 그것은 단위가 아니라

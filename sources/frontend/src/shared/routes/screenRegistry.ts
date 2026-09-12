@@ -68,8 +68,8 @@ export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
   '/noti-request': lazy(async () => ({
     default: (await import('@/features/notirequest/pages/NotiRequestPage')).NotiRequestPage,
   })),
-  '/batch/schedule': lazy(async () => ({
-    default: (await import('@/features/batchschedule/pages/BatchSchedulePage'))
+  '/admin/system/batch/schedule': lazy(async () => ({
+    default: (await import('@/modules/system/features/batchschedule/pages/BatchSchedulePage'))
       .BatchSchedulePage,
   })),
   '/batch/history': lazy(async () => ({

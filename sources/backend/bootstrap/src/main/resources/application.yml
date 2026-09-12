@@ -295,7 +295,7 @@ sys-config:
   # 알림 정책 — screen/notice/requirements.md 의 생산자 셋. 화면 값(ui.noti.*)과 층이 다르다: 저쪽은 몇 줄을
   # 그리는가이고 여기는 누구에게 언제 보내는가다.
   #
-  # 채널 키가 없다 — 채널이 인앱뿐이면 채널 설정이 없다(screen/notice/requirements.md). screen/batch/schedule/requirements.md 이 BATCH-06 을
+  # 채널 키가 없다 — 채널이 인앱뿐이면 채널 설정이 없다(screen/notice/requirements.md). screen/admin/system/batch/schedule/requirements.md 이 BATCH-06 을
   # "수신 대상과 채널" 로 남겼는데 그중 하나가 여기서 사라졌다.
   noti:
     # 배치 실패를 받을 역할(BATCH-06). 비우면 보내지 않는다 — 배치별 on/off 를 두지 않는

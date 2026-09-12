@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
- * 중단 요청 — BATCH-05 · screen/batch/schedule/requirements.md. <b>요청까지가 화면의 책임이다.</b>
+ * 중단 요청 — BATCH-05 · screen/admin/system/batch/schedule/requirements.md. <b>요청까지가 화면의 책임이다.</b>
  *
  * <p>협조적 중단이라 이 서비스가 하는 일은 {@code CANCEL_REQ_DTM} 을 세우는 것 하나다.
  * 그래서 검사할 것도 <b>세울 수 있는가</b>와 <b>이미 세워져 있는가</b> 둘뿐이며, 그 둘을
@@ -132,7 +132,7 @@ class BatchCancelServiceTest {
         assertThat(skipped.getRsltCd().isFinished()).isTrue();
         /*
           <b>소요가 0 이지 null 이 아니다</b> — null 로 두면 소요 정렬에서 <b>유령과 같은
-          자리</b>에 선다. 건너뜀은 끝난 사건이고 유령은 끝나지 않은 사건이다(screen/batch/schedule/requirements.md).
+          자리</b>에 선다. 건너뜀은 끝난 사건이고 유령은 끝나지 않은 사건이다(screen/admin/system/batch/schedule/requirements.md).
         */
         assertThat(skipped.getElapsedMs()).isZero();
         assertThat(skipped.getEndDtm()).isEqualTo(NOW);

@@ -1062,7 +1062,7 @@ export const MSG = {
   /**
    * 연산자 셀렉터 — <b>이상</b>(`>=`). 크기 계열의 둘째 실물이다(frontend/search-form.md).
    *
-   * <p>screen/batch/schedule/requirements.md 의 *소요 시간 이상* 이 처음 요구했다.
+   * <p>screen/admin/system/batch/schedule/requirements.md 의 *소요 시간 이상* 이 처음 요구했다.
    */
   SEARCH_OP_GTE: 'search.op.gte',
   /**
@@ -2434,9 +2434,9 @@ export const MSG = {
    */
   USER_AUTH_PERIOD_REVERSED: 'userAuth.period.reversed',
 
-  // ── duration 렌더러 (frontend/grid.md · screen/batch/schedule/requirements.md) ─────────────────────
+  // ── duration 렌더러 (frontend/grid.md · screen/admin/system/batch/schedule/requirements.md) ─────────────────────
   //
-  // **형식 자체가 메시지다.** screen/batch/schedule/requirements.md 이 *"`1시간 2분 5초` 인지 `01:02:05` 인지, 다국어에서
+  // **형식 자체가 메시지다.** screen/admin/system/batch/schedule/requirements.md 이 *"`1시간 2분 5초` 인지 `01:02:05` 인지, 다국어에서
   // 갈린다"* 를 미결로 남겼는데, 갈리는 것이 맞으므로 소스가 조립하지 않는다 — 조립하면
   // 언어가 늘 때마다 소스를 고쳐야 하고 그것이 90 이 막으려는 것이다.
   //
@@ -2457,7 +2457,7 @@ export const MSG = {
    */
   GRID_DURATION_SUB: 'grid.duration.sub',
 
-  // ── 배치 결과·실행 구분의 라벨 (screen/batch/schedule/requirements.md) ────────────────────
+  // ── 배치 결과·실행 구분의 라벨 (screen/admin/system/batch/schedule/requirements.md) ────────────────────
   //
   // **공통코드가 아니다.** 값은 소스가 갖고(`BatchResultCode` · `BatchExecType`) 라벨만
   // 여기 있다 — 관리자가 늘릴 일이 없고, 공통코드로 두면 `SYS_YN='Y'` 로 잠가야 하는데
@@ -2465,20 +2465,20 @@ export const MSG = {
   //
   // 색은 여기 없다 — 값이 일곱이고 색이 넷이라 `tone` 맵이 화면의 것이다(frontend/grid.md).
 
-  /** 진행 중 — 배지 `none`. 오래 남으면 유령이다(screen/batch/schedule/requirements.md). */
+  /** 진행 중 — 배지 `none`. 오래 남으면 유령이다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_RSLT_RUNNING: 'batch.rslt.RUNNING',
   /** 정상 종료 — 배지 `ok`. */
   BATCH_RSLT_SUCCESS: 'batch.rslt.SUCCESS',
   /** 예외 종료 — 배지 `err`. */
   BATCH_RSLT_FAIL: 'batch.rslt.FAIL',
-  /** 락 선점 실패 — <b>다중화에서는 정상</b>이라 배지가 `muted` 다(screen/batch/schedule/requirements.md). */
+  /** 락 선점 실패 — <b>다중화에서는 정상</b>이라 배지가 `muted` 다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_RSLT_SKIP_LOCK: 'batch.rslt.SKIP_LOCK',
   /** 쿨다운에 막힘 — <b>나면 안 되는 일</b>이라 `warn` 이다(backend/persistence.md). */
   BATCH_RSLT_SKIP_COOLDOWN: 'batch.rslt.SKIP_COOLDOWN',
   /** 사람이 중단시켰고 배치가 그것을 읽었다 — 배지 `muted`. */
   BATCH_RSLT_CANCELED: 'batch.rslt.CANCELED',
   /**
-   * 실행하던 노드가 사라져 <b>결과를 모른다</b> — 배지 `err` (screen/batch/schedule/requirements.md).
+   * 실행하던 노드가 사라져 <b>결과를 모른다</b> — 배지 `err` (screen/admin/system/batch/schedule/requirements.md).
    *
    * <p>`FAIL` 과 가르는 이유는 <b>스택이 없다</b>는 것이다. 죽은 것은 배치가 아니라
    * 프로세스이고, 같은 색을 쓰되 <b>다른 글자</b>여야 스택을 찾다 못 찾은 사람이
@@ -2490,11 +2490,11 @@ export const MSG = {
   /** 사람이 즉시 실행을 눌렀다 — 쿨다운을 우회한 실행이다(backend/persistence.md). */
   BATCH_EXEC_MANUAL: 'batch.execType.MANUAL',
 
-  // ── 배치 스케줄 관리 (screen/batch/schedule/requirements.md) ────────────────────────────────
+  // ── 배치 스케줄 관리 (screen/admin/system/batch/schedule/requirements.md) ────────────────────────────────
 
   /** 마스터 그리드의 제목. */
   BATCH_SCHEDULE_GRID_TITLE: 'batchSchedule.grid.title',
-  /** 순서 컬럼 — <b>사람이 정한다</b>. 드래그가 아니라 숫자다(screen/batch/schedule/requirements.md). */
+  /** 순서 컬럼 — <b>사람이 정한다</b>. 드래그가 아니라 숫자다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_COL_SORT_NO: 'batchSchedule.col.sortNo',
   /** 배치 ID 컬럼 — PK 이자 <b>락 키</b>다(backend/persistence.md). */
   BATCH_SCHEDULE_COL_BATCH_ID: 'batchSchedule.col.batchId',
@@ -2502,27 +2502,27 @@ export const MSG = {
   BATCH_SCHEDULE_COL_BATCH_NM: 'batchSchedule.col.batchNm',
   /** 설명 컬럼 — <b>끄면 무엇이 멈추는가</b>를 적는 자리다(sys/batch.md). 필수다. */
   BATCH_SCHEDULE_COL_BATCH_DESC: 'batchSchedule.col.batchDesc',
-  /** 실행 빈 컬럼 — 타이핑이 아니라 <b>고르는 것</b>이다(screen/batch/schedule/requirements.md). */
+  /** 실행 빈 컬럼 — 타이핑이 아니라 <b>고르는 것</b>이다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_COL_BEAN_ID: 'batchSchedule.col.beanId',
-  /** 크론 컬럼 — 저장이 쿨다운과의 관계를 검증한다(screen/batch/schedule/requirements.md). */
+  /** 크론 컬럼 — 저장이 쿨다운과의 관계를 검증한다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_COL_CRON: 'batchSchedule.col.cron',
   /**
-   * 시간대 컬럼 — 크론을 <b>어느 시간대로 읽나</b>(screen/batch/schedule/requirements.md §4-1).
+   * 시간대 컬럼 — 크론을 <b>어느 시간대로 읽나</b>(screen/admin/system/batch/schedule/requirements.md §4-1).
    *
    * <p>식은 변환되지 않고 그대로 저장된다. 신규 행은 서버의 업무 시간대로 채워진다.
    */
   BATCH_SCHEDULE_COL_TIMEZONE: 'batchSchedule.col.timezone',
-  /** 다음 실행 컬럼 — <b>서버가 계산한다</b>. 크론을 눈으로 확인시킨다(screen/batch/schedule/requirements.md). */
+  /** 다음 실행 컬럼 — <b>서버가 계산한다</b>. 크론을 눈으로 확인시킨다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_COL_NEXT_EXEC: 'batchSchedule.col.nextExec',
-  /** 파라미터 컬럼 — `nclob` 이 아니므로 `[보기]` 가 아니라 `textModal` 이다(screen/batch/schedule/requirements.md). */
+  /** 파라미터 컬럼 — `nclob` 이 아니므로 `[보기]` 가 아니라 `textModal` 이다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_COL_PARAM: 'batchSchedule.col.paramJson',
-  /** 락 만료 컬럼 — 장애 안전망이며 유령 판정의 임계값이기도 하다(screen/batch/schedule/requirements.md). */
+  /** 락 만료 컬럼 — 장애 안전망이며 유령 판정의 임계값이기도 하다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_COL_LOCK_EXPIRY: 'batchSchedule.col.lockExpiry',
-  /** 쿨다운 컬럼 — 크론과 비교된다(screen/batch/schedule/requirements.md). */
+  /** 쿨다운 컬럼 — 크론과 비교된다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_COL_COOLDOWN: 'batchSchedule.col.cooldown',
-  /** 사용 컬럼 — 스위치지만 <b>즉시 저장이 아니다</b>(screen/batch/schedule/requirements.md). */
+  /** 사용 컬럼 — 스위치지만 <b>즉시 저장이 아니다</b>(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_COL_USE_YN: 'batchSchedule.col.useYn',
-  /** 최근 결과 컬럼 — 하단 pane 첫 행과 같은 값이다(screen/batch/schedule/requirements.md). */
+  /** 최근 결과 컬럼 — 하단 pane 첫 행과 같은 값이다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_COL_LAST_RSLT: 'batchSchedule.col.lastRslt',
 
   /** 조회조건 — 배치명. */
@@ -2548,12 +2548,12 @@ export const MSG = {
 
   /** 0건 — 등록 자체가 없다. */
   BATCH_SCHEDULE_EMPTY: 'batchSchedule.empty',
-  /** 파라미터 셀의 컬럼 검증 — 프론트가 `JSON.parse` 로 즉시 판정한다(screen/batch/schedule/requirements.md). */
+  /** 파라미터 셀의 컬럼 검증 — 프론트가 `JSON.parse` 로 즉시 판정한다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_PARAM_INVALID: 'batchSchedule.paramInvalid',
   /** 같은 그리드 안에 같은 배치 ID 가 둘이다 — 화면이 판정할 수 있는 중복이다(frontend/grid.md). */
   BATCH_SCHEDULE_DUPLICATE: 'batchSchedule.duplicate',
 
-  /** 저장 확인의 첫 줄 — 끄는 배치가 `{count}` 건 있다(screen/batch/schedule/requirements.md). */
+  /** 저장 확인의 첫 줄 — 끄는 배치가 `{count}` 건 있다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_WARN_DISABLE: 'batchSchedule.warn.disable',
   /**
    * 그 목록의 한 줄 — `{name}` `{batchId}`. <b>다음 줄에 설명이 그대로 붙는다.</b>
@@ -2564,7 +2564,7 @@ export const MSG = {
   BATCH_SCHEDULE_WARN_DISABLE_ITEM: 'batchSchedule.warn.disableItem',
 
   /**
-   * 저장 확인 — 시간대를 바꾼 배치가 `{count}` 건 있다(screen/batch/schedule/requirements.md §5-1).
+   * 저장 확인 — 시간대를 바꾼 배치가 `{count}` 건 있다(screen/admin/system/batch/schedule/requirements.md §5-1).
    *
    * <p><b>크론이 그대로라 경고가 필요하다.</b> 화면상 달라진 것은 한 칸인데 실제 실행
    * 시각은 몇 시간 옮겨진다 — 보이는 변화의 크기와 결과의 크기가 어긋나는 자리다.
@@ -2575,28 +2575,28 @@ export const MSG = {
 
   /** 삭제 게이트 — 켜져 있다. <b>대안까지 말한다</b>(먼저 끄세요). */
   BATCH_SCHEDULE_DELETE_ENABLED: 'batchSchedule.delete.enabled',
-  /** 삭제 게이트 — 실행 중이다. 락이 잡힌 채 등록이 사라지면 안 된다(screen/batch/schedule/requirements.md). */
+  /** 삭제 게이트 — 실행 중이다. 락이 잡힌 채 등록이 사라지면 안 된다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_DELETE_RUNNING: 'batchSchedule.delete.running',
 
-  /** ①의 실행 — 즉시 실행(BATCH-02). 액션은 `EXECUTE` 다(screen/batch/schedule/requirements.md). */
+  /** ①의 실행 — 즉시 실행(BATCH-02). 액션은 `EXECUTE` 다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_ACTION_RUN: 'batchSchedule.action.runNow',
-  /** 실행 앞의 검증 — 미저장 변경이 있으면 막는다(screen/batch/schedule/requirements.md). */
+  /** 실행 앞의 검증 — 미저장 변경이 있으면 막는다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_RUN_UNSAVED: 'batchSchedule.run.unsaved',
   /** 실행 결과 모달의 제목 — 성공/실패를 건별로 낸다(frontend/grid.md). */
   BATCH_SCHEDULE_RUN_TITLE: 'batchSchedule.run.title',
-  /** 그중 시작한 것 — `{count}`. 진행은 하단 pane 의 `RUNNING` 행이 보여준다(screen/batch/schedule/requirements.md). */
+  /** 그중 시작한 것 — `{count}`. 진행은 하단 pane 의 `RUNNING` 행이 보여준다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_RUN_STARTED: 'batchSchedule.run.started',
   /**
    * 거절 — `{batchId}` `{node}` `{time}`.
    *
-   * <p><b>노드와 시각이 요점이다</b>(screen/batch/schedule/requirements.md). *"실행 중입니다"* 만 내면 운영자는 얼마나
+   * <p><b>노드와 시각이 요점이다</b>(screen/admin/system/batch/schedule/requirements.md). *"실행 중입니다"* 만 내면 운영자는 얼마나
    * 기다려야 하는지 모른다 — backend/persistence.md 이 `NODE_ID` 를 남긴 것과 같은 이유다.
    */
   BATCH_SCHEDULE_RUN_REJECTED_NODE: 'batchSchedule.run.rejectedNode',
   /** 거절인데 노드를 모른다 — 락은 잡혔는데 `RUNNING` 이력이 아직 없는 짧은 창이다. */
   BATCH_SCHEDULE_RUN_REJECTED: 'batchSchedule.run.rejected',
 
-  /** 하단 pane 의 제목 — 탭이 아니라 pane 하나다(screen/batch/schedule/requirements.md). */
+  /** 하단 pane 의 제목 — 탭이 아니라 pane 하나다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_SCHEDULE_RECENT_TITLE: 'batchSchedule.recent.title',
   /** 하단 빈 상태 — 아직 아무 배치도 고르지 않았다(frontend/grid.md). */
   BATCH_SCHEDULE_RECENT_EMPTY: 'batchSchedule.recent.empty',
@@ -2605,64 +2605,64 @@ export const MSG = {
   /**
    * 하단 빈 상태 — <b>고른 배치가 한 번도 안 돌았다</b>.
    *
-   * <p>위 둘과 다른 사실이다. screen/batch/schedule/requirements.md 이 *"행이 없으면 꺼져 있는 것"* 이라고 한 그 신호이며,
+   * <p>위 둘과 다른 사실이다. screen/admin/system/batch/schedule/requirements.md 이 *"행이 없으면 꺼져 있는 것"* 이라고 한 그 신호이며,
    * *"선택하세요"* 로 뭉치면 <b>조사하러 온 사람이 아무것도 못 읽는다</b>.
    */
   BATCH_SCHEDULE_RECENT_NONE: 'batchSchedule.recent.none',
 
-  // ── 배치 실행 이력 (screen/batch/schedule/requirements.md) ──────────────────────────────────
+  // ── 배치 실행 이력 (screen/admin/system/batch/schedule/requirements.md) ──────────────────────────────────
 
   /** 마스터 그리드의 제목. */
   BATCH_HISTORY_GRID_TITLE: 'batchHistory.grid.title',
   /** 시작 컬럼 — <b>기본 정렬</b>(내림)이다. */
   BATCH_HISTORY_COL_START: 'batchHistory.col.startDtm',
-  /** 배치 ID 컬럼 — 더블 클릭하면 `BATCH_SCHEDULE` 이 그 배치로 열린다(screen/batch/schedule/requirements.md). */
+  /** 배치 ID 컬럼 — 더블 클릭하면 `BATCH_SCHEDULE` 이 그 배치로 열린다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_COL_BATCH_ID: 'batchHistory.col.batchId',
-  /** 배치명 컬럼 — 조인이며 없으면 `(삭제된 배치)` 다(screen/batch/schedule/requirements.md). */
+  /** 배치명 컬럼 — 조인이며 없으면 `(삭제된 배치)` 다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_COL_BATCH_NM: 'batchHistory.col.batchNm',
-  /** 실행 구분 컬럼 — 스케줄 · 수동. 중복 진단의 첫 단계다(screen/batch/schedule/requirements.md). */
+  /** 실행 구분 컬럼 — 스케줄 · 수동. 중복 진단의 첫 단계다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_COL_EXEC_TYPE: 'batchHistory.col.execType',
-  /** 결과 컬럼 — 배지. 색은 `tone` 맵이 정한다(screen/batch/schedule/requirements.md). */
+  /** 결과 컬럼 — 배지. 색은 `tone` 맵이 정한다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_COL_RSLT: 'batchHistory.col.rslt',
-  /** 소요 컬럼 — <b>정렬이 이 화면의 핵심</b>이다(screen/batch/schedule/requirements.md). 값은 ms 원본이다. */
+  /** 소요 컬럼 — <b>정렬이 이 화면의 핵심</b>이다(screen/admin/system/batch/schedule/requirements.md). 값은 ms 원본이다. */
   BATCH_HISTORY_COL_ELAPSED: 'batchHistory.col.elapsed',
   /** 요약 컬럼 — `VARCHAR(1000)` 이라 <b>셀에 싣는다</b>(sys/batch.md). */
   BATCH_HISTORY_COL_RSLT_MSG: 'batchHistory.col.rsltMsg',
-  /** 상세 컬럼 — 파생이며 셀에 그려지는 것은 `[보기]` 다(screen/batch/schedule/requirements.md). */
+  /** 상세 컬럼 — 파생이며 셀에 그려지는 것은 `[보기]` 다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_COL_DETAIL: 'batchHistory.col.detail',
-  /** 종료 컬럼 — <b>NULL 이면 진행 중</b>이다(screen/batch/schedule/requirements.md). */
+  /** 종료 컬럼 — <b>NULL 이면 진행 중</b>이다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_COL_END: 'batchHistory.col.endDtm',
-  /** 노드 컬럼 — 기본 숨김이며 <b>중복이 의심될 때 켠다</b>(screen/batch/schedule/requirements.md). */
+  /** 노드 컬럼 — 기본 숨김이며 <b>중복이 의심될 때 켠다</b>(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_COL_NODE: 'batchHistory.col.nodeId',
   /** 중단 요청 컬럼 — 결과가 아니라 <b>요청</b>이다(sys/batch.md). */
   BATCH_HISTORY_COL_CANCEL_REQ: 'batchHistory.col.cancelReq',
   /** 순번 컬럼 — PK 이자 tie-breaker. */
   BATCH_HISTORY_COL_HIST_ID: 'batchHistory.col.histId',
 
-  /** 상세 셀에 그려지는 글자 — 값이 아니다(screen/batch/schedule/requirements.md). 엑셀은 원본 값을 쓴다(frontend/grid.md). */
+  /** 상세 셀에 그려지는 글자 — 값이 아니다(screen/admin/system/batch/schedule/requirements.md). 엑셀은 원본 값을 쓴다(frontend/grid.md). */
   BATCH_HISTORY_DETAIL_LINK: 'batchHistory.detail.link',
   /** 배치명이 비었을 때 — <b>이름을 지어내지 않는다</b>(screen/admin/system/log/access/requirements.md 와 같은 판단). */
   BATCH_HISTORY_DELETED_BATCH: 'batchHistory.deletedBatch',
-  /** `RUNNING` 인데 락 만료를 넘긴 행의 배지 — 죽었다는 뜻이다(screen/batch/schedule/requirements.md). */
+  /** `RUNNING` 인데 락 만료를 넘긴 행의 배지 — 죽었다는 뜻이다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_GHOST: 'batchHistory.ghost',
   /** 그 배지의 툴팁 — 왜 유령이라고 부르는지 말한다. */
   BATCH_HISTORY_GHOST_TIP: 'batchHistory.ghostTip',
-  /** 중단 버튼이 비활성인 이유 — `{time}` 에 이미 요청됐다(screen/batch/schedule/requirements.md). */
+  /** 중단 버튼이 비활성인 이유 — `{time}` 에 이미 요청됐다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_CANCELING: 'batchHistory.canceling',
 
-  /** 조회조건 — 시작 일시. <b>필수가 아니다</b>. 기본값만 둔다(screen/batch/schedule/requirements.md). */
+  /** 조회조건 — 시작 일시. <b>필수가 아니다</b>. 기본값만 둔다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_SEARCH_START: 'batchHistory.search.startDtm',
   /** 조회조건 — 배치. */
   BATCH_HISTORY_SEARCH_BATCH: 'batchHistory.search.batchId',
   /** 조회조건 — 결과(다중). */
   BATCH_HISTORY_SEARCH_RSLT: 'batchHistory.search.rsltCd',
-  /** 조회조건 — 결과 묶음. 파생 조건의 <b>네 번째 사례</b>다(screen/batch/schedule/requirements.md). */
+  /** 조회조건 — 결과 묶음. 파생 조건의 <b>네 번째 사례</b>다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_SEARCH_GROUP: 'batchHistory.search.rsltGroup',
   /** 조회조건 — 실행 구분. */
   BATCH_HISTORY_SEARCH_EXEC_TYPE: 'batchHistory.search.execType',
-  /** 조회조건 — 노드. 특정 노드만 보는 것이 진단의 한 단계다(screen/batch/schedule/requirements.md). */
+  /** 조회조건 — 노드. 특정 노드만 보는 것이 진단의 한 단계다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_SEARCH_NODE: 'batchHistory.search.nodeId',
-  /** 조회조건 — 소요 시간 이상(초). <b>입력은 초, 전송은 ms</b> 다(screen/batch/schedule/requirements.md). */
+  /** 조회조건 — 소요 시간 이상(초). <b>입력은 초, 전송은 ms</b> 다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_SEARCH_ELAPSED: 'batchHistory.search.elapsed',
   /** 결과 묶음의 후보 — 실패만(`FAIL` + `CANCELED`). */
   BATCH_HISTORY_GROUP_FAILED: 'batchHistory.group.failed',
@@ -2671,17 +2671,17 @@ export const MSG = {
 
   /** 0건 — 조건 없이 물었을 때. */
   BATCH_HISTORY_EMPTY: 'batchHistory.empty',
-  /** 0건인데 <b>답이다</b> — *실패만* 으로 물어 0건이면 이 기간에 실패가 없었다(screen/batch/schedule/requirements.md). */
+  /** 0건인데 <b>답이다</b> — *실패만* 으로 물어 0건이면 이 기간에 실패가 없었다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_EMPTY_FAILED: 'batchHistory.emptyFailed',
   /** 0건인데 답이다 — *건너뜀만* 으로 물어 0건이면 락도 쿨다운도 걸리지 않았다. */
   BATCH_HISTORY_EMPTY_SKIPPED: 'batchHistory.emptySkipped',
   /** 푸터 주석 — 보존 1년(retention.md). 없는 것과 파기된 것을 사용자가 가를 수 있게 한다. */
   BATCH_HISTORY_RETENTION: 'batchHistory.retention',
 
-  /** ①의 실행 — 중단(BATCH-05). 액션은 `EXECUTE` 다(screen/batch/schedule/requirements.md). */
+  /** ①의 실행 — 중단(BATCH-05). 액션은 `EXECUTE` 다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_ACTION_CANCEL: 'batchHistory.action.cancel',
   /**
-   * 확인 문구 — `{count}`. <b>*"중단합니다"* 가 아니다</b>(screen/batch/schedule/requirements.md).
+   * 확인 문구 — `{count}`. <b>*"중단합니다"* 가 아니다</b>(screen/admin/system/batch/schedule/requirements.md).
    *
    * <p>협조적 중단이라 <b>요청까지가 화면의 책임</b>이고, 그것을 말하지 않으면 안 멈췄을 때
    * 화면이 거짓말한 것이 된다.
@@ -2689,10 +2689,10 @@ export const MSG = {
   BATCH_HISTORY_CANCEL_CONFIRM: 'batchHistory.cancel.confirm',
   /** 결과 — `{count}` 건에 요청했다. 멈추는 시점은 배치의 체크포인트다. */
   BATCH_HISTORY_CANCEL_DONE: 'batchHistory.cancel.done',
-  /** 결과 — `{count}` 건은 이미 요청돼 있었다. <b>오류가 아니다</b>(screen/batch/schedule/requirements.md). */
+  /** 결과 — `{count}` 건은 이미 요청돼 있었다. <b>오류가 아니다</b>(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_CANCEL_ALREADY: 'batchHistory.cancel.already',
 
-  /** 상세 모달의 제목 — <b>탭 둘</b>이다(screen/batch/schedule/requirements.md). */
+  /** 상세 모달의 제목 — <b>탭 둘</b>이다(screen/admin/system/batch/schedule/requirements.md). */
   BATCH_HISTORY_DETAIL_TITLE: 'batchHistory.detail.title',
   /** 탭 — 결과 상세(`RSLT_DTL_MSG`). 처리한 대상 목록이다(sys/batch.md). */
   BATCH_HISTORY_DETAIL_TAB_RESULT: 'batchHistory.detail.tabResult',

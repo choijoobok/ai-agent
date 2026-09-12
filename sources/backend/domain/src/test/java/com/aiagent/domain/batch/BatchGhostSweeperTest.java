@@ -22,7 +22,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 유령 정리 — screen/batch/schedule/requirements.md. <b>판정의 증거가 시각이 아니라 락이다.</b>
+ * 유령 정리 — screen/admin/system/batch/schedule/requirements.md. <b>판정의 증거가 시각이 아니라 락이다.</b>
  *
  * <p>이 테스트가 지키는 것은 하나다: <b>오래 도는 배치를 죽었다고 부르지 않는다.</b>
  * 그것이 예전 화면 배지({@code START_DTM + LOCK_EXPIRY_SEC})가 틀린 이유이며,
@@ -127,7 +127,7 @@ class BatchGhostSweeperTest {
         assertThat(history.getEndDtm()).isEqualTo(NOW);
         /*
           판정 시각까지를 소요로 적으면 <b>사흘 걸린 배치</b>가 되어 소요 정렬을 통째로
-          망친다 — 모르는 것을 0 이나 큰 수로 적지 않는다(screen/batch/schedule/requirements.md).
+          망친다 — 모르는 것을 0 이나 큰 수로 적지 않는다(screen/admin/system/batch/schedule/requirements.md).
         */
         assertThat(history.getElapsedMs()).isNull();
         assertThat(history.getRsltCd().isFinished()).isTrue();

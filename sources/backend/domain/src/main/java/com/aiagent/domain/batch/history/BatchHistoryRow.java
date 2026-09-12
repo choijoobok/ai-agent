@@ -15,7 +15,7 @@ import java.time.Instant;
  * <i>"어느 배치가 몇 건을 처리했나"</i> 를 목록에서 읽는다 — sys/batch.md 이 요약을
  * {@code nclob} 으로 올리지 않은 이유 전부다. <b>요약은 셀에서 훑고 상세는 모달에서 읽는다.</b>
  *
- * @param batchNm 조인해 온 이름 — <b>{@code null} 이면 지워진 등록</b>이다(sys/batch.md · screen/batch/schedule/requirements.md).
+ * @param batchNm 조인해 온 이름 — <b>{@code null} 이면 지워진 등록</b>이다(sys/batch.md · screen/admin/system/batch/schedule/requirements.md).
  * 화면이 {@code (삭제된 배치)} 로 그리며 <b>이름을 지어내지 않는다</b> — screen/admin/system/log/access/requirements.md 가
  *     없는 계정에 이름을 붙이지 않기로 한 것과 같은 판단이다
  * @param elapsedMs <b>ms 원본</b>이다 — 화면이 {@code duration} 렌더러로 사람 단위로만

@@ -1,10 +1,10 @@
 import type { BatchExecType, BatchResultCode } from '@/shared/batch/batchCodes';
 
 /**
- * 실행 이력 한 행 — screen/batch/schedule/requirements.md. <b>`features/` 가 아니라 `shared/` 다.</b>
+ * 실행 이력 한 행 — screen/admin/system/batch/schedule/requirements.md. <b>`features/` 가 아니라 `shared/` 다.</b>
  *
  * <p>소비처가 둘이다 — `BATCH_HISTORY` 의 마스터와 `BATCH_SCHEDULE` 의 하단 pane
- * (screen/batch/schedule/requirements.md 가 pane 을 *"§4.2 와 같은 컬럼"* 으로 정했다). frontend/packages.md 이 <i>두 번째 화면이
+ * (screen/admin/system/batch/schedule/requirements.md 가 pane 을 *"§4.2 와 같은 컬럼"* 으로 정했다). frontend/packages.md 이 <i>두 번째 화면이
  * 쓰는 순간 `shared/` 로 올린다</i> 고 정한 그 자리이며, `features` 끼리 직접 import 하면
  * <b>폴더가 인가 경계라는 규칙</b>도 함께 흐려진다(seed.md).
  *
@@ -16,10 +16,10 @@ export interface BatchHistoryRow {
   histId: number;
   /** ISO-8601. <b>기본 정렬</b>(내림)이다. */
   startDtm: string;
-  /** 셀 더블 클릭 → `BATCH_SCHEDULE` 을 그 배치로 연다(screen/batch/schedule/requirements.md). */
+  /** 셀 더블 클릭 → `BATCH_SCHEDULE` 을 그 배치로 연다(screen/admin/system/batch/schedule/requirements.md). */
   batchId: string;
   /**
-   * 조인해 온 이름 — <b>`null` 이면 지워진 등록</b>이다(screen/batch/schedule/requirements.md).
+   * 조인해 온 이름 — <b>`null` 이면 지워진 등록</b>이다(screen/admin/system/batch/schedule/requirements.md).
    *
    * <p>이력에 FK 가 없으므로(sys/batch.md) 등록을 지워도 행은 남으며 남아야 한다. 화면은
    * `(삭제된 배치)` 로 그리고 <b>이름을 지어내지 않는다</b> — screen/admin/system/log/access/requirements.md 가 없는 계정에
@@ -29,7 +29,7 @@ export interface BatchHistoryRow {
   execTypeCd: BatchExecType;
   rsltCd: BatchResultCode;
   /**
-   * <b>ms 원본</b>이다 — 표시만 `duration` 렌더러가 바꾼다(screen/batch/schedule/requirements.md).
+   * <b>ms 원본</b>이다 — 표시만 `duration` 렌더러가 바꾼다(screen/admin/system/batch/schedule/requirements.md).
    *
    * <p>서버가 포맷한 문자열을 주면 정렬이 문자열 정렬이 되어 `9분` 이 `10분` 보다 뒤에
    * 온다. <b>정렬·필터·엑셀이 전부 이 값을 본다</b>(frontend/grid.md).
@@ -41,7 +41,7 @@ export interface BatchHistoryRow {
   /** 한 줄 요약 — `VARCHAR(1000)` 이라 <b>셀에 싣는다</b>(sys/batch.md). */
   rsltMsg: string | null;
   /**
-   * 상세 모달의 <b>탭 둘 중 하나라도 열 것이 있는가</b>(screen/batch/schedule/requirements.md).
+   * 상세 모달의 <b>탭 둘 중 하나라도 열 것이 있는가</b>(screen/admin/system/batch/schedule/requirements.md).
    *
    * <p><b>`false` 면 `[보기]` 자체가 없다</b> — 열 것이 없는데 링크를 두면 *눌러 보고서야
    * 빈 것을 아는 셀*이 된다. 대상 목록을 남기지 않는 배치의 <b>성공 행</b>이 그것이다.
@@ -49,7 +49,7 @@ export interface BatchHistoryRow {
   hasDetail: boolean;
   /** <b>`null` 이면 진행 중</b>이다. */
   endDtm: string | null;
-  /** 기본 숨김 — 평소에는 볼 일이 없고 <b>중복이 의심될 때 켠다</b>(screen/batch/schedule/requirements.md). */
+  /** 기본 숨김 — 평소에는 볼 일이 없고 <b>중복이 의심될 때 켠다</b>(screen/admin/system/batch/schedule/requirements.md). */
   nodeId: string;
   /**
    * 있는데 `rsltCd` 가 아직 `RUNNING` 이면 <b>중단 중</b>이다(sys/batch.md).

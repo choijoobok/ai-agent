@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * 배치가 실패하면 알린다 — <b>BATCH-06</b> · screen/batch/schedule/requirements.md · screen/notice/requirements.md.
+ * 배치가 실패하면 알린다 — <b>BATCH-06</b> · screen/admin/system/batch/schedule/requirements.md · screen/notice/requirements.md.
  *
  * <h2>부르는 곳이 하나다 — {@code BatchHistoryWriter}</h2>
  *
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
  *
  * <p>screen/notice/requirements.md 는 <i>"러너가 {@code FAIL} 을 적을 때"</i> 로 적었지만 {@link
  * BatchResultCode#LOST} 를 함께 넣는다 — <b>프로세스가 죽어 결과를 못 적은 실행</b>이며
- * (screen/batch/schedule/requirements.md 의 유령), 운영에서 그것은 실패보다 나쁘다: 아무도 안 죽였는데 사라졌다.
+ * (screen/admin/system/batch/schedule/requirements.md 의 유령), 운영에서 그것은 실패보다 나쁘다: 아무도 안 죽였는데 사라졌다.
  * 알리지 않으면 <b>화면을 열어 봐야만</b> 알 수 있다.
  *
  * <p>{@code SKIP_LOCK} · {@code SKIP_COOLDOWN} · {@code CANCELED} 는 아니다 — 앞의 둘은
@@ -37,7 +37,7 @@ import org.springframework.stereotype.Component;
  *
  * <h2>수신자가 역할이다</h2>
  *
- * <p>{@code sys-config.noti.batch-fail-role}(screen/notice/requirements.md). screen/batch/schedule/requirements.md 이 <i>"배치별 on/off 를
+ * <p>{@code sys-config.noti.batch-fail-role}(screen/notice/requirements.md). screen/admin/system/batch/schedule/requirements.md 이 <i>"배치별 on/off 를
  * 두면 꺼 둔 것을 잊는다"</i> 며 <b>전역 설정 하나</b>로 정한 그것이며, 채널이 인앱뿐이라
  * 채널 키는 없다.
  *
@@ -50,7 +50,7 @@ public class BatchFailNotifier {
 
     private static final Logger log = LoggerFactory.getLogger(BatchFailNotifier.class);
 
-    /** screen/batch/schedule/requirements.md 의 실행 이력 메뉴 — 알림을 누르면 그 화면이 열린다. */
+    /** screen/admin/system/batch/schedule/requirements.md 의 실행 이력 메뉴 — 알림을 누르면 그 화면이 열린다. */
     private static final String BATCH_HISTORY_MENU = "BATCH_HISTORY";
 
     private final NotificationSender notifications;
@@ -88,7 +88,7 @@ public class BatchFailNotifier {
      * <h3>{@code LINK_PARAM} 이 {@code BATCH_ID} 인 이유</h3>
      *
      * <p>넘겨주기 채널({@code handoffStore})은 <b>화면당 값 하나</b>이고 <b>무엇인지
-     * 모르는 문자열</b>이다. {@code BATCH_HISTORY} 의 그 한 자리는 이미 screen/batch/schedule/requirements.md 의 왕복이
+     * 모르는 문자열</b>이다. {@code BATCH_HISTORY} 의 그 한 자리는 이미 screen/admin/system/batch/schedule/requirements.md 의 왕복이
      * 쓰고 있으며 그 값은 <b>배치 ID</b> 다 — 실행 번호를 넣으면 받는 화면이 그것을 배치
      * ID 로 읽는다.
      *
@@ -122,11 +122,11 @@ public class BatchFailNotifier {
                   실어 보냈는데, 그것을 받는 쪽이 없다 — 넘겨주기 채널은 **화면당 값
                   하나**이고 무엇인지 모르는 문자열이며(`handoffStore`),
                   {@code BATCH_HISTORY} 의 그 한 자리는 이미 <b>배치 ID</b> 가 쓰고 있다
-                  (screen/batch/schedule/requirements.md 의 왕복). 실행 번호를 넣으면 받는 화면이 그것을 배치 ID 로
+                  (screen/admin/system/batch/schedule/requirements.md 의 왕복). 실행 번호를 넣으면 받는 화면이 그것을 배치 ID 로
                   읽어 <b>0건</b>을 보인다.
 
                   배치 ID 로 넘기면 그 배치의 실행이 조회된 채로 열리고, 방금 실패한
-                  실행이 **맨 위**다(기본 정렬이 시작 역순이다 — screen/batch/schedule/requirements.md). 실행 번호까지
+                  실행이 **맨 위**다(기본 정렬이 시작 역순이다 — screen/admin/system/batch/schedule/requirements.md). 실행 번호까지
                   집어 주는 것은 채널이 <i>무엇을</i> 넘기는지 말할 수 있게 되는 날의 일이다.
                 */
                 batchId);
@@ -134,10 +134,10 @@ public class BatchFailNotifier {
 
     /**
      * 제목에 <b>배치 이름</b>을 쓴다 — {@code BATCH_ID} 는 락 키이지 사람이 읽는 이름이
-     * 아니다(screen/batch/schedule/requirements.md).
+     * 아니다(screen/admin/system/batch/schedule/requirements.md).
      *
      * <p>이름을 못 찾으면 ID 를 그대로 쓴다. 등록이 지워진 뒤 남은 이력이 그 경우이며
-     * (screen/batch/schedule/requirements.md 이 삭제를 허용한다), <b>이름이 없다고 알림을 안 보낼 이유는 없다.</b>
+     * (screen/admin/system/batch/schedule/requirements.md 이 삭제를 허용한다), <b>이름이 없다고 알림을 안 보낼 이유는 없다.</b>
      */
     private String titleOf(String batchId, BatchResultCode rsltCd) {
         String name = batches.findById(batchId)

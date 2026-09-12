@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
  * <h2>기간이 필수가 아니다</h2>
  *
  * <p>screen/admin/system/log/access/requirements.md 의 <i>기간 필수 + 상한</i> 을 상속하지 않는다(screen/notice/requirements.md) — 근거가 대용량인데
- * 공지는 수백 건이다. screen/batch/schedule/requirements.md 이 배치 등록에 내린 것과 같은 판단이다.
+ * 공지는 수백 건이다. screen/admin/system/batch/schedule/requirements.md 이 배치 등록에 내린 것과 같은 판단이다.
  *
  * <h2>본문이 없다</h2>
  *

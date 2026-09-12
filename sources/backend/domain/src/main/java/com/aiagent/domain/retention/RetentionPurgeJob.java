@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
  *
  * <h2>템플릿의 첫 {@code BatchJob} 구현이다</h2>
  *
- * <p>screen/batch/schedule/requirements.md 은 <i>"템플릿에는 구현이 하나도 없다 — 지어내면 아무도 안 쓰는 배치가 시드에
+ * <p>screen/admin/system/batch/schedule/requirements.md 은 <i>"템플릿에는 구현이 하나도 없다 — 지어내면 아무도 안 쓰는 배치가 시드에
  * 남는다"</i> 고 적었다. 그 문장은 <b>업무 배치</b>에 대한 것이고 여기는 다르다: 파기는
  * 32 가 <b>이미 정책으로 정해 둔</b> 시스템 기능이며, 만들지 않으면 이력 테이블이 무한히
  * 자란다 — 지어낸 배치가 아니라 <b>빠져 있던 배치</b>다.

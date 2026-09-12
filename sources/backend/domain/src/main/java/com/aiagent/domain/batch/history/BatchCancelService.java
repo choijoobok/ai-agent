@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 중단 요청 — BATCH-05 · screen/batch/schedule/requirements.md. <b>요청까지가 화면의 책임이다.</b>
+ * 중단 요청 — BATCH-05 · screen/admin/system/batch/schedule/requirements.md. <b>요청까지가 화면의 책임이다.</b>
  *
  * <p>배치는 <b>다른 노드에서 돌 수 있으므로</b> 스레드를 직접 끊을 수 없다 — 협조적
  * 중단이며 배치가 체크포인트에서 플래그를 읽고 스스로 멈춘다. 그래서 이 서비스가 하는
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>{@code SAVE} 가 아니라 {@code EXECUTE} 다</h2>
  *
- * <p>screen/batch/schedule/requirements.md — {@code SYS_BATCH_HISTORY} 의 컬럼을 쓰지만 <b>컬럼 쓰기가 결과 그 자체가
+ * <p>screen/admin/system/batch/schedule/requirements.md — {@code SYS_BATCH_HISTORY} 의 컬럼을 쓰지만 <b>컬럼 쓰기가 결과 그 자체가
  * 아니라</b> 실행 중인 절차에 요청을 전달하는 <b>통로</b>다. 아무도 읽지 않으면
  * <b>아무 일도 일어나지 않는다</b> — screen/admin/system/user/requirements.md 의 잠금 해제와 갈리는 지점이 그것이다.
  * 경로 접두({@code cancel} → <i>그 외</i> → {@code EXECUTE})와 판단이 일치하므로
@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <p><b>이미 요청된 것은 다르다.</b> 그것은 <i>대상이 아니다</i> 가 아니라
  * <i>이미 됐다</i> 이므로 던지지 않고 세어서 돌려준다 — {@code CANCEL_REQ_DTM} 을 다시
- * 쓰면 <b>언제 눌렀나</b> 가 뒤로 밀리고, 화면이 그 값으로 문구를 만든다(screen/batch/schedule/requirements.md).
+ * 쓰면 <b>언제 눌렀나</b> 가 뒤로 밀리고, 화면이 그 값으로 문구를 만든다(screen/admin/system/batch/schedule/requirements.md).
  */
 @Service
 public class BatchCancelService {
@@ -63,7 +63,7 @@ public class BatchCancelService {
         List<Long> missing = new ArrayList<>(histIds);
         found.forEach(history -> missing.remove(history.getHistId()));
         if (!missing.isEmpty()) {
-            // 파기됐거나 없는 번호다 — screen/batch/schedule/requirements.md 의 그 자리이며 조용히 넘기지 않는다.
+            // 파기됐거나 없는 번호다 — screen/admin/system/batch/schedule/requirements.md 의 그 자리이며 조용히 넘기지 않는다.
             throw new BusinessException(
                     BatchHistoryErrorCode.PURGED, "없는 이력 번호다 — " + missing);
         }
@@ -91,7 +91,7 @@ public class BatchCancelService {
      * 화면이 모달에 그리는 것 — frontend/grid.md.
      *
      * <p><b>둘을 가르는 이유.</b> <i>"N건에 중단을 요청했습니다"</i> 만 내면 이미 요청돼
-     * 있던 것이 그 수에 섞여, 두 번 누른 사람이 <b>두 번 다 먹었다</b> 고 믿는다. screen/batch/schedule/requirements.md 가
+     * 있던 것이 그 수에 섞여, 두 번 누른 사람이 <b>두 번 다 먹었다</b> 고 믿는다. screen/admin/system/batch/schedule/requirements.md 가
      * <i>"버튼은 한 번만 먹는다"</i> 로 요청의 유일성을 요구했으므로 그 사실이 응답에
      * 보여야 한다.
      *

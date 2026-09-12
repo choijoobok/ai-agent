@@ -283,7 +283,7 @@ function buildColumns(): ColumnDef<NotiRequestRow>[] {
         사람* 임을 알리되 <b>처리는 막지 않는다</b> — 요청은 계정이 살아 있을 때 낸 것이다.
 
         <b>`(삭제된 사용자)` 는 없다</b>. `SYS_USER` 는 물리 삭제를 하지 않으므로
-        (USER-02 · sys/user-role.md) screen/batch/schedule/requirements.md 의 `(삭제된 배치)` 같은 고아가 생기지 않는다.
+        (USER-02 · sys/user-role.md) screen/admin/system/batch/schedule/requirements.md 의 `(삭제된 배치)` 같은 고아가 생기지 않는다.
       */
       derive: (row) => (row.userUseYn ? row.userNm : `${row.userNm} (${label(MSG.NOTI_REQUEST_USER_DISABLED)})`),
     },

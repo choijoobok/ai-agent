@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 구분되지 않는다.
  *
  * <p><b>게이트가 없다.</b> {@code BATCH_SCHEDULE} 은 <i>켜져 있는가·도는가</i> 를 봤지만
- * (screen/batch/schedule/requirements.md) 공지는 지운다고 조용히 멈추는 것이 없다 — 지워진 뒤에 아무도 그것을 참조하지
+ * (screen/admin/system/batch/schedule/requirements.md) 공지는 지운다고 조용히 멈추는 것이 없다 — 지워진 뒤에 아무도 그것을 참조하지
  * 않는다. 첨부가 붙는 날 {@code SYS_FILE_REF} 를 함께 지우는 조항이 는다(screen/notice/requirements.md).
  */
 @Service

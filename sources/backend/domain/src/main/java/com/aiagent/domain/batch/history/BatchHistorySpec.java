@@ -54,7 +54,7 @@ public final class BatchHistorySpec {
             */
             .from(H)
             .leftJoin(B).on(B.batchId.eq(H.batchId))
-            // 기본 정렬이자 조회조건의 기간 — 필수가 아니지만 기본값은 있다(screen/batch/schedule/requirements.md).
+            // 기본 정렬이자 조회조건의 기간 — 필수가 아니지만 기본값은 있다(screen/admin/system/batch/schedule/requirements.md).
             .col("startDtm", H.startDtm).sortable()
             .col("batchId", H.batchId).sortable()
             .col("execTypeCd", H.execTypeCd)

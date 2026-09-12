@@ -785,7 +785,7 @@ function buildColumns(): ColumnDef<SampleOrderFull>[] {
       /*
         **값은 ms 그대로다**(frontend/grid.md) — 렌더러가 사람이 읽는 단위로 바꾼다. 서버가 포맷한
         문자열을 따로 주면 그 컬럼의 정렬이 **문자열 정렬**이 되어 `9분` 이 `10분` 보다
-        뒤에 온다(screen/batch/schedule/requirements.md).
+        뒤에 온다(screen/admin/system/batch/schedule/requirements.md).
 
         일괄 재계산이 이 값을 적는다 — 아무도 쓰지 않으면 **영원히 비어 있는 칸**이다.
       */

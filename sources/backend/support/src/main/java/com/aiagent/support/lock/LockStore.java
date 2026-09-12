@@ -87,7 +87,7 @@ public interface LockStore {
      *
      * <p>{@link #release} 는 쿨다운이 남았으면 <b>행을 남긴다</b>. 그것이 쿨다운의 정의라
      * 그 메서드로는 우회할 수 없고, {@link #tryAcquire} 는 그 행을 만나면 실패한다 —
-     * 즉 <b>이 메서드가 없으면 즉시 실행이 쿨다운에 막힌다</b>. screen/batch/schedule/requirements.md 이 거부 사유를
+     * 즉 <b>이 메서드가 없으면 즉시 실행이 쿨다운에 막힌다</b>. screen/admin/system/batch/schedule/requirements.md 이 거부 사유를
      * <i>실행 중</i> 하나로 못박고 <i>쿨다운은 일어나지 않는다</i> 고 적은 것을 집행할
      * 수단이 여기다.
      *
@@ -124,7 +124,7 @@ public interface LockStore {
     boolean heartbeat(String type, String key, Instant expiresAt);
 
     /**
-     * 그 노드가 <b>지금도 쥐고 있는가</b> — 유령 판정의 유일한 증거다(screen/batch/schedule/requirements.md).
+     * 그 노드가 <b>지금도 쥐고 있는가</b> — 유령 판정의 유일한 증거다(screen/admin/system/batch/schedule/requirements.md).
      *
      * <p>{@link #heartbeat} 가 있어서 이 질문이 뜻을 갖는다. 하트비트가 없으면 살아 있는
      * 노드의 락도 만료되므로 <i>락이 없다</i> 가 <i>노드가 죽었다</i> 를 뜻하지 않는다.

@@ -1010,7 +1010,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
             /*
               화면이 <b>자기 문구</b>를 줄 수 있다(frontend/grid.md). 일반 문구는 *무엇을 몇 건* 을
               말하지만, <b>그 실행이 무엇을 보장하지 않는가</b> 는 그 실행만 안다 —
-              screen/batch/schedule/requirements.md 의 중단이 그 자리다(*"즉시 멈추지 않을 수 있습니다"*).
+              screen/admin/system/batch/schedule/requirements.md 의 중단이 그 자리다(*"즉시 멈추지 않을 수 있습니다"*).
             */
             content:
               typeof action.confirm === 'string'

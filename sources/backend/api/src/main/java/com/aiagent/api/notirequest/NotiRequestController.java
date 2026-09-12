@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
  * <p>접두 {@code update} 가 {@code SAVE} 다(backend/api.md). screen/admin/system/user/requirements.md 의 기준(<i>"우리 테이블의
  * 컬럼을 쓰는가"</i>)으로 봐도 그렇다 — 처리는 {@code SYS_NOTI_REQUEST} 의 컬럼 넷을 쓴다.
  *
- * <p><b>{@code BATCH_HISTORY} 의 {@code cancel} 과 갈리는 자리</b>다(screen/batch/schedule/requirements.md). 그쪽은
+ * <p><b>{@code BATCH_HISTORY} 의 {@code cancel} 과 갈리는 자리</b>다(screen/admin/system/batch/schedule/requirements.md). 그쪽은
  * 요청만 남기고 실제 종결은 배치가 했으므로 {@code EXECUTE} 였지만, 여기는 <b>이 호출이
  * 끝나면 상태가 끝난 상태</b>다.
  *

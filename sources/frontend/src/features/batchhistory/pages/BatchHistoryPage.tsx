@@ -63,7 +63,7 @@ const PAGE_SIZES = [100, 500, 1000];
 const GROUP_FAILED = 'FAILED';
 const GROUP_SKIPPED = 'SKIPPED';
 
-/** 소요 조건의 필드 — <b>화면은 초, 서버는 ms</b> 다(screen/batch/schedule/requirements.md · frontend/search-form.md). */
+/** 소요 조건의 필드 — <b>화면은 초, 서버는 ms</b> 다(screen/admin/system/batch/schedule/requirements.md · frontend/search-form.md). */
 const ELAPSED_FIELD = 'elapsedMs';
 
 /** 그 배수 — sys/batch.md 이 `ELAPSED_MS` 를 ms 로 저장하기로 했다(벤더별 시간 차 함수를 피한다). */
@@ -272,7 +272,7 @@ export function BatchHistoryPage() {
           */
           selection="multiple"
           /*
-            <b>보존이 푸터에 있다</b>(screen/batch/schedule/requirements.md · retention.md). 없는 것과 파기된 것을 사용자가
+            <b>보존이 푸터에 있다</b>(screen/admin/system/batch/schedule/requirements.md · retention.md). 없는 것과 파기된 것을 사용자가
             가를 수 있어야 한다 — 1년 전 실행을 찾다 0건을 본 사람이 <i>기록이 없다</i> 로
             읽으면 그다음에 하는 일이 틀린다.
           */

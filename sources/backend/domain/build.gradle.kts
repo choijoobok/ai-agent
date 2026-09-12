@@ -5,7 +5,7 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    // PARAM_JSON 의 구문 검증 — screen/batch/schedule/requirements.md · frontend/grid.md.
+    // PARAM_JSON 의 구문 검증 — screen/admin/system/batch/schedule/requirements.md · frontend/grid.md.
     //
     // 프론트가 JSON.parse 로 먼저 보지만 그것은 UX 이지 방어가 아니다(backend/security.md) — 화면 밖
     // 경로는 그 검사를 지나지 않는다. sys/batch.md 가 "저장 시 JSON 구문 검증으로 완화한다" 고

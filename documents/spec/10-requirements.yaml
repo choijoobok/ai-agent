@@ -643,10 +643,10 @@ requirements:
     acceptance: "존재하지 않는 구현, 잘못된 크론·시간대, 쿨다운 위반과 중복 실행은 거부되고 유령·중단 경합은 성공과 다른 결과로 기록된다"
     source: "현재 구현 역추적 — 배치 스케줄·실행 이력 화면과 스케줄러"
     evidence:
-      frontend: ["features/batchschedule", "features/batchhistory", "shared/batch"]
-      backend: ["api/batch", "domain/batch"]
+      frontend: ["modules/system/features/batchschedule", "features/batchhistory", "shared/batch"]
+      backend: ["modules/system/api/batch", "api/batch", "domain/batch"]
       tables: [SYS_SCHEDULE_BATCH, SYS_BATCH_HISTORY]
-      screens: ["/batch/schedule", "/batch/history"]
+      screens: ["/admin/system/batch/schedule", "/batch/history"]
     roadmap: RM-P1
 
   - id: REQ-509

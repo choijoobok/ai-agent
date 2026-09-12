@@ -1,9 +1,9 @@
 package com.aiagent.domain.batch;
 
 /**
- * 실행 결과 — sys/batch.md · screen/batch/schedule/requirements.md. <b>일곱이고, 공통코드가 아니다.</b>
+ * 실행 결과 — sys/batch.md · screen/admin/system/batch/schedule/requirements.md. <b>일곱이고, 공통코드가 아니다.</b>
  *
- * <p>screen/batch/schedule/requirements.md 이 {@code SYS_CODE} 에 두지 않기로 하며 근거를 넷 들었다: 값을 아는 것은
+ * <p>screen/admin/system/batch/schedule/requirements.md 이 {@code SYS_CODE} 에 두지 않기로 하며 근거를 넷 들었다: 값을 아는 것은
  * <b>러너의 분기</b>이고, 관리자가 늘릴 일이 없으며, 늘리려면 소스를 고쳐야 하고,
  * 공통코드로 두면 {@code SYS_YN='Y'} 로 잠가야 하는데(sys/code.md) <b>잠가 두면 관리자에게
  * 남는 것이 없다</b>. 라벨만 메시지 키({@code batch.rslt.*})다.
@@ -24,7 +24,7 @@ package com.aiagent.domain.batch;
  * 고치는 순간 화면이 틀린다 — sys/logs.md 이 로그인 실패를 체인 지점마다 코드로 가른 것과
  * 같은 규칙이다. 사유는 {@code RSLT_MSG} 에 계속 적되 <b>판정은 코드가 갖는다</b>.
  *
- * <p><b>{@code USE_YN='N'} 은 어느 코드도 아니다</b>(screen/batch/schedule/requirements.md) — 스케줄러가 등록하지 않으므로
+ * <p><b>{@code USE_YN='N'} 은 어느 코드도 아니다</b>(screen/admin/system/batch/schedule/requirements.md) — 스케줄러가 등록하지 않으므로
  * <b>행이 없다</b>. 실행 이력에서 행이 없으면 꺼져 있는 것이고 {@code SKIP_*} 이 있으면
  * 켜져 있는데 건너뛴 것이다.
  */
@@ -55,11 +55,11 @@ public enum BatchResultCode {
     CANCELED,
 
     /**
-     * <b>실행하던 노드가 사라졌다</b> — 결과를 아무도 적지 못했다(screen/batch/schedule/requirements.md).
+     * <b>실행하던 노드가 사라졌다</b> — 결과를 아무도 적지 못했다(screen/admin/system/batch/schedule/requirements.md).
      *
      * <p>{@code RUNNING} 행은 실행 스레드가 갱신한다. 그 스레드가 있던 <b>프로세스가
      * 통째로 죽으면</b> 갱신할 주체가 없어 행이 영원히 {@code RUNNING} 으로 남고, 그것이
-     * screen/batch/schedule/requirements.md 가 <b>유령</b>이라 부른 것이다. 유령은 눈에 거슬리는 데서 그치지 않는다 —
+     * screen/admin/system/batch/schedule/requirements.md 가 <b>유령</b>이라 부른 것이다. 유령은 눈에 거슬리는 데서 그치지 않는다 —
      * {@code runNow} 가 <i>이미 실행 중</i> 으로 읽어 <b>그 배치를 영원히 못 돌리게</b> 한다.
      *
      * <h2>{@code FAIL} 이 아닌 이유</h2>
@@ -80,7 +80,7 @@ public enum BatchResultCode {
      */
     LOST;
 
-    /** 진행 중인가 — 중단 대상 판정과 유령 판정이 함께 본다(screen/batch/schedule/requirements.md). */
+    /** 진행 중인가 — 중단 대상 판정과 유령 판정이 함께 본다(screen/admin/system/batch/schedule/requirements.md). */
     public boolean isRunning() {
         return this == RUNNING;
     }

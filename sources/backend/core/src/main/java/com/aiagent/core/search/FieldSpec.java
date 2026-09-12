@@ -217,7 +217,7 @@ public final class FieldSpec {
      *
      * <p><b>실기동에서 잡혔다</b>(2026-09-02). 단위 테스트는 전부 통과했는데 — 스펙을 만들 때
      * {@code .col(...)} 은 {@code Expression<?>} 만 받으므로 <b>컴파일이 막지 않고</b>, 그
-     * 자리는 조건이 실제로 요청에 실려 와야 지나간다. screen/batch/schedule/requirements.md 이 연 배치 이력의 <i>소요 시간
+     * 자리는 조건이 실제로 요청에 실려 와야 지나간다. screen/admin/system/batch/schedule/requirements.md 이 연 배치 이력의 <i>소요 시간
      * 이상</i> 도 같은 길이었다.
      */
     @SuppressWarnings({"unchecked", "rawtypes"})

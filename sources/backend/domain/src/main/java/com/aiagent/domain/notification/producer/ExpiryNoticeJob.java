@@ -74,7 +74,7 @@ import org.springframework.transaction.annotation.Transactional;
  * <h2>보낼 사람이 없는 날이 대부분이다</h2>
  *
  * <p>그것이 정상이며 {@code SUCCESS} 다. 요약 문구가 <i>0건</i> 을 말하는 것이 중요한데,
- * screen/batch/schedule/requirements.md 이 <i>"어제 안 돌았는데 왜"</i> 를 이력 화면의 물음으로 든 것과 같은 자리다 —
+ * screen/admin/system/batch/schedule/requirements.md 이 <i>"어제 안 돌았는데 왜"</i> 를 이력 화면의 물음으로 든 것과 같은 자리다 —
  * <b>돌았는데 대상이 없었던 것</b>과 <b>안 돈 것</b>이 화면에서 구분돼야 한다.
  */
 @Component

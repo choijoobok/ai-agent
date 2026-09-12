@@ -464,7 +464,7 @@ export function ShellLayout() {
           if (!node) return;
           /*
             **넘겨주기를 걸고 나서 연다.** 화면 → 화면 건네주기와 같은 채널이며
-            (screen/menu/requirements.md · screen/admin/system/log/access/requirements.md · screen/batch/schedule/requirements.md) 알림이 그 셋째 입구다. 순서가 규약이다 —
+            (screen/menu/requirements.md · screen/admin/system/log/access/requirements.md · screen/admin/system/batch/schedule/requirements.md) 알림이 그 셋째 입구다. 순서가 규약이다 —
             받는 쪽이 마운트하며 읽으므로 열기 전에 넣어야 한다(`handoffStore`).
           */
           if (linkParam !== null) handOff(menuCd, linkParam);

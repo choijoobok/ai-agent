@@ -17,10 +17,10 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/batch/schedule` |
+| 페이지 경로 | `/admin/system/batch/schedule` |
 | 메뉴코드 | `BATCH_SCHEDULE` |
-| 프론트 폴더 | `sources/frontend/src/features/batchschedule/` (+ 공통물 `shared/batch/`) |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/batch/schedule/` · `sources/backend/api/…/api/batch/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/batchschedule/` (+ 공통물 `shared/batch/`) |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/batch/schedule/` · `sources/backend/modules/system/…/system/api/batch/` |
 | 화면 유형 | **마스터-디테일(상하)** — 하단은 최근 이력 |
 | 처리 유형 | CRUD + **실행** |
 | 쓰는 액션 | `R` `S` `X` — **`EXPORT` 가 통째로 사라지는 첫 화면**이다 |
@@ -282,12 +282,12 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |
 |---|---|---|---|---|---|
-| 목록 | `getList` | `/service/batchSchedule/getList` | POST | R | offset |
-| 저장 | `save` | `/service/batchSchedule/save` | POST | S | — |
-| **구현 후보** | `getBeanList` | `/service/batchSchedule/getBeanList` | POST | R | — |
-| **시간대 후보** | `getTimezoneList` | `/service/batchSchedule/getTimezoneList` | POST | R | — |
-| 하단 — 최근 이력 | `getRecentHistory` | `/service/batchSchedule/getRecentHistory` | POST | R | **없음** |
-| **즉시 실행** | `runNow` | `/service/batchSchedule/runNow` | POST | **X** | — |
+| 목록 | `getList` | `/service/system/batchSchedule/getList` | POST | R | offset |
+| 저장 | `save` | `/service/system/batchSchedule/save` | POST | S | — |
+| **구현 후보** | `getBeanList` | `/service/system/batchSchedule/getBeanList` | POST | R | — |
+| **시간대 후보** | `getTimezoneList` | `/service/system/batchSchedule/getTimezoneList` | POST | R | — |
+| 하단 — 최근 이력 | `getRecentHistory` | `/service/system/batchSchedule/getRecentHistory` | POST | R | **없음** |
+| **즉시 실행** | `runNow` | `/service/system/batchSchedule/runNow` | POST | **X** | — |
 
 - **폴더가 인가 경계다.** 실행 이력과 한 폴더에 두면 **조회 전용 화면의 권한이 등록 저장을 연다** — **여기서는 특히 나쁘다**: `BATCH_HISTORY` 는 **저장이 없는 화면**인데 합치면 `save` 가 **그쪽에도 붙는다.**
 - `exportExcel` 없음 — **엑셀 자체가 없다.**
@@ -298,7 +298,7 @@
 
 - 코드그룹: **없음.**
 - 메시지 키: 화면 `MSG.BATCH_SCHEDULE_*` · `MSG.BATCH_RSLT_*`(공통) · 서버 `MsgKey.ERR_BATCH_*` 아홉.
-- 메뉴 시드: `menu-tree.yaml` — `code: BATCH_SCHEDULE` · `parent: BATCH` · `url: /batch/schedule`. **`export` 없음.**
+- 메뉴 시드: `menu-tree.yaml` — `code: BATCH_SCHEDULE` · `parent: BATCH` · `url: /admin/system/batch/schedule`. **`export` 없음.**
 - **초기 데이터 전제**: **배치 구현이 배포에 있어야 등록할 수 있다.** 템플릿에는 구현이 하나도 없어 후보가 비어 있는 것이 정상이다.
 - **파기 배치가 초기 시드로 하나 들어 있으며 `USE_YN='N'` 이다** — 켜야 돈다.
 

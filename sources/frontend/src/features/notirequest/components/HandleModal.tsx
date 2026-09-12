@@ -25,7 +25,7 @@ interface Props {
  * <h2>확인 문구가 실행마다 다르다</h2>
  *
  * <p>frontend/grid.md 의 `confirm: string` 이 <b>두 번째로 쓰이는 자리</b>다(첫째는 배치 중단 —
- * screen/batch/schedule/requirements.md). 일반 문구는 <i>무엇을 몇 건</i> 만 말하는데, <b>반려에서 중요한 것은
+ * screen/admin/system/batch/schedule/requirements.md). 일반 문구는 <i>무엇을 몇 건</i> 만 말하는데, <b>반려에서 중요한 것은
  * 사유가 상대에게 간다는 사실</b>이다 — 그것을 모르고 쓴 메모가 그대로 나간다.
  *
  * <p>처리 쪽은 <b>알림이 들어간다</b>는 사실을 말한다(screen/noti-request/requirements.md). 되돌리는 길이 없으므로

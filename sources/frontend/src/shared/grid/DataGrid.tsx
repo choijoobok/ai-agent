@@ -428,7 +428,7 @@ export function DataGrid<T>(props: DataGridProps<T>) {
   );
 
   /**
-   * <b>빈 문구가 바뀌면 오버레이를 다시 세운다</b> — frontend/grid.md · screen/admin/system/log/access/requirements.md · screen/batch/schedule/requirements.md.
+   * <b>빈 문구가 바뀌면 오버레이를 다시 세운다</b> — frontend/grid.md · screen/admin/system/log/access/requirements.md · screen/admin/system/batch/schedule/requirements.md.
    *
    * <p>세 화면이 <b>같은 빈 판에 다른 문구</b>를 낸다: *"역할을 선택하세요"* 와 *"저장 후
    * 조회할 수 있습니다"*, *"이 기간에 실패한 배치가 없습니다"* 와 *"조회 결과가 없습니다"*.

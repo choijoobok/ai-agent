@@ -91,7 +91,7 @@ new BusinessCalendar("Asia/Seoul", Clock.fixed(NOW, ZoneId.of("Asia/Seoul")))
 ### 면제는 지금 비어 있다
 
 유일한 면제였던 `CronRules#nextExecution` 이 사라졌다 — 배치가 **자기 시간대를 갖게**
-되면서(`screen/batch/schedule/requirements.md` §4-1) 표시와 실행이 같은 값을 쓴다.
+되면서(`screen/admin/system/batch/schedule/requirements.md` §4-1) 표시와 실행이 같은 값을 쓴다.
 **그 사실을 알려 준 것이 「면제가 아직 유효한가」 검사다** — 고친 쪽이 면제를 지우는 것을
 잊어도 빌드가 빨개진다.
 

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 시간대 후보와 판정 — screen/batch/schedule/requirements.md §4-1 · backend/time.md.
+ * 시간대 후보와 판정 — screen/admin/system/batch/schedule/requirements.md §4-1 · backend/time.md.
  *
  * <p><b>순서가 규약이다.</b> 오름차순이지만 <b>업무 시간대 하나만 맨 위</b>이며, 그 값이
  * 목록 안 제자리에도 다시 나온다 — 빼면 알파벳 순으로 찾는 사람이 그 자리에서 못 찾는다.

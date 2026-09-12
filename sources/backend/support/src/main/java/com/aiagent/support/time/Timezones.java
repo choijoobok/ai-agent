@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 시간대 후보와 판정 — screen/batch/schedule/requirements.md §4-1.
+ * 시간대 후보와 판정 — screen/admin/system/batch/schedule/requirements.md §4-1.
  *
  * <h2>후보를 좁히지 않는다</h2>
  *

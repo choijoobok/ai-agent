@@ -75,7 +75,7 @@ public interface SysDataLockRepository extends JpaRepository<SysDataLock, SysDat
             @Param("nodeId") String nodeId,
             @Param("expiresAt") Instant expiresAt);
 
-    /** 그 노드가 아직 쥐고 있는 <b>살아 있는</b> 락이 있는가 — 유령 판정(screen/batch/schedule/requirements.md). */
+    /** 그 노드가 아직 쥐고 있는 <b>살아 있는</b> 락이 있는가 — 유령 판정(screen/admin/system/batch/schedule/requirements.md). */
     @Query("""
             select count(l) > 0
             from SysDataLock l

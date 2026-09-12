@@ -9,7 +9,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
  * 배치가 도는 스레드 — backend/crosscutting.md 과 <b>다른 자리</b>다.
  *
  * <p>그 문서의 {@code ProgressHelper} 는 <i>요청 스레드가 시작하는 작업</i>을 전제하고
- * 배치는 그렇지 않다(screen/batch/schedule/requirements.md). 그래서 여기서 <b>{@code @EnableAsync} 를 켜지 않는다</b> —
+ * 배치는 그렇지 않다(screen/admin/system/batch/schedule/requirements.md). 그래서 여기서 <b>{@code @EnableAsync} 를 켜지 않는다</b> —
  * 켜면 전 애플리케이션의 {@code @Async} 기본 실행기가 정해지고, 그 결정은 30 이 아직
  * 하지 않은 결정이다(Phase 6). 이 슬라이스는 <b>자기 풀 하나</b>만 갖는다.
  *
@@ -26,7 +26,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
  *           조용히 쌓이다 메모리로 죽는 것보다 낫다({@link BatchRunner#submit})</td></tr>
  *   <tr><td>{@code waitForTasksToComplete}</td>
  *       <td>종료 시 <b>도는 배치를 기다린다.</b> 안 기다리면 {@code RUNNING} 행이 그대로
- * 남아 유령이 되고(screen/batch/schedule/requirements.md), 그것은 <i>비정상 종료의 증거</i> 라는 그 신호의
+ * 남아 유령이 되고(screen/admin/system/batch/schedule/requirements.md), 그것은 <i>비정상 종료의 증거</i> 라는 그 신호의
  *           값을 떨어뜨린다 — 정상 재기동마다 유령이 생기면 아무도 안 본다</td></tr>
  * </table>
  *

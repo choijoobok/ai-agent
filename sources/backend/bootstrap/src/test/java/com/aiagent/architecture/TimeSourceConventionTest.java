@@ -78,7 +78,7 @@ class TimeSourceConventionTest {
      * 하겠다* 뿐이면 그것은 면제가 아니라 미룬 것이다.
      *
      * <p><b>지금 비어 있다.</b> {@code CronRules#nextExecution} 이 유일한 면제였고,
-     * 배치별 시간대가 들어오면서(screen/batch/schedule/requirements.md §4-1) 사라졌다 —
+     * 배치별 시간대가 들어오면서(screen/admin/system/batch/schedule/requirements.md §4-1) 사라졌다 —
      * {@link #everyExemptionIsStillEarned} 가 그 사실을 알려 주었다.
      */
     private static final Map<String, String> EXEMPT = Map.of();

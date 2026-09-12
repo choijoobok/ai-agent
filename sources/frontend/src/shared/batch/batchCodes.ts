@@ -3,14 +3,14 @@ import { MSG } from '@/shared/i18n/messageKeys';
 import type { Tone } from '@/shared/grid/types';
 
 /**
- * 배치의 코드 셋 — screen/batch/schedule/requirements.md. <b>공통코드가 아니다.</b>
+ * 배치의 코드 셋 — screen/admin/system/batch/schedule/requirements.md. <b>공통코드가 아니다.</b>
  *
  * <p>그 절이 근거를 넷 들었다: 값을 아는 것은 <b>배치 러너의 분기</b>이고, 관리자가 늘릴
  * 일이 없으며, 늘리려면 소스를 고쳐야 하고, 공통코드로 두면 `SYS_YN='Y'` 로 잠가야 하는데
  * <b>잠가 두면 관리자에게 남는 것이 없다</b>(sys/code.md). 그래서 값은 여기, 라벨은 메시지다.
  *
  * <p><b>화면 둘이 함께 쓴다.</b> `BATCH_SCHEDULE` 의 *최근 결과* 와 `BATCH_HISTORY` 의
- * *결과* 가 같은 값을 그리므로(screen/batch/schedule/requirements.md — <i>"하단 pane 첫 행과 같은 값"</i>) 여기 한 벌만
+ * *결과* 가 같은 값을 그리므로(screen/admin/system/batch/schedule/requirements.md — <i>"하단 pane 첫 행과 같은 값"</i>) 여기 한 벌만
  * 둔다. 화면마다 맵을 두면 <b>색이 갈리고</b>, 갈린 색은 같은 사실을 다르게 읽힌다.
  *
  * <p><b>`features/` 가 아니라 `shared/` 인 것이 그 때문이다.</b> seed.md 의 *폴더가 인가
@@ -47,7 +47,7 @@ const EXEC_LABEL: Record<BatchExecType, string> = {
 };
 
 /**
- * 결과의 색 — screen/batch/schedule/requirements.md. <b>값이 일곱이고 색이 넷이다.</b>
+ * 결과의 색 — screen/admin/system/batch/schedule/requirements.md. <b>값이 일곱이고 색이 넷이다.</b>
  *
  * <p>그래서 `SYS_CODE` 에 색을 넣을 자리가 애초에 없고, frontend/grid.md 의 `tone` 맵이 그 자리다.
  *

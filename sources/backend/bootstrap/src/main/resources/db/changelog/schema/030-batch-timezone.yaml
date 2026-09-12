@@ -1,4 +1,4 @@
-# SYS_SCHEDULE_BATCH.TIMEZONE — 크론을 어느 시간대로 읽나 (screen/batch/schedule/requirements.md §4-1).
+# SYS_SCHEDULE_BATCH.TIMEZONE — 크론을 어느 시간대로 읽나 (screen/admin/system/batch/schedule/requirements.md §4-1).
 #
 # 이 컬럼이 없던 동안 크론의 기준은 **서버 JVM 의 기본 시간대**였다. 그 전제가 어디에도 적혀
 # 있지 않아, JVM 시간대가 업무 시간대와 다른 배포에서는 `0 0 6 * * *` 이 현지 06시가 아닌

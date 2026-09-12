@@ -100,13 +100,13 @@ export type ViewerType = 'largeText';
  * 막대는 원본 숫자를 그리고 아이콘은 원본 코드를 그린다. 이 규칙이 렌더러 축 전체를
  * 관통하는 것이며(frontend/grid.md), 어기는 순간 정렬·필터·엑셀이 <b>화면과 다른 것</b>을 본다.
  *
- * <p>`duration` 이 screen/batch/schedule/requirements.md 가 낸 <b>첫 사례</b>다 — frontend/grid.md 의 <i>"렌더러가 충분한가"</i> 에
+ * <p>`duration` 이 screen/admin/system/batch/schedule/requirements.md 가 낸 <b>첫 사례</b>다 — frontend/grid.md 의 <i>"렌더러가 충분한가"</i> 에
  * 답하는 자리이며, <b>숫자를 사람이 읽는 단위로 바꾸는 것</b>이 렌더러의 일이라는
  * 규칙은 이미 있었고 <b>시간만 빠져</b> 있었다.
  *
  * <p><b>값은 원본 그대로다</b>(frontend/grid.md) — 정렬·필터·엑셀이 전부 ms 를 본다.
  * 서버가 포맷한 문자열 컬럼을 따로 주면 그 컬럼의 정렬이 <b>문자열 정렬</b>이 되어
- * `9분` 이 `10분` 보다 뒤에 온다(screen/batch/schedule/requirements.md).
+ * `9분` 이 `10분` 보다 뒤에 온다(screen/admin/system/batch/schedule/requirements.md).
  */
 export type RendererType = 'badge' | 'tags' | 'link' | 'duration' | 'progress' | 'icon';
 
@@ -399,7 +399,7 @@ export interface ColumnDef<T> {
    * 못한다. *적용값* 셀은 값과 <span>변경됨</span> 을 <b>함께</b> 내야 하며, 값이 기본값과
    * 같아도 배지가 붙는 경우가 있어 <b>배지가 유일한 신호</b>다.
    *
-   * <p><b>둘을 함께 선언할 수는 있다</b>(screen/batch/schedule/requirements.md). 실행 이력의 *결과* 셀이 그것이며,
+   * <p><b>둘을 함께 선언할 수는 있다</b>(screen/admin/system/batch/schedule/requirements.md). 실행 이력의 *결과* 셀이 그것이며,
    * 거기서는 배지가 곧 값이고(`진행 중`) 이 자리가 그 값의 <b>내력</b>을 덧붙인다
    * (`유령` — 락 만료를 넘겼다). 값이 사라지지 않으므로 위 문단의 금지가 걸리지 않는다.
    *
@@ -624,7 +624,7 @@ export interface ActionApi<T> {
    * <b>기본 `true`</b> — *"선택한 N건을 실행하시겠습니까?"*. `params` 가 있으면 무시된다.
    *
    * <p><b>메시지 키를 주면 그 문구가 대신 나간다</b>(`{count}` 가 대상 건수다).
-   * screen/batch/schedule/requirements.md 의 <b>중단</b>이 그 자리다 — 협조적 중단이라 확인이
+   * screen/admin/system/batch/schedule/requirements.md 의 <b>중단</b>이 그 자리다 — 협조적 중단이라 확인이
    * *"중단합니다"* 가 아니라 <i>"중단을 <b>요청</b>합니다. <b>즉시 멈추지 않을 수
    * 있습니다.</b>"</i> 여야 하고, 그것을 말하지 않으면 <b>안 멈췄을 때 화면이 거짓말한
    * 것</b>이 된다.

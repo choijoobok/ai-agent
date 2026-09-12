@@ -33,7 +33,7 @@ interface Props {
  *
  * <h2>`LINK_PARAM` 은 넘겨주기로 간다</h2>
  *
- * <p>`handoffStore` 다 — screen/menu/requirements.md · screen/admin/system/log/access/requirements.md · screen/batch/schedule/requirements.md 의 *화면 → 화면* 건네주기와 **같은
+ * <p>`handoffStore` 다 — screen/menu/requirements.md · screen/admin/system/log/access/requirements.md · screen/admin/system/batch/schedule/requirements.md 의 *화면 → 화면* 건네주기와 **같은
  * 채널**이며, 알림이 그 셋째 입구가 된다. URL 파라미터가 아닌 이유도 같다: 경로 하나가
  * 탭 여러 개에 대응하므로 주소에 값을 실으면 **탭 전환마다 되살아난다.**
  *

@@ -6,7 +6,7 @@ import { MSG } from '@/shared/i18n/messageKeys';
 import { getBatchHistoryDetail } from '@/features/batchhistory/api/batchHistoryApi';
 
 /**
- * 실행 상세 — screen/batch/schedule/requirements.md 의 <b>탭 둘</b>. 각각 `textModal` 읽기 전용(frontend/grid.md).
+ * 실행 상세 — screen/admin/system/batch/schedule/requirements.md 의 <b>탭 둘</b>. 각각 `textModal` 읽기 전용(frontend/grid.md).
  *
  * <p><b>처음에는 탭 하나였다.</b> *"`RSLT_MSG` 는 `VARCHAR(1000)` 이라 목록 컬럼으로 이미
  * 보인다"* 가 근거였는데, sys/batch.md 이 <b>요약과 상세를 가르면서</b> 한 행에 `nclob` 이 둘이

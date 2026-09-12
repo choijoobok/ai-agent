@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 배치 등록 — sys/batch.md · screen/batch/schedule/requirements.md. <b>사람이 관리하는 유일한 배치 테이블</b>이다.
+ * 배치 등록 — sys/batch.md · screen/admin/system/batch/schedule/requirements.md. <b>사람이 관리하는 유일한 배치 테이블</b>이다.
  *
  * <p>짝인 {@link SysBatchHistory} 는 러너가 쌓고 감사 컬럼이 없다. 둘의 생애가 다르다는
  * 사실이 이 클래스가 {@link BaseAuditEntity} 를 상속하고 저쪽이 상속하지 않는 것으로
@@ -30,16 +30,16 @@ import lombok.NoArgsConstructor;
  *
  * <h2>{@code BATCH_DESC} 가 {@code nullable = false} 다</h2>
  *
- * <p>sys/batch.md 이 <i>"끄면 무슨 일이 생기는가를 적는 자리"</i> 로 정했고 screen/batch/schedule/requirements.md 이
+ * <p>sys/batch.md 이 <i>"끄면 무슨 일이 생기는가를 적는 자리"</i> 로 정했고 screen/admin/system/batch/schedule/requirements.md 이
  * <b>비워 둔 채 저장할 수 없게</b> 했다. 운영자가 배치를 끄는 순간은 대개 장애 대응
  * 중이며 그때 소스를 열 시간은 없다 — 그리고 <b>끄는 확인 창이 이 문장을 그대로 읽어
- * 준다</b>(screen/batch/schedule/requirements.md). 비어 있으면 그 확인이 아무 말도 하지 않는다.
+ * 준다</b>(screen/admin/system/batch/schedule/requirements.md). 비어 있으면 그 확인이 아무 말도 하지 않는다.
  *
  * <h2>{@code USE_YN} 을 여기서 따로 열지 않는다</h2>
  *
  * <p>{@link #apply} 가 전 컬럼을 함께 쓴다 — 그리드 한 행이 한 번에 저장되기 때문이다
  * (frontend/grid.md). {@code SysRole} 과 같은 모양이며, 끄기 전 확인은 <b>화면이 저장 전에</b>
- * 내고(screen/batch/schedule/requirements.md) 엔티티는 자기 행 밖의 일을 알지 않는다.
+ * 내고(screen/admin/system/batch/schedule/requirements.md) 엔티티는 자기 행 밖의 일을 알지 않는다.
  */
 @Entity
 @Table(name = "SYS_SCHEDULE_BATCH")
@@ -76,16 +76,16 @@ public class SysScheduleBatch extends BaseAuditEntity {
     @Column(name = "BATCH_DESC", length = BATCH_DESC_MAX, nullable = false)
     private String batchDesc;
 
-    /** {@code BatchJob} 구현의 스프링 빈 이름 — 화면은 고르게 한다(screen/batch/schedule/requirements.md). */
+    /** {@code BatchJob} 구현의 스프링 빈 이름 — 화면은 고르게 한다(screen/admin/system/batch/schedule/requirements.md). */
     @Column(name = "BEAN_ID", length = BEAN_ID_MAX, nullable = false)
     private String beanId;
 
-    /** 크론 표현식. 쿨다운과의 관계를 저장이 검증한다(backend/persistence.md · screen/batch/schedule/requirements.md). */
+    /** 크론 표현식. 쿨다운과의 관계를 저장이 검증한다(backend/persistence.md · screen/admin/system/batch/schedule/requirements.md). */
     @Column(name = "CRON", length = CRON_MAX, nullable = false)
     private String cron;
 
     /**
-     * 크론을 <b>어느 시간대로 읽나</b> — screen/batch/schedule/requirements.md §4-1.
+     * 크론을 <b>어느 시간대로 읽나</b> — screen/admin/system/batch/schedule/requirements.md §4-1.
      *
      * <p><b>{@code CRON} 은 사용자가 입력한 그대로다.</b> 시차만큼 옮긴 식을 저장하지 않는
      * 것이 이 컬럼이 있는 이유다 — 서머타임 지역은 오프셋이 연 2회 바뀌고, 시각과 요일을
@@ -104,29 +104,29 @@ public class SysScheduleBatch extends BaseAuditEntity {
     /**
      * 장애 안전망 — 업무 규칙이 아니라 인프라 사정이 정한다(backend/persistence.md).
      *
-     * <p><b>실행 이력의 유령 판정도 이 값을 쓴다</b>(screen/batch/schedule/requirements.md). 임계값을 새로 만들지 않는
+     * <p><b>실행 이력의 유령 판정도 이 값을 쓴다</b>(screen/admin/system/batch/schedule/requirements.md). 임계값을 새로 만들지 않는
      * 것이 그 절의 결정이며, 그래서 이 컬럼에 소비처가 둘이다.
      */
     @Column(name = "LOCK_EXPIRY_SEC", nullable = false)
     private Integer lockExpirySec;
 
-    /** 쿨다운 — 크론 최소 간격보다 길면 저장이 거부한다(backend/persistence.md · screen/batch/schedule/requirements.md). */
+    /** 쿨다운 — 크론 최소 간격보다 길면 저장이 거부한다(backend/persistence.md · screen/admin/system/batch/schedule/requirements.md). */
     @Column(name = "LOCK_MIN_INTERVAL_SEC", nullable = false)
     private Integer lockMinIntervalSec;
 
     /**
-     * {@code 'N'} 이면 스케줄러가 <b>등록조차 하지 않는다</b> — screen/batch/schedule/requirements.md.
+     * {@code 'N'} 이면 스케줄러가 <b>등록조차 하지 않는다</b> — screen/admin/system/batch/schedule/requirements.md.
      *
      * <p>크론이 남아 있어도 돌지 않으며 <b>{@code SKIP} 이력도 남지 않는다.</b>
      * <i>"안 돈다"</i> 와 <i>"건너뛰었다"</i> 는 다른 사건이고, 실행 이력에서 <b>행이
-     * 없으면 꺼져 있는 것</b>이다(screen/batch/schedule/requirements.md).
+     * 없으면 꺼져 있는 것</b>이다(screen/admin/system/batch/schedule/requirements.md).
      */
     @Convert(converter = YnConverter.class)
     @Column(name = "USE_YN", length = 1, nullable = false)
     private Boolean useYn;
 
     /**
-     * 사람이 정한다 — sys/batch.md · screen/batch/schedule/requirements.md. <b>드래그가 아니라 숫자다.</b>
+     * 사람이 정한다 — sys/batch.md · screen/admin/system/batch/schedule/requirements.md. <b>드래그가 아니라 숫자다.</b>
      *
      * <p>screen/menu/requirements.md 가 역할 목록에서 이 컬럼을 <b>두지 않기로</b> 한 것과 갈리는 자리다.
      * 배치는 실행 순서가 의미를 갖는 묶음이 있다(마감 → 집계 → 발송).
@@ -141,7 +141,7 @@ public class SysScheduleBatch extends BaseAuditEntity {
      * 신규 — {@code BATCH_ID} 는 <b>여기서만</b> 정해진다.
      *
      * <p>PK 라 고칠 수 없다(sys/user-role.md). 고치려면 지우고 다시 만드는데, 이 테이블은 <b>물리
-     * 삭제를 허용</b>하므로(screen/batch/schedule/requirements.md) 실제로 그 길이 있다 — 역할과 갈리는 점이다.
+     * 삭제를 허용</b>하므로(screen/admin/system/batch/schedule/requirements.md) 실제로 그 길이 있다 — 역할과 갈리는 점이다.
      */
     public static SysScheduleBatch created(
             String batchId,

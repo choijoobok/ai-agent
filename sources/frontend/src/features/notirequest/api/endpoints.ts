@@ -7,7 +7,7 @@
  * <p><b>`updateHandle` 이 `SAVE` 다</b>(접두가 정한다 — backend/api.md). screen/admin/system/user/requirements.md 의 기준
  * (*"우리 테이블의 컬럼을 쓰는가"*)으로 봐도 그렇다: 처리는 `SYS_NOTI_REQUEST` 의 컬럼
  * 넷을 쓴다. `BATCH_HISTORY` 의 `cancel` 이 `EXECUTE` 였던 것과 <b>갈리는 자리</b>이며
- * (screen/batch/schedule/requirements.md), 그쪽은 요청만 남기고 종결은 배치가 했지만 여기는 <b>이 호출이 끝나면
+ * (screen/admin/system/batch/schedule/requirements.md), 그쪽은 요청만 남기고 종결은 배치가 했지만 여기는 <b>이 호출이 끝나면
  * 상태가 끝난 상태</b>다.
  *
  * <p><b>처리와 반려가 한 경로다</b>(screen/noti-request/requirements.md) — 쓰는 컬럼이 같고 트랜잭션이 같다.

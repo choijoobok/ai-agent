@@ -5,13 +5,13 @@ import com.aiagent.core.search.SortDir;
 import com.aiagent.domain.batch.entity.QSysScheduleBatch;
 
 /**
- * {@code BATCH_SCHEDULE} 의 화이트리스트 — screen/batch/schedule/requirements.md · backend/api.md.
+ * {@code BATCH_SCHEDULE} 의 화이트리스트 — screen/admin/system/batch/schedule/requirements.md · backend/api.md.
  *
  * <h2>조회조건이 없다시피 하다</h2>
  *
- * <p>등록이 <b>수십 건</b>이고 페이지 사이즈가 50 이라(screen/batch/schedule/requirements.md) 한 화면에 다 들어온다 —
+ * <p>등록이 <b>수십 건</b>이고 페이지 사이즈가 50 이라(screen/admin/system/batch/schedule/requirements.md) 한 화면에 다 들어온다 —
  * 거르는 것보다 <b>눈으로 훑는 것</b>이 빠른 규모다. 그래서 목록 조회는 대개 조건 없이
- * 오며, 여기 열어 둔 넷은 등록이 수백 건이 됐을 때를 위한 것이다(screen/batch/schedule/requirements.md 의 실측 미결).
+ * 오며, 여기 열어 둔 넷은 등록이 수백 건이 됐을 때를 위한 것이다(screen/admin/system/batch/schedule/requirements.md 의 실측 미결).
  *
  * <h2>{@code PARAM_JSON} 이 없다</h2>
  *
@@ -21,7 +21,7 @@ import com.aiagent.domain.batch.entity.QSysScheduleBatch;
  *
  * <h2>정렬이 {@code SORT_NO} 하나다</h2>
  *
- * <p>screen/batch/schedule/requirements.md — 사람이 정한 순서가 <b>이 화면의 의미</b>다(마감 → 집계 → 발송). 다른
+ * <p>screen/admin/system/batch/schedule/requirements.md — 사람이 정한 순서가 <b>이 화면의 의미</b>다(마감 → 집계 → 발송). 다른
  * 컬럼으로 정렬하면 그 묶음이 흩어지고, 흩어진 목록에서 <i>이 배치 다음에 무엇이 도나</i>
  * 를 읽을 수 없다. tie-breaker 는 PK 이며 backend/persistence.md 가 그것을 요구한다.
  */
@@ -35,7 +35,7 @@ public final class BatchScheduleSpec {
             .col("batchNm", B.batchNm)
             .col("beanId", B.beanId)
             .col("useYn", B.useYn)
-            // 유일한 정렬이며 기본이다 — 사람이 정한 순서가 이 화면의 의미다(screen/batch/schedule/requirements.md).
+            // 유일한 정렬이며 기본이다 — 사람이 정한 순서가 이 화면의 의미다(screen/admin/system/batch/schedule/requirements.md).
             .col("sortNo", B.sortNo).sortable()
             .defaultSort("sortNo", SortDir.asc)
             .pk(B.batchId)

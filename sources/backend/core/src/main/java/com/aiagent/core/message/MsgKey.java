@@ -459,11 +459,11 @@ public final class MsgKey {
      */
     public static final String ERR_USER_ADMIN_RESET_DISABLED = "err.user-admin.reset-disabled";
 
-    // ── 배치 스케줄 — BatchScheduleErrorCode(screen/batch/schedule/requirements.md) ─────────────────
+    // ── 배치 스케줄 — BatchScheduleErrorCode(screen/admin/system/batch/schedule/requirements.md) ─────────────────
     //
     // **화면이 미리 막는 것이 거의 없다.** 62 의 삭제 게이트는 마스터의 건수 컬럼이 근거를
     // 목록에 실어 주지만, 여기서 막는 것들은 대개 **서버만 아는 사실**이다 — 크론의 최소
-    // 간격은 파서가 있어야 알고(screen/batch/schedule/requirements.md), 등록된 빈 목록은 스프링 컨텍스트가 안다.
+    // 간격은 파서가 있어야 알고(screen/admin/system/batch/schedule/requirements.md), 등록된 빈 목록은 스프링 컨텍스트가 안다.
 
     /** {@code BATCH_ID} 중복 — PK 이자 락 키다(backend/persistence.md). */
     public static final String ERR_BATCH_DUPLICATE = "err.batch.duplicate";
@@ -471,31 +471,31 @@ public final class MsgKey {
     /** 없는 등록을 가리켰다. 화면이 낡았거나 화면 밖 경로다. */
     public static final String ERR_BATCH_NOT_FOUND = "err.batch.not-found";
 
-    /** 배치명을 비운 채 저장했다 — screen/batch/schedule/requirements.md 의 필수 컬럼. */
+    /** 배치명을 비운 채 저장했다 — screen/admin/system/batch/schedule/requirements.md 의 필수 컬럼. */
     public static final String ERR_BATCH_NAME_REQUIRED = "err.batch.name-required";
 
     /**
-     * 설명을 비운 채 저장했다 — sys/batch.md · screen/batch/schedule/requirements.md.
+     * 설명을 비운 채 저장했다 — sys/batch.md · screen/admin/system/batch/schedule/requirements.md.
      *
      * <p><b>설명이 필수인 유일한 테이블</b>이다. 끄는 확인 창이 이 문장을 그대로 읽어 주며
-     * (screen/batch/schedule/requirements.md), 비어 있으면 그 확인이 아무 말도 하지 않는다 — 운영자가 배치를 끄는 순간은
+     * (screen/admin/system/batch/schedule/requirements.md), 비어 있으면 그 확인이 아무 말도 하지 않는다 — 운영자가 배치를 끄는 순간은
      * 대개 장애 대응 중이고 그때 소스를 열 시간은 없다.
      */
     public static final String ERR_BATCH_DESC_REQUIRED = "err.batch.desc-required";
 
     /**
-     * 실행 빈이 없거나 <b>등록된 {@code BatchJob} 구현이 아니다</b> — screen/batch/schedule/requirements.md.
+     * 실행 빈이 없거나 <b>등록된 {@code BatchJob} 구현이 아니다</b> — screen/admin/system/batch/schedule/requirements.md.
      *
      * <p>화면은 셀렉트로 고르게 해서 이 경로를 닫지만, 화면 밖 경로는 그 셀렉트를 지나지
      * 않는다. 막지 않으면 <b>실행 시점에 터지고</b> 그때는 크론이 깨운 새벽이다(원칙 P1).
      */
     public static final String ERR_BATCH_BEAN_UNKNOWN = "err.batch.bean-unknown";
 
-    /** 크론 표현식을 파서가 읽지 못했다 — 스케줄러가 쓰는 그 파서다(screen/batch/schedule/requirements.md). */
+    /** 크론 표현식을 파서가 읽지 못했다 — 스케줄러가 쓰는 그 파서다(screen/admin/system/batch/schedule/requirements.md). */
     public static final String ERR_BATCH_CRON_INVALID = "err.batch.cron-invalid";
 
     /**
-     * <b>아는 시간대 이름이 아니다</b> — screen/batch/schedule/requirements.md §6-1 의 13.
+     * <b>아는 시간대 이름이 아니다</b> — screen/admin/system/batch/schedule/requirements.md §6-1 의 13.
      *
      * <p>화면은 셀렉트라 이 값이 만들어지지 않는다. <b>API 를 직접 부르는 경로</b>의 마지막
      * 방어이며, 고정 오프셋(<code>+09:00</code>)도 여기서 걸린다 — 파싱은 되지만 서머타임이
@@ -510,16 +510,16 @@ public final class MsgKey {
      * 막으려는 사고가 <i>실행이 <b>조용히</b> 건너뛰어진다</i> 이며, 조용하기 때문에
      * 저장 시점에 막는 것 말고는 알릴 자리가 없다.
      *
-     * <p><b>오류가 두 셀에 걸린다</b>(screen/batch/schedule/requirements.md) — 어느 쪽이 틀렸는지 서버가 말할 수 없다.
+     * <p><b>오류가 두 셀에 걸린다</b>(screen/admin/system/batch/schedule/requirements.md) — 어느 쪽이 틀렸는지 서버가 말할 수 없다.
      * 틀린 것은 값이 아니라 <b>관계</b>이며, 그래서 문구가 두 값을 함께 읽어 준다.
      */
     public static final String ERR_BATCH_COOLDOWN_TOO_LONG = "err.batch.cooldown-too-long";
 
-    /** {@code PARAM_JSON} 이 JSON 이 아니다 — 프론트도 보고 서버도 본다(screen/batch/schedule/requirements.md · frontend/grid.md). */
+    /** {@code PARAM_JSON} 이 JSON 이 아니다 — 프론트도 보고 서버도 본다(screen/admin/system/batch/schedule/requirements.md · frontend/grid.md). */
     public static final String ERR_BATCH_PARAM_JSON = "err.batch.param-json";
 
     /**
-     * 지울 수 없다 — <b>켜져 있거나 실행 중</b>이다(screen/batch/schedule/requirements.md).
+     * 지울 수 없다 — <b>켜져 있거나 실행 중</b>이다(screen/admin/system/batch/schedule/requirements.md).
      *
      * <p><b>실행 이력은 게이트가 아니다.</b> 이력에 FK 가 없으므로(sys/batch.md) 등록을 지워도
      * 행은 남으며 남아야 한다 — 이력이 게이트가 되면 <b>오래된 배치는 영영 못 지운다</b>.
@@ -527,7 +527,7 @@ public final class MsgKey {
     public static final String ERR_BATCH_NOT_DELETABLE = "err.batch.not-deletable";
 
     /**
-     * 즉시 실행이 거부됐다 — <b>이미 실행 중</b>이다(screen/batch/schedule/requirements.md).
+     * 즉시 실행이 거부됐다 — <b>이미 실행 중</b>이다(screen/admin/system/batch/schedule/requirements.md).
      *
      * <p><b>거부 사유가 이것 하나</b>다. 쿨다운은 수동이 우회하고, {@code USE_YN='N'} 은
      * 막지 않는다 — 꺼 둔 배치를 한 번 돌려 보는 것이 정상 동선이다.
@@ -537,13 +537,13 @@ public final class MsgKey {
      */
     public static final String ERR_BATCH_ALREADY_RUNNING = "err.batch.already-running";
 
-    // ── 배치 실행 이력 — BatchHistoryErrorCode(screen/batch/schedule/requirements.md) ───────────────
+    // ── 배치 실행 이력 — BatchHistoryErrorCode(screen/admin/system/batch/schedule/requirements.md) ───────────────
 
-    /** {@code [보기]} 를 눌렀는데 그 사이 파기됐다 — 보존 1년(retention.md · screen/batch/schedule/requirements.md). */
+    /** {@code [보기]} 를 눌렀는데 그 사이 파기됐다 — 보존 1년(retention.md · screen/admin/system/batch/schedule/requirements.md). */
     public static final String ERR_BATCH_HIST_PURGED = "err.batch-hist.purged";
 
     /**
-     * 중단 대상이 아니다 — <b>{@code RUNNING} 이 아니다</b>(screen/batch/schedule/requirements.md).
+     * 중단 대상이 아니다 — <b>{@code RUNNING} 이 아니다</b>(screen/admin/system/batch/schedule/requirements.md).
      *
      * <p>화면이 {@code eligible} 로 이미 걸렀지만 그것은 <b>고른 시점의 사실</b>이고, 그
      * 사이 배치가 끝났을 수 있다. <b>조용히 건너뛰지 않고 거절하는 쪽</b>이 맞다 — 끝난

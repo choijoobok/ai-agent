@@ -144,7 +144,7 @@ export function NoticeMgmtPage() {
         noticeToDtm: null,
         /*
           파생은 서버가 계산한다 — 임의의 값으로 채우면 <i>계산해 보니 그렇다</i> 와
-          구분되지 않는다(screen/batch/schedule/requirements.md 의 파생 셋과 같은 규칙). 저장 후 재조회에서 진짜 값이 온다.
+          구분되지 않는다(screen/admin/system/batch/schedule/requirements.md 의 파생 셋과 같은 규칙). 저장 후 재조회에서 진짜 값이 온다.
         */
         noticeStat: 'SCHEDULED',
         // 게시하는 것이 정상이다 — 만들자마자 내려가 있으면 왜 안 보이는지 찾게 된다.
@@ -187,7 +187,7 @@ export function NoticeMgmtPage() {
   /**
    * 지울 수 있는가 — <b>게이트가 없다</b>(screen/notice/requirements.md).
    *
-   * <p>`BATCH_SCHEDULE` 은 <i>켜져 있는가·도는가</i> 를 봤지만(screen/batch/schedule/requirements.md) 공지는 지운다고
+   * <p>`BATCH_SCHEDULE` 은 <i>켜져 있는가·도는가</i> 를 봤지만(screen/admin/system/batch/schedule/requirements.md) 공지는 지운다고
    * 조용히 멈추는 것이 없다. 지워진 뒤에 아무도 그것을 참조하지 않는다.
    *
    * <p>그래도 이 선언을 두는 것은 <b>첨부가 붙는 날 여기에 조항이 는다</b>는 자리
@@ -240,7 +240,7 @@ export function NoticeMgmtPage() {
           emptyText={emptyText}
           /*
             <b>다중이다</b>(screen/notice/requirements.md). 하단 pane 이 없으므로 frontend/grid.md 의 제약이 걸리지 않고
-            (`BATCH_SCHEDULE` 은 pane 이 있어 단일이었다 — screen/batch/schedule/requirements.md), 여러 건을 한 번에
+            (`BATCH_SCHEDULE` 은 pane 이 있어 단일이었다 — screen/admin/system/batch/schedule/requirements.md), 여러 건을 한 번에
             지우는 일이 실제로 있다.
           */
           selection="multiple"
@@ -270,7 +270,7 @@ function buildColumns(): ColumnDef<NoticeRow>[] {
       width: 80,
       sortable: true,
       /*
-        <b>상단 고정용이고 드래그가 아니라 숫자다</b>(screen/notice/requirements.md · screen/batch/schedule/requirements.md 과 같은 판단).
+        <b>상단 고정용이고 드래그가 아니라 숫자다</b>(screen/notice/requirements.md · screen/admin/system/batch/schedule/requirements.md 과 같은 판단).
         중복을 막지 않으며 결정성은 tie-breaker(`NOTICE_ID`)가 준다 — 그 결정성이
         <b>화면에 직접 보인다</b>: 팝업이 이 정렬의 첫 건을 집는다(screen/notice/requirements.md C안).
       */
@@ -345,7 +345,7 @@ function buildColumns(): ColumnDef<NoticeRow>[] {
         게시 시작을 미래로 넣고 저장했는데 여기가 `예정` 이면 맞게 쓴 것이다.
 
         <b>값은 코드이고 글자만 라벨이다</b>(frontend/grid.md) — `tone` 맵이 코드를 키로 봐야 하고
-        정렬·필터도 코드를 본다. screen/batch/schedule/requirements.md 이 배지에서 겪은 그 자리다.
+        정렬·필터도 코드를 본다. screen/admin/system/batch/schedule/requirements.md 이 배지에서 겪은 그 자리다.
       */
       renderer: 'badge',
       tone: STAT_TONE,
@@ -405,7 +405,7 @@ function buildColumns(): ColumnDef<NoticeRow>[] {
  * 넷이며 <b>기간이 필수가 아니다</b>.
  *
  * <p>screen/admin/system/log/access/requirements.md 의 <i>기간 필수 + 상한</i> 을 상속하지 않는다(screen/notice/requirements.md) — 근거가 대용량인데
- * 공지는 수백 건이다. screen/batch/schedule/requirements.md 이 배치 등록에 내린 것과 같은 판단이다.
+ * 공지는 수백 건이다. screen/admin/system/batch/schedule/requirements.md 이 배치 등록에 내린 것과 같은 판단이다.
  *
  * <p><b>`게시 상태` 의 기본값이 `내림` 을 뺀 셋이다.</b> 내려 둔 공지는 *안 보이는 것이
  * 정상* 이라 목록의 기본에서도 빠진다 — <b>감추는 것이 아니라 기본값</b>이고 비우면 전부

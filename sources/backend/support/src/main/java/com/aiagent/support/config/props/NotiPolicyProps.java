@@ -15,12 +15,12 @@ import org.springframework.validation.annotation.Validated;
  *
  * <h2>채널 키가 없다</h2>
  *
- * <p>screen/batch/schedule/requirements.md 이 BATCH-06 을 <i>"전역 설정 하나 — 수신 대상과 채널"</i> 로 남겼는데,
+ * <p>screen/admin/system/batch/schedule/requirements.md 이 BATCH-06 을 <i>"전역 설정 하나 — 수신 대상과 채널"</i> 로 남겼는데,
  * <b>채널이 인앱뿐이면 채널 설정이 없다</b>(screen/notice/requirements.md). 남는 것은 수신 대상 하나이며
  * 그것이 {@link #batchFailRole} 이다. 외부 채널이 붙는 날 그 키 옆에 채널 키가 붙는다.
  *
  * @param batchFailRole 배치 실패 알림을 받을 <b>역할</b>(BATCH-06). 그 역할을 <b>지금
- * 유효하게</b> 가진 사람 전부에게 간다. <b>비우면 보내지 않는다</b> — screen/batch/schedule/requirements.md 이
+ * 유효하게</b> 가진 사람 전부에게 간다. <b>비우면 보내지 않는다</b> — screen/admin/system/batch/schedule/requirements.md 이
  *     <i>배치별 on/off 를 두지 않는다</i> 고 한 것은 <b>배치마다 잊는 것</b>을 막으려는
  *     것이고, 시스템 전체를 끄는 결정은 한 곳에서 한 번 하는 것이라 성격이 다르다.
  *     <b>없는 역할을 적으면 조용히 0명</b>이다(오타가 그렇게 보인다 — 그래서 보내는 쪽이

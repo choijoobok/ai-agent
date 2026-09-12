@@ -75,7 +75,7 @@ public class BusinessException extends RuntimeException {
      * 400 응답의 {@code fields} 한 칸(backend/api.md).
      *
      * <p><b>배열인 것이 규약이다</b> — 관계가 틀린 검증은 같은 문구가 두 필드에 실린다
-     * (screen/batch/schedule/requirements.md).
+     * (screen/admin/system/batch/schedule/requirements.md).
      *
      * <p>{@code value} 는 <b>서버가 보고 거부한 값</b>이다. 화면이 행을 되찾은 경우에는
      * 화면의 값을 쓰므로 없어도 되지만, 되찾지 못한 오류에서는 <i>무슨 값이 문제인가</i>

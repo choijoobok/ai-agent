@@ -74,7 +74,7 @@ const TONE_COLOR: Record<Tone, string | undefined> = {
 const TAG_LIMIT = 3;
 
 /**
- * ms → <b>사람이 읽는 시간</b> — screen/batch/schedule/requirements.md 의 미결을 닫는다.
+ * ms → <b>사람이 읽는 시간</b> — screen/admin/system/batch/schedule/requirements.md 의 미결을 닫는다.
  *
  * <p><b>형식을 소스가 조립하지 않는다.</b> 그 미결이 <i>"`1시간 2분 5초` 인지 `01:02:05`
  * 인지, <b>다국어에서 갈린다</b>"</i> 였고, 갈리는 것이 맞으므로 <b>형식 자체가
@@ -86,7 +86,7 @@ const TAG_LIMIT = 3;
  * <p><b>1초 미만은 별도 문구</b>다. *"0초"* 라고 쓰면 <i>안 걸린 것</i>처럼 읽히는데,
  * `SKIP_*` 이력이 실제로 0ms 라(sys/batch.md) 둘이 같은 글자가 되면 안 된다.
  *
- * <p><b>값이 없으면 빈 칸</b>이다 — 진행 중인 행의 `ELAPSED_MS` 가 `null` 이며(screen/batch/schedule/requirements.md)
+ * <p><b>값이 없으면 빈 칸</b>이다 — 진행 중인 행의 `ELAPSED_MS` 가 `null` 이며(screen/admin/system/batch/schedule/requirements.md)
  * 거기에 `0초` 를 그리면 <i>0ms 만에 끝났다</i> 로 읽힌다.
  */
 function durationText(value: unknown): string {
@@ -106,7 +106,7 @@ function durationText(value: unknown): string {
 }
 
 /**
- * 값 <b>뒤에</b> 붙는 표시 — screen/admin/system/code/requirements.md · screen/batch/schedule/requirements.md.
+ * 값 <b>뒤에</b> 붙는 표시 — screen/admin/system/code/requirements.md · screen/admin/system/batch/schedule/requirements.md.
  *
  * <p><b>값이 아니라 값의 내력이다</b> — 그래서 복사에서 빠진다(frontend/grid.md · `copyCell` 이
  * `bo-cell-aside` 를 걷어낸다). {@code renderer: 'badge'} 의 <i>본</i> 태그에는 이 클래스가
@@ -710,7 +710,7 @@ function applyRenderer<T>(
     /*
       <b>{@code display} 가 글자를 정하고 값이 색을 정한다</b> — 축이 둘이다.
 
-      값이 코드(`SKIP_LOCK`)이고 글자가 라벨(`건너뜀(락)`)인 배지가 있다(screen/batch/schedule/requirements.md ·
+      값이 코드(`SKIP_LOCK`)이고 글자가 라벨(`건너뜀(락)`)인 배지가 있다(screen/admin/system/batch/schedule/requirements.md ·
       screen/admin/system/user/requirements.md). 라벨을 {@code derive} 로 만들어 넣으면 <b>{@code tone} 조회가 라벨
       문자열로 가서 색이 하나도 안 칠해지고</b>, 정렬·필터·엑셀도 라벨을 보게 된다 —
       값을 원본으로 두는 것이 frontend/grid.md 의 규칙이다.
@@ -726,7 +726,7 @@ function applyRenderer<T>(
       // 맵에 없는 값은 칠하지 않는다 — 정상이 압도적인 목록에서는 그것이 기본이다(frontend/grid.md).
       const main = color ? <Tag color={color}>{text}</Tag> : <span>{text}</span>;
       /*
-        <b>값의 내력이 함께 올 수 있다</b>(screen/batch/schedule/requirements.md). 실행 이력의 *결과* 가 그 자리이며
+        <b>값의 내력이 함께 올 수 있다</b>(screen/admin/system/batch/schedule/requirements.md). 실행 이력의 *결과* 가 그 자리이며
         `진행 중` 옆에 `유령` 이 붙는다 — 값이 사라지지 않으므로 아래 `column.badge` 분기가
         금지한 겹침(값 <i>대신</i> 배지)이 아니다.
       */
@@ -742,7 +742,7 @@ function applyRenderer<T>(
     return;
   }
   /*
-    밀리초를 사람이 읽는 단위로 — frontend/grid.md · screen/batch/schedule/requirements.md.
+    밀리초를 사람이 읽는 단위로 — frontend/grid.md · screen/admin/system/batch/schedule/requirements.md.
 
     <b>{@code 3725000} 을 사람이 읽지 않는다.</b> 서버가 포맷한 문자열 컬럼을 따로 주면
     그 컬럼의 정렬이 <b>문자열 정렬</b>이 되고(`9분` > `10분`), 셀에서 계산하면 렌더 함수를
@@ -805,7 +805,7 @@ function applyRenderer<T>(
         {@code Number('')} 이 <b>둘 다 0</b> 이라, 값이 없는 칸에 <b>0% 막대</b>가 그려진다
         (2026-09-02 실물 — 테스트가 잡았다). 그러면 <i>아직 시작 안 함</i> 과 <i>진행률을
         모름</i> 이 화면에서 같은 것이 되고, 후자는 <b>고장</b>인데 전자로 읽힌다.
-        `duration` 이 {@code null} 을 빈 칸으로 두는 것과 같은 자리다(screen/batch/schedule/requirements.md).
+        `duration` 이 {@code null} 을 빈 칸으로 두는 것과 같은 자리다(screen/admin/system/batch/schedule/requirements.md).
       */
       const raw: unknown = params.value;
       const numeric = raw === null || raw === undefined || raw === '' ? NaN : Number(raw);

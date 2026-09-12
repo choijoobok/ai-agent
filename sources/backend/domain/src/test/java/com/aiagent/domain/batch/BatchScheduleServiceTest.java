@@ -25,13 +25,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationEventPublisher;
 
 /**
- * 배치 등록의 저장 — screen/batch/schedule/requirements.md.
+ * 배치 등록의 저장 — screen/admin/system/batch/schedule/requirements.md.
  *
  * <p><b>여기서 막는 것 절반은 화면이 못 하는 것</b>이다 — 등록된 빈 목록은 스프링
  * 컨텍스트가 알고, 크론의 최소 간격은 파서가 있어야 안다(frontend/grid.md).
  *
  * <p><b>한때 화면으로는 여기 닿을 수 없었다.</b> 템플릿에 {@code BatchJob} 구현이 하나도
- * 없어(screen/batch/schedule/requirements.md) 실제 화면에서는 <i>빈이 없다</i> 에서 언제나 먼저 걸렸다. 보존 파기
+ * 없어(screen/admin/system/batch/schedule/requirements.md) 실제 화면에서는 <i>빈이 없다</i> 에서 언제나 먼저 걸렸다. 보존 파기
  * 배치({@code retentionPurgeJob})가 서면서 셀렉트에 값이 하나 생겼고, 이제 그 뒤의 검증들이
  * <b>화면에서도 실행된다</b> — 이 테스트가 유일한 확인 자리는 아니게 됐지만, 크론 파서와
  * 쿨다운의 관계는 <b>값싸게 지킬 자리가 여전히 여기</b>다(frontend/grid.md).
@@ -110,6 +110,18 @@ class BatchScheduleServiceTest {
     }
 
     @Test
+    @DisplayName("TC-5082 알 수 없는 시간대는 저장 전에 거부하고 일정 행을 쓰지 않는다")
+    void rejectsUnknownTimezone() {
+        BusinessException thrown = save(service, new BatchScheduleSaveRow(
+                RowState.C, "X", "이름", "설명", "settleDailyJob", "0 0 2 * * *", "X/Y", null, 300, 0, true, 0));
+
+        assertThat(thrown.errorCode().code()).isEqualTo("err.batch.timezone-invalid");
+        assertThat(fieldsOfFirstRow(thrown)).extracting(BusinessException.FieldError::field)
+                .containsExactly("timezone");
+        verify(batches, never()).save(any());
+    }
+
+    @Test
     @DisplayName("쿨다운이 크론 최소 간격 이상이면 막는다 — 실행이 조용히 건너뛰어진다")
     void rejectsCooldownLongerThanCron() {
         // 5분 주기(300초)에 쿨다운 600초 — 한 주기 걸러 한 번씩만 돈다.
@@ -118,7 +130,7 @@ class BatchScheduleServiceTest {
 
         assertThat(thrown.errorCode().code()).isEqualTo("err.batch.cooldown-too-long");
         /*
-          <b>오류가 두 셀에 걸린다</b>(screen/batch/schedule/requirements.md) — 어느 쪽이 틀렸는지 서버가 말할 수 없다.
+          <b>오류가 두 셀에 걸린다</b>(screen/admin/system/batch/schedule/requirements.md) — 어느 쪽이 틀렸는지 서버가 말할 수 없다.
           틀린 것은 값이 아니라 <b>관계</b>이며, 문구가 두 값을 함께 읽어 준다.
         */
         assertThat(fieldsOfFirstRow(thrown)).extracting(BusinessException.FieldError::field)

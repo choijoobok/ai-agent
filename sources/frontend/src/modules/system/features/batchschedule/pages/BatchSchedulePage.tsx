@@ -1,3 +1,4 @@
+// @feat FEAT-508
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { App } from 'antd';
 import { useQuery } from '@tanstack/react-query';
@@ -23,14 +24,14 @@ import { handOff, onHandoff, useHandoff } from '@/shared/routes/handoffStore';
 import { hasPermission } from '@/shared/authz/permission';
 import { useAuthStore } from '@/shared/stores/authStore';
 import { rsltLabel, RSLT_TONE } from '@/shared/batch/batchCodes';
-import { BATCH_SCHEDULE_ENDPOINTS } from '@/features/batchschedule/api/endpoints';
-import { getBeanList, getTimezoneList } from '@/features/batchschedule/api/batchScheduleApi';
-import type { BatchRunResponse, BatchScheduleRow } from '@/features/batchschedule/types';
+import { BATCH_SCHEDULE_ENDPOINTS } from '@/modules/system/features/batchschedule/api/endpoints';
+import { getBeanList, getTimezoneList } from '@/modules/system/features/batchschedule/api/batchScheduleApi';
+import type { BatchRunResponse, BatchScheduleRow } from '@/modules/system/features/batchschedule/types';
 import { recentHistoryColumns } from '@/shared/batch/historyColumns';
 import type { BatchHistoryRow } from '@/shared/batch/historyRow';
 
 /**
- * `BATCH_SCHEDULE` — screen/batch/schedule/requirements.md. <b>screen/menu/requirements.md 이후 처음으로 *위험한 편집* 을 다룬다.</b>
+ * `BATCH_SCHEDULE` — screen/admin/system/batch/schedule/requirements.md. <b>screen/menu/requirements.md 이후 처음으로 *위험한 편집* 을 다룬다.</b>
  *
  * <p>메뉴 트리는 잘못 고치면 화면이 안 보인다. 배치는 <b>잘못 고치면 조용히 안 돈다</b> —
  * 그것이 이 화면의 검증과 확인이 촘촘한 이유다.
@@ -60,11 +61,11 @@ import type { BatchHistoryRow } from '@/shared/batch/historyRow';
 const MENU_CD = 'BATCH_SCHEDULE';
 const HISTORY_CD = 'BATCH_HISTORY';
 
-/** 등록이 수십 건이다 — <b>한 화면에 다 들어오는 것이 목적</b>이다(screen/batch/schedule/requirements.md). */
+/** 등록이 수십 건이다 — <b>한 화면에 다 들어오는 것이 목적</b>이다(screen/admin/system/batch/schedule/requirements.md). */
 const PAGE_SIZE = 50;
 const PAGE_SIZES = [50, 100, 500];
 
-/** 하단 pane 의 건수 — screen/batch/schedule/requirements.md. 전량은 `BATCH_HISTORY` 가 답한다. */
+/** 하단 pane 의 건수 — screen/admin/system/batch/schedule/requirements.md. 전량은 `BATCH_HISTORY` 가 답한다. */
 const RECENT_SIZE = 10;
 
 export function BatchSchedulePage() {
@@ -74,17 +75,17 @@ export function BatchSchedulePage() {
   const shell = useShellNavigation();
 
   /**
-   * 하단의 빈 상태 — <b>셋이 갈린다</b>(frontend/grid.md · screen/batch/schedule/requirements.md).
+   * 하단의 빈 상태 — <b>셋이 갈린다</b>(frontend/grid.md · screen/admin/system/batch/schedule/requirements.md).
    *
    * <p>*"배치를 선택하세요"* · *"저장 후 조회할 수 있습니다"* · *"아직 실행된 적이
    * 없습니다"* 는 같은 빈 판이지만 <b>다음에 할 일이 다르다</b>. 셋째가 특히 중요한데,
-   * screen/batch/schedule/requirements.md 이 <i>"행이 없으면 꺼져 있는 것"</i> 이라고 한 그 신호이기 때문이다 —
+   * screen/admin/system/batch/schedule/requirements.md 이 <i>"행이 없으면 꺼져 있는 것"</i> 이라고 한 그 신호이기 때문이다 —
    * *"선택하세요"* 로 뭉치면 조사하러 온 사람이 아무것도 못 읽는다.
    */
   const [recentEmpty, setRecentEmpty] = useState<string>(MSG.BATCH_SCHEDULE_RECENT_EMPTY);
 
   /**
-   * 넘겨받은 배치 — `BATCH_HISTORY` 에서 왔다(screen/batch/schedule/requirements.md).
+   * 넘겨받은 배치 — `BATCH_HISTORY` 에서 왔다(screen/admin/system/batch/schedule/requirements.md).
    *
    * <p><b>효과가 아니라 초기값이다.</b> 효과로 읽으면 *첫 렌더는 빈 칸, 두 번째 렌더에서
    * 채워짐* 이 되어 사람이 그 깜빡임을 본다 — `ApiCatalogPage` 가 같은 자리에서 같은
@@ -95,7 +96,7 @@ export function BatchSchedulePage() {
   const header = useSearchFormHeader();
 
   /**
-   * `BEAN_ID` 셀렉트의 후보 — <b>서버가 준다</b>(screen/batch/schedule/requirements.md).
+   * `BEAN_ID` 셀렉트의 후보 — <b>서버가 준다</b>(screen/admin/system/batch/schedule/requirements.md).
    *
    * <p>스프링 컨텍스트에서 `BatchJob` 구현을 모은 것이며 <b>시드가 아니다</b>. 시드로 두면
    * 배포마다 구현과 목록이 어긋날 수 있고, 어긋나면 화면이 <i>고를 수 있는데 실행되지
@@ -119,7 +120,7 @@ export function BatchSchedulePage() {
   );
 
   /**
-   * 시간대 후보 — <b>tzdb 가 원본</b>이고 600개가 넘는다(screen/batch/schedule/requirements.md §4-1).
+   * 시간대 후보 — <b>tzdb 가 원본</b>이고 600개가 넘는다(screen/admin/system/batch/schedule/requirements.md §4-1).
    *
    * <p>빈 목록과 같은 이유로 `staleTime` 이 무한이다. <b>맨 앞이 업무 시간대</b>이며 서버가
    * 그 순서를 정한다 — 화면이 다시 정렬하면 *무엇이 기본인가* 를 두 곳이 알아야 한다.
@@ -150,7 +151,7 @@ export function BatchSchedulePage() {
   const searchFields = useMemo(() => buildSearchFields(handoff ?? ''), [handoff]);
 
   /**
-   * 저장 확인이 <b>`BATCH_DESC` 를 그대로 읽어 준다</b> — screen/batch/schedule/requirements.md.
+   * 저장 확인이 <b>`BATCH_DESC` 를 그대로 읽어 준다</b> — screen/admin/system/batch/schedule/requirements.md.
    *
    * <p>sys/batch.md 의 셋째 항목(*"껐다 켜면 저절로 따라잡는 배치와 건너뛴 구간이 영영 비는
    * 배치는 끄는 결정의 무게가 다르다"*)이 여기서 값을 한다. 그 문장을 <b>끄는 순간에</b>
@@ -182,7 +183,7 @@ export function BatchSchedulePage() {
     }
 
     /*
-      <b>시간대 변경도 확인을 받는다</b>(screen/batch/schedule/requirements.md §5-1). 크론이 그대로라 화면상
+      <b>시간대 변경도 확인을 받는다</b>(screen/admin/system/batch/schedule/requirements.md §5-1). 크론이 그대로라 화면상
       달라진 것은 한 칸인데 <b>실제 실행 시각은 몇 시간 옮겨진다</b> — 보이는 변화의
       크기와 결과의 크기가 어긋난다.
 
@@ -230,7 +231,7 @@ export function BatchSchedulePage() {
   });
 
   /**
-   * 즉시 실행의 결과를 <b>건별로</b> 낸다 — frontend/grid.md · screen/batch/schedule/requirements.md.
+   * 즉시 실행의 결과를 <b>건별로</b> 낸다 — frontend/grid.md · screen/admin/system/batch/schedule/requirements.md.
    *
    * <p>서버는 값만 내려보내고(`BatchRunResponse`) <b>문구는 여기서 짓는다</b> — 완성된 문장을
    * 서버가 내려보내면 그것이 서버의 언어로 굳는다(backend/packages.md 가 오류 문구에서 감수한 대가와
@@ -267,7 +268,7 @@ export function BatchSchedulePage() {
         ),
       });
       /*
-        <b>하단 pane 을 다시 읽는다</b>(screen/batch/schedule/requirements.md) — `RUNNING` 행이 바로 보인다. 마스터가
+        <b>하단 pane 을 다시 읽는다</b>(screen/admin/system/batch/schedule/requirements.md) — `RUNNING` 행이 바로 보인다. 마스터가
         아니라 pane 인 것이 요점이다: 진행률 모달을 두지 않기로 했으므로 진행을
         보여줄 자리가 그 행 하나다.
 
@@ -304,7 +305,7 @@ export function BatchSchedulePage() {
           url: BATCH_SCHEDULE_ENDPOINTS.runNow,
           target: 'selected' as const,
           /*
-            <b>미저장 변경이 있으면 막는다</b>(screen/batch/schedule/requirements.md). 고친 크론이 반영되지 않은 채
+            <b>미저장 변경이 있으면 막는다</b>(screen/admin/system/batch/schedule/requirements.md). 고친 크론이 반영되지 않은 채
             도는 것을 사용자가 기대하지 않는다 — 저장은 등록을 바꾸고 실행은 그 등록을
             읽는다.
           */
@@ -333,7 +334,7 @@ export function BatchSchedulePage() {
         beanId: '',
         cron: '',
         /*
-          <b>빈 칸이 아니라 업무 시간대다</b>(screen/batch/schedule/requirements.md §4-1). 필수 칸을 비워 내면
+          <b>빈 칸이 아니라 업무 시간대다</b>(screen/admin/system/batch/schedule/requirements.md §4-1). 필수 칸을 비워 내면
           *대개 맞는 값* 을 매번 손으로 고르게 되고, 빠뜨리면 저장이 막힌다.
         */
         timezone: defaultTimezone,
@@ -379,7 +380,7 @@ export function BatchSchedulePage() {
   });
 
   /**
-   * 배치 선택 — 하단 pane 을 그 배치로 읽는다(frontend/grid.md · screen/batch/schedule/requirements.md).
+   * 배치 선택 — 하단 pane 을 그 배치로 읽는다(frontend/grid.md · screen/admin/system/batch/schedule/requirements.md).
    *
    * <p><b>거부하지 않는다.</b> 하단이 읽기 전용이라 잃을 미저장 편집이 없다.
    */
@@ -403,7 +404,7 @@ export function BatchSchedulePage() {
         return;
       }
       recentBatchId.current = row.data.batchId;
-      // 한 번도 안 돈 배치와 아직 안 고른 상태를 가른다(screen/batch/schedule/requirements.md).
+      // 한 번도 안 돈 배치와 아직 안 고른 상태를 가른다(screen/admin/system/batch/schedule/requirements.md).
       setRecentEmpty(MSG.BATCH_SCHEDULE_RECENT_NONE);
       void recent.read(true);
     },
@@ -423,7 +424,7 @@ export function BatchSchedulePage() {
     await master.read();
   }, [master, recent]);
 
-  /** 넘겨받은 배치가 있으면 <b>마운트하며 그 조건으로</b> 조회한다(screen/batch/schedule/requirements.md). */
+  /** 넘겨받은 배치가 있으면 <b>마운트하며 그 조건으로</b> 조회한다(screen/admin/system/batch/schedule/requirements.md). */
   const applyHandoff = useCallback(
     (batchId: string) => {
       searchForm.current?.apply({ batchId: { value: batchId } });
@@ -434,7 +435,7 @@ export function BatchSchedulePage() {
   useEffect(() => onHandoff(MENU_CD, applyHandoff), [applyHandoff]);
 
   /**
-   * 하단 행 더블 클릭 → `BATCH_HISTORY` 를 그 배치로 연다(UX-02 멀티탭 — screen/batch/schedule/requirements.md).
+   * 하단 행 더블 클릭 → `BATCH_HISTORY` 를 그 배치로 연다(UX-02 멀티탭 — screen/admin/system/batch/schedule/requirements.md).
    *
    * <p>§4.7 의 <b>반대 방향</b>이며 둘이 왕복을 만든다. <b>볼 권한이 없으면 열지
    * 않는다</b>(frontend/tabs.md) — 열어 놓고 403 을 보여주는 것보다 아무 일도 일어나지 않는 편이 낫다.
@@ -452,7 +453,7 @@ export function BatchSchedulePage() {
   );
 
   /**
-   * 지울 수 있는가 — <b>게이트가 자식이 아니라 상태</b>다(screen/batch/schedule/requirements.md).
+   * 지울 수 있는가 — <b>게이트가 자식이 아니라 상태</b>다(screen/admin/system/batch/schedule/requirements.md).
    *
    * <p>`ROLE_MGMT` 는 자식 건수를 셌고 여기는 <b>켜져 있는가</b>와 <b>도는가</b>를 본다.
    *
@@ -488,7 +489,7 @@ export function BatchSchedulePage() {
 
       <div style={{ flex: 1, minHeight: 0 }}>
         {/*
-          <b>축이 상하다</b>(frontend/grid.md · screen/batch/schedule/requirements.md). 마스터 컬럼이 열이 넘어 좌우로 나누면
+          <b>축이 상하다</b>(frontend/grid.md · screen/admin/system/batch/schedule/requirements.md). 마스터 컬럼이 열이 넘어 좌우로 나누면
           가로가 모자라고, 하단이 이력이라 <b>가로로 긴 표</b>다.
         */}
         <SplitPane
@@ -530,7 +531,7 @@ export function BatchSchedulePage() {
   );
 }
 
-// ── 컬럼 (screen/batch/schedule/requirements.md) ────────────────────────────────────────────────
+// ── 컬럼 (screen/admin/system/batch/schedule/requirements.md) ────────────────────────────────────────────────
 
 /**
  * frontend/grid.md 대로 <b>편집 폼이 없다</b> — 이 표가 목록이자 편집 화면이다.
@@ -550,7 +551,7 @@ function buildColumns(
       width: 80,
       sortable: true,
       /*
-        <b>드래그가 아니라 숫자다</b>(screen/batch/schedule/requirements.md). screen/menu/requirements.md 의 트리 드래그는 <b>계층을 바꾸는
+        <b>드래그가 아니라 숫자다</b>(screen/admin/system/batch/schedule/requirements.md). screen/menu/requirements.md 의 트리 드래그는 <b>계층을 바꾸는
         조작</b>이라 드래그가 유일한 수단이었지만, 여기는 평평한 목록이고 정렬이 표시
         순서일 뿐이라 드래그를 만들면 sys/menu.md 의 재작성 규약이 딸려 온다.
 
@@ -589,7 +590,7 @@ function buildColumns(
       fill: true,
       filter: false,
       /*
-        <b>필수다</b> — sys/batch.md · screen/batch/schedule/requirements.md. 비워 둔 채 저장할 수 없고, 이 문장을 <b>끄는
+        <b>필수다</b> — sys/batch.md · screen/admin/system/batch/schedule/requirements.md. 비워 둔 채 저장할 수 없고, 이 문장을 <b>끄는
         확인 창이 그대로 읽어 준다</b>.
       */
       required: true,
@@ -602,7 +603,7 @@ function buildColumns(
       type: 'text',
       width: 200,
       /*
-        <b>고르는 것이지 타이핑이 아니다</b>(screen/batch/schedule/requirements.md) — screen/menu/requirements.md 이 메뉴 URL 을 라우트
+        <b>고르는 것이지 타이핑이 아니다</b>(screen/admin/system/batch/schedule/requirements.md) — screen/menu/requirements.md 이 메뉴 URL 을 라우트
         목록에서 고르게 한 것과 같은 판단이다. 없는 빈을 넣으면 <b>실행 시점에 터지고</b>
         그때는 크론이 깨운 새벽이다.
 
@@ -620,7 +621,7 @@ function buildColumns(
       type: 'text',
       width: 150,
       /*
-        <b>구문도 관계도 서버가 본다</b>(screen/batch/schedule/requirements.md). 크론 파서가 프론트 의존성에 없으며
+        <b>구문도 관계도 서버가 본다</b>(screen/admin/system/batch/schedule/requirements.md). 크론 파서가 프론트 의존성에 없으며
         (stack.md), 쿨다운과의 관계는 <b>파서 없이는 판정 자체가 불가능</b>하다 —
         frontend/grid.md 가 *서버 검증이 남는 자리* 로 적은 그것이다.
       */
@@ -633,7 +634,7 @@ function buildColumns(
       type: 'text',
       width: 200,
       /*
-        <b>크론 바로 오른쪽이다</b>(screen/batch/schedule/requirements.md §4-1) — 둘이 한 뜻이라 떨어뜨리면
+        <b>크론 바로 오른쪽이다</b>(screen/admin/system/batch/schedule/requirements.md §4-1) — 둘이 한 뜻이라 떨어뜨리면
         *어느 시간대의 6시인가* 를 두 곳에서 읽어야 한다.
 
         <b>고르는 것이지 타이핑이 아니다.</b> 자유 입력을 열면 `Korea/Seoul` 처럼 있을 듯한
@@ -644,7 +645,7 @@ function buildColumns(
       /*
         <b>`select` 이 아니라 `richSelect` 다</b> — 후보가 600개다. playbook/INDEX.md 이 스무
         개를 경계로 둔 이유가 그것이며, 검색 없는 콤보에서 600개는 <b>고르는 것이 아니라
-        뒤지는 것</b>이 된다(screen/batch/schedule/requirements.md §4-1 — *검색으로 좁힌다*).
+        뒤지는 것</b>이 된다(screen/admin/system/batch/schedule/requirements.md §4-1 — *검색으로 좁힌다*).
       */
       editor: 'richSelect',
       options: timezoneOptions,
@@ -655,7 +656,7 @@ function buildColumns(
       type: 'text',
       width: 200,
       /*
-        <b>그 배치의 시간대로 표시한다</b>(screen/batch/schedule/requirements.md §4-1). 브라우저 시간대로 보이면
+        <b>그 배치의 시간대로 표시한다</b>(screen/admin/system/batch/schedule/requirements.md §4-1). 브라우저 시간대로 보이면
         `America/New_York` 로 설정한 운영자가 서울에서 `19:00` 을 보고, <b>자기가 넣은
         06:00 이 맞는지 확인할 근거가 사라진다</b> — 이 칸의 목적 전부가 그 확인이다.
 
@@ -668,7 +669,7 @@ function buildColumns(
       derive: (row) => formatInZone(row.nextExecDtm, row.timezone),
       filter: false,
       /*
-        <b>파생이며 읽기 전용이다</b>(screen/batch/schedule/requirements.md). 이 칸이 <b>크론을 눈으로 확인시킨다</b> —
+        <b>파생이며 읽기 전용이다</b>(screen/admin/system/batch/schedule/requirements.md). 이 칸이 <b>크론을 눈으로 확인시킨다</b> —
         `0 0 9 * * MON-FRI` 를 넣고 저장했는데 여기가 월요일이면 맞게 쓴 것이다.
 
         <b>비어 있는 경우가 둘이고 뜻이 다르다</b>: 꺼 둔 배치이거나(정상 — §3.6),
@@ -684,7 +685,7 @@ function buildColumns(
       filter: false,
       editable: true,
       /*
-        <b>`nclob` 이 아니다</b>(`VARCHAR(2000)`). 값이 손에 있으므로 screen/batch/schedule/requirements.md 의 `[보기]`
+        <b>`nclob` 이 아니다</b>(`VARCHAR(2000)`). 값이 손에 있으므로 screen/admin/system/batch/schedule/requirements.md 의 `[보기]`
         규약이 아니라 frontend/grid.md 의 <b>`textModal`</b> 이며, 셀은 한 줄로 잘리고 툴팁에 전체다.
 
         <b>JSON 포맷터를 두지 않는다</b> — 모달 안에 *정렬* 버튼 같은 것을 넣으면
@@ -735,7 +736,7 @@ function buildColumns(
       width: 110,
       /*
         <b>기본 숨김이다</b> — 안전망이라 평소에 볼 일이 없다. 다만 <b>실행 이력의 유령
-        판정이 이 값을 임계값으로 쓰므로</b>(screen/batch/schedule/requirements.md) 유령이 자주 보이면 여기를 켜서 본다.
+        판정이 이 값을 임계값으로 쓰므로</b>(screen/admin/system/batch/schedule/requirements.md) 유령이 자주 보이면 여기를 켜서 본다.
       */
       visible: false,
       editable: true,
@@ -804,7 +805,7 @@ function validateBatchIds(rows: GridRow<BatchScheduleRow>[]): GridIssue[] {
 }
 
 /**
- * 실행 <b>앞</b>에 선다 — 미저장 변경이 있으면 막는다(screen/batch/schedule/requirements.md).
+ * 실행 <b>앞</b>에 선다 — 미저장 변경이 있으면 막는다(screen/admin/system/batch/schedule/requirements.md).
  *
  * <p>고친 크론이 반영되지 않은 채 도는 것을 사용자가 기대하지 않는다. <b>저장은 등록을
  * 바꾸고 실행은 그 등록을 읽는다</b> — 순서가 뒤바뀌면 방금 고친 값이 아니라 <i>고치기
@@ -821,16 +822,16 @@ function rejectUnsaved(rows: GridRow<BatchScheduleRow>[]): GridIssue[] {
     : [];
 }
 
-// ── 조회조건 (screen/batch/schedule/requirements.md) ────────────────────────────────────────────
+// ── 조회조건 (screen/admin/system/batch/schedule/requirements.md) ────────────────────────────────────────────
 
 /**
  * 넷이며 <b>대개 비운 채로 조회한다</b>.
  *
- * <p>등록이 수십 건이고 페이지 사이즈가 50 이라(screen/batch/schedule/requirements.md) 한 화면에 다 들어온다 — 거르는
+ * <p>등록이 수십 건이고 페이지 사이즈가 50 이라(screen/admin/system/batch/schedule/requirements.md) 한 화면에 다 들어온다 — 거르는
  * 것보다 <b>눈으로 훑는 것</b>이 빠른 규모이며, 여기 열어 둔 넷은 등록이 수백 건이 됐을
- * 때를 위한 것이다(screen/batch/schedule/requirements.md 의 실측 미결).
+ * 때를 위한 것이다(screen/admin/system/batch/schedule/requirements.md 의 실측 미결).
  *
- * <p><b>`배치 ID` 가 넘겨받기의 착지점이다</b>(screen/batch/schedule/requirements.md). 실행 이력에서 `배치 ID` 를 더블
+ * <p><b>`배치 ID` 가 넘겨받기의 착지점이다</b>(screen/admin/system/batch/schedule/requirements.md). 실행 이력에서 `배치 ID` 를 더블
  * 클릭하면 이 탭이 그 값으로 열리며, <b>초기화는 빈 칸이 아니라 그 값으로</b> 돌아간다 —
  * 이 탭은 그것을 보러 열렸다(frontend/search-form.md).
  *
@@ -887,7 +888,7 @@ function buildSearchFields(batchId: string): SearchField[] {
   ];
 }
 
-/** 시각을 <b>시:분</b> 으로 — screen/batch/schedule/requirements.md 의 문구가 그 단위다(*"09:14 시작"*). */
+/** 시각을 <b>시:분</b> 으로 — screen/admin/system/batch/schedule/requirements.md 의 문구가 그 단위다(*"09:14 시작"*). */
 function timeText(value: string | null): string {
   if (!value) return '';
   const at = new Date(value);
@@ -897,7 +898,7 @@ function timeText(value: string | null): string {
 }
 
 /**
- * 그 배치의 시간대로 읽은 <b>다음 실행</b> — screen/batch/schedule/requirements.md §4-1.
+ * 그 배치의 시간대로 읽은 <b>다음 실행</b> — screen/admin/system/batch/schedule/requirements.md §4-1.
  *
  * <p>공통 포매터(`shared/grid/dateFormat.ts`)는 <b>브라우저 시간대</b>로 옮긴다 — 감사
  * 4컬럼처럼 *보는 사람의 시각* 이 맞는 칸에서는 그것이 옳다. 이 칸은 반대로 <b>설정한

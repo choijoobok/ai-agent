@@ -65,6 +65,7 @@ class AuthorizationInterceptorTest {
     private static final String CONFIG_SAVE = "/api/service/system/config/save";
     private static final String ACCESS_LOG_DETAIL = "/api/service/system/accessLog/getDetail";
     private static final String ERROR_LOG_DETAIL = "/api/service/system/errorLog/getDetail";
+    private static final String BATCH_SCHEDULE_RUN_NOW = "/api/service/system/batchSchedule/runNow";
 
     @Mock private ApiAuthorityRegistry registry;
     @Mock private EffectiveAuthorityService authorities;
@@ -235,6 +236,15 @@ class AuthorizationInterceptorTest {
 
             givenFact(ERROR_LOG_DETAIL, ActionType.READ, "ERROR_LOG");
             assertDenied(get(ERROR_LOG_DETAIL, session), AuthzErrorCode.NO_AUTHORITY);
+        }
+
+        @Test
+        @DisplayName("TC-5084 BATCH_SCHEDULE READ만으로 즉시 실행 직접 호출은 403이다")
+        void batchRunNowRequiresExecute() {
+            givenAuthority(new MenuAction("BATCH_SCHEDULE", ActionType.READ));
+            givenFact(BATCH_SCHEDULE_RUN_NOW, ActionType.EXECUTE, "BATCH_SCHEDULE");
+
+            assertDenied(get(BATCH_SCHEDULE_RUN_NOW, session), AuthzErrorCode.NO_AUTHORITY);
         }
 
         @Test

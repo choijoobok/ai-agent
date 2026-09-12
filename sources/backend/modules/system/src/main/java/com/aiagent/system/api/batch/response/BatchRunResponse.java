@@ -1,10 +1,11 @@
-package com.aiagent.api.batch.response;
+// @feat FEAT-508
+package com.aiagent.system.api.batch.response;
 
 import java.time.Instant;
 import java.util.List;
 
 /**
- * 즉시 실행의 응답 — frontend/grid.md · screen/batch/schedule/requirements.md. <b>건별이다.</b>
+ * 즉시 실행의 응답 — frontend/grid.md · screen/admin/system/batch/schedule/requirements.md. <b>건별이다.</b>
  *
  * <p>그 절이 <i>"응답: 모달 — 성공/실패를 건별로 낸다"</i> 고 적었다. 여러 건을 골라
  * 누르면 어떤 것은 시작하고 어떤 것은 이미 돌고 있으며, <b>첫 실패에서 예외를 던지면
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * <h2>문구를 서버가 짓지 않는다</h2>
  *
- * <p>screen/batch/schedule/requirements.md 이 요구한 문구는 <i>"이미 실행 중입니다 (노드 {@code app-02}, 09:14 시작)"</i>
+ * <p>screen/admin/system/batch/schedule/requirements.md 이 요구한 문구는 <i>"이미 실행 중입니다 (노드 {@code app-02}, 09:14 시작)"</i>
  * 이고, 그 안에 <b>노드와 시각</b>이 들어간다. 서버가 완성된 문장을 내려보내면 그것은
  * <b>서버의 언어</b>로 굳고(backend/packages.md 가 오류 문구에서 감수한 대가), 이 화면은 오류 응답이
  * 아니라 <b>정상 응답</b>이라 그 대가를 감수할 이유가 없다.

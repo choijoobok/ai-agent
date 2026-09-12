@@ -17,7 +17,7 @@ package com.aiagent.domain.notification;
  * <tr><td>{@link #REQUEST}</td><td>요청 처리·반려 — <b>지금 있는 유일한 생산자</b>(screen/notice/requirements.md)</td></tr>
  *   <tr><td>{@link #AUTH}</td><td>비밀번호 만료 예고 — AUTH-05</td></tr>
  *   <tr><td>{@link #AUTHZ}</td><td>권한 만료 예정 — AUTHZ-08</td></tr>
- * <tr><td>{@link #BATCH}</td><td>배치 실패 — BATCH-06(screen/batch/schedule/requirements.md)</td></tr>
+ * <tr><td>{@link #BATCH}</td><td>배치 실패 — BATCH-06(screen/admin/system/batch/schedule/requirements.md)</td></tr>
  * </table>
  *
  * <p><b>{@code NOTICE} 가 없다.</b> 공지는 알림함에 행을 넣지 않는다 — 로그인 후 팝업으로
