@@ -1,19 +1,20 @@
-/** 서버 `RolePickRow` · `RoleAuthTreeRow` · `RoleHolderRow` 와 1:1 — screen/role-auth/requirements.md. */
+// @feat FEAT-502
+/** 서버 `RolePickRow` · `RoleAuthTreeRow` · `RoleHolderRow` 와 1:1 — screen/admin/system/role-auth/requirements.md. */
 
 import type { Action } from '@/shared/authz/permission';
 
-/** 좌 — **읽기 전용**이다. 생성·비활성화·삭제는 `ROLE_MGMT`(screen/role-auth/requirements.md)의 일이다. */
+/** 좌 — **읽기 전용**이다. 생성·비활성화·삭제는 `ROLE_MGMT`(screen/admin/system/role-auth/requirements.md)의 일이다. */
 export interface RolePickRow {
   roleId: string;
   roleNm: string;
-  /** **비활성 역할도 나온다** — 권한 구성은 켜기 전에 해 두는 것이 정상이다(screen/role-auth/requirements.md). */
+  /** **비활성 역할도 나온다** — 권한 구성은 켜기 전에 해 두는 것이 정상이다(screen/admin/system/role-auth/requirements.md). */
   useYn: boolean;
-  /** 저장 확인의 둘째 줄이 말할 수를 **고르기 전에** 보여준다(screen/role-auth/requirements.md). */
+  /** 저장 확인의 둘째 줄이 말할 수를 **고르기 전에** 보여준다(screen/admin/system/role-auth/requirements.md). */
   holderCount: number;
 }
 
 /**
- * 우 — 권한 트리의 한 행. **정의는 screen/user/requirements.md 가 갖고 여기는 덜어 내기만 한다**(screen/role-auth/requirements.md).
+ * 우 — 권한 트리의 한 행. **정의는 screen/user/requirements.md 가 갖고 여기는 덜어 내기만 한다**(screen/admin/system/role-auth/requirements.md).
  *
  * <p>셀 상태가 일곱에서 넷으로 준다 — 켜짐 · 꺼짐 · `—` · 구조 노드. 기간 컬럼이 없어
  * *예정*·*만료* 배지가 사라지고, **역할 자신이 원본**이라 *역할 경유* 배지도 사라진다.
@@ -54,12 +55,12 @@ export interface RoleAuthTreeRow {
 /*
   하단 pane 의 행 타입은 **여기 없다** — `shared/authz/roleHolder.ts` 다.
 
-  screen/role-auth/requirements.md 가 하단을 *"§2.5 와 같은 그리드"* 로 정했으므로 `ROLE_MGMT` 도 같은 타입을 쓰는데,
+  screen/admin/system/role-auth/requirements.md 가 하단을 *"§2.5 와 같은 그리드"* 로 정했으므로 `ROLE_MGMT` 도 같은 타입을 쓰는데,
   features 끼리 직접 import 하면 **한쪽이 다른 쪽의 부품 창고**가 된다 — frontend/packages.md 이
   *"두 번째 화면이 쓰는 순간 shared/ 로 올린다"* 고 정한 그 자리다.
 */
 
-/** 저장이 보내는 부여 하나 — **켜진 스위치 전부**가 나간다(screen/role-auth/requirements.md). */
+/** 저장이 보내는 부여 하나 — **켜진 스위치 전부**가 나간다(screen/admin/system/role-auth/requirements.md). */
 export interface RoleAuthGrant {
   menuCd: string;
   actionCd: Action;

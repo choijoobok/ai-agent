@@ -28,8 +28,12 @@ import { join } from 'node:path';
  * 건너뛰는 검사는 <b>있는 것보다 나쁘다</b>(통과했다고 믿게 한다).
  */
 
-const FEATURES = 'src/features';
+const FRONTEND_ROOTS = ['src/features', 'src/modules'];
 const BACKEND = '../backend';
+const CONTROLLER_ROOTS = [
+  join(BACKEND, 'api/src/main/java'),
+  join(BACKEND, 'modules/system/src/main/java'),
+];
 
 /** 그리드가 몇 개인지는 바뀐다. <b>0 이 되면 파서가 눈이 먼 것</b>이므로 그것만 잠근다. */
 const MIN_GRIDS = 15;
@@ -67,13 +71,15 @@ function objectKeys(literal) {
 /** `X_ENDPOINTS.key` → `/service/…`. */
 function endpointUrls() {
   const urls = new Map();
-  for (const file of walk(FEATURES)) {
-    if (!file.endsWith('endpoints.ts')) continue;
-    const text = readFileSync(file, 'utf8');
-    const owner = text.match(/export const (\w+) = \{/)?.[1];
-    if (!owner) continue;
-    for (const [, key, url] of text.matchAll(/^ {2}(\w+): '([^']+)',$/gm)) {
-      urls.set(`${owner}.${key}`, url);
+  for (const root of FRONTEND_ROOTS) {
+    for (const file of walk(root)) {
+      if (!file.endsWith('endpoints.ts')) continue;
+      const text = readFileSync(file, 'utf8');
+      const owner = text.match(/export const (\w+) = \{/)?.[1];
+      if (!owner) continue;
+      for (const [, key, url] of text.matchAll(/^ {2}(\w+): '([^']+)',$/gm)) {
+        urls.set(`${owner}.${key}`, url);
+      }
     }
   }
   return urls;
@@ -82,22 +88,24 @@ function endpointUrls() {
 /** 프론트가 부르는 URL → `@RequestBody` 의 레코드 이름. */
 function requestRecords() {
   const byUrl = new Map();
-  for (const file of walk(join(BACKEND, 'api/src/main/java'))) {
-    if (!file.endsWith('Controller.java')) continue;
-    const lines = readFileSync(file, 'utf8').split('\n');
-    const base = lines.join('\n').match(/@RequestMapping\("([^"]+)"\)/)?.[1];
-    if (!base) continue;
+  for (const root of CONTROLLER_ROOTS) {
+    for (const file of walk(root)) {
+      if (!file.endsWith('Controller.java')) continue;
+      const lines = readFileSync(file, 'utf8').split('\n');
+      const base = lines.join('\n').match(/@RequestMapping\("([^"]+)"\)/)?.[1];
+      if (!base) continue;
 
-    for (let i = 0; i < lines.length; i += 1) {
-      const path = lines[i].match(/@PostMapping\("([^"]+)"\)/)?.[1];
-      if (!path) continue;
-      // 다음 매핑 전까지에서 본문 타입을 찾는다 — 없으면 본문 없는 POST 다.
-      for (let j = i + 1; j < lines.length && !/@(Post|Get)Mapping/.test(lines[j]); j += 1) {
-        // 애너테이션을 건너뛴다 — `@RequestBody @Valid Xxx request` 에서 `Valid` 를 타입으로 읽지 않게.
-        const type = lines[j].match(/@RequestBody\s+(?:@\w+\s+)*([A-Z]\w+)\s+\w+/)?.[1];
-        if (type) {
-          byUrl.set(`${base}${path}`.replace(/^\/api/, ''), type);
-          break;
+      for (let i = 0; i < lines.length; i += 1) {
+        const path = lines[i].match(/@PostMapping\("([^"]+)"\)/)?.[1];
+        if (!path) continue;
+        // 다음 매핑 전까지에서 본문 타입을 찾는다 — 없으면 본문 없는 POST 다.
+        for (let j = i + 1; j < lines.length && !/@(Post|Get)Mapping/.test(lines[j]); j += 1) {
+          // 애너테이션을 건너뛴다 — `@RequestBody @Valid Xxx request` 에서 `Valid` 를 타입으로 읽지 않게.
+          const type = lines[j].match(/@RequestBody\s+(?:@\w+\s+)*([A-Z]\w+)\s+\w+/)?.[1];
+          if (type) {
+            byUrl.set(`${base}${path}`.replace(/^\/api/, ''), type);
+            break;
+          }
         }
       }
     }
@@ -169,17 +177,19 @@ function recordComponents() {
 function grids(urls) {
   const found = [];
 
-  for (const file of walk(FEATURES)) {
-    if (!/\.tsx?$/.test(file) || file.endsWith('.test.ts')) continue;
-    const lines = readFileSync(file, 'utf8').split('\n');
+  for (const root of FRONTEND_ROOTS) {
+    for (const file of walk(root)) {
+      if (!/\.tsx?$/.test(file) || file.endsWith('.test.ts')) continue;
+      const lines = readFileSync(file, 'utf8').split('\n');
 
-    for (let i = 0; i < lines.length; i += 1) {
-      if (!/^\s*toSaveRow: \(row\) => \(\{$/.test(lines[i])) continue;
-      found.push({
-        where: `${file}:${i + 1}`,
-        keys: envelopeKeys(file, lines, i),
-        url: saveUrl(file, lines, i, urls),
-      });
+      for (let i = 0; i < lines.length; i += 1) {
+        if (!/^\s*toSaveRow: \(row\) => \(\{$/.test(lines[i])) continue;
+        found.push({
+          where: `${file}:${i + 1}`,
+          keys: envelopeKeys(file, lines, i),
+          url: saveUrl(file, lines, i, urls),
+        });
+      }
     }
   }
   return found;

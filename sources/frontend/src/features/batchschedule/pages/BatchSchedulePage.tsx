@@ -157,7 +157,7 @@ export function BatchSchedulePage() {
    * 보여주지 않으면 적어 둔 의미가 없다.
    *
    * <p><b>켜는 것은 확인하지 않는다.</b> 축이 다르다 — 켜는 것은 되돌릴 수 있고 끄는 것은
-   * 시간이 간다. `ROLE_MGMT` 가 같은 판단을 했다(screen/role/requirements.md).
+   * 시간이 간다. `ROLE_MGMT` 가 같은 판단을 했다(screen/admin/system/role/requirements.md).
    *
    * <p><b>설명을 메시지 키로 감싸지 않는다.</b> 데이터이지 문구가 아니며, 운영자가 적은
    * 그 문장이 그대로 읽혀야 한다.

@@ -17,10 +17,10 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/role` |
+| 페이지 경로 | `/admin/system/role` |
 | 메뉴코드 | `ROLE_MGMT` |
-| 프론트 폴더 | `sources/frontend/src/features/role/` (+ 공통물 `shared/authz/`) |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/authz/role/` · `sources/backend/api/…/api/role/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/role/` (+ 공통물 `shared/authz/`) |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/authz/role/` · `sources/backend/modules/system/…/system/api/role/` |
 | 화면 유형 | **마스터-디테일(상하)** — 하단은 읽기 전용 |
 | 처리 유형 | CRUD |
 | 쓰는 액션 | `R` `S` — **`EXPORT` 가 없는 두 번째 화면**이다(`ROLE_AUTH_MGMT` 에 이어) |
@@ -138,7 +138,7 @@
 - **만료도 보여준다** — 지금은 영향이 없지만 **다시 유효해질 수 있다.**
 - ***개인 예외 보유* 와 *다른 역할 보유* 가 나란히 선다.** 확인 문구가 *"다른 역할 없음 · 개인 예외 없음"* **두 사유를 나란히** 내기 때문이며, 같은 판정의 입력 둘 중 하나만 보여줄 근거가 없다(2026-08-30).
 - **읽기 전용이다.** 부여를 고치는 곳은 `USER_MGMT` 의 보유 역할 탭이다.
-- **URL 은 화면이 준다.** 공용 훅이 경로를 들면 `features/role/api/endpoints.ts` 에 그 줄이 없어지고, 그러면 시드가 **`ROLE_MGMT` 행을 만들지 못해** 이 화면의 하단이 403 이 된다. 두 화면이 같은 값을 각자 선언하는 것이 *경로가 하나* 라는 사실을 **두 시드 행**으로 만든다.
+- **URL 은 화면이 준다.** 공용 훅이 경로를 들면 `modules/system/features/role/api/endpoints.ts` 에 그 줄이 없어지고, 그러면 시드가 **`ROLE_MGMT` 행을 만들지 못해** 이 화면의 하단이 403 이 된다. 두 화면이 같은 값을 각자 선언하는 것이 *경로가 하나* 라는 사실을 **두 시드 행**으로 만든다.
 
 ### 4-2. 편집 가능 판단 — 조건부
 
@@ -258,9 +258,9 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |
 |---|---|---|---|---|---|
-| 목록 | `getList` | `/service/role/getList` | POST | R | offset |
-| 저장 | `save` | `/service/role/save` | POST | S | — |
-| **하단 pane** | `getAffectedUsers` | **`/service/roleAuth/getAffectedUsers`** | POST | R | offset |
+| 목록 | `getList` | `/service/system/role/getList` | POST | R | offset |
+| 저장 | `save` | `/service/system/role/save` | POST | S | — |
+| **하단 pane** | `getAffectedUsers` | **`/service/system/roleAuth/getAffectedUsers`** | POST | R | offset |
 
 - **셋째가 `roleAuth` 인 것은 오타가 아니다.** 하단이 `ROLE_AUTH_MGMT` 의 pane 과 **같은 그리드**이므로 **경로도 같아야 한다** — `role/getUserList` 를 따로 두면 **같은 질문에 답이 둘**이 된다. 이 한 줄이 시드에 **`ROLE_MGMT` 행을 하나 더** 붙이며, 그것이 API-메뉴 매핑이 다대다인 이유의 실물이다.
 - **`exportExcel` 이 없다** — 엑셀 자체가 없다.
@@ -271,7 +271,7 @@
 
 - 코드그룹: **없음.**
 - 메시지 키: 화면 `MSG.ROLE_*` · 서버 `MsgKey.ERR_ROLE_DUPLICATE` · `ERR_ROLE_NOT_FOUND` · `ERR_ROLE_NOT_DELETABLE` · `ERR_ROLE_NAME_REQUIRED`.
-- 메뉴 시드: `menu-tree.yaml` — `code: ROLE_MGMT` · `parent: AUTHZ` · `url: /role`. **`export` 없음.**
+- 메뉴 시드: `menu-tree.yaml` — `code: ROLE_MGMT` · `parent: MENU` · `url: /admin/system/role`. **`export` 없음.**
 - 초기 데이터 전제: 없음. **`ADMIN` 역할은 초기 시드가 만든다.**
 
 ---

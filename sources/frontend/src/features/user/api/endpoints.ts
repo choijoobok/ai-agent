@@ -41,9 +41,9 @@ export const USER_ENDPOINTS = {
   // `saveUnlock` 과 갈린다: 저것은 `LOCK_YN` 을 쓰므로 `unlock` 이면 안 됐다.
 
   /** 탭 1 — 보유 역할(USER-03). **기간으로 거르지 않는다** — 만료된 부여가 곧 답이다. */
-  getRoleList: '/service/user/getRoleList',
+  getRoleList: '/service/system/user/getRoleList',
   /** 〃 저장. 그 사람의 세션에 권한 재계산을 예약한다(backend/security.md). */
-  saveRole: '/service/user/saveRole',
+  saveRole: '/service/system/user/saveRole',
   /**
    * 부여 콤보와 마스터 조회조건의 후보 — **이 화면이 자기 경로를 갖는다**.
    *
@@ -51,7 +51,7 @@ export const USER_ENDPOINTS = {
    * (backend/api.md — 매핑이 경로를 따라간다), 그러면 사용자 관리만 가진 사람이 역할을 부여할
    * 수 없다.
    */
-  getRoleCandidates: '/service/user/getRoleCandidates',
+  getRoleCandidates: '/service/system/user/getRoleCandidates',
 
   /**
    * 탭 2 — 개인 예외 조회(AUTHZ-07). **`USER_AUTH_MGMT` 와 경로를 공유하지 않는다**(screen/user/requirements.md).
@@ -62,7 +62,7 @@ export const USER_ENDPOINTS = {
    * <p>**`save` 가 없다.** 사용자 관리 권한이 있다고 예외 권한 부여 권한이 따라오면 안 되며,
    * 시드 생성기가 `SAVE` 를 만들 수 없으므로 **어느 역할에도 줄 수 없다**.
    */
-  getUserMenuAuth: '/service/user/getUserMenuAuth',
+  getUserMenuAuth: '/service/system/user/getUserMenuAuth',
 
   /** 탭 3 — 접속 허용 IP(AUTH-08). **꺼진 행도 온다** — 화면이 다시 켜는 곳이다. */
   getIpList: '/service/user/getIpList',
@@ -75,5 +75,5 @@ export const USER_ENDPOINTS = {
   killSession: '/service/user/killSession',
 
   /** 탭 5 — 유효 권한(screen/user/requirements.md). **읽기만 한다** — 관리자 세션을 바꾸지 않는다(backend/security.md). */
-  getEffectiveAuthList: '/service/user/getEffectiveAuthList',
+  getEffectiveAuthList: '/service/system/user/getEffectiveAuthList',
 } as const;

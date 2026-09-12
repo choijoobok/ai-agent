@@ -45,8 +45,8 @@ tags: [seed, liquibase, gradle, authz, message]
 
 ```
 menu/menu-tree.yaml        MENU_CD  ↔  MENU_URL
-screenRegistry.ts          MENU_URL  →  @/features/{도메인}
-{도메인}/api/endpoints.ts   →  /api/service/** 들
+screenRegistry.ts          MENU_URL  →  @/{features|modules/{module}/features}/{도메인}
+등록된 기능 폴더/api/endpoints.ts      →  /api/service/** 들
 ```
 
 **`screenRegistry` 에 있는데 선언에 없으면 실패다** — 그 화면은 메뉴 트리에 없어 열 수

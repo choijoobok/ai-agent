@@ -1,3 +1,4 @@
+// @feat FEAT-502
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { FillColumn } from '@/shared/components/FillColumn';
 import { label } from '@/shared/i18n/label';
@@ -11,13 +12,13 @@ import type { ColumnDef, DeleteColumnSpec, GridIssue } from '@/shared/grid/types
 import { SearchForm, type SearchFormHandle } from '@/shared/searchform/SearchForm';
 import { useSearchFormHeader } from '@/shared/searchform/useSearchFormHeader';
 import type { SearchField } from '@/shared/searchform/types';
-import { ROLE_ENDPOINTS } from '@/features/role/api/endpoints';
+import { ROLE_ENDPOINTS } from '@/modules/system/features/role/api/endpoints';
 import { RoleHolderGrid } from '@/shared/authz/RoleHolderGrid';
 import { blockedUsers, fetchAllHolders, useRoleHolders } from '@/shared/authz/roleHolder';
-import type { RoleRow } from '@/features/role/types';
+import type { RoleRow } from '@/modules/system/features/role/types';
 
 /**
- * `ROLE_MGMT` — screen/role/requirements.md. <b>역할 자체의 생애를 다룬다.</b>
+ * `ROLE_MGMT` — screen/admin/system/role/requirements.md. <b>역할 자체의 생애를 다룬다.</b>
  *
  * <p>만들고 · 이름을 바꾸고 · 끄고 · 지운다. 권한을 붙이는 것은 `ROLE_AUTH_MGMT`이고
  * 역할을 사람에게 주는 것은 `USER_MGMT` 의 보유 역할 탭(screen/user/requirements.md)이다 — <b>셋이 각자 다른
@@ -68,7 +69,7 @@ export function RoleMgmtPage() {
   const header = useSearchFormHeader();
 
   /*
-    <b>URL 을 여기서 넘긴다</b>(screen/role/requirements.md). 공용 훅이 경로를 들면 `features/role` 의
+    <b>URL 을 여기서 넘긴다</b>(screen/admin/system/role/requirements.md). 공용 훅이 경로를 들면 `modules/system/features/role` 의
     `endpoints.ts` 에 그 줄이 없어지고, 그러면 `SYS_MENU_API` 시드가 <b>`ROLE_MGMT` 행을
     만들지 못해</b> 이 화면의 하단이 403 이 된다(backend/api.md).
   */
@@ -84,14 +85,14 @@ export function RoleMgmtPage() {
   const searchFields = useMemo(() => buildSearchFields(), []);
 
   /**
-   * <b>끄는 변경에만 둘째·셋째 줄이 붙는다</b>(screen/role/requirements.md).
+   * <b>끄는 변경에만 둘째·셋째 줄이 붙는다</b>(screen/admin/system/role/requirements.md).
    *
    * <p>이름만 고친 저장은 한 줄이다(frontend/grid.md). <b>켜는 방향에는 경고가 없다</b> — 권한이
    * 늘어나는 것은 되돌릴 수 있고, 경고를 양쪽에 두면 읽지 않게 된다.
    *
    * <p><b>비동기다.</b> 셋째 줄이 세는 것(<i>유효 권한이 공집합이 되어 다음 로그인부터
    * 차단될 사람</i>)은 이 그리드가 들고 있지 않다 — 보유자 전원의 <b>다른 역할</b>과
-   * <b>개인 예외</b>를 물어야 하고, 그 답이 하단 그리드의 열 둘이다(screen/role/requirements.md 목업 §4 주석 6).
+   * <b>개인 예외</b>를 물어야 하고, 그 답이 하단 그리드의 열 둘이다(screen/admin/system/role/requirements.md 목업 §4 주석 6).
    * 하단은 <b>고른 역할 하나</b>만 보여주므로 여기서 <b>끄는 역할마다</b> 따로 묻는다.
    */
   const warnDisable = useCallback(async (rows: GridRow<RoleRow>[]): Promise<string[]> => {
@@ -114,7 +115,7 @@ export function RoleMgmtPage() {
       const sample = await fetchAllHolders(ROLE_ENDPOINTS.getAffectedUsers, row.data.roleId);
       const blocked = blockedUsers(sample.holders);
       /*
-        <b>공집합 인원이 0 이면 그 줄을 내지 않는다</b>(screen/role/requirements.md) — 항상 보이면 읽히지 않는다.
+        <b>공집합 인원이 0 이면 그 줄을 내지 않는다</b>(screen/admin/system/role/requirements.md) — 항상 보이면 읽히지 않는다.
 
         <b>이름을 함께 낸다.</b> 건수만 알려주면 *"그 2명이 누구지"* 를 찾으러 다른 화면에
         가야 하고, 그러면 확인 문구가 스스로 완결되지 않는다(§4 주석 5).
@@ -123,7 +124,7 @@ export function RoleMgmtPage() {
         lines.push(label(MSG.ROLE_DISABLE_BLOCKED, { count: blocked.length }));
         lines.push(blocked.map((user) => `  · ${user.userNm} (${user.userId})`).join('\n'));
       }
-      // 한 장에 다 담기지 않았다 — <b>0명이라고 말하지 않는다</b>(screen/role/requirements.md 미결).
+      // 한 장에 다 담기지 않았다 — <b>0명이라고 말하지 않는다</b>(screen/admin/system/role/requirements.md 미결).
       if (sample.truncated) {
         lines.push(
           label(MSG.ROLE_BLOCKED_PARTIAL, {
@@ -169,7 +170,7 @@ export function RoleMgmtPage() {
         // 켜 두는 것이 정상이다 — 만든 직후에는 보유자도 권한도 없어 영향이 없다.
         useYn: true,
         /*
-          건수 셋은 <b>`null` 이다</b>(screen/role/requirements.md 주석 8) — 읽기 전용이고 <b>서버가 센다</b>.
+          건수 셋은 <b>`null` 이다</b>(screen/admin/system/role/requirements.md 주석 8) — 읽기 전용이고 <b>서버가 센다</b>.
           `0` 으로 채우면 *"세어 보니 0"* 과 구분되지 않는데, 그 구분이 곧 삭제 게이트가
           열리는 이유의 차이다: 신규 행은 <b>게이트를 타지 않고</b> 즉시 제거된다(frontend/grid.md).
         */
@@ -233,7 +234,7 @@ export function RoleMgmtPage() {
   /**
    * 지울 수 있는가 — <b>매 렌더 새 객체로 만들지 않는다</b>(frontend/grid.md).
    *
-   * <p><b>게이트가 건수 컬럼 둘이다</b>(screen/role/requirements.md). 마스터 응답이 그 수를 갖고 있으므로
+   * <p><b>게이트가 건수 컬럼 둘이다</b>(screen/admin/system/role/requirements.md). 마스터 응답이 그 수를 갖고 있으므로
    * <b>행마다</b> 답할 수 있고, 하단을 조회해야만 아는 것이 아니다.
    *
    * <p><b>막는 것은 보유 인원이지 유효 인원이 아니다.</b> 만료된 부여도 `SYS_USER_ROLE`
@@ -309,7 +310,7 @@ export function RoleMgmtPage() {
   );
 }
 
-// ── 컬럼 (screen/role/requirements.md) ────────────────────────────────────────────────
+// ── 컬럼 (screen/admin/system/role/requirements.md) ────────────────────────────────────────────────
 
 function buildColumns(): ColumnDef<RoleRow>[] {
   return [
@@ -370,11 +371,11 @@ function buildColumns(): ColumnDef<RoleRow>[] {
       // 파생이라 정렬 대상이 아니다(frontend/grid.md) — 서버 화이트리스트에도 없다.
       filter: false,
       /*
-        <b>신규 행에서는 `—` 다</b>(screen/role/requirements.md 주석 8). 읽기 전용이고 <b>서버가 센다</b> —
+        <b>신규 행에서는 `—` 다</b>(screen/admin/system/role/requirements.md 주석 8). 읽기 전용이고 <b>서버가 센다</b> —
         `0` 으로 그리면 *"세어 보니 0"* 과 구분되지 않고, 그 구분이 곧 삭제 게이트가
         열리는 이유의 차이다(신규 행은 게이트를 타지 않는다).
       */
-      // `null` 은 <b>아직 세지 않았다</b> 이며 `0` 과 다른 사실이다(screen/role/requirements.md 주석 8).
+      // `null` 은 <b>아직 세지 않았다</b> 이며 `0` 과 다른 사실이다(screen/admin/system/role/requirements.md 주석 8).
       derive: (row) => row.holderCount ?? '—',
     },
     {
@@ -384,7 +385,7 @@ function buildColumns(): ColumnDef<RoleRow>[] {
       width: 100,
       filter: false,
       /*
-        <b>보유와 유효를 하나로 접지 않는다</b>(screen/role/requirements.md). 게이트가 보는 것은 <b>보유</b>이고
+        <b>보유와 유효를 하나로 접지 않는다</b>(screen/admin/system/role/requirements.md). 게이트가 보는 것은 <b>보유</b>이고
         운영자가 궁금한 것은 <b>유효</b>다 — 접으면 *"0명인데 왜 못 지우나"* 가 된다.
       */
       derive: (row) => row.activeHolderCount ?? '—',
@@ -403,7 +404,7 @@ function buildColumns(): ColumnDef<RoleRow>[] {
   ];
 }
 
-// ── 조회조건 (screen/role/requirements.md) ────────────────────────────────────────────
+// ── 조회조건 (screen/admin/system/role/requirements.md) ────────────────────────────────────────────
 
 /**
  * 둘뿐이다 — 역할명과 사용 여부.
@@ -431,7 +432,7 @@ function buildSearchFields(): SearchField[] {
         <b>*전체* 를 표현할 자리가 없다</b>. 그리드 컬럼과 어휘가 갈리는 것이 아니라
         <b>묻는 것이 다르다</b> — 저기는 값이고 여기는 <i>무엇을 걸러 볼까</i> 다.
 
-        <b>기본값이 없다(*전체*)</b>(screen/role/requirements.md) — 끈 역할을 감추면 <b>같은 것을 또 만드는</b>
+        <b>기본값이 없다(*전체*)</b>(screen/admin/system/role/requirements.md) — 끈 역할을 감추면 <b>같은 것을 또 만드는</b>
         사고가 나고, 그때 `ROLE_ID` 가 PK 라 저장이 실패한다.
       */
       field: 'useYn',

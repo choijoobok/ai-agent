@@ -6,7 +6,7 @@ type: operation
 created: 2026-09-04
 updated: 2026-09-04
 status: active
-sources: ["sources/frontend/src/features/menu/pages/MenuTreePage.tsx", "sources/frontend/src/features/roleauth/", "sources/frontend/src/features/userauth/", "sources/frontend/src/shared/tree/"]
+sources: ["sources/frontend/src/features/menu/pages/MenuTreePage.tsx", "sources/frontend/src/modules/system/features/roleauth/", "sources/frontend/src/features/userauth/", "sources/frontend/src/shared/tree/"]
 tier: 2
 tags: [playbook, tree, splitpane, authz, menu]
 ---
@@ -14,7 +14,7 @@ tags: [playbook, tree, splitpane, authz, menu]
 # 트리 화면 — 계층을 보여주고 고치는 판
 
 > **실물 셋** — `features/menu/`(드래그로 계층을 고친다) ·
-> `features/roleauth/`(역할에 권한을 준다) · `features/userauth/`(사람에게 권한을 준다).
+> `modules/system/features/roleauth/`(역할에 권한을 준다) · `features/userauth/`(사람에게 권한을 준다).
 >
 > **샘플이 없다.** 여섯은 그리드 화면을 덮고 트리는 덮지 않는다 — 그래서 이 레시피가
 > 다른 여섯보다 길다. 새 트리 화면은 **위 셋 중 가장 가까운 것을 연다.**

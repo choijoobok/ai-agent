@@ -18,7 +18,7 @@
 | 페이지 경로 | `/user` |
 | 메뉴코드 | `USER_MGMT` |
 | 프론트 폴더 | `sources/frontend/src/features/user/` |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/user/admin/` · `sources/backend/domain/…/domain/user/detail/` · `sources/backend/api/…/api/user/` |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/user/admin/` · `sources/backend/domain/…/domain/user/detail/` · `sources/backend/api/…/api/user/` · `sources/backend/modules/system/…/system/api/user/` |
 | 화면 유형 | 마스터-디테일(상하) — 디테일은 탭 다섯 |
 | 처리 유형 | CRUD + 실행 |
 | 쓰는 액션 | `R` `S` `E` `X` — **넷을 다 쓰는 유일한 화면**이다. `EXPORT_YN` = `Y` |
@@ -385,15 +385,15 @@
 | 잠금 해제 | `saveUnlock` | `/service/user/saveUnlock` | POST | **S** | — |
 | 휴면 해제 | `saveDormantRelease` | `/service/user/saveDormantRelease` | POST | **S** | — |
 | 비밀번호 초기화 | `savePasswordReset` | `/service/user/savePasswordReset` | POST | **S** | — |
-| 탭1 목록 | `getRoleList` | `/service/user/getRoleList` | POST | R | 전건 |
-| 탭1 저장 | `saveRole` | `/service/user/saveRole` | POST | S | — |
-| 역할 후보 | `getRoleCandidates` | `/service/user/getRoleCandidates` | POST | R | 전건 |
-| 탭2 목록 | `getUserMenuAuth` | `/service/user/getUserMenuAuth` | POST | R | 전건 |
+| 탭1 목록 | `getRoleList` | `/service/system/user/getRoleList` | POST | R | 전건 |
+| 탭1 저장 | `saveRole` | `/service/system/user/saveRole` | POST | S | — |
+| 역할 후보 | `getRoleCandidates` | `/service/system/user/getRoleCandidates` | POST | R | 전건 |
+| 탭2 목록 | `getUserMenuAuth` | `/service/system/user/getUserMenuAuth` | POST | R | 전건 |
 | 탭3 목록 | `getIpList` | `/service/user/getIpList` | POST | R | 전건 |
 | 탭3 저장 | `saveIp` | `/service/user/saveIp` | POST | S | — |
 | 탭4 목록 | `getSessionList` | `/service/user/getSessionList` | POST | R | 전건 |
 | 탭4 강제 종료 | `killSession` | `/service/user/killSession` | POST | **X** | — |
-| 탭5 목록 | `getEffectiveAuthList` | `/service/user/getEffectiveAuthList` | POST | R | 전건 |
+| 탭5 목록 | `getEffectiveAuthList` | `/service/system/user/getEffectiveAuthList` | POST | R | 전건 |
 
 - **`exportExcel` 이 없다.** 액션 열은 `R S E X` 인데 `E` 에 대응하는 경로가 없다 — 엑셀은 프론트가 만들고 `EXPORT` 는 `SYS_MENU.EXPORT_YN` 이 선언한다.
 - **역할 후보를 `ROLE_MGMT` 의 경로로 부르지 않는다.** 그 요청은 **역할 관리의 `READ`** 를 요구하게 되고, 그러면 사용자 관리만 가진 사람이 역할을 부여할 수 없다. 조회조건의 `보유 역할` 과 보유 역할 탭이 **같은 목록**을 본다.

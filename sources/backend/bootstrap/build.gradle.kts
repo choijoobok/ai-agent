@@ -575,8 +575,8 @@ val checkMenuSeed = menuSeedTask("checkMenuSeed", verify = true)
 // MENU_CD ↔ API_URL 의 사슬은 셋을 잇는다.
 //
 // menu/menu-tree.yaml MENU_CD ↔ MENU_URL (seed.md — 시드가 아니라 선언이다)
-//   screenRegistry.ts    MENU_URL → @/features/{도메인}[/{화면}]
-//   {도메인}[/{화면}]/api/endpoints.ts  → /service/** URL 들
+//   screenRegistry.ts    MENU_URL → @/{features|modules/{module}/features}/{도메인}[/{화면}]
+//   등록된 기능 폴더의 api/endpoints.ts  → /service/** URL 들
 //
 // 마디가 둘일 수 있는 것이 playbook/INDEX.md 다 — 샘플 여섯은 한 애그리거트를 나눠 쓰므로 폴더가
 // 인가 경계이고, 한 폴더에 둘을 두면 두 화면의 엔드포인트가 서로에게 매핑된다.
@@ -747,8 +747,8 @@ abstract class ApiSeedTask : DefaultTask() {
         val rows = sortedSetOf<Pair<String, String>>(compareBy({ it.first }, { it.second }))
 
         menuUrls.forEach { (menuCd, menuUrl) ->
-            val domain = screens[menuUrl] ?: return@forEach
-            val file = frontendSrc.get().asFile.resolve("features/$domain/api/endpoints.ts")
+            val sourceDir = screens[menuUrl] ?: return@forEach
+            val file = frontendSrc.get().asFile.resolve("$sourceDir/api/endpoints.ts")
             if (!file.exists()) return@forEach
 
             ENDPOINT_URL.findAll(file.readText(Charsets.UTF_8)).forEach { match ->
@@ -851,10 +851,10 @@ abstract class ApiSeedTask : DefaultTask() {
           그 화면의 API 가 전부 미매핑(=403)이고, 실패가 아니라 침묵으로 나온다.
 
           `/pages/` 앞까지를 잡는 것은 등록 줄의 모양이 언제나
-          `@/features/{…}/pages/{Component}` 이기 때문이다.
+          `@/{features|modules/{module}/features}/{…}/pages/{Component}` 이기 때문이다.
         */
         val SCREEN_ENTRY =
-            Regex("""'(/[^']*)':\s*lazy\([\s\S]{0,400}?@/features/([A-Za-z0-9_/-]+)/pages/""")
+            Regex("""'(/[^']*)':\s*lazy\([\s\S]{0,400}?@/((?:features|modules/[A-Za-z0-9_-]+/features)/[A-Za-z0-9_/-]+)/pages/""")
     }
 }
 
@@ -866,9 +866,10 @@ fun Project.apiSeedTask(name: String, verify: Boolean) =
         } else {
             "컨트롤러와 프론트 endpoints 를 읽어 006·007 CSV 를 만든다 — backend/api.md"
         }
-        dependsOn(":backend:api:classes")
+        dependsOn(":backend:api:classes", ":backend:modules:system:classes")
         controllerClasses.from(
             rootProject.project(":backend:api").the<SourceSetContainer>()["main"].output.classesDirs,
+            rootProject.project(":backend:modules:system").the<SourceSetContainer>()["main"].output.classesDirs,
         )
         // bootstrap 의 런타임 클래스패스가 api 와 그 의존을 전부 담는다 — 남의 설정을
         // 해석하지 않는다.

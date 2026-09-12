@@ -533,10 +533,10 @@ requirements:
     acceptance: "동일 메뉴 액션의 역할 부여와 개인 예외가 정해진 규칙으로 하나의 유효 권한이 되고, 변경 뒤 오래 열린 세션도 이전 권한을 계속 사용하지 않는다"
     source: "현재 구현 역추적 — 역할·역할 권한·개인 권한 화면과 유효 권한 버전 검사"
     evidence:
-      frontend: ["features/role", "features/roleauth", "features/userauth", "shared/authz"]
-      backend: ["api/role", "api/userauth", "api/authz", "domain/authz"]
+      frontend: ["modules/system/features/role", "modules/system/features/roleauth", "features/userauth", "shared/authz"]
+      backend: ["modules/system/api/role", "modules/system/api/user", "api/userauth", "api/authz", "domain/authz"]
       tables: [SYS_ROLE, SYS_USER_ROLE, SYS_ROLE_MENU_AUTH, SYS_USER_MENU_AUTH]
-      screens: ["/role", "/role-auth", "/user-auth"]
+      screens: ["/admin/system/role", "/admin/system/role-auth", "/user-auth"]
     roadmap: RM-P1
 
   - id: REQ-503

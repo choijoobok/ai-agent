@@ -271,6 +271,18 @@ class AuthorizationInterceptorTest {
         }
 
         @Test
+        @DisplayName("TC-5023 권한 회수 뒤 이전 세션은 업무 서비스를 호출하기 전에 거부된다")
+        void revokedAuthorityRejectsTheOldSession() {
+            givenAuthority(new MenuAction("ORDER", ActionType.READ));
+            AuthzSession.markDirty(session);
+            givenRecalculated();
+            givenFact(ActionType.READ, "ORDER");
+
+            assertDenied(get(ORDER_LIST, session), AuthzErrorCode.NO_AUTHORITY);
+            verify(authorities).calculate(USER);
+        }
+
+        @Test
         @DisplayName("날짜가 바뀌면 아무도 아무것도 바꾸지 않아도 다시 계산한다")
         void dateChangeTriggersRecalculation() {
             // 어제 계산된 캐시. 어제 만료된 부여가 여기 살아 있다.

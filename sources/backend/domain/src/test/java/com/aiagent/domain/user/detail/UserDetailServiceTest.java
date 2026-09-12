@@ -199,6 +199,23 @@ class UserDetailServiceTest {
                             USER, List.of(new UserRoleSaveRow(RowState.C, ROLE, FROM, TO))))
                     .containsExactly(USER);
         }
+
+        @Test
+        @DisplayName("TC-5024 운영·감사·AI 품질 역할을 같은 사용자에게 함께 부여한다")
+        void multipleOperationalRolesAreAllowed() {
+            service.saveRoles(
+                    USER,
+                    List.of(
+                            new UserRoleSaveRow(RowState.C, "OPS", FROM, TO),
+                            new UserRoleSaveRow(RowState.C, "AUDIT", FROM, TO),
+                            new UserRoleSaveRow(RowState.C, "AI_QUALITY", FROM, TO)));
+
+            ArgumentCaptor<List<SysUserRole>> saved = captor();
+            verify(grants).saveAll(saved.capture());
+            assertThat(saved.getValue())
+                    .extracting(SysUserRole::getRoleId)
+                    .containsExactlyInAnyOrder("OPS", "AUDIT", "AI_QUALITY");
+        }
     }
 
     // ── 탭 3 — 접속 IP ────────────────────────────────────────────

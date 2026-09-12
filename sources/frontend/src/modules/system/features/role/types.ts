@@ -1,4 +1,5 @@
-/** 서버 `RoleRow` 와 1:1 — screen/role/requirements.md. */
+// @feat FEAT-502
+/** 서버 `RoleRow` 와 1:1 — screen/admin/system/role/requirements.md. */
 
 export interface RoleRow {
   /** PK. **신규 행에서만 편집 가능**하다(sys/user-role.md) — 고치려면 지우고 다시 만든다. */
@@ -15,19 +16,19 @@ export interface RoleRow {
   useYn: boolean;
   /*
     건수 셋은 **`null` 을 가질 수 있다** — 서버는 언제나 수를 보내고, `null` 은 **미저장 신규
-    행**이라는 뜻이다(screen/role/requirements.md 주석 8).
+    행**이라는 뜻이다(screen/admin/system/role/requirements.md 주석 8).
 
     `0` 으로 채우지 않는 것이 요점이다: *"세어 보니 0"* 과 *"아직 세지 않았다"* 는 다른
     사실이고, 둘을 같은 값으로 두면 **셀이 거짓말을 한다** — 그 행은 서버에 없어서 셀 수가
     없는 것이지 0 건인 것이 아니다. 화면은 이 값을 `—` 로 그린다.
   */
   /**
-   * `SYS_USER_ROLE` **전체** 행 수 — **삭제 게이트가 보는 수**다(screen/role/requirements.md).
+   * `SYS_USER_ROLE` **전체** 행 수 — **삭제 게이트가 보는 수**다(screen/admin/system/role/requirements.md).
    *
    * <p>기간을 보지 않는다: 만료된 부여도 행이며 **FK 는 날짜를 보지 않는다**.
    */
   holderCount: number | null;
-  /** 그중 오늘 유효한 부여. **게이트가 보지 않는 수**이며 운영자가 궁금한 쪽이다(screen/role/requirements.md). */
+  /** 그중 오늘 유효한 부여. **게이트가 보지 않는 수**이며 운영자가 궁금한 쪽이다(screen/admin/system/role/requirements.md). */
   activeHolderCount: number | null;
   /**
    * `SYS_ROLE_MENU_AUTH` 행 수 — **디테일이 없는 자식**의 건수다(편집은 `ROLE_AUTH_MGMT`).

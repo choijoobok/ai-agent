@@ -5,7 +5,7 @@ import com.aiagent.domain.user.admin.AccountStat;
 /**
  * 좌 pane 의 한 행 — screen/user/requirements.md. <b>고르기만 한다.</b>
  *
- * <p>{@code ROLE_AUTH_MGMT} 의 {@code RolePickRow} 와 같은 자리다(screen/role-auth/requirements.md) — 읽기 전용이고
+ * <p>{@code ROLE_AUTH_MGMT} 의 {@code RolePickRow} 와 같은 자리다(screen/admin/system/role-auth/requirements.md) — 읽기 전용이고
  * 행을 추가할 수 없다. 계정 생성은 {@code USER_MGMT} 의 일이므로 <b>이 화면에는 미저장
  * 신규 부모가 생길 수 없고</b>, 그래서 frontend/grid.md 의 상태 셋 중 <i>잠긴 상태</i> 가 없다
  * (screen/user/requirements.md).

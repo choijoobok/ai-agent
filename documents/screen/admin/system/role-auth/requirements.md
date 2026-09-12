@@ -17,10 +17,10 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/role-auth` |
+| 페이지 경로 | `/admin/system/role-auth` |
 | 메뉴코드 | `ROLE_AUTH_MGMT` |
-| 프론트 폴더 | `sources/frontend/src/features/roleauth/` (+ 공통물 `shared/authz/` · `shared/tree/`) |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/authz/role/` · `sources/backend/api/…/api/role/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/roleauth/` (+ 공통물 `shared/authz/` · `shared/tree/`) |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/authz/role/` · `sources/backend/modules/system/…/system/api/role/` |
 | 화면 유형 | **트리-그리드 · 스플리터 둘**(좌우 안에 상하) |
 | 처리 유형 | CRUD(**트리 일괄 저장**) |
 | 쓰는 액션 | `R` `S` — **`EXPORT` 가 없는 첫 화면**이다 |
@@ -260,12 +260,12 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |
 |---|---|---|---|---|---|
-| 좌 — 역할 목록 | `getList` | `/service/roleAuth/getList` | POST | R | offset |
-| 우 — 권한 트리 | `getMenuTree` | `/service/roleAuth/getMenuTree` | POST | R | **없음** |
-| 저장 | `save` | `/service/roleAuth/save` | POST | S | — |
-| 하 — 영향 인원 | `getAffectedUsers` | `/service/roleAuth/getAffectedUsers` | POST | R | offset |
+| 좌 — 역할 목록 | `getList` | `/service/system/roleAuth/getList` | POST | R | offset |
+| 우 — 권한 트리 | `getMenuTree` | `/service/system/roleAuth/getMenuTree` | POST | R | **없음** |
+| 저장 | `save` | `/service/system/roleAuth/save` | POST | S | — |
+| 하 — 영향 인원 | `getAffectedUsers` | `/service/system/roleAuth/getAffectedUsers` | POST | R | offset |
 
-- **넷이고 그중 하나는 옆 화면도 부른다.** `getAffectedUsers` 는 `ROLE_MGMT` 의 하단 pane 이기도 하며, `features/role/api/endpoints.ts` 가 **같은 URL 을 한 번 더 선언**한다. 시드에는 행이 **둘** 생긴다(매핑이 다대다다).
+- **넷이고 그중 하나는 옆 화면도 부른다.** `getAffectedUsers` 는 `ROLE_MGMT` 의 하단 pane 이기도 하며, `modules/system/features/role/api/endpoints.ts` 가 **같은 URL 을 한 번 더 선언**한다. 시드에는 행이 **둘** 생긴다(매핑이 다대다다).
 - **`getSaveImpact` 같은 경로가 없다**(§5-1).
 - **트리 조회에 조건도 정렬도 페이징도 없다** — 그래서 화면이 그리드 컨트롤러가 아니라 단순 질의를 쓴다. 컨트롤러를 쓰면 **절반이 죽은 채로 붙어 있게 되고**, 다음 사람이 *왜 여기서만 안 되나* 를 묻는다.
 - `exportExcel` 없음.
@@ -276,7 +276,7 @@
 
 - 코드그룹: **없음.**
 - 메시지 키: 화면 `MSG.ROLE_AUTH_*` · `MSG.ROLE_*`(좌측 컬럼 공유) · 서버 `MsgKey.ERR_ROLE_NOT_FOUND` · `ERR_ROLE_AUTH_MENU` · `ERR_ROLE_AUTH_ACTION` · `ERR_ROLE_AUTH_READ`.
-- 메뉴 시드: `menu-tree.yaml` — `code: ROLE_AUTH_MGMT` · `parent: MENU` · `url: /role-auth`. **`export` 없음.**
+- 메뉴 시드: `menu-tree.yaml` — `code: ROLE_AUTH_MGMT` · `parent: MENU` · `url: /admin/system/role-auth`. **`export` 없음.**
 - 초기 데이터 전제: `SYS_ROLE` 에 역할이, `SYS_MENU` 에 메뉴가, **`SYS_MENU_API` 에 매핑이** 있어야 한다 — 매핑이 없으면 그 메뉴의 액션이 전부 `—` 다.
 
 ---

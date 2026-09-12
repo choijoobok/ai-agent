@@ -4,7 +4,7 @@ import com.aiagent.domain.authz.ActionType;
 import java.util.List;
 
 /**
- * 권한 트리의 한 행 — screen/role-auth/requirements.md. <b>정의는 screen/user/requirements.md 가 갖고 여기는 덜어 내기만 한다.</b>
+ * 권한 트리의 한 행 — screen/admin/system/role-auth/requirements.md. <b>정의는 screen/user/requirements.md 가 갖고 여기는 덜어 내기만 한다.</b>
  *
  * <p>셀 상태가 <b>일곱에서 넷</b>으로 준다. 기간 컬럼이 없으므로(sys/menu.md) <i>예정</i>·<i>만료</i>
  * 배지가 사라지고, <b>역할 자신이 원본</b>이라 <i>역할 경유 보유</i> 배지도 사라진다 —

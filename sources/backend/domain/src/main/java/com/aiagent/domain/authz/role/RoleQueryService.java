@@ -40,24 +40,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code ROLE_MGMT}(screen/role/requirements.md) · {@code ROLE_AUTH_MGMT}(screen/role/requirements.md) 의 조회 — <b>클래스가 하나다.</b>
+ * {@code ROLE_MGMT}(screen/admin/system/role/requirements.md) · {@code ROLE_AUTH_MGMT}(screen/admin/system/role/requirements.md) 의 조회 — <b>클래스가 하나다.</b>
  *
  * <p>두 화면이 <b>같은 테이블 짝</b>을 다른 각도에서 본다. §3 은 <i>역할 자체의 생애</i>,
  * §2 는 <i>그 역할이 무엇을 할 수 있나</i> 인데, <b>하단 pane 은 아예 같은 그리드</b>이며
- * screen/role/requirements.md 이 <i>"경로도 같아야 한다"</i> 고 못박았다 — 서비스를 가르면 그 하나가 두 곳에
+ * screen/admin/system/role/requirements.md 이 <i>"경로도 같아야 한다"</i> 고 못박았다 — 서비스를 가르면 그 하나가 두 곳에
  * 생기거나, 한쪽이 다른 쪽을 부르는 이상한 의존이 된다.
  *
  * <h2>쿼리가 여럿인 것이 이 클래스의 형태다</h2>
  *
  * 마스터 한 번에 <b>파생 셋</b>(보유 인원 · 유효 인원 · 권한 건수)이 붙는데 셋 다 다른 것을
  * 센다. 스칼라 서브쿼리로 얹으면 <b>행마다 세 번</b>이 되고, 조인해 {@code GROUP BY} 하면
- * 페이징 단위가 역할이 아니게 될 위험을 매번 확인해야 한다 — screen/code/requirements.md 가 코드 그룹에서, screen/role/requirements.md
+ * 페이징 단위가 역할이 아니게 될 위험을 매번 확인해야 한다 — screen/code/requirements.md 가 코드 그룹에서, screen/admin/system/role/requirements.md
  * 가 메뉴 트리에서 내린 것과 같은 판단이다.
  *
  * <h2>권한 트리는 {@code QueryDslBuilder} 를 쓰지 않는다</h2>
  *
- * {@code MENU_TREE} 와 같은 이유다(screen/role/requirements.md) — <b>조건에 맞는 노드만 남기면 부모가 사라져
- * 트리가 아니게 된다</b>. screen/role/requirements.md 은 <i>메뉴명</i> 을 <i>(트리 조회 조건)</i> 으로 적었지만,
+ * {@code MENU_TREE} 와 같은 이유다(screen/admin/system/role/requirements.md) — <b>조건에 맞는 노드만 남기면 부모가 사라져
+ * 트리가 아니게 된다</b>. screen/admin/system/role/requirements.md 은 <i>메뉴명</i> 을 <i>(트리 조회 조건)</i> 으로 적었지만,
  * 여기서 거르면 그것 말고 <b>하나가 더 깨진다</b>: 폴더의 파생 3-state 는 <b>저장 전 편집에
  * 반응해야 하는 값</b>이라(§2.4 — {@code SAVE} 를 켜면 {@code READ} 열의 요약이 바뀐다)
  * <b>자손 전부가 클라이언트에 있어야</b> 다시 계산된다. 걸러 내려보내면 화면이 그 계산을
@@ -102,10 +102,10 @@ public class RoleQueryService {
         this.actions = actions;
     }
 
-    // ── ROLE_MGMT 마스터 (screen/role/requirements.md) ──────────────────────────────────
+    // ── ROLE_MGMT 마스터 (screen/admin/system/role/requirements.md) ──────────────────────────────────
 
     /**
-     * 역할 목록 — <b>파생 셋을 함께 낸다</b>(screen/role/requirements.md).
+     * 역할 목록 — <b>파생 셋을 함께 낸다</b>(screen/admin/system/role/requirements.md).
      *
      * <p>screen/user/requirements.md 가 <b>역할 나열 컬럼을 기각</b>한 것은 문자열 집계가 벤더마다 다르기
      * 때문이다({@code LISTAGG} · {@code GROUP_CONCAT} · {@code string_agg} — backend/persistence.md).
@@ -146,7 +146,7 @@ public class RoleQueryService {
         return built.respond(rows, total == null ? 0L : total);
     }
 
-    // ── ROLE_AUTH_MGMT 왼쪽 목록 (screen/role/requirements.md) ──────────────────────────
+    // ── ROLE_AUTH_MGMT 왼쪽 목록 (screen/admin/system/role/requirements.md) ──────────────────────────
 
     /** 고르기만 하는 목록 — 보유 인원 하나만 붙는다({@link RolePickRow}). */
     public PageResponse<RolePickRow> getRoleList(SearchRequest<Void> request) {
@@ -169,7 +169,7 @@ public class RoleQueryService {
         return built.respond(rows, total == null ? 0L : total);
     }
 
-    // ── 권한 트리 (screen/role/requirements.md) ─────────────────────────────────────────
+    // ── 권한 트리 (screen/admin/system/role/requirements.md) ─────────────────────────────────────────
 
     /**
      * 메뉴 계층 × 액션 4열 — <b>전건이고 전위 순회다</b>.
@@ -179,7 +179,7 @@ public class RoleQueryService {
      *
      * <p><b>고아·순환에 걸린 노드도 낸다.</b> {@code MenuTreeService} 는 조상 역산이 목적이라
      * 그것들을 빼지만, 권한을 주는 화면에서 사라지면 <b>그 메뉴에 부여된 권한을 회수할 수단이
-     * 없어진다</b> — screen/role/requirements.md 의 트리와 같은 판단이며 순회에 방문 집합을 걸어 터지지 않게 한다.
+     * 없어진다</b> — screen/admin/system/role/requirements.md 의 트리와 같은 판단이며 순회에 방문 집합을 걸어 터지지 않게 한다.
      *
      * @param lang 세션 언어 — 컨트롤러가 준다. 도메인은 요청을 모른다(backend/packages.md)
      */
@@ -230,7 +230,7 @@ public class RoleQueryService {
     /**
      * 이 역할을 가진 사람 — AUTHZ-13 의 역방향 조회.
      *
-     * <p><b>기간으로 거르지 않는다</b>(screen/role/requirements.md). 만료된 부여도 <b>다시 유효해질 수 있으므로</b>
+     * <p><b>기간으로 거르지 않는다</b>(screen/admin/system/role/requirements.md). 만료된 부여도 <b>다시 유효해질 수 있으므로</b>
      * 목록에 내고 상태로 말한다 — 감추면 <i>"영향 없다고 해서 지웠는데 다음 달에 문제가
      * 생겼다"</i> 가 된다.
      *
@@ -367,13 +367,13 @@ public class RoleQueryService {
         return codes;
     }
 
-    // ── 파생 셋 (screen/role/requirements.md) ─────────────────────────────────────────
+    // ── 파생 셋 (screen/admin/system/role/requirements.md) ─────────────────────────────────────────
 
     /**
      * 보유 인원 · 유효 인원 — <b>같은 쿼리에 조건 하나가 더 붙는다</b>.
      *
      * @param onlyActive 참이면 오늘 유효한 부여만 센다. 게이트가 보는 것은 <b>거짓</b> 쪽이며
-     * (screen/role/requirements.md — FK 는 날짜를 보지 않는다) 운영자가 궁금한 것은 참 쪽이다
+     * (screen/admin/system/role/requirements.md — FK 는 날짜를 보지 않는다) 운영자가 궁금한 것은 참 쪽이다
      */
     private Map<String, Long> holderCounts(List<String> roleIds, boolean onlyActive) {
         if (roleIds.isEmpty()) {
@@ -409,7 +409,7 @@ public class RoleQueryService {
     /**
      * 권한 건수 — <b>행 수이지 메뉴 수가 아니다</b>.
      *
-     * <p>screen/role/requirements.md 의 <i>매핑 역할</i> 이 {@code countDistinct} 인 것과 갈리는 자리다. 거기서는
+     * <p>screen/admin/system/role/requirements.md 의 <i>매핑 역할</i> 이 {@code countDistinct} 인 것과 갈리는 자리다. 거기서는
      * 같은 수를 탭 3 의 목록이 다시 세지만, 여기 <b>권한 건수는 목록이 없다</b> — 세는 것이
      * 곧 {@code SYS_ROLE_MENU_AUTH} 의 행이고, 그것이 <b>FK 가 막는 것</b>과 같은 단위다.
      */

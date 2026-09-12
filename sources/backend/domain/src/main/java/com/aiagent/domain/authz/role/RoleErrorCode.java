@@ -12,8 +12,8 @@ import com.aiagent.core.message.MsgKey;
  * 지나지 않는다.
  *
  * <p><b>{@link #NOT_DELETABLE} 만 화면이 앞서 막는다.</b> 마스터의 건수 컬럼이 그 근거이고
- * (screen/role/requirements.md) 그래도 <b>동시성으로 뚫린다</b> — 판정과 저장 사이에 누가 부여를 만들 수 있고,
- * 그때 이 문구가 저장 실패 모달로 나간다(screen/role/requirements.md). <i>화면이 미리 막는 것은 저장 시점의
+ * (screen/admin/system/role/requirements.md) 그래도 <b>동시성으로 뚫린다</b> — 판정과 저장 사이에 누가 부여를 만들 수 있고,
+ * 그때 이 문구가 저장 실패 모달로 나간다(screen/admin/system/role/requirements.md). <i>화면이 미리 막는 것은 저장 시점의
  * 실패를 조회 시점에 알리는 일이지 보증이 아니다.</i>
  */
 public enum RoleErrorCode implements ErrorCode {

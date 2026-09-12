@@ -1,3 +1,4 @@
+// @feat FEAT-502
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { skipToken, useQuery } from '@tanstack/react-query';
 import { App } from 'antd';
@@ -19,15 +20,15 @@ import { SearchForm, type SearchFormHandle } from '@/shared/searchform/SearchFor
 import { useSearchFormHeader } from '@/shared/searchform/useSearchFormHeader';
 import type { SearchField } from '@/shared/searchform/types';
 import type { TreeGridHandle } from '@/shared/tree/types';
-import { ROLE_AUTH_ENDPOINTS } from '@/features/roleauth/api/endpoints';
-import { getRoleAuthTree, saveRoleAuth } from '@/features/roleauth/api/roleAuthApi';
-import { AuthTree } from '@/features/roleauth/components/AuthTree';
+import { ROLE_AUTH_ENDPOINTS } from '@/modules/system/features/roleauth/api/endpoints';
+import { getRoleAuthTree, saveRoleAuth } from '@/modules/system/features/roleauth/api/roleAuthApi';
+import { AuthTree } from '@/modules/system/features/roleauth/components/AuthTree';
 import { RoleHolderGrid } from '@/shared/authz/RoleHolderGrid';
 import { blockedUsers, fetchAllHolders, useRoleHolders } from '@/shared/authz/roleHolder';
-import type { RoleAuthGrant, RoleAuthTreeRow, RolePickRow } from '@/features/roleauth/types';
+import type { RoleAuthGrant, RoleAuthTreeRow, RolePickRow } from '@/modules/system/features/roleauth/types';
 
 /**
- * `ROLE_AUTH_MGMT` — screen/role-auth/requirements.md. <b>저장 대상은 트리뿐이다.</b>
+ * `ROLE_AUTH_MGMT` — screen/admin/system/role-auth/requirements.md. <b>저장 대상은 트리뿐이다.</b>
  *
  * <p>screen/user/requirements.md 의 개인 예외와 <b>같은 컴포넌트</b>이며 여기는 <b>덜어 내기만</b> 한다.
  * 거기는 *"목록이 원본이고 트리는 그 투영"* 이었지만 `SYS_ROLE_MENU_AUTH` 에는 기간도 사유도
@@ -47,10 +48,10 @@ import type { RoleAuthGrant, RoleAuthTreeRow, RolePickRow } from '@/features/rol
  *
  * <h2>메뉴명은 거르지 않고 찾아간다</h2>
  *
- * screen/role-auth/requirements.md 은 메뉴명을 *(트리 조회 조건)* 으로 적었지만 <b>거를 수 없다</b>. 걸러 내려보내면
+ * screen/admin/system/role-auth/requirements.md 은 메뉴명을 *(트리 조회 조건)* 으로 적었지만 <b>거를 수 없다</b>. 걸러 내려보내면
  * 폴더의 파생 3-state 가 <b>보이는 자식만으로</b> 요약하는데, 그 값은 저장 전 편집에
  * 반응해야 하므로(§2.4 — `SAVE` 를 켜면 `READ` 열의 요약이 바뀐다) <b>자손 전부가 화면에
- * 있어야</b> 다시 계산된다. 그래서 `MENU_TREE`(screen/role-auth/requirements.md)와 <b>같은 어휘</b>를 쓴다 —
+ * 있어야</b> 다시 계산된다. 그래서 `MENU_TREE`(screen/admin/system/role-auth/requirements.md)와 <b>같은 어휘</b>를 쓴다 —
  * 강조하고 <b>그 경로를 펼치며</b>, 첫 일치로 스크롤한다.
  *
  * <p><b>칸은 트리 ①에 있다</b>(2026-08-31). 브레드크럼 슬롯에 두었더니 값이 <b>한 커밋
@@ -88,7 +89,7 @@ export function RoleAuthMgmtPage() {
 
   const holders = useRoleHolders(MENU_CD, ROLE_AUTH_ENDPOINTS.getAffectedUsers);
 
-  // ── 좌 — 역할 목록 (screen/role-auth/requirements.md) ────────────────────────────────────
+  // ── 좌 — 역할 목록 (screen/admin/system/role-auth/requirements.md) ────────────────────────────────────
 
   const collectConditions = useCallback(
     () => Promise.resolve(searchForm.current?.collect() ?? []),
@@ -106,13 +107,13 @@ export function RoleAuthMgmtPage() {
     api: roleApi,
     params: collectConditions,
     /*
-      <b>읽기 전용이다</b>(screen/role-auth/requirements.md) — 생성·비활성화·삭제는 `ROLE_MGMT` 의 일이므로 행 추가
+      <b>읽기 전용이다</b>(screen/admin/system/role-auth/requirements.md) — 생성·비활성화·삭제는 `ROLE_MGMT` 의 일이므로 행 추가
       버튼도 삭제 컬럼도 없다(frontend/grid.md). `addRow` 를 선언하지 않는 것이 그 집행이다.
     */
     editable: false,
   });
 
-  // ── 우 — 권한 트리 (screen/role-auth/requirements.md) ────────────────────────────────────
+  // ── 우 — 권한 트리 (screen/admin/system/role-auth/requirements.md) ────────────────────────────────────
 
   /**
    * <b>`useGridController` 가 아니라 `useQuery` 다.</b> 저것은 조건·정렬·페이징을 들고 있는데
@@ -221,7 +222,7 @@ export function RoleAuthMgmtPage() {
   );
 
   /**
-   * 저장 — <b>확인 문구가 세 줄이다</b>(screen/role-auth/requirements.md).
+   * 저장 — <b>확인 문구가 세 줄이다</b>(screen/admin/system/role-auth/requirements.md).
    *
    * <table>
    *   <tr><td>①</td><td>건수 — <b>수정이 없다</b>. 권한은 있거나 없거나라 켜면 추가, 끄면 삭제다</td></tr>
@@ -255,7 +256,7 @@ export function RoleAuthMgmtPage() {
         lines.push(label(MSG.ROLE_AUTH_SAVE_BLOCKED, { count: blocked.length }));
         lines.push(blocked.map((user) => `  · ${user.userNm} (${user.userId})`).join('\n'));
       }
-      // 한 장에 다 담기지 않았다 — <b>0명이라고 말하지 않는다</b>(screen/role-auth/requirements.md 미결).
+      // 한 장에 다 담기지 않았다 — <b>0명이라고 말하지 않는다</b>(screen/admin/system/role-auth/requirements.md 미결).
       if (sample.truncated) {
         lines.push(
           label(MSG.ROLE_BLOCKED_PARTIAL, {
@@ -292,7 +293,7 @@ export function RoleAuthMgmtPage() {
     await treeQuery.refetch();
   }, [diff, granted, message, modal, role, rows, treeQuery]);
 
-  // ── 검색 (screen/role-auth/requirements.md — 거르지 않고 찾아간다) ───────────────────────
+  // ── 검색 (screen/admin/system/role-auth/requirements.md — 거르지 않고 찾아간다) ───────────────────────
 
   const matches = useMemo(() => {
     const needle = term.trim().toLowerCase();
@@ -302,11 +303,11 @@ export function RoleAuthMgmtPage() {
       .map((row) => row.menuCd);
   }, [rows, term]);
   const highlighted = useMemo(() => new Set(matches), [matches]);
-  // 첫 일치로 스크롤한다 — 강조가 경로를 펼치므로 나머지도 같은 화면 안에 있다(screen/role-auth/requirements.md).
+  // 첫 일치로 스크롤한다 — 강조가 경로를 펼치므로 나머지도 같은 화면 안에 있다(screen/admin/system/role-auth/requirements.md).
   const focused = matches[0] ?? null;
 
   /**
-   * 트리 ①의 검색 칸 — <b>브레드크럼이 아니라 거기다</b>(2026-08-31 · screen/role-auth/requirements.md).
+   * 트리 ①의 검색 칸 — <b>브레드크럼이 아니라 거기다</b>(2026-08-31 · screen/admin/system/role-auth/requirements.md).
    *
    * <p>근거는 {@code TreeSearch} 에 있다 — 자리도 자리이지만 슬롯에 두면 값이 <b>한 커밋
    * 늦게</b> 도착해 <b>한글이 두 번 입력된다</b>. 개인 예외 화면에서 실물로 겪은 그것이며
@@ -411,7 +412,7 @@ export function RoleAuthMgmtPage() {
       /*
         Ⓑ 의 둘은 <b>`actionCd` 를 선언하지 않는다</b> — 표시를 바꿀 뿐 데이터를 읽지도 쓰지도
         않는다(frontend/grid.md). <b>토글 하나로 두지 않는 것</b>은 일부만 펼친 중간 상태에서 토글이
-        무엇을 가리키는지 말할 수 없기 때문이다(screen/role-auth/requirements.md).
+        무엇을 가리키는지 말할 수 없기 때문이다(screen/admin/system/role-auth/requirements.md).
       */
       {
         key: 'collapseAll',
@@ -572,7 +573,7 @@ function toGrantList(
   return list;
 }
 
-/** 추가와 삭제 — <b>수정이 없다</b>(screen/role-auth/requirements.md §4 주석 1). 정의된 조합 안에서만 센다. */
+/** 추가와 삭제 — <b>수정이 없다</b>(screen/admin/system/role-auth/requirements.md §4 주석 1). 정의된 조합 안에서만 센다. */
 function countDiff(
   rows: RoleAuthTreeRow[],
   original: ReadonlyMap<string, ReadonlySet<Action>>,
@@ -604,7 +605,7 @@ function countDiff(
 
 // ── 좌 컬럼 · 조회조건 (screen/menu/requirements.md) ───────────────────────────
 
-/** 역할명 · 사용 여부 · 보유 인원 셋뿐이다 — <b>고르기만 하는 목록</b>이다(screen/role-auth/requirements.md). */
+/** 역할명 · 사용 여부 · 보유 인원 셋뿐이다 — <b>고르기만 하는 목록</b>이다(screen/admin/system/role-auth/requirements.md). */
 function buildRoleColumns(): ColumnDef<RolePickRow>[] {
   return [
     { field: 'roleNm', header: MSG.ROLE_COL_ROLE_NM, type: 'text', width: 160, sortable: true, fill: true },
@@ -634,7 +635,7 @@ function buildRoleColumns(): ColumnDef<RolePickRow>[] {
  * 역할명 하나다.
  *
  * <p><b>사용 여부가 없다</b> — 비활성 역할의 권한을 고치는 것은 아무에게도 영향이 없어
- * <b>가장 안전한 편집</b>이며, 감추면 *켜기 전에 구성한다* 는 동선이 막힌다(screen/role-auth/requirements.md).
+ * <b>가장 안전한 편집</b>이며, 감추면 *켜기 전에 구성한다* 는 동선이 막힌다(screen/admin/system/role-auth/requirements.md).
  *
  * <p><b>부여 상태도 없다</b> — `SYS_ROLE_MENU_AUTH` 에 기간 컬럼이 없으므로 <b>상태 자체가
  * 없다</b>(sys/menu.md). screen/user/requirements.md 이 개인 예외에서 그것을 넣었다 뺐다 한 것과 갈리는 자리다.

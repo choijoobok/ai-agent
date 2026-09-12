@@ -101,6 +101,19 @@ class EffectiveAuthorityServiceTest {
     }
 
     @Test
+    @DisplayName("TC-5021 역할 READ와 기간 내 개인 SAVE는 한 유효 권한으로 합성된다")
+    void roleAndPersonalGrantsAreMerged() {
+        givenRoleGrants(new MenuAction("ORDER", ActionType.READ));
+        givenPersonalGrants(new MenuAction("ORDER", ActionType.SAVE));
+        givenMenus(leaf("ORDER"));
+
+        assertThat(service.calculate(USER).grants())
+                .containsExactlyInAnyOrder(
+                        new MenuAction("ORDER", ActionType.READ),
+                        new MenuAction("ORDER", ActionType.SAVE));
+    }
+
+    @Test
     @DisplayName("메뉴 USE_YN='N' 은 최종 게이트다 — 역할이 몇 개든 되살릴 수 없다")
     void disabledMenuIsRemovedFromTheResult() {
         givenRoleGrants(

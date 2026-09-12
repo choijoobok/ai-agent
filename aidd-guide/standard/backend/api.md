@@ -162,7 +162,7 @@ tags: [backend, api, rest, response, header]
 
 - **문서용이 아니라 시드용이다.** `generateApiSeed` 가 이 문장을 읽어
   `SYS_API.API_NM` 을 채우고, 그것이 **권한 화면에서 운영자가 보는 이름**이 된다.
-  비우면 운영자가 `/service/roleAuth/getMenuTree` 를 보고 무엇인지 판단해야 한다.
+  비우면 운영자가 `/service/system/roleAuth/getMenuTree` 를 보고 무엇인지 판단해야 한다.
 - 한국어로 쓴다(AGENTS.md §5-6). 컨트롤러 javadoc 과 같은 말을 두 번 적지 않는다 —
   **`summary` 는 운영자의 말, javadoc 은 다음 개발자의 말**이다.
 - **고치면 시드가 어긋난다.** `006-init-api.csv` 는 이 문장의 **생성물**이라 한 글자만

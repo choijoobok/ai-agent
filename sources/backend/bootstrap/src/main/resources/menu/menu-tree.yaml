@@ -35,8 +35,8 @@
 #     │   └ USER_AUTH_MGMT   개인 예외 권한           /user-auth
 #     ├ MENU                 메뉴 관리
 #     │   ├ MENU_TREE        메뉴 트리                /menu
-#     │   ├ ROLE_MGMT        역할 관리                /role
-#     │   ├ ROLE_AUTH_MGMT   역할 권한 관리           /role-auth
+#     │   ├ ROLE_MGMT        역할 관리                /admin/system/role
+#     │   ├ ROLE_AUTH_MGMT   역할 권한 관리           /admin/system/role-auth
 #     │   └ API_CATALOG      API 카탈로그             /api-catalog
 #     ├ MASTER               기준정보
 #     │   ├ CODE_MGMT        공통 코드 관리           /code
@@ -89,10 +89,10 @@ menus:
     export: true
   - code: ROLE_MGMT
     parent: MENU
-    url: /role
+    url: /admin/system/role
   - code: ROLE_AUTH_MGMT
     parent: MENU
-    url: /role-auth
+    url: /admin/system/role-auth
   - code: API_CATALOG
     parent: MENU
     url: /api-catalog

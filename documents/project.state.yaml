@@ -53,7 +53,7 @@ workstreams:
       P1_discovery:    { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 8/8.** ACT-012, PRC-06~08, REQ-501~510을 현재 소스·Liquibase·화면 문서에서 역추적했다. SYSTEM 하위 16개·공통 대시보드 1개·메뉴 없는 공통 화면 8개와 근거 테이블 31개를 대조했고 추적성 오류 0건이다. 레드팀에서 전 수명주기·변조 불가·소스 키 한정·요청 승인이라는 과잉 표현을 현재 구현 범위로 바로잡았다. 역질문 권장안에 따라 설치용 ADMIN은 설치 시점의 전체 권한 기준선으로 한정하고, 운영에서는 시스템 관리자와 감사·품질 역할을 분리한다. 일반 계정·권한 공지와 요청은 system, AI 품질·정책 관련 알림은 admin이 소유한다" }
       P2_architecture: { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 8/8.** ADR-007 아래 ARCH-022~026으로 system의 백엔드·프론트 목표 경로, 31개 테이블 쓰기 소유권, 화면 경로와 기능별 이행 순서를 정의하고 AUTHZ-091로 설치용 ADMIN과 운영 권한을 분리했다. 사용자는 역할 겸임을 허용하고 특정 역할·메뉴 코드의 금지 하드코딩을 거부했다. 역할·메뉴·개인 권한 데이터와 유효 권한이 유일한 판정 근거다. 현재 고객이 없는 개발 단계이므로 신규 경로 전환과 회귀 시험 뒤 기존 API·화면 경로는 같은 슬라이스에서 즉시 제거하고 호환 별칭을 남기지 않는다. ASM-005·006은 기각됨으로 닫았다" }
       P3_design:       { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 11/11.** REQ-501~510을 UC-501~510·FEAT-501~510·ENT-501~531·API-501~599·SCR-501~525·TC 52건으로 연결했다. 실제 컨트롤러 99개와 목표 API의 요청·응답 타입·근거 메서드를 전수 대조했고 누락·중복 0건이다. 핵심 시퀀스는 UC-501·503·508 세 건이며 예외와 트랜잭션 경계를 표시했다. 권한 변경 API는 SYS_LO_ACCESS의 일반 시스템 사용 이력에 남기되 전용 원장은 고객사 요구가 생긴 도입 시점 이후만 기록하고 과거 변경은 복원하지 않는다. 같은 역할을 동시에 전체 저장하면 나중에 완료된 스냅샷이 이기고 자동 병합하지 않는다. 레드팀 위험은 사용자 결정과 TC-5076·TC-5026으로 닫았고 trace 오류 0건이었다" }
-      P4_build:        { status: in_progress, approved_at: null, note: "SLICE-501 관통 골격은 2026-09-12 사용자 G4 승인을 받아 완료됐다. 다음은 SLICE-502 역할·역할 권한과 권한 버전이다" }
+      P4_build:        { status: in_progress, approved_at: null, note: "SLICE-501 관통 골격은 사용자 G4 승인을 받아 완료됐다. SLICE-502 역할·역할 권한과 권한 버전은 2026-09-12 자체검증을 마쳤고 사용자 G4 확인을 기다린다" }
       P5_verify:       { status: not_started, approved_at: null, note: "" }
   admin:
     phase: P1
@@ -143,14 +143,13 @@ roadmap_closed: []
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
 next_up:
   decided_at: 2026-09-12
-  choice: "SLICE-502 역할·역할 권한과 권한 버전을 테스트 우선으로 구현한다"
+  choice: "SLICE-502 역할·역할 권한과 권한 버전의 G4 미니게이트 결과를 검토하고 승인 여부를 결정한다"
   why: >-
-    SLICE-501은 TC-5011·TC-5013의 테스트, 규칙 반전, 변이 테스트와 전체 검증을 통과했고
-    2026-09-12 사용자 G4 승인을 받아 닫혔다. SLICE-502의 유일한 선행 조건이 해소됐다.
+    TC-5021·5023·5024·5026과 규칙 반전 4건이 통과했고, PIT는 도메인 83%·API 86%,
+    전체 백엔드·프론트엔드·시드·문서·품질 검사는 모두 초록이다. 사용자 승인 전에는 done으로 닫지 않는다.
   tasks:
-    - "FEAT-502의 UC·ENT·API·SCR·TC 계약을 실제 정본에서 다시 확인한다"
-    - "TC-5021·TC-5023·TC-5024·TC-5026을 먼저 작성하고 RED를 확인한다"
-    - "역할·역할 권한과 권한 버전을 구현하고 G4 미니게이트를 제시한다"
+    - "G4 체크리스트와 레드팀 결과를 검토한다"
+    - "SLICE-502 승인 또는 보완을 명시한다"
   then: >-
     SLICE-502 승인 뒤 SLICE-503 메뉴 트리·API 카탈로그·실패 폐쇄 인터셉터로 간다.
 
@@ -309,7 +308,7 @@ reproduction_baseline:
 # 항목 형식: { id, workstream, features, stage, status }. 계약 변경은 integration이 먼저다.
 slices:
   - { id: SLICE-501, workstream: system, features: [FEAT-501], testcases: [TC-5011, TC-5013], scope: "system 모듈 골격·public/common 인증·로그인·비밀번호·세션", stage: P4, status: done, depends_on: [] }
-  - { id: SLICE-502, workstream: system, features: [FEAT-502], testcases: [TC-5021, TC-5023, TC-5024, TC-5026], scope: "역할·역할 권한과 권한 버전", stage: P4, status: planned, depends_on: [SLICE-501] }
+  - { id: SLICE-502, workstream: system, features: [FEAT-502], testcases: [TC-5021, TC-5023, TC-5024, TC-5026], scope: "역할·역할 권한과 권한 버전", stage: P4, status: self_verified, depends_on: [SLICE-501] }
   - { id: SLICE-503, workstream: system, features: [FEAT-503], testcases: [TC-5031, TC-5032, TC-5033, TC-5034, TC-5035], scope: "메뉴 트리·API 카탈로그·실패 폐쇄 인터셉터", stage: P4, status: planned, depends_on: [SLICE-502] }
   - { id: SLICE-504, workstream: system, features: [FEAT-501], testcases: [TC-5012, TC-5014, TC-5015], scope: "사용자 관리·역할·IP·활성 세션", stage: P4, status: planned, depends_on: [SLICE-502, SLICE-503] }
   - { id: SLICE-505, workstream: system, features: [FEAT-502], testcases: [TC-5022, TC-5025], scope: "사용자 개인 예외·유효 권한 진단", stage: P4, status: planned, depends_on: [SLICE-503, SLICE-504] }
@@ -327,6 +326,7 @@ slices:
 
 verification_load:
   - { slice: SLICE-501, measured_at: "2026-09-12", fix_rounds: 5, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 2, note: "첫 RED 구현, repository 경계 컴파일 수정, system 컨트롤러 스캔 범위 수정 뒤 PIT가 찾은 도메인·API 서비스 테스트 빈틈 2건을 보강해 각각 93%를 달성했다. 사용자 관리 규칙은 소유 TC와 함께 SLICE-504에서 검증한다" }
+  - { slice: SLICE-502, measured_at: "2026-09-12", fix_rounds: 4, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 3, note: "보존된 RED 테스트에서 system 컨트롤러 결손을 확인한 뒤 역할·역할 권한·사용자 권한 경로를 이행했다. 생성기가 module 기능·컨트롤러를 보지 못한 결손과 검사 스크립트 참조를 3회 보정했고, 레드팀에서 실제 동시 트랜잭션의 자동 병합 위험·권한 변경 사용 이력 테스트 누락·이전 컨트롤러 설명 드리프트를 찾아 수정했다. 규칙 반전 4건과 전체 검증을 통과했고 PIT는 도메인 83%·API 86%다" }
 
 # ── 최근 활동 로그 (최신 10건만 유지) ─────────────────────────────
 log:
