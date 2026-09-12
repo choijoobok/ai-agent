@@ -7,7 +7,7 @@
  * 셀의 글자</b>를 읽는다.
  *
  * <p><b>다만 셀의 글자가 전부 값인 것은 아니다</b>(2026-08-30 — 실물에서 잡음). 값 뒤에
- * 배지를 덧붙이는 셀이 있고(54 의 {@code badge} — screen/code/requirements.md 의 <i>시스템</i>, §4.3 의
+ * 배지를 덧붙이는 셀이 있고(54 의 {@code badge} — screen/admin/system/code/requirements.md 의 <i>시스템</i>, §4.3 의
  * <i>변경됨</i>), 거기서 셀을 통째로 읽으면 {@code CODE_REF_KEY시스템} 이 복사된다 —
  * <b>붙여 넣을 수 없는 문자열</b>이다.
  *

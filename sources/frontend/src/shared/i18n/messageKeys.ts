@@ -399,7 +399,7 @@ export const MSG = {
   // `notification.empty.pending` 이 여기 있었다 — 탭 셋이 내용을 갖게 되면서 마지막
   // 사용처가 사라졌다. 지워도 시드는 깨지지 않는다: `008` 은 loadUpdateData 이고 코드에서
   // 사라진 키는 **행이 남은 채 USE_SCOPE 만 NONE** 이 된다(seed.md) — `018` 이 넣은
-  // 번역 행의 FK 도 그대로 산다. 실제로 DB 에서 지우는 자리는 메시지 관리 화면이다(screen/code/requirements.md).
+  // 번역 행의 FK 도 그대로 산다. 실제로 DB 에서 지우는 자리는 메시지 관리 화면이다(screen/admin/system/code/requirements.md).
   /** 목록이 상한에 걸려 잘렸다 — 조용히 자르면 목록이 전부로 읽힌다. */
   NOTIFICATION_TRUNCATED: 'notification.truncated',
   /** 상세에서 목록으로 — **새 탭을 열지 않는다**(frontend/tabs.md). */
@@ -879,7 +879,7 @@ export const MSG = {
   /** 그 본문 — 되돌릴 수 없다는 것을 말한다. */
   GRID_DISCARD_BODY: 'grid.discard.body',
   /**
-   * 건수 확인 <b>앞</b>에 서는 경고의 제목 — screen/code/requirements.md.
+   * 건수 확인 <b>앞</b>에 서는 경고의 제목 — screen/admin/system/code/requirements.md.
    *
    * <p>본문은 화면이 만든다. 건수는 얼마나를 말할 뿐이라 <b>무엇이 일어나는지</b> 를
    * 말하지 못하며, 그것을 아는 것은 화면이다.
@@ -1126,7 +1126,7 @@ export const MSG = {
   /** 그 확인의 실행 버튼. */
   SHELL_RELOAD: 'shell.reload',
 
-  // ── 다국어 메시지 관리 (screen/code/requirements.md) ──────────────────────────────
+  // ── 다국어 메시지 관리 (screen/admin/system/code/requirements.md) ──────────────────────────────
   /** 마스터 그리드의 제목 — 화면 제목이 아니라 그리드 제목이다(frontend/grid.md). */
   MESSAGE_MASTER_TITLE: 'message.master.title',
   /** 하단 그리드의 제목. */
@@ -1159,39 +1159,39 @@ export const MSG = {
   MESSAGE_UNTRANSLATED: 'message.untranslated',
   /** 조회조건 — 메시지 키. */
   MESSAGE_SEARCH_KEY: 'message.search.msgKey',
-  /** 조회조건 — 메시지 값. 어느 언어든 걸린다(screen/code/requirements.md). */
+  /** 조회조건 — 메시지 값. 어느 언어든 걸린다(screen/admin/system/code/requirements.md). */
   MESSAGE_SEARCH_VALUE: 'message.search.msgVal',
   /** 조회조건 — 사용처. */
   MESSAGE_SEARCH_SCOPE: 'message.search.useScope',
-  /** 조회조건 — 미번역 언어. 서버 조건이다(screen/code/requirements.md). */
+  /** 조회조건 — 미번역 언어. 서버 조건이다(screen/admin/system/code/requirements.md). */
   MESSAGE_SEARCH_UNTRANSLATED: 'message.search.untranslated',
   /** 마스터에서 행을 고르기 전 하단의 빈 상태(frontend/grid.md). */
   MESSAGE_DETAIL_EMPTY: 'message.detail.empty',
   /** 같은 키가 이 화면 안에 둘 있을 때 — 클라이언트가 판정할 수 있다. */
   MESSAGE_DUPLICATE_KEY: 'message.validate.duplicate',
 
-  // ── 시스템 환경설정 (screen/code/requirements.md) ─────────────────────────────────
+  // ── 시스템 환경설정 (screen/admin/system/code/requirements.md) ─────────────────────────────────
   /** 그리드의 제목 — 단일 그리드다. */
   CONFIG_GRID_TITLE: 'config.grid.title',
   /** 키 컬럼 — PK 이고 <b>코드가 정한다</b>. 열리지 않는다. */
   CONFIG_COL_KEY: 'config.col.cfgKey',
-  /** 기본값 컬럼 — `yml` 이며 <b>언제나 있다</b>. 숨기지 않는다(screen/code/requirements.md). */
+  /** 기본값 컬럼 — `yml` 이며 <b>언제나 있다</b>. 숨기지 않는다(screen/admin/system/code/requirements.md). */
   CONFIG_COL_DEFAULT: 'config.col.defaultVal',
   /** 적용값 컬럼 — <b>이 화면의 유일한 입력 칸</b>이다. */
   CONFIG_COL_VALUE: 'config.col.cfgVal',
   /** 유형 컬럼 — 필드 타입에서 온다. 읽기 전용. */
   CONFIG_COL_TYPE: 'config.col.cfgType',
-  /** 설명 컬럼 — 필드 Javadoc 에서 온다. `CFG_DESC` 가 아니다(screen/code/requirements.md). */
+  /** 설명 컬럼 — 필드 Javadoc 에서 온다. `CFG_DESC` 가 아니다(screen/admin/system/code/requirements.md). */
   CONFIG_COL_DESC: 'config.col.cfgDesc',
   /**
-   * 삭제 컬럼의 헤더 — <b>되돌리기</b> 다(screen/code/requirements.md).
+   * 삭제 컬럼의 헤더 — <b>되돌리기</b> 다(screen/admin/system/code/requirements.md).
    *
    * <p>*삭제* 면 관리자는 값이 사라질 것을 기대하고, 목록에 같은 키가 남아 있으면
    * <b>버그로 읽는다</b> — 기대를 라벨이 만든다.
    */
   CONFIG_COL_REVERT: 'config.col.revert',
   /**
-   * 적용값 뒤에 붙는 배지 — 근거는 <b>`SYS_CONFIG` 행의 존재</b>다(screen/code/requirements.md).
+   * 적용값 뒤에 붙는 배지 — 근거는 <b>`SYS_CONFIG` 행의 존재</b>다(screen/admin/system/code/requirements.md).
    *
    * <p>값이 기본값과 같아도 붙는다. 같은 값으로 저장해 두면 <b>다음 배포가 기본값을
    * 올려도 그 키만 옛 값에 묶이며</b>, 눈으로는 구분되지 않으므로 이것이 유일한 신호다.
@@ -1209,12 +1209,12 @@ export const MSG = {
   CONFIG_TYPE_JSON: 'config.type.JSON',
   /** 조회조건 — 키와 설명을 <b>한 칸이 함께 건다</b>(sys/code.md). */
   CONFIG_SEARCH_KEYWORD: 'config.search.keyword',
-  /** 조회조건 — 접두사. 전 키에서 <b>도출</b>한다(screen/code/requirements.md). */
+  /** 조회조건 — 접두사. 전 키에서 <b>도출</b>한다(screen/admin/system/code/requirements.md). */
   CONFIG_SEARCH_PREFIX: 'config.search.prefix',
   /** 조회조건 — 변경 여부. 판정은 행의 존재다. */
   CONFIG_SEARCH_OVERRIDDEN: 'config.search.overridden',
   /**
-   * 되돌리기 확인 — `{key}` · `{defaultVal}`. <b>기본값을 함께 말한다</b>(screen/code/requirements.md).
+   * 되돌리기 확인 — `{key}` · `{defaultVal}`. <b>기본값을 함께 말한다</b>(screen/admin/system/code/requirements.md).
    *
    * <p>값이 사라지는 것이 아니라 `yml` 이 드러난다는 것을 미리 말해 두지 않으면,
    * 되돌린 뒤에도 목록에 남은 같은 키가 <i>"지웠는데 그대로다"</i> 로 읽힌다.
@@ -1227,13 +1227,13 @@ export const MSG = {
    * 배포에서 잠긴 계정을 푸는 유일한 경로다.
    */
   CONFIG_ADMIN_RESET_WARN: 'config.adminReset.warn',
-  /** `NUMBER` 유형에 숫자가 아닌 값 — 화면이 아는 것은 <b>유형</b>까지다(screen/code/requirements.md). */
+  /** `NUMBER` 유형에 숫자가 아닌 값 — 화면이 아는 것은 <b>유형</b>까지다(screen/admin/system/code/requirements.md). */
   CONFIG_VALIDATE_NUMBER: 'config.validate.number',
   /** `BOOLEAN` 유형에 `true`/`false` 아닌 값. */
   CONFIG_VALIDATE_BOOLEAN: 'config.validate.boolean',
 
   /*
-    ── 공통 코드 관리 (screen/code/requirements.md) ──────────────────────────────────
+    ── 공통 코드 관리 (screen/admin/system/code/requirements.md) ──────────────────────────────────
 
     <b>접두가 `code.` 가 아니라 `codeMgmt.` 다.</b> `code.` 는 **데이터가 만드는 키**의
     자리다(sys/code.md — `code.{GRP_CD}.{DTL_CD}`). `generateMessageSeed` 는 그 접두를 아예
@@ -1247,18 +1247,18 @@ export const MSG = {
   CODE_GROUP_TITLE: 'codeMgmt.group.title',
   /** 하단 그리드의 제목 — 고른 그룹의 코드다. */
   CODE_DETAIL_TITLE: 'codeMgmt.detail.title',
-  /** 그룹 코드 컬럼 — PK 라 <b>신규 행에서만</b> 열린다(screen/code/requirements.md). */
+  /** 그룹 코드 컬럼 — PK 라 <b>신규 행에서만</b> 열린다(screen/admin/system/code/requirements.md). */
   CODE_COL_GRP_CD: 'codeMgmt.col.grpCd',
   /** 그룹명 컬럼 — <b>다국어가 아니다</b>. 관리 화면 전용 명칭이라 컬럼 값이다(sys/code.md). */
   CODE_COL_GRP_NM: 'codeMgmt.col.grpNm',
   /** 그룹 설명 컬럼. */
   CODE_COL_GRP_DESC: 'codeMgmt.col.grpDesc',
-  /** 그룹의 코드 수 — 파생이며 <b>삭제 게이트가 읽는다</b>(screen/code/requirements.md). */
+  /** 그룹의 코드 수 — 파생이며 <b>삭제 게이트가 읽는다</b>(screen/admin/system/code/requirements.md). */
   CODE_COL_COUNT: 'codeMgmt.col.codeCount',
   /** 코드 컬럼 — 그룹과 복합 PK 다. 신규 행에서만 열린다. */
   CODE_COL_DTL_CD: 'codeMgmt.col.dtlCd',
   /**
-   * 코드명 컬럼 — 값이 `SYS_MESSAGE` 로 간다(screen/code/requirements.md).
+   * 코드명 컬럼 — 값이 `SYS_MESSAGE` 로 간다(screen/admin/system/code/requirements.md).
    *
    * <p>여기서 채우는 것은 <b>지금 세션 언어</b> 하나다. 다른 언어는 `MESSAGE_MGMT` 로
    * 간다 — 언어를 컬럼으로 늘리면 지원 언어를 하나 켤 때마다 그리드가 옆으로 자란다.
@@ -1266,7 +1266,7 @@ export const MSG = {
   CODE_COL_CODE_NM: 'codeMgmt.col.codeNm',
   /** 코드 설명 컬럼 — 관리 화면 전용이다(sys/code.md). */
   CODE_COL_DTL_DESC: 'codeMgmt.col.dtlDesc',
-  /** 사용 여부 컬럼 — 스위치다(frontend/grid.md). 시스템 행에서는 잠긴다(screen/code/requirements.md). */
+  /** 사용 여부 컬럼 — 스위치다(frontend/grid.md). 시스템 행에서는 잠긴다(screen/admin/system/code/requirements.md). */
   CODE_COL_USE_YN: 'codeMgmt.col.useYn',
   /** 정렬 컬럼 — 그룹에서는 관리 화면 정렬, 코드에서는 <b>콤보 정렬</b>이다. */
   CODE_COL_SORT_NO: 'codeMgmt.col.sortNo',
@@ -1279,12 +1279,12 @@ export const MSG = {
   /**
    * 미저장 신규 그룹을 골랐을 때 — <b>잠긴 상태</b>다(frontend/grid.md).
    *
-   * <p>부모 키가 아직 DB 에 없어 자식을 붙일 수 없다. screen/code/requirements.md 의 메시지 화면이 이 규칙을
+   * <p>부모 키가 아직 DB 에 없어 자식을 붙일 수 없다. screen/admin/system/code/requirements.md 의 메시지 화면이 이 규칙을
    * 비껴간 것은 하단이 DB 에 붙지 않아서였고, 여기 하단은 <b>자기 테이블에 FK 로 붙어
    * 있다</b> — 2단계 등록을 그대로 치른다.
    */
   CODE_DETAIL_LOCKED: 'codeMgmt.detail.locked',
-  /** 하단 ⓐ의 버튼 — <b>서버를 부르지 않고 모달을 연다</b>(frontend/grid.md · screen/code/requirements.md). */
+  /** 하단 ⓐ의 버튼 — <b>서버를 부르지 않고 모달을 연다</b>(frontend/grid.md · screen/admin/system/code/requirements.md). */
   CODE_REF_DEF_BUTTON: 'codeMgmt.refDef.button',
   /** 정의 모달의 제목 — `{grpNm}` 이 어느 그룹의 것인지를 말한다. */
   CODE_REF_DEF_TITLE: 'codeMgmt.refDef.title',
@@ -1296,10 +1296,10 @@ export const MSG = {
   CODE_COL_REF_NM: 'codeMgmt.col.refNm',
   /** 참조 코드 설명 컬럼. */
   CODE_COL_REF_DESC: 'codeMgmt.col.refDesc',
-  /** 입력된 참조값 건수 — 정의 삭제 확인이 말하는 수다(screen/code/requirements.md). */
+  /** 입력된 참조값 건수 — 정의 삭제 확인이 말하는 수다(screen/admin/system/code/requirements.md). */
   CODE_COL_REF_COUNT: 'codeMgmt.col.refValueCount',
   /**
-   * 정의 버튼이 잠긴 이유 — <b>미저장 편집이 있다</b>(screen/code/requirements.md).
+   * 정의 버튼이 잠긴 이유 — <b>미저장 편집이 있다</b>(screen/admin/system/code/requirements.md).
    *
    * <p>정의가 바뀌면 컬럼 집합이 바뀌고 하단 재조회가 편집을 버린다. 열고 나서 묻는
    * 것보다 <b>누를 수 없는 것이 먼저 보이는 편</b>이 낫고, 그 사유를 말한다.
@@ -1307,7 +1307,7 @@ export const MSG = {
   CODE_REF_DEF_DIRTY: 'codeMgmt.refDef.dirty',
   /** 그룹을 고르지 않은 채 정의를 열려 했을 때. */
   CODE_REF_DEF_NO_GROUP: 'codeMgmt.refDef.noGroup',
-  /** 그룹 삭제가 잠긴 이유 — `{count}`. 회색 체크박스만 두면 <b>버그로 읽힌다</b>(screen/code/requirements.md). */
+  /** 그룹 삭제가 잠긴 이유 — `{count}`. 회색 체크박스만 두면 <b>버그로 읽힌다</b>(screen/admin/system/code/requirements.md). */
   CODE_GROUP_HAS_CODE: 'codeMgmt.group.hasCode',
   /** 코드 삭제 저장 전 확인 — `{count}`. 참조값은 <b>그 행의 파생</b>이라 함께 지운다. */
   CODE_DELETE_REF_WARN: 'codeMgmt.delete.refWarn',
@@ -1320,7 +1320,7 @@ export const MSG = {
   /** 조회조건 — 그룹명. */
   CODE_SEARCH_GRP_NM: 'codeMgmt.search.grpNm',
   /**
-   * 조회조건 — 코드. <b>하단 조건이 마스터를 거른다</b>(screen/code/requirements.md).
+   * 조회조건 — 코드. <b>하단 조건이 마스터를 거른다</b>(screen/admin/system/code/requirements.md).
    *
    * <p>*"이 코드값이 어느 그룹에 있더라"* 가 실제로 자주 묻는 것이며, 고르면 하단이
    * 그 조건으로 미리 걸려 있다.
@@ -1510,7 +1510,7 @@ export const MSG = {
    *
    * <p>`SYS_MENU.MENU_NM` 이 담은 것은 메시지 키이고 이름은 `SYS_MESSAGE` 의 값이라
    * 서버가 `EXISTS` 로 푼다. <b>어느 언어든 걸린다</b> — 운영자는 화면에 보이는 그 이름을
-   * 들고 오지 어느 언어의 값인지를 들고 오지 않는다(screen/code/requirements.md).
+   * 들고 오지 어느 언어의 값인지를 들고 오지 않는다(screen/admin/system/code/requirements.md).
    */
   ACCESS_LOG_SEARCH_MENU_NM: 'accessLog.search.menuNm',
   /** 조회조건 — 요청 URI. 앞 일치다(screen/log/access/requirements.md). */
@@ -2262,7 +2262,7 @@ export const MSG = {
    * 첫 대역을 더할 때의 경고 — **그 순간 나머지 전부가 막힌다**.
    *
    * <p>행이 없으면 제한 없음이므로(sys/user-role.md) 첫 행 하나가 **정책을 켜는 스위치**다. 건수는
-   * *얼마나* 를 말할 뿐이라 그것을 말하지 못한다(screen/code/requirements.md 가 연 자리).
+   * *얼마나* 를 말할 뿐이라 그것을 말하지 못한다(screen/admin/system/code/requirements.md 가 연 자리).
    */
   USER_IP_WARN_FIRST: 'user.ip.warn.first',
 

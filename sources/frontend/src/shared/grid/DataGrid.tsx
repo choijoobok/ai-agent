@@ -67,7 +67,7 @@ const AG_HEADER_FONT_WEIGHT = 500;
  * 잠금 상태를 모르는 버튼이 섞인다.
  *
  * <p><b>②(엑셀)와 ③(그리드 설정)이 아직 없다.</b> ②는 이 화면의 엑셀이 그리드와 모양이
- * 달라 ①의 버튼이고(screen/code/requirements.md), ③은 개인화 테이블의 스키마가 Phase 6 미결이다(frontend/grid.md) —
+ * 달라 ①의 버튼이고(screen/admin/system/code/requirements.md), ③은 개인화 테이블의 스키마가 Phase 6 미결이다(frontend/grid.md) —
  * 자리를 비워 두는 것이 아니라 <b>아직 그릴 것이 없다</b>.
  */
 
@@ -100,7 +100,7 @@ interface DataGridProps<T> {
   /**
    * 물리 삭제하는 테이블에만 삭제 컬럼이 나온다 — frontend/grid.md.
    *
-   * <p>객체를 주면 <b>라벨과 게이트</b>를 바꾼다 — screen/code/requirements.md 의 *되돌리기* 가 그것이다.
+   * <p>객체를 주면 <b>라벨과 게이트</b>를 바꾼다 — screen/admin/system/code/requirements.md 의 *되돌리기* 가 그것이다.
    */
   deletable?: boolean | DeleteColumnSpec<T>;
   /** 행이 없을 때의 문구. 메시지 키. */
@@ -108,12 +108,12 @@ interface DataGridProps<T> {
   /**
    * 마스터-디테일에서 선택 행이 바뀔 때. <b>단일 선택의 것</b>이다.
    *
-   * <p><b>거부할 수 있다</b>(2026-08-30 — screen/code/requirements.md 가 처음 요구했다). {@code false} 를 돌려주면
+   * <p><b>거부할 수 있다</b>(2026-08-30 — screen/admin/system/code/requirements.md 가 처음 요구했다). {@code false} 를 돌려주면
    * 판의 선택이 <b>이전 행으로 되돌아간다</b>. 디테일에 미저장 편집이 있을 때 묻는 자리이며
    * (UX-10 · frontend/grid.md), 거부권이 없으면 <b>보고 있는 것과 고른 것이 갈린다</b> — 그 상태로
    * 저장하면 A 그룹의 행이 B 그룹으로 나간다.
    *
-   * <p>{@code void} 를 돌려주면 언제나 통과다 — screen/code/requirements.md 처럼 잃을 것이 없는 화면은 묻지
+   * <p>{@code void} 를 돌려주면 언제나 통과다 — screen/admin/system/code/requirements.md 처럼 잃을 것이 없는 화면은 묻지
    * 않는다.
    */
   onSelect?: (row: GridRow<T> | null) => void | boolean | Promise<boolean>;
@@ -171,7 +171,7 @@ interface DataGridProps<T> {
    * ③ 설정 버튼을 낸다 — 기본은 <b>낸다</b>(frontend/grid.md).
    *
    * <p><b>끄는 자리가 있다.</b> 개인화할 것이 없는 그리드가 있기 때문이다 — 컬럼이 몇 개
-   * 안 되고 전부 봐야 하는 디테일 그리드가 그렇다(screen/code/requirements.md). 버튼만 감추는 것이 아니라
+   * 안 되고 전부 봐야 하는 디테일 그리드가 그렇다(screen/admin/system/code/requirements.md). 버튼만 감추는 것이 아니라
    * <b>저장된 설정을 읽지도 않는다</b>: 바꿀 길이 없는 설정을 화면마다 한 번씩 물어보는
    * 것은 왕복 하나를 그냥 버리는 일이다.
    */
@@ -922,7 +922,7 @@ export function DataGrid<T>(props: DataGridProps<T>) {
             'bo-row-added': (params: RowClassParams<GridRow<T>>) => params.data?.state === 'C',
             'bo-row-updated': (params: RowClassParams<GridRow<T>>) => params.data?.state === 'U',
             /*
-              선언이 <b>한 칸만 긋겠다</b> 고 하면 행 전체에는 긋지 않는다 — screen/code/requirements.md.
+              선언이 <b>한 칸만 긋겠다</b> 고 하면 행 전체에는 긋지 않는다 — screen/admin/system/code/requirements.md.
               둘 다 걸면 그 칸만 진하게 그어질 뿐 <i>행이 사라진다</i> 는 인상은 그대로다.
             */
             'bo-row-removed': (params: RowClassParams<GridRow<T>>) =>
@@ -1042,7 +1042,7 @@ function useGridSettings() {
 /**
  * 컨트롤 하나 — frontend/grid.md.
  *
- * <p><b>비활성이면 사유를 붙인다</b>(screen/code/requirements.md). 눌리지 않는 버튼은 눌러도 아무 일이 없고
+ * <p><b>비활성이면 사유를 붙인다</b>(screen/admin/system/code/requirements.md). 눌리지 않는 버튼은 눌러도 아무 일이 없고
  * 스스로 이유를 말하지 못한다 — frontend/grid.md 이 <i>행 추가</i>에 대해 *"비활성으로 막지 말고
  * 눌렀을 때 이유를 말하라"* 고 정한 것과 방향이 갈리는 자리이며, 여기는 <b>막는 것 자체가
  * 신호</b>여야 한다: 정의를 고치면 하단 재조회가 미저장 편집을 버린다.

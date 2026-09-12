@@ -116,7 +116,7 @@ class ErrorLogSpecTest {
     @Test
     @DisplayName("메뉴명 조건은 언어를 묻지 않는다 — 운영자는 화면에 보이는 그 이름을 들고 온다")
     void 메뉴명은_언어를_묻지_않는다() {
-        // screen/code/requirements.md 이 메시지 화면에서 한 판단과 같다 — LANG_CD 로 좁히면 그 조건이 여기 보인다.
+        // screen/admin/system/code/requirements.md 이 메시지 화면에서 한 판단과 같다 — LANG_CD 로 좁히면 그 조건이 여기 보인다.
         assertThat(ErrorLogSpec.SPEC.field("menuNm").toPredicate(Op.contains, "이력").toString())
                 .doesNotContain("langCd");
     }

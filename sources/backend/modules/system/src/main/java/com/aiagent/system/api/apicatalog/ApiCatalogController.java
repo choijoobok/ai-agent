@@ -61,7 +61,7 @@ public class ApiCatalogController {
      * 적은 것은 <b>이 목록의 크기가 곧 답</b>이라는 뜻이다.
      *
      * <p><b>세션 언어를 받는다.</b> 메뉴 경로의 이름이 {@code SYS_MESSAGE} 에서 오기 때문이며
-     * (sys/code.md), 요청 본문에 언어를 두지 않는 것은 screen/code/requirements.md 의 코드 저장과 같은 이유다 — 언어는
+     * (sys/code.md), 요청 본문에 언어를 두지 않는 것은 screen/admin/system/code/requirements.md 의 코드 저장과 같은 이유다 — 언어는
      * <i>지금 이 사람이 보고 있는 것</i> 이고 그것은 세션이 갖는다.
      */
     @Operation(

@@ -736,7 +736,7 @@ function resolve<T>(
 }
 
 /**
- * frontend/grid.md 의 컨트롤 하나. 비활성이면 사유를 붙인다 — screen/code/requirements.md 와 같은 규약이다.
+ * frontend/grid.md 의 컨트롤 하나. 비활성이면 사유를 붙인다 — screen/admin/system/code/requirements.md 와 같은 규약이다.
  *
  * <p><b>`button` 만 받는다.</b> 트리 화면의 ①에 셀렉트가 필요해진 적이 없고, 필요해지면
  * 그때 이 함수가 `DataGrid` 의 `renderControl` 처럼 갈라진다 — 미리 갈라 두면 아무도

@@ -106,7 +106,7 @@ function durationText(value: unknown): string {
 }
 
 /**
- * 값 <b>뒤에</b> 붙는 표시 — screen/code/requirements.md · screen/batch/schedule/requirements.md.
+ * 값 <b>뒤에</b> 붙는 표시 — screen/admin/system/code/requirements.md · screen/batch/schedule/requirements.md.
  *
  * <p><b>값이 아니라 값의 내력이다</b> — 그래서 복사에서 빠진다(frontend/grid.md · `copyCell` 이
  * `bo-cell-aside` 를 걷어낸다). {@code renderer: 'badge'} 의 <i>본</i> 태그에는 이 클래스가
@@ -143,7 +143,7 @@ interface AdapterOptions<T> {
   onInvalidEdit: (message: string) => void;
   /** 삭제 컬럼의 아이콘. 없으면 컬럼 자체가 나오지 않는다 — frontend/grid.md. */
   onToggleDelete?: (rowId: string) => void;
-  /** 삭제 컬럼의 라벨과 게이트 — screen/code/requirements.md. 없으면 <i>삭제</i> 이고 전 행이 열린다. */
+  /** 삭제 컬럼의 라벨과 게이트 — screen/admin/system/code/requirements.md. 없으면 <i>삭제</i> 이고 전 행이 열린다. */
   deleteColumn?: DeleteColumnSpec<T>;
   /** 상태 컬럼의 되돌리기 아이콘 — 수정한 행에만 나온다(frontend/grid.md). */
   onRevert: (rowId: string) => void;
@@ -164,7 +164,7 @@ interface AdapterOptions<T> {
   /**
    * 상태 컬럼을 그리는가 — <b>편집이 열리는 그리드면 그린다</b>(frontend/grid.md).
    *
-   * <p>저장 단위인가와 다른 축이다. screen/code/requirements.md 의 하단처럼 <b>남의 저장에 실리는 그리드</b>도
+   * <p>저장 단위인가와 다른 축이다. screen/admin/system/code/requirements.md 의 하단처럼 <b>남의 저장에 실리는 그리드</b>도
    * 고친 행이 무엇인지 보여야 하고, 되돌릴 수도 있어야 한다 — 표시가 마스터에만 있으면
    * <i>"어느 언어를 고쳤더라"</i> 를 하단에서 알 수 없다(2026-08-30).
    */
@@ -250,10 +250,10 @@ export function toColDefs<T>(options: AdapterOptions<T>): ColDef<GridRow<T>>[] {
         /*
           <b>비활성 버튼을 두지 않는다.</b> 회색 아이콘은 눌러 봐야 아무 일이 없고 왜
           안 되는지 말하지 못한다 — 지울 것이 없는 행에는 <b>버튼 자체가 없는</b> 것이
-          정직하다(screen/code/requirements.md 의 *변경됨 인 행만*).
+          정직하다(screen/admin/system/code/requirements.md 의 *변경됨 인 행만*).
         */
         if (enabled && !enabled(row)) {
-          // <b>사유를 말한다</b> — screen/code/requirements.md. 없으면 그냥 비운다: 시스템 행은 자기 배지가
+          // <b>사유를 말한다</b> — screen/admin/system/code/requirements.md. 없으면 그냥 비운다: 시스템 행은 자기 배지가
           // 이미 말하고 있고, 같은 말을 두 번 하면 그 배지가 뜻을 잃는다.
           const why = options.deleteColumn?.reason?.(row) ?? null;
           const dash = <span style={{ opacity: 0.35 }}>—</span>;
@@ -393,7 +393,7 @@ function toColDef<T>(column: ColumnDef<T>, options: AdapterOptions<T>): ColDef<G
 
   def.cellClassRules = {
     /*
-      취소선이 <b>이 칸에만</b> 걸린다 — screen/code/requirements.md. 선언이 없으면 행 전체이며(frontend/grid.md)
+      취소선이 <b>이 칸에만</b> 걸린다 — screen/admin/system/code/requirements.md. 선언이 없으면 행 전체이며(frontend/grid.md)
       그때는 이 규칙이 아무 행에도 붙지 않는다.
     */
     'bo-cell-removed': (params) =>
@@ -612,7 +612,7 @@ const DEFAULT_TEXT_MODAL_LENGTH = 2000;
 /**
  * 읽기 전용인데 셀에서 다 볼 수 없는 칸 — frontend/grid.md.
  *
- * <p><b>편집기를 열지 않는다.</b> 여는 순간 고칠 수 있는 것처럼 보이고, screen/code/requirements.md 의 설명
+ * <p><b>편집기를 열지 않는다.</b> 여는 순간 고칠 수 있는 것처럼 보이고, screen/admin/system/code/requirements.md 의 설명
  * 컬럼처럼 <i>편집하면 값을 안 바꿨는데 행이 생기는</i> 칸에서는 그것이 곧 사고다. 대신
  * {@code DataGrid} 가 더블클릭을 받아 <b>읽기 전용 모달</b>을 연다 — 여기서는 그 칸임을
  * 알리고 커서로 <b>눌러 볼 수 있다는 것</b>만 말한다.
@@ -677,7 +677,7 @@ function applyRenderer<T>(
       /*
         <b>왜 못 켜는지 말한다</b>(2026-08-30 — screen/admin/system/user/requirements.md). 텍스트 칸은 편집을 시도하면
         {@code denyEdit} 가 사유를 내지만, <b>비활성 스위치는 이벤트를 내지 않아</b> 그
-        문구가 영영 나가지 않는다 — screen/code/requirements.md 가 비활성 버튼에 대해 적은 것과 같은 자리다.
+        문구가 영영 나가지 않는다 — screen/admin/system/code/requirements.md 가 비활성 버튼에 대해 적은 것과 같은 자리다.
 
         <b>사유가 있을 때만 감싼다.</b> 컬럼 전체가 읽기 전용인 칸(선언에 {@code editable}
         이 없는 것)은 사유가 없고, 거기 툴팁을 붙이면 <i>못 고치는 칸마다 빈 말풍선</i>이
@@ -868,7 +868,7 @@ function applyRenderer<T>(
     return;
   }
   /*
-    값 <b>과 함께</b> 내는 표시 — screen/code/requirements.md.
+    값 <b>과 함께</b> 내는 표시 — screen/admin/system/code/requirements.md.
 
     `renderer: 'badge'` 아래에 두는 것은, 저것이 값 <i>대신</i> 배지를 그리므로 둘이
     한 셀에서 만나면 값이 사라지기 때문이다. 여기 오는 셀은 값이 주인공이고 굵기와
@@ -1099,7 +1099,7 @@ function systemColumn<T>(
   const header = label(headerKey);
   /*
     <b>시스템 컬럼도 헤더가 잘린다.</b> 폭이 고정(min = max)이라 사용자가 끌어 늘릴 수도
-    없어서 모자라면 <b>영영 말줄임표</b>이고, screen/code/requirements.md 처럼 라벨을 바꾸는 자리가 있으므로
+    없어서 모자라면 <b>영영 말줄임표</b>이고, screen/admin/system/code/requirements.md 처럼 라벨을 바꾸는 자리가 있으므로
     상수 하나로는 덮이지 않는다.
   */
   const fitted = font === undefined

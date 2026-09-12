@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 코드 — sys/code.md · screen/code/requirements.md.
+ * 코드 — sys/code.md · screen/admin/system/code/requirements.md.
  *
  * <p><b>{@code DTL_NM} 은 코드명이 아니라 그 코드의 메시지 키</b>({@code code.{GRP_CD}.{DTL_CD}})
  * 이며 사람이 정하지 않는다. 값이 PK 에서 도출되는데도 컬럼으로 두는 이유는 조회 쪽이
@@ -57,7 +57,7 @@ public class SysCode extends BaseAuditEntity {
     @Column(name = "USE_YN", length = 1, nullable = false)
     private Boolean useYn;
 
-    /** <b>콤보 정렬</b>이다 — 관리 화면용이 아니다(screen/code/requirements.md). */
+    /** <b>콤보 정렬</b>이다 — 관리 화면용이 아니다(screen/admin/system/code/requirements.md). */
     @Column(name = "SORT_NO", nullable = false)
     private Integer sortNo;
 
@@ -87,7 +87,7 @@ public class SysCode extends BaseAuditEntity {
      *
      * <p>{@code SYS_YN='Y'} 인 행에서 {@code USE_YN} 이 잠기는 것은 <b>저장 서비스의 판정</b>
      * 이다(sys/code.md). 여기서 막지 않는 것은 그 판정이 <i>이전 값과의 비교</i> 라 엔티티 혼자
-     * 답할 수 없기 때문이며, 화면은 스위치 자체를 잠근다(screen/code/requirements.md).
+     * 답할 수 없기 때문이며, 화면은 스위치 자체를 잠근다(screen/admin/system/code/requirements.md).
      */
     public void apply(String dtlDesc, Boolean useYn, Integer sortNo) {
         this.dtlDesc = dtlDesc;

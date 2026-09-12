@@ -88,7 +88,7 @@ export function ApiCatalogPage() {
   /*
     <b>선택된 API 를 ref 로도 든다.</b> 하단 조회 콜백이 이 값을 읽는데, 행을 고른 <b>바로 그
     순간</b>에 조회가 나가야 하므로 상태 갱신을 기다릴 수 없다 — 기다리면 첫 조회가
-    <i>이전 API</i> 의 매핑을 가져온다. screen/code/requirements.md 의 코드 화면과 같은 자리다.
+    <i>이전 API</i> 의 매핑을 가져온다. screen/admin/system/code/requirements.md 의 코드 화면과 같은 자리다.
   */
   const selectedApiUrl = useRef<string | null>(null);
 
@@ -101,7 +101,7 @@ export function ApiCatalogPage() {
   );
 
   /**
-   * 하단은 조회조건 폼을 <b>나눠 갖지 않는다</b> — screen/code/requirements.md 의 코드 화면과 갈리는 자리다.
+   * 하단은 조회조건 폼을 <b>나눠 갖지 않는다</b> — screen/admin/system/code/requirements.md 의 코드 화면과 갈리는 자리다.
    *
    * <p>거기서는 <i>"이 코드값이 어느 그룹에 있더라"</i> 가 실제 질문이라 하단 조건이 마스터를
    * 걸렀다. 여기 하단에 있는 것은 <b>메뉴 경로 · 사용 여부 · 인원</b>뿐이고 그 셋으로 API 를
@@ -168,7 +168,7 @@ export function ApiCatalogPage() {
    * API 선택 — 하단을 그 API 로 다시 읽는다.
    *
    * <p><b>거부하지 않는다 — 그래서 `void` 를 돌려준다</b>(frontend/grid.md · `<DataGrid>` 의 `onSelect`).
-   * screen/code/requirements.md 의 코드 화면은 하단에 미저장 편집이 있을 수 있어 물었고 그 답에 따라 선택을 되돌려야
+   * screen/admin/system/code/requirements.md 의 코드 화면은 하단에 미저장 편집이 있을 수 있어 물었고 그 답에 따라 선택을 되돌려야
    * 해서 `Promise<boolean>` 이었다. 여기 하단은 <b>잃을 것이 없다</b> — 편집이 없는 화면에서
    * 확인 모달은 순수한 마찰이고, 되돌릴 이유가 없으므로 돌려줄 답도 없다.
    *
@@ -368,7 +368,7 @@ function buildApiColumns(): ColumnDef<ApiCatalogRow>[] {
       /*
         <b>`pk: true` 가 아니다.</b> frontend/grid.md 의 `pk` 는 <i>신규 행에서만 열린다</i> 를 뜻하는데
         이 화면에는 신규 행이 없다 — 채울 수 없는 칸에 필수 표시를 붙이면 <i>왜 안 되나</i> 를
-        묻게 된다(screen/code/requirements.md 의 `msgKey` 와 같은 자리다).
+        묻게 된다(screen/admin/system/code/requirements.md 의 `msgKey` 와 같은 자리다).
       */
       editable: false,
     },
@@ -407,7 +407,7 @@ function buildApiColumns(): ColumnDef<ApiCatalogRow>[] {
       field: 'apiDesc',
       header: MSG.API_CATALOG_COL_API_DESC,
       type: 'text',
-      // 남는 폭을 이 칸이 먹는다 — 최소는 작게 둔다(screen/code/requirements.md 이 같은 자리에서 겪었다).
+      // 남는 폭을 이 칸이 먹는다 — 최소는 작게 둔다(screen/admin/system/code/requirements.md 이 같은 자리에서 겪었다).
       width: 200,
       fill: true,
       filter: false,
@@ -561,7 +561,7 @@ function buildSearchFields(defaultUrl: string): SearchField[] {
     {
       /*
         <b>진단의 입구다.</b> 파생 조건이며 판정은 <b>매핑 행의 존재</b>이지 값 비교가 아니다 —
-        screen/code/requirements.md 의 <i>변경 여부</i> 와 같은 모양이다.
+        screen/admin/system/code/requirements.md 의 <i>변경 여부</i> 와 같은 모양이다.
 
         기본값을 두지 않는다(<i>전체</i>) — <b>미매핑을 기본으로 걸면</b> 이 화면이 결함
         목록이 되고, 403 하나를 들고 온 사람이 <i>자기 URL 이 목록에 없다</i> 를 미등록으로

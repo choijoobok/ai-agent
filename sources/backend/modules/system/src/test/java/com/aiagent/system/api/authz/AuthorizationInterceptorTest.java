@@ -60,6 +60,7 @@ class AuthorizationInterceptorTest {
     private static final String USER = "kim";
     private static final String ORDER_LIST = "/api/service/order/getList";
     private static final String USER_SESSION_KILL = "/api/service/system/user/killSession";
+    private static final String CODE_SAVE = "/api/service/system/code/save";
 
     @Mock private ApiAuthorityRegistry registry;
     @Mock private EffectiveAuthorityService authorities;
@@ -118,7 +119,7 @@ class AuthorizationInterceptorTest {
         void commonRequiresAuthenticationOnly() {
             givenAuthority();
 
-            assertThat(interceptor.preHandle(get("/api/common/code/getList", session), response, null))
+            assertThat(interceptor.preHandle(get("/api/common/system/code/getList", session), response, null))
                     .isTrue();
             verify(registry, never()).find(anyString());
         }
@@ -186,6 +187,17 @@ class AuthorizationInterceptorTest {
         }
 
         @Test
+        @DisplayName("TC-5044 공통 코드 조회는 열고 CODE_MGMT SAVE 없는 직접 저장은 403이다")
+        void commonCodeReadIsOpenButCodeSaveNeedsAuthority() {
+            givenAuthority();
+            assertThat(interceptor.preHandle(get("/api/common/system/code/getList", session), response, null))
+                    .isTrue();
+
+            givenFact(CODE_SAVE, ActionType.SAVE, "CODE_MGMT");
+            assertDenied(get(CODE_SAVE, session), AuthzErrorCode.NO_AUTHORITY);
+        }
+
+        @Test
         @DisplayName("TC-5031 등록·매핑·유효 메뉴 액션 쌍이 맞으면 서비스 API가 통과한다")
         void allowed() {
             givenAuthority(new MenuAction("ORDER", ActionType.READ));
@@ -240,7 +252,7 @@ class AuthorizationInterceptorTest {
         @DisplayName("공통 API 도 막힌다 — 인증만으로 통과하는 층이 아니다")
         void blocksCommonToo() {
             givenAuthority();
-            assertDenied(get("/api/common/code/getList", session), AuthzErrorCode.PASSWORD_CHANGE_REQUIRED);
+            assertDenied(get("/api/common/system/code/getList", session), AuthzErrorCode.PASSWORD_CHANGE_REQUIRED);
         }
 
         @Test

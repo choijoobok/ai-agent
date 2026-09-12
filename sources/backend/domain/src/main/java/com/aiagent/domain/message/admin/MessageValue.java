@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
- * 하단 그리드의 한 행이자 마스터 행의 {@code list} 항목 하나 — screen/code/requirements.md · frontend/grid.md.
+ * 하단 그리드의 한 행이자 마스터 행의 {@code list} 항목 하나 — screen/admin/system/code/requirements.md · frontend/grid.md.
  *
  * <p><b>{@code msgVal} 이 {@code null} 이면 그 언어의 행을 지운다.</b> 빈 문자열이 아니다 —
  * 빈 문자열을 저장하면 sys/code.md 의 폴백이 죽고 <i>"이름이 없는 코드"</i> 가 조용히 생긴다.

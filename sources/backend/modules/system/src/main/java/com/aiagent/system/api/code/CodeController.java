@@ -1,7 +1,8 @@
-package com.aiagent.api.code;
+// @feat FEAT-504
+package com.aiagent.system.api.code;
 
-import com.aiagent.api.code.request.CodeListRequest;
-import com.aiagent.api.code.response.CodeListResponse;
+import com.aiagent.system.api.code.request.CodeListRequest;
+import com.aiagent.system.api.code.response.CodeListResponse;
 import com.aiagent.api.trace.TraceId;
 import com.aiagent.core.response.ApiResponse;
 import com.aiagent.domain.code.service.CodeService;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 드러나지 않는</b> 종류다.
  *
  * <p><b>{@code CodeAdminController} 와 갈린다.</b> 저쪽은 CODE_MGMT 화면의 것이고
- * ({@code /api/service/code/**}) 관리자만 부른다. 여기는 <b>로그인한 누구나</b> 부르며
+ * ({@code /api/service/system/code/**}) 관리자만 부른다. 여기는 <b>로그인한 누구나</b> 부르며
  * 돌려주는 것도 다르다 — 저쪽은 관리 그리드의 행 전부, 여기는 <b>콤보 후보인 코드값</b>뿐이다.
  *
  * <h2>{@code getList} 하나뿐이다</h2>
@@ -49,7 +50,7 @@ public class CodeController {
      * 버전</i> 이 아니라 <b>옛 데이터에 새 버전</b>을 찍는다 — 앞엣것은 다음 로그인이
      * 바로잡지만 뒤엣것은 <b>영원히 낡은 채로 최신인 척</b> 한다.
      */
-    @PostMapping("/api/common/code/getList")
+    @PostMapping("/api/common/system/code/getList")
     public ApiResponse<CodeListResponse> getList(@Valid @RequestBody CodeListRequest request) {
         long version = versions.current(SysCacheVersion.CODE);
         return ApiResponse.success(

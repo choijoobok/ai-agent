@@ -100,7 +100,7 @@ public class ApiCatalogQueryService {
      * <p>둘째가 <b>매핑 메뉴 수</b>이며 그것이 <i>미매핑</i> 배지의 근거다(screen/api-catalog/requirements.md). 첫 쿼리에
      * 스칼라 서브쿼리로 얹지 않는 이유는 <b>행마다 한 번씩 도는 것</b>이 되기 때문이고, 조인해
      * {@code GROUP BY} 하면 <b>페이징 단위가 API 가 아니게</b> 될 위험을 매번 다시 확인해야
-     * 한다 — screen/code/requirements.md 가 코드 그룹에서 쿼리를 둘로 가른 것과 같은 판단이다.
+     * 한다 — screen/admin/system/code/requirements.md 가 코드 그룹에서 쿼리를 둘로 가른 것과 같은 판단이다.
      *
      * <p><b>{@code offset} 이다.</b> screen/api-catalog/requirements.md 이 엑셀 항목을 <i>현재 페이지 · 전체</i> 둘로 두며
      * <i>"§4.9 의 트리와 달리 페이징이 있다"</i> 고 적었고, 업무 API 가 수백 개로 자라는 것이

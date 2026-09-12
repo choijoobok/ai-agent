@@ -14,7 +14,7 @@ package com.aiagent.domain.user.detail;
  * {@code ROLE_MGMT} 의 {@code READ} 를 요구하게 되고(backend/api.md — 매핑이 경로를 따라간다),
  * 그러면 <b>사용자 관리만 가진 사람이 역할을 부여할 수 없다</b>. 화면이 자기 경로를
  * 가져야 하는 이유가 그것이며, {@code CODE_MGMT} 가 참조 코드 후보를 자기 {@code getList}
- * 로 읽은 것과 같은 판단이다(screen/code/requirements.md) — 거기는 마침 쓸 수 있는 자기 경로가 있었다.
+ * 로 읽은 것과 같은 판단이다(screen/admin/system/code/requirements.md) — 거기는 마침 쓸 수 있는 자기 경로가 있었다.
  *
  * @param useYn <b>꺼진 역할도 후보다.</b> 부여는 되고 판정에서 걸릴 뿐이며(sys/menu.md 의 AND)
  *     <i>켜기 전에 부여를 구성해 두는</i> 동선이 정상이다 — 화면이 <b>표시로 그 사실을

@@ -132,7 +132,7 @@ public class ConfigService {
     }
 
     /**
-     * <b>저장 후의 상태</b>를 만들어 바인딩해 본다 — screen/code/requirements.md · sys/config.md.
+     * <b>저장 후의 상태</b>를 만들어 바인딩해 본다 — screen/admin/system/code/requirements.md · sys/config.md.
      *
      * <p>지금 DB 에 있는 오버라이드에 이 요청을 얹은 것이 그 상태다. 되돌리기({@code D})는
      * <b>빼는 것</b>이므로 함께 반영해야 한다 — 빼기를 무시하면 <i>"A 를 내리고 B 를 올려

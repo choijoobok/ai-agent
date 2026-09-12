@@ -22,10 +22,10 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/code` |
+| 페이지 경로 | `/admin/system/code` |
 | 메뉴코드 | `CODE_MGMT` |
-| 프론트 폴더 | `sources/frontend/src/features/code/` |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/code/admin/` · `sources/backend/api/…/api/code/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/code/` |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/code/admin/` · `sources/backend/modules/system/…/system/api/code/` |
 | 화면 유형 | **마스터-디테일(상하)** + 모달 하나 |
 | 처리 유형 | CRUD |
 | 쓰는 액션 | `R` `S` `E` — `EXPORT_YN` = `Y`. **`X` 없음** |
@@ -300,18 +300,18 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |
 |---|---|---|---|---|---|
-| 그룹 목록 | `getGroupList` | `/service/code/getGroupList` | POST | R | offset |
-| 그룹 저장 | `saveGroup` | `/service/code/saveGroup` | POST | S | — |
-| 코드 목록 | `getList` | `/service/code/getList` | POST | R | 전량 |
-| 코드 저장 | `save` | `/service/code/save` | POST | S | — |
-| 정의 목록 | `getRefDefList` | `/service/code/getRefDefList` | POST | R | 전량 |
-| 정의 저장 | `saveRefDef` | `/service/code/saveRefDef` | POST | S | — |
+| 그룹 목록 | `getGroupList` | `/service/system/code/getGroupList` | POST | R | offset |
+| 그룹 저장 | `saveGroup` | `/service/system/code/saveGroup` | POST | S | — |
+| 코드 목록 | `getList` | `/service/system/code/getList` | POST | R | 전량 |
+| 코드 저장 | `save` | `/service/system/code/save` | POST | S | — |
+| 정의 목록 | `getRefDefList` | `/service/system/code/getRefDefList` | POST | R | 전량 |
+| 정의 저장 | `saveRefDef` | `/service/system/code/saveRefDef` | POST | S | — |
 
 - **여섯인 것이 이 화면의 모양이다** — 그리드가 셋이고 각각 조회와 저장을 갖는다.
 - **`getRefDefList` 를 두 자리에서 부른다** — 정의 모달의 조회와, 하단 조회에 **함께** 나가는 쪽. 같은 응답을 쓰므로 정의가 바뀌면 **컬럼 집합과 모달 목록이 같은 순간에 같아진다.**
 - **참조 코드 후보도 `getList` 로 받는다**(그룹 `CODE_REF_KEY`) — 전용 경로를 내지 않는다.
 - `exportExcel` 없음 — 프론트 생성.
-- 별개로 **`POST /api/common/code/getList`** 가 있다 — 이 화면의 것이 아니라 **모든 화면의 코드 셀렉트**가 쓰는 공통 경로다.
+- 별개로 **`POST /api/common/system/code/getList`** 가 있다 — 이 화면의 것이 아니라 **모든 화면의 코드 셀렉트**가 쓰는 공통 경로다.
 
 ---
 
@@ -320,7 +320,7 @@
 - **코드그룹 `CODE_REF_KEY`** — 참조 코드의 화이트리스트다. 이 그룹 자체도 이 화면에서 관리한다.
 - 메시지 키: 화면 `MSG.CODE_*` · 서버 `MsgKey.ERR_CODE_*` 열.
 - **코드명의 메시지 키는 시드가 아니라 저장이 만든다** — `code.{GRP_CD}.{DTL_CD}`.
-- 메뉴 시드: `menu-tree.yaml` — `code: CODE_MGMT` · `parent: MASTER` · `url: /code` · `export: true`.
+- 메뉴 시드: `menu-tree.yaml` — `code: CODE_MGMT` · `parent: MASTER` · `url: /admin/system/code` · `export: true`.
 - 초기 데이터 전제: **소스가 이름으로 지목하는 그룹은 미리 있어야 한다**(예: `LOGIN_RSLT_CD`). 없으면 그 화면의 셀렉트가 비고 배지 글자가 키로 보인다.
 - 설정: 메시지 캐시 TTL(`sys-config.message.cache-ttl-minutes`).
 

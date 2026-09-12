@@ -209,7 +209,7 @@ export function NotiRequestPage() {
               menuCd: MENU_CD,
               disabled: blocked,
               /*
-                <b>왜 눌리지 않는지 말한다</b>(frontend/grid.md · screen/code/requirements.md). 선택이 0건인 것은 눈에
+                <b>왜 눌리지 않는지 말한다</b>(frontend/grid.md · screen/admin/system/code/requirements.md). 선택이 0건인 것은 눈에
                 보이지만 <b>이미 처리된 것이 섞인 것</b>은 안 보인다 — 고른 행이 다섯인데
                 버튼이 죽어 있으면 사용자는 권한을 의심한다.
               */

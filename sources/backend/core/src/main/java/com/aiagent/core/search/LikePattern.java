@@ -7,7 +7,7 @@ package com.aiagent.core.search;
  * <b>리터럴로 취급하고</b> {@code ESCAPE} 절을 붙인다 — 4벤더 전부 지원한다.
  *
  * <p><b>파생 필드도 여기를 쓴다.</b> 화면 값 하나가 {@code EXISTS} 서브쿼리의 {@code LIKE}
- * 가 되는 경우(screen/code/requirements.md 의 <i>메시지 값</i>)에 스펙이 직접 패턴을 만들면 <b>이스케이프가 두
+ * 가 되는 경우(screen/admin/system/code/requirements.md 의 <i>메시지 값</i>)에 스펙이 직접 패턴을 만들면 <b>이스케이프가 두
  * 곳</b>에 생기고, 한쪽만 고치면 조용히 갈린다.
  */
 public final class LikePattern {

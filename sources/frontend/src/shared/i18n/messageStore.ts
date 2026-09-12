@@ -29,7 +29,7 @@ interface CachedBundle {
 
 interface MessageState {
   lang: Lang;
-  /** 지원 언어 전부 — 다국어 관리 화면의 하단 행 수를 정한다(screen/code/requirements.md). */
+  /** 지원 언어 전부 — 다국어 관리 화면의 하단 행 수를 정한다(screen/admin/system/code/requirements.md). */
   langs: string[];
   version: number | null;
   messages: Record<string, string>;

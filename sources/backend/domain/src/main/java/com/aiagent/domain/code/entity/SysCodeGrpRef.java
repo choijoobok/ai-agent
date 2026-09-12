@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 /**
  * 참조 코드 <b>정의</b> — sys/code.md.
  *
- * <p><b>이 행 하나가 상세 코드 그리드의 컬럼 하나다</b>(screen/code/requirements.md). 정의 테이블이 생기기 전에는
+ * <p><b>이 행 하나가 상세 코드 그리드의 컬럼 하나다</b>(screen/admin/system/code/requirements.md). 정의 테이블이 생기기 전에는
  * 목록이 {@code SELECT DISTINCT REF_CD} 라 <b>상세 코드가 0건인 그룹은 속성을 정의할 수
  * 없었고, 마지막 코드를 지우면 정의가 조용히 사라졌다</b>.
  *

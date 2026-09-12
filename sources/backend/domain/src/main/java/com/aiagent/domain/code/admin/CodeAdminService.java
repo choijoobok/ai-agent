@@ -32,7 +32,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
- * {@code CODE_MGMT} 의 저장 — screen/code/requirements.md. <b>버튼 하나가 테이블 셋을 쓴다.</b>
+ * {@code CODE_MGMT} 의 저장 — screen/admin/system/code/requirements.md. <b>버튼 하나가 테이블 셋을 쓴다.</b>
  *
  * <p>하단의 저장 하나가 {@code SYS_CODE} · {@code SYS_MESSAGE}(코드명 — §2.3) ·
  * {@code SYS_CODE_REF}(참조값 — §2.4)를 쓴다. 화면이 셋을 각각 부르게 하면 <b>부분 실패</b>가
@@ -40,7 +40,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  *
  * <h2>게이트 하나, 확인 둘</h2>
  *
- * screen/code/requirements.md 가 셋을 갈랐고 <b>가르는 기준은 <i>DB 가 거부하는가</i></b> 다(frontend/grid.md).
+ * screen/admin/system/code/requirements.md 가 셋을 갈랐고 <b>가르는 기준은 <i>DB 가 거부하는가</i></b> 다(frontend/grid.md).
  *
  * <table>
  *   <tr><td>그룹 삭제</td><td><b>게이트</b></td><td>코드가 남의 것이라 FK 가 거부한다</td></tr>
@@ -53,7 +53,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  *
  * <h2>{@code SYS_YN} 은 여기서도 막는다</h2>
  *
- * 화면이 입력 수단을 없앤 것(screen/code/requirements.md)과 별개로 저장이 판정한다 — 읽기 전용은 화면에서만
+ * 화면이 입력 수단을 없앤 것(screen/admin/system/code/requirements.md)과 별개로 저장이 판정한다 — 읽기 전용은 화면에서만
  * 읽기 전용이고 요청 본문은 조작할 수 있다(sys/code.md · 원칙 P1). 켜고 끄는 것 자체는
  * <b>DTO 에 필드가 없어</b> 구조적으로 불가능하다.
  *
@@ -151,7 +151,7 @@ public class CodeAdminService {
     }
 
     /**
-     * <b>게이트가 여기 있다</b> — frontend/grid.md 의 첫 실물(screen/code/requirements.md).
+     * <b>게이트가 여기 있다</b> — frontend/grid.md 의 첫 실물(screen/admin/system/code/requirements.md).
      *
      * <p>화면은 하단이 {@code 0} 건일 때만 체크박스를 연다. 그 판정은 <b>조회 시점</b>의
      * 것이므로 그 사이에 다른 사람이 코드를 추가할 수 있다 — 여기서 한 번 더 세는 것이 그
@@ -179,9 +179,9 @@ public class CodeAdminService {
     // ── 하단 — 코드 ──────────────────────────────────────────────────
 
     /**
-     * 코드 저장 — <b>{@code refs} 는 그 그룹의 정의 목록을 루프한다</b>(screen/code/requirements.md).
+     * 코드 저장 — <b>{@code refs} 는 그 그룹의 정의 목록을 루프한다</b>(screen/admin/system/code/requirements.md).
      *
-     * @param lang 세션 언어 — 코드명이 쓰이는 {@code SYS_MESSAGE} 행의 언어다(screen/code/requirements.md).
+     * @param lang 세션 언어 — 코드명이 쓰이는 {@code SYS_MESSAGE} 행의 언어다(screen/admin/system/code/requirements.md).
      *     도메인이 요청을 모르므로 컨트롤러가 준다
      */
     @Transactional
@@ -233,7 +233,7 @@ public class CodeAdminService {
     }
 
     /**
-     * 코드 삭제 — <b>참조값도 이름도 함께 사라진다</b>(screen/code/requirements.md).
+     * 코드 삭제 — <b>참조값도 이름도 함께 사라진다</b>(screen/admin/system/code/requirements.md).
      *
      * <p>참조값은 그 행의 파생이라 함께 지우고, 이름은 <b>키까지</b> 지운다. 값만 지우고 키를
      * 남기면 그 키는 {@code USE_SCOPE='DATA'} 인 채로 영영 남는데,
@@ -259,7 +259,7 @@ public class CodeAdminService {
     }
 
     /**
-     * 코드명 — <b>비우면 그 언어의 행을 지운다</b>(screen/code/requirements.md).
+     * 코드명 — <b>비우면 그 언어의 행을 지운다</b>(screen/admin/system/code/requirements.md).
      *
      * <p>빈 문자열을 넣지 않는 이유는 sys/code.md 의 폴백이 죽기 때문이다. 값이 없으면 기본
      * 언어로, 그것도 없으면 <b>키 문자열</b>로 떨어져야 <i>아직 안 채웠다</i> 가 화면에서
@@ -300,7 +300,7 @@ public class CodeAdminService {
     }
 
     /**
-     * 참조값 — <b>정의 목록을 루프한다</b>(screen/code/requirements.md).
+     * 참조값 — <b>정의 목록을 루프한다</b>(screen/admin/system/code/requirements.md).
      *
      * <p>맵을 루프하지 않는 것이 요점이다. 맵에 <b>키가 없는 것</b>과 <b>값이 빈 것</b>은 같은
      * 뜻(<i>값 없음</i> — sys/code.md)인데, 맵을 돌면 앞엣것이 <i>손대지 않음</i> 으로 읽혀
@@ -346,7 +346,7 @@ public class CodeAdminService {
     // ── 정의 모달 — 참조 코드 ────────────────────────────────────────
 
     /**
-     * 정의 저장 — <b>모달 안에서 닫힌다</b>(screen/code/requirements.md).
+     * 정의 저장 — <b>모달 안에서 닫힌다</b>(screen/admin/system/code/requirements.md).
      *
      * <p>{@code REF_CD} 는 {@code CODE_REF_KEY} 공통코드의 화이트리스트에서만 온다(sys/code.md).
      * 화면이 콤보로 막지만 <b>정의 테이블이 그 통제를 대신하지 않으므로</b> 여기서도 본다 —
@@ -392,7 +392,7 @@ public class CodeAdminService {
         requireRefDef(grpCd, row.refCd()).apply(row.refNm(), row.refDesc());
     }
 
-    /** 값 → 정의 순서면 FK 가 거부하지 않는다 — 그래서 게이트가 아니라 확인이다(screen/code/requirements.md). */
+    /** 값 → 정의 순서면 FK 가 거부하지 않는다 — 그래서 게이트가 아니라 확인이다(screen/admin/system/code/requirements.md). */
     private void deleteRefDef(String grpCd, CodeRefDefSaveRow row) {
         SysCodeGrpRef def = requireRefDef(grpCd, row.refCd());
         refValues.deleteByGrpCdAndRefCd(grpCd, row.refCd());

@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
  * 가 소스 상수에서 만들고 사람은 손대지 않으며, 값 행은 그 반대다. 한 테이블에 두 소유가
  * 섞여 있던 것이 {@code MSG_GRP_CD} 부분 함수 종속의 원인이었다.
  *
- * <p><b>이 행이 곧 관리 화면의 마스터 행이다</b>(screen/code/requirements.md) — 값이 하나도 없는 키도 행으로
+ * <p><b>이 행이 곧 관리 화면의 마스터 행이다</b>(screen/admin/system/code/requirements.md) — 값이 하나도 없는 키도 행으로
  * 존재하므로 <i>"키만 있는 행"</i> 을 위한 예외가 필요 없다.
  */
 @Entity
@@ -45,7 +45,7 @@ public class SysMessageKey extends BaseAuditEntity {
     private String msgDesc;
 
     /**
-     * 관리 화면이 만드는 키 — screen/code/requirements.md. <b>{@code USE_SCOPE} 를 받지 않는다.</b>
+     * 관리 화면이 만드는 키 — screen/admin/system/code/requirements.md. <b>{@code USE_SCOPE} 를 받지 않는다.</b>
      *
      * <p>화면에서 추가한 키는 <b>즉시 {@code NONE}</b>(미사용)이다. 소스 상수에 없으므로
      * 그것이 사실이며, 다음 {@code generateMessageSeed} 가 상수에서 찾으면 사용처가 바뀐다 —
@@ -62,7 +62,7 @@ public class SysMessageKey extends BaseAuditEntity {
     }
 
     /**
-     * <b>데이터가 만드는 키</b> — {@code code.*}(sys/code.md · screen/code/requirements.md · sys/message.md).
+     * <b>데이터가 만드는 키</b> — {@code code.*}(sys/code.md · screen/admin/system/code/requirements.md · sys/message.md).
      *
      * <p>{@link #created} 와 갈라 두는 것이 요점이다. 저것은 사람이 만든 키라 소스에 없다는
      * 사실이 곧 {@link MessageScope#NONE} 인데, 이 키는 <b>코드 행이 있는 한 살아 있는

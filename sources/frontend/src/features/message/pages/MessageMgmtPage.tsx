@@ -234,7 +234,7 @@ export function MessageMgmtPage() {
           )}
           second={(collapsed, expand) => (
             /* 컬럼 넷이 전부 필요하다 — 끄거나 옮길 것이 없으면 설정 창도 뜻이 없다
-               (frontend/grid.md · screen/code/requirements.md). */
+               (frontend/grid.md · screen/admin/system/code/requirements.md). */
             <DataGrid
               title={MSG.MESSAGE_DETAIL_TITLE}
               menuCd={MENU_CD}

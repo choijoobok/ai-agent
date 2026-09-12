@@ -30,11 +30,11 @@ public interface SysMessageRepository extends JpaRepository<SysMessage, SysMessa
             """)
     List<MessageRow> findRows(@Param("langs") Collection<String> langs);
 
-    /** 관리 화면의 저장이 한 키의 현재 값을 통째로 읽는다 — screen/code/requirements.md 의 {@code values} 는 전량이다. */
+    /** 관리 화면의 저장이 한 키의 현재 값을 통째로 읽는다 — screen/admin/system/code/requirements.md 의 {@code values} 는 전량이다. */
     List<SysMessage> findByMsgKey(String msgKey);
 
     /**
-     * 키 삭제의 앞 단계 — <b>값 → 키 순서</b>여야 FK 가 거부하지 않는다(screen/code/requirements.md).
+     * 키 삭제의 앞 단계 — <b>값 → 키 순서</b>여야 FK 가 거부하지 않는다(screen/admin/system/code/requirements.md).
      *
      * <p>파생 삭제라 조회 후 삭제이며 언어 수만큼의 행이다. 벌크 {@code @Modifying} 으로
      * 두면 영속성 컨텍스트가 같은 트랜잭션 안에서 낡은 것을 들고 있게 된다.

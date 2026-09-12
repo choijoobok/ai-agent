@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
- * 일괄 저장의 봉투 — frontend/grid.md · screen/code/requirements.md.
+ * 일괄 저장의 봉투 — frontend/grid.md · screen/admin/system/code/requirements.md.
  *
  * <p><b>{@code rows} 한 키뿐이다.</b> 행 상태가 페이로드 안에 있으므로 등록/수정/삭제로
  * 나누지 않으며, 그래서 액션도 {@code SAVE} 하나다(backend/security.md).

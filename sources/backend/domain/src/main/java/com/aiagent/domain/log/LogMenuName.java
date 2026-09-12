@@ -26,7 +26,7 @@ import com.querydsl.jpa.JPAExpressions;
  *
  * <h2>언어를 묻지 않는다</h2>
  *
- * <p>어느 언어의 값이든 걸린다 — screen/code/requirements.md 이 메시지 화면에서 한 판단과 같다. 운영자는
+ * <p>어느 언어의 값이든 걸린다 — screen/admin/system/code/requirements.md 이 메시지 화면에서 한 판단과 같다. 운영자는
  * <i>화면에 보이는 그 이름</i> 을 들고 오지 <b>어느 언어의 값인지</b> 를 들고 오지 않으며,
  * 세션 언어로 좁히면 영어로 쓰는 사람이 한국어 이름으로 찾을 수 없다.
  *

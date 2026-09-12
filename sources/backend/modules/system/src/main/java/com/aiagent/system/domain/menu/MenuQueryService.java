@@ -48,7 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * 트리 한 번에 <b>파생 셋</b>(매핑 API · 접근 가능 인원 · 매핑 역할)이 붙는데, 셋 다 다른
  * 테이블을 센다. 스칼라 서브쿼리로 얹으면 <b>행마다 세 번</b>이 되고, 조인해 {@code GROUP BY}
- * 하면 페이징 단위가 메뉴가 아니게 될 위험을 매번 확인해야 한다 — screen/code/requirements.md 가 코드 그룹에서
+ * 하면 페이징 단위가 메뉴가 아니게 될 위험을 매번 확인해야 한다 — screen/admin/system/code/requirements.md 가 코드 그룹에서
  * 쿼리를 가른 것과 같은 판단이다.
  *
  * <p><b>파생 셋이 삭제 게이트의 근거이기도 하다</b>(screen/menu/requirements.md) — 조회 응답이 이미 갖고 있으므로

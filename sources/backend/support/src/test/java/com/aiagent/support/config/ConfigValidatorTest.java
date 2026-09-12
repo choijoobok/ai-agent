@@ -10,7 +10,7 @@ import org.springframework.mock.env.MockEnvironment;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
- * 저장하려는 값이 바인딩을 통과하는가 — screen/code/requirements.md · sys/config.md.
+ * 저장하려는 값이 바인딩을 통과하는가 — screen/admin/system/code/requirements.md · sys/config.md.
  *
  * <p><b>여기서 지키는 것은 <i>거부했는가</i> 가 아니라 <i>어느 칸이라고 말했는가</i> 다.</b>
  * 거부만 하고 키를 못 짚으면 화면은 문구를 모달로만 낼 수 있고, 일괄 저장은 화면에 안 보이는

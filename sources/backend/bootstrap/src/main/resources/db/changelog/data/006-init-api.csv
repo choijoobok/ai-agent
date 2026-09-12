@@ -10,12 +10,6 @@ API_URL,API_NM,API_DESC,ACTION_CD
 /api/service/batchSchedule/getTimezoneList,시간대 후보 조회,크론의 기준 시간대로 고를 수 있는 IANA 시간대 이름을 반환한다. 맨 앞이 서버의 업무 시간대이고 나머지는 오름차순이다.,READ
 /api/service/batchSchedule/runNow,배치 즉시 실행,선택한 배치를 지금 실행한다. 쿨다운을 우회하며 이미 실행 중이면 그 건만 거절하고 노드와 시작 시각을 함께 반환한다.,EXECUTE
 /api/service/batchSchedule/save,배치 등록 저장,"추가·수정·삭제 행을 한 트랜잭션으로 반영한다. 크론과 쿨다운의 관계를 검증하고, 커밋 뒤에 스케줄러가 크론을 다시 건다.",SAVE
-/api/service/code/getGroupList,코드 그룹 목록 조회,코드 그룹을 페이지 단위로 반환한다. 그룹마다 코드 수가 함께 실리며 삭제 게이트가 그것을 읽는다.,READ
-/api/service/code/getList,코드 목록 조회,선택한 그룹의 코드를 전량 반환한다. 세션 언어의 코드명과 참조값 맵이 함께 실린다.,READ
-/api/service/code/getRefDefList,참조 코드 정의 목록 조회,그룹이 쓰는 참조 코드 정의를 전량 반환한다. 이 목록이 곧 코드 그리드의 동적 컬럼 집합이다.,READ
-/api/service/code/save,코드 저장,코드·코드명·참조값을 한 트랜잭션으로 반영한다. 코드명은 세션 언어의 메시지 행에 쓴다.,SAVE
-/api/service/code/saveGroup,코드 그룹 저장,추가·수정·삭제 행을 한 트랜잭션으로 반영하고 코드 캐시 버전을 올린다.,SAVE
-/api/service/code/saveRefDef,참조 코드 정의 저장,정의를 추가·수정·삭제한다. 삭제는 그 정의로 입력된 참조값을 함께 지운다.,SAVE
 /api/service/config/getList,시스템 환경설정 목록 조회,yml 이 정한 설정 키 전부를 SYS_CONFIG 오버라이드와 아우터 조인해 반환한다.,READ
 /api/service/config/getPrefixes,시스템 환경설정 접두사 목록 조회,조회조건의 접두사 후보를 설정 키 전부에서 도출해 반환한다.,READ
 /api/service/config/save,시스템 환경설정 저장,적용값 수정과 되돌리기(오버라이드 삭제)를 한 트랜잭션으로 반영하고 설정 캐시 버전을 올린다.,SAVE
@@ -50,6 +44,12 @@ API_URL,API_NM,API_DESC,ACTION_CD
 /api/service/sample/shipOrders,샘플 주문 출고 지시,확정 상태의 주문을 출고로 옮긴다. 하나라도 대상이 아니면 전부 거부한다.,EXECUTE
 /api/service/system/apiCatalog/getList,API 카탈로그 목록 조회,등록된 업무 API 를 페이지 단위로 반환한다. API 마다 그것을 쓰는 메뉴 수가 함께 실리며 0 이면 미매핑이다.,READ
 /api/service/system/apiCatalog/getMenuList,API 매핑 메뉴 조회,"선택한 API 를 쓰는 메뉴를 전량 반환한다. 메뉴 전체 경로와 사용 여부, 접근 가능 인원이 함께 실린다.",READ
+/api/service/system/code/getGroupList,코드 그룹 목록 조회,코드 그룹을 페이지 단위로 반환한다. 그룹마다 코드 수가 함께 실리며 삭제 게이트가 그것을 읽는다.,READ
+/api/service/system/code/getList,코드 목록 조회,선택한 그룹의 코드를 전량 반환한다. 세션 언어의 코드명과 참조값 맵이 함께 실린다.,READ
+/api/service/system/code/getRefDefList,참조 코드 정의 목록 조회,그룹이 쓰는 참조 코드 정의를 전량 반환한다. 이 목록이 곧 코드 그리드의 동적 컬럼 집합이다.,READ
+/api/service/system/code/save,코드 저장,코드·코드명·참조값을 한 트랜잭션으로 반영한다. 코드명은 세션 언어의 메시지 행에 쓴다.,SAVE
+/api/service/system/code/saveGroup,코드 그룹 저장,추가·수정·삭제 행을 한 트랜잭션으로 반영하고 코드 캐시 버전을 올린다.,SAVE
+/api/service/system/code/saveRefDef,참조 코드 정의 저장,정의를 추가·수정·삭제한다. 삭제는 그 정의로 입력된 참조값을 함께 지운다.,SAVE
 /api/service/system/menu/deleteNode,메뉴 삭제,자식·매핑 API·매핑 역할·개인 예외가 모두 없을 때만 지운다. 즐겨찾기는 함께 지운다.,SAVE
 /api/service/system/menu/getAccessibleUsers,메뉴 사용 가능 사용자 조회,이 메뉴에 닿는 사용자를 경유(역할·개인 예외)마다 한 행으로 반환한다. 만료된 부여도 상태와 함께 낸다.,READ
 /api/service/system/menu/getApiList,메뉴 매핑 API 조회,이 메뉴가 쓰는 API 를 전량 반환한다. 0 건이면 이 화면의 기능을 아무도 쓸 수 없다.,READ

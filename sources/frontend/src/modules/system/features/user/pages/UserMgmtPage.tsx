@@ -91,7 +91,7 @@ export function UserMgmtPage() {
     부여할 수 없다. 이 화면이 자기 경로를 갖는 이유가 그것이다.
 
     `staleTime: Infinity` 인 것은 이 목록이 <b>거의 바뀌지 않고</b> 바뀌는 자리가 다른
-    화면이기 때문이다 — `CODE_MGMT` 의 참조 코드 후보와 같은 판단이다(screen/code/requirements.md).
+    화면이기 때문이다 — `CODE_MGMT` 의 참조 코드 후보와 같은 판단이다(screen/admin/system/code/requirements.md).
   */
   const roleCandidates = useQuery({
     queryKey: ['user', 'roleCandidates'],
@@ -117,7 +117,7 @@ export function UserMgmtPage() {
   const searchFields = useMemo(() => buildSearchFields(roleOptions), [roleOptions]);
 
   /**
-   * 저장 확인 <b>앞</b>에 서는 경고 — screen/code/requirements.md 가 연 자리다.
+   * 저장 확인 <b>앞</b>에 서는 경고 — screen/admin/system/code/requirements.md 가 연 자리다.
    *
    * <p>건수는 <i>얼마나</i> 를 말할 뿐이라 <b>무엇이 일어나는지</b>를 말하지 못한다.
    * 여기서 말해야 하는 것 둘 — <b>신규 행에는 임시 비밀번호가 발급되고</b>(관리자가 값을

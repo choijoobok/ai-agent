@@ -134,7 +134,7 @@ export type EditableResult = boolean | { ok: false; message: string };
 /**
  * 편집·필수 판단이 보는 문맥 — frontend/grid.md 의 `(row, ctx)`.
  *
- * <p>지금 담긴 것은 <b>행 상태 하나</b>다. *"PK 는 신규 행에서만 열린다"* (screen/code/requirements.md)를
+ * <p>지금 담긴 것은 <b>행 상태 하나</b>다. *"PK 는 신규 행에서만 열린다"* (screen/admin/system/code/requirements.md)를
  * 표현하려면 그 행이 저장된 것인지 알아야 하는데, 업무 데이터에는 그 사실이 없다.
  *
  * <p>frontend/grid.md 가 *"`ctx` 에 무엇이 들어가나"* 를 미결로 남겼다 — 유효 권한·공통코드·현재
@@ -212,7 +212,7 @@ export interface ColumnDef<T> {
    */
   cellTooltip?: boolean;
   /**
-   * 컬럼이 <b>데이터에서 온다</b> — frontend/grid.md. `CODE_MGMT` 의 참조 코드가 첫 실물이다(screen/code/requirements.md).
+   * 컬럼이 <b>데이터에서 온다</b> — frontend/grid.md. `CODE_MGMT` 의 참조 코드가 첫 실물이다(screen/admin/system/code/requirements.md).
    *
    * <p>셋이 달라진다.
    *
@@ -265,12 +265,12 @@ export interface ColumnDef<T> {
    * 셀에서 다 볼 수 없는 <b>읽기 전용</b> 칸을 펼쳐 읽는 방법 — frontend/grid.md.
    *
    * <p>{@link editor} 를 쓸 수 없는 자리다. 편집기를 열면 <b>고칠 수 있는 것처럼</b>
-   * 보이고, screen/code/requirements.md 의 설명 컬럼처럼 <i>편집하면 값을 안 바꿨는데 행이 생기는</i> 칸에서는
+   * 보이고, screen/admin/system/code/requirements.md 의 설명 컬럼처럼 <i>편집하면 값을 안 바꿨는데 행이 생기는</i> 칸에서는
    * 그것이 곧 사고다.
    */
   viewer?: ViewerType;
   /**
-   * 이 컬럼이 <b>PK 인가</b> — 셋을 한 번에 정한다(frontend/grid.md · screen/code/requirements.md).
+   * 이 컬럼이 <b>PK 인가</b> — 셋을 한 번에 정한다(frontend/grid.md · screen/admin/system/code/requirements.md).
    *
    * <ul>
    *   <li><b>신규 행에서만</b> 열린다 — 저장된 PK 를 고치는 것은 <i>다른 행을 만드는 일</i>
@@ -285,7 +285,7 @@ export interface ColumnDef<T> {
    * 조용하다</b>. 예외적으로 PK 를 고치는 화면은 `{ renamable: true }` 로 <b>명시해서</b>
    * 연다 — 기본이 잠그는 쪽이라 빠뜨렸을 때 덜 위험한 쪽으로 떨어진다(backend/security.md 와 같은 방향).
    *
-   * <p><b>편집이 아예 없는 PK 는 이것이 아니다.</b> screen/code/requirements.md 의 `msgKey` 처럼 신규 행조차
+   * <p><b>편집이 아예 없는 PK 는 이것이 아니다.</b> screen/admin/system/code/requirements.md 의 `msgKey` 처럼 신규 행조차
    * 없는 화면은 `editable: false` 로 적는다 — 채울 수 없는 칸에 필수 표시를 붙이면
    * <i>왜 안 되나</i> 를 묻게 된다.
    */
@@ -385,7 +385,7 @@ export interface ColumnDef<T> {
    */
   onDoubleClick?: (row: T) => void;
   /**
-   * 이 행에서 <b>값을 굵게</b> 낼 것인가 — screen/code/requirements.md 이 처음 요구했다.
+   * 이 행에서 <b>값을 굵게</b> 낼 것인가 — screen/admin/system/code/requirements.md 이 처음 요구했다.
    *
    * <p>{@link tone} 과 다른 축이다. 저것은 <b>값이 무엇인가</b>로 색을 고르는 맵이고,
    * 이것은 <i>"이 행에서 그 값이 특별한가"</i> 를 묻는다 — *적용값이 기본값과 다른가* 는
@@ -393,7 +393,7 @@ export interface ColumnDef<T> {
    */
   emphasis?: (row: T) => boolean;
   /**
-   * 값 <b>뒤에</b> 붙는 배지 — 값이 아니라 그 값의 <b>내력</b>을 말한다(screen/code/requirements.md).
+   * 값 <b>뒤에</b> 붙는 배지 — 값이 아니라 그 값의 <b>내력</b>을 말한다(screen/admin/system/code/requirements.md).
    *
    * <p>{@link renderer}`: 'badge'` 는 값 <i>대신</i> 배지를 그리므로 이 자리를 대신하지
    * 못한다. *적용값* 셀은 값과 <span>변경됨</span> 을 <b>함께</b> 내야 하며, 값이 기본값과
@@ -429,7 +429,7 @@ export interface ColumnDef<T> {
   /**
    * 파생 컬럼의 값 — 저장되는 컬럼이 아니다(frontend/grid.md 의 *정렬 끄는 대상*).
    *
-   * <p>screen/code/requirements.md 의 <i>번역</i> 컬럼처럼 <b>`list` 에서 계산</b>하는 칸이 여기 온다. 서버가
+   * <p>screen/admin/system/code/requirements.md 의 <i>번역</i> 컬럼처럼 <b>`list` 에서 계산</b>하는 칸이 여기 온다. 서버가
    * 내려주면 같은 규칙이 두 곳에 생기고, 셀에서 계산하면 렌더 함수를 여는 것이다.
    */
   derive?: (row: T) => unknown;
@@ -521,7 +521,7 @@ export interface SaveApi<T> {
   perRow?: PerRowSpec;
   validate?: ApiValidation<T>;
   /**
-   * 건수 확인 <b>앞</b>에 서는 경고 — screen/code/requirements.md 가 처음 요구했다.
+   * 건수 확인 <b>앞</b>에 서는 경고 — screen/admin/system/code/requirements.md 가 처음 요구했다.
    *
    * <p>건수는 <i>얼마나</i> 를 말할 뿐이라 <b>무엇이 일어나는지</b> 를 말하지 못한다.
    * *"이 키를 기본값 5 로 되돌립니다"* 와 *"끄면 잠긴 계정을 풀 수 없습니다"* 가 그런
@@ -696,7 +696,7 @@ export interface GridApi<T> {
    * 트리와 <b>같은 데이터의 두 표시</b>라 원본이 하나여야 하고(screen/admin/system/user/requirements.md) 그 하나는 트리
    * 조회다 — 목록에 자기 조회를 두면 <b>같은 질문에 답이 둘</b>이 된다.
    *
-   * <p>screen/code/requirements.md 의 <i>{@code api} 가 아예 없는 그리드</i> 와 <b>다른 자리</b>다. 저기는 조회도
+   * <p>screen/admin/system/code/requirements.md 의 <i>{@code api} 가 아예 없는 그리드</i> 와 <b>다른 자리</b>다. 저기는 조회도
    * 저장도 없어 크롬이 통째로 비지만, 여기는 <b>저장 단위</b>라 저장 버튼과 행 상태 컬럼이
    * 있어야 한다(frontend/grid.md).
    *
@@ -710,7 +710,7 @@ export interface GridApi<T> {
 }
 
 /**
- * 삭제 컬럼의 어휘와 게이트 — frontend/grid.md. <b>screen/code/requirements.md 가 처음 요구했다.</b>
+ * 삭제 컬럼의 어휘와 게이트 — frontend/grid.md. <b>screen/admin/system/code/requirements.md 가 처음 요구했다.</b>
  *
  * <p>거기서는 헤더가 <i>되돌리기</i> 다. 행을 지우면 값이 사라지는 것이 아니라 `yml` 이
  * 드러나며, 라벨이 <i>삭제</i> 면 관리자는 값이 사라질 것을 기대하고 <b>목록에 같은 키가
@@ -723,14 +723,14 @@ export interface DeleteColumnSpec<T> {
    * 체크할 수 있는 행. 기본은 <b>전 행</b>이다.
    *
    * <p>지울 것이 없는 행을 체크하게 두면 저장이 <i>없는 것을 지운다</i> 로 나간다 —
-   * screen/code/requirements.md 의 <i>변경됨 인 행만</i> 이 그것이다.
+   * screen/admin/system/code/requirements.md 의 <i>변경됨 인 행만</i> 이 그것이다.
    */
   enabled?: (row: GridRow<T>) => boolean;
   /**
    * <b>왜 못 지우는가</b> — {@link DeleteColumnSpec.enabled} 가 막은 행에 붙는 툴팁이다.
    * 완성된 문구이며 {@code null} 이면 붙지 않는다.
    *
-   * <p>screen/code/requirements.md 가 요구했다 — *"코드 4건이 있어 지울 수 없습니다"*. 회색 체크박스(여기서는
+   * <p>screen/admin/system/code/requirements.md 가 요구했다 — *"코드 4건이 있어 지울 수 없습니다"*. 회색 체크박스(여기서는
    * `—`)만 두면 <b>버그로 읽힌다</b>. 반대로 <b>사유가 없어도 되는 경우</b>가 있다:
    * 시스템 행은 자기 배지가 이미 말하고 있으므로 {@code null} 을 돌려준다.
    */
@@ -740,7 +740,7 @@ export interface DeleteColumnSpec<T> {
   /**
    * 취소선을 <b>이 컬럼에만</b> 건다. 없으면 frontend/grid.md 대로 <b>행 전체</b>다.
    *
-   * <p>screen/code/requirements.md 가 그 예외다 — 거기서는 행이 사라지지 않고 <b>오버라이드 한 줄</b>만
+   * <p>screen/admin/system/code/requirements.md 가 그 예외다 — 거기서는 행이 사라지지 않고 <b>오버라이드 한 줄</b>만
    * 지워진다. 전 셀에 취소선을 그으면 <i>"이 행이 통째로 없어진다"</i> 로 읽히고, 그
    * 기대는 저장 뒤에 <b>같은 키가 그대로 남아 있는 것</b>과 어긋난다.
    */
@@ -774,7 +774,7 @@ interface GridControlBase {
   /**
    * <b>왜 눌리지 않는가</b> — 메시지 키. 툴팁으로 붙는다.
    *
-   * <p>screen/code/requirements.md 가 요구했다. 비활성 버튼은 <b>눌러도 아무 일이 없고</b> 스스로 이유를 말하지
+   * <p>screen/admin/system/code/requirements.md 가 요구했다. 비활성 버튼은 <b>눌러도 아무 일이 없고</b> 스스로 이유를 말하지
    * 못한다 — frontend/grid.md 이 <i>행 추가</i>에서 *"비활성으로 막지 말고 눌렀을 때 이유를 말하라"*
    * 고 정한 것과 방향이 갈리는데, 여기는 <b>막는 것 자체가 신호</b>여야 하는 자리다:
    * 정의를 고치면 하단 재조회가 편집을 버리므로 <b>열고 나서 묻는 것보다 누를 수 없는 것이

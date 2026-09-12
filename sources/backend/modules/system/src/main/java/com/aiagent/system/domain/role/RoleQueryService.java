@@ -52,7 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * 마스터 한 번에 <b>파생 셋</b>(보유 인원 · 유효 인원 · 권한 건수)이 붙는데 셋 다 다른 것을
  * 센다. 스칼라 서브쿼리로 얹으면 <b>행마다 세 번</b>이 되고, 조인해 {@code GROUP BY} 하면
- * 페이징 단위가 역할이 아니게 될 위험을 매번 확인해야 한다 — screen/code/requirements.md 가 코드 그룹에서, screen/admin/system/role/requirements.md
+ * 페이징 단위가 역할이 아니게 될 위험을 매번 확인해야 한다 — screen/admin/system/code/requirements.md 가 코드 그룹에서, screen/admin/system/role/requirements.md
  * 가 메뉴 트리에서 내린 것과 같은 판단이다.
  *
  * <h2>권한 트리는 {@code QueryDslBuilder} 를 쓰지 않는다</h2>

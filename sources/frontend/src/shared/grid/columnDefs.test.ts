@@ -91,7 +91,7 @@ describe('시스템 컬럼', () => {
   });
 
   /**
-   * 삭제 컬럼의 <b>라벨과 게이트</b> — frontend/grid.md · screen/code/requirements.md.
+   * 삭제 컬럼의 <b>라벨과 게이트</b> — frontend/grid.md · screen/admin/system/code/requirements.md.
    *
    * <p>시스템 환경설정에서는 헤더가 <i>되돌리기</i> 다. 행을 지우면 값이 사라지는 것이
    * 아니라 `yml` 이 드러나며, 라벨이 <i>삭제</i> 면 관리자는 값이 사라질 것을 기대하고
@@ -129,7 +129,7 @@ describe('시스템 컬럼', () => {
   });
 
   /**
-   * 취소선의 범위 — frontend/grid.md 는 <b>행 전체</b>이고 screen/code/requirements.md 가 그 예외다.
+   * 취소선의 범위 — frontend/grid.md 는 <b>행 전체</b>이고 screen/admin/system/code/requirements.md 가 그 예외다.
    *
    * <p>거기서는 행이 사라지지 않는다. 지우는 것은 오버라이드 한 줄이고 <b>키는 목록에
    * 남으므로</b>, 전 셀에 그으면 *"이 행이 통째로 없어진다"* 로 읽혀 저장 뒤에 기대가
@@ -183,7 +183,7 @@ describe('시스템 컬럼', () => {
     });
   });
   /**
-   * 동적 컬럼 — frontend/grid.md. <b>`CODE_MGMT` 의 참조 코드가 첫 실물이다</b>(screen/code/requirements.md).
+   * 동적 컬럼 — frontend/grid.md. <b>`CODE_MGMT` 의 참조 코드가 첫 실물이다</b>(screen/admin/system/code/requirements.md).
    *
    * <p>여기서 지키는 것 둘이다. ① 헤더가 <b>메시지 키가 아니다</b> — 정의 행의 `REF_NM`
    * 이며 그대로 나가야 한다, ② 값이 <b>맵의 한 칸</b>이라 읽기는 `derive`, 쓰기는 `patch`

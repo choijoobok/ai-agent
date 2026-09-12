@@ -24,7 +24,7 @@ const STYLE_ID = 'bo-grid-style';
   색은 검증 실패의 테두리와 <b>같은 변수</b>를 쓴다. 별표와 붉은 셀은 같은 것을 말하므로
   (이 칸을 채워야 한다) 색이 갈리면 둘이 다른 일로 읽힌다.
 
-  `bo-cell-removed` — 취소선이 <b>한 셀에만</b> 걸리는 경우다(screen/code/requirements.md 의 되돌리기).
+  `bo-cell-removed` — 취소선이 <b>한 셀에만</b> 걸리는 경우다(screen/admin/system/code/requirements.md 의 되돌리기).
 
   거기서는 행이 사라지지 않는다. 지우는 것은 오버라이드 한 줄이고 목록의 행은 남으므로,
   전 셀에 취소선을 그으면 *"이 행이 통째로 없어진다"* 로 읽힌다. 무엇이 사라지는지를

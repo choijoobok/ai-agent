@@ -1,7 +1,7 @@
 package com.aiagent.support.config;
 
 /**
- * 재바인딩이 거부한 값 하나 — screen/code/requirements.md · sys/config.md.
+ * 재바인딩이 거부한 값 하나 — screen/admin/system/code/requirements.md · sys/config.md.
  *
  * @param key {@code CFG_KEY}. <b>행을 특정하는 것이 이 레코드의 목적이다</b> — 화면이 그
  * 셀에 문구를 붙인다(frontend/grid.md)

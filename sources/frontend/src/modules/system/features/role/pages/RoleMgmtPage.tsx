@@ -197,7 +197,7 @@ export function RoleMgmtPage() {
    * 역할 선택 — frontend/grid.md 의 상태 셋을 그대로 편다.
    *
    * <p><b>거부하지 않는다.</b> 하단이 읽기 전용이라 <b>잃을 미저장 편집이 없다</b> —
-   * screen/code/requirements.md 처럼 묻지 않는 화면이며, 그래서 {@code void} 를 돌려준다(frontend/grid.md).
+   * screen/admin/system/code/requirements.md 처럼 묻지 않는 화면이며, 그래서 {@code void} 를 돌려준다(frontend/grid.md).
    */
   const selectRole = useCallback(
     (row: GridRow<RoleRow> | null): void => {

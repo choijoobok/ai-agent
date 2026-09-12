@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 /**
- * 저장하려는 값이 <b>바인딩을 통과하는가</b> — screen/code/requirements.md · sys/config.md.
+ * 저장하려는 값이 <b>바인딩을 통과하는가</b> — screen/admin/system/code/requirements.md · sys/config.md.
  *
  * <p>sys/code.md 가 제약의 단일 원본을 {@code @Validated} 바인딩 객체로 정했다. <b>화면이 그
  * 규칙을 복제하면 원본이 둘이 된다</b> — 그래서 저장 경로는 규칙을 다시 적는 대신

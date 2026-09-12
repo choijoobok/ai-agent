@@ -13,7 +13,7 @@ import type { UserRoleRow } from '@/modules/system/features/user/types';
  */
 
 /**
- * 저장 확인 <b>앞</b>에 서는 경고 — screen/code/requirements.md 가 연 자리.
+ * 저장 확인 <b>앞</b>에 서는 경고 — screen/admin/system/code/requirements.md 가 연 자리.
  *
  * <p>회수는 <b>다음 로그인부터</b> 반영된다(backend/security.md) — 지금 세션은 살아 있다. 건수만으로는
  * 그 사실이 빠지고, 빠지면 <i>회수했는데 아직 들어가진다</i> 가 결함으로 읽힌다.

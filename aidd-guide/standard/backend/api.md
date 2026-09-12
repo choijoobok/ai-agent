@@ -48,7 +48,7 @@ tags: [backend, api, rest, response, header]
   인가 판정이 **경로 완전 일치**로 `SYS_API` 를 찾기 때문이다.
 - **`service` 는 전부 `POST`** — 조회도 그렇다. 조건이 body 에 들어가고, 쿼리스트링에
   담으면 길이 상한과 인코딩에 걸린다.
-- **`common`·`public` 은 조회에 `GET`.** 예외 둘: `POST /api/common/code/getList`
+- **`common`·`public` 은 조회에 `GET`.** 예외 둘: `POST /api/common/system/code/getList`
   (본문으로 그룹 코드 목록을 보낸다) · `GET /api/common/progress/{jobId}`
   (진행률 폴링 — 이 계층은 경로 일치 판정을 하지 않는다).
 

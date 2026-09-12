@@ -9,11 +9,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface SysCodeRepository extends JpaRepository<SysCode, SysCodeId> {
 
     /**
-     * 그룹 삭제의 게이트가 읽는 값 — frontend/grid.md · screen/code/requirements.md.
+     * 그룹 삭제의 게이트가 읽는 값 — frontend/grid.md · screen/admin/system/code/requirements.md.
      *
      * <p>화면은 하단의 행 수로 이미 판정하지만(조회 시점), <b>그 사이에 다른 사람이 코드를
      * 추가할 수 있다</b>. 저장 시점에 한 번 더 세는 것이 그 창을 좁히며, 그래도 남는 창은
-     * FK 가 닫는다 — screen/code/requirements.md 가 <i>"동시성으로 뚫릴 수 있다"</i> 고 미리 적어 둔 그것이다.
+     * FK 가 닫는다 — screen/admin/system/code/requirements.md 가 <i>"동시성으로 뚫릴 수 있다"</i> 고 미리 적어 둔 그것이다.
      */
     long countByGrpCd(String grpCd);
 

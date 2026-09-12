@@ -409,7 +409,7 @@ export function ShellLayout() {
     // 그리드 화면은 남는 높이를 **채워야** 한다(frontend/grid.md 의 크롬은 헤더·본문·푸터 셋이고
     // 본문만 늘어난다). minHeight 로 두면 콘텐츠 영역의 높이가 auto 라 그 안의
     // `height: 100%` 가 0 으로 풀리고, **그리드가 줄 하나 없이 접혀 보인다** —
-    // 첫 그리드 화면(screen/code/requirements.md)에서 실제로 그렇게 렌더됐다.
+    // 첫 그리드 화면(screen/admin/system/code/requirements.md)에서 실제로 그렇게 렌더됐다.
     // `position: relative` 가 자동 숨기기의 기준면이다 — 헤더는 이 면의 위 가장자리에서,
     // 사이더는 **한 겹 안쪽** 면의 왼쪽 가장자리에서 나온다. 사이더가 이 면을 쓰면 헤더까지
     // 덮는다.

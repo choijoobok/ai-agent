@@ -167,7 +167,7 @@ public final class MsgKey {
     /** 상세를 열려는데 그 행이 없다 — 조회 뒤에 파기 배치가 지나갔다. */
     public static final String ERR_ERROR_LOG_PURGED = "err.error-log.purged";
 
-    // ── 다국어 메시지 관리 — MessageErrorCode(screen/code/requirements.md) ────────────────
+    // ── 다국어 메시지 관리 — MessageErrorCode(screen/admin/system/code/requirements.md) ────────────────
 
     /** 이미 있는 {@code MSG_KEY} 로 신규 행을 저장했다. 현재 페이지 밖은 화면이 모른다. */
     public static final String ERR_MESSAGE_KEY_DUPLICATE = "err.message.key-duplicate";
@@ -178,7 +178,7 @@ public final class MsgKey {
     /** 저장하려는 키가 이미 지워졌다 — 다른 사람이 먼저 지웠다. */
     public static final String ERR_MESSAGE_KEY_MISSING = "err.message.key-missing";
 
-    // ── 시스템 환경설정 — ConfigErrorCode(screen/code/requirements.md) ────────────────────
+    // ── 시스템 환경설정 — ConfigErrorCode(screen/admin/system/code/requirements.md) ────────────────────
 
     /** 코드가 정하지 않은 {@code CFG_KEY} 가 왔다 — 아우터 조인의 왼쪽에 없는 키다. */
     public static final String ERR_CONFIG_KEY_UNKNOWN = "err.config.key-unknown";
@@ -189,7 +189,7 @@ public final class MsgKey {
     /** 재바인딩이 값을 거부했다 — 타입·{@code @Min}·상호 제약이 전부 여기로 온다. */
     public static final String ERR_CONFIG_INVALID_VALUE = "err.config.invalid-value";
 
-    // ── 공통 코드 관리 — CodeErrorCode(screen/code/requirements.md) ───────────────────────
+    // ── 공통 코드 관리 — CodeErrorCode(screen/admin/system/code/requirements.md) ───────────────────────
     //
     // 아홉 다 화면이 미리 막을 수 없는 것이다. 현재 페이지 밖의 코드값과 다른 사람의
     // 삭제·추가는 화면이 모르고, SYS_YN 과 참조 코드 화이트리스트는 서버가 갖는다.
@@ -200,7 +200,7 @@ public final class MsgKey {
     /** 고치거나 지우려는 그룹이 이미 없다 — 다른 사람이 먼저 지웠다. */
     public static final String ERR_CODE_GROUP_MISSING = "err.code.group-missing";
 
-    /** 코드가 남아 있어 그룹을 지울 수 없다 — 조회 뒤에 누군가 추가했다(screen/code/requirements.md). */
+    /** 코드가 남아 있어 그룹을 지울 수 없다 — 조회 뒤에 누군가 추가했다(screen/admin/system/code/requirements.md). */
     public static final String ERR_CODE_GROUP_HAS_CODE = "err.code.group-has-code";
 
     /** 이미 있는 {@code (GRP_CD, DTL_CD)} 로 신규 행을 저장했다. */

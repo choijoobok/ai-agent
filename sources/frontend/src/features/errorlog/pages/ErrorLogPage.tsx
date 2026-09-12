@@ -465,7 +465,7 @@ function buildSearchFields(): SearchField[] {
       /*
         <b>문의 전화가 주는 그 이름을 그대로 받는 칸</b>이다 — *"사용 이력 화면에서요"* 는
         코드가 아니라 이름이다. 이름은 `SYS_MENU` → `SYS_MESSAGE` 두 테이블 건너에 있어
-        서버가 `EXISTS` 로 풀고(`LogMenuName`), <b>어느 언어든 걸린다</b>(screen/code/requirements.md).
+        서버가 `EXISTS` 로 풀고(`LogMenuName`), <b>어느 언어든 걸린다</b>(screen/admin/system/code/requirements.md).
       */
       field: 'menuNm',
       label: MSG.ERROR_LOG_SEARCH_MENU_NM,

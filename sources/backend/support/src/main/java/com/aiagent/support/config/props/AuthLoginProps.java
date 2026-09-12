@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
  * 기동에서 걸린다(sys/code.md). <b>초기화식(기본값)도 두지 않는다</b> — 기본값의 자리는
  * {@code application.yml} 하나다.
  *
- * <p><b>설명은 {@code @param} 에 쓴다</b> — screen/code/requirements.md. 컴포넌트 위의 주석은 Javadoc 이 아니라
+ * <p><b>설명은 {@code @param} 에 쓴다</b> — screen/admin/system/code/requirements.md. 컴포넌트 위의 주석은 Javadoc 이 아니라
  * 그냥 주석이라 {@code spring-configuration-metadata.json} 에 실리지 않고, 그러면 관리
  * 화면의 <b>설명 컬럼이 조용히 빈다</b>.
  *

@@ -207,7 +207,7 @@ function buildColumns(): ColumnDef<ConfigRow>[] {
       emphasis: (row) => row.overridden && row.cfgVal !== row.defaultVal,
       badge: (row) =>
         row.overridden ? { text: label(MSG.CONFIG_OVERRIDDEN), tone: 'warn' } : null,
-      // 1층 — 유형에 맞는 <b>형식</b>만 본다(frontend/grid.md · screen/code/requirements.md).
+      // 1층 — 유형에 맞는 <b>형식</b>만 본다(frontend/grid.md · screen/admin/system/code/requirements.md).
       validate: (value, row) => formatIssue(value, row.cfgType),
     },
     {
@@ -293,7 +293,7 @@ function formatIssue(value: unknown, type: ConfigValueType): string | null {
   return null;
 }
 
-// ── 저장 전 경고 (screen/code/requirements.md) ─────────────────────────────────
+// ── 저장 전 경고 (screen/admin/system/code/requirements.md) ─────────────────────────────────
 
 /**
  * 건수가 말하지 못하는 둘을 말한다.

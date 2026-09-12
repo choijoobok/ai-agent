@@ -1,4 +1,5 @@
-package com.aiagent.api.code.response;
+// @feat FEAT-504
+package com.aiagent.system.api.code.response;
 
 import java.util.List;
 import java.util.Map;

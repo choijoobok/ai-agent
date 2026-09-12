@@ -1,10 +1,11 @@
+// @feat FEAT-504
 import { post } from '@/shared/api';
-import { CODE_ENDPOINTS } from '@/features/code/api/endpoints';
+import { CODE_ENDPOINTS } from '@/modules/system/features/code/api/endpoints';
 import type { PageResponse } from '@/shared/grid/types';
-import type { CodeRefDefRow, CodeRow } from '@/features/code/types';
+import type { CodeRefDefRow, CodeRow } from '@/modules/system/features/code/types';
 
 /**
- * 공통 코드 관리 — screen/code/requirements.md.
+ * 공통 코드 관리 — screen/admin/system/code/requirements.md.
  *
  * <p>그리드 셋의 조회·저장은 선언이 부른다(frontend/grid.md). 여기 있는 것은 <b>그 밖의 둘</b>이다 —
  * 참조 키 화이트리스트와 정의 목록.
@@ -14,7 +15,7 @@ import type { CodeRefDefRow, CodeRow } from '@/features/code/types';
 const ALL = { page: 0, size: 100 };
 
 /**
- * 참조 키 후보 — <b>전용 API 를 두지 않는다</b>(screen/code/requirements.md).
+ * 참조 키 후보 — <b>전용 API 를 두지 않는다</b>(screen/admin/system/code/requirements.md).
  *
  * <p>이 화면은 이미 *한 그룹의 코드* 를 읽는 경로를 갖고 있고 화이트리스트도 그 하나다 —
  * 새 경로를 내면 같은 질의가 두 벌이 된다.
@@ -28,7 +29,7 @@ export function getRefKeyCodes(): Promise<PageResponse<CodeRow>> {
   });
 }
 
-/** 정의 목록 — <b>컬럼 집합의 원본</b>이다. 하단 조회와 병렬로 나간다(screen/code/requirements.md). */
+/** 정의 목록 — <b>컬럼 집합의 원본</b>이다. 하단 조회와 병렬로 나간다(screen/admin/system/code/requirements.md). */
 export function getRefDefList(grpCd: string): Promise<PageResponse<CodeRefDefRow>> {
   return post<PageResponse<CodeRefDefRow>>(CODE_ENDPOINTS.getRefDefList, {
     conditions: [],

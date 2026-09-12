@@ -1,3 +1,4 @@
+// @feat FEAT-504
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { FillColumn } from '@/shared/components/FillColumn';
@@ -19,13 +20,13 @@ import type {
 import { SearchForm, type SearchFormHandle } from '@/shared/searchform/SearchForm';
 import { useSearchFormHeader } from '@/shared/searchform/useSearchFormHeader';
 import type { SearchField } from '@/shared/searchform/types';
-import { CODE_ENDPOINTS } from '@/features/code/api/endpoints';
-import { getRefDefList, getRefKeyCodes } from '@/features/code/api/codeApi';
-import { RefDefModal } from '@/features/code/components/RefDefModal';
-import type { CodeGroupRow, CodeRefDefRow, CodeRow } from '@/features/code/types';
+import { CODE_ENDPOINTS } from '@/modules/system/features/code/api/endpoints';
+import { getRefDefList, getRefKeyCodes } from '@/modules/system/features/code/api/codeApi';
+import { RefDefModal } from '@/modules/system/features/code/components/RefDefModal';
+import type { CodeGroupRow, CodeRefDefRow, CodeRow } from '@/modules/system/features/code/types';
 
 /**
- * `CODE_MGMT` — screen/code/requirements.md. <b>단계가 둘이 아니라 셋이고, 셋째는 컬럼이다.</b>
+ * `CODE_MGMT` — screen/admin/system/code/requirements.md. <b>단계가 둘이 아니라 셋이고, 셋째는 컬럼이다.</b>
  *
  * <pre>
  * 그룹 → 코드 → 참조
@@ -38,21 +39,21 @@ import type { CodeGroupRow, CodeRefDefRow, CodeRow } from '@/features/code/types
  * 수 없었다. 펼쳐 놓으면 <b>빈 칸 자체가 할 일</b>이 된다 — 별도 배지도, *값 없는 것 우선*
  * 정렬도 두지 않는 이유다.
  *
- * <p><b>조회가 둘이고 둘 다 도착한 뒤에 그린다</b>(screen/code/requirements.md). 컬럼 없이 행을 그리면 값이 갈
+ * <p><b>조회가 둘이고 둘 다 도착한 뒤에 그린다</b>(screen/admin/system/code/requirements.md). 컬럼 없이 행을 그리면 값이 갈
  * 자리가 없고, 행 없이 컬럼만 그리면 빈 그리드가 한 번 깜빡인다.
  *
- * <p><b>코드명은 여기서 입력한다</b>(screen/code/requirements.md). 값은 `SYS_MESSAGE` 로 가며 채우는 것은
+ * <p><b>코드명은 여기서 입력한다</b>(screen/admin/system/code/requirements.md). 값은 `SYS_MESSAGE` 로 가며 채우는 것은
  * <b>지금 세션 언어 하나</b>다 — 다른 언어는 `MESSAGE_MGMT` 로 간다. 언어를 컬럼으로 늘리면
  * 지원 언어를 하나 켤 때마다 그리드가 옆으로 자라고 저장된 컬럼 목록이 어긋난다.
  *
- * <p><b>하단이 DB 에 붙어 있다</b> — screen/code/requirements.md 의 메시지 화면과 갈리는 자리다. 그래서 frontend/grid.md
+ * <p><b>하단이 DB 에 붙어 있다</b> — screen/admin/system/code/requirements.md 의 메시지 화면과 갈리는 자리다. 그래서 frontend/grid.md
  * 의 제약 둘을 그대로 치른다: 미저장 신규 그룹의 하단은 <b>잠기고</b>(FK), 다른 그룹으로
  * 옮길 때 미저장 편집이 있으면 <b>묻는다</b>.
  */
 
 const MENU_CD = 'CODE_MGMT';
 
-/** 하단 조건은 마스터도 거른다 — 같은 이름으로 두 요청에 실린다(screen/code/requirements.md). */
+/** 하단 조건은 마스터도 거른다 — 같은 이름으로 두 요청에 실린다(screen/admin/system/code/requirements.md). */
 const DETAIL_CONDITION_FIELDS = ['dtlCd', 'codeNm'];
 
 export function CodeMgmtPage() {
@@ -117,7 +118,7 @@ export function CodeMgmtPage() {
     [],
   );
 
-  /** 하단은 폼의 조건 중 <b>자기 것 둘만</b> 받는다 — screen/code/requirements.md. */
+  /** 하단은 폼의 조건 중 <b>자기 것 둘만</b> 받는다 — screen/admin/system/code/requirements.md. */
   const detailConditions = useCallback(
     () =>
       Promise.resolve(
@@ -149,7 +150,7 @@ export function CodeMgmtPage() {
       save: {
         url: CODE_ENDPOINTS.save,
         validate: { grid: validateDtlCds },
-        // 참조값이 함께 사라진다는 것을 건수보다 **먼저** 말한다(frontend/grid.md · screen/code/requirements.md).
+        // 참조값이 함께 사라진다는 것을 건수보다 **먼저** 말한다(frontend/grid.md · screen/admin/system/code/requirements.md).
         warn: deleteWarnings,
       },
     }),
@@ -224,7 +225,7 @@ export function CodeMgmtPage() {
     saveEnvelope: (rows) => ({ grpCd: selectedGrpCd.current, rows }),
   });
 
-  /** 정의 목록 — 컬럼 집합의 원본이다. 하단 조회와 <b>병렬로</b> 나간다(screen/code/requirements.md). */
+  /** 정의 목록 — 컬럼 집합의 원본이다. 하단 조회와 <b>병렬로</b> 나간다(screen/admin/system/code/requirements.md). */
   const readRefDefs = useCallback(async (grpCd: string) => {
     const page = await getRefDefList(grpCd);
     setRefDefs(page.content);
@@ -271,7 +272,7 @@ export function CodeMgmtPage() {
       const grpCd = row.data.grpCd;
       selectedGrpCd.current = grpCd;
       setDetailEmpty(MSG.CODE_DETAIL_EMPTY);
-      // 둘을 함께 보내고 둘 다 도착한 뒤에 그린다 — screen/code/requirements.md.
+      // 둘을 함께 보내고 둘 다 도착한 뒤에 그린다 — screen/admin/system/code/requirements.md.
       await Promise.all([readRefDefs(grpCd), detail.read(true)]);
       return true;
     },
@@ -292,7 +293,7 @@ export function CodeMgmtPage() {
   }, [clearDetail, master]);
 
   /**
-   * ⓐ — <b>서버를 부르지 않고 모달을 연다</b>(frontend/grid.md 의 `button` 첫 실물 · screen/code/requirements.md).
+   * ⓐ — <b>서버를 부르지 않고 모달을 연다</b>(frontend/grid.md 의 `button` 첫 실물 · screen/admin/system/code/requirements.md).
    *
    * <p>미저장 편집이 있으면 <b>비활성</b>이다. 정의가 바뀌면 컬럼 집합이 바뀌고 하단
    * 재조회가 편집을 버리므로, 열고 나서 묻는 것보다 <b>누를 수 없는 것이 먼저 보이는
@@ -306,10 +307,10 @@ export function CodeMgmtPage() {
    * 셸이 초당 한 번 다시 그릴 때마다(세션 잔여 시간) 선언이 새로 계산돼 판이 <b>사용자가
    * 끌어 놓은 컬럼 폭</b>을 흔든다 — 367246c 가 환경설정에서 고친 것과 같은 자리다.
    *
-   * <p><b>게이트는 코드 수다</b>(frontend/grid.md 의 *건수 컬럼* 경로 · screen/code/requirements.md). 마스터 응답이 그
+   * <p><b>게이트는 코드 수다</b>(frontend/grid.md 의 *건수 컬럼* 경로 · screen/admin/system/code/requirements.md). 마스터 응답이 그
    * 수를 갖고 있으므로 <b>행마다</b> 답할 수 있다 — 하단을 조회해야만 아는 것이 아니다.
    *
-   * <p>시스템 그룹에는 <b>체크박스가 아예 없다</b>(screen/code/requirements.md) — 비활성이 아니라 없는 것이며,
+   * <p>시스템 그룹에는 <b>체크박스가 아예 없다</b>(screen/admin/system/code/requirements.md) — 비활성이 아니라 없는 것이며,
    * 그 사유는 자기 배지가 이미 말한다.
    */
   const masterDeletable = useMemo<DeleteColumnSpec<CodeGroupRow>>(
@@ -336,11 +337,11 @@ export function CodeMgmtPage() {
         slot: 'beforeRead',
         type: 'button',
         label: MSG.CODE_REF_DEF_BUTTON,
-        // `READ` 만 가진 사용자에게는 버튼이 없다 — 정의는 컬럼 헤더로 이미 보인다(screen/code/requirements.md).
+        // `READ` 만 가진 사용자에게는 버튼이 없다 — 정의는 컬럼 헤더로 이미 보인다(screen/admin/system/code/requirements.md).
         actionCd: 'SAVE',
         menuCd: MENU_CD,
         disabled: savedGrpCd === null || detail.dirty,
-        // 왜 눌리지 않는가 — 회색 버튼만 두면 버그로 읽힌다(screen/code/requirements.md).
+        // 왜 눌리지 않는가 — 회색 버튼만 두면 버그로 읽힌다(screen/admin/system/code/requirements.md).
         hint: savedGrpCd === null ? MSG.CODE_REF_DEF_NO_GROUP : MSG.CODE_REF_DEF_DIRTY,
         onClick: () => setModalOpen(true),
       },
@@ -348,7 +349,7 @@ export function CodeMgmtPage() {
     [savedGrpCd, detail.dirty],
   );
 
-  /** 모달이 닫히면 <b>하단을 재조회한다</b> — 컬럼 집합이 바뀌었을 수 있다(screen/code/requirements.md). */
+  /** 모달이 닫히면 <b>하단을 재조회한다</b> — 컬럼 집합이 바뀌었을 수 있다(screen/admin/system/code/requirements.md). */
   const closeModal = useCallback(async () => {
     setModalOpen(false);
     const grpCd = selectedGrpCd.current;
@@ -424,9 +425,9 @@ function buildGroupColumns(): ColumnDef<CodeGroupRow>[] {
       pinned: 'left',
       sortable: true,
       // PK 다 — 신규 행에서만 열리고, 필수이고, 헤더에 필수 표시가 붙는다(frontend/grid.md).
-      // 고치려면 지우고 다시 만든다(screen/code/requirements.md).
+      // 고치려면 지우고 다시 만든다(screen/admin/system/code/requirements.md).
       pk: true,
-      // 왜 못 지우는지가 <b>눌러 보기 전에</b> 보여야 한다(screen/code/requirements.md).
+      // 왜 못 지우는지가 <b>눌러 보기 전에</b> 보여야 한다(screen/admin/system/code/requirements.md).
       badge: (row) =>
         row.sysYn ? { text: label(MSG.CODE_SYSTEM_BADGE), tone: 'muted' } : null,
     },
@@ -473,20 +474,20 @@ function buildGroupColumns(): ColumnDef<CodeGroupRow>[] {
       /*
         <b>편집 선언이 없다.</b> 켤 수 있게 하면 관리자가 아무 그룹이나 잠글 수 있고,
         끌 수 있게 하면 보호가 한 번의 클릭으로 사라진다 — sys/code.md 이 저장 서비스에서
-        거부한다고 한 것을 화면은 <b>입력 수단을 없애는 것</b>으로 갚는다(screen/code/requirements.md).
+        거부한다고 한 것을 화면은 <b>입력 수단을 없애는 것</b>으로 갚는다(screen/admin/system/code/requirements.md).
       */
     },
     // 감사 4컬럼은 켤 수 있다 — 이 행은 사람이 만들고 사람이 고치므로 감사가 실제로
-    // 갈린다(screen/code/requirements.md 가 메시지 화면만 `hidden` 으로 둔 이유의 반대편이다).
+    // 갈린다(screen/admin/system/code/requirements.md 가 메시지 화면만 `hidden` 으로 둔 이유의 반대편이다).
     ...auditColumns<CodeGroupRow>({ sortable: true }),
   ];
 }
 
 /**
- * 하단 — <b>고정 컬럼 + 정의 수만큼</b>이다(screen/code/requirements.md · frontend/grid.md).
+ * 하단 — <b>고정 컬럼 + 정의 수만큼</b>이다(screen/admin/system/code/requirements.md · frontend/grid.md).
  *
  * <p>`DTL_CD` 와 코드명이 <b>좌측 고정</b>인 것은 사실상 필수다 — 정의가 늘면 그리드가 옆으로
- * 자라고, 고정하지 않으면 스크롤 중에 *"어느 코드의 값인가"* 가 사라진다(screen/code/requirements.md).
+ * 자라고, 고정하지 않으면 스크롤 중에 *"어느 코드의 값인가"* 가 사라진다(screen/admin/system/code/requirements.md).
  */
 function buildCodeColumns(refDefs: CodeRefDefRow[]): ColumnDef<CodeRow>[] {
   return [
@@ -509,7 +510,7 @@ function buildCodeColumns(refDefs: CodeRefDefRow[]): ColumnDef<CodeRow>[] {
       width: 200,
       pinned: 'left',
       /*
-        값이 `SYS_MESSAGE` 로 간다 — screen/code/requirements.md. **필수가 아니다**: 비우면 그 언어의 행을
+        값이 `SYS_MESSAGE` 로 간다 — screen/admin/system/code/requirements.md. **필수가 아니다**: 비우면 그 언어의 행을
         지우는 것이 규약이고(빈 문자열이 아니다), 지운 뒤 셀에 보이는 <b>키 문자열</b>이
         *아직 안 채웠다* 는 사실을 그대로 드러낸다(sys/code.md).
       */
@@ -533,7 +534,7 @@ function buildCodeColumns(refDefs: CodeRefDefRow[]): ColumnDef<CodeRow>[] {
       editable: (row) =>
         row.sysYn ? { ok: false, message: label(MSG.CODE_SYSTEM_BADGE) } : true,
     },
-    // <b>콤보 정렬</b>이다 — 관리 화면용이 아니다(screen/code/requirements.md).
+    // <b>콤보 정렬</b>이다 — 관리 화면용이 아니다(screen/admin/system/code/requirements.md).
     { field: 'sortNo', header: MSG.CODE_COL_SORT_NO, type: 'number', width: 90, sortable: true, editable: true },
 
     { field: 'sysYn', header: MSG.CODE_COL_SYS_YN, type: 'ynFlag', width: 90, sortable: true },
@@ -558,7 +559,7 @@ function buildCodeColumns(refDefs: CodeRefDefRow[]): ColumnDef<CodeRow>[] {
  * <p>값은 `refs` <b>맵의 한 칸</b>이라 읽기는 `derive`, 쓰기는 `patch` 다. 빈 셀은 <b>값이
  * 없는 것</b>이고 비우고 저장하면 그 행을 지운다(sys/code.md) — 빈 문자열을 저장하지 않는다.
  *
- * <p><b>`SYS_YN='Y'` 인 행에서도 열린다</b>(screen/code/requirements.md). `SYS_YN` 이 지키는 것은 <b>코드의
+ * <p><b>`SYS_YN='Y'` 인 행에서도 열린다</b>(screen/admin/system/code/requirements.md). `SYS_YN` 이 지키는 것은 <b>코드의
  * 존재</b>이지 그 속성값이 아니다 — 참조값은 운영 데이터다.
  */
 function toRefColumn(def: CodeRefDefRow): ColumnDef<CodeRow> {
@@ -588,10 +589,10 @@ function toRefColumn(def: CodeRefDefRow): ColumnDef<CodeRow> {
   };
 }
 
-// ── 조회조건 (screen/code/requirements.md) ────────────────────────────────────────────
+// ── 조회조건 (screen/admin/system/code/requirements.md) ────────────────────────────────────────────
 
 /**
- * <b>하단 조건 둘이 마스터를 거른다</b> — screen/code/requirements.md.
+ * <b>하단 조건 둘이 마스터를 거른다</b> — screen/admin/system/code/requirements.md.
  *
  * <p>*"이 코드값이 어느 그룹에 있더라"* 가 실제로 자주 묻는 것이며, 마스터만 거르면 답할 수
  * 없다. 고르면 하단이 그 조건으로 <b>미리 걸려 있다</b>.
@@ -630,7 +631,7 @@ function buildSearchFields(): SearchField[] {
     label: MSG.CODE_SEARCH_DTL_CD,
     type: 'text',
     op: 'contains',
-    // 파생이라 서버가 문자열 비교만 편다 — 없는 연산자를 열면 400 이다(screen/code/requirements.md).
+    // 파생이라 서버가 문자열 비교만 편다 — 없는 연산자를 열면 400 이다(screen/admin/system/code/requirements.md).
     ops: ['eq', 'startsWith', 'contains', 'endsWith'],
   },
   {
@@ -674,7 +675,7 @@ function duplicates<T>(
 }
 
 /**
- * 코드를 지우면 <b>참조값이 함께 사라진다</b>(screen/code/requirements.md).
+ * 코드를 지우면 <b>참조값이 함께 사라진다</b>(screen/admin/system/code/requirements.md).
  *
  * <p>게이트가 아니라 확인인 이유는 <b>DB 가 거부하지 않기</b> 때문이다 — 참조값은 그 행의
  * 파생이라 서비스가 먼저 지운다. 여기에 게이트를 두면 <b>아무것도 지울 수 없다</b>: 정의를

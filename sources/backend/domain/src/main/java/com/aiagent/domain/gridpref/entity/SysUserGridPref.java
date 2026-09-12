@@ -16,7 +16,7 @@ import org.hibernate.type.SqlTypes;
 /**
  * 그리드 개인화 — UX-06 · UX-13 · frontend/grid.md.
  *
- * <p><b>화면 하나에 그리드가 둘일 수 있다</b>(screen/code/requirements.md). {@code MENU_CD} 까지만 키로 두면
+ * <p><b>화면 하나에 그리드가 둘일 수 있다</b>(screen/admin/system/code/requirements.md). {@code MENU_CD} 까지만 키로 두면
  * 위아래 그리드의 설정이 서로를 덮는다 — 그래서 {@code GRID_ID} 가 키에 있다.
  *
  * <p><b>{@code SIGNATURE} 가 UX-13 이다.</b> 화면의 컬럼 목록이 바뀌면 저장된 설정을

@@ -1,7 +1,8 @@
-/** 서버 `CodeGroupRow` · `CodeRow` · `CodeRefDefRow` 와 1:1 — screen/code/requirements.md. */
+// @feat FEAT-504
+/** 서버 `CodeGroupRow` · `CodeRow` · `CodeRefDefRow` 와 1:1 — screen/admin/system/code/requirements.md. */
 
 export interface CodeGroupRow {
-  /** PK. **신규 행에서만 열린다** — 고치려면 지우고 다시 만든다(screen/code/requirements.md). */
+  /** PK. **신규 행에서만 열린다** — 고치려면 지우고 다시 만든다(screen/admin/system/code/requirements.md). */
   grpCd: string;
   /** **다국어가 아니다** — 관리 화면 전용 명칭이라 컬럼 값이다(sys/code.md). */
   grpNm: string;
@@ -14,12 +15,12 @@ export interface CodeGroupRow {
   */
   sortNo: number;
   /**
-   * 그 그룹의 코드 수 — **삭제 게이트가 읽는다**(frontend/grid.md · screen/code/requirements.md).
+   * 그 그룹의 코드 수 — **삭제 게이트가 읽는다**(frontend/grid.md · screen/admin/system/code/requirements.md).
    *
    * <p>하단을 조회하기 전에도 *지울 수 있는가* 에 답해야 하므로 마스터 응답이 갖는다.
    */
   codeCount: number;
-  /** **읽기 전용**이다 — 화면에 켜고 끄는 수단이 없다(screen/code/requirements.md). 배지의 근거다. */
+  /** **읽기 전용**이다 — 화면에 켜고 끄는 수단이 없다(screen/admin/system/code/requirements.md). 배지의 근거다. */
   sysYn: boolean;
   regId: string | null;
   regDtm: string | null;
@@ -30,7 +31,7 @@ export interface CodeGroupRow {
 export interface CodeRow {
   dtlCd: string;
   /**
-   * 지금 세션 언어의 **코드명** — screen/code/requirements.md.
+   * 지금 세션 언어의 **코드명** — screen/admin/system/code/requirements.md.
    *
    * <p>값이 없으면 기본 언어, 그것도 없으면 **키 문자열 그대로**다(sys/code.md). 셀에
    * `code.ORDER_KIND.B2B` 가 보이면 **아직 안 채운 것**이며 그것이 진단이다.
@@ -41,7 +42,7 @@ export interface CodeRow {
   codeNm: string;
   dtlDesc: string | null;
   useYn: boolean;
-  /** **콤보 정렬**이다 — 관리 화면용이 아니다(screen/code/requirements.md). */
+  /** **콤보 정렬**이다 — 관리 화면용이 아니다(screen/admin/system/code/requirements.md). */
   sortNo: number;
   sysYn: boolean;
   /**
@@ -67,7 +68,7 @@ export interface CodeRefDefRow {
    */
   refNm: string;
   refDesc: string | null;
-  /** 이 정의로 입력된 값의 수 — 삭제 **확인** 문구가 말하는 건수다(screen/code/requirements.md). */
+  /** 이 정의로 입력된 값의 수 — 삭제 **확인** 문구가 말하는 건수다(screen/admin/system/code/requirements.md). */
   valueCount: number;
   regId: string | null;
   regDtm: string | null;

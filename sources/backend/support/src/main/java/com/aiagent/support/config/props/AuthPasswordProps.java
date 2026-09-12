@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 /**
  * 비밀번호 정책 — sys/code.md. 값 검증은 DB 가 아니라 이 바인딩에서 한다(sys/code.md).
  *
- * <p>설명은 {@code @param} 에 쓴다 — 관리 화면의 설명 컬럼이 그것을 읽는다(screen/code/requirements.md).
+ * <p>설명은 {@code @param} 에 쓴다 — 관리 화면의 설명 컬럼이 그것을 읽는다(screen/admin/system/code/requirements.md).
  *
  * @param minLength 비밀번호 최소 길이(AUTH-05).
  * @param requireCharsetKinds 영대·영소·숫자·특수 4계열 중 몇 종 이상을 요구하는가.

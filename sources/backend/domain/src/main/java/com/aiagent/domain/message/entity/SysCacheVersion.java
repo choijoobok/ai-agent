@@ -34,7 +34,7 @@ public class SysCacheVersion {
     public static final String CONFIG = "config";
 
     /**
-     * 공통 코드 — {@code CODE_MGMT} 의 저장 셋이 전부 올린다(screen/code/requirements.md).
+     * 공통 코드 — {@code CODE_MGMT} 의 저장 셋이 전부 올린다(screen/admin/system/code/requirements.md).
      *
      * <p><b>코드명을 고친 저장은 {@link #MESSAGE} 도 함께 올린다.</b> 이름의 원본이
      * {@code SYS_MESSAGE} 라(sys/code.md) 프론트가 그 값을 <b>메시지 번들에서</b> 읽기 때문이며,

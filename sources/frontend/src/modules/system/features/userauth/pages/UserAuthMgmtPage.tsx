@@ -92,7 +92,7 @@ export function UserAuthMgmtPage() {
   /*
     <b>저장이 보는 사용자를 상태에서 읽지 않는다.</b> 저장 페이로드를 만드는 것은
     컨트롤러가 부르는 콜백이고, 그 콜백이 만들어진 시점의 상태를 붙잡고 있으면
-    <b>A 사용자의 예외가 B 사용자에게 나간다</b> — screen/code/requirements.md 가 하단 저장에서 같은 자리를
+    <b>A 사용자의 예외가 B 사용자에게 나간다</b> — screen/admin/system/code/requirements.md 가 하단 저장에서 같은 자리를
     ref 로 닫았다.
   */
   const selectedUserId = useRef<string | null>(null);

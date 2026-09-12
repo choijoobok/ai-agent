@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
- * 마스터 저장의 한 행 — screen/code/requirements.md.
+ * 마스터 저장의 한 행 — screen/admin/system/code/requirements.md.
  *
  * <p><b>{@code sysYn} 필드가 없다.</b> <i>"소스가 이 그룹을 참조하는가"</i> 는 코드가 아는
  * 사실이라(sys/code.md) 받을 경로 자체를 두지 않는다 — 화면에서 입력 수단을 없애는 것만으로는
@@ -18,7 +18,7 @@ import jakarta.validation.constraints.Size;
  * 지목하는 것이라 끄는 것의 뜻이 정의되지 않는다. 코드 쪽({@link CodeSaveRow})에는 그대로다.
  *
  * <p>{@code grpCd} 는 신규 행에서만 뜻이 있고 수정·삭제에서는 <b>대상을 가리키는 값</b>이다 —
- * PK 라 고칠 수 없고, 고치려면 지우고 다시 만든다(screen/code/requirements.md).
+ * PK 라 고칠 수 없고, 고치려면 지우고 다시 만든다(screen/admin/system/code/requirements.md).
  */
 public record CodeGroupSaveRow(
         @NotNull RowState rowState,

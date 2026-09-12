@@ -1,8 +1,9 @@
-package com.aiagent.api.code;
+// @feat FEAT-504
+package com.aiagent.system.api.code;
 
-import com.aiagent.api.code.request.CodeGroupSaveRequest;
-import com.aiagent.api.code.request.CodeRefDefSaveRequest;
-import com.aiagent.api.code.request.CodeSaveRequest;
+import com.aiagent.system.api.code.request.CodeGroupSaveRequest;
+import com.aiagent.system.api.code.request.CodeRefDefSaveRequest;
+import com.aiagent.system.api.code.request.CodeSaveRequest;
 import com.aiagent.api.message.RequestLocale;
 import com.aiagent.api.trace.TraceId;
 import com.aiagent.core.response.ApiResponse;
@@ -22,14 +23,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code CODE_MGMT} — screen/code/requirements.md. <b>그리드가 셋이라 경로가 여섯이다.</b>
+ * {@code CODE_MGMT} — screen/admin/system/code/requirements.md. <b>그리드가 셋이라 경로가 여섯이다.</b>
  *
  * <p>마스터(그룹) · 하단(코드) · 정의 모달이 각각 조회와 저장을 갖는다. 하나로 합치지 않는
- * 것은 <b>저장 단위가 셋</b>이기 때문이다 — screen/code/requirements.md 의 메시지 화면이 하단을 마스터의
+ * 것은 <b>저장 단위가 셋</b>이기 때문이다 — screen/admin/system/code/requirements.md 의 메시지 화면이 하단을 마스터의
  * {@code list} 컬럼으로 접은 것과 갈리는 자리이며, 여기 하단은 <b>자기 테이블에 붙어
  * 있다</b>(FK 도 걸린다).
  *
- * <p><b>{@code getRefDefList} 를 화면이 두 자리에서 부른다</b>(screen/code/requirements.md) — 모달의 조회 버튼과
+ * <p><b>{@code getRefDefList} 를 화면이 두 자리에서 부른다</b>(screen/admin/system/code/requirements.md) — 모달의 조회 버튼과
  * 하단 조회가 <b>병렬로</b> 부른다. 하단 응답에 정의를 얹지 않는 이유는 같은 목록이 두 경로로
  * 생기기 때문이고, 병렬인 이유는 컬럼 없이 행을 그리면 값이 갈 자리가 없어서다.
  *
@@ -42,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 버튼은 {@code <DataGrid>} 가 그린다.
  */
 @RestController
-@RequestMapping("/api/service/code")
+@RequestMapping("/api/service/system/code")
 public class CodeAdminController {
 
     private final CodeQueryService queries;
@@ -81,7 +82,7 @@ public class CodeAdminController {
     /**
      * <b>페이징하지 않는다</b>({@code mode: 'all'}).
      *
-     * <p>참조값을 컬럼 필터로 거르기로 했으므로(screen/code/requirements.md) 하단의 범위가 곧 전부여야 한다 —
+     * <p>참조값을 컬럼 필터로 거르기로 했으므로(screen/admin/system/code/requirements.md) 하단의 범위가 곧 전부여야 한다 —
      * 컬럼 필터는 현재 페이지 안에서만 걸리고(frontend/grid.md), 페이징하면 <i>어느 코드가 아직 안
      * 채워졌나</i> 의 답이 장마다 달라진다.
      */
@@ -96,7 +97,7 @@ public class CodeAdminController {
 
     /**
      * 저장 하나가 테이블 셋을 쓴다 — {@code SYS_CODE} · {@code SYS_MESSAGE} · {@code SYS_CODE_REF}
-     * (screen/code/requirements.md).
+     * (screen/admin/system/code/requirements.md).
      *
      * <p><b>언어를 요청이 나르지 않는다.</b> 코드명이 쓰이는 행의 언어는 <i>지금 이 사람이
      * 보고 있는 언어</i> 이며 그것은 세션이 갖는다 — 본문에 두면 화면이 다른 언어의 값을

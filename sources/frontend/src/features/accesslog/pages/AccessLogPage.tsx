@@ -417,7 +417,7 @@ function buildSearchFields(): SearchField[] {
       /*
         <b>이름은 두 테이블 건너에 있다</b> — `SYS_MENU.MENU_NM` 이 담은 것은 메시지 키이고
         이름은 `SYS_MESSAGE` 의 값이라(sys/code.md) 서버가 `EXISTS` 로 푼다(`LogMenuName`).
-        <b>어느 언어든 걸린다</b> — 사람은 화면에 보이는 그 이름을 들고 온다(screen/code/requirements.md).
+        <b>어느 언어든 걸린다</b> — 사람은 화면에 보이는 그 이름을 들고 온다(screen/admin/system/code/requirements.md).
       */
       field: 'menuNm',
       label: MSG.ACCESS_LOG_SEARCH_MENU_NM,

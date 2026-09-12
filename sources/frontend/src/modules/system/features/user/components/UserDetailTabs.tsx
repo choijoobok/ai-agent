@@ -121,7 +121,7 @@ export function UserDetailTabs(props: Props) {
    * 지금 보고 있는 사용자 — <b>렌더가 보는 값</b>이다.
    *
    * <p>같은 사실을 {@link userId} 도 담지만 축이 다르다: 저것은 <b>콜백이 그 순간에</b>
-   * 읽는 값이고 이것은 <b>화면이 다시 그릴 때</b> 읽는 값이다(screen/code/requirements.md 가 같은 자리에서 같은
+   * 읽는 값이고 이것은 <b>화면이 다시 그릴 때</b> 읽는 값이다(screen/admin/system/code/requirements.md 가 같은 자리에서 같은
    * 쌍을 두었다). ref 하나로 둘을 다 하면 빈 안내가 사용자를 바꿔도 그대로다.
    */
   const [picked, setPicked] = useState<{ userId: string | null; locked: boolean }>({
@@ -145,7 +145,7 @@ export function UserDetailTabs(props: Props) {
    * 유효 권한 탭을 <b>부른 적이 있는가</b> — 배너가 이것을 본다.
    *
    * <p>{@link loaded} 가 같은 사실을 담지만 그것은 ref 라 <b>렌더가 읽을 수 없다</b>
-   * (`react-hooks/refs`). 축이 다른 값을 억지로 하나로 두지 않는다 — screen/code/requirements.md 의
+   * (`react-hooks/refs`). 축이 다른 값을 억지로 하나로 두지 않는다 — screen/admin/system/code/requirements.md 의
    * {@code selectedGrpCd} · {@code savedGrpCd} 쌍과 같은 자리다.
    */
   const [effRead, setEffRead] = useState(false);
@@ -744,7 +744,7 @@ function buildRoleColumns(roleOptions: SelectOption[]): ColumnDef<UserRoleRow>[]
       tone: GRANT_TONE,
       display: stateText,
       /*
-        <b>꺼진 역할이면 배지가 하나 더 붙는다</b>(screen/code/requirements.md 의 값-뒤 배지). 상태는 기간만
+        <b>꺼진 역할이면 배지가 하나 더 붙는다</b>(screen/admin/system/code/requirements.md 의 값-뒤 배지). 상태는 기간만
         보므로 <i>유효</i> 인데 아무것도 주지 않는 행이 있고, 그 사실을 말하는 자리가
         여기밖에 없다.
       */
@@ -939,7 +939,7 @@ function validateIps(rows: GridRow<UserIpRow>[]): GridIssue[] {
  * <b>첫 대역 하나가 정책을 켜는 스위치</b>다 — sys/user-role.md.
  *
  * <p>행이 없으면 제한 없음이므로, 아무것도 없던 계정에 하나를 더하는 순간 <b>나머지 모든
- * IP 가 막힌다</b>. 건수는 <i>얼마나</i> 를 말할 뿐이라 그것을 말하지 못한다(screen/code/requirements.md).
+ * IP 가 막힌다</b>. 건수는 <i>얼마나</i> 를 말할 뿐이라 그것을 말하지 못한다(screen/admin/system/code/requirements.md).
  */
 function warnFirstRange(rows: GridRow<UserIpRow>[]): string[] {
   const added = rows.filter((row) => row.state === 'C').length;

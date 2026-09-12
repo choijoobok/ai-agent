@@ -95,7 +95,7 @@ interface PopupRequest {
  *
  * <p><b>더블클릭이 곧 선택이다.</b> 고르러 온 창이라 <i>한 번 눌러 고르고 버튼을 누르는</i>
  * 두 걸음이 매번 낭비이고, 그래도 버튼을 함께 두는 것은 <b>더블클릭을 모르는 사용자</b>가
- * 있기 때문이다 — screen/code/requirements.md 의 <i>제스처는 지름길이지 유일한 길이 아니다</i> 와 같다.
+ * 있기 때문이다 — screen/admin/system/code/requirements.md 의 <i>제스처는 지름길이지 유일한 길이 아니다</i> 와 같다.
  */
 function PopupModal(props: {
   request: PopupRequest;
@@ -138,7 +138,7 @@ function PopupModal(props: {
       onOk={() => selected && props.onSettle({ kind: 'picked', row: selected })}
       okText={label(MSG.POPUP_PICK)}
       cancelText={label(MSG.COMMON_CANCEL)}
-      // 고른 것이 없으면 확인할 것도 없다 — screen/code/requirements.md 의 <i>막는 것 자체가 신호</i> 다.
+      // 고른 것이 없으면 확인할 것도 없다 — screen/admin/system/code/requirements.md 의 <i>막는 것 자체가 신호</i> 다.
       okButtonProps={{ disabled: selected === null }}
       /*
         <b>지우기는 명시해야 일어난다.</b> 창을 그냥 닫는 것(Esc · 취소)은 아무 일도

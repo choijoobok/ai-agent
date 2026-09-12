@@ -29,7 +29,7 @@ dependencies {
     implementation("org.springframework:spring-tx")
     implementation("org.aspectj:aspectjweaver")
 
-    // 시스템 환경설정 화면의 **설명 컬럼**이 여기서 온다 — screen/code/requirements.md.
+    // 시스템 환경설정 화면의 **설명 컬럼**이 여기서 온다 — screen/admin/system/code/requirements.md.
     //
     // 프로세서가 컴파일 시점에 필드 Javadoc 을 META-INF/spring-configuration-metadata.json
     // 으로 뽑아 둔다. 설명을 담을 새 자리(CFG_DESC)를 만들지 않는 것이 요점이며,
@@ -60,13 +60,13 @@ dependencies {
     // developmentOnly 로 두면 그 "일시 ON" 이 재빌드가 된다.
     implementation(libs.p6spy)
 
-    // ConfigValidator 는 **실제로 바인딩해 보는 것**이 하는 일의 전부라(screen/code/requirements.md), 구현체가
+    // ConfigValidator 는 **실제로 바인딩해 보는 것**이 하는 일의 전부라(screen/admin/system/code/requirements.md), 구현체가
     // 없으면 그 검사가 검사하지 못한다. 런타임에는 웹 스타터가 끌고 오므로 여기서는
     // 테스트에만 둔다 — 이 모듈이 검증 구현을 골라 다른 모듈에 강요하지 않는다.
     testImplementation("org.springframework.boot:spring-boot-starter-validation")
 }
 
-// 설정 메타데이터를 **매번 처음부터 다시 만든다** — screen/code/requirements.md 의 설명 컬럼이 여기 달렸다.
+// 설정 메타데이터를 **매번 처음부터 다시 만든다** — screen/admin/system/code/requirements.md 의 설명 컬럼이 여기 달렸다.
 //
 // spring-boot-configuration-processor 는 출력 디렉터리에 이미 있는
 // META-INF/spring-configuration-metadata.json 을 **직전 결과로 읽어 합치는데**, 그

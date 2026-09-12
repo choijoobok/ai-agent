@@ -50,7 +50,7 @@ public class SysMessage extends BaseAuditEntity {
 
     /**
      * <b>부르는 쪽이 {@code null} 을 넘기지 않는다.</b> 값을 비우는 것은 수정이 아니라
-     * <b>행 삭제</b>이며(screen/code/requirements.md) 그 판단은 저장 서비스가 한다 — 여기서 {@code null} 을
+     * <b>행 삭제</b>이며(screen/admin/system/code/requirements.md) 그 판단은 저장 서비스가 한다 — 여기서 {@code null} 을
      * 받아 주면 {@code MSG_VAL IS NULL} 인 행이 남아 폴백이 세 번째 상태를 갖는다.
      */
     public void changeValue(String msgVal) {

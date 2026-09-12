@@ -118,7 +118,7 @@ export function revertRow<T>(rows: GridRow<T>[], id: string): GridRow<T>[] {
 }
 
 /**
- * 행의 내용이 원본과 같은가 — <b>{@link editRow} 와 마스터-디테일이 함께 쓴다</b>(screen/code/requirements.md).
+ * 행의 내용이 원본과 같은가 — <b>{@link editRow} 와 마스터-디테일이 함께 쓴다</b>(screen/admin/system/code/requirements.md).
  *
  * <p>하단에서 되돌린 값이 마스터 행으로 흘러갈 때, 마스터가 원본과 같아졌는지는
  * <b>내용을 비교해야만</b> 안다. 서버가 준 JSON 을 그대로 들고 있는 행이라

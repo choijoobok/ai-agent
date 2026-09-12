@@ -46,7 +46,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 
 /**
- * 저장 셋이 무엇을 지키는가 — screen/code/requirements.md.
+ * 저장 셋이 무엇을 지키는가 — screen/admin/system/code/requirements.md.
  *
  * <p><b>여기서 지키는 것 넷이다.</b> ① 그룹 삭제의 <b>게이트</b>와 코드·정의 삭제의
  * <b>확인</b>이 다른 것이다, ② {@code SYS_YN} 은 화면이 아니라 <b>여기서도</b>
@@ -153,7 +153,7 @@ class CodeAdminServiceTest {
     class Groups {
 
         @Test
-        @DisplayName("코드가 남아 있으면 지울 수 없다 — 게이트는 조회 시점이 아니라 여기가 마지막이다")
+        @DisplayName("TC-5043 코드가 남아 있으면 지울 수 없다 — 게이트는 조회 시점이 아니라 여기가 마지막이다")
         void deleteIsGatedByChildCount() {
             when(codes.countByGrpCd(GRP)).thenReturn(4L);
 
@@ -202,6 +202,19 @@ class CodeAdminServiceTest {
             service.saveGroup(List.of(groupRow(RowState.U, "LANG_CD", "지원 언어")));
 
             assertThat(locked.getGrpNm()).isEqualTo("지원 언어");
+        }
+
+        @Test
+        @DisplayName("이미 있는 그룹의 신규 저장은 거부하고 기존 행을 덮어쓰지 않는다")
+        void duplicateGroupIsRejected() {
+            when(groups.existsById("LANG_CD")).thenReturn(true);
+
+            assertThatThrownBy(() ->
+                            service.saveGroup(List.of(groupRow(RowState.C, "LANG_CD", "지원 언어"))))
+                    .isInstanceOf(BusinessException.class)
+                    .extracting(error -> ((BusinessException) error).errorCode())
+                    .isEqualTo(CodeErrorCode.GROUP_DUPLICATE);
+            verify(groups, never()).save(any(SysCodeGroup.class));
         }
 
         @Test
@@ -315,7 +328,7 @@ class CodeAdminServiceTest {
     class CodeNames {
 
         @Test
-        @DisplayName("코드명은 SYS_MESSAGE 로 간다 — 키는 서버가 PK 로 조립한다")
+        @DisplayName("TC-5041 코드명은 SYS_MESSAGE 로 간다 — 키는 서버가 PK 로 조립한다")
         void nameGoesToMessageTable() {
             service.save(GRP, "ko", List.of(codeRow(RowState.C, "B2B", "기업 간 거래")));
 
@@ -372,6 +385,22 @@ class CodeAdminServiceTest {
 
             verify(versions).findById(SysCacheVersion.CODE);
             verify(versions, never()).findById(SysCacheVersion.MESSAGE);
+        }
+
+        @Test
+        @DisplayName("기존 코드명이 달라지면 행 값과 메시지 캐시를 함께 바꾼다")
+        void changedNameUpdatesCodeAndMessageVersion() {
+            SysCode current = code("B2B", false);
+            when(codes.findById(new SysCodeId(GRP, "B2B"))).thenReturn(Optional.of(current));
+            when(messageValues.findByMsgKey("code.ORDER_KIND.B2B"))
+                    .thenReturn(List.of(SysMessage.of("code.ORDER_KIND.B2B", "ko", "이전 이름")));
+
+            service.save(GRP, "ko", List.of(new CodeSaveRow(RowState.U, "B2B", null, "새 설명", false, 7, Map.of())));
+
+            assertThat(current.getDtlDesc()).isEqualTo("새 설명");
+            assertThat(current.getUseYn()).isFalse();
+            assertThat(current.getSortNo()).isEqualTo(7);
+            verify(versions).findById(SysCacheVersion.MESSAGE);
         }
     }
 
@@ -439,6 +468,15 @@ class CodeAdminServiceTest {
         }
 
         @Test
+        @DisplayName("신규 코드도 정의된 참조값을 함께 저장한다 — 원본과 파생값이 한 저장 단위다")
+        void createsCodeWithItsReferenceValues() {
+            service.save(GRP, "ko", List.of(withRefs(RowState.C, "B2B", Map.of("PARENT", "SEOUL"))));
+
+            verify(codes).save(any(SysCode.class));
+            verify(refValues).save(any(SysCodeRef.class));
+        }
+
+        @Test
         @DisplayName("맵에 키가 없으면 지운다 — 맵을 루프하면 이 경로가 사라진다")
         void missingKeyDeletesTheValue() {
             existingCode("B2B", false);
@@ -464,7 +502,7 @@ class CodeAdminServiceTest {
         }
 
         @Test
-        @DisplayName("정의에 없는 참조 코드는 거부한다 — FK 의 500 보다 어느 칸인지 말하는 400 이 낫다")
+        @DisplayName("TC-5042 정의에 없는 참조 코드는 거부한다 — FK 의 500 보다 어느 칸인지 말하는 400 이 낫다")
         void unknownRefCdIsRejected() {
             existingCode("B2B", false);
 
@@ -520,6 +558,32 @@ class CodeAdminServiceTest {
                     .isInstanceOf(BusinessException.class)
                     .extracting(error -> ((BusinessException) error).errorCode())
                     .isEqualTo(CodeErrorCode.REQUIRED);
+        }
+
+        @Test
+        @DisplayName("이미 있는 정의를 신규로 저장하면 거부한다")
+        void duplicateDefinitionIsRejected() {
+            when(codes.existsById(new SysCodeId(SysCodeGrpRef.REF_CD_GROUP, "PARENT")))
+                    .thenReturn(true);
+            when(refDefs.existsById(new SysCodeGrpRefId(GRP, "PARENT"))).thenReturn(true);
+
+            assertThatThrownBy(() ->
+                            service.saveRefDef(GRP, List.of(defRow(RowState.C, "PARENT", "상위"))))
+                    .isInstanceOf(BusinessException.class)
+                    .extracting(error -> ((BusinessException) error).errorCode())
+                    .isEqualTo(CodeErrorCode.REF_DEF_DUPLICATE);
+        }
+
+        @Test
+        @DisplayName("기존 정의 수정은 대상 존재를 확인하고 이름과 설명을 바꾼다")
+        void updatesExistingDefinition() {
+            SysCodeGrpRef current = SysCodeGrpRef.created(GRP, "PARENT", "이전", null);
+            when(refDefs.findById(new SysCodeGrpRefId(GRP, "PARENT"))).thenReturn(Optional.of(current));
+
+            service.saveRefDef(GRP, List.of(new CodeRefDefSaveRow(RowState.U, "PARENT", "상위 창고", "설명")));
+
+            assertThat(current.getRefNm()).isEqualTo("상위 창고");
+            assertThat(current.getRefDesc()).isEqualTo("설명");
         }
 
         @Test

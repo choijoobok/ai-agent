@@ -250,7 +250,7 @@ function buildColumns(): ColumnDef<LoginLogRow>[] {
         두면 *"조회가 덜 됐다"* 로 읽힌다 — screen/log/login/requirements.md 가 <b>이름을 안 붙이는 근거</b>로 든
         그 빈칸이며, 여기서는 <b>빈칸을 없애는 쪽</b>으로 답한다.
 
-        <b>`renderer: 'badge'` 가 아니라 `badge` 다</b>(frontend/grid.md · screen/code/requirements.md). 저것은 값
+        <b>`renderer: 'badge'` 가 아니라 `badge` 다</b>(frontend/grid.md · screen/admin/system/code/requirements.md). 저것은 값
         <i>대신</i> 배지를 그리므로 <b>이름이 있는 행에서 이름이 사라진다</b>. 여기 배지는
         값이 없을 때만 붙는 <b>그 값의 내력</b>이다.
 

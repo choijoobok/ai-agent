@@ -96,7 +96,7 @@ export function NoticeMgmtPage() {
   const searchFields = useMemo(() => buildSearchFields(), []);
 
   /**
-   * 삭제가 섞였을 때의 경고 — <b>건수 확인 앞에 선다</b>(frontend/grid.md · screen/code/requirements.md).
+   * 삭제가 섞였을 때의 경고 — <b>건수 확인 앞에 선다</b>(frontend/grid.md · screen/admin/system/code/requirements.md).
    *
    * <p>`SaveApi.confirm` 은 불리언이라 문구를 실을 수 없다. 여기가 그 자리이며,
    * 되돌릴 수 없다는 사실과 <b>대안(끄기)</b>을 함께 말한다 — 사람이 실제로 하려는 일은

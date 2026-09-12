@@ -24,7 +24,7 @@ accessLog.payload.truncated,FRONT,"전문이 상한에서 잘렸다 — backend/
 accessLog.search.clientIp,FRONT,조회조건 — IP. 완전 일치다.
 accessLog.search.menu,FRONT,
 accessLog.search.menuCd,FRONT,조회조건 — 메뉴 코드. 뿌리 테이블의 컬럼이라 값 비교 하나로 끝난다. `메뉴 없음` 항목이 여기 없다. 콤보였을 때는 `in` 배열의 `null` 이 `IS NULL` 로 펴졌는데(screen/log/access/requirements.md) 텍스트 칸에는 담을 자리가 없다 — 그 물음은 메뉴 컬럼의 필터가 답한다(frontend/grid.md). /
-accessLog.search.menuNm,FRONT,조회조건 — 메뉴명. 이름은 두 테이블 건너에 있다(sys/code.md). `SYS_MENU.MENU_NM` 이 담은 것은 메시지 키이고 이름은 `SYS_MESSAGE` 의 값이라 서버가 `EXISTS` 로 푼다. 어느 언어든 걸린다 — 운영자는 화면에 보이는 그 이름을 들고 오지 어느 언어의 값인지를 들고 오지 않는다(screen/code/requirements.md). /
+accessLog.search.menuNm,FRONT,조회조건 — 메뉴명. 이름은 두 테이블 건너에 있다(sys/code.md). `SYS_MENU.MENU_NM` 이 담은 것은 메시지 키이고 이름은 `SYS_MESSAGE` 의 값이라 서버가 `EXISTS` 로 푼다. 어느 언어든 걸린다 — 운영자는 화면에 보이는 그 이름을 들고 오지 어느 언어의 값인지를 들고 오지 않는다(screen/admin/system/code/requirements.md). /
 accessLog.search.outcome,FRONT,조회조건 — 상태. 파생이며 기본은 전체다(screen/log/access/requirements.md).
 accessLog.search.period,FRONT,조회조건 — 기간. 필수이며 상한이 31일이다(screen/log/access/requirements.md).
 accessLog.search.requestUri,FRONT,조회조건 — 요청 URI. 앞 일치다(screen/log/access/requirements.md).
@@ -144,34 +144,34 @@ batchSchedule.warn.disable,FRONT,저장 확인의 첫 줄 — 끄는 배치가 `
 batchSchedule.warn.disableItem,FRONT,"그 목록의 한 줄 — `{name}` `{batchId}`. 다음 줄에 설명이 그대로 붙는다. 설명이 데이터라 메시지가 아니다 — sys/batch.md 의 셋째 항목(*""껐다 켜면 따라잡는가""*)을 끄는 순간에 읽히게 하는 것이 이 확인의 목적 전부다. /"
 batchSchedule.warn.timezone,FRONT,저장 확인 — 시간대를 바꾼 배치가 `{count}` 건 있다(screen/batch/schedule/requirements.md §5-1). 크론이 그대로라 경고가 필요하다. 화면상 달라진 것은 한 칸인데 실제 실행 시각은 몇 시간 옮겨진다 — 보이는 변화의 크기와 결과의 크기가 어긋나는 자리다. /
 batchSchedule.warn.timezoneItem,FRONT,그 목록의 한 줄 — `{name}` `{batchId}` `{from}` `{to}`. 바뀐 값 둘을 나란히 놓는다.
-codeMgmt.col.codeCount,FRONT,그룹의 코드 수 — 파생이며 삭제 게이트가 읽는다(screen/code/requirements.md).
-codeMgmt.col.codeNm,FRONT,코드명 컬럼 — 값이 `SYS_MESSAGE` 로 간다(screen/code/requirements.md). 여기서 채우는 것은 지금 세션 언어 하나다. 다른 언어는 `MESSAGE_MGMT` 로 간다 — 언어를 컬럼으로 늘리면 지원 언어를 하나 켤 때마다 그리드가 옆으로 자란다. /
+codeMgmt.col.codeCount,FRONT,그룹의 코드 수 — 파생이며 삭제 게이트가 읽는다(screen/admin/system/code/requirements.md).
+codeMgmt.col.codeNm,FRONT,코드명 컬럼 — 값이 `SYS_MESSAGE` 로 간다(screen/admin/system/code/requirements.md). 여기서 채우는 것은 지금 세션 언어 하나다. 다른 언어는 `MESSAGE_MGMT` 로 간다 — 언어를 컬럼으로 늘리면 지원 언어를 하나 켤 때마다 그리드가 옆으로 자란다. /
 codeMgmt.col.dtlCd,FRONT,코드 컬럼 — 그룹과 복합 PK 다. 신규 행에서만 열린다.
 codeMgmt.col.dtlDesc,FRONT,코드 설명 컬럼 — 관리 화면 전용이다(sys/code.md).
-codeMgmt.col.grpCd,FRONT,그룹 코드 컬럼 — PK 라 신규 행에서만 열린다(screen/code/requirements.md).
+codeMgmt.col.grpCd,FRONT,그룹 코드 컬럼 — PK 라 신규 행에서만 열린다(screen/admin/system/code/requirements.md).
 codeMgmt.col.grpDesc,FRONT,그룹 설명 컬럼.
 codeMgmt.col.grpNm,FRONT,그룹명 컬럼 — 다국어가 아니다. 관리 화면 전용 명칭이라 컬럼 값이다(sys/code.md).
 codeMgmt.col.refCd,FRONT,참조 코드 컬럼 — `CODE_REF_KEY` 화이트리스트에서 고른다(sys/code.md).
 codeMgmt.col.refDesc,FRONT,참조 코드 설명 컬럼.
 codeMgmt.col.refNm,FRONT,참조 코드명 컬럼 — 하단 그리드의 컬럼 헤더가 된다. 필수다(sys/code.md).
-codeMgmt.col.refValueCount,FRONT,입력된 참조값 건수 — 정의 삭제 확인이 말하는 수다(screen/code/requirements.md).
+codeMgmt.col.refValueCount,FRONT,입력된 참조값 건수 — 정의 삭제 확인이 말하는 수다(screen/admin/system/code/requirements.md).
 codeMgmt.col.sortNo,FRONT,"정렬 컬럼 — 그룹에서는 관리 화면 정렬, 코드에서는 콤보 정렬이다."
 codeMgmt.col.sysYn,FRONT,시스템 여부 컬럼 — 읽기 전용이다. 왜 못 지우는지가 눌러 보기 전에 보인다.
-codeMgmt.col.useYn,FRONT,사용 여부 컬럼 — 스위치다(frontend/grid.md). 시스템 행에서는 잠긴다(screen/code/requirements.md).
+codeMgmt.col.useYn,FRONT,사용 여부 컬럼 — 스위치다(frontend/grid.md). 시스템 행에서는 잠긴다(screen/admin/system/code/requirements.md).
 codeMgmt.delete.refWarn,FRONT,코드 삭제 저장 전 확인 — `{count}`. 참조값은 그 행의 파생이라 함께 지운다.
 codeMgmt.detail.empty,FRONT,마스터에서 그룹을 고르기 전 하단의 빈 상태(frontend/grid.md).
-codeMgmt.detail.locked,FRONT,"미저장 신규 그룹을 골랐을 때 — 잠긴 상태다(frontend/grid.md). 부모 키가 아직 DB 에 없어 자식을 붙일 수 없다. screen/code/requirements.md 의 메시지 화면이 이 규칙을 비껴간 것은 하단이 DB 에 붙지 않아서였고, 여기 하단은 자기 테이블에 FK 로 붙어 있다 — 2단계 등록을 그대로 치른다. /"
+codeMgmt.detail.locked,FRONT,"미저장 신규 그룹을 골랐을 때 — 잠긴 상태다(frontend/grid.md). 부모 키가 아직 DB 에 없어 자식을 붙일 수 없다. screen/admin/system/code/requirements.md 의 메시지 화면이 이 규칙을 비껴간 것은 하단이 DB 에 붙지 않아서였고, 여기 하단은 자기 테이블에 FK 로 붙어 있다 — 2단계 등록을 그대로 치른다. /"
 codeMgmt.detail.title,FRONT,하단 그리드의 제목 — 고른 그룹의 코드다.
-codeMgmt.group.hasCode,FRONT,그룹 삭제가 잠긴 이유 — `{count}`. 회색 체크박스만 두면 버그로 읽힌다(screen/code/requirements.md).
+codeMgmt.group.hasCode,FRONT,그룹 삭제가 잠긴 이유 — `{count}`. 회색 체크박스만 두면 버그로 읽힌다(screen/admin/system/code/requirements.md).
 codeMgmt.group.title,FRONT,마스터 그리드의 제목 — 코드 그룹이다.
-codeMgmt.refDef.button,FRONT,하단 ⓐ의 버튼 — 서버를 부르지 않고 모달을 연다(frontend/grid.md · screen/code/requirements.md).
+codeMgmt.refDef.button,FRONT,하단 ⓐ의 버튼 — 서버를 부르지 않고 모달을 연다(frontend/grid.md · screen/admin/system/code/requirements.md).
 codeMgmt.refDef.deleteWarn,FRONT,정의 삭제 저장 전 확인 — `{count}`. 값 → 정의 순서라 FK 가 거부하지 않는다.
-codeMgmt.refDef.dirty,FRONT,"정의 버튼이 잠긴 이유 — 미저장 편집이 있다(screen/code/requirements.md). 정의가 바뀌면 컬럼 집합이 바뀌고 하단 재조회가 편집을 버린다. 열고 나서 묻는 것보다 누를 수 없는 것이 먼저 보이는 편이 낫고, 그 사유를 말한다. /"
+codeMgmt.refDef.dirty,FRONT,"정의 버튼이 잠긴 이유 — 미저장 편집이 있다(screen/admin/system/code/requirements.md). 정의가 바뀌면 컬럼 집합이 바뀌고 하단 재조회가 편집을 버린다. 열고 나서 묻는 것보다 누를 수 없는 것이 먼저 보이는 편이 낫고, 그 사유를 말한다. /"
 codeMgmt.refDef.grid,FRONT,정의 모달 안 그리드의 제목.
 codeMgmt.refDef.noGroup,FRONT,그룹을 고르지 않은 채 정의를 열려 했을 때.
 codeMgmt.refDef.title,FRONT,정의 모달의 제목 — `{grpNm}` 이 어느 그룹의 것인지를 말한다.
 codeMgmt.search.codeNm,FRONT,조회조건 — 코드명. 이름은 `SYS_MESSAGE` 에 있고 어느 언어든 걸린다.
-codeMgmt.search.dtlCd,FRONT,"조회조건 — 코드. 하단 조건이 마스터를 거른다(screen/code/requirements.md). *""이 코드값이 어느 그룹에 있더라""* 가 실제로 자주 묻는 것이며, 고르면 하단이 그 조건으로 미리 걸려 있다. /"
+codeMgmt.search.dtlCd,FRONT,"조회조건 — 코드. 하단 조건이 마스터를 거른다(screen/admin/system/code/requirements.md). *""이 코드값이 어느 그룹에 있더라""* 가 실제로 자주 묻는 것이며, 고르면 하단이 그 조건으로 미리 걸려 있다. /"
 codeMgmt.search.grpCd,FRONT,조회조건 — 그룹 코드.
 codeMgmt.search.grpNm,FRONT,조회조건 — 그룹명.
 codeMgmt.systemBadge,FRONT,시스템 행에 붙는 배지의 글자.
@@ -179,25 +179,25 @@ codeMgmt.validate.duplicate,FRONT,같은 코드가 이 그리드 안에 둘 있�
 common.cancel,FRONT,모달·확인 대화의 취소 버튼.
 common.close,FRONT,모달·확인 대화의 닫기 버튼.
 config.adminReset.warn,FRONT,`auth.password.admin-reset-enabled` 를 끌 때 — sys/code.md. 되돌릴 수는 있지만 되돌릴 사람이 못 들어올 수 있다. 메일 연동이 없는 배포에서 잠긴 계정을 푸는 유일한 경로다. /
-config.col.cfgDesc,FRONT,설명 컬럼 — 필드 Javadoc 에서 온다. `CFG_DESC` 가 아니다(screen/code/requirements.md).
+config.col.cfgDesc,FRONT,설명 컬럼 — 필드 Javadoc 에서 온다. `CFG_DESC` 가 아니다(screen/admin/system/code/requirements.md).
 config.col.cfgKey,FRONT,키 컬럼 — PK 이고 코드가 정한다. 열리지 않는다.
 config.col.cfgType,FRONT,유형 컬럼 — 필드 타입에서 온다. 읽기 전용.
 config.col.cfgVal,FRONT,적용값 컬럼 — 이 화면의 유일한 입력 칸이다.
-config.col.defaultVal,FRONT,기본값 컬럼 — `yml` 이며 언제나 있다. 숨기지 않는다(screen/code/requirements.md).
-config.col.revert,FRONT,"삭제 컬럼의 헤더 — 되돌리기 다(screen/code/requirements.md). *삭제* 면 관리자는 값이 사라질 것을 기대하고, 목록에 같은 키가 남아 있으면 버그로 읽는다 — 기대를 라벨이 만든다. /"
+config.col.defaultVal,FRONT,기본값 컬럼 — `yml` 이며 언제나 있다. 숨기지 않는다(screen/admin/system/code/requirements.md).
+config.col.revert,FRONT,"삭제 컬럼의 헤더 — 되돌리기 다(screen/admin/system/code/requirements.md). *삭제* 면 관리자는 값이 사라질 것을 기대하고, 목록에 같은 키가 남아 있으면 버그로 읽는다 — 기대를 라벨이 만든다. /"
 config.defaulted,FRONT,조회조건의 반대쪽 — 오버라이드 행이 없는 키.
 config.grid.title,FRONT,그리드의 제목 — 단일 그리드다.
-config.overridden,FRONT,"적용값 뒤에 붙는 배지 — 근거는 `SYS_CONFIG` 행의 존재다(screen/code/requirements.md). 값이 기본값과 같아도 붙는다. 같은 값으로 저장해 두면 다음 배포가 기본값을 올려도 그 키만 옛 값에 묶이며, 눈으로는 구분되지 않으므로 이것이 유일한 신호다. /"
-config.revert.warn,FRONT,"되돌리기 확인 — `{key}` · `{defaultVal}`. 기본값을 함께 말한다(screen/code/requirements.md). 값이 사라지는 것이 아니라 `yml` 이 드러난다는 것을 미리 말해 두지 않으면, 되돌린 뒤에도 목록에 남은 같은 키가 ""지웠는데 그대로다"" 로 읽힌다. /"
+config.overridden,FRONT,"적용값 뒤에 붙는 배지 — 근거는 `SYS_CONFIG` 행의 존재다(screen/admin/system/code/requirements.md). 값이 기본값과 같아도 붙는다. 같은 값으로 저장해 두면 다음 배포가 기본값을 올려도 그 키만 옛 값에 묶이며, 눈으로는 구분되지 않으므로 이것이 유일한 신호다. /"
+config.revert.warn,FRONT,"되돌리기 확인 — `{key}` · `{defaultVal}`. 기본값을 함께 말한다(screen/admin/system/code/requirements.md). 값이 사라지는 것이 아니라 `yml` 이 드러난다는 것을 미리 말해 두지 않으면, 되돌린 뒤에도 목록에 남은 같은 키가 ""지웠는데 그대로다"" 로 읽힌다. /"
 config.search.keyword,FRONT,조회조건 — 키와 설명을 한 칸이 함께 건다(sys/code.md).
 config.search.overridden,FRONT,조회조건 — 변경 여부. 판정은 행의 존재다.
-config.search.prefix,FRONT,조회조건 — 접두사. 전 키에서 도출한다(screen/code/requirements.md).
+config.search.prefix,FRONT,조회조건 — 접두사. 전 키에서 도출한다(screen/admin/system/code/requirements.md).
 config.type.BOOLEAN,FRONT,유형 `BOOLEAN` — `true`/`false` 아닌 값을 막는다.
 config.type.JSON,FRONT,유형 `JSON` — 컬렉션을 한 칸에 담은 문자열이다(sys/batch.md).
 config.type.NUMBER,FRONT,유형 `NUMBER` — 화면이 문자를 막는다(frontend/grid.md).
 config.type.STRING,FRONT,유형 `STRING`.
 config.validate.boolean,FRONT,`BOOLEAN` 유형에 `true`/`false` 아닌 값.
-config.validate.number,FRONT,`NUMBER` 유형에 숫자가 아닌 값 — 화면이 아는 것은 유형까지다(screen/code/requirements.md).
+config.validate.number,FRONT,`NUMBER` 유형에 숫자가 아닌 값 — 화면이 아는 것은 유형까지다(screen/admin/system/code/requirements.md).
 dashboard.greeting,FRONT,대시보드 인사 — `{name}`.
 dashboard.menuCount,FRONT,접근 가능한 메뉴 수 카드의 제목.
 dashboard.menuCount.value,FRONT,그 카드의 값 — `{count}`.
@@ -223,7 +223,7 @@ err.batch.param-json,BACK,PARAM_JSON 이 JSON 이 아니다 — 프론트도 보
 err.batch.timezone-invalid,BACK,"아는 시간대 이름이 아니다 — screen/batch/schedule/requirements.md §6-1 의 13. 화면은 셀렉트라 이 값이 만들어지지 않는다. API 를 직접 부르는 경로의 마지막 방어이며, 고정 오프셋(+09:00)도 여기서 걸린다 — 파싱은 되지만 서머타임이 없어 현지 시각을 유지한다 는 그 컬럼의 목적을 조용히 깬다(backend/time.md). /"
 err.code.duplicate,BACK,"이미 있는 (GRP_CD, DTL_CD) 로 신규 행을 저장했다."
 err.code.group-duplicate,BACK,이미 있는 GRP_CD 로 신규 행을 저장했다.
-err.code.group-has-code,BACK,코드가 남아 있어 그룹을 지울 수 없다 — 조회 뒤에 누군가 추가했다(screen/code/requirements.md).
+err.code.group-has-code,BACK,코드가 남아 있어 그룹을 지울 수 없다 — 조회 뒤에 누군가 추가했다(screen/admin/system/code/requirements.md).
 err.code.group-missing,BACK,고치거나 지우려는 그룹이 이미 없다 — 다른 사람이 먼저 지웠다.
 err.code.missing,BACK,고치거나 지우려는 코드가 이미 없다.
 err.code.ref-cd-unknown,BACK,CODE_REF_KEY 화이트리스트 밖의 참조 코드다 — 소스가 이 값을 문자열로 참조한다.
@@ -486,7 +486,7 @@ grid.save.confirm.hidden,FRONT,컬럼 필터로 보이지 않는 변경 행이 �
 grid.save.confirm.title,FRONT,저장 전 확인의 제목.
 grid.save.done,FRONT,저장 성공 — 확인을 누르면 재조회가 돈다(frontend/grid.md).
 grid.save.nothing,FRONT,저장할 변경이 없는데 저장을 눌렀을 때.
-grid.save.warn.title,FRONT,"건수 확인 앞에 서는 경고의 제목 — screen/code/requirements.md. 본문은 화면이 만든다. 건수는 얼마나를 말할 뿐이라 무엇이 일어나는지 를 말하지 못하며, 그것을 아는 것은 화면이다. /"
+grid.save.warn.title,FRONT,"건수 확인 앞에 서는 경고의 제목 — screen/admin/system/code/requirements.md. 본문은 화면이 만든다. 건수는 얼마나를 말할 뿐이라 무엇이 일어나는지 를 말하지 못하며, 그것을 아는 것은 화면이다. /"
 grid.selectAll,FRONT,다중 선택 컬럼 헤더의 전체 선택 체크박스 이름.
 grid.selectRow,FRONT,다중 선택 컬럼에서 행 하나를 고르는 체크박스 이름.
 grid.settings,FRONT,③의 아이콘 버튼 이름 — 글자가 없어 툴팁이 유일한 설명이다.
@@ -631,8 +631,8 @@ message.scope.DATA,FRONT,사용처 `DATA` — `menu.*` · `code.*`.
 message.scope.FRONT,FRONT,사용처 `FRONT`.
 message.scope.NONE,FRONT,사용처 `NONE` — 아무도 안 쓰는 죽은 키다.
 message.search.msgKey,FRONT,조회조건 — 메시지 키.
-message.search.msgVal,FRONT,조회조건 — 메시지 값. 어느 언어든 걸린다(screen/code/requirements.md).
-message.search.untranslated,FRONT,조회조건 — 미번역 언어. 서버 조건이다(screen/code/requirements.md).
+message.search.msgVal,FRONT,조회조건 — 메시지 값. 어느 언어든 걸린다(screen/admin/system/code/requirements.md).
+message.search.untranslated,FRONT,조회조건 — 미번역 언어. 서버 조건이다(screen/admin/system/code/requirements.md).
 message.search.useScope,FRONT,조회조건 — 사용처.
 message.untranslated,FRONT,번역이 하나라도 비었을 때 붙는 배지(MASTER-06).
 message.validate.duplicate,FRONT,같은 키가 이 화면 안에 둘 있을 때 — 클라이언트가 판정할 수 있다.
@@ -1183,7 +1183,7 @@ user.ip.empty,FRONT,"허용 대역이 하나도 없다 — **제한 없음이라
 user.ip.malformed,FRONT,IP 도 CIDR 도 아니다 — 서버가 다시 본다(frontend/grid.md).
 user.ip.period.tip,FRONT,두 컬럼의 헤더 툴팁 — **판정 시각이 서버 기준**이라는 사실을 말한다.
 user.ip.title,FRONT,탭 3 의 제목.
-user.ip.warn.first,FRONT,첫 대역을 더할 때의 경고 — **그 순간 나머지 전부가 막힌다**. 행이 없으면 제한 없음이므로(sys/user-role.md) 첫 행 하나가 **정책을 켜는 스위치**다. 건수는 *얼마나* 를 말할 뿐이라 그것을 말하지 못한다(screen/code/requirements.md 가 연 자리). /
+user.ip.warn.first,FRONT,첫 대역을 더할 때의 경고 — **그 순간 나머지 전부가 막힌다**. 행이 없으면 제한 없음이므로(sys/user-role.md) 첫 행 하나가 **정책을 켜는 스위치**다. 건수는 *얼마나* 를 말할 뿐이라 그것을 말하지 못한다(screen/admin/system/code/requirements.md 가 연 자리). /
 user.issued.desc,FRONT,"그 안내 — **이 창을 닫으면 다시 볼 수 없다**. 값이 응답에만 있기 때문이다(screen/admin/system/user/requirements.md). 말하지 않으면 관리자가 창을 닫고 나서 재발급을 누르는데, 그러면 방금 전한 값이 그 자리에서 무효가 된다. /"
 user.issued.expiry,FRONT,발급 값이 곧 만료된다는 안내 — `{hours}` 시간.
 user.issued.title,FRONT,발급 결과 모달의 제목.

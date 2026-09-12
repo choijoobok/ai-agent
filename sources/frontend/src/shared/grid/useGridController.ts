@@ -74,7 +74,7 @@ import type {
 /**
  * 그리드 하나의 상태와 흐름 — frontend/grid.md.
  *
- * <p><b>{@code api} 가 없는 그리드가 있다</b>(screen/code/requirements.md 의 하단). 그때는 조회도 저장도 없고
+ * <p><b>{@code api} 가 없는 그리드가 있다</b>(screen/admin/system/code/requirements.md 의 하단). 그때는 조회도 저장도 없고
  * 행을 화면이 넣어 준다 — 버튼이 <b>감춰지는 것이 아니라 선언이 없는 것</b>이며(frontend/grid.md)
  * 이 훅은 그 경우에도 같은 모양을 낸다. 두 컴포넌트로 가르면 크롬이 둘이 된다.
  */
@@ -87,7 +87,7 @@ export interface GridControllerOptions<T> {
   /** 조건은 폼이 검증해서 준다. {@code null} 이면 조회하지 않는다 — frontend/grid.md. */
   params?: () => Promise<SearchCondition[] | null>;
   /**
-   * 조회 봉투의 {@code params} — backend/api.md. <b>screen/code/requirements.md 가 처음 요구했다.</b>
+   * 조회 봉투의 {@code params} — backend/api.md. <b>screen/admin/system/code/requirements.md 가 처음 요구했다.</b>
    *
    * <p>{@link GridControllerOptions.params} 와 <b>다른 축</b>이다. 저것은 사용자가 좁힌
    * 것이고 이것은 <b>화면의 구조</b>다 — 마스터-디테일의 <b>부모 키</b>가 그것이며, 조건
@@ -127,9 +127,9 @@ export interface GridControllerOptions<T> {
   /**
    * 셀이 열리는가. <b>기본은 이 그리드의 저장 권한</b>이다.
    *
-   * <p>넘기는 자리가 하나 있다 — screen/code/requirements.md 의 하단처럼 <b>저장 단위가 다른 그리드</b>인 경우다.
+   * <p>넘기는 자리가 하나 있다 — screen/admin/system/code/requirements.md 의 하단처럼 <b>저장 단위가 다른 그리드</b>인 경우다.
    * 자기 `api.save` 가 없으므로 기본값으로는 영영 읽기 전용이 되는데, 그 화면은 하단이
-   * 편집되는 것이 설계다. 마스터의 저장 권한을 넘겨받는다(screen/code/requirements.md).
+   * 편집되는 것이 설계다. 마스터의 저장 권한을 넘겨받는다(screen/admin/system/code/requirements.md).
    */
   editable?: boolean;
 }
@@ -183,7 +183,7 @@ export interface GridController<T> {
    * 조회. <b>미저장 편집이 있으면 묻는다</b>(frontend/grid.md).
    *
    * @param confirmed 부르는 쪽이 <b>이미 물었을 때</b> {@code true}. 마스터-디테일에서
-   * 마스터 선택이 바뀔 때가 그 자리다(screen/code/requirements.md) — 화면이 선택을 거부할지 판단하려고
+   * 마스터 선택이 바뀔 때가 그 자리다(screen/admin/system/code/requirements.md) — 화면이 선택을 거부할지 판단하려고
    *     먼저 묻는데, 여기서 또 물으면 <b>같은 질문이 두 번</b> 뜬다
    */
   read: (confirmed?: boolean) => Promise<void>;
@@ -813,7 +813,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
       return;
     }
 
-    // ② 경고 — 건수보다 <b>먼저</b> 묻는다(screen/code/requirements.md).
+    // ② 경고 — 건수보다 <b>먼저</b> 묻는다(screen/admin/system/code/requirements.md).
     //
     // 건수는 얼마나를 말할 뿐이라 무엇이 일어나는지를 말하지 못한다. *"기본값 5 로
     // 되돌립니다"* 와 *"끄면 잠긴 계정을 풀 수 없습니다"* 가 그런 것들이며, 건수 뒤에

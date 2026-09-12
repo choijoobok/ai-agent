@@ -88,11 +88,11 @@ api         {화면·도메인}/
 ### 메서드 이름 — **URL 마지막 마디와 같다**
 
 ```
-POST /api/service/code/saveGroup
+POST /api/service/system/code/saveGroup
                        ↑
    CodeAdminController.saveGroup()  →  CodeAdminService.saveGroup()
                        ↑
-   endpoints.ts        saveGroup: '/service/code/saveGroup'
+   endpoints.ts        saveGroup: '/service/system/code/saveGroup'
 ```
 
 **넷이 한 낱말이다** — URL 마디 · 컨트롤러 메서드 · 서비스 메서드 · `endpoints.ts` 키.

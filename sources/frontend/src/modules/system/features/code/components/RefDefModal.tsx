@@ -1,3 +1,4 @@
+// @feat FEAT-504
 import { useCallback, useEffect, useMemo } from 'react';
 import { Modal } from 'antd';
 import { label } from '@/shared/i18n/label';
@@ -6,11 +7,11 @@ import { DataGrid } from '@/shared/grid/DataGrid';
 import { useGridController } from '@/shared/grid/useGridController';
 import type { GridRow } from '@/shared/grid/rows';
 import type { ColumnDef, GridIssue, SelectOption } from '@/shared/grid/types';
-import { CODE_ENDPOINTS } from '@/features/code/api/endpoints';
-import type { CodeRefDefRow } from '@/features/code/types';
+import { CODE_ENDPOINTS } from '@/modules/system/features/code/api/endpoints';
+import type { CodeRefDefRow } from '@/modules/system/features/code/types';
 
 /**
- * 참조 코드 <b>정의</b> 관리 — screen/code/requirements.md.
+ * 참조 코드 <b>정의</b> 관리 — screen/admin/system/code/requirements.md.
  *
  * <p><b>값은 컬럼이고 정의만 모달이다.</b> 이전 판은 값 목록을 모달에 담았는데 그러면
  * <b>한 코드씩만 보여</b> *"어느 코드가 아직 안 채워졌나"* 에 답할 수 없었다(sys/code.md).
@@ -49,7 +50,7 @@ export function RefDefModal(props: RefDefModalProps) {
       save: {
         url: CODE_ENDPOINTS.saveRefDef,
         validate: { grid: validateRefCds },
-        // 값이 함께 사라진다는 것을 건수보다 **먼저** 말한다(frontend/grid.md · screen/code/requirements.md).
+        // 값이 함께 사라진다는 것을 건수보다 **먼저** 말한다(frontend/grid.md · screen/admin/system/code/requirements.md).
         warn: deleteWarnings,
       },
     }),
@@ -106,7 +107,7 @@ export function RefDefModal(props: RefDefModalProps) {
           menuCd={menuCd}
           gridId="refDef"
           controller={grid}
-          // 정의는 물리 삭제다 — 값 → 정의 순서라 게이트가 아니라 확인이다(screen/code/requirements.md).
+          // 정의는 물리 삭제다 — 값 → 정의 순서라 게이트가 아니라 확인이다(screen/admin/system/code/requirements.md).
           deletable
           // 컬럼 넷이 전부 필요하다 — 끄거나 옮길 것이 없으면 설정 창도 뜻이 없다(frontend/grid.md).
           settings={false}
@@ -181,7 +182,7 @@ function validateRefCds(rows: GridRow<CodeRefDefRow>[]): GridIssue[] {
 }
 
 /**
- * 정의를 지우면 <b>그 정의로 입력된 값이 함께 사라진다</b>(screen/code/requirements.md).
+ * 정의를 지우면 <b>그 정의로 입력된 값이 함께 사라진다</b>(screen/admin/system/code/requirements.md).
  *
  * <p>게이트가 아니라 확인인 이유는 <b>DB 가 거부하지 않기</b> 때문이다 — 값 → 정의 순서로
  * 지우면 FK 가 막을 것이 없다. 막을 것이 없으면 <b>묻는다</b>.
