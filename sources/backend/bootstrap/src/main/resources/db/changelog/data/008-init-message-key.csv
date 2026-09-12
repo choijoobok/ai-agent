@@ -260,6 +260,7 @@ err.menu.duplicate,BACK,MENU_CD 중복 — 다른 사람이 방금 만든 것을
 err.menu.not-deletable,BACK,삭제 게이트 — 자식·매핑 API·매핑 역할·개인 예외 중 하나라도 남아 있다(screen/menu/requirements.md).
 err.menu.not-found,BACK,없는 메뉴를 가리켰다. 화면이 낡았거나 화면 밖 경로다.
 err.menu.tree-changed,BACK,"보낸 형제 목록이 지금의 자식 집합과 다르다 — sys/menu.md 의 집합 검증. 나머지와 성질이 다르다: 해서는 안 되는 일이 아니라 보던 트리가 낡았다 이며, 조회 한 번이 복구다. 문구가 그 한 줄을 말한다. /"
+err.menu.url-duplicate,BACK,다른 메뉴가 이미 가진 URL 을 저장하려 했다 — 메뉴 URL은 화면 하나와만 연결된다.
 err.menu.url-on-parent,BACK,자식이 있는 노드에 URL 을 채우려 했다 — URL 과 자식은 배타다(backend/security.md).
 err.menu.url-required,BACK,"권한 행이 있는 노드의 URL 을 비우려 했다 — screen/menu/requirements.md. 비우는 순간 권한 대상이 아닌데 SYS_ROLE_MENU_AUTH 에 행이 남는다 — sys/menu.md 가 ""들어오면 거부"" 라고 한 상태가 거꾸로 만들어진다. /"
 err.message.key-duplicate,BACK,이미 있는 MSG_KEY 로 신규 행을 저장했다. 현재 페이지 밖은 화면이 모른다.

@@ -214,6 +214,13 @@ public class MenuService {
                     MenuErrorCode.URL_ON_PARENT,
                     "자식이 있는 메뉴는 화면을 가질 수 없다 — " + menu.getMenuCd());
         }
+        if (menuUrl != null && all.stream().anyMatch(candidate ->
+                !candidate.getMenuCd().equals(menu.getMenuCd())
+                        && menuUrl.equals(candidate.getMenuUrl()))) {
+            throw new BusinessException(
+                    MenuErrorCode.DUPLICATE_URL,
+                    "다른 메뉴가 이미 사용하는 화면 URL입니다 — " + menuUrl);
+        }
         if (menuUrl == null && hasAuthority(menu.getMenuCd())) {
             throw new BusinessException(
                     MenuErrorCode.URL_REQUIRED_BY_AUTH,

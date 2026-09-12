@@ -340,6 +340,9 @@ public final class MsgKey {
      */
     public static final String ERR_MENU_URL_REQUIRED = "err.menu.url-required";
 
+    /** 다른 메뉴가 이미 가진 URL 을 저장하려 했다 — 메뉴 URL은 화면 하나와만 연결된다. */
+    public static final String ERR_MENU_URL_DUPLICATE = "err.menu.url-duplicate";
+
     /** {@code MENU_CD} 중복 — 다른 사람이 방금 만든 것을 클라이언트가 알 수 없다(frontend/grid.md). */
     public static final String ERR_MENU_DUPLICATE = "err.menu.duplicate";
 

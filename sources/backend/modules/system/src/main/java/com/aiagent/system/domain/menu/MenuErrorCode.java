@@ -24,16 +24,23 @@ public enum MenuErrorCode implements ErrorCode {
     URL_ON_PARENT(MsgKey.ERR_MENU_URL_ON_PARENT, "하위 메뉴가 있는 메뉴는 화면을 가질 수 없습니다"),
     CHILD_UNDER_LEAF(MsgKey.ERR_MENU_CHILD_UNDER_LEAF, "화면이 있는 메뉴에는 하위를 둘 수 없습니다"),
     URL_REQUIRED_BY_AUTH(MsgKey.ERR_MENU_URL_REQUIRED, "권한이 부여된 메뉴는 화면을 비울 수 없습니다"),
+    DUPLICATE_URL(MsgKey.ERR_MENU_URL_DUPLICATE, "다른 메뉴가 이미 사용하는 화면 URL입니다", ErrorType.CONFLICT),
     DUPLICATE_CODE(MsgKey.ERR_MENU_DUPLICATE, "이미 있는 메뉴 코드입니다"),
     NOT_DELETABLE(MsgKey.ERR_MENU_NOT_DELETABLE, "다른 곳에서 쓰고 있어 삭제할 수 없습니다"),
     NOT_FOUND(MsgKey.ERR_MENU_NOT_FOUND, "없는 메뉴입니다");
 
     private final String code;
     private final String defaultMessage;
+    private final ErrorType type;
 
     MenuErrorCode(String code, String defaultMessage) {
+        this(code, defaultMessage, ErrorType.INVALID_REQUEST);
+    }
+
+    MenuErrorCode(String code, String defaultMessage, ErrorType type) {
         this.code = code;
         this.defaultMessage = defaultMessage;
+        this.type = type;
     }
 
     @Override
@@ -43,7 +50,7 @@ public enum MenuErrorCode implements ErrorCode {
 
     @Override
     public ErrorType type() {
-        return ErrorType.INVALID_REQUEST;
+        return type;
     }
 
     @Override

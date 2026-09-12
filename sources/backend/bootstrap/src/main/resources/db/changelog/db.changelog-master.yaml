@@ -448,3 +448,6 @@ databaseChangeLog:
   # 008 이 만든다 — 113 과 같은 이유로 순서가 선다.
   - include:
       file: db/changelog/data/114-init-message.yaml
+  # CR-002 — URL 하나가 두 메뉴를 여는 모호성을 DB에서도 막는다.
+  - include:
+      file: db/changelog/schema/031-menu-url-unique.yaml

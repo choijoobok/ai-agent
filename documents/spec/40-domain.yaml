@@ -127,9 +127,9 @@ entities:
     attributes: [{ name: MENU_CD, type: varchar, pk: true }]
     columns: [MENU_CD, UP_MENU_CD, MENU_NM, MENU_URL, ICON_CD, SORT_NO, USE_YN, EXPORT_YN, SRC_CD, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
     relations: ["UP_MENU_CD -> ENT-510.MENU_CD"]
-    indexes: []
-    index_policy: "URL 중복은 현재 서비스 검증을 보존하며 모듈 이동에서 새 제약을 만들지 않는다"
-    rules: ["순환 트리 금지", "screenRegistry와 시드 URL 1:1"]
+    indexes: [{ name: UK_SYS_MENU_01, columns: [MENU_URL], unique: true, purpose: "NULL인 구조 노드는 복수 허용하고 화면 URL은 하나의 메뉴에만 귀속" }]
+    index_policy: "CR-002: 서버 사전 검증과 DB 유니크 제약을 함께 둬 동시 저장·직접 데이터 변경도 URL 1:1을 깨지 못하게 한다"
+    rules: ["순환 트리 금지", "screenRegistry와 시드 URL 1:1", "NULL이 아닌 MENU_URL은 전역 유일하며 중복 저장은 409으로 거부"]
     audit: standard
     delete_policy: hard
 

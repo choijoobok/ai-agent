@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 031-sys-menu-url-unique
+      author: codex
+      comment: CR-002 — 화면 URL은 메뉴 하나에만 귀속된다. NULL 구조 노드는 복수 허용한다.
+      changes:
+        - addUniqueConstraint:
+            tableName: SYS_MENU
+            columnNames: MENU_URL
+            constraintName: UK_SYS_MENU_01
