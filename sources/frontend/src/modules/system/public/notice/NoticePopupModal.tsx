@@ -1,26 +1,27 @@
+// @feat FEAT-509
 import { useEffect, useState } from 'react';
 import { Button, Checkbox, Descriptions, Modal, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
-import { getNoticePopup } from '@/features/notification/api/notificationApi';
-import { dismiss, isDismissed } from '@/features/notification/noticeDismissal';
-import type { NoticeDetail } from '@/features/notification/types';
+import { getNoticePopup } from '@/modules/system/public/notice/api/noticeApi';
+import { dismiss, isDismissed } from '@/modules/system/public/notice/noticeDismissal';
+import type { NoticeDetail } from '@/modules/system/public/notice/types';
 
 interface Props {
-  /** *"N건 더 있음"* 이 여는 곳 — 알림 모달의 공지 탭이다(screen/notice/requirements.md C안). */
+  /** *"N건 더 있음"* 이 여는 곳 — 알림 모달의 공지 탭이다(screen/admin/system/notice/requirements.md C안). */
   onOpenNotifications: () => void;
 }
 
 /**
- * 공지 팝업 — screen/_standalone/README.md · screen/notice/requirements.md **C안**.
+ * 공지 팝업 — screen/_standalone/README.md · screen/admin/system/notice/requirements.md **C안**.
  *
  * <h2>최신 1건만 띄운다</h2>
  *
  * <p>나머지는 알림 모달의 공지 탭으로 보낸다 — frontend/tabs.md 에 이미 그 탭이 있으므로 **목록을 두
  * 곳에 만들지 않는다.** 팝업은 **도달을 보장하는 장치**이고 목록은 그 탭이다.
  *
- * <p>어느 건이 뜨는지는 서버가 정한다 — 목록 정렬의 첫 건이며(screen/notice/requirements.md) 그 정렬이
+ * <p>어느 건이 뜨는지는 서버가 정한다 — 목록 정렬의 첫 건이며(screen/admin/system/notice/requirements.md) 그 정렬이
  * 결정적이라 **매 로그인마다 달라지지 않는다.**
  *
  * <h2>셸이 선 뒤에 뜬다 — `NP-01` · `NP-02`</h2>
@@ -31,7 +32,7 @@ interface Props {
  *
  * <h2>"오늘 하루 보지 않기" 는 기기에 담긴다</h2>
  *
- * <p>`localStorage` · 다음 자정까지 · 영구 숨김 없음(screen/notice/requirements.md · `noticeDismissal`).
+ * <p>`localStorage` · 다음 자정까지 · 영구 숨김 없음(screen/admin/system/notice/requirements.md · `noticeDismissal`).
  */
 export function NoticePopupModal({ onOpenNotifications }: Props) {
   const [notice, setNotice] = useState<NoticeDetail | null>(null);
@@ -104,7 +105,7 @@ export function NoticePopupModal({ onOpenNotifications }: Props) {
         </Descriptions.Item>
       </Descriptions>
 
-      {/* 본문은 텍스트다 — 모르는 형식이 와도 해석하지 않는다(screen/notice/requirements.md · `NoticeDetailView`). */}
+      {/* 본문은 텍스트다 — 모르는 형식이 와도 해석하지 않는다(screen/admin/system/notice/requirements.md · `NoticeDetailView`). */}
       <Typography.Paragraph style={{ whiteSpace: 'pre-wrap' }}>
         {notice.content}
       </Typography.Paragraph>

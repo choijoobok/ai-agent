@@ -1,7 +1,7 @@
 package com.aiagent.domain.notification;
 
 /**
- * 요청의 종류 — sys/notification.md · screen/notice/requirements.md. <b>셋이고, 공통코드가 아니다.</b>
+ * 요청의 종류 — sys/notification.md · screen/admin/system/notice/requirements.md. <b>셋이고, 공통코드가 아니다.</b>
  *
  * <p>sys/notification.md 이 {@link NotiType} 과 같은 판단으로 닫았다 — 값은 소스가 분기하는 것이라
  * 관리자가 늘리면 처리 코드가 없는 값이 생긴다. 라벨만 메시지 키({@code notiReq.type.*})다.

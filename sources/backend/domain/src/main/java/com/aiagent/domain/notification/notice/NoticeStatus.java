@@ -4,10 +4,10 @@ import com.aiagent.domain.notification.entity.SysNotice;
 import java.time.Instant;
 
 /**
- * 공지의 게시 상태 — screen/notice/requirements.md. <b>저장되지 않는 파생 값</b>이다.
+ * 공지의 게시 상태 — screen/admin/system/notice/requirements.md. <b>저장되지 않는 파생 값</b>이다.
  *
  * <p>컬럼이 아니라 {@code USE_YN} 과 기간 둘의 <b>조합</b>이며, 그래서 조회조건에서도
- * 파생이다(screen/notice/requirements.md — {@code 72} 가 세는 파생 조건의 다섯째 사례).
+ * 파생이다(screen/admin/system/notice/requirements.md — {@code 72} 가 세는 파생 조건의 다섯째 사례).
  *
  * <h2>규칙이 한 곳에 있다</h2>
  *
@@ -36,7 +36,7 @@ public enum NoticeStatus {
     /** 게시중 — 목록과 팝업이 보는 상태. */
     ACTIVE,
 
-    /** 종료 — 게시 종료가 지났다. {@code 지난 공지 포함} 으로 켜면 보인다(screen/notice/requirements.md). */
+    /** 종료 — 게시 종료가 지났다. {@code 지난 공지 포함} 으로 켜면 보인다(screen/admin/system/notice/requirements.md). */
     EXPIRED;
 
     /**

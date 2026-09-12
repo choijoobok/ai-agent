@@ -100,7 +100,7 @@ export interface SearchField {
    * 초기화는 <b>빈칸이 아니라 기본값</b>으로 되돌린다(frontend/search-form.md).
    *
    * <p><b>배열이면 다중 선택의 기본값</b>이다 — `op: 'in'` 인 콤보에서만 뜻이 있다.
-   * 실물은 공지의 *상태* 셋(`SCHEDULED`+`ACTIVE`+`EXPIRED` — screen/notice/requirements.md)과 알림 요청의
+   * 실물은 공지의 *상태* 셋(`SCHEDULED`+`ACTIVE`+`EXPIRED` — screen/admin/system/notice/requirements.md)과 알림 요청의
    * `RECEIVED` 하나다. 문자열 하나를 주면 원소 하나짜리 배열이 된다.
    *
    * <p><b>기본값을 두는 것이 늘 옳지는 않다.</b> 사용자 관리의 *계정 상태* 는 한동안

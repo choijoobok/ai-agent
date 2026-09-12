@@ -16,7 +16,7 @@ import java.time.Instant;
  * 않으면서 <i>그 사람에게 따지는 경로</i>를 만든다. 워크플로를 만들지 않기로 한 것의
  * 같은 방향이다.
  *
- * @param handleMemo <b>반려 사유가 여기 온다</b>(screen/notice/requirements.md). 목업이
+ * @param handleMemo <b>반려 사유가 여기 온다</b>(screen/admin/system/notice/requirements.md). 목업이
  *     <i>"사유: 관리자 직접 해제됨"</i> 을 줄에 붙인 자리이며, 처리에서는 비어 있을 수
  * 있다(메모가 선택이다 — sys/notification.md)
  */

@@ -19,7 +19,7 @@ import org.hibernate.annotations.Nationalized;
 import org.hibernate.type.SqlTypes;
 
 /**
- * 공지사항 — sys/notification.md · screen/notice/requirements.md.
+ * 공지사항 — sys/notification.md · screen/admin/system/notice/requirements.md.
  *
  * <h2>축이 셋이고 한 컬럼으로 합칠 수 없다</h2>
  *
@@ -39,9 +39,9 @@ import org.hibernate.type.SqlTypes;
  *
  * <h2>대상도 읽음도 없다</h2>
  *
- * <p>공지는 <b>전체 공개</b>이며(screen/notice/requirements.md) 역할별로 갈리는 통지는 공지가 아니라 알림이다 —
+ * <p>공지는 <b>전체 공개</b>이며(screen/admin/system/notice/requirements.md) 역할별로 갈리는 통지는 공지가 아니라 알림이다 —
  * {@link SysNotiInbox} 가 {@code USER_ID} 를 갖는 것이 그 자리다. 읽음 상태도 두지
- * 않는다(screen/notice/requirements.md): 배지가 공지를 세지 않으므로(frontend/tabs.md) 저장해도 나타날 곳이 없고,
+ * 않는다(screen/admin/system/notice/requirements.md): 배지가 공지를 세지 않으므로(frontend/tabs.md) 저장해도 나타날 곳이 없고,
  * 전체 공개라 읽음은 <b>사용자 수 × 공지 수</b>로 자라는 교차 테이블이 된다.
  *
  * <h2>감사 4컬럼이 있다 — 사람이 작성한다</h2>
@@ -60,7 +60,7 @@ public class SysNotice extends BaseAuditEntity {
     /**
      * {@code CONTENT_TYPE_CD} 의 기본 — sys/notification.md.
      *
-     * <p><b>지금 값이 이것 하나뿐이라 화면이 컬럼을 감춘다</b>(screen/notice/requirements.md). 컬럼을 빼지 않는
+     * <p><b>지금 값이 이것 하나뿐이라 화면이 컬럼을 감춘다</b>(screen/admin/system/notice/requirements.md). 컬럼을 빼지 않는
      * 것은 에디터를 붙이는 프로젝트가 {@code HTML} 로 저장하기 때문이며, 그때
      * <b>저장 시 sanitize 가 필수</b>다 — 공지는 전 사용자에게 렌더링된다.
      */
@@ -88,7 +88,7 @@ public class SysNotice extends BaseAuditEntity {
      * <p>{@code @Lob} 이 아니라 이 조합인 것은 backend/persistence.md 의 실측 때문이다 — {@code @Lob} 은
      * MySQL 에서 {@code tinytext}(255바이트)가 되어 본문이 들어가지 않는다.
      *
-     * <p>화면은 <b>셀에서 한 줄로 자르고 {@code textModal} 로 연다</b>(frontend/grid.md · screen/notice/requirements.md).
+     * <p>화면은 <b>셀에서 한 줄로 자르고 {@code textModal} 로 연다</b>(frontend/grid.md · screen/admin/system/notice/requirements.md).
      * <b>정렬은 끈다</b> — Oracle 이 {@code CLOB} 의 {@code ORDER BY} 를 막는다.
      */
     @Nationalized
@@ -117,7 +117,7 @@ public class SysNotice extends BaseAuditEntity {
     private Boolean popupYn;
 
     /**
-     * 팝업 기간 — <b>게시 기간 안이어야 한다</b>(screen/notice/requirements.md).
+     * 팝업 기간 — <b>게시 기간 안이어야 한다</b>(screen/admin/system/notice/requirements.md).
      *
      * <p>넘으면 <i>팝업은 뜨는데 목록에 없는 공지</i>가 생기고, 팝업의
      * <i>"공지 N건 더 있음"</i> 링크가 빈 목록으로 간다. 검증은 서비스가 하며 DB 제약으로
@@ -133,7 +133,7 @@ public class SysNotice extends BaseAuditEntity {
      * 즉시 내림 — <b>기간과 축이 다르다</b>(sys/notification.md).
      *
      * <p>표시 판정에서 이것이 기간을 이긴다: {@code false} 면 기간 안이어도 목록에서
-     * 사라진다(screen/notice/requirements.md). 기간을 고쳐 내리게 하면 <b>미래의 게시 계획을 손으로 지우는
+     * 사라진다(screen/admin/system/notice/requirements.md). 기간을 고쳐 내리게 하면 <b>미래의 게시 계획을 손으로 지우는
      * 일</b>이 되고, 되돌릴 때 원래 기간을 기억해야 한다.
      */
     @Convert(converter = YnConverter.class)
@@ -141,10 +141,10 @@ public class SysNotice extends BaseAuditEntity {
     private Boolean useYn;
 
     /**
-     * 목록 상단 고정 — screen/notice/requirements.md. <b>드래그가 아니라 숫자다</b>(screen/admin/system/batch/schedule/requirements.md 과 같은 판단).
+     * 목록 상단 고정 — screen/admin/system/notice/requirements.md. <b>드래그가 아니라 숫자다</b>(screen/admin/system/batch/schedule/requirements.md 과 같은 판단).
      *
      * <p>중복을 막지 않는다. 결정성은 tie-breaker({@code NOTICE_ID})가 주며, 그 결정성이
-     * <b>화면에 직접 보인다</b> — 팝업이 이 정렬의 첫 건을 집는다(screen/notice/requirements.md C안).
+     * <b>화면에 직접 보인다</b> — 팝업이 이 정렬의 첫 건을 집는다(screen/admin/system/notice/requirements.md C안).
      */
     @Column(name = "SORT_NO", nullable = false)
     private Integer sortNo;
@@ -171,11 +171,11 @@ public class SysNotice extends BaseAuditEntity {
     /**
      * 수정 — <b>전 컬럼을 함께 쓴다</b>(frontend/grid.md). 그리드 한 행이 한 번에 저장된다.
      *
-     * <p><b>{@code POPUP_YN} 을 꺼도 팝업 기간을 지우지 않는다</b>(screen/notice/requirements.md) — 다시 켤 때
+     * <p><b>{@code POPUP_YN} 을 꺼도 팝업 기간을 지우지 않는다</b>(screen/admin/system/notice/requirements.md) — 다시 켤 때
      * 값이 살아 있어야 한다. 화면이 보내 준 값을 그대로 쓴다.
      *
      * <p>{@code CONTENT_TYPE_CD} 를 받지 않는다. 값이 {@code TEXT} 하나뿐이라 고를 것이
-     * 없고(screen/notice/requirements.md), 받을 경로를 두면 <b>화면이 렌더 방식을 정하는</b> 셈이 된다 —
+     * 없고(screen/admin/system/notice/requirements.md), 받을 경로를 두면 <b>화면이 렌더 방식을 정하는</b> 셈이 된다 —
      * {@code HTML} 이 들어오면 표시 측이 분기하지 않아 태그가 글자로 보인다.
      */
     public void apply(

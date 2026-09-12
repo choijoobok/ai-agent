@@ -14,7 +14,7 @@ import java.util.List;
  * 샘플 주문의 화이트리스트 — playbook/INDEX.md · backend/api.md.
  *
  * <p><b>정적 상수다.</b> {@code NoticeSpec} 이 빈이 된 것은 <i>지금</i> 이 필요한 파생
- * 조건 때문이었고(screen/notice/requirements.md), 여기에는 그런 조건이 없다 — 필요 없는데 빈으로 만들면
+ * 조건 때문이었고(screen/admin/system/notice/requirements.md), 여기에는 그런 조건이 없다 — 필요 없는데 빈으로 만들면
  * 스펙 하나를 읽으려고 스프링을 띄우게 된다.
  *
  * <h2>화면 둘이 <b>한 화이트리스트</b>를 나눠 쓴다</h2>

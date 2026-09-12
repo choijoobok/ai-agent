@@ -33,6 +33,9 @@ const required = [
   'src/modules/system/features/batchschedule/api/endpoints.ts',
   'src/modules/system/features/batchhistory/pages/BatchHistoryPage.tsx',
   'src/modules/system/features/batchhistory/api/endpoints.ts',
+  'src/modules/system/features/notice/pages/NoticeMgmtPage.tsx',
+  'src/modules/system/features/notice/api/endpoints.ts',
+  'src/modules/system/public/notice/NoticePopupModal.tsx',
   'src/modules/system/public/settings/SettingsModal.tsx',
   '../backend/bootstrap/src/main/resources/menu/menu-tree.yaml',
 ];
@@ -50,6 +53,7 @@ const legacy = [
   'src/features/errorlog/pages/ErrorLogPage.tsx',
   'src/features/batchschedule/pages/BatchSchedulePage.tsx',
   'src/features/batchhistory/pages/BatchHistoryPage.tsx',
+  'src/features/notice/pages/NoticeMgmtPage.tsx',
   'src/features/settings/SettingsModal.tsx',
 ];
 const errors = [];
@@ -75,6 +79,7 @@ for (const [route, source] of [
   ['/admin/system/log/error', '@/modules/system/features/errorlog/pages/ErrorLogPage'],
   ['/admin/system/batch/schedule', '@/modules/system/features/batchschedule/pages/BatchSchedulePage'],
   ['/admin/system/batch/history', '@/modules/system/features/batchhistory/pages/BatchHistoryPage'],
+  ['/admin/system/notice', '@/modules/system/features/notice/pages/NoticeMgmtPage'],
 ]) {
   if (!registry.includes(route) || !registry.includes(source)) {
     errors.push(`화면 레지스트리가 ${route} → ${source}를 선언하지 않는다`);
@@ -90,7 +95,7 @@ if (!accessPayloadModal.includes('staleTime: Infinity')) {
 }
 
 const menuSeed = readFileSync('../backend/bootstrap/src/main/resources/menu/menu-tree.yaml', 'utf8');
-for (const route of ['/admin/system/menu', '/admin/system/api-catalog', '/admin/system/user', '/admin/system/user-auth', '/admin/system/code', '/admin/system/message', '/admin/system/config', '/admin/system/log/login', '/admin/system/log/access', '/admin/system/log/error', '/admin/system/batch/schedule', '/admin/system/batch/history']) {
+for (const route of ['/admin/system/menu', '/admin/system/api-catalog', '/admin/system/user', '/admin/system/user-auth', '/admin/system/code', '/admin/system/message', '/admin/system/config', '/admin/system/log/login', '/admin/system/log/access', '/admin/system/log/error', '/admin/system/batch/schedule', '/admin/system/batch/history', '/admin/system/notice']) {
   if (!menuSeed.includes(`url: ${route}`)) errors.push(`메뉴 선언에 ${route}가 없다`);
 }
 

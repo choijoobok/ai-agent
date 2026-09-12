@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 알림을 넣는 <b>유일한 진입점</b> — screen/notice/requirements.md.
+ * 알림을 넣는 <b>유일한 진입점</b> — screen/admin/system/notice/requirements.md.
  *
  * <h2>왜 서비스 하나를 두는가</h2>
  *
- * <p>생산자가 넷이다(screen/notice/requirements.md) — 요청 처리 · 비밀번호 만료 예고(AUTH-05) · 권한
+ * <p>생산자가 넷이다(screen/admin/system/notice/requirements.md) — 요청 처리 · 비밀번호 만료 예고(AUTH-05) · 권한
  * 만료 예정(AUTHZ-08) · 배치 실패(BATCH-06). 각자 {@code SYS_NOTI_INBOX} 에 직접 쓰면
  * {@link NotiType} 선택과 제목 형식이 <b>넷으로 갈린다</b>.
  *
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>지금은 인앱뿐이다 — outbox 가 없다</h2>
  *
- * <p>screen/notice/requirements.md. 메일·SMS 어댑터가 없는 배포이므로 {@code SYS_NOTI_OUTBOX} 는 <b>테이블
+ * <p>screen/admin/system/notice/requirements.md. 메일·SMS 어댑터가 없는 배포이므로 {@code SYS_NOTI_OUTBOX} 는 <b>테이블
  * 자체를 만들지 않았다</b>. sys/notification.md 이 <i>"인앱 알림은 outbox 를 거치지 않는다 — DB 에
  * 행을 쓰는 것이 곧 도달"</i> 로 이미 갈라 두었으므로 인앱만으로 성립한다.
  *
@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>트랜잭션을 열지 않는다 — 부르는 쪽에 참여한다</h2>
  *
- * <p>{@code Propagation.REQUIRED} 가 기본이며 그것이 의도다. 요청 처리(screen/notice/requirements.md)가
+ * <p>{@code Propagation.REQUIRED} 가 기본이며 그것이 의도다. 요청 처리(screen/admin/system/notice/requirements.md)가
  * 롤백되면 <b>알림도 없어야</b> 하고, 새 트랜잭션을 열면 <i>처리는 실패했는데 처리됐다는
  * 알림만 간</i> 상태가 만들어진다.
  */
@@ -55,7 +55,7 @@ public class NotificationSender {
      *
      * <p>{@code LINK_MENU_CD} 가 {@code null} 이면 이동 없음이다(sys/notification.md). 요청 처리 알림이
      * 그 경우이며, 결과를 보러 갈 자리가 알림 모달의 탭이고 <b>탭에는 {@code MENU_CD} 가
-     * 없다</b>(screen/_standalone/README.md · screen/notice/requirements.md).
+     * 없다</b>(screen/_standalone/README.md · screen/admin/system/notice/requirements.md).
      */
     @Transactional
     public void send(String userId, NotiType type, String title, String content) {
@@ -88,7 +88,7 @@ public class NotificationSender {
     }
 
     /**
-     * 여러 사람에게 같은 알림 — 만료 예고·배치 실패가 쓴다(screen/notice/requirements.md).
+     * 여러 사람에게 같은 알림 — 만료 예고·배치 실패가 쓴다(screen/admin/system/notice/requirements.md).
      *
      * <p><b>수신자마다 행이 하나다.</b> 한 행에 여러 수신자를 담으면 읽음 상태를 사람마다
      * 가질 수 없고, 그러면 배지가 성립하지 않는다(frontend/tabs.md).

@@ -19,20 +19,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 인앱 알림함 — sys/notification.md · frontend/tabs.md · screen/notice/requirements.md.
+ * 인앱 알림함 — sys/notification.md · frontend/tabs.md · screen/admin/system/notice/requirements.md.
  *
  * <h2>큐가 아니다</h2>
  *
  * <p>sys/notification.md 이 <i>"인앱 알림은 outbox 를 거치지 않는다 — DB 에 행을 쓰는 것이 곧 도달"</i>
  * 로 갈라 두었다. 그래서 상태 전이도 릴레이도 없고 {@code READ_YN} 하나만 바뀐다.
- * {@code SYS_NOTI_OUTBOX} 는 <b>테이블 자체가 없다</b>(screen/notice/requirements.md) — 외부 채널 어댑터가 없는
+ * {@code SYS_NOTI_OUTBOX} 는 <b>테이블 자체가 없다</b>(screen/admin/system/notice/requirements.md) — 외부 채널 어댑터가 없는
  * 배포에서 outbox 는 지나가는 것이 없는 테이블이라 DDL 을 미뤘다.
  *
  * <h2>지금 이 엔티티가 있는 이유는 파기 배치다</h2>
  *
  * <p>보존이 90일이고(retention.md · sys/notification.md) {@code RetentionPurgeJob} 이 리포지토리로 도는 구조라
  * 대상 테이블에는 엔티티가 있어야 한다. <b>읽기·쓰기 서비스는 아직 없다</b> — 알림 모달과
- * 생산자 넷(screen/notice/requirements.md)이 오는 슬라이스의 것이다.
+ * 생산자 넷(screen/admin/system/notice/requirements.md)이 오는 슬라이스의 것이다.
  *
  * <h2>감사 4컬럼이 없다</h2>
  *
@@ -84,16 +84,16 @@ public class SysNotiInbox {
      *
      * <p>{@code SYS_USER} 는 물리 삭제를 하지 않으므로(USER-02 · sys/user-role.md) 이 FK 가 계정
      * 정리를 막지 않는다 — {@code SYS_BATCH_HISTORY} 가 {@code BATCH_ID} 에 FK 를 걸지 못한
-     * 것과 갈리는 자리다(sys/batch.md · screen/notice/requirements.md).
+     * 것과 갈리는 자리다(sys/batch.md · screen/admin/system/notice/requirements.md).
      */
     @Column(name = "USER_ID", length = 30, nullable = false)
     private String userId;
 
     /**
-     * {@code AUTH} · {@code AUTHZ} · {@code BATCH} · {@code REQUEST} — screen/notice/requirements.md 의 생산자
+     * {@code AUTH} · {@code AUTHZ} · {@code BATCH} · {@code REQUEST} — screen/admin/system/notice/requirements.md 의 생산자
      * 넷과 1:1 이다.
      *
-     * <p><b>공통코드가 아니다</b>(sys/notification.md · screen/notice/requirements.md). 값은 소스가 분기하는 것이라 관리자가
+     * <p><b>공통코드가 아니다</b>(sys/notification.md · screen/admin/system/notice/requirements.md). 값은 소스가 분기하는 것이라 관리자가
      * 늘리면 <b>처리 코드가 없는 값</b>이 생긴다. 라벨만 메시지 키({@code noti.type.*})다.
      *
      * <p>{@code String} 이 아니라 열거형인 것은 <b>넣는 쪽이 넷 중에서 고르게</b> 하기
@@ -120,9 +120,9 @@ public class SysNotiInbox {
      *
      * <p><b>FK 가 없다.</b> 알림은 이력이라 대상 메뉴가 사라져도 남아야 하는데, FK 가 있으면
      * 메뉴 하나를 지우려고 과거 알림을 먼저 지워야 한다. 이 엔티티에서 <b>끊어질 수 있는
-     * 유일한 참조</b>이며 표시 시점에 이동 버튼을 감추는 것으로 처리한다(screen/notice/requirements.md).
+     * 유일한 참조</b>이며 표시 시점에 이동 버튼을 감추는 것으로 처리한다(screen/admin/system/notice/requirements.md).
      *
-     * <p>{@code null} 이면 이동 없음이다 — 요청 처리 알림이 그렇다(screen/notice/requirements.md): 결과를 보러 갈
+     * <p>{@code null} 이면 이동 없음이다 — 요청 처리 알림이 그렇다(screen/admin/system/notice/requirements.md): 결과를 보러 갈
      * 자리가 알림 모달의 탭이고 <b>탭에는 {@code MENU_CD} 가 없다</b>(screen/_standalone/README.md).
      */
     @Column(name = "LINK_MENU_CD", length = 30)

@@ -32,7 +32,7 @@ const STAT_TONE: Record<ReqStatus, string | undefined> = {
  * <h2>방향이 반대다</h2>
  *
  * <p>앞의 두 탭은 **받는 것**이고 여기는 **보내는 것**이다. 그래서 미읽음이 없고
- * (`NI-15`), 정렬이 최신순이며(내 이력이지 대기열이 아니다 — screen/notice/requirements.md), 목록에 **버튼이
+ * (`NI-15`), 정렬이 최신순이며(내 이력이지 대기열이 아니다 — screen/admin/system/notice/requirements.md), 목록에 **버튼이
  * 하나 붙는다.**
  *
  * <h2>처리는 여기서 하지 않는다 — `NI-13`</h2>
@@ -46,7 +46,7 @@ const STAT_TONE: Record<ReqStatus, string | undefined> = {
  * <p>접수 상태로 열려 있는 유형은 폼에서 고를 수 있되 **보내기가 막힌다.** 서버도
  * 거부하지만(마지막 방어) 눌러서 오류를 보는 것보다 낫다 — 워크플로가 없으므로
  * 같은 것을 또 내도 진행이 빨라지지 않고, 관리자는 그 여벌을 **하나씩 반려**해야 하며
- * 반려마다 알림이 나간다(screen/notice/requirements.md).
+ * 반려마다 알림이 나간다(screen/admin/system/notice/requirements.md).
  */
 export function MyRequestTab() {
   const [loaded, setLoaded] = useState<MyRequests | null>(null);
@@ -187,7 +187,7 @@ export function MyRequestTab() {
                       없고, 그것을 되묻는 단계가 없다 — 한 번의 답이 전부여야 한다.
 
                       **라벨이 상태마다 다르다.** 반려면 *사유* 이고 처리면 *처리 메모* 다
-                      (screen/notice/requirements.md 의 비대칭 그대로) — 처리된 요청에 "사유" 를 붙이면 <b>처리된
+                      (screen/admin/system/notice/requirements.md 의 비대칭 그대로) — 처리된 요청에 "사유" 를 붙이면 <b>처리된
                       것이 반려된 것처럼</b> 읽힌다. 브라우저에서 눌러 보고 드러났다.
                     */}
                     {row.handleMemo &&

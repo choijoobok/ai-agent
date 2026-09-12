@@ -14,7 +14,7 @@ import { ExpiryWarningModal } from '@/modules/system/public/auth/components/Expi
 import { SettingsModal } from '@/modules/system/public/settings/SettingsModal';
 import { ProfileModal } from '@/features/profile/ProfileModal';
 import { NotificationModal } from '@/features/notification/NotificationModal';
-import { NoticePopupModal } from '@/features/notification/NoticePopupModal';
+import { NoticePopupModal } from '@/modules/system/public/notice/NoticePopupModal';
 import { getUnreadCount } from '@/features/notification/api/notificationApi';
 import { handOff } from '@/shared/routes/handoffStore';
 import { rememberRecentMenu } from '@/shared/authz/recentMenus';

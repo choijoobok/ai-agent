@@ -1,6 +1,7 @@
-package com.aiagent.api.notice;
+// @feat FEAT-509
+package com.aiagent.system.api.notice;
 
-import com.aiagent.api.notice.request.NoticeSaveRequest;
+import com.aiagent.system.api.notice.request.NoticeSaveRequest;
 import com.aiagent.api.trace.TraceId;
 import com.aiagent.core.response.ApiResponse;
 import com.aiagent.core.search.PageResponse;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code NOTICE_MGMT} — screen/notice/requirements.md. <b>경로가 둘이고 액션이 둘이다.</b>
+ * {@code NOTICE_MGMT} — screen/admin/system/notice/requirements.md. <b>경로가 둘이고 액션이 둘이다.</b>
  *
  * <table><caption></caption>
  *   <tr><td>{@code getList}</td><td>{@code READ}</td><td>마스터 목록 — §4.2</td></tr>
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
  * <p>sys/menu.md 의 액션 열이 {@code R S} 이고, frontend/grid.md 의 <i>"{@code E} 가 없으면 ②도
  * 감춘다"</i> 가 {@code BATCH_SCHEDULE} 에 이어 <b>두 번째로</b> 쓰인다.
  *
- * <p><b>근거가 저쪽과 다르다</b>(screen/notice/requirements.md) — 배치는 <i>원본이 화면</i> 이었고 여기는
+ * <p><b>근거가 저쪽과 다르다</b>(screen/admin/system/notice/requirements.md) — 배치는 <i>원본이 화면</i> 이었고 여기는
  * <b>본문이 {@code nclob} 이라 엑셀 셀 상한에서 잘린다</b>(frontend/grid.md). 잘린 공지 파일은
  * 원본도 참고 자료도 아니다.
  *
@@ -42,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 로 쪼갠 것이 여기서 경로의 갈림으로 나타난다.
  */
 @RestController
-@RequestMapping("/api/service/notice")
+@RequestMapping("/api/service/system/notice")
 public class NoticeController {
 
     private final NoticeQueryService queries;
@@ -63,7 +64,7 @@ public class NoticeController {
     }
 
     /**
-     * 저장 — 추가 · 수정 · <b>물리 삭제</b>가 한 트랜잭션이다(screen/notice/requirements.md).
+     * 저장 — 추가 · 수정 · <b>물리 삭제</b>가 한 트랜잭션이다(screen/admin/system/notice/requirements.md).
      *
      * <p><b>팝업 기간이 게시 기간을 벗어나면 거부한다</b>. 이 화면 고유의 검증이며,
      * 없으면 <b>목록에 없는 공지가 팝업으로 뜬다</b> — 팝업의 <i>"공지 N건 더 있음"</i>

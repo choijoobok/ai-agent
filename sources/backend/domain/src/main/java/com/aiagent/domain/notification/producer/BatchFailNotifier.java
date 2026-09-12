@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * 배치가 실패하면 알린다 — <b>BATCH-06</b> · screen/admin/system/batch/schedule/requirements.md · screen/notice/requirements.md.
+ * 배치가 실패하면 알린다 — <b>BATCH-06</b> · screen/admin/system/batch/schedule/requirements.md · screen/admin/system/notice/requirements.md.
  *
  * <h2>부르는 곳이 하나다 — {@code BatchHistoryWriter}</h2>
  *
@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
  *
  * <h2>{@code LOST} 도 실패다</h2>
  *
- * <p>screen/notice/requirements.md 는 <i>"러너가 {@code FAIL} 을 적을 때"</i> 로 적었지만 {@link
+ * <p>screen/admin/system/notice/requirements.md 는 <i>"러너가 {@code FAIL} 을 적을 때"</i> 로 적었지만 {@link
  * BatchResultCode#LOST} 를 함께 넣는다 — <b>프로세스가 죽어 결과를 못 적은 실행</b>이며
  * (screen/admin/system/batch/schedule/requirements.md 의 유령), 운영에서 그것은 실패보다 나쁘다: 아무도 안 죽였는데 사라졌다.
  * 알리지 않으면 <b>화면을 열어 봐야만</b> 알 수 있다.
@@ -37,7 +37,7 @@ import org.springframework.stereotype.Component;
  *
  * <h2>수신자가 역할이다</h2>
  *
- * <p>{@code sys-config.noti.batch-fail-role}(screen/notice/requirements.md). screen/admin/system/batch/schedule/requirements.md 이 <i>"배치별 on/off 를
+ * <p>{@code sys-config.noti.batch-fail-role}(screen/admin/system/notice/requirements.md). screen/admin/system/batch/schedule/requirements.md 이 <i>"배치별 on/off 를
  * 두면 꺼 둔 것을 잊는다"</i> 며 <b>전역 설정 하나</b>로 정한 그것이며, 채널이 인앱뿐이라
  * 채널 키는 없다.
  *

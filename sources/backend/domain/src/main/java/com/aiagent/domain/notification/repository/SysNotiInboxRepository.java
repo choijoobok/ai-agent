@@ -21,7 +21,7 @@ import org.springframework.data.repository.query.Param;
 public interface SysNotiInboxRepository extends JpaRepository<SysNotiInbox, Long> {
 
     /**
-     * 파기 대상의 <b>번호만</b> 한 청크 — LOG-07 · retention.md · screen/notice/requirements.md.
+     * 파기 대상의 <b>번호만</b> 한 청크 — LOG-07 · retention.md · screen/admin/system/notice/requirements.md.
      *
      * <p><b>{@code READ_YN} 을 보지 않는다.</b> sys/notification.md 이 닫은 결정이며, 읽은 것만 지우면
      * <b>안 읽은 알림이 영원히 쌓이고</b> 그것이 정확히 지우고 싶은 행이다(아무도 안 보는
@@ -68,7 +68,7 @@ public interface SysNotiInboxRepository extends JpaRepository<SysNotiInbox, Long
     List<SysNotiInbox> findByUserIdAndReadYn(String userId, Boolean readYn);
 
     /**
-     * 최근에 <b>이 종류를 이미 받은</b> 사람 — 만료 예고 배치의 중복 방지(screen/notice/requirements.md).
+     * 최근에 <b>이 종류를 이미 받은</b> 사람 — 만료 예고 배치의 중복 방지(screen/admin/system/notice/requirements.md).
      *
      * <p><b>배치가 하루 두 번 돌 수 있다</b>(즉시 실행 · screen/admin/system/batch/schedule/requirements.md). 그리고 예고 창은 며칠
      * 짜리라 창이 열려 있는 동안 <b>매일 같은 사람에게</b> 같은 말을 하게 된다 — 그것은

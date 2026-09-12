@@ -22,13 +22,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code NOTICE_MGMT} 의 조회 — screen/notice/requirements.md.
+ * {@code NOTICE_MGMT} 의 조회 — screen/admin/system/notice/requirements.md.
  *
  * <h2>{@code CONTENT} 를 목록이 싣는다</h2>
  *
  * <p>{@code nclob} 인데 {@code SELECT} 한다. screen/admin/system/log/access/requirements.md 가 이력에서 <i>전문을 목록에 싣지
  * 않는다</i> 고 한 것과 갈리는데, 근거가 양이었기 때문이다 — 이력은 수천만 행이고 공지는
- * 수백 건이며 <b>페이지 사이즈가 20</b> 이다(screen/notice/requirements.md).
+ * 수백 건이며 <b>페이지 사이즈가 20</b> 이다(screen/admin/system/notice/requirements.md).
  *
  * <p>그리고 여기서는 <b>본문이 편집 대상</b>이다. 별도 조회로 빼면 {@code textModal} 을
  * 열 때마다 왕복이 하나 늘고, 그 왕복은 <i>편집하려고 여는</i> 동작마다 난다.

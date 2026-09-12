@@ -17,10 +17,10 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/notice` |
+| 페이지 경로 | `/admin/system/notice` |
 | 메뉴코드 | `NOTICE_MGMT` |
-| 프론트 폴더 | `sources/frontend/src/features/notice/` |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/notification/notice/` · `sources/backend/api/…/api/notice/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/notice/` |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/notification/notice/` · `sources/backend/modules/system/…/api/notice/` |
 | 화면 유형 | **단일 그리드** — 하단 pane 이 없다 |
 | 처리 유형 | CRUD |
 | 쓰는 액션 | `R` `S` — **엑셀 자체가 없다** |
@@ -243,8 +243,8 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |
 |---|---|---|---|---|---|
-| 목록 | `getList` | `/service/notice/getList` | POST | R | offset |
-| 저장 | `save` | `/service/notice/save` | POST | S | — |
+| 목록 | `getList` | `/service/system/notice/getList` | POST | R | offset |
+| 저장 | `save` | `/service/system/notice/save` | POST | S | — |
 
 - **둘뿐이다.** 추가·수정·**물리 삭제**가 `save` 하나다.
 - **폴더가 인가 경계다.** 요청함(`NOTI_REQUEST`)과 한 폴더에 두면 두 화면의 엔드포인트가 서로에게 매핑되어 **공지 권한이 요청 처리를 연다** — 요청 처리는 **남의 요청을 판정하는 일**이라 그 사고의 대가가 크다.
@@ -257,7 +257,7 @@
 
 - 코드그룹: **없음.** 게시 상태 넷은 파생값이며 소스가 갖는다.
 - 메시지 키: 화면 `MSG.NOTICE_*` · 서버 `MsgKey.ERR_NOTICE_REQUIRED` · `ERR_NOTICE_NOT_FOUND` · `ERR_NOTICE_PERIOD` · `ERR_NOTICE_POPUP_RANGE` · `ERR_NOTICE_POPUP_PERIOD`.
-- 메뉴 시드: `menu-tree.yaml` — `code: NOTICE_MGMT` · `parent: NOTICE` · `url: /notice`. **`export` 없음.**
+- 메뉴 시드: `menu-tree.yaml` — `code: NOTICE_MGMT` · `parent: NOTICE` · `url: /admin/system/notice`. **`export` 없음.**
 - 초기 데이터 전제: 없음.
 - 설정: `app.business-timezone` — **게시 상태 판정에는 개입하지 않는다.** 판정은 `Instant` 비교라 시간대가 들어갈 자리가 없다(`NoticeStatus.resolve`). 이 설정은 `BusinessCalendar` 의 것이며 **`LocalDate` 로 자르는 화면**이 쓴다.
 - **게시 상태 열거형의 사본이 둘이다** — 관리 측과 표시 측(`features/notification`)에 각각 있다. 기능끼리 import 하지 않는 규칙이라 **사본이 둘인 것은 의도**이며, **그렇다면 최소한 순서가 같아야 한다.**

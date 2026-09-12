@@ -18,7 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 사용자 → 관리자 요청함 — sys/notification.md · screen/notice/requirements.md.
+ * 사용자 → 관리자 요청함 — sys/notification.md · screen/admin/system/notice/requirements.md.
  *
  * <p>{@link SysNotiInbox} 와 <b>방향이 반대이고 상태의 성격이 다르다</b>(sys/notification.md) — 알림은
  * 읽음(봤나), 요청은 처리(했나)다. 한 테이블에 합치면 그 둘이 한 컬럼에 섞인다.
@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
  *
  * <h2>화면이 셀을 고치지 않는다</h2>
  *
- * <p>screen/notice/requirements.md — 처리는 저장이 아니라 <b>판정</b>이고, 부수 효과가 있으며(요청자에게 알림이
+ * <p>screen/admin/system/notice/requirements.md — 처리는 저장이 아니라 <b>판정</b>이고, 부수 효과가 있으며(요청자에게 알림이
  * 나간다), 반려는 두 값을 함께 강제해야 한다. 그래서 이 엔티티에는 그리드 저장이 부르는
  * {@code apply(전 컬럼)} 이 없고 {@link #handle} 하나만 있다.
  */
@@ -93,7 +93,7 @@ public class SysNotiRequest {
     private Instant handleDtm;
 
     /**
-     * 처리·반려 사유 — <b>반려에서만 필수</b>다(sys/notification.md · screen/notice/requirements.md).
+     * 처리·반려 사유 — <b>반려에서만 필수</b>다(sys/notification.md · screen/admin/system/notice/requirements.md).
      *
      * <p>비대칭이 의도다. 처리는 결과 자체가 답이지만 반려는 이유가 없으면 답이 아니며,
      * 사유 없는 반려는 요청자가 <b>같은 요청을 다시 내게</b> 만든다 — 그것이 워크플로를

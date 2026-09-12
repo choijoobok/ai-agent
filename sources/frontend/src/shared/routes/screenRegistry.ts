@@ -62,8 +62,8 @@ export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
     요청을 판정하는 일이라 그 사고의 대가가 크다.
     `generateApiSeed` 가 이 두 줄을 따라와 각 폴더의 `api/endpoints.ts` 를 읽는다(backend/api.md).
   */
-  '/notice': lazy(async () => ({
-    default: (await import('@/features/notice/pages/NoticeMgmtPage')).NoticeMgmtPage,
+  '/admin/system/notice': lazy(async () => ({
+    default: (await import('@/modules/system/features/notice/pages/NoticeMgmtPage')).NoticeMgmtPage,
   })),
   '/noti-request': lazy(async () => ({
     default: (await import('@/features/notirequest/pages/NotiRequestPage')).NotiRequestPage,

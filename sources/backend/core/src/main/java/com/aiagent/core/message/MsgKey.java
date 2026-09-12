@@ -673,7 +673,7 @@ public final class MsgKey {
      */
     public static final String ERR_USER_SESSION_INDEX = "err.user-session.index";
 
-    // ── 공지사항 — NoticeErrorCode(screen/notice/requirements.md) ───────────────────────────
+    // ── 공지사항 — NoticeErrorCode(screen/admin/system/notice/requirements.md) ───────────────────────────
 
     /** 제목·본문·게시 시작이 비었다 — 셀 단위 오류로 돌려준다(frontend/grid.md). */
     public static final String ERR_NOTICE_REQUIRED = "err.notice.required";
@@ -685,7 +685,7 @@ public final class MsgKey {
     public static final String ERR_NOTICE_PERIOD = "err.notice.period";
 
     /**
-     * <b>팝업 기간이 게시 기간을 벗어났다</b> — screen/notice/requirements.md.
+     * <b>팝업 기간이 게시 기간을 벗어났다</b> — screen/admin/system/notice/requirements.md.
      *
      * <p>이 검증이 없으면 <b>목록에 없는 공지가 팝업으로 뜬다</b>. 팝업의
      * <i>"공지 N건 더 있음"</i> 링크가 알림 모달의 공지 탭을 여는데 그 탭은 게시 기간을
@@ -693,16 +693,16 @@ public final class MsgKey {
      */
     public static final String ERR_NOTICE_POPUP_RANGE = "err.notice.popup-range";
 
-    /** 팝업을 켰는데 팝업 기간이 비었다 — screen/notice/requirements.md. */
+    /** 팝업을 켰는데 팝업 기간이 비었다 — screen/admin/system/notice/requirements.md. */
     public static final String ERR_NOTICE_POPUP_PERIOD = "err.notice.popup-period";
 
-    // ── 요청함 — NotiRequestErrorCode(screen/notice/requirements.md) ────────────────────────
+    // ── 요청함 — NotiRequestErrorCode(screen/admin/system/notice/requirements.md) ────────────────────────
 
     /** 없는 요청이다. */
     public static final String ERR_NOTI_REQ_NOT_FOUND = "err.noti-req.not-found";
 
     /**
-     * <b>이미 처리된 요청이 선택에 섞였다</b> — screen/notice/requirements.md.
+     * <b>이미 처리된 요청이 선택에 섞였다</b> — screen/admin/system/notice/requirements.md.
      *
      * <p>처리 가능한 것만 골라 실행하지 않는다. 일부만 처리하면 <b>알림이 일부에게만
      * 나가고</b> 사용자는 무엇이 처리됐는지 모른다 — 되돌리는 길이 없으므로
@@ -740,7 +740,7 @@ public final class MsgKey {
      *
      * <p>워크플로가 없으므로 요청은 <b>한 번 내면 답이 올 때까지 그대로</b>다 —
      * 같은 것을 또 내도 진행이 빨라지지 않고 대기열만 늘어난다. 그리고 관리자는 그 여벌을
-     * <b>하나씩 반려</b>해야 하는데, 반려마다 요청자에게 알림이 나간다(screen/notice/requirements.md).
+     * <b>하나씩 반려</b>해야 하는데, 반려마다 요청자에게 알림이 나간다(screen/admin/system/notice/requirements.md).
      *
      * <p>막는 것은 <b>같은 유형</b>뿐이다. 권한 신청과 잠금 해제는 서로 다른 답을 기다리는
      * 것이라 함께 열려 있어야 한다.

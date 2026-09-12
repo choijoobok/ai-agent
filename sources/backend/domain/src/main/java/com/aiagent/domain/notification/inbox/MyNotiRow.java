@@ -15,7 +15,7 @@ import java.time.Instant;
  * {@code VARCHAR(2000)} 이다. 한 줄 요약을 따로 만들 필요가 없다.
  *
  * @param linkMenuCd 클릭하면 갈 메뉴. {@code null} 이면 이동 없음이다(요청 처리 알림이
- * 그렇다 — screen/notice/requirements.md). <b>화면은 이 코드가 내 메뉴 트리에 있을 때만 이동 버튼을
+ * 그렇다 — screen/admin/system/notice/requirements.md). <b>화면은 이 코드가 내 메뉴 트리에 있을 때만 이동 버튼을
  *     켠다</b>({@code NI-11}) — 권한이 없어진 메뉴로 보내 403 을 보이는 것보다 낫다.
  *     <b>알림이 권한을 주지 않는다</b>
  * @param readYn 열었는가. <b>배지가 세는 유일한 값</b>이다(frontend/tabs.md)

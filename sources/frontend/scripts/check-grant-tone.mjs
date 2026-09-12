@@ -20,7 +20,7 @@ import { join, relative, sep } from 'node:path';
  * </pre>
  *
  * <p><b>공지의 `SCHEDULED` 는 뺀다.</b> 그것은 <b>게시 상태</b>이지 부여 상태가 아니다 —
- * 이름만 같고 요건서가 주의색으로 못박았다(screen/notice/requirements.md).
+ * 이름만 같고 요건서가 주의색으로 못박았다(screen/admin/system/notice/requirements.md).
  */
 
 const SRC = new URL('../src/', import.meta.url).pathname.replace(/^\/(?=[A-Za-z]:)/, '');
@@ -29,7 +29,7 @@ const SRC = new URL('../src/', import.meta.url).pathname.replace(/^\/(?=[A-Za-z]
 const OWNERS = ['shared/authz/grantState.ts'];
 
 /** 이름만 같고 다른 개념 — 위 머리말. */
-const OTHER_MEANING = ['features/notice/'];
+const OTHER_MEANING = ['features/notice/', 'modules/system/features/notice/'];
 
 const DECLARES = /\bSCHEDULED:\s*'(none|ok|warn|err|muted)'/;
 

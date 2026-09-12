@@ -405,10 +405,10 @@ export const MSG = {
   /** 상세에서 목록으로 — **새 탭을 열지 않는다**(frontend/tabs.md). */
   NOTIFICATION_BACK: 'notification.back',
 
-  // ── 공지사항 탭 (screen/_standalone/README.md · screen/notice/requirements.md) ───────────────────────────
+  // ── 공지사항 탭 (screen/_standalone/README.md · screen/admin/system/notice/requirements.md) ───────────────────────────
   //
-  // 팝업이 최신 1건만 띄우므로(screen/notice/requirements.md C안) **공지 목록의 실질 자리가 이 탭**이다.
-  // 읽음 상태가 없다(screen/notice/requirements.md) — 미읽음 강조를 쓰지 않는다(NI-03).
+  // 팝업이 최신 1건만 띄우므로(screen/admin/system/notice/requirements.md C안) **공지 목록의 실질 자리가 이 탭**이다.
+  // 읽음 상태가 없다(screen/admin/system/notice/requirements.md) — 미읽음 강조를 쓰지 않는다(NI-03).
   /** 게시 기간이 끝난 공지를 켜서 본다 — 기본은 꺼져 있다(NI-04). */
   NOTIFICATION_NOTICE_INCLUDE_EXPIRED: 'notification.notice.includeExpired',
   /** 게시 중인 공지가 하나도 없다 — 정상 상태다. */
@@ -443,10 +443,10 @@ export const MSG = {
    */
   NOTIFICATION_MINE_GOTO_DENIED: 'notification.mine.gotoDenied',
 
-  // ── 알림의 생산자 (sys/notification.md · screen/notice/requirements.md) ────────────────────────
+  // ── 알림의 생산자 (sys/notification.md · screen/admin/system/notice/requirements.md) ────────────────────────
   //
   // 공통코드가 아니다 — 값이 늘면 처리 코드가 함께 늘어야 한다. **라벨만** 메시지 키다.
-  /** 요청 처리 결과 — screen/notice/requirements.md. */
+  /** 요청 처리 결과 — screen/admin/system/notice/requirements.md. */
   NOTI_TYPE_REQUEST: 'noti.type.REQUEST',
   /** 비밀번호 만료 예고 — AUTH-05. */
   NOTI_TYPE_AUTH: 'noti.type.AUTH',
@@ -483,10 +483,10 @@ export const MSG = {
    */
   NOTIFICATION_REQUEST_PENDING: 'notification.request.pending',
 
-  // ── 공지 팝업 (screen/_standalone/README.md · screen/notice/requirements.md C안) ─────────────────────────
+  // ── 공지 팝업 (screen/_standalone/README.md · screen/admin/system/notice/requirements.md C안) ─────────────────────────
   //
   // 도달을 보장하는 장치다. 목록은 알림 모달의 공지 탭이며 **두 곳에 만들지 않는다**.
-  /** "오늘 하루 보지 않기" — `localStorage` 에 **다음 자정까지** 담는다(screen/notice/requirements.md). */
+  /** "오늘 하루 보지 않기" — `localStorage` 에 **다음 자정까지** 담는다(screen/admin/system/notice/requirements.md). */
   NOTICE_POPUP_DISMISS: 'noticePopup.dismiss',
   /** 나머지는 공지 탭에 있다 — "공지 {count}건 더 있음". */
   NOTICE_POPUP_MORE: 'noticePopup.more',
@@ -2708,21 +2708,21 @@ export const MSG = {
   /** 오류 탭이 비활성인 이유 — 성공한 실행이다. 위와 <b>사유가 다르다</b>. */
   BATCH_HISTORY_DETAIL_NO_ERROR: 'batchHistory.detail.noError',
 
-  // ── 공지사항 관리 (screen/notice/requirements.md) ──────────────────────────────────────
+  // ── 공지사항 관리 (screen/admin/system/notice/requirements.md) ──────────────────────────────────────
 
   /** 마스터 그리드의 제목. */
   NOTICE_GRID_TITLE: 'notice.grid.title',
-  /** 순서 — <b>상단 고정용</b>이며 드래그가 아니라 숫자다(screen/notice/requirements.md). */
+  /** 순서 — <b>상단 고정용</b>이며 드래그가 아니라 숫자다(screen/admin/system/notice/requirements.md). */
   NOTICE_COL_SORT_NO: 'notice.col.sortNo',
   NOTICE_COL_NOTICE_ID: 'notice.col.noticeId',
   NOTICE_COL_TITLE: 'notice.col.title',
-  /** 본문 — `nclob` 이지만 목록에 싣는다. 공지는 수백 건이다(screen/notice/requirements.md). */
+  /** 본문 — `nclob` 이지만 목록에 싣는다. 공지는 수백 건이다(screen/admin/system/notice/requirements.md). */
   NOTICE_COL_CONTENT: 'notice.col.content',
   NOTICE_COL_FROM_DTM: 'notice.col.fromDtm',
   /** 게시 종료 — <b>비우면 무기한</b>이다(sys/notification.md). */
   NOTICE_COL_TO_DTM: 'notice.col.toDtm',
   /**
-   * 게시 상태 — <b>파생이며 서버가 판정한다</b>(screen/notice/requirements.md).
+   * 게시 상태 — <b>파생이며 서버가 판정한다</b>(screen/admin/system/notice/requirements.md).
    *
    * <p>클라이언트가 계산하면 PC 시계가 틀린 사람에게 다른 배지가 뜨고, 기준 시각은
    * 브라우저가 아니라 업무 타임존이다(sys/INDEX.md).
@@ -2750,19 +2750,19 @@ export const MSG = {
   /** 조회 0건 — 일반 문구다. */
   NOTICE_EMPTY: 'notice.empty',
   /**
-   * <b>`게시중` 으로 걸렀는데 0건</b> — 진단으로 읽히게 한다(screen/notice/requirements.md · screen/admin/system/log/access/requirements.md).
+   * <b>`게시중` 으로 걸렀는데 0건</b> — 진단으로 읽히게 한다(screen/admin/system/notice/requirements.md · screen/admin/system/log/access/requirements.md).
    *
    * <p>지금 사용자에게 아무 공지도 보이지 않는다는 뜻이고, 그것을 알고 싶어서 거른 것이다.
    */
   NOTICE_EMPTY_ACTIVE: 'notice.empty.active',
-  /** 삭제 확인 — <b>되돌릴 수 없다</b>고 말하고 대안(끄기)을 함께 준다(screen/notice/requirements.md). */
+  /** 삭제 확인 — <b>되돌릴 수 없다</b>고 말하고 대안(끄기)을 함께 준다(screen/admin/system/notice/requirements.md). */
   NOTICE_DELETE_CONFIRM: 'notice.delete.confirm',
 
-  // ── 요청함 처리 (screen/notice/requirements.md) ────────────────────────────────────────
+  // ── 요청함 처리 (screen/admin/system/notice/requirements.md) ────────────────────────────────────────
 
   NOTI_REQUEST_GRID_TITLE: 'notiRequest.grid.title',
   NOTI_REQUEST_COL_REQ_ID: 'notiRequest.col.reqId',
-  /** 요청일시 — <b>오름차순</b>이 기본이다. 대기열은 오래 기다린 것이 먼저다(screen/notice/requirements.md). */
+  /** 요청일시 — <b>오름차순</b>이 기본이다. 대기열은 오래 기다린 것이 먼저다(screen/admin/system/notice/requirements.md). */
   NOTI_REQUEST_COL_CRE_DTM: 'notiRequest.col.creDtm',
   NOTI_REQUEST_COL_USER: 'notiRequest.col.user',
   NOTI_REQUEST_COL_TYPE: 'notiRequest.col.type',
@@ -2785,27 +2785,27 @@ export const MSG = {
   NOTI_REQUEST_SEARCH_TYPE: 'notiRequest.search.type',
   NOTI_REQUEST_SEARCH_USER: 'notiRequest.search.user',
 
-  /** 처리 · 반려 버튼 — <b>저장이 아니라 판정</b>이다(screen/notice/requirements.md). */
+  /** 처리 · 반려 버튼 — <b>저장이 아니라 판정</b>이다(screen/admin/system/notice/requirements.md). */
   NOTI_REQUEST_ACTION_DONE: 'notiRequest.action.done',
   NOTI_REQUEST_ACTION_REJECT: 'notiRequest.action.reject',
   /** 모달 제목 둘. */
   NOTI_REQUEST_MODAL_DONE: 'notiRequest.modal.done',
   NOTI_REQUEST_MODAL_REJECT: 'notiRequest.modal.reject',
-  /** 처리는 메모가 선택이다 — 결과 자체가 답이다(screen/notice/requirements.md). */
+  /** 처리는 메모가 선택이다 — 결과 자체가 답이다(screen/admin/system/notice/requirements.md). */
   NOTI_REQUEST_MEMO_OPTIONAL: 'notiRequest.memo.optional',
   /** 반려는 사유가 필수다 — 이유가 없으면 답이 아니다(sys/notification.md). */
   NOTI_REQUEST_MEMO_REQUIRED: 'notiRequest.memo.required',
   NOTI_REQUEST_MEMO_PLACEHOLDER: 'notiRequest.memo.placeholder',
-  /** <b>사유가 요청자에게 간다</b>는 사실을 확인 문구가 말해야 한다(frontend/grid.md · screen/notice/requirements.md). */
+  /** <b>사유가 요청자에게 간다</b>는 사실을 확인 문구가 말해야 한다(frontend/grid.md · screen/admin/system/notice/requirements.md). */
   NOTI_REQUEST_REJECT_NOTICE: 'notiRequest.reject.notice',
-  /** 처리하면 요청자의 알림함에 행이 하나 생긴다 — 같은 트랜잭션이다(screen/notice/requirements.md). */
+  /** 처리하면 요청자의 알림함에 행이 하나 생긴다 — 같은 트랜잭션이다(screen/admin/system/notice/requirements.md). */
   NOTI_REQUEST_DONE_NOTICE: 'notiRequest.done.notice',
 
-  /** 조회 0건 — <b>비어 있는 것이 정상인 유일한 화면</b>이다(screen/notice/requirements.md). */
+  /** 조회 0건 — <b>비어 있는 것이 정상인 유일한 화면</b>이다(screen/admin/system/notice/requirements.md). */
   NOTI_REQUEST_EMPTY: 'notiRequest.empty',
-  /** 선택에 이미 처리된 것이 섞였다 — 버튼이 비활성인 이유(screen/notice/requirements.md). */
+  /** 선택에 이미 처리된 것이 섞였다 — 버튼이 비활성인 이유(screen/admin/system/notice/requirements.md). */
   NOTI_REQUEST_HINT_NOT_RECEIVED: 'notiRequest.hint.notReceived',
-  /** 미사용 계정 표시 — <b>`(삭제된 사용자)` 는 없다</b>(screen/notice/requirements.md). */
+  /** 미사용 계정 표시 — <b>`(삭제된 사용자)` 는 없다</b>(screen/admin/system/notice/requirements.md). */
   NOTI_REQUEST_USER_DISABLED: 'notiRequest.user.disabled',
 
   // ── 샘플 · 마스터-디테일 상하 분할 (playbook/INDEX.md) ─────────────────────

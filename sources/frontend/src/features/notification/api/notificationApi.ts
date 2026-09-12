@@ -3,9 +3,6 @@ import { NOTIFICATION_ENDPOINTS } from '@/features/notification/api/endpoints';
 import type {
   MyNotifications,
   MyRequests,
-  NoticeBrief,
-  NoticeDetail,
-  NoticePopup,
   ReqType,
   SystemInfo,
 } from '@/features/notification/types';
@@ -18,37 +15,6 @@ import type {
  */
 export function getSystemInfo(): Promise<SystemInfo> {
   return get<SystemInfo>(NOTIFICATION_ENDPOINTS.getSystemInfo);
-}
-
-/**
- * 공지 탭의 목록 — screen/_standalone/README.md.
- *
- * @param includeExpired `NI-04` 의 "지난 공지 포함". 켜도 **내린 공지는 오지 않는다**
- */
-export function getNoticeList(includeExpired: boolean): Promise<NoticeBrief[]> {
-  return get<NoticeBrief[]>(NOTIFICATION_ENDPOINTS.getNoticeList, {
-    params: { includeExpired },
-  });
-}
-
-/** 고른 공지 하나 — 본문이 여기서 온다. */
-export function getNoticeOne(
-  noticeId: number,
-  includeExpired: boolean,
-): Promise<NoticeDetail> {
-  return get<NoticeDetail>(NOTIFICATION_ENDPOINTS.getNoticeOne, {
-    params: { noticeId, includeExpired },
-  });
-}
-
-/**
- * 로그인 뒤 띄울 것 — screen/_standalone/README.md.
- *
- * **실패해도 셸은 동작한다**(`NP-02`). 부르는 쪽이 기다리지 않으며, 셸 부팅을 막는 것은
- * 메시지 번들 하나뿐이다.
- */
-export function getNoticePopup(): Promise<NoticePopup> {
-  return get<NoticePopup>(NOTIFICATION_ENDPOINTS.getNoticePopup);
 }
 
 /**
@@ -75,7 +41,7 @@ export function markAllNotiRead(): Promise<MyNotifications> {
   return post<MyNotifications>(NOTIFICATION_ENDPOINTS.saveAllNotiRead);
 }
 
-/** 내가 낸 요청 — **최신이 위**다(대기열이 아니라 이력이다 · screen/notice/requirements.md). */
+/** 내가 낸 요청 — **최신이 위**다(대기열이 아니라 이력이다 · screen/admin/system/notice/requirements.md). */
 export function getMyRequests(): Promise<MyRequests> {
   return get<MyRequests>(NOTIFICATION_ENDPOINTS.getMyRequests);
 }

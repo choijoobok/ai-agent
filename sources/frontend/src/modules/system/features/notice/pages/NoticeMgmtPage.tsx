@@ -1,3 +1,4 @@
+// @feat FEAT-509
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { FillColumn } from '@/shared/components/FillColumn';
 import { label } from '@/shared/i18n/label';
@@ -10,11 +11,11 @@ import type { ColumnDef, DeleteColumnSpec, Tone } from '@/shared/grid/types';
 import { SearchForm, type SearchFormHandle } from '@/shared/searchform/SearchForm';
 import { useSearchFormHeader } from '@/shared/searchform/useSearchFormHeader';
 import type { SearchField } from '@/shared/searchform/types';
-import { NOTICE_ENDPOINTS } from '@/features/notice/api/endpoints';
-import type { NoticeRow, NoticeStatus } from '@/features/notice/types';
+import { NOTICE_ENDPOINTS } from '@/modules/system/features/notice/api/endpoints';
+import type { NoticeRow, NoticeStatus } from '@/modules/system/features/notice/types';
 
 /**
- * `NOTICE_MGMT` — screen/notice/requirements.md. <b>여기서 만든 것이 전 사용자에게 뜬다.</b>
+ * `NOTICE_MGMT` — screen/admin/system/notice/requirements.md. <b>여기서 만든 것이 전 사용자에게 뜬다.</b>
  *
  * <p>62~65 의 관리 화면은 잘못 고치면 <b>관리자가</b> 곤란하다. 이 화면에서 잘못 올린 글은
  * <b>다음 로그인부터 전원에게 팝업으로</b> 뜨며, 그것이 저장 검증이 넷인 이유다.
@@ -34,14 +35,14 @@ import type { NoticeRow, NoticeStatus } from '@/features/notice/types';
  *
  * <h2>하단 pane 이 없다</h2>
  *
- * <p>공지는 자식이 없다. 첨부가 그 자리인데 이번 범위 밖이다(screen/notice/requirements.md). 그래서 frontend/grid.md 의
+ * <p>공지는 자식이 없다. 첨부가 그 자리인데 이번 범위 밖이다(screen/admin/system/notice/requirements.md). 그래서 frontend/grid.md 의
  * 제약이 걸리지 않아 <b>다중 선택을 연다</b> — 여러 건을 한 번에 지우는 일이 실제로 있다
  * (`BATCH_SCHEDULE` 은 pane 이 있어 단일이었다).
  */
 
 const MENU_CD = 'NOTICE_MGMT';
 
-/** 행마다 `nclob` 이 달려 있다 — 목록에서 읽지 않지만 행 수를 늘릴 이유도 없다(screen/notice/requirements.md). */
+/** 행마다 `nclob` 이 달려 있다 — 목록에서 읽지 않지만 행 수를 늘릴 이유도 없다(screen/admin/system/notice/requirements.md). */
 const PAGE_SIZE = 20;
 const PAGE_SIZES = [20, 50, 100];
 
@@ -100,7 +101,7 @@ export function NoticeMgmtPage() {
    *
    * <p>`SaveApi.confirm` 은 불리언이라 문구를 실을 수 없다. 여기가 그 자리이며,
    * 되돌릴 수 없다는 사실과 <b>대안(끄기)</b>을 함께 말한다 — 사람이 실제로 하려는 일은
-   * 대개 *잠깐 감추는 것*이고 `USE_YN` 이 이미 그것을 갖고 있다(screen/notice/requirements.md).
+   * 대개 *잠깐 감추는 것*이고 `USE_YN` 이 이미 그것을 갖고 있다(screen/admin/system/notice/requirements.md).
    */
   const warnDelete = useCallback((rows: GridRow<NoticeRow>[]): string[] => {
     const removed = rows.filter((row) => row.state === 'D');
@@ -177,7 +178,7 @@ export function NoticeMgmtPage() {
             sortNo: row.data.sortNo,
           }),
       /*
-        <b>`noticeStat` 을 보내지 않는다</b>(screen/notice/requirements.md 의 `NoticeSaveRow`). 서버가 계산하는
+        <b>`noticeStat` 을 보내지 않는다</b>(screen/admin/system/notice/requirements.md 의 `NoticeSaveRow`). 서버가 계산하는
         파생 값이라 보낼 경로를 두면 <b>화면이 게시 여부를 스스로 정하는</b> 셈이 된다 —
         읽기 전용은 화면에서만 읽기 전용이고 요청 본문은 조작할 수 있다(원칙 P1).
       */
@@ -185,18 +186,18 @@ export function NoticeMgmtPage() {
   });
 
   /**
-   * 지울 수 있는가 — <b>게이트가 없다</b>(screen/notice/requirements.md).
+   * 지울 수 있는가 — <b>게이트가 없다</b>(screen/admin/system/notice/requirements.md).
    *
    * <p>`BATCH_SCHEDULE` 은 <i>켜져 있는가·도는가</i> 를 봤지만(screen/admin/system/batch/schedule/requirements.md) 공지는 지운다고
    * 조용히 멈추는 것이 없다. 지워진 뒤에 아무도 그것을 참조하지 않는다.
    *
    * <p>그래도 이 선언을 두는 것은 <b>첨부가 붙는 날 여기에 조항이 는다</b>는 자리
-   * 표시이기 때문이다(screen/notice/requirements.md) — 그때 `SYS_FILE_REF` 를 함께 지워야 한다.
+   * 표시이기 때문이다(screen/admin/system/notice/requirements.md) — 그때 `SYS_FILE_REF` 를 함께 지워야 한다.
    */
   const deletable = useMemo<DeleteColumnSpec<NoticeRow>>(() => ({ enabled: () => true }), []);
 
   /**
-   * 빈 상태가 <b>둘로 갈린다</b> — screen/notice/requirements.md · screen/admin/system/log/access/requirements.md.
+   * 빈 상태가 <b>둘로 갈린다</b> — screen/admin/system/notice/requirements.md · screen/admin/system/log/access/requirements.md.
    *
    * <p>`게시중` 하나로 걸렀을 때의 0건은 <b>사실을 말하는 답</b>이다: 지금 사용자에게
    * 아무 공지도 보이지 않는다는 뜻이고, 그것을 알고 싶어서 거른 것이다. 제목으로 걸러
@@ -239,7 +240,7 @@ export function NoticeMgmtPage() {
           deletable={deletable}
           emptyText={emptyText}
           /*
-            <b>다중이다</b>(screen/notice/requirements.md). 하단 pane 이 없으므로 frontend/grid.md 의 제약이 걸리지 않고
+            <b>다중이다</b>(screen/admin/system/notice/requirements.md). 하단 pane 이 없으므로 frontend/grid.md 의 제약이 걸리지 않고
             (`BATCH_SCHEDULE` 은 pane 이 있어 단일이었다 — screen/admin/system/batch/schedule/requirements.md), 여러 건을 한 번에
             지우는 일이 실제로 있다.
           */
@@ -250,13 +251,13 @@ export function NoticeMgmtPage() {
   );
 }
 
-// ── 컬럼 (screen/notice/requirements.md) ────────────────────────────────────────────────
+// ── 컬럼 (screen/admin/system/notice/requirements.md) ────────────────────────────────────────────────
 
 /**
  * <b>본문이 목록에 보인다.</b> 64 가 이력에서 전문을 감춘 것과 갈리는데 근거가 양이었기
- * 때문이다 — 이력은 수천만 행이고 공지는 수백 건이다(screen/notice/requirements.md).
+ * 때문이다 — 이력은 수천만 행이고 공지는 수백 건이다(screen/admin/system/notice/requirements.md).
  *
- * <p>편집기가 <b>`largeText` 다</b>. screen/notice/requirements.md 은 `textModal` 로 적었지만 그 편집기는 아직
+ * <p>편집기가 <b>`largeText` 다</b>. screen/admin/system/notice/requirements.md 은 `textModal` 로 적었지만 그 편집기는 아직
  * 없고(`shared/grid/types.ts` — *"`listModal` · `textModal` · `richText` 는 아직 없다"*),
  * `BATCH_SCHEDULE` 의 `PARAM_JSON` 도 같은 자리에서 `largeText` 를 쓴다. 두 문서가 모두
  * `textModal` 이라 적었으므로 <b>구현이 오면 두 화면이 함께 바뀐다</b>.
@@ -270,9 +271,9 @@ function buildColumns(): ColumnDef<NoticeRow>[] {
       width: 80,
       sortable: true,
       /*
-        <b>상단 고정용이고 드래그가 아니라 숫자다</b>(screen/notice/requirements.md · screen/admin/system/batch/schedule/requirements.md 과 같은 판단).
+        <b>상단 고정용이고 드래그가 아니라 숫자다</b>(screen/admin/system/notice/requirements.md · screen/admin/system/batch/schedule/requirements.md 과 같은 판단).
         중복을 막지 않으며 결정성은 tie-breaker(`NOTICE_ID`)가 준다 — 그 결정성이
-        <b>화면에 직접 보인다</b>: 팝업이 이 정렬의 첫 건을 집는다(screen/notice/requirements.md C안).
+        <b>화면에 직접 보인다</b>: 팝업이 이 정렬의 첫 건을 집는다(screen/admin/system/notice/requirements.md C안).
       */
       editable: true,
     },
@@ -341,7 +342,7 @@ function buildColumns(): ColumnDef<NoticeRow>[] {
       width: 100,
       filter: false,
       /*
-        <b>파생이며 읽기 전용이다</b>(screen/notice/requirements.md). 이 칸이 <b>기간을 눈으로 확인시킨다</b> —
+        <b>파생이며 읽기 전용이다</b>(screen/admin/system/notice/requirements.md). 이 칸이 <b>기간을 눈으로 확인시킨다</b> —
         게시 시작을 미래로 넣고 저장했는데 여기가 `예정` 이면 맞게 쓴 것이다.
 
         <b>값은 코드이고 글자만 라벨이다</b>(frontend/grid.md) — `tone` 맵이 코드를 키로 봐야 하고
@@ -359,7 +360,7 @@ function buildColumns(): ColumnDef<NoticeRow>[] {
       sortable: false,
       /*
         <b>스위치가 즉시 저장을 뜻하지 않는다</b>(frontend/grid.md). 그리고 이 값은 기간을 이긴다 —
-        끄면 게시 기간 안이어도 목록에서 사라진다(screen/notice/requirements.md).
+        끄면 게시 기간 안이어도 목록에서 사라진다(screen/admin/system/notice/requirements.md).
       */
       editable: true,
     },
@@ -370,7 +371,7 @@ function buildColumns(): ColumnDef<NoticeRow>[] {
       width: 80,
       /*
         켜면 아래 둘이 필수가 되고, <b>팝업 기간이 게시 기간을 벗어나면 저장이
-        거부한다</b>(screen/notice/requirements.md) — 없으면 *목록에 없는 공지가 팝업으로 뜬다*.
+        거부한다</b>(screen/admin/system/notice/requirements.md) — 없으면 *목록에 없는 공지가 팝업으로 뜬다*.
       */
       editable: true,
     },
@@ -399,12 +400,12 @@ function buildColumns(): ColumnDef<NoticeRow>[] {
   ];
 }
 
-// ── 조회조건 (screen/notice/requirements.md) ────────────────────────────────────────────
+// ── 조회조건 (screen/admin/system/notice/requirements.md) ────────────────────────────────────────────
 
 /**
  * 넷이며 <b>기간이 필수가 아니다</b>.
  *
- * <p>screen/admin/system/log/access/requirements.md 의 <i>기간 필수 + 상한</i> 을 상속하지 않는다(screen/notice/requirements.md) — 근거가 대용량인데
+ * <p>screen/admin/system/log/access/requirements.md 의 <i>기간 필수 + 상한</i> 을 상속하지 않는다(screen/admin/system/notice/requirements.md) — 근거가 대용량인데
  * 공지는 수백 건이다. screen/admin/system/batch/schedule/requirements.md 이 배치 등록에 내린 것과 같은 판단이다.
  *
  * <p><b>`게시 상태` 의 기본값이 `내림` 을 뺀 셋이다.</b> 내려 둔 공지는 *안 보이는 것이
@@ -429,10 +430,10 @@ function buildSearchFields(): SearchField[] {
       field: 'noticeFromDtm',
       label: MSG.NOTICE_SEARCH_PERIOD,
       type: 'dateRange',
-      // 비우고 조회할 수 있다 — 공지는 수백 건이다(screen/notice/requirements.md).
+      // 비우고 조회할 수 있다 — 공지는 수백 건이다(screen/admin/system/notice/requirements.md).
       required: false,
       /*
-        <b>기본값이 비어 있다</b>(screen/notice/requirements.md). `dateRange` 는 적지 않으면 시스템 기본 기간
+        <b>기본값이 비어 있다</b>(screen/admin/system/notice/requirements.md). `dateRange` 는 적지 않으면 시스템 기본 기간
         (`ui.search.range-days.default-days` — 7일)으로 채워지는데, 그러면 <b>지난달에 올린
         공지가 기본 조회에서 사라진다</b>. 공지는 이력이 아니라 <i>지금 게시 중인 것</i>을
         묻는 화면이고, 그 좁히기는 `게시 상태` 가 한다.
@@ -443,7 +444,7 @@ function buildSearchFields(): SearchField[] {
     },
     {
       /*
-        <b>파생 조건이다</b>(screen/notice/requirements.md) — `USE_YN` 과 기간 둘의 조합이며 컬럼이 아니다.
+        <b>파생 조건이다</b>(screen/admin/system/notice/requirements.md) — `USE_YN` 과 기간 둘의 조합이며 컬럼이 아니다.
         `72` 가 세는 파생 조건의 <b>다섯째 사례</b>이고, 앞의 넷과 달리 <b>`in` 을
         받는다</b>: 화면 기본값이 *세 개 선택* 이기 때문이다.
       */

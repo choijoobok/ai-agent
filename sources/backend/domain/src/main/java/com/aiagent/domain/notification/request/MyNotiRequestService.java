@@ -36,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>관리자에게도 알리지 않는다</h2>
  *
- * <p>screen/notice/requirements.md 의 생산자 넷에 <i>요청 접수</i> 가 없다. 대기열은 {@code NOTI_REQUEST} 화면이
+ * <p>screen/admin/system/notice/requirements.md 의 생산자 넷에 <i>요청 접수</i> 가 없다. 대기열은 {@code NOTI_REQUEST} 화면이
  * 보는 것이고, 알림으로도 보내면 <b>같은 사실을 두 곳이 말한다</b> — 그리고 받을 사람을
  * 정하려면 <i>어느 역할이 요청을 처리하는가</i> 라는 설정이 하나 더 필요해진다.
  */
@@ -55,7 +55,7 @@ public class MyNotiRequestService {
         this.clock = clock;
     }
 
-    /** 내가 낸 것 — <b>최신이 위</b>다(대기열이 아니라 이력이다 · screen/notice/requirements.md). */
+    /** 내가 낸 것 — <b>최신이 위</b>다(대기열이 아니라 이력이다 · screen/admin/system/notice/requirements.md). */
     public MyRequests findMine(String userId) {
         int limit = configs.get(NotiProps.class).listSize();
 
@@ -73,7 +73,7 @@ public class MyNotiRequestService {
      *
      * <p>워크플로가 없으므로 요청은 한 번 내면 답이 올 때까지 그대로다. 여벌을
      * 허용하면 두 가지가 생긴다 — 대기열이 <b>같은 사람의 같은 말</b>로 차고, 관리자가
-     * 그 여벌을 하나씩 반려하는 동안 <b>반려 알림이 그 수만큼 나간다</b>(screen/notice/requirements.md).
+     * 그 여벌을 하나씩 반려하는 동안 <b>반려 알림이 그 수만큼 나간다</b>(screen/admin/system/notice/requirements.md).
      * 더블클릭 한 번이 그것을 만든다.
      *
      * <p><b>유형별로 센다.</b> 권한 신청과 잠금 해제는 서로 다른 답을 기다리는 것이라

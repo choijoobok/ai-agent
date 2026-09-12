@@ -32,9 +32,9 @@ import org.springframework.transaction.annotation.Transactional;
  * 아니다).
  *
  * <p><b>그것이 보안 경계다.</b> 조건을 클라이언트가 주면 내려진 공지를 부를 수 있고, 그
- * 순간 <i>즉시 내림</i>(screen/notice/requirements.md)이 <b>화면에서만 내려간 것</b>이 된다.
+ * 순간 <i>즉시 내림</i>(screen/admin/system/notice/requirements.md)이 <b>화면에서만 내려간 것</b>이 된다.
  *
- * <h2>보이는 것의 규칙 — screen/notice/requirements.md</h2>
+ * <h2>보이는 것의 규칙 — screen/admin/system/notice/requirements.md</h2>
  *
  * <pre>
  * 기본            사용 + 게시 시작이 지났고 + (게시 종료가 없거나 아직 안 지났다)
@@ -82,10 +82,10 @@ public class NoticeFeedService {
     }
 
     /**
-     * 공지 탭 — screen/notice/requirements.md 의 정렬 그대로다.
+     * 공지 탭 — screen/admin/system/notice/requirements.md 의 정렬 그대로다.
      *
      * <p><b>관리 화면과 같은 순서</b>인 것이 요건이다. 팝업이 <i>이 정렬의 첫 건</i> 을
-     * 집으므로(screen/notice/requirements.md) 순서가 갈리면 <i>"팝업에 뜬 공지가 탭 목록의 첫 줄이 아니다"</i>
+     * 집으므로(screen/admin/system/notice/requirements.md) 순서가 갈리면 <i>"팝업에 뜬 공지가 탭 목록의 첫 줄이 아니다"</i>
      * 가 생기고, 그러면 <b>둘이 같은 것을 가리킨다는 전제</b>가 깨진다.
      *
      * @param includeExpired {@code NI-04} 의 <i>"지난 공지 포함"</i>. 기본은 꺼져 있다
@@ -144,9 +144,9 @@ public class NoticeFeedService {
     }
 
     /**
-     * 로그인 뒤 띄울 것 — screen/notice/requirements.md C안.
+     * 로그인 뒤 띄울 것 — screen/admin/system/notice/requirements.md C안.
      *
-     * <p><b>목록 정렬의 첫 건</b>이며 그것이 결정적이어야 한다(screen/notice/requirements.md). 흔들리면
+     * <p><b>목록 정렬의 첫 건</b>이며 그것이 결정적이어야 한다(screen/admin/system/notice/requirements.md). 흔들리면
      * <i>"어느 공지가 팝업으로 뜨는가"</i> 가 매 로그인마다 달라진다.
      *
      * <p><b>{@code moreCount} 는 게시중 전건에서 하나를 뺀 수</b>다. 팝업 대상만 세지
@@ -185,7 +185,7 @@ public class NoticeFeedService {
      * 공지가 생기고, 그것은 화면에서 설명할 수 없다.
      *
      * <p><b>사용 여부는 어느 쪽에서도 빠지지 않는다</b> — {@code includeExpired} 가 무르는
-     * 것은 <b>종료 조건 하나뿐</b>이다(screen/notice/requirements.md).
+     * 것은 <b>종료 조건 하나뿐</b>이다(screen/admin/system/notice/requirements.md).
      */
     private static BooleanExpression visible(Instant now, boolean includeExpired) {
         BooleanExpression base = N.useYn.isTrue().and(N.noticeFromDtm.loe(now));

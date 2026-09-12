@@ -1,10 +1,11 @@
+// @feat FEAT-509
 import { useEffect, useState } from 'react';
 import { Alert, Descriptions, Skeleton, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
-import { getNoticeOne } from '@/features/notification/api/notificationApi';
-import type { NoticeBrief, NoticeDetail } from '@/features/notification/types';
+import { getNoticeOne } from '@/modules/system/public/notice/api/noticeApi';
+import type { NoticeBrief, NoticeDetail } from '@/modules/system/public/notice/types';
 
 interface Props {
   notice: NoticeBrief;
@@ -13,7 +14,7 @@ interface Props {
 }
 
 /**
- * 공지 상세 — screen/_standalone/README.md · screen/notice/requirements.md.
+ * 공지 상세 — screen/_standalone/README.md · screen/admin/system/notice/requirements.md.
  *
  * <h2>목록이 가진 것을 먼저 그린다</h2>
  *
@@ -22,11 +23,11 @@ interface Props {
  *
  * <h2>본문은 텍스트다 — `richText` 를 쓰지 않는다</h2>
  *
- * <p>`CONTENT_TYPE_CD` 는 지금 언제나 `TEXT` 다(screen/notice/requirements.md). **모르는 형식이 와도 그대로
+ * <p>`CONTENT_TYPE_CD` 는 지금 언제나 `TEXT` 다(screen/admin/system/notice/requirements.md). **모르는 형식이 와도 그대로
  * 텍스트로 그린다** — 해석하려 들면 그것이 곧 XSS 통로가 되고, 에디터를 붙이는 프로젝트가
  * **표시 측도 함께** 바꿔야 한다는 사실이 여기서 드러나야 한다(태그가 글자로 보인다).
  *
- * <p>`white-space: pre-wrap` 이 줄바꿈을 살린다. `textarea` 로 쓴 글이므로(screen/notice/requirements.md)
+ * <p>`white-space: pre-wrap` 이 줄바꿈을 살린다. `textarea` 로 쓴 글이므로(screen/admin/system/notice/requirements.md)
  * 줄바꿈이 유일한 서식이며, 그것마저 잃으면 문단이 한 덩어리가 된다.
  */
 export function NoticeDetailView({ notice, includeExpired }: Props) {

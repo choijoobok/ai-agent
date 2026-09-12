@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 만료를 <b>미리 알린다</b> — AUTH-05(비밀번호) · AUTHZ-08(권한). screen/notice/requirements.md 의 <i>만료 점검
+ * 만료를 <b>미리 알린다</b> — AUTH-05(비밀번호) · AUTHZ-08(권한). screen/admin/system/notice/requirements.md 의 <i>만료 점검
  * 배치</i> 다.
  *
  * <h2>만료를 <i>처리</i> 하지 않는다 — 이름이 그렇게 붙은 이유</h2>
@@ -208,7 +208,7 @@ public class ExpiryNoticeJob implements BatchJob {
                     /*
                       **이동 링크가 없다.** 비밀번호 변경은 메뉴가 아니라 프로필 모달의
                       탭이고(screen/_standalone/README.md), 모달에는 MENU_CD 가 없다(screen/_standalone/README.md) — 요청 처리 알림이
-                      링크 없이 가는 것과 같은 자리다(screen/notice/requirements.md).
+                      링크 없이 가는 것과 같은 자리다(screen/admin/system/notice/requirements.md).
                     */
                     null,
                     null);
@@ -345,7 +345,7 @@ public class ExpiryNoticeJob implements BatchJob {
      * <b>알릴 값어치가 있는 계정인가.</b>
      *
      * <p>{@code LOCK_YN} 과 {@code DORMANT_YN} 을 보지 않는 것이 결정이다 — <b>일시적
-     * 상태</b>이고 풀리면 그 알림을 본다(screen/notice/requirements.md 이 미사용 계정의 요청 처리를 막지 않은
+     * 상태</b>이고 풀리면 그 알림을 본다(screen/admin/system/notice/requirements.md 이 미사용 계정의 요청 처리를 막지 않은
      * 것과 같은 방향). 오히려 잠긴 사람일수록 <i>비밀번호가 곧 만료된다</i> 를 알아야 한다.
      *
      * <p>{@code USE_YN} 과 계정 기간은 <b>돌아오지 않을 수 있는</b> 상태라 거른다 —

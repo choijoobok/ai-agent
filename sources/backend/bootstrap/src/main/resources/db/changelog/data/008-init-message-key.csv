@@ -272,14 +272,14 @@ err.no-authority,BACK,API 는 정상이고 이 사람에게 권한이 없다.
 err.not-found,BACK,없는 자원 · 오타 난 API 경로.
 err.noti-inbox.not-found,BACK,"내 알림이 아니다 — 남의 번호이거나 이미 파기됐다(보존 90일 · retention.md). 둘을 갈라 말하지 않는다. ""남의 것"" 이라고 답하면 그 번호가 실재한다는 사실을 알려 주게 되고, 알림은 사람마다 행이 다르므로(sys/notification.md) 그 사실 자체가 정보다. 조용히 넘기지 않는 이유는 화면이 읽음으로 바뀐 줄 알고 배지를 깎기 때문이다 — 새로고침하면 숫자가 되돌아온다. /"
 err.noti-req.content-required,BACK,요청 내용이 비었다 — sys/notification.md 이 REQ_CONTENT 를 필수로 두었다.
-err.noti-req.duplicate,BACK,"같은 유형의 접수 상태 요청이 이미 있다. 워크플로가 없으므로 요청은 한 번 내면 답이 올 때까지 그대로다 — 같은 것을 또 내도 진행이 빨라지지 않고 대기열만 늘어난다. 그리고 관리자는 그 여벌을 하나씩 반려해야 하는데, 반려마다 요청자에게 알림이 나간다(screen/notice/requirements.md). 막는 것은 같은 유형뿐이다. 권한 신청과 잠금 해제는 서로 다른 답을 기다리는 것이라 함께 열려 있어야 한다. /"
+err.noti-req.duplicate,BACK,"같은 유형의 접수 상태 요청이 이미 있다. 워크플로가 없으므로 요청은 한 번 내면 답이 올 때까지 그대로다 — 같은 것을 또 내도 진행이 빨라지지 않고 대기열만 늘어난다. 그리고 관리자는 그 여벌을 하나씩 반려해야 하는데, 반려마다 요청자에게 알림이 나간다(screen/admin/system/notice/requirements.md). 막는 것은 같은 유형뿐이다. 권한 신청과 잠금 해제는 서로 다른 답을 기다리는 것이라 함께 열려 있어야 한다. /"
 err.noti-req.memo-required,BACK,"반려인데 사유가 비었다 — sys/notification.md 이 필수로 정했다. 사유 없는 반려는 요청자에게 아무 정보도 주지 않는다. 그러면 같은 요청을 다시 내고, 그것이 워크플로를 만들지 않기로 한 대가를 실제 비용으로 바꾼다 — 단계가 없으므로 한 번의 답이 전부여야 한다. /"
 err.noti-req.not-found,BACK,없는 요청이다.
-err.noti-req.not-received,BACK,이미 처리된 요청이 선택에 섞였다 — screen/notice/requirements.md. 처리 가능한 것만 골라 실행하지 않는다. 일부만 처리하면 알림이 일부에게만 나가고 사용자는 무엇이 처리됐는지 모른다 — 되돌리는 길이 없으므로 부분 성공을 만들지 않는다. /
+err.noti-req.not-received,BACK,이미 처리된 요청이 선택에 섞였다 — screen/admin/system/notice/requirements.md. 처리 가능한 것만 골라 실행하지 않는다. 일부만 처리하면 알림이 일부에게만 나가고 사용자는 무엇이 처리됐는지 모른다 — 되돌리는 길이 없으므로 부분 성공을 만들지 않는다. /
 err.notice.not-found,BACK,없는 공지다 — 화면이 낡았거나 화면 밖 경로다.
 err.notice.period,BACK,게시 종료가 시작보다 앞이다.
-err.notice.popup-period,BACK,팝업을 켰는데 팝업 기간이 비었다 — screen/notice/requirements.md.
-err.notice.popup-range,BACK,"팝업 기간이 게시 기간을 벗어났다 — screen/notice/requirements.md. 이 검증이 없으면 목록에 없는 공지가 팝업으로 뜬다. 팝업의 ""공지 N건 더 있음"" 링크가 알림 모달의 공지 탭을 여는데 그 탭은 게시 기간을 보므로, 눌러도 그 공지가 없다 — 팝업이 도달 보장 장치라는 전제가 거기서 깨진다. /"
+err.notice.popup-period,BACK,팝업을 켰는데 팝업 기간이 비었다 — screen/admin/system/notice/requirements.md.
+err.notice.popup-range,BACK,"팝업 기간이 게시 기간을 벗어났다 — screen/admin/system/notice/requirements.md. 이 검증이 없으면 목록에 없는 공지가 팝업으로 뜬다. 팝업의 ""공지 N건 더 있음"" 링크가 알림 모달의 공지 탭을 여는데 그 탭은 게시 기간을 보므로, 눌러도 그 공지가 없다 — 팝업이 도달 보장 장치라는 전제가 거기서 깨진다. /"
 err.notice.required,BACK,제목·본문·게시 시작이 비었다 — 셀 단위 오류로 돌려준다(frontend/grid.md).
 err.password-change-required,BACK,제한 세션. 비밀번호를 바꾸면 풀리므로 이것만 문구가 다르다.
 err.query.cursor-sort-arity,BACK,커서형에 정렬 컬럼이 둘 이상 왔다 — 기준점이 성립하려면 정렬 키가 하나여야 한다.
@@ -641,17 +641,17 @@ message.validate.noValue,NONE,신규 키에 값이 하나도 없을 때 — 화�
 noti.type.AUTH,FRONT,비밀번호 만료 예고 — AUTH-05.
 noti.type.AUTHZ,FRONT,권한 만료 예정 — AUTHZ-08.
 noti.type.BATCH,FRONT,배치 실패 — BATCH-06.
-noti.type.REQUEST,FRONT,요청 처리 결과 — screen/notice/requirements.md.
+noti.type.REQUEST,FRONT,요청 처리 결과 — screen/admin/system/notice/requirements.md.
 notiReq.stat.DONE,FRONT,
 notiReq.stat.RECEIVED,FRONT,
 notiReq.stat.REJECTED,FRONT,
 notiReq.type.ETC,FRONT,
 notiReq.type.ROLE_GRANT,FRONT,유형 셋 · 상태 셋 — 공통코드가 아니라 소스의 값이다(sys/notification.md).
 notiReq.type.UNLOCK,FRONT,
-notiRequest.action.done,FRONT,처리 · 반려 버튼 — 저장이 아니라 판정이다(screen/notice/requirements.md).
+notiRequest.action.done,FRONT,처리 · 반려 버튼 — 저장이 아니라 판정이다(screen/admin/system/notice/requirements.md).
 notiRequest.action.reject,FRONT,
 notiRequest.col.content,FRONT,
-notiRequest.col.creDtm,FRONT,요청일시 — 오름차순이 기본이다. 대기열은 오래 기다린 것이 먼저다(screen/notice/requirements.md).
+notiRequest.col.creDtm,FRONT,요청일시 — 오름차순이 기본이다. 대기열은 오래 기다린 것이 먼저다(screen/admin/system/notice/requirements.md).
 notiRequest.col.handleDtm,FRONT,
 notiRequest.col.handler,FRONT,
 notiRequest.col.memo,FRONT,
@@ -659,35 +659,35 @@ notiRequest.col.reqId,FRONT,
 notiRequest.col.stat,FRONT,
 notiRequest.col.type,FRONT,
 notiRequest.col.user,FRONT,
-notiRequest.done.notice,FRONT,처리하면 요청자의 알림함에 행이 하나 생긴다 — 같은 트랜잭션이다(screen/notice/requirements.md).
-notiRequest.empty,FRONT,조회 0건 — 비어 있는 것이 정상인 유일한 화면이다(screen/notice/requirements.md).
+notiRequest.done.notice,FRONT,처리하면 요청자의 알림함에 행이 하나 생긴다 — 같은 트랜잭션이다(screen/admin/system/notice/requirements.md).
+notiRequest.empty,FRONT,조회 0건 — 비어 있는 것이 정상인 유일한 화면이다(screen/admin/system/notice/requirements.md).
 notiRequest.grid.title,FRONT,
-notiRequest.hint.notReceived,FRONT,선택에 이미 처리된 것이 섞였다 — 버튼이 비활성인 이유(screen/notice/requirements.md).
-notiRequest.memo.optional,FRONT,처리는 메모가 선택이다 — 결과 자체가 답이다(screen/notice/requirements.md).
+notiRequest.hint.notReceived,FRONT,선택에 이미 처리된 것이 섞였다 — 버튼이 비활성인 이유(screen/admin/system/notice/requirements.md).
+notiRequest.memo.optional,FRONT,처리는 메모가 선택이다 — 결과 자체가 답이다(screen/admin/system/notice/requirements.md).
 notiRequest.memo.placeholder,FRONT,
 notiRequest.memo.required,FRONT,반려는 사유가 필수다 — 이유가 없으면 답이 아니다(sys/notification.md).
 notiRequest.modal.done,FRONT,모달 제목 둘.
 notiRequest.modal.reject,FRONT,
-notiRequest.reject.notice,FRONT,사유가 요청자에게 간다는 사실을 확인 문구가 말해야 한다(frontend/grid.md · screen/notice/requirements.md).
+notiRequest.reject.notice,FRONT,사유가 요청자에게 간다는 사실을 확인 문구가 말해야 한다(frontend/grid.md · screen/admin/system/notice/requirements.md).
 notiRequest.search.period,FRONT,
 notiRequest.search.stat,FRONT,
 notiRequest.search.type,FRONT,
 notiRequest.search.user,FRONT,
-notiRequest.user.disabled,FRONT,미사용 계정 표시 — `(삭제된 사용자)` 는 없다(screen/notice/requirements.md).
-notice.col.content,FRONT,본문 — `nclob` 이지만 목록에 싣는다. 공지는 수백 건이다(screen/notice/requirements.md).
+notiRequest.user.disabled,FRONT,미사용 계정 표시 — `(삭제된 사용자)` 는 없다(screen/admin/system/notice/requirements.md).
+notice.col.content,FRONT,본문 — `nclob` 이지만 목록에 싣는다. 공지는 수백 건이다(screen/admin/system/notice/requirements.md).
 notice.col.fromDtm,FRONT,
 notice.col.noticeId,FRONT,
 notice.col.popupFrom,FRONT,
 notice.col.popupTo,FRONT,
 notice.col.popupYn,FRONT,
-notice.col.sortNo,FRONT,순서 — 상단 고정용이며 드래그가 아니라 숫자다(screen/notice/requirements.md).
-notice.col.stat,FRONT,"게시 상태 — 파생이며 서버가 판정한다(screen/notice/requirements.md). 클라이언트가 계산하면 PC 시계가 틀린 사람에게 다른 배지가 뜨고, 기준 시각은 브라우저가 아니라 업무 타임존이다(sys/INDEX.md). /"
+notice.col.sortNo,FRONT,순서 — 상단 고정용이며 드래그가 아니라 숫자다(screen/admin/system/notice/requirements.md).
+notice.col.stat,FRONT,"게시 상태 — 파생이며 서버가 판정한다(screen/admin/system/notice/requirements.md). 클라이언트가 계산하면 PC 시계가 틀린 사람에게 다른 배지가 뜨고, 기준 시각은 브라우저가 아니라 업무 타임존이다(sys/INDEX.md). /"
 notice.col.title,FRONT,
 notice.col.toDtm,FRONT,게시 종료 — 비우면 무기한이다(sys/notification.md).
 notice.col.useYn,FRONT,사용 — 즉시 내림이며 기간과 축이 다르다(sys/notification.md).
-notice.delete.confirm,FRONT,삭제 확인 — 되돌릴 수 없다고 말하고 대안(끄기)을 함께 준다(screen/notice/requirements.md).
+notice.delete.confirm,FRONT,삭제 확인 — 되돌릴 수 없다고 말하고 대안(끄기)을 함께 준다(screen/admin/system/notice/requirements.md).
 notice.empty,FRONT,조회 0건 — 일반 문구다.
-notice.empty.active,FRONT,"`게시중` 으로 걸렀는데 0건 — 진단으로 읽히게 한다(screen/notice/requirements.md · screen/admin/system/log/access/requirements.md). 지금 사용자에게 아무 공지도 보이지 않는다는 뜻이고, 그것을 알고 싶어서 거른 것이다. /"
+notice.empty.active,FRONT,"`게시중` 으로 걸렀는데 0건 — 진단으로 읽히게 한다(screen/admin/system/notice/requirements.md · screen/admin/system/log/access/requirements.md). 지금 사용자에게 아무 공지도 보이지 않는다는 뜻이고, 그것을 알고 싶어서 거른 것이다. /"
 notice.grid.title,FRONT,마스터 그리드의 제목.
 notice.popup.off,FRONT,
 notice.popup.on,FRONT,
@@ -699,7 +699,7 @@ notice.stat.ACTIVE,FRONT,
 notice.stat.DOWN,FRONT,
 notice.stat.EXPIRED,FRONT,
 notice.stat.SCHEDULED,FRONT,게시 상태 배지 넷 — 값은 코드이고 글자만 라벨이다(frontend/grid.md).
-noticePopup.dismiss,FRONT,"""오늘 하루 보지 않기"" — `localStorage` 에 **다음 자정까지** 담는다(screen/notice/requirements.md)."
+noticePopup.dismiss,FRONT,"""오늘 하루 보지 않기"" — `localStorage` 에 **다음 자정까지** 담는다(screen/admin/system/notice/requirements.md)."
 noticePopup.more,FRONT,"나머지는 공지 탭에 있다 — ""공지 {count}건 더 있음""."
 notification.back,FRONT,상세에서 목록으로 — **새 탭을 열지 않는다**(frontend/tabs.md).
 notification.empty.pending,NONE,담을 테이블이 아직 없다 — 빈 목록과 다른 말이라야 한다.

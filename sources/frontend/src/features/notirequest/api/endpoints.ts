@@ -1,7 +1,7 @@
 /**
  * 요청함 처리 API — screen/noti-request/requirements.md.
  *
- * <p>공지와 폴더가 갈린 이유는 `features/notice/api/endpoints.ts` 에 적었다 —
+ * <p>공지와 폴더가 갈린 이유는 `modules/system/features/notice/api/endpoints.ts` 에 적었다 —
  * <b>폴더가 인가 경계</b>다(seed.md).
  *
  * <p><b>`updateHandle` 이 `SAVE` 다</b>(접두가 정한다 — backend/api.md). screen/admin/system/user/requirements.md 의 기준

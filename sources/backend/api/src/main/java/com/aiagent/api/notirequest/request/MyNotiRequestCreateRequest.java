@@ -16,7 +16,7 @@ import jakarta.validation.constraints.Size;
  * 있고, 그것은 요청함을 <b>기록으로만</b> 쓰이게 한다.
  *
  * @param reqTypeCd 셋 중 하나 — 권한 신청 · 잠금 해제 · 기타(sys/notification.md). <b>공통코드가
- * 아니다</b>(screen/notice/requirements.md): 값이 늘면 처리 코드가 함께 늘어야 한다
+ * 아니다</b>(screen/admin/system/notice/requirements.md): 값이 늘면 처리 코드가 함께 늘어야 한다
  * @param reqContent <b>필수</b>다. 유형만으로는 무엇을 원하는지 알 수 없고, 그것을 되묻는
  * 단계가 없다(워크플로를 만들지 않는다)
  */

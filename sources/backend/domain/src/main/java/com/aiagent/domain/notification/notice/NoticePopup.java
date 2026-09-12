@@ -1,7 +1,7 @@
 package com.aiagent.domain.notification.notice;
 
 /**
- * 로그인 뒤 뜨는 팝업 — screen/_standalone/README.md · screen/notice/requirements.md <b>C안</b>.
+ * 로그인 뒤 뜨는 팝업 — screen/_standalone/README.md · screen/admin/system/notice/requirements.md <b>C안</b>.
  *
  * <p><b>한 건이다.</b> 여러 건을 순차로 넘기거나(B안) 목록을 팝업에 담는(A안) 대신 최신
  * 하나만 띄우고 나머지는 알림 모달의 공지 탭으로 보낸다 — <b>목록을 두 곳에 만들지

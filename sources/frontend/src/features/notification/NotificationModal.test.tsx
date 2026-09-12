@@ -4,27 +4,32 @@ import { NotificationModal } from '@/features/notification/NotificationModal';
 import {
   getMyNotifications,
   getMyRequests,
-  getNoticeList,
-  getNoticeOne,
   getSystemInfo,
   markAllNotiRead,
   markNotiRead,
 } from '@/features/notification/api/notificationApi';
+import {
+  getNoticeList,
+  getNoticeOne,
+} from '@/modules/system/public/notice/api/noticeApi';
 import type {
   MyNotiRow,
   MyNotifications,
-  NoticeBrief,
   SystemInfo,
 } from '@/features/notification/types';
+import type { NoticeBrief } from '@/modules/system/public/notice/types';
 
 vi.mock('@/features/notification/api/notificationApi', () => ({
   getSystemInfo: vi.fn(),
-  getNoticeList: vi.fn(),
-  getNoticeOne: vi.fn(),
   getMyNotifications: vi.fn(),
   markNotiRead: vi.fn(),
   markAllNotiRead: vi.fn(),
   getMyRequests: vi.fn(),
+}));
+
+vi.mock('@/modules/system/public/notice/api/noticeApi', () => ({
+  getNoticeList: vi.fn(),
+  getNoticeOne: vi.fn(),
 }));
 
 const loadSystemInfo = vi.mocked(getSystemInfo);

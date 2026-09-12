@@ -14,7 +14,7 @@ interface Props {
 }
 
 /**
- * 처리 · 반려 모달 — screen/notice/requirements.md.
+ * 처리 · 반려 모달 — screen/admin/system/notice/requirements.md.
  *
  * <h2>셀 편집이 아닌 이유가 이 모달의 존재 이유다</h2>
  *

@@ -1,10 +1,11 @@
+// @feat FEAT-509
 import { useEffect, useState } from 'react';
 import { Alert, Checkbox, Empty, List, Skeleton, Tag, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
-import { getNoticeList } from '@/features/notification/api/notificationApi';
-import type { NoticeBrief } from '@/features/notification/types';
+import { getNoticeList } from '@/modules/system/public/notice/api/noticeApi';
+import type { NoticeBrief } from '@/modules/system/public/notice/types';
 
 interface Props {
   /** 고른 항목을 상세로 — **새 탭을 열지 않는다**(frontend/tabs.md). */
@@ -15,23 +16,23 @@ interface Props {
 }
 
 /**
- * 공지사항 탭 — screen/_standalone/README.md · screen/notice/requirements.md.
+ * 공지사항 탭 — screen/_standalone/README.md · screen/admin/system/notice/requirements.md.
  *
  * <h2>여기가 공지 목록의 실질 자리다</h2>
  *
- * <p>팝업이 최신 1건만 띄우므로(screen/notice/requirements.md C안) 나머지를 볼 곳이 필요하고, 그것을 **여기
+ * <p>팝업이 최신 1건만 띄우므로(screen/admin/system/notice/requirements.md C안) 나머지를 볼 곳이 필요하고, 그것을 **여기
  * 하나로** 둔 것이 그 결정의 절반이다 — 팝업의 *"공지 N건 더 있음"* 이 이 탭으로 온다.
  * **목록을 두 곳에 만들지 않는다.**
  *
  * <h2>미읽음 강조를 쓰지 않는다 — `NI-03`</h2>
  *
- * <p>공지에는 읽음 상태가 없다(screen/notice/requirements.md). 전체 공개라 `(NOTICE_ID, USER_ID)` 교차 테이블이
+ * <p>공지에는 읽음 상태가 없다(screen/admin/system/notice/requirements.md). 전체 공개라 `(NOTICE_ID, USER_ID)` 교차 테이블이
  * **사용자 수 × 공지 수**로 자라고, 배지가 공지를 세지 않으므로(frontend/tabs.md) 저장해도
  * **나타날 곳이 없다.**
  *
  * <h2>지난 공지는 흐리다 — `NI-04`</h2>
  *
- * <p>기본은 감추고 체크박스로 켠다. **켜도 내려진 공지는 오지 않는다**(screen/notice/requirements.md) —
+ * <p>기본은 감추고 체크박스로 켠다. **켜도 내려진 공지는 오지 않는다**(screen/admin/system/notice/requirements.md) —
  * *"지난 공지"* 는 기간이 끝난 것이지 내려진 것이 아니다.
  */
 export function NoticeTab({ onOpen, includeExpired, onIncludeExpiredChange }: Props) {
@@ -94,7 +95,7 @@ export function NoticeTab({ onOpen, includeExpired, onIncludeExpiredChange }: Pr
               />
               {/*
                 흐린 것만으로는 **왜** 흐린지 말하지 못한다. 배지 하나가 그 이유를 적는다 —
-                게시 상태는 서버가 판정한 값이며(screen/notice/requirements.md) 화면이 다시 계산하지 않는다.
+                게시 상태는 서버가 판정한 값이며(screen/admin/system/notice/requirements.md) 화면이 다시 계산하지 않는다.
               */}
               {row.noticeStat === 'EXPIRED' && (
                 <Tag>{label(MSG.NOTIFICATION_NOTICE_EXPIRED)}</Tag>

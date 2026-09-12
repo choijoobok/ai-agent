@@ -23,7 +23,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 배치 실패 알림 — BATCH-06 · screen/admin/system/batch/schedule/requirements.md · screen/notice/requirements.md.
+ * 배치 실패 알림 — BATCH-06 · screen/admin/system/batch/schedule/requirements.md · screen/admin/system/notice/requirements.md.
  *
  * <p>지키는 것 셋이다 — ① <b>무엇이 실패인가</b>(유령을 포함하고 건너뜀·중단을 뺀다),
  * ② <b>역할을 비우면 보내지 않는가</b>, ③ <b>이동 링크에 <i>받는 쪽이 기대하는 값</i>이

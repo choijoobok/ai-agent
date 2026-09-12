@@ -96,7 +96,7 @@ public class BatchHistoryWriter {
         histories.findById(histId).ifPresent(history -> {
             history.finish(rsltCd, clock.instant(), rsltMsg, rsltDtlMsg, errMsg);
             /*
-              <b>BATCH-06 이 여기 걸린다</b>(screen/admin/system/batch/history/requirements.md · screen/notice/requirements.md). 러너에는 FAIL 을 적는
+              <b>BATCH-06 이 여기 걸린다</b>(screen/admin/system/batch/history/requirements.md · screen/admin/system/notice/requirements.md). 러너에는 FAIL 을 적는
               자리가 넷인데(큐 적재 실패 · 구현 없음 · 예외 · 유령), 거기에 각각 붙이면
               <b>하나를 빠뜨린 것을 아무도 모른다</b> — 드물게 타는 경로라 운영에서
               "알림이 안 왔다" 로만 드러난다.

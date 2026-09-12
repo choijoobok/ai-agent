@@ -9,14 +9,6 @@
 export const NOTIFICATION_ENDPOINTS = {
   getSystemInfo: '/common/system/getSystemInfo',
 
-  // ── 공지사항 탭 · 팝업 (screen/_standalone/README.md) ─────────────────────────
-  //
-  // 셋 다 조회조건 봉투를 쓰지 않는다 — 동적 조회가 아니다(backend/api.md). 보이는 범위가
-  // 서버 코드에 박혀 있는 것이 보안 경계다(screen/notice/requirements.md).
-  getNoticeList: '/common/notice/getList',
-  getNoticeOne: '/common/notice/getOne',
-  getNoticePopup: '/common/notice/getPopup',
-
   // ── 내 알림 탭 (frontend/tabs.md) ─────────────────────────────
   //
   // 목록 조회는 읽음을 만들지 않는다 — 훑어만 봐도 배지가 사라지면 놓친 알림을 찾을 수

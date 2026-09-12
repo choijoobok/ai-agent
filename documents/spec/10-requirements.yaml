@@ -661,10 +661,10 @@ requirements:
     acceptance: "게시 기간 밖 공지는 팝업으로 보이지 않고, 요청 처리·반려가 실제 권한·계정 변경을 암묵적으로 수행하지 않는다"
     source: "현재 구현 역추적 — 공지·알림 요청·알림함·공지 팝업"
     evidence:
-      frontend: ["features/notice", "features/notirequest", "features/notification"]
-      backend: ["api/notice", "api/notirequest", "api/notification", "domain/notification"]
+      frontend: ["modules/system/features/notice", "modules/system/public/notice", "features/notirequest", "features/notification"]
+      backend: ["modules/system/api/notice", "api/notirequest", "api/notification", "domain/notification"]
       tables: [SYS_NOTICE, SYS_NOTI_REQUEST, SYS_NOTI_INBOX]
-      screens: ["/notice", "/noti-request", "_standalone/noti-inbox", "_standalone/notice-popup"]
+      screens: ["/admin/system/notice", "/noti-request", "_standalone/noti-inbox", "_standalone/system/notice-popup"]
     roadmap: RM-P1
 
   - id: REQ-510

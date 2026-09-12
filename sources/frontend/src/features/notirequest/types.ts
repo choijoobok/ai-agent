@@ -1,7 +1,7 @@
 /** 요청 유형 셋 — sys/notification.md. 공통코드가 아니라 소스의 값이다(sys/notification.md). */
 export type ReqType = 'ROLE_GRANT' | 'UNLOCK' | 'ETC';
 
-/** 처리 상태 셋 — sys/notification.md. <b>되돌아가는 전이가 없다</b>(screen/notice/requirements.md). */
+/** 처리 상태 셋 — sys/notification.md. <b>되돌아가는 전이가 없다</b>(screen/admin/system/notice/requirements.md). */
 export type ReqStatus = 'RECEIVED' | 'DONE' | 'REJECTED';
 
 /**

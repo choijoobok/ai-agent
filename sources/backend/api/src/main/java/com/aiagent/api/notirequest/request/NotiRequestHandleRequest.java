@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 /**
- * 처리·반려의 입력 — screen/notice/requirements.md.
+ * 처리·반려의 입력 — screen/admin/system/notice/requirements.md.
  *
  * <p><b>{@code SaveRow} 가 아니다.</b> 이 화면은 셀을 고치지 않으므로(screen/noti-request/requirements.md) 행 단위
  * 저장이 성립하지 않는다 — 입력은 <b>대상 목록 + 상태 + 메모</b> 셋뿐이며 그 셋이 곧
@@ -25,7 +25,7 @@ import java.util.List;
  *     화면 밖 경로가 실재한다
  * @param reqStatCd {@link ReqStatus#DONE} 또는 {@link ReqStatus#REJECTED}.
  *     {@link ReqStatus#RECEIVED} 가 오면 서비스가 거부한다 — <b>되돌리는 전이가 없다</b>
- * (screen/notice/requirements.md)
+ * (screen/admin/system/notice/requirements.md)
  */
 public record NotiRequestHandleRequest(
         @NotEmpty @Size(max = 1000) List<@NotNull Long> targets,

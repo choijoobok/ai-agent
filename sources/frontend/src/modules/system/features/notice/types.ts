@@ -1,23 +1,24 @@
+// @feat FEAT-509
 /**
- * 게시 상태 넷 — screen/notice/requirements.md. <b>저장되지 않는 파생 값</b>이다.
+ * 게시 상태 넷 — screen/admin/system/notice/requirements.md. <b>저장되지 않는 파생 값</b>이다.
  *
- * <p><b>순서가 서버 열거형과 같다</b>({@code NoticeStatus}) — `features/notification` 에도
+ * <p><b>순서가 서버 열거형과 같다</b>({@code NoticeStatus}) — 사용자 공지 계약에도
  * 같은 선언이 있고(전 사용자에게 열리는 표시 측이다), 기능끼리 import 하지 않는 규칙
  * (frontend/packages.md)이라 <b>사본이 둘인 것은 의도다</b>. 그렇다면 최소한 같아야 한다: 순서가
  * 갈리면 같은 열거형이 두 파일에서 다르게 읽힌다.
  */
 export type NoticeStatus = 'DOWN' | 'SCHEDULED' | 'ACTIVE' | 'EXPIRED';
 
-/** 서버 `NoticeRow` 와 1:1 — screen/notice/requirements.md. */
+/** 서버 `NoticeRow` 와 1:1 — screen/admin/system/notice/requirements.md. */
 export interface NoticeRow {
-  /** 상단 고정용. <b>드래그가 아니라 숫자다</b>(screen/notice/requirements.md). */
+  /** 상단 고정용. <b>드래그가 아니라 숫자다</b>(screen/admin/system/notice/requirements.md). */
   sortNo: number | null;
   /** 채번이라 <b>신규 행에서 `null`</b> 이다. 문의 대조용이며 기본 숨김이다. */
   noticeId: number | null;
   /** <b>필수</b>. */
   title: string;
   /**
-   * 본문 — `nclob` 인데 <b>목록이 싣는다</b>(screen/notice/requirements.md).
+   * 본문 — `nclob` 인데 <b>목록이 싣는다</b>(screen/admin/system/notice/requirements.md).
    *
    * <p>64 가 이력에서 전문을 싣지 않은 것과 갈리는데 근거가 양이었기 때문이다 — 이력은
    * 수천만 행이고 공지는 수백 건이며 페이지 사이즈가 20 이다. 그리고 여기서는
@@ -29,7 +30,7 @@ export interface NoticeRow {
   /** 게시 종료 — <b>`null` 이면 무기한</b>이다(sys/notification.md). */
   noticeToDtm: string | null;
   /**
-   * 파생 — <b>서버가 판정한다</b>(screen/notice/requirements.md).
+   * 파생 — <b>서버가 판정한다</b>(screen/admin/system/notice/requirements.md).
    *
    * <p>클라이언트가 계산하면 PC 시계가 틀린 사람에게 다른 배지가 뜨고, 기준 시각은
    * 브라우저가 아니라 `app.business-timezone` 이다(sys/INDEX.md).
@@ -43,7 +44,7 @@ export interface NoticeRow {
    */
   useYn: boolean;
   popupYn: boolean;
-  /** 팝업 기간 — <b>게시 기간 안</b>이어야 하며 저장이 막는다(screen/notice/requirements.md). */
+  /** 팝업 기간 — <b>게시 기간 안</b>이어야 하며 저장이 막는다(screen/admin/system/notice/requirements.md). */
   popupFromDtm: string | null;
   popupToDtm: string | null;
   regId: string | null;

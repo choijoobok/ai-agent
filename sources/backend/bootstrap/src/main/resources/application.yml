@@ -292,10 +292,10 @@ sys-config:
       # 20 이다 — 목록은 스크롤되면 그만이고(frontend/tabs.md) 몇 개까지 볼지는 사용자 몫이다.
       top-n: 20
 
-  # 알림 정책 — screen/notice/requirements.md 의 생산자 셋. 화면 값(ui.noti.*)과 층이 다르다: 저쪽은 몇 줄을
+  # 알림 정책 — screen/admin/system/notice/requirements.md 의 생산자 셋. 화면 값(ui.noti.*)과 층이 다르다: 저쪽은 몇 줄을
   # 그리는가이고 여기는 누구에게 언제 보내는가다.
   #
-  # 채널 키가 없다 — 채널이 인앱뿐이면 채널 설정이 없다(screen/notice/requirements.md). screen/admin/system/batch/schedule/requirements.md 이 BATCH-06 을
+  # 채널 키가 없다 — 채널이 인앱뿐이면 채널 설정이 없다(screen/admin/system/notice/requirements.md). screen/admin/system/batch/schedule/requirements.md 이 BATCH-06 을
   # "수신 대상과 채널" 로 남겼는데 그중 하나가 여기서 사라졌다.
   noti:
     # 배치 실패를 받을 역할(BATCH-06). 비우면 보내지 않는다 — 배치별 on/off 를 두지 않는
@@ -326,7 +326,7 @@ sys-config:
     exception-log-days: 180
     login-log-days: 365
     batch-history-days: 365
-    # 인앱 알림(SYS_NOTI_INBOX) — sys/notification.md · screen/notice/requirements.md. **읽음 여부를 보지 않는다**:
+    # 인앱 알림(SYS_NOTI_INBOX) — sys/notification.md · screen/admin/system/notice/requirements.md. **읽음 여부를 보지 않는다**:
     # 읽은 것만 지우면 안 읽은 알림이 영원히 쌓이고, 그것이 정확히 지우고 싶은 행이다.
     noti-inbox-days: 90
     # 한 트랜잭션이 지우는 행 수 — retention.md. 크게 잡으면 락과 언두 로그가 터지고,

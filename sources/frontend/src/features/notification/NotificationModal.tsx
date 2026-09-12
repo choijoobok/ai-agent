@@ -10,12 +10,13 @@ import {
   NOTIFICATION_TAB_KEYS,
   type NotificationTab,
 } from '@/features/notification/notificationTabs';
-import { NoticeTab } from '@/features/notification/tabs/NoticeTab';
+import { NoticeTab } from '@/modules/system/public/notice/NoticeTab';
 import { MyNotiTab } from '@/features/notification/tabs/MyNotiTab';
 import { MyRequestTab } from '@/features/notification/tabs/MyRequestTab';
-import { NoticeDetailView } from '@/features/notification/views/NoticeDetailView';
+import { NoticeDetailView } from '@/modules/system/public/notice/NoticeDetailView';
 import { MyNotiDetailView } from '@/features/notification/views/MyNotiDetailView';
-import type { MyNotiRow, NoticeBrief } from '@/features/notification/types';
+import type { MyNotiRow } from '@/features/notification/types';
+import type { NoticeBrief } from '@/modules/system/public/notice/types';
 
 interface Props {
   open: boolean;

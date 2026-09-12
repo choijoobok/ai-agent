@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 /**
- * 알림을 <b>누구에게 언제</b> 보내는가 — screen/notice/requirements.md 의 생산자 셋이 읽는다.
+ * 알림을 <b>누구에게 언제</b> 보내는가 — screen/admin/system/notice/requirements.md 의 생산자 셋이 읽는다.
  *
  * <p><b>{@code NotiProps}(= {@code sys-config.ui.noti}) 와 다른 층이다.</b> 저쪽은
  * <i>화면이 몇 줄을 그리는가</i> 이고 여기는 <b>정책</b>이다 — 하나는 UI 값이라
@@ -16,7 +16,7 @@ import org.springframework.validation.annotation.Validated;
  * <h2>채널 키가 없다</h2>
  *
  * <p>screen/admin/system/batch/schedule/requirements.md 이 BATCH-06 을 <i>"전역 설정 하나 — 수신 대상과 채널"</i> 로 남겼는데,
- * <b>채널이 인앱뿐이면 채널 설정이 없다</b>(screen/notice/requirements.md). 남는 것은 수신 대상 하나이며
+ * <b>채널이 인앱뿐이면 채널 설정이 없다</b>(screen/admin/system/notice/requirements.md). 남는 것은 수신 대상 하나이며
  * 그것이 {@link #batchFailRole} 이다. 외부 채널이 붙는 날 그 키 옆에 채널 키가 붙는다.
  *
  * @param batchFailRole 배치 실패 알림을 받을 <b>역할</b>(BATCH-06). 그 역할을 <b>지금

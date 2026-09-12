@@ -8,7 +8,7 @@
 
 > **이 문서는 `docs/design/60-screen-auth.md` §9 에서 옮겼다**(2026-09-04 · 그 폴더는 폐지됐다).
 
-> **문서 상태: 구현됨** — `features/notification/NoticePopupModal.tsx`.
+> **문서 상태: 구현됨** — `modules/system/public/notice/NoticePopupModal.tsx`.
 
 ---
 
@@ -18,7 +18,7 @@
 |---|---|
 | 자리 | **셸이 사용 가능해진 뒤** |
 | 메뉴코드 | **없음** |
-| 프론트 폴더 | `sources/frontend/src/features/notification/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/public/notice/` |
 | 화면 유형 | 모달 하나 |
 | 처리 유형 | 조회 |
 | 액션 권한 | **해당 없음** |
@@ -89,7 +89,7 @@
 
 ## 7. API
 
-`GET /api/common/notice/getPopup` — 대상 1건 + 나머지 수. **인가 시드의 입력이 아니다.**
+`GET /api/common/system/notice/getPopup` — 대상 1건 + 나머지 수. **인가 시드의 입력이 아니다.**
 
 ---
 

@@ -58,10 +58,12 @@ testcases:
   - { id: TC-5085, feature: FEAT-508, usecase: UC-508, type: normal, title: "배치 경로 전환과 실행 상태 무손실", actor: ACT-012, given: "일정·진행 이력 기준선", when: "신규 경로 전환", then: "일정과 결과 코드 동일, 진행 중 실행 유실·중복 없음, 구 경로 0건" }
 
   - { id: TC-5091, feature: FEAT-509, usecase: UC-509, type: normal, title: "공지 노출과 관리 요청 판정 알림", actor: ACT-012, given: "현재 게시 공지와 RECEIVED 요청", when: "공지 조회 후 요청 처리", then: "공지 노출, 요청 DONE과 처리자·시각, 사용자 알림 1건" }
-  - { id: TC-5092, feature: FEAT-509, usecase: UC-509, type: validation, title: "역전된 기간과 빈 처리 사유 거부", actor: ACT-012, given: "종료가 시작보다 이른 공지 또는 사유 없는 반려", when: "API-577·582 저장", then: "400, ENT-525·527 불변" }
-  - { id: TC-5093, feature: FEAT-509, usecase: UC-509, type: business_exception, title: "기간 밖 팝업과 종결 요청 재처리 차단", actor: ACT-012, given: "팝업 기간 밖 공지와 DONE 요청", when: "API-580·582 호출", then: "팝업 미노출, 재처리 409, 계정·권한 데이터 불변" }
+  - { id: TC-5092, feature: FEAT-509, usecase: UC-509, type: validation, title: "역전된 공지 기간 거부", actor: ACT-012, given: "종료가 시작보다 이른 공지", when: "API-577 저장", then: "400, ENT-525 불변" }
+  - { id: TC-5093, feature: FEAT-509, usecase: UC-509, type: business_exception, title: "기간 밖 팝업 미노출", actor: ACT-012, given: "팝업 기간 밖 공지", when: "API-580 호출", then: "팝업 미노출" }
   - { id: TC-5094, feature: FEAT-509, usecase: UC-509, type: permission, title: "타 사용자 요청·알림 접근 차단", actor: ACT-001, given: "다른 사용자 REQ_ID·NOTI_ID", when: "common API 직접 호출", then: "403 또는 존재 비노출, 타인 행 불변" }
   - { id: TC-5095, feature: FEAT-509, usecase: UC-509, type: normal, title: "공지·알림 경로 전환과 데이터 무손실", actor: ACT-012, given: "ENT-525~527 기준선", when: "신규 경로 전환", then: "노출·판정·읽음 결과 동일, 행·PK·해시 동일, 구 경로 0건" }
+  - { id: TC-5096, feature: FEAT-509, usecase: UC-509, type: validation, title: "빈 반려 사유 거부", actor: ACT-012, given: "사유 없는 반려 요청", when: "API-582 저장", then: "400, ENT-527 불변" }
+  - { id: TC-5097, feature: FEAT-509, usecase: UC-509, type: business_exception, title: "종결 요청 재처리 차단", actor: ACT-012, given: "DONE 요청", when: "API-582 호출", then: "409, 계정·권한 데이터 불변" }
 
   - { id: TC-5101, feature: FEAT-510, usecase: UC-510, type: normal, title: "공통 사용자 상태의 모듈 간 단일성", actor: ACT-001, given: "admin에서 저장한 즐겨찾기·그리드·조회조건", when: "portal에서 system public 계약 조회", then: "같은 네 테이블의 같은 값 반환, 복제 행 0건" }
   - { id: TC-5102, feature: FEAT-510, usecase: UC-510, type: validation, title: "미등록 메뉴·잘못된 JSON·중복 기본조건 거부", actor: ACT-001, given: "각 잘못된 상태 요청", when: "API-590·593·596 호출", then: "400 또는 404, ENT-528~531 불변" }

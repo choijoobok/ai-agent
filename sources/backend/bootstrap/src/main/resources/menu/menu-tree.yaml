@@ -50,7 +50,7 @@
 #     │   ├ BATCH_SCHEDULE   스케줄 관리              /admin/system/batch/schedule
 #     │   └ BATCH_HISTORY    실행 이력                /admin/system/batch/history
 #     └ NOTICE               공지 · 알림
-#         ├ NOTICE_MGMT      공지사항 관리            /notice
+#         ├ NOTICE_MGMT      공지사항 관리            /admin/system/notice
 #         └ NOTI_REQUEST     요청함 처리              /noti-request
 #
 # 위 한글은 주석이며 데이터가 아니다 — 이름은 SYS_MESSAGE 의 menu.{MENU_CD} 다.
@@ -141,7 +141,7 @@ menus:
     parent: SYSTEM
   - code: NOTICE_MGMT
     parent: NOTICE
-    url: /notice
+    url: /admin/system/notice
   - code: NOTI_REQUEST
     parent: NOTICE
     url: /noti-request

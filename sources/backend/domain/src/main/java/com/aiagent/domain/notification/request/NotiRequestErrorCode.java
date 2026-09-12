@@ -5,7 +5,7 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * 요청 처리가 거부하는 것 — screen/notice/requirements.md.
+ * 요청 처리가 거부하는 것 — screen/admin/system/notice/requirements.md.
  *
  * <p>앞의 셋은 <b>저장 검증이 아니다</b>. 그 화면은 셀을 고치지 않으므로(screen/noti-request/requirements.md)
  * 필수·형식 오류가 성립하지 않고, 거부되는 것은 전부 <b>판정의 전제</b>다 — 대상이

@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code NOTICE_MGMT} 의 저장 — screen/notice/requirements.md.
+ * {@code NOTICE_MGMT} 의 저장 — screen/admin/system/notice/requirements.md.
  *
  * <h2>여기서 만든 것이 전 사용자에게 뜬다</h2>
  *
  * <p>62~65 의 관리 화면은 잘못 고치면 <b>관리자가</b> 곤란하다. 이 화면에서 잘못 올린
  * 글은 <b>다음 로그인부터 전원에게 팝업으로</b> 뜨며, 그것이 검증 넷 중 셋째가 있는
- * 이유다(screen/notice/requirements.md).
+ * 이유다(screen/admin/system/notice/requirements.md).
  *
  * <h2>검증 넷 — 셋째가 이 화면 고유의 것이다</h2>
  *
@@ -34,12 +34,12 @@ import org.springframework.transaction.annotation.Transactional;
  * <h2>삭제는 물리 삭제다</h2>
  *
  * <p>{@code USE_YN='N'} 이 이미 <i>내림</i> 이므로 지우는 것은 <b>잘못 만든 것</b>에만
- * 쓴다(screen/notice/requirements.md). 논리 삭제 플래그를 하나 더 두면 <i>내림</i> 과 <i>지움</i> 이 화면에서
+ * 쓴다(screen/admin/system/notice/requirements.md). 논리 삭제 플래그를 하나 더 두면 <i>내림</i> 과 <i>지움</i> 이 화면에서
  * 구분되지 않는다.
  *
  * <p><b>게이트가 없다.</b> {@code BATCH_SCHEDULE} 은 <i>켜져 있는가·도는가</i> 를 봤지만
  * (screen/admin/system/batch/schedule/requirements.md) 공지는 지운다고 조용히 멈추는 것이 없다 — 지워진 뒤에 아무도 그것을 참조하지
- * 않는다. 첨부가 붙는 날 {@code SYS_FILE_REF} 를 함께 지우는 조항이 는다(screen/notice/requirements.md).
+ * 않는다. 첨부가 붙는 날 {@code SYS_FILE_REF} 를 함께 지우는 조항이 는다(screen/admin/system/notice/requirements.md).
  */
 @Service
 public class NoticeService {
@@ -116,7 +116,7 @@ public class NoticeService {
                         row.sortNoOrZero());
     }
 
-    // ── 검증 (screen/notice/requirements.md) ──────────────────────────────────────────────
+    // ── 검증 (screen/admin/system/notice/requirements.md) ──────────────────────────────────────────────
 
     private void validate(NoticeSaveRow row) {
         requireText(row.title(), "title", "제목은 필수입니다");
@@ -138,7 +138,7 @@ public class NoticeService {
         if (!row.popupYnOrFalse()) {
             /*
               **꺼져 있으면 팝업 기간을 보지 않는다.** 값이 남아 있는 것이 의도이고
-              (screen/notice/requirements.md — 다시 켤 때 살아 있어야 한다), 남은 값이 게시 기간과 어긋난다는
+              (screen/admin/system/notice/requirements.md — 다시 켤 때 살아 있어야 한다), 남은 값이 게시 기간과 어긋난다는
               이유로 저장을 막으면 **게시 기간만 고치려던 사람이 팝업 칸에서 막힌다.**
               다시 켜는 순간 아래 검증이 그것을 잡는다.
             */
@@ -162,11 +162,11 @@ public class NoticeService {
     }
 
     /**
-     * <b>팝업 기간 &sube; 게시 기간</b> — screen/notice/requirements.md. 이 화면 고유의 검증이다.
+     * <b>팝업 기간 &sube; 게시 기간</b> — screen/admin/system/notice/requirements.md. 이 화면 고유의 검증이다.
      *
      * <p>없으면 <b>목록에 없는 공지가 팝업으로 뜬다</b>. 팝업은 C안이라 최신 1건만 띄우고
-     * 나머지를 <i>"공지 N건 더 있음 →"</i> 로 알림 모달의 공지 탭에 넘기는데(screen/notice/requirements.md),
-     * 그 탭의 조회는 <b>게시 기간</b>을 본다(screen/notice/requirements.md) — 팝업만 뜨고 목록에 없으면 눌러도
+     * 나머지를 <i>"공지 N건 더 있음 →"</i> 로 알림 모달의 공지 탭에 넘기는데(screen/admin/system/notice/requirements.md),
+     * 그 탭의 조회는 <b>게시 기간</b>을 본다(screen/admin/system/notice/requirements.md) — 팝업만 뜨고 목록에 없으면 눌러도
      * 그 공지가 없다.
      *
      * <p><b>어느 쪽을 고쳐야 하는지 말한다.</b> 관련된 칸이 넷이라 <i>"기간이 올바르지

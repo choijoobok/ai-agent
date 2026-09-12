@@ -1,12 +1,13 @@
+// @feat FEAT-509
 import dayjs from 'dayjs';
 
 /**
- * *"오늘 하루 보지 않기"* 의 저장 — screen/notice/requirements.md.
+ * *"오늘 하루 보지 않기"* 의 저장 — screen/admin/system/notice/requirements.md.
  *
  * <h2>서버가 아니라 기기다</h2>
  *
  * <p>frontend/tabs.md 의 *"UI 설정은 기기의 속성"* 이며, 여기에는 근거가 하나 더 있다 —
- * **읽음을 두지 않기로 한 것과의 정합**(screen/notice/requirements.md). *안 보기* 는 읽음의 약한 형태이고,
+ * **읽음을 두지 않기로 한 것과의 정합**(screen/admin/system/notice/requirements.md). *안 보기* 는 읽음의 약한 형태이고,
  * 읽음 없이 안 보기만 서버에 두면 **같은 사실을 반쪽만 저장**하게 된다.
  *
  * <p>기기를 바꾸면 다시 뜨는 것이 **팝업의 목적에 맞다** — 팝업은 취향이 아니라 도달
@@ -19,7 +20,7 @@ import dayjs from 'dayjs';
  *
  * <p>영구 숨김은 두지 않는다. 공지는 *"중요해서 팝업으로 띄운 것"* 이므로 영구 숨김은
  * 그 판단을 사용자가 무르는 버튼이 된다 — 하루면 다음 날 다시 묻고, 게시 기간이 끝나면
- * 저절로 멈춘다(screen/notice/requirements.md).
+ * 저절로 멈춘다(screen/admin/system/notice/requirements.md).
  */
 const PREFIX = 'notice.dismissed.';
 
@@ -31,7 +32,7 @@ function nextMidnight(): number {
 /**
  * 이 공지를 오늘 감췄는가.
  *
- * <p><b>지나간 키는 이 자리에서 지운다</b>(screen/notice/requirements.md) — 별도 청소 경로를 만들지 않는다.
+ * <p><b>지나간 키는 이 자리에서 지운다</b>(screen/admin/system/notice/requirements.md) — 별도 청소 경로를 만들지 않는다.
  * 팝업이 뜰 때만 도는 코드라 그 시점이 유일하게 확실한 청소 시점이다.
  */
 export function isDismissed(noticeId: number): boolean {

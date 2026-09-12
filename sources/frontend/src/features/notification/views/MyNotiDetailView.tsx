@@ -28,7 +28,7 @@ interface Props {
  * <p>판정은 **내 메뉴 트리에 그 코드가 있는가** 하나다. 트리는 유효 권한으로 이미 걸러져
  * 오므로(frontend/tabs.md) 여기서 권한을 다시 묻지 않는다.
  *
- * <p>`linkMenuCd` 가 `null` 이면 **이동 자체가 없다** — 요청 처리 알림이 그렇다(screen/notice/requirements.md):
+ * <p>`linkMenuCd` 가 `null` 이면 **이동 자체가 없다** — 요청 처리 알림이 그렇다(screen/admin/system/notice/requirements.md):
  * 결과를 보러 갈 자리가 이 모달의 탭이고 **탭에는 `MENU_CD` 가 없다.**
  *
  * <h2>`LINK_PARAM` 은 넘겨주기로 간다</h2>

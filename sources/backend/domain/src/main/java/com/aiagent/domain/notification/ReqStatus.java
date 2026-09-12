@@ -1,7 +1,7 @@
 package com.aiagent.domain.notification;
 
 /**
- * 요청의 처리 상태 — sys/notification.md · screen/notice/requirements.md. <b>셋에서 닫는다.</b>
+ * 요청의 처리 상태 — sys/notification.md · screen/admin/system/notice/requirements.md. <b>셋에서 닫는다.</b>
  *
  * <p>10 과 가 <b>결재선·단계·결재자 지정을 두지 않는다</b>로 못박았다. 넷째를
  * 요구하는 목소리(<i>검토 중</i> · <i>보류</i>)는 <b>컬럼이 아니라 범위의 문제</b>로
@@ -10,7 +10,7 @@ package com.aiagent.domain.notification;
  * <h2>되돌아가는 전이가 없다</h2>
  *
  * <p>{@link #DONE}·{@link #REJECTED} 에서 {@link #RECEIVED} 로 가는 길을 두지 않는 것은
- * <b>처리 시점에 요청자에게 알림이 이미 나갔기 때문</b>이다(screen/notice/requirements.md) — 상태를 되돌려도
+ * <b>처리 시점에 요청자에게 알림이 이미 나갔기 때문</b>이다(screen/admin/system/notice/requirements.md) — 상태를 되돌려도
  * 그 알림은 회수되지 않는다. 잘못 처리했으면 요청자가 다시 내고 그것이 새 행이다.
  *
  * <p>{@link #RECEIVED} 가 기본값인 것은 <b>요청이 곧 접수</b>이기 때문이다. 관리자가
@@ -21,9 +21,9 @@ public enum ReqStatus {
     /** 접수 — 관리자가 아직 안 봤거나 보는 중. <b>처리 가능한 유일한 상태</b>다. */
     RECEIVED,
 
-    /** 처리 완료. 메모는 선택이다 — 결과 자체가 답이다(screen/notice/requirements.md). */
+    /** 처리 완료. 메모는 선택이다 — 결과 자체가 답이다(screen/admin/system/notice/requirements.md). */
     DONE,
 
-    /** 반려. <b>메모가 필수</b>다 — 이유가 없으면 답이 아니다(sys/notification.md · screen/notice/requirements.md). */
+    /** 반려. <b>메모가 필수</b>다 — 이유가 없으면 답이 아니다(sys/notification.md · screen/admin/system/notice/requirements.md). */
     REJECTED
 }

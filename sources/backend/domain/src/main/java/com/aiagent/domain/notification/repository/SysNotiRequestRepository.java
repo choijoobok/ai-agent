@@ -10,13 +10,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * 요청함 — sys/notification.md. 조회는 {@code QuerySpec} 을 지난다(backend/api.md).
  *
- * <p><b>보존 기간이 아직 없다</b>(screen/notice/requirements.md 미결). 요청은 개인이 낸 것이라 로그와 성격이
+ * <p><b>보존 기간이 아직 없다</b>(screen/admin/system/notice/requirements.md 미결). 요청은 개인이 낸 것이라 로그와 성격이
  * 다르고, 짧게 잡으면 <i>"작년에 낸 요청"</i> 의 답이 사라진다.
  */
 public interface SysNotiRequestRepository extends JpaRepository<SysNotiRequest, Long> {
 
     /**
-     * 처리 대상을 <b>한 번에</b> 집는다 — screen/notice/requirements.md.
+     * 처리 대상을 <b>한 번에</b> 집는다 — screen/admin/system/notice/requirements.md.
      *
      * <p>행마다 {@code findById} 를 부르지 않는 이유는 N+1 이 아니라 <b>판정 때문</b>이다:
      * 선택에 이미 처리된 것이 섞이면 <b>전부 막아야</b> 하므로(부분 실행하지 않는다)

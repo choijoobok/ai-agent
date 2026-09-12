@@ -88,9 +88,9 @@
 
 | 경로 | 무엇 | 비고 |
 |---|---|---|
-| `GET /api/common/notice/getList?includeExpired=` | 공지 탭 | 조건이 **서버 코드에 박혀 있다** |
-| `GET /api/common/notice/getOne` | 공지 상세 | 목록이 본문을 싣지 않는다 |
-| `GET /api/common/notice/getPopup` | 팝업 | 대상 1건 + **나머지 수** |
+| `GET /api/common/system/notice/getList?includeExpired=` | 공지 탭 | 조건이 **서버 코드에 박혀 있다** |
+| `GET /api/common/system/notice/getOne` | 공지 상세 | 목록이 본문을 싣지 않는다 |
+| `GET /api/common/system/notice/getPopup` | 팝업 | 대상 1건 + **나머지 수** |
 | `GET /api/common/noti/getList` | 내 알림 | 목록 · 미읽음 · 전건을 **함께** 준다 |
 | `GET /api/common/noti/getUnreadCount` | 배지만 | 모달을 열지 않아도 벨은 숫자를 보여야 한다 |
 | `POST /api/common/noti/saveRead` | 그 항목만 | 남의 번호는 **없는 것**이다(403 이 아니다 — **있다는 사실이 정보다**) |
