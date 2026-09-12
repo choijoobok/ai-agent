@@ -179,25 +179,25 @@ codeMgmt.validate.duplicate,FRONT,같은 코드가 이 그리드 안에 둘 있�
 common.cancel,FRONT,모달·확인 대화의 취소 버튼.
 common.close,FRONT,모달·확인 대화의 닫기 버튼.
 config.adminReset.warn,FRONT,`auth.password.admin-reset-enabled` 를 끌 때 — sys/code.md. 되돌릴 수는 있지만 되돌릴 사람이 못 들어올 수 있다. 메일 연동이 없는 배포에서 잠긴 계정을 푸는 유일한 경로다. /
-config.col.cfgDesc,FRONT,설명 컬럼 — 필드 Javadoc 에서 온다. `CFG_DESC` 가 아니다(screen/admin/system/code/requirements.md).
+config.col.cfgDesc,FRONT,설명 컬럼 — 필드 Javadoc 에서 온다. `CFG_DESC` 가 아니다(screen/admin/system/config/requirements.md).
 config.col.cfgKey,FRONT,키 컬럼 — PK 이고 코드가 정한다. 열리지 않는다.
 config.col.cfgType,FRONT,유형 컬럼 — 필드 타입에서 온다. 읽기 전용.
 config.col.cfgVal,FRONT,적용값 컬럼 — 이 화면의 유일한 입력 칸이다.
-config.col.defaultVal,FRONT,기본값 컬럼 — `yml` 이며 언제나 있다. 숨기지 않는다(screen/admin/system/code/requirements.md).
-config.col.revert,FRONT,"삭제 컬럼의 헤더 — 되돌리기 다(screen/admin/system/code/requirements.md). *삭제* 면 관리자는 값이 사라질 것을 기대하고, 목록에 같은 키가 남아 있으면 버그로 읽는다 — 기대를 라벨이 만든다. /"
+config.col.defaultVal,FRONT,기본값 컬럼 — `yml` 이며 언제나 있다. 숨기지 않는다(screen/admin/system/config/requirements.md).
+config.col.revert,FRONT,"삭제 컬럼의 헤더 — 되돌리기 다(screen/admin/system/config/requirements.md). *삭제* 면 관리자는 값이 사라질 것을 기대하고, 목록에 같은 키가 남아 있으면 버그로 읽는다 — 기대를 라벨이 만든다. /"
 config.defaulted,FRONT,조회조건의 반대쪽 — 오버라이드 행이 없는 키.
 config.grid.title,FRONT,그리드의 제목 — 단일 그리드다.
-config.overridden,FRONT,"적용값 뒤에 붙는 배지 — 근거는 `SYS_CONFIG` 행의 존재다(screen/admin/system/code/requirements.md). 값이 기본값과 같아도 붙는다. 같은 값으로 저장해 두면 다음 배포가 기본값을 올려도 그 키만 옛 값에 묶이며, 눈으로는 구분되지 않으므로 이것이 유일한 신호다. /"
-config.revert.warn,FRONT,"되돌리기 확인 — `{key}` · `{defaultVal}`. 기본값을 함께 말한다(screen/admin/system/code/requirements.md). 값이 사라지는 것이 아니라 `yml` 이 드러난다는 것을 미리 말해 두지 않으면, 되돌린 뒤에도 목록에 남은 같은 키가 ""지웠는데 그대로다"" 로 읽힌다. /"
+config.overridden,FRONT,"적용값 뒤에 붙는 배지 — 근거는 `SYS_CONFIG` 행의 존재다(screen/admin/system/config/requirements.md). 값이 기본값과 같아도 붙는다. 같은 값으로 저장해 두면 다음 배포가 기본값을 올려도 그 키만 옛 값에 묶이며, 눈으로는 구분되지 않으므로 이것이 유일한 신호다. /"
+config.revert.warn,FRONT,"되돌리기 확인 — `{key}` · `{defaultVal}`. 기본값을 함께 말한다(screen/admin/system/config/requirements.md). 값이 사라지는 것이 아니라 `yml` 이 드러난다는 것을 미리 말해 두지 않으면, 되돌린 뒤에도 목록에 남은 같은 키가 ""지웠는데 그대로다"" 로 읽힌다. /"
 config.search.keyword,FRONT,조회조건 — 키와 설명을 한 칸이 함께 건다(sys/code.md).
 config.search.overridden,FRONT,조회조건 — 변경 여부. 판정은 행의 존재다.
-config.search.prefix,FRONT,조회조건 — 접두사. 전 키에서 도출한다(screen/admin/system/code/requirements.md).
+config.search.prefix,FRONT,조회조건 — 접두사. 전 키에서 도출한다(screen/admin/system/config/requirements.md).
 config.type.BOOLEAN,FRONT,유형 `BOOLEAN` — `true`/`false` 아닌 값을 막는다.
 config.type.JSON,FRONT,유형 `JSON` — 컬렉션을 한 칸에 담은 문자열이다(sys/batch.md).
 config.type.NUMBER,FRONT,유형 `NUMBER` — 화면이 문자를 막는다(frontend/grid.md).
 config.type.STRING,FRONT,유형 `STRING`.
 config.validate.boolean,FRONT,`BOOLEAN` 유형에 `true`/`false` 아닌 값.
-config.validate.number,FRONT,`NUMBER` 유형에 숫자가 아닌 값 — 화면이 아는 것은 유형까지다(screen/admin/system/code/requirements.md).
+config.validate.number,FRONT,`NUMBER` 유형에 숫자가 아닌 값 — 화면이 아는 것은 유형까지다(screen/admin/system/config/requirements.md).
 dashboard.greeting,FRONT,대시보드 인사 — `{name}`.
 dashboard.menuCount,FRONT,접근 가능한 메뉴 수 카드의 제목.
 dashboard.menuCount.value,FRONT,그 카드의 값 — `{count}`.

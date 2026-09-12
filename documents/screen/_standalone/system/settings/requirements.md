@@ -8,7 +8,7 @@
 
 > **이 문서는 `docs/design/60-screen-auth.md` §7 에서 옮겼다**(2026-09-04 · 그 폴더는 폐지됐다).
 
-> **문서 상태: 구현됨** — `features/settings/SettingsModal.tsx`.
+> **문서 상태: 구현됨** — `modules/system/public/settings/SettingsModal.tsx`.
 
 ---
 
@@ -18,7 +18,7 @@
 |---|---|
 | 자리 | 헤더 → 모달 |
 | 메뉴코드 | **없음** |
-| 프론트 폴더 | `sources/frontend/src/features/settings/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/public/settings/` |
 | 화면 유형 | **그룹 넷**(일반 · 테마 · 글꼴 · 그리드) |
 | 처리 유형 | 즉시 반영 |
 | 액션 권한 | **해당 없음** |

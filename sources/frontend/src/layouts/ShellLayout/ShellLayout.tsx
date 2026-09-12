@@ -11,7 +11,7 @@ import { useSessionCleanup } from '@/modules/system/public/auth/session';
 import { useUiStore } from '@/shared/stores/uiStore';
 import { useSessionExpiry } from '@/modules/system/public/auth/useSessionExpiry';
 import { ExpiryWarningModal } from '@/modules/system/public/auth/components/ExpiryWarningModal';
-import { SettingsModal } from '@/features/settings/SettingsModal';
+import { SettingsModal } from '@/modules/system/public/settings/SettingsModal';
 import { ProfileModal } from '@/features/profile/ProfileModal';
 import { NotificationModal } from '@/features/notification/NotificationModal';
 import { NoticePopupModal } from '@/features/notification/NoticePopupModal';

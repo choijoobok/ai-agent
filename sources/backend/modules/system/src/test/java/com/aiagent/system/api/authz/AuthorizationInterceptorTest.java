@@ -62,6 +62,7 @@ class AuthorizationInterceptorTest {
     private static final String USER_SESSION_KILL = "/api/service/system/user/killSession";
     private static final String CODE_SAVE = "/api/service/system/code/save";
     private static final String MESSAGE_SAVE = "/api/service/system/message/save";
+    private static final String CONFIG_SAVE = "/api/service/system/config/save";
 
     @Mock private ApiAuthorityRegistry registry;
     @Mock private EffectiveAuthorityService authorities;
@@ -205,6 +206,15 @@ class AuthorizationInterceptorTest {
             givenFact(MESSAGE_SAVE, ActionType.SAVE, "MESSAGE_MGMT");
 
             assertDenied(get(MESSAGE_SAVE, session), AuthzErrorCode.NO_AUTHORITY);
+        }
+
+        @Test
+        @DisplayName("TC-5064 CONFIG_MGMT SAVE 없는 직접 저장은 403이다")
+        void configSaveNeedsAuthority() {
+            givenAuthority();
+            givenFact(CONFIG_SAVE, ActionType.SAVE, "CONFIG_MGMT");
+
+            assertDenied(get(CONFIG_SAVE, session), AuthzErrorCode.NO_AUTHORITY);
         }
 
         @Test

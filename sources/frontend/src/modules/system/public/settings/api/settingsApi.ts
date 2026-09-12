@@ -1,5 +1,6 @@
+// @feat FEAT-506
 import { post } from '@/shared/api';
-import { SETTINGS_ENDPOINTS } from '@/features/settings/api/endpoints';
+import { SETTINGS_ENDPOINTS } from '@/modules/system/public/settings/api/endpoints';
 
 /**
  * 언어를 서버에 저장한다 — 의 ②.

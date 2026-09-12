@@ -18,8 +18,8 @@ export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
   '/admin/system/message': lazy(async () => ({
     default: (await import('@/modules/system/features/message/pages/MessageMgmtPage')).MessageMgmtPage,
   })),
-  '/config': lazy(async () => ({
-    default: (await import('@/features/config/pages/ConfigMgmtPage')).ConfigMgmtPage,
+  '/admin/system/config': lazy(async () => ({
+    default: (await import('@/modules/system/features/config/pages/ConfigMgmtPage')).ConfigMgmtPage,
   })),
   '/admin/system/code': lazy(async () => ({
     default: (await import('@/modules/system/features/code/pages/CodeMgmtPage')).CodeMgmtPage,

@@ -150,7 +150,7 @@ class ConfigServiceTest {
     class Keys {
 
         @Test
-        @DisplayName("카탈로그에 없는 키는 거부한다 — 저장은 되고 동작하지 않는 실패를 막는다")
+        @DisplayName("TC-5062 카탈로그에 없는 키는 거부한다 — 저장은 되고 동작하지 않는 실패를 막는다")
         void 없는_키는_거부() {
             assertThatThrownBy(() -> service.save(List.of(update("auth.login.nope", "1"))))
                     .isInstanceOf(BusinessException.class)
@@ -234,7 +234,7 @@ class ConfigServiceTest {
     class CacheVersion {
 
         @Test
-        @DisplayName("저장 한 번에 +1 이다 — 행 수만큼 올리지 않는다(sys/code.md)")
+        @DisplayName("TC-5061 저장 한 번에 +1 이다 — 행 수만큼 올리지 않는다(sys/code.md)")
         void 한_번에_한_번() {
             SysCacheVersion version = SysCacheVersion.started(SysCacheVersion.CONFIG, NOW);
             when(versions.findById(SysCacheVersion.CONFIG)).thenReturn(Optional.of(version));

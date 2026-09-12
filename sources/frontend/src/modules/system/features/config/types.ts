@@ -1,3 +1,4 @@
+// @feat FEAT-506
 /** 서버 `ConfigRow` 와 1:1 — screen/config/requirements.md. */
 
 /** 서버 `ConfigValueType` 과 1:1. 화면이 아는 것은 <b>여기까지</b>다(screen/config/requirements.md). */

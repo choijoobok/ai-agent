@@ -1170,28 +1170,28 @@ export const MSG = {
   /** 같은 키가 이 화면 안에 둘 있을 때 — 클라이언트가 판정할 수 있다. */
   MESSAGE_DUPLICATE_KEY: 'message.validate.duplicate',
 
-  // ── 시스템 환경설정 (screen/admin/system/code/requirements.md) ─────────────────────────────────
+  // ── 시스템 환경설정 (screen/admin/system/config/requirements.md) ────────────────────────────────
   /** 그리드의 제목 — 단일 그리드다. */
   CONFIG_GRID_TITLE: 'config.grid.title',
   /** 키 컬럼 — PK 이고 <b>코드가 정한다</b>. 열리지 않는다. */
   CONFIG_COL_KEY: 'config.col.cfgKey',
-  /** 기본값 컬럼 — `yml` 이며 <b>언제나 있다</b>. 숨기지 않는다(screen/admin/system/code/requirements.md). */
+  /** 기본값 컬럼 — `yml` 이며 <b>언제나 있다</b>. 숨기지 않는다(screen/admin/system/config/requirements.md). */
   CONFIG_COL_DEFAULT: 'config.col.defaultVal',
   /** 적용값 컬럼 — <b>이 화면의 유일한 입력 칸</b>이다. */
   CONFIG_COL_VALUE: 'config.col.cfgVal',
   /** 유형 컬럼 — 필드 타입에서 온다. 읽기 전용. */
   CONFIG_COL_TYPE: 'config.col.cfgType',
-  /** 설명 컬럼 — 필드 Javadoc 에서 온다. `CFG_DESC` 가 아니다(screen/admin/system/code/requirements.md). */
+  /** 설명 컬럼 — 필드 Javadoc 에서 온다. `CFG_DESC` 가 아니다(screen/admin/system/config/requirements.md). */
   CONFIG_COL_DESC: 'config.col.cfgDesc',
   /**
-   * 삭제 컬럼의 헤더 — <b>되돌리기</b> 다(screen/admin/system/code/requirements.md).
+   * 삭제 컬럼의 헤더 — <b>되돌리기</b> 다(screen/admin/system/config/requirements.md).
    *
    * <p>*삭제* 면 관리자는 값이 사라질 것을 기대하고, 목록에 같은 키가 남아 있으면
    * <b>버그로 읽는다</b> — 기대를 라벨이 만든다.
    */
   CONFIG_COL_REVERT: 'config.col.revert',
   /**
-   * 적용값 뒤에 붙는 배지 — 근거는 <b>`SYS_CONFIG` 행의 존재</b>다(screen/admin/system/code/requirements.md).
+   * 적용값 뒤에 붙는 배지 — 근거는 <b>`SYS_CONFIG` 행의 존재</b>다(screen/admin/system/config/requirements.md).
    *
    * <p>값이 기본값과 같아도 붙는다. 같은 값으로 저장해 두면 <b>다음 배포가 기본값을
    * 올려도 그 키만 옛 값에 묶이며</b>, 눈으로는 구분되지 않으므로 이것이 유일한 신호다.
@@ -1209,12 +1209,12 @@ export const MSG = {
   CONFIG_TYPE_JSON: 'config.type.JSON',
   /** 조회조건 — 키와 설명을 <b>한 칸이 함께 건다</b>(sys/code.md). */
   CONFIG_SEARCH_KEYWORD: 'config.search.keyword',
-  /** 조회조건 — 접두사. 전 키에서 <b>도출</b>한다(screen/admin/system/code/requirements.md). */
+  /** 조회조건 — 접두사. 전 키에서 <b>도출</b>한다(screen/admin/system/config/requirements.md). */
   CONFIG_SEARCH_PREFIX: 'config.search.prefix',
   /** 조회조건 — 변경 여부. 판정은 행의 존재다. */
   CONFIG_SEARCH_OVERRIDDEN: 'config.search.overridden',
   /**
-   * 되돌리기 확인 — `{key}` · `{defaultVal}`. <b>기본값을 함께 말한다</b>(screen/admin/system/code/requirements.md).
+   * 되돌리기 확인 — `{key}` · `{defaultVal}`. <b>기본값을 함께 말한다</b>(screen/admin/system/config/requirements.md).
    *
    * <p>값이 사라지는 것이 아니라 `yml` 이 드러난다는 것을 미리 말해 두지 않으면,
    * 되돌린 뒤에도 목록에 남은 같은 키가 <i>"지웠는데 그대로다"</i> 로 읽힌다.
@@ -1227,7 +1227,7 @@ export const MSG = {
    * 배포에서 잠긴 계정을 푸는 유일한 경로다.
    */
   CONFIG_ADMIN_RESET_WARN: 'config.adminReset.warn',
-  /** `NUMBER` 유형에 숫자가 아닌 값 — 화면이 아는 것은 <b>유형</b>까지다(screen/admin/system/code/requirements.md). */
+  /** `NUMBER` 유형에 숫자가 아닌 값 — 화면이 아는 것은 <b>유형</b>까지다(screen/admin/system/config/requirements.md). */
   CONFIG_VALIDATE_NUMBER: 'config.validate.number',
   /** `BOOLEAN` 유형에 `true`/`false` 아닌 값. */
   CONFIG_VALIDATE_BOOLEAN: 'config.validate.boolean',

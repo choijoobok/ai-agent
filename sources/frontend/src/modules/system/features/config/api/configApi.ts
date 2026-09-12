@@ -1,5 +1,6 @@
+// @feat FEAT-506
 import { post } from '@/shared/api';
-import { CONFIG_ENDPOINTS } from '@/features/config/api/endpoints';
+import { CONFIG_ENDPOINTS } from '@/modules/system/features/config/api/endpoints';
 
 /**
  * 시스템 환경설정 — screen/config/requirements.md.

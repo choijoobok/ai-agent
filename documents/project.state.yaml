@@ -18,7 +18,7 @@ current:
   # ↑ **축이 둘이고 글자가 같다.** 차수는 *무엇을 내는가*(00-charter.yaml roadmap),
   #   단계는 *어디까지 만들었는가*(P0~P6)다. 한 차수가 P0~P6 을 한 바퀴 돈다.
   #   `trace-check` 가 이 값을 읽어 **뒤 차수의 결손을 오류가 아니라 경고로** 센다.
-  slice: SLICE-508           # 시스템 설정·사용자 설정·캐시 버전의 RED 테스트를 만들면 구현을 진행한다
+  slice: SLICE-509           # 로그인·사용 이력 목록과 상세의 RED 테스트를 만든 뒤 구현한다
   blocked_by: []
   template_maintenance: false
   # ↑ true 로 켜면 G3 전에도 sources/ 를 고칠 수 있다(guard-write ①).
@@ -143,17 +143,17 @@ roadmap_closed: []
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
 next_up:
   decided_at: 2026-09-12
-  choice: "SLICE-508 시스템 설정·사용자 설정·캐시 버전을 system 모듈 기준으로 이행한다"
+  choice: "SLICE-509 로그인·사용 이력 목록과 상세를 system 모듈 기준으로 이행한다"
   why: >-
-    SLICE-507 메시지 값·번들·캐시 버전이 사용자 G4 승인으로 완료됐다.
-    SLICE-508은 SLICE-503·SLICE-507을 선행으로 요구하며, 시스템·사용자 설정과 캐시 버전은
-    메시지 번들의 버전 동기화와 같은 system 공통 기반을 사용한다.
+    SLICE-508 시스템 설정·사용자 설정·캐시 버전이 사용자 G4 승인으로 완료됐다.
+    SLICE-509는 SLICE-503·SLICE-504를 선행으로 요구하며, 로그인·사용 이력의 목록과 상세는
+    system 인가·사용자 상태·공통 조회 기반을 사용한다.
   tasks:
-    - "FEAT-506의 시스템 설정·사용자 설정·캐시 버전과 TC-5061~TC-5065의 현재 경로를 산정한다"
+    - "FEAT-507의 로그인·사용 이력 목록·상세와 TC-5072~TC-5073의 현재 경로를 산정한다"
     - "신규 system 패키지 존재와 기존 구현 패키지 부재 계약을 먼저 작성해 RED를 확인한다"
     - "구현·DTO·소유 테스트를 이행하고 전체 검사·규칙 반전·PIT 뒤 G4 승인을 요청한다"
   then: >-
-    SLICE-508 승인 뒤에 독립 의존 슬라이스 SLICE-509 로그인·사용 이력 목록과 상세로 진행한다.
+    SLICE-509 승인 뒤에 SLICE-510 오류 이력과 클라이언트 다운로드 이력으로 진행한다.
 
 # ── 미결 질문 (Open Questions) ─────────────────────────────────────
 # 사용자 답변이 필요한 것. 답변되면 삭제하고 결과를 spec·ADR 에 반영한다.
@@ -316,7 +316,7 @@ slices:
   - { id: SLICE-505, workstream: system, features: [FEAT-502], testcases: [TC-5022, TC-5025], scope: "사용자 개인 예외·유효 권한 진단", stage: P4, status: done, depends_on: [SLICE-503, SLICE-504] }
   - { id: SLICE-506, workstream: system, features: [FEAT-504], testcases: [TC-5041, TC-5042, TC-5043, TC-5044, TC-5045], scope: "공통코드·참조 코드와 공통 조회 계약", stage: P4, status: done, depends_on: [SLICE-503] }
   - { id: SLICE-507, workstream: system, features: [FEAT-505], testcases: [TC-5051, TC-5052, TC-5053, TC-5054, TC-5055], scope: "메시지 값·번들·캐시 버전", stage: P4, status: done, depends_on: [SLICE-503, SLICE-506] }
-  - { id: SLICE-508, workstream: system, features: [FEAT-506], testcases: [TC-5061, TC-5062, TC-5063, TC-5064, TC-5065], scope: "시스템 설정·사용자 설정·캐시 버전", stage: P4, status: planned, depends_on: [SLICE-503, SLICE-507] }
+  - { id: SLICE-508, workstream: system, features: [FEAT-506], testcases: [TC-5061, TC-5062, TC-5063, TC-5064, TC-5065], scope: "시스템 설정·사용자 설정·캐시 버전", stage: P4, status: done, depends_on: [SLICE-503, SLICE-507] }
   - { id: SLICE-509, workstream: system, features: [FEAT-507], testcases: [TC-5072, TC-5073], scope: "로그인·사용 이력 목록과 상세", stage: P4, status: planned, depends_on: [SLICE-503, SLICE-504] }
   - { id: SLICE-510, workstream: system, features: [FEAT-507], testcases: [TC-5071, TC-5074, TC-5075, TC-5076], scope: "오류 이력과 클라이언트 다운로드 이력", stage: P4, status: planned, depends_on: [SLICE-509] }
   - { id: SLICE-511, workstream: system, features: [FEAT-508], testcases: [TC-5081, TC-5082, TC-5084], scope: "배치 일정·구현 레지스트리·즉시 실행", stage: P4, status: planned, depends_on: [SLICE-503, SLICE-506] }
@@ -334,6 +334,7 @@ verification_load:
   - { slice: SLICE-505, measured_at: "2026-09-12", fix_rounds: 2, unverified_rules: 0, quality_fails: 0, spec_defects: 1, redteam_fixes: 1, note: "기존 개인 예외 권한의 system 패키지·화면·정식 경로 부재를 RED 구조 계약으로 확인한 뒤 컨트롤러·요청 DTO·프런트 기능·화면 문서를 함께 이행했다. 레드팀에서 사용 중지 계정의 예외 사전 구성 정책을 사용자에게 확인했고, 계정 상태를 표시한 채 허용하기로 확정했다. 없는 계정 저장 거부를 반전했을 때 TC-5022가 실패하고 원복 뒤 통과했다. UserAuthService PIT는 변이 40개 중 35개를 제거해 87.5%로 Full 트랙 75% 기준을 통과했다" }
   - { slice: SLICE-506, measured_at: "2026-09-12", fix_rounds: 3, unverified_rules: 0, quality_fails: 0, spec_defects: 1, redteam_fixes: 1, note: "기존 공통코드의 system 패키지·화면·정식 경로 부재를 RED 구조 계약으로 확인한 뒤 컨트롤러·요청 DTO·응답 DTO·프런트 기능·화면 문서를 함께 이행했다. 공통 조회는 인증 사용자에게만 열고 CODE_MGMT SAVE 없는 직접 저장은 403이 되도록 테스트를 보강했다. 정의 없는 참조값 허용 판정을 반전했을 때 TC-5042가 실패하고 원복 뒤 통과했다. CodeAdminService PIT는 변이 92개 중 70개를 제거해 76%로 Full 트랙 75% 기준을 통과했다. 사용자는 구 공통코드 URL의 호환 별칭을 제거하기로 확정했다" }
   - { slice: SLICE-507, measured_at: "2026-09-12", fix_rounds: 4, unverified_rules: 0, quality_fails: 0, spec_defects: 1, redteam_fixes: 1, note: "기존 메시지의 system 패키지·화면·정식 경로 부재를 RED 구조 계약으로 확인한 뒤 컨트롤러·DTO·프런트 기능·화면 문서·시드를 함께 이행했다. 관리 화면은 생성된 메시지 키의 값만 바꾸며 직접 키 생성은 거부한다. 키 생성 허용과 캐시 버전 증가를 각각 반전했을 때 TC-5052·TC-5051이 실패하고 원복 뒤 통과했다. MessageAdminService PIT는 변이 27개 중 24개를 제거해 89%로 Full 트랙 75% 기준을 통과했다. 메시지는 업무 크리티컬이 아니므로 노드별 백엔드 캐시 차이는 고객사별 TTL 동안 허용하며, 프런트는 로그인·세션 복원 때 캐시 버전을 비교하도록 보정했다" }
+  - { slice: SLICE-508, measured_at: "2026-09-12", fix_rounds: 1, unverified_rules: 0, quality_fails: 0, spec_defects: 2, redteam_fixes: 1, note: "시스템 설정 API·요청 DTO와 프런트 설정 화면·공통 설정 모달을 system 정식 경로로 이행하고 구 경로를 제거했다. 메시지 키 생성 거부 문구의 ko·en 값 시드 누락 1건을 새 Liquibase 체인지셋으로 보완했다. 비밀·임의 변경 금지 값은 sys-config 밖의 배포 경로로 분리(CR-005)했고, 설정은 노드 TTL 캐시 없이 다음 작업 스코프에서 DB 오버라이드를 다시 합성하도록 정본을 바로잡았다(CR-006). 노출 경계·미등록 키·버전 증가를 각각 반전했을 때 테스트가 실패하고 원복 뒤 통과했으며, ConfigService PIT는 87%다" }
 
 # ── 최근 활동 로그 (최신 10건만 유지) ─────────────────────────────
 log:

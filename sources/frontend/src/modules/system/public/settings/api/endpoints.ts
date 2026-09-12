@@ -1,3 +1,4 @@
+// @feat FEAT-506
 /**
  * 사용자 설정 API — frontend/tabs.md.
  *

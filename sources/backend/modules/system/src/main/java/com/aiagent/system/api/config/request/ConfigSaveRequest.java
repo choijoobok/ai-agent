@@ -1,4 +1,5 @@
-package com.aiagent.api.config.request;
+// @feat FEAT-506
+package com.aiagent.system.api.config.request;
 
 import com.aiagent.domain.config.admin.ConfigSaveRow;
 import jakarta.validation.Valid;

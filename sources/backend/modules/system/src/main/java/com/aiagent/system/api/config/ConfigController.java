@@ -1,6 +1,7 @@
-package com.aiagent.api.config;
+// @feat FEAT-506
+package com.aiagent.system.api.config;
 
-import com.aiagent.api.config.request.ConfigSaveRequest;
+import com.aiagent.system.api.config.request.ConfigSaveRequest;
 import com.aiagent.api.trace.TraceId;
 import com.aiagent.core.response.ApiResponse;
 import com.aiagent.core.search.PageResponse;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 삭제가 한 요청이며, 쪼개면 화면의 저장 버튼 하나가 두 번 나간다.
  */
 @RestController
-@RequestMapping("/api/service/config")
+@RequestMapping("/api/service/system/config")
 public class ConfigController {
 
     private final ConfigQueryService queries;

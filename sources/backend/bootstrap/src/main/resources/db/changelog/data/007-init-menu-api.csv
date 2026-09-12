@@ -18,9 +18,9 @@ CODE_MGMT,/api/service/system/code/getRefDefList
 CODE_MGMT,/api/service/system/code/save
 CODE_MGMT,/api/service/system/code/saveGroup
 CODE_MGMT,/api/service/system/code/saveRefDef
-CONFIG_MGMT,/api/service/config/getList
-CONFIG_MGMT,/api/service/config/getPrefixes
-CONFIG_MGMT,/api/service/config/save
+CONFIG_MGMT,/api/service/system/config/getList
+CONFIG_MGMT,/api/service/system/config/getPrefixes
+CONFIG_MGMT,/api/service/system/config/save
 ERROR_LOG,/api/service/errorLog/getDetail
 ERROR_LOG,/api/service/errorLog/getList
 LOGIN_LOG,/api/service/loginLog/getList

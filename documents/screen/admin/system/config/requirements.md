@@ -26,10 +26,10 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/config` |
+| 페이지 경로 | `/admin/system/config` |
 | 메뉴코드 | `CONFIG_MGMT` |
-| 프론트 폴더 | `sources/frontend/src/features/config/` |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/config/admin/` · `sources/backend/api/…/api/config/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/config/` |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/config/admin/` · `sources/backend/modules/system/…/system/api/config/` |
 | 화면 유형 | **단일 그리드** |
 | 처리 유형 | CRUD(**행 추가 없음** · 삭제는 **되돌리기**) |
 | 쓰는 액션 | `R` `S` — **`EXPORT_YN` = `N`. 엑셀 액션 자체가 없다** |
@@ -241,9 +241,9 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |
 |---|---|---|---|---|---|
-| 목록 | `getList` | `/service/config/getList` | POST | R | offset |
-| 접두사 후보 | `getPrefixes` | `/service/config/getPrefixes` | POST | R | — |
-| 저장 | `save` | `/service/config/save` | POST | S | — |
+| 목록 | `getList` | `/service/system/config/getList` | POST | R | offset |
+| 접두사 후보 | `getPrefixes` | `/service/system/config/getPrefixes` | POST | R | — |
+| 저장 | `save` | `/service/system/config/save` | POST | S | — |
 
 - **되돌리기용 경로가 없다** — 일괄 저장이라 수정과 삭제가 `save` 하나로 나간다.
 - **`exportExcel` 이 없다** — `EXPORT` 액션 자체가 없다.
@@ -255,7 +255,7 @@
 
 - 코드그룹: **없음.** 유형 넷은 상수다.
 - 메시지 키: 화면 `MSG.CONFIG_*` · 서버 `MsgKey.ERR_CONFIG_KEY_UNKNOWN` · `ERR_CONFIG_NOT_OVERRIDDEN` · `ERR_CONFIG_INVALID_VALUE`.
-- 메뉴 시드: `menu-tree.yaml` — `code: CONFIG_MGMT` · `parent: MASTER` · `url: /config`. **`export` 를 두지 않는다.**
+- 메뉴 시드: `menu-tree.yaml` — `code: CONFIG_MGMT` · `parent: MASTER` · `url: /admin/system/config`. **`export` 를 두지 않는다.**
 - 초기 데이터 전제: **`SYS_CONFIG` 가 비어 있는 것이 정상이다.** 왼쪽 테이블은 배포가 갖는다.
 - **키를 늘리는 것은 개발의 일이다** — `yml` 에 키를 더하고 바인딩 객체에 필드를 더하면 이 화면에 줄이 는다. 화면은 그것을 만들 수 없다.
 

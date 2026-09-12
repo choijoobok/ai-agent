@@ -157,7 +157,7 @@ class ConfigLookupTest {
         }
 
         @Test
-        @DisplayName("다음 작업부터 새 값이다")
+        @DisplayName("TC-5065 다음 작업부터 새 값이다 — 노드 TTL 캐시를 두지 않는다")
         void 다음_작업은_새_값() {
             configs.inNewSnapshot(() -> configs.get(AuthLoginProps.class));
             source.values.put("auth.login.fail-limit", "3");

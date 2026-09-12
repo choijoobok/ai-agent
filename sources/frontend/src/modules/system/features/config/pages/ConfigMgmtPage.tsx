@@ -1,3 +1,4 @@
+// @feat FEAT-506
 import { useCallback, useMemo, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { FillColumn } from '@/shared/components/FillColumn';
@@ -11,9 +12,9 @@ import type { ColumnDef, GridIssue, SelectOption } from '@/shared/grid/types';
 import { SearchForm, type SearchFormHandle } from '@/shared/searchform/SearchForm';
 import { useSearchFormHeader } from '@/shared/searchform/useSearchFormHeader';
 import type { SearchField } from '@/shared/searchform/types';
-import { CONFIG_ENDPOINTS } from '@/features/config/api/endpoints';
-import { getConfigPrefixes } from '@/features/config/api/configApi';
-import type { ConfigRow, ConfigValueType } from '@/features/config/types';
+import { CONFIG_ENDPOINTS } from '@/modules/system/features/config/api/endpoints';
+import { getConfigPrefixes } from '@/modules/system/features/config/api/configApi';
+import type { ConfigRow, ConfigValueType } from '@/modules/system/features/config/types';
 
 /**
  * `CONFIG_MGMT` — screen/config/requirements.md. <b>목록이 아우터 조인이다.</b>

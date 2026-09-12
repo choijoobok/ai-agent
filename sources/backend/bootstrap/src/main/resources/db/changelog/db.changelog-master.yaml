@@ -455,3 +455,7 @@ databaseChangeLog:
   # CR-002 — 생성 키의 설치용 문구는 적용된 체인지셋을 고치지 않고 새 파일로 넣는다.
   - include:
       file: db/changelog/data/115-init-message.yaml
+
+  # 메시지 관리 API는 소스 상수 밖의 신규 키 생성을 거부한다.
+  - include:
+      file: db/changelog/data/116-init-message.yaml

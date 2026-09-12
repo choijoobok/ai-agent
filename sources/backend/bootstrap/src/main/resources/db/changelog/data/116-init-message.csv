@@ -1,0 +1,3 @@
+MSG_KEY,LANG_CD,MSG_VAL
+err.message.key-create-forbidden,ko,메시지 키는 새로 만들 수 없습니다.
+err.message.key-create-forbidden,en,Message keys cannot be created.

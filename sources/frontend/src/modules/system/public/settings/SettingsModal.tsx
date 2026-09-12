@@ -1,3 +1,4 @@
+// @feat FEAT-506
 import { useState } from 'react';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import {
@@ -29,7 +30,7 @@ import {
 } from '@/shared/stores/uiStore';
 import { WEB_SAFE_FONTS } from '@/shared/theme/themeTokens';
 import { useResolvedDark } from '@/shared/theme/useResolvedDark';
-import { saveLocale } from '@/features/settings/api/settingsApi';
+import { saveLocale } from '@/modules/system/public/settings/api/settingsApi';
 
 /**
  * 설정 모달 — frontend/tabs.md.
