@@ -1,0 +1,41 @@
+# CR-002 메뉴 URL 중복 거부 문구 — 008 생성 키의 설치용 ko·en 값이다.
+#
+# 적용된 값 체인지셋을 고치지 않는다. loadData는 체크섬을 가지므로 새 파일로 넣어야 이미
+# 설치된 DB와 신규 설치가 같은 문구를 갖는다.
+databaseChangeLog:
+  - changeSet:
+      id: data-115-message
+      author: codex
+      comment: CR-002 — 메뉴 URL 중복 거부 문구 ko·en
+      changes:
+        - loadData:
+            tableName: SYS_MESSAGE
+            file: db/changelog/data/115-init-message.csv
+            relativeToChangelogFile: false
+            encoding: UTF-8
+            columns:
+              - column:
+                  name: MSG_KEY
+                  type: STRING
+              - column:
+                  name: LANG_CD
+                  type: STRING
+              - column:
+                  name: MSG_VAL
+                  type: STRING
+
+  - changeSet:
+      id: data-115-cache-version
+      author: codex
+      comment: 값을 넣었으면 메시지 캐시 버전을 올린다 — sys/message.md
+      changes:
+        - update:
+            tableName: SYS_CACHE_VERSION
+            columns:
+              - column:
+                  name: VERSION
+                  valueComputed: VERSION + 1
+              - column:
+                  name: MOD_DTM
+                  valueComputed: CURRENT_TIMESTAMP
+            where: CACHE_NAME = 'message'

@@ -5,9 +5,9 @@ category: standard/backend
 type: operation
 class: policy
 created: 2026-09-03
-updated: 2026-09-07
+updated: 2026-09-12
 status: active
-sources: ["sources/backend/api/config/InterceptorConfig.java", "sources/backend/api/", "sources/backend/bootstrap/src/main/resources/application.yml"]
+sources: ["sources/backend/bootstrap/src/main/java/com/aiagent/bootstrap/config/InterceptorConfig.java", "sources/backend/api/", "sources/backend/modules/system/", "sources/backend/bootstrap/src/main/resources/application.yml"]
 tier: 2
 tags: [backend, filter, interceptor, aop, order, async, virtual-thread, dedup]
 ---
@@ -49,8 +49,8 @@ afterCompletion             SYS_LO_ACCESS — 전 요청 1행
 **뒤에 두면 인가가 막은 요청이 통째로 사라진다** — 그리고 *"권한 없는 접근 시도"* 는
 사용 이력이 가장 자주 답해야 하는 질문이다.
 
-순서가 [`InterceptorConfig`](../../../sources/backend/api/src/main/java/com/aiagent/api/config/InterceptorConfig.java)
-**한 파일에서만 표현되므로** `InterceptorOrderTest` 가 지킨다.
+순서가 [`InterceptorConfig`](../../../sources/backend/bootstrap/src/main/java/com/aiagent/bootstrap/config/InterceptorConfig.java)
+**한 파일에서만 표현되므로** `InterceptorRegistrationOrderTest` 가 지킨다.
 
 ## 3. `addPathPatterns("/api/**")` 로 좁히지 않는다
 

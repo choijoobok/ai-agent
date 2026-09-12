@@ -12,6 +12,8 @@ dependencies {
     implementation(project(":backend:api"))
     implementation(project(":backend:modules:system"))
     implementation("org.springframework.boot:spring-boot-starter")
+    // 인터셉터 조립은 실행 모듈이 소유한다. WebMvcConfigurer 는 api의 전이 구현에 기대지 않는다.
+    implementation("org.springframework.boot:spring-boot-starter-web")
 
     // 스키마의 유일한 출처. ddl-auto 는 전 환경 validate 다(backend/persistence.md).
     //

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 class MenuModulePathContractTest {
 
     @Test
-    @DisplayName("SLICE-503 메뉴·API 카탈로그 구현과 전용 요청 DTO는 system 패키지에만 존재한다")
+    @DisplayName("SLICE-503 메뉴·API 카탈로그·실패 폐쇄 인가 판정은 system 패키지에만 존재한다")
     void menuImplementationLivesOnlyInSystemModule() {
         assertPresent("com.aiagent.system.api.menu.MenuController");
         assertPresent("com.aiagent.system.api.apicatalog.ApiCatalogController");
@@ -28,6 +28,7 @@ class MenuModulePathContractTest {
         assertPresent("com.aiagent.system.api.menu.request.MenuNodeRequest");
         assertPresent("com.aiagent.system.api.menu.request.MenuSaveRequest");
         assertPresent("com.aiagent.system.api.menu.request.MenuTreeSaveRequest");
+        assertPresent("com.aiagent.system.api.authz.AuthorizationInterceptor");
 
         assertMissing("com.aiagent.api.menu.MenuController");
         assertMissing("com.aiagent.api.apicatalog.ApiCatalogController");
@@ -38,6 +39,7 @@ class MenuModulePathContractTest {
         assertMissing("com.aiagent.api.menu.request.MenuNodeRequest");
         assertMissing("com.aiagent.api.menu.request.MenuSaveRequest");
         assertMissing("com.aiagent.api.menu.request.MenuTreeSaveRequest");
+        assertMissing("com.aiagent.api.authz.AuthorizationInterceptor");
     }
 
     @Test

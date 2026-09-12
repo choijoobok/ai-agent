@@ -1,3 +1,4 @@
+// @feat FEAT-503
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { App, Select, Space, Switch, Tag, Typography, theme } from 'antd';
@@ -15,13 +16,13 @@ import type { TreeGridHandle, TreeNode } from '@/shared/tree/types';
 import { SplitPane } from '@/shared/grid/SplitPane';
 import { SWITCH_WIDTH } from '@/shared/grid/columnDefs';
 import type { GridButtonControl } from '@/shared/grid/types';
-import { deleteNode, getMenuTree, saveMenu, saveNode, saveTree } from '@/features/menu/api/menuApi';
-import { AddNodeModal } from '@/features/menu/components/AddNodeModal';
-import { MenuDetailTabs } from '@/features/menu/components/MenuDetailTabs';
-import type { MenuSiblingGroup, MenuTreeRow } from '@/features/menu/types';
+import { deleteNode, getMenuTree, saveMenu, saveNode, saveTree } from '@/modules/system/features/menu/api/menuApi';
+import { AddNodeModal } from '@/modules/system/features/menu/components/AddNodeModal';
+import { MenuDetailTabs } from '@/modules/system/features/menu/components/MenuDetailTabs';
+import type { MenuSiblingGroup, MenuTreeRow } from '@/modules/system/features/menu/types';
 
 /**
- * `MENU_TREE` — screen/menu/requirements.md. <b>통째로 즉시 저장이다.</b>
+ * `MENU_TREE` — screen/admin/system/menu/requirements.md. <b>통째로 즉시 저장이다.</b>
  *
  * <p>이 화면의 절반이 그 한 줄에서 나온다. 위치 변경은 <b>즉시일 수밖에 없고</b>(형제
  * 전체가 다시 쓰이며 `@CustomLock(WAIT)` 로 직렬화된다 — sys/menu.md), 한 그리드 안에서 일괄과
@@ -73,7 +74,7 @@ export function MenuTreePage() {
   const canSave = hasPermission(permissions, MENU_CD, 'SAVE');
 
   /**
-   * 넘겨받은 메뉴 — screen/menu/requirements.md 가 요구한 도착 지점이다.
+   * 넘겨받은 메뉴 — screen/admin/system/menu/requirements.md 가 요구한 도착 지점이다.
    *
    * <p>`API_CATALOG` 하단에서 더블 클릭하면 그 메뉴 코드가 건네져 온다. <b>마운트할 때 한 번
    * 읽고 지운다</b>({@code takeHandoff}) — 넘겨주기는 <b>사건</b>이지 상태가 아니라서, 남겨
@@ -105,7 +106,7 @@ export function MenuTreePage() {
     하는 길을 둘로 만들지 않는다.
   */
   /**
-   * 검색어 <b>하나</b>가 이름·코드·URL 을 함께 본다 — 2026-08-31 요청 · screen/menu/requirements.md.
+   * 검색어 <b>하나</b>가 이름·코드·URL 을 함께 본다 — 2026-08-31 요청 · screen/admin/system/menu/requirements.md.
    *
    * <p>칸이 셋이었다. 그런데 <b>사람은 손에 있는 것으로 찾는다</b> — 이름이거나 코드이거나
    * URL 이고, <i>어느 칸에 넣을지</i> 를 먼저 정해야 하는 것이 곧 마찰이다.
@@ -191,7 +192,7 @@ export function MenuTreePage() {
    */
   const selected = selectedCd === null ? null : (nodes.get(selectedCd)?.data ?? null);
 
-  // ── 검색 (screen/menu/requirements.md) ─────────────────────────────────────────────
+  // ── 검색 (screen/admin/system/menu/requirements.md) ─────────────────────────────────────────────
 
   /**
    * <b>셋을 {@code OR} 로 잇는다</b> — 칸이 하나가 됐다(2026-08-31 요청).
@@ -214,11 +215,11 @@ export function MenuTreePage() {
   }, [rows, term]);
 
   const highlighted = useMemo(() => new Set(matches), [matches]);
-  // 첫 일치로 스크롤한다 — 강조가 경로를 펼치므로 나머지도 같은 화면 안에 있다(screen/menu/requirements.md).
+  // 첫 일치로 스크롤한다 — 강조가 경로를 펼치므로 나머지도 같은 화면 안에 있다(screen/admin/system/menu/requirements.md).
   const focused = matches[0] ?? null;
 
   /**
-   * 트리 ①의 검색 칸 — <b>브레드크럼이 아니라 거기다</b>(2026-08-31 · screen/menu/requirements.md).
+   * 트리 ①의 검색 칸 — <b>브레드크럼이 아니라 거기다</b>(2026-08-31 · screen/admin/system/menu/requirements.md).
    *
    * <p>근거는 {@code TreeSearch} 에 있다. 슬롯에 두면 값이 <b>한 커밋 늦게</b> 도착해
    * <b>한글이 두 번 입력되고</b>, 자리도 <i>조회조건 숨기기</i> 옆이라 무엇을 검색하는지가
@@ -235,7 +236,7 @@ export function MenuTreePage() {
     화면이라 frontend/tabs.md 의 <i>조회조건 접기</i> 도 여기 올 것이 없다.
   */
 
-  // ── 쓰기 넷 (screen/menu/requirements.md) ───────────────────────────────────────────
+  // ── 쓰기 넷 (screen/admin/system/menu/requirements.md) ───────────────────────────────────────────
 
   /**
    * 셀 하나에 요청 하나 — <b>응답을 받고 값을 바꾼다</b>.
@@ -703,7 +704,7 @@ export function MenuTreePage() {
                   </span>
                 </span>
               )}
-              /* 폭을 내용에서 내고 잘린 이름은 툴팁이 말한다 — screen/menu/requirements.md. */
+              /* 폭을 내용에서 내고 잘린 이름은 툴팁이 말한다 — screen/admin/system/menu/requirements.md. */
               hierarchyText={(row) => row.menuNm}
               search={treeSearch}
               columns={columns}
@@ -828,7 +829,7 @@ function siblingGroups(
 }
 
 /**
- * 놓을 수 있는가 · 무엇이라 말할 것인가 — screen/menu/requirements.md 의 문장 넷이 여기서 만들어진다.
+ * 놓을 수 있는가 · 무엇이라 말할 것인가 — screen/admin/system/menu/requirements.md 의 문장 넷이 여기서 만들어진다.
  *
  * <p><b>놓을 수 없는 자리에서도 이유를 낸다.</b> 왜 안 놓이는지 모르면 사용자는 버그로 읽는다.
  */

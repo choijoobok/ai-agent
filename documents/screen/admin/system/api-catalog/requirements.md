@@ -26,9 +26,9 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/api-catalog` |
+| 페이지 경로 | `/admin/system/api-catalog` |
 | 메뉴코드 | `API_CATALOG` |
-| 프론트 폴더 | `sources/frontend/src/features/apicatalog/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/apicatalog/` |
 | 백엔드 패키지 | `sources/backend/modules/system/…/system/domain/apicatalog/` · `sources/backend/modules/system/…/system/api/apicatalog/` |
 | 화면 유형 | **마스터-디테일(상하)** — 둘 다 읽기 전용 |
 | 처리 유형 | **조회 전용** |
@@ -246,7 +246,7 @@
 
 - 코드그룹: **없음.** 액션 넷은 상수다.
 - 메시지 키: 화면 `MSG.API_CATALOG_*` · `MSG.AUTHZ_ACTION_*`. **서버 오류 키가 없다**(쓰기가 없다).
-- 메뉴 시드: `menu-tree.yaml` — `code: API_CATALOG` · `parent: MENU` · `url: /api-catalog` · `export: true`.
+- 메뉴 시드: `menu-tree.yaml` — `code: API_CATALOG` · `parent: MENU` · `url: /admin/system/api-catalog` · `export: true`.
 - **초기 데이터 전제 — 이 화면의 데이터 자체가 생성물이다.** `SYS_API` 는 컨트롤러에서, `SYS_MENU_API` 는 `screenRegistry` → `endpoints.ts` 에서 생성된다. **둘 다 `./gradlew generateApiSeed` 가 만든다.**
 
 ---

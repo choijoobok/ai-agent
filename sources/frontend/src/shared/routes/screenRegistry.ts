@@ -24,11 +24,11 @@ export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
   '/code': lazy(async () => ({
     default: (await import('@/features/code/pages/CodeMgmtPage')).CodeMgmtPage,
   })),
-  '/api-catalog': lazy(async () => ({
-    default: (await import('@/features/apicatalog/pages/ApiCatalogPage')).ApiCatalogPage,
+  '/admin/system/api-catalog': lazy(async () => ({
+    default: (await import('@/modules/system/features/apicatalog/pages/ApiCatalogPage')).ApiCatalogPage,
   })),
-  '/menu': lazy(async () => ({
-    default: (await import('@/features/menu/pages/MenuTreePage')).MenuTreePage,
+  '/admin/system/menu': lazy(async () => ({
+    default: (await import('@/modules/system/features/menu/pages/MenuTreePage')).MenuTreePage,
   })),
   '/admin/system/role': lazy(async () => ({
     default: (await import('@/modules/system/features/role/pages/RoleMgmtPage')).RoleMgmtPage,

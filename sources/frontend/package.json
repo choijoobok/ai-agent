@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "lint": "eslint . && node scripts/check-save-envelope.mjs && node scripts/check-grant-tone.mjs",
+    "lint": "eslint . && node scripts/check-save-envelope.mjs && node scripts/check-system-module-path.mjs && node scripts/check-grant-tone.mjs",
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"

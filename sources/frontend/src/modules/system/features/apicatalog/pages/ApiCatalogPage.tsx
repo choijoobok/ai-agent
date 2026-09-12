@@ -1,3 +1,4 @@
+// @feat FEAT-503
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FillColumn } from '@/shared/components/FillColumn';
 import { label } from '@/shared/i18n/label';
@@ -14,14 +15,14 @@ import { useShellNavigation } from '@/layouts/ShellLayout/useShellNavigation';
 import { SearchForm, type SearchFormHandle } from '@/shared/searchform/SearchForm';
 import { useSearchFormHeader } from '@/shared/searchform/useSearchFormHeader';
 import type { SearchField } from '@/shared/searchform/types';
-import { API_CATALOG_ENDPOINTS } from '@/features/apicatalog/api/endpoints';
-import type { ApiCatalogRow, ApiMenuRow } from '@/features/apicatalog/types';
+import { API_CATALOG_ENDPOINTS } from '@/modules/system/features/apicatalog/api/endpoints';
+import type { ApiCatalogRow, ApiMenuRow } from '@/modules/system/features/apicatalog/types';
 
 /**
- * `API_CATALOG` — screen/api-catalog/requirements.md. <b>이 화면은 데이터를 고치지 않는다.</b>
+ * `API_CATALOG` — screen/admin/system/api-catalog/requirements.md. <b>이 화면은 데이터를 고치지 않는다.</b>
  *
  * <p>원본이 시드이고 시드는 생성된다(backend/api.md) — 여기서 고칠 수 있게 하면 <b>다음 배포에서
- * 사라진다</b>(screen/api-catalog/requirements.md). 그래서 `api.save` 도 `addRow` 도 `deletable` 도 없고, 그것이 없으므로
+ * 사라진다</b>(screen/admin/system/api-catalog/requirements.md). 그래서 `api.save` 도 `addRow` 도 `deletable` 도 없고, 그것이 없으므로
  * 상태 컬럼도 삭제 컬럼도 저장 버튼도 붙지 않는다(frontend/grid.md) — <b>이 화면의
  * 절반은 선언하지 않은 것으로 이루어져 있다.</b>
  *
@@ -48,10 +49,10 @@ import type { ApiCatalogRow, ApiMenuRow } from '@/features/apicatalog/types';
 
 const MENU_CD = 'API_CATALOG';
 
-/** 미등록 진단을 낼 조건 — screen/api-catalog/requirements.md. <b>이 칸에만 값이 있을 때</b>다. */
+/** 미등록 진단을 낼 조건 — screen/admin/system/api-catalog/requirements.md. <b>이 칸에만 값이 있을 때</b>다. */
 const URL_FIELD = 'apiUrl';
 
-/** 넘겨줄 화면 — screen/api-catalog/requirements.md. 여기 있는 것은 <b>메뉴 코드 하나</b>다. */
+/** 넘겨줄 화면 — screen/admin/system/api-catalog/requirements.md. 여기 있는 것은 <b>메뉴 코드 하나</b>다. */
 const MENU_TREE_CD = 'MENU_TREE';
 
 const ACTION_LABEL: Record<Action, string> = {
@@ -67,7 +68,7 @@ export function ApiCatalogPage() {
   const permissions = useAuthStore((state) => state.permissions);
 
   /**
-   * 마스터의 빈 상태 문구 — <b>둘로 갈린다</b>(screen/api-catalog/requirements.md).
+   * 마스터의 빈 상태 문구 — <b>둘로 갈린다</b>(screen/admin/system/api-catalog/requirements.md).
    *
    * <p><i>URL 을 정확히 넣었는데 0건</i> 과 <i>조건이 안 맞아 0건</i> 은 다른 사건이다.
    * 하나로 합치면 조건을 잘못 준 사람에게 <i>"컨트롤러를 추가하라"</i> 고 말하게 되고,
@@ -133,7 +134,7 @@ export function ApiCatalogPage() {
 
   /*
     <b>`save` 가 없다.</b> frontend/grid.md 이 `api.save` 로 저장 버튼을 만드는데, 선언하지 않았으므로
-    버튼이 나오지 않는다 — 감추는 코드가 한 줄도 없다는 것이 screen/api-catalog/requirements.md 의 집행 방식이다.
+    버튼이 나오지 않는다 — 감추는 코드가 한 줄도 없다는 것이 screen/admin/system/api-catalog/requirements.md 의 집행 방식이다.
 
     <b>`emptyNotice` 도 없다.</b> frontend/grid.md 는 마스터에서 켜라고 하지만 이 화면은 <b>0건이 답</b>인
     유일한 화면이다 — <i>"조회 결과가 없습니다"</i> 모달이 먼저 뜨면 진단을 읽기 전에
@@ -190,7 +191,7 @@ export function ApiCatalogPage() {
   );
 
   /**
-   * 하단 행 더블 클릭 → <b>`MENU_TREE` 를 그 메뉴로 연다</b>(screen/api-catalog/requirements.md · UX-02 멀티탭).
+   * 하단 행 더블 클릭 → <b>`MENU_TREE` 를 그 메뉴로 연다</b>(screen/admin/system/api-catalog/requirements.md · UX-02 멀티탭).
    *
    * <p>§5.2 의 <b>셋째 갈래로 넘어가는 경로</b>다 — API 도 있고 매핑도 있는데 403 이면
    * 남은 것은 <i>권한 문제</i> 이고, 거기서 볼 것은 <b>그 메뉴에 누가 닿는가</b>(§4.11 탭 2)와
@@ -340,7 +341,7 @@ export function ApiCatalogPage() {
 }
 
 /**
- * 지금 걸린 조건이 <b>URL 하나뿐인가</b> — screen/api-catalog/requirements.md 의 빈 상태를 가르는 근거다.
+ * 지금 걸린 조건이 <b>URL 하나뿐인가</b> — screen/admin/system/api-catalog/requirements.md 의 빈 상태를 가르는 근거다.
  *
  * <p>URL 칸에 값이 있고 <b>다른 칸이 비었을 때</b>만 미등록 문구를 낸다. 아니면 조건을 잘못
  * 준 사람에게 <i>"컨트롤러를 추가하라"</i> 고 말하게 된다.
@@ -353,7 +354,7 @@ function urlOnly(conditions: SearchCondition[]): boolean {
 
 /**
  * <b>`editable` 을 하나도 선언하지 않는다</b> — frontend/grid.md 는 편집이 명시해야 열린다고 정했으므로
- * 이 함수에 없는 것이 곧 전 컬럼 읽기 전용이다(screen/api-catalog/requirements.md).
+ * 이 함수에 없는 것이 곧 전 컬럼 읽기 전용이다(screen/admin/system/api-catalog/requirements.md).
  */
 function buildApiColumns(): ColumnDef<ApiCatalogRow>[] {
   return [
@@ -377,7 +378,7 @@ function buildApiColumns(): ColumnDef<ApiCatalogRow>[] {
       type: 'text',
       width: 220,
       sortable: true,
-      // 원본이 `@Operation.summary` 다 — 고치는 곳은 컨트롤러이지 여기가 아니다(screen/api-catalog/requirements.md).
+      // 원본이 `@Operation.summary` 다 — 고치는 곳은 컨트롤러이지 여기가 아니다(screen/admin/system/api-catalog/requirements.md).
       editable: false,
     },
     {
@@ -399,7 +400,7 @@ function buildApiColumns(): ColumnDef<ApiCatalogRow>[] {
     },
     {
       /*
-        <b>빌 수 있다</b> — `description` 은 선택이다(screen/api-catalog/requirements.md). 필요하면 컨트롤러에 채운다.
+        <b>빌 수 있다</b> — `description` 은 선택이다(screen/admin/system/api-catalog/requirements.md). 필요하면 컨트롤러에 채운다.
 
         필터를 끈다 — 훑어 읽는 칸이지 거르는 칸이 아니고, 500자라 한 줄로는 다 못 읽는다.
       */
@@ -416,7 +417,7 @@ function buildApiColumns(): ColumnDef<ApiCatalogRow>[] {
     },
     {
       /*
-        <b>`0` 이 곧 진단이다</b>(screen/api-catalog/requirements.md). `SYS_MENU_API` 에 행이 없으면 유효 권한의 원소가
+        <b>`0` 이 곧 진단이다</b>(screen/admin/system/api-catalog/requirements.md). `SYS_MENU_API` 에 행이 없으면 유효 권한의 원소가
         되는 (MENU_CD, ACTION_CD) 쌍이 만들어지지 않아 <b>아무도 이 API 를 부를 수 없다</b>.
 
         배지의 색은 <b>값이 `0` 인가</b>가 정한다. `err` 인 것은 §5.4 의 제목이
@@ -435,7 +436,7 @@ function buildApiColumns(): ColumnDef<ApiCatalogRow>[] {
     },
     {
       /*
-        <b>감사 컬럼이 아니라 `최종 시드 반영` 이다</b>(screen/api-catalog/requirements.md). 시드는 전건 삭제 후 전건
+        <b>감사 컬럼이 아니라 `최종 시드 반영` 이다</b>(screen/admin/system/api-catalog/requirements.md). 시드는 전건 삭제 후 전건
         삽입이라(seed.md) <b>전 행이 같은 값</b>이며, <i>등록일</i> 로 보여주면 거짓말이 된다.
 
         <b>`hidden` 이 아니라 `visible: false` 다</b> — <i>배포가 언제 반영됐나</i> 를 물을
@@ -451,12 +452,12 @@ function buildApiColumns(): ColumnDef<ApiCatalogRow>[] {
   ];
 }
 
-/** 하단 pane — 이 API 를 쓰는 메뉴(screen/api-catalog/requirements.md). <b>행 추가도 삭제도 없다.</b> */
+/** 하단 pane — 이 API 를 쓰는 메뉴(screen/admin/system/api-catalog/requirements.md). <b>행 추가도 삭제도 없다.</b> */
 function buildMenuColumns(): ColumnDef<ApiMenuRow>[] {
   return [
     {
       /*
-        <b>전체 경로다</b> — 메뉴명만으로는 어느 것인지 모른다(screen/api-catalog/requirements.md). 이 화면에 오는 사람은
+        <b>전체 경로다</b> — 메뉴명만으로는 어느 것인지 모른다(screen/admin/system/api-catalog/requirements.md). 이 화면에 오는 사람은
         403 하나를 들고 왔을 뿐이라 그 메뉴를 <b>모르는 상태</b>다.
       */
       field: 'menuPath',
@@ -490,7 +491,7 @@ function buildMenuColumns(): ColumnDef<ApiMenuRow>[] {
     },
     {
       /*
-        AUTHZ-13 — screen/api-catalog/requirements.md 탭 2 와 같은 계산이다. <b>게이트 ④를 먹이지 않은 수</b>이며 그
+        AUTHZ-13 — screen/admin/system/api-catalog/requirements.md 탭 2 와 같은 계산이다. <b>게이트 ④를 먹이지 않은 수</b>이며 그
         이유는 서버가 적었다(`ApiCatalogQueryService`).
 
         <b>`0` 이면 셋째 갈래의 답이다</b> — API 도 있고 매핑도 있는데 아무도 못 부른다면
@@ -510,7 +511,7 @@ function actionOptions(): SelectOption[] {
   return ACTIONS.map((action) => ({ value: action, text: label(ACTION_LABEL[action]) }));
 }
 
-// ── 조회조건 (screen/api-catalog/requirements.md) ────────────────────────────────────────────
+// ── 조회조건 (screen/admin/system/api-catalog/requirements.md) ────────────────────────────────────────────
 
 /**
  * 넷이고 <b>넷째가 진단의 입구</b>다.
@@ -542,7 +543,7 @@ function buildSearchFields(defaultUrl: string): SearchField[] {
       label: MSG.API_CATALOG_SEARCH_API_NM,
       type: 'text',
       op: 'contains',
-      // `@Operation.summary` 가 필수라 언제나 값이 있다 — ArchUnit 이 지킨다(screen/api-catalog/requirements.md).
+      // `@Operation.summary` 가 필수라 언제나 값이 있다 — ArchUnit 이 지킨다(screen/admin/system/api-catalog/requirements.md).
       ops: ['eq', 'startsWith', 'contains', 'endsWith'],
     },
     {

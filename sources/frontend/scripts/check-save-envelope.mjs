@@ -116,7 +116,10 @@ function requestRecords() {
 /** 레코드 이름 → 칸 이름들. */
 function recordComponents() {
   const byName = new Map();
-  for (const file of walk(join(BACKEND, 'api/src/main/java'))) {
+  // 요청 레코드도 기능과 함께 system으로 옮긴다. 컨트롤러 탐색 범위와 맞춰야
+  // 이행 뒤에 실제 저장 계약을 놓치지 않는다.
+  for (const root of CONTROLLER_ROOTS) {
+    for (const file of walk(root)) {
     if (!file.endsWith('.java')) continue;
     const text = readFileSync(file, 'utf8');
     const at = text.search(/\brecord\s+\w+\s*\(/);
@@ -164,6 +167,7 @@ function recordComponents() {
       if (word) fields.add(word);
     }
     byName.set(name, fields);
+    }
   }
   return byName;
 }

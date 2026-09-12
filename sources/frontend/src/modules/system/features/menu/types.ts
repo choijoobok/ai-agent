@@ -1,4 +1,5 @@
-/** 서버 `MenuTreeRow` · `MenuApiRow` · `MenuUserRow` · `MenuRoleRow` 와 1:1 — screen/menu/requirements.md. */
+// @feat FEAT-503
+/** 서버 `MenuTreeRow` · `MenuApiRow` · `MenuUserRow` · `MenuRoleRow` 와 1:1 — screen/admin/system/menu/requirements.md. */
 
 import type { Action } from '@/shared/authz/permission';
 
@@ -22,7 +23,7 @@ export interface MenuTreeRow {
   /**
    * `null` 이면 **구조 노드**다(backend/security.md). URL 과 자식은 배타이며 그 사이가 없다.
    *
-   * <p>화면에서는 **라우트 목록에서 고른다**(screen/menu/requirements.md) — 손으로 치게 두면 오타가 곧 404 이고,
+   * <p>화면에서는 **라우트 목록에서 고른다**(screen/admin/system/menu/requirements.md) — 손으로 치게 두면 오타가 곧 404 이고,
    * 그 값은 **저장은 되지만 열리지 않는다**.
    */
   menuUrl: string | null;
@@ -60,11 +61,11 @@ export interface MenuApiRow {
   actionCd: Action;
 }
 
-/** 탭 3 — 조회 전용. 편집은 `ROLE_AUTH_MGMT`(screen/menu/requirements.md)다. */
+/** 탭 3 — 조회 전용. 편집은 `ROLE_AUTH_MGMT`(screen/admin/system/menu/requirements.md)다. */
 export interface MenuRoleRow {
   roleId: string;
   roleNm: string;
-  /** `false` 인 역할도 나온다 — 권한 행은 살아 있다(screen/menu/requirements.md). */
+  /** `false` 인 역할도 나온다 — 권한 행은 살아 있다(screen/admin/system/menu/requirements.md). */
   useYn: boolean;
   actions: Action[];
 }
@@ -74,7 +75,7 @@ import type { GrantState } from '@/shared/authz/grantState';
 
 export type { GrantState };
 
-/** 탭 2 — AUTHZ-13. **경유마다 한 행**이다(screen/menu/requirements.md). */
+/** 탭 2 — AUTHZ-13. **경유마다 한 행**이다(screen/admin/system/menu/requirements.md). */
 export interface MenuUserRow {
   userId: string;
   userNm: string;
@@ -94,7 +95,7 @@ export interface MenuUserRow {
 export const VIA_PERSONAL = 'PERSONAL';
 
 /**
- * 순서 저장의 한 묶음 — 서버 `MenuSiblingGroup` 과 1:1(screen/menu/requirements.md).
+ * 순서 저장의 한 묶음 — 서버 `MenuSiblingGroup` 과 1:1(screen/admin/system/menu/requirements.md).
  *
  * <p><b>형제 전체가 한 묶음이다.</b> 옮긴 노드 하나만 보내면 뺀 쪽에 번호 구멍이 남는다
  * (`1,2,4`) — sys/menu.md 가 전체 재작성으로 얻으려던 *언제나 정규화 상태* 가 그것으로 깨진다.

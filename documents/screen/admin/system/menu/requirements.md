@@ -27,9 +27,9 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/menu` |
+| 페이지 경로 | `/admin/system/menu` |
 | 메뉴코드 | `MENU_TREE` |
-| 프론트 폴더 | `sources/frontend/src/features/menu/` (+ 공통물 `shared/tree/` · `shared/authz/menuIcons`) |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/menu/` (+ 공통물 `shared/tree/` · `shared/authz/menuIcons`) |
 | 백엔드 패키지 | `sources/backend/modules/system/…/system/domain/menu/` · `sources/backend/modules/system/…/system/api/menu/` |
 | 화면 유형 | **트리-그리드 + 하단 탭 셋** |
 | 처리 유형 | CRUD — **즉시 저장** |
@@ -331,7 +331,7 @@
 
 - 코드그룹: **없음.** 아이콘 코드는 프론트 상수 목록에서 고른다.
 - 메시지 키: 화면 `MSG.MENU_*` · 서버 `MsgKey.ERR_MENU_*` 아홉. **메뉴 이름 키는 `menu.{MENU_CD}`**.
-- 메뉴 시드: `menu-tree.yaml` — `code: MENU_TREE` · `parent: MENU` · `url: /menu` · `export: true`.
+- 메뉴 시드: `menu-tree.yaml` — `code: MENU_TREE` · `parent: MENU` · `url: /admin/system/menu` · `export: true`.
 - **초기 데이터 전제**: 트리 자체가 `menu-tree.yaml` → `./gradlew generateMenuSeed` 로 만들어진다. **`screenRegistry.ts` 의 경로와 `menu-tree.yaml` 의 `url` 이 1:1** 이며 한쪽에만 있으면 시드 생성이 막힌다.
 - **`SRC_CD`** — `SEED`(시드가 만듦) · `USER`(화면에서 만듦) · **`ORPHAN`**(선언에서 사라짐).
 - 설정: 깊이 상한 5단(코드 상수, 화면·서버 양쪽).

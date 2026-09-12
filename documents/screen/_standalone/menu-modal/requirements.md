@@ -18,7 +18,7 @@
 |---|---|
 | 자리 | 헤더 → 모달 |
 | 메뉴코드 | **없음** |
-| 프론트 폴더 | `sources/frontend/src/layouts/ShellLayout/` — `MenuEntryModal.tsx`. 검색은 `shared/authz/menuSearch`, 즐겨찾기는 `shared/favorite/` 가 갖는다. **`features/menu/` 가 아니다** — 그쪽은 메뉴 트리 관리 화면(`/menu`)이다 |
+| 프론트 폴더 | `sources/frontend/src/layouts/ShellLayout/` — `MenuEntryModal.tsx`. 검색은 `shared/authz/menuSearch`, 즐겨찾기는 `shared/favorite/` 가 갖는다. **`modules/system/features/menu/` 가 아니다** — 그쪽은 메뉴 트리 관리 화면(`/admin/system/menu`)이다 |
 | 화면 유형 | 모달 하나 — 검색과 즐겨찾기가 **같은 컴포넌트** |
 | 처리 유형 | 조회 + 실행(선택) |
 | 액션 권한 | **해당 없음** |

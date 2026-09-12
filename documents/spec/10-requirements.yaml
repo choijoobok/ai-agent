@@ -552,7 +552,7 @@ requirements:
     acceptance: "메뉴·화면 등록·API 등록·메뉴 API 매핑 중 하나를 제거한 회귀 시험이 반드시 접근 거부로 끝난다"
     source: "현재 구현 역추적 — 메뉴 트리·API 카탈로그·screenRegistry·AuthorizationInterceptor"
     evidence:
-      frontend: ["features/menu", "features/apicatalog", "shared/routes", "shared/authz"]
+      frontend: ["modules/system/features/menu", "modules/system/features/apicatalog", "shared/routes", "shared/authz"]
       backend: ["api/menu", "api/apicatalog", "api/authz", "domain/authz"]
       tables: [SYS_MENU, SYS_API, SYS_MENU_API, SYS_ROLE_MENU_AUTH, SYS_USER_MENU_AUTH]
       screens: ["/menu", "/api-catalog", "_standalone/menu-modal"]

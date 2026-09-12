@@ -2,7 +2,7 @@ package com.aiagent.architecture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.aiagent.api.authz.AuthorizationInterceptor;
+import com.aiagent.system.api.authz.AuthorizationInterceptor;
 import com.tngtech.archunit.core.domain.JavaAnnotation;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;

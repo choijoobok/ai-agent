@@ -1,10 +1,11 @@
+// @feat FEAT-503
 import { useState } from 'react';
 import { Form, Input, Modal, Typography } from 'antd';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
 
 /**
- * 신규 노드 — <b>칸이 하나짜리 모달</b>이다(screen/menu/requirements.md).
+ * 신규 노드 — <b>칸이 하나짜리 모달</b>이다(screen/admin/system/menu/requirements.md).
  *
  * <p><b>frontend/grid.md 의 편집 폼이 아니다.</b> 그 절이 없앤 것은 <i>행을 편집하는 폼</i>이고 여기는
  * {@code createNode(upMenuCd, menuCd)} 라는 <b>한 연산의 인자</b>를 받는다 — frontend/grid.md 의 파라미터

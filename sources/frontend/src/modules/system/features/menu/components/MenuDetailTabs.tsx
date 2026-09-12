@@ -1,3 +1,4 @@
+// @feat FEAT-503
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FillColumn } from '@/shared/components/FillColumn';
 import { label } from '@/shared/i18n/label';
@@ -8,20 +9,20 @@ import { useGridController } from '@/shared/grid/useGridController';
 import type { ColumnDef, SelectOption } from '@/shared/grid/types';
 import { ACTIONS, type Action } from '@/shared/authz/permission';
 import { GRANT_TONE, grantDisplay } from '@/shared/authz/grantState';
-import { MENU_ENDPOINTS } from '@/features/menu/api/endpoints';
+import { MENU_ENDPOINTS } from '@/modules/system/features/menu/api/endpoints';
 import type {
   GrantState,
   MenuApiRow,
   MenuRoleRow,
   MenuTreeRow,
   MenuUserRow,
-} from '@/features/menu/types';
-import { VIA_PERSONAL } from '@/features/menu/types';
+} from '@/modules/system/features/menu/types';
+import { VIA_PERSONAL } from '@/modules/system/features/menu/types';
 
 /**
- * 하단 — <b>탭 셋이 그대로 셋이다</b>(screen/menu/requirements.md).
+ * 하단 — <b>탭 셋이 그대로 셋이다</b>(screen/admin/system/menu/requirements.md).
  *
- * <p>screen/menu/requirements.md 에서는 탭 셋이 pane 하나가 됐다. <b>여기서는 셋이 서로 다른 것을 본다</b> —
+ * <p>screen/admin/system/menu/requirements.md 에서는 탭 셋이 pane 하나가 됐다. <b>여기서는 셋이 서로 다른 것을 본다</b> —
  * 이 화면이 <i>무엇을 쓰는가</i>(탭 1) · <i>누가 닿는가</i>(탭 2) · <i>누가 줬는가</i>(탭 3).
  *
  * <p><b>셋 다 조회 전용이다.</b> 매핑은 시드로만 바뀌고(backend/api.md), 권한 편집은
@@ -135,7 +136,7 @@ export function MenuDetailTabs(props: Props) {
     searchParams: byMenu,
   });
 
-  // ── 탭 3 — 매핑된 역할 (screen/menu/requirements.md) ─────────────────────────────────
+  // ── 탭 3 — 매핑된 역할 (screen/admin/system/menu/requirements.md) ─────────────────────────────────
 
   const roleColumns = useMemo(() => buildRoleColumns(), []);
   const roleApi = useMemo(() => ({ read: { url: MENU_ENDPOINTS.getRoleList } }), []);
@@ -234,7 +235,7 @@ export function MenuDetailTabs(props: Props) {
    * 제목 뒤에 붙는 것 — <b>메뉴명과 코드</b>다(frontend/grid.md).
    *
    * <p>둘 다인 이유는 각자 부족하기 때문이다. 이름은 <b>메시지 키를 푼 값</b>이라 아직
-   * 이름을 안 채운 메뉴에서는 키 문자열이고(screen/menu/requirements.md 의 진단), 코드만으로는 <i>어느 화면인지</i>
+   * 이름을 안 채운 메뉴에서는 키 문자열이고(screen/admin/system/menu/requirements.md 의 진단), 코드만으로는 <i>어느 화면인지</i>
    * 를 모른다.
    *
    * <p><b>완성된 글자를 준다</b> — 마스터가 트리라 부모 컨트롤러가 없다({@code DataGrid} 의
@@ -337,7 +338,7 @@ const grantText = grantDisplay(GRANT_LABEL);
 
 /**
  * 액션 <b>한 칸</b>씩 넷 — 권한은 (메뉴, 액션) 단위이며 <i>"쓸 수 있다"</i> 가 액션마다
- * 갈린다(screen/menu/requirements.md).
+ * 갈린다(screen/admin/system/menu/requirements.md).
  *
  * <p>가진 것만 늘어놓지 않고 <b>넷을 다 그린다</b> — 없는 것을 흐리게 두어야 <i>이 행에
  * 무엇이 없는가</i> 가 보인다. 있는 것만 나열하면 두 행을 세로로 비교할 수 없다.

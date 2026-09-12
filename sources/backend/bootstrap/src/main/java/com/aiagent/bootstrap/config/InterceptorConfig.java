@@ -1,7 +1,8 @@
-package com.aiagent.api.config;
+// @feat FEAT-503
+package com.aiagent.bootstrap.config;
 
-import com.aiagent.api.authz.AuthorizationInterceptor;
 import com.aiagent.api.log.UserActionLogInterceptor;
+import com.aiagent.system.api.authz.AuthorizationInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,7 +17,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  *
  * <p><b>그 한 줄이 붙었다</b>(2026-08-30, 이력 슬라이스). 순서가 이 파일에서만 표현되므로
  * 두 줄의 자리를 바꾸면 403 이 조용히 이력에서 사라진다 — 그것을
- * {@code InterceptorOrderTest} 가 지킨다.
+ * {@code InterceptorRegistrationOrderTest} 가 지킨다.
  *
  * <p><b>{@code addPathPatterns("/api/**")} 로 좁히지 않는다.</b> 좁히면 패턴에 걸리지 않는
  * 새 경로가 <b>판정 없이 지나간다</b> — 인터셉터가 전부 받고 {@link

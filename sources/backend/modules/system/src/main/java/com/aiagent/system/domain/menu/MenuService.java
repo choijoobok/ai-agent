@@ -345,7 +345,8 @@ public class MenuService {
               서브트리를 통째로 끌면 **그 서브트리의 높이까지 더해** 판정한다(screen/menu/requirements.md) —
               옮기는 노드만 보면 자손이 상한을 넘는 것을 놓친다.
             */
-            requireDepth(depthOf(menuCd, parentAfter) + heightOf(menuCd, parentAfter));
+            // 깊이와 높이는 모두 이동 노드를 포함하므로, 그 노드를 한 번만 센다.
+            requireDepth(depthOf(menuCd, parentAfter) + heightOf(menuCd, parentAfter) - 1);
         }
     }
 

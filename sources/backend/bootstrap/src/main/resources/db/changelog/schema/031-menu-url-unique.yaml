@@ -2,9 +2,28 @@ databaseChangeLog:
   - changeSet:
       id: 031-sys-menu-url-unique
       author: codex
+      dbms: "!mssql"
       comment: CR-002 — 화면 URL은 메뉴 하나에만 귀속된다. NULL 구조 노드는 복수 허용한다.
       changes:
         - addUniqueConstraint:
             tableName: SYS_MENU
             columnNames: MENU_URL
             constraintName: UK_SYS_MENU_01
+      rollback:
+        - dropUniqueConstraint:
+            tableName: SYS_MENU
+            constraintName: UK_SYS_MENU_01
+
+  # SQL Server의 UNIQUE 제약은 NULL 한 건만 허용한다. 폴더 메뉴는 URL이 NULL이고 여럿이어야
+  # 하므로, 리프 URL만 대상으로 삼는 filtered unique index를 쓴다.
+  - changeSet:
+      id: 031-sys-menu-url-unique-mssql
+      author: codex
+      dbms: mssql
+      comment: CR-002 — SQL Server에서는 NULL 구조 메뉴를 제외한 화면 URL만 유일하게 한다.
+      changes:
+        - sql:
+            sql: CREATE UNIQUE INDEX UK_SYS_MENU_01 ON SYS_MENU (MENU_URL) WHERE MENU_URL IS NOT NULL
+      rollback:
+        - sql:
+            sql: DROP INDEX UK_SYS_MENU_01 ON SYS_MENU

@@ -1,4 +1,5 @@
-package com.aiagent.api.authz;
+// @feat FEAT-503
+package com.aiagent.system.api.authz;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -8,6 +9,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.aiagent.api.auth.SessionKeys;
+import com.aiagent.api.authz.AuthzErrorCode;
+import com.aiagent.api.authz.AuthzSession;
 import com.aiagent.core.error.BusinessException;
 import com.aiagent.core.error.CommonErrorCode;
 import com.aiagent.domain.authz.ActionType;
@@ -146,7 +149,7 @@ class AuthorizationInterceptorTest {
     class ServiceApi {
 
         @Test
-        @DisplayName("SYS_API 미등록 — 고치는 곳은 API 마스터 시드다")
+        @DisplayName("TC-5033 SYS_API 미등록 — 고치는 곳은 API 마스터 시드다")
         void notRegistered() {
             givenAuthority(new MenuAction("ORDER", ActionType.READ));
             when(registry.find(ORDER_LIST)).thenReturn(Optional.empty());
@@ -155,7 +158,7 @@ class AuthorizationInterceptorTest {
         }
 
         @Test
-        @DisplayName("매핑 0건 — 등록됐으나 아무도 권한을 가질 수 없다")
+        @DisplayName("TC-5033 매핑 0건 — 등록됐으나 아무도 권한을 가질 수 없다")
         void notMapped() {
             givenAuthority(new MenuAction("ORDER", ActionType.READ));
             givenFact(ActionType.READ);
@@ -164,7 +167,7 @@ class AuthorizationInterceptorTest {
         }
 
         @Test
-        @DisplayName("매핑은 있으나 유효 권한에 쌍이 없다 — API 는 정상이고 사람에게 권한이 없다")
+        @DisplayName("TC-5034 매핑은 있으나 유효 메뉴·액션 쌍이 없다 — URL·역할명으로 우회하지 않는다")
         void noAuthority() {
             givenAuthority(new MenuAction("ORDER", ActionType.SAVE));
             givenFact(ActionType.READ, "ORDER");
@@ -173,7 +176,7 @@ class AuthorizationInterceptorTest {
         }
 
         @Test
-        @DisplayName("쌍이 맞으면 통과한다")
+        @DisplayName("TC-5031 등록·매핑·유효 메뉴 액션 쌍이 맞으면 서비스 API가 통과한다")
         void allowed() {
             givenAuthority(new MenuAction("ORDER", ActionType.READ));
             givenFact(ActionType.READ, "ORDER");
@@ -267,7 +270,7 @@ class AuthorizationInterceptorTest {
             assertThat(interceptor.preHandle(get(ORDER_LIST, session), response, null)).isTrue();
             verify(authorities).calculate(USER);
             // 내리지 않으면 매 요청 다시 계산한다.
-            assertThat(session.getAttribute(AuthzSession.DIRTY)).isNull();
+            assertThat(AuthzSession.isDirty(session)).isFalse();
         }
 
         @Test

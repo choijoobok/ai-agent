@@ -4,6 +4,8 @@
 
 **메뉴 위치** 시스템 › 메뉴 › API 카탈로그
 
+**페이지 주소** `/admin/system/api-catalog`
+
 [API 카탈로그 화면 — 위는 등록된 주소, 아래는 그 주소를 쓰는 메뉴](./mockup.html#main)
 
 ---

@@ -451,3 +451,7 @@ databaseChangeLog:
   # CR-002 — URL 하나가 두 메뉴를 여는 모호성을 DB에서도 막는다.
   - include:
       file: db/changelog/schema/031-menu-url-unique.yaml
+
+  # CR-002 — 생성 키의 설치용 문구는 적용된 체인지셋을 고치지 않고 새 파일로 넣는다.
+  - include:
+      file: db/changelog/data/115-init-message.yaml

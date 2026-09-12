@@ -1,6 +1,11 @@
-package com.aiagent.api.authz;
+// @feat FEAT-503
+package com.aiagent.system.api.authz;
 
 import com.aiagent.api.auth.SessionKeys;
+import com.aiagent.api.authz.ApiLayer;
+import com.aiagent.api.authz.AuthzErrorCode;
+import com.aiagent.api.authz.AuthzSession;
+import com.aiagent.api.authz.AuthzVersionHeader;
 import com.aiagent.core.error.BusinessException;
 import com.aiagent.core.error.CommonErrorCode;
 import com.aiagent.domain.authz.ApiAuthorityFact;

@@ -54,7 +54,11 @@ public final class AuthzSession {
         session.removeAttribute(DIRTY);
     }
 
-    static boolean isDirty(HttpSession session) {
+    /**
+     * 캐시 재계산이 필요한지 읽는다. 인가 판정은 system 모듈이 소유하지만 세션 저장 계약은
+     * API 공통 계층에 남으므로, 경계를 넘는 읽기 연산만 공개한다.
+     */
+    public static boolean isDirty(HttpSession session) {
         return Boolean.TRUE.equals(session.getAttribute(DIRTY));
     }
 
