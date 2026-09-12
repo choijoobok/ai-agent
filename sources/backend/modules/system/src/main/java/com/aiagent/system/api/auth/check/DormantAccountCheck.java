@@ -1,4 +1,5 @@
-package com.aiagent.api.auth.check;
+// @feat FEAT-501
+package com.aiagent.system.api.auth.check;
 
 import com.aiagent.domain.auth.LoginResultCode;
 import java.util.Optional;

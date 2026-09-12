@@ -1,5 +1,5 @@
 // @feat FEAT-501
-package com.aiagent.api.auth;
+package com.aiagent.system.api.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -10,10 +10,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import com.aiagent.api.auth.check.LoginCandidate;
-import com.aiagent.api.auth.check.LoginPostCheck;
-import com.aiagent.api.auth.request.LoginRequest;
-import com.aiagent.api.auth.response.LoginResponse;
+import com.aiagent.api.auth.AuthErrorCode;
+import com.aiagent.api.auth.SessionKeys;
 import com.aiagent.api.authz.AuthzSession;
 import com.aiagent.api.authz.AuthzVersionHeader;
 import com.aiagent.core.error.BusinessException;
@@ -34,6 +32,10 @@ import com.aiagent.support.config.props.SearchRangeProps;
 import com.aiagent.support.config.props.UiDateFormatProps;
 import com.aiagent.support.config.props.UiExcelProps;
 import com.aiagent.support.time.BusinessCalendar;
+import com.aiagent.system.api.auth.check.LoginCandidate;
+import com.aiagent.system.api.auth.check.LoginPostCheck;
+import com.aiagent.system.api.auth.request.LoginRequest;
+import com.aiagent.system.api.auth.response.LoginResponse;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;

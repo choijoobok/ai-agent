@@ -1,8 +1,8 @@
 // @feat FEAT-501
-package com.aiagent.api.auth.check;
+package com.aiagent.system.api.auth.check;
 
 import com.aiagent.domain.auth.LoginResultCode;
-import com.aiagent.domain.user.service.AllowedIpService;
+import com.aiagent.system.domain.auth.AllowedIpService;
 import java.util.Optional;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

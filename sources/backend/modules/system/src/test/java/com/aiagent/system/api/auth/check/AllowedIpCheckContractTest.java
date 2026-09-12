@@ -1,5 +1,5 @@
 // @feat FEAT-501
-package com.aiagent.api.auth.check;
+package com.aiagent.system.api.auth.check;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import com.aiagent.domain.auth.LoginResultCode;
 import com.aiagent.domain.authz.EffectiveAuthority;
 import com.aiagent.domain.user.entity.SysUser;
-import com.aiagent.domain.user.service.AllowedIpService;
+import com.aiagent.system.domain.auth.AllowedIpService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

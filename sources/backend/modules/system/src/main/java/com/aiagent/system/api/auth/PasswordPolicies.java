@@ -1,6 +1,6 @@
-package com.aiagent.api.auth;
+// @feat FEAT-501
+package com.aiagent.system.api.auth;
 
-import com.aiagent.api.auth.response.PasswordPolicyResponse;
 import com.aiagent.api.message.RequestLocale;
 import com.aiagent.core.message.MsgFormat;
 import com.aiagent.core.message.MsgKey;
@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Component;
+import com.aiagent.system.api.auth.response.PasswordPolicyResponse;
 
 /**
  * 비밀번호 규칙 목록을 조립한다 — {@code documents/screen/_standalone/system/pwd-change/requirements.md} §6-2.

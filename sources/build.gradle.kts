@@ -47,7 +47,11 @@ subprojects {
 // Full 트랙의 슬라이스 미니게이트 — 업무 규칙이 있는 클래스만 -PmutationTargets 로 좁혀 잰다.
 val pitestCoreVersion = libs.versions.pitestCore.get()
 val pitestJunit5Version = libs.versions.pitestJunit5.get()
-configure(listOf(project(":backend:api"), project(":backend:domain"))) {
+configure(listOf(
+    project(":backend:api"),
+    project(":backend:domain"),
+    project(":backend:modules:system"),
+)) {
     apply(plugin = "info.solidsoft.pitest")
     extensions.configure<info.solidsoft.gradle.pitest.PitestPluginExtension> {
         providers.gradleProperty("mutationTargets").orNull?.let { patterns ->

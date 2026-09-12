@@ -1,4 +1,5 @@
-package com.aiagent.api.auth.response;
+// @feat FEAT-501
+package com.aiagent.system.api.auth.response;
 
 import com.aiagent.domain.authz.EffectiveAuthority;
 import com.aiagent.domain.authz.MenuNode;

@@ -1,5 +1,5 @@
 // @feat FEAT-501
-package com.aiagent.domain.user;
+package com.aiagent.system.domain.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import com.aiagent.domain.user.entity.SysUserIpAllow;
 import com.aiagent.domain.user.repository.SysUserIpAllowRepository;
-import com.aiagent.domain.user.service.AllowedIpService;
 import com.aiagent.support.time.BusinessCalendar;
 import java.time.Clock;
 import java.time.Instant;

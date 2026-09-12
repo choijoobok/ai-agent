@@ -1,12 +1,11 @@
-package com.aiagent.api.auth;
+// @feat FEAT-501
+package com.aiagent.system.api.auth;
 
-import com.aiagent.api.auth.check.LoginCandidate;
-import com.aiagent.api.auth.check.LoginPostCheck;
+import com.aiagent.api.auth.AuthErrorCode;
+import com.aiagent.api.auth.LoginContexts;
+import com.aiagent.api.auth.SessionKeys;
 import com.aiagent.api.authz.AuthzSession;
 import com.aiagent.api.authz.AuthzVersionHeader;
-import com.aiagent.api.auth.request.LoginRequest;
-import com.aiagent.api.auth.response.LoginResponse;
-import com.aiagent.api.auth.response.LoginUserResponse;
 import com.aiagent.core.error.BusinessException;
 import com.aiagent.core.error.ErrorCode;
 import com.aiagent.domain.auth.LoginResultCode;
@@ -24,6 +23,11 @@ import com.aiagent.support.config.props.SearchRangeProps;
 import com.aiagent.support.config.props.UiDateFormatProps;
 import com.aiagent.support.config.props.UiExcelProps;
 import com.aiagent.support.time.BusinessCalendar;
+import com.aiagent.system.api.auth.check.LoginCandidate;
+import com.aiagent.system.api.auth.check.LoginPostCheck;
+import com.aiagent.system.api.auth.request.LoginRequest;
+import com.aiagent.system.api.auth.response.LoginResponse;
+import com.aiagent.system.api.auth.response.LoginUserResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

@@ -1,5 +1,5 @@
 // @feat FEAT-501
-package com.aiagent.domain.user.service;
+package com.aiagent.system.domain.auth;
 
 import com.aiagent.domain.user.entity.SysUserIpAllow;
 import com.aiagent.domain.user.repository.SysUserIpAllowRepository;

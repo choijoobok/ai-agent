@@ -4,6 +4,8 @@ dependencies {
     // 기능별 이행이 끝날 때까지 기존 api/domain 구현을 재사용한다. 컨트롤러 진입점은 이 모듈만 소유한다.
     implementation(project(":backend:api"))
 
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
