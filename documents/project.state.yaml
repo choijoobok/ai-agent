@@ -18,7 +18,7 @@ current:
   # ↑ **축이 둘이고 글자가 같다.** 차수는 *무엇을 내는가*(00-charter.yaml roadmap),
   #   단계는 *어디까지 만들었는가*(P0~P6)다. 한 차수가 P0~P6 을 한 바퀴 돈다.
   #   `trace-check` 가 이 값을 읽어 **뒤 차수의 결손을 오류가 아니라 경고로** 센다.
-  slice: SLICE-505           # 사용자 개인 예외·유효 권한 진단의 RED 테스트를 만들면 구현을 진행한다
+  slice: SLICE-506           # 공통코드·참조 코드와 공통 조회 계약의 RED 테스트를 만들면 구현을 진행한다
   blocked_by: []
   template_maintenance: false
   # ↑ true 로 켜면 G3 전에도 sources/ 를 고칠 수 있다(guard-write ①).
@@ -53,7 +53,7 @@ workstreams:
       P1_discovery:    { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 8/8.** ACT-012, PRC-06~08, REQ-501~510을 현재 소스·Liquibase·화면 문서에서 역추적했다. SYSTEM 하위 16개·공통 대시보드 1개·메뉴 없는 공통 화면 8개와 근거 테이블 31개를 대조했고 추적성 오류 0건이다. 레드팀에서 전 수명주기·변조 불가·소스 키 한정·요청 승인이라는 과잉 표현을 현재 구현 범위로 바로잡았다. 역질문 권장안에 따라 설치용 ADMIN은 설치 시점의 전체 권한 기준선으로 한정하고, 운영에서는 시스템 관리자와 감사·품질 역할을 분리한다. 일반 계정·권한 공지와 요청은 system, AI 품질·정책 관련 알림은 admin이 소유한다" }
       P2_architecture: { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 8/8.** ADR-007 아래 ARCH-022~026으로 system의 백엔드·프론트 목표 경로, 31개 테이블 쓰기 소유권, 화면 경로와 기능별 이행 순서를 정의하고 AUTHZ-091로 설치용 ADMIN과 운영 권한을 분리했다. 사용자는 역할 겸임을 허용하고 특정 역할·메뉴 코드의 금지 하드코딩을 거부했다. 역할·메뉴·개인 권한 데이터와 유효 권한이 유일한 판정 근거다. 현재 고객이 없는 개발 단계이므로 신규 경로 전환과 회귀 시험 뒤 기존 API·화면 경로는 같은 슬라이스에서 즉시 제거하고 호환 별칭을 남기지 않는다. ASM-005·006은 기각됨으로 닫았다" }
       P3_design:       { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 11/11.** REQ-501~510을 UC-501~510·FEAT-501~510·ENT-501~531·API-501~599·SCR-501~525·TC 52건으로 연결했다. 실제 컨트롤러 99개와 목표 API의 요청·응답 타입·근거 메서드를 전수 대조했고 누락·중복 0건이다. 핵심 시퀀스는 UC-501·503·508 세 건이며 예외와 트랜잭션 경계를 표시했다. 권한 변경 API는 SYS_LO_ACCESS의 일반 시스템 사용 이력에 남기되 전용 원장은 고객사 요구가 생긴 도입 시점 이후만 기록하고 과거 변경은 복원하지 않는다. 같은 역할을 동시에 전체 저장하면 나중에 완료된 스냅샷이 이기고 자동 병합하지 않는다. 레드팀 위험은 사용자 결정과 TC-5076·TC-5026으로 닫았고 trace 오류 0건이었다" }
-      P4_build:        { status: in_progress, approved_at: null, note: "SLICE-501 인증과 SLICE-502 역할·역할 권한은 system 모듈로 이행해 각각 2026-09-12 사용자 G4 재승인을 받았고, SLICE-503 메뉴 트리·API 카탈로그·실패 폐쇄 인터셉터와 SLICE-504 사용자 관리·IP·활성 세션도 사용자 G4 승인으로 완료했다. ADR-008은 합쳐진 백오피스 템플릿·AI Agent Hub의 DBMS 경계를 분리한다: 독립 템플릿의 주요 DBMS 지원은 유지하고, 통합 Hub의 system·admin·portal·agent는 하나의 PostgreSQL 스키마와 pgvector를 공유하며, 고객사 업무 DB·DW 연결은 중립이다. 세션 저장소는 Redis와 Spring JDBC Session 중 운영 환경에 맞게 선택할 수 있다. 관련 드라이버·Liquibase·시험의 소유 경계 정비는 CR-004의 별도 유지보수 범위다. 다음은 사용자 개인 예외 쓰기·유효 권한 진단 SLICE-505다" }
+      P4_build:        { status: in_progress, approved_at: null, note: "SLICE-501 인증과 SLICE-502 역할·역할 권한은 system 모듈로 이행해 각각 2026-09-12 사용자 G4 재승인을 받았고, SLICE-503 메뉴 트리·API 카탈로그·실패 폐쇄 인터셉터, SLICE-504 사용자 관리·IP·활성 세션, SLICE-505 사용자 개인 예외·유효 권한 진단도 사용자 G4 승인으로 완료했다. 사용 중지 계정도 재활성화 전제의 개인 예외를 사전 구성할 수 있으며 화면은 현재 계정 상태를 표시한다. ADR-008은 합쳐진 백오피스 템플릿·AI Agent Hub의 DBMS 경계를 분리한다: 독립 템플릿의 주요 DBMS 지원은 유지하고, 통합 Hub의 system·admin·portal·agent는 하나의 PostgreSQL 스키마와 pgvector를 공유하며, 고객사 업무 DB·DW 연결은 중립이다. 세션 저장소는 Redis와 Spring JDBC Session 중 운영 환경에 맞게 선택할 수 있다. 관련 드라이버·Liquibase·시험의 소유 경계 정비는 CR-004의 별도 유지보수 범위다. 다음은 공통코드·참조 코드와 공통 조회 계약 SLICE-506이다" }
       P5_verify:       { status: not_started, approved_at: null, note: "" }
   admin:
     phase: P1
@@ -143,17 +143,18 @@ roadmap_closed: []
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
 next_up:
   decided_at: 2026-09-12
-  choice: "SLICE-505 사용자 개인 예외·유효 권한 진단을 system 모듈 기준으로 이행한다"
+  choice: "SLICE-506 공통코드·참조 코드와 공통 조회 계약을 system 모듈 기준으로 이행한다"
   why: >-
-    SLICE-504 사용자 관리·역할·IP·활성 세션 이행이 사용자 G4 승인으로 완료됐다.
-    개인 예외 쓰기와 유효 권한 진단은 사용자 관리·역할·API 카탈로그의 정식 경로를 함께
-    사용하므로 의존 슬라이스가 모두 완료된 지금 처리한다.
+    SLICE-505 사용자 개인 예외·유효 권한 진단이 사용자 G4 승인으로 완료됐다.
+    기존에 다음으로 적었던 SLICE-514는 선행 SLICE-513이 아직 완료되지 않아 시작할 수 없다.
+    SLICE-506은 완료된 SLICE-503만 선행으로 요구하는 가장 이른 계획 슬라이스이며, 뒤의
+    메시지·설정·배치·공지 슬라이스가 공통 조회 계약을 재사용한다.
   tasks:
-    - "FEAT-502의 사용자 개인 예외·유효 권한 진단과 TC-5022·TC-5025의 현재 경로를 산정한다"
+    - "FEAT-504의 공통코드·참조 코드와 TC-5041~TC-5045의 현재 경로를 산정한다"
     - "신규 system 패키지 존재와 기존 구현 패키지 부재 계약을 먼저 작성해 RED를 확인한다"
     - "구현·DTO·소유 테스트를 이행하고 전체 검사·규칙 반전·PIT 뒤 G4 승인을 요청한다"
   then: >-
-    SLICE-505 승인 뒤에만 의존 슬라이스 SLICE-514 관리 요청 판정·내 요청·알림함 public 계약으로 진행한다.
+    SLICE-506 승인 뒤에 의존 슬라이스 SLICE-507 메시지 값·번들·캐시 버전으로 진행한다.
 
 # ── 미결 질문 (Open Questions) ─────────────────────────────────────
 # 사용자 답변이 필요한 것. 답변되면 삭제하고 결과를 spec·ADR 에 반영한다.
@@ -313,7 +314,7 @@ slices:
   - { id: SLICE-502, workstream: system, features: [FEAT-502], testcases: [TC-5021, TC-5023, TC-5024, TC-5026], scope: "역할·역할 권한과 권한 버전", stage: P4, status: done, depends_on: [SLICE-501] }
   - { id: SLICE-503, workstream: system, features: [FEAT-503], testcases: [TC-5031, TC-5032, TC-5033, TC-5034, TC-5035], scope: "메뉴 트리·API 카탈로그·실패 폐쇄 인터셉터", stage: P4, status: done, depends_on: [SLICE-502] }
   - { id: SLICE-504, workstream: system, features: [FEAT-501], testcases: [TC-5012, TC-5014, TC-5015], scope: "사용자 관리·역할·IP·활성 세션", stage: P4, status: done, depends_on: [SLICE-502, SLICE-503] }
-  - { id: SLICE-505, workstream: system, features: [FEAT-502], testcases: [TC-5022, TC-5025], scope: "사용자 개인 예외·유효 권한 진단", stage: P4, status: in_progress, depends_on: [SLICE-503, SLICE-504] }
+  - { id: SLICE-505, workstream: system, features: [FEAT-502], testcases: [TC-5022, TC-5025], scope: "사용자 개인 예외·유효 권한 진단", stage: P4, status: done, depends_on: [SLICE-503, SLICE-504] }
   - { id: SLICE-506, workstream: system, features: [FEAT-504], testcases: [TC-5041, TC-5042, TC-5043, TC-5044, TC-5045], scope: "공통코드·참조 코드와 공통 조회 계약", stage: P4, status: planned, depends_on: [SLICE-503] }
   - { id: SLICE-507, workstream: system, features: [FEAT-505], testcases: [TC-5051, TC-5052, TC-5053, TC-5054, TC-5055], scope: "메시지 값·번들·캐시 버전", stage: P4, status: planned, depends_on: [SLICE-503, SLICE-506] }
   - { id: SLICE-508, workstream: system, features: [FEAT-506], testcases: [TC-5061, TC-5062, TC-5063, TC-5064, TC-5065], scope: "시스템 설정·사용자 설정·캐시 버전", stage: P4, status: planned, depends_on: [SLICE-503, SLICE-507] }
@@ -331,6 +332,7 @@ verification_load:
   - { slice: SLICE-502, measured_at: "2026-09-12", fix_rounds: 5, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 3, note: "보존된 RED 테스트에서 system 컨트롤러 결손을 확인한 뒤 역할·역할 권한·사용자 권한 경로를 이행했다. 생성기가 module 기능·컨트롤러를 보지 못한 결손과 검사 스크립트 참조를 3회 보정했고, 레드팀에서 실제 동시 트랜잭션의 자동 병합 위험·권한 변경 사용 이력 테스트 누락·이전 컨트롤러 설명 드리프트를 찾아 수정했다. 이후 ARCH-026 대비 역할·역할 권한 서비스·DTO·소유 테스트가 과도기 경로에 남은 결손을 RED 구조 계약으로 재확인해 system 모듈로 이행했다. 규칙 반전 4건·전체 백엔드 검증·부트 JAR 확인을 통과했고, 이동한 RoleAuthService PIT는 80%다. 사용자 관리 묶음은 사용자 확인에 따라 ASM-007 아래 SLICE-504에 남긴다" }
   - { slice: SLICE-503, measured_at: "2026-09-12", fix_rounds: 7, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 3, note: "메뉴 URL 중복을 서버·DB에서 함께 막고, SQL Server의 NULL 유니크 차이를 vendor 분기와 정적 이행 시험으로 보강했다. 메뉴 서비스 변이 시험이 발견한 5단 리프 이동 차단 결함을 고쳐 5단 허용·6단 거부로 고정했고, MenuService PIT 98%·AuthorizationInterceptor PIT 92%를 통과했다. G4 점검에서 FEAT-503 프론트가 옛 features 경로와 화면 URL에 남은 결손을 찾아 system 모듈·/admin/system 정식 경로·화면 문서·메뉴 시드로 함께 이행했다. 저장 봉투 검사가 system 요청 레코드를 못 찾던 결손을 보정하고, 단일 system 경로 검사를 lint에 넣었다" }
   - { slice: SLICE-504, measured_at: "2026-09-12", fix_rounds: 3, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 2, note: "기존 사용자 관리의 system 패키지·화면·정식 경로 부재를 RED 구조 계약으로 확인한 뒤 컨트롤러·세션 서비스·요청 DTO·프런트 기능·화면 문서를 함께 이행했다. 레드팀에서 거부된 IP 저장이 쓰기를 남기지 않는다는 증거와 API·화면 정본의 구 경로를 보강했다. CIDR 유효성 및 USER_MGMT EXECUTE 판정을 각각 반전했을 때 TC-5012·TC-5014가 실패하고 원복 뒤 통과했다. UserDetailService PIT는 변이 58개 중 49개를 제거해 84%로 Full 트랙 75% 기준을 통과했다" }
+  - { slice: SLICE-505, measured_at: "2026-09-12", fix_rounds: 2, unverified_rules: 0, quality_fails: 0, spec_defects: 1, redteam_fixes: 1, note: "기존 개인 예외 권한의 system 패키지·화면·정식 경로 부재를 RED 구조 계약으로 확인한 뒤 컨트롤러·요청 DTO·프런트 기능·화면 문서를 함께 이행했다. 레드팀에서 사용 중지 계정의 예외 사전 구성 정책을 사용자에게 확인했고, 계정 상태를 표시한 채 허용하기로 확정했다. 없는 계정 저장 거부를 반전했을 때 TC-5022가 실패하고 원복 뒤 통과했다. UserAuthService PIT는 변이 40개 중 35개를 제거해 87.5%로 Full 트랙 75% 기준을 통과했다" }
 
 # ── 최근 활동 로그 (최신 10건만 유지) ─────────────────────────────
 log:
