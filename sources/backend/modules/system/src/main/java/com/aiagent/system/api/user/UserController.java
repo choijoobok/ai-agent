@@ -1,8 +1,9 @@
-package com.aiagent.api.user;
+// @feat FEAT-501
+package com.aiagent.system.api.user;
 
 import com.aiagent.api.trace.TraceId;
-import com.aiagent.api.user.request.UserSaveRequest;
-import com.aiagent.api.user.request.UserTargetRequest;
+import com.aiagent.system.api.user.request.UserSaveRequest;
+import com.aiagent.system.api.user.request.UserTargetRequest;
 import com.aiagent.core.error.BusinessException;
 import com.aiagent.core.error.CommonErrorCode;
 import com.aiagent.core.response.ApiResponse;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code USER_MGMT} 의 마스터 — screen/user/requirements.md. <b>경로가 다섯이고 넷이 {@code save*} 다.</b>
+ * {@code USER_MGMT} 의 마스터 — screen/admin/system/user/requirements.md. <b>경로가 다섯이고 넷이 {@code save*} 다.</b>
  *
  * <table>
  *   <tr><td>{@code getList}</td><td>목록 — <b>곧 상세다</b>({@code getDetail} 이 없는 이유)</td></tr>
@@ -34,13 +35,13 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <h2>{@code unlock} 이 아니라 {@code saveUnlock} 이다</h2>
  *
- * <p>screen/user/requirements.md — <b>규칙을 넓히지 않고 경로를 규칙에 맞춘다</b>(backend/api.md). 순진하게
+ * <p>screen/admin/system/user/requirements.md — <b>규칙을 넓히지 않고 경로를 규칙에 맞춘다</b>(backend/api.md). 순진하게
  * {@code unlock} 으로 쓰면 접두가 {@code EXECUTE} 로 떨어지는데, 이 API 는
  * {@code LOCK_YN}·{@code LOGIN_FAIL_CNT} 두 컬럼을 <b>쓴다</b> — 저장이다.
  *
  * <p>기준은 <i>버튼이 위험해 보이는가</i> 가 아니라 <b>우리 테이블의 컬럼을 쓰는가</b>이며,
  * 그래서 이 화면의 {@code EXECUTE} 는 <b>강제 로그아웃 하나</b>다(sys/menu.md 의 {@code X}) —
- * 그것은 세션 스토어를 비우지 우리 테이블을 쓰지 않고, 활성 세션 탭에 붙는다(screen/user/requirements.md).
+ * 그것은 세션 스토어를 비우지 우리 테이블을 쓰지 않고, 활성 세션 탭에 붙는다(screen/admin/system/user/requirements.md).
  *
  * <h2>{@code exportExcel} 이 없다</h2>
  *
@@ -56,7 +57,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 해시가 들어가 재조회로 다시 얻을 수 없다.
  */
 @RestController
-@RequestMapping("/api/service/user")
+@RequestMapping("/api/service/system/user")
 public class UserController {
 
     private final UserQueryService queries;
@@ -77,9 +78,9 @@ public class UserController {
     }
 
     /**
-     * 셀 편집 저장 — <b>신규 행은 임시 비밀번호를 함께 받는다</b>(screen/user/requirements.md).
+     * 셀 편집 저장 — <b>신규 행은 임시 비밀번호를 함께 받는다</b>(screen/admin/system/user/requirements.md).
      *
-     * <p>{@code principal} 을 넘기는 것은 <b>자기 비활성화를 막기 위해서</b>다(screen/user/requirements.md).
+     * <p>{@code principal} 을 넘기는 것은 <b>자기 비활성화를 막기 위해서</b>다(screen/admin/system/user/requirements.md).
      * 도메인이 <i>지금 누가 요청했는가</i> 를 스스로 알면 계층이 뒤집힌다(backend/packages.md) — 감사 4컬럼을
      * 채우는 {@code AuditorAware} 와 <b>다른 자리</b>인 것은, 저것이 <i>기록</i> 이고 이것은
      * <b>판정</b>이기 때문이다.
@@ -114,7 +115,7 @@ public class UserController {
     /**
      * 임시 비밀번호 발급 — <b>값을 응답에 담는다</b>.
      *
-     * <p>screen/user/requirements.md 이 <i>"메일 발송이 없는 배포에서 화면에 표시할지"</i> 를 미결로 남겼고
+     * <p>screen/admin/system/user/requirements.md 이 <i>"메일 발송이 없는 배포에서 화면에 표시할지"</i> 를 미결로 남겼고
      * <b>표시하는 쪽으로 닫았다</b>({@link IssuedPassword}) — sys/code.md 이 이 기능을 <i>"잠긴
      * 계정을 푸는 유일한 경로"</i> 라 부른 이상 전달 수단이 없으면 경로가 아니다.
      *

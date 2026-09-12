@@ -21,7 +21,7 @@ import jakarta.validation.constraints.Size;
  *   <tr><td>{@code READ} 불변식</td><td>검증이 <b>메뉴 하나의 액션 넷을 함께</b> 봐야 성립한다.
  *       변경분만 오면 <i>이미 있던 READ</i> 를 다시 조회해 합쳐야 하고, 그 합침이 두 곳
  *       (화면·서버)에 생긴다</td></tr>
- * <tr><td>트리가 전건이다</td><td>페이징도 필터도 없으므로(screen/user/requirements.md) 화면이 든 집합이
+ * <tr><td>트리가 전건이다</td><td>페이징도 필터도 없으므로(screen/admin/system/user/requirements.md) 화면이 든 집합이
  *       <b>완전하다</b> — 부분만 보고 전체를 보냈다고 착각할 자리가 없다</td></tr>
  * </table>
  *

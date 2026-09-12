@@ -2,7 +2,7 @@ import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
 
 /**
- * 계정 상태 — sys/user-role.md · screen/user/requirements.md. **파생값이며 컬럼이 아니다.**
+ * 계정 상태 — sys/user-role.md · screen/admin/system/user/requirements.md. **파생값이며 컬럼이 아니다.**
  *
  * <p>계정을 못 쓰게 하는 넷(`USE_YN` · 기간 만료 · `LOCK_YN` · `DORMANT_YN`)을 **접근 제어
  * 체인 순서로 먼저 걸린 것 하나**로 접은 것이다. 로그인 이력이 결과 코드를 하나만 남기는
@@ -10,7 +10,7 @@ import { MSG } from '@/shared/i18n/messageKeys';
  *
  * <h2>왜 `shared/` 인가</h2>
  *
- * <p>**두 화면이 쓴다** — `USER_MGMT`(screen/user/requirements.md)와 `USER_AUTH_MGMT`(screen/user/requirements.md). frontend/packages.md 이
+ * <p>**두 화면이 쓴다** — `USER_MGMT`(screen/admin/system/user/requirements.md)와 `USER_AUTH_MGMT`(screen/admin/system/user/requirements.md). frontend/packages.md 이
  * *"두 번째 화면이 쓰는 순간 `shared/` 로 올린다"* 고 정한 그 자리이며, features 끼리 직접
  * import 하면 **한쪽이 다른 쪽의 부품 창고**가 된다.
  *

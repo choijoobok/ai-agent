@@ -2,7 +2,7 @@ package com.aiagent.domain.user.detail;
 
 /**
  * 역할 후보 하나 — 보유 역할 탭의 콤보와 마스터 조회조건의 <i>역할</i> 이 <b>같은 목록</b>을
- * 본다(screen/user/requirements.md 탭 1).
+ * 본다(screen/admin/system/user/requirements.md 탭 1).
  *
  * <h2>{@code ROLE_MGMT} 의 경로를 쓰지 않는다</h2>
  *

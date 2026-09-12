@@ -128,7 +128,7 @@ export function ExcelButton<T>(props: Props<T>) {
           <b>{@code disabled} 를 버튼이 직접 받는다</b>(2026-08-31 실물). 드롭다운은 자식에게
           그것을 전해 주지만({@code child.props.disabled ?? disabled}) <b>그 자식이 툴팁</b>
           이라 버튼에는 닿지 않았다 — 눌리지는 않는데 아이콘만 <b>활성 상태의 색</b>으로
-          남아, 하단 탭이 잠겼을 때(screen/user/requirements.md) 이 버튼 하나만 켜져 보였다.
+          남아, 하단 탭이 잠겼을 때(screen/admin/system/user/requirements.md) 이 버튼 하나만 켜져 보였다.
         */}
         <Button
           icon={<FileExcelOutlined />}

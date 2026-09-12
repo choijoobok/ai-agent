@@ -7,9 +7,9 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 /**
- * 접속 IP 저장의 한 행 — screen/user/requirements.md 탭 3.
+ * 접속 IP 저장의 한 행 — screen/admin/system/user/requirements.md 탭 3.
  *
- * <p><b>{@code D} 가 있는 유일한 탭</b>이다. screen/user/requirements.md 의 표가 <i>추가 · 삭제</i> 로 적었고,
+ * <p><b>{@code D} 가 있는 유일한 탭</b>이다. screen/admin/system/user/requirements.md 의 표가 <i>추가 · 삭제</i> 로 적었고,
  * 그것이 맞다 — 여기서 지우는 것은 <b>부여의 기록</b>이 아니라 <i>사무실이 어디인가</i> 라는
  * <b>지금의 사실</b>이다. 이사한 사무실의 대역을 남겨 둘 이유가 없고, 잠시 막는 것은
  * {@code USE_YN} 이 맡는다.

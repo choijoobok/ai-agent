@@ -1,19 +1,20 @@
+// @feat FEAT-501
 import { Alert, Modal, Table, Typography } from 'antd';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
-import type { IssuedPassword } from '@/features/user/types';
+import type { IssuedPassword } from '@/modules/system/features/user/types';
 
 /**
- * 발급된 임시 비밀번호를 보여주는 창 — screen/user/requirements.md · AUTH-07.
+ * 발급된 임시 비밀번호를 보여주는 창 — screen/admin/system/user/requirements.md · AUTH-07.
  *
  * <h2>왜 값을 화면에 내는가</h2>
  *
- * screen/user/requirements.md 이 *"메일 발송이 없는 배포에서 화면에 표시할지"* 를 미결로 남겼고 **표시하는
+ * screen/admin/system/user/requirements.md 이 *"메일 발송이 없는 배포에서 화면에 표시할지"* 를 미결로 남겼고 **표시하는
  * 쪽으로 닫았다**(2026-08-30). sys/code.md 이 `admin-reset-enabled` 의 기본값을 켜 두며 적은
  * 근거가 *"메일 연동이 없는 배포에서 잠긴 계정을 푸는 **유일한 경로**"* 인데, **전달 수단이
  * 없으면 그 경로는 있으나 마나**다 — 발급하고 알려 주지 않는 것은 계정을 잠그는 것과 같다.
  *
- * <p>*"관리자가 아는 비밀번호가 생긴다"* 는 우려(screen/user/requirements.md)는 **사실이며 받아들인다.** 대신
+ * <p>*"관리자가 아는 비밀번호가 생긴다"* 는 우려(screen/admin/system/user/requirements.md)는 **사실이며 받아들인다.** 대신
  * 값의 수명을 묶는다 — `PWD_INIT_YN='Y'` 라 다음 로그인이 곧바로 강제 변경으로 가고
  * (backend/security.md 체인 #5), `tempValidHours` 가 지나면 로그인 자체가 막힌다. **아는 즉시 쓸모없어지는
  * 값**이라는 것이 방어다.

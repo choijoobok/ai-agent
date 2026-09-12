@@ -49,7 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <h2>{@code runNow} 가 {@code EXECUTE} 인 것에 예외가 없다</h2>
  *
- * <p>screen/batch/schedule/requirements.md — screen/user/requirements.md 의 기준(<i>"우리 테이블의 컬럼을 쓰는가"</i>)으로 봐도 그렇다.
+ * <p>screen/batch/schedule/requirements.md — screen/admin/system/user/requirements.md 의 기준(<i>"우리 테이블의 컬럼을 쓰는가"</i>)으로 봐도 그렇다.
  * 즉시 실행은 {@code SYS_SCHEDULE_BATCH} 를 <b>읽기만</b> 하고 쓰는 것은 이력이다.
  * <b>절차 발동이지 저장이 아니다.</b>
  *

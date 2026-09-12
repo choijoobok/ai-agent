@@ -81,7 +81,7 @@ const NO_USER = 'FAIL_NO_USER';
  * <b>색은 셋이고 글자는 열다섯이다</b> — screen/log/login/requirements.md.
  *
  * <p>14색을 쓰지 않는다: 운영자가 색 열다섯을 외우지 않는다. 배지 안의 라벨은 코드마다
- * 다르므로(sys/code.md — 공통코드의 이름) <b>구분은 잃지 않고 훑기만 빨라진다</b>. screen/user/requirements.md 이
+ * 다르므로(sys/code.md — 공통코드의 이름) <b>구분은 잃지 않고 훑기만 빨라진다</b>. screen/admin/system/user/requirements.md 이
  * 계정 상태 넷을 파생 컬럼 하나로 접은 것과 같은 방향·다른 수단이다 — 거기는 값을 접었고
  * 여기는 <b>색만</b> 접는다.
  *

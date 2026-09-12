@@ -675,13 +675,13 @@ function applyRenderer<T>(
         />
       );
       /*
-        <b>왜 못 켜는지 말한다</b>(2026-08-30 — screen/user/requirements.md). 텍스트 칸은 편집을 시도하면
+        <b>왜 못 켜는지 말한다</b>(2026-08-30 — screen/admin/system/user/requirements.md). 텍스트 칸은 편집을 시도하면
         {@code denyEdit} 가 사유를 내지만, <b>비활성 스위치는 이벤트를 내지 않아</b> 그
         문구가 영영 나가지 않는다 — screen/code/requirements.md 가 비활성 버튼에 대해 적은 것과 같은 자리다.
 
         <b>사유가 있을 때만 감싼다.</b> 컬럼 전체가 읽기 전용인 칸(선언에 {@code editable}
         이 없는 것)은 사유가 없고, 거기 툴팁을 붙이면 <i>못 고치는 칸마다 빈 말풍선</i>이
-        생긴다 — screen/user/requirements.md 의 시스템 축 셋이 정확히 그런 칸이다.
+        생긴다 — screen/admin/system/user/requirements.md 의 시스템 축 셋이 정확히 그런 칸이다.
 
         <b>{@code span} 으로 감싼다</b> — 비활성 요소는 마우스 이벤트를 내지 않으므로
         툴팁이 붙을 자리가 따로 필요하다.
@@ -711,7 +711,7 @@ function applyRenderer<T>(
       <b>{@code display} 가 글자를 정하고 값이 색을 정한다</b> — 축이 둘이다.
 
       값이 코드(`SKIP_LOCK`)이고 글자가 라벨(`건너뜀(락)`)인 배지가 있다(screen/batch/schedule/requirements.md ·
-      screen/user/requirements.md). 라벨을 {@code derive} 로 만들어 넣으면 <b>{@code tone} 조회가 라벨
+      screen/admin/system/user/requirements.md). 라벨을 {@code derive} 로 만들어 넣으면 <b>{@code tone} 조회가 라벨
       문자열로 가서 색이 하나도 안 칠해지고</b>, 정렬·필터·엑셀도 라벨을 보게 된다 —
       값을 원본으로 두는 것이 frontend/grid.md 의 규칙이다.
 
@@ -975,7 +975,7 @@ function toneOf(tone: ColumnDef<never>['tone'], value: unknown): Tone {
  *
  * <p>같은 규칙을 두 곳에 적지 않으려고 {@link editableOf} 하나를 본다. 다른 것은 <b>거절을
  * 말하지 않는다</b>는 것뿐이다: 비활성 스위치는 <i>못 만지는 것</i>으로 이미 읽히고
- * (screen/user/requirements.md — <i>회색 체크박스는 꺼진 것과 구분되지 않는다</i> 의 반대편이다), 누를 수 없는
+ * (screen/admin/system/user/requirements.md — <i>회색 체크박스는 꺼진 것과 구분되지 않는다</i> 의 반대편이다), 누를 수 없는
  * 컨트롤은 사유를 낼 계기 자체가 없다.
  */
 /**
@@ -983,7 +983,7 @@ function toneOf(tone: ColumnDef<never>['tone'], value: unknown): Tone {
  *
  * <p>{@code false} 와 {@code {ok:false, message}} 를 가르는 것이 요점이다(frontend/grid.md). 앞엣것은
  * <b>이 컬럼은 원래 못 고친다</b>(선언에 {@code editable} 이 없거나 지운 행이다)이고,
- * 뒤엣것은 <b>이 행에서만 못 고친다</b> — screen/user/requirements.md 의 <i>자기 계정은 사용 중지할 수 없다</i>
+ * 뒤엣것은 <b>이 행에서만 못 고친다</b> — screen/admin/system/user/requirements.md 의 <i>자기 계정은 사용 중지할 수 없다</i>
  * 가 그것이며, 그때는 <b>사유를 말해야 한다</b>: 말하지 않으면 <i>왜 이 행만 안 되나</i> 가
  * 된다.
  */

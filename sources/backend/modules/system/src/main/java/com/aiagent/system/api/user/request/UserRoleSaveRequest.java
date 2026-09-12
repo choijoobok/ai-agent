@@ -1,4 +1,5 @@
-package com.aiagent.api.user.request;
+// @feat FEAT-501
+package com.aiagent.system.api.user.request;
 
 import com.aiagent.domain.user.detail.UserRoleSaveRow;
 import jakarta.validation.Valid;
@@ -8,7 +9,7 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 /**
- * 보유 역할 저장 — screen/user/requirements.md 탭 1.
+ * 보유 역할 저장 — screen/admin/system/user/requirements.md 탭 1.
  *
  * <p><b>{@code userId} 가 본문에 있다.</b> 마스터에서 고른 그 사람이며 조회조건이 아니라
  * <b>화면의 구조</b>다(backend/api.md) — {@code UserAuthSaveRequest} 와 같은 모양이고 같은 이유다.

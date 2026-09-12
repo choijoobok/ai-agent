@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
- * 메뉴 하나를 <b>조상 경로를 포함한 한 줄</b>로 — screen/user/requirements.md 의 탭 둘이 요구했다.
+ * 메뉴 하나를 <b>조상 경로를 포함한 한 줄</b>로 — screen/admin/system/user/requirements.md 의 탭 둘이 요구했다.
  *
  * <p><b>재는 것은 빼지 않는가</b>다. {@code MenuTreeService} 의 조상 역산은 뿌리에 닿지
  * 못하는 리프를 <b>뺀다</b>(트리를 만드는 것이 목적이라 그것이 맞다). 여기는 반대다 —

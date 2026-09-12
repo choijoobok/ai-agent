@@ -33,7 +33,7 @@ const STYLE_ID = 'bo-grid-style';
   설명이 CSS 문자열 밖에 있는 것은 그 안의 한글을 ESLint 가 <b>번역 안 한 문구</b>로 보기
   때문이다 — 규칙이 옳다: 저 문자열은 화면에 나가는 것과 같은 모양이라 가릴 수 없다.
 
-  `bo-detail-tabs` — <b>탭 안의 그리드가 남는 높이를 쓰게 한다</b>(screen/user/requirements.md 이 처음 요구했다).
+  `bo-detail-tabs` — <b>탭 안의 그리드가 남는 높이를 쓰게 한다</b>(screen/admin/system/user/requirements.md 이 처음 요구했다).
 
   탭 다섯이 다 그리드인 화면이 생기면서 필요해졌다. 그리드는 <i>자기 몫을 채우는</i>
   컴포넌트인데 antd 의 탭 본문 래퍼 셋(`content-holder` · `content` · `tabpane`)이 기본

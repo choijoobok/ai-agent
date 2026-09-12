@@ -983,7 +983,7 @@ export const MSG = {
 
   // ── 그리드 실행 (frontend/grid.md) ────────────────────────────────────
   //
-  // `read` · `save` 가 아닌 버튼이 부르는 자리다. screen/user/requirements.md 의 *잠금 해제* · *휴면 해제* ·
+  // `read` · `save` 가 아닌 버튼이 부르는 자리다. screen/admin/system/user/requirements.md 의 *잠금 해제* · *휴면 해제* ·
   // *비밀번호 초기화* 가 첫 실물이다.
   /** 실행 전 확인의 제목. */
   GRID_ACTION_CONFIRM_TITLE: 'grid.action.confirm.title',
@@ -1068,7 +1068,7 @@ export const MSG = {
   /**
    * 연산자 셀렉터 — <b>이하</b>(`<=`). 크기 계열의 셋째 실물이다(frontend/search-form.md).
    *
-   * <p>screen/user/requirements.md 의 기간 칸 둘이 처음 요구했다(2026-08-31). *한쪽만 아는 조건* 이 실제로
+   * <p>screen/admin/system/user/requirements.md 의 기간 칸 둘이 처음 요구했다(2026-08-31). *한쪽만 아는 조건* 이 실제로
    * 있다 — <i>이 날짜 이후로 한 번도 안 들어온 계정</i> 이 `lte` 이고 그 반대가 `gte` 다.
    */
   SEARCH_OP_LTE: 'search.op.lte',
@@ -1883,7 +1883,7 @@ export const MSG = {
    * <p>칸이 셋이었다. 그런데 <b>사람은 손에 있는 것으로 찾는다</b> — 이름이거나 코드이거나
    * URL 이고, <i>어느 칸에 넣을지</i> 를 먼저 정해야 하는 것이 곧 마찰이다. 셋을 `OR` 로
    * 잇는 칸 하나면 그 결정이 사라진다(`userAuth.search.user` 가 ID 와 이름을 함께 보는 것과
-   * 같은 판단이다 — screen/user/requirements.md).
+   * 같은 판단이다 — screen/admin/system/user/requirements.md).
    *
    * <p>자리표에 <b>무엇을 보는지</b> 를 적는다 — 하나로 합친 칸은 그 말이 없으면 <i>이름만
    * 찾는 칸</i> 으로 읽힌다.
@@ -1999,9 +1999,9 @@ export const MSG = {
   ROLE_AUTH_TREE_TITLE: 'roleAuth.tree.title',
   /** 우 — 역할을 고르기 전의 빈 상태. */
   ROLE_AUTH_TREE_EMPTY: 'roleAuth.tree.empty',
-  /** 트리의 계층 컬럼 헤더 — 맨 왼쪽 고정이다(screen/user/requirements.md). */
+  /** 트리의 계층 컬럼 헤더 — 맨 왼쪽 고정이다(screen/admin/system/user/requirements.md). */
   ROLE_AUTH_COL_MENU: 'roleAuth.col.menu',
-  /** `—` 셀의 툴팁 — *안 줬다* 가 아니라 **줄 것이 없다**(screen/user/requirements.md). */
+  /** `—` 셀의 툴팁 — *안 줬다* 가 아니라 **줄 것이 없다**(screen/admin/system/user/requirements.md). */
   ROLE_AUTH_UNDEFINED: 'roleAuth.undefined',
   /** 폴더 파생 3-state — 전체. **저장되지 않는다**(sys/menu.md). */
   ROLE_AUTH_TRI_ALL: 'roleAuth.tri.all',
@@ -2009,7 +2009,7 @@ export const MSG = {
   ROLE_AUTH_TRI_SOME: 'roleAuth.tri.some',
   /** 폴더 파생 3-state — 없음. */
   ROLE_AUTH_TRI_NONE: 'roleAuth.tri.none',
-  /** 다른 액션을 켜서 조회가 함께 켜졌다 — **조용히 하지 않는다**(screen/user/requirements.md). */
+  /** 다른 액션을 켜서 조회가 함께 켜졌다 — **조용히 하지 않는다**(screen/admin/system/user/requirements.md). */
   ROLE_AUTH_READ_ON: 'roleAuth.read.on',
   /** 조회를 꺼서 나머지 `{count}` 건이 함께 꺼졌다 — 〃. */
   ROLE_AUTH_READ_OFF: 'roleAuth.read.off',
@@ -2026,11 +2026,11 @@ export const MSG = {
   /** 트리 검색 — 메뉴명. **거르지 않는다**(screen/menu/requirements.md 과 같은 어휘다). */
   ROLE_AUTH_SEARCH_MENU: 'roleAuth.search.menu',
 
-  // ── 사용자 관리 (screen/user/requirements.md) ────────────────────────────────────
+  // ── 사용자 관리 (screen/admin/system/user/requirements.md) ────────────────────────────────────
   /** 마스터 그리드의 제목. */
   USER_GRID_TITLE: 'user.grid.title',
 
-  // 계정 상태 다섯 — **공통코드가 아니다**(screen/user/requirements.md). 서버가 계산하는 파생값이고
+  // 계정 상태 다섯 — **공통코드가 아니다**(screen/admin/system/user/requirements.md). 서버가 계산하는 파생값이고
   // 다섯에서 늘 일이 없으므로 메시지 키로 둔다. 로그인 이력의 결과 코드와 1:1 이다.
   /** 접근 제어 체인 넷을 다 통과했다. */
   USER_STAT_NORMAL: 'user.stat.NORMAL',
@@ -2055,10 +2055,10 @@ export const MSG = {
    * 그 헤더의 한 줄 설명 — **넷을 하나로 접은 값**이라는 사실을 말한다.
    *
    * <p>접은 것을 말하지 않으면 *"잠금을 풀었는데 여전히 못 쓴다"* 의 이유(미사용이 함께
-   * 걸려 있었다)를 화면에서 읽을 수 없다(screen/user/requirements.md).
+   * 걸려 있었다)를 화면에서 읽을 수 없다(screen/admin/system/user/requirements.md).
    */
   USER_COL_STAT_TIP: 'user.col.accountStat.tip',
-  /** 컬럼 — 사용 여부. **관리자가 건다**(screen/user/requirements.md). */
+  /** 컬럼 — 사용 여부. **관리자가 건다**(screen/admin/system/user/requirements.md). */
   USER_COL_USE_YN: 'user.col.useYn',
   /** 컬럼 — 사용 기간 시작. */
   USER_COL_VALID_FROM: 'user.col.validFromDt',
@@ -2086,21 +2086,21 @@ export const MSG = {
   /** 언어 후보 — 영어. */
   USER_LOCALE_EN: 'user.locale.en',
 
-  /** 조회조건 — 로그인 ID. 앞 일치이며 PK 인덱스를 탄다(screen/user/requirements.md). */
+  /** 조회조건 — 로그인 ID. 앞 일치이며 PK 인덱스를 탄다(screen/admin/system/user/requirements.md). */
   USER_SEARCH_USER_ID: 'user.search.userId',
-  /** 조회조건 — 이름. 부분 일치라 인덱스를 타지 않는다(screen/user/requirements.md 미결). */
+  /** 조회조건 — 이름. 부분 일치라 인덱스를 타지 않는다(screen/admin/system/user/requirements.md 미결). */
   USER_SEARCH_USER_NM: 'user.search.userNm',
   /** 조회조건 — 이메일. 〃 */
   USER_SEARCH_EMAIL: 'user.search.email',
-  /** 조회조건 — 계정 상태(다중). **기본값이 없다** — 끈 계정을 찾으러 오는 화면이다(screen/user/requirements.md). */
+  /** 조회조건 — 계정 상태(다중). **기본값이 없다** — 끈 계정을 찾으러 오는 화면이다(screen/admin/system/user/requirements.md). */
   USER_SEARCH_STAT: 'user.search.accountStat',
-  /** 조회조건 — 보유 역할. `EXISTS` 라 벤더 중립이다(screen/user/requirements.md). */
+  /** 조회조건 — 보유 역할. `EXISTS` 라 벤더 중립이다(screen/admin/system/user/requirements.md). */
   USER_SEARCH_ROLE: 'user.search.roleId',
   /**
    * 조회조건 — 역할 만료 예정 N일.
    *
    * <p>숫자 칸이 아니라 **후보 콤보**다. 파생 조건은 부등호를 받지 못하므로(backend/api.md)
-   * *N일 이내* 라는 뜻을 번역 함수가 갖는다 — 그 김에 screen/user/requirements.md 의 *기본값 미결* 이
+   * *N일 이내* 라는 뜻을 번역 함수가 갖는다 — 그 김에 screen/admin/system/user/requirements.md 의 *기본값 미결* 이
    * **기본값 없음**으로 닫힌다.
    */
   USER_SEARCH_ROLE_EXPIRING: 'user.search.roleExpiringInDays',
@@ -2111,7 +2111,7 @@ export const MSG = {
   /** 조회조건 — 등록일 기간. */
   USER_SEARCH_REG_DTM: 'user.search.regDtm',
 
-  /** ①의 실행 — 잠금 해제(AUTH-04). 액션은 `SAVE` 다(screen/user/requirements.md). */
+  /** ①의 실행 — 잠금 해제(AUTH-04). 액션은 `SAVE` 다(screen/admin/system/user/requirements.md). */
   USER_ACTION_UNLOCK: 'user.action.unlock',
   /** ①의 실행 — 휴면 해제. 메일이 안 되는 환경을 위한 관리자 경로다. */
   USER_ACTION_DORMANT: 'user.action.dormantRelease',
@@ -2123,7 +2123,7 @@ export const MSG = {
   /**
    * 그 안내 — **이 창을 닫으면 다시 볼 수 없다**.
    *
-   * <p>값이 응답에만 있기 때문이다(screen/user/requirements.md). 말하지 않으면 관리자가 창을 닫고 나서
+   * <p>값이 응답에만 있기 때문이다(screen/admin/system/user/requirements.md). 말하지 않으면 관리자가 창을 닫고 나서
    * 재발급을 누르는데, 그러면 방금 전한 값이 그 자리에서 무효가 된다.
    */
   USER_ISSUED_DESC: 'user.issued.desc',
@@ -2134,37 +2134,37 @@ export const MSG = {
   USER_DUPLICATE: 'user.duplicate',
   /** 사용 기간의 시작이 종료보다 늦다. */
   USER_PERIOD_REVERSED: 'user.period.reversed',
-  /** 자기 계정의 사용 여부 셀을 끄려 했을 때 — **권한이 아니라 대상 제약**이다(screen/user/requirements.md). */
+  /** 자기 계정의 사용 여부 셀을 끄려 했을 때 — **권한이 아니라 대상 제약**이다(screen/admin/system/user/requirements.md). */
   USER_SELF_DISABLE: 'user.selfDisable',
-  /** 저장 확인 앞의 경고 — 신규 `{count}` 건에 임시 비밀번호가 발급된다(screen/user/requirements.md). */
+  /** 저장 확인 앞의 경고 — 신규 `{count}` 건에 임시 비밀번호가 발급된다(screen/admin/system/user/requirements.md). */
   USER_WARN_NEW_PASSWORD: 'user.warn.newPassword',
   /** 저장 확인 앞의 경고 — 사용 중지하는 `{count}` 건은 다음 로그인부터 막힌다. */
   USER_WARN_DISABLE: 'user.warn.disable',
 
-  // ── 디테일 탭 다섯 (screen/user/requirements.md) ───────────────────────────────
+  // ── 디테일 탭 다섯 (screen/admin/system/user/requirements.md) ───────────────────────────────
   //
   // **다섯이 다 그리드다**(frontend/grid.md) — 폼이 하나도 없으므로 탭 전환이 곧 그리드 교체이고,
   // 조회 전용 탭도 frontend/grid.md 의 크롬을 그대로 갖는다.
   //
   // **액션 넷의 헤더는 `authz.action.*` 를 그대로 쓴다.** 유효 권한 탭의 네 열이 그것인데,
-  // 같은 액션을 화면마다 다른 말로 부르면 그것이 학습 비용이다 — screen/user/requirements.md 가 트리 표시를
+  // 같은 액션을 화면마다 다른 말로 부르면 그것이 학습 비용이다 — screen/admin/system/user/requirements.md 가 트리 표시를
   // 두 화면이 공유하게 한 것과 같은 규칙이다.
 
   /** 탭 1 — 보유 역할(USER-03). */
   USER_TAB_ROLE: 'user.tab.role',
-  /** 탭 2 — 개인 예외(AUTHZ-07 조회). **조회 전용**이다(screen/user/requirements.md). */
+  /** 탭 2 — 개인 예외(AUTHZ-07 조회). **조회 전용**이다(screen/admin/system/user/requirements.md). */
   USER_TAB_GRANT: 'user.tab.grant',
   /** 탭 3 — 접속 IP(AUTH-08). */
   USER_TAB_IP: 'user.tab.ip',
   /** 탭 4 — 활성 세션(AUTH-10). */
   USER_TAB_SESSION: 'user.tab.session',
-  /** 탭 5 — 유효 권한. sys/menu.md 의 미결을 닫는 진단이다(screen/user/requirements.md). */
+  /** 탭 5 — 유효 권한. sys/menu.md 의 미결을 닫는 진단이다(screen/admin/system/user/requirements.md). */
   USER_TAB_EFFECTIVE: 'user.tab.effective',
 
   /**
    * 아직 아무도 고르지 않았다 — *"사용자를 선택하세요"*(frontend/grid.md).
    *
-   * <p>**비활성되는 것은 버튼이지 탭이 아니다**(screen/user/requirements.md). 탭은 열리되 비어 있고 안내가
+   * <p>**비활성되는 것은 버튼이지 탭이 아니다**(screen/admin/system/user/requirements.md). 탭은 열리되 비어 있고 안내가
    * 뜬다 — 탭을 잠그면 *"이 사용자에게 역할 탭이 없나"* 로 읽힌다.
    */
   USER_DETAIL_EMPTY: 'user.detail.empty',
@@ -2211,7 +2211,7 @@ export const MSG = {
   /** 탭 2 의 제목. */
   USER_GRANT_TITLE: 'user.grant.title',
   /**
-   * 메뉴 컬럼의 헤더 툴팁 — **여기서는 고칠 수 없다**(screen/user/requirements.md).
+   * 메뉴 컬럼의 헤더 툴팁 — **여기서는 고칠 수 없다**(screen/admin/system/user/requirements.md).
    *
    * <p>사용자 관리 권한이 있다고 예외 권한 부여 권한이 따라오면 안 되며, 권한은
    * `(MENU_CD, ACTION_CD)` 쌍이므로 **메뉴가 갈려야 갈린다**. 회색 그리드만 두면
@@ -2270,11 +2270,11 @@ export const MSG = {
   USER_SESSION_TITLE: 'user.session.title',
   /** 컬럼 — 세션. **앞 8자만** 그린다. */
   USER_SESSION_COL_ID: 'user.session.col.sessionId',
-  /** 컬럼 — 현재 세션인가. screen/user/requirements.md 의 **자기 자신 금지**를 눈으로 확인시킨다. */
+  /** 컬럼 — 현재 세션인가. screen/admin/system/user/requirements.md 의 **자기 자신 금지**를 눈으로 확인시킨다. */
   USER_SESSION_COL_CURRENT: 'user.session.col.current',
   /** 컬럼 — 생성 시각. */
   USER_SESSION_COL_CREATED: 'user.session.col.created',
-  /** 컬럼 — 최근 접근. ***끊을까 말까* 를 가르는 값**이다(screen/user/requirements.md). */
+  /** 컬럼 — 최근 접근. ***끊을까 말까* 를 가르는 값**이다(screen/admin/system/user/requirements.md). */
   USER_SESSION_COL_ACCESS: 'user.session.col.lastAccess',
   /** 컬럼 — 만료 예정 = 최근 접근 + 유휴 한도. **파생**이다. */
   USER_SESSION_COL_EXPIRY: 'user.session.col.expiry',
@@ -2299,7 +2299,7 @@ export const MSG = {
   /** 실행 버튼 — 강제 종료(AUTH-10). */
   USER_SESSION_KILL: 'user.session.kill',
   /**
-   * 확인 문구 — **계정은 바뀌지 않는다**는 것을 말한다(screen/user/requirements.md).
+   * 확인 문구 — **계정은 바뀌지 않는다**는 것을 말한다(screen/admin/system/user/requirements.md).
    *
    * <p>*"N건을 종료합니다"* 만으로는 **다시 로그인할 수 있다**는 사실이 빠진다 — 막으려면
    * `USE_YN='N'` 이고 그것은 **다른 축**이다(sys/user-role.md). 말하지 않으면 이 버튼이 계정을
@@ -2308,7 +2308,7 @@ export const MSG = {
   USER_SESSION_KILL_CONFIRM: 'user.session.kill.confirm',
   /** 결과 — `{count}` 건을 끊었다. **고른 수와 다를 수 있고 다른 것이 사실**이다. */
   USER_SESSION_KILL_DONE: 'user.session.kill.done',
-  /** 버튼이 왜 비활성인가 — 자기 계정의 세션은 끊을 수 없다(screen/user/requirements.md). */
+  /** 버튼이 왜 비활성인가 — 자기 계정의 세션은 끊을 수 없다(screen/admin/system/user/requirements.md). */
   USER_SESSION_SELF: 'user.session.self',
 
   /** 탭 5 의 제목. */
@@ -2318,7 +2318,7 @@ export const MSG = {
   /** 범위 — 가진 것만. 기본값이다. */
   USER_EFF_SCOPE_HELD: 'user.eff.scope.held',
   /**
-   * 범위 — 전체 메뉴. **없는 것도 보여야 한다**(screen/user/requirements.md 의 요구 2).
+   * 범위 — 전체 메뉴. **없는 것도 보여야 한다**(screen/admin/system/user/requirements.md 의 요구 2).
    *
    * <p>*"왜 못 보나"* 는 **권한이 없는 행**에 답이 있다 — 가진 것만 보여주면 이 탭은
    * 진단이 아니라 요약이다.
@@ -2339,7 +2339,7 @@ export const MSG = {
   /** 조회 결과가 비었다. */
   USER_EFF_EMPTY: 'user.eff.empty',
   /**
-   * **유효 권한이 공집합이다** — 배너로 먼저 알린다(screen/user/requirements.md).
+   * **유효 권한이 공집합이다** — 배너로 먼저 알린다(screen/admin/system/user/requirements.md).
    *
    * <p>그 계정은 **다음 로그인부터 차단된다**(backend/security.md). 탭을 열어 빈 표를 보고 유추하게
    * 두지 않는다 — 빈 표는 *조회가 안 된 것* 으로도 읽힌다.
@@ -2350,10 +2350,10 @@ export const MSG = {
   /** 부여가 예정이거나 만료다 — 지금은 효력이 없다. 〃 */
   USER_EFF_INACTIVE: 'user.eff.inactive',
 
-  // ── 개인 예외 권한 (screen/user/requirements.md) ─────────────────────────────────
+  // ── 개인 예외 권한 (screen/admin/system/user/requirements.md) ─────────────────────────────────
   //
   // **트리의 표시 문구는 `roleAuth.*` 를 그대로 쓴다.** 폴더의 파생 3-state 와 `—` 의
-  // 툴팁이 그것인데, screen/user/requirements.md 가 *"읽는 것은 마찰의 대상이 아니므로 표시는 양쪽 공통"* 이라고
+  // 툴팁이 그것인데, screen/admin/system/user/requirements.md 가 *"읽는 것은 마찰의 대상이 아니므로 표시는 양쪽 공통"* 이라고
   // 정했다 — 같은 트리를 두 화면에서 다른 말로 부르면 그것이 학습 비용이다. 키 이름이
   // `roleAuth` 로 시작하는 것은 **먼저 쓴 화면이 이름을 가져간** 결과일 뿐이다.
   /** 좌 pane 의 제목 — 사용자 목록. */
@@ -2367,13 +2367,13 @@ export const MSG = {
   /** 예외가 하나도 없을 때 — **고장이 아니다**. 예외는 예외다. */
   USER_AUTH_GRANT_EMPTY: 'userAuth.grant.empty',
 
-  /** 조회조건 — 사용자. **ID 와 이름을 함께** 본다(screen/user/requirements.md). */
+  /** 조회조건 — 사용자. **ID 와 이름을 함께** 본다(screen/admin/system/user/requirements.md). */
   USER_AUTH_SEARCH_USER: 'userAuth.search.user',
-  /** 트리 검색 — 메뉴명. **거르지 않는다**(screen/user/requirements.md · screen/menu/requirements.md 과 같은 어휘다). */
+  /** 트리 검색 — 메뉴명. **거르지 않는다**(screen/admin/system/user/requirements.md · screen/menu/requirements.md 과 같은 어휘다). */
   USER_AUTH_SEARCH_MENU: 'userAuth.search.menu',
 
   /**
-   * 좌 pane 컬럼 — **지금 유효한** 예외 건수(screen/user/requirements.md).
+   * 좌 pane 컬럼 — **지금 유효한** 예외 건수(screen/admin/system/user/requirements.md).
    *
    * <p>예정·만료를 세지 않는 것이 이름에 들어가야 했다 — *예외 건수* 로 두면 만료가 쌓인
    * 계정에서 **화면의 어느 수와도 맞지 않는다**.
@@ -2386,7 +2386,7 @@ export const MSG = {
   USER_AUTH_COL_MENU: 'userAuth.col.menu',
   /** 목록 컬럼 — 액션. */
   USER_AUTH_COL_ACTION: 'userAuth.col.action',
-  /** 목록 컬럼 — 상태(예정 · 유효 · 만료). **기간에서 파생**한다(screen/user/requirements.md). */
+  /** 목록 컬럼 — 상태(예정 · 유효 · 만료). **기간에서 파생**한다(screen/admin/system/user/requirements.md). */
   USER_AUTH_COL_STATE: 'userAuth.col.state',
   /** 목록 컬럼 — 시작일. **필수**다. */
   USER_AUTH_COL_FROM: 'userAuth.col.validFromDt',
@@ -2402,27 +2402,27 @@ export const MSG = {
   /** 상태 — 만료. 종료일이 지났다. */
   USER_AUTH_STATE_EXPIRED: 'userAuth.state.EXPIRED',
 
-  /** 역할 경유 배지의 툴팁 — `{roles}` 가 역할명 목록이다(screen/user/requirements.md). */
+  /** 역할 경유 배지의 툴팁 — `{roles}` 가 역할명 목록이다(screen/admin/system/user/requirements.md). */
   USER_AUTH_VIA_ROLE: 'userAuth.viaRole',
   /** 역할 경유 배지의 글자 — 좁은 칸이라 짧다. 이름은 툴팁이 말한다. */
   USER_AUTH_VIA_ROLE_TAG: 'userAuth.viaRole.tag',
   /** 부여는 있는데 그 액션이 정의에서 사라졌다 — **고아**다(seed.md). */
   USER_AUTH_ORPHAN: 'userAuth.orphan',
 
-  /** 다른 액션을 켜서 조회가 함께 켜졌다 — **조용히 하지 않는다**(screen/user/requirements.md). */
+  /** 다른 액션을 켜서 조회가 함께 켜졌다 — **조용히 하지 않는다**(screen/admin/system/user/requirements.md). */
   USER_AUTH_READ_ON: 'userAuth.read.on',
   /** 조회를 회수해서 나머지 `{count}` 건도 함께 회수됐다 — 〃. */
   USER_AUTH_READ_OFF: 'userAuth.read.off',
   /** 역할이 조회를 주고 있어 조회를 따로 켜지 않았다 — 합집합이라 그것으로 충분하다. */
   USER_AUTH_READ_VIA_ROLE: 'userAuth.read.viaRole',
 
-  /** 만료된 부여를 다시 켤 때의 확인 제목(screen/user/requirements.md). */
+  /** 만료된 부여를 다시 켤 때의 확인 제목(screen/admin/system/user/requirements.md). */
   USER_AUTH_REVIVE_TITLE: 'userAuth.revive.title',
   /** 그 본문 — `{from}` · `{to}` · `{reason}` 이 **대체될 이전 값**이다. */
   USER_AUTH_REVIVE_BODY: 'userAuth.revive.body',
   /** 예정 부여를 켜려 했을 때 — **값을 건드리지 않는다**. 고치려면 목록에서 고친다. */
   USER_AUTH_SCHEDULED_KEEP: 'userAuth.scheduled.keep',
-  /** 한 번에 `{count}` 건을 골랐다 — *역할 신설을 검토하세요*(screen/user/requirements.md). **막지는 않는다**. */
+  /** 한 번에 `{count}` 건을 골랐다 — *역할 신설을 검토하세요*(screen/admin/system/user/requirements.md). **막지는 않는다**. */
   USER_AUTH_THRESHOLD: 'userAuth.threshold',
 
   /**

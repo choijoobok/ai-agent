@@ -21,7 +21,7 @@ public interface SysLoginLogRepository extends JpaRepository<SysLoginLog, Long> 
     List<SysLoginLog> findByUserIdOrderByCreDtmDesc(String userId, Limit limit);
 
     /**
-     * 한 사람의 <b>성공한</b> 로그인만 최근 순으로 — screen/user/requirements.md(2026-08-31).
+     * 한 사람의 <b>성공한</b> 로그인만 최근 순으로 — screen/admin/system/user/requirements.md(2026-08-31).
      *
      * <p>활성 세션 목록이 <b>어디서 들어왔나</b> 를 채우는 데 쓴다. 세션 스토어는 IP 도
      * User-Agent 도 갖고 있지 않으므로(sys/logs.md 가 그것을 보존 1년으로 갖는다) 세션이 만들어진

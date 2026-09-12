@@ -18,7 +18,7 @@ current:
   # ↑ **축이 둘이고 글자가 같다.** 차수는 *무엇을 내는가*(00-charter.yaml roadmap),
   #   단계는 *어디까지 만들었는가*(P0~P6)다. 한 차수가 P0~P6 을 한 바퀴 돈다.
   #   `trace-check` 가 이 값을 읽어 **뒤 차수의 결손을 오류가 아니라 경고로** 센다.
-  slice: SLICE-503           # 다음 슬라이스의 RED 테스트가 생기면 SLICE-504로 전환한다
+  slice: SLICE-504           # TC-5012·5014·5015 RED 테스트를 만든 뒤 사용자 관리 이행을 진행한다
   blocked_by: []
   template_maintenance: false
   # ↑ true 로 켜면 G3 전에도 sources/ 를 고칠 수 있다(guard-write ①).
@@ -214,7 +214,7 @@ counters:
   SCR: 69
   TC: 52
   ADR: 8      # 001~008 accepted. 008은 템플릿 독립·통합 Hub·DW DBMS 지원 경계이며 proposed는 없다
-  ASM: 2      # **미확인 둘** — 003(기한 G3) · 007(기한 SLICE-504 G4). 002·004 는 확인됨, 005·006 은 기각됨
+  ASM: 1      # **미확인 하나** — 003(기한 G3). 002·004·007은 확인됨, 005·006 은 기각됨
   SLICE: 16
   DEF: 0
 
@@ -312,7 +312,7 @@ slices:
   - { id: SLICE-501, workstream: system, features: [FEAT-501], testcases: [TC-5011, TC-5013], scope: "system 모듈 골격·public/common 인증·로그인·비밀번호·세션", stage: P4, status: done, depends_on: [] }
   - { id: SLICE-502, workstream: system, features: [FEAT-502], testcases: [TC-5021, TC-5023, TC-5024, TC-5026], scope: "역할·역할 권한과 권한 버전", stage: P4, status: done, depends_on: [SLICE-501] }
   - { id: SLICE-503, workstream: system, features: [FEAT-503], testcases: [TC-5031, TC-5032, TC-5033, TC-5034, TC-5035], scope: "메뉴 트리·API 카탈로그·실패 폐쇄 인터셉터", stage: P4, status: done, depends_on: [SLICE-502] }
-  - { id: SLICE-504, workstream: system, features: [FEAT-501], testcases: [TC-5012, TC-5014, TC-5015], scope: "사용자 관리·역할·IP·활성 세션", stage: P4, status: planned, depends_on: [SLICE-502, SLICE-503] }
+  - { id: SLICE-504, workstream: system, features: [FEAT-501], testcases: [TC-5012, TC-5014, TC-5015], scope: "사용자 관리·역할·IP·활성 세션", stage: P4, status: in_progress, depends_on: [SLICE-502, SLICE-503] }
   - { id: SLICE-505, workstream: system, features: [FEAT-502], testcases: [TC-5022, TC-5025], scope: "사용자 개인 예외·유효 권한 진단", stage: P4, status: planned, depends_on: [SLICE-503, SLICE-504] }
   - { id: SLICE-506, workstream: system, features: [FEAT-504], testcases: [TC-5041, TC-5042, TC-5043, TC-5044, TC-5045], scope: "공통코드·참조 코드와 공통 조회 계약", stage: P4, status: planned, depends_on: [SLICE-503] }
   - { id: SLICE-507, workstream: system, features: [FEAT-505], testcases: [TC-5051, TC-5052, TC-5053, TC-5054, TC-5055], scope: "메시지 값·번들·캐시 버전", stage: P4, status: planned, depends_on: [SLICE-503, SLICE-506] }
@@ -330,6 +330,7 @@ verification_load:
   - { slice: SLICE-501, measured_at: "2026-09-12", fix_rounds: 6, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 3, note: "첫 RED 구현, repository 경계 컴파일 수정, system 컨트롤러 스캔 범위 수정 뒤 PIT가 찾은 도메인·API 서비스 테스트 빈틈 2건을 보강해 각각 93%를 달성했다. 이후 ARCH-026 대비 백엔드 구현 패키지 이행 누락을 발견해 완료를 철회했고, 인증 API 조립·DTO·후처리·허용 IP 판정과 테스트를 system 모듈로 옮겼다. 기존 경로 부재 계약과 system 모듈 PIT 93%를 다시 통과해 2026-09-12 사용자 G4 재승인을 받았다. 사용자 관리 규칙과 잔여 user aggregate는 ASM-007 아래 소유 TC와 함께 SLICE-504에서 검증한다" }
   - { slice: SLICE-502, measured_at: "2026-09-12", fix_rounds: 5, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 3, note: "보존된 RED 테스트에서 system 컨트롤러 결손을 확인한 뒤 역할·역할 권한·사용자 권한 경로를 이행했다. 생성기가 module 기능·컨트롤러를 보지 못한 결손과 검사 스크립트 참조를 3회 보정했고, 레드팀에서 실제 동시 트랜잭션의 자동 병합 위험·권한 변경 사용 이력 테스트 누락·이전 컨트롤러 설명 드리프트를 찾아 수정했다. 이후 ARCH-026 대비 역할·역할 권한 서비스·DTO·소유 테스트가 과도기 경로에 남은 결손을 RED 구조 계약으로 재확인해 system 모듈로 이행했다. 규칙 반전 4건·전체 백엔드 검증·부트 JAR 확인을 통과했고, 이동한 RoleAuthService PIT는 80%다. 사용자 관리 묶음은 사용자 확인에 따라 ASM-007 아래 SLICE-504에 남긴다" }
   - { slice: SLICE-503, measured_at: "2026-09-12", fix_rounds: 7, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 3, note: "메뉴 URL 중복을 서버·DB에서 함께 막고, SQL Server의 NULL 유니크 차이를 vendor 분기와 정적 이행 시험으로 보강했다. 메뉴 서비스 변이 시험이 발견한 5단 리프 이동 차단 결함을 고쳐 5단 허용·6단 거부로 고정했고, MenuService PIT 98%·AuthorizationInterceptor PIT 92%를 통과했다. G4 점검에서 FEAT-503 프론트가 옛 features 경로와 화면 URL에 남은 결손을 찾아 system 모듈·/admin/system 정식 경로·화면 문서·메뉴 시드로 함께 이행했다. 저장 봉투 검사가 system 요청 레코드를 못 찾던 결손을 보정하고, 단일 system 경로 검사를 lint에 넣었다" }
+  - { slice: SLICE-504, measured_at: "2026-09-12", fix_rounds: 3, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 2, note: "기존 사용자 관리의 system 패키지·화면·정식 경로 부재를 RED 구조 계약으로 확인한 뒤 컨트롤러·세션 서비스·요청 DTO·프런트 기능·화면 문서를 함께 이행했다. 레드팀에서 거부된 IP 저장이 쓰기를 남기지 않는다는 증거와 API·화면 정본의 구 경로를 보강했다. CIDR 유효성 및 USER_MGMT EXECUTE 판정을 각각 반전했을 때 TC-5012·TC-5014가 실패하고 원복 뒤 통과했다. UserDetailService PIT는 변이 58개 중 49개를 제거해 84%로 Full 트랙 75% 기준을 통과했다" }
 
 # ── 최근 활동 로그 (최신 10건만 유지) ─────────────────────────────
 log:

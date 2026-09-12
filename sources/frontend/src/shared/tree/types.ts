@@ -272,7 +272,7 @@ export interface TreeGridProps<T> {
    * Ⓑ — frontend/grid.md. 모두 접기·펼치기가 여기 온다(screen/menu/requirements.md).
    *
    * <p><b>`button` 만 받는다</b> — 트리의 ①에 셀렉트가 필요해진 화면이 아직 없다.
-   * 그리드 쪽은 유효 권한 탭이 그것을 요구해 갈렸다(screen/user/requirements.md · `GridSelectControl`).
+   * 그리드 쪽은 유효 권한 탭이 그것을 요구해 갈렸다(screen/admin/system/user/requirements.md · `GridSelectControl`).
    */
   controls?: GridButtonControl[];
   /**

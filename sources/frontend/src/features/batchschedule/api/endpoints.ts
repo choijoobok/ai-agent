@@ -37,7 +37,7 @@ export const BATCH_SCHEDULE_ENDPOINTS = {
   /**
    * 즉시 실행 — 액션은 <b>`EXECUTE`</b> 다(경로 접두가 정한다 — backend/api.md).
    *
-   * <p>`SYS_SCHEDULE_BATCH` 를 <b>읽기만</b> 하고 쓰는 것은 이력이다 — screen/user/requirements.md 의
+   * <p>`SYS_SCHEDULE_BATCH` 를 <b>읽기만</b> 하고 쓰는 것은 이력이다 — screen/admin/system/user/requirements.md 의
    * 기준(*"우리 테이블의 컬럼을 쓰는가"*)으로 봐도 저장이 아니다(screen/batch/schedule/requirements.md).
    */
   runNow: '/service/batchSchedule/runNow',

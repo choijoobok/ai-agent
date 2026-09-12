@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 /**
- * 개인 예외 저장의 한 행 — screen/user/requirements.md · frontend/grid.md.
+ * 개인 예외 저장의 한 행 — screen/admin/system/user/requirements.md · frontend/grid.md.
  *
  * <h2>{@code RoleAuthGrant} 와 모양이 다르다 — 그것이 두 화면의 차이 전부다</h2>
  *

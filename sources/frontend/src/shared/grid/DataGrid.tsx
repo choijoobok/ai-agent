@@ -81,7 +81,7 @@ interface DataGridProps<T> {
    *
    * <p>보통은 {@code api.read} 선언이 버튼을 낸다(frontend/grid.md). <b>그럴 수 없는 그리드가
    * 있다</b>: 행이 자기 경로가 아니라 <b>다른 조회에서</b> 오는 경우이며, `USER_AUTH_MGMT`
-   * 의 하단이 그것이다 — 트리와 목록을 {@code getMenuTree} 하나가 함께 먹인다(screen/user/requirements.md).
+   * 의 하단이 그것이다 — 트리와 목록을 {@code getMenuTree} 하나가 함께 먹인다(screen/admin/system/user/requirements.md).
    * 그 응답은 {@code PageResponse} 가 아니라 트리라 {@code controller.read()} 가 파싱하지
    * 못하고, 그래서 {@code api.read} 를 선언할 수가 없다.
    *
@@ -177,7 +177,7 @@ interface DataGridProps<T> {
    */
   settings?: boolean;
   /**
-   * ①·②·③을 <b>통째로 잠근다</b> — screen/user/requirements.md 가 처음 요구했다.
+   * ①·②·③을 <b>통째로 잠근다</b> — screen/admin/system/user/requirements.md 가 처음 요구했다.
    *
    * <p>{@code collapsed} 와 다른 축이다. 저것은 <i>안 보인다</i> 이고 이것은 <b>보이는데
    * 누를 수 없다</b>이며, 마스터-디테일에서 <b>대상이 없는 탭</b>이 그 자리다(frontend/grid.md) —
@@ -189,7 +189,7 @@ interface DataGridProps<T> {
    */
   disabled?: boolean;
   /**
-   * 제목 뒤에 <b>부모 행의 이름</b>을 붙인다 — frontend/grid.md · screen/user/requirements.md(2026-08-31).
+   * 제목 뒤에 <b>부모 행의 이름</b>을 붙인다 — frontend/grid.md · screen/admin/system/user/requirements.md(2026-08-31).
    *
    * <p>디테일 그리드는 자기가 <b>누구의 것인지 말하지 못한다</b>. 마스터의 선택 행이 스크롤
    * 밖으로 나가거나 조회조건이 펼쳐지면 지금 보고 있는 것이 누구의 것인지가 화면 어디에도
@@ -448,7 +448,7 @@ export function DataGrid<T>(props: DataGridProps<T>) {
    *
    * <p>그래서 <b>행이 왔는데 빈 판이 남는다</b>. 대개는 조회의 {@code loading} 이 true↔false
    * 로 흔들리면서 판이 그 자리에서 다시 판정해 조용히 지나갔는데, <b>{@code read} 가 없는
-   * 그리드</b>는 그 흔들림이 아예 없다 — 개인 예외 목록(screen/user/requirements.md)이 그것이고, <i>"이 사용자에게
+   * 그리드</b>는 그 흔들림이 아예 없다 — 개인 예외 목록(screen/admin/system/user/requirements.md)이 그것이고, <i>"이 사용자에게
    * 개인 예외가 없습니다"</i> 가 <b>행 위에 그대로 남았다</b>(2026-08-31 실물).
    *
    * <p><b>우리가 세운 것만 내린다.</b> 필터가 전부를 걸러 판이 스스로 띄운 <i>일치하는 행이
@@ -1146,7 +1146,7 @@ function GridHeader<T>(
   const { controller, controls = [], permissions, menuCd } = props;
   const { token } = theme.useToken();
   const excelMaxRows = useAuthStore((state) => state.excelMaxRows);
-  // 조회 중이거나 <b>대상이 없다</b> — screen/user/requirements.md. 둘 다 "지금은 아무것도 누르지 말라" 다.
+  // 조회 중이거나 <b>대상이 없다</b> — screen/admin/system/user/requirements.md. 둘 다 "지금은 아무것도 누르지 말라" 다.
   const locked = controller.loading || props.disabled === true;
   const collapsed = props.collapsed === true;
   /*
@@ -1305,7 +1305,7 @@ function GridHeader<T>(
               </Button>
             );
             /*
-              <b>사유를 붙인다</b>(screen/user/requirements.md). 대상 제약으로 막힌 실행은 <i>선택이 0건</i>
+              <b>사유를 붙인다</b>(screen/admin/system/user/requirements.md). 대상 제약으로 막힌 실행은 <i>선택이 0건</i>
               과 겉모습이 같아 <b>고를 것이 없어서인지 고를 수 없어서인지</b> 가 갈리지
               않는다 — 비활성 버튼은 마우스 이벤트를 내지 않으므로 자리를 감싸 준다.
             */
@@ -1325,7 +1325,7 @@ function GridHeader<T>(
         {/*
           ② — 도구는 언제나 맨 오른쪽이다(frontend/grid.md). 권한이 없으면 아예 없다(frontend/tabs.md).
 
-          <b>{@code read} 가 아니라 {@code api} 를 본다</b>(2026-08-30 — screen/user/requirements.md). 조회를
+          <b>{@code read} 가 아니라 {@code api} 를 본다</b>(2026-08-30 — screen/admin/system/user/requirements.md). 조회를
           다른 응답이 먹이는 저장 그리드가 생겼고(개인 예외 목록), 그 그리드도 내려받을
           것이 있다 — {@code fetchAll} 이 그때 <b>화면이 든 행 전부</b>를 돌려준다.
           {@code api} 가 아예 없는 그리드는 여전히 ②가 없고, <b>{@code excel={false}} 로

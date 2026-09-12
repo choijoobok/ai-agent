@@ -1,10 +1,11 @@
+// @feat FEAT-501
 import { describe, expect, it } from 'vitest';
 import type { GridRow, RowState } from '@/shared/grid/rows';
-import { isIpOrCidr, warnRevoke } from '@/features/user/detailRules';
-import type { UserRoleRow } from '@/features/user/types';
+import { isIpOrCidr, warnRevoke } from '@/modules/system/features/user/detailRules';
+import type { UserRoleRow } from '@/modules/system/features/user/types';
 
 /**
- * 디테일 탭의 판정 둘 — screen/user/requirements.md.
+ * 디테일 탭의 판정 둘 — screen/admin/system/user/requirements.md.
  *
  * <p><b>둘 다 한 번씩 틀렸던 자리다.</b> 회수 경고는 브라우저 시계를 UTC 로 읽어 KST 자정
  * 직후에 뜨지 않았고(sys/INDEX.md), 형식 검사는 IPv4 의 접두 상한을 계열에서 얻지 않으면

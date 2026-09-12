@@ -17,7 +17,7 @@ export const ACCESS_LOG_ENDPOINTS = {
   /**
    * **전문 한 칸을 따로 가져온다** — 목록이 `nclob` 을 싣지 못하기 때문이다(screen/log/access/requirements.md).
    *
-   * <p>screen/user/requirements.md 가 편집 폼을 없애며 `getDetail` 을 없앤 것과 정반대다. 여기서는
+   * <p>screen/admin/system/user/requirements.md 가 편집 폼을 없애며 `getDetail` 을 없앤 것과 정반대다. 여기서는
    * **컬럼 하나가 목록에 들어올 수 없어서** 돌아왔다.
    */
   getDetail: '/service/accessLog/getDetail',

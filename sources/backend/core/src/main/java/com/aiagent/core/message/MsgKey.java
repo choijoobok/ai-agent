@@ -385,7 +385,7 @@ public final class MsgKey {
     public static final String ERR_ROLE_AUTH_MENU = "err.role.auth.menu";
 
     /**
-     * 그 메뉴에 정의되지 않은 액션이다 — screen/user/requirements.md 의 {@code —}.
+     * 그 메뉴에 정의되지 않은 액션이다 — screen/admin/system/user/requirements.md 의 {@code —}.
      *
      * <p><b>줄 것이 없는 조합</b>이다. 받아 두면 인가 데이터가 <i>줬는데 안 되는</i> 상태를
      * 갖게 되고, 그 다음 문의는 <i>"권한을 줬는데 왜 안 되나"</i> 가 된다.
@@ -396,7 +396,7 @@ public final class MsgKey {
     public static final String ERR_ROLE_AUTH_ACTION = "err.role.auth.action";
 
     /**
-     * {@code READ} 없이 다른 액션만 왔다 — screen/user/requirements.md 의 <b>불변식 하나</b>.
+     * {@code READ} 없이 다른 액션만 왔다 — screen/admin/system/user/requirements.md 의 <b>불변식 하나</b>.
      *
      * <p>화면이 이것을 <b>유지</b>하므로(끄면 함께 끄고, 켜면 함께 켠다) 정상 경로로는 오지
      * 않는다. 서버가 다시 보는 것은 sys/menu.md 의 원칙 P1 이며 {@code MENU_URL IS NULL} 거부와
@@ -404,7 +404,7 @@ public final class MsgKey {
      */
     public static final String ERR_ROLE_AUTH_READ = "err.role.auth.read";
 
-    // ── 사용자 관리 — UserAdminErrorCode(screen/user/requirements.md) ─────────────────────
+    // ── 사용자 관리 — UserAdminErrorCode(screen/admin/system/user/requirements.md) ─────────────────────
     //
     // **위의 `err.user.*` 와 축이 다르다.** 저기는 **본인이** 자기 계정에 대해 하는 일이고
     // 여기는 **관리자가 남의 계정에** 하는 일이다 — 같은 접두를 쓰면 관리 화면에서 문구를
@@ -416,11 +416,11 @@ public final class MsgKey {
     /** 없는 계정을 가리켰다. 화면이 낡았거나 화면 밖 경로다. */
     public static final String ERR_USER_ADMIN_NOT_FOUND = "err.user-admin.not-found";
 
-    /** 이름을 비운 채 저장했다 — screen/user/requirements.md 의 필수 컬럼. */
+    /** 이름을 비운 채 저장했다 — screen/admin/system/user/requirements.md 의 필수 컬럼. */
     public static final String ERR_USER_ADMIN_NAME_REQUIRED = "err.user-admin.name-required";
 
     /**
-     * 이메일을 비운 채 저장했다 — screen/user/requirements.md 의 필수 컬럼.
+     * 이메일을 비운 채 저장했다 — screen/admin/system/user/requirements.md 의 필수 컬럼.
      *
      * <p><b>필수인 이유가 발송처</b>다. 관리자가 발급한 임시 비밀번호를 전할 곳이 없으면
      * 그 계정은 만들어지자마자 들어올 수 없다(AUTH-07).
@@ -433,14 +433,14 @@ public final class MsgKey {
     /**
      * 삭제 행이 왔다 — {@code SYS_USER} 는 <b>물리 삭제를 하지 않는다</b>(sys/user-role.md · USER-02).
      *
-     * <p>화면에는 삭제 컬럼이 아예 없다(screen/user/requirements.md). 못 쓰게 하는 수단은 {@code USE_YN='N'} 이며
+     * <p>화면에는 삭제 컬럼이 아예 없다(screen/admin/system/user/requirements.md). 못 쓰게 하는 수단은 {@code USE_YN='N'} 이며
      * 그것은 <b>셀 편집</b>이다 — 이력 테이블이 {@code USER_ID} 를 값으로 갖고 있어(sys/user-role.md)
      * 행을 지우면 <b>지난 이력의 주인이 사라진다</b>.
      */
     public static final String ERR_USER_ADMIN_NO_DELETE = "err.user-admin.no-delete";
 
     /**
-     * 자기 계정을 비활성화하려 했다 — screen/user/requirements.md.
+     * 자기 계정을 비활성화하려 했다 — screen/admin/system/user/requirements.md.
      *
      * <p><b>권한이 아니라 대상 제약</b>이라 화면은 감추지 않고 <b>보이되 막고 사유를
      * 붙인다</b>(frontend/tabs.md 의 예외가 아니라 축이 다른 것이다). 그 자리에서 화면 밖으로 밀려나기
@@ -548,7 +548,7 @@ public final class MsgKey {
      */
     public static final String ERR_BATCH_HIST_NOT_CANCELABLE = "err.batch-hist.not-cancelable";
 
-    // ── 개인 예외 권한 — UserAuthErrorCode(screen/user/requirements.md) ───────────────────
+    // ── 개인 예외 권한 — UserAuthErrorCode(screen/admin/system/user/requirements.md) ───────────────────
     //
     // **위의 `err.role.auth.*` 와 뜻이 겹치는 것이 셋 있다**(메뉴 · 액션 · READ). 같은 규칙을
     // 두 화면이 지키기 때문인데(sys/menu.md 원칙 P1) **키를 공유하지 않는다** — 문구를 고치는
@@ -561,13 +561,13 @@ public final class MsgKey {
     /**
      * 구조 노드나 없는 메뉴에 예외를 주려 했다 — sys/menu.md 의 {@code MENU_URL IS NULL} 거부.
      *
-     * <p>화면에는 구조 노드에 스위치가 아예 없다(screen/user/requirements.md). 이 문구가 나가는 것은 화면 밖
+     * <p>화면에는 구조 노드에 스위치가 아예 없다(screen/admin/system/user/requirements.md). 이 문구가 나가는 것은 화면 밖
      * 경로이거나, 트리를 열어 둔 사이에 그 메뉴가 폴더가 된 경우다.
      */
     public static final String ERR_USER_AUTH_MENU = "err.user-auth.menu";
 
     /**
-     * 그 메뉴에 정의되지 않은 액션이다 — screen/user/requirements.md 의 {@code —}.
+     * 그 메뉴에 정의되지 않은 액션이다 — screen/admin/system/user/requirements.md 의 {@code —}.
      *
      * <p><b>줄 것이 없는 조합</b>이다. 받아 두면 <i>줬는데 안 되는</i> 상태가 인가 데이터에
      * 남고, 그 다음 문의는 <i>"권한을 줬는데 왜 안 되나"</i> 가 된다.
@@ -575,7 +575,7 @@ public final class MsgKey {
     public static final String ERR_USER_AUTH_ACTION = "err.user-auth.action";
 
     /**
-     * {@code READ} 없이 다른 액션만 남는다 — screen/user/requirements.md 의 <b>불변식 하나</b>.
+     * {@code READ} 없이 다른 액션만 남는다 — screen/admin/system/user/requirements.md 의 <b>불변식 하나</b>.
      *
      * <p><b>역할 쪽과 판정이 다르다.</b> 거기서는 그 역할 안에서만 봤지만 여기서는 유효
      * 권한이 <b>역할과 개인 예외의 합집합</b>이므로(backend/security.md ③), <b>역할이 조회를 주고 있으면
@@ -601,14 +601,14 @@ public final class MsgKey {
      * 같은 {@code (메뉴, 액션)} 이 두 번 왔거나 이미 있는 행을 새로 만들려 했다.
      *
      * <p>PK 가 {@code (USER_ID, MENU_CD, ACTION_CD)} 이므로 <b>한 조합에 행은 하나뿐</b>이며,
-     * 재부여는 새 행이 아니라 <b>같은 행의 기간·사유를 갱신하는 것</b>이다(screen/user/requirements.md).
+     * 재부여는 새 행이 아니라 <b>같은 행의 기간·사유를 갱신하는 것</b>이다(screen/admin/system/user/requirements.md).
      */
     public static final String ERR_USER_AUTH_DUPLICATE = "err.user-auth.duplicate";
 
     /** 고치거나 지우려는 행이 없다 — 다른 사람이 먼저 지웠다. */
     public static final String ERR_USER_AUTH_MISSING = "err.user-auth.missing";
 
-    // ── 사용자 디테일 탭 — UserDetailErrorCode(screen/user/requirements.md) ─────────────
+    // ── 사용자 디테일 탭 — UserDetailErrorCode(screen/admin/system/user/requirements.md) ─────────────
     //
     // **`err.user-admin.*` 와 축이 다르다.** 저기는 `SYS_USER` 한 테이블의 일이고 여기는
     // **그 계정에 매달린 것들**의 일이다 — 보유 역할과 접속 IP. 편집이 있는 탭이 그 둘뿐이라
@@ -650,7 +650,7 @@ public final class MsgKey {
     public static final String ERR_USER_DETAIL_IP_MISSING = "err.user-detail.ip-missing";
 
     /**
-     * 자기 세션을 끊으려 했다 — screen/user/requirements.md. <b>그 자리에서 화면 밖으로 밀려난다.</b>
+     * 자기 세션을 끊으려 했다 — screen/admin/system/user/requirements.md. <b>그 자리에서 화면 밖으로 밀려난다.</b>
      *
      * <p>사용 여부 {@code 'N'} 전환과 <b>같은 이유로 막고 다른 자리에서 막는다</b>: 저것은
      * 셀 편집이라 컬럼이 막고, 이것은 실행이라 <b>버튼이 비활성</b>이며 서버가 다시 본다.

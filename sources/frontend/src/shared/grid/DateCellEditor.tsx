@@ -8,7 +8,7 @@ import { datePattern, type DatePrecision } from '@/shared/grid/dateFormat';
  * 날짜 셀의 편집기 — <b>AntD 달력</b>이다(frontend/grid.md).
  *
  * <p><b>판의 기본 편집기는 텍스트 칸</b>이다. 그대로 두면 사람이 {@code 2026-08-31} 을
- * 손으로 치고, 형식이 틀리면 <b>조용히 값이 되지 않는다</b> — screen/user/requirements.md 탭 1 의 시작·종료일이
+ * 손으로 치고, 형식이 틀리면 <b>조용히 값이 되지 않는다</b> — screen/admin/system/user/requirements.md 탭 1 의 시작·종료일이
  * 실물로 그랬다(2026-08-31).
  *
  * <p><b>조회조건과 같은 컴포넌트</b>다. 다르면 같은 화면에서 <b>두 모양의 달력</b>이 뜨고,

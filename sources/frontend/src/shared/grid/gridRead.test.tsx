@@ -81,7 +81,7 @@ describe('그리드 ①의 조회 — frontend/grid.md', () => {
 
   /**
    * `USER_AUTH_MGMT` 의 하단이 이 자리다 — 트리와 목록을 조회 하나가 함께 먹이므로
-   * (screen/user/requirements.md) 자기 `api.read` 가 없다. <b>그래도 다시 읽을 길은 있어야 한다.</b>
+   * (screen/admin/system/user/requirements.md) 자기 `api.read` 가 없다. <b>그래도 다시 읽을 길은 있어야 한다.</b>
    */
   it('`onRead` 를 주면 버튼이 서고, **서버를 부르지 않고** 그 함수가 불린다', () => {
     const onRead = vi.fn();

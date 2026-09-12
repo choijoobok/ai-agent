@@ -437,7 +437,7 @@ function buildSearchFields(): SearchField[] {
         공지가 기본 조회에서 사라진다</b>. 공지는 이력이 아니라 <i>지금 게시 중인 것</i>을
         묻는 화면이고, 그 좁히기는 `게시 상태` 가 한다.
 
-        빈 문자열이 *비워 둔다* 의 뜻이다(screen/user/requirements.md 이 만든 규약) — 적지 않는 것과 다르다.
+        빈 문자열이 *비워 둔다* 의 뜻이다(screen/admin/system/user/requirements.md 이 만든 규약) — 적지 않는 것과 다르다.
       */
       defaultValue: '',
     },

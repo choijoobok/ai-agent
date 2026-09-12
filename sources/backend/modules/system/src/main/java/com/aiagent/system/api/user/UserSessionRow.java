@@ -1,9 +1,10 @@
-package com.aiagent.api.user;
+// @feat FEAT-501
+package com.aiagent.system.api.user;
 
 import java.time.Instant;
 
 /**
- * 활성 세션 하나 — AUTH-10 · screen/user/requirements.md.
+ * 활성 세션 하나 — AUTH-10 · screen/admin/system/user/requirements.md.
  *
  * <p><b>컬럼이 여섯이다</b> — 세션 ID(앞 8자) · 생성 시각 · 최근 접근 · 만료 예정 ·
  * 접속 IP · 브라우저.
@@ -28,7 +29,7 @@ import java.time.Instant;
  *
  * @param sessionId <b>전체</b>가 실린다. 화면이 앞 8자만 그리지만 끊을 때는 온전한 값이
  *     필요하고, 앞 8자만 보내면 <b>서버가 접두로 찾아야</b> 한다 — 그것은 겹칠 수 있는 키다
- * @param current 이 요청을 보낸 바로 그 세션인가. 화면이 <i>(현재 세션)</i> 을 붙이고 screen/user/requirements.md
+ * @param current 이 요청을 보낸 바로 그 세션인가. 화면이 <i>(현재 세션)</i> 을 붙이고 screen/admin/system/user/requirements.md
  *     의 <b>자기 자신 금지</b>를 눈으로 확인시킨다 — 버튼이 왜 비활성인지 말하는 것이 이 값이다
  * @param expiryDtm 만료 예정 = 최근 접근 + 유휴 한도. <b>파생</b>이며 스토어가 갖고 있는
  *     값이 아니다 — 컬럼으로 두면 접근할 때마다 갱신해야 하고, 그러면 여기서 계산하는 것과

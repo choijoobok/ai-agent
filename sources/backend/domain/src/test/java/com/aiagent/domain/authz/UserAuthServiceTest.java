@@ -40,7 +40,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 /**
- * 개인 예외 저장 — screen/user/requirements.md · sys/menu.md 의 원칙 P1.
+ * 개인 예외 저장 — screen/admin/system/user/requirements.md · sys/menu.md 의 원칙 P1.
  *
  * <p><b>여기서 재는 것은 서버가 마지막으로 막는 것들</b>이다. 화면도 같은 것을 막지만 그것은
  * UX 이고(frontend/grid.md), 요청 본문은 조작할 수 있으며 화면 없이 부르는 경로가 늘 있다.

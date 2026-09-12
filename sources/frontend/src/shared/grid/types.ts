@@ -547,7 +547,7 @@ export interface SaveApi<T> {
   /**
    * 저장이 끝난 뒤 — <b>재조회 다음</b>이다.
    *
-   * <p><b>서버 응답이 인자로 온다</b>(2026-08-30 — screen/user/requirements.md 가 처음 요구했다). 대개
+   * <p><b>서버 응답이 인자로 온다</b>(2026-08-30 — screen/admin/system/user/requirements.md 가 처음 요구했다). 대개
    * {@code null} 이지만 <b>재조회로는 얻을 수 없는 값</b>을 저장이 만들어 내는 화면이 있다 —
    * 신규 계정의 임시 비밀번호가 그것이며, DB 에는 해시가 들어가 다시 물어볼 수 없다.
    *
@@ -557,7 +557,7 @@ export interface SaveApi<T> {
 }
 
 /**
- * `read` · `save` 가 아닌 <b>그 밖의 모든 버튼</b> — frontend/grid.md. <b>screen/user/requirements.md 가 처음 요구했다.</b>
+ * `read` · `save` 가 아닌 <b>그 밖의 모든 버튼</b> — frontend/grid.md. <b>screen/admin/system/user/requirements.md 가 처음 요구했다.</b>
  *
  * <p>`controls`와 갈리는 자리는 하나다 — <b>서버를 부르는가</b>. 부르면 여기다
  * (frontend/grid.md — *"그래도 서버를 부르면 `actions` 다"*).
@@ -567,7 +567,7 @@ export interface SaveApi<T> {
  * 만든다. 선언에 또 적으면 <b>같은 사실이 두 곳</b>이 되어 시드와 어긋난다.
  *
  * <p><b>이름이 `execute` 가 아니다.</b> 액션 `EXECUTE`(`X`)와 섞이기 때문이며 —
- * *잠금 해제*는 `actions` 의 하나이지만 액션은 `SAVE` 다(screen/user/requirements.md).
+ * *잠금 해제*는 `actions` 의 하나이지만 액션은 `SAVE` 다(screen/admin/system/user/requirements.md).
  */
 export interface ActionApi<T> {
   /** 화면 안에서만 유일하면 된다 — 버튼의 `key` 다. */
@@ -636,7 +636,7 @@ export interface ActionApi<T> {
   /**
    * <b>왜 눌리지 않는가</b> — 메시지 키. 툴팁으로 붙는다. `GridControl.hint` 와 같은 자리다.
    *
-   * <p>screen/user/requirements.md 이 요구했다. 자기 계정의 세션은 끊을 수 없는데(그 자리에서 화면 밖으로
+   * <p>screen/admin/system/user/requirements.md 이 요구했다. 자기 계정의 세션은 끊을 수 없는데(그 자리에서 화면 밖으로
    * 밀려난다) 그것은 <b>권한이 아니라 대상 제약</b>이라 감추면 *"왜 이 사람만 안 되나"* 가
    * 된다 — **보이되 막고 사유를 붙인다**.
    *
@@ -676,7 +676,7 @@ export interface ActionApi<T> {
   /**
    * 서버가 돌려준 것 — <b>{@code save} 에는 없는 자리</b>다.
    *
-   * <p>임시 비밀번호 발급이 그 실물이다(screen/user/requirements.md) — 발급된 값은 <b>그 응답에만</b> 있고
+   * <p>임시 비밀번호 발급이 그 실물이다(screen/admin/system/user/requirements.md) — 발급된 값은 <b>그 응답에만</b> 있고
    * 재조회로는 다시 얻을 수 없다.
    *
    * <p>{@link progress} 인 실행에서는 <b>{@code jobId} 를 담은 응답</b>이 온다 — 진행률의
@@ -690,10 +690,10 @@ export interface ActionApi<T> {
  */
 export interface GridApi<T> {
   /**
-   * <b>없을 수 있다</b>(2026-08-30 — screen/user/requirements.md 가 처음 요구했다).
+   * <b>없을 수 있다</b>(2026-08-30 — screen/admin/system/user/requirements.md 가 처음 요구했다).
    *
    * <p>조회를 <b>다른 응답이 대신 먹이는</b> 그리드가 있다. 개인 예외 목록이 그것으로,
-   * 트리와 <b>같은 데이터의 두 표시</b>라 원본이 하나여야 하고(screen/user/requirements.md) 그 하나는 트리
+   * 트리와 <b>같은 데이터의 두 표시</b>라 원본이 하나여야 하고(screen/admin/system/user/requirements.md) 그 하나는 트리
    * 조회다 — 목록에 자기 조회를 두면 <b>같은 질문에 답이 둘</b>이 된다.
    *
    * <p>screen/code/requirements.md 의 <i>{@code api} 가 아예 없는 그리드</i> 와 <b>다른 자리</b>다. 저기는 조회도
@@ -790,7 +790,7 @@ export interface GridButtonControl extends GridControlBase {
 }
 
 /**
- * 표시 범위 전환 — **screen/user/requirements.md 의 유효 권한 탭이 첫 실물**이다(frontend/grid.md 가 그렇게 적었다).
+ * 표시 범위 전환 — **screen/admin/system/user/requirements.md 의 유효 권한 탭이 첫 실물**이다(frontend/grid.md 가 그렇게 적었다).
  *
  * <p>`select` 인데 **조회조건이 아닌 이유**가 이 컨트롤의 존재 이유다. 여기서 고르는 것은
  * *거르기* 가 아니라 **무엇을 행으로 낼지**이며 — 부여를 세느냐 메뉴를 세느냐 — 값에 따라
@@ -838,7 +838,7 @@ export interface GridToggleControl extends GridControlBase {
 export type GridControl = GridButtonControl | GridSelectControl | GridToggleControl;
 
 /**
- * 제목 뒤에 붙는 <b>부모 행의 이름</b> — frontend/grid.md · screen/user/requirements.md.
+ * 제목 뒤에 붙는 <b>부모 행의 이름</b> — frontend/grid.md · screen/admin/system/user/requirements.md.
  *
  * <p><b>디테일 그리드는 자기가 누구의 것인지 말하지 못한다.</b> 마스터에서 행을 고르면
  * 하단 탭이 그 사람의 것으로 갈리는데, 스크롤해서 마스터의 선택 행이 화면에서 벗어나거나

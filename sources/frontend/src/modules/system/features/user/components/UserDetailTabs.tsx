@@ -1,3 +1,4 @@
+// @feat FEAT-501
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { App, Alert } from 'antd';
 import { FillColumn } from '@/shared/components/FillColumn';
@@ -17,8 +18,8 @@ import type {
   TitleSuffixSpec,
 } from '@/shared/grid/types';
 import { GRANT_TONE, grantDisplay } from '@/shared/authz/grantState';
-import { USER_ENDPOINTS } from '@/features/user/api/endpoints';
-import { isIpOrCidr, warnRevoke } from '@/features/user/detailRules';
+import { USER_ENDPOINTS } from '@/modules/system/features/user/api/endpoints';
+import { isIpOrCidr, warnRevoke } from '@/modules/system/features/user/detailRules';
 import type {
   ActionCd,
   EffectiveAuthRow,
@@ -28,18 +29,18 @@ import type {
   UserRoleRow,
   UserRow,
   UserSessionRow,
-} from '@/features/user/types';
-import { VIA_PERSONAL } from '@/features/user/types';
+} from '@/modules/system/features/user/types';
+import { VIA_PERSONAL } from '@/modules/system/features/user/types';
 
 /**
- * `USER_MGMT` 의 디테일 — screen/user/requirements.md. <b>탭 다섯이 다 그리드다.</b>
+ * `USER_MGMT` 의 디테일 — screen/admin/system/user/requirements.md. <b>탭 다섯이 다 그리드다.</b>
  *
  * <p>편집 폼을 두지 않으므로(frontend/grid.md) 기본정보 탭이 없고, 그 내용은 마스터 그리드의
  * 컬럼이 됐다. 남은 다섯은 전부 <b>`SYS_USER` 밖</b>의 데이터라 각자 조회 경로를 갖는다.
  *
  * <h2>탭을 열 때 부른다</h2>
  *
- * <p>screen/user/requirements.md 의 표는 *"저장된 행 선택 → 다섯 개 전부 조회"* 라고 적었지만 <b>여는 탭
+ * <p>screen/admin/system/user/requirements.md 의 표는 *"저장된 행 선택 → 다섯 개 전부 조회"* 라고 적었지만 <b>여는 탭
  * 하나만 부른다</b>(2026-08-31). 마스터를 클릭할 때마다 왕복이 다섯이면 <b>목록을 훑는
  * 동작 자체가 부하</b>가 되고, 그중 유효 권한은 메뉴 전건과 부여 전건을 함께 읽어 가장
  * 비싸다 — screen/menu/requirements.md 이 메뉴 상세 탭 셋에 대해 이미 같은 판단을 내렸고 그 근거가 여기서도
@@ -86,9 +87,9 @@ export interface UserDetailTabsHandle {
 
 interface Props {
   menuCd: string;
-  /** screen/user/requirements.md — 자기 계정의 세션은 끊을 수 없다. */
+  /** screen/admin/system/user/requirements.md — 자기 계정의 세션은 끊을 수 없다. */
   myUserId: string;
-  /** 역할 후보. 마스터의 조회조건과 <b>같은 목록</b>을 본다(screen/user/requirements.md). */
+  /** 역할 후보. 마스터의 조회조건과 <b>같은 목록</b>을 본다(screen/admin/system/user/requirements.md). */
   roleOptions: SelectOption[];
   /**
    * 마스터 그리드 — <b>탭의 제목이 누구의 것인지 말하는 근거</b>다(frontend/grid.md).
@@ -225,7 +226,7 @@ export function UserDetailTabs(props: Props) {
   });
 
   /**
-   * 지울 수 있는가 — <b>언제나 그렇다</b>(screen/user/requirements.md 의 셋째 줄과 같은 어휘).
+   * 지울 수 있는가 — <b>언제나 그렇다</b>(screen/admin/system/user/requirements.md 의 셋째 줄과 같은 어휘).
    *
    * <p>지우는 것은 <b>잘못 등록한 행 정리</b>이며 <i>회수</i> 가 아니다. 회수는 종료일을
    * 어제로 하는 것이고 그때 행은 남는다 — 변경 이력 테이블이 없으므로(sys/logs.md)
@@ -319,19 +320,19 @@ export function UserDetailTabs(props: Props) {
           label: MSG.USER_SESSION_KILL,
           url: USER_ENDPOINTS.killSession,
           /*
-            <b>확인 문구가 계정은 바뀌지 않는다는 것을 말한다</b>(screen/user/requirements.md). *"N건을
+            <b>확인 문구가 계정은 바뀌지 않는다는 것을 말한다</b>(screen/admin/system/user/requirements.md). *"N건을
             종료합니다"* 만으로는 <b>다시 로그인할 수 있다</b>는 사실이 빠지고, 그러면 이
             버튼이 계정을 잠그는 것으로 읽힌다 — 막으려면 `USE_YN='N'` 이고 그것은 **다른
             축**이다(sys/user-role.md).
           */
           confirm: MSG.USER_SESSION_KILL_CONFIRM,
           /*
-            <b>자기 계정이면 대상이 하나도 없다</b>(screen/user/requirements.md). 고른 행을 여기서 걸러 내는
+            <b>자기 계정이면 대상이 하나도 없다</b>(screen/admin/system/user/requirements.md). 고른 행을 여기서 걸러 내는
             것이 `toTargets` 가 아니라 `eligible` 인 이유는, 걸러진 결과가 확인 문구의
             건수와 버튼의 활성 상태를 함께 정하기 때문이다(frontend/grid.md).
           */
           eligible: () => userId.current !== myUserId,
-          // 비활성 사유가 <i>선택 0건</i> 이 아니므로 말해 준다 — screen/user/requirements.md.
+          // 비활성 사유가 <i>선택 0건</i> 이 아니므로 말해 준다 — screen/admin/system/user/requirements.md.
           hint: MSG.USER_SESSION_SELF,
           toTargets: (rows: GridRow<UserSessionRow>[]) =>
             rows.map((row) => row.data.sessionId),
@@ -358,7 +359,7 @@ export function UserDetailTabs(props: Props) {
     searchParams: byUser,
   });
 
-  // ── 탭 5 — 유효 권한 (screen/user/requirements.md) ───────────────────────────────
+  // ── 탭 5 — 유효 권한 (screen/admin/system/user/requirements.md) ───────────────────────────────
 
   const effColumns = useMemo(() => buildEffectiveColumns(), []);
   const effApi = useMemo(() => ({ read: { url: USER_ENDPOINTS.getEffectiveAuthList } }), []);
@@ -371,7 +372,7 @@ export function UserDetailTabs(props: Props) {
   });
 
   /**
-   * 유효 권한이 <b>공집합</b>인가 — screen/user/requirements.md 이 배너로 먼저 알리라고 한 것.
+   * 유효 권한이 <b>공집합</b>인가 — screen/admin/system/user/requirements.md 이 배너로 먼저 알리라고 한 것.
    *
    * <p>행에서 센다. 서버가 따로 세어 주지 않아도 되는 것은 이 탭이 <b>전건을 내려받기</b>
    * 때문이며(`mode: 'all'`), 범위가 <i>가진 것만</i> 이든 <i>전체 메뉴</i> 든 답이 같다 —
@@ -608,7 +609,7 @@ export function UserDetailTabs(props: Props) {
               /*
                 <b>배너가 탭 안에 있다</b>(2026-08-31). 탭바 위에 두었더니 <b>탭 다섯 전체가
                 한 줄 밀렸고</b>, 무엇보다 그 줄은 <i>유효 권한 탭의 말</i> 인데 탭 밖에
-                있어서 <b>화면 전체에 대한 경고</b>처럼 읽혔다 — screen/user/requirements.md 이 요구한 것은
+                있어서 <b>화면 전체에 대한 경고</b>처럼 읽혔다 — screen/admin/system/user/requirements.md 이 요구한 것은
                 *빈 표를 보고 유추하게 두지 않는 것* 이고, 그 자리는 그 표의 위다.
               */
               <div
@@ -785,7 +786,7 @@ function buildGrantColumns(): ColumnDef<UserGrantRow>[] {
       field: 'menuPath',
       header: MSG.USER_GRANT_COL_MENU,
       /*
-        <b>여기서는 고칠 수 없다</b>는 것을 헤더가 말한다(screen/user/requirements.md). 회색 그리드만 두면
+        <b>여기서는 고칠 수 없다</b>는 것을 헤더가 말한다(screen/admin/system/user/requirements.md). 회색 그리드만 두면
         *"왜 안 고쳐지나"* 가 되고, 그 답은 권한 설계에 있지 화면의 결함이 아니다.
       */
       headerTooltip: MSG.USER_GRANT_READONLY,
@@ -957,7 +958,7 @@ function buildSessionColumns(): ColumnDef<UserSessionRow>[] {
       width: 140,
       pinned: 'left',
       /*
-        <b>앞 8자만 그린다</b>(screen/user/requirements.md).
+        <b>앞 8자만 그린다</b>(screen/admin/system/user/requirements.md).
 
         `display` 가 아니라 `derive` 인 것은 어댑터가 `display` 를 <b>렌더러가 있는 칸</b>
         (`list` · `link` · `badge`)에만 태우기 때문이다(frontend/grid.md) — 평범한 텍스트 칸에서는
@@ -977,7 +978,7 @@ function buildSessionColumns(): ColumnDef<UserSessionRow>[] {
     },
     { field: 'createdDtm', header: MSG.USER_SESSION_COL_CREATED, type: 'dateTime', width: 170, sortable: true },
     {
-      // 목록의 기본 정렬이 이것이다 — *끊을까 말까* 를 가르는 값이다(screen/user/requirements.md).
+      // 목록의 기본 정렬이 이것이다 — *끊을까 말까* 를 가르는 값이다(screen/admin/system/user/requirements.md).
       field: 'lastAccessedDtm',
       header: MSG.USER_SESSION_COL_ACCESS,
       type: 'dateTime',
@@ -1025,11 +1026,11 @@ function buildSessionColumns(): ColumnDef<UserSessionRow>[] {
 // ── 탭 5 — 유효 권한 ──────────────────────────────────────────────
 
 /**
- * screen/user/requirements.md 의 컬럼 표 그대로다 — <b>메뉴 · 액션 4열 · 출처 · 상태</b>.
+ * screen/admin/system/user/requirements.md 의 컬럼 표 그대로다 — <b>메뉴 · 액션 4열 · 출처 · 상태</b>.
  *
  * <p>액션 넷이 <b>파생 컬럼</b>이다. 값이 `actions` 배열의 원소 여부이고 정의 밖이면
  * `—` 인데, 그 셋(있음 · 없음 · 줄 것 없음)을 한 칸에 담는 방법이 배지의 글자다 —
- * screen/user/requirements.md 가 트리에서 쓴 것과 <b>같은 어휘</b>다.
+ * screen/admin/system/user/requirements.md 가 트리에서 쓴 것과 <b>같은 어휘</b>다.
  */
 function buildEffectiveColumns(): ColumnDef<EffectiveAuthRow>[] {
   const actionColumn = (action: ActionCd): ColumnDef<EffectiveAuthRow> => ({
@@ -1062,7 +1063,7 @@ function buildEffectiveColumns(): ColumnDef<EffectiveAuthRow>[] {
       sortable: true,
       /*
         <b>지금 효력이 없는 행은 흐리다</b>. 게이트 ④에 걸렸거나 부여가 예정·만료인
-        것들이며, 배지가 그중 어느 쪽인지 말한다 — screen/user/requirements.md 의 *전체 모드에서 권한 없는
+        것들이며, 배지가 그중 어느 쪽인지 말한다 — screen/admin/system/user/requirements.md 의 *전체 모드에서 권한 없는
         행은 회색* 을 <b>모든 모드로</b> 넓힌 것이다: 가진 것만 모드에도 만료된 부여가 있다.
       */
       emphasis: (row) => row.effective,

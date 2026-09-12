@@ -1,4 +1,5 @@
-package com.aiagent.api.user.request;
+// @feat FEAT-501
+package com.aiagent.system.api.user.request;
 
 import com.aiagent.domain.user.admin.UserSaveRow;
 import jakarta.validation.Valid;

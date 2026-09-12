@@ -45,7 +45,7 @@ export type SearchOp =
    */
   | 'gte'
   /**
-   * 크기 계열의 <b>셋째 실물</b> — screen/user/requirements.md 의 기간 칸 둘이 처음 요구했다(2026-08-31).
+   * 크기 계열의 <b>셋째 실물</b> — screen/admin/system/user/requirements.md 의 기간 칸 둘이 처음 요구했다(2026-08-31).
    *
    * <p>기간 칸에서 <b>한쪽만 아는 조건</b>이 실제로 흔하다: *"이 날짜 이후로 한 번도 안
    * 들어온 계정"* 이 {@code lte} 이고 그 반대가 {@code gte} 다. 범위로 표현하려면 반대쪽
@@ -104,11 +104,11 @@ export interface SearchField {
    * `RECEIVED` 하나다. 문자열 하나를 주면 원소 하나짜리 배열이 된다.
    *
    * <p><b>기본값을 두는 것이 늘 옳지는 않다.</b> 사용자 관리의 *계정 상태* 는 한동안
-   * <i>사용중</i> 셋이었는데 2026-08-31 에 <b>비웠다</b>(screen/user/requirements.md) — 끈 계정을 찾으러
+   * <i>사용중</i> 셋이었는데 2026-08-31 에 <b>비웠다</b>(screen/admin/system/user/requirements.md) — 끈 계정을 찾으러
    * 오는 것이 그 화면의 흔한 동선이라, 기본 필터가 걸려 있으면 <b>방금 끈 그 계정이 첫
    * 조회에 없다</b>. 거르는 것을 사용자가 고르게 둘 것인지는 <b>화면마다 다르다</b>.
    *
-   * <p><b>`dateRange` 에서 빈 문자열은 *비워 둔다* 는 뜻이다</b>(2026-08-30 — screen/user/requirements.md).
+   * <p><b>`dateRange` 에서 빈 문자열은 *비워 둔다* 는 뜻이다</b>(2026-08-30 — screen/admin/system/user/requirements.md).
    * 적지 않으면 시스템 기본 기간(`ui.search.range-days.default-days`)으로 채워지는데,
    * 그것은 **기간이 부하의 상한인 화면**의 규약이다([screen/log/access/requirements.md](../../../../../documents/screen/log/access/requirements.md)). 사용자 목록의
    * *최종 로그인* 은 그런 칸이 아니다 — 미리 채우면 <b>한 번도 로그인하지 않은 계정이

@@ -345,7 +345,7 @@ function ActionCell({
  * <p><b>액션이 없는 자식(`—`)은 요약에서 뺀다</b> — *줄 수 없는 것* 을 *안 줬다* 로 세면
  * 폴더가 영영 *전체* 가 되지 않는다. 셀 수 있는 자식이 아예 없으면 아무것도 그리지 않는다.
  *
- * <p><b>일괄 토글을 두지 않는다</b>(screen/user/requirements.md). 여기서는 backend/security.md 가 *"개인 예외를 폴더 단위로
+ * <p><b>일괄 토글을 두지 않는다</b>(screen/admin/system/user/requirements.md). 여기서는 backend/security.md 가 *"개인 예외를 폴더 단위로
  * 확장하면 제2의 역할 체계가 된다"* 며 막은 자리이고, <b>한 칸씩 체크해야 하는 마찰이 그
  * 방어의 본체</b>다.
  */

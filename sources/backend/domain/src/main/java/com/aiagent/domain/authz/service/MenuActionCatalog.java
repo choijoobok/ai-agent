@@ -85,7 +85,7 @@ public class MenuActionCatalog {
         }
         /*
           <b>READ 가 있는 메뉴에만 붙인다.</b> 엑셀은 조회한 것을 내려받는 일이라 READ 없이는
-          성립하지 않으며, screen/user/requirements.md 의 불변식이 그것을 이미 말하고 있다 — READ 없이 EXPORT 만
+          성립하지 않으며, screen/admin/system/user/requirements.md 의 불변식이 그것을 이미 말하고 있다 — READ 없이 EXPORT 만
           담긴 저장은 서버가 거부한다. 그 검사를 그대로 두고 스위치만 그리면 <b>켤 수는
           있는데 저장이 안 되는 칸</b>이 생긴다.
 

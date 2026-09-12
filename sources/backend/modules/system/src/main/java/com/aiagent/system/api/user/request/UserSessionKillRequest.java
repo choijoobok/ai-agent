@@ -1,4 +1,5 @@
-package com.aiagent.api.user.request;
+// @feat FEAT-501
+package com.aiagent.system.api.user.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -6,11 +7,11 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 /**
- * 강제 로그아웃의 대상 — AUTH-10 · screen/user/requirements.md. <b>대상이 세션이지 사용자가 아니다.</b>
+ * 강제 로그아웃의 대상 — AUTH-10 · screen/admin/system/user/requirements.md. <b>대상이 세션이지 사용자가 아니다.</b>
  *
  * <p>{@link UserTargetRequest} 를 쓰지 않는 이유가 그것이다. 저것의 대상은
  * {@code USER_ID} 이고 여기는 <b>세션 ID</b> 다 — 한 사람에게 세션이 여럿일 수 있고
- * (동시 접속 상한이 2 이상인 배포 — screen/user/requirements.md), 그때 <i>어느 것을 끊나</i> 가 이 탭이
+ * (동시 접속 상한이 2 이상인 배포 — screen/admin/system/user/requirements.md), 그때 <i>어느 것을 끊나</i> 가 이 탭이
  * 하는 일 전부다.
  *
  * <p><b>{@code userId} 도 함께 받는다.</b> 세션 ID 만으로도 끊을 수는 있지만 그러면

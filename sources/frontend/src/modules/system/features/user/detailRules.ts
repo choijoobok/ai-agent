@@ -1,10 +1,11 @@
+// @feat FEAT-501
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
 import type { GridRow } from '@/shared/grid/rows';
-import type { UserRoleRow } from '@/features/user/types';
+import type { UserRoleRow } from '@/modules/system/features/user/types';
 
 /**
- * 디테일 탭의 <b>판정 둘</b> — screen/user/requirements.md 탭 1 · 탭 3.
+ * 디테일 탭의 <b>판정 둘</b> — screen/admin/system/user/requirements.md 탭 1 · 탭 3.
  *
  * <p>화면 파일에서 꺼낸 것은 <b>둘 다 한 번씩 틀렸기 때문</b>이다. 그리드 선언 사이에
  * 섞여 있으면 컴포넌트를 띄우지 않고는 잴 수 없고, 잴 수 없는 규칙은 <b>실물을 눌러 봐야</b>

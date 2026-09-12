@@ -16,14 +16,14 @@
  * `hasOtherRole` 두 열이 그 계산의 입력이며 화면이 그 자리에서 센다(§2.5 · 목업 §4 주석 6).
  *
  * <p><b>`exportExcel` 이 없다.</b> 엑셀 자체가 없다 — sys/menu.md 의 액션 열이 `R S` 이고,
- * screen/user/requirements.md 의 *"액션 미정의"* 가 **화면 단위로 나타난 첫 자리**다(②가 통째로 빈다).
+ * screen/admin/system/user/requirements.md 의 *"액션 미정의"* 가 **화면 단위로 나타난 첫 자리**다(②가 통째로 빈다).
  */
 export const ROLE_AUTH_ENDPOINTS = {
   /** 좌 — 고르기만 하는 목록이다. 비활성 역할도 나온다(screen/admin/system/role-auth/requirements.md). */
   getList: '/service/system/roleAuth/getList',
-  /** 우 — 메뉴 계층 전건 + 이 역할의 부여 상태. **페이징도 조건도 없다**(screen/user/requirements.md). */
+  /** 우 — 메뉴 계층 전건 + 이 역할의 부여 상태. **페이징도 조건도 없다**(screen/admin/system/user/requirements.md). */
   getMenuTree: '/service/system/roleAuth/getMenuTree',
-  /** **저장 대상은 트리뿐이다** — screen/user/requirements.md 의 개인 예외와 갈리는 자리(screen/admin/system/role-auth/requirements.md). */
+  /** **저장 대상은 트리뿐이다** — screen/admin/system/user/requirements.md 의 개인 예외와 갈리는 자리(screen/admin/system/role-auth/requirements.md). */
   save: '/service/system/roleAuth/save',
   /** 하 — 영향 인원. `ROLE_MGMT` 에서는 *보유 사용자* 라 부른다(screen/admin/system/role-auth/requirements.md). */
   getAffectedUsers: '/service/system/roleAuth/getAffectedUsers',

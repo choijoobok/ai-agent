@@ -5,7 +5,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 /**
- * 탭 1 — <b>이 사람이 가진 역할</b>(USER-03 · screen/user/requirements.md).
+ * 탭 1 — <b>이 사람이 가진 역할</b>(USER-03 · screen/admin/system/user/requirements.md).
  *
  * <p>{@code RoleHolderRow} 를 <b>반대쪽에서 본 것</b>이다. 저기는 <i>"이 역할을 가진
  * 사람"</i> 이라 계정 컬럼이 붙고, 여기는 <i>"이 사람이 가진 역할"</i> 이라 <b>역할 컬럼이
@@ -13,7 +13,7 @@ import java.time.LocalDate;
  * 다르므로</b> 레코드가 둘이다.
  *
  * <p><b>편집이 여기에만 있다.</b> 62 의 하단 pane 은 읽기 전용이고({@code RoleHolderRow} 의
- * 머리말) 부여를 고치는 곳은 이 탭 하나다 — screen/user/requirements.md 가 개인 예외에 대해 정한 것과 같은
+ * 머리말) 부여를 고치는 곳은 이 탭 하나다 — screen/admin/system/user/requirements.md 가 개인 예외에 대해 정한 것과 같은
  * 규칙이며, 같은 사실을 고치는 화면이 둘이면 규칙도 둘이 된다.
  *
  * @param roleNm 역할명. <b>{@code roleId} 만으로는 고를 수 없다</b> — 후보 콤보가 이 값을

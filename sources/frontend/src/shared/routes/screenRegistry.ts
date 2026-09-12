@@ -45,8 +45,8 @@ export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
   '/log/error': lazy(async () => ({
     default: (await import('@/features/errorlog/pages/ErrorLogPage')).ErrorLogPage,
   })),
-  '/user': lazy(async () => ({
-    default: (await import('@/features/user/pages/UserMgmtPage')).UserMgmtPage,
+  '/admin/system/user': lazy(async () => ({
+    default: (await import('@/modules/system/features/user/pages/UserMgmtPage')).UserMgmtPage,
   })),
   '/user-auth': lazy(async () => ({
     default: (await import('@/features/userauth/pages/UserAuthMgmtPage')).UserAuthMgmtPage,

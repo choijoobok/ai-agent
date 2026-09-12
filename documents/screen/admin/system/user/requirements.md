@@ -15,10 +15,10 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/user` |
+| 페이지 경로 | `/admin/system/user` |
 | 메뉴코드 | `USER_MGMT` |
-| 프론트 폴더 | `sources/frontend/src/features/user/` |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/user/admin/` · `sources/backend/domain/…/domain/user/detail/` · `sources/backend/api/…/api/user/` · `sources/backend/modules/system/…/system/api/user/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/user/` |
+| 백엔드 패키지 | `sources/backend/domain/…/domain/user/admin/` · `sources/backend/domain/…/domain/user/detail/` · `sources/backend/modules/system/…/system/api/user/` |
 | 화면 유형 | 마스터-디테일(상하) — 디테일은 탭 다섯 |
 | 처리 유형 | CRUD + 실행 |
 | 쓰는 액션 | `R` `S` `E` `X` — **넷을 다 쓰는 유일한 화면**이다. `EXPORT_YN` = `Y` |
@@ -380,19 +380,19 @@
 
 | 용도 | `endpoints.ts` 키 | 경로 | 메서드 | 액션 | 페이징 |
 |---|---|---|---|---|---|
-| 목록 | `getList` | `/service/user/getList` | POST | R | offset |
-| 저장 | `save` | `/service/user/save` | POST | S | — |
-| 잠금 해제 | `saveUnlock` | `/service/user/saveUnlock` | POST | **S** | — |
-| 휴면 해제 | `saveDormantRelease` | `/service/user/saveDormantRelease` | POST | **S** | — |
-| 비밀번호 초기화 | `savePasswordReset` | `/service/user/savePasswordReset` | POST | **S** | — |
+| 목록 | `getList` | `/service/system/user/getList` | POST | R | offset |
+| 저장 | `save` | `/service/system/user/save` | POST | S | — |
+| 잠금 해제 | `saveUnlock` | `/service/system/user/saveUnlock` | POST | **S** | — |
+| 휴면 해제 | `saveDormantRelease` | `/service/system/user/saveDormantRelease` | POST | **S** | — |
+| 비밀번호 초기화 | `savePasswordReset` | `/service/system/user/savePasswordReset` | POST | **S** | — |
 | 탭1 목록 | `getRoleList` | `/service/system/user/getRoleList` | POST | R | 전건 |
 | 탭1 저장 | `saveRole` | `/service/system/user/saveRole` | POST | S | — |
 | 역할 후보 | `getRoleCandidates` | `/service/system/user/getRoleCandidates` | POST | R | 전건 |
 | 탭2 목록 | `getUserMenuAuth` | `/service/system/user/getUserMenuAuth` | POST | R | 전건 |
-| 탭3 목록 | `getIpList` | `/service/user/getIpList` | POST | R | 전건 |
-| 탭3 저장 | `saveIp` | `/service/user/saveIp` | POST | S | — |
-| 탭4 목록 | `getSessionList` | `/service/user/getSessionList` | POST | R | 전건 |
-| 탭4 강제 종료 | `killSession` | `/service/user/killSession` | POST | **X** | — |
+| 탭3 목록 | `getIpList` | `/service/system/user/getIpList` | POST | R | 전건 |
+| 탭3 저장 | `saveIp` | `/service/system/user/saveIp` | POST | S | — |
+| 탭4 목록 | `getSessionList` | `/service/system/user/getSessionList` | POST | R | 전건 |
+| 탭4 강제 종료 | `killSession` | `/service/system/user/killSession` | POST | **X** | — |
 | 탭5 목록 | `getEffectiveAuthList` | `/service/system/user/getEffectiveAuthList` | POST | R | 전건 |
 
 - **`exportExcel` 이 없다.** 액션 열은 `R S E X` 인데 `E` 에 대응하는 경로가 없다 — 엑셀은 프론트가 만들고 `EXPORT` 는 `SYS_MENU.EXPORT_YN` 이 선언한다.
@@ -405,7 +405,7 @@
 
 - 코드그룹: **없음.** 계정 상태와 언어 둘 다 공통코드가 아니다 — 상태는 서버가 계산하는 파생값이고, 언어는 값에 따라 프로세스가 갈리므로 소스가 값을 가져야 한다(번들 · 메시지 · `src/locales` 를 함께 건드리는 일이라 코드 행 하나로 늘지 않는다).
 - 메시지 키: 화면 `MSG.USER_*` · 서버 `MsgKey.ERR_USER_ADMIN_*` 여덟.
-- 메뉴 시드: `menu-tree.yaml` — `code: USER_MGMT` · `parent: USER` · `url: /user` · `export: true`.
+- 메뉴 시드: `menu-tree.yaml` — `code: USER_MGMT` · `parent: USER` · `url: /admin/system/user` · `export: true`.
 - 초기 데이터 전제: 역할을 부여하려면 `SYS_ROLE` 에 역할이 먼저 있어야 한다.
 - 설정(`AuthPasswordProps`): `minLength` · `requireCharsetKinds` · `reuseBlockCount` · **`adminResetEnabled`**(꺼지면 비밀번호 초기화가 거부된다) · `tempValidHours`.
 

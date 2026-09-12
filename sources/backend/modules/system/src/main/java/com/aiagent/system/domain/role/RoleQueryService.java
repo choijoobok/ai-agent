@@ -108,7 +108,7 @@ public class RoleQueryService {
     /**
      * 역할 목록 — <b>파생 셋을 함께 낸다</b>(screen/admin/system/role/requirements.md).
      *
-     * <p>screen/user/requirements.md 가 <b>역할 나열 컬럼을 기각</b>한 것은 문자열 집계가 벤더마다 다르기
+     * <p>screen/admin/system/user/requirements.md 가 <b>역할 나열 컬럼을 기각</b>한 것은 문자열 집계가 벤더마다 다르기
      * 때문이다({@code LISTAGG} · {@code GROUP_CONCAT} · {@code string_agg} — backend/persistence.md).
      * <b>{@code COUNT} 에는 그 문제가 없다</b> — 그래서 세는 것은 컬럼으로 둔다.
      *
@@ -176,7 +176,7 @@ public class RoleQueryService {
      * 메뉴 계층 × 액션 4열 — <b>전건이고 전위 순회다</b>.
      *
      * <p>페이징하지 않는다({@code mode: 'all'}) — <b>계층이 잘리면 부모 없는 자식이 보인다</b>
-     * (screen/user/requirements.md). 조건으로도 거르지 않는다(클래스 주석).
+     * (screen/admin/system/user/requirements.md). 조건으로도 거르지 않는다(클래스 주석).
      *
      * <p><b>고아·순환에 걸린 노드도 낸다.</b> {@code MenuTreeService} 는 조상 역산이 목적이라
      * 그것들을 빼지만, 권한을 주는 화면에서 사라지면 <b>그 메뉴에 부여된 권한을 회수할 수단이

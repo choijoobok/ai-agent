@@ -45,7 +45,7 @@ import java.util.Map;
  * @param definedActions 이 메뉴에 <b>있는</b> 액션 — {@code MenuActionCatalog} 가 계산한다.
  *     여기 없는 칸은 {@code —} 이며 <i>안 줬다</i> 가 아니라 <b>줄 것이 없다</b> 다
  * @param grants 이 사용자의 개인 예외. <b>정의 밖의 고아가 섞여 있을 수 있다</b> — API 가
- * 사라진 조합이며 <b>지우지 않는다</b>(screen/user/requirements.md · seed.md)
+ * 사라진 조합이며 <b>지우지 않는다</b>(screen/admin/system/user/requirements.md · seed.md)
  * @param viaRoles 액션 → 그 액션을 주는 <b>지금 유효한</b> 역할들의 이름. 만료된 역할 부여와
  *     꺼진 역할은 여기 오지 않는다 — 배지가 <i>지금 역할로 된다</i> 를 말해야 하기 때문이다
  */

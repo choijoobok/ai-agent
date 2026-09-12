@@ -30,13 +30,13 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 /**
- * 디테일 탭의 저장 — screen/user/requirements.md 탭 1 · 탭 3.
+ * 디테일 탭의 저장 — screen/admin/system/user/requirements.md 탭 1 · 탭 3.
  *
  * <p><b>재는 것이 셋이다.</b> <i>회수와 삭제가 갈리는가</i> · <i>거부되는 요청이 쓰기를 하지
  * 않는가</i> · <i>형식 검사가 들어오는 것에만 걸리는가</i>.
  *
  * <p>첫째가 이 화면의 핵심이다. sys/menu.md 이 <b>회수는 삭제가 아니라 {@code VALID_TO_DT}</b>
- * 라고 정했고 screen/user/requirements.md 이 <b>행 삭제는 잘못 등록한 행 정리</b> 로 남겨 두었다 — 둘을 섞으면
+ * 라고 정했고 screen/admin/system/user/requirements.md 이 <b>행 삭제는 잘못 등록한 행 정리</b> 로 남겨 두었다 — 둘을 섞으면
  * <i>"누가 언제까지 무슨 역할을 가졌는가"</i> 가 사라진다. 변경 이력 테이블이 없으므로
  * (sys/logs.md) 그 기록을 갖는 것이 이 행뿐이다.
  *
@@ -103,7 +103,7 @@ class UserDetailServiceTest {
         }
 
         @Test
-        @DisplayName("삭제는 잘못 등록한 행 정리다 — 막지 않는다(screen/user/requirements.md 의 셋째 줄)")
+        @DisplayName("삭제는 잘못 등록한 행 정리다 — 막지 않는다(screen/admin/system/user/requirements.md 의 셋째 줄)")
         void deleteIsAllowed() {
             SysUserRole existing = SysUserRole.granted(USER, ROLE, FROM, TO);
             when(grants.findByUserIdOrderByRoleIdAsc(USER)).thenReturn(List.of(existing));
@@ -247,11 +247,16 @@ class UserDetailServiceTest {
         }
 
         @Test
-        @DisplayName("형식이 아니면 거부한다 — DDL 에 둘 수 없는 검사다(backend/persistence.md)")
+        @DisplayName("TC-5012 잘못된 IPv4·IPv6 CIDR은 저장하지 않고 거부한다")
         void malformedRangeIsRejected() {
             assertThatThrownBy(() -> service.saveIps(
                             USER, List.of(new UserIpSaveRow(RowState.C, "192.168.0", true, null, null))))
                     .isInstanceOf(BusinessException.class);
+            assertThatThrownBy(() -> service.saveIps(
+                            USER, List.of(new UserIpSaveRow(RowState.C, "2001:db8::/129", true, null, null))))
+                    .isInstanceOf(BusinessException.class);
+
+            verify(ipAllows, never()).saveAll(org.mockito.ArgumentMatchers.anyList());
         }
 
         @Test

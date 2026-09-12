@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 /**
- * 보유 역할 저장의 한 행 — screen/user/requirements.md 탭 1 · frontend/grid.md.
+ * 보유 역할 저장의 한 행 — screen/admin/system/user/requirements.md 탭 1 · frontend/grid.md.
  *
  * <p><b>{@link UserAuthSaveRow} 와 두 자리가 다르고 둘 다 sys/menu.md 이 정한 것</b>이다:
  * 기간이 <b>선택</b>이고({@code null} 이 무기한) <b>사유 칸이 없다</b>. 개인 예외에 사유가
@@ -17,7 +17,7 @@ import java.time.LocalDate;
  * <table>
  *   <tr><td>{@code C}</td><td>새 부여</td></tr>
  * <tr><td>{@code U}</td><td>기간 변경. <b>회수도 이것</b>이다 — 종료일을 어제로 한다(sys/menu.md)</td></tr>
- * <tr><td>{@code D}</td><td><b>잘못 등록한 행 정리</b>뿐이다 — 회수가 아니다(screen/user/requirements.md 의 셋째 줄)</td></tr>
+ * <tr><td>{@code D}</td><td><b>잘못 등록한 행 정리</b>뿐이다 — 회수가 아니다(screen/admin/system/user/requirements.md 의 셋째 줄)</td></tr>
  * </table>
  *
  * <p><b>{@code roleId} 는 {@code U} 에서 바뀌지 않는다</b> — PK 의 절반이다(sys/menu.md). 다른

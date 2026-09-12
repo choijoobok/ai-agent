@@ -175,7 +175,7 @@ public class UserAuthQueryService {
     }
 
     /**
-     * 접근 제어 체인 순서로 <b>먼저 걸린 것 하나</b> — sys/user-role.md · screen/user/requirements.md.
+     * 접근 제어 체인 순서로 <b>먼저 걸린 것 하나</b> — sys/user-role.md · screen/admin/system/user/requirements.md.
      *
      * <p>{@code UserQueryService.statOf} 와 <b>같은 순서를 같은 방향으로</b> 읽는다.
      * 둘을 한 자리로 모으지 않은 것은 <b>읽어 오는 모양이 다르기</b> 때문이다 — 저기는
@@ -202,7 +202,7 @@ public class UserAuthQueryService {
      * 메뉴 계층 × 액션 4열 + 이 사용자의 개인 예외 + 역할 경유 — <b>전건이고 전위 순회다</b>.
      *
      * <p>페이징하지 않는다({@code mode: 'all'}) — <b>계층이 잘리면 부모 없는 자식이 보인다</b>
-     * (screen/user/requirements.md).
+     * (screen/admin/system/user/requirements.md).
      *
      * @param lang 세션 언어 — 컨트롤러가 준다. 도메인은 요청을 모른다(backend/packages.md)
      */

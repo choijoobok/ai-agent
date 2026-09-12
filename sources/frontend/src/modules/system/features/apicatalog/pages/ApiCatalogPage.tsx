@@ -495,7 +495,7 @@ function buildMenuColumns(): ColumnDef<ApiMenuRow>[] {
         이유는 서버가 적었다(`ApiCatalogQueryService`).
 
         <b>`0` 이면 셋째 갈래의 답이다</b> — API 도 있고 매핑도 있는데 아무도 못 부른다면
-        고칠 곳은 역할 권한이나 개인 예외(screen/user/requirements.md)다.
+        고칠 곳은 역할 권한이나 개인 예외(screen/admin/system/user/requirements.md)다.
       */
       field: 'accessibleUserCount',
       header: MSG.API_CATALOG_COL_USER_COUNT,

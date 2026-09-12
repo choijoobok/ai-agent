@@ -1,7 +1,7 @@
 /**
  * 부여 상태 — 예정 · 유효 · 만료. **화면 넷이 이 하나를 본다.**
  *
- * <p><b>기간에서만 파생한다</b>(screen/user/requirements.md). 역할 자체의 {@code USE_YN} 은 보지 않으므로
+ * <p><b>기간에서만 파생한다</b>(screen/admin/system/user/requirements.md). 역할 자체의 {@code USE_YN} 은 보지 않으므로
  * <i>유효인데 아무 권한도 주지 않는</i> 행이 있을 수 있고, 그 사실은 상태가 아니라 옆의
  * 배지가 말한다. 기간이 비면 무기한이다.
  *

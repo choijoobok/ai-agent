@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * {@code ROLE_AUTH_MGMT} 의 저장 — screen/admin/system/role-auth/requirements.md. <b>저장 대상은 트리뿐이다.</b>
  *
- * <p>screen/user/requirements.md 의 개인 예외와 갈리는 자리다. 거기서는 <i>"목록이 원본이고 트리는 그 투영"</i>
+ * <p>screen/admin/system/user/requirements.md 의 개인 예외와 갈리는 자리다. 거기서는 <i>"목록이 원본이고 트리는 그 투영"</i>
  * 이었지만 <b>여기는 원본이 트리 하나</b>다 — {@code SYS_ROLE_MENU_AUTH} 에 기간도 사유도
  * 없으므로(sys/menu.md) 넣을 것이 없고, 하단은 <b>읽기 전용</b>이다.
  *
@@ -40,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 액션 — {@link com.aiagent.domain.authz.service.MenuActionCatalog})은 <b>화면이
  * 표현할 수 없으므로</b> 요청에 실릴 수 없다. 받은 집합을 그대로 <i>전부</i>
  * 로 읽어 나머지를 지우면, API 가 사라져 고아가 된 부여가 <b>조용히 삭제된다</b> —
- * screen/user/requirements.md 가 <i>"부여한 뒤에 액션이 사라지면 행은 남는다 · 지우는 것은 사람이 판단한다"</i>
+ * screen/admin/system/user/requirements.md 가 <i>"부여한 뒤에 액션이 사라지면 행은 남는다 · 지우는 것은 사람이 판단한다"</i>
  * 고 정한 것과 정면으로 어긋난다(seed.md — 배포가 운영 결정을 지우지 않는다).
  *
  * <p>그래서 <b>삭제도 추가도 정의된 조합 안에서만</b> 일어난다. 정의 밖의 기존 행은
@@ -48,7 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <h2>{@code READ} 불변식을 서버가 다시 본다</h2>
  *
- * <i>다른 액션이 하나라도 켜져 있으면 {@code READ} 가 켜져 있다</i>(screen/user/requirements.md). 화면이 이것을
+ * <i>다른 액션이 하나라도 켜져 있으면 {@code READ} 가 켜져 있다</i>(screen/admin/system/user/requirements.md). 화면이 이것을
  * <b>유지</b>하지만 그것은 UX 이고(frontend/grid.md), 여기서 보는 것은 sys/menu.md 의 원칙 P1 이며
  * {@code MENU_URL IS NULL} 거부와 <b>같은 자리</b>다.
  *
@@ -113,7 +113,7 @@ public class RoleAuthService {
             }
             /*
               <b>정의 밖은 건드리지 않는다.</b> 화면이 {@code —} 로 그려 요청에 실을 수 없는
-              칸이므로, 없다고 해서 *끈 것* 이 아니다 — screen/user/requirements.md 의 고아 부여다.
+              칸이므로, 없다고 해서 *끈 것* 이 아니다 — screen/admin/system/user/requirements.md 의 고아 부여다.
             */
             if (isDefinable(definable, pair)) {
                 removed.add(row);
@@ -176,7 +176,7 @@ public class RoleAuthService {
                             "그 메뉴에 정의되지 않은 액션이다 — " + menuCd + " " + action);
                 }
             }
-            // 불변식 하나 — screen/user/requirements.md. 규칙 둘이 아니라 이것 하나이며 양방향이 여기서 나온다.
+            // 불변식 하나 — screen/admin/system/user/requirements.md. 규칙 둘이 아니라 이것 하나이며 양방향이 여기서 나온다.
             if (!entry.getValue().contains(ActionType.READ)) {
                 throw new BusinessException(
                         RoleErrorCode.READ_REQUIRED,

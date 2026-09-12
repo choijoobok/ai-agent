@@ -3,7 +3,7 @@ import { Tabs, theme, type TabsProps } from 'antd';
 import { ensureGridStyles } from '@/shared/grid/gridStyles';
 
 /**
- * 마스터-디테일의 <b>하단 탭</b> — frontend/grid.md · screen/user/requirements.md.
+ * 마스터-디테일의 <b>하단 탭</b> — frontend/grid.md · screen/admin/system/user/requirements.md.
  *
  * <p><b>기본값을 화면마다 적지 않는다.</b> 탭 안이 그리드인 화면이 여러 개 서면서 같은 값
  * 셋을 매번 적게 됐고(높이 · 탭 최소 폭 · 탭바 높이), 적는 자리가 화면이면 <b>새 화면이

@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 /**
- * 개인 예외 저장 — screen/user/requirements.md.
+ * 개인 예외 저장 — screen/admin/system/user/requirements.md.
  *
  * <p><b>{@code userId} 가 본문에 있다.</b> 조회조건이 아니라 <b>화면의 구조</b>이며(backend/api.md)
  * 좌 pane 에서 고른 그 사람이다 — 조건 목록에 두면 화이트리스트를 지나며 <b>선택적</b>이 되어,

@@ -58,7 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * <p>sys/menu.md 이 <i>"역할 부여 만료 예고 — 알림은 <b>수신자를 정할 수 없다</b>(부여자인지
  * 관리자 전원인지 조직마다 다르다)"</i> 로 관리자 알림을 닫고 조회 조건으로 답했다
- * (screen/user/requirements.md 의 {@code 역할 만료 예정 N일}). <b>그것과 어긋나지 않는다</b> — 여기서 받는
+ * (screen/admin/system/user/requirements.md 의 {@code 역할 만료 예정 N일}). <b>그것과 어긋나지 않는다</b> — 여기서 받는
  * 사람은 <b>권한이 사라질 당사자</b>이고 그 수신자는 자명하다.
  *
  * <p>그리고 당사자에게는 <b>할 일이 있다</b>. screen/_standalone/README.md 이 <i>새 요청</i> 을 세우면서

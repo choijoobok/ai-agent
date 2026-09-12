@@ -1,18 +1,19 @@
-/** 서버 `UserRow` · `IssuedPassword` 와 1:1 — screen/user/requirements.md. */
+// @feat FEAT-501
+/** 서버 `UserRow` · `IssuedPassword` 와 1:1 — screen/admin/system/user/requirements.md. */
 
 import type { AccountStat } from '@/shared/user/accountStat';
 
 /*
   **계정 상태는 여기 없다** — `shared/user/accountStat.ts` 다.
 
-  `USER_AUTH_MGMT`(screen/user/requirements.md)의 좌 pane 이 같은 값을 쓰면서 올렸다. frontend/packages.md 의
+  `USER_AUTH_MGMT`(screen/admin/system/user/requirements.md)의 좌 pane 이 같은 값을 쓰면서 올렸다. frontend/packages.md 의
   *"두 번째 화면이 쓰는 순간 shared/ 로 올린다"* 이며, 무엇보다 **같은 계정이 두 화면에서
   다르게 보이면 안 된다** — 체인 순서든 라벨이든 한쪽만 고치면 그 순간 *어느 쪽이 맞나*
   라는 질문이 생긴다.
 */
 
 /**
- * 마스터의 한 행 — **목록이 곧 상세다**(screen/user/requirements.md).
+ * 마스터의 한 행 — **목록이 곧 상세다**(screen/admin/system/user/requirements.md).
  *
  * <p>편집 폼을 없애면서(frontend/grid.md) 이 행이 `SYS_USER` 의 모든 컬럼을 갖게 됐다. 숨김 컬럼도
  * 응답에는 들어 있고 그리드 설정에서 켜면 보인다 — 그래서 행을 골라 다시 조회할 것이 없고
@@ -28,16 +29,16 @@ export interface UserRow {
   userNm: string;
   /** **필수**다. 임시 비밀번호의 발송처이기도 하다(AUTH-07). */
   email: string | null;
-  /** 파생 하나 — 원본 넷은 아래에 각각 있고 기본 숨김이다(screen/user/requirements.md). */
+  /** 파생 하나 — 원본 넷은 아래에 각각 있고 기본 숨김이다(screen/admin/system/user/requirements.md). */
   accountStat: AccountStat;
-  /** **관리자가 건다** — 편집 가능(screen/user/requirements.md). */
+  /** **관리자가 건다** — 편집 가능(screen/admin/system/user/requirements.md). */
   useYn: boolean;
   /** 〃. **양끝 포함**이며 `null` 은 제한 없음이다(sys/INDEX.md). */
   validFromDt: string | null;
   validToDt: string | null;
   lastLoginDtm: string | null;
   localeCd: string;
-  /** **시스템이 건다** — 셀은 읽기 전용이고 푸는 것은 ①의 버튼이다(screen/user/requirements.md). */
+  /** **시스템이 건다** — 셀은 읽기 전용이고 푸는 것은 ①의 버튼이다(screen/admin/system/user/requirements.md). */
   lockYn: boolean;
   lockDtm: string | null;
   loginFailCnt: number;
@@ -53,12 +54,12 @@ export interface UserRow {
 }
 
 /**
- * 발급된 임시 비밀번호 하나 — **이 응답에만 있다**(screen/user/requirements.md).
+ * 발급된 임시 비밀번호 하나 — **이 응답에만 있다**(screen/admin/system/user/requirements.md).
  *
  * <p>DB 에는 해시가 들어가므로 재조회로 다시 얻을 수 없다. 잃으면 다시 발급하는 것 말고
  * 길이 없어서, 저장과 발급 API 가 결과를 화면에 준다.
  *
- * <p>**화면에 보여주는 것이 결정이다**(2026-08-30 — screen/user/requirements.md 의 미결을 닫는다). 메일 연동이
+ * <p>**화면에 보여주는 것이 결정이다**(2026-08-30 — screen/admin/system/user/requirements.md 의 미결을 닫는다). 메일 연동이
  * 없는 배포에서 관리자가 전할 수단이 이것뿐이며, sys/code.md 이 이 기능을 *"잠긴 계정을 푸는
  * 유일한 경로"* 라 부른 이상 전달 수단이 없으면 경로가 아니다.
  */
@@ -69,7 +70,7 @@ export interface IssuedPassword {
   password: string;
 }
 
-// ── 디테일 탭 다섯 (screen/user/requirements.md) ───────────────────────────────────────
+// ── 디테일 탭 다섯 (screen/admin/system/user/requirements.md) ───────────────────────────────────────
 //
 // **다섯이 다 그리드다.** 편집 폼을 두지 않으므로(frontend/grid.md) 탭 전환이 곧 그리드 교체이며,
 // 조회 전용 탭도 엑셀과 그리드 설정을 갖는다.
@@ -109,7 +110,7 @@ export interface UserRoleRow {
   modDtm: string | null;
 }
 
-/** 역할 후보 하나 — 신규 부여의 콤보와 조회조건의 `역할` 이 같은 목록을 본다(screen/user/requirements.md). */
+/** 역할 후보 하나 — 신규 부여의 콤보와 조회조건의 `역할` 이 같은 목록을 본다(screen/admin/system/user/requirements.md). */
 export interface RoleCandidate {
   roleId: string;
   roleNm: string;
@@ -121,7 +122,7 @@ export interface RoleCandidate {
  * 탭 2 — **이 사람이 가진 개인 예외**(AUTHZ-07 조회).
  *
  * <p>**조회 전용이다.** 사용자 관리 권한이 있다고 예외 권한 부여 권한이 따라오면 안 되며,
- * 권한은 `(MENU_CD, ACTION_CD)` 쌍이므로 **메뉴가 갈려야 갈린다**(screen/user/requirements.md).
+ * 권한은 `(MENU_CD, ACTION_CD)` 쌍이므로 **메뉴가 갈려야 갈린다**(screen/admin/system/user/requirements.md).
  */
 export interface UserGrantRow {
   menuCd: string;
@@ -170,7 +171,7 @@ export interface UserIpRow {
 }
 
 /**
- * 탭 4 — **활성 세션 하나**(AUTH-10 · screen/user/requirements.md).
+ * 탭 4 — **활성 세션 하나**(AUTH-10 · screen/admin/system/user/requirements.md).
  *
  * <p>**IP 와 User-Agent 는 이력에서 온다**(2026-08-31). 세션 스토어는 그 값을 갖고 있지
  * 않으며 여기서도 **담지 않는다** — 원본은 여전히 `SYS_LO_LOGIN` 하나이고(sys/logs.md · screen/log/access/requirements.md),
@@ -185,7 +186,7 @@ export interface UserIpRow {
 export interface UserSessionRow {
   /** **전체**가 온다. 화면은 앞 8자만 그리지만 끊을 때는 온전한 값이 필요하다. */
   sessionId: string;
-  /** 이 요청의 세션인가 — screen/user/requirements.md 의 **자기 자신 금지**를 눈으로 확인시킨다. */
+  /** 이 요청의 세션인가 — screen/admin/system/user/requirements.md 의 **자기 자신 금지**를 눈으로 확인시킨다. */
   current: boolean;
   createdDtm: string;
   /** *끊을까 말까* 를 가르는 값이다 — 목록의 기본 정렬도 이것이다. */
@@ -205,7 +206,7 @@ export interface UserSessionRow {
 }
 
 /**
- * 탭 5 — **유효 권한 한 줄**(screen/user/requirements.md). sys/menu.md 의 미결을 닫는다.
+ * 탭 5 — **유효 권한 한 줄**(screen/admin/system/user/requirements.md). sys/menu.md 의 미결을 닫는다.
  *
  * <p>**메뉴 하나가 여러 행일 수 있다** — 경유가 둘이면 행이 둘이다. `MenuUserRow`(screen/menu/requirements.md)
  * 를 반대쪽에서 본 것이며, 합쳐 한 행으로 내면 액션 합집합은 맞아도 **어느 부여를
@@ -228,7 +229,7 @@ export interface EffectiveAuthRow {
    * 지금 실제로 권한을 주는가 — `grantState === 'ACTIVE'` 이고 `menuAuthorizable` 이다.
    *
    * <p>**서버가 낸다.** 화면 전용 계산을 두면 실제 판정과 갈리고, 갈리는 순간 이 탭은
-   * 진단이 아니라 **또 하나의 거짓말**이 된다(screen/user/requirements.md 의 요구 1).
+   * 진단이 아니라 **또 하나의 거짓말**이 된다(screen/admin/system/user/requirements.md 의 요구 1).
    */
   effective: boolean;
   grantState: GrantState | null;

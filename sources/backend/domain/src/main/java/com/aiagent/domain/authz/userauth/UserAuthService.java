@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 없거나 둘뿐이라 <i>수정</i> 이 존재하지 않았기 때문이다.
  *
  * <p>여기는 <b>기간과 사유가 붙는다</b>(sys/menu.md). 같은 조합의 값이 바뀔 수 있으므로 <i>수정</i>
- * 이 실재하고, 그래서 frontend/grid.md 의 보통 일괄 저장 모양이 된다 — screen/user/requirements.md 가 <i>"목록이 원본이고
+ * 이 실재하고, 그래서 frontend/grid.md 의 보통 일괄 저장 모양이 된다 — screen/admin/system/user/requirements.md 가 <i>"목록이 원본이고
  * 트리는 그 투영"</i> 이라고 한 것의 서버 쪽 모습이다.
  *
  * <h2>회수는 삭제가 아니다</h2>

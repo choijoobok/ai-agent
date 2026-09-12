@@ -55,7 +55,7 @@ public class SysUserRole extends BaseAuditEntity {
     private LocalDate validToDt;
 
     /**
-     * 새 부여 — screen/user/requirements.md 탭 1 에서 <b>행을 더한 것</b>이다.
+     * 새 부여 — screen/admin/system/user/requirements.md 탭 1 에서 <b>행을 더한 것</b>이다.
      *
      * <p>기간이 <b>선택</b>이며 {@code null} 이 무기한이다 — {@code SysUserMenuAuth.created}
      * 와 갈리는 자리이고, 그 차이가 sys/menu.md 이 정한 두 테이블의 성격 전부다.

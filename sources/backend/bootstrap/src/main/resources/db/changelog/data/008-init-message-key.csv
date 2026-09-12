@@ -290,9 +290,9 @@ err.query.unknown-field,BACK,화이트리스트에 없는 필드로 조건이 �
 err.query.value,BACK,값의 형태가 연산자와 맞지 않는다 — between 이 2원소가 아니거나 해석 불가.
 err.reset.code-expired,BACK,"만료 · 이미 사용 · 시도 한도 초과 — 셋이 한 문구다. 사용자가 할 일이 셋 다 같기 때문이다(①로 돌아가 다시 받는다). 갈라 두면 ""이 아이디에 유효한 토큰이 있었다"" 를 알려주는 응답이 생긴다. /"
 err.reset.code-invalid,BACK,인증번호가 맞지 않다. 남은 시도 횟수를 알려주지 않는다.
-err.role.auth.action,BACK,"그 메뉴에 정의되지 않은 액션이다 — screen/user/requirements.md 의 —. 줄 것이 없는 조합이다. 받아 두면 인가 데이터가 줬는데 안 되는 상태를 갖게 되고, 그 다음 문의는 ""권한을 줬는데 왜 안 되나"" 가 된다. EXPORT 는 API 가 없어도 정의될 수 있으므로(sys/menu.md) 이유를 API 의 부재로 대지 않는다. /"
+err.role.auth.action,BACK,"그 메뉴에 정의되지 않은 액션이다 — screen/admin/system/user/requirements.md 의 —. 줄 것이 없는 조합이다. 받아 두면 인가 데이터가 줬는데 안 되는 상태를 갖게 되고, 그 다음 문의는 ""권한을 줬는데 왜 안 되나"" 가 된다. EXPORT 는 API 가 없어도 정의될 수 있으므로(sys/menu.md) 이유를 API 의 부재로 대지 않는다. /"
 err.role.auth.menu,BACK,"구조 노드나 없는 메뉴에 권한을 주려 했다 — sys/menu.md 의 MENU_URL IS NULL 거부. 화면에는 구조 노드에 스위치가 아예 없다(screen/menu/requirements.md). 이 문구가 나가는 것은 화면 밖 경로이거나, 트리를 열어 둔 사이에 그 메뉴가 폴더가 된 경우다. /"
-err.role.auth.read,BACK,"READ 없이 다른 액션만 왔다 — screen/user/requirements.md 의 불변식 하나. 화면이 이것을 유지하므로(끄면 함께 끄고, 켜면 함께 켠다) 정상 경로로는 오지 않는다. 서버가 다시 보는 것은 sys/menu.md 의 원칙 P1 이며 MENU_URL IS NULL 거부와 같은 자리다. /"
+err.role.auth.read,BACK,"READ 없이 다른 액션만 왔다 — screen/admin/system/user/requirements.md 의 불변식 하나. 화면이 이것을 유지하므로(끄면 함께 끄고, 켜면 함께 켠다) 정상 경로로는 오지 않는다. 서버가 다시 보는 것은 sys/menu.md 의 원칙 P1 이며 MENU_URL IS NULL 거부와 같은 자리다. /"
 err.role.duplicate,BACK,ROLE_ID 중복 — 다른 사람이 방금 만든 것을 클라이언트가 알 수 없다(frontend/grid.md).
 err.role.name-required,BACK,역할명을 비운 채 저장했다 — screen/menu/requirements.md 의 필수 컬럼.
 err.role.not-deletable,BACK,삭제 게이트 — 보유 사용자나 권한 행이 남아 있다(screen/menu/requirements.md). 거의 항상 삭제가 아니라 USE_YN='N' 이다. 이 게이트를 통과하는 역할은 한 번도 쓰이지 않은 것뿐이며 그것이 정확히 잘못 만든 역할 이다 — 쓰인 역할을 지우면 누가 무슨 역할을 가졌었나 가 사라진다(sys/menu.md). /
@@ -318,21 +318,21 @@ err.session.evicted,BACK,다른 곳의 로그인에 밀려 이 세션이 끝났�
 err.unauthenticated,BACK,세션이 없거나 만료됐다. 프론트가 로그인 화면으로 돌린다.
 err.unclassified-api,BACK,세 계층 프리픽스 밖의 /api/** — 경로 차원의 fail-closed.
 err.user-admin.duplicate,BACK,USER_ID 중복 — 다른 사람이 방금 만든 것을 클라이언트가 알 수 없다(frontend/grid.md).
-err.user-admin.email-required,BACK,이메일을 비운 채 저장했다 — screen/user/requirements.md 의 필수 컬럼. 필수인 이유가 발송처다. 관리자가 발급한 임시 비밀번호를 전할 곳이 없으면 그 계정은 만들어지자마자 들어올 수 없다(AUTH-07). /
-err.user-admin.name-required,BACK,이름을 비운 채 저장했다 — screen/user/requirements.md 의 필수 컬럼.
-err.user-admin.no-delete,BACK,삭제 행이 왔다 — SYS_USER 는 물리 삭제를 하지 않는다(sys/user-role.md · USER-02). 화면에는 삭제 컬럼이 아예 없다(screen/user/requirements.md). 못 쓰게 하는 수단은 USE_YN='N' 이며 그것은 셀 편집이다 — 이력 테이블이 USER_ID 를 값으로 갖고 있어(sys/user-role.md) 행을 지우면 지난 이력의 주인이 사라진다. /
+err.user-admin.email-required,BACK,이메일을 비운 채 저장했다 — screen/admin/system/user/requirements.md 의 필수 컬럼. 필수인 이유가 발송처다. 관리자가 발급한 임시 비밀번호를 전할 곳이 없으면 그 계정은 만들어지자마자 들어올 수 없다(AUTH-07). /
+err.user-admin.name-required,BACK,이름을 비운 채 저장했다 — screen/admin/system/user/requirements.md 의 필수 컬럼.
+err.user-admin.no-delete,BACK,삭제 행이 왔다 — SYS_USER 는 물리 삭제를 하지 않는다(sys/user-role.md · USER-02). 화면에는 삭제 컬럼이 아예 없다(screen/admin/system/user/requirements.md). 못 쓰게 하는 수단은 USE_YN='N' 이며 그것은 셀 편집이다 — 이력 테이블이 USER_ID 를 값으로 갖고 있어(sys/user-role.md) 행을 지우면 지난 이력의 주인이 사라진다. /
 err.user-admin.not-found,BACK,없는 계정을 가리켰다. 화면이 낡았거나 화면 밖 경로다.
 err.user-admin.period,BACK,사용 기간의 시작이 종료보다 늦다 — 그 계정은 어느 날도 쓸 수 없다(sys/INDEX.md).
 err.user-admin.reset-disabled,BACK,"임시 비밀번호 발급이 꺼져 있다 — sys-config.auth.password.admin-reset-enabled. 기본값이 켜짐인 것이 결정이다(sys/code.md) — 메일 연동이 없는 배포에서 잠긴 계정을 푸는 유일한 경로이며, 끄면 복구 수단이 사라진다. /"
-err.user-admin.self-disable,BACK,"자기 계정을 비활성화하려 했다 — screen/user/requirements.md. 권한이 아니라 대상 제약이라 화면은 감추지 않고 보이되 막고 사유를 붙인다(frontend/tabs.md 의 예외가 아니라 축이 다른 것이다). 그 자리에서 화면 밖으로 밀려나기 때문이며, 되돌릴 사람이 그 사람 자신이다. /"
-err.user-auth.action,BACK,"그 메뉴에 정의되지 않은 액션이다 — screen/user/requirements.md 의 —. 줄 것이 없는 조합이다. 받아 두면 줬는데 안 되는 상태가 인가 데이터에 남고, 그 다음 문의는 ""권한을 줬는데 왜 안 되나"" 가 된다. /"
-err.user-auth.duplicate,BACK,"같은 (메뉴, 액션) 이 두 번 왔거나 이미 있는 행을 새로 만들려 했다. PK 가 (USER_ID, MENU_CD, ACTION_CD) 이므로 한 조합에 행은 하나뿐이며, 재부여는 새 행이 아니라 같은 행의 기간·사유를 갱신하는 것이다(screen/user/requirements.md). /"
-err.user-auth.menu,BACK,"구조 노드나 없는 메뉴에 예외를 주려 했다 — sys/menu.md 의 MENU_URL IS NULL 거부. 화면에는 구조 노드에 스위치가 아예 없다(screen/user/requirements.md). 이 문구가 나가는 것은 화면 밖 경로이거나, 트리를 열어 둔 사이에 그 메뉴가 폴더가 된 경우다. /"
+err.user-admin.self-disable,BACK,"자기 계정을 비활성화하려 했다 — screen/admin/system/user/requirements.md. 권한이 아니라 대상 제약이라 화면은 감추지 않고 보이되 막고 사유를 붙인다(frontend/tabs.md 의 예외가 아니라 축이 다른 것이다). 그 자리에서 화면 밖으로 밀려나기 때문이며, 되돌릴 사람이 그 사람 자신이다. /"
+err.user-auth.action,BACK,"그 메뉴에 정의되지 않은 액션이다 — screen/admin/system/user/requirements.md 의 —. 줄 것이 없는 조합이다. 받아 두면 줬는데 안 되는 상태가 인가 데이터에 남고, 그 다음 문의는 ""권한을 줬는데 왜 안 되나"" 가 된다. /"
+err.user-auth.duplicate,BACK,"같은 (메뉴, 액션) 이 두 번 왔거나 이미 있는 행을 새로 만들려 했다. PK 가 (USER_ID, MENU_CD, ACTION_CD) 이므로 한 조합에 행은 하나뿐이며, 재부여는 새 행이 아니라 같은 행의 기간·사유를 갱신하는 것이다(screen/admin/system/user/requirements.md). /"
+err.user-auth.menu,BACK,"구조 노드나 없는 메뉴에 예외를 주려 했다 — sys/menu.md 의 MENU_URL IS NULL 거부. 화면에는 구조 노드에 스위치가 아예 없다(screen/admin/system/user/requirements.md). 이 문구가 나가는 것은 화면 밖 경로이거나, 트리를 열어 둔 사이에 그 메뉴가 폴더가 된 경우다. /"
 err.user-auth.missing,BACK,고치거나 지우려는 행이 없다 — 다른 사람이 먼저 지웠다.
 err.user-auth.not-found,BACK,없는 계정에 예외를 주려 했다. 화면이 낡았거나 화면 밖 경로다.
 err.user-auth.period,BACK,시작이 종료보다 늦다 — 그 예외는 어느 날도 유효하지 않다(sys/INDEX.md).
 err.user-auth.period-required,BACK,기간을 비운 채 저장했다 — 개인 예외에는 무기한이라는 선택지가 없다(sys/menu.md).
-err.user-auth.read,BACK,"READ 없이 다른 액션만 남는다 — screen/user/requirements.md 의 불변식 하나. 역할 쪽과 판정이 다르다. 거기서는 그 역할 안에서만 봤지만 여기서는 유효 권한이 역할과 개인 예외의 합집합이므로(backend/security.md ③), 역할이 조회를 주고 있으면 개인 예외에는 저장만 있어도 된다 — 실제로 그것이 이 화면의 흔한 쓰임이다. /"
+err.user-auth.read,BACK,"READ 없이 다른 액션만 남는다 — screen/admin/system/user/requirements.md 의 불변식 하나. 역할 쪽과 판정이 다르다. 거기서는 그 역할 안에서만 봤지만 여기서는 유효 권한이 역할과 개인 예외의 합집합이므로(backend/security.md ③), 역할이 조회를 주고 있으면 개인 예외에는 저장만 있어도 된다 — 실제로 그것이 이 화면의 흔한 쓰임이다. /"
 err.user-auth.reason-required,BACK,"사유를 비운 채 저장했다 — 필수다(AUTHZ-07). 변경 이력 테이블을 두지 않았으므로(sys/logs.md) ""누구에게 왜 무엇을 언제까지 줬는가"" 를 남기는 것이 이 컬럼뿐이다. /"
 err.user-detail.ip,BACK,"IP 도 CIDR 도 아니다 — sys/user-role.md 이 DDL 에 두지 않은 검사다. 벤더 중립 DDL 에 정규식 CHECK 를 둘 수 없고(backend/persistence.md), 둘 수 있어도 IPv6 축약까지 정규식으로 맞추는 것은 저장 시 파싱보다 약하다. /"
 err.user-detail.ip-duplicate,BACK,"같은 대역을 두 번 넣었다 — PK 가 (USER_ID, IP_CIDR) 다(sys/user-role.md)."
@@ -343,7 +343,7 @@ err.user-detail.role-duplicate,BACK,"이미 가진 역할을 또 줬다 — PK �
 err.user-detail.role-missing,BACK,고치거나 지우려는 부여가 없다 — 다른 사람이 먼저 정리했다.
 err.user-detail.user,BACK,없는 계정에 무언가를 매달려 했다 — FK 가 막기 전에 우리가 먼저 말한다.
 err.user-session.index,BACK,"세션 인덱스가 없어 활성 세션을 나열할 수 없다 — backend/session.md · backend/security.md. 빈 목록으로 답하지 않는다. 그러면 ""이 사람은 지금 아무 데도 안 들어와 있다"" 로 읽히는데 그것은 모르는 것을 아는 것처럼 말하는 것이다 — 이 탭이 하는 일이 끊을까 말까 이므로 그 거짓말의 대가가 크다. 스토어가 있는데 인덱스가 없는 배포는 SecurityConfig 가 기동에서 막으므로, 여기 닿는 것은 store-type: none 하나이며 그것은 선택된 동작이다(단일 노드 · 개발). /"
-err.user-session.self,BACK,"자기 세션을 끊으려 했다 — screen/user/requirements.md. 그 자리에서 화면 밖으로 밀려난다. 사용 여부 'N' 전환과 같은 이유로 막고 다른 자리에서 막는다: 저것은 셀 편집이라 컬럼이 막고, 이것은 실행이라 버튼이 비활성이며 서버가 다시 본다. /"
+err.user-session.self,BACK,"자기 세션을 끊으려 했다 — screen/admin/system/user/requirements.md. 그 자리에서 화면 밖으로 밀려난다. 사용 여부 'N' 전환과 같은 이유로 막고 다른 자리에서 막는다: 저것은 셀 편집이라 컬럼이 막고, 이것은 실행이라 버튼이 비활성이며 서버가 다시 본다. /"
 err.user.locale-unsupported,BACK,지원하지 않는 언어를 고르려 했다. 화면은 목록만 보여주지만 판정은 서버다.
 err.user.pwd-mismatch,BACK,현재 비밀번호가 다르다. 새 비밀번호 쪽 문제와 갈라야 한다 — 합치면 무엇을 고칠지 모른다.
 err.user.pwd-reused,BACK,최근 N건 안에 있던 비밀번호다 — 건수는 정책이 정한다(sys/user-role.md).
@@ -596,7 +596,7 @@ menuTree.move.to,FRONT,드롭 확인 — 이동할 자리. `{path}` · `{index}`
 menuTree.move.warn,FRONT,드롭 확인의 마지막 줄 — 되돌리려면 다시 끌어야 한다.
 menuTree.orphan,FRONT,선언에서 사라진 메뉴의 배지 — screen/menu/requirements.md · seed.md.
 menuTree.orphan.hint,FRONT,그 배지의 툴팁 — 무엇을 해야 하는지까지 말한다.
-menuTree.search.any,FRONT,"트리 검색 — 칸 하나가 셋을 함께 본다(2026-08-31 요청 · screen/menu/requirements.md). 칸이 셋이었다. 그런데 사람은 손에 있는 것으로 찾는다 — 이름이거나 코드이거나 URL 이고, 어느 칸에 넣을지 를 먼저 정해야 하는 것이 곧 마찰이다. 셋을 `OR` 로 잇는 칸 하나면 그 결정이 사라진다(`userAuth.search.user` 가 ID 와 이름을 함께 보는 것과 같은 판단이다 — screen/user/requirements.md). 자리표에 무엇을 보는지 를 적는다 — 하나로 합친 칸은 그 말이 없으면 이름만 찾는 칸 으로 읽힌다. /"
+menuTree.search.any,FRONT,"트리 검색 — 칸 하나가 셋을 함께 본다(2026-08-31 요청 · screen/menu/requirements.md). 칸이 셋이었다. 그런데 사람은 손에 있는 것으로 찾는다 — 이름이거나 코드이거나 URL 이고, 어느 칸에 넣을지 를 먼저 정해야 하는 것이 곧 마찰이다. 셋을 `OR` 로 잇는 칸 하나면 그 결정이 사라진다(`userAuth.search.user` 가 ID 와 이름을 함께 보는 것과 같은 판단이다 — screen/admin/system/user/requirements.md). 자리표에 무엇을 보는지 를 적는다 — 하나로 합친 칸은 그 말이 없으면 이름만 찾는 칸 으로 읽힌다. /"
 menuTree.search.menuCd,FRONT,조회조건 — 메뉴 코드.
 menuTree.search.menuNm,FRONT,
 menuTree.search.menuUrl,FRONT,조회조건 — URL.
@@ -861,9 +861,9 @@ role.use.off,FRONT,조회조건의 후보 — 미사용.
 role.use.on,FRONT,조회조건의 후보 — 사용. 폼에서는 스위치가 아니라 콤보다(*전체* 를 낼 자리가 필요하다).
 roleAuth.affected.empty,FRONT,하단의 빈 상태.
 roleAuth.affected.title,FRONT,하단 — 영향 인원의 제목. `ROLE_MGMT` 에서는 *보유 사용자* 라 부른다(screen/menu/requirements.md).
-roleAuth.col.menu,FRONT,트리의 계층 컬럼 헤더 — 맨 왼쪽 고정이다(screen/user/requirements.md).
+roleAuth.col.menu,FRONT,트리의 계층 컬럼 헤더 — 맨 왼쪽 고정이다(screen/admin/system/user/requirements.md).
 roleAuth.read.off,FRONT,조회를 꺼서 나머지 `{count}` 건이 함께 꺼졌다 — 〃.
-roleAuth.read.on,FRONT,다른 액션을 켜서 조회가 함께 켜졌다 — **조용히 하지 않는다**(screen/user/requirements.md).
+roleAuth.read.on,FRONT,다른 액션을 켜서 조회가 함께 켜졌다 — **조용히 하지 않는다**(screen/admin/system/user/requirements.md).
 roleAuth.role.title,FRONT,좌 — 역할 목록의 제목. **읽기 전용**이며 생성은 `ROLE_MGMT` 다(screen/menu/requirements.md).
 roleAuth.save.blocked,FRONT,저장 확인 셋째 줄 — 그중 `{count}` 명이 공집합이 되어 차단된다.
 roleAuth.save.counts,FRONT,저장 확인 첫째 줄 — `{added}` 추가 · `{removed}` 삭제. **수정이 없다**(screen/menu/requirements.md).
@@ -874,7 +874,7 @@ roleAuth.tree.title,FRONT,우 — 권한 트리의 제목.
 roleAuth.tri.all,FRONT,폴더 파생 3-state — 전체. **저장되지 않는다**(sys/menu.md).
 roleAuth.tri.none,FRONT,폴더 파생 3-state — 없음.
 roleAuth.tri.some,FRONT,폴더 파생 3-state — 부분.
-roleAuth.undefined,FRONT,`—` 셀의 툴팁 — *안 줬다* 가 아니라 **줄 것이 없다**(screen/user/requirements.md).
+roleAuth.undefined,FRONT,`—` 셀의 툴팁 — *안 줬다* 가 아니라 **줄 것이 없다**(screen/admin/system/user/requirements.md).
 sample.action.confirm,FRONT,"확정 — `target:'selected'`, 프로그레스 없음(playbook/INDEX.md)."
 sample.action.confirm.confirm,FRONT,
 sample.action.confirm.hint,FRONT,
@@ -1007,7 +1007,7 @@ search.op.in,FRONT,연산자 셀렉터 — 여럿 중 하나. 고르면 콤보�
 search.op.isNotNull,FRONT,연산자 셀렉터 — 값 있음. `in` 으로 표현할 방법이 아예 없는 조건이다.
 search.op.isNull,FRONT,연산자 셀렉터 — 값 없음. 고르면 값 칸이 사라진다(backend/api.md).
 search.op.lt,FRONT,연산자 셀렉터 — 미만(`<`). 크기 계열의 다섯째이자 마지막이다(playbook/INDEX.md).
-search.op.lte,FRONT,연산자 셀렉터 — 이하(`<=`). 크기 계열의 셋째 실물이다(frontend/search-form.md). screen/user/requirements.md 의 기간 칸 둘이 처음 요구했다(2026-08-31). *한쪽만 아는 조건* 이 실제로 있다 — 이 날짜 이후로 한 번도 안 들어온 계정 이 `lte` 이고 그 반대가 `gte` 다. /
+search.op.lte,FRONT,연산자 셀렉터 — 이하(`<=`). 크기 계열의 셋째 실물이다(frontend/search-form.md). screen/admin/system/user/requirements.md 의 기간 칸 둘이 처음 요구했다(2026-08-31). *한쪽만 아는 조건* 이 실제로 있다 — 이 날짜 이후로 한 번도 안 들어온 계정 이 `lte` 이고 그 반대가 `gte` 다. /
 search.op.ne,FRONT,연산자 셀렉터 — 같지 않음.
 search.op.startsWith,FRONT,연산자 셀렉터 — 시작 문자 일치.
 search.rangeTooWide,FRONT,기간이 상한을 넘었다 — `{days}`. 조용히 자르지 않는다(screen/log/access/requirements.md).
@@ -1132,9 +1132,9 @@ tab.openNewInstance,FRONT,"트리 우클릭 메뉴의 ""새 탭으로 열기"" �
 tab.openNewWindow,FRONT,브라우저 창을 하나 더 열어 그 메뉴를 띄운다 — 앱 안의 탭이 아니다.
 user.action.dormantRelease,FRONT,①의 실행 — 휴면 해제. 메일이 안 되는 환경을 위한 관리자 경로다.
 user.action.passwordReset,FRONT,①의 실행 — 비밀번호 초기화(AUTH-07). **잠금은 풀리지 않는다**.
-user.action.unlock,FRONT,①의 실행 — 잠금 해제(AUTH-04). 액션은 `SAVE` 다(screen/user/requirements.md).
+user.action.unlock,FRONT,①의 실행 — 잠금 해제(AUTH-04). 액션은 `SAVE` 다(screen/admin/system/user/requirements.md).
 user.col.accountStat,FRONT,컬럼 — 계정 상태(파생).
-user.col.accountStat.tip,FRONT,"그 헤더의 한 줄 설명 — **넷을 하나로 접은 값**이라는 사실을 말한다. 접은 것을 말하지 않으면 *""잠금을 풀었는데 여전히 못 쓴다""* 의 이유(미사용이 함께 걸려 있었다)를 화면에서 읽을 수 없다(screen/user/requirements.md). /"
+user.col.accountStat.tip,FRONT,"그 헤더의 한 줄 설명 — **넷을 하나로 접은 값**이라는 사실을 말한다. 접은 것을 말하지 않으면 *""잠금을 풀었는데 여전히 못 쓴다""* 의 이유(미사용이 함께 걸려 있었다)를 화면에서 읽을 수 없다(screen/admin/system/user/requirements.md). /"
 user.col.dormantYn,FRONT,컬럼 — 휴면. **읽기 전용**이다.
 user.col.email,FRONT,컬럼 — 이메일. 임시 비밀번호의 발송처다(AUTH-07).
 user.col.lastLoginDtm,FRONT,컬럼 — 최종 로그인. 휴면 판정의 근거다.
@@ -1144,12 +1144,12 @@ user.col.lockYn,FRONT,컬럼 — 잠금. **읽기 전용**이며 푸는 것은 �
 user.col.loginFailCnt,FRONT,컬럼 — 로그인 실패 횟수. 잠금 직전 진단용이다.
 user.col.pwdChgDtm,FRONT,컬럼 — 비밀번호 변경일. 만료 임박 확인용이다.
 user.col.pwdInitYn,FRONT,컬럼 — 임시 비밀번호(발급 후 미변경).
-user.col.useYn,FRONT,컬럼 — 사용 여부. **관리자가 건다**(screen/user/requirements.md).
+user.col.useYn,FRONT,컬럼 — 사용 여부. **관리자가 건다**(screen/admin/system/user/requirements.md).
 user.col.userId,FRONT,컬럼 — 로그인 ID. PK 이며 신규 행에서만 열린다(sys/user-role.md).
 user.col.userNm,FRONT,컬럼 — 이름.
 user.col.validFromDt,FRONT,컬럼 — 사용 기간 시작.
 user.col.validToDt,FRONT,컬럼 — 사용 기간 종료.
-user.detail.empty,FRONT,"아직 아무도 고르지 않았다 — *""사용자를 선택하세요""*(frontend/grid.md). **비활성되는 것은 버튼이지 탭이 아니다**(screen/user/requirements.md). 탭은 열리되 비어 있고 안내가 뜬다 — 탭을 잠그면 *""이 사용자에게 역할 탭이 없나""* 로 읽힌다. /"
+user.detail.empty,FRONT,"아직 아무도 고르지 않았다 — *""사용자를 선택하세요""*(frontend/grid.md). **비활성되는 것은 버튼이지 탭이 아니다**(screen/admin/system/user/requirements.md). 탭은 열리되 비어 있고 안내가 뜬다 — 탭을 잠그면 *""이 사용자에게 역할 탭이 없나""* 로 읽힌다. /"
 user.detail.locked,FRONT,"미저장 신규 행을 골랐다 — *""저장 후 편집할 수 있습니다""*(frontend/grid.md). `SYS_USER_ROLE` 이 `SYS_USER` 를 FK 로 참조하므로(sys/user-role.md) **부모가 저장되기 전에는 자식을 만들 수 없다.** 빈 상태와 **같은 빈 판이지만 다음에 할 일이 다르다**. /"
 user.duplicate,FRONT,같은 그리드 안에 같은 로그인 ID 가 둘이다 — 화면이 판정할 수 있는 중복이다(frontend/grid.md).
 user.eff.col.grantRsn,FRONT,컬럼 — 사유. 개인 예외 경유일 때만 있다(역할 부여에는 사유가 없다 — sys/menu.md).
@@ -1159,9 +1159,9 @@ user.eff.col.via,FRONT,컬럼 — 출처. 역할명이거나 개인 예외다(ba
 user.eff.empty,FRONT,조회 결과가 비었다.
 user.eff.gate,FRONT,부여는 살아 있는데 **대상이 죽었다** — 게이트 ④(backend/security.md). 행의 배지 사유다.
 user.eff.inactive,FRONT,부여가 예정이거나 만료다 — 지금은 효력이 없다. 〃
-user.eff.none,FRONT,**유효 권한이 공집합이다** — 배너로 먼저 알린다(screen/user/requirements.md). 그 계정은 **다음 로그인부터 차단된다**(backend/security.md). 탭을 열어 빈 표를 보고 유추하게 두지 않는다 — 빈 표는 *조회가 안 된 것* 으로도 읽힌다. /
+user.eff.none,FRONT,**유효 권한이 공집합이다** — 배너로 먼저 알린다(screen/admin/system/user/requirements.md). 그 계정은 **다음 로그인부터 차단된다**(backend/security.md). 탭을 열어 빈 표를 보고 유추하게 두지 않는다 — 빈 표는 *조회가 안 된 것* 으로도 읽힌다. /
 user.eff.scope,FRONT,헤더 ⓐ 의 셀렉트 라벨 — 표시 범위(frontend/grid.md 의 `select` 첫 실물).
-user.eff.scope.all,FRONT,"범위 — 전체 메뉴. **없는 것도 보여야 한다**(screen/user/requirements.md 의 요구 2). *""왜 못 보나""* 는 **권한이 없는 행**에 답이 있다 — 가진 것만 보여주면 이 탭은 진단이 아니라 요약이다. /"
+user.eff.scope.all,FRONT,"범위 — 전체 메뉴. **없는 것도 보여야 한다**(screen/admin/system/user/requirements.md 의 요구 2). *""왜 못 보나""* 는 **권한이 없는 행**에 답이 있다 — 가진 것만 보여주면 이 탭은 진단이 아니라 요약이다. /"
 user.eff.scope.held,FRONT,범위 — 가진 것만. 기본값이다.
 user.eff.title,FRONT,탭 5 의 제목.
 user.eff.via.none,FRONT,출처가 없다 — **부여 자체가 없는 행**이다(전체 메뉴 모드에서만 나온다).
@@ -1171,7 +1171,7 @@ user.grant.col.grantRsn,FRONT,컬럼 — 사유. **이 행이 곧 감사 기록*
 user.grant.col.menu,FRONT,컬럼 — 메뉴(조상 경로 포함).
 user.grant.col.menuOk,FRONT,컬럼 — 대상 메뉴가 살아 있는가(게이트 ④ — backend/security.md).
 user.grant.empty,FRONT,개인 예외가 하나도 없다.
-user.grant.readonly,FRONT,"메뉴 컬럼의 헤더 툴팁 — **여기서는 고칠 수 없다**(screen/user/requirements.md). 사용자 관리 권한이 있다고 예외 권한 부여 권한이 따라오면 안 되며, 권한은 `(MENU_CD, ACTION_CD)` 쌍이므로 **메뉴가 갈려야 갈린다**. 회색 그리드만 두면 *""왜 안 고쳐지나""* 가 된다. /"
+user.grant.readonly,FRONT,"메뉴 컬럼의 헤더 툴팁 — **여기서는 고칠 수 없다**(screen/admin/system/user/requirements.md). 사용자 관리 권한이 있다고 예외 권한 부여 권한이 따라오면 안 되며, 권한은 `(MENU_CD, ACTION_CD)` 쌍이므로 **메뉴가 갈려야 갈린다**. 회색 그리드만 두면 *""왜 안 고쳐지나""* 가 된다. /"
 user.grant.title,FRONT,탭 2 의 제목.
 user.grid.title,FRONT,마스터 그리드의 제목.
 user.ip.col.ipCidr,FRONT,컬럼 — 단일 IP 또는 CIDR. **PK 의 절반**이라 고치지 않고 지우고 다시 넣는다.
@@ -1184,7 +1184,7 @@ user.ip.malformed,FRONT,IP 도 CIDR 도 아니다 — 서버가 다시 본다(fr
 user.ip.period.tip,FRONT,두 컬럼의 헤더 툴팁 — **판정 시각이 서버 기준**이라는 사실을 말한다.
 user.ip.title,FRONT,탭 3 의 제목.
 user.ip.warn.first,FRONT,첫 대역을 더할 때의 경고 — **그 순간 나머지 전부가 막힌다**. 행이 없으면 제한 없음이므로(sys/user-role.md) 첫 행 하나가 **정책을 켜는 스위치**다. 건수는 *얼마나* 를 말할 뿐이라 그것을 말하지 못한다(screen/code/requirements.md 가 연 자리). /
-user.issued.desc,FRONT,"그 안내 — **이 창을 닫으면 다시 볼 수 없다**. 값이 응답에만 있기 때문이다(screen/user/requirements.md). 말하지 않으면 관리자가 창을 닫고 나서 재발급을 누르는데, 그러면 방금 전한 값이 그 자리에서 무효가 된다. /"
+user.issued.desc,FRONT,"그 안내 — **이 창을 닫으면 다시 볼 수 없다**. 값이 응답에만 있기 때문이다(screen/admin/system/user/requirements.md). 말하지 않으면 관리자가 창을 닫고 나서 재발급을 누르는데, 그러면 방금 전한 값이 그 자리에서 무효가 된다. /"
 user.issued.expiry,FRONT,발급 값이 곧 만료된다는 안내 — `{hours}` 시간.
 user.issued.title,FRONT,발급 결과 모달의 제목.
 user.locale.en,FRONT,언어 후보 — 영어.
@@ -1202,29 +1202,29 @@ user.role.empty,FRONT,부여가 하나도 없다 — 이 계정은 개인 예외
 user.role.off,FRONT,역할이 꺼져 있다 — **기간이 유효해도 지금은 아무 권한도 주지 않는다**. 배지의 사유다.
 user.role.title,FRONT,탭 1 의 제목.
 user.role.warn.revoke,FRONT,저장 확인 앞의 경고 — 회수하는 `{count}` 건은 **다음 로그인부터** 반영된다(backend/security.md).
-user.search.accountStat,FRONT,조회조건 — 계정 상태(다중). **기본값이 없다** — 끈 계정을 찾으러 오는 화면이다(screen/user/requirements.md).
+user.search.accountStat,FRONT,조회조건 — 계정 상태(다중). **기본값이 없다** — 끈 계정을 찾으러 오는 화면이다(screen/admin/system/user/requirements.md).
 user.search.days,FRONT,그 후보의 표시 — `{days}` 일 이내.
 user.search.email,FRONT,조회조건 — 이메일. 〃
 user.search.lastLoginDtm,FRONT,조회조건 — 최종 로그인 기간.
 user.search.regDtm,FRONT,조회조건 — 등록일 기간.
-user.search.roleExpiringInDays,FRONT,조회조건 — 역할 만료 예정 N일. 숫자 칸이 아니라 **후보 콤보**다. 파생 조건은 부등호를 받지 못하므로(backend/api.md) *N일 이내* 라는 뜻을 번역 함수가 갖는다 — 그 김에 screen/user/requirements.md 의 *기본값 미결* 이 **기본값 없음**으로 닫힌다. /
-user.search.roleId,FRONT,조회조건 — 보유 역할. `EXISTS` 라 벤더 중립이다(screen/user/requirements.md).
-user.search.userId,FRONT,조회조건 — 로그인 ID. 앞 일치이며 PK 인덱스를 탄다(screen/user/requirements.md).
-user.search.userNm,FRONT,조회조건 — 이름. 부분 일치라 인덱스를 타지 않는다(screen/user/requirements.md 미결).
-user.selfDisable,FRONT,자기 계정의 사용 여부 셀을 끄려 했을 때 — **권한이 아니라 대상 제약**이다(screen/user/requirements.md).
+user.search.roleExpiringInDays,FRONT,조회조건 — 역할 만료 예정 N일. 숫자 칸이 아니라 **후보 콤보**다. 파생 조건은 부등호를 받지 못하므로(backend/api.md) *N일 이내* 라는 뜻을 번역 함수가 갖는다 — 그 김에 screen/admin/system/user/requirements.md 의 *기본값 미결* 이 **기본값 없음**으로 닫힌다. /
+user.search.roleId,FRONT,조회조건 — 보유 역할. `EXISTS` 라 벤더 중립이다(screen/admin/system/user/requirements.md).
+user.search.userId,FRONT,조회조건 — 로그인 ID. 앞 일치이며 PK 인덱스를 탄다(screen/admin/system/user/requirements.md).
+user.search.userNm,FRONT,조회조건 — 이름. 부분 일치라 인덱스를 타지 않는다(screen/admin/system/user/requirements.md 미결).
+user.selfDisable,FRONT,자기 계정의 사용 여부 셀을 끄려 했을 때 — **권한이 아니라 대상 제약**이다(screen/admin/system/user/requirements.md).
 user.session.col.clientIp,FRONT,컬럼 — 접속 IP(2026-08-31). **세션 스토어에는 없는 값**이며 로그인 이력에서 온다. 담지 않고 조회 시점에 붙이므로 원본은 여전히 `SYS_LO_LOGIN` 하나다(sys/logs.md). /
 user.session.col.created,FRONT,컬럼 — 생성 시각.
-user.session.col.current,FRONT,컬럼 — 현재 세션인가. screen/user/requirements.md 의 **자기 자신 금지**를 눈으로 확인시킨다.
+user.session.col.current,FRONT,컬럼 — 현재 세션인가. screen/admin/system/user/requirements.md 의 **자기 자신 금지**를 눈으로 확인시킨다.
 user.session.col.expiry,FRONT,컬럼 — 만료 예정 = 최근 접근 + 유휴 한도. **파생**이다.
-user.session.col.lastAccess,FRONT,컬럼 — 최근 접근. ***끊을까 말까* 를 가르는 값**이다(screen/user/requirements.md).
+user.session.col.lastAccess,FRONT,컬럼 — 최근 접근. ***끊을까 말까* 를 가르는 값**이다(screen/admin/system/user/requirements.md).
 user.session.col.sessionId,FRONT,컬럼 — 세션. **앞 8자만** 그린다.
 user.session.col.userAgent,FRONT,〃 브라우저(`User-Agent`). `VARCHAR(500)` 이라 셀에서 잘리고 툴팁으로 펼친다.
 user.session.empty,FRONT,활성 세션이 없다 — 지금 아무 데도 들어와 있지 않다.
 user.session.fromLogin,FRONT,"두 컬럼의 헤더 툴팁 — **출처를 말한다**(screen/log/access/requirements.md 과 같은 규약). 이 컬럼을 어디까지 믿을 수 있나가 값의 옆에 없으면, **빈 칸이 결함으로** 읽히고 채워진 칸은 세션이 들고 있는 사실처럼 읽힌다. /"
 user.session.kill,FRONT,실행 버튼 — 강제 종료(AUTH-10).
-user.session.kill.confirm,FRONT,"확인 문구 — **계정은 바뀌지 않는다**는 것을 말한다(screen/user/requirements.md). *""N건을 종료합니다""* 만으로는 **다시 로그인할 수 있다**는 사실이 빠진다 — 막으려면 `USE_YN='N'` 이고 그것은 **다른 축**이다(sys/user-role.md). 말하지 않으면 이 버튼이 계정을 잠그는 것으로 읽힌다. /"
+user.session.kill.confirm,FRONT,"확인 문구 — **계정은 바뀌지 않는다**는 것을 말한다(screen/admin/system/user/requirements.md). *""N건을 종료합니다""* 만으로는 **다시 로그인할 수 있다**는 사실이 빠진다 — 막으려면 `USE_YN='N'` 이고 그것은 **다른 축**이다(sys/user-role.md). 말하지 않으면 이 버튼이 계정을 잠그는 것으로 읽힌다. /"
 user.session.kill.done,FRONT,결과 — `{count}` 건을 끊었다. **고른 수와 다를 수 있고 다른 것이 사실**이다.
-user.session.self,FRONT,버튼이 왜 비활성인가 — 자기 계정의 세션은 끊을 수 없다(screen/user/requirements.md).
+user.session.self,FRONT,버튼이 왜 비활성인가 — 자기 계정의 세션은 끊을 수 없다(screen/admin/system/user/requirements.md).
 user.session.title,FRONT,탭 4 의 제목.
 user.stat.DISABLED,FRONT,`USE_YN='N'` — **관리자가 껐다**.
 user.stat.DORMANT,FRONT,`DORMANT_YN='Y'` — 배치가 걸었다.
@@ -1234,19 +1234,19 @@ user.stat.NORMAL,FRONT,접근 제어 체인 넷을 다 통과했다.
 user.state.ACTIVE,FRONT,상태 — 유효. 기간 안이다(**양끝 포함** — sys/INDEX.md).
 user.state.EXPIRED,FRONT,상태 — 만료. 종료일이 지났다. **행은 남는다** — 회수는 삭제가 아니다(sys/menu.md).
 user.state.SCHEDULED,FRONT,상태 — 예정. 오늘이 시작일 전이다. 세 탭이 함께 쓴다.
-user.tab.effective,FRONT,탭 5 — 유효 권한. sys/menu.md 의 미결을 닫는 진단이다(screen/user/requirements.md).
-user.tab.grant,FRONT,탭 2 — 개인 예외(AUTHZ-07 조회). **조회 전용**이다(screen/user/requirements.md).
+user.tab.effective,FRONT,탭 5 — 유효 권한. sys/menu.md 의 미결을 닫는 진단이다(screen/admin/system/user/requirements.md).
+user.tab.grant,FRONT,탭 2 — 개인 예외(AUTHZ-07 조회). **조회 전용**이다(screen/admin/system/user/requirements.md).
 user.tab.ip,FRONT,탭 3 — 접속 IP(AUTH-08).
 user.tab.role,FRONT,탭 1 — 보유 역할(USER-03).
 user.tab.session,FRONT,탭 4 — 활성 세션(AUTH-10).
 user.warn.disable,FRONT,저장 확인 앞의 경고 — 사용 중지하는 `{count}` 건은 다음 로그인부터 막힌다.
-user.warn.newPassword,FRONT,저장 확인 앞의 경고 — 신규 `{count}` 건에 임시 비밀번호가 발급된다(screen/user/requirements.md).
+user.warn.newPassword,FRONT,저장 확인 앞의 경고 — 신규 `{count}` 건에 임시 비밀번호가 발급된다(screen/admin/system/user/requirements.md).
 userAuth.col.action,FRONT,목록 컬럼 — 액션.
-userAuth.col.grantCnt,FRONT,좌 pane 컬럼 — **지금 유효한** 예외 건수(screen/user/requirements.md). 예정·만료를 세지 않는 것이 이름에 들어가야 했다 — *예외 건수* 로 두면 만료가 쌓인 계정에서 **화면의 어느 수와도 맞지 않는다**. /
+userAuth.col.grantCnt,FRONT,좌 pane 컬럼 — **지금 유효한** 예외 건수(screen/admin/system/user/requirements.md). 예정·만료를 세지 않는 것이 이름에 들어가야 했다 — *예외 건수* 로 두면 만료가 쌓인 계정에서 **화면의 어느 수와도 맞지 않는다**. /
 userAuth.col.grantCnt.tip,FRONT,그 툴팁 — **무엇을 세지 않는지**를 말한다. 값만 보고는 알 수 없다.
 userAuth.col.grantRsn,FRONT,목록 컬럼 — 사유. 〃 이 행이 곧 감사 기록이다(sys/logs.md).
 userAuth.col.menu,FRONT,목록 컬럼 — 메뉴(조상 경로 포함).
-userAuth.col.state,FRONT,목록 컬럼 — 상태(예정 · 유효 · 만료). **기간에서 파생**한다(screen/user/requirements.md).
+userAuth.col.state,FRONT,목록 컬럼 — 상태(예정 · 유효 · 만료). **기간에서 파생**한다(screen/admin/system/user/requirements.md).
 userAuth.col.validFromDt,FRONT,목록 컬럼 — 시작일. **필수**다.
 userAuth.col.validToDt,FRONT,목록 컬럼 — 종료일. 〃 **무기한이라는 선택지가 없다**(sys/menu.md).
 userAuth.grant.empty,FRONT,예외가 하나도 없을 때 — **고장이 아니다**. 예외는 예외다.
@@ -1254,19 +1254,19 @@ userAuth.grant.title,FRONT,하 pane 의 제목 — 예외 목록.
 userAuth.orphan,FRONT,부여는 있는데 그 액션이 정의에서 사라졌다 — **고아**다(seed.md).
 userAuth.period.reversed,FRONT,시작일이 종료일보다 늦다. **비어 있는 것은 여기서 말하지 않는다** — 컬럼의 `required` 가 그리드 공용 문구 (`grid.validation.required`)를 낸다(frontend/grid.md). 같은 말을 화면마다 다시 적으면 그것이 곧 번역해야 할 문장이 하나 더 느는 일이다. /
 userAuth.read.off,FRONT,조회를 회수해서 나머지 `{count}` 건도 함께 회수됐다 — 〃.
-userAuth.read.on,FRONT,다른 액션을 켜서 조회가 함께 켜졌다 — **조용히 하지 않는다**(screen/user/requirements.md).
+userAuth.read.on,FRONT,다른 액션을 켜서 조회가 함께 켜졌다 — **조용히 하지 않는다**(screen/admin/system/user/requirements.md).
 userAuth.read.viaRole,FRONT,역할이 조회를 주고 있어 조회를 따로 켜지 않았다 — 합집합이라 그것으로 충분하다.
 userAuth.revive.body,FRONT,그 본문 — `{from}` · `{to}` · `{reason}` 이 **대체될 이전 값**이다.
-userAuth.revive.title,FRONT,만료된 부여를 다시 켤 때의 확인 제목(screen/user/requirements.md).
+userAuth.revive.title,FRONT,만료된 부여를 다시 켤 때의 확인 제목(screen/admin/system/user/requirements.md).
 userAuth.scheduled.keep,FRONT,예정 부여를 켜려 했을 때 — **값을 건드리지 않는다**. 고치려면 목록에서 고친다.
-userAuth.search.menu,FRONT,트리 검색 — 메뉴명. **거르지 않는다**(screen/user/requirements.md · screen/menu/requirements.md 과 같은 어휘다).
-userAuth.search.user,FRONT,조회조건 — 사용자. **ID 와 이름을 함께** 본다(screen/user/requirements.md).
+userAuth.search.menu,FRONT,트리 검색 — 메뉴명. **거르지 않는다**(screen/admin/system/user/requirements.md · screen/menu/requirements.md 과 같은 어휘다).
+userAuth.search.user,FRONT,조회조건 — 사용자. **ID 와 이름을 함께** 본다(screen/admin/system/user/requirements.md).
 userAuth.state.ACTIVE,FRONT,상태 — 유효. 스위치가 켜지는 것은 이것 하나뿐이다.
 userAuth.state.EXPIRED,FRONT,상태 — 만료. 종료일이 지났다.
 userAuth.state.SCHEDULED,FRONT,상태 — 예정. 오늘이 시작일 전이다.
-userAuth.threshold,FRONT,한 번에 `{count}` 건을 골랐다 — *역할 신설을 검토하세요*(screen/user/requirements.md). **막지는 않는다**.
+userAuth.threshold,FRONT,한 번에 `{count}` 건을 골랐다 — *역할 신설을 검토하세요*(screen/admin/system/user/requirements.md). **막지는 않는다**.
 userAuth.tree.empty,FRONT,"사용자를 고르기 전의 트리 — *""사용자를 선택하세요""*."
 userAuth.tree.title,FRONT,우 pane 의 제목 — 권한 트리.
 userAuth.user.title,FRONT,좌 pane 의 제목 — 사용자 목록.
-userAuth.viaRole,FRONT,역할 경유 배지의 툴팁 — `{roles}` 가 역할명 목록이다(screen/user/requirements.md).
+userAuth.viaRole,FRONT,역할 경유 배지의 툴팁 — `{roles}` 가 역할명 목록이다(screen/admin/system/user/requirements.md).
 userAuth.viaRole.tag,FRONT,역할 경유 배지의 글자 — 좁은 칸이라 짧다. 이름은 툴팁이 말한다.

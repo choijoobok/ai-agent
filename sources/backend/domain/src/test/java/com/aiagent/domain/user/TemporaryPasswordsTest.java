@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
- * 관리자 발급 임시 비밀번호 — AUTH-07 · screen/user/requirements.md.
+ * 관리자 발급 임시 비밀번호 — AUTH-07 · screen/admin/system/user/requirements.md.
  *
  * <p><b>재는 것이 둘이다.</b> 만든 값이 <i>정책을 확실히 채우는가</i> 와 <i>사람이 옮겨 적을
  * 수 있는가</i>.
@@ -70,7 +70,7 @@ class TemporaryPasswordsTest {
     class Legible {
 
         /**
-         * 서로 헷갈리는 글자들 — screen/user/requirements.md 가 이 값을 <b>화면에 표시</b>하기로 한 결과다.
+         * 서로 헷갈리는 글자들 — screen/admin/system/user/requirements.md 가 이 값을 <b>화면에 표시</b>하기로 한 결과다.
          *
          * <p>{@code l}(엘)·{@code I}(아이 대문자)·{@code 1} 이 한 묶음이고,
          * {@code O}(오)·{@code 0} 이 한 묶음이다. 전화로 불러 주는 상황을 가정한다.

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * 메뉴 하나를 <b>조상 경로를 포함한 한 줄</b>로 편다 — {@code 사용자 &gt; 사용자 관리}.
  *
- * <p>frontend/tabs.md 의 검색 결과가 쓰는 형식이고, screen/user/requirements.md 의 탭 둘(개인 예외 · 유효 권한)이 같은
+ * <p>frontend/tabs.md 의 검색 결과가 쓰는 형식이고, screen/admin/system/user/requirements.md 의 탭 둘(개인 예외 · 유효 권한)이 같은
  * 형식을 요구했다. <b>목록에서는 리프 이름만으로 부족하다</b> — 같은 이름의 리프가 다른
  * 가지에 있을 수 있고, 무엇보다 <i>"이게 어느 화면이지"</i> 를 코드로 되짚게 만든다.
  *

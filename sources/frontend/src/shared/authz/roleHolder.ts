@@ -26,7 +26,7 @@ import { GRANT_TONE, grantDisplay, type GrantState } from '@/shared/authz/grantS
 
 export type { GrantState } from './grantState';
 
-/** 서버 `RoleHolderRow` 와 1:1. <b>읽기 전용이며 저장 대상이 아니다</b>(screen/user/requirements.md 이 고친다). */
+/** 서버 `RoleHolderRow` 와 1:1. <b>읽기 전용이며 저장 대상이 아니다</b>(screen/admin/system/user/requirements.md 이 고친다). */
 export interface RoleHolderRow {
   userId: string;
   userNm: string;

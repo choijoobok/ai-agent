@@ -84,7 +84,7 @@ export interface UserAuthTreeRow {
    * 둘**이 되고, 그 둘이 갈리는 순간 *"트리에는 있는데 목록에 없다"* 가 된다.
    *
    * <p>`definedActions` 에 없는 값이 섞여 있을 수 있다 — API 가 사라져 고아가 된 부여이며
-   * **지우지 않는다**(screen/user/requirements.md · seed.md). 다만 이 화면에서는 **지울 수는 있다**: screen/user/requirements.md 이
+   * **지우지 않는다**(screen/admin/system/user/requirements.md · seed.md). 다만 이 화면에서는 **지울 수는 있다**: screen/admin/system/user/requirements.md 이
    * *잘못 등록한 행 정리* 를 셋째 수단으로 적어 두었고, 그 판단은 사람이 한다.
    */
   grants: PersonalGrant[];
@@ -114,7 +114,7 @@ export interface GrantRow {
   validToDt: string | null;
   grantRsn: string | null;
   /**
-   * 이 메뉴에 그 액션이 **정의돼 있는가** — 아니면 **고아**다(screen/user/requirements.md · seed.md).
+   * 이 메뉴에 그 액션이 **정의돼 있는가** — 아니면 **고아**다(screen/admin/system/user/requirements.md · seed.md).
    *
    * <p>API 가 사라져 미정의가 된 부여이며 트리에서는 `—` 로 보인다. 목록에는 보여야
    * **사람이 판단**할 수 있다 — 배포가 운영 결정을 지우지 않는다.
@@ -122,7 +122,7 @@ export interface GrantRow {
   defined: boolean;
 }
 
-/** 저장이 보내는 행 하나 — **행 상태가 있다**(screen/user/requirements.md · frontend/grid.md). */
+/** 저장이 보내는 행 하나 — **행 상태가 있다**(screen/admin/system/user/requirements.md · frontend/grid.md). */
 export interface UserAuthSaveRow {
   rowState: RowState;
   menuCd: string;

@@ -26,7 +26,7 @@ import { VIA_PERSONAL } from '@/modules/system/features/menu/types';
  * 이 화면이 <i>무엇을 쓰는가</i>(탭 1) · <i>누가 닿는가</i>(탭 2) · <i>누가 줬는가</i>(탭 3).
  *
  * <p><b>셋 다 조회 전용이다.</b> 매핑은 시드로만 바뀌고(backend/api.md), 권한 편집은
- * {@code ROLE_AUTH_MGMT}와 개인 예외(screen/user/requirements.md)의 일이다 — 여기서 고칠 수 있게 하면
+ * {@code ROLE_AUTH_MGMT}와 개인 예외(screen/admin/system/user/requirements.md)의 일이다 — 여기서 고칠 수 있게 하면
  * <b>같은 사실을 고치는 화면이 둘</b>이 된다.
  *
  * <h2>판이 antd `Table` 이었다 — 2026-08-31 에 그리드가 됐다</h2>
@@ -43,7 +43,7 @@ import { VIA_PERSONAL } from '@/modules/system/features/menu/types';
  * <h2>탭을 열 때 부른다</h2>
  *
  * <p>셋을 한꺼번에 부르면 보지도 않을 계산 둘이 매번 딸려 오고, 그중 <i>사용 가능 사용자</i>
- * 는 두 경로의 합집합이라 가장 비싸다. screen/user/requirements.md 이 탭 다섯에 대해 같은 판단을 내렸고 그
+ * 는 두 경로의 합집합이라 가장 비싸다. screen/admin/system/user/requirements.md 이 탭 다섯에 대해 같은 판단을 내렸고 그
  * 근거가 여기서도 그대로다.
  *
  * <p><b>한 번 부른 탭은 메뉴가 바뀔 때까지 다시 부르지 않는다.</b> 탭을 오가는 것은 조회가
@@ -52,7 +52,7 @@ import { VIA_PERSONAL } from '@/modules/system/features/menu/types';
  *
  * <h2>선택은 <b>prop 으로</b> 온다 — 핸들이 아니다</h2>
  *
- * <p>{@code USER_MGMT} 는 {@code UserDetailTabsHandle.select} 를 마스터가 부른다(screen/user/requirements.md).
+ * <p>{@code USER_MGMT} 는 {@code UserDetailTabsHandle.select} 를 마스터가 부른다(screen/admin/system/user/requirements.md).
  * 여기서는 갈린다.
  *
  * <table>
@@ -344,7 +344,7 @@ const grantText = grantDisplay(GRANT_LABEL);
  * 무엇이 없는가</i> 가 보인다. 있는 것만 나열하면 두 행을 세로로 비교할 수 없다.
  *
  * <p><b>컬럼 넷이지 태그 넷이 아니다</b>(2026-08-31). 한 칸에 태그 넷을 넣으면 그 컬럼은
- * <b>정렬도 필터도 되지 않고</b> 엑셀에는 배열이 그대로 나간다 — screen/user/requirements.md 의 유효 권한
+ * <b>정렬도 필터도 되지 않고</b> 엑셀에는 배열이 그대로 나간다 — screen/admin/system/user/requirements.md 의 유효 권한
  * 탭이 같은 자리에서 이미 <b>컬럼 넷</b>을 골랐고, 그 판단이 여기서도 그대로다.
  *
  * <p>{@code —} 가 없는 것이 그쪽과 갈리는 자리다. 저기서는 <i>줄 것이 없다</i>(미정의
@@ -427,7 +427,7 @@ function buildUserColumns(): ColumnDef<MenuUserRow>[] {
         <b>역할명 또는 개인 예외</b> — backend/security.md 의 메뉴→사용자 식이 두 갈래의 합집합이며, 이
         칸이 <i>어느 쪽을 회수해야 하나</i> 에 답한다.
 
-        {@code display} 가 아니라 {@code derive} 인 이유는 screen/user/requirements.md 의 같은 칸과 같다 —
+        {@code display} 가 아니라 {@code derive} 인 이유는 screen/admin/system/user/requirements.md 의 같은 칸과 같다 —
         텍스트 칸에서는 {@code display} 가 걸리지 않아 `PERSONAL` 이 그대로 보인다. 정렬·
         필터·엑셀이 보아야 하는 것도 <i>개인 예외</i> 라는 글자이지 서버의 자리 표시자가
         아니며, 원본 코드가 필요한 칸은 {@code roleId} 다.

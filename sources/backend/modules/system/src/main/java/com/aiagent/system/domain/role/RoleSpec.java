@@ -66,7 +66,7 @@ public final class RoleSpec {
      * 고치는 것은 <b>아무에게도 영향이 없어 가장 안전한 편집</b>이다 — 감출 이유가 없다.
      *
      * <p><b>부여 상태도 없다</b> — {@code SYS_ROLE_MENU_AUTH} 에 기간 컬럼이 없으므로
-     * (sys/menu.md) <b>상태 자체가 없다</b>. screen/user/requirements.md 이 개인 예외에서 그것을 넣었다 뺐다 한 것과
+     * (sys/menu.md) <b>상태 자체가 없다</b>. screen/admin/system/user/requirements.md 이 개인 예외에서 그것을 넣었다 뺐다 한 것과
      * 갈리는 자리다.
      */
     public static final QuerySpec ROLE_PICK_SPEC = QuerySpec.of("roleAuthRole")

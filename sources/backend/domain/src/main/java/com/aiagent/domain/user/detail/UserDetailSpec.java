@@ -7,7 +7,7 @@ import com.aiagent.domain.authz.entity.QSysUserRole;
 import com.aiagent.domain.user.entity.QSysUserIpAllow;
 
 /**
- * 디테일 탭의 화이트리스트 — screen/user/requirements.md · backend/api.md. <b>다섯 중 둘만 여기 있다.</b>
+ * 디테일 탭의 화이트리스트 — screen/admin/system/user/requirements.md · backend/api.md. <b>다섯 중 둘만 여기 있다.</b>
  *
  * <h2>스펙이 있는 탭과 없는 탭이 갈리는 기준</h2>
  *
@@ -18,7 +18,7 @@ import com.aiagent.domain.user.entity.QSysUserIpAllow;
  *   <tr><td>개인 예외 · 유효 권한</td><td><b>없다</b></td>
  *       <td>보여줄 컬럼의 <b>절반이 파생</b>이다({@code menuPath} · {@code effective} ·
  *           {@code grantState}) — SQL 이 모르는 값은 {@code ORDER BY} 대상이 될 수 없다</td></tr>
- * <tr><td>활성 세션</td><td><b>없다</b></td><td>원본이 DB 가 아니다 — 세션 스토어다(screen/user/requirements.md)</td></tr>
+ * <tr><td>활성 세션</td><td><b>없다</b></td><td>원본이 DB 가 아니다 — 세션 스토어다(screen/admin/system/user/requirements.md)</td></tr>
  * </table>
  *
  * <p>스펙이 없는 셋은 <b>전건을 낸다</b>({@code mode: 'all'} — backend/api.md). 그러면 정렬이

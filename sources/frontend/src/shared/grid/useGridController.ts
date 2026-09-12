@@ -907,7 +907,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
         await reloadHere();
       }
       /*
-        <b>응답을 함께 넘긴다</b>(screen/user/requirements.md). 대개 {@code null} 이지만 <b>재조회로는 얻을 수
+        <b>응답을 함께 넘긴다</b>(screen/admin/system/user/requirements.md). 대개 {@code null} 이지만 <b>재조회로는 얻을 수
         없는 값</b>을 저장이 만들어 내는 화면이 있다 — 신규 계정의 임시 비밀번호다.
       */
       saveApi.onSuccess?.(result);
@@ -957,7 +957,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
    *
    * <p><b>{@code save} 와 갈리는 자리가 둘이다.</b> 여기는 <b>미변경 행도 대상</b>이고
    * (고른 것이 곧 대상이다) <b>응답을 화면에 준다</b>({@code onSuccess}) — 임시 비밀번호처럼
-   * 재조회로는 다시 얻을 수 없는 값이 있기 때문이다(screen/user/requirements.md).
+   * 재조회로는 다시 얻을 수 없는 값이 있기 때문이다(screen/admin/system/user/requirements.md).
    */
   const runAction = useCallback(
     async (key: string) => {
@@ -1123,7 +1123,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
           await reloadHere();
         }
         /*
-          <b>재조회 뒤에 부른다.</b> 콜백이 여는 모달(발급된 임시 비밀번호 — screen/user/requirements.md)이 떠
+          <b>재조회 뒤에 부른다.</b> 콜백이 여는 모달(발급된 임시 비밀번호 — screen/admin/system/user/requirements.md)이 떠
           있는 동안 목록이 갈리는 것보다, 갈리고 난 다음에 뜨는 편이 낫다.
         */
         action.onSuccess?.(result);
@@ -1226,7 +1226,7 @@ export function useGridController<T>(options: GridControllerOptions<T>): GridCon
   const fetchAll = useCallback(
     async (limit: number): Promise<T[] | null> => {
       /*
-        <b>조회가 없는 그리드의 전량은 화면이 든 것 전부</b>다(frontend/grid.md · screen/user/requirements.md). 서버
+        <b>조회가 없는 그리드의 전량은 화면이 든 것 전부</b>다(frontend/grid.md · screen/admin/system/user/requirements.md). 서버
         페이징이 없으므로 그것이 실제로 전량이며, {@code null} 을 돌려주면 엑셀 <i>전체</i>
         가 <b>아무 말 없이 아무 일도 하지 않는다</b>.
       */

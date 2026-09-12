@@ -1,8 +1,9 @@
-package com.aiagent.api.user;
+// @feat FEAT-501
+package com.aiagent.system.api.user;
 
 import com.aiagent.api.trace.TraceId;
-import com.aiagent.api.user.request.UserIpSaveRequest;
-import com.aiagent.api.user.request.UserSessionKillRequest;
+import com.aiagent.system.api.user.request.UserIpSaveRequest;
+import com.aiagent.system.api.user.request.UserSessionKillRequest;
 import com.aiagent.core.error.BusinessException;
 import com.aiagent.core.error.CommonErrorCode;
 import com.aiagent.core.response.ApiResponse;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * {@code USER_MGMT} 디테일 중 접속 IP·활성 세션 — screen/user/requirements.md. <b>경로가 넷이다.</b>
+ * {@code USER_MGMT} 디테일 중 접속 IP·활성 세션 — screen/admin/system/user/requirements.md. <b>경로가 넷이다.</b>
  *
  * <table>
  *   <tr><th>탭</th><th>경로</th><th>액션</th></tr>
@@ -34,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <p>{@code UserController} 가 <i>"{@code X} 에 대응하는 경로도 아직 없다 — 활성 세션
  * 탭이 서는 슬라이스가 가져온다"</i> 고 적어 둔 자리다. {@code killSession} 은 접두 규칙의
- * <i>그 외</i> 에 걸려 {@code EXECUTE} 가 되고(backend/api.md), 그 판정이 screen/user/requirements.md 의 기준과
+ * <i>그 외</i> 에 걸려 {@code EXECUTE} 가 되고(backend/api.md), 그 판정이 screen/admin/system/user/requirements.md 의 기준과
  * 일치한다 — <b>우리 테이블의 컬럼을 쓰지 않는다.</b> 세션 스토어를 비울 뿐이며
  * {@code SYS_USER} 는 그대로다.
  *
@@ -44,15 +45,14 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <h2>권한 탭과 나눈 과도기 컨트롤러다</h2>
  *
- * <p>보유 역할·개인 예외 조회·유효 권한은 system 경계의 {@code UserAuthorizationController}로
- * 먼저 옮겼다(FEAT-502). 이 컨트롤러와 {@code /api/service/user} 경로는 접속 IP·활성 세션이
- * SLICE-504에서 이동할 때 사라진다. 같은 화면이라도 기능 소유 경계에 따라 나누는 과도기다.
+ * <p>보유 역할·개인 예외 조회·유효 권한은 system 경계의 {@code UserAuthorizationController}가
+ * 맡는다(FEAT-502). 이 컨트롤러는 접속 IP·활성 세션을 같은 system 정식 경로에서 맡는다.
  *
  * <p><b>활성 세션만 도메인 서비스가 아니다</b>({@link UserSessionService}) — 원천이 DB 가
  * 아니라 세션 스토어라 {@code api} 의 것이며, 도메인이 그것을 알면 backend/packages.md 이 갈린다.
  */
 @RestController
-@RequestMapping("/api/service/user")
+@RequestMapping("/api/service/system/user")
 public class UserDetailController {
 
     private final UserDetailQueryService queries;
@@ -112,7 +112,7 @@ public class UserDetailController {
     /**
      * 강제 로그아웃 — <b>이 화면의 유일한 {@code EXECUTE}</b>(sys/menu.md 의 {@code X}).
      *
-     * <p><b>자기 계정은 막는다</b>(screen/user/requirements.md). 그 자리에서 화면 밖으로 밀려나기 때문이며,
+     * <p><b>자기 계정은 막는다</b>(screen/admin/system/user/requirements.md). 그 자리에서 화면 밖으로 밀려나기 때문이며,
      * 되돌릴 사람이 그 사람 자신이다 — 화면도 버튼을 비활성으로 두고 사유를 붙이지만,
      * 요청 본문은 조작할 수 있으므로 서버가 다시 본다(sys/menu.md 원칙 P1).
      *

@@ -30,7 +30,7 @@ import type { RoleAuthGrant, RoleAuthTreeRow, RolePickRow } from '@/modules/syst
 /**
  * `ROLE_AUTH_MGMT` — screen/admin/system/role-auth/requirements.md. <b>저장 대상은 트리뿐이다.</b>
  *
- * <p>screen/user/requirements.md 의 개인 예외와 <b>같은 컴포넌트</b>이며 여기는 <b>덜어 내기만</b> 한다.
+ * <p>screen/admin/system/user/requirements.md 의 개인 예외와 <b>같은 컴포넌트</b>이며 여기는 <b>덜어 내기만</b> 한다.
  * 거기는 *"목록이 원본이고 트리는 그 투영"* 이었지만 `SYS_ROLE_MENU_AUTH` 에는 기간도 사유도
  * 없으므로(sys/menu.md) <b>넣을 것이 없어 트리가 전부</b>다 — 하단은 <b>영향 인원</b>이고
  * <b>읽기 전용</b>이다.
@@ -42,7 +42,7 @@ import type { RoleAuthGrant, RoleAuthTreeRow, RolePickRow } from '@/modules/syst
  *
  * <h2>`READ` 는 나머지 셋의 전제다 — 불변식 하나</h2>
  *
- * *다른 액션이 하나라도 켜져 있으면 `READ` 가 켜져 있다*(screen/user/requirements.md). <b>규칙 둘이 아니라
+ * *다른 액션이 하나라도 켜져 있으면 `READ` 가 켜져 있다*(screen/admin/system/user/requirements.md). <b>규칙 둘이 아니라
  * 불변식 하나</b>이며 양방향이 거기서 나온다 — `READ` 를 끄면 나머지도 함께 꺼지고,
  * `READ` 가 꺼진 채 다른 액션을 켜면 `READ` 도 함께 켜진다. <b>둘 다 조용히 하지 않는다.</b>
  *
@@ -56,7 +56,7 @@ import type { RoleAuthGrant, RoleAuthTreeRow, RolePickRow } from '@/modules/syst
  *
  * <p><b>칸은 트리 ①에 있다</b>(2026-08-31). 브레드크럼 슬롯에 두었더니 값이 <b>한 커밋
  * 늦게</b> 도착해 한글이 두 번 입력됐고, 자리도 <i>조회조건 숨기기</i> 옆이라 무엇을
- * 검색하는지가 화면에 없었다 — screen/user/requirements.md 에서 겪은 그것이며 세 트리 화면이 같은 구조였다.
+ * 검색하는지가 화면에 없었다 — screen/admin/system/user/requirements.md 에서 겪은 그것이며 세 트리 화면이 같은 구조였다.
  */
 
 const MENU_CD = 'ROLE_AUTH_MGMT';
@@ -117,7 +117,7 @@ export function RoleAuthMgmtPage() {
 
   /**
    * <b>`useGridController` 가 아니라 `useQuery` 다.</b> 저것은 조건·정렬·페이징을 들고 있는데
-   * 트리에는 <b>하나도 없다</b>(screen/user/requirements.md) — 쓰면 절반이 죽은 채로 붙어 있게 되고, 다음 사람이
+   * 트리에는 <b>하나도 없다</b>(screen/admin/system/user/requirements.md) — 쓰면 절반이 죽은 채로 붙어 있게 되고, 다음 사람이
    * *왜 여기서만 안 되나* 를 묻는다. `MENU_TREE` 와 같은 판단이다.
    *
    * <p>{@code enabled} 가 선택 여부다 — 역할을 고르기 전에는 요청이 나가지 않는다.
@@ -140,7 +140,7 @@ export function RoleAuthMgmtPage() {
   }, [original, edits]);
 
   /**
-   * 정의된 조합만 센다 — <b>고아 부여는 화면이 표현하지 못한다</b>(screen/user/requirements.md).
+   * 정의된 조합만 센다 — <b>고아 부여는 화면이 표현하지 못한다</b>(screen/admin/system/user/requirements.md).
    *
    * <p>API 가 사라져 미정의가 된 부여는 셀이 `—` 라 켜고 끌 수 없고, 저장 페이로드에도
    * 실리지 않는다. 그것을 차이에 넣으면 <b>아무것도 안 만졌는데 미저장</b>이 된다 —
@@ -149,7 +149,7 @@ export function RoleAuthMgmtPage() {
   const diff = useMemo(() => countDiff(rows, original, granted), [rows, original, granted]);
   const dirty = diff.added > 0 || diff.removed > 0;
   /**
-   * 미저장 변경이 있는 메뉴들 — 메뉴명 옆의 `✎` 다(2026-09-01 요청 · screen/user/requirements.md 와 같은 표시).
+   * 미저장 변경이 있는 메뉴들 — 메뉴명 옆의 `✎` 다(2026-09-01 요청 · screen/admin/system/user/requirements.md 와 같은 표시).
    *
    * <p><b>건수와 같은 판정에서 나온다</b>({@link countDiff}) — 저장 확인의 <i>추가 N · 삭제
    * M</i> 과 트리의 표시가 갈리면 <b>어느 쪽이 맞는지 알 수 없다</b>. 그래서 세는 함수가
@@ -163,7 +163,7 @@ export function RoleAuthMgmtPage() {
   const dirtyMenus = diff.menus;
 
   /**
-   * 스위치 하나 — <b>불변식이 함께 돈다</b>(screen/user/requirements.md).
+   * 스위치 하나 — <b>불변식이 함께 돈다</b>(screen/admin/system/user/requirements.md).
    *
    * <p><b>자동은 줄이는 쪽으로만 연쇄한다.</b> `READ` 를 켠다고 나머지가 켜지지는 않는다 —
    * 끄는 것은 축소라 안전하고 켜는 것은 확장이라 명시해야 한다. 다른 액션을 켤 때 `READ` 가
@@ -189,7 +189,7 @@ export function RoleAuthMgmtPage() {
 
       if (next) {
         held.add(action);
-        // 확장은 명시해야 한다 — 그래도 이 조작 자체가 이미 확장의 의사표시다(screen/user/requirements.md).
+        // 확장은 명시해야 한다 — 그래도 이 조작 자체가 이미 확장의 의사표시다(screen/admin/system/user/requirements.md).
         if (action !== 'READ' && !held.has('READ') && defined.has('READ')) {
           held.add('READ');
           notice = label(MSG.ROLE_AUTH_READ_ON);
@@ -198,7 +198,7 @@ export function RoleAuthMgmtPage() {
         held.delete(action);
         if (action === 'READ') {
           /*
-            도달할 수 없는 권한을 남기면 <b>인가 데이터가 거짓말을 한다</b>(screen/user/requirements.md).
+            도달할 수 없는 권한을 남기면 <b>인가 데이터가 거짓말을 한다</b>(screen/admin/system/user/requirements.md).
 
             <b>정의된 액션만 센다.</b> 화면이 {@code —} 로 그리는 고아 부여(API 가 사라진
             조합)까지 세면 <i>화면에 보이지 않는 것</i>을 껐다고 말하게 되고 — 실제로
@@ -311,7 +311,7 @@ export function RoleAuthMgmtPage() {
    *
    * <p>근거는 {@code TreeSearch} 에 있다 — 자리도 자리이지만 슬롯에 두면 값이 <b>한 커밋
    * 늦게</b> 도착해 <b>한글이 두 번 입력된다</b>. 개인 예외 화면에서 실물로 겪은 그것이며
-   * (screen/user/requirements.md) 여기도 같은 구조였다.
+   * (screen/admin/system/user/requirements.md) 여기도 같은 구조였다.
    */
   const treeSearch = useMemo(
     () => ({ placeholder: MSG.ROLE_AUTH_SEARCH_MENU, value: term, onChange: setTerm }),
@@ -329,7 +329,7 @@ export function RoleAuthMgmtPage() {
   /**
    * 제목 뒤에 붙는 <b>고른 역할</b> — frontend/grid.md.
    *
-   * <p><b>모양이 둘로 갈리는 것은 컴포넌트의 차이</b>다(screen/user/requirements.md 와 같다). 하단은 컨트롤러를
+   * <p><b>모양이 둘로 갈리는 것은 컴포넌트의 차이</b>다(screen/admin/system/user/requirements.md 와 같다). 하단은 컨트롤러를
    * 넘길 수 있어 판정을 {@code DataGrid} 에 두고, 트리는 <b>완성된 글자</b>를 받는다 —
    * 둘이 <b>같은 선택 하나</b>에서 나오므로 갈릴 수 없다.
    */
@@ -553,7 +553,7 @@ function toGrantMap(rows: RoleAuthTreeRow[]): Map<string, Set<Action>> {
  *
  * <p>고아 부여(`definedActions` 에 없는데 `grantedActions` 에 있는 것)는 화면이 `—` 로
  * 그리므로 켜고 끌 수 없고, 여기서도 빠진다. 서버가 <b>정의된 조합 안에서만</b> 지우므로
- * 그 행은 손대지 않은 채 남는다 — screen/user/requirements.md 의 *"배포가 운영 결정을 지우지 않는다"* 다.
+ * 그 행은 손대지 않은 채 남는다 — screen/admin/system/user/requirements.md 의 *"배포가 운영 결정을 지우지 않는다"* 다.
  */
 function toGrantList(
   rows: RoleAuthTreeRow[],
@@ -638,7 +638,7 @@ function buildRoleColumns(): ColumnDef<RolePickRow>[] {
  * <b>가장 안전한 편집</b>이며, 감추면 *켜기 전에 구성한다* 는 동선이 막힌다(screen/admin/system/role-auth/requirements.md).
  *
  * <p><b>부여 상태도 없다</b> — `SYS_ROLE_MENU_AUTH` 에 기간 컬럼이 없으므로 <b>상태 자체가
- * 없다</b>(sys/menu.md). screen/user/requirements.md 이 개인 예외에서 그것을 넣었다 뺐다 한 것과 갈리는 자리다.
+ * 없다</b>(sys/menu.md). screen/admin/system/user/requirements.md 이 개인 예외에서 그것을 넣었다 뺐다 한 것과 갈리는 자리다.
  *
  * <p><b>메뉴명은 폼에 없다.</b> 서버로 나가지 않기 때문이며(클래스 주석), 트리 검색은
  * `MENU_TREE` 와 같은 자리 — 브레드크럼 줄 — 에 둔다. 같은 일을 하는 컨트롤이 화면마다 다른

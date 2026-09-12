@@ -31,7 +31,7 @@
 #   DASHBOARD                대시보드                 ← 유일한 최상위 리프
 #   SYSTEM                   시스템                   ← 모듈 (1단)
 #     ├ USER                 사용자
-#     │   ├ USER_MGMT        사용자 관리              /user
+  #     │   ├ USER_MGMT        사용자 관리              /admin/system/user
 #     │   └ USER_AUTH_MGMT   개인 예외 권한           /user-auth
 #     ├ MENU                 메뉴 관리
 #     │   ├ MENU_TREE        메뉴 트리                /admin/system/menu
@@ -73,8 +73,8 @@ menus:
   - code: USER
     parent: SYSTEM
   - code: USER_MGMT
-    parent: USER
-    url: /user
+      parent: USER
+      url: /admin/system/user
     export: true
   - code: USER_AUTH_MGMT
     parent: USER

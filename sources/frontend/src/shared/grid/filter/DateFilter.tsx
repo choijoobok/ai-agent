@@ -26,7 +26,7 @@ import {
  * <i>고를 수 없는 자릿수</i> 이며, 사용자는 자기가 고른 일이 무시된다는 것을 알 수 없다.
  *
  * <p><b>한쪽만 채우면 단측이다</b> — 반대쪽 끝에 사람이 아무 값이나 넣게 하면 그 값이
- * 곧 조건이 된다(검색 폼의 {@code gte}·{@code lte} 와 같은 자리 · screen/user/requirements.md).
+ * 곧 조건이 된다(검색 폼의 {@code gte}·{@code lte} 와 같은 자리 · screen/admin/system/user/requirements.md).
  */
 export interface DateFilterParams {
   precision: DatePrecision;
@@ -63,7 +63,7 @@ export function DateFilter(props: CustomFilterProps & DateFilterParams) {
   /*
     <b>{@code RangePicker} 가 아니라 달력 <i>둘</i> 이다.</b> 범위 컨트롤은 두 끝을 함께
     받으므로 <b>한쪽만 고를 수가 없고</b>, 그것이 이 필터의 계약이다(단측). 검색 폼이
-    같은 문제를 만났을 때도 {@code gte}·{@code lte} 에서 달력 하나로 갈랐다(screen/user/requirements.md) —
+    같은 문제를 만났을 때도 {@code gte}·{@code lte} 에서 달력 하나로 갈랐다(screen/admin/system/user/requirements.md) —
     거기서는 <i>연산자</i> 가 축이었고 여기서는 <b>두 칸이 각자 비어 있을 수 있다</b>.
   */
   const picker = (index: 0 | 1, placeholder: string) => (

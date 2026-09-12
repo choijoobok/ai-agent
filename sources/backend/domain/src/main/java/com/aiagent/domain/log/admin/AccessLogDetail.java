@@ -3,7 +3,7 @@ package com.aiagent.domain.log.admin;
 /**
  * 요청 전문 하나 — screen/log/access/requirements.md. <b>한 행의 {@code nclob} 만 가져온다.</b>
  *
- * <p>목록이 이 값을 싣지 못하므로 {@code getDetail} 이 돌아왔다. screen/user/requirements.md 가 편집 폼을
+ * <p>목록이 이 값을 싣지 못하므로 {@code getDetail} 이 돌아왔다. screen/admin/system/user/requirements.md 가 편집 폼을
  * 없애며 {@code getDetail} 을 없앤 것과 정반대이며, <b>{@code getDetail} 의 존재 이유가
  * 편집 폼이 아니라 컬럼 하나</b>라는 것이 이 화면의 답이다.
  *

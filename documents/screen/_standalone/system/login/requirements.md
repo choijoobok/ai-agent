@@ -230,7 +230,7 @@
 | `/api/public/system/auth/saveResetPassword` | POST | ③ 완료 | **있다** |
 
 **이름을 `reset` 으로 묶는다.** 셋이 한 묶음임이 경로만 봐도 보이고, 이미 있는
-`/api/service/user/savePasswordReset`(**관리자 임시 비밀번호 발급**)과 **이름이 겹치지 않는다** —
+`/api/service/system/user/savePasswordReset`(**관리자 임시 비밀번호 발급**)과 **이름이 겹치지 않는다** —
 둘은 다른 일이며 겹치면 로그에서 구분되지 않는다.
 
 **정책만 `GET` 인 것이 규약이다** — `common`·`public` 의 조회는 GET, 나머지는 POST.

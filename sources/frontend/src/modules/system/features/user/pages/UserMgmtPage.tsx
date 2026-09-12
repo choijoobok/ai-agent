@@ -1,3 +1,4 @@
+// @feat FEAT-501
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { FillColumn } from '@/shared/components/FillColumn';
@@ -15,17 +16,17 @@ import type { ColumnDef, GridIssue, SelectOption } from '@/shared/grid/types';
 import { SearchForm, type SearchFormHandle } from '@/shared/searchform/SearchForm';
 import { useSearchFormHeader } from '@/shared/searchform/useSearchFormHeader';
 import type { SearchField } from '@/shared/searchform/types';
-import { USER_ENDPOINTS } from '@/features/user/api/endpoints';
-import { getRoleCandidates } from '@/features/user/api/userApi';
-import { IssuedPasswordModal } from '@/features/user/components/IssuedPasswordModal';
+import { USER_ENDPOINTS } from '@/modules/system/features/user/api/endpoints';
+import { getRoleCandidates } from '@/modules/system/features/user/api/userApi';
+import { IssuedPasswordModal } from '@/modules/system/features/user/components/IssuedPasswordModal';
 import {
   UserDetailTabs,
   type UserDetailTabsHandle,
-} from '@/features/user/components/UserDetailTabs';
-import type { IssuedPassword, UserRow } from '@/features/user/types';
+} from '@/modules/system/features/user/components/UserDetailTabs';
+import type { IssuedPassword, UserRow } from '@/modules/system/features/user/types';
 
 /**
- * `USER_MGMT` — screen/user/requirements.md. <b>액션 넷을 모두 갖는 유일한 화면</b>이다(sys/menu.md — `R S E X`).
+ * `USER_MGMT` — screen/admin/system/user/requirements.md. <b>액션 넷을 모두 갖는 유일한 화면</b>이다(sys/menu.md — `R S E X`).
  *
  * <h2>목록이 곧 상세다</h2>
  *
@@ -35,7 +36,7 @@ import type { IssuedPassword, UserRow } from '@/features/user/types';
  * <h2>계정을 못 쓰게 하는 넷을 <b>컬럼이 가른다</b></h2>
  *
  * sys/user-role.md 규칙 3은 넷이 서로 덮지 않아야 한다고 정했다. 그것을 지키는 것은 편집 폼이
- * 아니라 <b>누가 거는 것인가로 컬럼을 가르는 것</b>이다(screen/user/requirements.md) — 관리자가 거는 둘
+ * 아니라 <b>누가 거는 것인가로 컬럼을 가르는 것</b>이다(screen/admin/system/user/requirements.md) — 관리자가 거는 둘
  * (`USE_YN` · 사용 기간)만 셀이 열리고, 시스템이 거는 셋(`LOCK_YN` · `DORMANT_YN` ·
  * `LOGIN_FAIL_CNT`)은 <b>읽기 전용</b>이며 ①의 버튼이 자기 컬럼만 쓴다.
  *
@@ -46,11 +47,11 @@ import type { IssuedPassword, UserRow } from '@/features/user/types';
  *
  * frontend/grid.md 이 *"첫 실행 버튼이 생기는 화면이 `api.actions[]` 를 가져온다"* 고 미뤄 두었던
  * 그것이다. 셋 다 <b>액션은 `SAVE`</b> 인데 버튼이 셋인 것은, 기준이 *버튼이 위험해
- * 보이는가* 가 아니라 <b>우리 테이블의 컬럼을 쓰는가</b>이기 때문이다(screen/user/requirements.md).
+ * 보이는가* 가 아니라 <b>우리 테이블의 컬럼을 쓰는가</b>이기 때문이다(screen/admin/system/user/requirements.md).
  *
  * <h2>디테일 탭 다섯 — 축은 상하다</h2>
  *
- * screen/user/requirements.md 가 정했다. 마스터에 컬럼이 열여덟이라 좌우로 나누면 가로가 모자란다 —
+ * screen/admin/system/user/requirements.md 가 정했다. 마스터에 컬럼이 열여덟이라 좌우로 나누면 가로가 모자란다 —
  * 스플리터로 비율을 바꾸고 양쪽 다 접을 수 있다(frontend/grid.md).
  *
  * <p><b>거부할 수 있는 선택이다.</b> 편집이 있는 탭이 둘(보유 역할 · 접속 IP)이라, 미저장
@@ -64,14 +65,14 @@ export function UserMgmtPage() {
   const searchForm = useRef<SearchFormHandle>(null);
   const tabs = useRef<UserDetailTabsHandle | null>(null);
   /**
-   * 방금 발급된 임시 비밀번호 — <b>이 응답에만 있는 값</b>이다(screen/user/requirements.md).
+   * 방금 발급된 임시 비밀번호 — <b>이 응답에만 있는 값</b>이다(screen/admin/system/user/requirements.md).
    *
    * <p>재조회로 다시 얻을 수 없어 모달을 닫으면 사라진다. 상태에 담아 두는 것이 아니라
    * <b>모달이 떠 있는 동안만</b> 들고 있으며, 닫을 때 비운다.
    */
   const [issued, setIssued] = useState<IssuedPassword[]>([]);
 
-  /** 자기 자신에게 할 수 없는 것의 기준 — screen/user/requirements.md. */
+  /** 자기 자신에게 할 수 없는 것의 기준 — screen/admin/system/user/requirements.md. */
   const myUserId = useAuthStore((state) => state.user?.userId ?? '');
 
   const header = useSearchFormHeader();
@@ -83,7 +84,7 @@ export function UserMgmtPage() {
   );
 
   /*
-    역할 후보 — <b>조회조건과 보유 역할 탭이 같은 목록을 본다</b>(screen/user/requirements.md 탭 1).
+    역할 후보 — <b>조회조건과 보유 역할 탭이 같은 목록을 본다</b>(screen/admin/system/user/requirements.md 탭 1).
 
     `ROLE_MGMT` 의 경로를 부르지 않는다. 그 요청은 <b>역할 관리의 `READ`</b> 를 요구하게
     되고(backend/api.md — 매핑이 경로를 따라간다), 그러면 사용자 관리만 가진 사람이 역할을
@@ -121,7 +122,7 @@ export function UserMgmtPage() {
    * <p>건수는 <i>얼마나</i> 를 말할 뿐이라 <b>무엇이 일어나는지</b>를 말하지 못한다.
    * 여기서 말해야 하는 것 둘 — <b>신규 행에는 임시 비밀번호가 발급되고</b>(관리자가 값을
    * 정하지 않으므로 그것을 전할 준비가 필요하다), <b>사용 중지는 다음 로그인부터
-   * 막는다</b>(지금 세션은 살아 있다 — screen/user/requirements.md).
+   * 막는다</b>(지금 세션은 살아 있다 — screen/admin/system/user/requirements.md).
    */
   const warnSave = useCallback((rows: GridRow<UserRow>[]): string[] => {
     const lines: string[] = [];
@@ -146,7 +147,7 @@ export function UserMgmtPage() {
         validate: { grid: validateUserIds },
         warn: warnSave,
         /*
-          <b>저장이 값을 돌려준다</b> — 신규 계정의 임시 비밀번호다(screen/user/requirements.md). 관리자가
+          <b>저장이 값을 돌려준다</b> — 신규 계정의 임시 비밀번호다(screen/admin/system/user/requirements.md). 관리자가
           비밀번호를 정하는 자리를 두지 않은 결과이며, DB 에는 해시가 들어가므로 <b>이
           응답을 놓치면 다시 얻을 수 없다</b>: 재조회는 답을 갖고 있지 않다.
 
@@ -180,7 +181,7 @@ export function UserMgmtPage() {
           label: MSG.USER_ACTION_RESET_PWD,
           url: USER_ENDPOINTS.savePasswordReset,
           toTargets,
-          // 발급된 값은 <b>이 응답에만</b> 있다 — 재조회로 다시 얻을 수 없다(screen/user/requirements.md).
+          // 발급된 값은 <b>이 응답에만</b> 있다 — 재조회로 다시 얻을 수 없다(screen/admin/system/user/requirements.md).
           onSuccess: (result: unknown) => setIssued(asIssued(result)),
         },
       ],
@@ -223,7 +224,7 @@ export function UserMgmtPage() {
         lockDtm: null,
         loginFailCnt: 0,
         dormantYn: false,
-        // 저장하면 서버가 임시 비밀번호를 발급하며 `'Y'` 가 된다(screen/user/requirements.md).
+        // 저장하면 서버가 임시 비밀번호를 발급하며 `'Y'` 가 된다(screen/admin/system/user/requirements.md).
         pwdInitYn: false,
         pwdChgDtm: null,
         regId: null,
@@ -254,7 +255,7 @@ export function UserMgmtPage() {
   const confirmDiscard = useConfirmDiscard();
 
   /**
-   * 사용자 선택 — frontend/grid.md 의 상태 셋을 그대로 편다(screen/user/requirements.md).
+   * 사용자 선택 — frontend/grid.md 의 상태 셋을 그대로 편다(screen/admin/system/user/requirements.md).
    *
    * <p><b>미저장 신규 행은 잠긴 상태</b>다. `SYS_USER_ROLE` 이 `SYS_USER` 를 FK 로
    * 참조하므로(sys/user-role.md) 부모가 저장되기 전에는 자식을 만들 수 없다 — <i>신규 사용자에게
@@ -303,7 +304,7 @@ export function UserMgmtPage() {
       />
 
       <div style={{ flex: 1, minHeight: 0 }}>
-        {/* 축은 상하다 — 마스터에 컬럼이 열여덟이라 좌우로는 가로가 모자란다(screen/user/requirements.md). */}
+        {/* 축은 상하다 — 마스터에 컬럼이 열여덟이라 좌우로는 가로가 모자란다(screen/admin/system/user/requirements.md). */}
         <SplitPane
           storageKey="user"
           first={(collapsed, expand) => (
@@ -316,7 +317,7 @@ export function UserMgmtPage() {
               collapsed={collapsed}
               onExpand={expand}
               /*
-                <b>삭제 컬럼이 없다</b>(screen/user/requirements.md) — `SYS_USER` 는 물리 삭제를 하지 않는다
+                <b>삭제 컬럼이 없다</b>(screen/admin/system/user/requirements.md) — `SYS_USER` 는 물리 삭제를 하지 않는다
                 (sys/user-role.md · USER-02). 못 쓰게 하는 수단은 `USE_YN='N'` 이고 그것은 셀 편집이다.
               */
             />
@@ -370,7 +371,7 @@ function asIssued(result: unknown): IssuedPassword[] {
   return Array.isArray(result) ? (result as IssuedPassword[]) : [];
 }
 
-// ── 컬럼 (screen/user/requirements.md) ────────────────────────────────────────────────
+// ── 컬럼 (screen/admin/system/user/requirements.md) ────────────────────────────────────────────────
 
 /**
  * 컬럼 열넷 — <b>표시 다섯, 숨김 아홉</b>.
@@ -427,11 +428,11 @@ function buildColumns(myUserId: string): ColumnDef<UserRow>[] {
       header: MSG.USER_COL_STAT,
       headerTooltip: MSG.USER_COL_STAT_TIP,
       /*
-        <b>타입이 `code` 가 아니라 `text` 다</b>(screen/user/requirements.md) — `code` 는 공통코드 값을 위한
+        <b>타입이 `code` 가 아니라 `text` 다</b>(screen/admin/system/user/requirements.md) — `code` 는 공통코드 값을 위한
         것이고(frontend/packages.md) 이것은 서버가 계산하는 파생값이다.
 
         <b>정렬을 켜지 않는다.</b> SQL 이 모르는 값이라 `ORDER BY` 대상이 아니고, 켜면
-        서버 화이트리스트에 없어 400 이다(frontend/grid.md · screen/user/requirements.md 의 미결).
+        서버 화이트리스트에 없어 400 이다(frontend/grid.md · screen/admin/system/user/requirements.md 의 미결).
       */
       type: 'text',
       width: 100,
@@ -458,9 +459,9 @@ function buildColumns(myUserId: string): ColumnDef<UserRow>[] {
       width: 90,
       sortable: true,
       /*
-        <b>관리자가 건다</b>(screen/user/requirements.md) — 그래서 셀이 열린다.
+        <b>관리자가 건다</b>(screen/admin/system/user/requirements.md) — 그래서 셀이 열린다.
 
-        <b>자기 자신만 잠근다</b>(screen/user/requirements.md). 컬럼 전체가 아니라 <b>특정 행의 특정
+        <b>자기 자신만 잠근다</b>(screen/admin/system/user/requirements.md). 컬럼 전체가 아니라 <b>특정 행의 특정
         컬럼</b>만 막는 첫 자리이며, 감추지 않고 <b>보이되 막고 사유를 붙인다</b> —
         이것은 권한이 아니라 <b>대상 제약</b>이라 frontend/tabs.md(권한 없는 버튼은 감춘다)의
         예외가 아니라 <b>축이 다른 것</b>이다.
@@ -512,7 +513,7 @@ function buildColumns(myUserId: string): ColumnDef<UserRow>[] {
       options: LOCALE_OPTIONS,
     },
     /*
-      ── 시스템 축 — 전부 <b>읽기 전용</b>이다(screen/user/requirements.md) ──────────────
+      ── 시스템 축 — 전부 <b>읽기 전용</b>이다(screen/admin/system/user/requirements.md) ──────────────
 
       `editable` 을 적지 않는 것이 곧 잠그는 것이다(frontend/grid.md — 편집은 명시해야 열린다).
       푸는 것은 ①의 버튼이며 <b>그 API 가 자기 컬럼만 쓴다</b>.
@@ -581,10 +582,10 @@ function periodIssue(from: string | null, to: string | null): string | null {
   return from > to ? label(MSG.USER_PERIOD_REVERSED) : null;
 }
 
-// ── 조회조건 (screen/user/requirements.md) ────────────────────────────────────────────
+// ── 조회조건 (screen/admin/system/user/requirements.md) ────────────────────────────────────────────
 
 /**
- * 여덟 — screen/user/requirements.md 의 표 그대로다.
+ * 여덟 — screen/admin/system/user/requirements.md 의 표 그대로다.
  *
  * <p><b>기본값을 가진 칸이 하나도 없다</b>(2026-08-31). 계정 상태가 한동안 *사용중* 셋으로
  * 미리 걸려 있었는데, 그러면 첫 조회가 <b>이미 거른 목록</b>인데도 무엇으로 걸렀는지가
@@ -593,7 +594,7 @@ function periodIssue(from: string | null, to: string | null): string | null {
  *
  * <p><b>역할 만료 예정이 숫자 칸이 아니다.</b> 파생 조건은 부등호를 받지 못하므로
  * (backend/api.md · `FieldSpec#javaType`) *N일 이내* 라는 뜻을 서버의 번역 함수가 갖는다 —
- * 그래서 후보 콤보이고, 그 김에 screen/user/requirements.md 의 *기본값 미결* 이 **기본값 없음**으로 닫힌다.
+ * 그래서 후보 콤보이고, 그 김에 screen/admin/system/user/requirements.md 의 *기본값 미결* 이 **기본값 없음**으로 닫힌다.
  */
 function buildSearchFields(roleOptions: SelectOption[]): SearchField[] {
   return [
@@ -601,7 +602,7 @@ function buildSearchFields(roleOptions: SelectOption[]): SearchField[] {
       field: 'userId',
       label: MSG.USER_SEARCH_USER_ID,
       type: 'text',
-      // 앞 일치가 기본이다 — PK 인덱스를 타는 유일한 형태다(screen/user/requirements.md).
+      // 앞 일치가 기본이다 — PK 인덱스를 타는 유일한 형태다(screen/admin/system/user/requirements.md).
       op: 'startsWith',
       ops: ['eq', 'startsWith', 'contains'],
     },
@@ -621,7 +622,7 @@ function buildSearchFields(roleOptions: SelectOption[]): SearchField[] {
     },
     {
       /*
-        <b>화면이 보내는 값과 SQL 컬럼이 1:1 이 아니다</b>(screen/user/requirements.md) — 서버가 다섯 값을 네
+        <b>화면이 보내는 값과 SQL 컬럼이 1:1 이 아니다</b>(screen/admin/system/user/requirements.md) — 서버가 다섯 값을 네
         컬럼의 조건으로 번역한다. backend/api.md 가 *"와이어의 문제가 아니라 화이트리스트의
         문제"* 로 답한 그 자리이며, 로그인 이력의 결과 묶음(screen/log/access/requirements.md)에 이은 셋째다.
       */
@@ -660,7 +661,7 @@ function buildSearchFields(roleOptions: SelectOption[]): SearchField[] {
         <b>후보가 공통코드가 아니다</b> — 역할은 `SYS_ROLE` 의 행이고 운영 중에 늘어난다.
         `grpCd` 도 상수 배열도 쓸 수 없는 첫 칸이며, 그래서 화면이 조회해서 채운다
         (`getRoleCandidates`). <b>보유 역할 탭과 같은 목록</b>이다 — 같은 후보를 두 곳이
-        따로 물으면 그 둘이 갈리는 날이 온다(screen/user/requirements.md 탭 1).
+        따로 물으면 그 둘이 갈리는 날이 온다(screen/admin/system/user/requirements.md 탭 1).
       */
       options: roleOptions,
     },
@@ -676,7 +677,7 @@ function buildSearchFields(roleOptions: SelectOption[]): SearchField[] {
       })),
     },
     /*
-      <b>기간 둘은 비워 둔다</b>(2026-08-30 · screen/user/requirements.md — 기본값이 없다). 적지 않으면 폼이
+      <b>기간 둘은 비워 둔다</b>(2026-08-30 · screen/admin/system/user/requirements.md — 기본값이 없다). 적지 않으면 폼이
       시스템 기본 기간으로 채우는데, 그것은 <b>기간이 부하의 상한인 화면</b>의 규약이고
       (screen/log/access/requirements.md) 여기 둘은 <b>선택 필터</b>다.
 

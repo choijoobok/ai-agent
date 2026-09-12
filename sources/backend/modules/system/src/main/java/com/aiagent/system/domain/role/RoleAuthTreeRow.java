@@ -5,7 +5,7 @@ import com.aiagent.domain.authz.ActionType;
 import java.util.List;
 
 /**
- * 권한 트리의 한 행 — screen/admin/system/role-auth/requirements.md. <b>정의는 screen/user/requirements.md 가 갖고 여기는 덜어 내기만 한다.</b>
+ * 권한 트리의 한 행 — screen/admin/system/role-auth/requirements.md. <b>정의는 screen/admin/system/user/requirements.md 가 갖고 여기는 덜어 내기만 한다.</b>
  *
  * <p>셀 상태가 <b>일곱에서 넷</b>으로 준다. 기간 컬럼이 없으므로(sys/menu.md) <i>예정</i>·<i>만료</i>
  * 배지가 사라지고, <b>역할 자신이 원본</b>이라 <i>역할 경유 보유</i> 배지도 사라진다 —
@@ -19,7 +19,7 @@ import java.util.List;
  *   <tr><td>{@link #grantedActions}</td><td>이 역할이 <b>준</b> 액션 — 스위치의 켜짐이다</td></tr>
  * </table>
  *
- * <p><b>{@code —} 는 <i>안 줬다</i> 가 아니라 <i>줄 것이 없다</i> 다</b>(screen/user/requirements.md). 권한의 단위가
+ * <p><b>{@code —} 는 <i>안 줬다</i> 가 아니라 <i>줄 것이 없다</i> 다</b>(screen/admin/system/user/requirements.md). 권한의 단위가
  * {@code (MENU_CD, ACTION_CD)} 이고 그것이 뜻하는 바는 <b>이 메뉴에서 이 액션의 API 를 부를
  * 수 있다</b> 는 것이므로, 부를 API 가 없으면 부여할 것이 없다. 빈 스위치로 두면 <i>"줄 수
  * 있는데 안 준 것"</i> 으로 읽히고, 관리자가 켜서 저장했는데 사용자는 여전히 못 한다면
@@ -39,7 +39,7 @@ import java.util.List;
  *     {@code EXECUTE} 로 떨어지는 API 가 하나 생기면 시드 재생성으로 {@code —} 가 스위치로 바뀐다
  * @param grantedActions {@code SYS_ROLE_MENU_AUTH} 의 이 역할 · 이 메뉴 행들. <b>정의에 없는
  *     액션이 여기 있을 수 있다</b> — API 가 사라져 고아가 된 부여이며 <b>지우지 않는다</b>
- * (screen/user/requirements.md · seed.md): 배포가 운영 결정을 지우지 않는다
+ * (screen/admin/system/user/requirements.md · seed.md): 배포가 운영 결정을 지우지 않는다
  */
 public record RoleAuthTreeRow(
         String menuCd,

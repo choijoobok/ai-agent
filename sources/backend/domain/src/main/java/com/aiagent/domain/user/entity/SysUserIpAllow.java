@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
  *
  * <p><b>이 행을 읽는 검사는 아직 없다</b>(2026-08-30). AUTH-08 은 S 등급이고 sys/user-role.md 가
  * 그 검사를 <b>로그인 후처리 핸들러 체인</b>의 한 클래스로 배정해 두었다 — 이 슬라이스가
- * 세우는 것은 <b>값을 관리하는 화면</b>이며(screen/user/requirements.md 탭 3), 집행은 그 핸들러가 설 때 붙는다.
+ * 세우는 것은 <b>값을 관리하는 화면</b>이며(screen/admin/system/user/requirements.md 탭 3), 집행은 그 핸들러가 설 때 붙는다.
  * 순서가 이쪽인 이유는 <b>검사가 먼저 서면 아무도 값을 넣을 수 없어 전원이 잠기기</b>
  * 때문이다.
  */

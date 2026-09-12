@@ -1,10 +1,11 @@
+// @feat FEAT-501
 // @feat FEAT-502
 package com.aiagent.system.api.user;
 
 import com.aiagent.api.authz.AuthzInvalidator;
 import com.aiagent.api.message.RequestLocale;
 import com.aiagent.api.trace.TraceId;
-import com.aiagent.api.user.request.UserRoleSaveRequest;
+import com.aiagent.system.api.user.request.UserRoleSaveRequest;
 import com.aiagent.core.error.BusinessException;
 import com.aiagent.core.error.CommonErrorCode;
 import com.aiagent.core.response.ApiResponse;

@@ -18,7 +18,7 @@ import type { GridButtonControl } from '@/shared/grid/types';
 import type { RoleAuthTreeRow } from '@/modules/system/features/roleauth/types';
 
 /**
- * 권한 트리 — <b>정의는 screen/user/requirements.md 가 갖고 여기는 덜어 내기만 한다</b>(screen/admin/system/role-auth/requirements.md).
+ * 권한 트리 — <b>정의는 screen/admin/system/user/requirements.md 가 갖고 여기는 덜어 내기만 한다</b>(screen/admin/system/role-auth/requirements.md).
  *
  * <p>셀 상태가 <b>일곱에서 넷</b>으로 준다: 켜짐 · 꺼짐 · `—` · 구조 노드. `SYS_ROLE_MENU_AUTH`
  * 에 기간 컬럼이 없으므로(sys/menu.md) *예정*·*만료* 배지가 사라지고, <b>역할 자신이 원본</b>이라
@@ -26,7 +26,7 @@ import type { RoleAuthTreeRow } from '@/modules/system/features/roleauth/types';
  *
  * <h2>`<AuthTree>` 가 `<TreeGrid>` 다</h2>
  *
- * screen/user/requirements.md 는 이것을 <i>AntD Table 의 트리 행</i> 으로 적었다. 그 문장이 쓰였을 때는 판이
+ * screen/admin/system/user/requirements.md 는 이것을 <i>AntD Table 의 트리 행</i> 으로 적었다. 그 문장이 쓰였을 때는 판이
  * AG Grid 냐 AntD 냐만 있었는데, 그 뒤 `MENU_TREE`(screen/admin/system/role-auth/requirements.md)가 <b>직접 그린 트리</b>를 어휘로
  * 들여왔다 — 계층 컬럼 · 접힘 · 검색 강조 · 크롬(53)이 이미 거기 있다. 판을 하나 더 들이면
  * <b>같은 화면 두 개가 다른 판으로 그려지고</b>, 53 의 크롬을 두 번 맞춰야 한다.
@@ -40,7 +40,7 @@ import type { RoleAuthTreeRow } from '@/modules/system/features/roleauth/types';
  * 아래를 얼마나 줬는지</b>를 액션 열마다 <b>따로</b> 요약한다 — 조회 열이 *전체* 라고 저장
  * 열이 그런 것은 아니다.
  *
- * <p><b>일괄 토글을 두지 않는다 — 어느 화면에도</b>(screen/admin/system/role-auth/requirements.md · screen/user/requirements.md). 3-state 를 그리면
+ * <p><b>일괄 토글을 두지 않는다 — 어느 화면에도</b>(screen/admin/system/role-auth/requirements.md · screen/admin/system/user/requirements.md). 3-state 를 그리면
  * *"누르면 자식 전부가 켜지는 것"* 이 자연스러워 보이지만 이유가 셋이다: ① 폴더 하나가 리프
  * 열댓 개이고 그것이 곧 <b>보유자 전원의 유효 권한 변경</b>이다 ② 껐다 켜면 <i>원래 켜져
  * 있던 것만</i> 복원해야 하는데 그 규칙을 정해야 한다 ③ 액션 미정의 건너뛰기와 `READ`
@@ -123,7 +123,7 @@ export function AuthTree(props: Props) {
             <FolderState node={node} action={action} granted={granted} />
           ) : !row.definedActions.includes(action) ? (
             /*
-              <b>`—` 는 *안 줬다* 가 아니라 *줄 것이 없다* 다</b>(screen/user/requirements.md). 빈 스위치로 두면
+              <b>`—` 는 *안 줬다* 가 아니라 *줄 것이 없다* 다</b>(screen/admin/system/user/requirements.md). 빈 스위치로 두면
               *"줄 수 있는데 안 준 것"* 으로 읽히고, 관리자가 켜서 저장했는데 사용자는
               여전히 못 한다면 <b>화면이 거짓말을 한 것</b>이다.
 
@@ -202,7 +202,7 @@ export function AuthTree(props: Props) {
             </span>
           </span>
           {/*
-            <b>미저장 표시</b> — screen/user/requirements.md 의 개인 예외 트리와 <b>같은 글자·같은 색</b>이다
+            <b>미저장 표시</b> — screen/admin/system/user/requirements.md 의 개인 예외 트리와 <b>같은 글자·같은 색</b>이다
             (2026-09-01 요청). 두 화면이 같은 일을 하는데 표시가 다르면 그것이 학습 비용이다.
 
             <b>목록이 아니라 트리가 낸다.</b> 이 화면에는 하단 예외 목록 같은 <i>바뀐 것의

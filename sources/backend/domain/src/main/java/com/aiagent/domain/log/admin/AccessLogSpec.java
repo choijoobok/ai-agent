@@ -43,7 +43,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
  * <h2>사용자와 메뉴가 <b>각각 칸 둘</b>이다 — 2026-09-01</h2>
  *
  * <p>아이디와 이름이 갈렸다. ID 는 <b>목록에서 복사해 오는 값</b>이고 이름은 <b>사람이 기억
- * 하는 값</b>이라, 한 칸에 섞으면 어느 쪽으로 걸릴지 화면이 말할 수 없다(screen/user/requirements.md 의
+ * 하는 값</b>이라, 한 칸에 섞으면 어느 쪽으로 걸릴지 화면이 말할 수 없다(screen/admin/system/user/requirements.md 의
  * {@code userAuth.search.user} 가 합친 것과 <b>갈리는 자리</b>다 — 거기는 후보를 고르는
  * 칸이고 여기는 <b>거르는 칸</b>이다).
  *

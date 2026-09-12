@@ -5,7 +5,7 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * 사용자 관리가 거부하는 것 — screen/user/requirements.md.
+ * 사용자 관리가 거부하는 것 — screen/admin/system/user/requirements.md.
  *
  * <p><b>{@code UserErrorCode} 와 축이 다르다.</b> 저기는 <b>본인이</b> 자기 계정에 하는 일의
  * 실패(비밀번호 변경 · 언어)이고 여기는 <b>관리자가 남의 계정에</b> 하는 일이다. 같은 열거에
@@ -26,7 +26,7 @@ public enum UserAdminErrorCode implements ErrorCode {
     /** {@code SYS_USER} 는 물리 삭제를 하지 않는다 — sys/user-role.md · USER-02. */
     DELETE_NOT_SUPPORTED(MsgKey.ERR_USER_ADMIN_NO_DELETE, "계정은 삭제할 수 없습니다"),
 
-    /** screen/user/requirements.md — 그 자리에서 화면 밖으로 밀려난다. */
+    /** screen/admin/system/user/requirements.md — 그 자리에서 화면 밖으로 밀려난다. */
     SELF_DISABLE(MsgKey.ERR_USER_ADMIN_SELF_DISABLE, "자기 계정은 사용 중지할 수 없습니다"),
 
     RESET_DISABLED(MsgKey.ERR_USER_ADMIN_RESET_DISABLED, "임시 비밀번호 발급이 꺼져 있습니다");

@@ -91,7 +91,7 @@ const POPUP_OPS: SearchOp[] = ['eq', 'ne', 'isNull', 'isNotNull'];
  * 상한 검사를 그대로 통과하는 무제한 조회</b>이고(그 검사는 두 끝의 차를 본다 —
  * {@link issueOf}), 기간이 <b>부하의 상한인 화면</b>에서 그것은 문을 열어 두는 것이다.
  *
- * <p><b>선택 필터인 칸은 화면이 열 수 있다</b>(2026-08-31 · screen/user/requirements.md). 사용자 목록의 *최종
+ * <p><b>선택 필터인 칸은 화면이 열 수 있다</b>(2026-08-31 · screen/admin/system/user/requirements.md). 사용자 목록의 *최종
  * 로그인* 처럼 기간이 창이 아니라 거르개인 칸에서는 <i>이 날짜 이후로 한 번도 안 들어온
  * 계정</i> 을 물을 방법이 필요하며, 범위로 표현하려면 반대쪽 끝에 <b>사람이 아무 값이나</b>
  * 넣어야 한다 — 그 값이 곧 조건이 되어 <b>묻지 않은 것을 거른다</b>.
@@ -102,7 +102,7 @@ const POPUP_OPS: SearchOp[] = ['eq', 'ne', 'isNull', 'isNotNull'];
 const DATE_RANGE_OPS: SearchOp[] = ['between'];
 
 /**
- * 기간 칸이 <b>달력 하나</b>로 바뀌는 연산자 — 2026-08-31 · screen/user/requirements.md.
+ * 기간 칸이 <b>달력 하나</b>로 바뀌는 연산자 — 2026-08-31 · screen/admin/system/user/requirements.md.
  *
  * <p>범위 칸을 그대로 두고 한쪽을 비우게 하면 <i>비운 것</i>과 <i>아직 안 고른 것</i>이
  * 같은 모양이 되어, 조회가 되는지를 눌러 봐야 안다.
@@ -147,7 +147,7 @@ const OP_ORDER: SearchOp[] = [
   // 크기 계열의 넷째·다섯째 — playbook/INDEX.md(2026-09-02). 위 주석이 정한 순서(gte · gt ·
   // lte · lt)의 남은 두 칸이며, 이로써 backend/api.md 의 열셋이 전부 열렸다.
   'gt',
-  // 셋째 — screen/user/requirements.md 의 기간 칸 둘. 그 순서의 셋째 자리다.
+  // 셋째 — screen/admin/system/user/requirements.md 의 기간 칸 둘. 그 순서의 셋째 자리다.
   'lte',
   'lt',
 ];
@@ -588,7 +588,7 @@ function ValueControl(props: {
       precision === 'second' ? dayjs(value) : dayjs(value, wireFormat);
 
     /*
-      <b>한쪽만 아는 조건은 달력 하나다</b>(2026-08-31 · screen/user/requirements.md). 범위 칸을 그대로 두고
+      <b>한쪽만 아는 조건은 달력 하나다</b>(2026-08-31 · screen/admin/system/user/requirements.md). 범위 칸을 그대로 두고
       한쪽을 비우게 하면 <i>비운 것</i>과 <i>아직 안 고른 것</i>이 같은 모양이 되어,
       조회가 되는지 안 되는지를 눌러 봐야 안다.
     */
@@ -913,7 +913,7 @@ function moveValue(value: FieldValue, next: SearchOp): FieldValue {
   return Array.isArray(value) ? '' : value;
 }
 
-/** 다중 선택의 기본값 — <b>배열이면 그대로</b>다(screen/user/requirements.md 의 계정 상태가 셋을 준다). */
+/** 다중 선택의 기본값 — <b>배열이면 그대로</b>다(screen/admin/system/user/requirements.md 의 계정 상태가 셋을 준다). */
 function asList(value: string | string[]): string[] {
   if (Array.isArray(value)) return value;
   return value === '' ? [] : [value];
@@ -930,7 +930,7 @@ function defaults(fields: SearchField[], systemRange: SystemRange): Record<strin
     const op = defaultOpOf(field);
     if (op === 'between') {
       /*
-        <b>빈 문자열이 *비워 둔다* 다</b>(2026-08-30 — screen/user/requirements.md). 기간을 미리 채우는 것은
+        <b>빈 문자열이 *비워 둔다* 다</b>(2026-08-30 — screen/admin/system/user/requirements.md). 기간을 미리 채우는 것은
         <b>기간이 부하의 상한인 화면</b>의 규약이고(screen/log/access/requirements.md), 사용자 목록의 *최종 로그인*
         처럼 <b>선택 필터</b>인 칸에서는 그것이 <i>한 번도 로그인하지 않은 계정을 첫
         조회에서 통째로 빼는</i> 일이 된다.

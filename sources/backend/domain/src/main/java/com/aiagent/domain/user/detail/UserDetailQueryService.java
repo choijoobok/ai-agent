@@ -42,9 +42,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code USER_MGMT} 의 디테일 탭 넷을 읽는다 — screen/user/requirements.md.
+ * {@code USER_MGMT} 의 디테일 탭 넷을 읽는다 — screen/admin/system/user/requirements.md.
  *
- * <p>다섯째(활성 세션)는 여기 없다. 원천이 DB 가 아니라 <b>세션 스토어</b>라(screen/user/requirements.md)
+ * <p>다섯째(활성 세션)는 여기 없다. 원천이 DB 가 아니라 <b>세션 스토어</b>라(screen/admin/system/user/requirements.md)
  * {@code api} 모듈의 일이며, 도메인이 {@code FindByIndexNameSessionRepository} 를 알면
  * backend/packages.md 이 갈린다.
  *
@@ -169,7 +169,7 @@ public class UserDetailQueryService {
     // ── 탭 2 — 개인 예외 (AUTHZ-07 조회) ─────────────────────────────
 
     /**
-     * 이 사람의 개인 예외 <b>전부</b> — screen/user/requirements.md 가 {@code getUserMenuAuth} 로 이름 지은 경로다.
+     * 이 사람의 개인 예외 <b>전부</b> — screen/admin/system/user/requirements.md 가 {@code getUserMenuAuth} 로 이름 지은 경로다.
      *
      * <p>{@code USER_AUTH_MGMT} 의 트리 조회와 <b>API 를 공유하지 않는다</b>. backend/security.md 의
      * <i>"화면마다 허용 범위가 달라야 한다면 그것은 분리해야 할 두 API"</i> 와 방향이 같으며,
@@ -267,12 +267,12 @@ public class UserDetailQueryService {
         return built.respond(rows, total == null ? 0L : total);
     }
 
-    // ── 탭 5 — 유효 권한 (screen/user/requirements.md) ────────────────────────────────
+    // ── 탭 5 — 유효 권한 (screen/admin/system/user/requirements.md) ────────────────────────────────
 
     /**
      * <i>"이 사용자가 왜 이 메뉴를 못 보나"</i> 에 답한다 — sys/menu.md 의 미결을 닫는 자리.
      *
-     * <p><b>backend/security.md 파이프라인을 그대로 쓴다</b>(screen/user/requirements.md 의 요구 1). 화면 전용 계산을 두면
+     * <p><b>backend/security.md 파이프라인을 그대로 쓴다</b>(screen/admin/system/user/requirements.md 의 요구 1). 화면 전용 계산을 두면
      * 실제 판정과 갈리고, <b>갈리는 순간 이 탭은 진단이 아니라 또 하나의 거짓말</b>이 된다.
      * 그래서 여기서 하는 일은 <b>계산이 아니라 펴는 것</b>이다 — 파이프라인의 ①②를 출처별로
      * 나열하고, ④의 게이트를 {@code menuAuthorizable} 로 각 행에 붙인다.
@@ -313,7 +313,7 @@ public class UserDetailQueryService {
 
             if (sources.isEmpty()) {
                 /*
-                  <b>없는 것도 보여야 한다</b>(screen/user/requirements.md 의 요구 2). 전체 모드에서 부여가
+                  <b>없는 것도 보여야 한다</b>(screen/admin/system/user/requirements.md 의 요구 2). 전체 모드에서 부여가
                   하나도 없는 메뉴는 이 한 행으로 나오고, 화면이 회색으로 그린다 —
                   가진 것만 보여주면 이 탭은 진단이 아니라 요약이다.
                 */

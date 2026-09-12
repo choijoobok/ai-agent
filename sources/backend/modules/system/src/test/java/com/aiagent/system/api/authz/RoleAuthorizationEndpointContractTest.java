@@ -20,7 +20,7 @@ class RoleAuthorizationEndpointContractTest {
     @DisplayName("TC-5021 유효 권한 조회는 system 정식 경로 하나만 사용한다")
     void effectiveAuthorityUsesTheSystemPath() throws Exception {
         assertPost(USER_AUTHZ, "/api/service/system/user", "getEffectiveAuthList", "/getEffectiveAuthList");
-        assertMethodMissing("com.aiagent.api.user.UserDetailController", "getEffectiveAuthList");
+        assertClassMissing("com.aiagent.api.user.UserDetailController");
     }
 
     @Test
@@ -36,9 +36,7 @@ class RoleAuthorizationEndpointContractTest {
         assertPost(USER_AUTHZ, "/api/service/system/user", "getRoleList", "/getRoleList");
         assertPost(USER_AUTHZ, "/api/service/system/user", "saveRole", "/saveRole");
         assertPost(USER_AUTHZ, "/api/service/system/user", "getRoleCandidates", "/getRoleCandidates");
-        assertMethodMissing("com.aiagent.api.user.UserDetailController", "getRoleList");
-        assertMethodMissing("com.aiagent.api.user.UserDetailController", "saveRole");
-        assertMethodMissing("com.aiagent.api.user.UserDetailController", "getRoleCandidates");
+        assertClassMissing("com.aiagent.api.user.UserDetailController");
     }
 
     @Test
@@ -69,9 +67,4 @@ class RoleAuthorizationEndpointContractTest {
                 .isInstanceOf(ClassNotFoundException.class);
     }
 
-    private static void assertMethodMissing(String className, String methodName) throws Exception {
-        assertThat(java.util.Arrays.stream(Class.forName(className).getDeclaredMethods())
-                        .map(Method::getName))
-                .doesNotContain(methodName);
-    }
 }

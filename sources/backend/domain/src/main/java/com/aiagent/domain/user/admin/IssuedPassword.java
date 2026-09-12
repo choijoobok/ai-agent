@@ -1,7 +1,7 @@
 package com.aiagent.domain.user.admin;
 
 /**
- * 발급된 임시 비밀번호 하나 — AUTH-07 · screen/user/requirements.md.
+ * 발급된 임시 비밀번호 하나 — AUTH-07 · screen/admin/system/user/requirements.md.
  *
  * <p><b>이 응답에만 있는 값이다.</b> DB 에는 해시가 들어가므로 재조회로 다시 얻을 수 없고,
  * 잃으면 <b>다시 발급하는 것 말고 길이 없다</b> — 그래서 실행 API 가 결과를 화면에 준다
@@ -9,7 +9,7 @@ package com.aiagent.domain.user.admin;
  *
  * <h2>화면에 보여주는 것이 결정이다</h2>
  *
- * <p>screen/user/requirements.md 이 <i>"메일 발송이 없는 배포에서 화면에 표시할지"</i> 를 미결로 남겼다.
+ * <p>screen/admin/system/user/requirements.md 이 <i>"메일 발송이 없는 배포에서 화면에 표시할지"</i> 를 미결로 남겼다.
  * <b>표시한다</b>(2026-08-30) — sys/code.md 이 {@code admin-reset-enabled} 의 기본값을 켜 두며
  * 적은 근거가 <i>"메일 연동이 없는 배포에서 잠긴 계정을 푸는 <b>유일한 경로</b>"</i> 인데,
  * 전달 수단이 없으면 그 경로는 <b>있으나 마나</b>다. 발급하고 알려 주지 않는 것은 계정을
@@ -17,7 +17,7 @@ package com.aiagent.domain.user.admin;
  *
  * <p><b>대신 값의 수명을 짧게 묶는다.</b> {@code PWD_INIT_YN='Y'} 라 다음 로그인이 곧바로
  * 강제 변경으로 가고, {@code tempValidHours} 가 지나면 로그인 자체가 막힌다(backend/security.md).
- * <i>"관리자가 아는 비밀번호가 생긴다"</i> 는 우려(screen/user/requirements.md)는 <b>사실이며 받아들인다</b> —
+ * <i>"관리자가 아는 비밀번호가 생긴다"</i> 는 우려(screen/admin/system/user/requirements.md)는 <b>사실이며 받아들인다</b> —
  * 그것이 아는 즉시 쓸모없어지는 값이라는 것이 방어다.
  *
  * <p><b>알림(NOTI)이 서면 뒤집는다.</b> 그때는 메일이 전달을 맡으므로 화면이 값을 볼 이유가

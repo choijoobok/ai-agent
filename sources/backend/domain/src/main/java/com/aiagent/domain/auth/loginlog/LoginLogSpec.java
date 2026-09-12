@@ -82,7 +82,7 @@ public final class LoginLogSpec {
      * <b>결과 묶음</b> — screen/log/login/requirements.md. 배지의 색 셋과 <b>같은 축</b>이다.
      *
      * <p>코드 열다섯을 콤보에서 하나씩 고르게 하면 <i>"실패 전부"</i> 를 고르는 데 열 번을
-     * 누른다. 묶음을 고르면 <b>서버가 코드 집합으로 번역</b>한다 — screen/user/requirements.md 의 계정 상태와
+     * 누른다. 묶음을 고르면 <b>서버가 코드 집합으로 번역</b>한다 — screen/admin/system/user/requirements.md 의 계정 상태와
      * 같은 파생 조건이며 72 프로토콜의 두 번째 사례다.
      *
      * <p><b>{@code loginRsltCd} 와 함께 오면 교집합이다.</b> 둘을 하나로 합치지 않는 것은

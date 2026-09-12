@@ -64,7 +64,7 @@ public class SysUserMenuAuth extends BaseAuditEntity {
     private String grantRsn;
 
     /**
-     * 새 부여 — screen/user/requirements.md 에서 <b>꺼진 칸을 켠 것</b>이다.
+     * 새 부여 — screen/admin/system/user/requirements.md 에서 <b>꺼진 칸을 켠 것</b>이다.
      *
      * <p>검증은 밖에서 한다({@code UserAuthService}). 엔티티가 {@code SYS_MENU} 와
      * {@code SYS_API} 를 알아야 <i>줄 수 있는 조합인가</i> 를 판정할 수 있는데, 그것은
@@ -89,7 +89,7 @@ public class SysUserMenuAuth extends BaseAuditEntity {
     }
 
     /**
-     * 기간과 사유를 갱신한다 — <b>재부여도 회수도 이것</b>이다(screen/user/requirements.md).
+     * 기간과 사유를 갱신한다 — <b>재부여도 회수도 이것</b>이다(screen/admin/system/user/requirements.md).
      *
      * <p>PK 가 {@code (USER_ID, MENU_CD, ACTION_CD)} 라 <b>한 조합에 행은 하나뿐</b>이며,
      * 같은 조합을 기간을 달리해 두 번 줄 수 없다. 그래서 <i>재부여</i> 는 새 행이 아니라
@@ -99,7 +99,7 @@ public class SysUserMenuAuth extends BaseAuditEntity {
      * 않았으므로(sys/logs.md) <i>"누구에게 왜 무엇을 언제까지 줬는가"</i> 를 남기는 것이 이
      * 행뿐이다.
      *
-     * <p>덮어써진 이전 기간과 사유는 <b>요청 전문 로그</b>에 있다(screen/user/requirements.md) — 작년의
+     * <p>덮어써진 이전 기간과 사유는 <b>요청 전문 로그</b>에 있다(screen/admin/system/user/requirements.md) — 작년의
      * {@code save} 요청에 작년의 기간과 사유가 들어 있다.
      */
     public void change(LocalDate validFromDt, LocalDate validToDt, String grantRsn) {

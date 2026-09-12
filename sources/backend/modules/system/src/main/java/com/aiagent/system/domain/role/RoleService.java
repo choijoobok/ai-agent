@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
  * {@code ROLE_MGMT} 의 저장 — screen/admin/system/role/requirements.md. <b>역할 자체의 생애를 다룬다.</b>
  *
  * <p>만들고 · 이름을 바꾸고 · 끄고 · 지운다. 권한을 붙이는 것은 {@link RoleAuthService}이고
- * 역할을 사람에게 주는 것은 {@code USER_MGMT}(screen/user/requirements.md)다 — <b>셋이 각자 다른 테이블을 쓴다.</b>
+ * 역할을 사람에게 주는 것은 {@code USER_MGMT}(screen/admin/system/user/requirements.md)다 — <b>셋이 각자 다른 테이블을 쓴다.</b>
  *
  * <h2>삭제 게이트가 처음 실물이 된다 — 자식 둘, 디테일 하나</h2>
  *

@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <h2>{@code updateHandle} 이 {@code SAVE} 인 것에 예외가 없다</h2>
  *
- * <p>접두 {@code update} 가 {@code SAVE} 다(backend/api.md). screen/user/requirements.md 의 기준(<i>"우리 테이블의
+ * <p>접두 {@code update} 가 {@code SAVE} 다(backend/api.md). screen/admin/system/user/requirements.md 의 기준(<i>"우리 테이블의
  * 컬럼을 쓰는가"</i>)으로 봐도 그렇다 — 처리는 {@code SYS_NOTI_REQUEST} 의 컬럼 넷을 쓴다.
  *
  * <p><b>{@code BATCH_HISTORY} 의 {@code cancel} 과 갈리는 자리</b>다(screen/batch/schedule/requirements.md). 그쪽은

@@ -810,7 +810,7 @@ function flatten(rows: UserAuthTreeRow[]): GrantRow[] {
   return flat;
 }
 
-/** `사용자 > 사용자 관리` — frontend/tabs.md 의 검색 결과와 같은 형식이다(screen/user/requirements.md). */
+/** `사용자 > 사용자 관리` — frontend/tabs.md 의 검색 결과와 같은 형식이다(screen/admin/system/user/requirements.md). */
 function menuPaths(rows: UserAuthTreeRow[]): Map<string, string> {
   const byCode = new Map(rows.map((row) => [row.menuCd, row]));
   const paths = new Map<string, string>();
@@ -948,7 +948,7 @@ function buildGrantColumns(today: string): ColumnDef<GrantRow>[] {
       fill: true,
       sortable: false,
       /*
-        <b>고아 배지</b> — API 가 사라져 그 액션이 미정의가 된 부여다(screen/user/requirements.md · seed.md).
+        <b>고아 배지</b> — API 가 사라져 그 액션이 미정의가 된 부여다(screen/admin/system/user/requirements.md · seed.md).
         트리에서는 `—` 로 보여 켜고 끌 수 없고, 목록에서만 <b>지울 수 있다</b>.
 
         screen/user-auth/requirements.md 이 <i>"고아 배지의 모양"</i> 을 미결로 남겼다 — 여기서 <b>값 뒤에 붙는
@@ -1005,7 +1005,7 @@ function buildGrantColumns(today: string): ColumnDef<GrantRow>[] {
       fill: true,
       filter: false,
       editable: true,
-      // 변경 이력 테이블이 없으므로 <b>이 칸이 곧 감사 기록</b>이다(sys/logs.md · screen/user/requirements.md).
+      // 변경 이력 테이블이 없으므로 <b>이 칸이 곧 감사 기록</b>이다(sys/logs.md · screen/admin/system/user/requirements.md).
       required: true,
       editor: 'largeText',
     },

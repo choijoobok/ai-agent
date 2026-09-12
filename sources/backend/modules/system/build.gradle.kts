@@ -8,6 +8,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-session-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-session-data-redis")
 
     // 역할 조회가 QueryDSL 조립을 직접 소유한다. domain의 구현 의존성은 전이되지 않는다.
     implementation(libs.querydsl.jpa)

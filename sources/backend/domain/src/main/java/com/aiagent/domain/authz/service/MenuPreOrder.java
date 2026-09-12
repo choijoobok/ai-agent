@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * 메뉴 전건을 <b>전위 순회</b>로 편다 — 부모 바로 뒤에 그 자식들이 온다.
  *
- * <p><b>권한 트리 둘이 같은 순서를 봐야 한다</b>(screen/menu/requirements.md · screen/user/requirements.md). 역할 쪽과 개인 예외 쪽은
+ * <p><b>권한 트리 둘이 같은 순서를 봐야 한다</b>(screen/menu/requirements.md · screen/admin/system/user/requirements.md). 역할 쪽과 개인 예외 쪽은
  * <i>같은 컴포넌트</i> 로 정해져 있고(AUTHZ-07), 순서가 갈리면 같은 트리가 두 화면에서 다르게
  * 보인다 — 화면이 정렬하지 않기 때문이다(정렬하면 계층이 깨진다).
  *

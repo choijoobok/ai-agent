@@ -13,7 +13,7 @@ import java.time.LocalDate;
  * 된다).
  *
  * <p><b>읽기 전용이며 저장 대상이 아니다.</b> 부여를 고치는 곳은 {@code USER_MGMT} 의 보유
- * 역할 탭이다(screen/user/requirements.md 탭 1).
+ * 역할 탭이다(screen/admin/system/user/requirements.md 탭 1).
  *
  * <p><b>screen/admin/system/role/requirements.md 의 {@link MenuUserRow} 와 다른 것</b>이 여기서 갈린다. 저것은 <i>"이 메뉴에
  * 닿는 사람"</i> 이라 <b>경유가 여럿</b>이고 액션 열이 붙는다. 여기는 <i>"이 역할을 가진

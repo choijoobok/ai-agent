@@ -14,7 +14,7 @@ export interface RolePickRow {
 }
 
 /**
- * 우 — 권한 트리의 한 행. **정의는 screen/user/requirements.md 가 갖고 여기는 덜어 내기만 한다**(screen/admin/system/role-auth/requirements.md).
+ * 우 — 권한 트리의 한 행. **정의는 screen/admin/system/user/requirements.md 가 갖고 여기는 덜어 내기만 한다**(screen/admin/system/role-auth/requirements.md).
  *
  * <p>셀 상태가 일곱에서 넷으로 준다 — 켜짐 · 꺼짐 · `—` · 구조 노드. 기간 컬럼이 없어
  * *예정*·*만료* 배지가 사라지고, **역할 자신이 원본**이라 *역할 경유* 배지도 사라진다.
@@ -38,7 +38,7 @@ export interface RoleAuthTreeRow {
   /**
    * 이 메뉴에 **있는** 액션 — sys/menu.md 의 액션 열이 데이터로 온 것이다.
    *
-   * <p>여기 없는 칸은 `—` 이며 그것은 *안 줬다* 가 아니라 **줄 것이 없다** 다(screen/user/requirements.md).
+   * <p>여기 없는 칸은 `—` 이며 그것은 *안 줬다* 가 아니라 **줄 것이 없다** 다(screen/admin/system/user/requirements.md).
    * 빈 스위치로 두면 관리자가 켜고 저장하는데 사용자는 여전히 못 한다.
    */
   definedActions: Action[];
@@ -46,7 +46,7 @@ export interface RoleAuthTreeRow {
    * 이 역할이 **준** 액션.
    *
    * <p>`definedActions` 에 없는 값이 섞여 있을 수 있다 — API 가 사라져 고아가 된 부여이며
-   * **지우지 않는다**(screen/user/requirements.md · seed.md). 화면에는 `—` 로 보이고 저장 페이로드에서도 빠지며,
+   * **지우지 않는다**(screen/admin/system/user/requirements.md · seed.md). 화면에는 `—` 로 보이고 저장 페이로드에서도 빠지며,
    * 서버가 **정의된 조합 안에서만** 지우므로 그 행은 그대로 남는다.
    */
   grantedActions: Action[];

@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 관리자가 발급하는 임시 비밀번호를 만든다 — AUTH-07 · screen/user/requirements.md.
+ * 관리자가 발급하는 임시 비밀번호를 만든다 — AUTH-07 · screen/admin/system/user/requirements.md.
  *
  * <p>{@link PasswordRules} 와 <b>짝</b>이다. 저것은 <i>이 값이 정책을 채우는가</i> 를 묻고
  * 이것은 <b>채우는 값을 만든다</b> — 규칙이 하나뿐이므로 만든 것이 검사를 통과하지 못하는

@@ -21,9 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 디테일 탭의 저장 — <b>편집이 있는 탭은 둘뿐이다</b>(screen/user/requirements.md 탭 1 · 탭 3).
+ * 디테일 탭의 저장 — <b>편집이 있는 탭은 둘뿐이다</b>(screen/admin/system/user/requirements.md 탭 1 · 탭 3).
  *
- * <p>개인 예외는 조회 전용이고(screen/user/requirements.md — 사용자 관리 권한이 예외 부여 권한을 끌고 오면 안
+ * <p>개인 예외는 조회 전용이고(screen/admin/system/user/requirements.md — 사용자 관리 권한이 예외 부여 권한을 끌고 오면 안
  * 된다), 유효 권한은 계산 결과이며, 활성 세션은 우리 테이블이 아니다.
  *
  * <h2>두 저장이 같은 뼈대를 쓴다</h2>
@@ -185,7 +185,7 @@ public class UserDetailService {
     // ── 탭 3 — 접속 IP (AUTH-08) ────────────────────────────────────
 
     /**
-     * 허용 대역 일괄 저장 — screen/user/requirements.md 탭 3.
+     * 허용 대역 일괄 저장 — screen/admin/system/user/requirements.md 탭 3.
      *
      * <p><b>{@code D} 가 있는 유일한 탭</b>이다. 여기서 지우는 것은 <i>부여의 기록</i> 이
      * 아니라 <i>사무실이 어디인가</i> 라는 <b>지금의 사실</b>이라, 이사한 대역을 남겨 둘

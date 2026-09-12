@@ -59,6 +59,7 @@ class AuthorizationInterceptorTest {
 
     private static final String USER = "kim";
     private static final String ORDER_LIST = "/api/service/order/getList";
+    private static final String USER_SESSION_KILL = "/api/service/system/user/killSession";
 
     @Mock private ApiAuthorityRegistry registry;
     @Mock private EffectiveAuthorityService authorities;
@@ -173,6 +174,15 @@ class AuthorizationInterceptorTest {
             givenFact(ActionType.READ, "ORDER");
 
             assertDenied(get(ORDER_LIST, session), AuthzErrorCode.NO_AUTHORITY);
+        }
+
+        @Test
+        @DisplayName("TC-5014 USER_MGMT EXECUTE가 없으면 타 사용자 세션 종료 API는 403이다")
+        void sessionTerminationRequiresExecute() {
+            givenAuthority(new MenuAction("USER_MGMT", ActionType.READ));
+            givenFact(USER_SESSION_KILL, ActionType.EXECUTE, "USER_MGMT");
+
+            assertDenied(get(USER_SESSION_KILL, session), AuthzErrorCode.NO_AUTHORITY);
         }
 
         @Test
@@ -373,8 +383,12 @@ class AuthorizationInterceptorTest {
     }
 
     private void givenFact(ActionType action, String... menuCds) {
-        when(registry.find(ORDER_LIST))
-                .thenReturn(Optional.of(new ApiAuthorityFact(ORDER_LIST, action, Set.of(menuCds))));
+        givenFact(ORDER_LIST, action, menuCds);
+    }
+
+    private void givenFact(String path, ActionType action, String... menuCds) {
+        when(registry.find(path))
+                .thenReturn(Optional.of(new ApiAuthorityFact(path, action, Set.of(menuCds))));
     }
 
     private static MockHttpServletRequest get(String path, MockHttpSession session) {

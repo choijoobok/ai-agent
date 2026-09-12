@@ -58,7 +58,7 @@ import type { MenuSiblingGroup, MenuTreeRow } from '@/modules/system/features/me
  * 찾고, 어느 칸에 넣을지를 먼저 정해야 하는 것이 곧 마찰이다.
  *
  * <p><b>자리도 브레드크럼에서 트리 ①로 내려왔다</b>. 슬롯은 셸이 그리는 구조라 값이 한 커밋
- * 늦게 도착해 <b>한글이 두 번 입력됐다</b>(screen/user/requirements.md 에서 실물로 겪었다). 이동 버튼 둘은 뺐다 —
+ * 늦게 도착해 <b>한글이 두 번 입력됐다</b>(screen/admin/system/user/requirements.md 에서 실물로 겪었다). 이동 버튼 둘은 뺐다 —
  * 강조가 경로를 펼치므로 나머지 일치도 같은 화면 안에 있다.
  */
 
@@ -199,7 +199,7 @@ export function MenuTreePage() {
    *
    * <p>{@code AND} 였다. 칸이 셋일 때는 그것이 <i>좁히는</i> 뜻이었지만 칸이 하나면 <b>넣은
    * 글자가 어디서든 걸려야</b> 한다 — {@code USER_AUTH_MGMT} 의 사용자 조건이 ID 와 이름을
-   * 함께 보는 것과 같은 규칙이며(screen/user/requirements.md), 그쪽도 서버에서 {@code OR} 다.
+   * 함께 보는 것과 같은 규칙이며(screen/admin/system/user/requirements.md), 그쪽도 서버에서 {@code OR} 다.
    */
   const matches = useMemo(() => {
     const needle = term.trim().toLowerCase();
@@ -663,7 +663,7 @@ export function MenuTreePage() {
               /*
                 <b>접히면 제목만 남는다</b>(frontend/grid.md). 넘기지 않으면 트리는 자기가 접혔다는
                 것을 몰라 머리·판·푸터를 그대로 그리고, 좁아진 pane 안에서 그것이 <b>잘린
-                표</b>로 보인다(screen/user/requirements.md 에서 실물로 겪었다).
+                표</b>로 보인다(screen/admin/system/user/requirements.md 에서 실물로 겪었다).
               */
               collapsed={collapsed}
               collapsedAxis={axis}

@@ -71,7 +71,7 @@ public class LoginHistoryService {
     }
 
     /**
-     * 성공한 로그인 최근 몇 건 — <b>활성 세션 탭이 어디서 들어왔나를 채운다</b>(screen/user/requirements.md).
+     * 성공한 로그인 최근 몇 건 — <b>활성 세션 탭이 어디서 들어왔나를 채운다</b>(screen/admin/system/user/requirements.md).
      *
      * <p>세션 스토어는 IP 도 User-Agent 도 갖고 있지 않고, 담지도 않는다 — 원본은 이 이력
      * 하나다(sys/logs.md). 부르는 쪽이 <b>세션 생성 시각으로 짝짓는다</b>.
@@ -98,7 +98,7 @@ public class LoginHistoryService {
     public record LoginContext(String clientIp, String userAgent, String traceId) {}
 
     /**
-     * 성공 로그인 하나의 <b>출처</b> — screen/user/requirements.md.
+     * 성공 로그인 하나의 <b>출처</b> — screen/admin/system/user/requirements.md.
      *
      * <p>{@link MyLoginRecord} 와 달리 결과 코드가 없다. 성공만 담기므로 그 칸이 <b>언제나
      * 같은 값</b>이 되고, 같은 값을 나르는 칸은 읽는 사람에게 <i>다를 수 있다</i> 고

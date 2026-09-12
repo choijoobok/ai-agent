@@ -21,7 +21,7 @@ import type { RoleRow } from '@/modules/system/features/role/types';
  * `ROLE_MGMT` — screen/admin/system/role/requirements.md. <b>역할 자체의 생애를 다룬다.</b>
  *
  * <p>만들고 · 이름을 바꾸고 · 끄고 · 지운다. 권한을 붙이는 것은 `ROLE_AUTH_MGMT`이고
- * 역할을 사람에게 주는 것은 `USER_MGMT` 의 보유 역할 탭(screen/user/requirements.md)이다 — <b>셋이 각자 다른
+ * 역할을 사람에게 주는 것은 `USER_MGMT` 의 보유 역할 탭(screen/admin/system/user/requirements.md)이다 — <b>셋이 각자 다른
  * 테이블을 쓴다.</b>
  *
  * <h2>기본정보 탭이 컬럼이 됐다</h2>

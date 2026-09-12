@@ -152,7 +152,7 @@ public class AuthController {
      * 재설정 ③ — 새 비밀번호를 저장하고 <b>여기서</b> 잠금을 푼다. 요건서 §6-3.
      *
      * <p><b>이름이 {@code savePasswordReset} 이 아니다.</b> 그 이름은 이미
-     * {@code /api/service/user/savePasswordReset}(관리자 임시 비밀번호 발급)의 것이며, 둘은
+     * {@code /api/service/system/user/savePasswordReset}(관리자 임시 비밀번호 발급)의 것이며, 둘은
      * 다른 일이라 겹치면 로그에서 구분되지 않는다 — 셋을 {@code reset} 으로 묶어 <b>한
      * 묶음임이 경로만 봐도 보이게</b> 했다(요건서 §7).
      *

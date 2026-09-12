@@ -19,11 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * {@code USER_MGMT} 의 조회 — screen/user/requirements.md. <b>목록이 곧 상세다.</b>
+ * {@code USER_MGMT} 의 조회 — screen/admin/system/user/requirements.md. <b>목록이 곧 상세다.</b>
  *
  * <p>편집 폼을 없앤 결과(frontend/grid.md) 이 쿼리 하나가 {@code SYS_USER} 의 모든 컬럼을 낸다 —
  * {@code getDetail} 이 없는 이유이며, 행을 골랐을 때 탭이 부르는 것은 <b>{@code SYS_USER} 밖의
- * 데이터</b>뿐이다(screen/user/requirements.md).
+ * 데이터</b>뿐이다(screen/admin/system/user/requirements.md).
  *
  * <h2>파생 컬럼이 하나뿐이고 그것도 세지 않는다</h2>
  *
@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  * <b>계정 상태 하나</b>이고 그것은 <b>이미 읽은 네 컬럼의 함수</b>다 — 쿼리를 하나도 더하지
  * 않는다.
  *
- * <p><b>역할 나열 컬럼이 없기 때문이다</b>(screen/user/requirements.md). 한 행에 역할명을 이어 붙이려면 문자열
+ * <p><b>역할 나열 컬럼이 없기 때문이다</b>(screen/admin/system/user/requirements.md). 한 행에 역할명을 이어 붙이려면 문자열
  * 집계가 필요하고 그것이 벤더마다 다르다({@code LISTAGG} · {@code GROUP_CONCAT} ·
  * {@code string_agg} — backend/persistence.md). 그 질문은 <b>보유 역할 탭</b>과 <b>조회조건</b>이 나눠 받는다.
  *
@@ -41,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
  * ({@link UserSpec}). 자바에서 계산하면 순서의 원본은 {@link AccountStat} 하나이고,
  * 스펙의 파생 조건은 그 열거를 <b>보고</b> 번역한다.
  *
- * <p>대가는 <b>정렬</b>이다 — SQL 이 모르는 값이라 {@code ORDER BY} 를 걸 수 없다(screen/user/requirements.md 의
+ * <p>대가는 <b>정렬</b>이다 — SQL 이 모르는 값이라 {@code ORDER BY} 를 걸 수 없다(screen/admin/system/user/requirements.md 의
  * 미결). 화면이 그 컬럼의 {@code sortable} 을 켜지 않는 것으로 지킨다.
  */
 @Service
@@ -119,7 +119,7 @@ public class UserQueryService {
     }
 
     /**
-     * 접근 제어 체인 순서로 <b>먼저 걸린 것 하나</b> — screen/user/requirements.md.
+     * 접근 제어 체인 순서로 <b>먼저 걸린 것 하나</b> — screen/admin/system/user/requirements.md.
      *
      * <p>{@link UserSpec#condition} 과 <b>같은 순서를 같은 방향으로</b> 읽는다. 한쪽만
      * 고치면 <i>목록에는 미사용인데 잠김으로 조회하면 나오는</i> 행이 생기므로, 순서를 바꿀

@@ -5,7 +5,7 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * 개인 예외 저장이 거부하는 것 — screen/user/requirements.md · sys/menu.md 의 원칙 P1.
+ * 개인 예외 저장이 거부하는 것 — screen/admin/system/user/requirements.md · sys/menu.md 의 원칙 P1.
  *
  * <p>{@code RoleErrorCode} 의 뒤 셋(메뉴 · 액션 · {@code READ})과 <b>같은 규칙</b>을
  * 지키지만 <b>키를 공유하지 않는다</b>({@link MsgKey} 의 해당 블록) — 규칙이 하나인 것과

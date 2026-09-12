@@ -157,10 +157,10 @@ public class SysUser extends BaseAuditEntity {
         this.pwdInitYn = false;
     }
 
-    // ── 관리자가 하는 것 (screen/user/requirements.md) ────────────────────────────────
+    // ── 관리자가 하는 것 (screen/admin/system/user/requirements.md) ────────────────────────────────
 
     /**
-     * 관리자가 셀에서 고치는 것 — screen/user/requirements.md 의 <b>관리자 축</b>이 이 메서드의 표면이다.
+     * 관리자가 셀에서 고치는 것 — screen/admin/system/user/requirements.md 의 <b>관리자 축</b>이 이 메서드의 표면이다.
      *
      * <p>계정을 못 쓰게 하는 넷 중 <b>둘만</b> 있다({@code USE_YN} · 사용 기간). 나머지 둘은
      * 시스템이 걸고 <b>전용 메서드가 자기 컬럼만</b> 쓴다({@link #unlock} · {@link
@@ -196,7 +196,7 @@ public class SysUser extends BaseAuditEntity {
     }
 
     /**
-     * 휴면 해제 — screen/user/requirements.md. <b>메일이 안 되는 환경을 위한 관리자 경로</b>다.
+     * 휴면 해제 — screen/admin/system/user/requirements.md. <b>메일이 안 되는 환경을 위한 관리자 경로</b>다.
      *
      * <p>정상 경로는 본인의 비밀번호 재설정이며 그것이 곧 본인 재인증이다(sys/user-role.md · screen/_standalone/README.md).
      *
@@ -214,7 +214,7 @@ public class SysUser extends BaseAuditEntity {
      * 내리고 여기는 <b>세운다</b> — 세워 두어야 다음 로그인이 강제 변경으로 가고,
      * {@code tempValidHours} 가 지나면 로그인 자체가 막힌다({@link #isTemporaryPasswordExpired}).
      *
-     * <p><b>잠금도 휴면도 건드리지 않는다</b>(screen/user/requirements.md). 발송만으로 잠금이 풀리면
+     * <p><b>잠금도 휴면도 건드리지 않는다</b>(screen/admin/system/user/requirements.md). 발송만으로 잠금이 풀리면
      * <i>실패 5회 → 초기화 → 다시 5회</i> 가 무한 반복된다.
      */
     public void resetPasswordByAdmin(String encodedPwd, Instant now) {

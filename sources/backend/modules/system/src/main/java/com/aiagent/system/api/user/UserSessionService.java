@@ -1,4 +1,5 @@
-package com.aiagent.api.user;
+// @feat FEAT-501
+package com.aiagent.system.api.user;
 
 import com.aiagent.core.error.BusinessException;
 import com.aiagent.domain.auth.service.LoginHistoryService;
@@ -14,7 +15,7 @@ import org.springframework.session.Session;
 import org.springframework.stereotype.Service;
 
 /**
- * 활성 세션 조회와 강제 로그아웃 — AUTH-10 · screen/user/requirements.md.
+ * 활성 세션 조회와 강제 로그아웃 — AUTH-10 · screen/admin/system/user/requirements.md.
  *
  * <h2>화면이 스토어를 모른다</h2>
  *
@@ -43,7 +44,7 @@ import org.springframework.stereotype.Service;
 public class UserSessionService {
 
     /**
-     * 짝지을 로그인을 <b>몇 건까지 읽나</b> — screen/user/requirements.md.
+     * 짝지을 로그인을 <b>몇 건까지 읽나</b> — screen/admin/system/user/requirements.md.
      *
      * <p>활성 세션 하나마다 로그인 하나가 대응하므로 필요한 것은 <i>세션 수만큼</i> 이다.
      * 그보다 넉넉히 읽는 것은 <b>결과 코드가 인덱스에 없어</b>({@code IX_SYS_LO_LOGIN_03})
@@ -85,7 +86,7 @@ public class UserSessionService {
     /**
      * 이 사람의 활성 세션 — <b>최근 접근이 늦은 것부터</b>.
      *
-     * <p>정렬 기준이 <i>끊을까 말까</i> 를 가르는 값이다(screen/user/requirements.md). 생성 시각 순으로 두면
+     * <p>정렬 기준이 <i>끊을까 말까</i> 를 가르는 값이다(screen/admin/system/user/requirements.md). 생성 시각 순으로 두면
      * <b>오래 켜 둔 채 쓰지 않는 세션</b>이 목록 뒤로 밀리는데, 그것이 정확히 찾는 것이다.
      *
      * @param currentSessionId 이 요청의 세션. 목록에서 <b>표시만</b> 하며 빼지 않는다 —
@@ -151,9 +152,9 @@ public class UserSessionService {
      *
      * <p><b>없는 세션은 조용히 넘어간다.</b> 이미 끊겼거나 만료된 것이며, 그것은 실패가
      * 아니라 <i>이미 이뤄진 상태</i>다 — 잠금 해제가 잠기지 않은 계정을 오류로 보지 않는
-     * 것과 같다(screen/user/requirements.md).
+     * 것과 같다(screen/admin/system/user/requirements.md).
      *
-     * <p><b>{@code SYS_USER} 는 바뀌지 않는다</b>(screen/user/requirements.md). 끊긴 사람은 <b>다시 로그인할
+     * <p><b>{@code SYS_USER} 는 바뀌지 않는다</b>(screen/admin/system/user/requirements.md). 끊긴 사람은 <b>다시 로그인할
      * 수 있다</b> — 막으려면 {@code USE_YN='N'} 이고 그것은 다른 축이다(sys/user-role.md).
      *
      * @return 실제로 끊은 수. 화면이 <i>N건을 종료했습니다</i> 로 낸다 — 고른 수와 다를 수

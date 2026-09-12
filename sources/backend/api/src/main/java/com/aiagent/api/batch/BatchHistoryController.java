@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <p>screen/batch/history/requirements.md — {@code CANCEL_REQ_DTM} 을 쓰지만 <b>컬럼 쓰기가 결과 그 자체가 아니라</b>
  * 실행 중인 절차에 요청을 전달하는 <b>통로</b>다. 아무도 읽지 않으면 아무 일도 일어나지
- * 않으며, screen/user/requirements.md 의 잠금 해제(컬럼 값을 바꾸는 것이 목적)와 갈리는 지점이 그것이다.
+ * 않으며, screen/admin/system/user/requirements.md 의 잠금 해제(컬럼 값을 바꾸는 것이 목적)와 갈리는 지점이 그것이다.
  * 경로 접두({@code cancel} → <i>그 외</i> → {@code EXECUTE})와 판단이 <b>일치</b>하므로
  * {@code @ApiActionType} 을 쓰지 않는다.
  *

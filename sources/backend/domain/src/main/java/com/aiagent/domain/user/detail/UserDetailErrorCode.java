@@ -5,7 +5,7 @@ import com.aiagent.core.error.ErrorType;
 import com.aiagent.core.message.MsgKey;
 
 /**
- * 디테일 탭의 저장이 거부하는 것 — screen/user/requirements.md.
+ * 디테일 탭의 저장이 거부하는 것 — screen/admin/system/user/requirements.md.
  *
  * <p><b>편집이 있는 탭은 둘뿐</b>이라(보유 역할 · 접속 IP) 여기 있는 것도 그 둘의 것이다.
  * 개인 예외 · 유효 권한 · 활성 세션은 조회 전용이며, 강제 로그아웃의 <i>자기 자신</i> 거부는
