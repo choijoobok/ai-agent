@@ -1,0 +1,64 @@
+/** 실제 Chromium에서 탐색·설정·목업 격리·Mermaid 렌더링을 검사한다. */
+import { createRequire } from 'node:module';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { REPO } from '../manual-site/lib/menu.mjs';
+
+const rootArg = process.argv.slice(2).find((arg) => arg.startsWith('--root='))?.slice('--root='.length);
+const site = process.argv.slice(2).find((arg) => !arg.startsWith('--')) ?? 'design';
+const root = resolve(REPO, rootArg || 'build/deliverables');
+const requireFrontend = createRequire(resolve(REPO, 'sources/frontend/package.json'));
+const { chromium } = requireFrontend('playwright');
+const browser = await chromium.launch({ headless: true });
+const errors = [];
+
+try {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  await page.goto(pathToFileURL(resolve(root, site, 'index.html')).href, { waitUntil: 'load' });
+  await page.evaluate(() => window.DELIVERY_READY);
+  if (site === 'design') {
+    const mockupPage = await page.locator('[data-mockup$="/__design__"]').first().evaluate((node) => node.closest('[data-page]')?.id);
+    if (mockupPage) await page.locator(`[data-page-link="${mockupPage}"]`).click();
+  }
+  const state = await page.evaluate(() => ({
+    pages: document.querySelectorAll('[data-page]').length,
+    visiblePages: [...document.querySelectorAll('[data-page]')].filter((node) => !node.hidden).length,
+    currentPath: document.querySelector('[data-current-path]')?.textContent?.trim(),
+    mermaids: document.querySelectorAll('.mermaid[data-mermaid-source]').length,
+    diagrams: document.querySelectorAll('.mermaid svg').length,
+    designMockups: document.querySelectorAll('[data-mockup$="/__design__"]').length,
+    describedMockups: [...document.querySelectorAll('[data-mockup$="/__design__"]')].filter((node) => {
+      const shadow = node.querySelector('[data-mockup-body]')?.shadowRoot;
+      return shadow?.querySelector('[data-note]') && shadow?.querySelector('[id^="note-"]') && shadow?.textContent.includes('테스트 케이스');
+    }).length,
+  }));
+  if (state.visiblePages !== 1) errors.push(`현재 문서가 하나가 아니다: ${state.visiblePages}`);
+  if (!state.currentPath) errors.push('상단 현재 문서 경로가 비었다.');
+  if (state.mermaids !== state.diagrams) errors.push(`Mermaid ${state.mermaids}개 중 SVG ${state.diagrams}개만 렌더링됐다.`);
+  if (site === 'design' && (state.designMockups === 0 || state.describedMockups !== 1)) {
+    errors.push(`현재 문서의 상세 목업이 완결되지 않았다: 전체 자리 ${state.designMockups} · 주입 완료 ${state.describedMockups}`);
+  }
+  await page.locator('[data-ui-settings-toggle]').click();
+  await page.locator('select[data-ui-width]').selectOption('full');
+  await page.locator('select[data-ui-font]').selectOption('serif');
+  await page.locator('select[data-ui-size]').selectOption('110');
+  const settings = await page.evaluate(() => ({
+    width: document.documentElement.dataset.contentWidth,
+    font: document.documentElement.dataset.uiFont,
+    scale: document.documentElement.style.getPropertyValue('--ui-scale'),
+  }));
+  if (settings.width !== 'full' || settings.font !== 'serif' || settings.scale !== '1.1') errors.push('보기 설정이 문서 루트에 반영되지 않았다.');
+  await page.locator('[data-theme-toggle]').click();
+  await page.evaluate(() => window.DELIVERY_READY);
+  await page.emulateMedia({ media: 'print' });
+  const printVisible = await page.evaluate(() => [...document.querySelectorAll('[data-page]')]
+    .filter((node) => getComputedStyle(node).display !== 'none').length);
+  if (printVisible !== 1) errors.push(`인쇄 매체에서 현재 문서 외 ${printVisible - 1}개가 더 보인다.`);
+  console.log(`${site}: 문서 ${state.pages} · Mermaid SVG ${state.diagrams} · 상세 목업 ${state.describedMockups} · 인쇄 문서 ${printVisible}`);
+} finally {
+  await browser.close();
+}
+
+for (const error of errors) console.log(`오류: ${error}`);
+console.log(errors.length ? `빨강 — ${errors.length}건` : '초록 — 실제 브라우저 동작이 완결됐다.');
+process.exitCode = errors.length ? 1 : 0;

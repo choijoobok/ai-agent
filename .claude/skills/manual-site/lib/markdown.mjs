@@ -76,6 +76,8 @@ export function renderMarkdown(source, options = {}) {
   let list = null;
   let inTable = false;
   let inFence = false;
+  let fenceLanguage = '';
+  let fenceLines = [];
 
   const closeList = () => {
     if (list) {
@@ -96,12 +98,23 @@ export function renderMarkdown(source, options = {}) {
     if (line.startsWith('```')) {
       closeList();
       closeTable();
-      html.push(inFence ? '</pre>' : '<pre>');
-      inFence = !inFence;
+      if (!inFence) {
+        fenceLanguage = line.slice(3).trim().toLowerCase();
+        fenceLines = [];
+        inFence = true;
+      } else {
+        const source = fenceLines.join('\n');
+        html.push(fenceLanguage === 'mermaid'
+          ? `<div class="mermaid" data-mermaid-source="${encodeURIComponent(source)}">${escapeHtml(source)}</div>`
+          : `<pre><code${fenceLanguage ? ` class="language-${escapeHtml(fenceLanguage)}"` : ''}>${escapeHtml(source)}</code></pre>`);
+        inFence = false;
+        fenceLanguage = '';
+        fenceLines = [];
+      }
       continue;
     }
     if (inFence) {
-      html.push(escapeHtml(raw));
+      fenceLines.push(raw);
       continue;
     }
 
@@ -177,7 +190,10 @@ export function renderMarkdown(source, options = {}) {
   }
   closeList();
   closeTable();
-  if (inFence) html.push('</pre>');
+  if (inFence) {
+    const source = fenceLines.join('\n');
+    html.push(`<pre><code${fenceLanguage ? ` class="language-${escapeHtml(fenceLanguage)}"` : ''}>${escapeHtml(source)}</code></pre>`);
+  }
   return html.join('\n');
 }
 

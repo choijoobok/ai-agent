@@ -15,7 +15,8 @@ tags: [artifact, template, screen]
   사용자 메뉴얼 — 템플릿 (v1)
   ─────────────────────────────────────────────────────────
   [독자] 이 화면을 쓰는 운영자·사용자. 개발자가 아니다.
-  [원본] 이 MD 가 원본이고 `build/deliverables/user/` 는 파생이다 — HTML 을 직접 고치면
+  [원본] 이 MD 가 원본이고 내부 검토 `build/deliverables/user/` 와 사용자 독립본
+         `build/deliverables-user/` 는 파생이다 — HTML 을 직접 고치면
          다음 생성에서 사라진다. 피드백은 여기 반영하고 사이트를 다시 만든다(AGENTS.md §6.2).
 
   [작성 원칙]

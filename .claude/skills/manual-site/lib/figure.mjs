@@ -137,7 +137,7 @@ function screenBlocks(source) {
  * 벗기는 것은 <i>오려 낸 사본</i> 뿐이며, 그래서 둘이 갈릴 일이 없다.
  */
 function stripAnnotations(html) {
-  const noBadges = html.replace(/\s*<span class="n">\d+<\/span>/g, '');
+  const noBadges = html.replace(/\s*<span\b[^>]*class="[^"]*\bn\b[^"]*"[^>]*>\d+<\/span>/g, '');
   return ['bar', 'banner'].reduce(cutBlocks, noBadges);
 }
 

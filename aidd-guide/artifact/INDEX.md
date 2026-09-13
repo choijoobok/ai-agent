@@ -52,7 +52,7 @@ tags: [artifact, map, index]
 | 27  | 가정 원장                      | 상시    | L   | `documents/decisions/ASSUMPTIONS.md`                                                                                   |  ●   |  ●  |  ●   |
 | 28  | 변경 요청 대장                   | P3~   | L   | `documents/decisions/CHANGES.md`                                                                                       |  ○   |  ●  |  ●   |
 | 29  | 배포/운영 런북                   | P2~P6 | S+G | `documents/spec/80-operations.yaml` → `documents/generated/80-운영런북.md`                                                |  ○   |  ●  |  ●   |
-| 30  | 사용자 매뉴얼                    | P4~P6 | S+G | `documents/screen/{페이지경로}/manual.md` → `build/deliverables/user/index.html`                                           |  ●   |  ●  |  ●   |
+| 30  | 사용자 매뉴얼                    | P4~P6 | S+G | `documents/screen/{페이지경로}/manual.md` → 내부 검토 `build/deliverables/user/` · 사용자 독립본 `build/deliverables-user/` |  ●   |  ●  |  ●   |
 | 31  | 데이터 이행 계획                  | P6    | S   | `documents/generated/82-데이터이행.md`                                                                                      |  ○   |  ○  |  ●   |
 | 32  | 인수 확인서                     | P6    | G   | `documents/generated/99-인수확인서.md`                                                                                      |  ○   |  ●  |  ●   |
 | 33  | **화면 요건 정의서 + 테스트케이스**     | P3~P4 | S   | `documents/screen/{페이지경로}/requirements.md`                                                                             |  ●   |  ●  |  ●   |

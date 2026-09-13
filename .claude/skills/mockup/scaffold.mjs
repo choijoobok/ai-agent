@@ -228,21 +228,42 @@ function screenModel(md, type) {
   };
 }
 
-function searchControl(row) {
+function annotator(key) {
+  const notes = [];
+  return {
+    badge(description) {
+      const number = notes.length + 1;
+      const id = `${key}-${number}`;
+      notes.push({ id, number, description });
+      return `<span class="n anchor" data-note="${id}" role="link" tabindex="0" aria-label="설명 ${number} 보기">${number}</span>`;
+    },
+    render() {
+      if (!notes.length) return '';
+      return `<div class="notes"><ol>${notes.map((note) => `<li id="note-${note.id}"><span class="n">${note.number}</span>${note.description}</li>`).join('')}</ol></div>`;
+    },
+  };
+}
+
+function searchControl(row, annotations) {
   const label = row[0] || '조회 조건';
   const input = row[2] || '';
   const select = /셀렉트|선택|코드|날짜/.test(input);
-  return `<label>${html(label)}</label>${select ? '<select><option>전체</option></select>' : `<input placeholder="${html(plain(label))}" />`}`;
+  const description = `<b>${html(plain(label))}</b> — 요건서 §조회조건에 정의된 조건이다. ${html(plain(row.slice(1).filter(Boolean).join(' · ')) || '입력값으로 목록을 조회한다.')}`;
+  return `<label>${html(label)}${annotations.badge(description)}</label>${select ? '<select><option>전체</option></select>' : `<input placeholder="${html(plain(label))}" />`}`;
 }
 
 function columnLabel(row) {
   return plain(row[0] || '컬럼');
 }
 
-function grid(title, table, { empty = '', selected = false } = {}) {
+function grid(title, table, annotations, { empty = '', selected = false } = {}) {
   const cols = table?.rows ?? [];
   if (!cols.length) return '';
-  const heads = cols.map((row) => `<th class="roh">${html(row[0])}<span class="mn">☰</span></th>`).join('');
+  const titleBadge = annotations.badge(`<b>${html(title)}</b> 영역 — 조회 결과와 건수를 함께 확인한다.`);
+  const heads = cols.map((row) => {
+    const detail = plain(row.slice(1).filter(Boolean).join(' · ')) || '요건서 §컬럼에 정의된 표시 항목이다.';
+    return `<th class="roh">${html(row[0])}${annotations.badge(`<b>${html(columnLabel(row))}</b> 컬럼 — ${html(detail)}`)}<span class="mn">☰</span></th>`;
+  }).join('');
   const values = cols.map((row, i) => {
     const label = columnLabel(row);
     if (/수$|건수|count/i.test(label)) return '<td>0</td>';
@@ -252,15 +273,19 @@ function grid(title, table, { empty = '', selected = false } = {}) {
   const body = empty
     ? `<tbody><tr><td colspan="${cols.length}" class="empty">${html(empty)}</td></tr></tbody>`
     : `<tbody><tr${selected ? ' class="sel"' : ''}>${values}</tr></tbody>`;
-  return `<div class="tb"><span class="ttl">${html(title)}</span><span class="cnt">${empty ? '0건' : '1건'}</span></div>
+  return `<div class="tb"><span class="ttl">${html(title)}${titleBadge}</span><span class="cnt">${empty ? '0건' : '1건'}</span></div>
     <div class="grid"><table><thead><tr>${heads}</tr></thead>${body}</table></div>
     <div class="pg"><span>총 <b>${empty ? '0' : '1'}</b>건</span><span class="nav">‹ 1 ›</span><span class="size">50건</span></div>`;
 }
 
-function actionButtons(rows) {
+function actionButtons(rows, annotations) {
   const names = rows.map((r) => plain(r[0])).filter((x) => x && !/^\(/.test(x));
   const shown = names.length ? names.slice(0, 4) : ['조회'];
-  return shown.map((name, i) => `<button class="btn ${i === 0 ? 'sm' : 'ghost sm'}">${html(name)}</button>`).join('');
+  return shown.map((name, i) => {
+    const row = rows.find((candidate) => plain(candidate[0]) === name) ?? [];
+    const detail = plain(row.slice(1).filter(Boolean).join(' · ')) || '현재 조건으로 업무 동작을 수행한다.';
+    return `<button class="btn ${i === 0 ? 'sm' : 'ghost sm'}">${html(name)}${annotations.badge(`<b>${html(name)}</b> 버튼 — ${html(detail)}`)}</button>`;
+  }).join('');
 }
 
 function detailTitle(table, fallback) {
@@ -289,58 +314,61 @@ function screenSketch(title, type, model, key, caption, manualKey) {
   const captionLine = caption ? ` · ${html(caption)}` : '';
   const isEmpty = /0건|없|미등록|미매핑|빈/.test(caption);
   const emptyMessage = isEmpty ? caption : '';
+  const annotations = annotator(key);
+  const described = (screen) => `${screen}\n${annotations.render()}`;
   if (/대시보드/.test(type) && !model.columns.length) {
-    return `<div class="screen leaf"${attrs}>
+    return described(`<div class="screen leaf"${attrs}>
   <div class="bar">${html(title)}${captionLine} — 요건서 기반 화면 배치</div>
   <div class="body">
-    <div class="bc"><span class="path"><b>${html(title)}</b></span><button class="btn ghost">기간</button></div>
-    <div class="row" style="margin-bottom:12px"><div class="grp" style="flex:1"><b>요약</b><div class="item"><span>현재 상태</span><b>—</b></div></div><div class="grp" style="flex:1"><b>집계</b><div class="item"><span>조회 결과</span><b>—</b></div></div></div>
+    <div class="bc"><span class="path"><b>${html(title)}</b></span><button class="btn ghost">기간${annotations.badge('<b>기간</b> — 대시보드 집계 기준 기간을 선택한다.')}</button></div>
+    <div class="row" style="margin-bottom:12px"><div class="grp" style="flex:1"><b>요약${annotations.badge('<b>요약</b> — 현재 업무 상태의 핵심 지표를 보여준다.')}</b><div class="item"><span>현재 상태</span><b>—</b></div></div><div class="grp" style="flex:1"><b>집계</b><div class="item"><span>조회 결과</span><b>—</b></div></div></div>
     <div class="tb"><span class="ttl">현황</span><span class="cnt">요건서의 데이터가 여기에 표시됩니다</span></div>
     <div class="grid"><table><thead><tr><th>구분</th><th>값</th><th>기준 시각</th></tr></thead><tbody><tr><td>표시 데이터</td><td>—</td><td>—</td></tr></tbody></table></div>
   </div>
-</div>`;
+</div>`);
   }
   if (/폼|로그인|팝업|모달|설정/.test(type) && !model.columns.length) {
-    return `<div class="screen shell"${attrs}>
+    return described(`<div class="screen shell"${attrs}>
   <div class="body"><div class="modal"><div class="mh">${html(title)}<span class="x">×</span></div><div class="mb">
-    <div class="f"><label>입력 항목</label><input value="" placeholder="요건서에 정의한 값을 입력합니다" /></div>
+    <div class="f"><label>입력 항목${annotations.badge('<b>입력 항목</b> — 요건서의 입력·검증 규칙을 적용한다.')}</label><input value="" placeholder="요건서에 정의한 값을 입력합니다" /></div>
     <div class="f ro"><label>조회 항목</label><input value="읽기 전용 값" readonly /></div>
-  </div><div class="mf"><span>${caption ? html(caption) : '기본 상태'}</span><span class="row"><button class="btn ghost sm">취소</button><button class="btn sm">확인</button></span></div></div></div>
-</div>`;
+  </div><div class="mf"><span>${caption ? html(caption) : '기본 상태'}</span><span class="row"><button class="btn ghost sm">취소</button><button class="btn sm">확인${annotations.badge('<b>확인</b> — 입력값을 검증한 뒤 저장하거나 다음 단계로 진행한다.')}</button></span></div></div></div>
+</div>`);
   }
   const first = model.columns[0];
   const second = detailFor(model.columns, caption);
   if (first) {
     const search = model.search.length
-      ? model.search.map(searchControl).join('')
-      : '<label>조회 조건</label><input placeholder="검색어" />';
-    const master = grid(detailTitle(first, `${title} 목록`), first, { empty: emptyMessage, selected: model.masterDetail && !isEmpty });
+      ? model.search.map((row) => searchControl(row, annotations)).join('')
+      : `<label>조회 조건${annotations.badge('<b>조회 조건</b> — 입력값으로 목록을 다시 조회한다.')}</label><input placeholder="검색어" />`;
+    const actions = actionButtons(model.actions, annotations);
+    const master = grid(detailTitle(first, `${title} 목록`), first, annotations, { empty: emptyMessage, selected: model.masterDetail && !isEmpty });
     const tabs = model.columns.length > 2
-      ? `<div class="tabs">${model.columns.slice(1).map((table) => `<span class="${table === second ? 'on' : ''}">${html(detailTitle(table, '상세'))}</span>`).join('')}</div>`
+      ? `<div class="tabs">${model.columns.slice(1).map((table) => `<span class="${table === second ? 'on' : ''}">${html(detailTitle(table, '상세'))}${annotations.badge(`<b>${html(detailTitle(table, '상세'))}</b> 탭 — 선택한 상위 행의 상세 데이터를 표시한다.`)}</span>`).join('')}</div>`
       : '';
     const detail = second
-      ? `${model.vertical ? '<div class="split"><span class="arw">⌃</span><span class="hnd">⋮⋮⋮</span><span class="arw">⌄</span></div>' : ''}${tabs}${grid(detailTitle(second, '상세'), second, { empty: model.masterDetail ? '위 목록에서 행을 선택하면 상세가 표시됩니다' : '' })}`
+      ? `${model.vertical ? '<div class="split"><span class="arw">⌃</span><span class="hnd">⋮⋮⋮</span><span class="arw">⌄</span></div>' : ''}${tabs}${grid(detailTitle(second, '상세'), second, annotations, { empty: model.masterDetail ? '위 목록에서 행을 선택하면 상세가 표시됩니다' : '' })}`
       : '';
-    return `<div class="screen leaf"${attrs}>
+    return described(`<div class="screen leaf"${attrs}>
   <div class="bar">${html(title)}${captionLine} — 요건서의 조회조건·컬럼·버튼을 반영한 화면</div>
   <div class="body">
     <div class="bc"><span class="path"><b>${html(title)}</b></span></div>
-    <div class="sf">${search}<span class="act">${actionButtons(model.actions)}</span></div>
+    <div class="sf">${search}<span class="act">${actions}</span></div>
     ${master}
     ${detail}
   </div>
-</div>`;
+</div>`);
   }
-  return `<div class="screen leaf"${attrs}>
+  return described(`<div class="screen leaf"${attrs}>
   <div class="bar">${html(title)}${captionLine} — 요건서 기반 화면 배치</div>
   <div class="body">
     <div class="bc"><span class="path"><b>${html(title)}</b></span></div>
-    <div class="sf"><label>조회 조건</label><input placeholder="검색어" /><label>상태</label><select><option>전체</option></select><span class="act"><button class="btn sm">조회</button></span></div>
+    <div class="sf"><label>조회 조건${annotations.badge('<b>조회 조건</b> — 입력값으로 목록을 조회한다.')}</label><input placeholder="검색어" /><label>상태</label><select><option>전체</option></select><span class="act"><button class="btn sm">조회${annotations.badge('<b>조회</b> — 현재 조건으로 데이터를 조회한다.')}</button></span></div>
     <div class="tb"><span class="ttl">${html(title)} 목록</span><span class="cnt">0건</span><button class="btn ghost sm">새로고침</button></div>
     <div class="grid"><table><thead><tr><th>이름</th><th>상태</th><th>변경일시</th></tr></thead><tbody><tr><td>표시 데이터</td><td>—</td><td>—</td></tr></tbody></table></div>
     <div class="pg"><span>총 <b>0</b>건</span><span class="nav">‹ 1 ›</span><span class="size">50건</span></div>
   </div>
-</div>`;
+</div>`);
 }
 
 // ── 골격 ────────────────────────────────────────────────────────────
@@ -464,6 +492,15 @@ function check(dir) {
   if (!/<div\b[^>]*class="[^"]*\bscreen\b[^"]*"/i.test(mock)) {
     problems.push('화면 블록이 없다 — 공용 스타일·테스트 표만으로는 목업이 아니다');
   }
+
+  // 화면 안의 번호 배지와 하단 상세 설명은 정확히 1:1이어야 한다.
+  const badgeIds = [...mock.matchAll(/data-note="([\w-]+)"/g)].map((m) => m[1]);
+  const noteIds = [...mock.matchAll(/\bid="note-([\w-]+)"/g)].map((m) => m[1]);
+  if (!badgeIds.length) problems.push('화면 요소를 설명하는 번호 배지가 없다');
+  for (const id of badgeIds) if (!noteIds.includes(id)) problems.push(`번호 배지 ${id}의 하단 설명이 없다`);
+  for (const id of noteIds) if (!badgeIds.includes(id)) problems.push(`하단 설명 ${id}을 가리키는 화면 번호 배지가 없다`);
+  if (new Set(badgeIds).size !== badgeIds.length) problems.push('같은 data-note 번호 배지가 중복됐다');
+  if (new Set(noteIds).size !== noteIds.length) problems.push('같은 하단 설명 id가 중복됐다');
 
   // ① 화면 계약의 핵심인 컬럼 이름은 목업에서도 그대로 보여야 한다. 일반적인
   // "이름·상태" 헤더로 바뀌면 화면 구조가 맞아 보여도 실제 업무 화면은 틀린다.

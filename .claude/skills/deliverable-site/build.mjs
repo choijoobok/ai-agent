@@ -1,12 +1,13 @@
 /**
  * 세 고객 제출 사이트를 하나의 오프라인 폴더로 조립한다.
- * 외부 CDN 없이 file://에서 트리·검색·테마·전체 인쇄가 동작한다.
+ * 외부 CDN 없이 file://에서 트리·검색·테마·현재 문서 인쇄가 동작한다.
  */
 import {
   copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, readdirSync,
   rmSync, statSync, writeFileSync,
 } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { createRequire } from 'node:module';
 import { dirname, extname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseYaml } from '../../hooks/lib.mjs';
@@ -16,17 +17,23 @@ import { menuTree, read as readRepo, REPO, screensOf } from '../manual-site/lib/
 import { themeAware } from '../manual-site/lib/page.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const OUT = resolve(REPO, 'build/deliverables');
 const ASSET_SOURCE = resolve(REPO, 'aidd-guide/artifact/site-kit/assets');
 const args = process.argv.slice(2);
 const mode = args.find((arg) => !arg.startsWith('--')) ?? 'all';
 const release = args.includes('--release');
 const pdf = args.includes('--pdf');
+const standalone = args.includes('--standalone');
 const validModes = new Set(['all', 'design', 'user', 'operations']);
 if (!validModes.has(mode)) {
   console.error(`대상은 all · design · user · operations 중 하나다 — 받은 값: ${mode}`);
   process.exit(2);
 }
+if (standalone && mode === 'all') {
+  console.error('--standalone은 design · user · operations 중 하나와 함께 쓴다.');
+  process.exit(2);
+}
+const OUT = resolve(REPO, standalone ? `build/deliverables-${mode}` : 'build/deliverables');
+const keys = mode === 'all' ? ['design', 'user', 'operations'] : [mode];
 
 const config = parseYaml(readFileSync(resolve(REPO, 'documents/delivery.yaml'), 'utf8'));
 const siteConfig = new Map((config.sites ?? []).map((site) => [site.key, site]));
@@ -91,16 +98,32 @@ function captureName(key) { return key === MAIN ? 'screen.png' : `screen-${key}.
 function captureSource(url, key) { return `documents/screen${url}/${captureName(key)}`; }
 
 function collectSharedMockups() {
+  const userRoutes = new Set(keys.includes('user')
+    ? screensOf(menuTree().roots).filter((menu) => !(release && menu.url.startsWith('/sample'))).map((menu) => menu.url)
+    : []);
   for (const file of walk('documents/screen', 'mockup.html')) {
     const folder = norm(dirname(file)).replace(/^documents\/screen/, '');
+    const forUser = userRoutes.has(folder);
+    const forDesign = keys.includes('design') && !folder.startsWith('/sample');
+    if (!forUser && !forDesign) continue;
     const req = `${norm(dirname(file))}/requirements.md`;
     const meta = byDoc.get(req) ?? byRoute.get(folder) ?? null;
     const screenId = screenIdentity(meta, { url: folder, code: slug(folder) });
     const { figures, style } = figuresOf(folder, 'mockup');
-    for (const [key, figure] of figures) {
-      mockups[`${screenId}/${key}`] = { html: figure.html, style: themeAware(style) };
+    if (forUser) {
+      for (const [key, figure] of figures) mockups[`${screenId}/${key}`] = { html: figure.html, style: themeAware(style) };
+    }
+    if (forDesign) {
+      const source = read(file);
+      const full = source.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1];
+      if (full) mockups[`${screenId}/__design__`] = { html: full, style: themeAware(style) };
     }
   }
+}
+
+function designMockupMarkup(screenId) {
+  if (!mockups[`${screenId}/__design__`]) return '<div class="delivery-empty">생성된 목업이 없습니다.</div>';
+  return `<div class="design-mockup" data-mockup="${escapeHtml(`${screenId}/__design__`)}"><div class="mockwrap" data-mockup-body></div></div>`;
 }
 
 function copyShot(screenId, key, file) {
@@ -149,29 +172,37 @@ function designChapters() {
   const chapters = [];
   for (const path of walk('documents/generated')) {
     if (path.endsWith('/_index.md') || path.includes('/80-운영런북') || path.endsWith('80-운영런북.md')) continue;
-    chapters.push(markdownChapter({ id: `design-${slug(path)}`, group: '생성 설계·검증 문서', path }));
+    chapters.push({ ...markdownChapter({ id: `design-${slug(path)}`, group: '생성 설계·검증 문서', path }), treePath: ['생성 설계·검증 문서'] });
   }
   for (const path of walk('documents/design')) {
-    chapters.push(markdownChapter({ id: `detail-${slug(path)}`, group: '상세 설계', path }));
+    chapters.push({ ...markdownChapter({ id: `detail-${slug(path)}`, group: '상세 설계', path }), treePath: ['상세 설계'] });
   }
-  for (const path of walk('documents/screen').filter((value) => value.endsWith('/requirements.md'))) {
-    if (release && path.includes('/sample/')) continue;
+  const { roots } = menuTree();
+  const ordered = screensOf(roots).filter((menu) => !menu.url.startsWith('/sample'));
+  const menuByRoute = new Map(ordered.map((menu) => [menu.url, menu]));
+  const requirementPaths = walk('documents/screen').filter((value) => value.endsWith('/requirements.md') && !value.includes('/sample/'));
+  requirementPaths.sort((left, right) => {
+    const leftRoute = norm(dirname(left)).replace(/^documents\/screen/, '');
+    const rightRoute = norm(dirname(right)).replace(/^documents\/screen/, '');
+    const li = ordered.findIndex((menu) => menu.url === leftRoute);
+    const ri = ordered.findIndex((menu) => menu.url === rightRoute);
+    return (li < 0 ? Number.MAX_SAFE_INTEGER : li) - (ri < 0 ? Number.MAX_SAFE_INTEGER : ri)
+      || left.localeCompare(right, 'ko');
+  });
+  for (const path of requirementPaths) {
     const meta = byDoc.get(norm(path));
     const folder = norm(dirname(path)).replace(/^documents\/screen/, '');
     const screenId = screenIdentity(meta, { url: folder, code: slug(folder) });
-    const { figures } = figuresOf(folder, 'mockup');
-    const visuals = [...figures].map(([key, figure], index) => figureMarkup({
-      site: 'design', screenId, screenTitle: meta?.title ?? titleOf(read(path), path), url: folder,
-      key, caption: `${meta?.title ?? screenId} — ${key}`, figure, index: index + 1, total: figures.size,
-    })).join('\n');
-    chapters.push(markdownChapter({
-      id: `screen-${slug(screenId)}`, group: `화면 요건·목업 · ${meta?.module ?? '기타'}`, path,
+    const menu = menuByRoute.get(folder);
+    const treePath = ['화면 요건·목업', ...(menu?.path.slice(0, -1) ?? ['공통 화면'])];
+    chapters.push({ ...markdownChapter({
+      id: `screen-${slug(screenId)}`, group: treePath.join(' › '), path,
       title: `${screenId} ${meta?.title ?? titleOf(read(path), '')}`,
       tabs: [
         { key: 'requirements', label: '요건 정의서', markdown: read(path) },
-        { key: 'mockup', label: '화면 목업', rendered: visuals || '<div class="delivery-empty">생성된 목업이 없습니다.</div>' },
+        { key: 'mockup', label: '화면 목업', rendered: designMockupMarkup(screenId) },
       ],
-    }));
+    }), treePath });
   }
   return chapters;
 }
@@ -217,13 +248,14 @@ function userChapters() {
     }
     chapters.push({
       id: `manual-${slug(screenId)}`, group: menu.path.slice(0, -1).join(' › ') || '사용자 메뉴얼', path,
+      treePath: ['사용자 메뉴얼', ...menu.path.slice(0, -1)],
       title: `${screenId} ${menu.name}`, markdown: null, rendered: body,
     });
   }
   if (!release && captureRows.length) {
     const rows = captureRows.filter((row) => row.site === 'user').map((row) =>
       `<tr><td>${row.actual ? '✅' : '◇'}</td><td>${escapeHtml(row.screenId)}</td><td>${escapeHtml(row.screenTitle)}</td><td><code>${escapeHtml(row.key)}</code></td><td><code>${escapeHtml(row.expected)}</code></td></tr>`).join('');
-    chapters.unshift({ id: 'capture-status', group: '검토', path: 'generated:capture-status', title: '실제 화면 캡처 현황', markdown: null,
+    chapters.unshift({ id: 'capture-status', group: '검토', treePath: ['검토'], path: 'generated:capture-status', title: '실제 화면 캡처 현황', markdown: null,
       rendered: `<h1>실제 화면 캡처 현황</h1><p>◇는 현재 목업이며 표시된 파일을 넣고 다시 생성하면 같은 자리가 실제 화면으로 바뀝니다.</p><table class="capture-summary"><thead><tr><th>상태</th><th>화면 ID</th><th>화면</th><th>그림 키</th><th>대체 파일</th></tr></thead><tbody>${rows}</tbody></table>` });
   }
   return chapters;
@@ -232,9 +264,9 @@ function userChapters() {
 function operationsChapters() {
   const chapters = [];
   const runbook = 'documents/generated/80-운영런북.md';
-  if (exists(runbook)) chapters.push(markdownChapter({ id: 'operations-runbook', group: '고객 환경 운영 런북', path: runbook }));
+  if (exists(runbook)) chapters.push({ ...markdownChapter({ id: 'operations-runbook', group: '고객 환경 운영 런북', path: runbook }), treePath: ['고객 환경 운영 런북'] });
   for (const path of walk('developer-guide')) {
-    chapters.push(markdownChapter({ id: `developer-${slug(path)}`, group: '구축·개발·배포·운영 안내', path }));
+    chapters.push({ ...markdownChapter({ id: `developer-${slug(path)}`, group: '구축·개발·배포·운영 안내', path }), treePath: ['구축·개발·배포·운영 안내'] });
   }
   return chapters;
 }
@@ -262,15 +294,30 @@ function renderTabs(chapter, mapping) {
   return `<div class="document-tabs" data-document-tabs><div class="document-tab-list" role="tablist" aria-label="화면 설계 보기">${buttons}</div>${panels}</div>`;
 }
 
+function renderTree(chapters, siteTitle) {
+  const root = { children: new Map(), pages: [] };
+  for (const chapter of chapters) {
+    let node = root;
+    for (const label of chapter.treePath ?? [chapter.group]) {
+      if (!node.children.has(label)) node.children.set(label, { children: new Map(), pages: [] });
+      node = node.children.get(label);
+    }
+    node.pages.push(chapter);
+  }
+  const branch = (node, depth = 0) => [
+    ...[...node.children].map(([label, child]) => `<li class="tree-branch" data-tree-depth="${depth}"><button class="tnode group" data-tree-group type="button" aria-expanded="true"><svg class="icon chev"><use href="#i-chevron-down"/></svg><span class="label">${escapeHtml(label)}</span></button><ul>${branch(child, depth + 1)}</ul></li>`),
+    ...node.pages.map((chapter) => {
+      const documentPath = [siteTitle, ...(chapter.treePath ?? [chapter.group]), chapter.title].join(' › ');
+      return `<li><button class="tnode empty-chev" data-page-link="${chapter.id}" data-page-path="${escapeHtml(documentPath)}" type="button"><span class="label">${escapeHtml(chapter.title)}</span></button></li>`;
+    }),
+  ].join('');
+  return branch(root);
+}
+
 function renderSite(key, chapters) {
   const cfg = siteConfig.get(key) ?? { title: key, description: '' };
   const mapping = new Map(chapters.filter((chapter) => !chapter.path.startsWith('generated:')).map((chapter) => [norm(chapter.path), chapter.id]));
-  const groups = new Map();
-  for (const chapter of chapters) {
-    if (!groups.has(chapter.group)) groups.set(chapter.group, []);
-    groups.get(chapter.group).push(chapter);
-  }
-  const tree = [...groups].map(([group, items]) => `<li><button class="tnode group" data-tree-group type="button" aria-expanded="true"><svg class="icon chev"><use href="#i-chevron-down"/></svg><span class="label">${escapeHtml(group)}</span></button><ul>${items.map((chapter) => `<li><button class="tnode empty-chev" data-page-link="${chapter.id}" type="button"><span class="label">${escapeHtml(chapter.title)}</span></button></li>`).join('')}</ul></li>`).join('');
+  const tree = renderTree(chapters, cfg.title);
   const bodies = chapters.map((chapter) => {
     const body = chapter.tabs
       ? renderTabs(chapter, mapping)
@@ -281,63 +328,85 @@ function renderSite(key, chapters) {
 <html lang="ko"${release ? ' class="release"' : ''}>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>${escapeHtml(cfg.title)}</title>
 <link rel="stylesheet" href="../assets/guide.css"><link rel="stylesheet" href="../assets/delivery.css">
-<script src="../assets/icons.js" defer></script><script src="../assets/mockups.js" defer></script><script src="../assets/delivery.js" defer></script></head>
-<body class="${release ? 'release' : 'review'}"><header class="topbar"><button class="icon-btn menu-toggle" data-menu-toggle type="button" aria-label="목차 열기" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button><a class="brand" href="../index.html"><span class="logo"><svg class="icon sm"><use href="#i-book-open"/></svg></span><span>${escapeHtml(cfg.title)}</span></a><div class="spacer"></div><div class="site-actions"><button data-print-all type="button">전체 인쇄·PDF</button><button class="icon-btn" data-theme-toggle type="button" aria-label="라이트 테마로 전환" title="테마 전환"><svg class="icon theme-icon-dark"><use href="#i-sun"/></svg><svg class="icon theme-icon-light" hidden><use href="#i-moon"/></svg></button></div></header>
+<script src="../assets/icons.js" defer></script><script src="../assets/mermaid.min.js" defer></script><script src="../assets/mockups.js" defer></script><script src="../assets/delivery.js" defer></script></head>
+<body class="${release ? 'release' : 'review'}"><header class="topbar"><button class="icon-btn menu-toggle" data-menu-toggle type="button" aria-label="목차 열기" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button><a class="brand" href="../index.html"><span class="logo"><svg class="icon sm"><use href="#i-book-open"/></svg></span><span>${escapeHtml(cfg.title)}</span></a><div class="current-path" data-current-path aria-live="polite"></div><div class="spacer"></div><div class="site-actions"><button data-print-page type="button">현재 페이지 인쇄·PDF</button><div class="ui-settings"><button class="icon-btn" data-ui-settings-toggle type="button" aria-label="보기 설정" aria-expanded="false" title="보기 설정"><svg class="icon"><use href="#i-settings"/></svg></button><div class="ui-settings-panel" data-ui-settings-panel hidden><label>본문 너비<select data-ui-width><option value="standard">읽기 편한 너비</option><option value="full">화면 100%</option></select></label><label>글꼴<select data-ui-font><option value="system">시스템 기본</option><option value="gothic">고딕</option><option value="serif">명조</option><option value="mono">고정폭</option></select></label><label>글자 크기<select data-ui-size><option value="90">90%</option><option value="100">100%</option><option value="110">110%</option><option value="120">120%</option></select></label><button data-ui-reset type="button">기본값 복원</button></div></div><button class="icon-btn" data-theme-toggle type="button" aria-label="라이트 테마로 전환" title="테마 전환"><svg class="icon theme-icon-dark"><use href="#i-sun"/></svg><svg class="icon theme-icon-light" hidden><use href="#i-moon"/></svg></button></div></header>
 <div class="sidebar-backdrop"></div><div class="layout"><aside class="sidebar" id="sidebar"><div class="sb-head">목차</div><div class="sb-filter"><input data-tree-filter type="search" placeholder="제목·본문 검색"></div><nav class="tree"><ul>${tree}</ul></nav></aside><div class="main-wrap"><main class="content">${bodies || '<div class="delivery-empty">표시할 문서가 없습니다.</div>'}</main></div></div></body></html>`;
   write(resolve(OUT, key, 'index.html'), html);
 }
 
 function rootPage() {
-  const cards = [...siteConfig.values()].map((site) => `<a class="delivery-home-card" href="${site.key}/index.html"><h2>${escapeHtml(site.title)}</h2><p>${escapeHtml(site.description)}</p></a>`).join('');
-  return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>고객 제출 산출물</title><link rel="stylesheet" href="assets/guide.css"><link rel="stylesheet" href="assets/delivery.css"></head><body><main class="content"><article><h1>고객 제출 산출물</h1><p>인터넷 연결 없이 아래 세 사이트를 열람할 수 있습니다.</p><div class="delivery-home-grid">${cards}</div></article></main></body></html>`;
+  const cards = keys.map((key) => siteConfig.get(key)).filter(Boolean).map((site) => `<a class="delivery-home-card" href="${site.key}/index.html"><h2>${escapeHtml(site.title)}</h2><p>${escapeHtml(site.description)}</p></a>`).join('');
+  const intro = standalone && mode === 'user'
+    ? '일반 사용자에게 전달하는 사용자 매뉴얼 전용 오프라인 패키지입니다. 설계 산출물과 운영자 자료는 포함하지 않습니다.'
+    : `인터넷 연결 없이 ${keys.length === 1 ? '선택한 사이트를' : '세 사이트를'} 열람할 수 있습니다.`;
+  return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>고객 제출 산출물</title><link rel="stylesheet" href="assets/guide.css"><link rel="stylesheet" href="assets/delivery.css"></head><body><main class="content"><article><h1>고객 제출 산출물</h1><p>${intro}</p><div class="delivery-home-grid">${cards}</div></article></main></body></html>`;
 }
 
-async function makePdf(keys) {
+async function makePdf(chaptersBySite) {
   let chromium;
-  try { ({ chromium } = await import('playwright')); }
+  try {
+    const requireFrontend = createRequire(resolve(REPO, 'sources/frontend/package.json'));
+    ({ chromium } = requireFrontend('playwright'));
+  }
   catch { throw new Error('--pdf는 선택 의존성 playwright와 chromium이 필요하다. HTML 제출본은 정상 생성됐다.'); }
   const browser = await chromium.launch({ headless: true });
+  const files = [];
   try {
     ensure(resolve(OUT, 'pdf'));
-    for (const key of keys) {
-      const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
-      await page.goto(`${pathToFileURL(resolve(OUT, key, 'index.html')).href}?print=all`, { waitUntil: 'networkidle' });
-      await page.pdf({ path: resolve(OUT, 'pdf', `${key}.pdf`), format: 'A4', printBackground: true });
-      await page.close();
+    for (const [key, chapters] of Object.entries(chaptersBySite)) {
+      ensure(resolve(OUT, 'pdf', key));
+      for (const [index, chapter] of chapters.entries()) {
+        const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+        await page.goto(`${pathToFileURL(resolve(OUT, key, 'index.html')).href}?print=page#${chapter.id}`, { waitUntil: 'load' });
+        await page.evaluate(() => window.DELIVERY_READY);
+        await page.emulateMedia({ media: 'print' });
+        const filename = `${String(index + 1).padStart(3, '0')}-${slug(chapter.title) || chapter.id}.pdf`;
+        const target = resolve(OUT, 'pdf', key, filename);
+        await page.pdf({ path: target, format: 'A4', printBackground: true });
+        files.push(norm(relative(OUT, target)));
+        await page.close();
+      }
     }
   } finally { await browser.close(); }
+  return files;
 }
 
 const expectedRoot = `${resolve(REPO, 'build')}${sep}`;
 if (!OUT.startsWith(expectedRoot)) throw new Error(`제출 폴더가 build 밖이다: ${OUT}`);
-if (mode === 'all') rmSync(OUT, { recursive: true, force: true });
+if (mode === 'all' || standalone) rmSync(OUT, { recursive: true, force: true });
 else rmSync(resolve(OUT, mode), { recursive: true, force: true });
 ensure(resolve(OUT, 'assets'));
 for (const asset of ['guide.css', 'icons.js', 'delivery.css', 'delivery.js']) copyFileSync(resolve(ASSET_SOURCE, asset), resolve(OUT, 'assets', asset));
+const mermaidAsset = resolve(REPO, 'sources/frontend/node_modules/mermaid/dist/mermaid.min.js');
+if (!existsSync(mermaidAsset)) issues.push({ site: 'all', level: 'error', message: '오프라인 Mermaid 자산이 없다. sources/frontend에서 npm install을 실행한다.' });
+else copyFileSync(mermaidAsset, resolve(OUT, 'assets/mermaid.min.js'));
 
 collectSharedMockups();
 write(resolve(OUT, 'assets/mockups.js'), `window.DELIVERY_MOCKUPS=${JSON.stringify(mockups).replace(/<\//g, '<\\/')};\n`);
 
-const keys = mode === 'all' ? ['design', 'user', 'operations'] : [mode];
 const makers = { design: designChapters, user: userChapters, operations: operationsChapters };
 const allChapters = Object.fromEntries(keys.map((key) => [key, makers[key]()]));
 for (const key of keys) renderSite(key, allChapters[key]);
 write(resolve(OUT, 'index.html'), rootPage());
 
+let pdfFiles = [];
 if (pdf) {
-  try { await makePdf(keys); }
+  try { pdfFiles = await makePdf(allChapters); }
   catch (error) { issues.push({ site: 'all', level: 'error', message: error.message }); console.error(error.message); }
 }
 
 const selectedIssues = issues.filter((issue) => issue.site === 'all' || keys.includes(issue.site));
 const manifest = {
-  id: config.meta?.id ?? 'DLV-001', generatedAt: new Date().toISOString(), mode, release,
+  id: config.meta?.id ?? 'DLV-001', generatedAt: new Date().toISOString(), mode, release, standalone, pdfFiles,
   sites: Object.fromEntries(keys.map((key) => [key, { chapters: allChapters[key].length }])),
   sources: [...sourceFiles].sort().map((path) => ({ path, sha256: createHash('sha256').update(readFileSync(repoPath(path))).digest('hex') })),
   issues: selectedIssues,
 };
 write(resolve(OUT, 'delivery-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
-write(resolve(OUT, 'README.txt'), '고객 제출 산출물\r\n==================\r\nindex.html을 열면 인터넷 연결 없이 세 사이트를 볼 수 있습니다.\r\n각 사이트의 전체 인쇄·PDF 버튼으로 브라우저 PDF 저장을 사용할 수 있습니다.\r\n');
+const readmeScope = standalone && mode === 'user'
+  ? '이 폴더는 일반 사용자용 사용자 매뉴얼만 포함합니다. 설계 산출물과 운영자 자료는 별도 전체 제출본에서 관리합니다.'
+  : `이 폴더에는 ${keys.join(' · ')} 사이트가 포함되어 있습니다.`;
+write(resolve(OUT, 'README.txt'), `고객 제출 산출물\r\n==================\r\n${readmeScope}\r\nindex.html을 열면 인터넷 연결 없이 볼 수 있습니다.\r\n각 사이트의 현재 페이지 인쇄·PDF 버튼은 보고 있는 문서만 인쇄합니다.\r\n--pdf 옵션으로 만든 PDF는 pdf/{사이트}/ 아래에 문서별로 저장됩니다.\r\n`);
 
 for (const issue of selectedIssues) console.log(`${issue.level === 'error' ? '오류' : '경고'}: ${issue.message}`);
 console.log(`제출 사이트 ${keys.join(' · ')} — ${OUT}`);

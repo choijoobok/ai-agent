@@ -39,12 +39,14 @@ description: 화면별 manual.md를 사용자 매뉴얼 오프라인 사이트�
 node .claude/skills/mockup/scaffold.mjs --check
 node .claude/skills/manual-site/build.mjs
 node .claude/skills/deliverable-site/build.mjs user --release
+node .claude/skills/deliverable-site/build.mjs user --release --standalone
 ```
 
 - 기본 검토본은 PNG가 없으면 목업을 쓴다.
 - `--release`는 그림 자리마다 실제 PNG를 요구한다. 하나라도 없으면 실패한다.
-- 결과는 `build/deliverables/` 파생물이므로 커밋하지 않는다.
-- PDF는 사이트의 `전체 인쇄·PDF` 버튼을 쓰거나 `$deliverable-site --pdf`로 만든다.
+- 내부 검토 결과는 `build/deliverables/user/`, 일반 사용자에게 전달할 독립 패키지는
+  `build/deliverables-user/` 파생물이므로 커밋하지 않는다. 일반 사용자에게 전체 `build/deliverables/` 폴더를 주지 않는다.
+- PDF는 사이트의 `현재 페이지 인쇄·PDF` 버튼을 쓰거나 `$deliverable-site --pdf`로 문서별 생성한다.
 
 ## 실제 화면 캡처
 

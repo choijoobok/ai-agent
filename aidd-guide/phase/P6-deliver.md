@@ -68,11 +68,13 @@ node .claude/skills/doc-gen/gen.mjs
 node .claude/skills/runbook/check.mjs --release
 node .claude/skills/deliverable-site/build.mjs all --release
 node .claude/skills/deliverable-site/build.mjs all --release --pdf  # 선택
+node .claude/skills/deliverable-site/build.mjs user --release --standalone  # 일반 사용자에게 따로 전달
 ```
 
 검토 모드는 목업과 캡처 목표 경로를 보여 준다. `--release`는 사용자 매뉴얼의 모든 그림 자리에
-실제 PNG가 없으면 실패한다. PDF 자동 생성 의존성이 없으면 HTML의 `전체 인쇄·PDF` 버튼으로
-브라우저에서 저장한다. `build/`는 파생물이므로 커밋하지 않고 인도 시 새로 만든다.
+실제 PNG가 없으면 실패한다. 일반 사용자에게는 설계·운영 자료가 없는 `build/deliverables-user/`만 준다.
+`--pdf`는 문서별 PDF를 만들며 Mermaid SVG 완료를 기다린다. 자동 생성 의존성이 없으면 HTML의
+`현재 페이지 인쇄·PDF` 버튼으로 보고 있는 문서만 저장한다. `build/`는 파생물이므로 커밋하지 않고 인도 시 새로 만든다.
 
 ## 5. 데이터 이행과 인수 확인
 

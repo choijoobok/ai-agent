@@ -54,6 +54,8 @@ cp aidd-guide/artifact/template/02-requirements.md documents/screen/{페이지�
 3. `/manual-site`가 좌측 실제 메뉴 트리 + 중앙 본문인
    `build/deliverables/user/index.html`을 만든다. 화면별 HTML을 중복 생성하지 않는다.
    개발 중에는 목업을 쓰고, P6 인수 전에는 그림 키별 실제 PNG를 넣어 `--release`를 통과시킨다.
+   일반 사용자에게는 `user --release --standalone`으로 만든 `build/deliverables-user/`만 전달한다.
+   이 독립본에는 설계 산출물과 운영·개발 안내가 들어가지 않는다.
 
 ## 폴더 이름은 페이지 경로다
 

@@ -267,9 +267,12 @@ a{color:var(--note)}
 /* 주석 — 화면 요소 ↔ 문서 결정 연결 */
 .notes{border-left:3px solid var(--note);background:var(--note-bg);padding:10px 14px;font-size:12.5px}
 .notes ol{margin:0;padding-left:18px}
-.notes li{margin:3px 0}
+.notes li{margin:6px 0;scroll-margin-top:18px}
+.notes li:target{outline:2px solid var(--note);outline-offset:3px;background:var(--note-bg)}
 .n{display:inline-block;min-width:17px;height:17px;line-height:17px;text-align:center;
    border-radius:50%;background:var(--note);color:#fff;font-size:11px;margin-right:5px}
+.n.anchor{margin:0 3px;color:#fff;text-decoration:none;vertical-align:1px;cursor:pointer}
+.n.anchor:hover,.n.anchor:focus-visible{outline:2px solid var(--note);outline-offset:2px}
 
 table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
 th,td{border:1px solid var(--line2);padding:5px 8px;text-align:left;vertical-align:top}

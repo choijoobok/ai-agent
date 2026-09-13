@@ -21,7 +21,7 @@ tags: [artifact, html, offline, delivery]
 | `assets/guide.css` | 가이드 템플릿의 색·글꼴·기본 컴포넌트 |
 | `assets/icons.js` | 외부 CDN 없는 SVG 아이콘 심볼 |
 | `assets/delivery.css` | 트리형 문서 사이트·인쇄·캡처 상태 확장 |
-| `assets/delivery.js` | 목차 이동·검색·테마·전체 인쇄 |
+| `assets/delivery.js` | 목차 이동·검색·현재 경로·보기 설정·테마·현재 문서 인쇄·Mermaid 렌더링 |
 
 `guide-skill/`은 도입 근거일 뿐 런타임 입력이 아니다. 모양을 고칠 때는 이 폴더만 수정하고,
 생성된 `build/deliverables/`를 손으로 고치지 않는다.
