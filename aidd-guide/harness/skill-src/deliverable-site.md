@@ -6,7 +6,8 @@ description: 설계 산출물·사용자 매뉴얼·운영 런북/개발자 가�
 # 고객 제출 사이트 생성
 
 정본을 옮기거나 HTML을 손으로 고치지 않는다. `documents/delivery.yaml`의 세 사이트 구성을 읽고
-`build/deliverables/`를 통째로 다시 만든다.
+`build/deliverables/`를 통째로 다시 만든다. 어느 모드든 생성하면 사용법·옵션·AI 요청 예문을 담은
+`build/README.txt`도 `aidd-guide/artifact/site-kit/BUILD-README.txt`에서 다시 만든다.
 
 ```bash
 node .claude/skills/doc-gen/gen.mjs

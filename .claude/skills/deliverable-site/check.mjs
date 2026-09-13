@@ -9,6 +9,7 @@ const rootArg = process.argv.slice(2).find((arg) => arg.startsWith('--root='))?.
 const ROOT = resolve(REPO, rootArg || 'build/deliverables');
 const errors = [];
 const manifestPath = resolve(ROOT, 'delivery-manifest.json');
+const buildReadmePath = resolve(REPO, 'build/README.txt');
 let manifest = null;
 
 if (!existsSync(manifestPath)) errors.push('delivery-manifest.json이 없다.');
@@ -18,6 +19,13 @@ else {
     errors.push('manifest에 제출 구성 정본이 없다.');
   }
   console.log(`manifest: 원본 ${(manifest.sources ?? []).length}개 · 문제 ${(manifest.issues ?? []).length}개`);
+}
+if (!existsSync(buildReadmePath)) errors.push('build/README.txt 생성 안내가 없다.');
+else {
+  const guide = readFileSync(buildReadmePath, 'utf8');
+  for (const token of ['--release', '--standalone', '--pdf', 'AI에게 생성 요청']) {
+    if (!guide.includes(token)) errors.push(`build/README.txt에 필수 안내가 없다 — ${token}`);
+  }
 }
 
 const keys = Object.keys(manifest?.sites ?? {});

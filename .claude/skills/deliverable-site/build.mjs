@@ -33,6 +33,7 @@ if (standalone && mode === 'all') {
   process.exit(2);
 }
 const OUT = resolve(REPO, standalone ? `build/deliverables-${mode}` : 'build/deliverables');
+const BUILD_README = resolve(REPO, 'aidd-guide/artifact/site-kit/BUILD-README.txt');
 const keys = mode === 'all' ? ['design', 'user', 'operations'] : [mode];
 
 const config = parseYaml(readFileSync(resolve(REPO, 'documents/delivery.yaml'), 'utf8'));
@@ -376,6 +377,7 @@ if (!OUT.startsWith(expectedRoot)) throw new Error(`제출 폴더가 build 밖�
 if (mode === 'all' || standalone) rmSync(OUT, { recursive: true, force: true });
 else rmSync(resolve(OUT, mode), { recursive: true, force: true });
 ensure(resolve(OUT, 'assets'));
+copyFileSync(BUILD_README, resolve(REPO, 'build/README.txt'));
 for (const asset of ['guide.css', 'icons.js', 'delivery.css', 'delivery.js']) copyFileSync(resolve(ASSET_SOURCE, asset), resolve(OUT, 'assets', asset));
 const mermaidAsset = resolve(REPO, 'sources/frontend/node_modules/mermaid/dist/mermaid.min.js');
 if (!existsSync(mermaidAsset)) issues.push({ site: 'all', level: 'error', message: '오프라인 Mermaid 자산이 없다. sources/frontend에서 npm install을 실행한다.' });
