@@ -3,6 +3,7 @@
 
 # Gradle
 .gradle/
+.gradle-g4/
 build/
 !sources/gradle/wrapper/gradle-wrapper.jar
 
