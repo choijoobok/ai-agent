@@ -166,7 +166,7 @@
   function applySettings() {
     if (!['standard', 'full'].includes(settings.width)) settings.width = 'standard';
     if (!['system', 'gothic', 'serif', 'mono'].includes(settings.font)) settings.font = 'system';
-    if (!['90', '100', '110', '120'].includes(settings.size)) settings.size = '100';
+    if (!['90', '100', '110', '120', '130', '140', '150'].includes(settings.size)) settings.size = '100';
     root.dataset.contentWidth = settings.width;
     root.dataset.uiFont = settings.font;
     root.style.setProperty('--ui-scale', String(Number(settings.size) / 100));

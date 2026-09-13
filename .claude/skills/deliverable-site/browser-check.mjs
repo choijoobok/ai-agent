@@ -41,13 +41,13 @@ try {
   await page.locator('[data-ui-settings-toggle]').click();
   await page.locator('select[data-ui-width]').selectOption('full');
   await page.locator('select[data-ui-font]').selectOption('serif');
-  await page.locator('select[data-ui-size]').selectOption('110');
+  await page.locator('select[data-ui-size]').selectOption('150');
   const settings = await page.evaluate(() => ({
     width: document.documentElement.dataset.contentWidth,
     font: document.documentElement.dataset.uiFont,
     scale: document.documentElement.style.getPropertyValue('--ui-scale'),
   }));
-  if (settings.width !== 'full' || settings.font !== 'serif' || settings.scale !== '1.1') errors.push('보기 설정이 문서 루트에 반영되지 않았다.');
+  if (settings.width !== 'full' || settings.font !== 'serif' || settings.scale !== '1.5') errors.push('보기 설정이 문서 루트에 반영되지 않았다.');
   await page.locator('[data-theme-toggle]').click();
   await page.evaluate(() => window.DELIVERY_READY);
   await page.emulateMedia({ media: 'print' });

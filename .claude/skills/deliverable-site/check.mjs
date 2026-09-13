@@ -55,6 +55,9 @@ for (const key of keys) {
   if (!html.includes('data-ui-settings-toggle') || !html.includes('data-ui-width') || !html.includes('data-ui-font') || !html.includes('data-ui-size')) {
     errors.push(`${key}: 너비·글꼴·글자 크기 보기 설정이 없다.`);
   }
+  for (const size of ['130', '140', '150']) {
+    if (!html.includes(`<option value="${size}">${size}%</option>`)) errors.push(`${key}: 글자 크기 ${size}% 옵션이 없다.`);
+  }
   if (!html.includes('data-print-page') || html.includes('data-print-all')) errors.push(`${key}: 현재 페이지만 인쇄하는 제어가 아니다.`);
   if (!html.includes('../assets/mermaid.min.js')) errors.push(`${key}: 오프라인 Mermaid 스크립트를 부르지 않는다.`);
   if (key === 'user' && /data-page-link="[^"]*sample/i.test(html)) errors.push('user: 샘플 화면이 목차에 포함됐다.');
