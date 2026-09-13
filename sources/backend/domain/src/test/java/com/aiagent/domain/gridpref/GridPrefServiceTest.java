@@ -1,12 +1,16 @@
 package com.aiagent.domain.gridpref;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.aiagent.domain.gridpref.entity.SysUserGridPref;
+import com.aiagent.domain.authz.repository.SysMenuRepository;
+import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.CommonErrorCode;
 import com.aiagent.domain.gridpref.repository.SysUserGridPrefRepository;
 import com.aiagent.domain.gridpref.service.GridPrefService;
 import java.util.Optional;
@@ -37,12 +41,14 @@ class GridPrefServiceTest {
     private static final String GRID = "main";
 
     @Mock private SysUserGridPrefRepository preferences;
+    @Mock private SysMenuRepository menus;
 
     private GridPrefService service;
 
     @BeforeEach
     void setUp() {
-        service = new GridPrefService(preferences);
+        service = new GridPrefService(preferences, menus);
+        when(menus.existsById(MENU)).thenReturn(true);
         when(preferences.findByUserIdAndMenuCdAndGridId(any(), any(), any()))
                 .thenReturn(Optional.empty());
     }
@@ -97,6 +103,17 @@ class GridPrefServiceTest {
 
         // 기본값은 화면 선언이고 배포마다 바뀔 수 있다 — 굳히면 *초기화했는데 옛 기본값* 이다.
         verify(preferences).deleteByUserIdAndMenuCdAndGridId(USER, MENU, GRID);
+        verify(preferences, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("TC-5102 등록되지 않은 메뉴에는 설정을 저장하지 않는다")
+    void rejectsUnknownMenuOnSave() {
+        assertThatThrownBy(() -> service.save(USER, "UNKNOWN", GRID, "{}", "abc"))
+                .isInstanceOf(BusinessException.class)
+                .extracting(error -> ((BusinessException) error).errorCode())
+                .isEqualTo(CommonErrorCode.NOT_FOUND);
+
         verify(preferences, never()).save(any());
     }
 }

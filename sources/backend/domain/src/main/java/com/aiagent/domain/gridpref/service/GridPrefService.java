@@ -1,5 +1,8 @@
 package com.aiagent.domain.gridpref.service;
 
+import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.CommonErrorCode;
+import com.aiagent.domain.authz.repository.SysMenuRepository;
 import com.aiagent.domain.gridpref.GridPref;
 import com.aiagent.domain.gridpref.entity.SysUserGridPref;
 import com.aiagent.domain.gridpref.repository.SysUserGridPrefRepository;
@@ -27,9 +30,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class GridPrefService {
 
     private final SysUserGridPrefRepository preferences;
+    private final SysMenuRepository menus;
 
-    public GridPrefService(SysUserGridPrefRepository preferences) {
+    public GridPrefService(SysUserGridPrefRepository preferences, SysMenuRepository menus) {
         this.preferences = preferences;
+        this.menus = menus;
     }
 
     /**
@@ -56,6 +61,7 @@ public class GridPrefService {
     /** 저장 — 같은 자리에 덮어쓴다. 개인 설정에 이력을 두지 않는다. */
     @Transactional
     public void save(String userId, String menuCd, String gridId, String prefJson, String signature) {
+        requireRegisteredMenu(menuCd);
         preferences
                 .findByUserIdAndMenuCdAndGridId(userId, menuCd, gridId)
                 .ifPresentOrElse(
@@ -73,5 +79,11 @@ public class GridPrefService {
     @Transactional
     public void reset(String userId, String menuCd, String gridId) {
         preferences.deleteByUserIdAndMenuCdAndGridId(userId, menuCd, gridId);
+    }
+
+    private void requireRegisteredMenu(String menuCd) {
+        if (!menus.existsById(menuCd)) {
+            throw new BusinessException(CommonErrorCode.NOT_FOUND);
+        }
     }
 }

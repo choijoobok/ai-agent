@@ -4,6 +4,7 @@ import com.aiagent.domain.favorite.entity.SysUserFavorite;
 import com.aiagent.domain.favorite.entity.SysUserFavoriteId;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -19,6 +20,27 @@ public interface SysUserFavoriteRepository
     List<SysUserFavorite> findByUserIdOrderBySortNoAsc(String userId);
 
     boolean existsByUserIdAndMenuCd(String userId, String menuCd);
+
+    /**
+     * 이미 같은 즐겨찾기가 생긴 경합도 성공으로 끝낸다.
+     *
+     * <p>두 탭이 동시에 없는 행을 본 뒤 저장해도 PK 충돌을 오류로 돌리지 않는다. 즐겨찾기는
+     * 있는 상태가 결과이므로, 뒤 요청도 같은 결과를 받은 것으로 처리한다(RQ-515-01).
+     */
+    @Modifying
+    @Query(
+            value =
+                    """
+                    insert into SYS_USER_FAVORITE (USER_ID, MENU_CD, SORT_NO, CRE_DTM)
+                    values (:userId, :menuCd, :sortNo, :createdAt)
+                    on conflict (USER_ID, MENU_CD) do nothing
+                    """,
+            nativeQuery = true)
+    int insertIfAbsent(
+            @Param("userId") String userId,
+            @Param("menuCd") String menuCd,
+            @Param("sortNo") int sortNo,
+            @Param("createdAt") java.time.Instant createdAt);
 
     void deleteByUserIdAndMenuCd(String userId, String menuCd);
 

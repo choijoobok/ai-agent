@@ -1,11 +1,15 @@
 package com.aiagent.domain.favorite.service;
 
+import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.CommonErrorCode;
 import com.aiagent.domain.favorite.FavoriteMenu;
+import com.aiagent.domain.authz.repository.SysMenuRepository;
 import com.aiagent.domain.favorite.entity.SysUserFavorite;
 import com.aiagent.domain.favorite.repository.SysUserFavoriteRepository;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,10 +37,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class FavoriteService {
 
     private final SysUserFavoriteRepository favorites;
+    private final SysMenuRepository menus;
     private final Clock clock;
 
-    public FavoriteService(SysUserFavoriteRepository favorites, Clock clock) {
+    public FavoriteService(SysUserFavoriteRepository favorites, SysMenuRepository menus, Clock clock) {
         this.favorites = favorites;
+        this.menus = menus;
         this.clock = clock;
     }
 
@@ -46,9 +52,19 @@ public class FavoriteService {
      * <p><b>권한으로 거르지 않는다.</b> 거르는 자리는 화면이며, 화면이 가진 메뉴 트리가
      * 이미 유효 권한을 통과한 것이다(backend/security.md · frontend/tabs.md). 여기서 한 번 더 거르면 <b>같은
      * 규칙이 두 곳</b>에 놓이고, 그 둘이 어긋나는 날 어느 쪽이 옳은지 알 수 없다.
+     * 다만 시드에서 사라진 {@code ORPHAN} 은 기능 데이터가 아니라 정리 대상이므로 이 계약에서
+     * 숨긴다(TC-5103). 이는 권한 판정을 복제하는 것이 아니라 사라진 메뉴 참조를 노출하지 않는 일이다.
      */
     public List<FavoriteMenu> findMine(String userId) {
-        return favorites.findByUserIdOrderBySortNoAsc(userId).stream()
+        List<SysUserFavorite> found = favorites.findByUserIdOrderBySortNoAsc(userId);
+        Set<String> visibleMenuCds =
+                menus.findAllById(found.stream().map(SysUserFavorite::getMenuCd).toList()).stream()
+                        .filter(menu -> !menu.isOrphan())
+                        .map(menu -> menu.getMenuCd())
+                        .collect(java.util.stream.Collectors.toSet());
+
+        return found.stream()
+                .filter(favorite -> visibleMenuCds.contains(favorite.getMenuCd()))
                 .map(FavoriteService::toRecord)
                 .toList();
     }
@@ -56,12 +72,12 @@ public class FavoriteService {
     /** 등록 — <b>이미 있으면 아무 일도 하지 않는다.</b> 결과가 같으므로 실패로 만들 이유가 없다. */
     @Transactional
     public void add(String userId, String menuCd) {
+        requireRegisteredMenu(menuCd);
         if (favorites.existsByUserIdAndMenuCd(userId, menuCd)) {
             return;
         }
-        favorites.save(
-                SysUserFavorite.created(
-                        userId, menuCd, favorites.findLastSortNo(userId) + 1, Instant.now(clock)));
+        favorites.insertIfAbsent(
+                userId, menuCd, favorites.findLastSortNo(userId) + 1, Instant.now(clock));
     }
 
     /** 제거 — 없는 것을 지워도 성공이다(결과가 같다). */
@@ -72,5 +88,11 @@ public class FavoriteService {
 
     private static FavoriteMenu toRecord(SysUserFavorite entity) {
         return new FavoriteMenu(entity.getMenuCd(), entity.getSortNo(), entity.getCreDtm());
+    }
+
+    private void requireRegisteredMenu(String menuCd) {
+        if (!menus.existsById(menuCd)) {
+            throw new BusinessException(CommonErrorCode.NOT_FOUND);
+        }
     }
 }

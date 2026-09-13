@@ -18,7 +18,7 @@ current:
   # ↑ **축이 둘이고 글자가 같다.** 차수는 *무엇을 내는가*(00-charter.yaml roadmap),
   #   단계는 *어디까지 만들었는가*(P0~P6)다. 한 차수가 P0~P6 을 한 바퀴 돈다.
   #   `trace-check` 가 이 값을 읽어 **뒤 차수의 결손을 오류가 아니라 경고로** 센다.
-  slice: SLICE-515           # 즐겨찾기·그리드·저장 조회조건을 system 모듈 기준으로 이행한다
+  slice: SLICE-516           # 메뉴 사용 통계·대시보드와 고아 상태 정리를 system 모듈 기준으로 이행한다
   blocked_by: []
   template_maintenance: false
   # ↑ true 로 켜면 G3 전에도 sources/ 를 고칠 수 있다(guard-write ①).
@@ -143,16 +143,15 @@ roadmap_closed: []
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
 next_up:
   decided_at: 2026-09-13
-  choice: "SLICE-515 즐겨찾기·그리드·저장 조회조건을 system 모듈 기준으로 이행한다"
+  choice: "SLICE-516 메뉴 사용 통계·대시보드와 고아 상태 정리를 system 모듈 기준으로 이행한다"
   why: >-
-    SLICE-514 관리 요청 판정·내 요청·알림함 public 계약이 사용자 G4 승인으로 완료됐다.
-    SLICE-515는 SLICE-503 메뉴와 SLICE-504 사용자 관리 계약을 선행으로 사용한다.
+    SLICE-515는 사용자 G4 승인으로 완료됐고, SLICE-516은 그 system 사용자 상태 계약을 이어 쓴다.
   tasks:
-    - "FEAT-510의 즐겨찾기·그리드·저장 조회조건과 TC-5101·TC-5102·TC-5104의 현재 경로를 산정한다"
-    - "신규 system 패키지 존재와 기존 사용자 상태 구현 패키지 부재 계약을 먼저 작성해 RED를 확인한다"
-    - "구현·DTO·소유 테스트를 이행하고 전체 검사·규칙 반전·PIT 뒤 G4 승인을 요청한다"
+    - "FEAT-510의 메뉴 사용 통계·대시보드·고아 상태와 TC-5103·TC-5105의 현재 경로를 산정한다"
+    - "신규 system 패키지 존재와 기존 메뉴 통계 구현 패키지 부재 계약을 먼저 작성해 RED를 확인한다"
+    - "구현·DTO·소유 테스트를 이행하고 전체 검사·규칙 반전·PIT 뒤 G4 승인 결과를 반영한다"
   then: >-
-    SLICE-515 승인 뒤에 SLICE-516 메뉴 사용 통계·대시보드와 고아 상태 정리로 진행한다.
+    SLICE-516 완료 뒤 system P4의 남은 이행 범위를 확인한다.
 
 # ── 미결 질문 (Open Questions) ─────────────────────────────────────
 # 사용자 답변이 필요한 것. 답변되면 삭제하고 결과를 spec·ADR 에 반영한다.
@@ -322,10 +321,11 @@ slices:
   - { id: SLICE-512, workstream: system, features: [FEAT-508], testcases: [TC-5083, TC-5085], scope: "배치 실행 이력·중단·유실 판정", stage: P4, status: done, depends_on: [SLICE-511] }
   - { id: SLICE-513, workstream: system, features: [FEAT-509], testcases: [TC-5092, TC-5093], scope: "공지 관리·사용자 공지·팝업", stage: P4, status: done, depends_on: [SLICE-503, SLICE-507] }
   - { id: SLICE-514, workstream: system, features: [FEAT-509], testcases: [TC-5091, TC-5094, TC-5095, TC-5096, TC-5097], scope: "관리 요청 판정·내 요청·알림함 public 계약", stage: P4, status: done, depends_on: [SLICE-504, SLICE-513] }
-  - { id: SLICE-515, workstream: system, features: [FEAT-510], testcases: [TC-5101, TC-5102, TC-5104], scope: "즐겨찾기·그리드·저장 조회조건", stage: P4, status: planned, depends_on: [SLICE-503, SLICE-504] }
+  - { id: SLICE-515, workstream: system, features: [FEAT-510], testcases: [TC-5101, TC-5102, TC-5104], scope: "즐겨찾기·그리드·저장 조회조건", stage: P4, status: done, depends_on: [SLICE-503, SLICE-504] }
   - { id: SLICE-516, workstream: system, features: [FEAT-510], testcases: [TC-5103, TC-5105], scope: "메뉴 사용 통계·대시보드와 고아 상태 정리", stage: P4, status: planned, depends_on: [SLICE-515] }
 
 verification_load:
+  - { slice: SLICE-515, measured_at: "2026-09-13", fix_rounds: 2, unverified_rules: 0, quality_fails: 0, spec_defects: 3, redteam_fixes: 3, note: "신규 system 패키지 존재·구 사용자 상태 API 패키지 부재 RED 계약을 확인한 뒤 즐겨찾기·그리드·저장 조회조건의 컨트롤러·DTO·프런트 엔드포인트를 system 정식 경로로 이행했다. 등록되지 않은 메뉴 저장 거부, 저장 조회조건의 기본값 복원·같은 이름 덮어쓰기·기본 전환을 시험했으며, CR-012로 JSON을 서버가 열어 거부하지 않고 화면에서 안전 복원하는 현재 구현을 정본으로 바로잡았다. CR-016으로 동시 즐겨찾기는 PostgreSQL 중복 무시 저장으로 둘 다 성공·행 하나가 되게 했고, CR-017으로 동시 기본 조회조건 저장은 사용자 행 잠금으로 직렬화해 마지막 저장 완료 요청 하나만 기본이 되게 했다. 전체 백엔드·프런트 검사, 시드 생성·검사, 품질·추적성·문서 검사를 통과했고 변경된 FavoriteService·SearchCondService PIT는 변이 29개 중 26개를 제거해 90%·테스트 강도 100%다." }
   - { slice: SLICE-514, measured_at: "2026-09-13", fix_rounds: 2, unverified_rules: 0, quality_fails: 1, spec_defects: 1, redteam_fixes: 2, note: "신규 system 패키지 존재·기존 요청·알림 패키지 부재 RED 계약을 확인한 뒤 API·프론트·화면 문서·메뉴 시드를 함께 이행했다. 레드팀에서 같은 요청의 동시 판정이 중복 알림을 만들 수 있음을 찾아 사용자 승인 CR-010으로 대상 행의 PK 오름차순 비관 잠금과 뒤 요청 409를 추가했다. 이어 TC-5094가 경로 계약에만 묶인 결손을 찾아 타 사용자 알림 읽음의 존재 비노출·무변경 테스트를 추가했다. 잠금 순서를 뒤집자 TC-5097이 실패하고 복원 뒤 통과했으며, NotiRequestService PIT는 87%·테스트 강도 100%다. 사용자 G4 승인으로 뒤 요청은 처리자 정보를 드러내지 않는 기존 문구를 쓰고, 잠금 대기 초과는 공통 오류 정책을 유지한다." }
   - { slice: SLICE-513, measured_at: "2026-09-13", fix_rounds: 5, unverified_rules: 0, quality_fails: 0, spec_defects: 1, redteam_fixes: 1, note: "CR-009로 공지 기간 역전(TC-5092)과 팝업 기간 밖 노출(TC-5093)을 이 슬라이스에 고정하고 요청·알림함 계약 시험은 SLICE-514로 분리했다. 신규 system 패키지 존재·구 패키지 부재 RED 계약 뒤 admin·공용 API·화면·메뉴 시드를 함께 이행했다. TC-5092 규칙 반전은 실패 후 복구했고 NoticeService PIT는 77%다. 사용자 G4 승인으로 팝업 오늘 하루 숨김은 기기별 브라우저 저장소에 유지하며 구 /notice 경로는 즉시 제거한다." }
   - { slice: SLICE-501, measured_at: "2026-09-12", fix_rounds: 6, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 3, note: "첫 RED 구현, repository 경계 컴파일 수정, system 컨트롤러 스캔 범위 수정 뒤 PIT가 찾은 도메인·API 서비스 테스트 빈틈 2건을 보강해 각각 93%를 달성했다. 이후 ARCH-026 대비 백엔드 구현 패키지 이행 누락을 발견해 완료를 철회했고, 인증 API 조립·DTO·후처리·허용 IP 판정과 테스트를 system 모듈로 옮겼다. 기존 경로 부재 계약과 system 모듈 PIT 93%를 다시 통과해 2026-09-12 사용자 G4 재승인을 받았다. 사용자 관리 규칙과 잔여 user aggregate는 ASM-007 아래 소유 TC와 함께 SLICE-504에서 검증한다" }

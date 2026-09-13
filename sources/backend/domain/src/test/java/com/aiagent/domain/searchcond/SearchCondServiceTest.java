@@ -8,14 +8,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.CommonErrorCode;
+import com.aiagent.domain.authz.repository.SysMenuRepository;
 import com.aiagent.domain.searchcond.entity.SysUserSearchCond;
 import com.aiagent.domain.searchcond.repository.SysUserSearchCondRepository;
 import com.aiagent.domain.searchcond.service.SearchCondErrorCode;
 import com.aiagent.domain.searchcond.service.SearchCondService;
+import com.aiagent.domain.user.entity.SysUser;
+import com.aiagent.domain.user.repository.SysUserRepository;
 import com.aiagent.support.config.ConfigLookup;
 import com.aiagent.support.config.props.SavedCondProps;
 import java.util.List;
 import java.util.Optional;
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Lock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -45,13 +51,30 @@ class SearchCondServiceTest {
     private static final String JSON = "{}";
 
     @Mock private SysUserSearchCondRepository conditions;
+    @Mock private SysMenuRepository menus;
+    @Mock private SysUserRepository users;
+    @Mock private SysUser user;
     @Mock private ConfigLookup configs;
 
     private SearchCondService service;
 
+    @Test
+    @DisplayName("TC-5102 기본 조회조건 저장은 사용자 행 잠금 저장소 계약을 가진다")
+    void exposesOwnerLockOperation() throws Exception {
+        Lock lock =
+                SysUserRepository.class
+                        .getDeclaredMethod("findByUserIdForUpdate", String.class)
+                        .getAnnotation(Lock.class);
+
+        assertThat(lock).isNotNull();
+        assertThat(lock.value()).isEqualTo(LockModeType.PESSIMISTIC_WRITE);
+    }
+
     @BeforeEach
     void setUp() {
-        service = new SearchCondService(conditions, configs);
+        service = new SearchCondService(conditions, menus, users, configs);
+        when(menus.existsById(MENU)).thenReturn(true);
+        when(users.findByUserIdForUpdate(USER)).thenReturn(Optional.of(user));
         when(configs.get(SavedCondProps.class)).thenReturn(new SavedCondProps(3));
         when(conditions.findByUserIdAndMenuCdAndCondNm(any(), any(), any()))
                 .thenReturn(Optional.empty());
@@ -85,6 +108,7 @@ class SearchCondServiceTest {
             service.save(USER, MENU, "오늘", JSON, true);
 
             // 부분 유니크 인덱스는 벤더마다 문법이 다르다(backend/persistence.md) — 그래서 여기가 유일한 보증이다.
+            verify(users).findByUserIdForUpdate(USER);
             assertThat(old.getDfltYn()).isFalse();
         }
 
@@ -167,5 +191,16 @@ class SearchCondServiceTest {
 
         verify(conditions).save(saved.capture());
         assertThat(saved.getValue().getCondNm()).isEqualTo("최근 것");
+    }
+
+    @Test
+    @DisplayName("TC-5102 등록되지 않은 메뉴에는 조회조건을 저장하지 않는다")
+    void rejectsUnknownMenuOnSave() {
+        assertThatThrownBy(() -> service.save(USER, "UNKNOWN", "최근", JSON, false))
+                .isInstanceOf(BusinessException.class)
+                .extracting(error -> ((BusinessException) error).errorCode())
+                .isEqualTo(CommonErrorCode.NOT_FOUND);
+
+        verify(conditions, never()).save(any());
     }
 }

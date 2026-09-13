@@ -1,9 +1,12 @@
 package com.aiagent.domain.searchcond.service;
 
 import com.aiagent.core.error.BusinessException;
+import com.aiagent.core.error.CommonErrorCode;
+import com.aiagent.domain.authz.repository.SysMenuRepository;
 import com.aiagent.domain.searchcond.SavedSearchCond;
 import com.aiagent.domain.searchcond.entity.SysUserSearchCond;
 import com.aiagent.domain.searchcond.repository.SysUserSearchCondRepository;
+import com.aiagent.domain.user.repository.SysUserRepository;
 import com.aiagent.support.config.ConfigLookup;
 import com.aiagent.support.config.props.SavedCondProps;
 import java.util.List;
@@ -31,10 +34,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class SearchCondService {
 
     private final SysUserSearchCondRepository conditions;
+    private final SysMenuRepository menus;
+    private final SysUserRepository users;
     private final ConfigLookup configs;
 
-    public SearchCondService(SysUserSearchCondRepository conditions, ConfigLookup configs) {
+    public SearchCondService(
+            SysUserSearchCondRepository conditions,
+            SysMenuRepository menus,
+            SysUserRepository users,
+            ConfigLookup configs) {
         this.conditions = conditions;
+        this.menus = menus;
+        this.users = users;
         this.configs = configs;
     }
 
@@ -54,6 +65,8 @@ public class SearchCondService {
      */
     @Transactional
     public void save(String userId, String menuCd, String condNm, String condJson, boolean dflt) {
+        requireRegisteredMenu(menuCd);
+        requireAndLockUser(userId);
         String name = condNm.trim();
         Optional<SysUserSearchCond> existing =
                 conditions.findByUserIdAndMenuCdAndCondNm(userId, menuCd, name);
@@ -103,5 +116,17 @@ public class SearchCondService {
                 entity.getCondJson(),
                 Boolean.TRUE.equals(entity.getDfltYn()),
                 entity.getSortNo());
+    }
+
+    private void requireRegisteredMenu(String menuCd) {
+        if (!menus.existsById(menuCd)) {
+            throw new BusinessException(CommonErrorCode.NOT_FOUND);
+        }
+    }
+
+    private void requireAndLockUser(String userId) {
+        if (users.findByUserIdForUpdate(userId).isEmpty()) {
+            throw new BusinessException(CommonErrorCode.NOT_FOUND);
+        }
     }
 }

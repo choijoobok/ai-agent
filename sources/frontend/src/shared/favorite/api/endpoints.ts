@@ -10,7 +10,7 @@
  * 함께 쓰므로 소속시킬 도메인이 없다.
  */
 export const FAVORITE_ENDPOINTS = {
-  getList: '/common/favorite/getList',
-  save: '/common/favorite/save',
-  delete: '/common/favorite/delete',
+  getList: '/common/system/favorite/getList',
+  save: '/common/system/favorite/save',
+  delete: '/common/system/favorite/delete',
 } as const;
