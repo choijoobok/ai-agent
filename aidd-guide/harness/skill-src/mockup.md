@@ -34,7 +34,7 @@ node .claude/skills/mockup/scaffold.mjs --list
 ## ① 생성 — 골격을 받고 그림만 그린다
 
 ```bash
-node .claude/skills/mockup/scaffold.mjs log/access > documents/screen/log/access/mockup.html
+node .claude/skills/mockup/scaffold.mjs admin/system/log/access > documents/screen/admin/system/log/access/mockup.html
 ```
 
 골격이 **기계가 만들 수 있는 것 전부**를 담고 나온다:
