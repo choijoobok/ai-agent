@@ -15,6 +15,7 @@ import com.aiagent.domain.message.entity.SysMessageKey;
 import com.aiagent.domain.message.repository.SysCacheVersionRepository;
 import com.aiagent.domain.message.repository.SysMessageKeyRepository;
 import com.aiagent.domain.message.repository.SysMessageRepository;
+import com.aiagent.domain.menustat.repository.SysUserMenuStatRepository;
 import com.aiagent.support.time.BusinessCalendar;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,6 +74,7 @@ public class MenuService {
     private final SysUserFavoriteRepository favorites;
     private final SysUserSearchCondRepository searchConds;
     private final SysUserGridPrefRepository gridPrefs;
+    private final SysUserMenuStatRepository menuStats;
     private final SysMessageKeyRepository messageKeys;
     private final SysMessageRepository messageValues;
     private final SysCacheVersionRepository versions;
@@ -87,6 +89,7 @@ public class MenuService {
             SysUserFavoriteRepository favorites,
             SysUserSearchCondRepository searchConds,
             SysUserGridPrefRepository gridPrefs,
+            SysUserMenuStatRepository menuStats,
             SysMessageKeyRepository messageKeys,
             SysMessageRepository messageValues,
             SysCacheVersionRepository versions,
@@ -99,6 +102,7 @@ public class MenuService {
         this.favorites = favorites;
         this.searchConds = searchConds;
         this.gridPrefs = gridPrefs;
+        this.menuStats = menuStats;
         this.messageKeys = messageKeys;
         this.messageValues = messageValues;
         this.versions = versions;
@@ -413,6 +417,7 @@ public class MenuService {
             favorites.deleteByMenuCd(menuCd);
             searchConds.deleteByMenuCd(menuCd);
             gridPrefs.deleteByMenuCd(menuCd);
+            menuStats.deleteByMenuCd(menuCd);
 
             /*
               이름의 자리도 거둔다 — **데이터가 만든 키는 그 데이터가 거둔다**(sys/message.md).

@@ -27,7 +27,7 @@ describe('셸 내비게이션', () => {
   });
 
   beforeEach(() => {
-    useAuthStore.setState({ menuTree: [node('DASHBOARD', '/dashboard'), node('USER_MGMT', '/user')] });
+    useAuthStore.setState({ menuTree: [node('DASHBOARD', '/admin/system/dashboard'), node('USER_MGMT', '/user')] });
     useTabStore.getState().reset();
   });
 
@@ -42,7 +42,7 @@ describe('셸 내비게이션', () => {
     }
 
     render(
-      <MemoryRouter initialEntries={['/dashboard']}>
+      <MemoryRouter initialEntries={['/admin/system/dashboard']}>
         <AntApp>
           <Probe />
         </AntApp>
@@ -67,7 +67,7 @@ describe('셸 내비게이션', () => {
 
     // 대시보드는 닫히지 않으므로 남은 탭은 언제나 있다.
     expect(useTabStore.getState().tabs).toHaveLength(1);
-    expect(screen.getByTestId('path').textContent).toBe('/dashboard');
+    expect(screen.getByTestId('path').textContent).toBe('/admin/system/dashboard');
   });
 
   it('활성 탭이 살아 있으면 주소를 건드리지 않는다', () => {

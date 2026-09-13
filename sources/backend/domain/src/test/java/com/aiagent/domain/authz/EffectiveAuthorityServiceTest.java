@@ -128,6 +128,20 @@ class EffectiveAuthorityServiceTest {
     }
 
     @Test
+    @DisplayName("TC-5103 시드에서 빠진 ORPHAN 메뉴는 유효 권한에서 제거한다")
+    void orphanMenuIsRemovedFromTheResult() {
+        givenRoleGrants(
+                new MenuAction("ORDER", ActionType.READ),
+                new MenuAction("ORPHAN", ActionType.READ));
+        givenPersonalGrants(new MenuAction("ORPHAN", ActionType.SAVE));
+        givenMenus(leaf("ORDER"), orphanLeaf("ORPHAN"));
+
+        EffectiveAuthority authority = service.calculate(USER);
+
+        assertThat(authority.menuCodes()).containsExactly("ORDER");
+    }
+
+    @Test
     @DisplayName("MENU_URL 이 없는 구조 노드는 권한 대상이 아니다 — 게이트가 같은 자리에서 뺀다")
     void structuralNodesAreRemoved() {
         givenRoleGrants(new MenuAction("SYSTEM", ActionType.READ));
@@ -194,6 +208,10 @@ class EffectiveAuthorityServiceTest {
 
     private static SysMenu disabledLeaf(String menuCd) {
         return SysMenuFixture.disabledLeaf(menuCd, null, 1);
+    }
+
+    private static SysMenu orphanLeaf(String menuCd) {
+        return SysMenuFixture.orphanLeaf(menuCd, null, 1);
     }
 
     private static SysMenu structural(String menuCd) {

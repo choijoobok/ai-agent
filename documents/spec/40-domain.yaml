@@ -329,7 +329,7 @@ entities:
     attributes: [{ name: USER_ID, type: varchar, pk: true }, { name: MENU_CD, type: varchar, pk: true }]
     columns: [USER_ID, MENU_CD, SORT_NO, CRE_DTM]
     relations: ["USER_ID -> ENT-501.USER_ID", "MENU_CD -> ENT-510.MENU_CD"]
-    rules: ["세션 사용자 범위 고정", "메뉴 삭제 시 고아 행 정리"]
+    rules: ["세션 사용자 범위 고정", "같은 메뉴의 동시 등록은 복합 PK 충돌을 성공으로 처리해 행 하나만 유지", "메뉴 삭제 시 고아 행 정리"]
     audit: created_only
     delete_policy: hard
 
@@ -353,7 +353,7 @@ entities:
     relations: ["USER_ID -> ENT-501.USER_ID", "MENU_CD -> ENT-510.MENU_CD"]
     indexes: []
     index_policy: "현재 물리 인덱스를 그대로 두며 모듈 이동에서 새 인덱스를 만들지 않는다"
-    rules: ["월 키는 YYYYMM", "선택 횟수는 원자 증가"]
+    rules: ["월 키는 YYYYMM", "메뉴 트리의 현재 셸 탭·셸 새 탭·성공한 브라우저 새 탭·창 열기만 선택으로 센다", "선택 횟수는 편의용 best-effort이며 동시 같은 메뉴 선택의 한 건 유실을 허용"]
     audit: none
     delete_policy: hard
 
@@ -364,6 +364,6 @@ entities:
     attributes: [{ name: USER_ID, type: varchar, pk: true }, { name: MENU_CD, type: varchar, pk: true }, { name: COND_NM, type: varchar, pk: true }]
     columns: [USER_ID, MENU_CD, COND_NM, COND_JSON, DFLT_YN, SORT_NO, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
     relations: ["USER_ID -> ENT-501.USER_ID", "MENU_CD -> ENT-510.MENU_CD"]
-    rules: ["사용자·메뉴별 기본값은 최대 하나", "타 사용자 키 금지"]
+    rules: ["COND_JSON은 화면 선언이 해석하는 개인 설정 값이며 서버는 내용을 검증하지 않는다", "저장조건을 적용할 때 현재 화면에 유효한 값만 화면별 기본값 위에 덮어쓴다", "같은 이름은 덮어쓰고 새 기본 저장조건을 지정하면 이전 기본 저장조건을 해제한다", "같은 사용자의 동시 기본 저장은 사용자 행 잠금으로 직렬화해 마지막 저장 완료 요청 하나만 기본으로 둔다", "타 사용자 키 금지"]
     audit: standard
     delete_policy: hard

@@ -1,3 +1,4 @@
+// @feat FEAT-510
 import { Card, Col, Row, Typography } from 'antd';
 import { useAuthStore } from '@/shared/stores/authStore';
 import { label } from '@/shared/i18n/label';

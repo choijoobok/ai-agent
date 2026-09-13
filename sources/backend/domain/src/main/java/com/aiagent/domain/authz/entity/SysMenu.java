@@ -116,9 +116,14 @@ public class SysMenu extends BaseAuditEntity {
     /** 시드가 만들었는데 선언에서 사라졌다. */
     public static final String ORPHAN = "ORPHAN";
 
-    /** 권한을 부여할 수 있는 대상인가 — 리프이고 살아 있는가. 게이트(④)가 묻는 것 전부다. */
+    /**
+     * 권한을 부여할 수 있는 대상인가 — 활성 리프이면서 시드 선언에 남아 있는가.
+     *
+     * <p>{@code ORPHAN} 은 역할·개인 예외를 회수할 관리 근거로는 남지만, 일반 사용자의 유효
+     * 권한과 기능 데이터에는 쓰지 않는다(TC-5103).
+     */
     public boolean isAuthorizable() {
-        return menuUrl != null && Boolean.TRUE.equals(useYn);
+        return menuUrl != null && Boolean.TRUE.equals(useYn) && !isOrphan();
     }
 
     /**

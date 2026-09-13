@@ -151,12 +151,12 @@ export function useShellNavigation(): ShellNavigation {
       return;
     }
 
-    if (location.pathname !== '/dashboard' && location.pathname !== '/') {
+    if (location.pathname !== '/admin/system/dashboard' && location.pathname !== '/') {
       // 없는 메뉴이거나 권한이 없다 — 프론트는 둘을 구분하지 않는다(frontend/packages.md).
       // 조용히 대시보드로 보내면 사용자는 자기가 잘못 눌렀다고 생각한다.
       message.warning(label(MSG.SCREEN_DENIED));
     }
-    void navigate('/dashboard', { replace: true, state: { tabKey: 'dashboard' } });
+    void navigate('/admin/system/dashboard', { replace: true, state: { tabKey: 'dashboard' } });
     // location.key 하나로 충분하다 — 같은 경로로 다시 이동해도 값이 바뀐다.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.key, index]);

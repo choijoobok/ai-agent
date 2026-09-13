@@ -105,7 +105,7 @@ function RestrictedSession() {
 /** 세션이 있으면 셸로 보낸다 — 로그인 화면에 다시 들어올 이유가 없다(screen/_standalone/README.md). */
 function RequireAnonymous({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((state) => state.user);
-  return user ? <Navigate to="/dashboard" replace /> : <>{children}</>;
+  return user ? <Navigate to="/admin/system/dashboard" replace /> : <>{children}</>;
 }
 
 function RequireAuth({ children }: { children: React.ReactNode }) {

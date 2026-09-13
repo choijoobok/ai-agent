@@ -7,6 +7,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.aiagent.domain.authz.SysMenuFixture;
+import com.aiagent.domain.authz.repository.SysMenuRepository;
 import com.aiagent.domain.menustat.entity.SysUserMenuStat;
 import com.aiagent.domain.menustat.repository.SysUserMenuStatRepository;
 import com.aiagent.domain.menustat.service.MenuStatService;
@@ -46,15 +48,23 @@ class MenuStatServiceTest {
     private static final ZoneId SEOUL = ZoneId.of("Asia/Seoul");
 
     @Mock private SysUserMenuStatRepository stats;
+    @Mock private SysMenuRepository menus;
     @Mock private ConfigLookup configs;
 
     private MenuStatService service;
+
+    @Test
+    @DisplayName("TC-5103 메뉴가 삭제되면 메뉴 통계도 정리할 수 있는 저장소 계약이 있다")
+    void exposesMenuCleanupOperation() throws Exception {
+        assertThat(SysUserMenuStatRepository.class.getDeclaredMethod("deleteByMenuCd", String.class))
+                .isNotNull();
+    }
 
     @BeforeEach
     void setUp() {
         // 2026-08-30 09:00 KST — 8월 버킷이다.
         Clock fixed = Clock.fixed(Instant.parse("2026-08-30T00:00:00Z"), SEOUL);
-        service = new MenuStatService(stats, configs, new BusinessCalendar("Asia/Seoul", fixed));
+        service = new MenuStatService(stats, menus, configs, new BusinessCalendar("Asia/Seoul", fixed));
         when(configs.get(MenuStatProps.class)).thenReturn(new MenuStatProps(3, 10));
     }
 
@@ -67,6 +77,8 @@ class MenuStatServiceTest {
         void countsExistingBucket() {
             SysUserMenuStat bucket =
                     SysUserMenuStat.first(USER, "MESSAGE_MGMT", "202608", Instant.EPOCH);
+            when(menus.findById("MESSAGE_MGMT"))
+                    .thenReturn(Optional.of(SysMenuFixture.leaf("MESSAGE_MGMT", null, 1)));
             when(stats.findByUserIdAndMenuCdAndStatYm(USER, "MESSAGE_MGMT", "202608"))
                     .thenReturn(Optional.of(bucket));
 
@@ -79,6 +91,8 @@ class MenuStatServiceTest {
         @Test
         @DisplayName("없으면 이번 달 버킷을 만든다 — 업무 시간대의 달이다")
         void createsThisMonthBucket() {
+            when(menus.findById("MESSAGE_MGMT"))
+                    .thenReturn(Optional.of(SysMenuFixture.leaf("MESSAGE_MGMT", null, 1)));
             when(stats.findByUserIdAndMenuCdAndStatYm(USER, "MESSAGE_MGMT", "202608"))
                     .thenReturn(Optional.empty());
 
@@ -89,6 +103,18 @@ class MenuStatServiceTest {
             verify(stats).save(saved.capture());
             assertThat(saved.getValue().getStatYm()).isEqualTo("202608");
             assertThat(saved.getValue().getUseCnt()).isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("TC-5103 고아 메뉴 선택은 이전 세션에서도 새 통계를 만들지 않는다")
+        void ignoresOrphanMenu() {
+            when(menus.findById("REMOVED"))
+                    .thenReturn(Optional.of(SysMenuFixture.orphanLeaf("REMOVED", null, 1)));
+
+            service.record(USER, "REMOVED");
+
+            verify(stats, never()).findByUserIdAndMenuCdAndStatYm(any(), any(), any());
+            verify(stats, never()).save(any());
         }
     }
 
@@ -129,6 +155,8 @@ class MenuStatServiceTest {
         void sumsTheWindow() {
             when(stats.findTop(eq(USER), any(), any()))
                     .thenReturn(List.<Object[]>of(new Object[] {"MESSAGE_MGMT", 7L, Instant.EPOCH}));
+            when(menus.findAllById(List.of("MESSAGE_MGMT")))
+                    .thenReturn(List.of(SysMenuFixture.leaf("MESSAGE_MGMT", null, 1)));
 
             FrequentMenus found = service.findMine(USER);
 
@@ -136,11 +164,29 @@ class MenuStatServiceTest {
         }
 
         @Test
+        @DisplayName("TC-5103 고아 메뉴 사용 통계는 기능 목록에서 숨긴다")
+        void hidesOrphanFrequentMenu() {
+            when(stats.findTop(eq(USER), any(), any()))
+                    .thenReturn(
+                            List.<Object[]>of(
+                                    new Object[] {"MESSAGE_MGMT", 7L, Instant.EPOCH},
+                                    new Object[] {"REMOVED", 9L, Instant.EPOCH}));
+            when(menus.findAllById(List.of("MESSAGE_MGMT", "REMOVED")))
+                    .thenReturn(
+                            List.of(
+                                    SysMenuFixture.leaf("MESSAGE_MGMT", null, 1),
+                                    SysMenuFixture.orphanLeaf("REMOVED", null, 2)));
+
+            assertThat(service.findMine(USER).menus())
+                    .containsExactly(new FrequentMenu("MESSAGE_MGMT", 7));
+        }
+
+        @Test
         @DisplayName("해가 바뀌는 경계도 문자열로 센다 — 202601 이면 202511")
         void crossesTheYear() {
             Clock january = Clock.fixed(Instant.parse("2026-01-05T00:00:00Z"), SEOUL);
             MenuStatService inJanuary =
-                    new MenuStatService(stats, configs, new BusinessCalendar("Asia/Seoul", january));
+                    new MenuStatService(stats, menus, configs, new BusinessCalendar("Asia/Seoul", january));
             when(stats.findTop(eq(USER), any(), any())).thenReturn(List.of());
 
             inJanuary.findMine(USER);

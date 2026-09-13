@@ -2,6 +2,7 @@ package com.aiagent.domain.menustat.service;
 
 import com.aiagent.domain.menustat.FrequentMenu;
 import com.aiagent.domain.menustat.FrequentMenus;
+import com.aiagent.domain.authz.repository.SysMenuRepository;
 import com.aiagent.domain.menustat.entity.SysUserMenuStat;
 import com.aiagent.domain.menustat.repository.SysUserMenuStatRepository;
 import com.aiagent.support.config.ConfigLookup;
@@ -11,6 +12,7 @@ import java.time.Instant;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,14 +38,17 @@ public class MenuStatService {
     private static final DateTimeFormatter YM = DateTimeFormatter.ofPattern("yyyyMM");
 
     private final SysUserMenuStatRepository stats;
+    private final SysMenuRepository menus;
     private final ConfigLookup configs;
     private final BusinessCalendar calendar;
 
     public MenuStatService(
             SysUserMenuStatRepository stats,
+            SysMenuRepository menus,
             ConfigLookup configs,
             BusinessCalendar calendar) {
         this.stats = stats;
+        this.menus = menus;
         this.configs = configs;
         this.calendar = calendar;
     }
@@ -59,6 +64,11 @@ public class MenuStatService {
      */
     @Transactional
     public void record(String userId, String menuCd) {
+        // 권한 스냅샷은 메뉴 시드 동기화보다 오래 살아 있을 수 있다. 그 창에도 ORPHAN을 새
+        // 기능 데이터로 만들지 않는다(TC-5103). 통계는 부수 효과이므로 조용히 건너뛴다.
+        if (menus.findById(menuCd).filter(menu -> !menu.isOrphan()).isEmpty()) {
+            return;
+        }
         String statYm = currentYm();
         Instant now = calendar.now();
 
@@ -79,13 +89,20 @@ public class MenuStatService {
         MenuStatProps props = configs.get(MenuStatProps.class);
         String fromYm = YearMonth.from(calendar.today()).minusMonths(props.months() - 1L).format(YM);
 
-        List<FrequentMenu> menus =
+        List<FrequentMenu> ranked =
                 stats.findTop(userId, fromYm, PageRequest.ofSize(props.topN())).stream()
                         .map(row -> new FrequentMenu((String) row[0], ((Number) row[1]).longValue()))
                         .toList();
+        Set<String> visibleMenuCds =
+                menus.findAllById(ranked.stream().map(FrequentMenu::menuCd).toList()).stream()
+                        .filter(menu -> !menu.isOrphan())
+                        .map(menu -> menu.getMenuCd())
+                        .collect(java.util.stream.Collectors.toSet());
+        List<FrequentMenu> visible =
+                ranked.stream().filter(menu -> visibleMenuCds.contains(menu.menuCd())).toList();
 
         // 기간을 함께 낸다 — 목록만으로는 "무엇을 기준으로 자주인가" 를 알 수 없다.
-        return new FrequentMenus(fromYm, menus);
+        return new FrequentMenus(fromYm, visible);
     }
 
     /** 이번 달 — <b>업무 시간대</b>의 달이다(sys/INDEX.md). 자정 근처의 한 건이 옆 달로 새지 않게. */

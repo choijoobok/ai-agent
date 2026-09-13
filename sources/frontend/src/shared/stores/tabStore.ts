@@ -43,7 +43,7 @@ export const DASHBOARD_MENU_CD = 'DASHBOARD';
 export const DASHBOARD_TAB: WorkTab = {
   key: 'dashboard',
   menuCd: DASHBOARD_MENU_CD,
-  pathname: '/dashboard',
+  pathname: '/admin/system/dashboard',
   titleKey: 'menu.DASHBOARD',
   instance: 1,
   closable: false,

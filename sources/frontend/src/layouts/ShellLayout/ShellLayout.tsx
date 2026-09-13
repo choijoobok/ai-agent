@@ -35,6 +35,7 @@ import { TabPanes } from '@/layouts/ShellLayout/TabPanes';
 import { allowNextUnload, useUnsavedGuard } from '@/layouts/ShellLayout/useUnsavedGuard';
 import { useShellNavigation } from '@/layouts/ShellLayout/useShellNavigation';
 import { useTabHotkeys } from '@/layouts/ShellLayout/useTabHotkeys';
+import { openMenuInBrowser } from '@/layouts/ShellLayout/browserMenuOpen';
 import { MSG } from '@/shared/i18n/messageKeys';
 import { thinScrollbar } from '@/shared/theme/scrollbar';
 
@@ -244,11 +245,10 @@ export function ShellLayout() {
    *
    * <p><b>`noopener` 다.</b> 없으면 새 창이 `window.opener` 로 이쪽을 만질 수 있다.
    */
-  const openInBrowser = useCallback((node: { menuUrl: string | null }) => {
-    if (node.menuUrl) {
-      window.open(node.menuUrl, '_blank', 'noopener');
-    }
-  }, []);
+  const openInBrowser = useCallback(
+    (node: { menuCd: string; menuUrl: string | null }) => openMenuInBrowser(node, countMenu),
+    [countMenu],
+  );
 
   /*
     즐겨찾기를 셸이 뜰 때 한 번 읽는다 — 원본은 DB 다(sys/menu.md).

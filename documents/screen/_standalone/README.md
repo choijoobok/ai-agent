@@ -36,7 +36,7 @@ documents/screen/_standalone/{화면}/
 | [settings](./settings) | `features/settings/SettingsModal.tsx` | 헤더 → 모달 |
 | [noti-inbox](./noti-inbox) | `features/notification/NotificationModal.tsx` | 헤더 벨 → 모달 |
 | [system/notice-popup](./system/notice-popup) | `modules/system/public/notice/NoticePopupModal.tsx` | 셸 부팅 후 |
-| [menu-modal](./menu-modal) | `layouts/ShellLayout/MenuEntryModal.tsx` (+ `shared/authz/menuSearch` · `shared/favorite/`) | 헤더 → 모달 |
+| [system/menu-modal](./system/menu-modal) | `layouts/ShellLayout/MenuEntryModal.tsx` (+ `shared/authz/menuSearch` · `shared/favorite/`) | 헤더 → 모달 |
 
 ## 어디서 왔나
 

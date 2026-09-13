@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * <p><b>{@code FavoriteController} 처럼 목록을 되돌린다.</b> 읽음으로 바꾼 뒤 화면이 다시
  * 조회하지 않아도 되고, 다른 탭에서 생긴 변화가 그 자리에서 보인다 — 멀티탭 셸이다
- * ({@link com.aiagent.api.favorite.FavoriteController} · frontend/tabs.md).
+ * ({@link com.aiagent.system.api.favorite.FavoriteController} · frontend/tabs.md).
  */
 @RestController
 public class NotiInboxController {

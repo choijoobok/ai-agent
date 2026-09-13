@@ -25,7 +25,7 @@ describe('메뉴 진입 모달', () => {
   });
 
   const index = indexMenuTree([
-    node('DASHBOARD', '/dashboard'),
+    node('DASHBOARD', '/admin/system/dashboard'),
     node('SYSTEM', null, [node('USER_MGMT', '/user'), node('USER_AUTH_MGMT', '/user-auth')]),
   ]);
 
@@ -167,7 +167,7 @@ describe('메뉴 진입 모달 — 입력 칸', () => {
     iconCd: null,
     children: [],
   });
-  const index = indexMenuTree([node('DASHBOARD', '/dashboard'), node('USER_MGMT', '/user')]);
+  const index = indexMenuTree([node('DASHBOARD', '/admin/system/dashboard'), node('USER_MGMT', '/user')]);
 
   const view = (open: boolean, query = '') =>
     render(

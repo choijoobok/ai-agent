@@ -16,6 +16,9 @@ public interface SysUserMenuStatRepository
     Optional<SysUserMenuStat> findByUserIdAndMenuCdAndStatYm(
             String userId, String menuCd, String statYm);
 
+    /** 삭제된 메뉴를 가리키는 월별 사용 통계를 함께 걷어 낸다. */
+    void deleteByMenuCd(String menuCd);
+
     /**
      * 창 안의 합계로 정렬한 상위 목록 — sys/menu.md.
      *

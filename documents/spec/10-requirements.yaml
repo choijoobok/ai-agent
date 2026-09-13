@@ -555,7 +555,7 @@ requirements:
       frontend: ["modules/system/features/menu", "modules/system/features/apicatalog", "shared/routes", "shared/authz"]
       backend: ["api/menu", "api/apicatalog", "api/authz", "domain/authz"]
       tables: [SYS_MENU, SYS_API, SYS_MENU_API, SYS_ROLE_MENU_AUTH, SYS_USER_MENU_AUTH]
-      screens: ["/menu", "/api-catalog", "_standalone/menu-modal"]
+      screens: ["/menu", "/api-catalog", "_standalone/system/menu-modal"]
     roadmap: RM-P1
 
   - id: REQ-504
@@ -681,9 +681,9 @@ requirements:
     source: "현재 구현 역추적 — 공통 즐겨찾기·그리드·검색조건·메뉴 통계 저장소"
     evidence:
       frontend: ["shared/favorite", "shared/grid", "shared/searchform", "shared/menustat"]
-      backend: ["api/favorite", "api/gridpref", "api/searchcond", "api/menustat", "domain/favorite", "domain/gridpref", "domain/searchcond", "domain/menustat"]
+      backend: ["modules/system/api/favorite", "modules/system/api/gridpref", "modules/system/api/searchcond", "modules/system/api/menustat", "domain/favorite", "domain/gridpref", "domain/searchcond", "domain/menustat"]
       tables: [SYS_USER_FAVORITE, SYS_USER_GRID_PREF, SYS_USER_SEARCH_COND, SYS_USER_MENU_STAT]
-      screens: ["/dashboard"]
+      screens: ["/admin/system/dashboard"]
     roadmap: RM-P1
 
 # ── 요구사항 모순 검사 ─────────────────────────────────────────────

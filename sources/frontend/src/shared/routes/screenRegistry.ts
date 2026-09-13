@@ -12,8 +12,8 @@ import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
  * 데이터가 앞서간 것이 아니라 <b>아직 만들지 않은 화면</b>이다.
  */
 export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
-  '/dashboard': lazy(async () => ({
-    default: (await import('@/features/dashboard/pages/DashboardPage')).DashboardPage,
+  '/admin/system/dashboard': lazy(async () => ({
+    default: (await import('@/modules/system/features/dashboard/pages/DashboardPage')).DashboardPage,
   })),
   '/admin/system/message': lazy(async () => ({
     default: (await import('@/modules/system/features/message/pages/MessageMgmtPage')).MessageMgmtPage,

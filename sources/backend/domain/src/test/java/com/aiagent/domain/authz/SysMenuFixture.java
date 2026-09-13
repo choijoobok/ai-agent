@@ -23,6 +23,17 @@ public final class SysMenuFixture {
         return menu(menuCd, upMenuCd, "/" + menuCd.toLowerCase(), sortNo, false);
     }
 
+    /** 시드 선언에서 빠진 리프 — 관리 화면에는 남지만 일반 사용자 권한 대상은 아니다. */
+    public static SysMenu orphanLeaf(String menuCd, String upMenuCd, int sortNo) {
+        SysMenu instance = leaf(menuCd, upMenuCd, sortNo);
+        try {
+            set(instance, "srcCd", SysMenu.ORPHAN);
+            return instance;
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     /** 구조 노드 — {@code MENU_URL} 이 없다. URL 과 자식은 배타다(backend/security.md). */
     public static SysMenu folder(String menuCd, String upMenuCd, int sortNo) {
         return menu(menuCd, upMenuCd, null, sortNo, true);

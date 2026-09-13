@@ -21,6 +21,7 @@ import com.aiagent.domain.message.entity.SysMessage;
 import com.aiagent.domain.message.entity.SysMessageKey;
 import com.aiagent.domain.message.repository.SysMessageKeyRepository;
 import com.aiagent.domain.message.repository.SysMessageRepository;
+import com.aiagent.domain.menustat.repository.SysUserMenuStatRepository;
 import com.aiagent.domain.searchcond.repository.SysUserSearchCondRepository;
 import com.aiagent.support.time.BusinessCalendar;
 import java.time.Instant;
@@ -36,7 +37,7 @@ class MenuServiceTest {
             new MenuTreeLockTrigger(), menus, mock(SysMenuApiRepository.class),
             mock(SysRoleMenuAuthRepository.class), mock(SysUserMenuAuthRepository.class),
             mock(SysUserFavoriteRepository.class), mock(SysUserSearchCondRepository.class),
-            mock(SysUserGridPrefRepository.class), mock(SysMessageKeyRepository.class),
+            mock(SysUserGridPrefRepository.class), mock(SysUserMenuStatRepository.class), mock(SysMessageKeyRepository.class),
             mock(SysMessageRepository.class), mock(SysCacheVersionRepository.class), mock(BusinessCalendar.class));
 
     @Test
@@ -258,7 +259,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("삭제는 메뉴를 가리키는 사용자 포인터와 이름 데이터를 함께 정리한다")
+    @DisplayName("TC-5103 삭제는 메뉴를 가리키는 사용자 상태와 이름 데이터를 함께 정리한다")
     void removesDependentPointersAndName() {
         SysMenu menu = leaf("REMOVE", "/remove");
         SysMenuApiRepository menuApis = mock(SysMenuApiRepository.class);
@@ -267,13 +268,14 @@ class MenuServiceTest {
         SysUserFavoriteRepository favorites = mock(SysUserFavoriteRepository.class);
         SysUserSearchCondRepository searchConds = mock(SysUserSearchCondRepository.class);
         SysUserGridPrefRepository gridPrefs = mock(SysUserGridPrefRepository.class);
+        SysUserMenuStatRepository menuStats = mock(SysUserMenuStatRepository.class);
         SysMessageKeyRepository keys = mock(SysMessageKeyRepository.class);
         SysMessageRepository values = mock(SysMessageRepository.class);
         when(menus.findById("REMOVE")).thenReturn(Optional.of(menu));
         when(menus.existsByUpMenuCd("REMOVE")).thenReturn(false);
         when(values.findByMsgKey(SysMenu.messageKey("REMOVE"))).thenReturn(List.of());
         MenuService deleting = new MenuService(new MenuTreeLockTrigger(), menus, menuApis, roleAuths, userAuths,
-                favorites, searchConds, gridPrefs, keys, values, mock(SysCacheVersionRepository.class),
+                favorites, searchConds, gridPrefs, menuStats, keys, values, mock(SysCacheVersionRepository.class),
                 mock(BusinessCalendar.class));
 
         deleting.deleteNode("REMOVE");
@@ -281,6 +283,7 @@ class MenuServiceTest {
         verify(favorites).deleteByMenuCd("REMOVE");
         verify(searchConds).deleteByMenuCd("REMOVE");
         verify(gridPrefs).deleteByMenuCd("REMOVE");
+        verify(menuStats).deleteByMenuCd("REMOVE");
         verify(values).deleteByMsgKey(SysMenu.messageKey("REMOVE"));
     }
 
@@ -304,7 +307,7 @@ class MenuServiceTest {
         MenuService deleting = new MenuService(new MenuTreeLockTrigger(), menus, mock(SysMenuApiRepository.class),
                 mock(SysRoleMenuAuthRepository.class), mock(SysUserMenuAuthRepository.class),
                 mock(SysUserFavoriteRepository.class), mock(SysUserSearchCondRepository.class),
-                mock(SysUserGridPrefRepository.class), keys, values, versions, calendar);
+                mock(SysUserGridPrefRepository.class), mock(SysUserMenuStatRepository.class), keys, values, versions, calendar);
 
         deleting.deleteNode("NAMED");
 
@@ -322,7 +325,7 @@ class MenuServiceTest {
             SysUserMenuAuthRepository users) {
         return new MenuService(new MenuTreeLockTrigger(), menus, menuApis, roles, users,
                 mock(SysUserFavoriteRepository.class), mock(SysUserSearchCondRepository.class),
-                mock(SysUserGridPrefRepository.class), mock(SysMessageKeyRepository.class),
+                mock(SysUserGridPrefRepository.class), mock(SysUserMenuStatRepository.class), mock(SysMessageKeyRepository.class),
                 mock(SysMessageRepository.class), mock(SysCacheVersionRepository.class), mock(BusinessCalendar.class));
     }
 

@@ -19,9 +19,9 @@
 
 | 항목 | 값 |
 |---|---|
-| 페이지 경로 | `/dashboard` |
+| 페이지 경로 | `/admin/system/dashboard` |
 | 메뉴코드 | `DASHBOARD` — **유일한 최상위 리프**(부모가 없다) |
-| 프론트 폴더 | `sources/frontend/src/features/dashboard/` — **파일이 하나다** |
+| 프론트 폴더 | `sources/frontend/src/modules/system/features/dashboard/` — **파일이 하나다** |
 | 백엔드 패키지 | **없음** |
 | 화면 유형 | **카드 둘** — 그리드도 조회조건도 없다 |
 | 처리 유형 | **조회 전용** — 그나마 서버를 부르지 않는다 |
@@ -130,7 +130,7 @@
 
 - 코드그룹: 없음.
 - 메시지 키: 화면 `MSG.DASHBOARD_GREETING` · `DASHBOARD_MENU_COUNT` · `DASHBOARD_MENU_COUNT_VALUE` · `DASHBOARD_PERMISSION_COUNT` · `DASHBOARD_PERMISSION_COUNT_VALUE`. **서버 키가 없다.**
-- 메뉴 시드: `menu-tree.yaml` — `code: DASHBOARD` · **`parent` 없음** · `url: /dashboard`. **`export` 없음.**
+- 메뉴 시드: `menu-tree.yaml` — `code: DASHBOARD` · **`parent` 없음** · `url: /admin/system/dashboard`. **`export` 없음.**
 - 초기 데이터 전제: 없음.
 
 ---
@@ -164,7 +164,7 @@
 
 ## 10. 미결 · 확인 필요
 
-- **무엇을 놓을지가 미결이다**(§6-4 ④).
+- **무엇을 놓을지가 미결이다**(§6-4 ④). **@defer Hub 개발 완료 후** 고객 요구에 맞춰 즐겨찾기·자주 쓰는 메뉴 등 위젯의 상세 요건을 정의한다.
 - **위젯 단위 권한을 어떻게 표현할지가 미결이다** — 업무 데이터 위젯을 놓기로 하면 **그것을 먼저 정해야 한다.**
 - **차트 라이브러리 선택이 미결이다.**
 - **위젯을 개인이 고를 수 있게 할지가 미결이다** — 지금은 개인화가 없다.

@@ -17,7 +17,7 @@ describe('menuTree', () => {
   });
 
   const TREE: MenuNode[] = [
-    node('DASHBOARD', '/dashboard'),
+    node('DASHBOARD', '/admin/system/dashboard'),
     node('SYSTEM', null, [
       node('USER', null, [node('USER_MGMT', '/user'), node('USER_AUTH_MGMT', '/user-auth')]),
       node('LOG', null, [node('LOGIN_LOG', '/admin/system/log/login')]),
