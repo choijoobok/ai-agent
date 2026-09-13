@@ -9,11 +9,11 @@ describe('브라우저 메뉴 열기', () => {
 
   it('TC-5105: window.open으로 실제 새 탭 또는 창이 열리면 메뉴 선택을 한 번 기록한다', () => {
     const countMenu = vi.fn();
-    vi.spyOn(window, 'open').mockReturnValue({} as Window);
+    const open = vi.spyOn(window, 'open').mockReturnValue({} as Window);
 
     openMenuInBrowser({ menuCd: 'USER_MGMT', menuUrl: '/admin/system/user' }, countMenu);
 
-    expect(window.open).toHaveBeenCalledWith('/admin/system/user', '_blank', 'noopener');
+    expect(open).toHaveBeenCalledWith('/admin/system/user', '_blank', 'noopener');
     expect(countMenu).toHaveBeenCalledOnce();
     expect(countMenu).toHaveBeenCalledWith('USER_MGMT');
   });
