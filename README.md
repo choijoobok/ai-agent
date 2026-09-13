@@ -14,7 +14,7 @@
 |---|---|---|
 | **[`aidd-guide/`](aidd-guide/INDEX.md)** | **AI 가 읽는 규칙** — 프로세스(단계·게이트·추적성) + 개발 표준(백엔드·프론트·레시피) | AI · 표준을 찾는 개발자 |
 | **[`documents/`](documents/INDEX.md)** | **AI 가 만드는 산출물** — spec(SSOT) · 결정 · 화면 문서 셋 · 생성 문서 | 설계자 · 승인자 |
-| **[`user-guide/`](user-guide/INDEX.md)** | **사람이 읽는 안내** — 수행 방법 · 환경 구축 · 개발 · 빌드·배포 · 운영 | 프로젝트에 들어온 사람 |
+| **[`developer-guide/`](developer-guide/INDEX.md)** | **개발자 안내** — 수행 방법 · 환경 구축 · 개발 · 빌드·배포 · 운영 | 개발 참여자 |
 | **[`sources/`](sources/)** | **코드** — 백엔드 · 프론트엔드. **빌드 루트가 여기다** | 개발자 |
 
 **주제로 나누지 않았다.** "테스트" 는 규칙·절차·산출물·코드 넷에 걸치는데, 주제로 나누면
@@ -25,7 +25,7 @@
 그 밖에 [`AGENTS.md`](AGENTS.md)(**공통 헌법**) · [`CLAUDE.md`](CLAUDE.md)(Claude import
 adapter) · [`.claude/`](.claude/settings.json)(Claude 배선) · [`.codex/`](.codex/hooks.json)
 (Codex 배선) · `.github/`(CI)가 루트에 있다. 현재 훅·스킬 목록은
-[user-guide/07-harness.md](user-guide/07-harness.md)가 갖는다.
+[developer-guide/07-harness.md](developer-guide/07-harness.md)가 갖는다.
 
 ---
 
@@ -33,8 +33,8 @@ adapter) · [`.claude/`](.claude/settings.json)(Claude 배선) · [`.codex/`](.c
 
 ```
 ① 이 파일                     무엇을 만드는 프로젝트인가            5분
-② user-guide/01-project.md    어떻게 굴러가는가 · 내 역할          15분
-③ user-guide/02-setup.md      환경을 만든다                      30분~2시간
+② developer-guide/01-project.md 어떻게 굴러가는가 · 내 역할        15분
+③ developer-guide/02-setup.md   환경을 만든다                    30분~2시간
 ④ AGENTS.md                   AI 가 지키는 공통 규칙 — 사람도 한 번은 20분
 ⑤ aidd-guide/INDEX.md         규칙이 어디 있는지의 지도 (통독 금지)
 ```

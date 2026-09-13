@@ -107,7 +107,7 @@ Docker 로 4벤더를 띄워 스키마·정렬을 대조한다. **20분이 걸�
 | **package** | **수동만** | 단일 JAR + **프론트 임베드 검증** |
 | **db-portability** | changelog·엔티티 변경 · 야간 | 4벤더 스키마·정렬 대조 |
 
-- **`documents/**` · `aidd-guide/**` · `user-guide/**` · `**/*.md` 만 바뀐 푸시는 CI 를 돌리지
+- **`documents/**` · `aidd-guide/**` · `developer-guide/**` · `**/*.md` 만 바뀐 푸시는 CI 를 돌리지
   않는다** — 문서 트랙의 커밋이 다수가 되면 빌드 큐가 그것으로 찬다. PR 에서는 항상 돈다.
 - **`package` 가 수동인 이유는 배포 대상이 아직 없어서다.** 배포가 생기면 그 조건을 지운다.
 - **빌드 루트가 `sources/` 이므로 워크플로의 모든 잡이 `working-directory: sources` 를 갖는다.**

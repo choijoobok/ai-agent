@@ -11,7 +11,7 @@ on:
       - '.claude/**'
       - '.agents/**'
       - '.codex/**'
-      - 'user-guide/07-harness.md'
+      - 'developer-guide/07-harness.md'
       - '.github/workflows/harness.yml'
   pull_request:
     paths:
@@ -21,7 +21,7 @@ on:
       - '.claude/**'
       - '.agents/**'
       - '.codex/**'
-      - 'user-guide/07-harness.md'
+      - 'developer-guide/07-harness.md'
       - '.github/workflows/harness.yml'
   workflow_dispatch:
 

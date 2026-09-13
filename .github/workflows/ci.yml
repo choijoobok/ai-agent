@@ -12,7 +12,7 @@ on:
     paths-ignore:
       - 'documents/**'
       - 'aidd-guide/**'
-      - 'user-guide/**'
+      - 'developer-guide/**'
       - '**/*.md'
   pull_request:
   workflow_dispatch:

@@ -1,7 +1,7 @@
 # documents/ — AI 가 만드는 모든 산출물
 
 > **여기 있는 것이 프로젝트의 상태다.** 규칙은 [`aidd-guide/`](../aidd-guide/INDEX.md) 가,
-> 코드는 [`sources/`](../sources/) 가, 사람용 안내는 [`user-guide/`](../user-guide/INDEX.md) 가 갖는다.
+> 코드는 [`sources/`](../sources/) 가, 개발자 안내는 [`developer-guide/`](../developer-guide/INDEX.md) 가 갖는다.
 >
 > **자리가 정해진 것만 만든다.** 만들 수 있는 자리는
 > [산출물 지도](../aidd-guide/artifact/INDEX.md)이 정하고 `guard-write` 훅이 **차단한다**

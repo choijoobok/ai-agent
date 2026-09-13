@@ -18,7 +18,7 @@ tags: [index, routing, master, decision-tree]
 > `AGENTS.md` §3이 요청 종류별로 이 INDEX의 어느 카테고리로 들어갈지 정한다.
 >
 > **단일 입구 정책**: 한 사실은 한 곳에서만 정의. 다른 카테고리는 링크.
-> **사람이 읽는 안내는 [`user-guide/`](../user-guide/INDEX.md) 다** — 같은 주제라도 *지킬 규칙* 은
+> **개발자 안내는 [`developer-guide/`](../developer-guide/INDEX.md) 다** — 같은 주제라도 *지킬 규칙* 은
 > 여기, *따라할 절차* 는 그쪽이다.
 
 ## 폴더 넷 — 나누는 축은 *주제* 가 아니라 **누가 읽나** 다
@@ -27,7 +27,7 @@ tags: [index, routing, master, decision-tree]
 ai-agent/
 ├── aidd-guide/   ★ AI 가 읽는 규칙 — 프로세스(단계·게이트·추적성) + 개발 표준(백엔드·프론트·레시피)
 ├── documents/    ★ AI 가 만드는 산출물 — spec(SSOT) · 결정 · 화면 문서 셋 · 생성 문서
-├── user-guide/   ★ 사람이 읽는 안내 — 수행 방법 · 환경 구축 · 개발 · 빌드·배포 · 운영
+├── developer-guide/ ★ 개발자 안내 — 수행 방법 · 환경 구축 · 개발 · 빌드·배포 · 운영
 └── sources/      ★ 코드 — 백엔드 · 프론트엔드. 빌드 루트가 여기다
 ```
 
@@ -42,7 +42,7 @@ ai-agent/
   다시 만든다.**
 - 그래서 **서식은 [`artifact/template/`](./artifact/template/02-requirements.md) 이고
   채운 것은 `documents/` 다.**
-- **`user-guide/` 와 헷갈리지 않는다.** 같은 주제라도 *AI 가 지킬 규칙* 은 여기, *사람이
+- **`developer-guide/` 와 헷갈리지 않는다.** 같은 주제라도 *AI 가 지킬 규칙* 은 여기, *개발자가
   따라할 절차* 는 그쪽이다. 한쪽에 적었으면 다른 쪽은 **링크만** 둔다.
 - **`sources/` 가 빌드 루트다.** 문서에 적는 **파일 경로는 저장소 루트 기준**
   (`sources/backend/...`)이고, **빌드 명령은 `sources/` 기준**이다.
@@ -65,7 +65,7 @@ ai-agent/
   ↓
 ① 무엇을 하려는가?
   ├─ "규칙·헌법·금지·우선순위"                → AGENTS.md (여기 아님)
-  ├─ "개발 환경 구축 · 빌드 · 배포 · 운영 절차" → user-guide/ (여기 아님)
+  ├─ "개발 환경 구축 · 빌드 · 배포 · 운영 절차" → developer-guide/ (여기 아님)
   │
   │  ── 프로세스 ──────────────────────────────────
   ├─ "지금 어디인가 · 다음에 무엇을"           → documents/project.state.yaml · /pm-status
@@ -106,7 +106,7 @@ ai-agent/
 | [playbook](playbook/INDEX.md) | 화면 레시피 (샘플 여섯과 대응) | 2 | 10 |
 | [quality](quality/INDEX.md) | 테스트 설계 · 레드팀 · 코드 품질 · 골든셋 · 관측 | 2 | 13 |
 | [knowledge](knowledge/INDEX.md) | 표 34개 — 인가·코드·문구·이력·운영 | 3 | 14 |
-| [harness](harness/INDEX.md) | 훅 · 스킬 · 문맥 예산 · 로그 — **지금 무엇이 있나는 [user-guide/07-harness.md](../user-guide/07-harness.md)**(생성물) | 2 | 16 |
+| [harness](harness/INDEX.md) | 훅 · 스킬 · 문맥 예산 · 로그 — **지금 무엇이 있나는 [developer-guide/07-harness.md](../developer-guide/07-harness.md)**(생성물) | 2 | 16 |
 
 
 **`문서` 는 그 폴더의 `.md` 개수다**(하위 폴더 · `INDEX.md` 포함). `lint.mjs` 가 실제와 대조한다 — 전에는 `운용` 이었는데 무엇을 세는지가 적혀 있지 않아 **아홉 중 여섯이 어긋나 있었다**(`standard` 는 48 대 36).

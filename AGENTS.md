@@ -18,7 +18,7 @@
 ai-agent/
 ├── aidd-guide/   # 고객사가 바뀌어도 그대로 쓰는 AI 규칙
 ├── documents/    # 프로젝트별 spec(SSOT)·결정·화면 문서
-├── user-guide/   # 사람이 읽는 구축·개발·배포·운영 안내
+├── developer-guide/ # 개발자를 위한 구축·개발·배포·운영 안내
 └── sources/      # 코드와 빌드 루트
 ```
 
@@ -136,7 +136,7 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <revision> --sur
    `mockup.html`은 그림만 편집하며 표와 확인 목록은 건드리지 않는다.
 12. 게이트 승인에는 결정 카드(업무 언어 3~5줄)와 역질문 1~2개를 붙인다. 절차 축소 요청은
     `줄일 수 있음 / 절대 안 됨 / 지금은 빠르나 나중에 비쌈`으로 구분한다.
-13. 대화에서 ID·번호·약자는 처음 한 번 괄호로 뜻을 푼다. 사전에 없으면 `user-guide/06-glossary.md`에 더한다.
+13. 대화에서 ID·번호·약자는 처음 한 번 괄호로 뜻을 푼다. 사전에 없으면 `developer-guide/06-glossary.md`에 더한다.
 
 ## 6. 화면 문서와 개발 순서
 
@@ -187,7 +187,7 @@ node aidd-guide/harness/runtime/harness-check.mjs && node aidd-guide/meta/_meta/
 
 훅은 규칙의 원본이 아니다. 자동 차단이 없어도 문서 규칙은 유효하다. 집행 목록은
 [`harness/automation-matrix.md`](aidd-guide/harness/automation-matrix.md), 현재 훅 목록은 생성물
-[`user-guide/07-harness.md`](user-guide/07-harness.md)가 갖는다. 사람이 판단할 핵심 규약은:
+[`developer-guide/07-harness.md`](developer-guide/07-harness.md)가 갖는다. 사람이 판단할 핵심 규약은:
 
 - 조회는 `<기능>QueryService`, 명령은 `<기능>Service`; 쓰기 메서드는 트랜잭션을 표시한다.
 - API는 `/api/{계층}/{도메인}/{동작}`이며 `service`는 POST다.
