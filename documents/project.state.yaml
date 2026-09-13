@@ -24,17 +24,6 @@ current:
   # ↑ true 로 켜면 G3 전에도 sources/ 를 고칠 수 있다(guard-write ①).
   #   **템플릿 자체의 보수에만 켠다.** 켠 사실이 여기 남아 무엇을 왜 열었는지 추적된다.
 
-batch_g4:
-  status: active
-  approved_at: 2026-09-13
-  change_request: CR-011
-  scope: { roadmap: RM-P1, workstream: system, slices: [SLICE-515, SLICE-516] }
-  rule: >-
-    범위의 각 슬라이스는 G4 자체검증·레드팀·결정 카드·역질문을 마친 뒤 self_verified로
-    보류하고 다음 슬라이스로 진행한다. 완료·커밋·배포는 금지하며, 사용자가 사후 일괄
-    승인할 때만 슬라이스별로 done·지정 경로 커밋한다.
-  unresolved_reverse_questions: []
-
 # ── 단계 게이트 — **현재 차수(`current.roadmap`)의 것이다** ────────
 # status: not_started | in_progress | self_verified | approved
 #
