@@ -54,7 +54,7 @@ workstreams:
       P2_architecture: { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 8/8.** ADR-007 아래 ARCH-022~026으로 system의 백엔드·프론트 목표 경로, 31개 테이블 쓰기 소유권, 화면 경로와 기능별 이행 순서를 정의하고 AUTHZ-091로 설치용 ADMIN과 운영 권한을 분리했다. 사용자는 역할 겸임을 허용하고 특정 역할·메뉴 코드의 금지 하드코딩을 거부했다. 역할·메뉴·개인 권한 데이터와 유효 권한이 유일한 판정 근거다. 현재 고객이 없는 개발 단계이므로 신규 경로 전환과 회귀 시험 뒤 기존 API·화면 경로는 같은 슬라이스에서 즉시 제거하고 호환 별칭을 남기지 않는다. ASM-005·006은 기각됨으로 닫았다" }
       P3_design:       { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 11/11.** REQ-501~510을 UC-501~510·FEAT-501~510·ENT-501~531·API-501~599·SCR-501~525·TC 52건으로 연결했다. 실제 컨트롤러 99개와 목표 API의 요청·응답 타입·근거 메서드를 전수 대조했고 누락·중복 0건이다. 핵심 시퀀스는 UC-501·503·508 세 건이며 예외와 트랜잭션 경계를 표시했다. 권한 변경 API는 SYS_LO_ACCESS의 일반 시스템 사용 이력에 남기되 전용 원장은 고객사 요구가 생긴 도입 시점 이후만 기록하고 과거 변경은 복원하지 않는다. 같은 역할을 동시에 전체 저장하면 나중에 완료된 스냅샷이 이기고 자동 병합하지 않는다. 레드팀 위험은 사용자 결정과 TC-5076·TC-5026으로 닫았고 trace 오류 0건이었다" }
       P4_build:        { status: approved, approved_at: "2026-09-13", note: "사용자 재승인. CR-019로 재개방한 sample local 전용 코드·프런트·시드·Liquibase 기준선 분리를 재검증했다. 제품 번들은 sample을 제외하고 local은 여섯 화면을 포함하며, 전체 백엔드·프런트(88파일·688테스트)·시드·품질·추적성·문서 검사를 통과했다. SampleRules PIT는 변이 3개를 모두 제거했다. 실제 DB 설치·성능·번들 경고 영향은 P5에서 검증한다." }
-      P5_verify:       { status: in_progress, approved_at: null, note: "system P4 재승인 뒤 실제 실행 환경 검증을 시작한다. product/local 빈 PostgreSQL 기준선 적용·복구, 권한 매트릭스 API 직접 호출, 시스템 운영 흐름과 NFR 실측을 수행한다" }
+      P5_verify:       { status: in_progress, approved_at: null, note: "2026-09-13 실제 빈 PostgreSQL 설치를 확인했다. product는 기준선 3건·sample 테이블 0개·API 인가 사실 62건, local은 기준선 6건·sample 테이블 3개·주문 2,006건·API 인가 사실 82건으로 기동했고 JPA validate를 통과했다. 두 서버는 P5 전용 18080·18081 포트에서 HTTP 404 응답까지 확인 후 종료했다. 다음은 기준선 복구와 권한 매트릭스 API 직접 호출, 시스템 운영 흐름과 NFR 실측이다" }
   admin:
     phase: P1
     required_in: [RM-P1]
@@ -143,12 +143,12 @@ roadmap_closed: []
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
 next_up:
   decided_at: 2026-09-13
-  choice: "system 작업흐름 P5 검증을 시작한다"
+  choice: "system 작업흐름 P5의 기준선 복구·권한 매트릭스 검증을 진행한다"
   why: >-
-    사용자가 CR-019 재검증을 포함한 system 작업흐름 G4를 승인했다. P4의 단위·계약 검증을
-    실제 product/local 설치와 권한·운영 흐름, 비기능 실측으로 확장할 차례다.
+    product/local 빈 PostgreSQL 기준선은 실제 기동과 JPA validate까지 통과했다. 다음은
+    이 설치 결과를 복구할 수 있는지와 API 직접 호출의 권한 경계를 검증하는 일이다.
   tasks:
-    - "product/local 빈 PostgreSQL에 모듈 기준선을 적용하고 설치·복구 경로를 검증한다"
+    - "P5 전용 product/local DB의 기준선 복구 경로를 검증한다"
     - "system 권한 매트릭스의 API 직접 호출과 운영 흐름을 실행하고 NFR 실측 계획을 세운다"
   then: >-
     system 작업흐름 G5 자체검증·레드팀 뒤 사용자 승인으로 P6 준비 여부를 판단한다.
