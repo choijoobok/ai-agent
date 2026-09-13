@@ -529,7 +529,7 @@ const REPO_ROOTS = [
   'sources/',
   'aidd-guide/',
   'documents/',
-  'user-guide/',
+  'developer-guide/',
   '.claude/',
   '.agents/',
   '.codex/',

@@ -39,7 +39,7 @@ tags: [harness, hooks, automation]
 
 ## 훅이 막는다 — 목록은 생성물이 갖는다
 
-어느 훅이 언제 무엇에 걸리고 **강도가 무엇인가**는 [`user-guide/07-harness.md`](../../user-guide/07-harness.md) 가 갖는다 —
+어느 훅이 언제 무엇에 걸리고 **강도가 무엇인가**는 [`developer-guide/07-harness.md`](../../developer-guide/07-harness.md) 가 갖는다 —
 `harness-doc` 훅이 **실물에서 계산해** 다시 만든다. 여기에 베껴 적지 않는다 — 베낀 순간 **훅을 더할 때마다 낡는다**.
 
 **여기는 *왜 그런 강도인가* 를 갖는다.**

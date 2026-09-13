@@ -1,5 +1,5 @@
 /**
- * 훅·스킬 목록을 `user-guide/07-harness.md` 로 만든다 — `PostToolUse` 훅 겸 생성기.
+ * 훅·스킬 목록을 `developer-guide/07-harness.md` 로 만든다 — `PostToolUse` 훅 겸 생성기.
  *
  * <h2>왜 손으로 쓰지 않나</h2>
  * <p>훅과 스킬의 목록은 이미 세 곳에 있다 — `AGENTS.md` §8(헌법의 요지) ·
@@ -30,7 +30,7 @@ import { join } from 'node:path';
 import { REPO, readHookInput, repoRelative, targetPath, pass, warn } from './lib.mjs';
 import { CHAINS } from '../../aidd-guide/harness/runtime/chains.mjs';
 
-const OUT = 'user-guide/07-harness.md';
+const OUT = 'developer-guide/07-harness.md';
 const HOOK_DIR = join(REPO, '.claude/hooks');
 const SKILL_DIR = join(REPO, '.claude/skills');
 const SETTINGS = join(REPO, '.claude/settings.json');

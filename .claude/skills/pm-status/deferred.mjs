@@ -24,7 +24,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..', '..', '..');
 
 /** 훑을 자리. `sources/` 는 코드라 넣지 않는다 — 미룬 *결정* 을 찾는 것이다. */
-const SCAN = ['documents', 'aidd-guide', 'user-guide', 'AGENTS.md'];
+const SCAN = ['documents', 'aidd-guide', 'developer-guide', 'AGENTS.md'];
 const SKIP = new Set(['node_modules', '.git', 'generated', 'build']);
 
 /** 기한을 정렬한다. 앞설수록 급하다. 모르는 값은 뒤로 보낸다. */

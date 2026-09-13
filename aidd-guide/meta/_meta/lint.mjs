@@ -119,7 +119,7 @@ const DEPRECATED_ROOTS = ['sources/frontend/src/shared', 'sources/backend'];
 
 /** `sources:` 의 값 중 <b>저장소 경로</b>로 볼 접두. 그 밖은 인용이라 실물이 없다. */
 const REPO_ROOTS = [
-  'sources/', 'aidd-guide/', 'documents/', 'user-guide/',
+  'sources/', 'aidd-guide/', 'documents/', 'developer-guide/',
   '.claude/', '.agents/', '.codex/', '.github/',
 ];
 
@@ -606,7 +606,7 @@ function checkConstitutionCitations() {
   }
 
   const out = [];
-  for (const root of ['aidd-guide', 'documents', 'user-guide', '.claude', '.agents', '.codex']) {
+  for (const root of ['aidd-guide', 'documents', 'developer-guide', '.claude', '.agents', '.codex']) {
     const dir = join(REPO, root);
     if (!existsSync(dir)) continue;
     for (const f of walk(dir)) {

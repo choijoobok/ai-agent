@@ -24,7 +24,7 @@ const GENERATED = new Map([
   [`${SAMPLE}/902-sample-bulk-order.csv`, './gradlew generateSampleBulkSeed'],
   [`${SAMPLE}/902-sample-bulk-item.csv`, './gradlew generateSampleBulkSeed'],
   [`${SAMPLE}/904-sample-bulk-item-dense.csv`, './gradlew generateSampleBulkSeed'],
-  ['user-guide/07-harness.md', 'node .claude/hooks/harness-doc.mjs --write'],
+  ['developer-guide/07-harness.md', 'node .claude/hooks/harness-doc.mjs --write'],
   ['aidd-guide/standard/registry.md', 'node .claude/hooks/commons-doc.mjs --write'],
 ]);
 

@@ -19,7 +19,7 @@ tags: [harness, hooks, gate, automation]
 > **배선과 `lib.mjs` 계약, 새 훅을 더할 때의 규칙**은 [hooks-contract.md](./hooks-contract.md)
 > 가 갖는다 — 200줄 상한에 닿아 갈랐다.
 >
-> **현재 목록은 생성물이다** — [`user-guide/07-harness.md`](../../user-guide/07-harness.md).
+> **현재 목록은 생성물이다** — [`developer-guide/07-harness.md`](../../developer-guide/07-harness.md).
 > 손으로 적은 목록은 훅을 더할 때마다 낡고, **낡은 목록은 없는 것보다 나쁘다**.
 
 ## 진입 조건
