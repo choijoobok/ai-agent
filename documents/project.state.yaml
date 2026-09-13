@@ -18,7 +18,7 @@ current:
   # ↑ **축이 둘이고 글자가 같다.** 차수는 *무엇을 내는가*(00-charter.yaml roadmap),
   #   단계는 *어디까지 만들었는가*(P0~P6)다. 한 차수가 P0~P6 을 한 바퀴 돈다.
   #   `trace-check` 가 이 값을 읽어 **뒤 차수의 결손을 오류가 아니라 경고로** 센다.
-  slice: SLICE-518           # CR-019 반영으로 sample 격리 슬라이스를 다시 검증한다
+  slice: null                # system P4의 마지막 SLICE-518을 닫고 P5 검증으로 전환했다
   blocked_by: []
   template_maintenance: false
   # ↑ true 로 켜면 G3 전에도 sources/ 를 고칠 수 있다(guard-write ①).
@@ -45,7 +45,7 @@ gates:
 # P0/G0과 G6은 전역이다. 소스 쓰기는 기능을 소유한 작업흐름 P3_design 승인으로 열린다.
 workstreams:
   system:
-    phase: P4
+    phase: P5
     required_in: [RM-P1]
     blocked_by: []
     deferred_until: null
@@ -53,8 +53,8 @@ workstreams:
       P1_discovery:    { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 8/8.** ACT-012, PRC-06~08, REQ-501~510을 현재 소스·Liquibase·화면 문서에서 역추적했다. SYSTEM 하위 16개·공통 대시보드 1개·메뉴 없는 공통 화면 8개와 근거 테이블 31개를 대조했고 추적성 오류 0건이다. 레드팀에서 전 수명주기·변조 불가·소스 키 한정·요청 승인이라는 과잉 표현을 현재 구현 범위로 바로잡았다. 역질문 권장안에 따라 설치용 ADMIN은 설치 시점의 전체 권한 기준선으로 한정하고, 운영에서는 시스템 관리자와 감사·품질 역할을 분리한다. 일반 계정·권한 공지와 요청은 system, AI 품질·정책 관련 알림은 admin이 소유한다" }
       P2_architecture: { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 8/8.** ADR-007 아래 ARCH-022~026으로 system의 백엔드·프론트 목표 경로, 31개 테이블 쓰기 소유권, 화면 경로와 기능별 이행 순서를 정의하고 AUTHZ-091로 설치용 ADMIN과 운영 권한을 분리했다. 사용자는 역할 겸임을 허용하고 특정 역할·메뉴 코드의 금지 하드코딩을 거부했다. 역할·메뉴·개인 권한 데이터와 유효 권한이 유일한 판정 근거다. 현재 고객이 없는 개발 단계이므로 신규 경로 전환과 회귀 시험 뒤 기존 API·화면 경로는 같은 슬라이스에서 즉시 제거하고 호환 별칭을 남기지 않는다. ASM-005·006은 기각됨으로 닫았다" }
       P3_design:       { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 11/11.** REQ-501~510을 UC-501~510·FEAT-501~510·ENT-501~531·API-501~599·SCR-501~525·TC 52건으로 연결했다. 실제 컨트롤러 99개와 목표 API의 요청·응답 타입·근거 메서드를 전수 대조했고 누락·중복 0건이다. 핵심 시퀀스는 UC-501·503·508 세 건이며 예외와 트랜잭션 경계를 표시했다. 권한 변경 API는 SYS_LO_ACCESS의 일반 시스템 사용 이력에 남기되 전용 원장은 고객사 요구가 생긴 도입 시점 이후만 기록하고 과거 변경은 복원하지 않는다. 같은 역할을 동시에 전체 저장하면 나중에 완료된 스냅샷이 이기고 자동 병합하지 않는다. 레드팀 위험은 사용자 결정과 TC-5076·TC-5026으로 닫았고 trace 오류 0건이었다" }
-      P4_build:        { status: in_progress, approved_at: null, note: "2026-09-13 CR-019로 재개방. sample을 local 전용 코드·프런트·시드·Liquibase 기준선으로 분리하고 기존 DB를 초기화했다. 제품은 sample 번들 제외·local은 여섯 화면 번들 포함을 확인했고 문서를 현행화했다. 다만 이 환경의 전체 Vitest가 단일 워커에서도 시작 뒤 종료하지 않아, SLICE-518 미니게이트 전에 전체 프런트 테스트의 재현 가능한 완료 결과가 남아야 한다." }
-      P5_verify:       { status: not_started, approved_at: null, note: "CR-019의 P4 재검증이 끝난 뒤 실제 실행 환경 검증을 재개한다" }
+      P4_build:        { status: approved, approved_at: "2026-09-13", note: "사용자 재승인. CR-019로 재개방한 sample local 전용 코드·프런트·시드·Liquibase 기준선 분리를 재검증했다. 제품 번들은 sample을 제외하고 local은 여섯 화면을 포함하며, 전체 백엔드·프런트(88파일·688테스트)·시드·품질·추적성·문서 검사를 통과했다. SampleRules PIT는 변이 3개를 모두 제거했다. 실제 DB 설치·성능·번들 경고 영향은 P5에서 검증한다." }
+      P5_verify:       { status: in_progress, approved_at: null, note: "system P4 재승인 뒤 실제 실행 환경 검증을 시작한다. product/local 빈 PostgreSQL 기준선 적용·복구, 권한 매트릭스 API 직접 호출, 시스템 운영 흐름과 NFR 실측을 수행한다" }
   admin:
     phase: P1
     required_in: [RM-P1]
@@ -143,16 +143,15 @@ roadmap_closed: []
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
 next_up:
   decided_at: 2026-09-13
-  choice: "system 작업흐름 P4 전체 게이트를 점검한다"
+  choice: "system 작업흐름 P5 검증을 시작한다"
   why: >-
-    SLICE-501~518의 구현·모듈 경계 보정·정본 문서 현행화가 끝났고 각 슬라이스가 사용자
-    G4 승인을 받았다. 이제 전체 Exit Criteria와 레드팀을 다시 세어 작업흐름 P4 승인 여부를
-    사용자가 판단할 차례다.
+    사용자가 CR-019 재검증을 포함한 system 작업흐름 G4를 승인했다. P4의 단위·계약 검증을
+    실제 product/local 설치와 권한·운영 흐름, 비기능 실측으로 확장할 차례다.
   tasks:
-    - "phase-gate 절차로 system P4 Exit Criteria를 자체검증하고 레드팀 반박을 붙인다"
-    - "결정 카드와 역질문을 제시해 사용자에게 system 작업흐름 G4 승인을 요청한다"
+    - "product/local 빈 PostgreSQL에 모듈 기준선을 적용하고 설치·복구 경로를 검증한다"
+    - "system 권한 매트릭스의 API 직접 호출과 운영 흐름을 실행하고 NFR 실측 계획을 세운다"
   then: >-
-    system 작업흐름 G4 승인 뒤 P5 검증으로 넘어가되 전역 P4 게이트와 혼동하지 않는다.
+    system 작업흐름 G5 자체검증·레드팀 뒤 사용자 승인으로 P6 준비 여부를 판단한다.
 
 # ── 미결 질문 (Open Questions) ─────────────────────────────────────
 # 사용자 답변이 필요한 것. 답변되면 삭제하고 결과를 spec·ADR 에 반영한다.
@@ -187,7 +186,7 @@ open_questions:
 # ── 인지 부채 ──────────────────────────────────────────────────────
 # 사용자가 이해하지 못한 채 승인하는 것을 감지한다.
 cognitive_debt:
-  silent_approvals: 0
+  silent_approvals: 1
   # ↑ G0(2026-09-05)에서 1 이었다 — 역질문 둘에 답하지 않고 승인했기 때문이다.
   #   **같은 날 사용자가 셋 다 답해 0 으로 돌아왔다.** 부채가 갚아진 것이므로 지운다.
   #   답은 각자의 자리에 있다: 성공 기준은 charter 의 measurement_first,
@@ -325,7 +324,7 @@ slices:
   - { id: SLICE-515, workstream: system, features: [FEAT-510], testcases: [TC-5101, TC-5102, TC-5104], scope: "즐겨찾기·그리드·저장 조회조건", stage: P4, status: done, depends_on: [SLICE-503, SLICE-504] }
   - { id: SLICE-516, workstream: system, features: [FEAT-510], testcases: [TC-5103, TC-5105], scope: "메뉴 사용 통계·대시보드와 고아 상태 정리", stage: P4, status: done, depends_on: [SLICE-515] }
   - { id: SLICE-517, workstream: system, features: [FEAT-501], testcases: [TC-5015], scope: "내 프로필·내 로그인 이력·내 역할·언어 설정의 system public 경계 보정", stage: P4, status: done, depends_on: [SLICE-501, SLICE-504] }
-  - { id: SLICE-518, workstream: system, features: [FEAT-503], testcases: [TC-5035], scope: "CR-018·019 sample 참조 구현을 local 전용 백엔드·프런트·시드·기준선으로 격리", stage: P4, status: todo, depends_on: [SLICE-517] }
+  - { id: SLICE-518, workstream: system, features: [FEAT-503], testcases: [TC-5035], scope: "CR-018·019 sample 참조 구현을 local 전용 백엔드·프런트·시드·기준선으로 격리", stage: P4, status: done, depends_on: [SLICE-517] }
 
 verification_load:
   - { slice: SLICE-518, measured_at: "2026-09-13", fix_rounds: 2, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 3, note: "백엔드 컨트롤러·DTO·도메인·소유 테스트를 backend:modules:sample과 com.aiagent.sample로, 프런트 여섯 화면·API·규칙을 modules/sample로 이행하고 구 api/sample·domain/sample·features/sample을 제거했다. 외부 /sample/**·/api/service/sample/**와 SMPL_* 메뉴·시드·제거 절차는 유지했다. API 요약 계약 테스트와 시드 생성기의 스캔 범위를 api·system·sample 모듈로 보정하고, api에는 HTTP·Security·요청 경계 공통물만 남겼다. 백엔드·프런트 경계를 각각 구 경로로 뒤집자 구조 테스트가 실패했고 원복 뒤 통과했다. 전체 백엔드, 프런트 88파일·688테스트, 시드, quality·trace·doc 생성·harness·meta 검사를 통과했으며 SampleRules PIT는 변이 3개를 모두 제거했다. 서비스 전체를 넓게 잡은 탐색 PIT는 기존 미시험 조립 메서드까지 포함해 29%였고 이번 구조 이동의 통과 근거로 사용하지 않았다." }
