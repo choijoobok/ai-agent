@@ -13,6 +13,7 @@ import { parseYaml } from '../../hooks/lib.mjs';
 import { FIGURE_LINE, escapeHtml, renderMarkdown } from '../manual-site/lib/markdown.mjs';
 import { MAIN, figuresOf } from '../manual-site/lib/figure.mjs';
 import { menuTree, read as readRepo, REPO, screensOf } from '../manual-site/lib/menu.mjs';
+import { themeAware } from '../manual-site/lib/page.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = resolve(REPO, 'build/deliverables');
@@ -96,7 +97,9 @@ function collectSharedMockups() {
     const meta = byDoc.get(req) ?? byRoute.get(folder) ?? null;
     const screenId = screenIdentity(meta, { url: folder, code: slug(folder) });
     const { figures, style } = figuresOf(folder, 'mockup');
-    for (const [key, figure] of figures) mockups[`${screenId}/${key}`] = { html: figure.html, style };
+    for (const [key, figure] of figures) {
+      mockups[`${screenId}/${key}`] = { html: figure.html, style: themeAware(style) };
+    }
   }
 }
 
@@ -137,9 +140,9 @@ ${note}
 </figure>`;
 }
 
-function markdownChapter({ id, group, path, title, extraHtml = '', markdown }) {
+function markdownChapter({ id, group, path, title, extraHtml = '', markdown, tabs = null }) {
   const source = markdown ?? read(path);
-  return { id, group, path, title: title ?? titleOf(source, path), markdown: source, extraHtml };
+  return { id, group, path, title: title ?? titleOf(source, path), markdown: source, extraHtml, tabs };
 }
 
 function designChapters() {
@@ -164,7 +167,10 @@ function designChapters() {
     chapters.push(markdownChapter({
       id: `screen-${slug(screenId)}`, group: `화면 요건·목업 · ${meta?.module ?? '기타'}`, path,
       title: `${screenId} ${meta?.title ?? titleOf(read(path), '')}`,
-      extraHtml: `<h2>화면 목업</h2>${visuals || '<div class="delivery-empty">생성된 목업이 없습니다.</div>'}`,
+      tabs: [
+        { key: 'requirements', label: '요건 정의서', markdown: read(path) },
+        { key: 'mockup', label: '화면 목업', rendered: visuals || '<div class="delivery-empty">생성된 목업이 없습니다.</div>' },
+      ],
     }));
   }
   return chapters;
@@ -243,6 +249,19 @@ function rewriteLinks(markdown, from, mapping) {
   });
 }
 
+function renderTabs(chapter, mapping) {
+  const tabs = chapter.tabs ?? [];
+  const buttons = tabs.map((tab, index) => {
+    const selected = index === 0;
+    return `<button class="document-tab" id="${chapter.id}-tab-${tab.key}" data-document-tab="${tab.key}" type="button" role="tab" aria-selected="${selected}" aria-controls="${chapter.id}-panel-${tab.key}" tabindex="${selected ? '0' : '-1'}">${escapeHtml(tab.label)}</button>`;
+  }).join('');
+  const panels = tabs.map((tab, index) => {
+    const body = tab.rendered ?? renderMarkdown(rewriteLinks(tab.markdown, chapter.path, mapping));
+    return `<section class="document-tab-panel" id="${chapter.id}-panel-${tab.key}" data-document-panel="${tab.key}" role="tabpanel" aria-labelledby="${chapter.id}-tab-${tab.key}"${index === 0 ? '' : ' hidden'}>${body}</section>`;
+  }).join('');
+  return `<div class="document-tabs" data-document-tabs><div class="document-tab-list" role="tablist" aria-label="화면 설계 보기">${buttons}</div>${panels}</div>`;
+}
+
 function renderSite(key, chapters) {
   const cfg = siteConfig.get(key) ?? { title: key, description: '' };
   const mapping = new Map(chapters.filter((chapter) => !chapter.path.startsWith('generated:')).map((chapter) => [norm(chapter.path), chapter.id]));
@@ -253,7 +272,9 @@ function renderSite(key, chapters) {
   }
   const tree = [...groups].map(([group, items]) => `<li><button class="tnode group" data-tree-group type="button" aria-expanded="true"><svg class="icon chev"><use href="#i-chevron-down"/></svg><span class="label">${escapeHtml(group)}</span></button><ul>${items.map((chapter) => `<li><button class="tnode empty-chev" data-page-link="${chapter.id}" type="button"><span class="label">${escapeHtml(chapter.title)}</span></button></li>`).join('')}</ul></li>`).join('');
   const bodies = chapters.map((chapter) => {
-    const body = chapter.rendered ?? renderMarkdown(rewriteLinks(chapter.markdown, chapter.path, mapping));
+    const body = chapter.tabs
+      ? renderTabs(chapter, mapping)
+      : chapter.rendered ?? renderMarkdown(rewriteLinks(chapter.markdown, chapter.path, mapping));
     return `<section class="delivery-page" data-page id="${chapter.id}" hidden><article>${sourceMeta(chapter.path)}${body}${chapter.extraHtml ?? ''}</article></section>`;
   }).join('\n');
   const html = `<!doctype html>
@@ -261,7 +282,7 @@ function renderSite(key, chapters) {
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>${escapeHtml(cfg.title)}</title>
 <link rel="stylesheet" href="../assets/guide.css"><link rel="stylesheet" href="../assets/delivery.css">
 <script src="../assets/icons.js" defer></script><script src="../assets/mockups.js" defer></script><script src="../assets/delivery.js" defer></script></head>
-<body class="${release ? 'release' : 'review'}"><header class="topbar"><button class="icon-btn menu-toggle" data-menu-toggle type="button" aria-label="목차 열기" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button><a class="brand" href="../index.html"><span class="logo"><svg class="icon sm"><use href="#i-book-open"/></svg></span><span>${escapeHtml(cfg.title)}</span></a><div class="spacer"></div><div class="site-actions"><button data-print-all type="button">전체 인쇄·PDF</button><button data-theme-toggle type="button" aria-label="밝은 테마와 어두운 테마 전환">테마</button></div></header>
+<body class="${release ? 'release' : 'review'}"><header class="topbar"><button class="icon-btn menu-toggle" data-menu-toggle type="button" aria-label="목차 열기" aria-expanded="false"><svg class="icon"><use href="#i-menu"/></svg></button><a class="brand" href="../index.html"><span class="logo"><svg class="icon sm"><use href="#i-book-open"/></svg></span><span>${escapeHtml(cfg.title)}</span></a><div class="spacer"></div><div class="site-actions"><button data-print-all type="button">전체 인쇄·PDF</button><button class="icon-btn" data-theme-toggle type="button" aria-label="라이트 테마로 전환" title="테마 전환"><svg class="icon theme-icon-dark"><use href="#i-sun"/></svg><svg class="icon theme-icon-light" hidden><use href="#i-moon"/></svg></button></div></header>
 <div class="sidebar-backdrop"></div><div class="layout"><aside class="sidebar" id="sidebar"><div class="sb-head">목차</div><div class="sb-filter"><input data-tree-filter type="search" placeholder="제목·본문 검색"></div><nav class="tree"><ul>${tree}</ul></nav></aside><div class="main-wrap"><main class="content">${bodies || '<div class="delivery-empty">표시할 문서가 없습니다.</div>'}</main></div></div></body></html>`;
   write(resolve(OUT, key, 'index.html'), html);
 }

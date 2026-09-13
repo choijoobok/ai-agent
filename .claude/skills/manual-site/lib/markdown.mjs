@@ -85,7 +85,7 @@ export function renderMarkdown(source, options = {}) {
   };
   const closeTable = () => {
     if (inTable) {
-      html.push('</tbody></table>');
+      html.push('</tbody></table></div>');
       inTable = false;
     }
   };
@@ -142,7 +142,7 @@ export function renderMarkdown(source, options = {}) {
       const rendered = cells.map((cell) => inline(cell.trim()));
       if (!inTable) {
         closeList();
-        html.push('<table><thead><tr>');
+        html.push('<div class="table-wrap"><table><thead><tr>');
         html.push(rendered.map((c) => `<th>${c}</th>`).join(''));
         html.push('</tr></thead><tbody>');
         inTable = true;

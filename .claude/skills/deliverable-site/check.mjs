@@ -18,6 +18,17 @@ for (const key of ['design', 'user', 'operations']) {
   const pages = [...html.matchAll(/\bdata-page(?:\s|>)/g)].length;
   const links = [...html.matchAll(/\bdata-page-link=/g)].length;
   if (pages === 0 || pages !== links) errors.push(`${key}: 본문 ${pages}개와 목차 ${links}개가 다르다.`);
+  if (!html.includes('class="icon theme-icon-dark"') || !html.includes('class="icon theme-icon-light"')) {
+    errors.push(`${key}: 해·달 테마 아이콘이 없다.`);
+  }
+  if (key === 'design') {
+    const tabLists = [...html.matchAll(/\bdata-document-tabs(?:\s|>)/g)].length;
+    const requirementTabs = [...html.matchAll(/data-document-tab="requirements"/g)].length;
+    const mockupTabs = [...html.matchAll(/data-document-tab="mockup"/g)].length;
+    if (tabLists === 0 || tabLists !== requirementTabs || tabLists !== mockupTabs) {
+      errors.push(`design: 화면 문서 탭 ${tabLists}개와 요건 ${requirementTabs}개·목업 ${mockupTabs}개가 다르다.`);
+    }
+  }
   for (const match of html.matchAll(/(?:src|href)="([^"]+)"/g)) {
     const target = match[1];
     if (/^(?:https?:|mailto:|#)/.test(target)) continue;
