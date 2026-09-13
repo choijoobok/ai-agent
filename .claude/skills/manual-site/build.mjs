@@ -128,7 +128,7 @@ function renderDoc({ screen, source, figures, hrefOf }) {
         problems.push(
           `${screen.url} — 메뉴얼이 mockup.html#${key} 를 부르는데 그 그림이 없다` +
             `\n    목업이 아예 없으면 파생물이라 그렇다(CLAUDE.md §4-5) — 먼저 만든다:` +
-            `\n    node .claude/skills/mockup/scaffold.mjs ${screen.url.replace(/^\//, '')} > documents/screen${screen.url}/mockup.html`,
+            `\n    node .claude/skills/mockup/scaffold.mjs --write ${screen.url.replace(/^\//, '')}`,
         );
         return '';
       }

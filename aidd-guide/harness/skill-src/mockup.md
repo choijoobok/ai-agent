@@ -34,7 +34,7 @@ node .claude/skills/mockup/scaffold.mjs --list
 ## ① 생성 — 골격을 받고 그림만 그린다
 
 ```bash
-node .claude/skills/mockup/scaffold.mjs admin/system/log/access > documents/screen/admin/system/log/access/mockup.html
+node .claude/skills/mockup/scaffold.mjs --write admin/system/log/access
 ```
 
 골격이 **기계가 만들 수 있는 것 전부**를 담고 나온다:
@@ -47,8 +47,9 @@ node .claude/skills/mockup/scaffold.mjs admin/system/log/access > documents/scre
 | 확인 목록 | 요건서 §미결 |
 | `data-manual` 키 목록 | `manual.md` 의 `[설명](mockup.html#키)` 줄 |
 
-**남는 일은 그림이고 그것만 그린다.** 골격의 `<h2>1. 기본 상태</h2>` · `<h2>2. 상태가 갈리는 자리</h2>`
-아래를 채우고 **지시 주석 블록을 지운다**:
+**생성기는 화면 유형별 공통 배치를 이미 그려 낸다.** 빈 종이·스타일·테스트 표만 있는
+목업은 만들지 않는다. 요건서 §1에 특화 배치·상태가 있으면 그 사실을 요건서에 먼저 적고
+생성기를 확장한다:
 
 1. **요건서 §1 화면 구성의 배치를 그대로 옮긴다.** 요건서에 없는 요소를 그리게 되면 **요건서를 먼저 고친다** — 그것이 유실될 결정이다.
 2. **상태를 각각 그린다.** 기본 상태 하나로는 확인이 안 된다 — 빈 · 잠긴 · 편집 중 · 검증 실패 · 권한 없음.
@@ -78,6 +79,7 @@ node .claude/skills/mockup/scaffold.mjs --check log/access    # 하나
 | 요건서의 케이스 ID ↔ 목업의 케이스 ID | 목업이 케이스를 몰래 늘렸다 — 요건서로 옮긴다 |
 | 외부 CSS·JS·이미지 | 파일 하나만 열었을 때 깨진다 |
 | 생성물 표식 | 손편집을 부른다 |
+| `.screen` 화면 블록 | 스타일·표만 있고 실제 화면이 없는 목업을 막는다 |
 
 **요건서를 고쳤으면 검사가 아니라 재생성이다** — ①을 다시 돌린다.
 
@@ -98,8 +100,8 @@ requirements.md ──/mockup──> mockup.html ──/manual-site──> manua
 for s in $(node .claude/skills/mockup/scaffold.mjs --list | sed -n '2,$p' | awk 'NF>2{print $1}'); do echo "$s"; done
 ```
 
-**한 번에 다 만들지 않는다.** 그림은 화면마다 판단이고, 몰아서 그리면 배치를 요건서에서 확인하지 않은
-채 서식만 채우게 된다. 화면 하나를 만들고 `--check` 로 확인한 뒤 다음으로 간다.
+**한 번에 다 만들지 않는다.** 자동 골격도 화면마다 요건서 §1의 배치와 대조한다. 상세 배치가
+부족하면 먼저 요건서를 고치고, 화면 하나를 만들고 `--check`로 확인한 뒤 다음으로 간다.
 
 ---
 

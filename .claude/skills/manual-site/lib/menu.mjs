@@ -20,7 +20,8 @@ export const REPO = (() => {
   return process.cwd();
 })();
 
-export const DOCS = 'documents/generated/menu';
+/** 화면 문서의 정본 경로 — 생성물은 이 폴더 아래에만 둔다(AGENTS.md §6). */
+export const DOCS = 'documents/screen';
 const DATA_DIR = 'sources/backend/bootstrap/src/main/resources/db/changelog/data';
 const MENU_CSV = `${DATA_DIR}/003-init-menu.csv`;
 

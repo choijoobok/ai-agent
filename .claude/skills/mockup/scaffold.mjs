@@ -173,6 +173,47 @@ function styleBlock() {
   return m[0];
 }
 
+/**
+ * 요건서의 메타만으로도 빈 종이를 내지 않는 최소 화면 그림.
+ *
+ * 상세 배치는 §1 화면 구성에서 더 풍부하게 만들 수 있지만, 그 해석이 아직 없는 화면도
+ * 메뉴얼에 "그림 없음"으로 나가서는 안 된다. 유형별 공통 크롬만 그리고 값·규칙을
+ * 지어내지 않는다. 상세 표현은 요건서를 보강한 뒤 이 생성기를 확장하는 자리다.
+ */
+function screenSketch(title, type, key, caption, manualKey) {
+  const attrs = ` id="${key}"${manualKey ? ` data-manual="${key}"` : ''}`;
+  const captionLine = caption ? ` · ${html(caption)}` : '';
+  if (/대시보드/.test(type)) {
+    return `<div class="screen leaf"${attrs}>
+  <div class="bar">${html(title)}${captionLine} — 요건서 기반 화면 배치</div>
+  <div class="body">
+    <div class="bc"><span class="path"><b>${html(title)}</b></span><button class="btn ghost">기간</button></div>
+    <div class="row" style="margin-bottom:12px"><div class="grp" style="flex:1"><b>요약</b><div class="item"><span>현재 상태</span><b>—</b></div></div><div class="grp" style="flex:1"><b>집계</b><div class="item"><span>조회 결과</span><b>—</b></div></div></div>
+    <div class="tb"><span class="ttl">현황</span><span class="cnt">요건서의 데이터가 여기에 표시됩니다</span></div>
+    <div class="grid"><table><thead><tr><th>구분</th><th>값</th><th>기준 시각</th></tr></thead><tbody><tr><td>표시 데이터</td><td>—</td><td>—</td></tr></tbody></table></div>
+  </div>
+</div>`;
+  }
+  if (/폼|로그인|팝업|모달|설정/.test(type)) {
+    return `<div class="screen shell"${attrs}>
+  <div class="body"><div class="modal"><div class="mh">${html(title)}<span class="x">×</span></div><div class="mb">
+    <div class="f"><label>입력 항목</label><input value="" placeholder="요건서에 정의한 값을 입력합니다" /></div>
+    <div class="f ro"><label>조회 항목</label><input value="읽기 전용 값" readonly /></div>
+  </div><div class="mf"><span>${caption ? html(caption) : '기본 상태'}</span><span class="row"><button class="btn ghost sm">취소</button><button class="btn sm">확인</button></span></div></div></div>
+</div>`;
+  }
+  return `<div class="screen leaf"${attrs}>
+  <div class="bar">${html(title)}${captionLine} — 요건서 기반 화면 배치</div>
+  <div class="body">
+    <div class="bc"><span class="path"><b>${html(title)}</b></span></div>
+    <div class="sf"><label>조회 조건</label><input placeholder="검색어" /><label>상태</label><select><option>전체</option></select><span class="act"><button class="btn sm">조회</button></span></div>
+    <div class="tb"><span class="ttl">${html(title)} 목록</span><span class="cnt">0건</span><button class="btn ghost sm">새로고침</button></div>
+    <div class="grid"><table><thead><tr><th>이름</th><th>상태</th><th>변경일시</th></tr></thead><tbody><tr><td>표시 데이터</td><td>—</td><td>—</td></tr></tbody></table></div>
+    <div class="pg"><span>총 <b>0</b>건</span><span class="nav">‹ 1 ›</span><span class="size">50건</span></div>
+  </div>
+</div>`;
+}
+
 // ── 골격 ────────────────────────────────────────────────────────────
 function scaffold(dir) {
   const md = read(path.join(SCREENS, dir, 'requirements.md'));
@@ -184,6 +225,8 @@ function scaffold(dir) {
   const rows = meta(md);
   const pathRow = rows.find((r) => /페이지 경로|라우트|자리/.test(r[0]));
   const where = pathRow ? pathRow[1] : `/${dir}`;
+  const typeRow = rows.find((r) => /화면 유형/.test(r[0]));
+  const type = typeRow ? typeRow[1] : '';
   const tc = testcases(md);
   const keys = manualKeys(dir);
   const open = section(md, /미결/);
@@ -212,27 +255,17 @@ function scaffold(dir) {
   L.push('  </dl>');
   L.push('</div>');
   L.push('');
-  L.push('<!-- ══════════════════════════════════════════════════════════════');
-  L.push('     여기서부터 그림이다 — AI 가 그린다. 아래 지시를 지운 뒤 채운다.');
-  L.push('');
-  L.push('     ① 요건서 §1 화면 구성의 배치를 그대로 옮긴다.');
-  L.push('     ② 상태가 갈리는 자리를 각각 그린다 — 빈 · 잠긴 · 편집 중 · 검증 실패 · 권한 없음.');
-  L.push('     ③ 그리드 어휘 다섯만 쓴다 — .sf .tb .grid .pg .split');
-  L.push('     ④ 외부 CSS·JS·이미지·프레임워크를 쓰지 않는다. 한 파일로 완결된다.');
-  if (keys.length) {
-    L.push('');
-    L.push('     ⑤ 메뉴얼이 부르는 그림에 data-manual 키를 단다. 아래가 그 전부이며');
-    L.push('        하나라도 없으면 /manual-site 가 보고한다. 키 없는 블록은 그림이 아니다:');
-    for (const { key, caption } of keys) L.push(`          data-manual="${key}"   ← ${caption}`);
-  } else {
-    L.push('');
-    L.push('     ⑤ 메뉴얼이 부르는 그림이 없다 — data-manual 키를 달지 않는다.');
-  }
-  L.push('     ══════════════════════════════════════════════════════════════ -->');
-  L.push('');
+  const figures = keys.length ? keys : [{ key: 'main', caption: '기본 상태' }];
   L.push('<h2>1. 기본 상태</h2>');
+  L.push(screenSketch(title, type, figures[0].key, figures[0].caption, keys.length > 0));
   L.push('');
   L.push('<h2>2. 상태가 갈리는 자리</h2>');
+  for (const figure of figures.slice(1)) {
+    L.push(`<h3>${html(figure.caption)}</h3>`);
+    L.push(screenSketch(title, type, figure.key, figure.caption, true));
+    L.push('');
+  }
+  if (figures.length === 1) L.push('<p class="notes">추가 상태는 요건서의 예외·검증 규칙을 구체화한 뒤 이 자리에 그린다.</p>');
   L.push('');
 
   // ── 테스트 케이스 — 요건서에서 그대로 옮긴다 ──
@@ -296,6 +329,10 @@ function check(dir) {
     return want.length
       ? [MISSING_NEEDED, `메뉴얼이 그림 ${want.length}장을 부른다 — /mockup 으로 먼저 만든다`]
       : [MISSING_OK];
+  }
+
+  if (!/<div\b[^>]*class="[^"]*\bscreen\b[^"]*"/i.test(mock)) {
+    problems.push('화면 블록이 없다 — 공용 스타일·테스트 표만으로는 목업이 아니다');
   }
 
   // ① 메뉴얼이 부르는 그림 키와 짝이 맞나
@@ -372,6 +409,18 @@ if (args.includes('--check')) {
   }
   console.log('목업이 없는 것은 결손이 아니다 — 요건서에서 언제든 만든다(CLAUDE.md §4-5).');
   process.exit(bad ? 1 : 0);
+}
+
+if (args.includes('--write')) {
+  const rest = args.filter((a) => a !== '--write');
+  if (rest.length !== 1) {
+    console.error('--write 는 화면 하나만 받는다. 생성 내용을 확인한 뒤 화면별로 기록한다.');
+    process.exit(2);
+  }
+  const dir = resolveScreen(rest[0]);
+  fs.writeFileSync(path.join(SCREENS, dir, 'mockup.html'), scaffold(dir), 'utf8');
+  console.log(`목업 생성 — documents/screen/${dir}/mockup.html`);
+  process.exit(0);
 }
 
 if (!args.length) {
