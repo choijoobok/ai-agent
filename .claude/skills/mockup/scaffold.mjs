@@ -173,17 +173,123 @@ function styleBlock() {
   return m[0];
 }
 
+/** 한 절 안의 표와 바로 앞 소제목을 함께 보존한다. */
+function tablesIn(body) {
+  const out = [];
+  let heading = '';
+  let lines = [];
+  const flush = () => {
+    const rows = mdTable(lines.join('\n'));
+    if (rows.length >= 2) out.push({ heading, header: rows[0], rows: rows.slice(1) });
+    lines = [];
+  };
+  for (const line of body.split('\n')) {
+    if (/^###?\s+/.test(line)) {
+      flush();
+      heading = line.replace(/^#+\s*/, '').trim();
+    } else if (/^\s*\|/.test(line)) {
+      lines.push(line);
+    } else {
+      flush();
+    }
+  }
+  flush();
+  return out;
+}
+
+/** 마크다운 장식 없이 사람이 보는 표제어. 비교와 예시 값에만 쓴다. */
+function plain(s = '') {
+  return String(s)
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\*+/g, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function findTable(sec, firstHeader) {
+  return sec ? tablesIn(sec.body).find((t) => firstHeader.test(plain(t.header[0]))) : null;
+}
+
+/** 요건서의 화면·조회·컬럼·버튼 표를 한 번만 읽어 화면 모델로 만든다. */
+function screenModel(md, type) {
+  const composition = section(md, /화면 구성/);
+  const search = findTable(section(md, /조회조건/), /조건|검색/);
+  const columns = (section(md, /^컬럼$|컬럼/) ? tablesIn(section(md, /^컬럼$|컬럼/).body) : [])
+    .filter((t) => /컬럼/.test(plain(t.header[0])));
+  const actions = findTable(section(md, /버튼.*액션|액션.*버튼/), /버튼|액션/);
+  const text = `${type}\n${composition?.body ?? ''}`;
+  return {
+    search: search?.rows ?? [],
+    columns,
+    actions: actions?.rows ?? [],
+    masterDetail: /마스터.?디테일/.test(text) || columns.length > 1,
+    vertical: /(상하|위.*아래|상·하)/.test(text),
+  };
+}
+
+function searchControl(row) {
+  const label = row[0] || '조회 조건';
+  const input = row[2] || '';
+  const select = /셀렉트|선택|코드|날짜/.test(input);
+  return `<label>${html(label)}</label>${select ? '<select><option>전체</option></select>' : `<input placeholder="${html(plain(label))}" />`}`;
+}
+
+function columnLabel(row) {
+  return plain(row[0] || '컬럼');
+}
+
+function grid(title, table, { empty = '', selected = false } = {}) {
+  const cols = table?.rows ?? [];
+  if (!cols.length) return '';
+  const heads = cols.map((row) => `<th class="roh">${html(row[0])}<span class="mn">☰</span></th>`).join('');
+  const values = cols.map((row, i) => {
+    const label = columnLabel(row);
+    if (/수$|건수|count/i.test(label)) return '<td>0</td>';
+    if (/사용|여부|YN|상태/.test(label)) return '<td>Y</td>';
+    return `<td>${i === 0 ? '예시 값' : '—'}</td>`;
+  }).join('');
+  const body = empty
+    ? `<tbody><tr><td colspan="${cols.length}" class="empty">${html(empty)}</td></tr></tbody>`
+    : `<tbody><tr${selected ? ' class="sel"' : ''}>${values}</tr></tbody>`;
+  return `<div class="tb"><span class="ttl">${html(title)}</span><span class="cnt">${empty ? '0건' : '1건'}</span></div>
+    <div class="grid"><table><thead><tr>${heads}</tr></thead>${body}</table></div>
+    <div class="pg"><span>총 <b>${empty ? '0' : '1'}</b>건</span><span class="nav">‹ 1 ›</span><span class="size">50건</span></div>`;
+}
+
+function actionButtons(rows) {
+  const names = rows.map((r) => plain(r[0])).filter((x) => x && !/^\(/.test(x));
+  const shown = names.length ? names.slice(0, 4) : ['조회'];
+  return shown.map((name, i) => `<button class="btn ${i === 0 ? 'sm' : 'ghost sm'}">${html(name)}</button>`).join('');
+}
+
+function detailTitle(table, fallback) {
+  return plain(table?.heading || '').replace(/^\d+(?:-\d+)?\.?\s*/, '') || fallback;
+}
+
+/** 메뉴얼 그림의 캡션이 특정 탭·상세를 말하면 그 표를 고른다. */
+function detailFor(columns, caption) {
+  const details = columns.slice(1);
+  const words = plain(caption).split(/\s+/).filter((w) => w.length >= 2);
+  const scored = details.map((table) => {
+    const heading = detailTitle(table, '');
+    return { table, score: words.filter((word) => heading.includes(word)).length };
+  });
+  return scored.sort((a, b) => b.score - a.score)[0]?.table ?? details[0];
+}
+
 /**
- * 요건서의 메타만으로도 빈 종이를 내지 않는 최소 화면 그림.
+ * 요건서의 표를 화면 구조로 옮긴다.
  *
- * 상세 배치는 §1 화면 구성에서 더 풍부하게 만들 수 있지만, 그 해석이 아직 없는 화면도
- * 메뉴얼에 "그림 없음"으로 나가서는 안 된다. 유형별 공통 크롬만 그리고 값·규칙을
- * 지어내지 않는다. 상세 표현은 요건서를 보강한 뒤 이 생성기를 확장하는 자리다.
+ * 컬럼 목록을 일반적인 "이름·상태"로 바꾸면 목업이 가장 중요한 계약을 잃는다. 그래서
+ * §2 조회조건·§4 컬럼·§5 버튼을 그대로 읽고, 마스터-디테일이면 두 표와 스플리터를 낸다.
  */
-function screenSketch(title, type, key, caption, manualKey) {
+function screenSketch(title, type, model, key, caption, manualKey) {
   const attrs = ` id="${key}"${manualKey ? ` data-manual="${key}"` : ''}`;
   const captionLine = caption ? ` · ${html(caption)}` : '';
-  if (/대시보드/.test(type)) {
+  const isEmpty = /0건|없|미등록|미매핑|빈/.test(caption);
+  const emptyMessage = isEmpty ? caption : '';
+  if (/대시보드/.test(type) && !model.columns.length) {
     return `<div class="screen leaf"${attrs}>
   <div class="bar">${html(title)}${captionLine} — 요건서 기반 화면 배치</div>
   <div class="body">
@@ -194,12 +300,35 @@ function screenSketch(title, type, key, caption, manualKey) {
   </div>
 </div>`;
   }
-  if (/폼|로그인|팝업|모달|설정/.test(type)) {
+  if (/폼|로그인|팝업|모달|설정/.test(type) && !model.columns.length) {
     return `<div class="screen shell"${attrs}>
   <div class="body"><div class="modal"><div class="mh">${html(title)}<span class="x">×</span></div><div class="mb">
     <div class="f"><label>입력 항목</label><input value="" placeholder="요건서에 정의한 값을 입력합니다" /></div>
     <div class="f ro"><label>조회 항목</label><input value="읽기 전용 값" readonly /></div>
   </div><div class="mf"><span>${caption ? html(caption) : '기본 상태'}</span><span class="row"><button class="btn ghost sm">취소</button><button class="btn sm">확인</button></span></div></div></div>
+</div>`;
+  }
+  const first = model.columns[0];
+  const second = detailFor(model.columns, caption);
+  if (first) {
+    const search = model.search.length
+      ? model.search.map(searchControl).join('')
+      : '<label>조회 조건</label><input placeholder="검색어" />';
+    const master = grid(detailTitle(first, `${title} 목록`), first, { empty: emptyMessage, selected: model.masterDetail && !isEmpty });
+    const tabs = model.columns.length > 2
+      ? `<div class="tabs">${model.columns.slice(1).map((table) => `<span class="${table === second ? 'on' : ''}">${html(detailTitle(table, '상세'))}</span>`).join('')}</div>`
+      : '';
+    const detail = second
+      ? `${model.vertical ? '<div class="split"><span class="arw">⌃</span><span class="hnd">⋮⋮⋮</span><span class="arw">⌄</span></div>' : ''}${tabs}${grid(detailTitle(second, '상세'), second, { empty: model.masterDetail ? '위 목록에서 행을 선택하면 상세가 표시됩니다' : '' })}`
+      : '';
+    return `<div class="screen leaf"${attrs}>
+  <div class="bar">${html(title)}${captionLine} — 요건서의 조회조건·컬럼·버튼을 반영한 화면</div>
+  <div class="body">
+    <div class="bc"><span class="path"><b>${html(title)}</b></span></div>
+    <div class="sf">${search}<span class="act">${actionButtons(model.actions)}</span></div>
+    ${master}
+    ${detail}
+  </div>
 </div>`;
   }
   return `<div class="screen leaf"${attrs}>
@@ -227,6 +356,7 @@ function scaffold(dir) {
   const where = pathRow ? pathRow[1] : `/${dir}`;
   const typeRow = rows.find((r) => /화면 유형/.test(r[0]));
   const type = typeRow ? typeRow[1] : '';
+  const model = screenModel(md, type);
   const tc = testcases(md);
   const keys = manualKeys(dir);
   const open = section(md, /미결/);
@@ -257,12 +387,12 @@ function scaffold(dir) {
   L.push('');
   const figures = keys.length ? keys : [{ key: 'main', caption: '기본 상태' }];
   L.push('<h2>1. 기본 상태</h2>');
-  L.push(screenSketch(title, type, figures[0].key, figures[0].caption, keys.length > 0));
+  L.push(screenSketch(title, type, model, figures[0].key, figures[0].caption, keys.length > 0));
   L.push('');
   L.push('<h2>2. 상태가 갈리는 자리</h2>');
   for (const figure of figures.slice(1)) {
     L.push(`<h3>${html(figure.caption)}</h3>`);
-    L.push(screenSketch(title, type, figure.key, figure.caption, true));
+    L.push(screenSketch(title, type, model, figure.key, figure.caption, true));
     L.push('');
   }
   if (figures.length === 1) L.push('<p class="notes">추가 상태는 요건서의 예외·검증 규칙을 구체화한 뒤 이 자리에 그린다.</p>');
@@ -335,13 +465,26 @@ function check(dir) {
     problems.push('화면 블록이 없다 — 공용 스타일·테스트 표만으로는 목업이 아니다');
   }
 
-  // ① 메뉴얼이 부르는 그림 키와 짝이 맞나
+  // ① 화면 계약의 핵심인 컬럼 이름은 목업에서도 그대로 보여야 한다. 일반적인
+  // "이름·상태" 헤더로 바뀌면 화면 구조가 맞아 보여도 실제 업무 화면은 틀린다.
+  if (md) {
+    const type = meta(md).find((r) => /화면 유형/.test(r[0]))?.[1] ?? '';
+    const expected = screenModel(md, type).columns.flatMap((t) => t.rows.map(columnLabel));
+    const shown = [...mock.matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/gi)]
+      .map((m) => plain(m[1].replace(/<[^>]+>/g, '')));
+    const missingColumns = expected.filter((label) => !shown.some((head) => head.includes(label)));
+    if (missingColumns.length) {
+      problems.push(`요건서 컬럼이 목업 헤더에 없다 ${missingColumns.length}건: ${missingColumns.slice(0, 8).join(' · ')}`);
+    }
+  }
+
+  // ② 메뉴얼이 부르는 그림 키와 짝이 맞나
   const want = manualKeys(dir).map((k) => k.key);
   const have = [...mock.matchAll(/data-manual="([\w-]+)"/g)].map((m) => m[1]);
   for (const k of want) if (!have.includes(k)) problems.push(`메뉴얼이 #${k} 를 부르는데 그 그림이 없다`);
   for (const k of have) if (!want.includes(k)) problems.push(`data-manual="${k}" 를 부르는 메뉴얼 줄이 없다`);
 
-  // ② 테스트 케이스가 요건서와 같은가 — 목업이 케이스를 몰래 늘리지 못하게 한다
+  // ③ 테스트 케이스가 요건서와 같은가 — 목업이 케이스를 몰래 늘리지 못하게 한다
   const tc = md ? testcases(md) : null;
   const wantIds = (tc?.groups ?? []).flatMap((g) => g.rows.map((r) => r[0].replace(/`/g, '')));
   const haveIds = [...mock.matchAll(/<td class="c">([^<]+)<\/td>/g)].map((m) => m[1].trim());
@@ -350,12 +493,12 @@ function check(dir) {
   if (missing.length) problems.push(`요건서에 있고 목업에 없는 케이스 ${missing.length}건: ${missing.slice(0, 8).join(' ')}`);
   if (extra.length) problems.push(`목업에만 있는 케이스 ${extra.length}건: ${extra.slice(0, 8).join(' ')} — 요건서로 옮긴다`);
 
-  // ③ 한 파일로 완결되나
+  // ④ 한 파일로 완결되나
   if (/<link[^>]+rel=["']?stylesheet/i.test(mock)) problems.push('외부 스타일시트를 부른다 — 한 파일로 완결해야 한다');
   if (/<script[^>]+src=/i.test(mock)) problems.push('외부 스크립트를 부른다 — 한 파일로 완결해야 한다');
   if (/<img[^>]+src=["']?https?:/i.test(mock)) problems.push('외부 이미지를 부른다 — 한 파일로 완결해야 한다');
 
-  // ④ 생성물임을 밝히나
+  // ⑤ 생성물임을 밝히나
   if (!/생성물이다/.test(mock)) problems.push('생성물 표식이 없다 — 손편집을 부른다');
   return problems;
 }
