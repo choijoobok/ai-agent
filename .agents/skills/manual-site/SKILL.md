@@ -32,6 +32,8 @@ description: 화면별 manual.md를 사용자 매뉴얼 오프라인 사이트�
 
 파일명을 Markdown에 직접 쓰지 않는다. 따라서 목업과 캡처를 바꿔도 `manual.md`는 바뀌지 않는다.
 검토본에는 화면 ID(SCR), 그림 키, 기대 캡처 경로가 표시된다.
+실제 PNG를 넣어도 검토본의 이 블록은 `현재 출처: 실제 캡처`로 남는다. 고객용 `--release`에서만
+검토 블록 전체를 제거하므로, 일반 사용자에게 검토본을 전달하지 않는다.
 
 ## 생성과 검사
 
@@ -43,6 +45,7 @@ node .claude/skills/deliverable-site/build.mjs user --release --standalone
 ```
 
 - 기본 검토본은 PNG가 없으면 목업을 쓴다.
+- 샘플 메뉴(`/sample/**`)는 검토본과 제출본 모두 사용자 매뉴얼에서 제외한다.
 - `--release`는 그림 자리마다 실제 PNG를 요구한다. 하나라도 없으면 실패한다.
 - 내부 검토 결과는 `build/deliverables/user/`, 일반 사용자에게 전달할 독립 패키지는
   `build/deliverables-user/` 파생물이므로 커밋하지 않는다. 일반 사용자에게 전체 `build/deliverables/` 폴더를 주지 않는다.

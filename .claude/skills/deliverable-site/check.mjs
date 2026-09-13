@@ -49,6 +49,8 @@ for (const key of keys) {
   }
   if (!html.includes('data-print-page') || html.includes('data-print-all')) errors.push(`${key}: 현재 페이지만 인쇄하는 제어가 아니다.`);
   if (!html.includes('../assets/mermaid.min.js')) errors.push(`${key}: 오프라인 Mermaid 스크립트를 부르지 않는다.`);
+  if (key === 'user' && /data-page-link="[^"]*sample/i.test(html)) errors.push('user: 샘플 화면이 목차에 포함됐다.');
+  if (key === 'user' && manifest?.release && html.includes('class="review-note')) errors.push('user: 제출본에 내부 캡처 검토 블록이 남았다.');
   if (key === 'design') {
     const tabLists = [...html.matchAll(/\bdata-document-tabs(?:\s|>)/g)].length;
     const requirementTabs = [...html.matchAll(/data-document-tab="requirements"/g)].length;

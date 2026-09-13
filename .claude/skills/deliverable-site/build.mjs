@@ -99,7 +99,7 @@ function captureSource(url, key) { return `documents/screen${url}/${captureName(
 
 function collectSharedMockups() {
   const userRoutes = new Set(keys.includes('user')
-    ? screensOf(menuTree().roots).filter((menu) => !(release && menu.url.startsWith('/sample'))).map((menu) => menu.url)
+    ? screensOf(menuTree().roots).filter((menu) => !menu.url.startsWith('/sample')).map((menu) => menu.url)
     : []);
   for (const file of walk('documents/screen', 'mockup.html')) {
     const folder = norm(dirname(file)).replace(/^documents\/screen/, '');
@@ -214,7 +214,7 @@ function userChapters() {
   const { roots } = menuTree();
   const chapters = [];
   for (const menu of screensOf(roots)) {
-    if (release && menu.url.startsWith('/sample')) continue;
+    if (menu.url.startsWith('/sample')) continue;
     const path = `documents/screen${menu.url}/manual.md`;
     if (!exists(path)) {
       issues.push({ site: 'user', level: release ? 'error' : 'warning', message: `${menu.url}: manual.md가 없다.` });

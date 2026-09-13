@@ -39,7 +39,7 @@ node .claude/skills/deliverable-site/browser-check.mjs design
 
 - 설계: `documents/generated/**/*.md`(운영 런북 제외), `documents/design/**/*.md`,
   `documents/screen/**/requirements.md` + `mockup.html`.
-- 사용자: 메뉴가 있는 화면의 `manual.md` + 같은 화면의 목업/캡처.
+- 사용자: 메뉴가 있는 화면의 `manual.md` + 같은 화면의 목업/캡처. `/sample/**` 화면은 검토본·제출본 모두 제외한다.
 - 운영: `documents/generated/80-운영런북.md` + `developer-guide/**/*.md`.
 
 `manual.md`의 `[설명](./mockup.html#키)`가 그림 자리다. 같은 폴더의 `screen.png` 또는
