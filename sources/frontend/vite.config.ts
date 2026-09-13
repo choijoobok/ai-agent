@@ -1,13 +1,25 @@
 import { defineConfig } from 'vitest/config';
+import { loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 
 // 개발은 두 서버를 띄우고 프록시로 잇는다 — aidd-guide/standard/build-deploy.md §6.
 // 그래서 화면 코드의 요청 경로가 개발과 운영에서 같다.
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), 'VITE_');
+  const includeSample = env.VITE_INCLUDE_SAMPLE === 'true';
+  return {
   plugins: [react()],
   resolve: {
-    alias: { '@': path.resolve(import.meta.dirname, 'src') },
+    alias: {
+      // 좁은 별칭이 넓은 `@`보다 먼저여야 한다. 순서가 반대면 Vite가 `@`에서
+      // 먼저 멈춰 local 전용 화면이 제품용 빈 레지스트리로 고정된다.
+      '@/shared/routes/sampleScreens': path.resolve(
+        import.meta.dirname,
+        includeSample ? 'src/shared/routes/sampleScreens.local.ts' : 'src/shared/routes/sampleScreens.ts',
+      ),
+      '@': path.resolve(import.meta.dirname, 'src'),
+    },
   },
   server: {
     port: 3000,
@@ -42,4 +54,5 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: false,
   },
+  };
 });

@@ -43,26 +43,13 @@ import org.yaml.snakeyaml.Yaml;
 class SeedChangelogIncludeTest {
 
     private static final Path CHANGELOG = SeedRows.CHANGELOG;
-    private static final Path MASTER = CHANGELOG.resolve("db.changelog-master.yaml");
-
-    /** {@code master} 가 include 를 긁어 오는 폴더 — 여기 있는 yaml 은 전부 걸려 있어야 한다. */
-    private static final List<String> INCLUDED_DIRS = List.of("schema", "data", "vendor", "sample");
-
-    /**
-     * <b>일부러 걸지 않는 것</b> — 걸면 안 되는 것이라 예외를 목록으로 세운다.
-     *
-     * <p>{@code 999-sample-remove} 는 {@code VendorPortabilityTest} 가 {@code master} 의
-     * 900·901 을 <b>대신해</b> 태우는 파일이다(playbook/INDEX.md). 평소에 걸면 기동할 때마다 샘플이
-     * 걷힌다.
-     *
-     * <p>목록으로 두는 것이 <i>이름 규칙으로 거르는 것</i> 보다 낫다 — 규칙은 다음에 생길
-     * 파일을 <b>말없이</b> 검사 밖으로 내보내지만, 목록은 사람이 한 줄을 더해야 한다.
-     */
-    private static final Set<String> NOT_INCLUDED_ON_PURPOSE =
-            Set.of("db/changelog/sample/999-sample-remove.yaml");
+    /** product와 local의 루트 모두를 검사한다. local만 sample 기준선을 더 포함한다(ADR-009). */
+    private static final List<Path> MASTERS = List.of(
+            CHANGELOG.resolve("db.changelog-master.yaml"),
+            CHANGELOG.resolve("db.changelog-local.yaml"));
 
     @Test
-    @DisplayName("changelog 폴더의 yaml 은 전부 master 에 include 돼 있다")
+    @DisplayName("모듈 기준선은 product 또는 local master에서 빠짐없이 도달한다")
     void everyChangelogIsIncluded() throws IOException {
         Set<String> included = includedFiles();
         List<String> onDisk = changelogsOnDisk();
@@ -73,14 +60,13 @@ class SeedChangelogIncludeTest {
 
         List<String> missing = onDisk.stream()
                 .filter(file -> !included.contains(file))
-                .filter(file -> !NOT_INCLUDED_ON_PURPOSE.contains(file))
                 .toList();
 
         assertThat(missing)
                 .as(
                         "%s 에 include 가 없다 — 파일은 있지만 기동해도 적재되지 않는다."
                                 + " master 맨 끝에 include 하고 왜 를 주석으로 적는다(backend/persistence.md)",
-                        MASTER)
+                        MASTERS)
                 .isEmpty();
     }
 
@@ -89,7 +75,9 @@ class SeedChangelogIncludeTest {
     void everyIncludeAndDataFileExists() throws IOException {
         List<String> referenced = new ArrayList<>(includedFiles());
         for (String include : includedFiles()) {
-            referenced.addAll(dataFilesOf(fromClasspathRoot(include)));
+            if (include.endsWith(".yaml")) {
+                referenced.addAll(dataFilesOf(fromClasspathRoot(include)));
+            }
         }
 
         assertThat(referenced).isNotEmpty();
@@ -102,15 +90,18 @@ class SeedChangelogIncludeTest {
     }
 
     @Test
-    @DisplayName("같은 changelog 를 두 번 include 하지 않는다")
+    @DisplayName("각 실행 변형은 같은 changelog 를 두 번 include 하지 않는다")
     void noDuplicateIncludes() throws IOException {
-        List<String> all = includeList();
-        Set<String> unique = new LinkedHashSet<>(all);
+        for (Path master : MASTERS) {
+            List<String> files = new ArrayList<>();
+            collectIncludes(master, files, new LinkedHashSet<>());
+            Set<String> unique = new LinkedHashSet<>(files);
 
-        assertThat(all).isNotEmpty();
-        assertThat(all)
-                .as("두 번 걸린 changelog 가 있다 — 같은 changeSet 이 두 자리에서 돈다")
-                .hasSameSizeAs(unique);
+            assertThat(files).isNotEmpty();
+            assertThat(files)
+                    .as("%s 에 두 번 걸린 changelog 가 있다 — 같은 changeSet 이 두 자리에서 돈다", master)
+                    .hasSameSizeAs(unique);
+        }
     }
 
     /** {@code src/main/resources} 기준 경로 — {@code relativeToChangelogFile: false} 의 기준이다. */
@@ -122,16 +113,30 @@ class SeedChangelogIncludeTest {
         return new LinkedHashSet<>(includeList());
     }
 
-    /** {@code master} 의 include 를 <b>적힌 순서대로</b> — 중복 검사가 순서를 필요로 한다. */
+    /** 두 master가 재귀 include 하는 기준선 파일을 <b>적힌 순서대로</b> 모은다. */
     private static List<String> includeList() throws IOException {
         List<String> files = new ArrayList<>();
-        for (Object entry : list(load(MASTER).get("databaseChangeLog"))) {
-            Map<String, Object> include = map(map(entry).get("include"));
-            if (include != null && include.get("file") != null) {
-                files.add(String.valueOf(include.get("file")));
-            }
+        for (Path master : MASTERS) {
+            collectIncludes(master, files, new LinkedHashSet<>());
         }
         return files;
+    }
+
+    private static void collectIncludes(Path changelog, List<String> files, Set<Path> seen) throws IOException {
+        Path normalized = changelog.normalize();
+        if (!seen.add(normalized)) {
+            return;
+        }
+        for (Object entry : list(load(changelog).get("databaseChangeLog"))) {
+            Map<String, Object> include = map(map(entry).get("include"));
+            if (include != null && include.get("file") != null) {
+                String file = String.valueOf(include.get("file"));
+                files.add(file);
+                if (file.endsWith(".yaml")) {
+                    collectIncludes(fromClasspathRoot(file), files, seen);
+                }
+            }
+        }
     }
 
     /** 한 changelog 가 {@code loadData}·{@code loadUpdateData} 로 읽는 파일들. */
@@ -159,14 +164,17 @@ class SeedChangelogIncludeTest {
 
     private static List<String> changelogsOnDisk() throws IOException {
         List<String> files = new ArrayList<>();
-        for (String dir : INCLUDED_DIRS) {
-            Path folder = CHANGELOG.resolve(dir);
-            assertThat(folder).as("%s 가 없다 — 검사가 헛돈다", folder).isDirectory();
-            try (Stream<Path> paths = Files.list(folder)) {
-                paths.map(path -> path.getFileName().toString())
-                        .filter(name -> name.endsWith(".yaml"))
-                        .sorted()
-                        .forEach(name -> files.add("db/changelog/" + dir + "/" + name));
+        Path modules = CHANGELOG.resolve("modules");
+        assertThat(modules).as("%s 가 없다 — 검사가 헛돈다", modules).isDirectory();
+        try (Stream<Path> moduleFolders = Files.list(modules)) {
+            for (Path folder : moduleFolders.filter(Files::isDirectory).toList()) {
+                String module = folder.getFileName().toString();
+                try (Stream<Path> paths = Files.list(folder)) {
+                    paths.map(path -> path.getFileName().toString())
+                            .filter(name -> name.endsWith(".yaml"))
+                            .sorted()
+                            .forEach(name -> files.add("db/changelog/modules/" + module + "/" + name));
+                }
             }
         }
         return files;

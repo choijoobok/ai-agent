@@ -22,7 +22,7 @@
 | 페이지 경로 | `/sample/excel` |
 | 메뉴코드 | `SMPL_EXCEL` |
 | 프론트 폴더 | `sources/frontend/src/modules/sample/features/excel/` |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/sample/` · `sources/backend/api/…/api/sample/excel/` |
+| 백엔드 패키지 | `sources/backend/modules/sample/src/main/java/com/aiagent/sample/` |
 | 화면 유형 | **화면 안 최상단 탭 둘** |
 | 처리 유형 | CRUD + **엑셀 업로드** |
 | 쓰는 액션 | `R` `S` `E` — `EXPORT_YN` = `Y` |

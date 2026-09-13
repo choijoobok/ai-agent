@@ -40,7 +40,7 @@ tags: [standard, registry, shared, commons]
 | `CMP-012` | 프론트 | `shared/menustat/` | 3 | [../knowledge/sys/personalization.md](../knowledge/sys/personalization.md) |
 | `CMP-013` | 프론트 | `shared/popup/` | 4 | [../playbook/modal.md](../playbook/modal.md) · [../artifact/screen/overlay/modal.md](../artifact/screen/overlay/modal.md) |
 | `CMP-014` | 프론트 | `shared/progress/` | 6 | [./frontend/progress.md](./frontend/progress.md) |
-| `CMP-015` | 프론트 | `shared/routes/` | 2 | [./frontend/tabs.md](./frontend/tabs.md) |
+| `CMP-015` | 프론트 | `shared/routes/` | 4 | [./frontend/tabs.md](./frontend/tabs.md) |
 | `CMP-016` | 프론트 | `shared/screentabs/` | 1 | [./frontend/tabs.md](./frontend/tabs.md) |
 | `CMP-017` | 프론트 | `shared/searchform/` | 9 | [./frontend/declarations.md](./frontend/declarations.md) · [./frontend/search-form.md](./frontend/search-form.md) · [../artifact/screen/overlay/search-condition.md](../artifact/screen/overlay/search-condition.md) |
 | `CMP-018` | 프론트 | `shared/stores/` | 3 | [./frontend/theme.md](./frontend/theme.md) |

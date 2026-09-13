@@ -1,4 +1,5 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
+import { SAMPLE_SCREENS } from '@/shared/routes/sampleScreens';
 
 /**
  * `MENU_URL` → 화면 컴포넌트 — frontend/packages.md.
@@ -11,7 +12,7 @@ import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
  * <i>"프론트 배포 없이 메뉴 추가"</i> 라는 이점이 성립하지 않고, 여기 없는 `MENU_URL` 은
  * 데이터가 앞서간 것이 아니라 <b>아직 만들지 않은 화면</b>이다.
  */
-export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
+const PRODUCT_SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
   '/admin/system/dashboard': lazy(async () => ({
     default: (await import('@/modules/system/features/dashboard/pages/DashboardPage')).DashboardPage,
   })),
@@ -75,32 +76,11 @@ export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
   '/admin/system/batch/history': lazy(async () => ({
     default: (await import('@/modules/system/features/batchhistory/pages/BatchHistoryPage')).BatchHistoryPage,
   })),
-  /*
-    샘플 — 68. **참조 구현이지 업무 화면이 아니다.** 걷어낼 때 지우는 줄이 여기 있고
-    (playbook/INDEX.md) `generateApiSeed` 가 이 줄을 따라와 `@/modules/sample/features/mdvertical/api/endpoints.ts` 를
-    읽으므로, 지우면 006·007 시드에서 샘플 API 가 저절로 사라진다.
-  */
-  '/sample/single-offset': lazy(async () => ({
-    default: (await import('@/modules/sample/features/singleoffset/pages/SampleSingleOffsetPage'))
-      .SampleSingleOffsetPage,
-  })),
-  '/sample/single-cursor': lazy(async () => ({
-    default: (await import('@/modules/sample/features/singlecursor/pages/SampleSingleCursorPage'))
-      .SampleSingleCursorPage,
-  })),
-  '/sample/md-horizontal': lazy(async () => ({
-    default: (await import('@/modules/sample/features/mdhorizontal/pages/SampleMdHorizontalPage'))
-      .SampleMdHorizontalPage,
-  })),
-  '/sample/md-vertical': lazy(async () => ({
-    default: (await import('@/modules/sample/features/mdvertical/pages/SampleMdVerticalPage')).SampleMdVerticalPage,
-  })),
-  '/sample/md-tabs': lazy(async () => ({
-    default: (await import('@/modules/sample/features/mdtabs/pages/SampleMdTabsPage')).SampleMdTabsPage,
-  })),
-  '/sample/excel': lazy(async () => ({
-    default: (await import('@/modules/sample/features/excel/pages/SampleExcelPage')).SampleExcelPage,
-  })),
+};
+
+export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
+  ...PRODUCT_SCREENS,
+  ...SAMPLE_SCREENS,
 };
 
 export function screenFor(pathname: string): LazyExoticComponent<ComponentType> | null {

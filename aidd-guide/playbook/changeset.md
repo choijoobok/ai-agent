@@ -1,171 +1,86 @@
 ---
 id: LLM-PLY-004
-title: "Liquibase changeset — 표를 만들고 시드를 더한다"
+title: "Liquibase changeset — 모듈 기준선 뒤에 변경을 더한다"
 category: playbook
 type: operation
 created: 2026-05-04
-updated: 2026-09-03
+updated: 2026-09-13
 status: active
 sources: ["sources/backend/bootstrap/src/main/resources/db/changelog/", "aidd-guide/standard/backend/persistence.md"]
 tier: 2
 tags: [playbook, liquibase, changeset, seed, schema]
 ---
 
-# Liquibase changeset — 표를 만들고 시드를 더한다
+# Liquibase changeset — 모듈 기준선 뒤에 변경을 더한다
 
-> **파일 이름이 `insert-sql.md` 였다.** 이 저장소에는 손으로 쓰는 INSERT SQL 이 없다 —
-> DDL 도 시드도 **Liquibase changeset** 이고 벤더별 SQL 은 실행 시점에 만들어진다.
->
-> **실물**: `sources/backend/bootstrap/src/main/resources/db/changelog/`.
-> 생성 시드의 절차는 [standard/seed.md](../standard/seed.md) 가 갖는다 — 여기는
-> **사람이 쓰는 쪽**이다.
+> 실물은 `sources/backend/bootstrap/src/main/resources/db/changelog/`이다. 기준선은 **새 DB를
+> 현재 상태로 한 번 만드는 출발점**이고, 이후 변경은 해당 모듈의 새 changeset으로만 더한다.
 
-## 1. 먼저 가른다 — 누구의 것인가
+## 1. 먼저 어느 기준선을 탈지 정한다
 
-| 소유 | 무엇 | 고치는 법 |
-|---|---|---|
-| **생성물** | 메뉴(`003`) · API(`006`·`007`) · 메시지 **키**(`008`) | **선언을 고치고 다시 만든다.** 손편집은 훅이 차단한다 |
-| **사람** | 스키마 · 코드 · 메시지 **값** · 부트스트랩 권한 · 시퀀스 행 | **새 파일을 더한다** |
+| 실행 변형 | 루트 | 포함 모듈 | 명령 |
+|---|---|---|---|
+| product | `db.changelog-master.yaml` | `platform` · `system` | `./gradlew :backend:bootstrap:bootJar` |
+| local | `db.changelog-local.yaml` | product + `sample` | `./gradlew :backend:bootstrap:bootRun -PincludeSample=true` |
 
-**이미 적재된 changeset 을 고치지 않는다.** 고치면 **남의 로컬이 checksum 으로 죽는다.**
-`loadData` 의 체크섬은 **CSV 를 본다** — 값만 고쳐도 같은 일이 난다.
+- `platform`·`system`·`sample`은 각각 `modules/{모듈}/db.changelog-{모듈}.yaml`이 자기
+  기준선과 이후 changeset의 순서를 소유한다.
+- **sample은 local 전용**이다. product master·JAR·프런트·API 시드에 sample을 넣지 않는다.
+- 루트와 모듈 master는 `includeAll`을 쓰지 않는다. 순서·의존 이유를 include 옆 주석으로 남긴다.
+  `SeedChangelogIncludeTest`가 두 루트에서 파일 누락과 중복 include를 검사한다.
 
-## 2. 파일 하나를 더하는 절차
+## 2. 기준선과 이후 변경은 다르다
 
-```
-1. 번호를 정한다        data/ 의 마지막 번호 + 1   (스키마는 schema/)
-2. 파일을 쓴다          {번호}-{무엇}.yaml  (+ 필요하면 같은 이름의 .csv)
-3. master 에 include    db.changelog-master.yaml 맨 끝에 — 주석으로 **왜** 를 적는다
-4. 기동해 확인          ./gradlew bootRun — 적재 실패는 기동 실패다
-```
-
-- **번호는 실행 순서가 아니라 이름이다.** 순서는 `master` 의 include 순서가 정한다.
-- **`master` 의 주석이 이 저장소의 이력이다.** *무엇을 왜 이 자리에 넣었나* 를 한두 줄
-  적는다 — 파일명만으로는 **FK 때문인지 우연인지** 알 수 없다.
-- **끝에 붙인다.** 여럿이 동시에 고치는 파일이라 중간에 끼우면 충돌이 난다. 순서가
-  성립하는 한 끝이 맞는다.
-- **3 을 잊으면 파일만 있고 적재되지 않는다.** `master` 는 `includeAll` 이 아니라 include 를
-  하나씩 적기 때문이며, 그것이 순서와 주석을 얻는 대가다. `SeedChangelogIncludeTest` 가
-  **폴더와 include 목록을 대조해** 막는다 — 전에는 이 자리에 게이트가 없었고, 시드 검사는
-  `master` 가 아니라 **폴더를 훑으므로** 잊어도 전부 초록이었다(`./gradlew test` 에
-  Liquibase 를 태우는 테스트가 하나도 없다).
-
-## 3. 스키마 — 벤더 다섯을 한 벌로 쓴다
-
-```yaml
-- changeSet:
-    id: 013-create-sys-code-group
-    author: template
-    changes:
-      - createTable: { tableName: SYS_CODE_GROUP, columns: [...] }
-```
-
-- **`createTable` 같은 추상 명령으로 쓴다.** 벤더별 DDL 을 손으로 다섯 벌 관리하면 서로
-  어긋나는 것은 시간 문제다.
-- **타입은 표 안에서만 고른다** — [standard/backend/persistence.md](../standard/backend/persistence.md) §2.
-- **표가 늘면 `SYS_SEQUENCE` 에 행이 하나 는다.** 식별자가 `TABLE` 전략이다.
-- **파일 머리에 왜를 적는다.** 이 저장소의 스키마 파일은 *무엇을 만드나* 가 아니라
-  *왜 이 모양인가* 를 담는다 — 다음 사람이 컬럼을 지우려 할 때 읽을 유일한 글이다.
-
-## 4. 코드 시드
-
-```yaml
-- insert: { tableName: SYS_CODE_GROUP, columns: [ { column: { name: GRP_CD, value: ... } } ] }
-- insert: { tableName: SYS_CODE,       columns: [ ... ] }
-```
-
-| 규칙 | |
+| 상황 | 하는 일 |
 |---|---|
-| **`DTL_NM` 은 이름이 아니라 메시지 키다** | `code.{GRP_CD}.{DTL_CD}` — 값은 메시지 시드가 넣는다 |
-| **값을 안 넣으면 화면에 키가 그대로 보인다** | 그것이 *시끄럽게 드러나는* 쪽이라 의도된 모양이다 |
-| **소스가 문자열로 참조하는 그룹은 `SYS_YN='Y'`** | 운영이 지우면 코드가 죽는다 |
-| **코드를 넣었으면 캐시 버전을 올린다** | §6 |
+| 아직 배포하지 않은 초기 기준선 정리 | 모듈 기준선을 다시 만들 수 있다. 기존 DB는 승인 후 비우고 처음부터 기동해 검증한다. |
+| 기준선이 적용된 DB가 하나라도 있다 | **기준선 파일을 고치지 않는다.** 모듈 master 끝에 새 changeset을 추가한다. |
+| 메뉴·컨트롤러·`endpoints.ts`·메시지 키를 바꿨다 | 생성 태스크로 local 시드 CSV를 갱신하고 `-PincludeSample=true`로 검사한다. |
+| product 배포를 만든다 | sample 제외 JAR과 product master 기동을 검증한다. local 생성 시드 검사는 의도적으로 건너뛴다. |
 
-## 5. 메시지 값 시드 — CSV + `loadData`
+초기 기준선을 다시 만드는 일은 **현재 DB의 `DATABASECHANGELOG`만 지우는 작업이 아니다.**
+동일 접속 정보를 유지하려면 서버를 멈춘 뒤 대상 스키마의 모든 객체를 삭제하고 빈 스키마를 만든
+다음, 해당 변형으로 기동한다. 이미 운영된 DB의 변경 이력에는 이 방법을 쓰지 않는다.
 
-```yaml
-- changeSet:
-    id: data-106-message
-    changes:
-      - loadData:
-          tableName: SYS_MESSAGE
-          file: db/changelog/data/106-init-message.csv
-          relativeToChangelogFile: false
-          encoding: UTF-8
-          columns: [ { column: { name: MSG_KEY, type: STRING } }, ... ]
+## 3. 새 changeset을 더하는 절차
+
+```
+1. 소유 모듈을 정한다        platform | system | sample(local 전용)
+2. 새 파일을 만든다          modules/{모듈}/{순번}-{무엇}.yaml 또는 .sql
+3. 모듈 master 끝에 include  의존 순서와 이유를 주석으로 남긴다
+4. 변형별로 기동한다         local은 -PincludeSample=true, product는 sample 없이
+5. 시드 관련 변경이면 생성·검사를 함께 한다
 ```
 
-- **키는 생성물이고 값은 사람의 것이다.** `generateMessageSeed` 가 `MSG`·`MsgKey` 에서 키를
-  만들고, **문구는 여기서 넣는다.**
-- **키가 시드에 없으면 기동에서 FK 가 거부한다.** 값 시드는 키 시드보다 뒤여야 한다.
-- **같은 키의 값을 두 파일이 넣지 않는다.** `SYS_MESSAGE` PK 위반으로 **기동이 실패한다** —
-  `SeedMessageTest` 가 중복을 검사하지만 **새 파일을 쓸 때 기존 것을 먼저 찾는다.**
-- **언어마다 한 줄이다**(`ko`·`en`).
-- **개명은 지우고 다시 넣는 것이다.** `MSG_KEY` 가 PK 이고 값이 그것을 참조하므로 `update`
-  로 옮기려면 순서를 잡아야 한다 — 행이 몇 안 되면 `delete` 둘 + `loadData` 가 짧다.
+- 이전에 적용된 changeset과 그 CSV는 수정하지 않는다. 체크섬 불일치로 기존 DB 기동이 멈춘다.
+- 파일명 번호는 소유 모듈 안에서만 쓴다. 실제 실행 순서는 module master의 include 순서다.
+- 새 테이블·FK·시드는 해당 모듈의 경계 안에 둔다. sample은 `SMPL_` 테이블만 소유하며 공통
+  테이블의 기본 데이터를 추가해야 하면 local master에서 sample 뒤에 전용 changeset으로 적는다.
 
-### 최종값은 **CSV 하나로 알 수 없다** — 도구가 답한다
+## 4. 생성 시드
+
+메뉴·API·메뉴 API·메시지 키는 소스 선언에서 생성하는 local 시드다. CSV를 직접 고치지 않는다.
 
 ```bash
-node aidd-guide/playbook/seed-value.mjs loginLog.col.userId ko
+cd sources
+./gradlew :backend:bootstrap:generateSeeds -PincludeSample=true
+./gradlew :backend:bootstrap:checkSeeds -PincludeSample=true
 ```
 
-적재된 CSV 는 고치지 않고 **뒤의 changeset 이 `update` 로 덮는 것이 규약**이므로(§5-8),
-그 CSV 만 보면 **반드시 옛 값을 읽는다.** 스크립트가 `master` 의 include 순서를 따라가
-*누가 넣고 누가 덮었나* 를 표로 내고 최종값을 말한다.
+생성물과 기준선은 역할이 다르다. 생성 CSV는 소스 선언의 일치 검사용이고, 신규 DB의 실제
+초기 적재는 모듈 기준선이 책임진다. 기준선을 변경해야 하는 것은 새 DB에만 적용할 수 있는
+초기화인지, 기존 DB에도 적용할 변경인지 먼저 판단한다.
 
-> **세 번 반복된 오답이라 도구로 만들었다.** `053-init-message.csv` 의 `시도 ID` 를 보고
-> *"화면이 그렇게 뜬다"* 고 단정하기 쉬운데, `080-init-message.yaml` 이 이미 `사용자 아이디`
-> 로 덮고 있다. 세 번 같은 자리에서 틀리면 그것은 부주의가 아니라 **읽는 방법이 없는
-> 것**이다.
+## 5. 커밋 전 체크리스트
 
-## 6. 값을 넣었으면 캐시 버전을 올린다
-
-```yaml
-- update:
-    tableName: SYS_CACHE_VERSION
-    columns:
-      - column: { name: VERSION, valueComputed: VERSION + 1 }
-      - column: { name: MOD_DTM, valueComputed: CURRENT_TIMESTAMP }
-    where: CACHE_NAME = 'message'
-```
-
-**올리지 않으면 이미 뜬 인스턴스가 옛 값을 계속 쓴다.** 대상은 `message` · `code` ·
-`config` — [standard/backend/caching.md](../standard/backend/caching.md).
-
-## 7. 지우는 법까지가 한 벌이다
-
-**`include` 를 지우기만 하면 아무 일도 일어나지 않는다.** Liquibase 는 이미 적용한
-changeset 을 목록에서 빼도 **되돌리지 않는다** — `DATABASECHANGELOG` 행이 남고 표도 시드도
-그대로다. *앞으로 안 만든다* 이지 *지운다* 가 아니었다.
-
-**걷어낼 수 있어야 하는 묶음에는 제거 changeset 을 함께 만든다** — 샘플의
-`999-sample-remove.yaml` 이 그 실물이며, 쓰는 법과 **함께 지울 소스 목록**이 파일 머리에 있다.
-
-| 제거 changeset 에서 조심할 것 | |
-|---|---|
-| **`LIKE` 의 밑줄이 와일드카드다** | `SMPL\_%` 는 `SMPLX...` 도 잡는다. **`ESCAPE` 를 반드시 쓴다** |
-| **역슬래시를 이스케이프 문자로 쓰지 않는다** | MySQL 이 문자열 리터럴에서 **한 번 더 해석한다** |
-| **새 DB 에서도 안전해야 한다** | 지울 것이 없으면 `delete` 는 0행, `dropTable` 은 `preConditions` 로 건너뛴다 |
-
-## 8. 생성 시드와 섞지 않는다
-
-| 하지 않는다 | 왜 |
-|---|---|
-| 생성 CSV 를 손으로 고친다 | 훅이 차단한다. 막히지 않아도 **다음 생성에서 사라진다** |
-| 생성 시드에 사람의 행을 섞는다 | API 시드는 **전건 삭제 후 전건 삽입**이다 |
-| 메뉴 시드를 전건 삭제로 바꾼다 | `SYS_MENU` 를 참조하는 FK 가 일곱이고 넷은 **사람이 결정한 사실**이다 |
-
-## 9. 커밋 전 체크리스트
-
-- [ ] 기존 changeset·CSV 를 **고치지 않고 더했는가**
-- [ ] `master` 에 include 했고 **왜** 를 주석으로 적었는가
-- [ ] 메시지 값이면 키가 **먼저** 들어가는가 · 같은 키가 다른 파일에 **없는가**
-- [ ] 코드·메시지·설정을 넣었으면 **캐시 버전**을 올렸는가
-- [ ] 실제로 기동해 적재를 확인했는가
+- [ ] product/local 중 어느 루트가 해당하는지 정했는가
+- [ ] 올바른 모듈 master 끝에 새 파일을 include했는가
+- [ ] 기존에 적용된 기준선·changeset·생성 CSV를 고치지 않았는가
+- [ ] 메뉴·API·화면 등록을 바꿨다면 `generateSeeds`와 local `checkSeeds`를 실행했는가
+- [ ] local과 product 중 영향을 받는 변형을 실제 기동 또는 패키지 검증했는가
 
 ## 관련
 
-- [standard/seed.md](../standard/seed.md) — 생성 시드의 절차
-- [standard/backend/persistence.md](../standard/backend/persistence.md) — 타입과 벤더
-- [knowledge](../knowledge/INDEX.md) — 코드·메시지·메뉴가 무엇인가
+- [standard/seed.md](../standard/seed.md) — 생성 시드의 입력과 검사
+- [standard/backend/persistence.md](../standard/backend/persistence.md) — 타입·DB 이식성
+- [standard/build-deploy.md](../standard/build-deploy.md) — 변형별 빌드와 배포

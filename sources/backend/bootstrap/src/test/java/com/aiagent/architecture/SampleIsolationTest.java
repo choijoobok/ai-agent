@@ -37,10 +37,9 @@ import org.junit.jupiter.api.Test;
  *       테이블에 남긴 행은 <b>주인 없이 남는다</b>.
  * </ul>
  *
- * <p><b>이 파일도 샘플과 함께 지운다.</b> 샘플이 없으면 세 규칙은 위반 0건으로 조용히
- * 통과하는데, 그것은 검사가 아니라 <b>영원히 초록인 게이트</b>다(LayerDependencyTest 가
- * 임포트 비었음을 막는 것과 같은 종류의 함정). 999-sample-remove.yaml 의 걷어내기 목록에
- * 이 경로가 적혀 있다.
+ * <p>제품 변형에는 sample 모듈이 원래 없다. 그때는 <b>샘플 클래스가 하나도 없음을</b> 확인하고,
+ * local 변형에서는 샘플 구현이 전용 모듈에 있음을 확인한다. 둘을 구분하지 않으면 제품 빌드가
+ * local 전용 클래스를 요구하거나, 반대로 local 격리 검사가 공허하게 통과한다(ADR-009).
  */
 class SampleIsolationTest {
 
@@ -66,11 +65,17 @@ class SampleIsolationTest {
             .importPackages(BASE);
 
     @Test
-    @DisplayName("TC-5035 샘플 API와 도메인은 전용 sample 모듈 패키지에만 존재한다")
+    @DisplayName("TC-5035 sample은 local에서만 전용 모듈 패키지에 존재한다")
     void sampleLivesOnlyInTheDedicatedModule() throws Exception {
-        assertThat(Class.forName("com.aiagent.sample.api.singleoffset.SampleSingleOffsetController"))
-                .isNotNull();
-        assertThat(Class.forName("com.aiagent.sample.domain.SampleOrderService")).isNotNull();
+        boolean localVariant = Boolean.getBoolean("includeSample");
+        if (localVariant) {
+            assertThat(Class.forName("com.aiagent.sample.api.singleoffset.SampleSingleOffsetController"))
+                    .isNotNull();
+            assertThat(Class.forName("com.aiagent.sample.domain.SampleOrderService")).isNotNull();
+        } else {
+            assertClassMissing("com.aiagent.sample.api.singleoffset.SampleSingleOffsetController");
+            assertClassMissing("com.aiagent.sample.domain.SampleOrderService");
+        }
 
         assertClassMissing("com.aiagent.api.sample.singleoffset.SampleSingleOffsetController");
         assertClassMissing("com.aiagent.domain.sample.SampleOrderService");

@@ -48,12 +48,12 @@ subprojects {
 val pitestCoreVersion = libs.versions.pitestCore.get()
 val pitestJunit5Version = libs.versions.pitestJunit5.get()
 configure(listOf(
-    project(":backend:api"),
-    project(":backend:core"),
-    project(":backend:domain"),
-    project(":backend:modules:system"),
-    project(":backend:modules:sample"),
-)) {
+    ":backend:api",
+    ":backend:core",
+    ":backend:domain",
+    ":backend:modules:system",
+    ":backend:modules:sample",
+).mapNotNull(::findProject)) {
     apply(plugin = "info.solidsoft.pitest")
     extensions.configure<info.solidsoft.gradle.pitest.PitestPluginExtension> {
         providers.gradleProperty("mutationTargets").orNull?.let { patterns ->

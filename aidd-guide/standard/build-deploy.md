@@ -33,8 +33,9 @@ bootstrap-{version}.jar   (단일 산출물 — 이름은 모듈명이 정한다
 | **얻는 것** | 배포 대상이 하나. 웹서버 별도 구성 불필요. **동일 오리진이라 CORS 가 없고** 세션 쿠키가 자연스럽다 |
 | **감수하는 것** | 프론트만 고쳐도 전체 재배포(개발 중에는 Vite dev 서버로 대응) · JAR 크기 · CDN 불가(사내 백오피스라 요구 없음) |
 
-`bootstrap`은 `api`·`modules/system`·`modules/sample`을 조립한다. sample도 단일 JAR에
-포함되지만, 고객 전달 시 sample 모듈 의존·프런트 라우트·시드 입력을 함께 제거할 수 있다.
+`bootstrap`은 항상 `api`·`modules/system`을 조립한다. `modules/sample`은
+`-PincludeSample=true`인 **local 변형에서만** 조립한다. product JAR에는 sample 클래스·라우트·
+changelog·API 시드가 들어가지 않는다(ADR-009).
 
 ## 2. SPA 라우팅 — `/api/**` 를 반드시 제외한다
 
@@ -47,14 +48,12 @@ React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌�
 정적 리소스 캐시 — 해시 파일명(`assets/*.{hash}.js`)은 `max-age=1y` immutable,
 `index.html` 은 `no-cache`.
 
-## 3. 프로파일 넷
+## 3. 프로파일과 빌드 변형
 
 | 프로파일 | 용도 | 특징 |
 |---|---|---|
 | `local` | 로컬 개발 | PostgreSQL(**ICU**) · **세션 스토어 `jdbc`** · Swagger 노출 · SQL 로그 |
-| `dev` | 개발 서버 | 다중화 없음 · `store-type=jdbc` · Swagger 노출 |
-| `stage` | 검증 | **운영과 동일 구성** · Swagger 노출 |
-| `prod` | 운영 | Swagger 차단 · Actuator 최소 |
+| 그 외 | 배포 환경 | 현재 저장소에는 설정 파일을 두지 않는다. 배포 환경이 명시 프로파일·데이터소스·비밀값을 제공한다. |
 
 **비밀값은 파일에 두지 않고 환경변수로 주입한다**(`DB_PASSWORD` · `REDIS_PASSWORD`).
 다만 **암호화 키는 운영에서 키 파일이 기본**이고 환경변수는 로컬·개발용이다.
@@ -63,6 +62,13 @@ React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌�
 > 두지 않았다 — 두면 운영에서 잘못된 프로파일로 조용히 뜬다. 대신 `bootRun` 이
 > `-Pprofile` 을 읽어 `local` 을 기본으로 주며, **IDE 실행 구성도 그 태스크를 부른다.**
 > `java -jar` 은 이 경로 밖이라 프로파일을 직접 받는다.
+
+| 목적 | 명령 |
+|---|---|
+| local 실행 | `./gradlew :backend:bootstrap:bootRun -PincludeSample=true` |
+| product JAR | `./gradlew :backend:bootstrap:bootJar` |
+| product 백엔드 검증 | `./gradlew check -PskipFrontend` |
+| local 생성 시드 검증 | `./gradlew :backend:bootstrap:checkSeeds -PincludeSample=true` |
 
 > **`application-local.yml` 은 저장소에 넣는다.** `.gitignore` 대상으로 두면
 > **템플릿을 받은 사람이 "로컬을 어떻게 띄우나" 의 답을 갖지 못한다.**
@@ -87,7 +93,7 @@ React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌�
 ```
 1. 체크아웃
 2. JDK 25 / Node 셋업
-3. ./gradlew build      컴파일 + 단위테스트 + ArchUnit + Spotless + checkSeeds
+3. ./gradlew build      컴파일 + 단위테스트 + ArchUnit + Spotless
 4. npm ci && npm run lint && npm run test && npm run build
 5. 통합테스트 (Testcontainers)
      PR   : PostgreSQL · MySQL
@@ -97,7 +103,8 @@ React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌�
 ```
 
 **시드 태스크의 절차는 [seed.md](./seed.md) 가 갖는다** — 여기는 파이프라인의 자리만 말한다.
-`checkSeeds` 가 3번 안에 있다는 것이 요점이다: **시드를 다시 만들지 않은 커밋은 CI 에서
+local 시드 변경이 있는 CI는 `checkSeeds -PincludeSample=true`를 별도 실행한다. product `check`는
+local 전용 생성물을 의도적으로 비교하지 않는다. **시드를 다시 만들지 않은 local 커밋은 CI에서
 막힌다.**
 
 ## 6. 개발 중에는 두 서버를 프록시로 잇는다

@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/modules/platform/db.changelog-platform.yaml
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/modules/system/db.changelog-system.yaml
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/modules/sample/db.changelog-sample.yaml
+      relativeToChangelogFile: false

@@ -40,17 +40,15 @@ unzip -l sources/backend/bootstrap/build/libs/bootstrap-*.jar | grep 'BOOT-INF/c
 > **CI 가 같은 검사를 한다.** `package` 잡이 JAR 안의 `static/index.html` 을 확인하고
 > 없으면 실패한다 — **임베드가 조용히 빠지는 것이 가장 늦게 발견되는 사고**이기 때문이다.
 
-## 3. 프로파일 넷
+## 3. 프로파일과 빌드 변형
 
 | 프로파일 | 용도 | 특징 |
 |---|---|---|
 | `local` | 로컬 개발 | PostgreSQL(ICU) · 세션 스토어 `jdbc` · Swagger 노출 · SQL 로그 |
-| `dev` | 개발 서버 | 다중화 없음 · `store-type=jdbc` · Swagger 노출 |
-| `stage` | 검증 | **운영과 동일 구성** · Swagger 노출 |
-| `prod` | 운영 | **Swagger 차단** · Actuator 최소 |
+| 그 외 | 배포 환경 | 현재 저장소에는 설정 파일을 두지 않는다. 배포 환경이 명시 프로파일·데이터소스·비밀값을 제공한다. |
 
 ```bash
-java -jar bootstrap-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+./gradlew :backend:bootstrap:bootRun -PincludeSample=true
 ```
 
 - **비밀값은 파일에 두지 않고 환경 변수로 주입한다** (`DB_PASSWORD` · `REDIS_PASSWORD`).
@@ -60,6 +58,9 @@ java -jar bootstrap-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
   세 항목이 검증되지 않으므로**, API 구독 확보 직후 실환경에서 그 셋을 최우선 검증한다.
 - **업무 DB·DW 데이터소스와 API 자격증명은 yml 에만 둔다.** 화면은 매핑과 참조 키만 관리하고
   접속 정보를 노출하지 않는다(ARCH-030).
+
+`sample`은 local 변형에서만 포함된다. product JAR은 `./gradlew :backend:bootstrap:bootJar`로
+만들며 sample 코드·화면·DB 기준선을 넣지 않는다.
 
 ## 4. 배포 전에 확인할 것
 
@@ -76,15 +77,17 @@ cd sources && ./gradlew check && cd frontend && npm run lint && npm run typechec
 ### 시드가 소스와 일치하나
 
 ```bash
-cd sources && ./gradlew checkSeeds
+cd sources && ./gradlew :backend:bootstrap:checkSeeds -PincludeSample=true
 ```
 
-**`checkSeeds` 는 `check` 에 물려 있다.** 별도로 돌릴 일은 시드만 확인할 때뿐이다.
+**`checkSeeds`는 local 전용 생성물 검사다.** product `check`는 sample을 포함하지 않으므로 이
+검사를 건너뛴다.
 
-### DB changelog 가 `master` 에 걸려 있나
+### DB 기준선이 올바른 master에 걸려 있나
 
-changelog 파일을 만들어 놓고 `master` 에 include 하지 않으면 **로컬 게이트가 전부 초록인 채
-적재되지 않는다.** `SeedChangelogIncludeTest` 가 그것을 막는다 — `check` 에 포함된다.
+product는 `db.changelog-master.yaml`, local은 `db.changelog-local.yaml`을 쓴다. 모듈 master에
+새 파일을 include하지 않으면 기동해도 적재되지 않는다. `SeedChangelogIncludeTest`가 두 루트를
+함께 검사한다.
 
 ### 이식성 (DB 를 바꿀 계획이 있을 때만)
 
@@ -99,7 +102,7 @@ Docker 로 4벤더를 띄워 스키마·정렬을 대조한다. **20분이 걸�
 
 | 잡 | 언제 | 무엇을 |
 |---|---|---|
-| **backend** | push(main) · PR · 수동 | `./gradlew build -PskipFrontend` — 컴파일 · 단위테스트 · ArchUnit · Spotless · `checkSeeds` |
+| **backend** | push(main) · PR · 수동 | `./gradlew build -PskipFrontend` — 컴파일 · 단위테스트 · ArchUnit · Spotless |
 | **frontend** | 〃 | `npm ci` → lint → test → build |
 | **package** | **수동만** | 단일 JAR + **프론트 임베드 검증** |
 | **db-portability** | changelog·엔티티 변경 · 야간 | 4벤더 스키마·정렬 대조 |

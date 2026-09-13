@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
@@ -40,6 +40,9 @@ const CONTROLLER_ROOTS = [
 const MIN_GRIDS = 15;
 
 function walk(dir, out = []) {
+  // 모듈 이관 뒤 구 features 루트는 의도적으로 제거된다. 없는 탐색 뿌리를
+  // 실패로 취급하면 빈 구 폴더를 되살리게 되므로, 존재하는 뿌리만 순회한다.
+  if (!existsSync(dir)) return out;
   for (const name of readdirSync(dir)) {
     if (name === 'node_modules' || name === 'build' || name === '.gradle') continue;
     const full = join(dir, name);

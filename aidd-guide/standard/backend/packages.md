@@ -38,7 +38,7 @@ sources/backend/
 | `api` | `core` · `support` · `domain` |
 | `modules/system` | `api` |
 | `modules/sample` | `api` |
-| `bootstrap` | `api` · `modules/system` · `modules/sample` |
+| `bootstrap` | `api` · `modules/system` (+ `-PincludeSample=true`일 때만 `modules/sample`) |
 
 이 표는 **현재 Gradle 직접 의존**이다. `api`가 이행 전 `domain`을 공개하므로 system·sample도 그 타입을 간접 가시성으로 쓸 수 있다. 새 모듈이 다른 제품 모듈 내부를 참조하는 것은 금지하며,
 `LayerDependencyTest`와 `SampleIsolationTest`가 역방향·샘플 누출을 막는다.
@@ -188,9 +188,9 @@ POST /api/service/system/code/saveGroup
 전부 `sources/backend/bootstrap/src/test/java/com/aiagent/architecture/` 에 있고
 `./gradlew check -PskipFrontend` 가 돌린다.
 
-**샘플은 통째로 삭제 가능해야 한다** — `modules/sample`과 bootstrap 조립·프런트 라우트·시드
-입력만 걷으면 된다. 외부 주소 `/sample/**`·`/api/service/sample/**`는 참조 계약을 유지하고,
-공통·제품 코드는 샘플을 참조하지 않는다. 프런트의 유일한 외부 조립 참조는 라우트 레지스트리다.
+**샘플은 local 전용으로 통째로 분리한다** — `-PincludeSample=true`일 때만 `modules/sample`과
+프런트 라우트·시드·Liquibase sample 기준선을 조립한다. product에는 외부 주소
+`/sample/**`·`/api/service/sample/**`도 없다. 공통·제품 코드는 샘플을 참조하지 않는다.
 
 ## 관련
 

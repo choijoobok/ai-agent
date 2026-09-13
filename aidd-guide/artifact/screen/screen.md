@@ -92,7 +92,7 @@ cp aidd-guide/artifact/template/02-requirements.md documents/screen/{페이지�
 | 표와 컬럼이 실제로 있나 | `sources/backend/domain/…/entity/` · [knowledge/sys](../../knowledge/sys/INDEX.md) |
 | 코드 그룹이 있나 | 시드 changeset · `SYS_CODE_GROUP` |
 | 메시지 키를 새로 만드나 | `sources/frontend/src/shared/i18n/messageKeys.ts` · `MsgKey.java` |
-| **비슷한 화면이 이미 있나** | `sources/frontend/src/features/` · 샘플 여섯 |
+| **비슷한 화면이 이미 있나** | `sources/frontend/src/modules/` · local 전용 샘플 여섯 |
 | 페이지 경로가 비었나 | `screenRegistry.ts` |
 
 > **비슷한 화면을 먼저 찾는 것이 이 단계의 절반이다.** 있으면 요건서가 짧아진다 —

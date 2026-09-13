@@ -8,10 +8,33 @@ plugins {
     alias(libs.plugins.spring.boot)
 }
 
+/** sample은 local 배포 변형에서만 실제 클래스패스에 넣는다(ADR-009). */
+val includeSample = providers.gradleProperty("includeSample")
+    .map(String::toBoolean)
+    .getOrElse(false)
+
+tasks.processResources {
+    // 이전 누적 changeSet은 기준선 생성 입력일 뿐 런타임 산출물에는 싣지 않는다.
+    exclude(
+        "db/changelog/schema/**",
+        "db/changelog/data/**",
+        "db/changelog/vendor/**",
+        "db/changelog/sample/**",
+    )
+    if (!includeSample) {
+        exclude(
+            "db/changelog/db.changelog-local.yaml",
+            "db/changelog/modules/sample/**",
+        )
+    }
+}
+
 dependencies {
     implementation(project(":backend:api"))
     implementation(project(":backend:modules:system"))
-    implementation(project(":backend:modules:sample"))
+    if (includeSample) {
+        implementation(project(":backend:modules:sample"))
+    }
     implementation("org.springframework.boot:spring-boot-starter")
     // 인터셉터 조립은 실행 모듈이 소유한다. WebMvcConfigurer 는 api의 전이 구현에 기대지 않는다.
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -79,6 +102,7 @@ dependencies {
 // 이미 그것을 보고 있고, 셋을 가르면 같은 리소스를 두 번 배선하게 된다.
 tasks.test {
     useJUnitPlatform { excludeTags("portability") }
+    systemProperty("includeSample", includeSample)
 }
 
 tasks.register<Test>("portabilityTest") {
@@ -158,6 +182,7 @@ val npmBuild by tasks.registering(Exec::class) {
     dependsOn(npmInstall)
     workingDir = frontendDir.asFile
     commandLine(npmCmd, "run", "build")
+    environment("VITE_INCLUDE_SAMPLE", includeSample.toString())
 
     // 입력은 src 만이 아니다. vite.config.ts · tsconfig · index.html · public/ 이 전부
     // 산출물을 바꾸며, 빠뜨리면 고쳐도 UP-TO-DATE 로 통과하고 JAR 에 옛 프론트가 실린다.
@@ -606,6 +631,11 @@ abstract class ApiSeedTask : DefaultTask() {
 
     @get:InputFile abstract val screenRegistry: RegularFileProperty
 
+    /** local 변형일 때만 합치는 샘플 화면 등록부(ADR-009). */
+    @get:InputFile abstract val sampleScreenRegistry: RegularFileProperty
+
+    @get:Input abstract val includeSampleScreens: Property<Boolean>
+
     /** `features/{도메인}[/{화면}]/api/endpoints.ts` 들이 있는 뿌리. */
     @get:InputDirectory abstract val frontendSrc: DirectoryProperty
 
@@ -728,7 +758,11 @@ abstract class ApiSeedTask : DefaultTask() {
         val menuUrls = MenuDeclaration.parse(menuDeclaration.get().asFile.readText(Charsets.UTF_8))
             .filter { it.url != null }
             .map { it.code to it.url!! }
-        val screens = parseScreenRegistry(screenRegistry.get().asFile.readText(Charsets.UTF_8))
+        val screens = linkedMapOf<String, String>()
+        screens.putAll(parseScreenRegistry(screenRegistry.get().asFile.readText(Charsets.UTF_8)))
+        if (includeSampleScreens.get()) {
+            screens.putAll(parseScreenRegistry(sampleScreenRegistry.get().asFile.readText(Charsets.UTF_8)))
+        }
 
         /*
           <b>화면은 등록됐는데 메뉴가 없다</b> — 언제나 실수다(seed.md). 그 화면은 메뉴
@@ -863,21 +897,24 @@ abstract class ApiSeedTask : DefaultTask() {
 
 fun Project.apiSeedTask(name: String, verify: Boolean) =
     tasks.register<ApiSeedTask>(name) {
+        val controllerProjects = buildList {
+            add(":backend:api")
+            add(":backend:modules:system")
+            if (includeSample) {
+                add(":backend:modules:sample")
+            }
+        }
         group = if (verify) "verification" else "seed"
         description = if (verify) {
             "인가 시드가 컨트롤러·화면 선언과 일치하는지 확인한다 — seed.md"
         } else {
             "컨트롤러와 프론트 endpoints 를 읽어 006·007 CSV 를 만든다 — backend/api.md"
         }
-        dependsOn(
-            ":backend:api:classes",
-            ":backend:modules:system:classes",
-            ":backend:modules:sample:classes",
-        )
+        dependsOn(controllerProjects.map { "$it:classes" })
         controllerClasses.from(
-            rootProject.project(":backend:api").the<SourceSetContainer>()["main"].output.classesDirs,
-            rootProject.project(":backend:modules:system").the<SourceSetContainer>()["main"].output.classesDirs,
-            rootProject.project(":backend:modules:sample").the<SourceSetContainer>()["main"].output.classesDirs,
+            controllerProjects.map {
+                rootProject.project(it).the<SourceSetContainer>()["main"].output.classesDirs
+            },
         )
         // bootstrap 의 런타임 클래스패스가 api 와 그 의존을 전부 담는다 — 남의 설정을
         // 해석하지 않는다.
@@ -890,6 +927,12 @@ fun Project.apiSeedTask(name: String, verify: Boolean) =
                 "frontend/src/shared/routes/screenRegistry.ts",
             ),
         )
+        sampleScreenRegistry.set(
+            rootProject.layout.projectDirectory.file(
+                "frontend/src/shared/routes/sampleScreens.local.ts",
+            ),
+        )
+        includeSampleScreens.set(includeSample)
         frontendSrc.set(rootProject.layout.projectDirectory.dir("frontend/src"))
         apiSeed.set(
             layout.projectDirectory.file("src/main/resources/db/changelog/data/006-init-api.csv"),
@@ -1288,8 +1331,19 @@ tasks.register("generateSeeds") {
 
 tasks.register("checkSeeds") {
     group = "verification"
-    description = "생성 시드가 소스와 일치하는지 확인한다 — seed.md"
-    dependsOn(checkMenuSeed, checkApiSeed, checkMessageSeed, checkSampleBulkSeed)
+    if (includeSample) {
+        description = "local 생성 시드가 소스와 일치하는지 확인한다 — seed.md"
+        dependsOn(checkMenuSeed, checkApiSeed, checkMessageSeed, checkSampleBulkSeed)
+    } else {
+        /*
+          이 생성물은 local 기준선의 입력이다. product 변형은 sample 클래스·화면과 함께
+          해당 CSV를 산출물에서 제외하므로, 여기서 product 소스와 비교하면 정상적인
+          local 전용 행을 오류로 오인한다(ADR-009). product 기준선은 별도 master 기동
+          검증과 SeedChangelogIncludeTest가 책임진다.
+         */
+        description = "local 전용 생성 시드 검사를 건너뛴다 — product 기준선은 기동 검사로 확인"
+        onlyIf { false }
+    }
 }
 
 tasks.named("check") { dependsOn("checkSeeds") }

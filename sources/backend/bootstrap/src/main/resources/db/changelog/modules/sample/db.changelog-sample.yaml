@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/modules/sample/001-sample-schema.sql
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/modules/sample/002-sample-seed.sql
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/modules/sample/003-sample-shared-seed.sql
+      relativeToChangelogFile: false

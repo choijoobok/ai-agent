@@ -20,7 +20,7 @@
 | 페이지 경로 | `/sample/md-tabs` |
 | 메뉴코드 | `SMPL_MD_TABS` |
 | 프론트 폴더 | `sources/frontend/src/modules/sample/features/mdtabs/` |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/sample/` · `sources/backend/api/…/api/sample/mdtabs/` |
+| 백엔드 패키지 | `sources/backend/modules/sample/src/main/java/com/aiagent/sample/` |
 | 화면 유형 | **마스터-디테일(상하) + 하단 탭 둘** |
 | 처리 유형 | CRUD — **저장 단위가 셋** |
 | 쓰는 액션 | `R` `S` `E` — `EXPORT_YN` = `Y`. **`X` 없음** |

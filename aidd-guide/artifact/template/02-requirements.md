@@ -63,8 +63,8 @@ tags: [artifact, template, screen]
 |---|---|
 | 페이지 경로 | `{/user}` — 주소창에 보이는 그것. `screenRegistry.ts` 의 키 |
 | 메뉴코드 | `{USER_MGMT}` — `menu-tree.yaml` 의 `code` |
-| 프론트 폴더 | `sources/frontend/src/features/{user}/` |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/{user}/` · `sources/backend/api/…/api/{계층}/{user}/` |
+| 프론트 폴더 | `sources/frontend/src/modules/{모듈}/features/{user}/` |
+| 백엔드 패키지 | `sources/backend/modules/{모듈}/src/main/java/com/aiagent/{모듈}/` |
 | 화면 유형 | {단일 그리드 / 마스터-디테일(좌우) / 마스터-디테일(상하) / 마스터-디테일(탭) / 트리-그리드 / 폼 / 대시보드} |
 | 처리 유형 | {조회 전용 / CRUD / 실행} |
 | 쓰는 액션 | {R · S · E · X 중 실제로 쓰는 것} — `EXPORT_YN` = {Y/N} |

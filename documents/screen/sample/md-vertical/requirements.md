@@ -20,7 +20,7 @@
 | 페이지 경로 | `/sample/md-vertical` |
 | 메뉴코드 | `SMPL_MD_VERT` |
 | 프론트 폴더 | `sources/frontend/src/modules/sample/features/mdvertical/` (+ 공통 `modules/sample/itemColumns.ts`) |
-| 백엔드 패키지 | `sources/backend/domain/…/domain/sample/` · `sources/backend/api/…/api/sample/mdvertical/` |
+| 백엔드 패키지 | `sources/backend/modules/sample/src/main/java/com/aiagent/sample/` |
 | 화면 유형 | **마스터-디테일(상하)** |
 | 처리 유형 | CRUD + **실행 둘** |
 | 쓰는 액션 | `R` `S` `E` `X` — `EXPORT_YN` = `Y` |

@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/modules/platform/001-platform-schema.sql
+      relativeToChangelogFile: false

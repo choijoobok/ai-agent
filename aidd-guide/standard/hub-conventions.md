@@ -68,7 +68,7 @@ modules/system/        사용자 · 메뉴 · 역할 · 권한 · 공통코드 �
 modules/admin/         AI 기준 정보 · 지식 · 정책 · 설정 · 운영 화면/API
 modules/portal/        사용자 portal 화면/API
 modules/agent/         질의 · 실행 · LLM/업무 시스템 연동. UI 없음
-modules/sample/        배포에 포함하되 통째로 제거 가능한 참조 구현
+modules/sample/        local 변형에만 포함하는 참조 구현
 extensions/{시스템}/   업무 확장 — 빌드에 넣을 때만 있다 (WMS · OMS · TMS …)
 ```
 
