@@ -8,7 +8,7 @@
 
 > **이 문서는 `docs/design/60-screen-auth.md` §6 에서 옮겼다**(2026-09-04 · 그 폴더는 폐지됐다).
 
-> **문서 상태: 구현됨** — `features/profile/ProfileModal.tsx`.
+> **문서 상태: 구현됨** — `modules/system/public/profile/ProfileModal.tsx`.
 
 ---
 
@@ -18,7 +18,7 @@
 |---|---|
 | 자리 | 헤더 → 모달 |
 | 메뉴코드 | **없음** |
-| 프론트 폴더 | `sources/frontend/src/features/profile/` |
+| 프론트 폴더 | `sources/frontend/src/modules/system/public/profile/` |
 | 화면 유형 | **탭 넷** |
 | 처리 유형 | 조회 + 부분 수정 |
 | 액션 권한 | **해당 없음** — 대상이 항상 세션의 주인이다 |

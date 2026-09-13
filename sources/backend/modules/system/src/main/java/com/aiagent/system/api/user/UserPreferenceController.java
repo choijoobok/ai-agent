@@ -1,18 +1,20 @@
-package com.aiagent.api.user;
+// @feat FEAT-501
+package com.aiagent.system.api.user;
 
 import com.aiagent.api.auth.SessionPrincipal;
 import com.aiagent.api.trace.TraceId;
-import com.aiagent.api.user.request.LocaleRequest;
 import com.aiagent.core.error.BusinessException;
 import com.aiagent.core.error.CommonErrorCode;
 import com.aiagent.core.response.ApiResponse;
 import com.aiagent.domain.user.service.UserPreferenceService;
+import com.aiagent.system.api.user.request.LocaleRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.security.Principal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 둔 것과 같은 이유다).
  */
 @RestController
+@RequestMapping("/api/common/system/user")
 public class UserPreferenceController {
 
     private final UserPreferenceService preferences;
@@ -48,7 +51,7 @@ public class UserPreferenceController {
      * <p>저장 뒤 <b>세션 주체의 언어도 함께 갈아 끼운다.</b> 그러지 않으면 재로드 후에도
      * 서버가 만드는 실패 문구만 옛 언어로 나간다(backend/packages.md).
      */
-    @PostMapping("/api/common/user/saveLocale")
+    @PostMapping("/saveLocale")
     public ApiResponse<Void> saveLocale(
             @Valid @RequestBody LocaleRequest request,
             Principal principal,

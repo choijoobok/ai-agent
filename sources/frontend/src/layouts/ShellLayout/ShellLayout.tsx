@@ -12,7 +12,7 @@ import { useUiStore } from '@/shared/stores/uiStore';
 import { useSessionExpiry } from '@/modules/system/public/auth/useSessionExpiry';
 import { ExpiryWarningModal } from '@/modules/system/public/auth/components/ExpiryWarningModal';
 import { SettingsModal } from '@/modules/system/public/settings/SettingsModal';
-import { ProfileModal } from '@/features/profile/ProfileModal';
+import { ProfileModal } from '@/modules/system/public/profile/ProfileModal';
 import { NotificationModal } from '@/modules/system/public/notification/NotificationModal';
 import { NoticePopupModal } from '@/modules/system/public/notice/NoticePopupModal';
 import { getUnreadCount } from '@/modules/system/public/notification/api/notificationApi';

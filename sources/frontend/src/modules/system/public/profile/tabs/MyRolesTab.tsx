@@ -1,10 +1,11 @@
+// @feat FEAT-501
 import { Alert, Divider, Empty, Space, Table, Tag, Tooltip, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
-import { getMyRoles } from '@/features/profile/api/profileApi';
+import { getMyRoles } from '@/modules/system/public/profile/api/profileApi';
 import { useLoad } from '@/shared/hooks/useLoad';
-import type { MyMenuGrant, MyRoleGrant } from '@/features/profile/types';
+import type { MyMenuGrant, MyRoleGrant } from '@/modules/system/public/profile/types';
 
 interface Props {
   active: boolean;

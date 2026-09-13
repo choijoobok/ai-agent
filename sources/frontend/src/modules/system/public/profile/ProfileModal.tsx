@@ -1,15 +1,16 @@
+// @feat FEAT-501
 import { useEffect, useState } from 'react';
 import { Alert, Modal, Skeleton, Tabs } from 'antd';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
-import { getMyProfile } from '@/features/profile/api/profileApi';
+import { getMyProfile } from '@/modules/system/public/profile/api/profileApi';
 import { useModalTabHotkeys } from '@/shared/hooks/useModalTabHotkeys';
-import { PROFILE_TABS, PROFILE_TAB_KEYS, type ProfileTab } from '@/features/profile/profileTabs';
-import { MyInfoTab } from '@/features/profile/tabs/MyInfoTab';
-import { PasswordTab } from '@/features/profile/tabs/PasswordTab';
-import { LoginHistoryTab } from '@/features/profile/tabs/LoginHistoryTab';
-import { MyRolesTab } from '@/features/profile/tabs/MyRolesTab';
-import type { MyProfile } from '@/features/profile/types';
+import { PROFILE_TABS, PROFILE_TAB_KEYS, type ProfileTab } from '@/modules/system/public/profile/profileTabs';
+import { MyInfoTab } from '@/modules/system/public/profile/tabs/MyInfoTab';
+import { PasswordTab } from '@/modules/system/public/profile/tabs/PasswordTab';
+import { LoginHistoryTab } from '@/modules/system/public/profile/tabs/LoginHistoryTab';
+import { MyRolesTab } from '@/modules/system/public/profile/tabs/MyRolesTab';
+import type { MyProfile } from '@/modules/system/public/profile/types';
 
 interface Props {
   open: boolean;

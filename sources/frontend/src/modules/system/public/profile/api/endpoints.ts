@@ -1,3 +1,4 @@
+// @feat FEAT-501
 /**
  * 프로필 모달의 API — frontend/tabs.md.
  *
@@ -10,9 +11,9 @@
  * `user/` 로 옮기면 비밀번호가 만료된 사용자가 아무것도 못 하는 세션에 갇힌다.
  */
 export const PROFILE_ENDPOINTS = {
-  getMyProfile: '/common/user/getMyProfile',
-  saveMyProfile: '/common/user/saveMyProfile',
-  getMyLoginHistory: '/common/user/getMyLoginHistory',
-  getMyRoles: '/common/user/getMyRoles',
+  getMyProfile: '/common/system/user/getMyProfile',
+  saveMyProfile: '/common/system/user/saveMyProfile',
+  getMyLoginHistory: '/common/system/user/getMyLoginHistory',
+  getMyRoles: '/common/system/user/getMyRoles',
   changePassword: '/common/system/auth/changePassword',
 } as const;

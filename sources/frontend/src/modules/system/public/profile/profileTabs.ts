@@ -1,3 +1,4 @@
+// @feat FEAT-501
 import { MSG } from '@/shared/i18n/messageKeys';
 
 /** 프로필 모달의 탭 — frontend/tabs.md. 넷 다 "나에 대한 것" 이다. */

@@ -1,11 +1,12 @@
+// @feat FEAT-501
 import { Alert, Empty, Space, Table, Tag, Tooltip, Typography } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
-import { getMyLoginHistory } from '@/features/profile/api/profileApi';
+import { getMyLoginHistory } from '@/modules/system/public/profile/api/profileApi';
 import { useLoad } from '@/shared/hooks/useLoad';
-import type { MyLoginRecord } from '@/features/profile/types';
+import type { MyLoginRecord } from '@/modules/system/public/profile/types';
 
 interface Props {
   /** 이 탭이 화면에 있는가 — 열릴 때 한 번만 읽는다(frontend/tabs.md). */

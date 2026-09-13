@@ -1,12 +1,13 @@
+// @feat FEAT-501
 import { App } from 'antd';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { PasswordTab } from '@/features/profile/tabs/PasswordTab';
-import { changePassword } from '@/features/profile/api/profileApi';
-import type { MyProfile } from '@/features/profile/types';
+import { PasswordTab } from '@/modules/system/public/profile/tabs/PasswordTab';
+import { changePassword } from '@/modules/system/public/profile/api/profileApi';
+import type { MyProfile } from '@/modules/system/public/profile/types';
 import { useAuthStore } from '@/shared/stores/authStore';
 
-vi.mock('@/features/profile/api/profileApi', () => ({ changePassword: vi.fn() }));
+vi.mock('@/modules/system/public/profile/api/profileApi', () => ({ changePassword: vi.fn() }));
 
 const submit = vi.mocked(changePassword);
 

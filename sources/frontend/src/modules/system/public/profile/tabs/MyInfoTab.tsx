@@ -1,3 +1,4 @@
+// @feat FEAT-501
 import { useState } from 'react';
 import { App, Button, Descriptions, Form, Input, Space } from 'antd';
 import dayjs from 'dayjs';
@@ -5,8 +6,8 @@ import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
 import { codeLabel, LANG_CD } from '@/shared/i18n/codeLabel';
 import { useAuthStore } from '@/shared/stores/authStore';
-import { saveMyProfile } from '@/features/profile/api/profileApi';
-import type { MyProfile } from '@/features/profile/types';
+import { saveMyProfile } from '@/modules/system/public/profile/api/profileApi';
+import type { MyProfile } from '@/modules/system/public/profile/types';
 
 interface Props {
   profile: MyProfile;

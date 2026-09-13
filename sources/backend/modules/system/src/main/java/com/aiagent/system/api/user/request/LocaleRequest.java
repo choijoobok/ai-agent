@@ -1,4 +1,5 @@
-package com.aiagent.api.user.request;
+// @feat FEAT-501
+package com.aiagent.system.api.user.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

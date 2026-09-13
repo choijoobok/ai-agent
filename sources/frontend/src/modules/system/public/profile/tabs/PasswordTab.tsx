@@ -1,11 +1,12 @@
+// @feat FEAT-501
 import { useState } from 'react';
 import { App, Alert, Button, Form, Input, Space, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
 import { useAuthStore } from '@/shared/stores/authStore';
-import { changePassword } from '@/features/profile/api/profileApi';
-import type { MyProfile } from '@/features/profile/types';
+import { changePassword } from '@/modules/system/public/profile/api/profileApi';
+import type { MyProfile } from '@/modules/system/public/profile/types';
 
 interface Props {
   profile: MyProfile;

@@ -1,6 +1,7 @@
+// @feat FEAT-501
 import { get, post } from '@/shared/api';
-import { PROFILE_ENDPOINTS } from '@/features/profile/api/endpoints';
-import type { MyAuthority, MyLoginRecord, MyProfile } from '@/features/profile/types';
+import { PROFILE_ENDPOINTS } from '@/modules/system/public/profile/api/endpoints';
+import type { MyAuthority, MyLoginRecord, MyProfile } from '@/modules/system/public/profile/types';
 
 /**
  * 탭마다 호출이 하나다 — frontend/tabs.md.

@@ -1,17 +1,18 @@
+// @feat FEAT-501
 import { App } from 'antd';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ProfileModal } from '@/features/profile/ProfileModal';
+import { ProfileModal } from '@/modules/system/public/profile/ProfileModal';
 import {
   getMyLoginHistory,
   getMyProfile,
   getMyRoles,
   saveMyProfile,
-} from '@/features/profile/api/profileApi';
-import type { MyProfile } from '@/features/profile/types';
+} from '@/modules/system/public/profile/api/profileApi';
+import type { MyProfile } from '@/modules/system/public/profile/types';
 import { useAuthStore } from '@/shared/stores/authStore';
 
-vi.mock('@/features/profile/api/profileApi', () => ({
+vi.mock('@/modules/system/public/profile/api/profileApi', () => ({
   getMyProfile: vi.fn(),
   saveMyProfile: vi.fn(),
   getMyLoginHistory: vi.fn(),
