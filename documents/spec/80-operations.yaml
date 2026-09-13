@@ -1,0 +1,71 @@
+# 운영 런북 정본 — P2부터 골격을 세우고 P5 실측으로 검증한 뒤 P6에서 인수한다.
+#
+# RUN-###는 절차 단위다. 값이나 절차를 generated 문서에 직접 쓰지 않는다.
+# 아직 고객 환경이 정해지지 않은 값은 지어내지 않고 @defer와 근거 CON을 남긴다.
+
+meta:
+  status: in_progress
+  baselined: null
+  owner: system
+  traces_to: [ARCH-003, ARCH-024, NFR-006, NFR-007, NFR-008, NFR-009]
+
+system_overview:
+  - id: RUN-001
+    title: "배포 변형과 데이터베이스 기준선 확인"
+    purpose: "product와 local 변형이 의도한 모듈·테이블 기준선으로 기동했는지 확인한다"
+    traces_to: [ARCH-024, TC-5035]
+    verify: "P5 전용 빈 PostgreSQL 설치와 JPA validate 결과를 테스트 수행 결과서에서 확인한다"
+    evidence: "documents/project.state.yaml workstreams.system.gates.P5_verify.note"
+    status: verified
+
+daily_checks: []
+
+incidents:
+  - id: RUN-201
+    title: "API 권한 거부 원인 구분"
+    symptom: "공개 정책·무인증·CSRF·유효 권한에 따라 403 또는 권한 오류가 발생한다"
+    traces_to: [AUTHZ-091, API-540, SCR-511]
+    procedure:
+      - "API 카탈로그에서 주소 등록과 메뉴 매핑을 확인한다"
+      - "호출 계정의 현재 유효 권한을 확인한다"
+      - "쓰기 요청이면 CSRF 토큰과 요청 본문 검증 결과를 확인한다"
+    verify: "공개 200, 무인증 service 403, CSRF 없는 admin service 403, 권한 보유 200, 권한 미보유 403의 P5 직접 호출 결과와 대조한다"
+    rollback: "권한을 임의로 넓히지 않는다. 잘못 바꾼 정책은 변경 이력에서 직전 상태로 되돌린다"
+    status: verified
+
+backup_restore:
+  - id: RUN-301
+    title: "PostgreSQL 백업·삭제·재생성·복구"
+    traces_to: [ARCH-024]
+    preconditions:
+      - "대상 데이터베이스와 product/local 변형을 구분한다"
+      - "비밀값은 문서나 명령 이력에 남기지 않는다"
+    procedure:
+      - "PostgreSQL custom 형식으로 백업한다"
+      - "복구 리허설 전 대상과 백업 파일을 다시 확인한다"
+      - "P5 전용 데이터베이스를 재생성하고 백업을 복구한다"
+    verify: "Liquibase 미실행, JPA validate, 기준선 건수, sample 테이블 부재, API 인가 사실 수와 미매핑 0건을 확인한다"
+    evidence: "documents/project.state.yaml workstreams.system.gates.P5_verify.note"
+    customer_values: "@defer P6 — 실제 주기·보관기간·저장 위치는 고객사 백업 정책과 CON 항목 확정 뒤 기록한다"
+    status: verified
+
+monitoring:
+  - id: RUN-401
+    title: "NFR 실측과 운영 임계값"
+    traces_to: [NFR-006, NFR-007, NFR-008, NFR-009]
+    procedure:
+      - "NFR measurement와 source에 적힌 수집 지점에서 값을 측정한다"
+      - "평균이 아니라 명세가 요구한 분위수·상태·질의 유형으로 나눠 판정한다"
+    normal: "@defer P5 — system 운영 흐름과 NFR 실측 뒤 실제 기준을 기록한다"
+    status: draft
+
+periodic_tasks: []
+
+escalation:
+  - id: RUN-601
+    title: "고객사 운영 에스컬레이션"
+    traces_to: [CON-015, CON-016, CON-017]
+    trigger: "런북 절차로 정상 기준을 회복하지 못하거나 고객 업무 시스템의 담당 조치가 필요하다"
+    owner: "@defer P6 — 고객사 운영 조직과 구축 조직이 확정한다"
+    contact: "비밀 또는 개인정보를 저장소에 직접 기록하지 않고 고객사의 승인된 연락처 문서를 가리킨다"
+    status: draft

@@ -13,7 +13,8 @@
  */
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { join, relative, sep } from 'node:path';
+import { join, relative, resolve, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   REPO,
   readHookInput,
@@ -52,34 +53,34 @@ const ID_RE =
 /** 정의가 다른 원장에 있는 접두 — dangling 판정에서 뺀다. */
 const EXTERNAL = ['ASM-', 'CR-', 'DEF-', 'SLICE-', 'ADR-'];
 
-const argv = process.argv.slice(2);
+const isMain = Boolean(process.argv[1]) && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+const argv = isMain ? process.argv.slice(2) : [];
 const workstreamIndex = argv.indexOf('--workstream');
 const requestedWorkstream = workstreamIndex >= 0 ? String(argv[workstreamIndex + 1] ?? '').trim() : null;
-if (argv.includes('--all') || argv.includes('--report')) {
-  const { errors, warnings } = fullCheck(requestedWorkstream);
-  process.stdout.write(report(errors, warnings));
-  if (argv.includes('--report')) process.stdout.write('\n\n' + matrix());
-  process.stdout.write('\n');
-  process.exit(0);
+if (isMain) {
+  if (argv.includes('--all') || argv.includes('--report')) {
+    process.stdout.write(traceReport(requestedWorkstream, argv.includes('--report')) + '\n');
+    process.exit(0);
+  }
+
+  const input = await readHookInput();
+  const path = repoRelative(targetPath(input));
+  if (!path || !path.startsWith(`${SPEC_DIR}/`)) pass();
+
+  const { errors } = fullCheck();
+  if (errors.length === 0) pass();
+
+  const head = errors.slice(0, 8).map(([rule, target, msg]) => `  [${rule}] ${target}: ${msg}`);
+  warn(
+    [
+      `추적성 오류 ${errors.length}건이 남아 있다 (게이트 통과 불가):`,
+      ...head,
+      errors.length > 8 ? `  … 외 ${errors.length - 8}건. ${skillRef('trace')} 로 전체 확인` : '',
+    ]
+      .filter(Boolean)
+      .join('\n'),
+  );
 }
-
-const input = await readHookInput();
-const path = repoRelative(targetPath(input));
-if (!path || !path.startsWith(`${SPEC_DIR}/`)) pass();
-
-const { errors } = fullCheck();
-if (errors.length === 0) pass();
-
-const head = errors.slice(0, 8).map(([rule, target, msg]) => `  [${rule}] ${target}: ${msg}`);
-warn(
-  [
-    `추적성 오류 ${errors.length}건이 남아 있다 (게이트 통과 불가):`,
-    ...head,
-    errors.length > 8 ? `  … 외 ${errors.length - 8}건. ${skillRef('trace')} 로 전체 확인` : '',
-  ]
-    .filter(Boolean)
-    .join('\n'),
-);
 
 // ── 검사 ──────────────────────────────────────────────────────────
 
@@ -568,4 +569,12 @@ function matrix() {
   }
   rows.push('', '`—` 이 REQ 행에 남아 있으면 **미실현 요구사항**이며 G3 를 통과할 수 없다.');
   return rows.join('\n');
+}
+
+/** 하위 프로세스 없이 `/doc-gen`이 같은 판정과 매트릭스를 재사용한다. */
+export function traceReport(workstream = null, includeMatrix = true) {
+  const { errors, warnings } = fullCheck(workstream);
+  const parts = [report(errors, warnings)];
+  if (includeMatrix) parts.push(matrix());
+  return parts.join('\n\n');
 }

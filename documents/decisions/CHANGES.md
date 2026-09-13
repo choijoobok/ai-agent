@@ -23,6 +23,7 @@ G3(설계 베이스라인) 승인 이후의 모든 spec 변경을 기록한다.
 | CR-017 | 2026-09-13 | Fix | 같은 사용자의 동시 기본 조회조건 저장은 사용자 행 잠금으로 직렬화해 마지막 저장 완료 요청 하나만 기본으로 둔다 | 사용자 | UC-510·ENT-531·TC-5102·SearchCondService·SysUserRepository·SLICE-515 | Small (동시 기본값 잠금·시험) | A | 완료 |
 | CR-018 | 2026-09-13 | Modify | 샘플 메뉴·API·도메인·프런트를 삭제 가능한 별도 sample 모듈로 분리하되 현재 외부 주소와 `SMPL_*` 시드·제거 절차는 유지한다 | 사용자 | ARCH-010·011·027, Gradle·ArchUnit·프런트 경계, 샘플 화면·API·도메인·시드·playbook 경로 | Medium (SLICE-518 신규) | A | 완료 |
 | CR-019 | 2026-09-13 | Modify | 현재 최종 상태를 모듈별 Liquibase 기준선으로 재구성하고, sample은 local 변형에서만 코드·화면·API·시드를 포함한다. 현재 로컬 DB는 삭제·재생성한다 | 사용자 | ARCH-027·ADR-009·CR-018, Gradle·Vite·Liquibase·시드·sample 화면 문서·배포 안내 | Large (SLICE-518 재작업) | A | 완료 |
+| CR-020 | 2026-09-13 | Add | 개발 중인 정본을 옮기거나 화면별 HTML을 중복 생성하지 않고, 설계·사용자·운영 세 오프라인 사이트와 선택 PDF로 고객 제출본을 만든다. 사용자 매뉴얼 그림은 의미 키로 목업에서 실제 캡처로 치환한다 | 사용자 | 산출물 지도·P6·화면 문서·doc-gen·manual-site·신규 runbook/deliverable-site 스킬·공통 HTML UI 키트 | Medium (문서 하네스 3개 작업 단위, 제품 슬라이스 0) | A | 완료 |
 
 **유형**: Add / Modify / Remove / Fix
 **판정**: A(지금 반영) / B(나중에) / C(안 함)
@@ -50,3 +51,4 @@ G3(설계 베이스라인) 승인 이후의 모든 spec 변경을 기록한다.
 | CR-017 | 96 | 0 (+0.0%) | Add 0 / Modify 6 / Remove 0 / Fix 10 |
 | CR-018 | 96 | 0 (+0.0%) | Add 0 / Modify 7 / Remove 0 / Fix 10 |
 | CR-019 | 96 | 0 (+0.0%) | Add 0 / Modify 8 / Remove 0 / Fix 10 |
+| CR-020 | 96 | 0 (+0.0%) | Add 1 / Modify 8 / Remove 0 / Fix 10 |

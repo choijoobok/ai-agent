@@ -1,54 +1,46 @@
 ---
 id: LLM-ART-003
-title: "운영 런북 템플릿"
+title: "운영 런북 정본 템플릿"
 category: artifact/template
 type: template
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-13
 status: active
-sources: []
+sources: ["documents/spec/80-operations.yaml"]
 tier: 3
-tags: [template]
+tags: [template, runbook, operations]
 ---
 
-# 운영 런북
+# 운영 런북 정본
 
-> 운영 인력이 **새벽에 전화받고 읽는 문서**다. 짧고 절차적으로.
+> 운영 인력이 장애 중에도 순서대로 실행할 수 있어야 한다. Markdown 결과를 직접 쓰지 않고
+> `documents/spec/80-operations.yaml`에 다음 구조를 채운다.
 
-## 1. 시스템 구성 한눈에
-```mermaid
-graph TB
+```yaml
+meta:
+  status: in_progress
+  baselined: null
+  owner: system
+  traces_to: [ARCH-###, NFR-###]
+
+system_overview:
+  - id: RUN-001
+    title: "시스템 구성 확인"
+    purpose: "무엇을 판단하는 절차인가"
+    traces_to: [ARCH-###]
+    procedure: ["확인 순서"]
+    verify: "정상이라고 판정하는 관측값"
+    rollback: "실패할 때 안전하게 되돌리는 법"
+    status: draft
+
+daily_checks: []
+incidents: []
+backup_restore: []
+monitoring: []
+periodic_tasks: []
+escalation: []
 ```
-| 구성요소 | 위치/주소 | 접속 방법 | 담당 |
-|---|---|---|---|
 
-## 2. 일상 점검
-| 주기 | 항목 | 확인 방법 | 정상 기준 | 이상 시 |
-|---|---|---|---|---|
-| 매일 | | | | |
-
-## 3. 장애 대응
-### 증상: {사용자가 말하는 표현으로}
-**먼저 확인**: 
-**절차**
-1. 
-2. 
-**그래도 안 되면**: 에스컬레이션
-
-## 4. 백업과 복구
-- 백업 시각/주기/보관기간/위치:
-- 복구 절차:
-- **복구 검증 방법**: (복구가 실제로 됐는지 확인하는 쿼리/화면)
-- 마지막 복구 리허설 일자:
-
-## 5. 모니터링 지표와 임계값
-| 지표 | 정상 | 주의 | 위험 | 확인 위치 |
-|---|---|---|---|---|
-
-## 6. 정기 작업
-| 주기 | 작업 | 절차 |
-|---|---|---|
-
-## 7. 에스컬레이션
-| 단계 | 담당 | 연락처 | 판단 기준 |
-|---|---|---|---|
+각 항목은 `RUN-###` ID와 근거 ID를 갖는다. 고객 환경의 주기·담당·연락 위치가 미정이면
+지어내지 않고 `@defer P6 — 근거 CON-###`로 남긴다. `verified`는 실행 근거와 확인 방법이
+있을 때만 쓴다. 완결성 검사는 `/runbook`, 읽는 문서 생성은 `/doc-gen`이 담당한다.

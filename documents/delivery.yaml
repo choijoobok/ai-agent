@@ -1,0 +1,49 @@
+# 고객 제출 사이트 구성 — 내용은 원래 정본에 두고 여기에는 배치만 둔다.
+#
+# `deliverable-site`가 세 사이트를 만들 때 읽는 프로젝트별 카탈로그다.
+# 같은 원본은 한 사이트에만 배치한다. 화면 목업·캡처는 공용 자산이라 여러 사이트가 참조할 수 있다.
+
+meta:
+  id: DLV-001
+  status: in_progress
+  baselined: null
+
+sites:
+  - id: SITE-001
+    key: design
+    title: "설계·검증 산출물"
+    description: "spec에서 생성한 설계 문서와 상세 설계, 화면 요건서·목업을 함께 검토한다"
+    sources:
+      - "documents/generated/**/*.md — 운영 런북은 SITE-003으로 보낸다"
+      - "documents/design/**/*.md"
+      - "documents/screen/**/requirements.md + mockup.html"
+
+  - id: SITE-002
+    key: user
+    title: "사용자 매뉴얼"
+    description: "화면별 manual.md와 목업 또는 실제 캡처를 실제 메뉴 순서로 보여 준다"
+    sources:
+      - "documents/screen/**/manual.md"
+      - "documents/screen/**/mockup.html 또는 screen-{그림키}.png"
+
+  - id: SITE-003
+    key: operations
+    title: "운영·개발자 가이드"
+    description: "고객 환경 운영 런북과 구축·개발·배포·운영 안내를 한 사이트에서 제공한다"
+    sources:
+      - "documents/generated/80-운영런북.md"
+      - "developer-guide/**/*.md"
+
+output:
+  path: build/deliverables
+  offline: true
+  shared_assets: true
+  html_per_site: one
+  pdf: optional
+
+capture:
+  identity: "SCR-###/그림키"
+  main_file: screen.png
+  keyed_file: "screen-{그림키}.png"
+  draft_fallback: mockup
+  release_requires_png: true

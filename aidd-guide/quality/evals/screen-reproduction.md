@@ -60,7 +60,7 @@ git worktree add --detach <스크래치>/sbx-B HEAD
 |---|---|
 | `sources/frontend/src/modules/{모듈}/features/{도메인}/` 전체 | 그 화면의 `requirements.md` |
 | 그 화면만 쓰는 백엔드 클래스 | 옆 화면이 함께 쓰는 클래스 |
-| `documents/screen/{경로}/mockup.html` · `manual.md` · `manual.html` | `aidd-guide/` 전부 · 샘플 여섯 |
+| `documents/screen/{경로}/mockup.html` · `manual.md` | `build/deliverables/` · `aidd-guide/` 전부 · 샘플 여섯 |
 | `screenRegistry.ts` 의 그 줄 | 시드 CSV(**단, 아래 ①**) · `messageKeys.ts` · `menu-tree.yaml` |
 
 - **① 대상 화면에서 생성된 시드는 뺀다.** `006-init-api.csv` 는 `endpoints.ts` 에서

@@ -71,6 +71,9 @@ REQ ──→ UC ──→ FEAT ──┬──→ ENT   (테이블)
 | `AUTHZ` | **Auth**ori**z**ation | 인가 | *로그인한 이 사람이 이것을 해도 되는가* — `22-authz.yaml` |
 | `IF` | **I**nter**f**ace | 연동 | 외부 시스템과 주고받는 통로 — `51-interfaces.yaml` |
 | `UND` | **Und**ecided | 미확정 | 나중에 정하기로 하고 **자리만 잡아 둔 것** — `60-screens.yaml` |
+| `RUN` | **Run**book procedure | 운영 절차 | 장애·점검·복구 때 순서대로 실행하는 절차 — `80-operations.yaml` |
+| `DLV` | **D**e**l**i**v**ery | 제출 구성 | 고객 제출 사이트 전체의 배치 정책 — `delivery.yaml` |
+| `SITE` | Site | 제출 사이트 | 설계·사용자·운영 중 사이트 한 개 — `delivery.yaml` |
 
 ### 1.4 결정과 미결 — 판단의 이력
 

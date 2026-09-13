@@ -7,6 +7,9 @@
 > [산출물 지도](../aidd-guide/artifact/INDEX.md)이 정하고 `guard-write` 훅이 **차단한다**
 > (AGENTS.md §4). 이 파일은 지도의 **현재 상태**를 보여줄 뿐이며 자리를 정하지 않는다.
 
+세 고객 제출 사이트의 배치는 [`delivery.yaml`](delivery.yaml)이 정한다. 원문을 옮기지 않고
+현재 정본·파생 문서를 `build/deliverables/`로 조립한다.
+
 ## 지금 어디인가
 
 **[`project.state.yaml`](project.state.yaml) 하나가 그 답이다.** 단계·게이트·미결 질문·
@@ -23,7 +26,7 @@
 | [`decisions/`](decisions/ASSUMPTIONS.md) | 이 프로젝트의 **ADR** · **가정 원장** · **변경 대장**            | AI 가 직접             | **예** (누적 원장)               |
 | [`design/`](design/)                     | spec YAML 로 접히지 않는 **규범적 산문** — 상태 기계·프로토콜·오케스트레이션  | AI 가 직접             | **예**                       |
 | [`research/`](research/)                 | **비규범** — 결정의 근거가 된 외부 사례·기술 평가·PoC 실측                    | AI 가 직접             | **예** (다시 만들 수 없다)        |
-| [`screen/`](screen/README.md)            | 화면 문서 셋 — 요건서 · 목업 · 메뉴얼                            | AI 가 직접 (설계자가 승인)   | **예** (`manual.html` 만 생성물) |
+| [`screen/`](screen/README.md)            | 화면 문서 셋 — 요건서 · 목업 · 메뉴얼 · 선택 캡처                   | AI 가 직접 (설계자가 승인)   | **예** (목업·제출 HTML은 생성물) |
 | `generated/`                             | spec 에서 나온 사람이 읽는 문서                                | **`/doc-gen` 이 생성** | **아니다** — 훅이 막는다            |
 
 - **`spec/` 과 `design/` 을 가르는 기준은 하나다**: *ID 를 가진 항목의 목록으로 표현되면
@@ -32,11 +35,11 @@
 - **`research/` 는 비규범이다** — spec 도 `aidd-guide/` 도 여기를 직접 인용하지 않는다.
   순서는 **조사 → ADR → spec** 이며 조사를 인용하는 것은 `decisions/` 의 ADR 뿐이다
   ([산출물 지도 42행](../aidd-guide/artifact/INDEX.md)).
-- **`generated/` 에 문서 14개가 있다**(2026-09-07 · `/doc-gen`). **커밋하지 않는다** —
+- **`generated/`는 `/doc-gen`이 현재 spec에서 다시 만든다.** **커밋하지 않는다** —
   `.gitignore` 대상이며 `documents/spec/` 에서 언제든 다시 만든다. **없으면 만들면 되고,
   고칠 것이 있으면 spec 을 고친다.**
   - `10-요구사항정의서/` (9) — **P0~P2 정본 여덟의 읽는 뷰**(지도 43행). 게이트 승인의 판단 대상이다
-  - `20-아키텍처.md` · `22-권한매트릭스.md` · `31-기능목록.md` · `60-화면정의서.md` · `90-추적성매트릭스.md`
+  - `20-아키텍처.md` · `22-권한매트릭스.md` · `31-기능목록.md` · `60-화면정의서.md` · `80-운영런북.md` · `90-추적성매트릭스.md`
   - **아직 안 나오는 것 넷** — 유즈케이스 · ERD · API · 테스트케이스. **spec 이 비어 있어서다**
 
 ## spec/ 카탈로그
@@ -61,6 +64,7 @@
 | [`51-interfaces.yaml`](spec/51-interfaces.yaml) | P3 | **외부 인터페이스 8**(IF-) — 나가는 5 · 들어오는 3 | 이관 |
 | [`60-screens.yaml`](spec/60-screens.yaml) | P3 | **화면 43**(SCR-) — admin 32 · portal 11 + 메뉴 판정 기준 · 통제 경계 · Phase 노출 | 이관 |
 | [`70-testcases.yaml`](spec/70-testcases.yaml) | P3~ | 테스트 케이스 | **비어 있다** |
+| [`80-operations.yaml`](spec/80-operations.yaml) | P2~P6 | **운영 절차**(RUN-) — 구성·일상 점검·장애·백업/복구·모니터링·정기 작업·에스컬레이션 | 작성 중 |
 
 ### 상태가 뜻하는 것
 
@@ -90,6 +94,8 @@
 | `IF-`                               | 외부 인터페이스                 | `51-interfaces.yaml`                |
 | `SCR-`                              | 화면                       | `60-screens.yaml`                   |
 | `TC-`                               | 테스트 케이스                  | `70-testcases.yaml`                 |
+| `RUN-`                              | 운영 런북 절차                 | `80-operations.yaml`                |
+| `DLV-` `SITE-`                      | 제출 구성 · 제출 사이트          | `delivery.yaml`                     |
 | `DES-`                              | 상세 설계 문서                 | `design/`                           |
 | `ADR-` `ASM-` `CR-` `DEF-` `SLICE-` | 결정 · 가정 · 변경 · 결함 · 슬라이스 | `decisions/` · `project.state.yaml` |
 

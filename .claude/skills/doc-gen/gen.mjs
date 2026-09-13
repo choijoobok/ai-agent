@@ -24,9 +24,9 @@
 
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from 'node:fs';
 import { dirname, join, normalize, posix } from 'node:path';
-import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { parseYaml } from '../../hooks/lib.mjs';
+import { traceReport } from '../../hooks/trace-check.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..', '..', '..');
@@ -597,8 +597,7 @@ function 권한매트릭스() {
 // ── 26행 · 추적성 매트릭스 ────────────────────────────────────────
 /** **셈은 `trace-check` 가 낸다.** 여기서 다시 세지 않는다 — 두 곳에서 세면 갈린다. */
 function 추적성() {
-  const body = execFileSync('node', ['.claude/hooks/trace-check.mjs', '--report'],
-    { cwd: REPO, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 }).trim();
+  const body = traceReport().trim();
   write(`${OUT}90-추적성매트릭스.md`, [
     head('TRACE', '추적성 매트릭스', `${SPEC}(전체)`, 'mixed', null, null,
       '> **셈은 `node .claude/hooks/trace-check.mjs --report` 가 낸다.** 여기서 다시 세지 않는다 —\n'
@@ -730,8 +729,29 @@ function 테스트() {
   ]);
 }
 
+function 운영런북() {
+  const d = load('80-operations');
+  const sections = [
+    ['시스템 구성 한눈에', d.system_overview ?? []],
+    ['일상 점검', d.daily_checks ?? []],
+    ['장애 대응', d.incidents ?? []],
+    ['백업과 복구', d.backup_restore ?? []],
+    ['모니터링 지표와 임계값', d.monitoring ?? []],
+    ['정기 작업', d.periodic_tasks ?? []],
+    ['에스컬레이션', d.escalation ?? []],
+  ];
+  const items = sections.flatMap(([, values]) => values);
+  write(`${OUT}80-운영런북.md`, [
+    head('RUNBOOK', '운영 런북', `${SPEC}80-operations.yaml`, d.meta.status,
+      d.meta.baselined, items.map((x) => x.id)),
+    '> 운영 인력이 장애 상황에서 순서대로 실행할 절차다. 값과 절차는 정본 `80-operations.yaml`에서만 고친다.',
+    ...sections.map(([title, values], index) =>
+      `## ${index + 1}. ${title}\n\n${values.length ? blocks(values, ['id'], 'title', '###') : '> 아직 등록된 절차가 없다.'}`),
+  ]);
+}
+
 // ── 대상 등록 ─────────────────────────────────────────────────────
-const TARGETS = { 요구사항정의서, 아키텍처, 기능목록, 화면정의서, 권한매트릭스, 유즈케이스, ERD, API, 테스트, 추적성 };
+const TARGETS = { 요구사항정의서, 아키텍처, 기능목록, 화면정의서, 권한매트릭스, 유즈케이스, ERD, API, 테스트, 운영런북, 추적성 };
 
 /**
  * 같은 대상의 다른 이름. `SKILL.md` 의 인자 줄은 짧은 이름(`화면`·`권한`)을 쓰고
@@ -740,7 +760,7 @@ const TARGETS = { 요구사항정의서, 아키텍처, 기능목록, 화면정�
  */
 const ALIAS = {
   화면: '화면정의서', 권한: '권한매트릭스', '기능목록·메뉴': '기능목록',
-  테스트케이스: '테스트', 사용자매뉴얼: '매뉴얼',
+  테스트케이스: '테스트', 런북: '운영런북',
 };
 const resolve = (a) => ALIAS[a] ?? a;
 
@@ -753,7 +773,6 @@ const NOT_YET = {
   시퀀스: '핵심 UC별 첫 실물의 구조를 검증한 뒤 결정 생성으로 옮긴다',
   DDL: '기존 system 물리 구조는 보존하며, 승인된 신규 물리 변경이 생길 때 생성기로 옮긴다',
   요건정의서: '작업흐름별 P3 범위가 채워질 때 기능별 첫 실물의 구조를 검증한 뒤 결정 생성으로 옮긴다',
-  매뉴얼: 'P6 산출물이다',
 };
 
 // ── --check · 생성물이 spec 을 다 담았나 ──────────────────────────

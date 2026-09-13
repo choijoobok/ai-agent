@@ -136,4 +136,5 @@ Docker 로 4벤더를 띄워 스키마·정렬을 대조한다. **20분이 걸�
 - 파이프라인의 정본 — [`aidd-guide/standard/build-deploy.md`](../aidd-guide/standard/build-deploy.md)
 - 배포 후 무엇을 보나 — [05-operate.md](05-operate.md)
 - 인도 단계 절차 — [`aidd-guide/phase/P6-deliver.md`](../aidd-guide/phase/P6-deliver.md)
-- 사용자 메뉴얼 산출물 만들기 — `/manual-site` 스킬
+- 사용자 메뉴얼 확인·캡처 치환 — `/manual-site` 스킬
+- 설계·사용자·운영 오프라인 제출본 만들기 — `/deliverable-site` 스킬

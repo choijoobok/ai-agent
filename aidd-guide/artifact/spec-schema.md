@@ -4,7 +4,7 @@ title: "spec 스키마 — 파일과 작성 단계"
 category: artifact
 type: operation
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-13
 status: active
 sources: []
 tier: 1
@@ -35,6 +35,7 @@ tags: [spec, ssot, yaml]
 | `51-interfaces.yaml` | P3 | 외부 시스템 연동 | 〃 |
 | `60-screens.yaml` | P3 | 화면 정의 | 〃 §6 |
 | `70-testcases.yaml` | P3~ | 테스트 케이스 | `aidd-guide/quality/test-design.md` §1 |
+| `80-operations.yaml` | P2~P6 | 운영 절차·검증·복구·에스컬레이션 | `aidd-guide/artifact/template/05-runbook.md` |
 
 ## 공통 규칙
 
@@ -47,6 +48,6 @@ tags: [spec, ssot, yaml]
 ## 검증
 
 ```bash
-python .claude/hooks/trace-check.mjs --all
+node .claude/hooks/trace-check.mjs --all
 ```
 또는 `/trace`.

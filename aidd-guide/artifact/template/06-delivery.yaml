@@ -1,0 +1,27 @@
+# 고객 제출 사이트 배치 카탈로그 템플릿
+meta:
+  id: DLV-###
+  status: draft
+  baselined: null
+
+sites:
+  - id: SITE-###
+    key: design
+    title: "설계·검증 산출물"
+    description: "고객이 이 사이트에서 판단할 것"
+    sources:
+      - "정본 또는 파생 문서 경로 — 같은 원문을 복사하지 않는다"
+
+output:
+  path: build/deliverables
+  offline: true
+  shared_assets: true
+  html_per_site: one
+  pdf: optional
+
+capture:
+  identity: "SCR-###/그림키"
+  main_file: screen.png
+  keyed_file: "screen-{그림키}.png"
+  draft_fallback: mockup
+  release_requires_png: true

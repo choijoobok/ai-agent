@@ -46,13 +46,11 @@ logs/
 # 바뀌었는지 보이지 않게 된다.
 #
 # 화면 하나의 정본은 requirements.md 와 manual.md 둘이다.
-#   requirements.md ──/mockup──> mockup.html ──/manual-site──> manual.html · 고객사 제출본
+#   requirements.md ──/mockup──> mockup.html
+#   manual.md + 목업/캡처 ──/deliverable-site──> build/deliverables/ 고객 제출본
 # 목업은 요건서의 파생물이라 여기서 뺀다 — 새로 클론한 트리에 없는 것이 정상이고,
 # 승인이나 메뉴얼 생성에 필요할 때 만든다.
 documents/screen/**/mockup.html
-documents/screen/**/manual.html
-documents/screen/index.html
-build/manual/
 
 # spec YAML 에서 /doc-gen 이 만드는 문서 — 서식은 aidd-guide/artifact/template/generated/ 다.
 documents/generated/

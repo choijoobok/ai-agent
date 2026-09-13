@@ -21,7 +21,7 @@ export const escapeHtml = (text) =>
  * <code>](mockup.html#키)</code> 로 끝나므로 욕심 매칭이 흔들리지 않는다. 앞의 것은
  * <b>설명에 <code>]</code> 가 하나만 들어가도 짝이 깨졌다</b>(실제로 두 번 겪었다).
  */
-export const FIGURE_LINE = /^\[(.*)\]\(mockup\.html#([\w-]+)\)$/;
+export const FIGURE_LINE = /^\[(.*)\]\((?:\.\/)?mockup\.html#([\w-]+)\)$/;
 
 /**
  * 인라인 — <b>코드를 먼저 빼낸다</b>. 코드 안의 `**` 를 굵게 만들면 안 된다.

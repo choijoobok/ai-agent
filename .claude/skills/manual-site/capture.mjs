@@ -107,7 +107,7 @@ try {
 }
 
 console.log(`\n캡처 ${done.length} · 실패 ${failed.length}`);
-console.log('이제 build.mjs 를 돌리면 산출물이 캡처를 쓴다 — node .claude/skills/manual-site/build.mjs');
+console.log('이제 사용자 사이트를 다시 만들면 대표 캡처를 쓴다 — node .claude/skills/manual-site/build.mjs');
 if (failed.length > 0) {
   console.log('\n실패한 화면은 screen.png 가 없으므로 목업 그림 그대로 나간다.');
 }

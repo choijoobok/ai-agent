@@ -212,6 +212,7 @@ counters:
   API: 99
   SCR: 69
   TC: 52
+  RUN: 5      # 80-operations.yaml의 현재 절차. P5~P6에서 일상·정기 작업과 고객값을 채운다
   ADR: 9      # 001~009 accepted. 009는 모듈별 기준선과 local 전용 sample 배포 경계이며 proposed는 없다
   ASM: 1      # **미확인 하나** — 003(기한 G3). 002·004·007은 확인됨, 005·006 은 기각됨
   SLICE: 18

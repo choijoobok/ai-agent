@@ -48,7 +48,7 @@ export function figuresOf(url, mode = 'auto') {
   if (source) {
     /* 주석은 여기서 한 번만 벗긴다 — HTML · 인쇄본 · 슬라이드가 같은 그림을 받아야 한다. */
     for (const block of screenBlocks(source)) {
-      figures.set(block.key, { kind: 'mockup', ...block, html: stripAnnotations(block.html) });
+      figures.set(block.key, { kind: 'mockup', file: `${DOCS}${url}/mockup.html`, ...block, html: stripAnnotations(block.html) });
     }
   }
 

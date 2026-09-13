@@ -74,13 +74,15 @@ node .claude/skills/doc-gen/gen.mjs --check            # 생성물이 spec 을 �
 | DDL | `prose` | `db/ddl/*.sql` | 40-domain + conventions |
 | API | `gen` | `documents/generated/50-API.md` + `documents/generated/50-openapi.yaml` | 50-api |
 | 테스트케이스 | `gen` | `documents/generated/70-테스트케이스.md` | 70-testcases |
+| 운영런북 | `gen` | `documents/generated/80-운영런북.md` | 80-operations |
 | 시퀀스 | `prose` | `documents/generated/33-시퀀스/UC-###.md` (Mermaid sequenceDiagram) + `_index.md` | 30-usecases + 50-api |
-| 사용자매뉴얼 | `prose` | `documents/generated/81-사용자매뉴얼.md` | 31-features menu + 60-screens + 30-usecases |
 
-**`prose` 넷은 아직 결정 생성으로 옮기지 않았다.** DDL은 승인된 물리 변경이 생길 때,
-시퀀스와 기능별 요건정의서는 첫 실물의 구조를 검증한 뒤, 매뉴얼은 P6에서 생성기로 옮긴다.
+**`prose` 셋은 아직 결정 생성으로 옮기지 않았다.** DDL은 승인된 물리 변경이 생길 때,
+시퀀스와 기능별 요건정의서는 첫 실물의 구조를 검증한 뒤 생성기로 옮긴다.
 유즈케이스·ERD·API·테스트는 P3 정본이 채워졌으므로 `gen.mjs`가 모든 필드를 빠뜨리지 않고
-재현한다. `gen.mjs`의 `NOT_YET`은 남은 넷을 부르면 *왜 아직 아닌지*를 말한다.
+재현한다. 사용자 매뉴얼은 전역 문서로 중복 생성하지 않고 화면별 `manual.md`를
+`/deliverable-site`가 한 사이트로 조립한다. `gen.mjs`의 `NOT_YET`은 남은 셋을 부르면
+*왜 아직 아닌지*를 말한다.
 
 ## 요구사항 정의서 — 지도 43행 (`요구사항정의서`)
 

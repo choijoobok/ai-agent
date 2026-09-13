@@ -4,7 +4,7 @@ title: "산출물 서식 — 정본과 파생"
 category: artifact/template
 type: operation
 created: 2026-09-04
-updated: 2026-09-07
+updated: 2026-09-13
 status: active
 sources: ["aidd-guide/artifact/INDEX.md", "documents/screen/"]
 tier: 3
@@ -26,7 +26,8 @@ tags: [artifact, template, format]
 | [`01-adr.md`](./01-adr.md) | P2~ | `documents/decisions/ADR-{번호}-{제목}.md` | 다음 사람 |
 | [`02-requirements.md`](./02-requirements.md) | P3 | `documents/screen/{페이지경로}/requirements.md` | **AI**(구현 주체) |
 | [`04-manual.md`](./04-manual.md) | P4 | `documents/screen/{페이지경로}/manual.md` | **운영자·사용자** |
-| [`05-runbook.md`](./05-runbook.md) | P6 | `documents/generated/80-운영런북.md` | 운영 |
+| [`05-runbook.md`](./05-runbook.md) | P2~P6 | `documents/spec/80-operations.yaml` | 운영자 |
+| [`06-delivery.yaml`](./06-delivery.yaml) | P3~P6 | `documents/delivery.yaml` | 고객·인수 담당자 |
 
 - **00 이 01 앞인 것이 순서다** — 조사가 결정보다 앞선다. `00` 은 **비규범**이고 `01` 이
   규범의 입구다: 조사 자료를 인용하는 것은 ADR 뿐이며, spec 은 ADR 을 인용한다.
@@ -34,6 +35,10 @@ tags: [artifact, template, format]
   요건서가 규칙의 정본이고 메뉴얼은 그것을 사용자의 말로 옮긴다. 워크플로는 `AGENTS.md` §6 이 갖는다.
 - **02·04 는 화면 서른한 곳에 쓰이면서 자란 서식이다.** 지어낸 형식이 아니므로, 고칠
   때는 *왜 그 칸이 생겼나* 를 먼저 본다.
+- **05는 단계적으로 채운다.** P2 구성, P3 운영 화면·흐름, P4 배포·정기 작업, P5 실측·리허설,
+  P6 고객값·인수를 한 정본에 누적하고 `/doc-gen`이 읽는 런북으로 만든다.
+- **06은 내용 문서가 아니라 배치 카탈로그다.** 세 사이트에 무엇을 싣는지만 정하고,
+  원문은 각자의 정본에 둔다.
 - **[`03-mockup.html`](./03-mockup.html) 은 목록에 없다** — 목업이 파생물이 됐기 때문이다.
   그 파일은 이제 서식이 아니라 **`<style>` 블록의 원본이자 그림의 형식 참조**이며,
   `/mockup` 의 `scaffold.mjs` 가 그 블록을 읽어 넣는다. 아래 *파생 서식* 을 본다.

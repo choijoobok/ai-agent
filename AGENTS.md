@@ -132,7 +132,7 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <revision> --sur
 9. 큰 파일은 통째로 읽지 않고 검색으로 필요한 범위를 먼저 좁힌다.
 10. 리뷰·점검은 문제·위험·누락부터 쓴다. 테스트 통과만으로 완료라 하지 않고 업무 규칙을
    뒤집었을 때 테스트가 실패하는지 확인한다.
-11. 생성 산출물(시드 CSV · `manual.html` · 화면 index · `documents/generated/`)은 손편집하지 않는다.
+11. 생성 산출물(시드 CSV · `build/deliverables/` · `documents/generated/`)은 손편집하지 않는다.
    `mockup.html`은 그림만 편집하며 표와 확인 목록은 건드리지 않는다.
 12. 게이트 승인에는 결정 카드(업무 언어 3~5줄)와 역질문 1~2개를 붙인다. 절차 축소 요청은
     `줄일 수 있음 / 절대 안 됨 / 지금은 빠르나 나중에 비쌈`으로 구분한다.
@@ -146,7 +146,7 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <revision> --sur
 
 ### 6.2 문서 역할
 
-화면 하나는 정본 `requirements.md`·`manual.md`와 파생 `mockup.html`·`manual.html`로 구성한다.
+화면 하나는 정본 `requirements.md`·`manual.md`, 파생 `mockup.html`, 선택 실제 캡처로 구성한다.
 요건서는 AI에게 무엇을, 메뉴얼은 운영자에게 순서를, 목업은 설계자에게 그림을 말한다.
 같은 사실을 중복하지 않는다. 목업에만 있는 규칙은 유실된 것이며 테스트 케이스는 요건서가 갖는다.
 상세 역할은 [`documents/screen/README.md`](documents/screen/README.md)가 갖는다.
@@ -160,7 +160,8 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <revision> --sur
 - ①과 ②는 함께 내고, ③ 전에는 백엔드·프론트엔드·시드를 변경하지 않는다.
 - ⑤ 사용자 테스트는 AI의 게이트 초록으로 대신하지 않는다.
 - 기존 화면 수정도 달라지는 요건 → 목업 → 승인 순서로 되돌아간다. G3 이후면 `change-request`가 먼저다.
-- 상세 절차는 [`artifact/screen/screen.md`](aidd-guide/artifact/screen/screen.md), 목업은 `mockup`, 제출본은 `manual-site`를 사용한다.
+- 상세 절차는 [`artifact/screen/screen.md`](aidd-guide/artifact/screen/screen.md), 목업은 `mockup`,
+  사용자 사이트는 `manual-site`, 세 고객 제출 사이트는 `deliverable-site`를 사용한다.
 
 ### 6.4 현행화
 

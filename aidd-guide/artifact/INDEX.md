@@ -4,7 +4,7 @@ title: "산출물 지도 — 무엇을 언제 어디에"
 category: artifact
 type: operation
 created: 2026-09-04
-updated: 2026-09-07
+updated: 2026-09-13
 status: active
 sources: []
 tier: 1
@@ -51,21 +51,22 @@ tags: [artifact, map, index]
 | 26  | 추적성 매트릭스                   | P3~P5 | G   | `documents/generated/90-추적성매트릭스.md`                                                                                    |  ○   |  ●  |  ●   |
 | 27  | 가정 원장                      | 상시    | L   | `documents/decisions/ASSUMPTIONS.md`                                                                                   |  ●   |  ●  |  ●   |
 | 28  | 변경 요청 대장                   | P3~   | L   | `documents/decisions/CHANGES.md`                                                                                       |  ○   |  ●  |  ●   |
-| 29  | 배포/운영 런북                   | P6    | S   | `documents/generated/80-운영런북.md`                                                                                       |  ○   |  ●  |  ●   |
-| 30  | 사용자 매뉴얼                    | P6    | G   | `documents/generated/81-사용자매뉴얼.md`                                                                                     |  ●   |  ●  |  ●   |
+| 29  | 배포/운영 런북                   | P2~P6 | S+G | `documents/spec/80-operations.yaml` → `documents/generated/80-운영런북.md`                                                |  ○   |  ●  |  ●   |
+| 30  | 사용자 매뉴얼                    | P4~P6 | S+G | `documents/screen/{페이지경로}/manual.md` → `build/deliverables/user/index.html`                                           |  ●   |  ●  |  ●   |
 | 31  | 데이터 이행 계획                  | P6    | S   | `documents/generated/82-데이터이행.md`                                                                                      |  ○   |  ○  |  ●   |
 | 32  | 인수 확인서                     | P6    | G   | `documents/generated/99-인수확인서.md`                                                                                      |  ○   |  ●  |  ●   |
 | 33  | **화면 요건 정의서 + 테스트케이스**     | P3~P4 | S   | `documents/screen/{페이지경로}/requirements.md`                                                                             |  ●   |  ●  |  ●   |
 | 34  | **화면 목업**                  | P3~P4 | G   | `documents/screen/{페이지경로}/mockup.html` — `/mockup` 이 33 에서 만든다                                                         |  ●   |  ●  |  ●   |
 | 35  | **화면 사용자 메뉴얼**             | P4    | S   | `documents/screen/{페이지경로}/manual.md`                                                                                   |  ●   |  ●  |  ●   |
-| 36  | 〃 파생 · 화면 그림 · 구현 기록       | P4    | G   | `documents/screen/{페이지경로}/manual.html` · `screen.png` · `impl.md`                                                      |  ○   |  ●  |  ●   |
+| 36  | 〃 실제 화면 그림 · 구현 기록          | P4~P6 | S   | `documents/screen/{페이지경로}/screen.png` · `screen-{그림키}.png` · `impl.md`                                               |  ○   |  ●  |  ●   |
 | 37  | 메뉴 없는 화면의 문서               | P3~P4 | S   | `documents/screen/_standalone/{화면이름}/`                                                                                 |  ○   |  ●  |  ●   |
-| 38  | 화면 문서 서식·열람 페이지            | 상시    | S+G | `aidd-guide/artifact/template/` · `documents/screen/README.md` · `documents/screen/index.html`                         |  ●   |  ●  |  ●   |
+| 38  | 화면 문서 서식                     | 상시    | S   | `aidd-guide/artifact/template/` · `documents/screen/README.md`                                                          |  ●   |  ●  |  ●   |
 | 39  | **상세 설계 문서**               | P3    | S   | `documents/design/{주제}.md`                                                                                             |  ○   |  ●  |  ●   |
 | 40  | 산출물 대장 (이 지도의 현재 상태)       | 상시    | S   | `documents/INDEX.md`                                                                                                   |  ●   |  ●  |  ●   |
 | 41  | **재현 회귀의 근거 기록**           | 상시    | S   | `documents/evals/{차수}/{재현}/SOURCES.md` · `documents/evals/{차수}/{재현}/GAPS.md`                                           |  ○   |  ○  |  ●   |
 | 42  | **외부 조사 자료** (비규범)        | P2~   | S   | `documents/research/{주제}.md`                                                                                          |  ○   |  ○  |  ●   |
 | 43  | **요구사항 정의서** (읽는 뷰)        | P1~   | G   | `documents/generated/10-요구사항정의서/`                                                                                 |  ●   |  ●  |  ●   |
+| 44  | **고객 제출 사이트 구성·제출본**       | P3~P6 | S+G | `documents/delivery.yaml` → `build/deliverables/`                                                                        |  ●   |  ●  |  ●   |
 
 ● 필수 · △ 축약형 · ○ 선택
 
@@ -118,11 +119,15 @@ tags: [artifact, map, index]
 **ID 를 가진 항목의 목록으로 표현되면 spec 이고, 그렇지 않으면 여기다.**
 여기에 적은 것도 상위 spec 의 ID 를 헤더에 명시해 추적성 체인에 붙인다.
 
+### 44 — 고객 제출 사이트 구성은 왜 자리를 갖나
+
+- **목적** — 세 사이트의 경계와 입력만 결정한다. 내용은 원래 정본에 둔다.
+- **포맷** — [`template/06-delivery.yaml`](./template/06-delivery.yaml): SITE ID·입력·오프라인·PDF·캡처 정책.
+- **소유** — `delivery.yaml`은 정본, `build/deliverables/`는 파생이며 UI 자산은 한 벌이다.
+
 ## 2. 이 지도가 곧 문서 예산이다
 
-> 문서가 늘어나는 병의 모양은 하나다:
-> **문서를 정리하면 정리 내역을 적는 문서가 생기고, 그 근거를 적는 문서가 또 생긴다.**
-> 그러다 어느 것이 참인지 알 수 없게 되고, 문서 사이의 모순이 늘어난다.
+> 문서를 정리하는 문서와 그 근거가 다시 생기면 정본이 갈린다.
 > **그래서 문서는 예산 안에서만 만든다**(AGENTS.md §4).
 
 **`documents/` 에는 위 표에 있는 자리만 만든다.** `guard-write` 훅이 이 파일의 경로 칸을
@@ -130,18 +135,13 @@ tags: [artifact, map, index]
 
 - 새 종류가 정말 필요하면 **이 표에 행을 먼저 더하고** 사용자에게 왜 필요한지 보고한다.
   번호는 마지막 행 다음으로 이어 붙이며, 지운 행의 번호는 재사용하지 않는다.
-- **행을 더하는 것으로 끝나지 않는다.** 새 유형은 **규격화해야 자리가 열린다** —
-  셋을 함께 낸다:
-  1. **목적** — 무엇을 답하는 문서인가. *누가 읽고 무엇을 판단하는가* 로 적는다.
-     기존 셋(커밋 메시지 · ADR · `project.state.yaml`)으로 답할 수 있으면 만들지 않는다.
-  2. **포맷** — `artifact/template/` 에 서식을 만든다. 서식 없는 유형은 두 번째 문서부터
-     제각각이 되고, 그러면 유형이 아니라 낱개다.
-  3. **누가 소유하나** — 정본인가 파생인가(AGENTS.md §4-5). 파생이면 무엇에서
-     생성되는지, 정본이면 무엇이 낡았을 때 고치는지.
+- **새 유형은 규격화해야 자리가 열린다** — 셋을 함께 낸다:
+  1. **목적** — 누가 읽고 무엇을 판단하는가. 기존 셋(커밋·ADR·상태)으로 답하면 만들지 않는다.
+  2. **포맷** — `artifact/template/`에 서식을 만든다. 없으면 유형이 아니라 낱개다.
+  3. **소유** — 정본/파생과 생성 원본 또는 현행화 기준을 밝힌다.
 - **훅의 차단은 유지한다.** 경고로 낮추면 절차가 번거로울 때 그냥 지나가게 되고,
   그 순간 예산은 없는 것이 된다.
-- **경로 칸의 `{…}` 는 자리표시자다** — 훅이 `[^/]+` 로 읽는다. 새 행을 더할 때 실제 경로에
-  가변 부분이 있으면 반드시 `{…}` 로 적는다. 아니면 그 자리가 열리지 않는다.
+- **경로 칸의 `{…}`는 자리표시자다** — 가변 부분은 반드시 그렇게 적어야 훅이 자리를 연다.
 
 ### 자리가 있다는 것과 커밋한다는 것은 다르다
 
@@ -152,17 +152,17 @@ tags: [artifact, map, index]
 | | 어디 | 커밋 |
 |---|---|---|
 | **정본** | `documents/spec/` · `screen/*/requirements.md` · `screen/*/manual.md` · `decisions/` · `design/` | **한다** |
-| **파생** | `documents/generated/` · `screen/*/mockup.html` · `screen/*/manual.html` · `screen/index.html` | 하지 않는다 |
+| **파생** | `documents/generated/` · `screen/*/mockup.html` · `build/deliverables/` | 하지 않는다 |
 | **파생이지만 빌드가 읽는다** | 생성 시드 CSV | **한다** — 빼면 새로 클론한 사람이 앱을 띄울 수 없다 |
 
-**목업은 세 번째 칸에 넣지 않는다.** Liquibase 가 기동에 읽는 시드 CSV 와 달리, 목업은
-`/manual-site` 를 **돌릴 때만** 필요하고 그 자리에서 `/mockup` 으로 만들 수 있다. 앱이 뜨는
+**목업은 세 번째 칸에 넣지 않는다.** 시드 CSV와 달리 `/manual-site` 때 `/mockup`으로 다시 만들 수 있다. 앱이 뜨는
 일과 문서를 만드는 일은 급함이 다르다.
 
 ## 3. 산출물 생성 원칙
 
 ### 원칙 A — SSOT를 먼저, 문서는 나중에
-`S` 표시 산출물만 손으로(=AI가 직접) 만든다. `G` 는 `/doc-gen` 스킬이 spec에서 생성한다.
+`S` 표시 산출물만 손으로(=AI가 직접) 만든다. `G` 는 `/doc-gen`, `/mockup`,
+`/deliverable-site` 같은 지정 생성기가 정본에서 만든다.
 사람이 `documents/generated/` 를 고치면 다음 생성 때 덮어써진다. 훅이 경고한다.
 
 ### 원칙 B — 문서는 "AI가 다시 읽을 것"을 전제로 쓴다

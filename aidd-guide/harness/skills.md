@@ -46,11 +46,13 @@ tags: [harness, skill, workflow, convention]
 | [`doc-gen`](./skill-src/doc-gen.md) | spec YAML 에서 읽는 문서를 만들 때 | `documents/spec/*.yaml` → `documents/generated/` |
 | [`menu-doc`](./skill-src/menu-doc.md) | 새 화면 착수 전 요건서 · 소스 변경 뒤 문서 대조 · 전수 결손 점검 | 원본이 둘(`requirements.md` · `manual.md`) |
 | [`mockup`](./skill-src/mockup.md) | 요건서를 고친 뒤 · 승인용 그림이 필요할 때 · `manual-site` 앞 | `requirements.md` → `mockup.html` |
-| [`manual-site`](./skill-src/manual-site.md) | 메뉴얼을 고친 뒤 · 고객사 제출본을 만들 때 · 화면을 캡처해 넣을 때 | `manual.md` + `mockup.html` → `manual.html` · `documents/screen/index.html` · `build/manual/` |
+| [`manual-site`](./skill-src/manual-site.md) | 메뉴얼을 고친 뒤 · 사용자 매뉴얼을 확인할 때 · 화면을 캡처해 넣을 때 | `manual.md` + 목업/캡처 → `build/deliverables/user/` |
+| [`runbook`](./skill-src/runbook.md) | 운영 절차를 세우거나 P6 인수 전 완결성을 검사할 때 | `80-operations.yaml` → `80-운영런북.md` |
+| [`deliverable-site`](./skill-src/deliverable-site.md) | 설계·사용자·운영 고객 제출 사이트와 선택 PDF를 만들 때 | 정본/파생 Markdown + 목업/캡처 → `build/deliverables/` |
 | [`trace`](./skill-src/trace.md) | 추적성 체인이 끊긴 곳을 찾을 때 | — (검사) |
 | [`redteam`](./skill-src/redteam.md) | 자기가 만든 산출물을 적대적으로 검토할 때 | — (검사) |
 
-**셋이 한 사슬이다**: `requirements.md` → `/mockup` → `/manual-site`. 앞의 것을 고치면 뒤를 다시
+**화면 셋이 한 사슬이다**: `requirements.md` → `/mockup` → `/manual-site`. 앞의 것을 고치면 뒤를 다시
 만든다 — 그리고 **뒤의 것을 고쳐 앞을 바꾸지 않는다.** 파생물은 형상 관리에 없어(AGENTS.md §4-5)
 새로 클론한 트리에는 목업도 메뉴얼 HTML 도 **없는 것이 정상**이다.
 
@@ -96,8 +98,8 @@ aidd-guide/harness/skill-src/{이름}.md    공통 정본
 ### 원본은 하나, 나머지는 파생
 
 - **파생물을 손으로 고치지 않는다.** 다음 생성에서 사라진다(AGENTS.md §5-11).
-- 모양을 바꿔야 하면 **생성기를 고친다**(`/manual-site` 는 `lib/page.mjs` 의 스타일 상수).
-- 저장소 파생물은 **소스와 같은 커밋**에, 제출본(`build/`)은 **담지 않는다**(§8).
+- 모양을 바꿔야 하면 **생성기를 고친다**(세 제출 사이트는 `artifact/site-kit/assets/`).
+- 제출본(`build/`)은 **담지 않는다**(§8). 정본과 생성기를 커밋하고 필요할 때 다시 만든다.
 
 ### 스크립트는 의존성 없이 돈다
 
@@ -105,7 +107,6 @@ aidd-guide/harness/skill-src/{이름}.md    공통 정본
 - **무거운 의존은 옵션이고, 없을 때의 길이 반드시 있어야 한다.** `capture.mjs` 는 playwright 가 필요하고
   로컬 앱·계정까지 요구하지만, **없으면 목업 그림으로 메뉴얼이 나온다.** 전제가 없으면 산출물도 없는
   스킬은 폐쇄망에서 없는 스킬이다.
-- `.pptx` 는 XML 을 담은 ZIP 이라 라이브러리 없이 쓴다 — 같은 이유의 결과다.
 - 자격증명은 **인자나 환경변수로만** 받는다. 소스에 적지 않는다.
 
 ### 실물 목록을 스킬이 늘리지 않는다
@@ -118,8 +119,7 @@ aidd-guide/harness/skill-src/{이름}.md    공통 정본
 
 - 결손·불일치를 먼저 쓰고 잘된 것은 뒤에 짧게(AGENTS.md §5-10).
 - **빈 점검 결과를 채우려고 산출물을 새로 만들지 않는다.** 무엇을 만들지는 사용자가 정한다.
-- 생성기가 검사할 수 있는 것에는 끝이 있다 — `.pptx` 는 **PowerPoint 로 열어 확인한다**.
-  규격을 지켰다는 것이 *그 프로그램이 연다* 와 같은 말은 아니다.
+- 생성기가 검사할 수 있는 것에는 끝이 있다 — 고객 브라우저와 PDF 뷰어에서 최종 열람을 확인한다.
 
 ## 새 스킬을 만들 때
 

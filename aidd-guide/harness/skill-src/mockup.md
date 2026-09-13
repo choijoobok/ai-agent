@@ -90,7 +90,7 @@ node .claude/skills/mockup/scaffold.mjs --check log/access    # 하나
 ## ③ `/manual-site` 앞에 온다
 
 ```
-requirements.md ──/mockup──> mockup.html ──/manual-site──> manual.html · 고객사 제출본
+requirements.md ──/mockup──> mockup.html ──/manual-site──> build/deliverables/user/
 ```
 
 목업이 형상 관리에 없으므로 **메뉴얼 사이트를 만들려면 목업이 먼저 있어야 한다.**
@@ -111,4 +111,4 @@ for s in $(node .claude/skills/mockup/scaffold.mjs --list | sed -n '2,$p' | awk 
 
 - **요건서 없이 목업을 만들지 않는다**(`AGENTS.md` §6 — ①이 없으면 ②를 시작하지 않는다).
 - **목업에만 있는 규칙을 남기지 않는다.** 그림을 그리다 결정이 필요해지면 **요건서에 적고 나서** 그린다.
-- **`manual.html` 을 만들지 않는다** — `/manual-site` 의 몫이다.
+- **사용자 사이트를 만들지 않는다** — `/manual-site` 의 몫이다.

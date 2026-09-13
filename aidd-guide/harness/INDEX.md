@@ -57,7 +57,9 @@ tags: [harness, hooks, skills, automation, index]
 | `/doc-gen` | spec YAML → `documents/generated/` |
 | `/menu-doc` | 화면 문서(요건서·메뉴얼) 생성·현행 대조 |
 | `/mockup` | 요건서 → `mockup.html` (파생) |
-| `/manual-site` | 메뉴얼 열람 페이지 + 고객사 제출본(`build/manual/`) 생성 |
+| `/manual-site` | 화면별 메뉴얼 + 목업/캡처 → 사용자 매뉴얼 사이트 |
+| `/runbook` | 운영 런북 정본 작성·완결성 검사 |
+| `/deliverable-site` | 설계·사용자·운영 오프라인 고객 제출 사이트 생성 |
 | `/trace` · `/redteam` | 추적성 검사 · 적대적 검토 |
 | `/harness-sync` · `$harness-sync` | 공통 명세부터 양쪽 스킬·훅을 추가·복구 |
 

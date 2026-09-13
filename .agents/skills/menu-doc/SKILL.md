@@ -44,7 +44,7 @@ node .claude/skills/menu-doc/screens.mjs
 4. **`$mockup` 으로 목업을 만든다** — 요건서에서 생성된다. 승인은 *요건서와 목업을 함께* 보는 판단이다.
 5. **사용자 검토를 받는다.** 승인 뒤에 구현으로 간다.
 6. 구현과 **동시에** `manual.md` 를 만든다.
-   - `manual.html` 은 만들지 않는다 — `$manual-site` 가 생성한다.
+   - 제출 HTML은 만들지 않는다 — `$manual-site` 가 한 사용자 사이트로 생성한다.
    - 메뉴얼이 `[설명](mockup.html#키)` 로 부르는 그림은 목업에 `data-manual` 로 있어야 한다.
      짝이 어긋나면 `$mockup --check` 와 `$manual-site` 가 보고한다.
 

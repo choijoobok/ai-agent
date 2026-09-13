@@ -70,7 +70,7 @@
 
 ---
 
-## 스킬 — 14 개
+## 스킬 — 16 개
 
 공통 원본에서 두 발견 경로로 생성한다. **AI가 정해진 절차를 따르게 하는 지시서**다.
 
@@ -78,16 +78,18 @@
 |---|---|---|---|
 | `/adr` | `$adr` | 아키텍처 의사결정 기록(ADR)을 작성한다. | 되돌리기 비용이 큰 기술·설계 선택을 대안·근거·포기한 것과 함께 남긴다. 기술 스택, DB, 인증, 아키텍처 스타일 등을 정할 때 사용. |
 | `/change-request` | `$change-request` | 베이스라인 이후의 변경 요청(CR)을 처리한다. | 영향 분석, 3옵션 제시, 사용자 판정, spec 반영, 재작업 범위 산정. G3 승인 후 설계나 요구사항을 바꿔야 할 때 사용. |
+| `/deliverable-site` | `$deliverable-site` | 설계 산출물·사용자 매뉴얼·운영 런북/개발자 가이드를 좌측 트리형 오프라인 HTML 사이트와 선택 PDF로 조립한다. | "고객 제출본", "산출물 사이트", "모든 문서를 HTML", "오프라인 매뉴얼", "PDF 제출본" 요청에 사용한다. |
 | `/doc-gen` | `$doc-gen` | documents/spec/ 의 YAML에서 사람이 읽는 산출물 문서를 생성한다. | 요건정의서, 유즈케이스 명세, ERD, API 문서, 화면정의서, 권한 매트릭스, 테스트 케이스, 사용자 매뉴얼 등을 documents/generated/ 아래에 만든다. |
 | `/harness-sync` | `$harness-sync` | Claude Code와 Codex가 함께 쓰는 스킬·훅을 추가하거나 수정하고 양쪽 구현의 누락·불일치를 복구한다. | "새 스킬", "새 훅", "Claude와 Codex에 같이 추가", "하네스 동기화", "하네스 불일치" 요청이나 SessionStart parity 경고가 있을 때 쓴다. |
 | `/interview` | `$interview` | 현재 단계에서 사용자에게 물어야 할 것을 질문 배치로 만들어 제시한다. | 각 질문에 권장안·영향범위·되돌리기비용을 붙인다. 정보가 부족해 진행이 막혔을 때 사용. |
 | `/kickoff` | `$kickoff` | 새 시스템 구축 프로젝트를 시작한다. | 사용자가 "○○ 시스템을 만들고 싶다"고 할 때 AI-SDLC 방법론에 따라 P0 착수를 개시하고, 프로젝트 뼈대와 첫 질문 배치를 만든다. |
-| `/manual-site` | `$manual-site` | 화면별 manual.md 에서 사용자 메뉴얼 산출물을 만든다 — 저장소용 manual.html·열람 페이지와, 고객사에 통째로 복사해 전달하는 build/manual/ 폴더(화면 그림 포함 · 인쇄용 PDF · 선택 PPTX). 메뉴얼을 고친 뒤, 제출본을 만들 때, 실제 화면을 캡처해 넣을 때 쓴다. | "메뉴얼 HTML" · "메뉴얼 사이트" · "제출본" · "PDF" · "PPT" · "화면 캡처" 요청에 쓴다. |
+| `/manual-site` | `$manual-site` | 화면별 manual.md를 사용자 매뉴얼 오프라인 사이트로 조립하고 목업·실제 캡처 치환 상태를 검사한다. | 메뉴얼을 고친 뒤, 사용자 메뉴얼 HTML을 만들 때, 실제 화면을 캡처해 넣을 때 쓴다. "메뉴얼 HTML" · "메뉴얼 사이트" · "화면 캡처" 요청에 쓴다. |
 | `/menu-doc` | `$menu-doc` | 메뉴 화면의 문서(requirements.md · manual.md)를 시작하거나, 소스와 대조해 현행화하거나, 전체 화면의 결손 현황을 센다. | 새 화면 착수 전 요건서를 쓸 때, 화면 소스를 고친 뒤 문서를 맞출 때, "화면 문서" · "요건서" · "메뉴얼" 을 만들거나 점검하라는 요청에 쓴다. 목업은 /mockup 이 요건서에서 생성한다. |
 | `/mockup` | `$mockup` | 화면 목업(mockup.html)을 요건서에서 생성하거나, 있는 목업이 요건서·메뉴얼과 어긋나지 않는지 검사한다. | 요건서를 고친 뒤 목업을 맞출 때, 새 화면의 목업을 처음 만들 때, "목업을 만들어" · "목업 다시 그려" · "목업 검사" 요청에 쓴다. 목업은 파생물이라 형상 관리에 없으므로 /manual-site 를 돌리기 전에 이 스킬로 먼저 만든다. |
 | `/phase-gate` | `$phase-gate` | 단계 게이트를 점검하고 통과를 요청한다. | Exit Criteria 자체검증 → 레드팀 자기반박 → 사용자 승인 요청의 4단계를 실행한다. 한 단계를 마치고 다음으로 넘어갈 때 반드시 사용. |
 | `/pm-status` | `$pm-status` | 프로젝트 현재 상태를 보고한다. | 지금 어느 단계인지, 게이트 상태, 미결 질문, 진행 중 슬라이스, 다음 할 일을 한 화면에 정리한다. 세션 시작 시나 "지금 어디까지 됐어?" 물을 때 사용. |
 | `/redteam` | `$redteam` | 현재 산출물을 적대적으로 검토한다. | AI가 자기가 만든 설계·요구사항·코드를 인수 심사자 입장에서 공격해 실패 시나리오, 누락, 사용자가 반대할 지점을 찾아낸다. 게이트 전이나 중요 산출물 완료 후 사용. |
+| `/runbook` | `$runbook` | 운영 런북 정본을 P2~P6 근거로 작성·검증하고 RUN ID, 장애 대응, 백업/복구, 모니터링, 정기 작업, 에스컬레이션의 누락을 점검한다. | "운영 런북", "장애 대응 절차", "백업 복구 절차", "운영 인수" 요청에 사용한다. |
 | `/slice` | `$slice` | 수직 슬라이스 하나를 구현한다. | 소유 작업흐름과 스펙 확인 → 테스트 먼저 → 필요한 층 구현 → 계약·테스트 통과 → 미니게이트 순으로 진행한다. P4 구현 단계에서 기능 하나를 만들 때 사용. |
 | `/trace` | `$trace` | 추적성 체인을 검사한다. | REQ→UC→FEAT→ENT/API/SCR→TC 연결이 끊긴 곳, 고아 산출물, 미실현 요구사항, dangling ID를 찾아 보고하고 추적성 매트릭스를 생성한다. |
 
@@ -95,10 +97,13 @@
 
 | 스킬 | 스크립트 | 직접 돌리려면 |
 |---|---|---|
+| `/deliverable-site` | `build.mjs` | `node .claude/skills/deliverable-site/build.mjs` |
+| `/deliverable-site` | `check.mjs` | `node .claude/skills/deliverable-site/check.mjs` |
 | `/doc-gen` | `gen.mjs` | `node .claude/skills/doc-gen/gen.mjs` |
 | `/manual-site` | `build.mjs` | `node .claude/skills/manual-site/build.mjs` |
 | `/manual-site` | `capture.mjs` | `node .claude/skills/manual-site/capture.mjs` |
 | `/menu-doc` | `screens.mjs` | `node .claude/skills/menu-doc/screens.mjs` |
 | `/mockup` | `scaffold.mjs` | `node .claude/skills/mockup/scaffold.mjs` |
 | `/pm-status` | `deferred.mjs` | `node .claude/skills/pm-status/deferred.mjs` |
+| `/runbook` | `check.mjs` | `node .claude/skills/runbook/check.mjs` |
 
