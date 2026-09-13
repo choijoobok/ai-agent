@@ -5,7 +5,7 @@ category: standard/backend
 type: operation
 class: policy
 created: 2026-05-04
-updated: 2026-09-07
+updated: 2026-09-13
 status: active
 sources: ["sources/backend/"]
 tier: 2
@@ -17,15 +17,17 @@ tags: [backend, module, package, naming, transaction]
 > **무엇을 어디에 두고 무엇이라 부르는가.** 새 기능을 만들 때 가장 먼저 정해지고,
 > 한 번 틀리면 가장 늦게 드러나는 것들이다.
 
-## 1. 모듈 다섯
+## 1. 모듈과 소유권
 
 ```
 sources/backend/
-├── core/       도메인 비종속 커널 — 응답·에러·검색 규약·감사 엔티티
-├── support/    기술 어댑터 — 엑셀·락·로깅·시각·설정
-├── domain/     백오피스 공통 도메인 — 엔티티·리포지터리·서비스
-├── api/        REST 컨트롤러 · 요청 DTO · Security 설정 · 예외 핸들러
-└── bootstrap/  실행 모듈 — main · application.yml · Liquibase · 프론트 임베드
+├── core/             도메인 비종속 커널 — 응답·에러·검색 규약·감사 엔티티
+├── support/          core만 의존하는 기술 어댑터 — 엑셀·락·로깅·시각·설정
+├── domain/           이행 전 공통 업무 도메인 — 엔티티·리포지터리·서비스
+├── api/              HTTP·Security·필터·예외·세션 경계
+├── modules/system/   system 업무 API·DTO·도메인
+├── modules/sample/   통째로 제거 가능한 참조 구현 API·DTO·도메인
+└── bootstrap/        조립 루트 — main · application.yml · Liquibase · 프론트 임베드
 ```
 
 | 모듈 | 의존 |
@@ -34,14 +36,19 @@ sources/backend/
 | `support` | `core` |
 | `domain` | `core` · `support` |
 | `api` | `core` · `support` · `domain` |
-| `bootstrap` | 전부 |
+| `modules/system` | `api` |
+| `modules/sample` | `api` |
+| `bootstrap` | `api` · `modules/system` · `modules/sample` |
 
-**의존 방향은 `LayerDependencyTest`(ArchUnit)가 강제한다.** 역방향·순환은 빌드가 깨진다.
+이 표는 **현재 Gradle 직접 의존**이다. `api`가 이행 전 `domain`을 공개하므로 system·sample도 그 타입을 간접 가시성으로 쓸 수 있다. 새 모듈이 다른 제품 모듈 내부를 참조하는 것은 금지하며,
+`LayerDependencyTest`와 `SampleIsolationTest`가 역방향·샘플 누출을 막는다.
 
-> **왜 헥사고날이 아닌가.** 백오피스 CRUD 가 대부분인 템플릿에서 포트/어댑터를 전면
-> 도입하면 **파일 수가 3배**가 된다. 교체 가능성이 실제로 있는 지점(락·엑셀·스토리지)만
-> 인터페이스로 갈라 `support` 에 두고, 나머지는 계층형으로 단순하게 간다.
-> 이 프로젝트의 제1 목표는 **짧고 공통화된 소스**다(AGENTS.md §1).
+`api`에는 `auth`·`authz`·`config`·`error`·`log`·`message`·`progress`·`system`
+(`SystemInfoController`)·`trace`만 둔다. 이들은 HTTP·Security·요청 경계 공통물이므로
+`core`나 `support`로 옮기지 않는다. 제품 업무는 `modules/{모듈}`로 이행한다.
+
+> **왜 헥사고날이 아닌가.** 포트/어댑터 전면 도입 대신 교체 가능성이 실제로 있는
+> 락·엑셀·스토리지만 `support`로 갈라 짧고 공통화된 소스를 유지한다(AGENTS.md §1).
 
 ## 2. 패키지 — `com.aiagent`
 
@@ -52,23 +59,22 @@ domain      {애그리거트}/
               entity/  repository/
               {기능}/          ← 화면 하나가 쓰는 것들이 여기 모인다
               service/         ← 공통 계층이 쓰는 서비스만
-api         {화면·도메인}/
+api         {HTTP·Security·요청 경계}/
               controller · request/ · (필요 시) response/
+modules     {모듈}/src/main/java/com/aiagent/{모듈}/
+              api/ · domain/ · public/
 ```
 
-애그리거트 열여덟: `auth` `authz` `batch` `code` `config` `favorite` `gridpref` `lock`
-`log` `menustat` `message` `notification` `progress` `retention` `sample` `search`
-`searchcond` `user`
+이행 전 `domain` 애그리거트 열일곱: `auth` `authz` `batch` `code` `config` `favorite` `gridpref`
+`lock` `log` `menustat` `message` `notification` `progress` `retention` `search` `searchcond` `user`.
+`sample`은 여기에 두지 않고 `modules/sample`이 전부 소유한다.
 
 ### 레이어가 아니라 기능으로 묶는다
 
-`controller/` · `service/` · `entity/` 를 최상위에 두지 않는다. **업무 화면 하나를 추가할 때
-건드리는 파일이 한 디렉터리에 모이는 편**이 유지보수에 유리하다.
+`controller/` · `service/` · `entity/`를 최상위에 두지 않고 업무 화면별 파일을 모은다.
 
-`dto/` 는 두지 않는다. 애그리거트 안은 **엔티티·리포지터리 둘과 기능 서브패키지**로 갈리고,
-한 화면이 쓰는 것들(`*Service` · `*QueryService` · `*Row` · `*SaveRow` · `*Spec` · `*Params` ·
-`*ErrorCode`)이 그 서브패키지에 모인다 — `code/admin` · `user/detail` · `authz/menu` ·
-`batch/schedule` 이 그 모양이다.
+`dto/`는 두지 않는다. 애그리거트 안은 엔티티·리포지터리와 기능 서브패키지로 갈리고,
+`*Service`·`*QueryService`·`*Row`·`*SaveRow`·`*Spec`·`*Params`·`*ErrorCode`를 기능에 모은다.
 
 ## 3. 이름
 
@@ -101,19 +107,12 @@ POST /api/service/system/code/saveGroup
 - **행을 여럿 받아도 단수다.** `saveGroups` 가 아니라 `saveGroup` 이다 — 일괄 저장은 이
   저장소의 기본이라 이름에 적을 것이 없고, 적으면 **URL 과 갈린다**. *무엇을 몇 개 받나*
   는 시그니처가 말한다.
-- **`/service/` 와 `/public/` 에서만 그렇다.** 실측: `/service/` **81개 전부
-  일치** · `/public/` 4개 전부 일치 · **`/common/` 은 17개 중 8개가 갈린다**(`favorite/save`
-  → `add()` · `noti/saveRead` → `markRead()`). 갈리는 것이 옳다 — 공통 경로는 **URL 접두가
-  인가 액션을 정하므로**([api.md](./api.md)) 접두를 바꿀 수 없고, 그 제약을 자바 메서드
-  이름까지 끌고 가면 `markRead` 가 `saveRead` 가 된다.
-- **왜 못박나.** 규칙이 없으면 자연스러운 답이 갈린다 — 여럿을 받으니 `saveCodes` ·
-  `saveGroups` 로 쓰는 쪽이 그만큼 자연스럽다. 갈리면 화면을 따라 읽는 사람이 **URL 에서
-  서비스로 건너갈 때마다 이름을 다시 찾는다.**
+- **`/service/`와 `/public/`에서만 그렇다.** `/common/`은 접두가 인가 액션을 정하므로
+  `favorite/save` → `add()`처럼 갈릴 수 있다([api.md](./api.md)).
+- 이 규칙은 복수 입력 때문에 `saveGroups`처럼 URL과 서비스 이름이 갈리는 일을 막는다.
 
-> **`Admin` 을 이름의 장식으로 쓰지 않는다.** 한때 조회 열일곱 중 여섯이
-> `*AdminQueryService` 였고 그 여섯은 **모두 `<도메인>/admin/` 패키지 안에 있었다** —
-> 같은 말을 두 번 하면서 나머지 열하나와 갈렸다. **새 화면을 만드는 사람은 둘 중 무엇을
-> 따라야 할지 알 수 없다.** 이름은 패키지가 못 하는 말만 해야 한다.
+> **`Admin`을 이름의 장식으로 쓰지 않는다.** `<도메인>/admin/` 패키지가 이미 말하는 역할을
+> 이름에 반복하면 다른 조회 서비스와 갈린다. 이름은 패키지가 못 하는 말만 해야 한다.
 >
 > **그래서 `<기능>` 은 마디 둘을 가른다.** `detail`·`menu`·`schedule` 은 **기능**이라 이름에
 > 들어가고(`UserDetailService`·`BatchScheduleService`), `admin`·`service` 는 **역할**이라
@@ -180,17 +179,18 @@ POST /api/service/system/code/saveGroup
 
 | 테스트 | 무엇 |
 |---|---|
-| `LayerDependencyTest` | 모듈 의존 방향 (core ← support ← domain ← api) |
+| `LayerDependencyTest` | 기반 모듈 의존 방향 (`core ← support ← domain ← api`) |
 | `ServiceConventionTest` | 조회 서비스는 클래스 레벨 `readOnly` · 메서드 레벨 없음 · 이름에 `Admin` 없음 / 컨트롤러에 트랜잭션 없음 |
-| `SampleIsolationTest` | 밖에서 샘플 참조 금지 · 샘플은 `SMPL_` 테이블만 |
+| `SampleIsolationTest` | 샘플 전용 모듈·구 패키지 부재 · 밖에서 참조 금지 · `SMPL_` 테이블만 |
 | `RestrictedSessionPathTest` | 세션 제한 경로 |
 | `ApiOperationSummaryTest` | API 요약 |
 
 전부 `sources/backend/bootstrap/src/test/java/com/aiagent/architecture/` 에 있고
 `./gradlew check -PskipFrontend` 가 돌린다.
 
-**샘플은 통째로 삭제 가능해야 한다** — 고객사에 넘길 때 지우는 것이 `sample` 하나이도록.
-그래서 공통 코드가 샘플을 참조하면 빌드가 깨진다.
+**샘플은 통째로 삭제 가능해야 한다** — `modules/sample`과 bootstrap 조립·프런트 라우트·시드
+입력만 걷으면 된다. 외부 주소 `/sample/**`·`/api/service/sample/**`는 참조 계약을 유지하고,
+공통·제품 코드는 샘플을 참조하지 않는다. 프런트의 유일한 외부 조립 참조는 라우트 레지스트리다.
 
 ## 관련
 

@@ -19,7 +19,7 @@
 |---|---|
 | 페이지 경로 | `/sample/md-tabs` |
 | 메뉴코드 | `SMPL_MD_TABS` |
-| 프론트 폴더 | `sources/frontend/src/features/sample/mdtabs/` |
+| 프론트 폴더 | `sources/frontend/src/modules/sample/features/mdtabs/` |
 | 백엔드 패키지 | `sources/backend/domain/…/domain/sample/` · `sources/backend/api/…/api/sample/mdtabs/` |
 | 화면 유형 | **마스터-디테일(상하) + 하단 탭 둘** |
 | 처리 유형 | CRUD — **저장 단위가 셋** |
@@ -82,7 +82,7 @@
 
 ### 4-1a. 품목 탭 — **열**
 
-`features/sample/itemColumns.ts` 의 공용 선언. 표는
+`modules/sample/itemColumns.ts` 의 공용 선언. 표는
 [상하 화면 §4-1a](../md-vertical/requirements.md) 가 갖는다.
 
 ### 4-1b. 태그 탭 — **넷**

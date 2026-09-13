@@ -113,6 +113,6 @@ tags: [stack, version, gradle, npm]
 
 ## 관련
 
-- [standard/backend/packages.md](./backend/packages.md) — 모듈 다섯과 의존 방향
+- [standard/backend/packages.md](./backend/packages.md) — 백엔드 모듈·소유권·의존 방향
 - [standard/backend/persistence.md](./backend/persistence.md) — 다섯 벤더
 - [standard/frontend/packages.md](./frontend/packages.md) — 프론트 구조

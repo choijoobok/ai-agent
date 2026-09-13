@@ -68,12 +68,12 @@ modules/system/        사용자 · 메뉴 · 역할 · 권한 · 공통코드 �
 modules/admin/         AI 기준 정보 · 지식 · 정책 · 설정 · 운영 화면/API
 modules/portal/        사용자 portal 화면/API
 modules/agent/         질의 · 실행 · LLM/업무 시스템 연동. UI 없음
+modules/sample/        배포에 포함하되 통째로 제거 가능한 참조 구현
 extensions/{시스템}/   업무 확장 — 빌드에 넣을 때만 있다 (WMS · OMS · TMS …)
 ```
 
-- **`modules/` 넷은 제품 모듈이고 늘지 않는다. 늘어나는 것은 `extensions/`다**
-  (ADR-007 · ARCH-016~018).
-  업무 확장은 **자기 업무 DB 를 소유하고**(별도 `DataSource`·별도 Liquibase master),
+- **제품 모듈은 system·admin·portal·agent 넷이고 늘지 않는다. `sample`은 제품·작업흐름으로 세지 않는 참조 구현이며, 늘어나는 것은 `extensions/`다**(ADR-007 · ARCH-016~018·027).
+  업무 확장은 **자기 업무 DB를 소유하고**(별도 `DataSource`·별도 Liquibase master),
   **Hub 를 참조하되 Hub 는 확장을 참조하지 않는다** — 그래서 넣지 않고 빌드해도 Hub 가 선다.
   좌측 메뉴 트리에는 **형제 노드**로 붙는다. **자리만 열어 둔 상태이며 구현은 Hub 완성 뒤다.**
 - **platform·shared는 어떤 제품 모듈에도 의존하지 않는다.** 역방향 의존이 생기면 agent

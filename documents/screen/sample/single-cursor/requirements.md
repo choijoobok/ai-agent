@@ -21,7 +21,7 @@
 |---|---|
 | 페이지 경로 | `/sample/single-cursor` |
 | 메뉴코드 | `SMPL_SINGLE_CURSOR` |
-| 프론트 폴더 | `sources/frontend/src/features/sample/singlecursor/` |
+| 프론트 폴더 | `sources/frontend/src/modules/sample/features/singlecursor/` |
 | 백엔드 패키지 | `sources/backend/domain/…/domain/sample/` · `sources/backend/api/…/api/sample/singlecursor/` |
 | 화면 유형 | **단일 그리드** |
 | 처리 유형 | **조회 전용** |

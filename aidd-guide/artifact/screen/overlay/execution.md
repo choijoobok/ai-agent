@@ -6,7 +6,7 @@ type: operation
 created: 2026-09-03
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/features/sample/singleoffset/pages/SampleSingleOffsetPage.tsx", "sources/frontend/src/features/sample/mdvertical/pages/SampleMdVerticalPage.tsx", "aidd-guide/artifact/template/02-requirements.md"]
+sources: ["sources/frontend/src/modules/sample/features/singleoffset/pages/SampleSingleOffsetPage.tsx", "sources/frontend/src/modules/sample/features/mdvertical/pages/SampleMdVerticalPage.tsx", "aidd-guide/artifact/template/02-requirements.md"]
 tier: 1
 tags: [prompt, overlay, execution, progress]
 ---
@@ -67,9 +67,9 @@ RCV --확정--> CFM --출고--> SHP --완료--> DON
 
 | | |
 |---|---|
-| 응답이 곧 끝 | `features/sample/singleoffset/` 의 *확정* |
+| 응답이 곧 끝 | `modules/sample/features/singleoffset/` 의 *확정* |
 | 인자 모달 + 진행률 | 〃 의 *일괄 재계산* |
-| 행 × 자식 진행률 | `features/sample/mdvertical/` 의 *품목 금액 재계산* |
+| 행 × 자식 진행률 | `modules/sample/features/mdvertical/` 의 *품목 금액 재계산* |
 
 ## 구현은
 

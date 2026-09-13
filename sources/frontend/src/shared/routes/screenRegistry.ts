@@ -77,29 +77,29 @@ export const SCREENS: Record<string, LazyExoticComponent<ComponentType>> = {
   })),
   /*
     샘플 — 68. **참조 구현이지 업무 화면이 아니다.** 걷어낼 때 지우는 줄이 여기 있고
-    (playbook/INDEX.md) `generateApiSeed` 가 이 줄을 따라와 `@/features/sample/mdvertical/api/endpoints.ts` 를
+    (playbook/INDEX.md) `generateApiSeed` 가 이 줄을 따라와 `@/modules/sample/features/mdvertical/api/endpoints.ts` 를
     읽으므로, 지우면 006·007 시드에서 샘플 API 가 저절로 사라진다.
   */
   '/sample/single-offset': lazy(async () => ({
-    default: (await import('@/features/sample/singleoffset/pages/SampleSingleOffsetPage'))
+    default: (await import('@/modules/sample/features/singleoffset/pages/SampleSingleOffsetPage'))
       .SampleSingleOffsetPage,
   })),
   '/sample/single-cursor': lazy(async () => ({
-    default: (await import('@/features/sample/singlecursor/pages/SampleSingleCursorPage'))
+    default: (await import('@/modules/sample/features/singlecursor/pages/SampleSingleCursorPage'))
       .SampleSingleCursorPage,
   })),
   '/sample/md-horizontal': lazy(async () => ({
-    default: (await import('@/features/sample/mdhorizontal/pages/SampleMdHorizontalPage'))
+    default: (await import('@/modules/sample/features/mdhorizontal/pages/SampleMdHorizontalPage'))
       .SampleMdHorizontalPage,
   })),
   '/sample/md-vertical': lazy(async () => ({
-    default: (await import('@/features/sample/mdvertical/pages/SampleMdVerticalPage')).SampleMdVerticalPage,
+    default: (await import('@/modules/sample/features/mdvertical/pages/SampleMdVerticalPage')).SampleMdVerticalPage,
   })),
   '/sample/md-tabs': lazy(async () => ({
-    default: (await import('@/features/sample/mdtabs/pages/SampleMdTabsPage')).SampleMdTabsPage,
+    default: (await import('@/modules/sample/features/mdtabs/pages/SampleMdTabsPage')).SampleMdTabsPage,
   })),
   '/sample/excel': lazy(async () => ({
-    default: (await import('@/features/sample/excel/pages/SampleExcelPage')).SampleExcelPage,
+    default: (await import('@/modules/sample/features/excel/pages/SampleExcelPage')).SampleExcelPage,
   })),
 };
 

@@ -24,7 +24,7 @@
 |---|---|
 | 페이지 경로 | `/sample/md-horizontal` |
 | 메뉴코드 | `SMPL_MD_HORZ` |
-| 프론트 폴더 | `sources/frontend/src/features/sample/mdhorizontal/` (+ 공통 `features/sample/itemColumns.ts`) |
+| 프론트 폴더 | `sources/frontend/src/modules/sample/features/mdhorizontal/` (+ 공통 `modules/sample/itemColumns.ts`) |
 | 백엔드 패키지 | `sources/backend/domain/…/domain/sample/` · `sources/backend/api/…/api/sample/mdvertical/` — **상하 화면과 컨트롤러를 공유한다** |
 | 화면 유형 | **마스터-디테일(좌우)** |
 | 처리 유형 | CRUD — **실행이 없다** |
@@ -92,7 +92,7 @@
 
 ### 4-1a. 우 — 품목 **열**
 
-`features/sample/itemColumns.ts` 의 공용 선언을 쓴다 — 표는
+`modules/sample/itemColumns.ts` 의 공용 선언을 쓴다 — 표는
 [상하 화면 §4-1a](../md-vertical/requirements.md) 가 갖는다. **여기 옮겨 적지 않는다**(AGENTS.md §4-3).
 
 ### 4-4. 팝업 · 모달 선택 결과 매핑

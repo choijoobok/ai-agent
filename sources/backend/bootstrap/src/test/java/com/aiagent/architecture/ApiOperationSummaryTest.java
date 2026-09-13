@@ -30,7 +30,7 @@ class ApiOperationSummaryTest {
 
     private final JavaClasses classes = new ClassFileImporter()
             .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-            .importPackages("com.aiagent.api");
+            .importPackages("com.aiagent.api", "com.aiagent.system", "com.aiagent.sample");
 
     @Test
     @DisplayName("업무 API 핸들러 전부가 @Operation.summary 를 갖는다")

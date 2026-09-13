@@ -1,3 +1,4 @@
+// @feat FEAT-503
 package com.aiagent.architecture;
 
 import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideOutsideOfPackage;
@@ -19,7 +20,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * 샘플은 <b>통째로 지울 수 있어야 한다</b> — aidd-guide/standard/conventions.md §7.
+ * 샘플은 <b>통째로 지울 수 있어야 한다</b> — aidd-guide/standard/backend/packages.md §5.
  *
  * <p>[10] §L 이 샘플을 <i>"참조 구현"</i> 으로 정의하면서 함께 요구한 것이 격리다. 사용
  * 프로젝트는 샘플을 베낀 다음 걷어내는데, 그 삭제가 <b>폴더 하나와 선언 몇 줄</b>이 아니면
@@ -64,6 +65,17 @@ class SampleIsolationTest {
             .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
             .importPackages(BASE);
 
+    @Test
+    @DisplayName("TC-5035 샘플 API와 도메인은 전용 sample 모듈 패키지에만 존재한다")
+    void sampleLivesOnlyInTheDedicatedModule() throws Exception {
+        assertThat(Class.forName("com.aiagent.sample.api.singleoffset.SampleSingleOffsetController"))
+                .isNotNull();
+        assertThat(Class.forName("com.aiagent.sample.domain.SampleOrderService")).isNotNull();
+
+        assertClassMissing("com.aiagent.api.sample.singleoffset.SampleSingleOffsetController");
+        assertClassMissing("com.aiagent.domain.sample.SampleOrderService");
+    }
+
     /**
      * LayerDependencyTest 와 같은 이유의 방어다 — 임포트가 비면 아래 규칙이 전부 공허하게
      * 통과한다. 샘플의 존재를 걸지 않는 것은 <b>샘플이 없는 것이 정상 상태</b>이기 때문이다.
@@ -82,6 +94,20 @@ class SampleIsolationTest {
         noClasses()
                 .that().resideOutsideOfPackage(SAMPLE)
                 .should().dependOnClassesThat().resideInAPackage(SAMPLE)
+                .allowEmptyShould(true)
+                .check(classes);
+    }
+
+    @Test
+    @DisplayName("샘플은 제품 모듈 내부를 참조하지 않는다")
+    void sampleDoesNotDependOnProductModules() {
+        noClasses()
+                .that().resideInAPackage(SAMPLE)
+                .should().dependOnClassesThat().resideInAnyPackage(
+                        BASE + ".system..",
+                        BASE + ".admin..",
+                        BASE + ".portal..",
+                        BASE + ".agent..")
                 .allowEmptyShould(true)
                 .check(classes);
     }
@@ -143,5 +169,10 @@ class SampleIsolationTest {
         }
         JavaAnnotation<JavaClass> table = entity.getAnnotationOfType(TABLE);
         return table.get("name").map(String::valueOf).filter(n -> !n.isBlank());
+    }
+
+    private static void assertClassMissing(String className) {
+        assertThat(org.assertj.core.api.Assertions.catchThrowable(() -> Class.forName(className)))
+                .isInstanceOf(ClassNotFoundException.class);
     }
 }

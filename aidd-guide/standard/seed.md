@@ -5,7 +5,7 @@ category: standard
 type: operation
 class: none
 created: 2026-09-03
-updated: 2026-09-07
+updated: 2026-09-13
 status: active
 sources: ["sources/backend/bootstrap/build.gradle.kts"]
 tier: 1
@@ -24,7 +24,7 @@ tags: [seed, liquibase, gradle, authz, message]
 | 태스크 | 입력 | 산출물 | DB 반영 |
 |---|---|---|---|
 | **`generateMenuSeed`** | `menu/menu-tree.yaml` (사람이 쓰는 선언) | `003-init-menu.csv` | **upsert — 삭제하지 않는다.** 선언에서 사라진 메뉴는 `SRC_CD='ORPHAN'` |
-| **`generateApiSeed`** | 컨트롤러 `@RequestMapping`(`/api/service/**`) · `@Operation` · 프론트 `endpoints.ts` · `screenRegistry.ts` · `menu-tree.yaml` | `006-init-api.csv`<br>`007-init-menu-api.csv` | **전건 삭제 → 전건 삽입** |
+| **`generateApiSeed`** | api·system·sample 모듈 컨트롤러 `@RequestMapping`(`/api/service/**`) · `@Operation` · 프론트 `endpoints.ts` · `screenRegistry.ts` · `menu-tree.yaml` | `006-init-api.csv`<br>`007-init-menu-api.csv` | **전건 삭제 → 전건 삽입** |
 | **`generateMessageSeed`** | 프론트 `MSG` · 백엔드 `MsgKey`(+`ErrorCode`) **+ 직전 시드 파일** | `008-init-message-key.csv` | **없는 것만 추가** + `USE_SCOPE` 전건 재계산 |
 | `check*Seed` 셋 | 위 + **커밋본** | — (비교) | — |
 

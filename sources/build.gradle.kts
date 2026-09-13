@@ -52,6 +52,7 @@ configure(listOf(
     project(":backend:core"),
     project(":backend:domain"),
     project(":backend:modules:system"),
+    project(":backend:modules:sample"),
 )) {
     apply(plugin = "info.solidsoft.pitest")
     extensions.configure<info.solidsoft.gradle.pitest.PitestPluginExtension> {

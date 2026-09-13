@@ -6,14 +6,14 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-06
 status: active
-sources: ["sources/frontend/src/shared/grid/excel/", "sources/frontend/src/features/sample/mdvertical/pages/SampleMdVerticalPage.tsx", "sources/backend/support/excel/"]
+sources: ["sources/frontend/src/shared/grid/excel/", "sources/frontend/src/modules/sample/features/mdvertical/pages/SampleMdVerticalPage.tsx", "sources/backend/support/excel/"]
 tier: 2
 tags: [playbook, excel, download]
 ---
 
 # 엑셀 내려받기 — 갈래 넷
 
-> **실물**: 서버 생성은 `features/sample/mdvertical/`(③), 공통물은 `shared/grid/excel/`.
+> **실물**: 서버 생성은 `modules/sample/features/mdvertical/`(③), 공통물은 `shared/grid/excel/`.
 >
 > **올려받기는 [excel-upload.md](./excel-upload.md) 가 갖는다.** 한 파일이었다가 200줄
 > 상한에 닿아 갈랐다 — 갈리는 축은 문서가 스스로 적어 둔 그대로 *내려받기/올려받기* 다.

@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-07
 status: active
-sources: ["sources/frontend/src/features/sample/", "sources/backend/api/src/main/java/com/aiagent/api/sample/"]
+sources: ["sources/frontend/src/modules/sample/", "sources/backend/modules/sample/src/main/java/com/aiagent/sample/api/"]
 tier: 2
 tags: [playbook, recipe, index]
 ---
@@ -16,7 +16,7 @@ tags: [playbook, recipe, index]
 > **[standard](../standard/INDEX.md) 는 *무엇이 표준인가* 이고 여기는 *어떤 순서로
 > 하는가* 다.** 표준을 여기에 다시 적지 않는다 — 절차가 표준을 **가리킨다**.
 >
-> **모든 레시피에 실물이 있다.** 대개 `sources/frontend/src/features/sample/` 의 여섯 화면이 그것이며,
+> **모든 레시피에 실물이 있다.** 대개 `sources/frontend/src/modules/sample/` 의 여섯 화면이 그것이며,
 > 실물 없는 레시피는 여기 두지 않는다. 막히면 **문서가 아니라 그 화면을 연다**.
 >
 > **예외 하나 — 트리.** 샘플 여섯이 그리드 화면을 덮고 트리는 덮지 않아, `tree-screen.md` 의

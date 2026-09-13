@@ -6,14 +6,14 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/features/sample/mdvertical/", "sources/frontend/src/features/sample/mdhorizontal/", "aidd-guide/playbook/INDEX.md"]
+sources: ["sources/frontend/src/modules/sample/features/mdvertical/", "sources/frontend/src/modules/sample/features/mdhorizontal/", "aidd-guide/playbook/INDEX.md"]
 tier: 2
 tags: [playbook, master-detail, splitpane]
 ---
 
 # 마스터-디테일 화면 — 상하 · 좌우
 
-> **실물 둘**: `features/sample/mdvertical/`(③ 상하) · `features/sample/mdhorizontal/`(④ 좌우).
+> **실물 둘**: `modules/sample/features/mdvertical/`(③ 상하) · `modules/sample/features/mdhorizontal/`(④ 좌우).
 > 갈리는 것은 **축과 마스터 컬럼 수**뿐이고 나머지는 같다.
 >
 > 단일 그리드의 모든 규칙이 그대로 적용된다 — [crud-screen.md](./crud-screen.md) 를 먼저 읽는다.
@@ -128,7 +128,7 @@ onRead={() => void detail.read(true)}
 
 ## 7. 갈리지 않아야 하는 것
 
-- **디테일의 컬럼 선언을 공유한다** — ③④가 `features/sample/itemColumns.ts` 하나를 쓴다.
+- **디테일의 컬럼 선언을 공유한다** — ③④가 `modules/sample/itemColumns.ts` 하나를 쓴다.
   갈려야 하는 것은 **마스터와 축**이지 자식의 정의가 아니다.
 - **부분집합이면 엔드포인트를 새로 열지 않는다**(④는 ③의 아홉 중 셋만 그린다).
 - **조회조건도 같다** — ③④가 같은 넷이다.

@@ -7,7 +7,7 @@ class: contract
 created: 2026-05-04
 updated: 2026-09-07
 status: active
-sources: ["sources/frontend/src/shared/grid/", "sources/frontend/src/features/sample/"]
+sources: ["sources/frontend/src/shared/grid/", "sources/frontend/src/modules/sample/"]
 tier: 2
 tags: [frontend, grid, column, type]
 ---

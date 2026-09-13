@@ -15,7 +15,8 @@ tags: [frontend, http, axios, endpoints, request-id]
 # HTTP — `endpoints.ts` · 배럴 하나 · 응답 처리
 
 > **호출 URL 은 기능의 `api/endpoints.ts` 에만 둔다** — 이행 전에는
-> `features/{도메인}`, 제품 모듈 안에서는 `modules/{모듈}/{features|public}/{도메인}`이다.
+> `features/{도메인}`, 모듈 안에서는 `modules/{모듈}/{features|public}/{도메인}`이다.
+> sample 화면도 `modules/sample/features/{화면}/api/endpoints.ts`를 쓴다.
 > 그 선언이 **인가 시드의 입력**이다 — **선언하지 않고 부르면 403, 선언만 하고 안 부르면
 > 접근 범위가 조용히 넓어진다.**
 
@@ -112,7 +113,8 @@ import { post } from '@/shared/api/request';                    // ❌ ESLint
 
 ## 6. 새 API 를 부를 때
 
-1. 컨트롤러 경로를 `/api/service/{도메인}/{동작}` 으로 짓는다 — **접두가 액션을 정한다.**
+1. 컨트롤러 경로를 `/api/service/{도메인}/{동작}`으로 짓는다. 모듈 제품은
+   `/api/service/{모듈}/{도메인}/{동작}`, sample은 기존 계약 `/api/service/sample/{동작}`을 쓴다.
 2. `endpoints.ts` 에 상수를 더한다.
 3. `{도메인}Api.ts` 에 함수를 더한다 (그리드 선언은 예외).
 4. **`./gradlew generateApiSeed`** — 잊으면 **403** 이다.

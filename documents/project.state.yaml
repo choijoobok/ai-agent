@@ -18,7 +18,7 @@ current:
   # ↑ **축이 둘이고 글자가 같다.** 차수는 *무엇을 내는가*(00-charter.yaml roadmap),
   #   단계는 *어디까지 만들었는가*(P0~P6)다. 한 차수가 P0~P6 을 한 바퀴 돈다.
   #   `trace-check` 가 이 값을 읽어 **뒤 차수의 결손을 오류가 아니라 경고로** 센다.
-  slice: SLICE-518           # 승인된 CR-018에 따라 sample 참조 구현의 독립 모듈 경계를 RED로 검증한다
+  slice: null                # system P4의 구현 슬라이스가 모두 끝나 전체 G4 점검을 기다린다
   blocked_by: []
   template_maintenance: false
   # ↑ true 로 켜면 G3 전에도 sources/ 를 고칠 수 있다(guard-write ①).
@@ -53,7 +53,7 @@ workstreams:
       P1_discovery:    { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 8/8.** ACT-012, PRC-06~08, REQ-501~510을 현재 소스·Liquibase·화면 문서에서 역추적했다. SYSTEM 하위 16개·공통 대시보드 1개·메뉴 없는 공통 화면 8개와 근거 테이블 31개를 대조했고 추적성 오류 0건이다. 레드팀에서 전 수명주기·변조 불가·소스 키 한정·요청 승인이라는 과잉 표현을 현재 구현 범위로 바로잡았다. 역질문 권장안에 따라 설치용 ADMIN은 설치 시점의 전체 권한 기준선으로 한정하고, 운영에서는 시스템 관리자와 감사·품질 역할을 분리한다. 일반 계정·권한 공지와 요청은 system, AI 품질·정책 관련 알림은 admin이 소유한다" }
       P2_architecture: { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 8/8.** ADR-007 아래 ARCH-022~026으로 system의 백엔드·프론트 목표 경로, 31개 테이블 쓰기 소유권, 화면 경로와 기능별 이행 순서를 정의하고 AUTHZ-091로 설치용 ADMIN과 운영 권한을 분리했다. 사용자는 역할 겸임을 허용하고 특정 역할·메뉴 코드의 금지 하드코딩을 거부했다. 역할·메뉴·개인 권한 데이터와 유효 권한이 유일한 판정 근거다. 현재 고객이 없는 개발 단계이므로 신규 경로 전환과 회귀 시험 뒤 기존 API·화면 경로는 같은 슬라이스에서 즉시 제거하고 호환 별칭을 남기지 않는다. ASM-005·006은 기각됨으로 닫았다" }
       P3_design:       { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 11/11.** REQ-501~510을 UC-501~510·FEAT-501~510·ENT-501~531·API-501~599·SCR-501~525·TC 52건으로 연결했다. 실제 컨트롤러 99개와 목표 API의 요청·응답 타입·근거 메서드를 전수 대조했고 누락·중복 0건이다. 핵심 시퀀스는 UC-501·503·508 세 건이며 예외와 트랜잭션 경계를 표시했다. 권한 변경 API는 SYS_LO_ACCESS의 일반 시스템 사용 이력에 남기되 전용 원장은 고객사 요구가 생긴 도입 시점 이후만 기록하고 과거 변경은 복원하지 않는다. 같은 역할을 동시에 전체 저장하면 나중에 완료된 스냅샷이 이기고 자동 병합하지 않는다. 레드팀 위험은 사용자 결정과 TC-5076·TC-5026으로 닫았고 trace 오류 0건이었다" }
-      P4_build:        { status: in_progress, approved_at: null, note: "SLICE-501~517 전체가 사용자 G4 승인으로 완료됐다. 모든 system API·프런트 화면과 내 프로필·내 로그인 이력·내 역할·언어 설정은 system 단일 경로로 이행했고 구 경로·호환 별칭을 즉시 제거했다. 이력 상세는 CLOB 전문의 목록 부하를 피하려는 분리 조회이며 목록과 같은 현재 READ 권한으로 보호한다(CR-008). 다운로드 이력은 프런트가 요청한 사실만 남기고 실제 파일 수신을 서버가 판정하지 않는다. 이력 `PARAMETERS`의 개인정보 등 민감값 필드별 마스킹은 Hub 개발 완료 뒤 별도 기능으로 설계하며, 현재 마스킹된 불변 감사 이력은 화면별 캐시 정책을 따른다(CR-007). 공지 팝업의 오늘 하루 숨김은 기기별 브라우저 저장소에 유지한다. 같은 관리 요청의 동시 판정은 첫 요청만 처리하고 뒤 요청은 기존 409 문구로 거부하며 잠금 대기 초과는 공통 오류 정책을 따른다(CR-010). 같은 즐겨찾기 동시 등록은 모두 성공·행 하나로 끝나며, 동시 기본 조회조건 저장은 마지막 저장 완료 요청 하나만 기본으로 둔다(CR-016·017). 메뉴 트리의 현재·새 셸 탭과 성공한 브라우저 열기만 편의용 best-effort 사용 통계에 넣고, 대시보드는 현행 슬롯 구현을 유지한다(CR-013~015)." }
+      P4_build:        { status: in_progress, approved_at: null, note: "SLICE-501~518 전체가 사용자 G4 승인으로 완료됐다. 모든 system API·프런트 화면과 내 프로필·내 로그인 이력·내 역할·언어 설정은 system 단일 경로로 이행했고 구 경로·호환 별칭을 제거했다. sample은 제품 모듈로 세지 않는 삭제 가능한 별도 백엔드·프런트 참조 모듈이며 외부 `/sample/**`·`/api/service/sample/**`와 `SMPL_*` 시드·제거 절차는 유지한다(CR-018). HTTP·Security·필터·예외·세션 경계 공통물은 api에 유지하고 core·support로 옮기지 않았다. 이력 상세는 목록과 같은 현재 READ 권한으로 보호한다(CR-008). 이력 `PARAMETERS` 민감값 필드별 마스킹은 Hub 개발 완료 뒤 별도 기능으로 설계한다(CR-007). 같은 관리 요청은 첫 판정만 처리한다(CR-010). 동시 즐겨찾기 등록은 모두 성공·행 하나, 동시 기본 조회조건 저장은 마지막 완료 요청 하나가 기본이다(CR-016·017). 메뉴 통계는 성공한 진입만 best-effort로 세고 대시보드는 현행 슬롯을 유지한다(CR-013~015)." }
       P5_verify:       { status: not_started, approved_at: null, note: "" }
   admin:
     phase: P1
@@ -143,17 +143,16 @@ roadmap_closed: []
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
 next_up:
   decided_at: 2026-09-13
-  choice: "모듈 경계 보정의 변경 요청을 결정하고 profile·sample 이행과 문서 현행화를 수행한다"
+  choice: "system 작업흐름 P4 전체 게이트를 점검한다"
   why: >-
-    SLICE-501~516이 모두 사용자 G4 승인을 받아 구현 슬라이스가 끝났다. 다만 사용자
-    프로필의 system 이행 누락과 sample 독립 모듈 신설·문서 현행화가 남아 P4 전체
-    게이트를 지금 닫으면 실제 소스 구조와 정본 문서가 다시 갈린다.
+    SLICE-501~518의 구현·모듈 경계 보정·정본 문서 현행화가 끝났고 각 슬라이스가 사용자
+    G4 승인을 받았다. 이제 전체 Exit Criteria와 레드팀을 다시 세어 작업흐름 P4 승인 여부를
+    사용자가 판단할 차례다.
   tasks:
-    - "샘플 컨트롤러·DTO·도메인 로직·프런트 화면을 backend:modules:sample·frontend/modules/sample으로 이행하되 /sample·/service/sample 외부 주소와 샘플 시드 제거 절차는 유지한다"
-    - "이행 뒤에만 api의 빈 업무 폴더를 제거하고, 모듈 구조·소유권·의존 방향을 설명하는 정본 문서와 실제 경로 인용 문서를 전수 현행화한다"
-    - "신규 모듈·구 패키지 부재 RED, 전체 백엔드·프런트·시드·품질·추적성·문서 생성 검증 뒤 P4 전체 게이트를 점검한다"
+    - "phase-gate 절차로 system P4 Exit Criteria를 자체검증하고 레드팀 반박을 붙인다"
+    - "결정 카드와 역질문을 제시해 사용자에게 system 작업흐름 G4 승인을 요청한다"
   then: >-
-    보정 이행과 문서 현행화의 사용자 G4 승인 뒤 system 작업흐름 P4 전체 게이트를 점검한다.
+    system 작업흐름 G4 승인 뒤 P5 검증으로 넘어가되 전역 P4 게이트와 혼동하지 않는다.
 
 # ── 미결 질문 (Open Questions) ─────────────────────────────────────
 # 사용자 답변이 필요한 것. 답변되면 삭제하고 결과를 spec·ADR 에 반영한다.
@@ -326,9 +325,10 @@ slices:
   - { id: SLICE-515, workstream: system, features: [FEAT-510], testcases: [TC-5101, TC-5102, TC-5104], scope: "즐겨찾기·그리드·저장 조회조건", stage: P4, status: done, depends_on: [SLICE-503, SLICE-504] }
   - { id: SLICE-516, workstream: system, features: [FEAT-510], testcases: [TC-5103, TC-5105], scope: "메뉴 사용 통계·대시보드와 고아 상태 정리", stage: P4, status: done, depends_on: [SLICE-515] }
   - { id: SLICE-517, workstream: system, features: [FEAT-501], testcases: [TC-5015], scope: "내 프로필·내 로그인 이력·내 역할·언어 설정의 system public 경계 보정", stage: P4, status: done, depends_on: [SLICE-501, SLICE-504] }
-  - { id: SLICE-518, workstream: system, features: [FEAT-503], testcases: [TC-5035], scope: "CR-018 sample 참조 구현을 별도 백엔드·프런트 모듈로 격리", stage: P4, status: todo, depends_on: [SLICE-517] }
+  - { id: SLICE-518, workstream: system, features: [FEAT-503], testcases: [TC-5035], scope: "CR-018 sample 참조 구현을 별도 백엔드·프런트 모듈로 격리", stage: P4, status: done, depends_on: [SLICE-517] }
 
 verification_load:
+  - { slice: SLICE-518, measured_at: "2026-09-13", fix_rounds: 2, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 3, note: "백엔드 컨트롤러·DTO·도메인·소유 테스트를 backend:modules:sample과 com.aiagent.sample로, 프런트 여섯 화면·API·규칙을 modules/sample로 이행하고 구 api/sample·domain/sample·features/sample을 제거했다. 외부 /sample/**·/api/service/sample/**와 SMPL_* 메뉴·시드·제거 절차는 유지했다. API 요약 계약 테스트와 시드 생성기의 스캔 범위를 api·system·sample 모듈로 보정하고, api에는 HTTP·Security·요청 경계 공통물만 남겼다. 백엔드·프런트 경계를 각각 구 경로로 뒤집자 구조 테스트가 실패했고 원복 뒤 통과했다. 전체 백엔드, 프런트 88파일·688테스트, 시드, quality·trace·doc 생성·harness·meta 검사를 통과했으며 SampleRules PIT는 변이 3개를 모두 제거했다. 서비스 전체를 넓게 잡은 탐색 PIT는 기존 미시험 조립 메서드까지 포함해 29%였고 이번 구조 이동의 통과 근거로 사용하지 않았다." }
   - { slice: SLICE-517, measured_at: "2026-09-13", fix_rounds: 1, unverified_rules: 0, quality_fails: 1, spec_defects: 1, redteam_fixes: 3, note: "내 프로필·내 로그인 이력·내 역할·언어 설정의 API·DTO를 system 모듈로, 프런트 UI·API·테스트와 화면 문서를 modules/system/public 경로로 이행하고 API-519~523 source_contract를 실제 소스에 맞췄다. 실행 소스의 구 com.aiagent.api.user·/common/user·features/profile 참조는 0건이며 호환 별칭을 남기지 않았다. SessionPrincipal·TraceId 등 HTTP·Security 경계 공통물은 api에 유지했다. 신규 system/구 경로 부재 RED와 URL 규칙 반전 실패를 확인했고, 전체 백엔드·프런트·시드·품질·추적성·문서 생성 검사를 통과했다. UserProfileService PIT는 라인 97%, 변이 77%로 Full 기준을 통과했다. 전체 lint에서 발견된 기존 FEAT-510 unbound-method 결함은 spy 참조로 별도 보정했다." }
   - { slice: SLICE-516, measured_at: "2026-09-13", fix_rounds: 5, unverified_rules: 0, quality_fails: 0, spec_defects: 2, redteam_fixes: 3, note: "메뉴 통계 컨트롤러·요청 DTO와 대시보드 경로를 system 정식 경로로 이행하고 구 API·/dashboard 경로를 제거했다. 물리 메뉴 삭제 때 즐겨찾기·저장 조회조건·그리드 설정·월별 사용 통계를 함께 정리하며, 시드 ORPHAN은 유효 권한·즐겨찾기·자주 쓰는 메뉴 응답과 이전 세션의 새 통계 기록에서 제외한다. 신규 system/구 패키지 부재 RED 계약, 세 고아 규칙과 경로 규칙의 반전 실패를 확인했다. CR-015로 메뉴 트리의 성공한 window.open 브라우저 새 탭·창 열기도 사용 횟수에 넣고, 팝업 차단은 기록하지 않는 RED·GREEN·규칙 반전 테스트를 추가했다. 전체 백엔드·프런트 검사, 시드 생성·검사, 품질·추적성·문서 검사를 통과했고 FavoriteService 100%, MenuStatService 100%, SysMenu 관련 분기 강도 100% PIT를 통과했다. CR-013으로 동시 USE_CNT 유실은 편의용 통계의 허용 오차로 확정했고, 대시보드는 CR-014로 현행 슬롯 구현을 유지하며 상세 요건을 Hub 개발 완료 후로 보류한다." }
   - { slice: SLICE-515, measured_at: "2026-09-13", fix_rounds: 2, unverified_rules: 0, quality_fails: 0, spec_defects: 3, redteam_fixes: 3, note: "신규 system 패키지 존재·구 사용자 상태 API 패키지 부재 RED 계약을 확인한 뒤 즐겨찾기·그리드·저장 조회조건의 컨트롤러·DTO·프런트 엔드포인트를 system 정식 경로로 이행했다. 등록되지 않은 메뉴 저장 거부, 저장 조회조건의 기본값 복원·같은 이름 덮어쓰기·기본 전환을 시험했으며, CR-012로 JSON을 서버가 열어 거부하지 않고 화면에서 안전 복원하는 현재 구현을 정본으로 바로잡았다. CR-016으로 동시 즐겨찾기는 PostgreSQL 중복 무시 저장으로 둘 다 성공·행 하나가 되게 했고, CR-017으로 동시 기본 조회조건 저장은 사용자 행 잠금으로 직렬화해 마지막 저장 완료 요청 하나만 기본이 되게 했다. 전체 백엔드·프런트 검사, 시드 생성·검사, 품질·추적성·문서 검사를 통과했고 변경된 FavoriteService·SearchCondService PIT는 변이 29개 중 26개를 제거해 90%·테스트 강도 100%다." }

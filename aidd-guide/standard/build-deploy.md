@@ -5,7 +5,7 @@ category: standard
 type: operation
 class: none
 created: 2026-09-04
-updated: 2026-09-07
+updated: 2026-09-13
 status: active
 sources: ["sources/build.gradle.kts", "sources/backend/bootstrap/build.gradle.kts", ".github/workflows/", "sources/backend/bootstrap/src/main/resources/application.yml", "sources/frontend/vite.config.ts"]
 tier: 2
@@ -32,6 +32,9 @@ bootstrap-{version}.jar   (단일 산출물 — 이름은 모듈명이 정한다
 |---|---|
 | **얻는 것** | 배포 대상이 하나. 웹서버 별도 구성 불필요. **동일 오리진이라 CORS 가 없고** 세션 쿠키가 자연스럽다 |
 | **감수하는 것** | 프론트만 고쳐도 전체 재배포(개발 중에는 Vite dev 서버로 대응) · JAR 크기 · CDN 불가(사내 백오피스라 요구 없음) |
+
+`bootstrap`은 `api`·`modules/system`·`modules/sample`을 조립한다. sample도 단일 JAR에
+포함되지만, 고객 전달 시 sample 모듈 의존·프런트 라우트·시드 입력을 함께 제거할 수 있다.
 
 ## 2. SPA 라우팅 — `/api/**` 를 반드시 제외한다
 

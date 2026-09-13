@@ -11,6 +11,7 @@ plugins {
 dependencies {
     implementation(project(":backend:api"))
     implementation(project(":backend:modules:system"))
+    implementation(project(":backend:modules:sample"))
     implementation("org.springframework.boot:spring-boot-starter")
     // 인터셉터 조립은 실행 모듈이 소유한다. WebMvcConfigurer 는 api의 전이 구현에 기대지 않는다.
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -848,8 +849,8 @@ abstract class ApiSeedTask : DefaultTask() {
         val ENDPOINT_URL = Regex("""'(/service/[^']+)'""")
         /*
           마디를 하나로 못 박지 않는다. playbook/INDEX.md 가 화면마다 폴더를 요구하므로 샘플의
-          여섯은 `features/sample/mdvertical` 처럼 두 마디이며, 한 마디만 잡으면 `sample`
-          로 읽어 `features/sample/api/endpoints.ts` 를 찾다가 없다고 조용히 건너뛴다 —
+          여섯은 `modules/sample/features/mdvertical`처럼 모듈과 기능 마디를 모두 가지며,
+          기능 마디를 못 잡으면 `modules/sample/api/endpoints.ts`를 찾다가 조용히 건너뛴다 —
           그 화면의 API 가 전부 미매핑(=403)이고, 실패가 아니라 침묵으로 나온다.
 
           `/pages/` 앞까지를 잡는 것은 등록 줄의 모양이 언제나
@@ -868,10 +869,15 @@ fun Project.apiSeedTask(name: String, verify: Boolean) =
         } else {
             "컨트롤러와 프론트 endpoints 를 읽어 006·007 CSV 를 만든다 — backend/api.md"
         }
-        dependsOn(":backend:api:classes", ":backend:modules:system:classes")
+        dependsOn(
+            ":backend:api:classes",
+            ":backend:modules:system:classes",
+            ":backend:modules:sample:classes",
+        )
         controllerClasses.from(
             rootProject.project(":backend:api").the<SourceSetContainer>()["main"].output.classesDirs,
             rootProject.project(":backend:modules:system").the<SourceSetContainer>()["main"].output.classesDirs,
+            rootProject.project(":backend:modules:sample").the<SourceSetContainer>()["main"].output.classesDirs,
         )
         // bootstrap 의 런타임 클래스패스가 api 와 그 의존을 전부 담는다 — 남의 설정을
         // 해석하지 않는다.

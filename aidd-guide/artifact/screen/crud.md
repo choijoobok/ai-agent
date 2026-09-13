@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["aidd-guide/artifact/template/02-requirements.md", "sources/frontend/src/features/sample/singleoffset/"]
+sources: ["aidd-guide/artifact/template/02-requirements.md", "sources/frontend/src/modules/sample/features/singleoffset/"]
 tier: 1
 tags: [prompt, crud, example]
 ---

@@ -25,7 +25,7 @@
 |---|---|
 | 페이지 경로 | `/sample/single-offset` |
 | 메뉴코드 | `SMPL_SINGLE_OFFSET` — 트리에서 **첫 리프**다(베껴 갈 화면을 먼저 만난다) |
-| 프론트 폴더 | `sources/frontend/src/features/sample/singleoffset/` |
+| 프론트 폴더 | `sources/frontend/src/modules/sample/features/singleoffset/` |
 | 백엔드 패키지 | `sources/backend/domain/…/domain/sample/` · `sources/backend/api/…/api/sample/` |
 | 화면 유형 | **단일 그리드** |
 | 처리 유형 | CRUD + **실행 둘** |

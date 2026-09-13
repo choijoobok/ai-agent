@@ -64,4 +64,4 @@
 - 레시피는 [`aidd-guide/playbook/INDEX.md`](../aidd-guide/playbook/INDEX.md) — CRUD·마스터디테일·
   엑셀·모달·트리 화면을 만드는 순서가 실물 샘플과 짝지어 있다.
 - **표준을 추정해 새로 만들지 않는다.** 문서에 없으면
-  `sources/frontend/src/features/sample/` 의 샘플 여섯을 읽는다 — 그 목적으로 있다.
+  `sources/frontend/src/modules/sample/` 의 샘플 여섯을 읽는다 — 그 목적으로 있다.

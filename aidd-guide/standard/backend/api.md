@@ -5,9 +5,9 @@ category: standard/backend
 type: operation
 class: policy
 created: 2026-05-04
-updated: 2026-09-12
+updated: 2026-09-13
 status: active
-sources: ["sources/backend/api/", "sources/backend/core/response/ApiResponse.java", "sources/backend/core/response/"]
+sources: ["sources/backend/api/", "sources/backend/modules/system/", "sources/backend/modules/sample/", "sources/backend/core/response/"]
 tier: 2
 tags: [backend, api, rest, response, header]
 ---
@@ -34,7 +34,7 @@ tags: [backend, api, rest, response, header]
 | **도메인** | 애그리거트 이름 그대로 — [packages.md §2](./packages.md) 의 패키지와 같다 |
 | **동작** | **접두가 액션을 정한다** — 아래 §2 |
 
-> **모듈러 제품은 계층 바로 뒤에 모듈을 넣는다.** Hub는 `/api/{계층}/{모듈}/{도메인}/{동작}`이며, 계층을 먼저 둬야 `ApiLayer`와 인가 시드의 실패 폐쇄 판정이 보존된다(ADR-007 · `standard/hub-conventions.md` §4.1).
+> **모듈러 제품은 계층 바로 뒤에 모듈을 넣는다.** Hub는 `/api/{계층}/{모듈}/{도메인}/{동작}`이며, sample 참조 구현만 기존 외부 계약 `/api/service/sample/{동작}`을 유지한다(ADR-007 · ARCH-027).
 **표기는 camelCase 단수다.** 도메인도 동작도. 복수형·케밥을 쓰지 않는다.
 
 | | 왜 |

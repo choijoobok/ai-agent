@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/features/sample/mdtabs/", "sources/frontend/src/features/sample/excel/"]
+sources: ["sources/frontend/src/modules/sample/features/mdtabs/", "sources/frontend/src/modules/sample/features/excel/"]
 tier: 1
 tags: [prompt, overlay, tabs]
 ---

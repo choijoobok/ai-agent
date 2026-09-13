@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/shared/formmodal/", "sources/frontend/src/shared/popup/", "sources/frontend/src/features/sample/popups.ts", "sources/frontend/src/features/sample/singleoffset/pages/SampleSingleOffsetPage.tsx"]
+sources: ["sources/frontend/src/shared/formmodal/", "sources/frontend/src/shared/popup/", "sources/frontend/src/modules/sample/popups.ts", "sources/frontend/src/modules/sample/features/singleoffset/pages/SampleSingleOffsetPage.tsx"]
 tier: 2
 tags: [playbook, modal, popup, editor]
 ---
@@ -17,7 +17,7 @@ tags: [playbook, modal, popup, editor]
 > **없다** — 같은 표에 저장 경로가 둘이 되는 그 모양을 그리드 표준이 없앴다.
 > **창 안에 그리드가 드는 것은 그것과 다르다**(§1-1) — 거기서도 고치는 곳은 그리드다.
 >
-> **실물**: `features/sample/popups.ts` · `singleoffset/`(①) · `mdhorizontal/`(④) ·
+> **실물**: `modules/sample/popups.ts` · `singleoffset/`(①) · `mdhorizontal/`(④) ·
 > `mdtabs/`(⑤).
 
 ## 1. 어느 창인가
@@ -120,7 +120,7 @@ registerPopups({
                        read: { url: SAMPLE_OFFSET_ENDPOINTS.getCustomerList },
                        width: 520, columns: [...] },
 });
-// 쓰는 화면에서:  import '@/features/sample/popups';   ← 이 임포트가 등록이다
+// 쓰는 화면에서:  import '@/modules/sample/popups';   ← 이 임포트가 등록이다
 ```
 
 | 규칙 | 왜 |

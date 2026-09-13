@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/modules/system/features/accesslog/", "sources/frontend/src/features/sample/singlecursor/", "sources/backend/domain/src/main/java/com/aiagent/domain/log/entity/"]
+sources: ["sources/frontend/src/modules/system/features/accesslog/", "sources/frontend/src/modules/sample/features/singlecursor/", "sources/backend/domain/src/main/java/com/aiagent/domain/log/entity/"]
 tier: 1
 tags: [prompt, overlay, history, cursor]
 ---
@@ -57,7 +57,7 @@ tags: [prompt, overlay, history, cursor]
 
 | | |
 |---|---|
-| 커서 페이징 | `features/sample/singlecursor/` — 총 건수 없음 · 기간 필수 · 자동 새로고침 |
+| 커서 페이징 | `modules/sample/features/singlecursor/` — 총 건수 없음 · 기간 필수 · 자동 새로고침 |
 | 실제 이력 화면 | `features/accesslog/`(`/log/access`) · `features/loginlog/`(`/log/login`) |
 
 ## 표가 무엇을 담나

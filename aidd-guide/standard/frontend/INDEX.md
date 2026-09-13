@@ -72,7 +72,7 @@ tags: [frontend, index]
 ```
 
 **표준을 추정해 새로 만들지 않는다** — 비슷한 화면의 실물을 읽는다.
-샘플 여섯이 `sources/frontend/src/features/sample/` 에 그 목적으로 있다.
+샘플 여섯이 `sources/frontend/src/modules/sample/` 에 그 목적으로 있다.
 
 ## 기계가 막는 것
 

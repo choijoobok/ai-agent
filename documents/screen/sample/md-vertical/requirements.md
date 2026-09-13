@@ -19,7 +19,7 @@
 |---|---|
 | 페이지 경로 | `/sample/md-vertical` |
 | 메뉴코드 | `SMPL_MD_VERT` |
-| 프론트 폴더 | `sources/frontend/src/features/sample/mdvertical/` (+ 공통 `features/sample/itemColumns.ts`) |
+| 프론트 폴더 | `sources/frontend/src/modules/sample/features/mdvertical/` (+ 공통 `modules/sample/itemColumns.ts`) |
 | 백엔드 패키지 | `sources/backend/domain/…/domain/sample/` · `sources/backend/api/…/api/sample/mdvertical/` |
 | 화면 유형 | **마스터-디테일(상하)** |
 | 처리 유형 | CRUD + **실행 둘** |
@@ -93,7 +93,7 @@
   게이트가 그것을 읽는다(§1-1). 그리드에는 그리지 않는다.
 - **상태는 화면에서 고치지 않는다** — 상태를 옮기는 것은 실행 버튼이다(§5).
 
-### 4-1a. 디테일 — 품목 **열** (`features/sample/itemColumns.ts` · **좌우·탭 화면과 같은 표**)
+### 4-1a. 디테일 — 품목 **열** (`modules/sample/itemColumns.ts` · **좌우·탭 화면과 같은 표**)
 
 | 필드명 | 라벨 키 | 입력방식 | 폭 | 필수 | 편집 | 선택 출처 |
 |---|---|---|---|---|---|---|
@@ -110,7 +110,7 @@
 
 - **`ordNo` 와 `useYn` 이 없다** — 부모가 정해져 있고(한 주문 안이다) 품목의 사용 여부는
   `itemStatCd` 가 말한다. **⑥의 평면 양식과 갈리는 지점**이다(`screen/sample/excel`).
-- **컬럼 선언이 `features/sample/itemColumns.ts` 에 있다** — 좌우 분할 화면과 **같은 표**이며,
+- **컬럼 선언이 `modules/sample/itemColumns.ts` 에 있다** — 좌우 분할 화면과 **같은 표**이며,
   **갈려야 하는 것은 마스터와 축이지 품목의 정의가 아니다.**
 
 ### 4-1b. 남은 서식 절

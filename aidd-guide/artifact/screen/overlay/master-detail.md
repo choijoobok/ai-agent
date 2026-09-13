@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/features/sample/mdvertical/", "sources/frontend/src/features/sample/mdhorizontal/"]
+sources: ["sources/frontend/src/modules/sample/features/mdvertical/", "sources/frontend/src/modules/sample/features/mdhorizontal/"]
 tier: 1
 tags: [prompt, overlay, master-detail]
 ---
@@ -52,8 +52,8 @@ tags: [prompt, overlay, master-detail]
 
 | | |
 |---|---|
-| 상하 | `sources/frontend/src/features/sample/mdvertical/` — 마스터 컬럼 아홉 · 삭제 게이트 |
-| 좌우 | `sources/frontend/src/features/sample/mdhorizontal/` — 마스터 컬럼 셋 |
+| 상하 | `sources/frontend/src/modules/sample/features/mdvertical/` — 마스터 컬럼 아홉 · 삭제 게이트 |
+| 좌우 | `sources/frontend/src/modules/sample/features/mdhorizontal/` — 마스터 컬럼 셋 |
 
 ## 구현은
 

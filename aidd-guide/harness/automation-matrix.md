@@ -27,9 +27,9 @@ tags: [harness, hooks, automation]
 | ESLint `no-restricted-imports` | `@/shared/api/*` 딥 임포트 금지 — HTTP 는 **배럴 `@/shared/api`** 하나 |
 | `check-save-envelope.mjs` | **`saveEnvelope` 의 키가 서버 `record` 의 칸인가** — 부모 키를 빠뜨렸거나 이름이 어긋나면 차단(`npm run lint` 가 이어서 돈다) |
 | ESLint `import-x/no-restricted-paths` | `features/*` 끼리 직접 import 금지 |
-| ArchUnit `LayerDependencyTest` | 모듈 의존 방향(core ← support ← domain ← api) |
+| ArchUnit `LayerDependencyTest` | 기반 모듈 의존 방향(core ← support ← domain ← api) |
 | ArchUnit `ServiceConventionTest` | 조회 서비스는 클래스 레벨 `readOnly` · 메서드 레벨 없음 / 컨트롤러에 트랜잭션 없음 |
-| ArchUnit `SampleIsolationTest` | 밖에서 샘플 참조 금지 · 샘플은 `SMPL_` 테이블만 |
+| ArchUnit `SampleIsolationTest` | sample 전용 모듈·구 패키지 부재 · 제품 모듈/밖의 역참조 금지 · `SMPL_` 테이블만 |
 | ArchUnit `RowTxConventionTest` | 목록 처리의 트랜잭션 경계가 이름과 맞는가 |
 | ArchUnit `TimeSourceConventionTest` | 맨 `now()` · `ZoneId.systemDefault()` · `System.currentTimeMillis()` · `new Date()` 금지 — **면제는 양방향으로 실패한다**(standard/backend/time.md §2) |
 | `ProjectionCoverageTest` | **프로젝션에 없는 컬럼을 `Tuple` 에서 읽는 것** — QueryDSL 이 예외 대신 `null` 을 주므로 응답의 그 칸이 조용히 빈다([standard/backend/search.md](../standard/backend/search.md)) |

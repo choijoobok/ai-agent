@@ -7,7 +7,7 @@ class: contract
 created: 2026-09-06
 updated: 2026-09-07
 status: active
-sources: ["sources/frontend/src/shared/grid/", "sources/frontend/src/features/sample/"]
+sources: ["sources/frontend/src/shared/grid/", "sources/frontend/src/modules/sample/"]
 tier: 2
 tags: [frontend, grid, validation, edit, sort]
 ---

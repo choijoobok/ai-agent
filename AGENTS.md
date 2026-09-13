@@ -98,7 +98,7 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <revision> --sur
 | 인가·메뉴·코드·메시지 | `knowledge/INDEX.md` |
 | 훅·스킬·문맥 | `harness/INDEX.md` |
 
-표준이 없으면 새로 추정하지 말고 `sources/frontend/src/features/sample/`의 유사 실물을 읽는다.
+표준이 없으면 새로 추정하지 말고 `sources/frontend/src/modules/sample/`의 유사 실물을 읽는다.
 
 ## 4. 문서 예산 — 자리와 정본
 

@@ -7,6 +7,7 @@ include(
     "backend:domain",
     "backend:api",
     "backend:modules:system",
+    "backend:modules:sample",
     "backend:bootstrap",
 )
 

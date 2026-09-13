@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/shared/formmodal/", "sources/frontend/src/shared/popup/", "sources/frontend/src/features/sample/popups.ts"]
+sources: ["sources/frontend/src/shared/formmodal/", "sources/frontend/src/shared/popup/", "sources/frontend/src/modules/sample/popups.ts"]
 tier: 1
 tags: [prompt, overlay, modal, popup]
 ---
@@ -61,7 +61,7 @@ tags: [prompt, overlay, modal, popup]
 
 ## 실물
 
-`features/sample/popups.ts`(참조·배열 후보) · `features/sample/singleoffset/`(실행 인자).
+`modules/sample/popups.ts`(참조·배열 후보) · `modules/sample/features/singleoffset/`(실행 인자).
 
 ## 구현은
 

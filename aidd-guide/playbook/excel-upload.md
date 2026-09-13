@@ -6,14 +6,14 @@ type: operation
 created: 2026-09-06
 updated: 2026-09-06
 status: active
-sources: ["sources/frontend/src/shared/excelupload/", "sources/frontend/src/features/sample/excel/"]
+sources: ["sources/frontend/src/shared/excelupload/", "sources/frontend/src/modules/sample/features/excel/"]
 tier: 2
 tags: [playbook, excel, upload]
 ---
 
 # 엑셀 올려받기 — 업로드가 아니라 읽기다
 
-> **실물**: `features/sample/excel/`(⑥), 공통물은 `shared/excelupload/`.
+> **실물**: `modules/sample/features/excel/`(⑥), 공통물은 `shared/excelupload/`.
 >
 > **양식은 [excel-download.md](./excel-download.md) 의 *전체 다운로드* 다** — 둘이 갈리면
 > 사용자가 내려받은 파일을 이 탭이 거절한다. 한 문서였다가 200줄 상한에 닿아 갈랐다.

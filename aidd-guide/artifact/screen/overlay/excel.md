@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/shared/grid/excel/types.ts", "sources/frontend/src/features/sample/excel/", "sources/frontend/src/features/sample/mdvertical/pages/SampleMdVerticalPage.tsx"]
+sources: ["sources/frontend/src/shared/grid/excel/types.ts", "sources/frontend/src/modules/sample/features/excel/", "sources/frontend/src/modules/sample/features/mdvertical/pages/SampleMdVerticalPage.tsx"]
 tier: 1
 tags: [prompt, overlay, excel]
 ---
@@ -85,8 +85,8 @@ tags: [prompt, overlay, excel]
 
 | | |
 |---|---|
-| 서버 생성 내려받기 | `features/sample/mdvertical/` — `page`·`all`·`extra` 셋 |
-| 올려받기 | `features/sample/excel/` |
+| 서버 생성 내려받기 | `modules/sample/features/mdvertical/` — `page`·`all`·`extra` 셋 |
+| 올려받기 | `modules/sample/features/excel/` |
 
 ## 구현은
 

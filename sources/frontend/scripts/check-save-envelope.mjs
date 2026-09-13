@@ -33,6 +33,7 @@ const BACKEND = '../backend';
 const CONTROLLER_ROOTS = [
   join(BACKEND, 'api/src/main/java'),
   join(BACKEND, 'modules/system/src/main/java'),
+  join(BACKEND, 'modules/sample/src/main/java'),
 ];
 
 /** 그리드가 몇 개인지는 바뀐다. <b>0 이 되면 파서가 눈이 먼 것</b>이므로 그것만 잠근다. */

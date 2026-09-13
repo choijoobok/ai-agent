@@ -6,7 +6,7 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/features/sample/singleoffset/pages/SampleSingleOffsetPage.tsx", "sources/frontend/src/shared/searchform/types.ts"]
+sources: ["sources/frontend/src/modules/sample/features/singleoffset/pages/SampleSingleOffsetPage.tsx", "sources/frontend/src/shared/searchform/types.ts"]
 tier: 1
 tags: [prompt, overlay, search]
 ---
@@ -56,7 +56,7 @@ tags: [prompt, overlay, search]
 
 ## 실물
 
-`sources/frontend/src/features/sample/singleoffset/` — 조회조건 **열둘**로 연산자와 입력방식이
+`sources/frontend/src/modules/sample/features/singleoffset/` — 조회조건 **열둘**로 연산자와 입력방식이
 전부 나온다.
 
 ## 구현은

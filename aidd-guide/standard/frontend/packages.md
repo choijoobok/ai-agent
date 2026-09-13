@@ -24,7 +24,7 @@ tags: [frontend, structure, shared, state, zustand]
 src/
 ├── app/          진입 · 라우터 · 프로바이더(QueryClient · AntdConfig · I18n · Auth)
 ├── layouts/      앱 셸 — ShellLayout(헤더·사이더·탭바·브레드크럼·콘텐츠) · BlankLayout
-├── modules/      제품 모듈 — features/와 다른 모듈에 공개하는 public/ 계약
+├── modules/      제품 모듈과 삭제 가능한 sample — features/와 공개 public/ 계약
 ├── shared/       도메인 비종속 공통 — 아래 §2
 ├── features/     모듈 이행 전 화면 기능 단위 — api/ · components/ · pages/ · types.ts
 └── locales/      번들 로드 실패 시의 문구 몇 개만 (전체 폴백이 아니다)
@@ -34,7 +34,7 @@ src/
 서버에 두면 뜻이 없다.
 
 **`features/` 는 백엔드 애그리거트와 대체로 대응하되 1:1 이 아니다** — `auth` · `dashboard` · `errorlog` · `settings` 는 프론트에만 있다.
-이행한 기능은 `modules/{모듈}/features/{기능}`, 외부 계약은 `modules/{모듈}/public/{계약}`에 두며 소비자는 system `public/**`만 가져오고 system은 admin·portal·agent를 참조하지 못하도록 ESLint가 막는다.
+이행한 기능은 `modules/{모듈}/features/{기능}`, 외부 계약은 `modules/{모듈}/public/{계약}`에 둔다. sample도 `modules/sample/features/{화면}`을 따르며, 밖의 유일한 참조는 라우트 조립이다. 소비자는 system `public/**`만 가져오고 system은 admin·portal·agent를 참조하지 못하도록 ESLint가 막는다.
 
 ### 기능 하나의 모양
 

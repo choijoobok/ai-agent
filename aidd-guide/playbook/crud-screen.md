@@ -6,14 +6,14 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/features/sample/singleoffset/", "sources/frontend/src/features/sample/singlecursor/", "sources/backend/api/src/main/java/com/aiagent/api/sample/singleoffset/", "aidd-guide/playbook/INDEX.md"]
+sources: ["sources/frontend/src/modules/sample/features/singleoffset/", "sources/frontend/src/modules/sample/features/singlecursor/", "sources/backend/modules/sample/src/main/java/com/aiagent/sample/api/singleoffset/", "aidd-guide/playbook/INDEX.md"]
 tier: 2
 tags: [playbook, crud, grid, paging]
 ---
 
 # 단일 그리드 화면 — 조회 · 저장 · 실행
 
-> **실물 둘**: `features/sample/singleoffset/`(①) · `features/sample/singlecursor/`(②).
+> **실물 둘**: `modules/sample/features/singleoffset/`(①) · `modules/sample/features/singlecursor/`(②).
 > **여는 것부터 한다** — 이 문서는 그 파일에서 *무엇을 왜 그렇게 골랐는지* 만 적는다.
 >
 > 컴포넌트 계약은 [standard/frontend/grid.md](../standard/frontend/grid.md) 가 갖는다.

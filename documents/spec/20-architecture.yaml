@@ -139,9 +139,9 @@ module_boundaries:
     rule: "`sample`은 system·admin·portal·agent에 이은 다섯 번째 제품 모듈이 아니며, 고객사 업무 확장도 아니다. 배포 산출물에는 포함되지만 제품 요구사항·테이블 쓰기 소유권·작업흐름 게이트의 소유자로 세지 않는 삭제 가능한 참조 구현이다"
     source_boundary:
       backend: "`sources/backend/modules/sample/` — Gradle 모듈 `backend:modules:sample`; 컨트롤러·요청 DTO·도메인 서비스·Entity·Repository와 소유 테스트를 함께 둔다"
-      frontend: "`sources/frontend/src/modules/sample/` — 샘플 화면·API 엔드포인트·화면 규칙과 소유 테스트를 함께 둔다"
+      frontend: "`sources/frontend/src/modules/sample/` — 공통 샘플 규칙과 소유 테스트를 두고, 여섯 화면·API 엔드포인트는 `features/{화면}/` 아래에 둔다"
     dependency_direction:
-      - "sample은 `core`·`support`와 HTTP/Security 경계인 `api`가 공개한 공통물만 의존한다. system·admin·portal·agent의 내부 구현은 참조하지 않는다"
+      - "sample의 Gradle 직접 의존은 HTTP/Security 경계인 `api` 하나다. 현재는 api가 공개하는 `core`·`support`·이행 전 `domain` 공통 계약을 간접 사용하며, system·admin·portal·agent의 내부 구현은 참조하지 않는다"
       - "제품 모듈과 `core`·`support`·`api`는 sample을 참조하지 않는다. `bootstrap`만 조립·실행을 위해 sample 모듈을 포함한다"
       - "프런트의 sample 밖 코드는 `modules/sample/**`을 참조하지 않는다. 라우터·메뉴 등록처럼 조립에 필요한 진입점만 명시적으로 가져온다"
     compatibility:

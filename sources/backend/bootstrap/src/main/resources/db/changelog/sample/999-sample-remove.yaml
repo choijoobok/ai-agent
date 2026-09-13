@@ -5,8 +5,8 @@
 #   master 에서 900·901·902·903 네 줄을 지우고 이 한 줄로 바꿔 끼운다. 네 줄을 지우고 한 줄을
 #   넣는 것이 diff 에 남으므로 무엇을 왜 지웠는지가 이력이 된다.
 #
-#   그리고 소스도 함께 걷어낸다 — backend/domain/.../sample, backend/api/.../sample,
-#   frontend/src/features/sample, screenRegistry 의 한 줄, menu/menu-tree.yaml 의 두 줄.
+#   그리고 소스도 함께 걷어낸다 — backend/modules/sample과 settings·bootstrap의 모듈 선언,
+#   frontend/src/modules/sample, screenRegistry의 조립 참조, menu/menu-tree.yaml의 두 줄.
 #   006·007 시드는 생성물이라 재생성이 안 뱉으면 저절로 사라진다(48 §7.1).
 #
 #   architecture/SampleIsolationTest 도 함께 지운다. 샘플이 없으면 그 세 규칙은 위반 0건으로

@@ -6,14 +6,14 @@ type: operation
 created: 2026-05-04
 updated: 2026-09-03
 status: active
-sources: ["sources/frontend/src/features/sample/mdtabs/", "sources/frontend/src/shared/grid/DetailTabs.tsx", "aidd-guide/playbook/INDEX.md"]
+sources: ["sources/frontend/src/modules/sample/features/mdtabs/", "sources/frontend/src/shared/grid/DetailTabs.tsx", "aidd-guide/playbook/INDEX.md"]
 tier: 2
 tags: [playbook, master-detail, tabs]
 ---
 
 # 하단 디테일 탭 — 자식 표가 둘 이상일 때
 
-> **실물**: `features/sample/mdtabs/`(⑤) — 페이지 하나와 `components/SampleDetailTabs.tsx`.
+> **실물**: `modules/sample/features/mdtabs/`(⑤) — 페이지 하나와 `components/SampleDetailTabs.tsx`.
 >
 > **③에 탭을 얹은 것이지 ③을 베낀 것이 아니다.** 마스터·조회조건·스플리터는 그대로이며
 > 갈리는 것은 **하단**뿐이다. [master-detail.md](./master-detail.md) 를 먼저 읽는다.

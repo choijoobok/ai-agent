@@ -21,7 +21,7 @@ G3(설계 베이스라인) 승인 이후의 모든 spec 변경을 기록한다.
 | CR-015 | 2026-09-13 | Modify | 메뉴 트리에서 `window.open`으로 브라우저 새 탭 또는 창을 실제로 열면 월별 메뉴 사용 횟수에 포함하고, 팝업 차단으로 열리지 않으면 기록하지 않는다 | 사용자 | UC-510·ENT-530·SCR-512·TC-5105·공통 메뉴 진입 요건·ShellLayout·SLICE-516 | Small (프런트 집계 경로·규칙 시험) | A | 완료 |
 | CR-016 | 2026-09-13 | Fix | 같은 즐겨찾기를 두 탭에서 동시에 등록해도 복합 PK 충돌을 오류로 내보내지 않고, 모두 성공·행 하나로 끝낸다 | 사용자 | UC-510·ENT-528·TC-5101·FavoriteService·SysUserFavoriteRepository·SLICE-515 | Small (동시 등록 저장소 계약·시험) | A | 완료 |
 | CR-017 | 2026-09-13 | Fix | 같은 사용자의 동시 기본 조회조건 저장은 사용자 행 잠금으로 직렬화해 마지막 저장 완료 요청 하나만 기본으로 둔다 | 사용자 | UC-510·ENT-531·TC-5102·SearchCondService·SysUserRepository·SLICE-515 | Small (동시 기본값 잠금·시험) | A | 완료 |
-| CR-018 | 2026-09-13 | Modify | 샘플 메뉴·API·도메인·프런트를 삭제 가능한 별도 sample 모듈로 분리하되 현재 외부 주소와 `SMPL_*` 시드·제거 절차는 유지한다 | 사용자 | ARCH-010·011·027, Gradle·ArchUnit·프런트 경계, 샘플 화면·API·도메인·시드·playbook 경로 | Medium (SLICE-518 신규) | A | 반영중 |
+| CR-018 | 2026-09-13 | Modify | 샘플 메뉴·API·도메인·프런트를 삭제 가능한 별도 sample 모듈로 분리하되 현재 외부 주소와 `SMPL_*` 시드·제거 절차는 유지한다 | 사용자 | ARCH-010·011·027, Gradle·ArchUnit·프런트 경계, 샘플 화면·API·도메인·시드·playbook 경로 | Medium (SLICE-518 신규) | A | 완료 |
 
 **유형**: Add / Modify / Remove / Fix
 **판정**: A(지금 반영) / B(나중에) / C(안 함)
