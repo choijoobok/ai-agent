@@ -135,6 +135,21 @@ module_boundaries:
     rule: "**portal ↔ agent 통신은 비동기로 한다.** portal 은 질의를 접수시키고 즉시 반환받으며, 진행 상태와 결과는 프론트엔드 폴링으로 조회한다. 폴링은 턴 처리 중에만 수행하고 응답 수신 시 중지하며 **주기는 admin 시스템 설정으로 관리한다**"
     why: "서버 푸시(SSE·WebSocket)를 쓰지 않는 이유는 **프록시·L7 로드밸런서의 유휴 타임아웃과 응답 버퍼링 설정에 좌우되지 않기 위함**이다. 배포 환경이 고객사마다 다르므로 환경 의존을 줄이는 쪽을 택한다"
     note: "이 호출을 **portal 트랜잭션 안에 묶지 않는다** — 분리 시 원격 호출로 바뀔 수 있다"
+  - id: ARCH-027
+    rule: "`sample`은 system·admin·portal·agent에 이은 다섯 번째 제품 모듈이 아니며, 고객사 업무 확장도 아니다. 배포 산출물에는 포함되지만 제품 요구사항·테이블 쓰기 소유권·작업흐름 게이트의 소유자로 세지 않는 삭제 가능한 참조 구현이다"
+    source_boundary:
+      backend: "`sources/backend/modules/sample/` — Gradle 모듈 `backend:modules:sample`; 컨트롤러·요청 DTO·도메인 서비스·Entity·Repository와 소유 테스트를 함께 둔다"
+      frontend: "`sources/frontend/src/modules/sample/` — 샘플 화면·API 엔드포인트·화면 규칙과 소유 테스트를 함께 둔다"
+    dependency_direction:
+      - "sample은 `core`·`support`와 HTTP/Security 경계인 `api`가 공개한 공통물만 의존한다. system·admin·portal·agent의 내부 구현은 참조하지 않는다"
+      - "제품 모듈과 `core`·`support`·`api`는 sample을 참조하지 않는다. `bootstrap`만 조립·실행을 위해 sample 모듈을 포함한다"
+      - "프런트의 sample 밖 코드는 `modules/sample/**`을 참조하지 않는다. 라우터·메뉴 등록처럼 조립에 필요한 진입점만 명시적으로 가져온다"
+    compatibility:
+      - "외부 화면 주소 `/sample/**`와 API 주소 `/api/service/sample/**`는 유지한다. 소스 모듈 경계만 바꾸며 구 소스 경로 별칭은 남기지 않는다"
+      - "`SMPL_*` 테이블·메뉴·권한·메시지 시드는 유지하고 기존 생성 절차로 재생성한다"
+      - "고객 전달 시 sample 모듈·진입점·`SMPL_*` 시드를 한 절차로 제거할 수 있어야 하며, build·`.gradle`·`node_modules` 생성 폴더는 제거 대상이 아니다"
+    verification: "신규 모듈 존재와 구 `api/sample`·`domain/sample`·`features/sample` 부재를 먼저 실패하는 구조 계약으로 고정하고, 전체 빌드·시드 생성·샘플 규칙 반전 시험으로 확인한다"
+    traces_to: [ARCH-010, ARCH-011]
 
 write_ownership:
   claim: "네 모듈이 공유하는 PostgreSQL 스키마는 하나지만 **각 테이블과 Entity/Repository에는 쓰기 소유 모듈 하나가 있다.** 다른 모듈은 소유 모듈의 공개 조회 계약을 사용하고 내부 Repository를 직접 참조하지 않는다"
@@ -161,6 +176,7 @@ business_extension:
     hard_rule: "**Hub DB 와 업무 DB 에 걸친 원자적 트랜잭션을 전제하지 않는다** — 둘을 함께 바꾸는 흐름은 보상 처리로 설계한다"
     why: "합치면 업무 시스템의 스키마 수명주기가 Hub 에 묶인다. 업무 시스템이 주인공인 형태에서 그것은 주객이 뒤바뀐 종속이다"
     traces_to: [ARCH-010]
+
   - id: ARCH-018
     rule: "**업무 확장은 좌측 메뉴 트리에 형제 노드로 자기 메뉴를 기여한다** — 시스템 관리·AI Agent 관리와 나란한 최상위 노드이며, 그에 딸린 프론트·백엔드 소스가 함께 온다"
     requires: "`menu-tree.yaml` → `screenRegistry.ts` → `endpoints.ts` 로 이어지는 **시드 사슬이 확장의 기여를 받을 수 있어야 한다.** 확장을 넣지 않고 빌드하면 그 메뉴·화면·인가 시드도 함께 빠진다"

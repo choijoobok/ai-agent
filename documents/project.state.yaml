@@ -18,8 +18,8 @@ current:
   # ↑ **축이 둘이고 글자가 같다.** 차수는 *무엇을 내는가*(00-charter.yaml roadmap),
   #   단계는 *어디까지 만들었는가*(P0~P6)다. 한 차수가 P0~P6 을 한 바퀴 돈다.
   #   `trace-check` 가 이 값을 읽어 **뒤 차수의 결손을 오류가 아니라 경고로** 센다.
-  slice: null                # system P4의 모든 슬라이스가 사용자 G4 승인을 받았다
-  blocked_by: ["sample 모듈 신설의 변경 요청(CR) 판정"]
+  slice: SLICE-517           # CR-018 승인 뒤 profile 경계 보정부터 다시 RED로 검증한다
+  blocked_by: []
   template_maintenance: false
   # ↑ true 로 켜면 G3 전에도 sources/ 를 고칠 수 있다(guard-write ①).
   #   **템플릿 자체의 보수에만 켠다.** 켠 사실이 여기 남아 무엇을 왜 열었는지 추적된다.
@@ -327,6 +327,8 @@ slices:
   - { id: SLICE-514, workstream: system, features: [FEAT-509], testcases: [TC-5091, TC-5094, TC-5095, TC-5096, TC-5097], scope: "관리 요청 판정·내 요청·알림함 public 계약", stage: P4, status: done, depends_on: [SLICE-504, SLICE-513] }
   - { id: SLICE-515, workstream: system, features: [FEAT-510], testcases: [TC-5101, TC-5102, TC-5104], scope: "즐겨찾기·그리드·저장 조회조건", stage: P4, status: done, depends_on: [SLICE-503, SLICE-504] }
   - { id: SLICE-516, workstream: system, features: [FEAT-510], testcases: [TC-5103, TC-5105], scope: "메뉴 사용 통계·대시보드와 고아 상태 정리", stage: P4, status: done, depends_on: [SLICE-515] }
+  - { id: SLICE-517, workstream: system, features: [FEAT-501], testcases: [TC-5015], scope: "내 프로필·내 로그인 이력·내 역할·언어 설정의 system public 경계 보정", stage: P4, status: todo, depends_on: [SLICE-501, SLICE-504] }
+  - { id: SLICE-518, workstream: system, features: [FEAT-503], testcases: [TC-5035], scope: "CR-018 sample 참조 구현을 별도 백엔드·프런트 모듈로 격리", stage: P4, status: todo, depends_on: [SLICE-517] }
 
 verification_load:
   - { slice: SLICE-516, measured_at: "2026-09-13", fix_rounds: 5, unverified_rules: 0, quality_fails: 0, spec_defects: 2, redteam_fixes: 3, note: "메뉴 통계 컨트롤러·요청 DTO와 대시보드 경로를 system 정식 경로로 이행하고 구 API·/dashboard 경로를 제거했다. 물리 메뉴 삭제 때 즐겨찾기·저장 조회조건·그리드 설정·월별 사용 통계를 함께 정리하며, 시드 ORPHAN은 유효 권한·즐겨찾기·자주 쓰는 메뉴 응답과 이전 세션의 새 통계 기록에서 제외한다. 신규 system/구 패키지 부재 RED 계약, 세 고아 규칙과 경로 규칙의 반전 실패를 확인했다. CR-015로 메뉴 트리의 성공한 window.open 브라우저 새 탭·창 열기도 사용 횟수에 넣고, 팝업 차단은 기록하지 않는 RED·GREEN·규칙 반전 테스트를 추가했다. 전체 백엔드·프런트 검사, 시드 생성·검사, 품질·추적성·문서 검사를 통과했고 FavoriteService 100%, MenuStatService 100%, SysMenu 관련 분기 강도 100% PIT를 통과했다. CR-013으로 동시 USE_CNT 유실은 편의용 통계의 허용 오차로 확정했고, 대시보드는 CR-014로 현행 슬롯 구현을 유지하며 상세 요건을 Hub 개발 완료 후로 보류한다." }
