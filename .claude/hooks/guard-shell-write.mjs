@@ -18,7 +18,8 @@
  * 그 자리는 사후 chain 과 사람이 본다.
  */
 
-import { join, resolve } from 'node:path';
+import { existsSync, statSync } from 'node:fs';
+import { basename, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   readHookInput, repoRelative, runEmbeddedHook, isEmbedded, deny, pass, REPO,
@@ -26,10 +27,13 @@ import {
 import { PRE_FILE } from '../../aidd-guide/harness/runtime/chains.mjs';
 
 /** 파일이 아닌 리다이렉션 대상 — 여기에 쓰는 것은 저장소를 바꾸지 않는다. */
-const NOT_A_FILE = /^(?:&|\$|-$|\/dev\/|nul$|con$)/i;
+const NOT_A_FILE = /^(?:&|\$|-$|[0-9]+$|\/dev\/|nul$|con$)/i;
 
 /** 마지막 인자가 대상인 명령. */
 const LAST_ARG_IS_TARGET = new Set(['cp', 'mv', 'install', 'rsync']);
+
+/** GNU coreutils에서 목적지 디렉터리를 옵션으로 받는 명령. */
+const TARGET_DIRECTORY_COMMANDS = new Set(['cp', 'mv', 'install']);
 
 /** 인자 전부가 대상인 명령. */
 const ALL_ARGS_ARE_TARGETS = new Set(['tee', 'touch', 'truncate']);
@@ -40,6 +44,7 @@ const PS_WRITERS = new Set([
   'export-csv', 'export-clixml', 'tee-object',
 ]);
 const PS_TARGET_FLAG = /^-(?:path|filepath|literalpath|destination)$/i;
+const PS_COPY_MOVERS = new Set(['copy-item', 'move-item']);
 
 /**
  * <b>상대 경로는 두 뿌리에 대 본다 — `cwd` 와 저장소 루트.</b>
@@ -55,7 +60,7 @@ const PS_TARGET_FLAG = /^-(?:path|filepath|literalpath|destination)$/i;
 export function shellWriteTargets(command, cwd) {
   const roots = [...new Set([cwd || REPO, REPO])];
   const found = new Map();
-  for (const raw of rawTargets(command, 0)) {
+  for (const raw of rawTargets(command, 0, roots)) {
     if (!raw || NOT_A_FILE.test(raw) || /[*?]/.test(raw)) continue;
     for (const root of roots) {
       /* `raw` 가 절대 경로면 `root` 는 무시된다 — 두 번 같은 값이 나오고 Map 이 접는다. */
@@ -79,12 +84,12 @@ const WRAPPER_FLAG = /^(?:-c|\/c|\/k|-command)$/i;
  * 오탐을 막는 옳은 규칙이므로 버리지 않고, <b>래퍼로 넘긴 인자만 다시 명령으로 읽는다.</b>
  * 깊이를 둘로 묶어 `sh -c "sh -c …"` 가 무한히 도는 것을 막는다.
  */
-function rawTargets(command, depth) {
+function rawTargets(command, depth, roots) {
   const out = [];
   for (const segment of segments(tokenize(withoutHeredocBodies(command)))) {
-    out.push(...segmentTargets(segment));
+    out.push(...segmentTargets(segment, roots));
     if (depth >= 2) continue;
-    for (const payload of wrapperPayloads(segment)) out.push(...rawTargets(payload, depth + 1));
+    for (const payload of wrapperPayloads(segment)) out.push(...rawTargets(payload, depth + 1, roots));
   }
   return out;
 }
@@ -179,11 +184,11 @@ function tokenize(text) {
     }
     if (ch === '>' || ch === '<' || ch === '|' || ch === '&' || ch === ';') {
       flush();
-      let operator = ch;
-      while (text[i + 1] === ch) {
-        operator += ch;
-        i += 1;
-      }
+      /* 같은 문자만 묶으면 `>|`·`<>`·`&>`가 갈라져 실제 목적지를 잃는다. 긴 연산자를
+         먼저 고른다. `>&1`의 숫자는 NOT_A_FILE이 걷어내고 `>&파일`은 쓰기로 잡힌다. */
+      const operator = ['&>>', '<<<', '>>', '<<', '&&', '||', '>|', '<>', '&>', '>&', '<&']
+        .find((candidate) => text.startsWith(candidate, i)) ?? ch;
+      i += operator.length - 1;
       tokens.push(operator);
       continue;
     }
@@ -194,12 +199,13 @@ function tokenize(text) {
   return tokens;
 }
 
-function segmentTargets(tokens) {
+function segmentTargets(tokens, roots) {
   const targets = [];
   const words = [];
   for (let i = 0; i < tokens.length; i += 1) {
     const token = tokens[i];
-    if (token === '>' || token === '>>') {
+    if (token === '>' || token === '>>' || token === '>|' || token === '<>' ||
+        token === '&>' || token === '&>>' || token === '>&') {
       if (tokens[i + 1] !== undefined) targets.push(tokens[i + 1]);
       i += 1;
       continue;
@@ -210,28 +216,77 @@ function segmentTargets(tokens) {
     }
     words.push(token);
   }
-  targets.push(...commandTargets(words));
+  targets.push(...commandTargets(words, roots));
   return targets;
 }
 
-function commandTargets(words) {
+function commandTargets(words, roots) {
   const name = String(words[0] ?? '').split(/[\\/]/).pop().toLowerCase();
   const args = words.slice(1);
   const plain = args.filter((arg) => !arg.startsWith('-'));
 
+  if (PS_COPY_MOVERS.has(name)) {
+    const destination = args.findIndex((arg) => /^-destination$/i.test(arg));
+    if (destination >= 0 && args[destination + 1]) {
+      const source = args.findIndex((arg) => /^-(?:path|literalpath)$/i.test(arg));
+      const sources = source >= 0 && args[source + 1]
+        ? [args[source + 1]]
+        : plain.filter((operand) => operand !== args[destination + 1]).slice(0, 1);
+      return destinationTargets(args[destination + 1], sources, roots);
+    }
+    /* -Path/-LiteralPath와 첫 위치 인자는 원본이다. 목적지는 마지막 위치 인자다. */
+    return destinationTargets(plain.at(-1), plain.slice(0, -1), roots);
+  }
   if (PS_WRITERS.has(name)) {
     const flagged = args.findIndex((arg) => PS_TARGET_FLAG.test(arg));
     if (flagged >= 0 && args[flagged + 1]) return [args[flagged + 1]];
     return plain.slice(0, 1);
   }
   if (ALL_ARGS_ARE_TARGETS.has(name)) return plain;
-  if (LAST_ARG_IS_TARGET.has(name)) return plain.slice(-1);
+  if (TARGET_DIRECTORY_COMMANDS.has(name)) {
+    const longAttached = args.find((arg) => arg.startsWith('--target-directory='));
+    if (longAttached) {
+      const targetDir = longAttached.slice('--target-directory='.length);
+      return targetsInsideDirectory(targetDir, plain);
+    }
+    const separated = args.findIndex((arg) => arg === '-t' || arg === '--target-directory');
+    if (separated >= 0 && args[separated + 1]) {
+      return targetsInsideDirectory(args[separated + 1], plain);
+    }
+    const shortAttached = args.find((arg) => /^-t.+/.test(arg));
+    if (shortAttached) return targetsInsideDirectory(shortAttached.slice(2), plain);
+  }
+  if (LAST_ARG_IS_TARGET.has(name)) {
+    return destinationTargets(plain.at(-1), plain.slice(0, -1), roots);
+  }
   if (name === 'dd') {
     return args.filter((arg) => arg.startsWith('of=')).map((arg) => arg.slice(3));
   }
   /* `sed -i` 만 파일을 고친다 — 나머지 sed 는 읽기다. 첫 인자는 스크립트이므로 뺀다. */
   if (name === 'sed' && args.some((arg) => /^-[^-]*i/.test(arg))) return plain.slice(1);
   return [];
+}
+
+/** `cp/mv/install -t DIR SOURCE…`의 실제 목적지는 `DIR/basename(SOURCE)`다. */
+function targetsInsideDirectory(targetDir, operands) {
+  const sources = operands.filter((operand) => operand !== targetDir);
+  return sources.length
+    ? sources.map((source) => join(targetDir, basename(source.replace(/[\\/]+$/, ''))))
+    : [targetDir];
+}
+
+/** 기존 디렉터리에 복사·이동하면 실제 쓰기는 그 아래 source basename에서 일어난다. */
+function destinationTargets(destination, sources, roots) {
+  if (!destination) return [];
+  const existingDirectory = roots.some((root) => {
+    const absolute = resolve(root, destination);
+    try {
+      return existsSync(absolute) && statSync(absolute).isDirectory();
+    } catch {
+      return false;
+    }
+  });
+  return existingDirectory ? targetsInsideDirectory(destination, sources) : [destination];
 }
 
 // ── 실행 ───────────────────────────────────────────────────────────

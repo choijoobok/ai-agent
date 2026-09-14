@@ -291,6 +291,13 @@ const adapterError = new SyntaxError('adapter parse failed');
 assert.deepEqual(bootstrapTargets(asWrite('.codex/hooks/file-chain.mjs')), [join(REPO, '.codex', 'hooks', 'file-chain.mjs')]);
 assert.equal(crashOutput(asWrite('.codex/hooks/file-chain.mjs'), 'file-chain.mjs', adapterError)?.hookSpecificOutput?.permissionDecision, undefined);
 assert.equal(crashOutput(asWrite('documents/INDEX.md'), 'file-chain.mjs', adapterError)?.hookSpecificOutput?.permissionDecision, 'deny');
+const mcpShellCrash = crashOutput(
+  { hook_event_name: 'PreToolUse', tool_name: 'mcp__server__start_process', tool_input: { command: 'echo x' } },
+  '.claude/hooks/pre-shell.mjs',
+  adapterError,
+);
+assert.equal(mcpShellCrash?.hookSpecificOutput?.permissionDecision, 'deny');
+assert.equal(mcpShellCrash?.hookSpecificOutput?.permissionDecisionReason.startsWith('셸 보호 진입부'), true);
 
 /* 구문이 깨진 훅을 **그 자리에서** 잡는다. 깨진 파일을 실제로 만들어야 의미가 있으므로
    `finally` 로 반드시 지운다 — 시험이 저장소에 쓰레기를 남기면 다음 사람이 그것을 의심한다. */
@@ -397,6 +404,16 @@ assert.deepEqual(targetsOf('echo y >>AGENTS.md'), ['AGENTS.md']);
 assert.deepEqual(targetsOf('cat a | tee -a documents/x.md'), ['documents/x.md']);
 assert.deepEqual(targetsOf("sed -i 's/a/b/' AGENTS.md"), ['AGENTS.md']);
 assert.deepEqual(targetsOf('Set-Content documents/x.md "hi"'), ['documents/x.md']);
+assert.deepEqual(targetsOf('Copy-Item -Path AGENTS.md -Destination documents/x.md'), ['documents/x.md']);
+assert.deepEqual(targetsOf('Copy-Item AGENTS.md documents/x.md'), ['documents/x.md']);
+assert.deepEqual(targetsOf('Move-Item -LiteralPath AGENTS.md -Destination documents/x.md'), ['documents/x.md']);
+assert.deepEqual(targetsOf('Copy-Item -Path AGENTS.md -Destination documents'), ['documents/AGENTS.md']);
+assert.deepEqual(targetsOf('cp AGENTS.md documents'), ['documents/AGENTS.md']);
+assert.deepEqual(targetsOf('cp -t documents AGENTS.md'), ['documents/AGENTS.md']);
+assert.deepEqual(targetsOf('cp --target-directory=documents AGENTS.md'), ['documents/AGENTS.md']);
+assert.deepEqual(targetsOf('cp -tdocuments AGENTS.md'), ['documents/AGENTS.md']);
+assert.deepEqual(targetsOf('echo x >| documents/x.md'), ['documents/x.md']);
+assert.deepEqual(targetsOf('exec 3<> documents/x.md'), ['documents/x.md']);
 assert.deepEqual(targetsOf('cat <<EOF > documents/x.md\n> 본문의 꺾쇠\nEOF'), ['documents/x.md']);
 /* 읽기·저장소 밖·인용부 안·`/dev/null` 은 건드리지 않는다. */
 assert.deepEqual(targetsOf("sed -n '1,5p' AGENTS.md"), []);
@@ -414,6 +431,10 @@ assert.deepEqual(targetsOf(posixCommit('fix: a > b')), []);
 const shellChain = (command) =>
   runHookChain({ cwd: REPO, hook_event_name: 'PreToolUse', tool_name: 'Bash', tool_input: { command } }, PRE_SHELL);
 assert.equal(isDenied(await shellChain('printf x > documents/지도밖.md')), true);
+assert.equal(isDenied(await shellChain('Copy-Item AGENTS.md documents/지도밖.md')), true);
+assert.equal(isDenied(await shellChain('Copy-Item AGENTS.md documents')), true);
+assert.equal(isDenied(await shellChain('echo x >| documents/지도밖.md')), true);
+assert.equal(isDenied(await shellChain('cp -t documents AGENTS.md')), true);
 assert.equal(isDenied(await shellChain('cat AGENTS.md | head -5')), false);
 
 /* 어댑터는 emitter 밖에서 stdout 에 쓰지 않는다 — **두 곳에서 쓰면 형태가 섞이고**,

@@ -85,7 +85,8 @@ Codex 전용 검사는 매 요청에서 그 값과 현재 실행면을 대조하
 ## 입력 차이
 
 Codex shell은 hook에서 `Bash`로 보이고 명령은 `tool_input.command`에 온다. 파일 편집은
-`tool_name: apply_patch`이며 patch 전체가 같은 `command`에 온다. `.codex/hooks/file-chain.mjs`가
+`tool_name: apply_patch`이며 matcher도 그 이름을 명시한다. patch 전체가 같은 `command`에 온다.
+`.codex/hooks/file-chain.mjs`가
 patch의 Add/Update/Delete/Move 대상들을 꺼내 Claude 정책 엔진이 이해하는 `file_path` 입력으로
 바꾼다. 여러 파일이면 각 파일을 순서대로 검사하고 deny 하나라도 있으면 전체 patch를 막는다.
 파일 사전 chain은 `pretool-bootstrap`을 거쳐 adapter import 전 오류도 deny로 바꾸되,

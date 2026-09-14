@@ -56,7 +56,10 @@ Claude의 Write/Edit 계열 입력은 `tool_input.file_path`와 `content`/`new_s
 파일 사전 chain은 `pretool-bootstrap`을 거쳐 adapter import 전 오류까지 deny로 바꾼다. bootstrap
 자체가 깨지면 쓰기는 닫히고 Bash는 남으므로 그 파일을 Bash로 복구한다.
 
-**사전 훅 둘 다 `args` exec form이며 셸을 거치지 않는다.** Claude는 훅이 *시작조차 못 하면*
+**사전 훅 둘 다 `args` exec form이며 셸을 거치지 않는다.** script 인자는 현재 셸의 `cwd`가
+아니라 `${CLAUDE_PROJECT_DIR}`에서 시작한다. 상대 경로로 두면 하위 디렉터리에서 `node`가
+bootstrap을 찾지 못하고 exit 1로 끝나는데, Claude는 exit 2가 아닌 오류를 비차단으로 처리해
+게이트가 열린다. Claude는 훅이 *시작조차 못 하면*
 차단이 아니라 **통과**시킨다(exit 2만 막는다). 셸 형태로 두면 `bash`가 없는 윈도우 기계에서
 게이트가 통째로 열리는데, 그것은 폐쇄망 고객사에서 가장 그럴듯한 환경이다. exec form은 그
 경우를 없애고, adapter가 깨지는 경우는 `pretool-bootstrap`이 구조화된 deny로 바꾼다. 셸 chain도

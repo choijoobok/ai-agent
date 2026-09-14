@@ -44,7 +44,7 @@ tags: [harness, hooks, contract, wiring]
 | `UserPromptSubmit` | `log-raw` + `context-gauge` | `log-raw` | 사용자 대화 기록 |
 | `Stop` | `log-raw` | `log-raw` | AI 대화 기록 |
 
-- **배선은 도구 이름으로 선다 — 그래서 무엇을 덮는지 세지 않으면 도구를 바꾸는 것만으로 게이트가 사라진다.** `harness-check`가 대표 도구 이름(`Write`·`Edit`·`NotebookEdit`·MCP 쓰기·`Bash`·`PowerShell`·MCP 셸)을 Claude matcher 정규식에 실제로 먹여 본다. 새 쓰기·셸 도구가 생기면 그 목록에 먼저 더한다. **파일 쪽만 MCP를 덮고 셸 쪽을 두면 같은 구멍이 남는다** — 2026-09-14 실측에서 `Bash`로 막힌 명령이 MCP `start_process`로 그대로 돌았다.
+- **배선은 도구 이름으로 선다 — 그래서 무엇을 덮는지 세지 않으면 도구를 바꾸는 것만으로 게이트가 사라진다.** `harness-check`가 provider별 대표 도구 이름(Claude의 `Write`·`Edit`·`NotebookEdit`, Codex의 `apply_patch`, 양쪽의 shell·MCP 쓰기)을 각 matcher 정규식에 실제로 먹여 본다. 새 쓰기·셸 도구가 생기면 그 목록에 먼저 더한다. **파일 쪽만 MCP를 덮고 셸 쪽을 두면 같은 구멍이 남는다** — 2026-09-14 실측에서 `Bash`로 막힌 명령이 MCP `start_process`로 그대로 돌았다.
 - **셸 chain이 보는 것은 `tool_input.command` 하나다.** 그래서 셸을 *새로 여는* MCP 도구는 덮지만, 이미 열린 REPL·프로세스에 이어 넣는 입력(`interact_with_process`의 `input` 등)은 보지 못한다 — 명령이 그 필드에 없고, 그 내용은 셸 문법도 아니다. 그 자리는 사후 chain과 사람이 본다.
 - 같은 matcher의 command hook은 동시 실행될 수 있다. 그래서 순서가 필요한 정책은 handler를 여러 개 배선하지 않고 **chain 하나**가 직렬 실행한다.
 - **같은 chain에는 같은 timeout을 준다.** 예산이 갈리면 좁은 쪽에서만 뒤쪽 훅이 통째로
@@ -107,7 +107,7 @@ startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로
 | 칸 | 값 |
 |---|---|
 | 이벤트 · 입력 | `PreToolUse` shell chain 의 끝 · `tool_input.command` |
-| 판정 · 강도 | 명령에서 쓰기 대상을 뽑아 **`pre_file` chain 을 그대로** 돌린다 · 차단. 저장소 밖·`/dev/null`·glob·인용부 안은 통과 |
+| 판정 · 강도 | 명령에서 쓰기 대상을 뽑아 **`pre_file` chain 을 그대로** 돌린다 · 차단. 복사·이동은 원본이 아니라 목적지를 보고 `>|`·`<>`·`-t` 목적지도 포함한다. 저장소 밖·`/dev/null`·glob·인용부 안은 통과 |
 | 출력 · 실패 정책 | 막힌 경로마다 원래 훅의 사유 · 사전 chain 이라 던지면 차단한다 |
 | 못 보는 것 | 스크립트가 자기 안에서 여는 파일(`node -e` · gradle), 인용부 안의 리다이렉션, 변수·glob 경로, 삭제(`rm` — `@defer ?`) |
 | fixture | `.codex/hooks/self-test.mjs` — 잡는 형태와 **통과해야 하는 형태**를 함께 센다 |

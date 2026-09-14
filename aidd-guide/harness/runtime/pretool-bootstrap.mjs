@@ -7,7 +7,7 @@
  * 바꾸며, 그때는 아직 살아 있는 shell 도구로 이 파일을 고친다.
  */
 
-import { dirname, isAbsolute, relative, resolve, sep } from 'node:path';
+import { basename, dirname, isAbsolute, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
@@ -39,9 +39,9 @@ export function crashOutput(input, entry, error) {
   const repair = targets.length > 0 && targets.every((path) => REPAIR_PATH.test(path));
   const cause = firstLine(error);
 
-  /* 셸 chain 도 이 진입부를 쓴다 — 그때 <b>고칠 때 쓰는 도구가 편집 도구</b>라서
-     안내가 반대다. 파일 대상이 없으면 셸 진입으로 본다. */
-  if (!isFileEvent(input)) {
+  /* 셸 chain 도 이 진입부를 쓴다 — 진입 경로가 어느 chain인지의 정본이다. 도구 이름으로
+     추정하면 MCP shell 이름을 파일 도구로 오인해 수리 안내가 뒤집힌다. */
+  if (basename(String(entry).replace(/\\/g, '/')) === 'pre-shell.mjs') {
     const reason = [
       `셸 보호 진입부 실행 실패: ${entry}: ${cause}`,
       '**명령 실행을 차단했다.** 편집 도구(`Edit`)로 훅을 복구한 뒤 다시 시도한다.',
@@ -103,12 +103,6 @@ async function readInput() {
   } catch {
     return {};
   }
-}
-
-/** 파일 도구인가 — 대상 경로가 있거나 파일 도구 이름이면 그렇다. */
-function isFileEvent(input) {
-  if (patchTargets(input).length > 0) return true;
-  return !/^(?:Bash|PowerShell|Shell)$/i.test(String(input?.tool_name ?? ''));
 }
 
 function repoRelative(path) {

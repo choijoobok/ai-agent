@@ -21,7 +21,7 @@
           {
             "type": "command",
             "command": "node",
-            "args": ["aidd-guide/harness/runtime/pretool-bootstrap.mjs", "claude", ".claude/hooks/pre-write.mjs"],
+            "args": ["${CLAUDE_PROJECT_DIR}/aidd-guide/harness/runtime/pretool-bootstrap.mjs", "claude", ".claude/hooks/pre-write.mjs"],
             "timeout": 45,
             "statusMessage": "게이트·산출물 지도 확인"
           }
@@ -33,7 +33,7 @@
           {
             "type": "command",
             "command": "node",
-            "args": ["aidd-guide/harness/runtime/pretool-bootstrap.mjs", "claude", ".claude/hooks/pre-shell.mjs"],
+            "args": ["${CLAUDE_PROJECT_DIR}/aidd-guide/harness/runtime/pretool-bootstrap.mjs", "claude", ".claude/hooks/pre-shell.mjs"],
             "timeout": 20,
             "statusMessage": "파괴적 명령·커밋 형태·쓰기 경로 확인"
           }

@@ -7,8 +7,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/session-start.mjs\" --hook-revision=5783da045514e380174d17e2cc77e33e9e50c6673b953a0446bc3ccfad07c2ef",
-            "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/session-start.mjs') --hook-revision=5783da045514e380174d17e2cc77e33e9e50c6673b953a0446bc3ccfad07c2ef\"",
+            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/session-start.mjs\" --hook-revision=95aec44238b9558c52601b116fa0d1d1806cdafa5891b9fe1e3282c40bf95125",
+            "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/session-start.mjs') --hook-revision=95aec44238b9558c52601b116fa0d1d1806cdafa5891b9fe1e3282c40bf95125\"",
             "timeout": 60,
             "statusMessage": "원격 동기화와 프로젝트 상태 확인",
             "additionalContextLimit": 5000
@@ -31,7 +31,7 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "apply_patch|Edit|Write|^mcp__.*__(?:write|edit|move|create)",
         "hooks": [
           {
             "type": "command",
@@ -43,7 +43,7 @@
         ]
       },
       {
-        "matcher": "Bash",
+        "matcher": "Bash|PowerShell|^mcp__.*__(?:start_process|execute_command|run_command|run_shell_command|shell_exec|bash|terminal|exec)",
         "hooks": [
           {
             "type": "command",
@@ -57,7 +57,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "apply_patch|Edit|Write|^mcp__.*__(?:write|edit|move|create)",
         "hooks": [
           {
             "type": "command",

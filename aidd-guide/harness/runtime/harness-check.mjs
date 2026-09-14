@@ -1,7 +1,7 @@
 /** Claude Code/Codex 하네스의 정본·생성물·배선을 빠르게 대조한다. */
 
 import { existsSync, readFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseYaml } from '../../../.claude/hooks/lib.mjs';
 import { skillDiffs, sourceSkills } from './sync-skills.mjs';
@@ -102,6 +102,13 @@ export function checkHarness() {
         if (!wrapped && !(execForm && viaBootstrap)) {
           issues.push(`${name} PreToolUse 진입 실패를 명시적 deny로 바꾸는 wrapper가 없다: ${group?.matcher ?? '*'}`);
         }
+        if (name === 'Claude' && execForm && viaBootstrap) {
+          const bootstrap = String(hook.args[0] ?? '');
+          const projectAbsolute = bootstrap.startsWith('${CLAUDE_PROJECT_DIR}/') || isAbsolute(bootstrap);
+          if (!projectAbsolute) {
+            issues.push(`Claude PreToolUse bootstrap이 현재 cwd 기준 상대 경로다 — 하위 디렉터리에서 exit 1로 열릴 수 있다: ${bootstrap}`);
+          }
+        }
         if (name === 'Codex' && hook?.commandWindows && !command.includes('ConvertTo-Json -Compress')) {
           issues.push(`Codex Windows deny wrapper가 객체 직렬화를 쓰지 않는다 — inline JSON은 cmd.exe에서 따옴표가 깨진다: ${group?.matcher ?? '*'}`);
         }
@@ -146,7 +153,8 @@ export function checkHarness() {
     }
   }
 
-  issues.push(...coverageIssues(claude));
+  issues.push(...coverageIssues('Claude', claude));
+  issues.push(...coverageIssues('Codex', codex));
 
   if (sourceSkills().length === 0) issues.push('공통 스킬이 0개다.');
   return issues;
@@ -161,31 +169,37 @@ export function checkHarness() {
  * 그래서 대표 도구 이름을 matcher 정규식에 <b>실제로 먹여 본다.</b>
  */
 const MUST_SEE = {
-  'pre-write.mjs': ['Write', 'Edit', 'NotebookEdit', 'mcp__server__write_file', 'mcp__server__edit_block'],
-  /* MCP 셸 도구를 빼면 `Bash` 로 막히는 명령이 `start_process` 로 그대로 돈다 —
-     2026-09-14 에 실측했다. 파일 쪽만 MCP 를 덮고 셸 쪽은 두면 같은 구멍이 남는다. */
-  'pre-shell.mjs': ['Bash', 'PowerShell', 'mcp__server__start_process', 'mcp__server__execute_command'],
-  'post-write.mjs': ['Write', 'Edit', 'mcp__server__write_file', 'mcp__server__edit_block'],
+  Claude: [
+    { event: 'PreToolUse', adapter: 'pre-write.mjs', tools: ['Write', 'Edit', 'NotebookEdit', 'mcp__server__write_file', 'mcp__server__edit_block'] },
+    /* MCP 셸 도구를 빼면 `Bash` 로 막히는 명령이 `start_process` 로 그대로 돈다 —
+       2026-09-14 에 실측했다. 파일 쪽만 MCP 를 덮고 셸 쪽은 두면 같은 구멍이 남는다. */
+    { event: 'PreToolUse', adapter: 'pre-shell.mjs', tools: ['Bash', 'PowerShell', 'mcp__server__start_process', 'mcp__server__execute_command'] },
+    { event: 'PostToolUse', adapter: 'post-write.mjs', tools: ['Write', 'Edit', 'mcp__server__write_file', 'mcp__server__edit_block'] },
+  ],
+  Codex: [
+    { event: 'PreToolUse', adapter: 'file-chain.mjs', tools: ['apply_patch', 'Edit', 'Write', 'mcp__server__write_file', 'mcp__server__edit_block'] },
+    { event: 'PreToolUse', adapter: 'pre-shell.mjs', tools: ['Bash', 'PowerShell', 'mcp__server__start_process', 'mcp__server__execute_command'] },
+    { event: 'PostToolUse', adapter: 'file-chain.mjs', tools: ['apply_patch', 'Edit', 'Write', 'mcp__server__write_file', 'mcp__server__edit_block'] },
+  ],
 };
 
-function coverageIssues(claude) {
+function coverageIssues(name, config) {
   const issues = [];
-  for (const [adapter, tools] of Object.entries(MUST_SEE)) {
-    const event = adapter === 'post-write.mjs' ? 'PostToolUse' : 'PreToolUse';
+  for (const { event, adapter, tools } of MUST_SEE[name] ?? []) {
     const patterns = [];
-    for (const group of claude?.hooks?.[event] ?? []) {
+    for (const group of config?.hooks?.[event] ?? []) {
       for (const hook of group?.hooks ?? []) {
         const wiring = `${(hook?.args ?? []).join(' ')} ${hook?.command ?? ''}`;
         if (wiring.includes(adapter)) patterns.push(String(group?.matcher ?? ''));
       }
     }
     if (patterns.length === 0) {
-      issues.push(`Claude ${event} 에 ${adapter} 배선이 없다.`);
+      issues.push(`${name} ${event} 에 ${adapter} 배선이 없다.`);
       continue;
     }
     const missed = tools.filter((tool) => !patterns.some((pattern) => matches(pattern, tool)));
     if (missed.length) {
-      issues.push(`Claude ${event} matcher가 ${adapter} 로 보내지 않는 도구가 있다: ${missed.join(', ')}`);
+      issues.push(`${name} ${event} matcher가 ${adapter} 로 보내지 않는 도구가 있다: ${missed.join(', ')}`);
     }
   }
   return issues;
