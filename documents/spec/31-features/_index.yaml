@@ -21,4 +21,4 @@ spec_set:
     - 004-agent.yaml
     - 005-system.yaml
     - 006-common.yaml
-    - 003-retired.yaml
+    - 007-retired.yaml

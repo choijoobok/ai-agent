@@ -21,4 +21,4 @@ spec_set:
     - 004-knowledge-catalog.yaml
     - 005-derived.yaml
     - 006-system.yaml
-    - 002-consistency-review.yaml
+    - 007-consistency-review.yaml
