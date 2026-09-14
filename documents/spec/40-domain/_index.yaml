@@ -4,8 +4,6 @@ meta:
   baselined: null
   workstreams: { system: reviewed }
   physical_policy: "ARCH-024 — 기존 이름·스키마·컬럼·제약·데이터 유지, 복제와 이중 쓰기 금지"
-  source_commentary: |-
-    [1] 도메인·데이터 모델 — system은 기존 31개 테이블의 물리 구조·데이터를 바꾸지 않고 쓰기 소유권만 인수한다.
 
 spec_set:
   version: 1

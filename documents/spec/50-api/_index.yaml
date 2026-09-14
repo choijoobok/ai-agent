@@ -8,8 +8,6 @@ meta:
   common_errors: { 400: VALIDATION_ERROR, 401: AUTHENTICATION_REQUIRED, 403: AUTHORIZATION_DENIED, 404: RESOURCE_NOT_FOUND, 409: STATE_CONFLICT, 500: INTERNAL_ERROR }
   contract_rule: "각 API의 request·response 타입과 source_contract 메서드의 DTO 필드·Bean Validation을 G3 입력 계약으로 동결한다. P4에서는 패키지와 경로만 옮기며 타입·필드·null·페이징 의미를 바꾸지 않는다"
   error_inheritance: "모든 API는 common_errors를 상속하고, feature_contracts의 exception_map에 연결된 UC 예외를 추가로 반환한다"
-  source_commentary: |-
-    [1] Hub 내부 API — system 목표 경로. 현재 응답 DTO와 검증 의미를 보존하며 모듈 접두만 전환한다.
 
 spec_set:
   version: 1

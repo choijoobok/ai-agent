@@ -1,0 +1,28 @@
+requirements:
+# ── 로드맵·제약에서 유도한 것 ─────────────
+# **지어낸 사실이 아니라 함축을 드러낸 것이다.** 로드맵이 "알림 발송" 을 P3 포함
+# 항목으로, 개발 표준이 "프로파일 로컬/개발/운영" 을 규정했으나 요구사항으로 적힌 적이
+# 없어 실현체(FEAT-214 · FEAT-302)가 역추적되지 않았다. `derived: true` 가 그 표시이며
+# **P1 게이트에서 사용자 확인 대상이다.**
+  - id: REQ-401
+    type: functional
+    priority: should
+    derived: true
+    derived_from: "00-charter/_index.yaml RM-P3 (알림 발송) · CON-031 (메일 발송 경로)"
+    actors: [ACT-001, ACT-009]
+    title: "워크플로우·잡의 결과를 사용자에게 알린다"
+    detail: "주기·조건 실행으로 처리된 결과와 실패를 사용자에게 통지한다. 발송 경로는 고객사 환경에 따라 다르므로(CON-031) 경로를 시스템이 규정하지 않는다"
+    open: "**무엇을 어떤 조건에 알리는가는 미확정이다** — 워크플로우 설계에서 확정한다"
+    roadmap: RM-P3
+  - id: REQ-402
+    type: functional
+    priority: must
+    priority_reason: "고객사별 실행 환경을 분리하고 비밀 값을 평문으로 남기지 않기 위한 배포 전제다"
+    derived: true
+    derived_from: "CON-011 (비밀 값) · CON-033 (프로파일로 Provider 전환) · hub-conventions §3"
+    actors: [ACT-009]
+    process_step: PRC-01-01
+    title: "환경별 설정과 프로파일을 분리해 관리한다"
+    detail: "프로파일은 **로컬 / 개발 / 운영**으로 구분하고 모듈별 yml 을 파일로 분리한다. **비밀 값은 설정 파일에 평문으로 두지 않는다.** LLM Provider 선택(개발기 CLI ↔ 운영 API)도 프로파일 설정으로 전환된다"
+    hard_rule: "**업무 DB·DW 데이터소스와 API 자격증명은 yml 에만 둔다** — 화면은 매핑과 참조 키만 관리한다"
+

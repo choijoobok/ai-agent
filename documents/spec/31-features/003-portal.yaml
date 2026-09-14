@@ -1,0 +1,193 @@
+features:
+# ══ portal — 개인 사용자 (10.4) ══════════════════════════════════
+  - id: FEAT-101
+    module: portal
+    screen: SCR-101
+    roadmap: RM-P1
+    title: "채팅하기"
+    detail: "멀티 세션 · 세션 제목 설정 · 모델·effort 선택(**주 추론 역할에만 적용되고 턴 시작 시점에 고정된다**) · **레거시 딥링크 팝업 진입과 초기 문맥 파라미터 수신**"
+    reqs: [REQ-001, REQ-002]
+    traces_to: [ARCH-020, ARCH-040]
+  - id: FEAT-102
+    module: portal
+    screen: SCR-101
+    roadmap: RM-P1
+    title: "진행 상황 표시 · 중단 · 처리 중 추가 입력"
+    detail: "현재 상태와 경과 시간. **추가 입력 시 판정된 의도를 기본값으로 표시하고 되돌릴 수단을 함께 제공한다**(병행형 확인)"
+    reqs: [REQ-006, REQ-007, REQ-008, REQ-018, REQ-032]
+  - id: FEAT-103
+    module: portal
+    screen: SCR-101
+    roadmap: RM-P1
+    title: "응답 렌더링 — 텍스트 · 그리드 · 차트"
+    reqs: [REQ-011, REQ-012, REQ-027]
+  - id: FEAT-104
+    module: portal
+    screen: SCR-101
+    roadmap: RM-P1
+    title: "엑셀 다운로드 · 차트 이미지 다운로드"
+    detail: "**그리드·차트 컴포넌트의 클라이언트 기능.** 서버가 파일을 만들지 않는다"
+    reqs: [REQ-011]
+    traces_to: [NGOAL-10]
+  - id: FEAT-105
+    module: portal
+    screen: SCR-101
+    roadmap: RM-P1
+    title: "추가 정보 입력 · 승인 요청 응답 · 의도 확인 응답"
+    detail: "세 가지 대기 유형에 대응한다. **승인 요청 화면에는 예정된 액션 목록과 순서, 이 세션에서 이미 실행된 액션, 다른 세션의 최근 동일 API 실행을 함께 제시한다**"
+    reqs: [REQ-005, REQ-017, REQ-026, REQ-030, REQ-113]
+  - id: FEAT-106
+    module: portal
+    screen: SCR-101
+    roadmap: RM-P1
+    title: "중단된 턴 재시도"
+    detail: "**중단 상태에 한한다**"
+    reqs: [REQ-013, REQ-014]
+  - id: FEAT-107
+    module: portal
+    screen: SCR-101
+    roadmap: RM-P1
+    title: "채팅 도움말·주의사항 조회"
+    reqs: [REQ-101]
+  - id: FEAT-108
+    module: portal
+    screen: SCR-101
+    roadmap: RM-P1
+    title: "조회 계획 확인과 자연어 교정"
+    detail: "업무 용어로 제시된 처리 예정 내역 확인 · 교정 지시 입력"
+    reqs: [REQ-022, REQ-023]
+  - id: FEAT-109
+    module: portal
+    screen: SCR-101
+    roadmap: RM-P1
+    title: "결과 교정 재요청"
+    detail: "성공한 턴의 결과가 의도와 다를 때, 이전 해석문·조회 계획을 근거로 재작성을 요구한다"
+    reqs: [REQ-024]
+  - id: FEAT-110
+    module: portal
+    screen: SCR-101
+    roadmap: RM-P1
+    title: "생성 SQL 원문 열람"
+    detail: "그룹으로 허용된 사용자만. **편집·직접 실행은 제공하지 않는다**"
+    reqs: [REQ-104]
+  - id: FEAT-111
+    module: portal
+    screen: SCR-101
+    roadmap: RM-P1
+    title: "지난 대화 조회·검색"
+    detail: "세션 재진입 시 마지막 턴 표시, 위로 스크롤하면 이전 턴을 단위별로 추가 조회"
+    reqs: [REQ-019]
+  - id: FEAT-112
+    module: portal
+    screen: SCR-101
+    roadmap: RM-P1
+    title: "대화 이력 삭제"
+    detail: "**논리 삭제만**"
+    reqs: [REQ-109]
+  - id: FEAT-113
+    module: portal
+    screen: SCR-110
+    roadmap: RM-P1
+    title: "개인화 프롬프트 관리"
+    detail: "개인 기본 지시 · **정책과 충돌해 적용되지 않은 지시 표시**"
+    reqs: [REQ-112]
+  - id: FEAT-114
+    module: portal
+    screen: SCR-109
+    roadmap: RM-P1
+    title: "내 토큰·비용 사용량 및 잔여 한도 확인"
+    reqs: []
+    nfrs: [NFR-011]
+  - id: FEAT-115
+    module: portal
+    screen: SCR-109
+    roadmap: RM-P4
+    title: "초과 토큰 사용 신청"
+    reqs: []
+    nfrs: [NFR-011]
+  - id: FEAT-116
+    module: portal
+    screen: SCR-107
+    roadmap: RM-P2
+    title: "내 접근 가능 데이터 목록 조회"
+    detail: "권한 범위 내 테이블·컬럼, 마스킹 여부 포함. **데이터소스(별칭)별로 묶어 표시한다** — 테이블은 데이터소스에 귀속되므로"
+    why: "**존재 은닉(REQ-101)의 보완 경로다** — 정보 부재 응답이 이 목록으로 안내한다"
+    reqs: [REQ-101, REQ-103]
+    traces_to: [ARCH-012]
+  - id: FEAT-117
+    module: portal
+    screen: SCR-108
+    roadmap: RM-P2
+    title: "내 실행 가능 툴 목록 조회"
+    detail: "권한 범위 내 실행 API 와 파라미터 설명. **대상 시스템별로 묶어 표시**"
+    reqs: [REQ-105]
+    traces_to: [ARCH-012]
+  - id: FEAT-118
+    module: portal
+    screen: SCR-106
+    roadmap: RM-P3
+    title: "워크플로우 설정"
+    detail: "접근 가능 데이터·실행 가능 툴 목록을 조합해 워크플로우를 정의·수정·삭제한다. **권한 범위 내 항목만 조합 가능**"
+    reqs: [REQ-105, REQ-207]
+  - id: FEAT-119
+    module: portal
+    screen: SCR-106
+    roadmap: RM-P3
+    title: "워크플로우 수동 실행 · 활성 전환 · 실행 이력 조회"
+    reqs: [REQ-207]
+    nfrs: [NFR-024, NFR-025]
+  - id: FEAT-120
+    module: portal
+    screen: SCR-102
+    roadmap: RM-P1
+    title: "내 작업 상태"
+    detail: "진행 중인 턴과 워크플로우 잡의 현재 진행 과정 모니터링. 잡은 P3 부터"
+    reqs: [REQ-006, REQ-016]
+  - id: FEAT-121
+    module: portal
+    screen: SCR-103
+    roadmap: RM-P1
+    title: "질의 즐겨찾기"
+    detail: "자연어 질의문 저장·수정·삭제, 클릭 시 채팅 입력에 반영"
+    reqs: [REQ-201]
+  - id: FEAT-122
+    module: portal
+    screen: SCR-104
+    roadmap: RM-P2
+    title: "저장된 조회 관리"
+    detail: "성공한 조회의 저장 · 파라미터 확인 · 목록 조회·삭제 · 자연어 수정 요청 · 무효화 상태 확인"
+    reqs: [REQ-201, REQ-202, REQ-203, REQ-204]
+  - id: FEAT-123
+    module: portal
+    screen: SCR-105
+    roadmap: RM-P2
+    title: "대시보드 구성과 실행"
+    detail: "위젯 배치와 표현 형식 지정 · 위젯별 수동 조회와 자동 실행 설정 · 결과 렌더링"
+    reqs: [REQ-206]
+    nfrs: [NFR-005]
+  - id: FEAT-124
+    module: portal
+    screen: SCR-101
+    roadmap: RM-P1
+    title: "품질 신고 등록"
+    detail: "대상 턴 지정 · 사유 작성"
+    reqs: [REQ-110]
+  - id: FEAT-125
+    module: portal
+    screen: SCR-111
+    roadmap: RM-P1
+    title: "내 신고 목록과 처리 결과·사유 조회"
+    reqs: [REQ-110]
+
+  - id: FEAT-126
+    module: portal
+    workstream: integration
+    screen: SCR-112
+    roadmap: RM-P1
+    title: "agent 응답 계약 시험"
+    detail: "질의를 접수하고 처리 상태를 조회한 뒤, 권한·보안·쿼터·감사를 거친 agent 최종 응답 계약의 원문과 메타데이터를 누락 없이 표시한다"
+    hard_rule: "**제품용 가공·이력 탐색·개인화·시각화는 넣지 않는다.** 모르는 표현 블록도 버리지 않고 원문으로 확인할 수 있어야 한다"
+    lifecycle: "admin·agent 핵심 개발 중 사용하는 내부 시험 기능. 제품 portal의 SCR-101과 별도 승인·별도 슬라이스로 관리한다"
+    reqs: [REQ-009, REQ-027]
+    traces_to: [ARCH-015, ARCH-019]
+

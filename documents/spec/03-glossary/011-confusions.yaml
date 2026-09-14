@@ -85,6 +85,6 @@ confusions:
     left: "**차수** `RM-P1` — *무엇을 언제 출시하나*. 제품 출시 단계이며 spec 항목의 `roadmap:` 이 갖는다"
     right: "**단계** `P1` — *지금 어디까지 설계했나*. 방법론 단계이며 `project.state.yaml` 의 `current.phase` 가 갖는다"
     rule: >-
-      **차수 하나를 만들기 위해 P0~P6 을 한 바퀴 돈다**(00-charter.yaml `roadmap_notes`).
+      **차수 하나를 만들기 위해 P0~P6 을 한 바퀴 돈다**(00-charter/_index.yaml `roadmap_notes`).
       그래서 같은 화면이 다음 차수에 다시 P1(요구사항)부터 시작할 수 있으며 **그것은 후퇴가 아니다.**
       spec 에서 차수를 적는 필드 이름은 `roadmap:` 이다 — `phase:` 로 적으면 두 축이 같은 글자를 쓴다.

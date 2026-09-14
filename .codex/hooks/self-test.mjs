@@ -20,7 +20,7 @@ import { allowHookRepair, emitHookResults, runHookChain } from '../../.claude/ho
 import { patchTargets, runFileChain } from './file-chain.mjs';
 import { shellWriteTargets } from '../../.claude/hooks/guard-shell-write.mjs';
 import { maskQuoted, maskReadOnlyArguments } from '../../aidd-guide/harness/runtime/shell-parse.mjs';
-import { PRE_SHELL } from '../../aidd-guide/harness/runtime/chains.mjs';
+import { PRE_FILE, PRE_SHELL } from '../../aidd-guide/harness/runtime/chains.mjs';
 import {
   parseScreenRegistry,
   screenUrlOfFrontend,
@@ -68,6 +68,42 @@ const safe = await runFileChain({
   tool_input: { command: '*** Begin Patch\n*** Update File: AGENTS.md\n*** End Patch' },
 });
 assert.equal(safe.some((x) => x?.hookSpecificOutput?.permissionDecision === 'deny'), false);
+
+/* spec-set 조각을 _index에 등재하지 않은 상태에서도 실제 사전 훅 경로는 fail-open 하지 않는다.
+   leaf(guard-write)를 직접 실행하면 예외가 보일 수 있으나, provider adapter가 그 예외를 deny로
+   바꾸는 것이 계약이다. Claude와 Codex의 공통 chain, Codex의 실제 patch adapter를 함께 센다. */
+const orphanPart = join(REPO, 'documents', 'spec', '31-features', '999-orphan.yaml');
+writeFileSync(orphanPart, 'features: []\n', 'utf8');
+try {
+  const malformedInput = {
+    cwd: REPO,
+    hook_event_name: 'PreToolUse',
+    tool_name: 'Edit',
+    tool_input: {
+      file_path: join(REPO, 'sources', 'frontend', 'src', 'features', '_spec-set-probe.ts'),
+      new_string: '/** @feat FEAT-001 */',
+    },
+  };
+  const claudeMalformed = await runHookChain(malformedInput, PRE_FILE);
+  assert.equal(claudeMalformed.some((x) => x?.hookSpecificOutput?.permissionDecision === 'deny'), true);
+  assert.match(
+    String(claudeMalformed[0]?.hookSpecificOutput?.permissionDecisionReason ?? ''),
+    /parts에 없는 YAML/,
+  );
+  const codexMalformed = await runFileChain({
+    ...input,
+    tool_input: {
+      command: '*** Begin Patch\n*** Add File: sources/frontend/src/features/_spec-set-probe.ts\n+/** @feat FEAT-001 */\n*** End Patch',
+    },
+  });
+  assert.equal(codexMalformed.some((x) => x?.hookSpecificOutput?.permissionDecision === 'deny'), true);
+  assert.match(
+    String(codexMalformed[0]?.hookSpecificOutput?.permissionDecisionReason ?? ''),
+    /parts에 없는 YAML/,
+  );
+} finally {
+  rmSync(orphanPart, { force: true });
+}
 
 /* 전역 G3가 열리지 않아도 소유 작업흐름을 정확히 찾아 그 작업흐름 상태로 막는다. */
 const workstreamDenied = await runFileChain({

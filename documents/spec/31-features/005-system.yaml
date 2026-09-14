@@ -1,0 +1,163 @@
+features:
+# ══ system — 기존 백오피스 코어의 무손실 이행 (REQ-501~510) ══════
+  - id: FEAT-501
+    module: system
+    workstream: system
+    roadmap: RM-P1
+    type: transaction
+    title: "계정·인증·세션 운영"
+    detail: "계정 상태·사용 기간·접속 IP·잠금·휴면·비밀번호를 한 로그인 판정으로 묶고, 관리자 계정 관리와 사용자 자기 서비스·활성 세션 종료를 같은 수명주기 계약으로 제공한다"
+    hard_rule: "조건 하나라도 실패하면 세션을 만들지 않으며 SYS_USER는 물리 삭제하지 않는다"
+    reqs: [REQ-501]
+    usecases: [UC-501]
+    entities: [ENT-501, ENT-502, ENT-503, ENT-504, ENT-505]
+    apis: [API-501, API-502, API-503, API-504, API-505, API-506, API-507, API-508, API-509, API-510, API-511, API-512, API-513, API-514, API-515, API-516, API-517, API-518, API-519, API-520, API-521, API-522, API-523]
+    screens: [SCR-501, SCR-502, SCR-503, SCR-504, SCR-505, SCR-506]
+    actors: [ACT-001, ACT-012]
+    complexity: high
+
+  - id: FEAT-502
+    module: system
+    workstream: system
+    roadmap: RM-P1
+    type: master
+    title: "역할·개인 예외와 유효 권한 관리"
+    detail: "역할·사용자 역할·역할별 메뉴 액션·개인 예외를 관리하고 영향 사용자와 현재 유효 권한을 계산한다"
+    hard_rule: "역할 겸임과 역할-메뉴 조합을 코드로 금지하지 않고 저장 데이터·유효 기간·권한 버전만 판정 근거로 쓴다"
+    reqs: [REQ-502]
+    usecases: [UC-502]
+    entities: [ENT-506, ENT-507, ENT-508, ENT-509]
+    apis: [API-524, API-525, API-526, API-527, API-528, API-529, API-530, API-531, API-532, API-533, API-534, API-535, API-536, API-537]
+    screens: [SCR-507, SCR-508, SCR-509]
+    actors: [ACT-001, ACT-012]
+    complexity: high
+
+  - id: FEAT-503
+    module: system
+    workstream: system
+    roadmap: RM-P1
+    type: master
+    title: "메뉴·API 카탈로그와 실패 폐쇄 인가"
+    detail: "메뉴 트리, 배포 API 카탈로그와 메뉴 액션 매핑을 관리하고 모든 service 요청을 등록·매핑·유효 권한의 교집합으로 판정한다"
+    hard_rule: "어느 연결 하나라도 없으면 403이며 구 경로 별칭과 접두 변환 라우터를 남기지 않는다"
+    reqs: [REQ-503]
+    usecases: [UC-503]
+    entities: [ENT-510, ENT-511, ENT-512, ENT-508, ENT-509]
+    apis: [API-538, API-539, API-540, API-541, API-542, API-543, API-544, API-545, API-546, API-547]
+    screens: [SCR-510, SCR-511, SCR-512]
+    actors: [ACT-001, ACT-012]
+    complexity: high
+    traces_to: [AUTHZ-091, ARCH-023]
+
+  - id: FEAT-504
+    module: system
+    workstream: system
+    roadmap: RM-P1
+    type: master
+    title: "공통코드와 참조 코드 관리"
+    detail: "코드 그룹·코드·참조 정의·참조값과 다국어 코드명을 한 수명주기로 관리하고 모든 모듈에 공통 조회 계약을 제공한다"
+    hard_rule: "시스템 보호 데이터와 참조 무결성은 서버에서 검사하고 원본·파생값 변경은 한 트랜잭션으로 처리한다"
+    reqs: [REQ-504]
+    usecases: [UC-504]
+    entities: [ENT-513, ENT-514, ENT-515, ENT-516]
+    apis: [API-548, API-549, API-550, API-551, API-552, API-553, API-554]
+    screens: [SCR-513]
+    actors: [ACT-012]
+    complexity: high
+
+  - id: FEAT-505
+    module: system
+    workstream: system
+    roadmap: RM-P1
+    type: master
+    title: "다국어 메시지 값과 번들 관리"
+    detail: "생성된 메시지 키의 언어별 값만 관리하고 화면·서버·메뉴·공통코드에 버전이 있는 같은 번들을 제공한다"
+    hard_rule: "키 생성은 소스 상수와 시드 생성기만 수행하며 값과 캐시 버전은 한 트랜잭션으로 바꾼다"
+    reqs: [REQ-505]
+    usecases: [UC-505]
+    entities: [ENT-517, ENT-518, ENT-519]
+    apis: [API-555, API-556, API-557]
+    screens: [SCR-514]
+    actors: [ACT-001, ACT-012]
+    complexity: medium
+
+  - id: FEAT-506
+    module: system
+    workstream: system
+    roadmap: RM-P1
+    type: master
+    title: "런타임 시스템 설정 관리"
+    detail: "`sys-config.*` 아래 화면 노출용 일반 설정의 배포 기본값과 DB 오버라이드를 합성해 보여 주고 키별 타입·범위를 통과한 값만 적용·복원한다"
+    hard_rule: "비밀값·임의 변경 금지 값은 별도 프로퍼티 경로로 배포 관리해 이 기능의 목록·응답·저장 대상에서 제외하며, 화면 대상 설정의 오버라이드와 캐시 버전은 원자적으로 바꾼다. 설정값은 노드 캐시를 두지 않고 다음 작업 스코프에서 DB 오버라이드를 다시 합성한다"
+    reqs: [REQ-506]
+    usecases: [UC-506]
+    entities: [ENT-519, ENT-520]
+    apis: [API-558, API-559, API-560]
+    screens: [SCR-504, SCR-515]
+    actors: [ACT-001, ACT-012]
+    complexity: medium
+
+  - id: FEAT-507
+    module: system
+    workstream: system
+    roadmap: RM-P1
+    type: inquiry
+    title: "로그인·사용·오류 감사 이력 조회"
+    detail: "세 이력과 요청·오류 상세를 기간·사용자·경로·결과·trace ID로 조회해 사건을 재구성한다"
+    hard_rule: "원 이력의 수정·삭제 API를 만들지 않고 상세 전문도 목록과 같은 해당 메뉴의 현재 READ 권한을 검사한다"
+    reqs: [REQ-507]
+    usecases: [UC-507]
+    entities: [ENT-505, ENT-521, ENT-522]
+    apis: [API-561, API-562, API-563, API-564, API-565, API-566]
+    screens: [SCR-516, SCR-517, SCR-518]
+    actors: [ACT-005, ACT-012]
+    complexity: medium
+
+  - id: FEAT-508
+    module: system
+    workstream: system
+    roadmap: RM-P1
+    type: batch
+    title: "배치 일정·실행·중단과 이력"
+    detail: "등록된 BatchJob만 cron·timezone·분산 잠금·쿨다운 규칙으로 실행하고 즉시 실행·중단·유령 상태와 결과를 추적한다"
+    hard_rule: "중복·유령·중단 경합을 성공으로 기록하지 않으며 결과 코드 전수를 명시된 묶음으로 분류한다"
+    reqs: [REQ-508]
+    usecases: [UC-508]
+    entities: [ENT-523, ENT-524]
+    apis: [API-567, API-568, API-569, API-570, API-571, API-572, API-573, API-574, API-575]
+    screens: [SCR-519, SCR-520]
+    actors: [ACT-012]
+    complexity: high
+
+  - id: FEAT-509
+    module: system
+    workstream: system
+    roadmap: RM-P1
+    type: transaction
+    title: "공지·관리 요청·알림함 운영"
+    detail: "공지 게시·팝업 기간, 계정·권한 관련 요청 판정과 사용자 알림 전달을 관리한다"
+    hard_rule: "요청 승인·반려는 실제 계정·권한 데이터를 암묵 변경하지 않으며 admin은 system 알림 테이블을 직접 쓰지 않는다"
+    reqs: [REQ-509]
+    usecases: [UC-509]
+    entities: [ENT-525, ENT-526, ENT-527]
+    apis: [API-576, API-577, API-578, API-579, API-580, API-581, API-582, API-583, API-584, API-585, API-586, API-587, API-588]
+    screens: [SCR-521, SCR-522, SCR-523, SCR-524]
+    actors: [ACT-001, ACT-012]
+    complexity: medium
+
+  - id: FEAT-510
+    module: system
+    workstream: system
+    roadmap: RM-P1
+    type: transaction
+    title: "모듈 공통 사용자 상태 저장"
+    detail: "즐겨찾기·그리드 설정·저장 조회조건·메뉴 사용 통계를 system 공개 계약과 기존 테이블에 한 번만 저장한다"
+    hard_rule: "요청 소유자는 세션 사용자로 고정하고 portal 전용 상태와 platform 테이블은 포함하지 않는다"
+    reqs: [REQ-510]
+    usecases: [UC-510]
+    entities: [ENT-528, ENT-529, ENT-530, ENT-531]
+    apis: [API-589, API-590, API-591, API-592, API-593, API-594, API-595, API-596, API-597, API-598, API-599]
+    screens: [SCR-525]
+    actors: [ACT-001, ACT-012]
+    complexity: medium
+

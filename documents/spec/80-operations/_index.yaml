@@ -8,11 +8,6 @@ meta:
   baselined: null
   owner: system
   traces_to: [ARCH-003, ARCH-024, NFR-006, NFR-007, NFR-008, NFR-009]
-  source_commentary: |-
-    [1] 운영 런북 정본 — P2부터 골격을 세우고 P5 실측으로 검증한 뒤 P6에서 인수한다.
-    [2] 
-    [3] RUN-###는 절차 단위다. 값이나 절차를 generated 문서에 직접 쓰지 않는다.
-    [4] 아직 고객 환경이 정해지지 않은 값은 지어내지 않고 @defer와 근거 CON을 남긴다.
 
 spec_set:
   version: 1

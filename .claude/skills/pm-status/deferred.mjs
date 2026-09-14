@@ -189,7 +189,7 @@ for (const f of files) {
 // ── ④ 화면의 미확정 (UND) — 60-screens 논리 문서 ─────────────────
 {
   const spec = loadSpecSet({ repo: REPO, name: '60-screens', parseYaml, required: false });
-  const rel = spec?.source ?? 'documents/spec/60-screens/';
+  const rel = spec?.entry ?? 'documents/spec/60-screens/_index.yaml';
   for (const undecided of spec?.document?.undecided ?? []) {
     const { id, item, when = '', resolved } = undecided ?? {};
     if (!id || resolved) continue;

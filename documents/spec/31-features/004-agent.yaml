@@ -1,0 +1,135 @@
+features:
+# ══ agent — 백엔드 (10.5) ════════════════════════════════════════
+# 화면을 갖지 않는다. 상세 흐름은 documents/design/ 이 갖는다.
+  - id: FEAT-201
+    module: agent
+    roadmap: RM-P1
+    title: "질의 처리 오케스트레이션 (턴·스텝 관리)"
+    reqs: [REQ-004, REQ-009, REQ-010, REQ-015]
+  - id: FEAT-202
+    module: agent
+    roadmap: RM-P1
+    title: "컨텍스트 구성과 총량 관리"
+    detail: "과거 턴 참조 · **업무 도메인 → 데이터소스 → 공개 인터페이스 → 컬럼 순의 단계적 범위 축소와 컬럼 프루닝** · 활성 반영 세트의 지식·인증 예제 쿼리 주입 판정과 참조 인터페이스 합류 · 값 도메인·의미 유형·권장 조인 경로 주입과 주입 상한"
+    reqs: [REQ-002, REQ-003, REQ-021, REQ-303, REQ-306]
+    traces_to: [AUTHZ-040]
+  - id: FEAT-203
+    module: agent
+    roadmap: RM-P1
+    title: "도구 레지스트리와 도구 호출 처리"
+    detail: "**커스텀 도구 포함**"
+    reqs: [REQ-004, REQ-114]
+  - id: FEAT-204
+    module: agent
+    roadmap: RM-P1
+    title: "SQL 검증·정책 적용·실행"
+    detail: "파서로 구문 검증 · **선언된 데이터소스의 카탈로그와 참조 객체 대조 검증**(테이블·컬럼 단위) · **대조 실패의 중립 피드백 반환과 재작성 처리** · 행 스코프 조건과 **기본 필터 주입**(해제 요청 시 허용 여부 판정과 해제 사실 기록) · 원본 컬럼 추적"
+    reqs: [REQ-103]
+    traces_to: [AUTHZ-030, AUTHZ-050]
+  - id: FEAT-205
+    module: agent
+    roadmap: RM-P2
+    title: "업무 API 호출 (조회·실행)"
+    detail: "**연속 실행의 순차 처리와 실패 시 중단·보고** · 부분 실행 상태 판정 · **응답 수신 직후의 경로 분류와 마스킹 사본 분리** — 감사·재개 상태·로그로는 마스킹본만 내보내고 평문은 사용자 응답 경로에만 태운다 · 미지정 경로 경고 기록"
+    reqs: [REQ-026, REQ-105, REQ-111]
+  - id: FEAT-206
+    module: agent
+    roadmap: RM-P1
+    title: "지식 검색"
+    detail: "질의 키워드 추출 · 태그 검색 + 설정 시 벡터 검색 · 결과 병합. 활성 반영 세트의 지식 리비전만 검색한다"
+    reqs: [REQ-303, REQ-305, REQ-306]
+    traces_to: [ARCH-060]
+    nfrs: [NFR-021]
+  - id: FEAT-207
+    module: agent
+    roadmap: RM-P1
+    title: "정책 집행"
+    detail: "업무 연관성 · 그룹 판정 · 마스킹 · 전송 제한"
+    reqs: [REQ-101, REQ-102, REQ-103, REQ-106, REQ-025]
+  - id: FEAT-208
+    module: agent
+    roadmap: RM-P1
+    title: "결과 후처리 (집계 · 차트 데이터)"
+    detail: "**엑셀·이미지 파일 생성은 하지 않는다** — 클라이언트 컴포넌트의 기능으로 제공한다"
+    reqs: [REQ-011]
+  - id: FEAT-209
+    module: agent
+    roadmap: RM-P1
+    title: "LLM 공급 경로 추상화 및 전환"
+    detail: "**역할별 모델 선택 적용과 턴 시작 시점 고정**"
+    reqs: [REQ-034]
+    traces_to: [ARCH-040, PRN-01, PRN-05]
+    nfrs: [NFR-020]
+  - id: FEAT-210
+    module: agent
+    roadmap: RM-P1
+    title: "이력 기록"
+    reqs: [REQ-107, REQ-108]
+  - id: FEAT-211
+    module: agent
+    roadmap: RM-P1
+    title: "토큰·비용 집계와 쿼터 집행"
+    reqs: []
+    nfrs: [NFR-010, NFR-012, NFR-013, NFR-014]
+  - id: FEAT-212
+    module: agent
+    roadmap: RM-P3
+    title: "워크플로우 정의 실행"
+    reqs: [REQ-207]
+  - id: FEAT-213
+    module: agent
+    roadmap: RM-P3
+    title: "스케줄러 (주기·조건 실행, 잡 관리)"
+    reqs: []
+    nfrs: [NFR-024, NFR-025]
+  - id: FEAT-214
+    module: agent
+    roadmap: RM-P3
+    title: "알림 발송 (메일 등)"
+    reqs: [REQ-401]
+  - id: FEAT-215
+    module: agent
+    roadmap: RM-P1
+    title: "portal 채팅 인터페이스"
+    detail: "질의 접수 · 진행 상태 전달 · 중단·재시도 처리"
+    reqs: [REQ-006, REQ-007, REQ-013]
+    traces_to: [ARCH-015]
+  - id: FEAT-216
+    module: agent
+    roadmap: RM-P1
+    title: "턴 상태 관리와 재개 처리"
+    detail: "중단·추가 입력 요청의 스텝 경계 반영과 **처리 중 입력의 의도 분류·분기** · **실행 점유의 획득·갱신·해제와 만료 턴 회수**"
+    reqs: [REQ-013, REQ-016, REQ-030, REQ-031, REQ-032, REQ-033, REQ-035]
+    traces_to: [ARCH-070]
+  - id: FEAT-217
+    module: agent
+    roadmap: RM-P1
+    title: "공개 데이터 인터페이스 변화 보조 감지"
+    detail: "고객사 DB/DW 변경 통지를 처리하고, 선택 기능으로 카탈로그에 등록된 **공개 뷰·테이블**과 저장된 조회·인증 예제 쿼리·지식의 참조 객체에 구조 변화 후보를 표시한다. 업무 DB/DW 전체를 순회·대사하거나 결과로 카탈로그를 자동 변경하지 않는다"
+    reqs: [REQ-304, REQ-204]
+  - id: FEAT-218
+    module: agent
+    roadmap: RM-P1
+    title: "조회 계획 생성·제시와 사용자 교정 반영"
+    detail: "업무 명칭 기반 변환 · 강제 조건 판정"
+    reqs: [REQ-022, REQ-023]
+  - id: FEAT-219
+    module: agent
+    roadmap: RM-P1
+    title: "인증 예제 쿼리 매칭과 파라미터 채움 실행"
+    detail: "직접 실행 경로. **SQL 통제 4단계를 그대로 적용한다**"
+    reqs: [REQ-302]
+  - id: FEAT-220
+    module: agent
+    roadmap: RM-P2
+    title: "저장된 조회 실행"
+    detail: "**턴을 만들지 않는 실행 경로.** 파라미터 바인딩 · 실행 시점 권한 재판정 · 경량 실행 이력 기록 · 유량 제한 집행"
+    reqs: [REQ-201, REQ-207]
+    nfrs: [NFR-005]
+  - id: FEAT-221
+    module: agent
+    roadmap: RM-P1
+    title: "공개 카탈로그 사실 보조 수집"
+    detail: "이미 선택·등록된 공개 뷰·테이블에 한해 권한이 있을 때 컬럼 목록·타입·PK·유니크·NOT NULL과 DB 코멘트를 수집하고 인라인 값 후보를 제안한다. 의미·정책 항목을 덮지 않고 변경 알림만 남기며, 원본 DB/DW 전체를 수집하지 않는다"
+    reqs: [REQ-301]
+

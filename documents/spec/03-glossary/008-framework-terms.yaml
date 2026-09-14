@@ -143,13 +143,13 @@ framework_terms:
     definition: "입력·출력 토큰 수"
     relation: "정산의 근거다. **정본은 API Provider 다**(CON-034) — 개발 기간 CLI 의 값은 정산에 쓰지 않는다"
 
-# 구축 구조 (00-charter.yaml deployment_shapes)
+# 구축 구조 (00-charter/_index.yaml deployment_shapes)
   - id: TRM-133
     term: Hub 모듈
     key: hubModule
     group: 구조
     definition: "AI Agent Hub 를 이루는 논리 구획. **system · admin · portal · agent 넷이며 늘지 않는다.** AI 전용 DB 를 공유하고 한 WAS 안에 있다"
-    relation: "정의와 책임은 01-actors.yaml 의 `modules`, 경계는 20-architecture.yaml 의 ARCH-010~014 가 갖는다. system은 공통 백오피스 기반을, admin은 AI 기준·정책을, portal은 사용자 경험을, agent는 실행을 소유한다"
+    relation: "정의와 책임은 01-actors/_index.yaml 의 `modules`, 경계는 20-architecture/_index.yaml 의 ARCH-010~014 가 갖는다. system은 공통 백오피스 기반을, admin은 AI 기준·정책을, portal은 사용자 경험을, agent는 실행을 소유한다"
   - id: TRM-134
     term: 업무 확장
     key: businessExtension
@@ -167,7 +167,7 @@ framework_terms:
     key: roadmap
     group: 구조
     definition: "제품 출시 단계. `RM-P1`(조회) · `RM-P2`(실행) · `RM-P3`(자동화) · `RM-P4`(심화)"
-    relation: "**방법론 단계(P0~P6)와 다른 축이다** — 차수 하나를 만들기 위해 P0~P6 을 한 바퀴 돈다(00-charter.yaml `roadmap_notes`). spec 항목의 `roadmap:` 필드가 이 값을 갖는다"
+    relation: "**방법론 단계(P0~P6)와 다른 축이다** — 차수 하나를 만들기 위해 P0~P6 을 한 바퀴 돈다(00-charter/_index.yaml `roadmap_notes`). spec 항목의 `roadmap:` 필드가 이 값을 갖는다"
   - id: TRM-137
     term: 작업흐름
     key: workstream
