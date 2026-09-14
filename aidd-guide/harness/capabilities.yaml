@@ -30,6 +30,16 @@ context:
   claude_strategy: measured-warning
   codex_strategy: compact-rehydrate
 
+subagents:
+  common_policy: AGENTS.md
+  common_spec: aidd-guide/harness/sub-agents.md
+  autonomous_roles_only: true
+  approval_for_unregistered_or_approval_only: explicit-user-approval
+  user_notice: before-spawn
+  claude_roles: .claude/agents/
+  codex_config: .codex/config.toml
+  codex_roles: .codex/agents/
+
 verification:
   check: aidd-guide/harness/runtime/harness-check.mjs
   session_start: true

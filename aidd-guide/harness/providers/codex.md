@@ -4,9 +4,9 @@ title: "Codex 하네스 어댑터"
 category: harness
 type: operation
 created: "2026-09-10"
-updated: "2026-09-11"
+updated: "2026-09-14"
 status: active
-sources: ["AGENTS.md", ".codex/hooks.json", ".codex/hooks/", ".agents/skills/"]
+sources: ["AGENTS.md", "aidd-guide/harness/sub-agents.md", ".codex/config.toml", ".codex/agents/", ".codex/hooks.json", ".codex/hooks/", ".agents/skills/"]
 tier: 2
 tags: [harness, codex, adapter]
 ---
@@ -23,6 +23,12 @@ tags: [harness, codex, adapter]
 - 훅 배선: `.codex/hooks.json`
 - 어댑터: `.codex/hooks/*.mjs`
 - 정책 엔진: `.claude/hooks/*.mjs` — 경로 이름만 역사적이며 로직은 공용 Node 모듈이다
+
+## 하위 에이전트
+
+위임 판단·승인·사전 고지의 공통 정책은 [`sub-agents.md`](../sub-agents.md)가 정한다. Codex에서는 `.codex/config.toml`이 이 프로젝트의 주·기본 하위 모델과 동시 수를, `.codex/agents/`가 역할별 모델·추론 강도를 정한다.
+
+`autonomous-quick-scan.toml`과 `autonomous-reviewer.toml`은 읽기 전용 자율 역할이고, `autonomous-implementation-worker.toml`은 상위 세션 권한을 상속하는 자율 구현 역할이다. `approval-specialist.toml`은 사용자 명시 승인을 받은 호출에만 쓴다.
 
 프로젝트 훅은 저장소를 신뢰한 뒤 `/hooks`에서 현재 hash를 검토·승인해야 실행된다. 훅 파일이나
 배선을 바꾸면 hash가 달라져 다시 검토해야 한다.
