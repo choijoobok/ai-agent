@@ -706,6 +706,41 @@ function openApiText(d) {
   return `${lines.join('\n')}\n`;
 }
 
+/**
+ * 고객 제출 문서에 싣는 <b>`meta` 키의 허용목록</b> — 허용한 것만 나간다.
+ *
+ * <p><b>2026-09-15 에 실제로 샜다</b> — 이관 메모를 담은 `meta.source_commentary` 가
+ * API 명세와 테스트 케이스 문서에 그대로 실려 제출 사이트까지 갔다. 원인은 그 필드가 아니라
+ * <i>`meta` 를 통째로 찍던 렌더러</i>였고, 필드를 지워도 다음 내부 키가 같은 길로 나간다.
+ *
+ * <p>요점은 <b>분류를 강제하는 것</b>이다 — 어느 쪽에도 없는 키를 만나면 생성이 멈춘다.
+ * 허용목록만 두면 업무 값을 빠뜨렸을 때 조용히 사라지는데, `--check` 는 `meta` 를 세지
+ * 않으므로(`collect` 가 `meta` 를 건너뛴다) <b>여기서 막지 않으면 아무도 막지 않는다.</b>
+ *
+ * <p>`status`·`baselined` 는 문서 머리(`head`)가 이미 갖고, `workstreams` 는 진척 표시라
+ * 고객 문서의 것이 아니다.
+ */
+const META_INTERNAL = ['status', 'baselined', 'workstreams'];
+const META_PUBLIC = {
+  '50-api': ['path_convention', 'cutover', 'contract_rule', 'error_inheritance', 'common_errors'],
+  '70-testcases': ['migration_fixture', 'hard_rules'],
+};
+
+function publicMeta(name, meta) {
+  const allowed = META_PUBLIC[name] ?? [];
+  const unknown = Object.keys(meta ?? {})
+    .filter((key) => !allowed.includes(key) && !META_INTERNAL.includes(key));
+  if (unknown.length) {
+    throw new Error(
+      `${name}.meta 에 분류되지 않은 키가 있다: ${unknown.join(' · ')}\n`
+      + '고객 문서에 실을 것이면 gen.mjs 의 META_PUBLIC 에, 내부용이면 META_INTERNAL 에 더한다.',
+    );
+  }
+  const out = { id: 'meta' };
+  for (const key of allowed) if (meta?.[key] !== undefined) out[key] = meta[key];
+  return out;
+}
+
 function API() {
   const d = load('50-api');
   const items = d.apis ?? [];
@@ -713,7 +748,7 @@ function API() {
   write(`${OUT}50-API.md`, [
     head('API', 'API 명세', specSource('50-api'), d.meta.status,
       d.meta.baselined, items.map((x) => x.id)),
-    `## 공통 계약\n\n${blocks([{ id: 'meta', ...d.meta }], ['id'], 'name', '###')}`,
+    `## 공통 계약\n\n${blocks([publicMeta('50-api', d.meta)], ['id'], 'name', '###')}`,
     `## 기능별 계약\n\n${blocks(contracts, ['id'], 'name', '###')}`,
     `## API ${items.length}건\n\n${auto(items)}`,
   ]);
@@ -731,7 +766,7 @@ function 테스트() {
   write(`${OUT}70-테스트케이스.md`, [
     head('TC', '테스트 케이스', specSource('70-testcases'), d.meta.status,
       d.meta.baselined, items.map((x) => x.id)),
-    `## 공통 시험 계약\n\n${blocks([{ id: 'meta', ...d.meta }], ['id'], 'name', '###')}`,
+    `## 공통 시험 계약\n\n${blocks([publicMeta('70-testcases', d.meta)], ['id'], 'name', '###')}`,
     `## 테스트 케이스 ${items.length}건\n\n${blocks(items, ['id', 'feature'], 'title', '###')}`,
   ]);
 }
