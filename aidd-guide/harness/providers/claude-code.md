@@ -47,7 +47,13 @@ Claude Code 실물이다. 계획은 내장 `Plan`을 그대로 쓰고(중복 방
 | 빠른 탐색 (읽기 전용) | `autonomous-quick-scan.md` | 자율 사용 | `haiku` | `low` |
 | 독립 구현+검증 | `autonomous-implementation-worker.md` | 자율 사용 | `opus` | `high` |
 | 정확성·보안·회귀 리뷰 (읽기 전용) | `autonomous-reviewer.md` | 자율 사용 | `sonnet` | `high` |
+| 다모듈 설계 반박 (읽기 전용) | `autonomous-design-challenger.md` | 자율 사용 | `opus` | `high` |
 | 최고난도 설계·디버깅·검증 | `approval-specialist.md` | **승인 전용** | `fable` | `high` |
+
+`autonomous-design-challenger`는 Codex의 `autonomous-design-challenger.toml`(gpt-5.6-sol)에
+대응한다 — 여러 모듈 경계·불확실한 제약이 얽힌 설계를 읽기 전용으로 독립 반박한다. `/redteam`
+스킬과 목적은 겹치지만, 그쪽은 사용자가 직접 부르는 게이트 전 절차이고 이 역할은 주 에이전트가
+설계 도중 스스로 판단해 위임하는 자율 서브에이전트라는 점이 다르다.
 
 구현 역할을 Opus로 올린 이유: 공식 모델 비교(`platform.claude.com/docs/en/models/overview`)가
 Opus 5를 "복잡한 에이전트형 코딩과 엔터프라이즈 작업용"으로, Sonnet 5를 "속도·지능의 균형"으로
