@@ -28,7 +28,7 @@ tags: [harness, codex, adapter]
 
 위임 판단·승인·사전 고지의 공통 정책은 [`sub-agents.md`](../sub-agents.md)가 정한다. Codex에서는 `.codex/config.toml`이 이 프로젝트의 주·기본 하위 모델과 동시 수를, `.codex/agents/`가 역할별 모델·추론 강도를 정한다.
 
-`autonomous-quick-scan.toml`과 `autonomous-reviewer.toml`은 읽기 전용 자율 역할이고, `autonomous-implementation-worker.toml`은 상위 세션 권한을 상속하는 자율 구현 역할이다. `approval-specialist.toml`은 사용자 명시 승인을 받은 호출에만 쓴다.
+`autonomous-quick-scan.toml`과 `autonomous-reviewer.toml`은 읽기 전용 자율 역할이다. `autonomous-design-challenger.toml`은 여러 모듈 경계와 불확실한 제약이 얽힌 고난도 설계를 Sol High로 독립 반박하는 읽기 전용 자율 역할이다. `autonomous-implementation-worker.toml`은 상위 세션 권한을 상속하는 자율 구현 역할이고, `approval-specialist.toml`은 사용자 명시 승인을 받은 호출에만 쓴다.
 
 프로젝트 훅은 저장소를 신뢰한 뒤 `/hooks`에서 현재 hash를 검토·승인해야 실행된다. 훅 파일이나
 배선을 바꾸면 hash가 달라져 다시 검토해야 한다.
