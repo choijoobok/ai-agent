@@ -86,7 +86,7 @@ screens:
     features: [FEAT-003, FEAT-011, FEAT-012]
     roadmap: RM-P1
     agent_contact: 설정
-    note: "**작성 순서에서 가장 앞이다** — DB 설계의 설정 테이블 대부분이 여기서 나오고, agent 의 컨텍스트 구성이 이 화면의 산출물을 입력으로 삼는다"
+    note: "**작성 순서에서 가장 앞이다** — Hub 공개 대상으로 선택한 뷰·테이블과 그 업무 의미를 여기서 관리하고, agent의 컨텍스트 구성이 이 화면의 산출물을 입력으로 삼는다. 업무 DB/DW 전체를 대사하는 화면이 아니다"
   - id: SCR-004
     module: admin
     group: "연동 관리"
@@ -152,6 +152,7 @@ screens:
     feature: FEAT-014
     roadmap: RM-P1
     agent_contact: 설정
+    note: "지식 후보 리비전과 반영 세트의 작성·요청·승인 결과를 함께 다룬다. 별도 메뉴 분리는 P3 화면 설계에서 필요성이 확인될 때만 결정한다"
   - id: SCR-012
     module: admin
     group: "업무 지식 관리"
