@@ -80,7 +80,7 @@ workstreams:
   integration:
     phase: P2
     required_in: [RM-P1]
-    blocked_by: [OQ-003]
+    blocked_by: []   # OQ-003 이 2026-09-14 에 닫혀 풀렸다
     deferred_until: null
     gates:
       P1_discovery:    { status: approved, approved_at: "2026-09-11", note: "**Exit Criteria 8/8 · 사용자 승인.** 범용 Hub 프로세스 5개와 integration 소유 요구사항의 단계 연결을 확정했다. 작업흐름 G1은 우선순위 근거를 판정하고 Must 70% 상한은 전역 G1에서 적용한다. 계약 시험 원문은 합성 데이터가 기본이며 운영 원문은 권한·감사 아래 예외 열람한다. 서버군 격리·일괄 전환이 불가능하면 무중단으로 간주하지 않는다" }
@@ -178,12 +178,6 @@ open_questions:
       첫 고객 후보가 정해지면 **시스템 경계를 넘는 업무 빈도 · 반복 수작업 · 처리 건수 ·
       메타데이터 확보 가능성**으로 1차 업무를 고르고 적용 전 값을 잰다. 우리 WMS·TMS 구축
       고객은 접근성이 좋아 우선 후보지만, 그 사실이 제품의 연동 범위를 제한하지 않는다.
-  - id: OQ-003
-    phase: P3
-    question: "portal↔agent 계약 주 버전을 전환할 때 직전 주 버전을 어떤 기간과 종료 조건으로 병행 지원할 것인가"
-    status: "권장안은 현재 주 버전 N과 직전 주 버전 N-1을 함께 지원하고, N-1은 전환일부터 최소 30일이 지나면서 기존 portal 접근·진행 중 턴·되돌림 필요가 모두 사라진 뒤 종료하는 것이다"
-    blocked_on: "사용자 결정 — ARCH-019 호환성 규칙과 계약 시험 기대값"
-    required: true
 # ── 인지 부채 ──────────────────────────────────────────────────────
 # 사용자가 이해하지 못한 채 승인하는 것을 감지한다.
 cognitive_debt:
