@@ -19,6 +19,7 @@ import {
 import { allowHookRepair, emitHookResults, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
 import { patchTargets, runFileChain } from './file-chain.mjs';
 import { shellWriteTargets } from '../../.claude/hooks/guard-shell-write.mjs';
+import { maskQuoted, maskReadOnlyArguments } from '../../aidd-guide/harness/runtime/shell-parse.mjs';
 import { PRE_SHELL } from '../../aidd-guide/harness/runtime/chains.mjs';
 import {
   parseScreenRegistry,
@@ -446,6 +447,37 @@ for (const adapter of ['session-start.mjs', 'session-brief.mjs']) {
     false,
     `${adapter} 가 emitter 밖에서 stdout 에 쓴다 — outputs 배열에 넣어 emitHookResults 로 보낸다`,
   );
+}
+
+/* **따옴표 안은 데이터다 — 여는 쪽과 닫히는 쪽을 함께 센다.**
+   2026-09-14 에 `guard-bash` 가 `rg` 의 검색어를, `guard-commit` 이 `node -e` 안의 문자열을
+   명령으로 읽어 정당한 작업을 막았다. 오탐은 사람이 훅을 끄게 만들고, 꺼진 훅은 없는 훅이다.
+   그렇다고 따옴표를 통째로 무시하면 `psql -c "…"` 로 가드가 열리므로 둘을 같이 시험한다. */
+{
+  const sql = `${'DR'}${'OP DATABA'}SE bo`;
+  const git = `${'g'}it`;
+
+  /* 읽기 도구의 인자는 가린다 — 검색이 막히지 않는다. */
+  assert.equal(maskReadOnlyArguments(`rg -n "${sql}" docs/`).includes(sql), false);
+  assert.equal(maskReadOnlyArguments(`grep -rn '${sql}' AGENTS.md`).includes(sql), false);
+
+  /* 실행 도구의 인자는 그대로 둔다 — 여기가 열리면 가드가 통째로 무력해진다. */
+  assert.equal(maskReadOnlyArguments(`psql -c "${sql}"`).includes(sql), true);
+  assert.equal(maskReadOnlyArguments(`echo "${sql}" | psql -d bo`).includes(sql), true);
+  assert.equal(maskReadOnlyArguments(`rg -n "${sql}" f && psql -c "${sql}"`).includes(sql), true);
+
+  /* 따옴표 <b>밖</b>은 한 글자도 바뀌지 않는다 — 리다이렉션 판정이 살아 있어야 한다. */
+  assert.equal(maskReadOnlyArguments('cat x > /dev/sda'), 'cat x > /dev/sda');
+
+  /* 인용부 안의 줄바꿈이 구획을 끊지 않는다 — 없는 커밋 명령이 생기지 않는다. */
+  assert.equal(maskQuoted(`node -e "a\n${git} commit -F - -- a"`).includes('\n'), false);
+  /* 진짜 커밋은 한 글자도 안 바뀐다 — 규약 검사가 그대로 돌아야 한다. */
+  const realCommit = `${git} add a && ${git} commit -F - -- a b`;
+  assert.equal(maskQuoted(realCommit), realCommit);
+
+  /* 닫히지 않은 따옴표는 임의로 고쳐 읽지 않는다. */
+  const unclosed = 'rg -n "안 닫힘';
+  assert.equal(maskQuoted(unclosed), unclosed);
 }
 
 console.log('Codex hook adapter self-test 통과');

@@ -28,6 +28,7 @@ tags: [harness, hooks, contract, wiring]
 | 정책 엔진 | `.claude/hooks/*.mjs` | 역사적 경로를 유지한 공용 Node 로직. 화면 역인덱스는 `screen-registry.mjs` 하나를 훅·스킬이 함께 쓴다 |
 | 공통 chain | `runtime/chains.mjs` | 실행 순서의 유일한 원본 — manifest·adapter·생성 문서가 함께 읽는다 |
 | 사전 진입 | `runtime/pretool-bootstrap.mjs` | 파일 chain이 import 전부터 깨져도 차단하고 훅 파일 수리만 연다 |
+| 셸 파싱 | `runtime/shell-parse.mjs` | **따옴표 안이 데이터인가 명령인가** — `guard-bash`·`guard-commit`이 함께 읽는 유일한 원본 |
 
 정책 엔진을 한 번에 중립 경로로 옮기지 않는다. 경로 이동은 동작 개선이 아니면서 스킬·문서·
 권한 규칙을 대량으로 깨뜨린다. 새 훅은 가능하면 `aidd-guide/harness/runtime/`에 공용 로직을 두고,
@@ -45,8 +46,7 @@ tags: [harness, hooks, contract, wiring]
 | `Stop` | `log-raw` | `log-raw` | AI 대화 기록 |
 
 - **배선은 도구 이름으로 선다 — 그래서 무엇을 덮는지 세지 않으면 도구를 바꾸는 것만으로 게이트가 사라진다.** `harness-check`가 provider별 대표 도구 이름(Claude의 `Write`·`Edit`·`NotebookEdit`, Codex의 `apply_patch`, 양쪽의 shell·MCP 쓰기)을 각 matcher 정규식에 실제로 먹여 본다. 새 쓰기·셸 도구가 생기면 그 목록에 먼저 더한다. **파일 쪽만 MCP를 덮고 셸 쪽을 두면 같은 구멍이 남는다** — 2026-09-14 실측에서 `Bash`로 막힌 명령이 MCP `start_process`로 그대로 돌았다.
-- **셸 chain이 보는 것은 `tool_input.command` 하나다.** 그래서 셸을 *새로 여는* MCP 도구는 덮지만, 이미 열린 REPL·프로세스에 이어 넣는 입력(`interact_with_process`의 `input` 등)은 보지 못한다 — 명령이 그 필드에 없고, 그 내용은 셸 문법도 아니다. 그 자리는 사후 chain과 사람이 본다.
-- 같은 matcher의 command hook은 동시 실행될 수 있다. 그래서 순서가 필요한 정책은 handler를 여러 개 배선하지 않고 **chain 하나**가 직렬 실행한다.
+- **셸 chain이 보는 것은 `tool_input.command` 하나다.** 셸을 *새로 여는* MCP 도구는 덮지만 이미 열린 REPL에 이어 넣는 입력(`interact_with_process`의 `input`)은 못 본다 — 그 자리는 사후 chain과 사람이 본다. 같은 matcher의 command hook은 동시 실행될 수 있으므로, 순서가 필요한 정책은 handler를 여러 개 배선하지 않고 **chain 하나**가 직렬 실행한다.
 - **같은 chain에는 같은 timeout을 준다.** 예산이 갈리면 좁은 쪽에서만 뒤쪽 훅이 통째로
   잘리고, 잘렸다는 사실은 보이지 않는다. `harness-check`가 파일 chain 둘을 비교해 막는다.
 - 실행은 `node` 하나다. `package.json`도 `node_modules`도 보지 않는다(AGENTS.md §1).

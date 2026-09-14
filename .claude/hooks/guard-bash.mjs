@@ -12,6 +12,7 @@
  */
 
 import { readHookInput, readState, deny, pass } from './lib.mjs';
+import { maskReadOnlyArguments } from '../../aidd-guide/harness/runtime/shell-parse.mjs';
 import {
   codexPretoolCanaryDenial,
   codexPretoolCanaryRevision,
@@ -115,7 +116,10 @@ function withoutCommitMessage(cmd) {
   );
 }
 
-const flat = withoutCommitMessage(command).split(/\s+/).join(' ');
+/* **검색어는 명령이 아니다.** `rg -n "DROP DATABASE" …` 가 파괴적 SQL 로 읽혀 순수 검색이
+   막혔다(2026-09-14). 가르는 것은 따옴표가 아니라 그 앞에 선 명령의 이름이다 —
+   `psql -c "DROP …"` 은 그대로 걸린다. 근거는 runtime/shell-parse.mjs. */
+const flat = maskReadOnlyArguments(withoutCommitMessage(command)).split(/\s+/).join(' ');
 const hit = check(flat);
 if (!hit) pass();
 

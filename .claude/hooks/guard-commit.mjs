@@ -19,12 +19,8 @@
  */
 
 import { readHookInput, deny, pass, provider, PROVIDER_NAME } from './lib.mjs';
+import { maskQuoted } from '../../aidd-guide/harness/runtime/shell-parse.mjs';
 
-/**
- * 이 저장소가 쓰는 타입 — <b>실물에서 셌다</b>(docs 72 · fix 58 · feat 54 · refactor 13 ·
- * chore 12 · style 1). 나머지 넷은 관행상 함께 쓰는 것이며, 좁게 잡아 정당한 커밋을 막느니
- * 넓게 잡고 <b>형식과 언어</b>를 지키게 한다.
- */
 /**
  * 허용 타입 — **원본은 AGENTS.md §5-3 이다.** 여기는 집행만 한다.
  *
@@ -49,7 +45,11 @@ if (!command) pass();
   "git commit"` · 커밋 메시지 본문)까지 세면 훅이 자기 자신의 커밋을 막는다.
 */
 const SEGMENT_BREAK = /(?:^|[\n;&|]|&&|\|\|)\s*/g;
-const segments = command.split(SEGMENT_BREAK).map((part) => part.trim());
+/* **따옴표 안을 먼저 가린다.** 안 가리면 `node -e "…\ngit commit …"` 처럼 인용부에 든
+   줄바꿈이 구분자로 읽혀 **없는 커밋 명령**이 생기고, 커밋과 무관한 스크립트가 커밋 규약으로
+   막힌다(2026-09-14 실측). 가린 자리에는 구분자 없는 한 낱말만 남으므로 아래 플래그 검사
+   (`-m` · `-F -` · `-a` · `--`)는 그대로 돈다 — 그 셋은 따옴표 밖에 있다. */
+const segments = maskQuoted(command).split(SEGMENT_BREAK).map((part) => part.trim());
 const commits = segments.filter((part) => /^git\s+(-\S+\s+)*commit\b/.test(part));
 if (commits.length === 0) pass();
 
