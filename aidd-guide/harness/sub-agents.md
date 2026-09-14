@@ -4,9 +4,9 @@ title: "Sub-Agent Architecture 정책"
 category: harness
 type: operation
 created: 2026-05-04
-updated: 2026-09-10
+updated: 2026-09-14
 status: active
-sources: []
+sources: ["AGENTS.md", ".claude/agents/", ".codex/agents/", ".codex/config.toml"]
 tier: 2
 tags: [harness, sub-agent, delegation, context-protection]
 ---
@@ -42,6 +42,26 @@ tags: [harness, sub-agent, delegation, context-protection]
 | 계획 | 구현 전략 설계 | "어떻게 구현해야 할까" |
 | 범용 | 복잡한 다단계 조사 | 모호한 검색·다중 도구 필요 |
 | 제품 도움말 | AI runtime의 최신 동작 확인 | "hooks가 어떻게 동작하나" |
+
+## 모델·effort 자율 위임과 승인 게이트
+
+주 에이전트는 위임할 때 **어떤 서브에이전트를 쓸지**뿐 아니라 **어떤 모델·effort로 실행할지**도
+스스로 판단한다(2026-09-14, AGENTS.md 위임 정책). 역할은 두 갈래다.
+
+- **자율 사용** — 각 provider 전용 설정에 등록된 역할. 사용자 승인 없이 바로 위임한다. 다만
+  위임 직전 목적·역할을 한 문장으로 알린다.
+- **승인 전용** — 등록은 됐지만 자율 사용이 아닌 역할(예: 최상위 고비용 모델). 이번 호출에 대한
+  사용자의 명시적 승인 없이는 쓰지 않는다. 등록되지 않은 새 모델도 같은 취급이다.
+
+완료 뒤에는 주 에이전트가 결과를 직접 검토·통합해 보고한다(아래 "결과 검증"과 동일한 원칙).
+
+provider별 구체적 역할 이름·모델명·effort는 여기 두지 않는다 — 위 "사용 가능한 서브에이전트"의
+계약 원칙과 같다. 실물은 각 provider 전용 설정에 있다.
+
+| provider | 전용 설정 |
+|---|---|
+| Claude Code | `.claude/agents/*.md` frontmatter(`model`·`effort`) — [providers/claude-code.md](./providers/claude-code.md) |
+| Codex | `.codex/agents/*.toml`(`model`·`model_reasoning_effort`) + `.codex/config.toml`의 `[agents]` 기본값 |
 
 ## 위임 vs 직접 비용 분석
 

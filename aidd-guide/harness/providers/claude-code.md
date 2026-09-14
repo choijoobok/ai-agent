@@ -4,9 +4,9 @@ title: "Claude Code 하네스 어댑터"
 category: harness
 type: operation
 created: "2026-09-10"
-updated: "2026-09-11"
+updated: "2026-09-14"
 status: active
-sources: ["CLAUDE.md", ".claude/settings.json", ".claude/hooks/"]
+sources: ["CLAUDE.md", "aidd-guide/harness/sub-agents.md", ".claude/agents/", ".claude/settings.json", ".claude/hooks/"]
 tier: 2
 tags: [harness, claude, adapter]
 ---
@@ -34,6 +34,34 @@ node aidd-guide/harness/runtime/sync-skills.mjs --write
 
 직접 호출 문법은 `/스킬명`이다. 스킬 옆의 실행 스크립트는 기존 경로를 유지한다. 이 파일들은
 Node 정책 엔진이며 Claude API에 묶이지 않았으므로 Codex도 같은 실물을 실행할 수 있다.
+
+## 서브에이전트 역할 카탈로그
+
+[sub-agents.md](../sub-agents.md)의 "모델·effort 자율 위임과 승인 게이트"가 정하는 공통 정책의
+Claude Code 실물이다. 계획은 내장 `Plan`을 그대로 쓰고(중복 방지, `tool-curation.md`), 호출 시
+필요하면 `model`만 지정한다. 탐색은 내장 `Explore`를 대체해 `.claude/agents/*.md`로 model·effort를
+고정했다 — 호출자가 매번 `model`을 기억해 넘기는 방식은 실수로 비는 자리가 남기 때문이다.
+
+| 역할 | 파일 | 자율/승인 | model | effort |
+|---|---|---|---|---|
+| 빠른 탐색 (읽기 전용) | `autonomous-quick-scan.md` | 자율 사용 | `haiku` | `low` |
+| 독립 구현+검증 | `autonomous-implementation-worker.md` | 자율 사용 | `opus` | `high` |
+| 정확성·보안·회귀 리뷰 (읽기 전용) | `autonomous-reviewer.md` | 자율 사용 | `sonnet` | `high` |
+| 최고난도 설계·디버깅·검증 | `approval-specialist.md` | **승인 전용** | `fable` | `high` |
+
+구현 역할을 Opus로 올린 이유: 공식 모델 비교(`platform.claude.com/docs/en/models/overview`)가
+Opus 5를 "복잡한 에이전트형 코딩과 엔터프라이즈 작업용"으로, Sonnet 5를 "속도·지능의 균형"으로
+구분한다 — 독립 다단계 구현은 전자에 더 가깝다고 보고 세션 기본 모델(Sonnet 5)보다 올렸다. 대신
+비용은 MTok당 입력 $5·출력 $25로 Sonnet(입력 $2·출력 $10)의 2.5배다. 리뷰는 읽기 전용에 대량
+호출 가능성이 있어 Sonnet을 유지한다.
+
+`approval-specialist`는 등록돼 있어도 자율 사용이 아니다 — 파일 자체의 `description`에 "이번
+호출에 대한 사용자의 명시적 승인 없이는 쓰지 않는다"를 박아 뒀다. 새 세션에서만 `subagent_type`
+목록에 반영되므로, 이 파일들을 고친 뒤에는 새 Claude Code 세션에서 한 번 스모크 테스트한다.
+
+`.claude/settings.json`의 `env.CLAUDE_CODE_SUBAGENT_MODEL`이 안전망이다 — 서브에이전트 호출에서
+`model`을 깜빡 빠뜨려도 세션 모델(향후 Fable 등 고비용으로 바뀔 수 있음)을 그대로 상속하지 않고
+`sonnet`으로 떨어진다.
 
 ## 커밋
 
