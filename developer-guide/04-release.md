@@ -48,7 +48,7 @@ unzip -l sources/backend/bootstrap/build/libs/bootstrap-*.jar | grep 'BOOT-INF/c
 | 그 외 | 배포 환경 | 현재 저장소에는 설정 파일을 두지 않는다. 배포 환경이 명시 프로파일·데이터소스·비밀값을 제공한다. |
 
 ```bash
-./gradlew :backend:bootstrap:bootRun -PincludeSample=true
+./gradlew :backend:bootstrap:bootRun
 ```
 
 - **비밀값은 파일에 두지 않고 환경 변수로 주입한다** (`DB_PASSWORD` · `REDIS_PASSWORD`).

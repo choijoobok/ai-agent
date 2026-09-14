@@ -20,7 +20,7 @@ current:
   #   `trace-check` 가 이 값을 읽어 **뒤 차수의 결손을 오류가 아니라 경고로** 센다.
   slice: null                # system P4의 마지막 SLICE-518을 닫고 P5 검증으로 전환했다
   blocked_by: []
-  template_maintenance: false
+  template_maintenance: true
   # ↑ true 로 켜면 G3 전에도 sources/ 를 고칠 수 있다(guard-write ①).
   #   **템플릿 자체의 보수에만 켠다.** 켠 사실이 여기 남아 무엇을 왜 열었는지 추적된다.
 

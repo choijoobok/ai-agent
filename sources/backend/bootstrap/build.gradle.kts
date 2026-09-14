@@ -8,10 +8,31 @@ plugins {
     alias(libs.plugins.spring.boot)
 }
 
-/** sample은 local 배포 변형에서만 실제 클래스패스에 넣는다(ADR-009). */
+// ── 로컬 기동의 기본값 ────────────────────────────────────────────────
+// **기본값을 아는 자리는 `bootRun` 태스크 하나다**(build-deploy.md). 프로파일이 이미 그
+// 규약을 쓰고 있고(`-Pprofile` → `local`), sample 과 프론트도 같은 자리에서 준다.
+//
+// **전역 기본값은 건드리지 않는다.** 둘을 켠 채로 `build`·`bootJar`·`check` 가 돌면 제품
+// JAR 에 sample 이 새고(ADR-009), 프론트 임베드가 조용히 빠진다 — 후자는 04-release.md 가
+// **가장 늦게 발견되는 사고**라고 적은 바로 그것이다. 그래서 **이 실행이 `bootRun` 을 부를
+// 때만** 기본값이 바뀐다. 덕분에 `check -PskipFrontend` 를 적은 문서 넷도 그대로 맞다.
+//
+// 2026-09-14 실측이 이 자리를 만들었다. `bootRun -PskipFrontend` 가 6초 만에 죽었다 —
+// `local` 프로파일이 찾는 `db.changelog-local.yaml` 을 `includeSample=false` 가 리소스에서
+// 빼 버렸기 때문이다. **기본값 둘이 서로 어긋나 있었고, 문서에 적힌 명령이 돌지 않았다.**
+//
+// 판정의 원본은 `settings.gradle.kts` 다 — 거기가 먼저 평가되고 `sample` **모듈 포함 여부**를
+// 같은 값으로 가르기 때문이다. 여기서 다시 계산하면 한쪽만 고쳐져 어긋난다.
+val isBootRun = gradle.extra["isBootRun"] as Boolean
+
+/**
+ * sample은 local 배포 변형에서만 실제 클래스패스에 넣는다(ADR-009).
+ *
+ * 로컬 기동이 곧 local 변형이므로 `bootRun` 에서만 기본이 켜진다. 끄려면 `-PincludeSample=false`.
+ */
 val includeSample = providers.gradleProperty("includeSample")
     .map(String::toBoolean)
-    .getOrElse(false)
+    .getOrElse(isBootRun)
 
 tasks.processResources {
     // 이전 누적 changeSet은 기준선 생성 입력일 뿐 런타임 산출물에는 싣지 않는다.
@@ -168,8 +189,19 @@ springBoot {
 val frontendDir = rootProject.layout.projectDirectory.dir("frontend")
 val npmCmd = if (System.getProperty("os.name").lowercase().contains("windows")) "npm.cmd" else "npm"
 
-/** 백엔드만 만질 때 프론트 빌드를 건너뛴다 — `-PskipFrontend` (build-deploy.md). */
-val skipFrontend = providers.gradleProperty("skipFrontend").isPresent
+/**
+ * 백엔드만 만질 때 프론트 빌드를 건너뛴다 — `-PskipFrontend` (build-deploy.md).
+ *
+ * **`bootRun` 은 기본으로 건너뛴다.** 개발 중 화면을 주는 것은 Vite dev 서버이고, 기동할
+ * 때마다 도는 `npm run build` 의 산출물은 아무도 안 쓴다(02-setup.md §4). 임베드까지 보려면
+ * `bootJar` 로 확인한다 — 그쪽은 기본값이 그대로다.
+ *
+ * **값을 해석한다.** 예전에는 `isPresent` 만 봐서 `-PskipFrontend=false` 도 *건너뛴다* 로
+ * 읽혔다. 기본값이 생긴 이상 **끄는 길**이 있어야 한다. 값 없는 `-PskipFrontend` 는 그대로 참이다.
+ */
+val skipFrontend = providers.gradleProperty("skipFrontend")
+    .map { it.isBlank() || it.toBoolean() }
+    .getOrElse(isBootRun)
 
 val npmInstall by tasks.registering(Exec::class) {
     workingDir = frontendDir.asFile

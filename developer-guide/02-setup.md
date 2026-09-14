@@ -67,7 +67,7 @@ psql -U postgres -c "CREATE DATABASE bo" -c "CREATE USER bo_admin PASSWORD '<비
 ### 개발 중 — 백엔드와 프론트를 따로
 
 ```bash
-cd sources && ./gradlew :backend:bootstrap:bootRun -PskipFrontend
+cd sources && ./gradlew :backend:bootstrap:bootRun
 ```
 
 ```bash
@@ -76,9 +76,16 @@ cd sources/frontend && npm run dev
 
 - 프론트는 **3000** 포트, 백엔드는 **8080**. Vite 가 `/api` 를 백엔드로 프록시한다
   (`VITE_API_TARGET` 으로 바꿀 수 있다). **화면은 3000 으로 본다.**
-- **`-PskipFrontend` 를 붙인다.** 빼면 기동할 때마다 `npm run build`(`tsc -b && vite build`)가
-  함께 돈다 — `processResources` 가 프론트 산출물을 정적 리소스로 받기 때문이다.
-  **개발 중에는 그 산출물을 아무도 안 쓴다.** 화면을 주는 것은 Vite dev 서버다.
+- **플래그를 붙이지 않는다.** `bootRun` 이 `skipFrontend` 와 `includeSample` 을 **기본으로 켠다**
+  — 로컬 기동은 곧 local 변형이고, 개발 중에는 프론트 임베드 산출물을 아무도 안 쓰기
+  때문이다(화면을 주는 것은 Vite dev 서버다). 되돌리려면 `-PskipFrontend=false` ·
+  `-PincludeSample=false`.
+- **`build`·`bootJar`·`check` 의 기본값은 그대로다.** 기본값이 바뀌는 것은 `bootRun` 하나뿐이다
+  — 전역으로 켜면 제품 JAR 에 sample 이 새고 프론트 임베드가 조용히 빠진다
+  ([04-release.md](04-release.md) §2).
+- **`-PincludeSample` 은 DB 까지 가른다.** `local` 프로파일은 `db.changelog-local.yaml` 을 보는데
+  그 파일은 local 변형에서만 리소스에 실린다. 꺼 놓고 띄우면 `Liquibase failed to start ...
+  no changelog could be found` 로 죽는다 — 2026-09-14 에 실제로 그랬다.
 - **그래서 8080 루트는 404 다.** 프론트를 안 실었으니 맞다 — 없는 것을 있는 척하지 않는다.
 - **프로파일은 적지 않는다.** `bootRun` 태스크가 `local` 을 기본으로 준다. 다른 프로파일은
   **`-Pprofile=dev`** 로 바꾸며, `--args=` 나 `SPRING_PROFILES_ACTIVE` 로 넣지 않는다 —
@@ -109,6 +116,11 @@ java -jar sources/backend/bootstrap/build/libs/bootstrap-0.0.1-SNAPSHOT.jar --sp
 `Settings → Build, Execution, Deployment → Build Tools → Gradle` 에서
 *Build and run using* · *Run tests using* 를 **Gradle** 로 둔다.
 
+- **샘플 모듈을 IDE 에서 보려면 동기화에도 플래그를 준다.** 같은 화면의 *Gradle* 설정에
+  `-PincludeSample=true` 를 넣는다. `bootRun` 기본값은 **기동할 때만** 켜지는데, IntelliJ 의
+  프로젝트 동기화는 `bootRun` 을 부르지 않아 `backend:modules:sample` 이 **프로젝트 모델에
+  들어오지 않는다.** 기동은 되지만 샘플 소스가 인덱싱되지 않아 탐색·자동완성이 끊긴다.
+  샘플을 참고 실물로 읽지 않는다면 넣지 않아도 된다.
 - **IDEA 빌더로 두면 `check` 가 돌지 않는다.** 그러면 `checkSeeds` 도 돌지 않아
   **시드가 소스와 어긋난 사실을 아무도 말해 주지 않는다.** 증상은 화면의 **403** 으로만
   나타나고([seed.md](../aidd-guide/standard/seed.md) §3), 원인이 시드라고 적힌 곳이 없다.
@@ -157,7 +169,8 @@ cd sources/frontend && npm run lint && npm run typecheck && npm run test
 |---|---|
 | `./gradlew` 가 안 돈다 | `sources/` 에서 돌리고 있는지 본다 — **빌드 루트는 저장소 루트가 아니다** |
 | 백엔드 테스트에서 `npm` 을 찾는다 | `-PskipFrontend` 를 빼먹었다 |
-| 백엔드만 띄우는데 **프론트가 통째로 빌드된다** | `bootRun` 에 `-PskipFrontend` 를 빼먹었다(§4) |
+| 백엔드만 띄우는데 **프론트가 통째로 빌드된다** | `bootRun` 이 아닌 태스크다. `bootRun` 은 기본으로 건너뛴다(§4) |
+| `bootRun` 이 `no changelog could be found` 로 죽는다 | `-PincludeSample=false` 로 껐다. `local` 프로파일은 local 변형에서만 실리는 `db.changelog-local.yaml` 을 본다(§4) |
 | **8080 이 404** (개발 중) | **정상이다.** 프론트를 안 실었다 — 화면은 **3000** 으로 본다 |
 | `Failed to configure a DataSource` | **프로파일이 없다.** 기본값을 갖는 것은 `bootRun` 태스크뿐이다 — `java -jar` · IDE 직접 실행에는 `--spring.profiles.active=local` 을 직접 준다 |
 | 화면이 **403** 인데 코드는 맞다 | 선언을 고치고 시드를 다시 안 만들었다 → `./gradlew generateSeeds`. **IntelliJ 를 IDEA 빌더로 쓰면 `checkSeeds` 가 안 돌아 이것이 안 잡힌다**(§4) |
