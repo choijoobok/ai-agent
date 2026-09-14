@@ -67,7 +67,7 @@ psql -U postgres -c "CREATE DATABASE bo" -c "CREATE USER bo_admin PASSWORD '<비
 ### 개발 중 — 백엔드와 프론트를 따로
 
 ```bash
-cd sources && ./gradlew :backend:bootstrap:bootRun
+cd sources && ./gradlew :backend:bootstrap:bootRun -Pprofile=local
 ```
 
 ```bash
@@ -76,23 +76,20 @@ cd sources/frontend && npm run dev
 
 - 프론트는 **3000** 포트, 백엔드는 **8080**. Vite 가 `/api` 를 백엔드로 프록시한다
   (`VITE_API_TARGET` 으로 바꿀 수 있다). **화면은 3000 으로 본다.**
-- **플래그를 붙이지 않는다.** `bootRun` 이 `skipFrontend` 와 `includeSample` 을 **기본으로 켠다**
-  — 로컬 기동은 곧 local 변형이고, 개발 중에는 프론트 임베드 산출물을 아무도 안 쓰기
-  때문이다(화면을 주는 것은 Vite dev 서버다). 되돌리려면 `-PskipFrontend=false` ·
-  `-PincludeSample=false`.
-- **`build`·`bootJar`·`check` 의 기본값은 그대로다.** 기본값이 바뀌는 것은 `bootRun` 하나뿐이다
-  — 전역으로 켜면 제품 JAR 에 sample 이 새고 프론트 임베드가 조용히 빠진다
-  ([04-release.md](04-release.md) §2).
-- **`-PincludeSample` 은 DB 까지 가른다.** `local` 프로파일은 `db.changelog-local.yaml` 을 보는데
-  그 파일은 local 변형에서만 리소스에 실린다. 꺼 놓고 띄우면 `Liquibase failed to start ...
-  no changelog could be found` 로 죽는다 — 2026-09-14 에 실제로 그랬다.
+- **`-Pprofile=local`을 반드시 붙인다.** local 프로파일은 `skipFrontend`와 `includeSample`을
+  기본으로 켠다 — 개발 중에는 Vite dev 서버가 화면을 주므로 프론트 임베드 산출물을 쓰지 않는다.
+  개발·운영 프로파일은 둘 다 반대가 기본이며, 명시한 옵션이 프로파일 기본값보다 우선한다.
+- **일반 `build`·`bootJar`·`check`는 제품 변형이 기본이다.** sample을 제외하고 프론트를
+  포함한다([04-release.md](04-release.md) §2).
+- **`-PincludeSample` 은 DB 까지 가른다.** local에서 false를 명시하면 처리된 설정도 제품 master
+  changelog를 가리켜 sample 클래스·화면·API·시드를 함께 제외한다.
 - **그래서 8080 루트는 404 다.** 프론트를 안 실었으니 맞다 — 없는 것을 있는 척하지 않는다.
-- **프로파일은 적지 않는다.** `bootRun` 태스크가 `local` 을 기본으로 준다. 다른 프로파일은
-  **`-Pprofile=dev`** 로 바꾸며, `--args=` 나 `SPRING_PROFILES_ACTIVE` 로 넣지 않는다 —
-  전자는 태스크가 주는 인자와 겹치고, 후자는 Gradle 데몬의 환경이라 조용히 안 먹는다.
-- **`application.yml` 에는 기본 프로파일이 없다.** 기본값을 갖는 것은 `bootRun` **태스크**다.
-  그래서 `java -jar` 과 IDE 직접 실행에서는 **반드시 준다**(아래 두 절) — 안 주면
-  `Failed to configure a DataSource` 로 죽고, 그 메시지는 프로파일 얘기를 하지 않는다.
+- **프로파일은 항상 적는다.** `bootRun`은 `-Pprofile=local|dev|운영 프로파일`만 받는다.
+  `--args=`나 `SPRING_PROFILES_ACTIVE`로 대신하지 않는다 — 전자는 태스크 인자와 겹치고,
+  후자는 Gradle 데몬 환경이라 재사용 시 조용히 어긋날 수 있다.
+- **`application.yml`에는 기본 프로파일이 없다.** `java -jar`과 IDE 직접 실행도 반드시
+  `--spring.profiles.active=...` 또는 동등한 외부 설정을 준다. 누락하면 데이터소스가 외부에서
+  주어져 있어도 활성 프로파일 가드가 기동을 거부한다.
 - **프론트만 고칠 때는 백엔드를 재기동하지 않는다** — HMR 이 받는다.
 - 프로파일 넷의 용도는 [04-release.md](04-release.md) §3 이 갖는다.
 
@@ -116,15 +113,10 @@ java -jar sources/backend/bootstrap/build/libs/bootstrap-0.0.1-SNAPSHOT.jar --sp
 `Settings → Build, Execution, Deployment → Build Tools → Gradle` 에서
 *Build and run using* · *Run tests using* 를 **Gradle** 로 둔다.
 
-- **동기화에도 `-PincludeSample=true` 를 준다.** 같은 화면의 *Gradle* 설정, 또는
+- **local 개발 프로젝트 동기화에는 `-Pprofile=local`을 준다.** 같은 화면의 *Gradle* 설정, 또는
   `Gradle 도구창 → Run Configurations` 가 아닌 **Settings 의 Gradle *Arguments*** 에 넣는다.
-  `bootRun` 기본값은 **그 태스크를 부를 때만** 켜지는데 **IntelliJ 의 프로젝트 동기화는
-  `bootRun` 을 부르지 않는다.** 그래서 동기화가 만든 산출물에는 `db.changelog-local.yaml` 도
-  `modules/sample` 도 없다(2026-09-14 실측 — `build/resources/main/db/changelog/` 에
-  `db.changelog-master.yaml` 과 `modules/{platform,system}` 만 남는다).
-  - `bootRun` **태스크를 부르는 Gradle 실행 구성**은 영향이 없다. 그때 Gradle 이 다시 평가한다.
-  - **그 밖의 실행 구성은 기동까지 실패한다** — `local` 프로파일이 찾는 changelog 가 클래스패스에
-    없기 때문이다. 샘플 소스 탐색이 끊기는 것은 그다음 문제다.
+  프로파일은 sample 모듈을 프로젝트 모델에도 포함한다. 개발·운영 대상 프로젝트라면 해당
+  프로파일로 바꾸며, 제품 JAR을 만들 때는 local 프로파일을 남겨 두지 않는다.
 - **IDEA 빌더로 두면 `check` 가 돌지 않는다.** 그러면 `checkSeeds` 도 돌지 않아
   **시드가 소스와 어긋난 사실을 아무도 말해 주지 않는다.** 증상은 화면의 **403** 으로만
   나타나고([seed.md](../aidd-guide/standard/seed.md) §3), 원인이 시드라고 적힌 곳이 없다.
@@ -173,10 +165,10 @@ cd sources/frontend && npm run lint && npm run typecheck && npm run test
 |---|---|
 | `./gradlew` 가 안 돈다 | `sources/` 에서 돌리고 있는지 본다 — **빌드 루트는 저장소 루트가 아니다** |
 | 백엔드 테스트에서 `npm` 을 찾는다 | `-PskipFrontend` 를 빼먹었다 |
-| 백엔드만 띄우는데 **프론트가 통째로 빌드된다** | `bootRun` 이 아닌 태스크다. `bootRun` 은 기본으로 건너뛴다(§4) |
-| `bootRun` 이 `no changelog could be found` 로 죽는다 | `-PincludeSample=false` 로 껐다. `local` 프로파일은 local 변형에서만 실리는 `db.changelog-local.yaml` 을 본다(§4) |
+| local 백엔드만 띄우는데 **프론트가 통째로 빌드된다** | `-Pprofile=local`이 빠졌거나 다른 프로파일이다(§4) |
+| local인데 sample이 보이지 않는다 | `-PincludeSample=false`가 명시됐는지 본다. false면 제품 master changelog를 쓰는 것이 정상이다(§4) |
 | **8080 이 404** (개발 중) | **정상이다.** 프론트를 안 실었다 — 화면은 **3000** 으로 본다 |
-| `Failed to configure a DataSource` | **프로파일이 없다.** 기본값을 갖는 것은 `bootRun` 태스크뿐이다 — `java -jar` · IDE 직접 실행에는 `--spring.profiles.active=local` 을 직접 준다 |
+| `활성 프로파일이 없다`로 기동 실패 | `bootRun`은 `-Pprofile=...`, `java -jar`·IDE 직접 실행은 `--spring.profiles.active=...`를 준다 |
 | 화면이 **403** 인데 코드는 맞다 | 선언을 고치고 시드를 다시 안 만들었다 → `./gradlew generateSeeds`. **IntelliJ 를 IDEA 빌더로 쓰면 `checkSeeds` 가 안 돌아 이것이 안 잡힌다**(§4) |
 | `checkSeeds` 가 깨진다 | 선언(`menu-tree.yaml` · 컨트롤러 · `endpoints.ts` · `messageKeys.ts`)을 고치고 시드를 다시 만들지 않았다 → `cd sources && ./gradlew generateSeeds` |
 | Liquibase `checksum` 오류 | **이미 적재된 changeset 을 고쳤다.** 되돌리고 **새 파일을 더한다** — 고치면 남의 로컬이 죽는다 |

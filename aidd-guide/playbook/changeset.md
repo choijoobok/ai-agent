@@ -21,7 +21,8 @@ tags: [playbook, liquibase, changeset, seed, schema]
 | 실행 변형 | 루트 | 포함 모듈 | 명령 |
 |---|---|---|---|
 | product | `db.changelog-master.yaml` | `platform` · `system` | `./gradlew :backend:bootstrap:bootJar` |
-| local | `db.changelog-local.yaml` | product + `sample` | `./gradlew :backend:bootstrap:bootRun` (기본이 local 변형) |
+| local | `db.changelog-local.yaml` | product + `sample` | `./gradlew :backend:bootstrap:bootRun -Pprofile=local` |
+| local, sample 명시 제외 | `db.changelog-master.yaml` | `platform` · `system` | `./gradlew :backend:bootstrap:bootRun -Pprofile=local -PincludeSample=false` |
 
 - `platform`·`system`·`sample`은 각각 `modules/{모듈}/db.changelog-{모듈}.yaml`이 자기
   기준선과 이후 changeset의 순서를 소유한다.
@@ -48,7 +49,7 @@ tags: [playbook, liquibase, changeset, seed, schema]
 1. 소유 모듈을 정한다        platform | system | sample(local 전용)
 2. 새 파일을 만든다          modules/{모듈}/{순번}-{무엇}.yaml 또는 .sql
 3. 모듈 master 끝에 include  의존 순서와 이유를 주석으로 남긴다
-4. 변형별로 기동한다         local은 bootRun 기본, product는 -PincludeSample=false
+4. 변형별로 기동한다         bootRun은 -Pprofile=local|dev|prod, JAR은 --spring.profiles.active=<프로파일>
 5. 시드 관련 변경이면 생성·검사를 함께 한다
 ```
 

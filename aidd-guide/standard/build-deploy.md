@@ -58,30 +58,34 @@ React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌�
 **비밀값은 파일에 두지 않고 환경변수로 주입한다**(`DB_PASSWORD` · `REDIS_PASSWORD`).
 다만 **암호화 키는 운영에서 키 파일이 기본**이고 환경변수는 로컬·개발용이다.
 
-> **로컬 기동의 기본값을 아는 자리는 `bootRun` 태스크 하나다.** `application.yml` 에 기본
-> 프로파일을 두지 않았다 — 두면 운영에서 잘못된 프로파일로 조용히 뜬다. 대신 `bootRun` 이
-> `-Pprofile` 을 읽어 `local` 을 기본으로 주며, **IDE 실행 구성도 그 태스크를 부른다.**
-> `java -jar` 은 이 경로 밖이라 프로파일을 직접 받는다.
+> **서버 기동에는 활성 프로파일을 반드시 명시한다.** `application.yml`에 기본 프로파일을
+> 두지 않았고, 애플리케이션도 누락을 데이터소스 구성 전에 거부한다. `bootRun`은
+> `-Pprofile=<프로파일>`, `java -jar`·IDE 직접 실행은 `--spring.profiles.active=<프로파일>`
+> 또는 동등한 외부 설정을 사용한다.
 >
-> **`includeSample` 과 `skipFrontend` 도 같은 자리에서 준다.** 로컬 기동은 곧 local 변형이고,
-> 개발 중에는 프론트 임베드 산출물을 아무도 안 쓴다. 되돌리려면 `-PincludeSample=false` ·
-> `-PskipFrontend=false`. 판정의 원본은 `settings.gradle.kts` 이며 `sample` **모듈 포함 여부**를
-> 같은 값으로 가른다 — `bootstrap/build.gradle.kts` 는 그 값을 읽기만 한다.
+> **`includeSample`과 `skipFrontend`의 기본값은 프로파일이 정한다.** `local`은 둘 다 true,
+> 개발·운영 프로파일과 프로파일 없는 일반 빌드는 둘 다 false다. 명시한
+> `-PincludeSample=<true|false>`·`-PskipFrontend=<true|false>`가 기본값보다 우선한다.
 >
-> **`build`·`bootJar`·`check` 의 기본값은 그대로 `false` 다.** 전역으로 켜면 제품 JAR 에
-> sample 이 새고(ADR-009) 프론트 임베드가 조용히 빠진다. 기본값이 바뀌는 것은 `bootRun` 뿐이라
-> 아래 표의 나머지 명령과 `check -PskipFrontend` 를 적은 문서들은 그대로 맞다.
+> 판정의 원본은 `settings.gradle.kts`이며 sample **모듈 포함 여부**를 같은 값으로 가른다.
+> `bootstrap/build.gradle.kts`는 그 값을 읽는다. 일반 `build`·`bootJar`·`check`는 프로파일을
+> 주지 않으므로 제품 변형이고, sample 제외·프론트 포함이 기본이다.
 >
-> **두 기본값은 서로 묶여 있다.** `local` 프로파일은 `db.changelog-local.yaml` 을 보는데 그
-> 파일은 local 변형에서만 리소스에 실린다 — `includeSample` 을 끈 채 `local` 로 띄우면
-> `Liquibase failed to start … no changelog could be found` 로 죽는다(2026-09-14 실측).
+> `local`에서 `includeSample=false`를 명시하면 처리된 `application-local.yml`도 제품 master
+> changelog를 가리킨다. 그래야 명시 옵션이 클래스·화면뿐 아니라 DB 시드까지 함께 제외한다.
 
 | 목적 | 명령 |
 |---|---|
-| local 실행 | `./gradlew :backend:bootstrap:bootRun` |
+| local 실행 | `./gradlew :backend:bootstrap:bootRun -Pprofile=local` |
+| 개발·운영 서버 검증 | `./gradlew :backend:bootstrap:bootRun -Pprofile=<dev|prod>` |
+| local에서 sample 제외·프론트 포함 | `./gradlew :backend:bootstrap:bootRun -Pprofile=local -PincludeSample=false -PskipFrontend=false` |
 | product JAR | `./gradlew :backend:bootstrap:bootJar` |
+| product JAR 실행 | `java -jar bootstrap-<version>.jar --spring.profiles.active=<dev|prod>` |
 | product 백엔드 검증 | `./gradlew check -PskipFrontend` |
 | local 생성 시드 검증 | `./gradlew :backend:bootstrap:checkSeeds -PincludeSample=true` |
+
+`-Pprofile`은 Gradle의 `bootRun` 변형을 고르는 옵션이다. `bootJar`에는 주지 않는다. 패키지는
+항상 product 변형으로 만들고, JAR·IDE 직접 실행은 Spring 활성 프로파일을 외부에서 명시한다.
 
 > **`application-local.yml` 은 저장소에 넣는다.** `.gitignore` 대상으로 두면
 > **템플릿을 받은 사람이 "로컬을 어떻게 띄우나" 의 답을 갖지 못한다.**
@@ -106,13 +110,14 @@ React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌�
 ```
 1. 체크아웃
 2. JDK 25 / Node 셋업
-3. ./gradlew build      컴파일 + 단위테스트 + ArchUnit + Spotless
-4. npm ci && npm run lint && npm run test && npm run build
-5. 통합테스트 (Testcontainers)
+3. node gradle/build-variant-contract.test.mjs   프로파일별 sample·프론트 변형 + 누락 거부
+4. ./gradlew build -PskipFrontend   컴파일 + 단위테스트 + ArchUnit (프론트는 다음 단계에서 별도 검사)
+5. npm ci && npm run lint && npm run test && npm run build
+6. 통합테스트 (Testcontainers)
      PR   : PostgreSQL · MySQL
      야간 : + MariaDB · MSSQL · Oracle
-6. 의존성 취약점 스캔
-7. bootJar → 아티팩트 업로드
+7. 의존성 취약점 스캔
+8. 수동 package: bootJar → JAR 안 `static/index.html` 확인 → 아티팩트 업로드
 ```
 
 **시드 태스크의 절차는 [seed.md](./seed.md) 가 갖는다** — 여기는 파이프라인의 자리만 말한다.

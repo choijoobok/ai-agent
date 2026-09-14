@@ -33,7 +33,15 @@ jobs:
           distribution: temurin
           java-version: '25'
 
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: sources/.nvmrc
+
       - uses: gradle/actions/setup-gradle@v6
+
+      - name: 프로파일별 빌드 변형 계약
+        working-directory: sources
+        run: node gradle/build-variant-contract.test.mjs
 
       # 프론트는 frontend 잡이 맡는다. 여기서 npm 을 돌리면 같은 일을 두 번 한다 — build-deploy.md
       - name: 백엔드 빌드 — 빌드 루트는 sources/ 다

@@ -24,6 +24,7 @@ G3(설계 베이스라인) 승인 이후의 모든 spec 변경을 기록한다.
 | CR-018 | 2026-09-13 | Modify | 샘플 메뉴·API·도메인·프런트를 삭제 가능한 별도 sample 모듈로 분리하되 현재 외부 주소와 `SMPL_*` 시드·제거 절차는 유지한다 | 사용자 | ARCH-010·011·027, Gradle·ArchUnit·프런트 경계, 샘플 화면·API·도메인·시드·playbook 경로 | Medium (SLICE-518 신규) | A | 완료 |
 | CR-019 | 2026-09-13 | Modify | 현재 최종 상태를 모듈별 Liquibase 기준선으로 재구성하고, sample은 local 변형에서만 코드·화면·API·시드를 포함한다. 현재 로컬 DB는 삭제·재생성한다 | 사용자 | ARCH-027·ADR-009·CR-018, Gradle·Vite·Liquibase·시드·sample 화면 문서·배포 안내 | Large (SLICE-518 재작업) | A | 완료 |
 | CR-020 | 2026-09-13 | Add | 개발 중인 정본을 옮기거나 화면별 HTML을 중복 생성하지 않고, 설계·사용자·운영 세 오프라인 사이트와 선택 PDF로 고객 제출본을 만든다. 사용자 매뉴얼 그림은 의미 키로 목업에서 실제 캡처로 치환한다 | 사용자 | 산출물 지도·P6·화면 문서·doc-gen·manual-site·신규 runbook/deliverable-site 스킬·공통 HTML UI 키트 | Medium (문서 하네스 3개 작업 단위, 제품 슬라이스 0) | A | 완료 |
+| CR-021 | 2026-09-14 | Fix | 서버 기동에는 활성 프로파일을 반드시 요구하고, local 프로파일에서만 sample 포함·프론트 생략을 기본으로 하며 다른 프로파일은 반대 기본값을 적용한다. 명시 옵션은 기본값보다 우선한다 | 사용자 | ARCH-027·TC-5036·Gradle 변형 판정·애플리케이션 기동 가드·개발·배포 안내 | Small (SLICE-519 신규) | A | 완료 |
 
 **유형**: Add / Modify / Remove / Fix
 **판정**: A(지금 반영) / B(나중에) / C(안 함)
@@ -52,3 +53,4 @@ G3(설계 베이스라인) 승인 이후의 모든 spec 변경을 기록한다.
 | CR-018 | 96 | 0 (+0.0%) | Add 0 / Modify 7 / Remove 0 / Fix 10 |
 | CR-019 | 96 | 0 (+0.0%) | Add 0 / Modify 8 / Remove 0 / Fix 10 |
 | CR-020 | 96 | 0 (+0.0%) | Add 1 / Modify 8 / Remove 0 / Fix 10 |
+| CR-021 | 96 | 0 (+0.0%) | Add 1 / Modify 8 / Remove 0 / Fix 11 |

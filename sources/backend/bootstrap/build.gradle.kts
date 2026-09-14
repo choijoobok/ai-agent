@@ -2,6 +2,7 @@ import java.math.BigDecimal
 import java.net.URLClassLoader
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import org.springframework.boot.gradle.tasks.run.BootRun
 
 // bootstrap — 실행 모듈. main · application.yml · Liquibase changelog · 프론트 정적 리소스(backend/packages.md).
 plugins {
@@ -9,32 +10,34 @@ plugins {
 }
 
 // ── 로컬 기동의 기본값 ────────────────────────────────────────────────
-// **기본값을 아는 자리는 `bootRun` 태스크 하나다**(build-deploy.md). 프로파일이 이미 그
-// 규약을 쓰고 있고(`-Pprofile` → `local`), sample 과 프론트도 같은 자리에서 준다.
+// **기본값을 아는 자리는 `-Pprofile` 하나다**(build-deploy.md). local이면 sample을 포함하고
+// 프론트를 생략하며, 그 밖의 프로파일과 프로파일 없는 일반 빌드는 반대로 둔다.
 //
-// **전역 기본값은 건드리지 않는다.** 둘을 켠 채로 `build`·`bootJar`·`check` 가 돌면 제품
-// JAR 에 sample 이 새고(ADR-009), 프론트 임베드가 조용히 빠진다 — 후자는 04-release.md 가
-// **가장 늦게 발견되는 사고**라고 적은 바로 그것이다. 그래서 **이 실행이 `bootRun` 을 부를
-// 때만** 기본값이 바뀐다. 덕분에 `check -PskipFrontend` 를 적은 문서 넷도 그대로 맞다.
+// 프로파일을 주지 않은 `build`·`bootJar`·`check`의 기본값은 제품 변형이다. 둘을 local로
+// 켠 채 제품 JAR을 만들면 sample이 새고(ADR-009), 프론트 임베드가 조용히 빠진다 — 후자는
+// 04-release.md가 **가장 늦게 발견되는 사고**라고 적은 바로 그것이다.
 //
-// 2026-09-14 실측이 이 자리를 만들었다. `bootRun -PskipFrontend` 가 6초 만에 죽었다 —
-// `local` 프로파일이 찾는 `db.changelog-local.yaml` 을 `includeSample=false` 가 리소스에서
-// 빼 버렸기 때문이다. **기본값 둘이 서로 어긋나 있었고, 문서에 적힌 명령이 돌지 않았다.**
+// 2026-09-14 실측이 이 자리를 만들었다. local에서 sample을 빼면 application-local.yml의
+// changelog도 제품 master로 맞춰야 한다. 그렇지 않으면 명시 옵션이 기본값을 이기지 못한다.
 //
-// 판정의 원본은 `settings.gradle.kts` 다 — 거기가 먼저 평가되고 `sample` **모듈 포함 여부**를
-// 같은 값으로 가르기 때문이다. 여기서 다시 계산하면 한쪽만 고쳐져 어긋난다.
-val isBootRun = gradle.extra["isBootRun"] as Boolean
+// 판정의 원본은 `settings.gradle.kts`다 — 거기가 먼저 평가되고 sample **모듈 포함 여부**를
+// 같은 값으로 가르기 때문이다. 여기서 다시 계산하지 않는다.
+val isLocalProfile = gradle.extra["isLocalProfile"] as Boolean
 
 /**
  * sample은 local 배포 변형에서만 실제 클래스패스에 넣는다(ADR-009).
  *
- * 로컬 기동이 곧 local 변형이므로 `bootRun` 에서만 기본이 켜진다. 끄려면 `-PincludeSample=false`.
+ * local 프로파일에서만 기본이 켜진다. 명시한 `-PincludeSample`은 기본값보다 우선한다.
  */
-val includeSample = providers.gradleProperty("includeSample")
-    .map(String::toBoolean)
-    .getOrElse(isBootRun)
+val includeSample = gradle.extra["includeSample"] as Boolean
 
 tasks.processResources {
+    inputs.property("includeSample", includeSample)
+    filesMatching("application-local.yml") {
+        if (!includeSample) {
+            filter { line -> line.replace("db.changelog-local.yaml", "db.changelog-master.yaml") }
+        }
+    }
     // 이전 누적 changeSet은 기준선 생성 입력일 뿐 런타임 산출물에는 싣지 않는다.
     exclude(
         "db/changelog/schema/**",
@@ -192,16 +195,16 @@ val npmCmd = if (System.getProperty("os.name").lowercase().contains("windows")) 
 /**
  * 백엔드만 만질 때 프론트 빌드를 건너뛴다 — `-PskipFrontend` (build-deploy.md).
  *
- * **`bootRun` 은 기본으로 건너뛴다.** 개발 중 화면을 주는 것은 Vite dev 서버이고, 기동할
- * 때마다 도는 `npm run build` 의 산출물은 아무도 안 쓴다(02-setup.md §4). 임베드까지 보려면
- * `bootJar` 로 확인한다 — 그쪽은 기본값이 그대로다.
+ * **local 프로파일은 기본으로 건너뛴다.** 개발 중 화면을 주는 것은 Vite dev 서버이고,
+ * 기동할 때마다 도는 `npm run build`의 산출물은 아무도 안 쓴다(02-setup.md §4). 개발·운영
+ * 프로파일과 프로파일 없는 일반 빌드는 프론트를 포함한다.
  *
  * **값을 해석한다.** 예전에는 `isPresent` 만 봐서 `-PskipFrontend=false` 도 *건너뛴다* 로
  * 읽혔다. 기본값이 생긴 이상 **끄는 길**이 있어야 한다. 값 없는 `-PskipFrontend` 는 그대로 참이다.
  */
 val skipFrontend = providers.gradleProperty("skipFrontend")
     .map { it.isBlank() || it.toBoolean() }
-    .getOrElse(isBootRun)
+    .getOrElse(isLocalProfile)
 
 val npmInstall by tasks.registering(Exec::class) {
     workingDir = frontendDir.asFile
@@ -239,20 +242,23 @@ tasks.processResources {
 }
 
 // ── 로컬 기동 ──────────────────────────────────────────────────────────
-// build-deploy.md. 프로파일을 태스크가 갖는다 — 기동에 그것이 **필수**이기 때문이다.
+// build-deploy.md. 활성 프로파일은 기동에 **필수**이며, 어디서 띄우든 명시한다.
 //
-// application.yml 에는 datasource 가 없고 spring.profiles.active 기본값도 없다. 프로파일
-// 없이 띄우면 "Failed to configure a DataSource" 로 실패하며, 그 메시지는 *무엇을 안 줬는지*
-// 를 말해 주지 않는다 — 처음 받은 사람은 DB 가 안 떴다고 읽는다.
+// application.yml에는 spring.profiles.active 기본값이 없다. 데이터소스가 외부에서 우연히
+// 주어져도 기본 프로파일로 뜨면 안 되므로 애플리케이션도 별도로 기동을 거부한다.
 //
-// 그래서 --args 를 사람이 매번 적는 것이 아니라 여기서 준다. 문서에 적힌 명령이 그대로
-// 붙여 넣어 도는 것과 같은 규약이다(build-deploy.md — IDE 실행 구성도 이 태스크를 부른다).
-//
-// 덮는 길은 하나뿐이다. -Pprofile=dev 로 바꾸며, 그 자리에 SPRING_PROFILES_ACTIVE 환경변수를
-// 두지 않는다 — bootRun 은 앱을 별도 JVM 으로 포크하고 그 환경은 **Gradle 데몬**의 것이라,
-// 다른 환경으로 이미 떠 있는 데몬을 재사용하면 조용히 안 먹는다.
-tasks.bootRun {
-    args("--spring.profiles.active=${providers.gradleProperty("profile").getOrElse("local")}")
+// bootRun은 `-Pprofile`만 받아 애플리케이션 인자로 바꾼다. taskGraph에서 실제 bootRun 태스크를
+// 확인하므로 `bootR` 같은 Gradle 축약과 다른 태스크가 bootRun을 의존하는 경우도 빠지지 않는다.
+val bootProfile = providers.gradleProperty("profile").map(String::trim)
+val bootRunTask = tasks.named<BootRun>("bootRun")
+gradle.taskGraph.whenReady {
+    if (hasTask(bootRunTask.get())) {
+        val activeProfile = bootProfile.orNull?.takeIf(String::isNotEmpty)
+            ?: throw GradleException(
+                "서버 기동에는 활성 프로파일이 필요하다 — bootRun에 -Pprofile=<local|dev|운영 프로파일>을 지정한다.",
+            )
+        bootRunTask.get().args("--spring.profiles.active=$activeProfile")
+    }
 }
 
 // ── 메시지 키 시드 생성 ─────────────────────────────────────────────────

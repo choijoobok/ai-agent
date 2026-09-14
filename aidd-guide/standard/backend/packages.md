@@ -188,7 +188,7 @@ POST /api/service/system/code/saveGroup
 전부 `sources/backend/bootstrap/src/test/java/com/aiagent/architecture/` 에 있고
 `./gradlew check -PskipFrontend` 가 돌린다.
 
-**샘플은 local 전용으로 통째로 분리한다** — **local 변형**(`bootRun` 기본값, 그 밖은
+**샘플은 local 전용으로 통째로 분리한다** — **local 변형**(`-Pprofile=local`, 또는 명시한
 `-PincludeSample=true`)일 때만 `modules/sample`과 프런트 라우트·시드·sample 기준선을 조립한다. product에는 외부 주소
 `/sample/**`·`/api/service/sample/**`도 없다. 공통·제품 코드는 샘플을 참조하지 않는다.
 

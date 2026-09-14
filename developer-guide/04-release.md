@@ -31,6 +31,9 @@ cd sources && ./gradlew clean :backend:bootstrap:bootJar
 **`-PskipFrontend` 를 붙이지 않는다** — 붙이면 프론트가 임베드되지 않고 **배포본이 빈 화면이
 된다.** 개발 중 백엔드만 확인할 때만 붙인다.
 
+`bootJar`에는 `-Pprofile`을 주지 않는다. 패키징은 항상 product 변형(sample 제외·프론트
+포함)으로 만들고, **어느 환경에서 실행할지**는 JAR 실행 시 활성 Spring 프로파일로 정한다.
+
 임베드가 실제로 들어갔는지 확인한다.
 
 ```bash
@@ -48,7 +51,26 @@ unzip -l sources/backend/bootstrap/build/libs/bootstrap-*.jar | grep 'BOOT-INF/c
 | 그 외 | 배포 환경 | 현재 저장소에는 설정 파일을 두지 않는다. 배포 환경이 명시 프로파일·데이터소스·비밀값을 제공한다. |
 
 ```bash
-./gradlew :backend:bootstrap:bootRun
+./gradlew :backend:bootstrap:bootRun -Pprofile=local
+```
+
+| 목적 | 명령 | 기본 변형 |
+|---|---|---|
+| local 개발 서버 | `./gradlew :backend:bootstrap:bootRun -Pprofile=local` | sample 포함 · 프론트 생략 |
+| 개발 서버 검증 | `./gradlew :backend:bootstrap:bootRun -Pprofile=dev` | sample 제외 · 프론트 포함 |
+| 운영 서버 검증 | `./gradlew :backend:bootstrap:bootRun -Pprofile=prod` | sample 제외 · 프론트 포함 |
+| 배포 JAR 생성 | `./gradlew :backend:bootstrap:bootJar` | sample 제외 · 프론트 포함 |
+| 배포 JAR 실행 | `java -jar bootstrap-<version>.jar --spring.profiles.active=prod` | 빌드된 product 변형을 `prod` 설정으로 실행 |
+
+`bootRun`은 `-Pprofile`이 없으면 Gradle 단계에서 실패한다. 반면 `java -jar`와 IDE 직접 실행은
+Gradle 옵션을 읽지 않으므로 `--spring.profiles.active=<프로파일>` 또는 동등한 외부 설정이
+필수다. 둘 다 빠지면 애플리케이션이 데이터소스를 만들기 전에 기동을 거부한다.
+
+기본값과 다른 조합도 명시할 수 있다. 예를 들어 local에서 샘플 없이 프론트를 포함해 점검하려면
+다음처럼 실행한다.
+
+```bash
+./gradlew :backend:bootstrap:bootRun -Pprofile=local -PincludeSample=false -PskipFrontend=false
 ```
 
 - **비밀값은 파일에 두지 않고 환경 변수로 주입한다** (`DB_PASSWORD` · `REDIS_PASSWORD`).
@@ -71,8 +93,11 @@ node aidd-guide/meta/_meta/lint.mjs && node .claude/hooks/trace-check.mjs --all
 ```
 
 ```bash
-cd sources && ./gradlew check && cd frontend && npm run lint && npm run typecheck && npm run test
+cd sources && ./gradlew check -PskipFrontend && cd frontend && npm run lint && npm run typecheck && npm run test
 ```
+
+백엔드 검사는 프론트 빌드를 생략하고, 프론트 검사는 뒤의 별도 명령으로 실행한다. 배포 JAR을
+만들 때만 `-PskipFrontend`를 빼서 프론트를 임베드한다.
 
 ### 시드가 소스와 일치하나
 
@@ -102,7 +127,7 @@ Docker 로 4벤더를 띄워 스키마·정렬을 대조한다. **20분이 걸�
 
 | 잡 | 언제 | 무엇을 |
 |---|---|---|
-| **backend** | push(main) · PR · 수동 | `./gradlew build -PskipFrontend` — 컴파일 · 단위테스트 · ArchUnit · Spotless |
+| **backend** | push(main) · PR · 수동 | 프로파일별 빌드 변형 계약 → `./gradlew build -PskipFrontend` — 컴파일 · 단위테스트 · ArchUnit |
 | **frontend** | 〃 | `npm ci` → lint → test → build |
 | **package** | **수동만** | 단일 JAR + **프론트 임베드 검증** |
 | **db-portability** | changelog·엔티티 변경 · 야간 | 4벤더 스키마·정렬 대조 |

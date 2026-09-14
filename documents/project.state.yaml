@@ -211,7 +211,7 @@ counters:
   ENT: 31
   API: 99
   SCR: 69
-  TC: 52
+  TC: 53
   RUN: 5      # 80-operations.yaml의 현재 절차. P5~P6에서 일상·정기 작업과 고객값을 채운다
   ADR: 9      # 001~009 accepted. 009는 모듈별 기준선과 local 전용 sample 배포 경계이며 proposed는 없다
   ASM: 1      # **미확인 하나** — 003(기한 G3). 002·004·007은 확인됨, 005·006 은 기각됨
@@ -327,8 +327,10 @@ slices:
   - { id: SLICE-516, workstream: system, features: [FEAT-510], testcases: [TC-5103, TC-5105], scope: "메뉴 사용 통계·대시보드와 고아 상태 정리", stage: P4, status: done, depends_on: [SLICE-515] }
   - { id: SLICE-517, workstream: system, features: [FEAT-501], testcases: [TC-5015], scope: "내 프로필·내 로그인 이력·내 역할·언어 설정의 system public 경계 보정", stage: P4, status: done, depends_on: [SLICE-501, SLICE-504] }
   - { id: SLICE-518, workstream: system, features: [FEAT-503], testcases: [TC-5035], scope: "CR-018·019 sample 참조 구현을 local 전용 백엔드·프런트·시드·기준선으로 격리", stage: P4, status: done, depends_on: [SLICE-517] }
+  - { id: SLICE-519, workstream: system, features: [FEAT-503], testcases: [TC-5036], scope: "CR-021 활성 프로파일 필수와 프로파일별 sample·프런트 기본 빌드 변형", stage: P4, status: done, depends_on: [SLICE-518] }
 
 verification_load:
+  - { slice: SLICE-519, measured_at: "2026-09-14", fix_rounds: 2, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 3, note: "서버 실행은 활성 프로파일이 없으면 데이터소스 구성 전에 종료하고, Gradle bootRun은 -Pprofile을 필수로 받아 Spring 활성 프로파일로 전달한다. local 기본값은 sample 포함·프런트 생략, 그 밖의 프로파일은 sample 제외·프런트 포함이며 명시 옵션이 이를 덮어쓴다. local에서 sample을 끄면 처리된 설정도 제품 master changelog를 가리킨다. 태스크 그래프 7조합·changelog 2조합, 런타임 가드 단위 테스트, local 기본·sample 제외 전체 백엔드 검사와 실제 local 기본 기동을 통과했다. local 판정과 기동 가드를 반대로 뒤집자 각각 계약 테스트가 실패했고 원복 뒤 통과했다. 프런트 의존성 트리는 정상이나 Gradle npmInstall 정지는 별도 기존 실행환경 문제로 제품 JAR의 프런트 포함 실물 검증만 완료하지 못했다. doc-gen 대상 문서는 생성됐으나 저장소 전역 --check의 기존 934개 생성기 결손은 이번 슬라이스 범위 밖으로 남는다." }
   - { slice: SLICE-518, measured_at: "2026-09-13", fix_rounds: 2, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 3, note: "백엔드 컨트롤러·DTO·도메인·소유 테스트를 backend:modules:sample과 com.aiagent.sample로, 프런트 여섯 화면·API·규칙을 modules/sample로 이행하고 구 api/sample·domain/sample·features/sample을 제거했다. 외부 /sample/**·/api/service/sample/**와 SMPL_* 메뉴·시드·제거 절차는 유지했다. API 요약 계약 테스트와 시드 생성기의 스캔 범위를 api·system·sample 모듈로 보정하고, api에는 HTTP·Security·요청 경계 공통물만 남겼다. 백엔드·프런트 경계를 각각 구 경로로 뒤집자 구조 테스트가 실패했고 원복 뒤 통과했다. 전체 백엔드, 프런트 88파일·688테스트, 시드, quality·trace·doc 생성·harness·meta 검사를 통과했으며 SampleRules PIT는 변이 3개를 모두 제거했다. 서비스 전체를 넓게 잡은 탐색 PIT는 기존 미시험 조립 메서드까지 포함해 29%였고 이번 구조 이동의 통과 근거로 사용하지 않았다." }
   - { slice: SLICE-517, measured_at: "2026-09-13", fix_rounds: 1, unverified_rules: 0, quality_fails: 1, spec_defects: 1, redteam_fixes: 3, note: "내 프로필·내 로그인 이력·내 역할·언어 설정의 API·DTO를 system 모듈로, 프런트 UI·API·테스트와 화면 문서를 modules/system/public 경로로 이행하고 API-519~523 source_contract를 실제 소스에 맞췄다. 실행 소스의 구 com.aiagent.api.user·/common/user·features/profile 참조는 0건이며 호환 별칭을 남기지 않았다. SessionPrincipal·TraceId 등 HTTP·Security 경계 공통물은 api에 유지했다. 신규 system/구 경로 부재 RED와 URL 규칙 반전 실패를 확인했고, 전체 백엔드·프런트·시드·품질·추적성·문서 생성 검사를 통과했다. UserProfileService PIT는 라인 97%, 변이 77%로 Full 기준을 통과했다. 전체 lint에서 발견된 기존 FEAT-510 unbound-method 결함은 spy 참조로 별도 보정했다." }
   - { slice: SLICE-512, measured_at: "2026-09-13", fix_rounds: null, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 0, note: "최초 완료 때 verification_load 행이 누락돼 당시 수정 반복 횟수는 복원하지 않는다. 이번 G4 재검증에서 배치 실행 이력·유실·중단 규칙의 현재 테스트와 묶음 PIT를 다시 실행해 125개 변이 중 108개 제거(86%)를 확인했다. 과거 수치를 0으로 지어내지 않고 null로 남긴다." }

@@ -137,6 +137,10 @@ module_boundaries:
     note: "이 호출을 **portal 트랜잭션 안에 묶지 않는다** — 분리 시 원격 호출로 바뀔 수 있다"
   - id: ARCH-027
     rule: "`sample`은 system·admin·portal·agent에 이은 다섯 번째 제품 모듈이 아니며, 고객사 업무 확장도 아니다. local 배포 변형에만 포함하고 제품 배포물에서는 코드·화면·API·시드를 함께 제외하는 삭제 가능한 참조 구현이다"
+    variant_selection:
+      - "서버 기동에는 활성 Spring 프로파일을 반드시 명시한다. Gradle `bootRun`은 `-Pprofile=<프로파일>`, 패키지 JAR과 IDE 직접 실행은 `--spring.profiles.active=<프로파일>` 또는 동등한 외부 설정을 사용하며, 누락하면 데이터소스 유무와 관계없이 기동을 거부한다"
+      - "유효 프로파일이 `local`이면 `includeSample=true`·`skipFrontend=true`를 기본으로 하고, 그 밖의 프로파일과 일반 build·check·bootJar 실행은 둘 다 false를 기본으로 한다"
+      - "명시한 `-PincludeSample=<true|false>`와 `-PskipFrontend=<true|false>`는 프로파일 기본값보다 우선한다. local에서 sample을 명시적으로 빼면 Liquibase도 제품 master changelog를 사용해 코드·화면·API·시드를 함께 제외한다"
     source_boundary:
       backend: "`sources/backend/modules/sample/` — Gradle 모듈 `backend:modules:sample`; 컨트롤러·요청 DTO·도메인 서비스·Entity·Repository와 소유 테스트를 함께 둔다"
       frontend: "`sources/frontend/src/modules/sample/` — 공통 샘플 규칙과 소유 테스트를 두고, 여섯 화면·API 엔드포인트는 `features/{화면}/` 아래에 둔다"
@@ -148,7 +152,7 @@ module_boundaries:
       - "local 변형에서는 외부 화면 주소 `/sample/**`와 API 주소 `/api/service/sample/**`를 유지한다. 제품 변형에는 둘 다 존재하지 않으며 구 소스 경로 별칭은 남기지 않는다"
       - "`SMPL_*` 테이블·메뉴·권한·메시지 시드는 local Liquibase context와 local 시드 생성에만 포함한다"
       - "고객 전달 시 sample 모듈·진입점·`SMPL_*` 시드를 한 절차로 제거할 수 있어야 하며, build·`.gradle`·`node_modules` 생성 폴더는 제거 대상이 아니다"
-    verification: "신규 모듈 존재와 구 `api/sample`·`domain/sample`·`features/sample` 부재를 먼저 실패하는 구조 계약으로 고정하고, 전체 빌드·시드 생성·샘플 규칙 반전 시험으로 확인한다"
+    verification: "신규 모듈 존재와 구 `api/sample`·`domain/sample`·`features/sample` 부재를 먼저 실패하는 구조 계약으로 고정하고, 전체 빌드·시드 생성·프로파일별 빌드 변형·활성 프로파일 누락 거부·샘플 규칙 반전 시험으로 확인한다"
     traces_to: [ARCH-010, ARCH-011]
 
 write_ownership:
