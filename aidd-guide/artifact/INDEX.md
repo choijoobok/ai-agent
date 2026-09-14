@@ -46,7 +46,7 @@ tags: [artifact, map, index]
 | 21  | 소스 코드                      | P4    | -   | `sources/`                                                                                                             |  ●   |  ●  |  ●   |
 | 22  | 단위/통합 테스트 코드               | P4    | -   | `sources/backend/*/src/test/` · `sources/frontend/src/**/*.test.ts`                                                    |  ●   |  ●  |  ●   |
 | 23  | 테스트 케이스                    | P3~P5 | S+G | `documents/spec/70-testcases.yaml` → `documents/generated/70-테스트케이스.md`                                                |  ●   |  ●  |  ●   |
-| 24  | 테스트 수행 결과서                 | P5    | G   | `documents/generated/71-테스트결과서.md`                                                                                     |  ●   |  ●  |  ●   |
+| 24  | 테스트 수행 결과서                 | P5    | L   | `documents/generated/71-테스트결과서.md`                                                                                     |  ●   |  ●  |  ●   |
 | 25  | 결함 관리 대장                   | P5    | L   | `documents/generated/72-결함대장.md`                                                                                       |  ○   |  ●  |  ●   |
 | 26  | 추적성 매트릭스                   | P3~P5 | G   | `documents/generated/90-추적성매트릭스.md`                                                                                    |  ○   |  ●  |  ●   |
 | 27  | 가정 원장                      | 상시    | L   | `documents/decisions/ASSUMPTIONS.md`                                                                                   |  ●   |  ●  |  ●   |
