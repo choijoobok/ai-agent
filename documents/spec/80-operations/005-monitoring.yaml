@@ -1,0 +1,10 @@
+monitoring:
+  - id: RUN-401
+    title: "NFR 실측과 운영 임계값"
+    traces_to: [NFR-006, NFR-007, NFR-008, NFR-009]
+    procedure:
+      - "NFR measurement와 source에 적힌 수집 지점에서 값을 측정한다"
+      - "평균이 아니라 명세가 요구한 분위수·상태·질의 유형으로 나눠 판정한다"
+    normal: "@defer P5 — system 운영 흐름과 NFR 실측 뒤 실제 기준을 기록한다"
+    blocked_on: "NFR-006~009가 재는 대상(agent 턴 실행·응답성)이 아직 구축되지 않았다(agent 작업흐름 P2). 재개 조건은 agent P4 승인 뒤 실제 턴 이력이 쌓이는 시점이다 — 지금은 잴 대상 자체가 없다"
+    status: draft

@@ -32,7 +32,7 @@ tags: [testcase, nfr, coverage]
 모듈 간 계약 기능은 제공자·소비자 각각의 단위 테스트에 더해 `integration` 작업흐름이
 버전·필수 필드·알 수 없는 표현 블록 처리를 계약 테스트로 잠근다.
 
-### TC 작성 형식 (`documents/spec/70-testcases.yaml`)
+### TC 작성 형식 (`documents/spec/70-testcases/_index.yaml`)
 ```yaml
 - id: TC-0122
   feature: FEAT-012

@@ -91,7 +91,7 @@ tags: [gate, exit-criteria]
 - [ ] **`node .claude/hooks/quality-check.mjs` 통과** — 중복률 ≤5%, 예외 삼킴 0건, `@feat` 미태깅 0개 ([`quality/code-quality.md`](../quality/code-quality.md))
 - [ ] (Standard/Full) 도메인·서비스 계층 뮤테이션 스코어 ≥ 60% / 75%
 - [ ] DB 변경이 있으면 마이그레이션 스크립트 존재 + 롤백 방법 기재
-- [ ] API 변경이 documents/spec/50-api.yaml 과 일치
+- [ ] API 변경이 documents/spec/50-api/_index.yaml 과 일치
 - [ ] 코드에 `FEAT-###` 주석 태그 존재
 - [ ] 구현 중 발견한 spec 오류가 CR로 등록되고 처리됨
 - [ ] 사용자 확인(데모 또는 스크린샷/실행 결과 제시)
@@ -123,7 +123,7 @@ tags: [gate, exit-criteria]
 
 ### ① Exit Criteria (13/14 충족)
 ✅ 모든 FR이 FEAT로 실현됨 — REQ 47개 → FEAT 62개, 미실현 0 (documents/generated/90-추적성매트릭스.md)
-✅ 예외 흐름 정의 — UC 18개 전부 (documents/spec/30-usecases.yaml)
+✅ 예외 흐름 정의 — UC 18개 전부 (documents/spec/50-api/_index.yaml)
 ❌ 미해결 ASM 0건 — **ASM-007 (개인정보 컬럼 판정 주체) 미확인**
 
 ### ② [QA-레드팀] 자기반박
@@ -166,7 +166,7 @@ tags: [gate, exit-criteria]
 
 **축이 둘이고 글자가 같다.** 로드맵 차수(`RM-P1`~`RM-P4`)는 *무엇을 내는가* 이고 방법론
 단계(`P0`~`P6`)는 *어디까지 만들었는가* 다. **차수 하나를 내기 위해 단계를 한 바퀴 돈다**
-(`documents/spec/00-charter.yaml` `roadmap_notes`). 그러므로 위 게이트 일곱도 **차수마다
+(`documents/spec/50-api/_index.yaml` `roadmap_notes`). 그러므로 위 게이트 일곱도 **차수마다
 한 벌** 돌고, `project.state.yaml` 의 `gates` 는 언제나 **현재 차수(`current.roadmap`)의
 것**이다.
 

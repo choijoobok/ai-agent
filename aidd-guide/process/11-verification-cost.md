@@ -68,7 +68,7 @@ DORA 2025/2026 보고서의 **J-커브**:
 **무엇을 줄여도 되고 무엇은 안 되는지**를 미리 합의해 두기 위해서입니다.
 ```
 
-`documents/spec/00-charter.yaml` 에 기록한다.
+`documents/spec/00-charter/_index.yaml` 에 기록한다.
 
 ```yaml
 expectations:

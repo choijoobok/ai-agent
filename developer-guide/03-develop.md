@@ -109,7 +109,7 @@ AI 가 화면 소스를 고치면 `doc-drift` 훅이 그 화면의 문서 셋을
 - `documents/screen/` 에 있는 문서 셋은 **백오피스 템플릿의 화면들**이다 —
   사용자·역할·메뉴·권한·공통코드·메시지·로그·배치 등.
 - **Agentic AI Hub 의 화면 43개(admin 32 · portal 11)는 문서 셋이 없다.**
-  목록만 [`documents/spec/60-screens.yaml`](../documents/spec/60-screens.yaml) 에 있다.
+  목록만 [`documents/spec/60-screens/_index.yaml`](../documents/spec/60-screens/_index.yaml) 에 있다.
 - **작성 순서는 그 파일의 `doc_order` 가 정한다** — P1 메뉴가 먼저이고, 그중 **스키마
   카탈로그(SCR-003)와 업무 지식 관리(SCR-010~014)를 앞에 둔다.** DB 설계의 설정 테이블
   대부분이 거기서 나오고 agent 의 컨텍스트 구성이 그 화면들의 산출물을 입력으로 삼는다.

@@ -1,0 +1,176 @@
+usecases:
+  - id: UC-501
+    name: "계정 상태와 접속 조건을 운영한다"
+    workstream: system
+    reqs: [REQ-501]
+    actors: { primary: ACT-012, secondary: [ACT-001] }
+    process_step: PRC-06-01
+    precondition: "관리자는 계정 관리 권한을, 사용자는 유효한 인증 수단을 가진다"
+    trigger: "계정을 변경하거나 로그인·비밀번호·세션 동작을 요청한다"
+    main_flow:
+      - "관리자가 계정·사용 기간·접속 IP·잠금·휴면 상태를 조회하고 저장한다"
+      - "로그인 시 존재·사용 여부·기간·잠금·휴면·IP·비밀번호를 한 판정으로 검사한다"
+      - "성공 시 세션과 현재 권한 버전을 발급하고 로그인 이력을 남긴다"
+      - "비밀번호 변경·초기화·세션 종료에 이력과 만료 규칙을 적용한다"
+    alternative_flows:
+      - { id: A1, condition: "잠금 또는 휴면만 해제", flow: ["전용 명령으로 해당 상태만 해제한다"] }
+      - { id: A2, condition: "비밀번호 분실", flow: ["재설정 코드를 검증해 일회용 토큰으로 변경한다"] }
+    exception_flows:
+      - { id: E1, condition: "상태·기간·잠금·휴면·IP 중 하나라도 실패", flow: ["세션을 만들지 않고 내부 사유를 로그인 이력에 남긴다"] }
+      - { id: E2, condition: "재사용 비밀번호·만료 토큰·다른 세션 소유자", flow: ["변경을 거부하고 기존 상태를 보존한다"] }
+    postcondition: "허용된 계정만 현재 권한 버전의 세션을 가지며 변경 이력이 보존된다"
+    business_rules: ["SYS_USER는 물리 삭제하지 않는다", "관리자 설정과 시스템 파생 상태를 섞지 않는다"]
+
+  - id: UC-502
+    name: "역할과 개인 예외를 유효 권한으로 합성한다"
+    workstream: system
+    reqs: [REQ-502]
+    actors: { primary: ACT-012, secondary: [ACT-001] }
+    process_step: PRC-06-02
+    precondition: "대상 사용자·역할·메뉴 액션이 존재한다"
+    trigger: "역할 또는 메뉴 액션 권한을 부여·회수한다"
+    main_flow: ["역할과 보유 사용자·메뉴 액션을 조회한다", "변경 전 영향 사용자를 확인한다", "역할·역할 권한·개인 예외를 저장한다", "유효 기간 안의 권한을 합성하고 권한 버전을 올린다", "후속 요청은 새 권한을 사용한다"]
+    alternative_flows:
+      - { id: A1, condition: "한 사용자가 운영·감사·AI 품질 역할을 함께 보유", flow: ["역할 조합을 금지하지 않고 데이터에 등록된 액션을 합성한다"] }
+    exception_flows:
+      - { id: E1, condition: "존재하지 않거나 사용 중지된 사용자·역할·메뉴", flow: ["저장을 거부하고 기존 권한을 유지한다"] }
+      - { id: E2, condition: "세션 권한 버전이 현재보다 오래됨", flow: ["요청을 거부하고 재인증을 요구한다"] }
+    postcondition: "역할명 하드코딩 없이 데이터와 유효 기간으로 현재 권한이 계산된다"
+    business_rules: ["역할 묶음은 겸임 가능하다", "권한 변경 API는 SYS_LO_ACCESS의 일반 시스템 사용 이력에 포함하지만 부여·회수 전용 원장은 만들지 않는다", "같은 역할의 전체 권한을 동시에 저장하면 나중에 완료된 전체 스냅샷이 이기며 자동 병합하지 않는다"]
+
+  - id: UC-503
+    name: "메뉴와 서비스 API를 실패 폐쇄로 연결한다"
+    workstream: system
+    reqs: [REQ-503]
+    actors: { primary: ACT-012, secondary: [ACT-001] }
+    process_step: PRC-06-03
+    precondition: "화면 경로와 서비스 API가 배포 대상에 선언되어 있다"
+    trigger: "메뉴·API 카탈로그를 관리하거나 서비스 API를 호출한다"
+    main_flow: ["메뉴 트리와 API 카탈로그를 조회한다", "메뉴 액션과 API를 매핑한다", "메뉴를 유효 권한으로 필터링한다", "서비스 요청의 API 등록·메뉴 매핑·액션 권한을 대조한다", "모두 맞을 때만 실행하고 접근 이력을 남긴다"]
+    alternative_flows:
+      - { id: A1, condition: "같은 API를 여러 메뉴가 사용", flow: ["SYS_MENU_API 다대다 매핑으로 각 메뉴 액션에 연결한다"] }
+    exception_flows:
+      - { id: E1, condition: "API 미등록·메뉴 미매핑·액션 불일치", flow: ["403으로 닫고 업무 서비스를 호출하지 않는다"] }
+      - { id: E2, condition: "순환 트리·중복 URL·사용 중인 노드 삭제", flow: ["변경을 거부하고 기존 트리를 보존한다"] }
+    postcondition: "메뉴 노출과 서비스 API가 같은 권한 데이터로 판정된다"
+    business_rules: ["URL·역할명·메뉴 노출은 허용 근거가 아니다", "목표 API에는 system 모듈 경로를 한 번만 둔다"]
+
+  - id: UC-504
+    name: "공통코드와 참조 코드의 무결성을 관리한다"
+    workstream: system
+    reqs: [REQ-504]
+    actors: { primary: ACT-012, secondary: [] }
+    process_step: PRC-07-01
+    precondition: "공통코드 관리 권한이 있다"
+    trigger: "코드 그룹·코드·참조 정의와 값을 변경한다"
+    main_flow: ["그룹과 코드·참조 정의를 조회한다", "일반 그룹·코드와 참조값을 편집한다", "보호 여부·자식 존재·참조 정의를 검증한다", "코드명과 파생 참조값을 한 트랜잭션으로 저장한다"]
+    alternative_flows:
+      - { id: A1, condition: "참조 정의 추가", flow: ["정의된 참조 키의 동적 값 컬럼을 열어 함께 저장한다"] }
+    exception_flows:
+      - { id: E1, condition: "시스템 보호 그룹·코드 삭제 또는 비활성화", flow: ["저장을 거부한다"] }
+      - { id: E2, condition: "자식 코드가 남은 그룹 삭제 또는 정의 없는 참조값", flow: ["전체 변경을 롤백한다"] }
+    postcondition: "공통코드·참조값·다국어 코드명의 무결성이 유지된다"
+    business_rules: ["SYS_YN은 서버가 검사한다", "원본과 파생값은 같은 트랜잭션으로 정리한다"]
+
+  - id: UC-505
+    name: "생성된 메시지 키의 언어별 값을 운영한다"
+    workstream: system
+    reqs: [REQ-505]
+    actors: { primary: ACT-012, secondary: [ACT-001] }
+    process_step: PRC-07-02
+    precondition: "메시지 키가 소스 상수와 시드 생성기에서 등록되어 있다"
+    trigger: "언어별 값을 변경하거나 번들을 요청한다"
+    main_flow: ["생성된 키와 언어별 값을 조회한다", "값만 편집해 저장한다", "값과 캐시 버전을 한 트랜잭션으로 반영한다", "요청 언어 번들을 새 버전으로 제공한다"]
+    alternative_flows:
+      - { id: A1, condition: "요청 언어 값이 없음", flow: ["기본 언어, 키 문자열 순으로 폴백한다"] }
+      - { id: A2, condition: "생성 원천에서 사라진 키", flow: ["미사용 키 정리 대상으로 표시한다"] }
+    exception_flows:
+      - { id: E1, condition: "관리 화면에서 임의 키 생성", flow: ["요청을 거부한다"] }
+      - { id: E2, condition: "값 저장 또는 버전 증가 중 하나가 실패", flow: ["둘 모두 롤백한다"] }
+    postcondition: "모든 인스턴스가 TTL 안에 같은 메시지 버전을 사용한다"
+    business_rules: ["키는 관리 화면에서 만들지 않는다", "성공한 저장마다 버전을 한 번만 올린다"]
+
+  - id: UC-506
+    name: "검증된 시스템 설정을 적용하고 되돌린다"
+    workstream: system
+    reqs: [REQ-506]
+    actors: { primary: ACT-012, secondary: [ACT-001] }
+    process_step: PRC-07-03
+    precondition: "`sys-config.*` 아래 화면 노출용 설정 키와 배포 기본값·검증 규칙이 등록되어 있다"
+    trigger: "공통 설정을 변경하거나 기본값으로 복원한다"
+    main_flow: ["배포 기본값과 DB 오버라이드를 합성해 조회한다", "편집 가능한 값을 바꾼다", "타입·범위 규칙을 검증한다", "오버라이드와 캐시 버전을 한 트랜잭션으로 저장한다", "각 인스턴스의 다음 작업 스코프가 DB 오버라이드를 다시 합성한다"]
+    alternative_flows:
+      - { id: A1, condition: "기본값 복원", flow: ["오버라이드 행을 삭제해 배포 기본값을 드러낸다"] }
+    exception_flows:
+      - { id: E1, condition: "형식·범위 오류 또는 미등록 키", flow: ["전체 저장을 거부한다"] }
+      - { id: E2, condition: "설정 저장과 버전 증가 중 일부 실패", flow: ["트랜잭션을 롤백한다"] }
+    postcondition: "검증된 오버라이드 또는 배포 기본값 하나가 현재 설정으로 보인다"
+    business_rules: ["미등록 키를 런타임에 만들지 않는다", "비밀값·임의 변경 금지 값은 `sys-config.*` 밖의 별도 프로퍼티 경로에 두며 목록·응답·저장 대상이 아니다", "설정값은 노드 캐시를 두지 않고 작업 스코프마다 DB 오버라이드를 다시 합성한다"]
+
+  - id: UC-507
+    name: "로그인·사용·오류 이력으로 사건을 재구성한다"
+    workstream: system
+    reqs: [REQ-507]
+    actors: { primary: ACT-005, secondary: [ACT-012] }
+    process_step: PRC-08-01
+    precondition: "각 이력 메뉴의 READ 유효 권한이 있다"
+    trigger: "기간·사용자·경로·결과로 이력을 조회한다"
+    main_flow: ["세 이력 목록을 조회한다", "trace ID와 요청 경로로 관련 이력을 연결한다", "해당 이력 메뉴의 현재 READ 권한 판정 뒤 요청·오류 상세를 읽는다", "열람 자체도 사용 이력으로 남긴다"]
+    alternative_flows:
+      - { id: A1, condition: "계정이 없거나 비활성화됨", flow: ["시도 ID는 보존하고 사용자명은 없는 계정으로 구분한다"] }
+    exception_flows:
+      - { id: E1, condition: "해당 이력 메뉴의 READ 권한 없음", flow: ["목록·전문을 제공하지 않고 403으로 끝낸다"] }
+      - { id: E2, condition: "기간·페이지 범위 초과", flow: ["조회하지 않고 검증 오류를 반환한다"] }
+    postcondition: "원 이력을 바꾸지 않고 요청·결과·오류 연결을 확인한다"
+    business_rules: ["이력 쓰기·삭제 API를 만들지 않는다", "민감 등급으로 명시한 상세는 각 HTTP 요청에서 현재 권한을 판정한다. 현 이력 화면의 상세 유형에 민감 등급이 없으면, 불변 이력의 화면 캐시는 각 화면 요건을 따른다"]
+
+  - id: UC-508
+    name: "배치 일정과 실행 수명주기를 운영한다"
+    workstream: system
+    reqs: [REQ-508]
+    actors: { primary: ACT-012, secondary: [] }
+    process_step: PRC-08-02
+    precondition: "BatchJob 구현이 레지스트리에 등록되어 있다"
+    trigger: "배치 일정을 저장하거나 실행·중단·이력을 요청한다"
+    main_flow: ["구현 후보·시간대·일정과 최근 이력을 조회한다", "bean·cron·timezone·잠금·쿨다운을 검증해 저장한다", "분산 잠금을 획득해 이력을 시작한다", "완료·실패·중단 결과를 기록하고 잠금을 해제한다", "전체 이력과 상세를 조회한다"]
+    alternative_flows:
+      - { id: A1, condition: "실행 중 중단 요청", flow: ["요청 시각을 기록하고 안전 지점에서 종료한다"] }
+    exception_flows:
+      - { id: E1, condition: "미등록 구현·잘못된 cron/timezone·쿨다운", flow: ["저장 또는 실행을 거부한다"] }
+      - { id: E2, condition: "중복·유령 실행 또는 중단 경합", flow: ["성공과 다른 결과 코드로 끝낸다"] }
+    postcondition: "각 실행 시도의 시작·종료·결과가 하나의 이력으로 추적된다"
+    business_rules: ["같은 배치의 중복 실행을 막는다", "모든 결과 코드를 명시된 묶음으로 분류한다"]
+
+  - id: UC-509
+    name: "공지와 관리 요청을 분리해 운영한다"
+    workstream: system
+    reqs: [REQ-509]
+    actors: { primary: ACT-012, secondary: [ACT-001] }
+    process_step: PRC-08-03
+    precondition: "공지 또는 알림 요청 처리 권한이 있다"
+    trigger: "공지를 게시하거나 관리 요청을 등록·판정한다"
+    main_flow: ["게시·팝업 기간을 포함한 공지를 저장한다", "현재 시각에 맞는 공지만 제공한다", "사용자가 요청을 등록하고 상태를 조회한다", "관리자가 승인·반려와 사유를 기록한다", "결과를 사용자 알림함에 전달한다"]
+    alternative_flows:
+      - { id: A1, condition: "admin의 AI 품질·정책 처리 결과", flow: ["admin이 system public 알림 계약으로 전달한다"] }
+    exception_flows:
+      - { id: E1, condition: "게시 또는 팝업 기간 밖", flow: ["사용자 팝업에 노출하지 않는다"] }
+      - { id: E2, condition: "종결 요청 재처리 또는 실제 권한 변경 동반", flow: ["판정만 기록하고 계정·권한은 바꾸지 않는다"] }
+    postcondition: "공지 노출과 요청 판정·알림이 추적되며 권한 변경과 분리된다"
+    business_rules: ["요청 승인은 권한 부여가 아니다", "알림함은 수신자 자신의 행만 읽는다", "동일 요청의 동시 판정은 대상 행 잠금으로 직렬화하고 뒤 요청은 상태 충돌로 거부한다"]
+
+  - id: UC-510
+    name: "모듈 공통 사용자 상태를 한 곳에서 유지한다"
+    workstream: system
+    reqs: [REQ-510]
+    actors: { primary: ACT-001, secondary: [ACT-012] }
+    process_step: PRC-08-04
+    precondition: "사용자가 로그인했고 대상 메뉴가 등록되어 있다"
+    trigger: "즐겨찾기·그리드 설정·조회조건·메뉴 통계를 읽거나 저장한다"
+    main_flow: ["호출 모듈이 system 공개 계약을 부른다", "세션 사용자와 상태 소유자를 대조한다", "사용자·메뉴 키로 상태를 읽거나 갱신한다", "같은 즐겨찾기 동시 등록은 모두 성공으로 끝내고, 기본 조회조건 변경은 사용자 단위로 직렬화해 마지막 저장 완료 요청 하나를 기본으로 둔다", "메뉴 트리에서 현재 셸 탭·셸 새 탭 또는 성공한 브라우저 새 탭·창으로 열면 월별 통계에 누적한다", "모든 화면 영역에 같은 값을 반환한다"]
+    alternative_flows:
+      - { id: A1, condition: "저장 설정 초기화", flow: ["대상 행만 삭제해 기본 UI 설정으로 돌아간다"] }
+    exception_flows:
+      - { id: E1, condition: "다른 사용자의 키를 요청", flow: ["거부하고 타인 상태의 존재를 드러내지 않는다"] }
+      - { id: E2, condition: "삭제되거나 미등록된 메뉴의 고아 상태", flow: ["기능 데이터가 아닌 정리 대상으로 분류한다"] }
+    postcondition: "공통 사용자 상태가 system의 4개 테이블에 한 번만 저장된다"
+    business_rules: ["portal 전용 대화 상태는 제외한다", "platform 테이블은 system 엔티티가 아니다", "동시 즐겨찾기 등록은 하나의 행만 만들고 모두 성공으로 끝낸다", "같은 사용자의 동시 기본 조회조건 저장은 마지막 저장 완료 요청 하나만 기본으로 둔다", "기존 탭 이동·화면 안 버튼·팝업 차단은 메뉴 선택 통계에 넣지 않는다", "동시 메뉴 선택 통계는 편의용 best-effort이며 한 건 유실을 허용한다"]

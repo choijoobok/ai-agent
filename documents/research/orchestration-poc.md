@@ -5,7 +5,7 @@
 | 조사 시점 | **2026-08-31 ~ 2026-09-01** (실행 실측) |
 | 성격 | **실측(PoC)** |
 | 근거로 쓰인 결정 | [`ADR-001`](../decisions/ADR-001-오케스트레이션-프레임워크.md)(오케스트레이션 B안) · [`ADR-003`](../decisions/ADR-003-상태-원천-단일화.md)(체크포인트 저장소를 우리 테이블로) |
-| 상위 | [프레임워크 조사](agent-frameworks.md) §5.2 의 확인 항목 · `03-glossary.yaml` turn_states · REQ-030~035 |
+| 상위 | [프레임워크 조사](agent-frameworks.md) §5.2 의 확인 항목 · `03-glossary/_index.yaml` turn_states · REQ-030~035 |
 | 후속 | [턴 실행 점유 설계](../design/turn-execution.md) — §6.2 의 미확인 항목 2 를 설계로 닫았다. **그 결정은 ADR 로 따로 적지 않는다** — 대안·근거·포기한 것이 그 문서 §2 에 이미 있다 |
 
 > **비규범이다.** 여기의 어떤 서술도 설계 제약이 아니다 — 제약은 `documents/spec/` 이,
@@ -103,24 +103,24 @@ BeforeCall 훅  →  interrupt() 판정  →  WrapCall 체인  →  노드 본�
 | # | 시나리오 | 검증 대상 | A안 | B안 |
 |---|---|---|---|---|
 | S1 | 한 턴에서 도구 호출 4회 + 중간 승인 대기 1회 → 승인 → 완료 | REQ-004, REQ-005, REQ-105 | **PASS** | **PASS** |
-| S2 | 승인 대기 중 `Runtime.halt(9)`로 프로세스 강제 종료 → 새 프로세스에서 승인 재개 → 완료 | `03-glossary.yaml` turn_states, REQ-013, REQ-016 | **PASS** | **PASS** |
+| S2 | 승인 대기 중 `Runtime.halt(9)`로 프로세스 강제 종료 → 새 프로세스에서 승인 재개 → 완료 | `03-glossary/_index.yaml` turn_states, REQ-013, REQ-016 | **PASS** | **PASS** |
 | S3 | **별도 프로세스**가 DB에 중단 요청 기록 → 처리 측이 스텝 경계에서 ABORTED → 재시도로 이어감 | REQ-030~035, REQ-007, REQ-013 | **PASS**(수정 후) | **PASS** |
 | S4 | 전 과정의 스텝·LLM 호출·도구 호출 기록과 토큰 대사 | PRN-07, REQ-107, NFR-010~017 | **PASS** | **PASS** |
 | S5 | 승인도 거절도 아닌 입력을 비승인으로 처리하고 같은 턴을 계속 | REQ-017 | **PASS** | **PASS**(수정 후) |
 
 ### 3.1 S6 — 처리 중 입력의 네 갈래 (2026-09-01 추가)
 
-REQ-030~035이 처리 중 입력을 네 갈래로 분기하도록 개정되면서 추가한 시나리오다. **B안만 대상으로 한다** — 오케스트레이션이 B안으로 확정됐고(`02-constraints.yaml` 기술 제약), 되돌림은 그래프 런타임의 시간여행 API에 걸린 문제이기 때문이다.
+REQ-030~035이 처리 중 입력을 네 갈래로 분기하도록 개정되면서 추가한 시나리오다. **B안만 대상으로 한다** — 오케스트레이션이 B안으로 확정됐고(`02-constraints/_index.yaml` 기술 제약), 되돌림은 그래프 런타임의 시간여행 API에 걸린 문제이기 때문이다.
 
 다른 스레드가 인스턴스 역할로 새 입력을 턴 레코드에 기록하고(S3와 같은 전달 경로), 처리 측이 스텝 경계에서 읽어 분류한 뒤 분기한다.
 
 | # | 시나리오 | 검증 대상 | B안 |
 |---|---|---|---|
 | S6-boost | "지난달 것도 추가로" → 같은 턴에 반영하고 계속 | REQ-030~035 보강, 병행형 | **PASS** |
-| S6-correct | "아니 2번 창고로" → **되돌려 재수행** | REQ-030~035 교정, `03-glossary.yaml` turn_states 회차 | **PASS**(수정 후) |
+| S6-correct | "아니 2번 창고로" → **되돌려 재수행** | REQ-030~035 교정, `03-glossary/_index.yaml` turn_states 회차 | **PASS**(수정 후) |
 | S6-new | "그건 그렇고 오늘 재고 얼마야" → 별도 턴 개설, 원 턴은 계속 | REQ-030~035 별개 | **PASS** |
 | S6-stop | "됐어 그만" → 중단 | REQ-030~035 중단, REQ-007 | **PASS** |
-| S6-block | 액션 실행 후 도착한 입력은 **BOOST로 분류돼도 차단형으로 전환** | REQ-030~035 차단형, `03-glossary.yaml` turn_states 의도 확인 대기 | **PASS** |
+| S6-block | 액션 실행 후 도착한 입력은 **BOOST로 분류돼도 차단형으로 전환** | REQ-030~035 차단형, `03-glossary/_index.yaml` turn_states 의도 확인 대기 | **PASS** |
 
 - **분류 호출은 감사 이력에 그대로 남는다.** `scripted-classifier-v1` 호출이 스텝 이력·LLM 호출 이력에 기록되고, 다섯 시나리오 모두에서 `턴 누적 토큰 == 호출 기록 합` 대사가 일치했다 (`aidd-guide/standard/hub-conventions.md` §12.5, NFR-010~017).
 - **분류 입력이 최소인지를 코드로 강제했다.** 스크립트 분류기는 프롬프트가 지침+컨텍스트 2건이 아니거나 대화 이력·조회 결과가 섞여 있으면 즉시 실패한다. REQ-030~035의 "넣지 않는 것"이 지켜지는지가 시나리오 통과 조건에 포함된다.
@@ -182,7 +182,7 @@ S5에서 **B안이 처음에 실패했다.** 비승인으로 재개하자 같은
 
 5.1의 스텝은 **"agent ↔ LLM 1회 왕복"**이지 그래프 노드가 아니다. 훅을 `reason` 노드에 한정해 두 정의를 맞췄고, 도구 실행은 별도의 도구 호출 이력이 담당하게 했다.
 
-- **일반화**: 그래프 구조와 우리 용어(`03-glossary.yaml`)를 **1:1로 매핑하지 않는다.** 노드 분할은 실행 편의의 문제이고, 스텝은 감사·과금의 단위다. 두 개념이 우연히 일치할 때만 훅을 전역으로 건다.
+- **일반화**: 그래프 구조와 우리 용어(`03-glossary/_index.yaml`)를 **1:1로 매핑하지 않는다.** 노드 분할은 실행 편의의 문제이고, 스텝은 감사·과금의 단위다. 두 개념이 우연히 일치할 때만 훅을 전역으로 건다.
 
 ### 4.5 인터럽트된 노드는 `WrapCall`을 타지 않는다 (B안)
 
@@ -220,7 +220,7 @@ toolCall 행: 3  (catalog_lookup 2회, run_sql 1회)
 - **교정은 되돌린 지점 이후의 도구를 다시 실행한다.** `catalog_lookup`이 두 번 나갔다. 조회라 무해했지만 **액션이었다면 중복 실행**이다. REQ-030~035이 "액션을 이미 실행한 턴에서는 차단형으로 전환한다"고 정한 것이 이 실측으로 정당화된다 — S6-block이 그 경로를 통과했다.
 - **교정 전후의 스텝 순번이 중복된다** (`seq = 0, 0, 1, 2`). 2장이 "이력의 혼선"을 점유 문제로 들었는데, **교정에서는 점유가 정상인데도 같은 현상이 난다.** 두 기록의 `lease_fence`가 모두 1이므로 **4.4의 구분자가 여기서는 통하지 않는다.**
 
-이 발견이 `03-glossary.yaml` turn_states의 **회차(Revision)** 도입으로 이어졌고, 4.9에서 다시 검증했다.
+이 발견이 `03-glossary/_index.yaml` turn_states의 **회차(Revision)** 도입으로 이어졌고, 4.9에서 다시 검증했다.
 
 ### 4.8 "입력이 있다"와 "분류했다"를 나눠야 한다 (2026-09-01, S6)
 
@@ -231,7 +231,7 @@ toolCall 행: 3  (catalog_lookup 2회, run_sql 1회)
 
 ### 4.9 회차를 얹은 재실행 (2026-09-01)
 
-`03-glossary.yaml` turn_states가 회차를 등재한 뒤 PoC에 구현해 S6-correct를 다시 돌렸다. 회차는 점유 토큰과 같은 경로(`RunnableConfig.metadata`)로 노드·훅·saver에 전달되며, 되돌림에서만 올라간다.
+`03-glossary/_index.yaml` turn_states가 회차를 등재한 뒤 PoC에 구현해 S6-correct를 다시 돌렸다. 회차는 점유 토큰과 같은 경로(`RunnableConfig.metadata`)로 노드·훅·saver에 전달되며, 되돌림에서만 올라간다.
 
 ```
 [교정] 되돌림 지점 node=__START__ / 회차 0 -> 1 / 체크포인트 3건, 이전 회차 3건 정리
@@ -286,7 +286,7 @@ toolCall 행: rev=0 catalog_lookup / rev=1 catalog_lookup / rev=1 run_sql
 | 업무 도메인 → 데이터소스 → 테이블 → 컬럼의 4단계 축소 | REQ-021, REQ-301~304 |
 | 조회 계획 제시와 자연어 교정 (조건부 강제) | REQ-022, REQ-023 |
 | 인증 예제 쿼리 직접 실행 경로 vs 자유 SQL 생성 경로 | REQ-301~304 |
-| SQL 검증 실패 시 중립 피드백 후 재작성 | `22-authz.yaml`, FEAT-204 |
+| SQL 검증 실패 시 중립 피드백 후 재작성 | `22-authz/_index.yaml`, FEAT-204 |
 | 결과 교정 재요청 | REQ-024 |
 | 처리 불가 종결 | REQ-025 |
 
@@ -325,7 +325,7 @@ toolCall 행: rev=0 catalog_lookup / rev=1 catalog_lookup / rev=1 run_sql
 | 5 | **컨텍스트 총량 관리 (REQ-003, REQ-002)** | 두 안 모두 메시지를 그대로 누적했다. 과거 턴 요약·원본 재조회는 어느 안에서도 프레임워크가 주지 않는다 ([프레임워크 조사](agent-frameworks.md) 3.1 F축) |
 | 6 | **토큰 계측 정확도** | 스크립트 구현체의 토큰은 가짜다. ARCH-040가 지목한 API 구독 확보 후 최우선 검증 항목 그대로다 |
 | 7 | **의도 분류의 정확도** | S6의 분류기는 키워드 고정 매핑이다. 검증한 것은 **분류 결과가 그래프 실행에 어떻게 반영되는가**이지 분류가 맞는가가 아니다. 오분류율과 REQ-030~035의 보수적 우선순위(`CORRECT > STOP > NEW > BOOST`)가 실제로 안전한지는 실모델로만 확인된다 |
-| 8 | **A안의 처리 중 입력 분기** | S6는 B안만 돌렸다. A안에서 교정의 되돌림은 `conversationJson`을 직접 잘라내는 작업이 되며, 4.2의 "검사 지점을 우리가 박아야 한다"가 여기서도 반복될 것으로 보인다. 오케스트레이션이 B안으로 확정됐으므로(`02-constraints.yaml` 기술 제약) 확인하지 않았다 |
+| 8 | **A안의 처리 중 입력 분기** | S6는 B안만 돌렸다. A안에서 교정의 되돌림은 `conversationJson`을 직접 잘라내는 작업이 되며, 4.2의 "검사 지점을 우리가 박아야 한다"가 여기서도 반복될 것으로 보인다. 오케스트레이션이 B안으로 확정됐으므로(`02-constraints/_index.yaml` 기술 제약) 확인하지 않았다 |
 
 ### 6.3 두 안의 성격 차이 — 요약
 
@@ -350,13 +350,13 @@ toolCall 행: rev=0 catalog_lookup / rev=1 catalog_lookup / rev=1 run_sql
 
 권고 순서는 다음과 같다.
 
-1. **턴 단위 점유(락) 설계를 먼저 확정한다.** 멀티 인스턴스에서 같은 턴의 중복 처리를 막는 장치이며, `03-glossary.yaml` turn_states의 상태 전이와 함께 정의되어야 한다. 안 선택과 독립이다.
+1. **턴 단위 점유(락) 설계를 먼저 확정한다.** 멀티 인스턴스에서 같은 턴의 중복 처리를 막는 장치이며, `03-glossary/_index.yaml` turn_states의 상태 전이와 함께 정의되어야 한다. 안 선택과 독립이다.
 2. **API 구독 확보 후 스트리밍 구간을 이 PoC에 얹어 재실행한다.** ARCH-040가 이미 "API 구독 확보 직후 최우선 검증"으로 지목한 세 항목(토큰 집계·스트리밍·동시성)과 같은 작업이다.
-3. **그 결과를 근거로 `02-constraints.yaml` 기술 제약·`aidd-guide/standard/hub-conventions.md` §12.5를 개정한다.** 개정 시 반영할 항목은 아래와 같다.
+3. **그 결과를 근거로 `02-constraints/_index.yaml` 기술 제약·`aidd-guide/standard/hub-conventions.md` §12.5를 개정한다.** 개정 시 반영할 항목은 아래와 같다.
 
 | 개정 대상 | 반영할 내용 |
 |---|---|
-| `02-constraints.yaml` 기술 제약 기술 스택 | Spring Boot 4 계열 / Spring AI 2.0 계열 명시. 오케스트레이션 계층 선택 결과 |
+| `02-constraints/_index.yaml` 기술 제약 기술 스택 | Spring Boot 4 계열 / Spring AI 2.0 계열 명시. 오케스트레이션 계층 선택 결과 |
 | `aidd-guide/standard/hub-conventions.md` §12.4 계층 구조 | 프레임워크 추상 클래스 상속 빈에 Spring AOP 어노테이션 금지 (4.1) |
 | `aidd-guide/standard/hub-conventions.md` §12.5 외부 모델 호출 규칙 | 프레임워크 모델 추상화는 FEAT-304 **내부 구현**으로만 둔다는 경계 ([프레임워크 조사](agent-frameworks.md) 3.3). 의존성 규칙 검사 대상에 추가 |
 | REQ-030~035 (검토) | 중단 확인 지점을 "스텝 경계"가 아니라 **"모든 조기 반환 경로를 포함한 스텝 경계"**로 명확화할지 (4.2) |
@@ -377,7 +377,7 @@ toolCall 행: rev=0 catalog_lookup / rev=1 catalog_lookup / rev=1 run_sql
 | `poc/src/main/java/poc/va/SelfOrchestrator.java` | **A안** |
 | `poc/src/main/java/poc/vb/` | **B안** — 그래프, 노드, 커스텀 상태, 체크포인트 saver |
 | `poc/src/main/java/poc/ScenarioRunner.java` | S1~S6 실행과 이력 검증 |
-| `poc/src/main/java/poc/LeaseScenarios.java` | L1~L6 실행 ([턴 실행 점유 설계](../design/turn-execution.md) `31-features.yaml`) |
+| `poc/src/main/java/poc/LeaseScenarios.java` | L1~L6 실행 ([턴 실행 점유 설계](../design/turn-execution.md) `31-features/_index.yaml`) |
 
 실행 예:
 

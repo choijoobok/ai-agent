@@ -70,7 +70,7 @@ sources/
       *.repository.*
 tests/
   unit/                    # 서비스·도메인 규칙
-  integration/             # API 계약 (documents/spec/50-api.yaml 대조)
+  integration/             # API 계약 (documents/spec/50-api/_index.yaml 대조)
   e2e/                     # UC 시나리오 (TC-### 매핑)
 db/migrations/             # 순번_설명.sql + 순번_설명_rollback.sql
 ```

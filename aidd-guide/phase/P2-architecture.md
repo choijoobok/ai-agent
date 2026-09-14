@@ -14,7 +14,7 @@ tags: [architecture, adr]
 # P2 아키텍처 — 되돌릴 수 없는 것들을 먼저 정한다
 
 > 목표: **되돌리기 비용이 큰 결정**을 근거와 함께 확정한다. 상세 설계는 아직 하지 않는다.
-> 산출물: `documents/decisions/ADR-*.md`, `documents/spec/20-architecture.yaml`, `documents/spec/21-nfr.yaml`, `documents/spec/22-authz.yaml`
+> 산출물: `documents/decisions/ADR-*.md`, `documents/spec/20-architecture/_index.yaml`, `documents/spec/20-architecture/_index.yaml`, `documents/spec/20-architecture/_index.yaml`
 > 소요: 사용자 대화 1~2회 (대부분 AI가 제안하고 사용자가 승인)
 
 ## 1. 결정 순서 (의존성 순)
@@ -52,7 +52,7 @@ AI는 최신 기술을 제안하는 경향이 있다. 이 프로젝트의 기준
 - **비동기**: 필요가 증명되기 전엔 도입하지 않는다. (배치로 충분한 경우가 많다)
 - **캐시**: NFR 측정 후 필요하면. 선제 도입 금지.
 
-## 3. NFR 목표치 확정 (`documents/spec/21-nfr.yaml`)
+## 3. NFR 목표치 확정 (`documents/spec/20-architecture/_index.yaml`)
 
 P1의 NFR 요구사항을 **측정 가능한 숫자 + 측정 방법**으로 바꾼다.
 
@@ -72,7 +72,7 @@ P1의 NFR 요구사항을 **측정 가능한 숫자 + 측정 방법**으로 바�
 ## 4. 사이징 계산 (근거를 남긴다)
 
 ```yaml
-# documents/spec/20-architecture.yaml
+# documents/spec/20-architecture/_index.yaml
 sizing:
   users: { total: 300, concurrent_peak: 50, basis: "전체 300명 × 피크 동시율 15% + 여유" }
   data:
@@ -82,7 +82,7 @@ sizing:
   throughput: { peak: "질의 100건/분 (오전 보고 준비 시간대)" }
 ```
 
-## 5. 권한 모델 (`documents/spec/22-authz.yaml`)
+## 5. 권한 모델 (`documents/spec/20-architecture/_index.yaml`)
 
 권한은 나중에 붙일 수 없다. **여기서 모델을 정한다.**
 

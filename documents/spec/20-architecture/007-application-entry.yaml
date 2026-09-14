@@ -1,0 +1,31 @@
+application_entry:
+  id: ARCH-021
+  decision: ADR-007
+  ui:
+    - { path: "/", owner: portal, meaning: "portal 기본 진입" }
+    - { path: "/portal/**", owner: portal, meaning: "portal 기능 깊은 경로" }
+    - { path: "/admin", owner: system, meaning: "관리 콘솔 진입과 허용된 첫 화면 선택" }
+    - { path: "/admin/system/**", owner: system, meaning: "기존 백오피스 시스템 관리" }
+    - { path: "/admin/hub/**", owner: admin, meaning: "AI Hub 관리" }
+    - { path: "/internal/**", owner: integration, meaning: "메뉴에 노출하지 않는 내부 시험 화면" }
+  api:
+    convention: "/api/{계층}/{모듈}/{도메인}/{동작}"
+    layers: [public, common, service]
+    hard_rule: "모듈은 계층 뒤에 둔다. `/api/{모듈}/service/**`는 분류되지 않아 403이며, `/api/service/**`만 SYS_API·SYS_MENU_API 완전 일치 권한 판정을 받는다"
+  login_redirect:
+    order:
+      - "안전한 동일 출처의 원래 목적지가 있고 유효 권한이 있으면 그곳으로 복귀한다"
+      - "비밀번호 변경 필수 세션은 비밀번호 변경 화면으로 보낸다"
+      - "관리 콘솔 진입 권한이 있으면 `/admin`으로 보낸다"
+      - "portal 진입 권한만 있으면 `/`로 보낸다"
+      - "둘 다 없으면 접근 가능한 시작 화면이 없음을 알리고 리다이렉트 반복을 만들지 않는다"
+    hard_rule: "`ADMIN` 같은 역할명으로 분기하지 않고 서버가 계산한 유효 권한을 사용한다"
+  internal_screen:
+    rule: "주소를 아는 것은 권한이 아니다. `/internal/**`은 내비게이션에서 숨기되 화면과 `/api/service/**`를 같은 유효 권한으로 보호한다"
+    note: "역할은 이 권한을 배포하는 기본 묶음으로 사용할 수 있다. 저장 모델은 P3에서 메뉴 노출 속성 또는 별도 권한 자원을 비교해 확정한다"
+  traces_to: [ARCH-012, ARCH-020, AUTHZ-090]
+
+# ── system 모듈 목표 경계와 호환 이행 ──────────────────────
+# ADR-007이 승인한 네 제품 모듈 중 system의 현재 실물을 어디로 옮기고, 옮기는 동안
+# 무엇을 깨뜨리지 않는지 정한다. **이 절은 목표 구조이며 현재 소스 경로를 사실처럼
+# 바꾸지 않는다.** 실제 이동은 system G3 승인 뒤 수직 슬라이스로 수행한다.

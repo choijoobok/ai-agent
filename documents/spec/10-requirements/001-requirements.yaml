@@ -1,0 +1,697 @@
+requirements:
+# ── 질의 처리 ───────────────────────────────────────────────
+  - id: REQ-001
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "세션 내 맥락 유지"
+    detail: "같은 세션 안에서는 이전 대화 맥락을 유지한다"
+  - id: REQ-002
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "과거 턴 결과 재참조"
+    detail: "직전 턴이 아닌 **과거 턴의 결과를 다시 참조**할 수 있어야 한다 (중간에 다른 주제를 거친 뒤 '아까 조회했던 것' 을 지시)"
+  - id: REQ-003
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "컨텍스트 총량 제한"
+    detail: "세션에 대화가 과도하게 누적되지 않도록 컨텍스트 총량을 제한할 수 있어야 한다"
+    note: "**과거 턴 요약과 원본 재조회 참조를 병행**하는 방식으로 구현한다. 최근 N턴만 남기는 슬라이딩 윈도우 단독 방식은 REQ-002 를 만족하지 못한다"
+  - id: REQ-004
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "연속 도구 호출"
+    detail: "한 턴 처리 중 LLM 은 agent 에게 도구 호출을 **연속적으로** 요청할 수 있다"
+  - id: REQ-005
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "처리 중 사용자 개입과 재개"
+    detail: "턴 처리 중 사용자에게 추가 정보를 요구하거나 승인을 요청할 수 있고, 응답을 받아 처리를 재개할 수 있다"
+  - id: REQ-006
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "처리 진행 상황 단계별 표시"
+    detail: "질의 분석 중 · 조회 쿼리 작성 중 · 조회 중 등을 화면에 표시한다"
+  - id: REQ-007
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "사용자 중단"
+    detail: "처리 중 사용자가 중단할 수 있다. 중단 시 진행 중인 액션의 처리 방침을 정의해야 한다"
+  - id: REQ-008
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "처리 중 추가 입력의 의도 분류"
+    detail: "처리 중 사용자가 새 입력을 넣으면 **그 의도를 먼저 분류**한 뒤 처리한다. 새 입력이 항상 진행 중 턴에 대한 보강인 것은 아니며 — 전제를 뒤집는 교정일 수도, 무관한 별개 질의일 수도, 그만두라는 뜻일 수도 있다"
+    traces_to: [REQ-030, REQ-031, REQ-032, REQ-033]
+  - id: REQ-009
+    type: functional
+    priority: must
+    priority_reason: "portal과 agent가 나뉘거나 다중화되면 계약 없이는 같은 요청과 응답을 해석할 수 없으므로 RM-P1의 필수 기반이다"
+    actors: [ACT-001]
+    process_step: PRC-05-02
+    title: "요청·응답 포맷 규약 확정"
+    detail: "portal ↔ agent ↔ LLM 사이의 데이터 포맷 규약을 문서로 확정한다"
+    note: "portal↔agent의 제품 API 계약과 agent↔LLM 공급자 프로토콜은 서로 다른 계약이다. 전자는 integration 작업흐름에서, 후자는 FEAT-304와 IF-003에서 각각 버전과 호환성을 관리한다"
+  - id: REQ-010
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "전체 흐름도 작성"
+    detail: "연속 도구 호출 · 사용자 개입 · 중단 · 과거 턴 참조 · 신규 입력 끼어들기를 포함하는 흐름도를 작성한다"
+  - id: REQ-011
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "응답 형태 — 텍스트 · 그리드 · 차트 · 내보내기"
+    detail: "텍스트, 데이터 그리드, 차트, 엑셀 다운로드, 차트 이미지 다운로드를 지원한다"
+    hard_rule: "**엑셀·이미지 내보내기는 클라이언트 컴포넌트의 기능이고 서버는 파일을 생성하지 않는다**"
+    traces_to: [NGOAL-10]
+  - id: REQ-012
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "기준 시각 제공"
+    detail: "처리 결과가 데이터 조회일 때는 기준 시각(DW 사용 시 동기화 시점)을 함께 제공한다"
+    why: "사용자가 동기화 지연을 인지하지 못한 채 낡은 데이터로 판단하는 것을 막는다"
+  - id: REQ-013
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "중단된 턴의 재시도"
+    detail: "턴이 정상 응답 없이 **중단된 경우**(서버 장애·수동 중단·오류) 사용자가 **재시도를 요구**할 수 있다. 중단된 턴은 재개 가능 상태로 기록한다"
+  - id: REQ-014
+    type: functional
+    priority: should
+    actors: [ACT-001]
+    title: "중단 턴 재개 여부를 되묻지 않는다"
+    detail: "중단 이후 **무관한 새 질의**를 한 경우, 중단된 턴의 재개 여부를 되묻는 것은 **프롬프트 규칙에 그렇게 명시된 경우에만** 수행한다. 명시가 없으면 묻지 않는다"
+  - id: REQ-015
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "질의 해석문"
+    detail: "LLM 은 사용자 질의를 **명료하게 재정리한 해석문**을 만들고, 이를 지식 검색·SQL 생성·실행 API 탐색의 입력으로 사용한다. 결과에는 이 해석문을 함께 제시해 사용자가 자신의 의도와 대조할 수 있게 한다"
+  - id: REQ-016
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "화면 세션과 무관한 턴 처리"
+    detail: "세션 창·브라우저를 닫거나 로그아웃해도 진행 중인 턴은 계속 처리되고 결과가 저장된다. agent 는 질의 접수 시점에 필요한 사용자·권한 정보를 **처리 문맥으로 복사해 보유**하며, 이후 처리 과정에서 화면 세션에 의존하지 않는다"
+  - id: REQ-017
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "명시적 승인이 아닌 모든 입력은 비승인"
+    detail: "사용자대기 상태에서 승인·거절이 아닌 다른 입력을 하면 **비승인으로 취급**한다. 대기 중이던 액션은 실행하지 않고, 그 입력을 LLM 에 피드백으로 전달해 같은 턴을 계속 처리한다. 나중에 다시 승인 여부를 되묻지 않는다"
+  - id: REQ-018
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "현재 상태와 경과 시간 표시"
+    detail: "처리 중에는 현재 상태와 **경과 시간**을 화면에 표시한다"
+  - id: REQ-019
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "세션 재진입 시 역방향 페이징"
+    detail: "세션을 다시 열면 마지막 턴만 표시하고, 이전 턴은 위로 스크롤할 때 일정 건수 단위로 추가 조회해 붙인다"
+  - id: REQ-020
+    type: functional
+    priority: could
+    actors: [ACT-001]
+    title: "사용자 언어와 원어의 분리"
+    detail: "지식 검색과 SQL 생성은 **등록된 원어 기준으로 수행**하고, 사용자에게 보이는 설명·안내만 사용자 언어로 제시한다. **조회된 데이터 값 자체는 번역하지 않는다**"
+    roadmap: RM-P4
+    note: "번역 과정에서 업무 용어가 왜곡되면 태그 매칭이 실패한다 — 지식 태그의 **동의어에 외국어 표현을 함께 등록**할 수 있어야 한다"
+  - id: REQ-021
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "컨텍스트 단계적 축소"
+    detail: "여러 데이터소스에 도달 가능하면 주입할 카탈로그가 데이터소스 수만큼 늘어난다. **질의와 관련된 데이터소스를 먼저 선별하고 그 카탈로그만 주입**하며, 선별은 **업무 도메인 → 데이터소스 → 테이블 → 컬럼** 순의 단계적 축소로 수행한다"
+    hard_rule: "주입이 확정된 지식·인증 예제 쿼리의 **참조 공개 인터페이스는 객체 선별 결과에 합류**시킨다 — 키워드 선별이 놓친 공개 객체를 링크가 결정적으로 메꾼다"
+    traces_to: [REQ-003]
+  - id: REQ-022
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "조회 계획을 업무 용어로 제시하고 자연어로 교정받는다"
+    detail: "조회에 대해서는 질의 해석문·대상 데이터 영역의 업무 명칭·적용 조건·기간·집계 단위를, **액션이 포함된 턴에서는 실행할 액션과 순서를 함께** 제시한다. **기본 필터가 해제된 경우 그 사실을 함께 표시한다**"
+    hard_rule: "**테이블·컬럼의 물리명과 SQL 원문은 노출하지 않는다.** 사용자는 계획을 보고 **자연어로 교정**하며, 물리명이나 SQL 을 직접 편집하게 하지 않는다"
+    traces_to: [REQ-015, REQ-104]
+  - id: REQ-023
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "조회 계획 확인을 모든 턴에 강제하지 않는다"
+    detail: "강제 조건은 정책으로 관리하고, 기본값은 ① 대상 데이터 영역이 복수이거나 선별 확신이 낮을 때 ② 예상 결과 규모가 임계치를 넘을 때 ③ 액션이 포함된 턴"
+    hard_rule: "**③에서 계획 확인과 실행 승인을 하나로 합치지 않는다** — 전자는 '무엇을 하려는지 맞나' 를, 후자는 '되돌릴 수 없는 것을 실행해도 되나' 를 묻는다"
+    why: "매 조회마다 확인을 요구하면 대화가 느려지고 사용자가 확인을 습관적으로 넘긴다"
+  - id: REQ-024
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "성공한 턴의 결과 교정 재요청"
+    detail: "처리는 정상 종료됐지만 결과가 의도와 다른 경우, 이전 턴의 해석문·조회 계획·생성 SQL 을 재작성의 입력으로 사용한다. 사용자가 같은 질의를 처음부터 다시 입력하게 하지 않는다"
+    note: "REQ-013(중단 턴 재시도)과 **다른 경로**다"
+  - id: REQ-025
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "확신이 없으면 추측하지 않는다"
+    detail: "대상 데이터 영역을 특정할 수 없거나, 조건 해석이 갈리거나, 카탈로그·지식·예제 쿼리로 근거를 세울 수 없으면 임의로 골라 실행하지 않고 사용자에게 확인을 요구하거나 처리 불가로 응답한다. 처리 불가 응답에는 **무엇이 부족했는지**를 함께 제시한다"
+    hard_rule: "**자율 처리 비율보다 처리한 것의 정확도를 우선한다**"
+    traces_to: [SUC-02, SUC-03]
+  - id: REQ-026
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "연속 실행 — 여러 액션이 한 요청에 걸릴 때"
+    detail: "실행할 액션과 순서는 **사용자 요청에서 얻고 Hub 가 추론해 정하지 않는다.** 승인 필요 액션이 하나라도 있으면 예정된 액션 전체를 제시해 일괄 승인받되, 파라미터가 앞 액션의 결과에 의존하는 액션은 개별 승인한다"
+    hard_rule: "**실패하면 그 지점에서 중단하고 보고**하며, 남은 액션의 처리 여부를 근거 없이 판단하지 않는다. 부분 실행 후의 재요청은 이미 실행된 것을 제시하고 사용자가 정한다"
+    roadmap: RM-P2
+    traces_to: [REQ-025, REQ-105]
+
+  - id: REQ-027
+    type: functional
+    priority: must
+    priority_reason: "RM-P1에서 모든 표현을 완성하지 않아도 새 의미 블록이 agent 통제를 바꾸지 않는 확장 경계는 첫 계약부터 있어야 한다"
+    actors: [ACT-001]
+    process_step: PRC-02-05
+    title: "응답 표현 형식의 확장"
+    detail: "portal 은 텍스트·그리드·차트·지도 등 표현 형식을 추가할 수 있어야 하며, 새 표현 형식 때문에 agent 의 질의 처리·권한·보안·쿼터·감사 흐름을 바꾸지 않아야 한다"
+    hard_rule: "**agent 계약에 특정 시각화 라이브러리의 옵션을 넣지 않는다.** agent 는 버전이 있는 의미 블록과 데이터를 반환하고 portal 의 표현 어댑터가 도구별 설정으로 변환한다"
+    note: "지도는 미래 portal 요구의 대표 사례다. @defer G3 — portal 작업흐름에서 실제 시각화 도구와 화면 동작을 정하되, 계약 확장점은 integration 작업흐름에서 먼저 잠근다"
+    traces_to: [REQ-009, REQ-011]
+
+# ── 처리 중 입력의 네 갈래 ──────────────────────────────────
+  - id: REQ-030
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "네 갈래 분기 — 보강 · 교정 · 별개 · 중단"
+    detail: "① **보강**(조건·범위를 더한다) → 진행 중 턴에 반영 ② **교정**(전제가 틀렸다) → 되돌려 다시 수행, 지금까지의 스텝 결과는 버린다 ③ **별개**(무관한 질의) → 진행 중 턴은 그대로 두고 **별도 턴**으로 접수 ④ **중단** → 중단으로 전이"
+    why: "**②를 ①로 처리하면 틀린 방향으로 스텝이 누적된다.** 토큰을 아끼려고 스텝 경계 반영을 택한 것이 오히려 더 큰 낭비가 되며, 액션까지 도달하면 복구 절차가 필요해진다"
+    hard_rule: "어느 갈래든 **반영 시점은 스텝 경계다.** 진행 중인 LLM 요청을 즉시 끊지 않는다"
+  - id: REQ-031
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "의도 판정은 LLM 분류 + 사용자 확인"
+    detail: "자연어 입력의 의도를 규칙으로 가르는 것은 신뢰할 수 없고, 분류만 하고 확인하지 않으면 오분류가 그대로 진행된다. **분류는 보조 판정 역할**이며 관리자가 지정한 모델로 고정한다"
+    hard_rule: "**판단이 갈리면 멈추는 쪽으로 기운다** — '멈춘다' 는 판정이 틀리면 다시 시도하면 되지만 **'계속한다' 는 판정이 틀리면 오류가 누적된다**. 확인 문구에는 **무엇을 버리게 되는지**를 함께 제시한다"
+    open: "**분류 프롬프트를 프롬프트 규칙(FEAT-021)으로 관리할지가 미확정이다** — 프롬프트 규칙은 관리자가 운영 화면에서 바꾸는 *업무 지시* 인데 이것은 *시스템 분류기* 라 성격이 다르다. 운영 화면에 열면 분류가 조용히 나빠질 수 있고, 코드에 박으면 오분류를 고치려 배포해야 한다. @defer P3 agent 상세 설계에서 정한다"
+    open2: "**한 턴당 분류 호출 횟수 상한이 미확정이다** — 처리 중 입력을 연타하면 쿼터가 소모된다. @defer P2 쿼터 설계에서 정한다(NFR-010~017)"
+  - id: REQ-032
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "확인은 병행형이 기본, 차단형은 되돌릴 수 없을 때만"
+    detail: "**병행형**(기본) — 턴은 처리중을 유지한 채 분류 결과를 기본값으로 표시하고 되돌릴 수단을 제공한다. 아무 조치도 하지 않으면 분류대로 반영된다. **차단형** — 진행 중 턴이 `승인 대기` 이거나 액션을 이미 실행한 경우 `의도 확인 대기` 로 전이하고 사용자의 선택 없이는 진행하지 않는다"
+    hard_rule: "**분류 호출이 실패하거나 판정이 서지 않으면 차단형으로 폴백한다**"
+    why: "매 입력마다 차단형 확인을 요구하면 대화가 느려지고 사용자가 확인을 습관적으로 넘긴다. 병행형의 전제는 오분류가 복구 가능하다는 것인데, 액션이 걸린 턴에서는 그 전제가 성립하지 않는다"
+    open: "**`의도 확인 대기`(WT-03) 의 만료 시간 기본값이 미확정이다** — 만료 시간은 대기 유형별로 관리하며(03-glossary.yaml state_rules) 승인은 사람의 판단을 기다리므로 길고 의도 확인은 직전 입력에 대한 반응이므로 짧다는 것까지만 정해져 있다. **값은 실측이 필요하다**(ASM-002 의 measurement_first 와 같은 성격이다). @defer P2 응답성 측정이 서면 그 값으로 정한다"
+  - id: REQ-033
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "중단·추가 입력은 턴 레코드에 요청으로 기록한다"
+    detail: "요청은 **턴을 처리 중인 인스턴스가 아닌 다른 인스턴스로 도착할 수 있다.** 멀티 인스턴스 운영에서 요청을 받은 인스턴스는 다른 인스턴스가 열어 둔 LLM 연결을 직접 끊을 수 없으므로, 턴 레코드에 요청으로 기록하고 처리 중인 인스턴스가 스텝 경계에서 확인해 스스로 중단하거나 반영한다"
+    hard_rule: "중단 시 진행 중이던 LLM 요청은 클라이언트 측에서 취소하되 **이미 발생한 토큰은 과금되므로 사용량으로 기록한다**"
+  - id: REQ-034
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "agent ↔ LLM 은 스트리밍 수신"
+    detail: "중단을 실효 있게 하려면 스트리밍이어야 한다. 응답 전체를 기다리는 방식에서는 취소 시점에 이미 생성이 끝나 있어 절감 효과가 없고 REQ-018 의 상태 표시 근거도 얻을 수 없다"
+    note: "이 구간의 스트리밍은 portal ↔ agent 가 비동기 폴링인 것과 **무관하게 성립한다**"
+  - id: REQ-035
+    type: functional
+    priority: must
+    actors: [ACT-001]
+    title: "의도 분류 입력의 최소화"
+    detail: "**넣는다** — 진행 중 턴의 해석문 · 현재 단계 · 액션 대기 여부 · 직전 턴 해석문 1건 · 새 입력 원문. **넣지 않는다** — 대화 이력 전체 · 스키마 카탈로그 · 지식·예제 쿼리 · **조회 결과 데이터**"
+    why: "의도 분류는 '무엇을 조회할지' 를 판단하지 않는다. 조회 결과 데이터를 넣지 않는 것은 토큰 문제만이 아니라 전송 최소화 원칙(REQ-106)이다"
+    traces_to: [REQ-003, REQ-106]
+
+# ── 보안·거버넌스 ───────────────────────────────────────────
+  - id: REQ-101
+    type: functional
+    priority: must
+    actors: [ACT-001, ACT-002]
+    title: "업무 연관성 판정과 존재 은닉"
+    detail: "등록된 업무 범위 밖의 질의는 **거부**한다. 판정은 프롬프트 규칙 하나에 의존하지 않고 ① **구조적 판정**(등록된 도구·스키마·지식으로 처리할 수 없는 질의는 대상이 아니다) ② **규칙 기반 판정** ③ **사후 보정**(판정 결과를 기록하고 오분류 피드백으로 규칙을 개선)을 결합한다. 거부 시에도 질의와 사유를 기록한다"
+    hard_rule: "**객체의 존재 자체를 숨기는 것이 의도된 동작이다** — 권한 없는 객체는 LLM 에 노출되지 않으므로 정보가 없는 것과 권한이 없는 것을 구분해 답할 수 없고, 사용자에게는 **정보 부재로 응답한다**"
+    note: "다만 같은 질의를 반복하지 않도록 정보 부재 응답에 **내 접근 가능 데이터 목록으로 안내하는 고정 문구**를 함께 제시한다 — 이 문구는 특정 객체의 존재를 드러내지 않는다"
+  - id: REQ-102
+    type: functional
+    priority: must
+    actors: [ACT-002]
+    title: "LLM 자율성 경계 — 서버가 강제한다"
+    detail: "**금지 → 대안**: LLM 이 운영 DB 에 직접 접속해 조회·변경 → LLM 은 SQL 만 작성하고 실행은 agent / LLM 이 운영 WAS API 를 직접 호출 → agent 가 등록된 API 를 호출 / LLM 이 권한 검사를 스스로 수행 → 권한 검사는 서버 규칙 / LLM 이 승인 필요 액션을 판단만으로 실행 → 사용자 승인 절차를 서버가 강제"
+    traces_to: [PRN-02, PRN-03]
+  - id: REQ-103
+    type: functional
+    priority: must
+    priority_reason: "여러 업무 시스템의 데이터를 한 창구에서 다루므로 접근 통제가 없으면 제품을 운영에 투입할 수 없다"
+    actors: [ACT-002]
+    process_step: PRC-02-02
+    title: "데이터 접근 통제 — 그룹 판정 · 행 스코프 · SQL 4단계"
+    detail: "상세 모델은 22-authz.yaml 이 갖는다. 접근 제한·마스킹·행 스코프·전송 허용은 스키마 카탈로그 등록부터 함께 적용한다"
+    note: "초기 제품 오픈 전에는 보안 담당자(ACT-002)가 정책 적용을 최종 승인한다. 스키마 카탈로그와 접근·마스킹 정책은 변경이 드물므로 운영 중에도 보안 담당자와 업무 자산 관리자가 화면에서 직접 처리하며 제품 내 요청·승인 절차를 두지 않는다. 마스킹 대상 여부처럼 중대한 변경은 사유·근거를 변경 이력에 반드시 남긴다"
+    traces_to: [REQ-104]
+  - id: REQ-104
+    type: functional
+    priority: must
+    actors: [ACT-001, ACT-002]
+    title: "생성 SQL 과 물리명의 노출 통제"
+    detail: "**기본은 비노출이다.** 일반 사용자에게는 조회 계획만 업무 용어로 제시하고 물리 테이블·컬럼명과 SQL 원문을 보여주지 않는다. **원문 열람은 사용자 그룹으로 통제하는 선택 기능**이며, 열람이 허용된 사용자에게도 **편집과 직접 실행은 제공하지 않는다**"
+    why: "사용자가 고친 SQL 을 실행하면 그 SQL 은 LLM 이 만든 것도 관리자가 검수한 것도 아니게 되어, 통제 전제와 감사 이력의 의미가 함께 흔들린다"
+    note: "관리자는 노출 설정과 무관하게 감사 이력에서 SQL 원문을 조회한다 — **노출 통제는 화면 표시의 문제이며 기록의 문제가 아니다**"
+  - id: REQ-105
+    type: functional
+    priority: must
+    priority_reason: "RM-P2 실행 기능의 안전 경계이며 공통 그룹 판정 인터페이스가 이를 수용해야 하므로 우선순위를 유지한다"
+    actors: [ACT-001, ACT-002, ACT-006]
+    process_step: PRC-03-01
+    title: "API·도구 실행 통제"
+    detail: "호출 가능한 API 는 목록으로 등록·관리되며 목록에 없는 호출은 불가능하다. API 는 **유형**(조회/실행)을 갖고 승인 절차는 실행 API 에만 적용된다. 명세에는 **타임아웃·재시도 정책·멱등성 여부**를 함께 등록한다"
+    hard_rule: "**판정 미달이면 차단한다.** 중간 상태를 두지 않으며 승인을 받아 실행하는 우회 경로도 없다. **호출 인증은 시스템 단위 연동 계정으로, 실사용자 신원은 매핑된 식별자를 파라미터로 전달한다**"
+    roadmap: RM-P2
+  - id: REQ-106
+    type: functional
+    priority: must
+    priority_reason: "외부 모델로 나가는 데이터의 허용 범위를 강제하지 못하면 폐쇄망 고객사에서 모델 호출 자체를 열 수 없다"
+    actors: [ACT-002, ACT-007]
+    process_step: PRC-02-03
+    title: "LLM 외부 전송 데이터 정책"
+    detail: "**전송 허용 여부를 테이블·컬럼 단위 설정**으로 통제한다. 조회 API 응답은 카탈로그에 없으므로 **등록된 응답 스키마의 경로 단위**로 통제한다 — API 단위 플래그 하나로는 같은 응답 안의 개인정보와 업무 데이터를 가를 수 없다. **기본값은 차단이며 허용 목록 방식으로 연다.** 전송 시에도 마스킹 규칙과 행 수 상한을 적용하고 전송된 내용은 전량 기록한다"
+    note: "**Hub 는 레거시의 암호화 키·복호화 수단을 보유하지 않는다** — 암호화되어 저장된 개인정보는 조회해도 암호문이며 기술적으로 취급이 불가능하다. **평문으로 저장된 개인정보 컬럼이 통제 대상이다**"
+  - id: REQ-107
+    type: functional
+    priority: must
+    priority_reason: "AI가 만든 조회·실행의 근거를 사후에 재구성할 수 없으면 감사와 장애 조사가 성립하지 않는다"
+    actors: [ACT-005]
+    process_step: PRC-02-04
+    title: "감사 이력 — 전량 기록과 차등 저장"
+    detail: "**요청**(사용자·세션·턴·회차·스텝·원문 질의·전달된 컨텍스트와 프롬프트) · **판정**(업무 연관성·권한·마스킹·차단 내역) · **조회**(생성 SQL·데이터소스·기준 시각·실행 시간·결과 행 수와 컬럼 목록·**결과 지문**) · **실행**(API·파라미터·결과·승인 이력) · **응답**(LLM 응답 원문·최종 응답) · **비용**(스텝 역할·**공급 경로**·모델·effort·**계량 단위별 수량**·산정 비용·**적용한 단가표 판번호** — 판번호가 없으면 나중에 왜 이 값인지 되짚을 수 없다) · **정책 변경**(변경자·시각·대상·이전 값·이후 값)"
+    hard_rule: "**조회 결과 원문은 세 계층으로 차등 저장한다** — 메타데이터는 항상 · LLM 전송분은 항상 · **원문은 정책**(기본 미보존). 단 **실행 API 호출로 이어진 턴의 조회 결과는 정책과 무관하게 원문을 보존한다**(잘못 실행된 액션의 사후 조사에서 '어떤 데이터를 보고 실행했는가' 에 답해야 한다). **결과 지문(해시)은 항상 남긴다**"
+    note: "**저장하지 않기로 한 것과 저장에 실패한 것은 다르다** — 원문 미보존 설정에서도 메타데이터·전송분의 기록 실패는 처리 실패다"
+    traces_to: [PRN-07]
+  - id: REQ-108
+    type: functional
+    priority: must
+    actors: [ACT-005]
+    title: "이력 기록과 트랜잭션 분리"
+    detail: "이력 기록은 **업무 트랜잭션과 분리**한다. 소모된 토큰과 이미 실행된 조회·API 호출은 되돌릴 수 없으므로 성공·실패나 롤백 여부와 무관하게 기록이 남아야 한다. 발생 즉시 **별도 트랜잭션으로 커밋**하고 이력 테이블은 **append-only** 로 운용한다"
+    hard_rule: "**한 턴은 시작 시점의 정책으로 일관되게 처리한다.** 프롬프트 규칙·그룹 매핑·마스킹·외부 전송 허용은 턴 시작 시점의 활성 상태를 읽어 그 턴 동안 재조회하지 않는다 — 스텝 1에서 허용으로 판정한 것을 스텝 3에서 다른 기준으로 검증하면 한 턴 안에 서로 모순된 판정이 생긴다. **세션은 여러 날에 걸칠 수 있으므로 일관성 경계로 삼지 않는다**"
+    note: "정책 전체를 버전으로 스냅샷하지 않는다. 대신 턴 이력에 **적용된 프롬프트 규칙 ID 목록**을 함께 남긴다"
+  - id: REQ-109
+    type: functional
+    priority: must
+    actors: [ACT-001, ACT-005, ACT-011]
+    title: "보관과 파기 — 논리 삭제만 허용"
+    detail: "**사용자의 대화 이력 삭제는 논리 삭제만 허용한다.** 표시 여부 플래그만 갱신되며 데이터는 삭제되지 않는다. admin 은 감사를 위해 **삭제 표시된 이력도 전량 조회**할 수 있고, 사용자가 감사 대상 기록을 지울 수 있는 경로는 제공하지 않는다. 물리 삭제는 보관 기간 정책에 따른 시스템 일괄 처리로만 수행한다"
+    hard_rule: "**재개 상태(체크포인트)는 차등 저장을 우회하는 경로다** — 상태에는 도구 실행 결과 원문이 그대로 포함된다. 따라서 ① 턴이 종결되면 정리한다 ② **이전 회차의 재개 상태는 턴 종결 전에도 정리한다** ③ **보관 기간은 조회 결과 원문의 보관 기간보다 길 수 없다** ④ API 응답은 **마스킹된 사본만 상태에 싣는다**"
+  - id: REQ-110
+    type: functional
+    priority: must
+    actors: [ACT-001, ACT-005]
+    title: "품질 신고와 처리"
+    detail: "사용자는 응답이 사실과 다르거나 엉뚱하다고 판단되면 **해당 턴을 지정해 신고**한다. 신고 건은 원 응답의 이력과 연결되며, **되돌림이 있었던 턴에서는 최종 응답을 만든 회차의 이력에 연결한다**(버려진 회차의 SQL 을 근거로 분석하면 엉뚱한 결론이 나온다 — 다만 버려진 회차도 조회할 수 있어야 한다). 상태는 `접수 → 검토 → 종결` 로 전이하며 종결 시 처리자·일시·판단 사유와 **실제 조치 내역**을 기록한다"
+    hard_rule: "**신고자는 자신의 신고 목록과 처리 결과·사유를 조회할 수 있다.** 결과 회신 없이 종결하는 것은 허용하지 않는다 — 신고가 어떻게 처리되는지 보이지 않으면 신고 자체가 들어오지 않아 품질 개선 경로가 끊긴다"
+  - id: REQ-111
+    type: functional
+    priority: must
+    actors: [ACT-002, ACT-011]
+    title: "API 응답의 개인정보 통제"
+    detail: "**응답 경로 명세는 허용목록이며 기본값은 닫힘이다** — 명세에 없는 경로는 마스킹해서 화면에 내보내고, 저장하지 않으며, LLM 에 보내지 않는다. 경로 표현은 **정적 경로와 배열 와일드카드까지만** 허용한다. **미지정 경로가 응답에 나타나면 경고로 기록**하고 검토 대상으로 노출한다"
+    hard_rule: "**마스킹은 수신 직후에 갈라놓는다** — 감사 이력·재개 상태·애플리케이션 로그로 가는 사본은 처음부터 마스킹된 것만 만들고 **평문은 사용자 응답 경로에만** 태운다. 마스킹된 사본을 만들지 못하면(명세 부재·파싱 실패) 응답 전체를 마스킹 대상으로 다룬다"
+    two_axes: "**정보주체 식별자**(사번·고객 ID·주문번호)는 **보존한다** — '누구의 정보를 봤는가' 의 근거다. **민감 값**(주민등록번호·계좌·연락처·주소)은 **마스킹한다** — 필요하면 값 지문을 함께 남긴다. **평문 열람 여부와 그 근거가 된 그룹**은 평문으로 화면에 나간 경우 항상 남긴다"
+    why: "차단목록으로 두지 않는 이유는 **레거시의 응답 변경을 감지할 수단이 없기 때문**이다. 차단목록이면 레거시가 필드를 하나 추가하는 순간 미지정 경로가 생기고, 그것이 개인정보면 그대로 평문으로 쌓인다"
+    roadmap: RM-P2
+    limits: "**등록된 명세만큼만 정확하다.** 값 패턴 탐지는 **보조 수단**이며 이것을 근거로 명세 등록을 면제하지 않는다"
+  - id: REQ-112
+    type: functional
+    priority: must
+    actors: [ACT-002]
+    title: "프롬프트 인젝션·오염 대응"
+    detail: "사용자 입력·조회된 데이터·지식 문서에 포함된 지시성 문장을 **명령으로 해석하지 않는다.** 개인 기본 지시는 시스템 프롬프트 규칙을 무력화할 수 없다. 정책 판정은 항상 서버 규칙이 최종 결정한다"
+  - id: REQ-113
+    type: functional
+    priority: must
+    actors: [ACT-002, ACT-006]
+    title: "중복 실행의 책임 경계"
+    detail: "**한 턴 안**의 중복(인스턴스 회수 후 재개 등)은 **Hub 가 막는다**(실행 점유). **턴 사이**의 중복(서로 다른 세션·턴이 같은 대상에 같은 액션)은 **대상 시스템이 막는다** — Hub 는 막지 않는다"
+    why: "**후자를 막지 않는 것은 누락이 아니라 결정이다.** 두 사용자가 각자 다른 채팅에서 겹치는 대상을 처리하는 것은 정당한 병렬 업무이며, 파라미터가 일부 겹친다는 이유로 차단하면 정상 업무가 멈춘다. **무엇이 '같은 작업' 인지는 업무 의미론**이고 그 판단을 Hub 가 복제하는 것은 PRN-09 가 금지하는 방향이다"
+    hard_rule: "Hub 가 이 층에서 제공하는 것은 차단이 아니라 **가시성**이다 — 승인 화면에 같은 API 의 최근 실행 이력(실행자·시각·파라미터)을 함께 제시해 **사람이 판단**하게 한다. **멱등하지 않은 것으로 등록된 실행 API 는 승인 강제 등급을 낮추지 않는 것을 기본**으로 한다"
+    roadmap: RM-P2
+  - id: REQ-114
+    type: functional
+    priority: could
+    actors: [ACT-002]
+    title: "커스텀 도구 — PRN-08 의 명시적 예외"
+    detail: "설정으로 표현할 수 없는 다중 시스템 데이터 가공은 agent 안의 서비스 빈으로 구현한다. **도구 레지스트리에 등록**되고 **호출 허용 그룹 매핑과 전량 감사**를 다른 도구와 동일하게 받으며, 미등록·미매핑 상태에서는 호출할 수 없다"
+    hard_rule: "커스텀 도구는 코드이므로 SQL 통제 4단계를 거치지 않는다 — **내부의 데이터 접근 범위와 민감 데이터 처리는 구현 책임**이다. **SQL 이나 등록 API 로 가능한 것을 커스텀 도구로 만들지 않는다** — 통제가 검증된 경로를 우회하는 코드가 늘어나는 것 자체가 위험이다"
+    note: "요건 승인·코드 리뷰·배포 통제는 고객사 프로젝트 관리 체계의 책임이다. **보안팀 협의 결과에 따라 이 기능 자체를 제공하지 않는 선택도 가능하다**"
+    roadmap: RM-P2
+
+# ── 저장된 조회와 개인 대시보드 ────────────────────────────
+  - id: REQ-201
+    type: functional
+    priority: should
+    actors: [ACT-001]
+    title: "질의 즐겨찾기와 저장된 조회를 구분한다"
+    detail: "**질의 즐겨찾기** — 자연어 질의문을 저장하고 실행하면 새 턴으로 처리된다(LLM 호출·토큰 소모·결과가 매번 달라질 수 있다). **저장된 조회** — 확정 SQL + 파라미터 명세 + 해석문을 저장하고 **턴을 만들지 않고 직접 실행**된다(LLM 호출 없음·토큰 0·같은 파라미터면 같은 조회)"
+    why: "성격이 반대이므로 하나의 기능으로 합치지 않는다"
+    roadmap: RM-P2
+  - id: REQ-202
+    type: functional
+    priority: should
+    actors: [ACT-001]
+    title: "저장된 조회의 등록은 성공한 조회에서만"
+    detail: "사용자가 SQL 을 작성하거나 붙여넣어 등록하는 경로는 두지 않는다. **수정도 자연어로 한다** — 저장된 해석문과 원 질의문을 컨텍스트로 새 턴을 열어 재생성한 뒤 다시 저장한다"
+    why: "그 경로를 열면 '사용자가 고친 SQL 은 실행하지 않는다'(REQ-104)와 모순되고, 감사에서 그 SQL 의 출처를 답할 수 없다"
+    roadmap: RM-P2
+  - id: REQ-203
+    type: functional
+    priority: should
+    actors: [ACT-001]
+    title: "저장 시점에 파라미터화를 강제한다"
+    detail: "날짜·기간을 상수로 저장하면 하루 만에 무용지물이 된다. 저장 시 LLM 이 파라미터화 후보를 뽑아 사용자에게 확인받으며 **토큰은 저장할 때 한 번만** 쓴다. 파라미터 유형은 셋으로 제한한다 — ① 상대 시점·기간 ② 사용자 입력 값 ③ 실행자 신원"
+    hard_rule: "**임의 표현식은 허용하지 않는다**(그 자체가 인젝션 표면이다). 바인딩은 **바인드 변수로만** 하고, 파서 검증은 파라미터가 바인딩된 형태를 대상으로 수행한다"
+    roadmap: RM-P2
+  - id: REQ-204
+    type: functional
+    priority: should
+    actors: [ACT-001]
+    title: "저장된 조회는 반드시 썩는다 — 무효화 처리"
+    detail: "**컬럼 삭제·타입 변경·공개 객체 소멸** → 고객사 변경 통지 또는 공개 인터페이스 변화 후보가 참조 객체에 닿으면 저장된 조회를 자동 비활성화하고 소유자에게 알린다. 해석문으로 다시 만들기를 제안한다. **그룹 매핑 축소** → 실행 시점 판정 실패, '권한 변경으로 사용 불가' 표시(**어떤 객체 때문인지는 노출하지 않는다**). **신원 매핑 부재** → 사유와 함께 거부. **사용자 비활성화** → 실행 중지"
+    hard_rule: "**권한 상실 시 자동 삭제하지 않는다** — 사용자가 원인을 알아야 하고 그룹이 재부여되면 다시 동작하는 것이 옳다"
+    roadmap: RM-P2
+  - id: REQ-205
+    type: functional
+    priority: should
+    actors: [ACT-001]
+    title: "공유하지 않고 승격한다"
+    detail: "사용자 간 공유는 제공하지 않는다. 조직에서 쓸 만한 조회가 나오면 **인증 예제 쿼리로 승격**한다 — 관리자 검수를 거치고 노출 허용 그룹이 명시되며 채팅에서도 재사용된다. **개인 저장 → 사용 빈도 집계 → 관리자 승격 → 전사 자산**"
+    traces_to: [NGOAL-09]
+    roadmap: RM-P2
+  - id: REQ-206
+    type: functional
+    priority: should
+    actors: [ACT-001]
+    title: "대시보드 실행 방식 — 위젯별 수동 조회가 기본"
+    detail: "대시보드 진입 시 자동 실행은 위젯 단위 옵션으로 둔다. **주기 자동 갱신(폴링 새로고침)은 제공하지 않는다** — 시간·조건으로 트리거되는 것은 워크플로우의 영역이다"
+    why: "위젯 10개가 화면을 여는 순간 동시에 나가면 업무 시작 직후의 부하 집중이 재현된다"
+    roadmap: RM-P2
+  - id: REQ-207
+    type: functional
+    priority: must
+    actors: [ACT-002]
+    title: "LLM 을 거치지 않는 실행 경로의 통제"
+    detail: "저장된 조회와 워크플로우의 조회 단계는 **컨텍스트 필터링이 존재하지 않는다** — 이미 SQL 이 있기 때문이다. 이 경로에서는 **참조 객체 대조가 보완 수단이 아니라 주 방어선**이며, 매 실행마다 ① 참조 객체 **재추출**(저장 시점의 목록을 신뢰하지 않는다) ② **현재** 사용자 그룹과 대조 ③ 데이터소스 접근 그룹 판정 ④ **현재** 신원 매핑으로 행 스코프 재주입 ⑤ **현재** 컬럼 모드로 결과 마스킹 재적용 ⑥ 조회 상한·타임아웃 적용을 모두 수행한다"
+    hard_rule: "**정의는 과거의 권한으로 만들어졌고 실행은 현재의 권한으로 판정한다.** 저장 시점의 판정 결과를 캐시해 재사용하지 않는다 — 캐시하면 그룹 변경이 반영되지 않아 과거 권한으로 실행된다"
+    roadmap: RM-P2
+
+# ── 메타데이터와 인증 예제 쿼리 ────────────────────────────
+  - id: REQ-301
+    type: functional
+    priority: must
+    actors: [ACT-003]
+    title: "선별 공개 사실을 수집하고 업무 의미를 검수한다"
+    detail: "Hub 카탈로그는 업무 DB/DW 전체 스키마의 사본이 아니라 **고객사가 선택한 공개 데이터 인터페이스(뷰·테이블)** 의 업무 모델이다. 등록된 공개 객체의 **스키마 사실**(타입·PK·유니크·NOT NULL·컬럼 목록)은 권한이 있을 때 자동 수집·비교할 수 있다. **업무 의미**(업무 명칭·설명·의미 유형·값 도메인)는 수기이며 초안은 자동 제안하되 **사람이 검수해야 확정된다.** 업무 자산 관리자는 데이터소스·공개 범위·개발 구현 상세와 업무 관계를 함께 검수해 지식·인증 예제 쿼리의 근거로 삼는다. **정책**(그룹 매핑·마스킹·행 스코프·기본 필터·전송 허용)은 카탈로그 등록부터 수기로 적용하며 변경 이력 대상이다"
+    hard_rule: "**Hub는 원본 DB/DW 전체를 수집·대사하지 않는다.** 민감 원본 객체는 등록하지 않으며, 자동 수집은 이미 선택·등록된 공개 객체 밖으로 범위를 넓히지 않는다. 자동 수집이 사람이 넣은 의미·정책을 덮지 않으며 DB 코멘트는 업무 명칭의 초안으로만 쓴다"
+    why: "원본 테이블을 모두 노출하면 보안 경계가 무너지고, 복잡한 정형 조회를 뷰로 제공하는 고객사의 업무 모델과도 맞지 않는다. 정확도에 필요한 것은 전체 물리 스키마가 아니라 **검수된 공개 범위의 의미**다"
+    note: "등록된 공개 객체의 구조 비교는 보조 신호일 뿐이며, DB/DW 변경이 Hub 공개 범위·업무 의미에 미치는 영향은 업무 자산 관리자가 고객사 변경 근거를 보고 직접 판정한다. **전부 채우려 하지 않는다** — 조회 빈도 상위 중 메타데이터 미완성 목록을 노출한다. 초기 오픈 전 보안 담당자의 최종 승인은 제품 외 검수 절차다. 카탈로그와 정책은 직접 관리하되, 지식 베이스는 REQ-305·REQ-306의 반영 세트 상태 관리를 따른다"
+    traces_to: [PRN-10, CON-016, CON-018]
+  - id: REQ-302
+    type: functional
+    priority: must
+    actors: [ACT-003]
+    title: "인증 예제 쿼리 — 직접 실행 경로를 우선한다"
+    detail: "**예시 주입** — 질의와 유사한 예제 쿼리를 컨텍스트에 넣어 SQL 생성의 기준으로 삼는다. **직접 실행** — 질의가 예제 쿼리에 충분히 대응되면 LLM 이 SQL 을 새로 쓰지 않고 **파라미터만 채워** 실행을 요청한다"
+    hard_rule: "**직접 실행도 SQL 통제 4단계를 건너뛰지 않는다** — 파라미터 값이 조건절을 바꾸므로 검증 없이 실행하면 통제가 무의미해진다. **예제 쿼리라는 이유로 면제되는 통제는 없다**"
+    note: "축적 경로는 둘이다 — ① 관리자가 직접 등록 ② **성공한 조회 이력에서 관리자가 승격**. 예제 쿼리는 **등록 시점에 검수**하고, 추출된 **참조 공개 인터페이스는 정형으로 저장**되어 주입 판정과 공개 범위 영향 검수의 근거가 된다"
+    why: "자주 쓰이는 질의를 예제 쿼리로 수렴시키면 정확도·조회 부하·검증 부담이 함께 줄어든다"
+  - id: REQ-303
+    type: functional
+    priority: must
+    actors: [ACT-003]
+    title: "지식과 공개 데이터 인터페이스의 역할 경계 — 참조 링크"
+    detail: "**지식 본문에는 물리 테이블·컬럼명과 SQL 을 담지 않는다.** 공개 데이터 인터페이스 하나의 의미는 카탈로그의 업무 명칭·설명이, SQL로 표현되는 예시는 인증 예제 쿼리가 자리다. 지식이 특정 공개 뷰·테이블에 관한 것이면 **참조 인터페이스 링크**(0..N)로 표현한다"
+    why: "Hub가 선택해 공개한 물리명·구조의 원천은 카탈로그 하나다. 다른 자산이 물리명을 자유 텍스트로 품으면 **통제와 변경 검수 밖에서 관리되는 스키마 사본**이 생긴다"
+    link_uses: "① 컨텍스트 주입 판정 ② **참조 인터페이스 카탈로그의 동반 주입** — 언급된 공개 객체의 스키마 없이 SQL을 쓰는 상황을 만들지 않는다 ③ **수명 관리** — 고객사 변경관리 근거 또는 선택적 구조 변화 경고가 있으면 해당 지식·예제 쿼리의 영향 검수를 남긴다"
+  - id: REQ-304
+    type: functional
+    priority: must
+    actors: [ACT-003]
+    title: "공개 데이터 인터페이스 변화의 보조 감지와 영향 검수"
+    detail: "고객사 DB/DW 변경관리 절차의 통지·근거를 입력으로 업무 자산 관리자가 Hub 공개 범위 영향을 검수한다. 선택적으로, **이미 등록된 공개 뷰·테이블에 한해** 결과가 나오지 않는 조건의 조회 결과 메타데이터로 컬럼 목록을 비교해 변화 후보를 알릴 수 있다. 대상은 공개 카탈로그와 이를 참조하는 저장된 조회·인증 예제 쿼리·지식이다"
+    limits: "구조 비교는 컬럼 추가·삭제·타입 변경·객체 소멸의 후보만 알릴 수 있다. 컬럼의 **의미 변경**, 뷰의 행 필터·원본 조인 변경, 보안상 등록하지 않은 객체의 변경은 알 수 없다. 따라서 구조 비교가 없거나 이상이 없더라도 영향 없음의 자동 판정 근거가 되지 않는다"
+    hard_rule: "**Hub는 업무 DB/DW 전체를 대사하거나 카탈로그를 자동 갱신·활성화하지 않는다.** 변화 후보와 DB/DW 변경 통지는 업무 자산 관리자의 영향 검수 대상으로만 쓰며, 영향 있는 변경은 REQ-306 반영 세트로 처리한다. 점검 쿼리를 실행하면 실제 사용자 조회 이력과 분리해 기록한다"
+    note: "**인라인 값 후보 샘플링은 다른 동작이다** — 실제 데이터를 읽으므로 ① 관리자가 대상 컬럼을 지정해 수동 실행 ② distinct 값 수 상한과 조회 행 상한 적용 ③ **조회 이력에 시스템 조회로 구분해 기록**. **개인정보 컬럼은 샘플링 대상에서 제외한다** — 값을 보여주는 것이 목적인 기능이므로 마스킹으로 해결되지 않는다"
+  - id: REQ-305
+    type: functional
+    priority: must
+    actors: [ACT-003, ACT-013]
+    process_step: PRC-09-05
+    title: "지식 베이스 반영 요청·승인과 활성 상태 관리"
+    detail: "지식 베이스의 신규 등록·수정·삭제에는 사유와 근거를 반드시 남긴다. 안정적인 지식 식별자 아래 후보 리비전을 만들며, 활성 지식을 직접 고치지 않는다. 고객사 시스템 관리 정책이 외부 테스트·감수 절차를 요구하면 그 완료 근거를 갖춘 뒤 업무 자산 관리자가 반영 세트에 담아 요청하고, 지식 반영 최종 책임자가 근거를 확인해 승인한 경우에만 실제 활성 상태로 바꾼다"
+    hard_rule: "승인 전 지식과 후보 리비전은 AI Agent의 검색·컨텍스트 주입 대상이 아니다. 반려된 요청은 활성 상태로 바뀌지 않으며, 사유·근거·요청자·확인자와 상태 전이를 보존한다"
+    why: "지식 베이스의 품질 변화는 AI Agent의 응답 품질에 직접 영향을 주므로, 외부 검수와 실제 반영 사이를 사람이 확인 가능한 상태로 끊어야 한다"
+    traces_to: [REQ-301, REQ-303]
+  - id: REQ-306
+    type: functional
+    priority: must
+    actors: [ACT-003, ACT-013]
+    process_step: PRC-09-05
+    title: "반영 세트 단위 승인·반려와 일괄 활성화"
+    detail: "하나 이상의 지식 후보 리비전, 공개 카탈로그 후보 리비전, 인증 예제 쿼리, 관련 지식·스키마 매핑과 변경 사유·근거, 고객사 정책상 필요한 외부 시험·감수 증빙을 반영 세트로 묶는다. 단건 변경도 항목 하나인 세트로 처리할 수 있다. 최종 책임자는 세트 전체를 승인하거나 반려하며, 승인된 세트의 구성 항목만 함께 활성화한다"
+    hard_rule: "세트의 일부 항목만 활성화하지 않는다. 기존 활성 리비전과 매핑을 직접 수정하지 않고 후보 리비전에서 변경하며, 대상 지식·카탈로그가 새 리비전으로 활성화되어도 다른 지식의 참조 리비전을 자동 갱신하지 않는다. 카탈로그·보안 정책의 직접 관리 원칙은 유지하고, 최종 책임자의 승인은 정책 자체가 아니라 세트의 AI 서비스 반영 여부에 한정한다"
+    why: "업무 정책 변경은 지식 하나, 관련 지식, 공개 뷰의 의미, 인증 예제 쿼리와 매핑을 함께 바꿀 수 있다. 일부만 서비스에 반영하면 Agent가 서로 다른 근거를 조합해 잘못된 답을 만들 수 있다"
+    traces_to: [REQ-301, REQ-303, REQ-304, REQ-305]
+
+# ── 로드맵·제약에서 유도한 것 ─────────────
+# **지어낸 사실이 아니라 함축을 드러낸 것이다.** 로드맵이 "알림 발송" 을 P3 포함
+# 항목으로, 개발 표준이 "프로파일 로컬/개발/운영" 을 규정했으나 요구사항으로 적힌 적이
+# 없어 실현체(FEAT-214 · FEAT-302)가 역추적되지 않았다. `derived: true` 가 그 표시이며
+# **P1 게이트에서 사용자 확인 대상이다.**
+  - id: REQ-401
+    type: functional
+    priority: should
+    derived: true
+    derived_from: "00-charter.yaml RM-P3 (알림 발송) · CON-031 (메일 발송 경로)"
+    actors: [ACT-001, ACT-009]
+    title: "워크플로우·잡의 결과를 사용자에게 알린다"
+    detail: "주기·조건 실행으로 처리된 결과와 실패를 사용자에게 통지한다. 발송 경로는 고객사 환경에 따라 다르므로(CON-031) 경로를 시스템이 규정하지 않는다"
+    open: "**무엇을 어떤 조건에 알리는가는 미확정이다** — 워크플로우 설계에서 확정한다"
+    roadmap: RM-P3
+  - id: REQ-402
+    type: functional
+    priority: must
+    priority_reason: "고객사별 실행 환경을 분리하고 비밀 값을 평문으로 남기지 않기 위한 배포 전제다"
+    derived: true
+    derived_from: "CON-011 (비밀 값) · CON-033 (프로파일로 Provider 전환) · hub-conventions §3"
+    actors: [ACT-009]
+    process_step: PRC-01-01
+    title: "환경별 설정과 프로파일을 분리해 관리한다"
+    detail: "프로파일은 **로컬 / 개발 / 운영**으로 구분하고 모듈별 yml 을 파일로 분리한다. **비밀 값은 설정 파일에 평문으로 두지 않는다.** LLM Provider 선택(개발기 CLI ↔ 운영 API)도 프로파일 설정으로 전환된다"
+    hard_rule: "**업무 DB·DW 데이터소스와 API 자격증명은 yml 에만 둔다** — 화면은 매핑과 참조 키만 관리한다"
+
+# ── system — 현재 백오피스 코어의 요구사항과 구현 근거 ───────────
+# **신규 기능을 상상해 적은 것이 아니다.** 2026-09-12 현재 소스·Liquibase·화면 문서의
+# 구현 사실을 역추적해 system 소유 요구로 올렸다. P2는 이 경계를 이동 규칙으로, P3는
+# FEAT·ENT·API·TC와 무손실 회귀 계약으로 구체화한다. G3 승인 전에는 소스를 옮기지 않는다.
+  - id: REQ-501
+    type: functional
+    priority: must
+    priority_reason: "계정 판정이 없으면 모든 화면과 API의 인증 전제가 성립하지 않으며 현재 백오피스의 기존 동작을 잃으므로 RM-P1 필수다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-06-01
+    title: "계정 상태와 접속 조건을 한 판정으로 관리한다"
+    detail: "시스템 관리자는 계정 등록·수정, 역할 부여, 사용 기간, 잠금·휴면, 접속 허용 IP, 비밀번호 변경·초기화와 활성 세션 종료를 관리할 수 있어야 한다"
+    acceptance: "상태·기간·잠금·휴면·IP 중 하나라도 실패한 계정은 세션을 얻지 못하고, 비밀번호와 세션 변경은 이력·만료 규칙을 우회하지 않는다"
+    source: "현재 구현 역추적 — 사용자 관리와 로그인·프로필·설정·비밀번호 변경·세션 만료 화면"
+    evidence:
+      frontend: ["modules/system/features/user", "modules/system/public/auth", "modules/system/public/profile", "modules/system/public/settings"]
+      backend: ["modules/system/api/auth", "modules/system/api/user", "domain/auth", "domain/user"]
+      tables: [SYS_USER, SYS_USER_PWD_HIST, SYS_USER_IP_ALLOW, SYS_USER_PWD_RESET, SYS_LO_LOGIN]
+      screens: ["/admin/system/user", "_standalone/system/login", "_standalone/system/profile", "_standalone/system/settings", "_standalone/system/pwd-change", "_standalone/system/session-expire"]
+    roadmap: RM-P1
+
+  - id: REQ-502
+    type: functional
+    priority: must
+    priority_reason: "역할과 개인 예외가 하나의 유효 권한으로 합성되지 않으면 같은 사용자에게 화면과 API가 서로 다른 답을 하므로 RM-P1 필수다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-06-02
+    title: "역할 권한과 개인 예외를 합성해 현재 유효 권한을 계산한다"
+    detail: "시스템 관리자는 역할, 사용자별 역할, 역할별 메뉴 액션과 사용자별 예외를 부여·회수하고 영향 사용자를 확인할 수 있어야 한다"
+    acceptance: "동일 메뉴 액션의 역할 부여와 개인 예외가 정해진 규칙으로 하나의 유효 권한이 되고, 변경 뒤 오래 열린 세션도 이전 권한을 계속 사용하지 않는다"
+    source: "현재 구현 역추적 — 역할·역할 권한·개인 권한 화면과 유효 권한 버전 검사"
+    evidence:
+      frontend: ["modules/system/features/role", "modules/system/features/roleauth", "features/userauth", "shared/authz"]
+      backend: ["modules/system/api/role", "modules/system/api/user", "api/userauth", "api/authz", "domain/authz"]
+      tables: [SYS_ROLE, SYS_USER_ROLE, SYS_ROLE_MENU_AUTH, SYS_USER_MENU_AUTH]
+      screens: ["/admin/system/role", "/admin/system/role-auth", "/user-auth"]
+    roadmap: RM-P1
+
+  - id: REQ-503
+    type: functional
+    priority: must
+    priority_reason: "미등록·미매핑 API를 허용하면 메뉴 권한을 우회하므로 실패 폐쇄 권한 사슬은 RM-P1 보안 기준선이다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-06-03
+    title: "메뉴·화면·서비스 API의 권한 사슬을 실패 폐쇄로 유지한다"
+    detail: "시스템 관리자는 메뉴 트리와 API 카탈로그의 화면·액션·서비스 API 매핑을 확인하고, 사용자는 유효 권한이 있는 메뉴와 API만 사용할 수 있어야 한다"
+    hard_rule: "메뉴가 보인다는 사실, URL을 안다는 사실, 역할 이름 중 어느 것도 API 허용 근거가 아니다. `/api/service/**`는 등록 API와 메뉴 액션의 완전 일치가 없으면 403이다"
+    acceptance: "메뉴·화면 등록·API 등록·메뉴 API 매핑 중 하나를 제거한 회귀 시험이 반드시 접근 거부로 끝난다"
+    source: "현재 구현 역추적 — 메뉴 트리·API 카탈로그·screenRegistry·AuthorizationInterceptor"
+    evidence:
+      frontend: ["modules/system/features/menu", "modules/system/features/apicatalog", "shared/routes", "shared/authz"]
+      backend: ["api/menu", "api/apicatalog", "api/authz", "domain/authz"]
+      tables: [SYS_MENU, SYS_API, SYS_MENU_API, SYS_ROLE_MENU_AUTH, SYS_USER_MENU_AUTH]
+      screens: ["/menu", "/api-catalog", "_standalone/system/menu-modal"]
+    roadmap: RM-P1
+
+  - id: REQ-504
+    type: functional
+    priority: must
+    priority_reason: "공통코드는 모든 화면의 후보와 상태 해석을 함께 바꾸며 보호·참조 무결성이 깨지면 기존 데이터의 뜻이 달라지므로 RM-P1 필수다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-07-01
+    title: "공통코드와 참조 코드의 무결성을 보존한다"
+    detail: "시스템 관리자는 코드 그룹·코드와 참조 정의·값을 관리하되 시스템 보호 그룹·코드는 삭제하거나 끌 수 없어야 하고 파생된 참조값과 코드명은 원본의 수명주기를 따라야 한다"
+    acceptance: "시스템 그룹·코드의 삭제 또는 비활성화와 코드가 남은 그룹의 삭제, 정의에 없는 참조값 저장은 서버에서 거부되고, 코드·정의 삭제 시 그에 딸린 참조값과 코드명은 같은 트랜잭션에서 정리된다"
+    source: "현재 구현 역추적 — 공통코드 관리와 공통 CodeSelect"
+    evidence:
+      frontend: ["features/code", "shared/stores"]
+      backend: ["api/code", "domain/code"]
+      tables: [SYS_CODE_GROUP, SYS_CODE, SYS_CODE_GRP_REF, SYS_CODE_REF]
+      screens: ["/code"]
+    roadmap: RM-P1
+
+  - id: REQ-505
+    type: functional
+    priority: must
+    priority_reason: "화면·서버·메뉴·코드명이 같은 문구 원천을 쓰지 않으면 언어와 배포 시점에 따라 서로 다른 안내가 나오므로 RM-P1 필수다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-07-02
+    title: "생성된 메시지 키에 언어별 값을 일관되게 제공한다"
+    detail: "시스템 관리자는 생성된 메시지 키의 언어별 값을 관리하고 미사용 키를 식별·삭제하며, 화면·서버·메뉴·공통코드가 같은 메시지 원천을 사용하게 해야 한다"
+    hard_rule: "키 생성은 소스 상수와 시드 생성기가 소유한다. 관리 화면에서 임의 키를 추가하지 않는다"
+    acceptance: "요청 언어 값이 없을 때 기본 언어와 키 문자열 순의 폴백이 동작하고, 값 저장 한 번에 메시지 캐시 버전이 한 번 증가하며 커밋한 인스턴스는 즉시, 다른 인스턴스는 설정된 TTL 안에 새 값을 읽는다"
+    source: "현재 구현 역추적 — 다국어 메시지 관리, label(), MsgKey, 메시지 시드"
+    evidence:
+      frontend: ["modules/system/features/message", "shared/i18n"]
+      backend: ["api/message", "domain/message", "core/message"]
+      tables: [SYS_MESSAGE_KEY, SYS_MESSAGE, SYS_CACHE_VERSION]
+      screens: ["/message"]
+    roadmap: RM-P1
+
+  - id: REQ-506
+    type: functional
+    priority: must
+    priority_reason: "런타임 설정은 인증·보존·조회 범위에 직접 영향을 주므로 검증과 원자적 적용 없이 운영 변경을 허용할 수 없어 RM-P1 필수다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-07-03
+    title: "시스템 설정은 검증된 값만 적용하고 배포 기본값으로 되돌릴 수 있어야 한다"
+    detail: "시스템 관리자는 `sys-config.*` 아래에 등록된 일반 런타임 설정을 조회·변경할 수 있어야 하며, 키별 형식·범위와 변경 영향 경고를 따라야 한다. 비밀값·임의 변경 금지 값은 별도 프로퍼티 경로로 배포 관리하며 이 화면의 대상이 아니다"
+    acceptance: "잘못된 형식·범위·미등록 키 변경은 저장되지 않고, 성공한 변경은 설정 캐시 버전과 함께 한 트랜잭션으로 적용되며 되돌리면 오버라이드 행이 사라져 배포 기본값이 다시 드러난다. 설정값은 노드 캐시가 아니라 다음 작업 스코프의 DB 오버라이드 합성으로 반영된다. `sys-config.*` 밖의 비밀·보호 설정은 목록·응답·저장 요청에 나타나지 않는다"
+    source: "현재 구현 역추적 — 시스템 환경설정 화면과 사용자 설정 모달"
+    evidence:
+      frontend: ["modules/system/features/config", "modules/system/public/settings"]
+      backend: ["modules/system/api/config", "domain/config"]
+      tables: [SYS_CONFIG, SYS_CACHE_VERSION]
+      screens: ["/admin/system/config", "_standalone/system/settings"]
+    roadmap: RM-P1
+
+  - id: REQ-507
+    type: functional
+    priority: must
+    priority_reason: "인증·인가·오류의 사후 재구성은 보안 사고와 운영 장애를 판정하는 최소 근거이므로 RM-P1 필수다"
+    workstream: system
+    actors: [ACT-005, ACT-012]
+    process_step: PRC-08-01
+    title: "로그인·사용·오류 이력을 수정·삭제 경로 없이 조회하고 원인을 추적한다"
+    detail: "감사·시스템 관리자는 기간·사용자·경로·결과로 이력을 조회하고 허용된 경우 요청·오류 전문까지 확인할 수 있어야 한다"
+    acceptance: "이력 화면에는 저장·삭제 경로가 없고, 요청·오류 전문을 받는 상세 API는 목록과 같은 해당 이력 메뉴의 현재 READ 권한 사슬을 통과해야 한다"
+    source: "현재 구현 역추적 — 로그인 이력·사용 이력·에러 로그 화면"
+    evidence:
+      frontend: ["modules/system/features/loginlog", "modules/system/features/accesslog", "modules/system/features/errorlog"]
+      backend: ["modules/system/api/log", "domain/log", "domain/auth/loginlog"]
+      tables: [SYS_LO_LOGIN, SYS_LO_ACCESS, SYS_LO_EXCEPTION]
+      screens: ["/admin/system/log/login", "/admin/system/log/access", "/admin/system/log/error"]
+    roadmap: RM-P1
+
+  - id: REQ-508
+    type: functional
+    priority: must
+    priority_reason: "배치의 중복·유령 실행을 성공으로 오인하면 자동화 결과를 신뢰할 수 없으므로 현재 운영 기준선을 RM-P1에서 보존해야 한다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-08-02
+    title: "등록된 배치를 일정과 시간대에 따라 실행하고 결과를 추적한다"
+    detail: "시스템 관리자는 배치 일정 등록·활성화·즉시 실행·중단과 최근·전체 이력 조회를 할 수 있어야 한다"
+    acceptance: "존재하지 않는 구현, 잘못된 크론·시간대, 쿨다운 위반과 중복 실행은 거부되고 유령·중단 경합은 성공과 다른 결과로 기록된다"
+    source: "현재 구현 역추적 — 배치 스케줄·실행 이력 화면과 스케줄러"
+    evidence:
+      frontend: ["modules/system/features/batchschedule", "modules/system/features/batchhistory", "shared/batch"]
+      backend: ["modules/system/api/batch", "api/batch", "domain/batch"]
+      tables: [SYS_SCHEDULE_BATCH, SYS_BATCH_HISTORY]
+      screens: ["/admin/system/batch/schedule", "/admin/system/batch/history"]
+    roadmap: RM-P1
+
+  - id: REQ-509
+    type: functional
+    priority: must
+    priority_reason: "공지 노출과 계정·권한 요청의 판정을 실제 권한 변경과 분리해야 운영자가 요청 처리만으로 권한을 암묵 변경하지 않으므로 RM-P1 필수다"
+    workstream: system
+    actors: [ACT-012]
+    process_step: PRC-08-03
+    title: "공지 노출과 사용자의 관리 요청 판정을 분리해 운영한다"
+    detail: "시스템 관리자는 공지의 게시 기간·팝업 노출을 관리하고, 사용자가 보낸 권한·계정 관련 알림 요청의 상태와 처리 사유를 기록할 수 있어야 한다"
+    acceptance: "게시 기간 밖 공지는 팝업으로 보이지 않고, 요청 처리·반려가 실제 권한·계정 변경을 암묵적으로 수행하지 않는다"
+    source: "현재 구현 역추적 — 공지·알림 요청·알림함·공지 팝업"
+    evidence:
+      frontend: ["modules/system/features/notice", "modules/system/public/notice", "modules/system/features/notirequest", "modules/system/public/notification"]
+      backend: ["modules/system/api/notice", "modules/system/api/notirequest", "modules/system/api/notification", "domain/notification"]
+      tables: [SYS_NOTICE, SYS_NOTI_REQUEST, SYS_NOTI_INBOX]
+      screens: ["/admin/system/notice", "/admin/system/noti-request", "_standalone/system/noti-inbox", "_standalone/system/notice-popup"]
+    roadmap: RM-P1
+
+  - id: REQ-510
+    type: functional
+    priority: should
+    priority_reason: "공통 사용자 상태의 단일 소유는 중복 저장을 막지만 핵심 인증·인가·운영 기능이 먼저 성립할 수 있어 should로 둔다"
+    workstream: system
+    actors: [ACT-001, ACT-012]
+    process_step: PRC-08-04
+    title: "모듈 공통 사용자 상태는 system이 한 번만 소유한다"
+    detail: "즐겨찾기·그리드 설정·저장 조회조건·메뉴 사용 통계처럼 관리 콘솔과 portal에서 함께 쓰는 사용자 상태는 특정 화면 모듈에 복제하지 않아야 한다"
+    hard_rule: "portal 전용 대화·개인화 상태는 이 범위에 포함하지 않는다. `SYS_SEQUENCE`·`SYS_DATA_LOCK`·`SYS_JOB_PROGRESS`·Spring Session은 업무 기능이 아니라 platform 기반이다"
+    acceptance: "같은 사용자가 어느 화면 영역에서 접근해도 공통 상태가 하나이고, 모듈별 테이블·서비스 복제 없이 system 공개 계약으로 읽고 쓴다"
+    source: "현재 구현 역추적 — 공통 즐겨찾기·그리드·검색조건·메뉴 통계 저장소"
+    evidence:
+      frontend: ["shared/favorite", "shared/grid", "shared/searchform", "shared/menustat"]
+      backend: ["modules/system/api/favorite", "modules/system/api/gridpref", "modules/system/api/searchcond", "modules/system/api/menustat", "domain/favorite", "domain/gridpref", "domain/searchcond", "domain/menustat"]
+      tables: [SYS_USER_FAVORITE, SYS_USER_GRID_PREF, SYS_USER_SEARCH_COND, SYS_USER_MENU_STAT]
+      screens: ["/admin/system/dashboard"]
+    roadmap: RM-P1
+
+# ── 요구사항 모순 검사 ─────────────────────────────────────────────
+# 별도 현황 문서를 만들지 않는다. 판정은 요구사항 정본의 충돌하기 쉬운 쌍 옆에서 관리한다.

@@ -1,0 +1,7 @@
+delivery_strategy:
+  decision: "ADR-006 · ADR-007"
+  first: "SCR-112 계약 시험 화면을 integration 작업흐름에서 먼저 설계한다"
+  later: "SCR-101~111 제품 portal 화면은 admin·agent 핵심 안정 뒤 portal 작업흐름에서 상세 설계한다"
+  hard_rule: "SCR-112 승인은 SCR-101 채팅이나 다른 제품 portal 화면의 승인으로 간주하지 않는다"
+
+# ── 무엇을 메뉴로 두는가 ────────────────────────────────────

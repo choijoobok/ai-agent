@@ -1,0 +1,16 @@
+revision_rules:
+  - path: "처리 중 입력의 교정"
+    increments: true
+    why: "되돌려 다시 한다. 지나온 스텝이 버려진다"
+  - path: "중단된 턴의 재시도"
+    increments: false
+    why: "중단 지점에서 **이어간다.** 버려지는 스텝이 없다"
+  - path: "승인·추가 정보 응답 후 재개"
+    increments: false
+    why: "이어간다"
+  - path: "비승인 입력 후 계속"
+    increments: false
+    why: "같은 턴을 계속 처리한다"
+  - path: "성공한 턴의 결과 교정 재요청"
+    increments: null
+    why: "해당 없음 — 종결된 턴은 되돌리지 않고 **새 턴으로 처리한다**"

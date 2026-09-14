@@ -48,23 +48,23 @@
 
 | 파일 | 단계 | 담는 것 | 상태 |
 |---|---|---|---|
-| [`00-charter.yaml`](spec/00-charter.yaml) | P0 | 문제 5 · 경제성 5 · **목표 5**(GOAL-) · **비목표 10**(NGOAL-) · 성공 기준 7 · 로드맵 4 | 이관 |
-| [`01-actors.yaml`](spec/01-actors.yaml) | P0 | **액터 11**(ACT-) — 사람 5 · 외부 시스템 3 · 외부 조직 3 + 모듈 3 | 이관 |
-| [`02-constraints.yaml`](spec/02-constraints.yaml) | P0 | **설계 원칙 10**(PRN-) · 기술 제약 11 · 배포 3 · **착수 시 확정 18**(CON-) · 개발 제약 2 | 이관 |
-| [`03-glossary.yaml`](spec/03-glossary.yaml) | P1 | **용어 54**(TRM- · 대화·실행·정책·실행기반·처리중입력) · **프레임워크 어휘 24** · **헷갈리는 짝 10** · 턴 상태 6 · 대기 유형 3 · 회차 규칙 5 | 이관 |
-| [`10-requirements.yaml`](spec/10-requirements.yaml) | P1 | **요구사항 59**(REQ-) — 질의 처리 26 · 처리 중 입력 6 · 보안·거버넌스 14 · 저장된 조회 7 · 메타데이터 4 · **유도 2** | 이관 |
-| [`11-processes.yaml`](spec/11-processes.yaml) | P1 | 업무 프로세스 As-Is / To-Be | **비어 있다** |
-| [`20-architecture.yaml`](spec/20-architecture.yaml) | P2 | 구성 · **논리 구성도**(노드 14 · 간선 16 · 불변식 4) · 모듈 경계 6 · 딥링크 · 데이터소스 · LLM 연동 · 신원 매핑 · 지식 검색 · **실행 점유**(ARCH-) | 이관 |
-| [`21-nfr.yaml`](spec/21-nfr.yaml) | P2 | **비기능 19**(NFR-) — 성능 5 · 비용 8 · 안정성 6 (**목표 수치 전부 미정**) | 이관 |
-| [`22-authz.yaml`](spec/22-authz.yaml) | P2 | 그룹 판정 · 매핑 6 · 행 스코프 · **SQL 통제 4단계** · 주입 통제 · 기본 필터 · 책임 층(AUTHZ-) | 이관 |
-| [`30-usecases.yaml`](spec/30-usecases.yaml) | P3 | 유즈케이스 (기본·대안·예외 흐름) | **비어 있다** |
-| [`31-features.yaml`](spec/31-features.yaml) | P3 | **기능 85**(FEAT-) — admin 34 · portal 25 · agent 21 · 공통 5 | 이관 |
-| [`40-domain.yaml`](spec/40-domain.yaml) | P3 | 엔티티·속성·상태 전이 (네이밍 규약만 확정) | **비어 있다** |
-| [`50-api.yaml`](spec/50-api.yaml) | P3 | Hub 내부 API (경로 규약만 확정) | **비어 있다** |
-| [`51-interfaces.yaml`](spec/51-interfaces.yaml) | P3 | **외부 인터페이스 8**(IF-) — 나가는 5 · 들어오는 3 | 이관 |
-| [`60-screens.yaml`](spec/60-screens.yaml) | P3 | **화면 43**(SCR-) — admin 32 · portal 11 + 메뉴 판정 기준 · 통제 경계 · Phase 노출 | 이관 |
-| [`70-testcases.yaml`](spec/70-testcases.yaml) | P3~ | 테스트 케이스 | **비어 있다** |
-| [`80-operations.yaml`](spec/80-operations.yaml) | P2~P6 | **운영 절차**(RUN-) — 구성·일상 점검·장애·백업/복구·모니터링·정기 작업·에스컬레이션 | 작성 중 |
+| [`00-charter/_index.yaml`](spec/00-charter/_index.yaml) | P0 | 문제 5 · 경제성 5 · **목표 5**(GOAL-) · **비목표 10**(NGOAL-) · 성공 기준 7 · 로드맵 4 | 이관 |
+| [`01-actors/_index.yaml`](spec/01-actors/_index.yaml) | P0 | **액터 11**(ACT-) — 사람 5 · 외부 시스템 3 · 외부 조직 3 + 모듈 3 | 이관 |
+| [`02-constraints/_index.yaml`](spec/02-constraints/_index.yaml) | P0 | **설계 원칙 10**(PRN-) · 기술 제약 11 · 배포 3 · **착수 시 확정 18**(CON-) · 개발 제약 2 | 이관 |
+| [`03-glossary/_index.yaml`](spec/03-glossary/_index.yaml) | P1 | **용어 54**(TRM- · 대화·실행·정책·실행기반·처리중입력) · **프레임워크 어휘 24** · **헷갈리는 짝 10** · 턴 상태 6 · 대기 유형 3 · 회차 규칙 5 | 이관 |
+| [`10-requirements/_index.yaml`](spec/10-requirements/_index.yaml) | P1 | **요구사항 59**(REQ-) — 질의 처리 26 · 처리 중 입력 6 · 보안·거버넌스 14 · 저장된 조회 7 · 메타데이터 4 · **유도 2** | 이관 |
+| [`11-processes/_index.yaml`](spec/11-processes/_index.yaml) | P1 | 업무 프로세스 As-Is / To-Be | **비어 있다** |
+| [`20-architecture/_index.yaml`](spec/20-architecture/_index.yaml) | P2 | 구성 · **논리 구성도**(노드 14 · 간선 16 · 불변식 4) · 모듈 경계 6 · 딥링크 · 데이터소스 · LLM 연동 · 신원 매핑 · 지식 검색 · **실행 점유**(ARCH-) | 이관 |
+| [`21-nfr/_index.yaml`](spec/21-nfr/_index.yaml) | P2 | **비기능 19**(NFR-) — 성능 5 · 비용 8 · 안정성 6 (**목표 수치 전부 미정**) | 이관 |
+| [`22-authz/_index.yaml`](spec/22-authz/_index.yaml) | P2 | 그룹 판정 · 매핑 6 · 행 스코프 · **SQL 통제 4단계** · 주입 통제 · 기본 필터 · 책임 층(AUTHZ-) | 이관 |
+| [`30-usecases/_index.yaml`](spec/30-usecases/_index.yaml) | P3 | 유즈케이스 (기본·대안·예외 흐름) | **비어 있다** |
+| [`31-features/_index.yaml`](spec/31-features/_index.yaml) | P3 | **기능 85**(FEAT-) — admin 34 · portal 25 · agent 21 · 공통 5 | 이관 |
+| [`40-domain/_index.yaml`](spec/40-domain/_index.yaml) | P3 | 엔티티·속성·상태 전이 (네이밍 규약만 확정) | **비어 있다** |
+| [`50-api/_index.yaml`](spec/50-api/_index.yaml) | P3 | Hub 내부 API (경로 규약만 확정) | **비어 있다** |
+| [`51-interfaces/_index.yaml`](spec/51-interfaces/_index.yaml) | P3 | **외부 인터페이스 8**(IF-) — 나가는 5 · 들어오는 3 | 이관 |
+| [`60-screens/_index.yaml`](spec/60-screens/_index.yaml) | P3 | **화면 43**(SCR-) — admin 32 · portal 11 + 메뉴 판정 기준 · 통제 경계 · Phase 노출 | 이관 |
+| [`70-testcases/_index.yaml`](spec/70-testcases/_index.yaml) | P3~ | 테스트 케이스 | **비어 있다** |
+| [`80-operations/_index.yaml`](spec/80-operations/_index.yaml) | P2~P6 | **운영 절차**(RUN-) — 구성·일상 점검·장애·백업/복구·모니터링·정기 작업·에스컬레이션 | 작성 중 |
 
 ### 상태가 뜻하는 것
 
@@ -77,24 +77,24 @@
 
 | Prefix                              | 대상                       | 정의 위치                               |
 | ----------------------------------- | ------------------------ | ----------------------------------- |
-| `GOAL-` `NGOAL-`                    | 최종 목표 · 비목표              | `00-charter.yaml`                   |
-| `ACT-`                              | 액터                       | `01-actors.yaml`                    |
-| `PRN-`                              | 설계 원칙                    | `02-constraints.yaml`               |
+| `GOAL-` `NGOAL-`                    | 최종 목표 · 비목표              | `00-charter/_index.yaml`                   |
+| `ACT-`                              | 액터                       | `01-actors/_index.yaml`                    |
+| `PRN-`                              | 설계 원칙                    | `02-constraints/_index.yaml`               |
 | `CON-`                              | 제약·착수 확정 항목              | 〃                                   |
-| `TRM-`                              | 용어                       | `03-glossary.yaml`                  |
-| `REQ-`                              | 요구사항                     | `10-requirements.yaml`              |
-| `PRC-`                              | 업무 프로세스                  | `11-processes.yaml`                 |
-| `ARCH-`                             | 아키텍처 결정 사항               | `20-architecture.yaml`              |
-| `NFR-`                              | 비기능 목표치                  | `21-nfr.yaml`                       |
-| `AUTHZ-`                            | 권한 모델                    | `22-authz.yaml`                     |
-| `UC-`                               | 유즈케이스                    | `30-usecases.yaml`                  |
-| `FEAT-`                             | 기능                       | `31-features.yaml`                  |
-| `ENT-`                              | 엔티티                      | `40-domain.yaml`                    |
-| `API-`                              | Hub 내부 API               | `50-api.yaml`                       |
-| `IF-`                               | 외부 인터페이스                 | `51-interfaces.yaml`                |
-| `SCR-`                              | 화면                       | `60-screens.yaml`                   |
-| `TC-`                               | 테스트 케이스                  | `70-testcases.yaml`                 |
-| `RUN-`                              | 운영 런북 절차                 | `80-operations.yaml`                |
+| `TRM-`                              | 용어                       | `03-glossary/_index.yaml`                  |
+| `REQ-`                              | 요구사항                     | `10-requirements/_index.yaml`              |
+| `PRC-`                              | 업무 프로세스                  | `11-processes/_index.yaml`                 |
+| `ARCH-`                             | 아키텍처 결정 사항               | `20-architecture/_index.yaml`              |
+| `NFR-`                              | 비기능 목표치                  | `21-nfr/_index.yaml`                       |
+| `AUTHZ-`                            | 권한 모델                    | `22-authz/_index.yaml`                     |
+| `UC-`                               | 유즈케이스                    | `30-usecases/_index.yaml`                  |
+| `FEAT-`                             | 기능                       | `31-features/_index.yaml`                  |
+| `ENT-`                              | 엔티티                      | `40-domain/_index.yaml`                    |
+| `API-`                              | Hub 내부 API               | `50-api/_index.yaml`                       |
+| `IF-`                               | 외부 인터페이스                 | `51-interfaces/_index.yaml`                |
+| `SCR-`                              | 화면                       | `60-screens/_index.yaml`                   |
+| `TC-`                               | 테스트 케이스                  | `70-testcases/_index.yaml`                 |
+| `RUN-`                              | 운영 런북 절차                 | `80-operations/_index.yaml`                |
 | `DLV-` `SITE-`                      | 제출 구성 · 제출 사이트          | `delivery.yaml`                     |
 | `DES-`                              | 상세 설계 문서                 | `design/`                           |
 | `ADR-` `ASM-` `CR-` `DEF-` `SLICE-` | 결정 · 가정 · 변경 · 결함 · 슬라이스 | `decisions/` · `project.state.yaml` |

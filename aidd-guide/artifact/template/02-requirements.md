@@ -317,7 +317,7 @@ tags: [artifact, template, screen]
     *돌아가는가* 만 묻고 *막히는가* 를 묻지 않는다.
   · 최소 세트: 정상 · 경계 · 검증 거부 · 권한 없음. 상태 컬럼이 있으면 **상태 전이 거부**를 더한다.
   · **여기 있는 케이스가 테스트 코드의 입력이다**(TEST-FIRST). 구현 전에 코드로 옮기고 실패를 확인한다.
-  · @defer P3 **이 표의 케이스 번호와 `documents/spec/70-testcases.yaml` 의 `TC-####` 를 어떻게 잇나** —
+  · @defer P3 **이 표의 케이스 번호와 `documents/spec/70-testcases/_index.yaml` 의 `TC-####` 를 어떻게 잇나** —
     T13 은 `TC-####` 만 센다(process/05-traceability.md §3). 승격할 때 번호를 받나 처음부터 `TC-` 로 쓰나는
     **첫 화면의 요건서를 쓸 때 정한다** — 실물이 없는 지금 정하면 근거가 추정이다.
 -->

@@ -1,0 +1,17 @@
+wait_types:
+  - id: WT-01
+    type: 승인 대기
+    key: APPROVAL
+    waits_for: "승인 필요 액션의 실행 전 승인"
+    resume: "승인이면 실행, **그 외 모든 입력은 비승인**"
+  - id: WT-02
+    type: 추가 정보 대기
+    key: ADDITIONAL_INFO
+    waits_for: "질의 처리에 필요한 정보 요구"
+    resume: "받은 정보를 입력으로 처리를 이어간다"
+  - id: WT-03
+    type: 의도 확인 대기
+    key: INTENT_CONFIRM
+    waits_for: "**처리 중 들어온 새 입력의 의도 확인**"
+    resume: "**네 갈래로 분기한다** — 진행 중 턴에 반영 / 되돌려 재수행 / 별도 턴 / 중단"
+    note: "**되돌릴 수 없는 것이 걸린 턴에서만 쓴다.** 그 외에는 턴을 처리중으로 둔 채 확인을 병행하며 사용자대기로 전이하지 않는다 — 확인 때문에 멈추는 것 자체가 비용이다"

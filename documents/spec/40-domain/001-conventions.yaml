@@ -1,0 +1,13 @@
+conventions:
+  naming: "기존 SYS_* 이름 보존; 신규 system 테이블이 필요할 때만 승인된 changeset 규칙 적용"
+  time: "현재 컬럼 타입과 의미를 보존하고 신규 일시는 timestamptz"
+  audit: "REG_ID/REG_DTM/MOD_ID/MOD_DTM이 있는 테이블은 기존 감사 4컬럼 유지"
+  delete: "이력은 사용자·관리 API로 삭제하지 않고 설정된 보존 기간이 지난 행만 파기 배치가 hard delete한다. 계정·권한 기준은 참조 무결성 또는 비활성화, 사용자 UI 상태는 소유 범위 행만 hard delete한다"
+  source: "sources/backend/bootstrap/src/main/resources/db/changelog/schema/*.yaml"
+  requiredness: "PK attributes are non-null. All other nullable/default constraints are the currently applied Liquibase constraints; a system module move may not loosen or tighten them"
+  history_policy:
+    immutable_history: [ENT-505, ENT-521, ENT-522]
+    append_then_finalize: [ENT-524]
+    state_history: [ENT-527]
+    audit_columns_only: [ENT-501, ENT-502, ENT-503, ENT-506, ENT-507, ENT-508, ENT-509, ENT-510, ENT-511, ENT-512, ENT-513, ENT-514, ENT-515, ENT-516, ENT-517, ENT-518, ENT-520, ENT-523, ENT-525, ENT-526, ENT-528, ENT-529, ENT-531]
+    no_history: [ENT-504, ENT-519, ENT-530]

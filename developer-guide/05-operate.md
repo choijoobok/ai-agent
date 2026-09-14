@@ -1,6 +1,6 @@
 # 05. 운영 — 무엇을 보고 무엇을 준비하나
 
-> **운영 화면의 기능 목록은 [`documents/spec/31-features.yaml`](../documents/spec/31-features.yaml) 이,
+> **운영 화면의 기능 목록은 [`documents/spec/31-features/_index.yaml`](../documents/spec/31-features/_index.yaml) 이,
 > 지표의 판독 기준은 [`documents/design/turn-execution.md`](../documents/design/turn-execution.md) §7 이 갖는다.**
 > 여기는 *운영을 인수받는 사람이 무엇을 알아야 하는가* 다.
 
@@ -94,7 +94,7 @@ L·R·S(점유 유지·갱신 주기·스위퍼 주기)는 **실행 제한·운�
 ## 7. 착수 시 확정해야 할 것 — 운영 관점
 
 **시스템 기능이 아니어서 우리가 값을 정하지 않는 항목이 18개 있다**
-([`documents/spec/02-constraints.yaml`](../documents/spec/02-constraints.yaml) 의 `customer_agreements`).
+([`documents/spec/31-features/_index.yaml`](../documents/spec/31-features/_index.yaml) 의 `customer_agreements`).
 그중 **운영 인수 전에 반드시 답이 있어야 하는 것** 다섯을 꼽는다.
 
 | # | 항목 | 없으면 무슨 일이 나나 |
@@ -119,7 +119,7 @@ L·R·S(점유 유지·갱신 주기·스위퍼 주기)는 **실행 제한·운�
 ## 관련
 
 - 실행 점유의 지표 판독 — [`documents/design/turn-execution.md`](../documents/design/turn-execution.md) §7
-- 보안·거버넌스 요구사항 — [`documents/spec/10-requirements.yaml`](../documents/spec/10-requirements.yaml) REQ-101~114
-- 권한 모델 — [`documents/spec/22-authz.yaml`](../documents/spec/22-authz.yaml)
+- 보안·거버넌스 요구사항 — [`documents/spec/31-features/_index.yaml`](../documents/spec/31-features/_index.yaml) REQ-101~114
+- 권한 모델 — [`documents/spec/31-features/_index.yaml`](../documents/spec/31-features/_index.yaml)
 - 인도 단계 절차 — [`aidd-guide/phase/P6-deliver.md`](../aidd-guide/phase/P6-deliver.md)
 - 운영 로그와 오류 식별 — [`aidd-guide/standard/hub-conventions.md`](../aidd-guide/standard/hub-conventions.md) §7

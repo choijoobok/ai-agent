@@ -45,7 +45,7 @@ tags: [example, dialog]
 > 💬 **한 건 확인하려고 시스템 셋을 열어서 엑셀로 붙여 맞춰. 건당 20분씩 걸려.
 > 쓸 사람 120명, 붙일 시스템 3개. 연말까지. 기능 실행은 2차로 미뤄도 돼.**
 
-🤖 `[PM]` `documents/spec/00-charter.yaml` `01-actors.yaml` `02-constraints.yaml` 작성
+🤖 `[PM]` `documents/spec/00-charter/_index.yaml` `01-actors/_index.yaml` `02-constraints/_index.yaml` 작성
 > 반영했습니다. 성공기준 SC-01(자연어 조회 성공률), SC-02(조회 1건 소요 시간 20분→2분).
 > **범위 밖**: 기능 실행(2차), 워크플로우 자동화(3차), 모바일 앱.
 >

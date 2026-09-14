@@ -5,7 +5,7 @@
 > 사전**이다. AI 가 대화에서 괄호로 붙이는 풀이의 출처가 여기다.
 >
 > **여기 없는 것 — 업무 도메인 용어.** 세션·턴·스텝·워크플로우처럼 *이 시스템이 다루는 개념*
-> 44개는 [`documents/spec/03-glossary.yaml`](../documents/spec/03-glossary.yaml) 이 정본이다.
+> 44개는 [`documents/spec/03-glossary/_index.yaml`](../documents/spec/03-glossary/_index.yaml) 이 정본이다.
 > 그것은 **만들 물건의 말**이고, 여기는 **만드는 동안 오가는 말**이다.
 >
 > **모르는 말을 만나면 AI 에게 물어보고, 그 답을 여기에 더하게 한다.** 사전이 자라야
@@ -42,7 +42,7 @@ REQ ──→ UC ──→ FEAT ──┬──→ ENT   (테이블)
 
 ### 1.2 P0 착수 — 헌장에서 만드는 것
 
-전부 [`documents/spec/00-charter.yaml`](../documents/spec/00-charter.yaml) 에 있다.
+전부 [`documents/spec/03-glossary/_index.yaml`](../documents/spec/03-glossary/_index.yaml) 에 있다.
 
 | 접두 | 무엇의 약자 | 한국어 | 무슨 뜻인가 |
 |---|---|---|---|
@@ -60,18 +60,18 @@ REQ ──→ UC ──→ FEAT ──┬──→ ENT   (테이블)
 
 | 접두 | 무엇의 약자 | 한국어 | 어디에 |
 |---|---|---|---|
-| `ACT` | **Act**or | 액터 | 이 시스템을 쓰거나 이 시스템과 주고받는 **사람·외부 시스템** — `01-actors.yaml` |
-| `MOD` | **Mod**ule | 모듈 | 통제 경계로 나눈 덩어리 (admin · portal · agent) — `01-actors.yaml` |
-| `PRN` | **Prin**ciple | 설계 원칙 | 흔들리지 않는 판단 기준 — `02-constraints.yaml` |
-| `CON` | **Con**straint | 제약 | 기술·배포·고객사 합의로 **이미 정해져 바꿀 수 없는 것** — `02-constraints.yaml` |
-| `TRM` | **Ter**m | 용어 | 업무 도메인 용어 — `03-glossary.yaml` |
-| `TS` | **T**urn **S**tate | 턴 상태 | 질의 하나가 거쳐 가는 여섯 상태 — `03-glossary.yaml` |
-| `WT` | **W**ait **T**ype | 대기 유형 | 시스템이 사용자를 기다리는 이유의 종류 — `03-glossary.yaml` |
-| `ARCH` | **Arch**itecture | 아키텍처 결정 | 논리 구성·모듈 경계 — `20-architecture.yaml` |
-| `AUTHZ` | **Auth**ori**z**ation | 인가 | *로그인한 이 사람이 이것을 해도 되는가* — `22-authz.yaml` |
-| `IF` | **I**nter**f**ace | 연동 | 외부 시스템과 주고받는 통로 — `51-interfaces.yaml` |
-| `UND` | **Und**ecided | 미확정 | 나중에 정하기로 하고 **자리만 잡아 둔 것** — `60-screens.yaml` |
-| `RUN` | **Run**book procedure | 운영 절차 | 장애·점검·복구 때 순서대로 실행하는 절차 — `80-operations.yaml` |
+| `ACT` | **Act**or | 액터 | 이 시스템을 쓰거나 이 시스템과 주고받는 **사람·외부 시스템** — `01-actors/_index.yaml` |
+| `MOD` | **Mod**ule | 모듈 | 통제 경계로 나눈 덩어리 (admin · portal · agent) — `01-actors/_index.yaml` |
+| `PRN` | **Prin**ciple | 설계 원칙 | 흔들리지 않는 판단 기준 — `02-constraints/_index.yaml` |
+| `CON` | **Con**straint | 제약 | 기술·배포·고객사 합의로 **이미 정해져 바꿀 수 없는 것** — `02-constraints/_index.yaml` |
+| `TRM` | **Ter**m | 용어 | 업무 도메인 용어 — `03-glossary/_index.yaml` |
+| `TS` | **T**urn **S**tate | 턴 상태 | 질의 하나가 거쳐 가는 여섯 상태 — `03-glossary/_index.yaml` |
+| `WT` | **W**ait **T**ype | 대기 유형 | 시스템이 사용자를 기다리는 이유의 종류 — `03-glossary/_index.yaml` |
+| `ARCH` | **Arch**itecture | 아키텍처 결정 | 논리 구성·모듈 경계 — `20-architecture/_index.yaml` |
+| `AUTHZ` | **Auth**ori**z**ation | 인가 | *로그인한 이 사람이 이것을 해도 되는가* — `22-authz/_index.yaml` |
+| `IF` | **I**nter**f**ace | 연동 | 외부 시스템과 주고받는 통로 — `51-interfaces/_index.yaml` |
+| `UND` | **Und**ecided | 미확정 | 나중에 정하기로 하고 **자리만 잡아 둔 것** — `60-screens/_index.yaml` |
+| `RUN` | **Run**book procedure | 운영 절차 | 장애·점검·복구 때 순서대로 실행하는 절차 — `80-operations/_index.yaml` |
 | `DLV` | **D**e**l**i**v**ery | 제출 구성 | 고객 제출 사이트 전체의 배치 정책 — `delivery.yaml` |
 | `SITE` | Site | 제출 사이트 | 설계·사용자·운영 중 사이트 한 개 — `delivery.yaml` |
 
@@ -257,6 +257,6 @@ REQ ──→ UC ──→ FEAT ──┬──→ ENT   (테이블)
 
 - **AI 가 모르는 말을 썼으면 물어본다.** 답을 받으면 **여기에 더하게 한다** — 다음에 또 묻지
   않으려고 사전이 있다.
-- **업무 도메인 용어는 여기 적지 않는다.** `documents/spec/03-glossary.yaml` 이 정본이고,
+- **업무 도메인 용어는 여기 적지 않는다.** `documents/spec/03-glossary/_index.yaml` 이 정본이고,
   거기 것을 여기 옮겨 적으면 **두 사실이 되어 갈린다**([`AGENTS.md` §4-3](../AGENTS.md)).
 - **화면별 두 글자 접두도 적지 않는다**(§1.5). 화면이 늘 때마다 고쳐야 하는 목록은 유지되지 않는다.

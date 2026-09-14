@@ -18,7 +18,7 @@ tags: [design, baseline]
 [`process/13-workstreams.md`](../process/13-workstreams.md)가 갖는다.
 
 > 목표: 구현에 필요한 모든 것을 확정하고 **spec을 동결**한다.
-> 산출물: `documents/spec/30-usecases.yaml` `31-features.yaml` `40-domain.yaml` `50-api.yaml` `51-interfaces.yaml` `60-screens.yaml` `70-testcases.yaml` + `documents/generated/` 생성물
+> 산출물: `documents/spec/30-usecases/_index.yaml` `31-features/_index.yaml` `40-domain/_index.yaml` `50-api/_index.yaml` `51-interfaces/_index.yaml` `60-screens/_index.yaml` `70-testcases/_index.yaml` + `documents/generated/` 생성물
 > 소요: 프로젝트의 40% — 여기에 시간을 쓰는 것이 이 방법론의 핵심 베팅이다
 
 ## 1. 작업 순서 (의존성 순 — 뒤집으면 재작업)
@@ -39,7 +39,7 @@ tags: [design, baseline]
 
 ---
 
-## 2. ① 유즈케이스 (`documents/spec/30-usecases.yaml`)
+## 2. ① 유즈케이스 (`documents/spec/30-usecases/_index.yaml`)
 
 ```yaml
 - id: UC-004
@@ -79,7 +79,7 @@ tags: [design, baseline]
 
 ---
 
-## 3. ② 기능 목록과 메뉴 (`documents/spec/31-features.yaml`)
+## 3. ② 기능 목록과 메뉴 (`documents/spec/30-usecases/_index.yaml`)
 
 UC는 **업무 관점**, FEAT는 **시스템이 제공하는 것** — 1:N일 수 있다.
 
@@ -110,7 +110,7 @@ features:
 
 ---
 
-## 4. ③ 데이터 모델 (`documents/spec/40-domain.yaml`)
+## 4. ③ 데이터 모델 (`documents/spec/30-usecases/_index.yaml`)
 
 ```yaml
 entities:
@@ -165,7 +165,7 @@ conventions:
 
 ---
 
-## 5. ④ API (`documents/spec/50-api.yaml` — OpenAPI 3 호환)
+## 5. ④ API (`documents/spec/30-usecases/_index.yaml` — OpenAPI 3 호환)
 
 ```yaml
 - id: API-031
@@ -194,7 +194,7 @@ conventions:
 
 ---
 
-## 6. ⑤ 화면 (`documents/spec/60-screens.yaml`)
+## 6. ⑤ 화면 (`documents/spec/30-usecases/_index.yaml`)
 
 ```yaml
 - id: SCR-008

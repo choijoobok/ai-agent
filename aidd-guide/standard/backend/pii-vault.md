@@ -7,7 +7,7 @@ class: policy
 created: 2026-09-04
 updated: 2026-09-07
 status: active
-sources: ["sources/backend/domain/", "documents/spec/22-authz.yaml"]
+sources: ["sources/backend/domain/", "documents/spec/22-authz/_index.yaml"]
 tier: 3
 tags: [backend, pii, privacy, vault, constraint]
 ---

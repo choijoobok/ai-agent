@@ -190,6 +190,6 @@ cd sources/frontend && npm run lint && npm run typecheck && npm run test
 
 - 빌드·배포의 상세 — [04-release.md](04-release.md) ·
   [`aidd-guide/standard/build-deploy.md`](../aidd-guide/standard/build-deploy.md)
-- 스택과 제약 — [`documents/spec/02-constraints.yaml`](../documents/spec/02-constraints.yaml)
+- 스택과 제약 — [`documents/spec/02-constraints/_index.yaml`](../documents/spec/02-constraints/_index.yaml)
 - 시드를 만드는 절차 — [`aidd-guide/standard/seed.md`](../aidd-guide/standard/seed.md)
 - 손으로 쓰는 changeset — [`aidd-guide/playbook/changeset.md`](../aidd-guide/playbook/changeset.md)

@@ -7,7 +7,7 @@ class: none
 created: 2026-09-04
 updated: 2026-09-12
 status: active
-sources: ["documents/spec/02-constraints.yaml", "documents/spec/20-architecture.yaml"]
+sources: ["documents/spec/02-constraints/_index.yaml", "documents/spec/02-constraints/_index.yaml"]
 tier: 2
 tags: [hub, convention, module, transaction, logging, timezone]
 ---
@@ -19,8 +19,8 @@ tags: [hub, convention, module, transaction, logging, timezone]
 > 링크만 둔다.
 >
 > **결정의 근거는 `documents/spec/` 이 갖는다** — 여기는 *그래서 코드를 어떻게 쓰나* 다.
-> 원칙 ID(`PRN-`)와 제약 ID(`CON-`)는 [documents/spec/02-constraints.yaml](../../documents/spec/02-constraints.yaml),
-> 구조 ID(`ARCH-`)는 [documents/spec/20-architecture.yaml](../../documents/spec/20-architecture.yaml).
+> 원칙 ID(`PRN-`)와 제약 ID(`CON-`)는 [documents/spec/02-constraints/_index.yaml](../../documents/spec/02-constraints/_index.yaml),
+> 구조 ID(`ARCH-`)는 [documents/spec/02-constraints/_index.yaml](../../documents/spec/02-constraints/_index.yaml).
 
 ## 1. 결정 트리
 
@@ -40,11 +40,11 @@ Hub 코드를 쓴다
 
 - 기존 백오피스의 공통 테이블은 `SYS_` 접두를 유지하고 **system 모듈이 소유한다**.
 - AI 기능의 새 테이블은 `AI_<모듈>_<상세>`이며 모듈 키는 `ADMIN`·`PORTAL`·`AGENT`다.
-- 테이블 이름의 모듈 키와 `40-domain.yaml`의 쓰기 소유 모듈은 일치해야 한다(ARCH-010).
+- 테이블 이름의 모듈 키와 `40-domain/_index.yaml`의 쓰기 소유 모듈은 일치해야 한다(ARCH-010).
   같은 DB를 쓴다는 이유로 Entity·Repository를 공통 폴더에 두지 않는다.
 - PK 는 **서로게이트 키**를 쓰고, 자연키(예: 카탈로그의 `(데이터소스, DB 스키마, 테이블명)`)에는
   **유니크 제약**을 둔다. 참조는 서로게이트 키로 하여 **이름 변경이 참조를 깨지 않게** 한다.
-- 명명의 어휘는 [documents/spec/03-glossary.yaml](../../documents/spec/03-glossary.yaml) 의 `key` 다 — §8 도 참조.
+- 명명의 어휘는 [documents/spec/02-constraints/_index.yaml](../../documents/spec/02-constraints/_index.yaml) 의 `key` 다 — §8 도 참조.
 
 ## 3. 설정 파일
 

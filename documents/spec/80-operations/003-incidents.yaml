@@ -1,0 +1,12 @@
+incidents:
+  - id: RUN-201
+    title: "API 권한 거부 원인 구분"
+    symptom: "공개 정책·무인증·CSRF·유효 권한에 따라 403 또는 권한 오류가 발생한다"
+    traces_to: [AUTHZ-091, API-540, SCR-511]
+    procedure:
+      - "API 카탈로그에서 주소 등록과 메뉴 매핑을 확인한다"
+      - "호출 계정의 현재 유효 권한을 확인한다"
+      - "쓰기 요청이면 CSRF 토큰과 요청 본문 검증 결과를 확인한다"
+    verify: "공개 200, 무인증 service 403, CSRF 없는 admin service 403, 권한 보유 200, 권한 미보유 403의 P5 직접 호출 결과와 대조한다"
+    rollback: "권한을 임의로 넓히지 않는다. 잘못 바꾼 정책은 변경 이력에서 직전 상태로 되돌린다"
+    status: verified

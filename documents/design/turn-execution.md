@@ -11,9 +11,9 @@ verified: "2026-08-31 (리스 L1~L6) · 2026-09-01 (회차) — PoC 실행 검�
 > **status: migrated — 사용자 승인 전이다.** 재편성해 들어왔고
 > P3 게이트를 통과하지 않았다.
 >
-> **규범은 [`spec/20-architecture.yaml`](../spec/20-architecture.yaml) 의 `execution_lease`(ARCH-070) 가 갖는다.**
+> **규범은 [`spec/20-architecture/_index.yaml`](../spec/20-architecture/_index.yaml) 의 `execution_lease`(ARCH-070) 가 갖는다.**
 > 이 문서는 그것을 **구현 수준으로 상세화**한 것이며, 충돌하면 spec 이 우선한다.
-> 상태 모델과 회차 규칙은 [`spec/03-glossary.yaml`](../spec/03-glossary.yaml) 의
+> 상태 모델과 회차 규칙은 [`spec/03-glossary/_index.yaml`](../spec/03-glossary/_index.yaml) 의
 > `turn_states` · `revision_rules` 가 갖는다.
 
 ## 이 문서가 왜 앞당겨졌나
@@ -492,4 +492,4 @@ fence 1 은 죽은 인스턴스가 남긴 두 스텝, 2 는 스위퍼가 회수�
 | 5 | `ai_agent_turn` 의 인덱스 — 스위퍼가 쓰는 `(status, lease_expires_at)` 복합 인덱스의 필요 여부 | 이력 규모 산정 후(CON-025) |
 | 6 | **§3.5 의 (가)를 적용할 API 목록** — L 로 감당되지 않는 실행 API 가 실제로 있는지 | P2 API 등록·협의 시 |
 | 7 | **중복 실행 후보 판정에서 "같은 파라미터" 의 비교 방식** — 원문 일치인지 정규화 후 비교인지 | P2 |
-| 8 | **회차의 반영 범위** — 감사 이력·사용량·체크포인트에 남기기로 했으나, 이력 스키마의 인덱스와 조회 API 의 키를 `turn + revision + seq` 로 바꾸는 작업이 남는다 | `spec/40-domain.yaml` 확정 시 |
+| 8 | **회차의 반영 범위** — 감사 이력·사용량·체크포인트에 남기기로 했으나, 이력 스키마의 인덱스와 조회 API 의 키를 `turn + revision + seq` 로 바꾸는 작업이 남는다 | `spec/40-domain/_index.yaml` 확정 시 |

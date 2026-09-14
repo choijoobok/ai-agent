@@ -1,0 +1,411 @@
+terms:
+  - id: TRM-001
+    term: 세션
+    key: session
+    group: 대화
+    definition: "하나의 채팅 창. 맥락 유지와 컨텍스트 관리의 단위. 제목을 가지며, 사용자는 논리 삭제로 자신의 목록에서 숨길 수 있다"
+  - id: TRM-002
+    term: 턴
+    key: turn
+    group: 대화
+    definition: "**사용자 질의 1건과 그에 대한 최종 응답까지의 처리 단위.** 한 세션은 여러 턴을 가진다"
+  - id: TRM-003
+    term: 스텝
+    key: step
+    group: 대화
+    definition: "**턴을 처리하는 동안 발생하는 agent ↔ LLM 1회 요청·응답 왕복.** 한 턴은 여러 스텝을 가진다"
+  - id: TRM-004
+    term: 회차
+    key: revision
+    group: 대화
+    definition: "**한 턴 안에서 되돌려 다시 수행한 시도의 구분.** 되돌리면 스텝 순번이 처음부터 다시 시작되므로, 스텝을 특정하려면 회차가 함께 필요하다 — 스텝의 식별자는 `턴 + 회차 + 순번` 이다"
+  - id: TRM-005
+    term: 스텝 역할
+    key: stepRole
+    group: 대화
+    definition: "스텝이 LLM 에게 요구하는 작업의 성격. **주 추론**(계획 수립·SQL 생성·최종 응답 작성·실패 원인 분석)과 **보조 판정**(업무 연관성 판정·업무 도메인·데이터소스 선별·컬럼 프루닝·질의 키워드 추출·과거 턴 요약·처리 중 입력의 의도 분류)으로 구분한다"
+    note: "**모델 선택의 단위다**"
+  - id: TRM-006
+    term: 도구 호출
+    key: toolCall
+    group: 대화
+    definition: "스텝의 결과로 LLM 이 agent 에게 요청하는 단위 작업 (SQL 조회·API 실행·지식 검색·과거 이력 참조·사용자 확인 요청 등)"
+  - id: TRM-007
+    term: 도구
+    key: tool
+    group: 대화
+    definition: "agent 가 LLM 에게 노출하는, 호출 가능한 기능의 명세"
+  - id: TRM-008
+    term: 사용자 개입
+    key: interaction
+    group: 대화
+    definition: "턴 처리 중 사용자에게 추가 정보나 승인을 요청하고 응답을 받는 것"
+  - id: TRM-009
+    term: 컨텍스트
+    key: context
+    group: 대화
+    definition: "특정 턴을 처리하기 위해 LLM 에 전달되는 정보 집합 (시스템 프롬프트·개인 기본 지시·지식·과거 턴 요약·스키마 정보 등)"
+  - id: TRM-010
+    term: 품질 신고
+    key: qualityReport
+    group: 대화
+    definition: "사용자가 특정 턴의 응답 품질에 이의를 제기하는 건. 상태를 가지며 관리자의 처리로 종결된다"
+  - id: TRM-011
+    term: 실행 점유
+    key: executionLease
+    group: 대화
+    definition: "한 턴을 특정 agent 인스턴스가 처리 중임을 나타내는 **시한부 소유권**. 만료 시각을 가지며 갱신되지 않으면 회수된다"
+  - id: TRM-012
+    term: 점유 토큰
+    key: fenceToken
+    group: 대화
+    definition: "실행 점유가 바뀔 때마다 증가하는 값. 점유를 잃은 인스턴스의 뒤늦은 쓰기를 무효화하는 데 쓴다"
+
+# ── 실행과 자동화 ────────────────────────────────────────────
+  - id: TRM-020
+    term: 워크플로우
+    key: workflow
+    group: 실행
+    definition: "기본 기능(도구)을 조합해 사용자가 정의한 자동 처리 절차"
+  - id: TRM-021
+    term: 잡
+    key: job
+    group: 실행
+    definition: "워크플로우의 실행 인스턴스. 주기 실행·조건 실행·수동 실행으로 생성된다"
+  - id: TRM-022
+    term: 액션
+    key: action
+    group: 실행
+    definition: "데이터를 변경하거나 외부에 영향을 주는 실행 (조회와 구분)"
+  - id: TRM-023
+    term: 승인 필요 액션
+    key: approvalRequiredAction
+    group: 실행
+    definition: "실행 전 사용자 승인이 강제되는 액션"
+  - id: TRM-024
+    term: 커스텀 도구
+    key: customTool
+    group: 실행
+    definition: "설정으로 표현할 수 없는 다중 시스템 데이터 가공을 위해 agent 안에 서비스 빈으로 구현하는 도구. 도구 레지스트리에 등록되어 다른 도구와 같은 통제를 받는다"
+    note: "PRN-08 의 명시적 예외다"
+  - id: TRM-025
+    term: 질의 즐겨찾기
+    key: savedPrompt
+    group: 실행
+    definition: "사용자가 저장한 **자연어 질의문**. 실행하면 새 턴으로 처리된다 — LLM 을 거치므로 토큰을 소모하고 결과가 매번 달라질 수 있다"
+  - id: TRM-026
+    term: 저장된 조회
+    key: savedQuery
+    group: 실행
+    definition: "사용자가 저장한 **확정 SQL 과 파라미터 명세, 해석문의 묶음**. 실행은 턴을 만들지 않고 직접 수행되며 LLM 을 호출하지 않는다. 인증 예제 쿼리의 개인 대응물이다"
+  - id: TRM-027
+    term: 대시보드
+    key: dashboard
+    group: 실행
+    definition: "저장된 조회를 배치한 개인 화면. 구성 단위는 **위젯**(저장된 조회 + 표현 형식)이다"
+
+# ── 정책과 권한 ──────────────────────────────────────────────
+  - id: TRM-040
+    term: 대상 시스템
+    key: targetSystem
+    group: 정책
+    definition: "연동되는 업무 시스템 단위. 복수를 전제한다. API(기능)의 귀속처이며, **데이터소스와는 관계를 갖지 않는다**"
+    note: "**저장소 밖의 레거시든(SHAPE-01) 함께 짓는 업무 확장이든(SHAPE-02) 대상 시스템이다** — 차이는 연동 방식(TRM-135)뿐이며, agent 위쪽의 등록·권한·감사 계약은 같다"
+  - id: TRM-041
+    term: 데이터소스
+    key: dataSource
+    group: 정책
+    definition: "조회 대상 DB 또는 DW 연결 단위. 접속 정보는 yml 설정이 원천이고, admin 에 등록된 데이터소스 레코드(표시용 별칭·DBMS 종류·파서)가 그 ID 를 연결한다. **대상 시스템과 관계를 갖지 않는다**"
+  - id: TRM-042
+    term: 업무 도메인
+    key: businessDomain
+    group: 정책
+    definition: "카탈로그·지식·인증 예제 쿼리를 업무 단위로 묶은 집합. 질의 처리의 첫 단계에서 이 묶음을 먼저 선별해 컨텍스트 주입 범위를 좁힌다"
+  - id: TRM-043
+    term: 인증 예제 쿼리
+    key: certifiedQuery
+    group: 정책
+    definition: "관리자가 검수해 등록한, 업무 질의와 그에 대응하는 SQL·파라미터 명세의 쌍. 컨텍스트에 예시로 주입되거나 파라미터만 채워 그대로 실행된다"
+  - id: TRM-044
+    term: 조회 계획
+    key: queryPlan
+    group: 정책
+    definition: "조회·실행 전에 사용자에게 **업무 용어로** 제시하는 처리 예정 내역 — 질의 해석문, 대상 데이터 영역의 업무 명칭, 적용 조건·기간·집계 단위. **액션이 포함된 턴에서는 실행할 액션과 순서도 포함한다**"
+    note: "DBMS 실행 계획(EXPLAIN)과는 다른 개념이다. **이 용어를 유지할지는 미확정** — 액션 목록까지 담게 되어 이름과 범위가 어긋난다"
+  - id: TRM-045
+    term: 사용자 그룹
+    key: userGroup
+    group: 정책
+    definition: "접근 통제의 기본 단위. 시스템 전체를 아우르는 **전역** 개념으로, 직무·역할 단위로 정의한다(예: 급여담당·평가관리자). 사용자는 여러 그룹에 속할 수 있고, 접근 범위는 소속 그룹들이 여는 범위의 **합집합**이다"
+  - id: TRM-046
+    term: 쿼터 등급
+    key: quotaGrade
+    group: 정책
+    definition: "토큰·비용 한도 등급. **사용자 단위로 하나만** 부여하며 그룹과 무관하다"
+  - id: TRM-047
+    term: 마스킹
+    key: masking
+    group: 정책
+    definition: "접근을 허용하되 값을 가려서 보여주는 것. **컬럼 또는 API 응답 경로** ↔ 그룹 매핑의 **모드**(허용/마스킹)로 지정하며, 값 변환 규칙은 두 경로가 같은 것을 쓴다"
+  - id: TRM-048
+    term: 기본 필터
+    key: defaultFilter
+    group: 정책
+    definition: "테이블을 조회할 때 기본으로 강제 주입되는 조건. 논리 삭제 플래그·유효 상태처럼 **빠뜨리면 폐기 데이터까지 집계되는** 조건을 다룬다. 테이블당 0..1개이며 명시적 지시가 있을 때만 해제된다"
+    note: "**권한 통제가 아니다** — 정확도를 위한 장치다. 행 스코프와 한 항목으로 합치지 않는다: 하나는 볼 수 있는 범위이고 하나는 세어야 할 범위다"
+  - id: TRM-049
+    term: 신원 매핑
+    key: identityMapping
+    group: 정책
+    definition: "Hub 사용자가 각 대상 시스템·데이터소스에서 갖는 사용자 식별자의 매핑. API 호출의 신원 파라미터와 행 스코프 조인의 바인딩 값으로 쓰인다"
+    note: "**신원 매핑은 곧 사칭 능력이다.** 매핑 변경은 정책 변경 이력에 남긴다"
+  - id: TRM-050
+    term: 프롬프트 규칙
+    key: promptRule
+    group: 정책
+    definition: "관리자가 등록·수정하는 시스템 차원의 지시"
+  - id: TRM-051
+    term: 개인 기본 지시
+    key: personalDirective
+    group: 정책
+    definition: "사용자가 등록하는 개인화 지시. 프롬프트 규칙에 종속되며 이를 무력화할 수 없다"
+  - id: TRM-052
+    term: 지식
+    key: knowledge
+    group: 정책
+    definition: "업무 용어·규칙·설명 등 검색되어 컨텍스트에 주입되는 자료. 안정적인 지식 식별자 아래 여러 지식 리비전을 가질 수 있다"
+    note: "**물리 테이블·컬럼명과 SQL 을 담지 않는다** — 특정 공개 데이터 인터페이스에 관한 것이면 참조 링크로 표현한다"
+  - id: TRM-053
+    term: 쿼터
+    key: quota
+    group: 정책
+    definition: "사용자·기간 단위 토큰/비용 한도"
+  - id: TRM-054
+    term: 행 스코프
+    key: rowScope
+    group: 정책
+    definition: "행 단위 접근 제한(담당 조직·거래처·창고 등). 대상 데이터소스 안의 사용자 권한 정보 테이블과의 조인 또는 서브쿼리로 구현하며, 테이블당 0..1개 규칙을 둔다"
+  - id: TRM-055
+    term: 지식 리비전
+    key: knowledgeRevision
+    group: 정책
+    definition: "하나의 지식 식별자에 속한 내용·태그·참조 링크의 불변 후보 또는 이력 판. 활성 지식을 직접 고치지 않고 새 리비전으로 등록하며, 승인된 리비전만 Agent가 사용한다"
+  - id: TRM-056
+    term: 반영 세트
+    key: releaseSet
+    group: 정책
+    definition: "함께 서비스에 반영해야 하는 지식·카탈로그·인증 예제 쿼리·연관 매핑의 후보 리비전과 변경 사유·근거·시험 증빙을 묶은 단위. 하나 이상의 항목을 가지며 전체 승인·반려·활성화한다"
+  - id: TRM-057
+    term: 공개 데이터 인터페이스
+    key: publishedDataInterface
+    group: 정책
+    definition: "고객사가 AI Hub의 조회·컨텍스트 대상으로 선택해 등록한 DB/DW의 뷰 또는 테이블. 업무 DB/DW 전체 물리 스키마와 같지 않으며, 민감 원본 객체는 등록하지 않는다"
+
+# ── 실행 기반 어휘 (구현 수준) ───────────────────────────────
+# **업무 용어가 아니라 구현 어휘다.** 그래도 우리가 정한 것이므로 `key` 를 갖고 명명의
+# 기준이 된다 — 정본은 documents/design/turn-execution.md 이고 여기는 그 색인이다.
+  - id: TRM-060
+    term: 획득
+    key: acquire
+    group: 실행기반
+    definition: "진입 가능한 상태의 턴을 잡고 **점유 토큰을 +1** 한다"
+  - id: TRM-061
+    term: 갱신
+    key: renew
+    group: 실행기반
+    definition: "처리 중에 점유 만료 시각을 미룬다. **중단 요청과 처리 중 입력도 이 왕복에서 함께 읽는다**"
+  - id: TRM-062
+    term: 해제
+    key: release
+    group: 실행기반
+    definition: "처리를 끝내고 점유를 놓으면서 다음 상태로 전이시킨다"
+  - id: TRM-063
+    term: 회수
+    key: sweep
+    group: 실행기반
+    definition: "만료된 점유를 찾아 중단 상태로 돌리는 배치. 그 배치를 **스위퍼**라 부른다"
+  - id: TRM-064
+    term: 점유 상실 신호
+    key: leaseLost
+    group: 실행기반
+    definition: "점유를 잃었다는 신호(`LeaseLostException`). 받으면 **아무 상태도 쓰지 않고 포기한다** — 실패로 기록하는 것조차 하지 않는다"
+  - id: TRM-065
+    term: 점유 유지 시간
+    key: leaseDuration
+    group: 실행기반
+    definition: "기호 **L**. 갱신 없이 이 시간을 넘기면 만료된다"
+    note: "값은 미확정이다 — 실측이 필요하다"
+  - id: TRM-066
+    term: 갱신 주기
+    key: renewInterval
+    group: 실행기반
+    definition: "기호 **R**. `L / 3` 이하로 둔다"
+  - id: TRM-067
+    term: 회수 주기
+    key: sweepInterval
+    group: 실행기반
+    definition: "기호 **S**. 스위퍼가 도는 주기"
+    note: "**인스턴스가 죽고 회수되기까지 최악 `L + S` 가 걸린다** — 사용자에게 보이는 복구 시간의 상한은 L 이 아니라 이 합이다"
+  - id: TRM-068
+    term: 창 A
+    key: windowA
+    group: 실행기반
+    definition: "중복 실행이 열리는 구간 하나 — **프로세스가 정지했다가 회수된 뒤 되살아날 때**"
+    note: "현실성이 낮다 — 최소 L 동안 얼어 있어야 한다"
+  - id: TRM-069
+    term: 창 B
+    key: windowB
+    group: 실행기반
+    definition: "중복 실행이 열리는 구간 둘 — **도구 실행이 L 보다 길어져 정상 처리 중인 인스턴스가 회수될 때**"
+    note: "**장애 없이도 열린다.** 그래서 L 은 실행 API 의 타임아웃·재시도까지 포함해 산정한다 — exactly-once 를 약속하지 않는 근거가 이 창이다"
+  - id: TRM-070
+    term: 액션 실행 표시
+    key: actionExecuted
+    group: 실행기반
+    definition: "**이 턴에서 액션이 나갔을 수 있다**는 표시. **성공 여부가 아니다.** 호출 디스패치 직전에 쓴다"
+    note: "응답을 기다렸다가 쓰면 회수와 재개 사이에 값이 거짓으로 남아 재개가 같은 액션을 다시 낸다"
+  - id: TRM-071
+    term: 조건부 쓰기
+    key: conditionalWrite
+    group: 실행기반
+    definition: "`WHERE` 절에 점유 조건을 걸어 **0행이면 점유 상실로 판정하는** 쓰기 방식"
+  - id: TRM-072
+    term: 체크포인트 upsert
+    key: checkpointUpsert
+    group: 실행기반
+    definition: "갱신할 행이 없으면 삽입으로 흘러내리는 것. **시간여행이 저장소에 없는 id 로 갱신을 걸기 때문에 필요하다**"
+
+# ── 처리 중 입력의 어휘 ──────────────────────────────────────
+  - id: TRM-080
+    term: 해석문
+    key: interpretation
+    group: 처리중입력
+    definition: "LLM 이 사용자 질의를 명료하게 재정리한 문장(REQ-015). **지식 검색·SQL 생성·의도 분류의 입력**이며 조회 계획의 일부로 사용자에게 제시된다"
+  - id: TRM-081
+    term: 처리 중 입력의 네 갈래
+    key: inflightIntent
+    group: 처리중입력
+    definition: "처리 중 들어온 입력의 분류 넷 — **보강**(`BOOST`) · **교정**(`CORRECT`) · **별개**(`NEW`) · **중단**(`STOP`)"
+    note: "보수적 우선순위는 `CORRECT > STOP > NEW > BOOST` 다. 그 순위가 실제로 안전한지는 실모델로만 확인된다"
+  - id: TRM-082
+    term: 분류 불능
+    key: UNSURE
+    group: 처리중입력
+    definition: "분류가 서지 않을 때. **차단형 확인으로 넘긴다** — 추측해서 갈래를 고르지 않는다(REQ-025)"
+  - id: TRM-083
+    term: 병행형 확인
+    key: inlineConfirm
+    group: 처리중입력
+    definition: "턴을 **멈추지 않고** 분류 결과를 기본값으로 보여주며 되돌릴 창을 주는 것. **기본값이다**"
+  - id: TRM-084
+    term: 차단형 확인
+    key: blockingConfirm
+    group: 처리중입력
+    definition: "`의도 확인 대기`(WT-03)로 전이해 **사용자 선택 없이는 진행하지 않는** 것. **되돌릴 수 없는 것이 걸렸을 때만** 쓴다"
+    note: "확인 때문에 멈추는 것 자체가 비용이다"
+  - id: TRM-085
+    term: 일괄 승인
+    key: batchApproval
+    group: 처리중입력
+    definition: "연속 실행에서 예정된 액션 전체를 한 번에 승인받는 것(REQ-026)"
+    note: "**파라미터가 앞 액션의 결과에 의존하는 액션은 개별 승인한다** — 일괄에 넣으면 승인 시점에 무엇을 승인하는지 알 수 없다"
+# ── 모델 공급과 비용 (ADR-004) ──────────────────────────────
+# **「공급사」를 셋으로 가른 결과다.** 가르기 전에는 *약관을 심사하는 대상* 과 *값을 청구하는
+# 곳* 이 한 낱말이었고, 같은 모델을 여러 경로로 사면 그 둘이 갈라진다.
+  - id: TRM-086
+    term: 모델 제작사
+    key: modelVendor
+    group: 비용
+    definition: "모델을 만든 곳. 데이터 학습·저장 미사용 약관과 정보보호 인증의 **심사 대상이다**"
+    note: "**과금 주체가 아니다.** 게이트웨이를 경유하면 청구는 경로가 한다(TRM-087)"
+  - id: TRM-087
+    term: 공급 경로
+    key: supplyChannel
+    group: 비용
+    definition: "그 모델을 **실제로 사서 호출하는 통로.** 제작사 직접 API 이거나 게이트웨이(Bedrock · Vertex 등)다. **단가·엔드포인트·인증·리전이 여기 붙는다**"
+    relation: "**단가의 키가 `공급 경로 · 모델 · 계량 단위` 다**(NFR-010) — **effort 는 키가 아니다**(TRM-091). 같은 모델이 경로마다 다른 값이므로 경로가 키에서 빠지면 표현되지 않는다"
+    note: "**심사는 제작사와 경로 둘 다** 를 대상으로 한다 — 경유하면 데이터가 지나는 곳이 둘이다(ACT-007)"
+  - id: TRM-088
+    term: 계량 단위
+    key: meteringUnit
+    group: 비용
+    definition: "**무엇을 세어 값을 매기는가** — 입력 토큰 · 출력 토큰 · 캐시 읽기 · 캐시 쓰기(유지 시간별로 갈릴 수 있다) · 시간 · 요청 건수 등"
+    relation: "**공통코드 그룹으로 관리한다**(knowledge/sys/code.md 의 표 넷). 새 과금 정책의 대부분이 *새로운 계량 단위* 이므로 **코드 없이 행 추가로 대응된다**"
+    note: "**항목 수를 고정 컬럼으로 두지 않는다** — 경로마다 항목 집합이 다르다"
+  - id: TRM-089
+    term: 과금 모드
+    key: billingMode
+    group: 비용
+    definition: "**어떻게 곱하는가** — 토큰당(수량 × 단가) · 시간당 · 배치(할인율)"
+    note: "**계량 단위와 달리 열려 있지 않다.** 새 모드는 산식이므로 개발이 필요하며 그것이 정상이다 — 산식을 데이터로 두면 검증이 불가능해지고 테스트가 못 잠근다. **시간당은 지금 범위 밖이고 자리만 둔다**(ADR-004 §5)"
+  - id: TRM-090
+    term: 단가표 판
+    key: priceBookVersion
+    group: 비용
+    definition: "한 공급 경로의 단가 전체를 묶은 **불변 묶음.** 유효 시작일을 가지며 발효 뒤에는 고치지 않고 새 판을 더한다"
+    relation: "**호출 기록에 판번호를 남긴다**(REQ-107) — 그래야 나중에 *왜 이 값인가* 를 되짚을 수 있다. 행마다 유효기간을 두면 한 호출의 조합을 재구성할 때 여러 행을 시점 조회해야 하고 **그중 하나만 고쳐져도 조용히 달라진다**"
+    note: "공급 경로의 가격 개정은 실제로 여러 항목이 함께 바뀐다 — 판이 그 단위와 맞는다"
+  - id: TRM-091
+    term: effort
+    key: effort
+    group: 비용
+    definition: "**모델별 추론 레벨**(낮음 · 중간 · 높음 등). **토큰 소모량과 응답 소요 시간에 영향을 주고 단가에는 영향을 주지 않는다**"
+    relation: "**그래서 단가의 키가 아니라 사용량 기록의 축이다**(NFR-010). 소비량이 달라지므로 *어느 effort 로 얼마를 썼나* 를 남겨야 역할별 라우팅을 조정할 수 있다(ARCH-040)"
+    note: "**단가 행에 한정자 자리는 남긴다** — 비워 두는 것이 기본이고, 나중에 effort 별로 단가가 갈리면 그 행을 더한다. 미리 조합을 다 만들면 운영자가 같은 값을 셋 입력한다"
+
+# system 공통 운영 언어
+  - id: TRM-142
+    term: 시스템 관리자
+    key: systemAdministrator
+    group: 운영
+    definition: "계정·메뉴·역할·권한·공통코드·다국어 메시지·시스템 설정과 공통 운영 기능을 관리하는 사람"
+    relation: "AI 지식·정책을 관리하는 ACT-002~005와 구분하며 ACT-012가 이 역할을 맡는다"
+  - id: TRM-143
+    term: 유효 권한
+    key: effectiveAuthority
+    group: 인가
+    definition: "현재 시점의 계정·역할·메뉴 상태와 역할 권한·개인 예외를 합성해 사용자가 실제로 행사할 수 있다고 판정한 메뉴 액션 집합"
+    relation: "메뉴 노출과 서비스 API 허용은 같은 유효 권한을 사용하며 역할명이나 URL 자체는 허용 근거가 아니다"
+  - id: TRM-144
+    term: 메뉴 액션
+    key: menuAction
+    group: 인가
+    definition: "메뉴 하나에서 허용할 수 있는 읽기·저장·내보내기·실행 권한 단위"
+    relation: "역할 권한과 개인 예외가 이 단위로 부여되고 서비스 API가 요구하는 액션과 일치해야 호출이 허용된다"
+  - id: TRM-145
+    term: 공통코드
+    key: commonCode
+    group: 기준정보
+    definition: "여러 화면과 서버가 같은 값의 뜻과 선택 후보를 공유하기 위해 사용하는 코드 그룹·코드·참조 속성"
+    relation: "코드명은 다국어 메시지 값이며 시스템 보호 코드와 운영 코드의 변경 규칙이 다르다"
+  - id: TRM-146
+    term: 메시지 키
+    key: messageKey
+    group: 기준정보
+    definition: "화면·서버·메뉴·공통코드가 문구를 직접 쓰지 않고 언어별 값을 찾기 위해 사용하는 안정된 식별자"
+    relation: "소스 상수·시드 생성 또는 데이터가 만들고 관리 화면은 언어별 값을 채우거나 미사용 키를 정리한다"
+  - id: TRM-147
+    term: 캐시 버전
+    key: cacheVersion
+    group: 운영
+    definition: "공통코드·메시지·시스템 설정의 원천 값이 바뀌었음을 다른 인스턴스와 클라이언트에 알리는 증가 번호"
+    relation: "저장한 행 수가 아니라 성공한 저장 요청 한 번에 한 번 증가한다"
+  - id: TRM-148
+    term: 운영 이력
+    key: operationalLog
+    group: 감사
+    definition: "로그인·API 사용·예외·배치 실행처럼 시스템에서 실제로 일어난 일을 사후 재구성하기 위해 업무 화면에서는 수정·삭제할 수 없게 한 기록"
+    relation: "화면에는 저장·삭제 경로를 두지 않고 보존·파기는 별도 정책과 배치가 맡는다"
+  - id: TRM-149
+    term: 알림 요청
+    key: notificationRequest
+    group: 운영
+    definition: "사용자가 계정·권한 관련 조치를 관리자에게 요청하고 관리자가 처리 또는 반려 상태와 사유를 남기는 기록"
+    relation: "처리 판정 자체가 실제 계정·권한 변경을 수행하지 않는다"
+  - id: TRM-150
+    term: 사용자 공통 상태
+    key: sharedUserState
+    group: 운영
+    definition: "즐겨찾기·그리드 설정·저장 조회조건·메뉴 사용 통계처럼 관리 콘솔과 portal이 함께 사용하는 사용자별 상태"
+    relation: "portal 전용 대화·개인화 상태와 구분하며 system이 한 번만 소유한다"
+# ── 개념 계층 ────────────────────────────────────────────────

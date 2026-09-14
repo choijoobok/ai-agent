@@ -6,7 +6,7 @@ type: operation
 created: 2026-09-04
 updated: 2026-09-13
 status: active
-sources: ["documents/delivery.yaml", "documents/spec/80-operations.yaml"]
+sources: ["documents/delivery.yaml", "documents/spec/80-operations/_index.yaml"]
 tier: 1
 tags: [deliver, runbook, manual, offline]
 ---
@@ -22,14 +22,14 @@ tags: [deliver, runbook, manual, offline]
 
 | 시점 | 누적하는 정본·근거 |
 |---|---|
-| P2 | `80-operations.yaml`의 구성·배포 경계, ARCH 연결 |
+| P2 | `80-operations/_index.yaml`의 구성·배포 경계, ARCH 연결 |
 | P3 | 운영 화면·외부 연동·권한·업무 흐름, SCR/API/IF 연결 |
 | P4 | 배포·롤백·정기 작업과 구현된 실제 명령 |
 | P5 | NFR 임계값, 백업/복구·장애 대응 리허설과 검증 근거 |
 | P6 | 고객 환경의 주기·담당·연락 위치, 실제 화면 캡처, 인수 판정 |
 
-운영 런북의 근거는 `20-architecture.yaml`, `21-nfr.yaml`, `02-constraints.yaml`,
-`60-screens.yaml`, `70-testcases.yaml`, 현재 소스와 P5 실측이다. `/runbook`이 빈 필수 절과
+운영 런북의 근거는 `20-architecture/_index.yaml`, `21-nfr/_index.yaml`, `02-constraints/_index.yaml`,
+`60-screens/_index.yaml`, `70-testcases/_index.yaml`, 현재 소스와 P5 실측이다. `/runbook`이 빈 필수 절과
 미룬 값을 검사하고 `/doc-gen`이 `documents/generated/80-운영런북.md`를 만든다.
 
 ## 2. 배포·복구 인수

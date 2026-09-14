@@ -49,7 +49,7 @@ P0 착수 ─▶ P1 발견 ─▶ P2 아키텍처 ─▶ P3 설계 ══▶ P4 
 
 ### 제품 로드맵과 개발 단계는 다른 축이다
 
-`documents/spec/00-charter.yaml` 의 로드맵은 **P1 조회 → P2 실행 → P3 자동화 → P4 개인화** 로
+`documents/spec/00-charter/_index.yaml` 의 로드맵은 **P1 조회 → P2 실행 → P3 자동화 → P4 개인화** 로
 제품 출시 단계를 말한다. 위의 **P0~P6 은 개발 단계**다. **로드맵 P1 하나를 만들기 위해
 개발 P0~P6 을 한 바퀴 돈다.** 헷갈리면 `project.state.yaml` 의 `current.phase` 를 본다 —
 그것은 항상 개발 단계다.

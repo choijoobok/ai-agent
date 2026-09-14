@@ -1,0 +1,8 @@
+system_overview:
+  - id: RUN-001
+    title: "배포 변형과 데이터베이스 기준선 확인"
+    purpose: "product와 local 변형이 의도한 모듈·테이블 기준선으로 기동했는지 확인한다"
+    traces_to: [ARCH-024, TC-5035]
+    verify: "P5 전용 빈 PostgreSQL 설치와 JPA validate 결과를 테스트 수행 결과서에서 확인한다"
+    evidence: "documents/project.state.yaml workstreams.system.gates.P5_verify.note"
+    status: verified

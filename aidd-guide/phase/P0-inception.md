@@ -14,7 +14,7 @@ tags: [inception, charter]
 # P0 착수 — "무엇을, 왜, 어디까지"
 
 > 목표: 만들 것의 **경계**를 정한다. 여기서 경계를 못 그으면 끝까지 못 긋는다.
-> 산출물: `documents/spec/00-charter.yaml`, `documents/spec/01-actors.yaml`, `documents/spec/02-constraints.yaml`
+> 산출물: `documents/spec/00-charter/_index.yaml`, `documents/spec/00-charter/_index.yaml`, `documents/spec/00-charter/_index.yaml`
 > 소요: 사용자 대화 1~2회
 
 ## 1. 첫 응답 규칙
@@ -75,7 +75,7 @@ tags: [inception, charter]
 
 ## 3. 산출물 작성
 
-### `documents/spec/00-charter.yaml`
+### `documents/spec/00-charter/_index.yaml`
 ```yaml
 purpose: "업무 시스템 여럿에 흩어진 데이터를 자연어로 한 번에 조회해, 화면을 번갈아 열고 손으로 대조하는 일을 없앤다"
 problem:
@@ -110,7 +110,7 @@ expectations:                # §2-A 기대치 정렬 결과. 비어 있으면 G
   reduced_scope: []          # 사용자 합의로 줄인 절차. 항목과 근거를 함께.
 ```
 
-### `documents/spec/01-actors.yaml`
+### `documents/spec/00-charter/_index.yaml`
 ```yaml
 - id: ACT-001
   name: 현업 담당자
@@ -126,7 +126,7 @@ expectations:                # §2-A 기대치 정렬 결과. 비어 있으면 G
   interface_direction: inbound
 ```
 
-### `documents/spec/02-constraints.yaml`
+### `documents/spec/00-charter/_index.yaml`
 ```yaml
 - id: CON-001
   type: technical            # technical | organizational | budget | schedule | regulatory

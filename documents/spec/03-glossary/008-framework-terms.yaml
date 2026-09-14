@@ -1,0 +1,202 @@
+framework_terms:
+# 그래프 실행 (LangGraph4j)
+  - id: TRM-100
+    term: StateGraph
+    origin: LangGraph4j
+    group: 그래프
+    definition: "노드와 엣지로 짠 실행 그래프의 **정의**"
+    relation: "우리 스텝 루프의 뼈대"
+  - id: TRM-101
+    term: CompiledGraph
+    origin: LangGraph4j
+    group: 그래프
+    definition: "정의를 컴파일해 실제로 돌릴 수 있게 만든 것"
+  - id: TRM-102
+    term: 노드 (Node)
+    origin: LangGraph4j
+    group: 그래프
+    definition: "그래프의 작업 단위. 임의의 자바 코드다"
+    relation: "**스텝(TRM-003)과 1:1 이 아니다** — confusions 의 첫 항목을 본다"
+  - id: TRM-103
+    term: 엣지 (Edge)
+    origin: LangGraph4j
+    group: 그래프
+    definition: "노드에서 노드로 가는 화살표. 조건부 분기가 가능하다"
+    relation: "우리 흐름의 제어"
+  - id: TRM-104
+    term: 상태 (AgentState)
+    origin: LangGraph4j
+    group: 그래프
+    definition: "노드 사이를 흐르는 값 뭉치. 체크포인트에 통째로 저장된다"
+    relation: "대화 메시지·진행 위치가 여기 담긴다"
+  - id: TRM-105
+    term: 채널 (Channel) · Reducer
+    origin: LangGraph4j
+    group: 그래프
+    definition: "상태의 각 키를 **어떻게 병합할지** 정하는 규칙 (덮어쓰기 / 이어붙이기)"
+    relation: "메시지는 이어붙이기, 나머지는 덮어쓰기"
+  - id: TRM-106
+    term: GraphInput.args · resume
+    origin: LangGraph4j
+    group: 그래프
+    definition: "새로 시작 / 멈춘 지점에서 재개"
+    relation: "우리 `start()` · `resume()`·`retry()` 에 대응한다"
+# 멈춤과 재개
+  - id: TRM-110
+    term: 인터럽트 (interrupt)
+    origin: LangGraph4j
+    group: 멈춤
+    definition: "노드에 들어가기 **직전에** *여기서 멈출까* 를 판정하는 것"
+    relation: "**상태의 순수 함수다.** 재개하면 다시 평가되므로 *이미 물었다* 는 사실이 상태에 없으면 무한 반복된다 — PoC 에서 실제로 무한 루프에 빠졌다"
+  - id: TRM-111
+    term: InterruptableAction
+    origin: LangGraph4j
+    group: 멈춤
+    definition: "노드가 인터럽트 판정을 갖도록 만드는 인터페이스"
+    relation: "승인 게이트·중단·의도 분기가 전부 여기 붙는다"
+  - id: TRM-112
+    term: InterruptionMetadata
+    origin: LangGraph4j
+    group: 멈춤
+    definition: "멈춘 이유를 담아 올려보내는 것 (`APPROVAL_REQUIRED` · `INTENT_CORRECT` 등)"
+  - id: TRM-113
+    term: 체크포인트 (Checkpoint)
+    origin: LangGraph4j
+    group: 멈춤
+    definition: "어느 시점의 상태 전체를 저장한 것. **재개의 유일한 근거**"
+    relation: "우리 `ai_agent_checkpoint` 테이블에 쓴다 — **감사 이력과 다른 것이다**(confusions)"
+  - id: TRM-114
+    term: CheckpointSaver
+    origin: LangGraph4j
+    group: 멈춤
+    definition: "체크포인트를 읽고 쓰는 저장소 인터페이스"
+    relation: "**우리 테이블을 이 구현체로 만들었다** — 그래서 상태 원천이 하나다"
+  - id: TRM-115
+    term: StateSnapshot
+    origin: LangGraph4j
+    group: 멈춤
+    definition: "체크포인트 하나를 상태·노드·설정으로 감싼 조회 결과"
+    relation: "되돌림 지점을 고를 때 쓴다"
+  - id: TRM-116
+    term: 시간여행 (time travel)
+    origin: LangGraph4j
+    group: 멈춤
+    definition: "과거 체크포인트로 되돌아가 거기서 다시 실행하는 것"
+    relation: "**회차(TRM-004)를 올리는 경로다.** 갱신이 저장소에 없는 id 로 오므로 upsert 가 필요하다(TRM-072)"
+# 실행 문맥과 훅
+  - id: TRM-120
+    term: RunnableConfig
+    origin: LangGraph4j
+    group: 문맥
+    definition: "한 번의 실행에 딸려 다니는 설정 보따리"
+  - id: TRM-121
+    term: threadId
+    origin: LangGraph4j
+    group: 문맥
+    definition: "그 실행을 식별하는 값"
+    relation: "**우리는 여기에 턴 ID 를 싣는다**"
+  - id: TRM-122
+    term: checkPointId
+    origin: LangGraph4j
+    group: 문맥
+    definition: "어느 체크포인트에서 시작할지. 되돌림에서 쓴다"
+  - id: TRM-123
+    term: metadata
+    origin: LangGraph4j
+    group: 문맥
+    definition: "임의의 값을 실어 노드·훅·저장소 어디서나 꺼내 쓰는 자리"
+    relation: "**점유 토큰(TRM-012)과 회차(TRM-004)를 여기로 나른다**"
+  - id: TRM-124
+    term: BeforeCall 훅
+    origin: LangGraph4j
+    group: 문맥
+    definition: "노드 본문 **전에** 도는 것. 인터럽트 판정보다도 앞이다"
+    relation: "**점유 갱신·중단 확인·의도 분류를 여기 둔다** — 앞에서 읽은 값을 뒤의 `interrupt()` 가 쓴다"
+  - id: TRM-125
+    term: WrapCall 훅
+    origin: LangGraph4j
+    group: 문맥
+    definition: "노드 본문을 **감싸는** 것. 성공·실패·소요시간을 다 잡는다"
+    relation: "스텝 이력을 여기서 남긴다. **다만 인터럽트로 멈춘 노드는 이 훅을 타지 않는다**"
+  - id: TRM-126
+    term: AfterCall 훅
+    origin: LangGraph4j
+    group: 문맥
+    definition: "노드 본문 **뒤에** 도는 것"
+# 모델 계층 (Spring AI)
+  - id: TRM-130
+    term: ChatModel
+    origin: Spring AI
+    group: 모델
+    definition: "공급 경로를 감춘 대화 모델 인터페이스"
+    relation: "**FEAT-304(외부 모델 호출 공통 컴포넌트)의 내부 구현으로만 쓴다.** 도메인 코드는 우리 인터페이스만 본다 — 노출하면 공급 경로 교체 가능성을 얻는 대신 **프레임워크가 교체 불가능한 종속**이 된다(PRN-05)"
+  - id: TRM-131
+    term: Prompt · Message
+    origin: Spring AI
+    group: 모델
+    definition: "모델에 보내는 입력"
+    relation: "ChatModel 과 같은 경계 — FEAT-304 안에만 둔다"
+  - id: TRM-132
+    term: Usage
+    origin: Spring AI
+    group: 모델
+    definition: "입력·출력 토큰 수"
+    relation: "정산의 근거다. **정본은 API Provider 다**(CON-034) — 개발 기간 CLI 의 값은 정산에 쓰지 않는다"
+
+# 구축 구조 (00-charter.yaml deployment_shapes)
+  - id: TRM-133
+    term: Hub 모듈
+    key: hubModule
+    group: 구조
+    definition: "AI Agent Hub 를 이루는 논리 구획. **system · admin · portal · agent 넷이며 늘지 않는다.** AI 전용 DB 를 공유하고 한 WAS 안에 있다"
+    relation: "정의와 책임은 01-actors.yaml 의 `modules`, 경계는 20-architecture.yaml 의 ARCH-010~014 가 갖는다. system은 공통 백오피스 기반을, admin은 AI 기준·정책을, portal은 사용자 경험을, agent는 실행을 소유한다"
+  - id: TRM-134
+    term: 업무 확장
+    key: businessExtension
+    group: 구조
+    definition: "업무 시스템을 같은 빌드에 넣어 함께 구축할 때의 코드 단위(SHAPE-02). **자기 업무 DB 를 소유하고**, 좌측 메뉴 트리에 형제 노드로 자기 메뉴를 기여한다"
+    relation: "**Hub 제품 모듈이 아니다** — ARCH-010의 네 모듈 고정 목록에 포함되지 않고 자기 업무 DB를 별도 소유한다(ARCH-017). 빌드에 넣지 않아도 Hub가 선다. **빼는 것이 아니라 애초에 넣지 않는 것이며**, 한 번 넣은 뒤 제거하는 경로는 설계하지 않는다"
+  - id: TRM-135
+    term: 연동 방식
+    key: integrationMode
+    group: 정책
+    definition: "대상 시스템에 닿는 방법. `http`(업무 API 호출) 또는 `inProcess`(같은 빌드 안의 업무 확장을 서비스 빈으로 호출)"
+    relation: "**agent 위쪽의 계약은 같다** — 등록 · 권한 · 감사 · 호출 결과. **인프라 설계는 다르다** — 인증·타임아웃·재시도·멱등성 대 데이터소스·트랜잭션 경계·기동 순서"
+  - id: TRM-136
+    term: 차수
+    key: roadmap
+    group: 구조
+    definition: "제품 출시 단계. `RM-P1`(조회) · `RM-P2`(실행) · `RM-P3`(자동화) · `RM-P4`(심화)"
+    relation: "**방법론 단계(P0~P6)와 다른 축이다** — 차수 하나를 만들기 위해 P0~P6 을 한 바퀴 돈다(00-charter.yaml `roadmap_notes`). spec 항목의 `roadmap:` 필드가 이 값을 갖는다"
+  - id: TRM-137
+    term: 작업흐름
+    key: workstream
+    group: 구조
+    definition: "한 차수 안에서 설계·구현·검증 진척을 따로 관리하는 소유 범위. 기본은 system · admin · agent · portal · integration이며 고객사 업무 확장은 `extension:<이름>`으로 추가한다"
+    relation: "**차수와 슬라이스의 중간 축이다.** 차수는 무엇을 출시하는지, 작업흐름은 어느 모듈·계약이 어디까지 성숙했는지, 슬라이스는 기능 변경 하나를 뜻한다. 상세는 ADR-006과 aidd-guide/process/13-workstreams.md가 갖는다"
+  - id: TRM-138
+    term: API 계약
+    key: apiContract
+    group: 구조
+    definition: "portal과 agent가 서로 지키기로 한 요청·응답의 필드, 형식, 상태, 오류 의미와 호환성 규칙"
+    relation: "agent는 계약에 맞는 데이터를 만들고 portal은 계약상 알고 있는 데이터의 표시·내부 사용을 결정한다. 계약 버전·호환성·계약 시험은 integration 작업흐름이 소유한다"
+  - id: TRM-139
+    term: 계약 주 버전
+    key: contractMajorVersion
+    group: 구조
+    definition: "기존 소비자가 해석할 수 없는 API 계약 변경을 구분하는 번호. 호환되는 선택 필드 추가나 서버 수정에는 올리지 않는다"
+    relation: "모르는 선택 필드·표현 블록은 해당 부분만 무시하지만, 모르는 계약 주 버전은 조용히 처리하지 않고 지원하지 않는 버전으로 드러낸다"
+  - id: TRM-140
+    term: 의미 블록
+    key: semanticBlock
+    group: 응답
+    definition: "agent가 특정 화면 라이브러리 설정이 아니라 텍스트·표·차트·지도 같은 의미와 데이터를 함께 전달하는 응답 단위"
+    relation: "portal은 아는 블록을 화면 도구에 맞게 변환하고 모르는 블록은 무시한다. 계약 시험 화면은 변환하지 않은 원문을 안전한 텍스트로 표시한다"
+  - id: TRM-141
+    term: 실행 프로파일
+    key: runtimeProfile
+    group: 운영
+    definition: "로컬·개발·운영처럼 환경별 설정 묶음을 선택하는 기준"
+    relation: "모듈별 설정 파일과 비밀 값 주입 경로를 환경별로 분리하되 업무 DB·API 자격증명을 화면이나 평문 설정에 복제하지 않는다"
+
+# 훅과 인터럽트의 실행 순서 — **우리 설계가 이 순서에 의존한다.**

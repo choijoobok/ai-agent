@@ -1,0 +1,31 @@
+turn_states:
+  - id: TS-01
+    state: 접수
+    key: RECEIVED
+    meaning: "질의를 받아 기록했고 아직 처리를 시작하지 않았다"
+    next: [RUNNING, FAILED]
+  - id: TS-02
+    state: 처리중
+    key: RUNNING
+    meaning: "스텝을 진행하고 있다"
+    next: [WAITING_USER, DONE, ABORTED, FAILED]
+  - id: TS-03
+    state: 사용자대기
+    key: WAITING_USER
+    meaning: "사용자 응답 없이는 진행할 수 없다"
+    next: [RUNNING, ABORTED, FAILED]
+  - id: TS-04
+    state: 중단
+    key: ABORTED
+    meaning: "처리가 멈췄고 **재개 가능**하다 — 수동 중단·서버 재시작·실행 점유 만료·대기 만료처럼 다시 시도할 여지가 있는 멈춤"
+    next: [RUNNING]
+  - id: TS-05
+    state: 실패
+    key: FAILED
+    meaning: "처리가 불가능한 것으로 확정됐다 — 쿼터 소진·권한 부족·복구 불가 오류처럼 재시도해도 결과가 같은 종결"
+    next: []
+  - id: TS-06
+    state: 완료
+    key: DONE
+    meaning: "최종 응답을 사용자에게 전달했다"
+    next: []

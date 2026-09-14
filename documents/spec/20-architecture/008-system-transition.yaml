@@ -1,0 +1,65 @@
+system_transition:
+  decision: ADR-007
+  baseline:
+    claim: "2026-09-12 현재 system 기능은 프론트 `src/features`·`src/shared`, 백엔드 `backend/api`·`backend/domain`, 공통 Liquibase master와 짧은 화면 URL에 분산되어 있다"
+    evidence: "REQ-501~510의 frontend·backend·tables·screens가 이동 전 목록의 정본이다. 이 절에서 같은 목록을 다시 열거하지 않는다"
+
+  source_boundary:
+    id: ARCH-022
+    backend:
+      target_root: "`sources/backend/modules/system/` — Gradle 제품 모듈 `backend:modules:system`"
+      package_shape: "`com.aiagent.system.api/{기능}` · `com.aiagent.system.domain/{애그리거트}` · `com.aiagent.system.contract/{auth|authz|code|message|userstate}`"
+      public_surface: "다른 제품 모듈은 `com.aiagent.system.contract`만 참조한다. system의 controller·service·Entity·Repository 직접 참조는 ArchUnit으로 금지한다"
+      foundation: "`backend/core`·`backend/support`는 도메인 비종속 기술 기반, `backend/bootstrap`은 조립·실행·Liquibase의 자리로 유지한다. 현재 `backend/api`·`backend/domain`은 기능별 이동이 끝나면 제거하는 과도기 모듈이다"
+      enforcement: "경계 검사는 루트 `check`에서 네 제품 모듈의 main 출력 전체를 함께 스캔한다. 개별 모듈 테스트만 통과한 결과로 의존 경계를 통과했다고 판단하지 않는다"
+    frontend:
+      target_root: "`sources/frontend/src/modules/system/`"
+      package_shape: "소유 화면은 `features/{기능}`, 다른 화면 영역이 쓰는 인증·유효 권한·공통코드·메시지·공통 사용자 상태 계약은 `public/{auth|authz|code|message|userstate}`에 둔다"
+      public_surface: "admin·portal은 `@/modules/system/public/**`만 참조한다. system 내부 `features/**`를 가져오지 못하게 ESLint 경계 규칙으로 막는다"
+      shared_rule: "`src/shared`에는 HTTP·그리드·탭·테마처럼 도메인 비종속인 구현만 남긴다. system 업무 이름과 저장소 호출이 있는 현재 shared 코드는 system public 또는 feature로 이동한다"
+    dependency_direction: "system은 admin·portal·agent를 참조하지 않는다. admin·portal·agent → system public 계약만 허용하며 portal → agent 계약은 ARCH-019가 별도로 소유한다"
+    traces_to: [REQ-501, REQ-502, REQ-503, REQ-504, REQ-505, REQ-506, REQ-510]
+
+  api_transition:
+    id: ARCH-023
+    canonical: "system API의 목표 경로는 `/api/{public|common|service}/system/{도메인}/{동작}`이다"
+    cutover:
+      - "사용자 확정(2026-09-12): 현재는 고객이 없는 개발 단계이므로 배포 차수나 운영 관측 기간을 위한 호환 별칭을 두지 않는다"
+      - "기능 슬라이스 안에서 컨트롤러·프론트 호출·`SYS_API`·`SYS_MENU_API` 생성 입력을 신규 정식 경로로 함께 바꾸고, 회귀 시험이 통과하면 기존 `/api/{계층}/{도메인}/{동작}` 매핑을 같은 커밋에서 제거한다"
+      - "전환 결과에는 신규 경로 하나만 남긴다. 접두사 변환용 포괄 라우팅, 구 경로 리다이렉트, 이중 등록, 업무 로직·DTO 복제를 만들지 않는다"
+      - "삭제 전 저장소 전체에서 기존 경로 참조 0건과 생성 시드 일치를 검사한다. 나중에 실제 고객이 생긴 뒤의 경로 변경은 이 개발 단계 결정을 재사용하지 않고 변경 요청으로 호환 정책을 다시 정한다"
+    traces_to: [REQ-503]
+
+  data_boundary:
+    id: ARCH-024
+    system_tables: [SYS_API, SYS_BATCH_HISTORY, SYS_CACHE_VERSION, SYS_CODE, SYS_CODE_GROUP, SYS_CODE_GRP_REF, SYS_CODE_REF, SYS_CONFIG, SYS_LO_ACCESS, SYS_LO_EXCEPTION, SYS_LO_LOGIN, SYS_MENU, SYS_MENU_API, SYS_MESSAGE, SYS_MESSAGE_KEY, SYS_NOTI_INBOX, SYS_NOTI_REQUEST, SYS_NOTICE, SYS_ROLE, SYS_ROLE_MENU_AUTH, SYS_SCHEDULE_BATCH, SYS_USER, SYS_USER_FAVORITE, SYS_USER_GRID_PREF, SYS_USER_IP_ALLOW, SYS_USER_MENU_AUTH, SYS_USER_MENU_STAT, SYS_USER_PWD_HIST, SYS_USER_PWD_RESET, SYS_USER_ROLE, SYS_USER_SEARCH_COND]
+    physical_policy: "기존 31개 테이블의 이름·스키마·데이터를 바꾸거나 복제하지 않고 system이 쓰기 소유권만 인수한다. Entity·Repository 이동은 같은 테이블을 가리키며 이행 중 이중 쓰기를 만들지 않는다"
+    changelog_policy: "적재된 changeset은 그대로 둔다. G3 이후 system의 신규 변경은 `sources/backend/bootstrap/src/main/resources/db/changelog/system/`에 새 changeset으로 추가하고 공통 master에서 포함한다"
+    platform_exclusions: "`SYS_SEQUENCE`·`SYS_DATA_LOCK`·`SYS_JOB_PROGRESS`·Spring Session 테이블은 제품 업무 상태가 아니라 platform 기반이므로 system 소유 31개에 넣지 않는다(REQ-510)"
+    notification_ownership: "공지·공통 알림함·계정/권한 요청의 판정은 system이 소유한다. AI 품질 신고·정책 관련 요청과 처리 상태는 admin이 소유하고, 사용자에게 보낼 알림만 system public 알림 계약에 전달한다. admin은 system 알림 테이블을 직접 쓰지 않는다"
+    traces_to: [REQ-501, REQ-502, REQ-503, REQ-504, REQ-505, REQ-506, REQ-507, REQ-508, REQ-509, REQ-510]
+
+  screen_transition:
+    id: ARCH-025
+    menu_routes: "현재 system 메뉴 URL의 경로 꼬리를 보존해 `/admin/system/{기존 경로}`로 옮긴다. 예: `/user` → `/admin/system/user`, `/log/login` → `/admin/system/log/login`, `/dashboard` → `/admin/system/dashboard`"
+    standalone_routes: "로그인과 셸 공통 모달은 system 소유지만 관리 콘솔에 종속시키지 않는다. `/login`은 그대로 두고 프로필·설정·알림함·비밀번호 변경·세션 만료는 어느 화면 영역에서도 같은 system public 계약으로 연다"
+    document_paths: "메뉴 화면 문서는 브라우저 목표 경로와 함께 `documents/screen/admin/system/**`로 옮긴다. URL이 없는 공통 오버레이 문서는 `documents/screen/_standalone/system/**`에 둔다"
+    cutover: "사용자 확정(2026-09-12): 고객 북마크가 없는 개발 단계이므로 메뉴·라우터·화면 문서가 신규 경로로 함께 전환되면 기존 화면 경로는 같은 커밋에서 제거하고 리다이렉트 별칭을 두지 않는다"
+    traces_to: [REQ-501, REQ-503, REQ-507, REQ-508, REQ-509, REQ-510]
+
+  migration_order:
+    id: ARCH-026
+    steps:
+      - "공개 계약과 의존성 검사를 먼저 세우고 현재 구현을 그대로 통과시킨다"
+      - "기능 하나의 백엔드 패키지·프론트 feature·API 정식 경로·화면 문서 경로를 같은 슬라이스에서 옮긴다"
+      - "프론트·메뉴·API 시드·내부 호출자의 기존 경로 참조가 0건인지 검사한다"
+      - "신규 경로가 기존과 같은 권한·응답·업무 결과를 내는 회귀 시험을 통과시킨다"
+      - "같은 커밋에서 기존 API·화면 경로를 제거한다"
+    hard_rules:
+      - "전환 중간에 테스트할 수는 있어도 슬라이스의 최종 상태에는 기존 경로 별칭을 남기지 않는다"
+      - "DB 테이블 복사·이중 쓰기·기존 changeset 수정으로 모듈 이동을 표현하지 않는다"
+      - "system G3 승인 전에는 소스·API 시드·화면 경로·DB changeset을 변경하지 않는다"
+    rollback: "기능 슬라이스 커밋 전체를 되돌려 기존 패키지와 경로를 복원한다. DB를 복제하지 않으므로 데이터 역이행은 없다"
+    traces_to: [ARCH-022, ARCH-023, ARCH-024, ARCH-025]
+
+# ── 데이터소스 전략 ─────────────────────────────────────────

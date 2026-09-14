@@ -1,0 +1,1 @@
+hook_order: "BeforeCall 훅 → interrupt() 판정 → WrapCall 체인 → 노드 본문 → AfterCall 훅"

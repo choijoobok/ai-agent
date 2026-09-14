@@ -1,0 +1,15 @@
+backup_restore:
+  - id: RUN-301
+    title: "PostgreSQL 백업·삭제·재생성·복구"
+    traces_to: [ARCH-024]
+    preconditions:
+      - "대상 데이터베이스와 product/local 변형을 구분한다"
+      - "비밀값은 문서나 명령 이력에 남기지 않는다"
+    procedure:
+      - "PostgreSQL custom 형식으로 백업한다"
+      - "복구 리허설 전 대상과 백업 파일을 다시 확인한다"
+      - "P5 전용 데이터베이스를 재생성하고 백업을 복구한다"
+    verify: "Liquibase 미실행, JPA validate, 기준선 건수, sample 테이블 부재, API 인가 사실 수와 미매핑 0건을 확인한다"
+    evidence: "documents/project.state.yaml workstreams.system.gates.P5_verify.note"
+    customer_values: "@defer P6 — 실제 주기·보관기간·저장 위치는 고객사 백업 정책과 CON 항목 확정 뒤 기록한다"
+    status: verified

@@ -1,0 +1,4 @@
+customer_pilot:
+  status: deferred
+  reason: "첫 고객의 실제 적용 업무·빈도·처리 시간은 고객이 확정된 뒤에만 정의할 수 있다"
+  question: "OQ-002"

@@ -1,0 +1,12 @@
+# 유즈케이스 명세 — 작업흐름별 승인. 다른 작업흐름의 빈 범위는 지어내지 않는다.
+meta:
+  status: in_progress
+  baselined: null
+  workstreams: { system: reviewed }
+  source_commentary: |-
+    [1] 유즈케이스 명세 — 작업흐름별 승인. 다른 작업흐름의 빈 범위는 지어내지 않는다.
+
+spec_set:
+  version: 1
+  parts:
+    - 001-usecases.yaml

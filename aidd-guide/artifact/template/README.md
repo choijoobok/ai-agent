@@ -26,7 +26,7 @@ tags: [artifact, template, format]
 | [`01-adr.md`](./01-adr.md) | P2~ | `documents/decisions/ADR-{번호}-{제목}.md` | 다음 사람 |
 | [`02-requirements.md`](./02-requirements.md) | P3 | `documents/screen/{페이지경로}/requirements.md` | **AI**(구현 주체) |
 | [`04-manual.md`](./04-manual.md) | P4 | `documents/screen/{페이지경로}/manual.md` | **운영자·사용자** |
-| [`05-runbook.md`](./05-runbook.md) | P2~P6 | `documents/spec/80-operations.yaml` | 운영자 |
+| [`05-runbook.md`](./05-runbook.md) | P2~P6 | `documents/spec/80-operations/_index.yaml` | 운영자 |
 | [`06-delivery.yaml`](./06-delivery.yaml) | P3~P6 | `documents/delivery.yaml` | 고객·인수 담당자 |
 
 - **00 이 01 앞인 것이 순서다** — 조사가 결정보다 앞선다. `00` 은 **비규범**이고 `01` 이
@@ -51,8 +51,8 @@ tags: [artifact, template, format]
 | 서식 | 무엇에서 나오나 | 누가 만드나 |
 |---|---|---|
 | [`03-mockup.html`](./03-mockup.html) | `documents/screen/{경로}/requirements.md` | `/mockup` |
-| [`generated/feature-spec.md`](./generated/feature-spec.md) | `documents/spec/31-features.yaml` | `/doc-gen` |
-| [`generated/test-result.md`](./generated/test-result.md) | `documents/spec/70-testcases.yaml` + 실행 결과 | `/doc-gen` |
+| [`generated/feature-spec.md`](./generated/feature-spec.md) | `documents/spec/80-operations/_index.yaml` | `/doc-gen` |
+| [`generated/test-result.md`](./generated/test-result.md) | `documents/spec/80-operations/_index.yaml` + 실행 결과 | `/doc-gen` |
 
 **`03-mockup.html` 만 `generated/` 밖에 있다.** 그 파일은 *채워 넣는 서식* 이 아니라
 **생성기가 읽는 스타일 원본**이기 때문이다 — `generated/` 로 옮기면 "생성물이니 손대지 말라" 와
@@ -67,7 +67,7 @@ tags: [artifact, template, format]
 id: FEAT-012
 traces_to: [UC-004, REQ-011]
 status: baselined
-generated_from: documents/spec/31-features.yaml
+generated_from: documents/spec/80-operations/_index.yaml
 last_sync: 2026-09-04
 ---
 <!-- 생성물입니다. 직접 수정하지 마세요. documents/spec/ 를 고친 뒤 /doc-gen 하세요. -->

@@ -1,0 +1,5 @@
+rate_limit_ownership:
+  id: AUTHZ-080
+  claim: "**유량 통제는 받는 쪽(대상 시스템)의 책임이다**"
+  why: "서버 capacity 는 대상 시스템이 알고, Hub 사용은 그 시스템을 직접 쓰던 사용자의 이용이 **창구만 옮겨온 것**이다"
+  hub_behavior: "Hub 는 대상 시스템의 제한 응답(429 등)을 존중해 백오프·재시도하며 **자체 rate limit 을 약속하지 않는다**"

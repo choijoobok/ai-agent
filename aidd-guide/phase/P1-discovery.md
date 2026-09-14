@@ -14,7 +14,7 @@ tags: [discovery, requirement]
 # P1 발견 — 업무 프로세스와 요구사항
 
 > 목표: **업무 흐름**을 먼저 그리고, 거기서 요구사항을 **뽑아낸다**. 기능 목록에서 시작하지 않는다.
-> 산출물: `documents/spec/03-glossary.yaml`, `documents/spec/11-processes.yaml`, `documents/spec/10-requirements.yaml`
+> 산출물: `documents/spec/03-glossary/_index.yaml`, `documents/spec/03-glossary/_index.yaml`, `documents/spec/03-glossary/_index.yaml`
 > 소요: 사용자 대화 2~4회
 
 ## 1. 순서가 중요하다
@@ -32,7 +32,7 @@ tags: [discovery, requirement]
 사용자 발화에서 업무 명사를 전부 뽑아 정의를 **확인받는다**. AI가 짐작해서 정의하지 않는다.
 
 ```yaml
-# documents/spec/03-glossary.yaml
+# documents/spec/03-glossary/_index.yaml
 - id: TRM-001
   term: 턴
   definition: "사용자 질의 1건과 그에 대한 최종 응답까지의 처리 단위."
@@ -56,7 +56,7 @@ tags: [discovery, requirement]
 4. **각 단계에 담당 액터를 붙인다.** 담당자 없는 단계는 미완성이다.
 
 ```yaml
-# documents/spec/11-processes.yaml
+# documents/spec/03-glossary/_index.yaml
 - id: PRC-01
   name: 조회 요청 처리
   trigger: "현업 담당자가 자연어로 질의한다"
@@ -89,7 +89,7 @@ tags: [discovery, requirement]
 - ❌ "조회를 편리하게 한다." (검증 불가)
 - ❌ "결과 그리드에 마스킹 컬럼을 둔다." (해결책이지 요구사항이 아님 → "권한 없는 컬럼의 원본이 화면에 닿지 않아야 한다")
 
-### `documents/spec/10-requirements.yaml`
+### `documents/spec/03-glossary/_index.yaml`
 ```yaml
 - id: REQ-011
   type: functional            # functional | nonfunctional

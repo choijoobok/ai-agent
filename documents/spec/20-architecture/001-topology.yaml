@@ -1,0 +1,103 @@
+topology:
+  id: ARCH-001
+  core_claim: "**업무 시스템과 대화·추론 LLM 에 닿는 유일한 접점이 agent 다.** 업무 DB 를 읽는 경로, 업무 API 를 실행하는 경로, 사용자 질의가 LLM 으로 나가는 경로가 모두 agent 한 곳에 모인다"
+  zones:
+    - zone: "외부망"
+      contains: "대화·추론 LLM API · 임베딩 모델 API"
+    - zone: "DMZ"
+      contains: "아웃바운드 게이트웨이 (단일 통로 · 인바운드 미허용)"
+    - zone: "내부 폐쇄망 — Agentic AI Hub"
+      contains: "system · admin · portal · agent 모듈 · 공유 PostgreSQL 스키마(시스템 설정·이력·지식·임베딩 벡터)"
+    - zone: "내부 폐쇄망 — 레거시 (복수)"
+      contains: "업무 시스템 WAS/REST · 업무 운영 DB(여러 시스템이 공유 가능 · 이기종 DBMS) · 통합 DW"
+  notes:
+    - "**외부망에는 두 종류가 있다** — 대화·추론 LLM 과 임베딩 모델. 대화·추론 LLM 은 agent 만 호출한다. 임베딩의 호출 주체는 둘이다: **admin**(지식 등록·수정·재임베딩 시 본문 임베딩) · **agent**(질의 키워드 임베딩으로 지식 검색). 두 경로 모두 공통 컴포넌트를 경유하며 외부로 나가는 통로는 하나다"
+    - "**임베딩 사용은 선택 기능이다.** 끄면 임베딩 모델 연동 없이 태그 검색만으로 동작한다"
+    - "지식 본문과 임베딩 벡터는 **별도 벡터 DB 를 두지 않고** AI 전용 DB 의 테이블로 관리한다(pgvector 확장) — **대안 비교와 근거는 ADR-005 가 갖는다**(승인 2026-09-10)"
+    - "**사용자 접속 방식은 고객사 정책을 따른다** — VPN 전용·사내 PC 원격·VDI 등. 이 시스템이 접속 경로를 규정하지 않는다"
+    - "**알림 발송 경로도 고객사 환경에 따라 다르다** — 자체 메일 전송 에이전트 보유 여부"
+
+  # ── 논리 구성도의 원본 ────────────────────────────────────
+  # **여기가 그림의 정본이다.** `/doc-gen` 이 이 노드·간선으로
+  # `documents/generated/20-아키텍처.md` 의 Mermaid 를 그린다(산출물 지도 8행).
+  # **그림 파일을 만들지 않는다** — 이미지는 diff·검색·부분 수정이 되지 않는다.
+  #
+  # 원본(agentic-ai 의 6.1)은 Mermaid 로 그려져 있었고 이관에서 산문만 왔다.
+  # 산문에는 *무엇이 어느 구역에 있나* 는 있어도 **무엇이 무엇을 부르나** 가 없어
+  # 다시 그릴 수 없었다. 그 간선이 이 절이다 — 규칙은 module_boundaries 가 갖는다.
+  #
+  # **C4 두 계층은 이 하나를 접어서 그린다**(2026-09-10 · G2 가 Level 1·2 를 따로 요구한다).
+  # 노드·간선을 두 벌 적으면 그 순간 두 사실이 되고, 한쪽만 고쳤을 때 어느 그림이 참인지
+  # 알 방법이 없다. **Level 1 은 노드의 `l1:` 로 접고, Level 2 는 `deploy:` 로 묶는다.**
+
+  # ── C4 Level 1 — 시스템 컨텍스트 ──────────────────────────
+  context:
+    id: ARCH-002
+    claim: "**바깥에서 본 이 시스템은 상자 하나다.** 누가 쓰는가 · 무엇에 닿는가 · 나가는 통로가 몇 개인가만 말한다"
+    note: "**아웃바운드 게이트웨이를 상자로 남긴다.** C4 는 인프라를 Level 1 에 그리지 않는 것이 보통이지만, *나가는 통로가 하나이고 들어오는 통로가 없다* 는 것이 이 제품의 도입 조건이다(CON-013) — 지우면 그림이 그 사실을 말하지 않는다"
+    systems:
+      - { key: PERSON,     kind: 사람,      label: "사용자 · 관리자",                   note: "액터 열하나의 상세는 01-actors.yaml 이 갖는다" }
+      - { key: HUB,        kind: 이 시스템, label: "Agentic AI Hub" }
+      - { key: GW_SYS,     kind: 외부,      label: "아웃바운드 게이트웨이 (고객사 DMZ)", note: "단일 통로 · 인바운드 미허용(CON-013)" }
+      - { key: LLM_SVC,    kind: 외부,      label: "외부 LLM 서비스",                   note: "대화·추론과 임베딩 둘이며 공급 경로를 따로 설정한다(ARCH-040)" }
+      - { key: LEGACY_SYS, kind: 외부,      label: "업무 시스템 (복수)",                 note: "WAS/REST · 업무 운영 DB · 통합 DW 를 하나로 접은 것이다" }
+      - { key: MAIL_SYS,   kind: 외부,      label: "메일 발송 경로",                     note: "고객사 환경에 따라 상이(CON-031)" }
+
+  # ── C4 Level 2 — 컨테이너(따로 배포하거나 따로 실행되는 것) ─
+  containers:
+    id: ARCH-003
+    claim: "**컨테이너는 따로 배포하거나 따로 실행되는 것이다.** system·admin·portal·agent 는 컨테이너가 아니라 **한 WAS 안의 모듈**이며, 그 경계는 ARCH-010~014와 ADR-007이 갖는다"
+    units:
+      - { key: SPA, label: "브라우저 SPA (React 19 · Vite)", holds: "portal 화면 영역 · system/admin 관리 콘솔 영역", note: "**Hub WAS 가 하나의 정적 번들로 서빙한다.** `/`와 `/admin`은 별도 `index.html`이 아니라 라우터·레이아웃·지연 로딩 경계다(ARCH-021)" }
+      - { key: WAS, label: "Hub WAS (Spring Boot 4 · JDK 25)", holds: "system · admin · portal · agent 모듈", note: "**기본은 단일 배포다.** 분리는 agent 만 대상이고 그때도 DB 를 공유한다(ARCH-014). **SHAPE-02(통합 구축)에서는 여기에 업무 확장이 함께 들어가고 업무 DB 노드가 하나 더 생긴다**(ARCH-016~018) — 이 그림은 SHAPE-01 을 그린 것이다" }
+      - { key: DBU, label: "Hub 공유 DB (PostgreSQL)", holds: "system 설정 · 이력 · 지식 · 임베딩 벡터", note: "네 모듈이 하나의 스키마를 공유한다. 벡터도 여기 있다 — pgvector 확장을 쓰며 별도 벡터 DB를 두지 않는다(CON-001 · ADR-005 · ADR-008)" }
+
+  nodes:
+    - { key: USER,   zone: 사용자,    l1: PERSON,                   label: "사용자 PC",              note: "접속 방식은 고객사 정책(CON-015)" }
+    - { key: SPA,    zone: 사용자,    l1: HUB,        deploy: SPA,  label: "브라우저 SPA",           note: "화면은 여기서 돌고 서빙은 Hub WAS 가 한다 — 배포 단위가 하나인 이유" }
+    - { key: LLM,    zone: 외부망,    l1: LLM_SVC,                  label: "대화·추론 LLM API" }
+    - { key: EMB,    zone: 외부망,    l1: LLM_SVC,                  label: "임베딩 모델 API",        note: "선택 기능 — 끄면 태그 검색만으로 동작한다" }
+    - { key: GW,     zone: DMZ,       l1: GW_SYS,                   label: "아웃바운드 게이트웨이",   note: "단일 통로 · 인바운드 미허용(CON-013)" }
+    - { key: SYSTEM, zone: Hub,       l1: HUB,        deploy: WAS,  label: "system 모듈" }
+    - { key: PORTAL, zone: Hub,       l1: HUB,        deploy: WAS,  label: "portal 모듈" }
+    - { key: ADMIN,  zone: Hub,       l1: HUB,        deploy: WAS,  label: "admin 모듈" }
+    - { key: AGENT,  zone: Hub,       l1: HUB,        deploy: WAS,  label: "agent 모듈" }
+    - { key: AIDB,   zone: Hub,       l1: HUB,        deploy: DBU,  label: "Hub 공유 DB (PostgreSQL)", kind: db, note: "네 모듈이 공유하는 system 설정 · 이력 · 지식 · 임베딩 벡터(CON-001 · ADR-008)" }
+    - { key: WAS1,   zone: 레거시,    l1: LEGACY_SYS,               label: "업무 시스템 A — WAS / REST API" }
+    - { key: WAS2,   zone: 레거시,    l1: LEGACY_SYS,               label: "업무 시스템 B — WAS / REST API" }
+    - { key: DB1,    zone: 레거시,    l1: LEGACY_SYS,               label: "업무 운영 DB",            kind: db, note: "여러 시스템이 공유할 수 있다" }
+    - { key: DB2,    zone: 레거시,    l1: LEGACY_SYS,               label: "업무 운영 DB",            kind: db, note: "이기종 DBMS" }
+    - { key: DW,     zone: 레거시,    l1: LEGACY_SYS,               label: "통합 DW",                 kind: db }
+    - { key: MAIL,   zone: 고객사,    l1: MAIL_SYS,                 label: "메일 발송 경로",          note: "고객사 환경에 따라 상이(CON-031)" }
+  edges:
+    - { from: USER,   to: SPA,    label: "브라우저" }
+    - { from: SPA,    to: SYSTEM }
+    - { from: SPA,    to: PORTAL }
+    - { from: SPA,    to: ADMIN }
+    - { from: PORTAL, to: SYSTEM, label: "인증·유효 권한" }
+    - { from: ADMIN,  to: SYSTEM, label: "인증·유효 권한" }
+    - { from: AGENT,  to: SYSTEM, label: "인증·유효 권한" }
+    - { from: PORTAL, to: AGENT,  label: "채팅 질의·응답", note: "**비동기다** — 접수 후 즉시 반환하고 진행 상태는 폴링으로 조회한다(ARCH-015)" }
+    - { from: SYSTEM, to: AIDB }
+    - { from: PORTAL, to: AIDB }
+    - { from: ADMIN,  to: AIDB }
+    - { from: AGENT,  to: AIDB }
+    - { from: AGENT,  to: DB1,    label: "조회" }
+    - { from: AGENT,  to: DB2,    label: "조회" }
+    - { from: AGENT,  to: DW,     label: "조회" }
+    - { from: AGENT,  to: WAS1,   label: "실행 (REST)" }
+    - { from: AGENT,  to: WAS2,   label: "실행 (REST)" }
+    - { from: AGENT,  to: GW }
+    - { from: ADMIN,  to: GW }
+    - { from: GW,     to: LLM,    label: "질의·응답" }
+    - { from: GW,     to: EMB,    label: "지식 임베딩 · 질의 키워드 임베딩" }
+    - { from: AGENT,  to: MAIL,   label: "알림" }
+  edge_invariants:
+    - "**업무 DB·업무 API·대화·추론 LLM 에 닿는 간선은 agent 에서만 나간다.** 이 그림에서 그것이 보이는 것이 요점이며, portal·admin 에서 그런 간선이 그려지면 ARCH-013 위반이다"
+    - "**admin → GW 간선은 임베딩 전용이다.** admin 이 대화·추론 LLM 을 부르는 간선은 없다 — 통로는 공유하지만 인터페이스가 갈려 있어(FEAT-304) 참조 관계로 검사된다"
+    - "**허용된 모듈 간 경로는 system의 인증·유효 권한 계약과 portal → agent 계약뿐이다**(ARCH-011·012). 그 밖의 모듈 내부 저장소·서비스 직접 참조는 금지한다"
+    - "**레거시에서 Hub 로 들어오는 간선이 없다** — 인바운드 미허용(CON-013). 인사·조직 변경 수신은 예외이며 그 규약은 51-interfaces.yaml 이 갖는다"
+    - "**두 계층이 어긋나면 접는 규칙이 틀린 것이다.** Level 1 은 이 노드·간선을 `l1:` 로 접은 결과이지 따로 그린 그림이 아니다 — Level 1 에만 있는 상자나 간선이 보이면 고칠 곳은 정본이 아니라 생성기다"
+
+# ── 모듈 경계 ────────────────────────────────────────────────
+# 모듈의 정의와 책임은 01-actors.yaml 의 modules 가 갖는다. 여기는 **경계** 다.

@@ -28,7 +28,7 @@ tags: [verify, scenario]
 ## 2. 검증 유형
 
 ### ① 시나리오 테스트 (프로세스 관통)
-`documents/spec/11-processes.yaml` 의 각 PRC를 처음부터 끝까지 한 흐름으로 실행한다.
+`documents/spec/11-processes/_index.yaml` 의 각 PRC를 처음부터 끝까지 한 흐름으로 실행한다.
 
 ```yaml
 - id: TS-01
@@ -52,7 +52,7 @@ tags: [verify, scenario]
 - soft delete 데이터가 조회/집계에서 제외되는가
 
 ### ③ 권한 매트릭스 전수 검증
-`documents/spec/22-authz.yaml` 의 역할 × 기능 조합을 전부 시도한다.
+`documents/spec/11-processes/_index.yaml` 의 역할 × 기능 조합을 전부 시도한다.
 **"권한 없는 사용자가 API를 직접 호출"** 을 반드시 포함한다 (화면 우회).
 
 ### ④ 비기능 측정

@@ -6,7 +6,7 @@ type: template
 created: 2026-09-04
 updated: 2026-09-13
 status: active
-sources: ["documents/spec/80-operations.yaml"]
+sources: ["documents/spec/80-operations/_index.yaml"]
 tier: 3
 tags: [template, runbook, operations]
 ---
@@ -14,7 +14,7 @@ tags: [template, runbook, operations]
 # 운영 런북 정본
 
 > 운영 인력이 장애 중에도 순서대로 실행할 수 있어야 한다. Markdown 결과를 직접 쓰지 않고
-> `documents/spec/80-operations.yaml`에 다음 구조를 채운다.
+> `documents/spec/80-operations/_index.yaml`에 다음 구조를 채운다.
 
 ```yaml
 meta:
