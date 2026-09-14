@@ -38,6 +38,24 @@ export function crashOutput(input, entry, error) {
   const targets = patchTargets(input).map(repoRelative).filter(Boolean);
   const repair = targets.length > 0 && targets.every((path) => REPAIR_PATH.test(path));
   const cause = firstLine(error);
+
+  /* 셸 chain 도 이 진입부를 쓴다 — 그때 <b>고칠 때 쓰는 도구가 편집 도구</b>라서
+     안내가 반대다. 파일 대상이 없으면 셸 진입으로 본다. */
+  if (!isFileEvent(input)) {
+    const reason = [
+      `셸 보호 진입부 실행 실패: ${entry}: ${cause}`,
+      '**명령 실행을 차단했다.** 편집 도구(`Edit`)로 훅을 복구한 뒤 다시 시도한다.',
+      '원인은 `node --check <훅 경로>` 가 말해 준다.',
+    ].join('\n');
+    return {
+      hookSpecificOutput: {
+        hookEventName: 'PreToolUse',
+        permissionDecision: 'deny',
+        permissionDecisionReason: reason,
+      },
+    };
+  }
+
   if (repair) {
     const message = [
       `**파일 보호 진입부가 깨져 있다**(${entry}: ${cause}). 훅 adapter 수리만 통과시킨다.`,
@@ -85,6 +103,12 @@ async function readInput() {
   } catch {
     return {};
   }
+}
+
+/** 파일 도구인가 — 대상 경로가 있거나 파일 도구 이름이면 그렇다. */
+function isFileEvent(input) {
+  if (patchTargets(input).length > 0) return true;
+  return !/^(?:Bash|PowerShell|Shell)$/i.test(String(input?.tool_name ?? ''));
 }
 
 function repoRelative(path) {

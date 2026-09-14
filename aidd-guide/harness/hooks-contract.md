@@ -39,11 +39,13 @@ tags: [harness, hooks, contract, wiring]
 |---|---|---|---|
 | `SessionStart` | `session-start` chain | `session-start`(`startup`) · `session-brief`(`resume\|clear\|compact`) | `git-sync` → `session-brief` |
 | `PreToolUse` 파일 | `pre-write` chain | `file-chain` | `guard-write`(기능 소유 작업흐름 G3) → `guard-generated` |
-| `PreToolUse` shell | `pre-shell` chain | `pre-shell` chain | 파괴 명령·커밋 사고 차단 |
+| `PreToolUse` shell | `pre-shell` chain | `pre-shell` chain | 파괴 명령·커밋 사고 차단 → **셸이 쓰는 경로를 파일 chain 에 태운다** |
 | `PostToolUse` 파일 | `post-write` chain | `file-chain` | 인코딩 → 추적성 → 문서 현행화 |
 | `UserPromptSubmit` | `log-raw` + `context-gauge` | `log-raw` | 사용자 대화 기록 |
 | `Stop` | `log-raw` | `log-raw` | AI 대화 기록 |
 
+- **배선은 도구 이름으로 선다 — 그래서 무엇을 덮는지 세지 않으면 도구를 바꾸는 것만으로 게이트가 사라진다.** `harness-check`가 대표 도구 이름(`Write`·`Edit`·`NotebookEdit`·MCP 쓰기·`Bash`·`PowerShell`·MCP 셸)을 Claude matcher 정규식에 실제로 먹여 본다. 새 쓰기·셸 도구가 생기면 그 목록에 먼저 더한다. **파일 쪽만 MCP를 덮고 셸 쪽을 두면 같은 구멍이 남는다** — 2026-09-14 실측에서 `Bash`로 막힌 명령이 MCP `start_process`로 그대로 돌았다.
+- **셸 chain이 보는 것은 `tool_input.command` 하나다.** 그래서 셸을 *새로 여는* MCP 도구는 덮지만, 이미 열린 REPL·프로세스에 이어 넣는 입력(`interact_with_process`의 `input` 등)은 보지 못한다 — 명령이 그 필드에 없고, 그 내용은 셸 문법도 아니다. 그 자리는 사후 chain과 사람이 본다.
 - 같은 matcher의 command hook은 동시 실행될 수 있다. 그래서 순서가 필요한 정책은 handler를 여러 개 배선하지 않고 **chain 하나**가 직렬 실행한다.
 - **같은 chain에는 같은 timeout을 준다.** 예산이 갈리면 좁은 쪽에서만 뒤쪽 훅이 통째로
   잘리고, 잘렸다는 사실은 보이지 않는다. `harness-check`가 파일 chain 둘을 비교해 막는다.
@@ -81,15 +83,11 @@ fixture는 `.codex/hooks/self-test.mjs`가 갖는다 — 여는 쪽과 **닫히�
 | 실패 정책 | **던지지 않는다.** git 이 없거나 네트워크가 죽어도 세션은 열린다. 네트워크 15초 · 로컬 5초에서 끊는다 |
 | fixture | `.codex/hooks/self-test.mjs` — `source: 'compact'` 에서 아무것도 하지 않는다 |
 
-**세 가지를 하지 않는 것이 이 훅의 절반이다.** ① 미커밋 변경 위로 남의 커밋을 얹지
-않는다 — 충돌 해소는 사람의 판단이다(AGENTS.md §5-2). ② `--ff-only` 만 쓴다 — merge 와
-rebase 중 무엇으로 합칠지는 AI 가 고르지 않는다. ③ **푸시하지 않는다**(AGENTS.md §9).
+**세 가지를 하지 않는 것이 이 훅의 절반이다.** ① 미커밋 변경 위로 남의 커밋을 얹지 않는다 — 충돌 해소는 사람의 판단이다(AGENTS.md §5-2). ② `--ff-only` 만 쓴다 — merge 와 rebase 중 무엇으로 합칠지는 AI 가 고르지 않는다. ③ **푸시하지 않는다**(AGENTS.md §9).
 
 `resume`·`clear`·`compact` 에서 돌지 않는다 — 작업 중간에 파일이 바뀌면 AI가 읽은 것과 디스크가 어긋난다.
 
-startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로 바뀐 것을 현재 실행에 적용됐다고
-가장하지 않는다. Claude Code는 새 세션을 열고, Codex 앱은 승인 뒤 작업 맥락을 인계한 새 local
-task를 만들되, 앱에 hook 검토 화면이 없으면 **새 task를 묻기 전에** CLI `/hooks`로 현재 정의를 승인하고 완료를 확인한다. CLI 사용자는 승인·`/hooks` 검토 뒤 `codex resume <SESSION_ID>`(최근 task면 `--last`)로 돌아온다.
+startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로 바뀐 것을 현재 실행에 적용됐다고 가장하지 않는다. Claude Code는 새 세션을 열고, Codex 앱은 승인 뒤 작업 맥락을 인계한 새 local task를 만들되, 앱에 hook 검토 화면이 없으면 **새 task를 묻기 전에** CLI `/hooks`로 현재 정의를 승인하고 완료를 확인한다. CLI 사용자는 승인·`/hooks` 검토 뒤 `codex resume <SESSION_ID>`(최근 task면 `--last`)로 돌아온다.
 
 ## `skill-sync` — 공통 스킬 원본 → 두 AI 의 `SKILL.md`
 
@@ -102,17 +100,19 @@ task를 만들되, 앱에 hook 검토 화면이 없으면 **새 task를 묻기 �
 | 출력 | 다시 만든 스킬 이름과 *같은 커밋에 담으라* 는 말 |
 | 실패 정책 | 생성기가 던져도 훅은 통과시키고 경고만 낸다 — 쓰기를 되돌릴 수는 없다 |
 
-**왜 즉시 만드나.** `SKILL.md` 는 생성물이고 손편집은 `guard-generated` 가 막는다. 그러면
-원본을 고친 사람은 고쳤다고 믿는데 **AI 가 부르는 것은 옛 파일**이다 — 다음 세션의
-`harness-check` 가 잡아 주지만 **그 세션 안에서는 고친 스킬을 쓸 수 없다.**
-일부 provider 쓰기가 실패하면 성공이라고 말하지 않고 실패 목록과 재실행 명령만 알린다.
+**왜 즉시 만드나.** `SKILL.md` 는 생성물이고 손편집은 `guard-generated` 가 막는다. 그러면 원본을 고친 사람은 고쳤다고 믿는데 **AI 가 부르는 것은 옛 파일**이다 — 다음 세션의 `harness-check` 가 잡아 주지만 **그 세션 안에서는 고친 스킬을 쓸 수 없다.** 일부 provider 쓰기가 실패하면 성공이라고 말하지 않고 실패 목록과 재실행 명령만 알린다.
 
-## `guard-commit` — 보이는 메시지의 provider 표식
+## `guard-shell-write` — 셸이 쓰는 경로도 파일 게이트에 태운다
 
-AI가 만드는 커밋은 `-F -`로 본문을 명령에 드러낸다. POSIX heredoc과 PowerShell here-string을
-모두 읽고, provider 문서가 정한 정확한 `Agent:` 값과 마지막 trailer 묶음을 검사한다.
-`-m`·`-F <파일>`처럼 본문을 확인할 수 없는 형태는 통과시키지 않는다. Claude는 `Agent:` 뒤의
-정해진 `Co-Authored-By:`를 허용하고, Codex는 `Agent: Codex`가 마지막 줄이다.
+| 칸 | 값 |
+|---|---|
+| 이벤트 · 입력 | `PreToolUse` shell chain 의 끝 · `tool_input.command` |
+| 판정 · 강도 | 명령에서 쓰기 대상을 뽑아 **`pre_file` chain 을 그대로** 돌린다 · 차단. 저장소 밖·`/dev/null`·glob·인용부 안은 통과 |
+| 출력 · 실패 정책 | 막힌 경로마다 원래 훅의 사유 · 사전 chain 이라 던지면 차단한다 |
+| 못 보는 것 | 스크립트가 자기 안에서 여는 파일(`node -e` · gradle), 인용부 안의 리다이렉션, 변수·glob 경로, 삭제(`rm` — `@defer ?`) |
+| fixture | `.codex/hooks/self-test.mjs` — 잡는 형태와 **통과해야 하는 형태**를 함께 센다 |
+
+**왜.** 2026-09-14 실측에서 `Write` 로 막히는 지도 밖 경로가 `printf > …` 로는 조용히 만들어졌다. 게이트가 도구 이름으로 서면 **도구를 바꾸는 것만으로 게이트가 사라진다.** `guard-commit` 은 [hooks.md](./hooks.md)가 갖는다.
 
 ## 공통 계약 — `lib.mjs`
 

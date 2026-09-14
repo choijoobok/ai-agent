@@ -14,29 +14,30 @@
 
 같은 의미의 정책 엔진을 공유하고 입력 adapter와 컨텍스트 전략만 다르게 둔다.
 
-### Claude Code — 16개
+### Claude Code — 17개
 
 | 이벤트 | 언제 | 훅 | 하는 일 | 강도 | 제한 |
 |---|---|---|---|---|---|
 | `SessionStart` | — | `git-sync` | 세션이 열릴 때 원격을 먼저 당긴다 | 문맥에 넣는다 | 60s |
 | `SessionStart` | — | `session-brief` | 세션이 열릴 때 지금 어디인가를 문맥에 넣는다 | 문맥에 넣는다 | 60s |
-| `PreToolUse` | `Write\|Edit\|NotebookEdit` | `guard-write` | 쓰기의 다섯 사고를 막는다 | **차단** · 경고 | 45s |
-| `PreToolUse` | `Write\|Edit\|NotebookEdit` | `guard-generated` | 생성물을 손으로 고치는 것을 막는다 | **차단** | 45s |
-| `PreToolUse` | `Bash\|PowerShell` | `guard-bash` | 되돌릴 수 없는 명령을 막는다 | **차단** | 20s |
-| `PreToolUse` | `Bash\|PowerShell` | `guard-commit` | 커밋의 네 사고를 막는다 | **차단** | 20s |
-| `PostToolUse` | `Write\|Edit` | `normalize-encoding` | BOM 과 CRLF 를 방금 쓴 파일에서 걷어낸다 | 경고 | 90s |
-| `PostToolUse` | `Write\|Edit` | `hook-syntax` | 방금 고친 훅이 구문부터 깨졌는지 그 자리에서 본다 | 경고 | 90s |
-| `PostToolUse` | `Write\|Edit` | `trace-check` | 추적성 검사 — `PostToolUse`(`documents/spec/**` 쓰기) 훅 겸 `/trace` 스킬의 실행기. | 경고 | 90s |
-| `PostToolUse` | `Write\|Edit` | `doc-drift` | 화면 소스를 고치면 그 화면의 문서를 대조하라고, 요건서가 승인 전이면 승인부터 받으라고 알린다 | 경고 | 90s |
-| `PostToolUse` | `Write\|Edit` | `guide-drift` | `sources:` 에 이 파일을 적은 가이드 문서를 대조하라고 알린다 | 경고 | 90s |
-| `PostToolUse` | `Write\|Edit` | `skill-sync` | 공통 스킬 원본이 바뀌면 두 AI 의 `SKILL.md` 를 다시 만든다 | 경고 | 90s |
-| `PostToolUse` | `Write\|Edit` | `harness-doc` | 훅·스킬 목록을 `developer-guide/07-harness.md` 로 만든다 | 경고 | 90s |
-| `PostToolUse` | `Write\|Edit` | `commons-doc` | 공통물 목록을 `aidd-guide/standard/registry.md` 로 만든다 | 경고 | 90s |
+| `PreToolUse` | `Write\|Edit\|NotebookEdit\|^mcp__.*__(?:write\|edit\|move\|create)` | `guard-write` | 쓰기의 다섯 사고를 막는다 | **차단** · 경고 | 45s |
+| `PreToolUse` | `Write\|Edit\|NotebookEdit\|^mcp__.*__(?:write\|edit\|move\|create)` | `guard-generated` | 생성물을 손으로 고치는 것을 막는다 | **차단** | 45s |
+| `PreToolUse` | `Bash\|PowerShell\|^mcp__.*__(?:start_process\|execute_command\|run_command\|run_shell_command\|shell_exec\|bash\|terminal\|exec)` | `guard-bash` | 되돌릴 수 없는 명령을 막는다 | **차단** | 20s |
+| `PreToolUse` | `Bash\|PowerShell\|^mcp__.*__(?:start_process\|execute_command\|run_command\|run_shell_command\|shell_exec\|bash\|terminal\|exec)` | `guard-commit` | 커밋의 네 사고를 막는다 | **차단** | 20s |
+| `PreToolUse` | `Bash\|PowerShell\|^mcp__.*__(?:start_process\|execute_command\|run_command\|run_shell_command\|shell_exec\|bash\|terminal\|exec)` | `guard-shell-write` | 셸로 파일을 쓰는 것도 파일 게이트에 태운다 | **차단** | 20s |
+| `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `normalize-encoding` | BOM 과 CRLF 를 방금 쓴 파일에서 걷어낸다 | 경고 | 90s |
+| `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `hook-syntax` | 방금 고친 훅이 구문부터 깨졌는지 그 자리에서 본다 | 경고 | 90s |
+| `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `trace-check` | 추적성 검사 — `PostToolUse`(`documents/spec/**` 쓰기) 훅 겸 `/trace` 스킬의 실행기. | 경고 | 90s |
+| `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `doc-drift` | 화면 소스를 고치면 그 화면의 문서를 대조하라고, 요건서가 승인 전이면 승인부터 받으라고 알린다 | 경고 | 90s |
+| `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `guide-drift` | `sources:` 에 이 파일을 적은 가이드 문서를 대조하라고 알린다 | 경고 | 90s |
+| `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `skill-sync` | 공통 스킬 원본이 바뀌면 두 AI 의 `SKILL.md` 를 다시 만든다 | 경고 | 90s |
+| `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `harness-doc` | 훅·스킬 목록을 `developer-guide/07-harness.md` 로 만든다 | 경고 | 90s |
+| `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `commons-doc` | 공통물 목록을 `aidd-guide/standard/registry.md` 로 만든다 | 경고 | 90s |
 | `UserPromptSubmit` | — | `log-raw` | 대화 원문을 `chat-history/` 에 append 한다 | 조용히 한다 | 10s |
 | `UserPromptSubmit` | — | `context-gauge` | 컨텍스트 게이지 — 문맥이 차오르면 압축할 여지가 남아 있을 때 알린다. | 문맥에 넣는다 | 10s |
 | `Stop` | — | `log-raw` | 대화 원문을 `chat-history/` 에 append 한다 | 조용히 한다 | 15s |
 
-### Codex — 15개
+### Codex — 16개
 
 | 이벤트 | 언제 | 훅 | 하는 일 | 강도 | 제한 |
 |---|---|---|---|---|---|
@@ -47,6 +48,7 @@
 | `PreToolUse` | `Edit\|Write` | `guard-generated` | 생성물을 손으로 고치는 것을 막는다 | **차단** | 45s |
 | `PreToolUse` | `Bash` | `guard-bash` | 되돌릴 수 없는 명령을 막는다 | **차단** | 20s |
 | `PreToolUse` | `Bash` | `guard-commit` | 커밋의 네 사고를 막는다 | **차단** | 20s |
+| `PreToolUse` | `Bash` | `guard-shell-write` | 셸로 파일을 쓰는 것도 파일 게이트에 태운다 | **차단** | 20s |
 | `PostToolUse` | `Edit\|Write` | `normalize-encoding` | BOM 과 CRLF 를 방금 쓴 파일에서 걷어낸다 | 경고 | 90s |
 | `PostToolUse` | `Edit\|Write` | `hook-syntax` | 방금 고친 훅이 구문부터 깨졌는지 그 자리에서 본다 | 경고 | 90s |
 | `PostToolUse` | `Edit\|Write` | `trace-check` | 추적성 검사 — `PostToolUse`(`documents/spec/**` 쓰기) 훅 겸 `/trace` 스킬의 실행기. | 경고 | 90s |

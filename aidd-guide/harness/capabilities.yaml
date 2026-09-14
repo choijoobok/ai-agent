@@ -20,7 +20,7 @@ hooks:
   claude_wiring: .claude/settings.json
   codex_wiring: .codex/hooks.json
   pre_file: [guard-write, guard-generated]
-  pre_shell: [guard-bash, guard-commit]
+  pre_shell: [guard-bash, guard-commit, guard-shell-write]
   post_file: [normalize-encoding, hook-syntax, trace-check, doc-drift, guide-drift, skill-sync, harness-doc, commons-doc]
   session_start: [git-sync, session-brief]   # 순서가 의미다 — 당긴 뒤에 상태를 읽는다
   conversation: [session-brief, log-raw]

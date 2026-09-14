@@ -92,7 +92,14 @@ export function checkHarness() {
     for (const group of cfg?.hooks?.PreToolUse ?? []) {
       for (const hook of group?.hooks ?? []) {
         const command = String(hook?.commandWindows ?? hook?.command ?? '');
-        if (!command.includes('exit 2') && !command.includes('permissionDecision')) {
+        /* 진입 실패를 deny 로 바꾸는 길은 둘이다 — 셸 wrapper 가 `exit 2` 를 내거나,
+           셸 없이(exec form) `pretool-bootstrap` 이 구조화된 deny 를 내거나.
+           exec form 은 셸 자체가 없는 기계에서 훅이 <b>시작도 못 해 통과되는</b> 것을
+           없애므로, wrapper 와 같은 보장으로 친다. */
+        const execForm = Array.isArray(hook?.args) && hook.args.length > 0;
+        const viaBootstrap = `${(hook?.args ?? []).join(' ')} ${command}`.includes('pretool-bootstrap.mjs');
+        const wrapped = command.includes('exit 2') || command.includes('permissionDecision');
+        if (!wrapped && !(execForm && viaBootstrap)) {
           issues.push(`${name} PreToolUse 진입 실패를 명시적 deny로 바꾸는 wrapper가 없다: ${group?.matcher ?? '*'}`);
         }
         if (name === 'Codex' && hook?.commandWindows && !command.includes('ConvertTo-Json -Compress')) {
@@ -139,8 +146,57 @@ export function checkHarness() {
     }
   }
 
+  issues.push(...coverageIssues(claude));
+
   if (sourceSkills().length === 0) issues.push('공통 스킬이 0개다.');
   return issues;
+}
+
+/**
+ * <b>배선이 있는가</b> 가 아니라 <b>무엇을 덮는가</b> 를 센다.
+ *
+ * <p>2026-09-14 실측: `Write` 로 막히는 경로가 `Bash` 의 `printf > …` 와 MCP 쓰기 도구로는
+ * 그대로 만들어졌다. 게이트가 <b>도구 이름으로</b> 서 있으면 도구를 바꾸는 것만으로 게이트가
+ * 사라지는데, 그때까지 이 검사는 내내 초록이었다 — 어댑터가 배선돼 있기는 했으므로.
+ * 그래서 대표 도구 이름을 matcher 정규식에 <b>실제로 먹여 본다.</b>
+ */
+const MUST_SEE = {
+  'pre-write.mjs': ['Write', 'Edit', 'NotebookEdit', 'mcp__server__write_file', 'mcp__server__edit_block'],
+  /* MCP 셸 도구를 빼면 `Bash` 로 막히는 명령이 `start_process` 로 그대로 돈다 —
+     2026-09-14 에 실측했다. 파일 쪽만 MCP 를 덮고 셸 쪽은 두면 같은 구멍이 남는다. */
+  'pre-shell.mjs': ['Bash', 'PowerShell', 'mcp__server__start_process', 'mcp__server__execute_command'],
+  'post-write.mjs': ['Write', 'Edit', 'mcp__server__write_file', 'mcp__server__edit_block'],
+};
+
+function coverageIssues(claude) {
+  const issues = [];
+  for (const [adapter, tools] of Object.entries(MUST_SEE)) {
+    const event = adapter === 'post-write.mjs' ? 'PostToolUse' : 'PreToolUse';
+    const patterns = [];
+    for (const group of claude?.hooks?.[event] ?? []) {
+      for (const hook of group?.hooks ?? []) {
+        const wiring = `${(hook?.args ?? []).join(' ')} ${hook?.command ?? ''}`;
+        if (wiring.includes(adapter)) patterns.push(String(group?.matcher ?? ''));
+      }
+    }
+    if (patterns.length === 0) {
+      issues.push(`Claude ${event} 에 ${adapter} 배선이 없다.`);
+      continue;
+    }
+    const missed = tools.filter((tool) => !patterns.some((pattern) => matches(pattern, tool)));
+    if (missed.length) {
+      issues.push(`Claude ${event} matcher가 ${adapter} 로 보내지 않는 도구가 있다: ${missed.join(', ')}`);
+    }
+  }
+  return issues;
+}
+
+function matches(pattern, tool) {
+  try {
+    return new RegExp(pattern).test(tool);
+  } catch {
+    return false;
+  }
 }
 
 function read(path) {

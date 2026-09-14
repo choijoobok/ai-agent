@@ -16,33 +16,33 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "Write|Edit|NotebookEdit",
+        "matcher": "Write|Edit|NotebookEdit|^mcp__.*__(?:write|edit|move|create)",
         "hooks": [
           {
             "type": "command",
-            "command": "node aidd-guide/harness/runtime/pretool-bootstrap.mjs claude .claude/hooks/pre-write.mjs || { echo 'pretool-bootstrap 실행 실패 — Bash로 bootstrap을 복구한다.' >&2; exit 2; }",
-            "shell": "bash",
+            "command": "node",
+            "args": ["aidd-guide/harness/runtime/pretool-bootstrap.mjs", "claude", ".claude/hooks/pre-write.mjs"],
             "timeout": 45,
             "statusMessage": "게이트·산출물 지도 확인"
           }
         ]
       },
       {
-        "matcher": "Bash|PowerShell",
+        "matcher": "Bash|PowerShell|^mcp__.*__(?:start_process|execute_command|run_command|run_shell_command|shell_exec|bash|terminal|exec)",
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/pre-shell.mjs || { echo 'shell 보호 진입 실패 — Edit로 훅을 복구한다.' >&2; exit 2; }",
-            "shell": "bash",
+            "command": "node",
+            "args": ["aidd-guide/harness/runtime/pretool-bootstrap.mjs", "claude", ".claude/hooks/pre-shell.mjs"],
             "timeout": 20,
-            "statusMessage": "파괴적 명령과 커밋 형태 확인"
+            "statusMessage": "파괴적 명령·커밋 형태·쓰기 경로 확인"
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Write|Edit",
+        "matcher": "Write|Edit|^mcp__.*__(?:write|edit|move|create)",
         "hooks": [
           {
             "type": "command",

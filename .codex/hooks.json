@@ -7,8 +7,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/session-start.mjs\" --hook-revision=a205a180a7a5bbc6fbe987ac5e3795c57367e8457ae9c004c9e212325026caaa",
-            "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/session-start.mjs') --hook-revision=a205a180a7a5bbc6fbe987ac5e3795c57367e8457ae9c004c9e212325026caaa\"",
+            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/session-start.mjs\" --hook-revision=5783da045514e380174d17e2cc77e33e9e50c6673b953a0446bc3ccfad07c2ef",
+            "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/session-start.mjs') --hook-revision=5783da045514e380174d17e2cc77e33e9e50c6673b953a0446bc3ccfad07c2ef\"",
             "timeout": 60,
             "statusMessage": "원격 동기화와 프로젝트 상태 확인",
             "additionalContextLimit": 5000
@@ -50,7 +50,7 @@
             "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/pre-shell.mjs\" || { printf '%s' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"shell protection entry failed; repair hooks with Edit.\"}}'; exit 0; }",
             "commandWindows": "powershell -NoProfile -Command \"& node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/pre-shell.mjs'); if ($LASTEXITCODE -ne 0) { $fallback = @{hookSpecificOutput = @{hookEventName = 'PreToolUse'; permissionDecision = 'deny'; permissionDecisionReason = 'shell protection entry failed; repair hooks with Edit.'}} | ConvertTo-Json -Compress -Depth 3; [Console]::Out.Write($fallback); exit 0 }\"",
             "timeout": 20,
-            "statusMessage": "파괴적 명령과 커밋 형태 확인"
+            "statusMessage": "파괴적 명령·커밋 형태·쓰기 경로 확인"
           }
         ]
       }

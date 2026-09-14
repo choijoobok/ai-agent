@@ -95,9 +95,7 @@ screenRegistry가 가리킨 기능 폴더의 파일 ─→ screenRegistry.ts 역
 **역인덱스는 새로 만들지 않는다** — 가이드 문서 메타블록의 `sources:` 가 그것이다.
 그 값이 낡으면 `lint.mjs` 가 잡는다(실물과 맞지 않는 엔트리는 위반이다).
 
-- **축약 경로를 허용한다.** `sources/backend/api/error/` 의 실물은
-  `.../api/src/main/java/com/aiagent/api/error/` 다 — 모듈 안쪽의 관례 경로를 접는다.
-  **세그먼트가 순서대로 나타나면** 맞는 것으로 본다.
+- **축약 경로를 허용한다.** `sources/backend/api/error/` 의 실물은 `.../api/src/main/java/com/aiagent/api/error/` 다 — 모듈 안쪽의 관례 경로를 접는다. **세그먼트가 순서대로 나타나면** 맞는 것으로 본다.
 - **폴더 엔트리는 세그먼트 넷 이상만 넣는다.** `sources/frontend/src/` 는 *프론트 전부* 를
   주장하는 값이고, 그것까지 태우면 프론트를 건드릴 때마다 같은 이름이 떠 **경고가
   배경음**이 된다.
@@ -153,14 +151,17 @@ screenRegistry가 가리킨 기능 폴더의 파일 ─→ screenRegistry.ts 역
 
 > **`let` 선언을 실행 블록 아래에 두지 않는다.** 마스킹 규칙의 memo 를 아래에 두었더니 첫 턴이 TDZ 로 죽었고, **조용히 실패하도록 만들어 둔 탓에 그 죽음이 보이지 않았다.** 조용한 훅일수록 손으로 한 번 돌려 확인한다.
 
+## `guard-shell-write` — 셸이 쓰는 경로도 파일 게이트에 태운다
+
+**본다**: 셸 명령에서 뽑은 쓰기 대상(리다이렉션 · `tee` · `sed -i` · `cp`/`mv` · `touch` · `dd of=` · PowerShell `Out-File`/`Set-Content` 계열). 그 경로로 `guard-write`·`guard-generated` 를 **그대로** 돌린다 — 여기에 새 정책은 없다. **못 보는 것**(스크립트가 자기 안에서 여는 파일 등)과 fixture 는 [hooks-contract.md](./hooks-contract.md) 가 갖는다.
+
 ## `git-sync` — 세션 시작에 원격을 당긴다
 
 **깨끗한 트리에서 `startup` 일 때만** `git pull --ff-only` 를 돌린다. 더러우면 당기지 않고 이유와 다음 할 일을 말한다 — 미커밋 변경 위로 남의 커밋을 얹을지는 **사람의 판단**이고(AGENTS.md §5-2), 푸시는 사용자가 말할 때만이다(§9). Codex adapter는 시작 전후 훅 revision이 같을 때만 실행 확인을 문맥에 넣는다. 달라졌으면 데스크톱 앱은 앱 검토 화면 또는 CLI `/hooks`의 완료를 먼저 확인한 뒤 이동 승인을 받아 작업 맥락을 인계한 새 local task로 가고, CLI는 같은 task를 `codex resume`로 재개한다. 새 실행은 revision을 확인하고 `PreToolUse` 카나리 결과를 알리되, revision이 맞고 카나리만 실패하면 문서 규칙을 직접 적용하며 계속한다. 상세 절차와 fixture는 [hooks-contract.md](./hooks-contract.md)가 갖는다.
 
 ## 컨텍스트 관리 — 같은 목적, 다른 구현
 
-공통 목적은 **성능이 무너지기 전에 작업 연속성을 보존하는 것**이다. token 관측값과 압축
-lifecycle이 provider마다 다르므로 구현 동일성을 요구하지 않는다.
+공통 목적은 **성능이 무너지기 전에 작업 연속성을 보존하는 것**이다. token 관측값과 압축 lifecycle이 provider마다 다르므로 구현 동일성을 요구하지 않는다.
 
 ### Claude Code — 사용량 조기 경보
 
@@ -187,10 +188,7 @@ lifecycle이 provider마다 다르므로 구현 동일성을 요구하지 않는
 
 ### Codex — 자동 압축 뒤 재주입
 
-Codex에는 수치 경고 훅을 연결하지 않는다. hook의 안정된 입력에 실제 token usage가 없고, 임의
-추정 백분율은 실측처럼 보이기 때문이다. 자동 또는 수동 압축 뒤
-`SessionStart(source=compact)`가 즉시 실행되며 `session-brief`가 프로젝트 상태·현재 단계·하네스
-정합성을 다시 넣는다. 압축 이벤트 자체를 경고로 만들지 않는다 — 정상 lifecycle을 소음으로
+Codex에는 수치 경고 훅을 연결하지 않는다. hook의 안정된 입력에 실제 token usage가 없고, 임의 추정 백분율은 실측처럼 보이기 때문이다. 자동 또는 수동 압축 뒤 `SessionStart(source=compact)`가 즉시 실행되며 `session-brief`가 프로젝트 상태·현재 단계·하네스 정합성을 다시 넣는다. 압축 이벤트 자체를 경고로 만들지 않는다 — 정상 lifecycle을 소음으로
 만들 이유가 없다. 상세는 [`providers/codex.md`](./providers/codex.md)가 갖는다.
 
 ## 관련

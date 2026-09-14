@@ -322,8 +322,16 @@ export function skillRef(name) {
   return `${name} 스킬`;
 }
 
-/** 같은 프로세스에서 기존 top-level 훅을 한 번 실행한다 — 직렬 chain 전용. */
+/**
+ * 같은 프로세스에서 기존 top-level 훅을 한 번 실행한다 — 직렬 chain 전용.
+ *
+ * <p><b>중첩을 견딘다.</b> 끝날 때 `null` 로 지우지 않고 <b>들어올 때의 값으로 되돌린다</b> —
+ * `guard-shell-write` 처럼 chain 안의 훅이 다시 정책 엔진을 부르는 자리가 있고, 그때
+ * `null` 로 지우면 바깥 훅의 `pass`·`deny` 가 <b>예외 대신 `process.exit(0)` 으로 나간다.</b>
+ * 그러면 chain 의 나머지가 통째로 사라지고 stdout 에는 날 JSON 이 섞인다.
+ */
 export async function runEmbeddedHook(scriptPath, input) {
+  const outer = embeddedInput;
   embeddedInput = input;
   try {
     const url = `${pathToFileURL(scriptPath).href}?embedded=${embeddedRun++}`;
@@ -333,8 +341,19 @@ export async function runEmbeddedHook(scriptPath, input) {
     if (error instanceof HookExit) return error.output;
     throw error;
   } finally {
-    embeddedInput = null;
+    embeddedInput = outer;
   }
+}
+
+/**
+ * 지금 chain 안에서 불린 것인가 — <b>정책 훅이 자기 실행 여부를 가릴 때</b> 쓴다.
+ *
+ * <p>정책 엔진은 import 하면 곧바로 돈다(그것이 `runEmbeddedHook` 의 계약이다). 그래서
+ * 순수 함수 하나를 시험하려고 import 하면 <b>훅이 돌고 `process.exit` 로 시험을 끝낸다.</b>
+ * 이 함수로 실행부를 가리면 같은 파일이 정책이면서 시험 가능한 모듈이 된다.
+ */
+export function isEmbedded() {
+  return embeddedInput !== null;
 }
 
 function finish(output) {

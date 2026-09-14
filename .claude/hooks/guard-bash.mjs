@@ -97,10 +97,22 @@ if (!state?.current) pass();
  *
  * <p><b>{@code git commit} 일 때만</b> 뺀다. {@code sh <<EOF} 의 본문은 진짜 명령이므로
  * 그대로 검사한다 — 여기를 넓히면 heredoc 하나로 전체 가드를 우회하게 된다.
+ *
+ * <p><b>머리 줄이 같은 heredoc 만 뺀다.</b> 처음에는 명령 <i>전체</i>가
+ * {@code git commit} 으로 시작할 때만 뺐는데, {@code git add … && git commit -F - …} 는
+ * 그 조건에 걸리지 않아 <b>메시지 본문이 명령으로 훑였다</b> — 2026-09-14 에 훅 변경을
+ * 설명하려고 {@code DROP TABLE} 을 인용한 커밋이 그렇게 막혔다. 그렇다고 명령 아무 데나
+ * {@code git commit} 이 있으면 전부 빼면 {@code git commit -m x && sh <<EOF} 로 가드를
+ * 우회할 수 있다. 그래서 <b>{@code <<TAG} 가 {@code git commit} 과 같은 줄에 있을 때</b>
+ * 그 본문만 뺀다. 그 자리에 있는 heredoc 은 커밋 메시지 말고는 될 것이 없다.
  */
 function withoutCommitMessage(cmd) {
-  if (!/^\s*git\s+commit\b/.test(cmd)) return cmd;
-  return cmd.replace(/<<-?\s*'?"?([A-Za-z_][A-Za-z0-9_]*)'?"?[\s\S]*?^\s*\1\s*$/gm, '<<HEREDOC');
+  return cmd.replace(
+    /* `[^\n&|;]` — 머리 줄이 <b>구분자를 넘지 못한다.</b> 넘게 두면
+       `git commit -m x && sh <<EOF` 의 `sh` 본문까지 커밋 메시지로 읽혀 가드가 열린다. */
+    /(\bgit\s+commit\b[^\n&|;]*?)<<-?\s*'?"?([A-Za-z_][A-Za-z0-9_]*)'?"?([^\n&|;]*)\n[\s\S]*?^\s*\2\s*$/gm,
+    '$1<<HEREDOC$3',
+  );
 }
 
 const flat = withoutCommitMessage(command).split(/\s+/).join(' ');

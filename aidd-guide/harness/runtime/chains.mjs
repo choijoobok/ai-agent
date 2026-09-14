@@ -1,7 +1,9 @@
 /** 순서가 의미인 공통 hook chain의 유일한 실행 원본. */
 
 export const PRE_FILE = Object.freeze(['guard-write.mjs', 'guard-generated.mjs']);
-export const PRE_SHELL = Object.freeze(['guard-bash.mjs', 'guard-commit.mjs']);
+/* `guard-shell-write` 는 맨 뒤다 — 앞의 둘이 <b>명령 자체</b>를 보고, 그것이 통과한
+   뒤에야 <i>그 명령이 무슨 파일을 쓰는가</i> 를 묻는 것이 읽는 순서와 같다. */
+export const PRE_SHELL = Object.freeze(['guard-bash.mjs', 'guard-commit.mjs', 'guard-shell-write.mjs']);
 export const POST_FILE = Object.freeze([
   'normalize-encoding.mjs',
   'hook-syntax.mjs',

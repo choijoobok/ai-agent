@@ -18,6 +18,8 @@ import {
 } from '../../.claude/hooks/lib.mjs';
 import { allowHookRepair, emitHookResults, runHookChain } from '../../.claude/hooks/hook-chain.mjs';
 import { patchTargets, runFileChain } from './file-chain.mjs';
+import { shellWriteTargets } from '../../.claude/hooks/guard-shell-write.mjs';
+import { PRE_SHELL } from '../../aidd-guide/harness/runtime/chains.mjs';
 import {
   parseScreenRegistry,
   screenUrlOfFrontend,
@@ -380,6 +382,39 @@ if (savedProvider === undefined) delete process.env.AI_HOOK_PROVIDER;
 else process.env.AI_HOOK_PROVIDER = savedProvider;
 assert.equal(claudeStart.trim(), attestation);
 assert.throws(() => JSON.parse(claudeStart));
+
+/*
+  `guard-shell-write` — <b>셸로 쓰는 것도 파일 게이트를 지난다.</b>
+
+  <p>여는 쪽만 세면 안 된다. 오탐은 사람이 훅을 끄게 만들고, 꺼진 훅은 없는 훅이다 —
+  그래서 <b>읽기만 하는 명령과 인용부 안의 꺾쇠·파이프가 통과하는지</b>를 함께 센다.
+*/
+const targetsOf = (command) =>
+  shellWriteTargets(command, REPO).map((path) => path.replace(/\\/g, '/').replace(`${REPO.replace(/\\/g, '/')}/`, ''));
+
+assert.deepEqual(targetsOf('printf x > documents/canary.md'), ['documents/canary.md']);
+assert.deepEqual(targetsOf('echo y >>AGENTS.md'), ['AGENTS.md']);
+assert.deepEqual(targetsOf('cat a | tee -a documents/x.md'), ['documents/x.md']);
+assert.deepEqual(targetsOf("sed -i 's/a/b/' AGENTS.md"), ['AGENTS.md']);
+assert.deepEqual(targetsOf('Set-Content documents/x.md "hi"'), ['documents/x.md']);
+assert.deepEqual(targetsOf('cat <<EOF > documents/x.md\n> 본문의 꺾쇠\nEOF'), ['documents/x.md']);
+/* 읽기·저장소 밖·인용부 안·`/dev/null` 은 건드리지 않는다. */
+assert.deepEqual(targetsOf("sed -n '1,5p' AGENTS.md"), []);
+assert.deepEqual(targetsOf('grep -n "a > documents/no.md" AGENTS.md'), []);
+assert.deepEqual(targetsOf('echo "cat a | tee documents/no.md"'), []);
+assert.deepEqual(targetsOf('node x.mjs 2>&1 > /dev/null'), []);
+assert.deepEqual(targetsOf('node x.mjs 2>$null'), []);
+assert.deepEqual(targetsOf('printf x > /tmp/scratch.txt'), []);
+/* 정직한 커밋 메시지의 꺾쇠를 리다이렉션으로 읽지 않는다 — `guard-bash` 와 같은 이유다. */
+assert.deepEqual(targetsOf(posixCommit('fix: a > b')), []);
+
+/* chain 끝까지 — 지도 밖 경로는 막히고, 읽기는 지나간다. 여기서 `pass()` 가 프로세스를
+   끝내지 않는 것 자체가 `runEmbeddedHook` 중첩(바깥 훅 안에서 정책 엔진을 다시 부르는
+   자리)이 살아 있다는 증거다. */
+const shellChain = (command) =>
+  runHookChain({ cwd: REPO, hook_event_name: 'PreToolUse', tool_name: 'Bash', tool_input: { command } }, PRE_SHELL);
+assert.equal(isDenied(await shellChain('printf x > documents/지도밖.md')), true);
+assert.equal(isDenied(await shellChain('cat AGENTS.md | head -5')), false);
 
 /* 어댑터는 emitter 밖에서 stdout 에 쓰지 않는다 — **두 곳에서 쓰면 형태가 섞이고**,
    섞인 출력은 파싱되지 않아 훅 전체가 실패로 잡힌다. 그것이 위 버그의 실제 모양이었다. */
