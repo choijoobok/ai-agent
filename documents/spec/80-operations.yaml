@@ -18,7 +18,17 @@ system_overview:
     evidence: "documents/project.state.yaml workstreams.system.gates.P5_verify.note"
     status: verified
 
-daily_checks: []
+daily_checks:
+  - id: RUN-101
+    title: "배치 실행 결과 확인"
+    purpose: "지난 24시간의 배치 실행에서 실패·재실행 제한 위반·유령 종결이 있었는지, 활성 배치가 그 안에 한 번은 실행됐는지 확인한다"
+    traces_to: [FEAT-508]
+    procedure:
+      - "SYS_BATCH_HISTORY에서 RSLT_CD가 FAIL·SKIP_COOLDOWN·LOST이고 START_DTM이 24시간 이내인 행을 확인한다 — SKIP_LOCK은 다중화에서 다른 노드가 실행 중인 정상 동작이라 넣지 않는다"
+      - "USE_YN='Y'인 배치 중 24시간 내 실행 이력이 없는 것을 확인한다"
+    verify: "합성 픽스처(FAIL·SKIP_COOLDOWN·LOST·SKIP_LOCK·SUCCESS 각 1건)로 두 질의를 검증했다(2026-09-14) — 문제 상태 3건만 걸리고 SUCCESS·SKIP_LOCK은 걸리지 않았으며, 활성 배치 무실행 질의는 그 이력이 있는 동안 0건을 반환했다. **실제 배치 실행으로는 아직 검증하지 않았다** — 다음 자연 실행(EXPIRY_NOTICE, 04:10)에서 SUCCESS 행이 그대로 잡히는지 재확인한다"
+    rollback: "FAIL·SKIP_COOLDOWN은 ERR_MSG로 원인을 보고 재실행 여부를 판단한다. LOST는 유령 종결 자체가 정상 동작이므로 되돌릴 것이 없고 다음 주기가 정상 실행되는지만 본다"
+    status: verified
 
 incidents:
   - id: RUN-201
@@ -57,9 +67,29 @@ monitoring:
       - "NFR measurement와 source에 적힌 수집 지점에서 값을 측정한다"
       - "평균이 아니라 명세가 요구한 분위수·상태·질의 유형으로 나눠 판정한다"
     normal: "@defer P5 — system 운영 흐름과 NFR 실측 뒤 실제 기준을 기록한다"
+    blocked_on: "NFR-006~009가 재는 대상(agent 턴 실행·응답성)이 아직 구축되지 않았다(agent 작업흐름 P2). 재개 조건은 agent P4 승인 뒤 실제 턴 이력이 쌓이는 시점이다 — 지금은 잴 대상 자체가 없다"
     status: draft
 
-periodic_tasks: []
+periodic_tasks:
+  - id: RUN-501
+    title: "이력 보존 파기 배치 (RETENTION_PURGE)"
+    purpose: "감사·추적 이력이 보관 기간을 넘기지 않도록 정기 파기한다(knowledge/retention.md)"
+    traces_to: [ARCH-024]
+    procedure:
+      - "cron `0 30 3 * * *`(매일 03:30). 대상은 사용 이력 90일·에러 로그 180일·로그인 이력 1년·배치 실행 이력 1년·인앱 알림 90일이며, 개인정보 접근 이력(SYS_LO_PII_ACCESS)은 방향이 하한이라 구조적으로 제외한다"
+      - "기간·대상은 코드가 아니라 시스템 설정(sys-config.retention.*) 데이터를 읽으므로 값은 화면에서 바꾼다"
+    verify: "실측(2026-09-14): USE_YN='N' — 비활성이다. 시드 설명이 이유를 직접 적어 뒀다 — '삭제는 되돌릴 수 없고 아카이브는 아직 없다. 켜기 전에 보존 기간과 아카이브 방침을 먼저 정한다.' knowledge/retention.md §1도 '아카이브 후 삭제한다'를 정책으로 두었으나 아카이브 구현은 없다 — 지금 켜면 정책과 실제가 어긋난 채로 돈다"
+    customer_values: "@defer P6 — 보존 기간 값과 아카이브 구현 여부는 고객사 규제·정책 확정 뒤 결정한다. 그 전에는 켜지 않는다"
+    status: verified
+  - id: RUN-502
+    title: "만료 예고 알림 배치 (EXPIRY_NOTICE)"
+    purpose: "계정·비밀번호 만료가 임박한 사용자에게 알림을 보낸다"
+    traces_to: [FEAT-501, FEAT-509]
+    procedure:
+      - "cron `0 10 4 * * *`(매일 04:10)"
+      - "다음 날 RUN-101의 일상 점검에서 이 배치의 SUCCESS 행이 24시간 안에 있는지로 정상 동작을 확인한다"
+    verify: "실측(2026-09-14): USE_YN='Y' — 활성이다. 실행 이력은 아직 없다(서버 기동 직후라 04:10을 지나지 않았다) — 다음 자연 실행에서 RUN-101 질의로 확인한다"
+    status: draft
 
 escalation:
   - id: RUN-601
