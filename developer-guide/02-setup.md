@@ -116,11 +116,15 @@ java -jar sources/backend/bootstrap/build/libs/bootstrap-0.0.1-SNAPSHOT.jar --sp
 `Settings → Build, Execution, Deployment → Build Tools → Gradle` 에서
 *Build and run using* · *Run tests using* 를 **Gradle** 로 둔다.
 
-- **샘플 모듈을 IDE 에서 보려면 동기화에도 플래그를 준다.** 같은 화면의 *Gradle* 설정에
-  `-PincludeSample=true` 를 넣는다. `bootRun` 기본값은 **기동할 때만** 켜지는데, IntelliJ 의
-  프로젝트 동기화는 `bootRun` 을 부르지 않아 `backend:modules:sample` 이 **프로젝트 모델에
-  들어오지 않는다.** 기동은 되지만 샘플 소스가 인덱싱되지 않아 탐색·자동완성이 끊긴다.
-  샘플을 참고 실물로 읽지 않는다면 넣지 않아도 된다.
+- **동기화에도 `-PincludeSample=true` 를 준다.** 같은 화면의 *Gradle* 설정, 또는
+  `Gradle 도구창 → Run Configurations` 가 아닌 **Settings 의 Gradle *Arguments*** 에 넣는다.
+  `bootRun` 기본값은 **그 태스크를 부를 때만** 켜지는데 **IntelliJ 의 프로젝트 동기화는
+  `bootRun` 을 부르지 않는다.** 그래서 동기화가 만든 산출물에는 `db.changelog-local.yaml` 도
+  `modules/sample` 도 없다(2026-09-14 실측 — `build/resources/main/db/changelog/` 에
+  `db.changelog-master.yaml` 과 `modules/{platform,system}` 만 남는다).
+  - `bootRun` **태스크를 부르는 Gradle 실행 구성**은 영향이 없다. 그때 Gradle 이 다시 평가한다.
+  - **그 밖의 실행 구성은 기동까지 실패한다** — `local` 프로파일이 찾는 changelog 가 클래스패스에
+    없기 때문이다. 샘플 소스 탐색이 끊기는 것은 그다음 문제다.
 - **IDEA 빌더로 두면 `check` 가 돌지 않는다.** 그러면 `checkSeeds` 도 돌지 않아
   **시드가 소스와 어긋난 사실을 아무도 말해 주지 않는다.** 증상은 화면의 **403** 으로만
   나타나고([seed.md](../aidd-guide/standard/seed.md) §3), 원인이 시드라고 적힌 곳이 없다.
