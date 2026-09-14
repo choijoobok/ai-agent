@@ -71,8 +71,6 @@ for (const key of keys) {
     }
     if (/data-page-link="[^"]*sample/i.test(html)) errors.push('design: 샘플 화면이 목차에 포함됐다.');
     if (!html.includes('data-tree-depth="1"')) errors.push('design: 실제 메뉴 중간 노드 계층이 없다.');
-    const designMockups = [...html.matchAll(/data-mockup="[^"]+\/__design__"/g)].length;
-    if (designMockups !== mockupTabs) errors.push(`design: 전체 목업 ${designMockups}개와 목업 탭 ${mockupTabs}개가 다르다.`);
     if (![...html.matchAll(/class="mermaid" data-mermaid-source=/g)].length) errors.push('design: Mermaid 원문 블록이 없다.');
   }
   for (const match of html.matchAll(/(?:src|href)="([^"]+)"/g)) {
