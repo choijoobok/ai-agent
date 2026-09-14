@@ -38,6 +38,9 @@ import {
   configuredCodexHookRevision,
   currentCodexHookRevision,
 } from '../../aidd-guide/harness/runtime/codex-hook-revision.mjs';
+import { testSpecSet } from '../../aidd-guide/harness/runtime/spec-set.self-test.mjs';
+
+testSpecSet();
 
 const generated = 'sources/backend/bootstrap/src/main/resources/db/changelog/data/003-init-menu.csv';
 const patch = `*** Begin Patch\n*** Update File: ${generated}\n@@\n-old\n+new\n*** End Patch`;

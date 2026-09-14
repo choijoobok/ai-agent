@@ -4,7 +4,7 @@ title: "훅 계약 — 배선 · lib.mjs · 새 훅을 더할 때"
 category: harness
 type: operation
 created: "2026-09-06"
-updated: "2026-09-12"
+updated: "2026-09-15"
 status: active
 sources: ["aidd-guide/harness/capabilities.yaml", ".claude/hooks/", ".claude/settings.json", ".codex/hooks.json"]
 tier: 2
@@ -13,9 +13,8 @@ tags: [harness, hooks, contract, wiring]
 
 # 훅 계약 — 배선 · `lib.mjs` · 새 훅을 더할 때
 
-> **훅을 만들거나 고칠 때** 읽는다. *어떤 훅이 있고 각각 왜 그런가* 는
-> [hooks.md](./hooks.md) 가 갖는다 — 한 문서였다가 200줄 상한에 닿아 갈랐고, 갈린 축은
-> **읽는 이유**다: 여기는 만드는 사람, 저기는 막힌 사람이 온다.
+> **훅을 만들거나 고칠 때** 읽는다. *어떤 훅이 있고 각각 왜 그런가* 는 [hooks.md](./hooks.md)가 갖는다 —
+> 한 문서였다가 200줄 상한에 닿아 갈랐고, 갈린 축은 **읽는 이유**다: 여기는 만드는 사람, 저기는 막힌 사람이 온다.
 
 ## 정본과 구현
 
@@ -27,12 +26,13 @@ tags: [harness, hooks, contract, wiring]
 | Codex adapter | `.codex/hooks.json` · `.codex/hooks/` | `apply_patch` 정규화·압축 뒤 재주입 |
 | 정책 엔진 | `.claude/hooks/*.mjs` | 역사적 경로를 유지한 공용 Node 로직. 화면 역인덱스는 `screen-registry.mjs` 하나를 훅·스킬이 함께 쓴다 |
 | 공통 chain | `runtime/chains.mjs` | 실행 순서의 유일한 원본 — manifest·adapter·생성 문서가 함께 읽는다 |
+| spec-set 로더 | `runtime/spec-set.mjs` | 논리 spec 이름을 기존 단일 YAML 또는 분할 폴더로 읽는 유일한 원본 |
 | 사전 진입 | `runtime/pretool-bootstrap.mjs` | 파일 chain이 import 전부터 깨져도 차단하고 훅 파일 수리만 연다 |
 | 셸 파싱 | `runtime/shell-parse.mjs` | **따옴표 안이 데이터인가 명령인가** — `guard-bash`·`guard-commit`이 함께 읽는 유일한 원본 |
 
-정책 엔진을 한 번에 중립 경로로 옮기지 않는다. 경로 이동은 동작 개선이 아니면서 스킬·문서·
-권한 규칙을 대량으로 깨뜨린다. 새 훅은 가능하면 `aidd-guide/harness/runtime/`에 공용 로직을 두고,
-기존 훅은 수정할 때 호환 wrapper와 함께 점진적으로 옮긴다.
+`spec-set`은 `이름.yaml`과 `이름/_index.yaml` 중 하나만 허용한다. 폴더형은 명시적 `parts` 순서로
+병합하며 미등재 YAML·중복·폴더 이탈·값 덮어쓰기를 실패시킨다. 호출자는 논리 이름만 넘긴다.
+정책 엔진의 중립 경로 이동은 대량 참조를 깨므로, 새 공용 로직부터 `runtime/`에 두고 점진 이전한다.
 
 ## 배선
 

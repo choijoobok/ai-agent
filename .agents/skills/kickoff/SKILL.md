@@ -41,10 +41,15 @@ description: 새 시스템 구축 프로젝트를 시작한다. 사용자가 "�
 
 ### 4. 뼈대 생성
 ```
-documents/spec/00-charter.yaml  01-actors.yaml  02-constraints.yaml   (템플릿 상태)
+documents/spec/00-charter/_index.yaml       + 010-charter.yaml       (템플릿 상태)
+documents/spec/01-actors/_index.yaml        + 010-actors.yaml        (템플릿 상태)
+documents/spec/02-constraints/_index.yaml   + 010-constraints.yaml   (템플릿 상태)
 documents/decisions/ASSUMPTIONS.md  CHANGES.md
 documents/project.state.yaml    (project.name, started_at 채움, phase=P0)
 ```
+
+각 `_index.yaml`은 `spec_set.version: 1`과 번호가 붙은 `parts` 목록을 갖는다. 다른 문서는
+개별 조각 파일이 아니라 논리 폴더를 참조한다.
 
 ### 5. 질문 배치 1 발행
 `aidd-guide/phase/P0-inception.md` §2 의 필수 7문을 이 프로젝트 맥락에 맞게 구체화해서 던진다.

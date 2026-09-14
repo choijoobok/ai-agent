@@ -5,15 +5,16 @@ description: 운영 런북 정본을 P2~P6 근거로 작성·검증하고 RUN ID
 
 # 운영 런북 작성·검증
 
-정본은 `documents/spec/80-operations.yaml`이다. `documents/generated/80-운영런북.md`와 HTML은
+정본은 논리 문서 `documents/spec/80-operations`이다. 현재 단일 YAML과 이후 분할 폴더는 공통
+로더가 구분한다. `documents/generated/80-운영런북.md`와 HTML은
 파생물이므로 직접 고치지 않는다.
 
 ## 근거를 모으는 순서
 
-1. 구성·배포 경계는 `20-architecture.yaml`의 ARCH를 참조한다.
-2. 정상·주의·위험 기준은 `21-nfr.yaml`의 NFR과 P5 실측을 참조한다.
-3. 고객사 확정값은 `02-constraints.yaml`의 CON을 참조하고 미정이면 `@defer P6`로 남긴다.
-4. 운영 화면은 `60-screens.yaml`의 SCR, 검증은 `70-testcases.yaml`의 TC를 연결한다.
+1. 구성·배포 경계는 논리 문서 `20-architecture`의 ARCH를 참조한다.
+2. 정상·주의·위험 기준은 `21-nfr`의 NFR과 P5 실측을 참조한다.
+3. 고객사 확정값은 `02-constraints`의 CON을 참조하고 미정이면 `@defer P6`로 남긴다.
+4. 운영 화면은 `60-screens`의 SCR, 검증은 `70-testcases`의 TC를 연결한다.
 5. 비밀값·개인 연락처 원문은 저장소에 쓰지 않고 승인된 보관 위치만 적는다.
 
 절차마다 `RUN-###` ID, 증상/목적, 실행 순서, 정상 확인, 실패 시 복구·롤백, 근거와 마지막 검증일을 둔다.

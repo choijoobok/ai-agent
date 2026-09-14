@@ -3,7 +3,7 @@
  *
  * <p><b>목록을 만들지 않고 긁어 모으기만 한다.</b> 미룬 결정 하나하나는 이미 제자리를
  * 갖고 있다 — 미결 질문은 `project.state.yaml`, 미확인 가정은 `ASSUMPTIONS.md`,
- * 화면의 미확정은 `60-screens.yaml`. 그것을 따로 옮겨 적는 순간 정본이 둘이 되고,
+ * 화면의 미확정은 논리 문서 `60-screens`. 그것을 따로 옮겨 적는 순간 정본이 둘이 되고,
  * 한쪽만 닫혔을 때 어느 쪽이 참인지 알 방법이 없다(CLAUDE.md §4-2·§4-3).
  * 그래서 <b>이 스크립트의 출력은 파일로 남기지 않는다</b> — 매번 다시 만든다.
  *
@@ -19,6 +19,8 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseYaml } from '../../hooks/lib.mjs';
+import { loadSpecSet } from '../../../aidd-guide/harness/runtime/spec-set.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..', '..', '..');
@@ -184,20 +186,16 @@ for (const f of files) {
   }
 }
 
-// ── ④ 화면의 미확정 (UND) — 60-screens.yaml ──────────────────────
+// ── ④ 화면의 미확정 (UND) — 60-screens 논리 문서 ─────────────────
 {
-  const rel = 'documents/spec/60-screens.yaml';
-  const block = read(join(REPO, rel)).split(/^undecided:/m)[1]?.split(/^\S/m)[0] ?? '';
-  for (const chunk of block.split(/^\s+- id: /m).slice(1)) {
-    const id = chunk.match(/^(UND-\S+)/)?.[1];
-    if (!id) continue;
-    // `resolved:` 가 붙었으면 끝난 것이다 — 행은 이력으로 남기고 여기서는 세지 않는다.
-    if (/^\s+resolved:/m.test(chunk)) continue;
+  const spec = loadSpecSet({ repo: REPO, name: '60-screens', parseYaml, required: false });
+  const rel = spec?.source ?? 'documents/spec/60-screens/';
+  for (const undecided of spec?.document?.undecided ?? []) {
+    const { id, item, when = '', resolved } = undecided ?? {};
+    if (!id || resolved) continue;
     // `@defer` 를 품고 있으면 ① 이 이미 기한과 함께 잡았다 — 두 번 세지 않는다.
-    if (/@defer\s/.test(chunk)) continue;
-    const item = chunk.match(/item:\s*"([^"]*)"/)?.[1];
-    const when = chunk.match(/when:\s*"([^"]*)"/)?.[1] ?? '';
-    add(when.match(/G[0-6]|P[0-6]/)?.[0], id, `${item} — ${when}`, rel);
+    if (JSON.stringify(undecided).includes('@defer')) continue;
+    add(String(when).match(/G[0-6]|P[0-6]/)?.[0], id, `${item} — ${when}`, rel);
   }
 }
 

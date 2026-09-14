@@ -1,6 +1,6 @@
 ---
 name: doc-gen
-description: documents/spec/ 의 YAML에서 사람이 읽는 산출물 문서를 생성한다. 요건정의서, 유즈케이스 명세, ERD, API 문서, 화면정의서, 권한 매트릭스, 테스트 케이스, 사용자 매뉴얼 등을 documents/generated/ 아래에 만든다.
+description: documents/spec/ 의 논리 YAML 문서 세트에서 사람이 읽는 산출물 문서를 생성한다. 요건정의서, 유즈케이스 명세, ERD, API 문서, 화면정의서, 권한 매트릭스, 테스트 케이스, 사용자 매뉴얼 등을 documents/generated/ 아래에 만든다.
 ---
 
 # 문서 생성 (spec → docs)
@@ -26,8 +26,10 @@ node .claude/skills/doc-gen/gen.mjs --check            # 생성물이 spec 을 �
   **손으로 쓰지 않는다** — 서식을 바꿀 일이 있으면 `gen.mjs` 를 고친다.
 - **`prose` 로 표시된 것만 이 문서의 지시를 읽고 AI 가 쓴다.** 쓰고 나면
   **`gen.mjs` 에 대상으로 옮긴다** — 두 번째 생성부터 흔들리지 않게 하기 위함이다.
-- **의존성을 갖지 않는다.** YAML 은 `hooks/lib.mjs` 의 `parseYaml` 로 읽는다. 새 런타임을
+- **의존성을 갖지 않는다.** YAML 은 공통 `spec-set` 로더와 `hooks/lib.mjs`의 `parseYaml`로 읽는다. 새 런타임을
   들이지 않는 것이 폐쇄망 전제다 — 이 저장소의 도구는 전부 Node 다.
+- 호출자는 `31-features` 같은 **논리 이름**만 사용한다. 로더는 이관 중의 단일
+  `31-features.yaml`과 정식 폴더 `31-features/_index.yaml` 중 하나를 읽는다.
 - **`--check` 가 완전성을 센다** — spec ID · 스칼라 값 · 상대 링크 셋을 대조해
   *생성물에서 조용히 사라진 것* 을 찾는다. **P3 spec 이 채워지면 빨개지는 것이 정상이다**
   (새 대상이 필요하다는 신호이며, 초록으로 만들려고 검사를 좁히지 않는다).
@@ -41,7 +43,7 @@ node .claude/skills/doc-gen/gen.mjs --check            # 생성물이 spec 을 �
   id: FEAT-012
   traces_to: [UC-004, REQ-011]
   status: baselined
-  generated_from: documents/spec/31-features.yaml
+  generated_from: documents/spec/31-features/
   last_sync: 2026-09-04
   ---
   <!-- 이 문서는 생성물입니다. 직접 수정하지 마세요. documents/spec/ 을 수정 후 /doc-gen 하세요. -->
@@ -51,7 +53,7 @@ node .claude/skills/doc-gen/gen.mjs --check            # 생성물이 spec 을 �
     셰이프 종료로 읽힐 수 있고, 인용만으로 안전한지는 셰이프마다 다르다. spec 에는
     괄호가 든 레이블이 흔하다(`AI 전용 DB (PostgreSQL)`) — 여기서 escape 하지 않으면
     **그림이 통째로 렌더되지 않고, 생성물이라 아무도 고치지 않는다.**
-  - 아키텍처 그림의 노드·간선 원본은 `20-architecture.yaml` 의 `topology.nodes`·`edges` 다.
+  - 아키텍처 그림의 노드·간선 원본은 논리 문서 `20-architecture`의 `topology.nodes`·`edges`다.
     **`edge_invariants` 를 함께 싣는다** — 그림만으로는 낡음을 판정할 수 없다.
 - **기능별로 파일을 쪼갠다.** 큰 단일 문서는 다음 세션에 AI가 통째로 못 읽는다.
 - 각 디렉터리에 `_index.md` (ID + 한 줄 요약)를 만든다. AI는 인덱스를 먼저 읽는다.

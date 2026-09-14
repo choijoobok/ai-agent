@@ -1,18 +1,17 @@
-import { readFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseYaml } from '../../hooks/lib.mjs';
+import { loadSpecSet } from '../../../aidd-guide/harness/runtime/spec-set.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, '../../..');
-const FILE = join(REPO, 'documents/spec/80-operations.yaml');
 const release = process.argv.includes('--release');
 const requiredSections = [
   'system_overview', 'daily_checks', 'incidents', 'backup_restore',
   'monitoring', 'periodic_tasks', 'escalation',
 ];
 
-const data = parseYaml(readFileSync(FILE, 'utf8'));
+const data = loadSpecSet({ repo: REPO, name: '80-operations', parseYaml }).document;
 const errors = [];
 const warnings = [];
 const seen = new Set();

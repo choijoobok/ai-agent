@@ -11,6 +11,7 @@ import { createRequire } from 'node:module';
 import { dirname, extname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseYaml } from '../../hooks/lib.mjs';
+import { loadSpecSet } from '../../../aidd-guide/harness/runtime/spec-set.mjs';
 import { FIGURE_LINE, escapeHtml, renderMarkdown } from '../manual-site/lib/markdown.mjs';
 import { MAIN, figuresOf } from '../manual-site/lib/figure.mjs';
 import { menuTree, read as readRepo, REPO, screensOf } from '../manual-site/lib/menu.mjs';
@@ -38,12 +39,13 @@ const keys = mode === 'all' ? ['design', 'user', 'operations'] : [mode];
 
 const config = parseYaml(readFileSync(resolve(REPO, 'documents/delivery.yaml'), 'utf8'));
 const siteConfig = new Map((config.sites ?? []).map((site) => [site.key, site]));
-const screenSpec = parseYaml(readFileSync(resolve(REPO, 'documents/spec/60-screens.yaml'), 'utf8'));
+const loadedScreens = loadSpecSet({ repo: REPO, name: '60-screens', parseYaml });
+const screenSpec = loadedScreens.document;
 const specScreens = screenSpec.screens ?? [];
 const byRoute = new Map(specScreens.filter((screen) => screen.route).map((screen) => [screen.route, screen]));
 const byDoc = new Map(specScreens.filter((screen) => screen.current_doc).map((screen) => [norm(screen.current_doc), screen]));
 const issues = [];
-const sourceFiles = new Set(['documents/delivery.yaml', 'documents/spec/60-screens.yaml']);
+const sourceFiles = new Set(['documents/delivery.yaml', ...loadedScreens.files]);
 const mockups = {};
 const captureRows = [];
 

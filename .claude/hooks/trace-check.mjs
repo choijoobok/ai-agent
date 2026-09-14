@@ -12,7 +12,7 @@
  * 그쪽이다</b> — 규칙을 두 곳에 적으면 갈리고, 갈리면 초록불이 거짓이 된다.
  */
 
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -34,17 +34,18 @@ import {
   requirementBelongsToWorkstream,
   unrealizedRequirementDeferral,
 } from './lib.mjs';
+import { loadSpecSet } from '../../aidd-guide/harness/runtime/spec-set.mjs';
 
 const SPEC_DIR = 'documents/spec';
 const SPEC = {
-  req: '10-requirements.yaml',
-  nfr: '21-nfr.yaml',
-  uc: '30-usecases.yaml',
-  feat: '31-features.yaml',
-  ent: '40-domain.yaml',
-  api: '50-api.yaml',
-  scr: '60-screens.yaml',
-  tc: '70-testcases.yaml',
+  req: '10-requirements',
+  nfr: '21-nfr',
+  uc: '30-usecases',
+  feat: '31-features',
+  ent: '40-domain',
+  api: '50-api',
+  scr: '60-screens',
+  tc: '70-testcases',
 };
 
 const ID_RE =
@@ -84,14 +85,8 @@ if (isMain) {
 
 // ── 검사 ──────────────────────────────────────────────────────────
 
-function load(file) {
-  const p = join(REPO, SPEC_DIR, file);
-  if (!existsSync(p)) return null;
-  try {
-    return parseYaml(readFileSync(p, 'utf8'));
-  } catch {
-    return null;
-  }
+function load(name) {
+  return loadSpecSet({ repo: REPO, name, parseYaml, required: false })?.document ?? null;
 }
 
 /** 문서에서 항목 리스트를 꺼낸다 — 최상위 리스트이거나, 리스트를 담은 첫 칸이다. */
@@ -425,7 +420,7 @@ function fullCheck(targetWorkstream = null) {
     있는가</i> 다</b> — 이미 선 테스트는 대상이 아니므로 <b>면제 명단이 없고 앞으로도
     필요 없다.</b>
 
-    <p><b>비어 있을 때 켜는 것이 맞는 시점이다.</b> `70-testcases.yaml` 이 빈 지금 켜면
+    <p><b>비어 있을 때 켜는 것이 맞는 시점이다.</b> 논리 문서 `70-testcases`가 빈 지금 켜면
     위반 0 으로 시작하고 첫 TC 부터 규칙이 돈다 — 나중에 켜면 그때 쌓인 TC 가 전부 위반이
     되고 <b>다시 명단을 만들게 된다</b>(사용자 결정 2026-09-08).
 
@@ -501,7 +496,7 @@ function fullCheck(targetWorkstream = null) {
  * <b>같은 사유는 한 줄로 접는다</b> — 대상은 세어서 옆에 적는다.
  *
  * <p>펴 두면 <b>한 사실이 백 번 운다</b>. 2026-09-06 에 오류 104건이 전부
- * <i>테스트 케이스 없음</i> 하나였고, 원인도 하나였다({@code 70-testcases.yaml} 이 비었다).
+ * <i>테스트 케이스 없음</i> 하나였고, 원인도 하나였다({@code 70-testcases}가 비었다).
  * 그 백 줄이 흐르는 동안 <b>새로 생긴 한 건은 보이지 않는다</b> — 표가 길어서가 아니라
  * <b>읽히지 않게 되어서</b>다.
  *

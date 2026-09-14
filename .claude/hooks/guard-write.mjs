@@ -14,7 +14,7 @@
  */
 
 import { existsSync } from 'node:fs';
-import { basename, join, resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import {
   STATE_FILE,
   REPO,
@@ -34,6 +34,7 @@ import {
   pass,
   skillRef,
 } from './lib.mjs';
+import { loadSpecSet } from '../../aidd-guide/harness/runtime/spec-set.mjs';
 
 /*
   자리표시자를 정규식으로 바꾸는 값들. **최상위 실행보다 위에 선언한다** — 아래 두면
@@ -106,8 +107,8 @@ if (path.startsWith('sources/') && g3 !== 'approved' && !templateMode) {
 
 /** 소스 변경의 FEAT/TC를 spec 소유 작업흐름으로 바꾼다. */
 function sourceOwners(rel, absolute, hookInput) {
-  const featureDoc = parseYaml(readText(join(REPO, 'documents/spec/31-features.yaml')));
-  const testcaseDoc = parseYaml(readText(join(REPO, 'documents/spec/70-testcases.yaml')));
+  const featureDoc = loadSpecSet({ repo: REPO, name: '31-features', parseYaml, required: false })?.document;
+  const testcaseDoc = loadSpecSet({ repo: REPO, name: '70-testcases', parseYaml, required: false })?.document;
   const features = Array.isArray(featureDoc?.features) ? featureDoc.features : [];
   const testcases = Array.isArray(testcaseDoc?.testcases) ? testcaseDoc.testcases : [];
   const byFeature = new Map(features.map((feature) => [feature?.id, feature]));
@@ -240,7 +241,7 @@ if (path === STATE_FILE && turnsOnTemplateMode(input)) {
 // ── ⑥ 단계 밖 spec 선행 작성 ─────────────────────────────────────
 
 if (path.startsWith('documents/spec/')) {
-  const stem = basename(path).replace(/\.[^.]+$/, '');
+  const stem = path.slice('documents/spec/'.length).split('/')[0].replace(/\.[^.]+$/, '');
   if (!stem.startsWith('_') && !allowedSpec(phase).includes(stem)) {
     warn(
       [

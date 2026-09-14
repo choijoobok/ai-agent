@@ -1,5 +1,5 @@
 /**
- * spec → 사람이 읽는 문서. `documents/spec/*.yaml` 에서 `documents/generated/` 를 만든다.
+ * spec → 사람이 읽는 문서. `documents/spec/`의 논리 문서에서 `documents/generated/` 를 만든다.
  *
  * <p><b>왜 스크립트인가</b> — 파생물의 값은 *정본에서 언제든 같은 것이 다시 나온다* 는
  * 데 있다. 생성을 산문 지시로만 두면 부를 때마다 결과가 흔들리고, 그러면 그 값이 사라진다.
@@ -27,6 +27,7 @@ import { dirname, join, normalize, posix } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseYaml } from '../../hooks/lib.mjs';
 import { traceReport } from '../../hooks/trace-check.mjs';
+import { listSpecSetNames, loadSpecSet } from '../../../aidd-guide/harness/runtime/spec-set.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..', '..', '..');
@@ -150,8 +151,14 @@ last_sync: ${TODAY}
 ${banner}${extra}`;
 }
 
-const load = (f) => parseYaml(readFileSync(join(REPO, SPEC + f + '.yaml'), 'utf8'));
-const rawSpec = (f) => readFileSync(join(REPO, SPEC + f + '.yaml'), 'utf8');
+const loadedSpecs = new Map();
+const specSet = (name) => {
+  if (!loadedSpecs.has(name)) loadedSpecs.set(name, loadSpecSet({ repo: REPO, name, parseYaml }));
+  return loadedSpecs.get(name);
+};
+const load = (name) => specSet(name).document;
+const rawSpec = (name) => specSet(name).raw;
+const specSource = (name) => specSet(name).source;
 
 const written = [];
 function write(path, parts) {
@@ -165,7 +172,7 @@ function write(path, parts) {
 // ── 43행 · 요구사항 정의서 — P0~P2 정본 여덟의 읽는 뷰 ──────────────
 function 요구사항정의서() {
   const c = load('00-charter');
-  const p = [head('RQ-00-charter', '개요 — 목적 · 목표 · 성공 기준 · 로드맵', `${SPEC}00-charter.yaml`,
+  const p = [head('RQ-00-charter', '개요 — 목적 · 목표 · 성공 기준 · 로드맵', specSource('00-charter'),
     c.meta.status, c.meta.baselined, c.goals.map((g) => g.id))];
   p.push(`## 1. 목적\n\n**${flat(c.purpose)}**\n\n${flat(c.purpose_note)}`);
   p.push(`## 2. 배경 — 현행 시스템의 한계\n\n${auto(c.problems)}`);
@@ -191,7 +198,7 @@ function 요구사항정의서() {
   write(`${RQ}00-개요.md`, p);
 
   const a = load('01-actors');
-  const p1 = [head('RQ-01-actors', '이해관계자 — 액터와 모듈', `${SPEC}01-actors.yaml`,
+  const p1 = [head('RQ-01-actors', '이해관계자 — 액터와 모듈', specSource('01-actors'),
     a.meta.status, a.meta.baselined, a.actors.map((x) => x.id),
     '> **액터는 요구사항의 근거다**(추적성 T1) — 모든 요구사항은 최소 하나의 액터와 연결된다.\n')];
   const seen = new Set();
@@ -207,7 +214,7 @@ function 요구사항정의서() {
 
   const k = load('02-constraints');
   write(`${RQ}02-제약과-원칙.md`, [
-    head('RQ-02-constraints', '제약과 설계 원칙', `${SPEC}02-constraints.yaml`,
+    head('RQ-02-constraints', '제약과 설계 원칙', specSource('02-constraints'),
       k.meta.status, k.meta.baselined, k.principles.map((x) => x.id)),
     '## 1. 설계 원칙\n\n> **이후 모든 판단의 기준이다.** 선택지가 갈릴 때 이 원칙에 부합하는 쪽을 택한다.\n\n'
       + blocks(k.principles, ['id'], 'title'),
@@ -221,7 +228,7 @@ function 요구사항정의서() {
   ]);
 
   const g = load('03-glossary');
-  const p3 = [head('RQ-03-glossary', '용어 사전 — 유비쿼터스 언어', `${SPEC}03-glossary.yaml`,
+  const p3 = [head('RQ-03-glossary', '용어 사전 — 유비쿼터스 언어', specSource('03-glossary'),
     g.meta.status, g.meta.baselined, null,
     '> **이 사전이 모든 문서·DB 테이블·API 필드 명명의 기준이다.** 동의어를 섞어 쓰지 않는다.\n'
     + '> `영문 키` 는 DB 컬럼 값과 코드 상수에서 대문자 스네이크로 쓴다.\n')];
@@ -246,7 +253,7 @@ function 요구사항정의서() {
   write(`${RQ}03-용어.md`, p3);
 
   const r = load('10-requirements');
-  const p4 = [head('RQ-10-requirements', '기능 요구사항 (FR)', `${SPEC}10-requirements.yaml`,
+  const p4 = [head('RQ-10-requirements', '기능 요구사항 (FR)', specSource('10-requirements'),
     r.meta.status, r.meta.baselined, null, `> **채번** — ${r.meta.numbering}\n`)];
   const GROUPS = [[1, 29, '질의 처리'], [30, 99, '처리 중 입력'], [100, 199, '보안·거버넌스'],
     [200, 299, '저장된 조회·개인 대시보드'], [300, 399, '업무 메타데이터'],
@@ -266,7 +273,7 @@ function 요구사항정의서() {
   const pr = load('11-processes');
   const why = rawSpec('11-processes').split('\n').filter((l) => l.startsWith('#'))
     .map((l) => l.replace(/^#\s?/, '').trimEnd()).join('\n');
-  const processParts = [head('RQ-11-processes', '업무 프로세스 (As-Is / To-Be)', `${SPEC}11-processes.yaml`,
+  const processParts = [head('RQ-11-processes', '업무 프로세스 (As-Is / To-Be)', specSource('11-processes'),
     pr.meta.status, pr.meta.baselined, (pr.processes ?? []).map((x) => x.id),
     pr.meta.blocked_by ? `> **막고 있는 것** — ${flat(pr.meta.blocked_by)}\n` : '')];
   if (pr.processes?.length) {
@@ -282,7 +289,7 @@ function 요구사항정의서() {
   write(`${RQ}05-업무프로세스.md`, processParts);
 
   const n = load('21-nfr');
-  const p6 = [head('RQ-21-nfr', '비기능 요구 — 성능 · 응답성 · 비용 · 안정성', `${SPEC}21-nfr.yaml`,
+  const p6 = [head('RQ-21-nfr', '비기능 요구 — 성능 · 응답성 · 비용 · 안정성', specSource('21-nfr'),
     n.meta.status, n.meta.baselined, null,
     '> **목표값이 전부 `—` 다.** 미리 세우지 않고 *측정을 만들고 → 재고 → 개선이 필요한지\n'
     + '> 판단한다* 는 방침을 택했다(`ASM-002`). 그래서 빈칸은 **빠진 것이 아니라 아직 재지\n'
@@ -295,7 +302,7 @@ function 요구사항정의서() {
   write(`${RQ}06-비기능요구.md`, p6);
 
   const i = load('51-interfaces');
-  const p7 = [head('RQ-51-interfaces', '외부 인터페이스', `${SPEC}51-interfaces.yaml`,
+  const p7 = [head('RQ-51-interfaces', '외부 인터페이스', specSource('51-interfaces'),
     i.meta.status, i.meta.baselined, i.interfaces.map((x) => x.id))];
   const seenIf = new Set();
   for (const [dr, ttl] of [['outbound', '나가는 연동'], ['inbound', '들어오는 연동']]) {
@@ -362,7 +369,7 @@ function mmBox(nd) {
 /**
  * C4 Level 1 — 시스템 컨텍스트. **노드를 `l1:` 로 접어서 그린다.**
  *
- * <p>상자와 간선을 두 벌 적지 않는 것이 요점이다(20-architecture.yaml 의 불변식) —
+ * <p>상자와 간선을 두 벌 적지 않는 것이 요점이다(논리 문서 20-architecture의 불변식) —
  * 두 벌이면 한쪽만 고쳤을 때 <b>어느 그림이 참인지 알 방법이 없다</b>. 같은 상자로
  * 접힌 간선(예: portal → AI 전용 DB)은 사라지고, 남은 간선의 라벨은 합친다.
  */
@@ -435,7 +442,7 @@ function 아키텍처() {
   const d = load('20-architecture');
   const t = d.topology;
 
-  const p = [head('ARCH', '아키텍처 — 구성 · 경계 · 연동', `${SPEC}20-architecture.yaml`,
+  const p = [head('ARCH', '아키텍처 — 구성 · 경계 · 연동', specSource('20-architecture'),
     d.meta.status, d.meta.baselined,
     [t.id, t.context.id, t.containers.id, d.application_entry.id,
       ...d.module_boundaries.map((x) => x.id)],
@@ -499,7 +506,7 @@ function 아키텍처() {
 function 기능목록() {
   const f = load('31-features');
   const mods = [...new Set(f.features.map((x) => x.module))];
-  const p = [head('FEAT-LIST', '기능 목록 · 메뉴 구조', `${SPEC}31-features.yaml`,
+  const p = [head('FEAT-LIST', '기능 목록 · 메뉴 구조', specSource('31-features'),
     f.meta.status, f.meta.baselined, null, `> **채번** — ${f.meta.numbering}\n`)];
   if (f.delivery_strategy) {
     p.push(`## 전달 전략\n\n${blocks([{ id: 'delivery-strategy', ...f.delivery_strategy }], ['id'], 'name')}`);
@@ -524,7 +531,7 @@ function 기능목록() {
 function 화면정의서() {
   const s = load('60-screens');
   const mc = s.menu_criteria;
-  const p = [head('SCR-LIST', '화면 목록 · 화면 정의서', `${SPEC}60-screens.yaml`,
+  const p = [head('SCR-LIST', '화면 목록 · 화면 정의서', specSource('60-screens'),
     s.meta.status, s.meta.baselined, null,
     '> **화면 하나의 컬럼·검증·테스트 케이스는 여기 없다.** 그것은\n'
     + '> `documents/screen/{모듈}/{화면경로}/requirements.md` 가 갖는다(산출물 지도 33행) — 설계자가\n'
@@ -559,7 +566,7 @@ function 화면정의서() {
 // ── 19행 · 권한 매트릭스 ──────────────────────────────────────────
 function 권한매트릭스() {
   const z = load('22-authz');
-  const p = [head('AUTHZ', '권한 매트릭스 — 그룹 판정 · 매핑 · SQL 통제', `${SPEC}22-authz.yaml`,
+  const p = [head('AUTHZ', '권한 매트릭스 — 그룹 판정 · 매핑 · SQL 통제', specSource('22-authz'),
     z.meta.status, z.meta.baselined, null,
     '> **요구사항은 `04-요구사항.md`(REQ-103·105·111)가 갖는다** — 여기는 *모델* 이다.\n')];
   p.push(`## 1. 통제의 축\n\n**${flat(z.axis.claim)}** — ${flat(z.axis.why)}`);
@@ -614,7 +621,7 @@ function 유즈케이스() {
   const d = load('30-usecases');
   const items = d.usecases ?? [];
   write(`${OUT}30-유즈케이스.md`, [
-    head('UC', '유즈케이스 명세', `${SPEC}30-usecases.yaml`, d.meta.status,
+    head('UC', '유즈케이스 명세', specSource('30-usecases'), d.meta.status,
       d.meta.baselined, items.map((x) => x.id)),
     `## 유즈케이스 ${items.length}건\n\n${blocks(items, ['id'], 'name', '###')}`,
   ]);
@@ -637,7 +644,7 @@ function ERD() {
   }
   diagram.push('```');
   write(`${OUT}40-ERD.md`, [
-    head('ERD', '도메인·데이터 모델', `${SPEC}40-domain.yaml`, d.meta.status,
+    head('ERD', '도메인·데이터 모델', specSource('40-domain'), d.meta.status,
       d.meta.baselined, items.map((x) => x.id)),
     `## 공통 규약\n\n${blocks([{ id: 'conventions', ...(d.conventions ?? {}) }], ['id'], 'name', '###')}`,
     `## 관계 개요\n\n${diagram.join('\n')}`,
@@ -651,7 +658,7 @@ function openApiText(d) {
     'info:',
     '  title: system API',
     `  version: ${JSON.stringify(TODAY)}`,
-    `  description: ${JSON.stringify(flat(d.meta?.cutover ?? 'documents/spec/50-api.yaml에서 생성'))}`,
+    `  description: ${JSON.stringify(flat(d.meta?.cutover ?? `${specSource('50-api')}에서 생성`))}`,
     'paths:',
   ];
   for (const api of d.apis ?? []) {
@@ -704,7 +711,7 @@ function API() {
   const items = d.apis ?? [];
   const contracts = Object.entries(d.feature_contracts ?? {}).map(([id, value]) => ({ id, ...value }));
   write(`${OUT}50-API.md`, [
-    head('API', 'API 명세', `${SPEC}50-api.yaml`, d.meta.status,
+    head('API', 'API 명세', specSource('50-api'), d.meta.status,
       d.meta.baselined, items.map((x) => x.id)),
     `## 공통 계약\n\n${blocks([{ id: 'meta', ...d.meta }], ['id'], 'name', '###')}`,
     `## 기능별 계약\n\n${blocks(contracts, ['id'], 'name', '###')}`,
@@ -722,7 +729,7 @@ function 테스트() {
   const d = load('70-testcases');
   const items = d.testcases ?? [];
   write(`${OUT}70-테스트케이스.md`, [
-    head('TC', '테스트 케이스', `${SPEC}70-testcases.yaml`, d.meta.status,
+    head('TC', '테스트 케이스', specSource('70-testcases'), d.meta.status,
       d.meta.baselined, items.map((x) => x.id)),
     `## 공통 시험 계약\n\n${blocks([{ id: 'meta', ...d.meta }], ['id'], 'name', '###')}`,
     `## 테스트 케이스 ${items.length}건\n\n${blocks(items, ['id', 'feature'], 'title', '###')}`,
@@ -742,9 +749,9 @@ function 운영런북() {
   ];
   const items = sections.flatMap(([, values]) => values);
   write(`${OUT}80-운영런북.md`, [
-    head('RUNBOOK', '운영 런북', `${SPEC}80-operations.yaml`, d.meta.status,
+    head('RUNBOOK', '운영 런북', specSource('80-operations'), d.meta.status,
       d.meta.baselined, items.map((x) => x.id)),
-    '> 운영 인력이 장애 상황에서 순서대로 실행할 절차다. 값과 절차는 정본 `80-operations.yaml`에서만 고친다.',
+    `> 운영 인력이 장애 상황에서 순서대로 실행할 절차다. 값과 절차는 정본 \`${specSource('80-operations')}\`에서만 고친다.`,
     ...sections.map(([title, values], index) =>
       `## ${index + 1}. ${title}\n\n${values.length ? blocks(values, ['id'], 'title', '###') : '> 아직 등록된 절차가 없다.'}`),
   ]);
@@ -805,7 +812,7 @@ function check() {
   // Mermaid 레이블은 괄호가 escape 돼 있으므로 풀어서 대조한다
   const norm = all.replace(/#40;/g, '(').replace(/#41;/g, ')').replace(/\s+/g, ' ');
 
-  const specFiles = readdirSync(join(REPO, SPEC)).filter((f) => f.endsWith('.yaml'));
+  const specNames = listSpecSetNames({ repo: REPO });
   const ids = new Set();
   const leaves = [];
   const collect = (v, path) => {
@@ -814,10 +821,11 @@ function check() {
       for (const [k, x] of Object.entries(v)) if (k !== 'meta') collect(x, `${path}.${k}`);
     } else if (typeof v === 'string' && v.length > 25) leaves.push([path, v]);
   };
-  for (const f of specFiles) {
-    const raw = readFileSync(join(REPO, SPEC + f), 'utf8');
+  for (const name of specNames) {
+    const loaded = specSet(name);
+    const raw = loaded.raw;
     for (const m of raw.matchAll(/^\s*(?:-\s*)?id:\s*([A-Z][A-Z0-9]*-[0-9A-Za-z]+)\s*$/gm)) ids.add(m[1]);
-    collect(parseYaml(raw), f);
+    collect(loaded.document, name);
   }
   const goneIds = [...ids].filter((i) => !all.includes(i)).sort();
   const goneVals = leaves.filter(([, v]) => !norm.includes(v.trim().replace(/\s+/g, ' ').slice(0, 40)));

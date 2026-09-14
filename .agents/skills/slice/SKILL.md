@@ -25,7 +25,7 @@ description: 수직 슬라이스 하나를 구현한다. 소유 작업흐름과 
 구현 방식이 spec과 어긋나면 코드가 아니라 **CR을 먼저** 낸다.
 
 ### ③ TEST-FIRST (강제)
-`documents/spec/70-testcases.yaml` 의 TC를 실행 가능한 테스트 코드로 옮기고
+논리 문서 `documents/spec/70-testcases`의 TC를 실행 가능한 테스트 코드로 옮기고
 **실패하는 것을 확인**한 뒤 구현을 시작한다.
 > 코드를 먼저 쓰면 AI는 그 코드에 맞는 테스트를 쓴다. 그건 검증이 아니라 자기 확인이다.
 

@@ -4,7 +4,7 @@ title: "스킬 카탈로그 + 작성 규약"
 category: harness
 type: operation
 created: "2026-05-04"
-updated: "2026-09-10"
+updated: "2026-09-15"
 status: active
 sources: ["aidd-guide/harness/skill-src/", ".claude/skills/", ".agents/skills/"]
 tier: 2
@@ -43,11 +43,11 @@ tags: [harness, skill, workflow, convention]
 
 | 스킬 | 언제 부르나 | 원본 → 파생 |
 |---|---|---|
-| [`doc-gen`](./skill-src/doc-gen.md) | spec YAML 에서 읽는 문서를 만들 때 | `documents/spec/*.yaml` → `documents/generated/` |
+| [`doc-gen`](./skill-src/doc-gen.md) | spec YAML 에서 읽는 문서를 만들 때 | `documents/spec/{논리문서}/` → `documents/generated/` |
 | [`menu-doc`](./skill-src/menu-doc.md) | 새 화면 착수 전 요건서 · 소스 변경 뒤 문서 대조 · 전수 결손 점검 | 원본이 둘(`requirements.md` · `manual.md`) |
 | [`mockup`](./skill-src/mockup.md) | 요건서를 고친 뒤 · 승인용 그림이 필요할 때 · `manual-site` 앞 | `requirements.md` → `mockup.html` |
 | [`manual-site`](./skill-src/manual-site.md) | 메뉴얼을 고친 뒤 · 사용자 매뉴얼을 확인할 때 · 화면을 캡처해 넣을 때 | `manual.md` + 목업/캡처 → 내부 검토 `build/deliverables/user/` · 사용자 독립본 `build/deliverables-user/` |
-| [`runbook`](./skill-src/runbook.md) | 운영 절차를 세우거나 P6 인수 전 완결성을 검사할 때 | `80-operations.yaml` → `80-운영런북.md` |
+| [`runbook`](./skill-src/runbook.md) | 운영 절차를 세우거나 P6 인수 전 완결성을 검사할 때 | `80-operations/` → `80-운영런북.md` |
 | [`deliverable-site`](./skill-src/deliverable-site.md) | 설계·사용자·운영 고객 제출 사이트와 선택 PDF를 만들 때 | 정본/파생 Markdown + 목업/캡처 → `build/deliverables/` |
 | [`trace`](./skill-src/trace.md) | 추적성 체인이 끊긴 곳을 찾을 때 | — (검사) |
 | [`redteam`](./skill-src/redteam.md) | 자기가 만든 산출물을 적대적으로 검토할 때 | — (검사) |
