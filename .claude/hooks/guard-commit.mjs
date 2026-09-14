@@ -25,7 +25,19 @@ import { readHookInput, deny, pass, provider, PROVIDER_NAME } from './lib.mjs';
  * chore 12 · style 1). 나머지 넷은 관행상 함께 쓰는 것이며, 좁게 잡아 정당한 커밋을 막느니
  * 넓게 잡고 <b>형식과 언어</b>를 지키게 한다.
  */
-const TYPES = new Set(['feat', 'fix', 'docs', 'refactor', 'chore', 'style', 'test', 'perf', 'build', 'ci']);
+/**
+ * 허용 타입 — **원본은 AGENTS.md §5-3 이다.** 여기는 집행만 한다.
+ *
+ * <p>2026-09-14 까지 이 목록은 <b>이 코드에만</b> 있었다. 그래서 `state:` 로 적은 커밋 넷이
+ * 이미 저장소에 있는데도 무엇이 허용되는지 문서에서 알 길이 없었고, 사람은 <i>막히고 나서야</i>
+ * 규칙을 알았다. 훅이 정책의 원본이 되면 안 된다(hooks-contract.md).
+ *
+ * <p>`state` 는 `documents/project.state.yaml` 의 게이트 전이·검증 기록처럼
+ * <b>지금 어디인가만 바꾸는 커밋</b>이다. `chore` 에 섞으면 상태 이력을 로그에서 고를 수 없다.
+ */
+const TYPES = new Set([
+  'feat', 'fix', 'docs', 'refactor', 'chore', 'style', 'test', 'perf', 'build', 'ci', 'state',
+]);
 const HANGUL = /[가-힣]/;
 
 const input = await readHookInput();

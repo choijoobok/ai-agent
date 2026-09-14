@@ -119,6 +119,10 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <revision> --sur
    DROP/TRUNCATE, `terraform apply`, `kubectl delete`, `git push --force`, 프로덕션 변경은 사용자가 직접 하거나 명시 승인한다.
 3. 한 커밋은 한 가지 일이다. `<타입>: <현상> — <조치>` 형식의 한국어 제목과 본문 `왜`,
    마지막 trailer의 `Agent: <이름>`을 남기고 경로를 지정한다. 푸시는 요청받을 때만 한다.
+   타입은 **이 열하나뿐이다** — `feat` · `fix` · `docs` · `refactor` · `chore` · `style` ·
+   `test` · `perf` · `build` · `ci` · `state`. `state`는 `documents/project.state.yaml`의
+   게이트 전이·검증 기록처럼 **지금 어디인가만 바꾸는 커밋**이며, 다른 타입과 섞지 않는다.
+   `guard-commit`이 이 목록을 집행한다 — **목록의 원본은 훅이 아니라 여기다.**
 4. `documents/spec/`이 유일한 진실이고 `documents/generated/`는 파생 뷰다.
 5. 요구사항·유즈케이스·기능·엔티티·API·화면·테스트는 ID와 상위 ID 연결을 갖는다.
    미확인 전제는 `ASM-###`으로 `documents/decisions/ASSUMPTIONS.md`에 기록하고 산출물에서 참조한다.
