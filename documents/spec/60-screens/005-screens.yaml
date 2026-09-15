@@ -179,7 +179,7 @@ screens:
     feature: FEAT-017
     roadmap: RM-P1
     agent_contact: 설정
-    note: "**P1 인 것은 월별 개인 한도가 있어야 쿼터 집행이 성립하기 때문이다. 전사 예산 관리 화면은 아니다**"
+    note: "**P1 인 것은 월별 개인 한도가 있어야 쿼터 집행이 성립하기 때문이다. 계획 총 풀은 운영 기준선이고, 전사 예산 관리 화면은 아니다**"
   - id: SCR-022
     module: admin
     group: "비용 관리"
@@ -187,7 +187,7 @@ screens:
     feature: FEAT-018
     roadmap: RM-P1
     agent_contact: 설정
-    note: "사용자 신청·관리자 승인·즉시 반영을 RM-P1에 제공한다"
+    note: "사용자 신청·관리자 승인·즉시 반영을 RM-P1에 제공한다. 예비 풀 또는 계획 총 풀을 넘는 예외 승인도 사유와 함께 기록한다"
   - id: SCR-023
     module: admin
     group: "비용 관리"
@@ -195,6 +195,7 @@ screens:
     feature: FEAT-030
     roadmap: RM-P1
     agent_contact: 산출
+    note: "계획 총 풀·일반 배정·예외 승인·Hub 기록과 공급사 계량 차이를 정산 근거로 함께 보여 준다"
 
 # ══ admin — 품질 관리 (3.6) ══════════════════════════════════════
   - id: SCR-024
