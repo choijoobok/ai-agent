@@ -28,6 +28,14 @@ screens:
     roadmap: RM-P1
     agent_contact: 설정
     note: "**작성 순서에서 가장 앞이다** — Hub 공개 대상으로 선택한 뷰·테이블과 그 업무 의미를 여기서 관리하고, agent의 컨텍스트 구성이 이 화면의 산출물을 입력으로 삼는다. 업무 DB/DW 전체를 대사하는 화면이 아니다"
+  - id: SCR-033
+    module: admin
+    group: "연동 관리"
+    title: "운영 오류 처리"
+    feature: FEAT-035
+    roadmap: RM-P1
+    agent_contact: 산출
+    note: "데이터소스 조회·실행 예외의 원본 오류 이력과 복구 사건을 다루며, 사용자 논리 오류의 품질 신고 처리와 분리한다"
   - id: SCR-004
     module: admin
     group: "연동 관리"
@@ -93,7 +101,15 @@ screens:
     feature: FEAT-014
     roadmap: RM-P1
     agent_contact: 설정
-    note: "지식 후보 리비전과 반영 세트의 작성·요청·승인 결과를 함께 다룬다. 별도 메뉴 분리는 P3 화면 설계에서 필요성이 확인될 때만 결정한다"
+    note: "지식 후보 리비전과 반영 세트의 작성·요청·승인 결과를 함께 다룬다. 검토 필요 작업은 SCR-034에서 별도로 처리한다"
+  - id: SCR-034
+    module: admin
+    group: "업무 지식 관리"
+    title: "지식 검토 작업"
+    feature: FEAT-036
+    roadmap: RM-P1
+    agent_contact: 설정
+    note: "스키마 카탈로그·기준정보·업무 규칙 변경과 연결된 검토 필요 자산만 조회·처리한다"
   - id: SCR-012
     module: admin
     group: "업무 지식 관리"
