@@ -1,6 +1,6 @@
 delivery_strategy:
   decision: ADR-006
-  order: "admin 기준 정보·지식·정책 → agent 핵심과 계약 시험 → 제품 portal 상세 설계·구현"
+  order: "admin 기준 정보·지식·정책·실행 설정 → agent 핵심과 실행 계약 시험 → 제품 portal 상세 설계·구현"
   workstream_rule: "기능의 `workstream:`이 있으면 그것이 소유하고, 없으면 `module:`과 같은 이름의 작업흐름이 소유한다"
   portal_horizons:
     - name: contract_debug

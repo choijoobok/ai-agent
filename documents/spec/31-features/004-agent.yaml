@@ -28,7 +28,7 @@ features:
     traces_to: [AUTHZ-030, AUTHZ-050]
   - id: FEAT-205
     module: agent
-    roadmap: RM-P2
+    roadmap: RM-P1
     title: "업무 API 호출 (조회·실행)"
     detail: "**연속 실행의 순차 처리와 실패 시 중단·보고** · 부분 실행 상태 판정 · **응답 수신 직후의 경로 분류와 마스킹 사본 분리** — 감사·재개 상태·로그로는 마스킹본만 내보내고 평문은 사용자 응답 경로에만 태운다 · 미지정 경로 경고 기록"
     reqs: [REQ-026, REQ-105, REQ-111]
@@ -122,7 +122,7 @@ features:
     reqs: [REQ-302]
   - id: FEAT-220
     module: agent
-    roadmap: RM-P2
+    roadmap: RM-P1
     title: "저장된 조회 실행"
     detail: "**턴을 만들지 않는 실행 경로.** 파라미터 바인딩 · 실행 시점 권한 재판정 · 경량 실행 이력 기록 · 유량 제한 집행"
     reqs: [REQ-201, REQ-207]

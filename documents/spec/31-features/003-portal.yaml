@@ -102,7 +102,7 @@ features:
   - id: FEAT-115
     module: portal
     screen: SCR-109
-    roadmap: RM-P4
+    roadmap: RM-P1
     title: "초과 토큰 사용 신청"
     reqs: []
     nfrs: [NFR-011]
@@ -118,7 +118,7 @@ features:
   - id: FEAT-117
     module: portal
     screen: SCR-108
-    roadmap: RM-P2
+    roadmap: RM-P1
     title: "내 실행 가능 툴 목록 조회"
     detail: "권한 범위 내 실행 API 와 파라미터 설명. **대상 시스템별로 묶어 표시**"
     reqs: [REQ-105]
@@ -154,14 +154,14 @@ features:
   - id: FEAT-122
     module: portal
     screen: SCR-104
-    roadmap: RM-P2
+    roadmap: RM-P1
     title: "저장된 조회 관리"
     detail: "성공한 조회의 저장 · 파라미터 확인 · 목록 조회·삭제 · 자연어 수정 요청 · 무효화 상태 확인"
     reqs: [REQ-201, REQ-202, REQ-203, REQ-204]
   - id: FEAT-123
     module: portal
     screen: SCR-105
-    roadmap: RM-P2
+    roadmap: RM-P1
     title: "대시보드 구성과 실행"
     detail: "위젯 배치와 표현 형식 지정 · 위젯별 수동 조회와 자동 실행 설정 · 결과 렌더링"
     reqs: [REQ-206]
