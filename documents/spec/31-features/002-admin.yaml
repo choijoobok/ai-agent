@@ -146,7 +146,7 @@ features:
     screen: SCR-021
     roadmap: RM-P1
     title: "전사 예산 계획 관리"
-    detail: "기간 단위 전사 상한 · 쿼터 등급별 배분율(합계 100%) · 사용자별 상한 자동 계산·재계산 · **일 단위 발효(과거 소급 불가)**"
+    detail: "기간 단위 전사 상한 · 쿼터 등급별 배분율(합계 100%) · 사용자별 상한 자동 계산·재계산 · 초과 신청에 쓸 현재 기간 유효 재원 관리 · **일 단위 발효(과거 소급 불가)**"
     reqs: []
     nfrs: [NFR-011]
   - id: FEAT-018
@@ -154,6 +154,7 @@ features:
     screen: SCR-022
     roadmap: RM-P1
     title: "초과 토큰 사용 신청 승인 처리"
+    detail: "사용자 사유·추가 한도 신청 · 운영·비용 관리자의 현재 기간 유효 재원 확인·승인 또는 반려 · 승인분 즉시 반영 · 계획 종료 시 자동 만료와 이월 금지"
     reqs: []
     nfrs: [NFR-011]
   - id: FEAT-019
@@ -179,6 +180,7 @@ features:
     screen: SCR-019
     roadmap: RM-P1
     title: "도구(Tool) 노출 설정"
+    detail: "등록 REST 업무 API와 Hub 내부 서비스 빈 기반 커스텀 도구의 노출·실행 유형·허용 그룹·계약·통제 근거 관리"
     reqs: [REQ-105, REQ-114]
   - id: FEAT-022
     module: admin

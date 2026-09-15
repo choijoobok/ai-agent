@@ -104,6 +104,7 @@ features:
     screen: SCR-109
     roadmap: RM-P1
     title: "초과 토큰 사용 신청"
+    detail: "사유와 필요한 추가 한도를 신청하고, 승인된 한도·현재 기간 만료일·처리 결과를 조회"
     reqs: []
     nfrs: [NFR-011]
   - id: FEAT-116

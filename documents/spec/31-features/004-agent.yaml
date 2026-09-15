@@ -17,7 +17,7 @@ features:
     module: agent
     roadmap: RM-P1
     title: "도구 레지스트리와 도구 호출 처리"
-    detail: "**커스텀 도구 포함**"
+    detail: "등록 REST 업무 API와 **Hub 내부 서비스 빈 기반 커스텀 도구를 같은 레지스트리·권한·승인·감사 흐름으로 호출**한다. 커스텀 도구의 데이터 범위·마스킹은 도구 구현이 선언한 계약으로 별도 강제한다"
     reqs: [REQ-004, REQ-114]
   - id: FEAT-204
     module: agent
