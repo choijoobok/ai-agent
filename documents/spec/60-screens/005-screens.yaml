@@ -179,7 +179,7 @@ screens:
     feature: FEAT-017
     roadmap: RM-P1
     agent_contact: 설정
-    note: "**P1 인 것은 월별 개인 한도가 있어야 쿼터 집행이 성립하기 때문이다.** 최근 3개 확정 월 대조값의 보정률을 제안하고, 관리자의 수동 보정 근거를 남긴다. 계획 총 풀은 운영 기준선이고, 전사 예산 관리 화면은 아니다"
+    note: "**P1 인 것은 월별 개인 한도가 있어야 쿼터 집행이 성립하기 때문이다.** 등급별 배분 비율의 합은 100%이며, 활성 사용자 수로 나눈 다음 달 개인 한도를 보여 준다. 최근 3개 확정 월 대조값의 보정률을 제안하고, 관리자의 수동 보정 근거를 남긴다. 계획 총 풀은 운영 기준선이고, 전사 예산 관리 화면은 아니다"
   - id: SCR-022
     module: admin
     group: "비용 관리"
@@ -187,7 +187,15 @@ screens:
     feature: FEAT-018
     roadmap: RM-P1
     agent_contact: 설정
-    note: "사용자 신청·관리자 승인·즉시 반영을 RM-P1에 제공한다. 예비 풀 또는 계획 총 풀을 넘는 예외 승인도 사유와 함께 기록한다"
+    note: "사용자 신청·관리자 승인·즉시 반영을 RM-P1에 제공한다. 계획 총 풀을 넘는 예외 승인도 사유와 함께 기록한다"
+  - id: SCR-035
+    module: admin
+    group: "비용 관리"
+    title: "쿼터 등급 승급 요청 승인"
+    feature: FEAT-037
+    roadmap: RM-P1
+    agent_contact: 설정
+    note: "사용자의 다음 달 등급 승급 요청을 승인·반려하며, 이번 달 토큰 부족은 SCR-022의 추가 사용 승인으로 분리한다"
   - id: SCR-023
     module: admin
     group: "비용 관리"
@@ -335,7 +343,7 @@ screens:
     module: portal
     title: "내 사용량"
     feature: FEAT-114
-    features: [FEAT-114, FEAT-115]
+    features: [FEAT-114, FEAT-115, FEAT-127]
     roadmap: RM-P1
     note: "잔여 한도 화면에서 신청으로 이어진다. **신청은 P4**"
   - id: SCR-110
