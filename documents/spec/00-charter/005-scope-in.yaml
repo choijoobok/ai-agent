@@ -8,15 +8,15 @@ scope_in:
     why: "GOAL-1. 가치가 몰리는 자리(PRB-04)이며 1차 출시 범위다"
     roadmap: RM-P1
   - id: IN-03
-    what: "자연어 기능 실행 — API 등록·그룹 매핑 · 승인 필요 액션 · 실행 이력"
+    what: "자연어 기능 실행 — API 등록·그룹 매핑 · 모든 실행 액션의 사용자 승인 · 실행 이력"
     why: "GOAL-2"
-    roadmap: RM-P2
+    roadmap: RM-P1
   - id: IN-04
     what: "사용자 정의 워크플로우 자동화 — 정의·실행 · 스케줄러 · 알림"
     why: "GOAL-3. 반복 수작업(PRB-05)을 겨눈다"
     roadmap: RM-P3
   - id: IN-05
-    what: "개인화 심화 · 운영 고도화 — 개인 기본 지시 · 감사·통계·정산 · 쿼터 승인 · 다국어"
+    what: "개인화 심화 · 운영 고도화 — 개인 기본 지시 · 감사·통계·정산 고도화 · 다국어"
     why: "GOAL-4"
     roadmap: RM-P4
   - id: IN-06

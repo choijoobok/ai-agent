@@ -81,7 +81,7 @@ terms:
     term: 승인 필요 액션
     key: approvalRequiredAction
     group: 실행
-    definition: "실행 전 사용자 승인이 강제되는 액션"
+    definition: "실행 전 요청 사용자의 명시적 승인이 강제되는 액션. RM-P1에서는 등록된 모든 실행 액션이 여기에 해당한다"
   - id: TRM-024
     term: 커스텀 도구
     key: customTool
@@ -141,7 +141,7 @@ terms:
     term: 쿼터 등급
     key: quotaGrade
     group: 정책
-    definition: "토큰·비용 한도 등급. **사용자 단위로 하나만** 부여하며 그룹과 무관하다"
+    definition: "사용자의 **월별 토큰 한도**를 정하는 등급. 사용자 단위로 하나만 부여하며 그룹과 무관하다"
   - id: TRM-047
     term: 마스킹
     key: masking
@@ -179,7 +179,7 @@ terms:
     term: 쿼터
     key: quota
     group: 정책
-    definition: "사용자·기간 단위 토큰/비용 한도"
+    definition: "사용자별 **달력 월 단위 토큰 사용 한도**. 전사 예산이나 회계 예산과 구분한다"
   - id: TRM-054
     term: 행 스코프
     key: rowScope

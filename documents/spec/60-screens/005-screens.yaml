@@ -175,23 +175,23 @@ screens:
   - id: SCR-021
     module: admin
     group: "비용 관리"
-    title: "전사 예산 계획"
+    title: "월별 개인 쿼터 기준"
     feature: FEAT-017
     roadmap: RM-P1
     agent_contact: 설정
-    note: "**P1 인 것은 쿼터 등급별 상한이 있어야 집행이 성립하기 때문이다**"
+    note: "**P1 인 것은 월별 개인 한도가 있어야 쿼터 집행이 성립하기 때문이다. 전사 예산 관리 화면은 아니다**"
   - id: SCR-022
     module: admin
     group: "비용 관리"
-    title: "초과 사용 신청 승인"
+    title: "이번 달 초과 사용 신청 승인"
     feature: FEAT-018
     roadmap: RM-P1
     agent_contact: 설정
-    note: "신청·승인의 **자동화**가 P4 다 — 그 전까지는 관리자가 등급을 직접 조정한다"
+    note: "사용자 신청·관리자 승인·즉시 반영을 RM-P1에 제공한다"
   - id: SCR-023
     module: admin
     group: "비용 관리"
-    title: "토큰·비용 통계·정산"
+    title: "토큰·비용 통계·월 청구 정산 근거"
     feature: FEAT-030
     roadmap: RM-P1
     agent_contact: 산출

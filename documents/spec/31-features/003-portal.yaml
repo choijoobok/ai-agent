@@ -97,14 +97,15 @@ features:
     screen: SCR-109
     roadmap: RM-P1
     title: "내 토큰·비용 사용량 및 잔여 한도 확인"
+    detail: "현재 달의 누적 사용량·잔여 토큰 한도·이번 달 승인된 추가 한도를 확인"
     reqs: []
     nfrs: [NFR-011]
   - id: FEAT-115
     module: portal
     screen: SCR-109
     roadmap: RM-P1
-    title: "초과 토큰 사용 신청"
-    detail: "사유와 필요한 추가 한도를 신청하고, 승인된 한도·현재 기간 만료일·처리 결과를 조회"
+    title: "이번 달 초과 토큰 사용 신청"
+    detail: "사유와 이번 달에 필요한 추가 토큰을 신청하고, 승인된 한도·월말 만료일·처리 결과를 조회"
     reqs: []
     nfrs: [NFR-011]
   - id: FEAT-116
