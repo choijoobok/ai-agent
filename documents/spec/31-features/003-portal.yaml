@@ -20,7 +20,8 @@ features:
     screen: SCR-101
     roadmap: RM-P1
     title: "응답 렌더링 — 텍스트 · 그리드 · 차트"
-    reqs: [REQ-011, REQ-012, REQ-027]
+    detail: "agent 계약 메타데이터가 검토 필요 자산 사용을 알리면 응답에 사용자 검토 경고를 표시한다. 지식 식별자·리비전·공개 객체명은 표시하지 않는다"
+    reqs: [REQ-011, REQ-012, REQ-027, REQ-304]
   - id: FEAT-104
     module: portal
     screen: SCR-101
@@ -190,4 +191,3 @@ features:
     lifecycle: "admin·agent 핵심 개발 중 사용하는 내부 시험 기능. 제품 portal의 SCR-101과 별도 승인·별도 슬라이스로 관리한다"
     reqs: [REQ-009, REQ-027]
     traces_to: [ARCH-015, ARCH-019]
-
