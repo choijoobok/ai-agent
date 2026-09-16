@@ -3,7 +3,7 @@ wait_types:
     type: 승인 대기
     key: APPROVAL
     waits_for: "승인 필요 액션의 실행 전 승인"
-    resume: "승인이면 실행, **그 외 모든 입력은 비승인**"
+    resume: "승인 카드의 명시적 승인이면 실행한다. 거절 뒤 추가 질문은 별도 턴으로 처리하며, 사용자가 원 건의 재승인을 명시하면 후보 확인 뒤 최초 만료 시각 안에서만 새 승인 카드를 제시한다"
   - id: WT-02
     type: 추가 정보 대기
     key: ADDITIONAL_INFO
