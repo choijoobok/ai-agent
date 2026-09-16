@@ -282,11 +282,11 @@ terms:
     group: 처리중입력
     definition: "LLM 이 사용자 질의를 명료하게 재정리한 문장(REQ-015). **지식 검색·SQL 생성·의도 분류의 입력**이며 조회 계획의 일부로 사용자에게 제시된다"
   - id: TRM-081
-    term: 처리 중 입력의 네 갈래
+    term: 처리 중 입력의 세 갈래
     key: inflightIntent
     group: 처리중입력
-    definition: "처리 중 들어온 입력의 분류 넷 — **보강**(`BOOST`) · **교정**(`CORRECT`) · **별개**(`NEW`) · **중단**(`STOP`)"
-    note: "보수적 우선순위는 `CORRECT > STOP > NEW > BOOST` 다. 그 순위가 실제로 안전한지는 실모델로만 확인된다"
+    definition: "처리 중 들어온 입력의 분류 셋 — **변경**(`AMEND`) · **별개**(`NEW`) · **중단**(`STOP`)"
+    note: "`AMEND`는 보강·교정의 이름을 가르지 않고 변경 항목과 무효화 시작 단계로 처리한다. 명시적 `STOP`은 분류 없이 즉시 처리하며, 애매한 자연어 입력은 사용자 확인으로 보낸다"
   - id: TRM-082
     term: 분류 불능
     key: UNSURE

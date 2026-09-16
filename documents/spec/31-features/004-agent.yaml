@@ -99,7 +99,7 @@ features:
     module: agent
     roadmap: RM-P1
     title: "턴 상태 관리와 재개 처리"
-    detail: "중단·추가 입력 요청의 스텝 경계 반영과 **처리 중 입력의 의도 분류·분기** · **실행 점유의 획득·갱신·해제와 만료 턴 회수** · 대기열의 FIFO 시작"
+    detail: "중단·변경 입력 이벤트의 순서 보존과 **변경·별개·중단 분류 및 무효화 시작 단계 판정** · 실행 점유의 획득·갱신·해제와 만료 턴 회수 · 대기열의 FIFO 시작"
     reqs: [REQ-013, REQ-016, REQ-030, REQ-031, REQ-032, REQ-033, REQ-035, REQ-036]
     traces_to: [ARCH-070]
   - id: FEAT-217

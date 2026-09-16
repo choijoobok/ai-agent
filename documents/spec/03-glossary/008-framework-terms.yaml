@@ -58,7 +58,7 @@ framework_terms:
     term: InterruptionMetadata
     origin: LangGraph4j
     group: 멈춤
-    definition: "멈춘 이유를 담아 올려보내는 것 (`APPROVAL_REQUIRED` · `INTENT_CORRECT` 등)"
+    definition: "멈춘 이유를 담아 올려보내는 것 (`APPROVAL_REQUIRED` · `INTENT_AMEND` 등)"
   - id: TRM-113
     term: 체크포인트 (Checkpoint)
     origin: LangGraph4j

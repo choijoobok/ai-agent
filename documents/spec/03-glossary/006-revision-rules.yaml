@@ -1,7 +1,10 @@
 revision_rules:
-  - path: "처리 중 입력의 교정"
+  - path: "처리 중 입력 변경으로 이전 체크포인트가 무효"
     increments: true
     why: "되돌려 다시 한다. 지나온 스텝이 버려진다"
+  - path: "처리 중 입력 변경이 이후 단계에만 영향"
+    increments: false
+    why: "유효한 체크포인트를 버리지 않고 같은 턴을 계속 처리한다"
   - path: "중단된 턴의 재시도"
     increments: false
     why: "중단 지점에서 **이어간다.** 버려지는 스텝이 없다"
