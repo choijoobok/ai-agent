@@ -92,15 +92,15 @@ features:
     module: agent
     roadmap: RM-P1
     title: "portal 채팅 인터페이스"
-    detail: "질의 접수 · 진행 상태 전달 · 중단·재시도 처리"
-    reqs: [REQ-006, REQ-007, REQ-013]
+    detail: "질의 접수 · 개인별 동시 턴 제한과 영속 FIFO 대기열 등록 · 진행 상태 전달 · 중단·재시도 처리"
+    reqs: [REQ-006, REQ-007, REQ-013, REQ-036]
     traces_to: [ARCH-015]
   - id: FEAT-216
     module: agent
     roadmap: RM-P1
     title: "턴 상태 관리와 재개 처리"
-    detail: "중단·추가 입력 요청의 스텝 경계 반영과 **처리 중 입력의 의도 분류·분기** · **실행 점유의 획득·갱신·해제와 만료 턴 회수**"
-    reqs: [REQ-013, REQ-016, REQ-030, REQ-031, REQ-032, REQ-033, REQ-035]
+    detail: "중단·추가 입력 요청의 스텝 경계 반영과 **처리 중 입력의 의도 분류·분기** · **실행 점유의 획득·갱신·해제와 만료 턴 회수** · 대기열의 FIFO 시작"
+    reqs: [REQ-013, REQ-016, REQ-030, REQ-031, REQ-032, REQ-033, REQ-035, REQ-036]
     traces_to: [ARCH-070]
   - id: FEAT-217
     module: agent
