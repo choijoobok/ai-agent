@@ -222,7 +222,7 @@ counters:
   SCR: 69
   TC: 53
   RUN: 8      # 80-operations/_index.yaml의 현재 절차. daily_checks·periodic_tasks를 2026-09-14에 채웠다
-  ADR: 10     # 001~010 accepted. 010은 논리 spec-set 저장 구조이며 proposed는 없다
+  ADR: 11     # 001~011 accepted. 011은 대화형 턴 제어의 스트리밍·입력함·실행 경계이며 proposed는 없다
   ASM: 1      # **미확인 하나** — 003(기한 G3). 002·004·007은 확인됨, 005·006 은 기각됨
   SLICE: 18
   DEF: 0
