@@ -232,6 +232,13 @@ assert.equal(isDenied(await preShell(powershellCommit(SUBJECT))), true);
 assert.equal(isDenied(await preShell(posixCommit(`${SUBJECT}\n\nAgent: Potato`))), true);
 assert.equal(isDenied(await preShell(posixCommit(`${SUBJECT}\n\nAgent: Codex\ntrailing body`))), true);
 assert.equal(isDenied(await preShell(`git commit -m '${SUBJECT}' -- AGENTS.md`)), true);
+assert.equal(isDenied(await preShell('git pull origin main')), true);
+assert.equal(isDenied(await preShell('git pull --ff-only origin main')), false);
+assert.equal(isDenied(await preShell('git merge origin/main')), true);
+assert.equal(isDenied(await preShell('git merge --continue')), true);
+assert.equal(isDenied(await preShell('git merge --squash --no-commit origin/main')), true);
+assert.equal(isDenied(await preShell('git merge --no-commit origin/main')), false);
+assert.equal(isDenied(await preShell('git merge --ff-only origin/main')), false);
 
 const savedProvider = process.env.AI_HOOK_PROVIDER;
 process.env.AI_HOOK_PROVIDER = 'claude';

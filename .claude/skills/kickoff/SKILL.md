@@ -45,7 +45,7 @@ documents/spec/00-charter/_index.yaml       + 001-charter.yaml       (템플릿 
 documents/spec/01-actors/_index.yaml        + 001-actors.yaml        (템플릿 상태)
 documents/spec/02-constraints/_index.yaml   + 010-constraints.yaml   (템플릿 상태)
 documents/decisions/ASSUMPTIONS.md  CHANGES.md
-documents/project.state.yaml    (project.name, started_at 채움, phase=P0)
+documents/project.state.yaml    (`artifact/template/07-project-state.yaml`에서 시작해 이름·일자 채움)
 ```
 
 각 `_index.yaml`은 `spec_set.version: 1`과 번호가 붙은 `parts` 목록을 갖는다. 다른 문서는

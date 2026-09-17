@@ -33,6 +33,8 @@ tags: [gate, exit-criteria]
 ③도 건너뛸 수 없다. 사용자가 이해하지 못한 승인은 품질 장치가 아니라 책임 이전이다.
 → [10-cognitive-debt.md](./10-cognitive-debt.md)
 
+모든 게이트의 공통 선행조건은 **승인 범위의 `pending_rechecks` 0건**이다. 다른 작업흐름은 막지 않으며 범위 판정은 [14-collaboration.md](14-collaboration.md)를 따른다.
+
 ## 2. 게이트별 Exit Criteria
 
 ### G0 — 착수 게이트 (P0 → P1)
@@ -43,8 +45,7 @@ tags: [gate, exit-criteria]
 - [ ] 제약사항(예산·기한·기술·조직·규제)이 기록됨
 - [ ] 트랙(Lite/Standard/Full)이 결정됨
 - [ ] 기존 시스템 유무와 대체/연동 여부가 확인됨
-- [ ] **기대치 정렬 완료** — J-커브·검증 비용을 설명하고 `charter.expectations.user_priority`
-      (speed/quality/balanced)를 받음 → [11-verification-cost.md](./11-verification-cost.md) §2
+- [ ] **기대치 정렬 완료** — J-커브·검증 비용을 설명하고 `charter.expectations.user_priority`(speed/quality/balanced)를 받음 → [11-verification-cost.md](./11-verification-cost.md) §2
 
 ### G1 — 요구사항 게이트 (P1 → P2)
 - [ ] 모든 요구사항이 `REQ-###` ID를 가지고 `검증 가능한 문장`으로 기술됨
@@ -59,10 +60,7 @@ tags: [gate, exit-criteria]
 ### G2 — 아키텍처 게이트 (P2 → P3)
 - [ ] 되돌리기 비용 High인 모든 선택이 ADR로 기록됨 (대안 2개 이상 + 포기한 것)
 - [ ] 기술 스택이 `언어/런타임 · 프레임워크 · DB · 캐시 · 큐 · 인증 · 배포 · 모니터링` 축으로 결정됨
-- [ ] 모든 NFR에 **측정 가능한 목표치**가 있음 (예: "p95 응답 800ms 이하", "가용성 99.5%")
-      **또는** 목표를 미루기로 한 **명시적 결정(`ASM-###`)이 있고 측정이 서 있음** — 전 항목에
-      `measurement`(무엇을 재나)와 `source`(어디서 나오나)가 있고 `T7` 이 그것을 잠근다.
-      **재기 전에 세운 목표는 근거가 없고, 근거 없는 목표는 게이트에서 협상 대상이 된다.**
+- [ ] 모든 NFR에 **측정 가능한 목표치**가 있거나, 목표를 미룬 **명시적 결정(`ASM-###`)과 측정**이 서 있음 — 전 항목에 `measurement`(무엇)와 `source`(어디)가 있고 `T7`이 잠근다. **재기 전에 세운 목표는 근거가 없고 게이트에서 협상 대상이 된다.**
       *미룬다는 결정 없이 비어 있는 것* 과 *미루기로 하고 재는 장치를 세운 것* 은 다르다.
 - [ ] 시스템 컨텍스트 다이어그램(C4 Level 1) + 컨테이너 다이어그램(Level 2)이 존재
 - [ ] 외부 연동 대상별 방식·프로토콜·데이터 소유권이 정의됨
@@ -85,9 +83,9 @@ tags: [gate, exit-criteria]
 - [ ] **★ 사용자 승인 후 승인 범위의 spec 베이스라인 동결. 이후 변경은 CR 절차 ★**
 
 ### G4 — 슬라이스 미니게이트 (슬라이스마다)
+- [ ] 해당 슬라이스의 통합 후 재시험 `pending_rechecks`가 없음
 - [ ] 해당 FEAT의 모든 TC가 통과 (skip·xfail 0건)
-- [ ] **규칙 뒤집기 검사 통과** — UC의 business_rules 각각을 코드에서 뒤집었을 때
-      최소 1개 테스트가 실패함. 미검증 규칙 0건 ([`quality/redteam.md`](../quality/redteam.md))
+- [ ] **규칙 뒤집기 검사 통과** — UC의 business_rules 각각을 코드에서 뒤집었을 때 최소 1개 테스트가 실패함. 미검증 규칙 0건 ([`quality/redteam.md`](../quality/redteam.md))
 - [ ] **`node .claude/hooks/quality-check.mjs` 통과** — 중복률 ≤5%, 예외 삼킴 0건, `@feat` 미태깅 0개 ([`quality/code-quality.md`](../quality/code-quality.md))
 - [ ] (Standard/Full) 도메인·서비스 계층 뮤테이션 스코어 ≥ 60% / 75%
 - [ ] DB 변경이 있으면 마이그레이션 스크립트 존재 + 롤백 방법 기재
@@ -97,6 +95,7 @@ tags: [gate, exit-criteria]
 - [ ] 사용자 확인(데모 또는 스크린샷/실행 결과 제시)
 
 ### G5 — 검증 게이트 (P5 → P6)
+- [ ] 현재 차수 필수 작업흐름의 코드 시험·문서 재검토 `pending_rechecks`가 없음
 - [ ] 전체 TC 실행률 100%, 통과율이 합의 기준 이상
 - [ ] NFR 목표치별 실측값이 기록됨 (측정 안 한 NFR = 미충족)
 - [ ] 결함 대장의 Critical/High 잔여 = 0

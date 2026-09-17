@@ -1,0 +1,51 @@
+# id: LLM-ART-009
+# title: 프로젝트 진행 상태 템플릿
+# category: artifact/template
+# type: template
+# created: 2026-09-17
+# updated: 2026-09-17
+# status: active
+# sources: [aidd-guide/process/14-collaboration.md]
+# tier: 3
+# tags: [template, project-state, collaboration]
+
+# 새 프로젝트에서 필요한 최소 골격이다. 채운 값의 정본은 documents/project.state.yaml이다.
+project:
+  name: ""
+  code: ""
+  started_at: null
+  owner: ""
+
+current:
+  phase: P0
+  roadmap: RM-P1
+  workstream: null
+  slice: null
+  blocked_by: []
+  template_maintenance: false
+
+collaboration:
+  integration_mode: shared_main
+  conflict_tracking_started_at: null
+
+# 과거 이력은 [충돌 통합] 커밋이 갖는다. 현재 다시 확인할 것만 둔다.
+# 키는 기존 추적 ID(SLICE-###) 또는 "<workstream>.P<n>"을 쓴다.
+pending_rechecks: {}
+
+gates:
+  P0_inception:    { status: in_progress, approved_at: null, note: "" }
+  P1_discovery:    { status: not_started, approved_at: null, note: "" }
+  P2_architecture: { status: not_started, approved_at: null, note: "" }
+  P3_design:       { status: not_started, approved_at: null, note: "" }
+  P4_build:        { status: not_started, approved_at: null, note: "" }
+  P5_verify:       { status: not_started, approved_at: null, note: "" }
+  P6_deliver:      { status: not_started, approved_at: null, note: "" }
+
+workstreams: {}
+extension_workstreams: []
+roadmap_closed: []
+next_up: null
+open_questions: []
+slices: []
+verification_load: []
+

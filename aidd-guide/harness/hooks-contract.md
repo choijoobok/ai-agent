@@ -13,8 +13,7 @@ tags: [harness, hooks, contract, wiring]
 
 # 훅 계약 — 배선 · `lib.mjs` · 새 훅을 더할 때
 
-> **훅을 만들거나 고칠 때** 읽는다. *어떤 훅이 있고 각각 왜 그런가* 는 [hooks.md](./hooks.md)가 갖는다 —
-> 한 문서였다가 200줄 상한에 닿아 갈랐고, 갈린 축은 **읽는 이유**다: 여기는 만드는 사람, 저기는 막힌 사람이 온다.
+> **훅을 만들거나 고칠 때** 읽는다. *어떤 훅이 있고 각각 왜 그런가*는 [hooks.md](./hooks.md)가 갖는다 — 갈린 축은 **읽는 이유**다: 여기는 만드는 사람, 저기는 막힌 사람이 온다.
 
 ## 정본과 구현
 
@@ -30,9 +29,7 @@ tags: [harness, hooks, contract, wiring]
 | 사전 진입 | `runtime/pretool-bootstrap.mjs` | 파일 chain이 import 전부터 깨져도 차단하고 훅 파일 수리만 연다 |
 | 셸 파싱 | `runtime/shell-parse.mjs` | **따옴표 안이 데이터인가 명령인가** — `guard-bash`·`guard-commit`이 함께 읽는 유일한 원본 |
 
-`spec-set`은 `이름.yaml`과 `이름/_index.yaml` 중 하나만 허용한다. 폴더형은 명시적 `parts` 순서로
-병합하며 미등재 YAML·중복·폴더 이탈·값 덮어쓰기를 실패시킨다. 호출자는 논리 이름만 넘긴다.
-정책 엔진의 중립 경로 이동은 대량 참조를 깨므로, 새 공용 로직부터 `runtime/`에 두고 점진 이전한다.
+`spec-set`은 `이름.yaml`과 `이름/_index.yaml` 중 하나만 허용한다. 폴더형은 명시적 `parts` 순서로 병합하며 미등재 YAML·중복·폴더 이탈·값 덮어쓰기를 실패시킨다. 새 공용 로직부터 `runtime/`에 둔다.
 
 ## 배선
 
@@ -47,8 +44,7 @@ tags: [harness, hooks, contract, wiring]
 
 - **배선은 도구 이름으로 선다 — 그래서 무엇을 덮는지 세지 않으면 도구를 바꾸는 것만으로 게이트가 사라진다.** `harness-check`가 provider별 대표 도구 이름(Claude의 `Write`·`Edit`·`NotebookEdit`, Codex의 `apply_patch`, 양쪽의 shell·MCP 쓰기)을 각 matcher 정규식에 실제로 먹여 본다. 새 쓰기·셸 도구가 생기면 그 목록에 먼저 더한다. **파일 쪽만 MCP를 덮고 셸 쪽을 두면 같은 구멍이 남는다** — 2026-09-14 실측에서 `Bash`로 막힌 명령이 MCP `start_process`로 그대로 돌았다.
 - **셸 chain이 보는 것은 `tool_input.command` 하나다.** 셸을 *새로 여는* MCP 도구는 덮지만 이미 열린 REPL에 이어 넣는 입력(`interact_with_process`의 `input`)은 못 본다 — 그 자리는 사후 chain과 사람이 본다. 같은 matcher의 command hook은 동시 실행될 수 있으므로, 순서가 필요한 정책은 handler를 여러 개 배선하지 않고 **chain 하나**가 직렬 실행한다.
-- **같은 chain에는 같은 timeout을 준다.** 예산이 갈리면 좁은 쪽에서만 뒤쪽 훅이 통째로
-  잘리고, 잘렸다는 사실은 보이지 않는다. `harness-check`가 파일 chain 둘을 비교해 막는다.
+- **같은 chain에는 같은 timeout을 준다.** 예산이 갈리면 좁은 쪽의 뒤쪽 훅이 잘리므로 `harness-check`가 파일 chain 둘을 비교한다.
 - 실행은 `node` 하나다. `package.json`도 `node_modules`도 보지 않는다(AGENTS.md §1).
 - 사전 보호 chain에서 내부 오류가 나면 차단한다. 사후 chain 오류는 되돌릴 수 없으므로 경고한다.
 - **정책의 원본은 훅 코드가 아니다.** 차단·교정·경고의 근거는 먼저 `AGENTS.md` 또는 `aidd-guide/`에 있어야 하고, 훅은 그 규칙을 기계적으로 집행한다. matcher와 입력 정규화 같은 구현 상세만 훅이 단독으로 가질 수 있다.
@@ -57,8 +53,7 @@ tags: [harness, hooks, contract, wiring]
 
 ### 깨진 보호에서 빠져나오는 길
 
-사전 chain이 죽으면 **그 chain이 지키던 도구가 통째로 막힌다.** 그런데 고칠 때 쓰는 도구가
-바로 그것이다 — 쓰기 chain이 죽으면 훅 파일을 `Edit`으로 열 수 없다. 셋으로 막는다.
+사전 chain이 죽으면 지키던 도구와 고칠 도구가 함께 막힌다. 다음 장치로 복구한다.
 
 | | 무엇 |
 |---|---|
@@ -68,8 +63,7 @@ tags: [harness, hooks, contract, wiring]
 | 수리 자리만 연다 | **죽어서 막힌 경우에만** 훅 adapter(`.claude/hooks/`·`.codex/hooks/`)와 **그들이 함께 쓰는 실행 원본**(`aidd-guide/harness/runtime/`)의 `.mjs` 쓰기를 통과시킨다 — `chains.mjs` 가 깨지면 모든 chain 이 서지 못하는데 열지 않으면 **잠긴 사람이 잠근 파일을 못 고친다**. 정책 차단과 다른 경로는 절대 열지 않는다 |
 | 남의 트리로 안 퍼지게 | CI가 훅 전부에 `node --check` 를 돌린다 — 구문이 깨진 훅이 `main`에 들어가면 **clone하는 사람이 즉시 잠긴다** |
 
-fixture는 `.codex/hooks/self-test.mjs`가 갖는다 — 여는 쪽과 **닫히는 쪽을 함께** 센다.
-여는 쪽만 시험하면 게이트가 통째로 열린 것을 보지 못한다.
+fixture는 `.codex/hooks/self-test.mjs`가 갖고 여는 쪽과 **닫히는 쪽을 함께** 센다.
 
 ## `git-sync` — 세션 시작의 원격 동기화
 
@@ -77,13 +71,17 @@ fixture는 `.codex/hooks/self-test.mjs`가 갖는다 — 여는 쪽과 **닫히�
 |---|---|
 | 이벤트 | `SessionStart`, **세션 시작(`startup`)에서만** |
 | 입력 | 훅 입력의 `source`(Claude) · `startup` 전용 matcher 그룹(Codex) |
-| 판정 | 원격 없음 → 조용히 통과 / 추적 브랜치 없음·fetch 실패 → 알림 / **작업 트리가 더러우면 당기지 않는다** / 깨끗하고 뒤처졌으면 `git pull --ff-only` |
+| 판정 | 원격 없음 → 조용히 통과 / 추적 브랜치 없음·fetch 실패 → 알림 / **작업 트리가 더러우면 당기지 않는다** / 깨끗하고 뒤처졌으면 `git pull --ff-only` / 이력이 갈렸으면 `integrate-main` 안내 |
 | 강도 | 교정(당길 수 있을 때만) · 문맥에 넣는다 |
 | 출력 | `[원격 동기화]` 로 시작하는 **한 덩이** — 무엇을 했나 · 못 했으면 왜 · 다음에 무엇을 하나 |
 | 실패 정책 | **던지지 않는다.** git 이 없거나 네트워크가 죽어도 세션은 열린다. 네트워크 15초 · 로컬 5초에서 끊는다 |
 | fixture | `.codex/hooks/self-test.mjs` — `source: 'compact'` 에서 아무것도 하지 않는다 |
 
-**세 가지를 하지 않는 것이 이 훅의 절반이다.** ① 미커밋 변경 위로 남의 커밋을 얹지 않는다 — 충돌 해소는 사람의 판단이다(AGENTS.md §5-2). ② `--ff-only` 만 쓴다 — merge 와 rebase 중 무엇으로 합칠지는 AI 가 고르지 않는다. ③ **푸시하지 않는다**(AGENTS.md §9).
+**세 가지를 하지 않는 것이 이 훅의 절반이다.** ① 미커밋 변경 위로 남의 커밋을 얹지 않는다 — 충돌 해소는 사람의 판단이다(AGENTS.md §5-2). ② `--ff-only`가 안 되면 자동 merge하지 않고 `integrate-main`으로 넘긴다. ③ **푸시하지 않는다**(AGENTS.md §9).
+
+## 통합 상태 — 현재 경고와 과거 이력을 섞지 않는다
+
+`integration-state`는 `pending_rechecks`와 최근 `[충돌 통합]` 3건을 브리핑하고 CI에서 형식을 검사한다. `guard-commit`은 `pull --ff-only`·`merge --no-commit`, merge 상태의 경로 없는 커밋 예외, 충돌 커밋의 `영향`·`확인`·`검증`을 집행한다. 상세 정책은 [14-collaboration.md](../process/14-collaboration.md)가 갖는다.
 
 `resume`·`clear`·`compact` 에서 돌지 않는다 — 작업 중간에 파일이 바뀌면 AI가 읽은 것과 디스크가 어긋난다.
 

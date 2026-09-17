@@ -42,7 +42,7 @@ tags: [artifact, map, index]
 | 17  | 시퀀스 다이어그램                  | P3    | G   | `documents/generated/33-시퀀스/UC-{###}.md` (Mermaid)                                                                     |  △   |  ●  |  ●   |
 | 18  | 인터페이스 정의서 (외부 연동)          | P3    | S   | `documents/spec/00-charter/_index.yaml`                                                                                    |  ○   |  ●  |  ●   |
 | 19  | 권한 매트릭스                    | P3    | S+G | `documents/spec/00-charter/_index.yaml` → `documents/generated/22-권한매트릭스.md`                                                    |  ○   |  ●  |  ●   |
-| 20  | 슬라이스 백로그                   | P4    | L   | `documents/project.state.yaml` `slices:`                                                                               |  ●   |  ●  |  ●   |
+| 20  | 슬라이스 백로그·현재 후속 검증          | P4~P5 | L   | `documents/project.state.yaml` `slices:` · `pending_rechecks:`                                                         |  ●   |  ●  |  ●   |
 | 21  | 소스 코드                      | P4    | -   | `sources/`                                                                                                             |  ●   |  ●  |  ●   |
 | 22  | 단위/통합 테스트 코드               | P4    | -   | `sources/backend/*/src/test/` · `sources/frontend/src/**/*.test.ts`                                                    |  ●   |  ●  |  ●   |
 | 23  | 테스트 케이스                    | P3~P5 | S+G | `documents/spec/00-charter/_index.yaml` → `documents/generated/70-테스트케이스.md`                                                |  ●   |  ●  |  ●   |

@@ -4,7 +4,7 @@ title: "자동화 vs AI 책임 매트릭스"
 category: harness
 type: operation
 created: "2026-04-30"
-updated: 2026-09-11
+updated: 2026-09-17
 status: active
 sources: ["aidd-guide/harness/capabilities.yaml", ".claude/settings.json", ".codex/hooks.json", ".claude/hooks/"]
 tier: 1
@@ -75,6 +75,7 @@ CLI는 같은 task를 `codex resume`로 새 실행에 다시 붙인다. 양쪽 �
 | 공통물 승격 | AI | 두 번째 사용을 알아채는 검사가 없다 — 리뷰에서 *이거 다른 화면에도 있지 않나* 를 묻는다 |
 | `chat-history` 요약 | AI | **원문은 `log-raw` 가 남긴다.** 요약은 결정·산출물·미결만(AGENTS.md §10 · [harness/memory/logs.md](./memory/logs.md)) |
 | 결정 기록 | AI | **커밋 메시지에 *왜* 를 적는다**(AGENTS.md §9). 버린 안이 있으면 ADR 을 더한다 |
+| 충돌 통합 | AI | `integrate-main`으로 영향·오프라인 확인·검증을 기록한다. 넘긴 검증은 `pending_rechecks`, 과거 이력은 `[충돌 통합]` 커밋이 갖는다 |
 | Codex 사전 훅 결손 보완 | AI | 카나리 실패를 사용자에게 알리고 `guard-write`·`guard-generated`·`guard-bash`·`guard-commit`의 근거 규칙을 직접 적용한다 |
 | 명령 안에 경로가 없는 쓰기 | AI | `node -e` · gradle 태스크처럼 **스크립트가 자기 안에서 여는 파일**은 `guard-shell-write` 가 볼 수 없다 — 그 쓰기는 규칙을 사람이 지킨다 |
 
@@ -84,6 +85,7 @@ CLI는 같은 task를 `codex resume`로 새 실행에 다시 붙인다. 양쪽 �
 ❌ 생성 시드 CSV 를 손으로 고친다            → guard-generated 가 막는다
 ❌ 게이트를 피하려고 쓰기 도구 대신 셸로 쓴다 → guard-shell-write 가 같은 게이트에 태운다
 ❌ git commit -a / 본문 없는 메시지 / 잘못된 Agent trailer → guard-commit 이 막는다
+❌ 자동 merge commit / 충돌 통합 블록 없는 conflict merge → guard-commit 이 막는다
 ❌ 소스만 고치고 화면 문서를 그대로 둔다      → doc-drift 가 가리키지만 막지는 않는다
 ❌ 이미 적재된 changeset 을 수정한다          → 남의 로컬이 checksum 으로 죽는다 (검사 없음)
 ```

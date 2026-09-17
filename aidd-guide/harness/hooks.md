@@ -52,9 +52,11 @@ tags: [harness, hooks, gate, automation]
 | `-a` · `--all` | 추적 중인 모든 변경을 담는다 |
 | `--` 가 없다 | 경로 없는 커밋 — 낡은 인덱스가 **남의 커밋을 되돌린다** |
 | `-F -`가 아니거나 · trailer·제목 형식·언어가 틀리다 | 본문 · 만든 주체 · **무엇을 왜 했나**를 확인할 수 없다 |
+| `--ff-only` 없는 pull · 자동 commit/squash merge | 충돌 영향·확인·검증 전에 통합되거나 이력이 사라진다 |
 
 - **두 가지 좁힘이 없으면 훅이 자기 자신의 커밋을 막는다**: 문자열 안에 우연히 든 `git commit`(예: `echo`), here-string 본문에 든 `--` 나 `-m "`.
 - POSIX heredoc과 PowerShell here-string pipe를 모두 읽는다. Claude는 마지막 trailer 묶음의 `Agent: Claude` + 정해진 `Co-Authored-By:`, Codex는 마지막 줄 `Agent: Codex`여야 한다. 제목은 `<타입>: <현상> — <조치>` 이고 **제목·본문 모두 한국어**여야 한다(§5-3) — trailer 는 영문 키라서 언어를 묻지 않는다. **허용 타입 열하나의 원본은 AGENTS.md §5-3 이고 훅은 집행만 한다** — 목록을 늘리려면 거기를 먼저 고친다.
+- pull은 `--ff-only`, 통합은 `git merge --no-commit`만 허용하고 squash·`merge --continue`는 막는다. merge 상태에서는 예외적으로 `git commit -F -`를 쓰며, 실제 충돌이 있었으면 `[충돌 통합]`의 `영향`·`확인`·`검증`을 모두 요구한다.
 
 ## `normalize-encoding` — BOM · CRLF 교정
 
@@ -157,7 +159,7 @@ screenRegistry가 가리킨 기능 폴더의 파일 ─→ screenRegistry.ts 역
 
 ## `git-sync` — 세션 시작에 원격을 당긴다
 
-**깨끗한 트리에서 `startup` 일 때만** `git pull --ff-only` 를 돌린다. 더러우면 당기지 않고 이유와 다음 할 일을 말한다 — 미커밋 변경 위로 남의 커밋을 얹을지는 **사람의 판단**이고(AGENTS.md §5-2), 푸시는 사용자가 말할 때만이다(§9). Codex adapter는 시작 전후 훅 revision이 같을 때만 실행 확인을 문맥에 넣는다. 달라졌으면 데스크톱 앱은 앱 검토 화면 또는 CLI `/hooks`의 완료를 먼저 확인한 뒤 이동 승인을 받아 작업 맥락을 인계한 새 local task로 가고, CLI는 같은 task를 `codex resume`로 재개한다. 새 실행은 revision을 확인하고 `PreToolUse` 카나리 결과를 알리되, revision이 맞고 카나리만 실패하면 문서 규칙을 직접 적용하며 계속한다. 상세 절차와 fixture는 [hooks-contract.md](./hooks-contract.md)가 갖는다.
+**깨끗한 트리에서 `startup` 일 때만** `git pull --ff-only` 를 돌린다. 더러우면 당기지 않고 이유와 다음 할 일을 말하며, 이력이 갈렸으면 `integrate-main`으로 보낸다 — 미커밋 변경 위로 남의 커밋을 얹을지는 **사람의 판단**이고(AGENTS.md §5-2), 푸시는 사용자가 말할 때만이다(§9). `session-brief`는 현재 `pending_rechecks` 전부와 최근 `[충돌 통합]` 커밋 세 건을 함께 넣는다. Codex adapter는 시작 전후 훅 revision이 같을 때만 실행 확인을 문맥에 넣는다. 달라졌으면 데스크톱 앱은 앱 검토 화면 또는 CLI `/hooks`의 완료를 먼저 확인한 뒤 이동 승인을 받아 작업 맥락을 인계한 새 local task로 가고, CLI는 같은 task를 `codex resume`로 재개한다. 새 실행은 revision을 확인하고 `PreToolUse` 카나리 결과를 알리되, revision이 맞고 카나리만 실패하면 문서 규칙을 직접 적용하며 계속한다. 상세 절차와 fixture는 [hooks-contract.md](./hooks-contract.md)가 갖는다.
 
 ## 컨텍스트 관리 — 같은 목적, 다른 구현
 

@@ -53,7 +53,7 @@ tags: [harness, hooks, skills, automation, index]
 | 스킬 | 용도 |
 |------|------|
 | `/kickoff` · `/interview` · `/phase-gate` · `/pm-status` | 단계를 세우고 묻고 넘고 보고한다 |
-| `/slice` · `/change-request` · `/adr` | 구현 · 변경 요청 · 결정 기록 |
+| `/slice` · `/integrate-main` · `/change-request` · `/adr` | 구현 · main 통합 · 변경 요청 · 결정 기록 |
 | `/doc-gen` | spec YAML → `documents/generated/` |
 | `/menu-doc` | 화면 문서(요건서·메뉴얼) 생성·현행 대조 |
 | `/mockup` | 요건서 → `mockup.html` (파생) |

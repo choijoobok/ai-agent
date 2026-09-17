@@ -21,6 +21,9 @@ P1~P5에 `workstreams`가 있으면 **전역인지 어느 작업흐름인지도 
 ### ① Exit Criteria 자체검증
 `aidd-guide/process/04-gates.md` 의 해당 게이트 체크리스트를 **항목별로** 판정한다.
 
+`documents/project.state.yaml`의 `pending_rechecks` 중 이번 전역·작업흐름·슬라이스 범위에
+걸린 항목이 하나라도 있으면 미충족이다. 다른 범위의 항목으로 현재 게이트를 막지 않는다.
+
 - 각 항목에 ✅/❌ 와 **근거 파일 경로**를 붙인다. "충족" 만 쓰지 않는다.
 - 자동 검사 가능한 것은 실제로 실행한다:
   - 전역 게이트와 작업흐름 G1·G2는 `$trace`로 저장소 전체의 dangling·중복 ID와 현재

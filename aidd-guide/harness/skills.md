@@ -35,6 +35,7 @@ tags: [harness, skill, workflow, convention]
 | [`phase-gate`](./skill-src/phase-gate.md) | 단계 게이트를 점검하고 통과를 요청할 때 |
 | [`pm-status`](./skill-src/pm-status.md) | *지금 어디까지 왔나* 를 보고할 때 |
 | [`slice`](./skill-src/slice.md) | 수직 슬라이스 하나를 구현할 때 — 테스트 먼저 |
+| [`integrate-main`](./skill-src/integrate-main.md) | 같은 main의 pull·merge·충돌 해결과 후속 검증 위임 |
 | [`change-request`](./skill-src/change-request.md) | 베이스라인 뒤의 변경 요청 — 영향 분석과 3옵션 |
 | [`adr`](./skill-src/adr.md) | 되돌리기 비용이 큰 결정을 기록할 때 |
 | [`harness-sync`](./skill-src/harness-sync.md) | 스킬·훅을 양쪽에 추가하거나 누락을 복구할 때 |
@@ -64,7 +65,7 @@ tags: [harness, skill, workflow, convention]
 | | 무엇 | 누가 시작하나 | 예 |
 |---|---|---|---|
 | **훅** | 어겼는지 **검사**하거나 **기록**한다 | 도구 호출·턴이 자동으로 | [hooks.md](./hooks.md) 의 다섯 |
-| **스킬** | 여러 단계를 **순서대로** 해낸다 | 사람 또는 AI 가 부른다 | `/menu-doc` · `/manual-site` |
+| **스킬** | 여러 단계를 **순서대로** 해낸다 | 사람 또는 AI 가 부른다 | `/integrate-main` · `/menu-doc` |
 | **플레이북** | 화면 하나를 **어떻게 만드나** | AI 가 읽는다 | [playbook](../playbook/INDEX.md) |
 
 > **한 가지를 셋 중 둘에 두지 않는다.** 스킬이 코드 표준을 다시 적으면 플레이북과 갈리고,

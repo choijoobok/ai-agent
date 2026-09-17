@@ -12,6 +12,7 @@ on:
       - '.agents/**'
       - '.codex/**'
       - 'developer-guide/07-harness.md'
+      - 'documents/project.state.yaml'
       - '.github/workflows/harness.yml'
   pull_request:
     paths:
@@ -22,6 +23,7 @@ on:
       - '.agents/**'
       - '.codex/**'
       - 'developer-guide/07-harness.md'
+      - 'documents/project.state.yaml'
       - '.github/workflows/harness.yml'
   workflow_dispatch:
 
@@ -49,6 +51,8 @@ jobs:
         run: |
           node aidd-guide/harness/runtime/sync-skills.mjs --check
           node aidd-guide/harness/runtime/harness-check.mjs
+          node aidd-guide/harness/runtime/integration-state.mjs --check
+          node aidd-guide/harness/runtime/integration-state.self-test.mjs
           node .codex/hooks/self-test.mjs
 
       - name: 생성 문서와 AIDD 문서 검사

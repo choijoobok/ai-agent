@@ -26,6 +26,7 @@ import {
   skillRef,
 } from './lib.mjs';
 import { checkHarness } from '../../aidd-guide/harness/runtime/harness-check.mjs';
+import { integrationBrief } from '../../aidd-guide/harness/runtime/integration-state.mjs';
 
 await readHookInput(); // 입력은 쓰지 않지만 표준 입력을 비워야 훅이 매달리지 않는다
 const harnessIssues = checkHarness();
@@ -90,6 +91,7 @@ if (openQuestions.length > 0) lines.push(`진행을 막고 있는 것: ${openQue
 */
 const nextUp = typeof state?.next_up?.choice === 'string' ? state.next_up.choice.trim() : '';
 if (nextUp) lines.push(`다음 할 일(사용자가 택했다): ${nextUp}`);
+lines.push(...integrationBrief(state));
 
 lines.push(
   '',

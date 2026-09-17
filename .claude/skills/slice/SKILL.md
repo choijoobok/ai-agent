@@ -14,6 +14,7 @@ description: 수직 슬라이스 하나를 구현한다. 소유 작업흐름과 
   일치해야 한다. 공통 기능은 `integration`이 소유한다.
 - `workstreams.<키>.gates.P3_design.status == approved` 여야 한다. 작업흐름 구조가 없는
   기존 프로젝트만 전역 `gates.P3_design`을 쓴다. 아니면 **거부하고 이유를 보고**한다.
+- 이 슬라이스의 `pending_rechecks`가 있으면 새 구현과 함께 실행할지 먼저 확인한다.
 - 의존 슬라이스가 `done` 인지 확인.
 
 ## 절차 — `aidd-guide/process/07-slice.md` §3
@@ -66,7 +67,9 @@ node .claude/hooks/quality-check.mjs
 사용자에게 실행 결과(스크린샷/실행 방법)를 제시한다.
 
 ### ⑨ 상태 갱신
-`documents/project.state.yaml`: slice status = done, 다음 슬라이스 제시.
+`documents/project.state.yaml`: slice status = done, 다음 슬라이스 제시. 완료 슬라이스가 통합
+영향을 받아도 status를 되돌리지 않고 `pending_rechecks`만 등록·해제한다. 다른 팀원이 넘긴
+재시험도 실행 명령과 결과를 남기면 누구나 닫을 수 있다.
 완료 보고는 `aidd-guide/process/07-slice.md` §6 포맷.
 
 ## 첫 슬라이스(SLICE-001)는 골격이다

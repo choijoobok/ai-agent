@@ -87,7 +87,7 @@ if (!pulled.ok) {
     line(
       [
         `**당기지 못했다** — \`--ff-only\` 가 거절됐다(이력이 갈라져 있다). \`${short(pulled.err)}\``,
-        'merge 와 rebase 중 무엇으로 합칠지는 사용자가 정한다 — AI 가 고르지 않는다.',
+        `${upstream.out}와 함께 갈라진 이력이다 — ${provider() === 'codex' ? '$integrate-main' : '/integrate-main'} 절차로 \`git merge --no-commit\` 통합한다.`,
       ].join('\n'),
     ),
   );

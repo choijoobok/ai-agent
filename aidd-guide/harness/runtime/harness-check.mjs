@@ -25,6 +25,8 @@ export function checkHarness() {
     manifest?.hooks?.codex_revision,
     manifest?.hooks?.spec_loader,
     manifest?.hooks?.spec_loader_test,
+    manifest?.hooks?.integration_state,
+    manifest?.hooks?.integration_state_test,
     manifest?.hooks?.claude_wiring,
     manifest?.hooks?.codex_wiring,
     'aidd-guide/harness/providers/claude-code.md',

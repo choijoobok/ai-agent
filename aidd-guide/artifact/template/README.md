@@ -28,6 +28,7 @@ tags: [artifact, template, format]
 | [`04-manual.md`](./04-manual.md) | P4 | `documents/screen/{페이지경로}/manual.md` | **운영자·사용자** |
 | [`05-runbook.md`](./05-runbook.md) | P2~P6 | `documents/spec/80-operations/_index.yaml` | 운영자 |
 | [`06-delivery.yaml`](./06-delivery.yaml) | P3~P6 | `documents/delivery.yaml` | 고객·인수 담당자 |
+| [`07-project-state.yaml`](./07-project-state.yaml) | P0~P6 | `documents/project.state.yaml` | AI·PM·팀원 |
 
 - **00 이 01 앞인 것이 순서다** — 조사가 결정보다 앞선다. `00` 은 **비규범**이고 `01` 이
   규범의 입구다: 조사 자료를 인용하는 것은 ADR 뿐이며, spec 은 ADR 을 인용한다.
@@ -39,6 +40,8 @@ tags: [artifact, template, format]
   P6 고객값·인수를 한 정본에 누적하고 `/doc-gen`이 읽는 런북으로 만든다.
 - **06은 내용 문서가 아니라 배치 카탈로그다.** 세 사이트에 무엇을 싣는지만 정하고,
   원문은 각자의 정본에 둔다.
+- **07은 현재 상태의 최소 골격이다.** 과거 충돌은 커밋이, 지금 다시 확인할 것만
+  `pending_rechecks`가 갖는다. 이미 끝난 슬라이스의 과거 값을 새 필드로 만들지 않는다.
 - **[`03-mockup.html`](./03-mockup.html) 은 목록에 없다** — 목업이 파생물이 됐기 때문이다.
   그 파일은 이제 서식이 아니라 **`<style>` 블록의 원본이자 그림의 형식 참조**이며,
   `/mockup` 의 `scaffold.mjs` 가 그 블록을 읽어 넣는다. 아래 *파생 서식* 을 본다.

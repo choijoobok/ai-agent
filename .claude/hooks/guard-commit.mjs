@@ -18,8 +18,11 @@
  * 갈리면 나중에 <b>같은 사실을 두 말로 찾아야</b> 한다.
  */
 
-import { readHookInput, deny, pass, provider, PROVIDER_NAME } from './lib.mjs';
+import { execFileSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
+import { readHookInput, deny, pass, provider, PROVIDER_NAME, REPO } from './lib.mjs';
 import { maskQuoted } from '../../aidd-guide/harness/runtime/shell-parse.mjs';
+import { conflictIntegrationBlockProblem } from '../../aidd-guide/harness/runtime/integration-state.mjs';
 
 /**
  * 허용 타입 — **원본은 AGENTS.md §5-3 이다.** 여기는 집행만 한다.
@@ -50,8 +53,32 @@ const SEGMENT_BREAK = /(?:^|[\n;&|]|&&|\|\|)\s*/g;
    막힌다(2026-09-14 실측). 가린 자리에는 구분자 없는 한 낱말만 남으므로 아래 플래그 검사
    (`-m` · `-F -` · `-a` · `--`)는 그대로 돈다 — 그 셋은 따옴표 밖에 있다. */
 const segments = maskQuoted(command).split(SEGMENT_BREAK).map((part) => part.trim());
+const pulls = segments.filter((part) => /^git\s+(-\S+\s+)*pull\b/.test(part));
+for (const pull of pulls) {
+  if (!/(?:^|\s)--ff-only(?:\s|$)/.test(pull.split('\n')[0])) {
+    deny('`git pull`의 자동 merge를 허용하지 않는다 — `git pull --ff-only`를 쓰고, 거절되면 `integrate-main`을 따른다.');
+  }
+}
+
+const merges = segments.filter((part) => /^git\s+(-\S+\s+)*merge\b/.test(part));
+for (const merge of merges) {
+  const args = merge.split('\n')[0];
+  if (/(?:^|\s)--abort(?:\s|$)/.test(args) || /(?:^|\s)--ff-only(?:\s|$)/.test(args)) continue;
+  if (/(?:^|\s)--squash(?:\s|$)/.test(args)) {
+    deny('`git merge --squash`는 통합 부모와 충돌 이력을 없앤다 — `git merge --no-commit`을 쓴다.');
+  }
+  if (/(?:^|\s)--continue(?:\s|$)/.test(args)) {
+    deny('`git merge --continue`은 메시지 검사를 우회한다 — 충돌 해결 뒤 `git commit -F -`로 끝낸다.');
+  }
+  if (!/(?:^|\s)--no-commit(?:\s|$)/.test(args)) {
+    deny('통합 merge는 자동 커밋을 만들지 않는다 — `git merge --no-commit <upstream>`을 쓴다.');
+  }
+}
+
 const commits = segments.filter((part) => /^git\s+(-\S+\s+)*commit\b/.test(part));
 if (commits.length === 0) pass();
+const mergeState = inMergeState();
+const conflictedMerge = mergeState && mergeHadConflicts();
 
 for (const commit of commits) {
   /*
@@ -88,7 +115,7 @@ for (const commit of commits) {
     );
   }
 
-  if (!/\s--(\s|$)/.test(args)) {
+  if (!/\s--(\s|$)/.test(args) && !mergeState) {
     deny(
       [
         '경로를 지정하지 않은 커밋이다 — AGENTS.md §9.',
@@ -97,6 +124,10 @@ for (const commit of commits) {
         '한 커밋은 한 가지 일이다(§5-3) — 담을 경로를 세는 것이 그 규칙을 지키는 자리이기도 하다.',
       ].join('\n'),
     );
+  }
+
+  if (/\s--(\s|$)/.test(args) && mergeState) {
+    deny('merge commit은 Git이 경로 지정을 허용하지 않는다 — `git commit -F -`로 전체 통합 결과를 확정한다.');
   }
 
 }
@@ -133,6 +164,18 @@ for (const body of bodies.slice(-commits.length)) {
         '값과 순서: `aidd-guide/harness/providers/`.',
       ].join('\n'),
     );
+  }
+
+  if (conflictedMerge) {
+    const integration = conflictIntegrationBlockProblem(body);
+    if (integration) {
+      deny(
+        [
+          `충돌을 해결한 merge commit의 이력 정보가 부족하다 — ${integration}`,
+          '`[충돌 통합]` 아래에 `영향:` · `확인:` · `검증:`을 모두 적는다.',
+        ].join('\n'),
+      );
+    }
   }
 }
 
@@ -201,4 +244,34 @@ function trailerProblem(body, who) {
 
 function escapeRegex(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function inMergeState() {
+  return Boolean(gitPath('MERGE_HEAD'));
+}
+
+function mergeHadConflicts() {
+  const path = gitPath('MERGE_MSG');
+  if (!path || !existsSync(path)) return false;
+  try {
+    return /^# Conflicts:/m.test(readFileSync(path, 'utf8'));
+  } catch {
+    return false;
+  }
+}
+
+function gitPath(name) {
+  try {
+    if (name === 'MERGE_HEAD') {
+      execFileSync('git', ['rev-parse', '-q', '--verify', 'MERGE_HEAD'], {
+        cwd: REPO, stdio: 'ignore', windowsHide: true,
+      });
+      return name;
+    }
+    return String(execFileSync('git', ['rev-parse', '--path-format=absolute', '--git-path', name], {
+      cwd: REPO, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], windowsHide: true,
+    })).trim();
+  } catch {
+    return '';
+  }
 }

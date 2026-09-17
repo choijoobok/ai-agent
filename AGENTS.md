@@ -91,6 +91,7 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <revision> --sur
 | 구현된 것 수정 | 화면은 §6, 그 밖은 `guide-drift`; G3 이후 설계 변경은 먼저 `change-request` |
 | 승인된 화면 구현 | `playbook/INDEX.md` 결정 트리 |
 | 기능 하나 구현 | 소유 작업흐름 G3 승인 확인 → `slice` → `process/07-slice.md` |
+| pull·merge·충돌 통합 | `integrate-main` → `process/14-collaboration.md` |
 | 테스트 설계 | `quality/test-design.md` |
 | 백엔드/API | `standard/backend/INDEX.md` |
 | 프론트엔드/공통 컴포넌트 | `standard/frontend/INDEX.md` · `standard/registry.md` |
@@ -119,6 +120,8 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <revision> --sur
    DROP/TRUNCATE, `terraform apply`, `kubectl delete`, `git push --force`, 프로덕션 변경은 사용자가 직접 하거나 명시 승인한다.
 3. 한 커밋은 한 가지 일이다. `<타입>: <현상> — <조치>` 형식의 한국어 제목과 본문 `왜`,
    마지막 trailer의 `Agent: <이름>`을 남기고 경로를 지정한다. 푸시는 요청받을 때만 한다.
+   단, `MERGE_HEAD`가 있는 merge commit은 Git이 부분 커밋을 금지하므로 경로 지정을 생략한다.
+   충돌이 있었다면 본문에 `[충돌 통합]`과 영향·오프라인 확인·검증/후속을 남긴다.
    타입은 **이 열하나뿐이다** — `feat` · `fix` · `docs` · `refactor` · `chore` · `style` ·
    `test` · `perf` · `build` · `ci` · `state`. `state`는 `documents/project.state.yaml`의
    게이트 전이·검증 기록처럼 **지금 어디인가만 바꾸는 커밋**이며, 다른 타입과 섞지 않는다.
@@ -204,6 +207,8 @@ node aidd-guide/harness/runtime/harness-check.mjs && node aidd-guide/meta/_meta/
 ## 9. 커밋 · 형상 관리
 
 - 커밋은 stdin으로 메시지를 넘겨 `git commit -F - -- <경로…>`처럼 경로를 지정한다.
+- 갈라진 main은 `git merge --no-commit`으로 통합한다. merge 상태에서는 `git commit -F -`를
+  쓰며, 상세와 후속 검증은 [`process/14-collaboration.md`](aidd-guide/process/14-collaboration.md)를 따른다.
 - 푸시는 사용자가 요청할 때만 한다. 커밋하는 생성물은 시드 CSV뿐이다.
 - AI 커밋은 마지막 trailer 묶음에 저장소가 정한 `Agent: <이름>`을 남긴다.
 
@@ -218,7 +223,8 @@ node aidd-guide/harness/runtime/harness-check.mjs && node aidd-guide/meta/_meta/
   `aidd-guide/harness/hooks-contract.md`가 갖는다. 생성된 `SKILL.md`를 직접 고치지 않는다.
 - 새 스킬·훅과 하네스 불일치는 `harness-sync`로 양쪽을 함께 맞추고 `harness-check`를 실행한다.
 - 한 runtime에서 구현할 수 없는 차이는 provider 문서와 capability manifest에 근거를 남긴다.
-- 병행 작업은 AI마다 별도 Git worktree/branch를 쓰며, 테스트를 통과한 작은 커밋으로 합친다.
+- 같은 PC에서 병렬 쓰기하는 하위 AI는 별도 worktree/branch를 쓰거나 쓰기 병렬화를 하지 않는다.
+  서로 다른 PC의 팀원은 같은 main을 쓸 수 있으며 최신 통합자가 충돌과 후속 검증을 기록한다.
 - 컨텍스트 관리는 결과 동등성만 요구한다. Claude는 실측 경고, Codex는 자동 압축 뒤 재주입을 쓰며
   근거 없는 사용량 백분율을 만들지 않는다.
 - 주 에이전트는 요청의 범위·독립성·조정 비용을 먼저 판단한다. 현재 세션에서 충분히 처리할 수 있는
