@@ -51,6 +51,7 @@ tags: [harness, skill, workflow, convention]
 | [`runbook`](./skill-src/runbook.md) | 운영 절차를 세우거나 P6 인수 전 완결성을 검사할 때 | `80-operations/` → `80-운영런북.md` |
 | [`deliverable-site`](./skill-src/deliverable-site.md) | 설계·사용자·운영 고객 제출 사이트와 선택 PDF를 만들 때 | 정본/파생 Markdown + 목업/캡처 → `build/deliverables/` |
 | [`trace`](./skill-src/trace.md) | 추적성 체인이 끊긴 곳을 찾을 때 | — (검사) |
+| [`doc-consistency`](./skill-src/doc-consistency.md) | 여러 문서의 사실·책임·규칙이 서로 어긋나는지 정기 또는 통합 뒤 점검할 때 | — (검사) |
 | [`redteam`](./skill-src/redteam.md) | 자기가 만든 산출물을 적대적으로 검토할 때 | — (검사) |
 
 **화면 셋이 한 사슬이다**: `requirements.md` → `/mockup` → `/manual-site`. 앞의 것을 고치면 뒤를 다시

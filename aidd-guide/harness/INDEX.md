@@ -60,7 +60,7 @@ tags: [harness, hooks, skills, automation, index]
 | `/manual-site` | 화면별 메뉴얼 + 목업/캡처 → 사용자 매뉴얼 사이트 |
 | `/runbook` | 운영 런북 정본 작성·완결성 검사 |
 | `/deliverable-site` | 설계·사용자·운영 오프라인 고객 제출 사이트 생성 |
-| `/trace` · `/redteam` | 추적성 검사 · 적대적 검토 |
+| `/trace` · `/doc-consistency` · `/redteam` | 추적성 검사 · 문서 정합성 점검 · 적대적 검토 |
 | `/harness-sync` · `$harness-sync` | 공통 명세부터 양쪽 스킬·훅을 추가·복구 |
 
 ## 정본과 생성물
