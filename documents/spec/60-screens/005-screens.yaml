@@ -164,12 +164,12 @@ screens:
     agent_contact: 설정
   - id: SCR-020
     module: admin
-    group: "업무 지식 관리"
+    group: "AI 운영"
     title: "저장된 조회 현황·제한"
     feature: FEAT-025
     roadmap: RM-P1
     agent_contact: 설정
-    note: "인증 예제 쿼리 승격과 공개 인터페이스 변화에 따른 무효화·검토가 주 흐름이므로 업무 지식 관리에 둔다. 실행 상한·캐시 TTL 같은 운영 설정은 SCR-018이 관리한다"
+    note: "저장 개수·위젯 수·동시 실행·캐시 TTL·쿨다운을 운영·비용 관리자가 통제하므로 AI 운영에 둔다. 사용 빈도와 무효화 현황은 업무 자산 관리자가 인증 예제 쿼리 승격·지식 검토의 입력으로 참조하지만 화면 소유권을 바꾸지는 않는다"
 
 # ══ admin — 비용 관리 (3.5) ══════════════════════════════════════
   - id: SCR-021
@@ -320,7 +320,7 @@ screens:
     feature: FEAT-123
     roadmap: RM-P1
     note: "위젯 = 저장된 조회 + 표현 형식"
-    undecided: "**portal 의 진입 기본 화면이 미확정이다** — 정형 반복 업무를 대시보드가 담당한다고 규정했는데 대시보드는 P2 다. P1 의 진입점은 채팅뿐이며, P2 이후 사용자가 기본 화면을 고를 수 있게 할지 정한다"
+    undecided: "**portal 의 진입 기본 화면이 미확정이다** — 대시보드는 RM-P1에 제공하지만 기본 진입은 채팅으로 둔다. portal 작업흐름 P2에서 사용자가 채팅·대시보드 중 기본 화면을 고를 수 있게 할지 정한다"
   - id: SCR-106
     module: portal
     title: "워크플로우"
@@ -346,7 +346,7 @@ screens:
     feature: FEAT-114
     features: [FEAT-114, FEAT-115, FEAT-127]
     roadmap: RM-P1
-    note: "잔여 한도 화면에서 신청으로 이어진다. **신청은 P4**"
+    note: "잔여 한도 화면에서 이번 달 추가 토큰 신청과 다음 달 쿼터 등급 승급 요청으로 이어진다. 두 신청과 결과 조회는 RM-P1 범위다"
   - id: SCR-110
     module: portal
     title: "개인화 프롬프트"

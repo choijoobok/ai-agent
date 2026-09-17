@@ -15,7 +15,7 @@ features:
     detail: "yml 설정의 데이터소스 ID 목록을 화면 진입 시 실시간 조회해 제시하고, 각 ID 에 **별칭·DBMS 종류·사용 파서·유형(운영 DB / DW)·시각 체계·적용 가능 사용자 그룹 목록**을 매핑해 데이터소스 레코드로 등록한다"
     hard_rule: "**접속 정보는 관리·표시 대상이 아니다**"
     states: "세 상태를 구분해 보여준다 — ① 미등록 yml ID(등록 후보) ② 정상 ③ **끊긴 연결**(참조하는 yml ID 가 현재 설정에 없음)"
-    reqs: [REQ-103, REQ-116]
+    reqs: [REQ-103]
     traces_to: [ARCH-030]
   - id: FEAT-003
     module: admin
