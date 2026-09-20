@@ -54,6 +54,13 @@ function expectTask(result, task, present) {
   }
 }
 
+function expectText(result, text, present) {
+  const found = result.output.includes(text);
+  if (found !== present) {
+    throw new Error(`${result.name}: ${text} ${present ? '포함' : '제외'}가 필요하다.\n${result.output}`);
+  }
+}
+
 const local = run('local 기본값', [':backend:bootstrap:bootRun', '-Pprofile=local']);
 expectSuccess(local);
 expectTask(local, ':backend:modules:sample:compileJava', true);
@@ -89,8 +96,56 @@ expectSuccess(productJar);
 expectTask(productJar, ':backend:modules:sample:compileJava', false);
 expectTask(productJar, ':backend:bootstrap:npmBuild', true);
 
+const hubPortability = run('Hub 이식성 태스크 부재', [
+  ':backend:bootstrap:portabilityTest',
+  '-Pdeployment=hub',
+]);
+expectFailure(hubPortability);
+
+const templatePortability = run('독립 템플릿 이식성 태스크', [
+  ':backend:bootstrap:portabilityTest',
+  '-Pdeployment=template',
+]);
+expectSuccess(templatePortability);
+expectTask(templatePortability, ':backend:bootstrap:portabilityTest', true);
+
+const hubRuntime = run('기본 Hub 런타임 드라이버', [
+  ':backend:bootstrap:dependencies',
+  '--configuration',
+  'runtimeClasspath',
+  '-PskipFrontend=true',
+], false);
+expectSuccess(hubRuntime);
+expectText(hubRuntime, 'org.postgresql:postgresql', true);
+expectText(hubRuntime, 'com.oracle.database.jdbc:ojdbc11', false);
+expectText(hubRuntime, 'com.mysql:mysql-connector-j', false);
+expectText(hubRuntime, 'org.mariadb.jdbc:mariadb-java-client', false);
+expectText(hubRuntime, 'com.microsoft.sqlserver:mssql-jdbc', false);
+
+const templateRuntime = run('독립 템플릿 런타임 드라이버', [
+  ':backend:bootstrap:dependencies',
+  '--configuration',
+  'runtimeClasspath',
+  '-Pdeployment=template',
+  '-PskipFrontend=true',
+], false);
+expectSuccess(templateRuntime);
+for (const driver of [
+  'org.postgresql:postgresql',
+  'com.oracle.database.jdbc:ojdbc11',
+  'com.mysql:mysql-connector-j',
+  'org.mariadb.jdbc:mariadb-java-client',
+  'com.microsoft.sqlserver:mssql-jdbc',
+]) {
+  expectText(templateRuntime, driver, true);
+}
+
 expectFailure(run('bootRun 프로파일 누락', [':backend:bootstrap:bootRun']));
 expectFailure(run('축약 bootRun 프로파일 누락', [':backend:bootstrap:bootR']));
+expectFailure(run('알 수 없는 배포 변형', [
+  ':backend:bootstrap:bootJar',
+  '-Pdeployment=unknown',
+]));
 
 expectLocalChangelog(
   run('local sample 제외 changelog', [
@@ -111,4 +166,4 @@ expectLocalChangelog(
   'db.changelog-local.yaml',
 );
 
-console.log('TC-5036 Gradle 빌드 변형 계약 통과 — 태스크 그래프 7개·changelog 2개 조합');
+console.log('TC-5036 Gradle 빌드 변형 계약 통과 — 프로파일·배포 경계·드라이버·changelog 조합');

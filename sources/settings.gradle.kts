@@ -20,6 +20,22 @@ val isLocalProfile = providers.gradleProperty("profile")
     .getOrElse(false)
 gradle.extra["isLocalProfile"] = isLocalProfile
 
+/**
+ * 배포 경계 — 통합 Hub 는 PostgreSQL 전용이고, 독립 템플릿만 다중 DBMS 를 지원한다(ADR-008).
+ *
+ * 프로파일은 어느 환경에서 애플리케이션을 실행하는지, 이 값은 어느 제품을 패키징·검증하는지
+ * 가른다. 둘을 같은 옵션으로 합치면 local 개발 중에 템플릿 드라이버를 실은 Hub JAR 이 나오거나,
+ * 반대로 템플릿 이식성 시험이 Hub 정책에 묶인다. 기본값은 실제 통합 제품인 hub 이며,
+ * 독립 템플릿의 빌드·시험은 항상 `-Pdeployment=template` 으로 명시한다.
+ */
+val deploymentVariant = providers.gradleProperty("deployment")
+    .map(String::trim)
+    .getOrElse("hub")
+require(deploymentVariant in setOf("hub", "template")) {
+    "-Pdeployment 는 hub 또는 template 이어야 합니다: $deploymentVariant"
+}
+gradle.extra["deploymentVariant"] = deploymentVariant
+
 /** local 프로파일만 sample 포함이 기본이다. 명시한 옵션은 이 기본값보다 우선한다. */
 val includeSample = providers.gradleProperty("includeSample")
     .map(String::toBoolean)

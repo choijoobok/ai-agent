@@ -1,18 +1,18 @@
 ---
 id: LLM-FWK-005
-title: "빌드 · 배포 — 단일 JAR · 프로파일 · CI"
+title: "빌드 · 배포 — 단일 JAR · 배포 경계 · 프로파일 · CI"
 category: standard
 type: operation
 class: none
 created: 2026-09-04
-updated: 2026-09-13
+updated: 2026-09-20
 status: active
 sources: ["sources/build.gradle.kts", "sources/backend/bootstrap/build.gradle.kts", ".github/workflows/", "sources/backend/bootstrap/src/main/resources/application.yml", "sources/frontend/vite.config.ts"]
 tier: 2
 tags: [build, deploy, ci, profile, spa]
 ---
 
-# 빌드 · 배포 — 단일 JAR · 프로파일 · CI
+# 빌드 · 배포 — 단일 JAR · 배포 경계 · 프로파일 · CI
 
 > **`.github/workflows/` 와 `vite.config.ts` 가 이 파일을 단일 원본으로 가리킨다.**
 > 파이프라인 단계를 바꾸면 여기도 바꾼다 — 둘이 갈리면 **워크플로가 무엇을 하는지
@@ -48,7 +48,21 @@ React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌�
 정적 리소스 캐시 — 해시 파일명(`assets/*.{hash}.js`)은 `max-age=1y` immutable,
 `index.html` 은 `no-cache`.
 
-## 3. 프로파일과 빌드 변형
+## 3. 배포 경계와 프로파일은 다른 축이다
+
+`-Pdeployment`은 **무엇을 배포·검증하는가**, `-Pprofile`은 **어느 환경에서 실행하는가**를
+가른다. 이 둘을 섞으면 Hub JAR에 템플릿 전용 드라이버가 실리거나, 독립 템플릿의 DBMS
+이식성 검사를 Hub 정책으로 잘못 해석한다(ADR-008).
+
+| 배포 변형 | 지정 | 공유 DB 런타임 | 검증 |
+|---|---|---|---|
+| `hub` | 기본값. 명시하려면 `-Pdeployment=hub` | PostgreSQL만. system·admin·portal·agent가 하나의 스키마와 pgvector를 공유 | 일반 `build`·`check` |
+| `template` | `-Pdeployment=template` 필수 | PostgreSQL·Oracle·MySQL·MariaDB·SQL Server | `portabilityTest`와 DBMS 이식성 CI |
+
+고객사 업무 DB·DW는 위 공유 DB의 런타임 의존성이 아니다. 실제 지원할 DBMS·버전과 파서는
+고객사 데이터소스별 CON-023에서 정하며, Hub 자체를 그 DBMS로 바꾸는 근거가 되지 않는다.
+
+### 프로파일
 
 | 프로파일 | 용도 | 특징 |
 |---|---|---|
@@ -69,7 +83,8 @@ React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌�
 >
 > 판정의 원본은 `settings.gradle.kts`이며 sample **모듈 포함 여부**를 같은 값으로 가른다.
 > `bootstrap/build.gradle.kts`는 그 값을 읽는다. 일반 `build`·`bootJar`·`check`는 프로파일을
-> 주지 않으므로 제품 변형이고, sample 제외·프론트 포함이 기본이다.
+> 주지 않으므로 제품 변형이고, sample 제외·프론트 포함이 기본이다. 배포 변형도 주지 않으면
+> `hub`이므로 PostgreSQL 드라이버만 실린다.
 >
 > `local`에서 `includeSample=false`를 명시하면 처리된 `application-local.yml`도 제품 master
 > changelog를 가리킨다. 그래야 명시 옵션이 클래스·화면뿐 아니라 DB 시드까지 함께 제외한다.
@@ -79,13 +94,16 @@ React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌�
 | local 실행 | `./gradlew :backend:bootstrap:bootRun -Pprofile=local` |
 | 개발·운영 서버 검증 | `./gradlew :backend:bootstrap:bootRun -Pprofile=<dev|prod>` |
 | local에서 sample 제외·프론트 포함 | `./gradlew :backend:bootstrap:bootRun -Pprofile=local -PincludeSample=false -PskipFrontend=false` |
-| product JAR | `./gradlew :backend:bootstrap:bootJar` |
-| product JAR 실행 | `java -jar bootstrap-<version>.jar --spring.profiles.active=<dev|prod>` |
-| product 백엔드 검증 | `./gradlew check -PskipFrontend` |
+| Hub JAR | `./gradlew :backend:bootstrap:bootJar -Pdeployment=hub` |
+| Hub JAR 실행 | `java -jar bootstrap-<version>.jar --spring.profiles.active=<dev|prod>` |
+| Hub 백엔드 검증 | `./gradlew check -PskipFrontend -Pdeployment=hub` |
+| 독립 템플릿 JAR | `./gradlew :backend:bootstrap:bootJar -Pdeployment=template` |
+| 독립 템플릿 DBMS 이식성 | `./gradlew :backend:bootstrap:portabilityTest -Pdeployment=template` |
 | local 생성 시드 검증 | `./gradlew :backend:bootstrap:checkSeeds -PincludeSample=true` |
 
 `-Pprofile`은 Gradle의 `bootRun` 변형을 고르는 옵션이다. `bootJar`에는 주지 않는다. 패키지는
-항상 product 변형으로 만들고, JAR·IDE 직접 실행은 Spring 활성 프로파일을 외부에서 명시한다.
+항상 sample 제외·프론트 포함 product 조합으로 만들되, 배포 대상은 `-Pdeployment`으로 정한다.
+JAR·IDE 직접 실행은 Spring 활성 프로파일을 외부에서 명시한다.
 
 > **`application-local.yml` 은 저장소에 넣는다.** `.gitignore` 대상으로 두면
 > **템플릿을 받은 사람이 "로컬을 어떻게 띄우나" 의 답을 갖지 못한다.**
@@ -95,7 +113,7 @@ React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌�
 > 세션 스토어가 **로컬에서 한 번도 돌지 않아** `SPRING_SESSION` DDL 과 직렬화 경로가
 > **배포 뒤에야 시험된다.** *조용히 통과하는 게이트를 만들지 않는다* 는 원칙 그대로다.
 
-## 4. DB 전환 — 소스를 고치지 않는다
+## 4. 독립 템플릿에서만 DB 전환 — 소스를 고치지 않는다
 
 `spring.datasource` 의 URL · 드라이버 · 계정만 바꾼다.
 
@@ -103,21 +121,23 @@ React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌�
   고칠 자리가 하나 더 생긴다.**
 - Liquibase 가 기동 시 그 벤더용 DDL 을 만들어 적용한다.
 - MyBatis `databaseIdProvider` 가 벤더를 감지해 분기 쿼리를 고른다.
-- 드라이버 넷은 이미 JAR 에 들어 있다.
+- template JAR에는 PostgreSQL·Oracle·MySQL·MariaDB·SQL Server 드라이버가 들어 있다.
+- **Hub JAR은 PostgreSQL 전용이다.** pgvector와 네 제품 모듈의 공유 스키마를 다른 DBMS로
+  전환하지 않는다.
 
 ## 5. CI 파이프라인
 
 ```
 1. 체크아웃
 2. JDK 25 / Node 셋업
-3. node gradle/build-variant-contract.test.mjs   프로파일별 sample·프론트 변형 + 누락 거부
-4. ./gradlew build -PskipFrontend   컴파일 + 단위테스트 + ArchUnit (프론트는 다음 단계에서 별도 검사)
+3. node gradle/build-variant-contract.test.mjs   프로파일·배포 경계·드라이버 조합 + 누락 거부
+4. ./gradlew build -PskipFrontend -Pdeployment=hub   Hub 컴파일 + 단위테스트 + ArchUnit (프론트는 다음 단계에서 별도 검사)
 5. npm ci && npm run lint && npm run test && npm run build
-6. 통합테스트 (Testcontainers)
+6. 독립 템플릿 통합테스트 (`-Pdeployment=template`, Testcontainers)
      PR   : PostgreSQL · MySQL
      야간 : + MariaDB · MSSQL · Oracle
 7. 의존성 취약점 스캔
-8. 수동 package: bootJar → JAR 안 `static/index.html` 확인 → 아티팩트 업로드
+8. 수동 package: Hub 또는 template를 명시한 bootJar → JAR 안 `static/index.html` 확인 → 아티팩트 업로드
 ```
 
 **시드 태스크의 절차는 [seed.md](./seed.md) 가 갖는다** — 여기는 파이프라인의 자리만 말한다.

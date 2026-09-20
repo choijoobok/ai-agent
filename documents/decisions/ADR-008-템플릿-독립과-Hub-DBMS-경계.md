@@ -84,3 +84,14 @@ DBMS 지원은 유지하고, 고객사 업무 DB·DW는 특정 DBMS에 종속하
 - 후속으로 정해야 할 것: CR-004에서 각 드라이버·Liquibase changeset·시험이 독립 템플릿용인지
   통합 Hub 공유 PostgreSQL 스키마용인지 식별하고, 배포 프로파일과 검증 매트릭스를 분리한다.
   실제 지원할 외부 DBMS와 버전 목록은 CON-023에 따라 고객사 데이터소스별로 확정한다.
+
+## 8. 구현 기록
+
+- `settings.gradle.kts`의 `-Pdeployment=hub|template`가 배포 경계를 판정한다. 기본값은 실제
+  통합 제품인 `hub`이며, 모르는 값은 Gradle 설정 단계에서 거부한다.
+- `hub` 변형은 PostgreSQL JDBC 드라이버만 패키징한다. 이식성 `portabilityTest` 태스크와
+  벤더별 Testcontainers 의존성은 제공하지 않는다.
+- `template` 변형은 PostgreSQL·Oracle·MySQL·MariaDB·SQL Server 드라이버와 기존
+  `portabilityTest`를 제공한다. DBMS 이식성 CI도 이 변형을 명시해 실행한다.
+- 이 경계는 Hub 공유 스키마의 배포·시험 경계다. 고객사 업무 DB·DW 데이터소스 지원은 여전히
+  CON-023의 고객사별 연결 계약에서 정한다.

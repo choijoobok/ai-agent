@@ -58,6 +58,7 @@ jobs:
         working-directory: sources
         run: >
           ./gradlew :backend:bootstrap:portabilityTest
+          -Pdeployment=template
           -Dportability.vendors=${{ inputs.oracle && 'postgresql,mysql,mariadb,sqlserver,oracle' || 'postgresql,mysql,mariadb,sqlserver' }}
 
       # assumeTrue 가 걸리면 테스트는 'skipped' 로 통과한다 — 그것을 실패로 바꾼다.

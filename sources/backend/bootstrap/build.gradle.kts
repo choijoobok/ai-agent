@@ -24,6 +24,10 @@ plugins {
 // 같은 값으로 가르기 때문이다. 여기서 다시 계산하지 않는다.
 val isLocalProfile = gradle.extra["isLocalProfile"] as Boolean
 
+/** 실제 통합 제품(hub)인가, 독립 백오피스 템플릿(template)인가(ADR-008). */
+val deploymentVariant = gradle.extra["deploymentVariant"] as String
+val isTemplateDeployment = deploymentVariant == "template"
+
 /**
  * sample은 local 배포 변형에서만 실제 클래스패스에 넣는다(ADR-009).
  *
@@ -70,12 +74,16 @@ dependencies {
     // 그 침묵을 ddl-auto=validate 가 깼다 — "missing table" 로 기동이 실패한다.
     implementation("org.springframework.boot:spring-boot-starter-liquibase")
 
-    // 4벤더 무수정 기동 요건 — 드라이버는 전부 클래스패스에 있어야 한다(stack.md).
+    // 통합 Hub 는 pgvector 때문에 PostgreSQL 하나만 쓴다. 독립 템플릿만 주요 DBMS 드라이버를
+    // 함께 싣는다(ADR-008). 고객사 업무 DB·DW 연결 드라이버의 지원 선언은 CON-023에서 별도로
+    // 확정하며, 이 애플리케이션 공유 스키마의 런타임 의존성과 섞지 않는다.
     runtimeOnly(libs.driver.postgresql)
-    runtimeOnly(libs.driver.oracle)
-    runtimeOnly(libs.driver.mysql)
-    runtimeOnly(libs.driver.mariadb)
-    runtimeOnly(libs.driver.mssql)
+    if (isTemplateDeployment) {
+        runtimeOnly(libs.driver.oracle)
+        runtimeOnly(libs.driver.mysql)
+        runtimeOnly(libs.driver.mariadb)
+        runtimeOnly(libs.driver.mssql)
+    }
 
     // 메일 발송 — 분실 비밀번호 재설정(AUTH-07)이 코드를 나르는 유일한 경로다.
     //
@@ -94,7 +102,7 @@ dependencies {
     // 시드에 박힌 해시가 문서화된 비밀번호와 맞는지 검사한다 — SeedAdminPasswordTest.
     testImplementation("org.springframework.security:spring-security-crypto")
 
-    // ── 4벤더 이식성 — VendorPortabilityTest(backend/persistence.md · playbook/INDEX.md) ───────────
+    // ── 독립 템플릿 이식성 — VendorPortabilityTest(backend/persistence.md · playbook/INDEX.md) ───
     //
     // 버전을 적지 않는다. Spring Boot BOM 이 testcontainers 를 관리하므로(stack.md) 여기에
     // 숫자를 두면 같은 것의 두 원본이 생긴다.
@@ -104,16 +112,18 @@ dependencies {
     // 옮기면 BOM 을 따로 얹어 1.21.3 을 끌어오게 되고, 그러면 코어 2.0.5 위에 모듈 1.21.3 이
     // 얹혀 도는 조합이 된다. 그 어긋남은 컨테이너를 띄우는 순간에야 드러난다.
     //
-    // 벤더 모듈 넷이 다 필요하다. jdbc:tc: URL 은 그 모듈이 있어야 해석되며, 없으면
-    // 컨테이너를 띄우기도 전에 "Database name ... not supported" 로 죽는다 — Docker 문제로
-    // 오해하기 쉬운 문장이다. 드라이버는 runtimeOnly 로 이미 넷 다 있다(stack.md).
+    // 태그가 붙은 시험 클래스를 컴파일하려면 Testcontainers 핵심은 어느 변형에도 필요하다.
+    // 실제 벤더 컨테이너 모듈은 template 변형에만 둔다. Hub 의 보통 test 는 portability 태그를
+    // 실행하지 않으며, Hub JAR에는 이 테스트 의존성이 들어가지 않는다.
     testImplementation("org.testcontainers:testcontainers-junit-jupiter")
-    testImplementation("org.testcontainers:testcontainers-jdbc")
-    testImplementation("org.testcontainers:testcontainers-postgresql")
-    testImplementation("org.testcontainers:testcontainers-mysql")
-    testImplementation("org.testcontainers:testcontainers-mariadb")
-    testImplementation("org.testcontainers:testcontainers-mssqlserver")
-    testImplementation("org.testcontainers:testcontainers-oracle-free")
+    if (isTemplateDeployment) {
+        testImplementation("org.testcontainers:testcontainers-jdbc")
+        testImplementation("org.testcontainers:testcontainers-postgresql")
+        testImplementation("org.testcontainers:testcontainers-mysql")
+        testImplementation("org.testcontainers:testcontainers-mariadb")
+        testImplementation("org.testcontainers:testcontainers-mssqlserver")
+        testImplementation("org.testcontainers:testcontainers-oracle-free")
+    }
 }
 
 // ── 4벤더 이식성 검사 ─────────────────────────────────────────────────
@@ -129,23 +139,25 @@ tasks.test {
     systemProperty("includeSample", includeSample)
 }
 
-tasks.register<Test>("portabilityTest") {
-    group = "verification"
-    description = "실제 changelog 를 4벤더에 태운다 — 선다 → 걷어낸다 → 다시 선다(backend/persistence.md)"
-    testClassesDirs = sourceSets.test.get().output.classesDirs
-    classpath = sourceSets.test.get().runtimeClasspath
-    useJUnitPlatform { includeTags("portability") }
-    /*
-      벤더 목록은 워크플로가 넘긴다. **없으면 넘기지 않는다** — 빈 문자열로 덮으면 검사의
-      기본값(넷)이 사라져 도는 벤더가 0개가 되고, 그 상태가 정확히 이 태스크가 막으려는
-      "확인한 적 없는 초록" 이다.
-    */
-    providers.systemProperty("portability.vendors").orNull?.let { requested ->
-        systemProperty("portability.vendors", requested)
+if (isTemplateDeployment) {
+    tasks.register<Test>("portabilityTest") {
+        group = "verification"
+        description = "독립 템플릿의 실제 changelog 를 4벤더에 태운다 — 선다 → 걷어낸다 → 다시 선다(backend/persistence.md)"
+        testClassesDirs = sourceSets.test.get().output.classesDirs
+        classpath = sourceSets.test.get().runtimeClasspath
+        useJUnitPlatform { includeTags("portability") }
+        /*
+          벤더 목록은 워크플로가 넘긴다. **없으면 넘기지 않는다** — 빈 문자열로 덮으면 검사의
+          기본값(넷)이 사라져 도는 벤더가 0개가 되고, 그 상태가 정확히 이 태스크가 막으려는
+          "확인한 적 없는 초록" 이다.
+        */
+        providers.systemProperty("portability.vendors").orNull?.let { requested ->
+            systemProperty("portability.vendors", requested)
+        }
+        testLogging { showStandardStreams = true }
+        // 컨테이너가 도는 동안 UP-TO-DATE 로 건너뛰면 확인한 적 없는 초록이 된다.
+        outputs.upToDateWhen { false }
     }
-    testLogging { showStandardStreams = true }
-    // 컨테이너가 도는 동안 UP-TO-DATE 로 건너뛰면 확인한 적 없는 초록이 된다.
-    outputs.upToDateWhen { false }
 }
 
 // ── 빌드 정보 ─────────────────────────────────────────────────────────

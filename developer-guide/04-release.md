@@ -25,14 +25,15 @@ SaaS 가 아니고 고객사 간 버전이 갈릴 수 있는 것을 전제한다
 ## 2. 빌드
 
 ```bash
-cd sources && ./gradlew clean :backend:bootstrap:bootJar
+cd sources && ./gradlew clean :backend:bootstrap:bootJar -Pdeployment=hub
 ```
 
 **`-PskipFrontend` 를 붙이지 않는다** — 붙이면 프론트가 임베드되지 않고 **배포본이 빈 화면이
 된다.** 개발 중 백엔드만 확인할 때만 붙인다.
 
 `bootJar`에는 `-Pprofile`을 주지 않는다. 패키징은 항상 product 변형(sample 제외·프론트
-포함)으로 만들고, **어느 환경에서 실행할지**는 JAR 실행 시 활성 Spring 프로파일로 정한다.
+포함)으로 만들고, **무엇을 배포할지**는 `-Pdeployment=hub|template`, **어느 환경에서 실행할지**는
+JAR 실행 시 활성 Spring 프로파일로 정한다. 기본값은 `hub`이며, 통합 Hub는 PostgreSQL 전용이다.
 
 임베드가 실제로 들어갔는지 확인한다.
 
@@ -59,7 +60,8 @@ unzip -l sources/backend/bootstrap/build/libs/bootstrap-*.jar | grep 'BOOT-INF/c
 | local 개발 서버 | `./gradlew :backend:bootstrap:bootRun -Pprofile=local` | sample 포함 · 프론트 생략 |
 | 개발 서버 검증 | `./gradlew :backend:bootstrap:bootRun -Pprofile=dev` | sample 제외 · 프론트 포함 |
 | 운영 서버 검증 | `./gradlew :backend:bootstrap:bootRun -Pprofile=prod` | sample 제외 · 프론트 포함 |
-| 배포 JAR 생성 | `./gradlew :backend:bootstrap:bootJar` | sample 제외 · 프론트 포함 |
+| Hub 배포 JAR 생성 | `./gradlew :backend:bootstrap:bootJar -Pdeployment=hub` | sample 제외 · 프론트 포함 · PostgreSQL |
+| 독립 템플릿 JAR 생성 | `./gradlew :backend:bootstrap:bootJar -Pdeployment=template` | sample 제외 · 프론트 포함 · 주요 DBMS |
 | 배포 JAR 실행 | `java -jar bootstrap-<version>.jar --spring.profiles.active=prod` | 빌드된 product 변형을 `prod` 설정으로 실행 |
 
 `bootRun`은 `-Pprofile`이 없으면 Gradle 단계에서 실패한다. 반면 `java -jar`와 IDE 직접 실행은
@@ -117,17 +119,17 @@ product는 `db.changelog-master.yaml`, local은 `db.changelog-local.yaml`을 쓴
 ### 이식성 (DB 를 바꿀 계획이 있을 때만)
 
 ```bash
-cd sources && ./gradlew :backend:bootstrap:portabilityTest
+cd sources && ./gradlew :backend:bootstrap:portabilityTest -Pdeployment=template
 ```
 
-Docker 로 4벤더를 띄워 스키마·정렬을 대조한다. **20분이 걸려 매 푸시에 태우지 않는다** —
+독립 템플릿에서만 Docker 로 4벤더를 띄워 스키마·정렬을 대조한다. **20분이 걸려 매 푸시에 태우지 않는다** —
 자체 워크플로(`db-portability.yml`)가 changelog·엔티티 변경과 야간 스케줄로 돌린다.
 
 ## 5. CI — 무엇이 언제 도나
 
 | 잡 | 언제 | 무엇을 |
 |---|---|---|
-| **backend** | push(main) · PR · 수동 | 프로파일별 빌드 변형 계약 → `./gradlew build -PskipFrontend` — 컴파일 · 단위테스트 · ArchUnit |
+| **backend** | push(main) · PR · 수동 | 프로파일·배포 경계 계약 → `./gradlew build -PskipFrontend -Pdeployment=hub` — 컴파일 · 단위테스트 · ArchUnit |
 | **frontend** | 〃 | `npm ci` → lint → test → build |
 | **package** | **수동만** | 단일 JAR + **프론트 임베드 검증** |
 | **db-portability** | changelog·엔티티 변경 · 야간 | 4벤더 스키마·정렬 대조 |

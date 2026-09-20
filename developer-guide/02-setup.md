@@ -32,12 +32,13 @@ cd sources/frontend && npm ci
 ```
 
 ```bash
-cd sources && ./gradlew build -PskipFrontend
+cd sources && ./gradlew build -PskipFrontend -Pdeployment=hub
 ```
 
 - **`npm ci` 를 쓴다.** `npm install` 은 lock 을 갱신해 남의 로컬과 버전이 갈린다.
 - **`-PskipFrontend`** 는 백엔드만 만질 때 프론트 빌드를 건너뛴다. 프론트를 JAR 에 임베드하는
-  경로가 있어, 빼지 않으면 백엔드 테스트 한 번에 `npm run build` 가 함께 돈다.
+  경로가 있어, 빼지 않으면 백엔드 테스트 한 번에 `npm run build` 가 함께 돈다. `-Pdeployment=hub`은
+  통합 Hub의 PostgreSQL 전용 런타임 경계를 명시한다.
 
 ## 3. DB 준비
 
@@ -79,8 +80,9 @@ cd sources/frontend && npm run dev
 - **`-Pprofile=local`을 반드시 붙인다.** local 프로파일은 `skipFrontend`와 `includeSample`을
   기본으로 켠다 — 개발 중에는 Vite dev 서버가 화면을 주므로 프론트 임베드 산출물을 쓰지 않는다.
   개발·운영 프로파일은 둘 다 반대가 기본이며, 명시한 옵션이 프로파일 기본값보다 우선한다.
-- **일반 `build`·`bootJar`·`check`는 제품 변형이 기본이다.** sample을 제외하고 프론트를
-  포함한다([04-release.md](04-release.md) §2).
+- **일반 `build`·`bootJar`·`check`는 Hub 제품 변형이 기본이다.** sample을 제외하고 프론트를
+  포함하며 PostgreSQL만 지원한다. 독립 템플릿은 `-Pdeployment=template`을 명시한다
+  ([04-release.md](04-release.md) §2).
 - **`-PincludeSample` 은 DB 까지 가른다.** local에서 false를 명시하면 처리된 설정도 제품 master
   changelog를 가리켜 sample 클래스·화면·API·시드를 함께 제외한다.
 - **그래서 8080 루트는 404 다.** 프론트를 안 실었으니 맞다 — 없는 것을 있는 척하지 않는다.
