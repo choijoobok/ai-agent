@@ -159,7 +159,7 @@ screenRegistry가 가리킨 기능 폴더의 파일 ─→ screenRegistry.ts 역
 
 ## `git-sync` — 세션 시작에 원격을 당긴다
 
-**깨끗한 트리에서 `startup` 일 때만** `git pull --ff-only` 를 돌린다. 더러우면 당기지 않고 이유와 다음 할 일을 말하며, 이력이 갈렸으면 `integrate-main`으로 보낸다 — 미커밋 변경 위로 남의 커밋을 얹을지는 **사람의 판단**이고(AGENTS.md §5-2), 푸시는 사용자가 말할 때만이다(§9). `session-brief`는 현재 `pending_rechecks` 전부와 최근 `[충돌 통합]` 커밋 세 건을 함께 넣는다. Codex adapter는 시작 전후 **실제 훅 실행면** revision이 같을 때만 실행 확인을 문맥에 넣는다. 문서·스킬 변경만으로 세션을 끊지 않는다. revision이 달라지면 최신 훅 집행이 필요한 작업을 지금 이어갈지 사용자에게 먼저 확인하고, 사용자가 선택했을 때만 데스크톱 앱은 앱 검토 화면 또는 CLI `/hooks`의 완료 뒤 작업 맥락을 인계한 새 local task로 가며 CLI는 같은 task를 `codex resume`로 재개한다. 새 실행은 revision을 확인하고 `PreToolUse` 카나리 결과를 알리되, revision이 맞고 카나리만 실패하면 문서 규칙을 직접 적용하며 계속한다. 상세 절차와 fixture는 [hooks-contract.md](./hooks-contract.md)가 갖는다.
+**깨끗한 트리에서 `startup` 일 때만** `git pull --ff-only` 를 돌린다. 더러우면 당기지 않고 이유와 다음 할 일을 말하며, 이력이 갈렸으면 `integrate-main`으로 보낸다 — 미커밋 변경 위로 남의 커밋을 얹을지는 **사람의 판단**이고(AGENTS.md §5-2), 푸시는 사용자가 말할 때만이다(§9). `session-brief`는 현재 `pending_rechecks` 전부와 최근 `[충돌 통합]` 커밋 세 건을 함께 넣는다. Codex는 AIDD와 같이 매 세션 시작에 승인 상태를 주입하고, 승인 전 모든 `PreToolUse`에서 일반 작업을 잠근다. 사용자는 `/hooks`를 직접 검토·승인한 뒤 `1`(세션 시작 전 승인) 또는 `2`(세션 시작 후 신규 승인)로 시점을 확인한다. Codex adapter는 시작 전후 **실제 훅 실행면** revision이 같을 때만 실행 확인을 문맥에 넣는다. 문서·스킬 변경만으로 세션을 끊지 않는다. revision이 달라지면 최신 훅 집행이 필요한 작업을 지금 이어갈지 사용자에게 먼저 확인하고, 사용자가 선택했을 때만 데스크톱 앱은 앱 검토 화면 또는 CLI `/hooks`의 완료 뒤 작업 맥락을 인계한 새 local task로 가며 CLI는 같은 task를 `codex resume`로 재개한다. 새 실행은 revision을 확인하고 `PreToolUse` 카나리 결과를 알리되, revision이 맞고 카나리만 실패하면 문서 규칙을 직접 적용하며 계속한다. 상세 절차와 fixture는 [hooks-contract.md](./hooks-contract.md)가 갖는다.
 
 ## 컨텍스트 관리 — 같은 목적, 다른 구현
 

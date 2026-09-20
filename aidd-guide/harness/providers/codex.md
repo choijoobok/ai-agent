@@ -32,6 +32,11 @@ tags: [harness, codex, adapter]
 
 프로젝트 훅은 저장소를 신뢰한 뒤 `/hooks`에서 현재 hash를 검토·승인해야 실행된다. 훅 파일이나
 배선을 바꾸면 hash가 달라져 다시 검토해야 한다.
+
+Codex는 AIDD와 같이 매 `startup`·`resume`·`clear`·`compact`에서 세션별 승인 상태를 표시한다. 사용자는
+`/hooks` 직접 검토·승인 뒤 `1`(세션 시작 전) 또는 `2`(세션 시작 후)로 시점을 확인하고, 첫 `PreToolUse`
+게이트는 승인 전 일반 작업을 막는다(읽기·하네스 유지보수·관측 경로 close-out만 허용). 상태는 Git 무시
+경로에만 저장하며 trust 레코드만으로 실제 승인이나 현재 revision 실행을 증명하지 않는다.
 현재 실행은 새 `AGENTS.md`와 hook 설정을 중간에 갈아 끼우지 못한다. 문서·스킬 변경은 필요한
 부분을 다시 읽고 계속하며, **실제 Codex 훅 실행면 revision이 바뀐 경우에만** 최신 훅 집행이 필요한
 작업을 지금 이어갈지 사용자에게 확인한다. 사용자가 선택하면 현재 client가 지원하는 방식으로
@@ -174,7 +179,6 @@ Windows에서는 PowerShell here-string을 `git commit -F - -- <경로…>`에 p
 못한 것을 표준인 양 적지 않는다 — 특히 남의 도구 이름으로 된 이메일 주소를 지어내지 않는다.
 Codex 쪽에 문서화된 trailer 가 있으면 그것으로 바꾸고 이 절을 고친다.
 @defer ? — Codex 공식 커밋 표기 확인
-
 ## 확인과 제약
 
 ```bash
@@ -183,10 +187,7 @@ node aidd-guide/harness/runtime/harness-check.mjs
 node .codex/hooks/self-test.mjs
 ```
 
-`codex features list`에서 `hooks stable true`인지 확인한다. 지원하지 않는 버전이면 정적 검사와
-adapter self-test까지만 검증되고, 지원 버전으로 올린 뒤 `/hooks` 신뢰 승인과 실제
-SessionStart/PreToolUse/PostToolUse smoke test가 남는다. 훅은 유용한 guardrail이지 모든 도구를
-포괄하는 보안 경계가 아니므로 CI의 동일 검사를 제거하지 않는다.
+`codex features list`에서 `hooks stable true`인지 확인한다. 지원하지 않는 버전이면 정적 검사와 adapter self-test까지만 검증되고, 지원 버전으로 올린 뒤 `/hooks` 신뢰 승인과 실제 SessionStart/PreToolUse/PostToolUse smoke test가 남는다. 훅은 유용한 guardrail이지 모든 도구를 포괄하는 보안 경계가 아니므로 CI의 동일 검사를 제거하지 않는다.
 
 재연결 smoke test는 client별로 나눈다. CLI는 `/hooks` 승인 뒤 현재 실행을 끝내고
 `codex resume <SESSION_ID>`로 돌아온다. 데스크톱 앱은 새 local task에 작업 맥락을 넘겨 이동한다.
@@ -194,7 +195,4 @@ SessionStart/PreToolUse/PostToolUse smoke test가 남는다. 훅은 유용한 gu
 차단되는지, 직전 완료 작업을 인계받았는지를 함께 본다. revision이나 맥락 인계가 실패하면 해당
 client의 재연결 지원을 완료로 쓰지 않는다. 카나리만 실패하면 자동 사전 차단은 미지원으로 기록하고
 사용자에게 알리되, 문서 규칙을 직접 적용하며 작업은 계속한다.
-
-관리형 Windows sandbox가 hook 안의 자식 `node --check`를 `EPERM`으로 거절하면 `hook-syntax`는
-이를 구문 오류로 부르지 않고 **검사 불가**로 알린다. 그때 AI가 최상위 shell에서 같은 명령을
-실행하며, 다음 사전 쓰기는 bootstrap이 실제 import 오류를 차단한다.
+관리형 Windows sandbox가 hook 안의 자식 `node --check`를 `EPERM`으로 거절하면 `hook-syntax`는 이를 구문 오류로 부르지 않고 **검사 불가**로 알린다. 그때 AI가 최상위 shell에서 같은 명령을 실행하며, 다음 사전 쓰기는 bootstrap이 실제 import 오류를 차단한다.

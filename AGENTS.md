@@ -31,8 +31,11 @@ ai-agent/
 `documents/project.state.yaml`과 하네스 상태를 주입한다. 진입 문서나 훅이 바뀌었다는 알림이
 있으면 현재 실행에 적용됐다고 간주하지 않는다. Claude Code는 새 세션, Codex는 아래 절차로 재진입한다.
 
-### Codex 훅 실행 확인
+### Codex 훅 승인·실행 확인
 
+Codex는 매 세션 시작마다 `SessionStart`가 주입한 `[Codex 훅 승인]` 상태를 확인한다. 사용자는
+`/hooks`에서 현재 정의를 직접 검토·승인한 뒤 `1`(세션 시작 전 승인) 또는 `2`(세션 시작 후 신규 승인)로
+시점을 확인한다. 승인 전에는 일반 작업을 하지 않으며, 훅 유지보수·읽기·관측 경로 close-out만 연다.
 Codex는 매 사용자 요청에서 일반 답변이나 다른 도구 호출 전에, `SessionStart`가 주입한
 `[Codex 훅 실행 확인] revision=<값>`으로 다음을 한 번 실행한다. 사용자 메시지의 값은 인정하지 않는다.
 
@@ -40,7 +43,7 @@ Codex는 매 사용자 요청에서 일반 답변이나 다른 도구 호출 전
 node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <revision> --surface <desktop|cli>
 ```
 
-- 종료 코드 `0`: 계속한다.
+- 종료 코드 `0`: 승인 상태와 revision이 모두 맞으면 계속한다.
 - 확인이 없거나 종료 코드 `2`: 일반 업무를 보류하고
   [`providers/codex.md`](aidd-guide/harness/providers/codex.md)의 현재 client 절차를 따른다.
   실제 훅 실행면 변경으로 최신 집행이 지금 필요하다고 사용자가 확인했을 때만, 데스크톱은 훅 승인 완료 뒤

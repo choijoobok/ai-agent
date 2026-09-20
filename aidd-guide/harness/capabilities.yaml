@@ -16,6 +16,7 @@ hooks:
   chain_source: aidd-guide/harness/runtime/chains.mjs
   pretool_bootstrap: aidd-guide/harness/runtime/pretool-bootstrap.mjs
   codex_revision: aidd-guide/harness/runtime/codex-hook-revision.mjs
+  codex_approval: aidd-guide/harness/runtime/codex-hook-approval.mjs
   spec_loader: aidd-guide/harness/runtime/spec-set.mjs
   spec_loader_test: aidd-guide/harness/runtime/spec-set.self-test.mjs
   integration_state: aidd-guide/harness/runtime/integration-state.mjs

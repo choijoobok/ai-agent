@@ -1,7 +1,8 @@
 /** Codex 어댑터의 patch 정규화와 공통 차단 연결을 실제 자식 프로세스로 확인한다. */
 
 import { strict as assert } from 'node:assert';
-import { readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
   REPO,
@@ -38,6 +39,11 @@ import {
   configuredCodexHookRevision,
   currentCodexHookRevision,
 } from '../../aidd-guide/harness/runtime/codex-hook-revision.mjs';
+import {
+  acknowledge,
+  approvalGateReason,
+  approvalStatus,
+} from '../../aidd-guide/harness/runtime/codex-hook-approval.mjs';
 import { testSpecSet } from '../../aidd-guide/harness/runtime/spec-set.self-test.mjs';
 
 testSpecSet();
@@ -278,6 +284,25 @@ assert.equal(configuredCodexHookRevision(), hookRevision);
 assert.equal(checkCodexHookContext(hookRevision).ok, true);
 assert.equal(checkCodexHookContext('').ok, false);
 assert.equal(checkCodexHookContext('0'.repeat(64)).ok, false);
+
+/* AIDD와 동일하게 매 세션은 명시 승인 전 잠기며, 1/2 선택으로만 상태가 전이한다. */
+{
+  const approvalDir = mkdtempSync(join(tmpdir(), 'ai-agent-hook-approval-'));
+  const env = { AI_AGENT_HOOK_APPROVAL_DIR: approvalDir, CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex CLI' };
+  const approvalInput = { session_id: 'self-test-approval', tool_name: 'apply_patch', tool_input: { command: '*** Begin Patch\n*** Update File: documents/approval-probe.md\n@@\n*** End Patch' } };
+  try {
+    assert.match(approvalStatus(approvalInput, { env }), /아직 승인되지 않았습니다/);
+    assert.match(approvalGateReason(approvalInput, { env }), /승인 전에는 일반 작업을 할 수 없습니다/);
+    assert.equal(acknowledge({ ...approvalInput, prompt: '1' }, { env }), true);
+    assert.equal(approvalGateReason(approvalInput, { env }), null);
+    const desktopEnv = { ...env, CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex Desktop' };
+    const desktopInput = { ...approvalInput, session_id: 'self-test-desktop-approval' };
+    assert.equal(acknowledge({ ...desktopInput, prompt: '2' }, { env: desktopEnv }), true);
+    assert.match(approvalGateReason(desktopInput, { env: desktopEnv }), /새 task에서 다시 시작/);
+  } finally {
+    rmSync(approvalDir, { recursive: true, force: true });
+  }
+}
 assert.equal(codexClientSurface({ CODEX_APP_TOOLS_PIPE_PATH: 'pipe' }), 'desktop');
 assert.equal(codexClientSurface({ CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex Desktop' }), 'desktop');
 assert.equal(codexClientSurface({ CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex CLI' }), 'cli');

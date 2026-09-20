@@ -23,6 +23,7 @@ export function checkHarness() {
     manifest?.hooks?.chain_source,
     manifest?.hooks?.pretool_bootstrap,
     manifest?.hooks?.codex_revision,
+    manifest?.hooks?.codex_approval,
     manifest?.hooks?.spec_loader,
     manifest?.hooks?.spec_loader_test,
     manifest?.hooks?.integration_state,
@@ -66,7 +67,7 @@ export function checkHarness() {
   if (!configuredRevision || configuredRevision !== currentRevision) {
     issues.push(`Codex hook revision이 실행면과 다르다: 설정 ${configuredRevision || '(없음)'} · 현재 ${currentRevision}`);
   }
-  for (const adapter of ['session-start.mjs', 'session-brief.mjs', 'file-chain.mjs', 'pre-shell.mjs', 'log-raw.mjs']) {
+  for (const adapter of ['session-start.mjs', 'session-brief.mjs', 'approval-status.mjs', 'approval-gate.mjs', 'acknowledge.mjs', 'file-chain.mjs', 'pre-shell.mjs', 'log-raw.mjs']) {
     if (!codexText.includes(adapter)) issues.push(`Codex adapter 배선 없음: ${adapter}`);
   }
   const starts = codex?.hooks?.SessionStart ?? [];

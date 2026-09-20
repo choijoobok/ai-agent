@@ -138,7 +138,7 @@ startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로
 실행면이 침묵을 `Failed`로 표시한 이력이 있어 호환 형태를 명시한다. Claude `SessionStart`는
 날것이며, `emitHookResults` 한 곳에서 가르고 어댑터가 stdout을 섞지 않는다 — 사례는 [providers/codex.md](./providers/codex.md).
 
-## Codex 훅 revision — 승인하지 않은 세션에서 업무를 보류한다
+## Codex 훅 승인·revision — AIDD와 같이 매 세션에서 일반 업무를 잠근다
 
 | 칸 | 값 |
 |---|---|
@@ -146,15 +146,17 @@ startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로
 | revision | 실행면의 경로와 내용을 정렬해 SHA-256으로 계산한다. 설정 안의 revision 표식 자체는 제외한다 |
 | 동기화 | 훅 작성자가 `node aidd-guide/harness/runtime/codex-hook-revision.mjs --sync`를 실행해 startup 명령의 인자에 고정한다 |
 | 실행 확인 | Codex `SessionStart` adapter가 실행 전후 revision과 설정값이 모두 같을 때만 `[Codex 훅 실행 확인]`을 문맥에 넣는다 |
+| 승인 상태 | 별도 `approval-status` adapter가 세션별·revision별 승인 상태를 매 `startup`·`resume`·`clear`·`compact`에 주입한다. 상태는 Git 무시 `chat-history/.codex-hook-approvals/`에만 둔다 |
+| 선언·차단 | `UserPromptSubmit`의 `acknowledge` adapter가 `/hooks` 직접 검토 뒤의 `1`(기존)·`2`(신규)를 기록하고, 모든 `PreToolUse`보다 앞선 `approval-gate`가 승인 전 일반 작업을 막는다. 읽기·하네스 유지보수·관측 경로 close-out만 연다. 데스크톱의 신규 승인은 새 task를 요구하고 CLI는 현재 task에서 재승인할 수 있다 |
 | 판정 | AGENTS.md의 Codex 전용 preflight가 매 요청에서 문맥 revision과 현재 실행면을 대조한다 |
 | 강도 | 불일치·확인 부재면 모델이 **일반 업무**를 보류한다. `harness-check`와 CI는 stale revision을 오류로 막는다 |
 | 수리 차선 | 확인이 없어도 **읽기 전부 · `harness-sync` · 하네스 경로 한정 커밋**은 연다(아래) |
 | 실패 정책 | 자동 승인·신뢰 저장소 읽기·우회 플래그를 쓰지 않는다. 문서·스킬 변경은 재시작하지 않는다. 실제 훅 실행면 revision이 바뀌면 최신 훅 집행이 필요한 작업을 지금 이어갈지 사용자에게 먼저 확인한다. 사용자가 지금 이어가기를 택한 경우에만 데스크톱 앱은 hook 검토 화면 또는 CLI `/hooks` 승인 완료 확인 → 새 task 이동 승인 → 현재 턴 종료 → 새 local task에 맥락 인계 → revision·`PreToolUse` 생존 카나리 확인 순서다. CLI는 재개 승인 → `/hooks` 검토 → 현재 실행 종료 → `codex resume` → revision·카나리 확인 순서다. **revision 불일치·확인 부재는 일반 업무를 보류하지만, 승인된 새 실행에서 revision이 맞고 카나리만 실행되면 제품 결손을 사용자에게 한 번 알리고 문서 규칙을 AI가 직접 적용하며 업무를 계속한다.** 같은 재진입과 경고를 반복하지 않는다. |
 | fixture | `.codex/hooks/self-test.mjs` — 일치·확인 부재·잘못된 revision, **desktop·CLI·불명 세 갈래 안내**, 승인→재진입 순서, 양쪽 client의 카나리 경고 후 계속 정책, 카나리 deny, Codex `PreToolUse` 허용의 중립 JSON과 어댑터 출력 모양을 함께 센다 |
 
-**부트스트랩 한계가 있다.** 승인되지 않은 훅은 자기 자신을 실행해 차단할 수 없다. runtime
-hard block이라고 가장하지 않고 `AGENTS.md` preflight와 승인된 `SessionStart`의 문맥 증명을
-결합한다. 구현이 바뀌면 `/hooks` 재승인이 필요하고, 확인이 없는 동안은 수리 차선만 열린다.
+**부트스트랩 한계가 있다.** 승인되지 않은 훅은 자기 자신을 실행해 차단할 수 없다. 그래서 AIDD와
+같이 hook runtime의 상태 게이트와 `AGENTS.md` preflight를 함께 쓴다. 구현이 바뀌면 `/hooks`
+재승인이 필요하고, 확인이 없는 동안은 수리 차선만 열린다.
 
 **승인은 훅 우회가 아니라 작업 맥락을 보존한 재연결 승인이다.** 실제 훅 실행면이 바뀌어 최신 집행이 지금 필요하다고 사용자가 고른 경우에만 적용한다. CLI의 `resume`은 저장된 대화를 잇고, 앱은 `thread/start`로 새 local task를 만들어 완료한 일·남은 일·원본 task를 읽는 방법을 첫 prompt에 인계한다.
 `thread/fork` 뒤에는 startup 훅이 오지 않고 사전 훅 카나리도 통과한 것이 2026-09-11 실측됐으므로 재시작 수단으로 쓰지 않는다.
