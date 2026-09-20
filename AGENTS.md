@@ -43,9 +43,10 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <revision> --sur
 - 종료 코드 `0`: 계속한다.
 - 확인이 없거나 종료 코드 `2`: 일반 업무를 보류하고
   [`providers/codex.md`](aidd-guide/harness/providers/codex.md)의 현재 client 절차를 따른다.
-  데스크톱은 훅 승인 완료 뒤 새 local task 이동을 묻고(`fork` 금지), CLI는 `/hooks` 승인 뒤
-  같은 task의 `codex resume` 여부를 묻는다. client가 불명확하면 먼저 묻는다.
-- 새 실행은 revision 검사 뒤 `--pretool-canary <revision>`을 별도 도구 호출로 한 번 실행한다.
+  실제 훅 실행면 변경으로 최신 집행이 지금 필요하다고 사용자가 확인했을 때만, 데스크톱은 훅 승인 완료 뒤
+  새 local task 이동을 묻고(`fork` 금지), CLI는 `/hooks` 승인 뒤 같은 task의 `codex resume` 여부를 묻는다.
+  client가 불명확하면 먼저 묻는다.
+- 실제 Codex 훅 실행면의 revision이 바뀐 경우에만 사용자에게 최신 훅 집행이 필요한 작업을 지금 이어갈지 확인한다. 사용자가 지금 이어가기를 고르면 새 실행은 revision 검사 뒤 `--pretool-canary <revision>`을 별도 도구 호출로 한 번 실행한다. 문서·스킬 변경만으로는 재시작을 강제하지 않으며, 최신 훅 집행이 필요 없다고 하면 읽기·하네스 close-out 범위만 마친 뒤 해당 작업 직전에 같은 선택을 다시 묻는다.
   revision은 맞고 카나리만 실행되면 자동 사전 차단의 제품 결손을 한 번 알리고, 문서 규칙을
   직접 지키며 계속한다. 같은 승인·재진입을 반복하지 않는다.
 - 이 task에서 변경 전 검사가 통과한 뒤 사용자가 하네스 변경을 요청했다면 일반 업무는 멈추되,
@@ -66,7 +67,7 @@ node aidd-guide/harness/runtime/codex-hook-revision.mjs --check <revision> --sur
 2. **지금 여기 / 막힌 것 / 다음 할 일**의 3줄 브리핑을 먼저 제시한다.
 3. pull 실패나 더러운 트리는 먼저 사용자 변경을 보존한 채 정리한다.
 4. 하네스 불일치는 `harness-sync`로 먼저 복구한다.
-5. 하네스 재시작 알림이 있으면 승인된 수리 차선 외의 작업을 하지 않는다.
+5. 실제 훅 실행면 변경 알림에서 사용자가 지금 재연결을 택하면 승인된 수리 차선 외의 작업을 하지 않는다.
 
 ## 3. 신뢰 순서와 진입 지도
 

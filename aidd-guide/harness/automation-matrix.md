@@ -46,9 +46,12 @@ tags: [harness, hooks, automation]
 
 Codex 훅 승인 확인은 훅 자체의 hard block이 아니다. 승인되지 않은 훅은 실행될 수 없으므로,
 승인된 `SessionStart`의 revision 문맥과 `AGENTS.md` preflight가 일반 업무 응답을 보류하고
-CI는 revision 누락을 막는다. 불일치 때의 사용자 승인은 현재 실행의 우회가 아니라 **client가
-지원하는 방식으로 작업 맥락을 잇는 선택**이다. 데스크톱 앱은 새 local task에 맥락을 인계하고,
-CLI는 같은 task를 `codex resume`로 새 실행에 다시 붙인다. 양쪽 모두 revision을 확인하고
+CI는 revision 누락을 막는다. 실제 훅 실행면 revision이 불일치할 때만 사용자에게 최신 훅 집행이
+필요한 작업을 지금 이어갈지 확인한다. 그 선택은 현재 실행의 우회가 아니라 **client가 지원하는
+방식으로 작업 맥락을 잇는 선택**이다. 데스크톱 앱은 새 local task에 맥락을 인계하고, CLI는 같은
+task를 `codex resume`로 새 실행에 다시 붙인다. 문서·스킬 변경만으로 재연결하지 않으며, 지금
+필요 없다고 한 작업은 읽기·하네스 close-out 범위에서만 마치고 최신 훅 집행이 필요한 작업 전에
+다시 확인한다. 양쪽 모두 새 실행을 택하면 revision을 확인하고
 `PreToolUse` 카나리로 자동 사전 차단의 생존 여부를 사용자에게 알린다. revision이 맞는데
 카나리만 실패하면 문서 규칙을 AI가 직접 집행하며 계속한다. Claude Code의 요청 흐름에는 이
 검사를 연결하지 않는다.

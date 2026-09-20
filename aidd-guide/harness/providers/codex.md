@@ -32,11 +32,12 @@ tags: [harness, codex, adapter]
 
 프로젝트 훅은 저장소를 신뢰한 뒤 `/hooks`에서 현재 hash를 검토·승인해야 실행된다. 훅 파일이나
 배선을 바꾸면 hash가 달라져 다시 검토해야 한다.
-현재 실행은 새 `AGENTS.md`와 hook 설정을 중간에 갈아 끼우지 못하므로 하네스를 pull·수정한
-뒤 그 자리에서 업무를 계속하지 않는다. 대신 **현재 client가 지원하는 방식**으로 사용자 승인을
-받아 대화를 잇는다.
+현재 실행은 새 `AGENTS.md`와 hook 설정을 중간에 갈아 끼우지 못한다. 문서·스킬 변경은 필요한
+부분을 다시 읽고 계속하며, **실제 Codex 훅 실행면 revision이 바뀐 경우에만** 최신 훅 집행이 필요한
+작업을 지금 이어갈지 사용자에게 확인한다. 사용자가 선택하면 현재 client가 지원하는 방식으로
+대화를 잇는다.
 
-- **Codex 데스크톱 앱**: 새 task 이동을 묻기 전에 변경된 훅의 신뢰 승인을 먼저 끝낸다. 앱에
+- **Codex 데스크톱 앱**: 사용자가 최신 훅 집행을 지금 이어가기로 고른 경우, 새 task 이동을 묻기 전에 변경된 훅의 신뢰 승인을 먼저 끝낸다. 앱에
   hook 검토 화면이 있으면 거기서 승인하고, 없으면 저장소 루트에서 Codex CLI를 열어 그 TUI의
   `/hooks`로 승인한다. 사용자가 완료했다고 확인하기 전에는 새 task 이동을 묻거나 만들지 않는다.
   완료 확인 뒤 현재 작업 맥락을 인계한 새 task로 이동할지 묻는다. 승인되면 현재 턴을 끝낸 뒤
@@ -46,7 +47,7 @@ tags: [harness, codex, adapter]
   검토 화면은 공식 문서에서 확인하지 못했으므로, 화면이 없으면 자동 승인했다고 가장하지 않는다
   ([Hooks](https://learn.chatgpt.com/docs/hooks)). PowerShell에 `/hooks`를 직접 입력하는 것이 아니라
   `codex`로 연 CLI 대화 화면 안에서 실행한다.
-- **Codex CLI**: 같은 task를 새 실행으로 재개할지 묻는다. 승인되면 `/hooks`에서 현재 hash를
+- **Codex CLI**: 사용자가 최신 훅 집행을 지금 이어가기로 고른 경우, 같은 task를 새 실행으로 재개할지 묻는다. 승인되면 `/hooks`에서 현재 hash를
   검토·승인하고 현재 실행을 끝낸 뒤 `codex resume <SESSION_ID>`(가장 최근 task면
   `codex resume --last`)로 돌아온다. 공식 문서도 `resume`이 기존 대화를 잇고 그때
   `SessionStart`의 source가 `resume`이라고 명시한다
@@ -109,7 +110,8 @@ Windows fail-closed wrapper는 JSON 문자열을 명령에 직접 넣지 않고 
 `source`로 판정한다. CLI에서 같은 task를 `codex resume`로 다시 열면 두 번째 그룹이 현재
 revision 실행 확인과 프로젝트 상태를 새 문맥에 넣는다. 데스크톱 앱의 새 local task가 startup
 그룹을 실행해 같은 결과를 내는지는 smoke test로 확인한다. revision만으로 사전 훅
-실행까지 추정하지 않고 아래 생존 카나리로 사전 명령 훅의 자동 집행 여부를 따로 알린다.
+실행까지 추정하지 않고 아래 생존 카나리로 사전 명령 훅의 자동 집행 여부를 따로 알린다. 실제 훅
+실행면이 아닌 문서·스킬 변경은 새 실행을 요구하지 않는다.
 
 ### `PreToolUse` 생존 카나리
 

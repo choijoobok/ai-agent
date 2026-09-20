@@ -144,14 +144,14 @@ export function codexClientSurface(env = process.env) {
 
 /** 낡은 실행을 우회하지 않고 현재 client가 지원하는 방식으로 대화를 잇는 안내다. */
 export function codexHookReentryMessage(surface = codexClientSurface()) {
-  const common = '현재 실행에서 그대로 계속하지 않는다 — 이미 읽은 진입 문서와 hook 배선은 중간에 갈아 끼울 수 없다.';
+  const common = '현재 실행은 바뀌기 전 hook 배선으로 시작했다. 최신 사전 집행이 필요한 작업을 계속할지 먼저 사용자에게 확인한다.';
   if (surface === 'desktop') {
     return [
       common,
       '새 task 이동을 묻기 전에 변경된 훅의 신뢰 승인을 먼저 끝낸다. 앱에 hook 검토 화면이 보이면 사용자가 현재 정의를 승인한다.',
       '앱에 검토 화면이 보이지 않으면 저장소 루트에서 Codex CLI를 열고, 그 TUI 안의 `/hooks`로 현재 정의를 검토·승인하도록 안내한다. PowerShell에 `/hooks`를 직접 입력하게 하지 않는다.',
-      '사용자가 훅 승인 완료를 확인하기 전에는 새 task 이동을 묻거나 만들지 않는다. 완료가 확인되면 **현재 작업 맥락을 인계한 새 task로 이동할까요?**라고 묻는다.',
-      '승인되면 현재 턴을 끝낸 뒤 같은 saved project를 직접 쓰는 새 local task를 `thread/start`로 만들고, 완료한 일·남은 일·원본 task를 읽는 방법을 첫 prompt에 인계한 다음 그 task로 화면을 이동한다. 기존 task는 남기며 `thread/fork`는 쓰지 않는다.',
+      '사용자가 훅 승인 완료를 확인하기 전에는 새 task 이동을 묻거나 만들지 않는다. 완료가 확인되면 **최신 훅 집행이 필요한 작업을 지금 이어갈까요?**라고 묻는다.',
+      '사용자가 지금 이어가기를 고르면 현재 턴을 끝낸 뒤 같은 saved project를 직접 쓰는 새 local task를 `thread/start`로 만들고, 완료한 일·남은 일·원본 task를 읽는 방법을 첫 prompt에 인계한 다음 새 task로 이동한다. 지금 필요 없다고 고르면 현재 작업은 읽기·하네스 close-out 범위에서 마치고, 최신 훅 집행이 필요한 작업 전에 다시 이 선택을 한다. 기존 task는 남기며 `thread/fork`는 쓰지 않는다.',
       `새 task에서 현재 revision의 SessionStart 실행 확인 뒤 \`${codexPretoolCanaryCommand('<SessionStart revision>')}\`를 별도 호출한다. ${CODEX_PRETOOL_CANARY_PREFIX} 차단이 오면 자동 사전 차단이 살아 있다. 스크립트가 실행되면 이 도구 경로의 훅 미적용을 사용자에게 한 번 알리고, 문서 규칙을 직접 적용하며 업무를 계속한다.`,
       '앱 사용자에게 CLI를 기본 절차로 요구하지는 않되, 앱에 검토 화면이 없으면 `/hooks` 승인은 새 task를 만들기 전의 필수 차선이다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.',
     ].join('\n');
@@ -159,8 +159,8 @@ export function codexHookReentryMessage(surface = codexClientSurface()) {
   if (surface === 'cli') {
     return [
       common,
-      '사용자에게 **대화 기록을 유지한 채 같은 task를 새 실행으로 재개할까요?**라고 묻는다.',
-      '승인되면 Codex CLI(TUI)의 `/hooks`에서 현재 정의를 검토·승인하고 현재 실행을 끝낸 뒤 `codex resume <SESSION_ID>`로 재개한다. 가장 최근 task면 `codex resume --last`를 쓴다.',
+      '사용자에게 **최신 훅 집행이 필요한 작업을 대화 기록을 유지한 채 같은 task를 새 실행으로 지금 재개할까요?**라고 묻는다.',
+      '사용자가 지금 재개하기를 고르면 Codex CLI(TUI)의 `/hooks`에서 현재 정의를 검토·승인하고 현재 실행을 끝낸 뒤 `codex resume <SESSION_ID>`로 재개한다. 가장 최근 task면 `codex resume --last`를 쓴다. 지금 필요 없다고 고르면 현재 작업은 읽기·하네스 close-out 범위에서 마치고, 최신 훅 집행이 필요한 작업 전에 재개를 다시 묻는다.',
       `재개한 실행에서 현재 revision을 확인하고 PreToolUse 생존 확인 명령 \`${codexPretoolCanaryCommand('<SessionStart revision>')}\`를 별도 호출한다. 카나리만 실패하면 자동 사전 차단의 결손을 사용자에게 한 번 알리고 문서 규칙을 직접 적용하며 계속한다.`,
       '새 빈 task는 사용자가 원할 때만 연다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.',
     ].join('\n');
@@ -168,8 +168,8 @@ export function codexHookReentryMessage(surface = codexClientSurface()) {
   return [
     common,
     '현재 client를 확정할 수 없으므로 사용자에게 **Codex 데스크톱 앱인지 CLI(TUI)인지** 한 번 묻는다.',
-    '데스크톱 앱이면 작업 맥락을 인계한 새 local task를 만들고, CLI면 `/hooks` 검토·승인 뒤 같은 task를 `codex resume`로 재개한다.',
-    'client를 확정하기 전에는 어느 경로도 강제하지 않는다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.',
+    '최신 훅 집행이 지금 필요한 경우에만, 데스크톱 앱이면 작업 맥락을 인계한 새 local task를 만들고 CLI면 `/hooks` 검토·승인 뒤 같은 task를 `codex resume`로 재개한다.',
+    'client와 필요 시점을 확정하기 전에는 어느 재연결 경로도 강제하지 않는다. 사용자 승인은 낡은 훅을 현재 실행에서 우회하는 허가가 아니다.',
   ].join('\n');
 }
 

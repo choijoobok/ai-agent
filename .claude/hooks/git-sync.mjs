@@ -28,6 +28,7 @@ import { readHookInput, REPO, inject, pass, provider } from './lib.mjs';
 import {
   codexClientSurface,
   codexHookReentryMessage,
+  currentCodexHookRevision,
 } from '../../aidd-guide/harness/runtime/codex-hook-revision.mjs';
 
 /** 네트워크가 죽어 있을 때 세션 시작을 붙잡지 않는다 — 훅 전체 예산이 60초다. */
@@ -35,6 +36,9 @@ const NET_MS = 15_000;
 const LOCAL_MS = 5_000;
 
 const input = await readHookInput();
+/* 재시작 판단은 넓은 문서 폴더가 아니라 실제 Codex 훅 실행면의 revision으로 한다.
+   문서·스킬만 당겨졌다고 대화를 끊으면, 필요한 재연결보다 불필요한 중단이 훨씬 많아진다. */
+const hookRevisionBefore = provider() === 'codex' ? currentCodexHookRevision() : null;
 
 /* 작업 중간의 재주입에서는 파일을 바꾸지 않는다. source 를 모르면 시작으로 본다 —
    모르는 쪽으로 기울일 때 비용이 작은 쪽이 *당기는 것* 이 아니라 *묻는 것* 이지만,
@@ -94,10 +98,12 @@ if (!pulled.ok) {
 }
 
 const files = changed();
-const reload = files.filter(needsRestart);
+const hookRevisionAfter = provider() === 'codex' ? currentCodexHookRevision() : null;
+const hookChanged = hookRevisionBefore !== null && hookRevisionBefore !== hookRevisionAfter;
+const reload = provider() === 'codex' ? hookChanged : files.some(needsClaudeRestart);
 const reentry = provider() === 'codex'
   ? [
-      `**현재 실행을 끝내고 client에 맞는 방식으로 대화를 잇는다** — 진입 문서·하네스 ${reload.length}건이 바뀌었지만 현재 실행은 이미 이전 것을 읽었다.`,
+      '**Codex 훅 실행면이 바뀌었다** — 최신 훅을 적용할 작업을 지금 이어갈지 사용자에게 먼저 확인한다.',
       ...codexHookReentryMessage(codexClientSurface()).split('\n').slice(1),
     ]
   : [
@@ -112,7 +118,7 @@ inject(
       ...(files.length > 0
         ? [`바뀐 것 ${files.length}건: ${files.slice(0, 8).join(' · ')}${files.length > 8 ? ' …' : ''}`]
         : []),
-      ...(reload.length > 0
+      ...(reload
         ? reentry
         : []),
     ].join('\n') + tail,
@@ -149,7 +155,7 @@ function changed() {
   return git(['diff', '--name-only', 'ORIG_HEAD..HEAD'], LOCAL_MS).out.split('\n').filter(Boolean);
 }
 
-function needsRestart(path) {
+function needsClaudeRestart(path) {
   return /^(?:AGENTS\.md|CLAUDE\.md|\.claude\/|\.agents\/|\.codex\/|aidd-guide\/harness\/)/.test(path);
 }
 
