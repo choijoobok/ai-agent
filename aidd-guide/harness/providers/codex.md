@@ -179,10 +179,10 @@ Agent: Codex
 Windows에서는 PowerShell here-string을 `git commit -F - -- <경로…>`에 pipe한다. 훅은 이 본문을
 읽어 `Agent: Codex`가 마지막 줄인지 확인한다.
 
-**이 값은 저장소가 정한 것이다.** Codex 자체의 커밋 표기 관례를 확인하지 못했고, 확인하지
-못한 것을 표준인 양 적지 않는다 — 특히 남의 도구 이름으로 된 이메일 주소를 지어내지 않는다.
-Codex 쪽에 문서화된 trailer 가 있으면 그것으로 바꾸고 이 절을 고친다.
-@defer ? — Codex 공식 커밋 표기 확인
+**이 값은 저장소가 정한 것이다.** 2026-09-20에 확인한 OpenAI 공식 Codex 문서는 GitHub
+Actions 예제에서만 `github-actions[bot]` 신원을 설정하고 일반 Codex 작업의 trailer를 정하지
+않는다. 따라서 여기서는 남의 도구 이름·이메일을 지어내지 않고, 저장소의 추적 규칙인
+`Agent: Codex`를 유지한다. 공식 trailer가 나중에 문서화되면 그때 이 절을 갱신한다.
 ## 확인과 제약
 
 ```bash

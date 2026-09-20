@@ -135,6 +135,9 @@ function walk(p, out = []) {
 const files = SCAN.flatMap((s) => walk(join(REPO, s)));
 for (const f of files) {
   const rel = relative(REPO, f).split('\\').join('/');
+  // 스킬 정본의 `@defer ?` 예시는 실제 미룬 일이 아니다. 예시까지 세면
+  // 상태 보고가 자기 설명을 프로젝트 부채로 잘못 싣는다.
+  if (rel === 'aidd-guide/harness/skill-src/pm-status.md') continue;
   const lines = read(f).split('\n');
   lines.forEach((line, i) => {
     const m = line.match(/@defer\s+([A-Z]?[0-9]|지금|\?)[:\s]*(.*)$/);
