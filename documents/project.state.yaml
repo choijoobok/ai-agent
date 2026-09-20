@@ -72,7 +72,7 @@ workstreams:
     deferred_until: null
     gates:
       P1_discovery:    { status: approved, approved_at: "2026-09-20", note: "**사용자 승인 · Exit Criteria 8/8.** CR-022로 REQ-101~119·201~207·301~307 33건의 액터·프로세스 양방향 연결을 재검증했고, Must 비율은 23/33(69.70%)이다. 품질 신고와 AI 처리 오류는 분리하되 같은 지식 검토 근거로 연결하며, 신고·오류 증거 묶음에는 해당 턴의 전체 실행 스텝과 실제 모델 입력을 보관한다. 신고자는 자신의 질의·응답·승인·처리 결과만, 품질 담당자는 감사된 권한 아래 전체 증거를 열람한다. 턴 ID는 전역 양수 BIGINT DB 시퀀스, 정확한 시간은 TURN_STARTED_AT으로 분리한다" }
-      P2_architecture: { status: not_started, approved_at: null, note: "" }
+      P2_architecture: { status: in_progress, approved_at: null, note: "CR-023으로 실행 API·저장된 조회·추가 토큰 신청·승인의 최소 공개 계약과 쓰기 소유권을 ADR-013으로 정했다. P3에서 계약별 DTO·주소·권한·동시성·테이블 키를 확정한다" }
       P3_design:       { status: not_started, approved_at: null, note: "" }
       P4_build:        { status: not_started, approved_at: null, note: "" }
       P5_verify:       { status: not_started, approved_at: null, note: "" }
@@ -80,10 +80,10 @@ workstreams:
     phase: P2
     required_in: [RM-P1]
     blocked_by: []
-    deferred_until: "admin 계약 초안"
+    deferred_until: null
     gates:
       P1_discovery:    { status: in_progress, approved_at: null, note: "질의 처리 요구는 이관됐으나 작업흐름 단위 승인은 아직이다" }
-      P2_architecture: { status: in_progress, approved_at: null, note: "턴·스텝·점유·중단 설계 초안과 ADR-001·003이 있다" }
+      P2_architecture: { status: in_progress, approved_at: null, note: "턴·스텝·점유·중단 설계 초안과 ADR-001·003이 있다. CR-023의 admin 공개 계약 초안(ADR-013)을 받아 저장된 조회의 현재 권한 재판정 경계를 대조했다" }
       P3_design:       { status: not_started, approved_at: null, note: "" }
       P4_build:        { status: not_started, approved_at: null, note: "" }
       P5_verify:       { status: not_started, approved_at: null, note: "" }
@@ -94,7 +94,7 @@ workstreams:
     deferred_until: null
     gates:
       P1_discovery:    { status: approved, approved_at: "2026-09-11", note: "**Exit Criteria 8/8 · 사용자 승인.** 범용 Hub 프로세스 5개와 integration 소유 요구사항의 단계 연결을 확정했다. 작업흐름 G1은 우선순위 근거를 판정하고 Must 70% 상한은 전역 G1에서 적용한다. 계약 시험 원문은 합성 데이터가 기본이며 운영 원문은 권한·감사 아래 예외 열람한다. 서버군 격리·일괄 전환이 불가능하면 무중단으로 간주하지 않는다" }
-      P2_architecture: { status: in_progress, approved_at: null, note: "**2026-09-12 사용자 승인으로 재개방.** ADR-007의 4모듈·화면 영역·API 계층·인가 진입 경계를 ARCH-003·010~014·018~020에 반영하고 다시 검증한다" }
+      P2_architecture: { status: in_progress, approved_at: null, note: "**2026-09-12 사용자 승인으로 재개방.** ADR-007의 4모듈·화면 영역·API 계층·인가 진입 경계를 ARCH-003·010~014·018~020에 반영하고 다시 검증한다. CR-023으로 ADR-013의 portal·admin·agent 공개 계약을 P3 계약 시험 입력으로 추가했다" }
       P3_design:       { status: in_progress, approved_at: null, note: "G2 재검증 동안 중지. 이후 FEAT-126·SCR-112와 portal↔agent 계약을 함께 설계한다" }
       P4_build:        { status: not_started, approved_at: null, note: "" }
       P5_verify:       { status: not_started, approved_at: null, note: "" }
@@ -153,17 +153,14 @@ roadmap_closed: []
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
 next_up:
   decided_at: 2026-09-20
-  choice: "CR-023의 RM-P1 출시 규칙을 반영하고 admin·agent·portal·integration 작업흐름 재점검을 진행한다"
+  choice: "CR-001 영향 분석을 시작한다"
   why: >-
-    사용자 판정 A에 따라 RM-P1 제품 출시는 조회 전용으로 쪼개지 않으며, 등록 REST 업무 API
-    실행·저장된 조회·이번 달 추가 토큰 사용 신청과 승인이 함께 준비돼야 한다. 기능 추가나
-    P3 워크플로우 앞당김 없이, 해당 네 작업흐름의 요구사항·계약·출시 준비 상태를 재점검한다.
+    사용자 판정에 따라 변경 요청을 순서대로 하나씩 처리한다. CR-023은 RM-P1 전체 출시 규칙,
+    모듈 간 최소 공개 계약, 저장된 조회 실행 경계와 portal 추적 연결까지 반영·재점검을 마쳤다.
   tasks:
-    - "admin P2에서 API·저장 조회·추가 토큰 승인 데이터 소유권과 권한 경계를 설계한다"
-    - "agent P2와 integration P2에서 승인 실행·저장 조회·응답 통제 계약을 다시 대조한다"
-    - "portal P1에서 실행·저장 조회·추가 토큰 승인 화면의 요구사항 연결을 재점검한다"
+    - "CR-001의 변경 요청 내용과 영향 범위를 확인한다"
   then: >-
-    CR-023의 작업흐름 재점검이 끝나면 변경 요청을 완료 처리하고, 그 뒤에 CR-001을 처리한다.
+    CR-001의 세 가지 처리안을 제시하고 사용자의 판정을 받은 뒤에만 반영한다.
 
 # ── 미결 질문 (Open Questions) ─────────────────────────────────────
 # 사용자 답변이 필요한 것. 답변되면 삭제하고 결과를 spec·ADR 에 반영한다.
