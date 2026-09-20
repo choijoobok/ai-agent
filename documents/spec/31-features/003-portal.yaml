@@ -175,7 +175,7 @@ features:
     roadmap: RM-P1
     title: "대시보드 구성과 실행"
     detail: "위젯 배치와 표현 형식 지정 · 위젯별 수동 조회와 자동 실행 설정 · 결과 렌더링"
-    reqs: [REQ-206]
+    reqs: [REQ-206, REQ-207]
     nfrs: [NFR-005]
   - id: FEAT-124
     module: portal
