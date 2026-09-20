@@ -9,6 +9,7 @@ terms:
     key: turn
     group: 대화
     definition: "**사용자 질의 1건과 그에 대한 최종 응답까지의 처리 단위.** 한 세션은 여러 턴을 가진다"
+    relation: "턴 ID와 시작 시각의 정본 규칙은 REQ-107이 갖는다"
   - id: TRM-003
     term: 스텝
     key: step
