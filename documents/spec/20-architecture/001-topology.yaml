@@ -78,6 +78,9 @@ topology:
     - { from: ADMIN,  to: SYSTEM, label: "인증·유효 권한" }
     - { from: AGENT,  to: SYSTEM, label: "인증·유효 권한" }
     - { from: PORTAL, to: AGENT,  label: "채팅 질의·응답", note: "**비동기다** — 접수 후 즉시 반환하고 진행 상태는 폴링으로 조회한다(ARCH-015)" }
+    - { from: PORTAL, to: ADMIN,  label: "추가 토큰 신청·본인 처리 결과" }
+    - { from: ADMIN,  to: AGENT,  label: "실행 구성·유효 쿼터 조회" }
+    - { from: AGENT,  to: ADMIN,  label: "실행 통계·저장된 조회 상태 조회" }
     - { from: SYSTEM, to: AIDB }
     - { from: PORTAL, to: AIDB }
     - { from: ADMIN,  to: AIDB }
@@ -95,7 +98,7 @@ topology:
   edge_invariants:
     - "**업무 DB·업무 API·대화·추론 LLM 에 닿는 간선은 agent 에서만 나간다.** 이 그림에서 그것이 보이는 것이 요점이며, portal·admin 에서 그런 간선이 그려지면 ARCH-013 위반이다"
     - "**admin → GW 간선은 임베딩 전용이다.** admin 이 대화·추론 LLM 을 부르는 간선은 없다 — 통로는 공유하지만 인터페이스가 갈려 있어(FEAT-304) 참조 관계로 검사된다"
-    - "**허용된 모듈 간 경로는 system의 인증·유효 권한 계약과 portal → agent 계약뿐이다**(ARCH-011·012). 그 밖의 모듈 내부 저장소·서비스 직접 참조는 금지한다"
+    - "**허용된 모듈 간 경로는 system의 인증·유효 권한 계약, portal → agent 사용자 처리, portal → admin 추가 토큰 신청·본인 처리 결과, admin → agent 실행 구성·유효 쿼터 조회, agent → admin 실행 통계·저장된 조회 상태 조회뿐이다**(ARCH-011·012·ADR-013). 그 밖의 모듈 내부 저장소·서비스 직접 참조는 금지한다"
     - "**레거시에서 Hub 로 들어오는 간선이 없다** — 인바운드 미허용(CON-013). 인사·조직 변경 수신은 예외이며 그 규약은 51-interfaces/_index.yaml 이 갖는다"
     - "**두 계층이 어긋나면 접는 규칙이 틀린 것이다.** Level 1 은 이 노드·간선을 `l1:` 로 접은 결과이지 따로 그린 그림이 아니다 — Level 1 에만 있는 상자나 간선이 보이면 고칠 곳은 정본이 아니라 생성기다"
 

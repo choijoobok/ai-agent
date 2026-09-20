@@ -218,7 +218,7 @@ counters:
   SCR: 69
   TC: 53
   RUN: 8      # 80-operations/_index.yaml의 현재 절차. daily_checks·periodic_tasks를 2026-09-14에 채웠다
-  ADR: 12     # 001~012 accepted. 012는 단일 main 충돌 통합과 후속 검증 분리이며 proposed는 없다
+  ADR: 13     # 001~013 accepted. 013은 CR-023의 최소 모듈 간 공개 계약을 명시한다
   ASM: 1      # **미확인 하나** — 003(기한 G3). 002·004·007은 확인됨, 005·006 은 기각됨
   SLICE: 18
   DEF: 0
