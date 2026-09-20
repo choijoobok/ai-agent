@@ -294,8 +294,14 @@ assert.equal(checkCodexHookContext('0'.repeat(64)).ok, false);
   const approvalInput = { session_id: 'self-test-approval', source: 'startup', tool_name: 'apply_patch', tool_input: { command: '*** Begin Patch\n*** Update File: documents/approval-probe.md\n@@\n*** End Patch' } };
   try {
     assert.match(approvalStatus(approvalInput, { env }), /codex -C/);
+    assert.match(approvalStatus(approvalInput, { env }), /해야 할 일/);
+    assert.match(approvalStatus(approvalInput, { env }), /표시되는 모든 ai-agent 훅/);
     assert.match(approvalStatus(approvalInput, { env }), /`1` 또는 `2`로 답해주세요/);
     assert.match(approvalGateReason(approvalInput, { env }), /승인 전에는 일반 작업을 할 수 없습니다/);
+    const declaredInput = { ...approvalInput, session_id: 'self-test-declared-approval' };
+    assert.equal(acknowledge({ ...declaredInput, prompt: '훅을 검토하고 승인했어요' }, { env }), true);
+    assert.match(approvalStatus(declaredInput, { env }), /승인 시점이 빠졌습니다/);
+    assert.match(approvalStatus(declaredInput, { env }), /해야 할 일/);
     assert.equal(acknowledge({ ...approvalInput, prompt: '1' }, { env }), true);
     assert.equal(approvalGateReason(approvalInput, { env }), null);
     assert.equal(approvalEntrySource(approvalInput, { env }), 'startup');

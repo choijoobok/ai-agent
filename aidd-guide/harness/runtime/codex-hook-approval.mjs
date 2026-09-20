@@ -103,14 +103,21 @@ function prepare(input, repo = REPO, env = process.env) {
 
 function instruction() {
   return [
-    `터미널에서 \`codex -C "${REPO}"\`를 실행한 뒤 \`/hooks\`에서 모든 ai-agent 훅을 직접 검토·신뢰해 주세요.`,
+    '브리핑과 일반 작업을 시작하기 전에 Codex 훅을 직접 검토·신뢰해야 합니다.',
+    '',
+    '해야 할 일:',
+    `1. 터미널에서 \`codex -C "${REPO}"\`를 실행합니다.`,
+    '2. 열린 Codex 대화에서 `/hooks`를 입력합니다.',
+    '3. 표시되는 모든 ai-agent 훅을 직접 검토하고 신뢰합니다.',
     '',
     '승인 시점은 어느 쪽인가요?',
     '',
     '1. 현재 세션 시작 전에 이미 모두 승인됨',
     '2. 현재 세션 시작 후 새로 승인함',
     '',
-    '`1` 또는 `2`로 답해주세요.',
+    '위 절차를 마쳤다면 `1` 또는 `2`로 답해주세요. 숫자 답변은 훅을 직접 검토·신뢰했다는 확인도 뜻합니다.',
+    '',
+    '이 확인이 끝날 때까지는 브리핑이나 일반 작업을 시작하지 않습니다.',
   ].join('\n');
 }
 
@@ -167,7 +174,9 @@ function lockedReason(session, revision, restart, surface) {
   if (restartAppliesToClient(restart, surface)) {
     return 'Windows Codex 앱에서 새 훅을 승인한 뒤 열린 새 세션입니다. 일반 작업 전에 새 앱 창에서 재시작했고 훅이 승인된 상태라는 뜻을 명확히 알려주세요.';
   }
-  if (session?.state === 'declared') return `Codex 훅 승인 시점을 확인해야 합니다.\n\n${instruction()}`;
+  if (session?.state === 'declared') {
+    return `훅을 검토·신뢰했다는 선언은 받았지만 승인 시점이 빠졌습니다. 아래 절차를 확인한 뒤 \`1\` 또는 \`2\`로 답해주세요.\n\n${instruction()}`;
+  }
   return `Codex 훅 승인 전에는 일반 작업을 할 수 없습니다.\n\n${instruction()}`;
 }
 
