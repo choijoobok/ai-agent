@@ -7,29 +7,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/session-start.mjs\" --hook-revision=6d4d987081804f72c46a956766bed3aad16b59e9627c76fd2d8bb41bf4e7ba1d",
-            "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/session-start.mjs') --hook-revision=6d4d987081804f72c46a956766bed3aad16b59e9627c76fd2d8bb41bf4e7ba1d\"",
-            "timeout": 60,
-            "statusMessage": "원격 동기화와 프로젝트 상태 확인",
-            "additionalContextLimit": 5000
+            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/approval-status.mjs\" --hook-revision=9b4744bbcdccdbc9d699a8f39c43fd12909ead3d2350ff12f3b218b39555fcaa",
+            "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/approval-status.mjs') --hook-revision=9b4744bbcdccdbc9d699a8f39c43fd12909ead3d2350ff12f3b218b39555fcaa\"",
+            "timeout": 15,
+            "statusMessage": "Codex 훅 승인 상태 확인",
+            "additionalContextLimit": 4000
           }
         ]
       },
       {
         "matcher": "resume|clear|compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/session-brief.mjs\"",
-            "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/session-brief.mjs')\"",
-            "timeout": 15,
-            "statusMessage": "프로젝트 상태와 하네스 정합성 확인",
-            "additionalContextLimit": 5000
-          }
-        ]
-      },
-      {
-        "matcher": "startup|resume|clear|compact",
         "hooks": [
           {
             "type": "command",

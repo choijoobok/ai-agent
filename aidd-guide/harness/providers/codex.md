@@ -108,13 +108,14 @@ Windows fail-closed wrapper는 JSON 문자열을 명령에 직접 넣지 않고 
 
 ## 세션 시작
 
-`SessionStart`를 두 그룹으로 나눈다. `startup`은 `session-start.mjs`(`git-sync` → `session-brief`),
-`resume|clear|compact`는 `session-brief.mjs`만 돈다. Codex는 `SessionStart.source`와 matcher를
-정식 계약으로 제공한다. **matcher에서 먼저 가르는 이유**는 `git-sync`를 `startup` 경로에서만
-실행해 압축·재개 중 파일을 바꾸지 않기 위해서다. Claude는 같은 결과를 adapter 안에서 입력의
-`source`로 판정한다. CLI에서 같은 task를 `codex resume`로 다시 열면 두 번째 그룹이 현재
-revision 실행 확인과 프로젝트 상태를 새 문맥에 넣는다. 데스크톱 앱의 새 local task가 startup
-그룹을 실행해 같은 결과를 내는지는 smoke test로 확인한다. revision만으로 사전 훅
+`SessionStart`는 `startup`과 `resume|clear|compact` 모두 `approval-status.mjs`만 돈다. **승인 질문이
+브리핑보다 먼저**여야 하므로, `session-start.mjs`·`session-brief.mjs`는 이 이벤트에 직접 연결하지 않는다.
+사용자가 `1`을 답해 현재 세션 승인이 확인되면 `acknowledge.mjs`가 `approved-session.mjs`를 통해
+`startup`에는 `git-sync` → `session-brief`, 그 밖에는 `session-brief`만 실행한다. Codex는
+`SessionStart.source`와 matcher를 정식 계약으로 제공한다. 이 구분은 `git-sync`를 `startup`에만
+한정해 압축·재개 중 파일을 바꾸지 않기 위해서다. Windows 데스크톱에서 `2`면 현재 창은
+`restart_required`로 잠기고 새 앱 창에서 `1`을 확인해야 한다. CLI의 `2`는 현재 세션에서 같은
+승인 뒤 chain을 실행한다. revision만으로 사전 훅
 실행까지 추정하지 않고 아래 생존 카나리로 사전 명령 훅의 자동 집행 여부를 따로 알린다. 실제 훅
 실행면이 아닌 문서·스킬 변경은 새 실행을 요구하지 않는다.
 

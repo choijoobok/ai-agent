@@ -59,7 +59,10 @@ function prepare(input, repo = REPO, env = process.env) {
     const sessionKey = key(id);
     session = state.sessions[sessionKey];
     if (!session) {
-      session = { start_revision: revision, state: 'unconfirmed' };
+      const source = ['startup', 'resume', 'clear', 'compact'].includes(input?.source)
+        ? input.source
+        : 'startup';
+      session = { start_revision: revision, state: 'unconfirmed', source };
       state.sessions[sessionKey] = session;
       changed = true;
     }
@@ -69,7 +72,16 @@ function prepare(input, repo = REPO, env = process.env) {
 }
 
 function instruction() {
-  return 'Codex 훅을 `/hooks`에서 직접 검토·승인한 뒤 승인 시점을 알려주세요: 1) 이번 세션 시작 전에 이미 승인됨 2) 이번 세션 시작 후 새로 승인함. `1` 또는 `2`만 답해도 됩니다.';
+  return [
+    `터미널에서 \`codex -C "${REPO}"\`를 실행한 뒤 \`/hooks\`에서 모든 ai-agent 훅을 직접 검토·신뢰해 주세요.`,
+    '',
+    '승인 시점은 어느 쪽인가요?',
+    '',
+    '1. 현재 세션 시작 전에 이미 모두 승인됨',
+    '2. 현재 세션 시작 후 새로 승인함',
+    '',
+    '`1` 또는 `2`로 답해주세요.',
+  ].join('\n');
 }
 
 function messageKind(message) {
@@ -91,11 +103,17 @@ function userMessage(input) {
 
 export function approvalStatus(input, options = {}) {
   const { id, session, revision } = prepare(input, options.repo, options.env);
-  if (!id) return `[Codex 훅 승인] 세션 ID를 확인할 수 없어 승인 상태를 판정할 수 없습니다. ${instruction()}`;
+  if (!id) return `[Codex 훅 승인] 세션 ID를 확인할 수 없어 승인 상태를 판정할 수 없습니다.\n\n${instruction()}`;
   if (session.start_revision === revision && session.state === 'approved') {
     return `[Codex 훅 승인] 이 세션은 revision=${revision}의 승인 상태입니다.`;
   }
-  return `[Codex 훅 승인] 이 세션은 revision=${revision}에 대해 아직 승인되지 않았습니다. ${instruction()}`;
+  return `[Codex 훅 승인]\n\n${instruction()}`;
+}
+
+/** 마지막 SessionStart의 종류를 보존해, 승인 뒤 startup만 원격 동기화를 하게 한다. */
+export function approvalEntrySource(input, options = {}) {
+  const { session } = prepare(input, options.repo, options.env);
+  return ['startup', 'resume', 'clear', 'compact'].includes(session?.source) ? session.source : 'startup';
 }
 
 export function acknowledge(input, options = {}) {
@@ -129,6 +147,6 @@ export function approvalGateReason(input, options = {}) {
   if (!id) return `Codex 훅 승인 게이트: 세션 ID를 확인할 수 없어 일반 작업을 차단합니다. ${instruction()}`;
   if (session.start_revision === revision && session.state === 'approved') return null;
   if (maintenanceInput(input)) return null;
-  if (session.state === 'restart_required') return 'Codex 데스크톱에서 이번 세션 시작 후 새 훅을 승인했습니다. 최신 훅을 싣는 새 task에서 다시 시작한 뒤 승인 상태를 확인하세요.';
+  if (session.state === 'restart_required') return 'Codex 데스크톱에서 이번 세션 시작 후 새 훅을 승인했습니다. 이 창에서는 일반 작업이 금지됩니다. 새 Codex 앱 창에서 같은 프로젝트를 열고, 훅이 이미 승인된 상태임을 `1`로 확인한 뒤 작업하세요.';
   return `Codex 훅 승인 전에는 일반 작업을 할 수 없습니다. ${instruction()}`;
 }

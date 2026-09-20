@@ -37,14 +37,12 @@
 | `UserPromptSubmit` | — | `context-gauge` | 컨텍스트 게이지 — 문맥이 차오르면 압축할 여지가 남아 있을 때 알린다. | 문맥에 넣는다 | 10s |
 | `Stop` | — | `log-raw` | 대화 원문을 `chat-history/` 에 append 한다 | 조용히 한다 | 15s |
 
-### Codex — 19개
+### Codex — 17개
 
 | 이벤트 | 언제 | 훅 | 하는 일 | 강도 | 제한 |
 |---|---|---|---|---|---|
-| `SessionStart` | `startup` | `git-sync` | 세션이 열릴 때 원격을 먼저 당긴다 | 문맥에 넣는다 | 60s |
-| `SessionStart` | `startup` | `session-brief` | 세션이 열릴 때 지금 어디인가를 문맥에 넣는다 | 문맥에 넣는다 | 60s |
-| `SessionStart` | `resume\|clear\|compact` | `session-brief` | 세션이 열릴 때 지금 어디인가를 문맥에 넣는다 | 문맥에 넣는다 | 15s |
-| `SessionStart` | `startup\|resume\|clear\|compact` | `approval-status` |  | 조용히 한다 | 15s |
+| `SessionStart` | `startup` | `approval-status` |  | 조용히 한다 | 15s |
+| `SessionStart` | `resume\|clear\|compact` | `approval-status` |  | 조용히 한다 | 15s |
 | `PreToolUse` | — | `approval-gate` |  | 조용히 한다 | 20s |
 | `PreToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `guard-write` | 쓰기의 다섯 사고를 막는다 | **차단** · 경고 | 45s |
 | `PreToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `guard-generated` | 생성물을 손으로 고치는 것을 막는다 | **차단** | 45s |

@@ -41,6 +41,7 @@ import {
 } from '../../aidd-guide/harness/runtime/codex-hook-revision.mjs';
 import {
   acknowledge,
+  approvalEntrySource,
   approvalGateReason,
   approvalStatus,
 } from '../../aidd-guide/harness/runtime/codex-hook-approval.mjs';
@@ -289,16 +290,21 @@ assert.equal(checkCodexHookContext('0'.repeat(64)).ok, false);
 {
   const approvalDir = mkdtempSync(join(tmpdir(), 'ai-agent-hook-approval-'));
   const env = { AI_AGENT_HOOK_APPROVAL_DIR: approvalDir, CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex CLI' };
-  const approvalInput = { session_id: 'self-test-approval', tool_name: 'apply_patch', tool_input: { command: '*** Begin Patch\n*** Update File: documents/approval-probe.md\n@@\n*** End Patch' } };
+  const approvalInput = { session_id: 'self-test-approval', source: 'startup', tool_name: 'apply_patch', tool_input: { command: '*** Begin Patch\n*** Update File: documents/approval-probe.md\n@@\n*** End Patch' } };
   try {
-    assert.match(approvalStatus(approvalInput, { env }), /아직 승인되지 않았습니다/);
+    assert.match(approvalStatus(approvalInput, { env }), /codex -C/);
+    assert.match(approvalStatus(approvalInput, { env }), /`1` 또는 `2`로 답해주세요/);
     assert.match(approvalGateReason(approvalInput, { env }), /승인 전에는 일반 작업을 할 수 없습니다/);
     assert.equal(acknowledge({ ...approvalInput, prompt: '1' }, { env }), true);
     assert.equal(approvalGateReason(approvalInput, { env }), null);
+    assert.equal(approvalEntrySource(approvalInput, { env }), 'startup');
     const desktopEnv = { ...env, CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex Desktop' };
     const desktopInput = { ...approvalInput, session_id: 'self-test-desktop-approval' };
     assert.equal(acknowledge({ ...desktopInput, prompt: '2' }, { env: desktopEnv }), true);
-    assert.match(approvalGateReason(desktopInput, { env: desktopEnv }), /새 task에서 다시 시작/);
+    assert.match(approvalGateReason(desktopInput, { env: desktopEnv }), /새 Codex 앱 창/);
+    const restartedInput = { ...approvalInput, session_id: 'self-test-desktop-restarted' };
+    assert.equal(acknowledge({ ...restartedInput, prompt: '1' }, { env: desktopEnv }), true);
+    assert.equal(approvalGateReason(restartedInput, { env: desktopEnv }), null);
   } finally {
     rmSync(approvalDir, { recursive: true, force: true });
   }
@@ -343,11 +349,15 @@ assert.equal(
   true,
 );
 const hookConfig = JSON.parse(readFileSync(join(REPO, '.codex', 'hooks.json'), 'utf8'));
+const startupGroup = hookConfig.hooks.SessionStart.find((group) => group.matcher === 'startup');
 const resumeGroup = hookConfig.hooks.SessionStart.find((group) => group.matcher === 'resume|clear|compact');
-assert.equal(resumeGroup?.hooks?.[0]?.command.includes('session-brief.mjs'), true);
+assert.equal(startupGroup?.hooks?.[0]?.command.includes('approval-status.mjs'), true);
+assert.equal(resumeGroup?.hooks?.[0]?.command.includes('approval-status.mjs'), true);
+assert.equal(JSON.stringify(hookConfig.hooks.SessionStart).includes('session-brief.mjs'), false);
 const hookSurface = codexHookSurface().map((path) => path.replace(/\\/g, '/'));
 assert.equal(hookSurface.some((path) => path.endsWith('/.claude/hooks/guard-write.mjs')), true);
-assert.equal(hookSurface.some((path) => path.endsWith('/.codex/hooks/session-start.mjs')), true);
+assert.equal(hookSurface.some((path) => path.endsWith('/.codex/hooks/approved-session.mjs')), true);
+assert.equal(hookSurface.some((path) => path.endsWith('/.codex/hooks/session-start.mjs')), false);
 assert.equal(hookSurface.some((path) => path.endsWith('/.claude/hooks/context-gauge.mjs')), false);
 assert.equal(hookSurface.some((path) => path.endsWith('/.codex/hooks/self-test.mjs')), false);
 

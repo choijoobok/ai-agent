@@ -67,15 +67,21 @@ export function checkHarness() {
   if (!configuredRevision || configuredRevision !== currentRevision) {
     issues.push(`Codex hook revision이 실행면과 다르다: 설정 ${configuredRevision || '(없음)'} · 현재 ${currentRevision}`);
   }
-  for (const adapter of ['session-start.mjs', 'session-brief.mjs', 'approval-status.mjs', 'approval-gate.mjs', 'acknowledge.mjs', 'file-chain.mjs', 'pre-shell.mjs', 'log-raw.mjs']) {
+  for (const adapter of ['approval-status.mjs', 'approval-gate.mjs', 'acknowledge.mjs', 'file-chain.mjs', 'pre-shell.mjs', 'log-raw.mjs']) {
     if (!codexText.includes(adapter)) issues.push(`Codex adapter 배선 없음: ${adapter}`);
+  }
+  if (!read('.codex/hooks/acknowledge.mjs').includes('approved-session.mjs')) {
+    issues.push('Codex 승인 뒤 세션 시작 adapter가 acknowledge에 연결되지 않았다.');
   }
   const starts = codex?.hooks?.SessionStart ?? [];
   if (!starts.some((group) => String(group?.matcher ?? '').includes('compact'))) {
     issues.push('Codex SessionStart가 compact 이후 재주입을 보장하지 않는다.');
   }
   if (!starts.some((group) => String(group?.matcher ?? '') === 'startup')) {
-    issues.push('Codex SessionStart에 startup 전용 그룹이 없다 — 원격 동기화가 작업 중간에 돈다.');
+    issues.push('Codex SessionStart에 startup 전용 승인 그룹이 없다.');
+  }
+  if (JSON.stringify(starts).includes('session-brief.mjs') || JSON.stringify(starts).includes('session-start.mjs')) {
+    issues.push('Codex SessionStart가 훅 승인 전에 브리핑 또는 원격 동기화를 실행한다.');
   }
 
   const claude = json('.claude/settings.json', issues);
@@ -126,7 +132,7 @@ export function checkHarness() {
     '.claude/hooks/pre-write.mjs',
     '.claude/hooks/pre-shell.mjs',
     '.claude/hooks/post-write.mjs',
-    '.codex/hooks/session-start.mjs',
+    '.codex/hooks/approved-session.mjs',
     '.codex/hooks/file-chain.mjs',
     '.codex/hooks/pre-shell.mjs',
   ];
