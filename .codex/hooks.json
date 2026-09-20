@@ -7,8 +7,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/approval-status.mjs\" --hook-revision=9b4744bbcdccdbc9d699a8f39c43fd12909ead3d2350ff12f3b218b39555fcaa",
-            "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/approval-status.mjs') --hook-revision=9b4744bbcdccdbc9d699a8f39c43fd12909ead3d2350ff12f3b218b39555fcaa\"",
+            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/approval-status.mjs\" --hook-revision=6444a024626ad77ca772cf10a4dd6e0be26e02e9aa0a49bbdb5e9a61805e42b6",
+            "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/approval-status.mjs') --hook-revision=6444a024626ad77ca772cf10a4dd6e0be26e02e9aa0a49bbdb5e9a61805e42b6\"",
             "timeout": 15,
             "statusMessage": "Codex 훅 승인 상태 확인",
             "additionalContextLimit": 4000

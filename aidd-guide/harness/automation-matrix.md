@@ -47,7 +47,8 @@ tags: [harness, hooks, automation]
 Codex 훅 승인 게이트는 `SessionStart`에서 **브리핑보다 먼저** `/hooks` 직접 검토와 `1`·`2` 선택을
 요청하고, 모든 `PreToolUse`보다 먼저 일반 작업을 차단한다. 다만 승인되지 않은 훅 자체는 실행되지
 않을 수 있으므로, 승인된 `SessionStart`의 revision 문맥과 `AGENTS.md` preflight도 일반 업무 응답을
-보류하고 CI는 revision 누락을 막는다. 실제 훅 실행면 revision이 불일치할 때만 사용자에게 최신 훅 집행이
+보류하고 CI는 revision 누락을 막는다. revision은 `/hooks`에 보이는 `.codex/hooks.json`만 기준으로
+계산하며, Desktop의 신규 승인 재시작 표식은 만든 client에만 적용한다. 실제 훅 정의 revision이 불일치할 때만 사용자에게 최신 훅 집행이
 필요한 작업을 지금 이어갈지 확인한다. 그 선택은 현재 실행의 우회가 아니라 **client가 지원하는
 방식으로 작업 맥락을 잇는 선택**이다. 데스크톱 앱은 새 local task에 맥락을 인계하고, CLI는 같은
 task를 `codex resume`로 새 실행에 다시 붙인다. 문서·스킬 변경만으로 재연결하지 않으며, 지금

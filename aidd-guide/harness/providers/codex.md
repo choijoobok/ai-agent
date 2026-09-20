@@ -114,8 +114,11 @@ Windows fail-closed wrapper는 JSON 문자열을 명령에 직접 넣지 않고 
 `startup`에는 `git-sync` → `session-brief`, 그 밖에는 `session-brief`만 실행한다. Codex는
 `SessionStart.source`와 matcher를 정식 계약으로 제공한다. 이 구분은 `git-sync`를 `startup`에만
 한정해 압축·재개 중 파일을 바꾸지 않기 위해서다. Windows 데스크톱에서 `2`면 현재 창은
-`restart_required`로 잠기고 새 앱 창에서 `1`을 확인해야 한다. CLI의 `2`는 현재 세션에서 같은
-승인 뒤 chain을 실행한다. revision만으로 사전 훅
+`restart_required`로 잠기고, 같은 client의 새 앱 창에서 재시작·승인을 뜻하는 자연어 확인 뒤에만 chain을
+실행한다. 이 표식은 client kind별로 격리하므로 Desktop의 미완료 재시작이 새 CLI의 `1`·`2` 흐름을 막지
+않으며 CLI 승인도 Desktop 표식을 지우지 않는다. CLI의 `2`는 현재 세션에서 같은 승인 뒤 chain을 실행한다.
+revision은 `/hooks`에서 검토하는 `.codex/hooks.json`만 기준으로 삼아, 정의를 바꾸지 않는 실행기·정책·문서
+변경에는 재승인을 요구하지 않는다. revision만으로 사전 훅
 실행까지 추정하지 않고 아래 생존 카나리로 사전 명령 훅의 자동 집행 여부를 따로 알린다. 실제 훅
 실행면이 아닌 문서·스킬 변경은 새 실행을 요구하지 않는다.
 
@@ -190,10 +193,6 @@ node .codex/hooks/self-test.mjs
 
 `codex features list`에서 `hooks stable true`인지 확인한다. 지원하지 않는 버전이면 정적 검사와 adapter self-test까지만 검증되고, 지원 버전으로 올린 뒤 `/hooks` 신뢰 승인과 실제 SessionStart/PreToolUse/PostToolUse smoke test가 남는다. 훅은 유용한 guardrail이지 모든 도구를 포괄하는 보안 경계가 아니므로 CI의 동일 검사를 제거하지 않는다.
 
-재연결 smoke test는 client별로 나눈다. CLI는 `/hooks` 승인 뒤 현재 실행을 끝내고
-`codex resume <SESSION_ID>`로 돌아온다. 데스크톱 앱은 새 local task에 작업 맥락을 넘겨 이동한다.
-양쪽 모두 첫 요청에서 `[Codex 훅 실행 확인] revision=…`이 주입되는지, `PreToolUse` 카나리가
-차단되는지, 직전 완료 작업을 인계받았는지를 함께 본다. revision이나 맥락 인계가 실패하면 해당
-client의 재연결 지원을 완료로 쓰지 않는다. 카나리만 실패하면 자동 사전 차단은 미지원으로 기록하고
-사용자에게 알리되, 문서 규칙을 직접 적용하며 작업은 계속한다.
+재연결 smoke test는 client별로 나눈다. CLI는 `/hooks` 승인 뒤 현재 실행을 끝내고 `codex resume <SESSION_ID>`로 돌아오며, 데스크톱 앱은 새 local task에 작업 맥락을 넘겨 이동한다.
+양쪽 모두 첫 요청의 `[Codex 훅 실행 확인] revision=…`, `PreToolUse` 카나리 차단, 직전 완료 작업 인계를 함께 본다. revision·맥락 인계 실패면 해당 client의 재연결 지원을 완료로 쓰지 않으며, 카나리만 실패하면 자동 사전 차단은 미지원으로 기록하고 사용자에게 알리되 문서 규칙을 직접 적용하며 작업은 계속한다.
 관리형 Windows sandbox가 hook 안의 자식 `node --check`를 `EPERM`으로 거절하면 `hook-syntax`는 이를 구문 오류로 부르지 않고 **검사 불가**로 알린다. 그때 AI가 최상위 shell에서 같은 명령을 실행하며, 다음 사전 쓰기는 bootstrap이 실제 import 오류를 차단한다.

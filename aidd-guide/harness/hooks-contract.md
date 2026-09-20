@@ -142,12 +142,12 @@ startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로
 
 | 칸 | 값 |
 |---|---|
-| 실행면 | `.codex/hooks.json` · Codex adapter · 공통 chain · 정적 import · 훅 정책 데이터 |
-| revision | 실행면의 경로와 내용을 정렬해 SHA-256으로 계산한다. 설정 안의 revision 표식 자체는 제외한다 |
+| 실행면 | Codex가 `/hooks`에서 직접 검토하는 provider 정의 `.codex/hooks.json` |
+| revision | `.codex/hooks.json`의 SHA-256으로 계산한다. 설정 안의 revision 표식 자체는 제외하며, 정의를 바꾸지 않는 정책·실행기·문서 변경은 재승인을 요구하지 않는다 |
 | 동기화 | 훅 작성자가 `node aidd-guide/harness/runtime/codex-hook-revision.mjs --sync`를 실행해 startup 명령의 인자에 고정한다 |
 | 실행 확인 | Codex `SessionStart` adapter가 실행 전후 revision과 설정값이 모두 같을 때만 `[Codex 훅 실행 확인]`을 문맥에 넣는다 |
-| 승인 상태 | `SessionStart`는 브리핑 없이 `approval-status` adapter만 세션별·revision별로 매 `startup`·`resume`·`clear`·`compact`에 주입한다. 상태는 Git 무시 `chat-history/.codex-hook-approvals/`에만 둔다 |
-| 선언·차단 | `UserPromptSubmit`의 `acknowledge` adapter가 `/hooks` 직접 검토 뒤의 `1`(기존)·`2`(신규)를 기록한다. `1` 또는 CLI의 `2` 뒤에만 `approved-session`이 `git-sync`·브리핑·실행 확인을 내고, 모든 `PreToolUse`보다 앞선 `approval-gate`가 승인 전 일반 작업을 막는다. Windows 데스크톱의 `2`는 현재 창을 잠그고 새 앱 창을 요구한다. 읽기·하네스 유지보수·관측 경로 close-out만 연다 |
+| 승인 상태 | `SessionStart`는 브리핑 없이 `approval-status` adapter만 세션별·revision별로 매 `startup`·`resume`·`clear`·`compact`에 주입한다. 상태는 Git 무시 `chat-history/.codex-hook-approvals/`에만 두며, 구형 revision 범위 상태는 `unconfirmed`로 fail-closed 마이그레이션한다 |
+| 선언·차단 | `UserPromptSubmit`의 `acknowledge` adapter가 `/hooks` 직접 검토 뒤의 `1`(기존)·`2`(신규)를 기록하고, 모호한 자연어 선언은 `declared`로 남겨 시점을 다시 묻는다. `1` 또는 CLI의 `2` 뒤에만 `approved-session`이 `git-sync`·브리핑·실행 확인을 낸다. Desktop의 `2`는 client·revision·원 세션 키가 든 `restart_required`를 만들며, 같은 Desktop의 새 창에서 재시작·승인을 뜻하는 자연어 확인 뒤에만 해제한다. Desktop 미완료 재시작은 CLI 승인 흐름을 막지 않고 CLI 승인은 그 표식을 지우지 않는다. 모든 `PreToolUse`보다 앞선 `approval-gate`가 승인 전 일반 작업을 막는다 |
 | 판정 | AGENTS.md의 Codex 전용 preflight가 매 요청에서 문맥 revision과 현재 실행면을 대조한다 |
 | 강도 | 불일치·확인 부재면 모델이 **일반 업무**를 보류한다. `harness-check`와 CI는 stale revision을 오류로 막는다 |
 | 수리 차선 | 확인이 없어도 **읽기 전부 · `harness-sync` · 하네스 경로 한정 커밋**은 연다(아래) |

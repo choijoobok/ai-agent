@@ -1,6 +1,7 @@
 /** Codex 어댑터의 patch 정규화와 공통 차단 연결을 실제 자식 프로세스로 확인한다. */
 
 import { strict as assert } from 'node:assert';
+import { createHash } from 'node:crypto';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -286,7 +287,7 @@ assert.equal(checkCodexHookContext(hookRevision).ok, true);
 assert.equal(checkCodexHookContext('').ok, false);
 assert.equal(checkCodexHookContext('0'.repeat(64)).ok, false);
 
-/* AIDD와 동일하게 매 세션은 명시 승인 전 잠기며, 1/2 선택으로만 상태가 전이한다. */
+/* AIDD와 동일하게 매 세션은 명시 승인 전 잠기며, client-kind별 재시작 상태를 격리한다. */
 {
   const approvalDir = mkdtempSync(join(tmpdir(), 'ai-agent-hook-approval-'));
   const env = { AI_AGENT_HOOK_APPROVAL_DIR: approvalDir, CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex CLI' };
@@ -302,9 +303,49 @@ assert.equal(checkCodexHookContext('0'.repeat(64)).ok, false);
     const desktopInput = { ...approvalInput, session_id: 'self-test-desktop-approval' };
     assert.equal(acknowledge({ ...desktopInput, prompt: '2' }, { env: desktopEnv }), true);
     assert.match(approvalGateReason(desktopInput, { env: desktopEnv }), /새 Codex 앱 창/);
+    const statePath = join(approvalDir, 'hook-state.json');
+    const afterDesktop = JSON.parse(readFileSync(statePath, 'utf8'));
+    assert.equal(afterDesktop.version, 2);
+    assert.equal(afterDesktop.revision_scope, 'codex-hook-definition');
+    assert.equal(afterDesktop.restart_required?.client, 'desktop');
+
+    /* Desktop의 미완료 재시작이 새 CLI의 1·2 승인 흐름을 막거나 지우지 않는다. */
+    for (const [session_id, prompt] of [['self-test-cli-existing', '1'], ['self-test-cli-new', '2']]) {
+      const cliInput = { ...approvalInput, session_id };
+      assert.equal(acknowledge({ ...cliInput, prompt }, { env }), true);
+      assert.equal(approvalGateReason(cliInput, { env }), null);
+      const state = JSON.parse(readFileSync(statePath, 'utf8'));
+      assert.equal(state.restart_required?.client, 'desktop');
+    }
+
+    /* Desktop 새 창은 번호 1만으로는 열리지 않고 재시작·승인 의미를 확인해야 한다. */
     const restartedInput = { ...approvalInput, session_id: 'self-test-desktop-restarted' };
-    assert.equal(acknowledge({ ...restartedInput, prompt: '1' }, { env: desktopEnv }), true);
+    assert.equal(acknowledge({ ...restartedInput, prompt: '1' }, { env: desktopEnv }), false);
+    assert.match(approvalGateReason(restartedInput, { env: desktopEnv }), /새 앱 창에서 재시작/);
+    assert.equal(acknowledge({ ...restartedInput, prompt: '새 Codex 창을 열어 다시 시작했고 훅도 승인된 상태입니다' }, { env: desktopEnv }), true);
     assert.equal(approvalGateReason(restartedInput, { env: desktopEnv }), null);
+
+    /* 오래된 CLI 세션은 최신 정의를 검토한 뒤 2로 현재 세션에서 재승인한다. */
+    const staleInput = { ...approvalInput, session_id: 'self-test-cli-stale' };
+    assert.equal(acknowledge({ ...staleInput, prompt: '1' }, { env }), true);
+    const staleState = JSON.parse(readFileSync(statePath, 'utf8'));
+    const staleKey = createHash('sha256').update(staleInput.session_id).digest('hex');
+    staleState.sessions[staleKey].start_revision = 'old-revision';
+    writeFileSync(statePath, `${JSON.stringify(staleState)}\n`, 'utf8');
+    assert.match(approvalGateReason(staleInput, { env }), /현재 CLI 세션/);
+    assert.equal(acknowledge({ ...staleInput, prompt: '2' }, { env }), true);
+    assert.equal(approvalGateReason(staleInput, { env }), null);
+
+    /* v1 상태는 provider 정의 revision으로 자동 승격하지 않고 다시 확인한다. */
+    const legacyState = JSON.parse(readFileSync(statePath, 'utf8'));
+    legacyState.version = 1;
+    delete legacyState.revision_scope;
+    writeFileSync(statePath, `${JSON.stringify(legacyState)}\n`, 'utf8');
+    assert.match(approvalGateReason(approvalInput, { env }), /승인 전에는 일반 작업을 할 수 없습니다/);
+    const migrated = JSON.parse(readFileSync(statePath, 'utf8'));
+    assert.equal(migrated.version, 2);
+    assert.equal(migrated.revision_scope, 'codex-hook-definition');
+    assert.equal(migrated.sessions[createHash('sha256').update(approvalInput.session_id).digest('hex')].state, 'unconfirmed');
   } finally {
     rmSync(approvalDir, { recursive: true, force: true });
   }
@@ -312,7 +353,7 @@ assert.equal(checkCodexHookContext('0'.repeat(64)).ok, false);
 assert.equal(codexClientSurface({ CODEX_APP_TOOLS_PIPE_PATH: 'pipe' }), 'desktop');
 assert.equal(codexClientSurface({ CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex Desktop' }), 'desktop');
 assert.equal(codexClientSurface({ CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex CLI' }), 'cli');
-assert.equal(codexClientSurface({}), 'unknown');
+assert.equal(codexClientSurface({}), 'cli');
 const desktopReentry = codexHookReentryMessage('desktop');
 assert.match(desktopReentry, /새 task로 이동/);
 assert.match(desktopReentry, /최신 훅 집행이 필요한 작업을 지금 이어갈까요/);

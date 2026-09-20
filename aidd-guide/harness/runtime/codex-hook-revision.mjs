@@ -52,14 +52,12 @@ export function codexHookSurface(repo = REPO) {
   }
 }
 
-/** revision 표식 자체를 제외한 현재 Codex 훅 실행면의 SHA-256이다. */
+/** `/hooks`가 실제로 검토하는 provider 정의만의 SHA-256이다. */
 export function currentCodexHookRevision(repo = REPO) {
   const hash = createHash('sha256');
-  for (const file of codexHookSurface(repo)) {
-    const path = rel(repo, file);
-    const body = path === '.codex/hooks.json' ? withoutRevision(read(file)) : read(file);
-    hash.update(path).update('\0').update(body.replace(/\r\n/g, '\n')).update('\0');
-  }
+  const path = '.codex/hooks.json';
+  const body = withoutRevision(read(join(repo, path)));
+  hash.update(path).update('\0').update(body.replace(/\r\n/g, '\n')).update('\0');
   return hash.digest('hex');
 }
 
@@ -78,7 +76,7 @@ export function configuredCodexHookRevision(repo = REPO) {
   }
 }
 
-/** 훅 작성자가 한 번 실행한다. 공통 훅 변경도 Codex 설정 hash 변경으로 이어진다. */
+/** 훅 작성자가 한 번 실행한다. `/hooks`에 보이는 정의 변경만 재승인을 요구한다. */
 export function syncCodexHookRevision(repo = REPO) {
   const path = join(repo, '.codex/hooks.json');
   const config = JSON.parse(read(path));
@@ -138,7 +136,7 @@ export function codexClientSurface(env = process.env) {
   if (String(env?.CODEX_APP_TOOLS_PIPE_PATH ?? '').trim() || originator === 'codex desktop') {
     return 'desktop';
   }
-  if (originator.includes('cli')) return 'cli';
+  if (originator.includes('cli') || !originator) return 'cli';
   return 'unknown';
 }
 
