@@ -40,8 +40,9 @@ tags: [harness, codex, adapter]
 `SessionStart`의 `startup` 그룹은 `session-start.mjs`로 `git-sync` → `session-brief`를 실행하고,
 `resume|clear|compact` 그룹은 `session-brief.mjs`로 상태를 재주입한다. startup adapter는 아래 주의
 문구를 CLI용 JSON `systemMessage`로 내고, 첫 사용자 요청의 `final_answer` 첫 줄에 같은 문구를
-표시하라는 지시와 브리핑을 모델용 `additionalContext`로 낸다. `commentary`에 표시한 것은 충족으로
-보지 않으며 이미 표시했더라도 final_answer에서 다시 표시한다. 재개 adapter는 대화 중간 반복을
+세션당 한 번만 표시하라는 지시와 브리핑을 모델용 `additionalContext`로 낸다. `commentary`에 표시한 것은 충족으로
+보지 않으며 이미 표시했더라도 첫 final_answer에서 다시 표시한다. 이전 assistant final_answer에 이미
+표시됐다면 이후 응답에서는 절대 반복하지 않는다. 재개 adapter는 대화 중간 반복을
 피하려고 브리핑만 넣는다.
 두 `SessionStart` 그룹의 `statusMessage`는 Windows 앱에 `Codex 훅 승인 상태 확인`으로 표시한다.
 

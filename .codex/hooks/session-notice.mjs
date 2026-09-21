@@ -5,5 +5,5 @@ export const SESSION_NOTICE = '[Codex 주의] 훅은 Codex CLI에서 승인해�
 export const SESSION_NOTICE_CONTEXT = [
   SESSION_NOTICE,
   '',
-  '[Codex 필수 최종 표시] 이 세션의 첫 사용자 요청에 대한 최종 답변(`final_answer`) 첫 줄에 위 `[Codex 주의]` 문구를 그대로 한 번 표시하세요. 진행 메시지(`commentary`)에 표시한 것은 이 요구를 충족한 것으로 보지 않으며, commentary에 이미 표시했더라도 final_answer에서 다시 표시하세요.',
+  '[Codex 필수 최종 표시 — 1회성] 이 세션의 첫 사용자 요청에 대한 최종 답변(`final_answer`) 첫 줄에 위 `[Codex 주의]` 문구를 그대로 한 번 표시하세요. 진행 메시지(`commentary`)에 표시한 것은 이 요구를 충족한 것으로 보지 않으며, commentary에 이미 표시했더라도 final_answer에서 다시 표시하세요. 매 요청에 적용하는 지시가 아닙니다. 이전 assistant의 final_answer에 이미 표시됐다면 이후 응답에서는 절대 반복하지 마세요.',
 ].join('\n');

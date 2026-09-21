@@ -88,6 +88,9 @@ export function checkHarness() {
   if (!agentsText.includes('final_answer') || !agentsText.includes('commentary') || !agentsText.includes('충족한 것으로 보지')) {
     issues.push('AGENTS.md에 Windows 앱 최종 응답용 Codex 훅 주의 표시 정책이 없다.');
   }
+  if (!agentsText.includes('이후 응답에서는 절대 반복하지 않는다')) {
+    issues.push('AGENTS.md에 Codex 훅 주의의 세션 내 반복 금지 정책이 없다.');
+  }
   for (const [name, cfg] of [['Claude', claude], ['Codex', codex]]) {
     for (const group of cfg?.hooks?.PreToolUse ?? []) {
       for (const hook of group?.hooks ?? []) {

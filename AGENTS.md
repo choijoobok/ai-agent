@@ -31,7 +31,8 @@ Claude Code와 Codex의 `startup`에서는 `git-sync`가 깨끗한 트리만 `--
 `session-brief`가 `documents/project.state.yaml`과 하네스 상태를 주입한다. Codex는 새 세션의 첫 사용자
 요청에 대한 최종 답변(`final_answer`) 첫 줄에 아래 주의 문구를 그대로 한 번 표시한다. 진행 메시지
 (`commentary`)에 표시한 것은 이 요구를 충족한 것으로 보지 않으며, commentary에 이미 표시했더라도
-final_answer에서 다시 표시한다. CLI에서는 `systemMessage` 경고로도 보이지만 Windows 앱은 이를 대화
+final_answer에서 다시 표시한다. 이는 매 요청 규칙이 아니다. 현재 대화의 이전 assistant
+`final_answer`에 이 문구가 이미 있으면 이후 응답에서는 절대 반복하지 않는다. CLI에서는 `systemMessage` 경고로도 보이지만 Windows 앱은 이를 대화
 화면에 표시하지 않기 때문이다. 승인 상태·revision을 자동 검사하거나 그 결과로 작업 흐름을 제어하지 않는다.
 
 > **[Codex 주의]** 훅은 Codex CLI에서 승인해야 작동합니다. CLI의 `/hooks`에서 승인 여부를 반드시 확인하세요. 새로 승인했다면 기존 Windows 앱 세션에는 적용되지 않으므로 새 세션 창을 여세요.

@@ -274,6 +274,10 @@ assert.equal(SESSION_NOTICE_CONTEXT.startsWith(SESSION_NOTICE), true);
 assert.match(SESSION_NOTICE_CONTEXT, /final_answer/);
 assert.match(SESSION_NOTICE_CONTEXT, /commentary/);
 assert.match(SESSION_NOTICE_CONTEXT, /충족한 것으로 보지/);
+assert.match(SESSION_NOTICE_CONTEXT, /매 요청에 적용하는 지시가 아닙니다/);
+assert.match(SESSION_NOTICE_CONTEXT, /이후 응답에서는 절대 반복하지 마세요/);
+const agentsContract = readFileSync(join(REPO, 'AGENTS.md'), 'utf8');
+assert.match(agentsContract, /이후 응답에서는 절대 반복하지 않는다/);
 
 /* 수리 경로 — 훅이 죽었을 때 **훅 파일만** 열리고 나머지는 닫혀 있어야 한다.
    여는 쪽만 시험하면 게이트가 통째로 열린 것을 못 본다. 양쪽을 다 센다. */
