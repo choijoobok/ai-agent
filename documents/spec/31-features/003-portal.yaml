@@ -50,7 +50,8 @@ features:
     screen: SCR-101
     roadmap: RM-P1
     title: "채팅 도움말·주의사항 조회"
-    reqs: [REQ-101]
+    detail: "새 대화 화면에 'AI에게 무엇을 할 수 있는지 물어보세요'라는 짧은 안내를 모델 호출 없이 표시한다. 사용자가 기능·사용 방법·질의 예시를 물으면 활성 사용 안내 지식을 검색해 답하고, 현재 접근 가능한 업무 범주·데이터소스는 짧게 요약한다. RM-P2의 SCR-107이 제공되면 상세 접근 가능 데이터 목록으로 안내한다"
+    reqs: [REQ-101, REQ-308]
   - id: FEAT-108
     module: portal
     screen: SCR-101
