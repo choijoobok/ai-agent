@@ -26,7 +26,7 @@ import {
   screenUrlOfFrontend,
 } from '../../.claude/hooks/screen-registry.mjs';
 import { crashOutput, patchTargets as bootstrapTargets } from '../../aidd-guide/harness/runtime/pretool-bootstrap.mjs';
-import { SESSION_NOTICE } from './session-notice.mjs';
+import { SESSION_NOTICE, SESSION_NOTICE_CONTEXT } from './session-notice.mjs';
 import { testSpecSet } from '../../aidd-guide/harness/runtime/spec-set.self-test.mjs';
 
 testSpecSet();
@@ -265,9 +265,13 @@ const startupGroup = hookConfig.hooks.SessionStart.find((group) => group.matcher
 const resumeGroup = hookConfig.hooks.SessionStart.find((group) => group.matcher === 'resume|clear|compact');
 assert.equal(startupGroup?.hooks?.[0]?.command.includes('session-start.mjs'), true);
 assert.equal(resumeGroup?.hooks?.[0]?.command.includes('session-brief.mjs'), true);
+assert.equal(startupGroup?.hooks?.[0]?.statusMessage, 'Codex 훅 승인 상태 확인');
+assert.equal(resumeGroup?.hooks?.[0]?.statusMessage, 'Codex 훅 승인 상태 확인');
 assert.equal(JSON.stringify(hookConfig.hooks).includes('approval-'), false);
 assert.match(SESSION_NOTICE, /`\/hooks`에서 승인 여부를 반드시 확인하세요/);
 assert.match(SESSION_NOTICE, /기존 Windows 앱 세션에는 적용되지 않으므로 새 세션 창을 여세요/);
+assert.equal(SESSION_NOTICE_CONTEXT.startsWith(SESSION_NOTICE), true);
+assert.match(SESSION_NOTICE_CONTEXT, /첫 사용자 응답 첫 줄/);
 
 /* 수리 경로 — 훅이 죽었을 때 **훅 파일만** 열리고 나머지는 닫혀 있어야 한다.
    여는 쪽만 시험하면 게이트가 통째로 열린 것을 못 본다. 양쪽을 다 센다. */
@@ -361,13 +365,14 @@ function captureEmit(outputs, eventName, options) {
 
 /* Codex 는 JSON 만 읽는다 — 날 것이면 `JSON.parse` 가 던지고, 그것이 이 시험의 요점이다. */
 const codexStart = JSON.parse(captureEmit(
-  [SESSION_NOTICE, '[프로젝트 상태] …'],
+  [SESSION_NOTICE_CONTEXT, '[프로젝트 상태] …'],
   'SessionStart',
   { systemMessage: SESSION_NOTICE },
 ));
 assert.equal(codexStart.systemMessage, SESSION_NOTICE);
 assert.equal(codexStart.hookSpecificOutput.hookEventName, 'SessionStart');
 assert.equal(codexStart.hookSpecificOutput.additionalContext.includes(SESSION_NOTICE), true);
+assert.equal(codexStart.hookSpecificOutput.additionalContext.includes('첫 사용자 응답 첫 줄'), true);
 assert.equal(codexStart.hookSpecificOutput.additionalContext.includes('[프로젝트 상태] …'), true);
 
 /* 공식 계약상 빈 출력도 성공이지만, 실측된 `PreToolUse Failed` 표시를 되살리지 않도록

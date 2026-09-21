@@ -10,7 +10,7 @@
             "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/session-start.mjs\"",
             "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/session-start.mjs')\"",
             "timeout": 15,
-            "statusMessage": "세션 브리핑과 훅 주의사항",
+            "statusMessage": "Codex 훅 승인 상태 확인",
             "additionalContextLimit": 4000
           }
         ]
@@ -23,7 +23,7 @@
             "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/session-brief.mjs\"",
             "commandWindows": "powershell -NoProfile -Command \"node (Join-Path (git rev-parse --show-toplevel) '.codex/hooks/session-brief.mjs')\"",
             "timeout": 15,
-            "statusMessage": "세션 브리핑과 훅 주의사항",
+            "statusMessage": "Codex 훅 승인 상태 확인",
             "additionalContextLimit": 4000
           }
         ]

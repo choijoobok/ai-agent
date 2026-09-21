@@ -28,8 +28,10 @@ ai-agent/
 ## 2. 세션 진입 — 업무보다 먼저
 
 Claude Code와 Codex의 `startup`에서는 `git-sync`가 깨끗한 트리만 `--ff-only`로 당기고,
-`session-brief`가 `documents/project.state.yaml`과 하네스 상태를 주입한다. Codex는 시작·재개 시
-아래 주의 문구를 사용자 UI에 보여 주고 모델 문맥에도 주입하되, 승인 상태·revision을 자동 검사하거나 그 결과로 작업 흐름을 제어하지 않는다.
+`session-brief`가 `documents/project.state.yaml`과 하네스 상태를 주입한다. Codex는 새 세션의
+첫 사용자 응답 첫 줄에 아래 주의 문구를 그대로 한 번 표시한다. CLI에서는 `systemMessage` 경고로도
+보이지만 Windows 앱은 이를 대화 화면에 표시하지 않기 때문이다. 승인 상태·revision을 자동 검사하거나
+그 결과로 작업 흐름을 제어하지 않는다.
 
 > **[Codex 주의]** 훅은 Codex CLI에서 승인해야 작동합니다. CLI의 `/hooks`에서 승인 여부를 반드시 확인하세요. 새로 승인했다면 기존 Windows 앱 세션에는 적용되지 않으므로 새 세션 창을 여세요.
 

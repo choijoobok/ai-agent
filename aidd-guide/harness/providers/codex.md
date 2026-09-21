@@ -38,8 +38,10 @@ tags: [harness, codex, adapter]
 ## 세션 시작
 
 `SessionStart`의 `startup` 그룹은 `session-start.mjs`로 `git-sync` → `session-brief`를 실행하고,
-`resume|clear|compact` 그룹은 `session-brief.mjs`로 상태를 재주입한다. 두 adapter는 아래 주의 문구를
-사용자 UI용 JSON `systemMessage`로 내고, 같은 문구와 브리핑을 모델용 `additionalContext`로 낸다.
+`resume|clear|compact` 그룹은 `session-brief.mjs`로 상태를 재주입한다. startup adapter는 아래 주의
+문구를 CLI용 JSON `systemMessage`로 내고, 첫 사용자 응답 첫 줄에 같은 문구를 표시하라는 지시와
+브리핑을 모델용 `additionalContext`로 낸다. 재개 adapter는 대화 중간 반복을 피하려고 브리핑만 넣는다.
+두 `SessionStart` 그룹의 `statusMessage`는 Windows 앱에 `Codex 훅 승인 상태 확인`으로 표시한다.
 
 > **[Codex 주의]** 훅은 Codex CLI에서 승인해야 작동합니다. CLI의 `/hooks`에서 승인 여부를 반드시 확인하세요. 새로 승인했다면 기존 Windows 앱 세션에는 적용되지 않으므로 새 세션 창을 여세요.
 
@@ -65,6 +67,10 @@ Codex가 읽는 출력은 사용자에게 경고를 표시하는 `systemMessage`
 `hookSpecificOutput.additionalContext`를 함께 가진 JSON 하나다. adapter가 emitter 밖에서 stdout에 쓰면
 출력 형태가 섞이므로, 항상 `outputs` 배열을 `emitHookResults` 한 곳으로 보낸다. `PreToolUse` 허용은
 결정 없는 중립 JSON을 낸다.
+
+공식 훅 계약은 `systemMessage`를 UI 또는 이벤트 스트림에 경고로 노출한다고 정의한다. CLI에서는
+보이지만 현재 Windows 앱은 대화 화면에 표시하지 않는다. Windows 앱의 사용자 가시성은 startup의
+모델 지시로 보완하며, 실제 새 세션 첫 응답에서 확인한다.
 
 Codex에는 수치 사용량 경고 훅을 연결하지 않는다. 자동 또는 수동 압축 뒤
 `SessionStart(source=compact)`가 다시 실행되어 `session-brief`가 프로젝트 상태와 하네스 정합성을
