@@ -4,7 +4,7 @@ title: "P1 발견 — 프로세스와 요구사항"
 category: phase
 type: operation
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-21
 status: active
 sources: []
 tier: 1
@@ -14,7 +14,7 @@ tags: [discovery, requirement]
 # P1 발견 — 업무 프로세스와 요구사항
 
 > 목표: **업무 흐름**을 먼저 그리고, 거기서 요구사항을 **뽑아낸다**. 기능 목록에서 시작하지 않는다.
-> 산출물: `documents/spec/03-glossary/_index.yaml`, `documents/spec/03-glossary/_index.yaml`, `documents/spec/03-glossary/_index.yaml`
+> 산출물: `documents/spec/03-glossary/_index.yaml`, `documents/spec/11-processes/_index.yaml`, `documents/spec/10-requirements/_index.yaml`
 > 소요: 사용자 대화 2~4회
 
 ## 1. 순서가 중요하다

@@ -9,7 +9,7 @@
 | 속성 | 설명 |
 |---|---|
 | 이름 | ai-agent |
-| 무엇 | **기업용 Agentic AI Hub** — 백오피스 템플릿 위의 `admin` · `portal` · `agent`로 레거시 업무 시스템을 자연어 조회·실행·자동화에 연결한다 |
+| 무엇 | **기업용 Agentic AI Hub** — 백오피스 기반 `system`과 `admin` · `portal` · `agent` 네 모듈로 레거시 업무 시스템을 자연어 조회·실행·자동화에 연결한다 |
 | 스택 | Spring Boot 4.x · JDK 25 · JPA/QueryDSL · Liquibase · PostgreSQL(AI 전용 DB) / React 19 · TypeScript · AntD 6 · AG Grid 36 · Vite |
 | 방식 | 사용자는 고객·의사결정자, AI는 PM·BA·AA·DBA·개발자·테스터를 겸한다. 표준은 `aidd-guide/`와 기계 게이트로 집행한다 |
 | 제약 | 고객사 폐쇄망에서도 사람이 읽고 재현할 수 있도록 소스와 문서를 짧고 공통화한다 |
@@ -89,7 +89,7 @@ final_answer에서 다시 표시한다. 이는 매 요청 규칙이 아니다. �
    되돌리기 비싼 결정은 ADR, 미룬 일은 원래 자리에 `@defer <기한|?>`로 남긴다.
 3. 한 사실은 한 곳에서만 정의하고 다른 곳은 링크한다.
 4. 낡은 문서는 삭제하고, 삭제 사실은 별도 목록 없이 git 기록에 맡긴다.
-5. 정본은 커밋하고 파생물은 손으로 고치지 않는다. 예외적으로 커밋하는 생성물은 시드 CSV뿐이다.
+5. 정본은 커밋하고 파생물은 손으로 고치지 않는다. 파생물의 커밋 여부는 `.gitignore`와 생성 규약이 정한다. 시드 CSV 외에도 provider별 `SKILL.md`와 `developer-guide/07-harness.md`처럼 재현 경로에 필요한 생성물은 같은 커밋에 담는다.
 
 ## 5. 절대 규칙 — 모든 응답과 변경에 적용
 
@@ -106,7 +106,7 @@ final_answer에서 다시 표시한다. 이는 매 요청 규칙이 아니다. �
    `test` · `perf` · `build` · `ci` · `state`. `state`는 `documents/project.state.yaml`의
    게이트 전이·검증 기록처럼 **지금 어디인가만 바꾸는 커밋**이며, 다른 타입과 섞지 않는다.
    `guard-commit`이 이 목록을 집행한다 — **목록의 원본은 훅이 아니라 여기다.**
-4. `documents/spec/`이 유일한 진실이고 `documents/generated/`는 파생 뷰다.
+4. `documents/spec/`은 미구현 범위의 제품 사실의 유일한 정본이고 `documents/generated/`는 파생 뷰다. 구현된 현재 사실은 소스가 우선한다.
 5. 요구사항·유즈케이스·기능·엔티티·API·화면·테스트는 ID와 상위 ID 연결을 갖는다.
    미확인 전제는 `ASM-###`으로 `documents/decisions/ASSUMPTIONS.md`에 기록하고 산출물에서 참조한다.
 6. 화면 문구는 `MSG` 키 + `label()`, 서버 문구는 `MsgKey` + `SYS_MESSAGE`를 쓴다.
@@ -119,7 +119,7 @@ final_answer에서 다시 표시한다. 이는 매 요청 규칙이 아니다. �
 9. 큰 파일은 통째로 읽지 않고 검색으로 필요한 범위를 먼저 좁힌다.
 10. 리뷰·점검은 문제·위험·누락부터 쓴다. 테스트 통과만으로 완료라 하지 않고 업무 규칙을
    뒤집었을 때 테스트가 실패하는지 확인한다.
-11. 생성 산출물(시드 CSV · `build/deliverables/` · `documents/generated/`)은 손편집하지 않는다.
+11. 생성 산출물(예: 시드 CSV · provider별 `SKILL.md` · `developer-guide/07-harness.md` · `build/deliverables/` · `documents/generated/`)은 손편집하지 않는다.
    `mockup.html`은 그림만 편집하며 표와 확인 목록은 건드리지 않는다.
 12. 게이트 승인에는 결정 카드(업무 언어 3~5줄)와 역질문 1~2개를 붙인다. 절차 축소 요청은
     `줄일 수 있음 / 절대 안 됨 / 지금은 빠르나 나중에 비쌈`으로 구분한다.
@@ -189,7 +189,7 @@ node aidd-guide/harness/runtime/harness-check.mjs && node aidd-guide/meta/_meta/
 - 커밋은 stdin으로 메시지를 넘겨 `git commit -F - -- <경로…>`처럼 경로를 지정한다.
 - 갈라진 main은 `git merge --no-commit`으로 통합한다. merge 상태에서는 `git commit -F -`를
   쓰며, 상세와 후속 검증은 [`process/14-collaboration.md`](aidd-guide/process/14-collaboration.md)를 따른다.
-- 푸시는 사용자가 요청할 때만 한다. 커밋하는 생성물은 시드 CSV뿐이다.
+- 푸시는 사용자가 요청할 때만 한다. 생성물의 커밋 여부는 §4의 규칙을 따른다.
 - AI 커밋은 마지막 trailer 묶음에 저장소가 정한 `Agent: <이름>`을 남긴다.
 
 ## 10. `chat-history/` — 형상 관리 제외
