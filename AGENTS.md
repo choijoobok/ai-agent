@@ -41,6 +41,7 @@ Claude Code와 Codex의 `startup`에서는 `git-sync`가 깨끗한 트리만 `--
 
 1. `documents/project.state.yaml`과 현재 작업흐름의 `aidd-guide/phase/P{n}-*.md`를 읽는다.
 2. **지금 여기 / 막힌 것 / 다음 할 일**의 3줄 브리핑을 먼저 제시한다.
+   사용자가 프로젝트의 **"브리핑"**을 요청하면 현재 상태 요청으로 해석해 `pm-status`를 적용한다.
 3. pull 실패나 더러운 트리는 먼저 사용자 변경을 보존한 채 정리한다.
 4. 하네스 불일치는 `harness-sync`로 먼저 복구한다.
 5. 훅 실행면이 작업 중 바뀌면 해당 규칙을 다시 읽고, 필요하면 다음 세션에서 적용 상태를 확인한다.
@@ -59,7 +60,7 @@ Claude Code와 Codex의 `startup`에서는 `git-sync`가 깨끗한 트리만 `--
 
 | 요청 | 먼저 읽거나 사용할 것 |
 |---|---|
-| 현재 상태 | `project.state.yaml` → `pm-status` |
+| 현재 상태 · 프로젝트 브리핑 | `project.state.yaml` → `pm-status` |
 | 새 프로젝트 착수 | `kickoff` → `phase/P0-inception.md` (빈 템플릿에서 프로젝트를 세울 때만) |
 | 다음 차수 | `phase-gate`의 G6 → `process/04-gates.md` §5 |
 | 요구사항·설계 산출물 | `artifact/INDEX.md` |
