@@ -52,7 +52,7 @@
 | [`01-actors/_index.yaml`](spec/01-actors/_index.yaml) | P0 | **액터 11**(ACT-) — 사람 5 · 외부 시스템 3 · 외부 조직 3 + 모듈 3 | 이관 |
 | [`02-constraints/_index.yaml`](spec/02-constraints/_index.yaml) | P0 | **설계 원칙 10**(PRN-) · 기술 제약 11 · 배포 3 · **착수 시 확정 18**(CON-) · 개발 제약 2 | 이관 |
 | [`03-glossary/_index.yaml`](spec/03-glossary/_index.yaml) | P1 | **용어 54**(TRM- · 대화·실행·정책·실행기반·처리중입력) · **프레임워크 어휘 24** · **헷갈리는 짝 10** · 턴 상태 6 · 대기 유형 3 · 회차 규칙 5 | 이관 |
-| [`10-requirements/_index.yaml`](spec/10-requirements/_index.yaml) | P1 | **요구사항 59**(REQ-) — 질의 처리 26 · 처리 중 입력 6 · 보안·거버넌스 14 · 저장된 조회 7 · 메타데이터 4 · **유도 2** | 이관 |
+| [`10-requirements/_index.yaml`](spec/10-requirements/_index.yaml) | P1 | **요구사항 84**(REQ-) — 질의 처리·턴 수명주기 38 · 보안·거버넌스 19 · 저장된 조회 7 · 메타데이터·지식 검토 8 · **유도 2** · system 기반 10 | 이관 |
 | [`11-processes/_index.yaml`](spec/11-processes/_index.yaml) | P1 | 업무 프로세스 As-Is / To-Be | **비어 있다** |
 | [`20-architecture/_index.yaml`](spec/20-architecture/_index.yaml) | P2 | 구성 · **논리 구성도**(노드 14 · 간선 16 · 불변식 4) · 모듈 경계 6 · 딥링크 · 데이터소스 · LLM 연동 · 신원 매핑 · 지식 검색 · **실행 점유**(ARCH-) | 이관 |
 | [`21-nfr/_index.yaml`](spec/21-nfr/_index.yaml) | P2 | **비기능 19**(NFR-) — 성능 5 · 비용 8 · 안정성 6 (**목표 수치 전부 미정**) | 이관 |

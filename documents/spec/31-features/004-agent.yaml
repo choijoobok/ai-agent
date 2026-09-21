@@ -5,7 +5,7 @@ features:
     module: agent
     roadmap: RM-P1
     title: "질의 처리 오케스트레이션 (턴·스텝 관리)"
-    reqs: [REQ-004, REQ-009, REQ-010, REQ-015]
+    reqs: [REQ-004, REQ-009, REQ-010, REQ-015, REQ-038]
   - id: FEAT-202
     module: agent
     roadmap: RM-P1
@@ -51,8 +51,8 @@ features:
     module: agent
     roadmap: RM-P1
     title: "결과 후처리 (집계 · 차트 데이터)"
-    detail: "**엑셀·이미지 파일 생성은 하지 않는다** — 클라이언트 컴포넌트의 기능으로 제공한다"
-    reqs: [REQ-011]
+    detail: "DB 또는 agent의 결정적 집계·정렬·필터·차트 계열 추출을 먼저 수행하고, **엑셀·이미지 파일 생성은 하지 않는다** — 클라이언트 컴포넌트의 기능으로 제공한다. LLM 해석이 필요한 예외 경로도 원 결과가 아니라 전송 허용·마스킹·상한을 적용한 최소 데이터만 쓴다"
+    reqs: [REQ-011, REQ-039]
   - id: FEAT-209
     module: agent
     roadmap: RM-P1
@@ -101,7 +101,7 @@ features:
     roadmap: RM-P1
     title: "턴 상태 관리와 재개 처리"
     detail: "중단·변경 입력 이벤트의 순서 보존과 **변경·별개·중단 분류 및 무효화 시작 단계 판정** · 실행 점유의 획득·갱신·해제와 만료 턴 회수 · 대기열의 FIFO 시작"
-    reqs: [REQ-013, REQ-016, REQ-030, REQ-031, REQ-032, REQ-033, REQ-035, REQ-036]
+    reqs: [REQ-013, REQ-016, REQ-030, REQ-031, REQ-032, REQ-033, REQ-035, REQ-036, REQ-040]
     traces_to: [ARCH-070]
   - id: FEAT-217
     module: agent

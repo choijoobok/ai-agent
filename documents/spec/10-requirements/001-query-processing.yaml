@@ -3,18 +3,21 @@ requirements:
   - id: REQ-001
     type: functional
     priority: must
+    category: "대화 맥락·참조"
     actors: [ACT-001]
     title: "세션 내 맥락 유지"
     detail: "같은 세션 안에서는 이전 대화 맥락을 유지한다"
   - id: REQ-002
     type: functional
     priority: must
+    category: "대화 맥락·참조"
     actors: [ACT-001]
     title: "과거 턴 결과 재참조"
     detail: "직전 턴이 아닌 **과거 턴의 결과를 다시 참조**할 수 있어야 한다 (중간에 다른 주제를 거친 뒤 '아까 조회했던 것' 을 지시)"
   - id: REQ-003
     type: functional
     priority: must
+    category: "대화 맥락·참조"
     actors: [ACT-001]
     title: "컨텍스트 총량 제한"
     detail: "세션에 대화가 과도하게 누적되지 않도록 컨텍스트 총량을 제한할 수 있어야 한다"
@@ -22,30 +25,35 @@ requirements:
   - id: REQ-004
     type: functional
     priority: must
+    category: "오케스트레이션"
     actors: [ACT-001]
     title: "연속 도구 호출"
     detail: "한 턴 처리 중 LLM 은 agent 에게 도구 호출을 **연속적으로** 요청할 수 있다"
   - id: REQ-005
     type: functional
     priority: must
+    category: "사용자 대기·재개"
     actors: [ACT-001]
     title: "처리 중 사용자 개입과 재개"
     detail: "턴 처리 중 사용자에게 추가 정보를 요구하거나 승인을 요청할 수 있고, 응답을 받아 처리를 재개할 수 있다"
   - id: REQ-006
     type: functional
     priority: must
+    category: "진행 상태·표시"
     actors: [ACT-001]
     title: "처리 진행 상황 단계별 표시"
     detail: "질의 분석 중 · 조회 쿼리 작성 중 · 조회 중 등을 화면에 표시한다"
   - id: REQ-007
     type: functional
     priority: must
+    category: "중단·재시도"
     actors: [ACT-001]
     title: "사용자 중단"
     detail: "처리 중 사용자가 중단할 수 있다. 중단 시 진행 중인 액션의 처리 방침을 정의해야 한다"
   - id: REQ-008
     type: functional
     priority: must
+    category: "처리 중 입력"
     actors: [ACT-001]
     title: "처리 중 추가 입력의 의도 분류"
     detail: "처리 중 사용자가 새 입력을 넣으면 **그 의도를 먼저 분류**한 뒤 처리한다. 새 입력은 진행 중 턴을 바꾸는 **변경**일 수도, 무관한 **별개 질의**일 수도, 그만두라는 **중단**일 수도 있다"
@@ -53,6 +61,7 @@ requirements:
   - id: REQ-009
     type: functional
     priority: must
+    category: "요청·응답 계약"
     priority_reason: "portal과 agent가 나뉘거나 다중화되면 계약 없이는 같은 요청과 응답을 해석할 수 없으므로 RM-P1의 필수 기반이다"
     actors: [ACT-001]
     process_step: PRC-05-02
@@ -62,12 +71,14 @@ requirements:
   - id: REQ-010
     type: functional
     priority: must
+    category: "흐름·추적성"
     actors: [ACT-001]
     title: "전체 흐름도 작성"
     detail: "연속 도구 호출 · 사용자 개입 · 중단 · 과거 턴 참조 · 신규 입력 끼어들기를 포함하는 흐름도를 작성한다"
   - id: REQ-011
     type: functional
     priority: must
+    category: "응답·표현"
     actors: [ACT-001]
     title: "응답 형태 — 텍스트 · 그리드 · 차트 · 내보내기"
     detail: "텍스트, 데이터 그리드, 차트, 엑셀 다운로드, 차트 이미지 다운로드를 지원한다"
@@ -76,6 +87,7 @@ requirements:
   - id: REQ-012
     type: functional
     priority: must
+    category: "조회 결과 정보"
     actors: [ACT-001]
     title: "기준 시각 제공"
     detail: "처리 결과가 데이터 조회일 때는 기준 시각(DW 사용 시 동기화 시점)을 함께 제공한다"
@@ -83,6 +95,7 @@ requirements:
   - id: REQ-013
     type: functional
     priority: must
+    category: "중단·재시도"
     actors: [ACT-001]
     title: "중단된 턴의 재시도"
     detail: "턴이 정상 응답 없이 **중단된 경우**(서버 장애·수동 중단·안전한 호출의 타임아웃 자동 재시도 소진) 사용자가 **재시도를 요구**할 수 있다. 중단된 턴은 재개 가능 상태로 기록하고, 수동 재시도는 마지막 체크포인트부터 이어간다"
@@ -90,24 +103,28 @@ requirements:
   - id: REQ-014
     type: functional
     priority: should
+    category: "중단·재시도"
     actors: [ACT-001]
     title: "중단 턴 재개 여부를 되묻지 않는다"
     detail: "중단 이후 **무관한 새 질의**를 한 경우, 중단된 턴의 재개 여부를 되묻는 것은 **프롬프트 규칙에 그렇게 명시된 경우에만** 수행한다. 명시가 없으면 묻지 않는다"
   - id: REQ-015
     type: functional
     priority: must
+    category: "질의 해석·처리 경로"
     actors: [ACT-001]
     title: "질의 해석문"
     detail: "LLM 은 사용자 질의를 **명료하게 재정리한 해석문**을 만들고, 이를 지식 검색·SQL 생성·실행 API 탐색의 입력으로 사용한다. 결과에는 이 해석문을 함께 제시해 사용자가 자신의 의도와 대조할 수 있게 한다"
   - id: REQ-016
     type: functional
     priority: must
+    category: "세션 독립·재연결"
     actors: [ACT-001]
     title: "화면 세션과 무관한 턴 처리"
     detail: "세션 창·브라우저를 닫거나 로그아웃해도 진행 중인 턴은 계속 처리되고 결과가 저장된다. agent 는 질의 접수 시점에 필요한 사용자·권한 정보를 **처리 문맥으로 복사해 보유**하며, 이후 처리 과정에서 화면 세션에 의존하지 않는다"
   - id: REQ-017
     type: functional
     priority: must
+    category: "승인 대기·만료"
     actors: [ACT-001]
     title: "승인 거절 뒤의 추가 질문과 재승인"
     detail: "승인·거절 이외의 입력은 실행 승인이 아니다. 사용자가 승인 요청을 **거절한 뒤** 추가 질문을 하면 그 질문은 별도 턴으로 처리하며, 원 승인 건은 실행하지 않은 이력으로 남긴다. 사용자가 나중에 원 건을 다시 승인하려 하면 Hub는 후보를 요약해 '이 요청이 맞습니까?'로 먼저 확인한다. 원 승인 요청의 최초 만료 시각 안이고 액션·순서·파라미터가 변하지 않은 경우에만 같은 만료 시각을 가진 새 승인 카드를 제시한다. 하나라도 달라졌거나 만료됐으면 현재 상태를 다시 검토해 새 계획·새 승인으로 처리한다"
@@ -115,18 +132,21 @@ requirements:
   - id: REQ-018
     type: functional
     priority: must
+    category: "진행 상태·표시"
     actors: [ACT-001]
     title: "현재 상태와 경과 시간 표시"
     detail: "처리 중에는 현재 상태와 **경과 시간**을 화면에 표시한다"
   - id: REQ-019
     type: functional
     priority: must
+    category: "세션 독립·재연결"
     actors: [ACT-001]
     title: "세션 재진입 시 역방향 페이징"
     detail: "세션을 다시 열면 마지막 턴만 표시하고, 이전 턴은 위로 스크롤할 때 일정 건수 단위로 추가 조회해 붙인다"
   - id: REQ-020
     type: functional
     priority: could
+    category: "사용자 언어"
     actors: [ACT-001]
     title: "사용자 언어와 원어의 분리"
     detail: "지식 검색과 SQL 생성은 **등록된 원어 기준으로 수행**하고, 사용자에게 보이는 설명·안내만 사용자 언어로 제시한다. **조회된 데이터 값 자체는 번역하지 않는다**"
@@ -135,6 +155,7 @@ requirements:
   - id: REQ-021
     type: functional
     priority: must
+    category: "컨텍스트 구성"
     actors: [ACT-001]
     title: "컨텍스트 단계적 축소"
     detail: "여러 데이터소스에 도달 가능하면 주입할 카탈로그가 데이터소스 수만큼 늘어난다. **질의와 관련된 데이터소스를 먼저 선별하고 그 카탈로그만 주입**하며, 선별은 **업무 도메인 → 데이터소스 → 테이블 → 컬럼** 순의 단계적 축소로 수행한다"
@@ -143,6 +164,7 @@ requirements:
   - id: REQ-022
     type: functional
     priority: must
+    category: "계획·교정"
     actors: [ACT-001]
     title: "조회 계획을 업무 용어로 제시하고 자연어로 교정받는다"
     detail: "조회에 대해서는 질의 해석문·대상 데이터 영역의 업무 명칭·적용 조건·기간·집계 단위를, **액션이 포함된 턴에서는 실행할 액션과 순서를 함께** 제시한다. **기본 필터가 해제된 경우 그 사실을 함께 표시한다**"
@@ -151,6 +173,7 @@ requirements:
   - id: REQ-023
     type: functional
     priority: must
+    category: "계획·교정"
     actors: [ACT-001]
     title: "조회 계획 확인을 모든 턴에 강제하지 않는다"
     detail: "강제 조건은 정책으로 관리하고, 기본값은 ① 대상 데이터 영역이 복수이거나 선별 확신이 낮을 때 ② 예상 결과 규모가 임계치를 넘을 때 ③ 액션이 포함된 턴"
@@ -159,6 +182,7 @@ requirements:
   - id: REQ-024
     type: functional
     priority: must
+    category: "계획·교정"
     actors: [ACT-001]
     title: "성공한 턴의 결과 교정 재요청"
     detail: "처리는 정상 종료됐지만 결과가 의도와 다른 경우, 이전 턴의 해석문·조회 계획·생성 SQL 을 재작성의 입력으로 사용한다. 사용자가 같은 질의를 처음부터 다시 입력하게 하지 않는다"
@@ -166,6 +190,7 @@ requirements:
   - id: REQ-025
     type: functional
     priority: must
+    category: "확신·처리 불가"
     actors: [ACT-001]
     title: "확신이 없으면 추측하지 않는다"
     detail: "대상 데이터 영역을 특정할 수 없거나, 조건 해석이 갈리거나, 카탈로그·지식·예제 쿼리로 근거를 세울 수 없으면 임의로 골라 실행하지 않고 사용자에게 확인을 요구하거나 처리 불가로 응답한다. 처리 불가 응답에는 **무엇이 부족했는지**를 함께 제시한다"
@@ -174,6 +199,7 @@ requirements:
   - id: REQ-026
     type: functional
     priority: must
+    category: "액션 승인·실행"
     actors: [ACT-001]
     title: "연속 실행 — 여러 액션이 한 요청에 걸릴 때"
     detail: "실행할 액션과 순서는 **사용자 요청에서 얻고 Hub 가 추론해 정하지 않는다.** 등록된 실행 액션은 모두 실행 전에 사용자에게 명시적 승인을 받는다. 예정된 액션 전체를 제시해 일괄 승인받되, 파라미터가 앞 액션의 결과에 의존하는 액션은 개별 승인한다"
@@ -185,6 +211,7 @@ requirements:
   - id: REQ-027
     type: functional
     priority: must
+    category: "응답·표현"
     priority_reason: "RM-P1에서 모든 표현을 완성하지 않아도 새 의미 블록이 agent 통제를 바꾸지 않는 확장 경계는 첫 계약부터 있어야 한다"
     actors: [ACT-001]
     process_step: PRC-02-05
@@ -198,6 +225,7 @@ requirements:
   - id: REQ-030
     type: functional
     priority: must
+    category: "처리 중 입력"
     actors: [ACT-001]
     title: "세 갈래 분기 — 변경 · 별개 · 중단"
     detail: "① **변경**(`AMEND`) — 조건·범위·기간·지표·표현·실행 의도를 바꾸거나 철회한다. **보강과 교정을 구분하지 않는다.** 변경 항목과 이미 수행한 단계의 의존성을 기준으로 무효화 시작 단계를 판정하고, 그 지점부터 다시 수행한다. 무효화할 단계가 없으면 같은 처리 흐름을 이어간다. ② **별개**(`NEW`) — 진행 중 턴은 그대로 두고 별도 턴으로 접수한다. ③ **중단**(`STOP`) — 중단으로 전이한다"
@@ -206,6 +234,7 @@ requirements:
   - id: REQ-031
     type: functional
     priority: must
+    category: "처리 중 입력"
     actors: [ACT-001]
     title: "변경 영향 판정은 LLM 분류 + 사용자 확인"
     detail: "자연어 입력을 규칙만으로 가르는 것은 신뢰할 수 없으므로, LLM은 `AMEND`·`NEW`·`STOP`의 분류와 함께 **변경 항목·추가/교체/철회 연산·무효화 시작 단계**를 구조화해 제안한다. 분류는 보조 판정 역할이며 관리자가 지정한 모델으로 고정한다. 명시적 `STOP`은 분류하지 않는다"
@@ -215,6 +244,7 @@ requirements:
   - id: REQ-032
     type: functional
     priority: must
+    category: "처리 중 입력"
     actors: [ACT-001]
     title: "확인은 병행형이 기본, 차단형은 되돌릴 수 없을 때만"
     detail: "**병행형**(기본) — 턴은 처리중을 유지한 채 분류 결과를 기본값으로 표시하고 되돌릴 수단을 제공한다. 아무 조치도 하지 않으면 분류대로 반영된다. **차단형** — 진행 중 턴이 `승인 대기` 이거나 액션을 이미 실행한 경우 `의도 확인 대기` 로 전이하고 사용자의 선택 없이는 진행하지 않는다"
@@ -224,6 +254,7 @@ requirements:
   - id: REQ-033
     type: functional
     priority: must
+    category: "처리 중 입력·다중 인스턴스"
     actors: [ACT-001]
     title: "중단·변경 입력은 영속 이벤트로 기록한다"
     detail: "요청은 **턴을 처리 중인 인스턴스가 아닌 다른 인스턴스로 도착할 수 있다.** 중단·변경 입력은 대상 턴·입력 순번·접수 시점·처리 상태를 가진 append-only 이벤트로 DB에 기록한다. 요청을 받은 인스턴스는 다른 인스턴스가 열어 둔 LLM 연결을 직접 끊지 않으며, 점유한 인스턴스가 미처리 이벤트를 순서대로 읽어 스스로 중단하거나 반영한다"
@@ -231,6 +262,7 @@ requirements:
   - id: REQ-034
     type: functional
     priority: must
+    category: "중단·스트리밍"
     actors: [ACT-001]
     title: "agent ↔ LLM 은 스트리밍 수신"
     detail: "중단을 실효 있게 하려면 스트리밍이어야 한다. 응답 전체를 기다리는 방식에서는 취소 시점에 이미 생성이 끝나 있어 절감 효과가 없고 REQ-018 의 상태 표시 근거도 얻을 수 없다"
@@ -238,6 +270,7 @@ requirements:
   - id: REQ-035
     type: functional
     priority: must
+    category: "처리 중 입력·전송 최소화"
     actors: [ACT-001]
     title: "의도 분류 입력의 최소화"
     detail: "**넣는다** — 진행 중 턴의 유효 의도 스냅샷 · 현재 단계 · 액션 전송 여부 · 직전 턴 해석문 1건 · 순서대로 묶은 미처리 입력 원문. **넣지 않는다** — 대화 이력 전체 · 스키마 카탈로그 · 지식·예제 쿼리 · **조회 결과 데이터**"
@@ -246,6 +279,7 @@ requirements:
   - id: REQ-036
     type: functional
     priority: must
+    category: "접수·대기열"
     actors: [ACT-001, ACT-004]
     process_step: PRC-02-01
     title: "개인별 동시 턴 제한과 영속 대기열"
@@ -256,6 +290,7 @@ requirements:
   - id: REQ-037
     type: functional
     priority: must
+    category: "SQL 오류·재작성"
     actors: [ACT-001, ACT-004]
     process_step: PRC-02-02
     title: "SQL 오류의 재작성 분류와 런타임 상한"
@@ -264,4 +299,59 @@ requirements:
     config: "`sys-config.agent.sql-regeneration.max-attempts`는 정수 0~5, 기본 3으로 관리한다. 변경은 배포 없이 저장 직후 **다음 재작성 판정**부터 적용하며, 진행 중 SQL 실행을 끊지는 않는다. 현재 턴에서 이미 쓴 재작성 횟수·적용 설정값·설정 버전을 각 판정에 남긴다"
     why: "DBMS마다 오류 코드와 SQL 방언이 다르므로 공통 예외 유형만으로는 재작성해도 되는 오류를 안전하게 가릴 수 없다. 반대로 SQL 오류를 무제한 재작성하면 같은 실패·토큰 비용·처리 시간이 반복된다"
     traces_to: [REQ-103, REQ-115]
+    roadmap: RM-P1
+
+# ── 질의 유형 · 결과 데이터 처리 · 재연결 ───────────────────
+  - id: REQ-038
+    type: functional
+    priority: must
+    category: "질의 유형·처리 경로"
+    actors: [ACT-001, ACT-002]
+    process_step: PRC-02-01
+    title: "사용자 질의 유형과 처리 경로의 명시"
+    detail: "agent는 자연어 질의를 처리 계획으로 만들 때 **지식 검색·요약**, **SQL 또는 등록 조회 API 기반 데이터 조회**, **등록 API·커스텀 도구의 액션 실행**, **LLM 없이 하는 결정적 데이터 가공·표현**, **정책상 허용된 제한 데이터의 LLM 해석** 중 하나 이상으로 구분해야 한다. 복합 질의는 사용자 의도와 의존 순서에 따라 여러 유형의 단계를 하나의 계획에 함께 기록한다"
+    stages:
+      - { name: "접수·분류·대기열", reqs: [REQ-009, REQ-015, REQ-036, REQ-038] }
+      - { name: "맥락·지식·카탈로그 구성", reqs: [REQ-001, REQ-002, REQ-003, REQ-021, REQ-303, REQ-305, REQ-306, REQ-308] }
+      - { name: "데이터 조회·결정적 가공·표현", reqs: [REQ-011, REQ-012, REQ-022, REQ-023, REQ-037, REQ-039, REQ-103, REQ-104] }
+      - { name: "제한 데이터 LLM 해석", reqs: [REQ-039, REQ-106, REQ-111, REQ-112] }
+      - { name: "액션 승인·실행", reqs: [REQ-017, REQ-026, REQ-105, REQ-113, REQ-114] }
+      - { name: "응답·감사·사후 교정", reqs: [REQ-024, REQ-027, REQ-107, REQ-108, REQ-110, REQ-115] }
+    lifecycle:
+      - { name: "사용자 보강·변경·중단", reqs: [REQ-005, REQ-007, REQ-008, REQ-030, REQ-031, REQ-032, REQ-033, REQ-034, REQ-035] }
+      - { name: "브라우저 이탈·재접속·수동 재시도", reqs: [REQ-013, REQ-014, REQ-016, REQ-019, REQ-040] }
+      - { name: "대기·점유 만료와 상태 정리", reqs: [REQ-017, REQ-107, REQ-109], references: [ARCH-070, NFR-013, NFR-014, NFR-020, NFR-022, NFR-023] }
+    hard_rule: "유형 판정은 데이터 접근·외부 모델 전송·도구 호출을 허용하는 근거가 아니다. 지식 검색은 활성 반영 세트만, 데이터 조회는 현재 권한과 카탈로그·API 계약만, 액션은 REQ-026의 명시적 승인만, LLM 해석은 REQ-039의 전송 정책을 각각 통과한 뒤에만 수행한다. 저장된 조회 실행은 LLM·턴을 만들지 않는 별도 경로(REQ-201~207)로 유지한다"
+    why: "SQL 생성과 API 선택만으로는 지식 안내·결과 가공·분석 요청의 처리 책임과 통제 경계가 보이지 않는다. 유형을 먼저 드러내야 어떤 데이터를 어디까지 LLM에 보낼지, 어느 단계에서 사용자 확인을 받을지를 검토할 수 있다"
+    acceptance: "지식 사용법 문의, SQL 조회, 등록 조회 API 호출, 승인 필요 실행, 차트용 집계, 결과 해석이 각각 단독·복합으로 들어왔을 때 계획에는 해당 유형과 순서가 기록되고, 유형 판정만으로 권한 없는 데이터·미등록 도구·미승인 액션·미허용 모델 전송이 발생하지 않는다"
+    source: "2026-09-21 사용자 요구사항 재점검 — 사용자 질의 유형을 한 문서에서 관리"
+    roadmap: RM-P1
+  - id: REQ-039
+    type: functional
+    priority: must
+    category: "결과 가공·LLM 전송 경계"
+    actors: [ACT-001, ACT-002, ACT-007]
+    process_step: PRC-02-03
+    title: "결과 데이터의 결정적 가공과 제한된 LLM 해석"
+    detail: "SQL·조회 API의 결과는 기본적으로 모델에 다시 보내지 않고, DB 또는 agent의 **결정적 가공**(집계·정렬·필터·차트 계열 추출)을 거쳐 portal 표현 어댑터로 전달한다. 사용자가 결과의 해석·서술을 명시적으로 요구하고 현재 전송 정책이 허용한 경우에만, 서버는 원 결과가 아닌 목적에 필요한 최소 집계·선택 열·마스킹·행 수 상한을 적용한 제한 데이터로 LLM 해석 스텝을 만들 수 있다"
+    hard_rule: "차트 요청이나 사용자 요청만으로 실제 업무 데이터의 모델 전송이 허용되지는 않는다. 허용목록 밖 테이블·컬럼·API 응답 경로, 원 결과 전체, 마스킹 전 값은 모델 입력에 넣지 않는다. 전송 대상의 값은 지시가 아니라 데이터로 취급하며(REQ-112), 적용 정책·가공 방법·전송본은 REQ-106·107에 따라 남긴다. 정책이 허용하지 않으면 모델 해석 없이 통제된 그리드·차트 또는 전송 불가 안내만 제공한다"
+    open: "제한 데이터에 허용할 집계 함수·열 수·행 수·크기 상한과 고객사별 예외 승인 절차는 REQ-106의 전송 정책 상세로 P2에서 확정한다. 이 미확정은 원 결과 전송을 허용하는 공백이 아니다"
+    why: "차트 자체는 모델에 원본 행을 보내지 않아도 만들 수 있다. 반면 예외적인 분석 요청은 원본 결과 재전송을 관행으로 열지 않고, 목적에 맞는 최소 데이터와 기존 전송·마스킹·감사 통제를 함께 적용해야 한다"
+    acceptance: "차트 요청은 모델에 조회 결과를 전송하지 않고 결정적 집계와 portal 렌더링으로 처리되며, LLM 해석을 요구한 경우에도 허용된 열·경로만 마스킹·상한 적용 후 전송되고 실제 전송본과 적용 정책이 이력에 남는다. 미허용 열·경로 또는 원 결과 전체는 사용자 요청이 있어도 모델 입력에 포함되지 않는다"
+    source: "2026-09-21 사용자 요구사항 재점검 — 업무 데이터의 기본 비전송과 예외적 데이터 가공 필요"
+    traces_to: [REQ-011, REQ-106, REQ-107, REQ-111, REQ-112]
+    roadmap: RM-P1
+  - id: REQ-040
+    type: functional
+    priority: must
+    category: "세션 독립·재연결"
+    actors: [ACT-001]
+    process_step: PRC-02-01
+    title: "브라우저 재접속 시 진행 턴의 안전한 재연결"
+    detail: "브라우저 종료·네트워크 단절·로그아웃 뒤 같은 사용자가 다시 인증해 portal에 들어오면, portal은 영속된 턴 상태를 조회해 자신의 진행 중·사용자대기·최근 종결 턴을 다시 표시해야 한다. 처리 중인 턴에는 현재 상태·경과 시간·이미 기록된 결과를 붙이고, 사용자대기 턴에는 아직 유효한 원 대기 카드만 복원한다"
+    hard_rule: "재접속은 새 LLM 연결·도구 호출·승인·재시도를 만들지 않으며 브라우저 종료를 사용자 중단으로 해석하지 않는다. 대기나 점유가 만료되어 중단된 턴은 REQ-013의 재시도 조건으로만 이어가고, 이미 대상 시스템 실행을 전송했거나 결과가 불명인 턴은 재접속으로 다시 실행하지 않는다. 상태 조회는 현재 인증된 사용자의 소유 턴으로 한정한다"
+    why: "턴은 화면 세션보다 길게 실행되고, 다중 인스턴스에서 처리 인스턴스와 재접속 요청 인스턴스가 다를 수 있다. 화면 연결을 복구하는 것과 턴을 다시 실행하는 것을 분리하지 않으면 중복 실행이나 승인 우회가 생긴다"
+    acceptance: "처리 중 브라우저를 닫았다가 재접속해도 같은 턴 ID의 상태·결과가 표시되고 LLM·도구 호출 수는 증가하지 않는다. 유효한 사용자대기는 기존 대기 카드로만 응답할 수 있으며, 만료·중단·결과 불명 턴은 각각 재시도 가능 여부 또는 수동 확인 안내를 표시하고 자동 실행하지 않는다"
+    source: "2026-09-21 사용자 요구사항 재점검 — 브라우저 종료 뒤 기존 턴 재개"
+    traces_to: [REQ-013, REQ-016, REQ-017, REQ-019, REQ-033]
     roadmap: RM-P1
