@@ -142,15 +142,16 @@ startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로
 
 | 칸 | 값 |
 |---|---|
-| 출력 | 시작·재개 훅은 Windows 앱의 상태 영역에 `Codex 훅 승인 상태 확인`을 표시한다. `SessionStart` adapter는 `[Codex 주의]`를 `systemMessage`로 내고, 같은 문구를 첫 사용자 응답의 첫 줄에 표시하라는 지시와 브리핑을 `additionalContext`로 모델에 주입한다. `session-brief` adapter는 재개 문맥만 주입한다 |
+| 출력 | 시작·재개 훅은 Windows 앱의 상태 영역에 `Codex 훅 승인 상태 확인`을 표시한다. `SessionStart` adapter는 `[Codex 주의]`를 `systemMessage`로 내고, 같은 문구를 첫 사용자 요청의 최종 답변(`final_answer`) 첫 줄에 표시하라는 지시와 브리핑을 `additionalContext`로 모델에 주입한다. `commentary` 표시는 이 계약을 충족하지 않으며 `session-brief` adapter는 재개 문맥만 주입한다 |
 | 주의 내용 | 훅은 CLI에서 승인해야 작동한다. 사용자는 `/hooks`에서 승인 여부를 반드시 확인하고, 새로 승인했다면 Windows 앱에서 새 세션 창을 연다 |
 | 강도 | 안내. 승인 상태·revision·세션별 상태를 저장하거나 확인하지 않으며, 이를 이유로 모델 작업이나 `PreToolUse`를 막지 않는다 |
 | 배선 | `startup`은 `git-sync` → `session-brief`, `resume|clear|compact`는 `session-brief`를 직접 실행한다 |
-| fixture | `.codex/hooks/self-test.mjs`가 시작·재개 adapter 배선, 승인 차단 부재, 사용자용 `systemMessage`, 첫 응답 표시 지시, 모델용 `additionalContext`를 각각 확인한다 |
+| fixture | `.codex/hooks/self-test.mjs`가 시작·재개 adapter 배선, 승인 차단 부재, 사용자용 `systemMessage`, `final_answer` 표시와 `commentary` 비충족 지시, 모델용 `additionalContext`를 각각 확인한다 |
 
 Codex CLI는 `systemMessage`를 경고로 표시하지만 현재 Windows 앱은 같은 출력을 대화 화면에 표시하지
-않는다. 공식 계약도 UI **또는** 이벤트 스트림 노출까지만 보장한다. 그래서 새 세션의 첫 사용자 응답은
-같은 문구를 첫 줄에 한 번 표시한다. `resume`·`clear`·`compact`에서는 대화 중간에 반복하지 않는다.
+않는다. 공식 계약도 UI **또는** 이벤트 스트림 노출까지만 보장한다. 그래서 새 세션의 첫 사용자 요청에
+대한 `final_answer`는 같은 문구를 첫 줄에 표시한다. 접히는 `commentary`에 먼저 표시했더라도 최종
+응답에서 다시 표시한다. `resume`·`clear`·`compact`에서는 대화 중간에 반복하지 않는다.
 
 훅 설정이 작업 중 바뀌면 현재 실행이 새 설정을 자동으로 싣는다고 가정하지 않는다. CLI에서 새로 승인한 훅은 Windows 앱의 기존 세션에 활성화되지 않으므로 새 세션 창에서 확인한다.
 

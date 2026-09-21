@@ -159,7 +159,7 @@ screenRegistry가 가리킨 기능 폴더의 파일 ─→ screenRegistry.ts 역
 
 ## `git-sync` — 세션 시작에 원격을 당긴다
 
-**깨끗한 트리에서 `startup` 일 때만** `git pull --ff-only` 를 돌린다. 더러우면 당기지 않고 이유와 다음 할 일을 말하며, 이력이 갈렸으면 `integrate-main`으로 보낸다 — 미커밋 변경 위로 남의 커밋을 얹을지는 **사람의 판단**이고(AGENTS.md §5-2), 푸시는 사용자가 말할 때만이다(§9). `session-brief`는 현재 `pending_rechecks` 전부와 최근 `[충돌 통합]` 커밋 세 건을 함께 넣는다. Codex는 매 세션 시작에 훅을 CLI에서 반드시 승인하고 새로 승인했다면 Windows 앱에서 새 세션 창을 열라는 주의 문구를 CLI 경고로 내며, Windows 앱에서는 첫 사용자 응답 첫 줄에 같은 문구를 표시한다. 시작·재개 상태 문구는 `Codex 훅 승인 상태 확인`이다. 승인 상태·revision을 자동 검사하거나 그 결과로 작업을 제어하지 않는다. 상세 절차와 fixture는 [hooks-contract.md](./hooks-contract.md)가 갖는다.
+**깨끗한 트리에서 `startup` 일 때만** `git pull --ff-only` 를 돌린다. 더러우면 당기지 않고 이유와 다음 할 일을 말하며, 이력이 갈렸으면 `integrate-main`으로 보낸다 — 미커밋 변경 위로 남의 커밋을 얹을지는 **사람의 판단**이고(AGENTS.md §5-2), 푸시는 사용자가 말할 때만이다(§9). `session-brief`는 현재 `pending_rechecks` 전부와 최근 `[충돌 통합]` 커밋 세 건을 함께 넣는다. Codex는 매 세션 시작에 훅을 CLI에서 반드시 승인하고 새로 승인했다면 Windows 앱에서 새 세션 창을 열라는 주의 문구를 CLI 경고로 내며, Windows 앱에서는 첫 사용자 요청의 `final_answer` 첫 줄에 같은 문구를 표시한다. `commentary`에 먼저 표시했더라도 최종 응답에서 다시 표시한다. 시작·재개 상태 문구는 `Codex 훅 승인 상태 확인`이다. 승인 상태·revision을 자동 검사하거나 그 결과로 작업을 제어하지 않는다. 상세 절차와 fixture는 [hooks-contract.md](./hooks-contract.md)가 갖는다.
 
 ## 컨텍스트 관리 — 같은 목적, 다른 구현
 
