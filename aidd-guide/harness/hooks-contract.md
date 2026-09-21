@@ -133,8 +133,8 @@ startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로
 
 `warn()` 은 `systemMessage`(사람)와 `additionalContext`(모델)를 **둘 다** 보낸다 — *사람이 봤는데 AI 는 모르는* 상태를 만들지 않는다.
 
-**Codex가 읽는 출력은 JSON 하나다.** `SessionStart`는 `additionalContext`, `PreToolUse` 허용은
-결정 없는 중립 `hookSpecificOutput`을 낸다. 종료 코드 0의 빈 출력도 계약상 허용되지만 일부
+**Codex가 읽는 출력은 JSON 하나다.** `SessionStart`는 사용자에게 보이는 `systemMessage`와 모델이
+읽는 `additionalContext`를 함께 내고, `PreToolUse` 허용은 결정 없는 중립 `hookSpecificOutput`을 낸다. 종료 코드 0의 빈 출력도 계약상 허용되지만 일부
 실행면이 침묵을 `Failed`로 표시한 이력이 있어 호환 형태를 명시한다. Claude `SessionStart`는
 날것이며, `emitHookResults` 한 곳에서 가르고 어댑터가 stdout을 섞지 않는다 — 사례는 [providers/codex.md](./providers/codex.md).
 
@@ -142,11 +142,11 @@ startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로
 
 | 칸 | 값 |
 |---|---|
-| 출력 | `SessionStart`의 `session-start`·`session-brief` adapter가 브리핑과 함께 `[Codex 주의]`를 주입한다 |
-| 주의 내용 | 훅은 저장소 규칙의 보조 수단이며, 중요한 변경 전에는 `AGENTS.md`와 관련 문서를 직접 확인한다 |
+| 출력 | `SessionStart`의 `session-start`·`session-brief` adapter가 `[Codex 주의]`를 `systemMessage`로 사용자 UI에 표시하고, 같은 문구와 브리핑을 `additionalContext`로 모델에 주입한다 |
+| 주의 내용 | 현재 세션은 훅 승인 상태를 확인하지 않으므로 사용자가 CLI의 `/hooks`에서 직접 확인한다. 훅은 저장소 규칙의 보조 수단이며, 중요한 변경 전에는 `AGENTS.md`와 관련 문서를 직접 확인한다 |
 | 강도 | 안내. 승인 상태·revision·세션별 상태를 저장하거나 확인하지 않으며, 이를 이유로 모델 작업이나 `PreToolUse`를 막지 않는다 |
 | 배선 | `startup`은 `git-sync` → `session-brief`, `resume|clear|compact`는 `session-brief`를 직접 실행한다 |
-| fixture | `.codex/hooks/self-test.mjs`가 시작·재개 adapter 배선, 승인 차단 부재, 주의 문구와 Codex JSON 출력을 확인한다 |
+| fixture | `.codex/hooks/self-test.mjs`가 시작·재개 adapter 배선, 승인 차단 부재, 사용자용 `systemMessage`, 모델용 `additionalContext`를 각각 확인한다 |
 
 훅 설정이 작업 중 바뀌면 현재 실행이 새 설정을 자동으로 싣는다고 가정하지 않는다. 그러나 재시작·새 task 이동·`/hooks` 검토는 강제하지 않고, 작업에 필요한 최신 규칙을 직접 읽어 적용한다.
 

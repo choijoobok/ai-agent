@@ -39,9 +39,9 @@ tags: [harness, codex, adapter]
 
 `SessionStart`의 `startup` 그룹은 `session-start.mjs`로 `git-sync` → `session-brief`를 실행하고,
 `resume|clear|compact` 그룹은 `session-brief.mjs`로 상태를 재주입한다. 두 adapter는 아래 주의 문구를
-브리핑과 함께 JSON `additionalContext`로 낸다.
+사용자 UI용 JSON `systemMessage`로 내고, 같은 문구와 브리핑을 모델용 `additionalContext`로 낸다.
 
-> **[Codex 주의]** 훅은 저장소 규칙을 보조합니다. 현재 세션에서는 훅 승인 상태를 확인하거나 작업을 막지 않습니다. 중요한 변경 전에는 `AGENTS.md`와 관련 문서를 직접 확인하세요.
+> **[Codex 주의]** 현재 세션은 훅 승인 상태를 확인하거나 그 결과로 작업을 제어하지 않습니다. 훅 승인 여부는 Codex CLI의 `/hooks`에서 직접 확인하세요. 훅은 저장소 규칙을 보조하므로 중요한 변경 전에는 `AGENTS.md`와 관련 문서를 직접 확인하세요.
 
 승인 상태·revision·재시작 표식을 저장하거나 확인하지 않는다. `PreToolUse`도 훅 승인 여부 때문에
 차단하지 않는다. 훅 설정이 작업 중 바뀌면 필요한 규칙을 실물에서 다시 읽어 적용하며, `/hooks` 검토,
@@ -61,9 +61,10 @@ Codex shell은 hook에서 `Bash`로 보이고 명령은 `tool_input.command`에 
 
 ## 출력과 컨텍스트
 
-Codex가 읽는 출력은 `{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":…}}`
-형태의 JSON 하나다. adapter가 emitter 밖에서 stdout에 쓰면 출력 형태가 섞이므로, 항상 `outputs` 배열을
-`emitHookResults` 한 곳으로 보낸다. `PreToolUse` 허용은 결정 없는 중립 JSON을 낸다.
+Codex가 읽는 출력은 사용자에게 경고를 표시하는 `systemMessage`와 모델 문맥을 보강하는
+`hookSpecificOutput.additionalContext`를 함께 가진 JSON 하나다. adapter가 emitter 밖에서 stdout에 쓰면
+출력 형태가 섞이므로, 항상 `outputs` 배열을 `emitHookResults` 한 곳으로 보낸다. `PreToolUse` 허용은
+결정 없는 중립 JSON을 낸다.
 
 Codex에는 수치 사용량 경고 훅을 연결하지 않는다. 자동 또는 수동 압축 뒤
 `SessionStart(source=compact)`가 다시 실행되어 `session-brief`가 프로젝트 상태와 하네스 정합성을

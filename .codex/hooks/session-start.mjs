@@ -7,4 +7,4 @@ import { SESSION_NOTICE } from './session-notice.mjs';
 const input = await readHookInput();
 const outputs = await runHookChain({ ...input, source: 'startup' }, SESSION_START);
 outputs.unshift(SESSION_NOTICE);
-emitHookResults(outputs, 'SessionStart');
+emitHookResults(outputs, 'SessionStart', { systemMessage: SESSION_NOTICE });

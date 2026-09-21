@@ -86,7 +86,7 @@ export function allowHookRepair(input, outputs) {
   }];
 }
 
-export function emitHookResults(outputs, eventName) {
+export function emitHookResults(outputs, eventName, options = {}) {
   const denied = outputs.filter(isDenied);
   if (denied.length) {
     const reason = denied.map(reasonOf).filter(Boolean).join('\n\n');
@@ -128,6 +128,10 @@ export function emitHookResults(outputs, eventName) {
     감싸면 문맥에 JSON 이 들어간다. <b>Codex 는 반대로 JSON 만 읽는다</b>: 날 것을 내면
     파싱하지 못해 <b>훅 전체를 실패로 잡고 출력을 통째로 버린다.</b>
 
+    <p>Codex의 `systemMessage`는 사용자 UI 경고이고 `additionalContext`는 모델 문맥이다.
+    둘을 같은 것으로 보지 않는다. 세션 주의는 전자와 후자에 모두, 프로젝트 브리핑은
+    후자에만 넣어 사용자에게 긴 내부 문맥을 경고로 노출하지 않는다.
+
     <p>2026-09-11 에 이것 때문에 Codex 의 실행 확인이 문맥에 닿지 못해 하네스가 자기
     자신을 잠갔다. 훅은 셸·`commandWindows`·`codex sandbox` 어디서 직접 돌려도 `exit 0`
     이라 <b>직접 실행으로는 보이지 않는다</b> — 그래서 self-test 가 출력의 *모양* 을 센다.
@@ -135,6 +139,7 @@ export function emitHookResults(outputs, eventName) {
   if (eventName === 'SessionStart') {
     if (provider() === 'codex') {
       process.stdout.write(JSON.stringify({
+        ...(options.systemMessage ? { systemMessage: options.systemMessage } : {}),
         hookSpecificOutput: { hookEventName: 'SessionStart', additionalContext: message },
       }));
       return;

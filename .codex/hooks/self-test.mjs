@@ -266,7 +266,8 @@ const resumeGroup = hookConfig.hooks.SessionStart.find((group) => group.matcher 
 assert.equal(startupGroup?.hooks?.[0]?.command.includes('session-start.mjs'), true);
 assert.equal(resumeGroup?.hooks?.[0]?.command.includes('session-brief.mjs'), true);
 assert.equal(JSON.stringify(hookConfig.hooks).includes('approval-'), false);
-assert.match(SESSION_NOTICE, /작업을 막지 않습니다/);
+assert.match(SESSION_NOTICE, /작업을 제어하지 않습니다/);
+assert.match(SESSION_NOTICE, /`\/hooks`에서 직접 확인하세요/);
 
 /* 수리 경로 — 훅이 죽었을 때 **훅 파일만** 열리고 나머지는 닫혀 있어야 한다.
    여는 쪽만 시험하면 게이트가 통째로 열린 것을 못 본다. 양쪽을 다 센다. */
@@ -346,12 +347,12 @@ for (const [subject, shouldDeny] of [
   Codex 만 `Failed` 로 잡아 하네스가 자기 자신을 잠갔다. **여기서 세는 것은 실제로 쓰인
   바이트다.**
 */
-function captureEmit(outputs, eventName) {
+function captureEmit(outputs, eventName, options) {
   const chunks = [];
   const original = process.stdout.write.bind(process.stdout);
   process.stdout.write = (chunk) => (chunks.push(String(chunk)), true);
   try {
-    emitHookResults(outputs, eventName);
+    emitHookResults(outputs, eventName, options);
   } finally {
     process.stdout.write = original;
   }
@@ -359,7 +360,12 @@ function captureEmit(outputs, eventName) {
 }
 
 /* Codex 는 JSON 만 읽는다 — 날 것이면 `JSON.parse` 가 던지고, 그것이 이 시험의 요점이다. */
-const codexStart = JSON.parse(captureEmit([SESSION_NOTICE, '[프로젝트 상태] …'], 'SessionStart'));
+const codexStart = JSON.parse(captureEmit(
+  [SESSION_NOTICE, '[프로젝트 상태] …'],
+  'SessionStart',
+  { systemMessage: SESSION_NOTICE },
+));
+assert.equal(codexStart.systemMessage, SESSION_NOTICE);
 assert.equal(codexStart.hookSpecificOutput.hookEventName, 'SessionStart');
 assert.equal(codexStart.hookSpecificOutput.additionalContext.includes(SESSION_NOTICE), true);
 assert.equal(codexStart.hookSpecificOutput.additionalContext.includes('[프로젝트 상태] …'), true);

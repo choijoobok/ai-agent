@@ -11,4 +11,4 @@ const input = await readHookInput();
 const outputs = await runHookChain(input, SESSION_RESUME);
 outputs.unshift(SESSION_NOTICE);
 
-emitHookResults(outputs, 'SessionStart');
+emitHookResults(outputs, 'SessionStart', { systemMessage: SESSION_NOTICE });

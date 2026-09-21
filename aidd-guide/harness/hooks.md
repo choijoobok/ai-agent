@@ -159,7 +159,7 @@ screenRegistry가 가리킨 기능 폴더의 파일 ─→ screenRegistry.ts 역
 
 ## `git-sync` — 세션 시작에 원격을 당긴다
 
-**깨끗한 트리에서 `startup` 일 때만** `git pull --ff-only` 를 돌린다. 더러우면 당기지 않고 이유와 다음 할 일을 말하며, 이력이 갈렸으면 `integrate-main`으로 보낸다 — 미커밋 변경 위로 남의 커밋을 얹을지는 **사람의 판단**이고(AGENTS.md §5-2), 푸시는 사용자가 말할 때만이다(§9). `session-brief`는 현재 `pending_rechecks` 전부와 최근 `[충돌 통합]` 커밋 세 건을 함께 넣는다. Codex는 매 세션 시작에 훅이 저장소 규칙의 보조 수단임을 알리는 주의 문구를 함께 주입한다. 승인 상태·revision을 확인하거나 저장하지 않고, 이를 이유로 작업을 막지 않는다. 상세 절차와 fixture는 [hooks-contract.md](./hooks-contract.md)가 갖는다.
+**깨끗한 트리에서 `startup` 일 때만** `git pull --ff-only` 를 돌린다. 더러우면 당기지 않고 이유와 다음 할 일을 말하며, 이력이 갈렸으면 `integrate-main`으로 보낸다 — 미커밋 변경 위로 남의 커밋을 얹을지는 **사람의 판단**이고(AGENTS.md §5-2), 푸시는 사용자가 말할 때만이다(§9). `session-brief`는 현재 `pending_rechecks` 전부와 최근 `[충돌 통합]` 커밋 세 건을 함께 넣는다. Codex는 매 세션 시작에 훅 승인 여부를 CLI의 `/hooks`에서 직접 확인하라는 주의 문구를 사용자 UI에 표시하고 모델 문맥에도 주입한다. 승인 상태·revision을 확인하거나 저장하지 않고, 이를 이유로 작업을 막지 않는다. 상세 절차와 fixture는 [hooks-contract.md](./hooks-contract.md)가 갖는다.
 
 ## 컨텍스트 관리 — 같은 목적, 다른 구현
 
