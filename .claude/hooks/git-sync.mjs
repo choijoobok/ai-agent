@@ -25,21 +25,12 @@
 
 import { execFileSync } from 'node:child_process';
 import { readHookInput, REPO, inject, pass, provider } from './lib.mjs';
-import {
-  codexClientSurface,
-  codexHookReentryMessage,
-  currentCodexHookRevision,
-} from '../../aidd-guide/harness/runtime/codex-hook-revision.mjs';
 
 /** 네트워크가 죽어 있을 때 세션 시작을 붙잡지 않는다 — 훅 전체 예산이 60초다. */
 const NET_MS = 15_000;
 const LOCAL_MS = 5_000;
 
 const input = await readHookInput();
-/* 재시작 판단은 넓은 문서 폴더가 아니라 실제 Codex 훅 실행면의 revision으로 한다.
-   문서·스킬만 당겨졌다고 대화를 끊으면, 필요한 재연결보다 불필요한 중단이 훨씬 많아진다. */
-const hookRevisionBefore = provider() === 'codex' ? currentCodexHookRevision() : null;
-
 /* 작업 중간의 재주입에서는 파일을 바꾸지 않는다. source 를 모르면 시작으로 본다 —
    모르는 쪽으로 기울일 때 비용이 작은 쪽이 *당기는 것* 이 아니라 *묻는 것* 이지만,
    여기서 물을 상대가 없다. 그래서 실제 변경은 아래 「깨끗한가」 가 한 번 더 막는다. */
@@ -98,15 +89,8 @@ if (!pulled.ok) {
 }
 
 const files = changed();
-const hookRevisionAfter = provider() === 'codex' ? currentCodexHookRevision() : null;
-const hookChanged = hookRevisionBefore !== null && hookRevisionBefore !== hookRevisionAfter;
-const reload = provider() === 'codex' ? hookChanged : files.some(needsClaudeRestart);
-const reentry = provider() === 'codex'
-  ? [
-      '**Codex 훅 실행면이 바뀌었다** — 최신 훅을 적용할 작업을 지금 이어갈지 사용자에게 먼저 확인한다.',
-      ...codexHookReentryMessage(codexClientSurface()).split('\n').slice(1),
-    ]
-  : [
+const reload = provider() !== 'codex' && files.some(needsClaudeRestart);
+const reentry = [
       `**새 세션을 연다** — 진입 문서·하네스 ${reload.length}건이 바뀌었지만 현재 세션은 이미 이전 것을 읽었다.`,
       '이 세션에서 작업을 계속하면 디스크의 규칙과 AI가 따르는 규칙이 갈린다.',
     ];

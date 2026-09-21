@@ -143,6 +143,5 @@ startup pull이 `CLAUDE.md`·`AGENTS.md`·하네스를 바꿨으면 이미 읽�
 새로 clone한 환경에서는 Claude Code가 프로젝트 훅 실행 권한을 요청할 수 있다. 배선을 바꾼 뒤
 실제 Claude 세션에서 SessionStart와 대표 차단·경고 fixture를 한 번 확인한다.
 
-Codex의 `/hooks` 승인 revision과 `[Codex 훅 실행 확인]` preflight는 Claude Code에 연결하지
-않는다. 공통 훅을 수정한 작성자가 검증 단계에서 Codex revision을 갱신할 뿐, Claude의
-`SessionStart`·사용자 요청·설정 파일을 자동으로 막거나 바꾸지 않는다.
+Codex의 세션 주의 문구는 Claude Code에 연결하지 않는다. Claude의 `SessionStart`·사용자 요청·
+설정 파일은 Codex 훅 상태 때문에 자동으로 막거나 바꾸지 않는다.

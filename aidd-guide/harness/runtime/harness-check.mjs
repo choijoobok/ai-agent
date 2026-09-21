@@ -6,10 +6,6 @@ import { fileURLToPath } from 'node:url';
 import { parseYaml } from '../../../.claude/hooks/lib.mjs';
 import { skillDiffs, sourceSkills } from './sync-skills.mjs';
 import { CHAINS } from './chains.mjs';
-import {
-  configuredCodexHookRevision,
-  currentCodexHookRevision,
-} from './codex-hook-revision.mjs';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 
@@ -22,8 +18,6 @@ export function checkHarness() {
     manifest?.hooks?.contract,
     manifest?.hooks?.chain_source,
     manifest?.hooks?.pretool_bootstrap,
-    manifest?.hooks?.codex_revision,
-    manifest?.hooks?.codex_approval,
     manifest?.hooks?.spec_loader,
     manifest?.hooks?.spec_loader_test,
     manifest?.hooks?.integration_state,
@@ -62,42 +56,34 @@ export function checkHarness() {
   if (codexText.includes('context-gauge')) {
     issues.push('Codex에 Claude 전용 context-gauge가 연결되어 있다.');
   }
-  const currentRevision = currentCodexHookRevision(REPO);
-  const configuredRevision = configuredCodexHookRevision(REPO);
-  if (!configuredRevision || configuredRevision !== currentRevision) {
-    issues.push(`Codex hook revision이 실행면과 다르다: 설정 ${configuredRevision || '(없음)'} · 현재 ${currentRevision}`);
-  }
-  for (const adapter of ['approval-status.mjs', 'approval-gate.mjs', 'acknowledge.mjs', 'file-chain.mjs', 'pre-shell.mjs', 'log-raw.mjs']) {
+  for (const adapter of ['session-start.mjs', 'session-brief.mjs', 'file-chain.mjs', 'pre-shell.mjs', 'log-raw.mjs']) {
     if (!codexText.includes(adapter)) issues.push(`Codex adapter 배선 없음: ${adapter}`);
-  }
-  if (!read('.codex/hooks/acknowledge.mjs').includes('approved-session.mjs')) {
-    issues.push('Codex 승인 뒤 세션 시작 adapter가 acknowledge에 연결되지 않았다.');
   }
   const starts = codex?.hooks?.SessionStart ?? [];
   if (!starts.some((group) => String(group?.matcher ?? '').includes('compact'))) {
     issues.push('Codex SessionStart가 compact 이후 재주입을 보장하지 않는다.');
   }
   if (!starts.some((group) => String(group?.matcher ?? '') === 'startup')) {
-    issues.push('Codex SessionStart에 startup 전용 승인 그룹이 없다.');
+    issues.push('Codex SessionStart에 startup 전용 그룹이 없다.');
   }
-  if (JSON.stringify(starts).includes('session-brief.mjs') || JSON.stringify(starts).includes('session-start.mjs')) {
-    issues.push('Codex SessionStart가 훅 승인 전에 브리핑 또는 원격 동기화를 실행한다.');
+  if (!JSON.stringify(starts).includes('session-start.mjs') || !JSON.stringify(starts).includes('session-brief.mjs')) {
+    issues.push('Codex SessionStart가 시작·재개 브리핑을 직접 실행하지 않는다.');
+  }
+  if (JSON.stringify(codex?.hooks?.PreToolUse ?? []).includes('approval-')) {
+    issues.push('Codex PreToolUse에 훅 승인 차단이 남아 있다.');
   }
 
   const claude = json('.claude/settings.json', issues);
   if (!claude?.hooks?.SessionStart) issues.push('Claude SessionStart 훅이 없다.');
   const claudeText = read('.claude/settings.json');
-  if (claudeText.includes('codex-hook-revision') || claudeText.includes('Codex 훅 실행 확인')) {
-    issues.push('Claude 배선에 Codex 전용 훅 승인 검사가 연결되어 있다.');
-  }
   for (const adapter of ['session-start.mjs', 'pre-write.mjs', 'pre-shell.mjs', 'post-write.mjs', 'log-raw.mjs', 'context-gauge.mjs']) {
     if (!claudeText.includes(adapter)) issues.push(`Claude adapter 배선 없음: ${adapter}`);
   }
   if (!claudeText.includes('pretool-bootstrap.mjs')) issues.push('Claude 파일 사전 훅이 bootstrap을 거치지 않는다.');
   if (!codexText.includes('pretool-bootstrap.mjs')) issues.push('Codex 파일 사전 훅이 bootstrap을 거치지 않는다.');
   const agentsText = read('AGENTS.md');
-  if (!agentsText.includes('codex-hook-revision.mjs --check')) {
-    issues.push('AGENTS.md에 Codex hook revision preflight가 없다.');
+  if (!agentsText.includes('현재 세션에서는 훅 승인 상태를 확인하거나 작업을 막지 않습니다')) {
+    issues.push('AGENTS.md에 Codex 훅 비차단 주의 정책이 없다.');
   }
   for (const [name, cfg] of [['Claude', claude], ['Codex', codex]]) {
     for (const group of cfg?.hooks?.PreToolUse ?? []) {
@@ -132,7 +118,8 @@ export function checkHarness() {
     '.claude/hooks/pre-write.mjs',
     '.claude/hooks/pre-shell.mjs',
     '.claude/hooks/post-write.mjs',
-    '.codex/hooks/approved-session.mjs',
+    '.codex/hooks/session-start.mjs',
+    '.codex/hooks/session-brief.mjs',
     '.codex/hooks/file-chain.mjs',
     '.codex/hooks/pre-shell.mjs',
   ];

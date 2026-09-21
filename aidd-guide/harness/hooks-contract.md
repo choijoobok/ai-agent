@@ -85,7 +85,7 @@ fixture는 `.codex/hooks/self-test.mjs`가 갖고 여는 쪽과 **닫히는 쪽�
 
 `resume`·`clear`·`compact` 에서 돌지 않는다 — 작업 중간에 파일이 바뀌면 AI가 읽은 것과 디스크가 어긋난다.
 
-startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로 바뀐 것을 현재 실행에 적용됐다고 가장하지 않는다. Claude Code는 진입 문서·하네스 변경이면 새 세션을 연다. Codex는 문서·스킬 변경만이면 현재 작업에 필요한 부분을 다시 읽되 재시작을 강제하지 않는다. 실제 Codex 훅 실행면 revision이 바뀌면 최신 훅 집행이 필요한 작업을 지금 이어갈지 사용자에게 먼저 확인한다. 사용자가 선택했을 때만 Codex 앱은 승인 뒤 작업 맥락을 인계한 새 local task를 만들되, 앱에 hook 검토 화면이 없으면 **새 task를 묻기 전에** CLI `/hooks`로 현재 정의를 승인하고 완료를 확인한다. CLI 사용자는 승인·`/hooks` 검토 뒤 `codex resume <SESSION_ID>`(최근 task면 `--last`)로 돌아온다.
+startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로 바뀐 것을 현재 실행에 적용됐다고 가장하지 않는다. Claude Code는 진입 문서·하네스 변경이면 새 세션을 연다. Codex는 필요한 규칙을 현재 작업에서 다시 읽어 적용하되, 훅 설정 변경을 이유로 재시작·승인·작업 보류를 강제하지 않는다.
 
 ## `skill-sync` — 공통 스킬 원본 → 두 AI 의 `SKILL.md`
 
@@ -138,38 +138,17 @@ startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로
 실행면이 침묵을 `Failed`로 표시한 이력이 있어 호환 형태를 명시한다. Claude `SessionStart`는
 날것이며, `emitHookResults` 한 곳에서 가르고 어댑터가 stdout을 섞지 않는다 — 사례는 [providers/codex.md](./providers/codex.md).
 
-## Codex 훅 승인·revision — AIDD와 같이 매 세션에서 일반 업무를 잠근다
+## Codex 세션 주의 — 안내만 하고 작업을 제어하지 않는다
 
 | 칸 | 값 |
 |---|---|
-| 실행면 | Codex가 `/hooks`에서 직접 검토하는 provider 정의 `.codex/hooks.json` |
-| revision | `.codex/hooks.json`의 SHA-256으로 계산한다. 설정 안의 revision 표식 자체는 제외하며, 정의를 바꾸지 않는 정책·실행기·문서 변경은 재승인을 요구하지 않는다 |
-| 동기화 | 훅 작성자가 `node aidd-guide/harness/runtime/codex-hook-revision.mjs --sync`를 실행해 startup 명령의 인자에 고정한다 |
-| 실행 확인 | Codex `SessionStart` adapter가 실행 전후 revision과 설정값이 모두 같을 때만 `[Codex 훅 실행 확인]`을 문맥에 넣는다 |
-| 승인 상태 | `SessionStart`는 브리핑 없이 `approval-status` adapter만 세션별·revision별로 매 `startup`·`resume`·`clear`·`compact`에 주입한다. 출력은 터미널의 `codex -C "<프로젝트 루트>"`·대화 안의 `/hooks`·모든 훅 직접 검토·신뢰·`1`/`2` 선택을 빠짐없이 안내한다. 상태는 Git 무시 `chat-history/.codex-hook-approvals/`에만 두며, 구형 revision 범위 상태는 `unconfirmed`로 fail-closed 마이그레이션한다 |
-| 선언·차단 | `UserPromptSubmit`의 `acknowledge` adapter가 `/hooks` 직접 검토 뒤의 `1`(기존)·`2`(신규)를 기록하고, 모호한 자연어 선언은 `declared`로 남겨 시점을 다시 묻는다. `1` 또는 CLI의 `2` 뒤에만 `approved-session`이 `git-sync`·브리핑·실행 확인을 낸다. Desktop의 `2`는 client·revision·원 세션 키가 든 `restart_required`를 만들며, 같은 Desktop의 새 창에서 재시작·승인을 뜻하는 자연어 확인 뒤에만 해제한다. Desktop 미완료 재시작은 CLI 승인 흐름을 막지 않고 CLI 승인은 그 표식을 지우지 않는다. 모든 `PreToolUse`보다 앞선 `approval-gate`가 승인 전 일반 작업을 막는다 |
-| 판정 | AGENTS.md의 Codex 전용 preflight가 매 요청에서 문맥 revision과 현재 실행면을 대조한다 |
-| 강도 | 불일치·확인 부재면 모델이 **일반 업무**를 보류한다. `harness-check`와 CI는 stale revision을 오류로 막는다 |
-| 수리 차선 | 확인이 없어도 **읽기 전부 · `harness-sync` · 하네스 경로 한정 커밋**은 연다(아래) |
-| 실패 정책 | 자동 승인·신뢰 저장소 읽기·우회 플래그를 쓰지 않는다. 문서·스킬 변경은 재시작하지 않는다. 실제 훅 실행면 revision이 바뀌면 최신 훅 집행이 필요한 작업을 지금 이어갈지 사용자에게 먼저 확인한다. 사용자가 지금 이어가기를 택한 경우에만 데스크톱 앱은 hook 검토 화면 또는 CLI `/hooks` 승인 완료 확인 → 새 task 이동 승인 → 현재 턴 종료 → 새 local task에 맥락 인계 → revision·`PreToolUse` 생존 카나리 확인 순서다. CLI는 재개 승인 → `/hooks` 검토 → 현재 실행 종료 → `codex resume` → revision·카나리 확인 순서다. **revision 불일치·확인 부재는 일반 업무를 보류하지만, 승인된 새 실행에서 revision이 맞고 카나리만 실행되면 제품 결손을 사용자에게 한 번 알리고 문서 규칙을 AI가 직접 적용하며 업무를 계속한다.** 같은 재진입과 경고를 반복하지 않는다. |
-| fixture | `.codex/hooks/self-test.mjs` — 일치·확인 부재·잘못된 revision, **desktop·CLI·불명 세 갈래 안내**, 승인→재진입 순서, 양쪽 client의 카나리 경고 후 계속 정책, 카나리 deny, Codex `PreToolUse` 허용의 중립 JSON과 어댑터 출력 모양을 함께 센다 |
+| 출력 | `SessionStart`의 `session-start`·`session-brief` adapter가 브리핑과 함께 `[Codex 주의]`를 주입한다 |
+| 주의 내용 | 훅은 저장소 규칙의 보조 수단이며, 중요한 변경 전에는 `AGENTS.md`와 관련 문서를 직접 확인한다 |
+| 강도 | 안내. 승인 상태·revision·세션별 상태를 저장하거나 확인하지 않으며, 이를 이유로 모델 작업이나 `PreToolUse`를 막지 않는다 |
+| 배선 | `startup`은 `git-sync` → `session-brief`, `resume|clear|compact`는 `session-brief`를 직접 실행한다 |
+| fixture | `.codex/hooks/self-test.mjs`가 시작·재개 adapter 배선, 승인 차단 부재, 주의 문구와 Codex JSON 출력을 확인한다 |
 
-**부트스트랩 한계가 있다.** 승인되지 않은 훅은 자기 자신을 실행해 차단할 수 없다. 그래서 AIDD와
-같이 hook runtime의 상태 게이트와 `AGENTS.md` preflight를 함께 쓴다. 구현이 바뀌면 `/hooks`
-재승인이 필요하고, 확인이 없는 동안은 수리 차선만 열린다.
-
-**승인은 훅 우회가 아니라 작업 맥락을 보존한 재연결 승인이다.** 실제 훅 실행면이 바뀌어 최신 집행이 지금 필요하다고 사용자가 고른 경우에만 적용한다. CLI의 `resume`은 저장된 대화를 잇고, 앱은 `thread/start`로 새 local task를 만들어 완료한 일·남은 일·원본 task를 읽는 방법을 첫 prompt에 인계한다.
-`thread/fork` 뒤에는 startup 훅이 오지 않고 사전 훅 카나리도 통과한 것이 2026-09-11 실측됐으므로 재시작 수단으로 쓰지 않는다.
-앱에 hook 검토 화면이 없으면 자동 승인하지 않고, 저장소 루트에서 Codex CLI를 연 뒤 그 TUI의 `/hooks`로 승인하게 한다. **사용자가 승인 완료를 확인하기 전에는 새 task 이동을 묻거나 만들지 않는다.** 완료 확인 뒤 이동 승인을 받고 새 task를 만든다. 그 task의 새 `SessionStart` revision은 반드시 일치해야 한다. `PreToolUse` 카나리는 자동 집행의 생존 여부를 알려 주며, 차단되지 않으면 사용자에게 결손 범위를 알리고 문서 규칙을 직접 적용하며 업무를 재개한다.
-
-Claude Code에는 이 preflight와 revision 문맥을 주입하지 않는다. Claude의 프로젝트 훅 실행
-동의는 Claude runtime이 관리하며, 공통 훅 수정 때 Codex revision을 갱신하는 것은 작성·검증
-절차일 뿐 Claude 세션의 요청을 막거나 설정을 자동으로 쓰지 않는다.
-
-**수리 차선이 종료 절차를 겸한다.** 무엇이 열리는지는 [`AGENTS.md`](../../AGENTS.md) §2 가,
-왜는 [providers/codex.md](./providers/codex.md) 가 갖는다. 우회가 아니라 **미커밋 하네스를
-남기지 않는 종료 절차**이며 옛 「좁은 종료 예외」를 대신한다 — 그것은 *변경을 작성한 task*
-만 위한 것이라 **표식 없이 시작한 task, 바로 원인을 조사해야 할 task 를 잠갔다.**
+훅 설정이 작업 중 바뀌면 현재 실행이 새 설정을 자동으로 싣는다고 가정하지 않는다. 그러나 재시작·새 task 이동·`/hooks` 검토는 강제하지 않고, 작업에 필요한 최신 규칙을 직접 읽어 적용한다.
 
 ## 새 훅을 더할 때
 
@@ -180,7 +159,7 @@ Claude Code에는 이 preflight와 revision 문맥을 주입하지 않는다. Cl
    옆의 `catch`가 삼키면 훅이 *일은 하고 아무 말도 안 하는* 상태가 된다.
 4. `deny`에는 *고칠 곳*과 *다음에 돌릴 것*을 함께 적는다.
 5. 두 provider 배선과 self-test를 같은 변경에서 완성한다. 한쪽 실측을 못 하면 미검증으로 보고한다.
-6. `codex-hook-revision --sync`, `harness-check`, `harness-doc --write`, 문서 lint를 실행한다.
+6. `harness-check`, `harness-doc --write`, 문서 lint를 실행한다.
 
 ## 훅이 의심스러울 때
 
@@ -190,7 +169,7 @@ echo '{"tool_input":{"file_path":"sources/backend/bootstrap/src/main/resources/d
 
 - **출력이 비면 통과한 것이다**(`pass()` 는 아무 말도 하지 않는다).
 - 아무 훅도 안 도는 것 같으면 `REPO` 탐색과 provider 신뢰 승인을 먼저 본다.
-- Codex는 `/hooks`에서 프로젝트 hook hash가 승인됐는지 확인한다.
+- Codex 주의 문구가 보이지 않으면 `SessionStart` 배선과 adapter 출력을 확인한다.
 - `doc-drift` 가 한 번 말하고 조용하면 정상이다. 다시 보려면 tmp 의 세션 파일을 지운다.
 
 ## 관련

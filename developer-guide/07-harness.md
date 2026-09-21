@@ -37,13 +37,13 @@
 | `UserPromptSubmit` | — | `context-gauge` | 컨텍스트 게이지 — 문맥이 차오르면 압축할 여지가 남아 있을 때 알린다. | 문맥에 넣는다 | 10s |
 | `Stop` | — | `log-raw` | 대화 원문을 `chat-history/` 에 append 한다 | 조용히 한다 | 15s |
 
-### Codex — 17개
+### Codex — 16개
 
 | 이벤트 | 언제 | 훅 | 하는 일 | 강도 | 제한 |
 |---|---|---|---|---|---|
-| `SessionStart` | `startup` | `approval-status` |  | 조용히 한다 | 15s |
-| `SessionStart` | `resume\|clear\|compact` | `approval-status` |  | 조용히 한다 | 15s |
-| `PreToolUse` | — | `approval-gate` |  | 조용히 한다 | 20s |
+| `SessionStart` | `startup` | `git-sync` | 세션이 열릴 때 원격을 먼저 당긴다 | 문맥에 넣는다 | 15s |
+| `SessionStart` | `startup` | `session-brief` | 세션이 열릴 때 지금 어디인가를 문맥에 넣는다 | 문맥에 넣는다 | 15s |
+| `SessionStart` | `resume\|clear\|compact` | `session-brief` | 세션이 열릴 때 지금 어디인가를 문맥에 넣는다 | 문맥에 넣는다 | 15s |
 | `PreToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `guard-write` | 쓰기의 다섯 사고를 막는다 | **차단** · 경고 | 45s |
 | `PreToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `guard-generated` | 생성물을 손으로 고치는 것을 막는다 | **차단** | 45s |
 | `PreToolUse` | `Bash\|PowerShell\|^mcp__.*__(?:start_process\|execute_command\|run_command\|run_shell_command\|shell_exec\|bash\|terminal\|exec)` | `guard-bash` | 되돌릴 수 없는 명령을 막는다 | **차단** | 20s |
@@ -57,7 +57,6 @@
 | `PostToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `skill-sync` | 공통 스킬 원본이 바뀌면 두 AI 의 `SKILL.md` 를 다시 만든다 | 경고 | 90s |
 | `PostToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `harness-doc` | 훅·스킬 목록을 `developer-guide/07-harness.md` 로 만든다 | 경고 | 90s |
 | `PostToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `commons-doc` | 공통물 목록을 `aidd-guide/standard/registry.md` 로 만든다 | 경고 | 90s |
-| `UserPromptSubmit` | — | `acknowledge` |  | 조용히 한다 | 10s |
 | `UserPromptSubmit` | — | `log-raw` | 대화 원문을 `chat-history/` 에 append 한다 | 조용히 한다 | 10s |
 | `Stop` | — | `log-raw` | 대화 원문을 `chat-history/` 에 append 한다 | 조용히 한다 | 15s |
 - 사전 보호 chain 내부 오류는 해당 쓰기를 차단한다. 사후 검사 오류는 명시 경고한다.

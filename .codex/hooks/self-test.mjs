@@ -1,9 +1,7 @@
 /** Codex 어댑터의 patch 정규화와 공통 차단 연결을 실제 자식 프로세스로 확인한다. */
 
 import { strict as assert } from 'node:assert';
-import { createHash } from 'node:crypto';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   REPO,
@@ -28,24 +26,7 @@ import {
   screenUrlOfFrontend,
 } from '../../.claude/hooks/screen-registry.mjs';
 import { crashOutput, patchTargets as bootstrapTargets } from '../../aidd-guide/harness/runtime/pretool-bootstrap.mjs';
-import {
-  checkCodexHookContext,
-  codexClientSurface,
-  codexHookAttestationLine,
-  codexHookBlockMessage,
-  codexHookReentryMessage,
-  codexHookSurface,
-  codexPretoolCanaryCommand,
-  CODEX_PRETOOL_CANARY_PREFIX,
-  configuredCodexHookRevision,
-  currentCodexHookRevision,
-} from '../../aidd-guide/harness/runtime/codex-hook-revision.mjs';
-import {
-  acknowledge,
-  approvalEntrySource,
-  approvalGateReason,
-  approvalStatus,
-} from '../../aidd-guide/harness/runtime/codex-hook-approval.mjs';
+import { SESSION_NOTICE } from './session-notice.mjs';
 import { testSpecSet } from '../../aidd-guide/harness/runtime/spec-set.self-test.mjs';
 
 testSpecSet();
@@ -279,134 +260,13 @@ assert.equal(skillSrc.some((x) => String(x?.systemMessage ?? '').includes('실�
 assert.equal(provider(), 'codex');
 assert.equal(skillRef('trace'), '`$trace`');
 
-/* `/hooks` 승인 확인은 현재 실행면과 설정 revision, SessionStart가 넣은 값을 모두 센다.
-   통과만 시험하면 확인값을 아예 보지 않는 구현도 초록이 된다. */
-const hookRevision = currentCodexHookRevision();
-assert.equal(configuredCodexHookRevision(), hookRevision);
-assert.equal(checkCodexHookContext(hookRevision).ok, true);
-assert.equal(checkCodexHookContext('').ok, false);
-assert.equal(checkCodexHookContext('0'.repeat(64)).ok, false);
-
-/* AIDD와 동일하게 매 세션은 명시 승인 전 잠기며, client-kind별 재시작 상태를 격리한다. */
-{
-  const approvalDir = mkdtempSync(join(tmpdir(), 'ai-agent-hook-approval-'));
-  const env = { AI_AGENT_HOOK_APPROVAL_DIR: approvalDir, CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex CLI' };
-  const approvalInput = { session_id: 'self-test-approval', source: 'startup', tool_name: 'apply_patch', tool_input: { command: '*** Begin Patch\n*** Update File: documents/approval-probe.md\n@@\n*** End Patch' } };
-  try {
-    assert.match(approvalStatus(approvalInput, { env }), /codex -C/);
-    assert.match(approvalStatus(approvalInput, { env }), /해야 할 일/);
-    assert.match(approvalStatus(approvalInput, { env }), /표시되는 모든 ai-agent 훅/);
-    assert.match(approvalStatus(approvalInput, { env }), /`1` 또는 `2`로 답해주세요/);
-    assert.match(approvalGateReason(approvalInput, { env }), /승인 전에는 일반 작업을 할 수 없습니다/);
-    const declaredInput = { ...approvalInput, session_id: 'self-test-declared-approval' };
-    assert.equal(acknowledge({ ...declaredInput, prompt: '훅을 검토하고 승인했어요' }, { env }), true);
-    assert.match(approvalStatus(declaredInput, { env }), /승인 시점이 빠졌습니다/);
-    assert.match(approvalStatus(declaredInput, { env }), /해야 할 일/);
-    assert.equal(acknowledge({ ...approvalInput, prompt: '1' }, { env }), true);
-    assert.equal(approvalGateReason(approvalInput, { env }), null);
-    assert.equal(approvalEntrySource(approvalInput, { env }), 'startup');
-    const desktopEnv = { ...env, CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex Desktop' };
-    const desktopInput = { ...approvalInput, session_id: 'self-test-desktop-approval' };
-    assert.equal(acknowledge({ ...desktopInput, prompt: '2' }, { env: desktopEnv }), true);
-    assert.match(approvalGateReason(desktopInput, { env: desktopEnv }), /새 Codex 앱 창/);
-    const statePath = join(approvalDir, 'hook-state.json');
-    const afterDesktop = JSON.parse(readFileSync(statePath, 'utf8'));
-    assert.equal(afterDesktop.version, 2);
-    assert.equal(afterDesktop.revision_scope, 'codex-hook-definition');
-    assert.equal(afterDesktop.restart_required?.client, 'desktop');
-
-    /* Desktop의 미완료 재시작이 새 CLI의 1·2 승인 흐름을 막거나 지우지 않는다. */
-    for (const [session_id, prompt] of [['self-test-cli-existing', '1'], ['self-test-cli-new', '2']]) {
-      const cliInput = { ...approvalInput, session_id };
-      assert.equal(acknowledge({ ...cliInput, prompt }, { env }), true);
-      assert.equal(approvalGateReason(cliInput, { env }), null);
-      const state = JSON.parse(readFileSync(statePath, 'utf8'));
-      assert.equal(state.restart_required?.client, 'desktop');
-    }
-
-    /* Desktop 새 창은 번호 1만으로는 열리지 않고 재시작·승인 의미를 확인해야 한다. */
-    const restartedInput = { ...approvalInput, session_id: 'self-test-desktop-restarted' };
-    assert.equal(acknowledge({ ...restartedInput, prompt: '1' }, { env: desktopEnv }), false);
-    assert.match(approvalGateReason(restartedInput, { env: desktopEnv }), /새 앱 창에서 재시작/);
-    assert.equal(acknowledge({ ...restartedInput, prompt: '새 Codex 창을 열어 다시 시작했고 훅도 승인된 상태입니다' }, { env: desktopEnv }), true);
-    assert.equal(approvalGateReason(restartedInput, { env: desktopEnv }), null);
-
-    /* 오래된 CLI 세션은 최신 정의를 검토한 뒤 2로 현재 세션에서 재승인한다. */
-    const staleInput = { ...approvalInput, session_id: 'self-test-cli-stale' };
-    assert.equal(acknowledge({ ...staleInput, prompt: '1' }, { env }), true);
-    const staleState = JSON.parse(readFileSync(statePath, 'utf8'));
-    const staleKey = createHash('sha256').update(staleInput.session_id).digest('hex');
-    staleState.sessions[staleKey].start_revision = 'old-revision';
-    writeFileSync(statePath, `${JSON.stringify(staleState)}\n`, 'utf8');
-    assert.match(approvalGateReason(staleInput, { env }), /현재 CLI 세션/);
-    assert.equal(acknowledge({ ...staleInput, prompt: '2' }, { env }), true);
-    assert.equal(approvalGateReason(staleInput, { env }), null);
-
-    /* v1 상태는 provider 정의 revision으로 자동 승격하지 않고 다시 확인한다. */
-    const legacyState = JSON.parse(readFileSync(statePath, 'utf8'));
-    legacyState.version = 1;
-    delete legacyState.revision_scope;
-    writeFileSync(statePath, `${JSON.stringify(legacyState)}\n`, 'utf8');
-    assert.match(approvalGateReason(approvalInput, { env }), /승인 전에는 일반 작업을 할 수 없습니다/);
-    const migrated = JSON.parse(readFileSync(statePath, 'utf8'));
-    assert.equal(migrated.version, 2);
-    assert.equal(migrated.revision_scope, 'codex-hook-definition');
-    assert.equal(migrated.sessions[createHash('sha256').update(approvalInput.session_id).digest('hex')].state, 'unconfirmed');
-  } finally {
-    rmSync(approvalDir, { recursive: true, force: true });
-  }
-}
-assert.equal(codexClientSurface({ CODEX_APP_TOOLS_PIPE_PATH: 'pipe' }), 'desktop');
-assert.equal(codexClientSurface({ CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex Desktop' }), 'desktop');
-assert.equal(codexClientSurface({ CODEX_INTERNAL_ORIGINATOR_OVERRIDE: 'Codex CLI' }), 'cli');
-assert.equal(codexClientSurface({}), 'cli');
-const desktopReentry = codexHookReentryMessage('desktop');
-assert.match(desktopReentry, /새 task로 이동/);
-assert.match(desktopReentry, /최신 훅 집행이 필요한 작업을 지금 이어갈까요/);
-assert.match(desktopReentry, /지금 필요 없다고 고르면/);
-assert.match(desktopReentry, /PowerShell에 `\/hooks`를 직접 입력하게 하지 않는다/);
-assert.match(desktopReentry, /승인 완료.*전에는 새 task 이동을 묻거나 만들지 않는다/);
-assert.equal(desktopReentry.indexOf('`/hooks`') < desktopReentry.indexOf('최신 훅 집행이 필요한 작업을 지금 이어갈까요'), true);
-assert.match(desktopReentry, /thread\/start/);
-assert.match(desktopReentry, /새 local task/);
-assert.match(desktopReentry, /PreToolUse 생존 확인/);
-assert.match(desktopReentry, /문서 규칙을 직접 적용하며 업무를 계속/);
-assert.match(desktopReentry, /thread\/fork.*쓰지 않는다/);
-assert.doesNotMatch(desktopReentry, /codex resume/);
-const cliReentry = codexHookReentryMessage('cli');
-assert.match(cliReentry, /같은 task를 새 실행으로 지금 재개/);
-assert.match(cliReentry, /최신 훅 집행이 필요한 작업/);
-assert.match(cliReentry, /codex resume <SESSION_ID>/);
-assert.match(cliReentry, /PreToolUse 생존 확인/);
-assert.match(cliReentry, /문서 규칙을 직접 적용하며 계속/);
-const unknownReentry = codexHookReentryMessage('unknown');
-assert.match(unknownReentry, /데스크톱 앱인지 CLI/);
-assert.match(codexHookBlockMessage({ reason: 'attestation-missing' }, 'desktop'), /새 local task/);
-assert.match(cliReentry, /사용자 승인은 낡은 훅.*우회하는 허가가 아니다/);
-const canaryCommand = codexPretoolCanaryCommand(hookRevision);
-const canary = await runHookChain({
-  cwd: REPO,
-  hook_event_name: 'PreToolUse',
-  tool_name: 'Bash',
-  tool_input: { command: canaryCommand },
-}, ['guard-bash.mjs']);
-assert.equal(isDenied(canary), true);
-assert.equal(
-  canary[0].hookSpecificOutput.permissionDecisionReason.includes(CODEX_PRETOOL_CANARY_PREFIX),
-  true,
-);
 const hookConfig = JSON.parse(readFileSync(join(REPO, '.codex', 'hooks.json'), 'utf8'));
 const startupGroup = hookConfig.hooks.SessionStart.find((group) => group.matcher === 'startup');
 const resumeGroup = hookConfig.hooks.SessionStart.find((group) => group.matcher === 'resume|clear|compact');
-assert.equal(startupGroup?.hooks?.[0]?.command.includes('approval-status.mjs'), true);
-assert.equal(resumeGroup?.hooks?.[0]?.command.includes('approval-status.mjs'), true);
-assert.equal(JSON.stringify(hookConfig.hooks.SessionStart).includes('session-brief.mjs'), false);
-const hookSurface = codexHookSurface().map((path) => path.replace(/\\/g, '/'));
-assert.equal(hookSurface.some((path) => path.endsWith('/.claude/hooks/guard-write.mjs')), true);
-assert.equal(hookSurface.some((path) => path.endsWith('/.codex/hooks/approved-session.mjs')), true);
-assert.equal(hookSurface.some((path) => path.endsWith('/.codex/hooks/session-start.mjs')), false);
-assert.equal(hookSurface.some((path) => path.endsWith('/.claude/hooks/context-gauge.mjs')), false);
-assert.equal(hookSurface.some((path) => path.endsWith('/.codex/hooks/self-test.mjs')), false);
+assert.equal(startupGroup?.hooks?.[0]?.command.includes('session-start.mjs'), true);
+assert.equal(resumeGroup?.hooks?.[0]?.command.includes('session-brief.mjs'), true);
+assert.equal(JSON.stringify(hookConfig.hooks).includes('approval-'), false);
+assert.match(SESSION_NOTICE, /작업을 막지 않습니다/);
 
 /* 수리 경로 — 훅이 죽었을 때 **훅 파일만** 열리고 나머지는 닫혀 있어야 한다.
    여는 쪽만 시험하면 게이트가 통째로 열린 것을 못 본다. 양쪽을 다 센다. */
@@ -498,12 +358,10 @@ function captureEmit(outputs, eventName) {
   return chunks.join('');
 }
 
-const attestation = codexHookAttestationLine(hookRevision);
-
 /* Codex 는 JSON 만 읽는다 — 날 것이면 `JSON.parse` 가 던지고, 그것이 이 시험의 요점이다. */
-const codexStart = JSON.parse(captureEmit([attestation, '[프로젝트 상태] …'], 'SessionStart'));
+const codexStart = JSON.parse(captureEmit([SESSION_NOTICE, '[프로젝트 상태] …'], 'SessionStart'));
 assert.equal(codexStart.hookSpecificOutput.hookEventName, 'SessionStart');
-assert.equal(codexStart.hookSpecificOutput.additionalContext.includes(attestation), true);
+assert.equal(codexStart.hookSpecificOutput.additionalContext.includes(SESSION_NOTICE), true);
 assert.equal(codexStart.hookSpecificOutput.additionalContext.includes('[프로젝트 상태] …'), true);
 
 /* 공식 계약상 빈 출력도 성공이지만, 실측된 `PreToolUse Failed` 표시를 되살리지 않도록
@@ -516,10 +374,10 @@ assert.equal(codexPretoolPass.hookSpecificOutput.permissionDecision, undefined);
 
 /* Claude 는 반대다 — 여기까지 JSON 으로 바꾸면 문맥에 JSON 이 그대로 들어간다. */
 process.env.AI_HOOK_PROVIDER = 'claude';
-const claudeStart = captureEmit([attestation], 'SessionStart');
+const claudeStart = captureEmit([SESSION_NOTICE], 'SessionStart');
 if (savedProvider === undefined) delete process.env.AI_HOOK_PROVIDER;
 else process.env.AI_HOOK_PROVIDER = savedProvider;
-assert.equal(claudeStart.trim(), attestation);
+assert.equal(claudeStart.trim(), SESSION_NOTICE);
 assert.throws(() => JSON.parse(claudeStart));
 
 /*

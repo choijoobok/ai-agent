@@ -44,19 +44,10 @@ tags: [harness, hooks, automation]
 
 **여기는 *왜 그런 강도인가* 를 갖는다.**
 
-Codex 훅 승인 게이트는 `SessionStart`에서 **브리핑보다 먼저** `/hooks` 직접 검토와 `1`·`2` 선택을
-요청하고, 모든 `PreToolUse`보다 먼저 일반 작업을 차단한다. 다만 승인되지 않은 훅 자체는 실행되지
-않을 수 있으므로, 승인된 `SessionStart`의 revision 문맥과 `AGENTS.md` preflight도 일반 업무 응답을
-보류하고 CI는 revision 누락을 막는다. revision은 `/hooks`에 보이는 `.codex/hooks.json`만 기준으로
-계산하며, Desktop의 신규 승인 재시작 표식은 만든 client에만 적용한다. 실제 훅 정의 revision이 불일치할 때만 사용자에게 최신 훅 집행이
-필요한 작업을 지금 이어갈지 확인한다. 그 선택은 현재 실행의 우회가 아니라 **client가 지원하는
-방식으로 작업 맥락을 잇는 선택**이다. 데스크톱 앱은 새 local task에 맥락을 인계하고, CLI는 같은
-task를 `codex resume`로 새 실행에 다시 붙인다. 문서·스킬 변경만으로 재연결하지 않으며, 지금
-필요 없다고 한 작업은 읽기·하네스 close-out 범위에서만 마치고 최신 훅 집행이 필요한 작업 전에
-다시 확인한다. 양쪽 모두 새 실행을 택하면 revision을 확인하고
-`PreToolUse` 카나리로 자동 사전 차단의 생존 여부를 사용자에게 알린다. revision이 맞는데
-카나리만 실패하면 문서 규칙을 AI가 직접 집행하며 계속한다. Claude Code의 요청 흐름에는 이
-검사를 연결하지 않는다.
+Codex `SessionStart`는 시작·재개 브리핑과 함께 훅이 저장소 규칙의 보조 수단임을 알리는 주의 문구를
+보여 준다. 승인 상태·revision·세션별 상태를 확인하거나 저장하지 않고, 이를 이유로 작업이나
+`PreToolUse`를 차단하지 않는다. 훅 설정이 작업 중 바뀌면 필요한 규칙을 직접 읽어 적용하며,
+재시작·새 task 이동·`/hooks` 검토를 강제하지 않는다.
 
 ## 강도가 넷인 이유
 
