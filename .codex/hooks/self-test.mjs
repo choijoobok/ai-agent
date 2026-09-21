@@ -266,8 +266,8 @@ const resumeGroup = hookConfig.hooks.SessionStart.find((group) => group.matcher 
 assert.equal(startupGroup?.hooks?.[0]?.command.includes('session-start.mjs'), true);
 assert.equal(resumeGroup?.hooks?.[0]?.command.includes('session-brief.mjs'), true);
 assert.equal(JSON.stringify(hookConfig.hooks).includes('approval-'), false);
-assert.match(SESSION_NOTICE, /작업을 제어하지 않습니다/);
-assert.match(SESSION_NOTICE, /`\/hooks`에서 직접 확인하세요/);
+assert.match(SESSION_NOTICE, /`\/hooks`에서 승인 여부를 반드시 확인하세요/);
+assert.match(SESSION_NOTICE, /기존 Windows 앱 세션에는 적용되지 않으므로 새 세션 창을 여세요/);
 
 /* 수리 경로 — 훅이 죽었을 때 **훅 파일만** 열리고 나머지는 닫혀 있어야 한다.
    여는 쪽만 시험하면 게이트가 통째로 열린 것을 못 본다. 양쪽을 다 센다. */

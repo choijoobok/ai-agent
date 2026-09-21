@@ -82,7 +82,7 @@ export function checkHarness() {
   if (!claudeText.includes('pretool-bootstrap.mjs')) issues.push('Claude 파일 사전 훅이 bootstrap을 거치지 않는다.');
   if (!codexText.includes('pretool-bootstrap.mjs')) issues.push('Codex 파일 사전 훅이 bootstrap을 거치지 않는다.');
   const agentsText = read('AGENTS.md');
-  if (!agentsText.includes('훅 승인 여부는 Codex CLI의 `/hooks`에서 직접 확인하세요')) {
+  if (!agentsText.includes('CLI의 `/hooks`에서 승인 여부를 반드시 확인하세요')) {
     issues.push('AGENTS.md에 Codex 훅 비차단 주의 정책이 없다.');
   }
   for (const [name, cfg] of [['Claude', claude], ['Codex', codex]]) {

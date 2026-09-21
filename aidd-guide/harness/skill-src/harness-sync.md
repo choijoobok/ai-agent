@@ -47,6 +47,7 @@ node aidd-guide/meta/_meta/lint.mjs
 고친 뒤 다시 생성한다. 실제 Claude와 Codex 세션에서 각각 대표 trigger 하나와 차단/경고 하나를
 smoke test하고, 실행하지 못한 쪽은 완료로 가장하지 않고 남은 검증을 보고한다.
 하네스 파일을 pull하거나 고친 세션은 이미 읽은 진입 문서·hook 설정을 새 것으로 간주하지 않는다.
-Codex는 승인 상태·revision을 검사하거나 작업을 보류하지 않는다. 시작 문구가 보이지 않거나 배선이
-의심되면 `harness-check`와 self-test로 진단하고, 중요한 변경에 필요한 규칙은 실물을 다시 읽어
-직접 적용한다. Claude Code는 필요할 때 새 세션에서 갱신된 진입 문서를 읽는다.
+Codex는 승인 상태·revision을 자동 검사하거나 작업을 보류하지 않는다. 시작 문구가 보이지 않거나 배선이
+의심되면 `harness-check`와 self-test로 진단한다. CLI에서 훅을 새로 승인했거나 배선이 바뀌면 기존
+Windows 앱 세션에는 활성화되지 않으므로 새 세션 창에서 확인한다. Claude Code도 필요할 때 새 세션에서
+갱신된 진입 문서를 읽는다.

@@ -41,11 +41,11 @@ tags: [harness, codex, adapter]
 `resume|clear|compact` 그룹은 `session-brief.mjs`로 상태를 재주입한다. 두 adapter는 아래 주의 문구를
 사용자 UI용 JSON `systemMessage`로 내고, 같은 문구와 브리핑을 모델용 `additionalContext`로 낸다.
 
-> **[Codex 주의]** 현재 세션은 훅 승인 상태를 확인하거나 그 결과로 작업을 제어하지 않습니다. 훅 승인 여부는 Codex CLI의 `/hooks`에서 직접 확인하세요. 훅은 저장소 규칙을 보조하므로 중요한 변경 전에는 `AGENTS.md`와 관련 문서를 직접 확인하세요.
+> **[Codex 주의]** 훅은 Codex CLI에서 승인해야 작동합니다. CLI의 `/hooks`에서 승인 여부를 반드시 확인하세요. 새로 승인했다면 기존 Windows 앱 세션에는 적용되지 않으므로 새 세션 창을 여세요.
 
-승인 상태·revision·재시작 표식을 저장하거나 확인하지 않는다. `PreToolUse`도 훅 승인 여부 때문에
-차단하지 않는다. 훅 설정이 작업 중 바뀌면 필요한 규칙을 실물에서 다시 읽어 적용하며, `/hooks` 검토,
-새 task 이동, 재시작을 강제하지 않는다.
+승인 상태·revision·재시작 표식을 저장하거나 자동 확인하지 않는다. `PreToolUse`도 훅 승인 여부 때문에
+차단하지 않는다. 문서 규칙은 현재 작업에서 다시 읽어 적용할 수 있지만, CLI에서 훅을 새로 승인했거나
+훅 배선이 바뀌면 Windows 앱의 기존 세션에는 활성화되지 않으므로 새 세션 창을 연다.
 
 ## 입력 차이
 

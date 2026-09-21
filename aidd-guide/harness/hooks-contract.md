@@ -85,7 +85,7 @@ fixture는 `.codex/hooks/self-test.mjs`가 갖고 여는 쪽과 **닫히는 쪽�
 
 `resume`·`clear`·`compact` 에서 돌지 않는다 — 작업 중간에 파일이 바뀌면 AI가 읽은 것과 디스크가 어긋난다.
 
-startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로 바뀐 것을 현재 실행에 적용됐다고 가장하지 않는다. Claude Code는 진입 문서·하네스 변경이면 새 세션을 연다. Codex는 필요한 규칙을 현재 작업에서 다시 읽어 적용하되, 훅 설정 변경을 이유로 재시작·승인·작업 보류를 강제하지 않는다.
+startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로 바뀐 것을 현재 실행에 적용됐다고 가장하지 않는다. Claude Code는 진입 문서·하네스 변경이면 새 세션을 연다. Codex는 문서 규칙만 바뀌면 현재 작업에서 다시 읽어 적용하되, CLI에서 훅을 새로 승인했거나 훅 배선이 바뀌면 Windows 앱의 기존 세션에는 활성화되지 않으므로 새 세션 창을 연다.
 
 ## `skill-sync` — 공통 스킬 원본 → 두 AI 의 `SKILL.md`
 
@@ -143,12 +143,12 @@ startup 훅도 진입 문서와 hook 설정이 **로드된 뒤** 돈다. pull로
 | 칸 | 값 |
 |---|---|
 | 출력 | `SessionStart`의 `session-start`·`session-brief` adapter가 `[Codex 주의]`를 `systemMessage`로 사용자 UI에 표시하고, 같은 문구와 브리핑을 `additionalContext`로 모델에 주입한다 |
-| 주의 내용 | 현재 세션은 훅 승인 상태를 확인하지 않으므로 사용자가 CLI의 `/hooks`에서 직접 확인한다. 훅은 저장소 규칙의 보조 수단이며, 중요한 변경 전에는 `AGENTS.md`와 관련 문서를 직접 확인한다 |
+| 주의 내용 | 훅은 CLI에서 승인해야 작동한다. 사용자는 `/hooks`에서 승인 여부를 반드시 확인하고, 새로 승인했다면 Windows 앱에서 새 세션 창을 연다 |
 | 강도 | 안내. 승인 상태·revision·세션별 상태를 저장하거나 확인하지 않으며, 이를 이유로 모델 작업이나 `PreToolUse`를 막지 않는다 |
 | 배선 | `startup`은 `git-sync` → `session-brief`, `resume|clear|compact`는 `session-brief`를 직접 실행한다 |
 | fixture | `.codex/hooks/self-test.mjs`가 시작·재개 adapter 배선, 승인 차단 부재, 사용자용 `systemMessage`, 모델용 `additionalContext`를 각각 확인한다 |
 
-훅 설정이 작업 중 바뀌면 현재 실행이 새 설정을 자동으로 싣는다고 가정하지 않는다. 그러나 재시작·새 task 이동·`/hooks` 검토는 강제하지 않고, 작업에 필요한 최신 규칙을 직접 읽어 적용한다.
+훅 설정이 작업 중 바뀌면 현재 실행이 새 설정을 자동으로 싣는다고 가정하지 않는다. CLI에서 새로 승인한 훅은 Windows 앱의 기존 세션에 활성화되지 않으므로 새 세션 창에서 확인한다.
 
 ## 새 훅을 더할 때
 
