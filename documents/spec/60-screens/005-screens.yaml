@@ -116,6 +116,7 @@ screens:
     feature: FEAT-013
     roadmap: RM-P1
     agent_contact: 설정
+    note: "전사 공통 응답 규칙의 조건·문구·리비전을 관리한다"
   - id: SCR-014
     module: admin
     group: "업무 지식 관리"
@@ -277,6 +278,7 @@ screens:
     feature: FEAT-033
     roadmap: RM-P1
     agent_contact: "없음 (admin 이 생산)"
+    note: "관리 화면 단위의 전체 스냅샷을 과거 시점으로 재구성하며, 복원은 새 이력을 만든다"
   - id: SCR-032
     module: admin
     group: "감사·이력"
@@ -333,7 +335,7 @@ screens:
     title: "접근 가능 데이터"
     feature: FEAT-116
     roadmap: RM-P2
-    note: "데이터소스별 묶음"
+    note: "데이터소스별 묶음과 접근 가능한 지식 태그. 지식 제목·본문·전체 목록은 표시하지 않는다"
   - id: SCR-108
     module: portal
     title: "실행 가능 툴"
