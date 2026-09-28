@@ -4,7 +4,7 @@ title: "P1 발견 — 프로세스와 요구사항"
 category: phase
 type: operation
 created: 2026-09-04
-updated: 2026-09-21
+updated: 2026-09-28
 status: active
 sources: []
 tier: 1
@@ -56,7 +56,7 @@ tags: [discovery, requirement]
 4. **각 단계에 담당 액터를 붙인다.** 담당자 없는 단계는 미완성이다.
 
 ```yaml
-# documents/spec/03-glossary/_index.yaml
+# documents/spec/11-processes/_index.yaml
 - id: PRC-01
   name: 조회 요청 처리
   trigger: "현업 담당자가 자연어로 질의한다"
@@ -89,7 +89,7 @@ tags: [discovery, requirement]
 - ❌ "조회를 편리하게 한다." (검증 불가)
 - ❌ "결과 그리드에 마스킹 컬럼을 둔다." (해결책이지 요구사항이 아님 → "권한 없는 컬럼의 원본이 화면에 닿지 않아야 한다")
 
-### `documents/spec/03-glossary/_index.yaml`
+### `documents/spec/10-requirements/_index.yaml`
 ```yaml
 - id: REQ-011
   type: functional            # functional | nonfunctional
@@ -114,7 +114,62 @@ tags: [discovery, requirement]
 카테고리 최소 세트: `performance` · `availability` · `security` · `usability` · `operability` · `compliance` · `scalability` · `data_retention`
 각 카테고리에 최소 1개씩. **"해당 없음"도 명시적으로 기록**한다.
 
-## 5. 요구사항 품질 검사 (게이트 전 필수)
+## 5. 요구사항 정련 카드 — 요구사항 하나를 확정하는 절차
+
+> **왜**: 문장 하나와 수용 기준만으로는 설계에서 *"아, 잘못 생각했네"* 가 난다. 그때 요구사항을
+> 고치면 영향 범위를 셀 근거가 없어 많은 곳을 한꺼번에 다시 본다. 카드는 그 발견을 P1 로
+> 당기고, 늦게 바뀌어도 **영향 목록을 추정이 아니라 연계에서 뽑게** 한다. 완전히 막지는 못한다.
+
+§4 의 문장·`acceptance`·`source` 에 아래 칸을 더한다. **기존 칸을 옮겨 적지 않는다** —
+`detail`·`hard_rule` 은 그대로 두고 카드는 그 위에 쌓는다.
+
+### 5.1 핵심 칸 — 모든 FR
+
+| 칸 | 담는 것 | 규칙 |
+|---|---|---|
+| `summary` | 두세 줄 개요 | |
+| `intent` | `problem`(해결할 문제·현재의 불편) · `goal` · **`not`**(오해하기 쉬운 것의 명시 배제) | `not` 이 가장 값이 크다 — 용어사전 `not:` 과 같은 이유다 |
+| `goal_trace` | 기여하는 헌장 항목(`GOAL`·`SUC`·`MET`·`IN`) | 닿는 곳이 없으면 그 사실이 발견이다 |
+| `decider` | 이 요구사항을 확정할 수 있는 사람·역할 | `actors`(쓰는 사람)와 다르다 |
+| `preconditions` | 성립해야 할 전제 — `REQ`·`CON`·`ASM`·`FEAT` 를 가리킨다 | |
+| `relations` | `depends_on` · `constrains` · `conflicts_with` · `nfr` · `interfaces` | **양방향이다**: A 가 B 를 `constrains` 하면 B 의 `depends_on` 에 A 가 있다. `conflicts_with` 는 서로 적는다 |
+| `realization` | `features` · `screens` — 있으면 ID, 없으면 후보 이름 | `FEAT.reqs` 와 서로 맞아야 한다. 화면은 후보 목록까지 — 상세는 화면 요건서가 갖는다 |
+| `examples` | 실제 값이 든 사례. **정상 1건 + 예외 1건 이상** (`kind: 정상`·`예외`) | P3 에서 `TC` 의 씨앗이 된다 |
+| `volatility` | `level`(high·medium·low) · `what`(바뀔 수 있는 부분) | **고객사마다 달라질 수 있으면 high** — 설계에서 설정·확장 지점으로 뺀다 |
+| `open` | 아직 모르는 것. 항목마다 `@defer <기한>` | 없으면 `open: []` |
+| `maturity` | `level`(draft·elaborated·confirmed) · `at` · `by` · `confirmed_by` | 아래 §5.3 |
+
+### 5.2 조건부 칸 — 해당하면 쓰고, 아니면 한 줄로 "해당 없음"
+
+| 칸 | 해당할 때 |
+|---|---|
+| `data` | 데이터를 다룬다 — `{ item, origin, sensitivity, retention }` |
+| `business_rules` · `exceptions` | 계산식·판정 조건이 있다. 공정 단계 예외는 `PRC` 가 갖고 여기서는 가리킨다 |
+| `lifecycle` | 상태를 가진 대상이다 — `{ state, next, note? }`. **늦게 발견된 상태 하나가 ENT·API·SCR·TC 를 한꺼번에 흔든다** |
+| `permissions` | 행위별로 권한이 갈린다 (`actors` 와 달리 **행위 단위**) |
+| `audit` | 남길 이력·불변 여부·보존 |
+| `volume` | 빈도·건수·동시성 — 수치 목표는 `NFR` 이 갖고 여기는 업무 규모 사실만 |
+| `config` | 운영자가 바꿀 값 — 고정값으로 둘지 설정으로 둘지를 설계 뒤에 뒤집으면 비싸다 |
+| `risk` | 기술 불확실성 — 사전 검증(spike)이 필요한가 |
+
+**`Must`·`Should` 는 조건부 칸의 키를 모두 둔다** — 해당 없으면 `"해당 없음 — <이유>"` 또는 `[]`.
+빠뜨린 것과 해당이 없는 것을 구분하기 위해서다. **`Could` 는 `summary`·`intent`·`relations`·
+`maturity` 만 둔다.** 칸이 많으면 빈칸 채우기가 되어 중요한 칸의 품질이 떨어진다.
+
+### 5.3 확정 절차
+
+1. AI 가 영역별로 **5~7건씩** 카드를 채운다(`maturity: elaborated`). 근거가 없는 칸은 지어내지 않고
+   `open` 에 질문으로 남긴다. 규칙이 `FEAT` 에만 있던 것을 찾으면 카드의 `business_rules` 로 올리고
+   `FEAT` 는 그 REQ 를 가리키게 고친다 — **요구사항 사실의 정본은 REQ 다.**
+2. `open` 의 질문을 `interview` 형식(권장안·영향·되돌리기 비용)으로 묻는다.
+3. 답을 반영하고 **G1·P1 기한의 `open` 이 남지 않으면** `maturity: confirmed` 와 `confirmed_by` 를 적는다.
+   G1 전에 풀 필요가 없는 것(`@defer P2` 이후)은 남아도 된다.
+4. 묶음을 마칠 때마다 `/trace` 로 연계 양방향·`realization` 정합을 본다(T14).
+
+> **이미 G1 을 승인받은 작업흐름**은 카드를 소급해 쓰되 G1 을 다시 받지 않는다 — T14 가 경고로 센다.
+> 카드를 쓰다 규칙이 바뀌면, 그 작업흐름이 G3 전이면 spec 을 고치고 G3 뒤면 `change-request` 다.
+
+## 6. 요구사항 품질 검사 (게이트 전 필수)
 
 | 검사 | 방법 |
 |---|---|
@@ -125,8 +180,10 @@ tags: [discovery, requirement]
 | 용어 준수 | REQ 문장의 업무 명사가 전부 glossary에 있는가 |
 | Must 비율 | 70% 초과면 우선순위 재조정 요청 |
 | 프로세스 커버리지 | 모든 PRC 단계에 최소 1개 REQ가 있는가 (빈 단계 = 놓친 요구사항) |
+| **카드 완전성** | §5 의 칸이 있고 `Must`·`Should` 가 `confirmed` 인가 — `/trace --g1` (T14) |
+| **연계 정합** | `depends_on`↔`constrains` · `conflicts_with` 양방향, `realization`↔`FEAT.reqs` — T14 |
 
-## 6. P1 흔한 실패와 방어
+## 7. P1 흔한 실패와 방어
 
 | 실패 | 방어 |
 |---|---|
@@ -135,6 +192,9 @@ tags: [discovery, requirement]
 | NFR이 없다 | 카테고리 체크리스트를 훑는다. "해당없음"도 기록 |
 | 사용자가 대신 답한다 (현장 목소리 부재) | "이건 실제로 조회하시는 분께 확인이 필요합니다" 로 ASM 등록 |
 | AI가 일반적인 요구사항을 창작한다 | `source:` 필드를 비울 수 없게 한다. 출처 없으면 ASM |
+| 규칙은 있는데 사례가 없어 경계가 비어 있다 | `examples` 에 실제 값을 넣는다 — *"월 중간 신규 사용자의 첫 달"* 처럼 문장에서 안 보이던 빈칸이 값에서 드러난다 |
+| 업무 규칙이 FEAT·화면 쪽에만 적혀 있다 | 카드의 `business_rules` 로 올리고 아래쪽은 링크한다 |
+| 공식이 일부 분포에서만 의도대로 동작한다 | `examples` 에 **분포를 뒤집은 사례**를 하나 넣어 검산한다 |
 
-## 7. G1 게이트
+## 8. G1 게이트
 체크리스트 실행 → 레드팀 반박 → 승인 요청 → `current.phase: P2`

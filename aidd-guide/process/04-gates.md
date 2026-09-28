@@ -4,7 +4,7 @@ title: "게이트 G0~G6 — Exit Criteria"
 category: process
 type: operation
 created: 2026-09-04
-updated: 2026-09-11
+updated: 2026-09-28
 status: active
 sources: []
 tier: 1
@@ -56,6 +56,7 @@ tags: [gate, exit-criteria]
 - [ ] **범위 밖 목록이 P0 대비 갱신됨** (요구사항 도출 중 나온 "이번엔 안 함" 항목)
 - [ ] 우선순위(MoSCoW)가 부여됨. **Must 70% 상한은 현재 차수 전체를 모은 전역 G1에서 적용**하고, 작업흐름 G1은 소유 요구사항의 우선순위와 근거를 판정함
 - [ ] 요구사항 간 **모순 검사** 수행 결과가 기록됨
+- [ ] **요구사항 정련 카드**([P1 §5](../phase/P1-discovery.md))가 작성되고 소유 FR의 `Must`·`Should` 가 `maturity: confirmed` 임 — `/trace --g1` 의 T14 오류 0. **이미 G1 을 승인받은 작업흐름의 카드는 소급 작성 대상이며 경고로만 센다.** 카드 연계가 양방향이고(`depends_on`↔`constrains` · `conflicts_with`) `realization` 이 `FEAT.reqs` 와 맞으며, G1·P1 기한의 `open` 이 남지 않음
 
 ### G2 — 아키텍처 게이트 (P2 → P3)
 - [ ] 되돌리기 비용 High인 모든 선택이 ADR로 기록됨 (대안 2개 이상 + 포기한 것)

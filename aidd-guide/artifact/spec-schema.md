@@ -4,7 +4,7 @@ title: "spec 스키마 — 파일과 작성 단계"
 category: artifact
 type: operation
 created: 2026-09-04
-updated: 2026-09-13
+updated: 2026-09-28
 status: active
 sources: []
 tier: 1
@@ -28,7 +28,7 @@ tags: [spec, ssot, yaml]
 | `01-actors/_index.yaml` | P0 | 액터(사용자/외부시스템) | 〃 |
 | `02-constraints/_index.yaml` | P0 | 제약사항 | 〃 |
 | `03-glossary/_index.yaml` | P1 | 용어사전 (유비쿼터스 언어) | `aidd-guide/phase/P1-discovery.md` §2 |
-| `10-requirements/_index.yaml` | P1 | 요구사항 FR/NFR | 〃 §4 |
+| `10-requirements/_index.yaml` | P1 | 요구사항 FR/NFR + 정련 카드 | 〃 §4 · §5 |
 | `11-processes/_index.yaml` | P1 | 업무 프로세스 To-Be | 〃 §3 |
 | `20-architecture/_index.yaml` | P2 | 기술스택·인프라·사이징 | `aidd-guide/phase/P2-architecture.md` §4 |
 | `21-nfr/_index.yaml` | P2 | 비기능 목표치·측정방법 | 〃 §3 |
@@ -63,6 +63,7 @@ tags: [spec, ssot, yaml]
 3. 상위 산출물을 참조하는 필드가 반드시 있다 (`reqs:`, `usecases:`, `feature:` 등).
 4. G3 승인 후 베이스라인 동결. 각 문서의 `meta.baselined`에 날짜를 적는다.
 5. 베이스라인 이후 변경은 `/change-request`.
+6. **요구사항 사실(업무 규칙·산식·판정 조건)의 정본은 REQ 의 정련 카드다.** `FEAT`·`SCR` 은 기능 범위와 표시를 적고 규칙은 그 REQ 를 가리킨다 — 두 곳에 적으면 한쪽만 고쳐진다.
 
 ## 검증
 
