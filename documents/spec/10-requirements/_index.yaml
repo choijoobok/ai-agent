@@ -16,9 +16,12 @@ spec_set:
   version: 1
   parts:
     - 001-query-processing.yaml
-    - 002-governance.yaml
-    - 003-saved-queries.yaml
-    - 004-knowledge-catalog.yaml
-    - 005-derived.yaml
-    - 006-system.yaml
-    - 007-consistency-review.yaml
+    - 002-in-flight-input.yaml
+    - 003-security.yaml
+    - 004-audit-quality.yaml
+    - 005-quota.yaml
+    - 006-saved-queries.yaml
+    - 007-knowledge-catalog.yaml
+    - 008-derived.yaml
+    - 009-system.yaml
+    - 010-consistency-review.yaml

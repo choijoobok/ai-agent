@@ -1,3 +1,4 @@
+# 영역: 요구사항 일관성 검토
 consistency_review:
   reviewed_at: 2026-09-17
   scope: "integration·system G1과 admin P1 — 기존 계약 요구, REQ-101~119·201~207·301~307·REQ-501~510"
