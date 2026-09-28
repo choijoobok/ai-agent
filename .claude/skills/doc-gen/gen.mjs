@@ -68,6 +68,16 @@ const LABEL = {
   l1: 'Level 1 에서', deploy: '배포 단위', systems: '상자', units: '배포 단위',
   decided_at: '확정일', review_signal: '재검토 신호', ownership: '데이터 소유권',
   operations: '운영 분담',
+  process_step: '프로세스 단계', acceptance: '수용 기준',
+  summary: '개요', intent: '목적과 의도', problem: '해결할 문제', not: '아닌 것',
+  goal_trace: '상위 목표', decider: '결정권자', preconditions: '전제 조건', data: '필수 데이터',
+  item: '항목', sensitivity: '민감도', retention: '보존', business_rules: '업무 규칙',
+  lifecycle: '상태 전이', permissions: '권한', audit: '이력·감사', volume: '규모·빈도',
+  config: '운영 설정', relations: '연계', depends_on: '의존', constrains: '제약하는 대상',
+  conflicts_with: '충돌 후보', nfr: '비기능 요구', interfaces: '외부 연계',
+  realization: '실현 후보', features: '기능', screens: '화면', examples: '구체 사례',
+  case: '사례', volatility: '변동 가능성', level: '수준', what: '무엇이',
+  maturity: '성숙도', at: '일자', by: '작성', confirmed_by: '확인자',
 };
 const lab = (k) => LABEL[k] ?? k;
 
