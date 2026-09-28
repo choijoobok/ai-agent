@@ -297,7 +297,7 @@ requirements:
     config: []
     risk: "해당 없음"
     relations:
-      depends_on: [REQ-116]
+      depends_on: [REQ-116, REQ-118]
       constrains: [REQ-118]
       conflicts_with: []
       nfr: [NFR-011]
@@ -343,7 +343,7 @@ requirements:
       - { item: "자동 산정값·관리자 보정값·보정 근거", origin: "Hub 계산·admin 입력", sensitivity: "내부(비용)", retention: "수정 불가 이력" }
     business_rules:
       - "월 총 토큰 풀 = floor(계획 가능 금액 ÷ 보정 단가 × 1,000,000). 산식의 정본은 NFR-010 hard_rule이다"
-      - "보정률은 최근 3개 확정 월의 공급사 대조값으로 시스템이 제안하고, 관리자가 적용·수정·미적용을 고른다(현재 FEAT-017에만 적혀 있던 규칙)"
+      - "보정률은 최근 3개 확정 월의 공급사 대조값으로 시스템이 제안하고, 관리자가 적용·수정·미적용을 고른다"
     exceptions:
       - "공정 단계의 예외는 PRC-12-01이 갖는다"
       - "확정 월이 3개 미만(도입 초기)이면 보정률을 제안하지 않고 기본값 1.0을 쓴다. 관리자는 근거를 남기고 바꿀 수 있다"
@@ -362,8 +362,8 @@ requirements:
       - "계획 가능 금액·보정률 적용 여부는 월별 admin 입력이다. 산식 자체는 코드로 고정한다(ADR-004의 계량 단위·과금 모드 분리)"
     risk: "보정률의 입력인 공급사 월 대조값을 어떻게 받는지(수동 입력·파일·API)가 정해지지 않았다"
     relations:
-      depends_on: [REQ-116]
-      constrains: [REQ-119]
+      depends_on: [REQ-116, REQ-117]
+      constrains: [REQ-117, REQ-119]
       conflicts_with: []
       nfr: [NFR-010, NFR-011]
       interfaces: []
