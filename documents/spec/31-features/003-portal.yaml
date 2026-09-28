@@ -71,7 +71,7 @@ features:
     screen: SCR-101
     roadmap: RM-P1
     title: "생성 SQL 원문 열람"
-    detail: "그룹으로 허용된 사용자만. **편집·직접 실행은 제공하지 않는다**"
+    detail: "그룹으로 허용된 사용자만. 모델이 만든 생성 SQL을 보이고 행 스코프·기본 필터를 주입한 실행 SQL은 보이지 않는다. **편집·직접 실행은 제공하지 않는다**"
     reqs: [REQ-104]
   - id: FEAT-111
     module: portal
