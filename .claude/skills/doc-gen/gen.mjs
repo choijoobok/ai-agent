@@ -620,7 +620,7 @@ function 추적성() {
       '> **셈은 `node .claude/hooks/trace-check.mjs --report` 가 낸다.** 여기서 다시 세지 않는다 —\n'
       + '> 두 곳에서 세면 갈리고, 갈렸을 때 어느 쪽이 참인지 알 방법이 없다. 이 문서는 그\n'
       + '> 출력을 사람이 읽는 형태로 담은 것뿐이다.\n>\n'
-      + '> 규칙 T1~T13 는 [`aidd-guide/process/05-traceability.md`](../../aidd-guide/process/05-traceability.md) 가 갖는다.\n'),
+      + '> 규칙 T1~T14 는 [`aidd-guide/process/05-traceability.md`](../../aidd-guide/process/05-traceability.md) 가 갖는다.\n'),
     body,
   ]);
 }

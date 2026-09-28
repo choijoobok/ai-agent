@@ -5,16 +5,18 @@ description: 추적성 체인을 검사한다. REQ→UC→FEAT→ENT/API/SCR→T
 
 # 추적성 검사
 
-인자: 없음(검사만) / `--workstream <키>`(작업흐름 G3 범위) /
+인자: 없음(검사만) / `--g1`(G1 청구 — 정련 카드 완전성을 오류로) / `--workstream <키>`(작업흐름 G3 범위) /
 `--report`(매트릭스 생성) / `--impact ID`(변경 영향 분석)
 
 ## 검사 실행
 `.claude/hooks/trace-check.mjs` 를 실행한다. 없으면 documents/spec/*.yaml 을 직접 파싱해
-`aidd-guide/process/05-traceability.md` §3 의 T1~T13 규칙을 검사한다.
+`aidd-guide/process/05-traceability.md` §3 의 T1~T14 규칙을 검사한다.
 
 ```bash
 node .claude/hooks/trace-check.mjs --all
 node .claude/hooks/trace-check.mjs --all --workstream admin
+node .claude/hooks/trace-check.mjs --g1
+node .claude/hooks/trace-check.mjs --impact REQ-116
 ```
 
 작업흐름 지정 시 그 기능과 연결된 REQ·UC·NFR·ENT·API·SCR·TC만 현재 게이트 오류로 센다.
@@ -47,7 +49,9 @@ dangling ID와 중복 ID처럼 저장소 전체를 깨뜨리는 오류는 항상
 미실현 REQ가 하나라도 있으면 표 상단에 경고를 붙인다.
 
 ## `--impact ID` 변경 영향 분석
-체인을 타고 **직접 영향**과 **간접 영향**을 나열한다.
+`trace-check.mjs --impact <REQ|FEAT>` 가 정련 카드의 연계를 따라 REQ 를 연쇄로 모으고 그 실현 산출물을 낸다.
+그 결과를 뼈대로 **직접 영향**과 **간접 영향**(ADR·인접 화면·구현된 슬라이스)을 나열한다.
+카드 없는 REQ 가 걸렸다는 경고가 나오면 목록이 불완전하다고 함께 보고한다.
 `aidd-guide/process/05-traceability.md` §5 포맷. 이미 구현된 슬라이스가 걸리면 재작업 규모를 함께 낸다.
 
 **영향 분석 결과는 보고만 하고 자동 수정하지 않는다.** 사용자 판단 후 CR 절차로.

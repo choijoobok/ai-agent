@@ -5,10 +5,12 @@
  *   node .claude/hooks/trace-check.mjs --all      전체 검사 후 사람이 읽는 리포트
  *   node .claude/hooks/trace-check.mjs --all --workstream admin  작업흐름 G3 범위 검사
  *   node .claude/hooks/trace-check.mjs --report   〃 + 추적성 매트릭스
+ *   node .claude/hooks/trace-check.mjs --g1       G1 청구 — T14 카드 완전성을 오류로 센다
+ *   node .claude/hooks/trace-check.mjs --impact REQ-116   카드 연계를 따른 변경 영향 분석
  *   (인자 없이 표준 입력으로 훅 입력을 받으면 spec 변경 직후 축약 검사)
  * </pre>
  *
- * <p>규칙은 `aidd-guide/process/05-traceability.md` 의 T1~T13 다. <b>여기는 집행이고 정의는
+ * <p>규칙은 `aidd-guide/process/05-traceability.md` 의 T1~T14 다. <b>여기는 집행이고 정의는
  * 그쪽이다</b> — 규칙을 두 곳에 적으면 갈리고, 갈리면 초록불이 거짓이 된다.
  */
 
@@ -54,13 +56,25 @@ const ID_RE =
 /** 정의가 다른 원장에 있는 접두 — dangling 판정에서 뺀다. */
 const EXTERNAL = ['ASM-', 'CR-', 'DEF-', 'SLICE-', 'ADR-'];
 
+/** T14 정련 카드의 칸 — 정의는 aidd-guide/phase/P1-discovery.md §5 다. */
+const CARD_CORE = ['summary', 'intent', 'goal_trace', 'decider', 'preconditions', 'relations', 'realization', 'examples', 'volatility', 'open', 'maturity'];
+const CARD_CONDITIONAL = ['data', 'business_rules', 'exceptions', 'lifecycle', 'permissions', 'audit', 'volume', 'config', 'risk'];
+const CARD_COULD = ['summary', 'intent', 'relations', 'maturity'];
+const G1_DEFER = /@defer\s+(지금|G0|G1|P0|P1)\b/;
+
 const isMain = Boolean(process.argv[1]) && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 const argv = isMain ? process.argv.slice(2) : [];
 const workstreamIndex = argv.indexOf('--workstream');
 const requestedWorkstream = workstreamIndex >= 0 ? String(argv[workstreamIndex + 1] ?? '').trim() : null;
+const impactIndex = argv.indexOf('--impact');
 if (isMain) {
-  if (argv.includes('--all') || argv.includes('--report')) {
-    process.stdout.write(traceReport(requestedWorkstream, argv.includes('--report')) + '\n');
+  if (impactIndex >= 0) {
+    process.stdout.write(impactReport(String(argv[impactIndex + 1] ?? '').trim()) + '\n');
+    process.exit(0);
+  }
+  if (argv.includes('--all') || argv.includes('--report') || argv.includes('--g1')) {
+    const options = { g1: argv.includes('--g1') };
+    process.stdout.write(traceReport(requestedWorkstream, argv.includes('--report'), options) + '\n');
     process.exit(0);
   }
 
@@ -166,7 +180,7 @@ function laterThanCurrentRoadmap() {
   return (x) => (roadmapOrder(x?.roadmap) > cur ? x.roadmap : null);
 }
 
-function fullCheck(targetWorkstream = null) {
+function fullCheck(targetWorkstream = null, { g1 = false } = {}) {
   const errors = [];
   const warnings = [];
 
@@ -241,6 +255,9 @@ function fullCheck(targetWorkstream = null) {
       ]);
     }
   }
+
+  // T14 — 요구사항 정련 카드
+  checkRequirementCards({ reqs, selectedReqs, feats, scrs, state, g1, errors, warnings });
 
   // T3 — UC → REQ
   for (const u of selectedUcs) {
@@ -490,6 +507,207 @@ function fullCheck(targetWorkstream = null) {
   return { errors, warnings };
 }
 
+// ── T14 — 요구사항 정련 카드 ──────────────────────────────────────
+
+/*
+  T14 는 <b>두 가지를 다르게 센다.</b>
+
+  ① <b>완전성</b>(카드가 있는가 · 칸이 있는가 · 확정됐는가)은 <b>G1 청구 때만 오류</b>다.
+  P1 을 쓰는 동안 매 저장마다 오류가 울리면 훅을 끄게 된다. 그래서 평소에는 경고이고,
+  `--g1` 로 부를 때 <b>소유 작업흐름의 G1 이 아직 승인 전인 REQ</b> 만 오류로 올린다.
+  이미 G1 을 받은 작업흐름은 소급 작성 대상이라 `--g1` 에서도 경고다(2026-09-28 사용자 결정).
+
+  ② <b>정합</b>(연계 비대칭 · realization 과 FEAT.reqs 의 어긋남 · 확정인데 G1 미확정이 남음)은
+  <b>언제나 오류</b>다. 이미 쓴 카드끼리 서로 다른 말을 하는 것은 미완성이 아니라 모순이다.
+
+  → aidd-guide/process/05-traceability.md §3 · aidd-guide/phase/P1-discovery.md §5
+*/
+function relationIds(r, key) {
+  const v = r?.relations?.[key];
+  return Array.isArray(v) ? v.filter((x) => typeof x === 'string') : [];
+}
+
+function hasCard(r) {
+  return Boolean(r && typeof r === 'object' && r.maturity);
+}
+
+/** REQ 를 소유하는 작업흐름 — REQ 의 명시값과, 그 REQ 를 가리키는 FEAT 의 작업흐름. */
+function requirementOwners(r, feats) {
+  const owners = new Set();
+  const own = featureWorkstream(r);
+  if (own) owners.add(own);
+  for (const f of feats) {
+    if (!refs(f, 'reqs').has(r?.id)) continue;
+    const w = featureWorkstream(f);
+    if (w) owners.add(w);
+  }
+  return owners;
+}
+
+/** 소유 작업흐름이 모두 G1 을 받았나. 소유자를 모르면 전역 G1 을 본다. */
+function requirementG1Approved(state, owners) {
+  const known = [...owners].filter((w) => state?.workstreams?.[w]);
+  if (known.length === 0) return gateStatus(state, 'P1_discovery') === 'approved';
+  return known.every((w) => workstreamGateStatus(state, w, 'P1_discovery') === 'approved');
+}
+
+function checkRequirementCards({ reqs, selectedReqs, feats, scrs, state, g1, errors, warnings }) {
+  const later = laterThanCurrentRoadmap();
+  const byId = new Map(reqs.map((r) => [r?.id, r]));
+  const featById = new Map(feats.map((f) => [f?.id, f]));
+
+  for (const r of selectedReqs) {
+    if (r?.type !== 'functional' || r?.priority === 'wont' || later(r)) continue;
+    const owners = requirementOwners(r, feats);
+    const approved = requirementG1Approved(state, owners);
+    const strict = g1 && !approved;
+    const why = approved ? '소유 작업흐름 G1 승인 뒤 — 소급 작성 대상' : 'G1 청구 전';
+    const completeness = (msg) => (strict ? errors : warnings).push(['T14', r?.id, strict ? msg : `${msg} — ${why}`]);
+
+    if (!hasCard(r)) {
+      completeness('정련 카드 없음');
+      continue;
+    }
+    const could = r?.priority === 'could';
+    const required = could ? CARD_COULD : [...CARD_CORE, ...CARD_CONDITIONAL];
+    const missing = required.filter((k) => !(k in r));
+    if (missing.length > 0) completeness(`카드 칸 없음: ${missing.join(', ')}`);
+    if (!could) {
+      const kinds = new Set((Array.isArray(r.examples) ? r.examples : []).map((e) => e?.kind));
+      if (!kinds.has('정상') || !kinds.has('예외')) completeness('구체 사례에 정상·예외가 한 건씩 있어야 한다');
+      if (r.maturity?.level !== 'confirmed') completeness(`성숙도 ${r.maturity?.level ?? '없음'} — 사용자 확인 전`);
+    }
+
+    // ② 정합 — 언제나 오류
+    const open = Array.isArray(r.open) ? r.open : r.open ? [r.open] : [];
+    if (r.maturity?.level === 'confirmed' && open.some((x) => G1_DEFER.test(String(x)))) {
+      errors.push(['T14', r?.id, '확정(confirmed)인데 G1 전에 풀어야 할 open 이 남아 있다']);
+    }
+    for (const key of ['depends_on', 'constrains', 'conflicts_with']) {
+      for (const other of relationIds(r, key)) {
+        if (!other.startsWith('REQ-')) {
+          errors.push(['T14', r?.id, `relations.${key} 에 REQ 가 아닌 ${other} — 전제는 preconditions 에 둔다`]);
+          continue;
+        }
+        const peer = byId.get(other);
+        if (!hasCard(peer)) continue;
+        const back = key === 'depends_on' ? 'constrains' : key === 'constrains' ? 'depends_on' : 'conflicts_with';
+        if (!relationIds(peer, back).includes(r.id)) {
+          errors.push(['T14', r?.id, `연계 비대칭 — ${key}: ${other} 이지만 ${other}.${back} 에 ${r.id} 가 없다`]);
+        }
+      }
+    }
+    const listed = new Set((r.realization?.features ?? []).filter((x) => /^FEAT-/.test(String(x))));
+    for (const id of listed) {
+      const f = featById.get(id);
+      if (f && !refs(f, 'reqs').has(r.id)) errors.push(['T14', r?.id, `realization 의 ${id} 가 이 REQ 를 reqs 에 두지 않았다`]);
+    }
+    for (const f of feats) {
+      if (refs(f, 'reqs').has(r.id) && !listed.has(f?.id)) errors.push(['T14', r?.id, `${f?.id} 가 이 REQ 를 실현하는데 realization.features 에 없다`]);
+    }
+    const screensOfFeatures = new Set([
+      ...[...listed].map((id) => featById.get(id)?.screen).filter(Boolean),
+      ...scrs.filter((s) => listed.has(s?.feature)).map((s) => s?.id),
+    ]);
+    for (const s of (r.realization?.screens ?? []).filter((x) => /^SCR-/.test(String(x)))) {
+      if (!screensOfFeatures.has(s)) warnings.push(['T14', r?.id, `realization 의 ${s} 가 나열한 기능의 화면이 아니다`]);
+    }
+  }
+}
+
+// ── 변경 영향 분석 (`--impact`) ───────────────────────────────────
+
+/**
+ * REQ 하나가 바뀌면 무엇을 다시 보아야 하나 — <b>카드의 연계를 따라 모은다.</b>
+ *
+ * <p>영향이 퍼지는 방향은 <i>이것에 기대는 쪽</i>이다: 내가 `constrains` 하는 REQ, 나를
+ * `depends_on` 하는 REQ, 나와 `conflicts_with` 인 REQ. 그 REQ 들의 실현(FEAT)에서 UC·SCR·API·
+ * TC·ENT·NFR 을 모은다. <b>보고만 하고 고치지 않는다</b>(process/05-traceability.md §5).
+ */
+function impactReport(id) {
+  const reqs = asList(load(SPEC.req), 'requirements');
+  const nfrs = asList(load(SPEC.nfr), 'nfrs');
+  const ucs = asList(load(SPEC.uc), 'usecases');
+  const feats = asList(load(SPEC.feat), 'features');
+  const apis = asList(load(SPEC.api), 'apis');
+  const scrs = asList(load(SPEC.scr), 'screens');
+  const tcs = asList(load(SPEC.tc), 'testcases');
+  const state = readState();
+  const byId = new Map(reqs.map((r) => [r?.id, r]));
+
+  let seeds = [];
+  if (/^REQ-/.test(id)) {
+    if (!byId.has(id)) return `## 변경 영향 분석 — ${id}\n\n정의되지 않은 REQ 다.`;
+    seeds = [id];
+  } else if (/^FEAT-/.test(id)) {
+    const f = feats.find((x) => x?.id === id);
+    if (!f) return `## 변경 영향 분석 — ${id}\n\n정의되지 않은 FEAT 다.`;
+    seeds = [...refs(f, 'reqs')];
+  } else {
+    return `## 변경 영향 분석 — ${id || '(없음)'}\n\nREQ-### 또는 FEAT-### 을 준다.`;
+  }
+
+  const affectedBy = (x) => {
+    const r = byId.get(x);
+    const out = new Set([...relationIds(r, 'constrains'), ...relationIds(r, 'conflicts_with')]);
+    for (const other of reqs) {
+      if (relationIds(other, 'depends_on').includes(x) || relationIds(other, 'conflicts_with').includes(x)) out.add(other.id);
+    }
+    out.delete(x);
+    return out;
+  };
+  const depth = new Map(seeds.map((s) => [s, 0]));
+  const queue = [...seeds];
+  while (queue.length > 0) {
+    const x = queue.shift();
+    for (const y of affectedBy(x)) {
+      if (depth.has(y) || !byId.has(y)) continue;
+      depth.set(y, depth.get(x) + 1);
+      queue.push(y);
+    }
+  }
+  const reqSet = new Set(depth.keys());
+  const featSet = new Set();
+  for (const f of feats) if ([...refs(f, 'reqs')].some((r) => reqSet.has(r))) featSet.add(f.id);
+  for (const r of reqSet) for (const f of byId.get(r)?.realization?.features ?? []) if (/^FEAT-/.test(String(f))) featSet.add(f);
+  if (/^FEAT-/.test(id)) featSet.add(id);
+
+  const list = (xs) => (xs.length > 0 ? xs.join(' · ') : '—');
+  const title = (x) => byId.get(x)?.title ?? '';
+  const direct = [...reqSet].filter((r) => depth.get(r) === 1).sort();
+  const indirect = [...reqSet].filter((r) => depth.get(r) > 1).sort();
+  const noCard = [...reqSet].filter((r) => !hasCard(byId.get(r))).sort();
+  const nfrSet = new Set();
+  for (const r of reqSet) for (const n of relationIds(byId.get(r), 'nfr')) nfrSet.add(n);
+  for (const n of nfrs) if ([...refs(n, 'traces_to')].some((r) => reqSet.has(r))) nfrSet.add(n.id);
+  const featList = [...featSet].sort();
+  const slices = (Array.isArray(state?.slices) ? state.slices : []).filter((s) => (s?.features ?? []).some((f) => featSet.has(f)));
+
+  const out = [
+    `## 변경 영향 분석 — ${id}`,
+    '',
+    '**요구사항 (카드 연계)**',
+    `- 출발: ${seeds.map((s) => `${s} ${title(s)}`).join(' · ')}`,
+    `- 직접(이것에 기대는 REQ): ${list(direct.map((r) => `${r} ${title(r)}`))}`,
+    `- 간접(연쇄): ${list(indirect.map((r) => `${r} ${title(r)}`))}`,
+    '',
+    '**산출물**',
+    `- FEAT: ${list(featList)}`,
+    `- UC: ${list(ucs.filter((u) => [...refs(u, 'reqs', 'req')].some((r) => reqSet.has(r))).map((u) => u.id))}`,
+    `- SCR: ${list([...new Set([...featList.map((f) => feats.find((x) => x?.id === f)?.screen).filter(Boolean), ...scrs.filter((s) => featSet.has(s?.feature)).map((s) => s.id)])].sort())}`,
+    `- API: ${list(apis.filter((a) => featSet.has(a?.feature)).map((a) => a.id))}`,
+    `- ENT: ${list([...new Set(featList.flatMap((f) => [...refs(feats.find((x) => x?.id === f), 'entities')]))].sort())}`,
+    `- TC: ${list(tcs.filter((t) => featSet.has(t?.feature)).map((t) => t.id))}`,
+    `- NFR: ${list([...nfrSet].sort())}`,
+    `- 구현 슬라이스: ${list(slices.map((s) => `${s.id}(${s.status})`))}`,
+  ];
+  if (noCard.length > 0) {
+    out.push('', `> ⚠️ 정련 카드가 없는 REQ ${noCard.length}건(${noCard.slice(0, 5).join(' · ')}${noCard.length > 5 ? ' …' : ''})은 연계를 모르므로 **이 목록이 빠짐없다고 보증하지 않는다.**`);
+  }
+  out.push('', '보고만 한다 — 고칠지는 사용자가 정하고, G3 뒤면 `change-request` 로 간다.');
+  return out.join('\n');
+}
+
 // ── 리포트 ────────────────────────────────────────────────────────
 
 /**
@@ -567,8 +785,8 @@ function matrix() {
 }
 
 /** 하위 프로세스 없이 `/doc-gen`이 같은 판정과 매트릭스를 재사용한다. */
-export function traceReport(workstream = null, includeMatrix = true) {
-  const { errors, warnings } = fullCheck(workstream);
+export function traceReport(workstream = null, includeMatrix = true, options = {}) {
+  const { errors, warnings } = fullCheck(workstream, options);
   const parts = [report(errors, warnings)];
   if (includeMatrix) parts.push(matrix());
   return parts.join('\n\n');
