@@ -46,7 +46,7 @@ requirements:
       - "업무 범위 규칙·고정 문구·대안은 전사 공통 프롬프트 규칙(FEAT-013)으로 배포 없이 바꾼다(PRN-06)"
     risk: "구조적 판정의 오탐(업무 질의 거부)·미탐 비율은 재기 전에는 모른다 — 평가셋(SUC-02)과 품질 지표(FEAT-032)로 잰다"
     relations:
-      depends_on: [REQ-103, REQ-110]
+      depends_on: [REQ-103, REQ-110, REQ-112]
       constrains: [REQ-107]
       conflicts_with: []
       nfr: []
@@ -100,7 +100,7 @@ requirements:
     risk: "해당 없음 — 경로를 제공하지 않는 방식이라 모델 품질에 의존하지 않는다. 오염된 입력의 대응은 REQ-112가 갖는다"
     relations:
       depends_on: []
-      constrains: [REQ-037, REQ-103, REQ-105, REQ-114]
+      constrains: [REQ-037, REQ-103, REQ-105, REQ-112, REQ-114]
       conflicts_with: []
       nfr: []
       interfaces: [IF-001, IF-002]
@@ -170,7 +170,7 @@ requirements:
     risk: "SQL 파서의 우회 경로(AUTHZ-030 bypass_paths)와 DBMS별 파서 차이는 P3에서 데이터소스별로 검증해야 한다"
     relations:
       depends_on: [REQ-102, REQ-509]
-      constrains: [REQ-101, REQ-105, REQ-106, REQ-107, REQ-116]
+      constrains: [REQ-101, REQ-105, REQ-106, REQ-107, REQ-108, REQ-116]
       conflicts_with: []
       nfr: [NFR-026]
       interfaces: [IF-001, IF-006]
@@ -425,8 +425,8 @@ requirements:
       "조회 결과 원문 보존 여부·보존 기간은 yml(전역 기본값 + 데이터소스·대상 시스템별 재정의)이며 배포 없이 바꿀 수 없다. 기본은 미보존"
     risk: "저장량과 쓰기 부하가 원문 보존 비율에 따라 커진다 — 목표치는 NFR에서 재고 정한다"
     relations:
-      depends_on: [REQ-101, REQ-103, REQ-105, REQ-106]
-      constrains: [REQ-104, REQ-109]
+      depends_on: [REQ-101, REQ-103, REQ-105, REQ-106, REQ-108]
+      constrains: [REQ-104, REQ-109, REQ-110, REQ-115]
       conflicts_with: []
       nfr: [NFR-027]
       interfaces: []
