@@ -59,7 +59,7 @@ requirements:
       - { kind: 예외, case: "급여 테이블 권한이 없는 사용자가 '김과장 9월 급여 알려 줘'라고 하면 '해당 정보를 찾을 수 없습니다'만 나가고 급여 테이블의 존재·차단 여부는 드러나지 않는다. 내부 이력에는 권한 판정 차단이 남는다" }
     volatility: { level: high, what: "업무 범위 규칙·고정 문구·대안은 고객사마다 다르다. 판정 구조는 고정하고 내용은 프롬프트 규칙 데이터로 둔다" }
     open: []
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-28", by: "AI 정리", confirmed_by: "사용자 (2026-09-28 요구사항 정의서 검토 뒤 확정)" }
   - id: REQ-102
     type: functional
     priority: must
@@ -113,7 +113,7 @@ requirements:
       - { kind: 예외, case: "모델이 'SELECT current_user, inet_server_addr()'를 만들면 허용 함수 목록에 없어 파서가 막는다. DB 연결이 끊겨 JDBC 예외에 호스트·계정이 들어 있어도 모델과 사용자에게는 표준 문구만 간다" }
     volatility: { level: low, what: "제품 원칙이라 고객사마다 달라지지 않는다" }
     open: []
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-28", by: "AI 정리", confirmed_by: "사용자 (2026-09-28 요구사항 정의서 검토 뒤 확정)" }
   - id: REQ-103
     type: functional
     priority: must
@@ -184,7 +184,7 @@ requirements:
     volatility: { level: high, what: "그룹 체계·매핑·행 스코프 규칙·마스킹 대상은 고객사마다 다르다. 판정 규칙은 고정하고 값은 운영 데이터로 둔다" }
     open:
       - "@defer P3 — 스냅샷의 저장량과 보존 기간을 REQ-109·CON-032와 함께 정한다"
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-28", by: "AI 정리", confirmed_by: "사용자 (2026-09-28 요구사항 정의서 검토 뒤 확정)" }
   - id: REQ-104
     type: functional
     priority: must
@@ -240,7 +240,7 @@ requirements:
       - { kind: 예외, case: "감사 담당자가 admin 조회 이력에서 행 스코프가 걸린 급여 조회를 열면 모델이 만든 생성 SQL과 권한 정보 테이블 조인이 들어간 실제 실행 SQL을 나란히 보지만 고치거나 실행할 수는 없다" }
     volatility: { level: low, what: "portal 비노출은 제품 원칙이라 고객사마다 달라지지 않는다. admin 열람 권한은 메뉴 권한 데이터로 흡수된다" }
     open: []
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-28", by: "AI 정리", confirmed_by: "사용자 (2026-09-28 요구사항 정의서 검토 뒤 확정)" }
   - id: REQ-105
     type: functional
     priority: must
@@ -308,7 +308,7 @@ requirements:
       - { kind: 예외, case: "호출이 타임아웃됐는데 결과 확인 API가 없으면 재시도하지 않고 '결과 불명 — 대상 시스템에서 처리 여부를 확인하세요'를 이력과 응답에 남긴다" }
     volatility: { level: high, what: "대상 API의 명세·결과 확인 방식은 고객사와 시스템마다 다르다. 명세 항목을 데이터로 받는다" }
     open:
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-28", by: "AI 정리", confirmed_by: "사용자 (2026-09-28 요구사항 정의서 검토 뒤 확정)" }
 
   - id: REQ-106
     type: functional
@@ -372,7 +372,7 @@ requirements:
       - { kind: 예외, case: "9월 주문 3만 행을 '상품별 추세를 분석해 줘'라고 하면 원본 행을 보내지 않고 상품·일자별 집계 SQL로 처리한다. 사용자가 원본 전체를 원하면 그리드의 엑셀 다운로드로 안내한다" }
     volatility: { level: high, what: "허용 목록과 상한 값은 고객사 보안 정책마다 다르다. 통제 구조는 고정하고 값은 운영 데이터로 둔다" }
     open:
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-28", by: "AI 정리", confirmed_by: "사용자 (2026-09-28 요구사항 정의서 검토 뒤 확정)" }
   - id: REQ-107
     type: functional
     priority: must
@@ -442,4 +442,4 @@ requirements:
     open:
       - "@defer P6 — 사용자 질의 원문·모델 응답 같은 자유 문장과 system 사용 이력 파라미터(CR-007)의 개인정보 자동 판별·마스킹을 Hub 개발 뒤 별도 기능으로 설계한다. 그전에는 보관 기간과 열람 권한으로 통제한다"
       - "@defer P4 — agent 모듈에 원문 사본 파기 BatchJob 빈을 추가하고(RetentionPurger 재사용, yml 보존 기간 사용) system 스케줄 화면에 등록한다. RUN-501처럼 기본은 꺼 두고 고객사 보존 기간 확정 뒤 켠다"
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-28", by: "AI 정리", confirmed_by: "사용자 (2026-09-28 요구사항 정의서 검토 뒤 확정)" }
