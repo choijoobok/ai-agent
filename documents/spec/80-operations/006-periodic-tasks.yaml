@@ -8,6 +8,7 @@ periodic_tasks:
       - "기간·대상은 코드가 아니라 시스템 설정(sys-config.retention.*) 데이터를 읽으므로 값은 화면에서 바꾼다"
     verify: "실측(2026-09-14): USE_YN='N' — 비활성이다. 시드 설명이 이유를 직접 적어 뒀다 — '삭제는 되돌릴 수 없고 아카이브는 아직 없다. 켜기 전에 보존 기간과 아카이브 방침을 먼저 정한다.' knowledge/retention.md §1도 '아카이브 후 삭제한다'를 정책으로 두었으나 아카이브 구현은 없다 — 지금 켜면 정책과 실제가 어긋난 채로 돈다"
     customer_values: "@defer P6 — 보존 기간 값과 아카이브 구현 여부는 고객사 규제·정책 확정 뒤 결정한다. 그 전에는 켜지 않는다"
+    next_targets: "Hub 조회 결과 원문 사본(REQ-107)도 같은 청크 방식으로 파기한다 — 보존 기간은 sys-config가 아니라 yml에서 읽고, 파기 대상은 사본을 소유한 모듈이 등록한다"
     status: verified
   - id: RUN-502
     title: "만료 예고 알림 배치 (EXPIRY_NOTICE)"

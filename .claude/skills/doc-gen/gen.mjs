@@ -78,6 +78,7 @@ const LABEL = {
   realization: '실현 후보', features: '기능', screens: '화면', examples: '구체 사례',
   case: '사례', volatility: '변동 가능성', level: '수준', what: '무엇이',
   maturity: '성숙도', at: '일자', by: '작성', confirmed_by: '확인자',
+  next_targets: '다음 파기 대상',
 };
 const lab = (k) => LABEL[k] ?? k;
 
