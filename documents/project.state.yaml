@@ -71,7 +71,7 @@ workstreams:
     blocked_by: []
     deferred_until: null
     gates:
-      P1_discovery:    { status: in_progress, approved_at: null, note: "**2026-09-21 사용자 승인으로 재개방.** 기존 33건의 액터·프로세스 연결과 Must 비율 23/33(69.70%)은 유지하되, P1 기준의 개별 출처·수용 기준이 각각 1/33·3/33만 기록된 결손을 보강한다. 범위와 우선순위를 새로 정하지 않고 요구사항별 업무 규칙·예외·검증 가능성을 재점검한다" }
+      P1_discovery:    { status: in_progress, approved_at: null, note: "**2026-09-21 사용자 승인으로 재개방.** 기존 33건의 액터·프로세스 연결과 Must 비율 23/33(69.70%)은 유지하되, P1 기준의 개별 출처·수용 기준이 각각 1/33·3/33만 기록된 결손을 보강한다. 출처는 2026-09-28 OQ-003 권장안 승인으로 33/33을 채웠다(CR-023 12건 · ASM-008 3건 · 2026-09-21 재점검 18건). 범위와 우선순위를 새로 정하지 않고 요구사항별 업무 규칙·예외·검증 가능성을 재점검한다" }
       P2_architecture: { status: in_progress, approved_at: null, note: "CR-023으로 실행 API·저장된 조회·추가 토큰 신청·승인의 최소 공개 계약과 쓰기 소유권을 ADR-013으로 정했다. admin P1 요구사항 상세 보강 뒤 P2 계약 영향과 정합성을 다시 검증한다" }
       P3_design:       { status: not_started, approved_at: null, note: "" }
       P4_build:        { status: not_started, approved_at: null, note: "" }
@@ -187,15 +187,6 @@ open_questions:
       첫 고객 후보가 정해지면 **시스템 경계를 넘는 업무 빈도 · 반복 수작업 · 처리 건수 ·
       메타데이터 확보 가능성**으로 1차 업무를 고르고 적용 전 값을 잰다. 우리 WMS·TMS 구축
       고객은 접근성이 좋아 우선 후보지만, 그 사실이 제품의 연동 범위를 제한하지 않는다.
-  - id: OQ-003
-    phase: P1
-    question: "admin REQ-101~119·201~207·301~307의 기존 정책 출처를 제품 오너(사용자)의 2026-09-21 요구사항 재점검으로 통일해 기록해도 되는가"
-    status: "P1 상세 재점검에서 33건 중 32건에 개별 `source:`가 없음을 확인했다. CR-023처럼 이미 날짜가 명시된 직접 결정은 그 결정을 우선 기록한다"
-    blocked_on: "사용자 확인"
-    required: false
-    impact: "admin P1 요구사항 33건의 출처 필드 · G1 재검증 근거"
-    reversal_cost: low
-    next: "승인되면 기존 정책을 바꾸지 않고 공통 출처를 보강하고, 직접 사용자 결정이 있는 REQ에는 해당 날짜와 CR을 기록한다"
 # ── 인지 부채 ──────────────────────────────────────────────────────
 # 사용자가 이해하지 못한 채 승인하는 것을 감지한다.
 cognitive_debt:
@@ -219,7 +210,7 @@ cognitive_debt:
 counters:
   REQ: 84
   UC: 10
-  FEAT: 96
+  FEAT: 100   # 2026-09-28 trace-check 재집계 — system 10 + TC 없는 90
   ENT: 31
   API: 99
   SCR: 69
@@ -227,7 +218,7 @@ counters:
   RUN: 8      # 80-operations/_index.yaml의 현재 절차. daily_checks·periodic_tasks를 2026-09-14에 채웠다
   ADR: 13     # 001~013 accepted. 013은 CR-023의 최소 모듈 간 공개 계약을 명시한다
   ASM: 1      # **미확인 하나** — 003(기한 G3). 002·004·007은 확인됨, 005·006 은 기각됨
-  SLICE: 18
+  SLICE: 19
   DEF: 0
 
 counter_note: >-
