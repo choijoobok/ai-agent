@@ -22,7 +22,7 @@
  * </pre>
  */
 
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, rmSync } from 'node:fs';
 import { dirname, join, normalize, posix } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseYaml } from '../../hooks/lib.mjs';
@@ -262,23 +262,40 @@ function 요구사항정의서() {
     + blocks(g.confusions, ['title'], null));
   write(`${RQ}03-용어.md`, p3);
 
-  const r = load('10-requirements');
-  const p4 = [head('RQ-10-requirements', '기능 요구사항 (FR)', specSource('10-requirements'),
-    r.meta.status, r.meta.baselined, null, `> **채번** — ${r.meta.numbering}\n`)];
-  const GROUPS = [[1, 29, '질의 처리'], [30, 99, '처리 중 입력'], [100, 199, '보안·거버넌스'],
-    [200, 299, '저장된 조회·개인 대시보드'], [300, 399, '업무 메타데이터'],
-    [400, 499, '로드맵·제약에서 유도한 것'], [500, 599, '백오피스 공통 운영 기반']];
-  for (const [lo, hi, ttl] of GROUPS) {
-    const sel = r.requirements.filter((x) => {
-      const n = Number(x.id.split('-')[1]);
-      return n >= lo && n <= hi;
-    });
-    if (sel.length) p4.push(`## ${ttl} (${sel.length}건)\n\n${blocks(sel, ['id'], 'title')}`);
-  }
-  if (r.consistency_review) {
-    p4.push(`## 요구사항 일관성 검토\n\n${blocks([{ id: 'consistency-review', ...r.consistency_review }], ['id'], 'name')}`);
-  }
-  write(`${RQ}04-요구사항.md`, p4);
+  /*
+    기능 요구사항은 **정본 조각 하나를 생성 파일 하나로** 쓴다. 영역 이름은 조각 첫머리의
+    `# 영역: …` 한 줄이 정본이다 — ID 범위를 여기에 다시 적으면 조각을 나눌 때 두 곳이 갈린다.
+    정련 카드가 붙으면 요구사항 하나가 50줄을 넘어, 84건을 한 파일에 담으면 읽을 수 없다(2026-09-28).
+  */
+  const rs = specSet('10-requirements');
+  const r = rs.document;
+  const RQ4 = `${RQ}04-요구사항/`;
+  const legacyRq4 = join(REPO, `${RQ}04-요구사항.md`);
+  if (existsSync(legacyRq4)) rmSync(legacyRq4);
+  const areas = [];
+  rs.files.slice(1).forEach((file, i) => {
+    const text = readFileSync(join(REPO, file), 'utf8');
+    const part = parseYaml(text) ?? {};
+    const stem = posix.basename(file, '.yaml');
+    const area = (text.match(/^# 영역: (.+)$/m)?.[1] ?? stem).trim();
+    const name = `${String(i + 1).padStart(2, '0')}-${area.replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '')}.md`;
+    const reqs = part.requirements ?? [];
+    const body = [head(`RQ-10-${stem}`, `기능 요구사항 — ${area}`, file, r.meta.status, r.meta.baselined,
+      reqs.map((x) => x.id), '> 영역 목록은 [00-목록](00-목록.md)에 있다.\n')];
+    if (reqs.length) body.push(`## ${area} (${reqs.length}건)\n\n${blocks(reqs, ['id'], 'title')}`);
+    if (part.consistency_review) {
+      body.push(`## 요구사항 일관성 검토\n\n${blocks([{ id: 'consistency-review', ...part.consistency_review }], ['id'], 'name')}`);
+    }
+    write(`${RQ4}${name}`, body);
+    areas.push({ name, area, reqs, file });
+  });
+  const areaRow = ({ name, area, reqs, file }) =>
+    `| [${area}](${name}) | ${reqs.length ? `${reqs[0].id}~${reqs.at(-1).id}` : '—'} | ${reqs.length} | \`${file}\` |`;
+  write(`${RQ4}00-목록.md`, [
+    head('RQ-10-requirements', '기능 요구사항 (FR)', specSource('10-requirements'),
+      r.meta.status, r.meta.baselined, null, `> **채번** — ${r.meta.numbering}\n`),
+    `## 영역\n\n| 영역 | 요구사항 | 건수 | 정본 조각 |\n|---|---|---|---|\n${areas.map(areaRow).join('\n')}`,
+  ]);
 
   const pr = load('11-processes');
   const why = rawSpec('11-processes').split('\n').filter((l) => l.startsWith('#'))
@@ -332,7 +349,7 @@ function 요구사항정의서() {
     ['01-이해관계자.md', `액터 ${a.actors.length} · 모듈 ${a.modules.length}`, '01-actors', a.meta.status],
     ['02-제약과-원칙.md', `설계 원칙 ${k.principles.length} · 기술 제약 ${k.technical.length} · 배포 전제 ${k.deployment.length} · 착수 확정 ${k.customer_agreements.length} · 개발 제약 ${k.development.length}`, '02-constraints', k.meta.status],
     ['03-용어.md', `용어 ${g.terms.length} · 프레임워크 어휘 ${g.framework_terms.length} · **헷갈리는 짝 ${g.confusions.length}** · 턴 상태 ${g.turn_states.length}`, '03-glossary', g.meta.status],
-    ['04-요구사항.md', `기능 요구사항 ${r.requirements.length}`, '10-requirements', r.meta.status],
+    ['04-요구사항/00-목록.md', `기능 요구사항 ${r.requirements.length} · 영역 ${areas.length}`, '10-requirements', r.meta.status],
     ['05-업무프로세스.md', pr.processes?.length ? `범용 Hub 프로세스 ${pr.processes.length}건` : `**비어 있다** — ${flat(pr.meta.blocked_by)} 에 막혀 있다`, '11-processes', pr.meta.status],
     ['06-비기능요구.md', `비기능 ${n.nfrs.length} (**목표값 전부 미정**)`, '21-nfr', n.meta.status],
     ['07-외부인터페이스.md', `외부 인터페이스 ${i.interfaces.length}`, '51-interfaces', i.meta.status],
@@ -578,7 +595,7 @@ function 권한매트릭스() {
   const z = load('22-authz');
   const p = [head('AUTHZ', '권한 매트릭스 — 그룹 판정 · 매핑 · SQL 통제', specSource('22-authz'),
     z.meta.status, z.meta.baselined, null,
-    '> **요구사항은 `04-요구사항.md`(REQ-103·105·111)가 갖는다** — 여기는 *모델* 이다.\n')];
+    '> **요구사항은 `04-요구사항/`(REQ-103·105·111)이 갖는다** — 여기는 *모델* 이다.\n')];
   p.push(`## 1. 통제의 축\n\n**${flat(z.axis.claim)}** — ${flat(z.axis.why)}`);
   const a = z.application_access;
   p.push(`## 2. 애플리케이션 진입 권한 (${a.id})\n\n`

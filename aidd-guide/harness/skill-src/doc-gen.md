@@ -116,7 +116,7 @@ node .claude/skills/doc-gen/gen.mjs --check            # 생성물이 spec 을 �
 | `01-이해관계자.md` | 01-actors | 액터 · 모듈 |
 | `02-제약과-원칙.md` | 02-constraints | 설계 원칙 · 기술 제약 · 배포 전제 · 착수 시 확정 항목 |
 | `03-용어.md` | 03-glossary | 용어 · 턴 상태 · 프레임워크 어휘 · **헷갈리는 짝** |
-| `04-요구사항.md` | 10-requirements | 기능 요구사항 (FR) |
+| `04-요구사항/` (`00-목록.md` + 정본 조각별 파일) | 10-requirements | 기능 요구사항 (FR) — 조각 첫 줄 `# 영역: …` 이 파일 이름·제목 |
 | `05-업무프로세스.md` | 11-processes | As-Is / To-Be |
 | `06-비기능요구.md` | 21-nfr | 성능 · 비용 · 안정성 |
 | `07-외부인터페이스.md` | 51-interfaces | 나가는 · 들어오는 연동 |
