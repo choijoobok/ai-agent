@@ -55,7 +55,7 @@ requirements:
       - { kind: 예외, case: "추가 정보 대기에 들어간 턴에 사용자가 3시간 뒤 답하면, 기준 60분을 넘겼으므로 이어가기 전에 현재 매핑으로 다시 판정한다. 그사이 그룹이 회수됐다면 그 테이블은 조회하지 않고 차단 사유를 안내한다" }
     volatility: { level: low, what: "감사 무결성 원칙이라 고객사마다 달라지지 않는다. 재판정 기준 시간만 운영 설정이다" }
     open: []
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-29", by: "AI 정리", confirmed_by: "사용자 (2026-09-29 요구사항 정의서 검토 뒤 확정)" }
   - id: REQ-109
     type: functional
     priority: must
@@ -116,7 +116,7 @@ requirements:
     volatility: { level: medium, what: "보관 기간은 고객사 규제마다 다르다. 논리 삭제 원칙은 고정한다" }
     open:
       - "@defer P4 — agent 모듈에 대화 이력 파기 BatchJob 빈을 추가하고(RetentionPurger 재사용, yml 보관 기간 사용) system 스케줄 화면에 등록한다. 원문 사본 파기 빈(REQ-107)과 한 빈으로 묶을지는 구현에서 정한다"
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-29", by: "AI 정리", confirmed_by: "사용자 (2026-09-29 요구사항 정의서 검토 뒤 확정)" }
   - id: REQ-110
     type: functional
     priority: should
@@ -178,7 +178,7 @@ requirements:
       - { kind: 예외, case: "원문 미보존 데이터소스의 턴이면 결과 값은 없고 SQL·기준 시각·결과 지문으로만 재현한다. 신고자는 증거 묶음의 내부 프롬프트를 볼 수 없다" }
     volatility: { level: low, what: "신고 흐름은 제품 기능이라 고객사마다 달라지지 않는다" }
     open: []
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-29", by: "AI 정리", confirmed_by: "사용자 (2026-09-29 요구사항 정의서 검토 뒤 확정)" }
   - id: REQ-111
     type: functional
     priority: must
@@ -242,7 +242,7 @@ requirements:
       - { kind: 예외, case: "레거시가 응답에 customer.email을 새로 넣으면 명세에 없는 경로라 화면에서 가려지고, 저장·모델 전송되지 않으며, 미지정 경로 경고가 남는다" }
     volatility: { level: high, what: "API 응답 구조와 개인정보 경로는 고객사·시스템마다 다르다. 명세는 운영 데이터로 둔다" }
     open: []
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-29", by: "AI 정리", confirmed_by: "사용자 (2026-09-29 요구사항 정의서 검토 뒤 확정)" }
   - id: REQ-112
     type: functional
     priority: must
@@ -300,7 +300,7 @@ requirements:
       - { kind: 예외, case: "사용자가 '등록된 지식 문서를 전부 보여 줘'라고 하면 본문·제목·건수 없이 구체적 업무나 사용법을 물어 달라는 공통 문구로 답한다" }
     volatility: { level: high, what: "규칙 문구·우선순위는 고객사마다 다르다. 서버가 강제하는 경계는 고정한다" }
     open: []
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-29", by: "AI 정리", confirmed_by: "사용자 (2026-09-29 요구사항 정의서 검토 뒤 확정)" }
   - id: REQ-113
     type: functional
     priority: must
@@ -351,7 +351,7 @@ requirements:
       - { kind: 예외, case: "두 사용자가 각자 채팅에서 같은 주문의 출고를 요청하면 Hub는 막지 않고, 두 번째 사용자의 승인 화면에 첫 번째 실행 이력을 보인다. 실제 중복 차단은 대상 시스템이 한다" }
     volatility: { level: low, what: "책임 경계 원칙이라 고객사마다 달라지지 않는다" }
     open: []
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-29", by: "AI 정리", confirmed_by: "사용자 (2026-09-29 요구사항 정의서 검토 뒤 확정)" }
   - id: REQ-114
     type: functional
     priority: should
@@ -412,7 +412,7 @@ requirements:
       - { kind: 예외, case: "검수 근거 없이 배포된 도구는 레지스트리에 있어도 노출되지 않고, 모델도 호출할 수 없다" }
     volatility: { level: high, what: "필요한 커스텀 도구는 고객사 업무마다 다르다. 통제 절차는 고정한다" }
     open: []
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-29", by: "AI 정리", confirmed_by: "사용자 (2026-09-29 요구사항 정의서 검토 뒤 확정)" }
   - id: REQ-115
     type: functional
     priority: must
@@ -480,4 +480,4 @@ requirements:
       - { kind: 예외, case: "품질 담당자가 '지식 보완 필요'로 판정하면 지식 검토 작업이 생기고 업무 자산 관리자에게 배정 알림이 간다. 보완이 끝나야 조치 완료로 넘어간다" }
     volatility: { level: medium, what: "처리 절차는 고정하고, 원인 묶음 기준과 담당 배정은 운영하며 다듬는다" }
     open: []
-    maturity: { level: elaborated, at: "2026-09-28", by: "AI 정리", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-09-29", by: "AI 정리", confirmed_by: "사용자 (2026-09-29 요구사항 정의서 검토 뒤 확정)" }
