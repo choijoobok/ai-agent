@@ -467,7 +467,7 @@ requirements:
     risk: "원인 묶음의 기준(안정 지문)이 틀리면 다른 원인이 한 건에 섞이거나 같은 원인이 흩어진다 — P3에서 정한다(note)"
     relations:
       depends_on: [REQ-107, REQ-108, REQ-111]
-      constrains: []
+      constrains: [REQ-204]
       conflicts_with: []
       nfr: []
       interfaces: []
