@@ -170,7 +170,7 @@ screens:
     feature: FEAT-025
     roadmap: RM-P1
     agent_contact: 설정
-    note: "저장 개수·위젯 수·동시 실행·캐시 TTL·쿨다운을 운영·비용 관리자가 통제하므로 AI 운영에 둔다. 사용 빈도와 무효화 현황은 업무 자산 관리자가 인증 예제 쿼리 승격·지식 검토의 입력으로 참조하지만 화면 소유권을 바꾸지는 않는다"
+    note: "저장·실행 제한과 실패 후 재시도 대기 설정은 AI 운영에 둔다. 오류 목록은 조회 ID별 한 행이며 개별 실패·신고·조사를 상세에서 조회한다(REQ-204·207). 유효 권한의 업무 자산·보안·품질 담당자가 확인하며 상세 SQL·정책 근거의 권한은 별도로 지킨다"
 
 # ══ admin — 비용 관리 (3.5) ══════════════════════════════════════
   - id: SCR-021
@@ -214,14 +214,15 @@ screens:
     feature: FEAT-022
     roadmap: RM-P1
     agent_contact: 산출
+    note: "채팅·저장 조회 실행 신고 원본과 개별 회신을 관리하고 SCR-033의 공통 조사에 연결한다(REQ-110)"
   - id: SCR-033
     module: admin
     group: "품질 관리"
-    title: "AI 처리 오류 관리"
+    title: "오류·품질 조사"
     feature: FEAT-035
     roadmap: RM-P1
     agent_contact: 산출
-    note: "portal·agent 처리 실패의 턴별 이력과 지식 보완 조치를 다루며, system 오류 이력 및 사용자 논리 오류 품질 신고와 분리한다"
+    note: "채팅 오류·품질 신고·저장 조회 실행 실패의 원본을 공통 조사에 연결해 배정·분석·조치·검증·사후 연결을 관리한다(REQ-115). system 오류 이력은 별도이며 저장 조회 오류 목록은 SCR-020이 맡는다"
   - id: SCR-025
     module: admin
     group: "품질 관리"
@@ -321,7 +322,7 @@ screens:
     title: "대시보드"
     feature: FEAT-123
     roadmap: RM-P1
-    note: "위젯 = 저장된 조회 + 표현 형식"
+    note: "위젯 = 저장된 조회 + 표현 형식. 즐겨찾기는 대상이 아니다. 오류 위젯의 재시도·복구·신고는 REQ-204·REQ-110을 따른다"
     undecided: "**portal 의 진입 기본 화면이 미확정이다** — 대시보드는 RM-P1에 제공하지만 기본 진입은 채팅으로 둔다. portal 작업흐름 P2에서 사용자가 채팅·대시보드 중 기본 화면을 고를 수 있게 할지 정한다"
   - id: SCR-106
     module: portal

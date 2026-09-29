@@ -154,29 +154,29 @@ features:
     screen: SCR-103
     roadmap: RM-P1
     title: "질의 즐겨찾기"
-    detail: "자연어 질의문 저장·수정·삭제, 클릭 시 채팅 입력에 반영"
+    detail: "자연어 질의문 저장·수정·삭제와 채팅 입력 반영. 수정 범위와 위젯 대상 제외는 REQ-201을 따른다"
     reqs: [REQ-201]
   - id: FEAT-122
     module: portal
     screen: SCR-104
     roadmap: RM-P1
     title: "저장된 조회 관리"
-    detail: "성공한 조회의 저장 · 파라미터 확인 · 목록 조회·삭제 · 자연어 수정 요청 · 무효화 상태 확인"
-    reqs: [REQ-201, REQ-202, REQ-203, REQ-204]
+    detail: "성공한 조회의 신규 저장 · 파라미터 확인 · 목록 조회·삭제 · 오류 사유·재시도 가능 시각 확인과 재실행. 정의 변경은 REQ-202, 삭제·위젯 제거·오류 복구는 REQ-204를 따르며 개별 실행 신고는 FEAT-124를 사용한다"
+    reqs: [REQ-110, REQ-201, REQ-202, REQ-203, REQ-204, REQ-207]
   - id: FEAT-123
     module: portal
     screen: SCR-105
     roadmap: RM-P1
     title: "대시보드 구성과 실행"
-    detail: "위젯 배치와 표현 형식 지정 · 위젯별 수동 조회와 자동 실행 설정 · 결과 렌더링"
-    reqs: [REQ-206, REQ-207]
+    detail: "위젯 배치와 표현 형식 지정 · 위젯별 수동 조회와 자동 실행 설정 · 결과 렌더링. 새 조회의 위젯 추가와 조회 삭제 시 연결 위젯 제거는 REQ-206을 따른다"
+    reqs: [REQ-110, REQ-206, REQ-207]
     nfrs: [NFR-005]
   - id: FEAT-124
     module: portal
     screen: SCR-101
     roadmap: RM-P1
     title: "품질 신고 등록"
-    detail: "대상 턴 지정 · 사유 작성"
+    detail: "대상 턴·응답 회차 또는 본인 저장 조회의 개별 실행·오류 지정 · 사유 작성 · 기존 조사 진행 안내. 접수·소유권·추가 설명 보존은 REQ-110을 따르며 채팅·저장 조회·위젯 오류에서 공통 사용한다"
     reqs: [REQ-110]
   - id: FEAT-125
     module: portal
