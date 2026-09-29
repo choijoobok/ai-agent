@@ -47,7 +47,7 @@ requirements:
     risk: "구조적 판정의 오탐(업무 질의 거부)·미탐 비율은 재기 전에는 모른다 — 평가셋(SUC-02)과 품질 지표(FEAT-032)로 잰다"
     relations:
       depends_on: [REQ-103, REQ-110, REQ-112]
-      constrains: [REQ-107]
+      constrains: [REQ-107, REQ-207]
       conflicts_with: []
       nfr: []
       interfaces: []
@@ -227,7 +227,7 @@ requirements:
     risk: "해당 없음"
     relations:
       depends_on: [REQ-107]
-      constrains: []
+      constrains: [REQ-202]
       conflicts_with: []
       nfr: []
       interfaces: []
@@ -358,7 +358,7 @@ requirements:
     risk: "레거시가 응답 필드를 추가하면 경로 미지정이 된다 — 기본 차단이라 누설 대신 누락이 생기고, 그 누락을 알아채는 경고가 필요하다(REQ-111)"
     relations:
       depends_on: [REQ-103, REQ-111]
-      constrains: [REQ-107]
+      constrains: [REQ-107, REQ-207]
       conflicts_with: []
       nfr: [NFR-026]
       interfaces: [IF-003]
@@ -426,7 +426,7 @@ requirements:
     risk: "저장량과 쓰기 부하가 원문 보존 비율에 따라 커진다 — 목표치는 NFR에서 재고 정한다"
     relations:
       depends_on: [REQ-101, REQ-103, REQ-105, REQ-106, REQ-108]
-      constrains: [REQ-104, REQ-109, REQ-110, REQ-115]
+      constrains: [REQ-104, REQ-109, REQ-110, REQ-115, REQ-207]
       conflicts_with: []
       nfr: [NFR-027]
       interfaces: []
