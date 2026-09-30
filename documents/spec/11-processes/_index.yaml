@@ -15,3 +15,4 @@ spec_set:
   parts:
     - 001-processes.yaml
     - 002-customer-pilot.yaml
+    - 003-reference-management.yaml

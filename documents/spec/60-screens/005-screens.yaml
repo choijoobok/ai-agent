@@ -42,10 +42,11 @@ screens:
   - id: SCR-005
     module: admin
     group: "권한 관리"
-    title: "사용자·조직"
+    title: "Portal 사용자 관리"
     feature: FEAT-005
     roadmap: RM-P1
     agent_contact: 설정
+    note: "REQ-616의 Portal 이용자 전용 관리 메뉴다. system의 관리자 사용자 관리(SCR-501)와 별도이며 그룹·쿼터·신원 매핑·이용 상태를 확인한다. 관리 콘솔 /admin/hub/** 영역에 두고 상세 경로는 P3에서 정한다. 이용자가 사용하는 Portal 메인(/)과 Portal 기능(/portal/**) 화면이 아니다(ARCH-021)"
   - id: SCR-006
     module: admin
     group: "권한 관리"
