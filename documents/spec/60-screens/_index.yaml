@@ -1,4 +1,4 @@
-# 화면 목록 — admin 32 · portal 12 · system 25 = 69
+# 화면 목록 — admin 36 · portal 12 · system 25 = 73
 #
 # 작성 단계: P3
 # status: migrated — 사용자 승인 전이다.
@@ -7,7 +7,7 @@
 #
 # **화면의 컬럼·검증·영향 테이블은 여기에 담지 않는다** — `documents/screen/{페이지경로}/`
 # 의 문서 셋이 갖는다(CLAUDE.md §6). 여기는 *무엇이 메뉴로 존재하고 어떤 기능이 거기
-# 속하는지* 까지다. **44개 화면의 문서 셋은 아직 없다** — CLAUDE.md §11.
+# 속하는지* 까지다. **48개 Hub 화면의 문서 셋은 아직 없다** — doc_order 참조.
 
 meta:
   status: in_progress
