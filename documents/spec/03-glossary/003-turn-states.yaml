@@ -3,7 +3,7 @@ turn_states:
     state: 접수
     key: RECEIVED
     meaning: "질의를 받아 기록했고 아직 처리를 시작하지 않았다"
-    next: [RUNNING, FAILED]
+    next: [RUNNING, ABORTED, FAILED]
   - id: TS-02
     state: 처리중
     key: RUNNING
@@ -17,8 +17,8 @@ turn_states:
   - id: TS-04
     state: 중단
     key: ABORTED
-    meaning: "처리가 멈췄고 **재개 가능**하다 — 수동 중단·서버 재시작·실행 점유 만료·대기 만료처럼 다시 시도할 여지가 있는 멈춤. 재시도는 원 질의를 재사용하되 첫 처리 단계부터 새 시도로 시작한다(REQ-013)"
-    next: [RUNNING]
+    meaning: "현재 시도의 처리가 끝났다. 수동 중단·서버 재시작·실행 점유 만료·대기 만료 등이 원인이다. REQ-013의 재시도 조건을 충족한 사용자 요청만 같은 턴의 새 시도로 접수하며 원 질의로 첫 단계부터 시작한다. 실행 요청 전송·결과 불명 등 재시도 금지 조건을 별도로 판정하므로 중단 상태만으로 재시도 가능을 뜻하지 않는다. 이전 시도의 실행용 재개 상태는 REQ-109에 따라 정리한다"
+    next: [RECEIVED]
   - id: TS-05
     state: 실패
     key: FAILED
@@ -27,5 +27,5 @@ turn_states:
   - id: TS-06
     state: 완료
     key: DONE
-    meaning: "최종 응답을 사용자에게 전달했다"
+    meaning: "필수 감사 이력과 최종 응답을 서버에 저장해 사용자가 조회할 수 있도록 처리를 마쳤다. 브라우저의 접속·수신·열람 여부와 구분하며 재접속은 저장된 결과 조회만 수행한다(REQ-040·REQ-108)"
     next: []

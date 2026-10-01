@@ -37,7 +37,7 @@ screens:
     agent_contact: 설정
 
 # ══ admin — 권한 관리 (3.2) ══════════════════════════════════════
-# **이 대분류 전체가 하나의 통제 경계다.** 다섯 화면이 접근 범위를 정하므로
+# **이 대분류 전체가 하나의 통제 경계다.** 아래 관리·승인 화면이 접근 범위를 정하므로
 # 이 대분류에 대한 접근 권한은 **감사 열람 권한과 반드시 분리할 수 있어야 한다.**
   - id: SCR-005
     module: admin
@@ -54,6 +54,14 @@ screens:
     feature: FEAT-006
     roadmap: RM-P1
     agent_contact: 설정
+  - id: SCR-037
+    module: admin
+    group: "권한 관리"
+    title: "사용자 접근 권한 승인"
+    feature: FEAT-038
+    roadmap: RM-P1
+    agent_contact: 설정
+    note: "REQ-609의 대상별 신원 매핑·그룹 추가 요청을 별도 메뉴에서 승인·반려한다. 사용자·대상·ID/그룹·요청 사유·근거·현재 권한·요청 버전·처리 이력을 확인한다. 승인 전 활성화는 불가하며 요청 작성·제거 메뉴와 승인 액션 권한을 분리한다. 상세 경로·요건서·목업은 P3에서 사용자 승인 절차로 정의한다"
   - id: SCR-007
     module: admin
     group: "권한 관리"
@@ -83,7 +91,8 @@ screens:
   - id: SCR-010
     module: admin
     group: "업무 지식 관리"
-    title: "업무 도메인"
+    title: "지식 검색 태그·동의어"
+    note: "REQ-607의 화면 후보. 독립 메뉴 신설은 미확정이며 지식 화면 통합 가능성을 P3에서 검토한다"
     feature: FEAT-024
     roadmap: RM-P1
     agent_contact: 설정
