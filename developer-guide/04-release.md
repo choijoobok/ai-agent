@@ -75,13 +75,19 @@ Gradle 옵션을 읽지 않으므로 `--spring.profiles.active=<프로파일>` �
 ./gradlew :backend:bootstrap:bootRun -Pprofile=local -PincludeSample=false -PskipFrontend=false
 ```
 
-- **비밀값은 파일에 두지 않고 환경 변수로 주입한다** (`DB_PASSWORD` · `REDIS_PASSWORD`).
-  단 **암호화 키는 운영에서 키 파일이 기본**이고 환경 변수는 로컬·개발용이다.
+- 현재 설정의 **비밀값은 환경 변수로 주입한다** (`DB_PASSWORD` · `REDIS_PASSWORD` · `MAIL_PASSWORD`).
+  `local`의 합성 개발 기본값은 운영 인증정보로 재사용하지 않는다. 암호화 키를 도입할 때는
+  운영 키 파일 기본·로컬/개발 환경 변수 규약을 따른다. 현재 YAML 설정 복호화 연동·운영 도구 및
+  개인정보 암호화 키 처리는 구현되지 않았다. **Hub는 Spring Security Crypto 기반 공통 설정 복호화를 직접 구현**하며,
+  암호화 yml + 환경별 외부 활성 마스터 키 하나의 운영 방식을 유지한다.
+  개별 비밀의 환경 변수 주입을 기본 운영 방식으로 요구하지 않는다. 관리 대상·키/교체·비노출 경계는
+  [REQ-403](../documents/spec/10-requirements/008-derived.yaml), 선택 이유와 설정 초기화 검증은
+  [ADR-022](../documents/decisions/ADR-022-Spring-Security-Crypto-설정암복호화.md)을 따른다.
 - **Hub 를 얹으면 프로파일이 하나 더 갈린다** — LLM Provider 선택(개발기 CLI ↔ 운영 API)이
   프로파일 설정으로 전환된다(CON-033). **개발 환경의 CLI 로는 토큰 집계·스트리밍·동시성
   세 항목이 검증되지 않으므로**, API 구독 확보 직후 실환경에서 그 셋을 최우선 검증한다.
-- **업무 DB·DW 데이터소스와 API 자격증명은 yml 에만 둔다.** 화면은 매핑과 참조 키만 관리하고
-  접속 정보를 노출하지 않는다(ARCH-030).
+- **DB·API·LLM 연결 정의는 배포 yml에서 관리한다.** 비밀 설정값은 REQ-403의 공통 도구로 암호화하고
+  설정 마스터 키만 외부에서 관리한다. 화면은 매핑과 참조 키만 관리하고 접속 정보·비밀 원문을 노출하지 않는다(ARCH-030).
 
 `sample`은 local 변형에서만 포함된다. product JAR은 `./gradlew :backend:bootstrap:bootJar`로
 만들며 sample 코드·화면·DB 기준선을 넣지 않는다.

@@ -5,9 +5,9 @@ category: standard
 type: operation
 class: none
 created: 2026-09-04
-updated: 2026-09-12
+updated: 2026-10-02
 status: active
-sources: ["documents/spec/02-constraints/_index.yaml", "documents/spec/02-constraints/_index.yaml"]
+sources: ["documents/spec/02-constraints/_index.yaml", "documents/spec/10-requirements/_index.yaml"]
 tier: 2
 tags: [hub, convention, module, transaction, logging, timezone]
 ---
@@ -51,8 +51,8 @@ Hub 코드를 쓴다
 - 모듈별 yml 은 **파일을 분리**하고 `application-<프로파일>.yml` 에서 import 한다.
 - 프로파일은 **로컬 / 개발 / 운영**이며 서버 기동 시 반드시 하나를 명시하고 기본 프로파일로 조용히 뜨게 두지 않는다(ARCH-027).
 - LLM Provider 선택(개발기 CLI ↔ 운영 API)은 **프로파일 설정으로 전환**한다(CON-033).
-- **비밀 값은 평문으로 두지 않는다.** 기본 전략은 **yml + Jasypt 암호화**이며 복호화 키는
-  환경 변수 또는 배포 도구에서 주입한다(CON-011).
+- **비밀 값은 평문으로 두지 않는다.** 암호화 yml·공통 설정 복호화·외부 마스터 키의 구현 정책은
+  프로젝트 REQ-403·CON-011·ADR-022를 따른다. 설정 파서·암호 알고리즘을 직접 다시 만들지 않는다.
 - **업무 DB·DW 데이터소스는 yml 에만 정의한다.** 데이터소스 ID 와 접속 정보·풀 설정을 포함하며,
   이 ID 는 admin 데이터소스 관리(FEAT-002)가 연결 대상으로 선택하는 값이다.
   다중 데이터소스를 전제하므로 **프로파일별로 파일을 분리한다.**

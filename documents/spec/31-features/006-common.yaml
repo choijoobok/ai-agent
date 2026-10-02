@@ -11,7 +11,8 @@ features:
     module: common
     roadmap: RM-P1
     title: "모듈별 환경 설정과 프로파일 관리"
-    reqs: [REQ-402]
+    detail: "환경별 설정 분리는 REQ-402, 접속 설정·비밀정보의 관리 대상·저장/주입·공통 설정 복호화 연동/운영 도구·비노출 경계는 REQ-403을 따른다. 비밀 원문 관리 화면을 만들지 않는다"
+    reqs: [REQ-402, REQ-403]
     traces_to: [CON-011]
   - id: FEAT-303
     module: common

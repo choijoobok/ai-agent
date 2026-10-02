@@ -7,7 +7,7 @@ technical:
     traces_to: [ADR-005, ADR-008]
   - id: CON-002
     area: "업무 DB / DW"
-    constraint: "DBMS 중립. 고객사 업무 DB·DW는 특정 DBMS로 제한하지 않으며, 접속 정보는 **yml 에만** 두고 admin은 매핑만 관리한다"
+    constraint: "DBMS 중립. 고객사 업무 DB·DW는 특정 DBMS로 제한하지 않으며 연결 정의와 암호화된 비밀 설정값은 배포 yml에서 관리한다. 공통 비밀/마스터 키 정책은 REQ-403을 따르고 admin은 매핑만 관리한다"
     traces_to: [PRN-04, ADR-008]
   - id: CON-003
     area: "업무 시스템 연동"
@@ -41,7 +41,8 @@ technical:
     constraint: "멀티 인스턴스 운영 시 Redis 또는 Spring JDBC Session. **턴 처리는 화면 세션에 의존하지 않는다**"
   - id: CON-011
     area: "비밀 값"
-    constraint: "접속 정보·키는 설정 파일에 평문으로 두지 않는다. 기본 전략은 **yml + Jasypt 암호화**이며 복호화 키는 환경 변수 또는 배포 도구에서 주입한다"
+    constraint: "접속 인증정보·키의 실제 원문은 설정 파일·소스에 평문으로 두지 않는다. **Spring Security Crypto 기반 암호화 yml·자체 공통 설정 복호화 연동 + 환경별 외부 활성 마스터 키 하나**를 기본 정책으로 채택한다(ADR-022). 공통 대상·저장/키 관리·화면 참조 경계와 현재 구현 여부는 REQ-403이 정본이다"
+    traces_to: [ADR-022]
   - id: CON-036
     area: "캐시"
     constraint: "**공통 캐시 계층을 두지 않는다.** 카탈로그·권한 판정·단가표처럼 매 턴 읽히는 것도 지금은 DB 에서 직접 읽는다"

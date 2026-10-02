@@ -225,6 +225,10 @@ REQ ──→ UC ──→ FEAT ──┬──→ ENT   (테이블)
 | **마스킹** | masking | 개인정보를 `홍*동` 처럼 **가려서 보여 주는 것** |
 | **감사 이력** | audit log | **누가 언제 무엇을 했는지** 지우지 못하게 남기는 기록 |
 
+| **Jasypt** | Java Simplified Encryption | Java 암복호화 라이브러리. Spring 설정 연동을 제공하는 `jasypt-spring-boot`와 핵심 암호화 라이브러리는 구분한다. 이전 채택안은 ADR-022로 대체했으며 제품 정책은 [REQ-403](../documents/spec/10-requirements/008-derived.yaml)을 참조한다 |
+| **Spring Security Crypto** | Spring Security 암호 기능 모듈 | 문자열·바이트 암복호화, 키 생성, 비밀번호 해싱을 제공한다. YAML 설정 자동 복호화 연동은 제공하지 않아 별도 공통 구현이 필요하다. 제품 정책은 [REQ-403](../documents/spec/10-requirements/008-derived.yaml)이 정본이다 |
+| **마스터 키** | master key | 여러 비밀 설정값을 암복호화하는 기준 키. 제품의 키 관리 단위·보관·교체 규칙은 [REQ-403](../documents/spec/10-requirements/008-derived.yaml)이 정본이다 |
+| **TLS** | Transport Layer Security | HTTPS 등 통신 구간을 암호화하고 상대를 인증하는 프로토콜. 공개 인증서와 비밀인 개인키는 구분한다 |
 ### 4.6 운영 · 배포
 
 | 말 | 무엇의 약자 | 무슨 뜻인가 |
