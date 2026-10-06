@@ -43,7 +43,7 @@ requirements:
     risk: "권한 검사와 실제 외부 호출 사이 경합, 인스턴스별 낡은 권한 캐시, 이전 문맥 재사용으로 통제가 우회될 수 있다. 호출 직전 검증·버전 확인·문맥 근거 추적 계약을 P2/P3에서 검증한다. 이미 전송한 호출의 취소와 외부 업무 원상복구는 보장하지 않는다. 감사 쓰기 부하는 NFR-027과 함께 검증한다"
     relations:
       depends_on: [REQ-103]
-      constrains: [REQ-107, REQ-110, REQ-115]
+      constrains: [REQ-107, REQ-110, REQ-115, "REQ-608"]
       conflicts_with: []
       nfr: [NFR-027]
       interfaces: []
