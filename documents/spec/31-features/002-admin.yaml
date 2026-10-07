@@ -66,7 +66,7 @@ features:
     screen: SCR-007
     roadmap: RM-P1
     title: "카탈로그 그룹 매핑 관리"
-    detail: "카탈로그 그룹·컬럼 모드·공통 마스킹 정의와 당시 전체 상태를 조회·관리한다. 관리 속성은 REQ-611, 직접 관리와 자산 접근 그룹 세트 승인·복원 경계는 REQ-103을 따른다"
+    detail: "카탈로그 그룹·컬럼별 원본 열람/마스킹 열람/접근 제한·공통 마스킹 정의와 당시 전체 상태를 조회·관리한다. 관리 속성은 REQ-611, 직접 관리와 자산 접근 그룹 세트 승인·복원 경계는 REQ-103을 따른다"
     reqs: [REQ-103, REQ-111, REQ-611]
     traces_to: [AUTHZ-011, AUTHZ-012]
   - id: FEAT-008
@@ -74,7 +74,7 @@ features:
     screen: SCR-008
     roadmap: RM-P1
     title: "API 그룹 매핑 관리"
-    detail: "API별 호출 허용 그룹·위험 등급·승인 강제·응답 경로별 모드를 관리한다. 속성과 통제 경계는 REQ-611, 응답 속성 원천은 REQ-608을 참조한다"
+    detail: "API별 호출 허용 그룹·위험 등급·승인 강제·응답 경로별 원본 열람/마스킹 열람/접근 제한을 관리한다. 속성과 통제 경계는 REQ-611, 응답 속성 원천은 REQ-608을 참조한다"
     reqs: [REQ-105, REQ-111, REQ-611]
     traces_to: [AUTHZ-014, AUTHZ-015]
   - id: FEAT-009
