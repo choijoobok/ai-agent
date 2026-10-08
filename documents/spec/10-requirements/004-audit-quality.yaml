@@ -382,7 +382,7 @@ requirements:
     type: functional
     priority: should
     priority_reason: "RM-P1의 업무 실행은 등록 REST API만으로 성립하며, 내부 서비스 빈 기반 커스텀 도구는 같은 통제 아래 확장하는 후순위 기능이므로 should로 둔다"
-    actors: [ACT-002]
+    actors: ["ACT-002"]
     source: "2026-09-15 사용자 결정 (CR-023) · 2026-09-28 사용자 결정(설정·자격증명 비반환 검수)"
     process_step: PRC-03-01
     title: "커스텀 도구 — PRN-08 의 명시적 예외"
@@ -398,7 +398,7 @@ requirements:
       not:
         - "SQL·등록 API로 되는 일을 코드로 만드는 경로가 아니다"
         - "통제가 자동으로 재사용되는 도구가 아니다 — 내부 서비스의 데이터 통제는 도구가 직접 강제한다"
-    goal_trace: [GOAL-2]
+    goal_trace: ["GOAL-2"]
     decider: "제품 오너(사용자). 도구별 요건 승인·코드 리뷰·배포 통제는 고객사 프로젝트 관리 체계"
     preconditions:
       - "도구 레지스트리와 그룹 판정·승인·감사 흐름이 있다(REQ-105)"
@@ -409,6 +409,7 @@ requirements:
       - "커스텀 도구는 등록·그룹 매핑·실행 유형·명시적 승인·전량 감사를 다른 도구와 똑같이 받는다"
       - "도구별 선언과 코드 리뷰·보안·고객사 테스트 검수 근거가 없으면 노출하지 않는다"
       - "검수에는 '설정 파일·환경 변수·자격증명을 읽거나 출력·오류로 반환하지 않는다'를 반드시 넣는다"
+      - "도구/API 등록 정보의 내부 관리 승인과 전결 설정은 REQ-601·608·612를 따른다. 해당 설정은 실제 상태 변경 실행의 요청 사용자 명시 확인이나 커스텀 코드 검수·배포 통제를 면제하지 않는다"
     exceptions:
       - "공정 단계의 예외는 PRC-03-01이 갖는다"
     lifecycle:
@@ -425,8 +426,8 @@ requirements:
       - "노출 여부와 그룹 매핑은 admin 데이터다. 도구 코드 자체는 배포가 필요하다(PRN-06의 예외)"
     risk: "코드라서 선언과 구현이 어긋나도 설계로는 막지 못한다 — 검수가 유일한 방어선이다"
     relations:
-      depends_on: [REQ-102, REQ-105]
-      constrains: []
+      depends_on: ["REQ-102","REQ-105","REQ-601"]
+      constrains: ["REQ-612"]
       conflicts_with: []
       nfr: []
       interfaces: []
@@ -436,9 +437,15 @@ requirements:
     examples:
       - { kind: 정상, case: "WMS 재고와 ERP 수불을 대조하는 커스텀 도구가 입출력·데이터 범위·마스킹 선언과 검수 근거를 갖추면, 그룹 매핑 뒤 재고담당 그룹에만 노출된다" }
       - { kind: 예외, case: "검수 근거 없이 배포된 도구는 레지스트리에 있어도 노출되지 않고, 모델도 호출할 수 없다" }
-    volatility: { level: high, what: "필요한 커스텀 도구는 고객사 업무마다 다르다. 통제 절차는 고정한다" }
+    volatility:
+      level: "high"
+      what: "필요한 커스텀 도구는 고객사 업무마다 다르다. 통제 절차는 고정한다"
     open: []
-    maturity: { level: confirmed, at: "2026-09-29", by: "AI 정리", confirmed_by: "사용자 (2026-09-29 요구사항 정의서 검토 뒤 확정)" }
+    maturity:
+      level: "confirmed"
+      at: "2026-09-29"
+      by: "AI 정리"
+      confirmed_by: "사용자 (2026-09-29 요구사항 정의서 검토 뒤 확정)"
   - id: REQ-115
     type: functional
     priority: must
