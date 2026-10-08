@@ -200,7 +200,7 @@ requirements:
     config:
       - "관리할 속성·원천·사용처는 이 카드의 data·field_usage·consumers를 따른다. 코드/배포 설정·관리 데이터·읽기 전용 참조를 혼합하지 않는다"
     risk: "API 공통 가이드와 지식 업무 절차를 중복 작성하면 입력 규칙이 갈릴 수 있으므로 원천과 참조를 구분한다. 참조 변경·사용 중지·적용 시점이 후속 파라미터 구성·실행·과거 이력을 깨뜨리지 않는지 설계·시험에서 검증한다"
-    relations: {"depends_on":["REQ-601","REQ-403","REQ-604","REQ-303","REQ-305","REQ-306","REQ-105","REQ-026","REQ-108","REQ-609"],"constrains":["REQ-612"],"conflicts_with":[],"nfr":[],"interfaces":[]}
+    relations: {"depends_on":["REQ-601","REQ-403","REQ-604","REQ-303","REQ-305","REQ-306","REQ-105","REQ-026","REQ-108","REQ-609"],"constrains":["REQ-612","REQ-038"],"conflicts_with":[],"nfr":[],"interfaces":[]}
     realization: {"features":["FEAT-004","FEAT-014"],"screens":["SCR-004","SCR-011","SCR-036"]}
     examples:
       - {"kind":"정상","case":"주문 접수 API의 성공을 '접수'로 등록하고 요청 ID로 결과 확인 API를 연결해 완료 여부를 별도 확인한다"}

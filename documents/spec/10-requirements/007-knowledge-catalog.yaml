@@ -205,7 +205,7 @@ requirements:
     risk: "참조 링크 누락은 변경 영향 검수 누락으로 이어지므로 등록 때 업무 관계를 함께 검수한다"
     relations:
       depends_on: ["REQ-301","REQ-302","REQ-603","REQ-601"]
-      constrains: ["REQ-305","REQ-607","REQ-608"]
+      constrains: ["REQ-305","REQ-607","REQ-608","REQ-038"]
       conflicts_with: []
       nfr: []
       interfaces: []
