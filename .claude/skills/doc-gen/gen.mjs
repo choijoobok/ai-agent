@@ -108,10 +108,34 @@ function blocks(items, headKeys = ['id'], titleKey = 'title', level = '###') {
   for (const it of items) {
     const hid = headKeys.filter((k) => it[k] !== undefined && it[k] !== null).map((k) => String(it[k])).join(' · ');
     const ttl = it[titleKey] ?? it.name ?? it.term ?? it.area ?? it.label ?? '';
-    out.push(`${level} ${hid}${ttl ? ` — ${ttl}` : ''}`, '');
+    if (it.overview_diagram) out.push(`${level} ${hid} 요구사항`, '', `**${ttl}**`, '');
+    else out.push(`${level} ${hid}${ttl ? ` — ${ttl}` : ''}`, '');
     for (const [k, v] of Object.entries(it)) {
       if (headKeys.includes(k) || k === titleKey) continue;
-      if (Array.isArray(v) && v.length && typeof v[0] === 'object' && v[0] !== null) {
+      if (k === 'overview_diagram' && typeof v === 'string') {
+        out.push(`#### ${it.id} 전체 흐름도`, '',
+          it.sequence_routes ? `S1~S${it.sequence_routes.length}는 상세 시퀀스의 검토 번호입니다. 실행 순서를 뜻하지 않습니다. 아래 [단계별 대응표](#${String(it.id).toLowerCase()}-단계별-대응표)에서 다이어그램과 순서 설명으로 이동할 수 있습니다.` : '',
+          '', '```mermaid', v.trimEnd(), '```', '');
+      } else if (k === 'sequence_routes' && Array.isArray(v)) {
+        const route = (r, steps = false) => `${posix.relative(`${RQ}04-요구사항`, r.document)}#${steps ? r.steps_anchor : r.anchor}`;
+        const byKey = new Map(v.map((r) => [r.key, r]));
+        out.push(`#### ${it.id} 단계별 대응표`, '',
+          '그림의 S 번호를 찾아 다이어그램 또는 설명을 여세요. 관련 경로는 실제 분기·공통 처리 연결이며, 검토 번호의 앞뒤 순서와 다릅니다.', '',
+          '| 검토 번호 | 다이어그램·순서 설명 | 확인할 내용 | 관련 경로 |',
+          '|---|---|---|---|');
+        for (const r of v) {
+          const related = (r.related ?? []).map((key) => {
+            const target = byKey.get(key);
+            if (!target) throw new Error(`시퀀스 대응표의 연결 대상이 없습니다: ${key}`);
+            return `[${key}](${route(target)})`;
+          }).join(' · ');
+          out.push(`| ${r.key} | [${r.title}](${route(r)}) · [순서 설명](${route(r, true)}) | ${r.focus} | ${related} |`);
+        }
+        out.push('', '**요구사항 반영 위치 대조** — 흐름 노드는 원본 Mermaid의 노드 이름입니다.', '',
+          '| 검토 번호 | 전체 흐름 노드 | 관련 요구사항 |', '|---|---|---|');
+        for (const r of v) out.push(`| [${r.key}](${route(r)}) | ${r.nodes.join(', ')} | ${r.requirements.join(', ')} |`);
+        out.push('', `[↑ 전체 흐름도로 돌아가기](#${String(it.id).toLowerCase()}-전체-흐름도)`, '');
+      } else if (Array.isArray(v) && v.length && typeof v[0] === 'object' && v[0] !== null) {
         out.push(`- **${lab(k)}**`);
         for (const x of v) out.push(`  - ${flat(x)}`);
       } else if (Array.isArray(v) && v.length > 1) {
@@ -290,13 +314,34 @@ function 요구사항정의서() {
     write(`${RQ4}${name}`, body);
     areas.push({ name, area, reqs, file });
   });
+  // 주제별 조각에는 비연속 ID가 들어간다. 실제로 연속된 번호만 범위로 묶는다.
+  const requirementIds = (reqs) => {
+    const ranges = [];
+    for (const { id } of reqs) {
+      const last = ranges.at(-1);
+      if (last && /^REQ-\d+$/.test(id) && /^REQ-\d+$/.test(last[1])
+          && Number(id.slice(4)) === Number(last[1].slice(4)) + 1) last[1] = id;
+      else ranges.push([id, id]);
+    }
+    return ranges.map(([first, last]) => first === last ? first : `${first}~${last}`).join(', ') || '—';
+  };
   const areaRow = ({ name, area, reqs, file }) =>
-    `| [${area}](${name}) | ${reqs.length ? `${reqs[0].id}~${reqs.at(-1).id}` : '—'} | ${reqs.length} | \`${file}\` |`;
+    `| [${area}](${name}) | ${requirementIds(reqs)} | ${reqs.length} | \`${file}\` |`;
   write(`${RQ4}00-목록.md`, [
     head('RQ-10-requirements', '기능 요구사항 (FR)', specSource('10-requirements'),
       r.meta.status, r.meta.baselined, null, `> **채번** — ${r.meta.numbering}\n`),
     `## 영역\n\n| 영역 | 요구사항 | 건수 | 정본 조각 |\n|---|---|---|---|\n${areas.map(areaRow).join('\n')}`,
   ]);
+  // 분할·이름 변경으로 대체된 요구사항 생성물만 제거한다. 다른 파일은 보존한다.
+  const currentAreaFiles = new Set(['00-목록.md', ...areas.map(({ name }) => name)]);
+  for (const entry of readdirSync(join(REPO, RQ4), { withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith('.md') || currentAreaFiles.has(entry.name)) continue;
+    const obsolete = join(REPO, RQ4, entry.name);
+    const content = readFileSync(obsolete, 'utf8');
+    if (/^id: RQ-10-/m.test(content)
+        && /^generated_from: documents\/spec\/10-requirements\//m.test(content)
+        && content.includes('<!-- 이 문서는 생성물입니다. 직접 수정하지 마세요.')) rmSync(obsolete);
+  }
 
   const pr = load('11-processes');
   const why = rawSpec('11-processes').split('\n').filter((l) => l.startsWith('#'))

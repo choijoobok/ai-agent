@@ -15,7 +15,11 @@ meta:
 spec_set:
   version: 1
   parts:
-    - 001-query-processing.yaml
+    - 001-01-context-management.yaml
+    - 001-02-query-execution.yaml
+    - 001-03-processing-intervention.yaml
+    - 001-04-progress-results.yaml
+    - 001-05-message-contract.yaml
     - 002-in-flight-input.yaml
     - 003-security.yaml
     - 004-audit-quality.yaml

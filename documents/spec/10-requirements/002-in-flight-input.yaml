@@ -162,7 +162,7 @@ requirements:
     risk: "지식 검색 무결과를 이유로 전체 허용 카탈로그·API·도구를 제공하면 업무 맥락과 매핑을 건너뛴 조회·실행이 발생할 수 있다. 조회·해석·실행을 같은 처리로 취급하면 데이터 전송·실행 승인을 우회할 수 있다"
     relations:
       depends_on: [REQ-303, REQ-608, REQ-612]
-      constrains: []
+      constrains: [REQ-009]
       conflicts_with: []
       nfr: [NFR-013, NFR-023]
       interfaces: []

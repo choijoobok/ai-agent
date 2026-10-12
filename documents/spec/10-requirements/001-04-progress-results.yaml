@@ -1,0 +1,44 @@
+# 영역: 진행 상황과 결과 표현
+requirements:
+  - id: REQ-006
+    type: functional
+    priority: must
+    category: "진행 상태·표시"
+    actors: [ACT-001]
+    title: "처리 진행 상황 단계별 표시"
+    detail: "질의 분석 중 · 조회 쿼리 작성 중 · 조회 중 등을 화면에 표시한다"
+  - id: REQ-011
+    type: functional
+    priority: must
+    category: "응답·표현"
+    actors: [ACT-001]
+    title: "응답 형태 — 텍스트 · 그리드 · 차트 · 내보내기"
+    detail: "텍스트, 데이터 그리드, 차트, 엑셀 다운로드, 차트 이미지 다운로드를 지원한다"
+    hard_rule: "**엑셀·이미지 내보내기는 클라이언트 컴포넌트의 기능이고 서버는 파일을 생성하지 않는다**"
+    traces_to: [NGOAL-10]
+  - id: REQ-018
+    type: functional
+    priority: must
+    category: "진행 상태·표시"
+    actors: [ACT-001]
+    title: "현재 상태와 경과 시간 표시"
+    detail: "처리 중에는 현재 상태와 **경과 시간**을 화면에 표시한다"
+  - id: REQ-019
+    type: functional
+    priority: must
+    category: "세션 독립·재연결"
+    actors: [ACT-001]
+    title: "세션 재진입 시 역방향 페이징"
+    detail: "세션을 다시 열면 마지막 턴만 표시하고, 이전 턴은 위로 스크롤할 때 일정 건수 단위로 추가 조회해 붙인다"
+  - id: REQ-027
+    type: functional
+    priority: must
+    category: "응답·표현"
+    priority_reason: "RM-P1에서 모든 표현을 완성하지 않아도 새 의미 블록이 agent 통제를 바꾸지 않는 확장 경계는 첫 계약부터 있어야 한다"
+    actors: [ACT-001]
+    process_step: PRC-02-05
+    title: "응답 표현 형식의 확장"
+    detail: "portal 은 텍스트·그리드·차트·지도 등 표현 형식을 추가할 수 있어야 하며, 새 표현 형식 때문에 agent 의 질의 처리·권한·보안·쿼터·감사 흐름을 바꾸지 않아야 한다. agent가 검토 필요 자산을 하나 이상 사용하면 계약에 사용자 표시 경고 문구와 경고 여부를 함께 넣고 portal은 그 문구를 그대로 표시한다. 지식 식별자·리비전과 공개 객체명은 노출하지 않는다"
+    hard_rule: "**agent 계약에 특정 시각화 라이브러리의 옵션을 넣지 않는다.** agent 는 버전이 있는 의미 블록과 데이터를 반환하고 portal 의 표현 어댑터가 도구별 설정으로 변환한다"
+    note: "지도는 미래 portal 요구의 대표 사례다. @defer G3 — portal 작업흐름에서 실제 시각화 도구와 화면 동작을 정하되, 계약 확장점은 integration 작업흐름에서 먼저 잠근다"
+    traces_to: [REQ-009, REQ-011]
