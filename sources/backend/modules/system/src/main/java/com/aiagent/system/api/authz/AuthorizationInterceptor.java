@@ -63,9 +63,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
      * <p><b>비워 두지 않는다.</b> 비우면 비밀번호가 만료된 사용자가 로그인한 뒤 아무것도 할
      * 수 없고 로그아웃조차 못 한다 — 막다른 세션이 된다.
      *
-     * <p>비밀번호 변경 화면(screen/_standalone/README.md)은 아직 없다. 경로를 미리 적어 두는 이유는 그 슬라이스가
-     * <b>컨트롤러만 추가하면 되게</b> 하려는 것이며, 없는 경로가 여기 있어도 무해하다 —
-     * 핸들러가 없으면 404 다.
+     * <p>비밀번호 변경 화면은 정책 조회와 아래 변경 경로만 사용한다. 프로필·메뉴 조회를
+     * 허용할 필요가 없으며, 변경 성공 전에는 기존 업무 API 차단을 유지한다.
      */
     private static final Set<String> RESTRICTED_SESSION_ALLOWED = Set.of(
             "/api/common/system/auth/getMe",

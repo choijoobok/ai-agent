@@ -120,7 +120,7 @@ export const MSG = {
   SESSION_AUTHZ_CHANGED: 'session.authzChanged',
   /** 비밀번호를 바꿔야 계속할 수 있는 제한 세션의 안내 제목(체인 #5). */
   SESSION_PASSWORD_CHANGE_TITLE: 'session.passwordChange.title',
-  /** 그 화면이 아직 없다는 안내 — 비밀번호 변경 화면(screen/_standalone/README.md)이 오면 사라진다. */
+  /** 초기화·만료된 비밀번호를 변경해야 업무를 계속할 수 있다는 안내. */
   SESSION_PASSWORD_CHANGE_DESC: 'session.passwordChange.desc',
 
   // ── 셸 (frontend/tabs.md) ────────────────────────────────────────

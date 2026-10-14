@@ -5,7 +5,7 @@ category: standard
 type: operation
 class: none
 created: 2026-09-07
-updated: 2026-09-13
+updated: 2026-10-14
 status: active
 sources: ["sources/frontend/src/", "sources/backend/core/", "sources/backend/support/"]
 tier: 1

@@ -5,3 +5,12 @@ databaseChangeLog:
   - include:
       file: db/changelog/modules/system/002-system-seed.sql
       relativeToChangelogFile: false
+  - include:
+      file: db/changelog/modules/system/003-admin-initial-password.yaml
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/modules/system/004-password-change-message.yaml
+      relativeToChangelogFile: false
+  - include:
+      file: db/changelog/modules/system/005-password-change-message-cache.yaml
+      relativeToChangelogFile: false

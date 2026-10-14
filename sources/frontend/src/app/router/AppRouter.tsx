@@ -5,17 +5,16 @@ import { useAuthStore } from '@/shared/stores/authStore';
 import { BlankLayout } from '@/layouts/BlankLayout';
 import { ShellLayout } from '@/layouts/ShellLayout';
 import { LoginPage } from '@/modules/system/public/auth/pages/LoginPage';
+import { PasswordChangePage } from '@/modules/system/public/auth/pages/PasswordChangePage';
 import { ReauthModal } from '@/modules/system/public/auth/components/ReauthModal';
 import { useSessionSignals } from '@/modules/system/public/auth/useSessionSignals';
 import { fetchMe } from '@/modules/system/public/auth/api/authApi';
 import { useMessageStore } from '@/shared/i18n/messageStore';
 import { useCodeStore } from '@/shared/code/codeStore';
 import { staticText } from '@/locales/staticText';
-import { label } from '@/shared/i18n/label';
-import { MSG } from '@/shared/i18n/messageKeys';
 
 /**
- * 라우트는 둘뿐이다 — <b>로그인 화면과 셸</b>. 메뉴별 경로는 `Routes` 에 없다.
+ * 라우트는 <b>로그인 · 비밀번호 강제 변경 · 셸</b>로 나뉜다. 메뉴별 경로는 `Routes` 에 없다.
  *
  * <p><b>탭이 라우트를 대신하기 때문</b>이다(frontend/packages.md). 경로 하나가 탭 여러 개에 대응할 수
  * 있으므로 라우터가 화면을 고르면 같은 경로의 두 인스턴스를 구분하지 못한다 — 매칭은
@@ -66,9 +65,17 @@ export function AppRouter() {
             }
           />
           <Route
+            path="/password/change"
+            element={
+              <RequireAuth>{mustChangePassword ? (
+                <BlankLayout><PasswordChangePage /></BlankLayout>
+              ) : <Navigate to="/admin/system/dashboard" replace />}</RequireAuth>
+            }
+          />
+          <Route
             path="*"
             element={
-              <RequireAuth>{mustChangePassword ? <RestrictedSession /> : <ShellLayout />}</RequireAuth>
+              <RequireAuth>{mustChangePassword ? <Navigate to="/password/change" replace /> : <ShellLayout />}</RequireAuth>
             }
           />
         </Routes>
@@ -82,23 +89,6 @@ export function AppRouter() {
         />
       ) : null}
     </>
-  );
-}
-
-/**
- * 체인 #5 의 제한 세션 — backend/security.md.
- *
- * <p><b>셸을 그리지 않는다.</b> 인가 인터셉터가 비밀번호 변경 외의 모든 API 를 403 으로
- * 막으므로 셸을 그리면 <b>메뉴는 보이는데 무엇을 눌러도 실패하는</b> 화면이 된다.
- * 변경 화면(screen/_standalone/README.md)이 이 자리에 온다.
- */
-function RestrictedSession() {
-  return (
-    <Result
-      status="warning"
-      title={label(MSG.SESSION_PASSWORD_CHANGE_TITLE)}
-      subTitle={label(MSG.SESSION_PASSWORD_CHANGE_DESC)}
-    />
   );
 }
 
