@@ -1,11 +1,9 @@
 // @feat FEAT-501
-import { useState } from 'react';
-import { App, Alert, Button, Form, Input, Space, Typography } from 'antd';
+import { Alert, Space, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
-import { useAuthStore } from '@/shared/stores/authStore';
-import { changePassword } from '@/modules/system/public/profile/api/profileApi';
+import { PasswordChangeForm } from '@/modules/system/shared/components/PasswordChangeForm';
 import type { MyProfile } from '@/modules/system/public/profile/types';
 
 interface Props {
@@ -27,87 +25,23 @@ interface Props {
  * 계속 막히면 <i>같은 화면에 갇힌다</i>(체인 #5 는 차단이 아니라 유도다 — backend/security.md).
  */
 export function PasswordTab({ profile }: Props) {
-  const { message } = App.useApp();
-  const [form] = Form.useForm<{ currentPwd: string; newPwd: string; confirmPwd: string }>();
-  const [saving, setSaving] = useState(false);
-  const clearPasswordChange = useAuthStore((state) => state.clearPasswordChange);
-
-  const submit = async (values: { currentPwd: string; newPwd: string }) => {
-    setSaving(true);
-    try {
-      await changePassword(values.currentPwd, values.newPwd);
-      form.resetFields();
-      clearPasswordChange();
-      message.success(label(MSG.PROFILE_PWD_DONE));
-    } catch (error) {
-      message.error(error instanceof Error ? error.message : String(error));
-    } finally {
-      setSaving(false);
-    }
-  };
-
   const rule = profile.passwordRule;
   const status = statusOf(profile);
-  const required = { required: true, message: label(MSG.PROFILE_PWD_REQUIRED) };
-
   return (
-    <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-      {status && <Alert type={status.type} message={status.text} showIcon />}
-
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={(values) => void submit(values)}
-        // 브라우저의 비밀번호 관리자가 계정 칸을 찾지 못해 엉뚱한 곳을 채우는 것을 막는다.
-        autoComplete="off"
-      >
-        <Form.Item name="currentPwd" label={label(MSG.PROFILE_PWD_CURRENT)} rules={[required]}>
-          <Input.Password maxLength={100} autoComplete="current-password" />
-        </Form.Item>
-        <Form.Item
-          name="newPwd"
-          label={label(MSG.PROFILE_PWD_NEW)}
-          rules={[required]}
-          extra={
-            <Space direction="vertical" size={0}>
-              <Typography.Text type="secondary">
-                {label(MSG.PROFILE_PWD_RULE, {
-                  minLength: rule.minLength,
-                  kinds: rule.requireCharsetKinds,
-                })}
-              </Typography.Text>
-              {/* 0 이면 재사용을 막지 않는다 — 없는 규칙을 안내하지 않는다. */}
-              {rule.reuseBlockCount > 0 && (
-                <Typography.Text type="secondary">
-                  {label(MSG.PROFILE_PWD_RULE_REUSE, { count: rule.reuseBlockCount })}
-                </Typography.Text>
-              )}
-            </Space>
-          }
-        >
-          <Input.Password maxLength={100} autoComplete="new-password" />
-        </Form.Item>
-        <Form.Item
-          name="confirmPwd"
-          label={label(MSG.PROFILE_PWD_CONFIRM)}
-          dependencies={['newPwd']}
-          rules={[
-            required,
-            // 서버까지 보내지 않고 여기서 잡는다 — 서버는 이 값을 받지도 않는다.
-            ({ getFieldValue }) => ({
-              validator: (_, value: string) =>
-                !value || getFieldValue('newPwd') === value
-                  ? Promise.resolve()
-                  : Promise.reject(new Error(label(MSG.PROFILE_PWD_CONFIRM_MISMATCH))),
-            }),
-          ]}
-        >
-          <Input.Password maxLength={100} autoComplete="new-password" />
-        </Form.Item>
-        <Button type="primary" htmlType="submit" loading={saving}>
-          {label(MSG.PROFILE_PWD_SUBMIT)}
-        </Button>
-      </Form>
+    <Space orientation="vertical" size="middle" style={{ display: 'flex' }}>
+      {status && <Alert type={status.type} title={status.text} showIcon />}
+      <PasswordChangeForm ruleHints={
+        <Space orientation="vertical" size={0}>
+          <Typography.Text type="secondary">
+            {label(MSG.PROFILE_PWD_RULE, { minLength: rule.minLength, kinds: rule.requireCharsetKinds })}
+          </Typography.Text>
+          {rule.reuseBlockCount > 0 && (
+            <Typography.Text type="secondary">
+              {label(MSG.PROFILE_PWD_RULE_REUSE, { count: rule.reuseBlockCount })}
+            </Typography.Text>
+          )}
+        </Space>
+      } />
     </Space>
   );
 }

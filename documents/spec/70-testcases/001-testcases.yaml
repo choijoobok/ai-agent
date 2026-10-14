@@ -1,4 +1,5 @@
 testcases:
+  - { id: TC-5016, feature: FEAT-501, usecase: UC-501, type: normal, title: "초기 관리자 비밀번호와 강제 변경", actor: ACT-012, given: "기본 시드 admin과 비밀번호를 이미 바꾼 admin을 각각 준비", when: "초기 비밀번호 보정 적용 후 로그인·직접 URL 이동·비밀번호 변경", then: "기본 시드만 admin 해시·PWD_INIT_YN=Y·PWD_CHG_DTM=NULL로 보정, 대상의 기존 세션과 속성도 종료하고 변경한 계정·세션과 다른 계정은 불변. 제한 세션은 변경 폼과 로그아웃만 제공하고 업무 API를 차단하며 변경 실패 시 제한 유지·성공 후 해제" }
   - { id: TC-5011, feature: FEAT-501, usecase: UC-501, type: normal, title: "허용 계정 로그인과 세션 발급", actor: ACT-001, given: "사용·기간·잠금·휴면·IP·비밀번호가 모두 유효", when: "API-501 로그인", then: "세션과 현재 authzVersion 발급, ENT-505 성공 이력 1건" }
   - { id: TC-5012, feature: FEAT-501, usecase: UC-501, type: validation, title: "계정과 IP 입력 검증", actor: ACT-012, given: "잘못된 기간 또는 IPv4/IPv6 CIDR", when: "API-511 또는 API-516 저장", then: "400, ENT-501·503 불변" }
   - { id: TC-5013, feature: FEAT-501, usecase: UC-501, type: business_exception, title: "로그인 조건 하나만 실패해도 세션 거부", actor: ACT-001, given: "잠금·휴면·기간·IP 중 하나씩 실패하는 표", when: "API-501 로그인", then: "모든 행 401, 세션 0건, 내부 결과 코드가 원인별 기록" }
