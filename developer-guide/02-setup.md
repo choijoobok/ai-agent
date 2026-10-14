@@ -10,7 +10,7 @@
 |---|---|---|---|
 | **JDK** | **25** | 백엔드가 그 위에 서 있다 | `java -version` |
 | **Node** | **22** (하한 `^20.19.0 \|\| ^22.13.0 \|\| >=24`) | `sources/.nvmrc` 가 22 를 고정한다. ESLint 10 이 `^22.13.0` 을 요구한다 | `node -v` |
-| **PostgreSQL** | 16+ | 로컬 프로파일이 `jdbc:postgresql://localhost:5432/bo` 를 본다. **AI 전용 DB 는 PostgreSQL 고정**(CON-001) | `psql --version` |
+| **PostgreSQL** | 16+ | 로컬 프로파일이 `jdbc:postgresql://localhost:5432/aiagent` 를 본다. **AI 전용 DB 는 PostgreSQL 고정**(CON-001) | `psql --version` |
 | **Git** | 2.40+ | — | `git --version` |
 | **Docker** | (선택) | 이식성 테스트(4벤더)에만 필요하다 | `docker info` |
 
@@ -48,18 +48,32 @@ cd sources && ./gradlew build -PskipFrontend -Pdeployment=hub
 |---|---|---|
 | 호스트 | `localhost` | `DB_HOST` |
 | 포트 | `5432` | `DB_PORT` |
-| 데이터베이스 | `bo` | `DB_NAME` |
-| 사용자 | `bo_admin` | `DB_USER` |
+| 데이터베이스 | `aiagent` | `DB_NAME` |
+| 사용자 | `aiagent` | `DB_USER` |
+| 비밀번호 | `aiagent` | `DB_PASSWORD` |
+| 스키마 | `public` | DB의 `search_path` |
+
+관리자 계정으로 접속한 뒤 역할과 DB를 만든다. 아래 SQL은 Windows 로컬 PostgreSQL 기준이며,
+Linux에서는 `LC_COLLATE`·`LC_CTYPE`을 설치된 UTF-8 로캘로 맞춘다. 정렬은 ICU `ko-KR`을 쓴다.
 
 ```bash
-psql -U postgres -c "CREATE DATABASE bo" -c "CREATE USER bo_admin PASSWORD '<비밀번호>'" -c "GRANT ALL ON DATABASE bo TO bo_admin"
+psql -h localhost -U postgres -d postgres
+```
+
+```sql
+CREATE ROLE aiagent LOGIN PASSWORD 'aiagent';
+CREATE DATABASE aiagent OWNER aiagent ENCODING 'UTF8'
+  LOCALE_PROVIDER icu ICU_LOCALE 'ko-KR'
+  LC_COLLATE 'Korean_Korea.utf8' LC_CTYPE 'Korean_Korea.utf8'
+  TEMPLATE template0;
+ALTER DATABASE aiagent SET search_path TO public;
 ```
 
 - **스키마와 시드는 Liquibase 가 만든다.** 애플리케이션을 처음 띄우면 changelog 가 적재된다.
-  DDL 을 손으로 넣지 않는다.
-- **비밀번호를 `application-local.yml` 에 적지 않는다.** 환경 변수로 주입한다 —
-  `application-local.yml` 자체는 형상 관리에 들어 있다(템플릿을 받은 사람이 *로컬을 어떻게
-  띄우나* 의 답을 가져야 하기 때문이다).
+  DDL 을 손으로 넣지 않는다. 테이블 스크립트는 DB명을 지정하지 않고, 스키마를 생략한 이름을
+  사용하므로 접속 DB와 `search_path`를 따른다. 덤프의 `Schema: public` 표기는 주석이다.
+- `application-local.yml`에는 위 로컬 개발용 기본값을 두며, 각 환경의 접속 정보는 환경 변수로
+  덮어쓴다. 실제 환경의 비밀값은 저장소에 넣지 않는다.
 
 ## 4. 띄우는 법
 

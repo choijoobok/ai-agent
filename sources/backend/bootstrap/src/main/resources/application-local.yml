@@ -7,11 +7,12 @@
 # 로컬 DB 는 ICU 로 만든다(backend/persistence.md). libc 콜레이션은 이름과 정렬 결과가 Windows·Linux
 # 에서 달라, 같은 쿼리가 개발자 PC 와 서버에서 다른 순서를 낸다.
 #
-#   CREATE DATABASE bo
-#     OWNER bo_admin ENCODING 'UTF8'
+#   CREATE DATABASE aiagent
+#     OWNER aiagent ENCODING 'UTF8'
 #     LOCALE_PROVIDER icu ICU_LOCALE 'ko-KR'
 #     LC_COLLATE 'Korean_Korea.utf8' LC_CTYPE 'Korean_Korea.utf8'
 #     TEMPLATE template0;
+#   ALTER DATABASE aiagent SET search_path TO public;
 
 spring:
   liquibase:
@@ -19,9 +20,9 @@ spring:
     contexts: local
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:bo}
-    username: ${DB_USER:bo_admin}
-    password: ${DB_PASSWORD:bo_admin}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:aiagent}
+    username: ${DB_USER:aiagent}
+    password: ${DB_PASSWORD:aiagent}
     # driver-class-name 도 jpa.database-platform 도 적지 않는다. 드라이버는 URL 로,
     # 방언은 Hibernate 가 드라이버로 판별한다 — 적으면 DB 전환 시 수정 지점이 는다(build-deploy.md).
 
