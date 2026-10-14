@@ -1,6 +1,6 @@
 // @feat FEAT-501
 import { useRef, useState, type ReactNode } from 'react';
-import { App, Button, Form, Input, Typography } from 'antd';
+import { App, Button, Flex, Form, Input, Typography } from 'antd';
 import { label } from '@/shared/i18n/label';
 import { MSG } from '@/shared/i18n/messageKeys';
 import { useAuthStore } from '@/shared/stores/authStore';
@@ -11,10 +11,11 @@ import { allClientRulesSatisfied, evaluateRules } from '@/modules/system/public/
 interface Props {
   ruleHints?: ReactNode;
   rules?: PasswordRuleSpec[];
+  secondaryAction?: ReactNode;
 }
 
 /** 프로필과 강제 변경 화면이 공유한다. 서버 성공 뒤에만 제한 세션을 해제한다. */
-export function PasswordChangeForm({ ruleHints, rules = [] }: Props) {
+export function PasswordChangeForm({ ruleHints, rules = [], secondaryAction }: Props) {
   const { message } = App.useApp();
   const [form] = Form.useForm<{ currentPwd: string; newPwd: string; confirmPwd: string }>();
   const [saving, setSaving] = useState(false);
@@ -77,9 +78,12 @@ export function PasswordChangeForm({ ruleHints, rules = [] }: Props) {
       >
         <Input.Password maxLength={100} autoComplete="new-password" />
       </Form.Item>
-      <Button type="primary" htmlType="submit" loading={saving} disabled={!allClientRulesSatisfied(states)}>
-        {label(MSG.PROFILE_PWD_SUBMIT)}
-      </Button>
+      <Flex align="center" justify={secondaryAction ? 'space-between' : 'flex-start'} gap="small">
+        {secondaryAction}
+        <Button type="primary" htmlType="submit" loading={saving} disabled={!allClientRulesSatisfied(states)}>
+          {label(MSG.PROFILE_PWD_SUBMIT)}
+        </Button>
+      </Flex>
     </Form>
   );
 }

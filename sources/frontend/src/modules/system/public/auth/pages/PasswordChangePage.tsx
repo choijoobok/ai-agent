@@ -37,17 +37,19 @@ export function PasswordChangePage() {
     }
   };
 
+  const logoutAction = <Button loading={leaving} onClick={() => void leave()}>{label(MSG.SHELL_LOGOUT)}</Button>;
+
   return (
     <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
       <Typography.Title level={3}>{label(MSG.SESSION_PASSWORD_CHANGE_TITLE)}</Typography.Title>
       <Alert type="warning" showIcon title={label(MSG.SESSION_PASSWORD_CHANGE_DESC)} />
       {error && <Alert type="error" showIcon title={error} />}
-      {policy ? <PasswordChangeForm rules={policy.rules} /> : error ? (
+      {policy ? <PasswordChangeForm rules={policy.rules} secondaryAction={logoutAction} /> : error ? (
         <Button onClick={() => { setError(null); setAttempt((value) => value + 1); }}>
           {label(MSG.REAUTH_RETRY)}
         </Button>
       ) : <Spin />}
-      <Button loading={leaving} onClick={() => void leave()}>{label(MSG.SHELL_LOGOUT)}</Button>
+      {!policy && logoutAction}
     </Space>
   );
 }
