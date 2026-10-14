@@ -20,6 +20,7 @@ current:
   #   `trace-check` 가 이 값을 읽어 **뒤 차수의 결손을 오류가 아니라 경고로** 센다.
   slice: null                # 현재 구현 슬라이스 없음 — agent 요구사항 상세 정련·검토 중이다
   blocked_by: []
+  maintenance_note: "2026-10-14 CR-024: 설치용 admin 초기 비밀번호와 강제 변경 폼 연결 보완. 백엔드 전체 check, 프런트 lint·타입 검사·89파일 692테스트, 문서·추적성·품질 검사와 플래그 반전 검증 통과. PostgreSQL 임시 테이블에서 조건부 보정·세션 종료·기존 변경 계정 보존·롤백 확인. 실제 계정 DB 적용은 서버 재시작 시이며 사용자 화면 확인은 후속이다. 이후 agent 요구사항 검토로 복귀한다"
   template_maintenance: false
   # ↑ true 로 켜면 G3 전에도 sources/ 를 고칠 수 있다(guard-write ①).
   #   **템플릿 자체의 보수에만 켠다.** 켠 사실이 여기 남아 무엇을 왜 열었는지 추적된다.
@@ -253,7 +254,8 @@ counters:
   ENT: 31
   API: 99
   SCR: 74     # 2026-10-01 SCR-037 추가 — admin 37 · portal 12 · system 25
-  TC: 55
+  TC: 56
+  CR: 24
   RUN: 8      # 80-operations/_index.yaml의 현재 절차. daily_checks·periodic_tasks를 2026-09-14에 채웠다
   ADR: 24     # 024 조회 결과 유한 보존과 조사 보호
   ASM: 1      # **미확인 하나** — 003(기한 G3). 002·004·007은 확인됨, 005·006 은 기각됨
@@ -261,7 +263,7 @@ counters:
   DEF: 0
 
 counter_note: >-
-  UC 10 · ENT 31 · API 99 · TC 55는 현재 system 작업흐름 P3에서 작성한 수다.
+  UC 10 · ENT 31 · API 99 · TC 56는 현재 system 작업흐름 P3에서 작성한 수다.
   `trace-check`는 뒤 차수와 아직 G3를 청구하지 않은 다른 작업흐름의 결손을 경고로 세고,
   각 작업흐름 G3를 청구할 때 그 소유 범위를 엄격하게 검사한다. 정확한 개수는 매 실행 결과가 정본이다.
 
