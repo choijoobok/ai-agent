@@ -79,7 +79,7 @@ requirements:
     open:
       - "@defer P2 기본 필터 명세·제외 명세의 요청/응답 계약, 저장된 조회/인증 예제의 의도 전달·현재 정책 재검증 경계를 구체화한다"
       - "@defer P3 테이블별 복수 규칙 모델·순서·권한 테이블 신뢰 출처·바인딩, 모든 참조와 외부 조인 의미를 유지하는 파서 주입, 기본 필터 조건의 중복/재작성 및 규칙 변경·캐시 무효화·쿼리 비용을 검증한다. 실제 제품 파서·대상 DBMS 검증 전 구현 완료로 간주하지 않는다"
-    maturity: { level: elaborated, at: "2026-10-14", by: "AI — 사용자 전송 정책 변경 연결·보완본 검토 대기", confirmed_by: null }
+    maturity: { level: confirmed, at: "2026-10-14", by: "AI — 사용자 명시 확정 반영", confirmed_by: "사용자 (2026-10-14 REQ-027 연관 정책 변경을 포함한 REQ-611 전체 보완본 확정)" }
 
   - id: REQ-612
     type: functional
