@@ -103,7 +103,7 @@ requirements:
     risk: "현재 상태·대기열·사용량·감사의 역할을 혼동하거나 잠금 밖에서 개인 실행 수를 판정하면 중복 선택·점유 누수·이중 차감이 생긴다. concurrency_rules와 verification으로 검증한다"
     relations:
       depends_on: []
-      constrains: [REQ-040]
+      constrains: [REQ-005, REQ-040]
       conflicts_with: []
       nfr: [NFR-012, NFR-015, NFR-020, NFR-021, NFR-022, NFR-023, NFR-027]
       interfaces: []
@@ -400,7 +400,7 @@ requirements:
       - {"case":"재시도 새 턴 생성/완료 뒤 재접속·이전 중단 위치로 이동","expected":"원본 중단과 새 턴 결과를 각각 복원하고 메시지 기록 순서·양방향 링크·개별 턴 시간/현재 유효 조작을 유지하며 재실행하지 않는다"}
     relations:
       depends_on: [REQ-006, REQ-013, REQ-016, REQ-019, REQ-036, REQ-109]
-      constrains: []
+      constrains: [REQ-005]
       conflicts_with: []
       nfr: [NFR-006, NFR-007, NFR-008, NFR-027]
       interfaces: []

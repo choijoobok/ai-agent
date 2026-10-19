@@ -116,7 +116,7 @@ requirements:
       - "검증 규칙을 뒤집어 미완성 호출 허용·지연 응답 적용·승인값 교체·결과 불명 재실행을 허용하면 해당 시험이 실패해야 한다. 소스 구현 전에는 시험 설계 기준이며 실행 통과로 기록하지 않는다"
     relations:
       depends_on: [REQ-038, REQ-610]
-      constrains: []
+      constrains: [REQ-005]
       conflicts_with: []
       nfr: [NFR-013, NFR-022, NFR-023, NFR-026, NFR-027]
       interfaces: [IF-003]
