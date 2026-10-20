@@ -137,7 +137,7 @@ sequenceDiagram
 
 **S3 검토 위치** — [REQ-010 요구사항](../generated/10-요구사항정의서/04-요구사항/02-질의-해석과-실행.md#req-010-요구사항) · [전체 흐름도](../generated/10-요구사항정의서/04-요구사항/02-질의-해석과-실행.md#req-010-전체-흐름도) · [단계별 대응표](../generated/10-요구사항정의서/04-요구사항/02-질의-해석과-실행.md#req-010-단계별-대응표) · [이 그림의 순서 설명](#s3-읽는-순서)
 
-**관련 처리 경로** — [S2 반복 모델 호출과 쿼터 검사](agent-call-sequences.md#s2-반복-모델-호출과-쿼터-검사) · [S5 사용자대기·다른 인스턴스 이어가기](agent-lifecycle-sequences.md#s5-사용자대기-다른-인스턴스-이어가기) · [S7 점유 만료·늦은 응답·새 시도](agent-lifecycle-sequences.md#s7-점유-만료-늦은-응답-새-시도) · [S8 감사·사용량·최종 응답 종결](agent-history-sequences.md#s8-감사-사용량-최종-응답-종결)
+**관련 처리 경로** — [S2 반복 모델 호출과 쿼터 검사](agent-call-sequences.md#s2-반복-모델-호출과-쿼터-검사) · [S5 사용자대기·다른 인스턴스 이어가기](agent-lifecycle-sequences.md#s5-사용자대기-다른-인스턴스-이어가기) · [S7 점유 만료·늦은 응답·새 턴 요청](agent-lifecycle-sequences.md#s7-점유-만료-늦은-응답-새-턴-요청) · [S8 감사·사용량·최종 응답 종결](agent-history-sequences.md#s8-감사-사용량-최종-응답-종결)
 
 **검토 순서** — [← S2 이전 검토](agent-call-sequences.md#s2-반복-모델-호출과-쿼터-검사) · [S4 다음 검토 →](agent-call-sequences.md#s4-질의-임베딩-지식-재임베딩)
 

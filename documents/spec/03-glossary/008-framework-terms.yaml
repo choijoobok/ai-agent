@@ -40,7 +40,7 @@ framework_terms:
     origin: LangGraph4j
     group: 그래프
     definition: "새로 시작 / 멈춘 지점에서 재개"
-    relation: "우리 `start()` · `resume()`·`retry()` 에 대응한다"
+    relation: "Hub의 처리 경계는 REQ-013.request_boundary를 따른다. 유효한 사용자대기 응답만 같은 턴의 이어가기로 연결하며 모든 상태의 원 질의 재요청은 별도 새 턴에서 처음부터 시작한다. 프레임워크의 resume 기능이 종결된 원 턴의 재사용을 허용하지 않는다"
 # 멈춤과 재개
   - id: TRM-110
     term: 인터럽트 (interrupt)
@@ -63,7 +63,7 @@ framework_terms:
     term: 체크포인트 (Checkpoint)
     origin: LangGraph4j
     group: 멈춤
-    definition: "어느 시점의 상태 전체를 저장한 것. **재개의 유일한 근거**"
+    definition: "어느 시점의 실행 상태를 저장한 것. Hub에서는 유효한 사용자대기 후 같은 턴/시도를 이어가는 근거로 사용한다. 종결·무효화된 상태의 사용 차단·정리는 REQ-109, 원 질의의 새 턴 요청과의 구분은 REQ-013.request_boundary를 따른다"
     relation: "우리 `ai_agent_checkpoint` 테이블에 쓴다 — **감사 이력과 다른 것이다**(confusions)"
   - id: TRM-114
     term: CheckpointSaver
