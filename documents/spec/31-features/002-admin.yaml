@@ -98,8 +98,8 @@ features:
     screen: SCR-014
     roadmap: RM-P1
     title: "채팅 도움말·주의사항 관리"
-    detail: "사용 안내 지식의 목적·가능한 업무·질의 예시·안전한 사용 한계·접근 가능 데이터 확인 방법을 후보 리비전과 반영 세트로 관리한다. portal의 초기 안내 문구와 사용법 답변이 활성 리비전만 사용한다"
-    reqs: [REQ-101, REQ-308]
+    detail: "사용 안내 지식의 목적·가능한 업무·질의 예시·안전한 사용 한계·접근 가능 데이터 확인 방법을 후보 리비전과 반영 세트로 관리한다. portal의 초기 안내 문구와 사용법 답변이 활성 리비전만 사용한다 REQ-106.input_notice의 개인정보 직접 입력 주의와 전송 안내를 함께 관리하고 제출 근거의 안내 버전에 연결한다."
+    reqs: [REQ-101, REQ-106, REQ-308]
   - id: FEAT-011
     module: admin
     screen: SCR-003
@@ -179,7 +179,7 @@ features:
     screen: SCR-017
     roadmap: RM-P1
     title: "LLM 전송 정책·동의 근거와 결과 원문 보존 설정"
-    detail: "REQ-106의 요청·동의·전송 제한과 REQ-614의 읽기 전용 보존 설정을 표시하고 실제 전송 이력에 연결한다. 카탈로그/API 마스킹 정의는 기존 단일 원천을 참조한다. 종전 LLM 허용 플래그의 관리 화면 이관은 P3에서 설계하며 동의를 대신하는 허용 목록을 두지 않는다"
+    detail: "REQ-106의 요청·동의·전송 제한과 REQ-614의 읽기 전용 보존 설정을 표시하고 실제 전송 이력에 연결한다. 카탈로그/API 마스킹 정의는 기존 단일 원천을 참조한다. 종전 LLM 허용 플래그의 관리 화면 이관은 P3에서 설계하며 동의를 대신하는 허용 목록을 두지 않는다 질의·응답 본문은 REQ-109.conversation_body_retention, 조회 결과는 REQ-107.retention_policy의 별도 YAML 설정을 읽기 전용으로 보여 준다."
     reqs: [REQ-106, REQ-107, REQ-109, REQ-111, REQ-611, REQ-614]
   - id: FEAT-020
     module: admin
@@ -237,8 +237,8 @@ features:
     screen: SCR-027
     roadmap: RM-P1
     title: "대화 이력 조회"
-    detail: "질의·프롬프트·응답과 REQ-107.history_storage의 턴/스텝 현재 상태·시작/종료·상태 전이·시도/회차/호출·점유/인계·오류/중단을 추적한다. 현재 상태 요약과 원 사건 이력을 구분해 조회한다"
-    audit_filter: "REQ-107.audit_classification의 요청/실제 처리 유형·출처·비업무 추정·동의 전송·검토 상태를 턴 단위 필터와 실제 스텝 근거로 연결한다"
+    detail: "질의·프롬프트·응답과 REQ-107.history_storage의 턴/스텝 현재 상태·시작/종료·상태 전이·시도/회차/호출·점유/인계·오류/중단을 추적한다. 현재 상태 요약과 원 사건 이력을 구분해 조회한다 본문과 감사 메타데이터의 기한을 구분하고 REQ-109에 따라 만료된 본문은 불가 사유로 표시한다."
+    audit_filter: "REQ-107.audit_classification의 요청/실제 처리 유형·출처·비업무 추정·동의 전송·검토 상태를 턴 단위 필터와 실제 스텝 근거로 연결한다 개인정보 판정·방법·유형·검토 필터와 원 판정/관리자 검토 구분은 REQ-107.privacy_review를 따른다."
     reqs: [REQ-107, REQ-109]
   - id: FEAT-027
     module: admin
