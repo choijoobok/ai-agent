@@ -26,6 +26,7 @@ screens:
     title: "스키마 카탈로그"
     feature: FEAT-003
     features: [FEAT-003, FEAT-011, FEAT-012]
+    metadata_scope: "REQ-301.column_metadata·value_domain·relationship_metadata와 REQ-111.privacy_metadata를 참조해 컬럼의 구조/의미·코드 출처·관계·개인정보 기준과 미완성/검수 상태를 확인한다. 정책 편집 권한과 원천은 REQ-103·611을 유지하고 필드·배치·목업은 P3에서 정한다"
     roadmap: RM-P1
     agent_contact: 설정
     note: "**작성 순서에서 가장 앞이다** — Hub 공개 대상으로 선택한 뷰·테이블과 그 업무 의미를 여기서 관리하고, agent의 컨텍스트 구성이 이 화면의 산출물을 입력으로 삼는다. 업무 DB/DW 전체를 대사하는 화면이 아니다. 메타데이터 후보를 작성하고 단독 변경도 SCR-036의 요청·기술 검토·최종 승인으로 반영한다"
@@ -35,6 +36,7 @@ screens:
     group: "연동 관리"
     title: "업무 API"
     feature: FEAT-004
+    metadata_scope: "REQ-608.field_metadata에 따라 요청·응답 각 필드의 구조·의미/형식·코드 참조와 REQ-111.privacy_metadata의 개인정보 기준을 관리한다. 응답 코드 필드의 제공 방법·명시적 원천/조건 매핑·검수는 REQ-608.code_name_resolution을 참조한다. 누락·미확인·검수 결과를 확인하며 실제 경로 편집·필드·배치·목업은 P3에서 정한다"
     roadmap: RM-P1
     agent_contact: 설정
     note: "REQ-608의 API 계약과 입력 필드별 자료형·필수 여부·허용값·값의 출처·채우기 가이드·검증 조건을 관리한다. 고정값·기본값과 허용 조회 참조·결과 추출/변환 안내를 구분하고 해당 지식-API 매핑 건의 사용 설명·업무별 절차를 참조한다. API 자체 갱신과 지식 매핑 변경 승인의 경계는 REQ-608을 따른다. 실제 필드 배치·화면 요건서·목업은 P3에서 정한다 REQ-608.result_handling_guide의 API 공통 결과 안내·질문/선택별 후속 처리 가이드를 자연어로 관리하고 계약 원천을 참조한다. 구체 필드·배치·목업은 P3에서 정한다."
