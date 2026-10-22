@@ -2,6 +2,7 @@
 processes:
   - id: PRC-13
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
+    request_integrity: "관리 변경 요청의 단일 미종결 건·제출본 고정·취소 후 새 요청·승인 경합 처리는 REQ-601.request_integrity를 따르며 실제 권한 회수와 직접 관리 업무는 기존 절차를 유지한다"
     name: "기준정보·Portal 이용자 등록과 변경 적용"
     trigger: "Hub 운영에 필요한 기준 정의·매핑·이용자를 등록하거나 변경·사용 중지한다"
     actors: ["ACT-002","ACT-003","ACT-004","ACT-005"]

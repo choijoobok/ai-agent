@@ -591,6 +591,7 @@ processes:
           - "계획 가능 금액·단가·보정률 또는 배분 가중치가 유효하지 않으면(0 이하·등급 순서 역전) 월 배정을 확정하지 않고 오류 항목을 보완한다"
           - "도입 첫 달처럼 승계할 확정 월이 없으면 첫 확정 전에는 질의 턴을 시작할 수 없다"
       - id: PRC-12-02
+        request_integrity: "REQ-601.request_integrity의 대상별 중복 신청 차단·제출 내용 고정·취소 후 새 신청과 승인 근거 검증을 적용한다. 기존 적용 월·부분 승인·월말 만료 규칙을 유지한다"
         name: "쿼터 등급 승급 요청 처리"
         actor: ACT-004
         system: "portal 요청 · admin 비용 관리"
@@ -602,6 +603,7 @@ processes:
         exceptions:
           - "이번 달 사용량 부족은 승급으로 처리하지 않고 PRC-12-03의 추가 사용 신청으로 안내한다"
       - id: PRC-12-03
+        request_integrity: "REQ-601.request_integrity의 대상별 중복 신청 차단·제출 내용 고정·취소 후 새 신청과 승인 근거 검증을 적용한다. 기존 적용 월·부분 승인·월말 만료 규칙을 유지한다"
         name: "이번 달 추가 토큰 사용 신청·승인"
         actor: ACT-004
         system: "portal 요청 · admin 비용 관리"

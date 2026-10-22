@@ -132,6 +132,7 @@ requirements:
     config:
       - "해당 업무의 승인 절차 사용 여부는 REQ-601·614를 따른다"
     risk: "해당 없음"
+    request_guard: "REQ-601.request_integrity를 따른다. 사용자당 처리 대기 1건과 제출 희망 등급·사유를 고정하고 변경은 취소 후 새 요청으로 처리한다. 승인 시 적용 월 결정과 미래 적용 예약은 기존 규칙을 유지한다"
     relations:
       depends_on: ["REQ-116","REQ-118","REQ-601"]
       constrains: ["REQ-118"]
@@ -149,11 +150,7 @@ requirements:
       level: "medium"
       what: "업무별 승인 절차 사용 여부는 REQ-601의 설정으로 관리하고 사용 시 기존 1단 승인 절차를 유지한다. 임의 다단계 결재선은 이번 변경에 포함하지 않는다"
     open: []
-    maturity:
-      level: "confirmed"
-      at: "2026-09-28"
-      by: "AI 정리"
-      confirmed_by: "사용자 (2026-09-28 질문 전건 권장안 승인)"
+    maturity: {"level":"confirmed","at":"2026-10-22","by":"AI — 사용자 명시 확정 반영","confirmed_by":"사용자 (2026-10-22 공통 변경 요청·승인 원칙과 업무별 적용 경계·예외·검증을 포함한 REQ-601·305·306·609·117·119 여섯 전체 보완본 확정 및 커밋·푸시 요청). 단계 게이트·소스 구현 승인은 별도다."}
   - id: REQ-118
     type: functional
     priority: should
@@ -273,6 +270,7 @@ requirements:
     config:
       - "해당 업무의 승인 절차 사용 여부는 REQ-601·614를 따른다"
     risk: "동시 사용 중 승인 반영·쿼터 판정의 경쟁과 처리 중 재검사 비활성화에 따른 초과는 NFR-012에 따라 구분·계량한다. 초과량이 소폭이라고 보장하지 않으며 추가 승인 한도와 실제 초과 사용량을 서로 덮어쓰지 않는다"
+    request_guard: "REQ-601.request_integrity를 따른다. 사용자·적용 월별 미종결 신청은 1건이고 신청량·사유 변경은 취소 후 새 신청으로 처리한다. 신청량 이하 부분 승인·즉시 한도 반영·월말 만료는 유지하며 원 신청과 실제 승인량을 구분한다"
     relations:
       depends_on: ["REQ-116","REQ-118","REQ-509","REQ-601"]
       constrains: [REQ-006]
@@ -290,8 +288,4 @@ requirements:
       level: "medium"
       what: "업무별 승인 절차 사용 여부는 설정으로 관리하고 금액/신청량/효력 규칙은 기존 요구사항을 따른다. 소량 자동 승인 같은 별도 조건 규칙은 현재 범위에 없다"
     open: []
-    maturity:
-      level: "confirmed"
-      at: "2026-09-28"
-      by: "AI 정리"
-      confirmed_by: "사용자 (2026-09-28 질문 전건 권장안 승인)"
+    maturity: {"level":"confirmed","at":"2026-10-22","by":"AI — 사용자 명시 확정 반영","confirmed_by":"사용자 (2026-10-22 공통 변경 요청·승인 원칙과 업무별 적용 경계·예외·검증을 포함한 REQ-601·305·306·609·117·119 여섯 전체 보완본 확정 및 커밋·푸시 요청). 단계 게이트·소스 구현 승인은 별도다."}

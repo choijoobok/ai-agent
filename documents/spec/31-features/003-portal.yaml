@@ -100,6 +100,7 @@ features:
     module: portal
     screen: SCR-109
     roadmap: RM-P1
+    request_integrity: "REQ-601.request_integrity의 중복 요청 차단·제출본 고정·취소 후 재요청·오래된 승인 거부를 적용하며 해당 업무의 기존 승인/효력 규칙을 유지한다"
     title: "이번 달 초과 토큰 사용 신청"
     detail: "사유와 이번 달에 필요한 추가 토큰을 신청하고, 승인된 한도(부분 승인 포함)·월말 만료일·처리 결과(미처리 자동 만료 포함)를 조회하고 결과 알림을 받는다"
     reqs: [REQ-119]
@@ -108,6 +109,7 @@ features:
     module: portal
     screen: SCR-109
     roadmap: RM-P1
+    request_integrity: "REQ-601.request_integrity의 중복 요청 차단·제출본 고정·취소 후 재요청·오래된 승인 거부를 적용하며 해당 업무의 기존 승인/효력 규칙을 유지한다"
     title: "쿼터 등급 승급 요청"
     detail: "현재 쿼터 등급과 다음 달 기본 한도·선택 가능 모델 범위를 확인하고, 희망 등급(현재보다 높은 등급만)과 사유를 제출한다. 처리 대기 요청은 1건만 둘 수 있다. 승인·반려 결과와 적용 예정 월을 조회한다"
     hard_rule: "등급 승급은 이번 달 기본 한도를 바꾸지 않는다. 이번 달에 필요한 토큰은 별도 추가 사용 신청으로 요청한다"

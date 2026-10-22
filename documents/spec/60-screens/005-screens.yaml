@@ -64,6 +64,7 @@ screens:
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     group: "권한 관리"
+    request_integrity: "REQ-601.request_integrity에 따라 기존 진행 요청을 안내하고 제출본 수정을 막으며 취소 결과 확인 후 새 요청으로 연결한다. 실제 처리 권한·현재 상태 검사는 서버에서 수행한다"
     title: "사용자 접근 권한 승인"
     feature: FEAT-038
     roadmap: RM-P1
@@ -117,6 +118,7 @@ screens:
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     group: "업무 지식 관리"
+    request_integrity: "REQ-601.request_integrity에 따라 기존 진행 요청을 안내하고 제출본 수정을 막으며 취소 결과 확인 후 새 요청으로 연결한다. 실제 처리 권한·현재 상태 검사는 서버에서 수행한다"
     title: "지식 변경 요청"
     feature: FEAT-014
     roadmap: RM-P1
@@ -219,6 +221,7 @@ screens:
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     group: "비용 관리"
+    request_integrity: "REQ-601.request_integrity에 따라 기존 진행 요청을 안내하고 제출본 수정을 막으며 취소 결과 확인 후 새 요청으로 연결한다. 실제 처리 권한·현재 상태 검사는 서버에서 수행한다"
     title: "이번 달 초과 사용 신청 승인"
     feature: FEAT-018
     roadmap: RM-P1
@@ -228,6 +231,7 @@ screens:
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     group: "비용 관리"
+    request_integrity: "REQ-601.request_integrity에 따라 기존 진행 요청을 안내하고 제출본 수정을 막으며 취소 결과 확인 후 새 요청으로 연결한다. 실제 처리 권한·현재 상태 검사는 서버에서 수행한다"
     title: "쿼터 등급 승급 요청 승인"
     feature: FEAT-037
     roadmap: RM-P1
@@ -390,6 +394,7 @@ screens:
     note: "대상 시스템별 묶음. **SCR-107 과 합치지 않는다** — 묶는 축이 다르고 둘은 서로 관계를 갖지 않는다. 한 화면에 넣으면 존재하지 않는 대응 관계가 있는 것처럼 보인다"
   - id: SCR-109
     module: portal
+    request_integrity: "REQ-601.request_integrity에 따라 기존 진행 요청을 안내하고 제출본 수정을 막으며 취소 결과 확인 후 새 요청으로 연결한다. 실제 처리 권한·현재 상태 검사는 서버에서 수행한다"
     title: "내 사용량"
     feature: FEAT-114
     features: [FEAT-114, FEAT-115, FEAT-127]
