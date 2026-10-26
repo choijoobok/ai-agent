@@ -340,6 +340,7 @@ screens:
     title: "채팅"
     feature: FEAT-101
     features: [FEAT-101, FEAT-102, FEAT-103, FEAT-104, FEAT-105, FEAT-106, FEAT-107, FEAT-108, FEAT-109, FEAT-111, FEAT-112, FEAT-114, FEAT-121, FEAT-124]
+    result_paging: "REQ-011·NFR-002·003의 페이지 상한 초과 안내와 후속 페이지 요청/표시를 제공한다. 다음 페이지 조작·페이징 지원 그리드 등 구체 방식은 portal이 P3 화면 요건/목업에서 결정하며 현재 범위·미상 전체 건수·로딩/끝/실패/만료를 구분한다. 대화 이력 페이징과 조회 결과 페이징은 별개다"
     privacy_notice: "REQ-106.input_notice의 개인정보 직접 입력 주의와 전송 안내를 제출 전에 확인할 수 있게 한다. 본문 만료/파기와 재요청 불가 안내는 REQ-109를 따르며 실제 문구·배치는 P3에서 설계한다"
     token_usage: "REQ-006.personal_usage에 따라 각 질의·응답의 수행 시간과 사용 토큰을 함께 표시하고, 별도 영역에 본인의 당월 잔여 총 토큰과 추가 질의 예상 횟수를 표시한다. 구체 배치·표본 근거의 상세 보기·갱신 계약은 P3 화면 요건서·목업에서 정한다"
     roadmap: RM-P1
