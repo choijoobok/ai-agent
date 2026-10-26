@@ -92,13 +92,23 @@ features:
     module: agent
     roadmap: RM-P3
     title: "워크플로우 정의 실행"
-    reqs: [REQ-207]
+    reqs:
+      - "REQ-207"
+      - "REQ-404"
+      - "REQ-405"
+    detail: "REQ-404의 자연어 실행 정의·불변 버전·의존 변경 검증·수동/예약 경로와 REQ-405의 액션별 자동 승인 요청/활성 상태·실행별 검사·해제를 연결한다. 대화 수동 실행은 기존 승인 카드를 사용한다"
+
   - id: FEAT-213
     module: agent
     roadmap: RM-P3
     title: "스케줄러 (주기·조건 실행, 잡 관리)"
-    reqs: []
+    reqs:
+      - "REQ-404"
+      - "REQ-405"
+
     nfrs: [NFR-024, NFR-025]
+    detail: "REQ-404의 자연어 실행 정의·불변 버전·의존 변경 검증·수동/예약 경로와 REQ-405의 액션별 자동 승인 요청/활성 상태·실행별 검사·해제를 연결한다. 대화 수동 실행은 기존 승인 카드를 사용한다"
+
   - id: FEAT-214
     module: agent
     roadmap: RM-P3
