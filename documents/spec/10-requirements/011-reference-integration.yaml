@@ -265,7 +265,7 @@ requirements:
     risk: "참조 변경·사용 중지·적용 시점이 후속 실행과 이력을 깨뜨리지 않는지 설계·시험에서 검증한다"
     relations:
       depends_on: ["REQ-601", "REQ-403"]
-      constrains: ["REQ-301", "REQ-302", "REQ-303", "REQ-609"]
+      constrains: ["REQ-021", "REQ-301", "REQ-302", "REQ-303", "REQ-609"]
       conflicts_with: []
       nfr: []
       interfaces: []

@@ -242,6 +242,10 @@ REQ ──→ UC ──→ FEAT ──┬──→ ENT   (테이블)
 
 Hub의 **DB 스키마(TRM-161)** 와 **스키마 카탈로그(TRM-162)** 는 [업무 용어 정본](../documents/spec/03-glossary/001-terms.yaml)과 [헷갈리는 짝](../documents/spec/03-glossary/011-confusions.yaml)을 참조한다. 여기서 제품 정의를 중복하지 않는다.
 
+**필수 조회 제약(TRM-247)** 도 [업무 용어 정본](../documents/spec/03-glossary/001-terms.yaml)을 따른다. 관리·집행 규칙은 [카탈로그 요구사항](../documents/spec/10-requirements/007-knowledge-catalog.yaml)의 `REQ-301.query_constraints`, 부족 조건 질문은 `REQ-025`가 갖는다.
+
+**작업 계획(TRM-248)·계획 작업(TRM-249)** 은 [업무 용어 정본](../documents/spec/03-glossary/001-terms.yaml)을 따른다. [질의 처리 요구사항](../documents/spec/10-requirements/001-02-query-execution.yaml)의 `REQ-015`가 계획 구성, `REQ-004`가 저장·현재 상태·반복 수행을 정의하며 대화 요약과 구분한다.
+
 ### 4.5 인증 · 보안
 
 | 말 | 무엇의 약자 | 무슨 뜻인가 |
@@ -295,7 +299,8 @@ Hub의 **DB 스키마(TRM-161)** 와 **스키마 카탈로그(TRM-162)** 는 [�
 | **오케스트레이션** | orchestration | 그 여러 단계와 도구 호출을 **순서대로 엮어 관리하는 것** |
 | **환각 · 할루시네이션** | hallucination | 모델이 **모르는 것을 아는 것처럼 지어내는 것.** 이 제품이 *절제*(모르면 모른다고 답하기)를 성공 기준에 둔 이유다 |
 | **토크나이저** | tokenizer | 문자열을 해당 모델의 토큰 단위로 나누고 수량을 계산하는 도구. 모델·버전에 따라 같은 문장의 토큰 수가 달라질 수 있다 |
-| **컨텍스트 창** | context window | 한 모델 실행에서 처리할 수 있는 입력·출력 문맥의 최대 범위. 실제 포함·축약 정책과 구분한다 |
+| **컨텍스트 창** | context window | 모델이 한 번에 읽고 답변을 만들 때 쓰는 정보 공간의 최대 크기. 입력과 생성이 함께 사용하므로 입력 전용 한도가 아니다. 모델·버전·공급 경로의 별도 입력/출력 제한도 확인한다 |
+| **입력 예산** | input token budget | 금액이 아니라 한 번의 모델 호출에 넣도록 정한 입력 토큰 허용량. 생성에 필요한 공간을 남겨 정하며 적용 범위·설명용 예시는 [REQ-003](../documents/spec/10-requirements/001-01-context-management.yaml)이 정본이다 |
 | **추론 토큰 / 캐시 입력 토큰** | reasoning tokens / cached input tokens | 추론 과정에 사용된 것으로 계량되는 토큰 / 재사용된 입력에 대해 별도로 계량되는 토큰. 포함·중복 관계와 단가는 공급 경로의 계량 계약을 확인한다 |
 
 ---
