@@ -8,7 +8,8 @@ features:
     plan_execution: "REQ-015의 계획 채택/변경을 REQ-004의 상태 기반 반복 수행에 연결한다. 계획/작업·현재 상태의 Hub DB 저장, 다음 작업 판정·실제 결과 갱신·대기/실패/종결은 해당 정본을 따르며 계획 작업과 실제 모델 스텝을 구분한다"
     detail: "REQ-038의 유형·후보 범위·실행 순서와 복합 작업의 부분 실패 처리를 적용한다. 최종 실패 시 독립 작업도 새로 시작하지 않고 처리 내역을 구분해 사용자에게 계속 여부를 확인하며 재요청·재승인은 기존 수명주기 규칙을 따른다 REQ-111.input_privacy_assessment에 따라 입력 패턴 검사와 기존 의도 파악 LLM 호출의 개인정보 의심 판단을 결합하고 입력 버전별 감사로 연결한다. 검사 전용 모델 호출은 추가하지 않는다."
     multi_source_orchestration: "REQ-021.multi_source_query의 데이터소스별 조회 의존 계획·현재 검증·결과 결합 인계를 담당한다. 확인·취소·최종 실패·부분 결과는 기존 턴 수명주기를 사용하며 새 상태나 전용 대기열을 만들지 않는다"
-    reqs: [REQ-004, REQ-009, REQ-010, REQ-015, REQ-021, REQ-038, REQ-111]
+    reqs: [REQ-004, REQ-009, REQ-010, REQ-015, REQ-020, REQ-021, REQ-038, REQ-111]
+    user_language: "RM-P4의 모델 호출별 사용자 소통 언어·언어 변경 경계·표현 재시도와 업무 실행 분리는 REQ-020을 따른다. 공통 요청/응답 연결은 REQ-009를 사용하며 현재 RM-P1의 필수 범위로 앞당기지 않는다"
   - id: FEAT-202
     module: agent
     roadmap: RM-P1
@@ -102,6 +103,7 @@ features:
     module: agent
     roadmap: RM-P3
     title: "스케줄러 (주기·조건 실행, 잡 관리)"
+    schedule_policy: "중첩 금지·기본 생략/선택적 순차 대기·미실행 회차 명시 요청은 REQ-404, 실행 시점의 기간·한도 검증은 REQ-405를 따른다. 예약/대기 사실과 업무 실행 결과를 구분한다"
     reqs:
       - "REQ-404"
       - "REQ-405"
@@ -113,6 +115,7 @@ features:
     module: agent
     roadmap: RM-P3
     title: "알림 발송 (메일 등)"
+    detail: "REQ-401의 기본/선택 알림 조건·소유자/허용 운영 담당자·최소 요약/인증된 결과 링크·고객사 채널을 적용한다. 중복/재전송과 전달 상태는 업무 실행 상태와 분리한다"
     reqs: [REQ-401]
   - id: FEAT-215
     module: agent
