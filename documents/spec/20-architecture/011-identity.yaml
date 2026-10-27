@@ -20,4 +20,16 @@ identity:
     why: "퇴직·조직 이동이 발생했는데 Hub 의 그룹 소속이 방치되면 **권한이 누적된다**"
     handling: "퇴직 → **사용자 비활성화** / 조직 이동 → **일시 비활성화 후 관리자 통보**, 관리자가 인사팀 확인을 거쳐 그룹을 재부여한다"
 
+  portal_account_contract:
+    reqs: [REQ-501, REQ-616, REQ-609]
+    ownership: "system은 Hub 인증 주체와 로그인·세션·유효 메뉴/API 권한을 소유한다. admin은 같은 주체에 연결된 Portal 등록/활성 상태·AI 사용자 그룹·쿼터 등급·대상 신원 매핑을 소유한다. 별도 비밀번호 저장소나 Portal 전용 로그인 엔진을 만들지 않는다"
+    identity_link: "모듈 간에는 한 사람을 식별하는 안정된 Hub 주체 키를 사용한다. 표시명·이메일·대상 시스템의 사번을 조합해 동일인을 추정하지 않는다. 자체 계정과 외부 인증의 주체 연결·중복/변경 처리는 system 공개 계약을 통해 검증한다. 물리 키/테이블은 P3에서 정한다"
+    local_mode: "REQ-616의 Portal 이용자 등록·비밀번호 초기화·잠금 해제는 관리자 권한을 확인한 뒤 system의 공통 계정 기능에 위임한다. admin이 인증 저장소를 직접 수정하지 않는다"
+    external_mode: "외부 원천의 인증·기본 프로필과 admin의 AI 이용 권한을 구분한다. 외부 주체 연결이 불명확하면 로컬 계정을 임의 복제하거나 이메일 일치로 병합하지 않는다"
+    access: "로그인·화면/API 접근은 ARCH-012·021의 유효 권한 계약을 사용하고, Portal 업무 이용에는 REQ-616의 활성 상태·승인된 활성 그룹·쿼터 등급을 추가 확인한다. admin은 해당 이용 자격의 사실을 제공하며 별도의 역할명 기반 로그인 판정기를 만들지 않는다"
+    revocation: "Portal 이용 자격만 비활성화한 경우 관리자 권한까지 자동 제거하지 않는다. 인증 원천의 계정 자체가 비활성/퇴직한 경우는 전체 인증·세션 정책을 따른다. Portal 자격·그룹·대상 매핑 회수는 agent의 다음 접근/실행 검사에서도 반영해야 하며 로그인 때 확인한 값만으로 계속 실행하지 않는다"
+    source_gap: "현재 AppUserDetailsService는 SysUser를 사용하고 SYS_USER.pwd는 필수다. EmptyAuthorityCheck는 기본 deny-empty-authority=true일 때 유효 메뉴 권한이 없는 로그인을 거부하며 false이면 해당 검사를 생략한다. 이 옵션만으로 외부 인증 주체 연결과 Portal 전용 이용자의 진입 계약이 구현됐다고 간주하지 않는다. 현재 AuthzInvalidator의 system 권한 재계산만으로 admin 그룹·쿼터·대상 매핑의 최신성까지 보장하지 않는다"
+    evidence: "sources/backend/api/src/main/java/com/aiagent/api/auth/AppUserDetailsService.java, sources/backend/modules/system/src/main/java/com/aiagent/system/api/auth/check/EmptyAuthorityCheck.java, sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql, sources/backend/api/src/main/java/com/aiagent/api/authz/AuthzInvalidator.java"
+    pending: "@defer P2 system/integration — Portal 전용 이용자의 유효 진입 권한, 외부 인증 주체 연결과 계정 저장/세션 계약을 CR로 구체화한다. 기존 system 기준선의 의미를 이 문서만으로 변경하지 않는다. P3에서 주체 키·외부 원천 변경/충돌·등록 재시도·세션 및 업무 권한 회수 시험을 연결한다"
+
 # ── 지식 검색 구성 ──────────────────────────────────────────

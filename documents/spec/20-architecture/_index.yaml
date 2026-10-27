@@ -28,3 +28,4 @@ spec_set:
     - 011-identity.yaml
     - 012-knowledge-search.yaml
     - 013-execution-lease.yaml
+    - 014-admin-contracts.yaml

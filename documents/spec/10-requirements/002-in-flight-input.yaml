@@ -75,6 +75,7 @@ requirements:
 
   - id: REQ-031
     type: functional
+    process_step: PRC-02-01
     priority: must
     category: "처리 중 입력"
     actors: [ACT-001]

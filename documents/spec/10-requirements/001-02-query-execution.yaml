@@ -419,6 +419,7 @@ requirements:
     traces_to: [REQ-015, REQ-104]
   - id: REQ-023
     type: functional
+    process_step: PRC-02-01
     priority: must
     category: "계획·교정"
     actors: [ACT-001]
@@ -576,6 +577,7 @@ requirements:
     traces_to: [SUC-02, SUC-03]
   - id: REQ-026
     type: functional
+    process_step: PRC-03-01
     priority: must
     category: "액션 승인·실행"
     actors: [ACT-001]
