@@ -3,7 +3,7 @@ id: DES-001
 title: 턴 실행 점유 — 리스와 점유 토큰
 status: migrated
 traces_to: [ARCH-070, REQ-007, REQ-013, REQ-030, REQ-033, REQ-034, REQ-109, FEAT-216, FEAT-031]
-verified: "2026-08-31 (리스 L1~L6) · 2026-09-01 (회차)의 과거 PoC 근거. 2026-10-01 중단·재시도·정리 규칙 현행화는 실행 검증 전이며 P3에서 계약·저장 구조와 함께 검증한다"
+verified: "2026-08-31 (리스 L1~L6) · 2026-09-01 (회차)의 과거 PoC 근거. 중단·재시도·정리 규칙과 2026-10-27 미만료 갱신/쓰기·독립 갱신 보완은 실행 검증 전이며 소유 P3에서 계약·저장 구조와 함께 검증한다"
 ---
 
 # 턴 실행 점유 — 리스와 점유 토큰
@@ -86,8 +86,9 @@ verified: "2026-08-31 (리스 L1~L6) · 2026-09-01 (회차)의 과거 PoC 근거
 - **인스턴스 식별자**는 기동 시 생성한 UUID 에 호스트명을 덧붙인 값으로 한다.
   **재기동하면 반드시 달라져야 한다** — 같은 값이면 재기동한 인스턴스가 죽기 전 자신의 점유를
   자기 것으로 오인한다.
-- **모든 시각 판정은 DB 서버 시각(`now()`)으로 한다.** 인스턴스의 시스템 시각을 쓰면 시각
-  오차가 그대로 점유 판정의 오차가 된다.
+- **만료 판정은 DB의 판정 시점 시각으로 한다.** 인스턴스 시각이나 오래된 트랜잭션의 시작 시각으로
+  유효성을 판단하지 않는다. 아래 PostgreSQL 예시는 `clock_timestamp()`를 쓰며, 실제 행 잠금·
+  조건 재검사·쓰기의 원자성은 소유 P3에서 경합 시험과 함께 상세화한다.
 
 ### 3.2 생애주기
 
@@ -122,16 +123,16 @@ AI 전용 DB 는 PostgreSQL 고정이므로(CON-001) `RETURNING` 을 사용한�
 ```sql
 UPDATE ai_agent_turn
    SET lease_owner       = :instanceId,
-       lease_expires_at  = now() + :ttl,
+       lease_expires_at  = clock_timestamp() + :ttl,
        lease_fence       = lease_fence + 1,
-       lease_acquired_at = now(),
+       lease_acquired_at = clock_timestamp(),
        status            = 'RUNNING',
-       updated_at        = now()
+       updated_at        = clock_timestamp()
  WHERE turn_id = :turnId
    AND status IN ('RECEIVED', 'WAITING_USER')
    AND (status <> 'WAITING_USER'
-        OR (wait_type = :expectedWaitType AND wait_expires_at > now()))
-   AND (lease_owner IS NULL OR lease_expires_at <= now())
+        OR (wait_type = :expectedWaitType AND wait_expires_at > clock_timestamp()))
+   AND (lease_owner IS NULL OR lease_expires_at <= clock_timestamp())
 RETURNING lease_fence;
 ```
 
@@ -142,34 +143,37 @@ RETURNING lease_fence;
   `ABORTED`를 직접 획득하지 않는다. REQ-013의 재시도 조건과 REQ-036의 접수 한도를 확인한 뒤
   원 턴의 `ABORTED`는 유지하고 원본 참조를 가진 새 턴의 `RECEIVED`·새 시도/메시지·개인 순서 대기 등록/실행 선택을 중복 없이 연결한다. 동일 접수 식별자의 중복 방지와 새 턴 점유를 구분하며 세부 계약은 P3 대상이다.
 - `WAITING_USER`는 유효한 승인·추가 정보·의도 확인 응답에 의한 이어가기다.
-  **배치 실행 전이라도 `wait_expires_at > now()`를 충족해야 한다.** 유형뿐 아니라 요청이 현재
+  **배치 실행 전이라도 `wait_expires_at > clock_timestamp()`를 충족해야 한다.** 유형뿐 아니라 요청이 현재
   시도·대기 카드에 속하는지도 같은 원자적 전이 조건으로 확인해야 한다. 위 SQL은 점유·만료 조건의
   예시이며 시도·카드 식별 필드와 구체적인 결합 조건은 P3에서 추가한다. 유형만 같다고 허용하지 않는다.
 - **병행형 확인(REQ-032)은 이 경로를 타지 않는다.** 턴이 처리중을 유지하므로 점유는 처리 중인
   인스턴스가 계속 쥐고 있고, 확인 응답은 `cancel_requested` 와 같은 방식으로 턴 레코드에
   기록되어 스텝 경계에서 읽힌다.
 
-#### 갱신 — renew (스텝 경계 / 스트리밍 청크 경계)
+#### 갱신 — renew (스텝 경계 / 독립 제어 경로)
 
 **중단 요청 확인(REQ-033)과 같은 왕복에서 처리한다.**
 
 ```sql
 UPDATE ai_agent_turn
-   SET lease_expires_at = now() + :ttl,
-       updated_at       = now()
+   SET lease_expires_at = clock_timestamp() + :ttl,
+       updated_at       = clock_timestamp()
  WHERE turn_id     = :turnId
    AND lease_owner = :instanceId
    AND lease_fence = :fence
    AND status      = 'RUNNING'
+   AND lease_expires_at > clock_timestamp()
 RETURNING cancel_requested;
 ```
 
 - **1행** → 점유 유효. 반환된 `cancel_requested` 가 참이면 중단 처리로 넘어간다.
 - **0행** → **점유 상실.** `LeaseLostException` 으로 즉시 빠져나온다. 상태 전이도,
   체크포인트 쓰기도 하지 않는다.
+- **회수 배치 전이어도 만료 후 갱신은 실패한다.** 소유자·토큰이 아직 같다는 이유로 만료된
+  점유를 부활시키지 않는다. 독립 갱신도 같은 조건을 적용하며 갱신 성공으로 호출 기한을 연장하지 않는다.
 
-**이 한 문장이 중단 확인과 점유 확인을 동시에 수행한다.** 두 검사가 같은 지점에서 일어나야
-하는 이유는 같다 — **스텝 경계는 "여기까지는 안전하게 멈출 수 있다" 고 보장되는 유일한 지점**이다.
+**중단 확인과 점유 확인을 같은 제어 경로에서 수행한다.** 모델과 긴 API는 호출 중에도 확인하되
+이미 전송된 외부 작업의 취소 성공을 추정하지 않는다. 호출·점유가 끝나면 해당 갱신 작업도 종료한다.
 
 #### 해제 — release
 
@@ -180,10 +184,12 @@ UPDATE ai_agent_turn
        status           = :nextStatus,     -- DONE / FAILED / ABORTED / WAITING_USER
        wait_type        = :waitType,       -- WAITING_USER 일 때만
        wait_expires_at  = :waitExpiresAt,  -- WAITING_USER 일 때만
-       updated_at       = now()
+       updated_at       = clock_timestamp()
  WHERE turn_id     = :turnId
    AND lease_owner = :instanceId
-   AND lease_fence = :fence;
+   AND lease_fence = :fence
+   AND status = 'RUNNING'
+   AND lease_expires_at > clock_timestamp();
 ```
 
 - **0행** → 이미 점유를 잃었다. 아무것도 하지 않는다.
@@ -199,9 +205,9 @@ UPDATE ai_agent_turn
        lease_owner      = NULL,
        lease_expires_at = NULL,
        lease_fence      = lease_fence + 1,
-       updated_at       = now()
+       updated_at       = clock_timestamp()
  WHERE status = 'RUNNING'
-   AND lease_expires_at <= now();
+   AND lease_expires_at <= clock_timestamp();
 ```
 
 - **`lease_fence` 를 올리는 것이 이 문장의 핵심이다.** 죽은 줄 알았던 인스턴스가 되살아나
@@ -209,7 +215,7 @@ UPDATE ai_agent_turn
 - **모든 인스턴스가 이 스위퍼를 돌려도 된다.** 동시에 실행되면 두 번째 트랜잭션은 첫 번째의
   커밋 후 조건을 재평가하고 `status <> 'RUNNING'` 이 되어 건너뛴다 —
   **별도의 리더 선출이 필요 없다.**
-- **대기 만료도 같은 스위퍼에서 처리한다** — `status = 'WAITING_USER' AND wait_expires_at <= now()`
+- **대기 만료도 같은 스위퍼에서 처리한다** — `status = 'WAITING_USER' AND wait_expires_at <= clock_timestamp()`
   조건을 별개 문장으로 함께 실행하고 `abort_reason = 'WAIT_EXPIRED'` 로 구분한다.
   두 만료 모두 원 턴과 현재 시도를 중단으로 종결한다. 원 턴은 다시 획득하지 않으며 원 질의의 별도 새 턴 요청은 REQ-013.request_boundary를 따른다.
 - 스위퍼는 주기 실행이며 인스턴스마다 **시작 시각에 지터**를 준다.
@@ -305,12 +311,16 @@ PoC 실측 (S6-correct · 회차 도입 전)
 ```sql
 INSERT INTO ai_agent_checkpoint
        (turn_id, checkpoint_id, node_id, next_node_id, seq, state_json, lease_fence, revision, created_at)
-SELECT :turnId, :checkpointId, :nodeId, :nextNodeId, :seq, :stateJson, :fence, :revision, now()
+SELECT :turnId, :checkpointId, :nodeId, :nextNodeId, :seq, :stateJson, :fence, :revision, clock_timestamp()
   FROM ai_agent_turn
- WHERE turn_id = :turnId AND lease_owner = :instanceId AND lease_fence = :fence;
+ WHERE turn_id = :turnId AND lease_owner = :instanceId AND lease_fence = :fence
+   AND status = 'RUNNING' AND lease_expires_at > clock_timestamp();
 ```
 
-0행이면 `LeaseLostException` 이다. 갱신도 같은 형태의 `WHERE EXISTS` 조건을 건다.
+0행이면 `LeaseLostException` 이다. 갱신도 같은 조건을 건다. 위 문장은 검증 조건을 보이는 예시이며
+스냅샷 선조회만으로 동시 회수와 쓰기의 원자성을 보장하지 않는다. 실제 구현은 턴 행의 현재 점유
+검증과 체크포인트 쓰기를 하나의 잠금/트랜잭션 경계로 설계하고, 잠금 대기 뒤에도 DB 현재 시각으로
+미만료를 확인해야 한다. 구체 SQL과 회수 경합 시험은 소유 P3에서 확정한다.
 
 ### 3.5 시간 값
 
@@ -327,11 +337,13 @@ SELECT :turnId, :checkpointId, :nodeId, :nextNodeId, :seq, :stateJson, :fence, :
   인스턴스는 처리를 포기하므로(3.2 규칙 3) 사용자 입장에서는 **이유 없이 턴이 중단된 것으로
   보인다.**
 - **L 이 길면** 인스턴스가 실제로 죽었을 때 사용자가 그만큼 기다린다.
-- **인스턴스 사망부터 회수까지의 지연은 최악의 경우 `L + S` 다.** 사용자에게 보이는 복구 시간의
-  상한은 L 이 아니라 **L + S** 이며, **두 값을 따로 정하지 말고 이 합을 목표로 잡고 배분한다.**
+- **마지막 유효 갱신부터 회수까지의 명목 기준은 `L + S`다.** 실제 DB·배치 처리/저장 지연은
+  따로 측정하며 사용자 표시에는 통신·폴링·화면 지연도 더해진다. 절대 상한으로 보장하지 않고
+  NFR-009의 서버 회수와 사용자 인지 구간을 나눠 검수한다.
 
 - **세 값 모두 코드에 박지 않고 운영 설정으로 관리한다**(FEAT-020).
-- **기본값은 P1 실측으로 확정한다.** 초기 검토값은 **L=120초 · R=30초 · S=60초**.
+- **초기값·허용 범위·변경 적용 정본은 ARCH-033.technical_parameters다.** 과거 검토값을 별도로
+  유지하지 않는다. 현재 P2 설계 기준안의 운영 적합성은 소유 구현 후 실제 지연/정지 시험으로 검증한다.
 - **모델 호출과 독립된 제어 경로에서 갱신·변경/중단을 확인한다**(REQ-007·034).
   청크 경계 확인도 사용할 수 있지만 청크가 없는 추론 구간과 개발 CLI의 전체 응답 대기에도
   R 주기의 제어가 동작해야 한다. 운영 API의 스트리밍 기준은 유지한다.
@@ -342,12 +354,13 @@ SELECT :turnId, :checkpointId, :nodeId, :nextNodeId, :seq, :stateJson, :fence, :
 #### 갱신 없이 지날 수 있는 최장 구간
 
 L 을 "LLM 타임아웃 + 여유" 로만 잡으면 **도구 실행 구간이 산정에서 빠진다.** §4 의 결합에서
-`renew` 는 `BeforeCall` 훅, 즉 **노드 진입 시점에 한 번**이고 노드 본문이 도는 동안에는 갱신이
-없다. 모델 구간은 위 독립 제어 경로가 갱신을 담당하며 **도구 노드 본문의 점유 갱신은 아래 설계로 별도 대조한다.**
+경계 갱신 모드의 `renew` 는 `BeforeCall` 훅, 즉 **노드 진입 시점에 한 번**이고 본문에서는 갱신하지
+않는다. 모델 구간은 독립 제어 경로가 갱신을 담당하며 **긴 API의 본문 갱신은 아래 모드로 검수한다.**
 DB 조회의 실행 중 취소 전달은 점유 갱신 방식과 별개로 REQ-007·033의 독립 제어 경로를 반드시 갖는다.
 
-특히 실행 API 호출은 **대상 시스템의 제한 응답(429 등)을 존중해 백오프·재시도**하므로
-(AUTHZ-080), 한 번의 도구 노드가 LLM 타임아웃보다 오래 걸리는 것이 이상 상황이 아니다.
+허용된 도구 재시도와 대상 시스템의 제한 응답에 따른 대기도 원인별 유한 상한 안에서 처리하므로,
+한 번의 도구 노드가 모델 호출보다 오래 걸릴 수 있다. 전송된 상태 변경 실행·결과 불명은
+NFR-022에 따라 자동 재전송하지 않으며, 이 산정으로 재시도 권한을 추가하지 않는다.
 이 구간이 L 을 넘기면 **정상 처리 중인 인스턴스도 회수될 수 있다.** 기존 호출이 끝나기 전에
 재실행을 허용하면 중복 호출 위험이 생긴다. 이를 체크포인트 재개로 해결하지 않으며,
 과거 실행 요청 전송·결과 불명만으로 원 질의의 새 턴 접수를 차단하지 않는다. 이전 실행/승인/체크포인트를 자동 재사용하지 않고, 새 계획의 실제 업무 실행은 새 승인과 이전 동일 실행의 결과 확인 경계를 따른다(REQ-013.execution_boundary).
@@ -355,12 +368,12 @@ DB 조회의 실행 중 취소 전달은 점유 갱신 방식과 별개로 REQ-0
 | 방식 | 내용 | 대가 |
 |---|---|---|
 | **(가) 도구 노드 본문에서도 갱신** | 도구 실행을 R 주기 갱신과 함께 수행한다. 갱신 실패는 `LeaseLostException` 이나 **이미 나간 호출을 되돌리지는 못한다** | 도구 실행 경로에 갱신 스레드가 붙는다 |
-| **(나) L 을 실행 API 기준으로 산정** | L ≥ max(LLM 타임아웃, **백오프·재시도를 포함한 실행 API 타임아웃**) + 여유 | L 이 커지면 복구 지연(L + S)이 함께 커진다 |
+| **(나) 본문 갱신 없는 일반 도구** | **도구 호출·허용 재시도·백오프·정리의 무갱신 구간 + 여유 < L** | L 이 커지면 회수 지연의 명목 기준(L + S)이 함께 커진다 |
 
-**(나)를 기본으로 하고, 등록 시점에 (나)로 감당되지 않는 API 가 나오면 그 API 에 한해 (가)를
-적용한다.** L 은 전역 값이므로 **가장 느린 API 하나 때문에 전체 복구 지연을 늘리는 것은
-합리적이지 않다.** API 등록 명세에 타임아웃·재시도 정책이 이미 들어가므로(FEAT-004), L 산정의
-입력을 등록 정보에서 얻을 수 있다.
+**두 모드의 규범은 ARCH-070.timing_contract와 ARCH-033.technical_parameters.lease_validation이다.**
+일반 도구는 (나), 검증된 긴 API는 (가)를 사용할 수 있다. API 등록값만으로 지원을 추정하지 않고
+실제 실행 경로·갱신 모드·호출 기한·프록시 조건을 검수한다. 가장 느린 API 하나 때문에 전체 L을
+늘리지 않되, 독립 제어가 장기 호출/트랜잭션/연결 고갈에 함께 막히지 않는지 시험한다.
 
 > **이 경로에서는 정상 운영 중에도 `LEASE_EXPIRED` 회수가 발생한다.** §6 의 "`LEASE_EXPIRED`
 > 회수 건수는 0 에 가까워야 한다" 는 판독 기준이 이 값을 잘못 잡으면 무의미해지므로,

@@ -12,9 +12,9 @@ requirements:
     actors: [ACT-012]
     process_step: PRC-06-01
     title: "계정 상태와 접속 조건을 한 판정으로 관리한다"
-    detail: "시스템 관리자는 계정 등록·수정, 역할 부여, 사용 기간, 잠금·휴면, 접속 허용 IP, 비밀번호 변경·초기화와 활성 세션 종료를 관리할 수 있어야 한다"
-    acceptance: "상태·기간·잠금·휴면·IP 중 하나라도 실패한 계정은 세션을 얻지 못하고, 비밀번호와 세션 변경은 이력·만료 규칙을 우회하지 않는다"
-    source: "현재 구현 역추적 — 사용자 관리와 로그인·프로필·설정·비밀번호 변경·세션 만료 화면"
+    detail: "시스템 관리자는 자체 계정 등록·수정, 역할 부여, 사용 기간, 잠금·휴면, 접속 허용 IP, 비밀번호 변경·초기화와 활성 세션 종료를 관리할 수 있어야 한다. CR-027에 따라 관리자 계정 관리와 Portal 사용자 관리는 같은 공통 계정을 참조하며 인증 수단과 기본 신원을 이중 관리하지 않는다. 외부 인증의 신원·프로필은 원천에서 관리하고 Hub는 검증된 주체 연결과 읽기 전용 참조를 제공한다"
+    acceptance: "상태·기간·잠금·휴면·IP 중 하나라도 실패한 계정은 세션을 얻지 못하고, 비밀번호와 세션 변경은 이력·만료 규칙을 우회하지 않는다. 두 관리 화면에서 같은 사람을 같은 공통 주체로 조회하고 Portal 이용 자격과 관리자 권한을 독립 관리한다. 외부 신원을 이름/이메일만으로 병합하거나 재요청으로 계정을 중복 생성하지 않는다"
+    source: "현재 구현 역추적 및 2026-10-27 사용자 CR-027 승인 — 공통 계정 하나를 두 관리 화면에서 참조한다. 기존 구현 근거와 미구현 목표 계약을 구분한다"
     evidence:
       frontend: ["modules/system/features/user","modules/system/public/auth","modules/system/public/profile","modules/system/public/settings"]
       backend: ["sources/backend/modules/system/src/main/java/com/aiagent/system/api/auth/LoginService.java","sources/backend/domain/src/main/java/com/aiagent/domain/user/service/UserAccountService.java","sources/backend/domain/src/main/java/com/aiagent/domain/user/service/PasswordChangeService.java","sources/backend/domain/src/main/java/com/aiagent/domain/user/service/PasswordResetService.java"]
@@ -22,7 +22,7 @@ requirements:
       screens: ["/admin/system/user","_standalone/system/login","_standalone/system/profile","_standalone/system/settings","_standalone/system/pwd-change","_standalone/system/session-expire"]
     roadmap: RM-P1
     summary: "계정 상태와 접속 조건을 한 판정으로 관리한다"
-    intent: {"problem":"계정 상태·기간·접속 조건과 비밀번호·세션 처리가 갈리면 허용되지 않은 로그인이 성립한다","goal":"기존 로그인·계정 관리의 판정과 이력·세션 종료 경계를 보존한다","not":["이번 기록은 기존 구현의 대조·개별 확정이며 새 기능·권한·보존 정책을 추가하지 않는다"]}
+    intent: {"problem":"계정 상태·기간·접속 조건과 비밀번호·세션 처리가 갈리면 허용되지 않은 로그인이 성립한다","goal":"기존 로그인·계정 관리의 판정과 이력·세션 종료 경계를 보존한다","not":["별도 Portal 비밀번호 저장소·로그인 엔진이나 이메일 일치 자동 계정 통합을 만들지 않는다"]}
     goal_trace: ["IN-07"]
     decider: "제품 오너(사용자)"
     preconditions: ["기존 system 작업흐름 승인과 UC-501·FEAT-501 및 해당 화면 요건을 전제로 현재 소스에 대조한다"]
@@ -34,14 +34,15 @@ requirements:
     audit: "기존 구현의 이력과 UC-501의 처리 근거를 유지한다. 이번 카드 작성으로 별도 감사 저장소를 추가하지 않는다"
     volume: "현재 화면·API의 조회/처리 범위와 기존 제한을 유지한다. 새로운 용량·성능 목표를 부여하지 않는다"
     config: "기존 계정·암호·세션 설정과 UC-501의 조건을 적용한다"
-    risk: "이번 소스 대조·기존 회귀 시험 범위에서 수용 기준 차이를 발견하지 않았다. 새 실환경·다중 인스턴스 시험 완료를 뜻하지 않는다"
-    relations: {"depends_on":[],"constrains":[],"conflicts_with":[],"nfr":[],"interfaces":[]}
+    risk: "CR-027의 공통 주체·외부 인증 연결·두 관리 화면 참조는 추가 상세 설계와 구현/계약 시험이 필요하다. source_review는 변경 전 기준선의 근거다"
+    relations: {"depends_on":[],"constrains":["REQ-616"],"conflicts_with":[],"nfr":[],"interfaces":[]}
     realization: {"features":["FEAT-501"],"screens":["SCR-501","SCR-502","SCR-503","SCR-505","SCR-506"]}
     examples: [{"kind":"정상","case":"허용된 사용자 user01이 유효 기간과 허용 IP로 로그인","result":"성공 세션과 현재 유효 권한을 발급하고 로그인 이력을 남긴다"},{"kind":"예외","case":"user01의 계정을 잠그거나 허용 IP 밖에서 로그인","result":"세션을 만들지 않고 해당 실패 이력을 남긴다"}]
     volatility: {"level":"low","what":"이미 구현된 system 기준선이다. 향후 업무 규칙·범위 변경은 기존 변경 절차를 따른다"}
-    source_review: {"at":"2026-10-26","result":"기존 구현과 일치 — 사용자 조건부 승인에 따라 확정","scope":"detail·hard_rule·acceptance의 현재 백엔드·프런트 구현과 기존 테스트를 대조했다","tests":["sources/backend/modules/system/src/test/java/com/aiagent/system/api/auth/LoginSlice501Test.java","sources/backend/domain/src/test/java/com/aiagent/domain/user/PasswordChangeServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/user/PasswordResetServiceTest.java"],"findings":[]}
-    open: []
-    maturity: {"level":"confirmed","at":"2026-10-26","by":"AI — 현재 소스 대조와 기존 회귀 검사","confirmed_by":"사용자 (2026-10-26 system 요구사항을 소스와 비교해 구현과 차이가 없으면 모두 확정 처리하도록 명시 승인)"}
+    source_review: {"at":"2026-10-26","result":"CR-027 이전 로컬 인증 기준선의 소스 대조 기록. 추가된 공통 주체 계약의 구현 완료를 뜻하지 않는다","scope":"CR-027 이전 detail·acceptance의 백엔드·프런트 구현과 기존 테스트를 대조했다","tests":["sources/backend/modules/system/src/test/java/com/aiagent/system/api/auth/LoginSlice501Test.java","sources/backend/domain/src/test/java/com/aiagent/domain/user/PasswordChangeServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/user/PasswordResetServiceTest.java"],"findings":[]}
+    approved_change: { change: CR-027, contract: "ARCH-050.portal_account_contract", status: "설계 방향 승인·상세 계약/구현 대기", verification: [TC-5017, TC-5018, TC-5019] }
+    open: ["@defer P3 — 공통 주체/외부 인증 저장·공개 계정 명령·두 관리 화면 참조·이행/세션 호환성과 실패 복구를 CR-027 범위로 상세 설계한다"]
+    maturity: {"level":"confirmed","at":"2026-10-27","by":"AI — CR-027 사용자 방향 반영","confirmed_by":"사용자 — 공통 계정 하나를 두 관리 화면에서 참조하는 방향에 동의. 기존 로컬 인증 기준선과 추가 계약을 구분하며 상세 설계·구현 승인은 별도"}
 
   - id: REQ-502
     type: functional
@@ -210,9 +211,9 @@ requirements:
     actors: [ACT-012]
     process_step: PRC-07-03
     title: "시스템 설정은 검증된 값만 적용하고 배포 기본값으로 되돌릴 수 있어야 한다"
-    detail: "시스템 관리자는 `sys-config.*` 아래에 등록된 일반 런타임 설정을 조회·변경할 수 있어야 하며, 키별 형식·범위와 변경 영향 경고를 따라야 한다. 비밀값·임의 변경 금지 값은 별도 프로퍼티 경로로 배포 관리하며 이 화면의 대상이 아니다"
-    acceptance: "잘못된 형식·범위·미등록 키 변경은 저장되지 않고, 성공한 변경은 설정 캐시 버전과 함께 한 트랜잭션으로 적용되며 되돌리면 오버라이드 행이 사라져 배포 기본값이 다시 드러난다. 설정값은 노드 캐시가 아니라 다음 작업 스코프의 DB 오버라이드 합성으로 반영된다. `sys-config.*` 밖의 비밀·보호 설정은 목록·응답·저장 요청에 나타나지 않는다"
-    source: "현재 구현 역추적 — 시스템 환경설정 화면과 사용자 설정 모달"
+    detail: "시스템 관리자는 `sys-config.*` 아래에 등록된 일반 런타임 설정을 조회·변경할 수 있어야 하며, 키별 형식·범위와 변경 영향 경고를 따라야 한다. 비밀값·임의 변경 금지 값은 별도 프로퍼티 경로로 배포 관리하며 이 화면의 대상이 아니다. CR-026에 따라 유효값과 버전 근거를 함께 제공하고 기대 버전이 맞는 저장/복원만 반영한다"
+    acceptance: "잘못된 형식·범위·미등록 키 변경은 저장되지 않고, 성공한 변경은 설정 캐시 버전과 함께 한 트랜잭션으로 적용되며 되돌리면 오버라이드 행이 사라져 배포 기본값이 다시 드러난다. 설정값은 노드 캐시가 아니라 다음 작업 스코프의 DB 오버라이드 합성으로 반영된다. `sys-config.*` 밖의 비밀·보호 설정은 목록·응답·저장 요청에 나타나지 않는다. 오래된 편집본은 충돌로 거부하며 업무 접수/전결이 사용한 설정 값·버전과 반영 결과는 일관돼야 한다. 설정 읽기 장애의 접수 예외는 REQ-601.approval_policy.read_failure를 따른다"
+    source: "현재 구현 역추적 및 2026-10-27 사용자 CR-026 A안 승인 — 값/버전·기대 버전·업무 승인 처리의 일관성 보강. 신규 계약은 미구현이다"
     evidence:
       frontend: ["modules/system/features/config","modules/system/public/settings"]
       backend: ["sources/backend/domain/src/main/java/com/aiagent/domain/config/admin/ConfigService.java","sources/backend/domain/src/main/java/com/aiagent/domain/config/admin/ConfigQueryService.java","sources/backend/support/src/main/java/com/aiagent/support/config/ConfigCatalog.java","sources/backend/support/src/main/java/com/aiagent/support/config/ConfigLookup.java"]
@@ -220,7 +221,7 @@ requirements:
       screens: ["/admin/system/config","_standalone/system/settings"]
     roadmap: RM-P1
     summary: "시스템 설정은 검증된 값만 적용하고 배포 기본값으로 되돌릴 수 있어야 한다"
-    intent: {"problem":"미등록·범위 밖 설정이나 부분 적용이 인증·운영 동작을 잘못 바꿀 수 있다","goal":"등록 설정만 검증해 원자적으로 적용하고 오버라이드를 제거해 배포 기본값으로 복원한다","not":["이번 기록은 기존 구현의 대조·개별 확정이며 새 기능·권한·보존 정책을 추가하지 않는다"]}
+    intent: {"problem":"미등록·범위 밖 설정이나 부분 적용이 인증·운영 동작을 잘못 바꿀 수 있다","goal":"등록 설정만 검증해 원자적으로 적용하고 오버라이드를 제거해 배포 기본값으로 복원한다","not":["admin 전용 설정 저장소를 복제하거나 비밀·보존 배포 설정을 화면 편집 대상으로 옮기지 않는다"]}
     goal_trace: ["IN-07"]
     decider: "제품 오너(사용자)"
     preconditions: ["기존 system 작업흐름 승인과 UC-506·FEAT-506 및 해당 화면 요건을 전제로 현재 소스에 대조한다"]
@@ -232,14 +233,15 @@ requirements:
     audit: "기존 구현의 이력과 UC-506의 처리 근거를 유지한다. 이번 카드 작성으로 별도 감사 저장소를 추가하지 않는다"
     volume: "현재 화면·API의 조회/처리 범위와 기존 제한을 유지한다. 새로운 용량·성능 목표를 부여하지 않는다"
     config: "sys-config.*의 기존 등록된 키만 관리한다. 비밀·보호 설정은 배포 경로를 유지한다"
-    risk: "이번 소스 대조·기존 회귀 시험 범위에서 수용 기준 차이를 발견하지 않았다. 새 실환경·다중 인스턴스 시험 완료를 뜻하지 않는다"
-    relations: {"depends_on":[],"constrains":[],"conflicts_with":[],"nfr":[],"interfaces":[]}
+    risk: "CR-026의 기대 버전·업무 접수와 설정 변경의 일관성·읽기 장애 예외는 상세 계약/구현/시험이 남아 있다. 기존 캐시 버전을 업무 일관성 보장으로 오인하지 않는다"
+    relations: {"depends_on":[],"constrains":["REQ-601","REQ-614"],"conflicts_with":[],"nfr":[],"interfaces":[]}
     realization: {"features":["FEAT-506"],"screens":["SCR-504","SCR-515"]}
     examples: [{"kind":"정상","case":"auth.login.fail-limit의 유효한 값을 저장한 뒤 되돌리기","result":"값·설정 버전을 같은 트랜잭션으로 처리하고 되돌리기는 오버라이드 행을 삭제한다"},{"kind":"예외","case":"미등록 키나 형식·범위를 위반하는 값 저장","result":"쓰기를 거부하고 기존 유효 설정을 유지한다"}]
     volatility: {"level":"low","what":"이미 구현된 system 기준선이다. 향후 업무 규칙·범위 변경은 기존 변경 절차를 따른다"}
-    source_review: {"at":"2026-10-26","result":"기존 구현과 일치 — 사용자 조건부 승인에 따라 확정","scope":"ConfigService는 값·버전을 같은 트랜잭션으로 저장하고 ConfigLookup은 다음 작업 스코프에서 DB 값을 다시 합성한다. REQ-505와 공유하는 버전 엔티티의 동시 증가 문제는 해당 findings를 참조하며, 설정값 적용을 노드 캐시/버전 변화에 의존하는 방식으로 간주하지 않는다.","tests":["sources/backend/domain/src/test/java/com/aiagent/domain/config/admin/ConfigServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/config/admin/ConfigQueryServiceTest.java","sources/backend/support/src/test/java/com/aiagent/support/config/ConfigLookupTest.java","sources/backend/support/src/test/java/com/aiagent/support/config/ConfigValidatorTest.java"],"findings":[]}
-    open: []
-    maturity: {"level":"confirmed","at":"2026-10-26","by":"AI — 현재 소스 대조와 기존 회귀 검사","confirmed_by":"사용자 (2026-10-26 system 요구사항을 소스와 비교해 구현과 차이가 없으면 모두 확정 처리하도록 명시 승인)"}
+    source_review: {"at":"2026-10-26","result":"CR-026 이전 설정 기준선의 소스 대조 기록. 추가된 값/버전 일관성 계약의 구현 완료를 뜻하지 않는다","scope":"기존 ConfigService는 값·캐시 갱신 버전을 같은 트랜잭션으로 저장하고 ConfigLookup은 다음 작업 스코프에서 DB 값을 다시 합성한다. 이것은 CR-026의 업무 설정 스냅샷·기대 버전 경합 보장이 아니다. REQ-505와 공유하는 버전 엔티티의 동시 증가 문제는 해당 findings를 참조하며, 설정값 적용을 노드 캐시/버전 변화에 의존하는 방식으로 간주하지 않는다.","tests":["sources/backend/domain/src/test/java/com/aiagent/domain/config/admin/ConfigServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/config/admin/ConfigQueryServiceTest.java","sources/backend/support/src/test/java/com/aiagent/support/config/ConfigLookupTest.java","sources/backend/support/src/test/java/com/aiagent/support/config/ConfigValidatorTest.java"],"findings":[]}
+    approved_change: { change: CR-026, contract: "ARCH-029.target_contract", status: "설계 방향 승인·상세 계약/구현 대기", verification: [TC-5066, TC-5067, TC-5068] }
+    open: ["@defer P3 — 기대 버전·스냅샷·원자적 반영의 물리 구조와 공개 계약, 설정 화면 요건/목업·충돌 안내·이행/롤백을 CR-026 범위로 상세 설계한다"]
+    maturity: {"level":"confirmed","at":"2026-10-27","by":"AI — CR-026 사용자 승인 반영","confirmed_by":"사용자 — 설명한 권장안대로 진행하도록 승인. 설정 읽기 장애의 수동 승인 요청 접수·근거 기록을 포함한 방향이며 상세 설계·구현 승인은 별도"}
 
   - id: REQ-507
     type: functional

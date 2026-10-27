@@ -29,3 +29,6 @@ spec_set:
     - 012-knowledge-search.yaml
     - 013-execution-lease.yaml
     - 014-admin-contracts.yaml
+    - 015-runtime-settings.yaml
+    - 016-provider-connections.yaml
+    - 017-runtime-setting-proposals.yaml
