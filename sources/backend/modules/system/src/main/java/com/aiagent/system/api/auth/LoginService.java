@@ -262,7 +262,7 @@ public class LoginService {
 
         // 유효 권한을 세션에 담는다 — 이후 매 요청의 판정이 이 값 하나를 본다(backend/security.md).
         // 세션 ID 를 바꾼 뒤에 담아야 한다: 순서가 뒤바뀌면 옛 세션에 담기고 새 세션은 빈다.
-        AuthzSession.write(session, authority);
+        AuthzSession.initialize(session, authority);
 
         // 로그인 응답은 /api/public 이라 인가 인터셉터를 지나지 않는다 — 여기서 붙이지 않으면
         // 프론트가 비교 기준값 없이 셸을 그린다.

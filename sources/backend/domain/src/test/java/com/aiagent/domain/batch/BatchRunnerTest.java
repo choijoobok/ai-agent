@@ -127,6 +127,20 @@ class BatchRunnerTest {
     }
 
     @Test
+    @DisplayName("TC-5083 중단 요청이 있어도 작업이 정상 완료하면 SUCCESS를 보존한다")
+    void cancelRequestDoesNotRelabelNormalCompletion() {
+        when(writer.isCancelRequested(42L)).thenReturn(true);
+        runner = runnerFor(context -> {
+            assertThat(context.isCancelRequested()).isTrue();
+            return BatchJobResult.of("이미 완료", "중단 요청 전에 모든 처리가 끝남");
+        });
+
+        runner.runNow(batch());
+
+        verify(writer).finish(42L, BatchResultCode.SUCCESS, "이미 완료", "중단 요청 전에 모든 처리가 끝남", null);
+    }
+
+    @Test
     @DisplayName("TC-5081 큐가 거부하면 RUNNING을 FAIL로 끝내고 heartbeat와 락을 함께 정리한다")
     void queueRejectionFinishesTheStartedHistoryAndReleasesTheLock() {
         RuntimeException queueFull = new IllegalStateException("실행 풀이 가득 찼다");

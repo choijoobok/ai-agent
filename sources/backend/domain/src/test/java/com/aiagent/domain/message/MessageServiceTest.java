@@ -17,6 +17,10 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -137,6 +141,34 @@ class MessageServiceTest {
 
         assertThat(service.text("login.title", "ko")).isEqualTo("새 문구");
         assertThat(otherNode.text("login.title", "ko")).isEqualTo("이전 문구");
+    }
+
+    @Test
+    @DisplayName("TC-5057 저장 전에 시작한 조회는 커밋 후 비운 캐시를 옛 값으로 다시 채우지 않는다")
+    void evictionDuringLoadDoesNotRepopulateTheCurrentCache() throws Exception {
+        CountDownLatch oldRowsRead = new CountDownLatch(1);
+        CountDownLatch finishOldLoad = new CountDownLatch(1);
+        AtomicInteger reads = new AtomicInteger();
+        when(messages.findRows(any())).thenAnswer(call -> {
+            if (reads.getAndIncrement() == 0) {
+                oldRowsRead.countDown();
+                assertThat(finishOldLoad.await(5, TimeUnit.SECONDS)).isTrue();
+                return List.of(row("login.title", "ko", "이전 문구", MessageScope.FRONT));
+            }
+            return List.of(row("login.title", "ko", "새 문구", MessageScope.FRONT));
+        });
+
+        try (var executor = Executors.newSingleThreadExecutor()) {
+            var oldRequest = executor.submit(() -> service.text("login.title", "ko"));
+            try {
+                assertThat(oldRowsRead.await(5, TimeUnit.SECONDS)).isTrue();
+                service.evict();
+            } finally {
+                finishOldLoad.countDown();
+            }
+            assertThat(oldRequest.get(5, TimeUnit.SECONDS)).isEqualTo("이전 문구");
+            assertThat(service.text("login.title", "ko")).isEqualTo("새 문구");
+        }
     }
 
     @Nested

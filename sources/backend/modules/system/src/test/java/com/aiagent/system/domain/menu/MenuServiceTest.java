@@ -295,14 +295,12 @@ class MenuServiceTest {
         SysMessageRepository values = mock(SysMessageRepository.class);
         SysCacheVersionRepository versions = mock(SysCacheVersionRepository.class);
         BusinessCalendar calendar = mock(BusinessCalendar.class);
-        SysCacheVersion version = SysCacheVersion.started(SysCacheVersion.MESSAGE, Instant.EPOCH);
         String msgKey = SysMenu.messageKey("NAMED");
         when(menus.findById("NAMED")).thenReturn(Optional.of(menu));
         when(menus.existsByUpMenuCd("NAMED")).thenReturn(false);
         when(values.findByMsgKey(msgKey)).thenReturn(List.of(SysMessage.of(msgKey, "ko", "이름")));
         SysMessageKey key = SysMessageKey.dataKey(msgKey);
         when(keys.findById(msgKey)).thenReturn(Optional.of(key));
-        when(versions.findById(SysCacheVersion.MESSAGE)).thenReturn(Optional.of(version));
         when(calendar.now()).thenReturn(Instant.parse("2026-09-12T00:00:00Z"));
         MenuService deleting = new MenuService(new MenuTreeLockTrigger(), menus, mock(SysMenuApiRepository.class),
                 mock(SysRoleMenuAuthRepository.class), mock(SysUserMenuAuthRepository.class),
@@ -312,7 +310,7 @@ class MenuServiceTest {
         deleting.deleteNode("NAMED");
 
         verify(keys).delete(key);
-        assertThat(version.getVersion()).isEqualTo(2L);
+        verify(versions).advance(SysCacheVersion.MESSAGE, Instant.parse("2026-09-12T00:00:00Z"));
     }
 
     private MenuService service(SysRoleMenuAuthRepository roles) {

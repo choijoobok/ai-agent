@@ -15,4 +15,5 @@ dependencies {
     implementation(libs.querydsl.jpa)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testRuntimeOnly("com.h2database:h2")
 }

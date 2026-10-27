@@ -62,6 +62,8 @@ spring:
     timeout: 30m
     jdbc:
       table-name: SPRING_SESSION
+      # 읽은 무효화 표식을 늦게 덮어쓰지 않도록 변경한 세션 속성만 저장한다.
+      save-mode: on-set-attribute
       # DDL 은 Liquibase 가 갖는다. Spring Session 이 따로 만들면 스키마 출처가 둘이 된다.
       initialize-schema: never
     # Redis 로 전환할 때 **함께** 켠다 — 주석을 풀지 않으면 조용히 무력해지는 것이 아니라

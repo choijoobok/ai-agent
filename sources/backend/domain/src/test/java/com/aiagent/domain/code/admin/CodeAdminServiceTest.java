@@ -383,8 +383,8 @@ class CodeAdminServiceTest {
 
             service.save(GRP, "ko", List.of(codeRow(RowState.U, "B2B", "기업 간 거래")));
 
-            verify(versions).findById(SysCacheVersion.CODE);
-            verify(versions, never()).findById(SysCacheVersion.MESSAGE);
+            verify(versions).advance(org.mockito.ArgumentMatchers.eq(SysCacheVersion.CODE), any());
+            verify(versions, never()).advance(org.mockito.ArgumentMatchers.eq(SysCacheVersion.MESSAGE), any());
         }
 
         @Test
@@ -400,7 +400,7 @@ class CodeAdminServiceTest {
             assertThat(current.getDtlDesc()).isEqualTo("새 설명");
             assertThat(current.getUseYn()).isFalse();
             assertThat(current.getSortNo()).isEqualTo(7);
-            verify(versions).findById(SysCacheVersion.MESSAGE);
+            verify(versions).advance(org.mockito.ArgumentMatchers.eq(SysCacheVersion.MESSAGE), any());
         }
     }
 

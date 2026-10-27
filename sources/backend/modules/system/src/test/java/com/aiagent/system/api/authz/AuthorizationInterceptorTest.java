@@ -5,12 +5,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.aiagent.api.auth.SessionKeys;
 import com.aiagent.api.authz.AuthzErrorCode;
 import com.aiagent.api.authz.AuthzSession;
+import com.aiagent.api.authz.AuthzInvalidator;
 import com.aiagent.core.error.BusinessException;
 import com.aiagent.core.error.CommonErrorCode;
 import com.aiagent.domain.authz.ActionType;
@@ -30,6 +33,17 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Optional;
 import java.util.Set;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.session.Session;
+import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.jdbc.JdbcIndexedSessionRepository;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.beans.factory.ObjectProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -331,6 +345,35 @@ class AuthorizationInterceptorTest {
     class Cache {
 
         @Test
+        @DisplayName("TC-5027 JDBC의 이전 dirty 세션 저장이 뒤늦어도 두 번째 회수 신호를 보존한다")
+        void lateJdbcRecalculationPreservesNewInvalidation() {
+            jdbcInvalidationRace(true);
+        }
+
+        @Test
+        @DisplayName("TC-5027 최초 재계산 도중에도 새 회수 신호를 보존한다")
+        void firstJdbcRecalculationPreservesInvalidation() {
+            jdbcInvalidationRace(false);
+        }
+
+        @Test
+        @DisplayName("TC-5027 같은 메모리 세션의 계산 도중 생긴 회수도 다시 계산한다")
+        void invalidationDuringCalculationRemainsPending() {
+            givenAuthority(new MenuAction("ORDER", ActionType.READ));
+            AuthzSession.markDirty(session);
+            givenFact(ActionType.READ, "ORDER");
+            when(authorities.calculate(USER)).thenAnswer(invocation -> {
+                AuthzSession.markDirty(session);
+                return new EffectiveAuthority(Set.of(new MenuAction("ORDER", ActionType.READ)),
+                        LocalDate.of(2026, 8, 29));
+            });
+
+            interceptor.preHandle(get(ORDER_LIST, session), response, null);
+
+            assertThat(AuthzSession.isDirty(session)).isTrue();
+        }
+
+        @Test
         @DisplayName("신선하면 재계산하지 않는다 — 요청당 추가 쿼리 0")
         void freshCacheIsReused() {
             givenAuthority(new MenuAction("ORDER", ActionType.READ));
@@ -342,7 +385,7 @@ class AuthorizationInterceptorTest {
         }
 
         @Test
-        @DisplayName("authzDirty 가 서 있으면 다시 계산하고 플래그를 내린다")
+        @DisplayName("무효화 표식이 바뀌면 다시 계산하고 관측 표식을 함께 저장한다")
         void dirtyFlagTriggersRecalculation() {
             givenAuthority(new MenuAction("ORDER", ActionType.SAVE));
             AuthzSession.markDirty(session);
@@ -351,7 +394,7 @@ class AuthorizationInterceptorTest {
 
             assertThat(interceptor.preHandle(get(ORDER_LIST, session), response, null)).isTrue();
             verify(authorities).calculate(USER);
-            // 내리지 않으면 매 요청 다시 계산한다.
+            // 관측 표식이 같으면 매 요청 다시 계산하지 않는다.
             assertThat(AuthzSession.isDirty(session)).isFalse();
         }
 
@@ -375,7 +418,7 @@ class AuthorizationInterceptorTest {
                     session,
                     new EffectiveAuthority(
                             Set.of(new MenuAction("ORDER", ActionType.READ)),
-                            LocalDate.of(2026, 8, 28)));
+                            LocalDate.of(2026, 8, 28)), AuthzSession.revision(session));
             givenRecalculated();
             givenFact(ActionType.READ, "ORDER");
 
@@ -391,6 +434,59 @@ class AuthorizationInterceptorTest {
 
             assertThat(interceptor.preHandle(get(ORDER_LIST, session), response, null)).isTrue();
         }
+    }
+
+    private void jdbcInvalidationRace(boolean dirtyBeforeRead) {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource(
+                "jdbc:h2:mem:" + java.util.UUID.randomUUID() + ";DB_CLOSE_DELAY=-1", "sa", "");
+        new ResourceDatabasePopulator(new ClassPathResource(
+                "org/springframework/session/jdbc/schema-h2.sql")).execute(dataSource);
+        try {
+            exerciseJdbcInvalidationRace(new JdbcIndexedSessionRepository(new JdbcTemplate(dataSource),
+                    new TransactionTemplate(new DataSourceTransactionManager(dataSource))), dirtyBeforeRead);
+        } finally {
+            new JdbcTemplate(dataSource).execute("SHUTDOWN");
+        }
+    }
+
+    private <S extends Session> void exerciseJdbcInvalidationRace(
+            FindByIndexNameSessionRepository<S> repository, boolean dirtyBeforeRead) {
+        S original = repository.createSession();
+        EffectiveAuthority old = new EffectiveAuthority(Set.of(new MenuAction("ORDER", ActionType.READ)),
+                LocalDate.of(2026, 8, 28));
+        original.setAttribute(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, USER);
+        AuthzSession.write(servletSession(original), old, null);
+        if (dirtyBeforeRead) AuthzSession.markDirty(servletSession(original));
+        repository.save(original);
+        S recalculating = repository.findById(original.getId());
+        @SuppressWarnings("unchecked")
+        ObjectProvider<FindByIndexNameSessionRepository<? extends Session>> provider = mock(ObjectProvider.class);
+        org.mockito.Mockito.doReturn(repository).when(provider).getIfAvailable();
+        AuthzInvalidator invalidator = new AuthzInvalidator(provider);
+        givenFact(ActionType.READ, "ORDER");
+        when(authorities.calculate(USER)).thenAnswer(invocation -> {
+            // 읽기 완료와 쓰기 사이를 고정한다. 스레드 스케줄러에 의존하지 않는 두 JDBC 스냅샷이다.
+            invalidator.markDirty(Set.of(USER), new MockHttpSession(), "other-admin");
+            return new EffectiveAuthority(old.grants(), LocalDate.of(2026, 8, 29));
+        });
+        interceptor.preHandle(get(ORDER_LIST, servletSession(recalculating)), response, null);
+        repository.save(recalculating);
+        HttpSession next = servletSession(repository.findById(original.getId()));
+        assertThat(AuthzSession.isDirty(next)).isTrue();
+        org.mockito.Mockito.doReturn(new EffectiveAuthority(Set.of(), LocalDate.of(2026, 8, 29)))
+                .when(authorities).calculate(USER);
+        assertDenied(get(ORDER_LIST, next), AuthzErrorCode.NO_AUTHORITY);
+    }
+
+    private static HttpSession servletSession(Session stored) {
+        HttpSession session = mock(HttpSession.class);
+        when(session.getId()).thenReturn(stored.getId());
+        when(session.getAttribute(anyString())).thenAnswer(i -> stored.getAttribute(i.getArgument(0)));
+        doAnswer(i -> { stored.setAttribute(i.getArgument(0), i.getArgument(1)); return null; })
+                .when(session).setAttribute(anyString(), org.mockito.ArgumentMatchers.any());
+        doAnswer(i -> { stored.removeAttribute(i.getArgument(0)); return null; })
+                .when(session).removeAttribute(anyString());
+        return session;
     }
 
     // ── 체인 #2~#4 세션 중 재검사 ────────────────────────────────────────
@@ -446,7 +542,8 @@ class AuthorizationInterceptorTest {
     }
 
     private void givenAuthority(MenuAction... grants) {
-        AuthzSession.write(session, new EffectiveAuthority(Set.of(grants), LocalDate.of(2026, 8, 29)));
+        AuthzSession.write(session, new EffectiveAuthority(Set.of(grants), LocalDate.of(2026, 8, 29)),
+                AuthzSession.revision(session));
     }
 
     private void givenRecalculated(MenuAction... grants) {
@@ -463,7 +560,7 @@ class AuthorizationInterceptorTest {
                 .thenReturn(Optional.of(new ApiAuthorityFact(path, action, Set.of(menuCds))));
     }
 
-    private static MockHttpServletRequest get(String path, MockHttpSession session) {
+    private static MockHttpServletRequest get(String path, HttpSession session) {
         MockHttpServletRequest request = new MockHttpServletRequest("POST", path);
         if (session != null) {
             request.setSession(session);

@@ -203,7 +203,7 @@ entities:
     features: [FEAT-505, FEAT-506]
     attributes: [{ name: CACHE_NAME, type: varchar, pk: true }]
     columns: [CACHE_NAME, VERSION, MOD_DTM]
-    rules: ["성공한 메시지·설정 저장마다 해당 버전 한 번 증가"]
+    rules: ["성공한 메시지·설정 저장마다 해당 버전 한 번 증가", "메시지와 코드 버전은 DB 원자 증가를 사용하고 값 저장과 함께 커밋·롤백한다"]
     audit: none
     delete_policy: never
 

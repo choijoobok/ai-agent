@@ -16,8 +16,7 @@ import org.springframework.stereotype.Component;
  * 자리가 역할 화면이다: <b>역할 권한을 고치거나 역할을 끄면 보유자 전원의 유효 권한이
  * 바뀌는데</b>(screen/menu/requirements.md) 그 사람들은 지금 다른 세션에 들어와 있다. backend/security.md 가
  * {@code SYS_USER_ROLE} 역방향 조회로 <b>보유자 전원</b>의 세션을 찾아 같은 플래그를 세우라고
- * 한 것이 이 컴포넌트이며, {@code AuthzSession} 이 <i>"부를 화면(AUTHZ-02·03)이 아직
- * 없다 — 역할 관리 슬라이스가 그것을 잇는다"</i> 고 적어 둔 자리를 닫는다.
+ * 한 것이 이 컴포넌트다. 변경마다 고유 표식을 써서 이전 계산의 늦은 저장과 구분한다.
  *
  * <h2>권한 집합을 미리 계산해 넣지 않는다</h2>
  *
@@ -107,7 +106,7 @@ public class AuthzInvalidator {
             if (sessionId.equals(currentId)) {
                 return;
             }
-            session.setAttribute(AuthzSession.DIRTY, Boolean.TRUE);
+            session.setAttribute(AuthzSession.DIRTY, AuthzSession.newRevision());
             repository.save(session);
         });
     }

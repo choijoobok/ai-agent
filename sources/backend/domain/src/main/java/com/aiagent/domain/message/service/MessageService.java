@@ -40,7 +40,7 @@ public class MessageService {
     private final Clock clock;
 
     /** 언어별 스냅샷. 노드마다 따로 만든다 — 노드 간 공유가 필요한 캐시는 없다(backend/caching.md). */
-    private final Map<String, Snapshot> snapshots = new ConcurrentHashMap<>();
+    private volatile Map<String, Snapshot> snapshots = new ConcurrentHashMap<>();
 
     public MessageService(SysMessageRepository messages, ConfigLookup configs, Clock clock) {
         this.messages = messages;
@@ -68,6 +68,11 @@ public class MessageService {
         return snapshot(lang).bundled();
     }
 
+    /** 공개 번들의 버전 검사 사이에서 DB 본문을 읽는다. 서버 문구의 TTL 캐시는 사용하지 않는다. */
+    public Map<String, String> freshBundle(String lang) {
+        return load(lang, clock.instant()).bundled();
+    }
+
     /**
      * 메시지를 고친 뒤 부른다 — {@code MessageAdminService} · {@code CodeAdminService} 의
      * 저장이 부른다(코드명의 원본이 {@code SYS_MESSAGE} 라 코드 저장도 함께 비운다).
@@ -76,17 +81,19 @@ public class MessageService {
      * 나머지 노드가 최대 TTL 만큼 옛 문구를 계속 낸다 — backend/caching.md 의 「보장하는 것」.
      */
     public void evict() {
-        snapshots.clear();
+        // 비우기 전 시작한 조회는 이전 맵에만 기록한다. 뒤늦은 put이 새 캐시를 오염시키지 않는다.
+        snapshots = new ConcurrentHashMap<>();
     }
 
     private Snapshot snapshot(String lang) {
-        Snapshot cached = snapshots.get(lang);
+        Map<String, Snapshot> current = snapshots;
+        Snapshot cached = current.get(lang);
         Instant now = clock.instant();
         if (cached != null && now.isBefore(cached.expiresAt())) {
             return cached;
         }
         Snapshot loaded = load(lang, now);
-        snapshots.put(lang, loaded);
+        current.put(lang, loaded);
         return loaded;
     }
 

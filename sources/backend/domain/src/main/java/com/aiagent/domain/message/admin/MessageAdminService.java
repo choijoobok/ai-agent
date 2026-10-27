@@ -12,7 +12,6 @@ import com.aiagent.domain.message.service.MessageService;
 import com.aiagent.support.config.ConfigLookup;
 import com.aiagent.support.config.props.MessageProps;
 import java.time.Clock;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -114,11 +113,7 @@ public class MessageAdminService {
     // ── 캐시 ─────────────────────────────────────────────────────────
 
     private void bumpVersion() {
-        Instant now = clock.instant();
-        versions.findById(SysCacheVersion.MESSAGE)
-                .ifPresentOrElse(
-                        version -> version.bump(now),
-                        () -> versions.save(SysCacheVersion.started(SysCacheVersion.MESSAGE, now)));
+        versions.advance(SysCacheVersion.MESSAGE, clock.instant());
     }
 
     /**

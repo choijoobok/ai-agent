@@ -84,6 +84,8 @@ class LoginSlice501Test {
         assertThat(result.user().userId()).isEqualTo(USER_ID);
         assertThat(request.getSession(false)).isNotNull();
         assertThat(AuthzSession.read(request.getSession(false))).isEqualTo(fixture.authority);
+        // TC-5028: 세션 색인 등록 전 회수는 첫 보호 요청에서 다시 확인한다.
+        assertThat(AuthzSession.isDirty(request.getSession(false))).isTrue();
         assertThat(request.getSession(false).getAttribute(SessionKeys.PASSWORD_CHANGE_REQUIRED))
                 .isEqualTo(false);
         assertThat(SecurityContextHolder.getContext().getAuthentication())

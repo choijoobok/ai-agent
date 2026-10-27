@@ -582,7 +582,6 @@ public class MenuService {
      * <i>경계가 있다</i> 고 읽혀 더 나쁘다.
      */
     private void bumpMessageVersion() {
-        versions.findById(SysCacheVersion.MESSAGE)
-                .ifPresent(version -> version.bump(calendar.now()));
+        versions.advance(SysCacheVersion.MESSAGE, calendar.now());
     }
 }

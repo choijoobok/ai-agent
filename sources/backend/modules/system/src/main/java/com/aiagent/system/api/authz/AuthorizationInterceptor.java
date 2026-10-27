@@ -173,10 +173,11 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             return cached;
         }
 
+        Object observedRevision = AuthzSession.revision(session);
         recheckAccountState(session, userId);
 
         EffectiveAuthority recalculated = authorities.calculate(userId);
-        AuthzSession.write(session, recalculated);
+        AuthzSession.write(session, recalculated, observedRevision);
         return recalculated;
     }
 
@@ -191,7 +192,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
      *   <tr><th>트리거</th><th>무엇을 잡나</th><th>지금 동작하나</th></tr>
      *   <tr><td>날짜 경과</td><td>계정 사용 기간 만료(#3) · 부여 만료</td><td><b>동작한다</b></td></tr>
      *   <tr><td>{@code authzDirty}</td><td>관리자의 {@code USE_YN} 해제 · 강제 잠금(#2·#4)</td>
-     *       <td>플래그를 세우는 화면이 아직 없다 — {@link AuthzSession#markDirty}</td></tr>
+     *       <td>관리 화면의 변경 후 무효화 표식을 남긴다 — {@link AuthzSession#markDirty}</td></tr>
      * </table>
      *
      * <p>그래서 <b>남는 창이 하나 있다</b>: 관리자가 계정을 비활성화해도 그 사용자의 세션은

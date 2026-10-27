@@ -16,11 +16,32 @@ requirements:
     acceptance: "상태·기간·잠금·휴면·IP 중 하나라도 실패한 계정은 세션을 얻지 못하고, 비밀번호와 세션 변경은 이력·만료 규칙을 우회하지 않는다"
     source: "현재 구현 역추적 — 사용자 관리와 로그인·프로필·설정·비밀번호 변경·세션 만료 화면"
     evidence:
-      frontend: ["modules/system/features/user", "modules/system/public/auth", "modules/system/public/profile", "modules/system/public/settings"]
-      backend: ["modules/system/api/auth", "modules/system/api/user", "domain/auth", "domain/user"]
+      frontend: ["modules/system/features/user","modules/system/public/auth","modules/system/public/profile","modules/system/public/settings"]
+      backend: ["sources/backend/modules/system/src/main/java/com/aiagent/system/api/auth/LoginService.java","sources/backend/domain/src/main/java/com/aiagent/domain/user/service/UserAccountService.java","sources/backend/domain/src/main/java/com/aiagent/domain/user/service/PasswordChangeService.java","sources/backend/domain/src/main/java/com/aiagent/domain/user/service/PasswordResetService.java"]
       tables: [SYS_USER, SYS_USER_PWD_HIST, SYS_USER_IP_ALLOW, SYS_USER_PWD_RESET, SYS_LO_LOGIN]
-      screens: ["/admin/system/user", "_standalone/system/login", "_standalone/system/profile", "_standalone/system/settings", "_standalone/system/pwd-change", "_standalone/system/session-expire"]
+      screens: ["/admin/system/user","_standalone/system/login","_standalone/system/profile","_standalone/system/settings","_standalone/system/pwd-change","_standalone/system/session-expire"]
     roadmap: RM-P1
+    summary: "계정 상태와 접속 조건을 한 판정으로 관리한다"
+    intent: {"problem":"계정 상태·기간·접속 조건과 비밀번호·세션 처리가 갈리면 허용되지 않은 로그인이 성립한다","goal":"기존 로그인·계정 관리의 판정과 이력·세션 종료 경계를 보존한다","not":["이번 기록은 기존 구현의 대조·개별 확정이며 새 기능·권한·보존 정책을 추가하지 않는다"]}
+    goal_trace: ["IN-07"]
+    decider: "제품 오너(사용자)"
+    preconditions: ["기존 system 작업흐름 승인과 UC-501·FEAT-501 및 해당 화면 요건을 전제로 현재 소스에 대조한다"]
+    data: [{"item":"SYS_USER·SYS_USER_PWD_HIST·SYS_USER_IP_ALLOW·SYS_USER_PWD_RESET·SYS_LO_LOGIN","origin":"기존 system 기능의 관리 입력과 서버 처리","sensitivity":"기존 행위별 권한과 데이터 보호 규칙 적용","retention":"기존 엔티티·화면·운영 보존 규칙을 따른다. 이번 확정으로 기간을 변경하지 않는다"}]
+    business_rules: ["업무 범위와 판정은 이 카드의 detail·acceptance 및 UC-501를 따른다"]
+    exceptions: ["정상·예외 판정은 examples와 기존 UC-501·TC의 거부/실패 기준을 적용한다"]
+    lifecycle: "계정 관리·인증·비밀번호 변경/초기화·세션 종료는 UC-501과 해당 화면 요건의 기존 전이를 따른다"
+    permissions: "UC-501·연결 화면/API의 기존 public·common·service 구분과 행위별 유효 권한을 적용한다"
+    audit: "기존 구현의 이력과 UC-501의 처리 근거를 유지한다. 이번 카드 작성으로 별도 감사 저장소를 추가하지 않는다"
+    volume: "현재 화면·API의 조회/처리 범위와 기존 제한을 유지한다. 새로운 용량·성능 목표를 부여하지 않는다"
+    config: "기존 계정·암호·세션 설정과 UC-501의 조건을 적용한다"
+    risk: "이번 소스 대조·기존 회귀 시험 범위에서 수용 기준 차이를 발견하지 않았다. 새 실환경·다중 인스턴스 시험 완료를 뜻하지 않는다"
+    relations: {"depends_on":[],"constrains":[],"conflicts_with":[],"nfr":[],"interfaces":[]}
+    realization: {"features":["FEAT-501"],"screens":["SCR-501","SCR-502","SCR-503","SCR-505","SCR-506"]}
+    examples: [{"kind":"정상","case":"허용된 사용자 user01이 유효 기간과 허용 IP로 로그인","result":"성공 세션과 현재 유효 권한을 발급하고 로그인 이력을 남긴다"},{"kind":"예외","case":"user01의 계정을 잠그거나 허용 IP 밖에서 로그인","result":"세션을 만들지 않고 해당 실패 이력을 남긴다"}]
+    volatility: {"level":"low","what":"이미 구현된 system 기준선이다. 향후 업무 규칙·범위 변경은 기존 변경 절차를 따른다"}
+    source_review: {"at":"2026-10-26","result":"기존 구현과 일치 — 사용자 조건부 승인에 따라 확정","scope":"detail·hard_rule·acceptance의 현재 백엔드·프런트 구현과 기존 테스트를 대조했다","tests":["sources/backend/modules/system/src/test/java/com/aiagent/system/api/auth/LoginSlice501Test.java","sources/backend/domain/src/test/java/com/aiagent/domain/user/PasswordChangeServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/user/PasswordResetServiceTest.java"],"findings":[]}
+    open: []
+    maturity: {"level":"confirmed","at":"2026-10-26","by":"AI — 현재 소스 대조와 기존 회귀 검사","confirmed_by":"사용자 (2026-10-26 system 요구사항을 소스와 비교해 구현과 차이가 없으면 모두 확정 처리하도록 명시 승인)"}
 
   - id: REQ-502
     type: functional
@@ -32,14 +53,35 @@ requirements:
     title: "역할 권한과 개인 예외를 합성해 현재 유효 권한을 계산한다"
     detail: "시스템 관리자는 역할, 사용자별 역할, 역할별 메뉴 액션과 사용자별 예외를 부여·회수하고 영향 사용자를 확인할 수 있어야 한다"
     note: "@defer P6 — 고객사 인수 전에 대리 역할의 원 승인자·부여 사유를 남기는 전용 위임 기록이 감사 요구인지 확인한다. 요구되면 변경 요청으로 정하며, 그전에는 역할 부여의 유효 기간과 일반 시스템 사용 이력으로 운영한다"
-    acceptance: "동일 메뉴 액션의 역할 부여와 개인 예외가 정해진 규칙으로 하나의 유효 권한이 되고, 변경 뒤 오래 열린 세션도 이전 권한을 계속 사용하지 않는다"
-    source: "현재 구현 역추적 — 역할·역할 권한·개인 권한 화면과 유효 권한 버전 검사"
+    acceptance: "역할 부여와 개인 예외를 현재 데이터·유효 기간으로 합성한다. 공유 세션 저장소의 변경 표식 저장이 끝난 뒤 해당 표식이 아직 반영되지 않은 세션의 보호 요청은 현재 권한을 재계산하며, 겹쳐 실행된 이전 계산이 늦게 저장돼도 후속 요청에서 회수된 권한을 계속 재사용하지 않는다"
+    source: "현재 구현 역추적 — 역할·역할 권한·개인 권한 화면, 세션 무효화 표식과 권한 내용 해시"
     evidence:
-      frontend: ["modules/system/features/role", "modules/system/features/roleauth", "features/userauth", "shared/authz"]
-      backend: ["modules/system/api/role", "modules/system/api/user", "api/userauth", "api/authz", "domain/authz"]
+      frontend: ["modules/system/features/role","modules/system/features/roleauth","modules/system/features/userauth","shared/authz"]
+      backend: ["sources/backend/domain/src/main/java/com/aiagent/domain/authz/service/EffectiveAuthorityService.java","sources/backend/modules/system/src/main/java/com/aiagent/system/domain/role/RoleAuthService.java","sources/backend/modules/system/src/main/java/com/aiagent/system/api/authz/AuthorizationInterceptor.java","sources/backend/api/src/main/java/com/aiagent/api/authz/AuthzSession.java","sources/backend/api/src/main/java/com/aiagent/api/authz/AuthzInvalidator.java"]
       tables: [SYS_ROLE, SYS_USER_ROLE, SYS_ROLE_MENU_AUTH, SYS_USER_MENU_AUTH]
-      screens: ["/admin/system/role", "/admin/system/role-auth", "/user-auth"]
+      screens: ["/admin/system/role","/admin/system/role-auth","/admin/system/user-auth"]
     roadmap: RM-P1
+    summary: "역할 권한과 개인 예외를 합성해 현재 유효 권한을 계산한다"
+    intent: {"problem":"역할·개인 예외 또는 권한 회수 반영이 어긋나면 이전 권한으로 업무에 접근할 수 있다","goal":"현재 역할·개인 예외를 합성하고 변경 뒤 세션이 오래된 권한을 재사용하지 않게 한다","not":["이번 기록은 기존 구현의 대조·개별 확정이며 새 기능·권한·보존 정책을 추가하지 않는다"]}
+    goal_trace: ["IN-07"]
+    decider: "제품 오너(사용자)"
+    preconditions: ["기존 system 작업흐름 승인과 UC-502·FEAT-502 및 해당 화면 요건을 전제로 현재 소스에 대조한다"]
+    data: [{"item":"SYS_ROLE·SYS_USER_ROLE·SYS_ROLE_MENU_AUTH·SYS_USER_MENU_AUTH","origin":"기존 system 기능의 관리 입력과 서버 처리","sensitivity":"기존 행위별 권한과 데이터 보호 규칙 적용","retention":"기존 엔티티·화면·운영 보존 규칙을 따른다. 이번 확정으로 기간을 변경하지 않는다"}]
+    business_rules: ["권한 내용 해시는 유효 메뉴·액션 집합의 해시이며 단조 증가 버전이나 재인증 요구가 아니다","부여·회수 뒤 영향 사용자의 공유 세션에 매번 새로운 무효화 표식을 남기고 다음 보호 요청에서 계정 상태·현재 권한을 재계산한다","계산 전에 읽은 표식과 계산 결과를 한 속성으로 저장하며, 재계산은 무효화 표식을 지우지 않는다. 후속 회수 표식과 다르면 다시 계산한다","로그인 세션의 첫 보호 요청은 세션 색인 등록 전 변경을 놓치지 않도록 재계산한다. 표식·업무일자가 같으면 이후 요청은 캐시를 사용한다","이미 인가를 통과해 진행 중인 업무를 소급 취소하는 계약은 아니다. 회수된 액션은 재계산 후 403으로 거부하며 계정 자체가 사용 불가하면 401과 세션 종료를 적용한다"]
+    exceptions: ["없는 대상 저장 거부와 액션별 403·계정 사용 불가 401은 UC-502 및 기존 화면 계약을 따른다"]
+    lifecycle: "부여·회수 저장 → 영향 세션에 변경 표식 → 다음 보호 요청에서 재계산 → 관측 표식과 결과 저장. 날짜 경과와 로그인 첫 보호 요청도 재계산하며 비활성 계정은 종료한다"
+    permissions: "UC-502·연결 화면/API의 기존 public·common·service 구분과 행위별 유효 권한을 적용한다"
+    audit: "기존 구현의 이력과 UC-502의 처리 근거를 유지한다. 이번 카드 작성으로 별도 감사 저장소를 추가하지 않는다"
+    volume: "현재 화면·API의 조회/처리 범위와 기존 제한을 유지한다. 새로운 용량·성능 목표를 부여하지 않는다"
+    config: "공유 세션은 인덱스 있는 저장소와 ON_SET_ATTRIBUTE 저장 모드를 사용한다. 인덱스 없는 개발용 컨테이너 세션은 현재 요청 세션만 무효화할 수 있다. 세션 형식 변경 시 노드 일괄 전환과 기존 세션 종료·재로그인을 적용한다"
+    risk: "실제 JDBC 세션 저장 경합과 메모리 세션을 검사했다. 권한 변경 트랜잭션은 모의 입력이며 PostgreSQL·Redis 배포, 무효화 저장 자체의 실패, 이미 인가된 요청의 소급 취소를 검증한 것은 아니다. 운영 반영은 일괄 전환·기존 세션 종료 조건을 따른다"
+    relations: {"depends_on":[],"constrains":[],"conflicts_with":[],"nfr":[],"interfaces":[]}
+    realization: {"features":["FEAT-502"],"screens":["SCR-507","SCR-508","SCR-509"]}
+    examples: [{"kind":"정상","case":"역할 READ와 기간 내 개인 SAVE 예외","result":"두 액션을 합성하고 같은 내용에는 같은 권한 해시를 제공한다"},{"kind":"예외","case":"무효화 표식을 읽은 재계산 도중 새 회수 뒤 이전 결과가 늦게 저장됨","result":"새 표식이 남아 다음 요청에서 재계산하고 회수된 액션을 거부한다"}]
+    volatility: {"level":"low","what":"이미 구현된 system 기준선이다. 향후 업무 규칙·범위 변경은 기존 변경 절차를 따른다"}
+    source_review: {"at":"2026-10-27","result":"문서 정정·경합 보완과 회귀 검사 완료","scope":"UC의 재인증·버전 증가 표현을 정정했다. 기존 코드에서 JDBC 저장 순서·같은 메모리 세션의 회수 신호 유실 2건과 로그인 첫 요청 재검사 1건을 실패로 확인한 뒤 수정·통과했다. 고유 표식을 고정값으로 반전하면 경합 시험 2건이 실패한다. 실제 Spring Session JDBC 4.1.1/H2와 모의 권한 조회로 저장 순서를 검증했다","tests":["sources/backend/domain/src/test/java/com/aiagent/domain/authz/EffectiveAuthorityServiceTest.java","sources/backend/modules/system/src/test/java/com/aiagent/system/domain/role/RoleAuthServiceTest.java","sources/backend/modules/system/src/test/java/com/aiagent/system/api/authz/AuthorizationInterceptorTest.java","sources/backend/api/src/test/java/com/aiagent/api/authz/AuthzSessionTest.java","sources/backend/modules/system/src/test/java/com/aiagent/system/api/auth/LoginSlice501Test.java"],"findings":[]}
+    open: []
+    maturity: {"level":"confirmed","at":"2026-10-27","by":"AI — 현재 소스 대조·실패 재현 후 수정·회귀 검사","confirmed_by":"사용자 (system 소스와 일치하면 확정하도록 한 기존 승인 및 2026-10-27 제안대로 문서 보완·테스트 요청)"}
 
   - id: REQ-503
     type: functional
@@ -54,11 +96,32 @@ requirements:
     acceptance: "메뉴·화면 등록·API 등록·메뉴 API 매핑 중 하나를 제거한 회귀 시험이 반드시 접근 거부로 끝난다"
     source: "현재 구현 역추적 — 메뉴 트리·API 카탈로그·screenRegistry·AuthorizationInterceptor"
     evidence:
-      frontend: ["modules/system/features/menu", "modules/system/features/apicatalog", "shared/routes", "shared/authz"]
-      backend: ["api/menu", "api/apicatalog", "api/authz", "domain/authz"]
+      frontend: ["modules/system/features/menu","modules/system/features/apicatalog","shared/routes","shared/authz"]
+      backend: ["sources/backend/modules/system/src/main/java/com/aiagent/system/api/authz/AuthorizationInterceptor.java","sources/backend/modules/system/src/main/java/com/aiagent/system/domain/menu/MenuService.java"]
       tables: [SYS_MENU, SYS_API, SYS_MENU_API, SYS_ROLE_MENU_AUTH, SYS_USER_MENU_AUTH]
-      screens: ["/menu", "/api-catalog", "_standalone/system/menu-modal"]
+      screens: ["/admin/system/menu","/admin/system/api-catalog","_standalone/system/menu-modal"]
     roadmap: RM-P1
+    summary: "메뉴·화면·서비스 API의 권한 사슬을 실패 폐쇄로 유지한다"
+    intent: {"problem":"메뉴·화면·API 매핑 중 일부가 빠졌는데 허용하면 서비스 권한을 우회한다","goal":"정식 생성·배포의 등록 사슬과 요청 시 실패 폐쇄 인가를 유지한다","not":["이번 기록은 기존 구현의 대조·개별 확정이며 새 기능·권한·보존 정책을 추가하지 않는다"]}
+    goal_trace: ["IN-07"]
+    decider: "제품 오너(사용자)"
+    preconditions: ["기존 system 작업흐름 승인과 UC-503·FEAT-503 및 해당 화면 요건을 전제로 현재 소스에 대조한다"]
+    data: [{"item":"SYS_MENU·SYS_API·SYS_MENU_API·SYS_ROLE_MENU_AUTH·SYS_USER_MENU_AUTH","origin":"기존 system 기능의 관리 입력과 서버 처리","sensitivity":"기존 행위별 권한과 데이터 보호 규칙 적용","retention":"기존 엔티티·화면·운영 보존 규칙을 따른다. 이번 확정으로 기간을 변경하지 않는다"}]
+    business_rules: ["업무 범위와 판정은 이 카드의 detail·acceptance·hard_rule 및 UC-503를 따른다"]
+    exceptions: ["정상·예외 판정은 examples와 기존 UC-503·TC의 거부/실패 기준을 적용한다"]
+    lifecycle: "등록·매핑의 배포와 매 요청 인가의 역할을 UC-503대로 구분한다"
+    permissions: "UC-503·연결 화면/API의 기존 public·common·service 구분과 행위별 유효 권한을 적용한다"
+    audit: "기존 구현의 이력과 UC-503의 처리 근거를 유지한다. 이번 카드 작성으로 별도 감사 저장소를 추가하지 않는다"
+    volume: "현재 화면·API의 조회/처리 범위와 기존 제한을 유지한다. 새로운 용량·성능 목표를 부여하지 않는다"
+    config: "메뉴·화면·API 등록과 매핑은 기존 시드 생성/배포 규칙을 따른다"
+    risk: "이번 소스 대조·기존 회귀 시험 범위에서 수용 기준 차이를 발견하지 않았다. 새 실환경·다중 인스턴스 시험 완료를 뜻하지 않는다"
+    relations: {"depends_on":[],"constrains":[],"conflicts_with":[],"nfr":[],"interfaces":[]}
+    realization: {"features":["FEAT-503"],"screens":["SCR-510","SCR-511","SCR-512"]}
+    examples: [{"kind":"정상","case":"USER_MGMT의 READ 매핑과 유효 권한이 있는 서비스 요청","result":"정확히 등록·매핑된 경로와 메뉴 액션으로 허용한다"},{"kind":"예외","case":"정식 시드 생성·검사·배포에서 화면 등록 또는 API 매핑이 누락","result":"해당 API에 유효한 등록·매핑·권한 사슬이 없으면 서버가 403으로 거부한다"}]
+    volatility: {"level":"low","what":"이미 구현된 system 기준선이다. 향후 업무 규칙·범위 변경은 기존 변경 절차를 따른다"}
+    source_review: {"at":"2026-10-26","result":"기존 구현과 일치 — 사용자 조건부 승인에 따라 확정","scope":"화면 등록은 sources/backend/bootstrap/build.gradle.kts의 메뉴 URL→screenRegistry→endpoints 시드 생성·검사·배포를 통해 서버 매핑으로 이어진다. 서버가 요청마다 프런트 원본 파일을 읽는 계약으로 해석하지 않는다. 권한 회수 동시 경합은 REQ-502.source_review.findings에 남기며 이 확정으로 해소하지 않는다.","tests":["sources/backend/modules/system/src/test/java/com/aiagent/system/api/authz/AuthorizationInterceptorTest.java","sources/backend/modules/system/src/test/java/com/aiagent/system/architecture/MenuModulePathContractTest.java"],"findings":[]}
+    open: []
+    maturity: {"level":"confirmed","at":"2026-10-26","by":"AI — 현재 소스 대조와 기존 회귀 검사","confirmed_by":"사용자 (2026-10-26 system 요구사항을 소스와 비교해 구현과 차이가 없으면 모두 확정 처리하도록 명시 승인)"}
 
   - id: REQ-504
     type: functional
@@ -72,11 +135,32 @@ requirements:
     acceptance: "시스템 그룹·코드의 삭제 또는 비활성화와 코드가 남은 그룹의 삭제, 정의에 없는 참조값 저장은 서버에서 거부되고, 코드·정의 삭제 시 그에 딸린 참조값과 코드명은 같은 트랜잭션에서 정리된다"
     source: "현재 구현 역추적 — 공통코드 관리와 공통 CodeSelect"
     evidence:
-      frontend: ["features/code", "shared/stores"]
-      backend: ["api/code", "domain/code"]
+      frontend: ["modules/system/features/code","shared/code"]
+      backend: ["sources/backend/domain/src/main/java/com/aiagent/domain/code/admin/CodeAdminService.java","sources/backend/domain/src/main/java/com/aiagent/domain/code/admin/CodeQueryService.java"]
       tables: [SYS_CODE_GROUP, SYS_CODE, SYS_CODE_GRP_REF, SYS_CODE_REF]
-      screens: ["/code"]
+      screens: ["/admin/system/code"]
     roadmap: RM-P1
+    summary: "공통코드와 참조 코드의 무결성을 보존한다"
+    intent: {"problem":"보호 코드 삭제나 잘못된 참조값이 저장되면 기존 데이터의 의미와 참조가 깨진다","goal":"시스템 보호 데이터와 코드·참조값·다국어 코드명의 무결성을 보존한다","not":["이번 기록은 기존 구현의 대조·개별 확정이며 새 기능·권한·보존 정책을 추가하지 않는다"]}
+    goal_trace: ["IN-07"]
+    decider: "제품 오너(사용자)"
+    preconditions: ["기존 system 작업흐름 승인과 UC-504·FEAT-504 및 해당 화면 요건을 전제로 현재 소스에 대조한다"]
+    data: [{"item":"SYS_CODE_GROUP·SYS_CODE·SYS_CODE_GRP_REF·SYS_CODE_REF","origin":"기존 system 기능의 관리 입력과 서버 처리","sensitivity":"기존 행위별 권한과 데이터 보호 규칙 적용","retention":"기존 엔티티·화면·운영 보존 규칙을 따른다. 이번 확정으로 기간을 변경하지 않는다"}]
+    business_rules: ["업무 범위와 판정은 이 카드의 detail·acceptance 및 UC-504를 따른다"]
+    exceptions: ["정상·예외 판정은 examples와 기존 UC-504·TC의 거부/실패 기준을 적용한다"]
+    lifecycle: "그룹·코드·참조 정의/값·코드명 생성·변경·삭제는 UC-504의 동일 트랜잭션 범위를 따른다"
+    permissions: "UC-504·연결 화면/API의 기존 public·common·service 구분과 행위별 유효 권한을 적용한다"
+    audit: "기존 구현의 이력과 UC-504의 처리 근거를 유지한다. 이번 카드 작성으로 별도 감사 저장소를 추가하지 않는다"
+    volume: "현재 화면·API의 조회/처리 범위와 기존 제한을 유지한다. 새로운 용량·성능 목표를 부여하지 않는다"
+    config: "기존 코드 그룹·참조 정의와 시스템 보호 설정을 사용한다"
+    risk: "이번 소스 대조·기존 회귀 시험 범위에서 수용 기준 차이를 발견하지 않았다. 새 실환경·다중 인스턴스 시험 완료를 뜻하지 않는다"
+    relations: {"depends_on":[],"constrains":[],"conflicts_with":[],"nfr":[],"interfaces":[]}
+    realization: {"features":["FEAT-504"],"screens":["SCR-513"]}
+    examples: [{"kind":"정상","case":"일반 코드 A에 등록된 참조 정의의 값을 저장","result":"허용된 참조만 저장하고 원본과 파생값의 수명주기를 함께 관리한다"},{"kind":"예외","case":"시스템 보호 코드를 삭제하거나 미등록 참조 정의의 값을 저장","result":"서버가 거부하고 기존 데이터를 유지한다"}]
+    volatility: {"level":"low","what":"이미 구현된 system 기준선이다. 향후 업무 규칙·범위 변경은 기존 변경 절차를 따른다"}
+    source_review: {"at":"2026-10-26","result":"기존 구현과 일치 — 사용자 조건부 승인에 따라 확정","scope":"detail·hard_rule·acceptance의 현재 백엔드·프런트 구현과 기존 테스트를 대조했다","tests":["sources/backend/domain/src/test/java/com/aiagent/domain/code/admin/CodeAdminServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/code/CodeServiceTest.java","sources/backend/modules/system/src/test/java/com/aiagent/system/api/code/CodeMigrationContractTest.java"],"findings":[]}
+    open: []
+    maturity: {"level":"confirmed","at":"2026-10-26","by":"AI — 현재 소스 대조와 기존 회귀 검사","confirmed_by":"사용자 (2026-10-26 system 요구사항을 소스와 비교해 구현과 차이가 없으면 모두 확정 처리하도록 명시 승인)"}
 
   - id: REQ-505
     type: functional
@@ -88,14 +172,35 @@ requirements:
     title: "생성된 메시지 키에 언어별 값을 일관되게 제공한다"
     detail: "시스템 관리자는 생성된 메시지 키의 언어별 값을 관리하고 미사용 키를 식별·삭제하며, 화면·서버·메뉴·공통코드가 같은 메시지 원천을 사용하게 해야 한다"
     hard_rule: "키 생성은 소스 상수와 시드 생성기가 소유한다. 관리 화면에서 임의 키를 추가하지 않는다"
-    acceptance: "요청 언어 값이 없을 때 기본 언어와 키 문자열 순의 폴백이 동작하고, 값 저장 한 번에 메시지 캐시 버전이 한 번 증가하며 커밋한 인스턴스는 즉시, 다른 인스턴스는 설정된 TTL 안에 새 값을 읽는다"
+    acceptance: "요청 언어가 없으면 기본 언어를 사용하며 표시 계층은 값이 모두 없을 때 기존 키·오류 기본문구 폴백을 적용한다. 성공한 값 저장마다 MESSAGE 버전을 한 번 증가시키며 동시 저장에서도 증가가 유실되지 않는다. 일반 서버 문구 캐시는 커밋 노드의 후속 조회에서 갱신되고 다른 노드는 설정 TTL 안에 갱신한다. 공개 번들은 반환 버전과 본문이 같은 변경 상태를 나타낸다"
     source: "현재 구현 역추적 — 다국어 메시지 관리, label(), MsgKey, 메시지 시드"
     evidence:
-      frontend: ["modules/system/features/message", "shared/i18n"]
-      backend: ["api/message", "domain/message", "core/message"]
+      frontend: ["modules/system/features/message","shared/i18n"]
+      backend: ["sources/backend/domain/src/main/java/com/aiagent/domain/message/admin/MessageAdminService.java","sources/backend/domain/src/main/java/com/aiagent/domain/message/service/MessageService.java","sources/backend/domain/src/main/java/com/aiagent/domain/message/entity/SysCacheVersion.java","sources/backend/domain/src/main/java/com/aiagent/domain/message/repository/SysCacheVersionRepository.java"]
       tables: [SYS_MESSAGE_KEY, SYS_MESSAGE, SYS_CACHE_VERSION]
-      screens: ["/message"]
+      screens: ["/admin/system/message"]
     roadmap: RM-P1
+    summary: "생성된 메시지 키에 언어별 값을 일관되게 제공한다"
+    intent: {"problem":"언어 폴백이나 변경 전파가 어긋나면 화면·서버가 서로 다른 메시지를 표시한다","goal":"생성된 키의 언어 값과 캐시 버전을 일관되게 전달한다","not":["이번 기록은 기존 구현의 대조·개별 확정이며 새 기능·권한·보존 정책을 추가하지 않는다"]}
+    goal_trace: ["IN-07"]
+    decider: "제품 오너(사용자)"
+    preconditions: ["기존 system 작업흐름 승인과 UC-505·FEAT-505 및 해당 화면 요건을 전제로 현재 소스에 대조한다"]
+    data: [{"item":"SYS_MESSAGE_KEY·SYS_MESSAGE·SYS_CACHE_VERSION","origin":"기존 system 기능의 관리 입력과 서버 처리","sensitivity":"기존 행위별 권한과 데이터 보호 규칙 적용","retention":"기존 엔티티·화면·운영 보존 규칙을 따른다. 이번 확정으로 기간을 변경하지 않는다"}]
+    business_rules: ["키 생성은 기존 소스 상수·시드 생성기만 수행하고 관리 화면은 값과 미사용 키를 관리한다","값 변경과 캐시 버전 원자 증가는 한 트랜잭션이며 둘 중 하나가 실패하면 함께 롤백한다. 코드명·메뉴명 변경의 메시지 버전도 같은 증가 규칙을 사용한다","무효화 전에 시작한 조회 결과를 무효화 후 새 캐시로 재등록하지 않는다. 이미 진행 중인 조회 결과를 소급 바꾸는 계약은 아니다","일반 서버 문구 조회에는 기존 노드별 TTL을 유지한다. 공개 번들은 노드의 오래된 TTL 캐시를 새 버전으로 포장하지 않고 DB 본문과 전후 버전 일치를 확인한다","공개 번들 읽기 중 변경되면 최대 3회 확인하고 계속 경합하면 본문을 성공 응답으로 보내지 않고 409를 반환한다. 브라우저 버전 비교 시점은 기존 로그인·세션 복원·번들 요청이며 실시간 강제 푸시를 추가하지 않는다","요청 언어·기본 언어 값이 모두 없으면 공개 번들에서 키를 생략하고 화면 label과 MessageService.text는 키를 표시한다. 서버 오류는 ErrorCode의 기본문구로 폴백한다"]
+    exceptions: ["관리 화면의 임의 키 생성은 거부한다. 값·버전 저장 실패는 함께 롤백하고 공개 번들 읽기의 반복 경합은 409로 응답한다"]
+    lifecycle: "키 생성·값 저장 → 같은 트랜잭션의 원자 버전 증가 → 커밋 후 현재 노드 무효화. 일반 서버 문구는 노드별 TTL, 공개 번들은 버전·본문 일치 검사 후 제공한다"
+    permissions: "UC-505·연결 화면/API의 기존 public·common·service 구분과 행위별 유효 권한을 적용한다"
+    audit: "기존 구현의 이력과 UC-505의 처리 근거를 유지한다. 이번 카드 작성으로 별도 감사 저장소를 추가하지 않는다"
+    volume: "현재 화면·API의 조회/처리 범위와 기존 제한을 유지한다. 새로운 용량·성능 목표를 부여하지 않는다"
+    config: "기존 기본 언어·일반 서버 문구 캐시 TTL 설정을 유지한다. 공개 번들 본문은 TTL 캐시와 분리하며 버전 검증이 끝난 결과만 브라우저에 전달한다"
+    risk: "DB 경합 시험은 JPA/H2이며 PostgreSQL 실연결·장시간 부하 시험은 미수행이다. 기본 시드가 없는 최초 동시 생성은 PK 충돌로 한 저장 전체가 롤백될 수 있다. 이미 브라우저에 저장된 과거 오염 번들은 배포 시 저장된 번들 캐시를 비우거나 정상 메시지 저장으로 버전을 갱신해야 한다"
+    relations: {"depends_on":[],"constrains":[],"conflicts_with":[],"nfr":[],"interfaces":[]}
+    realization: {"features":["FEAT-505"],"screens":["SCR-514"]}
+    examples: [{"kind":"정상","case":"요청 언어가 없고 기본 언어 값이 있음","result":"기본 언어로 표시한다. 둘 다 없으면 표시 계층의 키·오류 기본문구를 사용한다"},{"kind":"예외","case":"서로 다른 메시지를 동시에 저장하거나 캐시 적재 중 무효화","result":"각 커밋의 버전 증가를 보존하고 이전 적재 결과를 새 캐시에 재등록하지 않는다"}]
+    volatility: {"level":"low","what":"이미 구현된 system 기준선이다. 향후 업무 규칙·범위 변경은 기존 변경 절차를 따른다"}
+    source_review: {"at":"2026-10-27","result":"문서 정정·경합 보완과 회귀 검사 완료","scope":"버전 증가 유실·무효화 후 이전 캐시 재등록·다른 노드의 최신 버전/오래된 본문 혼합·번들 조회 중 커밋의 4개 실패를 재현한 뒤 수정·통과했다. 실제 JPA/H2의 두 트랜잭션 증가·롤백·초기화도 검증했다. 원자 증가 +1을 +0으로 반전하면 동시 증가 시험이 실패한다","tests":["sources/backend/domain/src/test/java/com/aiagent/domain/message/admin/MessageAdminServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/message/MessageServiceTest.java","sources/backend/modules/system/src/test/java/com/aiagent/system/api/message/MessageMigrationContractTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/message/admin/MessageVersionConcurrencyTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/message/admin/MessageVersionJpaTest.java","sources/backend/modules/system/src/test/java/com/aiagent/system/api/message/MessageBundleConsistencyTest.java"],"findings":[]}
+    open: []
+    maturity: {"level":"confirmed","at":"2026-10-27","by":"AI — 현재 소스 대조·실패 재현 후 수정·회귀 검사","confirmed_by":"사용자 (system 소스와 일치하면 확정하도록 한 기존 승인 및 2026-10-27 제안대로 문서 보완·테스트 요청)"}
 
   - id: REQ-506
     type: functional
@@ -109,11 +214,32 @@ requirements:
     acceptance: "잘못된 형식·범위·미등록 키 변경은 저장되지 않고, 성공한 변경은 설정 캐시 버전과 함께 한 트랜잭션으로 적용되며 되돌리면 오버라이드 행이 사라져 배포 기본값이 다시 드러난다. 설정값은 노드 캐시가 아니라 다음 작업 스코프의 DB 오버라이드 합성으로 반영된다. `sys-config.*` 밖의 비밀·보호 설정은 목록·응답·저장 요청에 나타나지 않는다"
     source: "현재 구현 역추적 — 시스템 환경설정 화면과 사용자 설정 모달"
     evidence:
-      frontend: ["modules/system/features/config", "modules/system/public/settings"]
-      backend: ["modules/system/api/config", "domain/config"]
+      frontend: ["modules/system/features/config","modules/system/public/settings"]
+      backend: ["sources/backend/domain/src/main/java/com/aiagent/domain/config/admin/ConfigService.java","sources/backend/domain/src/main/java/com/aiagent/domain/config/admin/ConfigQueryService.java","sources/backend/support/src/main/java/com/aiagent/support/config/ConfigCatalog.java","sources/backend/support/src/main/java/com/aiagent/support/config/ConfigLookup.java"]
       tables: [SYS_CONFIG, SYS_CACHE_VERSION]
-      screens: ["/admin/system/config", "_standalone/system/settings"]
+      screens: ["/admin/system/config","_standalone/system/settings"]
     roadmap: RM-P1
+    summary: "시스템 설정은 검증된 값만 적용하고 배포 기본값으로 되돌릴 수 있어야 한다"
+    intent: {"problem":"미등록·범위 밖 설정이나 부분 적용이 인증·운영 동작을 잘못 바꿀 수 있다","goal":"등록 설정만 검증해 원자적으로 적용하고 오버라이드를 제거해 배포 기본값으로 복원한다","not":["이번 기록은 기존 구현의 대조·개별 확정이며 새 기능·권한·보존 정책을 추가하지 않는다"]}
+    goal_trace: ["IN-07"]
+    decider: "제품 오너(사용자)"
+    preconditions: ["기존 system 작업흐름 승인과 UC-506·FEAT-506 및 해당 화면 요건을 전제로 현재 소스에 대조한다"]
+    data: [{"item":"SYS_CONFIG·SYS_CACHE_VERSION","origin":"기존 system 기능의 관리 입력과 서버 처리","sensitivity":"기존 행위별 권한과 데이터 보호 규칙 적용","retention":"기존 엔티티·화면·운영 보존 규칙을 따른다. 이번 확정으로 기간을 변경하지 않는다"}]
+    business_rules: ["업무 범위와 판정은 이 카드의 detail·acceptance 및 UC-506를 따른다"]
+    exceptions: ["정상·예외 판정은 examples와 기존 UC-506·TC의 거부/실패 기준을 적용한다"]
+    lifecycle: "배포 기본값→검증된 DB 오버라이드→오버라이드 삭제의 기존 전이를 유지한다"
+    permissions: "UC-506·연결 화면/API의 기존 public·common·service 구분과 행위별 유효 권한을 적용한다"
+    audit: "기존 구현의 이력과 UC-506의 처리 근거를 유지한다. 이번 카드 작성으로 별도 감사 저장소를 추가하지 않는다"
+    volume: "현재 화면·API의 조회/처리 범위와 기존 제한을 유지한다. 새로운 용량·성능 목표를 부여하지 않는다"
+    config: "sys-config.*의 기존 등록된 키만 관리한다. 비밀·보호 설정은 배포 경로를 유지한다"
+    risk: "이번 소스 대조·기존 회귀 시험 범위에서 수용 기준 차이를 발견하지 않았다. 새 실환경·다중 인스턴스 시험 완료를 뜻하지 않는다"
+    relations: {"depends_on":[],"constrains":[],"conflicts_with":[],"nfr":[],"interfaces":[]}
+    realization: {"features":["FEAT-506"],"screens":["SCR-504","SCR-515"]}
+    examples: [{"kind":"정상","case":"auth.login.fail-limit의 유효한 값을 저장한 뒤 되돌리기","result":"값·설정 버전을 같은 트랜잭션으로 처리하고 되돌리기는 오버라이드 행을 삭제한다"},{"kind":"예외","case":"미등록 키나 형식·범위를 위반하는 값 저장","result":"쓰기를 거부하고 기존 유효 설정을 유지한다"}]
+    volatility: {"level":"low","what":"이미 구현된 system 기준선이다. 향후 업무 규칙·범위 변경은 기존 변경 절차를 따른다"}
+    source_review: {"at":"2026-10-26","result":"기존 구현과 일치 — 사용자 조건부 승인에 따라 확정","scope":"ConfigService는 값·버전을 같은 트랜잭션으로 저장하고 ConfigLookup은 다음 작업 스코프에서 DB 값을 다시 합성한다. REQ-505와 공유하는 버전 엔티티의 동시 증가 문제는 해당 findings를 참조하며, 설정값 적용을 노드 캐시/버전 변화에 의존하는 방식으로 간주하지 않는다.","tests":["sources/backend/domain/src/test/java/com/aiagent/domain/config/admin/ConfigServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/config/admin/ConfigQueryServiceTest.java","sources/backend/support/src/test/java/com/aiagent/support/config/ConfigLookupTest.java","sources/backend/support/src/test/java/com/aiagent/support/config/ConfigValidatorTest.java"],"findings":[]}
+    open: []
+    maturity: {"level":"confirmed","at":"2026-10-26","by":"AI — 현재 소스 대조와 기존 회귀 검사","confirmed_by":"사용자 (2026-10-26 system 요구사항을 소스와 비교해 구현과 차이가 없으면 모두 확정 처리하도록 명시 승인)"}
 
   - id: REQ-507
     type: functional
@@ -127,11 +253,32 @@ requirements:
     acceptance: "이력 화면에는 저장·삭제 경로가 없고, 요청·오류 전문을 받는 상세 API는 목록과 같은 해당 이력 메뉴의 현재 READ 권한 사슬을 통과해야 한다"
     source: "현재 구현 역추적 — 로그인 이력·사용 이력·에러 로그 화면"
     evidence:
-      frontend: ["modules/system/features/loginlog", "modules/system/features/accesslog", "modules/system/features/errorlog"]
-      backend: ["modules/system/api/log", "domain/log", "domain/auth/loginlog"]
+      frontend: ["modules/system/features/loginlog","modules/system/features/accesslog","modules/system/features/errorlog"]
+      backend: ["sources/backend/modules/system/src/main/java/com/aiagent/system/api/log/LoginLogController.java","sources/backend/modules/system/src/main/java/com/aiagent/system/api/log/AccessLogController.java","sources/backend/modules/system/src/main/java/com/aiagent/system/api/log/ErrorLogController.java","sources/backend/modules/system/src/main/java/com/aiagent/system/api/authz/AuthorizationInterceptor.java"]
       tables: [SYS_LO_LOGIN, SYS_LO_ACCESS, SYS_LO_EXCEPTION]
-      screens: ["/admin/system/log/login", "/admin/system/log/access", "/admin/system/log/error"]
+      screens: ["/admin/system/log/login","/admin/system/log/access","/admin/system/log/error"]
     roadmap: RM-P1
+    summary: "로그인·사용·오류 이력을 수정·삭제 경로 없이 조회하고 원인을 추적한다"
+    intent: {"problem":"감사 이력을 고치거나 목록 권한 없이 전문을 읽으면 사건 근거와 접근 통제가 무너진다","goal":"불변 이력을 현재 권한 아래 조회하고 요청·오류 근거를 연결한다","not":["이번 기록은 기존 구현의 대조·개별 확정이며 새 기능·권한·보존 정책을 추가하지 않는다"]}
+    goal_trace: ["IN-07"]
+    decider: "제품 오너(사용자)"
+    preconditions: ["기존 system 작업흐름 승인과 UC-507·FEAT-507 및 해당 화면 요건을 전제로 현재 소스에 대조한다"]
+    data: [{"item":"SYS_LO_LOGIN·SYS_LO_ACCESS·SYS_LO_EXCEPTION","origin":"기존 system 기능의 관리 입력과 서버 처리","sensitivity":"기존 행위별 권한과 데이터 보호 규칙 적용","retention":"기존 엔티티·화면·운영 보존 규칙을 따른다. 이번 확정으로 기간을 변경하지 않는다"}]
+    business_rules: ["업무 범위와 판정은 이 카드의 detail·acceptance 및 UC-507를 따른다"]
+    exceptions: ["정상·예외 판정은 examples와 기존 UC-507·TC의 거부/실패 기준을 적용한다"]
+    lifecycle: "원 이력 조회와 보존 만료 처리를 구분하며 관리 화면의 수정·삭제 전이는 두지 않는다"
+    permissions: "UC-507·연결 화면/API의 기존 public·common·service 구분과 행위별 유효 권한을 적용한다"
+    audit: "기존 구현의 이력과 UC-507의 처리 근거를 유지한다. 이번 카드 작성으로 별도 감사 저장소를 추가하지 않는다"
+    volume: "현재 화면·API의 조회/처리 범위와 기존 제한을 유지한다. 새로운 용량·성능 목표를 부여하지 않는다"
+    config: "기존 이력별 조회 범위·전문 보존/상한 정책을 적용한다"
+    risk: "이번 소스 대조·기존 회귀 시험 범위에서 수용 기준 차이를 발견하지 않았다. 새 실환경·다중 인스턴스 시험 완료를 뜻하지 않는다"
+    relations: {"depends_on":[],"constrains":[],"conflicts_with":[],"nfr":[],"interfaces":[]}
+    realization: {"features":["FEAT-507"],"screens":["SCR-516","SCR-517","SCR-518"]}
+    examples: [{"kind":"정상","case":"사용 이력 메뉴 READ 권한으로 특정 요청의 전문 조회","result":"같은 이력 메뉴 권한 사슬을 통과한 상세만 제공한다"},{"kind":"예외","case":"이력 메뉴 READ 없이 상세 경로 직접 호출","result":"서버가 403으로 거부하고 원 이력의 수정·삭제 경로도 제공하지 않는다"}]
+    volatility: {"level":"low","what":"이미 구현된 system 기준선이다. 향후 업무 규칙·범위 변경은 기존 변경 절차를 따른다"}
+    source_review: {"at":"2026-10-26","result":"기존 구현과 일치 — 사용자 조건부 승인에 따라 확정","scope":"detail·hard_rule·acceptance의 현재 백엔드·프런트 구현과 기존 테스트를 대조했다","tests":["sources/backend/modules/system/src/test/java/com/aiagent/system/api/log/LogMigrationContractTest.java","sources/backend/modules/system/src/test/java/com/aiagent/system/api/log/ErrorLogMigrationContractTest.java","sources/backend/modules/system/src/test/java/com/aiagent/system/api/authz/AuthorizationInterceptorTest.java"],"findings":[]}
+    open: []
+    maturity: {"level":"confirmed","at":"2026-10-26","by":"AI — 현재 소스 대조와 기존 회귀 검사","confirmed_by":"사용자 (2026-10-26 system 요구사항을 소스와 비교해 구현과 차이가 없으면 모두 확정 처리하도록 명시 승인)"}
 
   - id: REQ-508
     type: functional
@@ -142,14 +289,35 @@ requirements:
     process_step: PRC-08-02
     title: "등록된 배치를 일정과 시간대에 따라 실행하고 결과를 추적한다"
     detail: "시스템 관리자는 배치 일정 등록·활성화·즉시 실행·중단과 최근·전체 이력 조회를 할 수 있어야 한다"
-    acceptance: "존재하지 않는 구현, 잘못된 크론·시간대, 쿨다운 위반과 중복 실행은 거부되고 유령·중단 경합은 성공과 다른 결과로 기록된다"
+    acceptance: "미등록 구현·잘못된 크론·시간대·잠금 설정을 거부하고 같은 배치의 중복 실행을 막는다. 스케줄 실행은 쿨다운을 지켜 SKIP_COOLDOWN을 기록하고 수동 즉시 실행은 쿨다운을 우회한다. 중단 요청만으로 결과를 바꾸지 않으며 작업이 중단을 보고하면 CANCELED, 정상 완료하면 SUCCESS로 기록한다"
     source: "현재 구현 역추적 — 배치 스케줄·실행 이력 화면과 스케줄러"
     evidence:
-      frontend: ["modules/system/features/batchschedule", "modules/system/features/batchhistory", "shared/batch"]
-      backend: ["modules/system/api/batch", "api/batch", "domain/batch"]
+      frontend: ["modules/system/features/batchschedule","modules/system/features/batchhistory","shared/batch"]
+      backend: ["sources/backend/domain/src/main/java/com/aiagent/domain/batch/schedule/BatchScheduleService.java","sources/backend/domain/src/main/java/com/aiagent/domain/batch/run/BatchRunner.java","sources/backend/domain/src/main/java/com/aiagent/domain/batch/history/BatchCancelService.java","sources/backend/domain/src/main/java/com/aiagent/domain/batch/run/BatchGhostSweeper.java"]
       tables: [SYS_SCHEDULE_BATCH, SYS_BATCH_HISTORY]
-      screens: ["/admin/system/batch/schedule", "/admin/system/batch/history"]
+      screens: ["/admin/system/batch/schedule","/admin/system/batch/history"]
     roadmap: RM-P1
+    summary: "등록된 배치를 일정과 시간대에 따라 실행하고 결과를 추적한다"
+    intent: {"problem":"쿨다운·중단·유실 결과의 범위가 모호하면 실제 수행과 운영 판단이 달라진다","goal":"등록된 일정·수동 실행·협조적 중단과 결과 이력을 일관되게 관리한다","not":["이번 기록은 기존 구현의 대조·개별 확정이며 새 기능·권한·보존 정책을 추가하지 않는다"]}
+    goal_trace: ["IN-07"]
+    decider: "제품 오너(사용자)"
+    preconditions: ["기존 system 작업흐름 승인과 UC-508·FEAT-508 및 해당 화면 요건을 전제로 현재 소스에 대조한다"]
+    data: [{"item":"SYS_SCHEDULE_BATCH·SYS_BATCH_HISTORY","origin":"기존 system 기능의 관리 입력과 서버 처리","sensitivity":"기존 행위별 권한과 데이터 보호 규칙 적용","retention":"기존 엔티티·화면·운영 보존 규칙을 따른다. 이번 확정으로 기간을 변경하지 않는다"}]
+    business_rules: ["스케줄의 쿨다운 건너뜀과 잠금 선점 실패는 각각 SKIP_COOLDOWN·SKIP_LOCK이다. 수동 실행은 RUNNING 여부를 확인하고 쿨다운 락을 해제·재획득하며 실행 중이면 새 실행을 시작하지 않는다","중단 API는 요청 시각을 기록한다. 작업이 안전 지점에서 이를 확인하고 중단 결과를 반환할 때만 CANCELED다. 강제 스레드 종료나 이미 완료한 업무의 롤백을 뜻하지 않는다","유실 실행은 LOST, 작업 예외는 FAIL, 정상 완료는 SUCCESS다. 중단 요청과 정상 완료가 겹쳤다는 이유만으로 정상 결과를 실패나 중단으로 바꾸지 않는다"]
+    exceptions: ["수동 요청에서 이미 RUNNING인 배치는 새 실행 대신 현재 실행 정보를 반환한다. 스케줄의 잠금·쿨다운 건너뜀과 유실 판정은 기존 결과 코드로 구분한다"]
+    lifecycle: "스케줄 건너뜀 또는 RUNNING → 실제 SUCCESS·FAIL·CANCELED·LOST로 종결한다. 중단 요청 시각은 실행 결과와 별도로 보존한다"
+    permissions: "UC-508·연결 화면/API의 기존 public·common·service 구분과 행위별 유효 권한을 적용한다"
+    audit: "기존 구현의 이력과 UC-508의 처리 근거를 유지한다. 이번 카드 작성으로 별도 감사 저장소를 추가하지 않는다"
+    volume: "현재 화면·API의 조회/처리 범위와 기존 제한을 유지한다. 새로운 용량·성능 목표를 부여하지 않는다"
+    config: "기존 cron·timezone·잠금 만료·쿨다운과 BatchJob 등록을 사용한다"
+    risk: "기존 실행·중단 규칙의 회귀 검사이며 각 고객사 BatchJob의 안전 지점과 실제 외부 업무 중단·롤백을 보증하지 않는다"
+    relations: {"depends_on":[],"constrains":[],"conflicts_with":[],"nfr":[],"interfaces":[]}
+    realization: {"features":["FEAT-508"],"screens":["SCR-519","SCR-520"]}
+    examples: [{"kind":"정상","case":"쿨다운 중 수동 즉시 실행 요청이며 실행 중인 배치는 없음","result":"쿨다운을 우회하되 잠금을 다시 선점해 실행한다"},{"kind":"예외","case":"정상 완료 직전 중단 요청이 도착했지만 작업이 정상 결과를 반환","result":"중단 요청 시각은 남기고 실제 결과 SUCCESS를 유지한다"}]
+    volatility: {"level":"low","what":"이미 구현된 system 기준선이다. 향후 업무 규칙·범위 변경은 기존 변경 절차를 따른다"}
+    source_review: {"at":"2026-10-27","result":"문서 정정·경합 보완과 회귀 검사 완료","scope":"수동 쿨다운 우회·협조적 중단의 기존 구현에 맞게 REQ·PRC·UC·FEAT·TC를 정정했다. 중단 요청이 있어도 정상 반환이면 SUCCESS인 회귀 시험을 추가했다. 요청 유무를 실제 결과로 오용하는 반전에서 중단/정상 완료 시험 2건이 실패했다. 배치 제품 코드는 변경하지 않았다","tests":["sources/backend/domain/src/test/java/com/aiagent/domain/batch/BatchScheduleServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/batch/BatchRunnerTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/batch/BatchCooldownTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/batch/BatchCancelServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/batch/BatchGhostSweeperTest.java"],"findings":[]}
+    open: []
+    maturity: {"level":"confirmed","at":"2026-10-27","by":"AI — 현재 소스 대조·실패 재현 후 수정·회귀 검사","confirmed_by":"사용자 (system 소스와 일치하면 확정하도록 한 기존 승인 및 2026-10-27 제안대로 문서 보완·테스트 요청)"}
 
   - id: REQ-509
     type: functional
@@ -163,11 +331,32 @@ requirements:
     acceptance: "게시 기간 밖 공지는 팝업으로 보이지 않고, 요청 처리·반려가 실제 권한·계정 변경을 암묵적으로 수행하지 않는다"
     source: "현재 구현 역추적 — 공지·알림 요청·알림함·공지 팝업"
     evidence:
-      frontend: ["modules/system/features/notice", "modules/system/public/notice", "modules/system/features/notirequest", "modules/system/public/notification"]
-      backend: ["modules/system/api/notice", "modules/system/api/notirequest", "modules/system/api/notification", "domain/notification"]
+      frontend: ["modules/system/features/notice","modules/system/public/notice","modules/system/features/notirequest","modules/system/public/notification"]
+      backend: ["sources/backend/domain/src/main/java/com/aiagent/domain/notification/notice/NoticeFeedService.java","sources/backend/domain/src/main/java/com/aiagent/domain/notification/notice/NoticeService.java","sources/backend/domain/src/main/java/com/aiagent/domain/notification/request/NotiRequestService.java","sources/backend/domain/src/main/java/com/aiagent/domain/notification/inbox/MyNotiService.java"]
       tables: [SYS_NOTICE, SYS_NOTI_REQUEST, SYS_NOTI_INBOX]
-      screens: ["/admin/system/notice", "/admin/system/noti-request", "_standalone/system/noti-inbox", "_standalone/system/notice-popup"]
+      screens: ["/admin/system/notice","/admin/system/noti-request","_standalone/system/noti-inbox","_standalone/system/notice-popup"]
     roadmap: RM-P1
+    summary: "공지 노출과 사용자의 관리 요청 판정을 분리해 운영한다"
+    intent: {"problem":"공지 노출 기간이나 요청 판정과 실제 권한 변경을 혼동하면 잘못된 안내·권한 부여가 발생한다","goal":"공지 노출과 관리 요청 판정·알림을 기존 계정/권한 변경과 분리한다","not":["이번 기록은 기존 구현의 대조·개별 확정이며 새 기능·권한·보존 정책을 추가하지 않는다"]}
+    goal_trace: ["IN-07"]
+    decider: "제품 오너(사용자)"
+    preconditions: ["기존 system 작업흐름 승인과 UC-509·FEAT-509 및 해당 화면 요건을 전제로 현재 소스에 대조한다"]
+    data: [{"item":"SYS_NOTICE·SYS_NOTI_REQUEST·SYS_NOTI_INBOX","origin":"기존 system 기능의 관리 입력과 서버 처리","sensitivity":"기존 행위별 권한과 데이터 보호 규칙 적용","retention":"기존 엔티티·화면·운영 보존 규칙을 따른다. 이번 확정으로 기간을 변경하지 않는다"}]
+    business_rules: ["업무 범위와 판정은 이 카드의 detail·acceptance 및 UC-509를 따른다"]
+    exceptions: ["정상·예외 판정은 examples와 기존 UC-509·TC의 거부/실패 기준을 적용한다"]
+    lifecycle: "공지 게시/내림과 관리 요청의 접수→처리/반려는 UC-509의 별도 전이로 유지한다"
+    permissions: "UC-509·연결 화면/API의 기존 public·common·service 구분과 행위별 유효 권한을 적용한다"
+    audit: "기존 구현의 이력과 UC-509의 처리 근거를 유지한다. 이번 카드 작성으로 별도 감사 저장소를 추가하지 않는다"
+    volume: "현재 화면·API의 조회/처리 범위와 기존 제한을 유지한다. 새로운 용량·성능 목표를 부여하지 않는다"
+    config: "기존 게시·팝업 기간·알림 목록 설정을 사용한다"
+    risk: "이번 소스 대조·기존 회귀 시험 범위에서 수용 기준 차이를 발견하지 않았다. 새 실환경·다중 인스턴스 시험 완료를 뜻하지 않는다"
+    relations: {"depends_on":[],"constrains":["REQ-103","REQ-119"],"conflicts_with":[],"nfr":[],"interfaces":[]}
+    realization: {"features":["FEAT-509"],"screens":["SCR-521","SCR-522","SCR-523","SCR-524"]}
+    examples: [{"kind":"정상","case":"접수된 관리 요청 1건을 사유와 함께 처리","result":"요청 상태·처리자·시각과 알림만 저장하며 계정·권한은 바꾸지 않는다"},{"kind":"예외","case":"게시 기간 밖 공지의 팝업 조회 또는 사유 없는 반려","result":"기간 밖 팝업은 반환하지 않고 빈 반려 사유는 거부한다"}]
+    volatility: {"level":"low","what":"이미 구현된 system 기준선이다. 향후 업무 규칙·범위 변경은 기존 변경 절차를 따른다"}
+    source_review: {"at":"2026-10-26","result":"기존 구현과 일치 — 사용자 조건부 승인에 따라 확정","scope":"detail·hard_rule·acceptance의 현재 백엔드·프런트 구현과 기존 테스트를 대조했다","tests":["sources/backend/domain/src/test/java/com/aiagent/domain/notification/notice/NoticeServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/notification/request/NotiRequestServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/notification/inbox/MyNotiServiceTest.java"],"findings":[]}
+    open: []
+    maturity: {"level":"confirmed","at":"2026-10-26","by":"AI — 현재 소스 대조와 기존 회귀 검사","confirmed_by":"사용자 (2026-10-26 system 요구사항을 소스와 비교해 구현과 차이가 없으면 모두 확정 처리하도록 명시 승인)"}
 
   - id: REQ-510
     type: functional
@@ -182,11 +371,32 @@ requirements:
     acceptance: "같은 사용자가 어느 화면 영역에서 접근해도 공통 상태가 하나이고, 모듈별 테이블·서비스 복제 없이 system 공개 계약으로 읽고 쓴다"
     source: "현재 구현 역추적 — 공통 즐겨찾기·그리드·검색조건·메뉴 통계 저장소"
     evidence:
-      frontend: ["shared/favorite", "shared/grid", "shared/searchform", "shared/menustat"]
-      backend: ["modules/system/api/favorite", "modules/system/api/gridpref", "modules/system/api/searchcond", "modules/system/api/menustat", "domain/favorite", "domain/gridpref", "domain/searchcond", "domain/menustat"]
+      frontend: ["shared/favorite","shared/grid","shared/searchform","shared/menustat"]
+      backend: ["sources/backend/modules/system/src/main/java/com/aiagent/system/api/favorite/FavoriteController.java","sources/backend/modules/system/src/main/java/com/aiagent/system/api/gridpref/GridPrefController.java","sources/backend/modules/system/src/main/java/com/aiagent/system/api/searchcond/SearchCondController.java","sources/backend/modules/system/src/main/java/com/aiagent/system/api/menustat/MenuStatController.java","sources/backend/domain/src/main/java/com/aiagent/domain/favorite/service/FavoriteService.java","sources/backend/domain/src/main/java/com/aiagent/domain/gridpref/service/GridPrefService.java","sources/backend/domain/src/main/java/com/aiagent/domain/searchcond/service/SearchCondService.java","sources/backend/domain/src/main/java/com/aiagent/domain/menustat/service/MenuStatService.java"]
       tables: [SYS_USER_FAVORITE, SYS_USER_GRID_PREF, SYS_USER_SEARCH_COND, SYS_USER_MENU_STAT]
       screens: ["/admin/system/dashboard"]
     roadmap: RM-P1
+    summary: "모듈 공통 사용자 상태는 system이 한 번만 소유한다"
+    intent: {"problem":"화면 모듈마다 공통 사용자 상태를 복제하면 같은 사용자의 저장값과 소유권이 갈린다","goal":"공통 사용자 상태를 system 공개 계약과 기존 테이블 한 곳에서 관리한다","not":["이번 기록은 기존 구현의 대조·개별 확정이며 새 기능·권한·보존 정책을 추가하지 않는다"]}
+    goal_trace: ["IN-07"]
+    decider: "제품 오너(사용자)"
+    preconditions: ["기존 system 작업흐름 승인과 UC-510·FEAT-510 및 해당 화면 요건을 전제로 현재 소스에 대조한다"]
+    data: [{"item":"SYS_USER_FAVORITE·SYS_USER_GRID_PREF·SYS_USER_SEARCH_COND·SYS_USER_MENU_STAT","origin":"기존 system 기능의 관리 입력과 서버 처리","sensitivity":"기존 행위별 권한과 데이터 보호 규칙 적용","retention":"기존 엔티티·화면·운영 보존 규칙을 따른다. 이번 확정으로 기간을 변경하지 않는다"}]
+    business_rules: ["업무 범위와 판정은 이 카드의 detail·acceptance·hard_rule 및 UC-510를 따른다"]
+    exceptions: ["정상·예외 판정은 examples와 기존 UC-510·TC의 거부/실패 기준을 적용한다"]
+    lifecycle: "사용자별 저장·변경·삭제와 메뉴 유효성은 UC-510의 기존 계약을 따른다"
+    permissions: "UC-510·연결 화면/API의 기존 public·common·service 구분과 행위별 유효 권한을 적용한다"
+    audit: "기존 구현의 이력과 UC-510의 처리 근거를 유지한다. 이번 카드 작성으로 별도 감사 저장소를 추가하지 않는다"
+    volume: "현재 화면·API의 조회/처리 범위와 기존 제한을 유지한다. 새로운 용량·성능 목표를 부여하지 않는다"
+    config: "기존 사용자 상태의 메뉴·그리드·조회조건 식별을 사용하고 별도 모듈별 저장소를 추가하지 않는다"
+    risk: "이번 소스 대조·기존 회귀 시험 범위에서 수용 기준 차이를 발견하지 않았다. 새 실환경·다중 인스턴스 시험 완료를 뜻하지 않는다"
+    relations: {"depends_on":[],"constrains":[],"conflicts_with":[],"nfr":[],"interfaces":[]}
+    realization: {"features":["FEAT-510"],"screens":["SCR-525"]}
+    examples: [{"kind":"정상","case":"user01이 화면 영역을 바꿔 같은 메뉴의 저장 조회조건 조회","result":"세션 사용자를 기준으로 동일한 공통 저장소의 값을 읽는다"},{"kind":"예외","case":"클라이언트가 다른 사용자 ID를 지정해 공통 상태에 접근 시도","result":"요청 형식은 소유자 ID를 받지 않고 서버 세션의 사용자로 처리한다"}]
+    volatility: {"level":"low","what":"이미 구현된 system 기준선이다. 향후 업무 규칙·범위 변경은 기존 변경 절차를 따른다"}
+    source_review: {"at":"2026-10-26","result":"기존 구현과 일치 — 사용자 조건부 승인에 따라 확정","scope":"detail·hard_rule·acceptance의 현재 백엔드·프런트 구현과 기존 테스트를 대조했다","tests":["sources/backend/modules/system/src/test/java/com/aiagent/system/api/userstate/UserStateMigrationContractTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/favorite/FavoriteServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/gridpref/GridPrefServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/searchcond/SearchCondServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/menustat/MenuStatServiceTest.java"],"findings":[]}
+    open: []
+    maturity: {"level":"confirmed","at":"2026-10-26","by":"AI — 현재 소스 대조와 기존 회귀 검사","confirmed_by":"사용자 (2026-10-26 system 요구사항을 소스와 비교해 구현과 차이가 없으면 모두 확정 처리하도록 명시 승인)"}
 
 # ── 요구사항 모순 검사 ─────────────────────────────────────────────
 # 별도 현황 문서를 만들지 않는다. 판정은 요구사항 정본의 충돌하기 쉬운 쌍 옆에서 관리한다.

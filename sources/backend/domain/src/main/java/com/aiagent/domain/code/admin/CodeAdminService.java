@@ -20,7 +20,6 @@ import com.aiagent.domain.message.repository.SysMessageKeyRepository;
 import com.aiagent.domain.message.repository.SysMessageRepository;
 import com.aiagent.domain.message.service.MessageService;
 import java.time.Clock;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -402,11 +401,7 @@ public class CodeAdminService {
     // ── 캐시 ─────────────────────────────────────────────────────────
 
     private void bump(String cacheName) {
-        Instant now = clock.instant();
-        versions.findById(cacheName)
-                .ifPresentOrElse(
-                        version -> version.bump(now),
-                        () -> versions.save(SysCacheVersion.started(cacheName, now)));
+        versions.advance(cacheName, clock.instant());
     }
 
     /**

@@ -25,7 +25,7 @@ tags: [backend, cache, invalidation]
 | **유효 권한** | **세션** | 매 요청 필요하지만 **낡으면 보안 결함** |
 | **공통 코드 · 메뉴 트리** | **캐싱 없음** | 서버 부하가 문제가 아니다 — **프론트가 캐싱한다** |
 | 시스템 설정 | **작업 스코프** | 한 덩어리 일 안에서 값이 바뀌면 안 된다 |
-| **다국어 메시지** | **TTL 30분** (`app.message.cache-ttl-minutes`) | 건수가 많다. 낡아도 **옛 문구가 보일 뿐**이다 |
+| **일반 서버 다국어 문구** | **TTL 30분** (`app.message.cache-ttl-minutes`) | 표시 지연을 허용한다. 공개 번들은 아래 버전·본문 검사를 적용한다 |
 | PII 정의 | 애플리케이션 캐시 | 응답 직렬화마다 참조. 변경은 배포에 준한다 |
 
 **"다중화 = Redis" 가 아니다.** 노드 간 공유가 필요한 캐시가 없으므로 `type: redis` 는
@@ -41,7 +41,7 @@ tags: [backend, cache, invalidation]
 번들 요청 둘뿐**이다.
 
 ```
-CODE_MGMT 저장 ─→ CacheVersionService.bump("code") ─→ SYS_CACHE_VERSION.VERSION++
+CODE_MGMT 저장 ─→ SysCacheVersionRepository.advance("code", now) ─→ SYS_CACHE_VERSION.VERSION++
                                                              │
 로그인 · 번들 요청 ─────────────────────────────────────────→ 프론트가 버전을 비교하고
                                                              localStorage 를 버린다
@@ -50,7 +50,7 @@ CODE_MGMT 저장 ─→ CacheVersionService.bump("code") ─→ SYS_CACHE_VERSIO
 | `CACHE_NAME` | 무엇을 버리나 | 누가 올리나 |
 |---|---|---|
 | `code` | 공통 코드 | `CODE_MGMT` 의 저장 셋 |
-| `message` | 다국어 메시지 | `MESSAGE_MGMT` · **코드명을 고친 저장** |
+| `message` | 다국어 메시지 | `MESSAGE_MGMT` · **코드명을 고친 저장** · 메뉴 삭제 |
 | `config` | 시스템 환경설정 | `CONFIG_MGMT` 의 저장 |
 
 > **코드명을 고친 저장은 `message` 도 함께 올린다.** 이름의 원본이 `SYS_MESSAGE` 라
@@ -61,6 +61,14 @@ CODE_MGMT 저장 ─→ CacheVersionService.bump("code") ─→ SYS_CACHE_VERSIO
   버려진다. 그룹 단위로 두면 **표가 코드 그룹 수만큼 늘어난다.**
 - **감사 4컬럼을 상속하지 않는다.** 애플리케이션이 기계적으로 쓰는 값이라 *"누가"* 가
   존재하지 않는다. `MOD_DTM` 만 진단용으로 둔다.
+
+메시지 값과 버전 증가는 같은 트랜잭션이다. 버전은 DB의 `VERSION = VERSION + 1`로
+원자 증가시켜 서로 다른 값을 동시에 저장해도 증가를 잃지 않는다. 현재 노드의 커밋 후 무효화는
+캐시 맵을 교체해, 진행 중이던 이전 조회가 새 맵에 낡은 값을 다시 넣지 못하게 한다.
+
+**공개 번들은 TTL 캐시를 쓰지 않는다.** 본문을 DB에서 읽고 조회 전후 버전이 같은지 검사한다.
+중간에 변경되면 최대 3회 확인하고 계속 경합하면 409를 반환한다. 최신 버전과 낡은 본문을
+같이 보내 브라우저가 이후 갱신을 건너뛰게 해서는 안 된다. 일반 서버 문구의 TTL 정책은 유지한다.
 
 ## 3. 메뉴 트리는 어디에도 캐시하지 않는다
 
@@ -85,7 +93,7 @@ CODE_MGMT 저장 ─→ CacheVersionService.bump("code") ─→ SYS_CACHE_VERSIO
 | 기대하면 안 되는 것 | 대신 무엇을 하나 |
 |---|---|
 | **`bump` 가 열려 있는 화면을 갱신한다** | 폴링이 없다. 읽는 시점은 **로그인과 번들 요청 둘뿐**이라 열린 탭은 옛 값을 계속 쓴다(§2) |
-| **메시지 캐시가 노드 간에 무효화된다** | 스냅샷이 **노드마다** 있고 `MessageService.evict()` 는 **부른 노드만** 비운다 — 다중 노드에서는 최대 TTL 만큼 노드마다 다른 문구가 나간다 |
+| **일반 서버 문구 캐시가 노드 간에 무효화된다** | `MessageService.evict()` 는 **부른 노드만** 비운다 — 다른 노드의 일반 문구는 최대 TTL 동안 다를 수 있다. 공개 번들은 별도로 버전·본문을 검증한다 |
 | **운영 중 캐시를 비우는 수단이 있다** | `@Cacheable` 을 쓰지 않아 `CacheManager` 가 없다. 수단은 **저장 경로의 `evict`** · TTL 만료 · 재기동뿐이다 |
 
 ## 관련

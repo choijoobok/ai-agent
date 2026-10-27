@@ -4,9 +4,7 @@ package com.aiagent.system.api.message;
 import com.aiagent.api.message.RequestLocale;
 import com.aiagent.api.trace.TraceId;
 import com.aiagent.core.response.ApiResponse;
-import com.aiagent.domain.message.entity.SysCacheVersion;
-import com.aiagent.domain.message.service.CacheVersionService;
-import com.aiagent.domain.message.service.MessageService;
+import com.aiagent.domain.message.service.MessageBundleQueryService;
 import com.aiagent.system.api.message.response.MessageBundleResponse;
 import com.aiagent.support.config.ConfigLookup;
 import com.aiagent.support.config.props.MessageProps;
@@ -28,18 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MessageController {
 
-    private final MessageService messages;
-    private final CacheVersionService versions;
+    private final MessageBundleQueryService bundles;
     private final RequestLocale locale;
     private final ConfigLookup configs;
 
     public MessageController(
-            MessageService messages,
-            CacheVersionService versions,
+            MessageBundleQueryService bundles,
             RequestLocale locale,
             ConfigLookup configs) {
-        this.messages = messages;
-        this.versions = versions;
+        this.bundles = bundles;
         this.locale = locale;
         this.configs = configs;
     }
@@ -53,13 +48,13 @@ public class MessageController {
             @RequestParam(required = false) String lang, @RequestParam(required = false) Long v) {
 
         String resolved = lang == null ? locale.current() : locale.normalize(lang);
-        long version = versions.current(SysCacheVersion.MESSAGE);
+        MessageBundleQueryService.Bundle bundle = bundles.get(resolved, v);
         List<String> langs = configs.get(MessageProps.class).supported();
 
         MessageBundleResponse body =
-                v != null && v == version
-                        ? MessageBundleResponse.unchanged(resolved, langs, version)
-                        : MessageBundleResponse.of(resolved, langs, version, messages.bundle(resolved));
+                bundle.unchanged()
+                        ? MessageBundleResponse.unchanged(resolved, langs, bundle.version())
+                        : MessageBundleResponse.of(resolved, langs, bundle.version(), bundle.messages());
 
         return ApiResponse.success(body, TraceId.current());
     }

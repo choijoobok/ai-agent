@@ -32,6 +32,8 @@ dependencies {
     // 유효 권한 계산은 도메인의 판정 로직이다 — 저장소를 mock 하면 DB 없이 검사할 수 있고,
     // 그래야 PR 마다 도는 값싼 게이트가 된다(backend/persistence.md 의 Testcontainers 는 그 위층이다).
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    // 메시지 버전의 실제 JPA 원자 증가·롤백·동시 저장 회귀 시험.
+    testRuntimeOnly("com.h2database:h2")
 
     testImplementation(libs.querydsl.jpa)
     testAnnotationProcessor(variantOf(libs.querydsl.apt) { classifier("jakarta") })

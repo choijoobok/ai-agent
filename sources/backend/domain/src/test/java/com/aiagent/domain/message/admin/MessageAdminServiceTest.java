@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -56,7 +58,7 @@ class MessageAdminServiceTest {
     void setUp() {
         keys = mock(SysMessageKeyRepository.class);
         values = mock(SysMessageRepository.class);
-        versions = mock(SysCacheVersionRepository.class);
+        versions = mock(SysCacheVersionRepository.class, CALLS_REAL_METHODS);
         messages = mock(MessageService.class);
 
         ConfigLookup configs = mock(ConfigLookup.class);
@@ -64,7 +66,6 @@ class MessageAdminServiceTest {
                 .thenReturn(new MessageProps(List.of("ko", "en"), "ko", "en", 30));
 
         when(values.findByMsgKey(anyString())).thenReturn(List.of());
-        when(versions.findById(SysCacheVersion.MESSAGE)).thenReturn(Optional.empty());
 
         service = new MessageAdminService(
                 keys, values, versions, messages, configs, Clock.fixed(NOW, ZoneOffset.UTC));
@@ -168,7 +169,10 @@ class MessageAdminServiceTest {
         @DisplayName("TC-5051 저장 한 번의 메시지 버전은 정확히 +1 이다")
         void versionBumpsOncePerSave() {
             SysCacheVersion version = SysCacheVersion.started(SysCacheVersion.MESSAGE, NOW);
-            when(versions.findById(SysCacheVersion.MESSAGE)).thenReturn(Optional.of(version));
+            doAnswer(call -> {
+                version.bump(call.getArgument(1));
+                return 1;
+            }).when(versions).incrementVersion(SysCacheVersion.MESSAGE, NOW);
             existing("a.b");
             existing("c.d");
             existing("e.f");
@@ -188,7 +192,7 @@ class MessageAdminServiceTest {
             existing("a.b");
             service.save(List.of(row(RowState.U, "a.b", new MessageValue("ko", "가"))));
 
-            verify(versions).save(any(SysCacheVersion.class));
+            verify(versions).saveAndFlush(any(SysCacheVersion.class));
         }
 
         @Test
@@ -206,7 +210,7 @@ class MessageAdminServiceTest {
             assertThatThrownBy(() -> service.save(List.of(row(RowState.C, "invented.key"))))
                     .isInstanceOf(BusinessException.class);
 
-            verify(versions, never()).save(any(SysCacheVersion.class));
+            verify(versions, never()).advance(anyString(), any());
             verify(messages, never()).evict();
         }
     }
