@@ -2,6 +2,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, '../../..');
@@ -83,6 +84,29 @@ for (const key of keys) {
 
 for (const asset of ['assets/guide.css', 'assets/delivery.css', 'assets/delivery.js', 'assets/icons.js', 'assets/mermaid.min.js']) {
   if (!existsSync(resolve(ROOT, asset))) errors.push(`공통 로컬 자산이 없다 — ${asset}`);
+}
+
+for (const view of manifest?.flowViews ?? []) {
+  const file = resolve(ROOT, view.path);
+  if (!existsSync(file)) { errors.push(`연속 보기 없음: ${view.path}`); continue; }
+  const html = readFileSync(file, 'utf8');
+  if (createHash('sha256').update(html).digest('hex') !== view.sha256) errors.push(`연속 보기 생성 후 변경: ${view.path}`);
+  const markup = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '');
+  const ids = [...markup.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);
+  const idSet = new Set(ids);
+  if (idSet.size !== ids.length) errors.push(`연속 보기 ID 중복: ${view.path}`);
+  for (const key of view.sequences) {
+    if (!idSet.has(key) || !idSet.has(`${key}-steps`)) errors.push(`연속 보기 상세/설명 누락: ${key}`);
+  }
+  const diagrams = [...markup.matchAll(/class="mermaid" data-mermaid-source=/g)].length;
+  if (diagrams !== view.sequences.length) errors.push(`연속 보기 Mermaid 수 불일치: ${diagrams}`);
+  for (const match of markup.matchAll(/(?:src|href)="([^"]+)"/g)) {
+    const target = match[1];
+    if (target.startsWith('#') && !idSet.has(target.slice(1))) errors.push(`연속 보기 앵커 누락: ${target}`);
+    if (!/^(?:#|https?:)/.test(target)) errors.push(`단일 HTML의 외부 파일 의존: ${target}`);
+  }
+  if (!html.includes('window.FLOW_READY')) errors.push('연속 보기 렌더링 완료 신호가 없다.');
+  console.log(`${view.path}: 전체 노드 ${view.overviewNodes} · 상세도 ${diagrams} · 단일 파일`);
 }
 
 for (const error of errors) console.log(`오류: ${error}`);

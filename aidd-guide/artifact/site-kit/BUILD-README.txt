@@ -12,8 +12,13 @@ aidd-guide/artifact/site-kit/에 반영한 뒤 다시 생성합니다.
 
 - deliverables/       설계 산출물 + 사용자 매뉴얼 + 운영·개발 가이드를 함께 보는 전체 패키지
 - deliverables-user/  일반 사용자에게 따로 전달하는 사용자 매뉴얼 독립 패키지
+- deliverables/design/agent-flow.html  전체 흐름도·상세 시퀀스·설명을 연속으로 읽는 단일 파일
 
 각 폴더의 index.html을 열면 인터넷 연결 없이 사용할 수 있습니다.
+설계 사이트의 연속 보기 HTML은 파일 하나만 복사해도 열립니다. 처리 묶음을 눌러 연결을 확인하고,
+S 번호로 상세도에 이동하거나 아래로 계속 스크롤합니다. 그림 확대·SVG 저장·전체 인쇄를 제공합니다.
+기본은 다크 모드이며 상단에서 라이트/다크를 전환합니다. 선택은 저장 가능한 환경에서 기억합니다.
+이 전용본의 종류와 배치는 documents/delivery.yaml의 design.flow_views에서 설정합니다.
 
 
 2. 가장 많이 쓰는 생성 명령
@@ -24,6 +29,11 @@ aidd-guide/artifact/site-kit/에 반영한 뒤 다시 생성합니다.
 [내부 검토용 전체 사이트]
 node .claude/skills/deliverable-site/build.mjs all
 node .claude/skills/deliverable-site/check.mjs
+
+[연속 보기 실제 브라우저 검증]
+node .claude/skills/deliverable-site/flow-view-check.mjs
+검증용 Chromium 대신 이미 설치된 Edge/Chrome을 쓰려면 --browser=msedge 또는 --browser=chrome을 붙입니다.
+같은 옵션을 browser-check.mjs에도 사용할 수 있습니다.
 
 [고객 제출용 전체 사이트]
 node .claude/skills/deliverable-site/build.mjs all --release

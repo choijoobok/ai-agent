@@ -17,6 +17,49 @@ sites:
       - "documents/generated/**/*.md — 운영 런북은 SITE-003으로 보낸다"
       - "documents/design/**/*.md"
       - "documents/screen/**/requirements.md + mockup.html"
+    flow_views:
+      - key: agent-flow
+        requirement: REQ-010
+        title: "Agent 처리 흐름 · 설계와 검증"
+        # 업무 연결은 REQ-010.overview_diagram에서 읽는다. 여기에는 배치만 둔다.
+        layout:
+          width: 1600
+          height: 990
+          groups:
+            - { key: intake, title: "요청 접수", sequence: S1, nodes: [P, A], x: 40, y: 120 }
+            - { key: start, title: "실행 시작 조건", sequence: S1, nodes: [E], x: 360, y: 120 }
+            - { key: plan, title: "계획과 다음 작업", sequence: S2, nodes: [C, N], x: 680, y: 120 }
+            - { key: finish, title: "결과 기록과 종결", sequence: S8, nodes: [R], x: 1320, y: 120 }
+            - { key: wait, title: "사용자 확인·승인 대기", sequence: S5, nodes: [W], x: 40, y: 410 }
+            - { key: search, title: "필요한 지식 검색", sequence: S4, nodes: [K, I], x: 360, y: 410 }
+            - { key: reason, title: "필요한 모델 판단", sequence: S2, nodes: [L], x: 680, y: 410 }
+            - { key: action, title: "SQL·API·도구 실행", sequence: S3, nodes: [T], x: 1000, y: 410 }
+            - { key: poll, title: "상태 조회와 화면 표시", sequence: S1, nodes: [Q, V, Z], x: 1320, y: 410 }
+            - { key: change, title: "변경·중단 입력", sequence: S6, nodes: [U, D], x: 40, y: 760 }
+            - { key: lease, title: "점유 만료와 늦은 응답", sequence: S7, nodes: [X, S], x: 360, y: 760 }
+            - { key: knowledge, title: "관리자 지식 임베딩", sequence: S4, nodes: [M, B], x: 680, y: 760 }
+            - { key: audit, title: "단계별 통제·기록", sequence: S8, nodes: [H], x: 1000, y: 760 }
+            - { key: history, title: "과거 질의·새 턴 요청", sequence: S7, nodes: [J, FAV], x: 1320, y: 760 }
+          # 주요 선은 노드 밖의 공용 통로를 사용한다. 그 밖의 선은 선택 시 강조한다.
+          routes:
+            - { from: intake, to: start, path: "M280 170 H360", label: "접수 허용", lx: 320, ly: 153 }
+            - { from: start, to: plan, path: "M600 170 H680" }
+            - { from: plan, to: finish, path: "M920 170 H1320", label: "완료 또는 처리 불가 판정", lx: 1120, ly: 153 }
+            - { from: plan, to: search, path: "M760 230 V310 H480 V410", label: "검색 필요", lx: 480, ly: 345 }
+            - { from: plan, to: reason, path: "M800 230 V410", label: "추론 필요", lx: 800, ly: 345 }
+            - { from: plan, to: action, path: "M840 230 V310 H1120 V410", label: "실행 가능한 작업", lx: 1120, ly: 345 }
+            - { from: plan, to: wait, path: "M680 200 H640 V270 H160 V410", label: "정보·확인·승인 필요", lx: 160, ly: 345 }
+            - { from: wait, to: start, path: "M280 460 H310 V255 H400 V230", label: "유효 응답", lx: 355, ly: 280 }
+            - { from: search, to: plan, path: "M480 520 V570 H1280 V65 H800 V120" }
+            - { from: reason, to: plan, path: "M800 520 V570 H1280 V65 H800 V120", label: "유효 결과 → 작업 상태 반영 → 다음 작업", lx: 875, ly: 603 }
+            - { from: action, to: plan, path: "M1120 520 V570 H1280 V65 H800 V120" }
+            - { from: finish, to: poll, path: "M1440 230 V410", label: "종결 확정 후 공개", lx: 1440, ly: 345 }
+            - { from: poll, to: history, path: "M1440 520 V760", label: "본문과 독립 조회", lx: 1440, ly: 645 }
+            - { from: intake, to: poll, kind: control, path: "M280 205 H300 V620 H1530 V520", label: "접수 이후 처리 중에도 상태·결과 조회", lx: 950, ly: 643 }
+            - { from: change, to: start, kind: control, path: "M160 760 V665 H20 V95 H480 V120", label: "현재 상태 확인 후 반영", lx: 150, ly: 650 }
+            - { from: lease, to: poll, kind: control, path: "M600 815 H640 V650 H1490 V520" }
+            - { from: audit, to: start, kind: control, path: "M1000 815 H970 V690 H320 V95 H440 V120" }
+            - { from: history, to: intake, kind: control, path: "M1560 815 H1580 V915 H8 V160 H40", label: "명시적 새 요청 · 새 턴", lx: 1200, ly: 903 }
 
   - id: SITE-002
     key: user

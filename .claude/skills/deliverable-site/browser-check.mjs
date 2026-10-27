@@ -9,7 +9,9 @@ const site = process.argv.slice(2).find((arg) => !arg.startsWith('--')) ?? 'desi
 const root = resolve(REPO, rootArg || 'build/deliverables');
 const requireFrontend = createRequire(resolve(REPO, 'sources/frontend/package.json'));
 const { chromium } = requireFrontend('playwright');
-const browser = await chromium.launch({ headless: true });
+const channel = process.argv.slice(2).find((arg) => arg.startsWith('--browser='))?.slice(10);
+if (channel && !['chrome', 'msedge'].includes(channel)) throw new Error('--browser는 chrome 또는 msedge다.');
+const browser = await chromium.launch({ headless: true, ...(channel ? { channel } : {}) });
 const errors = [];
 
 try {

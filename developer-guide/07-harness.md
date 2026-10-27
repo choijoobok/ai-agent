@@ -104,6 +104,7 @@
 | `/deliverable-site` | `browser-check.mjs` | `node .claude/skills/deliverable-site/browser-check.mjs` |
 | `/deliverable-site` | `build.mjs` | `node .claude/skills/deliverable-site/build.mjs` |
 | `/deliverable-site` | `check.mjs` | `node .claude/skills/deliverable-site/check.mjs` |
+| `/deliverable-site` | `flow-view-check.mjs` | `node .claude/skills/deliverable-site/flow-view-check.mjs` |
 | `/doc-gen` | `gen.mjs` | `node .claude/skills/doc-gen/gen.mjs` |
 | `/manual-site` | `build.mjs` | `node .claude/skills/manual-site/build.mjs` |
 | `/manual-site` | `capture.mjs` | `node .claude/skills/manual-site/capture.mjs` |

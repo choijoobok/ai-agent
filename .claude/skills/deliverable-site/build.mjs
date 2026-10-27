@@ -16,6 +16,7 @@ import { FIGURE_LINE, escapeHtml, renderMarkdown } from '../manual-site/lib/mark
 import { MAIN, figuresOf } from '../manual-site/lib/figure.mjs';
 import { menuTree, read as readRepo, REPO, screensOf } from '../manual-site/lib/menu.mjs';
 import { themeAware } from '../manual-site/lib/page.mjs';
+import { buildFlowViews } from './lib/flow-view.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ASSET_SOURCE = resolve(REPO, 'aidd-guide/artifact/site-kit/assets');
@@ -393,6 +394,17 @@ const allChapters = Object.fromEntries(keys.map((key) => [key, makers[key]()]));
 for (const key of keys) renderSite(key, allChapters[key]);
 write(resolve(OUT, 'index.html'), rootPage());
 
+let flowViews = [];
+if (keys.includes('design') && siteConfig.get('design')?.flow_views?.length) {
+  const loaded = loadSpecSet({ repo: REPO, name: '10-requirements', parseYaml });
+  loaded.files.forEach((file) => sourceFiles.add(file));
+  flowViews = buildFlowViews({ views: siteConfig.get('design').flow_views, requirements: loaded.document.requirements,
+    repo: REPO, out: OUT, read, write, mermaidAsset });
+  const links = flowViews.map((view) => `<p><a href="${view.key}.html">${escapeHtml(view.requirement)} 전체 흐름·시퀀스 연속 보기 ↗</a></p>`).join('');
+  const designIndex = resolve(OUT, 'design/index.html');
+  write(designIndex, readFileSync(designIndex, 'utf8').replace('<div class="sb-head">목차</div>', `<div class="sb-head">목차</div><div class="sb-filter">${links}</div>`));
+}
+
 let pdfFiles = [];
 if (pdf) {
   try { pdfFiles = await makePdf(allChapters); }
@@ -401,7 +413,7 @@ if (pdf) {
 
 const selectedIssues = issues.filter((issue) => issue.site === 'all' || keys.includes(issue.site));
 const manifest = {
-  id: config.meta?.id ?? 'DLV-001', generatedAt: new Date().toISOString(), mode, release, standalone, pdfFiles,
+  id: config.meta?.id ?? 'DLV-001', generatedAt: new Date().toISOString(), mode, release, standalone, pdfFiles, flowViews,
   sites: Object.fromEntries(keys.map((key) => [key, { chapters: allChapters[key].length }])),
   sources: [...sourceFiles].sort().map((path) => ({ path, sha256: createHash('sha256').update(readFileSync(repoPath(path))).digest('hex') })),
   issues: selectedIssues,
