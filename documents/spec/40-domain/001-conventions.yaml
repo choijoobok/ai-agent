@@ -6,8 +6,8 @@ conventions:
     domain_scope: "업무 영역은 쓰기 소유 모듈 및 용어사전 group과 구분한다. 실제 목록과 영역 수식어의 필요성은 admin 도메인 도출 중 확정하고 아직 임의 코드/접두어를 배정하지 않는다"
   business_domains:
     - name: "연동 자산"
-      responsibility: "업무 API의 제공 주체와 DB/DW 조회 연결 단위의 관리 정의·배포 참조·변경 근거를 소유한다. 카탈로그·API·도구와의 참조는 각 기능 명세에서 연결한다"
-      terms: [TRM-040, TRM-041, TRM-250, TRM-251]
+      responsibility: "업무 API의 제공 주체와 DB/DW 조회 연결 단위의 관리 정의·배포 참조, 공개 카탈로그의 객체·내용 리비전·컬럼·관계·필수 조회 제약과 변경 근거를 소유한다. API·도구·지식 및 현재 직접 정책과의 참조는 각 기능 명세에서 연결한다"
+      terms: [TRM-040, TRM-041, TRM-223, TRM-247, TRM-250, TRM-251, TRM-252, TRM-253, TRM-254, TRM-255]
       boundary: "대상 시스템과 데이터소스는 서로 귀속 관계가 없는 별도 개념이다. 배포 연결 정의·비밀은 이 영역의 DB 모델에 복제하지 않는다. 업무 영역 이름은 메뉴 대분류나 물리 접두어를 확정하는 코드가 아니다"
   liquibase:
     root: sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml

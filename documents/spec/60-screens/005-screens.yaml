@@ -31,6 +31,7 @@ screens:
     title: "스키마 카탈로그"
     feature: FEAT-003
     features: [FEAT-003, FEAT-011, FEAT-012]
+    usecases: [UC-007, UC-008, UC-014, UC-026]
     metadata_scope: "REQ-301.column_metadata·value_domain·relationship_metadata와 REQ-111.privacy_metadata를 참조해 컬럼의 구조/의미·코드 출처·관계·개인정보 기준과 미완성/검수 상태를 확인한다. 정책 편집 권한과 원천은 REQ-103·611을 유지하고 필드·배치·목업은 P3에서 정한다"
     roadmap: RM-P1
     agent_contact: 설정

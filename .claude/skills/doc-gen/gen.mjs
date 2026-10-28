@@ -99,6 +99,10 @@ const LABEL = {
   read: '조회', create: '등록', change: '변경', references: '참조 보호', consumption: '소비 시 검증',
   group_change: '그룹 변경', save: '저장', management: '관리 상태', availability: '호출 가능 판정',
   connection_observation: '연결 관측', query_eligibility: '조회 가능 판정',
+  metadata: '메타데이터', query_constraints: '필수 조회 제약', policy_boundary: '정책 관리 경계',
+  observation: '원천 관측', sampling: '값 후보 샘플링', impact: '영향 확인', validation: '검증', content: '내용',
+  catalog_candidate_contract: '카탈로그 후보 계약', catalog_history_link: '카탈로그 이력 연결',
+  catalog_evidence_link: '카탈로그 변경 근거 연결',
 };
 const lab = (k) => LABEL[k] ?? k;
 

@@ -1,0 +1,26 @@
+# 영역: 공개 카탈로그의 내용과 변경 근거
+terms:
+  - id: TRM-252
+    term: "카탈로그 리비전"
+    key: catalogRevision
+    group: "데이터"
+    definition: "안정된 카탈로그 항목 아래 구조·업무 의미·등록 컬럼·관계·필수 조회 제약·접근 그룹의 전체 구성을 구분하는 내용 판"
+    relation: "REQ-301·305·306 및 ARCH-028. 초안과 실제 유효본을 구분하고 제출·검토·판정·반영 당시 구성을 고정한다. 현재 직접 정책이나 배포 설정의 버전과 다르다"
+  - id: TRM-253
+    term: "카탈로그 컬럼"
+    key: catalogColumn
+    group: "데이터"
+    definition: "공개 카탈로그 항목에 명시적으로 등록한 컬럼의 안정 참조와 특정 카탈로그 리비전에서의 구조 사실·업무 의미·값 도메인 구성"
+    relation: "REQ-301.column_metadata·value_domain. 원천에서 발견만 한 미등록 컬럼과 구분하며 컬럼별 독립 승인 업무를 만들지 않는다"
+  - id: TRM-254
+    term: "권장 조인 관계"
+    key: recommendedJoinRelation
+    group: "데이터"
+    definition: "공개 객체 양쪽과 전체 연결 컬럼 쌍·방향·대응 수·검수 근거를 카탈로그 내용으로 관리하는 조회 관계"
+    relation: "REQ-301.relationship_metadata. 물리 외래 키 또는 검수된 논리 관계를 근거로 삼으며 원천 DB 제약이나 상대 객체 접근 권한을 생성하지 않는다"
+  - id: TRM-255
+    term: "카탈로그 변경 근거"
+    key: catalogChangeEvidence
+    group: "데이터"
+    definition: "고객사 변경 통지·선택적 구조 비교·관리자의 의미/값 도메인 변경이 어느 공개 객체·내용 판에 영향을 주는지 검토할 수 있도록 출처와 시점·관측 결과를 연결한 기록"
+    relation: "REQ-304 및 UC-014. 지식 검토 작업·자산 변경 요청·실제 반영 결과와 구분하고 근거가 있다는 사실만으로 운영본을 갱신하지 않는다"

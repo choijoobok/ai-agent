@@ -4,6 +4,8 @@ usecases:
     name: "공개 카탈로그 후보를 작성하고 사용 가능성을 검수한다"
     workstream: admin
     design_status: draft
+    feature_contract: FEAT-003
+    entities: [ENT-005, ENT-006, ENT-007, ENT-009]
     reqs: [REQ-301]
     actors: { primary: ACT-003, secondary: [ACT-002] }
     process_step: PRC-09-01
@@ -34,13 +36,15 @@ usecases:
     name: "공개 객체 사이의 권장 조인 관계 후보를 검수한다"
     workstream: admin
     design_status: draft
+    feature_contract: FEAT-011
+    entities: [ENT-006, ENT-008]
     reqs: [REQ-301]
     actors: { primary: ACT-003, secondary: [] }
     process_step: PRC-09-02
     precondition: "양쪽 공개 객체·컬럼을 식별할 수 있고 관계의 업무 의미와 물리 또는 논리 근거를 확인할 수 있다"
     trigger: "카탈로그에서 권장 조인 관계를 등록·수정·폐기한다"
     main_flow:
-      - "관계의 양쪽 공개 객체와 모든 컬럼 쌍을 선택하고 현재 카탈로그 버전·접근 범위를 확인한다"
+      - "소유 카탈로그 후보와 양쪽 공개 객체·모든 컬럼 쌍을 선택한다. 소유측은 자기 후보, 상대측은 검증된 유효본 또는 같은 세트 후보의 내용 판으로 구분하고 현재 접근 범위를 확인한다"
       - "물리 외래 키 또는 검수한 논리 관계의 근거와 방향·대응 수·복합 키 전체를 후보로 작성한다"
       - "REQ-301.relationship_metadata에 따라 조인 의미와 집계 중복 위험을 검수한다. 1:N의 중복을 일괄 DISTINCT로 숨기지 않는다"
       - "카탈로그 후보의 일부로 변경 전후와 영향 근거를 보존하고 UC-012의 세트 승인/전결로 인계한다"
@@ -87,6 +91,8 @@ usecases:
     name: "고객사 변경이 공개 카탈로그와 연결 지식에 주는 영향을 판정한다"
     workstream: admin
     design_status: draft
+    feature_contract: FEAT-003
+    entities: [ENT-010]
     reqs: [REQ-304]
     actors: { primary: ACT-003, secondary: [ACT-010, ACT-014] }
     process_step: PRC-09-04
