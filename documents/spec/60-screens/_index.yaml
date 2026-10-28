@@ -1,18 +1,17 @@
-# 화면 목록 — admin 36 · portal 12 · system 25 = 73
+# 메뉴·화면 목록 — 모듈·차수·범위는 각 screens 항목을 조회한다.
 #
 # 작성 단계: P3
 # status: migrated — 사용자 승인 전이다.
 #
 # 재채번: MNU-Ann → SCR-0nn · MNU-Pnn → SCR-1nn.
 #
-# **화면의 컬럼·검증·영향 테이블은 여기에 담지 않는다** — `documents/screen/{페이지경로}/`
-# 의 문서 셋이 갖는다(CLAUDE.md §6). 여기는 *무엇이 메뉴로 존재하고 어떤 기능이 거기
-# 속하는지* 까지다. **48개 Hub 화면의 문서 셋은 아직 없다** — doc_order 참조.
+# 화면의 컬럼·검증·영향 테이블은 documents/screen/의 화면별 요건서가 갖는다.
+# 여기는 메뉴·독립/내부 화면의 진입 유형·소유 기능·참여 기능·공통 화면 사용 관계를 갖는다.
 
 meta:
   status: in_progress
   baselined: null
-  workstreams: { system: reviewed }
+  workstreams: { system: reviewed, admin: draft }
   system_behavior_contract: "각 system 화면의 버튼·필드·검증·영향 테이블·현재 테스트는 current_doc이 정의한다. P4 이동은 동작을 바꾸지 않고 route와 소유 경로만 target_doc·system 모듈로 옮긴다"
 
 spec_set:

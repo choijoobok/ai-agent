@@ -2,9 +2,12 @@
 meta:
   status: in_progress
   baselined: null
-  workstreams: { system: reviewed }
+  workstreams: { system: reviewed, admin: draft }
 
 spec_set:
   version: 1
   parts:
     - 001-usecases.yaml
+    - 002-admin-common.yaml
+    - 003-admin-catalog.yaml
+    - 004-admin-knowledge.yaml

@@ -6,6 +6,7 @@ screens:
 # 목적이 다르고, 무엇보다 **접근 통제**라 권한 관리 쪽의 통제를 받아야 한다.
   - id: SCR-001
     module: admin
+    entry: menu
     group: "연동 관리"
     title: "대상 시스템"
     feature: FEAT-001
@@ -14,6 +15,7 @@ screens:
     note: "**RM-P1에서 등록한다** — 조회는 데이터소스만으로 성립하지만, 실행 출시 범위에서는 업무 API를 제공하는 대상 시스템을 등록해야 한다. 개별 API의 제공 시스템 지정과 계약 상세는 SCR-004가 관리한다"
   - id: SCR-002
     module: admin
+    entry: menu
     group: "연동 관리"
     title: "데이터소스"
     feature: FEAT-002
@@ -22,6 +24,7 @@ screens:
   - id: SCR-003
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
+    entry: menu
     group: "연동 관리"
     title: "스키마 카탈로그"
     feature: FEAT-003
@@ -33,6 +36,7 @@ screens:
   - id: SCR-004
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
+    entry: menu
     group: "연동 관리"
     title: "업무 API"
     feature: FEAT-004
@@ -47,6 +51,7 @@ screens:
   - id: SCR-005
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
+    entry: menu
     group: "권한 관리"
     title: "Portal 사용자 관리"
     feature: FEAT-005
@@ -55,6 +60,7 @@ screens:
     note: "REQ-616의 Portal 이용자 전용 관리 메뉴다. system의 관리자 사용자 관리(SCR-501)와 별도이며 그룹·쿼터·신원 매핑·이용 상태를 확인한다. 관리 콘솔 /admin/hub/** 영역에 두고 상세 경로는 P3에서 정한다. 이용자가 사용하는 Portal 메인(/)과 Portal 기능(/portal/**) 화면이 아니다(ARCH-021)"
   - id: SCR-006
     module: admin
+    entry: menu
     group: "권한 관리"
     title: "사용자 그룹"
     feature: FEAT-006
@@ -63,6 +69,7 @@ screens:
   - id: SCR-037
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
+    entry: menu
     group: "권한 관리"
     request_integrity: "REQ-601.request_integrity에 따라 기존 진행 요청을 안내하고 제출본 수정을 막으며 취소 결과 확인 후 새 요청으로 연결한다. 실제 처리 권한·현재 상태 검사는 서버에서 수행한다"
     title: "사용자 접근 권한 승인"
@@ -72,6 +79,7 @@ screens:
     note: "REQ-609의 대상별 신원 매핑·그룹 추가 요청을 별도 메뉴에서 승인·반려한다. 사용자·대상·ID/그룹·요청 사유·근거·현재 권한·요청 버전·처리 이력을 확인한다. 승인 전 활성화는 불가하며 요청 작성·제거 메뉴와 승인 액션 권한을 분리한다. 상세 경로·요건서·목업은 P3에서 사용자 승인 절차로 정의한다"
   - id: SCR-007
     module: admin
+    entry: menu
     group: "권한 관리"
     title: "카탈로그 그룹 매핑"
     feature: FEAT-007
@@ -79,6 +87,7 @@ screens:
     agent_contact: 설정
   - id: SCR-008
     module: admin
+    entry: menu
     group: "권한 관리"
     title: "API 그룹 매핑"
     feature: FEAT-008
@@ -86,6 +95,7 @@ screens:
     agent_contact: 설정
   - id: SCR-009
     module: admin
+    entry: menu
     group: "권한 관리"
     title: "행 스코프 규칙"
     feature: FEAT-009
@@ -108,6 +118,7 @@ screens:
   - id: SCR-011
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
+    entry: menu
     group: "업무 지식 관리"
     title: "지식"
     feature: FEAT-014
@@ -117,6 +128,7 @@ screens:
   - id: SCR-036
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
+    entry: menu
     group: "업무 지식 관리"
     request_integrity: "REQ-601.request_integrity에 따라 기존 진행 요청을 안내하고 제출본 수정을 막으며 취소 결과 확인 후 새 요청으로 연결한다. 실제 처리 권한·현재 상태 검사는 서버에서 수행한다"
     title: "지식 변경 요청"
@@ -126,6 +138,7 @@ screens:
     note: "지식·예제·카탈로그·매핑의 단독 또는 복합 변경 요청을 등록·조회하고 기술 검토 대기/중·최종 승인 대기·반려·반영 상태를 구분한다. 기술 검토 완료와 최종 승인 액션은 각각 유효 권한과 선행 상태를 확인하며 동일인의 전 단계 처리를 허용한다. 조사(SCR-033) 또는 지식 검토(SCR-034)에서 요청 등록으로 진입하며, 대상·변경 전후·사유·근거 조사/검토와 반영 세트 상태를 조회한다. 각 자산의 전체 내용·접근 허용 그룹·참조 매핑을 포함한 요청·검토·승인 당시 스냅샷과 현재 버전 차이·반려 사유·재요청 연결을 조회한다. 직접·예제 경유 카탈로그의 합산 목록은 당시 참조 버전으로 재현하며 현재 매핑으로 바꿔 표시하지 않는다(REQ-303). 결재선 설정은 두지 않는다. 세트 일괄 반영·자산별 중복 요청 차단·최신성 검사는 REQ-305·306을 따른다. 자산 후보 작성 화면과 보안 정책 직접 관리 화면은 유지한다. REQ-607의 태그 단독 요청도 함께 처리한다. 태그 변경 전후·자체 버전·단계별 스냅샷과 당시 연결된 지식 목록을 조회하며 영향 지식과 실제 수정 대상을 구분한다. 태그 텍스트만 바뀌면 태그 정의만 반영하고 연결된 지식의 매핑·본문·리비전은 바꾸지 않는다. 태그 요청의 연결 지식은 요청 당시 리비전으로 조회하고 현재 목록의 추가·제거·리비전 차이를 구분해 보여준다. 원 요청 스냅샷과 승인 당시 확인한 목록은 따로 보존한다. 태그와 지식 변경의 상호 차단 제외·동일 변경 대상 중복 제한·최소 검증은 REQ-607을 따른다 업무 API(REQ-608)·도구(REQ-612)의 전체 후보·권한/계약 근거도 같은 화면에서 검토·승인한다. 각 종류의 승인 설정·전결·혼합 세트 판정은 REQ-601을 따른다. 사람의 검토 없이 전결한 건은 실제 전결 처리와 설정 근거를 표시하며 책임자 승인으로 표시하지 않는다 지식의 업무 API·커스텀 도구 링크·매핑별 사용 설명과 당시 계약 버전·검증 근거를 재현하고 현재 버전과의 차이·반영 가능 여부를 REQ-306에 따라 확인한다. API·도구 공통 가이드와 지식 매핑의 후속 설명 변경도 각 전체 후보 스냅샷에 포함한다. REQ-608·612·303에 따라 당시 원천 버전·설명 및 현재와의 차이·계약/영향 검토 근거를 조회한다."
   - id: SCR-034
     module: admin
+    entry: menu
     group: "업무 지식 관리"
     title: "지식 검토 작업"
     feature: FEAT-036
@@ -135,6 +148,7 @@ screens:
   - id: SCR-012
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
+    entry: menu
     group: "업무 지식 관리"
     title: "인증 예제 쿼리"
     feature: FEAT-023
@@ -143,6 +157,7 @@ screens:
     note: "예제 SQL에서 추출해 예제 자체에 자동 매핑한 카탈로그·버전과 미등록·추출 불확실 항목을 확인한다(REQ-302). 예제·참조 매핑의 후보를 작성하고 단독 변경도 SCR-036에서 요청·기술 검토·최종 승인 후 운영에 반영한다. 요청·승인 당시 버전과 현재 운영본은 구분해 조회한다(REQ-302·305·306)"
   - id: SCR-013
     module: admin
+    entry: menu
     group: "업무 지식 관리"
     title: "프롬프트 규칙"
     feature: FEAT-013
@@ -151,6 +166,7 @@ screens:
     note: "REQ-610의 전사 공통 자연어 지침 본문·규칙 관리 속성·조건·리비전을 편집하고 의미 검토 결과·관리자 판단·변경 이력을 조회한다. 변수 치환·기술 템플릿·응답 스키마 편집은 제공하지 않는다. 관리 데이터 저장 검증과 문구 의미 검토의 표시·처리는 REQ-610.prompt_contract를 따른다. 실제 화면 요건서·목업은 P3에서 정한다. SQL 원문·물리명 비노출 지침의 초기 적용·한계는 REQ-104.initial_control을 참조한다."
   - id: SCR-014
     module: admin
+    entry: menu
     group: "업무 지식 관리"
     title: "채팅 도움말·주의사항"
     feature: FEAT-010
@@ -161,6 +177,7 @@ screens:
 # ══ admin — AI 운영 (3.4) ════════════════════════════════════════
   - id: SCR-015
     module: admin
+    entry: menu
     group: "AI 운영"
     title: "외부 모델"
     feature: FEAT-015
@@ -168,6 +185,7 @@ screens:
     agent_contact: 설정
   - id: SCR-016
     module: admin
+    entry: menu
     group: "AI 운영"
     title: "토큰 풀 기준 단가"
     feature: FEAT-016
@@ -175,6 +193,7 @@ screens:
     agent_contact: 설정
   - id: SCR-017
     module: admin
+    entry: menu
     group: "AI 운영"
     title: "전송 정책·결과 보존 설정"
     feature: FEAT-019
@@ -185,6 +204,7 @@ screens:
     note: "REQ-614의 운영 설정에서 REQ-601에 정의한 업무별 관리 승인 절차 사용 여부를 독립 설정한다. 현재 값·변경 전후·사유·처리자·시각과 각 처리에 적용한 설정 버전을 조회한다. 화면 요건서·목업은 P3에서 정의한다"
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
+    entry: menu
     group: "AI 운영"
     title: "실행 제한·운영 설정"
     feature: FEAT-020
@@ -194,6 +214,7 @@ screens:
     note: "REQ-612의 도구 전체 후보·허용 그룹·계약 검증 근거와 현재 유효본을 구분한다. 도구 관리 설정 사용 시 SCR-036에 요청·검토·책임자 승인으로 연결하고 미사용 시 저장자가 전결한다(REQ-601) 연결 지식·리비전·매핑별 사용 설명·변경 영향을 역참조해 조회하고 삭제·비활성화 참조 검증 결과를 확인한다(REQ-612). 매핑 자체의 편집은 SCR-011에서 한다. REQ-612.result_handling_guide의 내부 빈 공통 가이드를 관리하며 API 기반 도구의 가이드·버전은 원천을 읽기 전용으로 참조한다."
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
+    entry: menu
     group: "AI 운영"
     title: "도구 노출 설정"
     feature: FEAT-021
@@ -201,6 +222,7 @@ screens:
     agent_contact: 설정
   - id: SCR-020
     module: admin
+    entry: menu
     group: "AI 운영"
     title: "저장된 조회 현황·제한"
     feature: FEAT-025
@@ -211,6 +233,7 @@ screens:
 # ══ admin — 비용 관리 (3.5) ══════════════════════════════════════
   - id: SCR-021
     module: admin
+    entry: menu
     group: "비용 관리"
     title: "월별 개인 쿼터 기준"
     feature: FEAT-017
@@ -220,6 +243,7 @@ screens:
   - id: SCR-022
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
+    entry: menu
     group: "비용 관리"
     request_integrity: "REQ-601.request_integrity에 따라 기존 진행 요청을 안내하고 제출본 수정을 막으며 취소 결과 확인 후 새 요청으로 연결한다. 실제 처리 권한·현재 상태 검사는 서버에서 수행한다"
     title: "이번 달 초과 사용 신청 승인"
@@ -230,6 +254,7 @@ screens:
   - id: SCR-035
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
+    entry: menu
     group: "비용 관리"
     request_integrity: "REQ-601.request_integrity에 따라 기존 진행 요청을 안내하고 제출본 수정을 막으며 취소 결과 확인 후 새 요청으로 연결한다. 실제 처리 권한·현재 상태 검사는 서버에서 수행한다"
     title: "쿼터 등급 승급 요청 승인"
@@ -239,6 +264,7 @@ screens:
     note: "사용자의 등급 승급 요청을 적용 월과 함께 승인·반려하며, 이번 달 토큰 부족은 SCR-022의 추가 사용 승인으로 분리한다"
   - id: SCR-023
     module: admin
+    entry: menu
     group: "비용 관리"
     title: "토큰 통계·월별 공급사 사용 대조"
     feature: FEAT-030
@@ -249,6 +275,7 @@ screens:
 # ══ admin — 품질 관리 (3.6) ══════════════════════════════════════
   - id: SCR-024
     module: admin
+    entry: menu
     group: "품질 관리"
     title: "품질 신고 처리"
     feature: FEAT-022
@@ -257,6 +284,7 @@ screens:
     note: "채팅·저장 조회 실행 신고 원본과 개별 회신을 관리한다. 턴·개별 실행의 허용된 근거를 확인하고 SCR-033에서 조사를 생성하거나 기존 조사에 연결하며, 상세에서 현재 연결 조사 상태와 연결·취소 이력을 조회한다. 권한 있는 담당자의 사유 필수 연결 취소·재연결은 REQ-110·115를 따른다"
   - id: SCR-033
     module: admin
+    entry: menu
     group: "품질 관리"
     title: "오류·품질 조사"
     feature: FEAT-035
@@ -274,6 +302,7 @@ screens:
     agent_contact: "설정 + 산출"
   - id: SCR-026
     module: admin
+    entry: menu
     group: "품질 관리"
     title: "품질 지표"
     feature: FEAT-032
@@ -288,6 +317,7 @@ screens:
 # 보았는지 감사해야 개인정보 열람 경로가 닫힌다.
   - id: SCR-027
     module: admin
+    entry: menu
     group: "감사·이력"
     title: "대화 이력"
     feature: FEAT-026
@@ -296,6 +326,7 @@ screens:
     privacy_audit: "REQ-107.privacy_review의 개인정보 판정·방법/유형·검토 필터와 입력별 근거·검토 이력을 제공한다. REQ-109의 본문 만료/파기 상태와 별도 보관 메타데이터를 구분하며 구체 UI는 P3에서 설계한다"
   - id: SCR-028
     module: admin
+    entry: menu
     group: "감사·이력"
     title: "조회 이력"
     feature: FEAT-027
@@ -303,6 +334,7 @@ screens:
     agent_contact: 산출
   - id: SCR-029
     module: admin
+    entry: menu
     group: "감사·이력"
     title: "실행 이력"
     feature: FEAT-028
@@ -310,6 +342,7 @@ screens:
     agent_contact: 산출
   - id: SCR-030
     module: admin
+    entry: menu
     group: "감사·이력"
     title: "정책 판정 이력"
     feature: FEAT-029
@@ -318,6 +351,7 @@ screens:
   - id: SCR-031
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
+    entry: menu
     group: "감사·이력"
     title: "정책 변경 이력"
     feature: FEAT-033
@@ -326,6 +360,7 @@ screens:
     note: "관리 화면 단위의 전체 스냅샷을 과거 시점으로 재구성한다. 자산 내용·접근 그룹의 복원은 새 후보의 요청·기술 검토·최종 승인 후 반영하며 그 밖의 정책은 REQ-103의 직접 관리 경계를 따른다"
   - id: SCR-032
     module: admin
+    entry: menu
     group: "감사·이력"
     title: "턴·실행 상태 추적"
     feature: FEAT-031

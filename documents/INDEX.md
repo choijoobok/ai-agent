@@ -57,12 +57,12 @@
 | [`20-architecture/_index.yaml`](spec/20-architecture/_index.yaml) | P2 | 구성 · **논리 구성도**(노드 14 · 간선 16 · 불변식 4) · 모듈 경계 6 · 딥링크 · 데이터소스 · LLM 연동 · 신원 매핑 · 지식 검색 · **실행 점유**(ARCH-) | 이관 |
 | [`21-nfr/_index.yaml`](spec/21-nfr/_index.yaml) | P2 | **비기능 19**(NFR-) — 성능 5 · 비용 8 · 안정성 6 (**목표 수치 전부 미정**) | 이관 |
 | [`22-authz/_index.yaml`](spec/22-authz/_index.yaml) | P2 | 그룹 판정 · 매핑 6 · 행 스코프 · **SQL 통제 4단계** · 주입 통제 · 기본 필터 · 책임 층(AUTHZ-) | 이관 |
-| [`30-usecases/_index.yaml`](spec/30-usecases/_index.yaml) | P3 | 유즈케이스 (기본·대안·예외 흐름) | **비어 있다** |
-| [`31-features/_index.yaml`](spec/31-features/_index.yaml) | P3 | **기능 85**(FEAT-) — admin 34 · portal 25 · agent 21 · 공통 5 | 이관 |
+| [`30-usecases/_index.yaml`](spec/30-usecases/_index.yaml) | P3 | 유즈케이스 (UC-) — 요구사항 연결·기본·대안·예외 흐름 | 작업흐름별 정본 참조 |
+| [`31-features/_index.yaml`](spec/31-features/_index.yaml) | P3 | 기능 (FEAT-) — 모듈별 업무·공통 처리·배치/이벤트와 사용 관계 | 작업흐름별 정본 참조 |
 | [`40-domain/_index.yaml`](spec/40-domain/_index.yaml) | P3 | 엔티티·속성·상태 전이 (네이밍 규약만 확정) | **비어 있다** |
 | [`50-api/_index.yaml`](spec/50-api/_index.yaml) | P3 | Hub 내부 API (경로 규약만 확정) | **비어 있다** |
 | [`51-interfaces/_index.yaml`](spec/51-interfaces/_index.yaml) | P3 | **외부 인터페이스 8**(IF-) — 나가는 5 · 들어오는 3 | 이관 |
-| [`60-screens/_index.yaml`](spec/60-screens/_index.yaml) | P3 | **화면 43**(SCR-) — admin 32 · portal 11 + 메뉴 판정 기준 · 통제 경계 · Phase 노출 | 이관 |
+| [`60-screens/_index.yaml`](spec/60-screens/_index.yaml) | P3 | 메뉴·화면 (SCR-) — 진입 유형·소유/참여 기능·공통 화면 호출·차수/범위 | 작업흐름별 정본 참조 |
 | [`70-testcases/_index.yaml`](spec/70-testcases/_index.yaml) | P3~ | 테스트 케이스 | **비어 있다** |
 | [`80-operations/_index.yaml`](spec/80-operations/_index.yaml) | P2~P6 | **운영 절차**(RUN-) — 구성·일상 점검·장애·백업/복구·모니터링·정기 작업·에스컬레이션 | 작성 중 |
 

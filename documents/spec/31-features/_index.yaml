@@ -1,16 +1,16 @@
-# 기능 목록 — admin 34 · portal 26 · agent 21 · 공통 5 · system 10 = 96
+# 기능 목록 — 업무 기능과 공통 관리 처리를 모듈별로 정의한다.
 #
 # 작성 단계: P3
 # status: migrated — 사용자 승인 전이다.
 #
 # **추적성**: 모든 FEAT 는 `reqs` 로 역추적되고(T4) 최소 1개 TC 를 가져야 한다(T5).
-#   **TC 는 아직 없다** — 70-testcases/_index.yaml 이 비어 있고 작업흐름별 P3에서 만든다.
+#   TC는 70-testcases/_index.yaml에서 소유 작업흐름별 P3 설계에 연결한다.
 #   G3 전 작업흐름은 경고지만, 그 작업흐름 G3를 청구하면 결손이 오류가 된다.
 
 meta:
   status: migrated
   baselined: null
-  numbering: "FEAT-001~034 admin · 101~126 portal · 201~221 agent · 301~305 공통 · 501~510 system"
+  numbering: "FEAT-001~040 admin · 101~127 portal · 201~221 agent · 301~305 공통 · 501~510 system"
 
 spec_set:
   version: 1
@@ -22,3 +22,4 @@ spec_set:
     - 005-system.yaml
     - 006-common.yaml
     - 007-retired.yaml
+    - 008-admin-common.yaml

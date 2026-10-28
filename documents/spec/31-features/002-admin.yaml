@@ -1,6 +1,7 @@
 features:
 # ══ admin — 시스템 관리 (10.1) ═══════════════════════════════════
   - id: FEAT-001
+    usecases: [UC-001, UC-002, UC-006]
     module: admin
     screen: SCR-001
     roadmap: RM-P1
@@ -8,6 +9,7 @@ features:
     detail: "REQ-604의 대상 시스템 정의·API별 제공 시스템 지정·허용 연결 목록·기본 연결과 사용처를 관리한다. 공통 참조 보호는 REQ-601을 따른다"
     reqs: [REQ-105, REQ-601, REQ-604]
   - id: FEAT-002
+    usecases: [UC-001, UC-002, UC-006]
     module: admin
     screen: SCR-002
     roadmap: RM-P1
@@ -16,6 +18,8 @@ features:
     reqs: [REQ-103, REQ-601, REQ-603]
     traces_to: [ARCH-030]
   - id: FEAT-003
+    usecases: [UC-001, UC-003, UC-006, UC-007, UC-014]
+    uses_features: [FEAT-040, FEAT-014, FEAT-036]
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     screen: SCR-003
@@ -34,6 +38,8 @@ features:
     reqs: ["REQ-103","REQ-301","REQ-304","REQ-111"]
     traces_to: ["PRN-10"]
   - id: FEAT-004
+    usecases: [UC-001, UC-003, UC-006]
+    uses_features: [FEAT-040, FEAT-014]
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     screen: SCR-004
@@ -43,6 +49,9 @@ features:
     detail: "REQ-608의 업무 API 계약·입출력 경로 속성·통제·공동 오픈 근거와 입력 필드별 값의 출처·채우기 가이드·검증 조건을 등록하고 조회한다. 업무별 용도·사용 조건·입력 확보·조회·선택 절차는 해당 지식-API 매핑 건의 설명에서 참조하며 공통 계약을 복제하지 않는다. 기존 실행·마스킹·고객사 계약 규칙은 REQ-105·111·113을 따른다 Hub 내부 API 전체 후보·책임자 승인/전결·반영은 REQ-608·601을 따른다. API 공통 결과 안내·후속 처리 가이드와 그 변경 승인/버전은 REQ-608.result_handling_guide를 따른다."
     reqs: ["REQ-105","REQ-111","REQ-113","REQ-608"]
   - id: FEAT-005
+    usecases: [UC-001, UC-002, UC-003, UC-006]
+    uses_features: [FEAT-040]
+    operation_boundary: "REQ-609·616의 신원 매핑·그룹 부여는 UC-003의 승인/전결을 따른다. 제거·회수·이용자 비활성화와 기존 계정 공개 계약의 직접 작업은 UC-002로 구분한다. 마지막 활성 그룹 제거·비활성화와 늦은 부여 승인 차단은 REQ-103·609를 유지하며 FEAT-040 사용을 이유로 회수를 승인 대기에 넣지 않는다"
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     screen: SCR-005
@@ -52,6 +61,7 @@ features:
     reqs: ["REQ-103","REQ-116","REQ-609","REQ-616"]
     traces_to: ["ARCH-050"]
   - id: FEAT-006
+    usecases: [UC-001, UC-002, UC-006]
     module: admin
     screen: SCR-006
     roadmap: RM-P1
@@ -60,6 +70,8 @@ features:
     reqs: [REQ-103, REQ-601, REQ-605]
     traces_to: [AUTHZ-001]
   - id: FEAT-038
+    usecases: [UC-001, UC-003, UC-004, UC-005, UC-006]
+    uses_features: [FEAT-040]
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     screen: SCR-037
@@ -70,6 +82,9 @@ features:
     hard_rule: "요청 상태는 권한이 없고 제거는 승인 대상이 아니다. 지식 세트·업무 실행·쿼터 승인과 구분하며 처리 권한은 메뉴·액션으로 판정한다"
     reqs: ["REQ-609"]
   - id: FEAT-007
+    usecases: [UC-001, UC-002, UC-003, UC-006]
+    uses_features: [FEAT-040, FEAT-014]
+    operation_boundary: "REQ-103에 따라 자산 접근 그룹 변경은 UC-003의 자산 세트 승인/전결을 사용하고, 열람 모드·공통 마스킹 정의 등 직접 관리 정책은 UC-002를 따른다. FEAT-040 사용 관계가 기능의 모든 작업을 승인 대상으로 바꾸지는 않는다"
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     screen: SCR-007
@@ -79,6 +94,8 @@ features:
     reqs: ["REQ-103","REQ-111","REQ-611"]
     traces_to: ["AUTHZ-011","AUTHZ-012"]
   - id: FEAT-008
+    usecases: [UC-001, UC-003, UC-006]
+    uses_features: [FEAT-040, FEAT-014]
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     screen: SCR-008
@@ -88,6 +105,7 @@ features:
     reqs: ["REQ-105","REQ-111","REQ-611"]
     traces_to: ["AUTHZ-014","AUTHZ-015"]
   - id: FEAT-009
+    usecases: [UC-001, UC-002, UC-006]
     module: admin
     screen: SCR-009
     roadmap: RM-P1
@@ -103,6 +121,8 @@ features:
     detail: "사용 안내 지식의 목적·가능한 업무·질의 예시·안전한 사용 한계·접근 가능 데이터 확인 방법을 후보 리비전과 반영 세트로 관리한다. portal의 초기 안내 문구와 사용법 답변이 활성 리비전만 사용한다 REQ-106.input_notice의 개인정보 직접 입력 주의와 전송 안내를 함께 관리하고 제출 근거의 안내 버전에 연결한다."
     reqs: [REQ-101, REQ-106, REQ-308]
   - id: FEAT-011
+    usecases: [UC-001, UC-003, UC-006, UC-008]
+    uses_features: [FEAT-040, FEAT-014]
     module: admin
     screen: SCR-003
     roadmap: RM-P1
@@ -111,6 +131,7 @@ features:
     why: "**FK 가 없는 레거시에서 LLM 의 조인 추측 오류를 막는 근거다.** 1:N 조인 뒤 집계가 부풀려지는 오류를 막고 DISTINCT 필요 판단에도 쓰인다"
     reqs: [REQ-301]
   - id: FEAT-012
+    usecases: [UC-001, UC-002, UC-006]
     module: admin
     screen: SCR-003
     roadmap: RM-P1
@@ -121,6 +142,7 @@ features:
 
 # ══ admin — AI 관리 (10.2) ═══════════════════════════════════════
   - id: FEAT-013
+    usecases: [UC-001, UC-002, UC-006]
     module: admin
     screen: SCR-013
     roadmap: RM-P1
@@ -130,6 +152,9 @@ features:
     reqs: [REQ-101, REQ-104, REQ-112, REQ-308, REQ-610]
     traces_to: [PRN-06]
   - id: FEAT-014
+    usecases: [UC-001, UC-003, UC-004, UC-005, UC-006, UC-010, UC-012]
+    uses_features: [FEAT-040]
+    consumer_boundary: "다른 자산 기능의 uses_features 참조는 이 기능이 소유한 SCR-036·UC-012의 자산 변경 세트 접수·기술 검토·최종 판정·반영 계약을 사용한다는 뜻이다. 각 자산의 후보 작성·업무 규칙 소유권은 유지하며 직접 관리 정책에 새 승인을 추가하지 않는다"
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     screen: SCR-011
@@ -145,6 +170,7 @@ features:
     reqs: ["REQ-103","REQ-303","REQ-304","REQ-305","REQ-306","REQ-307","REQ-607","REQ-608","REQ-020","REQ-612"]
     traces_to: ["ARCH-060","AUTHZ-040"]
   - id: FEAT-015
+    usecases: [UC-001, UC-002, UC-006]
     module: admin
     screen: SCR-015
     roadmap: RM-P1
@@ -153,6 +179,7 @@ features:
     reqs: [REQ-031, REQ-116, REQ-601, REQ-602]
     traces_to: [ARCH-040]
   - id: FEAT-016
+    usecases: [UC-001, UC-002, UC-006]
     module: admin
     screen: SCR-016
     roadmap: RM-P1
@@ -161,6 +188,7 @@ features:
     reqs: [REQ-613]
     nfrs: [NFR-010]
   - id: FEAT-017
+    usecases: [UC-001, UC-002, UC-006]
     module: admin
     screen: SCR-021
     roadmap: RM-P1
@@ -169,6 +197,8 @@ features:
     reqs: [REQ-116, REQ-118, REQ-601, REQ-606]
     nfrs: [NFR-011]
   - id: FEAT-018
+    usecases: [UC-001, UC-003, UC-004, UC-005, UC-006]
+    uses_features: [FEAT-040]
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     screen: SCR-022
@@ -186,6 +216,7 @@ features:
     detail: "REQ-106의 요청·동의·전송 제한과 REQ-614의 읽기 전용 보존 설정을 표시하고 실제 전송 이력에 연결한다. 카탈로그/API 마스킹 정의는 기존 단일 원천을 참조한다. 종전 LLM 허용 플래그의 관리 화면 이관은 P3에서 설계하며 동의를 대신하는 허용 목록을 두지 않는다 질의·응답 본문은 REQ-109.conversation_body_retention, 조회 결과는 REQ-107.retention_policy의 별도 YAML 설정을 읽기 전용으로 보여 준다."
     reqs: [REQ-106, REQ-107, REQ-109, REQ-111, REQ-611, REQ-614]
   - id: FEAT-020
+    usecases: [UC-001, UC-002, UC-006]
     module: admin
     screen: SCR-018
     roadmap: RM-P1
@@ -195,6 +226,8 @@ features:
     nfrs: ["NFR-001","NFR-013","NFR-014","NFR-023"]
     traces_to: ["ARCH-070"]
   - id: FEAT-021
+    usecases: [UC-001, UC-003, UC-006]
+    uses_features: [FEAT-040, FEAT-014]
     module: admin
     screen: SCR-019
     roadmap: RM-P1
@@ -209,6 +242,8 @@ features:
     detail: "채팅·저장 조회 실행의 품질 신고 목록·대상 근거 조회 · 오류·품질 조사 연결·연결 취소·이력 조회 · 신고별 진행 안내·회신·종결 · 미처리 현황과 경과 시간. 조사와 신고 상태 분리 및 연결 이력 규칙은 REQ-110을 따른다"
     reqs: [REQ-110]
   - id: FEAT-023
+    usecases: [UC-001, UC-003, UC-006, UC-009]
+    uses_features: [FEAT-040, FEAT-014]
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     screen: SCR-012
@@ -218,6 +253,8 @@ features:
     detail: "업무 질의와 SQL 쌍의 등록·검수·폐기 · 파라미터 명세 · **검수 시 참조 공개 인터페이스 추출·저장**(주입 판정과 영향 검수의 근거) · 노출 허용 그룹 매핑 · 조회 이력에서의 승격 · 단독 변경도 반영 세트 후보로 작성하고 SCR-036에서 요청·기술 검토·최종 승인 후 반영하기(REQ-305·306)"
     reqs: ["REQ-302","REQ-205","REQ-306"]
   - id: FEAT-024
+    usecases: [UC-001, UC-003, UC-006, UC-011]
+    uses_features: [FEAT-040, FEAT-014]
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     screen: SCR-010
@@ -291,6 +328,9 @@ features:
     why: "**그룹 소속·매핑 조정의 근거**가 되고, 메타데이터 미완성 목록과 결합하면 '무엇을 채우면 오답이 줄어드는가' 가 데이터로 나온다"
     reqs: [REQ-101, REQ-110, REQ-301]
   - id: FEAT-033
+    usecases: [UC-001, UC-002, UC-003, UC-006]
+    uses_features: [FEAT-040, FEAT-014]
+    operation_boundary: "이력 조회는 UC-001·006, 직접 정책의 새 변경 복원은 UC-002, 자산·접근 그룹의 후보 복원은 UC-003을 따른다. 원래 소유 기능의 현재 검증·승인/전결로 연결하며 과거 승인을 현재 효력으로 승계하지 않는다"
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     screen: SCR-031
@@ -320,6 +360,8 @@ features:
     hard_rule: "원본 이력은 보존하고 동일 원인을 코드·메시지로 자동 묶지 않는다. system 오류 이력은 참조하지 않으며 내부 증거는 유효 권한으로 보호한다. 조사 완료는 저장 조회의 활성 복귀나 신고의 자동 종결을 뜻하지 않는다(REQ-115)"
     reqs: [REQ-115, REQ-304]
   - id: FEAT-036
+    uses_features: [FEAT-014]
+    usecases: [UC-013]
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     screen: SCR-034
@@ -329,6 +371,8 @@ features:
     hard_rule: "수정 불필요 검토 완료는 지식 반영 승인을 대체하거나 우회하지 않는다. 지식 내용·활성 상태를 바꾸는 경우에는 REQ-601의 업무별 설정에 따라 반영 세트 승인 또는 전결로 처리한다"
     reqs: ["REQ-307","REQ-305","REQ-306"]
   - id: FEAT-037
+    usecases: [UC-001, UC-003, UC-004, UC-005, UC-006]
+    uses_features: [FEAT-040]
     approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
     module: admin
     screen: SCR-035
