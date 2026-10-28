@@ -39,6 +39,22 @@ if (manifest?.standalone && keys[0] === 'user') {
   }
 }
 
+const homePath = resolve(ROOT, 'index.html');
+if (!existsSync(homePath)) errors.push('첫 화면 index.html이 없다.');
+else {
+  const home = readFileSync(homePath, 'utf8');
+  const cardLinks = [...home.matchAll(/<a\b(?=[^>]*\bclass="[^"]*\bdelivery-home-card\b[^"]*")[^>]*\bhref="([^"]+)"/g)].map((match) => match[1]);
+  const expectedLinks = [...keys.map((key) => `${key}/index.html`), ...(manifest?.flowViews ?? []).map((view) => view.path)];
+  for (const link of expectedLinks) {
+    if (cardLinks.filter((target) => target === link).length !== 1) errors.push(`첫 화면 카드 누락 또는 중복: ${link}`);
+  }
+  for (const link of cardLinks) {
+    if (!expectedLinks.includes(link)) errors.push(`첫 화면에 생성 대상이 아닌 카드가 있다: ${link}`);
+    if (!existsSync(resolve(ROOT, link))) errors.push(`첫 화면 카드 연결 파일이 없다: ${link}`);
+  }
+  console.log(`첫 화면: 카드 ${cardLinks.length}개 · 대상 ${expectedLinks.length}개`);
+}
+
 for (const key of keys) {
   const file = resolve(ROOT, key, 'index.html');
   if (!existsSync(file)) {

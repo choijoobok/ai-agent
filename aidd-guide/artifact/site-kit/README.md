@@ -4,7 +4,7 @@ title: "고객 제출 사이트 UI 키트"
 category: artifact
 type: operation
 created: 2026-09-13
-updated: 2026-10-27
+updated: 2026-10-28
 status: active
 sources: ["aidd-guide/artifact/INDEX.md", "aidd-guide/harness/skill-src/deliverable-site.md"]
 tier: 3
@@ -34,6 +34,10 @@ tags: [artifact, html, offline, delivery]
 `requirement`가 전체 흐름과 `sequence_routes`를 가진 요구사항 ID다. `layout.groups`는 정본
 노드를 빠짐없이 묶고 좌표·제목·상세도 연결만 정한다. `layout.routes`는 정본에 존재하는
 주요 연결의 선 배치만 정하며 업무 조건은 정본에서 읽는다. 누락 노드·새로 지어낸 연결은 생성 오류다.
+
+첫 화면 `index.html`은 선택한 사이트와 실제 생성된 연속 보기마다 진입 카드를 만든다.
+전체 패키지는 세 사이트와 등록한 흐름도 카드, 설계 전용본은 설계·흐름도 카드를 제공한다.
+사용자·운영 전용본에는 흐름도 카드를 넣지 않는다. `check.mjs`는 카드 누락·중복·연결 파일을 검사한다.
 
 `flow-view.mjs`는 같은 설계 문서에서 시퀀스·순서 설명·공통 계약/검증 조건을 추출한다.
 전체 개요는 정본 Mermaid의 노드·간선을 배치 SVG로 표현하고, 상세도는 Mermaid로 렌더링한다.

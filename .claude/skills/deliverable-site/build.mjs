@@ -338,11 +338,16 @@ function renderSite(key, chapters) {
   write(resolve(OUT, key, 'index.html'), html);
 }
 
-function rootPage() {
-  const cards = keys.map((key) => siteConfig.get(key)).filter(Boolean).map((site) => `<a class="delivery-home-card" href="${site.key}/index.html"><h2>${escapeHtml(site.title)}</h2><p>${escapeHtml(site.description)}</p></a>`).join('');
+function rootPage(flowViews) {
+  const siteCards = keys.map((key) => siteConfig.get(key)).filter(Boolean).map((site) => `<a class="delivery-home-card" href="${site.key}/index.html"><h2>${escapeHtml(site.title)}</h2><p>${escapeHtml(site.description)}</p></a>`);
+  const flowCards = flowViews.map((view) => {
+    const title = siteConfig.get('design').flow_views.find((item) => item.key === view.key).title;
+    return `<a class="delivery-home-card" href="${escapeHtml(view.path)}"><h2>${escapeHtml(title)}</h2><p>전체 흐름도와 상세 시퀀스, 단계별 설명을 함께 확인합니다.</p></a>`;
+  });
+  const cards = [...siteCards, ...flowCards].join('');
   const intro = standalone && mode === 'user'
     ? '일반 사용자에게 전달하는 사용자 매뉴얼 전용 오프라인 패키지입니다. 설계 산출물과 운영자 자료는 포함하지 않습니다.'
-    : `인터넷 연결 없이 ${keys.length === 1 ? '선택한 사이트를' : '세 사이트를'} 열람할 수 있습니다.`;
+    : '아래 산출물을 인터넷 연결 없이 열람할 수 있습니다.';
   return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>고객 제출 산출물</title><link rel="stylesheet" href="assets/guide.css"><link rel="stylesheet" href="assets/delivery.css"></head><body><main class="content"><article><h1>고객 제출 산출물</h1><p>${intro}</p><div class="delivery-home-grid">${cards}</div></article></main></body></html>`;
 }
 
@@ -392,7 +397,6 @@ write(resolve(OUT, 'assets/mockups.js'), `window.DELIVERY_MOCKUPS=${JSON.stringi
 const makers = { design: designChapters, user: userChapters, operations: operationsChapters };
 const allChapters = Object.fromEntries(keys.map((key) => [key, makers[key]()]));
 for (const key of keys) renderSite(key, allChapters[key]);
-write(resolve(OUT, 'index.html'), rootPage());
 
 let flowViews = [];
 if (keys.includes('design') && siteConfig.get('design')?.flow_views?.length) {
@@ -404,6 +408,7 @@ if (keys.includes('design') && siteConfig.get('design')?.flow_views?.length) {
   const designIndex = resolve(OUT, 'design/index.html');
   write(designIndex, readFileSync(designIndex, 'utf8').replace('<div class="sb-head">목차</div>', `<div class="sb-head">목차</div><div class="sb-filter">${links}</div>`));
 }
+write(resolve(OUT, 'index.html'), rootPage(flowViews));
 
 let pdfFiles = [];
 if (pdf) {
