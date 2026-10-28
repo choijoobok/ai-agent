@@ -74,7 +74,7 @@ workstreams:
     deferred_until: null
     design_plan:
       agreed_at: "2026-10-28"
-      updated_at: "2026-10-28"
+      updated_at: "2026-10-29"
       status: in_progress
       purpose: "사용자가 합의한 7개 상세 설계 작업 묶음과 재개 지점을 관리한다. 메뉴 대분류·물리 도메인명·G3 승인을 확정하는 기록은 아니다"
       status_rule: "not_started(미착수) → in_progress(진행) → verified(명시된 완료 기준과 검증 충족). 외부 계약 때문에 진행할 수 없는 항목만 waiting_dependency로 표시하고 해소 조건을 남긴다. verified는 사용자 게이트 승인과 별개다"
@@ -117,8 +117,8 @@ workstreams:
           progress: { inventory: verified, specification_and_logical: verified, physical_and_contracts: in_progress, verification: not_started }
           drafted: "2026-10-28 연동 자산 6개 기능과 ENT-001~016의 입력/처리·예외·권한/이력·참조 소유를 통합 검토했다. 사용자 선택인 관리 카탈로그 작성 시 선택·고정과 API당 도구 하나를 ADR-030·031 및 REQ-301·612에 기록하고 UC/FEAT/ENT/SCR를 연결했다. 자기조인 두 역할과 FEAT-014.reference_validation의 고정 후보 집합/외부 유효본/영향 근거/현재 직접 정책을 구분했다. 명세·논리 단계의 검토 완료이며 물리/공개 계약·화면·시험·G3 승인은 별도다. 정본은 31-features/002-admin.yaml과 40-domain/005~007 파일, 상세 후속은 각 pending 및 소유 영역을 따른다"
           draft_verification: "하네스·harness-doc·lint·도메인 검사 통과. 영역의 기능 6개/논리 모델 16개에서 규칙 참조 114개와 소비 연결 33개의 오류 0. 독립 검토의 대상 종류+안정 ID 구분, 고정 참조 판 자동 치환 금지, API 화면/요구 연결을 보완하고 8개 반례를 명세했다. trace 오류 0/경고 130(기존 후속 114+물리 설계 후속 16). doc-gen 197개·ID 796개·장문 10234개 누락/깨진 링크 0. HTML 설계 223장·사용자 18장·운영 9장 구조 검사와 Edge 논리 16개/물리 1개·탐색·도표·인쇄 통과. 런북 오류 0/기존 후속 경고 4. 두 질문은 사용자 답변을 정본에 반영해 닫았으며 ENT 집계를 실물 47개로 바로잡았다. 제품 실행 시험 완료를 뜻하지 않는다"
-          physical_drafted: "2026-10-28 첫 물리 묶음 ENT-001~004·017~019(대상 시스템·데이터소스·이력·집합·성공 명령 결과)과 API-001~018 관리 계약을 작성했다. 별칭 사용자 선택은 REQ-603.alias_identity, 상세 저장/재수신·참조 경합·연결 공개·별칭 비교는 50-api/003, 물리는 40-domain/005·008이 정본이다. 독립 검토의 Unicode 대소문자 반례를 보완했다. 모두 planned 초안이며 그룹 원천 FK·참조 쓰기 참여·보존 경계는 각 pending의 소유 영역에서 완성한다. G3나 구현 완료가 아니다"
-          physical_verification: "하네스·lint·도메인 검사와 첫 물리 7개 컬럼/PK/논리 매핑·FK 타입·테이블 길이·API 18개 DTO 연결 검사 오류 0. trace 오류 0/후속 경고 126(기존 후속 114+남은 논리 모델 12). doc-gen 200개·ID 802개·장문 10402개 누락/깨진 링크 0. HTML 설계 226장·사용자 18장·운영 9장 구조 통과. Edge 구현 명세 1개·물리 초안 7개·논리 초안 12개, Mermaid 13개·탐색·인쇄 통과. 미구현 테이블에 Liquibase 근거를 요구하던 검사기를 보완했다. 런북 오류 0/기존 후속 경고 4. 실제 DB·동시 요청·별칭 함수 실행 시험은 후속 구현에서 수행한다"
+          physical_drafted: "2026-10-29 대상 시스템·데이터소스의 첫 물리 7개/API 18개에 이어 카탈로그 ENT-005~010·020~028 물리 초안 15개와 API-019~036 관리 계약 18개를 작성했다. 동일 객체 이름 변경 시 근거와 후보 반영으로 안정 식별자를 유지하는 사용자 결정을 ADR-032·REQ-301.identity_change에 기록했다. 정본은 40-domain/006·009와 50-api/005·006이며 관계 소유/자기조인·전체 키/대체·코드 참조·초안 편집/고정·근거를 연결했다. DBMS 식별 규칙 변경 시 이행 전 차단과 새 판 복사의 자기/외부 참조 구분을 독립 검토로 보완했다. 그룹 후보·세트 원장/복구·원천별 정확 식별/샘플링·보존은 각 소유 pending에서 완성한다. 모두 planned이며 제품 구현/G3 완료가 아니다"
+          physical_verification: "하네스·lint·도메인 검사 통과. 이번 카탈로그 물리 15개/관리 API 18개의 컬럼·PK·FK 타입/참조 유일키·사전 토큰/이름 길이·DTO 연결 오류 0. PK 제거·조인 FK 타입 오류·관계 소유 복합 유일키 제거의 반례 3개 검출. 독립 재검토 추가 P1/P2 없음. trace 오류 0/후속 경고 120(기존 후속 114+남은 논리 모델 6). doc-gen 209개·ID 838개·장문 10693개 누락/깨진 링크 0. HTML 설계 235장·사용자 18장·운영 9장 구조 통과. Edge 구현 명세 1개·누적 물리 초안 22개·논리 초안 6개·Mermaid 13개·탐색/인쇄 통과. 런북 오류 0/기존 후속 경고 4. 정적 설계 검증이며 실제 DB·동시 요청·원천/SQL 판정 실행 시험은 후속이다"
         knowledge:
           name: "업무 지식·안내"
           features: [FEAT-010, FEAT-013, FEAT-014, FEAT-023, FEAT-024, FEAT-036]
@@ -163,8 +163,8 @@ workstreams:
           status: identified
           resume_when: "access_policy 상세 설계에서 외부 인사 사건과 모듈별 실제 처리 결과의 식별·순서·재전송·부분 실패/재처리·조회 계약을 대조한다. 계정과 Portal 이용 자격을 합치지 않는다"
       resume:
-        last_completed: "integration_assets의 physical_and_contracts 첫 묶음인 대상 시스템·데이터소스의 물리/API 초안을 작성·검토했다. 범위·검증 근거는 areas.integration_assets.physical_drafted·physical_verification을 따른다. 별칭 비교 질문은 사용자 답변을 반영해 해소했다. 제품 소스·게이트는 변경하지 않았다"
-        next_action: "같은 integration_assets의 physical_and_contracts를 카탈로그 ENT-005~010(40-domain/006-admin-catalog.yaml)부터 이어간다. 안정 자산·불변 내용 판·객체/컬럼 전체 식별·자기조인 두 역할·관계 관리측 고정·제출 후보 집합/외부 유효본 참조를 물리 키/제약과 관리 API로 내리고 첫 묶음의 데이터소스 부모 잠금/참조 보호와 연결한다. 이어 API/도구 ENT-011~016의 일대일·검수/노출 계약을 설계한다. 그룹/정책·보존·세트 처리와 integration 공개 계약은 각 pending의 소유 영역에서 완성한다. 화면 요건/목업·공통 화면·시퀀스·시험은 verification 후속이며 G3 전 제품 소스를 변경하지 않는다"
+        last_completed: "integration_assets의 카탈로그 물리/API 초안과 동일 객체 이름 변경의 사용자 결정을 정련했다. 첫 물리 묶음과 이번 범위·검증은 areas.integration_assets.physical_drafted·physical_verification을 따른다. 사용자 답변 대기는 없으며 그룹/세트/원천·보존의 소유 후속은 정본 pending에 남겼다. 제품 소스와 게이트는 변경하지 않았다"
+        next_action: "같은 integration_assets의 physical_and_contracts에서 업무 API·도구 ENT-011~016(40-domain/007-admin-api-tool.yaml)을 이어간다. API별 도구 하나의 대응·내용 판·입출력/코드명·그룹 응답 통제·노출/검수·공동 오픈 근거를 물리 키/제약·관리 API로 내린다. 대상 시스템/데이터소스의 참조 잠금과 카탈로그의 정확 후보 집합·외부 내용 참조/현재 정책 구분을 공유하고 내용 판 고정·같은 명령 재수신·결과 확인을 대조한다. 이어 연동 자산 영역 물리/공개 계약 통합 검토를 수행한다. 그룹/세트·보존·원천/실행의 실제 공개 계약은 소유 pending에서 완성하며 화면 요건/목업·시퀀스·시험과 G3 승인은 별도다"
         waiting_on: []
       update_rules:
         - "세션 시작·재개 때 이 design_plan과 next_up을 읽고 active_step·active_area·resume을 확인한다. 합의한 순서를 바꿀 이유가 생기면 영향과 재개 지점을 먼저 설명하고 기록한다"
@@ -411,19 +411,19 @@ counters:
   REQ: 102    # REQ-041 Portal 반응형 웹 추가
   UC: 48      # system 10 · admin 공통/업무 흐름 초안 38
   FEAT: 104   # FEAT-041 admin 오류 접수·FEAT-222 agent 정기 파기 추가
-  ENT: 50    # system 31 · admin 연동 자산 물리 초안 7/논리 초안 12
-  API: 117   # system 99 · admin 미구현 설계 18
+  ENT: 59    # system 31 · admin 연동 자산 물리 초안 22/논리 초안 6
+  API: 135   # system 99 · admin 미구현 설계 36
   SCR: 75    # SCR-038 워크플로우 자동 승인 요청 추가
   TC: 83     # system 67 · 보조 모델 후보 정책의 모듈 간 미구현 명세 16
   CR: 26     # CR-027까지 26건 — CR-011 없음, CR-026·027 방향 승인·반영중
   RUN: 8      # 80-operations/_index.yaml의 현재 절차. daily_checks·periodic_tasks를 2026-09-14에 채웠다
-  ADR: 31    # ADR-030 관계 관리측 고정 · ADR-031 API/도구 일대일
+  ADR: 32    # ADR-032 동일 객체 이름 변경의 안정 식별자 유지
   ASM: 1      # **미확인 하나** — 003(기한 G3). 002·004·007은 확인됨, 005·006 은 기각됨
   SLICE: 19
   DEF: 0
 
 counter_note: >-
-  UC는 system 10건과 admin 공통/업무 초안 38건이다. ENT 50건은 system 31건과 admin 연동 자산 물리 초안 7건/논리 초안 12건이며 API 117건은 system 99건과 admin 미구현 명세 18건이다. TC 83건은 system 67건과 보조 모델 후보 정책의 모듈 간 명세 16건이다. CR-026·027의 6건과 후보 정책 16건은 미구현 시험 명세다.
+  UC는 system 10건과 admin 공통/업무 초안 38건이다. ENT 59건은 system 31건과 admin 연동 자산 물리 초안 22건/논리 초안 6건이며 API 135건은 system 99건과 admin 미구현 명세 36건이다. TC 83건은 system 67건과 보조 모델 후보 정책의 모듈 간 명세 16건이다. CR-026·027의 6건과 후보 정책 16건은 미구현 시험 명세다.
   `trace-check`는 뒤 차수와 아직 G3를 청구하지 않은 다른 작업흐름의 결손을 경고로 세고,
   각 작업흐름 G3를 청구할 때 그 소유 범위를 엄격하게 검사한다. 정확한 개수는 매 실행 결과가 정본이다.
 
