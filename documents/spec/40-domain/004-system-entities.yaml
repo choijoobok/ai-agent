@@ -1,0 +1,236 @@
+entities:
+  - id: ENT-525
+    name: "공지"
+    table: SYS_NOTICE
+    features: [FEAT-509]
+    attributes: [{ name: NOTICE_ID, type: bigint, pk: true }]
+    columns: [NOTICE_ID, TITLE, CONTENT, CONTENT_TYPE_CD, NOTICE_FROM_DTM, NOTICE_TO_DTM, POPUP_YN, POPUP_FROM_DTM, POPUP_TO_DTM, USE_YN, SORT_NO, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    rules: ["게시와 팝업 기간을 독립 판정", "기간 밖 팝업 노출 금지"]
+    audit: standard
+    delete_policy: hard
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "NOTICE_ID", type: "bigint", nullable: false, default: null }
+        - { name: "TITLE", type: "character varying(500)", nullable: false, default: null }
+        - { name: "CONTENT", type: "text", nullable: false, default: null }
+        - { name: "CONTENT_TYPE_CD", type: "character varying(20)", nullable: false, default: "'TEXT'::character varying" }
+        - { name: "NOTICE_FROM_DTM", type: "timestamp with time zone", nullable: false, default: null }
+        - { name: "NOTICE_TO_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "POPUP_YN", type: "character(1)", nullable: false, default: "'N'::bpchar" }
+        - { name: "POPUP_FROM_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "POPUP_TO_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "USE_YN", type: "character(1)", nullable: false, default: "'Y'::bpchar" }
+        - { name: "SORT_NO", type: "integer", nullable: false, default: "0" }
+        - { name: "REG_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "REG_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "MOD_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "MOD_DTM", type: "timestamp with time zone", nullable: true, default: null }
+      constraints:
+        - { name: "PK_SYS_NOTICE", definition: "PRIMARY KEY (notice_id)" }
+      indexes:
+        - { name: "IX_SYS_NOTICE_01", unique: false, method: "btree", definition: "(sort_no, notice_from_dtm)" }
+        - { name: "IX_SYS_NOTICE_02", unique: false, method: "btree", definition: "(notice_from_dtm)" }
+
+  - id: ENT-526
+    name: "사용자 알림함"
+    table: SYS_NOTI_INBOX
+    features: [FEAT-509]
+    attributes: [{ name: NOTI_ID, type: bigint, pk: true }]
+    columns: [NOTI_ID, USER_ID, NOTI_TYPE_CD, TITLE, CONTENT, LINK_MENU_CD, LINK_PARAM, READ_YN, READ_DTM, CRE_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID", "LINK_MENU_CD -> ENT-510.MENU_CD (nullable)"]
+    state_machine: { UNREAD: [READ], READ: [] }
+    rules: ["수신자 자신의 행만 조회·읽음 처리", "admin은 public 계약으로 전달"]
+    audit: created_only
+    delete_policy: hard
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "NOTI_ID", type: "bigint", nullable: false, default: null }
+        - { name: "USER_ID", type: "character varying(30)", nullable: false, default: null }
+        - { name: "NOTI_TYPE_CD", type: "character varying(30)", nullable: false, default: null }
+        - { name: "TITLE", type: "character varying(500)", nullable: false, default: null }
+        - { name: "CONTENT", type: "character varying(2000)", nullable: true, default: null }
+        - { name: "LINK_MENU_CD", type: "character varying(30)", nullable: true, default: null }
+        - { name: "LINK_PARAM", type: "character varying(500)", nullable: true, default: null }
+        - { name: "READ_YN", type: "character(1)", nullable: false, default: "'N'::bpchar" }
+        - { name: "READ_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "CRE_DTM", type: "timestamp with time zone", nullable: false, default: null }
+      constraints:
+        - { name: "PK_SYS_NOTI_INBOX", definition: "PRIMARY KEY (noti_id)" }
+        - { name: "FK_SYS_NOTI_INBOX_01", definition: "FOREIGN KEY (user_id) REFERENCES sys_user(user_id)" }
+      indexes:
+        - { name: "IX_SYS_NOTI_INBOX_01", unique: false, method: "btree", definition: "(user_id, cre_dtm)" }
+        - { name: "IX_SYS_NOTI_INBOX_02", unique: false, method: "btree", definition: "(user_id, read_yn)" }
+        - { name: "IX_SYS_NOTI_INBOX_03", unique: false, method: "btree", definition: "(cre_dtm)" }
+
+  - id: ENT-527
+    name: "계정·권한 관리 요청"
+    table: SYS_NOTI_REQUEST
+    features: [FEAT-509]
+    attributes: [{ name: REQ_ID, type: bigint, pk: true }]
+    columns: [REQ_ID, USER_ID, REQ_TYPE_CD, REQ_CONTENT, REQ_STAT_CD, HANDLER_ID, HANDLE_DTM, HANDLE_MEMO, CRE_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID", "HANDLER_ID -> ENT-501.USER_ID (nullable)"]
+    indexes: []
+    index_policy: "현재 물리 인덱스를 그대로 두며 모듈 이동에서 새 인덱스를 만들지 않는다"
+    state_machine: { RECEIVED: [DONE, REJECTED], DONE: [], REJECTED: [] }
+    rules: ["판정은 계정·권한 변경과 분리", "종결 요청 재처리 금지", "REJECTED는 처리 메모 필수", "동시 판정은 대상 행 잠금으로 직렬화하고 뒤 요청은 상태 충돌로 거부"]
+    audit: full
+    delete_policy: never
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "REQ_ID", type: "bigint", nullable: false, default: null }
+        - { name: "USER_ID", type: "character varying(30)", nullable: false, default: null }
+        - { name: "REQ_TYPE_CD", type: "character varying(30)", nullable: false, default: null }
+        - { name: "REQ_CONTENT", type: "character varying(2000)", nullable: false, default: null }
+        - { name: "REQ_STAT_CD", type: "character varying(20)", nullable: false, default: "'RECEIVED'::character varying" }
+        - { name: "HANDLER_ID", type: "character varying(30)", nullable: true, default: null }
+        - { name: "HANDLE_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "HANDLE_MEMO", type: "character varying(2000)", nullable: true, default: null }
+        - { name: "CRE_DTM", type: "timestamp with time zone", nullable: false, default: null }
+      constraints:
+        - { name: "PK_SYS_NOTI_REQUEST", definition: "PRIMARY KEY (req_id)" }
+        - { name: "FK_SYS_NOTI_REQUEST_01", definition: "FOREIGN KEY (user_id) REFERENCES sys_user(user_id)" }
+      indexes:
+        - { name: "IX_SYS_NOTI_REQUEST_01", unique: false, method: "btree", definition: "(req_stat_cd, cre_dtm)" }
+        - { name: "IX_SYS_NOTI_REQUEST_02", unique: false, method: "btree", definition: "(user_id, cre_dtm)" }
+
+  - id: ENT-528
+    name: "사용자 즐겨찾기"
+    table: SYS_USER_FAVORITE
+    features: [FEAT-510]
+    attributes: [{ name: USER_ID, type: varchar, pk: true }, { name: MENU_CD, type: varchar, pk: true }]
+    columns: [USER_ID, MENU_CD, SORT_NO, CRE_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID", "MENU_CD -> ENT-510.MENU_CD"]
+    rules: ["세션 사용자 범위 고정", "같은 메뉴의 동시 등록은 복합 PK 충돌을 성공으로 처리해 행 하나만 유지", "메뉴 삭제 시 고아 행 정리"]
+    audit: created_only
+    delete_policy: hard
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "USER_ID", type: "character varying(30)", nullable: false, default: null }
+        - { name: "MENU_CD", type: "character varying(30)", nullable: false, default: null }
+        - { name: "SORT_NO", type: "integer", nullable: false, default: null }
+        - { name: "CRE_DTM", type: "timestamp with time zone", nullable: false, default: null }
+      constraints:
+        - { name: "PK_SYS_USER_FAVORITE", definition: "PRIMARY KEY (user_id, menu_cd)" }
+        - { name: "FK_SYS_USER_FAVORITE_01", definition: "FOREIGN KEY (user_id) REFERENCES sys_user(user_id)" }
+        - { name: "FK_SYS_USER_FAVORITE_02", definition: "FOREIGN KEY (menu_cd) REFERENCES sys_menu(menu_cd)" }
+      indexes: []
+
+  - id: ENT-529
+    name: "사용자 그리드 설정"
+    table: SYS_USER_GRID_PREF
+    features: [FEAT-510]
+    attributes: [{ name: USER_ID, type: varchar, pk: true }, { name: MENU_CD, type: varchar, pk: true }, { name: GRID_ID, type: varchar, pk: true }]
+    columns: [USER_ID, MENU_CD, GRID_ID, PREF_JSON, SIGNATURE, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID", "MENU_CD -> ENT-510.MENU_CD"]
+    rules: ["선언 signature 불일치는 기본 설정으로 복원", "타 사용자 키 금지"]
+    audit: standard
+    delete_policy: hard
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "USER_ID", type: "character varying(30)", nullable: false, default: null }
+        - { name: "MENU_CD", type: "character varying(30)", nullable: false, default: null }
+        - { name: "GRID_ID", type: "character varying(30)", nullable: false, default: null }
+        - { name: "PREF_JSON", type: "text", nullable: false, default: null }
+        - { name: "SIGNATURE", type: "character varying(64)", nullable: false, default: null }
+        - { name: "REG_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "REG_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "MOD_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "MOD_DTM", type: "timestamp with time zone", nullable: true, default: null }
+      constraints:
+        - { name: "PK_SYS_USER_GRID_PREF", definition: "PRIMARY KEY (user_id, menu_cd, grid_id)" }
+        - { name: "FK_SYS_USER_GRID_PREF_01", definition: "FOREIGN KEY (user_id) REFERENCES sys_user(user_id)" }
+        - { name: "FK_SYS_USER_GRID_PREF_02", definition: "FOREIGN KEY (menu_cd) REFERENCES sys_menu(menu_cd)" }
+      indexes: []
+
+  - id: ENT-530
+    name: "사용자 메뉴 월별 통계"
+    table: SYS_USER_MENU_STAT
+    features: [FEAT-510]
+    attributes: [{ name: USER_ID, type: varchar, pk: true }, { name: MENU_CD, type: varchar, pk: true }, { name: STAT_YM, type: varchar, pk: true }]
+    columns: [USER_ID, MENU_CD, STAT_YM, USE_CNT, LAST_USE_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID", "MENU_CD -> ENT-510.MENU_CD"]
+    indexes: []
+    index_policy: "현재 물리 인덱스를 그대로 두며 모듈 이동에서 새 인덱스를 만들지 않는다"
+    rules: ["월 키는 YYYYMM", "메뉴 트리의 현재 셸 탭·셸 새 탭·성공한 브라우저 새 탭·창 열기만 선택으로 센다", "선택 횟수는 편의용 best-effort이며 동시 같은 메뉴 선택의 한 건 유실을 허용"]
+    audit: none
+    delete_policy: hard
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "USER_ID", type: "character varying(30)", nullable: false, default: null }
+        - { name: "MENU_CD", type: "character varying(30)", nullable: false, default: null }
+        - { name: "STAT_YM", type: "character varying(6)", nullable: false, default: null }
+        - { name: "USE_CNT", type: "integer", nullable: false, default: "0" }
+        - { name: "LAST_USE_DTM", type: "timestamp with time zone", nullable: false, default: null }
+      constraints:
+        - { name: "PK_SYS_USER_MENU_STAT", definition: "PRIMARY KEY (user_id, menu_cd, stat_ym)" }
+      indexes: []
+
+  - id: ENT-531
+    name: "사용자 저장 조회조건"
+    table: SYS_USER_SEARCH_COND
+    features: [FEAT-510]
+    attributes: [{ name: USER_ID, type: varchar, pk: true }, { name: MENU_CD, type: varchar, pk: true }, { name: COND_NM, type: varchar, pk: true }]
+    columns: [USER_ID, MENU_CD, COND_NM, COND_JSON, DFLT_YN, SORT_NO, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["USER_ID -> ENT-501.USER_ID", "MENU_CD -> ENT-510.MENU_CD"]
+    rules: ["COND_JSON은 화면 선언이 해석하는 개인 설정 값이며 서버는 내용을 검증하지 않는다", "저장조건을 적용할 때 현재 화면에 유효한 값만 화면별 기본값 위에 덮어쓴다", "같은 이름은 덮어쓰고 새 기본 저장조건을 지정하면 이전 기본 저장조건을 해제한다", "같은 사용자의 동시 기본 저장은 사용자 행 잠금으로 직렬화해 마지막 저장 완료 요청 하나만 기본으로 둔다", "타 사용자 키 금지"]
+    audit: standard
+    delete_policy: hard
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "USER_ID", type: "character varying(30)", nullable: false, default: null }
+        - { name: "MENU_CD", type: "character varying(30)", nullable: false, default: null }
+        - { name: "COND_NM", type: "character varying(100)", nullable: false, default: null }
+        - { name: "COND_JSON", type: "text", nullable: false, default: null }
+        - { name: "DFLT_YN", type: "character(1)", nullable: false, default: "'N'::bpchar" }
+        - { name: "SORT_NO", type: "integer", nullable: false, default: null }
+        - { name: "REG_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "REG_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "MOD_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "MOD_DTM", type: "timestamp with time zone", nullable: true, default: null }
+      constraints:
+        - { name: "PK_SYS_USER_SEARCH_COND", definition: "PRIMARY KEY (user_id, menu_cd, cond_nm)" }
+        - { name: "FK_SYS_USER_SEARCH_COND_01", definition: "FOREIGN KEY (user_id) REFERENCES sys_user(user_id)" }
+        - { name: "FK_SYS_USER_SEARCH_COND_02", definition: "FOREIGN KEY (menu_cd) REFERENCES sys_menu(menu_cd)" }
+      indexes: []

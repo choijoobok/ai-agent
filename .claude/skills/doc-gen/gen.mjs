@@ -23,12 +23,13 @@
  */
 
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, rmSync } from 'node:fs';
-import { dirname, join, normalize, posix } from 'node:path';
+import { dirname, join, normalize, posix, resolve as resolvePath } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseYaml } from '../../hooks/lib.mjs';
 import { traceReport } from '../../hooks/trace-check.mjs';
 import { associatedScreens, featureIds, relationIds } from '../../../aidd-guide/harness/runtime/trace-model.mjs';
 import { listSpecSetNames, loadSpecSet } from '../../../aidd-guide/harness/runtime/spec-set.mjs';
+import { domainSchema } from '../../../aidd-guide/harness/runtime/domain-schema.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..', '..', '..');
@@ -82,6 +83,8 @@ const LABEL = {
   case: '사례', volatility: '변동 가능성', level: '수준', what: '무엇이',
   maturity: '성숙도', at: '일자', by: '작성', confirmed_by: '확인자',
   next_targets: '다음 파기 대상',
+  entity: '엔티티', description: '설명', order: '순서', column: '컬럼', nullable: 'NULL 허용',
+  default: '기본값', keys: '키·제약', method: '방식', file: '파일', author: '작성자', change_id: 'changeset',
 };
 const lab = (k) => LABEL[k] ?? k;
 
@@ -754,8 +757,84 @@ function ERD() {
       d.meta.baselined, items.map((x) => x.id)),
     `## 공통 규약\n\n${blocks([{ id: 'conventions', ...(d.conventions ?? {}) }], ['id'], 'name', '###')}`,
     `## 관계 개요\n\n${diagram.join('\n')}`,
-    `## 엔티티 ${items.length}건\n\n${blocks(items, ['id', 'table'], 'name', '###')}`,
+    '컬럼별 물리 정의·키·제약·인덱스·Liquibase 근거는 [테이블 목록·명세서](41-테이블명세서/_index.md)에서 확인한다. 아래 속성과 관계는 업무 모델이며 물리 외래키를 대신하지 않는다.',
+    `## 엔티티 ${items.length}건\n\n${blocks(items.map(({ physical, ...entity }) => entity), ['id', 'table'], 'name', '###')}`,
   ]);
+}
+
+let checkedDomain;
+function schema() { return checkedDomain ??= domainSchema(REPO); }
+
+/** 독립 물리 명세. 구현 전 계약과 소스 기준 예상 스키마를 명확히 나눈다. */
+function 테이블명세서(verify = false) {
+  const { domain, catalog } = schema();
+  const folder = `${OUT}41-테이블명세서/`;
+  const technical = domain.conventions.liquibase.technical_tables ?? [];
+  const items = [
+    ...domain.entities.map((e) => ({ ...e, key: e.id, physical: e.physical, description: e.name })),
+    ...technical.map((t) => ({ ...t, key: t.table, implementation: 'implemented', description: t.reason, physical: catalog.tables.get(t.table) })),
+  ];
+  // 검사를 모두 통과한 뒤에만 이 생성기가 소유한 파생 파일을 갱신한다.
+  const problems = [], emitted = new Set();
+  const emit = (file, parts) => {
+    emitted.add(posix.basename(file));
+    if (!verify) { write(file, parts); return; }
+    const normalizeDate = (s) => s.replace(/^last_sync:.*$/m, 'last_sync: DATE');
+    const expected = parts.join('\n\n').replace(/\n+$/, '') + '\n';
+    if (!existsSync(join(REPO, file)) || normalizeDate(readFileSync(join(REPO, file), 'utf8')) !== normalizeDate(expected)) problems.push(`${file}: 재생성 필요`);
+  };
+  if (!verify) mkdirSync(join(REPO, folder), { recursive: true });
+  const rows = [];
+  for (const e of items) {
+    const file = `${folder}${e.key}.md`, physical = e.physical;
+    const actual = catalog.tables.get(e.table);
+    const state = e.implementation === 'implemented' ? '소스 기준 물리 정의' : '설계 초안 · 미구현';
+    rows.push({ module: e.module, table: `[${e.table}](${e.key}.md)`, entity: e.id ?? '기술 기반', description: e.description, state });
+    const parts = [head(`TABLE-${e.key}`, `${e.table} — ${e.name ?? e.description}`, specSource('40-domain'), e.implementation === 'implemented' ? 'current_source' : 'draft', null, e.id ? [e.id, ...(e.features ?? [])] : []).replace('generated_from:', `module: ${e.module}\ngenerated_from:`),
+      `**${state}** — 실제 DB 적용 확인을 뜻하지 않는다.`,
+      table([{ owner: e.module, entity: e.id ?? '업무 ENT 없는 기술 기반', features: e.features ?? [], description: e.description }], ['owner', 'entity', 'features', 'description']),
+      '[테이블 목록으로](./_index.md) · [도메인·데이터 모델](../40-ERD.md)',
+    ];
+    if (physical) {
+      if (physical.comment) parts.push(`**DB 테이블 설명** — ${flat(physical.comment)}`);
+      const constraints = physical.constraints ?? [];
+      const columns = (physical.attributes ?? []).map((a, n) => ({
+        order: n + 1, column: a.name, type: a.type, nullable: a.nullable, default: a.default ?? '없음',
+        keys: constraints.filter((c) => {
+          const cols = c.definition.match(/^(PRIMARY KEY|UNIQUE|FOREIGN KEY)\s*\(([^)]+)\)/i)?.[2];
+          return cols?.split(',').map((s) => s.trim().toUpperCase()).includes(a.name);
+        }).map((c) => c.name),
+        description: a.comment ?? (e.attributes ?? []).find((x) => x.name === a.name)?.description ?? '미기재',
+      }));
+      parts.push(`## 컬럼 ${columns.length}개\n\n${table(columns, ['order', 'column', 'type', 'nullable', 'default', 'keys', 'description'])}`,
+        '## 키·제약\n\n' + (constraints.length ? table(constraints, ['name', 'definition']) : '명시된 물리 제약 없음'),
+        '## 별도 인덱스\n\n' + ((physical.indexes ?? []).length ? table(physical.indexes, ['name', 'unique', 'method', 'definition']) : '별도 인덱스 없음'),
+        '기본키·유일성 제약이 생성하는 인덱스는 키·제약에 포함한다. 논리 관계를 물리 외래키로 간주하지 않는다. 컬럼 설명이 미기재이면 이름으로 의미를 추정하지 않는다.');
+    } else parts.push('## 물리 상세\n\n아직 설계하지 않았다. 컬럼·키·제약을 확정할 때 40-domain의 physical을 작성한다.');
+    if (e.id) parts.push('## 업무 모델 연결\n\n' + blocks([{ id: e.id, name: e.name, rules: e.rules, relations: e.relations, audit: e.audit, delete_policy: e.delete_policy, retention: e.retention, state_machine: e.state_machine, planned_changes: e.planned_changes }], ['id'], 'name', '###'));
+    if (actual) {
+      parts.push('## Liquibase 변경 근거\n\n' + table(actual.changesets.map((c) => ({ file: `[${c.file}](${posix.relative(folder, c.file)})`, author: c.author, change_id: c.id })), ['file', 'author', 'change_id']),
+        '### 활성 include 경로\n\n' + actual.sources.map((s) => `- [${s}](${posix.relative(folder, s)})`).join('\n'));
+    }
+    emit(file, parts);
+  }
+  emit(`${folder}_index.md`, [head('TABLES', '테이블 목록·명세서', specSource('40-domain'), 'mixed', null, domain.entities.map((e) => e.id)),
+    '구현된 테이블은 활성 Liquibase 정의와 도메인 물리 계약의 일치를 검사한 뒤 생성한다. 신규 설계 초안은 아직 DB에 적용되지 않았음을 표시한다. 운영 DB 접속이나 마이그레이션 실행 결과가 아니다.',
+    `업무 엔티티 ${domain.entities.length}건 · 기술 기반 ${technical.length}건`,
+    table(rows, ['module', 'table', 'entity', 'description', 'state']),
+  ]);
+  if (existsSync(join(REPO, folder))) for (const file of readdirSync(join(REPO, folder))) {
+    if (!file.endsWith('.md') || emitted.has(file)) continue;
+    if (verify) problems.push(`${folder}${file}: 폐기된 명세서 잔존`);
+    else rmSync(join(REPO, folder, file));
+  }
+  if (problems.length) throw new Error(problems.join('\n'));
+}
+
+export function checkTableDocuments() {
+  const { catalog } = schema();
+  테이블명세서(true);
+  return [...specSet('40-domain').files, ...catalog.files];
 }
 
 function openApiText(d) {
@@ -900,7 +979,7 @@ function 운영런북() {
 }
 
 // ── 대상 등록 ─────────────────────────────────────────────────────
-const TARGETS = { 요구사항정의서, 아키텍처, 기능목록, 요건정의서, 화면정의서, 권한매트릭스, 유즈케이스, ERD, API, 테스트, 운영런북, 추적성 };
+const TARGETS = { 요구사항정의서, 아키텍처, 기능목록, 요건정의서, 화면정의서, 권한매트릭스, 유즈케이스, ERD, 테이블명세서, API, 테스트, 운영런북, 추적성 };
 
 /**
  * 같은 대상의 다른 이름. `SKILL.md` 의 인자 줄은 짧은 이름(`화면`·`권한`)을 쓰고
@@ -910,6 +989,7 @@ const TARGETS = { 요구사항정의서, 아키텍처, 기능목록, 요건정�
 const ALIAS = {
   화면: '화면정의서', '메뉴·화면정의서': '화면정의서', 권한: '권한매트릭스', '기능목록·메뉴': '기능목록',
   테스트케이스: '테스트', 런북: '운영런북',
+  테이블: '테이블명세서', 테이블목록: '테이블명세서',
 };
 const resolve = (a) => ALIAS[a] ?? a;
 
@@ -933,6 +1013,8 @@ const NOT_YET = {
  * 신호이며, 초록으로 만들려고 검사를 좁히지 않는다.
  */
 function check() {
+  schema();
+  테이블명세서(true);
   const mdFiles = [];
   const walkDir = (dir) => {
     if (!existsSync(dir)) return;
@@ -993,7 +1075,10 @@ function check() {
 }
 
 // ── 진입 ──────────────────────────────────────────────────────────
+function main() {
 const argv = process.argv.slice(2);
+// 어느 문서도 쓰기 전에 구조 불일치를 막는다. 기존 산출물은 실패 증거로 보존한다.
+schema();
 if (argv.includes('--check')) {
   check();
 } else {
@@ -1010,3 +1095,5 @@ if (argv.includes('--check')) {
     console.log(`\n아직 만들지 않는 대상 ${Object.keys(NOT_YET).length}개 — ${Object.entries(NOT_YET).map(([k, v]) => `${k}(${v})`).join(' · ')}`);
   }
 }
+}
+if (process.argv[1] && resolvePath(process.argv[1]) === fileURLToPath(import.meta.url)) main();

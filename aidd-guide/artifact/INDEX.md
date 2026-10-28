@@ -35,7 +35,7 @@ tags: [artifact, map, index]
 | 11  | 기능 목록 · 명세              | P3    | S+G | `documents/spec/31-features/_index.yaml` → `documents/generated/31-기능목록.md`                                                   |  ●   |  ●  |  ●   |
 | 12  | 기능별 요건 정의서                 | P3    | G   | `documents/generated/32-요건정의서/FEAT-{###}.md`                                                                           |  ●   |  ●  |  ●   |
 | 13  | 도메인/데이터 모델 · ERD           | P3    | S+G | `documents/spec/40-domain/_index.yaml` → `documents/generated/40-ERD.md` (Mermaid)                                            |  ●   |  ●  |  ●   |
-| 14  | 물리 스키마                     | P3    | S   | `documents/spec/40-domain/_index.yaml` → **Liquibase changeset** `sources/backend/bootstrap/src/main/resources/db/changelog/` |  ●   |  ●  |  ●   |
+| 14  | 물리 스키마 · 테이블 목록/명세서 | P3 | S+G | `documents/spec/40-domain/_index.yaml` ↔ **Liquibase changeset** → `documents/generated/41-테이블명세서/{ENT-ID}.md` · `_index.md`; 모듈 소유, [동기화 서식·절차](data-model.md) | ● | ● | ● |
 | 15  | API 명세                     | P3    | S+G | `documents/spec/50-api/_index.yaml` (OpenAPI) → `documents/generated/50-API.md` · `50-openapi.yaml`                                               |  ●   |  ●  |  ●   |
 | 16  | 메뉴·화면 목록 · 화면 정의서             | P3    | S+G | `documents/spec/60-screens/_index.yaml` → `documents/generated/60-화면정의서.md`                                                   |  ●   |  ●  |  ●   |
 | 17  | 시퀀스 다이어그램                  | P3    | G   | `documents/generated/33-시퀀스/UC-{###}.md` (Mermaid)                                                                     |  △   |  ●  |  ●   |

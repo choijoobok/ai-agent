@@ -34,6 +34,8 @@ description: 수직 슬라이스 하나를 구현한다. 소유 작업흐름과 
 ### ④ 필요한 층
 DB → 서비스/API → UI 중 기능에 존재하는 층만 구현한다. 마이그레이션이 있으면 롤백을,
 API·화면이 있으면 각 spec 계약과 권한·예외를 확인한다. 없는 UI를 agent 기능에 만들지 않는다.
+테이블 변경은 40-domain 물리 계약·새 Liquibase changeset·활성 include·ENT 소스 연결을 같은 변경에 반영한다.
+`node aidd-guide/harness/runtime/domain-schema.mjs`와 doc-gen/HTML 재생성을 수행한다. 적재된 changeset은 수정하지 않는다.
 
 ### ⑤ 계약·통합
 외부에서 관찰 가능한 API·이벤트·응답 블록을 확인한다. 모듈 간 계약 변경은 `integration`

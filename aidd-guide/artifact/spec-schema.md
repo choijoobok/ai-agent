@@ -83,7 +83,8 @@ tags: [spec, ssot, yaml]
 | 화면 목록·명세 | 구성·표시·입력·조작·호출 계약 | 목록/연결은 60-screens, 상세는 screen의 requirements.md |
 | 공통 화면 명세 | 여러 화면이 공유하는 모달·선택창의 공통 계약 | 같은 SCR 체계; 호출 화면은 전달값·반환값 매핑만 정의 |
 | API 목록·명세 | 메서드+경로·입출력·오류·인가·소유 기능·구현 메서드 | 50-api가 독립 정본; 화면 문서는 API 식별자를 참조 |
-| 데이터 모델·외부 연동 | 저장 구조·제약·상태와 외부 송수신 계약 | ENT·IF를 사용 기능과 연결 |
+| 데이터 모델·테이블 목록/명세서 | 개념·소유·상태·물리 계약, Liquibase 구현 대조 | ENT와 소스 연결로 테이블별 명세 생성; [동기화 서식](data-model.md) |
+| 외부 연동 | 외부 송수신 계약 | IF를 사용 기능과 연결 |
 | 테스트 명세 | 검증 조건·기대 결과·검증 수단 | TC와 테스트 코드·화면 사례 연결 |
 | 추적성·변경 영향 | 위 연결에서 계산한 검토 범위 | 생성/조회만 하며 별도 현황 원장을 만들지 않음 |
 
@@ -109,6 +110,7 @@ HTML 목차는 문서 종류 → 모듈 순으로 자동 구성한다. 단일 �
 | API | `feature`: 소유 기능, `method`+`path`: 호출 식별, `source_contract`: `sources/.../Controller.java#method` |
 | API | `implementation`: `planned`/`implemented`; 요청·응답·오류·권한 계약과 연결 기능을 유지 |
 | FEAT/SCR/API | `sources`: 구현 파일 또는 끝이 `/`인 폴더, 필요하면 `#메서드`; `docs`: 추가로 대조할 정본 경로 |
+| ENT | `module`·`implementation`·`physical`·`sources`: 소유 모듈, planned/implemented, 물리 계약, 활성 Liquibase 생성/변경 파일과 include 경로 |
 | TC | `feature`: 소유 기능, 필요하면 `features`·`apis`·`screens`; `screen_cases`: 기존 화면 사례의 `documents/screen/.../requirements.md#사례번호` 배열 |
 
 신규 화면 연결은 SCR의 `feature`/`features`에 정의한다. 기존 FEAT의 `screen`/`screens`는

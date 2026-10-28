@@ -1,9 +1,19 @@
 conventions:
+  liquibase:
+    root: sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+    resources: sources/backend/bootstrap/src/main/resources
+    scope: "제품 PostgreSQL 활성 include의 순방향 정의를 대조한다. 실제 DB 적용 여부와 고객별 수동 변경은 별도 마이그레이션 검증 대상이다. 비활성 schema/·local/sample 및 rollback은 합산하지 않는다"
+    technical_tables:
+      - { table: SYS_SEQUENCE, module: platform, reason: "기술 식별자 생성 기반. 업무 ENT를 만들지 않는다" }
+      - { table: SYS_DATA_LOCK, module: platform, reason: "공유 작업 잠금 기반. 업무 ENT를 만들지 않는다" }
+      - { table: SYS_JOB_PROGRESS, module: platform, reason: "공통 작업 진행 기반. 업무 ENT를 만들지 않는다" }
+      - { table: SPRING_SESSION, module: platform, reason: "Spring Session 세션 원천. 업무 ENT를 만들지 않는다" }
+      - { table: SPRING_SESSION_ATTRIBUTES, module: platform, reason: "Spring Session 속성 원천. 업무 ENT를 만들지 않는다" }
   naming: "기존 SYS_* 이름 보존; 신규 system 테이블이 필요할 때만 승인된 changeset 규칙 적용"
   time: "현재 컬럼 타입과 의미를 보존하고 신규 일시는 timestamptz"
   audit: "REG_ID/REG_DTM/MOD_ID/MOD_DTM이 있는 테이블은 기존 감사 4컬럼 유지"
   delete: "이력은 사용자·관리 API로 삭제하지 않고 설정된 보존 기간이 지난 행만 파기 배치가 hard delete한다. 계정·권한 기준은 참조 무결성 또는 비활성화, 사용자 UI 상태는 소유 범위 행만 hard delete한다"
-  source: "sources/backend/bootstrap/src/main/resources/db/changelog/schema/*.yaml"
+  source: "활성 경로는 conventions.liquibase.root가 정한다. 기존 schema/*.yaml은 이관 전 근거이며 현재 제품 스키마에 다시 합산하지 않는다"
   requiredness: "PK attributes are non-null. All other nullable/default constraints are the currently applied Liquibase constraints; a system module move may not loosen or tighten them"
   history_policy:
     immutable_history: [ENT-505, ENT-521, ENT-522]

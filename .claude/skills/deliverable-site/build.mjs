@@ -18,6 +18,7 @@ import { menuTree, read as readRepo, REPO, screensOf } from '../manual-site/lib/
 import { themeAware } from '../manual-site/lib/page.mjs';
 import { buildFlowViews } from './lib/flow-view.mjs';
 import { createDesignNavigation } from './lib/design-navigation.mjs';
+import { checkTableDocuments } from '../doc-gen/gen.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ASSET_SOURCE = resolve(REPO, 'aidd-guide/artifact/site-kit/assets');
@@ -38,6 +39,8 @@ if (standalone && mode === 'all') {
 const OUT = resolve(REPO, standalone ? `build/deliverables-${mode}` : 'build/deliverables');
 const BUILD_README = resolve(REPO, 'aidd-guide/artifact/site-kit/BUILD-README.txt');
 const keys = mode === 'all' ? ['design', 'user', 'operations'] : [mode];
+// 낡은 테이블 문서를 다시 포장하지 않는다. 검사는 출력 파일을 쓰기 전에 끝낸다.
+const schemaInputs = keys.includes('design') ? checkTableDocuments() : [];
 
 const config = parseYaml(readFileSync(resolve(REPO, 'documents/delivery.yaml'), 'utf8'));
 const siteConfig = new Map((config.sites ?? []).map((site) => [site.key, site]));
@@ -47,7 +50,7 @@ const specScreens = screenSpec.screens ?? [];
 const byRoute = new Map(specScreens.filter((screen) => screen.route).map((screen) => [screen.route, screen]));
 const byDoc = new Map(specScreens.filter((screen) => screen.current_doc).map((screen) => [norm(screen.current_doc), screen]));
 const issues = [];
-const sourceFiles = new Set(['documents/delivery.yaml', ...loadedScreens.files]);
+const sourceFiles = new Set(['documents/delivery.yaml', ...loadedScreens.files, ...schemaInputs]);
 const mockups = {};
 const captureRows = [];
 

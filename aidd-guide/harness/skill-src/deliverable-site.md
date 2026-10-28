@@ -25,6 +25,8 @@ node .claude/skills/deliverable-site/browser-check.mjs design
 
 문서 생성과 사이트 조립은 의도적으로 분리한다. 첫 명령이 정본에서 `documents/generated/`를
 갱신하고, 사이트 빌더는 그 결과를 읽기만 한다. 사용자 사이트만 확인할 때는 첫 명령을 생략할 수 있다.
+설계 사이트 조립 전에는 도메인·Liquibase와 테이블 명세서의 일치를 검사한다. 낡으면 doc-gen을 먼저
+실행한다. manifest는 이 원천 파일도 기록하며 `check.mjs`는 생성 뒤 원본 변경을 검출한다.
 
 ## 모드
 

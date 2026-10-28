@@ -43,6 +43,17 @@ try {
       await group.click();
       if (!await targetLink.isVisible()) errors.push('목차 그룹 펼치기가 동작하지 않는다.');
     }
+    const tablePage = await page.locator('[data-page-link]').evaluateAll((nodes) => {
+      const link = nodes.find((node) => node.dataset.pagePath?.includes('테이블 목록·명세서') && / — /.test(node.textContent));
+      return link ? { id: link.dataset.pageLink, path: link.dataset.pagePath } : null;
+    });
+    if (!tablePage) errors.push('테이블 상세 명세의 모듈별 목차가 없다.');
+    else {
+      await openHash(tablePage.id);
+      const text = await page.locator(`[data-page][id="${tablePage.id}"]`).innerText();
+      for (const label of ['NULL 허용', '기본값', '키·제약', 'Liquibase 변경 근거']) if (!text.includes(label)) errors.push(`테이블 명세 항목 누락: ${label}`);
+      if (await page.locator('[data-current-path]').textContent() !== tablePage.path) errors.push('테이블 명세의 현재 경로가 다르다.');
+    }
     const mockupPage = await page.locator('[data-mockup$="/__design__"]').first().evaluate((node) => node.closest('[data-page]')?.id);
     if (mockupPage) await openHash(mockupPage);
   }

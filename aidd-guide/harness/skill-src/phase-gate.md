@@ -35,6 +35,7 @@ P1~P5에 `workstreams`가 있으면 **전역인지 어느 작업흐름인지도 
   - 미해결 `ASM-###` 수 (`documents/decisions/ASSUMPTIONS.md`)
   - `proposed` 상태 ADR 수
   - 테스트 실행 결과
+  - G3의 데이터 모델 또는 G4의 DB 변경은 `node aidd-guide/harness/runtime/domain-schema.mjs`와 doc-gen `--check`를 실행한다. 예정 설계와 현재 구현을 구분하고 Liquibase 변경·물리 계약·테이블 명세서가 일치해야 한다. 실제 DB 적용/복구 시험은 소스 대조로 대체하지 않는다.
 - **❌ 가 하나라도 있으면 승인을 요청하지 않는다.** 먼저 해결하거나, 해결 불가 사유를 명시한다.
 
 ### ② 레드팀 자기반박 (필수, 생략 불가)

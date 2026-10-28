@@ -57,6 +57,10 @@ sites:
           path: ["데이터·API"]
           source_prefixes: ["documents/generated/40-", "documents/generated/50-", "documents/generated/51-"]
           group_by_module: true
+        - key: tables
+          path: ["데이터·API", "테이블 목록·명세서"]
+          source_prefixes: ["documents/generated/41-"]
+          group_by_module: true
         - key: screens
           path: ["화면 목록"]
           source_prefixes: ["documents/generated/60-"]

@@ -5,7 +5,7 @@ description: documents/spec/ 의 논리 YAML 문서 세트에서 사람이 읽�
 
 # 문서 생성 (spec → docs)
 
-인자: 없음(전체) / `아키텍처` `기능목록` `화면` `권한` `요건정의서` `유즈케이스` `ERD` `DDL` `API`
+인자: 없음(전체) / `아키텍처` `기능목록` `화면` `권한` `요건정의서` `유즈케이스` `ERD` `테이블명세서` `DDL` `API`
 `시퀀스` `테스트` `매뉴얼` `추적성`
 
 **목록의 정본은 아래 「생성 대상」 표다.** 이 줄은 그 표의 첫 칸을 줄인 것이며,
@@ -35,6 +35,7 @@ node .claude/skills/doc-gen/gen.mjs --check            # 생성물이 spec 을 �
   (새 대상이 필요하다는 신호이며, 초록으로 만들려고 검사를 좁히지 않는다).
 
 ## 원칙
+- 데이터 모델·Liquibase·테이블 명세서는 [동기화 규약](../../../aidd-guide/artifact/data-model.md)을 따른다. 생성 전 `domain-schema.mjs`가 활성 스키마와 설계의 일치를 검사하며 불일치면 쓰기 전에 실패한다. 테이블 명세서는 독립 생성물이며 `--check`로 내용의 노후화도 검사한다.
 - API 목록·상세 계약은 독립 산출물이며 API ID와 소유 기능·구현 메서드를 출력한다. Swagger UI는 필요하지 않다.
 - 메뉴·공통/독립 화면을 구별하고 단/복수 기능·화면 연결을 합쳐 읽는다. 기능별 문서를 수기로 복제하지 않는다.
 - **`documents/generated/` 는 파생물이다.** 항상 `documents/spec/` 에서 다시 만든다. 손으로 고친 내용은 덮어써진다.
@@ -86,7 +87,8 @@ node .claude/skills/doc-gen/gen.mjs --check            # 생성물이 spec 을 �
 | 요건정의서 | `gen` | `documents/generated/32-요건정의서/FEAT-###.md` + `_index.md` | 31-features + 50-api + 60-screens (REQ/UC 참조) |
 | 유즈케이스 | `gen` | `documents/generated/30-유즈케이스.md` | 30-usecases |
 | ERD | `gen` | `documents/generated/40-ERD.md` (Mermaid erDiagram) | 40-domain |
-| DDL | `prose` | `db/ddl/*.sql` | 40-domain + conventions |
+| 테이블명세서 | `gen` | `documents/generated/41-테이블명세서/{ENT-ID}.md` + `_index.md` (기술 기반은 테이블명) | 40-domain + 활성 Liquibase |
+| DDL | `prose` | 승인된 **새 Liquibase changeset** `sources/backend/bootstrap/src/main/resources/db/changelog/` | 40-domain + conventions |
 | API | `gen` | `documents/generated/50-API.md` + `documents/generated/50-openapi.yaml` | 50-api |
 | 테스트케이스 | `gen` | `documents/generated/70-테스트케이스.md` | 70-testcases |
 | 운영런북 | `gen` | `documents/generated/80-운영런북.md` | 80-operations |

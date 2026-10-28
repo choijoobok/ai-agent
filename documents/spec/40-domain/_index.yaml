@@ -10,3 +10,5 @@ spec_set:
   parts:
     - 001-conventions.yaml
     - 002-entities.yaml
+    - 003-system-entities.yaml
+    - 004-system-entities.yaml

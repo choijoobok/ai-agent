@@ -1,0 +1,385 @@
+entities:
+  - id: ENT-513
+    name: "공통코드 그룹"
+    table: SYS_CODE_GROUP
+    features: [FEAT-504]
+    attributes: [{ name: GRP_CD, type: varchar, pk: true }]
+    columns: [GRP_CD, GRP_NM, GRP_DESC, SYS_YN, SORT_NO, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    rules: ["SYS_YN=Y 삭제·비활성화 금지", "자식 코드가 있으면 삭제 금지"]
+    audit: standard
+    delete_policy: hard
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "GRP_CD", type: "character varying(30)", nullable: false, default: null }
+        - { name: "GRP_NM", type: "character varying(100)", nullable: false, default: null }
+        - { name: "GRP_DESC", type: "character varying(500)", nullable: true, default: null }
+        - { name: "SYS_YN", type: "character(1)", nullable: false, default: "'N'::bpchar" }
+        - { name: "SORT_NO", type: "integer", nullable: false, default: "0" }
+        - { name: "REG_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "REG_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "MOD_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "MOD_DTM", type: "timestamp with time zone", nullable: true, default: null }
+      constraints:
+        - { name: "PK_SYS_CODE_GROUP", definition: "PRIMARY KEY (grp_cd)" }
+      indexes: []
+
+  - id: ENT-514
+    name: "공통코드"
+    table: SYS_CODE
+    features: [FEAT-504]
+    attributes: [{ name: GRP_CD, type: varchar, pk: true }, { name: DTL_CD, type: varchar, pk: true }]
+    columns: [GRP_CD, DTL_CD, DTL_NM, DTL_DESC, SYS_YN, USE_YN, SORT_NO, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["GRP_CD -> ENT-513.GRP_CD"]
+    rules: ["SYS_YN=Y 삭제·비활성화 금지", "코드명 메시지는 같은 수명주기로 정리"]
+    audit: standard
+    delete_policy: hard
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "GRP_CD", type: "character varying(30)", nullable: false, default: null }
+        - { name: "DTL_CD", type: "character varying(30)", nullable: false, default: null }
+        - { name: "DTL_NM", type: "character varying(200)", nullable: false, default: null }
+        - { name: "DTL_DESC", type: "character varying(500)", nullable: true, default: null }
+        - { name: "SYS_YN", type: "character(1)", nullable: false, default: "'N'::bpchar" }
+        - { name: "USE_YN", type: "character(1)", nullable: false, default: "'Y'::bpchar" }
+        - { name: "SORT_NO", type: "integer", nullable: false, default: "0" }
+        - { name: "REG_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "REG_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "MOD_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "MOD_DTM", type: "timestamp with time zone", nullable: true, default: null }
+      constraints:
+        - { name: "PK_SYS_CODE", definition: "PRIMARY KEY (grp_cd, dtl_cd)" }
+        - { name: "FK_SYS_CODE_GROUP", definition: "FOREIGN KEY (grp_cd) REFERENCES sys_code_group(grp_cd)" }
+      indexes:
+        - { name: "IX_SYS_CODE_NM", unique: false, method: "btree", definition: "(dtl_nm)" }
+
+  - id: ENT-515
+    name: "코드 그룹 참조 정의"
+    table: SYS_CODE_GRP_REF
+    features: [FEAT-504]
+    attributes: [{ name: GRP_CD, type: varchar, pk: true }, { name: REF_CD, type: varchar, pk: true }]
+    columns: [GRP_CD, REF_CD, REF_NM, REF_DESC, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["GRP_CD -> ENT-513.GRP_CD"]
+    rules: ["참조값보다 정의가 먼저 존재"]
+    audit: standard
+    delete_policy: hard
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "GRP_CD", type: "character varying(30)", nullable: false, default: null }
+        - { name: "REF_CD", type: "character varying(30)", nullable: false, default: null }
+        - { name: "REF_NM", type: "character varying(100)", nullable: false, default: null }
+        - { name: "REF_DESC", type: "character varying(500)", nullable: true, default: null }
+        - { name: "REG_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "REG_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "MOD_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "MOD_DTM", type: "timestamp with time zone", nullable: true, default: null }
+      constraints:
+        - { name: "PK_SYS_CODE_GRP_REF", definition: "PRIMARY KEY (grp_cd, ref_cd)" }
+        - { name: "FK_SYS_CODE_GRP_REF_GROUP", definition: "FOREIGN KEY (grp_cd) REFERENCES sys_code_group(grp_cd)" }
+      indexes: []
+
+  - id: ENT-516
+    name: "공통코드 참조값"
+    table: SYS_CODE_REF
+    features: [FEAT-504]
+    attributes: [{ name: GRP_CD, type: varchar, pk: true }, { name: DTL_CD, type: varchar, pk: true }, { name: REF_CD, type: varchar, pk: true }]
+    columns: [GRP_CD, DTL_CD, REF_CD, REF_VAL, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["(GRP_CD,DTL_CD) -> ENT-514", "(GRP_CD,REF_CD) -> ENT-515"]
+    rules: ["원 코드 또는 정의 삭제 시 같은 트랜잭션으로 정리"]
+    audit: standard
+    delete_policy: hard
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "GRP_CD", type: "character varying(30)", nullable: false, default: null }
+        - { name: "DTL_CD", type: "character varying(30)", nullable: false, default: null }
+        - { name: "REF_CD", type: "character varying(30)", nullable: false, default: null }
+        - { name: "REF_VAL", type: "character varying(200)", nullable: false, default: null }
+        - { name: "REG_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "REG_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "MOD_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "MOD_DTM", type: "timestamp with time zone", nullable: true, default: null }
+      constraints:
+        - { name: "PK_SYS_CODE_REF", definition: "PRIMARY KEY (grp_cd, dtl_cd, ref_cd)" }
+        - { name: "FK_SYS_CODE_REF_CODE", definition: "FOREIGN KEY (grp_cd, dtl_cd) REFERENCES sys_code(grp_cd, dtl_cd)" }
+        - { name: "FK_SYS_CODE_REF_DEF", definition: "FOREIGN KEY (grp_cd, ref_cd) REFERENCES sys_code_grp_ref(grp_cd, ref_cd)" }
+      indexes: []
+
+  - id: ENT-517
+    name: "메시지 키"
+    table: SYS_MESSAGE_KEY
+    features: [FEAT-505]
+    attributes: [{ name: MSG_KEY, type: varchar, pk: true }]
+    columns: [MSG_KEY, USE_SCOPE, MSG_DESC, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    rules: ["키 생성은 소스·시드 생성기만 수행", "관리 화면 임의 생성 금지"]
+    audit: standard
+    delete_policy: hard
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "MSG_KEY", type: "character varying(200)", nullable: false, default: null }
+        - { name: "USE_SCOPE", type: "character varying(10)", nullable: false, default: null }
+        - { name: "MSG_DESC", type: "character varying(500)", nullable: true, default: null }
+        - { name: "REG_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "REG_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "MOD_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "MOD_DTM", type: "timestamp with time zone", nullable: true, default: null }
+      constraints:
+        - { name: "PK_SYS_MESSAGE_KEY", definition: "PRIMARY KEY (msg_key)" }
+      indexes: []
+
+  - id: ENT-518
+    name: "언어별 메시지 값"
+    table: SYS_MESSAGE
+    features: [FEAT-505]
+    attributes: [{ name: MSG_KEY, type: varchar, pk: true }, { name: LANG_CD, type: varchar, pk: true }]
+    columns: [MSG_KEY, LANG_CD, MSG_VAL, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    relations: ["MSG_KEY -> ENT-517.MSG_KEY"]
+    rules: ["요청 언어→기본 언어→키 문자열 폴백"]
+    audit: standard
+    delete_policy: hard
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "MSG_KEY", type: "character varying(200)", nullable: false, default: null }
+        - { name: "LANG_CD", type: "character varying(10)", nullable: false, default: null }
+        - { name: "MSG_VAL", type: "character varying(2000)", nullable: true, default: null }
+        - { name: "REG_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "REG_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "MOD_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "MOD_DTM", type: "timestamp with time zone", nullable: true, default: null }
+      constraints:
+        - { name: "PK_SYS_MESSAGE", definition: "PRIMARY KEY (msg_key, lang_cd)" }
+        - { name: "FK_SYS_MESSAGE_KEY", definition: "FOREIGN KEY (msg_key) REFERENCES sys_message_key(msg_key)" }
+      indexes:
+        - { name: "IX_SYS_MESSAGE_LANG", unique: false, method: "btree", definition: "(lang_cd)" }
+
+  - id: ENT-519
+    name: "공통 캐시 버전"
+    table: SYS_CACHE_VERSION
+    features: [FEAT-505, FEAT-506]
+    attributes: [{ name: CACHE_NAME, type: varchar, pk: true }]
+    columns: [CACHE_NAME, VERSION, MOD_DTM]
+    rules: ["성공한 메시지·설정 저장마다 해당 버전 한 번 증가", "메시지와 코드 버전은 DB 원자 증가를 사용하고 값 저장과 함께 커밋·롤백한다"]
+    audit: none
+    delete_policy: never
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "CACHE_NAME", type: "character varying(50)", nullable: false, default: null }
+        - { name: "VERSION", type: "bigint", nullable: false, default: null }
+        - { name: "MOD_DTM", type: "timestamp with time zone", nullable: true, default: null }
+      constraints:
+        - { name: "PK_SYS_CACHE_VERSION", definition: "PRIMARY KEY (cache_name)" }
+      indexes: []
+
+  - id: ENT-520
+    name: "시스템 설정 오버라이드"
+    table: SYS_CONFIG
+    features: [FEAT-506]
+    attributes: [{ name: CFG_KEY, type: varchar, pk: true }]
+    columns: [CFG_KEY, CFG_VAL, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    rules: ["등록된 키만 저장", "행 삭제는 배포 기본값 복원"]
+    audit: standard
+    delete_policy: hard
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "CFG_KEY", type: "character varying(100)", nullable: false, default: null }
+        - { name: "CFG_VAL", type: "character varying(1000)", nullable: false, default: null }
+        - { name: "REG_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "REG_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "MOD_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "MOD_DTM", type: "timestamp with time zone", nullable: true, default: null }
+      constraints:
+        - { name: "PK_SYS_CONFIG", definition: "PRIMARY KEY (cfg_key)" }
+      indexes: []
+
+  - id: ENT-521
+    name: "API 접근 이력"
+    table: SYS_LO_ACCESS
+    features: [FEAT-507]
+    attributes: [{ name: ACCESS_LOG_SEQ, type: bigint, pk: true }]
+    columns: [ACCESS_LOG_SEQ, USER_ID, MENU_CD, REQUEST_URI, HTTP_STAT, PARAMETERS, CLIENT_IP, TRACE_ID, CRE_DTM]
+    indexes: []
+    index_policy: "현재 물리 인덱스를 그대로 두며 모듈 이동에서 새 인덱스를 만들지 않는다"
+    rules: ["열람·권한 변경을 포함한 모든 API 접근 기록", "원문 수정·삭제 경로 없음", "권한 부여·회수 전용 원장이 아니라 시스템 사용 이력", "기본 90일 보존 뒤 파기 배치가 삭제"]
+    audit: created_only
+    delete_policy: never
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "ACCESS_LOG_SEQ", type: "bigint", nullable: false, default: null }
+        - { name: "USER_ID", type: "character varying(30)", nullable: true, default: null }
+        - { name: "MENU_CD", type: "character varying(30)", nullable: true, default: null }
+        - { name: "REQUEST_URI", type: "character varying(500)", nullable: false, default: null }
+        - { name: "HTTP_STAT", type: "smallint", nullable: false, default: null }
+        - { name: "PARAMETERS", type: "text", nullable: true, default: null }
+        - { name: "CLIENT_IP", type: "character varying(45)", nullable: true, default: null }
+        - { name: "TRACE_ID", type: "character varying(64)", nullable: true, default: null }
+        - { name: "CRE_DTM", type: "timestamp with time zone", nullable: false, default: null }
+      constraints:
+        - { name: "PK_SYS_LO_ACCESS", definition: "PRIMARY KEY (access_log_seq)" }
+      indexes:
+        - { name: "IX_SYS_LO_ACCESS_01", unique: false, method: "btree", definition: "(cre_dtm)" }
+        - { name: "IX_SYS_LO_ACCESS_02", unique: false, method: "btree", definition: "(trace_id)" }
+
+  - id: ENT-522
+    name: "예외 이력"
+    table: SYS_LO_EXCEPTION
+    features: [FEAT-507]
+    attributes: [{ name: EXCEPTION_LOG_SEQ, type: bigint, pk: true }]
+    columns: [EXCEPTION_LOG_SEQ, USER_ID, MENU_CD, REQUEST_URI, HTTP_STAT, ERR_CD, ERR_MSG, ROOT_CAUSE_STACK, CLIENT_IP, TRACE_ID, CRE_DTM]
+    indexes: []
+    index_policy: "현재 물리 인덱스를 그대로 두며 모듈 이동에서 새 인덱스를 만들지 않는다"
+    rules: ["상세 전문은 목록과 같은 ERROR_LOG 현재 READ 판정", "원문 수정·삭제 경로 없음", "기본 180일 보존 뒤 파기 배치가 삭제"]
+    audit: created_only
+    delete_policy: never
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "EXCEPTION_LOG_SEQ", type: "bigint", nullable: false, default: null }
+        - { name: "USER_ID", type: "character varying(30)", nullable: true, default: null }
+        - { name: "MENU_CD", type: "character varying(30)", nullable: true, default: null }
+        - { name: "REQUEST_URI", type: "character varying(500)", nullable: false, default: null }
+        - { name: "HTTP_STAT", type: "smallint", nullable: false, default: null }
+        - { name: "ERR_CD", type: "character varying(50)", nullable: true, default: null }
+        - { name: "ERR_MSG", type: "character varying(1000)", nullable: true, default: null }
+        - { name: "ROOT_CAUSE_STACK", type: "text", nullable: true, default: null }
+        - { name: "CLIENT_IP", type: "character varying(45)", nullable: true, default: null }
+        - { name: "TRACE_ID", type: "character varying(64)", nullable: true, default: null }
+        - { name: "CRE_DTM", type: "timestamp with time zone", nullable: false, default: null }
+      constraints:
+        - { name: "PK_SYS_LO_EXCEPTION", definition: "PRIMARY KEY (exception_log_seq)" }
+      indexes:
+        - { name: "IX_SYS_LO_EXCEPTION_01", unique: false, method: "btree", definition: "(cre_dtm)" }
+        - { name: "IX_SYS_LO_EXCEPTION_02", unique: false, method: "btree", definition: "(trace_id)" }
+
+  - id: ENT-523
+    name: "배치 일정"
+    table: SYS_SCHEDULE_BATCH
+    features: [FEAT-508]
+    attributes: [{ name: BATCH_ID, type: varchar, pk: true }]
+    columns: [BATCH_ID, BATCH_NM, BATCH_DESC, BEAN_ID, CRON, TIMEZONE, PARAM_JSON, LOCK_EXPIRY_SEC, LOCK_MIN_INTERVAL_SEC, USE_YN, SORT_NO, REG_ID, REG_DTM, MOD_ID, MOD_DTM]
+    rules: ["등록 BatchJob·cron·timezone 검증", "잠금 만료와 최소 실행 간격은 양수"]
+    audit: standard
+    delete_policy: hard
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "BATCH_ID", type: "character varying(50)", nullable: false, default: null }
+        - { name: "BATCH_NM", type: "character varying(100)", nullable: false, default: null }
+        - { name: "BATCH_DESC", type: "character varying(500)", nullable: false, default: null }
+        - { name: "BEAN_ID", type: "character varying(100)", nullable: false, default: null }
+        - { name: "CRON", type: "character varying(50)", nullable: false, default: null }
+        - { name: "PARAM_JSON", type: "character varying(2000)", nullable: true, default: null }
+        - { name: "LOCK_EXPIRY_SEC", type: "integer", nullable: false, default: null }
+        - { name: "LOCK_MIN_INTERVAL_SEC", type: "integer", nullable: false, default: null }
+        - { name: "USE_YN", type: "character(1)", nullable: false, default: "'Y'::bpchar" }
+        - { name: "SORT_NO", type: "integer", nullable: false, default: "0" }
+        - { name: "REG_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "REG_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "MOD_ID", type: "character varying(50)", nullable: true, default: null }
+        - { name: "MOD_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "TIMEZONE", type: "character varying(64)", nullable: false, default: "'Asia/Seoul'::character varying" }
+      constraints:
+        - { name: "PK_SYS_SCHEDULE_BATCH", definition: "PRIMARY KEY (batch_id)" }
+      indexes:
+        - { name: "IX_SYS_SCHEDULE_BATCH_01", unique: false, method: "btree", definition: "(sort_no)" }
+
+  - id: ENT-524
+    name: "배치 실행 이력"
+    table: SYS_BATCH_HISTORY
+    features: [FEAT-508]
+    attributes: [{ name: HIST_ID, type: bigint, pk: true }]
+    columns: [HIST_ID, BATCH_ID, EXEC_TYPE_CD, NODE_ID, START_DTM, END_DTM, ELAPSED_MS, RSLT_CD, RSLT_MSG, RSLT_DTL_MSG, ERR_MSG, CANCEL_REQ_DTM]
+    relations: ["BATCH_ID -> ENT-523.BATCH_ID"]
+    indexes: []
+    index_policy: "현재 물리 인덱스를 그대로 두며 모듈 이동에서 새 인덱스를 만들지 않는다"
+    state_machine: { RUNNING: [SUCCESS, FAIL, CANCELED, LOST], SUCCESS: [], FAIL: [], SKIP_LOCK: [], SKIP_COOLDOWN: [], CANCELED: [], LOST: [] }
+    rules: ["SKIP_LOCK·SKIP_COOLDOWN은 RUNNING을 거치지 않는 종결 시도", "CANCEL_REQ_DTM은 상태가 아니라 중단 요청 시각", "LOST의 ELAPSED_MS는 null"]
+    audit: created_only
+    delete_policy: never
+    module: system
+    implementation: implemented
+    sources:
+      - sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/db.changelog-system.yaml
+      - sources/backend/bootstrap/src/main/resources/db/changelog/modules/system/001-system-schema.sql
+    physical:
+      attributes:
+        - { name: "HIST_ID", type: "bigint", nullable: false, default: null }
+        - { name: "BATCH_ID", type: "character varying(50)", nullable: false, default: null }
+        - { name: "EXEC_TYPE_CD", type: "character varying(20)", nullable: false, default: null }
+        - { name: "NODE_ID", type: "character varying(100)", nullable: false, default: null }
+        - { name: "START_DTM", type: "timestamp with time zone", nullable: false, default: null }
+        - { name: "END_DTM", type: "timestamp with time zone", nullable: true, default: null }
+        - { name: "ELAPSED_MS", type: "bigint", nullable: true, default: null }
+        - { name: "RSLT_CD", type: "character varying(20)", nullable: false, default: null }
+        - { name: "RSLT_MSG", type: "character varying(1000)", nullable: true, default: null }
+        - { name: "RSLT_DTL_MSG", type: "text", nullable: true, default: null }
+        - { name: "ERR_MSG", type: "text", nullable: true, default: null }
+        - { name: "CANCEL_REQ_DTM", type: "timestamp with time zone", nullable: true, default: null }
+      constraints:
+        - { name: "PK_SYS_BATCH_HISTORY", definition: "PRIMARY KEY (hist_id)" }
+      indexes:
+        - { name: "IX_SYS_BATCH_HISTORY_01", unique: false, method: "btree", definition: "(start_dtm)" }
+        - { name: "IX_SYS_BATCH_HISTORY_02", unique: false, method: "btree", definition: "(batch_id, start_dtm)" }
+        - { name: "IX_SYS_BATCH_HISTORY_03", unique: false, method: "btree", definition: "(elapsed_ms)" }

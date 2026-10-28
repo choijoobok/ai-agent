@@ -20,6 +20,12 @@ else {
     errors.push('manifest에 제출 구성 정본이 없다.');
   }
   console.log(`manifest: 원본 ${(manifest.sources ?? []).length}개 · 문제 ${(manifest.issues ?? []).length}개`);
+  for (const source of manifest.sources ?? []) {
+    const path = resolve(REPO, source.path);
+    if (!existsSync(path) || createHash('sha256').update(readFileSync(path)).digest('hex') !== source.sha256) {
+      errors.push(`생성 후 원본 변경/누락: ${source.path} — 문서와 HTML을 재생성한다`);
+    }
+  }
 }
 if (!existsSync(buildReadmePath)) errors.push('build/README.txt 생성 안내가 없다.');
 else {
