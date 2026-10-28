@@ -18,9 +18,33 @@ try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
   await page.goto(pathToFileURL(resolve(root, site, 'index.html')).href, { waitUntil: 'load' });
   await page.evaluate(() => window.DELIVERY_READY);
+  const openHash = async (id) => {
+    await page.evaluate((value) => { location.hash = value; }, id);
+    await page.locator(`[data-page-link="${id}"][aria-current="page"]`).waitFor({ state: 'visible' });
+  };
   if (site === 'design') {
+    const target = await page.locator('[data-page-link]').evaluateAll((nodes) => {
+      const link = nodes.find((node) => node.closest('.collapsed'));
+      return link ? { id: link.dataset.pageLink, title: link.textContent.trim(), path: link.dataset.pagePath } : null;
+    });
+    if (!target) errors.push('설계 목차의 하위 그룹이 처음부터 모두 펼쳐져 있다.');
+    else {
+      const targetLink = page.locator(`[data-page-link="${target.id}"]`);
+      const search = page.locator('[data-tree-filter]');
+      await search.fill(target.title);
+      if (!await targetLink.isVisible()) errors.push('검색 결과의 접힌 상위 경로가 펼쳐지지 않는다.');
+      await search.fill('');
+      if (await targetLink.isVisible()) errors.push('검색을 지워도 이전 접힘 상태로 돌아가지 않는다.');
+      await openHash(target.id);
+      if (await page.locator('[data-current-path]').textContent() !== target.path) errors.push('해시 링크의 현재 경로가 새 목차와 다르다.');
+      const group = targetLink.locator('xpath=ancestor::li[contains(@class,"tree-branch")][1]').locator(':scope > [data-tree-group]');
+      await group.click();
+      if (await targetLink.isVisible()) errors.push('목차 그룹 접기가 동작하지 않는다.');
+      await group.click();
+      if (!await targetLink.isVisible()) errors.push('목차 그룹 펼치기가 동작하지 않는다.');
+    }
     const mockupPage = await page.locator('[data-mockup$="/__design__"]').first().evaluate((node) => node.closest('[data-page]')?.id);
-    if (mockupPage) await page.locator(`[data-page-link="${mockupPage}"]`).click();
+    if (mockupPage) await openHash(mockupPage);
   }
   const state = await page.evaluate(() => ({
     pages: document.querySelectorAll('[data-page]').length,

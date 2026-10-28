@@ -17,6 +17,58 @@ sites:
       - "documents/generated/**/*.md — 운영 런북은 SITE-003으로 보낸다"
       - "documents/design/**/*.md"
       - "documents/screen/**/requirements.md + mockup.html"
+    # 종류/배치만 여기서 정의한다. 기능 소유 모듈은 spec에서 읽고 단일 모듈 문서는 module 메타를 쓴다.
+    navigation:
+      title: "분석·설계·검증 문서"
+      integrated_label: "전체·통합"
+      module_labels: { common: "공통" }
+      sections:
+        - key: project
+          path: ["프로젝트·요구사항", "개요·기준"]
+          source_prefixes: ["documents/generated/10-"]
+        - key: requirements
+          path: ["프로젝트·요구사항", "기능 요구사항"]
+          source_prefixes: ["documents/generated/10-요구사항정의서/04-요구사항/"]
+          group_by_module: true
+        - key: process
+          path: ["프로젝트·요구사항", "업무 프로세스·품질·연동"]
+          source_prefixes: ["documents/generated/10-요구사항정의서/05-", "documents/generated/10-요구사항정의서/06-", "documents/generated/10-요구사항정의서/07-"]
+        - key: architecture
+          path: ["아키텍처·권한"]
+          source_prefixes: ["documents/generated/20-", "documents/generated/21-", "documents/generated/22-"]
+          group_by_module: true
+        - key: usecases
+          path: ["유즈케이스"]
+          source_prefixes: ["documents/generated/30-"]
+          group_by_module: true
+        - key: feature-index
+          path: ["기능 명세", "전체 목록"]
+          source_prefixes: ["documents/generated/31-"]
+        - key: features
+          path: ["기능 명세"]
+          source_prefixes: ["documents/generated/32-"]
+          owner: feature
+          group_by_module: true
+        - key: sequence
+          path: ["시퀀스"]
+          source_prefixes: ["documents/generated/33-"]
+          group_by_module: true
+        - key: data-api
+          path: ["데이터·API"]
+          source_prefixes: ["documents/generated/40-", "documents/generated/50-", "documents/generated/51-"]
+          group_by_module: true
+        - key: screens
+          path: ["화면 목록"]
+          source_prefixes: ["documents/generated/60-"]
+          group_by_module: true
+        - key: validation
+          path: ["테스트·추적성"]
+          source_prefixes: ["documents/generated/70-", "documents/generated/71-", "documents/generated/72-", "documents/generated/90-"]
+          group_by_module: true
+        - key: detail
+          path: ["상세 설계"]
+          source_prefixes: ["documents/design/"]
+          group_by_module: true
     flow_views:
       - key: agent-flow
         requirement: REQ-010

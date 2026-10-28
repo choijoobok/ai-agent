@@ -5,6 +5,19 @@
   const links = [...document.querySelectorAll('[data-page-link]')];
   const filter = document.querySelector('[data-tree-filter]');
   const currentPath = document.querySelector('[data-current-path]');
+  const groups = [...document.querySelectorAll('.tree-branch')];
+  let searchGroupState = null;
+
+  function setCollapsed(group, collapsed) {
+    group.classList.toggle('collapsed', collapsed);
+    group.querySelector(':scope > [data-tree-group]')?.setAttribute('aria-expanded', String(!collapsed));
+  }
+
+  function revealLink(link) {
+    for (let group = link?.closest('.tree-branch'); group; group = group.parentElement?.closest('.tree-branch')) {
+      setCollapsed(group, false);
+    }
+  }
 
   function resolvedTheme() { return root.dataset.theme === 'light' ? 'light' : 'dark'; }
 
@@ -108,6 +121,7 @@
       link.classList.toggle('active', active);
       if (active) {
         link.setAttribute('aria-current', 'page');
+        revealLink(link);
         if (currentPath) {
           currentPath.textContent = link.dataset.pagePath || link.textContent.trim();
           currentPath.title = currentPath.textContent;
@@ -132,8 +146,8 @@
 
   document.querySelectorAll('[data-tree-group]').forEach((button) => {
     button.addEventListener('click', () => {
-      const collapsed = button.closest('li')?.classList.toggle('collapsed') ?? false;
-      button.setAttribute('aria-expanded', String(!collapsed));
+      const group = button.closest('.tree-branch');
+      if (group) setCollapsed(group, !group.classList.contains('collapsed'));
     });
   });
   document.querySelector('[data-menu-toggle]')?.addEventListener('click', () => {
@@ -147,15 +161,22 @@
 
   filter?.addEventListener('input', () => {
     const query = filter.value.trim().toLocaleLowerCase();
+    if (query && !searchGroupState) searchGroupState = new Map(groups.map((group) => [group, group.classList.contains('collapsed')]));
     links.forEach((link) => {
       const page = document.getElementById(link.dataset.pageLink);
       const hit = !query || `${link.textContent} ${page?.textContent || ''}`.toLocaleLowerCase().includes(query);
       link.closest('li')?.classList.toggle('filtered', !hit);
     });
-    [...document.querySelectorAll('.tree-branch')].reverse().forEach((group) => {
+    [...groups].reverse().forEach((group) => {
       const visible = [...group.querySelectorAll('[data-page-link]')].some((link) => !link.closest('li')?.classList.contains('filtered'));
       group.classList.toggle('filtered', !visible);
+      if (query && visible) setCollapsed(group, false);
     });
+    if (!query && searchGroupState) {
+      searchGroupState.forEach((collapsed, group) => setCollapsed(group, collapsed));
+      searchGroupState = null;
+      revealLink(links.find((link) => link.classList.contains('active')));
+    }
   });
 
   const settings = { width: 'standard', font: 'system', size: '100' };

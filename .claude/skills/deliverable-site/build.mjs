@@ -17,6 +17,7 @@ import { MAIN, figuresOf } from '../manual-site/lib/figure.mjs';
 import { menuTree, read as readRepo, REPO, screensOf } from '../manual-site/lib/menu.mjs';
 import { themeAware } from '../manual-site/lib/page.mjs';
 import { buildFlowViews } from './lib/flow-view.mjs';
+import { createDesignNavigation } from './lib/design-navigation.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ASSET_SOURCE = resolve(REPO, 'aidd-guide/artifact/site-kit/assets');
@@ -174,13 +175,24 @@ function markdownChapter({ id, group, path, title, extraHtml = '', markdown, tab
 
 function designChapters() {
   const chapters = [];
+  const loadedFeatures = loadSpecSet({ repo: REPO, name: '31-features', parseYaml });
+  loadedFeatures.files.forEach((file) => sourceFiles.add(file));
+  const features = new Map((loadedFeatures.document.features ?? []).map((feature) => [feature.id, feature]));
+  const navigation = createDesignNavigation(siteConfig.get('design').navigation, features, parseYaml);
+  const addDocument = (path, prefix) => {
+    const chapter = markdownChapter({ id: `${prefix}-${slug(path)}`, path });
+    const { treePath, order } = navigation(path, chapter.markdown);
+    chapters.push({ ...chapter, group: treePath.join(' › '), treePath, navigationOrder: order });
+  };
   for (const path of walk('documents/generated')) {
     if (path.endsWith('/_index.md') || path.includes('/80-운영런북') || path.endsWith('80-운영런북.md')) continue;
-    chapters.push({ ...markdownChapter({ id: `design-${slug(path)}`, group: '생성 설계·검증 문서', path }), treePath: ['생성 설계·검증 문서'] });
+    addDocument(path, 'design');
   }
   for (const path of walk('documents/design')) {
-    chapters.push({ ...markdownChapter({ id: `detail-${slug(path)}`, group: '상세 설계', path }), treePath: ['상세 설계'] });
+    addDocument(path, 'detail');
   }
+  chapters.sort((a, b) => a.navigationOrder - b.navigationOrder
+    || a.group.localeCompare(b.group, 'ko') || a.path.localeCompare(b.path, 'ko', { numeric: true }));
   const { roots } = menuTree();
   const ordered = screensOf(roots).filter((menu) => !menu.url.startsWith('/sample'));
   const menuByRoute = new Map(ordered.map((menu) => [menu.url, menu]));
@@ -298,7 +310,7 @@ function renderTabs(chapter, mapping) {
   return `<div class="document-tabs" data-document-tabs><div class="document-tab-list" role="tablist" aria-label="화면 설계 보기">${buttons}</div>${panels}</div>`;
 }
 
-function renderTree(chapters, siteTitle) {
+function renderTree(chapters, siteTitle, collapseDepth = Infinity) {
   const root = { children: new Map(), pages: [] };
   for (const chapter of chapters) {
     let node = root;
@@ -309,7 +321,7 @@ function renderTree(chapters, siteTitle) {
     node.pages.push(chapter);
   }
   const branch = (node, depth = 0) => [
-    ...[...node.children].map(([label, child]) => `<li class="tree-branch" data-tree-depth="${depth}"><button class="tnode group" data-tree-group type="button" aria-expanded="true"><svg class="icon chev"><use href="#i-chevron-down"/></svg><span class="label">${escapeHtml(label)}</span></button><ul>${branch(child, depth + 1)}</ul></li>`),
+    ...[...node.children].map(([label, child]) => `<li class="tree-branch${depth >= collapseDepth ? ' collapsed' : ''}" data-tree-depth="${depth}"><button class="tnode group" data-tree-group type="button" aria-expanded="${depth < collapseDepth}"><svg class="icon chev"><use href="#i-chevron-down"/></svg><span class="label">${escapeHtml(label)}</span></button><ul>${branch(child, depth + 1)}</ul></li>`),
     ...node.pages.map((chapter) => {
       const documentPath = [siteTitle, ...(chapter.treePath ?? [chapter.group]), chapter.title].join(' › ');
       return `<li><button class="tnode empty-chev" data-page-link="${chapter.id}" data-page-path="${escapeHtml(documentPath)}" type="button"><span class="label">${escapeHtml(chapter.title)}</span></button></li>`;
@@ -321,7 +333,7 @@ function renderTree(chapters, siteTitle) {
 function renderSite(key, chapters) {
   const cfg = siteConfig.get(key) ?? { title: key, description: '' };
   const mapping = new Map(chapters.filter((chapter) => !chapter.path.startsWith('generated:')).map((chapter) => [norm(chapter.path), chapter.id]));
-  const tree = renderTree(chapters, cfg.title);
+  const tree = renderTree(chapters, cfg.title, key === 'design' ? 1 : Infinity);
   const bodies = chapters.map((chapter) => {
     const body = chapter.tabs
       ? renderTabs(chapter, mapping)
