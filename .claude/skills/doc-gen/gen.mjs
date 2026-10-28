@@ -85,6 +85,9 @@ const LABEL = {
   next_targets: '다음 파기 대상',
   entity: '엔티티', description: '설명', order: '순서', column: '컬럼', nullable: 'NULL 허용',
   default: '기본값', keys: '키·제약', method: '방식', file: '파일', author: '작성자', change_id: 'changeset',
+  application: '적용 방법', rules_from: '규칙 근거', owners: '계약 소유 모듈',
+  specify: '상세 명세에서 정할 항목', counterexample: '검증 반례', focus: '중점 검토',
+  contract_completion: '모듈 간 계약의 완료 조건',
 };
 const lab = (k) => LABEL[k] ?? k;
 
@@ -589,7 +592,16 @@ function 기능목록() {
   const p = [head('FEAT-LIST', '기능 목록 · 메뉴 구조', specSource('31-features'),
     f.meta.status, f.meta.baselined, null, `> **채번** — ${f.meta.numbering}\n`)];
   if (f.delivery_strategy) {
-    p.push(`## 전달 전략\n\n${blocks([{ id: 'delivery-strategy', ...f.delivery_strategy }], ['id'], 'name')}`);
+    const { admin_design_review: review, ...strategy } = f.delivery_strategy;
+    p.push(`## 전달 전략\n\n${blocks([{ id: 'delivery-strategy', ...strategy }], ['id'], 'name')}`);
+    if (review) {
+      const { axes, area_application, shared_feature, ...context } = review;
+      p.push('## admin 공통 상세 설계 기준\n\n'
+        + blocks([{ title: '적용 범위와 계약 경계', ...context }], ['title'], '', '###'));
+      p.push(blocks(Object.entries(axes ?? {}).map(([axis, value]) => ({ axis, ...value })), ['axis'], 'title', '###'));
+      p.push('### 업무 영역별 적용\n\n' + blocks(area_application ?? [], ['area'], 'name', '####'));
+      if (shared_feature) p.push(blocks([{ title: '공통 승인 기능의 적용 경계', ...shared_feature }], ['title'], '', '###'));
+    }
   }
   p.push('## 요약\n\n| 모듈 | 기능 수 | 차수 분포 |\n|---|---:|---|\n'
     + mods.map((m) => {
