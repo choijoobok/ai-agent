@@ -226,6 +226,7 @@ requirements:
     maturity: { level: confirmed, at: "2026-10-28", by: "AI — 영향 영역별 보완", confirmed_by: "사용자 — 보조 판정 대체 정책 권장안과 관련 요구·설계 전체 보완 승인. 게이트·제품 구현 승인은 별도" }
 
   - id: REQ-603
+    alias_identity: "2026-10-28 사용자 선택: 데이터소스 별칭은 앞뒤 공백과 대소문자 차이를 무시해 유일성을 판정한다. 표시 이름의 대소문자는 유지하되 다른 데이터소스와 같은 별칭이 되는 등록/이름 변경은 허용하지 않는다. 정규화·저장·동시 요청의 일관성은 ENT-002와 FEAT-002 물리/공개 계약에서 구체화한다"
     type: functional
     priority: must
     workstream: admin

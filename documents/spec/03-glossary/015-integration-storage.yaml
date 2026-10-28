@@ -1,0 +1,18 @@
+terms:
+  - id: TRM-261
+    term: "대상 시스템 허용 연결"
+    key: targetSystemConnection
+    db_token: TARGET_SYSTEM_CONN
+    db_token_reason: "30자 테이블 제한에 맞춰 connection을 기존 의미가 명확한 CONN으로 축약한 물리 설계 초안"
+    group: "정책"
+    definition: "대상 시스템에서 선택 가능한 배포 API 연결 식별자의 집합 원소. 실제 연결 정의와 비밀을 소유하지 않는다"
+  - id: TRM-262
+    term: "데이터소스 적용 가능 그룹"
+    key: dataSourceGroup
+    group: "정책"
+    definition: "하위 카탈로그의 테이블·컬럼에 매핑할 수 있는 관리 그룹의 데이터소스별 집합 원소"
+  - id: TRM-263
+    term: "연동 자산 변경 처리"
+    key: assetCommand
+    group: "정책"
+    definition: "대상 시스템·데이터소스의 한 성공 변경 명령과 입력 일치·반영 결과를 보존하는 근거. HTTP 추적이나 자산 승인 요청과 구분한다"

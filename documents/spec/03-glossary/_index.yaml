@@ -36,3 +36,4 @@ spec_set:
     - 012-integration-history.yaml
     - 013-catalog.yaml
     - 014-api-tool.yaml
+    - 015-integration-storage.yaml

@@ -7,7 +7,8 @@ features:
     roadmap: RM-P1
     title: "대상 시스템 등록·관리"
     design_status: draft
-    entities: [ENT-001, ENT-003]
+    entities: [ENT-001, ENT-003, ENT-017, ENT-019]
+    apis: [API-001, API-002, API-003, API-004, API-005, API-006, API-007, API-008, API-009]
     trigger: "관리자가 SCR-001에서 정의·허용 연결·기본 연결을 조회하거나 직접 변경하고, API 관리가 제공 시스템/연결 후보를 참조할 때"
     operation_boundary: "REQ-604의 직접 관리이며 UC-001·002·006·015를 따른다. API 계약의 승인·공동 오픈이나 실제 업무 실행 승인을 대신하지 않는다"
     inputs:
@@ -33,7 +34,7 @@ features:
     permissions: "REQ-604.permissions와 AUTHZ-090을 적용한다. 시스템 단위 사용자 그룹을 추가하지 않으며 사용처 조회로 API 권한·민감 근거를 우회하지 않는다"
     rules_from: ["REQ-604", "REQ-601.business_rules", "REQ-601.permissions", "ARCH-028.api_connection_resolution", "ARCH-028.deployment_contract", "AUTHZ-090"]
     pending:
-      - "@defer P3 integration_assets — 논리 모델을 기준으로 화면 필수 입력/배치·목업, 명칭 검색/정규화, 물리 식별/버전·이력 순서·명령 재수신·참조 검사/반영 경합, 공개 API와 정상/예외 시험을 설계한다. 대상 시스템명이나 배포 연결 참조의 유일성은 새로 가정하지 않는다"
+      - "@defer P3 integration_assets — 50-api의 FEAT-001 shared_write_contract·integration_public_contract와 ENT-001·003·017·019 물리 초안을 후속 참조 쓰기·현재 배포 계약에 연결하고 화면 요건/목업·오류 MSG·정상/예외/경합 시험을 완성한다. 시스템명/배포 참조의 유일성은 추가하지 않는다"
     detail: "REQ-604의 대상 시스템 정의·API별 제공 시스템 지정·허용 연결 목록·기본 연결과 사용처를 관리한다. 공통 참조 보호는 REQ-601을 따른다"
     reqs: [REQ-105, REQ-601, REQ-604]
   - id: FEAT-002
@@ -43,7 +44,8 @@ features:
     roadmap: RM-P1
     title: "데이터소스 관리"
     design_status: draft
-    entities: [ENT-002, ENT-004]
+    entities: [ENT-002, ENT-004, ENT-018, ENT-019]
+    apis: [API-010, API-011, API-012, API-013, API-014, API-015, API-016, API-017, API-018]
     trigger: "관리자가 SCR-002에서 Hub 데이터소스를 등록·변경·조회하거나 배포 연결 참조를 명시적으로 정정할 때"
     operation_boundary: "REQ-603의 직접 관리이며 UC-001·002·006·016을 따른다. 공개 객체의 자산 승인과 이용자 신원·그룹 부여는 각각 소유 기능이 처리한다"
     inputs:
@@ -71,7 +73,7 @@ features:
     permissions: "REQ-603.permissions와 AUTHZ-090을 적용한다. 데이터소스 적용 가능 그룹과 실제 사용자 신원·객체/행 권한 판정을 구분한다"
     rules_from: ["REQ-603", "REQ-601.business_rules", "ARCH-030", "AUTHZ-010", "AUTHZ-090"]
     pending:
-      - "@defer P3 integration_assets — 논리 속성을 화면 입력/조회·목업과 물리 계약에 연결한다. 별칭 정규화/유일성 비교, 시각 체계/데이터 기준 시각 표현, 파서 미지정 초안의 입력 요건, 그룹 집합·변경 전 이력의 저장/경합을 구체화한다"
+      - "@defer P3 integration_assets — 50-api의 FEAT-002 별칭/파서/정정·그룹 계약과 ENT-002·004·018·019 물리 초안을 화면 요건/목업·오류 MSG·경합 시험으로 연결한다. 그룹 원천의 물리 FK와 과거 표시·전체 참조 쓰기 보호는 access_policy와 대조한다"
       - "@defer P3 integration_assets·agent/integration — 배포 참조/연결 관측의 노드·세대·확인 시점, 동일 대상 정정 근거, 재수신/결과 확인, DBMS별 전체 물리 식별·검색 경로·실행 동일성의 공개 계약과 시험을 설계한다. 배포 연결 참조 자체의 유일성은 새로 가정하지 않는다"
     detail: "REQ-603의 데이터소스 연결 참조·업무 메타데이터·상태를 관리한다. 연결 원천·비밀정보 제외·반영 시점·실행 차단과 동일 연결의 다중 DB/카탈로그·스키마와 객체 식별/권한 경계는 해당 카드가 정본이다. 단일 DB 스키마 필수 선택이나 별도 스키마 권한 관리 기능을 추가하지 않는다"
     reqs: [REQ-103, REQ-601, REQ-603]
