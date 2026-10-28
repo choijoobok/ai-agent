@@ -72,6 +72,90 @@ workstreams:
     required_in: [RM-P1]
     blocked_by: []
     deferred_until: null
+    design_plan:
+      agreed_at: "2026-10-28"
+      updated_at: "2026-10-28"
+      status: in_progress
+      purpose: "사용자가 합의한 7개 상세 설계 작업 묶음과 재개 지점을 관리한다. 메뉴 대분류·물리 도메인명·G3 승인을 확정하는 기록은 아니다"
+      status_rule: "not_started(미착수) → in_progress(진행) → verified(명시된 완료 기준과 검증 충족). 외부 계약 때문에 진행할 수 없는 항목만 waiting_dependency로 표시하고 해소 조건을 남긴다. verified는 사용자 게이트 승인과 별개다"
+      active_step: inventory
+      active_area: null
+      sequence: [inventory, common_contracts, area_design, integration_review]
+      steps:
+        inventory:
+          status: in_progress
+          done: "현재 차수 admin 기능 38개·화면 36개의 기존 목록과 요구/UC 식별자 연결을 확인했다. 메뉴 진입 35개와 진입 방식 미결 SCR-010, 화면 없는 공통 처리 FEAT-040을 확인했다"
+          next: "현재 차수 요구사항 전체를 업무 의미로 대조해 admin 반영·공유 계약·다른 모듈 소유·유예를 구분한다. 기존 기능/화면의 누락·중복과 공통/내부 화면 후보를 정본에서 보완한다"
+          exit: "요구→UC→기능→메뉴/화면 연결과 화면 없는 기능의 근거, 7개 영역의 대표 검토 담당, 다른 모듈 접점·미결 판단이 정본에서 추적된다. 식별자 존재 검사만으로 완료하지 않는다"
+        common_contracts:
+          status: not_started
+          features: [FEAT-040]
+          refs: [REQ-601, ARCH-029, ARCH-050]
+          exit: "주체·권한·직접 변경/승인·버전·참조 보호·감사·보존의 공통 검토 기준과 소유 계약을 식별하고 각 영역에서 확인할 항목을 연결한다. 업무별 승인 단계를 하나로 합치지 않는다"
+        area_design:
+          status: not_started
+          exit: "아래 7개 영역이 동일 iteration의 완료 기준을 충족하고, 새로 발견한 공통 화면·기능·데이터·계약을 기존 정본과 전체 목록에 반영했다"
+        integration_review:
+          status: not_started
+          exit: "admin 소유 범위의 요구·명세·논리/물리 모델·공개 계약·화면 요건/목업·시퀀스·테스트·슬라이스를 대조하고 추적성/문서 검사·생성·레드팀을 마쳐 G3 승인 요청 자료를 갖춘다. 필수 미결 계약을 남긴 채 통과하지 않는다"
+      iteration:
+        inventory: "영역의 요구/UC와 메뉴·주 화면·공통/내부 화면·기능·관련 모듈을 대조하고 실제 변경 대상과 조회/참조 대상을 구분한다"
+        specification_and_logical: "화면·기능의 입력/조회/저장·예외·권한·승인·이력을 명세하면서 논리 속성·관계·식별·상태·불변식을 함께 설계한다. 신규 ENT는 planned/logical로 기록하고 TRM에 연결한다"
+        physical_and_contracts: "도출한 업무 영역·사전 key·필요 약어·물리명·자료형·키/제약·인덱스와 독립 API·모듈 공개 계약·경합 처리를 구체화한다. 물리 설계는 소유 G3 전에 완료한다"
+        verification: "화면 요건/목업·핵심 시퀀스·정상/예외/권한/경합 테스트·슬라이스를 대조하고 검증·필요 생성물을 갱신한다. 검증 결과와 사용자 검토/승인 여부를 구분하고 전체 목록에 영향 변경을 반영한다"
+      area_order: [integration_assets, knowledge, access_policy, model_operations, quota_cost, audit_trace, quality]
+      # features는 제품 소유권 변경이 아니라 이 계획 안의 대표 검토 담당이다. 다른 영역은 같은 정본을 참조한다.
+      areas:
+        integration_assets:
+          name: "연동 자산·카탈로그"
+          features: [FEAT-001, FEAT-002, FEAT-003, FEAT-004, FEAT-011, FEAT-021]
+          progress: { inventory: not_started, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
+        knowledge:
+          name: "업무 지식·안내"
+          features: [FEAT-010, FEAT-013, FEAT-014, FEAT-023, FEAT-024, FEAT-036]
+          progress: { inventory: not_started, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
+        access_policy:
+          name: "이용자·접근 정책"
+          features: [FEAT-005, FEAT-006, FEAT-007, FEAT-008, FEAT-009, FEAT-012, FEAT-038]
+          progress: { inventory: not_started, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
+        model_operations:
+          name: "모델·실행 운영"
+          features: [FEAT-015, FEAT-019, FEAT-020, FEAT-025]
+          focus: "REQ-602.auxiliary_fallback의 역할별 후보 순서·설정 버전·원/후속 호출·경로 동의를 함께 설계한다. FEAT-019의 전송 정책·보존 설정은 access_policy·audit_trace와 같은 정본을 대조한다"
+          progress: { inventory: not_started, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
+        quota_cost:
+          name: "쿼터·사용량·비용"
+          features: [FEAT-016, FEAT-017, FEAT-018, FEAT-030, FEAT-037]
+          progress: { inventory: not_started, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
+        audit_trace:
+          name: "감사·실행 추적"
+          features: [FEAT-026, FEAT-027, FEAT-028, FEAT-029, FEAT-031, FEAT-033]
+          focus: "메뉴·조회 목적·필요 기록의 분석은 전체 inventory부터 시작한다. 정책 변경 기록은 원 소유 영역과 대조하고 agent 생산 이력의 상세 확정 조건은 dependencies에서 추적한다"
+          progress: { inventory: not_started, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
+        quality:
+          name: "품질 신고·조사·개선"
+          features: [FEAT-022, FEAT-032, FEAT-035]
+          progress: { inventory: not_started, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
+      dependencies:
+        - refs: [CR-026, CR-027, ARCH-029, ARCH-050]
+          owners: [system, integration]
+          status: identified
+          resume_when: "공통 계정·설정 값/버전의 소비에 필요한 공개 계약을 소유 작업흐름과 대조했을 때 관련 상세를 확정한다. 방향 승인과 현재 구현 완료를 구별한다"
+        - refs: [REQ-006, REQ-107, REQ-108, REQ-109, REQ-110, REQ-115, REQ-118, ARCH-070]
+          owners: [agent, admin, integration]
+          status: identified
+          resume_when: "화면별 필요한 사건·식별자·상태·시간·집계·보존·권한·조회 계약을 생산/소비 양쪽에서 확인했을 때 해당 상세를 확정한다. agent 전체 설계 완료를 일괄 대기 조건으로 두지 않는다"
+      resume:
+        last_completed: "7개 영역 작업 순서 합의·계획 기록과 기존 목록의 식별자 연결 1차 대조. 요구사항 업무 의미 전수 검토와 영역별 상세 설계 완료는 아직이다"
+        next_action: "steps.inventory.next에서 이어간다. 전체 목록과 의존성 대조를 마친 뒤 공통 기준을 정리하고 integration_assets부터 상세 설계한다. audit_trace·quality의 기록 요구 도출은 전체 목록 대조에서 함께 시작한다"
+        waiting_on: []
+      update_rules:
+        - "세션 시작·재개 때 이 design_plan과 next_up을 읽고 active_step·active_area·resume을 확인한다. 합의한 순서를 바꿀 이유가 생기면 영향과 재개 지점을 먼저 설명하고 기록한다"
+        - "작업 단위를 마칠 때 해당 steps/areas.progress·updated_at·resume을 같은 작업에서 갱신한다. 완료 근거는 산출물 ID/경로와 실제 검사 결과로 남기며 시도·초안을 완료로 세지 않는다"
+        - "waiting_dependency에는 대상 ID·소유자·미결 계약의 정본 위치·해소 조건·다음 재검토 시점을 기록한다. 독립적인 다른 항목은 계속 진행한다"
+        - "제품 사실·미결 판단은 documents/spec/ 및 기존 decisions/화면 문서에 한 번만 기록하고 상태에는 참조를 남긴다. 별도 진행표·일일 계획 문서를 만들지 않는다"
+        - "화면 검토·사용자 승인·작업흐름 G3와 계획 진행 상태를 구별한다. 구현은 소유 G3 뒤에만 진행하며 기존 유예 범위·Portal 상세 설계 대기와 ASM-003의 소유 기한을 유지한다"
+        - "생성 보류는 원본의 보완 파일·AI 담당 조치·재실행 순서를 확인해 이어간다. 업무 의미·명명 충돌 등 사용자 판정이 필요한 경우만 선택지·영향·되돌리기 비용을 제시한다"
     gates:
       P1_discovery:    { status: approved, approved_at: "2026-10-27", note: "2026-10-27 사용자 명시 승인 · 자체검증 9/9. 관리 승인/업무 실행 승인 구분은 기존 확정 원칙이며 추가 메뉴 분리 결정이 아니라는 설명과 사용자 질의를 거쳤다. RM-P1 admin 소유·공유 요구사항 50건(must 43·should 7)은 모두 confirmed다. ① ID·검증 가능 문장과 ② 액터/프로세스 연결은 documents/spec/10-requirements/ 및 11-processes/001-processes.yaml에서 전수 확인했다. ③ 비기능 분류는 21-nfr/001-nfrs.yaml의 성능·가용성·보안·확장성·운영성·규정준수에 존재한다. ④ 업무 용어 173개와 혼동 구분은 03-glossary/를 대조했다. ⑤ To-Be 47단계에 담당 액터·요구 연결이 있다(11-processes/). ⑥ 범위 밖 11건은 00-charter/010-non-goals.yaml, 평가 기능 유예는 REQ-615.deferral와 현재 차수 제외(wont)에 반영했다. ⑦ 소유 요구의 우선순위·근거를 확인했으며 Must 70% 상한은 전역 G1에서 별도 판단한다. ⑧ 모순 검사·독립 레드팀 결과는 10-requirements/010-consistency-review.yaml에 반영했다. ⑨ trace --all --g1 오류 0건/후속 경고 116건이며 정련 카드와 연결 정합을 확인했다. pending_rechecks 0건. REQ-615는 elaborated인 유예 후보이며 확정하지 않았다. 미확인 ASM-003의 실환경 재현은 agent·integration G3 기한이고 현재 G1을 막지 않는다. admin P2에서 데이터소스 범위·연결 해석·사용자 신원·자산 버전·공급자 경계·비밀/운영 설정 계약을 정리한다. 화면·물리 계약은 P3, 게이트·소스 구현 승인은 별도다." }
       P2_architecture: { status: approved, approved_at: "2026-10-27", note: "2026-10-27 사용자 명시 승인 · admin G2 자체검증 8/8. 사용자가 폴링/동일 세션의 다중 탭 의미를 질문·이해한 뒤 지금까지 결정한 내용 전체를 승인하고 다음 단계 진행을 요청했다. ① 비싼 선택의 대안/대가: decisions/ADR-007·008·014·022·023·027·028·029. ② 기술 스택 8축: spec/02-constraints/002-technical.yaml·003-deployment.yaml, spec/20-architecture/013-execution-lease.yaml. ③ NFR 25건 measurement/source와 목표 실측 결정: spec/21-nfr/001-nfrs.yaml·ASSUMPTIONS ASM-002·ADR-029; 보호 초기값/범위/적용과 초기 기술 설정은 ARCH-031·033에 기록하고 이번 G2에서 함께 승인. ④ C4 두 계층: spec/20-architecture/001-topology.yaml. ⑤ 연동 방식/데이터 소유권: spec/51-interfaces/001-interfaces.yaml·ARCH-028·032. ⑥ 인증/인가: spec/22-authz/·ARCH-012·050·REQ-609·611·616. ⑦ 민감정보/비밀: PRN-07·REQ-403·107·109·111·ADR-014·022·024·025. ⑧ 운영 주체/배포: CON-012~014·ADR-028. pending_rechecks 0, proposed ADR 0, trace 오류 0/후속 경고 117. 독립 레드팀의 실측 유예 확대·긴 API 일괄 거부/무한 갱신·만료 점유 부활을 정본과 검수 반례로 해소했다. 미확인 ASM-003의 실환경 재현은 agent/integration G3 조건이며 admin P2 결손이 아니다. 물리 원자성·갱신/프로세스 정지·프록시/암호 기동·미설정 활성화 차단의 실제 시험은 소유 후속 단계다. 초기 기술 설정과 보호 계약을 포함해 admin G2를 승인했다. admin만 P3로 전환하며 다른 작업흐름 게이트·실환경 검수·제품 소스 구현 승인은 별도다." }
@@ -155,13 +239,18 @@ roadmap_closed: []
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
 next_up:
   decided_at: 2026-10-28
-  choice: "REQ-602.auxiliary_fallback의 보조 역할별 순서 후보·설정 버전·원/후속 호출·경로 동의 관계를 함께 설계한다. 동기화·명명 규약(aidd-guide/artifact/data-model.md)에 따라 admin UC-001~037과 현재 차수 기능·메뉴 목록의 논리 모델을 먼저 설계한다. 신규 ENT는 planned/logical로 한글 논리명·속성·관계·상태·불변식을 정의하고 기존 용어 TRM에 연결한다. 도출한 업무 영역을 정리한 뒤 사전 key·필요 약어·physical_name·물리 계약으로 진행하며 G3 전에 물리 설계를 완료한다. CR-026·027의 system 공개 주체/설정 버전 계약을 현재 구현으로 가정하지 않는다. 구현 승인 뒤에는 물리 계약·새 Liquibase changeset·활성 include·소스 연결을 같이 갱신하고 명세/HTML을 재생성한다. 생성 보류는 AI가 원본 보완을 이어가며 업무 의미/명명 충돌 등 판정이 필요한 경우만 사용자에게 질문한다. 이후 독립 API·화면 요건/목업·시퀀스·테스트·슬라이스 순서, 기존 P3 미결 계약과 유예 범위·Portal 상세 설계 대기를 유지한다."
+  choice: "documents/project.state.yaml의 workstreams.admin.design_plan을 먼저 읽고 active_step·active_area·resume에서 재개한다. 전체 요구사항의 메뉴·화면·기능 연결과 모듈 의존성 대조 → 공통 기준 → 합의한 7개 영역별 명세/논리 모델·물리/공개 계약·검증 → 통합 검토 순서를 유지하고, 작업마다 영역 상태와 재개 지점을 갱신한다. 감사·품질의 기록 요구는 처음부터 검토하며 상세 확정은 해당 생산/조회 계약에 연결한다. 계획 합의와 G3·구현 승인은 별개다."
   why: >-
     사용자가 관리 속성·데이터·사용처가 명확한 기준정보 요구사항 작성을 요청했다.
     system 관리자 계정 관리와 별도의 admin Portal 사용자 관리 메뉴를 명시했으며,
     관리자 메인과 Portal 메인을 독립 경로로 나눈 기존 ADR-007·ARCH-021을 확인했다.
     이어서 기준정보에서 무엇을 관리하는지 확정한 뒤 agent에서 그 정보를 언제 어떻게
     읽고 판단·실행하는지 정련하는 순서를 안내했고, 사용자가 다른 세션에서도 같은 계획을 안내하도록 요청했다.
+    2026-10-28 사용자가 요구사항에서 메뉴·화면·기능 목록을 먼저 도출하고 상세 명세와 논리 모델을 함께
+    구체화하는 순서로 작업하도록 요청했다. 전체 목록 대조 후 영역별 반복은 P3-design의 기존 순서를 따르며,
+    agent 관련 요구와 생산/소비 계약도 검토해 감사 조회를 누락하거나 미완성 계약을 확정으로 취급하지 않는다.
+    같은 날 사용자가 7개 업무 영역의 작업 계획을 수락하고 여러 날에 걸친 일관된 진행과 상태 관리를 요청했다.
+    세부 순서·완료 기준·현재 상태·대기 해소 조건·재개 지점은 workstreams.admin.design_plan에서 관리한다.
   tasks:
     - "2026-10-28 사용자 권장안 전체 보완 승인으로 REQ-602에 보조 판정 최대 3개 후보·각 1회·명확한 일시 공급 장애만 대체하는 정책을 확정했다. 주 추론 수동 새 시도·시스템 운영/임베딩 제외, 경로별 사전 동의·현재 입력/권한 검사·공유 마감·실제 사용량/호출 연결을 관련 REQ·ARCH·NFR·UC·FEAT·SCR·IF와 양방향으로 연결했다. 설계 TC 16건은 planned/미실행이며 물리 모델·독립 API·화면 상세/목업·새 Liquibase와 소스 구현은 소유 P3/G3 이후 후속이다. 독립 검토에서 전용 분류 예산의 적용 범위와 분류 실패의 확인/종결 분기를 수정하고 재검토에서 잔여 주요 결함 없음을 확인했다. 하네스/lint 통과·trace --all --g1 오류 0/후속 경고 112, 생성 문서 179개 누락·깨진 링크 0, HTML 205/18/9장과 시작 카드 4개·전체 흐름 24노드/상세 8개를 재생성했다. Edge 설계 사이트·연속 흐름도의 렌더링/탐색/인쇄/오프라인 검사 통과. 제품 소스·기존 DB·게이트·개인 설정은 변경하지 않았다. 02173f2b로 커밋했으며 사용자 커밋·푸시 요청에 따라 상태 기록과 함께 origin/main에 푸시한다."
     - "2026-10-28 사용자 요청으로 HTML 생성 보류의 후속 작업을 보완했다. 오류에서 해당 ENT 조각·Liquibase 경로와 AI의 수정/재생성, 사용자 판정 필요 조건을 안내한다. 논리명 우선 설계를 위해 planned/logical의 table/physical 미정과 한글 속성 명세 생성을 허용하고 physical_name으로 물리 컬럼을 연결했다. 독립 검토의 PK 미정 초안 오류와 physical 표시만으로 G3 통과하는 빈틈을 고쳤으며 G3 물리 계약/매핑 누락 반례를 검증했다. 명명 어휘 링크의 02-constraints 오류를 03-glossary로 수정하고 업무 영역·영문 토큰·필요 약어·기존 분류어 재사용 절차를 정리했다. 실제 업무 영역과 약어·신규 물리명은 모델링 후속이며 임의 확정하지 않았다. 회귀/self-test·하네스/lint 통과, trace 오류 0/기존 후속 경고 119, 생성 문서 179개·ID 765개·장문 9501개 누락/깨진 링크 0, HTML 205/18/9장 재생성·구조 검증 통과. 기존 요구·system 물리 계약·제품 소스·게이트·개인 설정 보존. 후속 변경은 8ef22e1d로 커밋했으며 사용자 요청에 따라 이번 문서·상태 커밋과 함께 origin/main에 푸시한다."
@@ -251,7 +340,7 @@ next_up:
     - "2026-10-01 사용자 결정으로 처리 중 스텝 LLM 호출 전 개인 쿼터 재검사를 시스템 설정으로 제공하며 기본 비활성화로 NFR-012·REQ-614에 반영했다. 시작 전 검사·사용량 기록은 유지하고 설정 변경은 다음 LLM 호출 직전부터 적용한다. 이미 전송한 호출은 취소하지 않는다"
     - "기준정보 확정 후 agent 상세 요구사항 검토로 이동한다. 기존 REQ-001~027·030~040과 FEAT-201~221, 이미 확정한 공통 정책을 바탕으로 입력·처리 순서·출력·예외·상태 전이·수용 기준을 정련한다"
   then: >-
-    admin P3 공통 관리/승인과 목록 초안을 바탕으로 업무별 UC·기능 연결을 보완한 뒤 데이터·API·화면·시퀀스·테스트·슬라이스를 구체화한다.
+    admin P3는 workstreams.admin.design_plan의 순서·완료 기준에 따라 진행한다.
     system의 공통 계정·설정 변경은 승인된 CR-026·027의 영향 상세 설계와 화면 요건/목업을 거친다.
     agent·integration의 실행 점유·외부 호출·배포 검수와 ASM-003 실환경 재현은 각 소유 작업흐름에서 확인한다.
     실측이 필요한 보호값은 ADR-029에 따라 최초 운영 활성화 전에 수치·허용 범위·시험 근거를 확정한다.
