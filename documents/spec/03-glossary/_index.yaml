@@ -33,3 +33,4 @@ spec_set:
     - 009-hook-order.yaml
     - 010-hook-order-notes.yaml
     - 011-confusions.yaml
+    - 012-integration-history.yaml

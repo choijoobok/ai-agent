@@ -88,6 +88,17 @@ const LABEL = {
   application: '적용 방법', rules_from: '규칙 근거', owners: '계약 소유 모듈',
   specify: '상세 명세에서 정할 항목', counterexample: '검증 반례', focus: '중점 검토',
   contract_completion: '모듈 간 계약의 완료 조건',
+  usecases: '유즈케이스', design_status: '설계 상태', design_stage: '설계 단계',
+  entities: '엔티티', domain: '업무 영역', attributes: '논리 속성', collection: '집합',
+  cardinality: '관계 수', structure: '구조', related_features: '관련 기능',
+  trigger: '시작 조건', operation_boundary: '처리 범위', inputs: '입력', outputs: '출력',
+  processing: '처리 규칙', public_contract_needs: '필요한 공개 계약', failure_contract: '실패 처리',
+  purpose: '목적', boundary: '경계', refs: '근거 참조', pending: '후속 설계',
+  feature_contract: '기능 명세 연결', integration_history_link: '연동 자산 이력 연결',
+  external_observations: '외부 관측 정보', state_machine: '상태와 판정', delete_policy: '삭제 정책',
+  read: '조회', create: '등록', change: '변경', references: '참조 보호', consumption: '소비 시 검증',
+  group_change: '그룹 변경', save: '저장', management: '관리 상태', availability: '호출 가능 판정',
+  connection_observation: '연결 관측', query_eligibility: '조회 가능 판정',
 };
 const lab = (k) => LABEL[k] ?? k;
 
@@ -144,6 +155,9 @@ function blocks(items, headKeys = ['id'], titleKey = 'title', level = '###') {
           '| 검토 번호 | 전체 흐름 노드 | 관련 요구사항 |', '|---|---|---|');
         for (const r of v) out.push(`| [${r.key}](${route(r)}) | ${r.nodes.join(', ')} | ${r.requirements.join(', ')} |`);
         out.push('', `[↑ 전체 흐름도로 돌아가기](#${String(it.id).toLowerCase()}-전체-흐름도)`, '');
+      } else if (['processing', 'state_machine'].includes(k) && v && typeof v === 'object' && !Array.isArray(v)) {
+        out.push(`- **${lab(k)}**`);
+        for (const [part, value] of Object.entries(v)) out.push(`  - **${lab(part)}** — ${flat(value)}`);
       } else if (Array.isArray(v) && v.length && typeof v[0] === 'object' && v[0] !== null) {
         out.push(`- **${lab(k)}**`);
         for (const x of v) out.push(`  - ${flat(x)}`);

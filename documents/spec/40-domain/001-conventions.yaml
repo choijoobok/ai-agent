@@ -4,7 +4,11 @@ conventions:
     logical_draft: "신규 ENT는 implementation: planned, design_stage: logical로 시작할 수 있다. name은 한글 논리명이며 table/physical은 아직 지정하지 않는다. 이 상태의 문서는 생성하되 물리 ERD 완성이나 G3 완료로 표시하지 않는다"
     naming: "기존 AI_<MODULE>_<DETAIL>·테이블명 30자·SYS 기존명 보존 규칙을 따른다. 영문 어휘는 03-glossary.terms의 key이며 필요한 약어만 db_token과 근거를 등록한다. 논리 속성과 물리 컬럼은 physical_name으로 연결한다"
     domain_scope: "업무 영역은 쓰기 소유 모듈 및 용어사전 group과 구분한다. 실제 목록과 영역 수식어의 필요성은 admin 도메인 도출 중 확정하고 아직 임의 코드/접두어를 배정하지 않는다"
-  business_domains: []
+  business_domains:
+    - name: "연동 자산"
+      responsibility: "업무 API의 제공 주체와 DB/DW 조회 연결 단위의 관리 정의·배포 참조·변경 근거를 소유한다. 카탈로그·API·도구와의 참조는 각 기능 명세에서 연결한다"
+      terms: [TRM-040, TRM-041, TRM-250, TRM-251]
+      boundary: "대상 시스템과 데이터소스는 서로 귀속 관계가 없는 별도 개념이다. 배포 연결 정의·비밀은 이 영역의 DB 모델에 복제하지 않는다. 업무 영역 이름은 메뉴 대분류나 물리 접두어를 확정하는 코드가 아니다"
   liquibase:
     root: sources/backend/bootstrap/src/main/resources/db/changelog/db.changelog-master.yaml
     resources: sources/backend/bootstrap/src/main/resources

@@ -100,8 +100,8 @@ requirements:
       nfr: []
       interfaces: []
     realization:
-      features: ["FEAT-001","FEAT-002","FEAT-006","FEAT-015","FEAT-017","FEAT-024","FEAT-020","FEAT-040"]
-      screens: ["SCR-001","SCR-002","SCR-006","SCR-015","SCR-021","SCR-010","SCR-018"]
+      features: ["FEAT-001","FEAT-002","FEAT-006","FEAT-015","FEAT-017","FEAT-024","FEAT-020","FEAT-033","FEAT-040"]
+      screens: ["SCR-001","SCR-002","SCR-006","SCR-015","SCR-021","SCR-010","SCR-018","SCR-031"]
     examples:
       - {"kind":"정상","case":"'물류조회' 그룹의 표시명을 '물류정보조회'로 바꿔도 기존 사용자·테이블 매핑은 같은 그룹 식별자를 참조한다"}
       - {"kind":"예외","case":"사용 중인 데이터소스를 삭제하려 하면 관련 카탈로그가 있다는 사실과 조치 대상을 안내하고 삭제하지 않는다"}

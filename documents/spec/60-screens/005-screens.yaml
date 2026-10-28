@@ -10,6 +10,7 @@ screens:
     group: "연동 관리"
     title: "대상 시스템"
     feature: FEAT-001
+    usecases: [UC-015]
     roadmap: RM-P1
     agent_contact: 설정
     note: "**RM-P1에서 등록한다** — 조회는 데이터소스만으로 성립하지만, 실행 출시 범위에서는 업무 API를 제공하는 대상 시스템을 등록해야 한다. 개별 API의 제공 시스템 지정과 계약 상세는 SCR-004가 관리한다"
@@ -19,6 +20,7 @@ screens:
     group: "연동 관리"
     title: "데이터소스"
     feature: FEAT-002
+    usecases: [UC-016]
     roadmap: RM-P1
     agent_contact: 설정
   - id: SCR-003

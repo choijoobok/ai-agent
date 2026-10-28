@@ -43,17 +43,22 @@ try {
       await group.click();
       if (!await targetLink.isVisible()) errors.push('목차 그룹 펼치기가 동작하지 않는다.');
     }
-    const tablePage = await page.locator('[data-page-link]').evaluateAll((nodes) => {
-      const link = nodes.find((node) => node.dataset.pagePath?.includes('테이블 목록·명세서') && / — /.test(node.textContent));
-      return link ? { id: link.dataset.pageLink, path: link.dataset.pagePath } : null;
-    });
-    if (!tablePage) errors.push('테이블 상세 명세의 모듈별 목차가 없다.');
-    else {
+    const tablePages = await page.locator('[data-page-link]').evaluateAll((nodes) => nodes
+      .filter((node) => node.dataset.pagePath?.includes('테이블 목록·명세서') && / — /.test(node.textContent))
+      .map((node) => ({ id: node.dataset.pageLink, path: node.dataset.pagePath, logical: node.textContent.includes('물리명 미정') })));
+    const physicalPage = tablePages.find((entry) => !entry.logical);
+    const logicalPages = tablePages.filter((entry) => entry.logical);
+    if (!physicalPage) errors.push('물리 테이블 상세 명세의 모듈별 목차가 없다.');
+    for (const tablePage of [...(physicalPage ? [physicalPage] : []), ...logicalPages]) {
       await openHash(tablePage.id);
       const text = await page.locator(`[data-page][id="${tablePage.id}"]`).innerText();
-      for (const label of ['NULL 허용', '기본값', '키·제약', 'Liquibase 변경 근거']) if (!text.includes(label)) errors.push(`테이블 명세 항목 누락: ${label}`);
+      const labels = tablePage.logical
+        ? ['논리 설계 · 물리명 미정', '논리 속성', '업무 모델 연결', '아직 설계하지 않았다']
+        : ['NULL 허용', '기본값', '키·제약', 'Liquibase 변경 근거'];
+      for (const label of labels) if (!text.includes(label)) errors.push(`${tablePage.path} 명세 항목 누락: ${label}`);
       if (await page.locator('[data-current-path]').textContent() !== tablePage.path) errors.push('테이블 명세의 현재 경로가 다르다.');
     }
+    console.log(`데이터 모델 표시: 물리 명세 ${physicalPage ? 1 : 0}개 · 논리 초안 ${logicalPages.length}개`);
     const mockupPage = await page.locator('[data-mockup$="/__design__"]').first().evaluate((node) => node.closest('[data-page]')?.id);
     if (mockupPage) await openHash(mockupPage);
   }
