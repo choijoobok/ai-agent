@@ -1,0 +1,164 @@
+# 카탈로그 관리 API — 소유 G3 전 미구현 설계
+apis:
+  - id: API-019
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/getList
+    action: READ
+    summary: "카탈로그 목록"
+    request: "body=SearchRequest<CatalogFilter>"
+    response: "ApiResponse<PageResponse<CatalogRow>>"
+  - id: API-020
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/getOne
+    action: READ
+    summary: "카탈로그 현재 항목"
+    request: "body=CatalogKey"
+    response: "ApiResponse<CatalogDetail>"
+  - id: API-021
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/getRevisions
+    action: READ
+    summary: "카탈로그 내용 판 목록"
+    request: "body=SearchRequest<CatalogKey>"
+    response: "ApiResponse<PageResponse<RevisionRow>>"
+  - id: API-022
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/getRevision
+    action: READ
+    summary: "선택 내용 판 전체 구성"
+    request: "body=RevisionKey"
+    response: "ApiResponse<RevisionDetail>"
+  - id: API-023
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/saveCreateDraft
+    action: SAVE
+    summary: "공개 객체와 최초 초안 등록"
+    request: "body=DraftCreate"
+    response: "ApiResponse<DraftResult>"
+  - id: API-024
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/saveDraft
+    action: SAVE
+    summary: "카탈로그 전체 초안 저장"
+    request: "body=DraftSave"
+    response: "ApiResponse<DraftResult>"
+  - id: API-025
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/saveCopyDraft
+    action: SAVE
+    summary: "변경·복원용 새 초안 작성"
+    request: "body=DraftCopy"
+    response: "ApiResponse<DraftResult>"
+  - id: API-026
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/getReferences
+    action: READ
+    summary: "카탈로그 사용처·영향"
+    request: "body=SearchRequest<RevisionKey>"
+    response: "ApiResponse<PageResponse<CatalogReferenceRow>>"
+  - id: API-027
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/getRelatedJoins
+    action: READ
+    summary: "양쪽 역할에서 보는 권장 관계"
+    request: "body=SearchRequest<RevisionKey>"
+    response: "ApiResponse<PageResponse<CatalogReferenceRow>>"
+  - id: API-028
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/getResolvedObject
+    action: READ
+    summary: "선정 공개 객체의 정확 식별"
+    request: "body=SourceObjectQuery"
+    response: "ApiResponse<SourceObjectResult>"
+  - id: API-029
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/getStructure
+    action: READ
+    summary: "등록 공개 객체의 구조 사실"
+    request: "body=StructureQuery"
+    response: "ApiResponse<StructureResult>"
+  - id: API-030
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/runSample
+    action: EXECUTE
+    summary: "허용된 등록 컬럼 수동 샘플링"
+    request: "body=SampleRequest"
+    response: "ApiResponse<SampleResult>"
+  - id: API-031
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/getEvidenceList
+    action: READ
+    summary: "카탈로그 변경 근거 목록"
+    request: "body=SearchRequest<EvidenceFilter>"
+    response: "ApiResponse<PageResponse<EvidenceRow>>"
+  - id: API-032
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/getEvidenceOne
+    action: READ
+    summary: "카탈로그 변경 근거 상세"
+    request: "body=EvidenceKey"
+    response: "ApiResponse<EvidenceDetail>"
+  - id: API-033
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/saveEvidence
+    action: SAVE
+    summary: "변경 통지·업무 변경 근거 접수"
+    request: "body=EvidenceSave"
+    response: "ApiResponse<DraftResult>"
+  - id: API-034
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/getCommandResult
+    action: READ
+    summary: "초안 편집·근거 접수 결과 확인"
+    request: "body=CatalogCommandKey"
+    response: "ApiResponse<CatalogCommandResult>"
+  - id: API-035
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/getValidation
+    action: READ
+    summary: "후보 전체 구성의 현재 검증"
+    request: "body=ValidationRequest"
+    response: "ApiResponse<ValidationResult>"
+  - id: API-036
+    feature: FEAT-003
+    implementation: planned
+    method: POST
+    path: /api/service/admin/catalog/getReferenceCandidates
+    action: READ
+    summary: "등록 객체·컬럼·키 참조 후보"
+    request: "body=SearchRequest<ReferenceCandidateFilter>"
+    response: "ApiResponse<PageResponse<CatalogReferenceRow>>"

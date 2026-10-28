@@ -5,7 +5,7 @@ usecases:
     workstream: admin
     design_status: draft
     feature_contract: FEAT-003
-    entities: [ENT-005, ENT-006, ENT-007, ENT-009]
+    entities: [ENT-005, ENT-006, ENT-007, ENT-009, ENT-020, ENT-021, ENT-022, ENT-023, ENT-024, ENT-026, ENT-028]
     reqs: [REQ-301]
     actors: { primary: ACT-003, secondary: [ACT-002] }
     process_step: PRC-09-01
@@ -37,7 +37,7 @@ usecases:
     workstream: admin
     design_status: draft
     feature_contract: FEAT-011
-    entities: [ENT-006, ENT-008]
+    entities: [ENT-006, ENT-008, ENT-020, ENT-025]
     reqs: [REQ-301]
     actors: { primary: ACT-003, secondary: [] }
     process_step: PRC-09-02
@@ -94,7 +94,7 @@ usecases:
     workstream: admin
     design_status: draft
     feature_contract: FEAT-003
-    entities: [ENT-010]
+    entities: [ENT-010, ENT-027, ENT-028]
     reqs: [REQ-304]
     actors: { primary: ACT-003, secondary: [ACT-010, ACT-014] }
     process_step: PRC-09-04

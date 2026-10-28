@@ -37,3 +37,4 @@ spec_set:
     - 013-catalog.yaml
     - 014-api-tool.yaml
     - 015-integration-storage.yaml
+    - 016-catalog-storage.yaml

@@ -1020,6 +1020,8 @@ terms:
     definition: "Hub 이용 등록·활성 상태·승인된 활성 그룹·쿼터 등급 등 필수 조건을 갖춰 질의를 요청할 수 있는 자격"
     relation: "REQ-103·116·616. 외부 로그인 성공이나 관리자 역할만으로 생기지 않으며 개별 자산 접근 권한은 별도로 검사한다"
   - id: TRM-247
+    db_token: QUERY_CONSTRAINT
+    db_token_reason: "30자 제한에 맞춰 필수 의미는 정의에 보존하고 QUERY_CONSTRAINT를 사용한다"
     term: "필수 조회 제약"
     key: requiredQueryConstraint
     group: "정책"

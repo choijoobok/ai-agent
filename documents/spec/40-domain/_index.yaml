@@ -2,7 +2,7 @@
 meta:
   status: in_progress
   baselined: null
-  workstreams: { system: reviewed, admin: logical_draft }
+  workstreams: { system: reviewed, admin: design_draft }
   physical_policy: "ARCH-024 — 기존 이름·스키마·컬럼·제약·데이터 유지, 복제와 이중 쓰기 금지"
 
 spec_set:
@@ -16,3 +16,4 @@ spec_set:
     - 006-admin-catalog.yaml
     - 007-admin-api-tool.yaml
     - 008-admin-integration-storage.yaml
+    - 009-admin-catalog-storage.yaml
