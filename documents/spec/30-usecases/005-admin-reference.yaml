@@ -1,0 +1,189 @@
+# 영역: admin 기준정보·연동 관리
+usecases:
+  - id: UC-015
+    name: "대상 시스템과 배포 연결의 사용 범위를 관리한다"
+    workstream: admin
+    design_status: draft
+    reqs: [REQ-604]
+    actors: { primary: [ACT-003, ACT-002], secondary: [] }
+    process_step: PRC-13-01
+    precondition: "대상 시스템 관리 권한이 있다. 연결 없는 등록 초안은 허용하며 실제 사용 전에는 배포 연결의 유효성을 확인한다"
+    trigger: "대상 시스템을 등록하거나 허용 연결·기본 연결·사용 상태를 변경한다"
+    main_flow:
+      - "안정 식별자·업무 명칭·사용 상태와 현재 로드된 연결 식별자를 확인한다"
+      - "시스템의 허용 연결 목록과 그 안의 기본 연결을 지정하고 개별 API·신원 매핑의 영향을 확인한다"
+      - "UC-002로 현재 권한·참조·기준 버전을 검증하고 직접 관리 변경과 이력을 반영한다"
+      - "개별 API의 기본/특정 연결 해석과 승인 후 실제 호출 대상 비교는 REQ-608·105의 계약으로 인계하고 UC-006에서 적용 결과를 확인한다"
+    alternative_flows:
+      - { id: A1, condition: "같은 도메인에 서로 다른 인증·헤더 구성이 필요함", flow: ["배포에 정의된 여러 연결 식별자를 선택한다. 이를 이유로 시스템을 강제로 분리하지 않는다"] }
+      - { id: A2, condition: "배포 연결을 아직 정의하지 않은 신규 등록 초안", flow: ["시스템 정의 초안을 보존하되 호출 가능으로 표시하지 않는다. 유효 연결을 매핑·검증한 뒤 실제 사용한다"] }
+    exception_flows:
+      - { id: E1, condition: "사용 중인 연결 제거 또는 기본 연결 해석 실패", flow: ["참조를 끊거나 다른 연결로 대체하지 않는다. 영향 API와 필요한 배포/참조 보완을 안내한다"] }
+      - { id: E2, condition: "주소·인증값·공통 헤더의 화면 편집이나 시스템 단위 사용자 그룹 부여 시도", flow: ["관리 대상이 아님을 안내한다. 배포 연결 원천과 개별 API 권한의 경계를 유지한다"] }
+    postcondition: "시스템 정의와 유효한 연결 참조·변경 근거가 남는다. 시스템 등록만으로 API 호출 권한이 생기지 않는다"
+    rules_from: ["REQ-604.business_rules", "REQ-604.approval_target", "REQ-604.lifecycle", "REQ-601.business_rules"]
+    pending: ["@defer P3 — 기본 연결 변경의 영향 조회·배포 적용 식별·참조 경합을 데이터/API/화면 계약으로 구체화한다"]
+
+  - id: UC-016
+    name: "데이터소스의 배포 연결 참조와 공개 객체 사용 조건을 관리한다"
+    workstream: admin
+    design_status: draft
+    reqs: [REQ-603]
+    actors: { primary: ACT-003, secondary: [] }
+    process_step: PRC-13-01
+    precondition: "데이터소스 관리 권한과 현재 로드된 배포 연결 식별자 목록이 있다"
+    trigger: "데이터소스를 등록·변경하거나 사라진 배포 연결 참조를 정정한다"
+    main_flow:
+      - "로드된 연결 식별자를 선택하고 Hub 내부 식별자·업무 의미·지원 DBMS/파서와 사용 상태를 확인한다"
+      - "같은 연결의 공개 객체·사용자 신원·자산 참조 영향을 확인한다. DB 스키마별 데이터소스나 시스템 귀속을 강제하지 않는다"
+      - "배포 식별자가 바뀐 경우 관리자가 같은 연결 대상임을 확인하고 내부 레코드의 참조를 명시적으로 정정한다"
+      - "UC-002로 검증·반영하고 내부 자산 식별자는 유지한다. 공개 객체 검수는 UC-007, 사용자 매핑은 UC-024로 연결한다"
+    alternative_flows:
+      - { id: A1, condition: "기존 연결에서 다른 DB/카탈로그의 공개 객체를 조회", flow: ["REQ-603·301의 전체 물리 식별과 DBMS 권한·파서 검증을 적용한다. 추가 연결이나 별도 DB 허용 목록을 만들지 않는다"] }
+    exception_flows:
+      - { id: E1, condition: "배포 연결 부재·미지원 파서·해석 불가 객체", flow: ["관련 조회를 차단하고 사유를 표시한다. 동명 객체나 다른 연결로 자동 대체하지 않는다"] }
+      - { id: E2, condition: "접속 비밀값 편집·풀의 동적 생성 요청", flow: ["배포 설정과 재시작 절차로 안내하고 화면에 주소·계정·비밀값을 복제하지 않는다"] }
+    postcondition: "안정된 Hub 참조와 실제 배포 연결 상태가 구분된다. 데이터소스 등록이 객체 접근 권한을 대신하지 않는다"
+    rules_from: ["REQ-603.business_rules", "REQ-603.exceptions", "REQ-301.data"]
+    pending: ["@defer P3 — 전체 물리 식별·배포 참조 조회·정정·연결 상실의 응답과 DBMS별 계약 시험을 설계한다"]
+
+  - id: UC-017
+    name: "모델 공급 경로와 역할별 유효 모델 조합을 관리한다"
+    workstream: admin
+    design_status: draft
+    reqs: [REQ-602]
+    actors: { primary: ACT-004, secondary: [] }
+    process_step: PRC-13-01
+    precondition: "모델 관리 권한과 배포 공급 경로·모델/추론 수준의 검수 근거가 있다"
+    trigger: "제작사·공급 경로·제공 모델·역할별 매핑 또는 사용 상태를 변경한다"
+    main_flow:
+      - "제작사와 공급 경로를 분리해 식별하고 배포 연결 참조·지원 모델/추론 수준을 확인한다"
+      - "주 추론·보조 판정·관리 운영용 호출·임베딩의 설정과 사용처를 각각 확인한다"
+      - "활성 경로·지원 조합·기본 모델과 등급 허용 범위의 영향을 검증하고 UC-002로 변경 이력을 반영한다"
+      - "REQ-116·602에 따라 진행 시도의 고정 설정과 새 선택/시작의 현재 유효 집합을 구분해 안내한다"
+    alternative_flows:
+      - { id: A1, condition: "임베딩 모델 교체", flow: ["ARCH-040의 본문/질의 임베딩 일치와 기존 벡터 재생성 조건으로 인계한다. 설정 저장만으로 전환 완료를 표시하지 않는다"] }
+    exception_flows:
+      - { id: E1, condition: "미지원 조합·미설정 또는 비활성 기본 모델", flow: ["허용되지 않는 조합을 사용하지 않는다. 다른 모델로 자동 대체하지 않고 현재 허용 목록 재선택 또는 관리자 확인을 안내한다"] }
+      - { id: E2, condition: "보조 판정/운영용 경로 장애", flow: ["주 추론이나 사용자의 등급 선택으로 우회하지 않는다. 해당 역할의 오류와 설정 근거를 남긴다"] }
+    postcondition: "역할별 설정·지원 조합·변경 근거가 관리되며 배포 비밀값과 진행 시도 설정은 임의로 바뀌지 않는다"
+    rules_from: ["REQ-602.business_rules", "REQ-602.model_selection_recovery", "REQ-116.business_rules"]
+    pending: ["@defer P3 — 공급 경로/모델/역할 매핑과 사용 불가 사유·선택 복구의 화면/계약 및 설정 경합을 상세화한다"]
+
+  - id: UC-018
+    name: "업무 API의 계약·연결·필드 통제 후보를 검수하고 반영한다"
+    workstream: admin
+    design_status: draft
+    reqs: [REQ-608]
+    actors: { primary: [ACT-003, ACT-002], secondary: [ACT-013] }
+    process_step: PRC-11-02
+    precondition: "고객사 공동 개발·시험·오픈 근거와 해당 후보 작성 권한이 있다"
+    trigger: "업무 API를 등록하거나 계약·연결·입출력 가이드·응답 통제·상태를 변경한다"
+    main_flow:
+      - "제공 시스템과 그 허용 목록 안의 기본/특정 연결, 메서드·상대 경로·조회/실행 유형을 확인한다"
+      - "입력 확보 방법과 요청/응답 필드의 경로·타입·의미·필수/NULL·형식·코드·개인정보를 검수한다. 서버 신원·보호 헤더를 업무 인자로 대체하지 않는다"
+      - "코드명 제공 방법과 전체 대응 조건·결과/후속 가이드·공통/개별 호출 제한을 검수하고 지식·정책·도구 참조 영향을 확인한다"
+      - "전체 API 후보와 외부 검수·참조 버전을 고정해 UC-012의 실제 자산 변경 세트에 인계한다. 관리 승인/전결은 업무 실행 승인을 대신하지 않는다"
+      - "실제 반영 상태와 고객사 공동 오픈 적용일을 확인한다. 승인만으로 적용일 전 호출을 허용하지 않으며 승인 뒤 실제 목적지/실행 주체 변경은 REQ-105의 재확인 경계를 유지한다"
+    alternative_flows:
+      - { id: A1, condition: "업무별 사용 방법만 변경", flow: ["API 공통 계약을 복제하지 않고 UC-010의 지식 매핑 설명 후보로 처리한다"] }
+    exception_flows:
+      - { id: E1, condition: "미허용 연결·절대 주소·미완성 필드/개인정보·참조 충돌", flow: ["정상 운영 계약으로 반영하지 않고 보완 지점을 알린다"] }
+      - { id: E2, condition: "개별 호출 제한과 점유 유지/프록시 검수 조건이 불일치", flow: ["긴 숫자만으로 호출을 허용하지 않는다. REQ-608.timeout_policy의 검증된 경로·설정 조건을 보완한다"] }
+      - { id: E3, condition: "코드명/응답 해석 실패", flow: ["원 업무의 실제 성공·접수·불명 상태를 보존한다. 이름을 추측하거나 원 업무를 자동 재실행하지 않는다"] }
+      - { id: E4, condition: "반려 또는 검증/반영 실패", flow: ["기존 유효본을 유지하고 실패 근거를 남긴다. 후보나 부분 반영을 새 유효 계약으로 사용하지 않는다"] }
+    postcondition: "검수 근거와 후보/유효본이 구분되고 실제 반영된 계약만 현재 통제 아래 사용된다"
+    rules_from: ["REQ-608.business_rules", "REQ-608.field_metadata", "REQ-608.code_name_resolution", "REQ-608.timeout_policy", "REQ-608.result_handling_guide", "REQ-608.approval_target", "REQ-608.lifecycle"]
+    pending: ["@defer P3 — 입력/응답 편집·코드명 참조·상속/반출 정책·계약 리비전·조건부 반영과 실패 상태의 물리/API/화면 계약을 설계한다"]
+
+  - id: UC-019
+    name: "업무 도구의 구현·계약·노출 후보를 검수한다"
+    workstream: admin
+    design_status: draft
+    reqs: [REQ-612]
+    actors: { primary: [ACT-003, ACT-004], secondary: [ACT-013] }
+    process_step: PRC-13-02
+    precondition: "도구 후보 작성 권한과 등록 API 또는 배포된 내부 서비스 구현의 검증 근거가 있다"
+    trigger: "도구를 등록·수정·비활성화·삭제하거나 허용 그룹·노출 상태를 변경한다"
+    main_flow:
+      - "REST API 원천과 내부 서비스 빈의 계약/검증 근거를 구분해 참조한다"
+      - "현재 도구를 참조하는 지식의 매핑과 업무별 사용 설명을 역조회하고 변경 영향을 확인한다"
+      - "전체 후보·작업 종류·사유·기준 버전·공통 결과 가이드를 검수한다. API 계약은 원천을 참조하고 내부 구현 가이드는 해당 정본에서 관리한다"
+      - "UC-012로 승인/전결과 일괄 반영을 처리하고 반영 전 후보는 노출·권한 판정에 사용하지 않는다"
+    alternative_flows:
+      - { id: A1, condition: "도구 폐지와 지식 연결 제거를 함께 수행", flow: ["실제 변경 대상 전체의 혼합 세트·참조 검증을 적용하고 과거 연결/실행 근거를 보존한다"] }
+    exception_flows:
+      - { id: E1, condition: "설정/비밀값을 읽는 금지 도구 또는 검증 무효 구현", flow: ["등록·노출하지 않는다. 배포되었다는 사실로 허용하지 않는다"] }
+      - { id: E2, condition: "참조 조회 실패·유효 연결 파손·승인 뒤 계약 변경", flow: ["연결 없음이나 승인된 새 계약으로 간주하지 않고 보완한다"] }
+    postcondition: "유효한 도구만 지식 연결·현재 권한·실행 승인 조건 아래 사용된다. 폐지는 이미 외부에서 접수/완료된 실행을 소급 취소하지 않는다"
+    rules_from: ["REQ-612.business_rules", "REQ-612.result_handling_guide", "REQ-612.permissions"]
+    pending: ["@defer P3 — 구현 레지스트리·계약 버전·역참조·가이드 편집과 반영/호출 시 검증의 계약·시험을 설계한다"]
+
+  - id: UC-020
+    name: "공통 자연어 지침을 검토하고 리비전으로 반영한다"
+    workstream: admin
+    design_status: draft
+    reqs: [REQ-610]
+    actors: { primary: [ACT-003, ACT-004], secondary: [] }
+    process_step: PRC-13-02
+    precondition: "프롬프트 규칙 관리 권한이 있다. 의미 검토는 운영용 모델 설정을 사용하며 설정 부재/호출 실패는 검토 미완료로 처리한다"
+    trigger: "공통 지침 본문·우선순위·적용 조건·활성 상태를 변경한다"
+    main_flow:
+      - "자연어 본문과 관리 속성의 후보를 작성하고 함께 적용될 규칙·기준 리비전을 확인한다"
+      - "admin→agent 경로로 운영용 모델의 의미 검토를 요청하고 비교 리비전·모델·사용량·경고/실패 근거를 기록한다"
+      - "권한자가 검토 내용과 판단·사유를 남기고 최종 반영 여부를 결정한다. 본문을 수정하면 새 변경안을 다시 검토한다"
+      - "UC-002의 현재 권한·관리 값·리비전·이력 검증을 거쳐 반영한다. 런타임 통신·권한·승인 검증은 별도로 유지한다"
+    alternative_flows:
+      - { id: A1, condition: "의미 경고 또는 검토 실패", flow: ["무모순이나 검토 통과로 표시하지 않는다. 권한자의 실제 판단·사유를 기록해 보완 또는 반영을 결정한다"] }
+    exception_flows:
+      - { id: E1, condition: "관리 값 오류·리비전 충돌·현재 권한 없음", flow: ["운영 반영하지 않는다. 의미 검토 결과만으로 저장 검증을 우회하지 않는다"] }
+      - { id: E2, condition: "자연어 안의 변수/스크립트·계약 우회 지시", flow: ["본문을 실행하거나 비밀/설정값으로 치환하지 않는다. 운영 문구로 소스의 입출력 계약과 통제를 변경할 수 없다"] }
+    postcondition: "판단 근거가 있는 지침 리비전과 호출별 조합 근거를 추적할 수 있다. 의미 검토가 업무 도구 실행이나 무모순 보증이 되지 않는다"
+    rules_from: ["REQ-610.prompt_contract", "REQ-610.business_rules", "REQ-602.business_rules"]
+    pending: ["@defer P3 — 검토 요청/응답·관리 액션 인가·비교 리비전·변경 뒤 재검토와 호출별 조합 근거의 저장/화면/시험을 구체화한다"]
+
+  - id: UC-021
+    name: "사용 안내 지식을 관리하고 초기 안내와의 경계를 확인한다"
+    workstream: admin
+    design_status: draft
+    reqs: [REQ-308]
+    actors: { primary: ACT-003, secondary: [ACT-002] }
+    process_step: PRC-09-05
+    precondition: "사용 안내 지식의 후보 작성·관리 권한이 있다"
+    trigger: "사용 목적·가능한 업무·질의 예시·주의사항·사용 한계 안내를 변경한다"
+    main_flow:
+      - "새 대화의 agent 제공 고정 안내와 검색 대상인 사용 안내 지식의 원천을 구분한다"
+      - "업무 범위·안전한 사용 한계·허용 대상·현재 제공 차수를 검수한 안내 후보를 작성한다"
+      - "UC-010·012의 지식 관리·세트 반영 경로로 처리하고 후보/반려본을 운영 검색에 쓰지 않는다"
+      - "활성·현재 허용 안내만 사용되고 무결과 안내·전체 열거 거절은 REQ-308의 원래 계약을 따르는지 확인한다"
+    alternative_flows:
+      - { id: A1, condition: "아직 상세 접근 목록 화면이 제공되지 않음", flow: ["현재 차수의 요약 안내를 유지하고 후속 차수의 화면으로 이동시키지 않는다"] }
+    exception_flows:
+      - { id: E1, condition: "안내에 권한 밖 객체·물리명·전체 지식 목록 노출", flow: ["안내로 접근 통제를 우회하지 않도록 후보를 보완한다"] }
+      - { id: E2, condition: "고정 초기 안내를 모델 호출이나 Portal 자체 생성으로 대체", flow: ["agent 계약의 정적 안내 경계를 유지한다"] }
+    postcondition: "사용 안내 지식의 유효 리비전과 반영 근거가 유지되며 초기 안내만으로 새 턴·모델 호출이 생기지 않는다"
+    rules_from: ["REQ-308.detail", "REQ-308.hard_rule", "REQ-308.approval_policy", "REQ-308.permissions"]
+    pending: ["@defer P3 — 안내 원천/지식 관리 연결, 차수별 표시·권한·무결과 사례를 화면 요건과 계약 시험으로 구체화한다"]
+
+  - id: UC-022
+    name: "공급 경로별 요금과 월 계획 단가를 검수한다"
+    workstream: admin
+    design_status: draft
+    reqs: [REQ-613]
+    actors: { primary: ACT-004, secondary: [] }
+    process_step: PRC-12-01
+    precondition: "요금 관리 권한과 공급 경로·모델별 요금 출처 및 계획 통화가 있다"
+    trigger: "적용 월의 요금·입력/캐시/출력 구성비·환산 근거를 등록하거나 보완한다"
+    main_flow:
+      - "공급 경로·모델 단위로 요금과 원 통화·출처·계획 통화의 환산 단가/근거를 확인한다"
+      - "구성비·단위·적용 월을 검증하고 NFR-010·REQ-118의 기존 산식으로 계획 단가를 확인한다"
+      - "UC-002로 이력과 현재 관리값을 반영하고 UC-027의 월별 계획에 인계한다"
+      - "과거 월의 계획·배정·사용량과 새 단가 적용 대상을 구분해 조회한다"
+    alternative_flows:
+      - { id: A1, condition: "공급사 통화와 고객사 계획 통화가 다름", flow: ["관리자가 환산 단가·근거를 입력한다. 자동 환율 연동이나 effort별 별도 요금표를 만들지 않는다"] }
+    exception_flows:
+      - { id: E1, condition: "통화/단위 혼합·구성비 또는 근거 미충족", flow: ["변환 없이 합산하거나 확정 단가로 사용하지 않는다"] }
+      - { id: E2, condition: "요금 변경으로 과거 월을 재계산하려 함", flow: ["과거 확정 계획·배정·사용량은 유지하고 새 적용 월의 변경으로 처리한다"] }
+    postcondition: "월별 단가·구성비·환산 및 출처 이력이 남고 과거 실적은 소급 변경되지 않는다"
+    rules_from: ["REQ-613.business_rules", "REQ-613.field_usage", "REQ-118.business_rules"]
+    pending: ["@defer P3 — 요금/구성비/환산 근거·적용 월·산식 미리보기·확정 월 보호의 데이터/API/화면 시험을 설계한다"]

@@ -128,8 +128,8 @@ requirements:
       nfr: [NFR-006, NFR-007, NFR-008, NFR-010, NFR-011, NFR-012, NFR-013, NFR-022, NFR-027]
       interfaces: []
     realization:
-      features: [FEAT-102, FEAT-114, FEAT-120, FEAT-215]
-      screens: [SCR-101, SCR-102, SCR-109]
+      features: [FEAT-102, FEAT-114, FEAT-120, FEAT-215, FEAT-031]
+      screens: [SCR-101, SCR-102, SCR-109, SCR-032]
     examples:
       - { kind: 정상, case: "요청 분석 완료 → 매출 조회 시작 → 매출 조회 완료 → 미수금 조회 시작 → 미수금 조회 완료 → 두 결과 정리 중을 실제 이력으로 보여준다. 계획의 몇 번째인지 별도 수치로 만들지 않는다" }
       - { kind: 예외, case: "턴 완료 뒤 토큰 사용량 정정이 추가돼도 화면은 완료를 유지한다. 최신 DB 행이라는 이유로 정정 기록을 현재 처리 단계로 표시하지 않는다" }

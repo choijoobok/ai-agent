@@ -11,3 +11,6 @@ spec_set:
     - 002-admin-common.yaml
     - 003-admin-catalog.yaml
     - 004-admin-knowledge.yaml
+    - 005-admin-reference.yaml
+    - 006-admin-access-quota.yaml
+    - 007-admin-operations.yaml

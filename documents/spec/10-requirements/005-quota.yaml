@@ -216,8 +216,8 @@ requirements:
       nfr: [NFR-010, NFR-011]
       interfaces: []
     realization:
-      features: [FEAT-017]
-      screens: [SCR-021]
+      features: [FEAT-017, FEAT-030]
+      screens: [SCR-021, SCR-023]
     examples:
       - { kind: 정상, case: "10월 계획 금액 1,000만 원, 1M 기준 단가 5,000원, 보정률 1.1이면 보정 단가 5,500원, 총 풀은 floor(10,000,000 ÷ 5,500 × 1,000,000) = 1,818,181,818 토큰이다" }
       - { kind: 예외, case: "관리자가 총 풀을 1,700,000,000으로 낮추며 근거를 비우면 확정하지 않는다" }
