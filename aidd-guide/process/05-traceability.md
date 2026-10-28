@@ -4,7 +4,7 @@ title: "추적성 — ID 체계와 연결 규칙 T1~T14"
 category: process
 type: operation
 created: 2026-09-04
-updated: 2026-09-28
+updated: 2026-10-28
 status: active
 sources: []
 tier: 1
@@ -30,7 +30,7 @@ AI는 세션이 바뀌면 "이 코드가 왜 여기 있는지"를 모른다. 추
 | `ADR-` | 아키텍처 결정 | P2~ | ADR-004 인증방식 |
 | `NFR-` | 비기능 목표치 | P2 | NFR-002 응답시간 |
 | `UC-` | 유즈케이스 | P3 | UC-004 스키마 카탈로그 등록 |
-| `FEAT-` | 기능 (메뉴 단위 실현체) | P3 | FEAT-012 |
+| `FEAT-` | 기능 (화면·공유 업무·배치·이벤트 처리) | P3 | FEAT-012 |
 | `ENT-` | 엔티티/테이블 | P3 | ENT-004 스키마 카탈로그 |
 | `API-` | API 엔드포인트 | P3 | API-031 |
 | `SCR-` | 화면 | P3 | SCR-008 |
@@ -86,11 +86,11 @@ NFR-### ────────────────────────
 | T6 | 모든 `TC` 는 정상 1건 + 예외 1건 이상 짝을 이룸 | 경고 |
 | T7 | 모든 `NFR` 은 **측정 방법(`measurement`) · 측정 원천(`source`) · `TC`** 보유 | 오류 (**소유 작업흐름 G3 이후** · 뒤 차수나 G3 전이면 경고) |
 | T8 | 모든 `ENT` 는 최소 1개 `FEAT` 에서 사용됨 | 경고 (미사용 테이블) |
-| T9 | 모든 `API`/`SCR` 은 `FEAT` 에 소속 | 오류 |
-| T10 | **기능 코드**는 헤더에 `@feat FEAT-###` 태그 보유 | 경고 |
+| T9 | 모든 `API`/`SCR`은 소유 `FEAT`를 갖고 공통 사용 관계·소스 경로가 유효함 | 오류 |
+| T10 | **기능 코드**는 헤더에 존재하는 `@feat FEAT-###` 태그 보유 | 경고 |
 | T11 | 참조된 ID가 실제로 존재함 (dangling reference) | 오류 |
 | T12 | ID 중복 없음 | 오류 |
-| T13 | 모든 `TC` 는 **테스트 이름**에 `TC-####` 로 나타난다 | 경고 (**소유 구현 슬라이스 시작 이후 오류**) · 거꾸로 spec 에 없는 TC 를 부르면 **오류** |
+| T13 | 모든 `TC`는 **테스트 이름**에 나타나며 명시한 `screen_cases`와 화면의 TC 참조가 유효함 | 경고 (**소유 구현 슬라이스 시작 이후 오류**) · 거꾸로 spec 에 없는 TC 를 부르면 **오류** |
 | T14 | 모든 FR `REQ` 는 **정련 카드**([P1 §5](../phase/P1-discovery.md))를 갖는다 — 칸 완전성 · 정상/예외 사례 · `Must`·`Should` 의 `confirmed`. 카드끼리는 **연계가 양방향**(`depends_on`↔`constrains` · `conflicts_with`)이고 `realization.features`↔`FEAT.reqs` 가 맞으며, `confirmed` 에 G1 전 `open` 이 없다 | 완전성은 경고 (**`--g1` 에서 소유 작업흐름 G1 승인 전이면 오류** · 이미 승인된 작업흐름은 소급 대상이라 경고) · **정합 위반은 언제나 오류** |
 
 ### T13 에 명단이 없는 이유 — **방향이 T10 과 반대다**
@@ -163,28 +163,21 @@ G3는 P4를 여는 경계이지 뒤 슬라이스의 테스트를 미리 만드�
 
 ## 5. 변경 영향 분석
 
-spec의 어떤 ID가 바뀌면 AI는 **먼저 영향 목록을 보고**하고, 자동 수정하지 않는다. `node .claude/hooks/trace-check.mjs --impact <REQ-###|FEAT-###>` 가 목록의 뼈대를 낸다. REQ 는 **정련 카드의 연계**를 따라 *이것에 기대는* REQ(`constrains` · 나를 `depends_on` 하는 쪽 · `conflicts_with`)를 연쇄로 모으고, 그 실현에서 FEAT·UC·SCR·API·ENT·TC·NFR·슬라이스를 모은다. **카드가 없는 REQ 가 걸리면 목록이 빠짐없다고 보증하지 않는다** — 그 사실을 함께 낸다. 간접 영향(ADR·인접 화면)의 판단은 여전히 사람과 AI 의 몫이다.
+정본 책임·관계 필드는 [spec-schema.md](../artifact/spec-schema.md)의 「설계 문서의 책임과 연결」을 따른다.
 
-```markdown
-## ⚠️ 변경 영향 분석 — REQ-011 수정
-
-REQ-011 (마스킹 적용 시점) 변경 시 영향:
-
-**직접 영향 (반드시 수정)**
-- UC-007 자연어 조회 실행 — 기본 흐름 4단계
-- FEAT-021, FEAT-022, FEAT-023
-- ENT-004 스키마 카탈로그 / ENT-009 조회 이력 — 컬럼 추가 필요
-- API-045 POST /api/portal/query/execute
-- TC-0451, TC-0452, TC-0455
-
-**간접 영향 (검토 필요)**
-- ADR-006 (마스킹 구현 위치) — 적용 지점 재검토
-- SCR-014 조회 결과 화면 — 안내 문구
-- 이미 구현된 SLICE-014 — 재작업 필요
-
-**예상 재작업**: 슬라이스 3개 부분 재작업
-진행할까요? 또는 CR-### 로 정식 등록할까요?
+```bash
+node .claude/hooks/trace-check.mjs --impact API-558
+node .claude/hooks/trace-check.mjs --source sources/backend/modules/system/src/main/java/com/aiagent/system/api/config/ConfigController.java
 ```
+
+- `--impact`는 REQ·UC·FEAT·ENT·API·SCR·IF·TC·NFR에서 시작한다. `--source`는 저장소 상대 경로와 선택 `#메서드`를 받는다.
+- 단수/복수 화면·기능 참조를 합쳐 읽고 `uses_features`·`uses_screens`의 모든 소비자로 전파한다. 소유자와 소비자의 작업흐름은 구분한다.
+- 근거 REQ는 설명 문맥으로 함께 표시하되 FEAT/API/SCR에서 시작한 조회를 그 REQ의 무관한 형제 기능까지 확산시키지 않는다.
+- `sources`·`source_contract`·파일 머리의 `@feat`/`@scr`로 소스에서 시작한다. 삭제된 파일도 이전 명세의 경로로 찾는다.
+- 정본·화면 문서·테스트·운영 절차·명시 소스·구현 슬라이스를 대조한다. 공통 화면은 메뉴 경로가 없어도 문서 경로로 찾는다.
+- 연결을 찾지 못하면 **영향 없음이 아니라 확인 필요**다. 미등록 소비자·동적 호출·실제 API 전수 일치·업무 의미는 별도 확인한다.
+- 변경 전후를 조회하고 같은 변경에서 정본·소스를 현행화한 뒤 파생물을 생성한다. 결과는 보고만 하며 승인·자동 수정하지 않는다.
+- 회귀 fixture: `node aidd-guide/harness/runtime/trace-model.self-test.mjs` — chain 실행·공통 소비자·다대다·순환·삭제 경로·화면 없는 배치·잘못된 참조.
 
 ## 6. 추적성 매트릭스 (생성물)
 
@@ -197,3 +190,5 @@ REQ-011 (마스킹 적용 시점) 변경 시 영향:
 | REQ-018 | Should | — | — | — | — | — | — | ❌ **미실현** |
 
 마지막 행 같은 항목이 하나라도 있으면 G3를 통과할 수 없다. 작업흐름 게이트는 기능의 `workstream:` 또는 `module:`을 따라 **소유 체인만** 오류로 센다([13-workstreams.md](13-workstreams.md) §2~4).
+
+화면·HTTP API가 없는 기능의 빈 칸은 정상이다. 미실현 요구사항은 T2, 테스트 결손은 T5/T7의 단계별 판정으로 구분한다.

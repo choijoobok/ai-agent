@@ -4,7 +4,7 @@ title: "산출물 지도 — 무엇을 언제 어디에"
 category: artifact
 type: operation
 created: 2026-09-04
-updated: 2026-09-13
+updated: 2026-10-28
 status: active
 sources: []
 tier: 1
@@ -14,8 +14,7 @@ tags: [artifact, map, index]
 # 산출물 지도 — 무엇을, 언제, 어디에
 
 > **이 폴더의 다른 문서** — [spec-schema.md](./spec-schema.md)(SSOT `documents/spec/` 의
-> 파일과 작성 단계) · [template/](./template/02-requirements.md)(산출물 서식) ·
-> [screen/INDEX.md](./screen/INDEX.md)(화면 요건서 절차).
+> 파일과 작성 단계) · [template/](./template/02-requirements.md)(서식) · [screen/INDEX.md](./screen/INDEX.md)(화면 절차).
 
 ## 1. 전체 산출물 목록
 
@@ -24,34 +23,34 @@ tags: [artifact, map, index]
 | #   | 산출물                        | 단계    | 종류  | 경로                                                                                                                     | Lite | Std | Full |
 | --- | -------------------------- | ----- | --- | ---------------------------------------------------------------------------------------------------------------------- | :--: | :-: | :--: |
 | 1   | 프로젝트 헌장 (목적·범위·성공기준)       | P0    | S   | `documents/spec/00-charter/_index.yaml`                                                                                       |  ●   |  ●  |  ●   |
-| 2   | 이해관계자 / 액터 정의              | P0    | S   | `documents/spec/00-charter/_index.yaml`                                                                                        |  ●   |  ●  |  ●   |
-| 3   | 제약사항 · 전제                  | P0    | S   | `documents/spec/00-charter/_index.yaml`                                                                                   |  ●   |  ●  |  ●   |
-| 4   | 용어사전 (유비쿼터스 언어)            | P1    | S   | `documents/spec/00-charter/_index.yaml`                                                                                      |  ●   |  ●  |  ●   |
-| 5   | 업무 프로세스 정의 (As-Is / To-Be) | P1    | S   | `documents/spec/00-charter/_index.yaml`                                                                                     |  ○   |  ●  |  ●   |
-| 6   | 요구사항 목록 (FR/NFR)           | P1    | S   | `documents/spec/00-charter/_index.yaml`                                                                                  |  ●   |  ●  |  ●   |
+| 2   | 이해관계자 / 액터 정의              | P0    | S   | `documents/spec/01-actors/_index.yaml`                                                                                        |  ●   |  ●  |  ●   |
+| 3   | 제약사항 · 전제                  | P0    | S   | `documents/spec/02-constraints/_index.yaml`                                                                                   |  ●   |  ●  |  ●   |
+| 4   | 용어사전 (유비쿼터스 언어)            | P1    | S   | `documents/spec/03-glossary/_index.yaml`                                                                                      |  ●   |  ●  |  ●   |
+| 5   | 업무 프로세스 정의 (As-Is / To-Be) | P1    | S   | `documents/spec/11-processes/_index.yaml`                                                                                     |  ○   |  ●  |  ●   |
+| 6   | 요구사항 목록 (FR/NFR)           | P1    | S   | `documents/spec/10-requirements/_index.yaml`                                                                                  |  ●   |  ●  |  ●   |
 | 7   | 아키텍처 결정 기록                 | P2    | L   | `documents/decisions/ADR-{번호}-{제목}.md`                                                                                 |  ●   |  ●  |  ●   |
-| 8   | 기술 스택 · 인프라 구성도            | P2    | S+G | `documents/spec/00-charter/_index.yaml` → `documents/generated/20-아키텍처.md`                                               |  ●   |  ●  |  ●   |
-| 9   | 비기능 목표치 (성능·가용성·보안)        | P2    | S   | `documents/spec/00-charter/_index.yaml`                                                                                           |  ○   |  ●  |  ●   |
-| 10  | 유즈케이스 명세 (기본/대안/예외 흐름)     | P3    | S+G | `documents/spec/00-charter/_index.yaml` → `documents/generated/30-유즈케이스.md`                                                  |  △   |  ●  |  ●   |
-| 11  | 기능 목록 · 메뉴 구조              | P3    | S+G | `documents/spec/00-charter/_index.yaml` → `documents/generated/31-기능목록.md`                                                   |  ●   |  ●  |  ●   |
+| 8   | 기술 스택 · 인프라 구성도            | P2    | S+G | `documents/spec/20-architecture/_index.yaml` → `documents/generated/20-아키텍처.md`                                               |  ●   |  ●  |  ●   |
+| 9   | 비기능 목표치 (성능·가용성·보안)        | P2    | S   | `documents/spec/21-nfr/_index.yaml`                                                                                           |  ○   |  ●  |  ●   |
+| 10  | 유즈케이스 명세 (기본/대안/예외 흐름)     | P3    | S+G | `documents/spec/30-usecases/_index.yaml` → `documents/generated/30-유즈케이스.md`                                                  |  △   |  ●  |  ●   |
+| 11  | 기능 목록 · 명세              | P3    | S+G | `documents/spec/31-features/_index.yaml` → `documents/generated/31-기능목록.md`                                                   |  ●   |  ●  |  ●   |
 | 12  | 기능별 요건 정의서                 | P3    | G   | `documents/generated/32-요건정의서/FEAT-{###}.md`                                                                           |  ●   |  ●  |  ●   |
-| 13  | 도메인/데이터 모델 · ERD           | P3    | S+G | `documents/spec/00-charter/_index.yaml` → `documents/generated/40-ERD.md` (Mermaid)                                            |  ●   |  ●  |  ●   |
-| 14  | 물리 스키마                     | P3    | S   | `documents/spec/00-charter/_index.yaml` → **Liquibase changeset** `sources/backend/bootstrap/src/main/resources/db/changelog/` |  ●   |  ●  |  ●   |
-| 15  | API 명세                     | P3    | S+G | `documents/spec/00-charter/_index.yaml` (OpenAPI) → `documents/generated/50-API.md`                                               |  ●   |  ●  |  ●   |
-| 16  | 화면 목록 · 화면 정의서             | P3    | S+G | `documents/spec/00-charter/_index.yaml` → `documents/generated/60-화면정의서.md`                                                   |  ●   |  ●  |  ●   |
+| 13  | 도메인/데이터 모델 · ERD           | P3    | S+G | `documents/spec/40-domain/_index.yaml` → `documents/generated/40-ERD.md` (Mermaid)                                            |  ●   |  ●  |  ●   |
+| 14  | 물리 스키마                     | P3    | S   | `documents/spec/40-domain/_index.yaml` → **Liquibase changeset** `sources/backend/bootstrap/src/main/resources/db/changelog/` |  ●   |  ●  |  ●   |
+| 15  | API 명세                     | P3    | S+G | `documents/spec/50-api/_index.yaml` (OpenAPI) → `documents/generated/50-API.md` · `50-openapi.yaml`                                               |  ●   |  ●  |  ●   |
+| 16  | 메뉴·화면 목록 · 화면 정의서             | P3    | S+G | `documents/spec/60-screens/_index.yaml` → `documents/generated/60-화면정의서.md`                                                   |  ●   |  ●  |  ●   |
 | 17  | 시퀀스 다이어그램                  | P3    | G   | `documents/generated/33-시퀀스/UC-{###}.md` (Mermaid)                                                                     |  △   |  ●  |  ●   |
-| 18  | 인터페이스 정의서 (외부 연동)          | P3    | S   | `documents/spec/00-charter/_index.yaml`                                                                                    |  ○   |  ●  |  ●   |
-| 19  | 권한 매트릭스                    | P3    | S+G | `documents/spec/00-charter/_index.yaml` → `documents/generated/22-권한매트릭스.md`                                                    |  ○   |  ●  |  ●   |
+| 18  | 인터페이스 정의서 (외부 연동)          | P3    | S   | `documents/spec/51-interfaces/_index.yaml`                                                                                    |  ○   |  ●  |  ●   |
+| 19  | 권한 매트릭스                    | P3    | S+G | `documents/spec/30-usecases/_index.yaml` → `documents/generated/22-권한매트릭스.md`                                                    |  ○   |  ●  |  ●   |
 | 20  | 슬라이스 백로그·현재 후속 검증          | P4~P5 | L   | `documents/project.state.yaml` `slices:` · `pending_rechecks:`                                                         |  ●   |  ●  |  ●   |
 | 21  | 소스 코드                      | P4    | -   | `sources/`                                                                                                             |  ●   |  ●  |  ●   |
 | 22  | 단위/통합 테스트 코드               | P4    | -   | `sources/backend/*/src/test/` · `sources/frontend/src/**/*.test.ts`                                                    |  ●   |  ●  |  ●   |
-| 23  | 테스트 케이스                    | P3~P5 | S+G | `documents/spec/00-charter/_index.yaml` → `documents/generated/70-테스트케이스.md`                                                |  ●   |  ●  |  ●   |
+| 23  | 테스트 케이스                    | P3~P5 | S+G | `documents/spec/70-testcases/_index.yaml` → `documents/generated/70-테스트케이스.md`                                                |  ●   |  ●  |  ●   |
 | 24  | 테스트 수행 결과서                 | P5    | L   | `documents/generated/71-테스트결과서.md`                                                                                     |  ●   |  ●  |  ●   |
 | 25  | 결함 관리 대장                   | P5    | L   | `documents/generated/72-결함대장.md`                                                                                       |  ○   |  ●  |  ●   |
 | 26  | 추적성 매트릭스                   | P3~P5 | G   | `documents/generated/90-추적성매트릭스.md`                                                                                    |  ○   |  ●  |  ●   |
 | 27  | 가정 원장                      | 상시    | L   | `documents/decisions/ASSUMPTIONS.md`                                                                                   |  ●   |  ●  |  ●   |
 | 28  | 변경 요청 대장                   | P3~   | L   | `documents/decisions/CHANGES.md`                                                                                       |  ○   |  ●  |  ●   |
-| 29  | 배포/운영 런북                   | P2~P6 | S+G | `documents/spec/00-charter/_index.yaml` → `documents/generated/80-운영런북.md`                                                |  ○   |  ●  |  ●   |
+| 29  | 배포/운영 런북                   | P2~P6 | S+G | `documents/spec/80-operations/_index.yaml` → `documents/generated/80-운영런북.md`                                                |  ○   |  ●  |  ●   |
 | 30  | 사용자 매뉴얼                    | P4~P6 | S+G | `documents/screen/{페이지경로}/manual.md` → 내부 검토 `build/deliverables/user/` · 사용자 독립본 `build/deliverables-user/` |  ●   |  ●  |  ●   |
 | 31  | 데이터 이행 계획                  | P6    | S   | `documents/generated/82-데이터이행.md`                                                                                      |  ○   |  ○  |  ●   |
 | 32  | 인수 확인서                     | P6    | G   | `documents/generated/99-인수확인서.md`                                                                                      |  ○   |  ●  |  ●   |
@@ -59,7 +58,7 @@ tags: [artifact, map, index]
 | 34  | **화면 목업**                  | P3~P4 | G   | `documents/screen/{페이지경로}/mockup.html` — `/mockup` 이 33 에서 만든다                                                         |  ●   |  ●  |  ●   |
 | 35  | **화면 사용자 메뉴얼**             | P4    | S   | `documents/screen/{페이지경로}/manual.md`                                                                                   |  ●   |  ●  |  ●   |
 | 36  | 〃 실제 화면 그림 · 구현 기록          | P4~P6 | S   | `documents/screen/{페이지경로}/screen.png` · `screen-{그림키}.png` · `impl.md`                                               |  ○   |  ●  |  ●   |
-| 37  | 메뉴 없는 화면의 문서               | P3~P4 | S   | `documents/screen/_standalone/{화면이름}/`                                                                                 |  ○   |  ●  |  ●   |
+| 37  | 메뉴 없는 공통·독립 화면의 문서               | P3~P4 | S   | `documents/screen/_standalone/{화면이름}/`                                                                                 |  ○   |  ●  |  ●   |
 | 38  | 화면 문서 서식                     | 상시    | S   | `aidd-guide/artifact/template/` · `documents/screen/README.md`                                                          |  ●   |  ●  |  ●   |
 | 39  | **상세 설계 문서**               | P3    | S   | `documents/design/{주제}.md`                                                                                             |  ○   |  ●  |  ●   |
 | 40  | 산출물 대장 (이 지도의 현재 상태)       | 상시    | S   | `documents/INDEX.md`                                                                                                   |  ●   |  ●  |  ●   |
@@ -69,6 +68,9 @@ tags: [artifact, map, index]
 | 44  | **고객 제출 사이트 구성·제출본**       | P3~P6 | S+G | `documents/delivery.yaml` → `build/deliverables/`                                                                        |  ●   |  ●  |  ●   |
 
 ● 필수 · △ 축약형 · ○ 선택
+
+문서별 책임·다대다 연결·소스 현행화의 정본은 [spec-schema.md](./spec-schema.md)의 「설계 문서의 책임과 연결」이다.
+기능별 명세는 31-features에서 생성하고 공통 화면도 같은 SCR 체계로 관리한다. API 목록은 독립 추적 기준이며 Swagger UI는 필수가 아니다.
 
 ### 33~38 — 화면 문서는 왜 `generated/` 가 아닌가
 
@@ -168,11 +170,9 @@ tags: [artifact, map, index]
 ### 원칙 B — 문서는 "AI가 다시 읽을 것"을 전제로 쓴다
 - 파일 하나가 너무 크면 AI가 다음 세션에 통째로 못 읽는다. **기능별로 파일을 쪼갠다** (`documents/generated/32-요건정의서/FEAT-012.md`).
 - 각 디렉터리에 `_index.md` 를 두고 ID와 한 줄 요약만 나열한다. AI는 인덱스를 먼저 읽고 필요한 것만 연다.
-- 산문보다 **표와 목록**. AI가 부분 수정하기 쉽다.
 
 ### 원칙 C — 다이어그램은 Mermaid로
-ERD, 시퀀스, 상태도, 플로우차트 전부 Mermaid 코드블록. 텍스트라서 diff·검색·부분 수정이 된다.
-이미지 파일은 만들지 않는다.
+ERD·시퀀스·상태도·흐름은 검색·부분 수정 가능한 Mermaid 코드블록으로 작성한다.
 
 ### 원칙 D — 산출물마다 헤더 블록 필수
 ```markdown
@@ -180,9 +180,9 @@ ERD, 시퀀스, 상태도, 플로우차트 전부 Mermaid 코드블록. 텍스�
 id: FEAT-012
 title: 스키마 카탈로그 등록
 traces_to: [UC-004, REQ-011]
-status: baselined      # draft | reviewed | baselined | changed
-generated_from: documents/spec/00-charter/_index.yaml
-last_sync: 2026-09-04
+status: baselined
+generated_from: documents/spec/31-features/
+last_sync: 2026-10-28
 ---
 ```
 `generated_from` 이 있으면 생성물이다. 직접 수정 금지 표시이기도 하다.

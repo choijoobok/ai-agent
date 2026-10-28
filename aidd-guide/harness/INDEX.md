@@ -4,7 +4,7 @@ title: "harness — 훅·스킬·자동화 INDEX"
 category: harness
 type: operation
 created: "2026-04-30"
-updated: "2026-09-10"
+updated: 2026-10-28
 status: active
 sources: []
 tier: 2
@@ -43,7 +43,7 @@ tags: [harness, hooks, skills, automation, index]
 | `guard-generated` | **차단** | 생성 시드 CSV 손편집 |
 | `guard-commit` | **차단** | 경로 없는 커밋 · `-a` · 본문을 못 보는 메시지 · 잘못된 `Agent:` trailer |
 | `normalize-encoding` | **교정** | BOM · CRLF |
-| `doc-drift` | **경고** | 화면 소스 ↔ 화면 문서(정본 둘) |
+| `doc-drift` | **경고** | 소스 ↔ 연결된 기능·API·화면과 공통 소비자의 정본 |
 | `log-raw` | **기록** | 대화 원문 → `chat-history/`(AGENTS.md §10) |
 
 상세: [automation-matrix.md](./automation-matrix.md)

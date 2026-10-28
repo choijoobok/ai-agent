@@ -4,7 +4,7 @@ title: "변경 관리 — 베이스라인 이후"
 category: process
 type: operation
 created: 2026-09-04
-updated: 2026-09-11
+updated: 2026-10-28
 status: active
 sources: []
 tier: 1
@@ -36,6 +36,8 @@ tags: [cr, baseline]
 ⑤ 반영     spec 수정 → 영향 문서 재생성 → 영향 슬라이스 재작업
 ⑥ 기록     documents/decisions/CHANGES.md 에 CR-### 확정
 ```
+
+영향 분석은 REQ·FEAT뿐 아니라 API·SCR 또는 소스 파일에서 시작할 수 있다. 공통 소비자·화면 없는 기능·TC·매뉴얼·운영 절차를 포함하고 변경 전후를 대조한다. 절차는 [05-traceability.md](05-traceability.md) §5를 따른다.
 
 ### ④ 판정 시 반드시 3옵션으로 제시
 

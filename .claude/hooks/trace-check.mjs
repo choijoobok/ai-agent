@@ -7,6 +7,7 @@
  *   node .claude/hooks/trace-check.mjs --report   〃 + 추적성 매트릭스
  *   node .claude/hooks/trace-check.mjs --g1       G1 청구 — T14 카드 완전성을 오류로 센다
  *   node .claude/hooks/trace-check.mjs --impact REQ-116   카드 연계를 따른 변경 영향 분석
+ *   node .claude/hooks/trace-check.mjs --source sources/.../Controller.java   소스 변경 영향
  *   (인자 없이 표준 입력으로 훅 입력을 받으면 spec 변경 직후 축약 검사)
  * </pre>
  *
@@ -37,6 +38,7 @@ import {
   unrealizedRequirementDeferral,
 } from './lib.mjs';
 import { loadSpecSet } from '../../aidd-guide/harness/runtime/spec-set.mjs';
+import { createTraceModel, featureIds, testsByFeature, associatedScreens, affectedIds, sourceSeeds, sourceRef, sourceEntries, relationErrors, linkedDocuments } from '../../aidd-guide/harness/runtime/trace-model.mjs';
 
 const SPEC_DIR = 'documents/spec';
 const SPEC = {
@@ -67,7 +69,12 @@ const argv = isMain ? process.argv.slice(2) : [];
 const workstreamIndex = argv.indexOf('--workstream');
 const requestedWorkstream = workstreamIndex >= 0 ? String(argv[workstreamIndex + 1] ?? '').trim() : null;
 const impactIndex = argv.indexOf('--impact');
-if (isMain) {
+const sourceIndex = argv.indexOf('--source');
+if (isMain || new URL(import.meta.url).searchParams.has('embedded')) {
+  if (sourceIndex >= 0) {
+    process.stdout.write(sourceImpactReport(String(argv[sourceIndex + 1] ?? '').trim()) + '\n');
+    process.exit(0);
+  }
   if (impactIndex >= 0) {
     process.stdout.write(impactReport(String(argv[impactIndex + 1] ?? '').trim()) + '\n');
     process.exit(0);
@@ -213,9 +220,11 @@ function fullCheck(targetWorkstream = null, { g1 = false } = {}) {
     : ucs;
   const selectedNfrs = targetWorkstream ? nfrs.filter((item) => selectedNfrIds.has(item?.id)) : nfrs;
   const selectedEnts = targetWorkstream ? ents.filter((item) => selectedEntIds.has(item?.id)) : ents;
-  const selectedApis = targetWorkstream ? apis.filter((item) => selectedFeatIds.has(item?.feature)) : apis;
-  const selectedScrs = targetWorkstream ? scrs.filter((item) => selectedFeatIds.has(item?.feature)) : scrs;
-  const selectedTcs = targetWorkstream ? tcs.filter((item) => selectedFeatIds.has(item?.feature)) : tcs;
+  const selectedApis = targetWorkstream ? apis.filter((item) => featureIds(item).some((id) => selectedFeatIds.has(id)) || selectedFeats.some((f) => refs(f, 'apis').has(item.id))) : apis;
+  const selectedScrIds = new Set(associatedScreens([...selectedFeatIds], feats, scrs));
+  const selectedScrs = targetWorkstream ? scrs.filter((item) => selectedScrIds.has(item.id)) : scrs;
+  const selectedTcs = targetWorkstream ? tcs.filter((item) => featureIds(item).some((id) => selectedFeatIds.has(id))) : tcs;
+  for (const [id, message] of relationErrors(createTraceModel({ features: feats, screens: scrs, apis, testcases: tcs }))) errors.push(['T9', id, message]);
 
   // T12 — ID 중복 정의
   const { defined, referenced } = collectIds();
@@ -289,12 +298,7 @@ function fullCheck(targetWorkstream = null, { g1 = false } = {}) {
     <p><b>현재 차수나 소유 작업흐름을 모르면 낮추지 않는다.</b> 모르는 것을 이유로
     게이트를 비우는 것이 가장 나쁜 실패다.
   */
-  const tcByFeat = new Map();
-  for (const t of tcs) {
-    const key = t?.feature;
-    if (!tcByFeat.has(key)) tcByFeat.set(key, []);
-    tcByFeat.get(key).push(t);
-  }
+  const tcByFeat = testsByFeature(tcs);
   const EXCEPTION_TYPES = ['business_exception', 'validation', 'permission', 'exception'];
   const later = laterThanCurrentRoadmap();
   const featureDeferral = (feature) => {
@@ -372,6 +376,25 @@ function fullCheck(targetWorkstream = null, { g1 = false } = {}) {
   // T9 — API/SCR → FEAT
   for (const a of selectedApis) if (!a?.feature) errors.push(['T9', a?.id, '소속 FEAT 없음']);
   for (const s of selectedScrs) if (!s?.feature) errors.push(['T9', s?.id, '소속 FEAT 없음']);
+  // 화면 사례의 기존 번호는 보존하되 TC와의 명시 연결은 끊길 수 없다.
+  for (const testcase of selectedTcs) for (const value of refs(testcase, 'screen_cases')) {
+    const ref = sourceRef(value);
+    if (!ref?.path.startsWith('documents/screen/') || !ref.symbol || !existsSync(join(REPO, ref.path))) {
+      errors.push(['T13', testcase.id, `존재하지 않는 화면 사례 연결: ${value}`]);
+      continue;
+    }
+    const escaped = ref.symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    if (!new RegExp(`(?:^|[^A-Za-z0-9-])${escaped}(?:$|[^A-Za-z0-9-])`, 'm').test(readText(join(REPO, ref.path)))) {
+      errors.push(['T13', testcase.id, `화면 사례번호 없음: ${value}`]);
+    }
+  }
+  for (const screen of selectedScrs) for (const doc of refs(screen, 'current_doc', 'target_doc')) {
+    const ref = sourceRef(doc);
+    if (!ref?.path.startsWith('documents/screen/') || !existsSync(join(REPO, ref.path))) continue;
+    for (const match of readText(join(REPO, ref.path)).matchAll(/\bTC-\d+\b/g)) {
+      if (!defined.has(match[0])) errors.push(['T13', screen.id, `화면 명세가 정의되지 않은 ${match[0]}을 참조한다`]);
+    }
+  }
 
   // UC 예외 흐름 (G3 필수)
   for (const u of selectedUcs) {
@@ -418,7 +441,10 @@ function fullCheck(targetWorkstream = null, { g1 = false } = {}) {
       if (/\/(test|spec)\//.test(rel) || /\.(test|spec)\.[jt]sx?$/.test(rel)) continue;
       if (!needsFeatTag(rel)) continue;
       if (exempt.has(rel)) continue;
-      if (!readText(file).slice(0, 1500).includes('@feat')) untagged.push(rel);
+      const head = readText(file).slice(0, 1500);
+      const tags = [...head.matchAll(/@feat\s+(FEAT-\d+)\b/g)].map((m) => m[1]);
+      if (tags.length === 0) untagged.push(rel);
+      for (const tag of tags) if (!defined.has(tag)) errors.push(['T10', rel, `정의되지 않은 기능 태그: ${tag}`]);
     }
     if (untagged.length > 0) {
       warnings.push([
@@ -605,10 +631,7 @@ function checkRequirementCards({ reqs, selectedReqs, feats, scrs, state, g1, err
     for (const f of feats) {
       if (refs(f, 'reqs').has(r.id) && !listed.has(f?.id)) errors.push(['T14', r?.id, `${f?.id} 가 이 REQ 를 실현하는데 realization.features 에 없다`]);
     }
-    const screensOfFeatures = new Set([
-      ...[...listed].map((id) => featById.get(id)?.screen).filter(Boolean),
-      ...scrs.filter((s) => listed.has(s?.feature)).map((s) => s?.id),
-    ]);
+    const screensOfFeatures = new Set(associatedScreens([...listed], feats, scrs));
     for (const s of (r.realization?.screens ?? []).filter((x) => /^SCR-/.test(String(x)))) {
       if (!screensOfFeatures.has(s)) warnings.push(['T14', r?.id, `realization 의 ${s} 가 나열한 기능의 화면이 아니다`]);
     }
@@ -618,94 +641,70 @@ function checkRequirementCards({ reqs, selectedReqs, feats, scrs, state, g1, err
 // ── 변경 영향 분석 (`--impact`) ───────────────────────────────────
 
 /**
- * REQ 하나가 바뀌면 무엇을 다시 보아야 하나 — <b>카드의 연계를 따라 모은다.</b>
- *
- * <p>영향이 퍼지는 방향은 <i>이것에 기대는 쪽</i>이다: 내가 `constrains` 하는 REQ, 나를
- * `depends_on` 하는 REQ, 나와 `conflicts_with` 인 REQ. 그 REQ 들의 실현(FEAT)에서 UC·SCR·API·
- * TC·ENT·NFR 을 모은다. <b>보고만 하고 고치지 않는다</b>(process/05-traceability.md §5).
+ * 식별자·소스가 바뀌면 소유 계약과 소비 관계를 따라 검토 범위를 모은다.
+ * 근거 문맥은 따로 표시하며 무관한 형제 기능으로 확산시키지 않는다.
+ * 보고만 하고 고치지 않는다(process/05-traceability.md §5).
  */
-function impactReport(id) {
-  const reqs = asList(load(SPEC.req), 'requirements');
-  const nfrs = asList(load(SPEC.nfr), 'nfrs');
-  const ucs = asList(load(SPEC.uc), 'usecases');
-  const feats = asList(load(SPEC.feat), 'features');
-  const apis = asList(load(SPEC.api), 'apis');
-  const scrs = asList(load(SPEC.scr), 'screens');
-  const tcs = asList(load(SPEC.tc), 'testcases');
-  const state = readState();
-  const byId = new Map(reqs.map((r) => [r?.id, r]));
-
-  let seeds = [];
-  if (/^REQ-/.test(id)) {
-    if (!byId.has(id)) return `## 변경 영향 분석 — ${id}\n\n정의되지 않은 REQ 다.`;
-    seeds = [id];
-  } else if (/^FEAT-/.test(id)) {
-    const f = feats.find((x) => x?.id === id);
-    if (!f) return `## 변경 영향 분석 — ${id}\n\n정의되지 않은 FEAT 다.`;
-    seeds = [...refs(f, 'reqs')];
-  } else {
-    return `## 변경 영향 분석 — ${id || '(없음)'}\n\nREQ-### 또는 FEAT-### 을 준다.`;
-  }
-
-  const affectedBy = (x) => {
-    const r = byId.get(x);
-    const out = new Set([...relationIds(r, 'constrains'), ...relationIds(r, 'conflicts_with')]);
-    for (const other of reqs) {
-      if (relationIds(other, 'depends_on').includes(x) || relationIds(other, 'conflicts_with').includes(x)) out.add(other.id);
-    }
-    out.delete(x);
-    return out;
+export function loadTraceModel() {
+  const nestedItems = (value) => {
+    if (!value || typeof value !== 'object') return [];
+    return [...(value.id ? [value] : []), ...Object.values(value).flatMap(nestedItems)];
   };
-  const depth = new Map(seeds.map((s) => [s, 0]));
-  const queue = [...seeds];
-  while (queue.length > 0) {
-    const x = queue.shift();
-    for (const y of affectedBy(x)) {
-      if (depth.has(y) || !byId.has(y)) continue;
-      depth.set(y, depth.get(x) + 1);
-      queue.push(y);
-    }
-  }
-  const reqSet = new Set(depth.keys());
-  const featSet = new Set();
-  for (const f of feats) if ([...refs(f, 'reqs')].some((r) => reqSet.has(r))) featSet.add(f.id);
-  for (const r of reqSet) for (const f of byId.get(r)?.realization?.features ?? []) if (/^FEAT-/.test(String(f))) featSet.add(f);
-  if (/^FEAT-/.test(id)) featSet.add(id);
+  return createTraceModel({
+    requirements: asList(load(SPEC.req), 'requirements'), nfrs: asList(load(SPEC.nfr), 'nfrs'),
+    usecases: asList(load(SPEC.uc), 'usecases'), features: asList(load(SPEC.feat), 'features'),
+    entities: asList(load(SPEC.ent), 'entities'), apis: asList(load(SPEC.api), 'apis'),
+    screens: asList(load(SPEC.scr), 'screens'), testcases: asList(load(SPEC.tc), 'testcases'),
+    interfaces: asList(load('51-interfaces'), 'interfaces'), operations: nestedItems(load('80-operations')),
+  });
+}
 
-  const list = (xs) => (xs.length > 0 ? xs.join(' · ') : '—');
-  const title = (x) => byId.get(x)?.title ?? '';
-  const direct = [...reqSet].filter((r) => depth.get(r) === 1).sort();
-  const indirect = [...reqSet].filter((r) => depth.get(r) > 1).sort();
-  const noCard = [...reqSet].filter((r) => !hasCard(byId.get(r))).sort();
-  const nfrSet = new Set();
-  for (const r of reqSet) for (const n of relationIds(byId.get(r), 'nfr')) nfrSet.add(n);
-  for (const n of nfrs) if ([...refs(n, 'traces_to')].some((r) => reqSet.has(r))) nfrSet.add(n.id);
-  const featList = [...featSet].sort();
-  const slices = (Array.isArray(state?.slices) ? state.slices : []).filter((s) => (s?.features ?? []).some((f) => featSet.has(f)));
+export function sourceImpactData(path) {
+  const model = loadTraceModel();
+  const file = sourceRef(path);
+  const seeds = sourceSeeds(model, path, file ? readText(join(REPO, file.path)) : '');
+  const ids = affectedIds(model, seeds);
+  return { model, seeds, ids, docs: linkedDocuments(model, ids) };
+}
 
-  const out = [
-    `## 변경 영향 분석 — ${id}`,
-    '',
-    '**요구사항 (카드 연계)**',
-    `- 출발: ${seeds.map((s) => `${s} ${title(s)}`).join(' · ')}`,
-    `- 직접(이것에 기대는 REQ): ${list(direct.map((r) => `${r} ${title(r)}`))}`,
-    `- 간접(연쇄): ${list(indirect.map((r) => `${r} ${title(r)}`))}`,
-    '',
-    '**산출물**',
-    `- FEAT: ${list(featList)}`,
-    `- UC: ${list(ucs.filter((u) => [...refs(u, 'reqs', 'req')].some((r) => reqSet.has(r))).map((u) => u.id))}`,
-    `- SCR: ${list([...new Set([...featList.map((f) => feats.find((x) => x?.id === f)?.screen).filter(Boolean), ...scrs.filter((s) => featSet.has(s?.feature)).map((s) => s.id)])].sort())}`,
-    `- API: ${list(apis.filter((a) => featSet.has(a?.feature)).map((a) => a.id))}`,
-    `- ENT: ${list([...new Set(featList.flatMap((f) => [...refs(feats.find((x) => x?.id === f), 'entities')]))].sort())}`,
-    `- TC: ${list(tcs.filter((t) => featSet.has(t?.feature)).map((t) => t.id))}`,
-    `- NFR: ${list([...nfrSet].sort())}`,
-    `- 구현 슬라이스: ${list(slices.map((s) => `${s.id}(${s.status})`))}`,
-  ];
-  if (noCard.length > 0) {
-    out.push('', `> ⚠️ 정련 카드가 없는 REQ ${noCard.length}건(${noCard.slice(0, 5).join(' · ')}${noCard.length > 5 ? ' …' : ''})은 연계를 모르므로 **이 목록이 빠짐없다고 보증하지 않는다.**`);
+function impactDetails(model, seeds) {
+  const ids = affectedIds(model, seeds);
+  const items = ids.map((id) => model.byId.get(id));
+  const features = items.filter((item) => item.id.startsWith('FEAT-'));
+  // 근거는 표시만 한다. 공유 REQ를 거쳐 무관한 형제 기능까지 확산시키지 않는다.
+  const context = new Set(features.flatMap((f) => [...refs(f, 'reqs', 'usecases', 'nfrs', 'entities', 'apis', 'interfaces')]));
+  const screens = associatedScreens(features.map((f) => f.id), model.groups.features, model.groups.screens);
+  for (const id of screens) context.add(id);
+  const all = [...new Set([...ids, ...context])].sort();
+  const list = (xs) => xs.length ? xs.join(' · ') : '—';
+  const out = ['**직접 변경 대상**', `- ${list(seeds)}`, '', '**검토 영향 — 소유 계약·공통 소비자**', `- ${list(ids)}`, '', '**연결된 명세**'];
+  for (const prefix of ['REQ', 'UC', 'FEAT', 'ENT', 'API', 'SCR', 'IF', 'TC', 'NFR', 'RUN']) {
+    out.push(`- ${prefix}: ${list(all.filter((id) => id.startsWith(prefix + '-')))}`);
   }
-  out.push('', '보고만 한다 — 고칠지는 사용자가 정하고, G3 뒤면 `change-request` 로 간다.');
+  const definitions = collectIds().defined;
+  const specFiles = [...new Set(all.flatMap((id) => definitions.get(id) ?? []))].sort();
+  const sources = [...new Set(all.flatMap((id) => sourceEntries(model.byId.get(id))))].sort();
+  const docs = linkedDocuments(model, all);
+  const slices = (readState()?.slices ?? []).filter((slice) => (slice.features ?? []).some((id) => ids.includes(id)));
+  out.push('', '**정본·소스·구현 단위**', ...specFiles.map((file) => `- ${file}`), ...docs.map((file) => `- ${file}`),
+    `- 명시 소스: ${list(sources)}`, `- 구현 슬라이스: ${list(slices.map((slice) => `${slice.id}(${slice.status})`))}`,
+    '', '기록된 연결의 검토 범위다. 자동 수정·승인하지 않는다. 소스 태그는 파일→기능 진입에 쓰며, 역방향 소스 전체는 명시 sources/source_contract와 실제 호출을 함께 확인한다.',
+    '연결을 새로 만들거나 지운 변경은 변경 전후를 모두 조회한다. 미등록 소비자·동적 호출·권한/실행 의미는 별도 대조한다.');
   return out.join('\n');
+}
+
+export function sourceImpactReport(path) {
+  const { model, seeds } = sourceImpactData(path);
+  const header = `## 소스 변경 영향 — ${path || '(없음)'}`;
+  if (!sourceRef(path)?.path.startsWith('sources/')) return `${header}\n\n저장소 기준 sources/ 경로를 준다. 저장소 밖 경로는 조회하지 않는다.`;
+  if (!seeds.length) return `${header}\n\n연결된 명세를 찾지 못했다. 영향 없음으로 판정하지 말고 source_contract·sources·@feat 및 호출자를 확인한다.`;
+  return `${header}\n\n${impactDetails(model, seeds)}`;
+}
+
+function impactReport(id) {
+  const model = loadTraceModel();
+  if (!model.byId.has(id)) return `## 변경 영향 분석 — ${id || '(없음)'}\n\n정의된 REQ·UC·FEAT·ENT·API·SCR·IF·TC·NFR 식별자를 준다.`;
+  return `## 변경 영향 분석 — ${id}\n\n${impactDetails(model, [id])}`;
 }
 
 // ── 리포트 ────────────────────────────────────────────────────────
@@ -775,12 +774,12 @@ function matrix() {
     rows.push(
       `| ${r?.id} | ${r?.priority ?? '—'} | ${cell(myUcs.map((u) => u?.id))} | ${cell(featIds)} | ` +
         `${cell([...new Set(myFeats.flatMap((f) => [...refs(f, 'entities')]))])} | ` +
-        `${cell(apis.filter((a) => featIds.includes(a?.feature)).map((a) => a?.id))} | ` +
-        `${cell(scrs.filter((s) => featIds.includes(s?.feature)).map((s) => s?.id))} | ` +
-        `${cell(tcs.filter((t) => featIds.includes(t?.feature)).map((t) => t?.id))} |`,
+        `${cell(apis.filter((a) => featureIds(a).some((id) => featIds.includes(id)) || myFeats.some((f) => refs(f, 'apis').has(a.id))).map((a) => a?.id))} | ` +
+        `${cell(associatedScreens(featIds, feats, scrs))} | ` +
+        `${cell(tcs.filter((t) => featureIds(t).some((id) => featIds.includes(id))).map((t) => t?.id))} |`,
     );
   }
-  rows.push('', '`—` 이 REQ 행에 남아 있으면 **미실현 요구사항**이며 G3 를 통과할 수 없다.');
+  rows.push('', '`—`는 해당 연결이 없다는 뜻이다. 화면·HTTP API가 없는 배치/내부 기능은 정상이며, 미실현 요구사항은 T2, 테스트 결손은 T5/T7의 단계별 판정을 따른다.');
   return rows.join('\n');
 }
 

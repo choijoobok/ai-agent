@@ -5,7 +5,7 @@ category: standard
 type: operation
 class: none
 created: 2026-09-04
-updated: 2026-09-20
+updated: 2026-10-28
 status: active
 sources: ["sources/build.gradle.kts", "sources/backend/bootstrap/build.gradle.kts", ".github/workflows/", "sources/backend/bootstrap/src/main/resources/application.yml", "sources/frontend/vite.config.ts"]
 tier: 2
@@ -66,7 +66,7 @@ React Router 의 클라이언트 라우팅과 정적 리소스 처리가 충돌�
 
 | 프로파일 | 용도 | 특징 |
 |---|---|---|
-| `local` | 로컬 개발 | PostgreSQL(**ICU**) · **세션 스토어 `jdbc`** · Swagger 노출 · SQL 로그 |
+| `local` | 로컬 개발 | PostgreSQL(**ICU**) · **세션 스토어 `jdbc`** · SQL 로그 |
 | 그 외 | 배포 환경 | 현재 저장소에는 설정 파일을 두지 않는다. 배포 환경이 명시 프로파일·데이터소스·비밀값을 제공한다. |
 
 **비밀값은 파일에 두지 않고 환경변수로 주입한다**(`DB_PASSWORD` · `REDIS_PASSWORD`).

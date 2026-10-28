@@ -4,7 +4,7 @@ title: "P3 설계 — 베이스라인을 만든다"
 category: phase
 type: operation
 created: 2026-09-04
-updated: 2026-09-12
+updated: 2026-10-28
 status: active
 sources: []
 tier: 1
@@ -25,10 +25,10 @@ tags: [design, baseline]
 
 ```
 ① 유즈케이스        UC-###   (REQ → UC)
-② 기능 목록·메뉴     FEAT-### (UC → FEAT, 메뉴 트리)
+② 메뉴·화면 목록/기능     FEAT-### (UC → FEAT, 메뉴 트리)
 ③ 도메인/데이터 모델  ENT-###  (FEAT가 다루는 개념 → 엔티티)
 ④ API 명세          API-###
-⑤ 화면 정의         SCR-###
+⑤ 화면·공통 화면 명세/목업         SCR-###
 ⑥ 시퀀스 다이어그램   (핵심 UC)
 ⑦ 테스트 케이스      TC-###
 ⑧ 슬라이스 백로그
@@ -36,6 +36,10 @@ tags: [design, baseline]
 ```
 
 **③을 ②보다 먼저 하지 않는다.** 기능을 모르고 만든 테이블은 반드시 다시 만든다.
+메뉴·화면·기능의 전체 목록을 먼저 대조한 뒤 영역별 상세 계약으로 내려간다.
+기능은 메뉴와 독립적이며 공통 업무·배치·이벤트를 포함한다. 공통 화면도 별도 SCR 명세를 갖고
+호출 화면은 사용 관계와 입력/결과 매핑을 참조한다. 정본 책임·관계 필드는
+[spec-schema.md](../artifact/spec-schema.md)의 「설계 문서의 책임과 연결」을 따른다.
 
 ---
 
@@ -79,18 +83,11 @@ tags: [design, baseline]
 
 ---
 
-## 3. ② 기능 목록과 메뉴 (`documents/spec/30-usecases/_index.yaml`)
+## 3. ② 기능 목록과 메뉴 (`documents/spec/31-features/_index.yaml`)
 
-UC는 **업무 관점**, FEAT는 **시스템이 제공하는 것** — 1:N일 수 있다.
+UC는 **업무 관점**, FEAT는 **시스템이 제공하는 것**이다. 화면과 기능은 다대다이며 메뉴 목록은 60-screens에서 관리한다.
 
 ```yaml
-menu:                                    # 메뉴 트리 = 사용자가 보는 구조
-  - id: MNU-01
-    name: 업무 지식 관리
-    children:
-      - { id: MNU-01-01, name: 카탈로그등록, feature: FEAT-012, roles: [ROLE-004, ROLE-003] }
-      - { id: MNU-01-02, name: 카탈로그조회, feature: FEAT-013, roles: [ROLE-001, ROLE-003, ROLE-004] }
-
 features:
   - id: FEAT-012
     name: 스키마 카탈로그 등록
@@ -100,7 +97,6 @@ features:
     description: "관리자가 테이블에 업무 의미를 붙여 등록한다"
     entities: [ENT-004, ENT-005]
     apis: [API-031, API-032]
-    screens: [SCR-008]
     roles: [ROLE-004, ROLE-003]
     complexity: medium                   # low | medium | high — 슬라이스 크기 산정용
 ```
@@ -110,7 +106,7 @@ features:
 
 ---
 
-## 4. ③ 데이터 모델 (`documents/spec/30-usecases/_index.yaml`)
+## 4. ③ 데이터 모델 (`documents/spec/40-domain/_index.yaml`)
 
 ```yaml
 entities:
@@ -165,7 +161,7 @@ conventions:
 
 ---
 
-## 5. ④ API (`documents/spec/30-usecases/_index.yaml` — OpenAPI 3 호환)
+## 5. ④ API (`documents/spec/50-api/_index.yaml` — OpenAPI 3 호환)
 
 ```yaml
 - id: API-031
@@ -190,11 +186,13 @@ conventions:
   idempotency: "요청 헤더 Idempotency-Key 지원"
 ```
 
+**API 목록은 화면 명세와 독립적으로 관리하고 source_contract로 구현 메서드를 연결한다.**
+최종 메서드+경로와 입출력 계약을 소스와 전수 대조한다. 태그 검사를 API 완전성 검증으로 대신하지 않는다.
 **모든 UC 예외 흐름이 에러 응답으로 매핑되어야 한다.** 매핑 안 된 예외 흐름이 있으면 게이트 미충족.
 
 ---
 
-## 6. ⑤ 화면 (`documents/spec/30-usecases/_index.yaml`)
+## 6. ⑤ 화면 (`documents/spec/60-screens/_index.yaml`)
 
 ```yaml
 - id: SCR-008

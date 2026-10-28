@@ -35,6 +35,8 @@ node .claude/skills/doc-gen/gen.mjs --check            # 생성물이 spec 을 �
   (새 대상이 필요하다는 신호이며, 초록으로 만들려고 검사를 좁히지 않는다).
 
 ## 원칙
+- API 목록·상세 계약은 독립 산출물이며 API ID와 소유 기능·구현 메서드를 출력한다. Swagger UI는 필요하지 않다.
+- 메뉴·공통/독립 화면을 구별하고 단/복수 기능·화면 연결을 합쳐 읽는다. 기능별 문서를 수기로 복제하지 않는다.
 - **`documents/generated/` 는 파생물이다.** 항상 `documents/spec/` 에서 다시 만든다. 손으로 고친 내용은 덮어써진다.
 - 생성 전 `documents/spec/` 의 스키마 유효성과 ID 참조 무결성을 먼저 확인한다.
 - 모든 생성 문서에 프런트매터를 넣는다:
@@ -77,11 +79,11 @@ node .claude/skills/doc-gen/gen.mjs --check            # 생성물이 spec 을 �
 |---|---|---|---|
 | **요구사항정의서** | `gen` | `documents/generated/10-요구사항정의서/{장}.md` + `_index.md` | 00-charter · 01-actors · 02-constraints · 03-glossary · 10-requirements · 11-processes · 21-nfr · 51-interfaces |
 | 아키텍처 | `gen` | `documents/generated/20-아키텍처.md` (Mermaid) | 20-architecture + ADR |
-| 기능목록·메뉴 | `gen` | `documents/generated/31-기능목록.md` | 31-features |
-| 화면정의서 | `gen` | `documents/generated/60-화면정의서.md` | 60-screens |
+| 기능목록 | `gen` | `documents/generated/31-기능목록.md` | 31-features |
+| 메뉴·화면정의서 | `gen` | `documents/generated/60-화면정의서.md` | 60-screens |
 | 권한매트릭스 | `gen` | `documents/generated/22-권한매트릭스.md` | 22-authz |
 | 추적성 | `gen` | `documents/generated/90-추적성매트릭스.md` | `trace-check --report` |
-| 요건정의서 | `prose` | `documents/generated/32-요건정의서/FEAT-###.md` + `_index.md` | 31-features + 30-usecases + 10-requirements |
+| 요건정의서 | `gen` | `documents/generated/32-요건정의서/FEAT-###.md` + `_index.md` | 31-features + 50-api + 60-screens (REQ/UC 참조) |
 | 유즈케이스 | `gen` | `documents/generated/30-유즈케이스.md` | 30-usecases |
 | ERD | `gen` | `documents/generated/40-ERD.md` (Mermaid erDiagram) | 40-domain |
 | DDL | `prose` | `db/ddl/*.sql` | 40-domain + conventions |
@@ -90,11 +92,11 @@ node .claude/skills/doc-gen/gen.mjs --check            # 생성물이 spec 을 �
 | 운영런북 | `gen` | `documents/generated/80-운영런북.md` | 80-operations |
 | 시퀀스 | `prose` | `documents/generated/33-시퀀스/UC-###.md` (Mermaid sequenceDiagram) + `_index.md` | 30-usecases + 50-api |
 
-**`prose` 셋은 아직 결정 생성으로 옮기지 않았다.** DDL은 승인된 물리 변경이 생길 때,
-시퀀스와 기능별 요건정의서는 첫 실물의 구조를 검증한 뒤 생성기로 옮긴다.
+**`prose` 둘은 아직 결정 생성으로 옮기지 않았다.** DDL은 승인된 물리 변경이 생길 때,
+시퀀스는 첫 실물의 구조를 검증한 뒤 생성기로 옮긴다. 기능별 요건정의서는 정본의 모든 필드와 정규화한 화면/API 연결을 생성한다.
 유즈케이스·ERD·API·테스트는 P3 정본이 채워졌으므로 `gen.mjs`가 모든 필드를 빠뜨리지 않고
 재현한다. 사용자 매뉴얼은 전역 문서로 중복 생성하지 않고 화면별 `manual.md`를
-`/deliverable-site`가 한 사이트로 조립한다. `gen.mjs`의 `NOT_YET`은 남은 셋을 부르면
+`/deliverable-site`가 한 사이트로 조립한다. `gen.mjs`의 `NOT_YET`은 남은 둘을 부르면
 *왜 아직 아닌지*를 말한다.
 
 ## 요구사항 정의서 — 지도 43행 (`요구사항정의서`)

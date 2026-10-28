@@ -18,7 +18,8 @@ description: 수직 슬라이스 하나를 구현한다. 소유 작업흐름과 
 ## 절차 — `aidd-guide/process/07-slice.md` §3
 
 ### ① 스펙 재확인 (기억에 의존 금지)
-해당 `FEAT-###` 의 spec을 **실제로 읽는다**: UC / ENT / API / SCR / TC 전부.
+해당 `FEAT-###`의 spec을 **실제로 읽는다**: UC / ENT / API / SCR / TC 전부.
+변경 전 `trace-check --impact`와 `--source`로 공통 소비자·정본을 찾고, 완료 전 API 실제 목록/계약과 변경 후 영향을 대조한다. 연결이 없다는 결과를 영향 없음으로 간주하지 않는다.
 
 ### ② 설계 확인
 구현 방식이 spec과 어긋나면 코드가 아니라 **CR을 먼저** 낸다.

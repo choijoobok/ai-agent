@@ -27,6 +27,7 @@ import { dirname, join, normalize, posix } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseYaml } from '../../hooks/lib.mjs';
 import { traceReport } from '../../hooks/trace-check.mjs';
+import { associatedScreens, featureIds, relationIds } from '../../../aidd-guide/harness/runtime/trace-model.mjs';
 import { listSpecSetNames, loadSpecSet } from '../../../aidd-guide/harness/runtime/spec-set.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -48,7 +49,9 @@ const LABEL = {
   measurement: '측정 방법', test_case: '테스트 케이스', target: '목표값', direction: '방향',
   aggregation: '집계 규칙',
   peer: '상대', protocol: '프로토콜', prerequisites: '전제', status: '상태', screen: '화면',
-  roadmap: '차수', feature: '기능', agent_contact: 'agent 와의 접점', undecided: '미확정',
+  uses_features: '사용 기능', uses_screens: '호출 화면', sources: '구현 소스', source_contract: '구현 메서드',
+  screen_cases: '화면 사례 연결', implementation: '구현 상태', entry: '진입 유형', menu_code: '메뉴 코드', menu_parent: '상위 메뉴',
+  roadmap: '차수', feature: '소유 기능', agent_contact: 'agent 와의 접점', undecided: '미확정',
   claim: '주장', axis: '축', rank: '순위', metrics: '지표', why_first: '왜 첫째인가',
   was: '전에는', why_demoted: '왜 내렸나', includes: '포함', excludes: '제외', goal: '목표',
   object: '대상', mapping: '매핑', meaning: '뜻', users: '사용자', form: '형태',
@@ -578,6 +581,7 @@ function 아키텍처() {
 // ── 11행 · 기능 목록 ──────────────────────────────────────────────
 function 기능목록() {
   const f = load('31-features');
+  const screens = load('60-screens').screens ?? [];
   const mods = [...new Set(f.features.map((x) => x.module))];
   const p = [head('FEAT-LIST', '기능 목록 · 메뉴 구조', specSource('31-features'),
     f.meta.status, f.meta.baselined, null, `> **채번** — ${f.meta.numbering}\n`)];
@@ -592,12 +596,38 @@ function 기능목록() {
     }).join('\n'));
   for (const m of mods) {
     const sel = f.features.filter((x) => x.module === m);
-    p.push(`## ${m} (${sel.length}건)\n\n${table(sel, ['id', 'title', 'screen', 'roadmap', 'reqs'])}`
+    p.push(`## ${m} (${sel.length}건)\n\n${table(sel.map((item) => ({ ...item, screens: associatedScreens([item.id], f.features, screens) })), ['id', 'title', 'screens', 'roadmap', 'reqs'])}`
       + `\n\n### 상세\n\n${blocks(sel, ['id'], 'title', '####')}`);
   }
   p.push('## 폐기한 기능\n\n**ID 는 재사용하지 않는다** — 결번으로 남기고 사유를 적는다.\n\n'
     + auto(f.retired));
   write(`${OUT}31-기능목록.md`, p);
+}
+
+function 요건정의서() {
+  const d = load('31-features');
+  const screens = load('60-screens').screens ?? [];
+  const apis = load('50-api').apis ?? [];
+  const folder = `${OUT}32-요건정의서/`;
+  const current = new Set(d.features.map((f) => `${f.id}.md`));
+  const full = join(REPO, folder);
+  if (existsSync(full)) for (const name of readdirSync(full)) {
+    if (!/^FEAT-\d+\.md$/.test(name) || current.has(name)) continue;
+    const file = join(full, name);
+    if (/^generated_from: documents\/spec\/31-features/m.test(readFileSync(file, 'utf8'))) rmSync(file);
+  }
+  for (const feature of d.features) {
+    const linkedApis = apis.filter((a) => featureIds(a).includes(feature.id) || relationIds(feature, 'apis').includes(a.id));
+    write(`${folder}${feature.id}.md`, [
+      head(feature.id, feature.title, specSource('31-features'), d.meta.status, d.meta.baselined, relationIds(feature, 'reqs', 'usecases', 'nfrs')),
+      '> 기능의 정본은 31-features이며 업무 규칙은 연결된 요구사항을 따른다. 화면·HTTP API가 없는 기능도 정상이다.',
+      blocks([feature], ['id'], 'title', '##'),
+      `## 연결 화면\n\n${associatedScreens([feature.id], d.features, screens).join(' · ') || '없음 — 화면 없는 기능 또는 설계 전'}`,
+      `## 연결 API\n\n${table(linkedApis, ['id', 'summary', 'method', 'path', 'source_contract'])}`,
+    ]);
+  }
+  write(`${folder}_index.md`, [head('FEAT-SPECS', '기능 명세 목록', specSource('31-features'), d.meta.status, d.meta.baselined),
+    '| 기능 | 이름 |\n|---|---|\n' + d.features.map((f) => `| [${f.id}](${f.id}.md) | ${flat(f.title)} |`).join('\n')]);
 }
 
 // ── 16행 · 화면 목록 · 화면 정의서 ────────────────────────────────
@@ -614,6 +644,9 @@ function 화면정의서() {
   }
   p.push(`## 1. 무엇을 메뉴로 두는가\n\n**${flat(mc.claim)}** — ${flat(mc.why)}\n\n${bullets(mc.tests)}`
     + (mc.note ? `\n\n> ${flat(mc.note)}` : ''));
+  const menuRows = s.screens.map((screen) => ({ ...screen, entry: screen.entry ?? (screen.route === null ? 'standalone' : screen.route ? 'menu' : '미정') }));
+  p.push('## 메뉴·진입 목록\n\n' + table(menuRows, ['id', 'title', 'entry', 'menu_code', 'menu_parent', 'route'])
+    + '\n\n메뉴 코드·계층·진입 유형 미정은 상세 설계에서 정하며, 구현 후 실제 메뉴 트리와 대조한다. 공통 화면을 메뉴로 만들지 않는다.');
   p.push(`## 2. 통제 경계\n\n${auto(s.control_boundaries)}`);
   p.push(`## 3. 규칙\n\n${bullets(s.rules)}`);
   let n = 3;
@@ -623,7 +656,7 @@ function 화면정의서() {
     p.push(`## ${n}. ${m} 화면 (${sel.length}건)`);
     for (const grp of [...new Set(sel.map((x) => x.group))]) {
       const gs = sel.filter((x) => x.group === grp);
-      p.push(`### ${grp ?? '(분류 없음)'}\n\n${table(gs, ['id', 'title', 'feature', 'roadmap'])}`
+      p.push(`### ${grp ?? '(분류 없음)'}\n\n${table(gs.map((item) => ({ ...item, features: featureIds(item) })), ['id', 'title', 'feature', 'features', 'uses_screens', 'roadmap'])}`
         + `\n\n${blocks(gs, ['id'], 'title', '####')}`);
     }
   }
@@ -823,6 +856,7 @@ function API() {
       d.meta.baselined, items.map((x) => x.id)),
     `## 공통 계약\n\n${blocks([publicMeta('50-api', d.meta)], ['id'], 'name', '###')}`,
     `## 기능별 계약\n\n${blocks(contracts, ['id'], 'name', '###')}`,
+    `## API 목록\n\n${table(items, ['id', 'summary', 'method', 'path', 'feature', 'implementation', 'source_contract'])}`,
     `## API ${items.length}건\n\n${auto(items)}`,
   ]);
   const path = `${OUT}50-openapi.yaml`;
@@ -866,7 +900,7 @@ function 운영런북() {
 }
 
 // ── 대상 등록 ─────────────────────────────────────────────────────
-const TARGETS = { 요구사항정의서, 아키텍처, 기능목록, 화면정의서, 권한매트릭스, 유즈케이스, ERD, API, 테스트, 운영런북, 추적성 };
+const TARGETS = { 요구사항정의서, 아키텍처, 기능목록, 요건정의서, 화면정의서, 권한매트릭스, 유즈케이스, ERD, API, 테스트, 운영런북, 추적성 };
 
 /**
  * 같은 대상의 다른 이름. `SKILL.md` 의 인자 줄은 짧은 이름(`화면`·`권한`)을 쓰고
@@ -874,7 +908,7 @@ const TARGETS = { 요구사항정의서, 아키텍처, 기능목록, 화면정�
  * 이름이 갈린 것을 사용자가 외워서 피하게 만들지 않는다(CLAUDE.md §5-13 과 같은 뿌리).
  */
 const ALIAS = {
-  화면: '화면정의서', 권한: '권한매트릭스', '기능목록·메뉴': '기능목록',
+  화면: '화면정의서', '메뉴·화면정의서': '화면정의서', 권한: '권한매트릭스', '기능목록·메뉴': '기능목록',
   테스트케이스: '테스트', 런북: '운영런북',
 };
 const resolve = (a) => ALIAS[a] ?? a;
@@ -887,7 +921,6 @@ const resolve = (a) => ALIAS[a] ?? a;
 const NOT_YET = {
   시퀀스: '핵심 UC별 첫 실물의 구조를 검증한 뒤 결정 생성으로 옮긴다',
   DDL: '기존 system 물리 구조는 보존하며, 승인된 신규 물리 변경이 생길 때 생성기로 옮긴다',
-  요건정의서: '작업흐름별 P3 범위가 채워질 때 기능별 첫 실물의 구조를 검증한 뒤 결정 생성으로 옮긴다',
 };
 
 // ── --check · 생성물이 spec 을 다 담았나 ──────────────────────────

@@ -4,7 +4,7 @@ title: "훅 계약 — 배선 · lib.mjs · 새 훅을 더할 때"
 category: harness
 type: operation
 created: "2026-09-06"
-updated: "2026-09-15"
+updated: 2026-10-28
 status: active
 sources: ["aidd-guide/harness/capabilities.yaml", ".claude/hooks/", ".claude/settings.json", ".codex/hooks.json"]
 tier: 2
@@ -25,6 +25,7 @@ tags: [harness, hooks, contract, wiring]
 | Codex adapter | `.codex/hooks.json` · `.codex/hooks/` | `apply_patch` 정규화·압축 뒤 재주입 |
 | 정책 엔진 | `.claude/hooks/*.mjs` | 역사적 경로를 유지한 공용 Node 로직. 화면 역인덱스는 `screen-registry.mjs` 하나를 훅·스킬이 함께 쓴다 |
 | 공통 chain | `runtime/chains.mjs` | 실행 순서의 유일한 원본 — manifest·adapter·생성 문서가 함께 읽는다 |
+| 추적 관계 | `runtime/trace-model.mjs` | 소유·사용 관계, 단/복수 호환, 소스 경로와 공통 소비자 해석 |
 | spec-set 로더 | `runtime/spec-set.mjs` | 논리 spec 이름을 기존 단일 YAML 또는 분할 폴더로 읽는 유일한 원본 |
 | 사전 진입 | `runtime/pretool-bootstrap.mjs` | 파일 chain이 import 전부터 깨져도 차단하고 훅 파일 수리만 연다 |
 | 셸 파싱 | `runtime/shell-parse.mjs` | **따옴표 안이 데이터인가 명령인가** — `guard-bash`·`guard-commit`이 함께 읽는 유일한 원본 |
@@ -50,6 +51,15 @@ tags: [harness, hooks, contract, wiring]
 - **정책의 원본은 훅 코드가 아니다.** 차단·교정·경고의 근거는 먼저 `AGENTS.md` 또는 `aidd-guide/`에 있어야 하고, 훅은 그 규칙을 기계적으로 집행한다. matcher와 입력 정규화 같은 구현 상세만 훅이 단독으로 가질 수 있다.
 - `trace-check` 강도는 `process/05-traceability.md`가 정한다. T2·T5·T7의 P3 설계 결손은 뒤 차수나 소유 작업흐름 G3 전에는 경고이고, `--workstream <키>` G3 검사에서 그 소유 범위를 오류로 올린다. T2는 FEAT 미연결 `REQ.workstream`도 엄격 검사한다. **T13은 예외다** — G3 승인 뒤에도 `planned` 슬라이스의 TC는 경고이고, `slices[].testcases`로 매핑된 소유 슬라이스가 `in_progress` 이상이 된 뒤부터 코드 부재를 오류로 올린다. 구형 상태처럼 TC 매핑이 없으면 그 기능의 슬라이스가 모두 `done`이거나 P4가 승인된 뒤 엄격하게 검사한다. spec에 없는 TC를 코드가 부르는 역방향은 언제나 오류다. **T14(요구사항 정련 카드)** 의 완전성은 평소 경고이고 `--g1`(G1 청구)에서 소유 작업흐름 G1 승인 전인 REQ만 오류로 올린다. 카드끼리의 연계·실현 정합 위반은 언제나 오류다.
 - chain 순서는 코드에 다시 쓰지 않는다. `runtime/chains.mjs`를 adapter와 문서 생성기가 직접 읽고, `harness-check`가 `capabilities.yaml`과 대조한다.
+
+### 추적·현행화 사후 검사 계약
+
+- 입력: spec 변경은 T1~T14, 소스 변경은 경로·선언된 sources/source_contract·헤더 태그·화면 등록정보.
+- 판정: API/SCR 소유와 사용 관계는 분리하고 공통 소비자는 전부 찾는다. 화면 없는 기능의 빈 화면/API는 오류가 아니다.
+- 강도: 기존 단계별 강도를 유지한다. 잘못된 관계·기능 태그·명시 화면 사례 연결은 오류, 문서 대조는 경고다.
+- 출력: 정본 경로·영향 식별자·재생성 지시. 조회 결과가 수정·게이트 승인을 대신하지 않는다.
+- 한계: API 전수 인벤토리·DTO 필드·동적 호출은 소스와 별도 대조한다. 미등록 연결을 영향 없음으로 판정하지 않는다.
+- fixture: `runtime/trace-model.self-test.mjs` — chain 실행·다대다/공통 소비자·순환·삭제 경로·배치·복수 메뉴·잘못된 참조. 양쪽 adapter는 같은 정책 엔진을 실행한다.
 
 ### 깨진 보호에서 빠져나오는 길
 

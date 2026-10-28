@@ -28,7 +28,7 @@
 | `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `normalize-encoding` | BOM 과 CRLF 를 방금 쓴 파일에서 걷어낸다 | 경고 | 90s |
 | `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `hook-syntax` | 방금 고친 훅이 구문부터 깨졌는지 그 자리에서 본다 | 경고 | 90s |
 | `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `trace-check` | 추적성 검사 — `PostToolUse`(`documents/spec/**` 쓰기) 훅 겸 `/trace` 스킬의 실행기. | 경고 | 90s |
-| `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `doc-drift` | 화면 소스를 고치면 그 화면의 문서를 대조하라고, 요건서가 승인 전이면 승인부터 받으라고 알린다 | 경고 | 90s |
+| `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `doc-drift` |  | 경고 | 90s |
 | `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `guide-drift` | `sources:` 에 이 파일을 적은 가이드 문서를 대조하라고 알린다 | 경고 | 90s |
 | `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `skill-sync` | 공통 스킬 원본이 바뀌면 두 AI 의 `SKILL.md` 를 다시 만든다 | 경고 | 90s |
 | `PostToolUse` | `Write\|Edit\|^mcp__.*__(?:write\|edit\|move\|create)` | `harness-doc` | 훅·스킬 목록을 `developer-guide/07-harness.md` 로 만든다 | 경고 | 90s |
@@ -52,7 +52,7 @@
 | `PostToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `normalize-encoding` | BOM 과 CRLF 를 방금 쓴 파일에서 걷어낸다 | 경고 | 90s |
 | `PostToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `hook-syntax` | 방금 고친 훅이 구문부터 깨졌는지 그 자리에서 본다 | 경고 | 90s |
 | `PostToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `trace-check` | 추적성 검사 — `PostToolUse`(`documents/spec/**` 쓰기) 훅 겸 `/trace` 스킬의 실행기. | 경고 | 90s |
-| `PostToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `doc-drift` | 화면 소스를 고치면 그 화면의 문서를 대조하라고, 요건서가 승인 전이면 승인부터 받으라고 알린다 | 경고 | 90s |
+| `PostToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `doc-drift` |  | 경고 | 90s |
 | `PostToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `guide-drift` | `sources:` 에 이 파일을 적은 가이드 문서를 대조하라고 알린다 | 경고 | 90s |
 | `PostToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `skill-sync` | 공통 스킬 원본이 바뀌면 두 AI 의 `SKILL.md` 를 다시 만든다 | 경고 | 90s |
 | `PostToolUse` | `apply_patch\|Edit\|Write\|^mcp__.*__(?:write\|edit\|move\|create)` | `harness-doc` | 훅·스킬 목록을 `developer-guide/07-harness.md` 로 만든다 | 경고 | 90s |

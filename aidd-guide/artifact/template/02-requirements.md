@@ -4,7 +4,7 @@ title: "화면 요건 정의서 서식"
 category: artifact/template
 type: template
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-10-28
 status: active
 sources: ["documents/screen/"]
 tier: 2
@@ -90,7 +90,7 @@ tags: [artifact, template, screen]
 ```
 
 - 진입 시 자동 조회: {함 / 안 함}
-- 모달: {없음 / 이름과 용도}
+- 모달: {없음 / 이름과 용도 / 공통 SCR 참조 — 공통 계약은 복제하지 않음}
 - 그리드 제목 라벨 키: `MSG.{…}` — **도식의 이름은 한국어라 키가 아니다.** 조회조건과
   컬럼에는 라벨 키 칸이 있는데 제목에만 없어, 적지 않으면 구현자가 키를 지어낸다.
 
@@ -269,6 +269,8 @@ tags: [artifact, template, screen]
 
 ## 7. API
 
+API ID로 `50-api`의 독립 명세를 참조한다. 여기에는 호출 액션·전달값·결과 매핑만 적고 서버 계약을 복제하지 않는다.
+
 <!-- endpoints.ts 의 선언이 인가 시드의 입력이다(AGENTS.md §8). 콤보·팝업용 부가 경로도 빠짐없이. -->
 <!-- 경로 칸은 endpoints.ts 에 적는 값 그대로다 — /api 를 붙이지 않는다(배럴이 붙인다).
      스무 화면 중 열여덟이 /api/service/… 로 적고 있었다 — 그대로 옮기면 /api/api/… 가 된다.
@@ -317,9 +319,9 @@ tags: [artifact, template, screen]
     *돌아가는가* 만 묻고 *막히는가* 를 묻지 않는다.
   · 최소 세트: 정상 · 경계 · 검증 거부 · 권한 없음. 상태 컬럼이 있으면 **상태 전이 거부**를 더한다.
   · **여기 있는 케이스가 테스트 코드의 입력이다**(TEST-FIRST). 구현 전에 코드로 옮기고 실패를 확인한다.
-  · @defer P3 **이 표의 케이스 번호와 `documents/spec/70-testcases/_index.yaml` 의 `TC-####` 를 어떻게 잇나** —
-    T13 은 `TC-####` 만 센다(process/05-traceability.md §3). 승격할 때 번호를 받나 처음부터 `TC-` 로 쓰나는
-    **첫 화면의 요건서를 쓸 때 정한다** — 실물이 없는 지금 정하면 근거가 추정이다.
+  · 신규 사례는 전역 TC 식별자를 참조한다. 기존 지역 번호는 보존하고
+    `70-testcases`의 `screen_cases: [documents/screen/.../requirements.md#사례번호]`로 연결한다.
+    화면은 조작·표시 사례, TC는 검증 대상·수단을 정의하며 같은 기대값을 복제하지 않는다.
 -->
 
 ### {묶음 이름 — 조회}
