@@ -1,4 +1,4 @@
-# 영역: admin 공통 관리 승인
+# 영역: admin 공통 관리 승인·오류 접수
 features:
   - id: FEAT-040
     module: admin
@@ -27,3 +27,24 @@ features:
       - "서버 업무 계약이며 공통 모달이나 일반 UI 컴포넌트와 구분한다. 기존 기능은 uses_features로 참조하고 역방향 사용처는 계산한다"
     pending:
       - "@defer P3 — 요청·버전·이력 구조, 설정 스냅샷과 업무 반영의 트랜잭션 경계, 잠금/조건부 갱신·재전송·복구 계약과 테스트를 후속 설계에서 연결한다"
+
+  - id: FEAT-041
+    module: admin
+    roadmap: RM-P1
+    design_status: draft
+    type: interface
+    title: "처리 오류 발생·불변 증거 접수"
+    reqs: [REQ-115]
+    usecases: [UC-038]
+    trigger: "agent·portal에서 채팅 처리 실패가 발생해 admin 공개 접수 계약으로 인계할 때"
+    detail: "REQ-115의 발생 원본·불변 증거를 admin 소유로 접수하고 원 턴/회차/스텝·관련 자산·원천 근거를 연결한다. agent의 FEAT-210 감사 원본과 admin 오류 발생 원본을 구분하며 FEAT-035가 접수된 발생을 조회·조사한다"
+    inputs: ["정제한 오류 발생 근거와 원 턴/회차/스텝·추적 참조", "현재 확보 가능한 마스킹 증거와 원자료의 보존·접근 제한 근거"]
+    outputs: ["불변 발생/증거 접수 참조와 확인된 저장 결과", "미확보 증거·저장 실패와 재수신 대조에 필요한 근거"]
+    rules_from: ["REQ-115.hard_rule", "REQ-115.business_rules", "REQ-110.business_rules", "REQ-107.retention_policy", "REQ-109.conversation_body_retention"]
+    boundaries:
+      - "전용 메뉴를 만들지 않는다. 조회·사람의 조사 처리는 SCR-033·FEAT-035가 소유한다"
+      - "동일 전달의 재수신과 같은 코드·메시지를 가진 별도 발생을 구분한다. 발생 접수로 조사 생성·알림·무기한 보호를 자동 수행하지 않는다"
+      - "저장 조회 실패는 REQ-207의 원 실행 이력을 참조하며 채팅 오류를 중복 생성하지 않는다. system 예외 이력은 원천으로 사용하지 않는다"
+      - "비밀 원문이나 이미 파기된 자료를 복원·재조회해 증거로 채우지 않는다. 증거의 범위·보존·보호는 참조 요구사항을 따른다"
+    pending:
+      - "@defer P3 — 생산자 인증·발생 식별/재수신·부분 실패·저장 실패/복구·증거 확보 경합의 공개 계약과 시험을 admin·agent·portal·integration에서 대조한다. 새 전달 수단·재시도 수치·물리 저장 구조를 현재 확정하지 않는다"

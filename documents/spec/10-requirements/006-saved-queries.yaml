@@ -288,7 +288,7 @@ requirements:
       nfr: [NFR-005]
       interfaces: []
     realization:
-      features: [FEAT-025, FEAT-122, FEAT-217]
+      features: [FEAT-025, FEAT-122, FEAT-217, FEAT-222]
       screens: [SCR-020, SCR-104]
     examples:
       - { kind: 정상, case: "조회 123이 컬럼 없음으로 실패하면 오류로 표시된다. 스키마 원복 후 대기시간이 지난 사용자 재실행이 성공하면 활성으로 돌아가고 과거 실패는 남는다" }

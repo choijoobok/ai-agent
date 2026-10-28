@@ -3,6 +3,8 @@ features:
 # 화면을 갖지 않는다. 상세 흐름은 documents/design/ 이 갖는다.
   - id: FEAT-201
     module: agent
+    uses_features: [FEAT-041]
+    error_handoff: "REQ-115의 채팅 처리 오류·증거를 FEAT-041의 admin 공개 접수 계약으로 인계한다. FEAT-210의 원 감사 생성은 agent가 유지하며 admin 원본을 직접 쓰지 않는다. 전달·수신/저장 실패·원천 증거 계약은 소유 후속 설계에서 확정한다"
     roadmap: RM-P1
     title: "질의 처리 오케스트레이션 (턴·스텝 관리)"
     plan_execution: "REQ-015의 계획 채택/변경을 REQ-004의 상태 기반 반복 수행에 연결한다. 계획/작업·현재 상태의 Hub DB 저장, 다음 작업 판정·실제 결과 갱신·대기/실패/종결은 해당 정본을 따르며 계획 작업과 실제 모델 스텝을 구분한다"
@@ -167,3 +169,20 @@ features:
     title: "공개 카탈로그 사실 보조 수집"
     detail: "이미 선택·등록된 공개 뷰·테이블에 한해 권한이 있을 때 컬럼 목록·타입·PK·유니크·NOT NULL과 DB 코멘트를 수집하고 인라인 값 후보를 제안한다. 의미·정책 항목을 덮지 않고 변경 알림만 남기며, 원본 DB/DW 전체를 수집하지 않는다"
     reqs: [REQ-301]
+
+  - id: FEAT-222
+    module: agent
+    roadmap: RM-P1
+    design_status: identified
+    type: batch
+    title: "보존 자료의 정기 파기"
+    reqs: [REQ-107, REQ-109, REQ-204]
+    trigger: "결과·본문의 일일 파기와 삭제 표시된 저장 조회의 정리 일정에서 실행한다. 구체 시각·작업 분리는 소유 후속 설계에서 정한다"
+    detail: "기존 보존 정책에 따라 만료된 결과 사본·대화 본문/파생 사본과 삭제 표시된 저장 조회를 agent가 정리한다. 만료에 따른 접근 차단과 실제 파기 시점을 구분하고, 파기 직전 현재 유효 조사 보호를 재검사하며 성공·실패·재처리 근거를 남긴다"
+    rules_from: ["REQ-107.retention_policy", "REQ-109.conversation_body_retention", "REQ-109.business_rules", "REQ-204.business_rules"]
+    boundaries:
+      - "system FEAT-508의 배치 일정·실행 이력·청크 처리/중단 기반을 재사용하며 별도 admin 파기 메뉴를 만들지 않는다. 파기 업무의 소유권은 agent에 있다"
+      - "admin의 FEAT-035 조사 보호·해제와 공개 계약으로 대조한다. 보호 해제 후 원래 기한을 적용하며 본문 없는 감사 메타데이터·사용량을 본문과 일괄 삭제하지 않는다"
+      - "오류 발생·조사 메타데이터의 별도 보존은 구분하되 증거에 포함된 본문·결과 사본은 각 원자료의 기한과 유효 조사 보호를 승계한다. FEAT-216의 실행용 재개 상태 정리, 외부 공급자 보관분과 백업 순환 폐기를 같은 작업으로 임의 합치지 않는다"
+    pending:
+      - "@defer P3 — agent·integration에서 작업 분리/등록·실행 시각·중복 실행·청크 경계·보호 경합·실패/지연 경고·재처리와 정리 결과 조회 계약을 설계한다. 현재 식별은 agent 단계 승인이나 배치 구현 완료가 아니다"

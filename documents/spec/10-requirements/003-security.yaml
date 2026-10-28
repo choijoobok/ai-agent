@@ -603,7 +603,7 @@ requirements:
       nfr: [NFR-027]
       interfaces: []
     realization:
-      features: ["FEAT-019","FEAT-026","FEAT-027","FEAT-028","FEAT-029","FEAT-033","FEAT-210","FEAT-304","FEAT-305","FEAT-209","FEAT-211"]
+      features: ["FEAT-019","FEAT-026","FEAT-027","FEAT-028","FEAT-029","FEAT-033","FEAT-210","FEAT-304","FEAT-305","FEAT-209","FEAT-211","FEAT-222"]
       screens: [SCR-017, SCR-027, SCR-028, SCR-029, SCR-030, SCR-031]
     examples:
       - { kind: 정상, case: "10월 14일 10시 수신한 결과는 기본 정책에서 10월 21일 10시에 만료된다. 턴이 바로 완료돼도 그 전에는 현재 권한으로 재접속 표시·명시적 후속 가공이 가능하며 조회 시각으로 기한을 갱신하지 않는다" }

@@ -36,7 +36,7 @@ system_transition:
     physical_policy: "기존 31개 테이블의 이름·스키마·데이터를 바꾸거나 복제하지 않고 system이 쓰기 소유권만 인수한다. Entity·Repository 이동은 같은 테이블을 가리키며 이행 중 이중 쓰기를 만들지 않는다"
     changelog_policy: "적재된 changeset은 그대로 둔다. G3 이후 system의 신규 변경은 `sources/backend/bootstrap/src/main/resources/db/changelog/system/`에 새 changeset으로 추가하고 공통 master에서 포함한다"
     platform_exclusions: "`SYS_SEQUENCE`·`SYS_DATA_LOCK`·`SYS_JOB_PROGRESS`·Spring Session 테이블은 제품 업무 상태가 아니라 platform 기반이므로 system 소유 31개에 넣지 않는다(REQ-510)"
-    notification_ownership: "공지·공통 알림함·계정/권한 요청의 판정은 system이 소유한다. AI 품질 신고·정책 관련 요청·AI 처리 오류와 처리 상태는 admin이 소유하고, 사용자에게 보낼 알림만 system public 알림 계약에 전달한다. admin은 system 알림 테이블을 직접 쓰지 않는다. AI 처리 오류의 최초 알림은 품질 담당자에게, 지식 보완 필요 판정 뒤 알림은 배정된 업무 자산 관리자에게 보낸다"
+    notification_ownership: "공지·공통 알림함·계정/권한 요청의 판정은 system이 소유한다. AI 품질 신고·정책 관련 요청·AI 처리 오류와 처리 상태는 admin이 소유하고, 사용자에게 보낼 알림만 system public 알림 계약에 전달한다. admin은 system 알림 테이블을 직접 쓰지 않는다. REQ-115의 알림 정책에 따라 오류 발생마다 알리지 않고 조사 담당자 배정·지식 보완 요청/검토 작업 배정 시 해당 담당자에게 알린다"
     traces_to: [REQ-501, REQ-502, REQ-503, REQ-504, REQ-505, REQ-506, REQ-507, REQ-508, REQ-509, REQ-510]
 
   screen_transition:
