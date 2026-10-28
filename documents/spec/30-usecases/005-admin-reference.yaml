@@ -83,7 +83,7 @@ usecases:
     workstream: admin
     design_status: draft
     feature_contract: FEAT-004
-    entities: [ENT-011, ENT-012, ENT-013, ENT-014]
+    entities: [ENT-011, ENT-012, ENT-013, ENT-014, ENT-015]
     reqs: [REQ-608]
     actors: { primary: [ACT-003, ACT-002], secondary: [ACT-013] }
     process_step: PRC-11-02
@@ -112,14 +112,14 @@ usecases:
     workstream: admin
     design_status: draft
     feature_contract: FEAT-021
-    entities: [ENT-012, ENT-015, ENT-016]
+    entities: [ENT-011, ENT-012, ENT-015, ENT-016]
     reqs: [REQ-612]
     actors: { primary: [ACT-003, ACT-004], secondary: [ACT-013] }
     process_step: PRC-13-02
     precondition: "도구 후보 작성 권한이 있다. 미완성 초안은 누락을 표시하고 정상 등록/노출 전 등록 API 또는 배포 내부 서비스의 계약·검증 근거를 확인한다. 호출 시 현재 유효성을 다시 검사한다"
     trigger: "도구를 등록·수정·비활성화·삭제하거나 허용 그룹·노출 상태를 변경한다"
     main_flow:
-      - "REST API 원천과 내부 서비스 빈의 계약/검증 근거를 구분해 참조한다"
+      - "REST API 원천과 내부 서비스 빈의 계약/검증 근거를 구분해 참조한다. API 기반은 REQ-612.api_tool_mapping에 따라 기존 대응 도구를 확인하고 API당 하나를 유지한다"
       - "현재 도구를 참조하는 지식의 매핑과 업무별 사용 설명을 역조회하고 변경 영향을 확인한다"
       - "전체 후보·작업 종류·사유·기준 버전·공통 결과 가이드를 검수한다. API 계약은 원천을 참조하고 내부 구현 가이드는 해당 정본에서 관리한다"
       - "UC-012로 승인/전결과 일괄 반영을 처리하고 반영 전 후보는 노출·권한 판정에 사용하지 않는다"
@@ -128,6 +128,7 @@ usecases:
     exception_flows:
       - { id: E1, condition: "설정/비밀값을 읽는 금지 도구 또는 검증 무효 구현", flow: ["등록·노출하지 않는다. 배포되었다는 사실로 허용하지 않는다"] }
       - { id: E2, condition: "참조 조회 실패·유효 연결 파손·승인 뒤 계약 변경", flow: ["연결 없음이나 승인된 새 계약으로 간주하지 않고 보완한다"] }
+      - { id: E3, condition: "같은 API의 별도 도구 중복 등록·접수", flow: ["기존 대응과 후보를 권한 범위 안에서 안내하고 중복을 거부한다. 폐지 후 재등록·복원도 새 도구 ID로 중복을 우회하지 않는다"] }
     postcondition: "유효한 도구만 지식 연결·현재 권한·실행 승인 조건 아래 사용된다. 폐지는 이미 외부에서 접수/완료된 실행을 소급 취소하지 않는다"
     rules_from: ["REQ-612.business_rules", "REQ-612.result_handling_guide", "REQ-612.permissions"]
     pending: ["@defer P3 — 구현 레지스트리·계약 버전·역참조·가이드 편집과 반영/호출 시 검증의 계약·시험을 설계한다"]

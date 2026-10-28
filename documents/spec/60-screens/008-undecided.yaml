@@ -34,9 +34,9 @@ undecided:
     when: "P3 각 소유 영역의 화면·기능 상세 명세 시, admin G3 전"
     candidates:
       - purpose: "카탈로그·자산 참조 선택/확인"
-        callers: [SCR-003, SCR-011, SCR-012]
-        usecases: [UC-007, UC-008, UC-009, UC-010]
-        review: "운영본/후보·수동 선택/SQL 추출·단일 객체/컬럼 쌍과 권한·버전 반환이 같을 때만 공통화한다"
+        callers: [SCR-003, SCR-004, SCR-019, SCR-011, SCR-012]
+        usecases: [UC-007, UC-008, UC-009, UC-010, UC-018, UC-019]
+        review: "운영본/세트 내 후보·수동 선택/SQL 추출·단일 객체/두 역할의 컬럼 쌍과 권한·버전 반환을 FEAT-014.reference_validation으로 대조한다. API 코드명 원천 선택·API당 도구 하나의 대응 조회는 별도 제약을 유지하며 입력/결과가 같을 때만 공통화한다"
       - purpose: "자산 영향·리비전 비교"
         callers: [SCR-036, SCR-034, SCR-033, SCR-031]
         usecases: [UC-012, UC-013, UC-036, UC-031]

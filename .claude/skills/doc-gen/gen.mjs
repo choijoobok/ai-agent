@@ -106,6 +106,11 @@ const LABEL = {
   connection: '연결 선택', fields: '필드 명세', input_guide: '입력 확보 가이드',
   code_names: '코드명 제공', call_contract: '호출 계약', guide: '공통 가이드',
   api_tool_candidate_contract: '업무 API·도구 후보 계약', api_tool_history_link: '업무 API·도구 이력 연결',
+  reference_validation: '세트 참조 검증', candidate_set: '세트 내 후보 집합',
+  external_reference: '외부 유효본 참조', role_resolution: '참조 역할 대조',
+  impact_only: '영향·과거 근거', current_policy: '현재 직접 정책', final_validation: '최종 검증과 반영',
+  counterexamples: '검증 반례', api_tool_mapping: 'API·도구 대응', relation_management: '관계 관리측',
+  tool_reference: '대응 도구 참조', api_reference: 'API 원천 참조',
 };
 const lab = (k) => LABEL[k] ?? k;
 
