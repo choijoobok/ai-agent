@@ -88,7 +88,7 @@ sites:
             - { key: finish, title: "결과 기록과 종결", sequence: S8, nodes: [R], x: 1320, y: 120 }
             - { key: wait, title: "사용자 확인·승인 대기", sequence: S5, nodes: [W], x: 40, y: 410 }
             - { key: search, title: "필요한 지식 검색", sequence: S4, nodes: [K, I], x: 360, y: 410 }
-            - { key: reason, title: "필요한 모델 판단", sequence: S2, nodes: [L], x: 680, y: 410 }
+            - { key: reason, title: "필요한 모델 판단", sequence: S2, nodes: [L, F], x: 680, y: 410 }
             - { key: action, title: "SQL·API·도구 실행", sequence: S3, nodes: [T], x: 1000, y: 410 }
             - { key: poll, title: "상태 조회와 화면 표시", sequence: S1, nodes: [Q, V, Z], x: 1320, y: 410 }
             - { key: change, title: "변경·중단 입력", sequence: S6, nodes: [U, D], x: 40, y: 760 }

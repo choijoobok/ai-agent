@@ -928,7 +928,7 @@ terms:
     key: modelRoleMapping
     group: "기준정보"
     definition: "질의의 주요 추론·계획·응답을 맡는 주 추론 모델과 의도 분류 등 보조 판단을 맡는 보조 판정 모델에 각각 사용할 제작사·공급 경로·모델·effort 조합을 연결하는 기준정보"
-    relation: "REQ-602. 사용자의 주 추론 모델 선택이 고정된 보조 판정 모델까지 바꾸지는 않는다"
+    relation: "REQ-602. 주 추론 선택과 독립인 보조 역할의 순서별 대체 후보·설정 버전을 포함한다. 자동 대체의 대상/조건/제외 역할은 auxiliary_fallback을 따른다"
   - id: TRM-232
     term: "허용 모델 조합"
     key: allowedModelCombination

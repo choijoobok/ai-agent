@@ -2,7 +2,7 @@
 id: DES-005
 title: 감사·사용량·상태 기록과 최종 응답 종결 시퀀스
 status: draft
-traces_to: [REQ-012, REQ-027, REQ-005, REQ-009, REQ-010, REQ-011, REQ-105, REQ-006, REQ-007, REQ-036, REQ-107, REQ-108, REQ-109, REQ-115, REQ-116, REQ-040, NFR-010, NFR-012, NFR-015, NFR-026, NFR-027, FEAT-201]
+traces_to: [REQ-602, REQ-012, REQ-027, REQ-005, REQ-009, REQ-010, REQ-011, REQ-105, REQ-006, REQ-007, REQ-036, REQ-107, REQ-108, REQ-109, REQ-115, REQ-116, REQ-040, NFR-010, NFR-012, NFR-015, NFR-026, NFR-027, FEAT-201]
 verified: "2026-10-27 최신 요구사항과 문서 대조·보완 — 기록 실패·중복 계량·종결 원자성 시험 전"
 ---
 
@@ -13,6 +13,7 @@ verified: "2026-10-27 최신 요구사항과 문서 대조·보완 — 기록 �
 [전체 연결](agent-request-sequences.md)의 모든 기록기 호출이 참조하는 공통 처리다.
 정본은 [REQ-107](../spec/10-requirements/003-security.yaml), [REQ-108·109](../spec/10-requirements/004-audit-quality.yaml), [NFR-010·012·015·027](../spec/21-nfr/_index.yaml)이다.
 업무 규칙은 기존 정본을 따르며 아래 기록 구조·저장 순서는 상세 설계 제안이다. 물리 스키마·트랜잭션의 확정과 실행 시험은 남아 있다.
+보조 대체는 REQ-107.history_storage.auxiliary_fallback에 따라 논리 작업→설정 버전/후보 순번→원/후속 실제 호출→관측한 응답 실행/사용량을 연결합니다. 미전송이나 관측 없는 실행은 가상 스텝으로 만들지 않고 늦은 계량은 원 호출에 한 번 반영합니다. 대체 성공으로 앞선 호출 실패·비용·취소 미확인을 덮지 않습니다. 저장/대조 실패는 후속 후보 호출을 차단하며 구체 원자성은 P3 검증 대상입니다.
 월 사용량 집계·호출 원장·실행 제어·대기열·현재 상태·감사의 저장 역할과 복구 시험 기준은 [REQ-036](../spec/10-requirements/002-in-flight-input.yaml)의 storage_design·concurrency_rules·verification을 따른다.
 
 

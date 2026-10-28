@@ -6,7 +6,8 @@ features:
     roadmap: RM-P1
     title: "채팅하기"
     detail: "멀티 세션 · 세션 제목 설정 · 사용자에게 직접 부여한 쿼터 등급에서 허용된 모델·effort 선택(**주 추론 역할에만 적용되고 실행 시도 시작에 고정되며 중단 후 새 시도에서는 변경할 수 있다 — ARCH-040**) · 모델 사용 불가 응답 뒤 선택 목록 복구는 REQ-602.model_selection_recovery 참조 · **레거시 딥링크 팝업 진입과 초기 문맥 파라미터 수신**"
-    reqs: [REQ-001, REQ-002, REQ-020, REQ-040, REQ-116, REQ-602, REQ-041]
+    model_failure: "REQ-602.primary_availability_recovery의 주 추론 일시 장애 안내·유효 선택 유지·명시적 새 시도, auxiliary_fallback의 보조 대체 진행/소진 안내와 REQ-106.consent.auxiliary_candidates의 경로 안내·동의 확인을 제공한다. 보조 모델 선택기를 사용자에게 만들거나 후보 소진을 주 추론 재선택으로 해결하도록 안내하지 않는다"
+    reqs: [REQ-001, REQ-002, REQ-020, REQ-040, REQ-116, REQ-602, REQ-106, REQ-041]
     nfrs: [NFR-028]
     user_language: "RM-P4에서 Portal 지정 언어의 소통·정형 문구·원값 구분, 언어 변경과 표현 실패 처리는 REQ-020을 따른다. 언어 선택의 저장·전달과 구체 화면은 해당 차수에서 설계하며 현재 RM-P1의 필수 범위로 앞당기지 않는다"
     past_result_reference: "REQ-002의 과거 결과 후보/범위 확인, 원 조회 시각·부분/마스킹 제한과 원본/가공 결과 구분·사용 불가/실패 안내를 표시한다. 구체 선택/동의 화면 계약은 P3에서 정하며 보존 결과 열람만으로 새 업무 실행이나 모델 호출을 만들지 않는다"

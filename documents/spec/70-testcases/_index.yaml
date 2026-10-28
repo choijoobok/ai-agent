@@ -10,3 +10,4 @@ spec_set:
   version: 1
   parts:
     - 001-testcases.yaml
+    - 002-auxiliary-fallback.yaml

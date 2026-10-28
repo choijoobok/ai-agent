@@ -20,7 +20,7 @@ requirements:
       not:
         - "사용자 그룹이 아니다 — 그룹은 업무 자산 접근 통제(REQ-103)이고 등급은 사용량·모델 범위다"
         - "system 역할이 아니다 — 역할·메뉴 권한(REQ-502)으로 등급을 정하지 않는다"
-        - "보조 판정 역할의 모델 선택이 아니다 — 그것은 역할별 고정 설정을 따른다"
+        - "보조 판정 역할의 모델 선택이 아니다 — 관리자 지정 후보 순서와 일시 장애 대체는 REQ-602를 따른다"
     goal_trace: [IN-06, MET-02]
     decider: "제품 오너(사용자). 고객사별 등급 체계와 값은 도입 시 ACT-004가 정한다"
     preconditions:
@@ -70,12 +70,12 @@ requirements:
     risk: "해당 없음 — 기술적으로 새로 검증할 구성요소가 없다"
     relations:
       depends_on: [REQ-103, REQ-616]
-      constrains: [REQ-006, REQ-117, REQ-118, REQ-119]
+      constrains: ["REQ-006","REQ-117","REQ-118","REQ-119","REQ-602"]
       conflicts_with: []
       nfr: [NFR-011]
       interfaces: []
     realization:
-      features: [FEAT-005, FEAT-015, FEAT-017, FEAT-101]
+      features: ["FEAT-005","FEAT-015","FEAT-017","FEAT-101","FEAT-209","FEAT-211"]
       screens: [SCR-005, SCR-015, SCR-021, SCR-101]
     examples:
       - { kind: 정상, case: "관리자 김관리의 운영 프롬프트 검토가 2,000토큰을 사용하면 김관리의 운영 사용량과 전체 비용에는 집계하되 Portal 개인 쿼터에서 차감하지 않는다" }

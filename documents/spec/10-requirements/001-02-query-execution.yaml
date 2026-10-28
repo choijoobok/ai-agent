@@ -85,7 +85,7 @@ requirements:
       nfr: [NFR-013, NFR-022, NFR-027]
       interfaces: []
     realization:
-      features: [FEAT-201, FEAT-202, FEAT-203, FEAT-210]
+      features: ["FEAT-201","FEAT-202","FEAT-203","FEAT-210"]
       screens: []
     examples:
       - { kind: 정상, case: "주문 조회 결과를 확보한 뒤 비교 집계 입력으로 사용", result: "서버가 결과 참조·완료 근거를 저장하고 다음 작업의 필요한 입력만 구성한다" }
@@ -104,7 +104,7 @@ requirements:
     title: "질의 처리 전체 흐름과 분산 실행·상태 관리 흐름 정의"
     detail: "portal의 비동기 질의 접수·상태/결과 폴링부터 agent의 턴·시도·회차·스텝·LangGraph 상태 관리, 대화/추론 및 임베딩 모델 호출, 지식 검색·SQL·업무 API·도구 실행과 최종 결과 전달까지 연결된 흐름도를 작성한다. 연속 호출·과거 턴 참조·사용자 개입·중단·이어가기·재시도와 멀티 인스턴스의 실행 점유·만료·장애·배포 종료를 포함하고, 각 경로에 권한·감사·추적·쿼터·동시 처리 제한의 검사 및 기록 지점을 표시한다"
     hard_rule: "흐름도는 연결된 요구사항의 동작을 표현하며 새 정책의 근거가 되지 않는다. 확정된 요구사항, 검토 중인 기존 설계, 미확정 연결을 구분한다. 누락·충돌은 해당 정본에서 해결하고, 관련 요구사항 검토와 흐름/상태/메시지 대조가 끝나기 전에 상세 흐름을 확정하거나 구현 완료로 판정하지 않는다"
-    source: "2026-10-12 사용자 요청 — portal 폴링·턴/스텝/LangGraph 상태·감사/추적/쿼터·LLM 호출과 실행 점유·중단/재개를 멀티 인스턴스에서 연결한다. 먼저 요구사항의 범위·완료 기준을 보완하고 개요도 초안을 유지하며, 관련 요구사항 검토 후 상세 흐름을 확정하는 순서에 동의했다. 같은 날 사용자가 범위·완료 기준의 기존 합의를 재확인하고, 관련 요구사항 검토·확정 → 흐름도·상세 시퀀스 보완 → 반영 여부·누락·충돌 최종 점검 → REQ-010 최종 확정 순서를 명시 선택했다 2026-10-26 사용자 요청으로 system 외 미확정 요구사항을 권장안대로 보완했다. 내용 보완·커밋/푸시 위임이며 카드 최종 확정·단계 게이트·소스 구현 승인은 별도다"
+    source: "2026-10-12 사용자 요청 — portal 폴링·턴/스텝/LangGraph 상태·감사/추적/쿼터·LLM 호출과 실행 점유·중단/재개를 멀티 인스턴스에서 연결한다. 먼저 요구사항의 범위·완료 기준을 보완하고 개요도 초안을 유지하며, 관련 요구사항 검토 후 상세 흐름을 확정하는 순서에 동의했다. 같은 날 사용자가 범위·완료 기준의 기존 합의를 재확인하고, 관련 요구사항 검토·확정 → 흐름도·상세 시퀀스 보완 → 반영 여부·누락·충돌 최종 점검 → REQ-010 최종 확정 순서를 명시 선택했다 2026-10-26 사용자 요청으로 system 외 미확정 요구사항을 권장안대로 보완했다. 내용 보완·커밋/푸시 위임이며 카드 최종 확정·단계 게이트·소스 구현 승인은 별도다 2026-10-28 사용자 승인: REQ-602의 보조 대체 권장안에 따른 관련 계약 보완."
 
     roadmap: RM-P1
     summary: "사용자 요청 한 건이 비동기·다중 인스턴스 환경에서 어떻게 처리·대기·종결되는지 전체 개요도와 주요 분기별 흐름도로 파악한다. 흐름별 근거 요구사항과 미확정 지점을 연결해 순차 검토와 상세 설계의 입력으로 사용한다"
@@ -121,6 +121,7 @@ requirements:
       - "REQ-009의 공통 메시지·작업·프롬프트 계약과 REQ-038의 질의 유형별 처리 경로를 연결 기준으로 사용한다"
       - "기존 ARCH-015의 비동기 폴링, ARCH-070의 실행 점유와 documents/design/turn-execution.md를 검토 입력으로 사용하되 문서 존재 자체를 설계 승인으로 간주하지 않는다"
       - "Spring AI·LangGraph4j의 역할은 ADR-001·003을 따르며 실환경 재현의 미확인 전제 ASM-003은 유지한다"
+    auxiliary_fallback: "보조 후보 사슬의 실행은 REQ-602와 DES-004 S2를 따른다. F→L은 같은 논리 보조 작업의 다음 후보이며 주 추론 변경·새 턴·완료 업무 재실행이 아니다. 동의 확인 뒤에는 저장한 순번/마감과 현재 조건을 다시 검사한다. 분류 사슬의 최종 실패는 DES-003 S6의 확인 경로, 최종 사용량은 DES-005 S8로 연결한다. 시스템 운영·임베딩은 이 사슬에 포함하지 않는다"
     flow_coverage:
       - { flow: "전체 처리 개요", includes: "질의 접수·해석·계획, 과거 턴 참조·문맥 구성, 지식 검색·입력값 확보, 반복 모델/도구 호출, SQL·업무 API·결과 가공·표현·종결", requirements: [REQ-001, REQ-002, REQ-003, REQ-004, REQ-009, REQ-012, REQ-015, REQ-020, REQ-021, REQ-022, REQ-023, REQ-025, REQ-026, REQ-037, REQ-038, REQ-039] }
       - { flow: "portal 비동기 조회", includes: "접수 응답·상태/결과 폴링·최종 응답 수신·사용자대기·중단/실패·화면 이탈·재접속, 상태별 폴링 중지/재시작과 일시 조회 실패", requirements: [REQ-006, REQ-011, REQ-016, REQ-019, REQ-027, REQ-040] }
@@ -142,7 +143,7 @@ requirements:
     sequence_design:
       - { document: "documents/design/agent-request-sequences.md", design: DES-002, scope: "접수·개인 한도·개인 순서 대기/취소·시작 전 쿼터·비동기 폴링·최종 상태 조회와 전체 연결" }
       - { document: "documents/design/agent-lifecycle-sequences.md", design: DES-003, scope: "턴/시도/회차/스텝·LangGraph 상태, 사용자대기·다른 인스턴스 이어가기·변경/중단·만료/늦은 결과·새 시도" }
-      - { document: "documents/design/agent-call-sequences.md", design: DES-004, scope: "매 모델 호출의 쿼터 재검사·프롬프트/응답 계약·도구 승인/전송·SQL 재작성·질의/지식 임베딩" }
+      - { document: "documents/design/agent-call-sequences.md", design: DES-004, scope: "매 모델 호출의 쿼터 재검사·보조 후보 대체/동의/공유 마감·프롬프트/응답 계약·도구 승인/전송·SQL 재작성·질의/지식 임베딩" }
       - { document: "documents/design/agent-history-sequences.md", design: DES-005, scope: "호출 식별·별도 감사 트랜잭션·사용량 원장/집계·기록 실패·중복 계량·늦은 응답·최종 응답 저장/공개" }
     sequence_status: "2026-10-27 사용자 요청으로 전체 개요와 상세 시퀀스 8개의 요구사항 반영을 대조하고 계획/정체·승인 갱신·변경/중단 경합·결과 불명 후속 실행·안전한 조회 재시도·임베딩·기록/종결 경로를 보완했다. 문서 대조를 마친 draft이며, 물리 저장/복구/동시성 계약과 실행 시험은 각 문서의 P2/P3 후속이다. 상세 설계 승인이나 구현 완료로 간주하지 않는다"
     overview_diagram: |
@@ -167,7 +168,13 @@ requirements:
         W -->|최초 대기 기한 만료| S
         N -->|전체 완료 또는 확인으로 해소 불가한 정체| R["S8 · 실제 결과 구분·필수 기록·적합한 상태로 종결"]
         T -->|부분 실패·결과 불명 등 종결 판단| R
-        L -->|복구 불가한 호출·계약 오류| R
+        L -->|보조 판정의 확인된 일시 공급 장애| F["S2 · REQ-602 후보 순서·공유 마감·전환 조건 검사"]
+        F -->|다음 후보의 권한·동의·입력·예산·기록 통과| L
+        F -->|추가 동의 필요·아직 유효한 작업| W
+        F -->|분류 최종 실패·분류 예산 소진이며 의도 확인 가능| W
+        F -->|확인으로 해소 불가한 실패·전체 스텝 예산 소진| R
+        L -->|입력 분류의 전환 불가 오류이며 의도 확인 가능| W
+        L -->|그 밖의 복구 불가한 호출·계약 오류| R
         K -->|허용 검색 경로로도 처리 불가| R
         R -->|기록·상태 전이 확정 후 공개| Q
         Q -->|최종 상태·허용 결과| V["S1 · portal 표시·폴링 종료"]
@@ -189,7 +196,7 @@ requirements:
         H["S8 · 단계별 권한·쿼터·한도 검사·감사·추적·사용량 기록"] -.-> E
     sequence_routes:
       - {"key":"S1","title":"접수·시작·비동기 폴링","document":"documents/design/agent-request-sequences.md","anchor":"s1-접수-시작-비동기-폴링","nodes":["P","A","E","Q","V","Z"],"requirements":[REQ-009, REQ-016, REQ-006, REQ-036, REQ-040],"focus":"개인 순서 대기·취소·자동 시작·신규 시작 쿼터·폴링","related":["S2","S4","S7","S8"],"steps_anchor":"s1-읽는-순서"}
-      - {"key":"S2","title":"반복 모델 호출과 쿼터 검사","document":"documents/design/agent-call-sequences.md","anchor":"s2-반복-모델-호출과-쿼터-검사","nodes":["C","N","L"],"requirements":[REQ-001, REQ-002, REQ-003, REQ-004, REQ-007, REQ-009, REQ-015, REQ-034, REQ-038, REQ-106, REQ-108, REQ-610],"focus":"채택 계획·작업 상태·모델 없는 작업·정체 검사·프롬프트/응답 계약·유효한 결과 반영","related":["S3","S4","S5","S6","S8"],"steps_anchor":"s2-읽는-순서"}
+      - {"key":"S2","title":"반복 모델 호출과 쿼터 검사","document":"documents/design/agent-call-sequences.md","anchor":"s2-반복-모델-호출과-쿼터-검사","nodes":["C","N","L","F"],"requirements":[REQ-001, REQ-002, REQ-003, REQ-004, REQ-007, REQ-009, REQ-015, REQ-034, REQ-038, REQ-106, REQ-108, REQ-610],"focus":"채택 계획·작업 상태·모델 없는 작업·정체 검사·프롬프트/응답 계약·유효한 결과 반영","related":["S3","S4","S5","S6","S8"],"steps_anchor":"s2-읽는-순서"}
       - {"key":"S3","title":"파라미터·승인·SQL·업무 API","document":"documents/design/agent-call-sequences.md","anchor":"s3-파라미터-승인-sql-업무-api","nodes":["C","T"],"requirements":[REQ-005, REQ-023, REQ-026, REQ-037, REQ-038, REQ-039, REQ-103, REQ-105, REQ-113, REQ-114, REQ-301],"focus":"모든 파라미터 확보·전체 실제 값 확인 후 최종 승인·현재 권한·전송 전 기록·부분 실패","related":["S2","S5","S7","S8"],"steps_anchor":"s3-읽는-순서"}
       - {"key":"S4","title":"질의 임베딩·지식 재임베딩","document":"documents/design/agent-call-sequences.md","anchor":"s4-질의-임베딩-지식-재임베딩","nodes":["K","M","B","I"],"requirements":[REQ-303, REQ-305, REQ-306, REQ-601, REQ-602],"focus":"선택적 임베딩·태그 검색 폴백·사용자/시스템 비용 귀속","related":["S1","S2","S8"],"steps_anchor":"s4-읽는-순서"}
       - {"key":"S5","title":"사용자대기·다른 인스턴스 이어가기","document":"documents/design/agent-lifecycle-sequences.md","anchor":"s5-사용자대기-다른-인스턴스-이어가기","nodes":["W"],"requirements":[REQ-005, REQ-013, REQ-017, REQ-032, REQ-036, REQ-040, REQ-105, REQ-107, REQ-108, REQ-109],"focus":"대상이 특정된 유효 응답·명시 승인/거절·중복/만료·개인 순서·같은 시도 이어가기","related":["S1","S2","S3","S7","S8"],"steps_anchor":"s5-읽는-순서"}
