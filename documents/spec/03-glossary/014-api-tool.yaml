@@ -1,0 +1,32 @@
+# 영역: 업무 API·등록 도구의 내용 계약
+terms:
+  - id: TRM-256
+    term: "업무 API 리비전"
+    key: businessApiRevision
+    group: "실행"
+    definition: "안정 업무 API 아래 연결 선택·입출력·호출 통제·그룹·가이드와 검수 근거의 전체 후보 및 당시 내용을 식별하는 판"
+    relation: "REQ-608·305·306 및 ARCH-028. 배포 연결 정의·실제 호출 기록·지식별 사용 설명과 별개다"
+  - id: TRM-257
+    term: "업무 API 필드 명세"
+    key: businessApiField
+    group: "데이터"
+    definition: "업무 API의 요청 또는 응답 값 필드를 위치/경로로 식별하고 구조·업무 의미·검증·코드·개인정보 기준을 같은 계약 판에 보존한 명세"
+    relation: "REQ-608.field_metadata. 입력 확보 가이드는 요청에만 적용하며 응답 필드 부재와 NULL·0·빈 문자열을 구분한다"
+  - id: TRM-258
+    term: "API 코드명 제공 규칙"
+    key: apiCodeNameRule
+    group: "데이터"
+    definition: "응답 코드형 필드의 원값과 표시명을 대응시키기 위해 API 계약에서 선택한 제공 방법·원천·전체 조건의 검수된 구성"
+    relation: "REQ-608.code_name_resolution. 응답 내 명칭·인라인 정의·공개 카탈로그 조회·조회용 API 중 명시한 방법을 사용하며 원 업무 결과와 이름 확인 결과는 별개다"
+  - id: TRM-259
+    term: "등록 업무 도구"
+    key: registeredBusinessTool
+    group: "실행"
+    definition: "업무 API 또는 배포된 내부 서비스 구현을 참조하여 admin에서 계약·허용 그룹·노출을 관리하는 안정 등록 단위"
+    relation: "REQ-612. 일반 도구(TRM-007) 전체와 동일한 등록 범위라고 가정하지 않으며 커스텀 도구(TRM-024)의 코드 원문을 보관하는 단위도 아니다"
+  - id: TRM-260
+    term: "업무 도구 리비전"
+    key: businessToolRevision
+    group: "실행"
+    definition: "등록 업무 도구의 구현/API 계약 참조·검증 근거·조회/실행 유형·허용 그룹·노출·공통 가이드의 전체 후보 및 당시 내용을 구분하는 판"
+    relation: "REQ-612·305·306. API 기반 도구의 계약과 가이드는 해당 API 리비전을 참조하고 지식의 매핑별 사용 설명을 복제하지 않는다"

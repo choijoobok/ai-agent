@@ -82,10 +82,12 @@ usecases:
     name: "업무 API의 계약·연결·필드 통제 후보를 검수하고 반영한다"
     workstream: admin
     design_status: draft
+    feature_contract: FEAT-004
+    entities: [ENT-011, ENT-012, ENT-013, ENT-014]
     reqs: [REQ-608]
     actors: { primary: [ACT-003, ACT-002], secondary: [ACT-013] }
     process_step: PRC-11-02
-    precondition: "고객사 공동 개발·시험·오픈 근거와 해당 후보 작성 권한이 있다"
+    precondition: "해당 후보 작성 권한이 있다. 초안의 미완성은 표시하고 정상 운영 반영 전 고객사 공동 개발·시험·오픈 근거와 계약을 검수한다. 실제 호출은 적용일과 현재 조건을 별도로 확인한다"
     trigger: "업무 API를 등록하거나 계약·연결·입출력 가이드·응답 통제·상태를 변경한다"
     main_flow:
       - "제공 시스템과 그 허용 목록 안의 기본/특정 연결, 메서드·상대 경로·조회/실행 유형을 확인한다"
@@ -95,6 +97,7 @@ usecases:
       - "실제 반영 상태와 고객사 공동 오픈 적용일을 확인한다. 승인만으로 적용일 전 호출을 허용하지 않으며 승인 뒤 실제 목적지/실행 주체 변경은 REQ-105의 재확인 경계를 유지한다"
     alternative_flows:
       - { id: A1, condition: "업무별 사용 방법만 변경", flow: ["API 공통 계약을 복제하지 않고 UC-010의 지식 매핑 설명 후보로 처리한다"] }
+      - { id: A2, condition: "결과 확인 API가 없는 계약", flow: ["없음을 명시하고 완료/접수·결과 불명·수동 확인 안내를 검수한다. 결과 확인 API 부재만으로 등록을 금지하거나 재전송 가능으로 간주하지 않는다"] }
     exception_flows:
       - { id: E1, condition: "미허용 연결·절대 주소·미완성 필드/개인정보·참조 충돌", flow: ["정상 운영 계약으로 반영하지 않고 보완 지점을 알린다"] }
       - { id: E2, condition: "개별 호출 제한과 점유 유지/프록시 검수 조건이 불일치", flow: ["긴 숫자만으로 호출을 허용하지 않는다. REQ-608.timeout_policy의 검증된 경로·설정 조건을 보완한다"] }
@@ -108,10 +111,12 @@ usecases:
     name: "업무 도구의 구현·계약·노출 후보를 검수한다"
     workstream: admin
     design_status: draft
+    feature_contract: FEAT-021
+    entities: [ENT-012, ENT-015, ENT-016]
     reqs: [REQ-612]
     actors: { primary: [ACT-003, ACT-004], secondary: [ACT-013] }
     process_step: PRC-13-02
-    precondition: "도구 후보 작성 권한과 등록 API 또는 배포된 내부 서비스 구현의 검증 근거가 있다"
+    precondition: "도구 후보 작성 권한이 있다. 미완성 초안은 누락을 표시하고 정상 등록/노출 전 등록 API 또는 배포 내부 서비스의 계약·검증 근거를 확인한다. 호출 시 현재 유효성을 다시 검사한다"
     trigger: "도구를 등록·수정·비활성화·삭제하거나 허용 그룹·노출 상태를 변경한다"
     main_flow:
       - "REST API 원천과 내부 서비스 빈의 계약/검증 근거를 구분해 참조한다"

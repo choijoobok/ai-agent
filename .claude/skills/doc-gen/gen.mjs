@@ -103,6 +103,9 @@ const LABEL = {
   observation: '원천 관측', sampling: '값 후보 샘플링', impact: '영향 확인', validation: '검증', content: '내용',
   catalog_candidate_contract: '카탈로그 후보 계약', catalog_history_link: '카탈로그 이력 연결',
   catalog_evidence_link: '카탈로그 변경 근거 연결',
+  connection: '연결 선택', fields: '필드 명세', input_guide: '입력 확보 가이드',
+  code_names: '코드명 제공', call_contract: '호출 계약', guide: '공통 가이드',
+  api_tool_candidate_contract: '업무 API·도구 후보 계약', api_tool_history_link: '업무 API·도구 이력 연결',
 };
 const lab = (k) => LABEL[k] ?? k;
 

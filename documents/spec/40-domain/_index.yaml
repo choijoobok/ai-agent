@@ -14,3 +14,4 @@ spec_set:
     - 004-system-entities.yaml
     - 005-admin-integration-assets.yaml
     - 006-admin-catalog.yaml
+    - 007-admin-api-tool.yaml
