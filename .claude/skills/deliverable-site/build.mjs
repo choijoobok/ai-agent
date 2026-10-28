@@ -40,7 +40,9 @@ const OUT = resolve(REPO, standalone ? `build/deliverables-${mode}` : 'build/del
 const BUILD_README = resolve(REPO, 'aidd-guide/artifact/site-kit/BUILD-README.txt');
 const keys = mode === 'all' ? ['design', 'user', 'operations'] : [mode];
 // 낡은 테이블 문서를 다시 포장하지 않는다. 검사는 출력 파일을 쓰기 전에 끝낸다.
-const schemaInputs = keys.includes('design') ? checkTableDocuments() : [];
+let schemaInputs = [];
+try { schemaInputs = keys.includes('design') ? checkTableDocuments() : []; }
+catch (error) { console.error(error.message); process.exit(1); }
 
 const config = parseYaml(readFileSync(resolve(REPO, 'documents/delivery.yaml'), 'utf8'));
 const siteConfig = new Map((config.sites ?? []).map((site) => [site.key, site]));

@@ -744,10 +744,11 @@ function ERD() {
   const items = d.entities ?? [];
   const diagram = ['```mermaid', 'erDiagram'];
   for (const ent of items) {
+    if (ent.design_stage === 'logical') continue;
     diagram.push(`  ${ent.table ?? ent.id} {`);
     for (const attr of ent.attributes ?? []) {
       const flags = [attr.pk ? 'PK' : '', attr.fk ? 'FK' : ''].filter(Boolean).join(',');
-      diagram.push(`    ${String(attr.type ?? 'string').replace(/[^A-Za-z0-9_]/g, '_')} ${attr.name}${flags ? ` ${flags}` : ''}`);
+      diagram.push(`    ${String(attr.type ?? 'string').replace(/[^A-Za-z0-9_]/g, '_')} ${attr.physical_name ?? attr.name}${flags ? ` ${flags}` : ''}`);
     }
     diagram.push('  }');
   }
@@ -757,6 +758,7 @@ function ERD() {
       d.meta.baselined, items.map((x) => x.id)),
     `## 공통 규약\n\n${blocks([{ id: 'conventions', ...(d.conventions ?? {}) }], ['id'], 'name', '###')}`,
     `## 관계 개요\n\n${diagram.join('\n')}`,
+    '논리 설계 단계의 엔티티는 아래 논리명·속성·관계로 검토한다. 물리명이 정해지기 전에는 물리 ERD에 임시 테이블명으로 넣지 않는다.',
     '컬럼별 물리 정의·키·제약·인덱스·Liquibase 근거는 [테이블 목록·명세서](41-테이블명세서/_index.md)에서 확인한다. 아래 속성과 관계는 업무 모델이며 물리 외래키를 대신하지 않는다.',
     `## 엔티티 ${items.length}건\n\n${blocks(items.map(({ physical, ...entity }) => entity), ['id', 'table'], 'name', '###')}`,
   ]);
@@ -766,8 +768,8 @@ let checkedDomain;
 function schema() { return checkedDomain ??= domainSchema(REPO); }
 
 /** 독립 물리 명세. 구현 전 계약과 소스 기준 예상 스키마를 명확히 나눈다. */
-function 테이블명세서(verify = false) {
-  const { domain, catalog } = schema();
+function 테이블명세서(verify = false, snapshot = schema(), capture = null) {
+  const { domain, catalog } = snapshot;
   const folder = `${OUT}41-테이블명세서/`;
   const technical = domain.conventions.liquibase.technical_tables ?? [];
   const items = [
@@ -778,19 +780,22 @@ function 테이블명세서(verify = false) {
   const problems = [], emitted = new Set();
   const emit = (file, parts) => {
     emitted.add(posix.basename(file));
+    if (capture) { capture.set(file, parts.join('\n\n').replace(/\n+$/, '') + '\n'); return; }
     if (!verify) { write(file, parts); return; }
     const normalizeDate = (s) => s.replace(/^last_sync:.*$/m, 'last_sync: DATE');
     const expected = parts.join('\n\n').replace(/\n+$/, '') + '\n';
     if (!existsSync(join(REPO, file)) || normalizeDate(readFileSync(join(REPO, file), 'utf8')) !== normalizeDate(expected)) problems.push(`${file}: 재생성 필요`);
   };
-  if (!verify) mkdirSync(join(REPO, folder), { recursive: true });
+  if (!verify && !capture) mkdirSync(join(REPO, folder), { recursive: true });
   const rows = [];
   for (const e of items) {
     const file = `${folder}${e.key}.md`, physical = e.physical;
     const actual = catalog.tables.get(e.table);
-    const state = e.implementation === 'implemented' ? '소스 기준 물리 정의' : '설계 초안 · 미구현';
-    rows.push({ module: e.module, table: `[${e.table}](${e.key}.md)`, entity: e.id ?? '기술 기반', description: e.description, state });
-    const parts = [head(`TABLE-${e.key}`, `${e.table} — ${e.name ?? e.description}`, specSource('40-domain'), e.implementation === 'implemented' ? 'current_source' : 'draft', null, e.id ? [e.id, ...(e.features ?? [])] : []).replace('generated_from:', `module: ${e.module}\ngenerated_from:`),
+    const logical = e.design_stage === 'logical';
+    const state = logical ? '논리 설계 · 물리명 미정' : e.implementation === 'implemented' ? '소스 기준 물리 정의' : '설계 초안 · 미구현';
+    const display = e.table ?? `${e.name} (물리명 미정)`;
+    rows.push({ module: e.module, table: `[${display}](${e.key}.md)`, entity: e.id ?? '기술 기반', description: e.description, state });
+    const parts = [head(`TABLE-${e.key}`, `${display} — ${e.name ?? e.description}`, specSource('40-domain'), e.implementation === 'implemented' ? 'current_source' : 'draft', null, e.id ? [e.id, ...(e.features ?? [])] : []).replace('generated_from:', `module: ${e.module}\ngenerated_from:`),
       `**${state}** — 실제 DB 적용 확인을 뜻하지 않는다.`,
       table([{ owner: e.module, entity: e.id ?? '업무 ENT 없는 기술 기반', features: e.features ?? [], description: e.description }], ['owner', 'entity', 'features', 'description']),
       '[테이블 목록으로](./_index.md) · [도메인·데이터 모델](../40-ERD.md)',
@@ -804,14 +809,14 @@ function 테이블명세서(verify = false) {
           const cols = c.definition.match(/^(PRIMARY KEY|UNIQUE|FOREIGN KEY)\s*\(([^)]+)\)/i)?.[2];
           return cols?.split(',').map((s) => s.trim().toUpperCase()).includes(a.name);
         }).map((c) => c.name),
-        description: a.comment ?? (e.attributes ?? []).find((x) => x.name === a.name)?.description ?? '미기재',
+        description: a.comment ?? (e.attributes ?? []).find((x) => (x.physical_name ?? x.name) === a.name)?.description ?? '미기재',
       }));
       parts.push(`## 컬럼 ${columns.length}개\n\n${table(columns, ['order', 'column', 'type', 'nullable', 'default', 'keys', 'description'])}`,
         '## 키·제약\n\n' + (constraints.length ? table(constraints, ['name', 'definition']) : '명시된 물리 제약 없음'),
         '## 별도 인덱스\n\n' + ((physical.indexes ?? []).length ? table(physical.indexes, ['name', 'unique', 'method', 'definition']) : '별도 인덱스 없음'),
         '기본키·유일성 제약이 생성하는 인덱스는 키·제약에 포함한다. 논리 관계를 물리 외래키로 간주하지 않는다. 컬럼 설명이 미기재이면 이름으로 의미를 추정하지 않는다.');
     } else parts.push('## 물리 상세\n\n아직 설계하지 않았다. 컬럼·키·제약을 확정할 때 40-domain의 physical을 작성한다.');
-    if (e.id) parts.push('## 업무 모델 연결\n\n' + blocks([{ id: e.id, name: e.name, rules: e.rules, relations: e.relations, audit: e.audit, delete_policy: e.delete_policy, retention: e.retention, state_machine: e.state_machine, planned_changes: e.planned_changes }], ['id'], 'name', '###'));
+    if (e.id) parts.push('## 업무 모델 연결\n\n' + blocks([{ id: e.id, name: e.name, term: e.term, domain: e.domain, attributes: logical ? e.attributes : undefined, rules: e.rules, relations: e.relations, audit: e.audit, delete_policy: e.delete_policy, retention: e.retention, state_machine: e.state_machine, planned_changes: e.planned_changes }], ['id'], 'name', '###'));
     if (actual) {
       parts.push('## Liquibase 변경 근거\n\n' + table(actual.changesets.map((c) => ({ file: `[${c.file}](${posix.relative(folder, c.file)})`, author: c.author, change_id: c.id })), ['file', 'author', 'change_id']),
         '### 활성 include 경로\n\n' + actual.sources.map((s) => `- [${s}](${posix.relative(folder, s)})`).join('\n'));
@@ -823,12 +828,22 @@ function 테이블명세서(verify = false) {
     `업무 엔티티 ${domain.entities.length}건 · 기술 기반 ${technical.length}건`,
     table(rows, ['module', 'table', 'entity', 'description', 'state']),
   ]);
-  if (existsSync(join(REPO, folder))) for (const file of readdirSync(join(REPO, folder))) {
+  if (!capture && existsSync(join(REPO, folder))) for (const file of readdirSync(join(REPO, folder))) {
     if (!file.endsWith('.md') || emitted.has(file)) continue;
     if (verify) problems.push(`${folder}${file}: 폐기된 명세서 잔존`);
     else rmSync(join(REPO, folder, file));
   }
-  if (problems.length) throw new Error(problems.join('\n'));
+  if (problems.length) throw new Error(['생성 보류 — 테이블 명세서가 현재 원본과 다르다', ...problems,
+    '조치: AI가 node .claude/skills/doc-gen/gen.mjs 와 --check를 실행한 뒤 HTML build/check를 다시 실행한다.',
+    '원본 대조에서 새 불일치가 나오면 그 안내의 보완 파일부터 처리한다. 생성 문서를 직접 수정하거나 사용자에게 수동 수정을 요구하지 않는다.',
+    '기존 HTML은 남아 있지만 최신 검증본은 아니다.'].join('\n'));
+}
+
+/** 출력 없이 명세 내용을 계산하여 논리/물리 렌더링을 독립 검증한다. */
+export function renderTableDocuments(snapshot) {
+  const documents = new Map();
+  테이블명세서(false, snapshot, documents);
+  return documents;
 }
 
 export function checkTableDocuments() {
@@ -1096,4 +1111,6 @@ if (argv.includes('--check')) {
   }
 }
 }
-if (process.argv[1] && resolvePath(process.argv[1]) === fileURLToPath(import.meta.url)) main();
+if (process.argv[1] && resolvePath(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
+}

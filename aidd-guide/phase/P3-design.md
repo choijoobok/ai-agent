@@ -108,6 +108,9 @@ features:
 
 ## 4. ③ 데이터 모델 (`documents/spec/40-domain/_index.yaml`)
 
+논리명·속성·관계를 먼저 도출하고 용어사전으로 업무 영역·영문 토큰을 정리한 뒤 물리명을 확정한다.
+`design_stage: logical` 초안은 물리명 없이 문서화하지만 G3 청구 전 물리 설계를 완료한다([명명·후속 절차](../artifact/data-model.md)).
+
 ```yaml
 entities:
   - id: ENT-004

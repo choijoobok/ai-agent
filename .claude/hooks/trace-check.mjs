@@ -39,6 +39,7 @@ import {
 } from './lib.mjs';
 import { loadSpecSet } from '../../aidd-guide/harness/runtime/spec-set.mjs';
 import { createTraceModel, featureIds, testsByFeature, associatedScreens, affectedIds, sourceSeeds, sourceRef, sourceEntries, relationErrors, linkedDocuments } from '../../aidd-guide/harness/runtime/trace-model.mjs';
+import { entityDesignIssues } from '../../aidd-guide/harness/runtime/liquibase-schema.mjs';
 
 const SPEC_DIR = 'documents/spec';
 const SPEC = {
@@ -403,6 +404,8 @@ function fullCheck(targetWorkstream = null, { g1 = false } = {}) {
 
   // ENT 필수 속성
   for (const e of selectedEnts) {
+    for (const message of entityDesignIssues(e)) (targetWorkstream ? errors : warnings).push(['ENT', e.id, message]);
+    if (e.implementation === 'planned' && e.design_stage === 'logical') continue;
     const attrs = Array.isArray(e?.attributes) ? e.attributes : [];
     if (!attrs.some((a) => a?.pk)) errors.push(['ENT', e?.id, 'PK 없음']);
     if (attrs.some((a) => a?.enum && a?.name === 'status') && !e?.state_machine) {

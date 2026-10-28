@@ -110,7 +110,8 @@ HTML 목차는 문서 종류 → 모듈 순으로 자동 구성한다. 단일 �
 | API | `feature`: 소유 기능, `method`+`path`: 호출 식별, `source_contract`: `sources/.../Controller.java#method` |
 | API | `implementation`: `planned`/`implemented`; 요청·응답·오류·권한 계약과 연결 기능을 유지 |
 | FEAT/SCR/API | `sources`: 구현 파일 또는 끝이 `/`인 폴더, 필요하면 `#메서드`; `docs`: 추가로 대조할 정본 경로 |
-| ENT | `module`·`implementation`·`physical`·`sources`: 소유 모듈, planned/implemented, 물리 계약, 활성 Liquibase 생성/변경 파일과 include 경로 |
+| ENT | `name`·`term`·`domain`·`design_stage`: 논리명, TRM 연결, 도출한 업무 영역, logical/physical. logical 초안은 물리명 없이 생성하며 G3 전 물리 설계를 완료 |
+| ENT | `module`·`implementation`·`table`·`physical`·`sources`: 소유 모듈, planned/implemented, 물리명/계약, Liquibase 연결. 논리 속성의 `physical_name`으로 컬럼 연결 |
 | TC | `feature`: 소유 기능, 필요하면 `features`·`apis`·`screens`; `screen_cases`: 기존 화면 사례의 `documents/screen/.../requirements.md#사례번호` 배열 |
 
 신규 화면 연결은 SCR의 `feature`/`features`에 정의한다. 기존 FEAT의 `screen`/`screens`는

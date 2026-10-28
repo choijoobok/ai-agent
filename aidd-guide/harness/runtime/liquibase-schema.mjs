@@ -180,6 +180,29 @@ export function physicalContract(table) {
   return { attributes: table.attributes, constraints: table.constraints, indexes: table.indexes, ...(table.comment !== undefined ? { comment: table.comment } : {}) };
 }
 
+/** G3에서 요구할 물리 설계의 완성 조건. 초안 허용 여부와 분리한다. */
+export function entityDesignIssues(entity) {
+  if (entity.design_stage === 'logical') return ['논리 설계 중 — 소유 작업흐름 G3 전에 물리명·키·제약을 확정한다'];
+  const issues = [];
+  if (!entity.table) issues.push('물리 테이블명 미정');
+  const physical = entity.physical;
+  if (!physical) return [...issues, '물리 계약(physical) 없음'];
+  const attrs = Array.isArray(physical.attributes) ? physical.attributes : [];
+  if (!attrs.length) issues.push('물리 컬럼 없음');
+  for (const attr of attrs) if (!attr?.name || !attr.type || typeof attr.nullable !== 'boolean' || !Object.hasOwn(attr, 'default')) issues.push('물리 컬럼 name/type/nullable/default 미완성');
+  if (!Array.isArray(physical.constraints) || !Array.isArray(physical.indexes)) issues.push('물리 제약/인덱스 목록 미정');
+  const constraints = Array.isArray(physical.constraints) ? physical.constraints : [];
+  const keys = constraints.flatMap((c) => c?.definition?.match(/^PRIMARY KEY\s*\(([^)]+)\)/i)?.[1].split(',').map((v) => upper(v.trim())) ?? []);
+  if (!keys.length) issues.push('물리 기본키 정의 없음');
+  for (const key of keys) if (!attrs.some((a) => a?.name === key && a.nullable === false)) issues.push(`기본키 컬럼/NOT NULL 누락: ${key}`);
+  for (const attr of entity.attributes ?? []) {
+    const name = attr.physical_name ?? attr.name;
+    if (!attrs.some((a) => a?.name === name)) issues.push(`논리→물리 컬럼 연결 누락: ${attr.name}`);
+    if (attr.pk && !keys.includes(name)) issues.push(`논리→물리 기본키 불일치: ${attr.name}`);
+  }
+  return issues;
+}
+
 /** 배열 순서는 컬럼만 의미가 있다. 업무 설명은 물리 비교 대상이 아니다. */
 export function schemaDifferences(entities, catalog, external = []) {
   const errors = [], used = new Set(), exempt = new Map(external.map((x) => [x.table, x]));
@@ -189,6 +212,12 @@ export function schemaDifferences(entities, catalog, external = []) {
   });
   for (const e of entities) {
     if (!['planned', 'implemented'].includes(e.implementation)) { errors.push(`${e.id}: implementation 누락`); continue; }
+    if (e.design_stage !== undefined && !['logical', 'physical'].includes(e.design_stage)) errors.push(`${e.id}: design_stage는 logical/physical이어야 한다`);
+    if (e.design_stage === 'logical') {
+      if (e.implementation !== 'planned' || e.table || e.physical) errors.push(`${e.id}: 논리 설계는 planned이며 table/physical을 아직 지정하지 않는다`);
+      if (!e.name || !e.module) errors.push(`${e.id}: 논리명/소유 모듈 누락`);
+      continue;
+    }
     if (!e.module || !e.table || used.has(e.table)) errors.push(`${e.id}: 모듈/테이블 누락 또는 중복`);
     used.add(e.table);
     if (e.physical) {
@@ -228,8 +257,9 @@ export function schemaDifferences(entities, catalog, external = []) {
     const names = actual.attributes.map((a) => a.name);
     if (e.columns && comparable([...e.columns].sort()) !== comparable([...names].sort())) errors.push(`${e.id}: 논리 columns 목록과 물리 컬럼 불일치`);
     for (const attr of e.attributes ?? []) {
-      if (!names.includes(attr.name)) errors.push(`${e.id}: 물리 정의에 없는 논리 속성 ${attr.name}`);
-      if (attr.pk && !actual.constraints.some((c) => /^PRIMARY KEY/i.test(c.definition) && new RegExp(`\\b${attr.name}\\b`, 'i').test(c.definition))) errors.push(`${e.id}: 논리 PK 불일치 ${attr.name}`);
+      const columnName = attr.physical_name ?? attr.name;
+      if (!names.includes(columnName)) errors.push(`${e.id}: 물리 정의에 없는 논리 속성 ${attr.name} → ${columnName}`);
+      if (attr.pk && !actual.constraints.some((c) => c.definition.match(/^PRIMARY KEY\s*\(([^)]+)\)/i)?.[1].split(',').map((v) => upper(v.trim())).includes(columnName))) errors.push(`${e.id}: 논리 PK 불일치 ${attr.name}`);
     }
   }
   for (const [name] of catalog.tables) if (!used.has(name) && !exempt.has(name)) errors.push(`${name}: ENT 또는 기술 기반 테이블 분류 누락`);

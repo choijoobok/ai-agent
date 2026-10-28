@@ -44,7 +44,7 @@ Hub 코드를 쓴다
   같은 DB를 쓴다는 이유로 Entity·Repository를 공통 폴더에 두지 않는다.
 - PK 는 **서로게이트 키**를 쓰고, 자연키(예: 카탈로그의 `(데이터소스, DB 스키마, 테이블명)`)에는
   **유니크 제약**을 둔다. 참조는 서로게이트 키로 하여 **이름 변경이 참조를 깨지 않게** 한다.
-- 명명의 어휘는 [documents/spec/02-constraints/_index.yaml](../../documents/spec/02-constraints/_index.yaml) 의 `key` 다 — §8 도 참조.
+- 명명의 어휘는 [용어사전](../../documents/spec/03-glossary/_index.yaml)의 `key`다. [논리명→물리명 절차](../artifact/data-model.md#명명-구조)를 따르고 §8도 참조한다.
 
 ## 3. 설정 파일
 
