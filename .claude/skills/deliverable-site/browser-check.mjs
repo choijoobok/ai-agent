@@ -3,6 +3,8 @@ import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { REPO } from '../manual-site/lib/menu.mjs';
+import { parseYaml } from '../../hooks/lib.mjs';
+import { loadSpecSet } from '../../../aidd-guide/harness/runtime/spec-set.mjs';
 
 const rootArg = process.argv.slice(2).find((arg) => arg.startsWith('--root='))?.slice('--root='.length);
 const site = process.argv.slice(2).find((arg) => !arg.startsWith('--')) ?? 'design';
@@ -43,22 +45,30 @@ try {
       await group.click();
       if (!await targetLink.isVisible()) errors.push('목차 그룹 펼치기가 동작하지 않는다.');
     }
-    const tablePages = await page.locator('[data-page-link]').evaluateAll((nodes) => nodes
+    const plannedTables = loadSpecSet({ repo: REPO, name: '40-domain', parseYaml }).document.entities
+      .filter((entity) => entity.implementation === 'planned' && entity.design_stage === 'physical')
+      .map((entity) => entity.table);
+    const tablePages = await page.locator('[data-page-link]').evaluateAll((nodes, planned) => nodes
       .filter((node) => node.dataset.pagePath?.includes('테이블 목록·명세서') && / — /.test(node.textContent))
-      .map((node) => ({ id: node.dataset.pageLink, path: node.dataset.pagePath, logical: node.textContent.includes('물리명 미정') })));
-    const physicalPage = tablePages.find((entry) => !entry.logical);
+      .map((node) => ({ id: node.dataset.pageLink, path: node.dataset.pagePath,
+        logical: node.textContent.includes('물리명 미정'),
+        planned: planned.includes(node.textContent.split(' — ')[0].trim()),
+      })), plannedTables);
+    const physicalPage = tablePages.find((entry) => !entry.logical && !entry.planned);
+    const plannedPages = tablePages.filter((entry) => entry.planned);
     const logicalPages = tablePages.filter((entry) => entry.logical);
     if (!physicalPage) errors.push('물리 테이블 상세 명세의 모듈별 목차가 없다.');
-    for (const tablePage of [...(physicalPage ? [physicalPage] : []), ...logicalPages]) {
+    if (plannedPages.length !== plannedTables.length) errors.push('미구현 물리 설계의 테이블 목차 수가 정본과 다르다.');
+    for (const tablePage of [...(physicalPage ? [physicalPage] : []), ...plannedPages, ...logicalPages]) {
       await openHash(tablePage.id);
       const text = await page.locator(`[data-page][id="${tablePage.id}"]`).innerText();
       const labels = tablePage.logical
         ? ['논리 설계 · 물리명 미정', '논리 속성', '업무 모델 연결', '아직 설계하지 않았다']
-        : ['NULL 허용', '기본값', '키·제약', 'Liquibase 변경 근거'];
+        : ['NULL 허용', '기본값', '키·제약', tablePage.planned ? '설계 초안 · 미구현' : 'Liquibase 변경 근거'];
       for (const label of labels) if (!text.includes(label)) errors.push(`${tablePage.path} 명세 항목 누락: ${label}`);
       if (await page.locator('[data-current-path]').textContent() !== tablePage.path) errors.push('테이블 명세의 현재 경로가 다르다.');
     }
-    console.log(`데이터 모델 표시: 물리 명세 ${physicalPage ? 1 : 0}개 · 논리 초안 ${logicalPages.length}개`);
+    console.log(`데이터 모델 표시: 구현 명세 ${physicalPage ? 1 : 0}개 · 물리 초안 ${plannedPages.length}개 · 논리 초안 ${logicalPages.length}개`);
     const mockupPage = await page.locator('[data-mockup$="/__design__"]').first().evaluate((node) => node.closest('[data-page]')?.id);
     if (mockupPage) await openHash(mockupPage);
   }
