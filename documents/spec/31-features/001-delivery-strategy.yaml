@@ -10,5 +10,5 @@ delivery_strategy:
       rule: "agent 계약을 검증하기 위한 최소 화면이다. 제품 portal 완료율에 합산하지 않는다"
     - name: product_portal
       maturity: identified
-      features: [FEAT-101, FEAT-102, FEAT-103, FEAT-104, FEAT-105, FEAT-106, FEAT-107, FEAT-108, FEAT-109, FEAT-111, FEAT-112, FEAT-113, FEAT-114, FEAT-115, FEAT-116, FEAT-117, FEAT-118, FEAT-119, FEAT-120, FEAT-121, FEAT-122, FEAT-123, FEAT-124, FEAT-125]
-      rule: "요구는 유지하고 핵심 계약 영향만 먼저 검사한다. 화면 배치·도구 선택·세부 상호작용은 admin·agent 핵심 뒤 portal 작업흐름 P3에서 정한다"
+      features: [FEAT-101, FEAT-102, FEAT-103, FEAT-104, FEAT-105, FEAT-106, FEAT-107, FEAT-108, FEAT-109, FEAT-111, FEAT-112, FEAT-113, FEAT-114, FEAT-115, FEAT-116, FEAT-117, FEAT-118, FEAT-119, FEAT-120, FEAT-121, FEAT-122, FEAT-123, FEAT-124, FEAT-125, FEAT-127]
+      rule: "요구는 유지하고 핵심 계약 영향만 먼저 검사한다. 제품 Portal의 PC·모바일 반응형 지원은 REQ-041·NFR-028을 따르며 같은 기능 ID로 추적한다. 화면 배치·도구 선택·세부 상호작용은 admin·agent 핵심 뒤 portal 작업흐름 P3에서 정한다"

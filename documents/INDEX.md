@@ -55,7 +55,7 @@
 | [`10-requirements/_index.yaml`](spec/10-requirements/_index.yaml) | P1 | **요구사항 84**(REQ-) — 질의 처리·턴 수명주기 38 · 보안·거버넌스 19 · 저장된 조회 7 · 메타데이터·지식 검토 8 · **유도 2** · system 기반 10 | 이관 |
 | [`11-processes/_index.yaml`](spec/11-processes/_index.yaml) | P1 | 업무 프로세스 As-Is / To-Be | **비어 있다** |
 | [`20-architecture/_index.yaml`](spec/20-architecture/_index.yaml) | P2 | 구성 · **논리 구성도**(노드 14 · 간선 16 · 불변식 4) · 모듈 경계 6 · 딥링크 · 데이터소스 · LLM 연동 · 신원 매핑 · 지식 검색 · **실행 점유**(ARCH-) | 이관 |
-| [`21-nfr/_index.yaml`](spec/21-nfr/_index.yaml) | P2 | **비기능 19**(NFR-) — 성능 5 · 비용 8 · 안정성 6 (**목표 수치 전부 미정**) | 이관 |
+| [`21-nfr/_index.yaml`](spec/21-nfr/_index.yaml) | P2 | 비기능 (NFR-) — 성능·응답성·비용·안정성·보안·사용성/호환성과 측정·검증 기준 | 항목별 정본 참조 |
 | [`22-authz/_index.yaml`](spec/22-authz/_index.yaml) | P2 | 그룹 판정 · 매핑 6 · 행 스코프 · **SQL 통제 4단계** · 주입 통제 · 기본 필터 · 책임 층(AUTHZ-) | 이관 |
 | [`30-usecases/_index.yaml`](spec/30-usecases/_index.yaml) | P3 | 유즈케이스 (UC-) — 요구사항 연결·기본·대안·예외 흐름 | 작업흐름별 정본 참조 |
 | [`31-features/_index.yaml`](spec/31-features/_index.yaml) | P3 | 기능 (FEAT-) — 모듈별 업무·공통 처리·배치/이벤트와 사용 관계 | 작업흐름별 정본 참조 |

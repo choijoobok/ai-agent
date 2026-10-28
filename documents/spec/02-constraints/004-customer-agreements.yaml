@@ -1,8 +1,10 @@
 customer_agreements:
   - id: CON-015
     area: "사용자 접속"
-    decide: "VPN 전용 / 사내 PC 원격 / VDI 등 접속 방식과 허용 대역"
+    decide: "VPN 전용 / 사내 PC 원격 / VDI 등 접속 방식과 허용 대역. REQ-041의 Portal 모바일 웹을 실제로 이용할 허용 단말·브라우저와 접속 경로를 함께 합의한다"
     owner: ACT-009
+    note: "반응형 모바일 웹 지원은 인터넷 공개나 인증·접속 정책 완화의 승인이 아니다. PC 원격/VDI 접속만 검토하고 모바일 브라우저의 이용 경로 확인을 누락하지 않는다"
+    traces_to: [REQ-041]
   - id: CON-016
     area: "메타데이터 구축"
     decide: "테이블·컬럼 **업무 의미의 등록·검수 담당과 일정**"

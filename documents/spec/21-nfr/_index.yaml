@@ -31,3 +31,4 @@ spec_set:
   version: 1
   parts:
     - 001-nfrs.yaml
+    - 002-portal-usability.yaml
