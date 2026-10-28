@@ -21,12 +21,16 @@ terms:
   - id: TRM-259
     term: "등록 업무 도구"
     key: registeredBusinessTool
+    db_token: BUSINESS_TOOL
+    db_token_reason: "AI_ADMIN 접두어와 30자 테이블명 제한 안에서 등록 범위를 논리명으로 유지하고 물리 토큰은 BUSINESS_TOOL을 쓴다"
     group: "실행"
     definition: "업무 API 또는 배포된 내부 서비스 구현을 참조하여 admin에서 계약·허용 그룹·노출을 관리하는 안정 등록 단위"
     relation: "REQ-612. 일반 도구(TRM-007) 전체와 동일한 등록 범위라고 가정하지 않으며 커스텀 도구(TRM-024)의 코드 원문을 보관하는 단위도 아니다"
   - id: TRM-260
     term: "업무 도구 리비전"
     key: businessToolRevision
+    db_token: BIZ_TOOL_REVISION
+    db_token_reason: "AI_ADMIN 접두어와 30자 테이블명 상한을 지키기 위해 명확한 약어를 사용한다"
     group: "실행"
     definition: "등록 업무 도구의 구현/API 계약 참조·검증 근거·조회/실행 유형·허용 그룹·노출·공통 가이드의 전체 후보 및 당시 내용을 구분하는 판"
     relation: "REQ-612·305·306. API 기반 도구의 계약과 가이드는 해당 API 리비전을 참조하고 지식의 매핑별 사용 설명을 복제하지 않는다"

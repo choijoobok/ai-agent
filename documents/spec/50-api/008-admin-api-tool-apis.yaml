@@ -1,0 +1,227 @@
+# 업무 API·도구 관리 API — 운영 반영은 공통 세트 계약 소유
+apis:
+  - id: API-037
+    feature: FEAT-004
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessApi/getList
+    action: READ
+    summary: "업무 API 목록"
+    request: "body=SearchRequest<BusinessApiFilter>"
+    response: "ApiResponse<PageResponse<BusinessApiRow>>"
+  - id: API-038
+    feature: FEAT-004
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessApi/getOne
+    action: READ
+    summary: "현재 업무 API"
+    request: "body=BusinessApiKey"
+    response: "ApiResponse<BusinessApiDetail>"
+  - id: API-039
+    feature: FEAT-004
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessApi/getRevisions
+    action: READ
+    summary: "API 내용 판 목록"
+    request: "body=SearchRequest<BusinessApiKey>"
+    response: "ApiResponse<PageResponse<BusinessApiRevisionRow>>"
+  - id: API-040
+    feature: FEAT-004
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessApi/getRevision
+    action: READ
+    summary: "API 전체 내용 판"
+    request: "body=BusinessApiRevisionKey"
+    response: "ApiResponse<BusinessApiRevisionDetail>"
+  - id: API-041
+    feature: FEAT-004
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessApi/saveCreateDraft
+    action: SAVE
+    summary: "API 최초 초안"
+    request: "body=BusinessApiDraftCreate"
+    response: "ApiResponse<AssetDraftResult>"
+  - id: API-042
+    feature: FEAT-004
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessApi/saveDraft
+    action: SAVE
+    summary: "API 전체 초안 저장"
+    request: "body=BusinessApiDraftSave"
+    response: "ApiResponse<AssetDraftResult>"
+  - id: API-043
+    feature: FEAT-004
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessApi/saveCopyDraft
+    action: SAVE
+    summary: "API 변경·복원 초안"
+    request: "body=BusinessApiDraftCopy"
+    response: "ApiResponse<AssetDraftResult>"
+  - id: API-044
+    feature: FEAT-004
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessApi/getReferences
+    action: READ
+    summary: "API 참조/사용처"
+    request: "body=SearchRequest<AssetReferencesQuery>"
+    response: "ApiResponse<PageResponse<AssetReferenceRow>>"
+  - id: API-045
+    feature: FEAT-004
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessApi/getValidation
+    action: READ
+    summary: "API 후보 검수/누락 확인"
+    request: "body=AssetValidationQuery"
+    response: "ApiResponse<AssetValidationResult>"
+  - id: API-046
+    feature: FEAT-004
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessApi/getReferenceCandidates
+    action: READ
+    summary: "API 정형 참조 선택 후보"
+    request: "body=SearchRequest<AssetReferenceQuery>"
+    response: "ApiResponse<PageResponse<AssetReferenceCandidate>>"
+  - id: API-047
+    feature: FEAT-004
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessApi/getConnectionCheck
+    action: READ
+    summary: "API 현재 연결/지원 관측"
+    request: "body=ApiConnectionQuery"
+    response: "ApiResponse<ApiConnectionResult>"
+  - id: API-048
+    feature: FEAT-004
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessApi/getCommandResult
+    action: READ
+    summary: "API 편집 결과 확인"
+    request: "body=AssetCommandQuery"
+    response: "ApiResponse<AssetCommandResult>"
+  - id: API-049
+    feature: FEAT-004
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessApi/getToolMapping
+    action: READ
+    summary: "API 현재 도구 대응과 예약"
+    request: "body=ApiToolMappingQuery"
+    response: "ApiResponse<ApiToolMappingResult>"
+  - id: API-050
+    feature: FEAT-021
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessTool/getList
+    action: READ
+    summary: "업무 도구 목록"
+    request: "body=SearchRequest<BusinessToolFilter>"
+    response: "ApiResponse<PageResponse<BusinessToolRow>>"
+  - id: API-051
+    feature: FEAT-021
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessTool/getOne
+    action: READ
+    summary: "현재 업무 도구"
+    request: "body=BusinessToolKey"
+    response: "ApiResponse<BusinessToolDetail>"
+  - id: API-052
+    feature: FEAT-021
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessTool/getRevisions
+    action: READ
+    summary: "도구 내용 판 목록"
+    request: "body=SearchRequest<BusinessToolKey>"
+    response: "ApiResponse<PageResponse<BusinessToolRevisionRow>>"
+  - id: API-053
+    feature: FEAT-021
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessTool/getRevision
+    action: READ
+    summary: "도구 전체 내용 판"
+    request: "body=BusinessToolRevisionKey"
+    response: "ApiResponse<BusinessToolRevisionDetail>"
+  - id: API-054
+    feature: FEAT-021
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessTool/saveCreateDraft
+    action: SAVE
+    summary: "도구 최초 초안·대응 확보"
+    request: "body=BusinessToolDraftCreate"
+    response: "ApiResponse<AssetDraftResult>"
+  - id: API-055
+    feature: FEAT-021
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessTool/saveDraft
+    action: SAVE
+    summary: "도구 전체 초안 저장"
+    request: "body=BusinessToolDraftSave"
+    response: "ApiResponse<AssetDraftResult>"
+  - id: API-056
+    feature: FEAT-021
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessTool/saveCopyDraft
+    action: SAVE
+    summary: "도구 변경·복원 초안"
+    request: "body=BusinessToolDraftCopy"
+    response: "ApiResponse<AssetDraftResult>"
+  - id: API-057
+    feature: FEAT-021
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessTool/getReferences
+    action: READ
+    summary: "도구 참조/연결 지식"
+    request: "body=SearchRequest<AssetReferencesQuery>"
+    response: "ApiResponse<PageResponse<AssetReferenceRow>>"
+  - id: API-058
+    feature: FEAT-021
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessTool/getValidation
+    action: READ
+    summary: "도구 후보 검수/누락 확인"
+    request: "body=AssetValidationQuery"
+    response: "ApiResponse<AssetValidationResult>"
+  - id: API-059
+    feature: FEAT-021
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessTool/getReferenceCandidates
+    action: READ
+    summary: "도구 원천/후속 참조 후보"
+    request: "body=SearchRequest<AssetReferenceQuery>"
+    response: "ApiResponse<PageResponse<AssetReferenceCandidate>>"
+  - id: API-060
+    feature: FEAT-021
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessTool/getImplementations
+    action: READ
+    summary: "검증된 배포 구현 목록"
+    request: "body=SearchRequest<ImplementationQuery>"
+    response: "ApiResponse<PageResponse<ImplementationRow>>"
+  - id: API-061
+    feature: FEAT-021
+    implementation: planned
+    method: POST
+    path: /api/service/admin/businessTool/getCommandResult
+    action: READ
+    summary: "도구 편집 결과 확인"
+    request: "body=AssetCommandQuery"
+    response: "ApiResponse<AssetCommandResult>"

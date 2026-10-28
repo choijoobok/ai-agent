@@ -18,3 +18,5 @@ spec_set:
     - 004-admin-integration-apis.yaml
     - 005-admin-catalog-contracts.yaml
     - 006-admin-catalog-apis.yaml
+    - 007-admin-api-tool-contracts.yaml
+    - 008-admin-api-tool-apis.yaml

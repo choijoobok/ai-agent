@@ -145,7 +145,7 @@ features:
     roadmap: RM-P1
     title: "업무 API 목록 등록·관리"
     design_status: draft
-    entities: [ENT-011, ENT-012, ENT-013, ENT-014, ENT-015]
+    entities: [ENT-011, ENT-012, ENT-013, ENT-014, ENT-015, ENT-029, ENT-030, ENT-031, ENT-032, ENT-033, ENT-034, ENT-036, ENT-037]
     trigger: "SCR-004에서 계약/필드·입력/결과 가이드·코드명·그룹/응답 통제·상태를 조회하거나 전체 변경 후보를 작성할 때"
     operation_boundary: "UC-018의 API 후보·계약 검수와 사용처 연결을 소유한다. Hub 관리 승인/전결, 고객사 공동 오픈 검수·적용일, 실제 상태 변경 호출의 사용자 승인은 각각 별도 조건이다"
     inputs:
@@ -179,8 +179,9 @@ features:
       - "결과 확인 API 없음·결과 불명은 REQ-105의 수동 확인·새 승인 경계를 따른다. 타임아웃은 취소 성공이 아니며 제한 설정 변경으로 진행 중 호출 시간을 바꾸지 않는다"
     permissions: "REQ-608.permissions와 AUTHZ-090·091의 현재 관리 액션을 적용한다. API와 코드 조회/입력 확보용 자산 각각의 현재 접근·신원·마스킹/전송 통제를 유지한다"
     rules_from: ["REQ-608", "REQ-612.api_tool_mapping", "REQ-105", "REQ-113", "REQ-111.privacy_metadata", "REQ-306.version_guard", "ARCH-028.asset_versions", "ARCH-028.api_connection_resolution"]
+    physical_contract: "40-domain/007·010 및 50-api/007·008의 물리/관리·모듈 계약 초안을 따른다. 그룹/세트/실행의 소유 pending과 G3 승인은 별도다"
     pending:
-      - "@defer P3 integration_assets — 전체 후보/필드·코드명 저장·공동 오픈/적용일·연결 선택·현재 효력/참조 경합·입력/응답/가이드/이력의 물리/API/화면·목업을 정한다"
+      - "@defer P3 integration_assets — 물리/관리 API 초안과 대조하여 입력/응답/가이드/이력 화면 요건·목업·시퀀스·예외/경합 시험을 정한다. 정책/원천/세트 연결은 물리 계약 pending을 따른다"
       - "@defer P3 integration_assets·agent/integration·access_policy — 경로/보호 헤더·실제 승인 대상/인자 고정·호출 제한/점유·코드 조회 상한/캐시/실패·반출 속성·응답 처리 후보/현재 정책의 계약과 시험을 연결한다"
     metadata_validation: "REQ-608.field_metadata에 따라 요청·응답 양쪽의 구조·의미/형식·필수/NULL·코드 참조를 검수하고 REQ-111.privacy_metadata를 같은 명세 원천에서 관리한다. 코드명 제공 방법·명시적 원천/조건 매핑·실패 처리의 관리와 검수는 REQ-608.code_name_resolution을 참조한다. 그룹 매핑·지식에 속성을 복제하지 않으며 구체 입력 항목·저장·화면 배치는 P3에서 정한다"
     detail: "REQ-608의 업무 API 계약·입출력 경로 속성·통제·공동 오픈 근거와 입력 필드별 값의 출처·채우기 가이드·검증 조건을 등록하고 조회한다. 업무별 용도·사용 조건·입력 확보·조회·선택 절차는 해당 지식-API 매핑 건의 설명에서 참조하며 공통 계약을 복제하지 않는다. 실행·마스킹·중복 책임은 REQ-105·111·113, 공동 오픈은 REQ-608·PRC-11을 따른다. Hub 내부 API 전체 후보·책임자 승인/전결·반영은 REQ-608·601을 따른다. API 공통 결과 안내·후속 처리 가이드와 그 변경 승인/버전은 REQ-608.result_handling_guide를 따른다."
@@ -426,7 +427,7 @@ features:
     roadmap: RM-P1
     title: "도구(Tool) 노출 설정"
     design_status: draft
-    entities: [ENT-011, ENT-012, ENT-015, ENT-016]
+    entities: [ENT-011, ENT-012, ENT-015, ENT-016, ENT-035, ENT-036, ENT-038]
     trigger: "SCR-019에서 API/내부 구현 기반 도구를 조회하거나 등록·계약/가이드·그룹/노출·비활성화/삭제 후보를 작성할 때"
     operation_boundary: "UC-019의 등록 업무 도구와 전체 후보·노출 구성을 소유한다. 실제 구현/배포·호출은 agent, API 공통 계약은 FEAT-004, 업무별 도구 연결·사용 설명은 지식이 소유한다"
     inputs:
@@ -454,9 +455,10 @@ features:
       - "가이드는 실행 스크립트나 우회 호출 경로가 아니다. 결과 불명·중복 가능성은 REQ-105·113의 수동 확인/새 승인 경계를 따르며 임의 재전송·자동 폴링하지 않는다"
     permissions: "REQ-612.permissions의 현재 관리 권한과 각 원천/연결 지식의 접근 권한을 검사한다. 이력의 과거 그룹이나 구현 검수 기록으로 현재 권한을 대신하지 않는다"
     rules_from: ["REQ-612", "REQ-114", "REQ-105", "REQ-113", "REQ-306.version_guard", "REQ-601.request_integrity", "ARCH-028.asset_versions"]
+    physical_contract: "40-domain/007·010 및 50-api/007·008의 물리/관리·모듈 계약 초안을 따른다. 그룹/세트/실행의 소유 pending과 G3 승인은 별도다"
     pending:
-      - "@defer P3 integration_assets·agent — 구현 레지스트리/계약 판·배포 근거·현재 검증/무효화 경합과 API당 도구 하나의 중복 접수/참조 변경/폐지 후 재등록을 물리/공개 계약으로 정한다"
-      - "@defer P3 integration_assets·knowledge — 가이드 참조/편집·지식 역조회·혼합 세트·반영/폐지와 이력의 물리/API/화면·목업·시험을 설계한다"
+      - "@defer P3 integration_assets·agent — 50-api의 FEAT-021 초안을 구현 레지스트리/계약 판·배포 근거·현재 검증/무효화 경합의 실제 공개 계약에 연결한다. API 대응 점유의 후보 종료/복구는 knowledge 소유 계약으로 완성한다"
+      - "@defer P3 integration_assets·knowledge — 가이드 참조/편집·지식 역조회·혼합 세트·반영/폐지와 이력의 소유 연결 및 화면·목업·시험을 설계한다"
     detail: "REQ-612의 도구 참조·계약·검증 근거·실행 유형·그룹·노출 상태를 관리한다. API 계약은 REQ-608을 참조한다 전체 후보 스냅샷의 책임자 승인 또는 저장자 전결 후 반영과 비활성화·삭제는 REQ-601·612를 따르며 승인 메뉴는 SCR-036을 사용한다 연결 지식의 역참조·변경 영향 조회와 삭제·비활성화의 참조 보호는 REQ-612, 지식의 도구 연결 편집은 REQ-303을 따른다. 커스텀 도구 공통 결과 가이드와 API 기반 도구의 원천 가이드 참조는 REQ-612.result_handling_guide를 따른다."
     reqs: ["REQ-105","REQ-114","REQ-612"]
   - id: FEAT-022

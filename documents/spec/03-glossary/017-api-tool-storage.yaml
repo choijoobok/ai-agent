@@ -1,0 +1,64 @@
+# 업무 API·도구 물리 구성 용어
+terms:
+  - id: TRM-273
+    term: "API 필드 안정 식별"
+    key: apiFieldIdentity
+    group: "실행"
+    definition: "같은 API 안에서만 ID를 사용하고 다른 API로 이전/재사용하지 않는다. 이름/위치가 같다고 다른 필드를 자동 동일시하지 않는다"
+    relation: "ENT-029 · REQ-608"
+  - id: TRM-274
+    term: "API 필드 정의 값"
+    key: apiFieldValue
+    group: "실행"
+    definition: "값의 타입·앞자리 0·빈 문자열·null을 보존한다. 숫자는 정규 십진 표현이며 해시 일치 시 전체 값을 대조하고 충돌은 거부한다"
+    relation: "ENT-030 · REQ-608"
+  - id: TRM-275
+    term: "API 필드 검증 조건"
+    key: apiFieldCheck
+    group: "실행"
+    definition: "조건은 모두 AND이며 값 타입·범위 모순·지원 형식을 후보 검수에서 검사한다. 임의 정규식/스크립트·실행 코드를 받지 않는다"
+    relation: "ENT-031 · REQ-608"
+  - id: TRM-276
+    term: "API 계약 참조"
+    key: apiContractReference
+    db_token: API_CONTRACT_REF
+    db_token_reason: "AI_ADMIN 접두어와 30자 테이블명 상한을 지키기 위해 명확한 약어를 사용한다"
+    group: "실행"
+    definition: "실제 내용 참조를 자연어/JSON 봉투에 숨기지 않는다. 비null ID는 존재와 소유를 검사하며 미완성 null은 초안에만 허용한다"
+    relation: "ENT-032 · REQ-608"
+  - id: TRM-277
+    term: "API 값 대응"
+    key: apiValueBinding
+    group: "실행"
+    definition: "선택한 종류의 값/ID만 받으며 다른 종류 컬럼은 null이다. 참조 번호와 선택 판·필드/컬럼을 복합 FK 및 서비스 검증으로 결합한다. null FK로 다른 판의 구성 참조를 우회하지 못한다"
+    relation: "ENT-033 · REQ-608"
+  - id: TRM-278
+    term: "API 결과 상태 대응"
+    key: apiOutcomeMapping
+    group: "실행"
+    definition: "한 응답 또는 한 결과 확인 참조는 검수한 상태 필드 하나와 값별 서로 겹치지 않는 EQ 규칙을 사용한다. 미등록/모호 값·호출 실패는 UNKNOWN이며 실패/미실행으로 추정하지 않는다"
+    relation: "ENT-034 · REQ-608"
+  - id: TRM-279
+    term: "API 도구 대응 점유"
+    key: apiToolClaim
+    group: "실행"
+    definition: "API_ID 유일키는 서로 다른 도구의 신규·변경 후보 경합도 차단한다. TOOL_ID에는 유일키를 두지 않아 현재 A와 변경 후보 B를 같은 도구가 함께 확보할 수 있다"
+    relation: "ENT-035 · REQ-612·REQ-601"
+  - id: TRM-280
+    term: "API 도구 편집 처리"
+    key: apiToolEditCommand
+    group: "실행"
+    definition: "현재 권한과 동일 주체·명령/입력 지문을 대조하고 성공 결과만 전체 초안/자식/점유와 같은 트랜잭션에 기록한다"
+    relation: "ENT-036 · REQ-608·REQ-612·REQ-601"
+  - id: TRM-281
+    term: "API 입력 출처"
+    key: apiInputSource
+    group: "실행"
+    definition: "요청 필드에만 존재한다. 여러 출처가 있으면 검수한 선택 조건과 부족/복수 처리 안내를 갖고 행 순서를 자동 fallback 실행으로 해석하지 않는다"
+    relation: "ENT-037 · REQ-608"
+  - id: TRM-282
+    term: "도구 가이드 참조"
+    key: toolGuideReference
+    group: "실행"
+    definition: "내부 구현의 자연어 가이드에서 사용할 등록 후속 참조만 보존한다. API 기반 도구는 API 판의 가이드/참조를 사용하고 이 행을 두지 않는다"
+    relation: "ENT-038 · REQ-612·REQ-114"
