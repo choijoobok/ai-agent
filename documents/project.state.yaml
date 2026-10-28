@@ -114,9 +114,9 @@ workstreams:
         integration_assets:
           name: "연동 자산·카탈로그"
           features: [FEAT-001, FEAT-002, FEAT-003, FEAT-004, FEAT-011, FEAT-021]
-          progress: { inventory: verified, specification_and_logical: in_progress, physical_and_contracts: not_started, verification: not_started }
-          drafted: "2026-10-28 FEAT-001·002의 대상 시스템/데이터소스, FEAT-003·011의 카탈로그/조인에 이어 FEAT-004·021의 업무 API/도구 명세와 ENT-011~016 논리 초안을 작성했다. UC-018·019/SCR-004·019 및 TRM-256~260을 연결하고 FEAT-008·014·033의 응답 통제/세트/이력 소비 관계를 보완했다. 관리 승인·공동 오픈/구현 검수·실제 실행 승인, 미완성 초안과 정상 운영 계약을 구분한다. 정본은 31-features/002-admin.yaml·40-domain/005-admin-integration-assets.yaml·006-admin-catalog.yaml·007-admin-api-tool.yaml이며 상세 미결은 각 pending을 따른다. 이 영역 6개 기능 모두 첫 명세/논리 초안을 갖췄으나 상호 참조·미결 정련, 물리/공개 계약·화면·시험은 남아 있어 specification_and_logical은 진행 중이다"
-          draft_verification: "하네스·harness-doc·lint·도메인 검사 통과. 이번 초안 10개의 규칙 참조 49개와 신규 논리 엔티티 6개의 용어/관계/소비 연결 오류 0. 독립 검토의 응답 통제 불변 구성·초안 조건·그룹 매핑 소비 연결을 보완했다. trace 오류 0/경고 130(기존 후속 114+누적 논리 엔티티의 물리 설계 후속 16). doc-gen 197개·ID 796개·장문 10188개 누락/깨진 링크 0. HTML 설계 223장·사용자 18장·운영 9장 구조 검사와 Edge의 논리 초안 16개/기존 물리 명세·탐색·도표·인쇄 검사 통과. 런북 오류 0/기존 후속 경고 4. 제품 실행 시험·화면 승인·G3 승인은 후속이다"
+          progress: { inventory: verified, specification_and_logical: verified, physical_and_contracts: not_started, verification: not_started }
+          drafted: "2026-10-28 연동 자산 6개 기능과 ENT-001~016의 입력/처리·예외·권한/이력·참조 소유를 통합 검토했다. 사용자 선택인 관리 카탈로그 작성 시 선택·고정과 API당 도구 하나를 ADR-030·031 및 REQ-301·612에 기록하고 UC/FEAT/ENT/SCR를 연결했다. 자기조인 두 역할과 FEAT-014.reference_validation의 고정 후보 집합/외부 유효본/영향 근거/현재 직접 정책을 구분했다. 명세·논리 단계의 검토 완료이며 물리/공개 계약·화면·시험·G3 승인은 별도다. 정본은 31-features/002-admin.yaml과 40-domain/005~007 파일, 상세 후속은 각 pending 및 소유 영역을 따른다"
+          draft_verification: "하네스·harness-doc·lint·도메인 검사 통과. 영역의 기능 6개/논리 모델 16개에서 규칙 참조 114개와 소비 연결 33개의 오류 0. 독립 검토의 대상 종류+안정 ID 구분, 고정 참조 판 자동 치환 금지, API 화면/요구 연결을 보완하고 8개 반례를 명세했다. trace 오류 0/경고 130(기존 후속 114+물리 설계 후속 16). doc-gen 197개·ID 796개·장문 10234개 누락/깨진 링크 0. HTML 설계 223장·사용자 18장·운영 9장 구조 검사와 Edge 논리 16개/물리 1개·탐색·도표·인쇄 통과. 런북 오류 0/기존 후속 경고 4. 두 질문은 사용자 답변을 정본에 반영해 닫았으며 ENT 집계를 실물 47개로 바로잡았다. 제품 실행 시험 완료를 뜻하지 않는다"
         knowledge:
           name: "업무 지식·안내"
           features: [FEAT-010, FEAT-013, FEAT-014, FEAT-023, FEAT-024, FEAT-036]
@@ -161,8 +161,8 @@ workstreams:
           status: identified
           resume_when: "access_policy 상세 설계에서 외부 인사 사건과 모듈별 실제 처리 결과의 식별·순서·재전송·부분 실패/재처리·조회 계약을 대조한다. 계정과 Portal 이용 자격을 합치지 않는다"
       resume:
-        last_completed: "integration_assets의 세 번째 묶음 FEAT-004·021/UC-018·019와 ENT-011~016 논리 초안을 작성·검증해 영역 6개 기능의 첫 초안을 갖췄다. 범위와 검사 근거는 areas.integration_assets.drafted·draft_verification을 따른다. 영역 전체 설계는 진행 중이며 제품 소스·게이트·미구현 계약 상태는 유지한다"
-        next_action: "같은 integration_assets의 specification_and_logical에서 6개 기능/ENT-001~016의 pending·참조 소유·후보/유효본 불변식을 통합 검토한다. 카탈로그 관계 소유측·자기조인/동시 후보, API/도구 대응·그룹/응답 통제 후보, 세트 원자성·직접 정책 경계를 정련하고 사용자 판정이 필요한 항목만 구체 선택지로 제시한다. 이어 physical_and_contracts에서 사전 key/물리명·저장/공개 계약·현재 연결/구현 유효성 경합을 구체화하고 화면 요건·목업·시퀀스·시험 순서로 진행한다. UND-S07 공통 화면 후보도 소유 계약에서 확정하며 다른 영역/모듈 미결은 해당 정본과 해소 조건으로 연결한다"
+        last_completed: "integration_assets의 specification_and_logical 통합 검토를 마쳤다. 관계 관리측과 API/도구 대응의 사용자 결정을 반영하고 자기조인·세트 후보/외부 참조·현재 정책 경계를 정련했다. 범위와 검증 근거는 areas.integration_assets.drafted·draft_verification을 따른다. 물리명/제품 소스와 게이트는 변경하지 않았다"
+        next_action: "같은 integration_assets의 physical_and_contracts를 ENT-001~004(대상 시스템·데이터소스·변경 전 이력)부터 시작한다. 기존 사전 key와 표준에 따라 물리명/자료형·식별/버전·허용 연결/그룹 집합·삭제 후 이력·저장/참조 검사 원자성·명령 재수신/결과 확인을 설계하고 독립 관리 API와 integration의 현재 연결 공개 계약을 연결한다. 이어 카탈로그·API/도구의 고정 후보 참조와 일대일/관리측 제약을 물리 계약으로 내린다. 다른 영역의 그룹/정책 모델·반출 속성·세트 처리 모델과 agent 구현/호출 근거는 각 pending의 소유 계약에서 대조한다. 화면 요건/목업·UND-S07 공통 화면·시퀀스·시험은 다음 verification에서 완성하며 G3 전 제품 소스는 변경하지 않는다"
         waiting_on: []
       update_rules:
         - "세션 시작·재개 때 이 design_plan과 next_up을 읽고 active_step·active_area·resume을 확인한다. 합의한 순서를 바꿀 이유가 생기면 영향과 재개 지점을 먼저 설명하고 기록한다"
@@ -409,13 +409,13 @@ counters:
   REQ: 102    # REQ-041 Portal 반응형 웹 추가
   UC: 48      # system 10 · admin 공통/업무 흐름 초안 38
   FEAT: 104   # FEAT-041 admin 오류 접수·FEAT-222 agent 정기 파기 추가
-  ENT: 41    # system 31 · admin 연동 자산/카탈로그의 논리 초안 10
+  ENT: 47    # system 31 · admin 연동 자산 논리 초안 16
   API: 99
   SCR: 75    # SCR-038 워크플로우 자동 승인 요청 추가
   TC: 83     # system 67 · 보조 모델 후보 정책의 모듈 간 미구현 명세 16
   CR: 26     # CR-027까지 26건 — CR-011 없음, CR-026·027 방향 승인·반영중
   RUN: 8      # 80-operations/_index.yaml의 현재 절차. daily_checks·periodic_tasks를 2026-09-14에 채웠다
-  ADR: 29    # 029 실측 시점/운영 활성화 조건 — 2026-10-27 사용자 승인
+  ADR: 31    # ADR-030 관계 관리측 고정 · ADR-031 API/도구 일대일
   ASM: 1      # **미확인 하나** — 003(기한 G3). 002·004·007은 확인됨, 005·006 은 기각됨
   SLICE: 19
   DEF: 0
