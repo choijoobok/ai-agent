@@ -78,14 +78,15 @@ workstreams:
       status: in_progress
       purpose: "사용자가 합의한 7개 상세 설계 작업 묶음과 재개 지점을 관리한다. 메뉴 대분류·물리 도메인명·G3 승인을 확정하는 기록은 아니다"
       status_rule: "not_started(미착수) → in_progress(진행) → verified(명시된 완료 기준과 검증 충족). 외부 계약 때문에 진행할 수 없는 항목만 waiting_dependency로 표시하고 해소 조건을 남긴다. verified는 사용자 게이트 승인과 별개다"
-      active_step: inventory
+      active_step: common_contracts
       active_area: null
       sequence: [inventory, common_contracts, area_design, integration_review]
       steps:
         inventory:
-          status: in_progress
-          done: "현재 차수 admin 기능 38개·화면 36개의 기존 목록과 요구/UC 식별자 연결을 확인했다. 메뉴 진입 35개와 진입 방식 미결 SCR-010, 화면 없는 공통 처리 FEAT-040을 확인했다"
-          next: "현재 차수 요구사항 전체를 업무 의미로 대조해 admin 반영·공유 계약·다른 모듈 소유·유예를 구분한다. 기존 기능/화면의 누락·중복과 공통/내부 화면 후보를 정본에서 보완한다"
+          status: verified
+          done: "2026-10-28 요구 102건 중 현재 차수 97건의 목적·실현 기능/주 화면·모듈 소유를 목록 수준에서 대조했다. 후속 차수 4건과 유예 REQ-615를 구분했다. admin 기능 39개·메뉴/주 화면 36개·UC 38개를 연결하고 FEAT-041 오류 접수와 agent FEAT-222 정기 파기를 보완했다. SCR-010은 사용자 선택으로 독립 메뉴·별도 편집 권한을 반영했다. 공통/내부 화면 후보는 UND-S07에서 관련 영역 상세 설계로 연결했다. 전체 하위 규칙·물리 계약·TC의 완성을 뜻하지 않는다"
+          verification: "하네스/lint 통과, trace 오류 0/후속 경고 114. admin 39개 기능의 대표 영역/공통 담당 배정 중복·누락 0, 기능/UC 규칙 참조 187개 실재 확인. 독립 의미 재검토의 자동 접수 주체·증거 사본 기한 승계 보완 후 추가 발견 0. doc-gen 181개·ID 769개·장문 9626개 누락/깨진 링크 0, HTML 설계 207장·사용자 18장·운영 9장 구조 검사와 실제 Edge 탐색/도표/인쇄 검사 통과. 런북 오류 0/기존 후속 경고 4. 제품 실행 시험·화면 상세 승인·G3 승인은 후속이다"
+          next: "steps.common_contracts의 기준과 소유 계약을 정리한 뒤 integration_assets부터 영역별 상세 설계를 시작한다. 새 기능·공통 화면을 발견하면 전체 목록을 함께 갱신한다"
           exit: "요구→UC→기능→메뉴/화면 연결과 화면 없는 기능의 근거, 7개 영역의 대표 검토 담당, 다른 모듈 접점·미결 판단이 정본에서 추적된다. 식별자 존재 검사만으로 완료하지 않는다"
         common_contracts:
           status: not_started
@@ -109,33 +110,33 @@ workstreams:
         integration_assets:
           name: "연동 자산·카탈로그"
           features: [FEAT-001, FEAT-002, FEAT-003, FEAT-004, FEAT-011, FEAT-021]
-          progress: { inventory: not_started, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
+          progress: { inventory: verified, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
         knowledge:
           name: "업무 지식·안내"
           features: [FEAT-010, FEAT-013, FEAT-014, FEAT-023, FEAT-024, FEAT-036]
-          progress: { inventory: not_started, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
+          progress: { inventory: verified, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
         access_policy:
           name: "이용자·접근 정책"
           features: [FEAT-005, FEAT-006, FEAT-007, FEAT-008, FEAT-009, FEAT-012, FEAT-038]
-          progress: { inventory: not_started, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
+          progress: { inventory: verified, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
         model_operations:
           name: "모델·실행 운영"
           features: [FEAT-015, FEAT-019, FEAT-020, FEAT-025]
           focus: "REQ-602.auxiliary_fallback의 역할별 후보 순서·설정 버전·원/후속 호출·경로 동의를 함께 설계한다. FEAT-019의 전송 정책·보존 설정은 access_policy·audit_trace와 같은 정본을 대조한다"
-          progress: { inventory: not_started, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
+          progress: { inventory: verified, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
         quota_cost:
           name: "쿼터·사용량·비용"
           features: [FEAT-016, FEAT-017, FEAT-018, FEAT-030, FEAT-037]
-          progress: { inventory: not_started, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
+          progress: { inventory: verified, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
         audit_trace:
           name: "감사·실행 추적"
           features: [FEAT-026, FEAT-027, FEAT-028, FEAT-029, FEAT-031, FEAT-033]
           focus: "메뉴·조회 목적·필요 기록의 분석은 전체 inventory부터 시작한다. 정책 변경 기록은 원 소유 영역과 대조하고 agent 생산 이력의 상세 확정 조건은 dependencies에서 추적한다"
-          progress: { inventory: not_started, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
+          progress: { inventory: verified, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
         quality:
           name: "품질 신고·조사·개선"
-          features: [FEAT-022, FEAT-032, FEAT-035]
-          progress: { inventory: not_started, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
+          features: [FEAT-022, FEAT-032, FEAT-035, FEAT-041]
+          progress: { inventory: verified, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
       dependencies:
         - refs: [CR-026, CR-027, ARCH-029, ARCH-050]
           owners: [system, integration]
@@ -145,9 +146,17 @@ workstreams:
           owners: [agent, admin, integration]
           status: identified
           resume_when: "화면별 필요한 사건·식별자·상태·시간·집계·보존·권한·조회 계약을 생산/소비 양쪽에서 확인했을 때 해당 상세를 확정한다. agent 전체 설계 완료를 일괄 대기 조건으로 두지 않는다"
+        - refs: [FEAT-041, UC-038, FEAT-035, FEAT-210, FEAT-222]
+          owners: [admin, agent, portal, integration]
+          status: identified
+          resume_when: "quality·audit_trace의 상세 설계에서 오류 접수의 생산자 인증·발생/재수신 식별·저장 실패/복구와 증거 보존·보호/파기 경합을 소유 공개 계약으로 대조한다. 미결은 해당 FEAT/UC의 pending을 따른다"
+        - refs: [REQ-103, IF-006, FEAT-305, FEAT-033]
+          owners: [system, admin, integration]
+          status: identified
+          resume_when: "access_policy 상세 설계에서 외부 인사 사건과 모듈별 실제 처리 결과의 식별·순서·재전송·부분 실패/재처리·조회 계약을 대조한다. 계정과 Portal 이용 자격을 합치지 않는다"
       resume:
-        last_completed: "7개 영역 작업 순서 합의·계획 기록과 기존 목록의 식별자 연결 1차 대조. 요구사항 업무 의미 전수 검토와 영역별 상세 설계 완료는 아직이다"
-        next_action: "steps.inventory.next에서 이어간다. 전체 목록과 의존성 대조를 마친 뒤 공통 기준을 정리하고 integration_assets부터 상세 설계한다. audit_trace·quality의 기록 요구 도출은 전체 목록 대조에서 함께 시작한다"
+        last_completed: "메뉴·주 화면·기능 전체 목록의 의미/소유 대조와 독립 재검토를 마쳤다. 정본은 30-usecases·31-features·60-screens이며 오류 접수/파기·조사 보호·외부 인사 처리 조회·권한/알림 모순을 보완했다. 하네스/lint 통과, trace 오류 0/후속 경고 114건. 추가 2건은 새로 식별한 기능의 후속 테스트 설계 경고다"
+        next_action: "common_contracts에서 ARCH-029·050과 REQ-601, AUTHZ-090/001, UC-001~006·FEAT-040의 주체·권한·직접 변경/승인·버전·참조 보호 기준을 대조한다. 감사·보존의 생산/소비 접점을 함께 연결한 뒤 integration_assets의 명세·논리 모델로 진행한다. UND-S07 후보는 해당 영역에서 입력/결과를 대조해 분리 여부를 결정한다"
         waiting_on: []
       update_rules:
         - "세션 시작·재개 때 이 design_plan과 next_up을 읽고 active_step·active_area·resume을 확인한다. 합의한 순서를 바꿀 이유가 생기면 영향과 재개 지점을 먼저 설명하고 기록한다"
@@ -392,12 +401,12 @@ cognitive_debt:
 # 이관으로 들어온 것을 센 값이다. 승인받은 것의 수가 아니다.
 counters:
   REQ: 102    # REQ-041 Portal 반응형 웹 추가
-  UC: 47      # system 10 · admin 공통/업무 흐름 초안 37
-  FEAT: 102   # FEAT-040 admin 공통 관리 승인 추가
+  UC: 48      # system 10 · admin 공통/업무 흐름 초안 38
+  FEAT: 104   # FEAT-041 admin 오류 접수·FEAT-222 agent 정기 파기 추가
   ENT: 31
   API: 99
   SCR: 75    # SCR-038 워크플로우 자동 승인 요청 추가
-  TC: 67     # CR-026·027 계약 시험 명세 6건 추가 — 미구현
+  TC: 83     # system 67 · 보조 모델 후보 정책의 모듈 간 미구현 명세 16
   CR: 26     # CR-027까지 26건 — CR-011 없음, CR-026·027 방향 승인·반영중
   RUN: 8      # 80-operations/_index.yaml의 현재 절차. daily_checks·periodic_tasks를 2026-09-14에 채웠다
   ADR: 29    # 029 실측 시점/운영 활성화 조건 — 2026-10-27 사용자 승인
@@ -406,7 +415,7 @@ counters:
   DEF: 0
 
 counter_note: >-
-  UC는 system 10건과 admin 공통 관리/승인 6건·카탈로그/지식 업무 초안 8건이다. ENT 31 · API 99 · TC 67은 system 설계 명세 수이며, TC 중 CR-026·027의 추가 6건은 미구현 계약 시험이다.
+  UC는 system 10건과 admin 공통/업무 초안 38건이다. ENT 31 · API 99는 system 설계 명세이며, TC 83건은 system 67건과 보조 모델 후보 정책의 모듈 간 명세 16건이다. CR-026·027의 6건과 후보 정책 16건은 미구현 시험 명세다.
   `trace-check`는 뒤 차수와 아직 G3를 청구하지 않은 다른 작업흐름의 결손을 경고로 세고,
   각 작업흐름 G3를 청구할 때 그 소유 범위를 엄격하게 검사한다. 정확한 개수는 매 실행 결과가 정본이다.
 
