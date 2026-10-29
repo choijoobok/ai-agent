@@ -39,6 +39,8 @@
 - 중요한 열을 기본 표시하고 드문 열은 그리드 설정에서 켠다. 엑셀은 표시된 열과 순서를 따르며 숨긴 열까지 자동 포함하지 않는다.
 - 저장·삭제 시 사유, 연결 참조 정정 시 동일 대상 근거는 명령 파라미터 창에서 입력한다. 기존 관리값을 수정하는 별도 폼을 만들지 않는다.
 
+행 추가 탭: 허용 연결
+
 ### 1-1. 마스터-디테일 연동
 
 - 상단 id로 상세를 읽어 전체 구성·version을 확보한 뒤 한 행을 편집한다. 하단 집합과 상단 셀을 하나의 편집본에 모으고 한 자산 전체를 저장한다. 여러 행 일괄 저장으로 계약을 바꾸지 않는다.
@@ -67,6 +69,18 @@
 | saving | 저장 중 | 허용 연결 | 저장 결과를 기다리고 있습니다. 편집과 새 작업은 잠깁니다. | 없음 | 잠금 | 없음 | 없음 |
 | no-export | 반출 권한 없음 | 허용 연결 | 조회는 가능하며 엑셀 다운로드 권한이 없습니다. | 조회 | 잠금 | 없음 | 없음 |
 | observation | 연결 관측 확인 | 연결 관측 | 로드 정의와 확인 시점입니다. 실제 접속/호출 성공과 구분합니다. | 조회·엑셀 다운로드 | 잠금 | 없음 | 없음 |
+
+### 1-5. 영역별 관리 대상과 작업
+
+| 영역 | 종류 | 관리 대상·목적 | 작업 설명 | 버튼 | 조회 방식 | 저장 범위 | 비활성 버튼 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 대상 시스템 목록 | 목록 | 업무 API 제공 시스템의 이름·사용 여부·기본 연결을 관리한다. | 한 행을 선택해 상단 셀과 하단 집합을 함께 편집한다. 변경 사유는 저장 명령 창에서 입력한다. | 없음 | 진입/조회 버튼으로 목록 조회; 자동 행 선택 없음 | 선택 시스템의 상단 값과 허용 연결 전체 | 없음 |
+| 허용 연결 | 탭 | 이 시스템에서 사용할 수 있는 배포 연결의 집합을 관리한다. | 연결 후보를 조회해 정확한 ID를 선택/제거한다. 상단 기본 연결은 이 집합 중 하나다. 후보 조회 실패는 기존 연결 삭제로 처리하지 않는다. | 연결 후보 조회·연결 추가·연결 제거·저장 | 상위 대상 선택 시 상세; 후보는 명시 조회 | 선택 시스템의 상단 값과 허용 연결 전체 | 없음 |
+| 연결 관측 | 탭 | 현재 노드에 로드된 연결 정의의 존재와 관측 근거를 확인한다. | 로드 존재는 실제 접속/호출 성공과 다르다. 미확인·누락·불일치를 정상으로 보지 않으며 관측으로 관리값을 자동 덮어쓰지 않는다. | 최신 상세 조회 | 대상 상세 조회/최신 상세 조회 시 관측 | 조회 전용 | 없음 |
+| 사용처 | 탭 | 다른 자산이 이 대상을 사용하는 현재 참조를 확인한다. | 각 소유 화면에서 설정한 연결을 읽는다. 여기에서 사용처를 편집하지 않으며 외부 연결 변경만으로 이 대상의 변경 이력이 추가되지는 않는다. | 사용처 새로고침 | 선택 대상의 현재 권한 범위 참조 조회 | 조회 전용 | 없음 |
+| 변경 이력 | 탭 | 각 성공한 생성·변경·삭제 직후의 전체 상태 스냅샷을 최신순으로 확인한다. | 그리드의 전체 스냅샷 보기를 눌러 속성·값·배열을 읽는다. 삭제 후에도 원 대상 ID로 확인한다. 당시 그룹명 근거가 없으면 ID를 보존한다. | 없음 | 탭 진입/선택 대상 변경 때 자동 조회; 조건·조회 버튼 없음 | 조회 전용; 하단 상세 폼 없음 | 없음 |
+
+- 목업은 초기 전체 화면과 아래 영역을 순서대로 제시한다. 같은 요소는 같은 번호를 사용하고 필수·편집·출처·검증은 하단 설명 목록에서 한 번만 설명한다. 버튼을 누르는 범위와 저장되는 범위가 다르면 아래 저장 범위를 우선한다.
 
 ## 2. 조회조건
 
@@ -106,33 +120,33 @@
 
 #### 대상 시스템 목록
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 시스템명 | `MSG.ADMIN_TARGET_NAME` | `SYSTEM_NM` | `systemName` | 텍스트 | 140/좌 | 필수 | 가능 | 직접 입력 | 1~100자, 이름 중복 금지 규칙 없음 | — | 영업 시스템 | — | 표시 |
-| 관리 사용 상태 | `MSG.ADMIN_TARGET_USE` | `USE_YN` | `useYn` | 셀렉트 | 140/좌 | 필수 | 가능 | Y=사용·N=미사용 | 비활성화 시 참조 검사 | — | 사용 | — | 표시 |
-| 기본 연결 | `MSG.ADMIN_TARGET_DEFAULT_CONNECTION` | `DEFAULT_CONNECTION_ID` | `defaultConnectionId` | 선택 | 140/좌 | 선택 | 가능 | 현재 편집본의 허용 연결 집합 | null 또는 허용 집합 소속 | — | sales-api | — | 표시 |
-| 설명 | `MSG.ADMIN_ASSET_DESCRIPTION` | `DESCRIPTION` | `description` | 장문 셀 | 180/좌 | 선택 | 가능 | 직접 입력 | 비밀정보 제외 | — | 주문 처리 API 제공 | — | 표시 |
-| 최종 변경 시각 | 공통 | `MOD_DTM` | `modifiedAt` | 일시 | 160/좌 | 필수 | 읽기전용 | 서버 | — | — | 2026-10-29 10:20 | — | 표시 |
-| 최종 변경 사유 | `MSG.ADMIN_ASSET_LAST_REASON` | `CHANGE_REASON` | `lastChangeReason` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 운영 설정 변경 | — | 선택 표시 |
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 | 설명 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 시스템명 | `MSG.ADMIN_TARGET_NAME` | `SYSTEM_NM` | `systemName` | 텍스트 | 140/좌 | 필수 | 가능 | 직접 입력 | 1~100자, 이름 중복 금지 규칙 없음 | — | 영업 시스템 | — | 표시 | 업무 API 제공 시스템의 표시 이름. |
+| 관리 사용 상태 | `MSG.ADMIN_TARGET_USE` | `USE_YN` | `useYn` | 셀렉트 | 140/좌 | 필수 | 가능 | Y=사용·N=미사용 | 비활성화 시 참조 검사 | — | 사용 | — | 표시 | 관리 정의의 사용 여부. 비활성화가 기존 참조를 깨는지 서버가 검사한다. |
+| 기본 연결 | `MSG.ADMIN_TARGET_DEFAULT_CONNECTION` | `DEFAULT_CONNECTION_ID` | `defaultConnectionId` | 선택 | 140/좌 | 선택 | 가능 | 현재 편집본의 허용 연결 집합 | null 또는 허용 집합 소속 | — | sales-api | — | 표시 | 특정 연결을 따로 정하지 않은 API가 사용할 기본 연결. 허용 집합 안에서만 선택한다. |
+| 설명 | `MSG.ADMIN_ASSET_DESCRIPTION` | `DESCRIPTION` | `description` | 장문 셀 | 180/좌 | 선택 | 가능 | 직접 입력 | 비밀정보 제외 | — | 주문 처리 API 제공 | — | 표시 | 대상의 업무 용도와 관리 설명. 인증값·비밀번호 등 비밀정보는 기록하지 않는다. |
+| 최종 변경 시각 | 공통 | `MOD_DTM` | `modifiedAt` | 일시 | 160/좌 | 필수 | 읽기전용 | 서버 | — | — | 2026-10-29 10:20 | — | 표시 | 관리 정의의 마지막 변경 시각. |
+| 최종 변경 사유 | `MSG.ADMIN_ASSET_LAST_REASON` | `CHANGE_REASON` | `lastChangeReason` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 운영 설정 변경 | — | 선택 표시 | 직전 성공한 관리 변경의 사유. |
 
 - 기본 연결은 하단 허용 연결 집합에서 선택한다. 허용 집합 밖의 값은 저장하지 않는다.
 
 #### 허용 연결 — 그리드
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 허용 연결 | `MSG.ADMIN_TARGET_ALLOWED_CONNECTIONS` | `CONNECTION_ID` | `values.allowedConnectionIds[]` | 선택 | 160/좌 | 선택 | 가능 | API-003 후보 | 중복 금지, 정확 ID, 100자 초과 선택 불가 | — | sales-api | — | 표시 |
-| 현재 로드 상태 | `MSG.ADMIN_ASSET_OBSERVATION` | 저장 안 함 | `ConnectionObservation` | 텍스트 | 130/좌 | — | 읽기전용 | 정확 ID 관측 | PRESENT/MISSING/UNAVAILABLE 구분 | — | 로드 확인 | — | 표시 |
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 | 설명 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 허용 연결 | `MSG.ADMIN_TARGET_ALLOWED_CONNECTIONS` | `CONNECTION_ID` | `values.allowedConnectionIds[]` | 선택 | 160/좌 | 선택 | 가능 | API-003 후보 | 중복 금지, 정확 ID, 100자 초과 선택 불가 | — | sales-api | — | 표시 | 이 대상 시스템에서 사용할 수 있도록 선택한 배포 연결 집합. |
+| 현재 로드 상태 | `MSG.ADMIN_ASSET_OBSERVATION` | 저장 안 함 | `ConnectionObservation` | 텍스트 | 130/좌 | — | 읽기전용 | 정확 ID 관측 | PRESENT/MISSING/UNAVAILABLE 구분 | — | 로드 확인 | — | 표시 | 연결 정의가 로드되었는지에 대한 PRESENT/MISSING/UNAVAILABLE 관측. 접속 성공과 다르다. |
 
 #### 연결 관측 — 그리드
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 연결 식별자 | `MSG.ADMIN_ASSET_OBS_CONNECTION` | `저장 안 함` | `connectionId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | sales-api | — | 표시 |
-| 현재 로드 상태 | `MSG.ADMIN_ASSET_OBSERVATION` | `저장 안 함` | `ConnectionObservation` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 로드 확인 | — | 표시 |
-| 관측 시각 | `MSG.ADMIN_ASSET_OBS_TIME` | `저장 안 함` | `observedAt` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2026-10-29 10:21 | — | 표시 |
-| 관측 노드 | `MSG.ADMIN_ASSET_OBS_NODE` | `저장 안 함` | `nodeId/bootId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 현재 노드 | — | 표시 |
-| 적용 설정 | `MSG.ADMIN_ASSET_OBS_SETTINGS` | `저장 안 함` | `appliedSettingsId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 현재 적용 설정 | — | 표시 |
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 | 설명 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 연결 식별자 | `MSG.ADMIN_ASSET_OBS_CONNECTION` | `저장 안 함` | `connectionId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | sales-api | — | 표시 | 운영 설정에 정의되어 현재 로드된 정확한 연결 ID. |
+| 현재 로드 상태 | `MSG.ADMIN_ASSET_OBSERVATION` | `저장 안 함` | `ConnectionObservation` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 로드 확인 | — | 표시 | 연결 정의가 로드되었는지에 대한 PRESENT/MISSING/UNAVAILABLE 관측. 접속 성공과 다르다. |
+| 관측 시각 | `MSG.ADMIN_ASSET_OBS_TIME` | `저장 안 함` | `observedAt` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2026-10-29 10:21 | — | 표시 | 관측을 수행한 서버 시각. 관리 변경 시각과 다르다. |
+| 관측 노드 | `MSG.ADMIN_ASSET_OBS_NODE` | `저장 안 함` | `nodeId/bootId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 현재 노드 | — | 표시 | 어느 실행 노드와 기동 구간에서 관측했는지의 근거. |
+| 적용 설정 | `MSG.ADMIN_ASSET_OBS_SETTINGS` | `저장 안 함` | `appliedSettingsId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 현재 적용 설정 | — | 표시 | 관측 때 적용되어 있던 운영 설정 식별값. |
 
 - PRESENT는 로드 정의 존재이며 접속/실행 성공이 아니다. MISSING/UNAVAILABLE를 구분하고 후보 페이지에 없는 것으로 정확 ID 부재를 단정하지 않는다. 관측은 저장값·미래 실행 허가가 아니다.
 
@@ -140,33 +154,33 @@
 
 - API·신원 등 다른 소유 화면이 만든 현재 참조를 읽는다. 이 탭에서 참조를 설정하지 않으며 대상 시스템 자체를 바꾸지 않은 외부 참조 변경은 원 소유 자산의 이력으로 관리한다.
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 사용 대상 | `MSG.ADMIN_ASSET_REFERENCE` | 공개 계약 | `AssetReferencePage`의 종류·안정 ID | 텍스트 | 180/좌 | — | 읽기전용 | API-004 | 숨겨진 참조 세부정보 미노출 | — | 업무 API / 201 | — | 표시 |
-| 연결 선택 방식 | `MSG.ADMIN_TARGET_CONNECTION_MODE` | 공개 계약 | `AssetReferencePage`의 기본/특정 방식 | 텍스트 | 120/좌 | — | 읽기전용 | API-004 | 기본/특정 구분 | — | 기본 연결 사용 | — | 표시 |
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 | 설명 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 사용 대상 | `MSG.ADMIN_ASSET_REFERENCE` | 공개 계약 | `AssetReferencePage`의 종류·안정 ID | 텍스트 | 180/좌 | — | 읽기전용 | API-004 | 숨겨진 참조 세부정보 미노출 | — | 업무 API / 201 | — | 표시 | 사용처 — 그리드에서 확인하는 사용 대상. 숨겨진 참조 세부정보 미노출 |
+| 연결 선택 방식 | `MSG.ADMIN_TARGET_CONNECTION_MODE` | 공개 계약 | `AssetReferencePage`의 기본/특정 방식 | 텍스트 | 120/좌 | — | 읽기전용 | API-004 | 기본/특정 구분 | — | 기본 연결 사용 | — | 표시 | 사용처 — 그리드에서 확인하는 연결 선택 방식. 기본/특정 구분 |
 
 #### 변경 이력 — 그리드
 
 - ADR-033: 각 행은 해당 명령이 확정한 반영 후 전체 상태다. 생성도 버전 1부터 기록하며 삭제는 마지막 구성과 deleted=true를 보존한다.
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 변경 순서 | `MSG.ADMIN_ASSET_CHANGE_SEQ` | `CHANGE_SEQ` | `changeSeq` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2 | — | 표시 |
-| 작업 | `MSG.ADMIN_ASSET_ACTION` | `ACTION_CD` | `action` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 변경 | — | 표시 |
-| 처리자 | `MSG.ADMIN_ASSET_ACTOR` | `ACTOR_ID` | `actorId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | admin01 | — | 표시 |
-| 처리 시각 | `MSG.ADMIN_ASSET_APPLIED_AT` | `APPLIED_DTM` | `appliedAt` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2026-10-29 10:20 | — | 표시 |
-| 변경 사유 | `MSG.ADMIN_ASSET_REASON` | `CHANGE_REASON` | `reason` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 기본 연결 변경 | — | 표시 |
-| 반영 관리 버전 | `MSG.ADMIN_ASSET_RESULT_VERSION` | `RESULT_VERSION` | `appliedVersion` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2 | — | 표시 |
-| 원 대상 ID | `MSG.ADMIN_ASSET_ORIGINAL_ID` | `TARGET_SYSTEM_ID` | `id` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 201 | — | 선택 표시 |
-| 이력 ID | `MSG.ADMIN_ASSET_HISTORY_ID` | `HISTORY_ID` | `historyId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 501 | — | 선택 표시 |
-| 스냅샷 판 | `MSG.ADMIN_ASSET_SNAPSHOT_VERSION` | `SNAPSHOT_VERSION` | `snapshotVersion` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 1 | — | 선택 표시 |
-| 작업 식별자 | `MSG.ADMIN_ASSET_COMMAND_KEY` | `COMMAND_KEY` | `commandKey` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 11111111-1111-4111-8111-111111111111 | — | 선택 표시 |
-| 반영 후 시스템명 | `MSG.ADMIN_TARGET_SNAPSHOT_NAME` | `SNAPSHOT` | `snapshot`의 systemName | 텍스트 | 전체/좌 | 필수 | 읽기전용 | API-007 | 현재값 대체 금지 | — | 영업 시스템 | — | 선택 표시 |
-| 반영 후 설명 | `MSG.ADMIN_ASSET_SNAPSHOT_DESCRIPTION` | `SNAPSHOT` | `snapshot`의 description | 장문 뷰어 | 전체/좌 | 선택 | 읽기전용 | API-007 | 당시 값 | — | 주문 API 연동 | — | 선택 표시 |
-| 반영 후 사용 상태 | `MSG.ADMIN_TARGET_SNAPSHOT_USE` | `SNAPSHOT` | `snapshot`의 useYn | 텍스트 | 전체/좌 | 필수 | 읽기전용 | API-007 | 당시 값 | — | 사용 | — | 선택 표시 |
-| 반영 후 허용 연결 전체 | `MSG.ADMIN_TARGET_SNAPSHOT_CONNECTIONS` | `SNAPSHOT` | `snapshot`의 allowedConnectionIds | 장문 뷰어 | 전체/좌 | 필수 | 읽기전용 | API-007 | 전체 집합 | — | sales-api | — | 선택 표시 |
-| 반영 후 기본 연결 | `MSG.ADMIN_TARGET_SNAPSHOT_DEFAULT` | `SNAPSHOT` | `snapshot`의 defaultConnectionId | 텍스트 | 전체/좌 | 선택 | 읽기전용 | API-007 | 미지정 구분 | — | sales-api | — | 선택 표시 |
-| 전체 스냅샷 | `MSG.ADMIN_ASSET_SNAPSHOT` | `SNAPSHOT` | `snapshot` | 스냅샷 뷰어 | 140/좌 | — | 읽기전용 | 서버 | — | — | {"id":"201","managementVersion":"2","deleted":false,"systemName":"영업 시스템","description":"주문 API 제공","useYn":"Y","allowedConnectionIds":["sales-api"],"defaultConnectionId":"sales-api","regId":"admin01","regDtm":"2026-10-29T01:00:00Z","modId":"admin01","modDtm":"2026-10-29T01:20:00Z","changeReason":"기본 연결 변경","commandKey":"11111111-1111-4111-8111-111111111111"} | — | 표시 |
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 | 설명 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 변경 순서 | `MSG.ADMIN_ASSET_CHANGE_SEQ` | `CHANGE_SEQ` | `changeSeq` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2 | — | 표시 | 대상 안에서 성공한 변경의 순서. |
+| 작업 | `MSG.ADMIN_ASSET_ACTION` | `ACTION_CD` | `action` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 변경 | — | 표시 | 생성·변경·삭제 등 확정된 명령 종류. |
+| 처리자 | `MSG.ADMIN_ASSET_ACTOR` | `ACTOR_ID` | `actorId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | admin01 | — | 표시 | 명령을 실제 수행한 인증 주체. |
+| 처리 시각 | `MSG.ADMIN_ASSET_APPLIED_AT` | `APPLIED_DTM` | `appliedAt` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2026-10-29 10:20 | — | 표시 | 변경이 확정되어 스냅샷을 기록한 시각. |
+| 변경 사유 | `MSG.ADMIN_ASSET_REASON` | `CHANGE_REASON` | `reason` | 텍스트 | 140/좌 | 저장 시 | 읽기전용 | 서버 | 비공백 사유 필수. 이번 명령의 사유를 입력 | — | 기본 연결 변경 | — | 표시 | 이번 저장/변경 명령의 사유. 직전 사유를 자동 재사용하지 않는다. |
+| 반영 관리 버전 | `MSG.ADMIN_ASSET_RESULT_VERSION` | `RESULT_VERSION` | `appliedVersion` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2 | — | 표시 | 명령이 반영된 뒤 관리 버전. |
+| 원 대상 ID | `MSG.ADMIN_ASSET_ORIGINAL_ID` | `TARGET_SYSTEM_ID` | `id` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 201 | — | 선택 표시 | 확정된 변경 당시의 원 대상 ID. 현재값으로 덮어쓰지 않는다. |
+| 이력 ID | `MSG.ADMIN_ASSET_HISTORY_ID` | `HISTORY_ID` | `historyId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 501 | — | 선택 표시 | 한 이력 행의 안정 식별자. |
+| 스냅샷 판 | `MSG.ADMIN_ASSET_SNAPSHOT_VERSION` | `SNAPSHOT_VERSION` | `snapshotVersion` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 1 | — | 선택 표시 | 스냅샷 내용의 해석 형식 버전. 관리 버전과 별개다. |
+| 작업 식별자 | `MSG.ADMIN_ASSET_COMMAND_KEY` | `COMMAND_KEY` | `commandKey` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 11111111-1111-4111-8111-111111111111 | — | 선택 표시 | 중복 요청을 같은 명령으로 식별하는 작업 키. |
+| 반영 후 시스템명 | `MSG.ADMIN_TARGET_SNAPSHOT_NAME` | `SNAPSHOT` | `snapshot`의 systemName | 텍스트 | 전체/좌 | 필수 | 읽기전용 | API-007 | 현재값 대체 금지 | — | 영업 시스템 | — | 선택 표시 | 이번 명령 직후 확정한 시스템명. 현재 설정으로 다시 계산하지 않고 당시 저장값을 표시한다. |
+| 반영 후 설명 | `MSG.ADMIN_ASSET_SNAPSHOT_DESCRIPTION` | `SNAPSHOT` | `snapshot`의 description | 장문 뷰어 | 전체/좌 | 선택 | 읽기전용 | API-007 | 당시 값 | — | 주문 API 연동 | — | 선택 표시 | 이번 명령 직후 확정한 설명. 현재 설정으로 다시 계산하지 않고 당시 저장값을 표시한다. |
+| 반영 후 사용 상태 | `MSG.ADMIN_TARGET_SNAPSHOT_USE` | `SNAPSHOT` | `snapshot`의 useYn | 텍스트 | 전체/좌 | 필수 | 읽기전용 | API-007 | 당시 값 | — | 사용 | — | 선택 표시 | 이번 명령 직후 확정한 사용 상태. 현재 설정으로 다시 계산하지 않고 당시 저장값을 표시한다. |
+| 반영 후 허용 연결 전체 | `MSG.ADMIN_TARGET_SNAPSHOT_CONNECTIONS` | `SNAPSHOT` | `snapshot`의 allowedConnectionIds | 장문 뷰어 | 전체/좌 | 필수 | 읽기전용 | API-007 | 전체 집합 | — | sales-api | — | 선택 표시 | 이번 명령 직후 확정한 허용 연결 전체. 현재 설정으로 다시 계산하지 않고 당시 저장값을 표시한다. |
+| 반영 후 기본 연결 | `MSG.ADMIN_TARGET_SNAPSHOT_DEFAULT` | `SNAPSHOT` | `snapshot`의 defaultConnectionId | 텍스트 | 전체/좌 | 선택 | 읽기전용 | API-007 | 미지정 구분 | — | sales-api | — | 선택 표시 | 이번 명령 직후 확정한 기본 연결. 현재 설정으로 다시 계산하지 않고 당시 저장값을 표시한다. |
+| 전체 스냅샷 | `MSG.ADMIN_ASSET_SNAPSHOT` | `SNAPSHOT` | `snapshot` | 스냅샷 뷰어 | 140/좌 | — | 읽기전용 | 서버 | — | — | {"id":"201","managementVersion":"2","deleted":false,"systemName":"영업 시스템","description":"주문 API 제공","useYn":"Y","allowedConnectionIds":["sales-api"],"defaultConnectionId":"sales-api","regId":"admin01","regDtm":"2026-10-29T01:00:00Z","modId":"admin01","modDtm":"2026-10-29T01:20:00Z","changeReason":"기본 연결 변경","commandKey":"11111111-1111-4111-8111-111111111111"} | — | 표시 | 그 변경 직후 전체 상태. 누르면 속성·값과 배열 목록을 읽으며 실제 원문이 있을 때만 JSON 원문 버튼을 제공한다. |
 
 - 각 행은 이번 처리 근거와 반영 후 전체 구성을 가진다. 삭제 행의 구성은 마지막 설정이며 현재 유효 설정이 아니다. SNAPSHOT v1의 항목을 개별 컬럼으로 표시하고 전체 스냅샷 보기 링크를 한 번 클릭하면 읽기 전용 모달에서 항목명/값·배열 목록으로 읽고 JSON 원문은 별도로 펼친다. ‘JSON 원문 보기’는 실제 내용이 있는 원문 문자열에만 표시한다. 원문 없음과 파싱 실패/미지원 형식의 구분은 [공통 표시 계약](../../../../spec/50-api/003-admin-integration-contracts.yaml)의 `FEAT-001.shared_write_contract.snapshot_presentation`을 따른다. 미지원 스냅샷 판은 재현 불가와 존재하는 원문을 유지하며 현재값으로 채우지 않는다.
 - 별도 조회조건·상세 조회 요청·하단 상세 폼은 없다. 그리드 설정/셀 뷰어는 사용할 수 있다.
@@ -200,6 +214,8 @@
 | 버튼 | 출처 | 라벨 키 | 액션 | 활성 조건 | 동작 | 확인 문구 키 |
 |---|---|---|---|---|---|---|
 | 조회 | 자동 | 공통 | READ | 조회 가능 | 목록 재조회, 이력 탭 안에는 없음 | — |
+| 연결 추가 | 선언 | MSG.ADMIN_TARGET_ADD_CONNECTION | SAVE | READ·SAVE·전체 편집본 확보·처리 중 아님; 현재 로드 후보 확보 | 허용 연결 선택 행을 편집본에 추가; 상단/하단 전체 저장 전 운영값 변경 없음 | — |
+| 연결 제거 | 선언 | MSG.ADMIN_TARGET_REMOVE_CONNECTION | SAVE | READ·SAVE·전체 편집본 확보·처리 중 아님; 선택 연결·기본 연결/사용처 정합성 확인 | 선택 연결을 편집본에서 제거; 상단/하단 전체 저장 전 운영값 변경 없음 | — |
 | 신규 | 선언 | 공통 | SAVE | READ·SAVE, 처리 중 아님 | 신규 편집본 | 미저장 변경 시 `MSG.ADMIN_ASSET_DISCARD_CONFIRM` |
 | 저장 | 선언 | 공통 | SAVE | 유효 변경 있음 | 현재 한 건 전체 저장 | — |
 | 삭제 | 선언 | 공통 | SAVE | 기존 대상, 처리 중 아님 | 사유 입력 후 서버 참조 검사/삭제 | `MSG.ADMIN_ASSET_DELETE_CONFIRM` |

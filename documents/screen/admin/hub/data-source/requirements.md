@@ -39,6 +39,8 @@
 - 중요한 열을 기본 표시하고 드문 열은 그리드 설정에서 켠다. 엑셀은 표시된 열과 순서를 따르며 숨긴 열까지 자동 포함하지 않는다.
 - 저장·삭제 시 사유, 연결 참조 정정 시 동일 대상 근거는 명령 파라미터 창에서 입력한다. 기존 관리값을 수정하는 별도 폼을 만들지 않는다.
 
+행 추가 탭: 적용 가능 그룹
+
 ### 1-1. 마스터-디테일 연동
 
 - 상단 id로 상세를 읽어 전체 구성·version을 확보한 뒤 한 행을 편집한다. 하단 집합과 상단 셀을 하나의 편집본에 모으고 한 자산 전체를 저장한다. 여러 행 일괄 저장으로 계약을 바꾸지 않는다.
@@ -72,6 +74,19 @@
 | timezone-search | 시간대 검색·선택 | 연결 관측 | 검색어로 목록을 좁힌 뒤 시간대를 선택합니다. 선택 해제는 미지정입니다. | 조회·저장·시간대 목록 새로고침·편집 취소·엑셀 다운로드 | 가능 | 없음 | 시각 체계 |
 | timezone-unavailable | 시간대 목록 확인 불가 | 연결 관측 | 시간대 목록을 불러오지 못했습니다. 기존 값을 유지하며 목록을 다시 확인하세요. | 시간대 목록 새로고침 | 잠금 | 없음 | 없음 |
 | no-export | 반출 권한 없음 | 연결 관측 | 조회는 가능하며 엑셀 다운로드 권한이 없습니다. | 조회 | 잠금 | 없음 | 없음 |
+| dbms-mismatch | DBMS 버전 대조 불일치 | 연결 관측 | 관리 버전과 관측 버전이 다릅니다. 원천 변경을 확인하고 관리값을 정정하기 전에는 SQL 생성·실행할 수 없습니다. | 조회·저장·엑셀 다운로드 | 가능 | DBMS 버전=16.4;관측 DBMS 버전=17.0;DBMS 대조 결과=불일치 | 없음 |
+
+### 1-5. 영역별 관리 대상과 작업
+
+| 영역 | 종류 | 관리 대상·목적 | 작업 설명 | 버튼 | 조회 방식 | 저장 범위 | 비활성 버튼 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 데이터소스 목록 | 목록 | DB 연결의 표시 별칭·DBMS·버전·파서·시각 체계를 관리한다. | 한 행을 선택해 상단 셀과 하단 집합을 함께 편집한다. 변경 사유는 저장 명령 창에서 입력한다. | 없음 | 진입/조회 버튼으로 목록 조회; 자동 행 선택 없음 | 선택 데이터소스의 상단 값과 적용 가능 그룹 전체 | 없음 |
+| 적용 가능 그룹 | 탭 | 하위 테이블/컬럼 접근 매핑에서 선택 가능한 Portal 그룹의 범위를 정한다. | 그룹 자체는 그룹 관리에서 만들고 여기서는 선택/제거한다. 사용 중인 하위 매핑이 있으면 제거를 서버가 검사한다. 그룹 후보 계약이 준비되지 않으면 변경 버튼은 잠긴다. | 그룹 추가·그룹 제거·저장 | 선택 데이터소스 상세로 집합 확보 | 선택 데이터소스의 상단 값과 적용 가능 그룹 전체 | 그룹 추가·그룹 제거 |
+| 연결 관측 | 탭 | 현재 로드 연결·실제 DBMS/버전·관리값 대조 결과를 확인한다. | 로드 존재는 실제 접속/호출 성공과 다르다. 미확인·누락·불일치를 정상으로 보지 않으며 관측으로 관리값을 자동 덮어쓰지 않는다. | 최신 상세 조회 | 대상 상세 조회/최신 상세 조회 시 관측 | 조회 전용 | 없음 |
+| 사용처 | 탭 | 다른 자산이 이 대상을 사용하는 현재 참조를 확인한다. | 각 소유 화면에서 설정한 연결을 읽는다. 여기에서 사용처를 편집하지 않으며 외부 연결 변경만으로 이 대상의 변경 이력이 추가되지는 않는다. | 사용처 새로고침 | 선택 대상의 현재 권한 범위 참조 조회 | 조회 전용 | 없음 |
+| 변경 이력 | 탭 | 각 성공한 생성·변경·삭제 직후의 전체 상태 스냅샷을 최신순으로 확인한다. | 그리드의 전체 스냅샷 보기를 눌러 속성·값·배열을 읽는다. 삭제 후에도 원 대상 ID로 확인한다. 당시 그룹명 근거가 없으면 ID를 보존한다. | 없음 | 탭 진입/선택 대상 변경 때 자동 조회; 조건·조회 버튼 없음 | 조회 전용; 하단 상세 폼 없음 | 없음 |
+
+- 목업은 초기 전체 화면과 아래 영역을 순서대로 제시한다. 같은 요소는 같은 번호를 사용하고 필수·편집·출처·검증은 하단 설명 목록에서 한 번만 설명한다. 버튼을 누르는 범위와 저장되는 범위가 다르면 아래 저장 범위를 우선한다.
 
 ## 2. 조회조건
 
@@ -79,7 +94,7 @@
 |---|---|---|---|---|---|---|---|---|
 | 표시 별칭 | `ALIAS_NM` | `alias` | 텍스트 | contains | 선택 | 없음 | 직접 입력 | `MSG.ADMIN_DS_ALIAS` |
 | yml 연결 ID | `CONNECTION_ID` | `connectionId` | 텍스트 | eq | 선택 | 없음 | 정확 문자열 | `MSG.ADMIN_DS_CONNECTION` |
-| DBMS | `DBMS_CD` | `dbmsCode` | 텍스트 | eq | 선택 | 없음 | 현재 저장 코드 정확 입력 | `MSG.ADMIN_DS_DBMS` |
+| DBMS | `DBMS_CD` | `dbmsCode` | 셀렉트 | eq | 선택 | 전체 | 공통코드 DBMS | `MSG.ADMIN_DS_DBMS` |
 | DB·DW 유형 | `SOURCE_TYPE_CD` | `sourceType` | 셀렉트 | eq | 선택 | 전체 | 상수 DB·DW | `MSG.ADMIN_DS_SOURCE_TYPE` |
 
 - 별칭 검색은 표시명 부분 일치이며 저장 유일성 비교와 다르다. 연결 후보는 keyword/assetId, 사용처는 id, 이력은 선택 id와 페이지만 전달한다.
@@ -112,19 +127,20 @@
 
 #### 데이터소스 목록
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 표시 별칭 | `MSG.ADMIN_DS_ALIAS` | `ALIAS_NM` | `alias` | 텍스트 | 140/좌 | 필수 | 가능 | 직접 입력 | FEAT-002.alias_contract, 정규화 후 1~100자 | — | ERP | — | 표시 |
-| yml 연결 ID | `MSG.ADMIN_DS_CONNECTION` | `CONNECTION_ID` | `connectionId` | 선택 | 140/좌 | 필수 | 조건부 | API-012 후보 | 정확 ID 1~100자, 기존 변경은 명시 정정 | — | erp-read | — | 표시 |
-| DBMS | `MSG.ADMIN_DS_DBMS` | `DBMS_CD` | `dbmsCode` | 선택 | 140/좌 | 필수 | 가능 | 현재 지원 목록 | 코드 1~30자·호환성 | — | POSTGRESQL | — | 표시 |
-| SQL 파서 | `MSG.ADMIN_DS_PARSER` | `PARSER_ID` | `parserId` | 선택 | 140/좌 | 선택 | 가능 | 해당 DBMS 지원 목록 | 미지정 허용·미지원 값 거부 | — | postgres-parser | — | 표시 |
-| DB·DW 유형 | `MSG.ADMIN_DS_SOURCE_TYPE` | `SOURCE_TYPE_CD` | `sourceType` | 셀렉트 | 140/좌 | 필수 | 가능 | DB·DW | 정확 코드 | — | DB | — | 표시 |
-| 시각 체계 | `MSG.ADMIN_DS_TIME_ZONE` | `TIME_ZONE_ID` | `timeZoneId` | 검색콤보 | 160/좌 | 선택 | 가능 | API-062·Timezones 공통 유틸 | null 또는 서버가 아는 ID, 자유 입력 저장 불가 | — | Asia/Seoul | Asia/Seoul·Asia/Tokyo·America/New_York·Europe/London·UTC | 표시 |
-| 설명 | `MSG.ADMIN_ASSET_DESCRIPTION` | `DESCRIPTION` | `description` | 장문 셀 | 180/좌 | 선택 | 가능 | 직접 입력 | 비밀정보 제외 | — | 영업 주문 조회 | — | 선택 표시 |
-| 데이터 기준 시각 정보 | `MSG.ADMIN_DS_DATA_BASIS` | `DATA_BASIS` | `dataBasis` | 장문 셀 | 180/좌 | 선택 | 가능 | 관리자 설명 | 실제 최신성 관측으로 가장하지 않음 | — | 매일 영업 마감 기준 | — | 선택 표시 |
-| 최종 변경 시각 | 공통 | `MOD_DTM` | `modifiedAt` | 일시 | 160/좌 | 필수 | 읽기전용 | 서버 | — | — | 2026-10-29 10:20 | — | 표시 |
-| 최종 변경 사유 | `MSG.ADMIN_ASSET_LAST_REASON` | `CHANGE_REASON` | `lastChangeReason` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 운영 설정 변경 | — | 선택 표시 |
-| 최종 정정 근거 | `MSG.ADMIN_DS_LAST_CORRECTION` | `CORRECTION_EVIDENCE` | `lastCorrectionEvidence` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 동일 대상 확인 기록 | — | 선택 표시 |
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 | 설명 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 표시 별칭 | `MSG.ADMIN_DS_ALIAS` | `ALIAS_NM` | `alias` | 텍스트 | 140/좌 | 필수 | 가능 | 직접 입력 | FEAT-002.alias_contract, 정규화 후 1~100자 | — | ERP | — | 표시 | 사람이 식별하기 위한 데이터소스 표시 별칭. yml 연결 ID와 구분한다. |
+| yml 연결 ID | `MSG.ADMIN_DS_CONNECTION` | `CONNECTION_ID` | `connectionId` | 선택 | 140/좌 | 필수 | 조건부 | API-012 후보 | 정확 ID 1~100자, 기존 변경은 명시 정정 | — | erp-read | — | 표시 | 운영 설정에 정의되어 현재 로드된 정확한 연결 ID. |
+| DBMS | `MSG.ADMIN_DS_DBMS` | `DBMS_CD` | `dbmsCode` | 검색콤보 | 140/좌 | 필수 | 가능 | 공통코드 DBMS·현재 실행 지원 목록 | 활성 코드·연결 관측 대조 | — | POSTGRESQL | POSTGRESQL | 표시 | 연결된 데이터베이스 관리 시스템의 종류. 자료형 후보·SQL 해석·AI 문맥에 사용한다. |
+| DBMS 버전 | `MSG.ADMIN_DS_DBMS_VERSION` | `DBMS_VERSION` | `dbmsVersion` | 텍스트 | 130/좌 | 필수 | 가능 | 연결 관측 제안·관리자 확인 | 앞뒤 공백 제거 후 1~100자, 실제 버전 문자열; 목록/semver 강제 없음 | — | 16.4 | — | 표시 | 관리자가 확인한 실제 DBMS 버전 문자열. AI에 제공하며 자료형 목록을 버전별로 나누지는 않는다. |
+| SQL 파서 | `MSG.ADMIN_DS_PARSER` | `PARSER_ID` | `parserId` | 선택 | 140/좌 | 선택 | 가능 | 해당 DBMS 지원 목록 | 미지정 허용·미지원 값 거부 | — | postgres-parser | — | 표시 | 선택 DBMS에 맞춰 SQL을 해석할 파서. |
+| DB·DW 유형 | `MSG.ADMIN_DS_SOURCE_TYPE` | `SOURCE_TYPE_CD` | `sourceType` | 셀렉트 | 140/좌 | 필수 | 가능 | DB·DW | 정확 코드 | — | DB | — | 표시 | 업무 데이터베이스(DB)와 데이터웨어하우스(DW) 구분. |
+| 시각 체계 | `MSG.ADMIN_DS_TIME_ZONE` | `TIME_ZONE_ID` | `timeZoneId` | 검색콤보 | 160/좌 | 선택 | 가능 | API-062·Timezones 공통 유틸 | null 또는 서버가 아는 ID, 자유 입력 저장 불가 | — | Asia/Seoul | Asia/Seoul·Asia/Tokyo·America/New_York·Europe/London·UTC | 표시 | 원천 시각 해석에 사용하는 Java ZoneId. 공통 검색 콤보로 선택한다. |
+| 설명 | `MSG.ADMIN_ASSET_DESCRIPTION` | `DESCRIPTION` | `description` | 장문 셀 | 180/좌 | 선택 | 가능 | 직접 입력 | 비밀정보 제외 | — | 영업 주문 조회 | — | 선택 표시 | 대상의 업무 용도와 관리 설명. 인증값·비밀번호 등 비밀정보는 기록하지 않는다. |
+| 데이터 기준 시각 정보 | `MSG.ADMIN_DS_DATA_BASIS` | `DATA_BASIS` | `dataBasis` | 장문 셀 | 180/좌 | 선택 | 가능 | 관리자 설명 | 실제 최신성 관측으로 가장하지 않음 | — | 매일 영업 마감 기준 | — | 선택 표시 | 데이터가 어느 업무 시점 기준인지 설명하는 관리 정보. 실제 최신성 관측값은 아니다. |
+| 최종 변경 시각 | 공통 | `MOD_DTM` | `modifiedAt` | 일시 | 160/좌 | 필수 | 읽기전용 | 서버 | — | — | 2026-10-29 10:20 | — | 표시 | 관리 정의의 마지막 변경 시각. |
+| 최종 변경 사유 | `MSG.ADMIN_ASSET_LAST_REASON` | `CHANGE_REASON` | `lastChangeReason` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 운영 설정 변경 | — | 선택 표시 | 직전 성공한 관리 변경의 사유. |
+| 최종 정정 근거 | `MSG.ADMIN_DS_LAST_CORRECTION` | `CORRECTION_EVIDENCE` | `lastCorrectionEvidence` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 동일 대상 확인 기록 | — | 선택 표시 | 직전 연결 참조 정정 때 기록한 동일 대상 근거. |
 
 - yml 연결 ID는 현재 로드된 후보에서 선택하며 신규/변경 저장 직전 서버가 존재를 재검사한다. 표시 별칭은 yml 키와 별개다. 미등록/제거는 입력 거부, 조회 장애는 확인 불가이며 저장하지 않는다.
 - 타임존은 API-062의 공통 Timezones 후보를 검색하여 선택한다. 검색어는 값이 아니며 선택 해제·신규는 null이다. 목록 실패 시 기존 선택을 보존한다. 기존 배포 연결 변경은 연결 참조 정정 동작과 근거 확인 후 저장한다.
@@ -133,21 +149,24 @@
 
 - 그룹 자체의 생성·명칭 관리는 사용자 그룹 메뉴가 소유한다. 이 화면에서는 해당 데이터소스의 하위 테이블/컬럼 매핑에 쓸 수 있는 그룹 집합을 선택한다. 실제 카탈로그·컬럼의 접근 그룹 부여는 카탈로그 그룹 매핑 메뉴가 소유하며 이 집합만으로 조회 권한을 부여하지 않는다.
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 적용 가능 그룹 ID | `MSG.ADMIN_DS_GROUP` | `GROUP_ID` | `values.applicableGroupIds[]` | 선택 | 160/좌 | 선택 | 조건부 | access_policy 계약 대기 | 중복 없음·제거 시 하위 매핑 검사 | — | 42 | — | 표시 |
-| 현재 그룹명 | `MSG.ADMIN_DS_GROUP_NAME` | 공개 계약 | 현재 표시명 | 텍스트 | 180/좌 | — | 읽기전용 | access_policy 계약 대기 | 조회 불가이면 ID 유지·미확인 | — | 이름 확인 대기 | — | 표시 |
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 | 설명 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 적용 가능 그룹 ID | `MSG.ADMIN_DS_GROUP` | `GROUP_ID` | `values.applicableGroupIds[]` | 선택 | 160/좌 | 선택 | 조건부 | access_policy 계약 대기 | 중복 없음·제거 시 하위 매핑 검사 | — | 42 | — | 표시 | 하위 카탈로그 그룹 매핑에서 선택할 수 있는 그룹의 범위. 이 목록 자체가 테이블 접근을 부여하지 않는다. |
+| 현재 그룹명 | `MSG.ADMIN_DS_GROUP_NAME` | 공개 계약 | 현재 표시명 | 텍스트 | 180/좌 | — | 읽기전용 | access_policy 계약 대기 | 조회 불가이면 ID 유지·미확인 | — | 이름 확인 대기 | — | 표시 | 현재 그룹 원천에서 읽은 이름. 조회 실패 시 ID와 미확인을 유지한다. |
 
 #### 연결 관측 — 그리드
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 연결 식별자 | `MSG.ADMIN_ASSET_OBS_CONNECTION` | `저장 안 함` | `connectionId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | erp-read | — | 표시 |
-| 현재 로드 상태 | `MSG.ADMIN_ASSET_OBSERVATION` | `저장 안 함` | `ConnectionObservation` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 로드 확인 | — | 표시 |
-| 파서 지원 | `MSG.ADMIN_DS_PARSER_SUPPORT` | `저장 안 함` | `지원 근거` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 선택 파서 지원 | — | 표시 |
-| 관측 시각 | `MSG.ADMIN_ASSET_OBS_TIME` | `저장 안 함` | `observedAt` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2026-10-29 10:21 | — | 표시 |
-| 관측 노드 | `MSG.ADMIN_ASSET_OBS_NODE` | `저장 안 함` | `nodeId/bootId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 현재 노드 | — | 표시 |
-| 적용 설정 | `MSG.ADMIN_ASSET_OBS_SETTINGS` | `저장 안 함` | `appliedSettingsId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 현재 적용 설정 | — | 표시 |
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 | 설명 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 연결 식별자 | `MSG.ADMIN_ASSET_OBS_CONNECTION` | `저장 안 함` | `connectionId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | erp-read | — | 표시 | 운영 설정에 정의되어 현재 로드된 정확한 연결 ID. |
+| 현재 로드 상태 | `MSG.ADMIN_ASSET_OBSERVATION` | `저장 안 함` | `ConnectionObservation` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 로드 확인 | — | 표시 | 연결 정의가 로드되었는지에 대한 PRESENT/MISSING/UNAVAILABLE 관측. 접속 성공과 다르다. |
+| 파서 지원 | `MSG.ADMIN_DS_PARSER_SUPPORT` | `저장 안 함` | `지원 근거` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 선택 파서 지원 | — | 표시 | 연결 관측 — 그리드에서 확인하는 파서 지원. — |
+| 관측 DBMS | `MSG.ADMIN_DS_OBS_DBMS` | `저장 안 함` | `observedProductName` | 텍스트 | 130/좌 | — | 읽기전용 | 연결 메타데이터 | 관리 DBMS와 구분 | — | PostgreSQL | — | 표시 | 실제 연결 메타데이터에서 읽은 DBMS 제품명. |
+| 관측 DBMS 버전 | `MSG.ADMIN_DS_OBS_DBMS_VERSION` | `저장 안 함` | `observedProductVersion` | 텍스트 | 140/좌 | — | 읽기전용 | 연결 메타데이터 | 미확인과 불일치 구분 | — | 16.4 | — | 표시 | 실제 연결 메타데이터에서 읽은 DBMS 버전. |
+| DBMS 대조 결과 | `MSG.ADMIN_DS_DBMS_MATCH` | `저장 안 함` | `dbmsMatch` | 텍스트 | 160/좌 | — | 읽기전용 | 서버 대조 | 불일치/미확인은 정상 아님 | — | 관리값 일치 | — | 표시 | 관리한 DBMS·버전과 관측값의 일치/불일치/미확인 판정. |
+| 관측 시각 | `MSG.ADMIN_ASSET_OBS_TIME` | `저장 안 함` | `observedAt` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2026-10-29 10:21 | — | 표시 | 관측을 수행한 서버 시각. 관리 변경 시각과 다르다. |
+| 관측 노드 | `MSG.ADMIN_ASSET_OBS_NODE` | `저장 안 함` | `nodeId/bootId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 현재 노드 | — | 표시 | 어느 실행 노드와 기동 구간에서 관측했는지의 근거. |
+| 적용 설정 | `MSG.ADMIN_ASSET_OBS_SETTINGS` | `저장 안 함` | `appliedSettingsId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 현재 적용 설정 | — | 표시 | 관측 때 적용되어 있던 운영 설정 식별값. |
 
 - PRESENT는 로드 정의 존재이며 접속/실행 성공이 아니다. MISSING/UNAVAILABLE를 구분하고 후보 페이지에 없는 것으로 정확 ID 부재를 단정하지 않는다. 관측은 저장값·미래 실행 허가가 아니다.
 
@@ -155,10 +174,10 @@
 
 - 현재 참조를 읽는 탭이다. 카탈로그·신원 매핑 등은 각 소유 화면에서 설정하며 여기서는 편집하지 않는다. 외부 자산의 참조 추가/삭제가 데이터소스 자체를 변경하지 않으면 데이터소스 변경 이력을 새로 만들지 않는다. 해당 변경의 이력은 소유 자산에서 관리한다.
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 사용 대상 | `MSG.ADMIN_ASSET_REFERENCE` | 공개 계약 | `AssetReferencePage`의 종류·안정 ID | 텍스트 | 180/좌 | — | 읽기전용 | API-013 | 공개 가능한 참조만 | — | 카탈로그 / 301 | — | 표시 |
-| 참조 목적 | `MSG.ADMIN_DS_REFERENCE_PURPOSE` | 공개 계약 | `AssetReferencePage`의 목적 | 텍스트 | 200/좌 | — | 읽기전용 | API-013 | 원천 객체 권한과 별개 | — | 공개 테이블 연결 | — | 표시 |
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 | 설명 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 사용 대상 | `MSG.ADMIN_ASSET_REFERENCE` | 공개 계약 | `AssetReferencePage`의 종류·안정 ID | 텍스트 | 180/좌 | — | 읽기전용 | API-013 | 공개 가능한 참조만 | — | 카탈로그 / 301 | — | 표시 | 사용처 — 그리드에서 확인하는 사용 대상. 공개 가능한 참조만 |
+| 참조 목적 | `MSG.ADMIN_DS_REFERENCE_PURPOSE` | 공개 계약 | `AssetReferencePage`의 목적 | 텍스트 | 200/좌 | — | 읽기전용 | API-013 | 원천 객체 권한과 별개 | — | 공개 테이블 연결 | — | 표시 | 사용처 — 그리드에서 확인하는 참조 목적. 원천 객체 권한과 별개 |
 
 #### 변경 이력 — 그리드
 
@@ -166,26 +185,26 @@
 
 - 이 탭의 범위는 데이터소스 자체의 메타데이터·배포 연결 참조·적용 가능 그룹 집합이다. 다른 자산에서 수행한 그룹 정의/접근 매핑/사용처 변경의 전체 감사 이력을 합친 목록이 아니다. 원 소유 자산의 이력은 해당 메뉴와 통합 감사/이력 조회에서 연결한다.
 
-| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 변경 순서 | `MSG.ADMIN_ASSET_CHANGE_SEQ` | `CHANGE_SEQ` | `changeSeq` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2 | — | 표시 |
-| 작업 | `MSG.ADMIN_ASSET_ACTION` | `ACTION_CD` | `action` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 변경 | — | 표시 |
-| 처리자 | `MSG.ADMIN_ASSET_ACTOR` | `ACTOR_ID` | `actorId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | admin01 | — | 표시 |
-| 처리 시각 | `MSG.ADMIN_ASSET_APPLIED_AT` | `APPLIED_DTM` | `appliedAt` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2026-10-29 10:20 | — | 표시 |
-| 변경 사유 | `MSG.ADMIN_ASSET_REASON` | `CHANGE_REASON` | `reason` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 적용 가능 그룹 10개에서 8개로 변경 | — | 표시 |
-| 반영 관리 버전 | `MSG.ADMIN_ASSET_RESULT_VERSION` | `RESULT_VERSION` | `appliedVersion` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2 | — | 표시 |
-| 원 대상 ID | `MSG.ADMIN_ASSET_ORIGINAL_ID` | `DATA_SOURCE_ID` | `id` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 101 | — | 선택 표시 |
-| 이력 ID | `MSG.ADMIN_ASSET_HISTORY_ID` | `HISTORY_ID` | `historyId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 501 | — | 선택 표시 |
-| 스냅샷 판 | `MSG.ADMIN_ASSET_SNAPSHOT_VERSION` | `SNAPSHOT_VERSION` | `snapshotVersion` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 1 | — | 선택 표시 |
-| 작업 식별자 | `MSG.ADMIN_ASSET_COMMAND_KEY` | `COMMAND_KEY` | `commandKey` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 11111111-1111-4111-8111-111111111111 | — | 선택 표시 |
-| 반영 후 별칭 | `MSG.ADMIN_DS_SNAPSHOT_ALIAS` | `SNAPSHOT` | `snapshot`의 alias | 텍스트 | 전체/좌 | 필수 | 읽기전용 | API-016 | 현재값 대체 금지 | — | ERP | — | 선택 표시 |
-| 반영 후 배포 연결 | `MSG.ADMIN_DS_SNAPSHOT_CONNECTION` | `SNAPSHOT` | `snapshot`의 connectionId | 텍스트 | 전체/좌 | 필수 | 읽기전용 | API-016 | 당시 정확 ID | — | erp-read | — | 선택 표시 |
-| 반영 후 설명 | `MSG.ADMIN_ASSET_SNAPSHOT_DESCRIPTION` | `SNAPSHOT` | `snapshot`의 description | 장문 뷰어 | 전체/좌 | 선택 | 읽기전용 | API-016 | 당시 값 | — | 영업 주문 원천 | — | 선택 표시 |
-| 반영 후 DBMS·파서·유형 | `MSG.ADMIN_DS_SNAPSHOT_TECHNICAL` | `SNAPSHOT` | `snapshot`의 dbmsCode/parserId/sourceType | 텍스트 | 전체/좌 | 필수 | 읽기전용 | API-016 | 미지정 구분 | — | POSTGRESQL / postgres-parser / DB | — | 선택 표시 |
-| 반영 후 시간대·기준 시각 정보 | `MSG.ADMIN_DS_SNAPSHOT_TIME_BASIS` | `SNAPSHOT` | `snapshot`의 timeZoneId/dataBasis | 장문 뷰어 | 전체/좌 | 선택 | 읽기전용 | API-016 | 미확인 구분 | — | Asia/Seoul / 영업 마감 기준 | — | 선택 표시 |
-| 적용 가능 그룹 수 | `MSG.ADMIN_DS_SNAPSHOT_GROUPS` | `SNAPSHOT` | snapshot.applicableGroupIds.length | 숫자 | 전체/좌 | 필수 | 읽기전용 | API-016 | 과거 이름이 없으면 ID 유지 | — | 8 | — | 표시 |
-| 이번 동일 대상 확인 근거 | `MSG.ADMIN_DS_CORRECTION_EVIDENCE` | `CORRECTION_EVIDENCE` | `correctionEvidence` | 장문 뷰어 | 전체/좌 | 정정 시 | 읽기전용 | API-016 | 직전 정정 근거와 구분 | — | 해당 없음 | — | 선택 표시 |
-| 전체 스냅샷 | `MSG.ADMIN_ASSET_SNAPSHOT` | `SNAPSHOT` | `snapshot` | 스냅샷 뷰어 | 140/좌 | — | 읽기전용 | 서버 | — | — | {"id":"101","managementVersion":"2","deleted":false,"connectionId":"erp-read","alias":"ERP","description":"영업 주문 조회","dbmsCode":"POSTGRESQL","parserId":"postgres-parser","sourceType":"DB","timeZoneId":"Asia/Seoul","dataBasis":"매일 영업 마감 기준","applicableGroupIds":["201","202","203","204","205","206","207","208"],"regId":"admin01","regDtm":"2026-10-29T01:00:00Z","modId":"admin01","modDtm":"2026-10-29T01:20:00Z","changeReason":"적용 가능 그룹 10개에서 8개로 변경","commandKey":"11111111-1111-4111-8111-111111111111","aliasKey":"erp","lastCorrectionEvidence":null} | — | 표시 |
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 | 설명 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 변경 순서 | `MSG.ADMIN_ASSET_CHANGE_SEQ` | `CHANGE_SEQ` | `changeSeq` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2 | — | 표시 | 대상 안에서 성공한 변경의 순서. |
+| 작업 | `MSG.ADMIN_ASSET_ACTION` | `ACTION_CD` | `action` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 변경 | — | 표시 | 생성·변경·삭제 등 확정된 명령 종류. |
+| 처리자 | `MSG.ADMIN_ASSET_ACTOR` | `ACTOR_ID` | `actorId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | admin01 | — | 표시 | 명령을 실제 수행한 인증 주체. |
+| 처리 시각 | `MSG.ADMIN_ASSET_APPLIED_AT` | `APPLIED_DTM` | `appliedAt` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2026-10-29 10:20 | — | 표시 | 변경이 확정되어 스냅샷을 기록한 시각. |
+| 변경 사유 | `MSG.ADMIN_ASSET_REASON` | `CHANGE_REASON` | `reason` | 텍스트 | 140/좌 | 저장 시 | 읽기전용 | 서버 | 비공백 사유 필수. 이번 명령의 사유를 입력 | — | 적용 가능 그룹 10개에서 8개로 변경 | — | 표시 | 이번 저장/변경 명령의 사유. 직전 사유를 자동 재사용하지 않는다. |
+| 반영 관리 버전 | `MSG.ADMIN_ASSET_RESULT_VERSION` | `RESULT_VERSION` | `appliedVersion` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2 | — | 표시 | 명령이 반영된 뒤 관리 버전. |
+| 원 대상 ID | `MSG.ADMIN_ASSET_ORIGINAL_ID` | `DATA_SOURCE_ID` | `id` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 101 | — | 선택 표시 | 확정된 변경 당시의 원 대상 ID. 현재값으로 덮어쓰지 않는다. |
+| 이력 ID | `MSG.ADMIN_ASSET_HISTORY_ID` | `HISTORY_ID` | `historyId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 501 | — | 선택 표시 | 한 이력 행의 안정 식별자. |
+| 스냅샷 판 | `MSG.ADMIN_ASSET_SNAPSHOT_VERSION` | `SNAPSHOT_VERSION` | `snapshotVersion` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 1 | — | 선택 표시 | 스냅샷 내용의 해석 형식 버전. 관리 버전과 별개다. |
+| 작업 식별자 | `MSG.ADMIN_ASSET_COMMAND_KEY` | `COMMAND_KEY` | `commandKey` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 11111111-1111-4111-8111-111111111111 | — | 선택 표시 | 중복 요청을 같은 명령으로 식별하는 작업 키. |
+| 반영 후 별칭 | `MSG.ADMIN_DS_SNAPSHOT_ALIAS` | `SNAPSHOT` | `snapshot`의 alias | 텍스트 | 전체/좌 | 필수 | 읽기전용 | API-016 | 현재값 대체 금지 | — | ERP | — | 선택 표시 | 이번 명령 직후 확정한 별칭. 현재 설정으로 다시 계산하지 않고 당시 저장값을 표시한다. |
+| 반영 후 배포 연결 | `MSG.ADMIN_DS_SNAPSHOT_CONNECTION` | `SNAPSHOT` | `snapshot`의 connectionId | 텍스트 | 전체/좌 | 필수 | 읽기전용 | API-016 | 당시 정확 ID | — | erp-read | — | 선택 표시 | 이번 명령 직후 확정한 배포 연결. 현재 설정으로 다시 계산하지 않고 당시 저장값을 표시한다. |
+| 반영 후 설명 | `MSG.ADMIN_ASSET_SNAPSHOT_DESCRIPTION` | `SNAPSHOT` | `snapshot`의 description | 장문 뷰어 | 전체/좌 | 선택 | 읽기전용 | API-016 | 당시 값 | — | 영업 주문 원천 | — | 선택 표시 | 이번 명령 직후 확정한 설명. 현재 설정으로 다시 계산하지 않고 당시 저장값을 표시한다. |
+| 반영 후 DBMS·버전·파서·유형 | `MSG.ADMIN_DS_SNAPSHOT_TECHNICAL` | `SNAPSHOT` | `snapshot`의 dbmsCode/dbmsVersion/parserId/sourceType | 텍스트 | 전체/좌 | 필수 | 읽기전용 | API-016 | 미지정 구분 | — | POSTGRESQL / 16.4 / postgres-parser / DB | — | 선택 표시 | 이번 명령 직후 확정한 DBMS·버전·파서·유형. 현재 설정으로 다시 계산하지 않고 당시 저장값을 표시한다. |
+| 반영 후 시간대·기준 시각 정보 | `MSG.ADMIN_DS_SNAPSHOT_TIME_BASIS` | `SNAPSHOT` | `snapshot`의 timeZoneId/dataBasis | 장문 뷰어 | 전체/좌 | 선택 | 읽기전용 | API-016 | 미확인 구분 | — | Asia/Seoul / 영업 마감 기준 | — | 선택 표시 | 이번 명령 직후 확정한 시간대·기준 시각 정보. 현재 설정으로 다시 계산하지 않고 당시 저장값을 표시한다. |
+| 적용 가능 그룹 수 | `MSG.ADMIN_DS_SNAPSHOT_GROUPS` | `SNAPSHOT` | snapshot.applicableGroupIds.length | 숫자 | 전체/좌 | 필수 | 읽기전용 | API-016 | 과거 이름이 없으면 ID 유지 | — | 8 | — | 표시 | 확정된 변경 당시의 적용 가능 그룹 수. 현재값으로 덮어쓰지 않는다. |
+| 이번 동일 대상 확인 근거 | `MSG.ADMIN_DS_CORRECTION_EVIDENCE` | `CORRECTION_EVIDENCE` | `correctionEvidence` | 장문 뷰어 | 전체/좌 | 정정 시 | 읽기전용 | API-016 | 직전 정정 근거와 구분 | — | 해당 없음 | — | 선택 표시 | 확정된 변경 당시의 이번 동일 대상 확인 근거. 현재값으로 덮어쓰지 않는다. |
+| 전체 스냅샷 | `MSG.ADMIN_ASSET_SNAPSHOT` | `SNAPSHOT` | `snapshot` | 스냅샷 뷰어 | 140/좌 | — | 읽기전용 | 서버 | — | — | {"id":"101","managementVersion":"2","deleted":false,"connectionId":"erp-read","alias":"ERP","description":"영업 주문 조회","dbmsCode":"POSTGRESQL","dbmsVersion":"16.4","parserId":"postgres-parser","sourceType":"DB","timeZoneId":"Asia/Seoul","dataBasis":"매일 영업 마감 기준","applicableGroupIds":["201","202","203","204","205","206","207","208"],"regId":"admin01","regDtm":"2026-10-29T01:00:00Z","modId":"admin01","modDtm":"2026-10-29T01:20:00Z","changeReason":"적용 가능 그룹 10개에서 8개로 변경","commandKey":"11111111-1111-4111-8111-111111111111","aliasKey":"erp","lastCorrectionEvidence":null} | — | 표시 | 그 변경 직후 전체 상태. 누르면 속성·값과 배열 목록을 읽으며 실제 원문이 있을 때만 JSON 원문 버튼을 제공한다. |
 
 - 각 행은 이번 처리 근거와 반영 후 전체 구성을 가진다. 삭제 행의 구성은 마지막 설정이며 현재 유효 설정이 아니다. SNAPSHOT v1의 항목을 개별 컬럼으로 표시하고 전체 스냅샷 보기 링크를 한 번 클릭하면 읽기 전용 모달에서 항목명/값·배열 목록으로 읽고 JSON 원문은 별도로 펼친다. ‘JSON 원문 보기’는 실제 내용이 있는 원문 문자열에만 표시한다. 원문 없음과 파싱 실패/미지원 형식의 구분은 [공통 표시 계약](../../../../spec/50-api/003-admin-integration-contracts.yaml)의 `FEAT-001.shared_write_contract.snapshot_presentation`을 따른다. 과거 그룹명을 현재 이름으로 바꾸지 않는다. 미지원 스냅샷 판은 재현 불가와 존재하는 원문을 유지하며 현재값으로 채우지 않는다.
 - 별도 조회조건·상세 조회 요청·하단 상세 폼은 없다. 그리드 설정/셀 뷰어는 사용할 수 있다.
@@ -219,6 +238,8 @@
 | 버튼 | 출처 | 라벨 키 | 액션 | 활성 조건 | 동작 | 확인 문구 키 |
 |---|---|---|---|---|---|---|
 | 조회 | 자동 | 공통 | READ | 조회 가능 | 목록 재조회, 이력 탭 안에는 없음 | — |
+| 그룹 추가 | 선언 | MSG.ADMIN_DS_ADD_GROUP | SAVE | READ·SAVE·전체 편집본 확보·처리 중 아님; 그룹 후보 계약 확정·유효 후보 확보 | 그룹 선택 행을 편집본에 추가; 상단/하단 전체 저장 전 운영값 변경 없음 | — |
+| 그룹 제거 | 선언 | MSG.ADMIN_DS_REMOVE_GROUP | SAVE | READ·SAVE·전체 편집본 확보·처리 중 아님; 그룹 후보 계약 확정·하위 매핑 정합성 확인 | 선택 그룹을 편집본에서 제거; 상단/하단 전체 저장 전 운영값 변경 없음 | — |
 | 신규 | 선언 | 공통 | SAVE | READ·SAVE, 처리 중 아님 | 신규 편집본 | 미저장 변경 시 `MSG.ADMIN_ASSET_DISCARD_CONFIRM` |
 | 저장 | 선언 | 공통 | SAVE | 전체 편집본 확보·유효 변경 | 현재 한 건 전체 저장 | — |
 | 삭제 | 선언 | 공통 | SAVE | 기존 대상, 처리 중 아님 | 사유 입력·서버 참조 검사 | `MSG.ADMIN_ASSET_DELETE_CONFIRM` |
@@ -238,6 +259,9 @@
 ## 6. 규칙 — 저장 · 실행
 
 ### 6-1. 검증
+
+- DBMS·버전은 `REQ-603.dbms_context`와 `FEAT-002.dbms_contract`를 따른다. DBMS는 활성 공통코드 `DBMS`에서 선택하고 버전은 실제 버전 문자열을 관리한다. 연결 관측값은 제안/대조용이며 명시 저장 전 관리값을 덮어쓰지 않는다. 확인 불가를 정상으로 만들지 않고 불일치 해소 전 SQL 생성·실행을 차단한다. DBMS/버전·관리 버전 참조는 소속 테이블/컬럼과 함께 LLM에 전달한다.
+- 자료형 후보는 `REQ-301.source_type_catalog`의 DBMS별 목록이며 버전별로 나누지 않는다. DBMS 변경 시 하위 자료형 불일치와 재검수 대상을 안내하고 임의 타입으로 자동 치환하지 않는다. DBMS 버전 변경 이력도 전체 스냅샷에 보존하며 이전 이력에 값이 없으면 현재 버전으로 채우지 않는다.
 
 | # | 시점 | 위치 | 검사 | 위반 시 메시지 |
 |---|---|---|---|---|
@@ -286,7 +310,7 @@
 ## 8. 시드 · 데이터 전제
 
 - 메뉴 HUB_DATA_SOURCE, 상위 HUB_INTEGRATION, 위 경로와 EXPORT_YN=Y(export: true)는 설계값이다. 제품 시드는 구현 시 생성한다.
-- DB/DW·관측 상태는 계약 상수, DBMS/파서는 소유 지원 목록이다. 임의의 고정 지원 목록/공통코드를 만들지 않는다.
+- DB/DW·관측 상태는 계약 상수다. DBMS는 공통코드 `DBMS`와 실행 지원 목록을 대조하고 파서는 소유 지원 목록을 사용한다. 버전은 관리 문자열이며 실제 코드/시드는 구현 단계에서 등록한다.
 - 시간대는 배포 JVM의 ZoneId 목록에서 공통 Timezones 유틸로 조회한다. 시간대용 코드 시드/DB 테이블은 없다. 목록 첫 값은 데이터소스의 자동 기본값이 아니다.
 - `MSG.ADMIN_DS_*`와 `MSG.ADMIN_ASSET_*`는 미등록 제안 키다. 표의 라벨·§5 버튼명·§1-2 안내를 문구로 사용한다. 공통 확인 문구/서버 오류 매핑은 [대상 시스템 §8](../target-system/requirements.md#8-시드--데이터-전제)과 같은 키를 사용하며 구현 시 한 번 등록한다. 별칭 중복 안내도 값에 원 입력을 반사하지 않는다.
 - `SYS_CONFIG` 신규 키 없음. 후보 조회 실패는 빈 성공 응답으로 치환하지 않는다.
@@ -323,6 +347,7 @@
 
 | DS-23 | 그룹 10개에서 8개로 변경 후 해당 이력·전체 스냅샷 보기·원문 유무 | 해당 버전 JSON 배열은 8개이며 현재값/다음 이력 없이 재현. 모달은 항목명/값·그룹 목록. 원문 없으면 원문 보기 숨김, 원문 있으면 파싱 실패/미지원 형식에도 확인 가능 | TC-00212 / 계약·통합·E2E |
 | DS-24 | 신규·삭제·같은 명령 재수신·긴 스냅샷 저장 | 생성 버전 1·삭제 표시+마지막 구성 보존, 중복 이력 없음, TEXT 원문 자름/일부 성공 없음 | TC-00212 / 통합 |
+| DS-25 | DBMS·버전 저장/변경·관측 불일치·LLM 문맥/이력 | 상단 1:1 값과 당시 스냅샷에 포함. 현재값/관측 구분·불일치 차단. 버전 변경으로 자료형 목록 분할 없음 | TC-00213 / 계약·통합·E2E |
 
 ## 10. 미결 · 확인 필요
 
@@ -339,3 +364,5 @@
 | 2026-10-29 | ADR-033 반영 후 확정 스냅샷·TEXT 저장·구조화된 스냅샷 모달 | — |
 | 2026-10-29 | 최초 화면 요건·상태·전역 시험 연결 | — |
 | 2026-10-29 | 사용자 선택 반영: Timezones 공통 유틸 기반 시간대 검색콤보·미지정·실패 상태·API-062 | — |
+
+| 2026-10-29 | DBMS·버전 관리/연결 관측 대조·LLM 전달·당시 이력과 시험 보완 | — |

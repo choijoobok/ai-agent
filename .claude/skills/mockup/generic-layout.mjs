@@ -1,0 +1,43 @@
+/** 기존 화면도 같은 요건서 기반 설명 서식으로 표시한다. 미선언 CRUD를 추정하지 않는다. */
+import {escapeHtml as esc, tableCell as cell, columnExplanation, actionExplanation, searchExplanation, surfaceOf} from './presentation.mjs';
+export const areaTitle = table => table.heading.replace(/\*+/g,'').replace(/^\d+(?:-\d+[a-z]?)?\.?\s*/, '').replace(/^(?:마스터(?: 그리드)?|하단|그리드|좌|우|하|디테일 탭 \d+|정의 모달)\s*—\s*/, '').replace(/\s*—\s*(폼|그리드)$/, '').replace(/\s*\([^)]*\)\s*$/,'');
+export function genericScreen(title, model, figure, {annotator, manualKey, compact=false, surfaceName}) {
+  const n=annotator(figure.key);
+  const badge=(description,key)=>n.badge(description,key);
+  const action=(name,scope)=>{
+    const table=model.actionTables.find(t=>t.rows.some(r=>cell(t,r,t.header[0])===name));
+    const row=table?.rows.find(r=>cell(table,r,table.header[0])===name);
+    const surface=surfaceOf(model,scope);
+    const desc=row?actionExplanation(table,row,scope):`<b>${esc(scope)} › ${esc(name)}</b><p>${esc(surface?.workflow||'요건서의 버튼 동작을 따른다.')}</p>`;
+    return `<button type="button" class="btn ghost sm">${esc(name)}${badge(desc+`<p>조회: ${esc(surface?.trigger||'화면 조회 조건')} / 저장: ${esc(surface?.save||'해당 없음')}</p>`,`action:${scope}:${name}`)}</button>`;
+  };
+  const renderArea=table=>{
+    const name=areaTitle(table), surface=surfaceOf(model,name);
+    const form=/폼|설정/.test(surface?.kind??'');
+    const deletable=surface?.buttons.includes('행 삭제');
+    const toolbar=(surface?.buttons??[]).filter(b=>b!=='행 삭제').map(b=>action(b,name)).join('');
+    const controls=`<div class="tb"><span class="ttl">${esc(name)}</span>${toolbar}</div>`;
+    const columns=table.rows.map(row=>({row,label:cell(table,row,table.header[0]),note:badge(columnExplanation(table,row),`column:${name}:${cell(table,row,table.header[0])}`)}));
+    if(form)return `${controls}<div class="form-fields">${columns.map(({row,label,note})=>{
+      const mode=cell(table,row,'입력방식'),editable=cell(table,row,'편집');
+      const ro=/읽기|불가|자동|—/.test(editable),value=cell(table,row,'예시');
+      const input=/선택|셀렉트|콤보|Y\/N/.test(mode)?`<select ${ro?'disabled':''}><option>${esc(value||'선택')}</option></select>`:/장문|텍스트영역/.test(mode)?`<textarea ${ro?'readonly':''}>${esc(value)}</textarea>`:`<input type="${/password|비밀번호/.test(mode)?'password':'text'}" value="${esc(value)}" ${ro?'readonly':''}>`;
+      return `<div class="f${ro?' ro':''}"><label data-field-label="${esc(label)}">${esc(label)}${note}</label>${input}</div>`;
+    }).join('')}</div>`;
+    const deletion=deletable?`<th>삭제${badge(`<b>${esc(name)} › 행 삭제</b><p>삭제할 행을 선택하고 이 영역의 저장 범위에 따라 저장한다. 시스템/참조 보호 조건은 공통 검증을 적용한다.</p>`,`action:${name}:행 삭제`)}</th>`:'';
+    return `${controls}<div class="grid" style="overflow:auto"><table><thead><tr>${deletion}${columns.map(({label,note})=>`<th style="min-width:110px">${esc(label)}${note}</th>`).join('')}</tr></thead><tbody><tr>${deletable?'<td><input type="checkbox" aria-label="행 삭제 선택"></td>':''}${columns.map(({row})=>`<td>${esc(cell(table,row,'예시')||'—')}</td>`).join('')}</tr></tbody></table></div>`;
+  };
+  const first=model.columns[0];
+  const firstSurface=surfaceOf(model,areaTitle(first||{heading:''}));
+  const selected=surfaceName?model.columns.find(t=>areaTitle(t)===surfaceName):firstSurface?.kind.startsWith('탭')?first:model.columns.slice(1).find(t=>!/(모달|단계|폼|설정)/.test(surfaceOf(model,areaTitle(t))?.kind??''));
+  const search=compact?'':model.search.map(r=>`<label>${esc(cell(model.searchTable,r,model.searchTable.header[0]))}${badge(searchExplanation(model.searchTable,r),`search:${r[0]}`)}</label>${/선택|셀렉트|코드/.test(cell(model.searchTable,r,'입력방식'))?'<select><option>전체</option></select>':'<input placeholder="조회 조건 입력">'}`).join('');
+  const tabs=model.surfaces.filter(s=>/^탭(?: 폼)?$/.test(s.kind));
+  const tabBar=tabs.length&&!compact?`<div class="tabs">${tabs.map(s=>`<span class="${s.name===areaTitle(selected||first||{heading:''})?'on':''}">${esc(s.name)}${badge(`<b>${esc(s.name)} 탭</b><p>${esc(s.purpose)}</p>`,`tab:${s.name}`)}</span>`).join('')}</div>`:'';
+  const attached=table=>model.columns.filter(t=>areaTitle(t).startsWith(areaTitle(table)+' / ')).map(renderArea).join('');
+  const secondary=selected&&selected!==first?[selected,...model.columns.slice(model.columns.indexOf(selected)+1).filter(t=>surfaceOf(model,areaTitle(t))?.kind==='영역')]:[];
+  const extra=secondary.map(t=>renderArea(t)+attached(t)).join('');
+  const pair=model.vertical?`${renderArea(first||{heading:'',rows:[]})}${extra?`<div class="split"><span class="hnd">⋮⋮⋮</span></div>${tabBar}${extra}`:''}`:`<div class="splitrow"><div class="pane">${first?renderArea(first):''}</div>${extra?`<div class="split v"><span class="hnd">⋮</span></div><div class="pane">${tabBar}${extra}</div>`:''}</div>`;
+  const content=compact?(selected?renderArea(selected)+attached(selected):''):first?firstSurface?.kind==='설정'?model.columns.map(renderArea).join(''):firstSurface?.kind.startsWith('탭')?tabBar+renderArea(first)+attached(first):pair:`<p>${esc(model.overview||'요건서의 화면 구성을 확인한다.')}</p>`;
+  const global=!first?model.actions.filter(r=>!/^\(/.test(r[0])).map(r=>action(r[0],'화면')).join(''):'';
+  return `<div class="screen leaf" id="${esc(figure.key)}"${manualKey?` data-manual="${esc(figure.key)}"`:''}><div class="bar">${esc(title)} · ${esc(figure.caption)} · 검토용 예시</div><div class="body">${search?`<div class="sf">${search}</div>`:''}${content}${global}</div></div>`;
+}

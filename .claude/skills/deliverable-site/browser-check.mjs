@@ -86,6 +86,17 @@ try {
         const mockup = article.locator(`[data-mockup="${screen.id}/__design__"]`);
         if (await mockup.count() !== 1 || !await mockup.locator('.screen').count()) errors.push(`${screen.id}: 생성 목업 식별/화면이 HTML에 연결되지 않았다.`);
         else {
+          const jump = mockup.locator('nav a[href^="#"]').last();
+          if (await jump.count()) {
+            const beforeHash = await page.evaluate(() => location.hash);
+            const targetKey = (await jump.getAttribute('href')).slice(1);
+            await jump.click();
+            const position = await mockup.locator(`[id="${targetKey}"]`).evaluate(node=>node.getBoundingClientRect().top);
+            if (position < 49 || position >= 200 || await page.evaluate(() => location.hash) !== beforeHash) errors.push(`${screen.id}: 목업 상태 링크가 해당 그림으로 이동하지 않거나 사이트 문서 선택을 바꿨다.`);
+            await page.locator('[data-back-to-top]').waitFor({state:'visible'});
+            await page.locator('[data-back-to-top]').click();
+            if (await page.evaluate(() => window.scrollY) !== 0 || await page.locator('[data-back-to-top]').isVisible()) errors.push(`${screen.id}: 맨 위로 버튼의 이동/숨김이 잘못됐다.`);
+          }
           const settings = mockup.locator('[data-grid-settings]').first();
           const optionalColumn = settings.locator('input[data-grid-column]:not(:checked)').first();
           if (await optionalColumn.count()) {
@@ -237,6 +248,7 @@ try {
   const printVisible = await page.evaluate(() => [...document.querySelectorAll('[data-page]')]
     .filter((node) => getComputedStyle(node).display !== 'none').length);
   if (printVisible !== 1) errors.push(`인쇄 매체에서 현재 문서 외 ${printVisible - 1}개가 더 보인다.`);
+  if (await page.locator('[data-back-to-top]').isVisible()) errors.push('맨 위로 버튼이 인쇄에 나타난다.');
   console.log(`${site}: 문서 ${state.pages} · Mermaid SVG ${state.diagrams} · 상세 목업 ${state.describedMockups} · 인쇄 문서 ${printVisible}`);
 } finally {
   await browser.close();

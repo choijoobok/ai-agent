@@ -76,7 +76,7 @@ test('검색콤보는 미지정·중복 제거·조회 전용·목록 밖 기존
   assert.match(html, /value="" selected>미지정/);
   assert.equal((html.match(/value="Asia\/Seoul"/g)||[]).length,1);
   assert.match(render({...figure,editable:false},fixture), /data-combo-filter readonly/);
-  assert.match(render({...figure,editable:false},fixture), /data-combo-select disabled/);
+  assert.match(render({...figure,editable:false},fixture), /data-combo-select[^>]* disabled/);
   assert.match(render({...figure,examples:{시간대:'Legacy/Zone'}},fixture), /value="Legacy\/Zone" selected disabled/);
 });
 test('기본 상하 배치와 좌우 예외를 구분하고 반출은 허용 상태에만 표시한다', () => {
@@ -115,4 +115,19 @@ test('문맥 밖 하위 목록은 예시 행을 넣지 않고 이름 오류를 �
   assert.match(lower,/선택한 문맥에 해당하지 않는 목록/);
   assert.doesNotMatch(lower,/<tr class="sel">/);
   assert.throws(()=>render({...figure,emptyGrids:['없는 목록']}),/§4/);
+});
+
+test('건수 탐색은 선언 탭과 컬럼 문맥을 보존하고 숨긴 패널도 하나의 편집본에 남긴다',()=>{
+  const main={heading:'목록',header:['컬럼','입력방식','편집','검증','예시'],rows:[['테이블','텍스트','읽기전용','','orders']]};
+  const detail={heading:'컬럼 정의',header:[...main.header,'이동 탭'],rows:[['컬럼명','텍스트','읽기전용','','customer_id','—'],['관계','탭 이동','읽기전용','','1건','관계']]};
+  const relations={heading:'관계',header:main.header,rows:[['참조','텍스트','조건부','','customers']]};
+  const [figure]=declaredFigures(stateTable([['main','기본','컬럼 정의','','조회','가능','없음']]),plain);
+  const fixture={...model,interactive:true,columns:[main,detail,relations],rowExamples:{rows:[['컬럼 정의','{"컬럼명":"customer_id"}']]}};
+  const html=render(figure,fixture);
+  assert.match(html,/data-open-tab="관계" data-context="customer_id"/);
+  assert.match(html,/data-detail-panel="관계" hidden/);
+  assert.equal([...html.matchAll(/data-note=/g)].length,[...html.matchAll(/id="note-/g)].length);
+  const ids=[...html.matchAll(/\sid="([^"]+)"/g)].map(m=>m[1]);
+  assert.equal(ids.length,new Set(ids).size);
+  assert.throws(()=>render(figure,{...fixture,columns:[main,detail]}),/이동 탭/);
 });

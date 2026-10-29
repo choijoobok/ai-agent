@@ -55,6 +55,19 @@
 
 ---
 
+### 1-9. 영역별 관리 대상과 작업
+
+| 영역 | 종류 | 관리 대상·목적 | 작업 설명 | 버튼 | 조회 방식 | 저장 범위 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 사용자 | 목록 | 관리자 계정을 관리한다. | 계정을 추가/수정한다. 잠금·휴면 해제와 비밀번호 초기화는 선택 계정에 별도 실행한다. 삭제 기능은 없다. | 조회·추가·저장·잠금 해제·휴면 해제·비밀번호 초기화 | 조회 버튼 | 관리자 계정 변경 행 |
+| 보유 역할 | 탭 | 선택 관리자에게 부여한 역할과 유효기간을 관리한다. | 저장된 사용자를 선택한 뒤 역할을 추가/제거하고 기간을 저장한다. | 조회·추가·저장·행 삭제 | 사용자 선택/탭 첫 진입 및 조회 버튼 | 선택 사용자의 역할 변경 행 |
+| 개인 예외 | 탭 | 선택 사용자의 직접 부여 예외를 읽는다. | 수정은 개인 권한 관리에서 한다. | 조회 | 사용자 선택/탭 첫 진입 및 조회 버튼 | 조회 전용 |
+| 접속 IP | 탭 | 선택 계정의 접속 허용 IP 대역을 관리한다. | 대역을 추가/삭제한다. 첫 대역 등록은 접속을 제한하므로 경고를 확인한다. | 조회·추가·저장·행 삭제 | 사용자 선택/탭 첫 진입 및 조회 버튼 | 선택 사용자의 IP 변경 행 |
+| 활성 세션 | 탭 | 현재 살아 있는 선택 계정의 세션을 확인한다. | 선택한 세션을 종료한다. 자기 계정은 종료할 수 없다. | 조회·세션 종료 | 사용자 선택/탭 첫 진입 및 조회 버튼 | 선택 세션 종료; 계정 변경 없음 |
+| 유효 권한 | 탭 | 선택 계정의 최종 권한을 진단한다. | 표시 범위를 선택해 메뉴별 유효 액션을 조회한다. | 조회 | 사용자/탭/표시 범위 변경 및 조회 버튼 | 조회 전용 |
+
+- 표의 버튼은 현재 소스의 배치를 따른다. 행 삭제는 그리드 행의 삭제 선택 기능이며 독립 업무 삭제 명령으로 바꾸지 않는다.
+
 ## 2. 조회조건
 
 **기본값을 가진 칸이 하나도 없다.** 계정을 끈 뒤 *왜 안 보이나* 를 확인하러 오는 동선이 이 화면의 흔한 사용이고, 기본 필터가 걸려 있으면 **방금 끈 그 계정이 첫 조회에 없다**.
@@ -106,23 +119,23 @@
 
 **표시 여덟 · 기본 숨김 일곱.** 숨김도 응답에는 들어 있고 그리드 설정에서 켜면 보인다 — **목록이 곧 상세이며 `getDetail` 이 없다.**
 
-| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 |
-|---|---|---|---|---|---|---|---|---|---|
-| 로그인 ID | `MSG.USER_COL_USER_ID` | `USER_ID` | `userId` | 텍스트 | 160/좌고정 | 필수 | **신규행만**(PK) | — | 그리드 내 중복 금지 |
-| 이름 | `MSG.USER_COL_USER_NM` | `USER_NM` | `userNm` | 텍스트 | 140 | 필수 | 가능 | — | — |
-| 이메일 | `MSG.USER_COL_EMAIL` | `EMAIL` | `email` | 텍스트 | 220 | **필수** | 가능 | — | — |
-| 상태 | `MSG.USER_COL_STAT` | **파생**(§6-3) | `accountStat` | 텍스트·배지 | 100 | — | 읽기전용 | — | — |
-| 사용 여부 | `MSG.USER_COL_USE_YN` | `USE_YN` | `useYn` | 스위치 | 90 | — | **조건부**(§4-2) | — | — |
-| 사용 시작일 | `MSG.USER_COL_VALID_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 120 | — | 가능 | — | 종료일보다 늦으면 거부 |
-| 사용 종료일 | `MSG.USER_COL_VALID_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 120 | — | 가능 | — | 〃 |
-| 최종 로그인 | `MSG.USER_COL_LAST_LOGIN` | `LAST_LOGIN_DTM` | `lastLoginDtm` | 일시 | 160 | — | 읽기전용 | — | — |
-| 언어 ○ | `MSG.USER_COL_LOCALE` | `LOCALE_CD` | `localeCd` | 셀렉트 | 100 | — | 가능 | **상수** `ko`·`en` | — |
-| 잠금 ○ | `MSG.USER_COL_LOCK_YN` | `LOCK_YN` | `lockYn` | 스위치 | 90 | — | **읽기전용** | — | — |
-| 잠금 시각 ○ | `MSG.USER_COL_LOCK_DTM` | `LOCK_DTM` | `lockDtm` | 일시 | 160 | — | 읽기전용 | — | — |
-| 실패 횟수 ○ | `MSG.USER_COL_FAIL_CNT` | `LOGIN_FAIL_CNT` | `loginFailCnt` | 숫자 | 100 | — | **읽기전용** | — | — |
-| 휴면 ○ | `MSG.USER_COL_DORMANT_YN` | `DORMANT_YN` | `dormantYn` | 스위치 | 80 | — | **읽기전용** | — | — |
-| 임시 비밀번호 ○ | `MSG.USER_COL_PWD_INIT` | `PWD_INIT_YN` | `pwdInitYn` | 스위치 | 110 | — | 읽기전용 | — | — |
-| 비밀번호 변경일 ○ | `MSG.USER_COL_PWD_CHG` | `PWD_CHG_DTM` | `pwdChgDtm` | 일시 | 160 | — | 읽기전용 | — | — |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 설명 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 로그인 ID | `MSG.USER_COL_USER_ID` | `USER_ID` | `userId` | 텍스트 | 160/좌고정 | 필수 | **신규행만**(PK) | — | 그리드 내 중복 금지 | 로그인 ID 항목. 값/선택 출처: —. |
+| 이름 | `MSG.USER_COL_USER_NM` | `USER_NM` | `userNm` | 텍스트 | 140 | 필수 | 가능 | — | — | 이름 항목. 값/선택 출처: —. |
+| 이메일 | `MSG.USER_COL_EMAIL` | `EMAIL` | `email` | 텍스트 | 220 | **필수** | 가능 | — | — | 이메일 항목. 값/선택 출처: —. |
+| 상태 | `MSG.USER_COL_STAT` | **파생**(§6-3) | `accountStat` | 텍스트·배지 | 100 | — | 읽기전용 | — | — | 상태 항목. 값/선택 출처: —. |
+| 사용 여부 | `MSG.USER_COL_USE_YN` | `USE_YN` | `useYn` | 스위치 | 90 | — | **조건부**(§4-2) | — | — | 사용 여부 항목. 값/선택 출처: —. |
+| 사용 시작일 | `MSG.USER_COL_VALID_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 120 | — | 가능 | — | 종료일보다 늦으면 거부 | 사용 시작일 항목. 값/선택 출처: —. |
+| 사용 종료일 | `MSG.USER_COL_VALID_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 120 | — | 가능 | — | 〃 | 사용 종료일 항목. 값/선택 출처: —. |
+| 최종 로그인 | `MSG.USER_COL_LAST_LOGIN` | `LAST_LOGIN_DTM` | `lastLoginDtm` | 일시 | 160 | — | 읽기전용 | — | — | 최종 로그인 항목. 값/선택 출처: —. |
+| 언어 ○ | `MSG.USER_COL_LOCALE` | `LOCALE_CD` | `localeCd` | 셀렉트 | 100 | — | 가능 | **상수** `ko`·`en` | — | 언어 ○ 항목. 값/선택 출처: 상수 ko·en. |
+| 잠금 ○ | `MSG.USER_COL_LOCK_YN` | `LOCK_YN` | `lockYn` | 스위치 | 90 | — | **읽기전용** | — | — | 잠금 ○ 항목. 값/선택 출처: —. |
+| 잠금 시각 ○ | `MSG.USER_COL_LOCK_DTM` | `LOCK_DTM` | `lockDtm` | 일시 | 160 | — | 읽기전용 | — | — | 잠금 시각 ○ 항목. 값/선택 출처: —. |
+| 실패 횟수 ○ | `MSG.USER_COL_FAIL_CNT` | `LOGIN_FAIL_CNT` | `loginFailCnt` | 숫자 | 100 | — | **읽기전용** | — | — | 실패 횟수 ○ 항목. 값/선택 출처: —. |
+| 휴면 ○ | `MSG.USER_COL_DORMANT_YN` | `DORMANT_YN` | `dormantYn` | 스위치 | 80 | — | **읽기전용** | — | — | 휴면 ○ 항목. 값/선택 출처: —. |
+| 임시 비밀번호 ○ | `MSG.USER_COL_PWD_INIT` | `PWD_INIT_YN` | `pwdInitYn` | 스위치 | 110 | — | 읽기전용 | — | — | 임시 비밀번호 ○ 항목. 값/선택 출처: —. |
+| 비밀번호 변경일 ○ | `MSG.USER_COL_PWD_CHG` | `PWD_CHG_DTM` | `pwdChgDtm` | 일시 | 160 | — | 읽기전용 | — | — | 비밀번호 변경일 ○ 항목. 값/선택 출처: —. |
 
 `○` = 기본 숨김. **감춘 컬럼(`hidden`)은 없다** — 운영자가 켜서 보면 안 되는 컬럼이 이 화면에는 없다.
 
@@ -132,31 +145,31 @@
 
 ### 4-1a. 디테일 탭 1 — 보유 역할 (편집 가능)
 
-| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 필수 | 편집 |
-|---|---|---|---|---|---|---|---|
-| 역할 | `MSG.USER_ROLE_COL_ROLE` | `ROLE_ID` | `roleId` | 셀렉트 | 220 | 필수 | **신규행만**(PK 절반) |
-| 역할명 ○ | `MSG.USER_ROLE_COL_ROLE_NM` | `SYS_ROLE.ROLE_NM` | `roleNm` | 텍스트 | 160 | — | 읽기전용 |
-| 설명 ○ | `MSG.USER_ROLE_COL_ROLE_DESC` | `SYS_ROLE.ROLE_DESC` | `roleDesc` | 텍스트 | 240 | — | 읽기전용 |
-| 역할 사용 | `MSG.USER_ROLE_COL_USE_YN` | `SYS_ROLE.USE_YN` | `roleUseYn` | 스위치 | 110 | — | **읽기전용** — 이 부여의 값이 아니라 역할의 값이다 |
-| 시작일 | `MSG.USER_ROLE_COL_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 130 | — | 가능 |
-| 종료일 | `MSG.USER_ROLE_COL_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 130 | — | 가능 |
-| 부여 상태 | `MSG.USER_ROLE_COL_STATE` | **파생**(§6-3) | `grantState` | 배지 | 90 | — | 읽기전용 |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 필수 | 편집 | 설명 | 검증 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 역할 | `MSG.USER_ROLE_COL_ROLE` | `ROLE_ID` | `roleId` | 셀렉트 | 220 | 필수 | **신규행만**(PK 절반) | 역할 항목. 저장 또는 조회 근거: ROLE_ID. | 10  ·  역할 저장  ·  화면  ·  같은 그리드 안에 `ROLE_ID` 중복 금지  ·  `MSG.USER_ROLE_DUPLICATE` |
+| 역할명 ○ | `MSG.USER_ROLE_COL_ROLE_NM` | `SYS_ROLE.ROLE_NM` | `roleNm` | 텍스트 | 160 | — | 읽기전용 | 역할명 ○ 항목. 저장 또는 조회 근거: SYS_ROLE.ROLE_NM. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 설명 ○ | `MSG.USER_ROLE_COL_ROLE_DESC` | `SYS_ROLE.ROLE_DESC` | `roleDesc` | 텍스트 | 240 | — | 읽기전용 | 설명 ○ 항목. 저장 또는 조회 근거: SYS_ROLE.ROLE_DESC. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 역할 사용 | `MSG.USER_ROLE_COL_USE_YN` | `SYS_ROLE.USE_YN` | `roleUseYn` | 스위치 | 110 | — | **읽기전용** — 이 부여의 값이 아니라 역할의 값이다 | 역할 사용 항목. 저장 또는 조회 근거: SYS_ROLE.USE_YN. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 시작일 | `MSG.USER_ROLE_COL_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 130 | — | 가능 | 시작일 항목. 저장 또는 조회 근거: VALID_FROM_DT. | 5  ·  저장  ·  화면+서버  ·  `VALID_FROM_DT` ≤ `VALID_TO_DT`. **양끝 포함**이라 같은 날은 통과  ·  `MSG.USER_PERIOD_REVERSED` / `MsgKey.ERR_USER_ADMIN_PERIOD` / 저장(수정)  ·  `SYS_USER`  ·  UPDATE  ·  `USER_NM` · `EMAIL` · `USE_YN` · `VALID_FROM_DT` · `VALID_TO_DT` · `LOCALE_CD` **만** / `EXPIRED` 기간 만료  ·  사용 중 AND 오늘이 `VALID_FROM_DT` ~ `VALID_TO_DT` **밖**  ·  warn |
+| 종료일 | `MSG.USER_ROLE_COL_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 130 | — | 가능 | 종료일 항목. 저장 또는 조회 근거: VALID_TO_DT. | 5  ·  저장  ·  화면+서버  ·  `VALID_FROM_DT` ≤ `VALID_TO_DT`. **양끝 포함**이라 같은 날은 통과  ·  `MSG.USER_PERIOD_REVERSED` / `MsgKey.ERR_USER_ADMIN_PERIOD` / 저장(수정)  ·  `SYS_USER`  ·  UPDATE  ·  `USER_NM` · `EMAIL` · `USE_YN` · `VALID_FROM_DT` · `VALID_TO_DT` · `LOCALE_CD` **만** / `EXPIRED` 기간 만료  ·  사용 중 AND 오늘이 `VALID_FROM_DT` ~ `VALID_TO_DT` **밖**  ·  warn |
+| 부여 상태 | `MSG.USER_ROLE_COL_STATE` | **파생**(§6-3) | `grantState` | 배지 | 90 | — | 읽기전용 | 부여 상태 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
 
 - 후보 콤보의 글자는 `역할명 (역할ID)` 이며 **꺼진 역할도 후보다** — 켜기 전에 부여를 구성해 두는 동선이 정상이다. 꺼져 있다는 사실은 `역할 사용` 컬럼과 상태 배지 옆 경고 배지가 말한다.
 - 행 삭제 **허용**. 삭제는 *잘못 등록한 행 정리* 이고 **회수가 아니다** — 회수는 종료일을 어제로 두는 것이며 그때 행은 남는다(변경 이력 테이블이 없으므로 그 컬럼이 유일한 기록이다).
 
 ### 4-1b. 디테일 탭 2 — 개인 예외 (**조회 전용**)
 
-| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 편집 |
-|---|---|---|---|---|---|---|
-| 메뉴 | `MSG.USER_GRANT_COL_MENU` | **파생** — 메뉴 경로 | `menuPath` | 텍스트 | 280 | 읽기전용 |
-| 액션 | `MSG.USER_GRANT_COL_ACTION` | `ACTION_CD` | `actionCd` | **코드** | 100 | 읽기전용 |
-| 부여 상태 | `MSG.USER_AUTH_COL_STATE` | **파생**(§6-3) | `grantState` | 배지 | 90 | 읽기전용 |
-| 시작일 | `MSG.USER_AUTH_COL_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 130 | 읽기전용 |
-| 종료일 | `MSG.USER_AUTH_COL_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 130 | 읽기전용 |
-| 대상 유효 | `MSG.USER_GRANT_COL_MENU_OK` | **파생** | `menuAuthorizable` | 스위치 | 100 | 읽기전용 |
-| 부여 사유 | `MSG.USER_GRANT_COL_REASON` | `GRANT_RSN` | `grantRsn` | 텍스트 | 240 | 읽기전용 |
-| (숨김) 메뉴코드 | `MSG.USER_AUTH_COL_MENU` | `MENU_CD` | `menuCd` | 텍스트 | 160 | 읽기전용 |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 편집 | 설명 | 검증 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 메뉴 | `MSG.USER_GRANT_COL_MENU` | **파생** — 메뉴 경로 | `menuPath` | 텍스트 | 280 | 읽기전용 | 메뉴 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 액션 | `MSG.USER_GRANT_COL_ACTION` | `ACTION_CD` | `actionCd` | **코드** | 100 | 읽기전용 | 액션 항목. 저장 또는 조회 근거: ACTION_CD. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 부여 상태 | `MSG.USER_AUTH_COL_STATE` | **파생**(§6-3) | `grantState` | 배지 | 90 | 읽기전용 | 부여 상태 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 시작일 | `MSG.USER_AUTH_COL_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 130 | 읽기전용 | 시작일 항목. 저장 또는 조회 근거: VALID_FROM_DT. | 5  ·  저장  ·  화면+서버  ·  `VALID_FROM_DT` ≤ `VALID_TO_DT`. **양끝 포함**이라 같은 날은 통과  ·  `MSG.USER_PERIOD_REVERSED` / `MsgKey.ERR_USER_ADMIN_PERIOD` / 저장(수정)  ·  `SYS_USER`  ·  UPDATE  ·  `USER_NM` · `EMAIL` · `USE_YN` · `VALID_FROM_DT` · `VALID_TO_DT` · `LOCALE_CD` **만** / `EXPIRED` 기간 만료  ·  사용 중 AND 오늘이 `VALID_FROM_DT` ~ `VALID_TO_DT` **밖**  ·  warn |
+| 종료일 | `MSG.USER_AUTH_COL_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 130 | 읽기전용 | 종료일 항목. 저장 또는 조회 근거: VALID_TO_DT. | 5  ·  저장  ·  화면+서버  ·  `VALID_FROM_DT` ≤ `VALID_TO_DT`. **양끝 포함**이라 같은 날은 통과  ·  `MSG.USER_PERIOD_REVERSED` / `MsgKey.ERR_USER_ADMIN_PERIOD` / 저장(수정)  ·  `SYS_USER`  ·  UPDATE  ·  `USER_NM` · `EMAIL` · `USE_YN` · `VALID_FROM_DT` · `VALID_TO_DT` · `LOCALE_CD` **만** / `EXPIRED` 기간 만료  ·  사용 중 AND 오늘이 `VALID_FROM_DT` ~ `VALID_TO_DT` **밖**  ·  warn |
+| 대상 유효 | `MSG.USER_GRANT_COL_MENU_OK` | **파생** | `menuAuthorizable` | 스위치 | 100 | 읽기전용 | 대상 유효 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 부여 사유 | `MSG.USER_GRANT_COL_REASON` | `GRANT_RSN` | `grantRsn` | 텍스트 | 240 | 읽기전용 | 부여 사유 항목. 저장 또는 조회 근거: GRANT_RSN. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| (숨김) 메뉴코드 | `MSG.USER_AUTH_COL_MENU` | `MENU_CD` | `menuCd` | 텍스트 | 160 | 읽기전용 | (숨김) 메뉴코드 항목. 저장 또는 조회 근거: MENU_CD. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
 
 - **`액션` 은 `code` 다** — 라벨은 `MSG.AUTHZ_ACTION_*` 로 만든 `options` 에서 온다. **`ACTION_CD` 공통코드 그룹은 없다**(§8) — `grpCd` 로 쓰면 후보가 비어 코드값이 그대로 보인다.
 - 감사 넷은 `auditColumns()` 가 붙인다.
@@ -166,12 +179,12 @@
 
 ### 4-1c. 디테일 탭 3 — 접속 IP (편집 가능)
 
-| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 필수 | 편집 |
-|---|---|---|---|---|---|---|---|
-| IP · CIDR | `MSG.USER_IP_COL_CIDR` | `IP_CIDR` | `ipCidr` | 텍스트 | 220 | 필수 | **신규행만**(PK 절반) |
-| 사용 | `MSG.USER_IP_COL_USE_YN` | `USE_YN` | `useYn` | 스위치 | 90 | — | 가능 |
-| 허용 시작 | `MSG.USER_IP_COL_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 130 | — | 가능 |
-| 허용 종료 | `MSG.USER_IP_COL_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 130 | — | 가능 |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 필수 | 편집 | 설명 | 검증 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IP · CIDR | `MSG.USER_IP_COL_CIDR` | `IP_CIDR` | `ipCidr` | 텍스트 | 220 | 필수 | **신규행만**(PK 절반) | IP · CIDR 항목. 저장 또는 조회 근거: IP_CIDR. | 11  ·  IP 저장  ·  화면  ·  `IP_CIDR` 이 IP 또는 CIDR 형식(빈 값은 통과 — 아직 안 쓴 칸이다)  ·  `MSG.USER_IP_MALFORMED` / 12  ·  IP 저장  ·  화면  ·  같은 그리드 안에 `IP_CIDR` 중복 금지  ·  `MSG.USER_IP_DUPLICATE` |
+| 사용 | `MSG.USER_IP_COL_USE_YN` | `USE_YN` | `useYn` | 스위치 | 90 | — | 가능 | 사용 항목. 저장 또는 조회 근거: USE_YN. | 저장(수정)  ·  `SYS_USER`  ·  UPDATE  ·  `USER_NM` · `EMAIL` · `USE_YN` · `VALID_FROM_DT` · `VALID_TO_DT` · `LOCALE_CD` **만** / **세션 · 캐시 부수효과**: 마스터 저장은 세션을 건드리지 않는다 — `USE_YN` 은 유효 권한의 입력이 아니라 **로그인 체인**의 것이고, 이미 로그인한 세션은 다음 로그인부터 막힌다. **역할 저장은** 그 사람의 세션에 권한 재계산을 예약한다. **IP 저장은** 세션을 건드리지 않는다(인가가 아니라 인증의 검사다). |
+| 허용 시작 | `MSG.USER_IP_COL_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 130 | — | 가능 | 허용 시작 항목. 저장 또는 조회 근거: VALID_FROM_DT. | 5  ·  저장  ·  화면+서버  ·  `VALID_FROM_DT` ≤ `VALID_TO_DT`. **양끝 포함**이라 같은 날은 통과  ·  `MSG.USER_PERIOD_REVERSED` / `MsgKey.ERR_USER_ADMIN_PERIOD` / 저장(수정)  ·  `SYS_USER`  ·  UPDATE  ·  `USER_NM` · `EMAIL` · `USE_YN` · `VALID_FROM_DT` · `VALID_TO_DT` · `LOCALE_CD` **만** / `EXPIRED` 기간 만료  ·  사용 중 AND 오늘이 `VALID_FROM_DT` ~ `VALID_TO_DT` **밖**  ·  warn |
+| 허용 종료 | `MSG.USER_IP_COL_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 130 | — | 가능 | 허용 종료 항목. 저장 또는 조회 근거: VALID_TO_DT. | 5  ·  저장  ·  화면+서버  ·  `VALID_FROM_DT` ≤ `VALID_TO_DT`. **양끝 포함**이라 같은 날은 통과  ·  `MSG.USER_PERIOD_REVERSED` / `MsgKey.ERR_USER_ADMIN_PERIOD` / 저장(수정)  ·  `SYS_USER`  ·  UPDATE  ·  `USER_NM` · `EMAIL` · `USE_YN` · `VALID_FROM_DT` · `VALID_TO_DT` · `LOCALE_CD` **만** / `EXPIRED` 기간 만료  ·  사용 중 AND 오늘이 `VALID_FROM_DT` ~ `VALID_TO_DT` **밖**  ·  warn |
 
 - **행이 없으면 제한 없음이다.** 빈 판의 문구가 그 사실을 말한다 — *허용 대역이 없습니다 — 이 계정은 어느 IP 에서도 접속할 수 있습니다.*
 - **꺼진 행도 조회된다** — 다시 켜는 곳이 이 화면이다.
@@ -182,15 +195,15 @@
 
 **DB 컬럼 칸이 없는 유일한 표다** — 원천이 세션 스토어이고 IP·브라우저만 로그인 이력에서 붙는다.
 
-| 컬럼 | 라벨 키 | **필드명** | 입력방식 | 폭 | 편집 |
-|---|---|---|---|---|---|
-| 세션 | `MSG.USER_SESSION_COL_ID` | `sessionId` | 텍스트(앞 8자) | 140 | 읽기전용 |
-| 현재 세션 | `MSG.USER_SESSION_COL_CURRENT` | `current` | 스위치 | 110 | 읽기전용 |
-| 생성 시각 | `MSG.USER_SESSION_COL_CREATED` | `createdDtm` | 일시 | 170 | 읽기전용 |
-| 최근 접근 | `MSG.USER_SESSION_COL_ACCESS` | `lastAccessedDtm` | 일시 | 170 | 읽기전용 |
-| 만료 예정 | `MSG.USER_SESSION_COL_EXPIRY` | `expiryDtm` | 일시 | 170 | 읽기전용 |
-| 접속 IP | `MSG.USER_SESSION_COL_IP` | `clientIp` | 텍스트 | 140 | 읽기전용 |
-| 브라우저 | `MSG.USER_SESSION_COL_AGENT` | `userAgent` | 텍스트 | 240 | 읽기전용 |
+| 컬럼 | 라벨 키 | **필드명** | 입력방식 | 폭 | 편집 | 설명 | 검증 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 세션 | `MSG.USER_SESSION_COL_ID` | `sessionId` | 텍스트(앞 8자) | 140 | 읽기전용 | 세션 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 현재 세션 | `MSG.USER_SESSION_COL_CURRENT` | `current` | 스위치 | 110 | 읽기전용 | 현재 세션 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 생성 시각 | `MSG.USER_SESSION_COL_CREATED` | `createdDtm` | 일시 | 170 | 읽기전용 | 생성 시각 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 최근 접근 | `MSG.USER_SESSION_COL_ACCESS` | `lastAccessedDtm` | 일시 | 170 | 읽기전용 | 최근 접근 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 만료 예정 | `MSG.USER_SESSION_COL_EXPIRY` | `expiryDtm` | 일시 | 170 | 읽기전용 | 만료 예정 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 접속 IP | `MSG.USER_SESSION_COL_IP` | `clientIp` | 텍스트 | 140 | 읽기전용 | 접속 IP 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 브라우저 | `MSG.USER_SESSION_COL_AGENT` | `userAgent` | 텍스트 | 240 | 읽기전용 | 브라우저 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
 
 **기본 정렬은 `lastAccessedDtm` 내림차순이다.**
 
@@ -200,17 +213,17 @@
 
 ### 4-1e. 디테일 탭 5 — 유효 권한 (**조회 전용** · 진단)
 
-| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 편집 |
-|---|---|---|---|---|---|---|
-| 액션 4열 | `ACTION_LABEL[액션]` | **파생** | **`act.{액션}`** — 액션마다 한 열 | 배지 | 76 | 읽기전용 |
-| 메뉴 | `MSG.USER_EFF_COL_MENU` | **파생** — 메뉴 경로 | `menuPath` | 텍스트 | 300 | 읽기전용 |
-| 출처 | `MSG.USER_EFF_COL_VIA` | **파생** | `via` | 텍스트 | 180 | 읽기전용 |
-| 상태 | `MSG.USER_EFF_COL_STATE` | **파생**(§6-3) | `grantState` | 배지 | 90 | 읽기전용 |
-| 시작일 | `MSG.USER_AUTH_COL_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 130 | 읽기전용 |
-| 종료일 | `MSG.USER_AUTH_COL_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 130 | 읽기전용 |
-| 부여 사유 | `MSG.USER_EFF_COL_REASON` | `GRANT_RSN` | `grantRsn` | 텍스트 | 240 | 읽기전용 |
-| (숨김) 메뉴코드 | `MSG.USER_AUTH_COL_MENU` | `MENU_CD` | `menuCd` | 텍스트 | 160 | 읽기전용 |
-| (숨김) 역할ID | `MSG.USER_ROLE_COL_ROLE` | `ROLE_ID` | `roleId` | 텍스트 | 140 | 읽기전용 |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 편집 | 설명 | 검증 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 액션 4열 | `ACTION_LABEL[액션]` | **파생** | **`act.{액션}`** — 액션마다 한 열 | 배지 | 76 | 읽기전용 | 액션 4열 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 메뉴 | `MSG.USER_EFF_COL_MENU` | **파생** — 메뉴 경로 | `menuPath` | 텍스트 | 300 | 읽기전용 | 메뉴 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 출처 | `MSG.USER_EFF_COL_VIA` | **파생** | `via` | 텍스트 | 180 | 읽기전용 | 출처 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 상태 | `MSG.USER_EFF_COL_STATE` | **파생**(§6-3) | `grantState` | 배지 | 90 | 읽기전용 | 상태 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 시작일 | `MSG.USER_AUTH_COL_FROM` | `VALID_FROM_DT` | `validFromDt` | 날짜 | 130 | 읽기전용 | 시작일 항목. 저장 또는 조회 근거: VALID_FROM_DT. | 5  ·  저장  ·  화면+서버  ·  `VALID_FROM_DT` ≤ `VALID_TO_DT`. **양끝 포함**이라 같은 날은 통과  ·  `MSG.USER_PERIOD_REVERSED` / `MsgKey.ERR_USER_ADMIN_PERIOD` / 저장(수정)  ·  `SYS_USER`  ·  UPDATE  ·  `USER_NM` · `EMAIL` · `USE_YN` · `VALID_FROM_DT` · `VALID_TO_DT` · `LOCALE_CD` **만** / `EXPIRED` 기간 만료  ·  사용 중 AND 오늘이 `VALID_FROM_DT` ~ `VALID_TO_DT` **밖**  ·  warn |
+| 종료일 | `MSG.USER_AUTH_COL_TO` | `VALID_TO_DT` | `validToDt` | 날짜 | 130 | 읽기전용 | 종료일 항목. 저장 또는 조회 근거: VALID_TO_DT. | 5  ·  저장  ·  화면+서버  ·  `VALID_FROM_DT` ≤ `VALID_TO_DT`. **양끝 포함**이라 같은 날은 통과  ·  `MSG.USER_PERIOD_REVERSED` / `MsgKey.ERR_USER_ADMIN_PERIOD` / 저장(수정)  ·  `SYS_USER`  ·  UPDATE  ·  `USER_NM` · `EMAIL` · `USE_YN` · `VALID_FROM_DT` · `VALID_TO_DT` · `LOCALE_CD` **만** / `EXPIRED` 기간 만료  ·  사용 중 AND 오늘이 `VALID_FROM_DT` ~ `VALID_TO_DT` **밖**  ·  warn |
+| 부여 사유 | `MSG.USER_EFF_COL_REASON` | `GRANT_RSN` | `grantRsn` | 텍스트 | 240 | 읽기전용 | 부여 사유 항목. 저장 또는 조회 근거: GRANT_RSN. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| (숨김) 메뉴코드 | `MSG.USER_AUTH_COL_MENU` | `MENU_CD` | `menuCd` | 텍스트 | 160 | 읽기전용 | (숨김) 메뉴코드 항목. 저장 또는 조회 근거: MENU_CD. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| (숨김) 역할ID | `MSG.USER_ROLE_COL_ROLE` | `ROLE_ID` | `roleId` | 텍스트 | 140 | 읽기전용 | (숨김) 역할ID 항목. 저장 또는 조회 근거: ROLE_ID. | 10  ·  역할 저장  ·  화면  ·  같은 그리드 안에 `ROLE_ID` 중복 금지  ·  `MSG.USER_ROLE_DUPLICATE` |
 
 - **액션마다 한 열이다** — 필드가 `act.READ` · `act.SAVE` · `act.EXPORT` · `act.EXECUTE` 이고
   **액션이 늘면 열이 는다.** **`dynamic` 이 아니다** — 열 집합이 데이터에서 오지 않고 상수라서다.

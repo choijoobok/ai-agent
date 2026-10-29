@@ -112,6 +112,9 @@
 | `/menu-doc` | `screens.mjs` | `node .claude/skills/menu-doc/screens.mjs` |
 | `/mockup` | `declared-layout.mjs` | `node .claude/skills/mockup/declared-layout.mjs` |
 | `/mockup` | `declared-layout.test.mjs` | `node .claude/skills/mockup/declared-layout.test.mjs` |
+| `/mockup` | `generic-layout.mjs` | `node .claude/skills/mockup/generic-layout.mjs` |
+| `/mockup` | `presentation.mjs` | `node .claude/skills/mockup/presentation.mjs` |
+| `/mockup` | `presentation.test.mjs` | `node .claude/skills/mockup/presentation.test.mjs` |
 | `/mockup` | `scaffold.mjs` | `node .claude/skills/mockup/scaffold.mjs` |
 | `/mockup` | `snapshot-view.mjs` | `node .claude/skills/mockup/snapshot-view.mjs` |
 | `/mockup` | `snapshot-view.test.mjs` | `node .claude/skills/mockup/snapshot-view.test.mjs` |

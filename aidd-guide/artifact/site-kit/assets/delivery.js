@@ -7,6 +7,17 @@
   const currentPath = document.querySelector('[data-current-path]');
   const groups = [...document.querySelectorAll('.tree-branch')];
   let searchGroupState = null;
+  const backToTop = document.querySelector('[data-back-to-top]');
+  const syncBackToTop = () => { if (backToTop) backToTop.hidden = window.scrollY < 400; };
+  addEventListener('scroll', syncBackToTop, {passive:true});
+  backToTop?.addEventListener('click', () => {
+    window.scrollTo(0, 0);
+    const current = document.querySelector('[data-page]:not([hidden])');
+    current?.setAttribute('tabindex', '-1');
+    current?.focus({preventScroll:true});
+    syncBackToTop();
+  });
+  syncBackToTop();
 
   function setCollapsed(group, collapsed) {
     group.classList.toggle('collapsed', collapsed);
@@ -98,21 +109,14 @@
       const shadow = body.attachShadow({ mode: 'open' });
       const isolatedStyle = (item.style || '').replace(/:root((?:\[[^\]]+\]|:not\([^)]*\))*)/g, (_, condition) => condition ? `:host(${condition})` : ':host')
         .replace(/(^|[}\s,])body(?=\s*[{,.#[:])/gm, '$1.mockup-root');
-      shadow.innerHTML = `<style>:host{display:block;color-scheme:light}:host([data-theme="dark"]){color-scheme:dark}${isolatedStyle}</style><div class="mockup-root">${item.html}</div>`;
+      shadow.innerHTML = `<style>:host{display:block;color-scheme:light}:host([data-theme="dark"]){color-scheme:dark}${isolatedStyle}\n.mockup-root [id]{scroll-margin-top:72px}</style><div class="mockup-root">${item.html}</div>`;
+      bindDeclaredMockup(shadow);
       shadow.addEventListener('click', (event) => {
-        const close = event.target.closest?.('[data-close-editor]');
-        if (close) { close.closest('details[data-cell-editor]')?.removeAttribute('open'); return; }
+        if (event.defaultPrevented) return;
         const anchor = event.target.closest?.('[data-note]');
         if (!anchor) return;
         const note = shadow.getElementById(`note-${anchor.dataset.note}`);
         if (note) { event.preventDefault(); note.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-      });
-      shadow.addEventListener('change', (event) => {
-        const toggle = event.target.closest?.('[data-grid-column]');
-        if (!toggle) return;
-        toggle.closest('[data-grid-view]')?.querySelectorAll('[data-grid-col]').forEach((cell) => {
-          if (cell.dataset.gridCol === toggle.dataset.gridColumn) cell.hidden = !toggle.checked;
-        });
       });
     });
     syncThemeControls();
@@ -161,7 +165,8 @@
       } else link.removeAttribute('aria-current');
     });
     if (updateHash) history.replaceState(null, '', `#${id}`);
-    document.querySelector('.main-wrap')?.scrollTo(0, 0);
+    window.scrollTo(0, 0);
+    syncBackToTop();
     injectMockups(current);
     window.DELIVERY_READY = renderMermaid();
     return true;

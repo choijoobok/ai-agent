@@ -19,6 +19,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { declaredFigures, declaredScreen, searchComboScript } from './declared-layout.mjs';
+import {annotationBook, surfaceRows, surfaceIntroduction, surfaceOf} from './presentation.mjs';
+import {genericScreen, areaTitle} from './generic-layout.mjs';
 
 const REPO = path.resolve(import.meta.dirname, '../../..');
 const SCREENS = path.join(REPO, 'documents/screen');
@@ -217,163 +219,31 @@ function screenModel(md, type) {
   const composition = section(md, /화면 구성/);
   const search = findTable(section(md, /조회조건/), /조건|검색/);
   const columns = (section(md, /^컬럼$|컬럼/) ? tablesIn(section(md, /^컬럼$|컬럼/).body) : [])
-    .filter((t) => /컬럼/.test(plain(t.header[0])));
-  const actions = findTable(section(md, /버튼.*액션|액션.*버튼/), /버튼|액션/);
+    .filter((t) => /컬럼/.test(plain(t.header[0])) && !/기본값|연쇄|재계산|비노출/.test(t.heading) && !t.header.some(h=>/^(기본값|변경 시)$/.test(plain(h))));
+  const actionTables = tablesIn(section(md, /버튼.*액션|액션.*버튼/)?.body??'').filter(t=>/버튼|액션/.test(plain(t.header[0])));
   const text = `${type}\n${composition?.body ?? ''}`;
+  const surfaces=surfaceRows(tablesIn(composition?.body??'').find(t=>t.header.includes('관리 대상·목적')));
+  for(const table of columns){table.rows=table.rows.filter(r=>plain(r[0]));table.readonly=/^조회 전용/.test(surfaces.find(s=>s.name===areaTitle(table))?.save??'');}
   return {
     figures: declaredFigures(findTable(composition, /그림 키/), plain),
+    interactive: /탭 상호작용:\s*사용/.test(composition?.body ?? ''),
+    addRowTabs: (composition?.body.match(/^행 추가 탭:\s*(.+)$/m)?.[1] ?? '').split('·').map(s=>s.trim()),
+    rowExamples: findTable(composition, /^그리드 예시$/),
+    popups: findTable(composition, /^선택창$/),
+    surfaces,
+    overview: plain(section(md,/개요/)?.body.split('\n').find(l=>l.includes('무엇을 하는 화면'))??''),
     searchTable: search,
     detailSearchTables: tablesIn(section(md, /조회조건/)?.body ?? '').filter((t) => /조건|검색/.test(plain(t.header[0]))).slice(1),
     search: search?.rows ?? [],
     columns,
-    actions: actions?.rows ?? [],
+    actionTables,
+    actions: actionTables.flatMap(t=>t.rows),
     masterDetail: /마스터.?디테일/.test(text) || columns.length > 1,
     vertical: /(상하|위.*아래|상·하)/.test(text),
   };
 }
 
-function annotator(key) {
-  const notes = [];
-  return {
-    badge(description) {
-      const number = notes.length + 1;
-      const id = `${key}-${number}`;
-      notes.push({ id, number, description });
-      return `<span class="n anchor" data-note="${id}" role="link" tabindex="0" aria-label="설명 ${number} 보기">${number}</span>`;
-    },
-    render() {
-      if (!notes.length) return '';
-      return `<div class="notes"><ol>${notes.map((note) => `<li id="note-${note.id}"><span class="n">${note.number}</span>${note.description}</li>`).join('')}</ol></div>`;
-    },
-  };
-}
-
-function searchControl(row, annotations) {
-  const label = row[0] || '조회 조건';
-  const input = row[2] || '';
-  const select = /셀렉트|선택|코드|날짜/.test(input);
-  const description = `<b>${html(plain(label))}</b> — 요건서 §조회조건에 정의된 조건이다. ${html(plain(row.slice(1).filter(Boolean).join(' · ')) || '입력값으로 목록을 조회한다.')}`;
-  return `<label>${html(label)}${annotations.badge(description)}</label>${select ? '<select><option>전체</option></select>' : `<input placeholder="${html(plain(label))}" />`}`;
-}
-
-function columnLabel(row) {
-  return plain(row[0] || '컬럼');
-}
-
-function grid(title, table, annotations, { empty = '', selected = false } = {}) {
-  const cols = table?.rows ?? [];
-  if (!cols.length) return '';
-  const titleBadge = annotations.badge(`<b>${html(title)}</b> 영역 — 조회 결과와 건수를 함께 확인한다.`);
-  const heads = cols.map((row) => {
-    const detail = plain(row.slice(1).filter(Boolean).join(' · ')) || '요건서 §컬럼에 정의된 표시 항목이다.';
-    return `<th class="roh">${html(row[0])}${annotations.badge(`<b>${html(columnLabel(row))}</b> 컬럼 — ${html(detail)}`)}<span class="mn">☰</span></th>`;
-  }).join('');
-  const values = cols.map((row, i) => {
-    const label = columnLabel(row);
-    if (/수$|건수|count/i.test(label)) return '<td>0</td>';
-    if (/사용|여부|YN|상태/.test(label)) return '<td>Y</td>';
-    return `<td>${i === 0 ? '예시 값' : '—'}</td>`;
-  }).join('');
-  const body = empty
-    ? `<tbody><tr><td colspan="${cols.length}" class="empty">${html(empty)}</td></tr></tbody>`
-    : `<tbody><tr${selected ? ' class="sel"' : ''}>${values}</tr></tbody>`;
-  return `<div class="tb"><span class="ttl">${html(title)}${titleBadge}</span><span class="cnt">${empty ? '0건' : '1건'}</span></div>
-    <div class="grid"><table><thead><tr>${heads}</tr></thead>${body}</table></div>
-    <div class="pg"><span>총 <b>${empty ? '0' : '1'}</b>건</span><span class="nav">‹ 1 ›</span><span class="size">50건</span></div>`;
-}
-
-function actionButtons(rows, annotations) {
-  const names = rows.map((r) => plain(r[0])).filter((x) => x && !/^\(/.test(x));
-  const shown = names.length ? names.slice(0, 4) : ['조회'];
-  return shown.map((name, i) => {
-    const row = rows.find((candidate) => plain(candidate[0]) === name) ?? [];
-    const detail = plain(row.slice(1).filter(Boolean).join(' · ')) || '현재 조건으로 업무 동작을 수행한다.';
-    return `<button class="btn ${i === 0 ? 'sm' : 'ghost sm'}">${html(name)}${annotations.badge(`<b>${html(name)}</b> 버튼 — ${html(detail)}`)}</button>`;
-  }).join('');
-}
-
-function detailTitle(table, fallback) {
-  return plain(table?.heading || '').replace(/^\d+(?:-\d+)?\.?\s*/, '') || fallback;
-}
-
-/** 메뉴얼 그림의 캡션이 특정 탭·상세를 말하면 그 표를 고른다. */
-function detailFor(columns, caption) {
-  const details = columns.slice(1);
-  const words = plain(caption).split(/\s+/).filter((w) => w.length >= 2);
-  const scored = details.map((table) => {
-    const heading = detailTitle(table, '');
-    return { table, score: words.filter((word) => heading.includes(word)).length };
-  });
-  return scored.sort((a, b) => b.score - a.score)[0]?.table ?? details[0];
-}
-
-/**
- * 요건서의 표를 화면 구조로 옮긴다.
- *
- * 컬럼 목록을 일반적인 "이름·상태"로 바꾸면 목업이 가장 중요한 계약을 잃는다. 그래서
- * §2 조회조건·§4 컬럼·§5 버튼을 그대로 읽고, 마스터-디테일이면 두 표와 스플리터를 낸다.
- */
-function screenSketch(title, type, model, key, caption, manualKey) {
-  const attrs = ` id="${key}"${manualKey ? ` data-manual="${key}"` : ''}`;
-  const captionLine = caption ? ` · ${html(caption)}` : '';
-  const isEmpty = /0건|없|미등록|미매핑|빈/.test(caption);
-  const emptyMessage = isEmpty ? caption : '';
-  const annotations = annotator(key);
-  const described = (screen) => `${screen}\n${annotations.render()}`;
-  if (/대시보드/.test(type) && !model.columns.length) {
-    return described(`<div class="screen leaf"${attrs}>
-  <div class="bar">${html(title)}${captionLine} — 요건서 기반 화면 배치</div>
-  <div class="body">
-    <div class="bc"><span class="path"><b>${html(title)}</b></span><button class="btn ghost">기간${annotations.badge('<b>기간</b> — 대시보드 집계 기준 기간을 선택한다.')}</button></div>
-    <div class="row" style="margin-bottom:12px"><div class="grp" style="flex:1"><b>요약${annotations.badge('<b>요약</b> — 현재 업무 상태의 핵심 지표를 보여준다.')}</b><div class="item"><span>현재 상태</span><b>—</b></div></div><div class="grp" style="flex:1"><b>집계</b><div class="item"><span>조회 결과</span><b>—</b></div></div></div>
-    <div class="tb"><span class="ttl">현황</span><span class="cnt">요건서의 데이터가 여기에 표시됩니다</span></div>
-    <div class="grid"><table><thead><tr><th>구분</th><th>값</th><th>기준 시각</th></tr></thead><tbody><tr><td>표시 데이터</td><td>—</td><td>—</td></tr></tbody></table></div>
-  </div>
-</div>`);
-  }
-  if (/폼|로그인|팝업|모달|설정/.test(type) && !model.columns.length) {
-    return described(`<div class="screen shell"${attrs}>
-  <div class="body"><div class="modal"><div class="mh">${html(title)}<span class="x">×</span></div><div class="mb">
-    <div class="f"><label>입력 항목${annotations.badge('<b>입력 항목</b> — 요건서의 입력·검증 규칙을 적용한다.')}</label><input value="" placeholder="요건서에 정의한 값을 입력합니다" /></div>
-    <div class="f ro"><label>조회 항목</label><input value="읽기 전용 값" readonly /></div>
-  </div><div class="mf"><span>${caption ? html(caption) : '기본 상태'}</span><span class="row"><button class="btn ghost sm">취소</button><button class="btn sm">확인${annotations.badge('<b>확인</b> — 입력값을 검증한 뒤 저장하거나 다음 단계로 진행한다.')}</button></span></div></div></div>
-</div>`);
-  }
-  const first = model.columns[0];
-  const second = detailFor(model.columns, caption);
-  if (first) {
-    const search = model.search.length
-      ? model.search.map((row) => searchControl(row, annotations)).join('')
-      : `<label>조회 조건${annotations.badge('<b>조회 조건</b> — 입력값으로 목록을 다시 조회한다.')}</label><input placeholder="검색어" />`;
-    const actions = actionButtons(model.actions, annotations);
-    const master = grid(detailTitle(first, `${title} 목록`), first, annotations, { empty: emptyMessage, selected: model.masterDetail && !isEmpty });
-    const tabs = model.columns.length > 2
-      ? `<div class="tabs">${model.columns.slice(1).map((table) => `<span class="${table === second ? 'on' : ''}">${html(detailTitle(table, '상세'))}${annotations.badge(`<b>${html(detailTitle(table, '상세'))}</b> 탭 — 선택한 상위 행의 상세 데이터를 표시한다.`)}</span>`).join('')}</div>`
-      : '';
-    const detail = second
-      ? `${model.vertical ? '<div class="split"><span class="arw">⌃</span><span class="hnd">⋮⋮⋮</span><span class="arw">⌄</span></div>' : ''}${tabs}${grid(detailTitle(second, '상세'), second, annotations, { empty: model.masterDetail ? '위 목록에서 행을 선택하면 상세가 표시됩니다' : '' })}`
-      : '';
-    return described(`<div class="screen leaf"${attrs}>
-  <div class="bar">${html(title)}${captionLine} — 요건서의 조회조건·컬럼·버튼을 반영한 화면</div>
-  <div class="body">
-    <div class="bc"><span class="path"><b>${html(title)}</b></span></div>
-    <div class="sf">${search}<span class="act">${actions}</span></div>
-    ${master}
-    ${detail}
-  </div>
-</div>`);
-  }
-  return described(`<div class="screen leaf"${attrs}>
-  <div class="bar">${html(title)}${captionLine} — 요건서 기반 화면 배치</div>
-  <div class="body">
-    <div class="bc"><span class="path"><b>${html(title)}</b></span></div>
-    <div class="sf"><label>조회 조건${annotations.badge('<b>조회 조건</b> — 입력값으로 목록을 조회한다.')}</label><input placeholder="검색어" /><label>상태</label><select><option>전체</option></select><span class="act"><button class="btn sm">조회${annotations.badge('<b>조회</b> — 현재 조건으로 데이터를 조회한다.')}</button></span></div>
-    <div class="tb"><span class="ttl">${html(title)} 목록</span><span class="cnt">0건</span><button class="btn ghost sm">새로고침</button></div>
-    <div class="grid"><table><thead><tr><th>이름</th><th>상태</th><th>변경일시</th></tr></thead><tbody><tr><td>표시 데이터</td><td>—</td><td>—</td></tr></tbody></table></div>
-    <div class="pg"><span>총 <b>0</b>건</span><span class="nav">‹ 1 ›</span><span class="size">50건</span></div>
-  </div>
-</div>`);
-}
+function columnLabel(row) { return plain(row[0] || '컬럼'); }
 
 // ── 골격 ────────────────────────────────────────────────────────────
 function scaffold(dir) {
@@ -418,20 +288,41 @@ function scaffold(dir) {
   L.push('</div>');
   L.push('');
   const figures = model.figures.length ? model.figures : keys.length ? keys : [{ key: 'main', caption: '기본 상태' }];
-  const renderFigure = (figure) => model.figures.length
-    ? declaredScreen(title, model, figure, { annotator, plain, searchControl, manualKey: keys.some((k) => k.key === figure.key) })
-    : screenSketch(title, type, model, figure.key, figure.caption, keys.length > 0);
-  if (model.figures.length) L.push(`<nav>${figures.map((f) => `<a href="#${f.key}">${html(f.caption)}</a>`).join(' · ')}</nav>`);
-  L.push('<h2>1. 기본 상태</h2>');
+  const book=annotationBook();
+  const sharedAnnotator=()=>({badge:(...args)=>book.badge(...args),render:()=>''});
+  const renderFigure = (figure,options={}) => model.figures.length
+    ? declaredScreen(title, model, figure, { annotator:sharedAnnotator, plain, manualKey: keys.some((k) => k.key === figure.key), ...options })
+    : genericScreen(title, model, figure, { annotator:sharedAnnotator, manualKey:keys.some(k=>k.key===figure.key),...options});
+  const areas=[...new Set(model.columns.slice(1).filter(t=>surfaceOf(model,areaTitle(t))?.kind!=='탭 내부').map(t=>model.figures.length?areaTitle(t).split(' / ')[0]:areaTitle(t)))];
+  const used=new Set([figures[0].key]);
+  const walkthrough=areas.map((name,index)=>{
+    const candidates=figures.slice(1).filter(f=>f.detail===name&&!/실패|없|충돌|잠금|확인 중|거부/.test(f.caption));
+    const chosen=candidates.find(f=>f.editable)??candidates[0];
+    const figure=chosen??{...figures[0],key:`area-${index+1}`,caption:name,detail:name};
+    used.add(figure.key);
+    return {name,figure};
+  });
+  L.push(`<nav class="walkthrough-nav"><a href="#${figures[0].key}">초기 화면</a>${walkthrough.map(({name,figure})=>`<a href="#${figure.key}">${html(name)}</a>`).join('')}<a href="#element-descriptions">요소 상세 설명</a><a href="#state-examples">상태별 예시</a></nav>`);
+  L.push('<h2>1. 초기 화면</h2>');
+  L.push(surfaceIntroduction(surfaceOf(model,areaTitle(model.columns[0]??{heading:''}))));
   L.push(renderFigure(figures[0]));
-  L.push('');
-  L.push('<h2>2. 상태가 갈리는 자리</h2>');
-  for (const figure of figures.slice(1)) {
-    L.push(`<h3>${html(figure.caption)}</h3>`);
-    L.push(renderFigure(figure));
-    L.push('');
+  L.push('<h2>2. 탭·상세 영역별 작업</h2>');
+  L.push('<p>같은 상위 대상을 선택한 상태에서 각 영역을 순서대로 설명합니다. 반복되는 상단 목록은 생략했습니다.</p>');
+  for(const {name,figure} of walkthrough){
+    L.push(`<section class="walkthrough-area" data-walkthrough-area="${html(name)}"><h3>${html(name)}</h3>${surfaceIntroduction(surfaceOf(model,name))}${renderFigure(figure,{compact:true,surfaceName:name})}</section>`);
   }
-  if (figures.length === 1) L.push('<p class="notes">추가 상태는 요건서의 예외·검증 규칙을 구체화한 뒤 이 자리에 그린다.</p>');
+  const extras=figures.slice(1).filter(f=>!used.has(f.key));
+  const extraHtml=extras.map(figure=>`<details class="state-example"><summary>${html(figure.caption)}</summary>${renderFigure(figure)}</details>`).join('');
+  L.push(book.render());
+  const rules=section(md,/규칙.*저장/);
+  if(rules){
+    L.push('<details id="shared-rules" class="state-example"><summary>공통 검증·실행 규칙 — 요건서 §6</summary>');
+    let rows=[];
+    const flush=()=>{if(rows.length){const parsed=mdTable(rows.join('\n'));L.push(`<table>${parsed.map((r,i)=>`<tr>${r.map(c=>`<${i?'td':'th'}>${html(c)}</${i?'td':'th'}>`).join('')}</tr>`).join('')}</table>`);rows=[];}};
+    for(const line of rules.body.split('\n')){if(line.startsWith('|'))rows.push(line);else{flush();if(line.trim())L.push(`<p>${html(line.replace(/^#{1,6} /,''))}</p>`);}}flush();
+    L.push('</details>');
+  }
+  L.push(`<section id="state-examples"><h2>상태별 예시</h2><p>빈 목록·권한·검증 오류 등의 예시는 필요한 경우 펼쳐 확인합니다. 같은 항목의 설명은 위 목록을 함께 사용합니다.</p>${extraHtml||'<p>별도 상태 예시 없음</p>'}</section>`);
   L.push('');
 
   // ── 테스트 케이스 — 요건서에서 그대로 옮긴다 ──
@@ -478,7 +369,7 @@ function scaffold(dir) {
   L.push('</footer>');
   L.push('');
   L.push('</main>');
-  if (model.figures.length || model.columns.some((t) => t.rows.some((r) => r.includes('검색콤보')))) L.push(searchComboScript());
+  L.push(searchComboScript());
   L.push('');
   return L.join('\n');
 }
@@ -502,13 +393,13 @@ function check(dir) {
     problems.push('화면 블록이 없다 — 공용 스타일·테스트 표만으로는 목업이 아니다');
   }
 
-  // 화면 안의 번호 배지와 하단 상세 설명은 정확히 1:1이어야 한다.
+  // 같은 요소의 여러 배지는 한 설명을 공유하며 설명 자체는 한 번만 낸다.
   const badgeIds = [...mock.matchAll(/data-note="([\w-]+)"/g)].map((m) => m[1]);
   const noteIds = [...mock.matchAll(/\bid="note-([\w-]+)"/g)].map((m) => m[1]);
   if (!badgeIds.length) problems.push('화면 요소를 설명하는 번호 배지가 없다');
   for (const id of badgeIds) if (!noteIds.includes(id)) problems.push(`번호 배지 ${id}의 하단 설명이 없다`);
   for (const id of noteIds) if (!badgeIds.includes(id)) problems.push(`하단 설명 ${id}을 가리키는 화면 번호 배지가 없다`);
-  if (new Set(badgeIds).size !== badgeIds.length) problems.push('같은 data-note 번호 배지가 중복됐다');
+  if ([...mock.matchAll(/data-annotation-catalog/g)].length!==1) problems.push('화면 요소 상세 설명 목록은 정확히 한 번 있어야 한다');
   if (new Set(noteIds).size !== noteIds.length) problems.push('같은 하단 설명 id가 중복됐다');
 
   // ① 화면 계약의 핵심인 컬럼 이름은 목업에서도 그대로 보여야 한다. 일반적인
@@ -516,6 +407,12 @@ function check(dir) {
   if (md) {
     const type = meta(md).find((r) => /화면 유형/.test(r[0]))?.[1] ?? '';
     const model = screenModel(md, type);
+    if(model.surfaces.length){
+      const names=model.columns.map(areaTitle);
+      if(new Set(model.surfaces.map(s=>s.name)).size!==model.surfaces.length)problems.push('영역별 작업 표의 영역 이름이 중복됐다');
+      for(const name of names)if(!surfaceOf(model,name))problems.push(`컬럼 영역 '${name}'의 관리 대상·작업·버튼 계약이 없다`);
+      for(const surface of model.surfaces)if(!names.includes(surface.name))problems.push(`영역 '${surface.name}'의 컬럼 표가 없다`);
+    }
     const expected = model.columns.flatMap((t) => t.rows.map(columnLabel));
     const shown = [...mock.matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/gi)]
       .map((m) => plain(m[1].replace(/<[^>]+>/g, '')));
@@ -615,6 +512,13 @@ if (args.includes('--write')) {
   const dir = resolveScreen(rest[0]);
   fs.writeFileSync(path.join(SCREENS, dir, 'mockup.html'), scaffold(dir), 'utf8');
   console.log(`목업 생성 — documents/screen/${dir}/mockup.html`);
+  process.exit(0);
+}
+
+if (args.includes('--write-existing')) {
+  const targets=allScreens().filter(dir=>fs.existsSync(path.join(SCREENS,dir,'mockup.html')));
+  for(const dir of targets)fs.writeFileSync(path.join(SCREENS,dir,'mockup.html'),scaffold(dir),'utf8');
+  console.log(`기존 목업 ${targets.length}개 재생성`);
   process.exit(0);
 }
 

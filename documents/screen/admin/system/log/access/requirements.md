@@ -47,6 +47,14 @@
 
 ---
 
+### 1-9. 영역별 관리 대상과 작업
+
+| 영역 | 종류 | 관리 대상·목적 | 작업 설명 | 버튼 | 조회 방식 | 저장 범위 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 사용 이력 | 목록 | 사용 이력의 업무 데이터를 조회한다. | 조건으로 목록을 좁혀 확인한다. 읽기 전용 데이터이며 상세/연결 이동은 해당 셀 동작을 사용한다. | 조회·초기화 | 요건서 §1의 진입 조건 및 조회 버튼 | 조회 전용; 실행 버튼은 별도 명령 |
+
+- 표의 버튼은 현재 소스의 배치를 따른다. 행 삭제는 그리드 행의 삭제 선택 기능이며 독립 업무 삭제 명령으로 바꾸지 않는다.
+
 ## 2. 조회조건
 
 **기간이 유일한 필수 조건이고 상한이 있다.** 비우고 조회하면 첫 질의가 보존 기간 전량(90일)을 향한다 — 이 테이블은 행마다 `nclob` 이 달려 있어 세 이력 중 가장 크다.
@@ -106,18 +114,18 @@
 
 ### 4-1. 그리드 — 사용 이력
 
-| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 |
-|---|---|---|---|---|---|---|---|---|---|
-| 일시 | `MSG.ACCESS_LOG_COL_CRE_DTM` | `CRE_DTM` | `creDtm` | 일시 | 170/좌고정 | — | 읽기전용 | — | — |
-| 상태 | `MSG.ACCESS_LOG_COL_HTTP_STAT` | `HTTP_STAT` | `httpStat` | 숫자·배지 | 90 | — | 읽기전용 | — | — |
-| 사용자 ID | `MSG.ACCESS_LOG_COL_USER_ID` | `USER_ID` | `userId` | 텍스트 | 120 | — | 읽기전용 | — | — |
-| 사용자명 | `MSG.ACCESS_LOG_COL_USER_NM` | `SYS_USER.USER_NM` | `userNm` | 텍스트 | 120 | — | 읽기전용 | — | — |
-| 메뉴 | `MSG.ACCESS_LOG_COL_MENU` | `MENU_CD` → 번역 | `menuNm` | 텍스트 | 140 | — | 읽기전용 | — | — |
-| 요청 URI | `MSG.ACCESS_LOG_COL_REQUEST_URI` | `REQUEST_URI` | `requestUri` | 텍스트 | 260 | — | 읽기전용 | — | — |
-| 전문 | `MSG.ACCESS_LOG_COL_PAYLOAD` | **파생** — `PARAMETERS IS NOT NULL` | `hasParameters` | 링크 | 80 | — | 읽기전용 | — | — |
-| 접속 IP | `MSG.ACCESS_LOG_COL_CLIENT_IP` | `CLIENT_IP` | `clientIp` | 텍스트 | 130 | — | 읽기전용 | — | — |
-| 추적 ID | `MSG.ACCESS_LOG_COL_TRACE_ID` | `TRACE_ID` | `traceId` | 텍스트 | 280 | — | 읽기전용 | — | — |
-| 순번 ○ | `MSG.ACCESS_LOG_COL_SEQ` | `ACCESS_LOG_SEQ` | `accessLogSeq` | 숫자 | 100 | — | 읽기전용 | — | — |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 설명 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 일시 | `MSG.ACCESS_LOG_COL_CRE_DTM` | `CRE_DTM` | `creDtm` | 일시 | 170/좌고정 | — | 읽기전용 | — | — | 일시 항목. 값/선택 출처: —. |
+| 상태 | `MSG.ACCESS_LOG_COL_HTTP_STAT` | `HTTP_STAT` | `httpStat` | 숫자·배지 | 90 | — | 읽기전용 | — | — | 상태 항목. 값/선택 출처: —. |
+| 사용자 ID | `MSG.ACCESS_LOG_COL_USER_ID` | `USER_ID` | `userId` | 텍스트 | 120 | — | 읽기전용 | — | — | 사용자 ID 항목. 값/선택 출처: —. |
+| 사용자명 | `MSG.ACCESS_LOG_COL_USER_NM` | `SYS_USER.USER_NM` | `userNm` | 텍스트 | 120 | — | 읽기전용 | — | — | 사용자명 항목. 값/선택 출처: —. |
+| 메뉴 | `MSG.ACCESS_LOG_COL_MENU` | `MENU_CD` → 번역 | `menuNm` | 텍스트 | 140 | — | 읽기전용 | — | — | 메뉴 항목. 값/선택 출처: —. |
+| 요청 URI | `MSG.ACCESS_LOG_COL_REQUEST_URI` | `REQUEST_URI` | `requestUri` | 텍스트 | 260 | — | 읽기전용 | — | — | 요청 URI 항목. 값/선택 출처: —. |
+| 전문 | `MSG.ACCESS_LOG_COL_PAYLOAD` | **파생** — `PARAMETERS IS NOT NULL` | `hasParameters` | 링크 | 80 | — | 읽기전용 | — | — | 전문 항목. 값/선택 출처: —. |
+| 접속 IP | `MSG.ACCESS_LOG_COL_CLIENT_IP` | `CLIENT_IP` | `clientIp` | 텍스트 | 130 | — | 읽기전용 | — | — | 접속 IP 항목. 값/선택 출처: —. |
+| 추적 ID | `MSG.ACCESS_LOG_COL_TRACE_ID` | `TRACE_ID` | `traceId` | 텍스트 | 280 | — | 읽기전용 | — | — | 추적 ID 항목. 값/선택 출처: —. |
+| 순번 ○ | `MSG.ACCESS_LOG_COL_SEQ` | `ACCESS_LOG_SEQ` | `accessLogSeq` | 숫자 | 100 | — | 읽기전용 | — | — | 순번 ○ 항목. 값/선택 출처: —. |
 
 `○` = 기본 숨김. **`hidden` 은 없다** — 운영자가 켜서 보면 안 되는 컬럼이 이력에는 없다.
 

@@ -30,6 +30,10 @@ html[data-content-width="full"] main.content{max-width:none;width:100%}
 .site-actions .icon-btn{width:calc(34px * var(--ui-scale));height:calc(34px * var(--ui-scale));padding:calc(7px * var(--ui-scale))}
 .theme-icon-dark[hidden],.theme-icon-light[hidden]{display:none!important}
 .site-actions button:hover{border-color:var(--accent)}
+.back-to-top{position:fixed;right:24px;bottom:max(24px,env(safe-area-inset-bottom));z-index:40;border:1px solid var(--border-strong);border-radius:999px;padding:11px 16px;background:var(--bg-2);color:var(--text);box-shadow:var(--shadow-lg);font:inherit;cursor:pointer}
+.back-to-top:hover{border-color:var(--accent);color:var(--accent)}
+.back-to-top:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.back-to-top[hidden]{display:none}
 .current-path{min-width:0;max-width:min(48vw,720px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-dim);font-size:calc(12px * var(--ui-scale));border-left:1px solid var(--border);padding-left:14px}
 .ui-settings{position:relative}
 .ui-settings-panel{position:absolute;right:0;top:calc(100% + 8px);z-index:80;width:250px;padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--bg-2);box-shadow:var(--shadow-lg)}
@@ -78,7 +82,7 @@ body.release .review-only{display:none!important}
 
 @media print{
   @page{size:A4;margin:14mm 13mm}
-  .topbar,.sidebar,.sidebar-backdrop,.review-only,.site-actions{display:none!important}
+  .topbar,.sidebar,.sidebar-backdrop,.review-only,.site-actions,.back-to-top{display:none!important}
   .layout,.main-wrap{display:block!important}
   main.content{max-width:none!important;padding:0!important}
   .delivery-page[hidden]{display:none!important}

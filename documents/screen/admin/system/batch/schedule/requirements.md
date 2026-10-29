@@ -61,6 +61,15 @@
 
 ---
 
+### 1-9. 영역별 관리 대상과 작업
+
+| 영역 | 종류 | 관리 대상·목적 | 작업 설명 | 버튼 | 조회 방식 | 저장 범위 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 배치 등록 | 목록 | 자동 실행할 배치와 크론·시간대를 관리한다. | 등록/변경 행을 저장한다. 즉시 실행은 선택 배치에 미저장 변경이 없을 때 실행한다. | 조회·추가·저장·행 삭제·즉시 실행 | 조회 버튼 | 배치 등록 변경 행; 즉시 실행은 별도 명령 |
+| 최근 실행 이력 | 영역 | 선택 배치의 최근 10건 실행을 확인한다. | 행을 더블클릭해 전체 실행 이력 화면으로 이동한다. | 조회 | 배치 선택/실행 성공 후 및 조회 버튼 | 조회 전용 |
+
+- 표의 버튼은 현재 소스의 배치를 따른다. 행 삭제는 그리드 행의 삭제 선택 기능이며 독립 업무 삭제 명령으로 바꾸지 않는다.
+
 ## 2. 조회조건
 
 | 조건 | 대상 컬럼 | 입력방식 | 연산 | 필수 | 기본값 | 라벨 키 |
@@ -108,22 +117,22 @@
 
 ### 4-1. 마스터 — 배치 등록
 
-| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 필수 | 편집 |
-|---|---|---|---|---|---|---|---|
-| 정렬 | `MSG.BATCH_SCHEDULE_COL_SORT_NO` | `SORT_NO` | `sortNo` | 숫자 | 80 | — | 가능 |
-| 배치 ID | `MSG.BATCH_SCHEDULE_COL_BATCH_ID` | `BATCH_ID` | `batchId` | 텍스트 | 180 | **PK** | **신규행만** |
-| 배치명 | `MSG.BATCH_SCHEDULE_COL_BATCH_NM` | `BATCH_NM` | `batchNm` | 텍스트 | 180 | **필수** | 가능 |
-| **설명** | `MSG.BATCH_SCHEDULE_COL_BATCH_DESC` | `BATCH_DESC` | `batchDesc` | 텍스트 | 280 | **필수** | 가능 |
-| 배치 구현 | `MSG.BATCH_SCHEDULE_COL_BEAN_ID` | `BEAN_ID` | `beanId` | **셀렉트** | 200 | **필수** | 가능 |
-| 크론 | `MSG.BATCH_SCHEDULE_COL_CRON` | `CRON` | `cron` | 텍스트 | 150 | **필수** | 가능 |
-| **시간대** | `MSG.BATCH_SCHEDULE_COL_TIMEZONE` | `TIMEZONE` | `timezone` | **셀렉트(검색)** | 200 | **필수** | 가능 |
-| 다음 실행 | `MSG.BATCH_SCHEDULE_COL_NEXT_EXEC` | **파생** | `nextExecDtm` | **일시 + 시간대** | 200 | — | **불가** |
-| 파라미터 | `MSG.BATCH_SCHEDULE_COL_PARAM` | `PARAM_JSON` | `paramJson` | 큰 텍스트 | 220 | — | 가능 |
-| 쿨다운(초) | `MSG.BATCH_SCHEDULE_COL_COOLDOWN` | `LOCK_MIN_INTERVAL_SEC` | `lockMinIntervalSec` | 숫자 | 110 | — | 가능 |
-| 락 만료(초) | `MSG.BATCH_SCHEDULE_COL_LOCK_EXPIRY` | `LOCK_EXPIRY_SEC` | `lockExpirySec` | 숫자 | 110 | — | 가능 |
-| 사용 | `MSG.BATCH_SCHEDULE_COL_USE_YN` | `USE_YN` | `useYn` | 스위치 | 80 | — | 가능 |
-| 최근 결과 | `MSG.BATCH_SCHEDULE_COL_LAST_RSLT` | **파생** | `lastRsltCd` | 배지 | 120 | — | **불가** |
-| 감사 4 | (공통) | — | — | — | — | — | 불가 |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 필수 | 편집 | 설명 | 검증 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 정렬 | `MSG.BATCH_SCHEDULE_COL_SORT_NO` | `SORT_NO` | `sortNo` | 숫자 | 80 | — | 가능 | 정렬 항목. 저장 또는 조회 근거: SORT_NO. | 요건서 §6 공통 검증·실행 규칙 참조; 별도 필드 제한을 추정하지 않는다 |
+| 배치 ID | `MSG.BATCH_SCHEDULE_COL_BATCH_ID` | `BATCH_ID` | `batchId` | 텍스트 | 180 | **PK** | **신규행만** | 배치 ID 항목. 저장 또는 조회 근거: BATCH_ID. | 1  ·  저장  ·  화면  ·  같은 요청 안 `BATCH_ID` 중복  ·  `MSG.BATCH_SCHEDULE_DUPLICATE` |
+| 배치명 | `MSG.BATCH_SCHEDULE_COL_BATCH_NM` | `BATCH_NM` | `batchNm` | 텍스트 | 180 | **필수** | 가능 | 배치명 항목. 저장 또는 조회 근거: BATCH_NM. | 3  ·  저장  ·  화면+서버  ·  `BATCH_NM` 필수  ·  `MsgKey.ERR_BATCH_NAME_REQUIRED` |
+| **설명** | `MSG.BATCH_SCHEDULE_COL_BATCH_DESC` | `BATCH_DESC` | `batchDesc` | 텍스트 | 280 | **필수** | 가능 | 설명 항목. 저장 또는 조회 근거: BATCH_DESC. | 4  ·  저장  ·  화면+서버  ·  **`BATCH_DESC` 필수**  ·  `MsgKey.ERR_BATCH_DESC_REQUIRED` |
+| 배치 구현 | `MSG.BATCH_SCHEDULE_COL_BEAN_ID` | `BEAN_ID` | `beanId` | **셀렉트** | 200 | **필수** | 가능 | 배치 구현 항목. 저장 또는 조회 근거: BEAN_ID. | 5  ·  저장  ·  서버  ·  **`BEAN_ID` 가 등록된 구현인가**  ·  `MsgKey.ERR_BATCH_BEAN_UNKNOWN` |
+| 크론 | `MSG.BATCH_SCHEDULE_COL_CRON` | `CRON` | `cron` | 텍스트 | 150 | **필수** | 가능 | 크론 항목. 저장 또는 조회 근거: CRON. | 요건서 §6 공통 검증·실행 규칙 참조; 별도 필드 제한을 추정하지 않는다 |
+| **시간대** | `MSG.BATCH_SCHEDULE_COL_TIMEZONE` | `TIMEZONE` | `timezone` | **셀렉트(검색)** | 200 | **필수** | 가능 | 시간대 항목. 저장 또는 조회 근거: TIMEZONE. | **13**  ·  저장  ·  화면+서버  ·  **`TIMEZONE` 이 아는 시간대 ID 인가**  ·  `MsgKey.ERR_BATCH_TIMEZONE_INVALID` |
+| 다음 실행 | `MSG.BATCH_SCHEDULE_COL_NEXT_EXEC` | **파생** | `nextExecDtm` | **일시 + 시간대** | 200 | — | **불가** | 다음 실행 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 파라미터 | `MSG.BATCH_SCHEDULE_COL_PARAM` | `PARAM_JSON` | `paramJson` | 큰 텍스트 | 220 | — | 가능 | 파라미터 항목. 저장 또는 조회 근거: PARAM_JSON. | 요건서 §6 공통 검증·실행 규칙 참조; 별도 필드 제한을 추정하지 않는다 |
+| 쿨다운(초) | `MSG.BATCH_SCHEDULE_COL_COOLDOWN` | `LOCK_MIN_INTERVAL_SEC` | `lockMinIntervalSec` | 숫자 | 110 | — | 가능 | 쿨다운(초) 항목. 저장 또는 조회 근거: LOCK_MIN_INTERVAL_SEC. | 요건서 §6 공통 검증·실행 규칙 참조; 별도 필드 제한을 추정하지 않는다 |
+| 락 만료(초) | `MSG.BATCH_SCHEDULE_COL_LOCK_EXPIRY` | `LOCK_EXPIRY_SEC` | `lockExpirySec` | 숫자 | 110 | — | 가능 | 락 만료(초) 항목. 저장 또는 조회 근거: LOCK_EXPIRY_SEC. | 요건서 §6 공통 검증·실행 규칙 참조; 별도 필드 제한을 추정하지 않는다 |
+| 사용 | `MSG.BATCH_SCHEDULE_COL_USE_YN` | `USE_YN` | `useYn` | 스위치 | 80 | — | 가능 | 사용 항목. 저장 또는 조회 근거: USE_YN. | 없음. `USE_YN` 은 켜고 끄는 값이다. |
+| 최근 결과 | `MSG.BATCH_SCHEDULE_COL_LAST_RSLT` | **파생** | `lastRsltCd` | 배지 | 120 | — | **불가** | 최근 결과 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 감사 4 | (공통) | — | — | — | — | — | 불가 | 감사 4 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
 
 - **`설명` 이 기본 숨김이 아니다.** 그 컬럼은 *끄면 무슨 일이 생기는가를 적는 자리* 이며 **장애 대응 중에 소스를 열 시간은 없다.** 컬럼 설정에서 꺼 둘 수는 있지만 **기본은 보인다.**
 - **`설명` 이 필수인 것이 그 자리의 값이다** — 비어 있으면 §5-1 의 확인이 아무 말도 못 한다.
@@ -140,6 +149,18 @@
   - **오름차순 정렬이고, 현재 업무 시간대 하나만 맨 위로 올린다.**
   - **검색으로 좁힌다.** 한 번에 **열 줄 이상**(권장 열두 줄) 보이게 한다 — 세 줄짜리 목록에서 600개를 훑을 수 없다.
   - **목록에 없는 값은 입력할 수 없다.** 자유 입력을 열면 `Korea/Seoul` 처럼 *있을 듯한 오타* 가 들어오고, 그것을 잡는 것이 오로지 서버 검증이 된다.
+
+
+### 4-1a. 최근 실행 이력
+
+| 컬럼 | 필드명 | 입력방식 | 필수 | 편집 | 선택 출처 | 검증 | 설명 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 시작 | startDtm | 텍스트 | 입력 대상 아님 | 읽기전용 | 서버 | 서버가 반환한 현재 대상의 값만 표시 | 선택 배치 실행 시작. |
+| 종료 | endDtm | 텍스트 | 입력 대상 아님 | 읽기전용 | 서버 | 서버가 반환한 현재 대상의 값만 표시 | 실행 종료 시각. |
+| 소요 | elapsedMs | 텍스트 | 입력 대상 아님 | 읽기전용 | 서버 | 서버가 반환한 현재 대상의 값만 표시 | 실행 소요 시간. |
+| 결과 | rsltCd | 텍스트 | 입력 대상 아님 | 읽기전용 | 서버 | 서버가 반환한 현재 대상의 값만 표시 | 실행 결과. |
+| 실행 구분 | execTypeCd | 텍스트 | 입력 대상 아님 | 읽기전용 | 서버 | 서버가 반환한 현재 대상의 값만 표시 | 수동/스케줄 실행 구분. |
+| 노드 | nodeId | 텍스트 | 입력 대상 아님 | 읽기전용 | 서버 | 서버가 반환한 현재 대상의 값만 표시 | 실행 노드. |
 
 ### 4-2. 편집 가능 판단 — 조건부
 

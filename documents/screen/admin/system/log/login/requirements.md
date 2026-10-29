@@ -50,6 +50,14 @@
 
 ---
 
+### 1-9. 영역별 관리 대상과 작업
+
+| 영역 | 종류 | 관리 대상·목적 | 작업 설명 | 버튼 | 조회 방식 | 저장 범위 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 로그인 이력 | 목록 | 로그인 이력의 업무 데이터를 조회한다. | 조건으로 목록을 좁혀 확인한다. 읽기 전용 데이터이며 상세/연결 이동은 해당 셀 동작을 사용한다. | 조회·초기화 | 요건서 §1의 진입 조건 및 조회 버튼 | 조회 전용; 실행 버튼은 별도 명령 |
+
+- 표의 버튼은 현재 소스의 배치를 따른다. 행 삭제는 그리드 행의 삭제 선택 기능이며 독립 업무 삭제 명령으로 바꾸지 않는다.
+
 ## 2. 조회조건
 
 | 조건 | 대상 컬럼 | 입력방식 | 연산 | 필수 | 기본값 | 선택 출처 | 라벨 키 |
@@ -103,16 +111,16 @@
 
 ### 4-1. 그리드 — 로그인 이력
 
-| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭/정렬 | 편집 | 선택 출처 |
-|---|---|---|---|---|---|---|---|
-| 일시 | `MSG.LOGIN_LOG_COL_CRE_DTM` | `CRE_DTM` | `creDtm` | 일시 | 170/좌고정 | 읽기전용 | — |
-| 사용자 아이디 | `MSG.LOGIN_LOG_COL_USER_ID` | `USER_ID` | `userId` | 텍스트 | 140 | 읽기전용 | — |
-| 사용자명 | `MSG.LOGIN_LOG_COL_USER_NM` | `SYS_USER.USER_NM` | `userNm` | 텍스트 + 배지 | 140 | 읽기전용 | — |
-| 결과 | `MSG.LOGIN_LOG_COL_RESULT` | `LOGIN_RSLT_CD` | `loginRsltCd` | 코드·배지 | 150 | 읽기전용 | **코드그룹 `LOGIN_RSLT_CD`** |
-| 접속 IP | `MSG.LOGIN_LOG_COL_CLIENT_IP` | `CLIENT_IP` | `clientIp` | 텍스트 | 130 | 읽기전용 | — |
-| 추적 ID | `MSG.LOGIN_LOG_COL_TRACE_ID` | `TRACE_ID` | `traceId` | 텍스트 | 280 | 읽기전용 | — |
-| 브라우저 ○ | `MSG.LOGIN_LOG_COL_USER_AGENT` | `USER_AGENT` | `userAgent` | 텍스트(툴팁) | 320 | 읽기전용 | — |
-| 순번 ○ | `MSG.LOGIN_LOG_COL_SEQ` | `LOGIN_LOG_SEQ` | `loginLogSeq` | 숫자 | 100 | 읽기전용 | — |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭/정렬 | 편집 | 선택 출처 | 설명 | 검증 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 일시 | `MSG.LOGIN_LOG_COL_CRE_DTM` | `CRE_DTM` | `creDtm` | 일시 | 170/좌고정 | 읽기전용 | — | 일시 항목. 값/선택 출처: —. | 1  ·  조회  ·  화면+서버  ·  `CRE_DTM` 기간 필수 — `TRACE_ID` 가 있으면 건너뛴다  ·  `MsgKey.ERR_LOGIN_LOG_RANGE_REQUIRED` |
+| 사용자 아이디 | `MSG.LOGIN_LOG_COL_USER_ID` | `USER_ID` | `userId` | 텍스트 | 140 | 읽기전용 | — | 사용자 아이디 항목. 값/선택 출처: —. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 사용자명 | `MSG.LOGIN_LOG_COL_USER_NM` | `SYS_USER.USER_NM` | `userNm` | 텍스트 + 배지 | 140 | 읽기전용 | — | 사용자명 항목. 값/선택 출처: —. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 결과 | `MSG.LOGIN_LOG_COL_RESULT` | `LOGIN_RSLT_CD` | `loginRsltCd` | 코드·배지 | 150 | 읽기전용 | **코드그룹 `LOGIN_RSLT_CD`** | 결과 항목. 값/선택 출처: 코드그룹 LOGIN_RSLT_CD. | 없음 — `LOGIN_RSLT_CD` 는 **기록된 사건의 종류**이지 전이하는 상태가 아니다. 한 행은 한 번 일어난 판정이며 나중에 바뀌지 않는다. |
+| 접속 IP | `MSG.LOGIN_LOG_COL_CLIENT_IP` | `CLIENT_IP` | `clientIp` | 텍스트 | 130 | 읽기전용 | — | 접속 IP 항목. 값/선택 출처: —. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 추적 ID | `MSG.LOGIN_LOG_COL_TRACE_ID` | `TRACE_ID` | `traceId` | 텍스트 | 280 | 읽기전용 | — | 추적 ID 항목. 값/선택 출처: —. | 1  ·  조회  ·  화면+서버  ·  `CRE_DTM` 기간 필수 — `TRACE_ID` 가 있으면 건너뛴다  ·  `MsgKey.ERR_LOGIN_LOG_RANGE_REQUIRED` |
+| 브라우저 ○ | `MSG.LOGIN_LOG_COL_USER_AGENT` | `USER_AGENT` | `userAgent` | 텍스트(툴팁) | 320 | 읽기전용 | — | 브라우저 ○ 항목. 값/선택 출처: —. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 순번 ○ | `MSG.LOGIN_LOG_COL_SEQ` | `LOGIN_LOG_SEQ` | `loginLogSeq` | 숫자 | 100 | 읽기전용 | — | 순번 ○ 항목. 값/선택 출처: —. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
 
 `○` = 기본 숨김.
 

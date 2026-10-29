@@ -52,6 +52,14 @@
 
 ---
 
+### 1-9. 영역별 관리 대상과 작업
+
+| 영역 | 종류 | 관리 대상·목적 | 작업 설명 | 버튼 | 조회 방식 | 저장 범위 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 요청 | 목록 | 요청의 업무 데이터를 조회한다. | 선택 요청을 처리하거나 사유를 입력해 반려한다. | 조회·처리·반려 | 요건서 §1의 진입 조건 및 조회 버튼 | 조회 전용; 실행 버튼은 별도 명령 |
+
+- 표의 버튼은 현재 소스의 배치를 따른다. 행 삭제는 그리드 행의 삭제 선택 기능이며 독립 업무 삭제 명령으로 바꾸지 않는다.
+
 ## 2. 조회조건
 
 | 조건 | 대상 컬럼 | 입력방식 | 연산 | 필수 | 기본값 | 라벨 키 |
@@ -97,18 +105,18 @@
 
 ### 4-1. 그리드 — 요청
 
-| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 편집 | 정렬 | 필터 |
-|---|---|---|---|---|---|---|---|---|
-| 요청일시 | `MSG.NOTI_REQUEST_COL_CRE_DTM` | `CRE_DTM` | `creDtm` | 일시 | 160 | 불가 | ○ | ○ |
-| 요청자 | `MSG.NOTI_REQUEST_COL_USER` | `SYS_USER.USER_NM` | `userNm` | 텍스트 | 140 | 불가 | — | ○ |
-| 유형 | `MSG.NOTI_REQUEST_COL_TYPE` | `REQ_TYPE_CD` | `reqTypeCd` | 배지 | 110 | 불가 | — | ○ |
-| 요청 내용 | `MSG.NOTI_REQUEST_COL_CONTENT` | `REQ_CONTENT`(2000자) | `reqContent` | 텍스트(**펼쳐 보기**) | 320(fill) | 불가 | — | 끔 |
-| 상태 | `MSG.NOTI_REQUEST_COL_STAT` | `REQ_STAT_CD` | `reqStatCd` | 배지 | 90 | 불가 | — | ○ |
-| 처리자 | `MSG.NOTI_REQUEST_COL_HANDLER` | `SYS_USER.USER_NM` | `handlerNm` | 텍스트 | 120 | 불가 | — | 끔 |
-| 처리일시 | `MSG.NOTI_REQUEST_COL_HANDLE_DTM` | `HANDLE_DTM` | `handleDtm` | 일시 | 160 | 불가 | — | 끔 |
-| 처리 메모 | `MSG.NOTI_REQUEST_COL_MEMO` | `HANDLE_MEMO` | `handleMemo` | 텍스트(**펼쳐 보기**) | 240 | 불가 | — | 끔 |
-| 요청 ID ○ | `MSG.NOTI_REQUEST_COL_REQ_ID` | `REQ_ID` | `reqId` | 숫자 | 90 | 불가 | — | — |
-| 요청자 ID ○ | `MSG.GRID_COL_REG_ID` | `USER_ID` | `userId` | 텍스트 | 120 | 불가 | — | — |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 편집 | 정렬 | 필터 | 설명 | 검증 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 요청일시 | `MSG.NOTI_REQUEST_COL_CRE_DTM` | `CRE_DTM` | `creDtm` | 일시 | 160 | 불가 | ○ | ○ | 요청일시 항목. 저장 또는 조회 근거: CRE_DTM. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 요청자 | `MSG.NOTI_REQUEST_COL_USER` | `SYS_USER.USER_NM` | `userNm` | 텍스트 | 140 | 불가 | — | ○ | 요청자 항목. 저장 또는 조회 근거: SYS_USER.USER_NM. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 유형 | `MSG.NOTI_REQUEST_COL_TYPE` | `REQ_TYPE_CD` | `reqTypeCd` | 배지 | 110 | 불가 | — | ○ | 유형 항목. 저장 또는 조회 근거: REQ_TYPE_CD. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 요청 내용 | `MSG.NOTI_REQUEST_COL_CONTENT` | `REQ_CONTENT`(2000자) | `reqContent` | 텍스트(**펼쳐 보기**) | 320(fill) | 불가 | — | 끔 | 요청 내용 항목. 저장 또는 조회 근거: REQ_CONTENT(2000자). | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 상태 | `MSG.NOTI_REQUEST_COL_STAT` | `REQ_STAT_CD` | `reqStatCd` | 배지 | 90 | 불가 | — | ○ | 상태 항목. 저장 또는 조회 근거: REQ_STAT_CD. | 처리 · 반려  ·  `SYS_NOTI_REQUEST`  ·  UPDATE  ·  `REQ_STAT_CD` · `HANDLER_ID` · `HANDLE_DTM` · `HANDLE_MEMO` **넷** |
+| 처리자 | `MSG.NOTI_REQUEST_COL_HANDLER` | `SYS_USER.USER_NM` | `handlerNm` | 텍스트 | 120 | 불가 | — | 끔 | 처리자 항목. 저장 또는 조회 근거: SYS_USER.USER_NM. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 처리일시 | `MSG.NOTI_REQUEST_COL_HANDLE_DTM` | `HANDLE_DTM` | `handleDtm` | 일시 | 160 | 불가 | — | 끔 | 처리일시 항목. 저장 또는 조회 근거: HANDLE_DTM. | 처리 · 반려  ·  `SYS_NOTI_REQUEST`  ·  UPDATE  ·  `REQ_STAT_CD` · `HANDLER_ID` · `HANDLE_DTM` · `HANDLE_MEMO` **넷** |
+| 처리 메모 | `MSG.NOTI_REQUEST_COL_MEMO` | `HANDLE_MEMO` | `handleMemo` | 텍스트(**펼쳐 보기**) | 240 | 불가 | — | 끔 | 처리 메모 항목. 저장 또는 조회 근거: HANDLE_MEMO. | 처리 · 반려  ·  `SYS_NOTI_REQUEST`  ·  UPDATE  ·  `REQ_STAT_CD` · `HANDLER_ID` · `HANDLE_DTM` · `HANDLE_MEMO` **넷** |
+| 요청 ID ○ | `MSG.NOTI_REQUEST_COL_REQ_ID` | `REQ_ID` | `reqId` | 숫자 | 90 | 불가 | — | — | 요청 ID ○ 항목. 저장 또는 조회 근거: REQ_ID. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 요청자 ID ○ | `MSG.GRID_COL_REG_ID` | `USER_ID` | `userId` | 텍스트 | 120 | 불가 | — | — | 요청자 ID ○ 항목. 저장 또는 조회 근거: USER_ID. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
 
 `○` = 기본 숨김.
 

@@ -46,6 +46,7 @@
 body{margin:0;padding:24px;background:var(--bg);color:var(--ink);
      font:14px/1.6 "Malgun Gothic","Apple SD Gothic Neo",sans-serif;}
 main{max-width:1000px;margin:0 auto}
+main:has([data-interactive-tabs]){max-width:none}
 h1{font-size:19px;margin:0 0 4px}
 h2{font-size:15px;margin:34px 0 10px;padding-bottom:5px;border-bottom:1px solid var(--line)}
 h3{font-size:13px;margin:20px 0 8px;color:var(--muted);font-weight:600}
@@ -273,6 +274,24 @@ a{color:var(--note)}
    border-radius:50%;background:var(--note);color:#fff;font-size:11px;margin-right:5px}
 .n.anchor{margin:0 3px;color:#fff;text-decoration:none;vertical-align:1px;cursor:pointer}
 .n.anchor:hover,.n.anchor:focus-visible{outline:2px solid var(--note);outline-offset:2px}
+.walkthrough-nav{display:flex;flex-wrap:wrap;gap:6px 16px;padding:14px 0;border-bottom:1px solid var(--line);margin-bottom:22px}
+.walkthrough-area{margin:24px 0;scroll-margin-top:72px}
+.surface-guide{border-left:3px solid var(--note);padding:8px 14px;margin:10px 0 14px;background:var(--note-bg);font-size:13px}
+.surface-guide p{margin:5px 0}
+.explanation-facts{display:grid;grid-template-columns:110px minmax(0,1fr);gap:5px 12px;margin:9px 0;font-size:13px;line-height:1.65}
+.explanation-facts dt{font-weight:600;color:var(--muted)}
+.explanation-facts dd{margin:0;overflow-wrap:anywhere}
+.annotation-catalog ol{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:12px}
+.annotation-catalog li{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);padding:14px;scroll-margin-top:72px;background:var(--panel)}
+.annotation-catalog li>div{min-width:0;flex:1}
+.annotation-catalog li:focus{outline:2px solid var(--note);outline-offset:2px}
+.state-example{margin:12px 0;border:1px solid var(--line);padding:12px}
+.state-example>summary{cursor:pointer;font-weight:600}
+.state-example .screen{margin-top:12px}
+.form-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px;padding:12px 0}
+.tb{flex-wrap:wrap}
+.control-annotation{display:inline-flex;align-items:center;gap:2px}
+.annotation-catalog .n{min-width:24px;flex:none;padding:0 3px}
 
 table{border-collapse:collapse;width:100%;font-size:12.5px;margin:8px 0}
 th,td{border:1px solid var(--line2);padding:5px 8px;text-align:left;vertical-align:top}

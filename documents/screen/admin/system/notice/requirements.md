@@ -47,6 +47,14 @@
 
 ---
 
+### 1-9. 영역별 관리 대상과 작업
+
+| 영역 | 종류 | 관리 대상·목적 | 작업 설명 | 버튼 | 조회 방식 | 저장 범위 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 공지 | 목록 | 공지의 업무 데이터를 조회한다. | 공지 제목·본문·게시 기간을 편집하고 저장한다. | 조회·저장·행 추가·행 삭제 | 요건서 §1의 진입 조건 및 조회 버튼 | 변경 행 일괄 저장 |
+
+- 표의 버튼은 현재 소스의 배치를 따른다. 행 삭제는 그리드 행의 삭제 선택 기능이며 독립 업무 삭제 명령으로 바꾸지 않는다.
+
 ## 2. 조회조건
 
 | 조건 | 대상 컬럼 | 입력방식 | 연산 | 필수 | 기본값 | 라벨 키 |
@@ -91,20 +99,20 @@
 
 ### 4-1. 그리드 — 공지
 
-| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 필수 | 편집 | 정렬 | 필터 |
-|---|---|---|---|---|---|---|---|---|---|
-| 순서 | `MSG.NOTICE_COL_SORT_NO` | `SORT_NO` | `sortNo` | 숫자 | 80 | — | 가능 | ○ | ○ |
-| 번호 ○ | `MSG.NOTICE_COL_NOTICE_ID` | `NOTICE_ID` | `noticeId` | 숫자 | 90 | — | **불가** | — | — |
-| 제목 | `MSG.NOTICE_COL_TITLE` | `TITLE` | `title` | 텍스트 | 260 | **필수** | 가능 | **불가** | ○ |
-| 본문 | `MSG.NOTICE_COL_CONTENT` | `CONTENT`(nclob) | `content` | 큰 텍스트 | 320(fill) | **필수** | 가능 | **불가** | **끔** |
-| 게시 시작 | `MSG.NOTICE_COL_FROM_DTM` | `NOTICE_FROM_DTM` | `noticeFromDtm` | 일시 | 160 | **필수** | 가능 | ○ | ○ |
-| 게시 종료 | `MSG.NOTICE_COL_TO_DTM` | `NOTICE_TO_DTM` | `noticeToDtm` | 일시 | 160 | — | 가능 | — | ○ |
-| 게시 상태 | `MSG.NOTICE_COL_STAT` | **파생** | `noticeStat` | 배지 | 100 | — | **불가** | — | **끔** |
-| 사용 | `MSG.NOTICE_COL_USE_YN` | `USE_YN` | `useYn` | 스위치 | 80 | — | 가능 | **불가** | ○ |
-| 팝업 | `MSG.NOTICE_COL_POPUP_YN` | `POPUP_YN` | `popupYn` | 스위치 | 80 | — | 가능 | — | ○ |
-| 팝업 시작 ○ | `MSG.NOTICE_COL_POPUP_FROM` | `POPUP_FROM_DTM` | `popupFromDtm` | 일시 | 160 | 조건부 | 가능 | — | — |
-| 팝업 종료 ○ | `MSG.NOTICE_COL_POPUP_TO` | `POPUP_TO_DTM` | `popupToDtm` | 일시 | 160 | 조건부 | 가능 | — | — |
-| 감사 4 | (공통) | — | — | — | — | — | 불가 | — | — |
+| 컬럼 | 라벨 키 | DB 컬럼 | **필드명** | 입력방식 | 폭 | 필수 | 편집 | 정렬 | 필터 | 설명 | 검증 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 순서 | `MSG.NOTICE_COL_SORT_NO` | `SORT_NO` | `sortNo` | 숫자 | 80 | — | 가능 | ○ | ○ | 순서 항목. 저장 또는 조회 근거: SORT_NO. | **팝업은 정렬의 첫 건을 집는다** — `SORT_NO` → `NOTICE_ID`. |
+| 번호 ○ | `MSG.NOTICE_COL_NOTICE_ID` | `NOTICE_ID` | `noticeId` | 숫자 | 90 | — | **불가** | — | — | 번호 ○ 항목. 저장 또는 조회 근거: NOTICE_ID. | **팝업은 정렬의 첫 건을 집는다** — `SORT_NO` → `NOTICE_ID`. |
+| 제목 | `MSG.NOTICE_COL_TITLE` | `TITLE` | `title` | 텍스트 | 260 | **필수** | 가능 | **불가** | ○ | 제목 항목. 저장 또는 조회 근거: TITLE. | 요건서 §6 공통 검증·실행 규칙 참조; 별도 필드 제한을 추정하지 않는다 |
+| 본문 | `MSG.NOTICE_COL_CONTENT` | `CONTENT`(nclob) | `content` | 큰 텍스트 | 320(fill) | **필수** | 가능 | **불가** | **끔** | 본문 항목. 저장 또는 조회 근거: CONTENT(nclob). | 요건서 §6 공통 검증·실행 규칙 참조; 별도 필드 제한을 추정하지 않는다 |
+| 게시 시작 | `MSG.NOTICE_COL_FROM_DTM` | `NOTICE_FROM_DTM` | `noticeFromDtm` | 일시 | 160 | **필수** | 가능 | ○ | ○ | 게시 시작 항목. 저장 또는 조회 근거: NOTICE_FROM_DTM. | 요건서 §6 공통 검증·실행 규칙 참조; 별도 필드 제한을 추정하지 않는다 |
+| 게시 종료 | `MSG.NOTICE_COL_TO_DTM` | `NOTICE_TO_DTM` | `noticeToDtm` | 일시 | 160 | — | 가능 | — | ○ | 게시 종료 항목. 저장 또는 조회 근거: NOTICE_TO_DTM. | 요건서 §6 공통 검증·실행 규칙 참조; 별도 필드 제한을 추정하지 않는다 |
+| 게시 상태 | `MSG.NOTICE_COL_STAT` | **파생** | `noticeStat` | 배지 | 100 | — | **불가** | — | **끔** | 게시 상태 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
+| 사용 | `MSG.NOTICE_COL_USE_YN` | `USE_YN` | `useYn` | 스위치 | 80 | — | 가능 | **불가** | ○ | 사용 항목. 저장 또는 조회 근거: USE_YN. | 요건서 §6 공통 검증·실행 규칙 참조; 별도 필드 제한을 추정하지 않는다 |
+| 팝업 | `MSG.NOTICE_COL_POPUP_YN` | `POPUP_YN` | `popupYn` | 스위치 | 80 | — | 가능 | — | ○ | 팝업 항목. 저장 또는 조회 근거: POPUP_YN. | 요건서 §6 공통 검증·실행 규칙 참조; 별도 필드 제한을 추정하지 않는다 |
+| 팝업 시작 ○ | `MSG.NOTICE_COL_POPUP_FROM` | `POPUP_FROM_DTM` | `popupFromDtm` | 일시 | 160 | 조건부 | 가능 | — | — | 팝업 시작 ○ 항목. 저장 또는 조회 근거: POPUP_FROM_DTM. | 요건서 §6 공통 검증·실행 규칙 참조; 별도 필드 제한을 추정하지 않는다 |
+| 팝업 종료 ○ | `MSG.NOTICE_COL_POPUP_TO` | `POPUP_TO_DTM` | `popupToDtm` | 일시 | 160 | 조건부 | 가능 | — | — | 팝업 종료 ○ 항목. 저장 또는 조회 근거: POPUP_TO_DTM. | 요건서 §6 공통 검증·실행 규칙 참조; 별도 필드 제한을 추정하지 않는다 |
+| 감사 4 | (공통) | — | — | — | — | — | 불가 | — | — | 감사 4 항목. 표시/편집 동작은 이 영역의 작업 설명과 아래 편집 조건을 따른다. | 직접 입력하지 않는다. 조회 범위·권한을 적용한 값만 표시한다. |
 
 `○` = 기본 숨김.
 
