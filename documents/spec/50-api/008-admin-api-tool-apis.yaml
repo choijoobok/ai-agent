@@ -107,7 +107,7 @@ apis:
     action: READ
     summary: "API 편집 결과 확인"
     request: "body=AssetCommandQuery"
-    response: "ApiResponse<AssetCommandResult>"
+    response: "ApiResponse<AssetDraftCommandResult>"
   - id: API-049
     feature: FEAT-004
     implementation: planned
@@ -224,4 +224,4 @@ apis:
     action: READ
     summary: "도구 편집 결과 확인"
     request: "body=AssetCommandQuery"
-    response: "ApiResponse<AssetCommandResult>"
+    response: "ApiResponse<AssetDraftCommandResult>"

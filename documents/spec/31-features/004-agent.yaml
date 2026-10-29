@@ -30,6 +30,9 @@ features:
     title: "도구 레지스트리와 도구 호출 처리"
     detail: "등록 REST 업무 API와 **Hub 내부 서비스 빈 기반 커스텀 도구를 같은 레지스트리·권한·승인·감사 흐름으로 호출**한다. 커스텀 도구의 데이터 범위·마스킹은 도구 구현이 선언한 계약으로 별도 강제한다 업무 질의의 후보 범위는 REQ-303·REQ-608·REQ-612의 지식 연결을 기준으로 하며 후보 구성과 호출 시 현재 유효 조건을 확인한다. REQ-009.result_dialogue에 따라 허용된 결과와 적용 가이드/매핑으로 LLM이 안내·질문·후속 작업을 제안하게 하고 agent가 실제 호출을 검증한다. 사용자 선택은 REQ-005의 기존 대기에 연결하며 필수 확인·재전송 금지·새 실행 승인·자동 폴링 금지를 유지한다."
     reqs: [REQ-004, REQ-114, REQ-303, REQ-608, REQ-612]
+    pending:
+      - "@defer P3 agent — FEAT-021.registry_contract와 ENT-016의 implementationId/contractVersion/deploymentRef·검수/무효화 관측을 공개 레지스트리 계약으로 연결한다. API 도구는 현재 대응과 정확 원천 판·지식 연결·양쪽 현재 그룹/노출을 함께 검사한다. agent P3 레지스트리/호출 계약 검토와 admin G3 전에 교차 확인한다"
+
   - id: FEAT-204
     module: agent
     roadmap: RM-P1
@@ -47,6 +50,9 @@ features:
     detail: "**연속 실행의 순차 처리와 실패 시 중단·보고** · 타임아웃 재시도 가능으로 등록된 호출의 **최대 한 번 자동 재시도**와 `TIMEOUT_RETRYING` 시도 이력 기록 · 자동 재시도 소진 뒤 안전한 호출의 중단 전이와 수동 재시도 · 대상 실행 결과 불명 시 직접 재시도 차단과 등록된 결과 확인 · 결과 확인 API가 없거나 확인 실패면 대상 시스템 수동 확인 안내 · 결과가 처리 중이면 자동 폴링하지 않고 권장 재확인 시간을 안내 · 부분 실행 상태 판정 · **응답 수신 직후의 경로 분류와 마스킹 사본 분리** — 감사·재개 상태·로그로는 마스킹본만 내보내고 평문 사용은 허용된 사용자 응답·REQ-106의 요청/동의 모델 전송·승인된 업무 호출 경로로 한정한다 · 미지정 경로 경고 기록 · 실행 파라미터 원값의 전용 암호화 임시본·승인 버전 연결·호출 후 삭제는 REQ-005.execution_parameter_storage를 따른다 사용자 중단 시 전송 후 취소 불가·미전송 후속 중단·타임아웃 결과 불명/자동·무확인 재실행 금지와 결과 확인 안내는 REQ-007을 따른다. 멱등성 제공자 계약·기본 미보장은 REQ-105.idempotency_contract, 사용자 확인 후 새 승인으로 수행하는 원 실행 연결 후속 실행과 반복 경계는 REQ-105.manual_reexecution을 따른다."
     reqs: [REQ-005, REQ-007, REQ-026, REQ-105, REQ-111]
     nfrs: [NFR-022]
+    pending:
+      - "@defer P3 agent·integration — FEAT-004.field_contract/reference_contract/module_contract의 정적 경로·필수/null/형식·입력 출처/보호 주입·코드명/전체 대응·결과 상태를 실제 호출/응답 계약으로 대조한다. 원 실행과 응답/코드명 실패를 분리하고 URL/배포 연결·긴 호출 지원은 ARCH-028의 integration 계약과 함께 검증한다. 코드명 조회 상한/실패/권한·마스킹 계약 미완성이면 해당 조회는 비활성이다. agent P3 API 호출 계약 검토와 admin G3 전에 교차 확인한다"
+
   - id: FEAT-206
     module: agent
     roadmap: RM-P1
@@ -169,6 +175,8 @@ features:
     title: "공개 카탈로그 사실 보조 수집"
     detail: "이미 선택·등록된 공개 뷰·테이블에 한해 권한이 있을 때 컬럼 목록·타입·PK·유니크·NOT NULL과 DB 코멘트를 수집하고 인라인 값 후보를 제안한다. 의미·정책 항목을 덮지 않고 변경 알림만 남기며, 원본 DB/DW 전체를 수집하지 않는다"
     reqs: [REQ-301]
+    pending:
+      - "@defer P3 agent·integration — FEAT-003.source_public_contract·ARCH-030의 정확 객체/identityProfile·전체 키·COMPLETE/PARTIAL/FAILED 관측과 구조 근거를 연결한다. 샘플은 현재 공개 범위·개인정보 제외·읽기/실행 권한·조회/시간 상한과 실행 이력 계약을 갖춘 별도 수동 경로다. agent P3 카탈로그 수집 계약 검토와 admin G3 전에 교차 확인한다"
 
   - id: FEAT-222
     module: agent
