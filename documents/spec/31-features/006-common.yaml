@@ -3,9 +3,12 @@ features:
   - id: FEAT-301
     module: common
     roadmap: RM-P1
-    title: "인증·인가"
-    detail: "레거시 SSO 연동 / 자체 계정 모드. admin·portal의 메뉴·액션 진입은 AUTHZ-090의 system 유효 권한으로, AI 업무 데이터 범위는 AUTHZ-001의 사용자 그룹으로 판정한다. 정책 변경과 감사 열람의 메뉴·액션 권한을 독립 부여할 수 있으며 업무 그룹 소속만으로 관리 화면 권한을 얻지 않는다"
-    reqs: [REQ-103]
+    title: "영역별 인증·인가 경계"
+    detail: "관리 콘솔은 system 관리자 자체 계정·세션과 AUTHZ-090 관리 메뉴/액션 권한을 사용한다. Portal은 별도 Portal 계정·SSO/대상 인증 또는 자체 모드·별도 세션과 현재 Portal 이용 조건을 사용한다. 두 영역의 로그인·세션·현재 주체를 교차 수락하지 않으며 AI 데이터 범위는 Portal 주체의 AUTHZ-001 사용자 그룹으로 판정한다"
+    reqs: [REQ-103, REQ-501, REQ-616, REQ-041]
+    usecases: [UC-501, UC-023]
+    screens: [SCR-113, SCR-114, SCR-115]
+    pending: "@defer P3 — ARCH-050의 영역별 인증·세션·서버 전달·권한 수락과 독립 Portal 인증 화면을 상세 설계한다. 공통 구현은 기술 유틸만 재사용한다"
     traces_to: [ARCH-050, AUTHZ-090, AUTHZ-001]
   - id: FEAT-302
     module: common
@@ -37,7 +40,7 @@ features:
     module: common
     roadmap: RM-P1
     title: "사용자 변경 이벤트 수신 인터페이스"
-    detail: "인사 시스템·그룹웨어가 폐쇄망 내부에서 호출하는 REST 수신 API. 퇴직 → 비활성화, 조직 이동 → 일시 비활성화 + 관리자 통보. **처리 결과는 정책 변경 이력에 남긴다**"
+    detail: "인사 시스템·그룹웨어가 폐쇄망 내부에서 보내는 변경 사건을 검증된 외부 연결의 Portal 계정에 적용한다. 퇴직은 Portal 비활성화, 조직 이동은 Portal 일시 비활성화와 관리자 통보이며 처리 결과를 정책 변경 이력에 남긴다. system 관리자 계정·세션에는 자동 전파하지 않는다"
     reqs: [REQ-103, REQ-107]
     nfrs: [NFR-027]
     traces_to: [ARCH-050]

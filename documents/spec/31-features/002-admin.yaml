@@ -195,7 +195,7 @@ features:
     screen: SCR-005
     roadmap: RM-P1
     title: "Portal 사용자 관리"
-    detail: "admin의 독립된 Portal 사용자 관리 메뉴. REQ-616의 이용자 프로필·등록·활성/비활성·그룹·쿼터·변경 이력과 REQ-609의 대상별 신원 매핑을 관리한다. system 관리자 계정 관리(SCR-501)와 구분하며 관리자 권한을 자동 부여하지 않는다. 기존 그룹·월별 등급 규칙은 REQ-103·116을 참조한다"
+    detail: "admin의 Portal 사용자 관리 메뉴에서 관리자 계정과 독립된 Portal 계정을 등록·관리하고 REQ-616의 상태·그룹·쿼터·이력과 REQ-609의 대상 신원 매핑을 관리한다. 자체 계정·외부 신원 연결과 별도 Portal 인증의 경계는 ARCH-050을 따른다. SCR-501의 관리자 자체 계정을 선택 연결하거나 system 계정 명령으로 등록하지 않는다"
     reqs: ["REQ-103","REQ-116","REQ-609","REQ-616"]
     traces_to: ["ARCH-050"]
   - id: FEAT-006

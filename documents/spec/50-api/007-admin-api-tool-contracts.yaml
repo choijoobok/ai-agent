@@ -1,6 +1,7 @@
 # 업무 API·도구 관리/소비 경계 — 미구현 P3 설계
 feature_contracts:
   FEAT-004:
+    security_domain_scope: "ARCH-050.admin_account_contract. 관리 명령의 인증·ACTOR_ID·지문·원 결과 소유 비교는 system 관리자 영역이다. Portal 주체/같은 문자열 ID로 실행·재생하지 않으며 Portal 대상 이용자와 처리자를 구분한다"
     design_status: draft
     implementation: planned
     request_rule: "POST/body·ApiResponse·SearchRequest/PageResponse·AUTHZ-090/091을 따른다. 모든 BIGINT ID/판/버전은 양의 십진 문자열, 순번과 초는 범위를 검사하는 정수다. 신규 ID는 JPA TABLE/SYS_SEQUENCE를 사용한다. 주체/검수자·시각·해시·현재 포인터·반영 결과는 서버가 결정한다"

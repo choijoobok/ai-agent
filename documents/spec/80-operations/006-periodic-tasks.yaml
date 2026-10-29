@@ -12,7 +12,7 @@ periodic_tasks:
     status: verified
   - id: RUN-502
     title: "만료 예고 알림 배치 (EXPIRY_NOTICE)"
-    purpose: "계정·비밀번호 만료가 임박한 사용자에게 알림을 보낸다"
+    purpose: "system 관리자 자체 계정·비밀번호 만료가 임박한 관리자에게 알린다. Portal 계정/SSO·비밀번호·알림 원장은 같은 USER_ID로 연결하지 않으며 별도 Portal 운영 계약을 따른다"
     traces_to: [FEAT-501, FEAT-509]
     procedure:
       - "cron `0 10 4 * * *`(매일 04:10)"

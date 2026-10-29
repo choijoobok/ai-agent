@@ -1,6 +1,7 @@
 # 첫 물리 묶음의 관리·모듈 공개 계약. 현재 제품 구현을 뜻하지 않는다.
 feature_contracts:
   FEAT-001:
+    security_domain_scope: "ARCH-050.admin_account_contract. 관리 명령의 인증·ACTOR_ID·지문·원 결과 소유 비교는 system 관리자 영역이다. Portal 주체/같은 문자열 ID로 실행·재생하지 않으며 Portal 대상 이용자와 처리자를 구분한다"
     design_status: draft
     implementation: planned
     request_rule: "모든 관리 호출은 현재 AUTHZ-090 액션 권한을 검사한다. service POST/body·ApiResponse·SearchRequest/PageResponse를 재사용하며 주체·반영 시각은 서버가 정한다. 이 절의 DTO 이름은 설계명이며 현재 Java 구현이 아니다"

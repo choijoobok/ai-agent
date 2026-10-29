@@ -14,10 +14,10 @@ system_transition:
       enforcement: "경계 검사는 루트 `check`에서 네 제품 모듈의 main 출력 전체를 함께 스캔한다. 개별 모듈 테스트만 통과한 결과로 의존 경계를 통과했다고 판단하지 않는다"
     frontend:
       target_root: "`sources/frontend/src/modules/system/`"
-      package_shape: "소유 화면은 `features/{기능}`, 다른 화면 영역이 쓰는 인증·유효 권한·공통코드·메시지·공통 사용자 상태 계약은 `public/{auth|authz|code|message|userstate}`에 둔다"
-      public_surface: "admin·portal은 `@/modules/system/public/**`만 참조한다. system 내부 `features/**`를 가져오지 못하게 ESLint 경계 규칙으로 막는다"
+      package_shape: "system의 소유 화면은 features/{기능}, 관리 콘솔이 쓰는 관리자 인증·유효 권한·계정 상태 계약은 public/{auth|authz|userstate}, 도메인 비종속 코드/메시지 제공은 public/{code|message}에 둔다. Portal 로그인·현재 주체·세션 초기화는 portal이 별도로 소유한다"
+      public_surface: "admin 관리 콘솔은 system public 관리자 인증/인가를 소비한다. Portal은 system 관리자 auth/authz/userstate를 인증 부팅에 재사용하지 않으며 공통코드/메시지 등 계정 비종속 계약만 필요에 따라 소비한다. system 내부 features import는 금지한다"
       shared_rule: "`src/shared`에는 HTTP·그리드·탭·테마처럼 도메인 비종속인 구현만 남긴다. system 업무 이름과 저장소 호출이 있는 현재 shared 코드는 system public 또는 feature로 이동한다"
-    dependency_direction: "system은 admin·portal·agent를 참조하지 않는다. admin·portal·agent → system public 계약만 허용하며 portal → agent 계약은 ARCH-019가 별도로 소유한다"
+    dependency_direction: "system은 admin·portal·agent를 참조하지 않는다. 관리 콘솔의 관리자 계약은 system public, Portal 계정 관리는 admin 공개 계약·Portal 인증은 portal 공개 계약으로 분리하며 내부 구현 직접 참조는 금지한다. portal→agent 및 Portal 주체의 전달 계약은 ARCH-011·050을 따른다"
     traces_to: [REQ-501, REQ-502, REQ-503, REQ-504, REQ-505, REQ-506, REQ-510]
 
   api_transition:
@@ -36,13 +36,13 @@ system_transition:
     physical_policy: "기존 31개 테이블의 이름·스키마·데이터를 바꾸거나 복제하지 않고 system이 쓰기 소유권만 인수한다. Entity·Repository 이동은 같은 테이블을 가리키며 이행 중 이중 쓰기를 만들지 않는다"
     changelog_policy: "적재된 changeset은 그대로 둔다. G3 이후 system의 신규 변경은 `sources/backend/bootstrap/src/main/resources/db/changelog/system/`에 새 changeset으로 추가하고 공통 master에서 포함한다"
     platform_exclusions: "`SYS_SEQUENCE`·`SYS_DATA_LOCK`·`SYS_JOB_PROGRESS`·Spring Session 테이블은 제품 업무 상태가 아니라 platform 기반이므로 system 소유 31개에 넣지 않는다(REQ-510)"
-    notification_ownership: "공지·공통 알림함·계정/권한 요청의 판정은 system이 소유한다. AI 품질 신고·정책 관련 요청·AI 처리 오류와 처리 상태는 admin이 소유하고, 사용자에게 보낼 알림만 system public 알림 계약에 전달한다. admin은 system 알림 테이블을 직접 쓰지 않는다. REQ-115의 알림 정책에 따라 오류 발생마다 알리지 않고 조사 담당자 배정·지식 보완 요청/검토 작업 배정 시 해당 담당자에게 알린다"
+    notification_ownership: "system의 SYS_USER 기반 공지/알림함·계정/권한 요청은 관리자 계정과 관리 권한 영역이다. admin은 Portal 계정 등록/이용 상태·그룹·쿼터·매핑과 AI 품질/정책 요청을 소유한다. Portal 수신자/요청자를 같은 문자열 USER_ID로 SYS_USER 알림 FK에 넣지 않는다. Portal 알림과 통합 발송은 영역·수신자 소유를 구분한 공개 계약으로 설계하며 현재 system 구현 재사용 완료로 표시하지 않는다"
     traces_to: [REQ-501, REQ-502, REQ-503, REQ-504, REQ-505, REQ-506, REQ-507, REQ-508, REQ-509, REQ-510]
 
   screen_transition:
     id: ARCH-025
     menu_routes: "현재 system 메뉴 URL의 경로 꼬리를 보존해 `/admin/system/{기존 경로}`로 옮긴다. 예: `/user` → `/admin/system/user`, `/log/login` → `/admin/system/log/login`, `/dashboard` → `/admin/system/dashboard`"
-    standalone_routes: "로그인과 셸 공통 모달은 system 소유지만 관리 콘솔에 종속시키지 않는다. `/login`은 그대로 두고 프로필·설정·알림함·비밀번호 변경·세션 만료는 어느 화면 영역에서도 같은 system public 계약으로 연다"
+    standalone_routes: "기존 system 로그인·프로필·설정·비밀번호 변경·세션 만료는 관리자 인증 영역에 한정한다. Portal은 SCR-113/114/115의 별도 로그인·자체 비밀번호·세션 만료 계약을 사용한다. 현재 /login 등 소스 경로와 목표 로그인 URL/이행·본인 서비스 범위는 P3에서 대조하며 같은 system auth 상태로 두 영역을 부팅하지 않는다"
     document_paths: "메뉴 화면 문서는 브라우저 목표 경로와 함께 `documents/screen/admin/system/**`로 옮긴다. URL이 없는 공통 오버레이 문서는 `documents/screen/_standalone/system/**`에 둔다"
     cutover: "사용자 확정(2026-09-12): 고객 북마크가 없는 개발 단계이므로 메뉴·라우터·화면 문서가 신규 경로로 함께 전환되면 기존 화면 경로는 같은 커밋에서 제거하고 리다이렉트 별칭을 두지 않는다"
     traces_to: [REQ-501, REQ-503, REQ-507, REQ-508, REQ-509, REQ-510]

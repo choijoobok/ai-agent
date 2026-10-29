@@ -45,7 +45,7 @@ requirements:
     lifecycle: "해당 없음 — 저장된 조회의 상태는 REQ-204가 갖는다"
     permissions:
       - "본인의 즐겨찾기·저장된 조회만 보고 실행한다: ACT-001"
-      - "portal 화면 접근은 system 역할·메뉴 권한 데이터로 판정한다 — 특정 역할 하드코딩 없음(AUTHZ-091)"
+      - "Portal 화면/API 접근은 ARCH-050.portal_account_contract.access의 별도 Portal 인증·현재 이용 조건·본인 범위로 판정한다. system 관리자 역할/메뉴 권한이나 특정 역할명으로 Portal 접근을 허용하지 않는다"
     audit: "즐겨찾기 실행은 일반 턴 이력(REQ-107)으로, 저장된 조회 실행은 경로를 구분한 실행 이력(REQ-207)으로 남는다"
     volume: "사용자당 저장 개수 상한은 NFR-005 — 실측 후 정한다"
     config:
@@ -121,7 +121,7 @@ requirements:
     lifecycle: "해당 없음 — 저장된 조회의 상태는 REQ-204가 갖는다"
     permissions:
       - "본인 조회 결과에서만 저장한다: ACT-001"
-      - "portal 화면 접근은 system 역할·메뉴 권한 데이터로 판정한다 — 특정 역할 하드코딩 없음(AUTHZ-091)"
+      - "Portal 화면/API 접근은 ARCH-050.portal_account_contract.access의 별도 Portal 인증·현재 이용 조건·본인 범위로 판정한다. system 관리자 역할/메뉴 권한이나 특정 역할명으로 Portal 접근을 허용하지 않는다"
     audit: "저장 요청과 근거 턴·회차·성공한 조회 도구 호출·결과 블록을 연결하고, 저장 시 정규화·파라미터화의 검증 및 사용자 확인을 남긴다. 원 호출 식별자는 출처 참조이며 재실행의 실행 식별자로 재사용하지 않는다(REQ-107·207)"
     volume: "해당 없음 — 개수는 REQ-201·NFR-005"
     config: "해당 없음"
@@ -194,7 +194,7 @@ requirements:
     lifecycle: "해당 없음"
     permissions:
       - "파라미터 확인·저장: 본인의 ACT-001"
-      - "portal 화면 접근은 system 역할·메뉴 권한 데이터로 판정한다 — 특정 역할 하드코딩 없음(AUTHZ-091)"
+      - "Portal 화면/API 접근은 ARCH-050.portal_account_contract.access의 별도 Portal 인증·현재 이용 조건·본인 범위로 판정한다. system 관리자 역할/메뉴 권한이나 특정 역할명으로 Portal 접근을 허용하지 않는다"
     audit: "저장 시 모델 호출과 사용자 확인 결과를 남긴다(REQ-107)"
     volume: "저장 1건당 모델 호출 1회 — 그 토큰은 사용자 쿼터에서 차감한다"
     config: "해당 없음 — 상대 시점 목록은 제품이 정한다"
@@ -407,7 +407,7 @@ requirements:
     lifecycle: "해당 없음"
     permissions:
       - "본인 대시보드 구성·실행: ACT-001"
-      - "portal 화면 접근은 system 역할·메뉴 권한 데이터로 판정한다 — 특정 역할 하드코딩 없음(AUTHZ-091)"
+      - "Portal 화면/API 접근은 ARCH-050.portal_account_contract.access의 별도 Portal 인증·현재 이용 조건·본인 범위로 판정한다. system 관리자 역할/메뉴 권한이나 특정 역할명으로 Portal 접근을 허용하지 않는다"
     audit: "위젯 실행은 저장된 조회 실행 이력에 수동·자동 구분과 함께 남는다(REQ-207)"
     volume: "대시보드당 위젯 수 상한·동시 실행 수(NFR-005) — 실측 후 정한다"
     config:
@@ -477,7 +477,7 @@ requirements:
     permissions:
       - "실행: 본인 저장된 조회의 ACT-001 — 판정은 실행 시점의 현재 권한으로 한다"
       - "정책 관리: ACT-002(REQ-101)"
-      - "portal 화면 접근은 system 역할·메뉴 권한 데이터로 판정한다 — 특정 역할 하드코딩 없음(AUTHZ-091)"
+      - "Portal 화면/API 접근은 ARCH-050.portal_account_contract.access의 별도 Portal 인증·현재 이용 조건·본인 범위로 판정한다. system 관리자 역할/메뉴 권한이나 특정 역할명으로 Portal 접근을 허용하지 않는다"
     audit: "실행마다 판정 결과와 경로를 남긴다 — 턴이 없어도 감사 누락은 0건이어야 한다(INV-01)"
     volume: "토큰이 들지 않아 반복 실행이 쉽다 — 실행 횟수·반환 행 수를 사용자·기간별로 집계해 임계를 넘으면 관리자에게 알린다(NFR-005)"
     config: "상한·타임아웃은 채팅 조회와 같은 설정을 쓰고, 저장 조회 실패의 재시도 대기시간은 REQ-204를 따른다"

@@ -31,3 +31,10 @@ conventions:
     state_history: [ENT-527]
     audit_columns_only: [ENT-501, ENT-502, ENT-503, ENT-506, ENT-507, ENT-508, ENT-509, ENT-510, ENT-511, ENT-512, ENT-513, ENT-514, ENT-515, ENT-516, ENT-517, ENT-518, ENT-520, ENT-523, ENT-525, ENT-526, ENT-528, ENT-529, ENT-531]
     no_history: [ENT-504, ENT-519, ENT-530]
+
+  identity_domain_scope:
+    decision: ADR-034
+    source_contract: "ARCH-050.security_domains"
+    system_entities: "ENT-501~531의 SYS_USER 계정·권한·로그·알림·개인 UI 상태 참조는 관리자 영역이다. Portal 계정/이름을 같은 USER_ID로 조인하거나 SYS_USER FK에 넣지 않는다. 기존 물리 구조는 유지한다"
+    admin_actors: "ENT-001~004의 REG_ID/MOD_ID/ACTOR_ID 및 ENT-019/028/036 명령 원장의 ACTOR_ID는 실제 인증된 system 관리자 처리자다. 변경 대상 Portal 이용자/레거시 신원과 구분하며 Portal 세션으로 원 결과를 재생하지 않는다"
+    portal_models: "@defer P3 — admin 소유의 별도 Portal 계정·자체 인증정보/외부 연결·admin 관리/portal 인증 공개 계약·삭제/보존 및 Portal 감사/알림/개인 상태의 논리·물리 모델을 설계한다. 이번 방향 변경으로 임의 테이블·컬럼·FK를 추가하거나 구현 완료로 표시하지 않는다"

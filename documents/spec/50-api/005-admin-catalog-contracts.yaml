@@ -1,6 +1,7 @@
 # 카탈로그 관리·모듈 공개 계약 — 미구현 P3 초안
 feature_contracts:
   FEAT-003:
+    security_domain_scope: "ARCH-050.admin_account_contract. 관리 명령의 인증·ACTOR_ID·지문·원 결과 소유 비교는 system 관리자 영역이다. Portal 주체/같은 문자열 ID로 실행·재생하지 않으며 Portal 대상 이용자와 처리자를 구분한다"
     design_status: draft
     implementation: planned
     request_rule: "POST/body·ApiResponse·SearchRequest/PageResponse와 AUTHZ-090·091을 따른다. 모든 BIGINT 식별자·버전/순서는 양의 십진 문자열이다. 신규 ID는 JPA TABLE/SYS_SEQUENCE를 사용하고 서버 주체/시각을 클라이언트가 대체하지 않는다. 기존 system 계약을 변경하지 않는다"

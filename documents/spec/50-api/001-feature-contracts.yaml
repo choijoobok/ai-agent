@@ -1,5 +1,6 @@
 feature_contracts:
   FEAT-501:
+    security_scope: "ARCH-050.admin_account_contract — 관리자 자체 계정/인증·세션 명령이며 Portal 계정/인증 요청에 재사용하지 않는다"
     request_rule: "관리 API의 userId는 필수이며 자기 서비스의 사용자 ID는 세션에서 얻는다; 비밀번호·토큰 원문은 응답·로그에 쓰지 않는다"
     response_rule: "현재 DTO 필드·null 의미·페이징을 보존하고 세션에는 authzVersion을 포함한다"
     transaction: "계정/역할/IP/비밀번호 이력 변경은 각 명령 단위로 원자적"
@@ -47,6 +48,6 @@ feature_contracts:
     exception_map: { UC-509.E1: NOTICE_OUTSIDE_WINDOW, UC-509.E2: NOTIFICATION_REQUEST_STATE_CONFLICT }
   FEAT-510:
     request_rule: "userId는 세션에서, menuCd/gridId/conditionName은 등록된 범위에서 얻는다"
-    response_rule: "모듈과 무관하게 같은 사용자·메뉴 키에 같은 값을 반환한다"
+    response_rule: "system/admin 관리 콘솔의 동일 관리자·메뉴 키에 같은 값을 반환한다. Portal 인증·같은 문자열 ID로 system 개인 상태를 읽거나 쓰지 않는다"
     transaction: "개별 사용자 상태 저장/초기화와 월별 사용 횟수 증가는 원자적"
     exception_map: { UC-510.E1: USER_STATE_OWNER_MISMATCH, UC-510.E2: USER_STATE_ORPHAN }
