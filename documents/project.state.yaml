@@ -114,11 +114,43 @@ workstreams:
         integration_assets:
           name: "연동 자산·카탈로그"
           features: [FEAT-001, FEAT-002, FEAT-003, FEAT-004, FEAT-011, FEAT-021]
-          progress: { inventory: verified, specification_and_logical: verified, physical_and_contracts: in_progress, verification: not_started }
+          progress: { inventory: verified, specification_and_logical: verified, physical_and_contracts: waiting_dependency, verification: not_started }
           drafted: "2026-10-28 연동 자산 6개 기능과 ENT-001~016의 입력/처리·예외·권한/이력·참조 소유를 통합 검토했다. 사용자 선택인 관리 카탈로그 작성 시 선택·고정과 API당 도구 하나를 ADR-030·031 및 REQ-301·612에 기록하고 UC/FEAT/ENT/SCR를 연결했다. 자기조인 두 역할과 FEAT-014.reference_validation의 고정 후보 집합/외부 유효본/영향 근거/현재 직접 정책을 구분했다. 명세·논리 단계의 검토 완료이며 물리/공개 계약·화면·시험·G3 승인은 별도다. 정본은 31-features/002-admin.yaml과 40-domain/005~007 파일, 상세 후속은 각 pending 및 소유 영역을 따른다"
           draft_verification: "하네스·harness-doc·lint·도메인 검사 통과. 영역의 기능 6개/논리 모델 16개에서 규칙 참조 114개와 소비 연결 33개의 오류 0. 독립 검토의 대상 종류+안정 ID 구분, 고정 참조 판 자동 치환 금지, API 화면/요구 연결을 보완하고 8개 반례를 명세했다. trace 오류 0/경고 130(기존 후속 114+물리 설계 후속 16). doc-gen 197개·ID 796개·장문 10234개 누락/깨진 링크 0. HTML 설계 223장·사용자 18장·운영 9장 구조 검사와 Edge 논리 16개/물리 1개·탐색·도표·인쇄 통과. 런북 오류 0/기존 후속 경고 4. 두 질문은 사용자 답변을 정본에 반영해 닫았으며 ENT 집계를 실물 47개로 바로잡았다. 제품 실행 시험 완료를 뜻하지 않는다"
           physical_drafted: "2026-10-29 대상 시스템·데이터소스 7개/API 18개와 카탈로그 15개/API 18개에 이어 업무 API·도구 ENT-011~016·029~038 물리 초안 16개와 API-037~061 관리 계약 25개를 작성했다. 누적 admin 연동 자산 물리 초안 38개/관리 API 61개다. 이번 정본은 40-domain/007·010 및 50-api/007·008이며 필드/값·정형 참조/대응·공동 오픈·API당 도구 하나의 현재/후보/폐지 점유와 편집 재수신 결과를 연결했다. 입력 출처의 같은 필드/조회 대응 검사와 원 응답/결과 확인 상태 구분을 독립 검토로 보완했다. API 대응 변경의 과거 판은 보존하되 단순 역사로 영구 점유하지 않는다. 그룹/반출 정책·세트 원장/후보 종료·원천/실행·보존의 실제 계약은 소유 pending에서 완성한다. 모두 planned이며 제품 구현/G3 완료가 아니다"
           physical_verification: "하네스·lint·도메인 검사 통과. 이번 API/도구 물리 16개·관리 API 25개의 컬럼·PK·FK 타입/참조 유일키·사전 토큰/이름 길이·DTO 연결 오류 0. API 점유 PK 제거·대응 FK 타입 오류·필드 소유 유일키 제거 반례 3개 검출. 독립 검토 P2 2건 및 후속 문장 정합 보완을 재검토로 해소했고 경합/참조 반례 11개를 명세했다. trace 오류 0/기존 후속 경고 114. doc-gen 219개·ID 883개·장문 11067개 누락/깨진 링크 0. HTML 설계 245장·사용자 18장·운영 9장 구조 통과. Edge 구현 명세 1개·누적 물리 초안 38개·논리 초안 0개·Mermaid 13개·탐색/인쇄 통과. 런북 오류 0/기존 후속 경고 4. 정적 설계 검증이며 실제 DB·동시 요청·원천/실행 시험 완료를 뜻하지 않는다"
+          physical_integration_review: "2026-10-29 세 물리 묶음 ENT-001~038·API-001~061의 전체 참조/키·공개 입출력·잠금/재수신·현재 정책/역사 경계를 통합 검토했다. 서로 다른 직접 변경/초안 결과가 공유하던 응답 타입은 AssetDraftCommandResult로 분리했고, FEAT-040의 업무상 요청 점유와 짧은 DB 잠금을 구분했다. 직접 삭제/그룹 축소와 참조 추가 경합의 반례 3개를 FEAT-014에 명세했다. 각 후속 계약의 반대 소유 pending과 아래 5개 대기 조건/재검토 지점을 연결했다. 독립 검토 추가 P1/P2 없음. 물리 38개/API 61개의 컬럼·키/FK·사전 토큰·DTO 연결 오류 0 및 결손 반례 4개 검출. 하네스/lint·도메인 통과, trace 오류 0/기존 후속 경고 114. doc-gen 219개·ID 883개·장문 11083개 누락/깨진 링크 0, HTML 245/18/9장 구조·Edge 물리 초안 38개/도표/탐색/인쇄 통과. 현재 범위 통합 검토의 완료이며 대기 계약·화면/시험·G3 전체 완료는 아니다"
+          waiting_dependency:
+            - refs: ["FEAT-006","FEAT-007","FEAT-008","ENT-018","ENT-006","ENT-012","ENT-016"]
+              owners: ["admin.access_policy"]
+              status: waiting_dependency
+              source: "documents/spec/31-features/002-admin.yaml의 FEAT-006·007·008.pending"
+              resume_when: "그룹 식별/FK·삭제/매핑 경합·카탈로그/API/도구 전체 정책 후보·응답/반출 통제의 저장/고정 참조를 소비 계약과 대조했다"
+              recheck_at: "access_policy의 physical_and_contracts 착수/검토, admin G3 전"
+            - refs: ["FEAT-014","FEAT-040","ENT-035"]
+              owners: ["admin.knowledge"]
+              status: waiting_dependency
+              source: "documents/spec/31-features/002-admin.yaml의 FEAT-014.pending 및 008-admin-common.yaml의 FEAT-040.pending"
+              resume_when: "후보 작업 중/종결·점유 확보/해제·전체 기준/참조 검증·포인터와 세트 실제 결과 원자성/불명 복구의 저장/공개 계약이 연결됐다"
+              recheck_at: "knowledge의 physical_and_contracts 착수/검토, admin G3 전"
+            - refs: ["FEAT-033","ENT-019","ENT-028","ENT-036"]
+              owners: ["admin.audit_trace"]
+              status: waiting_dependency
+              source: "documents/spec/31-features/002-admin.yaml의 FEAT-033.pending"
+              resume_when: "관리 이력/명령 결과 보존·파기 주체/경합과 늦은 키 재수용 차단 계약을 생산 기능과 대조했다. 미완성 동안 결과 파기는 비활성이다"
+              recheck_at: "audit_trace의 physical_and_contracts 착수/검토, admin G3 전"
+            - refs: ["ARCH-028","ARCH-030","FEAT-001","FEAT-002","FEAT-003","FEAT-004"]
+              owners: ["integration"]
+              status: waiting_dependency
+              source: "documents/spec/20-architecture/014-admin-contracts.yaml의 ARCH-028.deployment_contract.pending 및 009-datasource.yaml의 ARCH-030.pending"
+              resume_when: "로드 연결/지원·node/boot/적용 설정 관측·정확 객체/identityProfile 이행 및 실제 전송/조회 연결 동일성을 integration 공개 계약으로 대조했다"
+              recheck_at: "integration P3 배포 연결/DB 조회 계약 검토, admin G3 전"
+            - refs: ["FEAT-203","FEAT-205","FEAT-221","FEAT-003","FEAT-004","FEAT-021"]
+              owners: ["agent","integration"]
+              status: waiting_dependency
+              source: "documents/spec/31-features/004-agent.yaml의 FEAT-203·205·221.pending"
+              resume_when: "검증 구현/배포 무효화·API 입력/응답/코드명·현재 정책/보호값·카탈로그 관측/샘플 상한·실행 근거를 생산/소비 양쪽 계약과 대조했다"
+              recheck_at: "agent P3 레지스트리/API 호출/카탈로그 수집 계약 검토, admin G3 전"
         knowledge:
           name: "업무 지식·안내"
           features: [FEAT-010, FEAT-013, FEAT-014, FEAT-023, FEAT-024, FEAT-036]
@@ -163,9 +195,9 @@ workstreams:
           status: identified
           resume_when: "access_policy 상세 설계에서 외부 인사 사건과 모듈별 실제 처리 결과의 식별·순서·재전송·부분 실패/재처리·조회 계약을 대조한다. 계정과 Portal 이용 자격을 합치지 않는다"
       resume:
-        last_completed: "integration_assets의 업무 API·도구 물리/관리 API 초안을 작성하고 독립 검토·생성/브라우저 검증을 마쳤다. 누적 범위/검증은 areas.integration_assets.physical_drafted·physical_verification을 따른다. 사용자 답변 대기는 없으며 제품 소스·게이트는 변경하지 않았다. 현재 작업 완료 뒤 푸시 요청에 따라 설계와 상태를 분리 커밋하고 origin/main에 반영한다"
-        next_action: "같은 integration_assets의 physical_and_contracts에서 대상 시스템·데이터소스, 카탈로그, 업무 API·도구의 세 묶음(물리 38개/관리 API 61개)을 통합 검토한다. 전역 부모 잠금 순서·참조 추가/삭제·정확 후보 집합/외부 최신성·직접 정책과 내용 판·API 대응 점유·동일 명령 재수신/결과 확인을 횡단 대조한다. 그룹/반출·세트 원장/후보 종료·보존·원천/실행의 실제 공개 계약은 각 소유 pending에 연결하고 해소 조건을 확인한다. 통합 검토 뒤 같은 영역 verification에서 대상 시스템·데이터소스부터 화면 요건/목업·핵심 시퀀스·정상/예외/권한/경합 시험·슬라이스를 구체화한다. 미완성 의존 계약과 사용자 화면/G3 승인을 별도로 관리한다"
-        waiting_on: []
+        last_completed: "integration_assets의 물리/공개 계약 세 묶음 통합 검토를 마쳤다. 응답 타입 충돌·잠금 의미를 보완하고 물리 38개/API 61개를 전수 대조했다. 범위·검증은 areas.integration_assets.physical_integration_review, 미완성 계약은 waiting_dependency 5개 묶음과 각 정본 pending을 따른다. 사용자 답변 대기는 없으며 제품 소스/게이트 상태는 유지했다"
+        next_action: "같은 integration_assets의 verification에서 대상 시스템·데이터소스부터 시작한다. SCR-001/002의 정본·실제 페이지 경로/기존 화면 여부를 먼저 확인하고 FEAT-001/002·ENT-001~004/017~019·API-001~018에 맞춰 화면 요건/목업을 함께 작성한다. 직접 변경·참조 보호·이력·연결 관측과 저장 결과 불명의 표시를 대조하고 핵심 시퀀스·정상/예외/권한/경합 시험·슬라이스로 연결한다. 현재 화면 검토는 진행 가능하지만 미완성 모듈 계약을 구현 보장으로 표시하지 않는다. physical_and_contracts는 waiting_dependency의 해당 소유 영역/작업흐름에서 재검토하며 모두 해소 전 verified/G3로 전환하지 않는다. 이후 카탈로그·API/도구 화면 순서를 유지한다"
+        waiting_on: ["사용자 답변 대기 없음. 물리/공개 계약 확정은 areas.integration_assets.waiting_dependency의 5개 소유 후속을 대기하며 화면 요건/목업 검토는 계속한다"]
       update_rules:
         - "세션 시작·재개 때 이 design_plan과 next_up을 읽고 active_step·active_area·resume을 확인한다. 합의한 순서를 바꿀 이유가 생기면 영향과 재개 지점을 먼저 설명하고 기록한다"
         - "작업 단위를 마칠 때 해당 steps/areas.progress·updated_at·resume을 같은 작업에서 갱신한다. 완료 근거는 산출물 ID/경로와 실제 검사 결과로 남기며 시도·초안을 완료로 세지 않는다"
