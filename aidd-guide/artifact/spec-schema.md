@@ -4,7 +4,7 @@ title: "spec 스키마 — 파일과 작성 단계"
 category: artifact
 type: operation
 created: 2026-09-04
-updated: 2026-10-28
+updated: 2026-10-29
 status: active
 sources: []
 tier: 1
@@ -91,6 +91,21 @@ tags: [spec, ssot, yaml]
 사용자 매뉴얼과 운영 런북도 현행화 대상이다.
 배치의 실행·실패·재처리·복구 절차는 80-operations에 두고 기능 계약을 참조한다.
 API 목록의 목적은 변경 추적이며 Swagger UI는 필수가 아니다.
+
+### 핵심 처리 시퀀스
+
+`30-usecases`의 해당 UC에 `sequence_design`을 두고 `doc-gen 시퀀스`로
+`documents/generated/33-시퀀스/UC-###.md`를 만든다. 파생 Mermaid나 설명을 손으로 고치지 않는다.
+기존 산문 상세 설계 문서를 같은 사실의 정본으로 복제하지 않는다.
+
+- 공통 메타: `contracts_from`(상세 계약 근거)·`scope`·선택 `shared_sequences`·`pending`.
+- `diagrams[]`: UC 내부에서 유일한 `key`(영문 소문자/숫자/하이픈)·`title`·`mermaid`·
+  `transaction_boundary`·`reading_order`·관련 `apis`/`testcases`와 선택 `counterexamples`/`pending`.
+- 그림은 `sequenceDiagram`·`alt` 예외 분기·트랜잭션 경계를 갖는다. 읽기만 하는 흐름은
+  쓰기 트랜잭션이 없음을 명시한다. 공통 흐름은 다른 UC의 그림을 링크하고 승인/구현 상태를 올리지 않는다.
+- 생성기는 선언된 메타·설명을 모두 출력하고 키 중복·필수 구조 누락을 거부한다.
+  `doc-gen --check`는 그림·설명 변경, 누락, 폐기된 시퀀스 잔존을 원본과 대조한다.
+- Mermaid `Note` 설명의 세미콜론은 구문 구분자로 해석되므로 문장 구분 기호로 바꾸거나 `#59;`로 이스케이프한다.
 
 HTML 목차는 문서 종류 → 모듈 순으로 자동 구성한다. 단일 모듈의 설계 Markdown은 앞부분
 메타에 `module`을 기록하고, 모듈별 파생 문서는 생성기가 정본에서 이 값을 출력한다. 집계

@@ -106,10 +106,15 @@
 | `/deliverable-site` | `check.mjs` | `node .claude/skills/deliverable-site/check.mjs` |
 | `/deliverable-site` | `flow-view-check.mjs` | `node .claude/skills/deliverable-site/flow-view-check.mjs` |
 | `/doc-gen` | `gen.mjs` | `node .claude/skills/doc-gen/gen.mjs` |
+| `/doc-gen` | `sequences.test.mjs` | `node .claude/skills/doc-gen/sequences.test.mjs` |
 | `/manual-site` | `build.mjs` | `node .claude/skills/manual-site/build.mjs` |
 | `/manual-site` | `capture.mjs` | `node .claude/skills/manual-site/capture.mjs` |
 | `/menu-doc` | `screens.mjs` | `node .claude/skills/menu-doc/screens.mjs` |
+| `/mockup` | `declared-layout.mjs` | `node .claude/skills/mockup/declared-layout.mjs` |
+| `/mockup` | `declared-layout.test.mjs` | `node .claude/skills/mockup/declared-layout.test.mjs` |
 | `/mockup` | `scaffold.mjs` | `node .claude/skills/mockup/scaffold.mjs` |
+| `/mockup` | `snapshot-view.mjs` | `node .claude/skills/mockup/snapshot-view.mjs` |
+| `/mockup` | `snapshot-view.test.mjs` | `node .claude/skills/mockup/snapshot-view.test.mjs` |
 | `/pm-status` | `deferred.mjs` | `node .claude/skills/pm-status/deferred.mjs` |
 | `/runbook` | `check.mjs` | `node .claude/skills/runbook/check.mjs` |
 

@@ -4,7 +4,7 @@ title: "P3 설계 — 베이스라인을 만든다"
 category: phase
 type: operation
 created: 2026-09-04
-updated: 2026-10-28
+updated: 2026-10-29
 status: active
 sources: []
 tier: 1
@@ -229,6 +229,9 @@ conventions:
 ---
 
 ## 7. ⑥ 시퀀스 다이어그램 (`documents/generated/33-시퀀스/UC-###.md`)
+
+정본은 해당 UC의 `sequence_design`이며 [시퀀스 서식](../artifact/spec-schema.md#핵심-처리-시퀀스)을 따른다.
+`node .claude/skills/doc-gen/gen.mjs 시퀀스`로 그림과 읽는 순서를 함께 생성한다.
 
 핵심 UC(최소 3개: 가장 복잡한 것, 외부 연동, 트랜잭션 경계가 까다로운 것)에 작성.
 

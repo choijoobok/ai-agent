@@ -133,6 +133,13 @@ export function renderMarkdown(source, options = {}) {
       continue;
     }
 
+    const anchor = line.match(/^<a id="([A-Za-z][A-Za-z0-9_.:-]*)"><\/a>$/);
+    if (anchor) {
+      closeList();
+      closeTable();
+      html.push(`<a id="${escapeHtml(anchor[1])}" aria-hidden="true"></a>`);
+      continue;
+    }
     const heading = line.match(/^(#{1,6})\s+(.*)$/);
     if (heading) {
       closeList();

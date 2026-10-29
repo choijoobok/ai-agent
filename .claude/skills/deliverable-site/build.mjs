@@ -18,7 +18,7 @@ import { menuTree, read as readRepo, REPO, screensOf } from '../manual-site/lib/
 import { themeAware } from '../manual-site/lib/page.mjs';
 import { buildFlowViews } from './lib/flow-view.mjs';
 import { createDesignNavigation } from './lib/design-navigation.mjs';
-import { checkTableDocuments } from '../doc-gen/gen.mjs';
+import { checkTableDocuments, checkSequenceDocuments } from '../doc-gen/gen.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ASSET_SOURCE = resolve(REPO, 'aidd-guide/artifact/site-kit/assets');
@@ -41,7 +41,7 @@ const BUILD_README = resolve(REPO, 'aidd-guide/artifact/site-kit/BUILD-README.tx
 const keys = mode === 'all' ? ['design', 'user', 'operations'] : [mode];
 // 낡은 테이블 문서를 다시 포장하지 않는다. 검사는 출력 파일을 쓰기 전에 끝낸다.
 let schemaInputs = [];
-try { schemaInputs = keys.includes('design') ? checkTableDocuments() : []; }
+try { schemaInputs = keys.includes('design') ? [...checkTableDocuments(), ...checkSequenceDocuments()] : []; }
 catch (error) { console.error(error.message); process.exit(1); }
 
 const config = parseYaml(readFileSync(resolve(REPO, 'documents/delivery.yaml'), 'utf8'));
@@ -117,7 +117,7 @@ function collectSharedMockups() {
     const forDesign = keys.includes('design') && !folder.startsWith('/sample');
     if (!forUser && !forDesign) continue;
     const req = `${norm(dirname(file))}/requirements.md`;
-    const meta = byDoc.get(req) ?? byRoute.get(folder) ?? null;
+    const meta = screenFor(req, folder);
     const screenId = screenIdentity(meta, { url: folder, code: slug(folder) });
     const { figures, style } = figuresOf(folder, 'mockup');
     if (forUser) {
@@ -211,17 +211,23 @@ function designChapters() {
       || left.localeCompare(right, 'ko');
   });
   for (const path of requirementPaths) {
-    const meta = byDoc.get(norm(path));
     const folder = norm(dirname(path)).replace(/^documents\/screen/, '');
+    const meta = screenFor(path, folder);
     const screenId = screenIdentity(meta, { url: folder, code: slug(folder) });
     const menu = menuByRoute.get(folder);
-    const treePath = ['화면 요건·목업', ...(menu?.path.slice(0, -1) ?? ['공통 화면'])];
+    const moduleLabel = siteConfig.get('design').navigation?.module_labels?.[meta?.module] ?? meta?.module;
+    const plannedPath = meta?.entry === 'menu' && moduleLabel ? [moduleLabel, ...(meta.group ? [meta.group] : [])] : ['공통 화면'];
+    const treePath = ['화면 요건·목업', ...(menu?.path.slice(0, -1) ?? plannedPath)];
+    const sequencePaths = (meta?.usecases ?? []).map((id) => ({ id, path: `documents/generated/33-시퀀스/${id}.md` }))
+      .filter((item) => existsSync(repoPath(item.path)));
     chapters.push({ ...markdownChapter({
       id: `screen-${slug(screenId)}`, group: treePath.join(' › '), path,
       title: `${screenId} ${meta?.title ?? titleOf(read(path), '')}`,
       tabs: [
         { key: 'requirements', label: '요건 정의서', markdown: read(path) },
         { key: 'mockup', label: '화면 목업', rendered: designMockupMarkup(screenId) },
+        ...sequencePaths.map((item) => ({ key: `sequence-${item.id}`, label: sequencePaths.length === 1 ? '처리 시퀀스' : `처리 시퀀스 ${item.id}`,
+          markdown: read(item.path), path: item.path })),
       ],
     }), treePath });
   }
@@ -295,9 +301,10 @@ function operationsChapters() {
 function rewriteLinks(markdown, from, mapping) {
   return stripFrontmatter(markdown).replace(/\[([^\]]+)\]\(([^)]+)\)/g, (whole, label, target) => {
     if (/^(https?:|mailto:|#)/.test(target) || /mockup\.html#/.test(target)) return whole;
-    const [file] = target.split('#');
+    const [file, ...fragments] = target.split('#');
+    const fragment = fragments.join('#');
     const resolved = norm(relative(REPO, resolve(dirname(repoPath(from)), file)));
-    if (mapping.has(resolved)) return `[${label}](#${mapping.get(resolved)})`;
+    if (mapping.has(resolved)) return `[${label}](#${mapping.get(resolved)}${fragment ? `?anchor=${encodeURIComponent(fragment)}` : ''})`;
     return `${label} (\`${target}\`)`;
   });
 }
@@ -309,7 +316,7 @@ function renderTabs(chapter, mapping) {
     return `<button class="document-tab" id="${chapter.id}-tab-${tab.key}" data-document-tab="${tab.key}" type="button" role="tab" aria-selected="${selected}" aria-controls="${chapter.id}-panel-${tab.key}" tabindex="${selected ? '0' : '-1'}">${escapeHtml(tab.label)}</button>`;
   }).join('');
   const panels = tabs.map((tab, index) => {
-    const body = tab.rendered ?? renderMarkdown(rewriteLinks(tab.markdown, chapter.path, mapping));
+    const body = tab.rendered ?? renderMarkdown(rewriteLinks(tab.markdown, tab.path ?? chapter.path, mapping));
     return `<section class="document-tab-panel" id="${chapter.id}-panel-${tab.key}" data-document-panel="${tab.key}" role="tabpanel" aria-labelledby="${chapter.id}-tab-${tab.key}"${index === 0 ? '' : ' hidden'}>${body}</section>`;
   }).join('');
   return `<div class="document-tabs" data-document-tabs><div class="document-tab-list" role="tablist" aria-label="화면 설계 보기">${buttons}</div>${panels}</div>`;

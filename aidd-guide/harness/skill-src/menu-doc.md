@@ -32,6 +32,7 @@ node .claude/skills/menu-doc/screens.mjs
 
 1. `cp aidd-guide/artifact/template/02-requirements.md documents/screen/{페이지경로}/requirements.md`
 2. **`requirements.md` 를 채운다.** 머리 주석의 작성 원칙을 그대로 따른다. 특히:
+   - 배치·1:1 컬럼·하단 탭·엑셀 기본값은 [기본 UI 표준](../../../aidd-guide/playbook/master-detail.md) §1을 대조한다. 기본정보 편집 폼을 새로 만들지 않는다.
    - *무엇을* 적고 *어떻게* 는 적지 않는다. 컴포넌트·prop·훅 이름은 표준과 AI 의 몫이다.
    - **DB 테이블·컬럼명 · 공통코드 그룹 · 메시지 키 · 페이지 경로 · 메뉴코드는 명시**한다.
    - 이미 표준인 공통 동작(그리드 크롬·감사 넷·조회/저장 흐름·엑셀 두 갈래)은 **적지 않는다.**

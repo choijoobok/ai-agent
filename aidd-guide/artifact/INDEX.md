@@ -4,7 +4,7 @@ title: "산출물 지도 — 무엇을 언제 어디에"
 category: artifact
 type: operation
 created: 2026-09-04
-updated: 2026-10-28
+updated: 2026-10-29
 status: active
 sources: []
 tier: 1
@@ -157,8 +157,8 @@ tags: [artifact, map, index]
 | **파생** | `documents/generated/` · `screen/*/mockup.html` · `build/deliverables/` | 하지 않는다 |
 | **파생이지만 빌드가 읽는다** | 생성 시드 CSV | **한다** — 빼면 새로 클론한 사람이 앱을 띄울 수 없다 |
 
-**목업은 세 번째 칸에 넣지 않는다.** 시드 CSV와 달리 `/manual-site` 때 `/mockup`으로 다시 만들 수 있다. 앱이 뜨는
-일과 문서를 만드는 일은 급함이 다르다.
+**목업은 세 번째 칸에 넣지 않는다.** 시드 CSV와 달리 `/manual-site` 때 `/mockup`으로 다시 만들 수 있다. 앱이 뜨는 일과 문서를 만드는 일은 급함이 다르다.
+문서 작업의 임시 파일은 [빌드 안내 정본](site-kit/BUILD-README.txt)의 작업별 `build/tmp/` 하위에 둔다. 반복 실행할 생성기/검증기는 해당 도구 폴더에서 형상 관리한다.
 
 ## 3. 산출물 생성 원칙
 

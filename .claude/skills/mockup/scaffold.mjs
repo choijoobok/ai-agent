@@ -18,6 +18,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { declaredFigures, declaredScreen, searchComboScript } from './declared-layout.mjs';
 
 const REPO = path.resolve(import.meta.dirname, '../../..');
 const SCREENS = path.join(REPO, 'documents/screen');
@@ -184,7 +185,7 @@ function tablesIn(body) {
     lines = [];
   };
   for (const line of body.split('\n')) {
-    if (/^###?\s+/.test(line)) {
+    if (/^#{2,6}\s+/.test(line)) {
       flush();
       heading = line.replace(/^#+\s*/, '').trim();
     } else if (/^\s*\|/.test(line)) {
@@ -220,6 +221,9 @@ function screenModel(md, type) {
   const actions = findTable(section(md, /버튼.*액션|액션.*버튼/), /버튼|액션/);
   const text = `${type}\n${composition?.body ?? ''}`;
   return {
+    figures: declaredFigures(findTable(composition, /그림 키/), plain),
+    searchTable: search,
+    detailSearchTables: tablesIn(section(md, /조회조건/)?.body ?? '').filter((t) => /조건|검색/.test(plain(t.header[0]))).slice(1),
     search: search?.rows ?? [],
     columns,
     actions: actions?.rows ?? [],
@@ -413,14 +417,18 @@ function scaffold(dir) {
   L.push('  </dl>');
   L.push('</div>');
   L.push('');
-  const figures = keys.length ? keys : [{ key: 'main', caption: '기본 상태' }];
+  const figures = model.figures.length ? model.figures : keys.length ? keys : [{ key: 'main', caption: '기본 상태' }];
+  const renderFigure = (figure) => model.figures.length
+    ? declaredScreen(title, model, figure, { annotator, plain, searchControl, manualKey: keys.some((k) => k.key === figure.key) })
+    : screenSketch(title, type, model, figure.key, figure.caption, keys.length > 0);
+  if (model.figures.length) L.push(`<nav>${figures.map((f) => `<a href="#${f.key}">${html(f.caption)}</a>`).join(' · ')}</nav>`);
   L.push('<h2>1. 기본 상태</h2>');
-  L.push(screenSketch(title, type, model, figures[0].key, figures[0].caption, keys.length > 0));
+  L.push(renderFigure(figures[0]));
   L.push('');
   L.push('<h2>2. 상태가 갈리는 자리</h2>');
   for (const figure of figures.slice(1)) {
     L.push(`<h3>${html(figure.caption)}</h3>`);
-    L.push(screenSketch(title, type, model, figure.key, figure.caption, true));
+    L.push(renderFigure(figure));
     L.push('');
   }
   if (figures.length === 1) L.push('<p class="notes">추가 상태는 요건서의 예외·검증 규칙을 구체화한 뒤 이 자리에 그린다.</p>');
@@ -470,6 +478,7 @@ function scaffold(dir) {
   L.push('</footer>');
   L.push('');
   L.push('</main>');
+  if (model.figures.length || model.columns.some((t) => t.rows.some((r) => r.includes('검색콤보')))) L.push(searchComboScript());
   L.push('');
   return L.join('\n');
 }
@@ -506,9 +515,15 @@ function check(dir) {
   // "이름·상태" 헤더로 바뀌면 화면 구조가 맞아 보여도 실제 업무 화면은 틀린다.
   if (md) {
     const type = meta(md).find((r) => /화면 유형/.test(r[0]))?.[1] ?? '';
-    const expected = screenModel(md, type).columns.flatMap((t) => t.rows.map(columnLabel));
+    const model = screenModel(md, type);
+    const expected = model.columns.flatMap((t) => t.rows.map(columnLabel));
     const shown = [...mock.matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/gi)]
       .map((m) => plain(m[1].replace(/<[^>]+>/g, '')));
+    shown.push(...[...mock.matchAll(/data-field-label="([^"]+)"/g)].map((m) => m[1]));
+    for (const figure of model.figures) {
+      if (!mock.includes(`id="${figure.key}"`)) problems.push(`요건서의 목업 상태 ${figure.key}가 없다`);
+    }
+    if (model.figures.length && !mock.includes(styleBlock())) problems.push('공통 목업 스타일이 서식과 다르다 — 재생성한다');
     const missingColumns = expected.filter((label) => !shown.some((head) => head.includes(label)));
     if (missingColumns.length) {
       problems.push(`요건서 컬럼이 목업 헤더에 없다 ${missingColumns.length}건: ${missingColumns.slice(0, 8).join(' · ')}`);

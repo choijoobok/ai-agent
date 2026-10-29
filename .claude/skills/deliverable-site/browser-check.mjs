@@ -1,5 +1,6 @@
 /** 실제 Chromium에서 탐색·설정·목업 격리·Mermaid 렌더링을 검사한다. */
 import { createRequire } from 'node:module';
+import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { REPO } from '../manual-site/lib/menu.mjs';
@@ -23,6 +24,7 @@ try {
   const openHash = async (id) => {
     await page.evaluate((value) => { location.hash = value; }, id);
     await page.locator(`[data-page-link="${id}"][aria-current="page"]`).waitFor({ state: 'visible' });
+    await page.evaluate(() => window.DELIVERY_READY);
   };
   if (site === 'design') {
     const target = await page.locator('[data-page-link]').evaluateAll((nodes) => {
@@ -69,25 +71,154 @@ try {
       if (await page.locator('[data-current-path]').textContent() !== tablePage.path) errors.push('테이블 명세의 현재 경로가 다르다.');
     }
     console.log(`데이터 모델 표시: 구현 명세 ${physicalPage ? 1 : 0}개 · 물리 초안 ${plannedPages.length}개 · 논리 초안 ${logicalPages.length}개`);
+    const plannedScreens = loadSpecSet({ repo: REPO, name: '60-screens', parseYaml }).document.screens
+      .filter((screen) => screen.target_doc && existsSync(resolve(REPO, screen.target_doc)));
+    const usecases = loadSpecSet({ repo: REPO, name: '30-usecases', parseYaml }).document.usecases;
+    let sequenceTabs = 0, themeRace = null;
+    for (const screen of plannedScreens) {
+      const linkId = await page.locator('[data-page-link]').evaluateAll((nodes, id) => nodes.find((node) => node.textContent.trim().startsWith(id + ' '))?.dataset.pageLink, screen.id);
+      if (!linkId) { errors.push(`${screen.id}: 설계 화면 목차가 없다.`); continue; }
+      await openHash(linkId);
+      const article = page.locator(`[data-page][id="${linkId}"]`);
+      await article.locator('[data-document-tab="mockup"]').click();
+      const mockupFile = screen.target_doc.replace(/requirements\.md$/, 'mockup.html');
+      if (existsSync(resolve(REPO, mockupFile))) {
+        const mockup = article.locator(`[data-mockup="${screen.id}/__design__"]`);
+        if (await mockup.count() !== 1 || !await mockup.locator('.screen').count()) errors.push(`${screen.id}: 생성 목업 식별/화면이 HTML에 연결되지 않았다.`);
+        else {
+          const settings = mockup.locator('[data-grid-settings]').first();
+          const optionalColumn = settings.locator('input[data-grid-column]:not(:checked)').first();
+          if (await optionalColumn.count()) {
+            await settings.locator(':scope > summary').click();
+            const column = await optionalColumn.getAttribute('data-grid-column');
+            const toggle = settings.locator(`input[data-grid-column="${column}"]`);
+            await toggle.check();
+            const shown = await toggle.evaluate((node, id) => [...node.closest('[data-grid-view]').querySelectorAll('[data-grid-col]')]
+              .filter((cell) => cell.dataset.gridCol === id).every((cell) => !cell.hidden), column);
+            if (!shown) errors.push(`${screen.id}: HTML 목업의 선택 열이 표시되지 않는다.`);
+            await toggle.uncheck();
+            const hidden = await toggle.evaluate((node, id) => [...node.closest('[data-grid-view]').querySelectorAll('[data-grid-col]')]
+              .filter((cell) => cell.dataset.gridCol === id).every((cell) => cell.hidden), column);
+            if (!hidden) errors.push(`${screen.id}: HTML 목업의 선택 열 숨김이 동작하지 않는다.`);
+            await settings.locator(':scope > summary').click();
+          }
+          const viewer = mockup.locator('[data-snapshot-viewer]').first();
+          if (await viewer.count()) {
+            await viewer.locator(':scope > summary').click();
+            if (!await viewer.locator('.modal').isVisible()) errors.push(`${screen.id}: 스냅샷 모달이 열리지 않는다.`);
+            await viewer.locator('[data-close-editor]').click();
+            if (await viewer.locator('.modal').isVisible()) errors.push(`${screen.id}: 스냅샷 모달이 닫히지 않는다.`);
+          }
+        }
+      }
+      for (const id of screen.usecases ?? []) {
+        const design = usecases.find((uc) => uc.id === id)?.sequence_design;
+        if (!design) continue;
+        const button = article.locator(`[data-document-tab="sequence-${id}"]`);
+        if (await button.count() !== 1) { errors.push(`${screen.id}/${id}: 화면별 시퀀스 탭이 없다.`); continue; }
+        await button.click();
+        await page.evaluate(() => window.DELIVERY_READY);
+        const panel = article.locator(`[data-document-panel="sequence-${id}"]`);
+        if (!await panel.isVisible() || await panel.locator('.mermaid svg').count() !== design.diagrams.length
+          || await panel.locator('.mermaid-error').count()) errors.push(`${screen.id}/${id}: 화면별 시퀀스 렌더링이 불완전하다.`);
+        const themed = {};
+        for (const mode of ['dark', 'light']) {
+          if (await page.locator('html').getAttribute('data-theme') !== mode) await page.locator('[data-theme-toggle]').click();
+          await page.evaluate(() => window.DELIVERY_READY);
+          const mockup = article.locator(`[data-mockup="${screen.id}/__design__"]`);
+          if (await mockup.count()) {
+            await article.locator('[data-document-tab="mockup"]').click();
+            themed[mode] = await mockup.locator('.screen').first().evaluate((node) => ({ background: getComputedStyle(node).backgroundColor, text: getComputedStyle(node).color }));
+          } else themed[mode] = {};
+          await button.click();
+          await page.evaluate(() => window.DELIVERY_READY);
+          themed[mode].actor = await panel.locator('.mermaid svg rect.actor').first().evaluate((node) => getComputedStyle(node).fill);
+        }
+        if (themed.dark.background === themed.light.background || themed.dark.text === themed.light.text || themed.dark.actor === themed.light.actor) {
+          errors.push(`${screen.id}/${id}: 목업/시퀀스의 다크·라이트 색상이 전환되지 않는다.`);
+        }
+        themeRace = { pageId: linkId, tab: `sequence-${id}` };
+        sequenceTabs++;
+      }
+    }
+    if (themeRace) {
+      await openHash(themeRace.pageId);
+      const article = page.locator(`[data-page][id="${themeRace.pageId}"]`);
+      await article.locator(`[data-document-tab="${themeRace.tab}"]`).click();
+      await page.evaluate(() => window.DELIVERY_READY);
+      const panel = article.locator(`[data-document-panel="${themeRace.tab}"]`);
+      const expectedActor = await panel.locator('svg rect.actor').first().evaluate((node) => getComputedStyle(node).fill);
+      await page.evaluate(() => {
+        const original = window.mermaid.run;
+        window.__testMermaidOriginal = original;
+        window.__testMermaidWaiting = false;
+        let hold = true;
+        window.mermaid.run = async function(options) {
+          if (hold) { hold = false; window.__testMermaidWaiting = true; await new Promise((done) => { window.__testMermaidRelease = done; }); }
+          return original.call(window.mermaid, options);
+        };
+      });
+      await page.locator('[data-theme-toggle]').click();
+      await page.waitForFunction(() => window.__testMermaidWaiting);
+      await page.locator('[data-theme-toggle]').click();
+      await page.evaluate(() => window.__testMermaidRelease());
+      await page.evaluate(() => window.DELIVERY_READY);
+      await page.evaluate(() => { window.mermaid.run = window.__testMermaidOriginal; });
+      const actual = await panel.locator('.mermaid').first().evaluate((node) => ({ theme: node.dataset.renderedTheme, actor: getComputedStyle(node.querySelector('rect.actor')).fill }));
+      if (actual.theme !== 'light' || actual.actor !== expectedActor) errors.push('이전 다크 렌더와 라이트 선택이 겹치면 최종 SVG 테마가 남는다.');
+      console.log('테마 경합: 라이트→지연된 다크→라이트 최종 색상 확인');
+    }
+    for (const uc of usecases.filter((item) => item.sequence_design?.shared_sequences?.length)) {
+      const linkId = await page.locator('[data-page-link]').evaluateAll((nodes, id) => nodes.find((node) => node.textContent.trim().startsWith(id + ' '))?.dataset.pageLink, uc.id);
+      if (!linkId) continue;
+      for (const shared of uc.sequence_design.shared_sequences) {
+        const match = shared.match(/^\[([^\]]+)\]\([^#]+#([^)]+)\)$/);
+        if (!match) continue;
+        await openHash(linkId);
+        const link = page.locator(`[data-page][id="${linkId}"]`).getByRole('link', { name: match[1], exact: true });
+        const href = await link.getAttribute('href');
+        if (new URLSearchParams(href?.split('?')[1]).get('anchor') !== match[2]) errors.push(`${uc.id}: 공통 시퀀스 링크의 그림 앵커가 사라졌다.`);
+        await link.click();
+        await page.waitForFunction((key) => {
+          const current = document.querySelector('[data-page]:not([hidden])');
+          const target = [...(current?.querySelectorAll('[id]') ?? [])].find((node) => node.id === key);
+          const rect = target?.nextElementSibling?.getBoundingClientRect();
+          return rect && rect.top >= 0 && rect.top < innerHeight;
+        }, match[2]);
+      }
+    }
+    console.log(`설계 화면 ${plannedScreens.length}개: 정본 식별자·생성 목업·시퀀스 탭 ${sequenceTabs}개 확인`);
     const mockupPage = await page.locator('[data-mockup$="/__design__"]').first().evaluate((node) => node.closest('[data-page]')?.id);
     if (mockupPage) await openHash(mockupPage);
   }
+  const syntaxProblems = await page.evaluate(async () => {
+    const problems = [];
+    for (const node of document.querySelectorAll('.mermaid[data-mermaid-source]')) {
+      try { await window.mermaid.parse(decodeURIComponent(node.dataset.mermaidSource)); }
+      catch (error) { problems.push(String(error)); }
+    }
+    return problems;
+  });
+  errors.push(...syntaxProblems.map((problem) => `Mermaid 구문 오류: ${problem}`));
   const state = await page.evaluate(() => ({
     pages: document.querySelectorAll('[data-page]').length,
     visiblePages: [...document.querySelectorAll('[data-page]')].filter((node) => !node.hidden).length,
     currentPath: document.querySelector('[data-current-path]')?.textContent?.trim(),
     mermaids: document.querySelectorAll('.mermaid[data-mermaid-source]').length,
     diagrams: document.querySelectorAll('.mermaid svg').length,
+    visibleMermaids: [...document.querySelectorAll('.mermaid[data-mermaid-source]')].filter((node) => node.getClientRects().length).length,
+    visibleDiagrams: [...document.querySelectorAll('.mermaid[data-mermaid-source]')].filter((node) => node.getClientRects().length && node.querySelector('svg')).length,
     designMockups: document.querySelectorAll('[data-mockup$="/__design__"]').length,
     describedMockups: [...document.querySelectorAll('[data-mockup$="/__design__"]')].filter((node) => {
       const shadow = node.querySelector('[data-mockup-body]')?.shadowRoot;
       return shadow?.querySelector('[data-note]') && shadow?.querySelector('[id^="note-"]') && shadow?.textContent.includes('테스트 케이스');
     }).length,
+    currentMockups: [...document.querySelectorAll('[data-page]:not([hidden]) [data-mockup$="/__design__"]')].filter((node) => node.querySelector('[data-mockup-body]')?.shadowRoot?.querySelector('.screen')).length,
   }));
   if (state.visiblePages !== 1) errors.push(`현재 문서가 하나가 아니다: ${state.visiblePages}`);
   if (!state.currentPath) errors.push('상단 현재 문서 경로가 비었다.');
-  if (state.mermaids !== state.diagrams) errors.push(`Mermaid ${state.mermaids}개 중 SVG ${state.diagrams}개만 렌더링됐다.`);
-  if (site === 'design' && (state.designMockups === 0 || state.describedMockups !== 1)) {
+  if (state.visibleMermaids !== state.visibleDiagrams) errors.push(`현재 Mermaid ${state.visibleMermaids}개 중 SVG ${state.visibleDiagrams}개만 렌더링됐다.`);
+  if (site === 'design' && (state.designMockups === 0 || state.describedMockups < 1 || state.currentMockups !== 1)) {
     errors.push(`현재 문서의 상세 목업이 완결되지 않았다: 전체 자리 ${state.designMockups} · 주입 완료 ${state.describedMockups}`);
   }
   await page.locator('[data-ui-settings-toggle]').click();

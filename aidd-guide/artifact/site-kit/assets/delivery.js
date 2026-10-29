@@ -21,10 +21,20 @@
 
   function resolvedTheme() { return root.dataset.theme === 'light' ? 'light' : 'dark'; }
 
-  async function renderMermaid() {
-    const nodes = [...document.querySelectorAll('.mermaid[data-mermaid-source]')];
+  let mermaidQueue = Promise.resolve(), mermaidRevision = 0;
+  function renderMermaid() {
+    const revision = ++mermaidRevision;
+    mermaidQueue = mermaidQueue.catch(() => {}).then(() => renderMermaidNow(revision));
+    return mermaidQueue;
+  }
+  async function renderMermaidNow(revision) {
+    if (revision !== mermaidRevision) return;
+    const mode = resolvedTheme();
+    const nodes = [...document.querySelectorAll('.mermaid[data-mermaid-source]')].filter((node) => node.getClientRects().length
+      && (!node.querySelector('svg') || node.dataset.renderedTheme !== mode));
     if (!nodes.length) return;
     for (const node of nodes) {
+      delete node.dataset.renderedTheme;
       try { node.textContent = decodeURIComponent(node.dataset.mermaidSource); } catch { /* 원문 유지 */ }
       node.removeAttribute('data-processed');
       node.classList.remove('mermaid-error');
@@ -34,8 +44,20 @@
       return;
     }
     try {
-      window.mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: resolvedTheme() === 'dark' ? 'dark' : 'default' });
+      const palette = getComputedStyle(root);
+      const color = (name) => palette.getPropertyValue(name).trim();
+      window.mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: 'base', themeVariables: {
+        darkMode: resolvedTheme() === 'dark', background: color('--bg-2'),
+        primaryColor: color('--bg-3'), primaryTextColor: color('--text'), primaryBorderColor: color('--border-strong'),
+        secondaryColor: color('--bg-4'), tertiaryColor: color('--bg-2'), textColor: color('--text'), lineColor: color('--text-dim'),
+        actorBkg: color('--bg-3'), actorBorder: color('--border-strong'), actorTextColor: color('--text'), actorLineColor: color('--text-dim'),
+        signalColor: color('--text-dim'), signalTextColor: color('--text'),
+        labelBoxBkgColor: color('--bg-3'), labelBoxBorderColor: color('--border-strong'), labelTextColor: color('--text'), loopTextColor: color('--text'),
+        noteBkgColor: color('--bg-4'), noteBorderColor: color('--border-strong'), noteTextColor: color('--text'),
+        activationBkgColor: color('--bg-4'), activationBorderColor: color('--border-strong'), sequenceNumberColor: color('--bg-2'),
+      } });
       await window.mermaid.run({ nodes, suppressErrors: false });
+      if (revision === mermaidRevision) nodes.forEach((node) => { node.dataset.renderedTheme = mode; });
     } catch (error) {
       console.error('Mermaid 렌더링 실패', error);
       nodes.filter((node) => !node.querySelector('svg')).forEach((node) => node.classList.add('mermaid-error'));
@@ -74,14 +96,23 @@
       if (!item || !body || body.shadowRoot) return;
       body.dataset.theme = resolvedTheme();
       const shadow = body.attachShadow({ mode: 'open' });
-      const isolatedStyle = (item.style || '').replace(/:root/g, ':host')
+      const isolatedStyle = (item.style || '').replace(/:root((?:\[[^\]]+\]|:not\([^)]*\))*)/g, (_, condition) => condition ? `:host(${condition})` : ':host')
         .replace(/(^|[}\s,])body(?=\s*[{,.#[:])/gm, '$1.mockup-root');
-      shadow.innerHTML = `<style>:host{display:block;color-scheme:light dark}${isolatedStyle}</style><div class="mockup-root">${item.html}</div>`;
+      shadow.innerHTML = `<style>:host{display:block;color-scheme:light}:host([data-theme="dark"]){color-scheme:dark}${isolatedStyle}</style><div class="mockup-root">${item.html}</div>`;
       shadow.addEventListener('click', (event) => {
+        const close = event.target.closest?.('[data-close-editor]');
+        if (close) { close.closest('details[data-cell-editor]')?.removeAttribute('open'); return; }
         const anchor = event.target.closest?.('[data-note]');
         if (!anchor) return;
         const note = shadow.getElementById(`note-${anchor.dataset.note}`);
         if (note) { event.preventDefault(); note.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      });
+      shadow.addEventListener('change', (event) => {
+        const toggle = event.target.closest?.('[data-grid-column]');
+        if (!toggle) return;
+        toggle.closest('[data-grid-view]')?.querySelectorAll('[data-grid-col]').forEach((cell) => {
+          if (cell.dataset.gridCol === toggle.dataset.gridColumn) cell.hidden = !toggle.checked;
+        });
       });
     });
     syncThemeControls();
@@ -98,6 +129,7 @@
     });
     tabs.querySelectorAll('[data-document-panel]').forEach((panel) => { panel.hidden = panel.dataset.documentPanel !== key; });
     if (focus) button.focus();
+    window.DELIVERY_READY = renderMermaid();
   }
   document.querySelectorAll('[data-document-tab]').forEach((button) => {
     button.addEventListener('click', () => activateDocumentTab(button));
@@ -131,6 +163,7 @@
     if (updateHash) history.replaceState(null, '', `#${id}`);
     document.querySelector('.main-wrap')?.scrollTo(0, 0);
     injectMockups(current);
+    window.DELIVERY_READY = renderMermaid();
     return true;
   }
   function closeSidebar() {
@@ -140,9 +173,26 @@
     button?.setAttribute('aria-expanded', 'false');
     button?.setAttribute('aria-label', '목차 열기');
   }
+  function showHash() {
+    const [id, query = ''] = location.hash.slice(1).split('?');
+    if (!show(id, false)) return false;
+    let anchor = new URLSearchParams(query).get('anchor');
+    if (!anchor) return true;
+    try { anchor = decodeURIComponent(anchor); } catch { /* 잘못된 인코딩은 원 문자열로 탐색 */ }
+    const current = pages.find((page) => page.id === id);
+    const target = [...current.querySelectorAll('[id]')].find((node) => node.id === anchor);
+    if (!target) return true;
+    const panel = target.closest('[data-document-panel]');
+    if (panel?.hidden) {
+      const button = [...current.querySelectorAll('[data-document-tab]')].find((item) => item.dataset.documentTab === panel.dataset.documentPanel);
+      if (button) activateDocumentTab(button);
+    }
+    window.DELIVERY_READY.then(() => requestAnimationFrame(() => { if (!current.hidden) target.scrollIntoView({ block: 'center' }); }));
+    return true;
+  }
   links.forEach((link) => link.addEventListener('click', () => { show(link.dataset.pageLink); closeSidebar(); }));
-  if (!show(location.hash.slice(1), false) && pages[0]) show(pages[0].id, false);
-  addEventListener('hashchange', () => show(location.hash.slice(1), false));
+  if (!showHash() && pages[0]) show(pages[0].id, false);
+  addEventListener('hashchange', showHash);
 
   document.querySelectorAll('[data-tree-group]').forEach((button) => {
     button.addEventListener('click', () => {

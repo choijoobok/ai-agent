@@ -4,7 +4,7 @@ title: "고객 제출 사이트 UI 키트"
 category: artifact
 type: operation
 created: 2026-09-13
-updated: 2026-10-28
+updated: 2026-10-29
 status: active
 sources: ["aidd-guide/artifact/INDEX.md", "aidd-guide/harness/skill-src/deliverable-site.md"]
 tier: 3
@@ -48,6 +48,16 @@ tags: [artifact, html, offline, delivery]
 설계 사이트의 하위 그룹은 처음에 접고 현재 문서의 경로만 펼친다. 검색 중에는 일치 문서의
 경로를 펼치고, 검색을 지우면 이전 접힘 상태와 현재 문서 경로를 복원한다. 기존 문서 ID와
 해시 링크는 유지하며 상단 현재 경로는 새 분류를 표시한다.
+
+화면 문서는 실제 메뉴가 있으면 그 트리를 사용하고, 설계 중인 메뉴는 `60-screens`의
+route·module·group으로 식별/분류한다. 요건 정의서와 목업은 같은 SCR 식별자를 쓴다.
+`usecases`에 연결된 UC의 생성 시퀀스가 있으면 같은 화면에 `처리 시퀀스` 탭을 자동으로 붙인다.
+탭은 생성 Markdown의 원래 경로를 기준으로 링크를 해석하며 시퀀스가 없는 화면의 완료를 추정하지 않는다.
+문서 링크는 원래 그림 앵커도 보존해 해당 문서·탭·그림으로 이동한다. 목업의 내부 스타일과
+시퀀스 SVG는 상단 다크/라이트 선택을 따르며 페이지 재진입에도 선택을 유지한다.
+목업의 테마 조건은 내부 스타일의 `:host(...)`에 전달하고 SVG는 셸의 색 토큰을 사용한다.
+숨은 탭은 표시할 때 렌더링해 잘못된 텍스트 높이 측정을 피한다. 브라우저 검사는 전체 Mermaid
+구문과 메뉴별 실제 표시·다크/라이트 전환·그림 앵커 이동을 함께 확인한다.
 
 ## 흐름과 시퀀스의 연속 보기
 

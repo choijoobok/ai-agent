@@ -111,6 +111,8 @@ const LABEL = {
   impact_only: '영향·과거 근거', current_policy: '현재 직접 정책', final_validation: '최종 검증과 반영',
   counterexamples: '검증 반례', api_tool_mapping: 'API·도구 대응', relation_management: '관계 관리측',
   tool_reference: '대응 도구 참조', api_reference: 'API 원천 참조',
+  contracts_from: '상세 계약 근거', shared_sequences: '공통 처리 연결',
+  reading_order: '읽는 순서', transaction_boundary: '트랜잭션 경계',
 };
 const lab = (k) => LABEL[k] ?? k;
 
@@ -135,7 +137,7 @@ function table(items, keys) {
 }
 
 /** 항목마다 소제목 + 남은 필드를 불릿으로. **키를 떨어뜨리지 않는다.** */
-function blocks(items, headKeys = ['id'], titleKey = 'title', level = '###') {
+export function blocks(items, headKeys = ['id'], titleKey = 'title', level = '###') {
   const out = [];
   for (const it of items) {
     const hid = headKeys.filter((k) => it[k] !== undefined && it[k] !== null).map((k) => String(it[k])).join(' · ');
@@ -167,6 +169,8 @@ function blocks(items, headKeys = ['id'], titleKey = 'title', level = '###') {
           '| 검토 번호 | 전체 흐름 노드 | 관련 요구사항 |', '|---|---|---|');
         for (const r of v) out.push(`| [${r.key}](${route(r)}) | ${r.nodes.join(', ')} | ${r.requirements.join(', ')} |`);
         out.push('', `[↑ 전체 흐름도로 돌아가기](#${String(it.id).toLowerCase()}-전체-흐름도)`, '');
+      } else if (k === 'sequence_design' && /^UC-\d+$/.test(it.id ?? '') && v && typeof v === 'object' && !Array.isArray(v)) {
+        out.push(`- **핵심 처리 시퀀스** — [별도 명세](33-시퀀스/${it.id}.md)`);
       } else if (['processing', 'state_machine'].includes(k) && v && typeof v === 'object' && !Array.isArray(v)) {
         out.push(`- **${lab(k)}**`);
         for (const [part, value] of Object.entries(v)) out.push(`  - **${lab(part)}** — ${flat(value)}`);
@@ -774,6 +778,73 @@ function 유즈케이스() {
   ]);
 }
 
+/** UC의 흐름 정본에서 시퀀스와 해설을 함께 만든다. 승인·구현 상태를 올리지 않는다. */
+export function renderSequenceDocuments(usecases) {
+  const folder = `${OUT}33-시퀀스/`, documents = new Map(), rows = [];
+  const hasText = (value) => typeof value === 'string' && value.trim().length > 0;
+  const textList = (value) => Array.isArray(value) && value.length > 0 && value.every(hasText);
+  for (const uc of usecases) {
+    if (!uc.sequence_design) continue;
+    if (!/^UC-\d+$/.test(uc.id)) throw new Error('시퀀스의 상위 UC 식별자가 잘못됐다');
+    const { diagrams, ...metadata } = uc.sequence_design;
+    if (!hasText(metadata.scope) || !textList(metadata.contracts_from)) throw new Error(`${uc.id}: 범위·상세 계약 근거가 필요하다`);
+    if (!Array.isArray(diagrams) || !diagrams.length) throw new Error(`${uc.id}: 시퀀스가 비었다`);
+    const keys = new Set();
+    const parts = [
+      head(`SEQ-${uc.id}`, `${uc.id} — ${uc.name}`, specSource('30-usecases'), uc.design_status ?? 'draft', null,
+        [uc.id, ...(uc.reqs ?? []), ...(uc.feature_contract ? [uc.feature_contract] : [])])
+        .replace('generated_from:', `module: ${uc.workstream ?? '전체'}\ngenerated_from:`),
+      '> 설계 초안이다. 화살표는 조건에 맞는 분기만 실행한다. 다른 영역의 미결 계약이나 제품 실행 시험 완료를 뜻하지 않는다.',
+      blocks([{ title: '범위와 계약', ...metadata }], [], 'title', '##'),
+    ];
+    for (const diagram of diagrams) {
+      const { key, title, mermaid, ...details } = diagram;
+      if (!/^[a-z][a-z0-9-]*$/.test(key ?? '') || keys.has(key)) throw new Error(`${uc.id}: 시퀀스 키 중복/오류 ${key}`);
+      keys.add(key);
+      if (!hasText(title) || typeof mermaid !== 'string' || !/^sequenceDiagram(?:\s*[\r\n]|$)/.test(mermaid.trimStart())
+          || mermaid.includes('```') || !/^\s*alt\s/m.test(mermaid)
+          || !hasText(details.transaction_boundary) || !textList(details.reading_order)) {
+        throw new Error(`${uc.id}/${key}: 제목·sequenceDiagram·예외 분기·트랜잭션 경계·읽는 순서가 필요하다`);
+      }
+      if (mermaid.split('\n').some((line) => /^\s*Note\b[^:]*:/.test(line) && line.replace(/#[a-z0-9]+;/gi, '').includes(';'))) {
+        throw new Error(`${uc.id}/${key}: Note 설명의 세미콜론은 문장 구분 기호로 바꾸거나 #59;로 이스케이프한다`);
+      }
+      parts.push(`<a id="${key}"></a>\n\n## ${key} — ${title}`, '```mermaid\n' + mermaid.trimEnd() + '\n```',
+        blocks([{ title: '순서와 검증', ...details }], [], 'title', '###'));
+    }
+    documents.set(`${folder}${uc.id}.md`, `${parts.join('\n\n').replace(/\n+$/, '')}\n`);
+    rows.push({ id: uc.id, module: uc.workstream ?? '전체', name: `[${uc.name}](${uc.id}.md)`, diagrams: diagrams.length, status: uc.design_status ?? 'draft' });
+  }
+  documents.set(`${folder}_index.md`, [head('SEQUENCES', '핵심 처리 시퀀스', specSource('30-usecases'), 'mixed', null, rows.map((x) => x.id)),
+    'sequence_design이 작성된 유즈케이스만 싣는다. 이 목록의 존재가 다른 유즈케이스의 시퀀스 완료를 뜻하지 않는다.',
+    table(rows, ['id', 'module', 'name', 'diagrams', 'status'])].join('\n\n') + '\n');
+  return documents;
+}
+
+/** 날짜만 달라진 생성물은 허용하며 내용 누락·변조·폐기 문서 잔존은 거부한다. */
+export function checkSequenceDocuments(repo = REPO, usecases = load('30-usecases').usecases ?? []) {
+  const documents = renderSequenceDocuments(usecases), problems = [];
+  const normalizeDoc = (text) => text.replace(/^last_sync: .*$/m, 'last_sync: <date>');
+  for (const [file, expected] of documents) {
+    const actual = join(repo, file);
+    if (!existsSync(actual) || normalizeDoc(readFileSync(actual, 'utf8')) !== normalizeDoc(expected)) problems.push(`${file}: 시퀀스 생성물 누락/노후화`);
+  }
+  const folder = `${OUT}33-시퀀스/`;
+  if (existsSync(join(repo, folder))) for (const file of readdirSync(join(repo, folder))) {
+    if (file.endsWith('.md') && !documents.has(folder + file)) problems.push(`${folder}${file}: 폐기된 시퀀스 잔존`);
+  }
+  if (problems.length) throw new Error(problems.join('\n') + '\n조치: doc-gen 시퀀스를 재생성한다.');
+  return specSet('30-usecases').files;
+}
+
+function 시퀀스() {
+  const documents = renderSequenceDocuments(load('30-usecases').usecases ?? []), folder = `${OUT}33-시퀀스/`;
+  for (const [file, content] of documents) write(file, [content]);
+  if (existsSync(join(REPO, folder))) for (const file of readdirSync(join(REPO, folder))) {
+    if (file.endsWith('.md') && !documents.has(folder + file)) rmSync(join(REPO, folder, file));
+  }
+}
+
 /** 괄호가 Mermaid 셰이프를 닫지 않도록 공통 escape를 적용한다. */
 const mermaidLabel = (v) => flat(v).replace(/\(/g, '#40;').replace(/\)/g, '#41;').replace(/"/g, '&quot;');
 
@@ -1032,7 +1103,7 @@ function 운영런북() {
 }
 
 // ── 대상 등록 ─────────────────────────────────────────────────────
-const TARGETS = { 요구사항정의서, 아키텍처, 기능목록, 요건정의서, 화면정의서, 권한매트릭스, 유즈케이스, ERD, 테이블명세서, API, 테스트, 운영런북, 추적성 };
+const TARGETS = { 요구사항정의서, 아키텍처, 기능목록, 요건정의서, 화면정의서, 권한매트릭스, 유즈케이스, 시퀀스, ERD, 테이블명세서, API, 테스트, 운영런북, 추적성 };
 
 /**
  * 같은 대상의 다른 이름. `SKILL.md` 의 인자 줄은 짧은 이름(`화면`·`권한`)을 쓰고
@@ -1052,7 +1123,6 @@ const resolve = (a) => ALIAS[a] ?? a;
  * 부르지 않고, 부르지 않으면 없는 기능이 된다.
  */
 const NOT_YET = {
-  시퀀스: '핵심 UC별 첫 실물의 구조를 검증한 뒤 결정 생성으로 옮긴다',
   DDL: '기존 system 물리 구조는 보존하며, 승인된 신규 물리 변경이 생길 때 생성기로 옮긴다',
 };
 
@@ -1068,6 +1138,7 @@ const NOT_YET = {
 function check() {
   schema();
   테이블명세서(true);
+  checkSequenceDocuments();
   const mdFiles = [];
   const walkDir = (dir) => {
     if (!existsSync(dir)) return;

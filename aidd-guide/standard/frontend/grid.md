@@ -16,6 +16,7 @@ tags: [frontend, grid, ag-grid, crud, save]
 
 > **편집 폼을 두지 않는다. 이것이 나머지의 전제다.**
 > 화면에 남는 폼은 조회조건 하나뿐이며, **등록은 그리드의 새 행이고 수정은 셀 편집**이다.
+> 배치·1:1 항목·하단 탭·엑셀 기본값은 [마스터-디테일 §1](../../playbook/master-detail.md)을 따른다.
 >
 > 컬럼은 [grid-columns.md](./grid-columns.md), 정렬·필터·검증은 [grid-validation.md](./grid-validation.md).
 
@@ -192,7 +193,6 @@ const grid = useGridController<UserRow>({
 > **부모를 빠뜨린 요청이 전 그룹의 자식을 한 판에 쏟는다.**
 
 > **매 렌더 새 함수를 넘기지 않는다** — 조회·저장 콜백이 전부 새것이 된다.
-
 ## 관련
 
 - [grid-columns.md](./grid-columns.md) · [grid-validation.md](./grid-validation.md) — 컬럼과 그 동작

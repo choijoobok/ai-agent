@@ -37,6 +37,7 @@ node .claude/skills/doc-gen/gen.mjs --check            # 생성물이 spec 을 �
   (새 대상이 필요하다는 신호이며, 초록으로 만들려고 검사를 좁히지 않는다).
 
 ## 원칙
+- 임시 스크립트·로그·캡처·비교 데이터는 [빌드 안내](../../../aidd-guide/artifact/site-kit/BUILD-README.txt)의 작업별 경로에 둔다. `build/` 최상위에 쌓지 않는다.
 - 데이터 모델·Liquibase·테이블 명세서는 [동기화 규약](../../../aidd-guide/artifact/data-model.md)을 따른다. 생성 전 `domain-schema.mjs`가 활성 스키마와 설계의 일치를 검사하며 불일치면 쓰기 전에 실패한다. 테이블 명세서는 독립 생성물이며 `--check`로 내용의 노후화도 검사한다.
 - API 목록·상세 계약은 독립 산출물이며 API ID와 소유 기능·구현 메서드를 출력한다. Swagger UI는 필요하지 않다.
 - 메뉴·공통/독립 화면을 구별하고 단/복수 기능·화면 연결을 합쳐 읽는다. 기능별 문서를 수기로 복제하지 않는다.
@@ -94,13 +95,16 @@ node .claude/skills/doc-gen/gen.mjs --check            # 생성물이 spec 을 �
 | API | `gen` | `documents/generated/50-API.md` + `documents/generated/50-openapi.yaml` | 50-api |
 | 테스트케이스 | `gen` | `documents/generated/70-테스트케이스.md` | 70-testcases |
 | 운영런북 | `gen` | `documents/generated/80-운영런북.md` | 80-operations |
-| 시퀀스 | `prose` | `documents/generated/33-시퀀스/UC-###.md` (Mermaid sequenceDiagram) + `_index.md` | 30-usecases + 50-api |
+| 시퀀스 | `gen` | `documents/generated/33-시퀀스/UC-###.md` (Mermaid sequenceDiagram) + `_index.md` | 30-usecases.sequence_design (50-api 등 상세 계약 참조) |
 
-**`prose` 둘은 아직 결정 생성으로 옮기지 않았다.** DDL은 승인된 물리 변경이 생길 때,
-시퀀스는 첫 실물의 구조를 검증한 뒤 생성기로 옮긴다. 기능별 요건정의서는 정본의 모든 필드와 정규화한 화면/API 연결을 생성한다.
-유즈케이스·ERD·API·테스트는 P3 정본이 채워졌으므로 `gen.mjs`가 모든 필드를 빠뜨리지 않고
-재현한다. 사용자 매뉴얼은 전역 문서로 중복 생성하지 않고 화면별 `manual.md`를
-`/deliverable-site`가 한 사이트로 조립한다. `gen.mjs`의 `NOT_YET`은 남은 둘을 부르면
+**`prose`는 DDL 하나다.** 승인된 물리 변경이 생길 때 생성기로 옮긴다.
+기능별 요건정의서는 정본의 모든 필드와 정규화한 화면/API 연결을 생성한다.
+시퀀스는 [정본 서식](../../../aidd-guide/artifact/spec-schema.md#핵심-처리-시퀀스)의 UC `sequence_design`에서
+Mermaid·읽는 순서·API/시험·후속 계약을 함께 생성한다. 작성하지 않은 UC의 완료를 추정하지 않으며
+`--check`로 그림/설명 누락·노후화·폐기 문서 잔존을 거부한다.
+유즈케이스·ERD·API·테스트는 `gen.mjs`가 모든 필드를 빠뜨리지 않고 재현한다.
+사용자 매뉴얼은 전역 문서로 중복 생성하지 않고 화면별 `manual.md`를
+`/deliverable-site`가 한 사이트로 조립한다. `gen.mjs`의 `NOT_YET`은 남은 DDL을 부르면
 *왜 아직 아닌지*를 말한다.
 
 ## 요구사항 정의서 — 지도 43행 (`요구사항정의서`)
