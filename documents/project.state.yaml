@@ -178,6 +178,7 @@ workstreams:
           progress: { inventory: verified, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
         access_policy:
           name: "이용자·접근 정책"
+          focus: "REQ-103.column_group_exclusions의 HIDE/MASK 예외와 REQ-111.privacy_metadata.column_workspace의 컬럼 분류/마스킹 참조 저장·고정 계약을 대조한다. REQ-611.query_constraints와 SCR-009에 조회 제약을 이관했다. ENT-009/026은 정책 소유 논리 초안이며 독립 정책 버전·두 입력 바인딩/차이 검증·최종 SQL 검증·카탈로그 현재 정책 건수 역조회의 물리/공개/화면 계약을 완성한다"
           features: [FEAT-005, FEAT-006, FEAT-007, FEAT-008, FEAT-009, FEAT-012, FEAT-038]
           progress: { inventory: verified, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
         model_operations:
@@ -216,8 +217,8 @@ workstreams:
           status: identified
           resume_when: "access_policy 상세 설계에서 외부 인사 사건과 모듈별 실제 처리 결과의 식별·순서·재전송·부분 실패/재처리·조회 계약을 대조한다. 계정과 Portal 이용 자격을 합치지 않는다"
       resume:
-        last_completed: "SCR-001/002/003과 기존 목업 25개의 화면/탭 순서·업무 설명·단일 번호 목록·필수/검증·탭별 버튼을 보완하고 공통 스킬/서식/생성기와 HTML에 적용했다. DBMS/버전·공통 참조 조건 콤보·테이블 승계 후 컬럼 제외 설계를 함께 정합성 검증했다. 제품 구현/G3는 진행하지 않았다"
-        next_action: "SCR-003 검토 의견을 반영하고 REQ-301.source_dimensions/index_metadata의 치수·인덱스 저장/전체 후보 계약을 완성한다. FEAT-007의 제외 행 저장/고정 계약을 access_policy와 연결하며 FEAT-504.reference_combo_contract의 공통 조회·유틸/코드 시드 구현은 system 소유 G3 후 진행한다. 이어서 기존 integration_assets의 SCR-004/019 요건/목업·시험 순서를 유지한다"
+        last_completed: "2026-10-30 사용자 합의로 데이터소스 등록 코드 조회 SQL/파라미터와 컬럼별 정확 조회 버전/typed 바인딩 모델을 반영했다. INLINE 직접 등록은 유지하고 기존 단일 코드 테이블/AND 조건을 대체했다. REQ-301/603·ENT-024/041~043·API-063~069·TC-00216/00217/00319를 연결했다. SCR-002 9탭, SCR-003 12탭에 정의/파라미터/조회 결과와 NULL/미입력 구분, 테이블/뷰 표시·비교 예시를 생성했다. 독립 검토의 실패 화면/NULL 입력/TC 연결/옛 모델 잔존을 보완했다. 생성기25시험·Edge 코드 결과3건/실패시 비움/초안 활성화 잠금·하네스/lint·추적성 오류0/후속114, 생성229개/ID958개 누락0, HTML257/18/9장·문제0을 확인했다. 제품 SQL 실행/캐시와 새 논리 모델 물리는 후속이며 G3/구현 승인 아님"
+        next_action: "REQ-603.code_lookup_definition·FEAT-002.code_lookup_contract와 REQ-301.value_domain의 코드 조회 정의/바인딩 물리, SQL 허용 분석·실행 상한·액션·결과 원장/확인·캐시 무효화/보호된 근거 계약을 integration/access_policy/audit_trace와 구체화한다. REQ-304.batch_structure_comparison·ENT-039/040의 비교 실행/차이·잠금/복구/보존·공개 API를 완성한다. SCR-039 테이블 관계 상세 화면과 SCR-009 조회 제약 인계를 유지한다. 원천 조회권 없는 수동 등록과 치수·인덱스 저장/전체 후보, FEAT-007 예외 저장/고정 계약을 대조한다. FEAT-504 공통 콤보 유틸/시드는 system 소유 G3 뒤 구현한다. 사용자 SCR-001/002/003 화면 검토 뒤 기존 integration_assets의 SCR-004/019 요건/목업·시험 순서를 유지한다"
         waiting_on: ["사용자 필수 답변 대기 없음. SCR-001/002/003은 전체 화면 상세 승인/구현 승인 전 초안이다. 물리/공개 계약의 waiting_dependency 5개 소유 후속을 유지한다"]
       update_rules:
         - "세션 시작·재개 때 이 design_plan과 next_up을 읽고 active_step·active_area·resume을 확인한다. 합의한 순서를 바꿀 이유가 생기면 영향과 재개 지점을 먼저 설명하고 기록한다"
