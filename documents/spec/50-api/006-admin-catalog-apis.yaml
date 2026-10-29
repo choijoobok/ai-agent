@@ -25,6 +25,7 @@ apis:
     path: /api/service/admin/catalog/getRevisions
     action: READ
     summary: "카탈로그 내용 판 목록"
+    contract: "catalogId의 판 이력을 revisionNo DESC, revisionId DESC 고정 정렬로 반환한다. UI는 선택/탭 진입 시 자동 조회하고 페이지 이동도 같은 대상/정렬을 유지한다. CONTENT_STATE는 승인/운영 반영 상태가 아니다"
     request: "body=SearchRequest<CatalogKey>"
     response: "ApiResponse<PageResponse<RevisionRow>>"
   - id: API-022

@@ -29,6 +29,132 @@ usecases:
       - { id: E3, condition: "반영 시 기준 운영본이나 참조가 변경됨", flow: ["UC-003·012의 검증 결과에 따라 접수/반영을 막고 차이를 확인한다. 오래된 후보로 현재 값을 덮어쓰지 않는다"] }
     postcondition: "공개 객체의 후보·검수 상태·운영 사용 가능 범위와 후속 요청이 구분된다. 초안 작성만으로 활성화하지 않는다"
     rules_from: ["REQ-301.column_metadata", "REQ-301.value_domain", "REQ-301.query_constraints", "REQ-301.business_rules", "REQ-301.quality_management", "REQ-304.note", "REQ-601.approval_policy"]
+    sequence_design:
+      contracts_from: ["FEAT-003.identity_contract", "FEAT-003.composition_contract", "FEAT-003.edit_transaction", "FEAT-003.set_public_contract", "FEAT-003.source_public_contract", "REQ-301", "REQ-304"]
+      scope: "SCR-003의 전체 초안 저장·원 명령 확인과 관측/검증/소유 변경 세트 인계다. 직접 관리 ENT-019·운영 반영 원장으로 확대하지 않는다"
+      diagrams:
+        - key: draft-save
+          title: "전체 후보와 구성 ID·변경 근거·원 성공 결과의 동시 저장"
+          apis: [API-023, API-024, API-025, API-034]
+          testcases: [TC-0032, TC-0033, TC-0034, TC-0035, TC-0036, TC-0037, TC-00310]
+          transaction_boundary: "현재 권한/원 성공을 확인하고 READ COMMITTED에서 부모를 공통 순서로 잠근다. 잠금 뒤 원 명령 재조회·DRAFT/기대 버전·전체 참조/구성 검사와 ENT-028/전체 초안·자식·필요 변경 근거는 같은 TX다. 고정 후보·운영 포인터는 이 저장에서 바꾸지 않는다"
+          mermaid: |
+            sequenceDiagram
+                autonumber
+                participant U as 카탈로그 화면
+                participant A as admin 후보 저장
+                participant D as AI 전용 DB
+                U->>A: API-023/024/025 원 키·전체 구성/복사 기준·사유
+                A->>A: 현재 SAVE/소유 권한·형식·인증 주체/입력 지문 확인
+                A->>D: 같은 원 명령의 성공 결과 확인
+                alt 같은 주체/기능/입력의 성공 있음
+                    D-->>A: 원 DraftResult와 clientKey 매핑
+                    A-->>U: 원 성공 재생 — 현재 누락/검수는 별도 조회
+                else 미반영 명령
+                    rect rgba(110, 150, 190, 0.10)
+                        Note over A,D: BEGIN READ COMMITTED — 부모 종류/숫자 ID 순으로 잠금
+                        A->>D: 잠금 뒤 같은 명령 성공 재조회
+                        alt 원 성공 확인
+                            D-->>A: 기대 버전보다 먼저 원 성공 반환
+                            Note over A,D: TX 종료·잠금 해제 뒤 응답
+                        else 새 명령 검증
+                            A->>A: DRAFT·기대 편집/복사 기준 판·전체 구성/소유 검증
+                            A->>A: 정확 식별/profile·현재 참조·검수 의도/근거 검증
+                            alt 버전/소유/참조/식별 오류 또는 필수 검증 불가
+                                A->>D: ROLLBACK
+                                A-->>U: 계약 거부·입력 보존
+                            else 미완성 초안 포함 저장 가능
+                                A->>D: 신규 catalog/revision/member ID 배정·clientKey 참조 해석
+                                A->>A: 완전한 원 성공 결과/ID 매핑 계산
+                                A->>D: ENT-028 완전한 결과 INSERT
+                                A->>D: 전체 후보/자식·필요 의미 변경 근거 ENT-010/027 저장
+                                alt 모든 저장 성공
+                                    A->>D: COMMIT
+                                    A-->>U: DraftResult — 초안 저장이며 운영 반영 아님
+                                else 키 경합 또는 자식/근거/결과 저장 실패
+                                    A->>D: ROLLBACK — 부분 성공 없음
+                                    Note over A,D: 키 경합은 실패 TX 종료 뒤 새 읽기로 원 성공 확인
+                                    A-->>U: 명시 거부 또는 결과 불명 구분
+                                end
+                            end
+                        end
+                    end
+                end
+                opt 응답 유실/접수 불명
+                    U->>U: 원 키·원 입력 유지·새 저장/복사 잠금
+                    U->>A: API-034 현재 READ+SAVE로 원 키 확인
+                    alt 원 성공 확인
+                        A-->>U: APPLIED + 원 DraftResult
+                    else 원 성공 미발견/타 주체
+                        A-->>U: UNKNOWN — 미실행 확정 아님
+                        U->>A: 선택 시 같은 원 API·키·전체 입력 재전송
+                    end
+                end
+          reading_order:
+            - "후보 저장·복사와 실제 운영 반영은 다른 명령이다. 미완성 값은 허용하지만 없는 참조·중복 구성·소유 이전은 거부한다"
+            - "기존 성공은 현재 권한·같은 주체/입력에서 재생하고 잠금 대기 뒤 다시 확인한다. 과거 성공의 editVersion/clientKey 매핑에 현재 검수 결과를 섞지 않는다"
+            - "전체 구성·배정 ID·필요 업무 의미/값 변경 근거·완전한 명령 결과를 함께 확정한다. 서버가 검수자/시각과 무효화 범위를 결정한다"
+            - "UNKNOWN/통신·커밋 불명에는 새 키를 만들지 않는다. 미반영이 확인된 명시 거부만 입력 보존 후 편집 복귀하며 수정한 새 의도에 새 키를 쓴다"
+          counterexamples:
+            - "clientKey를 다른 후보의 미배정 ID로 추정하거나 FROZEN 판의 자식만 수정하면 실패해야 한다"
+            - "현재 운영 포인터를 초안 저장으로 바꾸거나 이력/근거 실패 후 자식 일부만 남으면 실패해야 한다"
+        - key: source-and-handoff
+          title: "원천 관측·메타데이터 검수와 소유 변경 세트의 고정/반영 인계"
+          apis: [API-028, API-029, API-030, API-035]
+          testcases: [TC-00310, TC-00311, TC-00312, TC-00313, TC-00314]
+          transaction_boundary: "원천 확인/샘플과 getValidation은 운영 반영 TX가 아니다. 고정과 실제 반영은 FEAT-014/040 소유의 별도 짧은 TX이며 사람의 검토/승인 대기를 DB 잠금 안에 두지 않는다"
+          mermaid: |
+            sequenceDiagram
+                autonumber
+                participant U as 카탈로그 화면
+                participant A as admin 카탈로그 조회/검증
+                participant I as integration 원천 관측
+                participant K as 자산 변경 세트 소유
+                participant D as AI 전용 DB
+                U->>A: API-028/029 선정한 정확 객체/선택 판
+                A->>I: 현재 공개/권한 안의 정확 객체 구조 확인
+                alt 모호/부분/실패
+                    I-->>A: 상태·누락/실패 범위·관측 근거
+                    A-->>U: 확인 불가/차이 표시 — 자동 삭제·공개 없음
+                else 정확 사실 확인
+                    I-->>A: 구조 사실·코멘트 제안·관측 근거
+                    A-->>U: 검수 보조 자료 — 의미 검수 완료 아님
+                end
+                opt 별도 수동 샘플
+                    Note over U,I: 등록 컬럼 선택·현재 원본 권한·개인정보 제외·제약/상한 계약이 완성된 때만 활성화
+                    U->>A: API-030 검증 가능한 조건/선택 컬럼
+                    A->>I: 현재 정책/제약/행·시간 제한 검증 후 조회
+                    I-->>U: 허용 결과·시스템 조회 이력 참조 — 후보/근거에 원문 복제 금지
+                end
+                U->>A: API-035 선택 판/기대 편집 버전·세트 후보 집합 검증
+                A-->>U: 누락·참조·검수 결과 — 예약/접수/반영 허가 아님
+                alt 미완성 또는 소유 계약 대기
+                    U->>U: 초안 보완 — 현재 운영본 유지
+                else 인계 가능한 전체 후보
+                    U->>K: SCR-036의 소유 흐름으로 대상·기준/후보 판·사유 인계
+                    rect rgba(110, 150, 190, 0.10)
+                        Note over K,D: 소유 고정 TX — 실제 저장/복구 계약은 knowledge 후속
+                        K->>D: 전체 후보/참조 잠금·기대 편집 버전·구성 완전성 검사
+                        K->>D: 전체 고정 참조/지문 확정·FROZEN 또는 전체 실패
+                    end
+                    Note over K,D: 요청/기술 검토·승인 또는 설정 미사용 전결 — DB 잠금 밖의 소유 절차
+                    rect rgba(90, 160, 110, 0.10)
+                        Note over K,D: 별도 실제 반영 TX — 소유 G3 후 구현
+                        K->>D: 전체 기준/참조 최신성·현재 권한/정책·동일성 재검증
+                        alt 충돌/필수 검증 실패
+                            K->>D: ROLLBACK — 운영본 유지
+                        else 반영 검증 통과
+                            K->>D: 전체 포인터·효력·물리 이름·세트 결과 함께 COMMIT
+                        end
+                    end
+                    K-->>U: 실제 세트 결과 확인 — 초안 저장과 구분
+                end
+          reading_order:
+            - "관측과 검수, 샘플 실행, 후보 검증, 고정/승인·전결, 실제 반영을 분리한다. 구조 정상도 업무 의미/값 변경의 영향 검토를 면제하지 않는다"
+            - "샘플의 현재 권한/개인정보 제외·조건/상한이 미완성이면 기능을 활성화하지 않는다. 이 그림은 샘플 상한 숫자나 허용 공개 범위를 새로 정하지 않는다"
+            - "고정과 반영은 소유 기능의 전체 후보 집합을 사용한다. 현재 직접 정책이나 외부 DDL을 admin DB 잠금으로 동결한 것으로 간주하지 않는다"
+          pending: ["@defer P3 knowledge·access_policy·integration·agent — 그룹 후보·세트 원장/고정/복구·원천 관측/샘플 공개 계약과 실제 동시 실행 시험을 연결한다"]
+      pending: ["@defer P3 — 화면 상세 승인·소유 후속 계약·구체 DTO/오류 메시지·제품 DB/동시 요청 및 사용자 시험을 완료한다"]
     pending:
       - "@defer P3 — 입력 필드·원천 조회/샘플링 계약·미완성 표시·버전과 공개 범위 검증을 데이터/API/화면·시험으로 구체화한다. 기본값·컬럼 길이·인덱스를 별도 관리 범위로 추가하지 않는다"
 
@@ -58,6 +184,57 @@ usecases:
       - { id: E2, condition: "상대 객체의 현재 접근 권한 부족 또는 참조 버전 충돌", flow: ["관계 등록으로 권한을 부여하거나 참조 버전을 임의 선택하지 않는다. 관련 후보와 영향을 보완한다"] }
     postcondition: "검수 근거가 있는 관계 후보와 변경 요청이 연결되며 운영 사용은 실제 반영·현재 접근 통제를 따른다"
     rules_from: ["REQ-301.relationship_metadata", "REQ-306.catalog_boundary", "REQ-306.version_guard"]
+    sequence_design:
+      contracts_from: ["FEAT-011", "FEAT-003.composition_contract", "FEAT-003.set_public_contract", "FEAT-014.reference_validation", "ADR-030"]
+      shared_sequences: ["[공통 후보 저장](UC-007.md#draft-save)", "[고정·실제 반영 인계](UC-007.md#source-and-handoff)"]
+      scope: "SCR-003의 관계 관리측 선택·반대편 동일 정본 조회·자기조인과 복합 컬럼쌍을 전체 카탈로그 후보에 연결한다"
+      diagrams:
+        - key: managing-relation
+          title: "관리측 고정과 자기/세트/외부 판을 구분한 관계 후보"
+          apis: [API-024, API-027, API-036]
+          testcases: [TC-0111, TC-0112, TC-0113]
+          transaction_boundary: "관계/쌍은 관리 카탈로그 전체 후보의 저장 TX에 포함한다. 별도 관계 승인/부분 반영은 없고 실제 고정·반영은 UC-007의 소유 세트 인계를 따른다"
+          mermaid: |
+            sequenceDiagram
+                autonumber
+                participant U as 카탈로그 화면
+                participant A as admin 카탈로그 후보
+                participant D as AI 전용 DB
+                U->>A: API-027 선택 판에 관련된 관계 조회
+                A-->>U: 같은 관계 ID·관리 카탈로그·두 역할/방향·정확 참조 판
+                alt 반대편 화면에서 기존 관계 수정
+                    U->>A: 관리 카탈로그 후보 열기·현재 SAVE/소유 권한 확인
+                    A-->>U: 관리측 편집 문맥 또는 권한 거부
+                else 새 관계 작성
+                    U->>U: 양쪽 공개 카탈로그 중 관리측 명시 선택
+                    Note over U,A: 관리측은 생성 뒤 고정 — 1/N 방향·화면 진입과 별개
+                end
+                U->>A: API-036 현재 권한의 객체/컬럼/참조 판 후보 조회
+                A-->>U: 자기/같은 세트 후보·외부 유효본 참조 구분
+                alt 자기조인
+                    U->>U: 같은 소유 후보의 LEFT/RIGHT 두 역할·모든 방향 컬럼쌍 유지
+                else 서로 다른 공개 객체
+                    U->>U: 양쪽 정확 판/역할·관계 의미·전체 복합 컬럼쌍 검수
+                end
+                rect rgba(110, 150, 190, 0.10)
+                    Note over A,D: UC-007 draft-save의 관리측 전체 후보 TX
+                    U->>A: API-024 관리측 전체 구성·기대 편집 버전·원 키
+                    A->>D: 소유/종류·전체 쌍/참조·검수 근거 확인
+                    alt 존재하지 않는 비null 참조/잘못된 소유/중복/관리측 이전 시도
+                        A->>D: ROLLBACK
+                        A-->>U: 보완 사유 — 자동 판 치환/권한 부여 없음
+                    else 전체 초안 저장 가능
+                        Note over A,D: 쌍 0개/일부 완전 쌍은 누락 사유와 UNKNOWN 보존 — 검수 완료/운영 사용은 불가
+                        A->>D: 관계/쌍 포함 전체 후보·원 성공 COMMIT
+                        A-->>U: 후보 저장 결과 — 운영 반영은 소유 세트로 인계
+                    end
+                end
+          reading_order:
+            - "반대편 조회도 같은 안정 관계 ID를 사용한다. 기존 관계의 관리측을 바꾸거나 사본으로 편집하지 않는다"
+            - "자기조인은 같은 카탈로그/후보여도 두 업무 역할을 유지하며 LEFT/RIGHT 컬럼쌍을 합치지 않는다. 복합 쌍 일부만 검수하지 않는다"
+            - "관계 정의는 쌍 목록 0개나 일부 완전한 쌍과 누락 사유로 초안 보존한다. 한쪽 컬럼만 있는 불완전 쌍 행·없는 참조·소유 오류·중복·관리측 이전은 거부하고, 누락 상태를 검수 완료/권장 경로로 운영 제공하지 않는다"
+            - "참조 선택은 예약이 아니다. 같은 세트 후보/외부 현재 유효본과 실제 반영 직전 현재 권한을 다시 검증하며 무관한 자산에 업무 점유를 만들지 않는다"
+          counterexamples: ["1:N 중복 의미를 일괄 DISTINCT로 감추거나 관계가 불필요한 독립 컬럼에도 관계를 강제하면 실패해야 한다"]
     pending:
       - "@defer P3 — 관계·복합 컬럼 쌍·검수 근거의 저장과 방향/대응 수 표시, 참조 무효·집계 중복 반례를 설계한다"
 

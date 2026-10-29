@@ -78,7 +78,7 @@ entities:
       - {"name":"대상 식별자","physical_name":"TARGET_ID","description":"생성 결과 또는 변경한 기존 대상"}
       - {"name":"작업 종류","physical_name":"ACTION_CD","description":"CREATE/CHANGE/REFERENCE_CORRECTION/DELETE"}
       - {"name":"반영 버전","physical_name":"RESULT_VERSION","description":"성공한 새 관리 버전. 삭제도 마지막 버전+1"}
-      - {"name":"이력 식별자","physical_name":"HISTORY_ID","description":"신규는 없음이며 대상 종류의 이력으로 해석"}
+      - {"name":"이력 식별자","physical_name":"HISTORY_ID","description":"신규를 포함한 성공 명령이 생성한 대상 종류의 확정 후 이력으로 해석"}
       - {"name":"반영 시각","physical_name":"APPLIED_DTM","description":"성공 트랜잭션의 서버 시각"}
     relations:
       - {"entity":"ENT-001","cardinality":"시스템 명령이면 당시 대상 하나","description":"삭제 뒤 현재 행은 없어도 처리 결과는 남는다"}
@@ -99,7 +99,7 @@ entities:
         - {"name":"TARGET_ID","type":"bigint","nullable":false,"default":null}
         - {"name":"ACTION_CD","type":"character varying(30)","nullable":false,"default":null}
         - {"name":"RESULT_VERSION","type":"bigint","nullable":false,"default":null}
-        - {"name":"HISTORY_ID","type":"bigint","nullable":true,"default":null}
+        - {"name":"HISTORY_ID","type":"bigint","nullable":false,"default":null}
         - {"name":"APPLIED_DTM","type":"timestamp with time zone","nullable":false,"default":null}
       constraints:
         - {"name":"PK_ADM_ASSET_COMMAND","definition":"PRIMARY KEY (COMMAND_KEY)"}

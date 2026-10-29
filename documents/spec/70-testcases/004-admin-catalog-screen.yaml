@@ -1,0 +1,223 @@
+# 화면 사례의 기대 결과는 SCR-003 requirements.md §9가 정본이다. 제품 시험은 미실행이다.
+testcases:
+  - id: TC-0031
+    feature: "FEAT-003"
+    usecase: "UC-007"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "목록·현재/선택 판·과거 열람"
+    actor: "ACT-003"
+    given: "목록·현재/선택 판·과거 열람 / 판 이력·폐기 항목 재진입 / 상단 목록·하단 탭·숨김 열 엑셀"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-01·CAT-18·CAT-19와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-01","documents/screen/admin/hub/catalog/requirements.md#CAT-18","documents/screen/admin/hub/catalog/requirements.md#CAT-19"]
+    status: "planned"
+  - id: TC-0032
+    feature: "FEAT-003"
+    usecase: "UC-007"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "신규 미완성 초안 저장"
+    actor: "ACT-003"
+    given: "신규 미완성 초안 저장"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-02와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-02"]
+    status: "planned"
+  - id: TC-0033
+    feature: "FEAT-003"
+    usecase: "UC-007"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "전체 후보 구성 저장·고정 판 변경"
+    actor: "ACT-003"
+    given: "전체 후보 구성 저장·고정 판 변경 / 새 구성 clientKey와 자기 참조"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-03·CAT-08·CAT-24와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-03","documents/screen/admin/hub/catalog/requirements.md#CAT-08","documents/screen/admin/hub/catalog/requirements.md#CAT-24"]
+    status: "planned"
+  - id: TC-0034
+    feature: "FEAT-003"
+    usecase: "UC-007"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "같은 이전 EDIT_VERSION의 동시 편집"
+    actor: "ACT-003"
+    given: "같은 이전 EDIT_VERSION의 동시 편집"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-04와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-04"]
+    status: "planned"
+  - id: TC-0035
+    feature: "FEAT-003"
+    usecase: "UC-007"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "응답 유실·원 키 재전송·저장 일부 실패"
+    actor: "ACT-003"
+    given: "응답 유실·원 키 재전송·저장 일부 실패"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-05와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-05"]
+    status: "planned"
+  - id: TC-0036
+    feature: "FEAT-003"
+    usecase: "UC-007"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "정확 물리 식별·해당 없음·중복/profile 차이"
+    actor: "ACT-003"
+    given: "정확 물리 식별·해당 없음·중복/profile 차이"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-06와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-06"]
+    status: "planned"
+  - id: TC-0037
+    feature: "FEAT-003"
+    usecase: "UC-007"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "동일 객체/컬럼 이름 변경·삭제 재생성"
+    actor: "ACT-003"
+    given: "동일 객체/컬럼 이름 변경·삭제 재생성"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-07와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-07"]
+    status: "planned"
+  - id: TC-0038
+    feature: "FEAT-003"
+    usecase: "UC-007"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "미완성 값 도메인·CODE/INLINE 모드 전환"
+    actor: "ACT-003"
+    given: "미완성 값 도메인·CODE/INLINE 모드 전환"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-09와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-09"]
+    status: "planned"
+  - id: TC-0039
+    feature: "FEAT-003"
+    usecase: "UC-007"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "복합 식별키 일부 누락·기간 경계/단위 미확인"
+    actor: "ACT-003"
+    given: "복합 식별키 일부 누락·기간 경계/단위 미확인"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-10와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-10"]
+    status: "planned"
+  - id: TC-00310
+    feature: "FEAT-003"
+    usecase: "UC-007"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "검수 의도 VERIFIED와 근거/필수 참조 오류"
+    actor: "ACT-003"
+    given: "검수 의도 VERIFIED와 근거/필수 참조 오류"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-11와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-11"]
+    status: "planned"
+  - id: TC-00311
+    feature: "FEAT-003"
+    usecase: "UC-007"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "현재 정책·그룹 원천 조회 실패"
+    actor: "ACT-003"
+    given: "현재 정책·그룹 원천 조회 실패 / 그룹/정책/메타데이터·샘플/반출 권한 조합"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-12·CAT-17와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-12","documents/screen/admin/hub/catalog/requirements.md#CAT-17"]
+    status: "planned"
+  - id: TC-00312
+    feature: "FEAT-003"
+    usecase: "UC-007"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "구조 관측 PARTIAL/FAILED·원천 코멘트"
+    actor: "ACT-003"
+    given: "구조 관측 PARTIAL/FAILED·원천 코멘트 / 수동 샘플 상한/권한 미완성·개인정보/미등록 열"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-13·CAT-14와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-13","documents/screen/admin/hub/catalog/requirements.md#CAT-14"]
+    status: "planned"
+  - id: TC-00313
+    feature: "FEAT-003"
+    usecase: "UC-007"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "검증 결과 후 요청·전결·반영"
+    actor: "ACT-003"
+    given: "검증 결과 후 요청·전결·반영"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-15와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-15"]
+    status: "planned"
+  - id: TC-00314
+    feature: "FEAT-003"
+    usecase: "UC-014"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "의미 변경·구조 변화 없음·영향 조회 실패"
+    actor: "ACT-003"
+    given: "의미 변경·구조 변화 없음·영향 조회 실패"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-16와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-16"]
+    status: "planned"
+  - id: TC-0111
+    feature: "FEAT-011"
+    usecase: "UC-008"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "관계 관리측·반대편 조회/편집"
+    actor: "ACT-003"
+    given: "관계 관리측·반대편 조회/편집"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-20와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-20"]
+    status: "planned"
+  - id: TC-0112
+    feature: "FEAT-011"
+    usecase: "UC-008"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "자기조인 두 역할·복합 컬럼쌍"
+    actor: "ACT-003"
+    given: "자기조인 두 역할·복합 컬럼쌍 / 1:N 집계와 불명 관계"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-21·CAT-23·CAT-25와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-21","documents/screen/admin/hub/catalog/requirements.md#CAT-23","documents/screen/admin/hub/catalog/requirements.md#CAT-25"]
+    status: "planned"
+  - id: TC-0113
+    feature: "FEAT-011"
+    usecase: "UC-008"
+    screens: ["SCR-003"]
+    type: "business_exception"
+    title: "외부 판·같은 세트 후보와 현재 접근"
+    actor: "ACT-003"
+    given: "외부 판·같은 세트 후보와 현재 접근"
+    when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
+    then: "CAT-22와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-22"]
+    status: "planned"

@@ -2,7 +2,7 @@
 meta:
   status: in_progress
   baselined: null
-  workstreams: { system: reviewed }
+  workstreams: { system: reviewed, admin: in_progress }
   migration_fixture: "현재 31개 SYS_* 테이블의 스키마·행 수·PK 집합·핵심 값 해시와 99개 기존 API 응답을 전환 전 기준선으로 캡처한다"
   hard_rules: ["업무 규칙을 반대로 구현하면 관련 TC가 실패해야 한다", "구 경로 참조 0건과 신규 경로 단독 등록을 정적 검사한다", "DB 복제·이중 쓰기·적재 changeset 수정은 실패다"]
 
@@ -11,3 +11,5 @@ spec_set:
   parts:
     - 001-testcases.yaml
     - 002-auxiliary-fallback.yaml
+    - 003-admin-integration-assets.yaml
+    - 004-admin-catalog-screen.yaml

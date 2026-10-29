@@ -26,7 +26,162 @@ usecases:
       - { id: E3, condition: "배포 연결·사용처 조회 실패", flow: ["저장된 정의/참조와 확인 불가 상태를 구분한다. 필요한 검증을 완료하지 못한 변경은 거부하고 빈 목록으로 덮어쓰지 않는다"] }
     postcondition: "시스템 정의와 지정한 연결 참조·변경 근거가 남는다. 등록 초안·관리 저장 성공과 개별 API의 실제 호출 가능을 구분하며 시스템 등록만으로 API 호출 권한이 생기지 않는다"
     rules_from: ["REQ-604.business_rules", "REQ-604.approval_target", "REQ-604.lifecycle", "REQ-601.business_rules"]
-    pending: ["@defer P3 — 기본 연결 변경의 영향 조회·배포 적용 식별·참조 경합을 데이터/API/화면 계약으로 구체화한다"]
+    sequence_design:
+      contracts_from: ["FEAT-001.shared_write_contract", "FEAT-001.snapshot_contract", "FEAT-014.reference_validation", "ADR-033"]
+      scope: "대상 시스템 직접 저장/삭제와 데이터소스가 재사용하는 공통 원자성·결과 확인 흐름이다. 후보 승인 세트나 실제 업무 실행을 대신하지 않는다"
+      diagrams:
+        - key: save
+          title: "전체 구성 저장과 확정 후 이력의 동시 반영"
+          apis: [API-005, API-006, API-014, API-015]
+          testcases: [TC-0012, TC-0013, TC-0017, TC-0018, TC-00111, TC-0028, TC-00212]
+          transaction_boundary: "기존 부모 잠금·원 명령 재조회·기대 버전/참조 검증·ENT-019 결과와 현재값/집합·확정 후 이력 저장은 같은 READ COMMITTED 쓰기 트랜잭션이다. 원 성공 재생 경로도 잠금을 해제하고 트랜잭션을 끝낸 후 응답한다"
+          mermaid: |
+            sequenceDiagram
+                autonumber
+                participant U as 관리자 화면
+                participant S as admin 직접 변경
+                participant D as AI 전용 DB
+                U->>S: save/delete 원 키·전체 입력·기대 버전
+                S->>S: 현재 SAVE 권한·명령 형식·인증 주체/입력 지문
+                S->>D: 같은 명령 키의 성공 결과 확인
+                alt 동일 주체·기능·입력의 원 성공 있음
+                    D-->>S: 원 대상·버전·historyId·반영 시각
+                    S-->>U: 원 성공 결과 재생
+                else 원 성공 없음
+                    rect rgba(110, 150, 190, 0.10)
+                        Note over S,D: BEGIN READ COMMITTED — 아래 모든 실패는 전체 ROLLBACK
+                        opt 기존 대상 변경/삭제
+                            S->>D: 기존 부모 잠금 시도 — 부재만으로 즉시 404 금지
+                        end
+                        S->>D: 부모 잠금 뒤 같은 명령 결과 재조회
+                        alt 동일 원 명령 성공 확인
+                            D-->>S: 원 성공 결과 — 기대 버전보다 먼저 판정
+                            Note over S,D: 트랜잭션 종료·잠금 해제 후 원 결과 응답
+                        else 미반영 명령
+                            S->>S: 현재 권한·대상 존재·전체 입력·기대 버전 검사
+                            S->>D: 같은 부모 보호 아래 전체 현재 참조 검증
+                            alt 입력/버전/참조 충돌 또는 필수 검증 불가
+                                S->>D: ROLLBACK
+                                S-->>U: 계약의 400/403/404/409/503 — 입력 보존
+                            else 검증 통과
+                                S->>D: 신규 대상 ID/이력 ID 채번
+                                S->>S: 신규 v1/기존 v+1·서버 근거·최종 전체 구성 확정
+                                S->>D: ENT-019에 historyId 포함 완전한 성공 결과 INSERT
+                                S->>D: 현재값/집합과 확정 후 전체 스냅샷 함께 저장
+                                Note over S,D: 삭제는 현재값/집합 제거 + 마지막 구성·deleted=true 이력
+                                alt 결과·현재값·이력 모두 저장 성공
+                                    S->>D: COMMIT
+                                    D-->>S: 커밋 완료
+                                    S-->>U: AssetMutationResult — 성공 후 재조회
+                                else 명령 키 경합 또는 저장 실패
+                                    S->>D: ROLLBACK — 채번 공백 허용
+                                    Note over S,D: 키 경합은 종료 뒤 새 읽기로 원 성공 확인 — replay 그림 참조
+                                    S-->>U: 오류/확정 불가 — 커밋 전 성공 공개 금지
+                                end
+                            end
+                        end
+                    end
+                end
+          reading_order:
+            - "먼저 현재 권한과 명령 형식을 확인한다. 동일 키의 다른 입력은 commandConflict, 다른 주체의 변경 재전송은 403이며 원 결과를 노출하지 않는다"
+            - "기존 대상은 부모를 잠근 뒤 성공 결과를 재조회한다. 삭제로 부모가 없어도 이 확인을 마치기 전에 404나 낡은 버전 충돌로 종결하지 않는다"
+            - "새 명령만 현재 권한·기대 버전·전체 참조를 검증하고 최종 상태를 확정한다. 신규도 v1의 이력과 필수 historyId를 만든다"
+            - "성공 결과·현재값/집합·이력을 함께 커밋한 뒤 응답한다. 삭제는 마지막 구성과 삭제 표시를 남기며 다음 저장 의도와 구분한다"
+          counterexamples:
+            - "원 성공 재확인보다 기대 버전을 먼저 검사하면 재전송이 자기 변경의 새 버전과 충돌하므로 실패해야 한다"
+            - "이력 저장 실패 후 현재값만 남거나, 커밋 전에 성공을 보내거나, 같은 원 키로 두 번째 이력을 만들면 실패해야 한다"
+        - key: replay
+          title: "응답 유실·UNKNOWN·원 명령 재전송"
+          apis: [API-005, API-006, API-009, API-014, API-015, API-018]
+          testcases: [TC-0016, TC-0018, TC-0027, TC-0028]
+          transaction_boundary: "결과 확인은 현재 READ+SAVE를 검사하는 단순 읽기다. 원 명령 재전송은 save 그림의 별도 쓰기 트랜잭션을 사용한다. 명령 키 유일성 오류를 받은 쓰기 트랜잭션은 종료한 뒤 새 읽기를 시작한다"
+          mermaid: |
+            sequenceDiagram
+                autonumber
+                participant U as 관리자 화면
+                participant S as admin 직접 변경/결과 조회
+                participant D as AI 전용 DB
+                S--xU: save/delete 응답 유실 — 실제 커밋 여부 미확인
+                U->>U: 원 키·원 입력 유지, 편집/신규/행 전환 잠금
+                U->>S: getCommandResult 원 키
+                S->>S: 현재 READ+SAVE 검사 — 회수됐으면 403
+                S->>D: 현재 주체·기능/대상 종류에 묶인 성공 결과 읽기
+                alt 같은 주체/종류의 성공 결과 있음
+                    D-->>S: 원 성공 결과
+                    S-->>U: APPLIED + 원 대상·버전·historyId·appliedAt
+                    U->>U: 완료 표시·잠금 해제·현재값/이력 재조회
+                else 미발견 또는 다른 주체/종류의 키
+                    S-->>U: UNKNOWN — 존재/결과 비노출
+                    U->>U: 미실행으로 단정하지 않고 원 키 유지
+                    opt 같은 입력 재시도 선택
+                        U->>S: 같은 save/delete·원 키·원 입력·원 기대 버전
+                        rect rgba(110, 150, 190, 0.10)
+                            Note over S,D: save 그림의 독립 쓰기 TX — 부모 잠금 후 결과 재확인이 기대 버전보다 먼저
+                            S->>S: 원 성공 재생 또는 미반영 명령 검증/반영
+                        end
+                        alt 원 성공 확인 또는 이번 커밋 성공
+                            S-->>U: 동일 명령의 확정 성공 결과
+                        else 명령 키 유일성 경합으로 쓰기 실패
+                            S->>D: 실패 TX ROLLBACK 완료 후 새 읽기로 성공 확인
+                            Note over S,D: 같은 실패 TX에서 추가 SQL을 계속하지 않음
+                            S-->>U: 확인된 원 성공 또는 확정 불가 안내
+                        else 원 명령 미반영이 확정된 계약 거부
+                            S-->>U: 확정 거부 사유 — 입력 보존
+                            U->>U: 편집 복귀·수정한 새 저장 의도에 새 키
+                        else 통신/커밋 불명 또는 원 성공 여부 미확인
+                            S-->>U: 결과 불명 — 원 키·원 입력 유지, 새 키 금지
+                        end
+                    end
+                end
+          reading_order:
+            - "결과 조회에 쓰는 현재 권한과 키 소유를 구분한다. 현재 권한이 없으면 거부하고, 권한이 있는 다른 주체/종류의 키 조회는 UNKNOWN으로 존재를 숨긴다"
+            - "UNKNOWN은 진행 중·미접수·롤백을 구별할 근거가 없다는 뜻이다. 신규로 복제하거나 키/입력을 바꾸지 않는다"
+            - "원 키 재전송에서 원 성공을 먼저 재생한다. 명령 키 경합으로 실패한 TX에서는 조회하지 않고 종료 뒤 새 읽기로 확인한다"
+            - "재생 응답의 traceId는 이번 HTTP 요청 값이고 data.appliedAt·대상/버전/historyId는 원 성공 값이다. 대상이 삭제됐어도 원 성공은 재생할 수 있다"
+            - "원 명령의 미반영이 확인된 명시적 계약 거부만 편집으로 돌아가며 수정한 의도에 새 키를 만든다. 단순 HTTP 400/409 코드만으로 원 성공 없음이 증명되지는 않는다. 기존 키의 다른 입력 충돌/통신/커밋 불명은 원 결과 확인 경로를 유지한다"
+          counterexamples:
+            - "UNKNOWN을 미실행으로 보고 새 키를 만들거나 같은 키의 입력을 바꾸면 실패해야 한다"
+            - "현재 SAVE 회수 뒤 결과를 보여주거나 다른 주체의 키 존재를 APPLIED로 노출하면 실패해야 한다"
+            - "미반영이 확정된 거부까지 원 키로만 반복하게 하거나, 반대로 코드만 보고 결과 불명 명령에 새 키를 발급하면 실패해야 한다"
+        - key: reference-race
+          title: "허용 연결 제거·삭제와 API/신원 참조 추가 경합"
+          apis: [API-005, API-006]
+          testcases: [TC-0014]
+          transaction_boundary: "직접 변경과 실제 참조 추가/교체는 각자의 트랜잭션에서 같은 대상 시스템 부모를 잠그고 커밋/롤백까지 유지한다. 여러 부모는 대상 종류+숫자 ID 순으로 잠근다"
+          mermaid: |
+            sequenceDiagram
+                autonumber
+                participant M as 대상 시스템 직접 변경
+                participant W as API/신원 참조 반영
+                participant D as AI 전용 DB
+                Note over M,D: M은 save 그림의 현재 권한·원 성공 재확인·기대 버전 검사를 따른다
+                rect rgba(90, 160, 110, 0.10)
+                    Note over M,D: 두 요청은 독립 TX이며 같은 부모 잠금에 참여
+                    alt 제거 대상 연결 또는 삭제 대상 시스템을 쓰는 참조가 먼저 잠금 획득
+                        W->>D: 대상 시스템 부모 잠금
+                        W->>D: 현재 대상·허용/기본 연결 검증 후 참조 반영
+                        M->>D: 같은 부모 잠금 대기
+                        W->>D: COMMIT — 부모 잠금 해제
+                        D-->>M: 부모 잠금 획득
+                        M->>D: 최신 전체 참조 검증 — 제거/삭제에 영향받는 사용처 확인
+                        M->>D: ROLLBACK
+                        M-->>M: 409 referenceConflict — 참조 제거/삭제 반영 없음
+                    else 제거/삭제가 먼저 잠금 획득
+                        M->>D: 대상 시스템 부모 잠금·현재 참조 검증
+                        W->>D: 같은 부모 잠금 대기
+                        M->>D: 결과·현재값/허용 집합·확정 후 이력 COMMIT
+                        D-->>W: 잠금 획득 또는 부모 부재 확인
+                        W->>D: 현재 대상/연결 재검증
+                        W->>D: 참조 무효면 ROLLBACK — 끊어진 참조 쓰기 금지
+                    end
+                end
+          reading_order:
+            - "화면의 사용처 페이지가 비어 있어도 서버는 전체 참조를 확인한다. 필수 참조 조회 실패는 미사용 판정이 아니라 반영 거부다"
+            - "제거 대상 연결 또는 삭제 대상 시스템을 쓰는 참조가 먼저 끝나면 제거/삭제를 거부한다. 반대 순서면 무효해진 참조 쓰기를 거부한다. A/B 중 B 제거와 A 참조 추가처럼 무관한 조합은 현재 검증을 통과하면 둘 다 성공할 수 있다"
+            - "실제 API/신원 쓰기 경로 모두가 같은 부모 보호에 참여해야 한다. 단순 목록/상세 조회는 이 쓰기 잠금에 참여시키지 않는다"
+          pending: ["@defer P3 integration_assets·access_policy — API/신원 참조의 실제 모든 쓰기 경로와 같은 부모 보호를 대조한 뒤 DB 동시 실행 시험으로 검증한다"]
+      pending: ["@defer P3 — integration 배포 관측·access_policy 참조 쓰기·audit_trace 보존/늦은 키 차단의 소유 계약과 실제 시험을 연결한다. 그림 존재만으로 경합 안전/구현 완료를 선언하지 않는다"]
+    pending: ["@defer P3 — 시퀀스의 소유 후속 계약과 구현 슬라이스 착수 조건·구체 응답/오류 MSG를 연결하고 전체 화면 상세 승인을 받는다"]
 
   - id: UC-016
     name: "데이터소스의 배포 연결 참조와 공개 객체 사용 조건을 관리한다"
@@ -53,7 +208,108 @@ usecases:
       - { id: E4, condition: "배포 연결 목록 조회 실패", flow: ["기존 정의·참조를 유지하고 연결 상태 확인 불가를 표시한다. 실제 끊김과 구분하며 필요한 검증을 완료하지 못한 참조 변경은 반영하지 않는다"] }
     postcondition: "안정된 Hub 참조와 실제 배포 연결 상태가 구분된다. 데이터소스 등록이 객체 접근 권한을 대신하지 않는다"
     rules_from: ["REQ-603.business_rules", "REQ-603.exceptions", "REQ-301.data", "AUTHZ-010"]
-    pending: ["@defer P3 — 전체 물리 식별·배포 참조 조회·정정·연결 상실의 응답과 DBMS별 계약 시험을 설계한다"]
+    sequence_design:
+      contracts_from: ["FEAT-001.shared_write_contract", "FEAT-002.connection_key_validation", "FEAT-002.alias_contract", "FEAT-002.parser_contract", "FEAT-002.timezone_contract", "FEAT-002.group_contract", "FEAT-002.correction_contract", "FEAT-002.snapshot_contract", "ADR-033"]
+      shared_sequences: ["[전체 저장과 원자성](UC-015.md#save)", "[응답 유실과 원 키 재전송](UC-015.md#replay)"]
+      scope: "공통 저장/재전송을 복제하지 않고 데이터소스의 정확 연결 검증·명시 정정과 적용 그룹 축소/삭제의 분기를 구체화한다"
+      diagrams:
+        - key: validation-correction
+          title: "로드 연결 검증·별칭/시간대 확인과 안정 ID를 유지하는 정정"
+          apis: [API-014]
+          testcases: [TC-0022, TC-0023, TC-0024, TC-0025, TC-00210, TC-00212]
+          transaction_boundary: "공통 save의 원 성공 재확인 뒤 새 명령의 필수 검증 단계다. 현재 권한·기대 버전·부모/참조 보호 및 결과/현재값/이력 원자성은 같은 공통 쓰기 TX를 따른다. 외부 관측은 관측 근거이며 영구 유효성을 보증하지 않는다"
+          mermaid: |
+            sequenceDiagram
+                autonumber
+                participant U as 데이터소스 화면
+                participant S as admin 데이터소스 직접 변경
+                participant I as integration 연결 관측
+                participant D as AI 전용 DB
+                U->>S: API-014 원 키·전체 값·기대 버전·사유
+                S->>S: 공통 save — 현재 권한/형식·같은 원 성공 확인
+                alt 동일 원 명령이 이미 성공
+                    S-->>U: 원 성공 결과 — 외부 검증으로 재생을 막지 않음
+                else 미반영 명령
+                    rect rgba(110, 150, 190, 0.10)
+                        Note over S,D: 공통 save TX — 부모 잠금·명령 재확인·현재 권한/버전 검사 뒤 필수 검증
+                        S->>S: 별칭 정규화·길이·필드/집합 중복 검사
+                        S->>I: 현재 로드된 정확 connectionId 검증
+                        alt 연결 부재/미지원 입력 또는 필수 관측 실패
+                            I-->>S: MISSING/미지원 또는 UNAVAILABLE
+                            S->>D: ROLLBACK
+                            S-->>U: 부재/무효는 400, 검증 장애는 503 — 입력/기존값 유지
+                        else 정확 연결과 지원 근거 확인
+                            I-->>S: PRESENT·적용 식별/시점·DBMS/파서 지원 근거
+                            S->>S: 지정 파서 호환성·null 또는 Timezones.isKnown 검사
+                            S->>S: 적용 그룹 유효성·하위 참조 보호 검사
+                            alt 기존 connectionId 변경
+                                S->>S: 비밀 없는 동일 대상 확인 근거 필수 검사
+                                Note over S,D: Hub ID·하위 카탈로그 연결 유지 — 자동 이름/호스트 추정 금지
+                            else 연결 ID 유지 또는 신규
+                                Note over S,D: 불필요한 정정 근거를 새로 만들지 않음
+                            end
+                            S->>D: 공통 save — 성공 결과·현재값/그룹·확정 후 이력 저장
+                            alt 모든 검증/저장·별칭 유일성 통과
+                                S->>D: COMMIT
+                                S-->>U: 확정 성공 — 원 대상/새 버전/historyId
+                            else 필드/정정/참조/별칭 충돌 또는 저장 실패
+                                S->>D: ROLLBACK — 부분 성공 없음
+                                S-->>U: 계약 오류·입력 보존
+                            end
+                        end
+                    end
+                end
+          reading_order:
+            - "이미 성공한 원 명령은 현재 권한과 주체/입력을 확인해 재생한다. 지금 연결이 없어졌다는 이유로 과거 성공 재생을 새 검증 실패로 바꾸지 않는다"
+            - "새 저장에서 yml 표시명이 아니라 현재 로드된 정확 connectionId를 검사한다. 별칭은 서버 정규화·DB 유일성으로 판정하고 대소문자 표시를 보존한다"
+            - "파서/시간대 미지정은 기존 초안 계약대로 허용한다. 지정값 오류를 null로 바꾸거나 임의 시간대를 선택하지 않는다"
+            - "기존 connectionId가 바뀌면 동일 연결 대상 확인 근거를 요구하고 Hub ID/하위 참조를 유지한다. 그룹 10→8은 8개 전체가 확정 후 이력에 저장된다"
+            - "필수 검증 실패는 저장 전에 중단하며 DB 유일성·현재값·이력 저장 실패도 전체 롤백한다. 원 성공 재확인과 commit은 UC-015 save를 따른다"
+          counterexamples:
+            - "yml 파일에만 있고 아직 로드되지 않은 연결을 저장하거나 기존 ID를 새 데이터소스 ID로 교체하면 실패해야 한다"
+            - "별칭 비교를 단순 소문자 변환으로 바꾸거나 시간대를 임의 기본값으로 채우면 TC-0023/00210의 반례가 실패해야 한다"
+          pending: ["@defer P3 integration·access_policy — 정확 연결 관측/실제 조회 환경과 그룹 원천 식별·지원/과거 표시 계약을 대조한다"]
+        - key: group-reference-race
+          title: "적용 가능 그룹 10→8·데이터소스 삭제와 하위 참조 추가 경합"
+          apis: [API-014, API-015]
+          testcases: [TC-0026, TC-0028, TC-0029, TC-00212]
+          transaction_boundary: "그룹 축소/삭제와 하위 카탈로그·그룹/신원 매핑 쓰기는 독립 TX에서 같은 데이터소스 부모를 잠그고 최종 검증·반영까지 유지한다. 여러 부모는 공통 잠금 순서를 따른다"
+          mermaid: |
+            sequenceDiagram
+                autonumber
+                participant M as 데이터소스 직접 변경
+                participant R as 하위 카탈로그/그룹/신원 참조 반영
+                participant D as AI 전용 DB
+                Note over M,D: M은 공통 save의 현재 권한·원 성공 재확인·기대 버전 검사를 따른다
+                rect rgba(90, 160, 110, 0.10)
+                    Note over M,D: 각 요청은 같은 데이터소스 부모 잠금에 참여하는 독립 TX
+                    alt 제거 대상 그룹의 하위 참조 쓰기가 먼저 잠금 획득
+                        R->>D: 데이터소스 부모 잠금
+                        R->>D: 현재 그룹/대상 검증·하위 참조 반영
+                        M->>D: 같은 부모 잠금 대기
+                        R->>D: COMMIT
+                        D-->>M: 부모 잠금 획득
+                        M->>D: 전체 참조 재검증 — 제거 대상 그룹 사용 중
+                        M->>D: ROLLBACK
+                        M-->>M: referenceConflict — 기존 10개 집합 유지
+                    else 그룹 축소/삭제가 먼저 잠금 획득
+                        M->>D: 데이터소스 부모 잠금·전체 현재 참조 검증
+                        R->>D: 같은 부모 잠금 대기
+                        M->>D: 8개 전체 집합 + 결과/확정 후 이력 COMMIT
+                        Note over M,D: 삭제는 현재 행/집합 제거 + 마지막 구성·deleted=true 이력/결과 보존
+                        D-->>R: 부모 잠금 획득 또는 부모 부재 확인
+                        R->>D: 현재 데이터소스·남은 그룹/참조 재검증
+                        R->>D: 제거 그룹/삭제 대상 참조는 ROLLBACK
+                    end
+                end
+          reading_order:
+            - "적용 가능 그룹의 집합 편집은 이 화면의 변경이다. 그룹 정의·하위 접근 매핑은 소유 기능에서 편집하되 쓰기 시 이 부모 보호에 참여한다"
+            - "그룹 축소가 허용되면 8개 결과 전체를 현재 집합과 같은 버전의 이력에 저장한다. 하위 참조가 먼저 생기면 10개를 유지한 채 거부한다"
+            - "삭제도 전체 참조 검증 후 공통 원자성으로 처리하며 이후 이력은 현재 부모와 조인하지 않고 원 ID로 읽는다"
+            - "다른 자산에서 사용처나 그룹 이름만 바뀌고 데이터소스 구성이 그대로면 그 자산의 이력으로 관리한다. 적용 가능 그룹을 런타임 권한 게이트로 추가하지 않는다"
+          pending: ["@defer P3 access_policy·integration_assets — 하위 매핑의 실제 전체 쓰기 경로와 그룹 삭제/안정 식별 FK 계약을 대조하고 양방향 동시 실행을 시험한다"]
+      pending: ["@defer P3 — 그룹 후보/정의·배포 연결 환경·이력/결과 보존은 소유 후속을 유지한다. 그림만으로 이 의존성을 해소하지 않는다"]
+    pending: ["@defer P3 — 시퀀스의 소유 후속 계약과 구현 슬라이스 착수 조건·구체 응답/오류 MSG를 연결하고 전체 화면 상세 승인을 받는다. DBMS별 전체 물리 객체 식별/조회 시험은 카탈로그·integration 소유에서 설계한다"]
 
   - id: UC-017
     name: "모델 공급 경로와 역할별 유효 모델 조합을 관리한다"

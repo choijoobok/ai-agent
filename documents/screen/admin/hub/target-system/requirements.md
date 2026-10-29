@@ -1,0 +1,308 @@
+# 요건 정의서 — 대상 시스템
+
+## 개요
+
+- **무엇을 하는 화면인가**: 업무 API를 제공하는 시스템의 정의·허용 연결·기본 연결을 직접 관리한다.
+- **프로세스상 위치**: (선행) 운영 배포에 API 연결 정의 → **이 화면** → (후행) 업무 API에서 제공 시스템과 연결 방식 선택.
+- **이 데이터를 누가 쓰나**: 업무 API 관리·신원 매핑·agent 실행. 관리 저장 성공과 실제 호출 가능 여부는 구분한다.
+- **바꾸면 어디가 흔들리나**: 기본 연결 사용 API, 특정 연결 사용 API, 신원 매핑. 사용처의 현재 참조를 끊는 변경은 서버에서 거부한다.
+
+> 신규 설계 초안이다. 화면·서버·메시지·메뉴 시드는 아직 구현되지 않았다. 기능 계약은 [FEAT-001](../../../../spec/31-features/002-admin.yaml), 저장/관측 계약은 [FEAT-001 공개 계약](../../../../spec/50-api/003-admin-integration-contracts.yaml)이 정본이다.
+
+## 0. 메타
+
+| 항목 | 값 |
+|---|---|
+| 화면 / 기능 / 유즈케이스 | SCR-001 / FEAT-001 / UC-015·UC-001·UC-002·UC-006 |
+| 페이지 경로 | `/admin/hub/target-system` — 설계 경로 |
+| 메뉴코드 / 상위 메뉴 | `HUB_TARGET_SYSTEM` / `HUB_INTEGRATION` — 설계값 |
+| 프론트 폴더 | `sources/frontend/src/modules/admin/features/targetsystem/` — 예정 |
+| 백엔드 패키지 | `sources/backend/modules/admin/src/main/java/com/aiagent/admin/` — 예정 |
+| 화면 유형 | 마스터-디테일(상하) · 상단 편집 그리드/하단 탭 |
+| 처리 유형 | CRUD — 선택한 한 시스템의 전체 구성 저장 |
+| 쓰는 액션 | `R`=READ · `S`=SAVE · `E`=EXPORT · `EXPORT_YN=Y` |
+| 페이징 | 목록·연결 후보·사용처·이력 offset |
+| 문서 상태 | 초안 — 사용자 화면 검토 전, 구현 승인 아님 |
+
+## 1. 화면 구성
+
+```text
+[조회조건 / 조회·신규·저장·삭제]
+[대상 시스템 — 1:1 현재값 편집 그리드, 전체 폭]
+[상하 스플리터]
+[허용 연결·연결 관측·사용처·변경 이력]
+[선택한 탭의 그리드 — 전체 폭]
+```
+
+- 목록 진입 시 자동 조회하며 행은 자동 선택하지 않는다. 상단에는 1:1 현재값을 모아 셀 편집한다. 별도 기본정보 편집 폼은 없다.
+- 하단에는 허용 연결·연결 관측·사용처·변경 이력를 둔다. 장문 현재값은 그리드 컬럼과 공통 장문 셀 편집/뷰어로 다룬다.
+- 중요한 열을 기본 표시하고 드문 열은 그리드 설정에서 켠다. 엑셀은 표시된 열과 순서를 따르며 숨긴 열까지 자동 포함하지 않는다.
+- 저장·삭제 시 사유, 연결 참조 정정 시 동일 대상 근거는 명령 파라미터 창에서 입력한다. 기존 관리값을 수정하는 별도 폼을 만들지 않는다.
+
+### 1-1. 마스터-디테일 연동
+
+- 상단 id로 상세를 읽어 전체 구성·version을 확보한 뒤 한 행을 편집한다. 하단 집합과 상단 셀을 하나의 편집본에 모으고 한 자산 전체를 저장한다. 여러 행 일괄 저장으로 계약을 바꾸지 않는다.
+- 미저장 변경 중 행 전환·재조회·이탈은 MSG.ADMIN_ASSET_DISCARD_CONFIRM으로 확인한다. 탭 이동은 입력을 유지한다. 저장/결과 불명 중 편집·신규·행 전환·삭제를 잠그고 원 키 확인/재시도만 제공한다.
+- 변경 이력은 탭 진입/상위 행 선택 때 원 id로 자동 조회하며 최신순이다. 탭 안 조회조건·조회 버튼·하단 상세 폼은 없다. 페이지 이동도 같은 대상·정렬을 유지한다.
+- 삭제 성공 시 마지막 선택 id와 삭제된 대상임을 유지해 해당 이력 탭을 자동 표시한다. 새 대상 선택 때만 이력 문맥을 바꾼다. 서버의 삭제 후 선택 id 문맥의 이력 자동 조회 계약은 유지한다.
+- 후보/관측 실패로 저장된 참조를 삭제하지 않는다. 전체 구성을 읽지 못했으면 저장하지 않으며, 읽기 실패 시 이전 대상 값이 새 대상처럼 남지 않는다.
+
+- 재진입 링크는 /admin/hub/target-system?tab=history&historyTargetId={원ID}다. 감사/사용처 등에서 원 ID를 전달받으면 현재 행 없이 READ 권한·양의 ID 형식을 검사해 API-007의 id로 조회한다. 현재 행이 없으면 상단 현재값을 비우고 과거 대상 ID를 명시한다. URL은 권한 근거가 아니며 미저장 변경 확인을 유지한다.
+
+### 1-2. 목업 상태
+
+| 그림 키 | 상태 | 상세 영역 | 안내 | 허용 버튼 | 편집 | 예시 변경 | 셀 편집 |
+|---|---|---|---|---|---|---|---|
+| main | 기본정보 편집 | 허용 연결 | 관리 정의 저장과 실제 호출 가능 여부는 별도입니다. | 조회·신규·저장·삭제·편집 취소·엑셀 다운로드 | 가능 | 없음 | 없음 |
+| connections | 허용 연결 선택 | 허용 연결 | 기본 연결은 허용 연결 중 하나입니다. 비밀정보는 표시하지 않습니다. | 조회·연결 후보 조회·저장·편집 취소·엑셀 다운로드 | 가능 | 없음 | 없음 |
+| references | 사용처 조회 | 사용처 | 현재 권한으로 볼 수 있는 사용처입니다. 목록이 비어도 삭제 가능을 보장하지 않습니다. | 조회·사용처 새로고침·엑셀 다운로드 | 잠금 | 없음 | 없음 |
+| history | 확정된 상태 스냅샷 조회 | 변경 이력 | 선택 대상의 변경 이력을 최신순으로 표시합니다. 반영 후 구성도 그리드 컬럼으로 확인합니다. | 조회·엑셀 다운로드 | 잠금 | 없음 | 없음 |
+| empty | 목록 없음 | 없음 | 등록된 대상이 없습니다. 신규로 등록할 수 있습니다. | 조회·신규·엑셀 다운로드 | 잠금 | 없음 | 없음 |
+| readonly | 조회·반출 권한, 저장 없음 | 허용 연결 | 읽기 전용입니다. | 조회·엑셀 다운로드 | 잠금 | 없음 | 없음 |
+| unavailable | 연결 확인 불가 | 허용 연결 | 현재 연결 정보를 확인할 수 없습니다. 저장된 연결 참조는 유지됩니다. | 조회·연결 후보 조회·편집 취소·엑셀 다운로드 | 잠금 | 현재 로드 상태=확인 불가 | 없음 |
+| invalid | 입력 검증 거부 | 허용 연결 | 시스템명을 확인하세요. 입력 내용은 유지됩니다. | 조회·저장·편집 취소·엑셀 다운로드 | 가능 | 시스템명= | 시스템명 |
+| conflict | 버전 충돌 | 허용 연결 | 다른 관리자가 변경했습니다. 입력을 확인한 뒤 최신 내용을 다시 조회하세요. | 최신 상세 조회 | 잠금 | 없음 | 없음 |
+| unknown | 저장 결과 확인 중 | 허용 연결 | 저장 여부를 아직 확인하지 못했습니다. 같은 작업의 결과를 확인하세요. | 결과 확인·같은 입력 재시도 | 잠금 | 없음 | 없음 |
+| denied | 조회 권한 없음 | 없음 | 이 화면을 조회할 권한이 없습니다. | 없음 | 잠금 | 없음 | 없음 |
+| saving | 저장 중 | 허용 연결 | 저장 결과를 기다리고 있습니다. 편집과 새 작업은 잠깁니다. | 없음 | 잠금 | 없음 | 없음 |
+| no-export | 반출 권한 없음 | 허용 연결 | 조회는 가능하며 엑셀 다운로드 권한이 없습니다. | 조회 | 잠금 | 없음 | 없음 |
+| observation | 연결 관측 확인 | 연결 관측 | 로드 정의와 확인 시점입니다. 실제 접속/호출 성공과 구분합니다. | 조회·엑셀 다운로드 | 잠금 | 없음 | 없음 |
+
+## 2. 조회조건
+
+| 조건 | 대상 컬럼 | 필드명 | 입력방식 | 연산 | 필수 | 기본값 | 선택 출처 | 라벨 키 |
+|---|---|---|---|---|---|---|---|---|
+| 시스템명 | `SYSTEM_NM` | `systemName` | 텍스트 | contains | 선택 | 없음 | 직접 입력 | `MSG.ADMIN_TARGET_NAME` |
+| 관리 사용 상태 | `USE_YN` | `useYn` | 셀렉트 | eq | 선택 | 전체 | 상수 Y=사용·N=미사용 | `MSG.ADMIN_TARGET_USE` |
+
+- 연결 후보 검색은 keyword·기존 assetId, 사용처는 선택 id를 전달한다. 이력 요청은 선택 id와 페이지뿐이며 별도 기간·작업 필터는 없다.
+- 연결 관측 상태를 목록 필터로 추가하지 않는다. 목록 계약에 없는 값이며 선택한 대상의 상세에서 확인한다.
+
+## 3. 조회 — 테이블과 범위
+
+### 3-1. 사용 테이블 · 결합
+
+| 테이블 | 역할 | 결합 기준 |
+|---|---|---|
+| `AI_ADMIN_TARGET_SYSTEM` | 현재 관리 정의 ENT-001 | `TARGET_SYSTEM_ID` |
+| `AI_ADMIN_TARGET_SYSTEM_CONN` | 허용 연결 ENT-017 | 같은 `TARGET_SYSTEM_ID` |
+| `AI_ADMIN_TARGET_SYSTEM_HISTORY` | 반영 후 구성 ENT-003 | 원 `TARGET_SYSTEM_ID`, 현재 행이 없어도 조회 |
+| `AI_ADMIN_ASSET_COMMAND` | 원 작업 성공 결과 ENT-019 | 서버가 현재 주체·대상 종류·`COMMAND_KEY` 확인 |
+
+- 연결 관측과 사용처는 공개 계약을 통해 조회한다. 배포 정의·사용처 원본을 관리 테이블에 복제하지 않는다.
+
+### 3-2. 고정 조건 · 기본 정렬
+
+- 현재 메뉴 READ 권한과 사용처별 공개 범위를 적용한다. 시스템별 사용자 그룹 조건은 없다.
+- 목록 기본 정렬 `systemName ASC, id ASC`; 허용 정렬은 `systemName/id/modifiedAt`. 이력 기본 정렬 `appliedAt DESC, historyId DESC`.
+- 페이지 크기·상한은 공통 SearchRequest 계약을 따른다. 한 페이지 결과로 전체 참조 유무를 판단하지 않는다.
+
+## 4. 컬럼
+
+- 행 식별자 id와 관리 version은 내부 봉투다. 상단 API 목록이 모든 1:1 현재값을 내려주며 상세를 누르지 않아도 내보낼 열을 구성할 수 있다.
+- 감사 4컬럼은 공통 규약이다. 최종 변경 시각만 기본 표시한다. '선택 표시'는 설정에서 켤 수 있는 초기 숨김이며 영구 hidden이 아니다.
+
+### 4-1. 표시 · 입력 항목
+
+#### 대상 시스템 목록
+
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 시스템명 | `MSG.ADMIN_TARGET_NAME` | `SYSTEM_NM` | `systemName` | 텍스트 | 140/좌 | 필수 | 가능 | 직접 입력 | 1~100자, 이름 중복 금지 규칙 없음 | — | 영업 시스템 | — | 표시 |
+| 관리 사용 상태 | `MSG.ADMIN_TARGET_USE` | `USE_YN` | `useYn` | 셀렉트 | 140/좌 | 필수 | 가능 | Y=사용·N=미사용 | 비활성화 시 참조 검사 | — | 사용 | — | 표시 |
+| 기본 연결 | `MSG.ADMIN_TARGET_DEFAULT_CONNECTION` | `DEFAULT_CONNECTION_ID` | `defaultConnectionId` | 선택 | 140/좌 | 선택 | 가능 | 현재 편집본의 허용 연결 집합 | null 또는 허용 집합 소속 | — | sales-api | — | 표시 |
+| 설명 | `MSG.ADMIN_ASSET_DESCRIPTION` | `DESCRIPTION` | `description` | 장문 셀 | 180/좌 | 선택 | 가능 | 직접 입력 | 비밀정보 제외 | — | 주문 처리 API 제공 | — | 표시 |
+| 최종 변경 시각 | 공통 | `MOD_DTM` | `modifiedAt` | 일시 | 160/좌 | 필수 | 읽기전용 | 서버 | — | — | 2026-10-29 10:20 | — | 표시 |
+| 최종 변경 사유 | `MSG.ADMIN_ASSET_LAST_REASON` | `CHANGE_REASON` | `lastChangeReason` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 운영 설정 변경 | — | 선택 표시 |
+
+- 기본 연결은 하단 허용 연결 집합에서 선택한다. 허용 집합 밖의 값은 저장하지 않는다.
+
+#### 허용 연결 — 그리드
+
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 허용 연결 | `MSG.ADMIN_TARGET_ALLOWED_CONNECTIONS` | `CONNECTION_ID` | `values.allowedConnectionIds[]` | 선택 | 160/좌 | 선택 | 가능 | API-003 후보 | 중복 금지, 정확 ID, 100자 초과 선택 불가 | — | sales-api | — | 표시 |
+| 현재 로드 상태 | `MSG.ADMIN_ASSET_OBSERVATION` | 저장 안 함 | `ConnectionObservation` | 텍스트 | 130/좌 | — | 읽기전용 | 정확 ID 관측 | PRESENT/MISSING/UNAVAILABLE 구분 | — | 로드 확인 | — | 표시 |
+
+#### 연결 관측 — 그리드
+
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 연결 식별자 | `MSG.ADMIN_ASSET_OBS_CONNECTION` | `저장 안 함` | `connectionId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | sales-api | — | 표시 |
+| 현재 로드 상태 | `MSG.ADMIN_ASSET_OBSERVATION` | `저장 안 함` | `ConnectionObservation` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 로드 확인 | — | 표시 |
+| 관측 시각 | `MSG.ADMIN_ASSET_OBS_TIME` | `저장 안 함` | `observedAt` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2026-10-29 10:21 | — | 표시 |
+| 관측 노드 | `MSG.ADMIN_ASSET_OBS_NODE` | `저장 안 함` | `nodeId/bootId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 현재 노드 | — | 표시 |
+| 적용 설정 | `MSG.ADMIN_ASSET_OBS_SETTINGS` | `저장 안 함` | `appliedSettingsId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 현재 적용 설정 | — | 표시 |
+
+- PRESENT는 로드 정의 존재이며 접속/실행 성공이 아니다. MISSING/UNAVAILABLE를 구분하고 후보 페이지에 없는 것으로 정확 ID 부재를 단정하지 않는다. 관측은 저장값·미래 실행 허가가 아니다.
+
+#### 사용처 — 그리드
+
+- API·신원 등 다른 소유 화면이 만든 현재 참조를 읽는다. 이 탭에서 참조를 설정하지 않으며 대상 시스템 자체를 바꾸지 않은 외부 참조 변경은 원 소유 자산의 이력으로 관리한다.
+
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 사용 대상 | `MSG.ADMIN_ASSET_REFERENCE` | 공개 계약 | `AssetReferencePage`의 종류·안정 ID | 텍스트 | 180/좌 | — | 읽기전용 | API-004 | 숨겨진 참조 세부정보 미노출 | — | 업무 API / 201 | — | 표시 |
+| 연결 선택 방식 | `MSG.ADMIN_TARGET_CONNECTION_MODE` | 공개 계약 | `AssetReferencePage`의 기본/특정 방식 | 텍스트 | 120/좌 | — | 읽기전용 | API-004 | 기본/특정 구분 | — | 기본 연결 사용 | — | 표시 |
+
+#### 변경 이력 — 그리드
+
+- ADR-033: 각 행은 해당 명령이 확정한 반영 후 전체 상태다. 생성도 버전 1부터 기록하며 삭제는 마지막 구성과 deleted=true를 보존한다.
+
+| 컬럼 | 라벨 키 | DB 컬럼 | 필드명 | 입력방식 | 폭/정렬 | 필수 | 편집 | 선택 출처 | 검증 | 합계 | 예시 | 후보 예시 | 기본 표시 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 변경 순서 | `MSG.ADMIN_ASSET_CHANGE_SEQ` | `CHANGE_SEQ` | `changeSeq` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2 | — | 표시 |
+| 작업 | `MSG.ADMIN_ASSET_ACTION` | `ACTION_CD` | `action` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 변경 | — | 표시 |
+| 처리자 | `MSG.ADMIN_ASSET_ACTOR` | `ACTOR_ID` | `actorId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | admin01 | — | 표시 |
+| 처리 시각 | `MSG.ADMIN_ASSET_APPLIED_AT` | `APPLIED_DTM` | `appliedAt` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2026-10-29 10:20 | — | 표시 |
+| 변경 사유 | `MSG.ADMIN_ASSET_REASON` | `CHANGE_REASON` | `reason` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 기본 연결 변경 | — | 표시 |
+| 반영 관리 버전 | `MSG.ADMIN_ASSET_RESULT_VERSION` | `RESULT_VERSION` | `appliedVersion` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 2 | — | 표시 |
+| 원 대상 ID | `MSG.ADMIN_ASSET_ORIGINAL_ID` | `TARGET_SYSTEM_ID` | `id` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 201 | — | 선택 표시 |
+| 이력 ID | `MSG.ADMIN_ASSET_HISTORY_ID` | `HISTORY_ID` | `historyId` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 501 | — | 선택 표시 |
+| 스냅샷 판 | `MSG.ADMIN_ASSET_SNAPSHOT_VERSION` | `SNAPSHOT_VERSION` | `snapshotVersion` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 1 | — | 선택 표시 |
+| 작업 식별자 | `MSG.ADMIN_ASSET_COMMAND_KEY` | `COMMAND_KEY` | `commandKey` | 텍스트 | 140/좌 | — | 읽기전용 | 서버 | — | — | 11111111-1111-4111-8111-111111111111 | — | 선택 표시 |
+| 반영 후 시스템명 | `MSG.ADMIN_TARGET_SNAPSHOT_NAME` | `SNAPSHOT` | `snapshot`의 systemName | 텍스트 | 전체/좌 | 필수 | 읽기전용 | API-007 | 현재값 대체 금지 | — | 영업 시스템 | — | 선택 표시 |
+| 반영 후 설명 | `MSG.ADMIN_ASSET_SNAPSHOT_DESCRIPTION` | `SNAPSHOT` | `snapshot`의 description | 장문 뷰어 | 전체/좌 | 선택 | 읽기전용 | API-007 | 당시 값 | — | 주문 API 연동 | — | 선택 표시 |
+| 반영 후 사용 상태 | `MSG.ADMIN_TARGET_SNAPSHOT_USE` | `SNAPSHOT` | `snapshot`의 useYn | 텍스트 | 전체/좌 | 필수 | 읽기전용 | API-007 | 당시 값 | — | 사용 | — | 선택 표시 |
+| 반영 후 허용 연결 전체 | `MSG.ADMIN_TARGET_SNAPSHOT_CONNECTIONS` | `SNAPSHOT` | `snapshot`의 allowedConnectionIds | 장문 뷰어 | 전체/좌 | 필수 | 읽기전용 | API-007 | 전체 집합 | — | sales-api | — | 선택 표시 |
+| 반영 후 기본 연결 | `MSG.ADMIN_TARGET_SNAPSHOT_DEFAULT` | `SNAPSHOT` | `snapshot`의 defaultConnectionId | 텍스트 | 전체/좌 | 선택 | 읽기전용 | API-007 | 미지정 구분 | — | sales-api | — | 선택 표시 |
+| 전체 스냅샷 | `MSG.ADMIN_ASSET_SNAPSHOT` | `SNAPSHOT` | `snapshot` | 스냅샷 뷰어 | 140/좌 | — | 읽기전용 | 서버 | — | — | {"id":"201","managementVersion":"2","deleted":false,"systemName":"영업 시스템","description":"주문 API 제공","useYn":"Y","allowedConnectionIds":["sales-api"],"defaultConnectionId":"sales-api","regId":"admin01","regDtm":"2026-10-29T01:00:00Z","modId":"admin01","modDtm":"2026-10-29T01:20:00Z","changeReason":"기본 연결 변경","commandKey":"11111111-1111-4111-8111-111111111111"} | — | 표시 |
+
+- 각 행은 이번 처리 근거와 반영 후 전체 구성을 가진다. 삭제 행의 구성은 마지막 설정이며 현재 유효 설정이 아니다. SNAPSHOT v1의 항목을 개별 컬럼으로 표시하고 전체 스냅샷 보기 링크를 한 번 클릭하면 읽기 전용 모달에서 항목명/값·배열 목록으로 읽고 JSON 원문은 별도로 펼친다. ‘JSON 원문 보기’는 실제 내용이 있는 원문 문자열에만 표시한다. 원문 없음과 파싱 실패/미지원 형식의 구분은 [공통 표시 계약](../../../../spec/50-api/003-admin-integration-contracts.yaml)의 `FEAT-001.shared_write_contract.snapshot_presentation`을 따른다. 미지원 스냅샷 판은 재현 불가와 존재하는 원문을 유지하며 현재값으로 채우지 않는다.
+- 별도 조회조건·상세 조회 요청·하단 상세 폼은 없다. 그리드 설정/셀 뷰어는 사용할 수 있다.
+
+- DB 저장: SNAPSHOT은 PostgreSQL TEXT(JPA NCLOB)이며 JSON 전체 원문을 보존한다. 그룹명 나열용 VARCHAR는 두지 않고 안정 ID를 배열로 저장한다. 모달/그리드 표시 축약이나 로그 잘림 정책으로 DB 스냅샷을 자르지 않는다.
+- 모달은 현재 그룹명을 과거 이름으로 합성하지 않는다. 당시 이름의 확인 근거가 없으면 저장된 ID를 표시한다. 닫기만 제공하며 편집/저장 기능이 없다.
+
+### 4-2. 편집 가능 판단 — 조건부
+
+- READ·SAVE가 있고 선택한 한 자산의 전체 구성/버전을 읽었을 때만 상단과 편집 가능한 하단 집합을 편집한다. READ만 있으면 모두 읽기 전용이다. 관측·사용처·이력은 언제나 읽기 전용이다.
+- 연결 없는 신규 등록을 허용한다. 사용 중 참조를 끊는 비활성화/연결 축소/삭제는 서버가 거부한다.
+
+### 4-3. 값 변경 후 연쇄 · 재계산
+
+- 기본 연결을 허용 집합에서 제거하면 기본값도 미지정임을 편집본에 표시한다. 저장 직전 참조 검사를 생략하지 않는다.
+
+### 4-4. 팝업 · 모달 선택 결과 매핑
+
+- 장문 셀 편집은 해당 행의 description만 바꾼다. 저장/삭제 명령 모달의 reason은 새 명령 사유이며 lastChangeReason을 자동 재사용하지 않는다.
+
+### 4-5. 행 추가 기본값
+
+- id/expectedVersion=null, useYn=Y, allowedConnectionIds=[], defaultConnectionId/description=null. 시스템명·명령 사유는 비운다.
+
+### 4-6. 비노출 저장 컬럼
+
+- id/expectedVersion/commandKey를 원 명령 봉투로 보내고 전체 values는 상단 현재값·하단 집합에서 구성한다. 주체·처리 시각·aliasKey·관측·이력 결과는 서버 근거이며 편집 입력이 아니다.
+
+## 5. 버튼 · 액션
+
+| 버튼 | 출처 | 라벨 키 | 액션 | 활성 조건 | 동작 | 확인 문구 키 |
+|---|---|---|---|---|---|---|
+| 조회 | 자동 | 공통 | READ | 조회 가능 | 목록 재조회, 이력 탭 안에는 없음 | — |
+| 신규 | 선언 | 공통 | SAVE | READ·SAVE, 처리 중 아님 | 신규 편집본 | 미저장 변경 시 `MSG.ADMIN_ASSET_DISCARD_CONFIRM` |
+| 저장 | 선언 | 공통 | SAVE | 유효 변경 있음 | 현재 한 건 전체 저장 | — |
+| 삭제 | 선언 | 공통 | SAVE | 기존 대상, 처리 중 아님 | 사유 입력 후 서버 참조 검사/삭제 | `MSG.ADMIN_ASSET_DELETE_CONFIRM` |
+| 편집 취소 | 선언 | `MSG.ADMIN_ASSET_CANCEL_EDIT` | READ | 미저장 변경 있음 | 마지막 상세로 되돌림 | `MSG.ADMIN_ASSET_DISCARD_CONFIRM` |
+| 연결 후보 조회 | 선언 | `MSG.ADMIN_ASSET_CONNECTION_REFRESH` | READ | 연결 탭 | 후보/관측 재조회, 편집값 유지 | — |
+| 사용처 새로고침 | 선언 | `MSG.ADMIN_ASSET_REFERENCES_REFRESH` | READ | 기존 대상 | 권한 있는 사용처 | — |
+| 최신 상세 조회 | 선언 | `MSG.ADMIN_ASSET_RELOAD` | READ | 버전 충돌 | 입력 폐기 확인 후 최신 상세 | `MSG.ADMIN_ASSET_DISCARD_CONFIRM` |
+| 결과 확인 | 선언 | `MSG.ADMIN_ASSET_CHECK_RESULT` | READ+SAVE | 원 명령 결과 불명 | API-009, APPLIED만 완료 처리 | — |
+| 같은 입력 재시도 | 선언 | `MSG.ADMIN_ASSET_RETRY_SAME` | SAVE | 원 명령 결과 불명 | 원 키·원 입력으로 같은 save/delete 재전송 | — |
+| 엑셀 다운로드 | 자동 | 공통 | EXPORT | READ·EXPORT, 저장/결과 불명 아님 | 각 그리드의 표시 열/순서, 현재 페이지·전체 | — |
+
+- 저장은 선택한 자산 전체 구성 명령이다. 그리드의 기본 엑셀 다운로드(현재 페이지/전체)는 상·하단 그리드에 제공하며 READ·EXPORT 권한과 실제 표시 열/순서를 적용한다. 엑셀 업로드는 미사용이다. 저장 중/결과 불명 중 반출 버튼도 비활성화한다.
+
+
+## 6. 규칙 — 저장 · 실행
+
+### 6-1. 검증
+
+| # | 시점 | 위치 | 검사 | 위반 시 메시지 |
+|---|---|---|---|---|
+| 1 | 저장/삭제 | 화면+서버 | 필수·상태·기본 연결의 집합 소속·사유 | `MsgKey.ADMIN_ASSET_INVALID_INPUT` |
+| 2 | 참조 변경 | 서버 | 현재 연결·권한 있는 검증 근거, 사용 중인 참조 보호 | `MsgKey.ADMIN_ASSET_REFERENCE_CONFLICT` / `ADMIN_ASSET_DEPENDENCY_UNAVAILABLE` |
+| 3 | 기존 저장/삭제 | 서버 | 기대 버전, 같은 키의 주체/입력 일치 | `MsgKey.ADMIN_ASSET_VERSION_CONFLICT` / `ADMIN_ASSET_COMMAND_CONFLICT` |
+
+- 검증 오류는 입력을 유지한다. 충돌은 자동 병합하지 않는다. 실패한 사용처 조회를 미사용으로 해석하지 않는다. 참조 보호의 잠금/원자성/재수신은 FEAT-001.shared_write_contract를 참조한다.
+
+### 6-2. 영향 테이블
+
+| 트리거 | 테이블 | 작업 | 조건 · 내용 |
+|---|---|---|---|
+| 신규/변경 | ENT-001·017 | INSERT/UPDATE·집합 교체 | 한 시스템 전체 구성 |
+| 신규/변경/삭제 | ENT-003 | INSERT | 반영 후 전체 구성과 처리 근거 |
+| 성공한 명령 | ENT-019 | INSERT | 동일 키 재수신은 기존 결과 |
+| 허용 삭제 | ENT-001·017 | DELETE | 현재값/자식만 삭제, 이력/결과 유지 |
+
+- 새 연결·풀·배포·세션을 만들거나 갱신하지 않는다. 이력/현재값/명령 결과는 함께 성공하거나 롤백한다.
+
+### 6-3. 상태 전이
+
+- `USE_YN`은 Y↔N이며 비활성화에도 참조 보호를 적용한다. 연결 PRESENT/MISSING/UNAVAILABLE는 읽기 전용 관측이다.
+- 편집 → 저장 중 → 성공이면 재조회; 응답 유실/접수 판단 불가이면 결과 불명. UNKNOWN은 미실행이 아니다. APPLIED 확인 전 새 키 발급·새 저장 의도·성공 표시를 금지한다. 400/409처럼 명시적으로 거부된 명령은 안내 후 편집으로 돌아간다.
+
+## 7. API
+
+정본은 [API-001~009](../../../../spec/50-api/004-admin-integration-apis.yaml). 아래 경로는 프론트 선언용으로 `/api`를 제외한다. 모두 POST다.
+
+| 용도 / API | endpoints.ts 키 | 경로 | 액션 | 전달값 → 결과 매핑 |
+|---|---|---|---|---|
+| 목록 API-001 | getList | `/service/admin/targetSystem/getList` | READ | §2 SearchRequest → 목록 |
+| 상세 API-002 | getOne | `/service/admin/targetSystem/getOne` | READ | id → values/version·관측 |
+| 연결 API-003 | getConnectionCandidates | `/service/admin/targetSystem/getConnectionCandidates` | READ | keyword/assetId → 선택 후보 |
+| 사용처 API-004 | getReferences | `/service/admin/targetSystem/getReferences` | READ | id → 권한 있는 사용처 |
+| 저장 API-005 | save | `/service/admin/targetSystem/save` | SAVE | 전체 values·봉투·reason → 반영 결과 |
+| 삭제 API-006 | delete | `/service/admin/targetSystem/delete` | SAVE | id/expectedVersion/commandKey/reason → 반영 결과 |
+| 이력 API-007 | getHistory | `/service/admin/targetSystem/getHistory` | READ | 선택 id·page → 스냅샷 포함 이력 그리드 |
+| 결과 API-009 | getCommandResult | `/service/admin/targetSystem/getCommandResult` | READ+SAVE | 원 commandKey → APPLIED/UNKNOWN |
+
+## 8. 시드 · 데이터 전제
+
+- 메뉴: HUB_TARGET_SYSTEM, 상위 HUB_INTEGRATION, 위 경로, EXPORT_YN=Y(export: true)로 설계한다. 제품 시드는 구현 시 생성한다.
+- 코드: Y/N·연결 관측 상태는 계약 상수다. 새로운 운영 공통코드 그룹은 없다.
+- `MSG.ADMIN_TARGET_*`와 `MSG.ADMIN_ASSET_*`는 이 문서에서 제안한 미등록 키다. 필드 라벨은 표의 한글, 버튼 라벨은 §5, 확인 문구는 “저장하지 않은 변경을 버리시겠습니까?”·“참조 검사 후 삭제합니다. 계속하시겠습니까?”다. 상태 안내는 §1-2의 문구를 사용한다.
+- 서버 오류 키는 공개 계약의 `err.admin.asset.invalidInput/versionConflict/commandConflict/referenceConflict/dependencyUnavailable`에 각각 §6-1의 MsgKey를 연결할 계획이다. 인증·권한·미발견은 기존 공통 문구를 사용한다. 새 메시지 값/생성 시드는 구현 단계에서 반영한다.
+- `SYS_CONFIG` 신규 키 없음. 연결 후보는 현재 로드된 정의만 사용한다.
+
+## 9. 테스트 케이스
+
+화면 사례가 조작·표시의 정본이고 [전역 시험](../../../../spec/70-testcases/003-admin-integration-assets.yaml)은 검증 수단을 갖는다. 모두 설계이며 실행 결과가 아니다.
+
+| # | 조작 · 상황 | 기대 | 전역 시험 / 수단 |
+|---|---|---|---|
+| TS-01 | 진입·목록 조회·행 선택 | 자동 목록 조회 후 선택한 행의 상세만 표시, 큰 ID 문자열 보존 | TC-0011 / E2E |
+| TS-02 | 연결 없는 시스템 신규 등록 | 빈 허용 집합·기본 미지정 저장, 최초 등록의 확정 후 버전 1 이력 생성 | TC-0012 / 통합 |
+| TS-03 | 기본 연결이 허용 집합 밖이거나 중복 연결 입력 | 저장 거부·입력 유지 **(되면 안 되는 것)** | TC-0013 / 단위·통합 |
+| TS-04 | 허용 연결·기본값 변경 | 전체 구성과 사유 반영, 해당 버전의 확정 후 구성과 직전 버전 이력 각각 조회 가능 | TC-0012 / 통합 |
+| TS-05 | 사용 중 연결 제거·참조 중 삭제 | 거부하며 권한 밖 사용처 세부정보 미노출 **(되면 안 되는 것)** | TC-0014 / 통합·E2E |
+| TS-06 | 후보 페이지에 기존 연결 없음 / 정확 조회 MISSING / 전체 조회 실패 | 각각 미판정·참조 없음·확인 불가로 구분, 저장 참조 자동 삭제 없음 | TC-0015 / 계약·E2E |
+| TS-07 | 목록만 읽을 수 있는 사용자·작업 중 권한 회수 | 변경 기능 및 서버 요청 차단, 결과 조회에도 현재 SAVE 검사 | TC-0016 / E2E·통합 |
+| TS-08 | 두 편집본이 같은 버전 저장 | 하나만 반영, 다른 입력 유지·자동 덮어쓰기 없음 | TC-0017 / 통합 |
+| TS-09 | 저장 응답 유실 후 UNKNOWN·원 키 재시도 | 새 ID/버전/이력 중복 없음, UNKNOWN에서 새 키 발급 없음 | TC-0018 / 통합·E2E |
+| TS-10 | 이력 저장 실패 | 현재값/자식/성공 결과도 롤백 **(되면 안 되는 것)** | TC-0018 / 통합 |
+| TS-11 | 삭제 후 즉시·재진입 링크로 원 ID 이력 조회 | 현재 행 없이 과거 구성 유지, 다른 대상 historyId 요청 거부 | TC-0019 / 통합·E2E |
+| TS-12 | 미지원 스냅샷 / 비밀값 포함 입력 | 재현 불가 표시 / 거부·원문 반사 금지 | TC-0019 / 계약·E2E |
+| TS-13 | 미저장 편집 중 행 이동 / 결과 불명 중 신규 | 취소 시 입력 유지 / 신규 차단 | TC-0011 / E2E |
+| TS-14 | 연결 제거/삭제와 API 참조 추가 동시 실행 | 어느 순서든 끊어진 유효 참조 없음; 화면 결과와 실제 반영 일치 | TC-0014 / 통합 |
+
+| TS-15 | 상단 현재값 편집·하단 탭 이동 | 1:1 값은 상단 그리드에 있고 한 편집본 유지, 좌우 분할/기본정보 폼 없음 | TC-00110 / E2E |
+| TS-16 | EXPORT 권한 유무·표시 열·현재 페이지/전체 내려받기 | 권한 없으면 차단, 숨김 열 자동 추가 없이 표시 열/순서·범위 준수 | TC-00110 / 통합·E2E |
+| TS-17 | 선택/이력 탭 진입·이력 페이지 이동 | 최신순 자동 조회, 조회조건·하단 상세 폼 없이 선택 이력의 확정 후 구성 전체를 컬럼/셀 뷰어로 확인 | TC-00110 / 계약·E2E |
+
+| TS-18 | 신규·변경·삭제 버전의 전체 스냅샷 보기·원문 유무 | 버전 1부터 확정 상태 보존, 삭제는 마지막 구성+삭제 표시, 읽기 전용 속성/값 모달. 원문 없으면 원문 보기 숨김, 원문 있으면 파싱 실패/미지원 형식에도 확인 가능 | TC-00111 / 계약·통합·E2E |
+
+## 10. 미결 · 확인 필요
+
+- @defer P3 integration — 현재 연결 관측의 실제 생산 계약과 실행 시 동일 연결 보장. 정본 FEAT-001.integration_public_contract·ARCH-028의 pending을 따른다. 목업의 관측값은 예시다.
+- @defer P3 access_policy — 신원 매핑을 포함한 모든 참조 쓰기 경로의 공통 잠금 참여·민감 사용처 공개 필드 확정. FEAT-005·FEAT-004의 소유 계약과 대조한다.
+- @defer P3 audit_trace — 반영 후 구성/명령 결과 보존과 늦은 재수신 차단. FEAT-033 소유이며 이 화면에서 파기를 활성화하지 않는다.
+- @defer G3 — 공개 계약의 서술형 사용처/관측 응답을 구현 DTO 필드와 일대일 대응시키고 메시지 등록·화면 검토를 완료한다. 상세 엔드포인트를 구현 완료로 간주하지 않는다.
+
+## 11. 변경 이력
+
+| 일자 | 변경 | 커밋 |
+|---|---|---|
+| 2026-10-29 | 사용자 결정: 상단 편집 그리드·하단 탭, 기본 엑셀, 이력 자동 최신순·전체 컬럼 | — |
+| 2026-10-29 | ADR-033 반영 후 확정 스냅샷·TEXT 저장·구조화된 스냅샷 모달 | — |
+| 2026-10-29 | 최초 화면 요건·상태·전역 시험 연결 | — |
