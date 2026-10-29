@@ -230,6 +230,8 @@ function screenModel(md, type) {
     addRowTabs: (composition?.body.match(/^행 추가 탭:\s*(.+)$/m)?.[1] ?? '').split('·').map(s=>s.trim()),
     rowExamples: findTable(composition, /^그리드 예시$/),
     popups: findTable(composition, /^선택창$/),
+    commandFields: findTable(composition, /^명령 입력창$/),
+    figureNavigation: findTable(composition, /^목업 이동$/),
     surfaces,
     overview: plain(section(md,/개요/)?.body.split('\n').find(l=>l.includes('무엇을 하는 화면'))??''),
     searchTable: search,

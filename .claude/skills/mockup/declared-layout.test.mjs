@@ -3,12 +3,42 @@ import { test } from 'node:test';
 import { declaredFigures, declaredScreen } from './declared-layout.mjs';
 
 const plain = (x) => String(x ?? '').replace(/`|\*/g, '').trim();
+
+test('상태별 명시 비활성은 편집 가능한 초안과 조회 이름에도 우선한다',()=>{
+  const table={header:[...stateTable([]).header,'비활성 버튼'],rows:[['draft','초안','상세','','저장·코드 결과 조회','가능','없음','저장·코드 결과 조회']]};
+  const [figure]=declaredFigures(table,plain);
+  const fixture={...model,actions:[...model.actions,['코드 결과 조회','','','','','코드 실행']]};
+  const html=render(figure,fixture);
+  assert.match(html, /<button[^>]*disabled[^>]*>저장<\/button>/);
+  assert.match(html, /<button[^>]*disabled[^>]*>코드 결과 조회<\/button>/);
+  assert.doesNotMatch(render({...figure,disabledButtons:[]},fixture),/<button[^>]*disabled[^>]*>저장<\/button>/);
+});
+
 const stateTable = (rows) => ({ header: ['그림 키','상태','상세 영역','안내','허용 버튼','편집','예시 변경'], rows });
 const columns = (heading, rows) => ({ heading, header: ['컬럼','입력방식','편집','검증','예시'], rows });
 const model = {
   columns: [columns('목록', [['이름','텍스트','읽기전용','','목록 예시']]), columns('상세 — 폼', [['상세값','텍스트','가능','필수','기존 값']])],
   actions: [['조회','','','','','목록 조회'],['저장','','','','','전체 저장']], search: [],
 };
+
+test('조회 표시명을 통일해도 원천 비교 명령과 내부 동작을 합치지 않는다', () => {
+  const actionTable={header:['버튼','동작','표시명'],rows:[['불일치 새로고침','저장 목록 조회','조회'],['원천 구조 비교','새 관측 실행','원천 구조 비교']]};
+  const fixture={...model,actions:actionTable.rows,actionTables:[actionTable],figureNavigation:{rows:[['원천 구조 비교','comparison']]}};
+  const [figure]=declaredFigures(stateTable([['main','기본','상세','','불일치 새로고침·원천 구조 비교','가능','없음']]),plain);
+  const html=render(figure,fixture);
+  assert.match(html, />조회<\/button>/);
+  assert.doesNotMatch(html, />불일치 새로고침<\/button>/);
+  assert.match(html, /data-open-figure="comparison">원천 구조 비교<\/button>/);
+});
+
+test('READ 새로고침은 조회 전용 비교 그리드에서도 조회로 활성화된다', () => {
+  const actionTable={header:['버튼','액션','표시명'],rows:[['불일치 새로고침','READ','조회']]};
+  const fixture={...model,columns:[model.columns[0],columns('상세',[['값','텍스트','읽기전용','','예시']])],actions:actionTable.rows,actionTables:[actionTable],surfaces:[{name:'상세',buttons:['불일치 새로고침'],disabled:[]}]};
+  const [figure]=declaredFigures(stateTable([['comparison','비교','상세','','','잠금','없음']]),plain);
+  const html=render(figure,fixture);
+  assert.match(html, />조회<\/button>/);
+  assert.doesNotMatch(html, /disabled[^>]*>조회<\/button>/);
+});
 function render(figure, fixture = model) {
   return declaredScreen('검증 화면', fixture, figure, {
     plain, searchControl: () => '', manualKey: false,

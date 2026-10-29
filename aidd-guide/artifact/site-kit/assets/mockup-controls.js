@@ -1,5 +1,70 @@
 /** 정본에서 생성한 목업의 탐색·선택 시연. 서버 저장이나 권한 판정을 수행하지 않는다. */
 function bindDeclaredMockup(root) {
+  // 상세 설명 한 곳을 재사용한다. 문서와 ShadowRoot 모두 같은 탐색/툴팁 동작을 쓴다.
+  const doc = root.ownerDocument || root;
+  const tip = doc.createElement('div');
+  tip.className = 'annotation-tooltip';
+  tip.id = 'annotation-tooltip';
+  tip.setAttribute('role', 'tooltip');
+  tip.setAttribute('popover', 'manual');
+  tip.hidden = true;
+  (root.body || root).append(tip);
+  let tipBadge = null, dismissTimer;
+  const hideTip = () => {
+    clearTimeout(dismissTimer);
+    tipBadge?.removeAttribute('aria-describedby');
+    tipBadge = null;
+    if (tip.matches(':popover-open')) tip.hidePopover();
+    tip.hidden = true;
+  };
+  const showTip = badge => {
+    clearTimeout(dismissTimer);
+    if (badge === tipBadge) return;
+    const source = root.getElementById(`note-${badge.dataset.note}`)?.querySelector('div');
+    if (!source) return;
+    hideTip();
+    const content = source.cloneNode(true);
+    // 툴팁은 설명 전용이다. 링크 조작은 원래 상세 설명에서 수행한다.
+    content.querySelectorAll('[id]').forEach(e => e.removeAttribute('id'));
+    content.querySelectorAll('a').forEach(a => a.replaceWith(doc.createTextNode(a.textContent)));
+    const tipHost = badge.closest('dialog') || root.body || root;
+    if (tip.parentNode !== tipHost) tipHost.append(tip);
+    tip.replaceChildren(content);
+    tipBadge = badge;
+    badge.setAttribute('aria-describedby', tip.id);
+    tip.hidden = false;
+    if (tip.showPopover) tip.showPopover();
+    const anchor = badge.getBoundingClientRect(), gap = 8, margin = 12;
+    const width = doc.documentElement.clientWidth, height = doc.documentElement.clientHeight;
+    tip.style.left = `${Math.max(margin, Math.min(anchor.left, width - tip.offsetWidth - margin))}px`;
+    const below = height - anchor.bottom - gap - margin, above = anchor.top - gap - margin;
+    const downward = below >= Math.min(tip.scrollHeight, height * .65) || below >= above;
+    tip.style.maxHeight = `${Math.max(40, Math.min(height * .65, downward ? below : above))}px`;
+    tip.style.top = `${Math.max(margin, downward ? anchor.bottom + gap : anchor.top - tip.offsetHeight - gap)}px`;
+  };
+  const scheduleDismiss = () => {
+    clearTimeout(dismissTimer);
+    dismissTimer = setTimeout(() => {
+      if (!tip.matches(':hover') && !tipBadge?.matches(':hover') && root.activeElement !== tipBadge) hideTip();
+    }, 150);
+  };
+  root.addEventListener('pointerover', event => {
+    const badge = event.target.closest('[data-note]');
+    if (badge) showTip(badge);
+    else if (tip.contains(event.target)) clearTimeout(dismissTimer);
+  });
+  root.addEventListener('pointerout', event => {
+    if (event.target.closest('[data-note]') || tip.contains(event.target)) scheduleDismiss();
+  });
+  root.addEventListener('focusin', event => {
+    const badge = event.target.closest('[data-note]');
+    if (badge) showTip(badge);
+  });
+  root.addEventListener('focusout', scheduleDismiss);
+  doc.addEventListener('keydown', event => { if (event.key === 'Escape' && tipBadge) { event.preventDefault(); hideTip(); } });
+  root.addEventListener('scroll', event => { if (!tip.contains(event.target)) hideTip(); }, true);
+  if (root.host) doc.addEventListener('scroll', hideTip, true);
+  doc.defaultView.addEventListener('resize', hideTip);
   const reveal = destination => {
     for(let p=destination.parentElement;p;p=p.parentElement)if(p.matches('details'))p.open=true;
     destination.setAttribute('tabindex','-1');
@@ -32,7 +97,28 @@ function bindDeclaredMockup(root) {
   root.addEventListener('click', event => {
     const target = event.target;
     const badge=target.closest('[data-note]');
-    if(badge){const destination=root.getElementById(`note-${badge.dataset.note}`);if(destination){event.preventDefault();event.stopPropagation();reveal(destination);}return;}
+    if(badge){hideTip();const destination=root.getElementById(`note-${badge.dataset.note}`);if(destination){event.preventDefault();event.stopPropagation();badge.closest('dialog')?.close();reveal(destination);}return;}
+    const figureLink = target.closest('[data-open-figure]');
+    if(figureLink){hideTip();const destination=root.getElementById(figureLink.dataset.openFigure);if(destination)reveal(destination);return;}
+    const command = target.closest('[data-open-command]');
+    if (command) {
+      hideTip();
+      const dialog=[...command.closest('.screen').querySelectorAll('[data-command]')].find(d=>d.dataset.command===command.dataset.openCommand);
+      dialog?.showModal(); return;
+    }
+    if (target.closest('[data-close-command]')) { hideTip(); target.closest('dialog').close(); return; }
+    if (target.closest('[data-add-command-target]')) {
+      const group=target.closest('form').querySelector('[data-command-targets]');
+      const row=group.firstElementChild.cloneNode(true);
+      row.querySelectorAll('select').forEach(e=>e.selectedIndex=0);
+      group.append(row);
+      group.querySelectorAll('[data-remove-command-target]').forEach(e=>e.disabled=false); return;
+    }
+    if (target.closest('[data-remove-command-target]')) {
+      const row=target.closest('[data-command-target]'), group=row.parentElement;
+      if(group.children.length>1)row.remove();
+      if(group.children.length===1)group.querySelector('[data-remove-command-target]').disabled=true; return;
+    }
     const localLink = target.closest('a[href^="#"]');
     if (localLink) {
       let key;
@@ -90,6 +176,14 @@ function bindDeclaredMockup(root) {
       editor.querySelector('summary').textContent = (values.join(' / ') || '미지정') + ' ✎';
       editor.open = false;
     }
+  });
+  root.addEventListener('submit', event => {
+    if (!event.target.matches('[data-command-form]')) return;
+    event.preventDefault();
+    event.target.querySelector('[data-command-result]').textContent='목업 입력 확인 완료 — 서버로 접수하거나 카탈로그를 변경하지 않았습니다.';
+  });
+  root.querySelectorAll('[data-command-targets]').forEach(group=>{
+    if(group.children.length===1)group.querySelector('[data-remove-command-target]').disabled=true;
   });
   root.addEventListener('keydown', event=>{
     if((event.key==='Enter'||event.key===' ')&&event.target.matches('[data-note]')){event.preventDefault();event.target.click();}

@@ -21,7 +21,7 @@ export function columnExplanation(table,row){
   ])}${!tableCell(table,row,'검증')?'<p><a href="#shared-rules">공통 검증·실행 규칙 보기</a></p>':''}`;
 }
 export function actionExplanation(table,row,scope='화면'){
-  return `<b>${escapeHtml(scope)} › ${escapeHtml(plain(row[0]))} 버튼</b>${facts([
+  return `<b>${escapeHtml(scope)} › ${escapeHtml(tableCell(table,row,'표시명')||plain(row[0]))} 버튼</b>${facts([
     ['하는 일',tableCell(table,row,'동작','무엇','비고')],
     ['사용 조건',tableCell(table,row,'활성 조건','사용 조건')],
     ['필요 권한',tableCell(table,row,'권한','액션')],
@@ -45,7 +45,7 @@ export function annotationBook(){
       if(!note){note={id:`item-${notes.length+1}`,number:notes.length+1,description};notes.push(note);byKey.set(key,note);}
       return `<span class="n anchor" data-note="${note.id}" role="link" tabindex="0" aria-label="설명 ${note.number} 보기">${note.number}</span>`;
     },
-    render(){return `<section class="annotation-catalog" id="element-descriptions" data-annotation-catalog><h2>화면 요소 상세 설명</h2><p>같은 번호는 같은 항목입니다. 화면의 번호를 누르면 해당 설명으로 이동합니다.</p><ol>${notes.map(n=>`<li id="note-${n.id}"><span class="n">${n.number}</span><div>${n.description}</div></li>`).join('')}</ol></section>`;},
+    render(){return `<section class="annotation-catalog" id="element-descriptions" data-annotation-catalog><h2>화면 요소 상세 설명</h2><p>같은 번호는 같은 항목입니다. 번호에 마우스를 올리거나 키보드 초점을 맞추면 같은 설명을 툴팁으로 확인합니다. 긴 설명은 툴팁 안에서 스크롤하고 Esc로 닫습니다. 번호를 누르면 해당 설명으로 이동합니다.</p><ol>${notes.map(n=>`<li id="note-${n.id}"><span class="n">${n.number}</span><div>${n.description}</div></li>`).join('')}</ol></section>`;},
   };
 }
 export function surfaceRows(table){
