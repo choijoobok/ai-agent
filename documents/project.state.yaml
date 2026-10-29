@@ -135,7 +135,11 @@ workstreams:
           sequence_artifact_verification: "하네스·양 provider 스킬·harness-doc·Codex adapter self-test·문서 lint 통과. trace 오류 0/기존 후속 경고 112, 도메인 69개/활성 36개 일치. doc-gen 222개·ID 906개·장문 11289개 누락/깨진 링크 0. HTML 설계249/사용자18/운영9장 구조와 최신 Edge의 설계 화면27개·시퀀스 탭2개·Mermaid 구문/생성SVG23개·현재 문서 인쇄1개 통과. build 최상위 파일은 README.txt만 유지했다. 실제 Claude 세션 trigger smoke·제품 DB/동시 요청/사용자 인수 시험은 미실행이다"
           catalog_screen_review: "2026-10-29 SCR-003 /admin/hub/catalog의 동일 서식 요건서·목업을 작성했다. 상단 현재 항목과 1:N 하단 내용 판/후보 정의·컬럼/값·키/제약·관계·정책·관측/샘플·근거·판 이력을 분리하고 DRAFT 재진입/전체 저장·FROZEN 복사·동일 객체 이름 변경·관리측 고정/자기조인·미완성 관계의 쌍0개 보존을 연결했다. 화면 사례25개·TC17개·목업27개 상태·UC-007/008 시퀀스3개 초안이다. API-021 최신 판 고정 정렬을 공개 계약에 명시했으며 그룹/원천/세트/반출·보존의 소유 후속은 유지한다. 전체 화면 상세 승인·구현/G3는 미완료다"
           catalog_screen_verification: "18개 카탈로그 API·실제 물리 컬럼/코드·25개 화면 사례와 TC17개 연결 오류0 및 시험/API/컬럼/매핑 결손 반례4개 검출. 독립 검토의 신규 운영값 잔재·DRAFT 계속 편집·미완성 관계쌍/NOT NULL 충돌을 보완했고 잔여 P1/P2 없음. 목업 단위17개(배치12+스냅샷5), 시퀀스5개·Markdown2개 통과. Edge 카탈로그27개 상태의 상하 배치·현재/후보 문맥·값 방식별 빈 자식·고정 장문 열람·가로 넘침 통과. doc-gen224개·ID923개·장문11421개 누락/깨진 링크0, HTML252/18/9장 구조 통과. 최종 HTML Edge 검사에서 설계 화면28개·시퀀스 탭4개·Mermaid SVG29개·상세 목업21개·인쇄1개와 선택 열 표시/숨김·테마 전환 경합을 통과했다. 실제 DB 저장·동시 요청·샘플 실행/원천 시험과 사용자 인수는 미실행이다"
-          catalog_layout_feedback: "2026-10-29 사용자: 카탈로그 탭별 기능의 자세한 설명을 먼저 요청했다. 한 탭에 여러 그리드를 배치한 현재 초안은 좁아 사용하기 어렵고 탭 수가 늘더라도 각 탭을 단순하게 구성하는 안을 선호한다. 현재 턴은 기능 설명이며 목업 재배치는 아직 착수하지 않았다"
+          catalog_layout_feedback: "2026-10-29 사용자 결정: 컬럼 정의에서 기본 정보·PK/NOT NULL·FK/코드 설정을 확인/입력하고 다건 구성만 별도 단일 그리드 탭으로 둔다. 건수 클릭으로 같은 후보/컬럼 문맥의 탭 이동, 테이블 팝업·컬럼 이름 콤보, 접근 가능 그룹 편집을 반영했다. 사이즈/인덱스 제외는 철회하고 새 저장 설계는 REQ-301.source_dimensions/index_metadata에 남겼다"
+          catalog_layout_verification: "2026-10-29 단일 하단 그리드/탭17개·목업35상태·화면 사례29개. 생성기 단위18개와 Edge의 컬럼4행·건수/0건 이동·FK 테이블 종속 컬럼·탭 전환 입력 유지·그룹·목록 접기·1366/1920폭·읽기 전용·다크/라이트 통과. HTML 삽입 목업의 인덱스 행 추가/컬럼 콤보도 확인했다. 독립 검토의 역할 LEFT/RIGHT 역매핑·키 이름 저장·UC 제외 범위 모순을 수정했고 재검토 잔여 P1/P2 없음. 하네스/lint 통과·trace 오류0/후속 경고108, 생성224개·ID926·장문11494개 누락/링크0, HTML252/18/9장 구조 통과. 실제 제품 저장/인가·DB·원천 조회 시험과 전체 화면 승인은 미실행이다"
+          artifact_navigation_review: "2026-10-29 사용자 요청: 설계/사용자/운영 HTML 공통에 스크롤 400px 이후 보이는 맨 위로 버튼을 추가했다. 삽입 목업의 상단 상태 링크는 같은 ShadowRoot의 그림을 찾아 이동하고 바깥 사이트의 문서 해시를 바꾸지 않는다. 기존 잘못된 main-wrap 스크롤 초기화도 실제 window 스크롤로 보완했다. Edge 전체 검사에서 화면28개·시퀀스탭4개·SVG29개·상세목업25개·현재문서 인쇄1개 및 상태 링크/맨 위로·테마 경합 통과. 버튼은 인쇄에서 제외하며 build 파생물은 재생성했다"
+          mockup_walkthrough_review: "2026-10-29 사용자 요청으로 초기 전체 화면→모든 탭/영역의 목적·작업·조회/저장 범위→공유 번호의 상세 설명 한 목록→접힌 상태 예시로 표준화했다. 기존 목업 25개를 재생성하고 SCR-003의 17탭과 SCR-001/002·기존 system/standalone의 실제 버튼·누락 필드를 현행화했다. 컬럼은 설명·필수 시점·편집·출처·검증을 분리했다. 공통 스킬 원본/Claude·Codex 생성 스킬·템플릿·생성기에 적용했다. 생성기 단위 22개, 기존 목업 25개 정합성/Edge 링크·번호·문맥·잠금·모드 검사, 하네스/self-test/lint/trace 오류 0(기존 경고 108), doc-gen 224개 ID/스칼라/상대 링크 누락 0, HTML 252/18/9장 manifest 오류 0 및 Edge 설계 화면 28·시퀀스 탭 4·SVG 29·다크/라이트/인쇄 검증 통과. 독립 읽기 검토의 상태 잠금·CODE/INLINE·영역 표 누락·기본값 보조표 혼입을 보완하고 추가 P1/P2 없음. 새 제품 구현/화면 승인/G3는 수행하지 않았다"
+          dbms_and_exclusion_review: "2026-10-29 사용자 결정: REQ-603의 DBMS/버전 관리·LLM 전달, REQ-301의 DBMS별 공통코드 자료형(버전 분리 없음), REQ-103의 테이블 그룹 승계 후 컬럼별 제외만 허용을 요건/도메인/공개 계약/목업에 반영했다. 제외 탭은 컬럼·제외 그룹·사유·등록자·등록일시 5열이다. 후속 사용자 결정으로 REQ-504·FEAT-504/API-600의 그룹코드·참조코드·참조값 조인 공통 콤보와 필터/전체 캐시 분리를 설계했다. 기존 API-554는 유지한다. TC-00213·00315·00316·5046은 미구현 검증 명세다. Edge에서 DBMS/버전·불일치 관측, 자료형 검색/선택, 5열/제외 콤보/건수 탐색/서버 등록 근거, 탭 입력 유지·읽기 전용·HTML 테마를 확인했다. 공통 유틸 제품 구현/시드와 제외 행 저장·치수/인덱스 상세는 소유 G3 후속이며 사용자 전체 화면 승인은 별도다"
           screen_review: { status: draft, user_approved: false, screens: [SCR-001, SCR-002, SCR-003] }
           waiting_dependency:
             - refs: ["FEAT-006","FEAT-007","FEAT-008","ENT-018","ENT-006","ENT-012","ENT-016"]
@@ -212,8 +216,8 @@ workstreams:
           status: identified
           resume_when: "access_policy 상세 설계에서 외부 인사 사건과 모듈별 실제 처리 결과의 식별·순서·재전송·부분 실패/재처리·조회 계약을 대조한다. 계정과 Portal 이용 자격을 합치지 않는다"
       resume:
-        last_completed: "SCR-003 카탈로그 요건/목업·시험17개·화면 사례25개·UC-007/008 시퀀스3개를 연결했다. 현재 항목과 후보 판을 분리하고 저장한 DRAFT 계속 편집·값 방식별 자식·관리측/자기조인·미완성 관계 보존을 검증했다. 범위·근거는 integration_assets.catalog_screen_review/catalog_screen_verification을 따른다. 화면 상세 승인·소유 후속 계약·제품 구현/G3는 미완료다"
-        next_action: "같은 integration_assets verification에서 SCR-004/019 업무 API·도구의 요건서/목업과 후보 필드·코드명 참조·도구 대응·세트 인계의 흐름/시험을 작성한다. SCR-001/002/003 사용자 검토 의견은 해당 정본에 반영하고 카탈로그 구현 슬라이스·구체 DTO/오류는 FEAT-003/011.pending에서 후속 정합화한다. 물리/공개 계약은 waiting_dependency의 5개 소유 후속을 유지하며 구현 승인이나 verified/G3로 처리하지 않는다. 임시 자료는 build/tmp/{작업명}/ 하위를 사용한다"
+        last_completed: "SCR-001/002/003과 기존 목업 25개의 화면/탭 순서·업무 설명·단일 번호 목록·필수/검증·탭별 버튼을 보완하고 공통 스킬/서식/생성기와 HTML에 적용했다. DBMS/버전·공통 참조 조건 콤보·테이블 승계 후 컬럼 제외 설계를 함께 정합성 검증했다. 제품 구현/G3는 진행하지 않았다"
+        next_action: "SCR-003 검토 의견을 반영하고 REQ-301.source_dimensions/index_metadata의 치수·인덱스 저장/전체 후보 계약을 완성한다. FEAT-007의 제외 행 저장/고정 계약을 access_policy와 연결하며 FEAT-504.reference_combo_contract의 공통 조회·유틸/코드 시드 구현은 system 소유 G3 후 진행한다. 이어서 기존 integration_assets의 SCR-004/019 요건/목업·시험 순서를 유지한다"
         waiting_on: ["사용자 필수 답변 대기 없음. SCR-001/002/003은 전체 화면 상세 승인/구현 승인 전 초안이다. 물리/공개 계약의 waiting_dependency 5개 소유 후속을 유지한다"]
       update_rules:
         - "세션 시작·재개 때 이 design_plan과 next_up을 읽고 active_step·active_area·resume을 확인한다. 합의한 순서를 바꿀 이유가 생기면 영향과 재개 지점을 먼저 설명하고 기록한다"
@@ -461,9 +465,9 @@ counters:
   UC: 48      # system 10 · admin 공통/업무 흐름 초안 38
   FEAT: 104   # FEAT-041 admin 오류 접수·FEAT-222 agent 정기 파기 추가
   ENT: 69    # system 31 · admin 연동 자산 물리 초안 38
-  API: 161   # system 99 · admin 미구현 설계 62
+  API: 162   # system 구현 99 · system 공통 참조 콤보 설계 1 · admin 설계 62
   SCR: 78    # SCR-113~115 별도 Portal 인증 화면 초안 추가
-  TC: 131    # 기존 123 · 계정/인증 경계 시험 8건 추가, 기존 3건 교체
+  TC: 135    # 기존 131 · DBMS/자료형/컬럼 제외/공통 참조 콤보 시험 4건 추가
   CR: 27     # CR-028까지 27건 — CR-011 없음, CR-027 공통 계정 방향은 CR-028로 철회
   RUN: 8      # 80-operations/_index.yaml의 현재 절차. daily_checks·periodic_tasks를 2026-09-14에 채웠다
   ADR: 34    # ADR-034 관리자와 Portal 계정·인증 분리
