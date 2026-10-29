@@ -18,3 +18,4 @@ spec_set:
     - 008-admin-integration-storage.yaml
     - 009-admin-catalog-storage.yaml
     - 010-admin-api-tool-storage.yaml
+    - 011-admin-query-policy.yaml

@@ -19,3 +19,80 @@ apis:
   - { id: API-017, feature: FEAT-002, implementation: planned, method: POST, path: /api/service/admin/dataSource/getHistoryOne, action: READ, summary: "데이터소스 확정 상태 스냅샷", request: "body=AssetHistoryKey", response: "ApiResponse<AssetHistoryDetail>" }
   - { id: API-018, feature: FEAT-002, implementation: planned, method: POST, path: /api/service/admin/dataSource/getCommandResult, action: READ, summary: "데이터소스 저장 결과 확인", request: "body=AssetCommandKey", response: "ApiResponse<AssetCommandResult>" }
   - { id: API-062, feature: FEAT-002, implementation: planned, method: POST, path: /api/service/admin/dataSource/getTimezoneList, action: READ, summary: "데이터소스 시간대 선택 후보", request: "body={}", response: "ApiResponse<List<String>>", contract: "FEAT-002.timezone_contract. HUB_DATA_SOURCE READ로 조회하며 support.time.Timezones.candidates(calendar.zone())를 재사용한다. 배치 스케줄 메뉴 권한을 요구하지 않는다" }
+
+  - id: API-063
+    feature: "FEAT-002"
+    implementation: "planned"
+    method: "POST"
+    path: "/api/service/admin/codeQuery/getList"
+    action: "READ"
+    summary: "데이터소스 코드 조회 정의 목록"
+    request: "body=SearchRequest<CodeQueryFilter>"
+    response: "ApiResponse<PageResponse<CodeQueryRow>>"
+    contract: "FEAT-002.code_lookup_contract. VERIFY/ACTIVATE/EXECUTE는 설계상 구분이며 실제 권한 액션 키는 후속 확정 전 배포/실행하지 않는다"
+
+  - id: API-064
+    feature: "FEAT-002"
+    implementation: "planned"
+    method: "POST"
+    path: "/api/service/admin/codeQuery/getRevisions"
+    action: "READ"
+    summary: "코드 조회 정확 버전/파라미터 열람"
+    request: "body=CodeQueryRevisionKey"
+    response: "ApiResponse<CodeQueryRevisionDetail>"
+    contract: "FEAT-002.code_lookup_contract. VERIFY/ACTIVATE/EXECUTE는 설계상 구분이며 실제 권한 액션 키는 후속 확정 전 배포/실행하지 않는다"
+
+  - id: API-065
+    feature: "FEAT-002"
+    implementation: "planned"
+    method: "POST"
+    path: "/api/service/admin/codeQuery/saveDraft"
+    action: "SAVE"
+    summary: "코드 조회 초안 저장/새 버전 복사"
+    request: "body=CodeQueryDraftSave"
+    response: "ApiResponse<CodeQueryCommandResult>"
+    contract: "FEAT-002.code_lookup_contract. VERIFY/ACTIVATE/EXECUTE는 설계상 구분이며 실제 권한 액션 키는 후속 확정 전 배포/실행하지 않는다"
+
+  - id: API-066
+    feature: "FEAT-002"
+    implementation: "planned"
+    method: "POST"
+    path: "/api/service/admin/codeQuery/verify"
+    action: "VERIFY"
+    summary: "코드 조회 버전 검수"
+    request: "body=CodeQueryReviewCommand"
+    response: "ApiResponse<CodeQueryCommandResult>"
+    contract: "FEAT-002.code_lookup_contract. VERIFY/ACTIVATE/EXECUTE는 설계상 구분이며 실제 권한 액션 키는 후속 확정 전 배포/실행하지 않는다"
+
+  - id: API-067
+    feature: "FEAT-002"
+    implementation: "planned"
+    method: "POST"
+    path: "/api/service/admin/codeQuery/activate"
+    action: "ACTIVATE"
+    summary: "검수된 코드 조회 버전 활성화"
+    request: "body=CodeQueryStateCommand"
+    response: "ApiResponse<CodeQueryCommandResult>"
+    contract: "FEAT-002.code_lookup_contract. VERIFY/ACTIVATE/EXECUTE는 설계상 구분이며 실제 권한 액션 키는 후속 확정 전 배포/실행하지 않는다"
+
+  - id: API-068
+    feature: "FEAT-002"
+    implementation: "planned"
+    method: "POST"
+    path: "/api/service/admin/codeQuery/deactivate"
+    action: "ACTIVATE"
+    summary: "코드 조회 버전 비활성화"
+    request: "body=CodeQueryStateCommand"
+    response: "ApiResponse<CodeQueryCommandResult>"
+    contract: "FEAT-002.code_lookup_contract. VERIFY/ACTIVATE/EXECUTE는 설계상 구분이며 실제 권한 액션 키는 후속 확정 전 배포/실행하지 않는다"
+
+  - id: API-069
+    feature: "FEAT-002"
+    implementation: "planned"
+    method: "POST"
+    path: "/api/service/admin/codeQuery/preview"
+    action: "EXECUTE"
+    summary: "코드 조회 결과 미리보기"
+    request: "body=CodeQueryPreviewRequest"
+    response: "ApiResponse<CodeQueryPreviewResult>"
+    contract: "FEAT-002.code_lookup_contract. VERIFY/ACTIVATE/EXECUTE는 설계상 구분이며 실제 권한 액션 키는 후속 확정 전 배포/실행하지 않는다"

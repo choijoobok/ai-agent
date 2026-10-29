@@ -97,10 +97,11 @@ apis:
     method: POST
     path: /api/service/admin/catalog/getStructure
     action: READ
-    summary: "등록 공개 객체의 구조 사실"
+    summary: "데이터소스 일괄 비교에서 재사용할 등록 객체 구조 사실 조회"
     request: "body=StructureQuery"
     response: "ApiResponse<StructureResult>"
   - id: API-030
+    scope_status: "현재 화면/구현 범위 제외. @defer 사용자 재요청 시 — 샘플 조회 필요성과 통제 재검토"
     feature: FEAT-003
     implementation: planned
     method: POST

@@ -1025,8 +1025,8 @@ terms:
     term: "필수 조회 제약"
     key: requiredQueryConstraint
     group: "정책"
-    definition: "공개 테이블·뷰를 조회할 때 반드시 충족해야 하는 기간 등 조건을 카탈로그에 정형으로 등록한 규칙"
-    relation: "REQ-301.query_constraints가 관리·검증 정본이고 부족 조건 확인은 REQ-025를 따른다. DB NOT NULL·행 접근 권한·선택 해제 가능한 기본 필터와 구분한다"
+    definition: "공개 테이블·뷰를 조회할 때 반드시 충족해야 하는 기간 등 조건을 행 스코프·필터 관리에서 대상 테이블에 연결한 조회 정책"
+    relation: "REQ-611.query_constraints가 관리·검증 정본이고 부족 조건 확인은 REQ-025를 따른다. DB NOT NULL·행 접근 권한·선택 해제 가능한 기본 필터와 구분한다"
   - id: TRM-248
     term: "작업 계획"
     key: workPlan

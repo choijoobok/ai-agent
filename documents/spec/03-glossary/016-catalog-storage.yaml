@@ -20,12 +20,12 @@ terms:
     group: "데이터"
     definition: "소유 컬럼의 VALUE_MODE=INLINE일 때만 쓰며 같은 유형/정규화 값 중복을 전체 구성 검증에서 거부한다"
   - id: TRM-268
-    term: "카탈로그 코드 조건"
-    key: catalogCodeCondition
-    group: "데이터"
-    definition: "코드 그룹/회사 등 필요한 식별 조건만 AND 동등 조건으로 보존한다. 전용 코드 테이블에 그룹 조건을 강제하지 않는다"
-    db_token: CAT_CODE_CONDITION
-    db_token_reason: "30자 테이블 제한에 맞춰 catalog를 CAT으로 줄인다. 원 의미와 키는 유지한다"
+    term: 카탈로그 코드 바인딩
+    key: catalogCodeBinding
+    group: 데이터
+    definition: 카탈로그 CODE 컬럼이 선택한 코드 조회 정의의 정확 버전에 전달하는 파라미터명·타입·정형 값. SQL 조각이나 단일 코드 테이블 AND 조건을 저장하지 않는다
+    db_token: CAT_CODE_BINDING
+    db_token_reason: 30자 제한에 맞춰 catalog를 CAT으로 줄인다
   - id: TRM-269
     term: "권장 조인 컬럼 쌍"
     key: catalogJoinPair
@@ -50,3 +50,19 @@ terms:
     key: catalogEditCommand
     group: "데이터"
     definition: "성공 결과만 초안/자식·근거와 같은 DB 트랜잭션에서 보존한다. ENT-019의 직접 관리나 자산 세트의 승인/실제 반영 원장을 확장하지 않는다"
+
+  - id: TRM-283
+    term: 코드 조회 정의
+    key: codeQuery
+    group: 데이터
+    definition: 데이터소스 안에서 코드값과 코드명을 공급하는 조회 자산의 안정 식별/관리명. 정확 SQL·파라미터/결과 대응은 정의 버전이 가진다
+  - id: TRM-284
+    term: 코드 조회 정의 버전
+    key: codeQueryRevision
+    group: 데이터
+    definition: 검수한 읽기 전용 SQL·typed named 파라미터·반환 코드값/코드명 대응과 조회/캐시 통제를 고정하는 버전. 원천 코드 데이터의 버전과 구분한다
+  - id: TRM-285
+    term: 코드 조회 파라미터
+    key: codeQueryParameter
+    group: 데이터
+    definition: 정확 코드 조회 버전에 선언된 값 바인딩의 이름/타입/필수·NULL 허용/업무 설명. SQL 식별자/구문을 치환하지 않는다

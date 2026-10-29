@@ -14,3 +14,4 @@ spec_set:
     - 003-admin-integration-assets.yaml
     - 004-admin-catalog-screen.yaml
     - 005-account-auth-boundaries.yaml
+    - 006-query-policy.yaml

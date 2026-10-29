@@ -12,7 +12,7 @@ mappings:
   - id: AUTHZ-012
     object: 컬럼
     mapping: "그룹별 처리(원본 열람/마스킹 열람/접근 제한) — REQ-611"
-    meaning: "REQ-103.column_group_exclusions에 따라 테이블 허용 그룹을 승계하고 제외 그룹만 차감한다. 컬럼 단독 허용/허용 목록 대체는 없다. 차감 후 허용 범위 안에서 세 가지 처리와 공통 마스킹 변환은 REQ-611을 따른다"
+    meaning: "REQ-103.column_group_exclusions에 따라 테이블 그룹을 승계하고 예외 없는 그룹은 원본 열람, HIDE 예외는 숨김, MASK 예외는 마스킹 열람이다. 테이블 밖 그룹의 컬럼 단독 허용은 없다. 복수 그룹의 최종 처리와 공통 변환은 REQ-611, 개인정보 저장 사본은 REQ-111을 따른다"
   - id: AUTHZ-014
     object: "실행 API"
     mapping: "호출 허용 그룹 목록 + 위험 등급 + 실행 승인 근거(일반 사용자 승인 / RM-P3 REQ-405 자동 승인 활성화)"

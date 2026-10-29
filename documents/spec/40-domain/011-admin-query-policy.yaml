@@ -1,0 +1,44 @@
+# 조회 정책 — 카탈로그 자식 물리 설계를 철회하고 access_policy 상세 설계로 이관한다.
+entities:
+  - id: ENT-009
+    name: "필수 조회 제약"
+    term: TRM-247
+    domain: "이용자·접근 정책"
+    module: admin
+    implementation: planned
+    design_stage: logical
+    features: [FEAT-012]
+    reqs: [REQ-611]
+    description: "행 스코프·필터 관리에서 대상 테이블에 적용하는 직접 조회 정책. 카탈로그 내용 버전과 독립된 규칙/정책 리비전을 가진다"
+    attributes:
+      - {name: "규칙 식별자·정책 리비전", description: "관리 변경/실행 적용 근거. 카탈로그 REVISION_ID가 소유 키가 아니다"}
+      - {name: "업무명·이유·사용자 질문 안내", description: "필요한 입력과 제한을 업무 언어로 전달"}
+      - {name: "대상 카탈로그·컬럼 참조", description: "정책에서 안정 catalogId/columnId로 연결하며 조회 시 필요한 정확 내용 버전을 대조"}
+      - {name: "명명 파라미터·출처·자료형", description: "사용자 입력과 서버 인증 신원을 구분. 필수/NULL·시간대/형식 포함"}
+      - {name: "조건 템플릿·값 검증식", description: "두 값 비교/차이의 최소·최대·단위·경계 및 실제 SQL 조건 바인딩. 허용 문법은 후속 설계"}
+      - {name: "검수·적용 상태·변경 근거", description: "미로드/미검수/불가를 제약 없음으로 취급하지 않음"}
+    relations:
+      - {entity: ENT-005, cardinality: "규칙별 적용 대상 테이블", description: "카탈로그는 역조회만 하며 규칙 목록을 후보에 복사하지 않음"}
+      - {entity: ENT-007, cardinality: "대상 컬럼 1개 이상", description: "현재 사용한 카탈로그 참조 버전/권한과 함께 검증"}
+      - {entity: ENT-026, cardinality: "규칙별 등록 대체 키 0개 이상", description: "해당 규칙에만 허용하는 명시 예외"}
+    rules: ["REQ-611.query_constraints를 따른다", "기본 필터 제외·실행 승인·카탈로그 과거 복원으로 해제하지 않는다", "값 검증과 실제 SQL/최종 바인딩의 제약 적용을 모두 확인한다"]
+    delete_policy: "현재 조회 정책의 변경/보존 절차로 관리하며 카탈로그 후보 삭제·복원과 함께 바꾸지 않는다"
+    pending: ["@defer P3 access_policy SCR-009 — 통합 규칙/파라미터/조건·검증식·적용 매핑/버전·이력 물리 모델과 공개 API, 카탈로그 건수 역조회 계약 설계", "@defer P3 agent·integration — 지원 DBMS/표현식·차이 단위·모든 참조 조건 주입·최종 SQL/바인딩/정책 변경 경합 검증"]
+  - id: ENT-026
+    name: "조회 제약 대체 키"
+    term: TRM-270
+    domain: "이용자·접근 정책"
+    module: admin
+    implementation: planned
+    design_stage: logical
+    features: [FEAT-012]
+    reqs: [REQ-611]
+    attributes:
+      - {name: "소유 제약·정책 리비전", description: "독립 조회 정책에 속하며 카탈로그 후보 자식이 아니다"}
+      - {name: "대상 카탈로그·키 참조", description: "허용한 전체 유일키의 안정 대상·정확 카탈로그 버전/키 식별 참조"}
+    relations:
+      - {entity: ENT-009, cardinality: "제약별 대체 키 0개 이상", description: "각 키가 하나의 독립 대안"}
+      - {entity: ENT-021, cardinality: "대체 하나당 전체 키 하나", description: "ENT-022 전체 구성과 현재 참조 유효성을 검증"}
+    rules: ["같은 요청 전체에서 하나의 고정된 전체 키 동등 조건임을 검증해야 기간 대체 가능", "복합 키 일부·NULL·여러 값·분기/반복 우회는 허용하지 않음"]
+    delete_policy: "소유 정책의 변경·이력·보존을 따른다"
+    pending: ["@defer P3 access_policy — ENT-009 통합 정책 물리 설계에서 정책 소유 키/참조·변경 보호·현재 검수 계약 확정"]

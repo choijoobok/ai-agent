@@ -1,0 +1,38 @@
+# 조회 제약의 소유 화면과 실행 경계 — 구현 전 설계 시험
+testcases:
+  - id: TC-0121
+    feature: FEAT-012
+    usecase: UC-026
+    screens: [SCR-009]
+    type: business_exception
+    title: "두 입력 값 차이와 인증 바인딩 분리"
+    actor: ACT-003
+    given: "REQ-611의 기간 상한 정책과 사용자 입력 두 개, 서버 인증 신원 바인딩이 있다"
+    when: "누락·역전·형식 오류·상한 초과·경계값을 입력하거나 사용자 ID 바인딩을 요청 값으로 덮으려 한다"
+    then: "정상 경계만 수락하고 나머지는 SQL 실행 전에 거부/보완 질문한다. 인증 바인딩은 서버 신원에서만 얻는다"
+    verification: "잘못된 차이를 WHERE false에 넣어 빈 결과 성공으로 처리하거나 신원 덮어쓰기를 허용하면 실패해야 한다"
+    status: planned
+  - id: TC-0122
+    feature: FEAT-012
+    usecase: UC-026
+    screens: [SCR-009]
+    type: business_exception
+    title: "입력 검증과 실제 SQL 조건 일치"
+    actor: ACT-003
+    given: "허용 범위의 두 값과 대상 컬럼·조건 템플릿이 검수된 조회 정책"
+    when: "SQL이 다른 컬럼/값을 사용하거나 조건을 생략하거나 OR·하위 질의·UNION의 일부 참조에서 제약을 우회한다"
+    then: "모든 실제 대상 참조에 정책 조건과 동일 바인딩이 적용됐음이 검증되지 않으면 실행하지 않는다"
+    verification: "모델의 충족 표식 또는 두 값 차이만 검사하여 우회 SQL이 실행되면 실패해야 한다. 지원 밖 구문은 검증 불가로 처리한다"
+    status: planned
+  - id: TC-0123
+    feature: FEAT-012
+    usecase: UC-026
+    screens: [SCR-003, SCR-009]
+    type: business_exception
+    title: "현재 정책 역조회와 카탈로그 버전 복원 분리"
+    actor: ACT-003
+    given: "현재 조회 제약 2건과 이전 카탈로그 버전, 정책 조회 실패/권한 제한 상태"
+    when: "카탈로그를 복원하고 조회 제약 셀을 열거나 정책을 변경한 뒤 저장 조회를 새로 실행한다"
+    then: "복원은 정책을 바꾸지 않는다. 조회 성공 시만 유효 건수를 표시하고 catalogId·QUERY_CONSTRAINT로 정책 화면을 연다. 새 실행은 현재 정책 리비전으로 재검증한다"
+    verification: "미로드/실패를 0건으로 표시하거나 카탈로그 복사에 정책 사본을 포함하거나 필수 제약을 선택 제외하면 실패해야 한다"
+    status: planned

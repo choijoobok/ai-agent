@@ -75,7 +75,7 @@ entities:
     table: AI_ADMIN_CATALOG_REVISION
     features: [FEAT-003, FEAT-011, FEAT-014, FEAT-033]
     reqs: [REQ-301, REQ-103, REQ-305, REQ-306]
-    description: "공개 카탈로그 항목 한 건의 후보 및 과거 전체 내용. 컬럼·관계·필수 제약에 독립 승인 단계를 만들지 않고 같은 후보 구성으로 연결한다"
+    description: "공개 카탈로그 항목 한 건의 후보 및 과거 전체 내용. 컬럼·관계에 독립 승인 단계를 만들지 않고 같은 후보 구성으로 연결한다"
     attributes:
       - {"name":"내용 판 식별자","physical_name":"REVISION_ID","pk":true,"description":"내용 판 식별자"}
       - {"name":"소유 카탈로그 안정 식별자","physical_name":"CATALOG_ID","description":"소유 카탈로그 안정 식별자"}
@@ -94,7 +94,6 @@ entities:
       - {"name":"업무 명칭. 미완성은 null","physical_name":"BUSINESS_NAME","description":"업무 명칭. 미완성은 null"}
       - {"name":"업무 설명","physical_name":"DESCRIPTION","description":"업무 설명"}
       - {"name":"PUBLISH/RETIRE. 현재 효력이 아니라 후보 의도","physical_name":"INTENT_CD","description":"PUBLISH/RETIRE. 현재 효력이 아니라 후보 의도"}
-      - {"name":"UNKNOWN/NONE/DEFINED. NONE도 검수 근거가 필요","physical_name":"CONSTRAINT_STATE","description":"UNKNOWN/NONE/DEFINED. NONE도 검수 근거가 필요"}
       - {"name":"검수 상태 UNKNOWN/VERIFIED/INVALID","physical_name":"REVIEW_STATUS","description":"검수 상태 UNKNOWN/VERIFIED/INVALID"}
       - {"name":"실제 검수자","physical_name":"REVIEWER_ID","description":"실제 검수자"}
       - {"name":"실제 검수 시각","physical_name":"REVIEWED_DTM","description":"실제 검수 시각"}
@@ -113,12 +112,11 @@ entities:
       - { entity: ENT-005, cardinality: "리비전마다 카탈로그 항목 하나", description: "현재 항목의 실제 효력과 과거 내용 보관을 구분한다" }
       - { entity: ENT-007, cardinality: "리비전마다 등록 컬럼 0개 이상", description: "미완성 초안은 저장 가능하나 해당 미완성 범위는 AI 사용에서 제외한다" }
       - { entity: ENT-008, cardinality: "리비전마다 소유 관계 0개 이상", description: "관계 없는 독립 컬럼의 사용을 일괄 막지 않는다" }
-      - { entity: ENT-009, cardinality: "리비전마다 필수 제약 0개 이상", description: "검수된 제약 없음은 별도 의미 상태다" }
       - { entity: ENT-010, cardinality: "리비전에 변경 근거 0개 이상", description: "일반 사유로 작성하는 후보에 별도 조사/관측을 강제하지 않는다" }
     related_features: [FEAT-014, FEAT-040, FEAT-007, FEAT-009, FEAT-012, FEAT-019, FEAT-033, FEAT-036]
     rules:
       - "제출 전 작성 초안과 제출 이후 고정 구성·과거 유효본을 구분한다. 제출된 내용을 교체하지 않고 취소/반려 후 새 요청으로 연결한다"
-      - "구조·의미·값 도메인·관계·제약·접근 그룹은 전체 후보로 검증/반영한다. 마스킹 변환·행 스코프·기본 필터·전송 정책의 직접 관리값은 내용 승인/복원으로 덮어쓰지 않는다"
+      - "구조·의미·값 도메인·관계·접근 그룹은 전체 후보로 검증/반영한다. 마스킹 변환·행 스코프·기본 필터·필수 조회 제약·전송 정책의 직접 관리값은 내용 승인/복원으로 덮어쓰지 않는다"
       - "기준 운영본·같은 세트 후보·외부 유효본·영향/과거 참조의 구분과 검증은 FEAT-014.reference_validation을 따른다. 참조만 하는 자산을 변경 대상처럼 점유하지 않는다"
       - "현재 유효본의 이전 전체 구성을 별도 보존한 상태에서만 새 구성을 반영한다. 현재 리비전 포인터·세트 구성 중 일부만 갱신하거나 과거를 현재 컬럼/그룹으로 재계산하지 않는다"
     state_machine:
@@ -149,7 +147,6 @@ entities:
         - {"name":"BUSINESS_NAME","type":"character varying(200)","nullable":true,"default":null}
         - {"name":"DESCRIPTION","type":"text","nullable":true,"default":null}
         - {"name":"INTENT_CD","type":"character varying(10)","nullable":false,"default":null}
-        - {"name":"CONSTRAINT_STATE","type":"character varying(12)","nullable":false,"default":null}
         - {"name":"REVIEW_STATUS","type":"character varying(12)","nullable":false,"default":null}
         - {"name":"REVIEWER_ID","type":"character varying(30)","nullable":true,"default":null}
         - {"name":"REVIEWED_DTM","type":"timestamp with time zone","nullable":true,"default":null}
@@ -171,7 +168,7 @@ entities:
         - {"name":"FK_CAT_REV_OWNER","definition":"FOREIGN KEY (CATALOG_ID) REFERENCES AI_ADMIN_CATALOG_ENTRY (CATALOG_ID) DEFERRABLE INITIALLY DEFERRED"}
         - {"name":"FK_CAT_BASE","definition":"FOREIGN KEY (CATALOG_ID, BASE_REVISION_ID) REFERENCES AI_ADMIN_CATALOG_REVISION (CATALOG_ID, REVISION_ID) DEFERRABLE INITIALLY DEFERRED"}
         - {"name":"FK_CAT_RESTORE","definition":"FOREIGN KEY (CATALOG_ID, RESTORE_REVISION_ID) REFERENCES AI_ADMIN_CATALOG_REVISION (CATALOG_ID, REVISION_ID) DEFERRABLE INITIALLY DEFERRED"}
-        - {"name":"CK_CAT_REV_STATE","definition":"CHECK (CONTENT_STATE IN ('DRAFT','FROZEN') AND EDIT_VERSION >= 1 AND REVISION_NO >= 1 AND POLICY_REF_FORMAT >= 1 AND INTENT_CD IN ('PUBLISH','RETIRE') AND OBJECT_TYPE IN ('TABLE','VIEW') AND CONSTRAINT_STATE IN ('UNKNOWN','NONE','DEFINED') AND (CONTENT_STATE <> 'FROZEN' OR (FROZEN_DIGEST IS NOT NULL AND FROZEN_DTM IS NOT NULL)))"}
+        - {"name":"CK_CAT_REV_STATE","definition":"CHECK (CONTENT_STATE IN ('DRAFT','FROZEN') AND EDIT_VERSION >= 1 AND REVISION_NO >= 1 AND POLICY_REF_FORMAT >= 1 AND INTENT_CD IN ('PUBLISH','RETIRE') AND OBJECT_TYPE IN ('TABLE','VIEW') AND (CONTENT_STATE <> 'FROZEN' OR (FROZEN_DIGEST IS NOT NULL AND FROZEN_DTM IS NOT NULL)))"}
         - {"name":"CK_CAT_REV_REVIEW","definition":"CHECK (REVIEW_STATUS IN ('UNKNOWN','VERIFIED','INVALID') AND (REVIEW_STATUS <> 'VERIFIED' OR (REVIEWER_ID IS NOT NULL AND REVIEWED_DTM IS NOT NULL AND REVIEW_EVIDENCE IS NOT NULL)))"}
       indexes: [{"name":"IX_CAT_REV_OWNER","unique":false,"method":"btree","definition":"(CATALOG_ID, REVISION_NO DESC)"}]
 
@@ -204,10 +201,8 @@ entities:
       - {"name":"필요한 원천 시간대","physical_name":"TIME_ZONE_ID","description":"필요한 원천 시간대"}
       - {"name":"금액·수량 등 단위","physical_name":"UNIT_CD","description":"금액·수량 등 단위"}
       - {"name":"UNKNOWN/NONE/CODE/INLINE","physical_name":"VALUE_MODE","description":"UNKNOWN/NONE/CODE/INLINE"}
-      - {"name":"코드 원천 공개 객체","physical_name":"CODE_CATALOG_ID","description":"코드 원천 공개 객체"}
-      - {"name":"고정해 선택한 코드 내용 판 또는 같은 세트 후보","physical_name":"CODE_REVISION_ID","description":"고정해 선택한 코드 내용 판 또는 같은 세트 후보"}
-      - {"name":"코드값 컬럼","physical_name":"CODE_VALUE_COLUMN_ID","description":"코드값 컬럼"}
-      - {"name":"코드명 컬럼","physical_name":"CODE_NAME_COLUMN_ID","description":"코드명 컬럼"}
+      - {"name":"코드 조회 안정 정의","physical_name":"CODE_QUERY_ID","description":"같은 데이터소스의 ENT-041 참조"}
+      - {"name":"코드 조회 정확 버전","physical_name":"CODE_QUERY_REVISION_ID","description":"ENT-042의 검수/활성 버전을 고정하며 최신판으로 치환하지 않음"}
       - {"name":"검수 상태 UNKNOWN/VERIFIED/INVALID","physical_name":"REVIEW_STATUS","description":"검수 상태 UNKNOWN/VERIFIED/INVALID"}
       - {"name":"실제 검수자","physical_name":"REVIEWER_ID","description":"실제 검수자"}
       - {"name":"실제 검수 시각","physical_name":"REVIEWED_DTM","description":"실제 검수 시각"}
@@ -220,7 +215,7 @@ entities:
     relations:
       - {"entity":"ENT-020","cardinality":"소유 판·구성의 복합 키로 참조","description":"명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"}
       - { entity: ENT-006, cardinality: "컬럼 구성마다 소유 리비전 하나", description: "같은 리비전의 복합 키/외래키로 현재/과거 컬럼 구성을 함께 보존한다" }
-      - { entity: ENT-005, cardinality: "코드 참조 방식이면 대상 코드 객체 하나", description: "같은 데이터소스의 공개·허용 객체 전체 식별과 당시 참조 판을 사용한다" }
+      - { entity: ENT-042, cardinality: "CODE 컬럼마다 정확 조회 버전 0개 또는 1개", description: "같은 데이터소스의 안정 정의/정확 버전과 현재 사용 가능성을 검사한다. 구체 FK는 조회 정의 물리 설계에서 완성한다" }
     rules:
       - "미등록 컬럼은 발견됐어도 등록 컬럼으로 자동 추가하지 않는다. 등록된 컬럼의 접근 그룹 기본 상속과 예외는 FEAT-007을 따른다"
       - "의미·필요 형식·값 도메인이 미완성/미검수이면 해당 범위를 사용하지 않는다. 코드/관계가 불필요한 독립 컬럼에 별도 관계 등록을 강제하지 않는다"
@@ -230,8 +225,9 @@ entities:
     rules_from: ["REQ-301.column_metadata", "REQ-301.value_domain", "REQ-301.business_rules", "REQ-111.privacy_metadata", "REQ-304.note"]
     delete_policy: "초안의 자식 제거도 부모 잠금/편집 버전을 검사한다. 고정 판과 과거 자식은 관리 화면에서 삭제/수정하지 않으며 파기는 소유 보존 정책과 참조 보호를 따른다"
     design_followup: "@defer P3 integration_assets — REQ-301.source_dimensions/index_metadata에 따라 치수의 형식/단위/정밀도·소수자리와 인덱스 정의/순서 구성의 논리·물리 저장을 보완한다. 현재 ENT-007 SOURCE_TYPE과 기존 식별키 테이블에 임의로 합쳐 저장하지 않으며 전체 후보·검수·복사/고정/이행 계약을 함께 완성한다"
-    storage_contract: "COLUMN_ID의 소유와 종류는 ENT-020으로 고정한다. 구조 PK/유일키 참여는 ENT-021·022의 전체 키로 표현하고 인라인 값은 ENT-023, 코드 그룹/회사 조건은 ENT-024로 저장한다. 이름 변경 시 같은 COLUMN_ID의 새 리비전 행을 작성하며 과거 행은 유지한다. 코드 대상 판·값/명칭 컬럼은 복합 FK로 묶고 같은 데이터소스·현재 공개/권한·검수 가능성은 공개 계약에서 검증한다."
-    pending: ["@defer P3 access_policy — 컬럼의 접근 그룹 상속/예외 후보와 개인정보 분류·현재 정책/당시 참조의 소유 저장 계약을 연결한다. 별도 개인정보 사본이나 원값 샘플은 두지 않는다"]
+    storage_contract: "COLUMN_ID의 소유/종류는 ENT-020으로 고정한다. 구조 키는 ENT-021/022, INLINE은 ENT-023, CODE 조회 바인딩은 ENT-024에 저장한다. CODE_QUERY_ID/CODE_QUERY_REVISION_ID는 ENT-041/042의 정확 조회 버전을 가리킨다. 이전 단일 코드 테이블·값/명칭 컬럼 참조와 CODE_CONDITION 모델은 사용하지 않는다. 전체 후보 저장/복사/고정은 조회 참조와 전체 typed 바인딩을 보존하되 조회 결과를 복제하지 않는다"
+    code_query_followup: "@defer P3 integration_assets — ENT-041/042/043의 물리 스키마를 확정해 CODE_QUERY_ID/CODE_QUERY_REVISION_ID의 같은 데이터소스·정확 버전 복합 FK/잠금·전체 이행/검수 계약을 완성한다. 현재 논리 참조를 FK 완료로 표시하지 않는다"
+    pending: ["@defer P3 access_policy — 컬럼의 접근 그룹 승계·HIDE/MASK 유형별 예외와 개인정보 분류·공통 마스킹 참조의 전체 후보 저장/고정·현재 정책/당시 참조 계약을 연결한다. 별도 개인정보 사본이나 원값 샘플은 두지 않는다"]
     physical:
       attributes:
         - {"name":"REVISION_ID","type":"bigint","nullable":false,"default":null}
@@ -250,10 +246,8 @@ entities:
         - {"name":"TIME_ZONE_ID","type":"character varying(100)","nullable":true,"default":null}
         - {"name":"UNIT_CD","type":"character varying(30)","nullable":true,"default":null}
         - {"name":"VALUE_MODE","type":"character varying(8)","nullable":false,"default":null}
-        - {"name":"CODE_CATALOG_ID","type":"bigint","nullable":true,"default":null}
-        - {"name":"CODE_REVISION_ID","type":"bigint","nullable":true,"default":null}
-        - {"name":"CODE_VALUE_COLUMN_ID","type":"bigint","nullable":true,"default":null}
-        - {"name":"CODE_NAME_COLUMN_ID","type":"bigint","nullable":true,"default":null}
+        - {"name":"CODE_QUERY_ID","type":"bigint","nullable":true,"default":null}
+        - {"name":"CODE_QUERY_REVISION_ID","type":"bigint","nullable":true,"default":null}
         - {"name":"REVIEW_STATUS","type":"character varying(12)","nullable":false,"default":null}
         - {"name":"REVIEWER_ID","type":"character varying(30)","nullable":true,"default":null}
         - {"name":"REVIEWED_DTM","type":"timestamp with time zone","nullable":true,"default":null}
@@ -271,12 +265,9 @@ entities:
         - {"name":"CK_CAT_COL_MODE","definition":"CHECK (VALUE_MODE IN ('UNKNOWN','NONE','CODE','INLINE') AND NULLABLE_CD IN ('UNKNOWN','YES','NO') AND SEMANTIC_TYPE IN ('UNKNOWN','DATE','DATETIME','AMOUNT','QUANTITY','FLAG','CODE','IDENTIFIER','TEXT'))"}
         - {"name":"CK_CAT_COL_REVIEW","definition":"CHECK (REVIEW_STATUS IN ('UNKNOWN','VERIFIED','INVALID') AND (REVIEW_STATUS <> 'VERIFIED' OR (REVIEWER_ID IS NOT NULL AND REVIEWED_DTM IS NOT NULL AND REVIEW_EVIDENCE IS NOT NULL)))"}
         - {"name":"CK_CAT_COL_VALUE_REVIEW","definition":"CHECK (VALUE_REVIEW_STATUS IN ('UNKNOWN','VERIFIED','INVALID') AND (VALUE_REVIEW_STATUS <> 'VERIFIED' OR (VALUE_REVIEWER_ID IS NOT NULL AND VALUE_REVIEWED_DTM IS NOT NULL AND VALUE_REVIEW_EVIDENCE IS NOT NULL)))"}
-        - {"name":"FK_CAT_CODE_REV","definition":"FOREIGN KEY (CODE_CATALOG_ID, CODE_REVISION_ID) REFERENCES AI_ADMIN_CATALOG_REVISION (CATALOG_ID, REVISION_ID) DEFERRABLE INITIALLY DEFERRED"}
-        - {"name":"FK_CAT_CODE_VALUE","definition":"FOREIGN KEY (CODE_REVISION_ID, CODE_VALUE_COLUMN_ID) REFERENCES AI_ADMIN_CATALOG_COLUMN (REVISION_ID, COLUMN_ID) DEFERRABLE INITIALLY DEFERRED"}
-        - {"name":"FK_CAT_CODE_NAME","definition":"FOREIGN KEY (CODE_REVISION_ID, CODE_NAME_COLUMN_ID) REFERENCES AI_ADMIN_CATALOG_COLUMN (REVISION_ID, COLUMN_ID) DEFERRABLE INITIALLY DEFERRED"}
-        - {"name":"UK_CAT_COL_CODE_TARGET","definition":"UNIQUE (REVISION_ID, COLUMN_ID, CODE_REVISION_ID)"}
         - {"name":"UK_CAT_COL_NAME","definition":"UNIQUE (REVISION_ID, COLUMN_KEY)"}
       indexes: [{"name":"IX_CAT_COL_HISTORY","unique":false,"method":"btree","definition":"(COLUMN_ID, REVISION_ID)"}]
+
 
   - id: ENT-008
     name: "권장 조인 관계"
@@ -359,78 +350,6 @@ entities:
         - {"name":"CK_CAT_JOIN_REVIEW","definition":"CHECK (REVIEW_STATUS IN ('UNKNOWN','VERIFIED','INVALID') AND (REVIEW_STATUS <> 'VERIFIED' OR (REVIEWER_ID IS NOT NULL AND REVIEWED_DTM IS NOT NULL AND REVIEW_EVIDENCE IS NOT NULL)))"}
       indexes: [{"name":"IX_CAT_JOIN_LEFT","unique":false,"method":"btree","definition":"(LEFT_CATALOG_ID, LEFT_REVISION_ID)"},{"name":"IX_CAT_JOIN_RIGHT","unique":false,"method":"btree","definition":"(RIGHT_CATALOG_ID, RIGHT_REVISION_ID)"}]
 
-  - id: ENT-009
-    name: "필수 조회 제약"
-    term: TRM-247
-    domain: "연동 자산"
-    module: admin
-    implementation: planned
-    design_stage: physical
-    table: AI_ADMIN_QUERY_CONSTRAINT
-    features: [FEAT-003]
-    reqs: [REQ-301]
-    description: "카탈로그 내용 리비전에 속한 정형 조회 조건. DB NOT NULL·행 스코프·선택 해제 가능한 기본 필터와 별개다"
-    attributes:
-      - {"name":"소유 내용 판","physical_name":"REVISION_ID","pk":true,"description":"소유 내용 판"}
-      - {"name":"소유 카탈로그","physical_name":"CATALOG_ID","description":"소유 카탈로그"}
-      - {"name":"안정 구성 식별자 중 CONSTRAINT","physical_name":"CONSTRAINT_ID","pk":true,"description":"안정 구성 식별자 중 CONSTRAINT"}
-      - {"name":"구성 종류","physical_name":"MEMBER_KIND","description":"안정 식별의 종류 CONSTRAINT"}
-      - {"name":"제약 업무 명칭","physical_name":"BUSINESS_NAME","description":"제약 업무 명칭"}
-      - {"name":"기간 조건을 강제하는 업무 이유","physical_name":"REASON","description":"기간 조건을 강제하는 업무 이유"}
-      - {"name":"기간 규칙 유형","physical_name":"RULE_KIND","description":"PERIOD_REQUIRED/PERIOD_MAX"}
-      - {"name":"소유 판의 기준일 컬럼","physical_name":"PERIOD_COLUMN_ID","description":"소유 판의 기준일 컬럼"}
-      - {"name":"해석할 날짜/일시 형식","physical_name":"VALUE_FORMAT","description":"해석할 날짜/일시 형식"}
-      - {"name":"검수한 원천 시간대","physical_name":"TIME_ZONE_ID","description":"검수한 원천 시간대"}
-      - {"name":"INCLUSIVE/EXCLUSIVE 또는 미확인 null","physical_name":"START_BOUND","description":"INCLUSIVE/EXCLUSIVE 또는 미확인 null"}
-      - {"name":"INCLUSIVE/EXCLUSIVE 또는 미확인 null","physical_name":"END_BOUND","description":"INCLUSIVE/EXCLUSIVE 또는 미확인 null"}
-      - {"name":"최대 범위의 양의 수. 최대 범위가 없는 규칙은 null","physical_name":"MAX_SPAN","description":"최대 범위의 양의 수. 최대 범위가 없는 규칙은 null"}
-      - {"name":"CALENDAR_DAY/ELAPSED_SECOND. 미지원 단위를 추정하지 않는다","physical_name":"SPAN_UNIT","description":"CALENDAR_DAY/ELAPSED_SECOND. 미지원 단위를 추정하지 않는다"}
-      - {"name":"검수 상태 UNKNOWN/VERIFIED/INVALID","physical_name":"REVIEW_STATUS","description":"검수 상태 UNKNOWN/VERIFIED/INVALID"}
-      - {"name":"실제 검수자","physical_name":"REVIEWER_ID","description":"실제 검수자"}
-      - {"name":"실제 검수 시각","physical_name":"REVIEWED_DTM","description":"실제 검수 시각"}
-      - {"name":"검수 근거. 샘플 원값이나 비밀을 넣지 않는다","physical_name":"REVIEW_EVIDENCE","description":"검수 근거. 샘플 원값이나 비밀을 넣지 않는다"}
-    relations:
-      - {"entity":"ENT-020","cardinality":"소유 판·구성의 복합 키로 참조","description":"명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"}
-      - { entity: ENT-006, cardinality: "제약마다 소유 내용 판 하나", description: "신규·수정·삭제·대체 변경은 같은 전체 후보/세트로 반영한다" }
-      - { entity: ENT-007, cardinality: "제약마다 대상 컬럼 참조 0개 이상, 사용 가능한 제약은 필요한 전체 참조 1개 이상", description: "미완성 초안의 누락을 표시하고 기간/대체 키의 전체 참조를 해당 내용 판에서 검증한다" }
-    rules:
-      - "여러 제약은 모두 충족해야 하며 대체는 연결된 제약에만 적용한다. 제약 없음은 ENT-006의 검수된 명시 상태이며 빈 목록으로 미확인을 숨기지 않는다"
-      - "미완성 후보는 저장할 수 있으나 해당 범위를 AI 조회에 사용하지 않는다. 내용 승인·실행 승인·기본 필터 제외는 제약 면제가 아니다"
-      - "실제 SQL/바인딩 전체와 최종 필터 처리 후 판정은 agent 소유다. 모델의 충족 표식만으로 통과하지 않고 과거 실행의 통과 결과를 새 실행에 재사용하지 않는다"
-    audit: "관리 정의는 ENT-006에 보존하고 실행의 적용 제약/판정은 REQ-301.query_constraints.audit의 소유 감사로 연결한다"
-    rules_from: ["REQ-301.query_constraints", "REQ-108", "REQ-207"]
-    delete_policy: "초안의 자식 제거도 부모 잠금/편집 버전을 검사한다. 고정 판과 과거 자식은 관리 화면에서 삭제/수정하지 않으며 파기는 소유 보존 정책과 참조 보호를 따른다"
-    storage_contract: "대체 키별 전체 구성은 ENT-021·022를 참조하는 ENT-026으로 분리한다. 제약별 여러 대체 키를 한 컬럼 목록으로 합치지 않는다. 제약 없음의 검수는 ENT-006.CONSTRAINT_STATE와 검수 근거다. 현재 규칙에는 임의 SQL/범용 표현식 저장 열이 없다."
-    pending: ["@defer P3 agent·verification — 지원 파서의 기간/전체 단일 키 판정·최종 SQL/바인딩 일치·달력일/경과초 경계·시간대 전환의 실제 거부/허용 시험을 연결한다"]
-    physical:
-      attributes:
-        - {"name":"REVISION_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"CATALOG_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"CONSTRAINT_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"MEMBER_KIND","type":"character varying(12)","nullable":false,"default":null}
-        - {"name":"BUSINESS_NAME","type":"character varying(200)","nullable":true,"default":null}
-        - {"name":"REASON","type":"text","nullable":true,"default":null}
-        - {"name":"RULE_KIND","type":"character varying(20)","nullable":false,"default":null}
-        - {"name":"PERIOD_COLUMN_ID","type":"bigint","nullable":true,"default":null}
-        - {"name":"VALUE_FORMAT","type":"character varying(100)","nullable":true,"default":null}
-        - {"name":"TIME_ZONE_ID","type":"character varying(100)","nullable":true,"default":null}
-        - {"name":"START_BOUND","type":"character varying(10)","nullable":true,"default":null}
-        - {"name":"END_BOUND","type":"character varying(10)","nullable":true,"default":null}
-        - {"name":"MAX_SPAN","type":"bigint","nullable":true,"default":null}
-        - {"name":"SPAN_UNIT","type":"character varying(16)","nullable":true,"default":null}
-        - {"name":"REVIEW_STATUS","type":"character varying(12)","nullable":false,"default":null}
-        - {"name":"REVIEWER_ID","type":"character varying(30)","nullable":true,"default":null}
-        - {"name":"REVIEWED_DTM","type":"timestamp with time zone","nullable":true,"default":null}
-        - {"name":"REVIEW_EVIDENCE","type":"text","nullable":true,"default":null}
-      constraints:
-        - {"name":"PK_QUERY_CONSTRAINT","definition":"PRIMARY KEY (REVISION_ID, CONSTRAINT_ID)"}
-        - {"name":"FK_CAT_QUERY_REV","definition":"FOREIGN KEY (CATALOG_ID, REVISION_ID) REFERENCES AI_ADMIN_CATALOG_REVISION (CATALOG_ID, REVISION_ID) DEFERRABLE INITIALLY DEFERRED"}
-        - {"name":"FK_CAT_QUERY_MEMBER","definition":"FOREIGN KEY (CATALOG_ID, CONSTRAINT_ID, MEMBER_KIND) REFERENCES AI_ADMIN_CATALOG_MEMBER (CATALOG_ID, MEMBER_ID, MEMBER_KIND)"}
-        - {"name":"CK_CAT_QUERY_KIND","definition":"CHECK (MEMBER_KIND = 'CONSTRAINT' AND RULE_KIND IN ('PERIOD_REQUIRED','PERIOD_MAX'))"}
-        - {"name":"FK_CAT_QUERY_COLUMN","definition":"FOREIGN KEY (REVISION_ID, PERIOD_COLUMN_ID) REFERENCES AI_ADMIN_CATALOG_COLUMN (REVISION_ID, COLUMN_ID) DEFERRABLE INITIALLY DEFERRED"}
-        - {"name":"CK_CAT_QUERY_RANGE","definition":"CHECK ((MAX_SPAN IS NULL OR MAX_SPAN > 0) AND (START_BOUND IS NULL OR START_BOUND IN ('INCLUSIVE','EXCLUSIVE')) AND (END_BOUND IS NULL OR END_BOUND IN ('INCLUSIVE','EXCLUSIVE')) AND (SPAN_UNIT IS NULL OR SPAN_UNIT IN ('CALENDAR_DAY','ELAPSED_SECOND')))"}
-        - {"name":"CK_CAT_QUERY_REVIEW","definition":"CHECK (REVIEW_STATUS IN ('UNKNOWN','VERIFIED','INVALID') AND (REVIEW_STATUS <> 'VERIFIED' OR (REVIEWER_ID IS NOT NULL AND REVIEWED_DTM IS NOT NULL AND REVIEW_EVIDENCE IS NOT NULL)))"}
-      indexes: [{"name":"IX_CAT_QUERY_HISTORY","unique":false,"method":"btree","definition":"(CONSTRAINT_ID, REVISION_ID)"}]
 
   - id: ENT-010
     name: "카탈로그 변경 근거"
@@ -489,3 +408,115 @@ entities:
         - {"name":"UK_CAT_EVIDENCE_COMMAND","definition":"UNIQUE (COMMAND_KEY)"}
         - {"name":"CK_CAT_EVIDENCE_STATE","definition":"CHECK (SOURCE_KIND IN ('NOTICE','STRUCTURE','MEANING') AND OBSERVATION_STATUS IN ('UNCONFIRMED','COMPLETE','PARTIAL','FAILED') AND EVIDENCE_FORMAT >= 1)"}
       indexes: [{"name":"IX_CAT_EVIDENCE_TIME","unique":false,"method":"btree","definition":"(RECEIVED_DTM DESC, EVIDENCE_ID DESC)"}]
+
+  - id: ENT-039
+    name: "원천 구조 비교 실행"
+    domain: "연동 자산"
+    module: admin
+    implementation: planned
+    design_stage: logical
+    features: [FEAT-003]
+    reqs: [REQ-304]
+    description: "데이터소스별 수동 비교 실행과 기준 목록·대상별 결과. 데이터소스 설정 변경 이력과 별도"
+    attributes:
+      - {name: "실행 ID·멱등 키·세대·데이터소스/설정 버전", description: "재요청·중복 실행·오래된 결과 차단"}
+      - {name: "주체·시작/완료 시각·상태·처리 수", description: "실행 중/완료/부분/실패/취소와 성공/불일치/미확인/건너뜀 수"}
+      - {name: "대상별 기준·지원 범위·관측/오류/해소 결과", description: "정확 카탈로그/버전·객체·지원 속성별 양쪽 정형 값/원문·확인 상태·연결 관측을 보존한다. 변경되지 않은 비교 셀도 같은 기준/관측으로 재현하며 현재 카탈로그로 과거 행을 채우지 않는다. 값 데이터/비밀 제외"}
+    relations:
+      - {entity: ENT-002, cardinality: "실행당 데이터소스 하나", description: "저장된 연결/설정 근거"}
+      - {entity: ENT-006, cardinality: "실행당 기준 버전 여러 건", description: "실행 시작 시 확정한 현재 유효본"}
+    rules: ["REQ-304.batch_structure_comparison을 따른다", "결과/불일치 반영 전에 실행 세대·기준 버전을 검증한다", "실패를 일치·부재로 처리하지 않는다"]
+    delete_policy: "비교/해소 기록과 변경 근거는 보존 정책으로 관리. 현재 차이 목록 삭제와 함께 삭제하지 않음"
+    pending: ["@defer P3 integration_assets·integration — 실행/대상 자식 물리 저장·잠금/재시작·공개 API·보존 확정"]
+  - id: ENT-040
+    name: "원천 구조 미해결 불일치"
+    domain: "연동 자산"
+    module: admin
+    implementation: planned
+    design_stage: logical
+    features: [FEAT-003]
+    reqs: [REQ-304]
+    description: "데이터소스 관리에서 조회할 현재 미해결 차이 목록. 불변 과거 근거가 아닌 현재 투영"
+    attributes:
+      - {name: "차이 키·COLUMN/INDEX 유형·정확 대상/속성·차이 종류", description: "동일 데이터소스/카탈로그/대상/속성/종류 중복 방지"}
+      - {name: "기준 버전·카탈로그 값·원천 값", description: "정형 값과 원문·지원/확인 상태를 저장. 인덱스 키 순서/표현식/포함/필터 전체 정의를 유지. 업무 데이터/원값 샘플 없음"}
+      - {name: "최초/최근 발견·최근 확인 상태·실행 참조", description: "관측 실패 시 기존 차이 유지와 신선도 구분. 화면은 컬럼/정의별로 집계하되 속성별 해소 상태를 유지"}
+    relations:
+      - {entity: ENT-039, cardinality: "차이당 최근 실행 근거", description: "추가/갱신/해소 사실은 실행 근거에 남김"}
+      - {entity: ENT-005, cardinality: "차이당 카탈로그 하나", description: "객체 이름만으로 합치지 않음"}
+    rules: ["신규 차이 추가·같은 차이 갱신·성공 재비교된 일치만 제거", "실패/부분/권한 제한·오래된 결과는 제거 사유가 아니다", "카탈로그 폐기는 별도 대상 제외로 처리하고 일치 확인을 꾸미지 않는다"]
+    delete_policy: "성공 확인된 일치/명시적 대상 폐기 시 현재 목록에서 제거. 실행/변경 근거와 사람 영향 검토는 보존"
+    pending: ["@defer P3 integration_assets — 물리 키·대상별 갱신 트랜잭션/복구·목록 페이지/정렬·권한 설계"]
+
+  - id: ENT-041
+    name: "코드 조회 정의"
+    term: "TRM-283"
+    domain: "연동 자산"
+    module: "admin"
+    implementation: "planned"
+    design_stage: "logical"
+    features: ["FEAT-002","FEAT-003"]
+    reqs: ["REQ-603","REQ-301"]
+    attributes:
+      - {"name":"안정 조회 정의","physical_name":"CODE_QUERY_ID","description":"재사용하지 않는 식별자","pk":true}
+      - {"name":"소속 데이터소스","physical_name":"DATA_SOURCE_ID","description":"ENT-002 소속 고정"}
+      - {"name":"조회명","physical_name":"QUERY_NAME","description":"관리자가 식별하는 이름"}
+      - {"name":"관리 설명","physical_name":"DESCRIPTION","description":"업무 목적/사용 범위"}
+    relations:
+      - {"entity":"ENT-002","cardinality":"데이터소스마다 여러 정의","description":"데이터소스/배포 연결과 별도 정의 자산"}
+      - {"entity":"ENT-042","cardinality":"정의마다 여러 버전","description":"정확 버전별 불변 SQL 계약"}
+    rules: ["사용 중 정의의 물리삭제 금지. 현재 상태/사용처를 검사하며 이름으로 실행하지 않는다","정의 저장/검수/활성 이력은 데이터소스 기본설정 이력과 별도다"]
+    pending: ["@defer P3 integration_assets·integration — 물리 컬럼/키·버전 원자성/잠금·멱등 처리·참조 보호와 감사/검수 이력의 보존 계약을 완성한다. planned 논리 모델이며 제품 구현/이행이 아니다"]
+
+  - id: ENT-042
+    name: "코드 조회 정의 버전"
+    term: "TRM-284"
+    domain: "연동 자산"
+    module: "admin"
+    implementation: "planned"
+    design_stage: "logical"
+    features: ["FEAT-002","FEAT-003"]
+    reqs: ["REQ-603","REQ-301"]
+    attributes:
+      - {"name":"조회 버전 식별자","physical_name":"CODE_QUERY_REVISION_ID","description":"정확 버전을 가리키는 안정 ID","pk":true}
+      - {"name":"안정 조회 정의","physical_name":"CODE_QUERY_ID","description":"ENT-041 소유"}
+      - {"name":"버전 번호","physical_name":"REVISION_NO","description":"정의 내 증가 번호"}
+      - {"name":"편집 버전","physical_name":"EDIT_VERSION","description":"DRAFT 저장 충돌 검사"}
+      - {"name":"상태 버전","physical_name":"STATE_VERSION","description":"검수/활성/비활성 전환의 기대 상태 버전. 내용 편집 버전과 구분"}
+      - {"name":"상태","physical_name":"STATUS","description":"DRAFT/VERIFIED/ACTIVE/INACTIVE"}
+      - {"name":"조회 SQL","physical_name":"QUERY_SQL","description":"typed named value binding의 검수된 read-only SQL"}
+      - {"name":"코드값 결과 컬럼","physical_name":"VALUE_RESULT_COLUMN","description":"코드값 원자료형을 보존"}
+      - {"name":"코드명 결과 컬럼","physical_name":"NAME_RESULT_COLUMN","description":"자연어 의미"}
+      - {"name":"설명 결과 컬럼","physical_name":"DESCRIPTION_RESULT_COLUMN","description":"선택"}
+      - {"name":"조회 방식","physical_name":"FETCH_MODE","description":"LIVE 기본/CACHE 선택"}
+      - {"name":"캐시 유효 초","physical_name":"CACHE_TTL_SECONDS","description":"CACHE에서 필수인 양수, 상한 값 후속"}
+      - {"name":"검수 근거","physical_name":"REVIEW_EVIDENCE","description":"서버 검수 주체/시각·정적/원천 시험 근거"}
+      - {"name":"실행 통제 참조","physical_name":"EXECUTION_POLICY_REF","description":"원천 참조/현재 권한·상한/정책 계약"}
+    relations:
+      - {"entity":"ENT-041","cardinality":"버전마다 정의 하나","description":"소속 데이터소스와 같은 실행 원천"}
+      - {"entity":"ENT-043","cardinality":"버전마다 선언 파라미터 0개 이상","description":"SQL placeholder와 전체 일치 검증"}
+      - {"entity":"ENT-007","cardinality":"정확 버전 참조 컬럼 0개 이상","description":"자동 최신판 치환/자동 원천 공개 금지"}
+    rules: ["VERIFIED 이후 SQL/파라미터/결과 계약은 불변. 수정은 새 DRAFT 복사","명시 활성화만 ACTIVE. 여러 버전 활성 가능, 비활성화는 그 버전의 신규/실행을 차단하고 참조를 보존","정의 변경·원천 코드 데이터 변경·실행 시점 결과/캐시를 구분한다. 실행 결과는 정의 행에 덮어쓰지 않는다"]
+    pending: ["@defer P3 integration_assets·integration — 물리 컬럼/키·버전 원자성/잠금·멱등 처리·참조 보호와 감사/검수 이력의 보존 계약을 완성한다. planned 논리 모델이며 제품 구현/이행이 아니다"]
+
+  - id: ENT-043
+    name: "코드 조회 파라미터"
+    term: "TRM-285"
+    domain: "연동 자산"
+    module: "admin"
+    implementation: "planned"
+    design_stage: "logical"
+    features: ["FEAT-002","FEAT-003"]
+    reqs: ["REQ-603","REQ-301"]
+    attributes:
+      - {"name":"소유 조회 버전","physical_name":"CODE_QUERY_REVISION_ID","description":"ENT-042 소유","pk":true}
+      - {"name":"파라미터명","physical_name":"PARAMETER_NAME","description":"named placeholder와 일치","pk":true}
+      - {"name":"자료형","physical_name":"VALUE_TYPE","description":"STRING/NUMBER/BOOLEAN/DATE/DATETIME"}
+      - {"name":"필수","physical_name":"REQUIRED_YN","description":"기본값을 암묵 생성하지 않음"}
+      - {"name":"NULL 허용","physical_name":"NULLABLE_YN","description":"필수/값 없음과 구분"}
+      - {"name":"허용값·길이 제약","physical_name":"VALIDATION_RULES","description":"지원하는 구조화 검증 규칙. 임의 SQL 금지; 물리 형식/길이와 검증 어휘는 후속 확정"}
+      - {"name":"업무 설명","physical_name":"DESCRIPTION","description":"그룹/언어/회사/과거 사용여부 정책"}
+    relations:
+      - {"entity":"ENT-042","cardinality":"파라미터마다 버전 하나","description":"정확 버전의 SQL/결과 계약에 고정"}
+    rules: ["PARAMETER_NAME은 ASCII 식별 이름으로 중복 불가, 테이블명/SQL 조각 치환이 아님","시험 바인딩은 일시 요청이며 파라미터 정의/공유 기본값으로 영구 저장하지 않는다","카탈로그 typed 바인딩·실행값과 선언 타입/필수/NULL을 서버에서 검사한다"]
+    pending: ["@defer P3 integration_assets·integration — 물리 컬럼/키·버전 원자성/잠금·멱등 처리·참조 보호와 감사/검수 이력의 보존 계약을 완성한다. planned 논리 모델이며 제품 구현/이행이 아니다"]
