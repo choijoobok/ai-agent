@@ -46,7 +46,7 @@ pending_rechecks: {}
 gates:
   P0_inception:    { status: approved, approved_at: "2026-09-05", note: "**Exit Criteria 8/8.** 목적 한 문장 · 성공 기준 셋(정확성 1 · 유효성 2 · 절제 3, 목표값은 ASM-002 로 P1) · 범위 In 7/Out 10 · 액터 11 전원 목적 보유 · 제약 44 · 트랙 full · 기존 시스템 병행 · 기대치 balanced. 안고 넘어간 것 셋은 아래 gate_note" }
   P1_discovery:    { status: in_progress, approved_at: null, note: "Hub 도메인 중립 프로세스 PRC-01~13과 요구사항은 정의되어 있다. 전역 G1은 각 작업흐름 P1의 통합 검증 뒤 승인한다. 2026-10-28 현재 차수 포함 요구사항 97건 중 must 84건(86.6%)으로 전역 상한 70%를 넘는다. 현재 범위 제외 REQ-615는 분모에서 제외했다. 우선순위를 임의로 낮추지 않고 전역 승인 전에 출시 범위·우선순위와 근거를 사용자와 조정한다. 첫 고객 실제 업무·적용 전 기준선 OQ-002는 파일럿 착수 조건이며 제품 G1을 막지 않는다." }
-  P2_architecture: { status: in_progress, approved_at: null, note: "**2026-09-12 재개방.** 기존 백오피스를 system으로 분리하고 admin·agent·portal과 함께 4모듈 경계를 두는 ADR-007이 ARCH-003·010~014와 공통 인가·라우팅에 영향을 준다. 기존 G2 자체검증은 무효화했으며 정본·하네스 갱신 뒤 다시 검증한다" }
+  P2_architecture: { status: in_progress, approved_at: null, note: "2026-10-29 CR-028·ADR-034의 공통 계정 철회/영역별 별도 인증 보안 불변식을 통합 재검증한다. 기존 재개방 기록: **2026-09-12 재개방.** 기존 백오피스를 system으로 분리하고 admin·agent·portal과 함께 4모듈 경계를 두는 ADR-007이 ARCH-003·010~014와 공통 인가·라우팅에 영향을 준다. 기존 G2 자체검증은 무효화했으며 정본·하네스 갱신 뒤 다시 검증한다" }
   P3_design:       { status: in_progress, approved_at: null, note: "system 범위의 30·31·40·50·60·70 설계와 핵심 시퀀스 3건은 작성됐다. admin·agent·integration·portal의 각 소유 범위는 아직 해당 작업흐름 단계에서 설계한다" }
   P4_build:        { status: not_started, approved_at: null, note: "**G4 기계 검사 셋이 다 초록이다**(2026-09-06) — 셋 다 빨갛던 것을 세는 법을 고쳐 닫았다. 아래 quality_baseline" }
   P5_verify:       { status: not_started, approved_at: null, note: "" }
@@ -63,8 +63,8 @@ workstreams:
     deferred_until: null
     gates:
       P1_discovery:    { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 8/8.** ACT-012, PRC-06~08, REQ-501~510을 현재 소스·Liquibase·화면 문서에서 역추적했다. SYSTEM 하위 16개·공통 대시보드 1개·메뉴 없는 공통 화면 8개와 근거 테이블 31개를 대조했고 추적성 오류 0건이다. 레드팀에서 전 수명주기·변조 불가·소스 키 한정·요청 승인이라는 과잉 표현을 현재 구현 범위로 바로잡았다. 역질문 권장안에 따라 설치용 ADMIN은 설치 시점의 전체 권한 기준선으로 한정하고, 운영에서는 시스템 관리자와 감사·품질 역할을 분리한다. 일반 계정·권한 공지와 요청은 system, AI 품질·정책 관련 알림은 admin이 소유한다" }
-      P2_architecture: { status: approved, approved_at: "2026-09-12", note: "**사용자 승인 · Exit Criteria 8/8.** ADR-007 아래 ARCH-022~026으로 system의 백엔드·프론트 목표 경로, 31개 테이블 쓰기 소유권, 화면 경로와 기능별 이행 순서를 정의하고 AUTHZ-091로 설치용 ADMIN과 운영 권한을 분리했다. 사용자는 역할 겸임을 허용하고 특정 역할·메뉴 코드의 금지 하드코딩을 거부했다. 역할·메뉴·개인 권한 데이터와 유효 권한이 유일한 판정 근거다. 현재 고객이 없는 개발 단계이므로 신규 경로 전환과 회귀 시험 뒤 기존 API·화면 경로는 같은 슬라이스에서 즉시 제거하고 호환 별칭을 남기지 않는다. ASM-005·006은 기각됨으로 닫았다" }
-      P3_design:       { status: in_progress, approved_at: null, note: "2026-10-27 CR-026·027 방향 승인으로 계정/설정의 영향 상세 설계만 재개방했다. 기대 버전·공통 주체의 물리/공개 계약·화면 요건/목업과 미구현 TC 6건을 재검토한다. 기존 승인 근거: **사용자 승인 · Exit Criteria 11/11.** REQ-501~510을 UC-501~510·FEAT-501~510·ENT-501~531·API-501~599·SCR-501~525·TC 52건으로 연결했다. 실제 컨트롤러 99개와 목표 API의 요청·응답 타입·근거 메서드를 전수 대조했고 누락·중복 0건이다. 핵심 시퀀스는 UC-501·503·508 세 건이며 예외와 트랜잭션 경계를 표시했다. 권한 변경 API는 SYS_LO_ACCESS의 일반 시스템 사용 이력에 남기되 전용 원장은 고객사 요구가 생긴 도입 시점 이후만 기록하고 과거 변경은 복원하지 않는다. 같은 역할을 동시에 전체 저장하면 나중에 완료된 스냅샷이 이기고 자동 병합하지 않는다. 레드팀 위험은 사용자 결정과 TC-5076·TC-5026으로 닫았고 trace 오류 0건이었다" }
+      P2_architecture: { status: in_progress, approved_at: null, note: "2026-10-29 CR-028·ADR-034로 계정·인증/인가·진입 경계만 재개방했다. 사용자 명시 변경 방향은 승인됐으나 영향 G2 재승인은 별도다. 다른 범위의 이전 승인 근거는 유지한다. 이전 기록: **사용자 승인 · Exit Criteria 8/8.** ADR-007 아래 ARCH-022~026으로 system의 백엔드·프론트 목표 경로, 31개 테이블 쓰기 소유권, 화면 경로와 기능별 이행 순서를 정의하고 AUTHZ-091로 설치용 ADMIN과 운영 권한을 분리했다. 사용자는 역할 겸임을 허용하고 특정 역할·메뉴 코드의 금지 하드코딩을 거부했다. 역할·메뉴·개인 권한 데이터와 유효 권한이 유일한 판정 근거다. 현재 고객이 없는 개발 단계이므로 신규 경로 전환과 회귀 시험 뒤 기존 API·화면 경로는 같은 슬라이스에서 즉시 제거하고 호환 별칭을 남기지 않는다. ASM-005·006은 기각됨으로 닫았다" }
+      P3_design:       { status: in_progress, approved_at: null, note: "2026-10-29 CR-028이 CR-027의 공통 계정 방향을 철회했다. 관리자 자체 계정과 별도 Portal 계정/인증의 수락·세션·API/감사 참조 분리를 영향 상세 설계한다. CR-026 설정 계약 재설계는 유지한다. 기존 이력: 2026-10-27 CR-026·027 방향 승인으로 계정/설정의 영향 상세 설계만 재개방했다. 기대 버전·공통 주체의 물리/공개 계약·화면 요건/목업과 미구현 TC 6건을 재검토한다. 기존 승인 근거: **사용자 승인 · Exit Criteria 11/11.** REQ-501~510을 UC-501~510·FEAT-501~510·ENT-501~531·API-501~599·SCR-501~525·TC 52건으로 연결했다. 실제 컨트롤러 99개와 목표 API의 요청·응답 타입·근거 메서드를 전수 대조했고 누락·중복 0건이다. 핵심 시퀀스는 UC-501·503·508 세 건이며 예외와 트랜잭션 경계를 표시했다. 권한 변경 API는 SYS_LO_ACCESS의 일반 시스템 사용 이력에 남기되 전용 원장은 고객사 요구가 생긴 도입 시점 이후만 기록하고 과거 변경은 복원하지 않는다. 같은 역할을 동시에 전체 저장하면 나중에 완료된 스냅샷이 이기고 자동 병합하지 않는다. 레드팀 위험은 사용자 결정과 TC-5076·TC-5026으로 닫았고 trace 오류 0건이었다" }
       P4_build:        { status: not_started, approved_at: null, note: "2026-10-27 CR-026·027 변경분의 구현은 아직 시작하지 않았다. 기존 소스의 승인 이력은 변경 전 기준선 근거이며 새 목표의 완료를 뜻하지 않는다. 기존 승인 근거: 사용자 재승인. CR-019로 재개방한 sample local 전용 코드·프런트·시드·Liquibase 기준선 분리를 재검증했다. 제품 번들은 sample을 제외하고 local은 여섯 화면을 포함하며, 전체 백엔드·프런트(88파일·688테스트)·시드·품질·추적성·문서 검사를 통과했다. SampleRules PIT는 변이 3개를 모두 제거했다. 실제 DB 설치·성능·번들 경고 영향은 P5에서 검증한다." }
       P5_verify:       { status: not_started, approved_at: null, note: "2026-10-27 CR-026·027 변경분의 계약·회귀·이행/배포 검증은 후속이다. 기존 승인 근거: **사용자 승인 · Exit Criteria 6/6.** 실제 빈 PostgreSQL 설치·product/local 기준선·product 백업/복구·JPA validate·API 인가 경계·운영 흐름을 검증했다. 잔여 5건은 RoleAuthServiceTest·AuthorizationInterceptorTest·CodeAdminServiceTest·ConfigServiceTest 재실행으로 닫았고, 전체 백엔드 check와 프런트 lint·타입 검사·테스트도 통과했다. system 소유 NFR은 0건이며 다른 작업흐름 NFR은 전역 G5 대상이 아니다. system 범위 trace 오류·경고 0건, Critical/High·Medium 이하 잔여 결함 0건이다. 실제 배치 자연 실행은 RUN-101 운영 관찰로 남긴다. P6에서 정본으로 생성물 전체를 다시 만들어 문서 생성 완전성 검사(ID 567개·장문 필드 1,980개)가 모두 누락 0건으로 닫혔다." }
   admin:
@@ -78,6 +78,7 @@ workstreams:
       status: in_progress
       purpose: "사용자가 합의한 7개 상세 설계 작업 묶음과 재개 지점을 관리한다. 메뉴 대분류·물리 도메인명·G3 승인을 확정하는 기록은 아니다"
       status_rule: "not_started(미착수) → in_progress(진행) → verified(명시된 완료 기준과 검증 충족). 외부 계약 때문에 진행할 수 없는 항목만 waiting_dependency로 표시하고 해소 조건을 남긴다. verified는 사용자 게이트 승인과 별개다"
+      account_security_change: { change: CR-028, decision: ADR-034, status: "방향 반영·상세 설계/구현 대기", references: [ARCH-050, REQ-501, REQ-616, FEAT-301, SCR-113, SCR-114, SCR-115], verification: "독립 의미 검토의 저장조회 권한·관리 service 범위·관리자 UI 상태/알림 참조·시험 주체를 보완했고 잔여 P1/P2 없음. 하네스/lint·도메인·trace 오류0/후속 경고108, 생성224개·ID926개·장문11483개 누락/깨진 링크0, HTML252/18/9장 통과. Edge 설계28화면·목업25개·시퀀스탭4개·SVG29개·테마 경합/인쇄 통과. 제품 소스/DB/실제 외부 인증·모바일 시험 미실행" }
       active_step: area_design
       active_area: integration_assets
       sequence: [inventory, common_contracts, area_design, integration_review]
@@ -134,6 +135,7 @@ workstreams:
           sequence_artifact_verification: "하네스·양 provider 스킬·harness-doc·Codex adapter self-test·문서 lint 통과. trace 오류 0/기존 후속 경고 112, 도메인 69개/활성 36개 일치. doc-gen 222개·ID 906개·장문 11289개 누락/깨진 링크 0. HTML 설계249/사용자18/운영9장 구조와 최신 Edge의 설계 화면27개·시퀀스 탭2개·Mermaid 구문/생성SVG23개·현재 문서 인쇄1개 통과. build 최상위 파일은 README.txt만 유지했다. 실제 Claude 세션 trigger smoke·제품 DB/동시 요청/사용자 인수 시험은 미실행이다"
           catalog_screen_review: "2026-10-29 SCR-003 /admin/hub/catalog의 동일 서식 요건서·목업을 작성했다. 상단 현재 항목과 1:N 하단 내용 판/후보 정의·컬럼/값·키/제약·관계·정책·관측/샘플·근거·판 이력을 분리하고 DRAFT 재진입/전체 저장·FROZEN 복사·동일 객체 이름 변경·관리측 고정/자기조인·미완성 관계의 쌍0개 보존을 연결했다. 화면 사례25개·TC17개·목업27개 상태·UC-007/008 시퀀스3개 초안이다. API-021 최신 판 고정 정렬을 공개 계약에 명시했으며 그룹/원천/세트/반출·보존의 소유 후속은 유지한다. 전체 화면 상세 승인·구현/G3는 미완료다"
           catalog_screen_verification: "18개 카탈로그 API·실제 물리 컬럼/코드·25개 화면 사례와 TC17개 연결 오류0 및 시험/API/컬럼/매핑 결손 반례4개 검출. 독립 검토의 신규 운영값 잔재·DRAFT 계속 편집·미완성 관계쌍/NOT NULL 충돌을 보완했고 잔여 P1/P2 없음. 목업 단위17개(배치12+스냅샷5), 시퀀스5개·Markdown2개 통과. Edge 카탈로그27개 상태의 상하 배치·현재/후보 문맥·값 방식별 빈 자식·고정 장문 열람·가로 넘침 통과. doc-gen224개·ID923개·장문11421개 누락/깨진 링크0, HTML252/18/9장 구조 통과. 최종 HTML Edge 검사에서 설계 화면28개·시퀀스 탭4개·Mermaid SVG29개·상세 목업21개·인쇄1개와 선택 열 표시/숨김·테마 전환 경합을 통과했다. 실제 DB 저장·동시 요청·샘플 실행/원천 시험과 사용자 인수는 미실행이다"
+          catalog_layout_feedback: "2026-10-29 사용자: 카탈로그 탭별 기능의 자세한 설명을 먼저 요청했다. 한 탭에 여러 그리드를 배치한 현재 초안은 좁아 사용하기 어렵고 탭 수가 늘더라도 각 탭을 단순하게 구성하는 안을 선호한다. 현재 턴은 기능 설명이며 목업 재배치는 아직 착수하지 않았다"
           screen_review: { status: draft, user_approved: false, screens: [SCR-001, SCR-002, SCR-003] }
           waiting_dependency:
             - refs: ["FEAT-006","FEAT-007","FEAT-008","ENT-018","ENT-006","ENT-012","ENT-016"]
@@ -193,10 +195,10 @@ workstreams:
           features: [FEAT-022, FEAT-032, FEAT-035, FEAT-041]
           progress: { inventory: verified, specification_and_logical: not_started, physical_and_contracts: not_started, verification: not_started }
       dependencies:
-        - refs: [CR-026, CR-027, ARCH-029, ARCH-050]
+        - refs: [CR-026, CR-028, ADR-034, ARCH-029, ARCH-050]
           owners: [system, integration]
           status: identified
-          resume_when: "공통 계정·설정 값/버전의 소비에 필요한 공개 계약을 소유 작업흐름과 대조했을 때 관련 상세를 확정한다. 방향 승인과 현재 구현 완료를 구별한다"
+          resume_when: "CR-028·ADR-034의 관리자/Portal 별도 계정·인증·세션과 CR-026의 설정 값/버전 소비 계약을 소유 작업흐름과 대조한다. 계정 자동 연결·동기화를 만들지 않으며 방향 승인과 실제 구현을 구분한다"
         - refs: [REQ-006, REQ-107, REQ-108, REQ-109, REQ-110, REQ-115, REQ-118, ARCH-070]
           owners: [agent, admin, integration]
           status: identified
@@ -222,7 +224,7 @@ workstreams:
         - "생성 보류는 원본의 보완 파일·AI 담당 조치·재실행 순서를 확인해 이어간다. 업무 의미·명명 충돌 등 사용자 판정이 필요한 경우만 선택지·영향·되돌리기 비용을 제시한다"
     gates:
       P1_discovery:    { status: approved, approved_at: "2026-10-27", note: "2026-10-27 사용자 명시 승인 · 자체검증 9/9. 관리 승인/업무 실행 승인 구분은 기존 확정 원칙이며 추가 메뉴 분리 결정이 아니라는 설명과 사용자 질의를 거쳤다. RM-P1 admin 소유·공유 요구사항 50건(must 43·should 7)은 모두 confirmed다. ① ID·검증 가능 문장과 ② 액터/프로세스 연결은 documents/spec/10-requirements/ 및 11-processes/001-processes.yaml에서 전수 확인했다. ③ 비기능 분류는 21-nfr/001-nfrs.yaml의 성능·가용성·보안·확장성·운영성·규정준수에 존재한다. ④ 업무 용어 173개와 혼동 구분은 03-glossary/를 대조했다. ⑤ To-Be 47단계에 담당 액터·요구 연결이 있다(11-processes/). ⑥ 범위 밖 11건은 00-charter/010-non-goals.yaml, 평가 기능 유예는 REQ-615.deferral와 현재 차수 제외(wont)에 반영했다. ⑦ 소유 요구의 우선순위·근거를 확인했으며 Must 70% 상한은 전역 G1에서 별도 판단한다. ⑧ 모순 검사·독립 레드팀 결과는 10-requirements/010-consistency-review.yaml에 반영했다. ⑨ trace --all --g1 오류 0건/후속 경고 116건이며 정련 카드와 연결 정합을 확인했다. pending_rechecks 0건. REQ-615는 elaborated인 유예 후보이며 확정하지 않았다. 미확인 ASM-003의 실환경 재현은 agent·integration G3 기한이고 현재 G1을 막지 않는다. admin P2에서 데이터소스 범위·연결 해석·사용자 신원·자산 버전·공급자 경계·비밀/운영 설정 계약을 정리한다. 화면·물리 계약은 P3, 게이트·소스 구현 승인은 별도다." }
-      P2_architecture: { status: approved, approved_at: "2026-10-27", note: "2026-10-27 사용자 명시 승인 · admin G2 자체검증 8/8. 사용자가 폴링/동일 세션의 다중 탭 의미를 질문·이해한 뒤 지금까지 결정한 내용 전체를 승인하고 다음 단계 진행을 요청했다. ① 비싼 선택의 대안/대가: decisions/ADR-007·008·014·022·023·027·028·029. ② 기술 스택 8축: spec/02-constraints/002-technical.yaml·003-deployment.yaml, spec/20-architecture/013-execution-lease.yaml. ③ NFR 25건 measurement/source와 목표 실측 결정: spec/21-nfr/001-nfrs.yaml·ASSUMPTIONS ASM-002·ADR-029; 보호 초기값/범위/적용과 초기 기술 설정은 ARCH-031·033에 기록하고 이번 G2에서 함께 승인. ④ C4 두 계층: spec/20-architecture/001-topology.yaml. ⑤ 연동 방식/데이터 소유권: spec/51-interfaces/001-interfaces.yaml·ARCH-028·032. ⑥ 인증/인가: spec/22-authz/·ARCH-012·050·REQ-609·611·616. ⑦ 민감정보/비밀: PRN-07·REQ-403·107·109·111·ADR-014·022·024·025. ⑧ 운영 주체/배포: CON-012~014·ADR-028. pending_rechecks 0, proposed ADR 0, trace 오류 0/후속 경고 117. 독립 레드팀의 실측 유예 확대·긴 API 일괄 거부/무한 갱신·만료 점유 부활을 정본과 검수 반례로 해소했다. 미확인 ASM-003의 실환경 재현은 agent/integration G3 조건이며 admin P2 결손이 아니다. 물리 원자성·갱신/프로세스 정지·프록시/암호 기동·미설정 활성화 차단의 실제 시험은 소유 후속 단계다. 초기 기술 설정과 보호 계약을 포함해 admin G2를 승인했다. admin만 P3로 전환하며 다른 작업흐름 게이트·실환경 검수·제품 소스 구현 승인은 별도다." }
+      P2_architecture: { status: in_progress, approved_at: null, note: "2026-10-29 CR-028·ADR-034로 계정·인증/인가·진입 경계만 재개방했다. 사용자 명시 변경 방향은 승인됐으나 영향 G2 재승인은 별도다. 다른 범위의 이전 승인 근거는 유지한다. 이전 기록: 2026-10-27 사용자 명시 승인 · admin G2 자체검증 8/8. 사용자가 폴링/동일 세션의 다중 탭 의미를 질문·이해한 뒤 지금까지 결정한 내용 전체를 승인하고 다음 단계 진행을 요청했다. ① 비싼 선택의 대안/대가: decisions/ADR-007·008·014·022·023·027·028·029. ② 기술 스택 8축: spec/02-constraints/002-technical.yaml·003-deployment.yaml, spec/20-architecture/013-execution-lease.yaml. ③ NFR 25건 measurement/source와 목표 실측 결정: spec/21-nfr/001-nfrs.yaml·ASSUMPTIONS ASM-002·ADR-029; 보호 초기값/범위/적용과 초기 기술 설정은 ARCH-031·033에 기록하고 이번 G2에서 함께 승인. ④ C4 두 계층: spec/20-architecture/001-topology.yaml. ⑤ 연동 방식/데이터 소유권: spec/51-interfaces/001-interfaces.yaml·ARCH-028·032. ⑥ 인증/인가: spec/22-authz/·ARCH-012·050·REQ-609·611·616. ⑦ 민감정보/비밀: PRN-07·REQ-403·107·109·111·ADR-014·022·024·025. ⑧ 운영 주체/배포: CON-012~014·ADR-028. pending_rechecks 0, proposed ADR 0, trace 오류 0/후속 경고 117. 독립 레드팀의 실측 유예 확대·긴 API 일괄 거부/무한 갱신·만료 점유 부활을 정본과 검수 반례로 해소했다. 미확인 ASM-003의 실환경 재현은 agent/integration G3 조건이며 admin P2 결손이 아니다. 물리 원자성·갱신/프로세스 정지·프록시/암호 기동·미설정 활성화 차단의 실제 시험은 소유 후속 단계다. 초기 기술 설정과 보호 계약을 포함해 admin G2를 승인했다. admin만 P3로 전환하며 다른 작업흐름 게이트·실환경 검수·제품 소스 구현 승인은 별도다." }
       P3_design:       { status: in_progress, approved_at: null, note: "2026-10-27 admin G2 사용자 승인으로 P3 진입을 기록했다. 사용자 요청에 따라 P2 확정 내용의 커밋·푸시를 먼저 처리하고 REQ-601 공통 관리/승인 유즈케이스와 기능 연결부터 상세 설계한다. 도메인·API·화면·시퀀스·테스트·슬라이스 순서이며 G3 승인·spec 동결·제품 소스 구현은 아직이다." }
       P4_build:        { status: not_started, approved_at: null, note: "" }
       P5_verify:       { status: not_started, approved_at: null, note: "" }
@@ -405,7 +407,7 @@ next_up:
     - "기준정보 확정 후 agent 상세 요구사항 검토로 이동한다. 기존 REQ-001~027·030~040과 FEAT-201~221, 이미 확정한 공통 정책을 바탕으로 입력·처리 순서·출력·예외·상태 전이·수용 기준을 정련한다"
   then: >-
     admin P3는 workstreams.admin.design_plan의 순서·완료 기준에 따라 진행한다.
-    system의 공통 계정·설정 변경은 승인된 CR-026·027의 영향 상세 설계와 화면 요건/목업을 거친다.
+    system의 관리자 인증 영역 한정과 별도 Portal 계정/인증은 CR-028·ADR-034, 설정 변경은 CR-026의 소유 상세 설계·화면 요건/목업과 경계 시험을 거친다. CR-027의 공통 계정 방향은 철회됐다.
     agent·integration의 실행 점유·외부 호출·배포 검수와 ASM-003 실환경 재현은 각 소유 작업흐름에서 확인한다.
     실측이 필요한 보호값은 ADR-029에 따라 최초 운영 활성화 전에 수치·허용 범위·시험 근거를 확정한다.
     제품 소스 구현은 해당 작업흐름의 G3 승인 뒤 진행한다.
@@ -460,17 +462,17 @@ counters:
   FEAT: 104   # FEAT-041 admin 오류 접수·FEAT-222 agent 정기 파기 추가
   ENT: 69    # system 31 · admin 연동 자산 물리 초안 38
   API: 161   # system 99 · admin 미구현 설계 62
-  SCR: 75    # SCR-038 워크플로우 자동 승인 요청 추가
-  TC: 123    # system 67 · 보조 모델 후보 정책 16 · admin 첫 세 화면/연동 자산 설계 시험 40
-  CR: 26     # CR-027까지 26건 — CR-011 없음, CR-026·027 방향 승인·반영중
+  SCR: 78    # SCR-113~115 별도 Portal 인증 화면 초안 추가
+  TC: 131    # 기존 123 · 계정/인증 경계 시험 8건 추가, 기존 3건 교체
+  CR: 27     # CR-028까지 27건 — CR-011 없음, CR-027 공통 계정 방향은 CR-028로 철회
   RUN: 8      # 80-operations/_index.yaml의 현재 절차. daily_checks·periodic_tasks를 2026-09-14에 채웠다
-  ADR: 33    # ADR-033 직접 관리의 반영 후 전체 상태 이력
+  ADR: 34    # ADR-034 관리자와 Portal 계정·인증 분리
   ASM: 1      # **미확인 하나** — 003(기한 G3). 002·004·007은 확인됨, 005·006 은 기각됨
   SLICE: 21  # system 19 · admin 첫 두 화면의 미착수 구현 초안 2
   DEF: 0
 
 counter_note: >-
-  UC는 system 10건과 admin 공통/업무 초안 38건이다. ENT 69건은 system 31건과 admin 연동 자산 물리 초안 38건이며 API 161건은 system 99건과 admin 미구현 명세 62건이다. TC 123건은 system 67건·보조 모델 후보 정책 16건·admin 첫 세 화면/연동 자산 40건이다. CR-026·027의 6건과 후보 정책 16건·admin 40건은 미구현 시험 명세다.
+  UC는 system 10건과 admin 공통/업무 초안 38건이다. ENT 69건은 system 31건과 admin 연동 자산 물리 초안 38건이며 API 161건은 system 99건과 admin 미구현 명세 62건이다. TC 131건은 기존 123건과 CR-028 계정/인증 경계 신규 8건이다. CR-026 시험 3건·CR-028로 교체한 TC-5017~5019 및 신규 8건·후보 정책 16건·admin 40건은 미구현 시험 명세다.
   `trace-check`는 뒤 차수와 아직 G3를 청구하지 않은 다른 작업흐름의 결손을 경고로 세고,
   각 작업흐름 G3를 청구할 때 그 소유 범위를 엄격하게 검사한다. 정확한 개수는 매 실행 결과가 정본이다.
 
@@ -560,10 +562,10 @@ reproduction_baseline:
 
 # 항목 형식: { id, workstream, features, stage, status }. 계약 변경은 integration이 먼저다.
 slices:
-  - { id: SLICE-501, workstream: system, features: [FEAT-501], testcases: [TC-5011, TC-5013, TC-5019], scope: "system 모듈 골격·public/common 인증·로그인·비밀번호·세션", stage: P3, status: todo, change: CR-027, depends_on: [] }
+  - { id: SLICE-501, workstream: system, features: [FEAT-501], testcases: [TC-5011, TC-5013, TC-5019], scope: "system 모듈 골격·public/common 인증·로그인·비밀번호·세션", stage: P3, status: todo, change: CR-028, depends_on: [] }
   - { id: SLICE-502, workstream: system, features: [FEAT-502], testcases: [TC-5021, TC-5023, TC-5024, TC-5026, TC-5027, TC-5028], scope: "역할·역할 권한과 권한 버전", stage: P4, status: done, depends_on: [SLICE-501] }
   - { id: SLICE-503, workstream: system, features: [FEAT-503], testcases: [TC-5031, TC-5032, TC-5033, TC-5034, TC-5035], scope: "메뉴 트리·API 카탈로그·실패 폐쇄 인터셉터", stage: P4, status: done, depends_on: [SLICE-502] }
-  - { id: SLICE-504, workstream: system, features: [FEAT-501], testcases: [TC-5012, TC-5014, TC-5015, TC-5017, TC-5018], scope: "사용자 관리·역할·IP·활성 세션", stage: P3, status: todo, change: CR-027, depends_on: [SLICE-502, SLICE-503] }
+  - { id: SLICE-504, workstream: system, features: [FEAT-501], testcases: [TC-5012, TC-5014, TC-5015, TC-5017, TC-5018], scope: "사용자 관리·역할·IP·활성 세션", stage: P3, status: todo, change: CR-028, depends_on: [SLICE-502, SLICE-503] }
   - { id: SLICE-505, workstream: system, features: [FEAT-502], testcases: [TC-5022, TC-5025], scope: "사용자 개인 예외·유효 권한 진단", stage: P4, status: done, depends_on: [SLICE-503, SLICE-504] }
   - { id: SLICE-506, workstream: system, features: [FEAT-504], testcases: [TC-5041, TC-5042, TC-5043, TC-5044, TC-5045], scope: "공통코드·참조 코드와 공통 조회 계약", stage: P4, status: done, depends_on: [SLICE-503] }
   - { id: SLICE-507, workstream: system, features: [FEAT-505], testcases: [TC-5051, TC-5052, TC-5053, TC-5054, TC-5055, TC-5056, TC-5057, TC-5058], scope: "메시지 값·번들·캐시 버전", stage: P4, status: done, depends_on: [SLICE-503, SLICE-506] }
