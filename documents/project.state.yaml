@@ -114,12 +114,27 @@ workstreams:
         integration_assets:
           name: "연동 자산·카탈로그"
           features: [FEAT-001, FEAT-002, FEAT-003, FEAT-004, FEAT-011, FEAT-021]
-          progress: { inventory: verified, specification_and_logical: verified, physical_and_contracts: waiting_dependency, verification: not_started }
+          progress: { inventory: verified, specification_and_logical: verified, physical_and_contracts: waiting_dependency, verification: in_progress }
           drafted: "2026-10-28 연동 자산 6개 기능과 ENT-001~016의 입력/처리·예외·권한/이력·참조 소유를 통합 검토했다. 사용자 선택인 관리 카탈로그 작성 시 선택·고정과 API당 도구 하나를 ADR-030·031 및 REQ-301·612에 기록하고 UC/FEAT/ENT/SCR를 연결했다. 자기조인 두 역할과 FEAT-014.reference_validation의 고정 후보 집합/외부 유효본/영향 근거/현재 직접 정책을 구분했다. 명세·논리 단계의 검토 완료이며 물리/공개 계약·화면·시험·G3 승인은 별도다. 정본은 31-features/002-admin.yaml과 40-domain/005~007 파일, 상세 후속은 각 pending 및 소유 영역을 따른다"
           draft_verification: "하네스·harness-doc·lint·도메인 검사 통과. 영역의 기능 6개/논리 모델 16개에서 규칙 참조 114개와 소비 연결 33개의 오류 0. 독립 검토의 대상 종류+안정 ID 구분, 고정 참조 판 자동 치환 금지, API 화면/요구 연결을 보완하고 8개 반례를 명세했다. trace 오류 0/경고 130(기존 후속 114+물리 설계 후속 16). doc-gen 197개·ID 796개·장문 10234개 누락/깨진 링크 0. HTML 설계 223장·사용자 18장·운영 9장 구조 검사와 Edge 논리 16개/물리 1개·탐색·도표·인쇄 통과. 런북 오류 0/기존 후속 경고 4. 두 질문은 사용자 답변을 정본에 반영해 닫았으며 ENT 집계를 실물 47개로 바로잡았다. 제품 실행 시험 완료를 뜻하지 않는다"
           physical_drafted: "2026-10-29 대상 시스템·데이터소스 7개/API 18개와 카탈로그 15개/API 18개에 이어 업무 API·도구 ENT-011~016·029~038 물리 초안 16개와 API-037~061 관리 계약 25개를 작성했다. 누적 admin 연동 자산 물리 초안 38개/관리 API 61개다. 이번 정본은 40-domain/007·010 및 50-api/007·008이며 필드/값·정형 참조/대응·공동 오픈·API당 도구 하나의 현재/후보/폐지 점유와 편집 재수신 결과를 연결했다. 입력 출처의 같은 필드/조회 대응 검사와 원 응답/결과 확인 상태 구분을 독립 검토로 보완했다. API 대응 변경의 과거 판은 보존하되 단순 역사로 영구 점유하지 않는다. 그룹/반출 정책·세트 원장/후보 종료·원천/실행·보존의 실제 계약은 소유 pending에서 완성한다. 모두 planned이며 제품 구현/G3 완료가 아니다"
           physical_verification: "하네스·lint·도메인 검사 통과. 이번 API/도구 물리 16개·관리 API 25개의 컬럼·PK·FK 타입/참조 유일키·사전 토큰/이름 길이·DTO 연결 오류 0. API 점유 PK 제거·대응 FK 타입 오류·필드 소유 유일키 제거 반례 3개 검출. 독립 검토 P2 2건 및 후속 문장 정합 보완을 재검토로 해소했고 경합/참조 반례 11개를 명세했다. trace 오류 0/기존 후속 경고 114. doc-gen 219개·ID 883개·장문 11067개 누락/깨진 링크 0. HTML 설계 245장·사용자 18장·운영 9장 구조 통과. Edge 구현 명세 1개·누적 물리 초안 38개·논리 초안 0개·Mermaid 13개·탐색/인쇄 통과. 런북 오류 0/기존 후속 경고 4. 정적 설계 검증이며 실제 DB·동시 요청·원천/실행 시험 완료를 뜻하지 않는다"
           physical_integration_review: "2026-10-29 세 물리 묶음 ENT-001~038·API-001~061의 전체 참조/키·공개 입출력·잠금/재수신·현재 정책/역사 경계를 통합 검토했다. 서로 다른 직접 변경/초안 결과가 공유하던 응답 타입은 AssetDraftCommandResult로 분리했고, FEAT-040의 업무상 요청 점유와 짧은 DB 잠금을 구분했다. 직접 삭제/그룹 축소와 참조 추가 경합의 반례 3개를 FEAT-014에 명세했다. 각 후속 계약의 반대 소유 pending과 아래 5개 대기 조건/재검토 지점을 연결했다. 독립 검토 추가 P1/P2 없음. 물리 38개/API 61개의 컬럼·키/FK·사전 토큰·DTO 연결 오류 0 및 결손 반례 4개 검출. 하네스/lint·도메인 통과, trace 오류 0/기존 후속 경고 114. doc-gen 219개·ID 883개·장문 11083개 누락/깨진 링크 0, HTML 245/18/9장 구조·Edge 물리 초안 38개/도표/탐색/인쇄 통과. 현재 범위 통합 검토의 완료이며 대기 계약·화면/시험·G3 전체 완료는 아니다"
+          screen_drafted: "2026-10-29 SCR-001 대상 시스템·SCR-002 데이터소스의 설계 경로/메뉴·target_doc와 공통 서식 요건서/목업을 작성했다. 상세 폼/탭, 저장 결과 불명, 조회 전용/권한 회수, 연결 관측/정정, 참조 보호, 삭제 후 이력과 그룹 계약 대기를 표현했다. 두 화면의 사례 29개를 전역 TC-0011~0019·0021~0029 18개와 연결했다. 사용자 화면 검토 전 초안이며 제품 소스·메뉴/메시지 시드·G3 승인 변경은 없다"
+          screen_verification: "공통 목업 생성기에 요건서의 상태 표·폼·예시·버튼 제한을 반영했다. 단위 7개 통과, 기존 system 3개 생성 결과 동일, 상태/스타일/폼 라벨 결손 반례 3개 검출. Edge에서 대상 시스템 12개·데이터소스 16개 상태와 권한/결과 불명 버튼·가로 넘침·밝음/어두움 표시를 확인했다. 독립 검토의 MISSING 연결 정정 진입 누락을 보완했고 추가 P1/P2 없음. 하네스·Codex adapter self-test·lint 통과, trace 오류 0/후속 경고 112. doc-gen 219개·ID 901개·장문 11173개 누락/깨진 링크 0, HTML 247/18/9장 구조와 실제 Edge 탐색·목업·도표·인쇄 통과. 제품 코드/DB/경합 시험은 미실행이며 TC는 planned다. 실제 Claude 세션 trigger smoke test는 수행하지 않았다"
+          timezone_review: "2026-10-29 사용자 요청으로 SCR-002의 시간대를 Timezones 공통 유틸 재사용 검색콤보로 변경했다. API-062를 데이터소스 READ로 설계해 배치 스케줄 메뉴 권한과 분리하고 null 기본값·선택 해제·목록 밖 값 거부·조회 실패 시 기존값 유지를 FEAT-002.timezone_contract에 정의했다. DS-16~18·TC-00210을 추가해 화면 사례 누적 32개·전역 시험 19개다. 목업 생성기 단위 8개와 Edge 검색/선택/해제/실패 상태 검증 통과. 화면/서버 구현·API 실행 시험은 미착수이며 전체 화면 승인/G3와 별개다"
+          grid_layout_review: "2026-10-29 사용자 결정으로 기본 UI를 상단 1:1 현재값 편집 그리드·하단 탭으로 정하고 master-detail 표준/진입 지도/오버레이/서식·menu-doc/mockup 공통 스킬을 맞췄다. 두 화면은 기본 엑셀(표시 열·현재 페이지/전체·EXPORT 권한), 설정 가능한 초기 숨김, 이력 자동 최신순·조회조건/하단 폼 없는 전체 구성 컬럼으로 재생성했다. 목록 Row에 1:1 현재값, 이력 Row에 전체 스냅샷과 이번 정정 근거를 포함하고 현재 행 없는 재진입 링크·SCR-031 검색 소유를 연결했다. 표시 별칭과 yml 연결 ID 분리·서버 존재 재검증은 사용자 확인으로 유지했다. 그룹 생성/데이터소스 적용 집합/실제 접근 매핑과 현재 사용처/자체 변경 이력의 범위를 설명·명세했다. 화면 사례 39개·관련 TC 21개·전체 TC 104개. 단위 10개·기존 system 3개 생성 결과 동일·결손 반례 3개 검출, Edge 14/19개 상태의 배치·이력·엑셀·타임존 셀 검증 통과. 독립 검토 P2 2건 보완 뒤 추가 없음. 제품 소스/시드·G3 상태는 유지하며 실제 SplitPane 기본 축 구현은 playbook/master-detail.md의 P4 후속이다"
+          committed_snapshot_review: "2026-10-29 사용자 결정으로 대상 시스템·데이터소스 직접 관리 이력을 반영 후 확정된 전체 상태로 정하고 ADR-033에 기록했다. 생성 버전 1부터 기록하고 삭제는 마지막 구성+deleted=true를 보존한다. ENT-003/004의 RESULT_VERSION·TEXT 원문, ENT-019의 필수 historyId와 API 원자성/재수신을 맞췄으며 다른 자산의 승인 판/기존 system 이력 정책은 소유 계약을 따른다. 두 목업은 전체 스냅샷의 보기 1회 클릭으로 읽기 전용 속성/값·배열 목록과 JSON 원문을 표시한다. 데이터소스 그룹 10→8은 8개 ID 전체를 저장·표시하며 그룹명 근거는 access_policy 후속을 유지한다. 화면 사례 42개·관련 TC 23개·전체 TC 106개, ADR 33개다. 목업 단위 14개·기존 system 3개 생성 동일·결손 반례 3개, 확정 후 이력 계약과 반례 4개, Edge 두 모달의 목록/원문/닫기 검증 통과. 독립 검토 추가 P1/P2 없음. 실제 DB·제품 화면/공통 JSON 뷰어 구현은 미착수이며 전체 화면 승인/G3는 유지한다"
+          committed_snapshot_verification: "하네스·harness-doc·문서 lint·도메인 검사 통과, trace 오류 0/기존 후속 경고 112. doc-gen 219개·ID 906개·장문 11231개 누락/깨진 링크 0. HTML 247/18/9장 구조와 Edge 물리 초안 38개·도표 13개·목업·탐색/인쇄 통과. 런북 오류 0/기존 후속 경고 4. 정적 설계/목업 검증이며 실제 DB 저장·동시 요청·제품 E2E 시험은 미실행이다"
+          snapshot_raw_visibility_review: "2026-10-29 사용자 검토로 JSON 원문 보기는 실제 내용 있는 원문 문자열에만 표시하도록 FEAT-001 공통 표시 계약·SCR-001/002 요건서와 TC-00111/00212에 명시했다. null/누락/빈 문자열/공백은 버튼과 빈 영역을 숨기고, 원문이 있으면 파싱 실패/미지원 형식에도 확인한다. 파싱 결과 재직렬화로 원문을 만들지 않는다. 목업 생성기에도 같은 조건을 적용해 단위 15개와 두 화면 생성/대조 통과. 제품 구현/G3는 변경하지 않았다"
+          sequence_and_slice_review: "2026-10-29 UC-015/016.sequence_design에 전체 저장/확정 후 이력·응답 유실/원 키·대상 연결 참조 경합·데이터소스 검증/정정·그룹 축소/삭제 경합 5개 시퀀스를 작성했다. SLICE-001/002 초안에 관련 TC 23개를 중복 없이 배정하고 기반 의존/화면 승인·소유 G3/외부 계약 착수 조건을 연결했다. 공통 저장/재전송은 UC-015를 참조하고 원 성공 우선 재확인·실패 TX 종료 뒤 새 읽기·확정 거부/불명 분리·무관한 참조의 정상 변경을 명시했다. 시퀀스는 정본 UC에서 자동 생성하며 필수 구조/설명·노후화·기존 REQ 배열 보존과 Note 세미콜론 오류를 검사한다. 생성기 단위 5개, 계약/TC 배정 및 결손 반례 4개 통과. 제품 구현·DB 동시 실행 시험·전체 화면 승인/G3는 미착수다"
+          html_artifact_review: "사용자 요청으로 설계/검증 HTML의 화면 식별자를 정본 SCR/route와 연결해 신규 목업 누락을 보완했다. 화면 요건·목업 > admin > 연동 관리에서 SCR-001/002의 요건 정의서·화면 목업·처리 시퀀스 탭을 제공한다. 대상 시스템 14개/데이터소스 19개 목업 상태·모달 열기/닫기, 시퀀스 3개/2개 실제 SVG 렌더링 통과. 전체 Edge 검사는 설계 화면 27개·시퀀스 탭 2개·SVG 23개·현재 문서 인쇄 1개를 확인했다. 신규 시퀀스/메뉴마다 기존 usecases·정본 경로를 사용하며 없는 설계를 완료로 추정하지 않는다"
+          build_workspace_review: "사용자 요청으로 build 최상위 임시 파일 97개(스크립트 34·로그 36·캡처 22·데이터 5)를 삭제 없이 build/tmp/document-review의 scripts/logs/captures/data로 옮겼다. 최상위 파일은 README.txt만 남겼고 목적별 결과 폴더는 유지했다. 임시 파일 경로 정본은 aidd-guide/artifact/site-kit/BUILD-README.txt이며 artifact 지도와 doc-gen/mockup 공통 스킬에서 참조한다. 반복 실행할 생성기/검증기는 저장소의 해당 도구 폴더에서 관리한다"
+          artifact_theme_review: "사용자 요청으로 목업 내부 테마 조건을 유효한 :host(...) 선택자로 전달하고 시퀀스 SVG에 셸 색 토큰·투명한 처리 영역을 적용했다. 현재 표시하는 그림만 렌더링해 숨은 탭의 Note 측정 오류를 피하고 직렬 큐/최신 revision과 캐시 무효화로 빠른 전환을 보호한다. source 경로와 fragment를 함께 보존해 대상 문서·탭·그림으로 이동하며 Markdown은 엄격한 빈 앵커만 허용한다. 두 화면의 다크/라이트 목업·모달·시퀀스 3/2개와 OS 다크/선택 라이트·재진입 선택 유지·save/replay 개별 이동이 실제 Edge에서 통과했다. 실제 Mermaid 완료를 지연한 라이트→다크→라이트 경합도 최종 SVG/태그 일치로 검증했다. 앵커 출력/HTML 삽입 거부 단위 2개 통과, 독립 검토의 링크/테마 경합 보완 뒤 추가 P1/P2 없음. 제품 테마/화면 소스 변경이 아닌 설계 산출물 열람 도구 보완이다"
+          sequence_artifact_verification: "하네스·양 provider 스킬·harness-doc·Codex adapter self-test·문서 lint 통과. trace 오류 0/기존 후속 경고 112, 도메인 69개/활성 36개 일치. doc-gen 222개·ID 906개·장문 11289개 누락/깨진 링크 0. HTML 설계249/사용자18/운영9장 구조와 최신 Edge의 설계 화면27개·시퀀스 탭2개·Mermaid 구문/생성SVG23개·현재 문서 인쇄1개 통과. build 최상위 파일은 README.txt만 유지했다. 실제 Claude 세션 trigger smoke·제품 DB/동시 요청/사용자 인수 시험은 미실행이다"
+          catalog_screen_review: "2026-10-29 SCR-003 /admin/hub/catalog의 동일 서식 요건서·목업을 작성했다. 상단 현재 항목과 1:N 하단 내용 판/후보 정의·컬럼/값·키/제약·관계·정책·관측/샘플·근거·판 이력을 분리하고 DRAFT 재진입/전체 저장·FROZEN 복사·동일 객체 이름 변경·관리측 고정/자기조인·미완성 관계의 쌍0개 보존을 연결했다. 화면 사례25개·TC17개·목업27개 상태·UC-007/008 시퀀스3개 초안이다. API-021 최신 판 고정 정렬을 공개 계약에 명시했으며 그룹/원천/세트/반출·보존의 소유 후속은 유지한다. 전체 화면 상세 승인·구현/G3는 미완료다"
+          catalog_screen_verification: "18개 카탈로그 API·실제 물리 컬럼/코드·25개 화면 사례와 TC17개 연결 오류0 및 시험/API/컬럼/매핑 결손 반례4개 검출. 독립 검토의 신규 운영값 잔재·DRAFT 계속 편집·미완성 관계쌍/NOT NULL 충돌을 보완했고 잔여 P1/P2 없음. 목업 단위17개(배치12+스냅샷5), 시퀀스5개·Markdown2개 통과. Edge 카탈로그27개 상태의 상하 배치·현재/후보 문맥·값 방식별 빈 자식·고정 장문 열람·가로 넘침 통과. doc-gen224개·ID923개·장문11421개 누락/깨진 링크0, HTML252/18/9장 구조 통과. 최종 HTML Edge 검사에서 설계 화면28개·시퀀스 탭4개·Mermaid SVG29개·상세 목업21개·인쇄1개와 선택 열 표시/숨김·테마 전환 경합을 통과했다. 실제 DB 저장·동시 요청·샘플 실행/원천 시험과 사용자 인수는 미실행이다"
+          screen_review: { status: draft, user_approved: false, screens: [SCR-001, SCR-002, SCR-003] }
           waiting_dependency:
             - refs: ["FEAT-006","FEAT-007","FEAT-008","ENT-018","ENT-006","ENT-012","ENT-016"]
               owners: ["admin.access_policy"]
@@ -195,9 +210,9 @@ workstreams:
           status: identified
           resume_when: "access_policy 상세 설계에서 외부 인사 사건과 모듈별 실제 처리 결과의 식별·순서·재전송·부분 실패/재처리·조회 계약을 대조한다. 계정과 Portal 이용 자격을 합치지 않는다"
       resume:
-        last_completed: "integration_assets의 물리/공개 계약 세 묶음 통합 검토를 마쳤다. 응답 타입 충돌·잠금 의미를 보완하고 물리 38개/API 61개를 전수 대조했다. 범위·검증은 areas.integration_assets.physical_integration_review, 미완성 계약은 waiting_dependency 5개 묶음과 각 정본 pending을 따른다. 사용자 답변 대기는 없으며 제품 소스/게이트 상태는 유지했다"
-        next_action: "같은 integration_assets의 verification에서 대상 시스템·데이터소스부터 시작한다. SCR-001/002의 정본·실제 페이지 경로/기존 화면 여부를 먼저 확인하고 FEAT-001/002·ENT-001~004/017~019·API-001~018에 맞춰 화면 요건/목업을 함께 작성한다. 직접 변경·참조 보호·이력·연결 관측과 저장 결과 불명의 표시를 대조하고 핵심 시퀀스·정상/예외/권한/경합 시험·슬라이스로 연결한다. 현재 화면 검토는 진행 가능하지만 미완성 모듈 계약을 구현 보장으로 표시하지 않는다. physical_and_contracts는 waiting_dependency의 해당 소유 영역/작업흐름에서 재검토하며 모두 해소 전 verified/G3로 전환하지 않는다. 이후 카탈로그·API/도구 화면 순서를 유지한다"
-        waiting_on: ["사용자 답변 대기 없음. 물리/공개 계약 확정은 areas.integration_assets.waiting_dependency의 5개 소유 후속을 대기하며 화면 요건/목업 검토는 계속한다"]
+        last_completed: "SCR-003 카탈로그 요건/목업·시험17개·화면 사례25개·UC-007/008 시퀀스3개를 연결했다. 현재 항목과 후보 판을 분리하고 저장한 DRAFT 계속 편집·값 방식별 자식·관리측/자기조인·미완성 관계 보존을 검증했다. 범위·근거는 integration_assets.catalog_screen_review/catalog_screen_verification을 따른다. 화면 상세 승인·소유 후속 계약·제품 구현/G3는 미완료다"
+        next_action: "같은 integration_assets verification에서 SCR-004/019 업무 API·도구의 요건서/목업과 후보 필드·코드명 참조·도구 대응·세트 인계의 흐름/시험을 작성한다. SCR-001/002/003 사용자 검토 의견은 해당 정본에 반영하고 카탈로그 구현 슬라이스·구체 DTO/오류는 FEAT-003/011.pending에서 후속 정합화한다. 물리/공개 계약은 waiting_dependency의 5개 소유 후속을 유지하며 구현 승인이나 verified/G3로 처리하지 않는다. 임시 자료는 build/tmp/{작업명}/ 하위를 사용한다"
+        waiting_on: ["사용자 필수 답변 대기 없음. SCR-001/002/003은 전체 화면 상세 승인/구현 승인 전 초안이다. 물리/공개 계약의 waiting_dependency 5개 소유 후속을 유지한다"]
       update_rules:
         - "세션 시작·재개 때 이 design_plan과 next_up을 읽고 active_step·active_area·resume을 확인한다. 합의한 순서를 바꿀 이유가 생기면 영향과 재개 지점을 먼저 설명하고 기록한다"
         - "작업 단위를 마칠 때 해당 steps/areas.progress·updated_at·resume을 같은 작업에서 갱신한다. 완료 근거는 산출물 ID/경로와 실제 검사 결과로 남기며 시도·초안을 완료로 세지 않는다"
@@ -444,18 +459,18 @@ counters:
   UC: 48      # system 10 · admin 공통/업무 흐름 초안 38
   FEAT: 104   # FEAT-041 admin 오류 접수·FEAT-222 agent 정기 파기 추가
   ENT: 69    # system 31 · admin 연동 자산 물리 초안 38
-  API: 160   # system 99 · admin 미구현 설계 61
+  API: 161   # system 99 · admin 미구현 설계 62
   SCR: 75    # SCR-038 워크플로우 자동 승인 요청 추가
-  TC: 83     # system 67 · 보조 모델 후보 정책의 모듈 간 미구현 명세 16
+  TC: 123    # system 67 · 보조 모델 후보 정책 16 · admin 첫 세 화면/연동 자산 설계 시험 40
   CR: 26     # CR-027까지 26건 — CR-011 없음, CR-026·027 방향 승인·반영중
   RUN: 8      # 80-operations/_index.yaml의 현재 절차. daily_checks·periodic_tasks를 2026-09-14에 채웠다
-  ADR: 32    # ADR-032 동일 객체 이름 변경의 안정 식별자 유지
+  ADR: 33    # ADR-033 직접 관리의 반영 후 전체 상태 이력
   ASM: 1      # **미확인 하나** — 003(기한 G3). 002·004·007은 확인됨, 005·006 은 기각됨
-  SLICE: 19
+  SLICE: 21  # system 19 · admin 첫 두 화면의 미착수 구현 초안 2
   DEF: 0
 
 counter_note: >-
-  UC는 system 10건과 admin 공통/업무 초안 38건이다. ENT 59건은 system 31건과 admin 연동 자산 물리 초안 22건/논리 초안 6건이며 API 135건은 system 99건과 admin 미구현 명세 36건이다. TC 83건은 system 67건과 보조 모델 후보 정책의 모듈 간 명세 16건이다. CR-026·027의 6건과 후보 정책 16건은 미구현 시험 명세다.
+  UC는 system 10건과 admin 공통/업무 초안 38건이다. ENT 69건은 system 31건과 admin 연동 자산 물리 초안 38건이며 API 161건은 system 99건과 admin 미구현 명세 62건이다. TC 123건은 system 67건·보조 모델 후보 정책 16건·admin 첫 세 화면/연동 자산 40건이다. CR-026·027의 6건과 후보 정책 16건·admin 40건은 미구현 시험 명세다.
   `trace-check`는 뒤 차수와 아직 G3를 청구하지 않은 다른 작업흐름의 결손을 경고로 세고,
   각 작업흐름 G3를 청구할 때 그 소유 범위를 엄격하게 검사한다. 정확한 개수는 매 실행 결과가 정본이다.
 
@@ -564,6 +579,36 @@ slices:
   - { id: SLICE-517, workstream: system, features: [FEAT-501], testcases: [TC-5015], scope: "내 프로필·내 로그인 이력·내 역할·언어 설정의 system public 경계 보정", stage: P4, status: done, depends_on: [SLICE-501, SLICE-504] }
   - { id: SLICE-518, workstream: system, features: [FEAT-503], testcases: [TC-5035], scope: "CR-018·019 sample 참조 구현을 local 전용 백엔드·프런트·시드·기준선으로 격리", stage: P4, status: done, depends_on: [SLICE-517] }
   - { id: SLICE-519, workstream: system, features: [FEAT-503], testcases: [TC-5036], scope: "CR-021 활성 프로파일 필수와 프로파일별 sample·프런트 기본 빌드 변형", stage: P4, status: done, depends_on: [SLICE-518] }
+  - id: SLICE-001
+    workstream: admin
+    features: [FEAT-001]
+    testcases: [TC-0011, TC-0012, TC-0013, TC-0014, TC-0015, TC-0016, TC-0017, TC-0018, TC-0019, TC-00110, TC-00111]
+    scope: "대상 시스템 목록/상단 편집·허용 연결/관측/사용처·직접 저장/삭제·원 키 결과 확인·확정 후 이력/삭제 후 조회·읽기 전용 스냅샷 모달·엑셀을 DB/API/UI/시험으로 관통한다. 첫 소비 범위에서 공통 명령/이력 경계를 만들며 system 기존 이력 정책은 바꾸지 않는다"
+    stage: P3
+    status: todo
+    depends_on: [SLICE-501, SLICE-503, SLICE-506, SLICE-507]
+    sequences: ["UC-015.sequence_design"]
+    entry_conditions:
+      - "admin 소유 G3와 SCR-001 요건/목업의 명시 승인. 계획/검토 의견을 구현 승인으로 취급하지 않는다"
+      - "integration_assets.waiting_dependency 중 이 기능의 연결 관측·API/신원 참조 쓰기·결과/이력 보존 계약을 소유 영역과 대조하고 물리/API/오류 MSG를 확정한다"
+      - "기반 system 계정/현재 권한·코드/메시지 공개 계약이 사용 가능하다. 등록은 연결 없는 초안도 허용하며 실제 API 실행까지 이 슬라이스로 구현하지 않는다"
+    verification: "전체 TC를 한 번씩 소유한다. 현재값/집합/이력/결과 원자성·유일 키 동시 재수신·삭제 뒤 원 성공·두 순서 부모 참조 경합을 실제 DB 시험으로, 권한/결과 불명·상하 그리드/반출/모달을 UI 시험과 사용자 테스트로 확인한다. 미래 API/신원 실제 쓰기 전체의 참여는 해당 소유 슬라이스 통합 시 재검증하며 여기서 완성으로 가장하지 않는다"
+    sizing: "FEAT 하나의 수직 슬라이스 초안이다. 공통물 재사용을 전제로 하며 P4 착수 산정이 1500라인을 넘으면 process/07-slice.md에 따라 사용자 관찰 가능한 하위 흐름으로 분할하고 TC 소유를 재배정한다"
+  - id: SLICE-002
+    workstream: admin
+    features: [FEAT-002]
+    testcases: [TC-0021, TC-0022, TC-0023, TC-0024, TC-0025, TC-0026, TC-0027, TC-0028, TC-0029, TC-00210, TC-00211, TC-00212]
+    scope: "데이터소스 목록/상단 편집·적용 그룹/관측/사용처·정확 연결 ID와 별칭/파서/시간대 검증·명시 참조 정정·직접 저장/삭제·원 키 결과 확인·확정 후 이력/스냅샷·엑셀을 DB/API/UI/시험으로 관통한다. 공통 직접 변경/보기 경계는 SLICE-001을 재사용한다"
+    stage: P3
+    status: todo
+    depends_on: [SLICE-001]
+    sequences: ["UC-016.sequence_design", "UC-015.sequence_design"]
+    entry_conditions:
+      - "admin 소유 G3와 SCR-002 요건/목업의 명시 승인"
+      - "integration_assets.waiting_dependency 중 그룹 후보/안정 식별·물리 FK·하위 참조 쓰기·과거 표시와 현재 로드 DB 연결/파서 환경, 결과/이력 보존 계약을 소유 영역과 대조한다"
+      - "Timezones 공통 유틸·별칭 정규화 버전과 공통 명령/이력 구현을 재사용한다. 적용 가능 그룹을 추가 런타임 권한 게이트로 구현하지 않는다"
+    verification: "별칭 Unicode/유일성 경합·현재 로드 yml 키·선택 시간대/미지정·동일 대상 정정/안정 ID·그룹 10→8·두 순서 하위 참조 경합·삭제 후 역사/원 키와 전체 원자성을 실제 DB/계약·UI 및 사용자 테스트로 검증한다. 실제 원천 조회·하위 카탈로그/접근 매핑 전체 쓰기 통합은 소유 후속에서 재검증한다"
+    sizing: "FEAT 하나의 수직 슬라이스 초안이며 실제 변경량은 P4 착수 때 산정한다. 1500라인 초과면 분할하고 TC의 단일 소유를 유지한다"
 
 verification_load:
   - { slice: SLICE-519, measured_at: "2026-09-14", fix_rounds: 2, unverified_rules: 0, quality_fails: 0, spec_defects: 0, redteam_fixes: 3, note: "서버 실행은 활성 프로파일이 없으면 데이터소스 구성 전에 종료하고, Gradle bootRun은 -Pprofile을 필수로 받아 Spring 활성 프로파일로 전달한다. local 기본값은 sample 포함·프런트 생략, 그 밖의 프로파일은 sample 제외·프런트 포함이며 명시 옵션이 이를 덮어쓴다. local에서 sample을 끄면 처리된 설정도 제품 master changelog를 가리킨다. 태스크 그래프 7조합·changelog 2조합, 런타임 가드 단위 테스트, local 기본·sample 제외 전체 백엔드 검사와 실제 local 기본 기동을 통과했다. local 판정과 기동 가드를 반대로 뒤집자 각각 계약 테스트가 실패했고 원복 뒤 통과했다. 프런트 의존성 트리는 정상이나 Gradle npmInstall 정지는 별도 기존 실행환경 문제로 제품 JAR의 프런트 포함 실물 검증만 완료하지 못했다. doc-gen 대상 문서는 생성됐으나 저장소 전역 --check의 기존 934개 생성기 결손은 이번 슬라이스 범위 밖으로 남는다." }
