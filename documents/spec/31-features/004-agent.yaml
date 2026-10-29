@@ -13,6 +13,7 @@ features:
     reqs: [REQ-004, REQ-009, REQ-010, REQ-015, REQ-020, REQ-021, REQ-038, REQ-111]
     user_language: "RM-P4의 모델 호출별 사용자 소통 언어·언어 변경 경계·표현 재시도와 업무 실행 분리는 REQ-020을 따른다. 공통 요청/응답 연결은 REQ-009를 사용하며 현재 RM-P1의 필수 범위로 앞당기지 않는다"
   - id: FEAT-202
+    datasource_sql_context: "REQ-603.dbms_context·ARCH-030에 따라 허용 테이블/컬럼을 소속 데이터소스별로 묶고 관리 DBMS 코드·버전·관리 버전 참조·선택 파서와 원천 타입/치수를 전달한다. 공통코드 표시 메시지를 SQL 타입 원문으로 사용하지 않는다. 필요한 문법·집계 함수 안내는 같은 실행 지원 계약을 참조하며 버전별 자료형 목록을 만들지 않는다. 비밀/접속 URL은 전달하지 않고 미확인/불일치 연결을 확인된 DBMS로 제시하지 않는다"
     module: agent
     roadmap: RM-P1
     title: "컨텍스트 구성과 총량 관리"
@@ -34,6 +35,7 @@ features:
       - "@defer P3 agent — FEAT-021.registry_contract와 ENT-016의 implementationId/contractVersion/deploymentRef·검수/무효화 관측을 공개 레지스트리 계약으로 연결한다. API 도구는 현재 대응과 정확 원천 판·지식 연결·양쪽 현재 그룹/노출을 함께 검사한다. agent P3 레지스트리/호출 계약 검토와 admin G3 전에 교차 확인한다"
 
   - id: FEAT-204
+    datasource_sql_validation: "REQ-603.dbms_context·REQ-301.source_type_catalog를 따른다. 모델 입력에 사용한 DBMS/버전과 실제 실행 연결의 차이·관리 변경을 확인하고 불일치이면 재확인 전 실행하지 않는다. 공통코드 선택/파서 통과는 해당 버전의 실제 타입·집계 함수 지원 보증이 아니며 기존 실행 오류 분류와 재작성 절차를 유지한다"
     module: agent
     roadmap: RM-P1
     title: "SQL 검증·정책 적용·실행"

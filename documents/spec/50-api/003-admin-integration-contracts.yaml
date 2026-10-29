@@ -33,7 +33,7 @@ feature_contracts:
       ConnectionCandidates: "nodeId/bootId/appliedSettingsId/observedAt, page:PageResponse<ConnectionCandidate>. 전체 조회 실패는 503이며 빈 page로 성공하지 않는다"
       ConnectionCandidate: "connectionId·비밀 없는 표시 설명·현재 선택 가능 여부. DATA_SOURCE는 DBMS/지원 파서 근거를 포함한다. 개별 기존 연결의 정확한 상태는 ConnectionObservation으로 별도 표시한다"
       ConnectionFilter: "keyword:선택 식별자 검색, assetId:선택 기존 관리 대상 ID. 연결 종류는 API 경로에서 결정하고 현재 주체의 허용 조회 범위에서만 검색한다"
-      ConnectionObservation: "nodeId/bootId/appliedSettingsId/observedAt와 connectionId별 PRESENT/MISSING/UNAVAILABLE, 비밀 없는 사유. DATA_SOURCE에만 지원 DBMS/파서 후보·호환성 근거를 덧붙인다. 후보 페이지에서 ID가 안 보인다는 이유로 MISSING을 판정하지 않고 선택 ID 정확 조회를 수행한다"
+      ConnectionObservation: "nodeId/bootId/appliedSettingsId/observedAt와 connectionId별 PRESENT/MISSING/UNAVAILABLE, 비밀 없는 사유. DATA_SOURCE에만 관측 제품명/버전·관측 성공/미확인과 관리값 대조 결과, 지원 DBMS/파서 후보·호환성 근거를 덧붙인다. 후보 페이지에서 ID가 안 보인다는 이유로 MISSING을 판정하지 않고 선택 ID 정확 조회를 수행한다"
       AssetHistoryFilter: "id:필수 원 대상 ID. 공통 SearchRequest의 페이지를 사용하며 정렬은 appliedAt DESC/historyId DESC로 고정한다. 화면은 선택/탭 진입 때 자동 조회하고 이력 탭의 별도 기간·작업·ID 조회조건을 두지 않는다. 현재 대상 삭제 후에도 원 ID로 조회한다"
       AssetHistoryRow: "historyId/id/changeSeq/appliedVersion/action/actorId/appliedAt/reason/commandKey/correctionEvidence/snapshotVersion/snapshot. appliedVersion은 RESULT_VERSION이며 CREATE=1부터 증가한다. correctionEvidence는 이번 데이터소스 정정의 근거, 그 밖에는 null이다. 각 행은 반영 후 전체 구성의 독립 스냅샷이며 그룹 10→8 변경의 해당 행에는 8개가 저장된다. DELETE는 마지막 구성과 deleted=true를 보존한다. 지원 형식의 속성을 그리드 컬럼에 투영하고 전체 스냅샷 셀은 프로퍼티/값 모달과 원문 보기를 제공한다. 미지원 형식/파싱 실패를 현재값으로 대체하지 않는다"
       AssetHistoryKey: "id/historyId:필수 양의 십진 문자열. 해당 대상 종류·원 ID의 이력인지 함께 검사하고 다른 대상 이력이면 404다"
@@ -55,17 +55,18 @@ feature_contracts:
       unavailable: "503 err.admin.asset.dependencyUnavailable — 필요한 배포/정책/참조 조회 실패. 빈 후보/미사용으로 치환하지 않는다. 이력/DB 저장 자체 실패는 기존 500 봉투로 처리한다"
       authorization: "401/403 및 404는 공통 규약. MSG 키의 실제 등록·시드와 문구는 화면/구현 단계에서 연결한다"
   FEAT-002:
+    dbms_contract: "REQ-603.dbms_context. DBMS 후보는 활성 DBMS 공통코드와 실행 지원 목록을 대조한다. dbmsVersion은 관리 문자열로 저장/조회/명령 지문/ENT-004 전체 스냅샷에 포함한다. 제품/버전 관측 결과는 초기 제안이며 실제 관리 변경은 명시 저장한다. 관측 실패는 값 삭제/임의 버전 보충 사유가 아니다. 확인된 불일치는 저장 시 안내하고 정정 전 SQL 생성/실행을 막는다. 카탈로그 소비 응답은 dataSourceId·dbmsCode·dbmsVersion·managementVersion·parserId를 함께 반환한다. DBMS 변경 뒤 하위 자료형 코드의 PARENT가 달라지면 영향을 표시하고 재선택/재검수 전 의존 조회를 차단한다. 버전 변경은 자료형 후보 목록을 바꾸지 않는다"
     design_status: draft
     implementation: planned
     request_rule: "FEAT-001의 shared_write_contract·오류·공통 DTO를 사용한다. 데이터소스의 적용 가능 그룹은 매핑 어휘이며 런타임 권한 게이트가 아니다"
     response_rule: "저장된 관리값과 연결/파서 관측을 분리한다. 기존 ID가 로드 목록에 없어도 관리 레코드와 당시 값을 반환하며 관측은 MISSING/UNAVAILABLE로 구분한다"
     connection_key_validation: "사용자 확인: yml 연결 키는 connectionId이며 표시용 alias와 구분한다. 신규/변경 저장 때 서버가 현재 로드된 정확 ID의 존재를 다시 검증한다. 미등록/제거된 ID는 400 invalidInput, 검증 조회 장애는 503 dependencyUnavailable로 거부하고 변경 전 값을 유지한다. 파일에만 추가되고 아직 로드되지 않은 키를 정상으로 간주하지 않는다. 기존 참조 부재는 조회에 MISSING으로 보존하며 삭제는 현재 참조 보호로 별도 판정한다"
     types:
-      DataSourceValues: "connectionId:필수 정확 식별자 1~100자, alias:필수 1~100자, description:nullable text, dbmsCode:지원 코드 1~30자, parserId:nullable 1~100자, sourceType:DB/DW, timeZoneId:nullable IANA 시간대 1~100자, dataBasis:nullable 설명, applicableGroupIds:필수 중복 없는 그룹 ID 집합. 시간대/기준 시각 미지정은 미확인으로 표시하며 서버 시각이나 임의 UTC로 채우지 않는다"
+      DataSourceValues: "connectionId:필수 정확 식별자 1~100자, alias:필수 1~100자, description:nullable text, dbmsCode:활성 DBMS 공통코드 1~30자, dbmsVersion:필수 앞뒤 공백 제거 후 1~100자 실제 버전 문자열(semver 강제/목록 선택 없음), parserId:nullable 1~100자, sourceType:DB/DW, timeZoneId:nullable IANA 시간대 1~100자, dataBasis:nullable 설명, applicableGroupIds:필수 중복 없는 그룹 ID 집합. 시간대/기준 시각 미지정은 미확인으로 표시하며 서버 시각이나 임의 UTC로 채우지 않는다"
       DataSourceSave: "commandKey/id/expectedVersion/reason은 FEAT-001 공통 계약, values:DataSourceValues 전체. 기존 connectionId 변경은 correctionEvidence:필수 비밀 없는 동일 대상 확인 근거를 추가한다. 나머지 변경에는 정정 근거를 새로 만들지 않는다"
       DataSourceDetail: "id/version/values·REG/MOD·변경 사유/정정 근거와 별도 연결/파서 관측. aliasKey는 서버 검사값이며 편집 입력으로 받지 않는다"
       DataSourceFilter: "alias:선택 표시명 부분 일치, connectionId:선택 정확 일치, dbmsCode/sourceType:선택. 공통 SearchRequest를 사용하며 허용 정렬은 alias/id/modifiedAt, 동률은 id다"
-      DataSourceRow: "id/version/alias/connectionId/description/dbmsCode/parserId/sourceType/timeZoneId/dataBasis/modifiedAt/lastChangeReason/lastCorrectionEvidence. 상단 그리드의 모든 1:1 현재값을 반환한다. lastChangeReason/lastCorrectionEvidence는 현재 저장된 읽기 근거이며 새 명령의 reason/correctionEvidence와 구분한다. 전체 그룹 집합·관측·이력은 각 상세/탭 계약으로 조회한다"
+      DataSourceRow: "id/version/alias/connectionId/description/dbmsCode/dbmsVersion/parserId/sourceType/timeZoneId/dataBasis/modifiedAt/lastChangeReason/lastCorrectionEvidence. 상단 그리드의 모든 1:1 현재값을 반환한다. lastChangeReason/lastCorrectionEvidence는 현재 저장된 읽기 근거이며 새 명령의 reason/correctionEvidence와 구분한다. 전체 그룹 집합·관측·이력은 각 상세/탭 계약으로 조회한다"
     alias_contract: "REQ-603.alias_identity에 따라 표시 별칭은 Unicode NFC와 앞뒤 공백 제거 후 보관한다. 유일성 키는 같은 문자열을 Unicode 16.0.0의 Default Full Case Folding(C/F 매핑, 언어별 T 매핑 제외)을 적용하고 다시 NFC로 만든 값이다. 서버/검증 도구에서 동일 정규화 함수를 사용하며 DB 정렬 규칙의 자동 대소문자 변환에 의존하지 않는다. ALIAS_KEY UNIQUE와 저장 전 검증을 함께 적용하고 동시 충돌은 409로 전체 롤백한다. 공백은 같은 Unicode 버전의 White_Space 속성의 코드 포인트로 통일하며 내부 공백은 보존한다. 표시 별칭의 대소문자는 유지한다. 길이는 코드 포인트 기준으로 정규화 후 별칭 1~100자·비교 키 1~300자를 검사하고 초과 시 절단 없이 거부한다. 공백뿐인 값은 거부한다"
     alias_verification: "ERP/erp/앞뒤 공백 ERP는 같은 키, ΟΣ/οσ/ος는 같은 키, Straße/STRASSE는 같은 키다. ERP A와 ERPA의 내부 공백, 전각 ＥＲＰ와 ERP는 다른 키로 유지한다. NFC 외의 호환 정규화는 적용하지 않는다. 같은 키의 동시 등록은 하나만 성공하며 기존 행 자신의 대소문자 표시 변경은 허용한다. 단순 소문자 변환으로 바꾸면 그리스어 반례가 실패해야 한다. 실제 함수·DB 유일성 경합 시험은 verification/구현에서 수행한다"
     alias_reference: "Unicode 16.0.0 §3.13·§5.18의 기본 case folding/정규화: https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-3/ 및 https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-5/ . 정규화 버전은 전체 저장소에 하나로 고정하며 변경 시 기존 키 재계산·충돌 해결·전환을 별도로 검토한다"

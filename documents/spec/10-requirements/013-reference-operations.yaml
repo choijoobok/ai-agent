@@ -1,6 +1,7 @@
 # 영역: 기준정보 정책·도구·단가·운영·평가·Portal 이용자
 requirements:
   - id: REQ-611
+    column_group_boundary: "컬럼의 접근 그룹은 REQ-103.column_group_exclusions의 테이블 승계·제외로 결정한다. 이 결과 안에서 기존 원본/마스킹/접근 제한 처리를 적용하며 직접 열람 모드 설정으로 제외 그룹이나 테이블 밖 그룹의 접근을 되살리지 않는다. API 응답 경로의 기존 정책은 유지한다"
     type: functional
     priority: must
     workstream: admin

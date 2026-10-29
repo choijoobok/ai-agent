@@ -10,8 +10,8 @@ testcases:
     given: "목록·현재/선택 판·과거 열람 / 판 이력·폐기 항목 재진입 / 상단 목록·하단 탭·숨김 열 엑셀"
     when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
     then: "CAT-01·CAT-18·CAT-19와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
-    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
-    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-01","documents/screen/admin/hub/catalog/requirements.md#CAT-18","documents/screen/admin/hub/catalog/requirements.md#CAT-19"]
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다. 추가 검증: 단일 하단 그리드·컬럼 건수로 탭 이동·0건 추가·미확인 표시·편집값 유지·복합 정의 전체 행 유지. 반대 동작이면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-01","documents/screen/admin/hub/catalog/requirements.md#CAT-18","documents/screen/admin/hub/catalog/requirements.md#CAT-19","documents/screen/admin/hub/catalog/requirements.md#CAT-26"]
     status: "planned"
   - id: TC-0032
     feature: "FEAT-003"
@@ -101,8 +101,8 @@ testcases:
     given: "미완성 값 도메인·CODE/INLINE 모드 전환"
     when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
     then: "CAT-09와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
-    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
-    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-09"]
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다. 추가 검증: 코드 테이블 팝업/의존 컬럼 콤보·변경 확인/취소/조회 실패 보존·정확 판 참조. 반대 동작이면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-09","documents/screen/admin/hub/catalog/requirements.md#CAT-27"]
     status: "planned"
   - id: TC-0039
     feature: "FEAT-003"
@@ -114,8 +114,8 @@ testcases:
     given: "복합 식별키 일부 누락·기간 경계/단위 미확인"
     when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
     then: "CAT-10와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
-    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
-    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-10"]
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다. 추가 검증: 원천 치수 단위/정밀도·소수자리/해당 없음과 미확인·복합 인덱스 전체 순서와 미지원 사실·원천 DDL 부재. 반대 동작이면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-10","documents/screen/admin/hub/catalog/requirements.md#CAT-29"]
     status: "planned"
   - id: TC-00310
     feature: "FEAT-003"
@@ -140,8 +140,8 @@ testcases:
     given: "현재 정책·그룹 원천 조회 실패 / 그룹/정책/메타데이터·샘플/반출 권한 조합"
     when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
     then: "CAT-12·CAT-17와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
-    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
-    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-12","documents/screen/admin/hub/catalog/requirements.md#CAT-17"]
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다. 추가 검증: 접근 그룹/컬럼 예외 동일 후보·부분집합·동시 편집 버전·반영 전 현재 권한 유지·직접 정책 분리. 반대 동작이면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-12","documents/screen/admin/hub/catalog/requirements.md#CAT-17","documents/screen/admin/hub/catalog/requirements.md#CAT-28"]
     status: "planned"
   - id: TC-00312
     feature: "FEAT-003"
@@ -218,6 +218,34 @@ testcases:
     given: "외부 판·같은 세트 후보와 현재 접근"
     when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
     then: "CAT-22와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
-    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
-    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-22"]
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다. 추가 검증: 테이블 이름/업무명 표시·정확 판/안정 ID 선택·테이블 변경 뒤 컬럼 종속성·같은 이름 자동 대체 거부. 반대 동작이면 실패해야 한다"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-22","documents/screen/admin/hub/catalog/requirements.md#CAT-27"]
     status: "planned"
+
+  - id: TC-00316
+    feature: FEAT-003
+    usecase: UC-007
+    screens: [SCR-003]
+    type: business_exception
+    title: "DBMS별 공통코드 자료형과 원천 검수"
+    actor: ACT-004
+    given: "같은 DBMS 다른 버전·다른 DBMS 코드·비활성/삭제/조회 실패·미등록/모호한 원천 타입"
+    when: "화면 조회·후보 선택/저장·검수·반영과 소비 문맥을 확인한다"
+    then: "CAT-30·REQ-301.source_type_catalog의 후보/저장/검수/고정 보존을 만족한다"
+    verification: "계약/통합/E2E; 버전별 후보 분리·타 DBMS 코드 저장·첫 값 자동 선택·코드명으로 원문 합성·원천 불일치 검수 완료를 허용하면 실패"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-30"]
+    status: planned
+
+  - id: TC-00315
+    feature: FEAT-003
+    usecase: UC-007
+    screens: [SCR-003]
+    type: business_exception
+    title: "컬럼 그룹 승계와 제외 전용 후보"
+    actor: ACT-004
+    given: "테이블 A/B·제외 없음/A/전체·테이블 밖 C·중복·빈 사유·테이블 축소·A와 B 동시 소속·등록 근거 변조"
+    when: "화면 조회·후보 선택/저장·검수·반영과 소비 문맥을 확인한다"
+    then: "CAT-31·REQ-103.column_group_exclusions와 동일 후보/원자적 반영 규칙을 만족한다"
+    verification: "계약/통합/E2E; 예외 0건은 A/B, A 제외는 B, 모두 제외는 빈 집합. A+B 사용자에게 A 제외만으로 전면 거부하거나 C 단독 허용·중복/사유 없음·등록자 위조·테이블 축소 후 고아 제외·현재 정책 덮어쓰기를 허용하면 실패"
+    screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-31"]
+    status: planned

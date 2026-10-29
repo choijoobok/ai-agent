@@ -83,6 +83,7 @@ entities:
       - { name: "별칭", physical_name: ALIAS_NM, description: "관리 화면과 모델 문맥의 수정 가능한 유일 표시명. REQ-603.alias_identity와 50-api의 FEAT-002.alias_contract에 따라 비교한다", origin: "관리자" }
       - { name: "설명", physical_name: DESCRIPTION, description: "조회 대상 업무 범위와 선택에 필요한 설명", origin: "관리자" }
       - { name: "DBMS 종류", physical_name: DBMS_CD, description: "질의 해석·파서 선택의 기술 기준", origin: "관리자·지원 목록" }
+      - { name: "DBMS 버전", physical_name: DBMS_VERSION, description: "제품의 실제 버전 문자열. LLM 문맥과 연결 대조에 사용하며 관리 편집 버전/자료형 목록 분류 키와 구분한다", origin: "연결 관측 제안·관리자 확인" }
       - { name: "SQL 파서 선택", physical_name: PARSER_ID, description: "DBMS 기본값을 참고하되 별도 지정하는 파서. 미지정/미지원은 조회 불가이며 기본 파서로 조용히 대체하지 않는다", origin: "관리자·지원 목록" }
       - { name: "운영 DB·DW 유형", physical_name: SOURCE_TYPE_CD, description: "조회 원천의 업무 유형. 실제 연결 주소나 접속 권한을 대신하지 않는다", origin: "관리자" }
       - { name: "시각 체계", physical_name: TIME_ZONE_ID, description: "조회 원천 시각을 해석하는 업무 메타데이터. Hub 감사 시각이나 브라우저 시간대와 구분한다", origin: "관리자" }
@@ -123,6 +124,7 @@ entities:
         - {"name":"ALIAS_KEY","type":"character varying(300)","nullable":false,"default":null}
         - {"name":"DESCRIPTION","type":"text","nullable":true,"default":null}
         - {"name":"DBMS_CD","type":"character varying(30)","nullable":false,"default":null}
+        - {"name":"DBMS_VERSION","type":"character varying(100)","nullable":false,"default":null}
         - {"name":"PARSER_ID","type":"character varying(100)","nullable":true,"default":null}
         - {"name":"SOURCE_TYPE_CD","type":"character varying(10)","nullable":false,"default":null}
         - {"name":"TIME_ZONE_ID","type":"character varying(100)","nullable":true,"default":null}
@@ -218,7 +220,7 @@ entities:
       - { name: "변경 순서", physical_name: CHANGE_SEQ, description: "동일 대상의 성공 변경을 구분하는 순서. 시각만으로 순서를 추정하지 않는다", origin: "서버" }
       - { name: "반영 버전", physical_name: RESULT_VERSION, description: "이번 명령이 확정한 관리 버전. 최초 등록 1, 이후 성공 명령마다 +1. 배포 세대·캐시 버전과 구분한다", origin: "ENT-002" }
       - { name: "스냅샷 형식 버전", physical_name: SNAPSHOT_VERSION, description: "과거 구성을 해석하는 형식 버전. 최초 형식은 1이며 자산 관리 버전과 구분한다", origin: "서버" }
-      - { name: "반영 후 전체 구성", physical_name: SNAPSHOT, description: "ENT-002의 배포 참조·별칭/설명·DBMS/파서·유형·시각 정보·적용 가능 그룹 집합·관리 버전/근거의 당시 값. 원천 비밀·풀·실시간 연결 관측은 제외한다", origin: "반영 후 현재값(삭제는 마지막 구성과 삭제 표시)", structure: "ENT-002의 관리 구성 스냅샷" }
+      - { name: "반영 후 전체 구성", physical_name: SNAPSHOT, description: "ENT-002의 배포 참조·별칭/설명·DBMS/DBMS 버전/파서·유형·시각 정보·적용 가능 그룹 집합·관리 버전/근거의 당시 값. 원천 비밀·풀·실시간 연결 관측은 제외한다", origin: "반영 후 현재값(삭제는 마지막 구성과 삭제 표시)", structure: "ENT-002의 관리 구성 스냅샷" }
       - { name: "변경 처리 주체", physical_name: ACTOR_ID, description: "이번 변경을 실제 처리한 system 관리자 계정 참조. 생성/변경의 스냅샷 최종 변경 근거와 일치한다", origin: "서버 인증 근거" }
       - { name: "변경 처리 시각", physical_name: APPLIED_DTM, description: "이번 변경이 실제 반영된 시각. 생성/변경 스냅샷의 반영 시각과 일치한다", origin: "서버" }
       - { name: "변경 사유", physical_name: CHANGE_REASON, description: "이번 변경을 수행한 업무 사유", origin: "관리자" }

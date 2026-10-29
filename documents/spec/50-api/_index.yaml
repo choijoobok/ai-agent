@@ -6,7 +6,7 @@ meta:
   path_convention: "/api/{public|common|service}/{module}/{domain}/{action}"
   cutover: "system 이행 슬라이스에서 호출자·SYS_API·SYS_MENU_API를 함께 바꾸고 회귀 시험 뒤 system 없는 구 경로를 같은 커밋에서 삭제한다"
   common_errors: { 400: VALIDATION_ERROR, 401: AUTHENTICATION_REQUIRED, 403: AUTHORIZATION_DENIED, 404: RESOURCE_NOT_FOUND, 409: STATE_CONFLICT, 500: INTERNAL_ERROR }
-  contract_rule: "system의 source_contract는 현재 DTO·검증 의미를 보존하는 이행 근거다. implementation: planned인 admin API는 feature_contracts의 설계 DTO·검증 계약을 사용하며 없는 source_contract를 만들지 않는다. system은 G3 입력 DTO 필드·검증·null·페이징을 보존하고 P4에서 패키지/경로만 이행한다. admin은 소유 G3에서 설계 계약을 검토한다"
+  contract_rule: "system의 source_contract는 현재 DTO·검증 의미를 보존하는 이행 근거다. implementation: planned인 API는 소유 feature_contracts의 설계 DTO·검증 계약을 사용하며 없는 source_contract를 만들지 않는다. system은 G3 입력 DTO 필드·검증·null·페이징을 보존하고 P4에서 패키지/경로만 이행한다. admin은 소유 G3에서 설계 계약을 검토한다"
   error_inheritance: "모든 API는 common_errors를 상속하고, feature_contracts의 exception_map에 연결된 UC 예외를 추가로 반환한다"
 
 spec_set:

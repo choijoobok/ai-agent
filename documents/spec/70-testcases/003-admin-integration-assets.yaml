@@ -300,3 +300,17 @@ testcases:
     verification: "계약/통합/E2E; 현재 이름/값을 과거로 대체하거나 다른 대상 이력 허용 시 실패"
     screen_cases: ["documents/screen/admin/hub/data-source/requirements.md#DS-13", "documents/screen/admin/hub/data-source/requirements.md#DS-14"]
     status: planned
+
+  - id: TC-00213
+    feature: FEAT-002
+    usecase: UC-016
+    screens: [SCR-002]
+    type: business_exception
+    title: "DBMS·버전 관리와 LLM 전달"
+    actor: ACT-004
+    given: "관리 DBMS/버전·실제 연결 관측 일치/불일치/실패·버전 변경·과거 이력"
+    when: "화면 조회·후보 선택/저장·검수·반영과 소비 문맥을 확인한다"
+    then: "DS-25·REQ-603.dbms_context를 만족하며 현재/관측/당시 값을 구분한다"
+    verification: "계약/통합/E2E; 버전 누락 LLM 전달·관리 편집 버전을 DBMS 버전으로 전달·관측 자동 덮어쓰기·불일치 실행·이력 현재값 대체·자료형 버전별 분할을 넣으면 실패"
+    screen_cases: ["documents/screen/admin/hub/data-source/requirements.md#DS-25"]
+    status: planned
