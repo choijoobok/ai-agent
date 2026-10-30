@@ -89,7 +89,9 @@ node .claude/skills/mockup/scaffold.mjs --check              # 전수
 node .claude/skills/mockup/scaffold.mjs --check log/access    # 하나
 ```
 
-넷을 본다. **전부 어긋남이지 취향이 아니다:**
+신규·수정 요건서는 `/menu-doc`의 요구사항 매핑 검사도 먼저 통과시킨다. 화면의 일부 지원을 요구사항 전체 충족으로 표현하지 않는다.
+
+다음을 본다. **전부 어긋남이지 취향이 아니다:**
 
 | 검사 | 어기면 무엇이 깨지나 |
 |---|---|

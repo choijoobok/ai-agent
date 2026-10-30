@@ -115,6 +115,8 @@
 | `/doc-gen` | `sequences.test.mjs` | `node .claude/skills/doc-gen/sequences.test.mjs` |
 | `/manual-site` | `build.mjs` | `node .claude/skills/manual-site/build.mjs` |
 | `/manual-site` | `capture.mjs` | `node .claude/skills/manual-site/capture.mjs` |
+| `/menu-doc` | `requirements-trace.mjs` | `node .claude/skills/menu-doc/requirements-trace.mjs` |
+| `/menu-doc` | `requirements-trace.test.mjs` | `node .claude/skills/menu-doc/requirements-trace.test.mjs` |
 | `/menu-doc` | `screens.mjs` | `node .claude/skills/menu-doc/screens.mjs` |
 | `/mockup` | `declared-layout.mjs` | `node .claude/skills/mockup/declared-layout.mjs` |
 | `/mockup` | `declared-layout.test.mjs` | `node .claude/skills/mockup/declared-layout.test.mjs` |
