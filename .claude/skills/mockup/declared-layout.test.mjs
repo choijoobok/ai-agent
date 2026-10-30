@@ -201,3 +201,14 @@ test('완료 상태의 대상별 결과는 공통 미적용 행을 대체하고 
  const result=render({...figure,key:'walkthrough-2',stateKey:'applied'},fixture);
  assert.match(result,/리비전 13/);assert.match(result,/리비전 3/);assert.doesNotMatch(result,/미적용/);
 });
+
+test('요청 초안은 선언된 지역 행 작업만 허용하고 검토·반려는 차단한다',()=>{
+ const fixture={...model,columns:[model.columns[0],{...model.columns[1],heading:'상세 — 그리드'}],requestScreen:true,strictButtons:true,addRowTabs:['상세'],
+ actions:[...model.actions,['행 추가','','','','','지역 추가'],['행 제거','','','','','지역 제거'],['반려','','','','','전체 반려']],
+ surfaces:[{name:'상세',buttons:['행 추가','행 제거','반려'],disabled:[]}]};
+ const figure={key:'draft',caption:'초안',detail:'상세',notice:'',buttons:['저장'],editable:true,examples:{}};
+ const html=render(figure,fixture);
+ assert.match(html,/data-add-demo-row/);assert.match(html,/data-remove-demo-row/);
+ assert.match(html,/<button[^>]*disabled[^>]*>반려<\/button>/);
+ assert.doesNotMatch(render({...figure,key:'submitted',editable:false},fixture),/data-remove-demo-row|data-add-demo-row/);
+});

@@ -17,6 +17,7 @@
  * <p>화면은 페이지 경로(`/log/access`) · 폴더(`log/access`) · 이름(`access`) 아무거나 받는다.
  */
 import fs from 'node:fs';
+import {parseYaml} from '../../hooks/lib.mjs';
 import path from 'node:path';
 import { declaredFigures, declaredScreen, searchComboScript } from './declared-layout.mjs';
 import {annotationBook, surfaceRows, surfaceIntroduction, surfaceOf} from './presentation.mjs';
@@ -274,6 +275,22 @@ function scaffold(dir) {
   const typeRow = rows.find((r) => /화면 유형/.test(r[0]));
   const type = typeRow ? typeRow[1] : '';
   const model = screenModel(md, type);
+  const requests=parseYaml(read(path.join(REPO,'documents/spec/60-screens/012-asset-change-request.yaml'))).screens;
+  const request=requests.find(s=>s.route===`/${dir}`);
+  model.requestScreen=Boolean(request);
+  model.screenPath=dir;
+  model.requestRoutes=requests;
+  if(request){
+    model.strictButtons=true;
+    const example=(m,pattern)=>{const t=m.columns[0];return t.rows.find(r=>pattern.test(plain(r[0])))?.[t.header.indexOf('예시')]??'';};
+    const requestNo=example(model,/^요청번호$/);
+    model.requestTargets=requests.filter(s=>read(path.join(REPO,s.target_doc))).map(s=>{
+      const other=screenModel(read(path.join(REPO,s.target_doc)),'마스터-디테일(상하)');
+      const target=example(other,/(?:식별자| ID)$/);
+      const relative=path.posix.relative(dir,s.route.slice(1));
+      return {id:s.id,label:s.title,href:`${relative?relative+'/':''}mockup.html?requestNo=${encodeURIComponent(requestNo)}&target=${encodeURIComponent(target)}#main`};
+    });
+  }
   const tc = testcases(md);
   const keys = manualKeys(dir);
   const open = section(md, /미결/);
@@ -421,6 +438,22 @@ function check(dir) {
   if (md) {
     const type = meta(md).find((r) => /화면 유형/.test(r[0]))?.[1] ?? '';
     const model = screenModel(md, type);
+  const requests=parseYaml(read(path.join(REPO,'documents/spec/60-screens/012-asset-change-request.yaml'))).screens;
+  const request=requests.find(s=>s.route===`/${dir}`);
+  model.requestScreen=Boolean(request);
+  model.screenPath=dir;
+  model.requestRoutes=requests;
+  if(request){
+    model.strictButtons=true;
+    const example=(m,pattern)=>{const t=m.columns[0];return t.rows.find(r=>pattern.test(plain(r[0])))?.[t.header.indexOf('예시')]??'';};
+    const requestNo=example(model,/^요청번호$/);
+    model.requestTargets=requests.filter(s=>read(path.join(REPO,s.target_doc))).map(s=>{
+      const other=screenModel(read(path.join(REPO,s.target_doc)),'마스터-디테일(상하)');
+      const target=example(other,/(?:식별자| ID)$/);
+      const relative=path.posix.relative(dir,s.route.slice(1));
+      return {id:s.id,label:s.title,href:`${relative?relative+'/':''}mockup.html?requestNo=${encodeURIComponent(requestNo)}&target=${encodeURIComponent(target)}#main`};
+    });
+  }
     if(model.surfaces.length){
       const names=model.columns.map(areaTitle);
       if(new Set(model.surfaces.map(s=>s.name)).size!==model.surfaces.length)problems.push('영역별 작업 표의 영역 이름이 중복됐다');

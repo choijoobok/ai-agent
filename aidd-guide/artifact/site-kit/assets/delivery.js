@@ -113,6 +113,18 @@
       bindDeclaredMockup(shadow);
       shadow.addEventListener('click', (event) => {
         if (event.defaultPrevented) return;
+        const request = event.target.closest?.('[data-request-navigation][data-request-screen]');
+        if(request){
+          const link=links.find(l=>l.textContent.trim().startsWith(request.dataset.requestScreen+' '));
+          if(!link)return;
+          event.preventDefault();
+          const query=request.getAttribute('href').split('?')[1]?.split('#')[0]??'';
+          show(link.dataset.pageLink);
+          const current=pages.find(p=>p.id===link.dataset.pageLink);
+          openRequestMockup(current,query);
+          history.replaceState(null,'',`#${link.dataset.pageLink}?${query}`);
+          return;
+        }
         const anchor = event.target.closest?.('[data-note]');
         if (!anchor) return;
         const note = shadow.getElementById(`note-${anchor.dataset.note}`);
@@ -171,6 +183,11 @@
     window.DELIVERY_READY = renderMermaid();
     return true;
   }
+  function openRequestMockup(current,query){
+    const tab=current?.querySelector('[data-document-tab="mockup"]');
+    if(tab)activateDocumentTab(tab);
+    current?.querySelectorAll('[data-mockup-body]').forEach(host=>{if(host.shadowRoot)applyRequestContext(host.shadowRoot,query);});
+  }
   function closeSidebar() {
     document.querySelector('#sidebar')?.classList.remove('open');
     document.querySelector('.sidebar-backdrop')?.classList.remove('open');
@@ -181,6 +198,7 @@
   function showHash() {
     const [id, query = ''] = location.hash.slice(1).split('?');
     if (!show(id, false)) return false;
+    if(new URLSearchParams(query).has('requestNo'))openRequestMockup(pages.find(p=>p.id===id),query);
     let anchor = new URLSearchParams(query).get('anchor');
     if (!anchor) return true;
     try { anchor = decodeURIComponent(anchor); } catch { /* 잘못된 인코딩은 원 문자열로 탐색 */ }

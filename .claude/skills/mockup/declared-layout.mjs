@@ -1,6 +1,7 @@
 /** 요건서에 명시한 상태·상세 폼을 공통 템플릿의 어휘로 렌더링한다. */
 import {snapshotView} from './snapshot-view.mjs';
 import {readFileSync} from 'node:fs';
+import path from 'node:path';
 import {columnExplanation, actionExplanation, searchExplanation, surfaceOf, surfaceIntroduction} from './presentation.mjs';
 const controls = readFileSync(new URL('../../../aidd-guide/artifact/site-kit/assets/mockup-controls.js', import.meta.url), 'utf8');
 const escape = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -69,7 +70,8 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const read = /조회|목록|열람|확인|상세|사용처|검증 결과|관리측 후보 열기/.test(name) || (actionTable && /READ/.test(plain(cell(actionTable,row,'액션'))));
     const locked = ['saving','unknown','conflict','denied'].includes(figure.key);
     const modeLocked=/추가|제거/.test(name)&&!supportsValueMode(scope);
-    const disabled = (model.strictButtons && !figure.buttons.includes(name)) || figure.disabledButtons?.includes(name) || modeLocked || (locked && !figure.buttons.includes(name)) || (!figure.editable && !read && !figure.buttons.includes(name)) || surface?.disabled?.includes(name) || name === '수동 샘플';
+    const localRequestEdit = model.requestScreen && figure.editable && /추가$|제거$/.test(name) && (model.addRowTabs??[]).includes(scope);
+    const disabled = (model.strictButtons && !figure.buttons.includes(name) && !localRequestEdit) || figure.disabledButtons?.includes(name) || modeLocked || (locked && !figure.buttons.includes(name)) || (!figure.editable && !read && !figure.buttons.includes(name)) || surface?.disabled?.includes(name) || name === '수동 샘플';
     const add = !disabled && /추가$/.test(name) && (model.addRowTabs??[]).includes(scope);
     const remove = !disabled && /제거$/.test(name) && (model.addRowTabs??[]).includes(scope);
     const description = actionTable ? actionExplanation(actionTable,row,title) : `<b>${escape(name)}</b> — ${escape(plain(row[5]))}`;
@@ -83,7 +85,9 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     if(nav&&!disabled){
       const href=plain(nav[1]);
       if(!/^(?:\.\.\/)*[a-z0-9/-]+\/mockup\.html(?:\?[a-zA-Z0-9=&_-]+)?(?:#main)?$/.test(href))throw new Error('화면 이동은 목업 상대 경로와 명시 문맥만 허용한다');
-      return `<span class="control-annotation"><a class="btn ghost sm" href="${escape(href)}" data-request-navigation>${escape(displayName)}</a>${note}</span>`;
+      const destination=path.posix.normalize(path.posix.join(model.screenPath??'',href.split('?')[0])).replace(/\/mockup\.html$/,'');
+      const requestId=model.requestRoutes?.find(s=>s.route===`/${destination}`)?.id??'';
+      return `<span class="control-annotation"><a class="btn ghost sm" href="${escape(href)}" data-request-navigation data-request-screen="${escape(requestId)}">${escape(displayName)}</a>${note}</span>`;
     }
     return `<span class="control-annotation"><button type="button" class="btn ghost sm"${disabled?' disabled':''}${modeLocked?' title="해당 값 방식의 등록 컬럼이 없어 사용할 수 없습니다"':''}${add?' data-add-demo-row':''}${remove?' data-remove-demo-row':''}${command?` data-open-command="${escape(name)}"`:''}${destination?` data-open-figure="${escape(plain(destination[1]))}"`:''}>${escape(displayName)}</button>${note}</span>`;
   };
@@ -155,6 +159,7 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
         const context = record['컬럼명'] || record['문맥'] || '';
         content = `<button type="button" class="btn ghost sm" data-open-tab="${escape(target)}" data-context="${escape(context)}">${escape(value)}</button>`;
       }
+      if(model.requestScreen && plain(r[0])==='요청번호')content=`<span data-request-number>${content}</span>`;
       return `<td data-grid-col="${i}"${hidden(r)}${editable ? ' class="edit"' : ''} style="overflow:hidden;text-overflow:ellipsis" title="${isSnapshot?'전체 스냅샷 보기':escape(value)}">${content}</td>`;
     }).join('');
     return `<tr class="${rowIndex===0?'sel':''}" data-row-context="${escape(JSON.stringify(String(record['문맥'] || record['컬럼명'] || '').split(',')))}">${vals}</tr>`;
@@ -211,9 +216,11 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
   const panes = model.vertical!==false
     ? `<div data-layout="top-bottom" style="margin-top:12px"><section data-pane="master">${master}</section><div class="split"><span class="hnd">⋮⋮⋮</span></div><section data-pane="detail">${lower}</section></div>`
     : `<div class="splitrow" data-layout="left-right" style="margin-top:12px"><div class="pane">${master}</div><div class="split v"><span class="hnd">⋮</span></div><div class="pane">${lower}</div></div>`;
+  const requestNav=!compact&&showData&&model.requestTargets&&!['unknown','denied','readonly','partial-permission'].includes(figure.stateKey??figure.key)
+    ? `<div class="tb" style="flex-wrap:wrap"><span class="ttl">복합 요청 이동 예시</span><span class="hint">같은 요청번호 · 도착 시 현재 권한 재검사</span><span class="sp"></span>${model.requestTargets.map(t=>`<a class="btn ghost sm" data-request-navigation data-request-screen="${escape(t.id)}" href="${escape(t.href)}">${escape(t.label)}</a>`).join('')}</div>`:'';
   const selectedLabel = model.columns[0].rows.filter(r=>/현재 객체명|현재 업무명/.test(plain(r[0]))).map(r=>example(model.columns[0],r)).join(' / ');
   const main = compact ? `<div class="hint">${escape(figure.detail)} · 같은 상위 행의 상세 영역</div><div class="notes" role="status">${escape(figure.notice)}</div><div data-detail-panel="${escape(figure.detail)}"><div class="hint" data-context-label hidden>현재 컬럼: <span></span> <button type="button" class="btn ghost sm" data-clear-context>전체 보기${badge('전체 보기','건수 셀에서 전달한 컬럼 문맥 필터를 해제하고 같은 대상의 전체 목록을 표시한다.','common:clear-context')}</button></div>${detail()}</div>` : `<div class="sf">${search}</div><div class="row actions" style="flex-wrap:wrap;margin:10px 0">${topButtons}${interactive&&model.collapsibleMaster?`<button type="button" class="btn ghost sm" data-toggle-master>테이블 목록 접기${badge('테이블 목록 접기/펼치기','선택 대상과 하단 편집본을 유지하면서 상단 목록의 표시만 전환한다.','common:toggle-master')}</button>`:''}</div>${interactive&&showData&&selectedLabel?`<div class="hint">선택 테이블: ${escape(selectedLabel)}</div>`:''}
-       <div class="notes" role="status">${escape(figure.notice)}</div>${panes}`;
+       <div class="notes" role="status">${escape(figure.notice)}</div>${requestNav}${panes}`;
   const commandTable=model.commandFields;
   const commands=[...new Set((commandTable?.rows??[]).map(r=>plain(r[0])))].map(name=>{
     const rows=commandTable.rows.filter(r=>plain(r[0])===name);

@@ -1,5 +1,15 @@
 /** 정본에서 생성한 목업의 탐색·선택 시연. 서버 저장이나 권한 판정을 수행하지 않는다. */
+function applyRequestContext(root, query) {
+  const params=new URLSearchParams(query), requestNo=params.get('requestNo');
+  if(!requestNo||!/^[a-zA-Z0-9_-]+$/.test(requestNo))return;
+  root.querySelectorAll('[data-request-number]').forEach(e=>{e.textContent=requestNo;});
+  root.querySelectorAll('[data-request-navigation]').forEach(a=>{
+    const parts=a.getAttribute('href').split('?'), values=new URLSearchParams((parts[1]??'').split('#')[0]);
+    values.set('requestNo',requestNo);a.setAttribute('href',parts[0]+'?'+values.toString()+'#main');
+  });
+}
 function bindDeclaredMockup(root) {
+  applyRequestContext(root,location.search);
   // 상세 설명 한 곳을 재사용한다. 문서와 ShadowRoot 모두 같은 탐색/툴팁 동작을 쓴다.
   const doc = root.ownerDocument || root;
   const tip = doc.createElement('div');
@@ -190,7 +200,7 @@ function bindDeclaredMockup(root) {
   root.addEventListener('submit', event => {
     if (!event.target.matches('[data-command-form]')) return;
     event.preventDefault();
-    event.target.querySelector('[data-command-result]').textContent='목업 입력 확인 완료 — 서버로 접수하거나 카탈로그를 변경하지 않았습니다.';
+    event.target.querySelector('[data-command-result]').textContent='목업 입력 확인 완료 — 서버로 접수하거나 업무 데이터를 변경하지 않았습니다.';
   });
   root.querySelectorAll('[data-command-targets]').forEach(group=>{
     if(group.children.length===1)group.querySelector('[data-remove-command-target]').disabled=true;
