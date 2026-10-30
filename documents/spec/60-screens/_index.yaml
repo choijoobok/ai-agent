@@ -28,3 +28,4 @@ spec_set:
     - 009-doc-order.yaml
     - 010-change-history.yaml
     - 011-menu-tree.yaml
+    - 012-asset-change-request.yaml

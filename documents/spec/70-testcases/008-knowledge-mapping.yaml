@@ -10,6 +10,12 @@ testcases:
       - SCR-012
       - SCR-019
       - SCR-036
+      - SCR-056
+      - SCR-057
+      - SCR-058
+      - SCR-059
+      - SCR-060
+      - SCR-061
     type: "normal"
     title: "지식 소유 매핑과 외부 상세 분리"
     actor: ACT-003
@@ -28,6 +34,12 @@ testcases:
       - SCR-012
       - SCR-019
       - SCR-036
+      - SCR-056
+      - SCR-057
+      - SCR-058
+      - SCR-059
+      - SCR-060
+      - SCR-061
     type: "normal"
     title: "지식 대기 중 API 독립 변경 허용"
     actor: ACT-003
@@ -46,6 +58,12 @@ testcases:
       - SCR-012
       - SCR-019
       - SCR-036
+      - SCR-056
+      - SCR-057
+      - SCR-058
+      - SCR-059
+      - SCR-060
+      - SCR-061
     type: "normal"
     title: "외부 리비전 상승으로 지식 자동 반려 금지"
     actor: ACT-003
@@ -64,6 +82,12 @@ testcases:
       - SCR-012
       - SCR-019
       - SCR-036
+      - SCR-056
+      - SCR-057
+      - SCR-058
+      - SCR-059
+      - SCR-060
+      - SCR-061
     type: "business_exception"
     title: "지식 자신의 기준 리비전 충돌 차단"
     actor: ACT-003
@@ -82,6 +106,12 @@ testcases:
       - SCR-012
       - SCR-019
       - SCR-036
+      - SCR-056
+      - SCR-057
+      - SCR-058
+      - SCR-059
+      - SCR-060
+      - SCR-061
     type: "business_exception"
     title: "매핑 대상 유효성·권한 검사 유지"
     actor: ACT-003
@@ -100,6 +130,12 @@ testcases:
       - SCR-012
       - SCR-019
       - SCR-036
+      - SCR-056
+      - SCR-057
+      - SCR-058
+      - SCR-059
+      - SCR-060
+      - SCR-061
     type: "normal"
     title: "자산 승인에서 연결 지식 영향과 보완 요청"
     actor: ACT-003
@@ -118,6 +154,12 @@ testcases:
       - SCR-012
       - SCR-019
       - SCR-036
+      - SCR-056
+      - SCR-057
+      - SCR-058
+      - SCR-059
+      - SCR-060
+      - SCR-061
     type: "normal"
     title: "직접·예제 경유 영향과 목록 변경 허용"
     actor: ACT-003
@@ -136,6 +178,12 @@ testcases:
       - SCR-012
       - SCR-019
       - SCR-036
+      - SCR-056
+      - SCR-057
+      - SCR-058
+      - SCR-059
+      - SCR-060
+      - SCR-061
     type: "normal"
     title: "실행 리비전 고정과 과거 근거 보존"
     actor: ACT-003
@@ -154,6 +202,12 @@ testcases:
       - SCR-012
       - SCR-019
       - SCR-036
+      - SCR-056
+      - SCR-057
+      - SCR-058
+      - SCR-059
+      - SCR-060
+      - SCR-061
     type: "permission"
     title: "영향 지식 본문 권한·조회 실패 구분"
     actor: ACT-003
@@ -172,6 +226,12 @@ testcases:
       - SCR-012
       - SCR-019
       - SCR-036
+      - SCR-056
+      - SCR-057
+      - SCR-058
+      - SCR-059
+      - SCR-060
+      - SCR-061
     type: "business_exception"
     title: "SQL·입출력 기술 계약 검증 유지"
     actor: ACT-003
@@ -180,3 +240,63 @@ testcases:
     then: "소유 기술 검증이 실패해야 한다. 지식의 안정 ID 매핑 정책을 모든 기술 참조 버전·필수값/형식 검사 제거로 확대하지 않는다."
     status: "planned"
     verification: "요구사항 검수 시 반례 대조. 제품 구현 시 단위/통합 시험으로 연결하며 문서 검증을 실제 승인/동시성 실행 시험으로 표시하지 않는다."
+
+  - id: TC-01411
+    feature: FEAT-014
+    usecase: UC-012
+    screens:
+      - SCR-036
+      - SCR-056
+      - SCR-057
+      - SCR-058
+      - SCR-059
+      - SCR-060
+      - SCR-061
+    type: "permission"
+    title: "통합 조회의 상태 변경 명령 차단"
+    actor: ACT-003
+    given: "SCR-036으로 모든 종류의 요청을 조회할 수 있는 사용자"
+    when: "통합 목록에서 초안 저장·제출·검토 완료·승인·반려·취소를 직접 호출"
+    then: "통합 조회는 READ/EXPORT/전용 상세 이동만 허용하고 상태 변경은 거부한다. 전용 요청 화면에서 현재 액션 권한·선행 상태를 새로 검사한다."
+    status: "planned"
+    verification: "자산별 요청 메뉴 요건/목업 수락 기준. 실제 권한·상태전이·원자성/재전송 시험은 후속 구현에서 수행한다."
+
+  - id: TC-01412
+    feature: FEAT-014
+    usecase: UC-012
+    screens:
+      - SCR-036
+      - SCR-056
+      - SCR-057
+      - SCR-058
+      - SCR-059
+      - SCR-060
+      - SCR-061
+    type: "business_exception"
+    title: "복합 요청의 전용 화면 이동과 단일 전체 판정"
+    actor: ACT-003
+    given: "같은 REQUEST_NO에 카탈로그 X와 API A의 실제 변경이 묶여 있음"
+    when: "카탈로그 요청 SCR-056과 API 요청 SCR-057 사이를 이동하고 판정을 재전송"
+    then: "동일 요청의 전체 대상·각 문맥 _SNP와 같은 처리 결과를 표시한다. 실제 전체 대상의 권한·선행 상태·자기 기준본·기술 검증 후 한 번만 전체 승인/반려·반영하고 부분 승인/부분 반영·중복 증가를 거부한다."
+    status: "planned"
+    verification: "자산별 요청 메뉴 요건/목업 수락 기준. 실제 권한·상태전이·원자성/재전송 시험은 후속 구현에서 수행한다."
+
+  - id: TC-01413
+    feature: FEAT-014
+    usecase: UC-012
+    screens:
+      - SCR-036
+      - SCR-056
+      - SCR-057
+      - SCR-058
+      - SCR-059
+      - SCR-060
+      - SCR-061
+    type: "permission"
+    title: "자산별 요청 메뉴와 전체 세트 권한 경계"
+    actor: ACT-003
+    given: "사용자가 카탈로그 요청 열람/승인 권한만 보유하고 API 요청 권한이 없으며 두 대상의 복합 요청 존재"
+    when: "요청번호·대상종류를 바꿔 API 상세 열람 또는 복합 요청 전체 승인을 시도"
+    then: "카탈로그 메뉴 권한으로 API 상세/다른 지식 본문을 우회 열람하지 못한다. 승인에서는 전체 실제 변경 대상의 현재 권한을 검사해 부족하면 판정/부분 반영을 거부하고 기존 요청을 보존한다."
+    status: "planned"
+    verification: "자산별 요청 메뉴 요건/목업 수락 기준. 실제 권한·상태전이·원자성/재전송 시험은 후속 구현에서 수행한다."

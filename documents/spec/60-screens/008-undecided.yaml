@@ -51,6 +51,12 @@ undecided:
       - purpose: "자산 영향·리비전 비교"
         callers:
           - SCR-036
+          - SCR-056
+          - SCR-057
+          - SCR-058
+          - SCR-059
+          - SCR-060
+          - SCR-061
           - SCR-034
           - SCR-033
           - SCR-031
@@ -62,7 +68,12 @@ undecided:
         review: "고정 제출본과 현재 효력, 조사 증거와 복원 후보의 열람 범위·반환 동작을 구분한다"
       - purpose: "관리 승인 상세"
         callers:
-          - SCR-036
+          - SCR-056
+          - SCR-057
+          - SCR-058
+          - SCR-059
+          - SCR-060
+          - SCR-061
           - SCR-037
           - SCR-035
           - SCR-022
