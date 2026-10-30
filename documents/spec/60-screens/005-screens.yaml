@@ -554,27 +554,6 @@ screens:
     history_policy:
       kind: "business_record"
       rule: "요청/판정·검토/조사·실행 로그/통계를 해당 업무 기록으로 조회한다. 이 화면 자체를 관리 구성 _HIST로 복사하지 않는다."
-  - id: SCR-018
-    note: "REQ-614의 운영 설정에서 REQ-601에 정의한 업무별 관리 승인 절차 사용 여부를 독립 설정한다. 현재 값·변경 전후·사유·처리자·시각과 각 처리에 적용한 설정 버전을 조회한다. 화면 요건서·목업은 P3에서 정의한다"
-    approval_policy: "요청·검토·책임자 승인 단계의 사용/미사용과 전결은 REQ-601.approval_policy를 따른다. 내용·권한·스냅샷·참조 검증과 실제 효력 시점은 대상별 요구사항을 유지한다"
-    module: "admin"
-    entry: "menu"
-    group: "공통 기반"
-    title: "실행 제한·운영 설정"
-    feature: FEAT-020
-    roadmap: "RM-P1"
-    agent_contact: "설정"
-    route: "/admin/hub/operation-config"
-    menu_code: "HUB_OPERATION_CONFIG"
-    menu_parent: "HUB_FOUNDATION"
-    target_doc: "documents/screen/admin/hub/operation-config/requirements.md"
-    screen_role: "management"
-    design_status: "screen_draft"
-    menu_contract: "현재 요구 기준의 목업 검토용 메뉴/경로안. 화면 합의 후 구현 시 선언·시드에 반영한다."
-    history_policy:
-      kind: "independent"
-      rule: "REQ-601.change_history. 최종 적용 관리 구성의 원 화면 상속 이력 메뉴를 둔다."
-    history_view: SCR-053
   - id: SCR-019
     usecases:
       - UC-019
@@ -610,7 +589,7 @@ screens:
     feature: FEAT-025
     roadmap: "RM-P1"
     agent_contact: "설정"
-    note: "저장·실행 제한과 실패 후 재시도 대기 설정은 AI 운영에 둔다. 오류 목록은 조회 ID별 한 행이며 개별 실패·신고·조사를 상세에서 조회한다(REQ-204·207). 개별 실패의 현재 조사 연결과 연결·취소 이력 조회는 REQ-115의 권한을 따른다. 유효 권한의 업무 자산·보안·품질 담당자가 확인하며 상세 SQL·정책 근거의 권한은 별도로 지킨다"
+    note: "저장·실행 제한과 실패 후 재시도 대기 설정은 기존 system 시스템 환경설정에서 관리하고 이 화면은 현재 유효값을 참조한다. 오류 목록은 조회 ID별 한 행이며 개별 실패·신고·조사를 상세에서 조회한다(REQ-204·207). 개별 실패의 현재 조사 연결과 연결·취소 이력 조회는 REQ-115의 권한을 따른다. 유효 권한의 업무 자산·보안·품질 담당자가 확인하며 상세 SQL·정책 근거의 권한은 별도로 지킨다"
     route: "/admin/hub/saved-query"
     menu_code: "HUB_SAVED_QUERY"
     menu_parent: "HUB_OPERATION"
@@ -618,11 +597,10 @@ screens:
     screen_role: "mixed_monitoring"
     design_status: "screen_draft"
     menu_contract: "현재 요구 기준의 목업 검토용 메뉴/경로안. 화면 합의 후 구현 시 선언·시드에 반영한다."
+    uses_screens: [SCR-515]
     history_policy:
-      kind: "shared_owner"
-      source_screen: SCR-018
-      rule: "제한 설정의 관리 원천은 SCR-018이며 현재 설정 읽기/이동과 그 이력을 연결한다. 저장 조회·위젯 등록/실행·개별 오류 기록은 각 업무 기록이며 운영 설정 _HIST에 섞지 않는다."
-    history_view: SCR-053
+      kind: "business_record"
+      rule: "제한 설정은 기존 system 시스템 환경설정(SCR-515)의 유효값을 참조한다. 새 설정 변경 이력 메뉴나 _HIST를 만들지 않는다. 저장 조회·위젯 등록/실행·개별 오류는 소유 업무 기록으로 조회한다."
   - id: SCR-021
     module: "admin"
     entry: "menu"

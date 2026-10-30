@@ -212,9 +212,9 @@ requirements:
     actors: [ACT-012]
     process_step: PRC-07-03
     title: "시스템 설정은 검증된 값만 적용하고 배포 기본값으로 되돌릴 수 있어야 한다"
-    detail: "시스템 관리자는 `sys-config.*` 아래에 등록된 일반 런타임 설정을 조회·변경할 수 있어야 하며, 키별 형식·범위와 변경 영향 경고를 따라야 한다. 비밀값·임의 변경 금지 값은 별도 프로퍼티 경로로 배포 관리하며 이 화면의 대상이 아니다. CR-026에 따라 유효값과 버전 근거를 함께 제공하고 기대 버전이 맞는 저장/복원만 반영한다"
-    acceptance: "잘못된 형식·범위·미등록 키 변경은 저장되지 않고, 성공한 변경은 설정 캐시 버전과 함께 한 트랜잭션으로 적용되며 되돌리면 오버라이드 행이 사라져 배포 기본값이 다시 드러난다. 설정값은 노드 캐시가 아니라 다음 작업 스코프의 DB 오버라이드 합성으로 반영된다. `sys-config.*` 밖의 비밀·보호 설정은 목록·응답·저장 요청에 나타나지 않는다. 오래된 편집본은 충돌로 거부하며 업무 접수/전결이 사용한 설정 값·버전과 반영 결과는 일관돼야 한다. 설정 읽기 장애의 접수 예외는 REQ-601.approval_policy.read_failure를 따른다"
-    source: "현재 구현 역추적 및 2026-10-27 사용자 CR-026 A안 승인 — 값/버전·기대 버전·업무 승인 처리의 일관성 보강. 신규 계약은 미구현이다"
+    detail: "시스템 관리자는 `sys-config.*` 아래에 등록된 일반 런타임 설정을 조회·변경할 수 있어야 하며, 키별 형식·범위와 변경 영향 경고를 따라야 한다. 비밀값·임의 변경 금지 값은 별도 프로퍼티 경로로 배포 관리하며 이 화면의 대상이 아니다."
+    acceptance: "잘못된 형식·범위·미등록 키 변경은 저장되지 않고, 성공한 변경은 설정 캐시 버전과 함께 한 트랜잭션으로 적용되며 되돌리면 오버라이드 행이 사라져 배포 기본값이 다시 드러난다. 설정값은 노드 캐시가 아니라 다음 작업 스코프의 DB 오버라이드 합성으로 반영된다. `sys-config.*` 밖의 비밀·보호 설정은 목록·응답·저장 요청에 나타나지 않는다."
+    source: "현재 구현 역추적 및 2026-10-30 사용자 결정 — CR-026의 미구현 설정 버전 확장을 철회하고 기존 시스템 환경설정 화면·권한·API·저장소를 그대로 재사용한다"
     evidence:
       frontend: ["modules/system/features/config","modules/system/public/settings"]
       backend: ["sources/backend/domain/src/main/java/com/aiagent/domain/config/admin/ConfigService.java","sources/backend/domain/src/main/java/com/aiagent/domain/config/admin/ConfigQueryService.java","sources/backend/support/src/main/java/com/aiagent/support/config/ConfigCatalog.java","sources/backend/support/src/main/java/com/aiagent/support/config/ConfigLookup.java"]
@@ -234,15 +234,15 @@ requirements:
     audit: "기존 구현의 이력과 UC-506의 처리 근거를 유지한다. 이번 카드 작성으로 별도 감사 저장소를 추가하지 않는다"
     volume: "현재 화면·API의 조회/처리 범위와 기존 제한을 유지한다. 새로운 용량·성능 목표를 부여하지 않는다"
     config: "sys-config.*의 기존 등록된 키만 관리한다. 비밀·보호 설정은 배포 경로를 유지한다"
-    risk: "CR-026의 기대 버전·업무 접수와 설정 변경의 일관성·읽기 장애 예외는 상세 계약/구현/시험이 남아 있다. 기존 캐시 버전을 업무 일관성 보장으로 오인하지 않는다"
+    risk: "기존 캐시 버전을 불변 설정 버전이나 설정 저장과 업무 승인 간의 직렬화 보장으로 오인하지 않는다. admin 승인 처리·실패 근거는 REQ-601의 소유 업무 계약이다"
     relations: {"depends_on":[],"constrains":["REQ-601","REQ-614"],"conflicts_with":[],"nfr":[],"interfaces":[]}
     realization: {"features":["FEAT-506"],"screens":["SCR-504","SCR-515"]}
-    examples: [{"kind":"정상","case":"auth.login.fail-limit의 유효한 값을 저장한 뒤 되돌리기","result":"값·설정 버전을 같은 트랜잭션으로 처리하고 되돌리기는 오버라이드 행을 삭제한다"},{"kind":"예외","case":"미등록 키나 형식·범위를 위반하는 값 저장","result":"쓰기를 거부하고 기존 유효 설정을 유지한다"}]
+    examples: [{"kind":"정상","case":"auth.login.fail-limit의 유효한 값을 저장한 뒤 되돌리기","result":"값·기존 캐시 갱신 버전을 같은 트랜잭션으로 처리하고 되돌리기는 오버라이드 행을 삭제한다"},{"kind":"예외","case":"미등록 키나 형식·범위를 위반하는 값 저장","result":"쓰기를 거부하고 기존 유효 설정을 유지한다"}]
     volatility: {"level":"low","what":"이미 구현된 system 기준선이다. 향후 업무 규칙·범위 변경은 기존 변경 절차를 따른다"}
     source_review: {"at":"2026-10-26","result":"CR-026 이전 설정 기준선의 소스 대조 기록. 추가된 값/버전 일관성 계약의 구현 완료를 뜻하지 않는다","scope":"기존 ConfigService는 값·캐시 갱신 버전을 같은 트랜잭션으로 저장하고 ConfigLookup은 다음 작업 스코프에서 DB 값을 다시 합성한다. 이것은 CR-026의 업무 설정 스냅샷·기대 버전 경합 보장이 아니다. REQ-505와 공유하는 버전 엔티티의 동시 증가 문제는 해당 findings를 참조하며, 설정값 적용을 노드 캐시/버전 변화에 의존하는 방식으로 간주하지 않는다.","tests":["sources/backend/domain/src/test/java/com/aiagent/domain/config/admin/ConfigServiceTest.java","sources/backend/domain/src/test/java/com/aiagent/domain/config/admin/ConfigQueryServiceTest.java","sources/backend/support/src/test/java/com/aiagent/support/config/ConfigLookupTest.java","sources/backend/support/src/test/java/com/aiagent/support/config/ConfigValidatorTest.java"],"findings":[]}
-    approved_change: { change: CR-026, contract: "ARCH-029.target_contract", status: "설계 방향 승인·상세 계약/구현 대기", verification: [TC-5066, TC-5067, TC-5068] }
-    open: ["@defer P3 — 기대 버전·스냅샷·원자적 반영의 물리 구조와 공개 계약, 설정 화면 요건/목업·충돌 안내·이행/롤백을 CR-026 범위로 상세 설계한다"]
-    maturity: {"level":"confirmed","at":"2026-10-29","by":"AI — CR-026 사용자 승인 반영","confirmed_by":"사용자 — 설명한 권장안대로 진행하도록 승인. 설정 읽기 장애의 수동 승인 요청 접수·근거 기록을 포함한 방향이며 상세 설계·구현 승인은 별도"}
+    approved_change: { change: CR-026, contract: "ARCH-029.target_contract", status: "2026-10-30 사용자 결정으로 미구현 확장 철회·현행 무수정 재사용" }
+    open: []
+    maturity: {"level":"confirmed","at":"2026-10-30","by":"AI — 기존 system 무수정 재사용 결정 반영","confirmed_by":"사용자 — admin 운영 설정 화면 제거·기존 system 시스템 환경설정 재사용. 현행 동작을 유지하며 제품 구현·게이트 전이는 별도"}
 
   - id: REQ-507
     type: functional

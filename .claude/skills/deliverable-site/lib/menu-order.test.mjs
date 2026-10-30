@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import { orderByAdminMenu } from '../../doc-gen/menu-contract.mjs';
 import { menuNavigationErrors } from './menu-order.mjs';
 const spec = { menu_tree: { admin_groups: [
- { title: '공통 기반', screens: ['SCR-018', 'SCR-053', 'SCR-015'] },
+ { title: '공통 기반', screens: ['SCR-016', 'SCR-052', 'SCR-015'] },
  { title: '연동 관리', screens: ['SCR-003', 'SCR-056', 'SCR-042'] },
 ] } };
-const rows = ['DOC', 'SCR-501', 'SCR-003', 'SCR-015', 'SCR-018', 'SCR-502', 'SCR-042', 'SCR-053', 'SCR-056'].map((id) => ({ id }));
-const ordered = ['DOC', 'SCR-501', 'SCR-018', 'SCR-053', 'SCR-015', 'SCR-502', 'SCR-003', 'SCR-056', 'SCR-042'];
+const rows = ['DOC', 'SCR-501', 'SCR-003', 'SCR-015', 'SCR-016', 'SCR-502', 'SCR-042', 'SCR-052', 'SCR-056'].map((id) => ({ id }));
+const ordered = ['DOC', 'SCR-501', 'SCR-016', 'SCR-052', 'SCR-015', 'SCR-502', 'SCR-003', 'SCR-056', 'SCR-042'];
 function nav(items) { return items.map(({ id, group }) => `<button data-page-link="screen-${id.toLowerCase()}" data-page-path="화면 요건·목업 › admin › ${group} › ${id}"></button>`).join(''); }
 const entries = spec.menu_tree.admin_groups.flatMap((g) => g.screens.map((id) => ({ id, group: g.title })));
 test('파일 순서와 떨어진 상속 이력을 메뉴 순서로 모으고 system·일반 문서 위치는 보존한다', () => {

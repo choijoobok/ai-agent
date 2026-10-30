@@ -137,7 +137,7 @@ requirements:
       interfaces: []
     realization:
       features: [FEAT-019, FEAT-020, FEAT-026, FEAT-112, FEAT-216, FEAT-222]
-      screens: [SCR-017, SCR-018, SCR-027, SCR-101]
+      screens: [SCR-017, SCR-515, SCR-027, SCR-101]
     examples:
       - { kind: 예외, case: "같은 대화에 처리 중인 턴과 승인 대기 턴이 있으면 삭제를 거부하고 취소·중단을 안내한다. 중단 요청 접수만으로 삭제하지 않고 모든 현재 시도의 종결을 확인한다" }
       - { kind: 정상, case: "완료된 턴과 사용자대기 턴만 남은 대화에서 대기 기한이 지나 서버가 중단 전이를 완료하면 삭제할 수 있다. 모든 턴이 종결돼도 사용자의 삭제 요청 없이 대화를 자동으로 숨기지 않는다" }
