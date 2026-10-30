@@ -212,3 +212,26 @@ test('요청 초안은 선언된 지역 행 작업만 허용하고 검토·반�
  assert.match(html,/<button[^>]*disabled[^>]*>반려<\/button>/);
  assert.doesNotMatch(render({...figure,key:'submitted',editable:false},fixture),/data-remove-demo-row|data-add-demo-row/);
 });
+
+
+test('단일 그리드는 상세 탭 없이 등록 행을 표시하고 빈 목록·권한 없음은 구분한다',()=>{
+ const fixture={...model,columns:[columns('모델 조합',[['공급사','선택','가능','','OpenAI'],['모델','선택','가능','','등록 모델']])],rowExamples:{rows:[['모델 조합','{"공급사":"Google Gemini","모델":"모델 A"}','—'],['모델 조합','{"공급사":"OpenAI","모델":"모델 B"}','—']]}};
+ const figure={key:'main',caption:'적용본',detail:'없음',notice:'조합 목록',buttons:['조회'],editable:false,examples:{}};
+ const html=render(figure,fixture);
+ assert.match(html,/data-layout="single-grid"/);assert.match(html,/Google Gemini/);assert.match(html,/모델 B/);
+ assert.doesNotMatch(html,/data-pane="detail"|role="tablist"|class="split"/);
+ const empty=render({...figure,key:'empty',emptyGrids:['모델 조합']},fixture);
+ assert.match(empty,/총 0건/);assert.doesNotMatch(empty,/모델 B/);
+ const denied=render({...figure,key:'denied',buttons:[]},fixture);
+ assert.doesNotMatch(denied,/<table|모델 B/);
+});
+
+
+test('행별 조건과 복수 허용값으로 우선순위 편집을 구분한다',()=>{
+  const fixture={...model,columns:[{heading:'모델 조합',header:['컬럼','입력방식','편집','예시','후보 예시','편집 조건'],rows:[['용도','선택','가능','주 추론','주 추론·요약·분류','—'],['우선순위','숫자','조건부','—','—','용도=요약·분류']]}],rowExamples:{rows:[['모델 조합','{"용도":"주 추론","우선순위":"—"}','—'],['모델 조합','{"용도":"요약","우선순위":"1"}','—'],['모델 조합','{"용도":"분류","우선순위":"2"}','—']]}};
+  const [figure]=declaredFigures(stateTable([['edit','편집','없음','','저장','가능','없음']]),plain);
+  const html=render(figure,fixture);
+  assert.equal((html.match(/data-edit-rule=/g)||[]).length,3);
+  assert.equal((html.match(/<details hidden data-cell-editor/g)||[]).length,1);
+  assert.match(html,/data-row-value="요약"/);
+});

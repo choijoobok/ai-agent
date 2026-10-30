@@ -95,8 +95,9 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
   const details = model.columns.slice(1);
   const selected = details.filter((t) => tabOf(t) === figure.detail);
   if (figure.detail !== '없음' && !selected.length) throw new Error(`목업 상태 ${figure.key}의 상세 영역 '${figure.detail}'이 §4에 없다`);
-  const showData = figure.detail !== '없음';
-  if (!showData && figure.buttons.length === 0) {
+  const singleGrid = model.columns.length === 1;
+  const showData = singleGrid || figure.detail !== '없음';
+  if (figure.detail === '없음' && figure.buttons.length === 0) {
     return `<div class="screen leaf" id="${escape(figure.key)}"${manualKey ? ` data-manual="${escape(figure.key)}"` : ''}><div class="bar">${escape(title)} · ${escape(figure.caption)}</div><div class="body"><div class="notes">${escape(figure.notice)}</div></div></div>\n${n.render()}`;
   }
   const example = (table, row) => Object.hasOwn(figure.examples, plain(row[0])) ? figure.examples[plain(row[0])] : plain(cell(table, row, '예시'));
@@ -129,14 +130,20 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const vals = table.rows.map((r,i) => {
       const editMode = plain(cell(table, r, '편집'));
       const condition=plain(cell(table,r,'편집 조건'));
+      const rowRules = condition && condition !== '—' ? condition.split('&&').map(rule => {
+        const [field,...values]=rule.trim().split('=');
+        return values.length && table.rows.some(row=>plain(row[0])===field)
+          ? {field, values:values.join('=').split('·')} : null;
+      }) : [];
+      const rowConditional = rowRules.length > 0 && rowRules.every(Boolean);
       const conditionLocked=condition && condition!=='—' && condition.split('&&').some(rule=>{
         const [field,...values]=rule.trim().split('=');
         if(!values.length)return field!==(figure.stateKey??figure.key);
         const base=model.columns.flatMap(t=>t.rows.map(row=>({table:t,row}))).find(x=>plain(x.row[0])===field);
-        const actual=figure.examples[field]??(base?example(base.table,base.row):'');
-        return actual!==values.join('=');
+        const actual=figure.examples[field]??record[field]??(base?example(base.table,base.row):'');
+        return !values.join('=').split('·').includes(String(actual));
       });
-      const editable = !conditionLocked && !table.readonly && figure.editable && (/가능|조건부/.test(editMode) || (editMode==='신규만' && figure.key==='new'));
+      const editable = (!conditionLocked || rowConditional) && !table.readonly && figure.editable && (/가능|조건부/.test(editMode) || (editMode==='신규만' && figure.key==='new'));
       const value = valueOf(r) || '—';
       const mode=plain(cell(table,r,'입력방식'));
       let content=escape(value);
@@ -160,7 +167,8 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
         content = `<button type="button" class="btn ghost sm" data-open-tab="${escape(target)}" data-context="${escape(context)}">${escape(value)}</button>`;
       }
       if(model.requestScreen && plain(r[0])==='요청번호')content=`<span data-request-number>${content}</span>`;
-      return `<td data-grid-col="${i}"${hidden(r)}${editable ? ' class="edit"' : ''} style="overflow:hidden;text-overflow:ellipsis" title="${isSnapshot?'전체 스냅샷 보기':escape(value)}">${content}</td>`;
+      if(rowConditional && editable)content=`<span data-locked-value${conditionLocked?'':' hidden'}>—</span>${conditionLocked?content.replace('<details data-cell-editor','<details hidden data-cell-editor'):content}`;
+      return `<td data-grid-col="${i}" data-row-field="${escape(plain(r[0]))}" data-row-value="${escape(valueOf(r)||'')}"${rowConditional&&editable?` data-edit-rule="${escape(JSON.stringify(rowRules))}"`:''}${hidden(r)}${editable && !conditionLocked ? ' class="edit"' : ''} style="overflow:hidden;text-overflow:ellipsis" title="${isSnapshot?'전체 스냅샷 보기':escape(value)}">${content}</td>`;
     }).join('');
     return `<tr class="${rowIndex===0?'sel':''}" data-row-context="${escape(JSON.stringify(String(record['문맥'] || record['컬럼명'] || '').split(',')))}">${vals}</tr>`;
     };
@@ -213,7 +221,9 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
   const tabMarkup=compact?'':tabs();
   const panels = interactive && showData ? tabNames.map(name=>`<div data-detail-panel="${escape(name)}"${name===figure.detail?'':' hidden'}>${surfaceIntroduction(surfaceOf(model,name))}<div class="hint" data-context-label hidden>현재 컬럼: <span></span> <button type="button" class="btn ghost sm" data-clear-context>전체 보기${badge('전체 보기','건수 셀에서 전달한 컬럼 문맥 필터를 해제하고 같은 대상의 전체 목록을 표시한다.','common:clear-context')}</button></div>${detailSearch(name)}${details.filter(t=>tabOf(t)===name).map(detailTable).join('')}</div>`).join('') : compact?'':detail();
   const lower = `<div class="tabs" style="flex-wrap:wrap"${interactive?' role="tablist"':''}>${tabMarkup}</div>${panels}`;
-  const panes = model.vertical!==false
+  const panes = singleGrid
+    ? `<div data-layout="single-grid" style="margin-top:12px">${master}</div>`
+    : model.vertical!==false
     ? `<div data-layout="top-bottom" style="margin-top:12px"><section data-pane="master">${master}</section><div class="split"><span class="hnd">⋮⋮⋮</span></div><section data-pane="detail">${lower}</section></div>`
     : `<div class="splitrow" data-layout="left-right" style="margin-top:12px"><div class="pane">${master}</div><div class="split v"><span class="hnd">⋮</span></div><div class="pane">${lower}</div></div>`;
   const requestNav=!compact&&showData&&model.requestTargets&&!['unknown','denied','readonly','partial-permission'].includes(figure.stateKey??figure.key)

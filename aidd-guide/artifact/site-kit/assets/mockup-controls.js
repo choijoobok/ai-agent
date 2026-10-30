@@ -10,6 +10,18 @@ function applyRequestContext(root, query) {
 }
 function bindDeclaredMockup(root) {
   applyRequestContext(root,location.search);
+  const refreshRowConditions = row => {
+    if (!row) return;
+    const values = Object.fromEntries([...row.querySelectorAll('[data-row-field]')].map(cell=>[cell.dataset.rowField,cell.dataset.rowValue]));
+    row.querySelectorAll('[data-edit-rule]').forEach(cell=>{
+      const allowed=JSON.parse(cell.dataset.editRule).every(rule=>rule.values.includes(values[rule.field]));
+      const editor=cell.querySelector('[data-cell-editor]');
+      editor.hidden=!allowed;
+      if(!allowed)editor.open=false;
+      cell.querySelector('[data-locked-value]').hidden=allowed;
+      cell.classList.toggle('edit',allowed);
+    });
+  };
   // 상세 설명 한 곳을 재사용한다. 문서와 ShadowRoot 모두 같은 탐색/툴팁 동작을 쓴다.
   const doc = root.ownerDocument || root;
   const tip = doc.createElement('div');
@@ -159,13 +171,15 @@ function bindDeclaredMockup(root) {
       row.querySelectorAll('[id]').forEach(e=>e.id+=`-new-${number}`);
       row.querySelectorAll('[data-auto-editor]').forEach(e=>{e.removeAttribute('data-auto-editor');e.open=false;});
       row.querySelectorAll('[data-edit-value]').forEach(e=>e.value='');
+      row.querySelectorAll('[data-row-value]').forEach(e=>e.dataset.rowValue='');
       row.querySelectorAll('[data-combo-value]').forEach(e=>e.textContent='현재 선택: 미지정');
       row.querySelectorAll('[data-cell-editor] summary').forEach(e=>e.textContent='선택/입력 ✎');
       grid.querySelector('tbody .empty')?.closest('tr').remove();
       grid.querySelector('tbody').append(row);
+      refreshRowConditions(row);
       const count = grid.querySelectorAll('tbody tr').length;
       grid.querySelector('.cnt').textContent=`${count}건`;
-      grid.querySelector('.pg').textContent='목업 새 행 — 컬럼 이름을 선택하세요. 서버 저장은 하지 않습니다.';
+      grid.querySelector('.pg').textContent='목업 새 행 — 필요한 값을 입력하세요. 서버 저장은 하지 않습니다.';
       return;
     }
     const close = target.closest('[data-close-editor]');
@@ -194,7 +208,15 @@ function bindDeclaredMockup(root) {
       const editor = apply.closest('[data-cell-editor]');
       const values = [...editor.querySelectorAll('[data-edit-value]')].flatMap(e => e.multiple ? [...e.selectedOptions].map(o=>o.value) : [e.value]).filter(Boolean);
       editor.querySelector('summary').textContent = (values.join(' / ') || '미지정') + ' ✎';
+      const cell=editor.closest('[data-row-field]');
+      if(cell)cell.dataset.rowValue=values.join(' / ');
       editor.open = false;
+      refreshRowConditions(editor.closest('tr'));
+    }
+    const selectedRow=target.closest('tbody tr[data-row-context]');
+    if(selectedRow){
+      selectedRow.parentElement.querySelectorAll('tr.sel').forEach(row=>row.classList.remove('sel'));
+      selectedRow.classList.add('sel');
     }
   });
   root.addEventListener('submit', event => {
