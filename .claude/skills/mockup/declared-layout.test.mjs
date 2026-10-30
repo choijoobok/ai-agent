@@ -321,6 +321,16 @@ test('일반 콤보에서 현재 후보가 빠져도 원 식별값을 보존하�
  assert.doesNotMatch(html,/<option value="EXT-NEW" selected/);
  assert.match(html,/data-row-value="EXT-OLD"/);
 });
+test('목록 연동의 미상 예시는 선택 월에만 적용하고 계산열은 입력 변경과 구분한다',()=>{
+ const master=columns('월별',[['년월','텍스트','읽기전용','','2026-11']]);
+ const detail={heading:'산정',header:['컬럼','입력방식','편집','예시','편집 조건'],rows:[['수량','숫자','가능','1','확정 여부=N'],['비용','조회','읽기전용','0.025','—']]};
+ const fixture={...model,columns:[master,detail],masterLink:'년월',masterEditRule:'확정 여부=N',calculations:[{area:'산정',target:'비용',kind:'곱셈',a:'수량',b:'수량',scale:1}],rowExamples:{rows:[['월별','{"년월":"2026-11","확정 여부":"N"}','—'],['산정','{"수량":"500","비용":"0.025","문맥":"2026-11","확정 여부":"N"}','—'],['산정','{"수량":"800","비용":"0.0008","문맥":"2026-10","확정 여부":"Y"}','—']]}};
+ const [figure]=declaredFigures(stateTable([['invalid','미상','산정','','조회·저장','가능','수량=미상']]),plain);
+ const html=render({...figure,masterValue:'2026-11'},fixture);
+ assert.deepEqual([...html.matchAll(/data-row-field="수량" data-row-value="([^"]*)"/g)].map(match=>match[1]),['미상','800']);
+ assert.equal((html.match(/data-calculated-value/g)||[]).length,2);
+ assert.match(html,/data-row-field="비용"[^>]*data-calculated-value/);
+});
 
 
 test('승인 사용 화면은 저장 슬롯에서 승인 요청을 한 번 제공한다',()=>{

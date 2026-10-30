@@ -10,7 +10,7 @@ function applyRequestContext(root, query) {
 }
 function bindDeclaredMockup(root) {
   applyRequestContext(root,location.search);
-  const rowValues=row=>Object.fromEntries([...row.querySelectorAll('[data-row-field]')].map(cell=>[cell.dataset.rowField,cell.dataset.rowValue]));
+  const rowValues=row=>Object.fromEntries([...row.querySelectorAll('[data-row-field]:not([data-calculated-value])')].map(cell=>[cell.dataset.rowField,cell.dataset.rowValue]));
   const originals=new WeakMap();
   root.querySelectorAll('tbody tr[data-grid-row-state]').forEach(row=>originals.set(row,{values:rowValues(row),html:row.innerHTML}));
   const refreshGrid=grid=>{
@@ -431,4 +431,5 @@ function bindDeclaredMockup(root) {
       box.querySelector('[data-combo-empty]').hidden = values.length !== 0;
     });
   });
+  if(typeof bindMockupMath==='function')bindMockupMath(root);
 }

@@ -5,6 +5,7 @@ import path from 'node:path';
 import {columnExplanation, actionExplanation, searchExplanation, surfaceOf, surfaceIntroduction} from './presentation.mjs';
 import {chrome,standardButton,inlineEditor,stateHeads,stateCells,deleteHead,deleteCell,systemWidth,editableColumn} from './grid-chrome.mjs';
 const controls = readFileSync(new URL('../../../aidd-guide/artifact/site-kit/assets/mockup-controls.js', import.meta.url), 'utf8');
+const math = readFileSync(new URL('../../../aidd-guide/artifact/site-kit/assets/mockup-math.js', import.meta.url), 'utf8');
 const escape = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const titleOf = (table) => table.heading.replace(/^\d+(?:-\d+)?\.?\s*/, '').replace(/\s*—\s*(폼|그리드)$/, '');
 const tabOf = (table) => titleOf(table).split(' / ')[0];
@@ -31,7 +32,7 @@ function searchCombo(id, label, value, examples, locked, parent = '', mapping = 
 
 /** 검색 문자열은 선택값을 변경하지 않으며 실제 선택 이벤트만 현재 값을 표시한다. */
 export function searchComboScript() {
-  return `<script>${controls}\nbindDeclaredMockup(document);
+  return `<script>${math}\n${controls}\nbindDeclaredMockup(document);
 function openDeclaredCell() {
   document.querySelectorAll('[data-auto-editor]').forEach(function(editor){editor.open=editor.closest('.screen').id===location.hash.slice(1);});
 }
@@ -53,6 +54,7 @@ export function declaredFigures(table, plain) {
       return [p.slice(0, at).trim(), p.slice(at + 1).trim()];
     })),
     cellEditor: plain(cell(table, r, '셀 편집')),
+    masterValue: plain(cell(table,r,'선택 대상')),
     emptyGrids: plain(cell(table,r,'빈 그리드')).split(';').map(x=>x.trim()).filter(x=>x&&x!=='없음'),
   }));
   if (figures.some((f) => !/^[a-z0-9][\w-]*$/.test(f.key)) || new Set(figures.map((f) => f.key)).size !== figures.length) {
@@ -100,7 +102,7 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
       const requestId=model.requestRoutes?.find(s=>s.route===`/${destination}`)?.id??'';
       return `<span class="control-annotation"><a class="btn ghost sm" href="${escape(href)}" data-request-navigation data-request-screen="${escape(requestId)}">${escape(displayName)}</a>${note}</span>`;
     }
-    return `<span class="control-annotation"><button type="button" class="btn ghost sm"${disabled?' disabled':''}${modeLocked?' title="해당 값 방식의 등록 컬럼이 없어 사용할 수 없습니다"':''}${add?' data-add-demo-row':''}${remove?' data-remove-demo-row':''}${command?` data-open-command="${escape(name)}"`:''}${destination?` data-open-figure="${escape(plain(destination[1]))}"`:''}>${escape(displayName)}</button>${note}</span>`;
+    return `<span class="control-annotation"><button type="button" class="btn ghost sm"${disabled?' disabled':''}${!read?' data-edit-action':''}${model.independentButtons?.includes(name)?' data-selection-independent':''}${modeLocked?' title="해당 값 방식의 등록 컬럼이 없어 사용할 수 없습니다"':''}${add?' data-add-demo-row':''}${remove?' data-remove-demo-row':''}${command?` data-open-command="${escape(name)}"`:''}${destination?` data-open-figure="${escape(plain(destination[1]))}"`:''}>${escape(displayName)}</button>${note}</span>`;
   };
   const buttons = () => compact ? '' : figure.buttons.filter((name) => name !== '엑셀 다운로드').map(name=>button(name)).join('');
   const details = model.columns.slice(1);
@@ -117,6 +119,7 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const matches = rows.filter(r => plain(r[2]).split('·').includes(figure.stateKey ?? figure.key));
     return (matches.length ? matches : rows.filter(r => !plain(r[2]) || plain(r[2]) === '—')).map(r => JSON.parse(r[1]));
   };
+  const exampleContext=record=>!model.masterLink||!figure.masterValue||String(record['문맥']??record[model.masterLink]??'').split(',').includes(figure.masterValue);
   const popup = (name, id, locked) => (model.popups?.rows ?? []).filter(r => plain(r[0]) === name).map((r, i) => {
     const label = plain(r[1]), mode = plain(r[2]), value = plain(r[3]), candidates = plain(r[4]);
     const parent = plain(r[5]) === '—' ? '' : plain(r[5]);
@@ -150,13 +153,13 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
         const [field,...values]=rule.trim().split('=');
         if(!values.length)return field===(figure.stateKey??figure.key);
         const base=model.columns.flatMap(t=>t.rows.map(row=>({table:t,row}))).find(x=>plain(x.row[0])===field);
-        const actual=figure.examples[field]??record[field]??(base?example(base.table,base.row):'');
+        const actual=(exampleContext(record)?figure.examples[field]:undefined)??record[field]??(base?example(base.table,base.row):'');
         return values.join('=').split('·').includes(String(actual));
       });
     };
     const editableHere=rows.some(record=>table.rows.some(r=>editableNow(r,record)));
     const renderRow = (record, rowIndex) => {
-    const valueOf = r => Object.hasOwn(figure.examples,plain(r[0])) && (!figure.examples['컬럼명'] || figure.examples['컬럼명']===record['컬럼명']) ? figure.examples[plain(r[0])] : Object.hasOwn(record,plain(r[0])) ? String(record[plain(r[0])]) : example(table,r);
+    const valueOf = r => exampleContext(record)&&Object.hasOwn(figure.examples,plain(r[0])) && (!figure.examples['컬럼명'] || figure.examples['컬럼명']===record['컬럼명']) ? figure.examples[plain(r[0])] : Object.hasOwn(record,plain(r[0])) ? String(record[plain(r[0])]) : exampleContext(record)?example(table,r):plain(cell(table,r,'예시'));
     const vals = table.rows.map((r,i) => {
       const editMode = plain(cell(table, r, '편집'));
       const condition=plain(cell(table,r,'편집 조건'));
@@ -170,7 +173,7 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
         const [field,...values]=rule.trim().split('=');
         if(!values.length)return field!==(figure.stateKey??figure.key);
         const base=model.columns.flatMap(t=>t.rows.map(row=>({table:t,row}))).find(x=>plain(x.row[0])===field);
-        const actual=figure.examples[field]??record[field]??(base?example(base.table,base.row):'');
+        const actual=(exampleContext(record)?figure.examples[field]:undefined)??record[field]??(base?example(base.table,base.row):'');
         return !values.join('=').split('·').includes(String(actual));
       });
       const editable = (!conditionLocked || rowConditional) && !table.readonly && figure.editable && (/가능|조건부/.test(editMode) || (/신규/.test(editMode) && (figure.key==='new'||rowIndex>=rows.length)));
@@ -207,13 +210,14 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
       if(model.requestScreen && plain(r[0])==='요청번호')content=`<span data-request-number>${content}</span>`;
       if(rowConditional && editable)content=`<span data-locked-value${conditionLocked?'':' hidden'}>—</span>${conditionLocked?content.replace('<details data-cell-editor','<details hidden data-cell-editor'):content}`;
       const storedValue=referenceMap&&referenceMap!=='—'?(JSON.parse(referenceMap)[valueOf(r)]??valueOf(r)):valueOf(r);
-      return `<td data-grid-col="${i}" data-row-field="${escape(plain(r[0]))}" data-row-value="${escape(storedValue||'')}"${rowConditional&&editable?` data-edit-rule="${escape(JSON.stringify(rowRules))}"`:''}${hidden(r)}${editable && !conditionLocked ? ' class="edit"' : ''} style="overflow:hidden;text-overflow:ellipsis" title="${isSnapshot?'전체 스냅샷 보기':escape(value)}">${content}</td>`;
+      return `<td data-grid-col="${i}" data-row-field="${escape(plain(r[0]))}" data-row-value="${escape(storedValue||'')}"${model.calculations?.some(rule=>rule.area===label&&rule.target===plain(r[0]))?' data-calculated-value':''}${rowConditional&&editable?` data-edit-rule="${escape(JSON.stringify(rowRules))}"`:''}${hidden(r)}${editable && !conditionLocked ? ' class="edit"' : ''} style="overflow:hidden;text-overflow:ellipsis" title="${isSnapshot?'전체 스냅샷 보기':escape(value)}">${content}</td>`;
     }).join('');
     const protection = model.removeGuardField ? String(record[model.removeGuardField]??'').trim() : '';
     const protectedRow = protection && !['—','없음','0'].includes(protection);
     const rowEditable=table.rows.some(r=>editableNow(r,record,rowIndex>=rows.length));
     const rowDeleteAllowed=(model.addRowTabs??[]).includes(label)||(surfaceOf(model,label)?.buttons??[]).some(name=>/삭제$|제거$/.test(name));
-    return `<tr class="${!multiple&&rowIndex===0?'sel':''}" data-grid-row-state=""${protectedRow?` data-remove-blocked="${escape(protection)}"`:''} data-row-context="${escape(JSON.stringify(String(record['문맥'] || record['컬럼명'] || '').split(',')))}">${stateCells(showState,['saving','unknown','denied'].includes(figure.key),multiple,rowIndex)}${vals}${deleteCell(showDelete,!rowEditable||!rowDeleteAllowed,protectedRow?protection+' 용도에서 사용 중 — 참조 해소 후 삭제':'')}</tr>`;
+    const [lockField,lockValue]=(model.masterEditRule??'').split('=');
+    return `<tr class="${!multiple&&rowIndex===0?'sel':''}" data-grid-row-state=""${table===model.columns[0]&&model.masterLink?` data-master-locked="${!figure.editable||String(record[lockField])!==lockValue}"`:''}${protectedRow?` data-remove-blocked="${escape(protection)}"`:''} data-row-context="${escape(JSON.stringify(String(record['문맥'] || record['컬럼명'] || '').split(',')))}">${stateCells(showState,['saving','unknown','denied'].includes(figure.key),multiple,rowIndex)}${vals}${deleteCell(showDelete,!rowEditable||!rowDeleteAllowed,protectedRow?protection+' 용도에서 사용 중 — 참조 해소 후 삭제':'')}</tr>`;
     };
     const body = empty ? `<tr><td class="empty" colspan="${table.rows.length+1+(multiple?1:0)+(showState?1:0)+(showDelete?1:0)}">${escape(contextEmpty?'선택한 문맥에 해당하지 않는 목록입니다.':figure.notice)}</td></tr>` : rows.map(renderRow).join('');
     const excel=figure.buttons.includes('엑셀 다운로드')?`<details data-excel-menu><summary>엑셀 다운로드 ▾${badge('엑셀 다운로드','현재 페이지 또는 전체를 선택한다. 현재 표시한 열과 순서, 반출 권한을 적용하며 숨긴 열은 자동 포함하지 않는다.','common:excel')}</summary><span>현재 페이지 · 전체</span></details>`:'';
@@ -227,7 +231,8 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const actions=[...new Set([...surfaceButtons,...globalButtons])].filter(name=>!(approvalSave&&name==='승인 요청')).map(name=>button(name,label)).join('');
     const approvalControl=approvalSave?'<span data-grid-save data-native-save>'+button('승인 요청',label)+'</span>':'';
     const header=chrome({title:label,count:`${empty?0:rows.length}건`,read:standardButton('조회','read',['saving','unknown','denied'].includes(figure.key)||figure.disabledButtons?.includes('조회'),'이 그리드의 현재 대상/조건을 조회한다. 미저장 입력 확인 후 조회하며 독립 저장 계약을 만들지 않는다.'),add:writable?standardButton('행 추가','add',!canAdd,'같은 저장 단위에 신규 행 추가'):'' ,save:approvalControl||((writable||(table===model.columns[0]&&figure.buttons.includes('저장')))?standardButton('저장','save',(!editableHere&&writable)||!figure.editable||!figure.buttons.includes('저장')||figure.disabledButtons?.includes('저장'),'요건서의 전체 저장 단위를 검증한다. 하위 탭 버튼도 소유 저장 범위를 유지한다.'):'') ,actions,tools:excel+settings});
-    return `<div data-grid-view="${gridId}" data-grid-selection="${multiple?'multiple':'single'}" data-grid-role="${table===model.columns[0]?'master':'detail'}">${header}${canAdd?`<template data-row-template>${renderRow({},rows.length)}</template>`:''}
+    const [contextField,contextValue]=(model.masterEditRule??'').split('=');
+    return `<div data-grid-view="${gridId}" data-grid-name="${escape(label)}" data-grid-selection="${multiple?'multiple':'single'}" data-grid-role="${table===model.columns[0]?'master':'detail'}">${header}${canAdd?`<template data-row-template>${renderRow(model.masterLink?{[contextField]:contextValue}:{},rows.length)}</template>`:''}
       <div class="grid" style="overflow:auto"><table style="width:100%;table-layout:fixed;min-width:${table.rows.filter(r=>!optional(r)).reduce((n,r)=>n+width(r),systemWidth(showState,multiple,showDelete))}px"><thead><tr>${heads}</tr></thead><tbody>${body}</tbody></table></div>
       <div class="pg">총 ${empty ? '0' : rows.length}건 · 1 페이지</div></div>`;
   };
@@ -297,6 +302,6 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const targets=targetRows.length?`<div data-command-targets><fieldset data-command-target><legend>관련 테이블·버전</legend>${targetRows.map(field).join('')}<button type="button" class="btn ghost sm" data-remove-command-target>대상 제거${badge('대상 제거','입력 중 대상 연결만 제거한다. 테이블이나 버전을 삭제하지 않는다.',`command:${name}:remove`)}</button></fieldset></div><button type="button" class="btn ghost sm" data-add-command-target>대상 추가${badge('대상 추가','같은 명령에 연결할 대상 입력 행을 추가한다.',`command:${name}:add`)}</button>`:'';
     return `<dialog class="command-dialog" data-command="${escape(name)}" aria-label="${escape(name)} 입력"><form data-command-form><h3>${escape(name)}</h3>${rows.filter(r=>plain(cell(commandTable,r,'영역'))!=='관련 대상').map(field).join('')}${targets}<p>검토용 입력 예시입니다. 실제 서버로 전송하지 않습니다.</p><p role="status" data-command-result></p><div class="row actions"><button type="submit" class="btn">접수${badge('접수','요건서의 필수 입력과 명령별 검증 조건을 확인해 접수한다. 목업에서는 입력 확인만 시연하며 실제 전송하지 않는다.',`command:${name}:submit`)}</button><button type="button" class="btn ghost" data-close-command>닫기${badge('닫기','입력창을 닫는다. 목업에서는 입력을 유지한다.',`command:${name}:close`)}</button></div></form></dialog>`;
   }).join('');
-  return `<div class="screen leaf" id="${escape(figure.key)}"${interactive?' data-interactive-tabs':''}${manualKey ? ` data-manual="${escape(figure.key)}"` : ''}>
-    <div class="bar">${escape(title)} · ${escape(figure.caption)} · 검토용 예시</div><div class="body">${main}</div>${commands}</div>\n${n.render()}`;
+  return `<div class="screen leaf" id="${escape(figure.key)}"${interactive?' data-interactive-tabs':''}${model.masterLink?` data-master-link="${escape(model.masterLink)}" data-master-initial="${escape(figure.masterValue??'')}" data-calculation-rules="${escape(JSON.stringify(model.calculations??[]))}" data-calculation-confirm="${escape(model.calculationConfirm??'')}"${figure.editable?'':' data-calculation-readonly'}`:''}${manualKey ? ` data-manual="${escape(figure.key)}"` : ''}>
+    <div class="bar">${escape(title)} · ${escape(figure.caption)} · 검토용 예시</div><div class="body">${main}${model.masterLink?'<p class="notes" role="status" data-calculation-status hidden></p>':''}</div>${commands}</div>\n${n.render()}`;
 }

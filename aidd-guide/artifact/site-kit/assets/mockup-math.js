@@ -1,0 +1,89 @@
+/** 요건서에 선언한 목업 계산만 시연한다. 서버 저장·금액 확정은 수행하지 않는다. */
+function computeMockupGrid(rules, source) {
+  const grids=Object.fromEntries(Object.entries(source).map(([name,rows])=>[name,rows.map(row=>({...row}))]));
+  const number=value=>{
+    if(value===undefined||value===null||String(value).trim()===''||!Number.isFinite(Number(value))||Number(value)<0)throw new Error('수량·단가의 미입력/미상·음수·비유한 값을 보완하세요.');
+    return Number(value);
+  };
+  const sum=reference=>{
+    const [name,field]=reference.split('::');
+    if(!name||!field||!grids[name]?.length)throw new Error('산정 대상과 입력 항목을 확인하세요.');
+    return grids[name].reduce((total,row)=>total+number(row[field]),0);
+  };
+  for(const rule of rules){
+    const rows=grids[rule.area];if(!rows?.length)throw new Error('산정 결과를 표시할 대상이 없습니다.');
+    const scale=number(rule.scale);
+    for(const row of rows){
+      let value;
+      if(rule.kind==='곱셈')value=number(row[rule.a])*number(row[rule.b])*scale;
+      else if(rule.kind==='합계')value=sum(rule.a)*scale;
+      else if(rule.kind==='비율'){
+        const top=sum(rule.a),bottom=sum(rule.b);
+        if(top<=0||bottom<=0)throw new Error('비용과 비중복 토큰 합계가 양수여야 단가를 산정할 수 있습니다.');
+        value=top/bottom*scale;
+      }else throw new Error('지원하지 않는 목업 계산 선언입니다.');
+      if(!Number.isFinite(value))throw new Error('계산 결과를 확인하세요.');
+      row[rule.target]=value;
+    }
+  }
+  return grids;
+}
+
+function bindMockupMath(root) {
+  const screens=[...root.querySelectorAll('[data-master-link]')];
+  if(!screens.length)return;
+  const rowsOf=grid=>[...grid.querySelectorAll(':scope > .grid > table > tbody > tr[data-row-context]')];
+  const controls=screen=>[...screen.querySelectorAll('button[data-grid-save],button[data-grid-add],button[data-edit-action]')];
+  const refresh=screen=>{
+    const master=screen.querySelector('[data-grid-role="master"]'),selected=master?.querySelector('tbody tr.sel');
+    if(!selected)return;
+    const key=selected.querySelector(`[data-row-field="${screen.dataset.masterLink}"]`)?.dataset.rowValue;
+    const locked=selected.dataset.masterLocked==='true';
+    screen.dataset.activeMaster=key||'';
+    for(const grid of screen.querySelectorAll('[data-grid-role="detail"]')){
+      const rows=rowsOf(grid);
+      for(const row of rows){
+        if(row.dataset.gridRowState==='C'&&!row.dataset.masterAssigned){row.dataset.rowContext=JSON.stringify([key]);row.dataset.masterAssigned='true';}
+        row.hidden=!JSON.parse(row.dataset.rowContext).includes(key);
+      }
+      const shown=rows.filter(row=>!row.hidden).length;
+      const count=grid.querySelector('.cnt');if(count)count.textContent=shown+'건';
+      const footer=grid.querySelector('.pg');if(footer)footer.textContent=`${key} · ${shown}건 · 같은 월의 입력 유지`;
+      rows.filter(row=>!row.hidden).forEach((row,index)=>{const n=row.querySelector('[data-grid-row-number]');if(n)n.textContent=String(index+1);});
+    }
+    for(const button of controls(screen))button.disabled=button.dataset.baseDisabled==='true'||(locked&&!button.hasAttribute('data-selection-independent'));
+    const status=screen.querySelector('[data-calculation-status]');if(status){status.hidden=true;status.textContent='';}
+    if(locked||screen.hasAttribute('data-calculation-readonly')||!screen.dataset.calculationRules)return;
+    const rules=JSON.parse(screen.dataset.calculationRules),grids={},elements={};
+    for(const grid of screen.querySelectorAll('[data-grid-view]')){
+      const rows=rowsOf(grid).filter(row=>!row.hidden&&row.dataset.gridRowState!=='D'&&(grid.dataset.gridRole!=='master'||row===selected));
+      elements[grid.dataset.gridName]=rows;
+      grids[grid.dataset.gridName]=rows.map(row=>Object.fromEntries([...row.querySelectorAll('[data-row-field]')].map(cell=>[cell.dataset.rowField,cell.dataset.rowValue])));
+    }
+    try{
+      const results=computeMockupGrid(rules,grids);
+      for(const rule of rules)elements[rule.area].forEach((row,index)=>{
+        const cell=[...row.querySelectorAll('[data-row-field]')].find(cell=>cell.dataset.rowField===rule.target);
+        const value=results[rule.area][index][rule.target];
+        cell.dataset.rowValue=String(value);cell.textContent=value.toLocaleString('ko-KR',{maximumFractionDigits:6});
+      });
+    }catch(error){
+      if(status){status.hidden=false;status.textContent='목업 산정 미완료 — '+error.message;}
+      for(const rule of rules)for(const row of elements[rule.area]||[]){const cell=[...row.querySelectorAll('[data-row-field]')].find(cell=>cell.dataset.rowField===rule.target);if(cell){cell.textContent='산정 불가';cell.dataset.rowValue='';}}
+      controls(screen).filter(button=>button.textContent.trim().startsWith(screen.dataset.calculationConfirm)).forEach(button=>button.disabled=true);
+    }
+  };
+  for(const screen of screens){
+    controls(screen).forEach(button=>button.dataset.baseDisabled=String(button.disabled));
+    const initial=screen.dataset.masterInitial;
+    if(initial)for(const row of screen.querySelectorAll('[data-grid-role="master"] tbody tr[data-row-context]'))row.classList.toggle('sel',row.querySelector(`[data-row-field="${screen.dataset.masterLink}"]`)?.dataset.rowValue===initial);
+    refresh(screen);
+  }
+  root.addEventListener('click',event=>{
+    const screen=event.target.closest('[data-master-link]');if(!screen)return;
+    const row=event.target.closest('[data-grid-role="master"] tbody tr[data-row-context]');
+    if(row){row.parentElement.querySelectorAll('tr.sel').forEach(node=>node.classList.remove('sel'));row.classList.add('sel');}
+    queueMicrotask(()=>refresh(screen));
+  });
+  for(const name of ['keydown','focusout','change'])root.addEventListener(name,event=>{const screen=event.target.closest('[data-master-link]');if(screen)queueMicrotask(()=>refresh(screen));});
+}
