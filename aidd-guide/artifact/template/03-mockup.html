@@ -178,6 +178,11 @@ a{color:var(--note)}
 .grid{border:1px solid var(--line);overflow:auto;max-height:260px}
 .grid table{margin:0;font-size:12px;border:none}
 .grid th{position:sticky;top:0;z-index:1}
+.grid [data-grid-pinned]{position:sticky;z-index:2;background:var(--bg);text-align:center}
+.grid th[data-grid-pinned]{z-index:3;background:var(--panel)}
+.grid [data-grid-system="number"]{text-align:right}
+.grid [data-grid-pinned="right"]{border-left:1px solid var(--line)}
+.grid tr.sel [data-grid-pinned]{background:var(--pri-1)}
 .grid td,.grid th{white-space:nowrap}
 .grid th .mn{float:right;color:var(--muted);font-weight:400;margin-left:8px}  /* 컬럼 메뉴 ☰ */
 .grid th .srt{color:var(--note)}                                             /* 정렬 표시 */

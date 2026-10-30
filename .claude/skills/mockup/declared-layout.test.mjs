@@ -124,7 +124,7 @@ test('마스터 셀에서 편집하고 선택 표시 열은 설정 가능한 그
   const [figure]=declaredFigures(stateTable([['history','이력','변경 이력','','조회','가능','없음']]),plain);
   const html=render(figure,{...model,columns:[main,history]});
   assert.match(html,/data-cell-editor/);
-  assert.match(html,/data-grid-col="1" hidden/);
+  assert.match(html,/data-grid-col="1"[^>]* hidden/);
   assert.match(html,/data-grid-column="1"/);
   const lower=html.split('data-pane="detail"')[1];
   assert.doesNotMatch(lower,/data-field-label|class="sf"/);
@@ -211,7 +211,7 @@ test('요청 초안은 선언된 지역 행 작업만 허용하고 검토·반�
  assert.match(html,/data-grid-add(?! disabled)/);assert.match(html,/data-grid-delete(?! disabled)/);
  assert.match(html,/<button[^>]*disabled[^>]*>반려<\/button>/);
  assert.match(render({...figure,key:'submitted',editable:false},fixture),/data-grid-add disabled/);
- assert.match(render({...figure,key:'submitted',editable:false},fixture),/data-grid-delete disabled/);
+ assert.doesNotMatch(render({...figure,key:'submitted',editable:false},fixture),/data-grid-delete-column|data-grid-state-column/);
 });
 
 
@@ -267,7 +267,7 @@ test('조회조건 밖 버튼 띠를 만들지 않고 그리드별 조회·편�
  assert.equal((html.match(/data-grid-add/g)||[]).length,1);
  assert.equal((html.match(/data-grid-save/g)||[]).length,1);
  assert.equal((html.match(/data-grid-state-column/g)||[]).length,1);
- assert.equal((html.match(/data-grid-delete-column/g)||[]).length,1);
+ assert.equal((html.match(/data-grid-delete-column/g)||[]).length,0);
  assert.doesNotMatch(html,/<div class="row actions"/);
  assert.match(html,/data-grid-actions[^>]*>[\s\S]*data-grid-read[\s\S]*data-grid-add[\s\S]*data-grid-save/);
 });
@@ -279,7 +279,7 @@ test('판정 입력이 편집 가능해도 제출된 업무 스냅샷의 추가�
  const html=render(figure,fixture).split('<section data-pane="detail">')[0];
  assert.match(html,/data-grid-add disabled/);
  assert.match(html,/data-grid-save disabled/);
- assert.match(html,/data-grid-delete disabled/);
+ assert.doesNotMatch(html,/data-grid-delete(?:>|\s)/);
  assert.doesNotMatch(html,/class="edit"/);
 });
 

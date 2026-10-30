@@ -13,17 +13,65 @@ function bindDeclaredMockup(root) {
   const rowValues=row=>Object.fromEntries([...row.querySelectorAll('[data-row-field]')].map(cell=>[cell.dataset.rowField,cell.dataset.rowValue]));
   const originals=new WeakMap();
   root.querySelectorAll('tbody tr[data-grid-row-state]').forEach(row=>originals.set(row,{values:rowValues(row),html:row.innerHTML}));
+  const refreshGrid=grid=>{
+    if(!grid)return;
+    const header=grid.querySelector(':scope > .grid > table > thead > tr');
+    const business=header?[...header.querySelectorAll('[data-grid-base-width]')]:[];
+    if(business.length){
+      const shown=business.filter(cell=>!cell.hidden);
+      shown.forEach((cell,index)=>cell.style.width=index===shown.length-1?'auto':cell.dataset.gridBaseWidth+'px');
+      const fixed=[...header.querySelectorAll('[data-grid-system]')].reduce((sum,cell)=>sum+Number.parseFloat(cell.style.width),0);
+      const table=header.closest('table');
+      // 업무 열을 모두 감춰도 AG Grid의 빈 중앙 영역과 오른쪽 고정 영역을 유지한다.
+      for(const row of [header,...table.querySelectorAll(':scope > tbody > tr[data-grid-row-state]')]){
+        const gap=row.querySelector(':scope > [data-grid-empty-space]');
+        if(shown.length){gap?.remove();continue;}
+        if(!gap){
+          const space=(root.ownerDocument||root).createElement(row===header?'th':'td');
+          space.setAttribute('data-grid-empty-space','');space.setAttribute('aria-hidden','true');
+          space.style.width='auto';
+          row.insertBefore(space,row.querySelector(':scope > [data-grid-system="delete"]'));
+        }
+      }
+      table.style.minWidth=(fixed+shown.reduce((sum,cell)=>sum+Number(cell.dataset.gridBaseWidth),0))+'px';
+      table.style.width='100%';
+    }
+    const rows=[...grid.querySelectorAll('tbody tr[data-grid-row-state]')].filter(row=>!row.hidden);
+    rows.forEach((row,index)=>{
+      const number=row.querySelector('[data-grid-row-number]');
+      if(number)number.textContent=String(Number(grid.dataset.gridRowOffset||0)+index+1);
+      const select=row.querySelector('[data-grid-select-row]');
+      if(select){select.setAttribute('aria-label',`${index+1}번 행 선택`);row.classList.toggle('sel',select.checked);}
+    });
+    const selectAll=grid.querySelector('[data-grid-select-all]');
+    if(selectAll){
+      const inputs=rows.flatMap(row=>[...row.querySelectorAll('[data-grid-select-row]:not(:disabled)')]);
+      const checked=inputs.filter(input=>input.checked).length;
+      selectAll.checked=inputs.length>0&&checked===inputs.length;
+      selectAll.indeterminate=checked>0&&checked<inputs.length;
+      selectAll.disabled=inputs.length===0;
+    }
+  };
+  root.querySelectorAll('[data-grid-view]').forEach(refreshGrid);
   const setRowState=(row,state)=>{
     row.dataset.gridRowState=state;
     const label=row.querySelector('[data-row-state]');
     if(label)label.textContent=({C:'신규',U:'수정',D:'삭제'})[state]||'';
     const revert=row.querySelector('[data-revert-row]');if(revert)revert.hidden=state!=='U';
     row.style.textDecoration=state==='D'?'line-through':'';
+    const remove=row.querySelector('[data-grid-delete]');
+    if(remove&&state==='D'){remove.innerHTML='↶';remove.setAttribute('aria-label','삭제 표시 해제');}
     if(state==='D')row.querySelectorAll('td[data-row-field] input,td[data-row-field] select,td[data-row-field] textarea').forEach(input=>input.disabled=true);
   };
   const markEdited=row=>{
     if(!row?.hasAttribute('data-grid-row-state')||['C','D'].includes(row.dataset.gridRowState))return;
     setRowState(row,JSON.stringify(rowValues(row))===JSON.stringify(originals.get(row)?.values)?'':'U');
+  };
+  const restoreRow=row=>{
+    const selected=row.querySelector('[data-grid-select-row]')?.checked;
+    row.innerHTML=originals.get(row).html;setRowState(row,'');
+    const select=row.querySelector('[data-grid-select-row]');if(select)select.checked=selected;
+    refreshGrid(row.closest('[data-grid-view]'));
   };
   const refreshRowConditions = row => {
     if (!row) return;
@@ -127,6 +175,7 @@ function bindDeclaredMockup(root) {
           const shown = all.filter(row=>!row.hidden).length;
           grid.querySelector('.cnt').textContent = context ? `${shown}건 / 전체 ${all.length}건` : `${all.length}건`;
           grid.querySelector('.pg').textContent = context ? `${context} 관련 ${shown}건 · 전체 보기로 해제` : `총 ${all.length}건 · 1 페이지`;
+          refreshGrid(grid);
         });
       }
     });
@@ -141,13 +190,13 @@ function bindDeclaredMockup(root) {
     if(rowDelete&&!rowDelete.disabled){
       const row=rowDelete.closest('tr'),grid=row.closest('[data-grid-view]');
       if(row.dataset.removeBlocked){grid.querySelector('.pg').textContent='삭제 차단 — 사용 중인 용도 참조를 먼저 해소하세요.';return;}
-      if(row.dataset.gridRowState==='C'){row.remove();grid.querySelector('.cnt').textContent=grid.querySelectorAll('tbody tr').length+'건';return;}
-      if(row.dataset.gridRowState==='D'){row.innerHTML=originals.get(row).html;setRowState(row,'');}
+      if(row.dataset.gridRowState==='C'){row.remove();grid.querySelector('.cnt').textContent=grid.querySelectorAll('tbody tr').length+'건';refreshGrid(grid);return;}
+      if(row.dataset.gridRowState==='D'){restoreRow(row);}
       else setRowState(row,'D');
       return;
     }
     const revertRow=target.closest('[data-revert-row]');
-    if(revertRow){const row=revertRow.closest('tr');row.innerHTML=originals.get(row).html;setRowState(row,'');return;}
+    if(revertRow){restoreRow(revertRow.closest('tr'));return;}
     const read=target.closest('[data-grid-read]'),save=target.closest('[data-grid-save]:not([data-native-save])');
     if((read&&!read.disabled)||(save&&!save.disabled)){
       const grid=(read||save).closest('[data-grid-view]');
@@ -202,6 +251,7 @@ function bindDeclaredMockup(root) {
       const count=body.querySelectorAll('tr').length;
       grid.querySelector('.cnt').textContent=`${count}건`;
       grid.querySelector('.pg').textContent='목업 편집 행 제거 — 서버에는 반영하지 않았습니다.';
+      refreshGrid(grid);
       return;
     }
     const add = target.closest('[data-add-demo-row],[data-grid-add]:not(:disabled)');
@@ -218,6 +268,7 @@ function bindDeclaredMockup(root) {
       grid.querySelector('tbody .empty')?.closest('tr').remove();
       row.classList.remove('sel');row.removeAttribute('data-remove-blocked');setRowState(row,'C');
       grid.querySelector('tbody').prepend(row);
+      refreshGrid(grid);
       refreshRowConditions(row);
       const count = grid.querySelectorAll('tbody tr').length;
       grid.querySelector('.cnt').textContent=`${count}건`;
@@ -279,7 +330,7 @@ function bindDeclaredMockup(root) {
       markEdited(editor.closest('tr'));
     }
     const selectedRow=target.closest('tbody tr[data-row-context]');
-    if(selectedRow){
+    if(selectedRow&&selectedRow.closest('[data-grid-view]')?.dataset.gridSelection!=='multiple'){
       selectedRow.parentElement.querySelectorAll('tr.sel').forEach(row=>row.classList.remove('sel'));
       selectedRow.classList.add('sel');
     }
@@ -315,10 +366,19 @@ function bindDeclaredMockup(root) {
   });
   root.addEventListener('change', event => {
     const input = event.target;
+    if(input.matches('[data-grid-select-all],[data-grid-select-row]')){
+      const grid=input.closest('[data-grid-view]');
+      if(input.matches('[data-grid-select-all]'))grid.querySelectorAll('tbody tr[data-grid-row-state]').forEach(row=>{
+        if(row.hidden)return;
+        const select=row.querySelector('[data-grid-select-row]');if(select&&!select.disabled)select.checked=input.checked;
+      });
+      refreshGrid(grid);return;
+    }
     if (input.matches('[data-grid-column]')) {
       input.closest('[data-grid-view]').querySelectorAll('[data-grid-col]').forEach(c => {
         if (c.dataset.gridCol === input.dataset.gridColumn) c.hidden = !input.checked;
       });
+      refreshGrid(input.closest('[data-grid-view]'));
     }
     if (!input.matches('[data-combo-select]') || input.disabled) return;
     input.closest('[data-search-combo]').querySelector('[data-combo-value]').textContent = '현재 선택: ' + ([...input.selectedOptions].filter(o=>o.value).map(o=>o.textContent).join(', ') || '미지정');

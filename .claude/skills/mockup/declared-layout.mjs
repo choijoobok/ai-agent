@@ -3,7 +3,7 @@ import {snapshotView} from './snapshot-view.mjs';
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {columnExplanation, actionExplanation, searchExplanation, surfaceOf, surfaceIntroduction} from './presentation.mjs';
-import {chrome,standardButton,stateHeads,stateCells,editableColumn} from './grid-chrome.mjs';
+import {chrome,standardButton,stateHeads,stateCells,deleteHead,deleteCell,systemWidth,editableColumn} from './grid-chrome.mjs';
 const controls = readFileSync(new URL('../../../aidd-guide/artifact/site-kit/assets/mockup-controls.js', import.meta.url), 'utf8');
 const escape = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const titleOf = (table) => table.heading.replace(/^\d+(?:-\d+)?\.?\s*/, '').replace(/\s*—\s*(폼|그리드)$/, '');
@@ -122,10 +122,15 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     empty = empty || contextEmpty;
     const gridId = `${figure.key}-grid-${model.columns.indexOf(table)}`;
     const writable=!table.readonly&&table.rows.some(r=>editableColumn(plain(cell(table,r,'편집'))));
+    const showState=writable&&figure.editable;
+    const multiple=model.selectionModes?.[label]==='다중';
+    const deletionDeclared=(model.addRowTabs??[]).includes(label)||(surfaceOf(model,label)?.buttons??[]).some(name=>/삭제$|제거$/.test(name));
+    const showDelete=showState&&deletionDeclared;
     const optional = (r) => plain(cell(table,r,'기본 표시')) === '선택 표시';
     const hidden = (r) => optional(r) ? ' hidden' : '';
     const width = r => Number.parseInt(cell(table, r, '폭/정렬'), 10) || 120;
-    const heads = stateHeads(writable)+table.rows.map((r,i) => `<th data-grid-col="${i}"${hidden(r)} style="white-space:normal;width:${width(r)}px">${escape(plain(r[0]))}${n.badge(columnExplanation(table,r),`column:${label}:${plain(r[0])}`)}</th>`).join('');
+    const lastVisible=table.rows.findLastIndex(r=>!optional(r));
+    const heads = stateHeads(showState,multiple)+table.rows.map((r,i) => `<th data-grid-col="${i}" data-grid-base-width="${width(r)}"${hidden(r)} style="white-space:normal;width:${i===lastVisible?'auto':width(r)+'px'}">${escape(plain(r[0]))}${n.badge(columnExplanation(table,r),`column:${label}:${plain(r[0])}`)}</th>`).join('')+deleteHead(showDelete);
     const examples = configured(table);
     const rows = examples.length ? examples : [{}];
     const editableNow=(r,record,isNew=false)=>{
@@ -197,9 +202,9 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const protectedRow = protection && !['—','없음','0'].includes(protection);
     const rowEditable=table.rows.some(r=>editableNow(r,record,rowIndex>=rows.length));
     const rowDeleteAllowed=(model.addRowTabs??[]).includes(label)||(surfaceOf(model,label)?.buttons??[]).some(name=>/삭제$|제거$/.test(name));
-    return `<tr class="${rowIndex===0?'sel':''}" data-grid-row-state=""${protectedRow?` data-remove-blocked="${escape(protection)}"`:''} data-row-context="${escape(JSON.stringify(String(record['문맥'] || record['컬럼명'] || '').split(',')))}">${stateCells(writable,!rowEditable||!rowDeleteAllowed,protectedRow?protection:'')}${vals}</tr>`;
+    return `<tr class="${!multiple&&rowIndex===0?'sel':''}" data-grid-row-state=""${protectedRow?` data-remove-blocked="${escape(protection)}"`:''} data-row-context="${escape(JSON.stringify(String(record['문맥'] || record['컬럼명'] || '').split(',')))}">${stateCells(showState,['saving','unknown','denied'].includes(figure.key),multiple,rowIndex)}${vals}${deleteCell(showDelete,!rowEditable||!rowDeleteAllowed,protectedRow?protection+' 용도에서 사용 중 — 참조 해소 후 삭제':'')}</tr>`;
     };
-    const body = empty ? `<tr><td class="empty" colspan="${table.rows.length+(writable?2:0)}">${escape(contextEmpty?'선택한 문맥에 해당하지 않는 목록입니다.':figure.notice)}</td></tr>` : rows.map(renderRow).join('');
+    const body = empty ? `<tr><td class="empty" colspan="${table.rows.length+1+(multiple?1:0)+(showState?1:0)+(showDelete?1:0)}">${escape(contextEmpty?'선택한 문맥에 해당하지 않는 목록입니다.':figure.notice)}</td></tr>` : rows.map(renderRow).join('');
     const excel=figure.buttons.includes('엑셀 다운로드')?`<details data-excel-menu><summary>엑셀 다운로드 ▾${badge('엑셀 다운로드','현재 페이지 또는 전체를 선택한다. 현재 표시한 열과 순서, 반출 권한을 적용하며 숨긴 열은 자동 포함하지 않는다.','common:excel')}</summary><span>현재 페이지 · 전체</span></details>`:'';
     const settings=`<details data-grid-settings><summary>그리드 설정${badge('그리드 설정','표시할 열을 선택한다. 선택 표시 열도 여기에서 켜며 저장 데이터 자체는 변경하지 않는다.','common:grid-settings')}</summary><div class="notes">${table.rows.map((r,i)=>`<label style="display:block"><input type="checkbox" data-grid-column="${i}" ${optional(r)?'':'checked'}>${escape(plain(r[0]))}</label>`).join('')}</div></details>`;
     const createDeclared=(model.addRowTabs??[]).includes(label)||(surfaceOf(model,label)?.buttons??[]).some(name=>/추가$/.test(name))||(table===model.columns[0]&&figure.buttons.includes('신규'));
@@ -211,8 +216,8 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const actions=[...new Set([...surfaceButtons,...globalButtons])].filter(name=>!(approvalSave&&name==='승인 요청')).map(name=>button(name,label)).join('');
     const approvalControl=approvalSave?'<span data-grid-save data-native-save>'+button('승인 요청',label)+'</span>':'';
     const header=chrome({title:label,count:`${empty?0:rows.length}건`,read:standardButton('조회','read',['saving','unknown','denied'].includes(figure.key)||figure.disabledButtons?.includes('조회'),'이 그리드의 현재 대상/조건을 조회한다. 미저장 입력 확인 후 조회하며 독립 저장 계약을 만들지 않는다.'),add:writable?standardButton('행 추가','add',!canAdd,'같은 저장 단위에 신규 행 추가'):'' ,save:approvalControl||((writable||(table===model.columns[0]&&figure.buttons.includes('저장')))?standardButton('저장','save',(!editableHere&&writable)||!figure.editable||!figure.buttons.includes('저장')||figure.disabledButtons?.includes('저장'),'요건서의 전체 저장 단위를 검증한다. 하위 탭 버튼도 소유 저장 범위를 유지한다.'):'') ,actions,tools:excel+settings});
-    return `<div data-grid-view="${gridId}" data-grid-role="${table===model.columns[0]?'master':'detail'}">${header}${canAdd?`<template data-row-template>${renderRow({},rows.length)}</template>`:''}
-      <div class="grid" style="overflow:auto"><table style="width:100%;table-layout:fixed;min-width:${table.rows.filter(r=>!optional(r)).reduce((n,r)=>n+width(r),writable?100:0)}px"><thead><tr>${heads}</tr></thead><tbody>${body}</tbody></table></div>
+    return `<div data-grid-view="${gridId}" data-grid-selection="${multiple?'multiple':'single'}" data-grid-role="${table===model.columns[0]?'master':'detail'}">${header}${canAdd?`<template data-row-template>${renderRow({},rows.length)}</template>`:''}
+      <div class="grid" style="overflow:auto"><table style="width:100%;table-layout:fixed;min-width:${table.rows.filter(r=>!optional(r)).reduce((n,r)=>n+width(r),systemWidth(showState,multiple,showDelete))}px"><thead><tr>${heads}</tr></thead><tbody>${body}</tbody></table></div>
       <div class="pg">총 ${empty ? '0' : rows.length}건 · 1 페이지</div></div>`;
   };
   const formView = (table) => table.rows.map((r, i) => {

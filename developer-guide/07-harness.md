@@ -123,6 +123,7 @@
 | `/mockup` | `generic-layout.mjs` | `node .claude/skills/mockup/generic-layout.mjs` |
 | `/mockup` | `generic-layout.test.mjs` | `node .claude/skills/mockup/generic-layout.test.mjs` |
 | `/mockup` | `grid-chrome.mjs` | `node .claude/skills/mockup/grid-chrome.mjs` |
+| `/mockup` | `grid-chrome.test.mjs` | `node .claude/skills/mockup/grid-chrome.test.mjs` |
 | `/mockup` | `presentation.mjs` | `node .claude/skills/mockup/presentation.mjs` |
 | `/mockup` | `presentation.test.mjs` | `node .claude/skills/mockup/presentation.test.mjs` |
 | `/mockup` | `request-layout.mjs` | `node .claude/skills/mockup/request-layout.mjs` |

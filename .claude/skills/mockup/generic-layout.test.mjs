@@ -17,7 +17,7 @@ test('일반 목업도 초기 화면의 모든 탭 패널과 실제 버튼을 �
   assert.match(html,/data-detail-panel="설정" hidden[\s\S]*value="유지할 입력"/);
   assert.equal([...html.matchAll(/data-detail-panel=/g)].length,2);
   assert.equal([...html.matchAll(/data-grid-state-column/g)].length,2);
-  assert.equal([...html.matchAll(/data-grid-delete-column/g)].length,2);
+  assert.equal([...html.matchAll(/data-grid-delete-column/g)].length,0);
 });
 
 test('탭별 설명 그림에는 탭바를 반복하지 않고 지정한 영역만 보여준다',()=>{
