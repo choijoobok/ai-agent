@@ -14,7 +14,7 @@
 | 화면 / 기능 / 유즈케이스 | SCR-015 / FEAT-015 /  |
 | 상위 요구사항 | REQ-602·REQ-116 |
 | 페이지 경로 | `/admin/hub/model` — 설계 경로 |
-| 메뉴코드 / 상위 메뉴 | `HUB_MODEL` / `HUB_OPERATION` |
+| 메뉴코드 / 상위 메뉴 | `HUB_MODEL` / `HUB_FOUNDATION` |
 | 화면 유형 | 마스터-디테일(상하) · 상단 그리드 / 하단 탭 |
 | 처리 유형 | 관리 |
 | 쓰는 액션 | READ · EXPORT · SAVE (세부 처리 권한은 §5) |

@@ -32,7 +32,7 @@ import { listSpecSetNames, loadSpecSet } from '../../../aidd-guide/harness/runti
 import { domainSchema } from '../../../aidd-guide/harness/runtime/domain-schema.mjs';
 import { assertHistoryContract } from './history-contract.mjs';
 import { approvalContractErrors } from './approval-contract.mjs';
-import { menuContractErrors, menuReviewMarkdown } from './menu-contract.mjs';
+import { menuContractErrors, menuReviewMarkdown, orderByAdminMenu } from './menu-contract.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..', '..', '..');
@@ -684,6 +684,7 @@ function 요건정의서() {
 function 화면정의서() {
   const s = load('60-screens');
   const errors=menuContractErrors(s);if(errors.length)throw new Error(errors.join('\n'));
+  const screens = orderByAdminMenu(s, s.screens);
   const mc = s.menu_criteria;
   const p = [head('SCR-LIST', '화면 목록 · 화면 정의서', specSource('60-screens'),
     s.meta.status, s.meta.baselined, null,
@@ -696,14 +697,14 @@ function 화면정의서() {
   if (s.menu_tree) p.push(menuReviewMarkdown(s, p=>existsSync(join(REPO,p))));
   p.push(`## 1. 무엇을 메뉴로 두는가\n\n**${flat(mc.claim)}** — ${flat(mc.why)}\n\n${bullets(mc.tests)}`
     + (mc.note ? `\n\n> ${flat(mc.note)}` : ''));
-  const menuRows = s.screens.map((screen) => ({ ...screen, entry: screen.entry ?? (screen.route === null ? 'standalone' : screen.route ? 'menu' : '미정') }));
+  const menuRows = screens.map((screen) => ({ ...screen, entry: screen.entry ?? (screen.route === null ? 'standalone' : screen.route ? 'menu' : '미정') }));
   p.push('## 메뉴·진입 목록\n\n' + table(menuRows, ['id', 'title', 'entry', 'menu_code', 'menu_parent', 'route'])
     + '\n\n메뉴 코드·계층·진입 유형 미정은 상세 설계에서 정하며, 구현 후 실제 메뉴 트리와 대조한다. 공통 화면을 메뉴로 만들지 않는다.');
   p.push(`## 2. 통제 경계\n\n${auto(s.control_boundaries)}`);
   p.push(`## 3. 규칙\n\n${bullets(s.rules)}`);
   let n = 3;
-  for (const m of [...new Set(s.screens.map((x) => x.module))]) {
-    const sel = s.screens.filter((x) => x.module === m);
+  for (const m of [...new Set(screens.map((x) => x.module))]) {
+    const sel = screens.filter((x) => x.module === m);
     n += 1;
     p.push(`## ${n}. ${m} 화면 (${sel.length}건)`);
     for (const grp of [...new Set(sel.map((x) => x.group))]) {

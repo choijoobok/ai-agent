@@ -37,3 +37,13 @@ export function menuReviewMarkdown(spec,exists){
  lines.push('### 이번 대상에서 제외','',...tree.excluded.map(x=>`- ${x.screen}: ${x.reason}`),'','### 적용 규칙','',...tree.rules.map(x=>'- '+x));
  return lines.join('\n');
 }
+
+/** 설계 메뉴의 배열 순서를 투영하되, 범위 밖 항목의 위치와 상대 순서는 보존한다. */
+export function orderByAdminMenu(spec, items, idOf = (item) => item.id) {
+ const ids = (spec.menu_tree?.admin_groups ?? []).flatMap((group) => group.screens ?? []);
+ const ranks = new Map(ids.map((id, index) => [id, index]));
+ const ordered = items.filter((item) => ranks.has(idOf(item)))
+  .sort((a, b) => ranks.get(idOf(a)) - ranks.get(idOf(b)));
+ let index = 0;
+ return items.map((item) => ranks.has(idOf(item)) ? ordered[index++] : item);
+}

@@ -19,6 +19,7 @@ import { themeAware } from '../manual-site/lib/page.mjs';
 import { buildFlowViews } from './lib/flow-view.mjs';
 import { createDesignNavigation } from './lib/design-navigation.mjs';
 import { historyViewMarkdown } from './lib/history-view.mjs';
+import { orderByAdminMenu } from '../doc-gen/menu-contract.mjs';
 import { checkTableDocuments, checkSequenceDocuments } from '../doc-gen/gen.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -230,7 +231,7 @@ function designChapters() {
         ...sequencePaths.map((item) => ({ key: `sequence-${item.id}`, label: sequencePaths.length === 1 ? '처리 시퀀스' : `처리 시퀀스 ${item.id}`,
           markdown: read(item.path), path: item.path })),
       ],
-    }), treePath });
+    }), treePath, screenId });
   }
   for (const screen of specScreens.filter((item) => item.view_kind === 'change_history')) {
     const source = specScreens.find((item) => item.id === screen.source_screen);
@@ -240,9 +241,9 @@ function designChapters() {
       id: `screen-${slug(screen.id)}`, group: treePath.join(' › '),
       path: `documents/spec/60-screens/010-change-history.yaml#${screen.id}`,
       title: `${screen.id} ${screen.title}`, markdown: historyViewMarkdown(screen, source),
-    }), treePath });
+    }), treePath, screenId: screen.id });
   }
-  return chapters;
+  return orderByAdminMenu(screenSpec, chapters, (chapter) => chapter.screenId);
 }
 
 function userChapters() {

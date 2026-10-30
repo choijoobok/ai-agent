@@ -55,7 +55,7 @@ node .claude/skills/deliverable-site/browser-check.mjs design
 UI 자산은 `aidd-guide/artifact/site-kit/assets/` 한 벌을 세 사이트가 공유한다. 입력 Markdown과
 목업은 원래 자리에서 계속 개발하며 제출 폴더로 복사하거나 이동하지 않는다.
 
-설계 사이트의 화면 목차는 메뉴 CSV의 실제 부모·자식 순서와 한글명을 그대로 쓴다. `/sample/**` 화면은
+설계 사이트의 화면 목차에서 설계 중인 admin 메뉴는 `60-screens` 정본의 `menu_tree.admin_groups` 영역·배열 순서를 따른다. 상속 이력도 이 순서에 포함한다. 구현된 나머지 메뉴는 메뉴 CSV의 실제 부모·자식 순서와 한글명을 유지한다. `/sample/**` 화면은
 검토본·제출본 모두 제외한다. 목업 탭에는 화면만 오린 그림이 아니라 번호 배지 설명·테스트 케이스를
 포함한 `mockup.html` 전체 본문을 싣는다.
 

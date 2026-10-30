@@ -101,7 +101,7 @@ screens:
     title: "Portal 사용자 관리 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "권한 관리"
+    group: "공통 기반"
     roadmap: "RM-P1"
     feature: FEAT-005
     usecases:
@@ -112,7 +112,7 @@ screens:
       - UC-023
       - UC-024
     menu_code: "HUB_PORTAL_USER_HISTORY"
-    menu_parent: "HUB_ACCESS"
+    menu_parent: "HUB_FOUNDATION"
     route: "/admin/hub/portal-user/history"
     view_kind: "change_history"
     source_screen: SCR-005
@@ -128,7 +128,7 @@ screens:
     title: "사용자 그룹 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "권한 관리"
+    group: "공통 기반"
     roadmap: "RM-P1"
     feature: FEAT-006
     usecases:
@@ -137,7 +137,7 @@ screens:
       - UC-006
       - UC-025
     menu_code: "HUB_USER_GROUP_HISTORY"
-    menu_parent: "HUB_ACCESS"
+    menu_parent: "HUB_FOUNDATION"
     route: "/admin/hub/user-group/history"
     view_kind: "change_history"
     source_screen: SCR-006
@@ -278,7 +278,7 @@ screens:
     title: "외부 모델 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "AI 운영"
+    group: "공통 기반"
     roadmap: "RM-P1"
     feature: FEAT-015
     usecases:
@@ -287,7 +287,7 @@ screens:
       - UC-006
       - UC-017
     menu_code: "HUB_MODEL_HISTORY"
-    menu_parent: "HUB_OPERATION"
+    menu_parent: "HUB_FOUNDATION"
     route: "/admin/hub/model/history"
     view_kind: "change_history"
     source_screen: SCR-015
@@ -303,7 +303,7 @@ screens:
     title: "토큰 풀 기준 단가 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "비용 관리"
+    group: "공통 기반"
     roadmap: "RM-P1"
     feature: FEAT-016
     usecases:
@@ -312,7 +312,7 @@ screens:
       - UC-006
       - UC-022
     menu_code: "HUB_TOKEN_RATE_HISTORY"
-    menu_parent: "HUB_COST"
+    menu_parent: "HUB_FOUNDATION"
     route: "/admin/hub/token-rate/history"
     view_kind: "change_history"
     source_screen: SCR-016
@@ -328,7 +328,7 @@ screens:
     title: "실행 제한·운영 설정 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "AI 운영"
+    group: "공통 기반"
     roadmap: "RM-P1"
     feature: FEAT-020
     usecases:
@@ -337,7 +337,7 @@ screens:
       - UC-006
       - UC-030
     menu_code: "HUB_OPERATION_CONFIG_HISTORY"
-    menu_parent: "HUB_OPERATION"
+    menu_parent: "HUB_FOUNDATION"
     route: "/admin/hub/operation-config/history"
     view_kind: "change_history"
     source_screen: SCR-018
@@ -375,7 +375,7 @@ screens:
     title: "월별 개인 쿼터 기준 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "비용 관리"
+    group: "공통 기반"
     roadmap: "RM-P1"
     feature: FEAT-017
     usecases:
@@ -384,7 +384,7 @@ screens:
       - UC-006
       - UC-027
     menu_code: "HUB_QUOTA_PLAN_HISTORY"
-    menu_parent: "HUB_COST"
+    menu_parent: "HUB_FOUNDATION"
     route: "/admin/hub/quota-plan/history"
     view_kind: "change_history"
     source_screen: SCR-021

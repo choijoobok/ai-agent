@@ -3,6 +3,9 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import { parseYaml } from '../../hooks/lib.mjs';
+import { loadSpecSet } from '../../../aidd-guide/harness/runtime/spec-set.mjs';
+import { menuNavigationErrors } from './lib/menu-order.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, '../../..');
@@ -86,6 +89,8 @@ for (const key of keys) {
   if (key === 'user' && /data-page-link="[^"]*sample/i.test(html)) errors.push('user: 샘플 화면이 목차에 포함됐다.');
   if (key === 'user' && manifest?.release && html.includes('class="review-note')) errors.push('user: 제출본에 내부 캡처 검토 블록이 남았다.');
   if (key === 'design') {
+    const spec = loadSpecSet({ repo: REPO, name: '60-screens', parseYaml }).document;
+    errors.push(...menuNavigationErrors(spec, html));
     const tabLists = [...html.matchAll(/\bdata-document-tabs(?:\s|>)/g)].length;
     const requirementTabs = [...html.matchAll(/data-document-tab="requirements"/g)].length;
     const mockupTabs = [...html.matchAll(/data-document-tab="mockup"/g)].length;
