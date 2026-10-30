@@ -6,6 +6,7 @@ menu_tree:
       title: "공통 기반"
       screens:
         - SCR-015
+        - SCR-062
         - SCR-016
         - SCR-021
         - SCR-006
@@ -61,6 +62,7 @@ menu_tree:
       screens:
         - SCR-031
         - SCR-051
+        - SCR-063
         - SCR-052
         - SCR-055
         - SCR-045

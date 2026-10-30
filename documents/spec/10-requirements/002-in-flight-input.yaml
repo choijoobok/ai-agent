@@ -133,7 +133,7 @@ requirements:
         - "FEAT-015"
         - "FEAT-216"
       screens:
-        - "SCR-015"
+        - "SCR-062"
     examples:
       - kind: "정상"
         case: "현재 대상과 입력에 연결된 유효한 구조화 분류가 검사를 통과하면 해당 변경 범위만 반영한다"

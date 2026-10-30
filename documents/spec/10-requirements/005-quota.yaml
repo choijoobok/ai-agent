@@ -74,7 +74,7 @@ requirements:
       interfaces: []
     realization:
       features: ["FEAT-005","FEAT-015","FEAT-017","FEAT-101","FEAT-209","FEAT-211"]
-      screens: [SCR-005, SCR-015, SCR-021, SCR-101]
+      screens: [SCR-005, SCR-062, SCR-021, SCR-101]
     examples:
       - { kind: 정상, case: "관리자 김관리의 운영 프롬프트 검토가 2,000토큰을 사용하면 김관리의 운영 사용량과 전체 비용에는 집계하되 Portal 개인 쿼터에서 차감하지 않는다" }
       - { kind: 예외, case: "같은 김관리가 Portal에서 개인 쿼터를 소진한 뒤 새 질의를 보내면 관리자 권한이 있어도 기존 시작 전 쿼터 검사로 차단한다" }
