@@ -332,6 +332,19 @@ test('목록 연동의 미상 예시는 선택 월에만 적용하고 계산열�
  assert.match(html,/data-row-field="비용"[^>]*data-calculated-value/);
 });
 
+test('이미 배분한 월을 조회해도 다른 월의 참조 행 추가와 신규 저장 골격은 유지한다',()=>{
+ const master={heading:'월 기준',header:['컬럼','입력방식','편집','예시','편집 조건'],rows:[['년월','조회','읽기전용','2026-10','—'],['금액','숫자','가능','100','배분 여부=N']]};
+ const fixture={...model,actions:[...model.actions,['쿼터 배분 실행','','','','','저장된 월 배분']],columns:[master],masterLink:'년월',masterEditRule:'배분 여부=N',independentButtons:['행 추가'],savedActions:['쿼터 배분 실행'],calculationGuardButtons:['저장'],addRowTabs:['월 기준'],addReferences:{rows:[['월 기준','년월','년월','단가','{"2026-11":{"년월":"2026-11","단가":1.5}}']]},rowExamples:{rows:[['월 기준','{"년월":"2026-10","배분 여부":"Y"}','—']]}};
+ const [figure]=declaredFigures(stateTable([['main','월 기준','없음','','조회·저장·쿼터 배분 실행','가능','없음']]),plain);
+ const html=render(figure,fixture);
+ assert.match(html,/data-add-reference=/);
+ assert.match(html,/data-grid-add data-selection-independent/);
+ assert.doesNotMatch(html,/<button[^>]+disabled[^>]+data-grid-save/);
+ assert.match(html,/data-saved-action/);
+ assert.match(html,/data-calculation-guard="\[&quot;저장&quot;\]"/);
+ assert.match(html,/<template data-row-template>[\s\S]*data-cell-inline/);
+});
+
 
 test('승인 사용 화면은 저장 슬롯에서 승인 요청을 한 번 제공한다',()=>{
  const fixture={...model,columns:[columns('자산',[['값','텍스트','가능','','기존']])],actions:[['승인 요청','','','','','전체 후보 제출']],addRowTabs:['자산']};

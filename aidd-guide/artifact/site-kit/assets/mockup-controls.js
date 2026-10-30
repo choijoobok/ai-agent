@@ -276,6 +276,14 @@ function bindDeclaredMockup(root) {
     const add = target.closest('[data-add-demo-row],[data-grid-add]:not(:disabled)');
     if (add) {
       const grid = add.closest('[data-grid-view]');
+      let seed;
+      if(grid.dataset.addReference){
+        const rule=JSON.parse(grid.dataset.addReference);
+        const input=[...grid.closest('.screen').querySelectorAll('.sf input,.sf select')].find(node=>node.getAttribute('aria-label')===rule.search);
+        const existing=[...grid.querySelectorAll('tbody tr[data-grid-row-state]')].map(row=>[...row.querySelectorAll('[data-row-field]')].find(cell=>cell.dataset.rowField===rule.key)?.dataset.rowValue);
+        try{seed=resolveMockupAddReference(rule,input?.value,existing);}
+        catch(error){grid.querySelector('.pg').textContent='행 추가 거부 — '+error.message;return;}
+      }
       const row = grid.querySelector('template[data-row-template]').content.firstElementChild.cloneNode(true);
       const number = grid.querySelectorAll('tbody tr').length + 1;
       row.querySelectorAll('[id]').forEach(e=>e.id+=`-new-${number}`);
@@ -284,9 +292,21 @@ function bindDeclaredMockup(root) {
       row.querySelectorAll('[data-row-value]').forEach(e=>e.dataset.rowValue='');
       row.querySelectorAll('[data-combo-value]').forEach(e=>e.textContent='현재 선택: 미지정');
       row.querySelectorAll('[data-cell-editor] summary').forEach(e=>e.textContent='선택/입력 ✎');
+      if(seed){
+        for(const cell of row.querySelectorAll('[data-row-field]')){
+          const value=String(seed[cell.dataset.rowField]??'');cell.dataset.rowValue=value;
+          const editor=cell.querySelector('[data-cell-editor]');
+          if(editor){editor.querySelectorAll('[data-edit-value]').forEach(input=>input.value=value);editor.querySelector('summary').textContent=value||'—';}
+          else cell.textContent=value||'—';
+        }
+        row.dataset.rowContext=JSON.stringify([seed[grid.closest('.screen').dataset.masterLink]]);
+        row.dataset.masterLocked='false';
+        row.dataset.masterAssigned='true';
+      }
       grid.querySelector('tbody .empty')?.closest('tr').remove();
       row.classList.remove('sel');row.removeAttribute('data-remove-blocked');setRowState(row,'C');
       grid.querySelector('tbody').prepend(row);
+      if(seed&&grid.dataset.gridRole==='master'){grid.querySelectorAll('tbody tr.sel').forEach(node=>node.classList.remove('sel'));row.classList.add('sel');}
       refreshGrid(grid);
       refreshRowConditions(row);
       const count = grid.querySelectorAll('tbody tr').length;

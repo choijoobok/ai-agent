@@ -29,6 +29,18 @@ function computeMockupGrid(rules, source) {
   return grids;
 }
 
+/** 조회조건으로 고른 정적 참조만 사용한다. 실제 제품 조회·저장 계약이 아니다. */
+function resolveMockupAddReference(rule, key, existing) {
+  key=String(key??'').trim();
+  if(!key)throw new Error(rule.search+'을 입력한 뒤 행 추가하세요.');
+  if(existing.includes(key))throw new Error('같은 '+rule.key+'의 행이 이미 있습니다.');
+  const row=rule.values[key];
+  if(!row||row[rule.key]!==key)throw new Error('해당 '+rule.search+'의 저장된 유효 단가가 없습니다. 기준 단가를 먼저 저장하세요.');
+  const rate=Number(row[rule.rate]);
+  if(row[rule.rate]===null||String(row[rule.rate]??'').trim()===''||!Number.isFinite(rate)||rate<=0)throw new Error('참조 단가가 미완료입니다. 확인 불가를0으로 대체할 수 없습니다.');
+  return {...row};
+}
+
 function bindMockupMath(root) {
   const screens=[...root.querySelectorAll('[data-master-link]')];
   if(!screens.length)return;
@@ -51,7 +63,8 @@ function bindMockupMath(root) {
       const footer=grid.querySelector('.pg');if(footer)footer.textContent=`${key} · ${shown}건 · 같은 월의 입력 유지`;
       rows.filter(row=>!row.hidden).forEach((row,index)=>{const n=row.querySelector('[data-grid-row-number]');if(n)n.textContent=String(index+1);});
     }
-    for(const button of controls(screen))button.disabled=button.dataset.baseDisabled==='true'||(locked&&!button.hasAttribute('data-selection-independent'));
+    const dirty=[selected,...screen.querySelectorAll('[data-grid-role="detail"] tr[data-grid-row-state]:not([hidden])')].some(row=>row.dataset.gridRowState);
+    for(const button of controls(screen))button.disabled=button.dataset.baseDisabled==='true'||(locked&&!button.hasAttribute('data-selection-independent'))||(button.hasAttribute('data-saved-action')&&dirty);
     const status=screen.querySelector('[data-calculation-status]');if(status){status.hidden=true;status.textContent='';}
     if(locked||screen.hasAttribute('data-calculation-readonly')||!screen.dataset.calculationRules)return;
     const rules=JSON.parse(screen.dataset.calculationRules),grids={},elements={};
@@ -70,7 +83,8 @@ function bindMockupMath(root) {
     }catch(error){
       if(status){status.hidden=false;status.textContent='목업 산정 미완료 — '+error.message;}
       for(const rule of rules)for(const row of elements[rule.area]||[]){const cell=[...row.querySelectorAll('[data-row-field]')].find(cell=>cell.dataset.rowField===rule.target);if(cell){cell.textContent='산정 불가';cell.dataset.rowValue='';}}
-      controls(screen).filter(button=>button.textContent.trim().startsWith(screen.dataset.calculationConfirm)).forEach(button=>button.disabled=true);
+      const guarded=JSON.parse(screen.dataset.calculationGuard||'[]');
+      controls(screen).filter(button=>guarded.includes(button.textContent.trim())).forEach(button=>button.disabled=true);
     }
   };
   for(const screen of screens){

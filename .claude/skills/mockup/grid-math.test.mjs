@@ -28,3 +28,11 @@ test('미상·음수·비유한 값과 0분모/0비용은 정상 단가로 만�
  assert.throws(()=>calculate([{단가:0,수량:1}]),/양수/);
  assert.throws(()=>context.computeMockupGrid([{area:'산정',kind:'실행',target:'값',scale:1}],{산정:[{}]}),/지원하지 않는/);
 });
+test('수동 월 행 추가는 같은 년월의 유효 저장 단가와 중복 여부를 검사한다',()=>{
+ const rule={search:'년월',key:'년월',rate:'단가',values:{'2026-11':{'년월':'2026-11',단가:1.5}}};
+ assert.equal(context.resolveMockupAddReference(rule,'2026-11',[]).단가,1.5);
+ assert.throws(()=>context.resolveMockupAddReference(rule,'',[]),/입력/);
+ assert.throws(()=>context.resolveMockupAddReference(rule,'2026-12',[]),/유효 단가/);
+ assert.throws(()=>context.resolveMockupAddReference(rule,'2026-11',['2026-11']),/이미/);
+ for(const rate of [0,-1,null,'미상',Infinity])assert.throws(()=>context.resolveMockupAddReference({...rule,values:{'2026-11':{'년월':'2026-11',단가:rate}}},'2026-11',[]),/미완료/);
+});
