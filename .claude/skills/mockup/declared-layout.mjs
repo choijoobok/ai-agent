@@ -188,7 +188,15 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
       const rowCandidates=rowParent ? (JSON.parse(candidateMap)[valueOf(table.rows.find(row=>plain(row[0])===rowParent))]??[]).join('·') : plain(cell(table,r,'후보 예시'));
       let content=escape(value);
       const isSnapshot=/스냅샷 뷰어/.test(mode);
-      if(editable || /장문/.test(mode) || isSnapshot) {
+      const isLargeText=/셀 위 텍스트영역/.test(mode);
+      if(mode==='스위치'){
+        if(editable)throw new Error('조회 결과 스위치는 읽기 전용으로 선언한다');
+        const flag=String(valueOf(r)),on=['true','Y','1'].includes(flag);
+        content=['true','false','Y','N','1','0'].includes(flag)?`<button type="button" role="switch" data-grid-switch aria-label="${escape(plain(r[0]))}" aria-checked="${on}" disabled title="${escape(plain(cell(table,r,'설명')))}"><span></span></button>`:'<span data-switch-unknown>확인 필요</span>';
+      }else if(isLargeText){
+        const controlId=`${gridId}-row-${rowIndex}-cell-${i}`;
+        content=`<details data-cell-editor data-cell-large${editable?' data-cell-inline':' data-cell-large-view'}><summary title="${editable?'더블 클릭으로 셀 위 텍스트영역 편집':'전체 내용 보기'}">${escape(value)}</summary><textarea data-edit-value id="${controlId}" aria-label="${escape(plain(r[0]))}" rows="8" cols="60" maxlength="2000"${editable?'':' readonly'}>${escape(valueOf(r)||'')}</textarea></details>`;
+      }else if(editable || /장문/.test(mode) || isSnapshot) {
         const controlId=`${gridId}-row-${rowIndex}-cell-${i}`;
         const labels=Object.fromEntries(model.columns.flatMap(t=>t.rows.map(row=>[plain(cell(t,row,'필드명')).replace(/^snapshot\s*의\s*|^snapshot\.|^values\./,'').replace(/\[\]$/,''),plain(row[0]).replace(/^반영 후 /,'')])).filter(([key])=>/^[a-zA-Z]\w*$/.test(key)));
         const formatRow=table.rows.find(row=>plain(cell(table,row,'필드명'))==='snapshotVersion');
@@ -210,7 +218,7 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
       if(model.requestScreen && plain(r[0])==='요청번호')content=`<span data-request-number>${content}</span>`;
       if(rowConditional && editable)content=`<span data-locked-value${conditionLocked?'':' hidden'}>—</span>${conditionLocked?content.replace('<details data-cell-editor','<details hidden data-cell-editor'):content}`;
       const storedValue=referenceMap&&referenceMap!=='—'?(JSON.parse(referenceMap)[valueOf(r)]??valueOf(r)):valueOf(r);
-      return `<td data-grid-col="${i}" data-row-field="${escape(plain(r[0]))}" data-row-value="${escape(storedValue||'')}"${model.calculations?.some(rule=>rule.area===label&&rule.target===plain(r[0]))?' data-calculated-value':''}${rowConditional&&editable?` data-edit-rule="${escape(JSON.stringify(rowRules))}"`:''}${hidden(r)}${editable && !conditionLocked ? ' class="edit"' : ''} style="overflow:hidden;text-overflow:ellipsis" title="${isSnapshot?'전체 스냅샷 보기':escape(value)}">${content}</td>`;
+      return `<td data-grid-col="${i}" data-row-field="${escape(plain(r[0]))}" data-row-value="${escape(storedValue||'')}"${(model.calculations?.some(rule=>rule.area===label&&rule.target===plain(r[0]))||model.allocationValidity?.field===plain(r[0]))?' data-calculated-value':''}${rowConditional&&editable?` data-edit-rule="${escape(JSON.stringify(rowRules))}"`:''}${hidden(r)}${editable && !conditionLocked ? ' class="edit"' : ''} style="overflow:hidden;text-overflow:ellipsis" title="${isSnapshot?'전체 스냅샷 보기':escape(value)}">${content}</td>`;
     }).join('');
     const protection = model.removeGuardField ? String(record[model.removeGuardField]??'').trim() : '';
     const protectedRow = protection && !['—','없음','0'].includes(protection);
@@ -230,7 +238,7 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const approvalSave=figure.buttons.includes('승인 요청')&&!figure.buttons.includes('저장');
     const actions=[...new Set([...surfaceButtons,...globalButtons])].filter(name=>!(approvalSave&&name==='승인 요청')).map(name=>button(name,label)).join('');
     const approvalControl=approvalSave?'<span data-grid-save data-native-save>'+button('승인 요청',label)+'</span>':'';
-    const addControl=standardButton('행 추가','add',!canAdd,'같은 저장 단위에 신규 행 추가').replace('data-grid-add',model.independentButtons?.includes('행 추가')?'data-grid-add data-selection-independent':'data-grid-add');
+    const addControl=standardButton('행 추가','add',!canAdd,'같은 저장 단위에 신규 행 추가').replace('data-grid-add',table===model.columns[0]&&model.independentButtons?.includes('행 추가')?'data-grid-add data-selection-independent':'data-grid-add');
     const addRefRow=model.addReferences?.rows.find(row=>plain(row[0])===label);
     const addRef=addRefRow?{search:plain(addRefRow[1]),key:plain(addRefRow[2]),rate:plain(addRefRow[3]),values:JSON.parse(addRefRow[4])}:null;
     const header=chrome({title:label,count:`${empty?0:rows.length}건`,read:standardButton('조회','read',['saving','unknown','denied'].includes(figure.key)||figure.disabledButtons?.includes('조회'),'이 그리드의 현재 대상/조건을 조회한다. 미저장 입력 확인 후 조회하며 독립 저장 계약을 만들지 않는다.'),add:writable?addControl:'' ,save:approvalControl||((writable||(table===model.columns[0]&&figure.buttons.includes('저장')))?standardButton('저장','save',(!model.masterLink&&!editableHere&&writable)||!figure.editable||!figure.buttons.includes('저장')||figure.disabledButtons?.includes('저장'),'요건서의 전체 저장 단위를 검증한다. 하위 탭 버튼도 소유 저장 범위를 유지한다.'):'') ,actions,tools:excel+settings});
@@ -305,6 +313,6 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const targets=targetRows.length?`<div data-command-targets><fieldset data-command-target><legend>관련 테이블·버전</legend>${targetRows.map(field).join('')}<button type="button" class="btn ghost sm" data-remove-command-target>대상 제거${badge('대상 제거','입력 중 대상 연결만 제거한다. 테이블이나 버전을 삭제하지 않는다.',`command:${name}:remove`)}</button></fieldset></div><button type="button" class="btn ghost sm" data-add-command-target>대상 추가${badge('대상 추가','같은 명령에 연결할 대상 입력 행을 추가한다.',`command:${name}:add`)}</button>`:'';
     return `<dialog class="command-dialog" data-command="${escape(name)}" aria-label="${escape(name)} 입력"><form data-command-form><h3>${escape(name)}</h3>${rows.filter(r=>plain(cell(commandTable,r,'영역'))!=='관련 대상').map(field).join('')}${targets}<p>검토용 입력 예시입니다. 실제 서버로 전송하지 않습니다.</p><p role="status" data-command-result></p><div class="row actions"><button type="submit" class="btn">접수${badge('접수','요건서의 필수 입력과 명령별 검증 조건을 확인해 접수한다. 목업에서는 입력 확인만 시연하며 실제 전송하지 않는다.',`command:${name}:submit`)}</button><button type="button" class="btn ghost" data-close-command>닫기${badge('닫기','입력창을 닫는다. 목업에서는 입력을 유지한다.',`command:${name}:close`)}</button></div></form></dialog>`;
   }).join('');
-  return `<div class="screen leaf" id="${escape(figure.key)}"${interactive?' data-interactive-tabs':''}${model.masterLink?` data-master-link="${escape(model.masterLink)}" data-master-initial="${escape(figure.masterValue??'')}" data-calculation-rules="${escape(JSON.stringify(model.calculations??[]))}" data-calculation-guard="${escape(JSON.stringify(model.calculationGuardButtons??[]))}"${figure.editable?'':' data-calculation-readonly'}`:''}${manualKey ? ` data-manual="${escape(figure.key)}"` : ''}>
+  return `<div class="screen leaf" id="${escape(figure.key)}"${interactive?' data-interactive-tabs':''}${model.masterLink?` data-master-link="${escape(model.masterLink)}" data-master-initial="${escape(figure.masterValue??'')}" data-calculation-rules="${escape(JSON.stringify(model.calculations??[]))}" data-calculation-guard="${escape(JSON.stringify(model.calculationGuardButtons??[]))}"${model.allocationValidity?` data-allocation-validity="${escape(JSON.stringify(model.allocationValidity))}"`:''}${figure.editable?'':' data-calculation-readonly'}`:''}${manualKey ? ` data-manual="${escape(figure.key)}"` : ''}>
     <div class="bar">${escape(title)} · ${escape(figure.caption)} · 검토용 예시</div><div class="body">${main}${model.masterLink?'<p class="notes" role="status" data-calculation-status hidden></p>':''}</div>${commands}</div>\n${n.render()}`;
 }

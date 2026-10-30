@@ -244,6 +244,7 @@ function screenModel(md, type, allowInheritance = true) {
     independentButtons: (composition?.body.match(/^선택 무관 버튼:\s*(.+)$/m)?.[1]??'').split('·').map(s=>s.trim()),
     calculationGuardButtons: (composition?.body.match(/^산정 검증 버튼:\s*(.+)$/m)?.[1]??'').split('·').map(s=>s.trim()).filter(Boolean),
     savedActions: (composition?.body.match(/^저장 후 실행 버튼:\s*(.+)$/m)?.[1]??'').split('·').map(s=>s.trim()).filter(Boolean),
+    allocationValidity: (()=>{const value=composition?.body.match(/^배분 유효성:\s*(.+)$/m)?.[1];if(!value)return null;const [field,...rest]=value.split('=');return {field:field.trim(),inputs:rest.join('=').split('·').map(s=>s.trim())};})(),
     addReferences: findTable(composition,/^행 추가 참조$/),
     calculations: (findTable(composition,/^목업 계산$/)?.rows??[]).map(row=>({area:plain(row[0]),target:plain(row[1]),kind:plain(row[2]),a:plain(row[3]),b:plain(row[4]),scale:plain(row[5])})),
     surfaces,

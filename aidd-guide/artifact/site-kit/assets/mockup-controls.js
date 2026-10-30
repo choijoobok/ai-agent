@@ -88,6 +88,7 @@ function bindDeclaredMockup(root) {
   const editingValues=new WeakMap();
   const finishInline=(editor,cancel=false)=>{
     if(!editor.open)return;
+    if(editor.hasAttribute('data-cell-large-view')){editor.open=false;return;}
     const input=editor.querySelector('[data-edit-value]'),cell=editor.closest('[data-row-field]');
     if(cancel)input.value=editingValues.get(editor)??input.value;
     cell.dataset.rowValue=input.value;
@@ -97,9 +98,14 @@ function bindDeclaredMockup(root) {
   };
   const openCell=editor=>{
     if(editor.hidden||editor.open||editor.closest('tr[data-grid-row-state="D"]'))return;
-    const input=editor.querySelector('input:not(:disabled):not([readonly]),select:not(:disabled),textarea:not([readonly]):not(:disabled)');
+    const input=editor.hasAttribute('data-cell-large-view')?editor.querySelector('textarea'):editor.querySelector('input:not(:disabled):not([readonly]),select:not(:disabled),textarea:not([readonly]):not(:disabled)');
     if(!input)return;
     hideTip();editingValues.set(editor,input.value);editor.open=true;input.focus();
+    if(editor.hasAttribute('data-cell-large')){
+      const rect=editor.closest('td').getBoundingClientRect(),width=(root.ownerDocument||root).documentElement.clientWidth;
+      input.style.left=Math.max(8,Math.min(rect.left,width-Math.min(560,width-16)-8))+'px';
+      input.style.top=Math.max(8,Math.min(rect.top,(root.ownerDocument||root).documentElement.clientHeight-210))+'px';
+    }
     if(input.tagName==='INPUT'&&input.type!=='checkbox')input.select();
   };
   // 상세 설명 한 곳을 재사용한다. 문서와 ShadowRoot 모두 같은 탐색/툴팁 동작을 쓴다.
@@ -199,8 +205,9 @@ function bindDeclaredMockup(root) {
   };
   root.addEventListener('click', event => {
     const target = event.target;
-    const cellSummary=target.closest('[data-cell-inline] > summary,[data-cell-popup] > summary');
+    const cellSummary=target.closest('[data-cell-inline] > summary,[data-cell-popup] > summary,[data-cell-large-view] > summary');
     if(cellSummary)event.preventDefault();
+    if(cellSummary?.parentElement.hasAttribute('data-cell-large-view')){openCell(cellSummary.parentElement);return;}
     const deleted=target.closest('tr[data-grid-row-state="D"]');
     if(deleted&&target.closest('[data-cell-editor]')){event.preventDefault();return;}
     const resetSearch=target.closest('[data-search-reset]');
@@ -297,6 +304,7 @@ function bindDeclaredMockup(root) {
           const value=String(seed[cell.dataset.rowField]??'');cell.dataset.rowValue=value;
           const editor=cell.querySelector('[data-cell-editor]');
           if(editor){editor.querySelectorAll('[data-edit-value]').forEach(input=>input.value=value);editor.querySelector('summary').textContent=value||'—';}
+          else if(cell.querySelector('[data-grid-switch]'))cell.querySelector('[data-grid-switch]').setAttribute('aria-checked',String(['true','Y','1'].includes(value)));
           else cell.textContent=value||'—';
         }
         row.dataset.rowContext=JSON.stringify([seed[grid.closest('.screen').dataset.masterLink]]);
@@ -376,11 +384,11 @@ function bindDeclaredMockup(root) {
   });
   root.addEventListener('dblclick',event=>{
     if(event.target.closest('input,select,textarea,button,[data-note]'))return;
-    const editor=event.target.closest('td')?.querySelector('[data-cell-inline],[data-cell-popup]');
+    const editor=event.target.closest('td')?.querySelector('[data-cell-inline],[data-cell-popup],[data-cell-large-view]');
     if(editor){event.preventDefault();openCell(editor);}
   });
   root.addEventListener('focusout',event=>{
-    const editor=event.target.closest('[data-cell-inline]');
+    const editor=event.target.closest('[data-cell-inline],[data-cell-large-view]');
     if(editor&&!editor.contains(event.relatedTarget))finishInline(editor);
   });
   root.addEventListener('submit', event => {
@@ -393,10 +401,10 @@ function bindDeclaredMockup(root) {
   });
   root.addEventListener('keydown', event=>{
     if((event.key==='Enter'||event.key===' ')&&event.target.matches('[data-note]')){event.preventDefault();event.target.click();}
-    const editor=event.target.closest('[data-cell-inline],[data-cell-popup]');
+    const editor=event.target.closest('[data-cell-inline],[data-cell-popup],[data-cell-large-view]');
     if(!editor)return;
     if(event.target.matches('summary')&&['Enter','F2',' '].includes(event.key)){event.preventDefault();openCell(editor);}
-    else if(editor.hasAttribute('data-cell-inline')&&['Enter','Escape'].includes(event.key)){event.preventDefault();finishInline(editor,event.key==='Escape');editor.querySelector('summary').focus();}
+    else if((editor.hasAttribute('data-cell-inline')||editor.hasAttribute('data-cell-large-view'))&&['Enter','Escape'].includes(event.key)&&(event.key!=='Enter'||!editor.hasAttribute('data-cell-large')||event.ctrlKey||event.metaKey)){event.preventDefault();finishInline(editor,event.key==='Escape');editor.querySelector('summary').focus();}
   });
   if(!root.host){
     const openHash=()=>{const destination=root.getElementById(location.hash.slice(1));if(destination)reveal(destination);};

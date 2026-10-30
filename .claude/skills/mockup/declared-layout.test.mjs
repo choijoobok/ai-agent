@@ -345,6 +345,17 @@ test('이미 배분한 월을 조회해도 다른 월의 참조 행 추가와 �
  assert.match(html,/<template data-row-template>[\s\S]*data-cell-inline/);
 });
 
+test('셀 위 textarea와 조회 전용 스위치는 선택 적용 모달·편집 스위치를 만들지 않는다',()=>{
+ const table={heading:'월 기준',header:['컬럼','입력방식','편집','예시'],rows:[['메모','셀 위 텍스트영역','가능','줄1\n줄2'],['배분 완료','스위치','읽기전용','true']]};
+ const [figure]=declaredFigures(stateTable([['main','미래 월','없음','','조회·저장','가능','없음']]),plain);
+ const fixture={...model,columns:[table]};const html=render(figure,fixture);
+ assert.match(html,/data-cell-large data-cell-inline/);assert.match(html,/<textarea[^>]+rows="8"[^>]*>줄1\n줄2<\/textarea>/);
+ assert.doesNotMatch(html,/선택 적용|data-apply-cell/);assert.match(html,/role="switch"[^>]+aria-checked="true" disabled/);
+ const frozen=render({...figure,editable:false,buttons:['조회']},fixture);assert.match(frozen,/data-cell-large-view/);assert.match(frozen,/<textarea[^>]+readonly/);
+ const unknown=render({...figure,examples:{'배분 완료':'확인 필요'}},fixture);assert.match(unknown,/data-switch-unknown/);assert.doesNotMatch(unknown,/aria-checked="false"/);
+ assert.throws(()=>render(figure,{...fixture,columns:[{...table,rows:[['배분 완료','스위치','가능','false']]}]}),/읽기 전용/);
+});
+
 
 test('승인 사용 화면은 저장 슬롯에서 승인 요청을 한 번 제공한다',()=>{
  const fixture={...model,columns:[columns('자산',[['값','텍스트','가능','','기존']])],actions:[['승인 요청','','','','','전체 후보 제출']],addRowTabs:['자산']};

@@ -17,10 +17,11 @@ function computeMockupGrid(rules, source) {
       let value;
       if(rule.kind==='곱셈')value=number(row[rule.a])*number(row[rule.b])*scale;
       else if(rule.kind==='합계')value=sum(rule.a)*scale;
-      else if(rule.kind==='비율'){
+      else if(rule.kind==='비율'||rule.kind==='버림 비율'){
         const top=sum(rule.a),bottom=sum(rule.b);
         if(top<=0||bottom<=0)throw new Error('비용과 비중복 토큰 합계가 양수여야 단가를 산정할 수 있습니다.');
         value=top/bottom*scale;
+        if(rule.kind==='버림 비율')value=Math.floor(value);
       }else throw new Error('지원하지 않는 목업 계산 선언입니다.');
       if(!Number.isFinite(value))throw new Error('계산 결과를 확인하세요.');
       row[rule.target]=value;
@@ -45,12 +46,20 @@ function bindMockupMath(root) {
   const screens=[...root.querySelectorAll('[data-master-link]')];
   if(!screens.length)return;
   const rowsOf=grid=>[...grid.querySelectorAll(':scope > .grid > table > tbody > tr[data-row-context]')];
+  const allocationInputs=new WeakMap();
   const controls=screen=>[...screen.querySelectorAll('button[data-grid-save],button[data-grid-add],button[data-edit-action]')];
   const refresh=screen=>{
     const master=screen.querySelector('[data-grid-role="master"]'),selected=master?.querySelector('tbody tr.sel');
     if(!selected)return;
     const key=selected.querySelector(`[data-row-field="${screen.dataset.masterLink}"]`)?.dataset.rowValue;
     const locked=selected.dataset.masterLocked==='true';
+    if(screen.dataset.allocationValidity){
+      const rule=JSON.parse(screen.dataset.allocationValidity),cell=name=>[...selected.querySelectorAll('[data-row-field]')].find(node=>node.dataset.rowField===name);
+      if(!allocationInputs.has(selected))allocationInputs.set(selected,{values:rule.inputs.map(name=>cell(name)?.dataset.rowValue),flag:cell(rule.field)?.dataset.rowValue});
+      const initial=allocationInputs.get(selected),same=rule.inputs.every((name,index)=>cell(name)?.dataset.rowValue===initial.values[index]),field=cell(rule.field);
+      const value=same?initial.flag:'false';
+      if(field&&['true','false','Y','N','1','0'].includes(String(initial.flag))){field.dataset.rowValue=value;const toggle=field.querySelector('[data-grid-switch]');if(toggle)toggle.setAttribute('aria-checked',String(['true','Y','1'].includes(value)));}
+    }
     screen.dataset.activeMaster=key||'';
     for(const grid of screen.querySelectorAll('[data-grid-role="detail"]')){
       const rows=rowsOf(grid);

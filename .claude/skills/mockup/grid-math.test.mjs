@@ -36,3 +36,9 @@ test('수동 월 행 추가는 같은 년월의 유효 저장 단가와 중복 �
  assert.throws(()=>context.resolveMockupAddReference(rule,'2026-11',['2026-11']),/이미/);
  for(const rate of [0,-1,null,'미상',Infinity])assert.throws(()=>context.resolveMockupAddReference({...rule,values:{'2026-11':{'년월':'2026-11',단가:rate}}},'2026-11',[]),/미완료/);
 });
+test('월 풀은 USD/환산율/보정률을 한 번 적용하고 마지막 토큰 수만 버린다',()=>{
+ const rules=[{area:'월',target:'보정단가',kind:'곱셈',a:'USD',b:'FX',scale:1},{area:'월',target:'보정단가',kind:'곱셈',a:'보정단가',b:'보정률',scale:1},{area:'월',target:'총풀',kind:'버림 비율',a:'월::금액',b:'월::보정단가',scale:1e6}];
+ const result=context.computeMockupGrid(rules,{월:[{USD:1.6,FX:1400,보정률:1,금액:1000000}]});
+ assert.equal(result.월[0].보정단가,2240);assert.equal(result.월[0].총풀,446428571);
+ assert.throws(()=>context.computeMockupGrid(rules,{월:[{USD:1.6,FX:0,보정률:1,금액:1000000}]}),/양수/);
+});

@@ -219,6 +219,13 @@ a{color:var(--note)}
 [data-cell-inline]>summary{list-style:none;cursor:cell;overflow:hidden;text-overflow:ellipsis}
 [data-cell-inline][open]>summary{display:none}
 [data-cell-inline]>input,[data-cell-inline]>select{width:100%;min-width:0;box-sizing:border-box;background:var(--bg);color:var(--ink);border:1px solid var(--pri);padding:3px 5px;font:inherit}
+[data-cell-large]>summary{list-style:none;cursor:cell;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+[data-cell-large][open]>summary{display:block}
+[data-cell-large][open]>textarea{position:fixed;z-index:35;width:min(560px,calc(100vw - 16px));height:200px;max-height:70vh;box-sizing:border-box;padding:10px;background:var(--bg);color:var(--ink);border:1px solid var(--pri);box-shadow:0 3px 12px #0003;font:inherit;white-space:pre-wrap}
+[data-grid-switch]{width:36px;height:20px;padding:2px;border:0;border-radius:12px;background:var(--line);opacity:.8;cursor:default}
+[data-grid-switch]>span{display:block;width:16px;height:16px;background:#fff;border-radius:50%}
+[data-grid-switch][aria-checked="true"]{background:var(--pri)}
+[data-grid-switch][aria-checked="true"]>span{margin-left:16px}
 /* 1. 검증 실패 — 유일하게 Primary 와 무관하다 */
 .grid tr td.err{background:var(--err-bg);outline:1px solid var(--err);outline-offset:-1px}
 
