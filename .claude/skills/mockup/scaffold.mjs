@@ -444,6 +444,9 @@ function check(dir) {
   if (md) {
     const type = meta(md).find((r) => /화면 유형/.test(r[0]))?.[1] ?? '';
     const model = screenModel(md, type);
+    if (dir.split(path.sep).join('/').startsWith('admin/hub/') && model.figures.some(figure=>figure.buttons.includes('수정'))) {
+      problems.push('그리드의 별도 수정 진입 버튼을 두지 않는다 — 초기 화면에서 셀 더블 클릭 편집을 선언한다');
+    }
   const requests=parseYaml(read(path.join(REPO,'documents/spec/60-screens/012-asset-change-request.yaml'))).screens;
   const request=requests.find(s=>s.route===`/${dir}`);
   model.requestScreen=Boolean(request);

@@ -85,6 +85,23 @@ function bindDeclaredMockup(root) {
       cell.classList.toggle('edit',allowed);
     });
   };
+  const editingValues=new WeakMap();
+  const finishInline=(editor,cancel=false)=>{
+    if(!editor.open)return;
+    const input=editor.querySelector('[data-edit-value]'),cell=editor.closest('[data-row-field]');
+    if(cancel)input.value=editingValues.get(editor)??input.value;
+    cell.dataset.rowValue=input.value;
+    editor.querySelector('summary').textContent=(input.tagName==='SELECT'?input.selectedOptions[0]?.textContent:input.value)||'—';
+    cell.title=input.value;editor.open=false;
+    refreshRowConditions(cell.closest('tr'));markEdited(cell.closest('tr'));
+  };
+  const openCell=editor=>{
+    if(editor.hidden||editor.open||editor.closest('tr[data-grid-row-state="D"]'))return;
+    const input=editor.querySelector('input:not(:disabled):not([readonly]),select:not(:disabled),textarea:not([readonly]):not(:disabled)');
+    if(!input)return;
+    hideTip();editingValues.set(editor,input.value);editor.open=true;input.focus();
+    if(input.tagName==='INPUT'&&input.type!=='checkbox')input.select();
+  };
   // 상세 설명 한 곳을 재사용한다. 문서와 ShadowRoot 모두 같은 탐색/툴팁 동작을 쓴다.
   const doc = root.ownerDocument || root;
   const tip = doc.createElement('div');
@@ -182,6 +199,8 @@ function bindDeclaredMockup(root) {
   };
   root.addEventListener('click', event => {
     const target = event.target;
+    const cellSummary=target.closest('[data-cell-inline] > summary,[data-cell-popup] > summary');
+    if(cellSummary)event.preventDefault();
     const deleted=target.closest('tr[data-grid-row-state="D"]');
     if(deleted&&target.closest('[data-cell-editor]')){event.preventDefault();return;}
     const resetSearch=target.closest('[data-search-reset]');
@@ -335,6 +354,15 @@ function bindDeclaredMockup(root) {
       selectedRow.classList.add('sel');
     }
   });
+  root.addEventListener('dblclick',event=>{
+    if(event.target.closest('input,select,textarea,button,[data-note]'))return;
+    const editor=event.target.closest('td')?.querySelector('[data-cell-inline],[data-cell-popup]');
+    if(editor){event.preventDefault();openCell(editor);}
+  });
+  root.addEventListener('focusout',event=>{
+    const editor=event.target.closest('[data-cell-inline]');
+    if(editor&&!editor.contains(event.relatedTarget))finishInline(editor);
+  });
   root.addEventListener('submit', event => {
     if (!event.target.matches('[data-command-form]')) return;
     event.preventDefault();
@@ -345,6 +373,10 @@ function bindDeclaredMockup(root) {
   });
   root.addEventListener('keydown', event=>{
     if((event.key==='Enter'||event.key===' ')&&event.target.matches('[data-note]')){event.preventDefault();event.target.click();}
+    const editor=event.target.closest('[data-cell-inline],[data-cell-popup]');
+    if(!editor)return;
+    if(event.target.matches('summary')&&['Enter','F2',' '].includes(event.key)){event.preventDefault();openCell(editor);}
+    else if(editor.hasAttribute('data-cell-inline')&&['Enter','Escape'].includes(event.key)){event.preventDefault();finishInline(editor,event.key==='Escape');editor.querySelector('summary').focus();}
   });
   if(!root.host){
     const openHash=()=>{const destination=root.getElementById(location.hash.slice(1));if(destination)reveal(destination);};

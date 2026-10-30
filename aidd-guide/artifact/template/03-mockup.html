@@ -216,6 +216,9 @@ a{color:var(--note)}
 .grid tr td.cur{background:var(--pri-2);outline:1px solid var(--pri);outline-offset:-1px}
 /* 2. 편집 중인 셀 — 테두리는 Primary 원색, 배경은 바탕(입력 글자가 읽혀야 한다) */
 .grid tr td.edit{background:var(--bg);color:var(--ink);outline:2px solid var(--pri);outline-offset:-2px}
+[data-cell-inline]>summary{list-style:none;cursor:cell;overflow:hidden;text-overflow:ellipsis}
+[data-cell-inline][open]>summary{display:none}
+[data-cell-inline]>input,[data-cell-inline]>select{width:100%;min-width:0;box-sizing:border-box;background:var(--bg);color:var(--ink);border:1px solid var(--pri);padding:3px 5px;font:inherit}
 /* 1. 검증 실패 — 유일하게 Primary 와 무관하다 */
 .grid tr td.err{background:var(--err-bg);outline:1px solid var(--err);outline-offset:-1px}
 

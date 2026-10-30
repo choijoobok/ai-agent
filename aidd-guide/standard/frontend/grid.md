@@ -15,7 +15,7 @@ tags: [frontend, grid, ag-grid, crud, save]
 # 그리드 — 화면 뼈대 · `api` 선언 · 저장
 
 > **편집 폼을 두지 않는다. 이것이 나머지의 전제다.**
-> 화면에 남는 폼은 조회조건 하나뿐이며, **등록은 그리드의 새 행이고 수정은 셀 편집**이다.
+> 화면에 남는 폼은 조회조건 하나뿐이며, **등록은 그리드의 새 행이고 수정은 셀 더블 클릭 편집**이다. 별도 수정 버튼이나 편집 모드 전환을 두지 않는다.
 > 배치·1:1 항목·하단 탭·엑셀 기본값은 [마스터-디테일 §1](../../playbook/master-detail.md)을 따른다.
 >
 > 컬럼은 [grid-columns.md](./grid-columns.md), 정렬·필터·검증은 [grid-validation.md](./grid-validation.md).

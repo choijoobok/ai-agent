@@ -7,6 +7,9 @@ export function chrome({title,count='',read,add='',save='',actions='',tools=''})
 export function standardButton(name,action,locked=false,description='') {
   return `<button type="button" class="btn ghost sm" data-grid-${action}${locked?' disabled':''} title="${esc(description)}">${esc(name)}</button>`;
 }
+export function inlineEditor(value,control) {
+  return `<details data-cell-editor data-cell-inline><summary title="더블 클릭으로 셀 편집">${esc(value||'—')}</summary>${control}</details>`;
+}
 const pinned=(side,offset,width)=>`data-grid-pinned="${side}" style="${side}:${offset}px;width:${width}px;min-width:${width}px;max-width:${width}px"`;
 // columnDefs.tsx toColDefs: 번호 → 다중 선택 → 상태 → 업무 컬럼 → 삭제(오른쪽 고정).
 export function stateHeads(editable,multiple=false) {

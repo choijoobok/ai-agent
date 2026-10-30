@@ -3,7 +3,7 @@ import {snapshotView} from './snapshot-view.mjs';
 import {readFileSync} from 'node:fs';
 import path from 'node:path';
 import {columnExplanation, actionExplanation, searchExplanation, surfaceOf, surfaceIntroduction} from './presentation.mjs';
-import {chrome,standardButton,stateHeads,stateCells,deleteHead,deleteCell,systemWidth,editableColumn} from './grid-chrome.mjs';
+import {chrome,standardButton,inlineEditor,stateHeads,stateCells,deleteHead,deleteCell,systemWidth,editableColumn} from './grid-chrome.mjs';
 const controls = readFileSync(new URL('../../../aidd-guide/artifact/site-kit/assets/mockup-controls.js', import.meta.url), 'utf8');
 const escape = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const titleOf = (table) => table.heading.replace(/^\d+(?:-\d+)?\.?\s*/, '').replace(/\s*—\s*(폼|그리드)$/, '');
@@ -182,9 +182,10 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
           : /설정 팝업/.test(mode) ? popup(plain(r[0]), controlId, !editable)
           : /검색콤보|팝업 선택/.test(mode) ? searchCombo(controlId,plain(r[0]),valueOf(r)||'',rowCandidates,!editable,rowParent,rowParent?candidateMap:'',/다중/.test(mode),plain(cell(table,r,'후보 값 매핑')))
           : /장문/.test(mode) ? `<textarea data-edit-value id="${controlId}" rows="5" ${editable?'':'readonly'}>${escape(valueOf(r)||'')}</textarea>`
-          : /선택|셀렉트/.test(mode) ? `<select data-edit-value id="${controlId}">${[...new Set([value, ...plain(cell(table,r,'후보 예시')).split('·').filter(v=>v&&v!=='—')])].map(v=>`<option>${escape(v)}</option>`).join('')}</select>`
-          : `<input data-edit-value id="${controlId}" value="${escape(valueOf(r)||'')}" ${editable?'':'readonly'}>`;
-        content=`<details data-cell-editor${isSnapshot?' data-snapshot-viewer':''}${figure.cellEditor===plain(r[0])&&rowIndex===0?' data-auto-editor':''}><summary title="${isSnapshot?'전체 스냅샷 보기':escape(value)}" style="overflow:hidden;text-overflow:ellipsis">${isSnapshot?'보기':escape(value)+(editable?' ✎':' 보기')}</summary><div class="modal" style="position:fixed;top:8%;left:50%;transform:translateX(-50%);width:min(${isSnapshot?'800':'520'}px,90vw);z-index:20;white-space:normal"><div class="mh">${escape(plain(r[0]))}<button type="button" class="btn ghost sm" data-close-editor>닫기${badge('닫기','셀 상세/설정 창을 닫는다. 후보 전체 저장은 수행하지 않는다.','common:close-editor')}</button></div><div class="mb${isSnapshot?'':' f'}" style="max-height:75vh;overflow:auto">${control}${editable?`<button type="button" class="btn sm" data-apply-cell>선택 적용${badge('선택 적용','설정 창의 입력을 로컬 후보 셀에 반영한다. 서버 저장은 별도 저장 버튼으로 수행한다.','common:apply-cell')}</button>`:''}</div></div></details>`;
+          : /선택|셀렉트/.test(mode) ? `<select data-edit-value id="${controlId}" aria-label="${escape(plain(r[0]))}">${[...new Set([value, ...plain(cell(table,r,'후보 예시')).split('·').filter(v=>v&&v!=='—')])].map(v=>`<option>${escape(v)}</option>`).join('')}</select>`
+          : `<input data-edit-value id="${controlId}" aria-label="${escape(plain(r[0]))}" value="${escape(valueOf(r)||'')}" ${editable?'':'readonly'}>`;
+        const inline=editable&&!/장문|설정 팝업|검색콤보|팝업 선택|스냅샷/.test(mode);
+        content=inline?inlineEditor(value,control):`<details data-cell-editor${editable?' data-cell-popup':''}${isSnapshot?' data-snapshot-viewer':''}${figure.cellEditor===plain(r[0])&&rowIndex===0?' data-auto-editor':''}><summary title="${editable?'더블 클릭으로 셀 편집':isSnapshot?'전체 스냅샷 보기':escape(value)}" style="overflow:hidden;text-overflow:ellipsis">${isSnapshot?'보기':escape(value)+(editable?' ✎':' 보기')}</summary><div class="modal" style="position:fixed;top:8%;left:50%;transform:translateX(-50%);width:min(${isSnapshot?'800':'520'}px,90vw);z-index:20;white-space:normal"><div class="mh">${escape(plain(r[0]))}<button type="button" class="btn ghost sm" data-close-editor>닫기${badge('닫기','셀 상세/설정 창을 닫는다. 후보 전체 저장은 수행하지 않는다.','common:close-editor')}</button></div><div class="mb${isSnapshot?'':' f'}" style="max-height:75vh;overflow:auto">${control}${editable?`<button type="button" class="btn sm" data-apply-cell>선택 적용${badge('선택 적용','설정 창의 입력을 로컬 후보 셀에 반영한다. 서버 저장은 별도 저장 버튼으로 수행한다.','common:apply-cell')}</button>`:''}</div></div></details>`;
       }
       const target = plain(cell(table, r, '이동 탭'));
       if (target && target !== '—' && value !== '미확인') {

@@ -137,6 +137,17 @@ test('고정 판의 장문 셀도 편집 없는 전체 내용 뷰어로 읽는�
   assert.match(html,/<textarea[^>]+readonly>전체 검수 근거<\/textarea>/);
   assert.doesNotMatch(html,/전체 검수 근거 ✎/);
 });
+test('단순 값은 초기 셀 안에서 편집하고 검색콤보는 셀 편집기를 쓰며 잠금 상태는 열지 않는다',()=>{
+ const table={heading:'기준',header:['컬럼','입력방식','편집','예시','후보 예시'],rows:[['이름','텍스트','가능','기존 이름','—'],['유형','선택','가능','A','A·B'],['모델','검색콤보','가능','공급사 - 모델','공급사 - 모델']]};
+ const fixture={...model,columns:[table]};
+ const [figure]=declaredFigures(stateTable([['main','현재 적용본','없음','','조회·저장','가능','없음']]),plain);
+ const html=render(figure,fixture);
+ assert.equal([...html.matchAll(/data-cell-inline/g)].length,2);
+ assert.equal([...html.matchAll(/data-cell-popup/g)].length,1);
+ assert.match(html,/<details data-cell-editor data-cell-inline><summary[^>]*>기존 이름<\/summary><input/);
+ assert.match(html,/<details data-cell-editor data-cell-inline><summary[^>]*>A<\/summary><select/);
+ assert.doesNotMatch(render({...figure,key:'readonly',editable:false,buttons:['조회']},fixture),/data-cell-inline|data-cell-popup/);
+});
 test('문맥 밖 하위 목록은 예시 행을 넣지 않고 이름 오류를 거부한다',()=>{
   const [figure]=declaredFigures(stateTable([['main','기본','상세','','조회','잠금','없음']]),plain);
   const fixture={...model,columns:model.columns.map((t,i)=>i?{...t,heading:'상세 — 그리드'}:t)};
