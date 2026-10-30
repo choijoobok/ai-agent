@@ -211,6 +211,9 @@ requirements:
       interfaces: []
     realization:
       features:
+        - FEAT-042
+        - FEAT-043
+        - FEAT-044
         - FEAT-001
         - FEAT-002
         - FEAT-006

@@ -632,7 +632,7 @@ screens:
     feature: FEAT-017
     roadmap: "RM-P1"
     agent_contact: "설정"
-    note: "년월로 식별하고 수동 행 추가 때 같은 월 저장된 유효 단가를 자동 참조한다. 없으면 추가 금지. 저장은 월 기준 보관과 단가 고정이며 쿼터 배분 실행은 저장된 기준의 사용자 한도를 대상 월부터 적용하는 별도 동작이다. 중복 계획 저장/계획 확정 버튼은 두지 않는다. 월말 승계·0명·소급 금지는 REQ-116/118을 따른다"
+    note: "기준년월 하나·금융 입력·메모 largeText·분리된 확정자/확정일시·읽기 전용 완료 스위치. 등급별 배분/사용자 배정 두 탭만 제공한다. 시작월 등급 정의는 SCR-064에서 관리하고 이 화면은 적용 기준만 읽는다. 미래 월 시작 전 예정 재생성·월말 배치의 다음 달 최종 생성/기준 부재 시 새 행 금융 승계·월 시작 후 잠금은 REQ-118이 정본이다"
     route: "/admin/hub/quota-plan"
     menu_code: "HUB_QUOTA_PLAN"
     menu_parent: "HUB_FOUNDATION"
@@ -690,11 +690,11 @@ screens:
     module: "admin"
     entry: "menu"
     group: "비용 관리"
-    title: "토큰 통계·월별 공급사 사용 대조"
+    title: "토큰 사용량·대조"
     feature: FEAT-030
     roadmap: "RM-P1"
     agent_contact: "산출"
-    note: "계획 총 풀·일반 배정·예외 승인·Hub 기록과 공급사 사용 대조값·실적 스냅샷/완전성·수동 보정 참고 근거를 보여 준다. 단가 작성/저장은 SCR-016, 단가 고정·수동 보정 기준 저장과 실제 배분 실행은 SCR-021 소유다. 청구서·회계 정산 화면은 아니다"
+    note: "비용 관리의 종합 조회/공급사 월 대조값·참고 보정 근거 입력이다. 사용자별/월별 통계 SCR-066/067은 같은 원 사용량/배치·금융·등급 출처를 조회하며 직접 판정/배분하지 않는다. 월말 배분은 FEAT-045, 기준 저장/등급 정의는 원 관리 화면이 소유한다."
     route: "/admin/hub/token-usage"
     menu_code: "HUB_TOKEN_USAGE"
     menu_parent: "HUB_COST"
@@ -1086,3 +1086,60 @@ screens:
   - { id: SCR-525, module: system, workstream: system, group: "공통 진입", title: "관리 대시보드", feature: FEAT-510, roadmap: RM-P1, type: dashboard, route: "/admin/system/dashboard", current_route: "/admin/system/dashboard", current_doc: "documents/screen/admin/system/dashboard/requirements.md", target_doc: "documents/screen/admin/system/dashboard/requirements.md", access: "DASHBOARD 유효 권한", empty_state: "없음 — 로그인 응답의 메뉴·권한 수 카드가 항상 보임", loading: "없음 — 서버 호출 없이 로그인 응답 상태만 사용", error_display: "없음 — 화면이 서버 조회나 고아 상태 표시를 하지 않음", undecided: "@defer Hub 개발 완료 후 — 즐겨찾기·자주 쓰는 메뉴 등 대시보드 위젯의 상세 요건을 고객 요구에 맞춰 정의한다" }
 
 # ── 차수별 노출 ───────────────────────────────────────────
+
+  - id: SCR-064
+    title: 쿼터 등급 관리
+    module: admin
+    entry: menu
+    group: 공통 기반
+    roadmap: RM-P1
+    feature: FEAT-042
+    usecases:
+      - UC-001
+      - UC-002
+      - UC-006
+      - UC-039
+    type: list_detail
+    route: /admin/hub/quota-grade
+    menu_code: HUB_QUOTA_GRADE
+    menu_parent: HUB_FOUNDATION
+    target_doc: documents/screen/admin/hub/quota-grade/requirements.md
+    design_status: draft
+    note: 화면/업무 흐름 합의 전 요건·목업이다. 물리/API·제품 소스/시드는 미확정이며 소유 요구사항과 화면 요건서가 컬럼/검수/경계를 정의한다.
+    history_view: SCR-065
+  - id: SCR-066
+    title: 사용자별 토큰 사용 통계
+    module: admin
+    entry: menu
+    group: 비용 관리
+    roadmap: RM-P1
+    feature: FEAT-043
+    usecases:
+      - UC-001
+      - UC-006
+      - UC-040
+    type: list_detail
+    route: /admin/hub/token-usage-user
+    menu_code: HUB_TOKEN_USAGE_USER
+    menu_parent: HUB_COST
+    target_doc: documents/screen/admin/hub/token-usage-user/requirements.md
+    design_status: draft
+    note: 화면/업무 흐름 합의 전 요건·목업이다. 물리/API·제품 소스/시드는 미확정이며 소유 요구사항과 화면 요건서가 컬럼/검수/경계를 정의한다.
+  - id: SCR-067
+    title: 월별 토큰 사용 통계
+    module: admin
+    entry: menu
+    group: 비용 관리
+    roadmap: RM-P1
+    feature: FEAT-044
+    usecases:
+      - UC-001
+      - UC-006
+      - UC-041
+    type: list_detail
+    route: /admin/hub/token-usage-month
+    menu_code: HUB_TOKEN_USAGE_MONTH
+    menu_parent: HUB_COST
+    target_doc: documents/screen/admin/hub/token-usage-month/requirements.md
+    design_status: draft
+    note: 화면/업무 흐름 합의 전 요건·목업이다. 물리/API·제품 소스/시드는 미확정이며 소유 요구사항과 화면 요건서가 컬럼/검수/경계를 정의한다.

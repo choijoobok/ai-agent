@@ -396,3 +396,29 @@ screens:
     error_display: "권한/기간/다른 소유 세트 요청을 거부한다."
     design_status: "screen_draft"
     screen_role: "inherited_change_history"
+
+  - id: SCR-065
+    title: 쿼터 등급 변경 이력
+    module: admin
+    entry: menu
+    group: 변경 이력
+    roadmap: RM-P1
+    feature: FEAT-042
+    usecases:
+      - UC-001
+      - UC-006
+    type: list_detail
+    menu_code: HUB_QUOTA_GRADE_HISTORY
+    menu_parent: HUB_CHANGE_HISTORY
+    route: /admin/hub/quota-grade/history
+    view_kind: change_history
+    source_screen: SCR-064
+    history_contract: REQ-601.change_history·ADR-035
+    inheritance: 원 등급 기준의 목록/전체 등급·메모를 읽기 전용 상속한다. 변경 요약·이력 기간만 추가하고 독립 requirements.md/mockup.html을 복제하지 않는다.
+    access: 해당 이력 READ·EXPORT 및 현재 대상 열람 범위. 원 관리 SAVE를 요구하지 않는다.
+    selection: 원 기준 안정 참조+소유 이력 세트로 당시 전체 등급을 조회한다. 물리 키는 소유 상세 설계 후속이다.
+    loading: 선택 이력 당시의 전체 세트를 표시한다. 현재/다른 시작월로 대체하지 않는다.
+    empty_state: 이력 없음·권한/일부 누락·미지원 구조를 구분한다.
+    error_display: 권한 회수·다른 기준/이력 요청을 거부하고 원 문맥을 보존한다.
+    design_status: draft
+    screen_role: inherited_change_history
