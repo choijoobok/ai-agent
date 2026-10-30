@@ -32,13 +32,16 @@ collaboration:
   push_policy: "2026-10-30 admin 목업 2인 병행은 각자 별도 clone/worktree와 작업 branch를 사용하고 A가 main 통합을 맡는다. 사용자 요청으로 기준선 정리와 이후 담당 변경의 커밋/작업 branch 푸시·검증 후 통합을 진행한다. 기존 main PR 강제 규칙 해제 상태는 유지하며 강제 푸시·main 삭제는 금지한다. 개인 설정 변경은 작업 커밋에서 제외한다."
   conflict_tracking_started_at: "2026-09-17"
   admin_mockup_assignment:
-    status: "planned"
+    status: "in_progress"
     agreed_at: "2026-10-30"
     scope: "admin 모듈만. 자산별 요청 메뉴6개를 먼저 등록한 목록 기준으로 원/요청 화면43개를 2명이 분담하고 이력16개는 소유 원 화면에서 상속 검토한다. 작업 배정이며 화면/G3 승인이나 세션/branch 생성 완료가 아니다."
     workspace: "팀원은 별도 clone을 사용하고 각자 작업 branch에서 진행한다. 같은 PC의 동시 쓰기 세션은 별도 worktree/branch 또는 직렬 작업으로 분리한다. 기존 개인 설정 변경을 보존하고 자동 stash/폐기하지 않는다."
     owner_a:
       name: "사용자 측 후속 세션·통합 담당"
       branch_example: "codex/admin-mockups-a"
+      draft_status: "verified"
+      verified_at: "2026-10-30"
+      draft_result: "담당20개: 기존3개 보완·신규17개 작성. 화면 사용자 검토 대기. 작업 branch의 정본을 통합한다."
       screens:
         - SCR-001
         - SCR-002
@@ -72,6 +75,9 @@ collaboration:
     owner_b:
       name: "팀원 측 AI"
       branch_example: "codex/admin-mockups-b"
+      received_revision: "d7a53eda"
+      draft_status: "integrated_verified"
+      draft_result: "담당23개 원문을 직접 수정하지 않고 통합 검증했다. 화면 사용자 검토 대기."
       screens:
         - SCR-010
         - SCR-011
@@ -101,6 +107,7 @@ collaboration:
     sequence: "공통 메뉴 기준 공유→각자 첫 묶음 3~4개 검토→담당 화면별 반복 작성/검증→B branch를 A가 통합→전체 목업/업무흐름 검토→사용자 합의 뒤 기술 상세 설계. 제품 sources/·DB/시드 구현과 게이트 전이는 이번 작업에 포함하지 않는다."
     integration: "A가 공통 파일을 단독 편집하고 검증한 B 변경을 main에 통합한다. 코드 충돌이 없어도 자산별 승인·지식 영향/독립 변경·권한·비용/조사 연계를 확인한다. mockup.html/generated/build는 Git에 강제 추가하지 않고 통합된 정본/생성기로 각 작업 폴더에서 재생성한다."
     handoff: "각 묶음의 담당 SCR·변경 파일·목업 생성 명령/검증 결과·미결/공통 변경 필요 사항·branch와 커밋을 전달한다. 주관적인 진행률이나 존재하지 않는 승인 상태를 만들지 않는다."
+    integration_verification: "2026-10-30 통합 커밋 309b9f7f. A20/B23 원·요청43개와 이력16개 상속 정합·B 원문 보존을 확인했다. 43개 목업 생성/개별 check·Edge 초기 탭209개와 편집 입력 보존·요청6종 왕복·사이트 새로고침 요청번호 유지·공통 확인 문구를 검증했다. 초안의 지역 행 편집과 검토/반려 차단을 분리했고 B의 공통 제거/확인 문구 보완 메모를 공통 도구에서 처리했다. 도구시험35개·하네스/lint 통과, trace 오류0/기존 후속 경고187, 생성277개 ID/장문 누락0·링크0, 설계 사이트361장/원본463개 정합. 생성물은 강제 추적하지 않는다. 사용자 화면/전체 업무 흐름 합의와 미정 기술 상세는 후속이며 제품·system·게이트 전이는 없다."
 
 # 과거 충돌은 커밋의 [충돌 통합] 블록이, 지금 다시 확인할 것만 이 맵이 갖는다.
 # 키: SLICE-###(코드 시험) 또는 "<workstream>.P<n>"(문서 재검토).
@@ -164,7 +171,7 @@ workstreams:
           status: in_progress
           alignment_review: "2026-10-30 사용자 요청으로 작업 버튼의 우측 정렬을 공통 목업 서식과 생성기/스킬에 반영했다. 기존25목업 재생성·어긋남0, Edge1366/1920폭의 작업줄6·그리드툴바76·모달 하단 우측 정렬을 확인했다. 제목/건수는 왼쪽이며 탭/셀 탐색 배치는 유지한다. 관련 도구시험40개·하네스/self-test/lint/추적성 오류0(후속경고188), 실제 Claude 세션 trigger 시험과 제품 UI 구현은 후속이다."
           reference_mapping_review: "2026-10-30 사용자 확정 방향으로 지식→태그/카탈로그/예제/API/도구를 안정 ID 매핑으로 정리했다. 외부 리비전 상승에 따른 자동 반려·매핑/지식 리비전 동기화를 제거하고 자산 승인에서 적용/미종결 제출 지식의 본문·사용 설명·보완 판단과 요청 연결을 확인한다. 자기 BASE_REVISION·권한/필수 참조·SQL/API 기술 검증·실행 당시 버전 고정/기록은 유지한다. 독립 의미 검토의 제출 연결 누락·기술 참조 범위·UC 후조건을 보완해 잔여 발견0, 검수 사례10개 추가. 도구시험9개 통과·추적성 오류0/후속 경고187을 확인했다. 제품 구현/실제 승인·동시성 시험과 화면 최종 합의는 후속이다."
-          next: "연동 관리부터 모든 원 화면의 요건/1차 목업을 작성한다. 전체 원/요청 화면43개 중 기존3개를 재검토하고 나머지40개를 작성한다. 상속 이력16개는 원 화면 기준으로 검토한다."
+          next: "A20/B23 전체43개 요건·목업의 통합 검증을 마쳤다(collaboration.admin_mockup_assignment). 우선 관계·업무 API·업무 도구와 요청3개부터 4~6개씩 사용자 검토하고 전체 업무 흐름을 합의한다. 사용자 화면 승인이나 기술 상세 재개를 대신하지 않는다."
           exit: "모든 원 화면의 조회/입력·전체 탭·상태·버튼·연결을 목업으로 확인할 수 있고 UND-S07 후보의 실제 사용 위치가 드러난다."
         screen_review:
           status: not_started
