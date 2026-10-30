@@ -18,6 +18,7 @@ import { menuTree, read as readRepo, REPO, screensOf } from '../manual-site/lib/
 import { themeAware } from '../manual-site/lib/page.mjs';
 import { buildFlowViews } from './lib/flow-view.mjs';
 import { createDesignNavigation } from './lib/design-navigation.mjs';
+import { historyViewMarkdown } from './lib/history-view.mjs';
 import { checkTableDocuments, checkSequenceDocuments } from '../doc-gen/gen.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -229,6 +230,16 @@ function designChapters() {
         ...sequencePaths.map((item) => ({ key: `sequence-${item.id}`, label: sequencePaths.length === 1 ? '처리 시퀀스' : `처리 시퀀스 ${item.id}`,
           markdown: read(item.path), path: item.path })),
       ],
+    }), treePath });
+  }
+  for (const screen of specScreens.filter((item) => item.view_kind === 'change_history')) {
+    const source = specScreens.find((item) => item.id === screen.source_screen);
+    const moduleLabel = siteConfig.get('design').navigation?.module_labels?.[screen.module] ?? screen.module;
+    const treePath = ['화면 요건·목업', moduleLabel, screen.group ?? '변경 이력'];
+    chapters.push({ ...markdownChapter({
+      id: `screen-${slug(screen.id)}`, group: treePath.join(' › '),
+      path: `documents/spec/60-screens/010-change-history.yaml#${screen.id}`,
+      title: `${screen.id} ${screen.title}`, markdown: historyViewMarkdown(screen, source),
     }), treePath });
   }
   return chapters;

@@ -29,7 +29,7 @@ tags: [prompt, overlay, index]
 | 엑셀 내려받기 · 올려받기 | [excel.md](./excel.md) | §0(`EXPORT_YN`) · §5 · §6-1 |
 | 창을 띄운다 | [modal.md](./modal.md) | §1(모달) · §4-4 |
 | **확정 · 재계산 같은 실행 버튼** | [execution.md](./execution.md) | §5 · **§6-2 · §6-3** |
-| 대용량 이력 조회 | [history-pattern.md](./history-pattern.md) | §0(페이징) · §2(기간 필수) |
+| 관리 변경 이력 저장·별도 메뉴 조회 / 대용량 로그 | [history-pattern.md](./history-pattern.md) | 관리: 저장 단위·복사 매핑·상속 SCR / 로그: §0·§2 |
 
 **둘 이상 겹치는 것이 정상이다.** 마스터-디테일 + 조회조건 + 엑셀은 흔한 조합이다.
 

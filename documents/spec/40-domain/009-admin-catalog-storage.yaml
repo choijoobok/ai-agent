@@ -1,295 +1,408 @@
-# 카탈로그의 구성 식별·전체 키·값·관계·근거·초안 편집 처리
+# admin 현재/요청/이력 저장의 논리 설계 — 물리 상세는 소유 G3 전 확정
 entities:
   - id: ENT-020
     name: "카탈로그 구성 식별"
     term: TRM-264
     domain: "연동 자산"
-    module: admin
-    implementation: planned
-    design_stage: physical
-    table: AI_ADMIN_CATALOG_MEMBER
-    features: ["FEAT-003","FEAT-011"]
-    reqs: ["REQ-301"]
+    module: "admin"
+    implementation: "planned"
+    design_stage: "logical"
+    features:
+      - FEAT-003
+      - FEAT-011
+    reqs:
+      - REQ-301
     attributes:
-      - {"name":"컬럼·관계의 안정 식별자","physical_name":"MEMBER_ID","pk":true,"description":"컬럼·관계의 안정 식별자"}
-      - {"name":"생성 시 고정한 소유 카탈로그","physical_name":"CATALOG_ID","description":"생성 시 고정한 소유 카탈로그"}
-      - {"name":"구성 종류","physical_name":"MEMBER_KIND","description":"COLUMN/RELATION"}
-      - {"name":"생성 주체","physical_name":"REG_ID","description":"생성 주체"}
-      - {"name":"생성 시각","physical_name":"REG_DTM","description":"생성 시각"}
+      - name: "컬럼·관계의 안정 식별자"
+        physical_name: "MEMBER_ID"
+        pk: true
+        description: "컬럼·관계의 안정 식별자"
+      - name: "생성 시 고정한 소유 카탈로그"
+        physical_name: "CATALOG_ID"
+        description: "생성 시 고정한 소유 카탈로그"
+      - name: "구성 종류"
+        physical_name: "MEMBER_KIND"
+        description: "COLUMN/RELATION"
+      - name: "생성 주체"
+        physical_name: "REG_ID"
+        description: "생성 주체"
+      - name: "생성 시각"
+        physical_name: "REG_DTM"
+        description: "생성 시각"
     relations:
-      - {"entity":"ENT-005","cardinality":"소유 판·구성의 복합 키로 참조","description":"명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"}
-    rules: ["소유 카탈로그·종류·식별자는 생성 후 불변이다. 이름 변경이나 미사용/폐기 뒤 다른 구성에 ID를 재사용하지 않는다","카탈로그 부모 잠금 아래 실제 초안 구성과 함께 생성하며 관계의 관리측 이전을 차단한다"]
+      - entity: ENT-005
+        cardinality: "소유 판·구성의 복합 키로 참조"
+        description: "명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"
+    rules:
+      - "소유 카탈로그·종류·식별자는 생성 후 불변이다. 이름 변경이나 미사용/폐기 뒤 다른 구성에 ID를 재사용하지 않는다"
+      - "카탈로그 부모 잠금 아래 실제 초안 구성과 함께 생성하며 관계의 관리측 이전을 차단한다"
     delete_policy: "소유 리비전/근거의 불변성과 보존을 따른다. 현재 후보에서 제거해도 과거 판/안정 식별/성공 결과를 연쇄 삭제하지 않는다. 초안 자식 교체는 부모 잠금 아래 같은 트랜잭션으로 처리한다"
-    pending: []
-    physical:
-      attributes:
-        - {"name":"MEMBER_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"CATALOG_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"MEMBER_KIND","type":"character varying(12)","nullable":false,"default":null}
-        - {"name":"REG_ID","type":"character varying(30)","nullable":false,"default":null}
-        - {"name":"REG_DTM","type":"timestamp with time zone","nullable":false,"default":null}
-      constraints:
-        - {"name":"PK_CATALOG_MEMBER","definition":"PRIMARY KEY (MEMBER_ID)"}
-        - {"name":"UK_CAT_MEMBER_OWNER","definition":"UNIQUE (CATALOG_ID, MEMBER_ID, MEMBER_KIND)"}
-        - {"name":"FK_CAT_MEMBER_CATALOG","definition":"FOREIGN KEY (CATALOG_ID) REFERENCES AI_ADMIN_CATALOG_ENTRY (CATALOG_ID)"}
-        - {"name":"CK_CAT_MEMBER_KIND","definition":"CHECK (MEMBER_KIND IN ('COLUMN','RELATION'))"}
-      indexes: []
-
+    pending:
+      - "@defer G3 전 — 새 current/SNP/HIST 소유 마스터와 업무 키/FK의 물리 계약 확정"
   - id: ENT-021
     name: "카탈로그 식별키"
     term: TRM-265
     domain: "연동 자산"
-    module: admin
-    implementation: planned
-    design_stage: physical
-    table: AI_ADMIN_CATALOG_KEY
-    features: ["FEAT-003"]
-    reqs: ["REQ-301"]
+    module: "admin"
+    implementation: "planned"
+    design_stage: "logical"
+    features:
+      - FEAT-003
+    reqs:
+      - REQ-301
     attributes:
-      - {"name":"소유 내용 판","physical_name":"REVISION_ID","pk":true,"description":"소유 내용 판"}
-      - {"name":"판 안의 키 번호","physical_name":"KEY_NO","pk":true,"description":"판 안의 키 번호"}
-      - {"name":"식별키 종류","physical_name":"KEY_KIND","description":"PRIMARY/UNIQUE"}
-      - {"name":"확인한 원천 키 이름. 논리 유일성 근거는 null 가능","physical_name":"SOURCE_NAME","description":"확인한 원천 키 이름. 논리 유일성 근거는 null 가능"}
-      - {"name":"검수 상태 UNKNOWN/VERIFIED/INVALID","physical_name":"REVIEW_STATUS","description":"검수 상태 UNKNOWN/VERIFIED/INVALID"}
-      - {"name":"실제 검수자","physical_name":"REVIEWER_ID","description":"실제 검수자"}
-      - {"name":"실제 검수 시각","physical_name":"REVIEWED_DTM","description":"실제 검수 시각"}
-      - {"name":"검수 근거. 샘플 원값이나 비밀을 넣지 않는다","physical_name":"REVIEW_EVIDENCE","description":"검수 근거. 샘플 원값이나 비밀을 넣지 않는다"}
+      - name: "CATALOG_ID"
+        physical_name: "CATALOG_ID"
+        description: "현재 소유 마스터의 안정 식별자"
+      - name: "판 안의 키 번호"
+        physical_name: "KEY_NO"
+        pk: true
+        description: "판 안의 키 번호"
+      - name: "식별키 종류"
+        physical_name: "KEY_KIND"
+        description: "PRIMARY/UNIQUE"
+      - name: "확인한 원천 키 이름. 논리 유일성 근거는 null 가능"
+        physical_name: "SOURCE_NAME"
+        description: "확인한 원천 키 이름. 논리 유일성 근거는 null 가능"
+      - name: "검수 상태 UNKNOWN/VERIFIED/INVALID"
+        physical_name: "REVIEW_STATUS"
+        description: "검수 상태 UNKNOWN/VERIFIED/INVALID"
+      - name: "실제 검수자"
+        physical_name: "REVIEWER_ID"
+        description: "실제 검수자"
+      - name: "실제 검수 시각"
+        physical_name: "REVIEWED_DTM"
+        description: "실제 검수 시각"
+      - name: "검수 근거. 샘플 원값이나 비밀을 넣지 않는다"
+        physical_name: "REVIEW_EVIDENCE"
+        description: "검수 근거. 샘플 원값이나 비밀을 넣지 않는다"
     relations:
-      - {"entity":"ENT-006","cardinality":"소유 판·구성의 복합 키로 참조","description":"명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"}
-    rules: ["원천 PK·유일키의 전체 컬럼 구성과 근거를 보존한다. 인덱스·DB 제약을 생성하거나 편집하는 기능이 아니다","미완성 키는 조회 대체/1측 유일성의 검수 근거로 사용하지 않는다"]
-    delete_policy: "소유 리비전/근거의 불변성과 보존을 따른다. 현재 후보에서 제거해도 과거 판/안정 식별/성공 결과를 연쇄 삭제하지 않는다. 초안 자식 교체는 부모 잠금 아래 같은 트랜잭션으로 처리한다"
-    pending: []
-    physical:
-      attributes:
-        - {"name":"REVISION_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"KEY_NO","type":"integer","nullable":false,"default":null}
-        - {"name":"KEY_KIND","type":"character varying(8)","nullable":false,"default":null}
-        - {"name":"SOURCE_NAME","type":"character varying(500)","nullable":true,"default":null}
-        - {"name":"REVIEW_STATUS","type":"character varying(12)","nullable":false,"default":null}
-        - {"name":"REVIEWER_ID","type":"character varying(30)","nullable":true,"default":null}
-        - {"name":"REVIEWED_DTM","type":"timestamp with time zone","nullable":true,"default":null}
-        - {"name":"REVIEW_EVIDENCE","type":"text","nullable":true,"default":null}
-      constraints:
-        - {"name":"PK_CATALOG_KEY","definition":"PRIMARY KEY (REVISION_ID, KEY_NO)"}
-        - {"name":"FK_CAT_KEY_REV","definition":"FOREIGN KEY (REVISION_ID) REFERENCES AI_ADMIN_CATALOG_REVISION (REVISION_ID)"}
-        - {"name":"CK_CAT_KEY_TYPE","definition":"CHECK (KEY_NO > 0 AND KEY_KIND IN ('PRIMARY','UNIQUE'))"}
-        - {"name":"CK_CAT_KEY_REVIEW","definition":"CHECK (REVIEW_STATUS IN ('UNKNOWN','VERIFIED','INVALID') AND (REVIEW_STATUS <> 'VERIFIED' OR (REVIEWER_ID IS NOT NULL AND REVIEWED_DTM IS NOT NULL AND REVIEW_EVIDENCE IS NOT NULL)))"}
-      indexes: []
-
+      - entity: ENT-005
+        cardinality: "소유 현재 구성 1:N"
+        description: "과거 판의 FK 대신 안정 소유 마스터를 참조한다. 요청/이력은 복사 세트 문맥으로 제한한다."
+    rules:
+      - "업무 속성/검수 규칙은 소유 REQ와 50-api의 전체 구성 계약을 따른다. 저장 문맥은 REQ-601.approval_storage가 정본이다."
+      - "현재 구성의 소유 키에는 독립 REVISION_ID를 두지 않는다. 외부 자산의 *_REVISION_ID는 정확 적용 리비전 참조로 보존하며 _HIST 공개 조회로 해석한다."
+      - "같은 세트 후보 참조는 REQUEST_NO+대상 종류/안정 ID+구성 ID로 표현한다. 반영 트랜잭션에서 모든 대상의 새 적용 리비전으로 함께 확정하고 외부 참조를 자동 최신화하지 않는다."
+    delete_policy: "운영 삭제도 요청/전결 검증·전체 이력과 원자 처리한다. 요청 제출본·과거 이력은 현재 삭제로 연쇄 제거하지 않는다."
+    pending:
+      - "@defer G3 전 — 변경된 current/SNP/HIST 논리 모델의 타입·업무키/내부 FK·복사 스키마와 Liquibase 물리를 확정한다. 기존 판별 PK/FK 물리 초안은 철회했으며 구현된 것으로 보지 않는다."
+    description: "소유 마스터의 현재 적용 구성. 현재값은 한 세트이며 요청/과거 구성은 별도 동형 _SNP/_HIST에서 읽는다."
+    storage_contract: "REQ-601.approval_storage. 본 테이블=현재값, 원본별 _SNP=요청 전체 구성, _HIST=성공 적용 전체 구성. 현재 업무 속성은 두 복사에 동형 보존한다. 저장·승인·반려 상태는 요청 원장 소유다."
+    audit: "원 등록/수정 감사값을 보존하고 현재/요청/이력의 작성·처리 근거를 구분한다. 정확 적용 리비전은 마스터 _HIST의 HISTORY_NO로 해석한다."
+    copy_mapping:
+      snapshot: ENT-070
+      history: ENT-071
   - id: ENT-022
     name: "카탈로그 식별키 컬럼"
     term: TRM-266
     domain: "연동 자산"
-    module: admin
-    implementation: planned
-    design_stage: physical
-    table: AI_ADMIN_CATALOG_KEY_COLUMN
-    features: ["FEAT-003"]
-    reqs: ["REQ-301"]
+    module: "admin"
+    implementation: "planned"
+    design_stage: "logical"
+    features:
+      - FEAT-003
+    reqs:
+      - REQ-301
     attributes:
-      - {"name":"소유 판","physical_name":"REVISION_ID","pk":true,"description":"소유 판"}
-      - {"name":"소유 키","physical_name":"KEY_NO","pk":true,"description":"소유 키"}
-      - {"name":"키 안의 컬럼 순서","physical_name":"POSITION_NO","pk":true,"description":"키 안의 컬럼 순서"}
-      - {"name":"같은 판의 안정 컬럼","physical_name":"COLUMN_ID","description":"같은 판의 안정 컬럼"}
+      - name: "CATALOG_ID"
+        physical_name: "CATALOG_ID"
+        description: "현재 소유 마스터의 안정 식별자"
+      - name: "소유 키"
+        physical_name: "KEY_NO"
+        pk: true
+        description: "소유 키"
+      - name: "키 안의 컬럼 순서"
+        physical_name: "POSITION_NO"
+        pk: true
+        description: "키 안의 컬럼 순서"
+      - name: "같은 판의 안정 컬럼"
+        physical_name: "COLUMN_ID"
+        description: "같은 판의 안정 컬럼"
     relations:
-      - {"entity":"ENT-021","cardinality":"소유 판·구성의 복합 키로 참조","description":"명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"}
-      - {"entity":"ENT-007","cardinality":"소유 판·구성의 복합 키로 참조","description":"명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"}
-    rules: ["복합 키의 일부 컬럼만으로 유일성을 판정하지 않으며 수집한 전체 키가 등록 컬럼에 완결됐는지 검증한다"]
-    delete_policy: "소유 리비전/근거의 불변성과 보존을 따른다. 현재 후보에서 제거해도 과거 판/안정 식별/성공 결과를 연쇄 삭제하지 않는다. 초안 자식 교체는 부모 잠금 아래 같은 트랜잭션으로 처리한다"
-    pending: []
-    physical:
-      attributes:
-        - {"name":"REVISION_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"KEY_NO","type":"integer","nullable":false,"default":null}
-        - {"name":"POSITION_NO","type":"integer","nullable":false,"default":null}
-        - {"name":"COLUMN_ID","type":"bigint","nullable":false,"default":null}
-      constraints:
-        - {"name":"PK_CATALOG_KEY_COLUMN","definition":"PRIMARY KEY (REVISION_ID, KEY_NO, POSITION_NO)"}
-        - {"name":"FK_CAT_KEY_COL_KEY","definition":"FOREIGN KEY (REVISION_ID, KEY_NO) REFERENCES AI_ADMIN_CATALOG_KEY (REVISION_ID, KEY_NO)"}
-        - {"name":"FK_CAT_KEY_COL_COLUMN","definition":"FOREIGN KEY (REVISION_ID, COLUMN_ID) REFERENCES AI_ADMIN_CATALOG_COLUMN (REVISION_ID, COLUMN_ID)"}
-        - {"name":"UK_CAT_KEY_COLUMN","definition":"UNIQUE (REVISION_ID, KEY_NO, COLUMN_ID)"}
-        - {"name":"CK_CAT_KEY_COL_POS","definition":"CHECK (POSITION_NO > 0)"}
-      indexes: []
-
+      - entity: ENT-021
+        cardinality: "소유 판·구성의 복합 키로 참조"
+        description: "명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"
+      - entity: ENT-007
+        cardinality: "소유 판·구성의 복합 키로 참조"
+        description: "명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"
+      - entity: ENT-005
+        cardinality: "소유 현재 구성 1:N"
+        description: "과거 판의 FK 대신 안정 소유 마스터를 참조한다. 요청/이력은 복사 세트 문맥으로 제한한다."
+    rules:
+      - "업무 속성/검수 규칙은 소유 REQ와 50-api의 전체 구성 계약을 따른다. 저장 문맥은 REQ-601.approval_storage가 정본이다."
+      - "현재 구성의 소유 키에는 독립 REVISION_ID를 두지 않는다. 외부 자산의 *_REVISION_ID는 정확 적용 리비전 참조로 보존하며 _HIST 공개 조회로 해석한다."
+      - "같은 세트 후보 참조는 REQUEST_NO+대상 종류/안정 ID+구성 ID로 표현한다. 반영 트랜잭션에서 모든 대상의 새 적용 리비전으로 함께 확정하고 외부 참조를 자동 최신화하지 않는다."
+    delete_policy: "운영 삭제도 요청/전결 검증·전체 이력과 원자 처리한다. 요청 제출본·과거 이력은 현재 삭제로 연쇄 제거하지 않는다."
+    pending:
+      - "@defer G3 전 — 변경된 current/SNP/HIST 논리 모델의 타입·업무키/내부 FK·복사 스키마와 Liquibase 물리를 확정한다. 기존 판별 PK/FK 물리 초안은 철회했으며 구현된 것으로 보지 않는다."
+    description: "소유 마스터의 현재 적용 구성. 현재값은 한 세트이며 요청/과거 구성은 별도 동형 _SNP/_HIST에서 읽는다."
+    storage_contract: "REQ-601.approval_storage. 본 테이블=현재값, 원본별 _SNP=요청 전체 구성, _HIST=성공 적용 전체 구성. 현재 업무 속성은 두 복사에 동형 보존한다. 저장·승인·반려 상태는 요청 원장 소유다."
+    audit: "원 등록/수정 감사값을 보존하고 현재/요청/이력의 작성·처리 근거를 구분한다. 정확 적용 리비전은 마스터 _HIST의 HISTORY_NO로 해석한다."
+    copy_mapping:
+      snapshot: ENT-072
+      history: ENT-073
   - id: ENT-023
     name: "카탈로그 인라인 값"
     term: TRM-267
     domain: "연동 자산"
-    module: admin
-    implementation: planned
-    design_stage: physical
-    table: AI_ADMIN_CATALOG_INLINE_VALUE
-    features: ["FEAT-003"]
-    reqs: ["REQ-301"]
+    module: "admin"
+    implementation: "planned"
+    design_stage: "logical"
+    features:
+      - FEAT-003
+    reqs:
+      - REQ-301
     attributes:
-      - {"name":"소유 판","physical_name":"REVISION_ID","pk":true,"description":"소유 판"}
-      - {"name":"소유 컬럼","physical_name":"COLUMN_ID","pk":true,"description":"소유 컬럼"}
-      - {"name":"열거 값 번호","physical_name":"VALUE_NO","pk":true,"description":"열거 값 번호"}
-      - {"name":"값 자료형","physical_name":"VALUE_TYPE","description":"STRING/NUMBER/BOOLEAN/DATE/DATETIME"}
-      - {"name":"명시한 형식의 값. 숫자 0·문자열 빈값·NULL 혼동 금지","physical_name":"VALUE_TEXT","description":"명시한 형식의 값. 숫자 0·문자열 빈값·NULL 혼동 금지"}
-      - {"name":"값의 업무 의미","physical_name":"VALUE_MEANING","description":"값의 업무 의미"}
+      - name: "CATALOG_ID"
+        physical_name: "CATALOG_ID"
+        description: "현재 소유 마스터의 안정 식별자"
+      - name: "소유 컬럼"
+        physical_name: "COLUMN_ID"
+        pk: true
+        description: "소유 컬럼"
+      - name: "열거 값 번호"
+        physical_name: "VALUE_NO"
+        pk: true
+        description: "열거 값 번호"
+      - name: "값 자료형"
+        physical_name: "VALUE_TYPE"
+        description: "STRING/NUMBER/BOOLEAN/DATE/DATETIME"
+      - name: "명시한 형식의 값. 숫자 0·문자열 빈값·NULL 혼동 금지"
+        physical_name: "VALUE_TEXT"
+        description: "명시한 형식의 값. 숫자 0·문자열 빈값·NULL 혼동 금지"
+      - name: "값의 업무 의미"
+        physical_name: "VALUE_MEANING"
+        description: "값의 업무 의미"
     relations:
-      - {"entity":"ENT-007","cardinality":"소유 판·구성의 복합 키로 참조","description":"명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"}
-    rules: ["소유 컬럼의 VALUE_MODE=INLINE일 때만 쓰며 같은 유형/정규화 값 중복을 전체 구성 검증에서 거부한다","원천 샘플을 자동 열거/복제하지 않는다. NONE/UNKNOWN과 빈 열거는 다르다"]
-    delete_policy: "소유 리비전/근거의 불변성과 보존을 따른다. 현재 후보에서 제거해도 과거 판/안정 식별/성공 결과를 연쇄 삭제하지 않는다. 초안 자식 교체는 부모 잠금 아래 같은 트랜잭션으로 처리한다"
-    pending: []
-    physical:
-      attributes:
-        - {"name":"REVISION_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"COLUMN_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"VALUE_NO","type":"integer","nullable":false,"default":null}
-        - {"name":"VALUE_TYPE","type":"character varying(12)","nullable":false,"default":null}
-        - {"name":"VALUE_TEXT","type":"text","nullable":false,"default":null}
-        - {"name":"VALUE_MEANING","type":"text","nullable":true,"default":null}
-      constraints:
-        - {"name":"PK_CATALOG_INLINE_VALUE","definition":"PRIMARY KEY (REVISION_ID, COLUMN_ID, VALUE_NO)"}
-        - {"name":"FK_CAT_INLINE_COLUMN","definition":"FOREIGN KEY (REVISION_ID, COLUMN_ID) REFERENCES AI_ADMIN_CATALOG_COLUMN (REVISION_ID, COLUMN_ID)"}
-        - {"name":"CK_CAT_INLINE_NO","definition":"CHECK (VALUE_NO > 0)"}
-      indexes: []
-
+      - entity: ENT-007
+        cardinality: "소유 판·구성의 복합 키로 참조"
+        description: "명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"
+      - entity: ENT-005
+        cardinality: "소유 현재 구성 1:N"
+        description: "과거 판의 FK 대신 안정 소유 마스터를 참조한다. 요청/이력은 복사 세트 문맥으로 제한한다."
+    rules:
+      - "업무 속성/검수 규칙은 소유 REQ와 50-api의 전체 구성 계약을 따른다. 저장 문맥은 REQ-601.approval_storage가 정본이다."
+      - "현재 구성의 소유 키에는 독립 REVISION_ID를 두지 않는다. 외부 자산의 *_REVISION_ID는 정확 적용 리비전 참조로 보존하며 _HIST 공개 조회로 해석한다."
+      - "같은 세트 후보 참조는 REQUEST_NO+대상 종류/안정 ID+구성 ID로 표현한다. 반영 트랜잭션에서 모든 대상의 새 적용 리비전으로 함께 확정하고 외부 참조를 자동 최신화하지 않는다."
+    delete_policy: "운영 삭제도 요청/전결 검증·전체 이력과 원자 처리한다. 요청 제출본·과거 이력은 현재 삭제로 연쇄 제거하지 않는다."
+    pending:
+      - "@defer G3 전 — 변경된 current/SNP/HIST 논리 모델의 타입·업무키/내부 FK·복사 스키마와 Liquibase 물리를 확정한다. 기존 판별 PK/FK 물리 초안은 철회했으며 구현된 것으로 보지 않는다."
+    description: "소유 마스터의 현재 적용 구성. 현재값은 한 세트이며 요청/과거 구성은 별도 동형 _SNP/_HIST에서 읽는다."
+    storage_contract: "REQ-601.approval_storage. 본 테이블=현재값, 원본별 _SNP=요청 전체 구성, _HIST=성공 적용 전체 구성. 현재 업무 속성은 두 복사에 동형 보존한다. 저장·승인·반려 상태는 요청 원장 소유다."
+    audit: "원 등록/수정 감사값을 보존하고 현재/요청/이력의 작성·처리 근거를 구분한다. 정확 적용 리비전은 마스터 _HIST의 HISTORY_NO로 해석한다."
+    copy_mapping:
+      snapshot: ENT-074
+      history: ENT-075
   - id: ENT-024
     name: "카탈로그 코드 바인딩"
-    term: "TRM-268"
+    term: TRM-268
     domain: "연동 자산"
     module: "admin"
     implementation: "planned"
     design_stage: "logical"
-    features: ["FEAT-003"]
-    reqs: ["REQ-301"]
-    description: "한 카탈로그 버전의 CODE 컬럼이 고정한 조회 정의 버전에 전달하는 정형 파라미터 값. 기존 코드 테이블 AND 조건 모델을 대체한다"
+    features:
+      - FEAT-003
+    reqs:
+      - REQ-301
+    description: "소유 마스터의 현재 적용 구성. 현재값은 한 세트이며 요청/과거 구성은 별도 동형 _SNP/_HIST에서 읽는다."
     attributes:
-      - {"name":"소유 카탈로그 버전","physical_name":"REVISION_ID","pk":true,"description":"ENT-006 소유"}
-      - {"name":"소유 컬럼","physical_name":"COLUMN_ID","pk":true,"description":"ENT-007 CODE 컬럼"}
-      - {"name":"파라미터명","physical_name":"PARAMETER_NAME","pk":true,"description":"정확 CODE_QUERY_REVISION_ID의 선언 이름"}
-      - {"name":"정형 값 자료형","physical_name":"VALUE_TYPE","description":"STRING/NUMBER/BOOLEAN/DATE/DATETIME. 선언 타입과 일치"}
-      - {"name":"정형 바인딩 값","physical_name":"VALUE_TEXT","description":"원문 코드 01/공백/타입을 임의 숫자 변환하지 않는 정형 값. NULL 허용은 정의를 따름"}
+      - name: "CATALOG_ID"
+        physical_name: "CATALOG_ID"
+        description: "현재 소유 마스터의 안정 식별자"
+      - name: "소유 컬럼"
+        physical_name: "COLUMN_ID"
+        pk: true
+        description: "ENT-007 CODE 컬럼"
+      - name: "파라미터명"
+        physical_name: "PARAMETER_NAME"
+        pk: true
+        description: "정확 CODE_QUERY_REVISION_ID의 선언 이름"
+      - name: "정형 값 자료형"
+        physical_name: "VALUE_TYPE"
+        description: "STRING/NUMBER/BOOLEAN/DATE/DATETIME. 선언 타입과 일치"
+      - name: "정형 바인딩 값"
+        physical_name: "VALUE_TEXT"
+        description: "원문 코드 01/공백/타입을 임의 숫자 변환하지 않는 정형 값. NULL 허용은 정의를 따름"
     relations:
-      - {"entity":"ENT-007","cardinality":"CODE 컬럼마다 0개 이상","description":"같은 소유 버전/컬럼과 정확 조회 정의 버전 전체를 검증"}
-      - {"entity":"ENT-043","cardinality":"바인딩마다 선언 파라미터 하나","description":"PARAMETER_NAME은 소유 컬럼의 CODE_QUERY_REVISION_ID에서 해석"}
-    rules: ["파라미터 이름 중복/미정의 이름/필수 누락/타입·형식/NULL 허용을 전체 후보에서 검증한다","CODE 아닌 컬럼은 조회 참조와 바인딩을 가질 수 없다. INLINE은 ENT-023만 사용한다","조회 정의 선택 변경은 명시 확인 후 바인딩 재검수. 전체 복사/고정은 참조와 typed 값을 보존하며 SQL·결과를 복제하지 않는다"]
-    delete_policy: "초안 전체 교체는 부모 잠금/EDIT_VERSION, 고정/과거는 불변성과 보존/참조 보호를 따른다"
-    pending: ["@defer P3 integration_assets — 조회 정의/버전/파라미터 물리 스키마와 함께 복합 키/FK·NULL 표현·typed 정규화·명령 잠금/원장·기존 planned 모델 대체를 확정한다. 제품 migration은 아직 없다"]
-
+      - entity: ENT-007
+        cardinality: "CODE 컬럼마다 0개 이상"
+        description: "같은 소유 버전/컬럼과 정확 조회 정의 버전 전체를 검증"
+      - entity: ENT-043
+        cardinality: "바인딩마다 선언 파라미터 하나"
+        description: "PARAMETER_NAME은 소유 컬럼의 CODE_QUERY_REVISION_ID에서 해석"
+      - entity: ENT-005
+        cardinality: "소유 현재 구성 1:N"
+        description: "과거 판의 FK 대신 안정 소유 마스터를 참조한다. 요청/이력은 복사 세트 문맥으로 제한한다."
+    rules:
+      - "업무 속성/검수 규칙은 소유 REQ와 50-api의 전체 구성 계약을 따른다. 저장 문맥은 REQ-601.approval_storage가 정본이다."
+      - "현재 구성의 소유 키에는 독립 REVISION_ID를 두지 않는다. 외부 자산의 *_REVISION_ID는 정확 적용 리비전 참조로 보존하며 _HIST 공개 조회로 해석한다."
+      - "같은 세트 후보 참조는 REQUEST_NO+대상 종류/안정 ID+구성 ID로 표현한다. 반영 트랜잭션에서 모든 대상의 새 적용 리비전으로 함께 확정하고 외부 참조를 자동 최신화하지 않는다."
+    delete_policy: "운영 삭제도 요청/전결 검증·전체 이력과 원자 처리한다. 요청 제출본·과거 이력은 현재 삭제로 연쇄 제거하지 않는다."
+    pending:
+      - "@defer G3 전 — 변경된 current/SNP/HIST 논리 모델의 타입·업무키/내부 FK·복사 스키마와 Liquibase 물리를 확정한다. 기존 판별 PK/FK 물리 초안은 철회했으며 구현된 것으로 보지 않는다."
+    storage_contract: "REQ-601.approval_storage. 본 테이블=현재값, 원본별 _SNP=요청 전체 구성, _HIST=성공 적용 전체 구성. 현재 업무 속성은 두 복사에 동형 보존한다. 저장·승인·반려 상태는 요청 원장 소유다."
+    audit: "원 등록/수정 감사값을 보존하고 현재/요청/이력의 작성·처리 근거를 구분한다. 정확 적용 리비전은 마스터 _HIST의 HISTORY_NO로 해석한다."
+    copy_mapping:
+      snapshot: ENT-076
+      history: ENT-077
   - id: ENT-025
     name: "권장 조인 컬럼 쌍"
     term: TRM-269
     domain: "연동 자산"
-    module: admin
-    implementation: planned
-    design_stage: physical
-    table: AI_ADMIN_CATALOG_JOIN_PAIR
-    features: ["FEAT-003","FEAT-011"]
-    reqs: ["REQ-301"]
+    module: "admin"
+    implementation: "planned"
+    design_stage: "logical"
+    features:
+      - FEAT-003
+      - FEAT-011
+    reqs:
+      - REQ-301
     attributes:
-      - {"name":"관리측 소유 판","physical_name":"REVISION_ID","pk":true,"description":"관리측 소유 판"}
-      - {"name":"관계 안정 식별자","physical_name":"RELATION_ID","pk":true,"description":"관계 안정 식별자"}
-      - {"name":"전체 조인 쌍 안의 순서","physical_name":"PAIR_NO","pk":true,"description":"전체 조인 쌍 안의 순서"}
-      - {"name":"왼쪽 역할 판","physical_name":"LEFT_REVISION_ID","description":"왼쪽 역할 판"}
-      - {"name":"왼쪽 역할 컬럼","physical_name":"LEFT_COLUMN_ID","description":"왼쪽 역할 컬럼"}
-      - {"name":"오른쪽 역할 판","physical_name":"RIGHT_REVISION_ID","description":"오른쪽 역할 판"}
-      - {"name":"오른쪽 역할 컬럼","physical_name":"RIGHT_COLUMN_ID","description":"오른쪽 역할 컬럼"}
+      - name: "CATALOG_ID"
+        physical_name: "CATALOG_ID"
+        description: "현재 소유 마스터의 안정 식별자"
+      - name: "관계 안정 식별자"
+        physical_name: "RELATION_ID"
+        pk: true
+        description: "관계 안정 식별자"
+      - name: "전체 조인 쌍 안의 순서"
+        physical_name: "PAIR_NO"
+        pk: true
+        description: "전체 조인 쌍 안의 순서"
+      - name: "왼쪽 역할 판"
+        physical_name: "LEFT_REVISION_ID"
+        description: "왼쪽 역할 판"
+      - name: "왼쪽 역할 컬럼"
+        physical_name: "LEFT_COLUMN_ID"
+        description: "왼쪽 역할 컬럼"
+      - name: "오른쪽 역할 판"
+        physical_name: "RIGHT_REVISION_ID"
+        description: "오른쪽 역할 판"
+      - name: "오른쪽 역할 컬럼"
+        physical_name: "RIGHT_COLUMN_ID"
+        description: "오른쪽 역할 컬럼"
     relations:
-      - {"entity":"ENT-008","cardinality":"소유 판·구성의 복합 키로 참조","description":"명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"}
-      - {"entity":"ENT-007","cardinality":"소유 판·구성의 복합 키로 참조","description":"명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"}
-    rules: ["두 역할을 컬럼 방향과 함께 유지한다. 자기조인의 양쪽 객체/판이 같아도 역할을 합치지 않는다","필요한 전체 쌍의 완결성과 1측 전체 키/누락·중복 의미를 검수한다. DB에 일부 쌍이 있다는 사실만으로 사용 가능으로 표시하지 않는다"]
-    delete_policy: "소유 리비전/근거의 불변성과 보존을 따른다. 현재 후보에서 제거해도 과거 판/안정 식별/성공 결과를 연쇄 삭제하지 않는다. 초안 자식 교체는 부모 잠금 아래 같은 트랜잭션으로 처리한다"
-    pending: []
-    physical:
-      attributes:
-        - {"name":"REVISION_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"RELATION_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"PAIR_NO","type":"integer","nullable":false,"default":null}
-        - {"name":"LEFT_REVISION_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"LEFT_COLUMN_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"RIGHT_REVISION_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"RIGHT_COLUMN_ID","type":"bigint","nullable":false,"default":null}
-      constraints:
-        - {"name":"PK_CATALOG_JOIN_PAIR","definition":"PRIMARY KEY (REVISION_ID, RELATION_ID, PAIR_NO)"}
-        - {"name":"FK_CAT_PAIR_OWNER","definition":"FOREIGN KEY (REVISION_ID, RELATION_ID, LEFT_REVISION_ID, RIGHT_REVISION_ID) REFERENCES AI_ADMIN_CAT_JOIN_RELATION (REVISION_ID, RELATION_ID, LEFT_REVISION_ID, RIGHT_REVISION_ID) DEFERRABLE INITIALLY DEFERRED"}
-        - {"name":"FK_CAT_PAIR_LEFT","definition":"FOREIGN KEY (LEFT_REVISION_ID, LEFT_COLUMN_ID) REFERENCES AI_ADMIN_CATALOG_COLUMN (REVISION_ID, COLUMN_ID) DEFERRABLE INITIALLY DEFERRED"}
-        - {"name":"FK_CAT_PAIR_RIGHT","definition":"FOREIGN KEY (RIGHT_REVISION_ID, RIGHT_COLUMN_ID) REFERENCES AI_ADMIN_CATALOG_COLUMN (REVISION_ID, COLUMN_ID) DEFERRABLE INITIALLY DEFERRED"}
-        - {"name":"UK_CAT_PAIR_COLUMNS","definition":"UNIQUE (REVISION_ID, RELATION_ID, LEFT_COLUMN_ID, RIGHT_COLUMN_ID)"}
-        - {"name":"CK_CAT_PAIR_NO","definition":"CHECK (PAIR_NO > 0)"}
-      indexes: []
-
-
+      - entity: ENT-008
+        cardinality: "소유 판·구성의 복합 키로 참조"
+        description: "명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"
+      - entity: ENT-007
+        cardinality: "소유 판·구성의 복합 키로 참조"
+        description: "명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"
+      - entity: ENT-005
+        cardinality: "소유 현재 구성 1:N"
+        description: "과거 판의 FK 대신 안정 소유 마스터를 참조한다. 요청/이력은 복사 세트 문맥으로 제한한다."
+    rules:
+      - "업무 속성/검수 규칙은 소유 REQ와 50-api의 전체 구성 계약을 따른다. 저장 문맥은 REQ-601.approval_storage가 정본이다."
+      - "현재 구성의 소유 키에는 독립 REVISION_ID를 두지 않는다. 외부 자산의 *_REVISION_ID는 정확 적용 리비전 참조로 보존하며 _HIST 공개 조회로 해석한다."
+      - "같은 세트 후보 참조는 REQUEST_NO+대상 종류/안정 ID+구성 ID로 표현한다. 반영 트랜잭션에서 모든 대상의 새 적용 리비전으로 함께 확정하고 외부 참조를 자동 최신화하지 않는다."
+    delete_policy: "운영 삭제도 요청/전결 검증·전체 이력과 원자 처리한다. 요청 제출본·과거 이력은 현재 삭제로 연쇄 제거하지 않는다."
+    pending:
+      - "@defer G3 전 — 변경된 current/SNP/HIST 논리 모델의 타입·업무키/내부 FK·복사 스키마와 Liquibase 물리를 확정한다. 기존 판별 PK/FK 물리 초안은 철회했으며 구현된 것으로 보지 않는다."
+    description: "소유 마스터의 현재 적용 구성. 현재값은 한 세트이며 요청/과거 구성은 별도 동형 _SNP/_HIST에서 읽는다."
+    storage_contract: "REQ-601.approval_storage. 본 테이블=현재값, 원본별 _SNP=요청 전체 구성, _HIST=성공 적용 전체 구성. 현재 업무 속성은 두 복사에 동형 보존한다. 저장·승인·반려 상태는 요청 원장 소유다."
+    audit: "원 등록/수정 감사값을 보존하고 현재/요청/이력의 작성·처리 근거를 구분한다. 정확 적용 리비전은 마스터 _HIST의 HISTORY_NO로 해석한다."
+    copy_mapping:
+      snapshot: ENT-078
+      history: ENT-079
   - id: ENT-027
     name: "카탈로그 근거 대상"
     term: TRM-271
     domain: "연동 자산"
-    module: admin
-    implementation: planned
-    design_stage: physical
-    table: AI_ADMIN_CAT_EVIDENCE_TARGET
-    features: ["FEAT-003","FEAT-036"]
-    reqs: ["REQ-304"]
+    module: "admin"
+    implementation: "planned"
+    design_stage: "logical"
+    features:
+      - FEAT-003
+      - FEAT-036
+    reqs:
+      - REQ-304
     attributes:
-      - {"name":"원 변경 근거","physical_name":"EVIDENCE_ID","pk":true,"description":"원 변경 근거"}
-      - {"name":"근거 안의 관련 대상 순서","physical_name":"TARGET_NO","pk":true,"description":"근거 안의 관련 대상 순서"}
-      - {"name":"관련 등록 항목","physical_name":"CATALOG_ID","description":"관련 등록 항목"}
-      - {"name":"관측 기준/전후/후보 내용 판. 미특정은 null","physical_name":"REVISION_ID","description":"관측 기준/전후/후보 내용 판. 미특정은 null"}
-      - {"name":"근거 대상 역할","physical_name":"REFERENCE_ROLE","description":"OBSERVED/BEFORE/AFTER/CANDIDATE"}
+      - name: "원 변경 근거"
+        physical_name: "EVIDENCE_ID"
+        pk: true
+        description: "원 변경 근거"
+      - name: "근거 안의 관련 대상 순서"
+        physical_name: "TARGET_NO"
+        pk: true
+        description: "근거 안의 관련 대상 순서"
+      - name: "관련 등록 항목"
+        physical_name: "CATALOG_ID"
+        description: "관련 등록 항목"
+      - name: "근거 대상 역할"
+        physical_name: "REFERENCE_ROLE"
+        description: "OBSERVED/BEFORE/AFTER/CANDIDATE"
+      - name: "읽기/명령 대상 문맥"
+        description: "CURRENT 자산ID, REQUEST 요청번호+대상키, HISTORY 자산ID+적용리비전/HISTORY_NO 중 명시된 한 종류. null은 현재값으로 치환하지 않는다."
     relations:
-      - {"entity":"ENT-010","cardinality":"소유 판·구성의 복합 키로 참조","description":"명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"}
-      - {"entity":"ENT-005","cardinality":"소유 판·구성의 복합 키로 참조","description":"명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"}
-      - {"entity":"ENT-006","cardinality":"소유 판·구성의 복합 키로 참조","description":"명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"}
-    rules: ["공개 범위의 관측/변경 근거이며 모든 대상이 세트의 실제 변경 대상이라는 뜻은 아니다","기준 판 미특정과 대상 없음은 관측 상태로 구분하고 현재 리비전으로 과거를 채우지 않는다"]
+      - entity: ENT-010
+        cardinality: "소유 판·구성의 복합 키로 참조"
+        description: "명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"
+      - entity: ENT-005
+        cardinality: "소유 판·구성의 복합 키로 참조"
+        description: "명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"
+      - entity: ENT-006
+        cardinality: "소유 판·구성의 복합 키로 참조"
+        description: "명시된 physical 외래키를 따른다. 보존·고정과 현재 권한 판정은 별도 계약이다"
+    rules:
+      - "공개 범위의 관측/변경 근거이며 모든 대상이 세트의 실제 변경 대상이라는 뜻은 아니다"
+      - "기준 판 미특정과 대상 없음은 관측 상태로 구분하고 현재 리비전으로 과거를 채우지 않는다"
     delete_policy: "소유 리비전/근거의 불변성과 보존을 따른다. 현재 후보에서 제거해도 과거 판/안정 식별/성공 결과를 연쇄 삭제하지 않는다. 초안 자식 교체는 부모 잠금 아래 같은 트랜잭션으로 처리한다"
-    pending: []
-    physical:
-      attributes:
-        - {"name":"EVIDENCE_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"TARGET_NO","type":"integer","nullable":false,"default":null}
-        - {"name":"CATALOG_ID","type":"bigint","nullable":false,"default":null}
-        - {"name":"REVISION_ID","type":"bigint","nullable":true,"default":null}
-        - {"name":"REFERENCE_ROLE","type":"character varying(12)","nullable":false,"default":null}
-      constraints:
-        - {"name":"PK_CAT_EVIDENCE_TARGET","definition":"PRIMARY KEY (EVIDENCE_ID, TARGET_NO)"}
-        - {"name":"FK_CAT_EVID_TARGET","definition":"FOREIGN KEY (EVIDENCE_ID) REFERENCES AI_ADMIN_CATALOG_EVIDENCE (EVIDENCE_ID)"}
-        - {"name":"FK_CAT_EVID_CATALOG","definition":"FOREIGN KEY (CATALOG_ID) REFERENCES AI_ADMIN_CATALOG_ENTRY (CATALOG_ID)"}
-        - {"name":"FK_CAT_EVID_REV","definition":"FOREIGN KEY (CATALOG_ID, REVISION_ID) REFERENCES AI_ADMIN_CATALOG_REVISION (CATALOG_ID, REVISION_ID) DEFERRABLE INITIALLY DEFERRED"}
-        - {"name":"CK_CAT_EVID_ROLE","definition":"CHECK (TARGET_NO > 0 AND REFERENCE_ROLE IN ('OBSERVED','BEFORE','AFTER','CANDIDATE'))"}
-      indexes: []
-
+    pending:
+      - "@defer G3 전 — current/SNP/HIST 문맥의 참조·키·타입 물리 확정"
+    storage_contract: "REQ-601.approval_storage. 요청 문맥은 REQUEST_NO+대상키, 적용 판 문맥은 자산ID+적용 REVISION 또는 HISTORY_NO다. 기존 판별 물리 FK는 새 저장 문맥의 물리 설계에서 대체한다."
   - id: ENT-028
     name: "카탈로그 편집 처리"
     term: TRM-272
     domain: "연동 자산"
-    module: admin
-    implementation: planned
-    design_stage: physical
-    table: AI_ADMIN_CATALOG_EDIT_COMMAND
-    features: ["FEAT-003","FEAT-011"]
-    reqs: ["REQ-301","REQ-304","REQ-601"]
+    module: "admin"
+    implementation: "planned"
+    design_stage: "logical"
+    features:
+      - FEAT-003
+      - FEAT-011
+    reqs:
+      - REQ-301
+      - REQ-304
+      - REQ-601
     attributes:
-      - {"name":"카탈로그 초안 편집/근거 접수의 UUID","physical_name":"COMMAND_KEY","pk":true,"description":"카탈로그 초안 편집/근거 접수의 UUID"}
-      - {"name":"현재 주체","physical_name":"ACTOR_ID","description":"현재 주체"}
-      - {"name":"작업 종류","physical_name":"ACTION_CD","description":"CREATE_DRAFT/SAVE_DRAFT/COPY_DRAFT/RECORD_EVIDENCE"}
-      - {"name":"전체 입력과 기대 편집 버전/주체의 지문","physical_name":"REQUEST_DIGEST","description":"전체 입력과 기대 편집 버전/주체의 지문"}
-      - {"name":"대상 카탈로그. 근거만 등록하면 null","physical_name":"CATALOG_ID","description":"대상 카탈로그. 근거만 등록하면 null"}
-      - {"name":"반영한 초안 판. 근거 등록이면 null","physical_name":"REVISION_ID","description":"반영한 초안 판. 근거 등록이면 null"}
-      - {"name":"성공한 초안 편집 버전. 근거 등록이면 null","physical_name":"EDIT_VERSION","description":"성공한 초안 편집 버전. 근거 등록이면 null"}
-      - {"name":"근거 접수 결과. 초안 편집이면 null","physical_name":"EVIDENCE_ID","description":"근거 접수 결과. 초안 편집이면 null"}
-      - {"name":"결과 봉투 형식 버전","physical_name":"RESULT_FORMAT","description":"결과 봉투 형식 버전"}
-      - {"name":"v1 신규 구성의 클라이언트 임시 참조→안정 ID 매핑. 재수신 때 같은 값 반환","physical_name":"RESULT_MAPPING","description":"v1 신규 구성의 클라이언트 임시 참조→안정 ID 매핑. 재수신 때 같은 값 반환"}
-      - {"name":"성공 처리 시각","physical_name":"APPLIED_DTM","description":"성공 처리 시각"}
-    rules: ["성공 결과만 초안/자식·근거와 같은 DB 트랜잭션에서 보존한다. ENT-019의 직접 관리나 자산 세트의 승인/실제 반영 원장을 확장하지 않는다","동일 주체·명령·입력 재수신은 원래 판/편집 버전/신규 구성 매핑을 반환한다. 현재 권한을 재검사한다"]
+      - name: "카탈로그 초안 편집/근거 접수의 UUID"
+        physical_name: "COMMAND_KEY"
+        pk: true
+        description: "카탈로그 초안 편집/근거 접수의 UUID"
+      - name: "현재 주체"
+        physical_name: "ACTOR_ID"
+        description: "현재 주체"
+      - name: "작업 종류"
+        physical_name: "ACTION_CD"
+        description: "CREATE_DRAFT/SAVE_DRAFT/COPY_DRAFT/RECORD_EVIDENCE"
+      - name: "전체 입력과 기대 편집 버전/주체의 지문"
+        physical_name: "REQUEST_DIGEST"
+        description: "전체 입력과 기대 편집 버전/주체의 지문"
+      - name: "대상 카탈로그. 근거만 등록하면 null"
+        physical_name: "CATALOG_ID"
+        description: "대상 카탈로그. 근거만 등록하면 null"
+      - name: "성공한 초안 편집 버전. 근거 등록이면 null"
+        physical_name: "EDIT_VERSION"
+        description: "성공한 초안 편집 버전. 근거 등록이면 null"
+      - name: "근거 접수 결과. 초안 편집이면 null"
+        physical_name: "EVIDENCE_ID"
+        description: "근거 접수 결과. 초안 편집이면 null"
+      - name: "결과 봉투 형식 버전"
+        physical_name: "RESULT_FORMAT"
+        description: "결과 봉투 형식 버전"
+      - name: "v1 신규 구성의 클라이언트 임시 참조→안정 ID 매핑. 재수신 때 같은 값 반환"
+        physical_name: "RESULT_MAPPING"
+        description: "v1 신규 구성의 클라이언트 임시 참조→안정 ID 매핑. 재수신 때 같은 값 반환"
+      - name: "성공 처리 시각"
+        physical_name: "APPLIED_DTM"
+        description: "성공 처리 시각"
+      - name: "읽기/명령 대상 문맥"
+        description: "CURRENT 자산ID, REQUEST 요청번호+대상키, HISTORY 자산ID+적용리비전/HISTORY_NO 중 명시된 한 종류. null은 현재값으로 치환하지 않는다."
+    rules:
+      - "성공 결과만 초안/자식·근거와 같은 DB 트랜잭션에서 보존한다. ENT-019의 직접 관리나 자산 세트의 승인/실제 반영 원장을 확장하지 않는다"
+      - "동일 주체·명령·입력 재수신은 원래 판/편집 버전/신규 구성 매핑을 반환한다. 현재 권한을 재검사한다"
     delete_policy: "소유 리비전/근거의 불변성과 보존을 따른다. 현재 후보에서 제거해도 과거 판/안정 식별/성공 결과를 연쇄 삭제하지 않는다. 초안 자식 교체는 부모 잠금 아래 같은 트랜잭션으로 처리한다"
-    pending: ["@defer P3 audit_trace — 늦은 재수신 차단과 처리 결과 보존/파기를 함께 확정한다. 그 전 결과 파기를 활성화하지 않는다"]
-    physical:
-      attributes:
-        - {"name":"COMMAND_KEY","type":"character varying(36)","nullable":false,"default":null}
-        - {"name":"ACTOR_ID","type":"character varying(30)","nullable":false,"default":null}
-        - {"name":"ACTION_CD","type":"character varying(16)","nullable":false,"default":null}
-        - {"name":"REQUEST_DIGEST","type":"character varying(64)","nullable":false,"default":null}
-        - {"name":"CATALOG_ID","type":"bigint","nullable":true,"default":null}
-        - {"name":"REVISION_ID","type":"bigint","nullable":true,"default":null}
-        - {"name":"EDIT_VERSION","type":"bigint","nullable":true,"default":null}
-        - {"name":"EVIDENCE_ID","type":"bigint","nullable":true,"default":null}
-        - {"name":"RESULT_FORMAT","type":"integer","nullable":false,"default":null}
-        - {"name":"RESULT_MAPPING","type":"text","nullable":false,"default":null}
-        - {"name":"APPLIED_DTM","type":"timestamp with time zone","nullable":false,"default":null}
-      constraints:
-        - {"name":"PK_CATALOG_EDIT_COMMAND","definition":"PRIMARY KEY (COMMAND_KEY)"}
-        - {"name":"CK_CAT_EDIT_ACTION","definition":"CHECK (ACTION_CD IN ('CREATE_DRAFT','SAVE_DRAFT','COPY_DRAFT','RECORD_EVIDENCE') AND RESULT_FORMAT >= 1)"}
-      indexes: []
+    pending:
+      - "@defer G3 전 — current/SNP/HIST 문맥의 참조·키·타입 물리 확정"
+    storage_contract: "REQ-601.approval_storage. 요청 문맥은 REQUEST_NO+대상키, 적용 판 문맥은 자산ID+적용 REVISION 또는 HISTORY_NO다. 기존 판별 물리 FK는 새 저장 문맥의 물리 설계에서 대체한다."

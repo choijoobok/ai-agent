@@ -101,7 +101,7 @@
 |---|---|---|
 | `SYS_USER` | 좌 — 사용자 목록 | — |
 | `SYS_MENU` | 우 — **메뉴 계층 전건** | — |
-| `SYS_USER_AUTH` | 개인 예외(기간 · 사유) | `USER_ID` + `MENU_CD` + `ACTION_CD` |
+| `SYS_USER_MENU_AUTH` | 개인 예외(기간 · 사유) | `USER_ID` + `MENU_CD` + `ACTION_CD` |
 | `SYS_MENU_API` · `SYS_API` | 정의된 액션 | `MENU_CD` |
 | `SYS_USER_ROLE` · `SYS_ROLE_MENU_AUTH` · `SYS_ROLE` | **역할 경유 배지** | `USER_ID` → `ROLE_ID` |
 | `SYS_MESSAGE` | 메뉴명 | 서버가 세션 언어로 푼다 |
@@ -269,7 +269,7 @@
 
 | 트리거 | 테이블 | 작업 | 조건 · 내용 |
 |---|---|---|---|
-| 저장 | `SYS_USER_AUTH` | INSERT · UPDATE · DELETE | 기간·사유가 함께 간다 |
+| 저장 | `SYS_USER_MENU_AUTH` | INSERT · UPDATE · DELETE | 기간·사유가 함께 간다 |
 | **세션** | — | **무효화** | 그 사용자의 유효 권한이 바뀌면 |
 
 - 저장은 **한 트랜잭션**이다.

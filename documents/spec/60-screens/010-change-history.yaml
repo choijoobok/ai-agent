@@ -1,0 +1,398 @@
+# admin 원 관리 화면을 상속하는 변경 이력 메뉴
+screens:
+  - id: SCR-040
+    title: "대상 시스템 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "연동 관리"
+    roadmap: "RM-P1"
+    feature: FEAT-001
+    usecases:
+      - UC-001
+      - UC-006
+    type: "list_detail"
+    menu_code: "HUB_TARGET_SYSTEM_HISTORY"
+    menu_parent: "HUB_INTEGRATION"
+    route: "/admin/hub/target-system/history"
+    view_kind: "change_history"
+    source_screen: SCR-001
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건/표시 컬럼/배치/탭을 재사용한다. 상단 변경 요약과 이력 저장일시 범위만 추가하고 모든 입력/저장·실행/복원은 제거한다. 독립 requirements.md/mockup.html을 작성하지 않는다."
+    access: "HUB_TARGET_SYSTEM_HISTORY READ·EXPORT 및 현재 대상 열람 범위. 원 관리 SAVE는 요구하지 않는다."
+    selection: "원 ID+historyNo+이력 종류로 전체 하단 세트를 조회한다. HIST_ID는 각 복사 행의 PK이며 세트 선택 키와 구분한다."
+    loading: "원 관리 조회 표시를 재사용하되 현재값이 아닌 선택 이력 세트의 응답만 표시한다."
+    empty_state: "조건에 맞는 이력 없음·현재 원본 삭제·세트 일부 누락/파기·미지원 구조를 구분한다."
+    error_display: "범위 오류·권한 회수·다른 대상 세트 요청을 거부하며 현재 데이터로 대체하지 않는다."
+    design_status: "draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-041
+    title: "데이터소스 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "연동 관리"
+    roadmap: "RM-P1"
+    feature: FEAT-002
+    usecases:
+      - UC-001
+      - UC-006
+    type: "list_detail"
+    menu_code: "HUB_DATA_SOURCE_HISTORY"
+    menu_parent: "HUB_INTEGRATION"
+    route: "/admin/hub/data-source/history"
+    view_kind: "change_history"
+    source_screen: SCR-002
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건/표시 컬럼/배치/탭을 재사용한다. 상단 변경 요약과 이력 저장일시 범위만 추가하고 모든 입력/저장·실행/복원은 제거한다. 독립 requirements.md/mockup.html을 작성하지 않는다."
+    access: "HUB_DATA_SOURCE_HISTORY READ·EXPORT 및 현재 대상 열람 범위. 원 관리 SAVE는 요구하지 않는다."
+    selection: "원 ID+historyNo+이력 종류로 전체 하단 세트를 조회한다. HIST_ID는 각 복사 행의 PK이며 세트 선택 키와 구분한다."
+    loading: "원 관리 조회 표시를 재사용하되 현재값이 아닌 선택 이력 세트의 응답만 표시한다."
+    empty_state: "조건에 맞는 이력 없음·현재 원본 삭제·세트 일부 누락/파기·미지원 구조를 구분한다."
+    error_display: "범위 오류·권한 회수·다른 대상 세트 요청을 거부하며 현재 데이터로 대체하지 않는다."
+    design_status: "draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-042
+    title: "스키마 카탈로그 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "연동 관리"
+    roadmap: "RM-P1"
+    feature: FEAT-003
+    usecases:
+      - UC-001
+      - UC-006
+    type: "list_detail"
+    menu_code: "HUB_CATALOG_HISTORY"
+    menu_parent: "HUB_INTEGRATION"
+    route: "/admin/hub/catalog/history"
+    view_kind: "change_history"
+    source_screen: SCR-003
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건/표시 컬럼/배치/탭을 재사용한다. 상단 변경 요약과 이력 저장일시 범위만 추가하고 모든 입력/저장·실행/복원은 제거한다. 독립 requirements.md/mockup.html을 작성하지 않는다."
+    access: "HUB_CATALOG_HISTORY READ·EXPORT 및 현재 대상 열람 범위. 원 관리 SAVE는 요구하지 않는다."
+    selection: "원 ID+historyNo+이력 종류로 전체 하단 세트를 조회한다. HIST_ID는 각 복사 행의 PK이며 세트 선택 키와 구분한다."
+    loading: "원 관리 조회 표시를 재사용하되 현재값이 아닌 선택 이력 세트의 응답만 표시한다."
+    empty_state: "조건에 맞는 이력 없음·현재 원본 삭제·세트 일부 누락/파기·미지원 구조를 구분한다."
+    error_display: "범위 오류·권한 회수·다른 대상 세트 요청을 거부하며 현재 데이터로 대체하지 않는다."
+    design_status: "draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-043
+    title: "업무 API 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "연동 관리"
+    roadmap: "RM-P1"
+    feature: FEAT-004
+    usecases:
+      - UC-018
+    menu_code: "HUB_BUSINESS_API_HISTORY"
+    menu_parent: "HUB_INTEGRATION"
+    route: "/admin/hub/business-api/history"
+    view_kind: "change_history"
+    source_screen: SCR-004
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건·컬럼·배치·탭을 읽기 전용으로 상속하고 변경 요약·이력 저장일시 범위만 추가한다. 독립 requirements.md/mockup.html을 만들지 않는다."
+    access: "별도 HUB_BUSINESS_API_HISTORY READ·EXPORT와 현재 대상 열람 범위를 검사한다."
+    selection: "원 ID와 HISTORY_NO로 동일한 전체 이력 세트를 선택한다. 현재 데이터로 대신 채우지 않는다."
+    empty_state: "이력 없음·세트 누락/파기·미지원 형식을 구분한다."
+    error_display: "권한/기간/다른 소유 세트 요청을 거부한다."
+    design_status: "screen_draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-044
+    title: "Portal 사용자 관리 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "권한 관리"
+    roadmap: "RM-P1"
+    feature: FEAT-005
+    usecases:
+      - UC-001
+      - UC-002
+      - UC-003
+      - UC-006
+      - UC-023
+      - UC-024
+    menu_code: "HUB_PORTAL_USER_HISTORY"
+    menu_parent: "HUB_ACCESS"
+    route: "/admin/hub/portal-user/history"
+    view_kind: "change_history"
+    source_screen: SCR-005
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건·컬럼·배치·탭을 읽기 전용으로 상속하고 변경 요약·이력 저장일시 범위만 추가한다. 독립 requirements.md/mockup.html을 만들지 않는다."
+    access: "별도 HUB_PORTAL_USER_HISTORY READ·EXPORT와 현재 대상 열람 범위를 검사한다."
+    selection: "원 ID와 HISTORY_NO로 동일한 전체 이력 세트를 선택한다. 현재 데이터로 대신 채우지 않는다."
+    empty_state: "이력 없음·세트 누락/파기·미지원 형식을 구분한다."
+    error_display: "권한/기간/다른 소유 세트 요청을 거부한다."
+    design_status: "screen_draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-045
+    title: "사용자 그룹 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "권한 관리"
+    roadmap: "RM-P1"
+    feature: FEAT-006
+    usecases:
+      - UC-001
+      - UC-002
+      - UC-006
+      - UC-025
+    menu_code: "HUB_USER_GROUP_HISTORY"
+    menu_parent: "HUB_ACCESS"
+    route: "/admin/hub/user-group/history"
+    view_kind: "change_history"
+    source_screen: SCR-006
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건·컬럼·배치·탭을 읽기 전용으로 상속하고 변경 요약·이력 저장일시 범위만 추가한다. 독립 requirements.md/mockup.html을 만들지 않는다."
+    access: "별도 HUB_USER_GROUP_HISTORY READ·EXPORT와 현재 대상 열람 범위를 검사한다."
+    selection: "원 ID와 HISTORY_NO로 동일한 전체 이력 세트를 선택한다. 현재 데이터로 대신 채우지 않는다."
+    empty_state: "이력 없음·세트 누락/파기·미지원 형식을 구분한다."
+    error_display: "권한/기간/다른 소유 세트 요청을 거부한다."
+    design_status: "screen_draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-046
+    title: "행 스코프·필터·조회 제약 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "권한 관리"
+    roadmap: "RM-P1"
+    feature: FEAT-009
+    usecases:
+      - UC-026
+    menu_code: "HUB_QUERY_POLICY_HISTORY"
+    menu_parent: "HUB_ACCESS"
+    route: "/admin/hub/query-policy/history"
+    view_kind: "change_history"
+    source_screen: SCR-009
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건·컬럼·배치·탭을 읽기 전용으로 상속하고 변경 요약·이력 저장일시 범위만 추가한다. 독립 requirements.md/mockup.html을 만들지 않는다."
+    access: "별도 HUB_QUERY_POLICY_HISTORY READ·EXPORT와 현재 대상 열람 범위를 검사한다."
+    selection: "원 ID와 HISTORY_NO로 동일한 전체 이력 세트를 선택한다. 현재 데이터로 대신 채우지 않는다."
+    empty_state: "이력 없음·세트 누락/파기·미지원 형식을 구분한다."
+    error_display: "권한/기간/다른 소유 세트 요청을 거부한다."
+    design_status: "screen_draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-047
+    title: "지식 검색 태그·동의어 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "업무 지식 관리"
+    roadmap: "RM-P1"
+    feature: FEAT-024
+    usecases:
+      - UC-001
+      - UC-003
+      - UC-006
+      - UC-011
+    menu_code: "HUB_KNOWLEDGE_TAG_HISTORY"
+    menu_parent: "HUB_KNOWLEDGE"
+    route: "/admin/hub/knowledge-tag/history"
+    view_kind: "change_history"
+    source_screen: SCR-010
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건·컬럼·배치·탭을 읽기 전용으로 상속하고 변경 요약·이력 저장일시 범위만 추가한다. 독립 requirements.md/mockup.html을 만들지 않는다."
+    access: "별도 HUB_KNOWLEDGE_TAG_HISTORY READ·EXPORT와 현재 대상 열람 범위를 검사한다."
+    selection: "원 ID와 HISTORY_NO로 동일한 전체 이력 세트를 선택한다. 현재 데이터로 대신 채우지 않는다."
+    empty_state: "이력 없음·세트 누락/파기·미지원 형식을 구분한다."
+    error_display: "권한/기간/다른 소유 세트 요청을 거부한다."
+    design_status: "screen_draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-048
+    title: "지식 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "업무 지식 관리"
+    roadmap: "RM-P1"
+    feature: FEAT-014
+    usecases:
+      - UC-001
+      - UC-003
+      - UC-004
+      - UC-005
+      - UC-006
+      - UC-010
+      - UC-012
+    menu_code: "HUB_KNOWLEDGE_HISTORY"
+    menu_parent: "HUB_KNOWLEDGE"
+    route: "/admin/hub/knowledge/history"
+    view_kind: "change_history"
+    source_screen: SCR-011
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건·컬럼·배치·탭을 읽기 전용으로 상속하고 변경 요약·이력 저장일시 범위만 추가한다. 독립 requirements.md/mockup.html을 만들지 않는다."
+    access: "별도 HUB_KNOWLEDGE_HISTORY READ·EXPORT와 현재 대상 열람 범위를 검사한다."
+    selection: "원 ID와 HISTORY_NO로 동일한 전체 이력 세트를 선택한다. 현재 데이터로 대신 채우지 않는다."
+    empty_state: "이력 없음·세트 누락/파기·미지원 형식을 구분한다."
+    error_display: "권한/기간/다른 소유 세트 요청을 거부한다."
+    design_status: "screen_draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-049
+    title: "인증 예제 쿼리 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "업무 지식 관리"
+    roadmap: "RM-P1"
+    feature: FEAT-023
+    usecases:
+      - UC-001
+      - UC-003
+      - UC-006
+      - UC-009
+    menu_code: "HUB_QUERY_EXAMPLE_HISTORY"
+    menu_parent: "HUB_KNOWLEDGE"
+    route: "/admin/hub/query-example/history"
+    view_kind: "change_history"
+    source_screen: SCR-012
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건·컬럼·배치·탭을 읽기 전용으로 상속하고 변경 요약·이력 저장일시 범위만 추가한다. 독립 requirements.md/mockup.html을 만들지 않는다."
+    access: "별도 HUB_QUERY_EXAMPLE_HISTORY READ·EXPORT와 현재 대상 열람 범위를 검사한다."
+    selection: "원 ID와 HISTORY_NO로 동일한 전체 이력 세트를 선택한다. 현재 데이터로 대신 채우지 않는다."
+    empty_state: "이력 없음·세트 누락/파기·미지원 형식을 구분한다."
+    error_display: "권한/기간/다른 소유 세트 요청을 거부한다."
+    design_status: "screen_draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-050
+    title: "프롬프트 규칙 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "업무 지식 관리"
+    roadmap: "RM-P1"
+    feature: FEAT-013
+    usecases:
+      - UC-001
+      - UC-002
+      - UC-006
+      - UC-020
+    menu_code: "HUB_PROMPT_RULE_HISTORY"
+    menu_parent: "HUB_KNOWLEDGE"
+    route: "/admin/hub/prompt-rule/history"
+    view_kind: "change_history"
+    source_screen: SCR-013
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건·컬럼·배치·탭을 읽기 전용으로 상속하고 변경 요약·이력 저장일시 범위만 추가한다. 독립 requirements.md/mockup.html을 만들지 않는다."
+    access: "별도 HUB_PROMPT_RULE_HISTORY READ·EXPORT와 현재 대상 열람 범위를 검사한다."
+    selection: "원 ID와 HISTORY_NO로 동일한 전체 이력 세트를 선택한다. 현재 데이터로 대신 채우지 않는다."
+    empty_state: "이력 없음·세트 누락/파기·미지원 형식을 구분한다."
+    error_display: "권한/기간/다른 소유 세트 요청을 거부한다."
+    design_status: "screen_draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-051
+    title: "외부 모델 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "AI 운영"
+    roadmap: "RM-P1"
+    feature: FEAT-015
+    usecases:
+      - UC-001
+      - UC-002
+      - UC-006
+      - UC-017
+    menu_code: "HUB_MODEL_HISTORY"
+    menu_parent: "HUB_OPERATION"
+    route: "/admin/hub/model/history"
+    view_kind: "change_history"
+    source_screen: SCR-015
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건·컬럼·배치·탭을 읽기 전용으로 상속하고 변경 요약·이력 저장일시 범위만 추가한다. 독립 requirements.md/mockup.html을 만들지 않는다."
+    access: "별도 HUB_MODEL_HISTORY READ·EXPORT와 현재 대상 열람 범위를 검사한다."
+    selection: "원 ID와 HISTORY_NO로 동일한 전체 이력 세트를 선택한다. 현재 데이터로 대신 채우지 않는다."
+    empty_state: "이력 없음·세트 누락/파기·미지원 형식을 구분한다."
+    error_display: "권한/기간/다른 소유 세트 요청을 거부한다."
+    design_status: "screen_draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-052
+    title: "토큰 풀 기준 단가 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "비용 관리"
+    roadmap: "RM-P1"
+    feature: FEAT-016
+    usecases:
+      - UC-001
+      - UC-002
+      - UC-006
+      - UC-022
+    menu_code: "HUB_TOKEN_RATE_HISTORY"
+    menu_parent: "HUB_COST"
+    route: "/admin/hub/token-rate/history"
+    view_kind: "change_history"
+    source_screen: SCR-016
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건·컬럼·배치·탭을 읽기 전용으로 상속하고 변경 요약·이력 저장일시 범위만 추가한다. 독립 requirements.md/mockup.html을 만들지 않는다."
+    access: "별도 HUB_TOKEN_RATE_HISTORY READ·EXPORT와 현재 대상 열람 범위를 검사한다."
+    selection: "원 ID와 HISTORY_NO로 동일한 전체 이력 세트를 선택한다. 현재 데이터로 대신 채우지 않는다."
+    empty_state: "이력 없음·세트 누락/파기·미지원 형식을 구분한다."
+    error_display: "권한/기간/다른 소유 세트 요청을 거부한다."
+    design_status: "screen_draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-053
+    title: "실행 제한·운영 설정 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "AI 운영"
+    roadmap: "RM-P1"
+    feature: FEAT-020
+    usecases:
+      - UC-001
+      - UC-002
+      - UC-006
+      - UC-030
+    menu_code: "HUB_OPERATION_CONFIG_HISTORY"
+    menu_parent: "HUB_OPERATION"
+    route: "/admin/hub/operation-config/history"
+    view_kind: "change_history"
+    source_screen: SCR-018
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건·컬럼·배치·탭을 읽기 전용으로 상속하고 변경 요약·이력 저장일시 범위만 추가한다. 독립 requirements.md/mockup.html을 만들지 않는다."
+    access: "별도 HUB_OPERATION_CONFIG_HISTORY READ·EXPORT와 현재 대상 열람 범위를 검사한다."
+    selection: "원 ID와 HISTORY_NO로 동일한 전체 이력 세트를 선택한다. 현재 데이터로 대신 채우지 않는다."
+    empty_state: "이력 없음·세트 누락/파기·미지원 형식을 구분한다."
+    error_display: "권한/기간/다른 소유 세트 요청을 거부한다."
+    design_status: "screen_draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-054
+    title: "업무 도구 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "연동 관리"
+    roadmap: "RM-P1"
+    feature: FEAT-021
+    usecases:
+      - UC-019
+    menu_code: "HUB_BUSINESS_TOOL_HISTORY"
+    menu_parent: "HUB_INTEGRATION"
+    route: "/admin/hub/business-tool/history"
+    view_kind: "change_history"
+    source_screen: SCR-019
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건·컬럼·배치·탭을 읽기 전용으로 상속하고 변경 요약·이력 저장일시 범위만 추가한다. 독립 requirements.md/mockup.html을 만들지 않는다."
+    access: "별도 HUB_BUSINESS_TOOL_HISTORY READ·EXPORT와 현재 대상 열람 범위를 검사한다."
+    selection: "원 ID와 HISTORY_NO로 동일한 전체 이력 세트를 선택한다. 현재 데이터로 대신 채우지 않는다."
+    empty_state: "이력 없음·세트 누락/파기·미지원 형식을 구분한다."
+    error_display: "권한/기간/다른 소유 세트 요청을 거부한다."
+    design_status: "screen_draft"
+    screen_role: "inherited_change_history"
+  - id: SCR-055
+    title: "월별 개인 쿼터 기준 변경 이력"
+    module: "admin"
+    entry: "menu"
+    group: "비용 관리"
+    roadmap: "RM-P1"
+    feature: FEAT-017
+    usecases:
+      - UC-001
+      - UC-002
+      - UC-006
+      - UC-027
+    menu_code: "HUB_QUOTA_PLAN_HISTORY"
+    menu_parent: "HUB_COST"
+    route: "/admin/hub/quota-plan/history"
+    view_kind: "change_history"
+    source_screen: SCR-021
+    history_contract: "REQ-601.change_history·ADR-035"
+    inheritance: "원 관리 화면의 조회조건·컬럼·배치·탭을 읽기 전용으로 상속하고 변경 요약·이력 저장일시 범위만 추가한다. 독립 requirements.md/mockup.html을 만들지 않는다."
+    access: "별도 HUB_QUOTA_PLAN_HISTORY READ·EXPORT와 현재 대상 열람 범위를 검사한다."
+    selection: "원 ID와 HISTORY_NO로 동일한 전체 이력 세트를 선택한다. 현재 데이터로 대신 채우지 않는다."
+    empty_state: "이력 없음·세트 누락/파기·미지원 형식을 구분한다."
+    error_display: "권한/기간/다른 소유 세트 요청을 거부한다."
+    design_status: "screen_draft"
+    screen_role: "inherited_change_history"

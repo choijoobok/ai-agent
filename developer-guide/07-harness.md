@@ -105,7 +105,13 @@
 | `/deliverable-site` | `build.mjs` | `node .claude/skills/deliverable-site/build.mjs` |
 | `/deliverable-site` | `check.mjs` | `node .claude/skills/deliverable-site/check.mjs` |
 | `/deliverable-site` | `flow-view-check.mjs` | `node .claude/skills/deliverable-site/flow-view-check.mjs` |
+| `/doc-gen` | `approval-contract.mjs` | `node .claude/skills/doc-gen/approval-contract.mjs` |
+| `/doc-gen` | `approval-contract.test.mjs` | `node .claude/skills/doc-gen/approval-contract.test.mjs` |
 | `/doc-gen` | `gen.mjs` | `node .claude/skills/doc-gen/gen.mjs` |
+| `/doc-gen` | `history-contract.mjs` | `node .claude/skills/doc-gen/history-contract.mjs` |
+| `/doc-gen` | `history-contract.test.mjs` | `node .claude/skills/doc-gen/history-contract.test.mjs` |
+| `/doc-gen` | `menu-contract.mjs` | `node .claude/skills/doc-gen/menu-contract.mjs` |
+| `/doc-gen` | `menu-contract.test.mjs` | `node .claude/skills/doc-gen/menu-contract.test.mjs` |
 | `/doc-gen` | `sequences.test.mjs` | `node .claude/skills/doc-gen/sequences.test.mjs` |
 | `/manual-site` | `build.mjs` | `node .claude/skills/manual-site/build.mjs` |
 | `/manual-site` | `capture.mjs` | `node .claude/skills/manual-site/capture.mjs` |
@@ -113,6 +119,7 @@
 | `/mockup` | `declared-layout.mjs` | `node .claude/skills/mockup/declared-layout.mjs` |
 | `/mockup` | `declared-layout.test.mjs` | `node .claude/skills/mockup/declared-layout.test.mjs` |
 | `/mockup` | `generic-layout.mjs` | `node .claude/skills/mockup/generic-layout.mjs` |
+| `/mockup` | `generic-layout.test.mjs` | `node .claude/skills/mockup/generic-layout.test.mjs` |
 | `/mockup` | `presentation.mjs` | `node .claude/skills/mockup/presentation.mjs` |
 | `/mockup` | `presentation.test.mjs` | `node .claude/skills/mockup/presentation.test.mjs` |
 | `/mockup` | `scaffold.mjs` | `node .claude/skills/mockup/scaffold.mjs` |

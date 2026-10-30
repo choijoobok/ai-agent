@@ -2,11 +2,14 @@
 usecases:
   - id: UC-010
     name: "지식 본문과 독립 참조·도구별 사용 설명을 후보로 작성한다"
-    workstream: admin
-    design_status: draft
-    reqs: [REQ-303]
-    actors: { primary: ACT-003, secondary: [] }
-    process_step: PRC-09-02
+    workstream: "admin"
+    design_status: "draft"
+    reqs:
+      - REQ-303
+    actors:
+      primary: ACT-003
+      secondary: []
+    process_step: "PRC-09-02"
     precondition: "지식 작성 권한과 업무 근거가 있고 참조할 자산의 현재 사용 가능성·버전을 확인할 수 있다"
     trigger: "지식을 신규 작성하거나 본문·접근 그룹·태그 ID·참조 링크·매핑별 설명을 변경한다"
     main_flow:
@@ -17,19 +20,46 @@ usecases:
       - "현재 기준 리비전·본문·그룹·링크·매핑 설명·각 참조 버전을 전체 후보로 보존한다. 검수가 끝난 변경은 UC-012로 인계한다"
       - "UC-006에서 실제 반영을 확인한다. 승인된 연결도 현재 접근 권한·활성·검증 조건을 통과한 경우에만 후보 구성과 주입에 사용한다"
     alternative_flows:
-      - { id: A1, condition: "특정 데이터 객체나 도구가 없는 일반 업무 지식", flow: ["예제·카탈로그·도구 연결을 강제하지 않는다. 지식 접근 그룹과 본문 검수는 유지한다"] }
-      - { id: A2, condition: "여러 데이터소스·스키마의 카탈로그를 연결", flow: ["참조에서 소속을 얻고 지식에 별도 데이터소스/스키마 목록을 중복 저장하지 않는다. 합산을 권한 확대나 데이터소스 간 SQL 조인 허용으로 해석하지 않는다"] }
-      - { id: A3, condition: "예제 또는 도구 연결을 해제", flow: ["승인·반영된 새 후보부터 해당 경로/매핑 설명을 제외한다. 다른 직접·예제 경로와 자산 자체는 유지한다"] }
-      - { id: A4, condition: "매핑 설명만 변경하거나 과거 상태를 복원", flow: ["새 지식 후보의 전체 스냅샷으로 처리한다. 과거 승인·실행 근거를 현재 값으로 치환하지 않는다"] }
+      - id: "A1"
+        condition: "특정 데이터 객체나 도구가 없는 일반 업무 지식"
+        flow:
+          - "예제·카탈로그·도구 연결을 강제하지 않는다. 지식 접근 그룹과 본문 검수는 유지한다"
+      - id: "A2"
+        condition: "여러 데이터소스·스키마의 카탈로그를 연결"
+        flow:
+          - "참조에서 소속을 얻고 지식에 별도 데이터소스/스키마 목록을 중복 저장하지 않는다. 합산을 권한 확대나 데이터소스 간 SQL 조인 허용으로 해석하지 않는다"
+      - id: "A3"
+        condition: "예제 또는 도구 연결을 해제"
+        flow:
+          - "승인·반영된 새 후보부터 해당 경로/매핑 설명을 제외한다. 다른 직접·예제 경로와 자산 자체는 유지한다"
+      - id: "A4"
+        condition: "매핑 설명만 변경하거나 과거 상태를 복원"
+        flow:
+          - "새 지식 후보의 전체 스냅샷으로 처리한다. 과거 승인·실행 근거를 현재 값으로 치환하지 않는다"
     exception_flows:
-      - { id: E1, condition: "본문에 물리명·SQL·특정 도구 호출 안내를 중복 작성", flow: ["해당 원천·매핑 편집으로 안내하고 검수 전 유효 반영하지 않는다. 자동 탐지만으로 완전 검수를 가정하지 않는다"] }
-      - { id: E2, condition: "참조 미등록·사용 불가·버전 충돌 또는 매핑 설명 누락/계약 충돌", flow: ["보완할 후보로 유지하고 임의 버전 선택·계약 복제·유효 매핑 반영을 하지 않는다"] }
-      - { id: E3, condition: "접근 그룹 없음 또는 현재 권한/필수 참조 판정 실패", flow: ["REQ-303.example_catalog_mapping.security에 따라 지식·직접 참조·예제의 사용 가능성을 구분한다. 권한 밖 필수 참조를 일부 숨긴 불완전한 예제를 주입하지 않는다"] }
+      - id: "E1"
+        condition: "본문에 물리명·SQL·특정 도구 호출 안내를 중복 작성"
+        flow:
+          - "해당 원천·매핑 편집으로 안내하고 검수 전 유효 반영하지 않는다. 자동 탐지만으로 완전 검수를 가정하지 않는다"
+      - id: "E2"
+        condition: "참조 미등록·사용 불가·버전 충돌 또는 매핑 설명 누락/계약 충돌"
+        flow:
+          - "보완할 후보로 유지하고 임의 버전 선택·계약 복제·유효 매핑 반영을 하지 않는다"
+      - id: "E3"
+        condition: "접근 그룹 없음 또는 현재 권한/필수 참조 판정 실패"
+        flow:
+          - "REQ-303.example_catalog_mapping.security에 따라 지식·직접 참조·예제의 사용 가능성을 구분한다. 권한 밖 필수 참조를 일부 숨긴 불완전한 예제를 주입하지 않는다"
     postcondition: "자산별 정본을 복제하지 않는 지식 전체 후보와 변경 요청이 연결되고 과거 직접·간접 참조를 당시 버전으로 재현할 근거가 남는다"
-    rules_from: ["REQ-303.detail", "REQ-303.example_catalog_mapping", "REQ-303.tool_usage_mapping", "REQ-303.custom_tool_mapping", "REQ-303.result_guidance", "REQ-303.query_constraint_boundary"]
+    rules_from:
+      - "REQ-303.detail"
+      - "REQ-303.example_catalog_mapping"
+      - "REQ-303.tool_usage_mapping"
+      - "REQ-303.custom_tool_mapping"
+      - "REQ-303.result_guidance"
+      - "REQ-303.query_constraint_boundary"
     pending:
       - "@defer P3 — 본문/매핑 역할 검수의 입력·자동 탐지와 사람 검수, 참조 합산·매핑별 설명/원천 가이드·충돌 표시를 데이터/API/화면·시험으로 설계한다"
-
+    storage_context: "REQ-601.approval_storage. 관리 조회/변경 입력은 현재 적용본, 초안 편집/제출/검토/반려는 SCR-036 요청 문맥, 과거 적용본은 별도 HIST 문맥이다. 후보는 _SNP의 전체 요청 내용이며 업무 REVISION 증가는 실제 반영 성공 때만 발생한다."
   - id: UC-011
     name: "공통 태그·동의어 후보와 연결 지식의 영향 차이를 확인한다"
     workstream: admin
@@ -59,11 +89,16 @@ usecases:
 
   - id: UC-012
     name: "자산 변경 세트를 제출하고 기술 검토·최종 판정·일괄 반영한다"
-    workstream: admin
-    design_status: draft
-    reqs: [REQ-305, REQ-306]
-    actors: { primary: ACT-003, secondary: [ACT-013] }
-    process_step: PRC-09-05
+    workstream: "admin"
+    design_status: "draft"
+    reqs:
+      - REQ-305
+      - REQ-306
+    actors:
+      primary: ACT-003
+      secondary:
+        - ACT-013
+    process_step: "PRC-09-05"
     precondition: "자산 변경의 전체 후보·영향·사유와 필요한 외부 시험/감수 근거가 있고 해당 작업의 현재 유효 권한을 확인할 수 있다"
     trigger: "단독 또는 복합 자산 후보를 운영에 반영하려 한다"
     main_flow:
@@ -75,20 +110,52 @@ usecases:
       - "최종 승인 또는 전결 반영 시 FEAT-014.reference_validation의 대상 기준본·세트 내 고정 후보 집합·외부 유효본·등록 유일성을 검증하고 세트 전체를 함께 반영한다. 영향/과거 근거와 현재 직접 정책은 각각의 소유·검증 조건을 유지한다"
       - "UC-006의 결과 리비전·시각·범위를 원 조사/검토에 연결한다. 필요한 변경의 실제 반영과 원 문제 해결 확인에 따라 각 작업의 완료를 별도로 판단한다"
     alternative_flows:
-      - { id: A1, condition: "지식 변경 없이 예제·카탈로그·태그·API·도구만 변경", flow: ["단독 변경도 동일한 세트 경로를 사용한다. 의미 없는 지식 후보나 조사·검토 작업을 만들지 않는다"] }
-      - { id: A2, condition: "승인 설정이 미사용 또는 실제 변경 종류별로 혼합됨", flow: ["UC-003·REQ-601의 전결/혼합 세트 판정을 사용한다. 수행하지 않은 사람의 기술 검토·최종 승인을 기록하지 않는다"] }
-      - { id: A3, condition: "검토·승인 반려 또는 제출 내용 변경 필요", flow: ["미반영 종결·취소와 새 요청은 UC-005를 따른다. 이전 요청·근거를 보존하고 UC-003에서 현재 승인 설정으로 새 처리 방식을 판정한다. 수동 승인 경로이면 기술 검토부터 다시 수행하며 전결 경로에서도 전체 검증·스냅샷·반영 계약을 유지한다"] }
-      - { id: A4, condition: "태그 영향 지식 목록 또는 지식 매핑의 태그 텍스트만 변경됨", flow: ["UC-011의 독립 변경 예외를 적용한다. 실제 변경 대상·태그 연결 가능성 검증과 당시 근거 보존은 유지한다"] }
+      - id: "A1"
+        condition: "지식 변경 없이 예제·카탈로그·태그·API·도구만 변경"
+        flow:
+          - "단독 변경도 동일한 세트 경로를 사용한다. 의미 없는 지식 후보나 조사·검토 작업을 만들지 않는다"
+      - id: "A2"
+        condition: "승인 설정이 미사용 또는 실제 변경 종류별로 혼합됨"
+        flow:
+          - "UC-003·REQ-601의 전결/혼합 세트 판정을 사용한다. 수행하지 않은 사람의 기술 검토·최종 승인을 기록하지 않는다"
+      - id: "A3"
+        condition: "검토·승인 반려 또는 제출 내용 변경 필요"
+        flow:
+          - "미반영 종결·취소와 새 요청은 UC-005를 따른다. 이전 요청·근거를 보존하고 UC-003에서 현재 승인 설정으로 새 처리 방식을 판정한다. 수동 승인 경로이면 기술 검토부터 다시 수행하며 전결 경로에서도 전체 검증·스냅샷·반영 계약을 유지한다"
+      - id: "A4"
+        condition: "태그 영향 지식 목록 또는 지식 매핑의 태그 텍스트만 변경됨"
+        flow:
+          - "UC-011의 독립 변경 예외를 적용한다. 실제 변경 대상·태그 연결 가능성 검증과 당시 근거 보존은 유지한다"
     exception_flows:
-      - { id: E1, condition: "후보·사유·필요 증빙 누락, 기준본 충돌 또는 한 대상의 미종결 요청 중복", flow: ["전체 접수를 거부하고 기존 운영본·요청을 유지한다. 세트 일부만 별도 접수하지 않는다"] }
-      - { id: E2, condition: "현재 권한 부족 또는 기술 검토 미완료", flow: ["해당 단계 전이를 거부한다. 최종 승인 권한으로 기술 검토 권한을 대신하지 않는다"] }
-      - { id: E3, condition: "업무별 기준본·참조 최신성·직접/간접 버전 정합성 실패", flow: ["REQ-306에 따라 세트 전체를 반려하고 차이를 남긴다. 참조 버전을 임의 선택하거나 타 자산의 매핑을 검토 없이 갱신하지 않는다"] }
-      - { id: E4, condition: "승인 뒤 반영 경합·실패·결과 불명", flow: ["부분 활성화와 정상 종결을 막고 UC-006에서 결과를 확인한다. 미종결 요청 제한과 연결 검토의 미해결 상태를 유지한다"] }
+      - id: "E1"
+        condition: "후보·사유·필요 증빙 누락, 기준본 충돌 또는 한 대상의 미종결 요청 중복"
+        flow:
+          - "전체 접수를 거부하고 기존 운영본·요청을 유지한다. 세트 일부만 별도 접수하지 않는다"
+      - id: "E2"
+        condition: "현재 권한 부족 또는 기술 검토 미완료"
+        flow:
+          - "해당 단계 전이를 거부한다. 최종 승인 권한으로 기술 검토 권한을 대신하지 않는다"
+      - id: "E3"
+        condition: "업무별 기준본·참조 최신성·직접/간접 버전 정합성 실패"
+        flow:
+          - "REQ-306에 따라 세트 전체를 반려하고 차이를 남긴다. 참조 버전을 임의 선택하거나 타 자산의 매핑을 검토 없이 갱신하지 않는다"
+      - id: "E4"
+        condition: "승인 뒤 반영 경합·실패·결과 불명"
+        flow:
+          - "부분 활성화와 정상 종결을 막고 UC-006에서 결과를 확인한다. 미종결 요청 제한과 연결 검토의 미해결 상태를 유지한다"
     postcondition: "단계별 불변 근거와 실제 일괄 반영 결과가 연결된다. 승인 판정만으로 운영 사용·검토 완료·조사 해결을 확정하지 않는다"
-    rules_from: ["REQ-305.business_rules", "REQ-305.hard_rule", "REQ-306.request_guard", "REQ-306.evidence", "REQ-306.catalog_boundary", "REQ-306.version_guard", "REQ-306.shared_impact", "REQ-601.approval_policy"]
+    rules_from:
+      - "REQ-305.business_rules"
+      - "REQ-305.hard_rule"
+      - "REQ-306.request_guard"
+      - "REQ-306.evidence"
+      - "REQ-306.catalog_boundary"
+      - "REQ-306.version_guard"
+      - "REQ-306.shared_impact"
+      - "REQ-601.approval_policy"
     pending:
       - "@defer P3 — 후보·요청·단계별 스냅샷과 현재 유효본의 물리 구조, 설정·권한·참조 검증과 일괄 반영의 동시성/복구 계약, 화면 상태·시퀀스·시험을 설계한다"
-
+    storage_context: "REQ-601.approval_storage. 관리 조회/변경 입력은 현재 적용본, 초안 편집/제출/검토/반려는 SCR-036 요청 문맥, 과거 적용본은 별도 HIST 문맥이다. 후보는 _SNP의 전체 요청 내용이며 업무 REVISION 증가는 실제 반영 성공 때만 발생한다."
   - id: UC-013
     name: "고객사 변경의 예방적 지식 검토 작업을 등록하고 근거에 따라 종결한다"
     workstream: admin

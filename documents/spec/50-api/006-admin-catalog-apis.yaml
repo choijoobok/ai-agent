@@ -2,13 +2,14 @@
 apis:
   - id: API-019
     feature: FEAT-003
-    implementation: planned
-    method: POST
-    path: /api/service/admin/catalog/getList
-    action: READ
+    implementation: "planned"
+    method: "POST"
+    path: "/api/service/admin/catalog/getList"
+    action: "READ"
     summary: "카탈로그 목록"
     request: "body=SearchRequest<CatalogFilter>"
     response: "ApiResponse<PageResponse<CatalogRow>>"
+    contract: "CURRENT 적용본만 조회한다. 최초 미적용 요청·초안·반려 제출본은 제외한다."
   - id: API-020
     feature: FEAT-003
     implementation: planned
@@ -20,50 +21,54 @@ apis:
     response: "ApiResponse<CatalogDetail>"
   - id: API-021
     feature: FEAT-003
-    implementation: planned
-    method: POST
-    path: /api/service/admin/catalog/getRevisions
-    action: READ
-    summary: "카탈로그 내용 판 목록"
-    contract: "catalogId의 판 이력을 revisionNo DESC, revisionId DESC 고정 정렬로 반환한다. UI는 선택/탭 진입 시 자동 조회하고 페이지 이동도 같은 대상/정렬을 유지한다. CONTENT_STATE는 승인/운영 반영 상태가 아니다"
+    implementation: "planned"
+    method: "POST"
+    path: "/api/service/admin/catalog/getChangeRequests"
+    action: "READ"
+    summary: "별도 변경 요청 화면의 카탈로그 요청 목록"
+    contract: "REQUEST_NO별 상태/기준·결과 리비전/반려 사유를 조회한다. 관리 화면의 하단 버전 탭에서 사용하지 않는다."
     request: "body=SearchRequest<CatalogKey>"
     response: "ApiResponse<PageResponse<RevisionRow>>"
   - id: API-022
     feature: FEAT-003
-    implementation: planned
-    method: POST
-    path: /api/service/admin/catalog/getRevision
-    action: READ
-    summary: "선택 내용 판 전체 구성"
+    implementation: "planned"
+    method: "POST"
+    path: "/api/service/admin/catalog/getRevision"
+    action: "READ"
+    summary: "명시한 현재·요청·이력 문맥의 전체 구성"
     request: "body=RevisionKey"
     response: "ApiResponse<RevisionDetail>"
+    contract: "kind=CURRENT이면 안정 자산 ID, REQUEST이면 requestNo+대상 종류/ID, HISTORY이면 안정 자산 ID+appliedRevision 또는 historyNo. 서버가 소유·세트·현재 권한을 검사하고 명시하지 않은 문맥/현재값으로 대체하지 않는다."
   - id: API-023
     feature: FEAT-003
-    implementation: planned
-    method: POST
-    path: /api/service/admin/catalog/saveCreateDraft
-    action: SAVE
-    summary: "공개 객체와 최초 초안 등록"
-    request: "body=DraftCreate"
-    response: "ApiResponse<DraftResult>"
+    implementation: "planned"
+    method: "POST"
+    path: "/api/service/admin/catalog/saveCreate"
+    action: "SAVE"
+    summary: "카탈로그 신규 저장 또는 승인 요청"
+    request: "body=ManagementChange"
+    response: "ApiResponse<RequestResult>"
+    contract: "BASE_REVISION=0 및 원본 미존재·업무키 유일성을 검사한다. 승인 사용이면 요청만, 미사용이면 전결·실제 반영한다."
   - id: API-024
     feature: FEAT-003
-    implementation: planned
-    method: POST
-    path: /api/service/admin/catalog/saveDraft
-    action: SAVE
-    summary: "카탈로그 전체 초안 저장"
-    request: "body=DraftSave"
-    response: "ApiResponse<DraftResult>"
+    implementation: "planned"
+    method: "POST"
+    path: "/api/service/admin/catalog/saveChange"
+    action: "SAVE"
+    summary: "카탈로그 전체 변경 저장 또는 승인 요청"
+    request: "body=ManagementChange"
+    response: "ApiResponse<RequestResult>"
+    contract: "서버가 REQ-601.approval_storage에 따라 전체 _SNP·BASE_REVISION을 고정하고 설정에 따라 요청 또는 전결 반영한다."
   - id: API-025
     feature: FEAT-003
-    implementation: planned
-    method: POST
-    path: /api/service/admin/catalog/saveCopyDraft
-    action: SAVE
-    summary: "변경·복원용 새 초안 작성"
+    implementation: "planned"
+    method: "POST"
+    path: "/api/service/admin/catalog/saveCopyDraft"
+    action: "SAVE"
+    summary: "별도 요청 작성 화면의 보완·복원 초안 복사"
     request: "body=DraftCopy"
     response: "ApiResponse<DraftResult>"
+    contract: "새 요청번호로 복사하고 현재 기준 리비전·원 요청/이력을 연결한다. 운영 데이터는 바꾸지 않는다."
   - id: API-026
     feature: FEAT-003
     implementation: planned

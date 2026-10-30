@@ -26,3 +26,5 @@ spec_set:
     - 007-not-menus.yaml
     - 008-undecided.yaml
     - 009-doc-order.yaml
+    - 010-change-history.yaml
+    - 011-menu-tree.yaml

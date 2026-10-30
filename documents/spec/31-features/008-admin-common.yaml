@@ -1,14 +1,21 @@
 # 영역: admin 공통 관리 승인·오류 접수
 features:
   - id: FEAT-040
-    module: admin
-    roadmap: RM-P1
-    design_status: draft
+    module: "admin"
+    roadmap: "RM-P1"
+    design_status: "draft"
     title: "관리 승인 경로·요청 무결성 공통 처리"
-    type: transaction
-    reqs: [REQ-601]
-    usecases: [UC-001, UC-003, UC-004, UC-005, UC-006]
-    traces_to: [ARCH-029]
+    type: "transaction"
+    reqs:
+      - REQ-601
+    usecases:
+      - UC-001
+      - UC-003
+      - UC-004
+      - UC-005
+      - UC-006
+    traces_to:
+      - ARCH-029
     trigger: "승인 대상 기능이 반영 저장·신규 요청 접수·단계 전이·전결·결과 조회를 수행할 때 내부에서 사용한다"
     detail: "업무별 승인 설정의 값/버전 판정, 실제 변경 대상의 단일 미종결 요청, 제출본 고정, 요청 ID/버전/선행 상태 검증과 처리 근거 연결을 제공한다. 업무별 승인 단계·효력·인가·반영은 기존 기능이 소유한다"
     inputs:
@@ -18,7 +25,10 @@ features:
     outputs:
       - "접수한 불변 요청 또는 같은 저장자의 전결 근거와 반영/예약 결과"
       - "중복·버전·상태 충돌, 읽기 장애 접수 제한 및 조회 권한을 지킨 기존 결과"
-    rules_from: ["REQ-601.approval_policy", "REQ-601.request_integrity", "ARCH-029.target_contract.approval_transaction"]
+    rules_from:
+      - "REQ-601.approval_policy"
+      - "REQ-601.request_integrity"
+      - "ARCH-029.target_contract.approval_transaction"
     boundaries:
       - "전용 메뉴·화면을 만들지 않는다. 자산 승인 SCR-036의 소유는 FEAT-014이고 권한 부여·승급·추가 토큰 승인 화면과 통합하지 않는다"
       - "직접 관리 항목에 새 승인을 추가하지 않는다. 승인 대상 작업의 전결도 기존 미종결 요청·현재 권한·버전 검증을 우회하지 않는다"
@@ -28,7 +38,9 @@ features:
     pending:
       - "@defer P3 knowledge physical_and_contracts — FEAT-014가 소비하는 고정 후보·작업 중/종결·승인/전결 결과의 공개 상태와 불명 복구를 함께 설계한다. 자산 전체 기준/참조 검증·포인터/ENT-035 대응 점유·세트 실제 결과의 원자성을 FEAT-003.set_public_contract·FEAT-004.module_contract와 대조하고 knowledge 물리 검토 및 admin G3 전에 재검토한다"
       - "@defer P3 — 요청·버전·이력 구조, 설정 스냅샷과 업무 반영의 트랜잭션 경계, 잠금/조건부 갱신·재전송·복구 계약과 테스트를 후속 설계에서 연결한다"
-
+    entities:
+      - ENT-049
+    storage_contract: "REQ-601.approval_storage의 공통 요청 원장·대상별 SNP·마스터 리비전·원자 반영·HIST 읽기/보호 계약을 소유 기능과 연결한다."
   - id: FEAT-041
     module: admin
     roadmap: RM-P1

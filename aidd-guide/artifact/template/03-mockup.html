@@ -108,6 +108,8 @@ a{color:var(--note)}
 .sub{text-align:center;margin-top:12px;font-size:12px}
 .row{display:flex;gap:8px;align-items:center}
 .row .btn{width:auto}
+.actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap}
+.actions .btn{width:auto}
 
 /* 키-값 나열 (읽기 전용 정보) */
 .kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:12.5px;margin:0}
@@ -161,11 +163,13 @@ a{color:var(--note)}
 .sf input,.sf select{width:100%;padding:3px 6px;border:1px solid var(--line);
   background:var(--bg);color:var(--ink);font:inherit;font-size:12px}
 .sf .wide{grid-column:span 3}
-.sf .act{grid-column:1/-1;text-align:right;padding-top:2px}
+.sf .act{grid-column:1/-1;display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap;padding-top:2px}
 
-/* 그리드 헤더 — 왼쪽 제목(.ttl), 오른쪽 버튼. 도구 둘(.ico)은 맨 오른쪽 고정 */
-.tb{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+/* 작업 버튼은 우측 정렬. 제목·건수(.tb-meta)는 왼쪽, 그리드 도구는 맨 오른쪽이다. */
+.tb{display:flex;justify-content:flex-end;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
 .tb .ttl{font-size:13px;font-weight:600;margin-right:auto;white-space:nowrap}
+.tb-meta{display:flex;align-items:center;gap:8px;margin-right:auto}
+.tb-meta .ttl{margin-right:0}
 .tb .ico{width:auto;padding:4px 8px;font-size:12px;white-space:nowrap}
 .tb .sp{flex:1}
 .tb .cnt{font-size:11.5px;color:var(--muted);white-space:nowrap}

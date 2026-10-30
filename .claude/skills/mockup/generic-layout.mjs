@@ -32,12 +32,19 @@ export function genericScreen(title, model, figure, {annotator, manualKey, compa
   const selected=surfaceName?model.columns.find(t=>areaTitle(t)===surfaceName):firstSurface?.kind.startsWith('탭')?first:model.columns.slice(1).find(t=>!/(모달|단계|폼|설정)/.test(surfaceOf(model,areaTitle(t))?.kind??''));
   const search=compact?'':model.search.map(r=>`<label>${esc(cell(model.searchTable,r,model.searchTable.header[0]))}${badge(searchExplanation(model.searchTable,r),`search:${r[0]}`)}</label>${/선택|셀렉트|코드/.test(cell(model.searchTable,r,'입력방식'))?'<select><option>전체</option></select>':'<input placeholder="조회 조건 입력">'}`).join('');
   const tabs=model.surfaces.filter(s=>/^탭(?: 폼)?$/.test(s.kind));
-  const tabBar=tabs.length&&!compact?`<div class="tabs">${tabs.map(s=>`<span class="${s.name===areaTitle(selected||first||{heading:''})?'on':''}">${esc(s.name)}${badge(`<b>${esc(s.name)} 탭</b><p>${esc(s.purpose)}</p>`,`tab:${s.name}`)}</span>`).join('')}</div>`:'';
+  const interactive=!compact&&tabs.length>0;
+  const selectedTab=tabs.find(s=>s.name===areaTitle(selected||first||{heading:''}))?.name??tabs[0]?.name;
+  const tabBar=tabs.length&&!compact?`<div class="tabs" role="tablist" style="flex-wrap:wrap">${tabs.map(s=>`<button type="button" role="tab" aria-selected="${s.name===selectedTab}" data-detail-tab="${esc(s.name)}" class="btn ghost sm ${s.name===selectedTab?'on':''}">${esc(s.name)}${badge(`<b>${esc(s.name)} 탭</b><p>${esc(s.purpose)}</p>`,`tab:${s.name}`)}</button>`).join('')}</div>`:'';
   const attached=table=>model.columns.filter(t=>areaTitle(t).startsWith(areaTitle(table)+' / ')).map(renderArea).join('');
   const secondary=selected&&selected!==first?[selected,...model.columns.slice(model.columns.indexOf(selected)+1).filter(t=>surfaceOf(model,areaTitle(t))?.kind==='영역')]:[];
-  const extra=secondary.map(t=>renderArea(t)+attached(t)).join('');
+  const panels=interactive?tabs.map(s=>{
+    const table=model.columns.find(t=>areaTitle(t)===s.name);
+    if(!table)throw new Error(`목업 탭 '${s.name}'의 컬럼 표가 §4에 없다`);
+    return `<div data-detail-panel="${esc(s.name)}"${s.name===selectedTab?'':' hidden'}>${renderArea(table)}${attached(table)}</div>`;
+  }).join(''):'';
+  const extra=interactive?panels:secondary.map(t=>renderArea(t)+attached(t)).join('');
   const pair=model.vertical?`${renderArea(first||{heading:'',rows:[]})}${extra?`<div class="split"><span class="hnd">⋮⋮⋮</span></div>${tabBar}${extra}`:''}`:`<div class="splitrow"><div class="pane">${first?renderArea(first):''}</div>${extra?`<div class="split v"><span class="hnd">⋮</span></div><div class="pane">${tabBar}${extra}</div>`:''}</div>`;
-  const content=compact?(selected?renderArea(selected)+attached(selected):''):first?firstSurface?.kind==='설정'?model.columns.map(renderArea).join(''):firstSurface?.kind.startsWith('탭')?tabBar+renderArea(first)+attached(first):pair:`<p>${esc(model.overview||'요건서의 화면 구성을 확인한다.')}</p>`;
+  const content=compact?(selected?renderArea(selected)+attached(selected):''):first?firstSurface?.kind==='설정'?model.columns.map(renderArea).join(''):firstSurface?.kind.startsWith('탭')?tabBar+(interactive?panels:renderArea(first)+attached(first)):pair:`<p>${esc(model.overview||'요건서의 화면 구성을 확인한다.')}</p>`;
   const global=!first?model.actions.filter(r=>!/^\(/.test(r[0])).map(r=>action(r[0],'화면')).join(''):'';
-  return `<div class="screen leaf" id="${esc(figure.key)}"${manualKey?` data-manual="${esc(figure.key)}"`:''}><div class="bar">${esc(title)} · ${esc(figure.caption)} · 검토용 예시</div><div class="body">${search?`<div class="sf">${search}</div>`:''}${content}${global}</div></div>`;
+  return `<div class="screen leaf" id="${esc(figure.key)}"${interactive?' data-interactive-tabs':''}${manualKey?` data-manual="${esc(figure.key)}"`:''}><div class="bar">${esc(title)} · ${esc(figure.caption)} · 검토용 예시</div><div class="body">${search?`<div class="sf">${search}</div>`:''}${content}${global?`<div class="actions">${global}</div>`:""}</div></div>`;
 }

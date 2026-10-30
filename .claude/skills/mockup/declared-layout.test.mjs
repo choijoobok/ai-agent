@@ -161,3 +161,21 @@ test('건수 탐색은 선언 탭과 컬럼 문맥을 보존하고 숨긴 패널
   assert.equal(ids.length,new Set(ids).size);
   assert.throws(()=>render(figure,{...fixture,columns:[main,detail]}),/이동 탭/);
 });
+
+test('상호작용 탭은 각 탭의 검색과 폼을 유지하고 목록 접기를 임의 추가하지 않는다',()=>{
+  const [figure]=declaredFigures(stateTable([['main','기본','상세','','조회','가능','없음']]),plain);
+  const other=columns('이력',[['이력값','텍스트','읽기전용','','기록']]);
+  const fixture={...model,interactive:true,columns:[...model.columns,other],detailSearchTables:[
+    {heading:'상세',header:['조건','기본값'],rows:[['상세 검색','전체']]},
+    {heading:'이력',header:['조건','기본값'],rows:[['이력 검색','전체']]},
+  ]};
+  const html=render(figure,fixture);
+  assert.match(html,/data-interactive-tabs/);
+  assert.match(html,/aria-selected="true" data-detail-tab="상세"/);
+  assert.match(html,/data-detail-panel="상세"[\s\S]*data-field-label="상세값"/);
+  assert.match(html,/data-detail-panel="이력" hidden[\s\S]*aria-label="이력 검색"/);
+  assert.doesNotMatch(html,/data-toggle-master|선택 테이블:/);
+  const compact=declaredScreen('검증 화면',fixture,figure,{plain,annotator:()=>({badge:()=>'',render:()=>''}),compact:true});
+  assert.doesNotMatch(compact,/data-interactive-tabs|data-detail-tab=/);
+  assert.doesNotMatch(render({...figure,detail:'없음',buttons:[]},fixture),/data-interactive-tabs|data-detail-tab=/);
+});

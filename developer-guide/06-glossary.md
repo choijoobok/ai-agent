@@ -190,12 +190,16 @@ REQ ──→ UC ──→ FEAT ──┬──→ ENT   (테이블)
 | **QueryDSL** | — | 복잡한 조회를 **글자 조합이 아니라 코드로** 쓰게 해 주는 도구. 오타를 컴파일이 잡는다 |
 | **DTO** | **D**ata **T**ransfer **O**bject | **계층 사이로 데이터를 실어 나르는 그릇.** DB 모양 그대로 화면에 내보내지 않기 위해 쓴다 |
 | **엔드포인트** | endpoint | 서버가 열어 둔 **호출 주소 하나** (`/api/admin/user/search` 같은 것) |
-| **내용 버전 · 리비전** | content revision | 카탈로그 등 자산의 전체 정의 구성을 구분하는 버전. 화면에서는 버전으로 표현한다. 카탈로그의 REVISION_NO는 버전 번호, REVISION_ID는 버전 식별자이며 저장 충돌을 검사하는 EDIT_VERSION과 구분한다. 원천 DB 데이터의 변경 이력이 아니다 |
+| **내용 버전 · 리비전** | content revision | 관리 마스터의 전체 적용 구성을 구분하는 REVISION. 실제 반영 성공 시 한 번 증가한다. 요청의 BASE_REVISION은 기준값, APPLIED_REVISION은 반영 성공 결과이며 그 전에는 NULL이다. 요청 초안 EDIT_VERSION 및 다른 자산의 정확 버전 참조와 구분한다 |
+| **요청 스냅샷** | request snapshot | 원본명_SNP에 요청번호로 보존한 전체 변경 구성. 요청 초안에서만 편집하고 제출 후 업무 내용은 불변이다. |
 | **트랜잭션** | transaction | **전부 되거나 전부 안 되거나** 를 보장하는 처리 묶음. 중간에 실패하면 앞의 것도 되돌린다 |
 | **필터 · 인터셉터** | filter / interceptor | 요청이 실제 처리에 닿기 **전후에 끼어드는 공통 처리** (로그인 확인·로그 남기기 등) |
 | **스택** | stack | 이 시스템을 만드는 데 쓴 **기술 묶음 전체** |
 | **API** | Application Programming Interface | 프로그램이나 시스템이 기능을 요청하고 결과를 받는 약속. §1의 API 접두는 이 약속을 식별하는 문서 ID다 |
 | **HTTP** | Hypertext Transfer Protocol | 웹 요청·응답을 주고받는 통신 규약. 통신 성공과 요청한 업무의 완료 여부는 별도로 해석해야 한다 |
+| **Base URL** | 기본 접속 주소 | 개별 API의 상대 경로를 붙이는 기준 주소. scheme(통신 방식)·host(호스트)·port(포트)와 기본 경로를 포함할 수 있다. 관리 화면의 안전한 표시 범위는 REQ-604.connection_display가 정한다 |
+| **이력 행 키 / 이력 번호** | history row key / history number | `_HIST`의 `HIST_ID`는 각 행의 서로게이트 기본키, `HISTORY_NO`는 마스터·관련 행을 한 세트로 묶는 번호다. PK와 세트 키를 혼용하지 않는다 |
+| **이력 저장일시** | history stored time | `HIST_DTM`. 한 이력 세트 저장 문맥에서 한 번 확정해 모든 복사 행에 공통 사용한다. 원본의 `REG_DTM`·`MOD_DTM`은 복사 당시 값으로 유지하고 이를 이력 저장시각으로 바꾸지 않는다 |
 | **JDBC** | Java Database Connectivity | 자바 프로그램에서 DB 연결·질의·결과 처리를 수행하는 표준 API |
 | **타임아웃** | timeout | 정한 시간 안에 응답이나 처리가 끝나지 않아 기다림을 종료하는 것. 원격 업무가 실패했거나 취소됐다는 증거는 아니다 |
 | **멱등성** | idempotency | 같은 요청을 반복해도 의도한 효과가 한 번 처리한 것과 같게 유지되는 성질. 중복 접수 방지 범위와 업무 중복 판단 범위는 구분한다 |

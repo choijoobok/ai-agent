@@ -74,7 +74,7 @@ try {
     const plannedScreens = loadSpecSet({ repo: REPO, name: '60-screens', parseYaml }).document.screens
       .filter((screen) => screen.target_doc && existsSync(resolve(REPO, screen.target_doc)));
     const usecases = loadSpecSet({ repo: REPO, name: '30-usecases', parseYaml }).document.usecases;
-    let sequenceTabs = 0, themeRace = null;
+    let sequenceTabs = 0, initialTabs = 0, themeRace = null;
     for (const screen of plannedScreens) {
       const linkId = await page.locator('[data-page-link]').evaluateAll((nodes, id) => nodes.find((node) => node.textContent.trim().startsWith(id + ' '))?.dataset.pageLink, screen.id);
       if (!linkId) { errors.push(`${screen.id}: 설계 화면 목차가 없다.`); continue; }
@@ -86,6 +86,21 @@ try {
         const mockup = article.locator(`[data-mockup="${screen.id}/__design__"]`);
         if (await mockup.count() !== 1 || !await mockup.locator('.screen').count()) errors.push(`${screen.id}: 생성 목업 식별/화면이 HTML에 연결되지 않았다.`);
         else {
+          const initial = mockup.locator('.screen').first();
+          const tabs = initial.locator('[data-detail-tab]');
+          if (await initial.locator('.tabs > span').count()) errors.push(`${screen.id}: 초기 화면의 탭이 정적 텍스트다.`);
+          for (let i = 0; i < await tabs.count(); i++) {
+            const name = await tabs.nth(i).getAttribute('data-detail-tab');
+            const beforeHash = await page.evaluate(() => location.hash);
+            await tabs.nth(i).click({position:{x:8,y:8}});
+            const state = await initial.evaluate(node=>({
+              selected:[...node.querySelectorAll('[data-detail-tab][aria-selected="true"]')].map(tab=>tab.dataset.detailTab),
+              shown:[...node.querySelectorAll('[data-detail-panel]')].filter(panel=>!panel.hidden).map(panel=>panel.dataset.detailPanel),
+            }));
+            if (state.selected.length !== 1 || state.selected[0] !== name || state.shown.length !== 1 || state.shown[0] !== name
+              || await page.evaluate(() => location.hash) !== beforeHash) errors.push(`${screen.id}: 삽입 목업의 '${name}' 탭 전환/문서 격리가 잘못됐다.`);
+            initialTabs++;
+          }
           const jump = mockup.locator('nav a[href^="#"]').last();
           if (await jump.count()) {
             const beforeHash = await page.evaluate(() => location.hash);
@@ -113,7 +128,7 @@ try {
             if (!hidden) errors.push(`${screen.id}: HTML 목업의 선택 열 숨김이 동작하지 않는다.`);
             await settings.locator(':scope > summary').click();
           }
-          const viewer = mockup.locator('[data-snapshot-viewer]').first();
+          const viewer = mockup.locator('[data-snapshot-viewer]:visible').first();
           if (await viewer.count()) {
             await viewer.locator(':scope > summary').click();
             if (!await viewer.locator('.modal').isVisible()) errors.push(`${screen.id}: 스냅샷 모달이 열리지 않는다.`);
@@ -198,7 +213,7 @@ try {
         }, match[2]);
       }
     }
-    console.log(`설계 화면 ${plannedScreens.length}개: 정본 식별자·생성 목업·시퀀스 탭 ${sequenceTabs}개 확인`);
+    console.log(`설계 화면 ${plannedScreens.length}개: 정본 식별자·생성 목업·초기 화면 탭 ${initialTabs}개·시퀀스 탭 ${sequenceTabs}개 확인`);
     const mockupPage = await page.locator('[data-mockup$="/__design__"]').first().evaluate((node) => node.closest('[data-page]')?.id);
     if (mockupPage) await openHash(mockupPage);
   }

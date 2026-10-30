@@ -1,0 +1,181 @@
+testcases:
+  - id: TC-0331
+    feature: FEAT-033
+    usecase: UC-031
+    screens:
+      - SCR-040
+      - SCR-041
+      - SCR-042
+    type: "normal"
+    title: "단일 그리드 성공 행 전체 복사·부분 성공"
+    actor: ACT-004
+    given: "단일 그리드/마스터·탭 저장과 승인/직접 변경, 삭제·부분 실패·권한/보존 경계의 합성 데이터"
+    when: "저장 트랜잭션·원본/이력 행·별도 이력 메뉴의 검색/선택/반출을 대조"
+    then: "성공한 변경 행만 전체 컬럼 복사, 실패 행/현재 페이지 전체 복사 없음"
+    verification: "단위/DB 통합/계약/E2E; 제목의 규칙을 반대로 허용했을 때 실패해야 한다. 미구현 제품 시험 명세다."
+    status: "planned"
+  - id: TC-0332
+    feature: FEAT-033
+    usecase: UC-031
+    screens:
+      - SCR-040
+      - SCR-041
+      - SCR-042
+    type: "normal"
+    title: "마스터/탭 전체 세트·원 시각 보존"
+    actor: ACT-004
+    given: "단일 그리드/마스터·탭 저장과 승인/직접 변경, 삭제·부분 실패·권한/보존 경계의 합성 데이터"
+    when: "저장 트랜잭션·원본/이력 행·별도 이력 메뉴의 검색/선택/반출을 대조"
+    then: "한 탭만 변경해도 전체 소유 관리 행을 같은 HISTORY_NO로 복사한다. HIST_DTM은 마스터에만 있고 자식은 부모 시각을 참조하며 원 REG/MOD를 유지한다."
+    verification: "단위/DB 통합/계약/E2E; 제목의 규칙을 반대로 허용했을 때 실패해야 한다. 미구현 제품 시험 명세다."
+    status: "planned"
+  - id: TC-0333
+    feature: FEAT-033
+    usecase: UC-031
+    screens:
+      - SCR-040
+      - SCR-041
+      - SCR-042
+    type: "normal"
+    title: "서버 변경 요약과 별도 이력 화면 상속"
+    actor: ACT-004
+    given: "단일 그리드/마스터·탭 저장과 승인/직접 변경, 삭제·부분 실패·권한/보존 경계의 합성 데이터"
+    when: "저장 트랜잭션·원본/이력 행·별도 이력 메뉴의 검색/선택/반출을 대조"
+    then: "기준 정보와 실제 변경 탭만 원 순서로 요약, 원 조건/배치/탭 + 요약/이력 저장일시만 추가"
+    verification: "단위/DB 통합/계약/E2E; 제목의 규칙을 반대로 허용했을 때 실패해야 한다. 미구현 제품 시험 명세다."
+    status: "planned"
+  - id: TC-0334
+    feature: FEAT-033
+    usecase: UC-031
+    screens:
+      - SCR-040
+      - SCR-041
+      - SCR-042
+    type: "business_exception"
+    title: "이력 실패·동시 저장·재전송 원자성"
+    actor: ACT-004
+    given: "단일 그리드/마스터·탭 저장과 승인/직접 변경, 삭제·부분 실패·권한/보존 경계의 합성 데이터"
+    when: "저장 트랜잭션·원본/이력 행·별도 이력 메뉴의 검색/선택/반출을 대조"
+    then: "이력 일부 실패는 현재값도 롤백, 같은 부모 변경은 일관된 세트, 동일 명령은 원 HISTORY_NO 반환"
+    verification: "단위/DB 통합/계약/E2E; 제목의 규칙을 반대로 허용했을 때 실패해야 한다. 미구현 제품 시험 명세다."
+    status: "planned"
+  - id: TC-0335
+    feature: FEAT-033
+    usecase: UC-031
+    screens:
+      - SCR-040
+      - SCR-041
+      - SCR-042
+    type: "permission"
+    title: "과거 값 검색·현재 행 삭제·별도 메뉴 권한"
+    actor: ACT-004
+    given: "단일 그리드/마스터·탭 저장과 승인/직접 변경, 삭제·부분 실패·권한/보존 경계의 합성 데이터"
+    when: "저장 트랜잭션·원본/이력 행·별도 이력 메뉴의 검색/선택/반출을 대조"
+    then: "당시 컬럼/이력 저장일시로 검색하고 삭제된 원본도 조회, 별도 READ/EXPORT와 대상 범위 검사"
+    verification: "단위/DB 통합/계약/E2E; 제목의 규칙을 반대로 허용했을 때 실패해야 한다. 미구현 제품 시험 명세다."
+    status: "planned"
+  - id: TC-0336
+    feature: FEAT-033
+    usecase: UC-031
+    screens:
+      - SCR-040
+      - SCR-041
+      - SCR-042
+    type: "validation"
+    title: "_HIST 이름·서로게이트 PK·세트 동일 시각"
+    actor: ACT-004
+    given: "단일 그리드/마스터·탭 저장과 승인/직접 변경, 삭제·부분 실패·권한/보존 경계의 합성 데이터"
+    when: "저장 트랜잭션·원본/이력 행·별도 이력 메뉴의 검색/선택/반출을 대조"
+    then: "원본명_HIST, HIST_ID 단일 PK, HISTORY_NO+원 키 유일성, 마스터 HIST_DTM 필수·자식 HIST_DTM 부재와 부모 참조를 검사한다."
+    verification: "단위/DB 통합/계약/E2E; 제목의 규칙을 반대로 허용했을 때 실패해야 한다. 미구현 제품 시험 명세다."
+    status: "planned"
+  - id: TC-0337
+    feature: FEAT-033
+    usecase: UC-031
+    screens:
+      - SCR-040
+      - SCR-041
+      - SCR-042
+    type: "business_exception"
+    title: "승인 반영 시점·반려 제출본 보존"
+    actor: ACT-004
+    given: "단일 그리드/마스터·탭 저장과 승인/직접 변경, 삭제·부분 실패·권한/보존 경계의 합성 데이터"
+    when: "저장 트랜잭션·원본/이력 행·별도 이력 메뉴의 검색/선택/반출을 대조"
+    then: "초안/요청/반려/취소/반영 실패는 _HIST 없음, 승인/전결 실제 반영 성공과 전체 이력 원자 저장, 반려 요청/제출본/사유는 삭제하지 않음"
+    verification: "단위/DB 통합/계약/E2E; 제목의 규칙을 반대로 허용했을 때 실패해야 한다. 미구현 제품 시험 명세다."
+    status: "planned"
+  - id: TC-0338
+    feature: FEAT-033
+    usecase: UC-031
+    screens:
+      - SCR-040
+      - SCR-041
+      - SCR-042
+    type: "permission"
+    title: "비밀·현재 관측 배제와 세트 보존 경계"
+    actor: ACT-004
+    given: "단일 그리드/마스터·탭 저장과 승인/직접 변경, 삭제·부분 실패·권한/보존 경계의 합성 데이터"
+    when: "저장 트랜잭션·원본/이력 행·별도 이력 메뉴의 검색/선택/반출을 대조"
+    then: "비밀/해시/토큰/현재 관측·다른 소유 사용처 미복제, 미지원/파기 세트는 현재값으로 복구하지 않음"
+    verification: "단위/DB 통합/계약/E2E; 제목의 규칙을 반대로 허용했을 때 실패해야 한다. 미구현 제품 시험 명세다."
+    status: "planned"
+  - id: TC-0339
+    feature: FEAT-033
+    usecase: UC-031
+    screens:
+      - SCR-003
+      - SCR-036
+      - SCR-042
+    type: "business_exception"
+    title: "적용본 관리와 승인 설정별 액션"
+    actor: ACT-004
+    given: "현재 적용본과 요청 초안·제출·반려·동시 반영/참조 보호 사례"
+    when: "REQ-601.approval_storage의 전이와 실제 저장/조회 결과를 대조"
+    then: "승인 사용/미사용 각각에서 관리 목록은 적용본만 표시하고 승인 요청/저장을 구분한다. 요청 접수·반려 후 운영값 유지, 신규 미적용 목록 제외, 요청 메뉴에서 당시 전체 SNP/반려 사유를 조회한다."
+    status: "planned"
+    verification: "제품 구현 시 단위/통합 시험. 명세 검사는 제품 트랜잭션 실행 시험을 대신하지 않는다."
+  - id: TC-03310
+    feature: FEAT-033
+    usecase: UC-031
+    screens:
+      - SCR-003
+      - SCR-036
+      - SCR-042
+    type: "business_exception"
+    title: "마스터 리비전·기준/결과 보존"
+    actor: ACT-004
+    given: "현재 적용본과 요청 초안·제출·반려·동시 반영/참조 보호 사례"
+    when: "REQ-601.approval_storage의 전이와 실제 저장/조회 결과를 대조"
+    then: "REVISION=12에서 자식만 수정해 제출하면 BASE_REVISION=12/APPLIED_REVISION=NULL이다. 실제 반영 성공 시 마스터13·APPLIED_REVISION13·HIST13을 함께 기록한다. 반려/실패는 그대로며 재전송은 추가 증가하지 않는다."
+    status: "planned"
+    verification: "제품 구현 시 단위/통합 시험. 명세 검사는 제품 트랜잭션 실행 시험을 대신하지 않는다."
+  - id: TC-03311
+    feature: FEAT-033
+    usecase: UC-031
+    screens:
+      - SCR-003
+      - SCR-036
+      - SCR-042
+    type: "business_exception"
+    title: "세트 문맥과 초안·제출 불변"
+    actor: ACT-004
+    given: "현재 적용본과 요청 초안·제출·반려·동시 반영/참조 보호 사례"
+    when: "REQ-601.approval_storage의 전이와 실제 저장/조회 결과를 대조"
+    then: "다른 REQUEST_NO/HISTORY_NO의 자식을 섞으면 거부한다. DRAFT 편집은 요청 EDIT_VERSION으로 보호하고 제출 후 본문/기준 리비전 수정은 거부한다. 반려 보완은 새 요청이다."
+    status: "planned"
+    verification: "제품 구현 시 단위/통합 시험. 명세 검사는 제품 트랜잭션 실행 시험을 대신하지 않는다."
+  - id: TC-03312
+    feature: FEAT-033
+    usecase: UC-031
+    screens:
+      - SCR-003
+      - SCR-036
+      - SCR-042
+    type: "business_exception"
+    title: "과거 실행 리비전과 참조 보호"
+    actor: ACT-004
+    given: "현재 적용본과 요청 초안·제출·반려·동시 반영/참조 보호 사례"
+    when: "REQ-601.approval_storage의 전이와 실제 저장/조회 결과를 대조"
+    then: "새 리비전 반영 뒤 진행/대기 실행은 이전 HIST 전체 세트를 읽는다. 참조 중인 이력 파기를 거부하고 현재 권한 회수는 즉시 적용한다. 세트 내부 후보 참조는 모두 새 적용 리비전으로 확정하며 외부 참조는 자동 최신화하지 않는다."
+    status: "planned"
+    verification: "제품 구현 시 단위/통합 시험. 명세 검사는 제품 트랜잭션 실행 시험을 대신하지 않는다."

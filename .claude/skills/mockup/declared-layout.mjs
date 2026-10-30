@@ -52,7 +52,7 @@ export function declaredFigures(table, plain) {
 export function declaredScreen(title, model, figure, { annotator, plain, searchControl, manualKey, compact = false }) {
   if ((figure.emptyGrids ?? []).some(name=>!model.columns.some(t=>titleOf(t)===name&&!/—\s*폼$/.test(t.heading)))) throw new Error('목업 상태의 빈 그리드 이름이 §4에 없다');
   const n = annotator(figure.key);
-  const interactive = model.interactive && !compact;
+  const interactive = model.interactive && !compact && figure.detail !== '없음';
   const supportsValueMode = scope => {
     const required = scope==='코드 값'?'INLINE':['코드 조건','코드 바인딩','조회 코드 값'].includes(scope)?'CODE':null;
     if(!required)return true;
@@ -61,6 +61,7 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
   };
   const badge = (label, detail = '', key = label) => n.badge(`<b>${escape(label)}</b> — ${escape(detail || label)}`, key);
   const button = (name, scope = '화면') => {
+    if (name === '승인 요청' && figure.buttons.includes('저장') && !figure.buttons.includes('승인 요청')) name = '저장';
     const actionTable = model.actionTables?.find(t=>t.rows.some(r=>plain(r[0])===name));
     const row = actionTable?.rows.find(r=>plain(r[0])===name) ?? model.actions.find((r) => plain(r[0]) === name);
     if (!row) throw new Error(`목업 상태 ${figure.key}의 버튼 '${name}'이 §5에 없다`);
@@ -145,7 +146,7 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const canAdd=figure.editable&&supportsValueMode(label)&&(model.addRowTabs??[]).includes(label)&&table.rows.some(r=>/가능|조건부/.test(plain(cell(table,r,'편집'))));
     const surface=surfaceOf(model,label);
     const rowControls=surface?surface.buttons.map(name=>button(name,label)).join(''):canAdd?`<button type="button" class="btn ghost sm" data-add-demo-row>행 추가${badge('행 추가','저장 전 편집본에 빈 행을 추가한다.',`action:${label}:행 추가`)}</button>`:'';
-    return `<div data-grid-view="${gridId}" data-grid-role="${table===model.columns[0]?'master':'detail'}"><div class="tb"><span class="ttl">${escape(label)}</span><span class="cnt">${empty ? '0' : rows.length}건</span>${rowControls}${excel}${settings}</div>${canAdd?`<template data-row-template>${renderRow({},rows.length)}</template>`:''}
+    return `<div data-grid-view="${gridId}" data-grid-role="${table===model.columns[0]?'master':'detail'}"><div class="tb"><span class="tb-meta"><span class="ttl">${escape(label)}</span><span class="cnt">${empty ? '0' : rows.length}건</span></span>${rowControls}${excel}${settings}</div>${canAdd?`<template data-row-template>${renderRow({},rows.length)}</template>`:''}
       <div class="grid" style="overflow:auto"><table style="width:100%;table-layout:fixed;min-width:${table.rows.filter(r=>!optional(r)).reduce((n,r)=>n+width(r),0)}px"><thead><tr>${heads}</tr></thead><tbody>${body}</tbody></table></div>
       <div class="pg">총 ${empty ? '0' : rows.length}건 · 1 페이지</div></div>`;
   };
@@ -166,9 +167,12 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
   }).join('');
   const tabNames = [...new Set(details.map(tabOf))];
   const tabs = () => tabNames.map((name) => {const note=badge(name,surfaceOf(model,name)?.purpose||'선택한 대상의 이 영역을 확인한다.',`tab:${name}`);return interactive ? `<button type="button" role="tab" aria-selected="${name === figure.detail}" data-detail-tab="${escape(name)}" class="btn ghost sm ${name === figure.detail ? 'on' : ''}">${escape(name)}${note}</button>` : `<span class="${name === figure.detail ? 'on' : ''}">${escape(name)}${note}</span>`;}).join('');
-  const extraSearch = model.detailSearchTables?.find((t) => titleOf(t) === figure.detail);
-  const detailSearch = extraSearch ? `<div class="sf" style="grid-template-columns:max-content minmax(0,1fr)">${extraSearch.rows.map((r) => `<label>${escape(plain(r[0]))}${badge(plain(r[0]),plain(cell(extraSearch,r,'기본값')))}</label><input aria-label="${escape(plain(r[0]))}" placeholder="${escape(plain(r[0]))}">`).join('')}</div>` : '';
-  const detail = () => interactive && showData ? '' : selected.length ? detailSearch + selected.map((t) => /—\s*폼$/.test(t.heading) ? `<h3>${escape(titleOf(t))}</h3>${formView(t)}` : tableView(t)).join('') : `<p>${escape(figure.notice)}</p>`;
+  const detailSearch = (name) => {
+    const table = model.detailSearchTables?.find((t) => titleOf(t) === name);
+    return table ? `<div class="sf" style="grid-template-columns:max-content minmax(0,1fr)">${table.rows.map((r) => `<label>${escape(plain(r[0]))}${badge(plain(r[0]),plain(cell(table,r,'기본값')))}</label><input aria-label="${escape(plain(r[0]))}" placeholder="${escape(plain(r[0]))}">`).join('')}</div>` : '';
+  };
+  const detailTable = (table) => /—\s*폼$/.test(table.heading) ? `<h3>${escape(titleOf(table))}</h3>${formView(table)}` : tableView(table);
+  const detail = () => interactive && showData ? '' : selected.length ? detailSearch(figure.detail) + selected.map(detailTable).join('') : `<p>${escape(figure.notice)}</p>`;
   const search = compact ? '' : model.search.map((r) => {
     if (!model.searchTable) return searchControl(r, n);
     const label = plain(r[0]);
@@ -183,13 +187,13 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
   const topButtons=buttons();
   const master = compact ? '' : tableView(model.columns[0],!showData);
   const tabMarkup=compact?'':tabs();
-  const panels = interactive && showData ? tabNames.map(name=>`<div data-detail-panel="${escape(name)}"${name===figure.detail?'':' hidden'}>${surfaceIntroduction(surfaceOf(model,name))}<div class="hint" data-context-label hidden>현재 컬럼: <span></span> <button type="button" class="btn ghost sm" data-clear-context>전체 보기${badge('전체 보기','건수 셀에서 전달한 컬럼 문맥 필터를 해제하고 같은 대상의 전체 목록을 표시한다.','common:clear-context')}</button></div>${details.filter(t=>tabOf(t)===name).map(t=>tableView(t)).join('')}</div>`).join('') : compact?'':detail();
+  const panels = interactive && showData ? tabNames.map(name=>`<div data-detail-panel="${escape(name)}"${name===figure.detail?'':' hidden'}>${surfaceIntroduction(surfaceOf(model,name))}<div class="hint" data-context-label hidden>현재 컬럼: <span></span> <button type="button" class="btn ghost sm" data-clear-context>전체 보기${badge('전체 보기','건수 셀에서 전달한 컬럼 문맥 필터를 해제하고 같은 대상의 전체 목록을 표시한다.','common:clear-context')}</button></div>${detailSearch(name)}${details.filter(t=>tabOf(t)===name).map(detailTable).join('')}</div>`).join('') : compact?'':detail();
   const lower = `<div class="tabs" style="flex-wrap:wrap"${interactive?' role="tablist"':''}>${tabMarkup}</div>${panels}`;
   const panes = model.vertical!==false
     ? `<div data-layout="top-bottom" style="margin-top:12px"><section data-pane="master">${master}</section><div class="split"><span class="hnd">⋮⋮⋮</span></div><section data-pane="detail">${lower}</section></div>`
     : `<div class="splitrow" data-layout="left-right" style="margin-top:12px"><div class="pane">${master}</div><div class="split v"><span class="hnd">⋮</span></div><div class="pane">${lower}</div></div>`;
   const selectedLabel = model.columns[0].rows.filter(r=>/현재 객체명|현재 업무명/.test(plain(r[0]))).map(r=>example(model.columns[0],r)).join(' / ');
-  const main = compact ? `<div class="hint">${escape(figure.detail)} · 같은 상위 행의 상세 영역</div><div class="notes" role="status">${escape(figure.notice)}</div><div data-detail-panel="${escape(figure.detail)}"><div class="hint" data-context-label hidden>현재 컬럼: <span></span> <button type="button" class="btn ghost sm" data-clear-context>전체 보기${badge('전체 보기','건수 셀에서 전달한 컬럼 문맥 필터를 해제하고 같은 대상의 전체 목록을 표시한다.','common:clear-context')}</button></div>${detail()}</div>` : `<div class="sf">${search}</div><div class="row" style="flex-wrap:wrap;margin:10px 0">${topButtons}${interactive?`<button type="button" class="btn ghost sm" data-toggle-master>테이블 목록 접기${badge('테이블 목록 접기/펼치기','선택 대상과 하단 편집본을 유지하면서 상단 목록의 표시만 전환한다.','common:toggle-master')}</button>`:''}</div>${interactive&&showData?`<div class="hint">선택 테이블: ${escape(selectedLabel)}</div>`:''}
+  const main = compact ? `<div class="hint">${escape(figure.detail)} · 같은 상위 행의 상세 영역</div><div class="notes" role="status">${escape(figure.notice)}</div><div data-detail-panel="${escape(figure.detail)}"><div class="hint" data-context-label hidden>현재 컬럼: <span></span> <button type="button" class="btn ghost sm" data-clear-context>전체 보기${badge('전체 보기','건수 셀에서 전달한 컬럼 문맥 필터를 해제하고 같은 대상의 전체 목록을 표시한다.','common:clear-context')}</button></div>${detail()}</div>` : `<div class="sf">${search}</div><div class="row actions" style="flex-wrap:wrap;margin:10px 0">${topButtons}${interactive&&model.collapsibleMaster?`<button type="button" class="btn ghost sm" data-toggle-master>테이블 목록 접기${badge('테이블 목록 접기/펼치기','선택 대상과 하단 편집본을 유지하면서 상단 목록의 표시만 전환한다.','common:toggle-master')}</button>`:''}</div>${interactive&&showData&&selectedLabel?`<div class="hint">선택 테이블: ${escape(selectedLabel)}</div>`:''}
        <div class="notes" role="status">${escape(figure.notice)}</div>${panes}`;
   const commandTable=model.commandFields;
   const commands=[...new Set((commandTable?.rows??[]).map(r=>plain(r[0])))].map(name=>{
@@ -207,7 +211,7 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     };
     const targetRows=rows.filter(r=>plain(cell(commandTable,r,'영역'))==='관련 대상');
     const targets=targetRows.length?`<div data-command-targets><fieldset data-command-target><legend>관련 테이블·버전</legend>${targetRows.map(field).join('')}<button type="button" class="btn ghost sm" data-remove-command-target>대상 제거${badge('대상 제거','입력 중 대상 연결만 제거한다. 테이블이나 버전을 삭제하지 않는다.',`command:${name}:remove`)}</button></fieldset></div><button type="button" class="btn ghost sm" data-add-command-target>대상 추가${badge('대상 추가','같은 명령에 연결할 대상 입력 행을 추가한다.',`command:${name}:add`)}</button>`:'';
-    return `<dialog class="command-dialog" data-command="${escape(name)}" aria-label="${escape(name)} 입력"><form data-command-form><h3>${escape(name)}</h3>${rows.filter(r=>plain(cell(commandTable,r,'영역'))!=='관련 대상').map(field).join('')}${targets}<p>검토용 입력 예시입니다. 실제 서버로 전송하지 않습니다.</p><p role="status" data-command-result></p><div class="row"><button type="submit" class="btn">접수${badge('접수','요건서의 필수 입력과 명령별 검증 조건을 확인해 접수한다. 목업에서는 입력 확인만 시연하며 실제 전송하지 않는다.',`command:${name}:submit`)}</button><button type="button" class="btn ghost" data-close-command>닫기${badge('닫기','입력창을 닫는다. 목업에서는 입력을 유지한다.',`command:${name}:close`)}</button></div></form></dialog>`;
+    return `<dialog class="command-dialog" data-command="${escape(name)}" aria-label="${escape(name)} 입력"><form data-command-form><h3>${escape(name)}</h3>${rows.filter(r=>plain(cell(commandTable,r,'영역'))!=='관련 대상').map(field).join('')}${targets}<p>검토용 입력 예시입니다. 실제 서버로 전송하지 않습니다.</p><p role="status" data-command-result></p><div class="row actions"><button type="submit" class="btn">접수${badge('접수','요건서의 필수 입력과 명령별 검증 조건을 확인해 접수한다. 목업에서는 입력 확인만 시연하며 실제 전송하지 않는다.',`command:${name}:submit`)}</button><button type="button" class="btn ghost" data-close-command>닫기${badge('닫기','입력창을 닫는다. 목업에서는 입력을 유지한다.',`command:${name}:close`)}</button></div></form></dialog>`;
   }).join('');
   return `<div class="screen leaf" id="${escape(figure.key)}"${interactive?' data-interactive-tabs':''}${manualKey ? ` data-manual="${escape(figure.key)}"` : ''}>
     <div class="bar">${escape(title)} · ${escape(figure.caption)} · 검토용 예시</div><div class="body">${main}</div>${commands}</div>\n${n.render()}`;

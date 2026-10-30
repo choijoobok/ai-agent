@@ -30,6 +30,9 @@ import { traceReport } from '../../hooks/trace-check.mjs';
 import { associatedScreens, featureIds, relationIds } from '../../../aidd-guide/harness/runtime/trace-model.mjs';
 import { listSpecSetNames, loadSpecSet } from '../../../aidd-guide/harness/runtime/spec-set.mjs';
 import { domainSchema } from '../../../aidd-guide/harness/runtime/domain-schema.mjs';
+import { assertHistoryContract } from './history-contract.mjs';
+import { approvalContractErrors } from './approval-contract.mjs';
+import { menuContractErrors, menuReviewMarkdown } from './menu-contract.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..', '..', '..');
@@ -95,6 +98,8 @@ const LABEL = {
   processing: '처리 규칙', public_contract_needs: '필요한 공개 계약', failure_contract: '실패 처리',
   purpose: '목적', boundary: '경계', refs: '근거 참조', pending: '후속 설계',
   feature_contract: '기능 명세 연결', integration_history_link: '연동 자산 이력 연결',
+  view_kind: '화면 종류', source_screen: '상속 원 화면', inheritance: '화면 상속 규칙', history_copy_of: '이력 복사 원본',
+  history_contract: '변경 이력 계약', history_pattern: '변경 이력 패턴', history_adoption: '기존 구현 이력 이행',
   external_observations: '외부 관측 정보', state_machine: '상태와 판정', delete_policy: '삭제 정책',
   read: '조회', create: '등록', change: '변경', references: '참조 보호', consumption: '소비 시 검증',
   group_change: '그룹 변경', save: '저장', management: '관리 상태', availability: '호출 가능 판정',
@@ -678,6 +683,7 @@ function 요건정의서() {
 // ── 16행 · 화면 목록 · 화면 정의서 ────────────────────────────────
 function 화면정의서() {
   const s = load('60-screens');
+  const errors=menuContractErrors(s);if(errors.length)throw new Error(errors.join('\n'));
   const mc = s.menu_criteria;
   const p = [head('SCR-LIST', '화면 목록 · 화면 정의서', specSource('60-screens'),
     s.meta.status, s.meta.baselined, null,
@@ -687,6 +693,7 @@ function 화면정의서() {
   if (s.delivery_strategy) {
     p.push(`## 전달 전략\n\n${blocks([{ id: 'delivery-strategy', ...s.delivery_strategy }], ['id'], 'name')}`);
   }
+  if (s.menu_tree) p.push(menuReviewMarkdown(s, p=>existsSync(join(REPO,p))));
   p.push(`## 1. 무엇을 메뉴로 두는가\n\n**${flat(mc.claim)}** — ${flat(mc.why)}\n\n${bullets(mc.tests)}`
     + (mc.note ? `\n\n> ${flat(mc.note)}` : ''));
   const menuRows = s.screens.map((screen) => ({ ...screen, entry: screen.entry ?? (screen.route === null ? 'standalone' : screen.route ? 'menu' : '미정') }));
@@ -874,7 +881,10 @@ function ERD() {
 }
 
 let checkedDomain;
-function schema() { return checkedDomain ??= domainSchema(REPO); }
+function schema() {
+  if (!checkedDomain) { const snapshot=domainSchema(REPO); assertHistoryContract(snapshot.domain); const errors=approvalContractErrors(snapshot.domain); if(errors.length)throw new Error(errors.join('\n')); checkedDomain=snapshot; }
+  return checkedDomain;
+}
 
 /** 독립 물리 명세. 구현 전 계약과 소스 기준 예상 스키마를 명확히 나눈다. */
 function 테이블명세서(verify = false, snapshot = schema(), capture = null) {

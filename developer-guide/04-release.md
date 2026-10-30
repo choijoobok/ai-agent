@@ -87,7 +87,10 @@ Gradle 옵션을 읽지 않으므로 `--spring.profiles.active=<프로파일>` �
   프로파일 설정으로 전환된다(CON-033). **개발 환경의 CLI 로는 토큰 집계·스트리밍·동시성
   세 항목이 검증되지 않으므로**, API 구독 확보 직후 실환경에서 그 셋을 최우선 검증한다.
 - **DB·API·LLM 연결 정의는 배포 yml에서 관리한다.** 비밀 설정값은 REQ-403의 공통 도구로 암호화하고
-  설정 마스터 키만 외부에서 관리한다. 화면은 매핑과 참조 키만 관리하고 접속 정보·비밀 원문을 노출하지 않는다(ARCH-030).
+  설정 마스터 키만 외부에서 관리한다. 화면의 관리 저장값은 매핑과 참조 키다. 대상 시스템 화면은
+  [REQ-604의 connection_display](../documents/spec/10-requirements/011-reference-integration.yaml)에 따라 현재 로드된
+  API 연결의 비밀 없는 Base URL·인증 방식과 관측 근거를 읽기 전용으로 표시한다. 비밀 원문·암호문과
+  DB 접속 정보의 비노출 경계(ARCH-030)는 유지한다.
 
 `sample`은 local 변형에서만 포함된다. product JAR은 `./gradlew :backend:bootstrap:bootJar`로
 만들며 sample 코드·화면·DB 기준선을 넣지 않는다.

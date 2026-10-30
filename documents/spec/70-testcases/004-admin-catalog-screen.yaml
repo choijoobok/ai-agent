@@ -35,7 +35,7 @@ testcases:
     actor: "ACT-003"
     given: "전체 후보 구성 저장·고정 판 변경 / 새 구성 clientKey와 자기 참조"
     when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
-    then: "CAT-03·CAT-08·CAT-24와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다. SCR-003과 SCR-039는 관리 카탈로그의 같은 전체 후보·EDIT_VERSION·API-023/024/025를 사용하고 숨김/요약만 읽은 관계/전체 쌍을 보존한다. 관계 목록 누락을 삭제로 저장하거나 다른 화면에서 저장한 옛 편집 버전을 자동 병합하면 실패한다"
+    then: "CAT-03·CAT-08·CAT-24와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다. SCR-003과 SCR-039는 관리 카탈로그의 같은 전체 변경 구성·BASE_REVISION·API-023/024를 사용하고 숨김/요약만 읽은 관계/전체 쌍을 보존한다. 관계 목록 누락을 삭제로 저장하거나 다른 화면에서 저장한 옛 기준 리비전을 자동 병합하면 실패한다"
     verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
     screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-03","documents/screen/admin/hub/catalog/requirements.md#CAT-08","documents/screen/admin/hub/catalog/requirements.md#CAT-24"]
     status: "planned"
@@ -44,9 +44,9 @@ testcases:
     usecase: "UC-007"
     screens: ["SCR-003"]
     type: "business_exception"
-    title: "같은 이전 EDIT_VERSION의 동시 편집"
+    title: "같은 이전 BASE_REVISION의 동시 편집"
     actor: "ACT-003"
-    given: "같은 이전 EDIT_VERSION의 동시 편집"
+    given: "같은 이전 BASE_REVISION의 동시 편집"
     when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
     then: "CAT-04와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
     verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
@@ -140,7 +140,7 @@ testcases:
     given: "현재 정책·그룹 원천 조회 실패 / 그룹/정책/메타데이터·샘플/반출 권한 조합"
     when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
     then: "CAT-12·CAT-17와 REQ-301·FEAT-003/011의 해당 규칙을 만족한다"
-    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다. 추가 검증: 접근 그룹/컬럼 예외 동일 후보·부분집합·동시 편집 버전·반영 전 현재 권한 유지·직접 정책 분리. 반대 동작이면 실패해야 한다"
+    verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다. 추가 검증: 접근 그룹/컬럼 예외 동일 후보·부분집합·동시 기준 리비전·반영 전 현재 권한 유지·직접 정책 분리. 반대 동작이면 실패해야 한다"
     screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-12","documents/screen/admin/hub/catalog/requirements.md#CAT-17","documents/screen/admin/hub/catalog/requirements.md#CAT-28"]
     status: "planned"
   - id: TC-00312
@@ -191,7 +191,7 @@ testcases:
     actor: "ACT-003"
     given: "관계 관리측·반대편 조회/편집"
     when: "화면 사례의 조회/후보 편집·검증·소유 흐름 인계를 수행한다"
-    then: "CAT-20와 REQ-301.relationship_metadata.workspace를 만족한다. SCR-003의 관계 탭/FK 직접 설정은 없고 요약은 읽기 전용이다. SCR-039에서 관리측을 생성 시 선택·고정하고 반대편은 같은 안정 관계/소유 판을 읽는다. 전체 후보/EDIT_VERSION/API-023/024/025 재사용과 미저장 입력 보존·현재 권한 재검사를 상세 설계 후 시험한다"
+    then: "CAT-20와 REQ-301.relationship_metadata.workspace를 만족한다. SCR-003의 관계 탭/FK 직접 설정은 없고 요약은 읽기 전용이다. SCR-039에서 관리측을 생성 시 선택·고정하고 반대편은 같은 안정 관계/소유 판을 읽는다. 전체 후보/BASE_REVISION/API-023/024/025 재사용과 미저장 입력 보존·현재 권한 재검사를 상세 설계 후 시험한다"
     verification: "단위/계약/DB 통합/E2E에서 요건서의 정상·거부·경합 기대를 검증한다. 부분 저장·자동 운영 반영·소유/현재 권한 우회·불명 결과 새 키 발급·무효 참조를 허용하면 실패해야 한다"
     screen_cases: ["documents/screen/admin/hub/catalog/requirements.md#CAT-20"]
     status: "planned"

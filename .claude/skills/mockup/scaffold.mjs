@@ -226,7 +226,8 @@ function screenModel(md, type) {
   for(const table of columns){table.rows=table.rows.filter(r=>plain(r[0]));table.readonly=/^조회 전용/.test(surfaces.find(s=>s.name===areaTitle(table))?.save??'');}
   return {
     figures: declaredFigures(findTable(composition, /그림 키/), plain),
-    interactive: /탭 상호작용:\s*사용/.test(composition?.body ?? ''),
+    interactive: columns.length > 1,
+    collapsibleMaster: /상단 목록은 접을 수/.test(composition?.body ?? ''),
     addRowTabs: (composition?.body.match(/^행 추가 탭:\s*(.+)$/m)?.[1] ?? '').split('·').map(s=>s.trim()),
     rowExamples: findTable(composition, /^그리드 예시$/),
     popups: findTable(composition, /^선택창$/),

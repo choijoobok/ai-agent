@@ -1,0 +1,90 @@
+# admin 메뉴의 검토용 배치 — 개별 화면 사실은 screens 참조
+menu_tree:
+  status: "screen_review_draft"
+  scope: "RM-P1 admin 모듈만 대상으로 한다. system 모듈은 이번 목업·메뉴 재정리 및 새 변경 이력 저장 대상에서 제외한다. 메뉴 코드/경로는 목업 검토안이며 제품 소스 반영은 화면 합의 뒤다."
+  admin_groups:
+    - code: "HUB_INTEGRATION"
+      title: "연동 관리"
+      screens:
+        - SCR-001
+        - SCR-040
+        - SCR-002
+        - SCR-041
+        - SCR-003
+        - SCR-042
+        - SCR-039
+        - SCR-004
+        - SCR-043
+        - SCR-019
+        - SCR-054
+    - code: "HUB_KNOWLEDGE"
+      title: "업무 지식 관리"
+      screens:
+        - SCR-010
+        - SCR-047
+        - SCR-011
+        - SCR-048
+        - SCR-012
+        - SCR-049
+        - SCR-013
+        - SCR-050
+        - SCR-014
+        - SCR-036
+        - SCR-034
+    - code: "HUB_ACCESS"
+      title: "권한 관리"
+      screens:
+        - SCR-005
+        - SCR-044
+        - SCR-006
+        - SCR-045
+        - SCR-007
+        - SCR-008
+        - SCR-009
+        - SCR-046
+        - SCR-037
+    - code: "HUB_OPERATION"
+      title: "AI 운영"
+      screens:
+        - SCR-015
+        - SCR-051
+        - SCR-017
+        - SCR-018
+        - SCR-053
+        - SCR-020
+    - code: "HUB_COST"
+      title: "비용 관리"
+      screens:
+        - SCR-016
+        - SCR-052
+        - SCR-021
+        - SCR-055
+        - SCR-022
+        - SCR-035
+        - SCR-023
+    - code: "HUB_AUDIT"
+      title: "감사·이력"
+      screens:
+        - SCR-027
+        - SCR-028
+        - SCR-029
+        - SCR-030
+        - SCR-031
+        - SCR-032
+    - code: "HUB_QUALITY"
+      title: "품질 관리"
+      screens:
+        - SCR-024
+        - SCR-033
+        - SCR-026
+  excluded:
+    - screen: SCR-025
+      reason: "REQ-615 유예 후보. 전체 개발 후 재검토한다."
+    - screen: SCR-038
+      reason: "RM-P3 자동화 후속 화면. 이번 목업 대상에서 제외한다."
+  rules:
+    - "관리 화면은 실제 적용본만 표시하고 요청/승인/반려는 소유 요청 화면에서 처리한다."
+    - "현재/요청/실행 감사의 의미가 다른 이력을 한 관리 _HIST 화면으로 합치지 않는다."
+    - "원 화면별 상속 이력은 목록에 포함하지만 독립 목업 작성 수에는 포함하지 않는다."
+    - "메뉴별 독립 이동과 읽기/처리/반출 권한을 유지한다. 구조 노드는 URL을 갖지 않고 리프만 화면에 연결한다."
+    - "전체 화면 요건/목업 합의 후 물리/API·트랜잭션 설계를 진행한다. 지금의 경로·코드는 구현 완료나 G3 승인을 뜻하지 않는다."
