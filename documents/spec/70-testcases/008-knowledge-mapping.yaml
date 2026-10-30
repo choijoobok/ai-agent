@@ -1,0 +1,182 @@
+# 지식의 안정 ID 매핑·독립 변경과 자산 승인 영향 검토
+testcases:
+  - id: TC-0141
+    feature: FEAT-014
+    usecase: UC-012
+    screens:
+      - SCR-003
+      - SCR-004
+      - SCR-011
+      - SCR-012
+      - SCR-019
+      - SCR-036
+    type: "normal"
+    title: "지식 소유 매핑과 외부 상세 분리"
+    actor: ACT-003
+    given: "지식 K가 태그·카탈로그·예제·API·도구를 연결하고 사용 설명을 변경"
+    when: "지식 요청 _SNP/승인 화면/관리 이력 확인"
+    then: "본문·그룹·안정 ID 매핑과 설명·당시 표시 근거만 보존한다. 외부 상세/하위 테이블·운영 고정 리비전을 지식 소유 스냅샷에 넣지 않는다."
+    status: "planned"
+    verification: "요구사항 검수 시 반례 대조. 제품 구현 시 단위/통합 시험으로 연결하며 문서 검증을 실제 승인/동시성 실행 시험으로 표시하지 않는다."
+  - id: TC-0142
+    feature: FEAT-014
+    usecase: UC-012
+    screens:
+      - SCR-003
+      - SCR-004
+      - SCR-011
+      - SCR-012
+      - SCR-019
+      - SCR-036
+    type: "normal"
+    title: "지식 대기 중 API 독립 변경 허용"
+    actor: ACT-003
+    given: "신규 지식 K의 요청 R만 API A를 연결하고 현재 운영 매핑에는 연결이 없음. R이 대기 중이며 A 적용 리비전은 3"
+    when: "A를 리비전 4로 별도 요청·검토·승인·반영"
+    then: "API 승인 영향 조회가 현재 운영 매핑과 미종결 제출 _SNP를 함께 찾아 REQUEST/R의 K 본문·설명을 보여준다. 두 요청은 서로 점유하지 않는다. A를 4로 반영해도 K 매핑·본문·리비전은 자동 변경하지 않고 신규 K의 적용 리비전을 꾸미지 않는다."
+    status: "planned"
+    verification: "요구사항 검수 시 반례 대조. 제품 구현 시 단위/통합 시험으로 연결하며 문서 검증을 실제 승인/동시성 실행 시험으로 표시하지 않는다."
+  - id: TC-0143
+    feature: FEAT-014
+    usecase: UC-012
+    screens:
+      - SCR-003
+      - SCR-004
+      - SCR-011
+      - SCR-012
+      - SCR-019
+      - SCR-036
+    type: "normal"
+    title: "외부 리비전 상승으로 지식 자동 반려 금지"
+    actor: ACT-003
+    given: "K 요청 뒤 연결된 카탈로그·예제·API·도구가 정상 갱신되고 매핑 대상은 존재/사용 가능/권한 유효"
+    when: "K 요청의 승인·반영 수행"
+    then: "외부 리비전 차이만으로 전체 반려·재요청을 강제하지 않으며 K 자기 기준본과 ID 매핑 유효성을 검사해 반영한다."
+    status: "planned"
+    verification: "요구사항 검수 시 반례 대조. 제품 구현 시 단위/통합 시험으로 연결하며 문서 검증을 실제 승인/동시성 실행 시험으로 표시하지 않는다."
+  - id: TC-0144
+    feature: FEAT-014
+    usecase: UC-012
+    screens:
+      - SCR-003
+      - SCR-004
+      - SCR-011
+      - SCR-012
+      - SCR-019
+      - SCR-036
+    type: "business_exception"
+    title: "지식 자신의 기준 리비전 충돌 차단"
+    actor: ACT-003
+    given: "K가 기준 리비전 12로 제출한 뒤 실제 K 적용본은 13"
+    when: "K 요청 반영 시도"
+    then: "실제 수정 대상의 BASE_REVISION 충돌로 차단하고 본 테이블·HIST를 변경하지 않는다. 외부 버전 비교 제거를 자기 충돌 검사 면제로 사용하지 않는다."
+    status: "planned"
+    verification: "요구사항 검수 시 반례 대조. 제품 구현 시 단위/통합 시험으로 연결하며 문서 검증을 실제 승인/동시성 실행 시험으로 표시하지 않는다."
+  - id: TC-0145
+    feature: FEAT-014
+    usecase: UC-012
+    screens:
+      - SCR-003
+      - SCR-004
+      - SCR-011
+      - SCR-012
+      - SCR-019
+      - SCR-036
+    type: "business_exception"
+    title: "매핑 대상 유효성·권한 검사 유지"
+    actor: ACT-003
+    given: "매핑 대상 API가 삭제/폐기되거나 현재 권한이 없음"
+    when: "지식의 요청·승인·반영 검증"
+    then: "존재·현재 연결 가능 상태·권한 실패를 차단한다. 정상 리비전 상승과 구분하고 실패를 연결 없음/영향 없음으로 표시하지 않는다."
+    status: "planned"
+    verification: "요구사항 검수 시 반례 대조. 제품 구현 시 단위/통합 시험으로 연결하며 문서 검증을 실제 승인/동시성 실행 시험으로 표시하지 않는다."
+  - id: TC-0146
+    feature: FEAT-014
+    usecase: UC-012
+    screens:
+      - SCR-003
+      - SCR-004
+      - SCR-011
+      - SCR-012
+      - SCR-019
+      - SCR-036
+    type: "normal"
+    title: "자산 승인에서 연결 지식 영향과 보완 요청"
+    actor: ACT-003
+    given: "API 입력 의미 또는 카탈로그 업무 의미가 바뀌며 연결 지식의 사용 설명도 보완 필요"
+    when: "변경 자산의 기술 검토·최종 승인 화면에서 영향 확인"
+    then: "연결 지식 목록·본문·해당 매핑 설명을 읽기 전용으로 보고 보완 필요 여부·근거·별도 지식 변경 요청을 연결한다. 지식을 자동 수정/승인하거나 요청 연결만으로 보완 완료 처리하지 않는다."
+    status: "planned"
+    verification: "요구사항 검수 시 반례 대조. 제품 구현 시 단위/통합 시험으로 연결하며 문서 검증을 실제 승인/동시성 실행 시험으로 표시하지 않는다."
+  - id: TC-0147
+    feature: FEAT-014
+    usecase: UC-012
+    screens:
+      - SCR-003
+      - SCR-004
+      - SCR-011
+      - SCR-012
+      - SCR-019
+      - SCR-036
+    type: "normal"
+    title: "직접·예제 경유 영향과 목록 변경 허용"
+    actor: ACT-003
+    given: "카탈로그 X에 직접 지식 A와 예제 E 경유 지식 B가 연결되고 검토 중 B 내용/연결이 변경"
+    when: "X 승인에서 당시/현재 영향 조회"
+    then: "직접/간접 경로와 당시/현재 차이를 보여주고 확인한 지식 리비전·판단 근거를 보존한다. 차이만으로 자동 반려/강제 지식 재승인하지 않는다. 적용본은 ID+리비전의 HIST, 제출본은 요청번호+지식ID의 SNP로 근거를 재현하고 현재값으로 덮지 않는다."
+    status: "planned"
+    verification: "요구사항 검수 시 반례 대조. 제품 구현 시 단위/통합 시험으로 연결하며 문서 검증을 실제 승인/동시성 실행 시험으로 표시하지 않는다."
+  - id: TC-0148
+    feature: FEAT-014
+    usecase: UC-012
+    screens:
+      - SCR-003
+      - SCR-004
+      - SCR-011
+      - SCR-012
+      - SCR-019
+      - SCR-036
+    type: "normal"
+    title: "실행 리비전 고정과 과거 근거 보존"
+    actor: ACT-003
+    given: "한 실행이 K 및 API A 리비전 3을 실제 선택한 뒤 A 리비전 4가 적용"
+    when: "기존 실행 유지·새 실행 시작·과거 조회"
+    then: "기존 실행은 REQ-108에 따라 선택 리비전 3을 유지하고 새 실행은 당시 사용 가능한 적용본을 선택·기록한다. 과거 실행/영향 근거를 현재값으로 덮지 않고 현재 권한 회수는 별도 적용한다."
+    status: "planned"
+    verification: "요구사항 검수 시 반례 대조. 제품 구현 시 단위/통합 시험으로 연결하며 문서 검증을 실제 승인/동시성 실행 시험으로 표시하지 않는다."
+  - id: TC-0149
+    feature: FEAT-014
+    usecase: UC-012
+    screens:
+      - SCR-003
+      - SCR-004
+      - SCR-011
+      - SCR-012
+      - SCR-019
+      - SCR-036
+    type: "permission"
+    title: "영향 지식 본문 권한·조회 실패 구분"
+    actor: ACT-003
+    given: "자산 승인자는 일부 연결 지식 본문 열람 권한이 없거나 역참조 조회 실패"
+    when: "영향 목록·본문·설명 조회"
+    then: "권한을 우회 노출하지 않으며 제한·조회 실패·진짜 연결 없음을 구분한다. 읽지 못한 내용을 영향 없음/검토 완료로 꾸미지 않고 권한 있는 담당자의 보완 근거를 연결한다."
+    status: "planned"
+    verification: "요구사항 검수 시 반례 대조. 제품 구현 시 단위/통합 시험으로 연결하며 문서 검증을 실제 승인/동시성 실행 시험으로 표시하지 않는다."
+  - id: TC-01410
+    feature: FEAT-014
+    usecase: UC-012
+    screens:
+      - SCR-003
+      - SCR-004
+      - SCR-011
+      - SCR-012
+      - SCR-019
+      - SCR-036
+    type: "business_exception"
+    title: "SQL·입출력 기술 계약 검증 유지"
+    actor: ACT-003
+    given: "인증 예제 SQL의 정확 카탈로그 참조 또는 도구의 API/구현 입출력 계약이 무효"
+    when: "각 실제 변경 자산의 기술 검토/반영 또는 실행 검증"
+    then: "소유 기술 검증이 실패해야 한다. 지식의 안정 ID 매핑 정책을 모든 기술 참조 버전·필수값/형식 검사 제거로 확대하지 않는다."
+    status: "planned"
+    verification: "요구사항 검수 시 반례 대조. 제품 구현 시 단위/통합 시험으로 연결하며 문서 검증을 실제 승인/동시성 실행 시험으로 표시하지 않는다."
