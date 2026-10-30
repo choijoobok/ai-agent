@@ -16,7 +16,7 @@
 | 화면 / 기능 / 유즈케이스 | SCR-061 / FEAT-023 / UC-003·UC-005·UC-012 |
 | 상위 요구사항 | REQ-302·REQ-205·REQ-306·REQ-601·REQ-305 |
 | 페이지 경로 | `/admin/hub/query-example/change-request` — 설계 경로 |
-| 메뉴코드 / 상위 메뉴 | `HUB_QUERY_EXAMPLE_CHANGE_REQUEST` / `HUB_KNOWLEDGE` |
+| 메뉴코드 / 상위 메뉴 | `HUB_QUERY_EXAMPLE_CHANGE_REQUEST` / `HUB_REQUEST_APPROVAL` |
 | 프론트 폴더 | 미정 — 화면 합의 후 소유 상세 설계에서 확정 |
 | 백엔드 패키지 | 미정 — 화면 합의 후 소유 상세 설계에서 확정 |
 | 화면 유형 | 마스터-디테일(상하·하단 탭) |

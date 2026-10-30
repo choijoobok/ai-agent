@@ -14,7 +14,7 @@
 | 화면 / 기능 / 유즈케이스 | SCR-036 / FEAT-014 /  |
 | 상위 요구사항 | REQ-601·REQ-305·REQ-306 |
 | 페이지 경로 | `/admin/hub/asset-change-request` — 설계 경로 |
-| 메뉴코드 / 상위 메뉴 | `HUB_ASSET_CHANGE_REQUEST` / `HUB_KNOWLEDGE` |
+| 메뉴코드 / 상위 메뉴 | `HUB_ASSET_CHANGE_REQUEST` / `HUB_REQUEST_APPROVAL` |
 | 화면 유형 | 마스터-디테일(상하) · 상단 그리드 / 하단 탭 |
 | 처리 유형 | 조회 전용 |
 | 쓰는 액션 | READ · EXPORT |

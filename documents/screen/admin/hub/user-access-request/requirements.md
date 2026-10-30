@@ -14,7 +14,7 @@
 | 화면 / 기능 / 유즈케이스 | SCR-037 / FEAT-038 /  |
 | 상위 요구사항 | REQ-609·REQ-616·REQ-601 |
 | 페이지 경로 | `/admin/hub/user-access-request` — 설계 경로 |
-| 메뉴코드 / 상위 메뉴 | `HUB_USER_ACCESS_REQUEST` / `HUB_ACCESS` |
+| 메뉴코드 / 상위 메뉴 | `HUB_USER_ACCESS_REQUEST` / `HUB_REQUEST_APPROVAL` |
 | 화면 유형 | 마스터-디테일(상하) · 상단 그리드 / 하단 탭 |
 | 처리 유형 | 관리 |
 | 쓰는 액션 | READ · EXPORT · SAVE (세부 처리 권한은 §5) |

@@ -4,7 +4,7 @@ screens:
     title: "대상 시스템 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "연동 관리"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-001
     usecases:
@@ -12,7 +12,7 @@ screens:
       - UC-006
     type: "list_detail"
     menu_code: "HUB_TARGET_SYSTEM_HISTORY"
-    menu_parent: "HUB_INTEGRATION"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/target-system/history"
     view_kind: "change_history"
     source_screen: SCR-001
@@ -29,7 +29,7 @@ screens:
     title: "데이터소스 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "연동 관리"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-002
     usecases:
@@ -37,7 +37,7 @@ screens:
       - UC-006
     type: "list_detail"
     menu_code: "HUB_DATA_SOURCE_HISTORY"
-    menu_parent: "HUB_INTEGRATION"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/data-source/history"
     view_kind: "change_history"
     source_screen: SCR-002
@@ -54,7 +54,7 @@ screens:
     title: "스키마 카탈로그 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "연동 관리"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-003
     usecases:
@@ -62,7 +62,7 @@ screens:
       - UC-006
     type: "list_detail"
     menu_code: "HUB_CATALOG_HISTORY"
-    menu_parent: "HUB_INTEGRATION"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/catalog/history"
     view_kind: "change_history"
     source_screen: SCR-003
@@ -79,13 +79,13 @@ screens:
     title: "업무 API 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "연동 관리"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-004
     usecases:
       - UC-018
     menu_code: "HUB_BUSINESS_API_HISTORY"
-    menu_parent: "HUB_INTEGRATION"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/business-api/history"
     view_kind: "change_history"
     source_screen: SCR-004
@@ -101,7 +101,7 @@ screens:
     title: "Portal 사용자 관리 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "공통 기반"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-005
     usecases:
@@ -112,7 +112,7 @@ screens:
       - UC-023
       - UC-024
     menu_code: "HUB_PORTAL_USER_HISTORY"
-    menu_parent: "HUB_FOUNDATION"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/portal-user/history"
     view_kind: "change_history"
     source_screen: SCR-005
@@ -128,7 +128,7 @@ screens:
     title: "사용자 그룹 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "공통 기반"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-006
     usecases:
@@ -137,7 +137,7 @@ screens:
       - UC-006
       - UC-025
     menu_code: "HUB_USER_GROUP_HISTORY"
-    menu_parent: "HUB_FOUNDATION"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/user-group/history"
     view_kind: "change_history"
     source_screen: SCR-006
@@ -153,13 +153,13 @@ screens:
     title: "행 스코프·필터·조회 제약 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "권한 관리"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-009
     usecases:
       - UC-026
     menu_code: "HUB_QUERY_POLICY_HISTORY"
-    menu_parent: "HUB_ACCESS"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/query-policy/history"
     view_kind: "change_history"
     source_screen: SCR-009
@@ -175,7 +175,7 @@ screens:
     title: "지식 검색 태그·동의어 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "업무 지식 관리"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-024
     usecases:
@@ -184,7 +184,7 @@ screens:
       - UC-006
       - UC-011
     menu_code: "HUB_KNOWLEDGE_TAG_HISTORY"
-    menu_parent: "HUB_KNOWLEDGE"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/knowledge-tag/history"
     view_kind: "change_history"
     source_screen: SCR-010
@@ -200,7 +200,7 @@ screens:
     title: "지식 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "업무 지식 관리"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-014
     usecases:
@@ -212,7 +212,7 @@ screens:
       - UC-010
       - UC-012
     menu_code: "HUB_KNOWLEDGE_HISTORY"
-    menu_parent: "HUB_KNOWLEDGE"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/knowledge/history"
     view_kind: "change_history"
     source_screen: SCR-011
@@ -228,7 +228,7 @@ screens:
     title: "인증 예제 쿼리 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "업무 지식 관리"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-023
     usecases:
@@ -237,7 +237,7 @@ screens:
       - UC-006
       - UC-009
     menu_code: "HUB_QUERY_EXAMPLE_HISTORY"
-    menu_parent: "HUB_KNOWLEDGE"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/query-example/history"
     view_kind: "change_history"
     source_screen: SCR-012
@@ -253,7 +253,7 @@ screens:
     title: "프롬프트 규칙 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "업무 지식 관리"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-013
     usecases:
@@ -262,7 +262,7 @@ screens:
       - UC-006
       - UC-020
     menu_code: "HUB_PROMPT_RULE_HISTORY"
-    menu_parent: "HUB_KNOWLEDGE"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/prompt-rule/history"
     view_kind: "change_history"
     source_screen: SCR-013
@@ -278,7 +278,7 @@ screens:
     title: "외부 모델 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "공통 기반"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-015
     usecases:
@@ -287,7 +287,7 @@ screens:
       - UC-006
       - UC-017
     menu_code: "HUB_MODEL_HISTORY"
-    menu_parent: "HUB_FOUNDATION"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/model/history"
     view_kind: "change_history"
     source_screen: SCR-015
@@ -303,7 +303,7 @@ screens:
     title: "토큰 풀 기준 단가 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "공통 기반"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-016
     usecases:
@@ -312,7 +312,7 @@ screens:
       - UC-006
       - UC-022
     menu_code: "HUB_TOKEN_RATE_HISTORY"
-    menu_parent: "HUB_FOUNDATION"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/token-rate/history"
     view_kind: "change_history"
     source_screen: SCR-016
@@ -328,7 +328,7 @@ screens:
     title: "실행 제한·운영 설정 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "공통 기반"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-020
     usecases:
@@ -337,7 +337,7 @@ screens:
       - UC-006
       - UC-030
     menu_code: "HUB_OPERATION_CONFIG_HISTORY"
-    menu_parent: "HUB_FOUNDATION"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/operation-config/history"
     view_kind: "change_history"
     source_screen: SCR-018
@@ -353,13 +353,13 @@ screens:
     title: "업무 도구 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "연동 관리"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-021
     usecases:
       - UC-019
     menu_code: "HUB_BUSINESS_TOOL_HISTORY"
-    menu_parent: "HUB_INTEGRATION"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/business-tool/history"
     view_kind: "change_history"
     source_screen: SCR-019
@@ -375,7 +375,7 @@ screens:
     title: "월별 개인 쿼터 기준 변경 이력"
     module: "admin"
     entry: "menu"
-    group: "공통 기반"
+    group: "변경 이력"
     roadmap: "RM-P1"
     feature: FEAT-017
     usecases:
@@ -384,7 +384,7 @@ screens:
       - UC-006
       - UC-027
     menu_code: "HUB_QUOTA_PLAN_HISTORY"
-    menu_parent: "HUB_FOUNDATION"
+    menu_parent: "HUB_CHANGE_HISTORY"
     route: "/admin/hub/quota-plan/history"
     view_kind: "change_history"
     source_screen: SCR-021

@@ -16,7 +16,7 @@
 | 화면 / 기능 / 유즈케이스 | SCR-031 / FEAT-033 / UC-001·UC-002·UC-003·UC-006·UC-031 |
 | 상위 요구사항 | REQ-103·REQ-107·REQ-601 |
 | 페이지 경로 | `/admin/hub/management-change-search` — 설계 경로 |
-| 메뉴코드 / 상위 메뉴 | `HUB_MANAGEMENT_CHANGE_SEARCH` / `HUB_AUDIT` |
+| 메뉴코드 / 상위 메뉴 | `HUB_MANAGEMENT_CHANGE_SEARCH` / `HUB_CHANGE_HISTORY` |
 | 프론트 폴더 | 미정 — 화면 합의 후 소유 상세 설계에서 확정 |
 | 백엔드 패키지 | 미정 — 화면 합의 후 소유 상세 설계에서 확정 |
 | 화면 유형 | 마스터-디테일(상하·하단 탭) |

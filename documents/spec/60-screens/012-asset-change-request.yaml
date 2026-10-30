@@ -4,7 +4,7 @@ screens:
     module: "admin"
     workstream: "admin"
     entry: "menu"
-    group: "연동 관리"
+    group: "요청·승인"
     title: "스키마 카탈로그 변경 요청"
     feature: FEAT-003
     features:
@@ -26,7 +26,7 @@ screens:
     type: "list_detail"
     route: "/admin/hub/catalog/change-request"
     menu_code: "HUB_CATALOG_CHANGE_REQUEST"
-    menu_parent: "HUB_INTEGRATION"
+    menu_parent: "HUB_REQUEST_APPROVAL"
     target_doc: "documents/screen/admin/hub/catalog/change-request/requirements.md"
     design_status: "screen_draft"
     layout: "조회조건·상단 요청 마스터 그리드·선택 요청의 하단 탭으로 구성한다. 원 관리 화면의 소유 업무 컬럼/탭을 재사용하고 요청번호·요청자/일시·상태·처리자/일시·사유·자기 기준/결과 리비전과 처리 영역을 추가한다. 요청일시 범위·처리 상태·요청자 조건을 제공하고 원 관리 화면의 업무 조건도 요청 스냅샷 값에 적용한다. 제출본은 읽기 전용이며 초안만 허용 상태/권한에서 보완한다. 원 관리 화면이 단일 그리드이면 업무 컬럼과 요청정보를 요청 목록에서 확인하며 존재하지 않는 하단 탭을 추가하지 않는다. 원 화면이 마스터/탭형이면 요청 마스터와 당시 소유 자식 탭을 재사용한다."
@@ -42,7 +42,7 @@ screens:
     module: "admin"
     workstream: "admin"
     entry: "menu"
-    group: "연동 관리"
+    group: "요청·승인"
     title: "업무 API 변경 요청"
     feature: FEAT-004
     features:
@@ -64,7 +64,7 @@ screens:
     type: "list_detail"
     route: "/admin/hub/business-api/change-request"
     menu_code: "HUB_BUSINESS_API_CHANGE_REQUEST"
-    menu_parent: "HUB_INTEGRATION"
+    menu_parent: "HUB_REQUEST_APPROVAL"
     target_doc: "documents/screen/admin/hub/business-api/change-request/requirements.md"
     design_status: "screen_draft"
     layout: "조회조건·상단 요청 마스터 그리드·선택 요청의 하단 탭으로 구성한다. 원 관리 화면의 소유 업무 컬럼/탭을 재사용하고 요청번호·요청자/일시·상태·처리자/일시·사유·자기 기준/결과 리비전과 처리 영역을 추가한다. 요청일시 범위·처리 상태·요청자 조건을 제공하고 원 관리 화면의 업무 조건도 요청 스냅샷 값에 적용한다. 제출본은 읽기 전용이며 초안만 허용 상태/권한에서 보완한다. 원 관리 화면이 단일 그리드이면 업무 컬럼과 요청정보를 요청 목록에서 확인하며 존재하지 않는 하단 탭을 추가하지 않는다. 원 화면이 마스터/탭형이면 요청 마스터와 당시 소유 자식 탭을 재사용한다."
@@ -80,7 +80,7 @@ screens:
     module: "admin"
     workstream: "admin"
     entry: "menu"
-    group: "연동 관리"
+    group: "요청·승인"
     title: "업무 도구 변경 요청"
     feature: FEAT-021
     features:
@@ -102,7 +102,7 @@ screens:
     type: "list_detail"
     route: "/admin/hub/business-tool/change-request"
     menu_code: "HUB_BUSINESS_TOOL_CHANGE_REQUEST"
-    menu_parent: "HUB_INTEGRATION"
+    menu_parent: "HUB_REQUEST_APPROVAL"
     target_doc: "documents/screen/admin/hub/business-tool/change-request/requirements.md"
     design_status: "screen_draft"
     layout: "조회조건·상단 요청 마스터 그리드·선택 요청의 하단 탭으로 구성한다. 원 관리 화면의 소유 업무 컬럼/탭을 재사용하고 요청번호·요청자/일시·상태·처리자/일시·사유·자기 기준/결과 리비전과 처리 영역을 추가한다. 요청일시 범위·처리 상태·요청자 조건을 제공하고 원 관리 화면의 업무 조건도 요청 스냅샷 값에 적용한다. 제출본은 읽기 전용이며 초안만 허용 상태/권한에서 보완한다. 원 관리 화면이 단일 그리드이면 업무 컬럼과 요청정보를 요청 목록에서 확인하며 존재하지 않는 하단 탭을 추가하지 않는다. 원 화면이 마스터/탭형이면 요청 마스터와 당시 소유 자식 탭을 재사용한다."
@@ -118,7 +118,7 @@ screens:
     module: "admin"
     workstream: "admin"
     entry: "menu"
-    group: "업무 지식 관리"
+    group: "요청·승인"
     title: "지식 검색 태그·동의어 변경 요청"
     feature: FEAT-024
     features:
@@ -140,7 +140,7 @@ screens:
     type: "list_detail"
     route: "/admin/hub/knowledge-tag/change-request"
     menu_code: "HUB_KNOWLEDGE_TAG_CHANGE_REQUEST"
-    menu_parent: "HUB_KNOWLEDGE"
+    menu_parent: "HUB_REQUEST_APPROVAL"
     target_doc: "documents/screen/admin/hub/knowledge-tag/change-request/requirements.md"
     design_status: "screen_draft"
     layout: "조회조건·상단 요청 마스터 그리드·선택 요청의 하단 탭으로 구성한다. 원 관리 화면의 소유 업무 컬럼/탭을 재사용하고 요청번호·요청자/일시·상태·처리자/일시·사유·자기 기준/결과 리비전과 처리 영역을 추가한다. 요청일시 범위·처리 상태·요청자 조건을 제공하고 원 관리 화면의 업무 조건도 요청 스냅샷 값에 적용한다. 제출본은 읽기 전용이며 초안만 허용 상태/권한에서 보완한다. 원 관리 화면이 단일 그리드이면 업무 컬럼과 요청정보를 요청 목록에서 확인하며 존재하지 않는 하단 탭을 추가하지 않는다. 원 화면이 마스터/탭형이면 요청 마스터와 당시 소유 자식 탭을 재사용한다."
@@ -156,7 +156,7 @@ screens:
     module: "admin"
     workstream: "admin"
     entry: "menu"
-    group: "업무 지식 관리"
+    group: "요청·승인"
     title: "지식 변경 요청"
     feature: FEAT-014
     features:
@@ -177,7 +177,7 @@ screens:
     type: "list_detail"
     route: "/admin/hub/knowledge/change-request"
     menu_code: "HUB_KNOWLEDGE_CHANGE_REQUEST"
-    menu_parent: "HUB_KNOWLEDGE"
+    menu_parent: "HUB_REQUEST_APPROVAL"
     target_doc: "documents/screen/admin/hub/knowledge/change-request/requirements.md"
     design_status: "screen_draft"
     layout: "조회조건·상단 요청 마스터 그리드·선택 요청의 하단 탭으로 구성한다. 원 관리 화면의 소유 업무 컬럼/탭을 재사용하고 요청번호·요청자/일시·상태·처리자/일시·사유·자기 기준/결과 리비전과 처리 영역을 추가한다. 요청일시 범위·처리 상태·요청자 조건을 제공하고 원 관리 화면의 업무 조건도 요청 스냅샷 값에 적용한다. 제출본은 읽기 전용이며 초안만 허용 상태/권한에서 보완한다. 원 관리 화면이 단일 그리드이면 업무 컬럼과 요청정보를 요청 목록에서 확인하며 존재하지 않는 하단 탭을 추가하지 않는다. 원 화면이 마스터/탭형이면 요청 마스터와 당시 소유 자식 탭을 재사용한다."
@@ -193,7 +193,7 @@ screens:
     module: "admin"
     workstream: "admin"
     entry: "menu"
-    group: "업무 지식 관리"
+    group: "요청·승인"
     title: "인증 예제 변경 요청"
     feature: FEAT-023
     features:
@@ -215,7 +215,7 @@ screens:
     type: "list_detail"
     route: "/admin/hub/query-example/change-request"
     menu_code: "HUB_QUERY_EXAMPLE_CHANGE_REQUEST"
-    menu_parent: "HUB_KNOWLEDGE"
+    menu_parent: "HUB_REQUEST_APPROVAL"
     target_doc: "documents/screen/admin/hub/query-example/change-request/requirements.md"
     design_status: "screen_draft"
     layout: "조회조건·상단 요청 마스터 그리드·선택 요청의 하단 탭으로 구성한다. 원 관리 화면의 소유 업무 컬럼/탭을 재사용하고 요청번호·요청자/일시·상태·처리자/일시·사유·자기 기준/결과 리비전과 처리 영역을 추가한다. 요청일시 범위·처리 상태·요청자 조건을 제공하고 원 관리 화면의 업무 조건도 요청 스냅샷 값에 적용한다. 제출본은 읽기 전용이며 초안만 허용 상태/권한에서 보완한다. 원 관리 화면이 단일 그리드이면 업무 컬럼과 요청정보를 요청 목록에서 확인하며 존재하지 않는 하단 탭을 추가하지 않는다. 원 화면이 마스터/탭형이면 요청 마스터와 당시 소유 자식 탭을 재사용한다."
