@@ -21,6 +21,7 @@ import path from 'node:path';
 import { declaredFigures, declaredScreen, searchComboScript } from './declared-layout.mjs';
 import {annotationBook, surfaceRows, surfaceIntroduction, surfaceOf} from './presentation.mjs';
 import {genericScreen, areaTitle} from './generic-layout.mjs';
+import {requestDeclaration, inheritRequest} from './request-layout.mjs';
 
 const REPO = path.resolve(import.meta.dirname, '../../..');
 const SCREENS = path.join(REPO, 'documents/screen');
@@ -215,7 +216,7 @@ function findTable(sec, firstHeader) {
 }
 
 /** 요건서의 화면·조회·컬럼·버튼 표를 한 번만 읽어 화면 모델로 만든다. */
-function screenModel(md, type) {
+function screenModel(md, type, allowInheritance = true) {
   const composition = section(md, /화면 구성/);
   const search = findTable(section(md, /조회조건/), /조건|검색/);
   const columns = (section(md, /^컬럼$|컬럼/) ? tablesIn(section(md, /^컬럼$|컬럼/).body) : [])
@@ -224,7 +225,9 @@ function screenModel(md, type) {
   const text = `${type}\n${composition?.body ?? ''}`;
   const surfaces=surfaceRows(tablesIn(composition?.body??'').find(t=>t.header.includes('관리 대상·목적')));
   for(const table of columns){table.rows=table.rows.filter(r=>plain(r[0]));table.readonly=/^조회 전용/.test(surfaces.find(s=>s.name===areaTitle(table))?.save??'');}
-  return {
+  let model = {
+    strictButtons: /상태별 버튼: 허용 목록/.test(composition?.body??''),
+    screenNavigation: findTable(composition, /^화면 이동$/),
     figures: declaredFigures(findTable(composition, /그림 키/), plain),
     interactive: columns.length > 1,
     collapsibleMaster: /상단 목록은 접을 수/.test(composition?.body ?? ''),
@@ -244,6 +247,15 @@ function screenModel(md, type) {
     masterDetail: /마스터.?디테일/.test(text) || columns.length > 1,
     vertical: /(상하|위.*아래|상·하)/.test(text),
   };
+  for (const extra of [false,true]) {
+    const declaration=requestDeclaration(md,extra);
+    if(!declaration)continue;
+    if(!allowInheritance)throw new Error('요청 원 화면의 재귀 상속은 허용하지 않는다');
+    const sourceMd=read(path.join(SCREENS,declaration.path,'requirements.md'));
+    if(!sourceMd)throw new Error('요청 원 화면 요건서가 없다');
+    model=inheritRequest(model,screenModel(sourceMd,'마스터-디테일(상하)',false),declaration.areas,{mergeMaster:!extra});
+  }
+  return model;
 }
 
 function columnLabel(row) { return plain(row[0] || '컬럼'); }
@@ -302,8 +314,7 @@ function scaffold(dir) {
     const candidates=figures.slice(1).filter(f=>f.detail===name&&!/실패|없|충돌|잠금|확인 중|거부/.test(f.caption));
     const chosen=candidates.find(f=>f.editable)??candidates[0];
     const figure=chosen??{...figures[0],key:`area-${index+1}`,caption:name,detail:name};
-    used.add(figure.key);
-    return {name,figure};
+    return {name,figure:{...figure,stateKey:figure.key,key:`walkthrough-${index+1}`}};
   });
   L.push(`<nav class="walkthrough-nav"><a href="#${figures[0].key}">초기 화면</a>${walkthrough.map(({name,figure})=>`<a href="#${figure.key}">${html(name)}</a>`).join('')}<a href="#element-descriptions">요소 상세 설명</a><a href="#state-examples">상태별 예시</a></nav>`);
   L.push('<h2>1. 초기 화면</h2>');

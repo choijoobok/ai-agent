@@ -122,6 +122,8 @@
 | `/mockup` | `generic-layout.test.mjs` | `node .claude/skills/mockup/generic-layout.test.mjs` |
 | `/mockup` | `presentation.mjs` | `node .claude/skills/mockup/presentation.mjs` |
 | `/mockup` | `presentation.test.mjs` | `node .claude/skills/mockup/presentation.test.mjs` |
+| `/mockup` | `request-layout.mjs` | `node .claude/skills/mockup/request-layout.mjs` |
+| `/mockup` | `request-layout.test.mjs` | `node .claude/skills/mockup/request-layout.test.mjs` |
 | `/mockup` | `scaffold.mjs` | `node .claude/skills/mockup/scaffold.mjs` |
 | `/mockup` | `snapshot-view.mjs` | `node .claude/skills/mockup/snapshot-view.mjs` |
 | `/mockup` | `snapshot-view.test.mjs` | `node .claude/skills/mockup/snapshot-view.test.mjs` |

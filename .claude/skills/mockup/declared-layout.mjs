@@ -69,8 +69,9 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const read = /조회|목록|열람|확인|상세|사용처|검증 결과|관리측 후보 열기/.test(name) || (actionTable && /READ/.test(plain(cell(actionTable,row,'액션'))));
     const locked = ['saving','unknown','conflict','denied'].includes(figure.key);
     const modeLocked=/추가|제거/.test(name)&&!supportsValueMode(scope);
-    const disabled = figure.disabledButtons?.includes(name) || modeLocked || (locked && !figure.buttons.includes(name)) || (!figure.editable && !read && !figure.buttons.includes(name)) || surface?.disabled?.includes(name) || name === '수동 샘플';
+    const disabled = (model.strictButtons && !figure.buttons.includes(name)) || figure.disabledButtons?.includes(name) || modeLocked || (locked && !figure.buttons.includes(name)) || (!figure.editable && !read && !figure.buttons.includes(name)) || surface?.disabled?.includes(name) || name === '수동 샘플';
     const add = !disabled && /추가$/.test(name) && (model.addRowTabs??[]).includes(scope);
+    const remove = !disabled && /제거$/.test(name) && (model.addRowTabs??[]).includes(scope);
     const description = actionTable ? actionExplanation(actionTable,row,title) : `<b>${escape(name)}</b> — ${escape(plain(row[5]))}`;
     const locations=model.surfaces?.filter(s=>s.buttons.includes(name))??[];
     const saveScopes=[...new Set(locations.map(s=>s.save))];
@@ -78,7 +79,13 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const command=(model.commandFields?.rows??[]).some(r=>plain(r[0])===name);
     const destination=(model.figureNavigation?.rows??[]).find(r=>plain(r[0])===name);
     const displayName=actionTable ? plain(cell(actionTable,row,'표시명'))||name : name;
-    return `<span class="control-annotation"><button type="button" class="btn ghost sm"${disabled?' disabled':''}${modeLocked?' title="해당 값 방식의 등록 컬럼이 없어 사용할 수 없습니다"':''}${add?' data-add-demo-row':''}${command?` data-open-command="${escape(name)}"`:''}${destination?` data-open-figure="${escape(plain(destination[1]))}"`:''}>${escape(displayName)}</button>${note}</span>`;
+    const nav=model.screenNavigation?.rows.find(r=>plain(r[0])===name);
+    if(nav&&!disabled){
+      const href=plain(nav[1]);
+      if(!/^(?:\.\.\/)*[a-z0-9/-]+\/mockup\.html(?:\?[a-zA-Z0-9=&_-]+)?(?:#main)?$/.test(href))throw new Error('화면 이동은 목업 상대 경로와 명시 문맥만 허용한다');
+      return `<span class="control-annotation"><a class="btn ghost sm" href="${escape(href)}" data-request-navigation>${escape(displayName)}</a>${note}</span>`;
+    }
+    return `<span class="control-annotation"><button type="button" class="btn ghost sm"${disabled?' disabled':''}${modeLocked?' title="해당 값 방식의 등록 컬럼이 없어 사용할 수 없습니다"':''}${add?' data-add-demo-row':''}${remove?' data-remove-demo-row':''}${command?` data-open-command="${escape(name)}"`:''}${destination?` data-open-figure="${escape(plain(destination[1]))}"`:''}>${escape(displayName)}</button>${note}</span>`;
   };
   const buttons = () => compact ? '' : figure.buttons.filter((name) => name !== '엑셀 다운로드').map(name=>button(name)).join('');
   const details = model.columns.slice(1);
@@ -89,7 +96,11 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     return `<div class="screen leaf" id="${escape(figure.key)}"${manualKey ? ` data-manual="${escape(figure.key)}"` : ''}><div class="bar">${escape(title)} · ${escape(figure.caption)}</div><div class="body"><div class="notes">${escape(figure.notice)}</div></div></div>\n${n.render()}`;
   }
   const example = (table, row) => Object.hasOwn(figure.examples, plain(row[0])) ? figure.examples[plain(row[0])] : plain(cell(table, row, '예시'));
-  const configured = (table) => (model.rowExamples?.rows ?? []).filter(r => plain(r[0]) === titleOf(table)).map(r => JSON.parse(r[1]));
+  const configured = (table) => {
+    const rows = (model.rowExamples?.rows ?? []).filter(r => plain(r[0]) === titleOf(table));
+    const matches = rows.filter(r => plain(r[2]).split('·').includes(figure.stateKey ?? figure.key));
+    return (matches.length ? matches : rows.filter(r => !plain(r[2]) || plain(r[2]) === '—')).map(r => JSON.parse(r[1]));
+  };
   const popup = (name, id, locked) => (model.popups?.rows ?? []).filter(r => plain(r[0]) === name).map((r, i) => {
     const label = plain(r[1]), mode = plain(r[2]), value = plain(r[3]), candidates = plain(r[4]);
     const parent = plain(r[5]) === '—' ? '' : plain(r[5]);
@@ -110,10 +121,18 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const examples = configured(table);
     const rows = examples.length ? examples : [{}];
     const renderRow = (record, rowIndex) => {
-    const valueOf = r => record['컬럼명'] && figure.examples['컬럼명'] === record['컬럼명'] && Object.hasOwn(figure.examples, plain(r[0])) ? figure.examples[plain(r[0])] : Object.hasOwn(record, plain(r[0])) ? String(record[plain(r[0])]) : example(table, r);
+    const valueOf = r => Object.hasOwn(figure.examples,plain(r[0])) && (!figure.examples['컬럼명'] || figure.examples['컬럼명']===record['컬럼명']) ? figure.examples[plain(r[0])] : Object.hasOwn(record,plain(r[0])) ? String(record[plain(r[0])]) : example(table,r);
     const vals = table.rows.map((r,i) => {
       const editMode = plain(cell(table, r, '편집'));
-      const editable = figure.editable && (/가능|조건부/.test(editMode) || (editMode==='신규만' && figure.key==='new'));
+      const condition=plain(cell(table,r,'편집 조건'));
+      const conditionLocked=condition && condition!=='—' && condition.split('&&').some(rule=>{
+        const [field,...values]=rule.trim().split('=');
+        if(!values.length)return field!==(figure.stateKey??figure.key);
+        const base=model.columns.flatMap(t=>t.rows.map(row=>({table:t,row}))).find(x=>plain(x.row[0])===field);
+        const actual=figure.examples[field]??(base?example(base.table,base.row):'');
+        return actual!==values.join('=');
+      });
+      const editable = !conditionLocked && !table.readonly && figure.editable && (/가능|조건부/.test(editMode) || (editMode==='신규만' && figure.key==='new'));
       const value = valueOf(r) || '—';
       const mode=plain(cell(table,r,'입력방식'));
       let content=escape(value);
@@ -152,7 +171,7 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
   };
   const formView = (table) => table.rows.map((r, i) => {
     const label = plain(r[0]);
-    const ro = !figure.editable || plain(cell(table, r, '편집')) === '읽기전용';
+    const ro = table.readonly || !figure.editable || plain(cell(table, r, '편집')) === '읽기전용';
     const input = plain(cell(table, r, '입력방식'));
     const value = example(table, r) || '';
     const fieldId = `${figure.key}-table-${model.columns.indexOf(table)}-field-${i}`;

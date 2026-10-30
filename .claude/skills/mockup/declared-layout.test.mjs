@@ -179,3 +179,25 @@ test('상호작용 탭은 각 탭의 검색과 폼을 유지하고 목록 접기
   assert.doesNotMatch(compact,/data-interactive-tabs|data-detail-tab=/);
   assert.doesNotMatch(render({...figure,detail:'없음',buttons:[]},fixture),/data-interactive-tabs|data-detail-tab=/);
 });
+
+test('초안 편집 가능이어도 상태에 없는 최종 승인 버튼은 잠긴다',()=>{
+ const fixture={...model,columns:[model.columns[0],columns('상세',[['상세값','텍스트','가능','','값']])],strictButtons:true,actions:[...model.actions,['최종 승인','','','','','전체 판정']],surfaces:[{name:'상세',buttons:['최종 승인'],disabled:[]}]};
+ const figure={key:'draft',caption:'초안',detail:'상세',notice:'',buttons:['저장'],editable:true,examples:{}};
+ const html=render(figure,fixture);
+ assert.match(html,/<button[^>]*disabled[^>]*>최종 승인<\/button>/);
+ assert.doesNotMatch(render({...figure,buttons:['저장','최종 승인']},fixture),/<button[^>]*disabled[^>]*>최종 승인<\/button>/);
+});
+
+test('완료 상태의 대상별 결과는 공통 미적용 행을 대체하고 다른 상태에 누출되지 않는다',()=>{
+ const detail=columns('상세',[['상세값','텍스트','읽기전용','','기본']]);
+ const fixture={...model,columns:[model.columns[0],detail],rowExamples:{rows:[
+   ['상세','{"상세값":"미적용"}','—'],
+   ['상세','{"상세값":"카탈로그 리비전 13"}','applied·delegated'],
+   ['상세','{"상세값":"도구 리비전 3"}','applied·delegated'],
+ ]}};
+ const figure={key:'submitted',caption:'제출',detail:'상세',notice:'',buttons:[],editable:false,examples:{}};
+ assert.match(render(figure,fixture),/미적용/);
+ assert.doesNotMatch(render(figure,fixture),/리비전 13/);
+ const result=render({...figure,key:'walkthrough-2',stateKey:'applied'},fixture);
+ assert.match(result,/리비전 13/);assert.match(result,/리비전 3/);assert.doesNotMatch(result,/미적용/);
+});

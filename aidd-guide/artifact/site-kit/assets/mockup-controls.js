@@ -131,6 +131,16 @@ function bindDeclaredMockup(root) {
         return;
       }
     }
+    const remove=target.closest('[data-remove-demo-row]');
+    if(remove){
+      const grid=remove.closest('[data-grid-view]'),body=grid.querySelector('tbody');
+      const selected=body.querySelector('tr.sel')??body.lastElementChild;
+      if(selected&&!selected.querySelector('.empty'))selected.remove();
+      const count=body.querySelectorAll('tr').length;
+      grid.querySelector('.cnt').textContent=`${count}건`;
+      grid.querySelector('.pg').textContent='목업 편집 행 제거 — 서버에는 반영하지 않았습니다.';
+      return;
+    }
     const add = target.closest('[data-add-demo-row]');
     if (add) {
       const grid = add.closest('[data-grid-view]');
