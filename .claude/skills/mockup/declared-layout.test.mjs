@@ -303,6 +303,24 @@ test('외부 모델 콤보는 표시 문자열과 저장 식별값을 구분한�
  assert.match(html,/data-row-value="EXT-01"/);
  assert.doesNotMatch(html,/<option value="공급사 - 모델 - effort"/);
 });
+test('일반 셀 콤보도 식별값/표시명을 구분하고 텍스트 설명을 팝업으로 만들지 않는다',()=>{
+ const table={heading:'용도',header:['컬럼','입력방식','편집','예시','후보 예시','후보 값 매핑'],rows:[['외부 모델','선택','가능','EXT-01','OpenAI / 모델 / effort','{"OpenAI / 모델 / effort":"EXT-01"}'],['설명','텍스트','가능','선정 이유','—','—']]};
+ const [figure]=declaredFigures(stateTable([['main','현재 적용본','없음','','저장','가능','없음']]),plain);
+ const html=render(figure,{...model,columns:[table]});
+ assert.match(html,/<option value="EXT-01" selected>OpenAI \/ 모델 \/ effort<\/option>/);
+ assert.match(html,/<summary[^>]*>OpenAI \/ 모델 \/ effort<\/summary>/);
+ assert.match(html,/data-row-value="EXT-01"/);
+ assert.equal((html.match(/data-cell-inline/g)||[]).length,2);
+ assert.doesNotMatch(html,/data-cell-popup|class="modal"|data-apply-cell|data-combo-filter/);
+});
+test('일반 콤보에서 현재 후보가 빠져도 원 식별값을 보존하고 정상 첫 후보로 바꾸지 않는다',()=>{
+ const table={heading:'용도',header:['컬럼','입력방식','편집','예시','후보 예시','후보 값 매핑'],rows:[['외부 모델','선택','가능','EXT-OLD','정상 모델','{"정상 모델":"EXT-NEW"}']]};
+ const [figure]=declaredFigures(stateTable([['main','현재 적용본','없음','','저장','가능','없음']]),plain);
+ const html=render(figure,{...model,columns:[table]});
+ assert.match(html,/<option value="EXT-OLD" selected disabled>EXT-OLD \(지원 확인 필요\)<\/option>/);
+ assert.doesNotMatch(html,/<option value="EXT-NEW" selected/);
+ assert.match(html,/data-row-value="EXT-OLD"/);
+});
 
 
 test('승인 사용 화면은 저장 슬롯에서 승인 요청을 한 번 제공한다',()=>{

@@ -524,7 +524,7 @@ screens:
     title: "모델 용도·우선순위 설정"
     feature: FEAT-015
     usecases: [UC-001, UC-002, UC-006, UC-017]
-    note: "REQ-602.screen_contract에 따라 SCR-015의 외부 모델 식별값 하나를 공급사 / 모델 표시명 / effort 표시명 단일 콤보에서 선택하고 용도·순위·설명을 지정한다. 주 추론 지정은 최초 기본값이며 사용자 선택지는 등록된 전체 유효 텍스트 조합이다. 보조 판정만 자동 대체한다."
+    note: "REQ-602.screen_contract에 따라 등록 조회로 구성한 일반 셀 콤보에서 SCR-015의 외부 모델 식별값 하나를 공급사 / 모델 표시명 / effort 표시명으로 선택한다. 용도는 agent 소스 계약 목록의 일반 셀 콤보이며 설명은 텍스트 셀 입력이다. 주 추론 지정은 최초 기본값이며 사용자 선택지는 등록된 전체 유효 텍스트 조합이다. 보조 판정만 자동 대체한다."
     roadmap: "RM-P1"
     agent_contact: "설정"
     route: "/admin/hub/model-usage"

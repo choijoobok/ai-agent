@@ -10,6 +10,15 @@ const titleOf = (table) => table.heading.replace(/^\d+(?:-\d+)?\.?\s*/, '').repl
 const tabOf = (table) => titleOf(table).split(' / ')[0];
 const cell = (table, row, header) => row[table.header.findIndex((h) => h.replace(/\*/g, '') === header)] ?? '';
 
+function selectControl(id,label,value,examples,referenceMap='') {
+  const references=referenceMap&&referenceMap!=='—'?JSON.parse(referenceMap):{};
+  const labels=[...new Set(examples.split('·').map(s=>s.trim()).filter(s=>s&&s!=='—'))];
+  const options=['',...labels].map(text=>({text,value:String(references[text]??text)}));
+  const selected=String(references[value]??value);
+  const missing=selected&&!options.some(option=>option.value===selected);
+  return `<select data-edit-value id="${id}" aria-label="${escape(label)}">${options.map(option=>`<option value="${escape(option.value)}"${option.value===selected?' selected':''}>${escape(option.text||'미지정')}</option>`).join('')}${missing?`<option value="${escape(selected)}" selected disabled>${escape(value)} (지원 확인 필요)</option>`:''}</select>`;
+}
+
 function searchCombo(id, label, value, examples, locked, parent = '', mapping = '', multiple = false, referenceMap = '') {
   const references=referenceMap&&referenceMap!=='—'?JSON.parse(referenceMap):{};
   const values = [...new Set(examples.split('·').map((s) => s.trim()).filter((s) => s && s !== '—'))];
@@ -165,7 +174,9 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
         return !values.join('=').split('·').includes(String(actual));
       });
       const editable = (!conditionLocked || rowConditional) && !table.readonly && figure.editable && (/가능|조건부/.test(editMode) || (/신규/.test(editMode) && (figure.key==='new'||rowIndex>=rows.length)));
-      const value = valueOf(r) || '—';
+      const referenceMap=plain(cell(table,r,'후보 값 매핑'));
+      const references=referenceMap&&referenceMap!=='—'?JSON.parse(referenceMap):{};
+      const value = Object.entries(references).find(([,stored])=>stored===valueOf(r))?.[0] || valueOf(r) || '—';
       const mode=plain(cell(table,r,'입력방식'));
       const parentField=plain(cell(table,r,'상위 선택'));
       const candidateMap=plain(cell(table,r,'후보 매핑'));
@@ -182,7 +193,7 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
           : /설정 팝업/.test(mode) ? popup(plain(r[0]), controlId, !editable)
           : /검색콤보|팝업 선택/.test(mode) ? searchCombo(controlId,plain(r[0]),valueOf(r)||'',rowCandidates,!editable,rowParent,rowParent?candidateMap:'',/다중/.test(mode),plain(cell(table,r,'후보 값 매핑')))
           : /장문/.test(mode) ? `<textarea data-edit-value id="${controlId}" rows="5" ${editable?'':'readonly'}>${escape(valueOf(r)||'')}</textarea>`
-          : /선택|셀렉트/.test(mode) ? `<select data-edit-value id="${controlId}" aria-label="${escape(plain(r[0]))}">${[...new Set([value, ...plain(cell(table,r,'후보 예시')).split('·').filter(v=>v&&v!=='—')])].map(v=>`<option>${escape(v)}</option>`).join('')}</select>`
+          : /선택|셀렉트/.test(mode) ? selectControl(controlId,plain(r[0]),valueOf(r)||'',plain(cell(table,r,'후보 예시')),referenceMap)
           : `<input data-edit-value id="${controlId}" aria-label="${escape(plain(r[0]))}" value="${escape(valueOf(r)||'')}" ${editable?'':'readonly'}>`;
         const inline=editable&&!/장문|설정 팝업|검색콤보|팝업 선택|스냅샷/.test(mode);
         content=inline?inlineEditor(value,control):`<details data-cell-editor${editable?' data-cell-popup':''}${isSnapshot?' data-snapshot-viewer':''}${figure.cellEditor===plain(r[0])&&rowIndex===0?' data-auto-editor':''}><summary title="${editable?'더블 클릭으로 셀 편집':isSnapshot?'전체 스냅샷 보기':escape(value)}" style="overflow:hidden;text-overflow:ellipsis">${isSnapshot?'보기':escape(value)+(editable?' ✎':' 보기')}</summary><div class="modal" style="position:fixed;top:8%;left:50%;transform:translateX(-50%);width:min(${isSnapshot?'800':'520'}px,90vw);z-index:20;white-space:normal"><div class="mh">${escape(plain(r[0]))}<button type="button" class="btn ghost sm" data-close-editor>닫기${badge('닫기','셀 상세/설정 창을 닫는다. 후보 전체 저장은 수행하지 않는다.','common:close-editor')}</button></div><div class="mb${isSnapshot?'':' f'}" style="max-height:75vh;overflow:auto">${control}${editable?`<button type="button" class="btn sm" data-apply-cell>선택 적용${badge('선택 적용','설정 창의 입력을 로컬 후보 셀에 반영한다. 서버 저장은 별도 저장 버튼으로 수행한다.','common:apply-cell')}</button>`:''}</div></div></details>`;
@@ -195,7 +206,6 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
       }
       if(model.requestScreen && plain(r[0])==='요청번호')content=`<span data-request-number>${content}</span>`;
       if(rowConditional && editable)content=`<span data-locked-value${conditionLocked?'':' hidden'}>—</span>${conditionLocked?content.replace('<details data-cell-editor','<details hidden data-cell-editor'):content}`;
-      const referenceMap=plain(cell(table,r,'후보 값 매핑'));
       const storedValue=referenceMap&&referenceMap!=='—'?(JSON.parse(referenceMap)[valueOf(r)]??valueOf(r)):valueOf(r);
       return `<td data-grid-col="${i}" data-row-field="${escape(plain(r[0]))}" data-row-value="${escape(storedValue||'')}"${rowConditional&&editable?` data-edit-rule="${escape(JSON.stringify(rowRules))}"`:''}${hidden(r)}${editable && !conditionLocked ? ' class="edit"' : ''} style="overflow:hidden;text-overflow:ellipsis" title="${isSnapshot?'전체 스냅샷 보기':escape(value)}">${content}</td>`;
     }).join('');
