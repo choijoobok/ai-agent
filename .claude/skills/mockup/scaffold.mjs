@@ -233,6 +233,7 @@ function screenModel(md, type, allowInheritance = true) {
     interactive: columns.length > 1,
     collapsibleMaster: /상단 목록은 접을 수/.test(composition?.body ?? ''),
     addRowTabs: (composition?.body.match(/^행 추가 탭:\s*(.+)$/m)?.[1] ?? '').split('·').map(s=>s.trim()),
+    removeGuardField: composition?.body.match(/^행 제거 보호:\s*(.+)$/m)?.[1]?.trim(),
     rowExamples: findTable(composition, /^그리드 예시$/),
     popups: findTable(composition, /^선택창$/),
     commandFields: findTable(composition, /^명령 입력창$/),

@@ -1,5 +1,6 @@
 /** 기존 화면도 같은 요건서 기반 설명 서식으로 표시한다. 미선언 CRUD를 추정하지 않는다. */
 import {escapeHtml as esc, tableCell as cell, columnExplanation, actionExplanation, searchExplanation, surfaceOf} from './presentation.mjs';
+import {chrome,standardButton,stateHeads,stateCells,editableColumn} from './grid-chrome.mjs';
 export const areaTitle = table => table.heading.replace(/\*+/g,'').replace(/^\d+(?:-\d+[a-z]?)?\.?\s*/, '').replace(/^(?:마스터(?: 그리드)?|하단|그리드|좌|우|하|디테일 탭 \d+|정의 모달)\s*—\s*/, '').replace(/\s*—\s*(폼|그리드)$/, '').replace(/\s*\([^)]*\)\s*$/,'');
 export function genericScreen(title, model, figure, {annotator, manualKey, compact=false, surfaceName}) {
   const n=annotator(figure.key);
@@ -14,9 +15,12 @@ export function genericScreen(title, model, figure, {annotator, manualKey, compa
   const renderArea=table=>{
     const name=areaTitle(table), surface=surfaceOf(model,name);
     const form=/폼|설정/.test(surface?.kind??'');
-    const deletable=surface?.buttons.includes('행 삭제');
-    const toolbar=(surface?.buttons??[]).filter(b=>b!=='행 삭제').map(b=>action(b,name)).join('');
-    const controls=`<div class="tb"><span class="ttl">${esc(name)}</span>${toolbar}</div>`;
+    const writable=!table.readonly&&table.rows.some(row=>editableColumn(cell(table,row,'편집')));
+    const createDeclared=(surface?.buttons??[]).some(name=>/추가$|^신규$/.test(name));
+    const deleteDeclared=(surface?.buttons??[]).some(name=>/삭제$|제거$/.test(name));
+    const locked=['readonly','denied','saving','unknown','conflict'].includes(figure.key);
+    const toolbar=(surface?.buttons??[]).filter(b=>!/^조회$|^저장$|추가$|삭제$|제거$/.test(b)).map(b=>action(b,name)).join('');
+    const controls=chrome({title:name,count:'1건',read:standardButton('조회','read',['saving','unknown','denied'].includes(figure.key)),add:writable&&createDeclared?standardButton('행 추가','add',locked):'',save:writable?standardButton('저장','save',locked):'',actions:toolbar});
     const columns=table.rows.map(row=>({row,label:cell(table,row,table.header[0]),note:badge(columnExplanation(table,row),`column:${name}:${cell(table,row,table.header[0])}`)}));
     if(form)return `${controls}<div class="form-fields">${columns.map(({row,label,note})=>{
       const mode=cell(table,row,'입력방식'),editable=cell(table,row,'편집');
@@ -24,8 +28,11 @@ export function genericScreen(title, model, figure, {annotator, manualKey, compa
       const input=/선택|셀렉트|콤보|Y\/N/.test(mode)?`<select ${ro?'disabled':''}><option>${esc(value||'선택')}</option></select>`:/장문|텍스트영역/.test(mode)?`<textarea ${ro?'readonly':''}>${esc(value)}</textarea>`:`<input type="${/password|비밀번호/.test(mode)?'password':'text'}" value="${esc(value)}" ${ro?'readonly':''}>`;
       return `<div class="f${ro?' ro':''}"><label data-field-label="${esc(label)}">${esc(label)}${note}</label>${input}</div>`;
     }).join('')}</div>`;
-    const deletion=deletable?`<th>삭제${badge(`<b>${esc(name)} › 행 삭제</b><p>삭제할 행을 선택하고 이 영역의 저장 범위에 따라 저장한다. 시스템/참조 보호 조건은 공통 검증을 적용한다.</p>`,`action:${name}:행 삭제`)}</th>`:'';
-    return `${controls}<div class="grid" style="overflow:auto"><table><thead><tr>${deletion}${columns.map(({label,note})=>`<th style="min-width:110px">${esc(label)}${note}</th>`).join('')}</tr></thead><tbody><tr>${deletable?'<td><input type="checkbox" aria-label="행 삭제 선택"></td>':''}${columns.map(({row})=>`<td>${esc(cell(table,row,'예시')||'—')}</td>`).join('')}</tr></tbody></table></div>`;
+    const renderRow=(isNew=false)=>`<tr data-grid-row-state="" data-row-context="[]">${stateCells(writable,locked||!deleteDeclared)}${columns.map(({row,label})=>{
+      const value=cell(table,row,'예시')||'—',mode=cell(table,row,'편집'),edit=writable&&!locked&&editableColumn(mode)&&(!/신규/.test(mode)||isNew);
+      return `<td data-row-field="${esc(label)}" data-row-value="${esc(value)}">${edit?`<input data-edit-value value="${esc(value)}" aria-label="${esc(label)}">`:esc(value)}</td>`;
+    }).join('')}</tr>`;
+    return `<div data-grid-view="${esc(figure.key+'-'+model.columns.indexOf(table))}" data-grid-role="${table===model.columns[0]?'master':'detail'}">${controls}${writable&&!locked&&createDeclared?`<template data-row-template>${renderRow(true)}</template>`:''}<div class="grid" style="overflow:auto"><table><thead><tr>${stateHeads(writable)}${columns.map(({label,note})=>`<th style="min-width:110px">${esc(label)}${note}</th>`).join('')}</tr></thead><tbody>${renderRow()}</tbody></table></div><div class="pg">총 1건 · 1 페이지</div></div>`;
   };
   const first=model.columns[0];
   const firstSurface=surfaceOf(model,areaTitle(first||{heading:''}));
@@ -46,5 +53,5 @@ export function genericScreen(title, model, figure, {annotator, manualKey, compa
   const pair=model.vertical?`${renderArea(first||{heading:'',rows:[]})}${extra?`<div class="split"><span class="hnd">⋮⋮⋮</span></div>${tabBar}${extra}`:''}`:`<div class="splitrow"><div class="pane">${first?renderArea(first):''}</div>${extra?`<div class="split v"><span class="hnd">⋮</span></div><div class="pane">${tabBar}${extra}</div>`:''}</div>`;
   const content=compact?(selected?renderArea(selected)+attached(selected):''):first?firstSurface?.kind==='설정'?model.columns.map(renderArea).join(''):firstSurface?.kind.startsWith('탭')?tabBar+(interactive?panels:renderArea(first)+attached(first)):pair:`<p>${esc(model.overview||'요건서의 화면 구성을 확인한다.')}</p>`;
   const global=!first?model.actions.filter(r=>!/^\(/.test(r[0])).map(r=>action(r[0],'화면')).join(''):'';
-  return `<div class="screen leaf" id="${esc(figure.key)}"${interactive?' data-interactive-tabs':''}${manualKey?` data-manual="${esc(figure.key)}"`:''}><div class="bar">${esc(title)} · ${esc(figure.caption)} · 검토용 예시</div><div class="body">${search?`<div class="sf">${search}</div>`:''}${content}${global?`<div class="actions">${global}</div>`:""}</div></div>`;
+  return `<div class="screen leaf" id="${esc(figure.key)}"${interactive?' data-interactive-tabs':''}${manualKey?` data-manual="${esc(figure.key)}"`:''}><div class="bar">${esc(title)} · ${esc(figure.caption)} · 검토용 예시</div><div class="body">${search?`<div class="sf">${search}<button type="button" class="btn ghost sm" data-search-reset${['saving','unknown','denied'].includes(figure.key)?' disabled':''}>초기화</button></div>`:''}${content}${global?`<div class="actions">${global}</div>`:""}</div></div>`;
 }

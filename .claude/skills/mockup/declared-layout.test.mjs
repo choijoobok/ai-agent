@@ -208,9 +208,10 @@ test('요청 초안은 선언된 지역 행 작업만 허용하고 검토·반�
  surfaces:[{name:'상세',buttons:['행 추가','행 제거','반려'],disabled:[]}]};
  const figure={key:'draft',caption:'초안',detail:'상세',notice:'',buttons:['저장'],editable:true,examples:{}};
  const html=render(figure,fixture);
- assert.match(html,/data-add-demo-row/);assert.match(html,/data-remove-demo-row/);
+ assert.match(html,/data-grid-add(?! disabled)/);assert.match(html,/data-grid-delete(?! disabled)/);
  assert.match(html,/<button[^>]*disabled[^>]*>반려<\/button>/);
- assert.doesNotMatch(render({...figure,key:'submitted',editable:false},fixture),/data-remove-demo-row|data-add-demo-row/);
+ assert.match(render({...figure,key:'submitted',editable:false},fixture),/data-grid-add disabled/);
+ assert.match(render({...figure,key:'submitted',editable:false},fixture),/data-grid-delete disabled/);
 });
 
 
@@ -230,8 +231,74 @@ test('단일 그리드는 상세 탭 없이 등록 행을 표시하고 빈 목�
 test('행별 조건과 복수 허용값으로 우선순위 편집을 구분한다',()=>{
   const fixture={...model,columns:[{heading:'모델 조합',header:['컬럼','입력방식','편집','예시','후보 예시','편집 조건'],rows:[['용도','선택','가능','주 추론','주 추론·요약·분류','—'],['우선순위','숫자','조건부','—','—','용도=요약·분류']]}],rowExamples:{rows:[['모델 조합','{"용도":"주 추론","우선순위":"—"}','—'],['모델 조합','{"용도":"요약","우선순위":"1"}','—'],['모델 조합','{"용도":"분류","우선순위":"2"}','—']]}};
   const [figure]=declaredFigures(stateTable([['edit','편집','없음','','저장','가능','없음']]),plain);
-  const html=render(figure,fixture);
+  const html=render(figure,fixture).replace(/<template[\s\S]*?<\/template>/g,'');
   assert.equal((html.match(/data-edit-rule=/g)||[]).length,3);
   assert.equal((html.match(/<details hidden data-cell-editor/g)||[]).length,1);
   assert.match(html,/data-row-value="요약"/);
+});
+
+
+test('모델별 effort 후보를 구분하고 상위 선택 누락을 거부한다',()=>{
+ const fixture={...model,columns:[{heading:'용도 설정',header:['컬럼','입력방식','편집','예시','후보 예시','상위 선택','후보 매핑'],rows:[['모델','검색콤보','가능','A','A·B','—','—'],['effort','검색콤보','가능','낮음','낮음·높음','모델','{"A":["낮음"],"B":["높음"]}']]}]};
+ const [figure]=declaredFigures(stateTable([['edit','편집','없음','','저장','가능','없음']]),plain);
+ const html=render(figure,fixture);
+ assert.match(html,/data-parent-field="모델"/);
+ assert.match(html,/<option value="낮음" selected>/);
+ assert.doesNotMatch(html,/<option value="높음"/);
+ const invalid=structuredClone(fixture);invalid.columns[0].rows[1][5]='없는 모델';
+ assert.throws(()=>render(figure,invalid),/상위 선택 필드/);
+});
+
+
+test('사용 중인 행은 제거 보호 근거를 갖고 신규 미참조 행과 구분한다',()=>{
+ const fixture={...model,removeGuardField:'사용 용도',columns:[columns('모델',[['이름','텍스트','가능','','A'],['사용 용도','텍스트','읽기전용','','—']])],rowExamples:{rows:[['모델','{"이름":"A","사용 용도":"주 추론"}','—'],['모델','{"이름":"B","사용 용도":"없음"}','—']]}};
+ const [figure]=declaredFigures(stateTable([['edit','편집','없음','','저장','가능','없음']]),plain);
+ const html=render(figure,fixture);
+ assert.equal((html.match(/data-remove-blocked=/g)||[]).length,1);
+ assert.match(html,/data-remove-blocked="주 추론"/);
+});
+
+
+test('조회조건 밖 버튼 띠를 만들지 않고 그리드별 조회·편집 크롬을 둔다',()=>{
+ const fixture={...model,columns:[columns('목록',[['이름','텍스트','가능','','기존']]),columns('세부',[['값','텍스트','읽기전용','','조회값']])],interactive:true};
+ const [figure]=declaredFigures(stateTable([['edit','편집','세부','','조회·저장','가능','없음']]),plain);
+ const html=render(figure,fixture);
+ assert.equal((html.match(/data-grid-read/g)||[]).length,2);
+ assert.equal((html.match(/data-grid-add/g)||[]).length,1);
+ assert.equal((html.match(/data-grid-save/g)||[]).length,1);
+ assert.equal((html.match(/data-grid-state-column/g)||[]).length,1);
+ assert.equal((html.match(/data-grid-delete-column/g)||[]).length,1);
+ assert.doesNotMatch(html,/<div class="row actions"/);
+ assert.match(html,/data-grid-actions[^>]*>[\s\S]*data-grid-read[\s\S]*data-grid-add[\s\S]*data-grid-save/);
+});
+
+
+test('판정 입력이 편집 가능해도 제출된 업무 스냅샷의 추가·저장·삭제는 잠근다',()=>{
+ const fixture={...model,columns:[{heading:'제출 업무',header:['컬럼','입력방식','편집','예시','편집 조건'],rows:[['업무값','텍스트','가능','제출값','draft']]},model.columns[1]],interactive:true,requestScreen:true};
+ const [figure]=declaredFigures(stateTable([['approval','판정','상세','','조회·저장','가능','없음']]),plain);
+ const html=render(figure,fixture).split('<section data-pane="detail">')[0];
+ assert.match(html,/data-grid-add disabled/);
+ assert.match(html,/data-grid-save disabled/);
+ assert.match(html,/data-grid-delete disabled/);
+ assert.doesNotMatch(html,/class="edit"/);
+});
+
+
+test('외부 모델 콤보는 표시 문자열과 저장 식별값을 구분한다',()=>{
+ const fixture={...model,columns:[{heading:'용도',header:['컬럼','입력방식','편집','예시','후보 예시','후보 값 매핑'],rows:[['외부 모델','검색콤보','가능','공급사 - 모델 - effort','공급사 - 모델 - effort','{"공급사 - 모델 - effort":"EXT-01"}']]}]};
+ const [figure]=declaredFigures(stateTable([['edit','편집','없음','','저장','가능','없음']]),plain);
+ const html=render(figure,fixture);
+ assert.match(html,/<option value="EXT-01" selected>공급사 - 모델 - effort<\/option>/);
+ assert.match(html,/data-row-value="EXT-01"/);
+ assert.doesNotMatch(html,/<option value="공급사 - 모델 - effort"/);
+});
+
+
+test('승인 사용 화면은 저장 슬롯에서 승인 요청을 한 번 제공한다',()=>{
+ const fixture={...model,columns:[columns('자산',[['값','텍스트','가능','','기존']])],actions:[['승인 요청','','','','','전체 후보 제출']],addRowTabs:['자산']};
+ const [figure]=declaredFigures(stateTable([['edit','편집','없음','','승인 요청','가능','없음']]),plain);
+ const html=render(figure,fixture);
+ assert.equal((html.match(/>승인 요청<\/button>/g)||[]).length,1);
+ assert.match(html,/data-grid-save data-native-save/);
+ assert.doesNotMatch(html,/>저장<\/button>/);
 });

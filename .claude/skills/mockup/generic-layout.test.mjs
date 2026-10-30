@@ -16,7 +16,8 @@ test('일반 목업도 초기 화면의 모든 탭 패널과 실제 버튼을 �
   assert.match(html,/data-detail-panel="역할"><div/);
   assert.match(html,/data-detail-panel="설정" hidden[\s\S]*value="유지할 입력"/);
   assert.equal([...html.matchAll(/data-detail-panel=/g)].length,2);
-  assert.equal([...html.matchAll(/<th(?:\s|>)/g)].length,2);
+  assert.equal([...html.matchAll(/data-grid-state-column/g)].length,2);
+  assert.equal([...html.matchAll(/data-grid-delete-column/g)].length,2);
 });
 
 test('탭별 설명 그림에는 탭바를 반복하지 않고 지정한 영역만 보여준다',()=>{
@@ -32,4 +33,15 @@ test('최상단이 탭인 화면과 탭 없는 단일 목록을 구분한다',()
   assert.equal([...html.matchAll(/data-detail-panel=/g)].length,2);
   assert.doesNotMatch(render({...model,columns:model.columns.slice(0,1),surfaces:surfaces.slice(0,1)}),/data-interactive-tabs|role="tablist"/);
   assert.throws(()=>render({...model,columns:model.columns.slice(0,2)}),/컬럼 표가 §4에 없다/);
+});
+
+
+test('기존 식별자는 잠그고 신규 행만 편집하며 미선언 행 추가는 만들지 않는다',()=>{
+ const fixture={...model,columns:[{heading:'기준',header:['컬럼','입력방식','편집','예시'],rows:[['식별자','텍스트','신규행만','existing.id'],['이름','텍스트','가능','기존']]}],surfaces:[{name:'기준',kind:'목록',buttons:['조회','행 추가','저장']}],search:[]};
+ const html=render(fixture);
+ const body=html.split('</template>')[1];
+ assert.doesNotMatch(body,/<input[^>]*value="existing.id"/);
+ assert.match(html.split('</template>')[0],/<input[^>]*value="existing.id"/);
+ const fixed=render({...fixture,surfaces:[{...fixture.surfaces[0],buttons:['조회','저장']}]});
+ assert.doesNotMatch(fixed,/data-grid-add/);
 });

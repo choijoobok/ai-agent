@@ -27,9 +27,10 @@ test('저장 중·결과 불명에는 로컬 재조회도 잠근다',()=>{
  }
 });
 test('CODE 컬럼에는 INLINE 행을, INLINE 컬럼에는 CODE 조건을 추가할 수 없다',()=>{
- assert.match(render(figure),/<button[^>]+disabled[^>]*>코드 값 추가/);
- assert.doesNotMatch(render(figure),/<button[^>]+data-add-demo-row[^>]*>코드 값 추가/);
+ const grid=(html,id)=>html.split('data-grid-view="'+id+'"')[1].split('<div data-grid-view=')[0];
+ assert.match(grid(render(figure),'main-grid-1'),/data-grid-add disabled/);
+ assert.doesNotMatch(grid(render(figure),'main-grid-2'),/data-grid-add disabled/);
  const inline=render({...figure,examples:{'컬럼명':'order_status','값 방식':'INLINE'}});
- assert.match(inline,/<button[^>]+data-add-demo-row[^>]*>코드 값 추가/);
- assert.match(inline,/<button[^>]+disabled[^>]*>코드 조건 추가/);
+ assert.doesNotMatch(grid(inline,'main-grid-1'),/data-grid-add disabled/);
+ assert.match(grid(inline,'main-grid-2'),/data-grid-add disabled/);
 });

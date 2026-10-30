@@ -10,6 +10,21 @@ function applyRequestContext(root, query) {
 }
 function bindDeclaredMockup(root) {
   applyRequestContext(root,location.search);
+  const rowValues=row=>Object.fromEntries([...row.querySelectorAll('[data-row-field]')].map(cell=>[cell.dataset.rowField,cell.dataset.rowValue]));
+  const originals=new WeakMap();
+  root.querySelectorAll('tbody tr[data-grid-row-state]').forEach(row=>originals.set(row,{values:rowValues(row),html:row.innerHTML}));
+  const setRowState=(row,state)=>{
+    row.dataset.gridRowState=state;
+    const label=row.querySelector('[data-row-state]');
+    if(label)label.textContent=({C:'신규',U:'수정',D:'삭제'})[state]||'';
+    const revert=row.querySelector('[data-revert-row]');if(revert)revert.hidden=state!=='U';
+    row.style.textDecoration=state==='D'?'line-through':'';
+    if(state==='D')row.querySelectorAll('td[data-row-field] input,td[data-row-field] select,td[data-row-field] textarea').forEach(input=>input.disabled=true);
+  };
+  const markEdited=row=>{
+    if(!row?.hasAttribute('data-grid-row-state')||['C','D'].includes(row.dataset.gridRowState))return;
+    setRowState(row,JSON.stringify(rowValues(row))===JSON.stringify(originals.get(row)?.values)?'':'U');
+  };
   const refreshRowConditions = row => {
     if (!row) return;
     const values = Object.fromEntries([...row.querySelectorAll('[data-row-field]')].map(cell=>[cell.dataset.rowField,cell.dataset.rowValue]));
@@ -118,6 +133,28 @@ function bindDeclaredMockup(root) {
   };
   root.addEventListener('click', event => {
     const target = event.target;
+    const deleted=target.closest('tr[data-grid-row-state="D"]');
+    if(deleted&&target.closest('[data-cell-editor]')){event.preventDefault();return;}
+    const resetSearch=target.closest('[data-search-reset]');
+    if(resetSearch&&!resetSearch.disabled){resetSearch.closest('.sf').querySelectorAll('input,select').forEach(input=>input.value='');return;}
+    const rowDelete=target.closest('[data-grid-delete]');
+    if(rowDelete&&!rowDelete.disabled){
+      const row=rowDelete.closest('tr'),grid=row.closest('[data-grid-view]');
+      if(row.dataset.removeBlocked){grid.querySelector('.pg').textContent='삭제 차단 — 사용 중인 용도 참조를 먼저 해소하세요.';return;}
+      if(row.dataset.gridRowState==='C'){row.remove();grid.querySelector('.cnt').textContent=grid.querySelectorAll('tbody tr').length+'건';return;}
+      if(row.dataset.gridRowState==='D'){row.innerHTML=originals.get(row).html;setRowState(row,'');}
+      else setRowState(row,'D');
+      return;
+    }
+    const revertRow=target.closest('[data-revert-row]');
+    if(revertRow){const row=revertRow.closest('tr');row.innerHTML=originals.get(row).html;setRowState(row,'');return;}
+    const read=target.closest('[data-grid-read]'),save=target.closest('[data-grid-save]:not([data-native-save])');
+    if((read&&!read.disabled)||(save&&!save.disabled)){
+      const grid=(read||save).closest('[data-grid-view]');
+      if(!grid)return;
+      grid.querySelector('.pg').textContent=read?'목업 조회 조작 — 대상·조건과 미저장 입력을 확인합니다. 실제 서버 조회는 하지 않습니다.':'목업 저장 조작 — 소유 저장 범위 전체를 확인합니다. 실제 서버 저장은 하지 않았습니다.';
+      return;
+    }
     const badge=target.closest('[data-note]');
     if(badge){hideTip();const destination=root.getElementById(`note-${badge.dataset.note}`);if(destination){event.preventDefault();event.stopPropagation();badge.closest('dialog')?.close();reveal(destination);}return;}
     const figureLink = target.closest('[data-open-figure]');
@@ -157,13 +194,17 @@ function bindDeclaredMockup(root) {
     if(remove){
       const grid=remove.closest('[data-grid-view]'),body=grid.querySelector('tbody');
       const selected=body.querySelector('tr.sel')??body.lastElementChild;
+      if(selected?.dataset.removeBlocked){
+        grid.querySelector('.pg').textContent=`삭제 차단 — ${selected.dataset.removeBlocked} 용도에서 사용 중입니다. 모델 용도 설정에서 참조를 해소한 뒤 삭제하세요.`;
+        return;
+      }
       if(selected&&!selected.querySelector('.empty'))selected.remove();
       const count=body.querySelectorAll('tr').length;
       grid.querySelector('.cnt').textContent=`${count}건`;
       grid.querySelector('.pg').textContent='목업 편집 행 제거 — 서버에는 반영하지 않았습니다.';
       return;
     }
-    const add = target.closest('[data-add-demo-row]');
+    const add = target.closest('[data-add-demo-row],[data-grid-add]:not(:disabled)');
     if (add) {
       const grid = add.closest('[data-grid-view]');
       const row = grid.querySelector('template[data-row-template]').content.firstElementChild.cloneNode(true);
@@ -175,7 +216,8 @@ function bindDeclaredMockup(root) {
       row.querySelectorAll('[data-combo-value]').forEach(e=>e.textContent='현재 선택: 미지정');
       row.querySelectorAll('[data-cell-editor] summary').forEach(e=>e.textContent='선택/입력 ✎');
       grid.querySelector('tbody .empty')?.closest('tr').remove();
-      grid.querySelector('tbody').append(row);
+      row.classList.remove('sel');row.removeAttribute('data-remove-blocked');setRowState(row,'C');
+      grid.querySelector('tbody').prepend(row);
       refreshRowConditions(row);
       const count = grid.querySelectorAll('tbody tr').length;
       grid.querySelector('.cnt').textContent=`${count}건`;
@@ -207,11 +249,34 @@ function bindDeclaredMockup(root) {
     if (apply) {
       const editor = apply.closest('[data-cell-editor]');
       const values = [...editor.querySelectorAll('[data-edit-value]')].flatMap(e => e.multiple ? [...e.selectedOptions].map(o=>o.value) : [e.value]).filter(Boolean);
-      editor.querySelector('summary').textContent = (values.join(' / ') || '미지정') + ' ✎';
+      const labels=[...editor.querySelectorAll('[data-edit-value]')].flatMap(e=>e.tagName==='SELECT'?[...e.selectedOptions].filter(o=>o.value).map(o=>o.textContent):[e.value]).filter(Boolean);
+      editor.querySelector('summary').textContent = (labels.join(' / ') || '미지정') + ' ✎';
       const cell=editor.closest('[data-row-field]');
-      if(cell)cell.dataset.rowValue=values.join(' / ');
+      if(cell){
+        const previous=cell.dataset.rowValue;
+        cell.dataset.rowValue=values.join(' / ');
+        if(previous!==cell.dataset.rowValue){
+          const row=cell.closest('tr');
+          row?.querySelectorAll('[data-parent-field]').forEach(box=>{
+            if(box.dataset.parentField!==cell.dataset.rowField || box.closest('[data-row-field]')===cell)return;
+            const child=box.closest('[data-row-field]');
+            const candidates=JSON.parse(box.dataset.candidateMap||'{}')[cell.dataset.rowValue]||[];
+            const select=box.querySelector('select');
+            select.replaceChildren();
+            ['',...candidates].forEach(value=>{const option=doc.createElement('option');option.value=value;option.textContent=value||'미지정';select.append(option);});
+            select.value='';
+            box.querySelector('[data-combo-filter]').value='';
+            box.querySelector('[data-combo-value]').textContent='현재 선택: 미지정';
+            box.querySelector('[data-combo-empty]').hidden=candidates.length!==0;
+            child.dataset.rowValue='';
+            child.querySelector('summary').textContent='미선택 ✎';
+            child.title='모델 변경 — 지원값을 다시 선택하세요';
+          });
+        }
+      }
       editor.open = false;
       refreshRowConditions(editor.closest('tr'));
+      markEdited(editor.closest('tr'));
     }
     const selectedRow=target.closest('tbody tr[data-row-context]');
     if(selectedRow){
@@ -235,6 +300,9 @@ function bindDeclaredMockup(root) {
     window.addEventListener('hashchange',openHash);if(location.hash)openHash();
   }
   root.addEventListener('input', event => {
+    if(event.target.matches('[data-edit-value]')&&!event.target.closest('[data-cell-editor]')){
+      const cell=event.target.closest('[data-row-field]');if(cell){cell.dataset.rowValue=event.target.value;markEdited(cell.closest('tr'));}
+    }
     if (!event.target.matches('[data-combo-filter]') || event.target.readOnly) return;
     const box = event.target.closest('[data-search-combo]');
     const query = event.target.value.toLowerCase();
@@ -253,7 +321,7 @@ function bindDeclaredMockup(root) {
       });
     }
     if (!input.matches('[data-combo-select]') || input.disabled) return;
-    input.closest('[data-search-combo]').querySelector('[data-combo-value]').textContent = '현재 선택: ' + ([...input.selectedOptions].map(o=>o.value).filter(Boolean).join(', ') || '미지정');
+    input.closest('[data-search-combo]').querySelector('[data-combo-value]').textContent = '현재 선택: ' + ([...input.selectedOptions].filter(o=>o.value).map(o=>o.textContent).join(', ') || '미지정');
     const editor = input.closest('[data-cell-editor]');
     if (!editor) return;
     editor.querySelectorAll('[data-parent-field]').forEach(box => {
