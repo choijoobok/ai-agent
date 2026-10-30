@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {annotationBook,columnExplanation} from './presentation.mjs';
+import {annotationBook,visibleNoteIds,annotationIssues,columnExplanation} from './presentation.mjs';
 import {declaredScreen} from './declared-layout.mjs';
 const plain=s=>String(s??'');
 test('같은 컬럼은 상태가 달라도 같은 번호와 설명 하나를 사용한다',()=>{
@@ -33,4 +33,31 @@ test('CODE 컬럼에는 INLINE 행을, INLINE 컬럼에는 CODE 조건을 추가
  const inline=render({...figure,examples:{'컬럼명':'order_status','값 방식':'INLINE'}});
  assert.doesNotMatch(grid(inline,'main-grid-1'),/data-grid-add disabled/);
  assert.match(grid(inline,'main-grid-2'),/data-grid-add disabled/);
+});
+
+
+test('초기 표시 요소를 먼저 연속 배정하고 숨김/닫힌 창은 추가 설명으로 묶는다',()=>{
+ const book=annotationBook();
+ const hidden=book.badge('<b>숨김 코드</b>','hidden');
+ const search=book.badge('<b>조회 조건</b>','search');
+ const settings=book.badge('<b>그리드 설정</b>','settings');
+ const close=book.badge('<b>편집창 닫기</b>','close');
+ const initial=`<div hidden>${hidden}</div><label>${search}</label><details><summary>${settings}</summary>${close}</details>`;
+ const rewrite=book.prioritize(initial),view=rewrite(initial),catalog=book.render();
+ assert.deepEqual(visibleNoteIds(view),['item-1','item-2']);
+ assert.match(view,/data-note="item-1"[^>]*>1<\/span>/);
+ const [base,extra]=catalog.split('<details data-extra-annotations>');
+ assert.match(base,/id="note-item-1"[\s\S]*조회 조건/);
+ assert.match(base,/id="note-item-2"[\s\S]*그리드 설정/);
+ assert.doesNotMatch(base,/숨김 코드|편집창 닫기/);
+ assert.match(extra,/id="note-item-3"[\s\S]*숨김 코드/);
+ assert.match(extra,/id="note-item-4"[\s\S]*편집창 닫기/);
+ assert.deepEqual(annotationIssues(view+catalog),[]);
+ assert.ok(annotationIssues(view.replace('>1</span>','>99</span>')+catalog).length);
+ assert.throws(()=>book.badge('나중 요소'),/번호를 확정/);
+});
+test('숨김 탭/템플릿/닫힌 대화상자는 제외하고 열린 details의 번호는 유지한다',()=>{
+ const badge=id=>`<span data-note="${id}">1</span>`;
+ const html=`<section hidden><div>${badge('hidden')}</div></section><template>${badge('template')}</template><dialog>${badge('dialog')}</dialog><details open><summary>${badge('summary')}</summary><div>${badge('body')}</div></details><details><summary>${badge('closed-summary')}</summary><div>${badge('closed-body')}</div></details>`;
+ assert.deepEqual(visibleNoteIds(html),['summary','body','closed-summary']);
 });

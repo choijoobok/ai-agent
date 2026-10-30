@@ -37,15 +37,64 @@ export function searchExplanation(table,row){
     ['검증',tableCell(table,row,'검증')],
   ])}`;
 }
+/** 초기 화면에서 hidden·template·닫힌 창/탭을 제외하고 보이는 번호의 DOM 순서를 읽는다. */
+export function visibleNoteIds(html){
+  const stack=[],ids=[];
+  const voids=new Set(['input','br','hr','img','meta','link','source','area','base','embed','param','wbr']);
+  for(const token of html.matchAll(/<(\/?)([a-z][\w:-]*)\b[^>]*>/gi)){
+    const tag=token[2].toLowerCase(),text=token[0];
+    if(token[1]){const index=stack.findLastIndex(node=>node.tag===tag);if(index>=0)stack.splice(index);continue;}
+    const parent=stack.at(-1);
+    const hidden=Boolean(parent?.hidden)||/\shidden(?:\s|=|\/?>)/.test(text)||tag==='template'
+      ||(tag==='dialog'&&!/\sopen(?:\s|=|\/?>)/.test(text))
+      ||Boolean(parent?.tag==='details'&&parent.closed&&tag!=='summary');
+    const id=text.match(/\bdata-note="([^"]+)"/)?.[1];
+    if(id&&!hidden&&!ids.includes(id))ids.push(id);
+    if(!voids.has(tag)&&!text.endsWith('/>'))stack.push({tag,hidden,closed:tag==='details'&&!/\sopen(?:\s|=|\/?>)/.test(text)});
+  }
+  return ids;
+}
+export function annotationIssues(html){
+  const issues=[],notes=new Map();
+  for(const match of html.matchAll(/<li\b[^>]*id="note-([^"]+)"[^>]*>\s*<span\b[^>]*>(\d+)<\/span>/g))notes.set(match[1],match[2]);
+  for(const match of html.matchAll(/<span\b([^>]*\bdata-note="([^"]+)"[^>]*)>(\d+)<\/span>/g)){
+    const [,attrs,id,number]=match;
+    if(!notes.has(id))issues.push(`화면 번호 ${number}의 상세 설명이 없다 (${id})`);
+    else if(notes.get(id)!==number)issues.push(`화면 번호 ${number}와 상세 설명 번호 ${notes.get(id)}가 다르다 (${id})`);
+    if(attrs.match(/aria-label="설명 (\d+) 보기"/)?.[1]!==number)issues.push(`화면 번호 ${number}의 접근성 설명 번호가 다르다`);
+  }
+  return issues;
+}
 export function annotationBook(){
-  const notes=[];const byKey=new Map();
+  const notes=[];const byKey=new Map();let initialCount=null,sealed=false;
   return {
     badge(description,key=description){
+      if(sealed)throw new Error('설명 번호를 확정한 뒤에는 새 배지를 생성할 수 없다');
       let note=byKey.get(key);
       if(!note){note={id:`item-${notes.length+1}`,number:notes.length+1,description};notes.push(note);byKey.set(key,note);}
       return `<span class="n anchor" data-note="${note.id}" role="link" tabindex="0" aria-label="설명 ${note.number} 보기">${note.number}</span>`;
     },
-    render(){return `<section class="annotation-catalog" id="element-descriptions" data-annotation-catalog><h2>화면 요소 상세 설명</h2><p>같은 번호는 같은 항목입니다. 번호에 마우스를 올리거나 키보드 초점을 맞추면 같은 설명을 툴팁으로 확인합니다. 긴 설명은 툴팁 안에서 스크롤하고 Esc로 닫습니다. 번호를 누르면 해당 설명으로 이동합니다.</p><ol>${notes.map(n=>`<li id="note-${n.id}"><span class="n">${n.number}</span><div>${n.description}</div></li>`).join('')}</ol></section>`;},
+    prioritize(initialHtml){
+      const ids=visibleNoteIds(initialHtml),old=new Map(notes.map(note=>[note.id,note]));
+      const visible=ids.map(id=>old.get(id));
+      if(visible.some(note=>!note))throw new Error('초기 화면의 번호가 설명 목록에 없다');
+      const ordered=[...visible,...notes.filter(note=>!ids.includes(note.id))],mapping=new Map();
+      ordered.forEach((note,index)=>{mapping.set(note.id,{id:`item-${index+1}`,number:index+1});});
+      ordered.forEach(note=>Object.assign(note,mapping.get(note.id)));
+      notes.splice(0,notes.length,...ordered);initialCount=visible.length;sealed=true;
+      return html=>html.replace(/<span\b[^>]*\bdata-note="([^"]+)"[^>]*>\d+<\/span>/g,(span,id)=>{
+        const next=mapping.get(id);if(!next)throw new Error('번호 재배정 대상의 설명이 없다');
+        return span.replace(`data-note="${id}"`,`data-note="${next.id}"`)
+          .replace(/aria-label="설명 \d+ 보기"/,`aria-label="설명 ${next.number} 보기"`)
+          .replace(/>\d+<\/span>$/,`>${next.number}</span>`);
+      });
+    },
+    render(){
+      const count=initialCount??notes.length;
+      const list=items=>`<ol>${items.map(n=>`<li id="note-${n.id}"><span class="n">${n.number}</span><div>${n.description}</div></li>`).join('')}</ol>`;
+      const extra=notes.slice(count);
+      return `<section class="annotation-catalog" id="element-descriptions" data-annotation-catalog><h2>화면 요소 상세 설명</h2><p>초기 화면에 보이는 요소부터 연속 번호를 부여했습니다. 같은 요소는 탭·상태가 달라도 같은 번호를 씁니다. 번호에 마우스를 올리거나 초점을 맞추면 설명이 나타나고, 누르면 해당 설명으로 이동합니다.</p>${list(notes.slice(0,count))}${extra.length?`<details data-extra-annotations><summary>추가 설명 ${extra.length}개 — 숨김 컬럼·다른 탭·편집/상태별 요소</summary>${list(extra)}</details>`:''}</section>`;
+    },
   };
 }
 export function surfaceRows(table){

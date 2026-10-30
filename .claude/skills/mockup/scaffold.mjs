@@ -20,7 +20,7 @@ import fs from 'node:fs';
 import {parseYaml} from '../../hooks/lib.mjs';
 import path from 'node:path';
 import { declaredFigures, declaredScreen, searchComboScript } from './declared-layout.mjs';
-import {annotationBook, surfaceRows, surfaceIntroduction, surfaceOf} from './presentation.mjs';
+import {annotationBook, annotationIssues, surfaceRows, surfaceIntroduction, surfaceOf} from './presentation.mjs';
 import {genericScreen, areaTitle} from './generic-layout.mjs';
 import {requestDeclaration, inheritRequest} from './request-layout.mjs';
 
@@ -338,7 +338,8 @@ function scaffold(dir) {
   L.push(`<nav class="walkthrough-nav"><a href="#${figures[0].key}">초기 화면</a>${walkthrough.map(({name,figure})=>`<a href="#${figure.key}">${html(name)}</a>`).join('')}<a href="#element-descriptions">요소 상세 설명</a><a href="#state-examples">상태별 예시</a></nav>`);
   L.push('<h2>1. 초기 화면</h2>');
   L.push(surfaceIntroduction(surfaceOf(model,areaTitle(model.columns[0]??{heading:''}))));
-  L.push(renderFigure(figures[0]));
+  const initialHtml=renderFigure(figures[0]);
+  L.push(initialHtml);
   L.push('<h2>2. 탭·상세 영역별 작업</h2>');
   L.push('<p>같은 상위 대상을 선택한 상태에서 각 영역을 순서대로 설명합니다. 반복되는 상단 목록은 생략했습니다.</p>');
   for(const {name,figure} of walkthrough){
@@ -346,6 +347,8 @@ function scaffold(dir) {
   }
   const extras=figures.slice(1).filter(f=>!used.has(f.key));
   const extraHtml=extras.map(figure=>`<details class="state-example"><summary>${html(figure.caption)}</summary>${renderFigure(figure)}</details>`).join('');
+  const renumber=book.prioritize(initialHtml);
+  for(let index=0;index<L.length;index++)L[index]=renumber(L[index]);
   L.push(book.render());
   const rules=section(md,/규칙.*저장/);
   if(rules){
@@ -355,7 +358,7 @@ function scaffold(dir) {
     for(const line of rules.body.split('\n')){if(line.startsWith('|'))rows.push(line);else{flush();if(line.trim())L.push(`<p>${html(line.replace(/^#{1,6} /,''))}</p>`);}}flush();
     L.push('</details>');
   }
-  L.push(`<section id="state-examples"><h2>상태별 예시</h2><p>빈 목록·권한·검증 오류 등의 예시는 필요한 경우 펼쳐 확인합니다. 같은 항목의 설명은 위 목록을 함께 사용합니다.</p>${extraHtml||'<p>별도 상태 예시 없음</p>'}</section>`);
+  L.push(`<section id="state-examples"><h2>상태별 예시</h2><p>빈 목록·권한·검증 오류 등의 예시는 필요한 경우 펼쳐 확인합니다. 같은 항목의 설명은 위 목록을 함께 사용합니다.</p>${renumber(extraHtml)||'<p>별도 상태 예시 없음</p>'}</section>`);
   L.push('');
 
   // ── 테스트 케이스 — 요건서에서 그대로 옮긴다 ──
@@ -434,6 +437,7 @@ function check(dir) {
   for (const id of noteIds) if (!badgeIds.includes(id)) problems.push(`하단 설명 ${id}을 가리키는 화면 번호 배지가 없다`);
   if ([...mock.matchAll(/data-annotation-catalog/g)].length!==1) problems.push('화면 요소 상세 설명 목록은 정확히 한 번 있어야 한다');
   if (new Set(noteIds).size !== noteIds.length) problems.push('같은 하단 설명 id가 중복됐다');
+  problems.push(...annotationIssues(mock));
 
   // ① 화면 계약의 핵심인 컬럼 이름은 목업에서도 그대로 보여야 한다. 일반적인
   // "이름·상태" 헤더로 바뀌면 화면 구조가 맞아 보여도 실제 업무 화면은 틀린다.
