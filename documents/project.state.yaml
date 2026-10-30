@@ -74,20 +74,37 @@ workstreams:
     deferred_until: null
     design_plan:
       agreed_at: "2026-10-28"
-      updated_at: "2026-10-29"
+      updated_at: "2026-10-30"
       status: in_progress
-      purpose: "사용자가 합의한 7개 상세 설계 작업 묶음과 재개 지점을 관리한다. 메뉴 대분류·물리 도메인명·G3 승인을 확정하는 기록은 아니다"
+      purpose: "사용자 합의로 admin 전체 화면 합의 뒤 기술 상세 설계를 진행한다. menu_tree를 기준으로 메뉴 정리·전체 목업·화면/업무 흐름 검토를 먼저 수행하고 기존 7영역은 이후 상세 설계 담당 묶음으로 유지한다. system은 이번 범위에서 제외한다"
       status_rule: "not_started(미착수) → in_progress(진행) → verified(명시된 완료 기준과 검증 충족). 외부 계약 때문에 진행할 수 없는 항목만 waiting_dependency로 표시하고 해소 조건을 남긴다. verified는 사용자 게이트 승인과 별개다"
       account_security_change: { change: CR-028, decision: ADR-034, status: "방향 반영·상세 설계/구현 대기", references: [ARCH-050, REQ-501, REQ-616, FEAT-301, SCR-113, SCR-114, SCR-115], verification: "독립 의미 검토의 저장조회 권한·관리 service 범위·관리자 UI 상태/알림 참조·시험 주체를 보완했고 잔여 P1/P2 없음. 하네스/lint·도메인·trace 오류0/후속 경고108, 생성224개·ID926개·장문11483개 누락/깨진 링크0, HTML252/18/9장 통과. Edge 설계28화면·목업25개·시퀀스탭4개·SVG29개·테마 경합/인쇄 통과. 제품 소스/DB/실제 외부 인증·모바일 시험 미실행" }
-      active_step: area_design
+      active_step: mockup_draft
       active_area: integration_assets
-      sequence: [inventory, common_contracts, area_design, integration_review]
+      sequence: [menu_inventory, mockup_draft, screen_review, workflow_review, area_design, integration_review]
       steps:
+        menu_inventory:
+          status: verified
+          verification: "독립 검토에서 admin53메뉴/7그룹·원화면37/상속16의 트리·경로·코드 중복/누락0, system 제외·유예/후속 분리를 확인했다. 메뉴/복사/상속 검증11개 통과, 하네스/lint/추적성 오류0·후속경고188, 생성279개 ID/장문/링크 누락0, 사이트323/18/9장 구조 문제0. 물리/API·제품 구현과 전체 목업 승인은 후속이다."
+          source: "documents/spec/60-screens/011-menu-tree.yaml"
+          done: "admin 기존 원 화면 37개와 상속 이력16개를 7개 그룹/53메뉴로 정리했다. 34개 미정 경로와 목업 요건서 경로를 설계안으로 등록하고 요청/업무기록/관리 이력의 소유를 구분했다. 유예 SCR-025와 후속 SCR-038, system 전체는 제외한다. 메뉴/화면 사용자 최종 승인을 뜻하지 않는다."
+          exit: "현재 요구/기능이 메뉴 또는 비메뉴 처리로 추적되고 메뉴 코드/경로·이력 원 화면·후속/유예 경계와 목업 작성 대상이 재현된다."
+        mockup_draft:
+          status: in_progress
+          alignment_review: "2026-10-30 사용자 요청으로 작업 버튼의 우측 정렬을 공통 목업 서식과 생성기/스킬에 반영했다. 기존25목업 재생성·어긋남0, Edge1366/1920폭의 작업줄6·그리드툴바76·모달 하단 우측 정렬을 확인했다. 제목/건수는 왼쪽이며 탭/셀 탐색 배치는 유지한다. 관련 도구시험40개·하네스/self-test/lint/추적성 오류0(후속경고188), 실제 Claude 세션 trigger 시험과 제품 UI 구현은 후속이다."
+          next: "연동 관리부터 모든 원 화면의 요건/1차 목업을 작성한다. 전체 원 화면37개 중 기존3개를 재검토하고 나머지34개를 작성한다. 상속 이력16개는 원 화면 기준으로 검토한다."
+          exit: "모든 원 화면의 조회/입력·전체 탭·상태·버튼·연결을 목업으로 확인할 수 있고 UND-S07 후보의 실제 사용 위치가 드러난다."
+        screen_review:
+          status: not_started
+          exit: "4~6개 화면씩 묶어 요건서와 목업을 함께 사용자 검토하고 수정하며 화면별 합의 상태를 원 문서에 기록한다."
+        workflow_review:
+          status: not_started
+          exit: "적용본 편집→요청/전결→검토/승인·반려→재요청→적용 이력과 권한/비용/조사 연계를 전체 화면에서 사용자 확인한다. 이후 기술 상세 설계로 진행한다."
         inventory:
           status: verified
           done: "2026-10-28 요구 102건 중 현재 차수 97건의 목적·실현 기능/주 화면·모듈 소유를 목록 수준에서 대조했다. 후속 차수 4건과 유예 REQ-615를 구분했다. admin 기능 39개·메뉴/주 화면 36개·UC 38개를 연결하고 FEAT-041 오류 접수와 agent FEAT-222 정기 파기를 보완했다. SCR-010은 사용자 선택으로 독립 메뉴·별도 편집 권한을 반영했다. 공통/내부 화면 후보는 UND-S07에서 관련 영역 상세 설계로 연결했다. 전체 하위 규칙·물리 계약·TC의 완성을 뜻하지 않는다"
           verification: "하네스/lint 통과, trace 오류 0/후속 경고 114. admin 39개 기능의 대표 영역/공통 담당 배정 중복·누락 0, 기능/UC 규칙 참조 187개 실재 확인. 독립 의미 재검토의 자동 접수 주체·증거 사본 기한 승계 보완 후 추가 발견 0. doc-gen 181개·ID 769개·장문 9626개 누락/깨진 링크 0, HTML 설계 207장·사용자 18장·운영 9장 구조 검사와 실제 Edge 탐색/도표/인쇄 검사 통과. 런북 오류 0/기존 후속 경고 4. 제품 실행 시험·화면 상세 승인·G3 승인은 후속이다"
-          next: "steps.common_contracts의 기준과 소유 계약을 정리한 뒤 integration_assets부터 영역별 상세 설계를 시작한다. 새 기능·공통 화면을 발견하면 전체 목록을 함께 갱신한다"
+          next: "최신 재집계는 menu_inventory를 따른다. 과거 inventory 완료 근거를 유지하고 전체 화면 합의 후 상세 설계를 재개한다."
           exit: "요구→UC→기능→메뉴/화면 연결과 화면 없는 기능의 근거, 7개 영역의 대표 검토 담당, 다른 모듈 접점·미결 판단이 정본에서 추적된다. 식별자 존재 검사만으로 완료하지 않는다"
         common_contracts:
           status: verified
@@ -96,10 +113,11 @@ workstreams:
           source: "documents/spec/31-features/001-delivery-strategy.yaml의 delivery_strategy.admin_design_review"
           done: "2026-10-28 주체·권한·변경/승인·버전·참조 보호·감사·보존 7축의 근거·소유 모듈·명세에서 정할 항목·검증 반례를 정리하고 7개 영역 및 공통 기능을 연결했다. UC-002의 admin 변경 원자성과 기존 system 공개 계약 적용 경계를 구분하고 REQ-601의 감사 근거 참조를 바로잡았다. ARCH-029·050의 현재 구현 차이가 여전히 유효함을 소스에서 확인했다. 공통 기준 식별의 완료이며 미구현 공개 계약·물리 설계의 완료는 아니다"
           verification: "하네스·harness-doc·lint 통과, trace 오류 0/기존 후속 경고 114. 기준의 근거 참조 108개 실재, admin 기능 39개 배정 중복·누락 0 및 계획 7영역과 일치. 독립 검토의 보존 반례 범위 보완 뒤 추가 발견 0. doc-gen 181개·ID 769개·장문 9664개 누락/깨진 링크 0, 생성 기준의 제목별 출력 확인. HTML 구조와 실제 Edge 탐색/도표/인쇄 통과. 런북 오류 0/기존 후속 경고 4"
-          next: "area_design의 integration_assets에서 기능 명세와 논리 모델을 함께 도출한다. 영역별 정본에 이 기준의 적용 여부와 소유 계약·예외를 연결한다"
+          next: "공통 기준을 전체 요건/목업에서 검토하고 업무 흐름 합의 후 area_design에서 모델·공개 계약을 상세화한다."
           exit: "주체·권한·직접 변경/승인·버전·참조 보호·감사·보존의 공통 검토 기준과 소유 계약을 식별하고 각 영역에서 확인할 항목을 연결한다. 업무별 승인 단계를 하나로 합치지 않는다"
         area_design:
           status: in_progress
+          resume_after: "workflow_review 사용자 합의. 기존 초안은 검토 입력이며 지금 새 물리/API 상세를 선행하지 않는다."
           exit: "아래 7개 영역이 동일 iteration의 완료 기준을 충족하고, 새로 발견한 공통 화면·기능·데이터·계약을 기존 정본과 전체 목록에 반영했다"
         integration_review:
           status: not_started
@@ -140,6 +158,9 @@ workstreams:
           artifact_navigation_review: "2026-10-29 사용자 요청: 설계/사용자/운영 HTML 공통에 스크롤 400px 이후 보이는 맨 위로 버튼을 추가했다. 삽입 목업의 상단 상태 링크는 같은 ShadowRoot의 그림을 찾아 이동하고 바깥 사이트의 문서 해시를 바꾸지 않는다. 기존 잘못된 main-wrap 스크롤 초기화도 실제 window 스크롤로 보완했다. Edge 전체 검사에서 화면28개·시퀀스탭4개·SVG29개·상세목업25개·현재문서 인쇄1개 및 상태 링크/맨 위로·테마 경합 통과. 버튼은 인쇄에서 제외하며 build 파생물은 재생성했다"
           mockup_walkthrough_review: "2026-10-29 사용자 요청으로 초기 전체 화면→모든 탭/영역의 목적·작업·조회/저장 범위→공유 번호의 상세 설명 한 목록→접힌 상태 예시로 표준화했다. 기존 목업 25개를 재생성하고 SCR-003의 17탭과 SCR-001/002·기존 system/standalone의 실제 버튼·누락 필드를 현행화했다. 컬럼은 설명·필수 시점·편집·출처·검증을 분리했다. 공통 스킬 원본/Claude·Codex 생성 스킬·템플릿·생성기에 적용했다. 생성기 단위 22개, 기존 목업 25개 정합성/Edge 링크·번호·문맥·잠금·모드 검사, 하네스/self-test/lint/trace 오류 0(기존 경고 108), doc-gen 224개 ID/스칼라/상대 링크 누락 0, HTML 252/18/9장 manifest 오류 0 및 Edge 설계 화면 28·시퀀스 탭 4·SVG 29·다크/라이트/인쇄 검증 통과. 독립 읽기 검토의 상태 잠금·CODE/INLINE·영역 표 누락·기본값 보조표 혼입을 보완하고 추가 P1/P2 없음. 새 제품 구현/화면 승인/G3는 수행하지 않았다"
           dbms_and_exclusion_review: "2026-10-29 사용자 결정: REQ-603의 DBMS/버전 관리·LLM 전달, REQ-301의 DBMS별 공통코드 자료형(버전 분리 없음), REQ-103의 테이블 그룹 승계 후 컬럼별 제외만 허용을 요건/도메인/공개 계약/목업에 반영했다. 제외 탭은 컬럼·제외 그룹·사유·등록자·등록일시 5열이다. 후속 사용자 결정으로 REQ-504·FEAT-504/API-600의 그룹코드·참조코드·참조값 조인 공통 콤보와 필터/전체 캐시 분리를 설계했다. 기존 API-554는 유지한다. TC-00213·00315·00316·5046은 미구현 검증 명세다. Edge에서 DBMS/버전·불일치 관측, 자료형 검색/선택, 5열/제외 콤보/건수 탐색/서버 등록 근거, 탭 입력 유지·읽기 전용·HTML 테마를 확인했다. 공통 유틸 제품 구현/시드와 제외 행 저장·치수/인덱스 상세는 소유 G3 후속이며 사용자 전체 화면 승인은 별도다"
+          connection_display_review: "2026-10-30 사용자 요청으로 REQ-604.connection_display에 현재 로드 API 연결의 Base URL·인증 방식·표시 상태와 적용 근거를 읽기 전용으로 정의했다. REQ-403·ARCH-028·UC-015·FEAT-001·ConnectionDisplay·SCR-001 요건/목업·TC-00112~14와 배포 안내를 연결했다. 원 주소/비밀은 서버에서 제거하고 조회/반출 권한·노드/기동/설정 동일성·이전 표시 제거·저장/이력 제외를 명세했다. 독립 검토 잔여 P1/P2 없음. 제품 연결 조회·주소 정제·설정 복호화는 아직 미구현이며 전체 화면/G3 승인은 별도다"
+          mockup_initial_tabs_review: "2026-10-30 사용자 요청으로 초기 전체 화면의 탭 전환을 공통 기본값으로 바꿨다. 선언형/기존 일반 목업 모두 패널을 유지해 탭별 입력·선택을 보존하며 별도 설명 그림에는 탭바를 반복하지 않는다. 공통 스킬/서식·Claude/Codex와 검사기를 맞추고 기존 목업 25개를 재생성했다. 단위 29개·Edge 단독 25화면 중 6화면 37탭/입력 유지·Base URL 읽기 전용/표시 제한·1366/1920폭 통과. HTML 삽입본 37탭·설계 화면 28개·시퀀스탭 3개·SVG 28개·다크/라이트/인쇄 통과. 독립 검토 잔여 P1/P2 없음. 생성229개/ID961개·장문11794개 누락/링크0, HTML257/18/9장 구조 문제0, 추적성 오류0/기존 후속114·하네스/self-test/lint 통과. 제품 기능 시험과 실제 Claude 세션 trigger smoke test는 미실행이다"
+          history_pattern_review: "2026-10-30 REQ-601.approval_storage·ADR-035·CR-029에 따라 적용본/요청/이력 분리, 원본별 SNP/HIST 동형 복사, 마스터 기준/결과 리비전, 자식 저장일시의 부모 참조를 반영했다. 카탈로그 목업은 적용본 전용·조건별 저장/승인 요청으로 전환했다. 새 논리 저장 모델의 물리 상세는 전체 화면 합의 후 G3 전에 확정하며 제품 구현/시험은 G3 승인 뒤다. 기존 판별 물리 초안은 철회했다."
           screen_review: { status: draft, user_approved: false, screens: [SCR-001, SCR-002, SCR-003] }
           waiting_dependency:
             - refs: ["FEAT-006","FEAT-007","FEAT-008","ENT-018","ENT-006","ENT-012","ENT-016"]
@@ -216,9 +237,16 @@ workstreams:
           owners: [system, admin, integration]
           status: identified
           resume_when: "access_policy 상세 설계에서 외부 인사 사건과 모듈별 실제 처리 결과의 식별·순서·재전송·부분 실패/재처리·조회 계약을 대조한다. 계정과 Portal 이용 자격을 합치지 않는다"
+      pending_design_proposal:
+        verification: "하네스/lint/추적성 오류 0, 추적성 후속 경고 188(새 저장 모델 물리 재설계 포함). 논리/물리 복사·상속·목업 도구 시험 28개 통과. 생성279개·ID1026개 및 장문 필드 누락/깨진 링크0, 사이트310/18/9장. Edge 관리22탭/별도이력3문서와 승인 사용/미사용 버튼 표시 통과. 제품 소스/실제 DB 시험·G3 승인은 별도."
+        status: "정본 반영·문서/목업 검증 완료"
+        at: "2026-10-30"
+        scope: "관리 화면은 적용 중 최종 데이터만 표시하고 요청 조회/승인·반려를 분리한다. 원본별 _SNP에 제출 전체 세트를 REQUEST_NO로 보관하고 실제 반영 때 본 테이블/_HIST/리비전/요청 결과를 원자 확정하는 사용자 제안"
+        recommendations: "REQ-601.approval_storage와 ADR-035에 현재/SNP/HIST·마스터 기준/결과 리비전·요청 화면 분리·자식 시각 정규화를 반영했다. 소유 도메인과 공개 계약이 같은 규칙을 참조한다."
+        unresolved: "과거 실행 내용은 HIST 공개 조회와 참조 보호로 결정했다. 새 저장 구조의 물리 상세·현재 미정 접근 그룹/지식 구성·제품 통합시험은 소유 G3/구현 후속이다. 이전 판별 물리 초안은 철회하고 논리 모델로 재정리했다."
       resume:
-        last_completed: "2026-10-30 사용자 합의로 데이터소스 등록 코드 조회 SQL/파라미터와 컬럼별 정확 조회 버전/typed 바인딩 모델을 반영했다. INLINE 직접 등록은 유지하고 기존 단일 코드 테이블/AND 조건을 대체했다. REQ-301/603·ENT-024/041~043·API-063~069·TC-00216/00217/00319를 연결했다. SCR-002 9탭, SCR-003 12탭에 정의/파라미터/조회 결과와 NULL/미입력 구분, 테이블/뷰 표시·비교 예시를 생성했다. 독립 검토의 실패 화면/NULL 입력/TC 연결/옛 모델 잔존을 보완했다. 생성기25시험·Edge 코드 결과3건/실패시 비움/초안 활성화 잠금·하네스/lint·추적성 오류0/후속114, 생성229개/ID958개 누락0, HTML257/18/9장·문제0을 확인했다. 제품 SQL 실행/캐시와 새 논리 모델 물리는 후속이며 G3/구현 승인 아님"
-        next_action: "REQ-603.code_lookup_definition·FEAT-002.code_lookup_contract와 REQ-301.value_domain의 코드 조회 정의/바인딩 물리, SQL 허용 분석·실행 상한·액션·결과 원장/확인·캐시 무효화/보호된 근거 계약을 integration/access_policy/audit_trace와 구체화한다. REQ-304.batch_structure_comparison·ENT-039/040의 비교 실행/차이·잠금/복구/보존·공개 API를 완성한다. SCR-039 테이블 관계 상세 화면과 SCR-009 조회 제약 인계를 유지한다. 원천 조회권 없는 수동 등록과 치수·인덱스 저장/전체 후보, FEAT-007 예외 저장/고정 계약을 대조한다. FEAT-504 공통 콤보 유틸/시드는 system 소유 G3 뒤 구현한다. 사용자 SCR-001/002/003 화면 검토 뒤 기존 integration_assets의 SCR-004/019 요건/목업·시험 순서를 유지한다"
+        last_completed: "2026-10-30 사용자 순서 합의와 범위 정정에 따라 admin 메뉴53개(원 화면37+상속 이력16)의 트리/경로·화면 역할·이력 연결·목업 작성 대상을 정리했다. system에 잘못 추가한 CR-029 이력 계획·화면 주석·슬라이스 재개방을 철회했다."
+        next_action: "menu_tree의 연동 관리부터 전체 원 화면37개의 요건/1차 목업을 작성·수정한다. 전체 메뉴/화면 합의 뒤 7영역 기술 상세 설계를 재개한다. system은 이번 작업과 새 변경 이력 저장에서 제외한다."
         waiting_on: ["사용자 필수 답변 대기 없음. SCR-001/002/003은 전체 화면 상세 승인/구현 승인 전 초안이다. 물리/공개 계약의 waiting_dependency 5개 소유 후속을 유지한다"]
       update_rules:
         - "세션 시작·재개 때 이 design_plan과 next_up을 읽고 active_step·active_area·resume을 확인한다. 합의한 순서를 바꿀 이유가 생기면 영향과 재개 지점을 먼저 설명하고 기록한다"
@@ -310,7 +338,7 @@ roadmap_closed: []
 # **이것이 3줄 브리핑의 「다음 할 일」이다**(CLAUDE.md §2). 끝나면 지운다.
 next_up:
   decided_at: 2026-10-28
-  choice: "documents/project.state.yaml의 workstreams.admin.design_plan을 먼저 읽고 active_step·active_area·resume에서 재개한다. 전체 요구사항의 메뉴·화면·기능 연결과 모듈 의존성 대조 → 공통 기준 → 합의한 7개 영역별 명세/논리 모델·물리/공개 계약·검증 → 통합 검토 순서를 유지하고, 작업마다 영역 상태와 재개 지점을 갱신한다. 감사·품질의 기록 요구는 처음부터 검토하며 상세 확정은 해당 생산/조회 계약에 연결한다. 계획 합의와 G3·구현 승인은 별개다."
+  choice: "admin design_plan의 menu_inventory→mockup_draft→screen_review→workflow_review 순서를 따른다. 모든 원 화면의 요건/목업·전체 업무 흐름 합의 뒤 기술 상세 설계를 재개한다. 이번 범위는 admin 모듈이며 system 새 이력 저장은 추가하지 않는다."
   why: >-
     사용자가 관리 속성·데이터·사용처가 명확한 기준정보 요구사항 작성을 요청했다.
     system 관리자 계정 관리와 별도의 admin Portal 사용자 관리 메뉴를 명시했으며,
@@ -462,22 +490,22 @@ cognitive_debt:
 # ── 진행 지표 ──────────────────────────────────────────────────────
 # 이관으로 들어온 것을 센 값이다. 승인받은 것의 수가 아니다.
 counters:
-  REQ: 102    # REQ-041 Portal 반응형 웹 추가
-  UC: 48      # system 10 · admin 공통/업무 흐름 초안 38
-  FEAT: 104   # FEAT-041 admin 오류 접수·FEAT-222 agent 정기 파기 추가
-  ENT: 69    # system 31 · admin 연동 자산 물리 초안 38
-  API: 162   # system 구현 99 · system 공통 참조 콤보 설계 1 · admin 설계 62
-  SCR: 78    # SCR-113~115 별도 Portal 인증 화면 초안 추가
-  TC: 135    # 기존 131 · DBMS/자료형/컬럼 제외/공통 참조 콤보 시험 4건 추가
-  CR: 27     # CR-028까지 27건 — CR-011 없음, CR-027 공통 계정 방향은 CR-028로 철회
+  REQ: 102    # 정본 실물 집계 2026-10-30
+  UC: 48    # 정본 실물 집계 2026-10-30
+  FEAT: 104    # 정본 실물 집계 2026-10-30
+  ENT: 124    # 정본 실물 집계 2026-10-30
+  API: 169    # 정본 실물 집계 2026-10-30
+  SCR: 95    # 정본 실물 집계 2026-10-30
+  TC: 162    # 정본 실물 집계 2026-10-30
+  CR: 28    # 정본의 고유 변경 요청 집계
   RUN: 8      # 80-operations/_index.yaml의 현재 절차. daily_checks·periodic_tasks를 2026-09-14에 채웠다
-  ADR: 34    # ADR-034 관리자와 Portal 계정·인증 분리
+  ADR: 35    # 정본 실물 집계 2026-10-30
   ASM: 1      # **미확인 하나** — 003(기한 G3). 002·004·007은 확인됨, 005·006 은 기각됨
   SLICE: 21  # system 19 · admin 첫 두 화면의 미착수 구현 초안 2
   DEF: 0
 
 counter_note: >-
-  UC는 system 10건과 admin 공통/업무 초안 38건이다. ENT 69건은 system 31건과 admin 연동 자산 물리 초안 38건이며 API 161건은 system 99건과 admin 미구현 명세 62건이다. TC 131건은 기존 123건과 CR-028 계정/인증 경계 신규 8건이다. CR-026 시험 3건·CR-028로 교체한 TC-5017~5019 및 신규 8건·후보 정책 16건·admin 40건은 미구현 시험 명세다.
+  2026-10-30 논리 문서 로더로 정본의 ID 개수를 다시 대조했다. ENT는 logical/planned를, API·TC는 미구현 명세와 후속 차수도 포함하므로 수가 구현 완료를 뜻하지 않는다. 기존 코드 조회·구조 비교·테이블 관계 설계에서 갱신이 빠진 집계도 실물에 맞췄다.
   `trace-check`는 뒤 차수와 아직 G3를 청구하지 않은 다른 작업흐름의 결손을 경고로 세고,
   각 작업흐름 G3를 청구할 때 그 소유 범위를 엄격하게 검사한다. 정확한 개수는 매 실행 결과가 정본이다.
 
@@ -589,7 +617,7 @@ slices:
   - id: SLICE-001
     workstream: admin
     features: [FEAT-001]
-    testcases: [TC-0011, TC-0012, TC-0013, TC-0014, TC-0015, TC-0016, TC-0017, TC-0018, TC-0019, TC-00110, TC-00111]
+    testcases: [TC-0011, TC-0012, TC-0013, TC-0014, TC-0015, TC-0016, TC-0017, TC-0018, TC-0019, TC-00110, TC-00111, TC-00112, TC-00113, TC-00114]
     scope: "대상 시스템 목록/상단 편집·허용 연결/관측/사용처·직접 저장/삭제·원 키 결과 확인·확정 후 이력/삭제 후 조회·읽기 전용 스냅샷 모달·엑셀을 DB/API/UI/시험으로 관통한다. 첫 소비 범위에서 공통 명령/이력 경계를 만들며 system 기존 이력 정책은 바꾸지 않는다"
     stage: P3
     status: todo
