@@ -4,7 +4,7 @@ title: "메뉴 화면 워크플로 ①~⑥ · 승인까지 일곱 단계"
 category: artifact/screen
 type: operation
 created: 2026-05-04
-updated: 2026-09-08
+updated: 2026-10-31
 status: active
 sources: ["aidd-guide/artifact/template/02-requirements.md", "documents/screen/README.md", "AGENTS.md"]
 tier: 1
@@ -146,6 +146,11 @@ node .claude/skills/mockup/scaffold.mjs {화면} > documents/screen/{화면}/moc
 - **테스트 케이스 표와 확인 목록에 손대지 않는다.** 요건서에서 온 것이다.
 - 메뉴얼이 실을 화면에는 `data-manual="키"` 를 단다 — **골격이 필요한 키를 다 적어 준다.**
 - 끝나면 `node .claude/skills/mockup/scaffold.mjs --check {화면}` 이 초록이어야 한다.
+
+**목업 신설·수정의 완료에는 최종 HTML 산출물 갱신을 포함한다.** 사용자는 `build/`의 최종
+산출물 페이지에서 검토하므로, 관련 spec 생성물과 변경 목업을 갱신한 뒤 `deliverable-site`로
+`build/deliverables/`를 생성·검사한다. 변경 화면은 설계 사이트에 삽입된 상태로도 확인하고
+최종 답변에는 해당 산출물 페이지 링크를 안내한다. 검사만 요청받았을 때는 재생성을 강제하지 않는다.
 
 **`manual.md` 는 여기서 쓰지 않는다** — 화면이 선 뒤다(AGENTS.md §6.3 ④).
 

@@ -1,6 +1,6 @@
 ---
 name: mockup
-description: 화면 목업(mockup.html)을 요건서에서 생성하거나, 있는 목업이 요건서·메뉴얼과 어긋나지 않는지 검사한다. 요건서를 고친 뒤 목업을 맞출 때, 새 화면의 목업을 처음 만들 때, "목업을 만들어" · "목업 다시 그려" · "목업 검사" 요청에 쓴다. 목업은 파생물이라 형상 관리에 없으므로 /manual-site 를 돌리기 전에 이 스킬로 먼저 만든다.
+description: 화면 목업(mockup.html)을 요건서에서 생성하거나, 있는 목업이 요건서·메뉴얼과 어긋나지 않는지 검사한다. 요건서를 고친 뒤 목업을 맞출 때, 새 화면의 목업을 처음 만들 때, "목업을 만들어" · "목업 다시 그려" · "목업 검사" 요청에 쓴다. 신설·수정은 build/의 최종 HTML 산출물 생성·검사까지 한 번에 수행한다.
 ---
 
 # 목업 — 요건서에서 생성한다
@@ -109,7 +109,25 @@ node .claude/skills/mockup/scaffold.mjs --check log/access    # 하나
 
 ---
 
-## ③ `/manual-site` 앞에 온다
+## ③ 최종 HTML 산출물까지 생성한다
+
+완료 기준은 [화면 절차 §6](../../../aidd-guide/artifact/screen/screen.md#6-목업을-만든다)을 따른다.
+신설·수정한 목업을 검사한 뒤 `/deliverable-site`를 이어서 수행한다. 관련 spec이 바뀌었거나
+생성 문서가 없거나 낡았으면 `/doc-gen`으로 먼저 갱신한다.
+
+```bash
+node .claude/skills/doc-gen/gen.mjs
+node .claude/skills/runbook/check.mjs
+node .claude/skills/deliverable-site/build.mjs all
+node .claude/skills/deliverable-site/check.mjs
+node .claude/skills/deliverable-site/browser-check.mjs design
+```
+
+변경 화면의 요건·목업이 최종 설계 사이트에 실렸는지와 해당 화면의 선택·탭·편집 상태를
+브라우저에서 확인한다. 최종 답변의 검토 링크는 `build/deliverables/design/index.html`의
+해당 화면 페이지로 안내한다. 개별 `mockup.html` 생성만으로 완료라고 보고하지 않는다.
+
+### 사용자 매뉴얼과의 연결
 
 ```
 requirements.md ──/mockup──> mockup.html ──/manual-site──> build/deliverables/user/
@@ -133,4 +151,4 @@ for s in $(node .claude/skills/mockup/scaffold.mjs --list | sed -n '2,$p' | awk 
 
 - **요건서 없이 목업을 만들지 않는다**(`AGENTS.md` §6 — ①이 없으면 ②를 시작하지 않는다).
 - **목업에만 있는 규칙을 남기지 않는다.** 그림을 그리다 결정이 필요해지면 **요건서에 적고 나서** 그린다.
-- **사용자 사이트를 만들지 않는다** — `/manual-site` 의 몫이다.
+- **최종 HTML 갱신을 생략하지 않는다.** HTML 조립은 `/deliverable-site`로 수행하며 사용자 매뉴얼 정본은 `/manual-site`의 경계를 따른다.
