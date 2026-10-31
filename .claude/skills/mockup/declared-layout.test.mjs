@@ -332,6 +332,16 @@ test('목록 연동의 미상 예시는 선택 월에만 적용하고 계산열�
  assert.match(html,/data-row-field="비용"[^>]*data-calculated-value/);
 });
 
+test('상단을 생략한 상세 그림은 선택 대상의 행만 표시하고 대상 부재를 예시 값으로 채우지 않는다',()=>{
+ const fixture={...model,columns:[columns('모델',[['단가 기준','조회','읽기전용','','A']]),columns('기간별 단가',[['가격','조회','읽기전용','','기본 예시']])],masterLink:'단가 기준',rowExamples:{rows:[['기간별 단가','{"가격":"A 전용 가격","문맥":"A"}','—'],['기간별 단가','{"가격":"B 전용 가격","문맥":"B"}','—']]}};
+ const [figure]=declaredFigures(stateTable([['main','가격','기간별 단가','','조회','잠금','없음']]),plain);
+ const compact=(key)=>declaredScreen('모델',fixture,{...figure,masterValue:key},{plain,searchControl:()=>'',annotator:()=>({badge:()=>'',render:()=>''}),compact:true});
+ assert.match(compact('A'),/A 전용 가격/);
+ assert.doesNotMatch(compact('A'),/B 전용 가격/);
+ assert.doesNotMatch(compact('없음'),/data-row-field="가격"/);
+ assert.match(compact('없음'),/class="empty"/);
+});
+
 test('이미 배분한 월을 조회해도 다른 월의 참조 행 추가와 신규 저장 골격은 유지한다',()=>{
  const master={heading:'월 기준',header:['컬럼','입력방식','편집','예시','편집 조건'],rows:[['년월','조회','읽기전용','2026-10','—'],['금액','숫자','가능','100','배분 여부=N']]};
  const fixture={...model,actions:[...model.actions,['쿼터 배분 실행','','','','','저장된 월 배분']],columns:[master],masterLink:'년월',masterEditRule:'배분 여부=N',independentButtons:['행 추가'],savedActions:['쿼터 배분 실행'],calculationGuardButtons:['저장'],addRowTabs:['월 기준'],addReferences:{rows:[['월 기준','년월','년월','단가','{"2026-11":{"년월":"2026-11","단가":1.5}}']]},rowExamples:{rows:[['월 기준','{"년월":"2026-10","배분 여부":"Y"}','—']]}};

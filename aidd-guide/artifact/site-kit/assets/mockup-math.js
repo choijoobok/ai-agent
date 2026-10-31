@@ -69,7 +69,7 @@ function bindMockupMath(root) {
       }
       const shown=rows.filter(row=>!row.hidden).length;
       const count=grid.querySelector('.cnt');if(count)count.textContent=shown+'건';
-      const footer=grid.querySelector('.pg');if(footer)footer.textContent=`${key} · ${shown}건 · 같은 월의 입력 유지`;
+      const footer=grid.querySelector('.pg');if(footer)footer.textContent=`${shown}건 · 선택 대상의 입력 유지`;
       rows.filter(row=>!row.hidden).forEach((row,index)=>{const n=row.querySelector('[data-grid-row-number]');if(n)n.textContent=String(index+1);});
     }
     const dirty=[selected,...screen.querySelectorAll('[data-grid-role="detail"] tr[data-grid-row-state]:not([hidden])')].some(row=>row.dataset.gridRowState);

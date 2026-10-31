@@ -143,7 +143,8 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const width = r => Number.parseInt(cell(table, r, '폭/정렬'), 10) || 120;
     const lastVisible=table.rows.findLastIndex(r=>!optional(r));
     const heads = stateHeads(showState,multiple)+table.rows.map((r,i) => `<th data-grid-col="${i}" data-grid-base-width="${width(r)}"${hidden(r)} style="white-space:normal;width:${i===lastVisible?'auto':width(r)+'px'}">${escape(plain(r[0]))}${n.badge(columnExplanation(table,r),`column:${label}:${plain(r[0])}`)}</th>`).join('')+deleteHead(showDelete);
-    const examples = configured(table);
+    const examples = configured(table).filter(record => !compact || exampleContext(record));
+    if (compact && model.masterLink && figure.masterValue && examples.length === 0) empty = true;
     const rows = examples.length ? examples : [{}];
     const editableNow=(r,record,isNew=false)=>{
       if(!figure.editable||table.readonly||!editableColumn(plain(cell(table,r,'편집'))))return false;
