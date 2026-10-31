@@ -398,3 +398,10 @@ test('승인 사용 화면은 저장 슬롯에서 승인 요청을 한 번 제�
  assert.match(html,/data-grid-save data-native-save/);
  assert.doesNotMatch(html,/>저장<\/button>/);
 });
+
+test('목록 연동만 있고 추가 잠금 조건이 없으면 편집 가능한 선택 대상을 잠그지 않는다',()=>{
+ const fixture={...model,masterLink:'사용자',columns:[columns('사용자',[['사용자','텍스트','읽기전용','','portal.user']]),columns('매핑',[['아이디','텍스트','가능','','erp.user']])]};
+ const [figure]=declaredFigures(stateTable([['main','편집','매핑','','조회·저장','가능','없음']]),plain);
+ assert.match(render(figure,fixture),/data-master-locked="false"/);
+ assert.match(render({...figure,editable:false},fixture),/data-master-locked="true"/);
+});
