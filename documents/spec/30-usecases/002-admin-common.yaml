@@ -179,7 +179,7 @@ usecases:
           - SCR-059
           - SCR-060
           - SCR-061
-      - kind: "사용자 신원 매핑·그룹 부여"
+      - kind: "사용자 그룹 추가"
         owner: FEAT-038
         screen: SCR-037
         rules_from:
@@ -232,7 +232,7 @@ usecases:
       - "REQ-601.request_integrity.domain_results"
       - "REQ-601.request_integrity.race_and_completion"
     pending:
-      - "@defer P3 — REQ-609.open의 신원 ID 교체 대기 중 기존 활성 매핑 처리·승인 근거·요청 만료 운영은 사용자 접근 상세 설계에서 확인한다. 이 초안에서 임의 기본값을 정하지 않는다"
+      - "@defer P3 — REQ-609.open의 그룹 추가 승인 근거·요청 만료 운영은 사용자 접근 상세 설계에서 확인한다. 이 초안에서 임의 기본값을 정하지 않는다"
     storage_context: "REQ-601.approval_storage. 관리 조회/변경 입력은 현재 적용본, 초안 편집/제출/검토/반려는 대상별 전용 요청 화면의 요청 문맥, 과거 적용본은 별도 HIST 문맥이다. 후보는 _SNP의 전체 요청 내용이며 업무 REVISION 증가는 실제 반영 성공 때만 발생한다."
   - id: UC-005
     name: "미반영 요청을 종결하고 변경된 내용으로 새 요청을 제출한다"

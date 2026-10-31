@@ -14,7 +14,7 @@ delivery_strategy:
         specify:
           - "처리자·관리 대상 이용자·자산의 안정 식별자를 구분하고, 각 속성을 어느 모듈/외부 원천이 쓰며 어느 공개 계약으로 읽거나 변경하는지 정의한다"
           - "system 관리자 계정/자체 인증과 admin이 관리하는 별도 Portal 계정·portal 인증/세션을 구분한다. Portal 외부/자체 모드의 편집 범위·등록 부분 실패/재요청·양방향 인증 거부를 확인한다"
-        counterexample: "표시명·이메일·기본 ID 변환 패턴만으로 같은 주체 또는 승인된 활성 대상 매핑이라고 판단하거나, Portal 자격 비활성화를 관리자 계정 전체 비활성화로 처리하면 근거와 어긋난다"
+        counterexample: "표시명·이메일·기본 ID 변환 패턴만으로 같은 주체 또는 직접 저장한 현재 유효 대상 매핑이라고 판단하거나, Portal 자격 비활성화를 관리자 계정 전체 비활성화로 처리하면 근거와 어긋난다"
       authorization:
         title: "현재 권한·열람 범위"
         rules_from: ["AUTHZ-090.rules", "AUTHZ-001.rules", "REQ-108.hard_rule", "REQ-601.permissions", "REQ-107.permissions"]

@@ -14,7 +14,7 @@
 | [REQ-605](../../../../spec/10-requirements/011-reference-integration.yaml) | Hub 사용자 그룹 정의·참조 현황 관리 | 직접 담당 | §1·§4·§5·§6: 그룹 정의와 다섯 매핑 탭·활성 편집 진입 | SCR-006-UI-01·SCR-006-UI-02·SCR-006-UI-03·SCR-006-UI-06·SCR-006-UI-07·SCR-006-UI-08 |
 | [REQ-103](../../../../spec/10-requirements/003-security.yaml) | 데이터 접근 통제 — 그룹 판정 · 행 스코프 · SQL 4단계 | 공통 제약 | §3·§6: 현재 권한·최소 그룹·컬럼/행 제약의 기존 판정 | SCR-006-UI-01·SCR-006-UI-04·SCR-006-UI-10·SCR-006-UI-11·SCR-006-UI-12 |
 | [REQ-601](../../../../spec/10-requirements/011-reference-integration.yaml) | 기준정보 관리 범위·공통 속성·참조 보호 | 공통 제약 | §5·§6: 소유 후보·승인 설정·자기 기준본·이력·반출 | SCR-006-UI-05·SCR-006-UI-08·SCR-006-UI-09 |
-| [REQ-609](../../../../spec/10-requirements/012-reference-business.yaml) | Portal 이용자의 대상별 신원 매핑·접근 권한 요청과 승인 | 연계·경계 | §4 사용자·§6: 소속 포함/제거는 SCR-005/037·UC-024가 처리 | SCR-006-UI-08·SCR-006-UI-09·SCR-006-UI-10 |
+| [REQ-609](../../../../spec/10-requirements/012-reference-business.yaml) | Portal 이용자의 대상별 신원 매핑과 사용자 그룹 부여 | 연계·경계 | §4 사용자·§6: 소속 포함/제거는 SCR-005/037·UC-024가 처리 | SCR-006-UI-08·SCR-006-UI-09·SCR-006-UI-10 |
 | [REQ-306](../../../../spec/10-requirements/007-knowledge-catalog.yaml) | 반영 세트 단위 기술 검토·최종 승인·반려와 일괄 활성화 | 연계·경계 | §4 지식·§6: 지식/인증 예제의 전체 후보·세트 승인 | SCR-006-UI-09·SCR-006-UI-12 |
 | [REQ-608](../../../../spec/10-requirements/012-reference-business.yaml) | 업무 API 계약·입출력 명세 기준정보 관리 | 연계·경계 | §4 API·§6: 업무 API의 허용 그룹·계약은 SCR-004/008 소유 | SCR-006-UI-09·SCR-006-UI-12 |
 | [REQ-612](../../../../spec/10-requirements/013-reference-operations.yaml) | 도구 등록·계약·노출 기준 관리 | 연계·경계 | §4 커스텀 도구·§6: 도구 자체 허용 그룹·노출·계약은 SCR-019 소유 | SCR-006-UI-09·SCR-006-UI-12 |
