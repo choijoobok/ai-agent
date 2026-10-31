@@ -19,6 +19,7 @@ import { themeAware } from '../manual-site/lib/page.mjs';
 import { buildFlowViews } from './lib/flow-view.mjs';
 import { createDesignNavigation } from './lib/design-navigation.mjs';
 import { historyViewMarkdown } from './lib/history-view.mjs';
+import { preparedMockupErrors } from './lib/prepared-mockups.mjs';
 import { orderByAdminMenu } from '../doc-gen/menu-contract.mjs';
 import { checkTableDocuments, checkSequenceDocuments } from '../doc-gen/gen.mjs';
 
@@ -57,6 +58,15 @@ const issues = [];
 const sourceFiles = new Set(['documents/delivery.yaml', ...loadedScreens.files, ...schemaInputs]);
 const mockups = {};
 const captureRows = [];
+
+// 파생 목업이 로컬에 없다는 이유로 기존 검토 화면을 빈 안내문으로 교체하지 않는다.
+if (keys.includes('design')) {
+  const missingMockups = preparedMockupErrors({ repo: REPO, screens: specScreens });
+  if (missingMockups.length) {
+    console.error(missingMockups.join('\n'));
+    process.exit(1);
+  }
+}
 
 if (!/^DLV-\d{3}$/.test(config.meta?.id ?? '')) {
   issues.push({ site: 'all', level: 'error', message: `잘못된 제출 구성 ID: ${config.meta?.id ?? '(없음)'}` });

@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto';
 import { parseYaml } from '../../hooks/lib.mjs';
 import { loadSpecSet } from '../../../aidd-guide/harness/runtime/spec-set.mjs';
 import { menuNavigationErrors } from './lib/menu-order.mjs';
+import { preparedMockupErrors } from './lib/prepared-mockups.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, '../../..');
@@ -91,6 +92,7 @@ for (const key of keys) {
   if (key === 'design') {
     const spec = loadSpecSet({ repo: REPO, name: '60-screens', parseYaml }).document;
     errors.push(...menuNavigationErrors(spec, html));
+    errors.push(...preparedMockupErrors({ repo: REPO, screens: spec.screens ?? [], html }));
     const tabLists = [...html.matchAll(/\bdata-document-tabs(?:\s|>)/g)].length;
     const requirementTabs = [...html.matchAll(/data-document-tab="requirements"/g)].length;
     const mockupTabs = [...html.matchAll(/data-document-tab="mockup"/g)].length;
