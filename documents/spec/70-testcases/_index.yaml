@@ -18,3 +18,4 @@ spec_set:
     - 007-change-history.yaml
     - 008-knowledge-mapping.yaml
     - 009-monthly-token-rate.yaml
+    - 010-user-group-mappings.yaml

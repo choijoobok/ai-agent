@@ -200,6 +200,8 @@ screens:
     entry: "menu"
     group: "공통 기반"
     title: "사용자 그룹"
+    note: "REQ-605.mapping_workbench에 따라 사용자·지식·스키마 카탈로그·API·커스텀 도구 다섯 탭을 안정 그룹 식별자에 연동한다. 매핑 활성 스위치는 그룹 포함/제외 후보이며 소유 저장·승인·현재 접근 상태와 분리한다. 지식 탭은 인증 예제, 도구 탭은 내부 빈/API 기반 유형도 구분한다"
+    usecases: [UC-025, UC-001, UC-002, UC-006]
     feature: FEAT-006
     roadmap: "RM-P1"
     agent_contact: "설정"
