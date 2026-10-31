@@ -42,12 +42,22 @@ function resolveMockupAddReference(rule, key, existing) {
   return {...row};
 }
 
+/** 그룹을 왕복해도 같은 하단 그리드의 선택 행을 원래 문맥으로 복원한다. */
+function rememberMockupDetailSelection(state, key, current, visible) {
+  if(state.key&&current)state.selected.set(state.key,current);
+  state.key=key;
+  const selected=state.selected.get(key);
+  if(selected&&!visible.includes(selected)){state.selected.delete(key);return null;}
+  return selected??null;
+}
+
 function bindMockupMath(root) {
   const screens=[...root.querySelectorAll('[data-master-link]')];
   if(!screens.length)return;
   const rowsOf=grid=>[...grid.querySelectorAll(':scope > .grid > table > tbody > tr[data-row-context]')];
   const allocationInputs=new WeakMap();
-  const controls=screen=>[...screen.querySelectorAll('button[data-grid-save],button[data-grid-add],button[data-edit-action]')];
+  const detailSelections=new WeakMap();
+  const controls=screen=>[...screen.querySelectorAll('button[data-grid-save],button[data-grid-add],button[data-edit-action],button[data-config-switch]')];
   const refresh=screen=>{
     const master=screen.querySelector('[data-grid-role="master"]'),selected=master?.querySelector('tbody tr.sel');
     if(!selected)return;
@@ -63,17 +73,21 @@ function bindMockupMath(root) {
     screen.dataset.activeMaster=key||'';
     for(const grid of screen.querySelectorAll('[data-grid-role="detail"]')){
       const rows=rowsOf(grid);
+      const current=rows.find(row=>row.classList.contains('sel')&&!row.hidden);
+      if(!detailSelections.has(grid))detailSelections.set(grid,{key,selected:new Map()});
       for(const row of rows){
         if(row.dataset.gridRowState==='C'&&!row.dataset.masterAssigned){row.dataset.rowContext=JSON.stringify([key]);row.dataset.masterAssigned='true';}
         row.hidden=!JSON.parse(row.dataset.rowContext).includes(key);
       }
+      const selected=rememberMockupDetailSelection(detailSelections.get(grid),key,current,rows.filter(row=>!row.hidden));
+      for(const row of rows)row.classList.toggle('sel',row===selected);
       const shown=rows.filter(row=>!row.hidden).length;
       const count=grid.querySelector('.cnt');if(count)count.textContent=shown+'건';
       const footer=grid.querySelector('.pg');if(footer)footer.textContent=`${shown}건 · 선택 대상의 입력 유지`;
       rows.filter(row=>!row.hidden).forEach((row,index)=>{const n=row.querySelector('[data-grid-row-number]');if(n)n.textContent=String(index+1);});
     }
     const dirty=[selected,...screen.querySelectorAll('[data-grid-role="detail"] tr[data-grid-row-state]:not([hidden])')].some(row=>row.dataset.gridRowState);
-    for(const button of controls(screen))button.disabled=button.dataset.baseDisabled==='true'||(locked&&!button.hasAttribute('data-selection-independent'))||(button.hasAttribute('data-saved-action')&&dirty);
+    for(const button of controls(screen))button.disabled=button.dataset.baseDisabled==='true'||(locked&&!button.hasAttribute('data-selection-independent'))||(button.hasAttribute('data-config-switch')&&!button.closest('[data-row-field]').classList.contains('edit'))||(button.hasAttribute('data-saved-action')&&dirty);
     const status=screen.querySelector('[data-calculation-status]');if(status){status.hidden=true;status.textContent='';}
     if(locked||screen.hasAttribute('data-calculation-readonly')||!screen.dataset.calculationRules)return;
     const rules=JSON.parse(screen.dataset.calculationRules),grids={},elements={};
@@ -97,7 +111,7 @@ function bindMockupMath(root) {
     }
   };
   for(const screen of screens){
-    controls(screen).forEach(button=>button.dataset.baseDisabled=String(button.disabled));
+    controls(screen).forEach(button=>button.dataset.baseDisabled=String(button.hasAttribute('data-config-switch')?button.dataset.switchReadonly==='true':button.disabled));
     const initial=screen.dataset.masterInitial;
     if(initial)for(const row of screen.querySelectorAll('[data-grid-role="master"] tbody tr[data-row-context]'))row.classList.toggle('sel',row.querySelector(`[data-row-field="${screen.dataset.masterLink}"]`)?.dataset.rowValue===initial);
     refresh(screen);

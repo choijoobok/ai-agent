@@ -61,7 +61,7 @@ function bindDeclaredMockup(root) {
     row.style.textDecoration=state==='D'?'line-through':'';
     const remove=row.querySelector('[data-grid-delete]');
     if(remove&&state==='D'){remove.innerHTML='↶';remove.setAttribute('aria-label','삭제 표시 해제');}
-    if(state==='D')row.querySelectorAll('td[data-row-field] input,td[data-row-field] select,td[data-row-field] textarea').forEach(input=>input.disabled=true);
+    if(state==='D')row.querySelectorAll('td[data-row-field] input,td[data-row-field] select,td[data-row-field] textarea,td[data-row-field] [data-config-switch]').forEach(input=>input.disabled=true);
   };
   const markEdited=row=>{
     if(!row?.hasAttribute('data-grid-row-state')||['C','D'].includes(row.dataset.gridRowState))return;
@@ -78,7 +78,10 @@ function bindDeclaredMockup(root) {
     const values = Object.fromEntries([...row.querySelectorAll('[data-row-field]')].map(cell=>[cell.dataset.rowField,cell.dataset.rowValue]));
     row.querySelectorAll('[data-edit-rule]').forEach(cell=>{
       const allowed=JSON.parse(cell.dataset.editRule).every(rule=>rule.values.includes(values[rule.field]));
+      const toggle=cell.querySelector('[data-config-switch]');
+      if(toggle){toggle.disabled=!allowed||toggle.dataset.switchReadonly==='true';cell.classList.toggle('edit',allowed&&toggle.dataset.switchReadonly!=='true');return;}
       const editor=cell.querySelector('[data-cell-editor]');
+      if(!editor){cell.classList.remove('edit');return;}
       editor.hidden=!allowed;
       if(!allowed)editor.open=false;
       cell.querySelector('[data-locked-value]').hidden=allowed;
@@ -220,6 +223,16 @@ function bindDeclaredMockup(root) {
       if(row.dataset.gridRowState==='D'){restoreRow(row);}
       else setRowState(row,'D');
       return;
+    }
+    const toggle=target.closest('[data-config-switch]');
+    if(toggle){
+      const cell=toggle.closest('[data-row-field]'),row=cell.closest('tr');
+      if(toggle.disabled||toggle.dataset.switchReadonly==='true'||row.dataset.gridRowState==='D')return;
+      const old=cell.dataset.rowValue;
+      if(!['true','false','Y','N','1','0'].includes(old))return;
+      const on=['true','Y','1'].includes(old),pair=['Y','N'].includes(old)?['Y','N']:['1','0'].includes(old)?['1','0']:['true','false'];
+      cell.dataset.rowValue=pair[on?1:0];toggle.setAttribute('aria-checked',String(!on));
+      refreshRowConditions(row);markEdited(row);return;
     }
     const revertRow=target.closest('[data-revert-row]');
     if(revertRow){restoreRow(revertRow.closest('tr'));return;}

@@ -5,7 +5,7 @@ category: standard/frontend
 type: operation
 class: contract
 created: 2026-05-04
-updated: 2026-09-07
+updated: 2026-10-31
 status: active
 sources: ["sources/frontend/src/shared/grid/", "sources/frontend/src/modules/sample/"]
 tier: 2
@@ -73,6 +73,10 @@ tags: [frontend, grid, column, type]
 | **`code`** | `select` · `richSelect` | 표시는 코드명, 저장은 코드값 |
 | **`popupRef`** | `popupRef` | 한 번 골라 여러 칸을 채운다 |
 | **`list`** | `listModal` | **배열을 담는다** |
+
+**여부형 두 값은 모두 스위치로 표시한다.** 참/거짓·Y/N·사용/미사용을 체크박스나 선택 목록으로
+표현하지 않는다. 현재 권한과 업무 규칙이 허용하는 설정만 직접 편집하며, 처리 결과·잠금/휴면 등
+전용 명령이 필요한 값은 읽기 전용 스위치로 표시한다. 미상은 꺼짐으로 바꾸지 않고 확인 필요로 표시한다.
 
 > **닫힌 집합이 아니라 *늘리는 조건이 있는* 집합이다.** 여기는 업무 도메인을 가리지 않는
 > 베이스이므로 *"지금 화면에 사례가 없다"* 는 막는 근거가 아니다. **늘릴 때 지킬 것은 둘** —

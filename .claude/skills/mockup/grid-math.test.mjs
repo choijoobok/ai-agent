@@ -9,6 +9,15 @@ const calculate=(rows)=>context.computeMockupGrid([
  {area:'요약',target:'총 비용',kind:'합계',a:'산정::비용',scale:1},
  {area:'요약',target:'USD/1M',kind:'비율',a:'산정::비용',b:'산정::수량',scale:1e6},
 ],{'산정':rows,'요약':[{}]});
+test('다른 그룹의 하단 행을 선택해도 원 그룹 선택을 복원하고 제거된 행은 재선택하지 않는다',()=>{
+ const a={},b={},state={key:'A',selected:new Map()};
+ assert.equal(context.rememberMockupDetailSelection(state,'A',a,[a]),a);
+ assert.equal(context.rememberMockupDetailSelection(state,'B',a,[b]),null);
+ assert.equal(context.rememberMockupDetailSelection(state,'B',b,[b]),b);
+ assert.equal(context.rememberMockupDetailSelection(state,'A',b,[a]),a);
+ assert.equal(context.rememberMockupDetailSelection(state,'B',a,[b]),b);
+ assert.equal(context.rememberMockupDetailSelection(state,'A',b,[]),null);
+});
 test('정규화한 캐시 구성으로 1.56USD/110만 토큰을 계산하며 원 입력은 변경하지 않는다',()=>{
  const rows=[{단가:2,수량:200000},{단가:.2,수량:800000},{단가:10,수량:100000}];
  const result=calculate(rows);

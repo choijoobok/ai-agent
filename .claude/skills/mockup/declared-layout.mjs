@@ -187,13 +187,15 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
       const rowParent=parentField && parentField!=='—' ? parentField : '';
       if(rowParent && !table.rows.some(row=>plain(row[0])===rowParent))throw new Error('상위 선택 필드가 같은 그리드에 없다');
       const rowCandidates=rowParent ? (JSON.parse(candidateMap)[valueOf(table.rows.find(row=>plain(row[0])===rowParent))]??[]).join('·') : plain(cell(table,r,'후보 예시'));
-      let content=escape(value);
+      let content=escape(value),switchKnown=true;
       const isSnapshot=/스냅샷 뷰어/.test(mode);
       const isLargeText=/셀 위 텍스트영역/.test(mode);
-      if(mode==='스위치'){
-        if(editable)throw new Error('조회 결과 스위치는 읽기 전용으로 선언한다');
+      if(mode==='스위치'||mode==='설정 스위치'){
+        if(mode==='스위치'&&editable)throw new Error('조회 결과 스위치는 읽기 전용으로 선언한다');
         const flag=String(valueOf(r)),on=['true','Y','1'].includes(flag);
-        content=['true','false','Y','N','1','0'].includes(flag)?`<button type="button" role="switch" data-grid-switch aria-label="${escape(plain(r[0]))}" aria-checked="${on}" disabled title="${escape(plain(cell(table,r,'설명')))}"><span></span></button>`:'<span data-switch-unknown>확인 필요</span>';
+        switchKnown=['true','false','Y','N','1','0'].includes(flag);
+        const configurable=mode==='설정 스위치';
+        content=switchKnown?`<button type="button" role="switch" data-grid-switch${configurable?` data-config-switch data-switch-readonly="${!editable}"`:''} aria-label="${escape(plain(r[0]))}" aria-checked="${on}"${!configurable||!editable||conditionLocked?' disabled':''} title="${escape(plain(cell(table,r,'설명')))}"><span></span></button>`:'<span data-switch-unknown>확인 필요</span>';
       }else if(isLargeText){
         const controlId=`${gridId}-row-${rowIndex}-cell-${i}`;
         content=`<details data-cell-editor data-cell-large${editable?' data-cell-inline':' data-cell-large-view'}><summary title="${editable?'더블 클릭으로 셀 위 텍스트영역 편집':'전체 내용 보기'}">${escape(value)}</summary><textarea data-edit-value id="${controlId}" aria-label="${escape(plain(r[0]))}" rows="8" cols="60" maxlength="2000"${editable?'':' readonly'}>${escape(valueOf(r)||'')}</textarea></details>`;
@@ -217,9 +219,9 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
         content = `<button type="button" class="btn ghost sm" data-open-tab="${escape(target)}" data-context="${escape(context)}">${escape(value)}</button>`;
       }
       if(model.requestScreen && plain(r[0])==='요청번호')content=`<span data-request-number>${content}</span>`;
-      if(rowConditional && editable)content=`<span data-locked-value${conditionLocked?'':' hidden'}>—</span>${conditionLocked?content.replace('<details data-cell-editor','<details hidden data-cell-editor'):content}`;
+      if(rowConditional && editable && mode!=='설정 스위치')content=`<span data-locked-value${conditionLocked?'':' hidden'}>—</span>${conditionLocked?content.replace('<details data-cell-editor','<details hidden data-cell-editor'):content}`;
       const storedValue=referenceMap&&referenceMap!=='—'?(JSON.parse(referenceMap)[valueOf(r)]??valueOf(r)):valueOf(r);
-      return `<td data-grid-col="${i}" data-row-field="${escape(plain(r[0]))}" data-row-value="${escape(storedValue||'')}"${(model.calculations?.some(rule=>rule.area===label&&rule.target===plain(r[0]))||model.allocationValidity?.field===plain(r[0]))?' data-calculated-value':''}${rowConditional&&editable?` data-edit-rule="${escape(JSON.stringify(rowRules))}"`:''}${hidden(r)}${editable && !conditionLocked ? ' class="edit"' : ''} style="overflow:hidden;text-overflow:ellipsis" title="${isSnapshot?'전체 스냅샷 보기':escape(value)}">${content}</td>`;
+      return `<td data-grid-col="${i}" data-row-field="${escape(plain(r[0]))}" data-row-value="${escape(storedValue||'')}"${(model.calculations?.some(rule=>rule.area===label&&rule.target===plain(r[0]))||model.allocationValidity?.field===plain(r[0]))?' data-calculated-value':''}${rowConditional&&editable?` data-edit-rule="${escape(JSON.stringify(rowRules))}"`:''}${hidden(r)}${editable && !conditionLocked && switchKnown ? ' class="edit"' : ''} style="overflow:hidden;text-overflow:ellipsis" title="${isSnapshot?'전체 스냅샷 보기':escape(value)}">${content}</td>`;
     }).join('');
     const protection = model.removeGuardField ? String(record[model.removeGuardField]??'').trim() : '';
     const protectedRow = protection && !['—','없음','0'].includes(protection);
@@ -236,8 +238,9 @@ export function declaredScreen(title, model, figure, { annotator, plain, searchC
     const surface=surfaceOf(model,label);
     const surfaceButtons=(surface?.buttons??[]).filter(name=>!/^조회$|^저장$|추가$|제거$|^엑셀 다운로드$/.test(name));
     const globalButtons=table===model.columns[0]&&!compact?figure.buttons.filter(name=>!/^조회$|^저장$|추가$|제거$|^엑셀 다운로드$/.test(name)&&!model.surfaces?.some(s=>s.buttons.includes(name))):[];
-    const approvalSave=figure.buttons.includes('승인 요청')&&!figure.buttons.includes('저장');
-    const actions=[...new Set([...surfaceButtons,...globalButtons])].filter(name=>!(approvalSave&&name==='승인 요청')).map(name=>button(name,label)).join('');
+    const saveButtons=surface?.buttons??figure.buttons;
+    const approvalSave=saveButtons.includes('승인 요청')&&!saveButtons.includes('저장')&&figure.buttons.includes('승인 요청');
+    const actions=[...new Set([...surfaceButtons,...globalButtons])].filter(name=>name!=='승인 요청'||(figure.buttons.includes('승인 요청')&&!approvalSave)).map(name=>button(name,label)).join('');
     const approvalControl=approvalSave?'<span data-grid-save data-native-save>'+button('승인 요청',label)+'</span>':'';
     const addControl=standardButton('행 추가','add',!canAdd,'같은 저장 단위에 신규 행 추가').replace('data-grid-add',table===model.columns[0]&&model.independentButtons?.includes('행 추가')?'data-grid-add data-selection-independent':'data-grid-add');
     const addRefRow=model.addReferences?.rows.find(row=>plain(row[0])===label);

@@ -367,6 +367,29 @@ test('셀 위 textarea와 조회 전용 스위치는 선택 적용 모달·편�
 });
 
 
+test('설정 스위치는 직접 편집을 표시하되 행 조건·읽기 전용·미상 상태를 유지한다',()=>{
+ const table={heading:'매핑',header:['컬럼','입력방식','편집','예시','편집 조건'],rows:[['매핑 활성','설정 스위치','조건부','Y','변경 가능=Y'],['변경 가능','조회','읽기전용','Y','—']]};
+ const [figure]=declaredFigures(stateTable([['main','설정','없음','','조회·저장','가능','없음']]),plain);
+ const fixture={...model,columns:[table]};
+ const html=render(figure,fixture);assert.match(html,/data-config-switch data-switch-readonly="false"[^>]+aria-checked="true"/);
+ assert.doesNotMatch(html,/aria-checked="true" disabled/);assert.match(html,/data-row-value="Y"/);assert.doesNotMatch(html,/data-cell-editor/);
+ assert.match(render({...figure,examples:{'변경 가능':'N'}},fixture),/aria-checked="true" disabled/);
+ assert.match(render({...figure,editable:false},fixture),/data-switch-readonly="true"[^>]+disabled/);
+ const unknown=render({...figure,examples:{'매핑 활성':'확인 필요'}},fixture);assert.match(unknown,/data-switch-unknown/);assert.doesNotMatch(unknown,/aria-checked="false"/);
+});
+
+test('그룹 정의 저장과 자산 매핑 승인 요청은 각각 자기 그리드의 저장 슬롯에만 표시한다',()=>{
+ const fixture={...model,columns:[columns('그룹',[['이름','텍스트','가능','','그룹']]),columns('지식',[['매핑 활성','설정 스위치','가능','','true']])],actions:[['저장','','','','','그룹 저장'],['승인 요청','','','','','자산 승인']],surfaces:[{name:'그룹',buttons:['조회','저장'],disabled:[]},{name:'지식',buttons:['조회','승인 요청'],disabled:[]}]};
+ const [figure]=declaredFigures(stateTable([['main','편집','지식','','조회·저장·승인 요청','가능','없음']]),plain);
+ const html=render(figure,fixture),master=html.slice(html.indexOf('data-grid-name="그룹"'),html.indexOf('data-grid-name="지식"')),detail=html.slice(html.indexOf('data-grid-name="지식"'));
+ assert.match(master,/>저장<\/button>/);assert.doesNotMatch(master,/>승인 요청<\/button>/);
+ assert.match(detail,/data-grid-save data-native-save/);assert.match(detail,/>승인 요청<\/button>/);assert.doesNotMatch(detail,/>저장<\/button>/);
+ const direct=render({...figure,key:'direct',buttons:['조회','저장']},fixture);
+ const directDetail=direct.slice(direct.indexOf('data-grid-name="지식"'));
+ assert.equal((directDetail.match(/>저장<\/button>/g)||[]).length,1);
+ assert.doesNotMatch(directDetail,/>승인 요청<\/button>/);
+});
+
 test('승인 사용 화면은 저장 슬롯에서 승인 요청을 한 번 제공한다',()=>{
  const fixture={...model,columns:[columns('자산',[['값','텍스트','가능','','기존']])],actions:[['승인 요청','','','','','전체 후보 제출']],addRowTabs:['자산']};
  const [figure]=declaredFigures(stateTable([['edit','편집','없음','','승인 요청','가능','없음']]),plain);
